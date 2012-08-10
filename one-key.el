@@ -61,7 +61,7 @@
 
 ;;; The *One-Key* buffer:
 ;;
-;; Running the command `one-key-open-default-menu-set' or `one-key-open-menu-set' opens the *One-Key* buffer.
+;; Running the command `one-key-open-associated-menu-set' or `one-key-open-menu-set' opens the *One-Key* buffer.
 ;; (these commands may be bound to keys - see "Installation" below).
 ;;
 ;; Within the *One-Key* buffer you will see a list of command descriptions each with a corresponding key in square
@@ -161,12 +161,15 @@
 
 ;;; Menu sets:
 
-;; A menu set is a collection of menu names. When you open the *One-Key* buffer with `one-key-open-default-menu-set'
-;; it opens the default set of menus `one-key-default-menu-set'. You can define other sets of menus by customizing
-;; `one-key-sets-of-menus-alist'. Each menu set consists of a name for the menu set, and a list of menu names.
+;; A menu set is a collection of menu names. When you open the *One-Key* buffer with `one-key-open-associated-menu-set'
+;; it opens a collection of menus associated with the current major-mode or buffer. By default this is the set of menus
+;; in `one-key-default-menu-set'. You can define other menu sets by customizing `one-key-sets-of-menus-alist', and
+;; associate them with different major-modes or buffers by customizing `one-key-associations-for-menu-sets'.
+;; Each menu set consists of a name for the menu set, and a list of menu names.
 ;; one-key reconstructs a menu from its name by searching `one-key-types-of-menu' for a matching entry, and applying
 ;; the associated function to create the menu.
-;; You can see what menu sets are currently defined, and switch menu sets, using the "menu-sets" menu.
+;; With the "menu-sets" menu you can see what menu sets are currently defined, switch menu sets, and save the current
+;; menus as a menu set (C-s).
 ;; See "Creating menus" above for info on how to add the "menu-sets" menu to the *One-Key* buffer.
 
 ;;; Other features:
@@ -226,12 +229,7 @@
 ;; want to use to open the *One-Key* buffer.
 ;;
 ;; (require 'one-key)
-;; (global-set-key (kbd "<menu>") 'one-key-open-default-menu-set)
-;;
-;; You can define new menu sets by customizing `one-key-sets-of-menus-alist', and change the default
-;; menu set by customizing `one-key-default-menu-set'.
-;; You can try out new menus by pressing the special key for "Add a menu" from the *One-Key* buffer
-;; (press f1 in the *One-Key* buffer to see a list of all special keybindings).
+;; (global-set-key (kbd "<menu>") 'one-key-open-associated-menu-set)
 ;;
 ;; Because this library uses a special implementation,
 ;; sometimes a `max-lisp-eval-depth' or `max-specpdl-size' error can occur.
@@ -255,8 +253,8 @@
 ;; `one-key-popup-window' : Whether to popup window when `one-key-menu' is run for the first time.
 ;; `one-key-buffer-name' : The buffer name of the popup menu window.
 ;; `one-key-column-major-order' : If true then menu items are displayed in column major order, otherwise row major order.
-;; `one-key-min-number-of-columns' : If non-nil then one-key menus created from keymaps will have command 
-;;                                             descriptions shortened to fit two columns.
+;; `one-key-min-number-of-columns' : An integer greater than 0 indicating the minimum number of columns to create for 
+;;                                   one-key menus.
 ;; `one-key-menu-window-max-height' : The max height of popup menu window.
 ;; `one-key-menus-save-file' : The file where `one-key' menus are saved.
 ;; `one-key-autosave-menus' : If non-nil then one-key menus will automatically be saved when created or changed.
@@ -273,6 +271,8 @@
 ;; `one-key-sets-of-menus-alist' : Saved menu sets (sets of menus).
 ;; `one-key-default-menu-set' : The default menu set. It's value should be the car of one of the items in 
 ;;                              `one-key-sets-of-menus-alist'.
+;; `one-key-associations-for-menu-sets' : An alist indicating which menu sets should be used with which 
+;;                                        buffers/major-modes.
 ;; `one-key-default-sort-method-alist' : An alist of sorting methods to use on the `one-key' menu items.
 ;; `one-key-special-keybindings' : An list of special keys; labels, keybindings, descriptions and associated functions.
 ;; `one-key-default-special-keybindings' : List of special keys to be used if no other set of special keys is defined for 
@@ -441,10 +441,12 @@
 
 ;;; TODO
 ;;
+;; Conditional menu sets : opened when condition is satisfied (e.g. major-mode)
 ;; New special keybinding for limiting by regexp all items in current menu and all submenus?
 ;; Make functions autoloadable.
 ;; Prompt to save submenus when saving menu. Special keybinding to save all altered menus?
 ;; Autohighlighting of menu items using regexp associations?
+;; Add to marmalade and elpa repos
 ;; 
 ;;; Require
 (eval-when-compile (require 'cl))
@@ -455,6 +457,10 @@
 (defgroup one-key nil
   "One key - easy access, refactorable menus."
   :group 'editing)
+
+(defgroup one-key-menu-sets nil
+  "One key menu sets - sets of one-key menus."
+  :group 'one-key)
 
 (defcustom one-key-default-menu-keys
   (let (letters-and-numbers)
@@ -566,93 +572,93 @@ current major mode) will be used (and created if necessary)."
   :group 'one-key)
 
 (defcustom one-key-menu-toplevel-alist '((("M" . "Cursor motion commands") .
-                                     (lambda nil (interactive)
-                                       (one-key-open-submenu "Cursor motion commands"
-                                                             one-key-menu-cursor-motion-commands-alist)))
-                                    (("B" . "Buffer and file commands") .
-                                     (lambda nil (interactive)
-                                       (one-key-open-submenu "Buffer and file commands"
-                                                             one-key-menu-buffer-and-file-commands-alist)))
-                                    (("E" . "Editing commands") .
-                                     (lambda nil (interactive)
-                                       (one-key-open-submenu "Editing commands"
-                                                             one-key-menu-editing-commands-alist)))
-                                    (("C-s" . "Searching commands") .
-                                     (lambda nil (interactive)
-                                       (one-key-open-submenu "Searching commands"
-                                                             one-key-menu-searching-commands-alist)))
-                                    (("S" . "Sorting commands") .
-                                     (lambda nil (interactive)
-                                       (one-key-open-submenu "Sorting commands"
-                                                             one-key-menu-sorting-commands-alist)))
-                                    (("W" . "Window commands") .
-                                     (lambda nil (interactive)
-                                       (one-key-open-submenu "Window commands"
-                                                             one-key-menu-window-commands-alist)))
-                                    (("C-h" . "Prefix-Key:C-h (help commands)") .
-                                     (lambda nil (interactive)
-                                       (funcall 'one-key-prefix-key-menu-command "C-h" t)))
-                                    (("<C-escape>" . "Prefix-Key:ESC (all meta key keybindings)") .
-                                     (lambda nil (interactive)
-                                       (funcall 'one-key-prefix-key-menu-command "ESC" t)))
-                                    (("M-g" . "Prefix-Key:M-g (error commands)") .
-                                     (lambda nil (interactive)
-                                       (funcall 'one-key-prefix-key-menu-command "M-g" t)))
-                                    (("M-o" . "Prefix-Key:M-o (font-lock/centering commands)") .
-                                     (lambda nil (interactive)
-                                       (funcall 'one-key-prefix-key-menu-command "M-o" t)))
-                                    (("M-s" . "Prefix-Key:M-s (occur/highlight commands)") .
-                                     (lambda nil (interactive)
-                                       (funcall 'one-key-prefix-key-menu-command "M-s" t)))
-                                    (("C-x" . "Prefix-Key:C-x (all C-x keybindings)") .
-                                     (lambda nil (interactive)
-                                       (funcall 'one-key-prefix-key-menu-command "C-x" t)))
-                                    (("r" . "Prefix-Key:C-x r (bookmark, rectangle and register commands)") .
-                                     (lambda nil (interactive)
-                                       (funcall 'one-key-prefix-key-menu-command "C-x r" t)))
-                                    (("v" . "Prefix-Key:C-x v (version control commands)") .
-                                     (lambda nil (interactive)
-                                       (funcall 'one-key-prefix-key-menu-command "C-x v" t)))
-                                    (("a" . "Prefix-Key:C-x a (abbrev commands)") .
-                                     (lambda nil (interactive)
-                                       (funcall 'one-key-prefix-key-menu-command "C-x a" t)))
-                                    (("n" . "Prefix-Key:C-x n (narrow/widen commands)") .
-                                     (lambda nil (interactive)
-                                       (funcall 'one-key-prefix-key-menu-command "C-x n" t)))
-                                    (("C-k" . "Prefix-Key:C-x C-k (keyboard macro commands)") .
-                                     (lambda nil (interactive)
-                                       (funcall 'one-key-prefix-key-menu-command "C-x C-k" t)))
-                                    (("w" . "Prefix-Key:C-x w (highlight commands)") .
-                                     (lambda nil (interactive)
-                                       (funcall 'one-key-prefix-key-menu-command "C-x w" t)))
-                                    (("RET" . "Prefix-Key:C-x RET (input/coding commands)") .
-                                     (lambda nil (interactive)
-                                       (funcall 'one-key-prefix-key-menu-command "C-x RET" t)))
-                                    (("4" . "Prefix-Key:C-x 4 (other-window commands)") .
-                                     (lambda nil (interactive)
-                                       (funcall 'one-key-prefix-key-menu-command "C-x 4" t)))
-                                    (("5" . "Prefix-Key:C-x 5 (other-frame commands)") .
-                                     (lambda nil (interactive)
-                                       (funcall 'one-key-prefix-key-menu-command "C-x 5" t)))
-                                    (("6" . "Prefix-Key:C-x 6 (2 column mode commands)") .
-                                     (lambda nil (interactive)
-                                       (funcall 'one-key-prefix-key-menu-command "C-x 6" t)))
-                                    (("C-c" . "Prefix-Key:C-c (mode specific bindings)") .
-                                     (lambda nil (interactive)
-                                       (funcall 'one-key-prefix-key-menu-command "C-c" t)))
-                                    (("@" . "Prefix-Key:C-c @ (outline commands)") .
-                                     (lambda nil (interactive)
-                                       (funcall 'one-key-prefix-key-menu-command "C-c @" t)))
-                                    (("," . "Prefix-Key:C-c , (senator/semantic commands)") .
-                                     (lambda nil (interactive)
-                                       (funcall 'one-key-prefix-key-menu-command "C-c ," t)))
-                                    (("." . "Prefix-Key:C-c . (Ede commands)") .
-                                     (lambda nil (interactive)
-                                       (funcall 'one-key-prefix-key-menu-command "C-c ." t)))
-                                    (("/" . "Prefix-Key:C-c / (Srecode commands)") .
-                                     (lambda nil (interactive)
-                                       (funcall 'one-key-prefix-key-menu-command "C-c /" t)))
-                                    )
+                                          (lambda nil (interactive)
+                                            (one-key-open-submenu "Cursor motion commands"
+                                                                  one-key-menu-cursor-motion-commands-alist)))
+                                         (("B" . "Buffer and file commands") .
+                                          (lambda nil (interactive)
+                                            (one-key-open-submenu "Buffer and file commands"
+                                                                  one-key-menu-buffer-and-file-commands-alist)))
+                                         (("E" . "Editing commands") .
+                                          (lambda nil (interactive)
+                                            (one-key-open-submenu "Editing commands"
+                                                                  one-key-menu-editing-commands-alist)))
+                                         (("C-s" . "Searching commands") .
+                                          (lambda nil (interactive)
+                                            (one-key-open-submenu "Searching commands"
+                                                                  one-key-menu-searching-commands-alist)))
+                                         (("S" . "Sorting commands") .
+                                          (lambda nil (interactive)
+                                            (one-key-open-submenu "Sorting commands"
+                                                                  one-key-menu-sorting-commands-alist)))
+                                         (("W" . "Window commands") .
+                                          (lambda nil (interactive)
+                                            (one-key-open-submenu "Window commands"
+                                                                  one-key-menu-window-commands-alist)))
+                                         (("C-h" . "Prefix-Key:C-h (help commands)") .
+                                          (lambda nil (interactive)
+                                            (funcall 'one-key-prefix-key-menu-command "C-h" t)))
+                                         (("<C-escape>" . "Prefix-Key:ESC (all meta key keybindings)") .
+                                          (lambda nil (interactive)
+                                            (funcall 'one-key-prefix-key-menu-command "ESC" t)))
+                                         (("M-g" . "Prefix-Key:M-g (error commands)") .
+                                          (lambda nil (interactive)
+                                            (funcall 'one-key-prefix-key-menu-command "M-g" t)))
+                                         (("M-o" . "Prefix-Key:M-o (font-lock/centering commands)") .
+                                          (lambda nil (interactive)
+                                            (funcall 'one-key-prefix-key-menu-command "M-o" t)))
+                                         (("M-s" . "Prefix-Key:M-s (occur/highlight commands)") .
+                                          (lambda nil (interactive)
+                                            (funcall 'one-key-prefix-key-menu-command "M-s" t)))
+                                         (("C-x" . "Prefix-Key:C-x (all C-x keybindings)") .
+                                          (lambda nil (interactive)
+                                            (funcall 'one-key-prefix-key-menu-command "C-x" t)))
+                                         (("r" . "Prefix-Key:C-x r (bookmark, rectangle and register commands)") .
+                                          (lambda nil (interactive)
+                                            (funcall 'one-key-prefix-key-menu-command "C-x r" t)))
+                                         (("v" . "Prefix-Key:C-x v (version control commands)") .
+                                          (lambda nil (interactive)
+                                            (funcall 'one-key-prefix-key-menu-command "C-x v" t)))
+                                         (("a" . "Prefix-Key:C-x a (abbrev commands)") .
+                                          (lambda nil (interactive)
+                                            (funcall 'one-key-prefix-key-menu-command "C-x a" t)))
+                                         (("n" . "Prefix-Key:C-x n (narrow/widen commands)") .
+                                          (lambda nil (interactive)
+                                            (funcall 'one-key-prefix-key-menu-command "C-x n" t)))
+                                         (("C-k" . "Prefix-Key:C-x C-k (keyboard macro commands)") .
+                                          (lambda nil (interactive)
+                                            (funcall 'one-key-prefix-key-menu-command "C-x C-k" t)))
+                                         (("w" . "Prefix-Key:C-x w (highlight commands)") .
+                                          (lambda nil (interactive)
+                                            (funcall 'one-key-prefix-key-menu-command "C-x w" t)))
+                                         (("RET" . "Prefix-Key:C-x RET (input/coding commands)") .
+                                          (lambda nil (interactive)
+                                            (funcall 'one-key-prefix-key-menu-command "C-x RET" t)))
+                                         (("4" . "Prefix-Key:C-x 4 (other-window commands)") .
+                                          (lambda nil (interactive)
+                                            (funcall 'one-key-prefix-key-menu-command "C-x 4" t)))
+                                         (("5" . "Prefix-Key:C-x 5 (other-frame commands)") .
+                                          (lambda nil (interactive)
+                                            (funcall 'one-key-prefix-key-menu-command "C-x 5" t)))
+                                         (("6" . "Prefix-Key:C-x 6 (2 column mode commands)") .
+                                          (lambda nil (interactive)
+                                            (funcall 'one-key-prefix-key-menu-command "C-x 6" t)))
+                                         (("C-c" . "Prefix-Key:C-c (mode specific bindings)") .
+                                          (lambda nil (interactive)
+                                            (funcall 'one-key-prefix-key-menu-command "C-c" t)))
+                                         (("@" . "Prefix-Key:C-c @ (outline commands)") .
+                                          (lambda nil (interactive)
+                                            (funcall 'one-key-prefix-key-menu-command "C-c @" t)))
+                                         (("," . "Prefix-Key:C-c , (senator/semantic commands)") .
+                                          (lambda nil (interactive)
+                                            (funcall 'one-key-prefix-key-menu-command "C-c ," t)))
+                                         (("." . "Prefix-Key:C-c . (Ede commands)") .
+                                          (lambda nil (interactive)
+                                            (funcall 'one-key-prefix-key-menu-command "C-c ." t)))
+                                         (("/" . "Prefix-Key:C-c / (Srecode commands)") .
+                                          (lambda nil (interactive)
+                                            (funcall 'one-key-prefix-key-menu-command "C-c /" t)))
+                                         )
   "The `one-key' top-level alist.
 Contains list of key items for toplevel one-key menu.
 Each item contains a key, description and command, in that order.
@@ -666,11 +672,11 @@ Each element in this list is a cons cell whose car is a name or description for 
 of menus which make up the set. Each menu name must correspond to a type in `one-key-types-of-menu' (which see),
 and `one-key' must be able to reconstruct the menu from the name (which it will be able to if the corresponding entry
 in `one-key-types-of-menu' is complete.
-These menu sets may be opened from the `one-key-menu-set' menu, and you may want to create different sets for different
+These menu sets may be opened from the \"menu-sets\" menu, and you may want to create different sets for different
 projects."
   :type '(alist :key-type (string :tag "Set description/name" :help-echo "A name or description for this collection of menus")
                 :value-type (repeat (string :tag "Menu" :help-echo "The name of the menu. Must correspond to a type in `one-key-types-of-menu'.")))
-  :group 'one-key)
+  :group 'one-key-menu-sets)
 
 (defcustom one-key-default-menu-set "Major mode, top-level & menu sets"
   "The default menu set. It's value should be the car of one of the items in `one-key-sets-of-menus-alist'.
@@ -678,7 +684,18 @@ It may be changed by the user from the menu-sets `one-key' menu.
 This is only meaningful if it is used with `one-key-open-menu-set' bound to a key so that the key can open a different
 menu set if the user has altered its value."
   :type 'string
-  :group 'one-key)
+  :group 'one-key-menu-sets)
+
+(defcustom one-key-associations-for-menu-sets nil
+  "An alist indicating which menu sets should be used with which buffers/major-modes.
+Each element is a cons cell whose car is either the symbol for a major-mode or a regular expression, and whose cdr is the
+name of a menu set (i.e. the car of an element of `one-key-sets-of-menus-alist').
+The `one-key-open-associated-menu-set' command uses this alist to determine which menu set to open.
+It will open the first menu set in the list whose car matches either the current major-mode or the name of the current
+buffer."
+  :type '(alist :key-type (choice (symbol :tag "Major mode") (regexp :tag "Regular expression"))
+                :value-type (string :tag "Name of menu set"))
+  :group 'one-key-menu-sets)
 
 (defcustom one-key-default-sort-method-alist
   '((key . (lambda (a b) (string< (caar a) (caar b))))
@@ -835,7 +852,7 @@ the first item should come before the second in the menu."
                         (lambda nil
                           (setq one-key-menu-window-configuration nil)
                           (with-selected-window (previous-window)
-                            (customize-variable 'one-key-sets-of-menus-alist)) nil))
+                            (customize-group 'one-key-menu-sets)) nil))
     (change-default-menuset "<f5>" "Change default menu set"
                             (lambda nil
                               (let* ((key (read-event "Press the key of item to set as default"))
@@ -852,19 +869,37 @@ the first item should come before the second in the menu."
                   (lambda nil
                     (let* ((names (mapcar 'car one-key-sets-of-menus-alist)) 
                            (newname (read-string "Name for menu set: "))
+                           (validnames (remove nil
+                                               (mapcar
+                                                (lambda (name) (if (one-key-get-menu-type name) name))
+                                                okm-menu-names)))
                            newset oldsets)
                       (unless (and (member newname names)
                                    (not (y-or-n-p
                                          "A menu set with that name already exists, overwrite it?")))
                         (setq newset (if (y-or-n-p "Include \"menu-sets\" menu?")
-                                         (append (list newname) okm-menu-names)
-                                       (remove "menu-sets" (append (list newname) okm-menu-names))))
+                                         (append (list newname) validnames)
+                                       (remove "menu-sets" (append (list newname) validnames))))
                         (setq oldsets (remove-if (lambda (item) (string= (car item) newname))
                                                  one-key-sets-of-menus-alist))
+                        (if (y-or-n-p "Associate menu set with current major-mode?")
+                            (let ((mode (with-selected-window (previous-window) major-mode)))
+                              (eval `(customize-save-variable 'one-key-associations-for-menu-sets
+                                                              ',(one-key-add-to-alist
+                                                                 'one-key-associations-for-menu-sets
+                                                                 (cons mode newname)))))
+                          (if (y-or-n-p "Associate menu set with current buffer?")
+                              (let ((regex (with-selected-window (previous-window)
+                                             (concat "^" (regexp-quote (buffer-name)) "$"))))
+                                (eval `(customize-save-variable 'one-key-associations-for-menu-sets
+                                                                ',(one-key-add-to-alist
+                                                                   'one-key-associations-for-menu-sets
+                                                                   (cons regex newname)))))))
                         (eval `(customize-save-variable 'one-key-sets-of-menus-alist
                                                         ',(append oldsets (list newset))))))
-                      (setq one-key-menu-call-first-time t)
-                      (one-key-menu-window-close))))
+                    (setq one-key-menu-call-first-time t)
+                    (one-key-menu-window-close))
+                  ))
   "An list of special keys; labels, keybindings, descriptions and associated functions.
 Each item in the list contains (in this order):
 
@@ -924,8 +959,8 @@ In other words if `one-key-special-keybindings' contains the items (symba symbb 
  (symbb \"a\" \"descriptionb\" commandb), then (one-key-get-special-key-contents '(symba symbb)) will return '((\"a\" \"descriptiona\" commanda) (\"b\" \"descriptionb\" commandb)). Notice that symbb is replaced by \"a\" in the returned list since
 this is the key description for symbb. At most 5 symbolic links will be followed before setting the key to nil."
   (let* ((symbs (if (listp specialkeys) specialkeys
-                 (if (symbolp specialkeys) (list specialkeys)
-                   (error "Invalid argument"))))
+                  (if (symbolp specialkeys) (list specialkeys)
+                    (error "Invalid argument"))))
          (items (one-key-assq-list symbs one-key-special-keybindings)))
     (loop for (key . rest) in items
           for x = 1
@@ -958,7 +993,8 @@ Each item in the list contains (in this order):
   1) The name for this menu type.
 
   2) A function which takes a string as its only argument and returns non-nil if that string corresponds to the name of
-     a menu of this type, otherwise it returns nil.
+     a menu of this type, otherwise it returns nil. Note: this function should only return non-nil if a menu can be
+     reconstructed from the name using the next item in this list.
 
   3) A function which takes the menu name as its only argument and returns a cons cell whose car is the new name or list
      of names for the menus, and whose cdr is a menu alist, a symbol whose value is a menu alist, or a list of symbols
@@ -1271,7 +1307,7 @@ The test for presence of the car of ELT-CONS is done with `equal'."
   (let ((existing-element (assoc (car elt-cons) (symbol-value alist-var))))
     (if existing-element
         (or no-replace
-            (rplacd existing-element (cdr elt-cons)))
+            (setcdr existing-element (cdr elt-cons)))
       (set alist-var (cons elt-cons (symbol-value alist-var)))))
   (symbol-value alist-var))
 
@@ -1341,8 +1377,8 @@ INFO-ALIST and FULL-LIST are as in the `one-key-menu' function."
         (progn (add-to-list 'one-key-altered-menus (symbol-name info-alist))
                (set info-alist (one-key-add-menu-item newkey desc contents full-list)))
       (setq info-alist (one-key-add-menu-item newkey desc contents full-list))))
-    (setq one-key-menu-call-first-time t)
-    (one-key-menu-window-close))
+  (setq one-key-menu-call-first-time t)
+  (one-key-menu-window-close))
 
 (defun one-key-swap-menu-items (info-alist full-list)
   "Prompt user for a pair of items in the `one-key' menu and swap the corresponding keys.
@@ -1478,20 +1514,20 @@ NAME is the name of the menu, INFO-ALIST and FULL-LIST are as in the `one-key-me
          (buf (get-file-buffer file)))
     (if file
         (if (file-writable-p file)
-                (with-current-buffer (find-file-noselect file)
-                  (goto-char (point-min))
-                  (if (not (search-forward (concat "(setq " varname) nil t))
-                      (goto-char (point-max))
-                    (beginning-of-line)
-                    (mark-sexp)
-                    (kill-region (point) (marker-position (mark-marker)))
-                    (deactivate-mark))
-                  (insert (concat "(setq " varname "\n      '"
-                                  (replace-regexp-in-string
-                                   ") ((" ")\n        ((" (eval `(prin1-to-string full-list))) ")"))
-                  (save-buffer)
-                  (if (not buf) (kill-buffer (get-file-buffer file))))
-              (message "Can't write to file %s" file))
+            (with-current-buffer (find-file-noselect file)
+              (goto-char (point-min))
+              (if (not (search-forward (concat "(setq " varname) nil t))
+                  (goto-char (point-max))
+                (beginning-of-line)
+                (mark-sexp)
+                (kill-region (point) (marker-position (mark-marker)))
+                (deactivate-mark))
+              (insert (concat "(setq " varname "\n      '"
+                              (replace-regexp-in-string
+                               ") ((" ")\n        ((" (eval `(prin1-to-string full-list))) ")"))
+              (save-buffer)
+              (if (not buf) (kill-buffer (get-file-buffer file))))
+          (message "Can't write to file %s" file))
       (message "`one-key-menus-save-file' not set" file))))
 
 (defun one-key-get-next-alist-item (currentcar allitems-alist &optional prev)
@@ -1562,11 +1598,11 @@ If no such menu or menu type exists, return nil."
   (let* ((listname (concat "one-key-menu-" name "-alist"))
          (type (one-key-get-menu-type name))
          (func (or (third type)
-                   (loop for sym being the symbols
-                         for symname = (symbol-name sym)
-                         when (equal listname symname)
-                         return (cons name sym))
-                   (error "Invalid menu name: \"%s\"" name))))
+                   (and (not type)
+                        (loop for sym being the symbols
+                              for symname = (symbol-name sym)
+                              when (equal listname symname)
+                              return (cons name sym))))))
     (if (functionp func) (funcall func name) func)))
 
 (defun one-key-prompt-for-menu nil
@@ -1576,7 +1612,7 @@ If no such menu or menu type exists, return nil."
                    (ido-completing-read "Menu type: " alltypes)
                  (completing-read "Menu type: " alltypes))))
     (one-key-get-menus-for-type type)))
-    
+
 (defun one-key-add-menus (&optional newnames newlists)
   "Add a menu/menus to the current list of menus in the `one-key' menu function call.
 This function assumes dynamic binding of the `okm-menu-alists', `okm-menu-number' and `okm-menu-names' arguments to the `one-key-menu'
@@ -1604,9 +1640,9 @@ function, and is called within that function."
                 okm-menu-number (1+ okm-menu-number)))
       (setq okm-menu-number 1
             okm-menu-alists (if multi (concatenate 'list (list okm-menu-alists) newlists)
-                          (list okm-menu-alists newlists))
+                              (list okm-menu-alists newlists))
             okm-menu-names (if multi (concatenate 'list (list okm-this-name) newnames)
-                    (list okm-this-name newnames))))))
+                             (list okm-this-name newnames))))))
 
 (defun* one-key-delete-menu (&optional (name this-name))
   "Remove the menu with name NAME from the list of menus, or the current menu if NAME is not supplied.
@@ -1629,13 +1665,13 @@ binding of the okm-menu-alists, okm-menu-number and okm-menu-names variables."
               this-name name
               one-key-menu-call-first-time t))
     (one-key-menu-close)))
-    
+
 (defun one-key-open-menus (names &optional menu-number protect-function)
   "Invoke `one-key-menu' with names and corresponding menu-alists.
 NAMES should be the name of a single `one-key' menu or menu type, or a list of such names.
 If called interactively a single name will be prompted for."
   (let* ((names (if (stringp names) (list names) names))
-         (pairs (mapcar 'one-key-get-menus-for-type names))
+         (pairs (remove nil (mapcar 'one-key-get-menus-for-type names)))
          (names (mapcan (lambda (x) (let ((y (car x))) (if (stringp y) (list y) y))) pairs))
          (alists (mapcan (lambda (x) (let ((a (car x)) (b (cdr x)))
                                        (if (stringp a) (list b) b))) pairs)))
@@ -1660,6 +1696,20 @@ If called interactively, MENUSET will be prompted for."
   (one-key-open-menu-set one-key-default-menu-set
                          (if one-key-persistent-menu-number
                              one-key-default-menu-number nil)))
+
+(defun one-key-open-associated-menu-set nil
+  "Open the menu set associated with the current buffer according to `one-key-associations-for-menu-sets'.
+If no menu set matches then open `one-key-default-menu-set'."
+  (interactive)
+  (let* ((allmenusets (mapcar 'car one-key-sets-of-menus-alist))
+         (assocmenu (cdr (assoc-if (lambda (item) (or (eql item major-mode)
+                                                      (and (stringp item)
+                                                           (string-match item (buffer-name)))))
+                                   one-key-associations-for-menu-sets)))
+         (menuset (if (member assocmenu allmenusets) assocmenu one-key-default-menu-set)))
+    (one-key-open-menu-set menuset
+                           (if one-key-persistent-menu-number
+                               one-key-default-menu-number nil))))
 
 (defun one-key-highlight (msg msg-regexp msg-face)
   "Highlight text in string `MSG' that matches regular expression `MSG-REGEXP' with face `MSG-FACE'."
@@ -1715,8 +1765,8 @@ a single menu name."
                       (okm-menu-number
                        (if ; hack to check if okm-menu-alists is a list of lists or just a single list
                            (and (listp okm-menu-alists) (not (and (listp (car okm-menu-alists))
-                                                              (listp (caar okm-menu-alists))
-                                                              (stringp (caaar okm-menu-alists)))))
+                                                                  (listp (caar okm-menu-alists))
+                                                                  (stringp (caaar okm-menu-alists)))))
                            0 nil))
                       okm-keep-window-p
                       okm-execute-when-miss-match-p
@@ -1745,33 +1795,33 @@ of `one-key-menu'.
 OKM-ALTERNATE-FUNCTION if non-nil is a function that is called after each key press while the menu is active.
 If OKM-FILTER-REGEX is non-nil then only menu items whose descriptions match OKM-FILTER-REGEX will be displayed."
   (let* ((okm-menu-number (or (and okm-menu-number ; make sure menu number is set properly
-                               (min okm-menu-number (1- (length okm-menu-alists))))
-                          (if (and (listp okm-menu-alists)
-                                   (not (and (listp (car okm-menu-alists))
-                                             (listp (caar okm-menu-alists))
-                                             (stringp (caaar okm-menu-alists)))))
-                              0 nil)))
+                                   (min okm-menu-number (1- (length okm-menu-alists))))
+                              (if (and (listp okm-menu-alists)
+                                       (not (and (listp (car okm-menu-alists))
+                                                 (listp (caar okm-menu-alists))
+                                                 (stringp (caaar okm-menu-alists)))))
+                                  0 nil)))
          (okm-info-alist (if okm-menu-number
-                         (nth okm-menu-number okm-menu-alists)
-                       okm-menu-alists))
+                             (nth okm-menu-number okm-menu-alists)
+                           okm-menu-alists))
          (okm-issymbol (symbolp okm-info-alist))
          (okm-full-list (if okm-issymbol
-                        (eval okm-info-alist)
-                      okm-info-alist))
+                            (eval okm-info-alist)
+                          okm-info-alist))
          (okm-this-name (if (stringp okm-menu-names) okm-menu-names
-                       (nth okm-menu-number okm-menu-names)))
+                          (nth okm-menu-number okm-menu-names)))
          ;; the list of items after filtering
          (okm-filtered-list (if (stringp okm-filter-regex)
-                            (remove-if-not
-                             (lambda (elt) (string-match okm-filter-regex (cdar elt)))
-                             okm-full-list)
-                          okm-full-list))
+                                (remove-if-not
+                                 (lambda (elt) (string-match okm-filter-regex (cdar elt)))
+                                 okm-full-list)
+                              okm-full-list))
          ;; the special keybindings for this menu
          (okm-special-keybindings-var (or (fifth (one-key-get-menu-type okm-this-name))
                                           one-key-default-special-keybindings))
          (okm-special-keybindings (one-key-get-special-key-contents (if (symbolp okm-special-keybindings-var)
-                                                                    (eval okm-special-keybindings-var)
-                                                                  okm-special-keybindings-var)))
+                                                                        (eval okm-special-keybindings-var)
+                                                                      okm-special-keybindings-var)))
          ;; following function is used for recursively calling itself when needed
          (self (function (lambda nil (one-key-menu okm-menu-names okm-menu-alists
                                                    :okm-menu-number okm-menu-number
@@ -1786,10 +1836,10 @@ If OKM-FILTER-REGEX is non-nil then only menu items whose descriptions match OKM
         ;; read a key and get the key description
         (let* ((namelist (if (listp okm-menu-names) okm-menu-names nil))
                (event (read-event (if one-key-menu-call-first-time
-                                    ;; just show the menu buffer when first called
-                                    (progn (setq one-key-menu-call-first-time nil)
-                                           (if one-key-popup-window
-                                               (one-key-menu-window-open))))))
+                                      ;; just show the menu buffer when first called
+                                      (progn (setq one-key-menu-call-first-time nil)
+                                             (if one-key-popup-window
+                                                 (one-key-menu-window-open))))))
                (key (one-key-key-description event)))
           (cond (
                  ;; HANDLE KEYSTROKES MATCHING MENU ITEMS
@@ -2140,8 +2190,8 @@ OKM-THIS-NAME being dynamically bound."
     (one-key-add-menus names vars)
     (if one-key-submenus-replace-parents
         (one-key-delete-menu currname)))
-    (setq one-key-menu-call-first-time t)
-    (one-key-handle-last nil self t))
+  (setq one-key-menu-call-first-time t)
+  (one-key-handle-last nil self t))
 
 (defun one-key-merge-menu-lists (lista listb)
   "Given two one-key menu lists, merge them and return the result.
@@ -2365,7 +2415,7 @@ created for them."
     mainvar))
 
 (defun one-key-generate-key (desc &optional usedkeys elements trykey)
- "Return a key for the menu item whose description string is DESC.
+  "Return a key for the menu item whose description string is DESC.
 The generated key can be used in a `one-key' menu, and this function can be used to help automatic creation
 of `one-key' menus.
 The function will try to choose a key corresponding to a char appearing in DESC, first choosing lowercase letters,
@@ -2381,7 +2431,7 @@ found)."
                         (let ((key2 (funcall transformer key)))
                           (if (and (member key one-key-default-menu-keys)
                                    (not (member key2 usedkeys)))
-                            (return key2)))))
+                              (return key2)))))
            (uptransformer (prefix) `(lambda (char) (concat ,prefix (upcase (char-to-string char)))))
            (downtransformer (prefix) `(lambda (char) (concat ,prefix (downcase (char-to-string char)))))
            (findall (keys) (or (findmatch (downtransformer "") keys)
@@ -2440,7 +2490,7 @@ If any element of descriptions is nil it will be left as nil."
   "Return list of menu names formed by appending numbers to MENUNAME.
 The new names will be in the form \"MENUNAME (N)\" where N runs over the integers from 1 to NUMMENUS.
 This is useful for creating menu types that return multiple menus."
-    (loop for num from 1 to nummenus
+  (loop for num from 1 to nummenus
         collect (concat menuname " (" (number-to-string num) ")")))
 
 (defun* one-key-create-menu-lists (commands &optional descriptions keys
@@ -2492,7 +2542,7 @@ and KEYFUNC is set to `one-key-generate-key' (which selects keys from `one-key-d
                                           for key in keystrs
                                           collect (cons (cons key desc) cmd)))))
     menu-alists))
-                                                          
+
 (defun one-key-build-menu-sets-menu-alist nil
   "Build menu-alist for opening menu sets defined in `one-key-sets-of-menus-alist'."
   (let* ((descriptions (mapcar (lambda (item)
@@ -2502,8 +2552,8 @@ and KEYFUNC is set to `one-key-generate-key' (which selects keys from `one-key-d
                                                                    :foreground one-key-item-foreground-colour))
                                      str))) one-key-sets-of-menus-alist))
          (commands (mapcar (lambda (item)
-                 `(lambda nil (interactive)
-                    (one-key-open-menu-set ,(car item))))
+                             `(lambda nil (interactive)
+                                (one-key-open-menu-set ,(car item))))
                            one-key-sets-of-menus-alist)))
     (car (one-key-create-menu-lists commands descriptions))))
 
@@ -2616,7 +2666,7 @@ If SUBMENUP is non-nil then the `one-key-open-submenu' command is used to add/re
          (menu (cdr pair)))
     (if submenup
         (one-key-open-submenu name menu)
-    (one-key-menu name menu))))
+      (one-key-menu name menu))))
 
 (defun one-key-create-menu-sets-title-format-string nil
   "Return a title format string for menu sets one-key menus."
@@ -2691,7 +2741,7 @@ To read how to make a good bug report see:
 http://www.gnu.org/software/emacs/manual/html_node/emacs/Understanding-Bug-Reporting.html
 ------------------------------------------------------------------------")))
 
-    
+
 ;; Set one-key menu types
 (one-key-add-to-alist 'one-key-types-of-menu
                       (list "top-level"
