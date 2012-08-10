@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Tue Jul 17 10:23:54 2012 (-0700)
+;; Last-Updated: Fri Aug 10 11:09:14 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5779
+;;     Update #: 5788
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -1517,18 +1517,25 @@ the state of buffer `*Bookmark List*' at the time it is created:
 (when (< emacs-major-version 23)
 
   ;; These definitions are for Emacs versions prior to Emacs 23.
-  ;; They are the same as the vanilla Emacs 23+ definitions, except as noted.
-  ;; They let older versions of Emacs handle bookmarks created with Emacs 23.
+  ;; They are the same as the vanilla Emacs 24+ definitions, except as noted.
+  ;; They let older versions of Emacs handle bookmarks created with Emacs 23+.
   ;; (Emacs < 23 also needs a compatible `bookmark-make-record' version,
   ;; but I redefine it for all versions, in any case.)
 
   (defun Info-bookmark-make-record ()
-    "Create an Info bookmark record."
-    `(,Info-current-node
-      ,@(bookmark-make-record-default 'no-file)
-      (filename . ,Info-current-file)
-      (info-node . ,Info-current-node)
-      (handler . Info-bookmark-jump)))
+    "Create a bookmark record for the current Info node (and point).
+Implements `bookmark-make-record-function' for Info nodes."
+    (let* ((file           (and (stringp Info-current-file)  (file-name-nondirectory Info-current-file)))
+           (bookmark-name  (if file
+                               (concat "(" file ") " Info-current-node)
+                             Info-current-node))
+           (defaults       (delq nil (list bookmark-name file Info-current-node))))
+      `(,bookmark-name
+        ,@(bookmark-make-record-default 'no-file)
+        (filename . ,Info-current-file)
+        (info-node . ,Info-current-node)
+        (handler . Info-bookmark-jump)
+        (defaults . ,defaults))))
 
   ;; Requires `info.el' explicitly (not autoloaded for `Info-find-node'.
   (defun Info-bookmark-jump (bookmark)
