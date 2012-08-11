@@ -7,9 +7,9 @@
 ;; Created: Fri Aug  3 22:33:41 2012 (-0500)
 ;; Version: 0.18
 ;; Package-Requires: ((http-post-simple "1.0") (yaoddmuse "0.1.1")(header2 "21.0") (lib-requires "21.0"))
-;; Last-Updated: Sat Aug 11 17:00:59 2012 (-0500)
+;; Last-Updated: Sat Aug 11 17:05:21 2012 (-0500)
 ;;           By: Matthew L. Fidler
-;;     Update #: 649
+;;     Update #: 652
 ;; URL: https://github.com/mlf176f2/org-readme
 ;; Keywords: Header2, Readme.org, Emacswiki, Git
 ;; Compatibility: Tested with Emacs 24.1 on Windows.
@@ -66,11 +66,14 @@
 ;; | lib-requires     | To generate the library dependencies |
 ;; |------------------+--------------------------------------|
 ;; 
-;; Another assumption is the primary lisp file is on github.com
+;; This section has been deleted previously
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 11-Aug-2012    Matthew L. Fidler  
+;;    Last-Updated: Sat Aug 11 17:03:26 2012 (-0500) #650 (Matthew L. Fidler)
+;;    Test the bug where some of the section text is deleted 
 ;; 11-Aug-2012    Matthew L. Fidler  
 ;;    Last-Updated: Sat Aug 11 16:46:03 2012 (-0500) #647 (Matthew L. Fidler)
 ;;    Added more documentation
@@ -1021,7 +1024,7 @@ When AT-BEGINNING is non-nil, if the section is not found, insert it at the begi
             (setq mtch (match-string 1))
             (delete-region
              (save-excursion
-               (goto-char (match-beginning 0))
+               (beginning-of-line)
                (skip-chars-backward " \t\n")
                (point))
              (if (re-search-forward (format "^%s +" (regexp-quote mtch)) nil t)
