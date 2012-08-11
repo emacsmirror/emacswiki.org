@@ -18,6 +18,15 @@ and operations on words:
 * eat extra space between words, extra whitespaces (newlines) between paragraphs.
 * etc.
 
+[new]
+These features partly overlap with built-in emacs functionality:
+* delete without saving: mark region, hit DEL
+* subword-mode: Treat parts of CamelCase as separate words. (Even for navigation!)
+
+Could be that TinyTools is older than these features.
+
+-- TaylanUB
+
 == Demo ==
 
 [[image:TinyeatPictureAnimateDemo]]
