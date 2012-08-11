@@ -8,11 +8,11 @@
 * <b>Author </b> --  Matthew L. Fidler
 * <b>Maintainer </b> --  Matthew L. Fidler
 * <b>Created </b> --  Fri Aug  3 22:33:41 2012 (-0500)
-* <b>Version </b> --  0.11
+* <b>Version </b> --  0.14
 * <b>Package-Requires </b> --  ((http-post-simple "1.0") (yaoddmuse "0.1.1")(header2 "21.0") (lib-requires "21.0"))
-* <b>Last-Updated </b> --  Sat Aug 11 07:13:12 2012 (-0500)
+* <b>Last-Updated </b> --  Sat Aug 11 11:23:10 2012 (-0500)
 * <b>By </b> --  Matthew L. Fidler
-* <b>Update # </b> --  493
+* <b>Update # </b> --  530
 * <B>URL </B> --  https://github.com/mlf176f2/org-readme
 * <b>Keywords </b> --  Header2, Readme.org, Emacswiki, Git
 * <b>Compatibility </b> --  Tested with Emacs 24.1 on Windows.
@@ -47,12 +47,12 @@ When <tt>org-readme-sync</tt> is called in a <tt>Readme.org</tt> file that is no
 single lisp file, the function exports the readme in !EmacsWiki format
 and posts it to the !EmacsWiki.
 === EmacsWiki Page Names ===
-When exporting the Readme.org to !EmacsWiki, the names are transformed
-as follows:
-
-* When the library is a single lisp function, the single lisp file is
 == History ==
 
+* <b>11-Aug-2012 </b> --   Bug fix for emacswiki post and melpa bug fix (Matthew L. Fidler)
+* <b>11-Aug-2012 </b> --   Bug fix for adding melpa recipes.  (Matthew L. Fidler)
+* <b>11-Aug-2012 </b> --   Bug fix for creating melpa recipie. (Matthew L. Fidler)
+* <b>11-Aug-2012 </b> --   Added ability to add melpa recipie (Matthew L. Fidler)
 * <b>11-Aug-2012 </b> --   Bug fix for pushing tags to a git repository (Matthew L. Fidler)
 * <b>11-Aug-2012 </b> --   Another fix for git tags. (Matthew L. Fidler)
 * <b>11-Aug-2012 </b> --   Found a bug, let see if tagging works now. (Matthew L. Fidler)
@@ -73,14 +73,14 @@ as follows:
 * <b>11-Aug-2012 </b> --   Bug fix to upload to emacswiki and upload to marmalade-repo (Matthew L. Fidler)
 * <b>11-Aug-2012 </b> --   Added marmalade-repo support. Now org-readme should upload to marmalade-repo when the version is different from the latest version.  (Matthew L. Fidler)
 * <b>08-Aug-2012 </b> --   Fixed preformatting tags in emacswiki post. Previously they may have been replaced with <PRE></pre> instead of <pre></pre>. This makes the emacswiki page display correctly. (Matthew L. Fidler)
-* <b>07-Aug-2012 </b> --   To use, put (require 'ess-smart-underscore) in your ~/.emacs file 7-Aug-2012 Matthew L. Fidler Last-Updated: Sat Aug 11 07:13:27 2012 (-0500)
+* <b>07-Aug-2012 </b> --   To use, put (require 'ess-smart-underscore) in your ~/.emacs file 7-Aug-2012 Matthew L. Fidler Last-Updated: Sat Aug 11 11:23:22 2012 (-0500)
 * <b>06-Aug-2012 </b> --   Added support for uploading Readme.org files to emacswiki without having to have a single associated lisp file. (Matthew L. Fidler)
 * <b>06-Aug-2012 </b> --   Bug fix for syncing from the single lisp file. (Matthew L. Fidler)
 * <b>06-Aug-2012 </b> --   Added the ability to call <tt>org-readme-sync</tt> from Readme.org (Matthew L. Fidler)
 * <b>05-Aug-2012 </b> --   Added git pushing to org-readme (Matthew L. Fidler)
 * <b>05-Aug-2012 </b> --   Added git support as well as a comment mode. The only thing that should need to be called is <tt>org-readme-sync</tt> (Matthew L. Fidler)
 * <b>04-Aug-2012 </b> --   Added syncing with emacswiki.  (Matthew L. Fidler)
-* <b>04-Aug-2012 </b> --   Initial Release  (Matthew L. Fidler)  converted to the emacswiki name by taking out the "-" and ".el" of
+* <b>04-Aug-2012 </b> --   Initial Release  (Matthew L. Fidler)When exporting the Readme.org to !EmacsWiki, the names are transformed
 
 
 This was generated with OrgReadme.  On updating the library, this page is likely to be replaced with updated content.
