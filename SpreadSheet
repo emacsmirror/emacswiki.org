@@ -3,7 +3,7 @@ Several packages provide the capabilities for working with Spreadsheets (See [[W
 * SimpleEmacsSpreadsheet --  A major mode in Emacs that mimics traditional spreadsheet software, but uses EmacsLisp formulas.
 * [[Dismal]] -- An older spreadsheet mode
 * [[ESheet]] -- A spreadsheet with its own extensible formula language.
-* SpreadMode -- A forumula language that Emacs can generate spreadsheets from.
+* SpreadMode -- A formula language that Emacs can generate spreadsheets from.
 * LatexSpread -- A simple spreadsheet minor mode for TeX/LaTeX documents.
 LaTeX files can include formulas for Emacs to evaluate.
 * [[OrgMode]] -- Its table editor uses AdvancedDeskCalculator to
