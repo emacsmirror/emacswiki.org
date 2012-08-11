@@ -5,11 +5,11 @@
 ;; Author: Matthew L. Fidler
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Fri Aug  3 22:33:41 2012 (-0500)
-;; Version: 0.12
+;; Version: 0.13
 ;; Package-Requires: ((http-post-simple "1.0") (yaoddmuse "0.1.1")(header2 "21.0") (lib-requires "21.0"))
-;; Last-Updated: Sat Aug 11 11:17:26 2012 (-0500)
+;; Last-Updated: Sat Aug 11 11:20:56 2012 (-0500)
 ;;           By: Matthew L. Fidler
-;;     Update #: 523
+;;     Update #: 527
 ;; URL: https://github.com/mlf176f2/org-readme
 ;; Keywords: Header2, Readme.org, Emacswiki, Git
 ;; Compatibility: Tested with Emacs 24.1 on Windows.
@@ -51,11 +51,15 @@
 ;; When exporting the Readme.org to EmacsWiki, the names are transformed
 ;; as follows:
 ;; 
-;; - When the library is a single lisp function, the single lisp file is
-;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 11-Aug-2012    Matthew L. Fidler  
+;;    Last-Updated: Sat Aug 11 11:20:16 2012 (-0500) #525 (Matthew L. Fidler)
+;;    Bug fix for adding melpa recipes. 
+;; 11-Aug-2012    Matthew L. Fidler  
+;;    Last-Updated: Sat Aug 11 11:19:36 2012 (-0500) #524 (Matthew L. Fidler)
+;;    Bug fix for creating melpa recipie.
 ;; 11-Aug-2012    Matthew L. Fidler  
 ;;    Last-Updated: Sat Aug 11 11:16:46 2012 (-0500) #521 (Matthew L. Fidler)
 ;;    Added ability to add melpa recipie
@@ -251,9 +255,9 @@ Returns file name if created."
                           lib-name))))
         (when rcp
           (with-temp-file melpa
-            (insert melpa)))))
+            (insert rcp)))))
     (if (file-exists-p melpa)
-        melpa
+        (symbol-value 'melpa)
       nil)))
 
 (defun org-readme-buffer-version ()
