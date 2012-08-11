@@ -5,11 +5,11 @@
 ;; Author: Matthew L. Fidler
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Fri Aug  3 22:33:41 2012 (-0500)
-;; Version: 0.6
-;; Package-Requires: ((http-post-simple "1.0") (yaoddmuse "0.1.1"))
-;; Last-Updated: Sat Aug 11 00:59:47 2012 (-0500)
+;; Version: 0.7
+;; Package-Requires: ((http-post-simple "1.0") (yaoddmuse "0.1.1")(header2 "21.0") (lib-requires "21.0"))
+;; Last-Updated: Sat Aug 11 01:02:40 2012 (-0500)
 ;;           By: Matthew L. Fidler
-;;     Update #: 456
+;;     Update #: 459
 ;; URL: https://github.com/mlf176f2/org-readme
 ;; Keywords: Header2, Readme.org, Emacswiki, Git
 ;; Compatibility: Tested with Emacs 24.1 on Windows.
@@ -60,11 +60,13 @@
 ;;   appropriate EmacsWiki documentation file by the Parent Directory of
 ;;   the `Readme.org'.  For example, =EmacsPortable.App" is converted to
 ;;   EmacsPortableApp
-;; ** Library assumptions
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 11-Aug-2012    Matthew L. Fidler  
+;;    Last-Updated: Sat Aug 11 01:02:04 2012 (-0500) #457 (Matthew L. Fidler)
+;;    Added better Package-Requires tag.
 ;; 11-Aug-2012    Matthew L. Fidler  
 ;;    Last-Updated: Sat Aug 11 00:58:56 2012 (-0500) #454 (Matthew L. Fidler)
 ;;    Made request for minor revision earlier, and fixed bug.
