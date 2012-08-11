@@ -7,9 +7,9 @@
 ;; Created: Fri Aug  3 22:33:41 2012 (-0500)
 ;; Version: 0.18
 ;; Package-Requires: ((http-post-simple "1.0") (yaoddmuse "0.1.1")(header2 "21.0") (lib-requires "21.0"))
-;; Last-Updated: Sat Aug 11 17:14:15 2012 (-0500)
+;; Last-Updated: Sat Aug 11 17:18:57 2012 (-0500)
 ;;           By: Matthew L. Fidler
-;;     Update #: 661
+;;     Update #: 664
 ;; URL: https://github.com/mlf176f2/org-readme
 ;; Keywords: Header2, Readme.org, Emacswiki, Git
 ;; Compatibility: Tested with Emacs 24.1 on Windows.
@@ -22,55 +22,13 @@
 ;; 
 ;;; Commentary: 
 ;; 
-;; * Using org-readme
-;; Org readme is used to:
-;; 
-;; - Create/Update a "History" section in the Readme.org based on the changelog
-;;   section of the Emacs Log.
-;; - Create/Update a "Library Information" Section Based on the Emacs lisp header.
-;; - Create/Update a "Possible Dependencies" Section Based on the Emacs
-;;   lisp header.
-;; 
-;; All other sections of the Readme.org are then put into the
-;; "Commentary" section of the readme.org.
-;; 
-;; In addition this library defines `org-readme-sync',  a convenience function that:
-;; 
-;; - Asks for a commentary about the library change.
-;; - Syncs the Readme.org with the lisp file as described above.
-;; - Updates emacswiki with the library description and the library
-;;   itself (requires yaoddmuse).
-;; - Updates Marmalade-repo if the library version is different than the
-;;   version in the server (requires http-post-simple).
-;; - Updates the git repository with the differences that you posted.
-;; - If you are using github, this library creates a melpa recipie.
-;; - If you are using github, this library creates a el-get recipie. 
-;; 
-;; When `org-readme-sync' is called in a `Readme.org' file that is not a
-;; single lisp file, the function exports the readme in EmacsWiki format
-;; and posts it to the EmacsWiki.
-;; ** EmacsWiki Page Names
-;; EmacsWiki Page names are generated from the file.  `org-readme.el'
-;; would generate a page of OrgReadme.
-;; 
-;; ** Why each required library is needed
-;; There are a few required libraries.  This is a list of the require
-;; libraries and why they are needed.
-;; 
-;; |------------------+--------------------------------------|
-;; | Library          | Why it is needed                     |
-;; |------------------+--------------------------------------|
-;; | yaoddmuse        | Publish to emacswiki                 |
-;; | http-post-simple | Publish to marmalade-repo.org        |
-;; | header2          | To create header and changelog       |
-;; | lib-requires     | To generate the library dependencies |
-;; |------------------+--------------------------------------|
-;; 
-;; This line is put at the end of the file.
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 11-Aug-2012    Matthew L. Fidler  
+;;    Last-Updated: Sat Aug 11 17:17:44 2012 (-0500) #662 (Matthew L. Fidler)
+;;    Another attempt at bug fix to remove section.
 ;; 11-Aug-2012    Matthew L. Fidler  
 ;;    Last-Updated: Sat Aug 11 17:13:24 2012 (-0500) #659 (Matthew L. Fidler)
 ;;    Another attempt at a remove-section fix.
@@ -1037,7 +995,9 @@ When AT-BEGINNING is non-nil, if the section is not found, insert it at the begi
                (point))
              (if (re-search-forward (format "^%s +" (regexp-quote mtch)) nil t)
                  (progn
-                   (- (match-beginning 0) 1))
+                   (beginning-of-line)
+                   (re-search-backward "\n\\=" nil t)
+                   (point))
                (point-max)))
             (when txt
               (insert txt))
