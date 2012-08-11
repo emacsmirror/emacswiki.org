@@ -5,11 +5,11 @@
 ;; Author: Matthew L. Fidler
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Fri Aug  3 22:33:41 2012 (-0500)
-;; Version: 0.05
+;; Version: 0.6
 ;; Package-Requires: ((http-post-simple "1.0") (yaoddmuse "0.1.1"))
-;; Last-Updated: Sat Aug 11 00:44:40 2012 (-0500)
+;; Last-Updated: Sat Aug 11 00:59:47 2012 (-0500)
 ;;           By: Matthew L. Fidler
-;;     Update #: 436
+;;     Update #: 456
 ;; URL: https://github.com/mlf176f2/org-readme
 ;; Keywords: Header2, Readme.org, Emacswiki, Git
 ;; Compatibility: Tested with Emacs 24.1 on Windows.
@@ -34,14 +34,17 @@
 ;; All other sections of the Readme.org are then put into the
 ;; "Commentary" section of the readme.org.
 ;; 
-;; In addition this library defines <tt>org-readme-sync</tt>,  a convenience function that:
+;; In addition this library defines `org-readme-sync',  a convenience function that:
 ;; 
 ;; - Asks for a commentary about the library change.
 ;; - Syncs the Readme.org with the lisp file as described above.
-;; - Updates emacswiki with the library description and the library itself.
+;; - Updates emacswiki with the library description and the library
+;;   itself.
+;; - Updates Marmalade-repo if the library version is different than the
+;;   version in the server.
 ;; - Updates the git repository with the differences that you posted.
 ;; 
-;; When <tt>org-readme-sync</tt> is called in a <tt>Readme.org</tt> file that is not a
+;; When `org-readme-sync' is called in a `Readme.org' file that is not a
 ;; single lisp file, the function exports the readme in EmacsWiki format
 ;; and posts it to the EmacsWiki.
 ;; ** EmacsWiki Page Names
@@ -55,15 +58,32 @@
 ;; - When the library is a multiple file lisp library, or a library
 ;;   without any direct lisp calls, the Readme.org is converted to an
 ;;   appropriate EmacsWiki documentation file by the Parent Directory of
-;;   the <tt>Readme.org</tt>.  For example, =EmacsPortable.App" is converted to
+;;   the `Readme.org'.  For example, =EmacsPortable.App" is converted to
 ;;   EmacsPortableApp
 ;; ** Library assumptions
-;; This library assumes that the Emacs Lisp libraries are created using
-;; [[http://emacswiki.org/emacs/header2.el][header2.el]], and optionally with the [[http://emacswiki.org/emacs/lib-requires.el][lib-requires.el]] libraries.
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 11-Aug-2012    Matthew L. Fidler  
+;;    Last-Updated: Sat Aug 11 00:58:56 2012 (-0500) #454 (Matthew L. Fidler)
+;;    Made request for minor revision earlier, and fixed bug.
+;; 11-Aug-2012    Matthew L. Fidler  
+;;    Last-Updated: Sat Aug 11 00:57:29 2012 (-0500) #451 (Matthew L. Fidler)
+;;    Fixed code typo
+;; 11-Aug-2012    Matthew L. Fidler  
+;;    Last-Updated: Sat Aug 11 00:56:12 2012 (-0500) #449 (Matthew L. Fidler)
+;;    Bug fix for deleting a section of a Readme.org file.
+;; 11-Aug-2012    Matthew L. Fidler  
+;;    Last-Updated: Sat Aug 11 00:55:37 2012 (-0500) #447 (Matthew L. Fidler)
+;;    Testing bug.
+;; 11-Aug-2012    Matthew L. Fidler  
+;;    Last-Updated: Sat Aug 11 00:55:30 2012 (-0500) #446 (Matthew L. Fidler)
+;;    Minor bug fix.
+;; 11-Aug-2012    Matthew L. Fidler  
+;;    Last-Updated: Sat Aug 11 00:53:32 2012 (-0500) #444 (Matthew L. Fidler)
+;;    Bug fix for comment sync, now Readme.org =file= is translated to lisp
+;;    `file'.  Additionally, asks for version bump.
 ;; 11-Aug-2012    Matthew L. Fidler  
 ;;    Last-Updated: Sat Aug 11 00:44:17 2012 (-0500) #434 (Matthew L. Fidler)
 ;;    Bug fix for syncing readme.  Now the returns should not be as prevalent.
@@ -453,8 +473,8 @@
                (file-name-nondirectory
                 (org-readme-get-change))))
       (delete-file (org-readme-get-change))
-      (message "Git push")
-      (shell-command "git push"))))
+      (message "Git push upstream")
+      (shell-command "git push upstream"))))
 
 (defun org-readme-in-readme-org-p ()
   "Determine if the currently open buffer is the Readme.org"
@@ -495,6 +515,16 @@ When COMMENT-ADDED is non-nil, the comment has been added and the syncing should
         (progn
           (setq org-readme-edit-last-buffer (current-buffer))
           (org-readme-edit))
+      (when (yes-or-no-p "Is this a minor revision (upload to Marmalade)? ")
+        (save-excursion
+          (goto-char (point-min))
+          (let ((case-fold-search t))
+            (when (re-search-forward "^[ \t]*;+[ \t]*Version:" nil t)
+              (end-of-line)
+              (when (looking-back "\\([ .]\\)\\([0-9]+\\)[ \t]*")
+                (replace-match (format "\\1%s"
+                                       (+ 1 (string-to-number (match-string 2))))))))))
+      
       (message "Adding Readme to Header Commentary")
       (org-readme-to-commentary)
       (message "Updating Changelog in current file.")
@@ -527,7 +557,7 @@ When COMMENT-ADDED is non-nil, the comment has been added and the syncing should
       
       (goto-char (point-min))
       (while (re-search-forward "=\\<\\(.*?\\)\\>=" nil t)
-        (replace-match (format "<tt>%s</tt>" (match-string 1))))
+        (replace-match (format "`%s'" (match-string 1))))
       
       (goto-char (point-min))
       (while (re-search-forward "#.*" nil t)
@@ -646,7 +676,8 @@ When AT-BEGINNING is non-nil, if the section is not found, insert it at the begi
             (delete-region
              (save-excursion
                (goto-char (match-beginning 0))
-               (skip-chars-backward " \t\n"))
+               (skip-chars-backward " \t\n")
+               (point))
              (if (re-search-forward (format "^%s +" (regexp-quote mtch)) nil t)
                  (progn
                    (- (match-beginning 0) 1))
