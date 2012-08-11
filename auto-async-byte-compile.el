@@ -1,4 +1,4 @@
-;;;; auto-async-byte-compile.el --- Automatically byte-compile when saved
+;;; auto-async-byte-compile.el --- Automatically byte-compile when saved
 ;; Time-stamp: <2010-12-05 11:36:45 rubikitch>
 
 ;; Copyright (C) 2010  rubikitch
