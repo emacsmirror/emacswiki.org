@@ -5,11 +5,11 @@
 ;; Author: Matthew L. Fidler
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Fri Aug  3 22:33:41 2012 (-0500)
-;; Version: 0.13
+;; Version: 0.14
 ;; Package-Requires: ((http-post-simple "1.0") (yaoddmuse "0.1.1")(header2 "21.0") (lib-requires "21.0"))
-;; Last-Updated: Sat Aug 11 11:20:56 2012 (-0500)
+;; Last-Updated: Sat Aug 11 11:23:30 2012 (-0500)
 ;;           By: Matthew L. Fidler
-;;     Update #: 527
+;;     Update #: 531
 ;; URL: https://github.com/mlf176f2/org-readme
 ;; Keywords: Header2, Readme.org, Emacswiki, Git
 ;; Compatibility: Tested with Emacs 24.1 on Windows.
@@ -49,11 +49,13 @@
 ;; and posts it to the EmacsWiki.
 ;; ** EmacsWiki Page Names
 ;; When exporting the Readme.org to EmacsWiki, the names are transformed
-;; as follows:
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 11-Aug-2012    Matthew L. Fidler  
+;;    Last-Updated: Sat Aug 11 11:22:44 2012 (-0500) #529 (Matthew L. Fidler)
+;;    Bug fix for emacswiki post and melpa bug fix
 ;; 11-Aug-2012    Matthew L. Fidler  
 ;;    Last-Updated: Sat Aug 11 11:20:16 2012 (-0500) #525 (Matthew L. Fidler)
 ;;    Bug fix for adding melpa recipes. 
@@ -542,7 +544,7 @@ Returns file name if created."
       (when melpa
         (message "Adding Melpa recipie")
         (shell-command
-         (format "git add %s"
+         (format "git add melpa/%s"
                  (file-name-nondirectory melpa)))))
     (message "Git Adding Readme")
     (shell-command
@@ -637,7 +639,7 @@ When COMMENT-ADDED is non-nil, the comment has been added and the syncing should
         (setq org-readme-edit-last-window-configuration nil))
       (when org-readme-sync-git
         (org-readme-git))
-      (when org-readme-emacswiki-post
+      (when org-readme-sync-emacswiki
         (message "Posting Description to emacswiki")
         (org-readme-convert-to-emacswiki)))))
 
