@@ -1,4 +1,4 @@
-;;; redo+.el -- Redo/undo system for Emacs
+;;; redo+.el --- Redo/undo system for Emacs
 
 ;; Copyright (C) 1985, 1986, 1987, 1993-1995 Free Software Foundation, Inc.
 ;; Copyright (C) 1995 Tinker Systems and INS Engineering Corp.
