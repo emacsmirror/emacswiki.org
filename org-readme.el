@@ -5,11 +5,11 @@
 ;; Author: Matthew L. Fidler
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Fri Aug  3 22:33:41 2012 (-0500)
-;; Version: 0.14
+;; Version: 0.15
 ;; Package-Requires: ((http-post-simple "1.0") (yaoddmuse "0.1.1")(header2 "21.0") (lib-requires "21.0"))
-;; Last-Updated: Sat Aug 11 11:23:30 2012 (-0500)
+;; Last-Updated: Sat Aug 11 16:29:48 2012 (-0500)
 ;;           By: Matthew L. Fidler
-;;     Update #: 531
+;;     Update #: 635
 ;; URL: https://github.com/mlf176f2/org-readme
 ;; Keywords: Header2, Readme.org, Emacswiki, Git
 ;; Compatibility: Tested with Emacs 24.1 on Windows.
@@ -39,20 +39,37 @@
 ;; - Asks for a commentary about the library change.
 ;; - Syncs the Readme.org with the lisp file as described above.
 ;; - Updates emacswiki with the library description and the library
-;;   itself.
+;;   itself (requires yaoddmuse).
 ;; - Updates Marmalade-repo if the library version is different than the
-;;   version in the server.
+;;   version in the server (requires http-post-simple).
 ;; - Updates the git repository with the differences that you posted.
+;; - If you are using github, this library creates a melpa recipie.
+;; - If you are using github, this library creates a el-get recipie. 
 ;; 
 ;; When `org-readme-sync' is called in a `Readme.org' file that is not a
 ;; single lisp file, the function exports the readme in EmacsWiki format
 ;; and posts it to the EmacsWiki.
 ;; ** EmacsWiki Page Names
-;; When exporting the Readme.org to EmacsWiki, the names are transformed
+;; ** Why each required library is needed
+;; There are a few required libraries.  This is a list of the require
+;; libraries and why they are needed.
+;; 
+;; |------------------+-----------------------------------------------|
+;; | Library          | Why it is needed                              |
+;; |------------------+-----------------------------------------------|
+;; | yaoddmuse        | Publishing to emacswiki                       |
+;; | http-post-simple | Publishing to marmalade-repo.org              |
+;; | header2          | To Create the required header                 |
+;; | lib-requires     | To generate the possible library dependencies |
+;; |------------------+-----------------------------------------------|
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 11-Aug-2012    Matthew L. Fidler  
+;;    Last-Updated: Sat Aug 11 16:28:45 2012 (-0500) #633 (Matthew L. Fidler)
+;;    Added the ability to create a markdown Readme (Readme.md) as well as
+;;    adding a el-get recipe.
 ;; 11-Aug-2012    Matthew L. Fidler  
 ;;    Last-Updated: Sat Aug 11 11:22:44 2012 (-0500) #529 (Matthew L. Fidler)
 ;;    Bug fix for emacswiki post and melpa bug fix
@@ -123,7 +140,7 @@
 ;; 11-Aug-2012    Matthew L. Fidler  
 ;;    Last-Updated: Sat Aug 11 00:21:27 2012 (-0500) #413 (Matthew L. Fidler)
 ;;    Added marmalade-repo support.  Now org-readme should upload to
-;;    marmalade-repo when the version is different from the latest version.  
+;;    marmalade-repo when the version is different from the latest version.
 ;; 08-Aug-2012    Matthew L. Fidler  
 ;;    Last-Updated: Wed Aug  8 18:44:37 2012 (-0500) #343 (Matthew L. Fidler)
 ;;    Fixed preformatting tags in emacswiki post.  Previously they may have
@@ -185,8 +202,9 @@
 ;; 
 ;;; Code:
 
-(require 'yaoddmuse)
-(require 'http-post-simple)
+(require 'yaoddmuse nil t)
+(require 'http-post-simple nil t)
+(require 'org-html)
 
 (defgroup org-readme nil
   "Org-readme is a way to create Readme.org files based on an elisp file.")
@@ -207,7 +225,7 @@
   :group 'org-readme)
 
 (defcustom org-readme-sync-emacswiki t
-  "Posts library to the emacswiki."
+  "Posts library to the emacswiki. Requires `yaoddmuse'"
   :type 'boolean
   :group 'org-readme)
 
@@ -221,16 +239,84 @@
   :type 'boolean
   :group 'org-readme)
 
-(defcustom org-readme-build-mepla-recipie t
-  "Builds a mepla recipie based on github information"
+(defcustom org-readme-build-melpa-recipie t
+  "Builds a mepla recipe based on github information"
   :type 'boolean
   :group 'org-readme)
 
+(defcustom org-readme-build-markdown t
+  "Builds Readme.md from Readme.org"
+  :type 'boolean
+  :group 'org-readme)
+
+(defun org-readme-build-el-get ()
+  "Builds an el-get recipe. This assumes github, though others could be added.
+Returns file name if created."
+  (let ((el-get (expand-file-name
+                 "el-get" (file-name-directory (buffer-file-name))))
+        (lib-name (file-name-sans-extension
+                   (file-name-nondirectory (buffer-file-name))))
+        (git-cfg
+         (expand-file-name
+          "config"
+          (expand-file-name
+           ".git" (file-name-directory (buffer-file-name)))))
+        github tmp
+        rcp)
+    (unless (file-exists-p el-get)
+      (make-directory el-get))
+    (setq el-get (expand-file-name lib-name el-get))
+    (when (file-exists-p git-cfg)
+      (with-temp-buffer
+        (insert-file-contents git-cfg)
+        (goto-char (point-min))
+        (when (re-search-forward "git@github.com:\\(.*?\\)[.]git")
+          (setq github (match-string 1))))
+      (setq rcp
+            (format "(:name %s\n :description \"%s\"%s\n :website \"%s\"\n :type git\n :url \"%s\")"
+                    lib-name
+                    (save-excursion
+                      (goto-char (point-min))
+                      (if (re-search-forward "^[ \t]*;;;[ \t]*%s[.]el[ \t]*--+[ \t]*\\(.*?\\)[ \t]*$" nil t)
+                          (match-string 1)
+                        lib-name))
+                    ;; :depends
+                    (save-excursion
+                      (goto-char (point-min))
+                      (if (re-search-forward "^[ \t]*;+[ \t]*[Pp]ackage-[Rr]equires:[ \t]*\\(.*?\\)[ \t]*$" nil t)
+                          (condition-case err
+                              (progn
+                                (setq tmp (match-string 1))
+                                (with-temp-buffer
+                                  (insert (format "(setq tmp '%s)" tmp))
+                                  (eval-buffer))
+                                (format "\n :depends (%s)"
+                                        (mapconcat
+                                         (lambda(x)
+                                           (symbol-name (car x)))
+                                         tmp " ")))
+                            (error (message "Error parsing package-requires: %s" err)
+                                   ""))
+                        ""))
+                    ;; Website
+                    (save-excursion
+                      (goto-char (point-min))
+                      (if (re-search-forward "^[ \t]*;+URL:[ \t]*\\(.*\\)[ \t]*$" nil t)
+                          (match-string 1)
+                        (format "https://github.com/%s" github)))
+                    ;; Github
+                    (format "https://github.com/%s.git" github)
+                    lib-name))
+      (when rcp
+        (with-temp-file el-get
+          (insert rcp))))
+    (if (file-exists-p el-get)
+        (symbol-value 'el-get)
+      nil)))
 
 (defun org-readme-build-melpa ()
   "Builds a melpa recipe. This assumes github, though other could be added.
 Returns file name if created."
-  (interactive)
   (let ((melpa (expand-file-name
                 "melpa" (file-name-directory (buffer-file-name))))
         (lib-name (file-name-sans-extension
@@ -244,20 +330,19 @@ Returns file name if created."
     (unless (file-exists-p melpa)
       (make-directory melpa))
     (setq melpa (expand-file-name lib-name melpa))
-    (unless (file-exists-p melpa)
-      (when (file-exists-p git-cfg)
-        (with-temp-buffer
-          (insert-file-contents git-cfg)
-          (goto-char (point-min))
-          (when (re-search-forward "git@github.com:\\(.*?\\)[.]git")
-            (setq rcp
-                  (format "(%s\n :repo \"%s\"\n :fetcher github\n :files (\"%s.el\"))"
-                          lib-name
-                          (match-string 1)
-                          lib-name))))
-        (when rcp
-          (with-temp-file melpa
-            (insert rcp)))))
+    (when (file-exists-p git-cfg)
+      (with-temp-buffer
+        (insert-file-contents git-cfg)
+        (goto-char (point-min))
+        (when (re-search-forward "git@github.com:\\(.*?\\)[.]git")
+          (setq rcp
+                (format "(%s\n :repo \"%s\"\n :fetcher github\n :files (\"%s.el\"))"
+                        lib-name
+                        (match-string 1)
+                        lib-name))))
+      (when rcp
+        (with-temp-file melpa
+          (insert rcp))))
     (if (file-exists-p melpa)
         (symbol-value 'melpa)
       nil)))
@@ -400,7 +485,115 @@ Returns file name if created."
 
 (define-derived-mode org-readme-edit-mode text-mode "Org-readme Log edit.")
 
-(defalias 'org-readme-sync-emacswiki 'org-readme-convert-to-emacswiki)
+(defun org-readme-convert-to-markdown ()
+  "Converts Readme.org to markdown Readme.md."
+  (interactive)
+  (let ((readme (org-readme-find-readme))
+        (what "Readme.md")
+        p1 md tmp tmp2)
+    (with-temp-buffer
+      (insert-file-contents readme)
+      
+      (goto-char (point-min))
+      (while (re-search-forward "#[+]TITLE:" nil t)
+        (replace-match "+TITLE:"))
+      
+      (goto-char (point-min))
+      (while (re-search-forward "#[+]AUTHOR:" nil t)
+        (replace-match ""))
+      
+      (goto-char (point-min))
+      (while (re-search-forward "^[ \t]*#.*" nil t) ;
+        (replace-match ""))
+
+      (goto-char (point-min))
+      (while (re-search-forward "[+]TITLE:" nil t)
+        (replace-match "# "))
+      
+      ;; Convert Headings
+      (goto-char (point-min))
+      (while (re-search-forward "^\\([*]+\\) *!?\\(.*\\)" nil t)
+        (setq tmp (make-string  (+ 1 (length (match-string 1))) ?#))
+        (replace-match (format "%s %s" tmp (match-string 2)) t t))
+      
+      
+      ;; Convert links [[link][text]] to [text](link)
+      (goto-char (point-min))
+      (while (re-search-forward "\\[\\[\\(\\(?:https?\\|ftp\\).*?\\)\\]\\[!?\\(.*?\\)\\]\\]" nil t)
+        (replace-match "[\\2](\\1)" t))
+      
+      ;; Replace file links.
+      (goto-char (point-min))
+      (while (re-search-forward "\\[\\[file:\\(.*?[.]el\\)\\]\\[\\1\\]\\]" nil t)
+        (replace-match "<\\1>"))
+      
+      ;; Underline _ul_ to <ul>ul</ul>
+      (goto-char (point-min))
+      (while (re-search-forward "_\\(.*+?\\) *_" nil t)
+        (replace-match (format "<ul>%s</ul>" (match-string 1)) t t))
+      
+      ;; Emphasis /emp/ to _emph_
+      (goto-char (point-min))
+      (while (re-search-forward "/\\(.*+?\\) */" nil t)
+        (replace-match (format "_%s_" (match-string 1)) t t))
+      
+      ;; Bold *bold* to __bold__
+      (goto-char (point-min))
+      (while (re-search-forward "[*]\\(.*+?\\) *[*]" nil t)
+        (unless (save-match-data (string-match "^[*]+$" (match-string 1)))
+          (replace-match (format "__%s__" (match-string 1)) t t)))
+      
+      (goto-char (point-min))
+      (while (re-search-forward "^[ \t]*[+-] +\\(.*?\\)::" nil t)
+        (replace-match (format "- __%s__ -- " (match-string 1))))
+      
+      ;; Code blocks
+      (goto-char (point-min))
+      (while (re-search-forward "=\\(.*+?\\) *=" nil t)
+        (replace-match (format "`%s`" (match-string 1)) t t))
+      
+      (goto-char (point-min))
+      (while (re-search-forward "^ *#[+]BEGIN_SRC.*" nil t)
+        (setq tmp (point))
+        (when (re-search-forward "^ *#[+]END_SRC" nil t)
+          (beginning-of-line)
+          (setq tmp2 (point))
+          (goto-char tmp)
+          (while (and (> tmp2 (point))
+                      (re-search-forward "^" tmp2 t))
+            (replace-match "::::"))))
+      
+      (goto-char (point-min))
+      (while (re-search-forward "^: " nil t)
+        (replace-match "\n::::" t t) ;
+        (while (progn
+                 (end-of-line)
+                 (re-search-forward "\\=\n: " nil t))
+          (replace-match "\n:::: "))
+        (end-of-line))
+      
+      ;; Convert pre-formatted
+      (goto-char (point-min))
+      (while (re-search-forward "^::::" nil t)
+        (replace-match "    "))
+      
+      ;; Convert tables to html
+      (goto-char (point-min))
+      (while (re-search-forward "^[ \t]*|.*|[ \t]*$" nil t)
+        (beginning-of-line)
+        (setq p1 (point))
+        (end-of-line)
+        (while (re-search-forward "\\=\n[ \t]*|" nil t)
+          (end-of-line))
+        (end-of-line)
+        (org-replace-region-by-html p1 (point)))
+      
+      ;; Lists are the same.
+      (setq readme (buffer-string)))
+    (with-temp-file (expand-file-name
+                     "Readme.md"
+                     (file-name-directory (buffer-file-name)))
+      (insert readme))))
 
 (defun org-readme-convert-to-emacswiki ()
   "Converts Readme.org to oddmuse markup and uploads to emacswiki."
@@ -538,22 +731,37 @@ Returns file name if created."
   (interactive)
   (let* ((df (file-name-directory (buffer-file-name)))
          (default-directory df)
-         melpa)
-    (when org-readme-build-mepla-recipie
+         melpa el-get)
+    (when org-readme-build-melpa-recipie
       (setq melpa (org-readme-build-melpa))
       (when melpa
-        (message "Adding Melpa recipie")
+        (message "Adding Melpa recipe")
         (shell-command
          (format "git add melpa/%s"
                  (file-name-nondirectory melpa)))))
+    
+    (when org-readme-build-el-get-recipie
+      (setq el-get (org-readme-build-el-get))
+      (when el-get
+        (message "Adding El-Get recipe")
+        (shell-command
+         (format "git add el-get/%s"
+                 (file-name-nondirectory el-get)))))
+    
     (message "Git Adding Readme")
     (shell-command
      (format "git add %s"
              (file-name-nondirectory (org-readme-find-readme))))
+    
+    (when (file-exists-p "Readme.md")
+      (shell-command
+       "git add Readme.md"))
+    
     (message "Git Adding %s" (file-name-nondirectory (buffer-file-name)))
     (shell-command
      (format "git add %s"
              (file-name-nondirectory (buffer-file-name))))
+    
     (when (file-exists-p (org-readme-get-change))
       (message "Git Committing")
       (shell-command
@@ -627,19 +835,29 @@ When COMMENT-ADDED is non-nil, the comment has been added and the syncing should
       (org-readme-changelog-to-readme)
       (org-readme-top-header-to-readme)
       (save-buffer)
-      (when org-readme-sync-marmalade
+
+      (when org-readme-build-markdown 
+        (org-readme-convert-to-markdown))
+      
+      (when (and (featurep 'http-post-simple)
+                 org-readme-sync-marmalade)
         (message "Attempting to post to marmalade-repo.org")
         (org-readme-marmalade-post))
-      (when org-readme-sync-emacswiki
+      
+      (when (and (featurep 'yaoddmuse)
+                 org-readme-sync-emacswiki)
         (message "Posting lisp file to emacswiki")
         (emacswiki-post nil ""))
       
       (when org-readme-edit-last-window-configuration
         (set-window-configuration org-readme-edit-last-window-configuration)
         (setq org-readme-edit-last-window-configuration nil))
+      
       (when org-readme-sync-git
         (org-readme-git))
-      (when org-readme-sync-emacswiki
+      
+      (when (and (featurep 'yaoddmuse)
+                 org-readme-sync-emacswiki)
         (message "Posting Description to emacswiki")
         (org-readme-convert-to-emacswiki)))))
 
