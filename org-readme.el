@@ -5,11 +5,11 @@
 ;; Author: Matthew L. Fidler
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Fri Aug  3 22:33:41 2012 (-0500)
-;; Version: 0.16
+;; Version: 0.17
 ;; Package-Requires: ((http-post-simple "1.0") (yaoddmuse "0.1.1")(header2 "21.0") (lib-requires "21.0"))
-;; Last-Updated: Sat Aug 11 16:31:49 2012 (-0500)
+;; Last-Updated: Sat Aug 11 16:43:44 2012 (-0500)
 ;;           By: Matthew L. Fidler
-;;     Update #: 639
+;;     Update #: 644
 ;; URL: https://github.com/mlf176f2/org-readme
 ;; Keywords: Header2, Readme.org, Emacswiki, Git
 ;; Compatibility: Tested with Emacs 24.1 on Windows.
@@ -60,11 +60,13 @@
 ;; | yaoddmuse        | Publishing to emacswiki                       |
 ;; | http-post-simple | Publishing to marmalade-repo.org              |
 ;; | header2          | To Create the required header                 |
-;; | lib-requires     | To generate the possible library dependencies |
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 11-Aug-2012    Matthew L. Fidler  
+;;    Last-Updated: Sat Aug 11 16:42:41 2012 (-0500) #642 (Matthew L. Fidler)
+;;    Markdown bug fix
 ;; 11-Aug-2012    Matthew L. Fidler  
 ;;    Last-Updated: Sat Aug 11 16:31:18 2012 (-0500) #637 (Matthew L. Fidler)
 ;;    Bug fix for el-get recipe.
@@ -512,7 +514,7 @@ Returns file name if created."
       (goto-char (point-min))
       (while (re-search-forward "^[ \t]*#.*" nil t) ;
         (replace-match ""))
-
+      
       (goto-char (point-min))
       (while (re-search-forward "[+]TITLE:" nil t)
         (replace-match "# "))
@@ -536,22 +538,22 @@ Returns file name if created."
       
       ;; Underline _ul_ to <ul>ul</ul>
       (goto-char (point-min))
-      (while (re-search-forward "_\\(.*+?\\) *_" nil t)
+      (while (re-search-forward "_\\(.*+?\\)_" nil t)
         (replace-match (format "<ul>%s</ul>" (match-string 1)) t t))
       
       ;; Emphasis /emp/ to _emph_
       (goto-char (point-min))
-      (while (re-search-forward "/\\(.*+?\\) */" nil t)
+      (while (re-search-forward "/\\(.*+?\\)/" nil t)
         (replace-match (format "_%s_" (match-string 1)) t t))
       
       ;; Bold *bold* to __bold__
       (goto-char (point-min))
-      (while (re-search-forward "[*]\\(.*+?\\) *[*]" nil t)
+      (while (re-search-forward "[*]\\(.*+?\\)[*]" nil t)
         (unless (save-match-data (string-match "^[*]+$" (match-string 1)))
           (replace-match (format "__%s__" (match-string 1)) t t)))
       
       (goto-char (point-min))
-      (while (re-search-forward "^[ \t]*[+-] +\\(.*?\\)::" nil t)
+      (while (re-search-forward "^[ \t]*[+-] +\\(.*?\\) *::" nil t)
         (replace-match (format "- __%s__ -- " (match-string 1))))
       
       ;; Code blocks
@@ -593,7 +595,12 @@ Returns file name if created."
         (while (re-search-forward "\\=\n[ \t]*|" nil t)
           (end-of-line))
         (end-of-line)
-        (org-replace-region-by-html p1 (point)))
+        (save-restriction
+          (narrow-to-region p1 (point))
+          (org-replace-region-by-html (point-min) (point-max))
+          (goto-char (point-min))
+          (while (re-search-forward "class" nil t)
+            (replace-match "align"))))
       
       ;; Lists are the same.
       (setq readme (buffer-string)))
