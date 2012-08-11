@@ -5,11 +5,11 @@
 ;; Author: Matthew L. Fidler
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Fri Aug  3 22:33:41 2012 (-0500)
-;; Version: 0.7
+;; Version: 0.8
 ;; Package-Requires: ((http-post-simple "1.0") (yaoddmuse "0.1.1")(header2 "21.0") (lib-requires "21.0"))
-;; Last-Updated: Sat Aug 11 01:08:21 2012 (-0500)
+;; Last-Updated: Sat Aug 11 01:09:33 2012 (-0500)
 ;;           By: Matthew L. Fidler
-;;     Update #: 467
+;;     Update #: 469
 ;; URL: https://github.com/mlf176f2/org-readme
 ;; Keywords: Header2, Readme.org, Emacswiki, Git
 ;; Compatibility: Tested with Emacs 24.1 on Windows.
@@ -57,11 +57,13 @@
 ;;   org-readme.el would be converted to OrgReadme.
 ;; - When the library is a multiple file lisp library, or a library
 ;;   without any direct lisp calls, the Readme.org is converted to an
-;;   appropriate EmacsWiki documentation file by the Parent Directory of
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 11-Aug-2012    Matthew L. Fidler  
+;;    Last-Updated: Sat Aug 11 01:08:21 2012 (-0500) #467 (Matthew L. Fidler)
+;;    Git push worked.  Bumping minor version.
 ;; 11-Aug-2012    Matthew L. Fidler  
 ;;    Last-Updated: Sat Aug 11 01:07:26 2012 (-0500) #465 (Matthew L. Fidler)
 ;;    Attempted to push repository again.
