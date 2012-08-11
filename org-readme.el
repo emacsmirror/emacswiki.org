@@ -7,9 +7,9 @@
 ;; Created: Fri Aug  3 22:33:41 2012 (-0500)
 ;; Version: 0.03
 ;; Package-Requires: ((http-post-simple "1.0") (yaoddmuse "0.1.1"))
-;; Last-Updated: Sat Aug 11 00:27:37 2012 (-0500)
+;; Last-Updated: Sat Aug 11 00:36:47 2012 (-0500)
 ;;           By: Matthew L. Fidler
-;;     Update #: 422
+;;     Update #: 428
 ;; URL: https://github.com/mlf176f2/org-readme
 ;; Keywords: Header2, Readme.org, Emacswiki, Git
 ;; Compatibility: Tested with Emacs 24.1 on Windows.
@@ -64,6 +64,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 11-Aug-2012    Matthew L. Fidler  
+;;    Last-Updated: Sat Aug 11 00:35:40 2012 (-0500) #426 (Matthew L. Fidler)
+;;    Attempting to fix org-readme-marmalade-post.
 ;; 11-Aug-2012    Matthew L. Fidler  
 ;;    Last-Updated: Sat Aug 11 00:26:36 2012 (-0500) #420 (Matthew L. Fidler)
 ;;    Bug fix to upload to emacswiki and upload to marmalade-repo
@@ -163,7 +166,7 @@
         (setq ver (match-string 1))))
     (symbol-value 'ver)))
 
-(defun org-readme-marmlade-post ()
+(defun org-readme-marmalade-post ()
   "Posts the current buffer to Marmalade."
   (interactive)
   (let* ((package (file-name-sans-extension
@@ -172,6 +175,8 @@
          (b-ver (org-readme-buffer-version))
          token
          resp)
+    (message "Marmalade Version: %s, Buffer Version: %s"
+             m-ver b-ver)
     (when (or (not m-ver) (not (string= m-ver b-ver)))
       (message "Should post %s, the marmalade package is outdated or does not exist."
                package)
@@ -251,7 +256,7 @@
   "Changelog for editing."
   (interactive)
   (let ((comment (buffer-substring (point-min) (point-max)))
-        mr)
+        mr)                             
     (kill-buffer (get-buffer "*Change Comment*"))
     (with-temp-buffer
       (insert comment)
@@ -491,7 +496,7 @@ When COMMENT-ADDED is non-nil, the comment has been added and the syncing should
       (org-readme-top-header-to-readme)
       (save-buffer)
       (message "Attempting to post to marmalade-repo.org")
-      (org-readme-marmlade-post)
+      (org-readme-marmalade-post)
       (message "Posting lisp file to emacswiki")
       (emacswiki-post nil "")
       (when org-readme-edit-last-window-configuration
