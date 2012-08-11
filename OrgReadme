@@ -1,6 +1,5 @@
 
 
-
 == Library Information ==
 *org-readme.el* --- Integrates Readme.org and Commentary/Change-logs.
 
@@ -9,11 +8,11 @@
 * <b>Author </b> --  Matthew L. Fidler
 * <b>Maintainer </b> --  Matthew L. Fidler
 * <b>Created </b> --  Fri Aug  3 22:33:41 2012 (-0500)
-* <b>Version </b> --  0.05
+* <b>Version </b> --  0.6
 * <b>Package-Requires </b> --  ((http-post-simple "1.0") (yaoddmuse "0.1.1"))
-* <b>Last-Updated </b> --  Sat Aug 11 00:44:20 2012 (-0500)
+* <b>Last-Updated </b> --  Sat Aug 11 00:59:30 2012 (-0500)
 * <b>By </b> --  Matthew L. Fidler
-* <b>Update # </b> --  435
+* <b>Update # </b> --  455
 * <B>URL </B> --  https://github.com/mlf176f2/org-readme
 * <b>Keywords </b> --  Header2, Readme.org, Emacswiki, Git
 * <b>Compatibility </b> --  Tested with Emacs 24.1 on Windows.
@@ -38,7 +37,10 @@ In addition this library defines <tt>org-readme-sync</tt>,  a convenience functi
 
 * Asks for a commentary about the library change.
 * Syncs the Readme.org with the lisp file as described above.
-* Updates emacswiki with the library description and the library itself.
+* Updates emacswiki with the library description and the library
+itself.
+* Updates Marmalade-repo if the library version is different than the
+version in the server.
 * Updates the git repository with the differences that you posted.
 
 When <tt>org-readme-sync</tt> is called in a <tt>Readme.org</tt> file that is not a
@@ -57,26 +59,28 @@ without any direct lisp calls, the Readme.org is converted to an
 appropriate !EmacsWiki documentation file by the Parent Directory of
 the <tt>Readme.org</tt>.  For example, =!EmacsPortable.App" is converted to
 !EmacsPortableApp
-=== Library assumptions ===
-This library assumes that the Emacs Lisp libraries are created using
-[http://emacswiki.org/emacs/header2.el header2.el], and optionally with the [http://emacswiki.org/emacs/lib-requires.el lib-requires.el] libraries.
-
 == History ==
 
+* <b>11-Aug-2012 </b> --   Made request for minor revision earlier, and fixed bug. (Matthew L. Fidler)
+* <b>11-Aug-2012 </b> --   Fixed code typo (Matthew L. Fidler)
+* <b>11-Aug-2012 </b> --   Bug fix for deleting a section of a Readme.org file. (Matthew L. Fidler)
+* <b>11-Aug-2012 </b> --   Testing bug. (Matthew L. Fidler)
+* <b>11-Aug-2012 </b> --   Minor bug fix. (Matthew L. Fidler)
+* <b>11-Aug-2012 </b> --   Bug fix for comment sync, now Readme.org <tt>file</tt> is translated to lisp <tt>file</tt>. Additionally, asks for version bump. (Matthew L. Fidler)
 * <b>11-Aug-2012 </b> --   Bug fix for syncing readme. Now the returns should not be as prevalent. (Matthew L. Fidler)
 * <b>11-Aug-2012 </b> --   Attempting to post to marmlade again... (Matthew L. Fidler)
 * <b>11-Aug-2012 </b> --   Attempting to fix org-readme-marmalade-post. (Matthew L. Fidler)
 * <b>11-Aug-2012 </b> --   Bug fix to upload to emacswiki and upload to marmalade-repo (Matthew L. Fidler)
 * <b>11-Aug-2012 </b> --   Added marmalade-repo support. Now org-readme should upload to marmalade-repo when the version is different from the latest version.  (Matthew L. Fidler)
 * <b>08-Aug-2012 </b> --   Fixed preformatting tags in emacswiki post. Previously they may have been replaced with <PRE></pre> instead of <pre></pre>. This makes the emacswiki page display correctly. (Matthew L. Fidler)
-* <b>07-Aug-2012 </b> --   To use, put (require 'ess-smart-underscore) in your ~/.emacs file 7-Aug-2012 Matthew L. Fidler Last-Updated: Sat Aug 11 00:44:34 2012 (-0500)
+* <b>07-Aug-2012 </b> --   To use, put (require 'ess-smart-underscore) in your ~/.emacs file 7-Aug-2012 Matthew L. Fidler Last-Updated: Sat Aug 11 00:59:42 2012 (-0500)
 * <b>06-Aug-2012 </b> --   Added support for uploading Readme.org files to emacswiki without having to have a single associated lisp file. (Matthew L. Fidler)
 * <b>06-Aug-2012 </b> --   Bug fix for syncing from the single lisp file. (Matthew L. Fidler)
 * <b>06-Aug-2012 </b> --   Added the ability to call <tt>org-readme-sync</tt> from Readme.org (Matthew L. Fidler)
 * <b>05-Aug-2012 </b> --   Added git pushing to org-readme (Matthew L. Fidler)
 * <b>05-Aug-2012 </b> --   Added git support as well as a comment mode. The only thing that should need to be called is <tt>org-readme-sync</tt> (Matthew L. Fidler)
 * <b>04-Aug-2012 </b> --   Added syncing with emacswiki.  (Matthew L. Fidler)
-* <b>04-Aug-2012 </b> --   Initial Release  (Matthew L. Fidler)
+* <b>04-Aug-2012 </b> --   Initial Release  (Matthew L. Fidler)** Library assumptions
 
 
 This was generated with OrgReadme.  On updating the library, this page is likely to be replaced with updated content.
