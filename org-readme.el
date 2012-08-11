@@ -7,9 +7,9 @@
 ;; Created: Fri Aug  3 22:33:41 2012 (-0500)
 ;; Version: 0.18
 ;; Package-Requires: ((http-post-simple "1.0") (yaoddmuse "0.1.1")(header2 "21.0") (lib-requires "21.0"))
-;; Last-Updated: Sat Aug 11 17:08:10 2012 (-0500)
+;; Last-Updated: Sat Aug 11 17:14:15 2012 (-0500)
 ;;           By: Matthew L. Fidler
-;;     Update #: 656
+;;     Update #: 661
 ;; URL: https://github.com/mlf176f2/org-readme
 ;; Keywords: Header2, Readme.org, Emacswiki, Git
 ;; Compatibility: Tested with Emacs 24.1 on Windows.
@@ -66,9 +66,14 @@
 ;; | lib-requires     | To generate the library dependencies |
 ;; |------------------+--------------------------------------|
 ;; 
+;; This line is put at the end of the file.
+;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 11-Aug-2012    Matthew L. Fidler  
+;;    Last-Updated: Sat Aug 11 17:13:24 2012 (-0500) #659 (Matthew L. Fidler)
+;;    Another attempt at a remove-section fix.
 ;; 11-Aug-2012    Matthew L. Fidler  
 ;;    Last-Updated: Sat Aug 11 17:07:22 2012 (-0500) #654 (Matthew L. Fidler)
 ;;    Bug fix for org-readme version tagging.
@@ -866,7 +871,7 @@ When COMMENT-ADDED is non-nil, the comment has been added and the syncing should
       (org-readme-changelog-to-readme)
       (org-readme-top-header-to-readme)
       (save-buffer)
-
+      
       (when org-readme-build-markdown 
         (org-readme-convert-to-markdown))
       
@@ -1027,15 +1032,14 @@ When AT-BEGINNING is non-nil, if the section is not found, insert it at the begi
              (save-excursion
                (beginning-of-line)
                (skip-chars-backward " \t\n")
+               (forward-line 1)
+               (beginning-of-line)
                (point))
              (if (re-search-forward (format "^%s +" (regexp-quote mtch)) nil t)
                  (progn
                    (- (match-beginning 0) 1))
                (point-max)))
             (when txt
-              (beginning-of-line)
-              (skip-chars-backward " \t\n")
-              (skip-chars-forward "\n")
               (insert txt))
             t)
         (when txt
@@ -1140,8 +1144,8 @@ When AT-BEGINNING is non-nil, if the section is not found, insert it at the begi
                             (replace-regexp-in-string
                              "  +" " "
                              (replace-regexp-in-string
-                                "\n" " "
-                                (replace-regexp-in-string
+                              "\n" " "
+                              (replace-regexp-in-string
                                "\n[ \t]*[*-+] +" "~~~~" (match-string 3))))))
                          (save-match-data
                            (replace-regexp-in-string
