@@ -5,10 +5,11 @@
 ;; Author: Matthew L. Fidler
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Fri Aug  3 22:33:41 2012 (-0500)
-;; Version: 0.01
-;; Last-Updated: Wed Aug  8 18:46:02 2012 (-0500)
+;; Version: 0.02
+;; Package-Requires: ((http-post-simple "1.0") (yaoddmuse "0.1.1"))
+;; Last-Updated: Sat Aug 11 00:22:47 2012 (-0500)
 ;;           By: Matthew L. Fidler
-;;     Update #: 345
+;;     Update #: 415
 ;; URL: https://github.com/mlf176f2/org-readme
 ;; Keywords: Header2, Readme.org, Emacswiki, Git
 ;; Compatibility: Tested with Emacs 24.1 on Windows.
@@ -63,6 +64,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 11-Aug-2012    Matthew L. Fidler  
+;;    Last-Updated: Sat Aug 11 00:21:27 2012 (-0500) #413 (Matthew L. Fidler)
+;;    Added marmalade-repo support.  Now org-readme should upload to
+;;    marmalade-repo when the version is different from the latest version.  
 ;; 08-Aug-2012    Matthew L. Fidler  
 ;;    Last-Updated: Wed Aug  8 18:44:37 2012 (-0500) #343 (Matthew L. Fidler)
 ;;    Fixed preformatting tags in emacswiki post.  Previously they may have
@@ -98,7 +103,7 @@
 ;; 04-Aug-2012    Matthew L. Fidler  
 ;;    Last-Updated: Sat Aug  4 21:40:14 2012 (-0500) #122 (Matthew L. Fidler)
 ;;    Added syncing with emacswiki. 
-;; 04-Aug-2012    Matthew L. Fidler  
+;; 04-Aug-2012    Matthew L. Fidler
 ;;    Last-Updated: Sat Aug  4 00:02:49 2012 (-0500) #20 (Matthew L. Fidler)
 ;;    Initial Release
 ;; 
@@ -125,9 +130,104 @@
 ;;; Code:
 
 (require 'yaoddmuse)
+(require 'http-post-simple)
 
 (defgroup org-readme nil
   "Org-readme is a way to create Readme.org files based on an elisp file.")
+
+(defcustom org-readme-marmalade-server "http://marmalade-repo.org" 
+  "Marmalade server website.  This should start with http: and should notend with a trailing forward slash, just like the default value of http://marmalade-repo.org"
+  :type 'string
+  :group 'org-readme)
+
+(defcustom org-readme-marmalade-token nil
+  "Marmalade token to upload content to the marmalade server."
+  :type 'string
+  :group 'org-readme)
+
+(defcustom org-readme-marmalade-user-name nil
+  "Marmalade user name to upload content to the marmalade server."
+  :type 'string
+  :group 'org-readme)
+
+(defun org-readme-buffer-version ()
+  "Gets the version of the current buffer."
+  (let (ver
+        (case-fold-search t))
+    (save-excursion
+      (goto-char (point-min))
+      (when (re-search-forward "^ *;+ *Version: *\\(.*?\\) *" nil t)
+        (setq ver (match-string 1))))
+    (symbol-value 'ver)))
+
+(defun org-readme-marmlade-post ()
+  "Posts the current buffer to Marmalade."
+  (interactive)
+  (let* ((package (file-name-sans-extension
+                   (file-name-nondirectory (buffer-file-name))))
+         (m-ver (org-readme-marmalade-version package))
+         (b-ver (org-readme-buffer-version))
+         token
+         resp)
+    (when (or (not m-ver) (not (string= m-ver b-ver)))
+      (message "Should post %s, the marmalade package is outdated or does not exist."
+               package)
+      (setq token (org-readme-token))
+      
+      (setq resp (http-post-simple-multipart
+                  (format "%s/v1/packages"
+                          org-readme-marmalade-server)
+                  `((name . ,org-readme-marmalade-user-name)
+                    (token . ,token))
+                  `(("package" ,(buffer-file-name)
+                     "text/x-script.elisp"
+                     ,(buffer-string)))))
+      (message "%s" resp))))
+
+(defun org-readme-marmalade-version (package)
+  "Gets the marmalade version of the PACKAGE." 
+  (let ((ver-json (url-retrieve-synchronously
+                   (format "%s/v1/packages/%s/latest"
+                           org-readme-marmalade-server
+                           package)))
+        ver)
+    (when ver-json
+      (save-excursion
+        (set-buffer ver-json)
+        (goto-char (point-min))
+        (when (re-search-forward "\"version\"[ \t]*:[ \t]*\"\\(.*?\\)\"" nil t)
+          (setq ver (match-string 1)))
+        (kill-buffer (current-buffer))))
+    (symbol-value 'ver)))
+
+(defun org-readme-token ()
+  "Gets marmalade-token, if not already saved."
+  (or org-readme-marmalade-token
+      (let ((user-name (or org-readme-marmalade-user-name
+                           (read-string "Marmalade username: ")))
+            (password (read-passwd "Marmalade password: "))
+            token)
+        (setq token
+              (with-temp-buffer
+                (insert
+                 (format "%s"
+                         (nth 0
+                              (http-post-simple
+                               (format "%s/v1/users/login"
+                                       org-readme-marmalade-server)
+                               `((name . ,user-name)
+                                 (password . ,password))))))
+                (goto-char (point-min))
+                
+                (if (not (re-search-forward "\"token\"[ \t]*:[ \t]*\"\\(.*?\\)\"" nil t))
+                    nil
+                  (match-string 1))))
+        (when token
+          (setq org-readme-marmalade-user-name user-name)
+          (setq org-readme-marmalade-token token)
+          (customize-save-variable 'org-readme-marmalade-user-name org-readme-marmalade-user-name)
+          (customize-save-variable 'org-readme-marmalade-token org-readme-marmalade-token))
+        (symbol-value 'token))))
 
 (defcustom org-readme-remove-sections '("History" "Possible Dependencies" "Library Information")
   "List of sections to remove when changing the Readme.org to Change-log."
@@ -187,6 +287,7 @@
 (define-derived-mode org-readme-edit-mode text-mode "Org-readme Log edit.")
 
 (defalias 'org-readme-sync-emacswiki 'org-readme-convert-to-emacswiki)
+
 (defun org-readme-convert-to-emacswiki ()
   "Converts Readme.org to oddmuse markup and uploads to emacswiki."
   (interactive)
@@ -213,8 +314,6 @@
         (replace-match "||")
         (while (re-search-forward "|" (point-at-eol) t)
           (replace-match "||")))
-      
-      
       
       ;; Convert Links
       (goto-char (point-min))
@@ -249,7 +348,7 @@
       
       (goto-char (point-min))
       (while (re-search-forward "^: " nil t)
-        (replace-match "<pre>\n::::" t)
+        (replace-match "<pre>\n::::" t t) ;
         (while (progn
                  (end-of-line)
                  (re-search-forward "\\=\n: " nil t))
@@ -272,10 +371,10 @@
       
       (goto-char (point-min))
       (while (re-search-forward "^ *#[+]BEGIN_SRC.*" nil t)
-        (replace-match "<pre>" t)
+        (replace-match "<pre>" t t)
         (setq tmp (point))
         (when (re-search-forward "^ *#[+]END_SRC" nil t)
-          (replace-match "</pre>" t)
+          (replace-match "</pre>" t t)
           (beginning-of-line)
           (setq tmp2 (point))
           (goto-char tmp)
@@ -292,7 +391,7 @@
         (replace-match "* "))
       
       (goto-char (point-min))
-      (while (re-search-forward "^[ \t]*#.*" nil t)
+      (while (re-search-forward "^[ \t]*#.*" nil t) ;
         (replace-match ""))
       
       (goto-char (point-min))
@@ -303,7 +402,7 @@
       (while (re-search-forward "^[ \t]+" nil t)
         (replace-match ""))
       
-      (goto-char (point-min))
+      (goto-char (point-min))           
       (while (re-search-forward "^::::" nil t)
         (replace-match "")
         (let ((case-fold-search nil))
@@ -391,6 +490,8 @@ When COMMENT-ADDED is non-nil, the comment has been added and the syncing should
       (when org-readme-edit-last-window-configuration
         (set-window-configuration org-readme-edit-last-window-configuration)
         (setq org-readme-edit-last-window-configuration nil))
+      (message "Attempting to post to marmalade-repo.org")
+      (org-readme-marmlade-post)
       (message "Posting lisp file to emacswiki")
       (emacswiki-post nil "")
       (org-readme-git)
