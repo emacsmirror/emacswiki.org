@@ -7,9 +7,9 @@
 ;; Created: Fri Aug  3 22:33:41 2012 (-0500)
 ;; Version: 0.18
 ;; Package-Requires: ((http-post-simple "1.0") (yaoddmuse "0.1.1")(header2 "21.0") (lib-requires "21.0"))
-;; Last-Updated: Sat Aug 11 16:46:03 2012 (-0500)
+;; Last-Updated: Sat Aug 11 17:00:59 2012 (-0500)
 ;;           By: Matthew L. Fidler
-;;     Update #: 647
+;;     Update #: 649
 ;; URL: https://github.com/mlf176f2/org-readme
 ;; Keywords: Header2, Readme.org, Emacswiki, Git
 ;; Compatibility: Tested with Emacs 24.1 on Windows.
@@ -50,19 +50,30 @@
 ;; single lisp file, the function exports the readme in EmacsWiki format
 ;; and posts it to the EmacsWiki.
 ;; ** EmacsWiki Page Names
+;; EmacsWiki Page names are generated from the file.  `org-readme.el'
+;; would generate a page of OrgReadme.
+;; 
 ;; ** Why each required library is needed
 ;; There are a few required libraries.  This is a list of the require
 ;; libraries and why they are needed.
 ;; 
-;; |------------------+-----------------------------------------------|
-;; | Library          | Why it is needed                              |
-;; |------------------+-----------------------------------------------|
-;; | yaoddmuse        | Publishing to emacswiki                       |
-;; | http-post-simple | Publishing to marmalade-repo.org              |
+;; |------------------+--------------------------------------|
+;; | Library          | Why it is needed                     |
+;; |------------------+--------------------------------------|
+;; | yaoddmuse        | Publish to emacswiki                 |
+;; | http-post-simple | Publish to marmalade-repo.org        |
+;; | header2          | To create header and changelog       |
+;; | lib-requires     | To generate the library dependencies |
+;; |------------------+--------------------------------------|
+;; 
+;; Another assumption is the primary lisp file is on github.com
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 11-Aug-2012    Matthew L. Fidler  
+;;    Last-Updated: Sat Aug 11 16:46:03 2012 (-0500) #647 (Matthew L. Fidler)
+;;    Added more documentation
 ;; 11-Aug-2012    Matthew L. Fidler  
 ;;    Last-Updated: Sat Aug 11 16:45:19 2012 (-0500) #645 (Matthew L. Fidler)
 ;;    One last bug fix to the markdown export engine.
