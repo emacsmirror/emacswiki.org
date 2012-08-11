@@ -7,12 +7,12 @@
 ;; Copyright (C) 1995-2012, Drew Adams, all rights reserved.
 ;; Created: Wed Aug  2 11:12:24 1995
 ;; Version: 21.1
-;; Last-Updated: Fri Aug 10 11:39:50 2012 (-0700)
+;; Last-Updated: Sat Aug 11 09:53:15 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 2933
+;;     Update #: 2937
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/start.el
 ;; Keywords: abbrev, internal, local, init
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -83,6 +83,8 @@
 ;;
 ;; Change Log:
 ;;
+;; 2012/08/11 dadams
+;;     Do not require frame+.el if window+.el was loaded.
 ;; 2012/08/10 dadams
 ;;     Updated names of show-wspace commands.
 ;; 2012/06/02 dadams
@@ -376,7 +378,6 @@
 (when (> emacs-major-version 21) (require 'bindings+ nil t)) ; Minor-mode menus in mode line.
 (require 'misc-fns nil t)               ; Miscellaneous non-interactive functions
 (require 'simple+ nil t)                ; Corrections, extensions.
-(require 'frame+ nil t)                 ; Corrections, extensions.
 (autoload 'libreq-requires-tree "lib-requires" ; Track Emacs-Lisp library dependencies.
   "The libraries `require'd by LIBRARY, as a tree." t)
 (autoload 'libreq-requires-list "lib-requires"
@@ -414,6 +415,7 @@
 (when (boundp 'mode-line-position)      ; Emacs 22+ - Mode line position highlighting.
   (require 'modeline-posn nil t))
 (require 'window+ nil t)                ; Corrections.
+(unless (featurep 'window+) (require 'frame+ nil t)) ; Corrections.
 ;; (require 'apropos)                      ; My version.
 (require 'paren)                        ; Highlight matching parens (standard GNU).
 (when window-system
