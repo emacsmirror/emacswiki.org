@@ -5,11 +5,11 @@
 ;; Author: Matthew L. Fidler
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Fri Aug  3 22:33:41 2012 (-0500)
-;; Version: 0.11
+;; Version: 0.12
 ;; Package-Requires: ((http-post-simple "1.0") (yaoddmuse "0.1.1")(header2 "21.0") (lib-requires "21.0"))
-;; Last-Updated: Sat Aug 11 07:13:34 2012 (-0500)
+;; Last-Updated: Sat Aug 11 11:17:26 2012 (-0500)
 ;;           By: Matthew L. Fidler
-;;     Update #: 494
+;;     Update #: 523
 ;; URL: https://github.com/mlf176f2/org-readme
 ;; Keywords: Header2, Readme.org, Emacswiki, Git
 ;; Compatibility: Tested with Emacs 24.1 on Windows.
@@ -52,11 +52,13 @@
 ;; as follows:
 ;; 
 ;; - When the library is a single lisp function, the single lisp file is
-;;   converted to the emacswiki name by taking out the "-" and ".el" of
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 11-Aug-2012    Matthew L. Fidler  
+;;    Last-Updated: Sat Aug 11 11:16:46 2012 (-0500) #521 (Matthew L. Fidler)
+;;    Added ability to add melpa recipie
 ;; 11-Aug-2012    Matthew L. Fidler  
 ;;    Last-Updated: Sat Aug 11 07:12:35 2012 (-0500) #492 (Matthew L. Fidler)
 ;;    Bug fix for pushing tags to a git repository
@@ -197,6 +199,62 @@
   "Marmalade user name to upload content to the marmalade server."
   :type 'string
   :group 'org-readme)
+
+(defcustom org-readme-sync-emacswiki t
+  "Posts library to the emacswiki."
+  :type 'boolean
+  :group 'org-readme)
+
+(defcustom org-readme-sync-marmalade t
+  "Posts library to marmalade-repo.org"
+  :type 'boolean
+  :group 'org-readme)
+
+(defcustom org-readme-sync-git t
+  "Posts library to git"
+  :type 'boolean
+  :group 'org-readme)
+
+(defcustom org-readme-build-mepla-recipie t
+  "Builds a mepla recipie based on github information"
+  :type 'boolean
+  :group 'org-readme)
+
+
+(defun org-readme-build-melpa ()
+  "Builds a melpa recipe. This assumes github, though other could be added.
+Returns file name if created."
+  (interactive)
+  (let ((melpa (expand-file-name
+                "melpa" (file-name-directory (buffer-file-name))))
+        (lib-name (file-name-sans-extension
+                   (file-name-nondirectory (buffer-file-name))))
+        (git-cfg
+         (expand-file-name
+          "config"
+          (expand-file-name
+           ".git" (file-name-directory (buffer-file-name)))))
+        rcp)
+    (unless (file-exists-p melpa)
+      (make-directory melpa))
+    (setq melpa (expand-file-name lib-name melpa))
+    (unless (file-exists-p melpa)
+      (when (file-exists-p git-cfg)
+        (with-temp-buffer
+          (insert-file-contents git-cfg)
+          (goto-char (point-min))
+          (when (re-search-forward "git@github.com:\\(.*?\\)[.]git")
+            (setq rcp
+                  (format "(%s\n :repo \"%s\"\n :fetcher github\n :files (\"%s.el\"))"
+                          lib-name
+                          (match-string 1)
+                          lib-name))))
+        (when rcp
+          (with-temp-file melpa
+            (insert melpa)))))
+    (if (file-exists-p melpa)
+        melpa
+      nil)))
 
 (defun org-readme-buffer-version ()
   "Gets the version of the current buffer."
@@ -473,7 +531,15 @@
   "Add The files to git."
   (interactive)
   (let* ((df (file-name-directory (buffer-file-name)))
-         (default-directory df))
+         (default-directory df)
+         melpa)
+    (when org-readme-build-mepla-recipie
+      (setq melpa (org-readme-build-melpa))
+      (when melpa
+        (message "Adding Melpa recipie")
+        (shell-command
+         (format "git add %s"
+                 (file-name-nondirectory melpa)))))
     (message "Git Adding Readme")
     (shell-command
      (format "git add %s"
@@ -555,17 +621,21 @@ When COMMENT-ADDED is non-nil, the comment has been added and the syncing should
       (org-readme-changelog-to-readme)
       (org-readme-top-header-to-readme)
       (save-buffer)
-      (message "Attempting to post to marmalade-repo.org")
-      (org-readme-marmalade-post)
-      (message "Posting lisp file to emacswiki")
-      (emacswiki-post nil "")
+      (when org-readme-sync-marmalade
+        (message "Attempting to post to marmalade-repo.org")
+        (org-readme-marmalade-post))
+      (when org-readme-sync-emacswiki
+        (message "Posting lisp file to emacswiki")
+        (emacswiki-post nil ""))
+      
       (when org-readme-edit-last-window-configuration
         (set-window-configuration org-readme-edit-last-window-configuration)
         (setq org-readme-edit-last-window-configuration nil))
-      
-      (org-readme-git)
-      (message "Posting Description to emacswiki")
-      (org-readme-convert-to-emacswiki))))
+      (when org-readme-sync-git
+        (org-readme-git))
+      (when org-readme-emacswiki-post
+        (message "Posting Description to emacswiki")
+        (org-readme-convert-to-emacswiki)))))
 
 ;;;###autoload
 (defun org-readme-to-commentary ()
@@ -657,6 +727,7 @@ To use without using a package manager:
 
  - Put the library in a directory in the emacs load path, like ~/.emacs.d
  - Add (require 'LIB-NAME) in your ~/.emacs file
+ - If you have [[http://www.marmalade-repo.org/][marmalade-repo.org]], this LIB-NAME is part of the emacs packges you can install.  Just type M-x package-install LIB-NAME marmalade 
 
 This is in emacswiki, so this package can also be installed using el-get.
 
@@ -814,8 +885,8 @@ When AT-BEGINNING is non-nil, if the section is not found, insert it at the begi
                             (replace-regexp-in-string
                              "  +" " "
                              (replace-regexp-in-string
-                              "\n" " "
-                              (replace-regexp-in-string
+                                "\n" " "
+                                (replace-regexp-in-string
                                "\n[ \t]*[*-+] +" "~~~~" (match-string 3))))))
                          (save-match-data
                            (replace-regexp-in-string
