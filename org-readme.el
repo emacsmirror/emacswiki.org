@@ -5,11 +5,11 @@
 ;; Author: Matthew L. Fidler
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Fri Aug  3 22:33:41 2012 (-0500)
-;; Version: 0.8
+;; Version: 0.9
 ;; Package-Requires: ((http-post-simple "1.0") (yaoddmuse "0.1.1")(header2 "21.0") (lib-requires "21.0"))
-;; Last-Updated: Sat Aug 11 01:09:33 2012 (-0500)
+;; Last-Updated: Sat Aug 11 01:19:15 2012 (-0500)
 ;;           By: Matthew L. Fidler
-;;     Update #: 469
+;;     Update #: 479
 ;; URL: https://github.com/mlf176f2/org-readme
 ;; Keywords: Header2, Readme.org, Emacswiki, Git
 ;; Compatibility: Tested with Emacs 24.1 on Windows.
@@ -55,12 +55,16 @@
 ;;   converted to the emacswiki name by taking out the "-" and ".el" of
 ;;   the library and converting to Camel Case.  For example,
 ;;   org-readme.el would be converted to OrgReadme.
-;; - When the library is a multiple file lisp library, or a library
-;;   without any direct lisp calls, the Readme.org is converted to an
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 11-Aug-2012    Matthew L. Fidler  
+;;    Last-Updated: Sat Aug 11 01:18:42 2012 (-0500) #477 (Matthew L. Fidler)
+;;    Found a bug, let see if tagging works now.
+;; 11-Aug-2012    Matthew L. Fidler  
+;;    Last-Updated: Sat Aug 11 01:17:40 2012 (-0500) #475 (Matthew L. Fidler)
+;;    Added Git tagging of new versions.  Lets see if it works.
 ;; 11-Aug-2012    Matthew L. Fidler  
 ;;    Last-Updated: Sat Aug 11 01:08:21 2012 (-0500) #467 (Matthew L. Fidler)
 ;;    Git push worked.  Bumping minor version.
@@ -196,8 +200,8 @@
         (case-fold-search t))
     (save-excursion
       (goto-char (point-min))
-      (when (re-search-forward "^ *;+ *Version: *\\(.*?\\) *" nil t)
-        (setq ver (match-string 1))))
+      (when (re-search-forward "^ *;+ *Version: *\\(.*?\\) *$" nil t)
+        (setq ver (match-string-no-properties 1))))
     (symbol-value 'ver)))
 
 (defun org-readme-marmalade-post ()
@@ -482,7 +486,13 @@
                 (org-readme-get-change))))
       (delete-file (org-readme-get-change))
       (message "Git push")
-      (shell-command "git push"))))
+      (shell-command "git push")
+      (let ((tags (shell-command-to-string "git tag"))
+            (ver  (org-readme-buffer-version)))
+        (unless (string-match (concat "v" (regexp-quote ver)) tags)
+          (message "Tagging the new version")
+          (shell-command (format "git tag -a %s -m 'version %s'" ver ver))
+          (shell-command "git push --tags"))))))
 
 (defun org-readme-in-readme-org-p ()
   "Determine if the currently open buffer is the Readme.org"
