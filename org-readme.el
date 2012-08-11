@@ -7,9 +7,9 @@
 ;; Created: Fri Aug  3 22:33:41 2012 (-0500)
 ;; Version: 0.18
 ;; Package-Requires: ((http-post-simple "1.0") (yaoddmuse "0.1.1")(header2 "21.0") (lib-requires "21.0"))
-;; Last-Updated: Sat Aug 11 17:05:21 2012 (-0500)
+;; Last-Updated: Sat Aug 11 17:08:10 2012 (-0500)
 ;;           By: Matthew L. Fidler
-;;     Update #: 652
+;;     Update #: 656
 ;; URL: https://github.com/mlf176f2/org-readme
 ;; Keywords: Header2, Readme.org, Emacswiki, Git
 ;; Compatibility: Tested with Emacs 24.1 on Windows.
@@ -66,11 +66,12 @@
 ;; | lib-requires     | To generate the library dependencies |
 ;; |------------------+--------------------------------------|
 ;; 
-;; This section has been deleted previously
-;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 11-Aug-2012    Matthew L. Fidler  
+;;    Last-Updated: Sat Aug 11 17:07:22 2012 (-0500) #654 (Matthew L. Fidler)
+;;    Bug fix for org-readme version tagging.
 ;; 11-Aug-2012    Matthew L. Fidler  
 ;;    Last-Updated: Sat Aug 11 17:03:26 2012 (-0500) #650 (Matthew L. Fidler)
 ;;    Test the bug where some of the section text is deleted 
@@ -775,7 +776,7 @@ Returns file name if created."
       (when el-get
         (message "Adding El-Get recipe")
         (shell-command
-         (format "git add el-get/%s"
+         (format "git add el-get/%s"    
                  (file-name-nondirectory el-get)))))
     
     (message "Git Adding Readme")
@@ -803,12 +804,12 @@ Returns file name if created."
       (shell-command "git push")
       (let ((tags (shell-command-to-string "git tag"))
             (ver  (org-readme-buffer-version)))
-        (message "Tags: %s\n%s" tags ver)
-        (unless (string-match (concat "v" (regexp-quote ver)) tags)
-          (message "Tagging the new version")
-          (message "git tag -a v%s -m \"version %s\"" ver ver)
-          (shell-command (format "git tag -a v%s -m \"version %s\"" ver ver))
-          (shell-command "git push --tags"))))))
+        (when ver
+          (unless (string-match (concat "v" (regexp-quote ver)) tags)
+            (message "Tagging the new version")
+            (message "git tag -a v%s -m \"version %s\"" ver ver)
+            (shell-command (format "git tag -a v%s -m \"version %s\"" ver ver))
+            (shell-command "git push --tags")))))))
 
 (defun org-readme-in-readme-org-p ()
   "Determine if the currently open buffer is the Readme.org"
@@ -879,17 +880,17 @@ When COMMENT-ADDED is non-nil, the comment has been added and the syncing should
         (message "Posting lisp file to emacswiki")
         (emacswiki-post nil ""))
       
-      (when org-readme-edit-last-window-configuration
-        (set-window-configuration org-readme-edit-last-window-configuration)
-        (setq org-readme-edit-last-window-configuration nil))
-      
       (when org-readme-sync-git
         (org-readme-git))
-      
+
       (when (and (featurep 'yaoddmuse)
                  org-readme-sync-emacswiki)
         (message "Posting Description to emacswiki")
-        (org-readme-convert-to-emacswiki)))))
+        (org-readme-convert-to-emacswiki))
+      
+      (when org-readme-edit-last-window-configuration
+        (set-window-configuration org-readme-edit-last-window-configuration)
+        (setq org-readme-edit-last-window-configuration nil)))))
 
 ;;;###autoload
 (defun org-readme-to-commentary ()
