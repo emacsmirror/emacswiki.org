@@ -5,11 +5,11 @@
 ;; Author: Matthew L. Fidler
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Fri Aug  3 22:33:41 2012 (-0500)
-;; Version: 0.02
+;; Version: 0.03
 ;; Package-Requires: ((http-post-simple "1.0") (yaoddmuse "0.1.1"))
-;; Last-Updated: Sat Aug 11 00:22:47 2012 (-0500)
+;; Last-Updated: Sat Aug 11 00:27:37 2012 (-0500)
 ;;           By: Matthew L. Fidler
-;;     Update #: 415
+;;     Update #: 422
 ;; URL: https://github.com/mlf176f2/org-readme
 ;; Keywords: Header2, Readme.org, Emacswiki, Git
 ;; Compatibility: Tested with Emacs 24.1 on Windows.
@@ -64,6 +64,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 11-Aug-2012    Matthew L. Fidler  
+;;    Last-Updated: Sat Aug 11 00:26:36 2012 (-0500) #420 (Matthew L. Fidler)
+;;    Bug fix to upload to emacswiki and upload to marmalade-repo
 ;; 11-Aug-2012    Matthew L. Fidler  
 ;;    Last-Updated: Sat Aug 11 00:21:27 2012 (-0500) #413 (Matthew L. Fidler)
 ;;    Added marmalade-repo support.  Now org-readme should upload to
@@ -487,13 +490,14 @@ When COMMENT-ADDED is non-nil, the comment has been added and the syncing should
       (org-readme-changelog-to-readme)
       (org-readme-top-header-to-readme)
       (save-buffer)
-      (when org-readme-edit-last-window-configuration
-        (set-window-configuration org-readme-edit-last-window-configuration)
-        (setq org-readme-edit-last-window-configuration nil))
       (message "Attempting to post to marmalade-repo.org")
       (org-readme-marmlade-post)
       (message "Posting lisp file to emacswiki")
       (emacswiki-post nil "")
+      (when org-readme-edit-last-window-configuration
+        (set-window-configuration org-readme-edit-last-window-configuration)
+        (setq org-readme-edit-last-window-configuration nil))
+      
       (org-readme-git)
       (message "Posting Description to emacswiki")
       (org-readme-convert-to-emacswiki))))
