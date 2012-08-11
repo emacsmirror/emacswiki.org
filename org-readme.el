@@ -5,11 +5,11 @@
 ;; Author: Matthew L. Fidler
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Fri Aug  3 22:33:41 2012 (-0500)
-;; Version: 0.15
+;; Version: 0.16
 ;; Package-Requires: ((http-post-simple "1.0") (yaoddmuse "0.1.1")(header2 "21.0") (lib-requires "21.0"))
-;; Last-Updated: Sat Aug 11 16:29:48 2012 (-0500)
+;; Last-Updated: Sat Aug 11 16:31:49 2012 (-0500)
 ;;           By: Matthew L. Fidler
-;;     Update #: 635
+;;     Update #: 639
 ;; URL: https://github.com/mlf176f2/org-readme
 ;; Keywords: Header2, Readme.org, Emacswiki, Git
 ;; Compatibility: Tested with Emacs 24.1 on Windows.
@@ -61,11 +61,13 @@
 ;; | http-post-simple | Publishing to marmalade-repo.org              |
 ;; | header2          | To Create the required header                 |
 ;; | lib-requires     | To generate the possible library dependencies |
-;; |------------------+-----------------------------------------------|
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 11-Aug-2012    Matthew L. Fidler  
+;;    Last-Updated: Sat Aug 11 16:31:18 2012 (-0500) #637 (Matthew L. Fidler)
+;;    Bug fix for el-get recipe.
 ;; 11-Aug-2012    Matthew L. Fidler  
 ;;    Last-Updated: Sat Aug 11 16:28:45 2012 (-0500) #633 (Matthew L. Fidler)
 ;;    Added the ability to create a markdown Readme (Readme.md) as well as
@@ -78,10 +80,10 @@
 ;;    Bug fix for adding melpa recipes. 
 ;; 11-Aug-2012    Matthew L. Fidler  
 ;;    Last-Updated: Sat Aug 11 11:19:36 2012 (-0500) #524 (Matthew L. Fidler)
-;;    Bug fix for creating melpa recipie.
+;;    Bug fix for creating melpa recipe.
 ;; 11-Aug-2012    Matthew L. Fidler  
 ;;    Last-Updated: Sat Aug 11 11:16:46 2012 (-0500) #521 (Matthew L. Fidler)
-;;    Added ability to add melpa recipie
+;;    Added ability to add melpa recipe
 ;; 11-Aug-2012    Matthew L. Fidler  
 ;;    Last-Updated: Sat Aug 11 07:12:35 2012 (-0500) #492 (Matthew L. Fidler)
 ;;    Bug fix for pushing tags to a git repository
@@ -239,8 +241,13 @@
   :type 'boolean
   :group 'org-readme)
 
-(defcustom org-readme-build-melpa-recipie t
+(defcustom org-readme-build-melpa-recipe t
   "Builds a mepla recipe based on github information"
+  :type 'boolean
+  :group 'org-readme)
+
+(defcustom org-readme-build-el-get-recipe t
+  "Builds a el-get recipe based on github information"
   :type 'boolean
   :group 'org-readme)
 
@@ -732,7 +739,7 @@ Returns file name if created."
   (let* ((df (file-name-directory (buffer-file-name)))
          (default-directory df)
          melpa el-get)
-    (when org-readme-build-melpa-recipie
+    (when org-readme-build-melpa-recipe
       (setq melpa (org-readme-build-melpa))
       (when melpa
         (message "Adding Melpa recipe")
@@ -740,7 +747,7 @@ Returns file name if created."
          (format "git add melpa/%s"
                  (file-name-nondirectory melpa)))))
     
-    (when org-readme-build-el-get-recipie
+    (when org-readme-build-el-get-recipe
       (setq el-get (org-readme-build-el-get))
       (when el-get
         (message "Adding El-Get recipe")
