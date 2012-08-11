@@ -5,11 +5,11 @@
 ;; Author: Matthew L. Fidler
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Fri Aug  3 22:33:41 2012 (-0500)
-;; Version: 0.04
+;; Version: 0.05
 ;; Package-Requires: ((http-post-simple "1.0") (yaoddmuse "0.1.1"))
-;; Last-Updated: Sat Aug 11 00:39:42 2012 (-0500)
+;; Last-Updated: Sat Aug 11 00:44:40 2012 (-0500)
 ;;           By: Matthew L. Fidler
-;;     Update #: 432
+;;     Update #: 436
 ;; URL: https://github.com/mlf176f2/org-readme
 ;; Keywords: Header2, Readme.org, Emacswiki, Git
 ;; Compatibility: Tested with Emacs 24.1 on Windows.
@@ -64,6 +64,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 11-Aug-2012    Matthew L. Fidler  
+;;    Last-Updated: Sat Aug 11 00:44:17 2012 (-0500) #434 (Matthew L. Fidler)
+;;    Bug fix for syncing readme.  Now the returns should not be as prevalent.
 ;; 11-Aug-2012    Matthew L. Fidler  
 ;;    Last-Updated: Sat Aug 11 00:39:23 2012 (-0500) #430 (Matthew L. Fidler)
 ;;    Attempting to post to marmlade again...
@@ -641,7 +644,9 @@ When AT-BEGINNING is non-nil, if the section is not found, insert it at the begi
           (progn
             (setq mtch (match-string 1))
             (delete-region
-             (match-beginning 0)
+             (save-excursion
+               (goto-char (match-beginning 0))
+               (skip-chars-backward " \t\n"))
              (if (re-search-forward (format "^%s +" (regexp-quote mtch)) nil t)
                  (progn
                    (- (match-beginning 0) 1))
