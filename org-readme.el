@@ -5,11 +5,11 @@
 ;; Author: Matthew L. Fidler
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Fri Aug  3 22:33:41 2012 (-0500)
-;; Version: 0.03
+;; Version: 0.04
 ;; Package-Requires: ((http-post-simple "1.0") (yaoddmuse "0.1.1"))
-;; Last-Updated: Sat Aug 11 00:36:47 2012 (-0500)
+;; Last-Updated: Sat Aug 11 00:39:42 2012 (-0500)
 ;;           By: Matthew L. Fidler
-;;     Update #: 428
+;;     Update #: 432
 ;; URL: https://github.com/mlf176f2/org-readme
 ;; Keywords: Header2, Readme.org, Emacswiki, Git
 ;; Compatibility: Tested with Emacs 24.1 on Windows.
@@ -64,6 +64,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 11-Aug-2012    Matthew L. Fidler  
+;;    Last-Updated: Sat Aug 11 00:39:23 2012 (-0500) #430 (Matthew L. Fidler)
+;;    Attempting to post to marmlade again...
 ;; 11-Aug-2012    Matthew L. Fidler  
 ;;    Last-Updated: Sat Aug 11 00:35:40 2012 (-0500) #426 (Matthew L. Fidler)
 ;;    Attempting to fix org-readme-marmalade-post.
@@ -175,8 +178,8 @@
          (b-ver (org-readme-buffer-version))
          token
          resp)
-    (message "Marmalade Version: %s, Buffer Version: %s"
-             m-ver b-ver)
+    (message "Marmalade %s Version: %s, Buffer Version: %s"
+             package m-ver b-ver)
     (when (or (not m-ver) (not (string= m-ver b-ver)))
       (message "Should post %s, the marmalade package is outdated or does not exist."
                package)
