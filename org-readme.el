@@ -5,11 +5,11 @@
 ;; Author: Matthew L. Fidler
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Fri Aug  3 22:33:41 2012 (-0500)
-;; Version: 0.17
+;; Version: 0.18
 ;; Package-Requires: ((http-post-simple "1.0") (yaoddmuse "0.1.1")(header2 "21.0") (lib-requires "21.0"))
-;; Last-Updated: Sat Aug 11 16:43:44 2012 (-0500)
+;; Last-Updated: Sat Aug 11 16:46:03 2012 (-0500)
 ;;           By: Matthew L. Fidler
-;;     Update #: 644
+;;     Update #: 647
 ;; URL: https://github.com/mlf176f2/org-readme
 ;; Keywords: Header2, Readme.org, Emacswiki, Git
 ;; Compatibility: Tested with Emacs 24.1 on Windows.
@@ -59,11 +59,13 @@
 ;; |------------------+-----------------------------------------------|
 ;; | yaoddmuse        | Publishing to emacswiki                       |
 ;; | http-post-simple | Publishing to marmalade-repo.org              |
-;; | header2          | To Create the required header                 |
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 11-Aug-2012    Matthew L. Fidler  
+;;    Last-Updated: Sat Aug 11 16:45:19 2012 (-0500) #645 (Matthew L. Fidler)
+;;    One last bug fix to the markdown export engine.
 ;; 11-Aug-2012    Matthew L. Fidler  
 ;;    Last-Updated: Sat Aug 11 16:42:41 2012 (-0500) #642 (Matthew L. Fidler)
 ;;    Markdown bug fix
@@ -534,7 +536,7 @@ Returns file name if created."
       ;; Replace file links.
       (goto-char (point-min))
       (while (re-search-forward "\\[\\[file:\\(.*?[.]el\\)\\]\\[\\1\\]\\]" nil t)
-        (replace-match "<\\1>"))
+        (replace-match "\\1"))
       
       ;; Underline _ul_ to <ul>ul</ul>
       (goto-char (point-min))
