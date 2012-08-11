@@ -7,9 +7,9 @@
 ;; Created: Fri Aug  3 22:33:41 2012 (-0500)
 ;; Version: 0.7
 ;; Package-Requires: ((http-post-simple "1.0") (yaoddmuse "0.1.1")(header2 "21.0") (lib-requires "21.0"))
-;; Last-Updated: Sat Aug 11 01:02:40 2012 (-0500)
+;; Last-Updated: Sat Aug 11 01:05:48 2012 (-0500)
 ;;           By: Matthew L. Fidler
-;;     Update #: 459
+;;     Update #: 463
 ;; URL: https://github.com/mlf176f2/org-readme
 ;; Keywords: Header2, Readme.org, Emacswiki, Git
 ;; Compatibility: Tested with Emacs 24.1 on Windows.
@@ -59,11 +59,13 @@
 ;;   without any direct lisp calls, the Readme.org is converted to an
 ;;   appropriate EmacsWiki documentation file by the Parent Directory of
 ;;   the `Readme.org'.  For example, =EmacsPortable.App" is converted to
-;;   EmacsPortableApp
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 11-Aug-2012    Matthew L. Fidler  
+;;    Last-Updated: Sat Aug 11 01:03:15 2012 (-0500) #461 (Matthew L. Fidler)
+;;    Attempt to push with git.  Something changed.
 ;; 11-Aug-2012    Matthew L. Fidler  
 ;;    Last-Updated: Sat Aug 11 01:02:04 2012 (-0500) #457 (Matthew L. Fidler)
 ;;    Added better Package-Requires tag.
@@ -475,8 +477,8 @@
                (file-name-nondirectory
                 (org-readme-get-change))))
       (delete-file (org-readme-get-change))
-      (message "Git push upstream")
-      (shell-command "git push upstream"))))
+      (message "Git push matching")
+      (shell-command "git push matching"))))
 
 (defun org-readme-in-readme-org-p ()
   "Determine if the currently open buffer is the Readme.org"
