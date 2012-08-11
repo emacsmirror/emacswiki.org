@@ -5,11 +5,11 @@
 ;; Author: Matthew L. Fidler
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Fri Aug  3 22:33:41 2012 (-0500)
-;; Version: 0.9
+;; Version: 0.10
 ;; Package-Requires: ((http-post-simple "1.0") (yaoddmuse "0.1.1")(header2 "21.0") (lib-requires "21.0"))
-;; Last-Updated: Sat Aug 11 01:19:15 2012 (-0500)
+;; Last-Updated: Sat Aug 11 01:21:43 2012 (-0500)
 ;;           By: Matthew L. Fidler
-;;     Update #: 479
+;;     Update #: 482
 ;; URL: https://github.com/mlf176f2/org-readme
 ;; Keywords: Header2, Readme.org, Emacswiki, Git
 ;; Compatibility: Tested with Emacs 24.1 on Windows.
@@ -54,11 +54,13 @@
 ;; - When the library is a single lisp function, the single lisp file is
 ;;   converted to the emacswiki name by taking out the "-" and ".el" of
 ;;   the library and converting to Camel Case.  For example,
-;;   org-readme.el would be converted to OrgReadme.
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 11-Aug-2012    Matthew L. Fidler  
+;;    Last-Updated: Sat Aug 11 01:21:02 2012 (-0500) #480 (Matthew L. Fidler)
+;;    Another fix for git tags.
 ;; 11-Aug-2012    Matthew L. Fidler  
 ;;    Last-Updated: Sat Aug 11 01:18:42 2012 (-0500) #477 (Matthew L. Fidler)
 ;;    Found a bug, let see if tagging works now.
@@ -491,7 +493,7 @@
             (ver  (org-readme-buffer-version)))
         (unless (string-match (concat "v" (regexp-quote ver)) tags)
           (message "Tagging the new version")
-          (shell-command (format "git tag -a %s -m 'version %s'" ver ver))
+          (shell-command (format "git tag -a v%s -m 'version %s'" ver ver))
           (shell-command "git push --tags"))))))
 
 (defun org-readme-in-readme-org-p ()
