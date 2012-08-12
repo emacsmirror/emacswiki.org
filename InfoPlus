@@ -2,7 +2,17 @@ DrewAdams has written library <tt>[[info+.el]]</tt> ('''info+'''), which extends
 
 '''[::Info+]''' provides:
 
-* '''''NEW''''' --- Breadcrumbs in the [[mode line]]. See where you are in the Info hierarchy, and access higher nodes directly. Turned on by default. See `##Toggle Breadcrumbs##' in `mouse-3' mode-line menu and `##Toggle Breadcrumbs in Mode Line##' in `Info' menu (e.g. in the minor-mode indicator). You can customize [[option]] '''`Info-breadcrumbs-in-mode-line-mode'''' if you want to turn it off by default. (Available for Emacs 23+ only.)
+* Additional, finer-grained highlighting.  This makes a '''''big''''' difference in readability.
+** Quoted names, like this: `name-stands-out', and strings, like this: "<code>string-stands-out</code>" are highlighted if '''`Info-fontify-quotations-flag'''' is non-`nil'.
+** Isolated single quotes, like this: ##'foobar##, are highlighted if '''`Info-fontify-single-quote-flag'''' and `Info-fontify-quotations-flag' are non-`nil'.
+** In the Emacs Lisp manual, reference items are highlighted, so they stand out.  This means: constants, [[command]]s, functions, [[macro]]s, special forms, syntax classes, [[user option]]s, and other [[variable]]s.
+
+:: Here is a screenshot of the <code>*Info*</code> buffer, showing some of the highlighting:
+
+:: [[image:DrewsEmacsInfoImage]]
+
+
+* Breadcrumbs in the [[mode line]]. See where you are in the Info hierarchy, and access higher nodes directly. Turned on by default. See `##Toggle Breadcrumbs##' in `mouse-3' mode-line menu and `##Toggle Breadcrumbs in Mode Line##' in `Info' menu (e.g. in the minor-mode indicator). You can customize [[option]] '''`Info-breadcrumbs-in-mode-line-mode'''' if you want to turn it off by default. (Available for Emacs 23+ only.)
 
 * Breadcrumbs in the header (just below the header line). This was added to vanilla Emacs 23. Turned off by default. See `##Toggle Breadcrumbs in Header Line##' in `Info' menu. Be aware that unlike breadcrumbs in the mode line, this can occasionally throw off the destination accuracy of cross references and searches slightly. (Available for Emacs 22+ only.)
 
@@ -10,17 +20,6 @@ DrewAdams has written library <tt>[[info+.el]]</tt> ('''info+'''), which extends
 * Improved standard commands.  For example:
 ** `info-display-manual': Completion for manual name.
 ** `Info-goto-emacs-key-command-node': If the key's [[command]] is not found, then it searches for the KeySequence in the text.
-
-* Additional, finer-grained highlighting, with new faces:
-** Quoted names, like this: `name-stands-out', and strings, like this: "<code>string-stands-out</code>" are highlighted if '''`Info-fontify-quotations-flag'''' is non-`nil'.
-** Isolated single quotes, like this: ##'foobar##, are highlighted if '''`Info-fontify-single-quote-flag'''' and `Info-fontify-quotations-flag' are non-`nil'.
-** In the Emacs Lisp manual, reference items are highlighted, so they stand out.
-** In Emacs 20, file names, info node names, cross-reference notes, and menu items are also fontified (this is standard in Emacs 21).
-
-:: Here is a screenshot of the <code>*Info*</code> buffer, showing the highlighting:
-
-:: [[image:DrewsEmacsInfoImage]]
-
 
 * Syntax table that respects EmacsLisp: apostrophe ('''##'##''') and non-breaking space have ''punctuation'' syntax, not ''word'' syntax.  So for example, you can easily use `C-s C-w' to select text between ##`##...##'## without also grabbing the ##'## at the end. (I reported this as Emacs bug [[http://emacsbugs.donarmstrong.com/cgi-bin/bugreport.cgi?bug=3312|#3312]], but so far it hasn't been fixed.)
 
