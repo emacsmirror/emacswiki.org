@@ -131,7 +131,62 @@ For example, with Emacs 24, the map that should contain `C-x m' as `icicle-bookm
 
 As with all problems where you have no idea what the culprit is, bisect your [[init file]], by commenting out half of it.  Then bisect the problematic half, then the problematic quarter,...  This binary search is very quick.  You will locate the problem in no time. -- DrewAdams
 
+[new]
+Thanks for the quick response.  Sorry for leaving out even basic version info: I'm using the Emacs on Ubuntu Precise 12.04: GNU Emacs 23.3.1 (x86_64-pc-linux-gnu, GTK+ Version 2.24.10), and the icicles package in precise: 23.0+20110910-1, and the bookmark+ version from quodlibetor/bookmarkplus-github
+ https://github.com/quodlibetor/bookmarkplus-github/.  
 
+And thanks again for all this cool code!  Though I'll chime in with the frustration that you don't use or endorse any effective version control or version numbering or packaging scheme for all this code.  It pains me to follow the instructions here, but here goes for the 'version' I'm using:
+<pre>
+$ grep 'Update #' *
+col-highlight.el:;;     Update #: 320
+crosshairs.el:;;     Update #: 404
+hexrgb.el:;;     Update #: 782
+hl-line+.el:;;     Update #: 434
+icicles-chg.el:;;     Update #: 7120
+icicles-cmd1.el:;;     Update #: 22215
+icicles-cmd1.el:Each Icicles file has a header `Update #' that you can use to identify it.\
+Binary file icicles-cmd1.elc matches
+icicles-cmd2.el:;;     Update #: 4206
+icicles-doc1.el:;;     Update #: 26186
+icicles-doc2.el:;;     Update #: 28228
+icicles.el:;;     Update #: 22978
+icicles-face.el:;;     Update #: 574
+icicles-fn.el:;;     Update #: 12563
+icicles-mac.el:;;     Update #: 813
+icicles-mcmd.el:;;     Update #: 17246
+icicles-mode.el:;;     Update #: 7595
+icicles-opt.el:;;     Update #: 4465
+icicles-var.el:;;     Update #: 1538
+icomplete+.el:;;     Update #: 931
+lacarte.el:;;     Update #: 638
+
+
+bookmark+-1.el:;;     Update #: 5539
+bookmark+-1.el:Be sure to mention the `Update #' from header of the particular Bookmark+ file header.\
+bookmark+-bmu.el:;;     Update #: 2047
+bookmark+-chg.el:;;     Update #: 14933
+bookmark+-doc.el:;;     Update #: 14564
+bookmark+.el:;;     Update #: 14985
+bookmark+-key.el:;;     Update #: 564
+bookmark+-lit.el:;;     Update #: 779
+bookmark+-mac.el:;;     Update #: 97
+</pre>
+
+Upon further searching, I find that it is different than the one at https://github.com/emacsmirror/bookmark-plus.  Sigh.
+
+I had found that minibuffer-local-filename-completion-map keymap, and it looks much like you say:
+
+<pre>
+ (24 keymap
+     (109)
+     (77)
+     (116 . icicle-cycle-image-file-thumbnail)
+     (46 . icicle-dispatch-C-x\.)
+     keymap
+     (6 . icicle-resolve-file-name))
+</pre>
+
+I was puzzled about why there was no function bound in "(109)".  At any rate, it looks the same both with and without my .emacs, but one works and the other doesn't, which just increased my confusion factor.  A bit of flipping thru the info pages on keymap didn't help.  What's going on?  And how can I just set it to the right thing, ignoring whatever is going on in my .emacs?
 
 
 
