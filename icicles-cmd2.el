@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Mon Aug  6 08:40:30 2012 (-0700)
+;; Last-Updated: Sun Aug 12 14:57:12 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5739
+;;     Update #: 5741
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1002,6 +1002,7 @@ used with `C-u', with Icicle mode turned off)."
           (setq color  (hexrgb-read-color nil 'CONVERT-TO-RGB)) ; input any valid RGB string.
 
         ;; Complete against name+RGB pairs, but user can enter invalid value without completing.
+        (when arg (setq arg  (prefix-numeric-value arg))) ; Convert `-' to -1.
         (let ((icicle-list-use-nth-parts
                (or (and arg (if (< arg 2) '(1) '(2))) ; 1 or 2, by program or via `C-1' or `C-2'.
                    icicle-list-use-nth-parts ; Bound externally by program.
