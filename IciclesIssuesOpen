@@ -195,6 +195,11 @@ I was mistaken about what I said about checking minibuffer keymaps.  The reason 
 
 But it seems clear that something in your ##.emacs## is interfering with that binding.  You need to find out what.  As I said, a binary search of your ##.emacs## is surprisingly quick, no matter how much code (e.g. libraries) you use.  - DrewAdams
 
+[new]
+Aha - that's the issue - that it changes dynamically.  I didn't find any good google hits on an efficient process to do bisection on a .emacs, especially given the advice for icicles that we're supposed to load it after loading most of the rest of the .emacs.  So I just gave up on that aspect and fiddled with ##emacs -q .emacs## and eval-region for a while, and ran across the culprit: (ffap-bindings).  
+
+I found where you talk about those issues at http://emacswiki.org/emacs/Icicles_-_Inserting_Text_from_Cursor but 
+I suggest you clarify that dynamic binding in places like http://www.emacswiki.org/emacs/Icicles_-_File-Name_Input as part of the text //Note: In addition to the usual Icicles key bindings, during file-name completion you can use the following keys. (These minibuffer bindings are also available for autofile bookmark commands.)//  Thanks again -- [[nealmcb]]
 
 
 
