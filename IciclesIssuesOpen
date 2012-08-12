@@ -186,7 +186,17 @@ I had found that minibuffer-local-filename-completion-map keymap, and it looks m
      (6 . icicle-resolve-file-name))
 </pre>
 
-I was puzzled about why there was no function bound in "(109)".  At any rate, it looks the same both with and without my .emacs, but one works and the other doesn't, which just increased my confusion factor.  A bit of flipping thru the info pages on keymap didn't help.  What's going on?  And how can I just set it to the right thing, ignoring whatever is going on in my .emacs?
+I was puzzled about why there was no function bound in "(109)".  At any rate, it looks the same both with and without my .emacs, but one works and the other doesn't, which just increased my confusion factor.  A bit of flipping thru the info pages on keymap didn't help.  What's going on?  And how can I just set it to the right thing, ignoring whatever is going on in my .emacs? -- [[nealmcb]]
+
+[new:DrewAdams:2012-08-12 17:25 UTC]
+IIUC, it works OK for you from ##emacs -Q## but not when your ##.emacs## is loaded.  You will need to do what I suggested above, in my last paragraph: recursively bisect your ##.emacs## to find out what part of it is making the difference.  
+
+I was mistaken about what I said about checking minibuffer keymaps.  The reason you (and I) do not see a non-empty binding for 109 is that the binding is in fact created on the fly in '''Icicles''' file-manipulation commands, such as `icicle-file'.  If you are curious, you can do `M-x debug-on-entry icicle-bind-file-candidate-keys' and then step through the debugger to see it bind `C-x m' properly.
+
+But it seems clear that something in your ##.emacs## is interfering with that binding.  You need to find out what.  As I said, a binary search of your ##.emacs## is surprisingly quick, no matter how much code (e.g. libraries) you use.  - DrewAdams
+
+
+
 
 
 
