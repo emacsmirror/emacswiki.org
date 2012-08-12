@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 21.0
-;; Last-Updated: Wed Aug  8 14:41:28 2012 (-0700)
+;; Last-Updated: Sun Aug 12 10:07:47 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1264
+;;     Update #: 1273
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/isearch+.el
 ;; Keywords: help, matching, internal, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -253,9 +253,13 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2012/08/12 dadams
+;;     isearch-edit-string: isearchp-fail-pos -> isearch-fail-pos (typo fix).
 ;; 2012/08/08 dadams
 ;;     Added: isearchp-message-prefix, isearchp-message-suffix.  Use everywhere in place of vanilla.
-;;     isearch-message, isearch-fail-pos: Redefine only for Emacs 22 & 23.  Use vanilla definitions.
+;;     isearch-message, isearch-fail-pos:
+;;       Redefine only for Emacs 22 & 23.  Use vanilla defs (Emacs 24, but with Emacs 22/23 vars).
+;;       Removed isearchp-fail-pos - replaced it with isearch-fail-pos.
 ;;     isearch-message-prefix: Added redefinition for Emacs 24.2+ (changed arglist).
 ;; 2012/02/08 dadams
 ;;     isearchp-remove-duplicates: Redefined to use a hash table.
@@ -855,7 +859,7 @@ If first char entered is \\[isearch-yank-word-or-char], then do word search inst
                    (setq isearch-new-string
                          (read-from-minibuffer
                           (isearchp-message-prefix nil nil isearch-nonincremental)
-                          (cons isearch-string (1+ (isearchp-fail-pos)))
+                          (cons isearch-string (1+ (isearch-fail-pos)))
                           minibuffer-local-isearch-map nil
                           (if isearch-regexp
                               (cons 'regexp-search-ring
