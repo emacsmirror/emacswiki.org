@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 21.0
-;; Last-Updated: Sun Aug 12 10:07:47 2012 (-0700)
+;; Last-Updated: Sun Aug 12 10:17:45 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1273
+;;     Update #: 1275
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/isearch+.el
 ;; Keywords: help, matching, internal, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -254,7 +254,7 @@
 ;;(@* "Change log")
 ;;
 ;; 2012/08/12 dadams
-;;     isearch-edit-string: isearchp-fail-pos -> isearch-fail-pos (typo fix).
+;;     isearch-edit-string: isearchp-fail-pos -> (or (isearch-fail-pos) (length isearch-string)).
 ;; 2012/08/08 dadams
 ;;     Added: isearchp-message-prefix, isearchp-message-suffix.  Use everywhere in place of vanilla.
 ;;     isearch-message, isearch-fail-pos:
@@ -859,7 +859,8 @@ If first char entered is \\[isearch-yank-word-or-char], then do word search inst
                    (setq isearch-new-string
                          (read-from-minibuffer
                           (isearchp-message-prefix nil nil isearch-nonincremental)
-                          (cons isearch-string (1+ (isearch-fail-pos)))
+                          (cons isearch-string (1+ (or (isearch-fail-pos)
+                                                       (length isearch-string))))
                           minibuffer-local-isearch-map nil
                           (if isearch-regexp
                               (cons 'regexp-search-ring
