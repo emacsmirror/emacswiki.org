@@ -121,6 +121,25 @@ Better yet, use this to separate threads (puts space before and after the horizo
 
 </pre>
 
+[new]
+C-x m is normally bound to compose-mail by emacs (in simple.el).  When I use icicles and bookmark+ alone, it works for me as documented here.  But with my normal .emacs, it doesn't: I get a new *mail* buffer.  That's true even when I load both at the very end of my .emacs.  How can I fix this?  E.g. track down where the conflict comes up, or what to add to my .emacs to re-bind it for use with bookmarks?  -- [[nealmcb]]
+
+
+
+
+
+
+
+
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
 
 [:DanColishFileNameCompletion]
 [new:DanColish:2012-07-31 20:00 UTC]
