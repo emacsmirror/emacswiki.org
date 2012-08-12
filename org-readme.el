@@ -5,11 +5,11 @@
 ;; Author: Matthew L. Fidler
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Fri Aug  3 22:33:41 2012 (-0500)
-;; Version: 0.18
+;; Version: 0.19
 ;; Package-Requires: ((http-post-simple "1.0") (yaoddmuse "0.1.1")(header2 "21.0") (lib-requires "21.0"))
-;; Last-Updated: Sat Aug 11 17:18:57 2012 (-0500)
+;; Last-Updated: Sat Aug 11 23:52:15 2012 (-0500)
 ;;           By: Matthew L. Fidler
-;;     Update #: 664
+;;     Update #: 667
 ;; URL: https://github.com/mlf176f2/org-readme
 ;; Keywords: Header2, Readme.org, Emacswiki, Git
 ;; Compatibility: Tested with Emacs 24.1 on Windows.
@@ -22,10 +22,29 @@
 ;; 
 ;;; Commentary: 
 ;; 
+;; * * Library Information
+;;  *org-readme.el* --- Integrates Readme.org and Commentary/Change-logs.
+;; 
+;;  - Filename :: [[file:org-readme.el][org-readme.el]]
+;;  - Description :: Integrate Readme.org and Commentary/Change Logs.
+;;  - Author :: Matthew L. Fidler
+;;  - Maintainer :: Matthew L. Fidler
+;;  - Created :: Fri Aug  3 22:33:41 2012 (-0500)
+;;  - Version :: 0.18
+;;  - Package-Requires :: ((http-post-simple "1.0") (yaoddmuse "0.1.1")(header2 "21.0") (lib-requires "21.0"))
+;;  - Last-Updated :: Sat Aug 11 17:13:51 2012 (-0500)
+;;  -           By :: Matthew L. Fidler
+;;  -     Update 
+;;  - URL :: https://github.com/mlf176f2/org-readme
+;;  - Keywords :: Header2, Readme.org, Emacswiki, Git
+;;  - Compatibility :: Tested with Emacs 24.1 on Windows.
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 11-Aug-2012    Matthew L. Fidler  
+;;    Last-Updated: Sat Aug 11 23:51:30 2012 (-0500) #665 (Matthew L. Fidler)
+;;    Reverted. Still buggy.
 ;; 11-Aug-2012    Matthew L. Fidler  
 ;;    Last-Updated: Sat Aug 11 17:17:44 2012 (-0500) #662 (Matthew L. Fidler)
 ;;    Another attempt at bug fix to remove section.
@@ -995,9 +1014,7 @@ When AT-BEGINNING is non-nil, if the section is not found, insert it at the begi
                (point))
              (if (re-search-forward (format "^%s +" (regexp-quote mtch)) nil t)
                  (progn
-                   (beginning-of-line)
-                   (re-search-backward "\n\\=" nil t)
-                   (point))
+                   (- (match-beginning 0) 1))
                (point-max)))
             (when txt
               (insert txt))
@@ -1006,7 +1023,7 @@ When AT-BEGINNING is non-nil, if the section is not found, insert it at the begi
           (goto-char (if at-beginning
                          (point-min)
                        (point-max)))
-          ;; Skip comments 
+          ;; Skip comments
           (if at-beginning
               (while (re-search-forward "\\=[ \t]*#.*\n" nil t))
             (while (re-search-backward "\n[ \t]*#.*\\=" nil t)))
