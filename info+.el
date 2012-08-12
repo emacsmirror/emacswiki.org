@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 21.1
-;; Last-Updated: Fri Aug 10 13:00:38 2012 (-0700)
+;; Last-Updated: Sun Aug 12 08:22:31 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 4609
+;;     Update #: 4629
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/info+.el
 ;; Keywords: help, docs, internal
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -27,7 +27,7 @@
 ;;
 ;;  Faces defined here:
 ;;
-;;    `info-command-ref-item', `info-file',
+;;    `info-command-ref-item', `info-constant-ref-item', `info-file',
 ;;    `info-function-ref-item',`info-macro-ref-item', `info-menu',
 ;;    `info-node', `info-quoted-name', `info-reference-item',
 ;;    `info-single-quote', `info-special-form-ref-item',
@@ -184,6 +184,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/08/12 dadams
+;;     Added: info-constant-ref-item (face).
+;;     info-fontify-reference-items: Handle constants, using face info-constant-ref-item.
 ;; 2012/08/10 dadams
 ;;     Info-search: Use latest Emacs 24 msg: _end of node_, not _initial node_.
 ;; 2012/08/09 dadams
@@ -674,37 +677,24 @@ Don't forget to mention your Emacs and library versions."))
 
 ;;; Faces for highlighting reference items
 ;;;###autoload
-(defface info-function-ref-item
-    '((((background dark))
-       (:foreground "#4D4DDDDDDDDD" :background "DimGray")) ; ~ cyan
-      (t (:foreground "DarkBlue" :background "LightGray")))
-  "*Face used for \"Function:\" reference items in `info' manual."
-  :group 'Info-Plus :group 'faces)
-;;;###autoload
-(defface info-variable-ref-item
-    '((((background dark))
-       (:foreground "Orange" :background "DimGray"))
-      (t (:foreground "FireBrick" :background "LightGray")))
-  "*Face used for \"Variable:\" reference items in `info' manual."
-  :group 'Info-Plus :group 'faces)
-;;;###autoload
-(defface info-special-form-ref-item
-    '((((background dark))
-       (:foreground "Yellow" :background "DimGray")) ; ~ light green
-      (t (:foreground "DarkMagenta" :background "LightGray")))
-  "*Face used for \"Special Form:\" reference items in `info' manual."
-  :group 'Info-Plus :group 'faces)
-;;;###autoload
 (defface info-command-ref-item
     '((((background dark)) (:foreground "#7474FFFF7474" :background "DimGray")) ; ~ light green
       (t (:foreground "Blue" :background "LightGray")))
   "*Face used for \"Command:\" reference items in `info' manual."
   :group 'Info-Plus :group 'faces)
 ;;;###autoload
-(defface info-user-option-ref-item
-    '((((background dark)) (:foreground "Red" :background "DimGray"))
-      (t (:foreground "Red" :background "LightGray")))
-  "*Face used for \"User Option:\" reference items in `info' manual."
+(defface info-constant-ref-item
+    '((((background dark))
+       (:foreground "DeepPink" :background "DimGray"))
+      (t (:foreground "DeepPink" :background "LightGray")))
+  "*Face used for \"Constant:\" reference items in `info' manual."
+  :group 'Info-Plus :group 'faces)
+;;;###autoload
+(defface info-function-ref-item
+    '((((background dark))
+       (:foreground "#4D4DDDDDDDDD" :background "DimGray")) ; ~ cyan
+      (t (:foreground "DarkBlue" :background "LightGray")))
+  "*Face used for \"Function:\" reference items in `info' manual."
   :group 'Info-Plus :group 'faces)
 ;;;###autoload
 (defface info-macro-ref-item
@@ -714,6 +704,19 @@ Don't forget to mention your Emacs and library versions."))
   "*Face used for \"Macro:\" reference items in `info' manual."
   :group 'Info-Plus :group 'faces)
 ;;;###autoload
+(defface info-reference-item
+    '((((background dark)) (:background "DimGray"))
+      (t (:background "LightGray")))
+  "*Face used for reference items in `info' manual."
+  :group 'Info-Plus :group 'faces)
+;;;###autoload
+(defface info-special-form-ref-item
+    '((((background dark))
+       (:foreground "Yellow" :background "DimGray")) ; ~ light green
+      (t (:foreground "DarkMagenta" :background "LightGray")))
+  "*Face used for \"Special Form:\" reference items in `info' manual."
+  :group 'Info-Plus :group 'faces)
+;;;###autoload
 (defface info-syntax-class-item
     '((((background dark))
        (:foreground "#FFFF9B9BFFFF" :background "DimGray")) ; ~ pink
@@ -721,10 +724,17 @@ Don't forget to mention your Emacs and library versions."))
   "*Face used for \"Syntax Class:\" reference items in `info' manual."
   :group 'Info-Plus :group 'faces)
 ;;;###autoload
-(defface info-reference-item
-    '((((background dark)) (:background "DimGray"))
-      (t (:background "LightGray")))
-  "*Face used for reference items in `info' manual."
+(defface info-user-option-ref-item
+    '((((background dark)) (:foreground "Red" :background "DimGray"))
+      (t (:foreground "Red" :background "LightGray")))
+  "*Face used for \"User Option:\" reference items in `info' manual."
+  :group 'Info-Plus :group 'faces)
+;;;###autoload
+(defface info-variable-ref-item
+    '((((background dark))
+       (:foreground "Orange" :background "DimGray"))
+      (t (:foreground "FireBrick" :background "LightGray")))
+  "*Face used for \"Variable:\" reference items in `info' manual."
   :group 'Info-Plus :group 'faces)
 
 
@@ -2852,7 +2862,7 @@ to search again for `%s'.")
 ;; 2. If `Info-fontify-quotations-flag', fontify `...' in face `info-quoted-name',
 ;;    "..." in face `info-string', and ' in face `info-single-quote'.
 ;;
-(when (and (> emacs-major-version 22) (not (fboundp 'Info-breadcrumbs))) ; Emacs 23.1, not 23.2+
+(when (and (> emacs-major-version 22)  (not (fboundp 'Info-breadcrumbs))) ; Emacs 23.1, not 23.2+
   (defun Info-fontify-node ()
     "Fontify the node."
     (save-excursion
@@ -3219,10 +3229,9 @@ to search again for `%s'.")
 ;; 2. If `Info-fontify-quotations-flag', fontify `...' in face `info-quoted-name',
 ;;    "..." in face `info-string', and ' in face `info-single-quote'.
 ;;
-(when (and (> emacs-major-version 22) (fboundp 'Info-breadcrumbs) ; Emacs 23.2 through 24.1
+(when (and (> emacs-major-version 22)  (fboundp 'Info-breadcrumbs) ; Emacs 23.2 through 24.1
            (or (= emacs-major-version 23)
-               (and (= emacs-major-version 24)
-                    (= emacs-minor-version 1)
+               (and (= emacs-major-version 24) (= emacs-minor-version 1)
                     (not (string-match "^[0-9]+\\.[0-9]+\\.[0-9]+" emacs-version)))))
   (defun Info-fontify-node ()
     "Fontify the node."
@@ -3600,7 +3609,7 @@ to search again for `%s'.")
              paragraph-markers
              (not-fontified-p           ; the node hasn't already been fontified
               (not (let ((where  (next-single-property-change (point-min) 'font-lock-face)))
-                     (and where (not (= where (point-max)))))))
+                     (and where  (not (= where (point-max)))))))
              (fontify-visited-p         ; visited nodes need to be re-fontified
               (and Info-fontify-visited-nodes
                    ;; Don't take time to refontify visited nodes in huge nodes
@@ -4037,23 +4046,22 @@ If ... contains \" or ' then that character must be backslashed.")
 
 (defun info-fontify-reference-items ()
   "Fontify reference items such as \"Function:\" in Info buffer."
-  (while
-      (re-search-forward
-       "^ --? \\(Function:\\|Variable:\\|Special Form:\\|\
-Command:\\|User Option:\\|Macro:\\|Syntax class:\\)\\(.*\\)"
-       nil t)
+  (while (re-search-forward "^ --? \\(Command:\\|Constant:\\|Function:\\|Macro:\\|Special Form:\\|\
+Syntax class:\\|User Option:\\|Variable:\\)\\(.*\\)"
+                            nil t)
     (let ((symb  (intern (match-string 1))))
       (put-text-property (match-beginning 1)
                          (match-end 1)
                          (if (> emacs-major-version 21) 'font-lock-face 'face)
                          (case symb
-                           ('Function:       'info-function-ref-item)
-                           ('Variable:       'info-variable-ref-item)
-                           ('Special\ Form:  'info-special-form-ref-item)
+                           ('Constant:       'info-constant-ref-item)
                            ('Command:        'info-command-ref-item)
-                           ('User\ Option:   'info-user-option-ref-item)
+                           ('Function:       'info-function-ref-item)
                            ('Macro:          'info-macro-ref-item)
-                           ('Syntax\ class:  'info-syntax-class-item)))
+                           ('Special\ Form:  'info-special-form-ref-item)
+                           ('Syntax\ class:  'info-syntax-class-item)
+                           ('User\ Option:   'info-user-option-ref-item)
+                           ('Variable:       'info-variable-ref-item)))
       (put-text-property (match-beginning 2) (match-end 2)
                          (if (> emacs-major-version 21) 'font-lock-face 'face)
                          'info-reference-item))))
