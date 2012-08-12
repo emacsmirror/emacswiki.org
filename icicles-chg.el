@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Aug 10 11:36:42 2012 (-0700)
+;; Last-Updated: Sun Aug 12 14:58:59 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8784
+;;     Update #: 8785
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -680,6 +680,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2012/08/12 dadams
+;;     icicle-read-color-WYSIWYG: Convert raw prefix arg `-' to -1.
 ;; 2012/08/06 dadams
 ;;     Renamed old-* to icicle-ORIG-*:
 ;;       icicle-ORIG-color, icicle-ORIG-read-color, icicle-ORIG-widget-color-complete.
