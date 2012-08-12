@@ -335,6 +335,12 @@ original `default-directory' is restored.
 
 * [[Icicles - Completion On Demand]] for information about on-demand insertion of file names, using completion, from any minibuffer
 
+== Discussion ==
+
+----
+[new]
+C-x m is normally bound to compose-mail by emacs (in simple.el).  When I use icicles and bookmark+ alone, it works for me as documented here.  But with my normal .emacs, it doesn't: I get a new *mail* buffer.  That's true even when I load both at the very end of my .emacs.  How can I fix this?  E.g. track down where the conflict comes up, or what to add to my .emacs to re-bind it for use with bookmarks?  --nealmcb
+
 ----
 
 
@@ -351,7 +357,6 @@ CategoryDirectories
 CategoryFiles
 CategoryProgrammerUtils
 CategoryCode
-
 
 
 
