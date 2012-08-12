@@ -7,12 +7,12 @@
 ;; Copyright (C) 2006-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Jun 23 08:07:15 2006
 ;; Version: 20
-;; Last-Updated: Fri Jan  6 08:54:14 2012 (-0800)
+;; Last-Updated: Sun Aug 12 14:47:46 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 170
+;;     Update #: 173
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/eyedropper.el
 ;; Keywords: color, rgb, hsv, hexadecimal, face, frame
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
 ;; 
 ;; Features that might be required by this library:
 ;;
@@ -82,6 +82,8 @@
 ;; 
 ;;; Change Log:
 ;;
+;; 2012/08/12 dadams
+;;     eyedrop-(background|foreground)-at-mouse: Ignore a switch-frame event.
 ;; 2011/01/04 dadams
 ;;     Added autoload cookies for commands.
 ;; 2007/10/11 dadams
@@ -158,6 +160,9 @@ Non-nil optional arg MSG-P means display an informative message."
   (interactive "e\np")
   ;; Emacs bug on Windows: Get extra, pending <C-drag-mouse-2> event, so discard it.
   (while (input-pending-p) (discard-input))
+  ;; Ignore `switch-frame' events.
+  (when (and (consp event)  (eq (event-basic-type (car event)) 'switch-frame))
+    (setq event  (read-event)))
   (set-buffer (window-buffer (posn-window (event-end event))))
   (mouse-set-point event)
   (let ((bg (eyedrop-background-at-point)))
@@ -171,6 +176,9 @@ Non-nil optional arg MSG-P means display an informative message."
   (interactive "e\np")
   ;; Emacs bug on Windows: Get extra, pending <C-drag-mouse-2> event, so discard it.
   (while (input-pending-p) (discard-input))
+  ;; Ignore `switch-frame' events.
+  (when (and (consp event)  (eq (event-basic-type (car event)) 'switch-frame))
+    (setq event  (read-event)))
   (set-buffer (window-buffer (posn-window (event-end event))))
   (mouse-set-point event)
   (let ((fg (eyedrop-foreground-at-point)))
