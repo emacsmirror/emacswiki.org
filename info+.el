@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 21.1
-;; Last-Updated: Sun Aug 12 08:22:31 2012 (-0700)
+;; Last-Updated: Sun Aug 12 08:51:09 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 4629
+;;     Update #: 4636
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/info+.el
 ;; Keywords: help, docs, internal
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -187,6 +187,7 @@
 ;; 2012/08/12 dadams
 ;;     Added: info-constant-ref-item (face).
 ;;     info-fontify-reference-items: Handle constants, using face info-constant-ref-item.
+;;     Info-toggle-breadcrumbs-in-header-line, Info-save-current-node: Added MSGP arg.
 ;; 2012/08/10 dadams
 ;;     Info-search: Use latest Emacs 24 msg: _end of node_, not _initial node_.
 ;; 2012/08/09 dadams
@@ -940,10 +941,12 @@ For example, type `^Q^L^Q^J* ' to set this to \"\\f\\n* \"."
    "Quit Info"))
 
 (when (> emacs-major-version 22)
-  (defun Info-toggle-breadcrumbs-in-header-line ()
+  (defun Info-toggle-breadcrumbs-in-header-line (&optional msgp)
     "Toggle showing breadcrumbs in a header line."
-    (interactive)
-    (setq Info-breadcrumbs-in-header-flag  (not Info-breadcrumbs-in-header-flag))))
+    (interactive "p")
+    (setq Info-breadcrumbs-in-header-flag  (not Info-breadcrumbs-in-header-flag))
+    (when msgp (message "Breadcrumbs in header line is now %s"
+                        (if Info-breadcrumbs-in-header-flag "ON" "OFF")))))
 
 (easy-menu-define
  Info-merged-menu
@@ -3985,8 +3988,9 @@ Change the default behavior by customizing option
 
 (when (> emacs-major-version 22)
   (defun Info-set-breadcrumbs-depth ()
-    "Set current breadcrumbs depth to a value read from user.
-Update breadcrumbs display in mode line accordingly."
+    "Set current breadcrumbs depth.
+Update breadcrumbs display in mode line accordingly.
+You are prompted for the depth value."
     (interactive)
     (setq Info-breadcrumbs-depth-internal  (read-number "New breadcrumbs depth: "
                                                         Info-breadcrumbs-depth-internal))
@@ -5242,15 +5246,15 @@ argument says to include Info nodes recorded as bookmarks."
     (Info-find-node 'toc "Top")))
 
 (when (> emacs-major-version 21)
-  (defun Info-save-current-node ()
+  (defun Info-save-current-node (&optional msgp)
     "Save name of current Info node to list `Info-saved-nodes'."
-    (interactive)
+    (interactive "p")
     (unless (eq major-mode 'Info-mode) (error "You must be in Info to use this command"))
     (unless Info-current-node (error "No current Info node"))
     (unless Info-current-file (error "No Info file"))
     (add-to-list 'Info-saved-nodes (concat "(" (file-name-nondirectory Info-current-file) ")"
                                            Info-current-node))
-    (when (interactive-p) (message (format "Node `%s' saved" Info-current-node)))))
+    (when msgp (message (format "Node `%s' saved" Info-current-node)))))
 
 
 ;; Note: This is not super-clean code (it's kind of a hack job).
