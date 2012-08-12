@@ -198,9 +198,18 @@ But it seems clear that something in your ##.emacs## is interfering with that bi
 [new]
 Aha - that's the issue - that it changes dynamically.  I didn't find any good google hits on an efficient process to do bisection on a .emacs, especially given the advice for icicles that we're supposed to load it after loading most of the rest of the .emacs.  So I just gave up on that aspect and fiddled with ##emacs -q .emacs## and eval-region for a while, and ran across the culprit: (ffap-bindings).  
 
-I found where you talk about those issues at http://emacswiki.org/emacs/Icicles_-_Inserting_Text_from_Cursor but 
-I suggest you clarify that dynamic binding in places like http://www.emacswiki.org/emacs/Icicles_-_File-Name_Input as part of the text //Note: In addition to the usual Icicles key bindings, during file-name completion you can use the following keys. (These minibuffer bindings are also available for autofile bookmark commands.)//  Thanks again -- [[nealmcb]]
+I found where you talk about those issues at [[Icicles - Inserting Text from Cursor]] but 
+I suggest you clarify that dynamic binding in places like [[Icicles - File-Name Input]] as part of the text //Note: In addition to the usual Icicles key bindings, during file-name completion you can use the following keys. (These minibuffer bindings are also available for autofile bookmark commands.)//  Thanks again -- [[nealmcb]]
 
+
+[new:DrewAdams:2012-08-12 21:08 UTC]
+1. Glad to hear that you found (and presumably solved) your problem.
+
+2. When I recommend recursively bisecting your init file I do not mean that you must bisect literally (exactly 50%) or completely blindly.  The point is to narrow things down in a systematic way, dividing the search domain roughly in half each time.
+
+If you can or must evaluate some particular code each time, IOW, not include it as part of the search space, that's fine.  Use your judgment to determine the space to be searched.  Within that space you can apply the idea of subdivision.  That's all.
+
+3. I don't know what you have in mind wrt "clarify that dynamic binding in places like [[Icicles - File-Name Input]]".  Can you elaborate?  What do you think would be helpful to add? -- DrewAdams
 
 
 
