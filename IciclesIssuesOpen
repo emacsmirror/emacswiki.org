@@ -127,6 +127,8 @@ C-x m is normally bound to compose-mail by emacs (in simple.el).  When I use ici
 [new:DrewAdams:2012-08-12 07:20 UTC]
 Sounds like somehow your ##.emacs## or something it loads is binding `C-x m' in a [[minibuffer]] keymap (which map depends on your Emacs release).
 
+For example, with Emacs 24, the map that should contain `C-x m' as `icicle-bookmark-file-other-window' is `minibuffer-local-filename-completion-map'.  In ''Icicle'' mode, if you do `C-h v' and enter that keymap name then you should see this in the keymap value: ##(24 keymap (97) (109))##.  The 24 is `C-x' and the 109 is `m'.
+
 As with all problems where you have no idea what the culprit is, bisect your [[init file]], by commenting out half of it.  Then bisect the problematic half, then the problematic quarter,...  This binary search is very quick.  You will locate the problem in no time. -- DrewAdams
 
 
