@@ -124,7 +124,10 @@ Better yet, use this to separate threads (puts space before and after the horizo
 [new]
 C-x m is normally bound to compose-mail by emacs (in simple.el).  When I use icicles and bookmark+ alone, it works for me as documented here.  But with my normal .emacs, it doesn't: I get a new *mail* buffer.  That's true even when I load both at the very end of my .emacs.  How can I fix this?  E.g. track down where the conflict comes up, or what to add to my .emacs to re-bind it for use with bookmarks?  -- [[nealmcb]]
 
+[new:DrewAdams:2012-08-12 07:20 UTC]
+Sounds like somehow your ##.emacs## or something it loads is binding `C-x m' in a [[minibuffer]] keymap (which map depends on your Emacs release).
 
+As with all problems where you have no idea what the culprit is, bisect your [[init file]], by commenting out half of it.  Then bisect the problematic half, then the problematic quarter,...  This binary search is very quick.  You will locate the problem in no time. -- DrewAdams
 
 
 
