@@ -5,11 +5,11 @@
 ;; Author: Matthew L. Fidler
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Fri Aug  3 22:33:41 2012 (-0500)
-;; Version: 0.21
+;; Version: 0.22
 ;; Package-Requires: ((http-post-simple "1.0") (yaoddmuse "0.1.1")(header2 "21.0") (lib-requires "21.0"))
-;; Last-Updated: Mon Aug 13 16:54:00 2012 (-0500)
+;; Last-Updated: Mon Aug 13 17:25:06 2012 (-0500)
 ;;           By: Matthew L. Fidler
-;;     Update #: 672
+;;     Update #: 678
 ;; URL: https://github.com/mlf176f2/org-readme
 ;; Keywords: Header2, Readme.org, Emacswiki, Git
 ;; Compatibility: Tested with Emacs 24.1 on Windows.
@@ -69,6 +69,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 13-Aug-2012    Matthew L. Fidler  
+;;    Last-Updated: Mon Aug 13 17:23:40 2012 (-0500) #676 (Matthew L. Fidler)
+;;    Added texinfo output.  Allows native emacs documentation.
 ;; 13-Aug-2012    Matthew L. Fidler  
 ;;    Last-Updated: Mon Aug 13 16:48:37 2012 (-0500) #670 (Matthew L. Fidler)
 ;;    Tried to post behind firewall.  Reattempting.
@@ -288,6 +291,11 @@
 
 (defcustom org-readme-build-markdown t
   "Builds Readme.md from Readme.org"
+  :type 'boolean
+  :group 'org-readme)
+
+(defcustom org-readme-build-texi t
+  "Builds library-name.texi from Readme.org, using Readme.md and pandoc.  Requires `org-readme-build-markdown' to be non-nil as pandoc to be found."
   :type 'boolean
   :group 'org-readme)
 
@@ -803,6 +811,17 @@ Returns file name if created."
     (when (file-exists-p "Readme.md")
       (shell-command
        "git add Readme.md"))
+
+    (when (file-exists-p (concat
+                          (file-name-sans-extension
+                           (file-name-nondirectory (buffer-file-name)))
+                          ".texi"))
+      (shell-command
+       (concat "git add "
+               (concat
+                (file-name-sans-extension
+                 (file-name-nondirectory (buffer-file-name)))
+                ".texi"))))
     
     (message "Git Adding %s" (file-name-nondirectory (buffer-file-name)))
     (shell-command
@@ -884,7 +903,14 @@ When COMMENT-ADDED is non-nil, the comment has been added and the syncing should
       (save-buffer)
       
       (when org-readme-build-markdown 
-        (org-readme-convert-to-markdown))
+        (org-readme-convert-to-markdown)
+        (when org-readme-build-texi
+          (when (executable-find "pandoc")
+            (let ((default-directory (file-name-directory (buffer-file-name))))
+              (shell-command (concat "pandoc Readme.md -s -o "
+                                     (file-name-sans-extension
+                                      (file-name-nondirectory (buffer-file-name)))
+                                     ".texi"))))))
       
       (when (and (featurep 'http-post-simple)
                  org-readme-sync-marmalade)
