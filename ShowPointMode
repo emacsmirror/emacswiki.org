@@ -8,6 +8,15 @@ Please send bug reports and suggestions to [mailto:toby-predictive@dr-qubit.org 
 
 --TobyCubitt
 
+To activate this feature on start-up, add the following statements to your emacs configuration:
+
+ (require 'show-point-mode)
+ (show-point-mode t)
+
+Read the documentation for <tt>require</tt> if you want to recover a little more gracefully when the original elisp file cannot be found.
+
+--RobbieMorrison
+
 ----
 CategoryDisplay
 CategoryModeLine
