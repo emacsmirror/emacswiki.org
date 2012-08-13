@@ -5,11 +5,11 @@
 ;; Author: Matthew L. Fidler
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Fri Aug  3 22:33:41 2012 (-0500)
-;; Version: 0.20
+;; Version: 0.21
 ;; Package-Requires: ((http-post-simple "1.0") (yaoddmuse "0.1.1")(header2 "21.0") (lib-requires "21.0"))
-;; Last-Updated: Mon Aug 13 16:48:37 2012 (-0500)
+;; Last-Updated: Mon Aug 13 16:54:00 2012 (-0500)
 ;;           By: Matthew L. Fidler
-;;     Update #: 670
+;;     Update #: 672
 ;; URL: https://github.com/mlf176f2/org-readme
 ;; Keywords: Header2, Readme.org, Emacswiki, Git
 ;; Compatibility: Tested with Emacs 24.1 on Windows.
@@ -69,6 +69,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 13-Aug-2012    Matthew L. Fidler  
+;;    Last-Updated: Mon Aug 13 16:48:37 2012 (-0500) #670 (Matthew L. Fidler)
+;;    Tried to post behind firewall.  Reattempting.
 ;; 13-Aug-2012    Matthew L. Fidler  
 ;;    Last-Updated: Mon Aug 13 16:44:23 2012 (-0500) #668 (Matthew L. Fidler)
 ;;    Changed the `org-readme-remove-section' to use `org-cut-subtree'.
