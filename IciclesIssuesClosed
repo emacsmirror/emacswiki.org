@@ -80,6 +80,125 @@ Better yet, use this to separate threads (puts space before and after the horizo
 
 </pre>
 
+[new]
+C-x m is normally bound to compose-mail by emacs (in simple.el).  When I use icicles and bookmark+ alone, it works for me as documented here.  But with my normal .emacs, it doesn't: I get a new *mail* buffer.  That's true even when I load both at the very end of my .emacs.  How can I fix this?  E.g. track down where the conflict comes up, or what to add to my .emacs to re-bind it for use with bookmarks?  -- [[NealMcBurnett]]
+
+[new:DrewAdams:2012-08-12 07:20 UTC]
+Sounds like somehow your ##.emacs## or something it loads is binding `C-x m' in a [[minibuffer]] keymap (which map depends on your Emacs release).
+
+For example, with Emacs 24, the map that should contain `C-x m' as `icicle-bookmark-file-other-window' is `minibuffer-local-filename-completion-map'.  In ''Icicle'' mode, if you do `C-h v' and enter that keymap name then you should see this in the keymap value: ##(24 keymap (97) (109))##.  The 24 is `C-x' and the 109 is `m'.
+
+As with all problems where you have no idea what the culprit is, bisect your [[init file]], by commenting out half of it.  Then bisect the problematic half, then the problematic quarter,...  This binary search is very quick.  You will locate the problem in no time. -- DrewAdams
+
+[new]
+Thanks for the quick response.  Sorry for leaving out even basic version info: I'm using the Emacs on Ubuntu Precise 12.04: GNU Emacs 23.3.1 (x86_64-pc-linux-gnu, GTK+ Version 2.24.10), and the icicles package in precise: 23.0+20110910-1, and the bookmark+ version from quodlibetor/bookmarkplus-github
+ https://github.com/quodlibetor/bookmarkplus-github/.  
+
+And thanks again for all this cool code!  Though I'll chime in with the frustration that you don't use or endorse any effective version control or version numbering or packaging scheme for all this code.  It pains me to follow the instructions here, but here goes for the 'version' I'm using:
+<pre>
+$ grep 'Update #' *
+col-highlight.el:;;     Update #: 320
+crosshairs.el:;;     Update #: 404
+hexrgb.el:;;     Update #: 782
+hl-line+.el:;;     Update #: 434
+icicles-chg.el:;;     Update #: 7120
+icicles-cmd1.el:;;     Update #: 22215
+icicles-cmd1.el:Each Icicles file has a header `Update #' that you can use to identify it.\
+Binary file icicles-cmd1.elc matches
+icicles-cmd2.el:;;     Update #: 4206
+icicles-doc1.el:;;     Update #: 26186
+icicles-doc2.el:;;     Update #: 28228
+icicles.el:;;     Update #: 22978
+icicles-face.el:;;     Update #: 574
+icicles-fn.el:;;     Update #: 12563
+icicles-mac.el:;;     Update #: 813
+icicles-mcmd.el:;;     Update #: 17246
+icicles-mode.el:;;     Update #: 7595
+icicles-opt.el:;;     Update #: 4465
+icicles-var.el:;;     Update #: 1538
+icomplete+.el:;;     Update #: 931
+lacarte.el:;;     Update #: 638
+
+
+bookmark+-1.el:;;     Update #: 5539
+bookmark+-1.el:Be sure to mention the `Update #' from header of the particular Bookmark+ file header.\
+bookmark+-bmu.el:;;     Update #: 2047
+bookmark+-chg.el:;;     Update #: 14933
+bookmark+-doc.el:;;     Update #: 14564
+bookmark+.el:;;     Update #: 14985
+bookmark+-key.el:;;     Update #: 564
+bookmark+-lit.el:;;     Update #: 779
+bookmark+-mac.el:;;     Update #: 97
+</pre>
+
+Upon further searching, I find that it is different than the one at https://github.com/emacsmirror/bookmark-plus.  Sigh.
+
+I had found that minibuffer-local-filename-completion-map keymap, and it looks much like you say:
+
+<pre>
+ (24 keymap
+     (109)
+     (77)
+     (116 . icicle-cycle-image-file-thumbnail)
+     (46 . icicle-dispatch-C-x\.)
+     keymap
+     (6 . icicle-resolve-file-name))
+</pre>
+
+I was puzzled about why there was no function bound in "(109)".  At any rate, it looks the same both with and without my .emacs, but one works and the other doesn't, which just increased my confusion factor.  A bit of flipping thru the info pages on keymap didn't help.  What's going on?  And how can I just set it to the right thing, ignoring whatever is going on in my .emacs? -- [[NealMcBurnett]]
+
+[new:DrewAdams:2012-08-12 17:25 UTC]
+IIUC, it works OK for you from ##emacs -Q## but not when your ##.emacs## is loaded.  You will need to do what I suggested above, in my last paragraph: recursively bisect your ##.emacs## to find out what part of it is making the difference.  
+
+I was mistaken about what I said about checking minibuffer keymaps.  The reason you (and I) do not see a non-empty binding for 109 is that the binding is in fact created on the fly in '''Icicles''' file-manipulation commands, such as `icicle-file'.  If you are curious, you can do `M-x debug-on-entry icicle-bind-file-candidate-keys' and then step through the debugger to see it bind `C-x m' properly.
+
+But it seems clear that something in your ##.emacs## is interfering with that binding.  You need to find out what.  As I said, a binary search of your ##.emacs## is surprisingly quick, no matter how much code (e.g. libraries) you use.  - DrewAdams
+
+[new]
+Aha - that's the issue - that it changes dynamically.  I didn't find any good google hits on an efficient process to do bisection on a .emacs, especially given the advice for icicles that we're supposed to load it after loading most of the rest of the .emacs.  So I just gave up on that aspect and fiddled with ##emacs -q .emacs## and eval-region for a while, and ran across the culprit: (ffap-bindings).  
+
+I found where you talk about those issues at [[Icicles - Inserting Text from Cursor]] but 
+I suggest you clarify that dynamic binding in places like [[Icicles - File-Name Input]] as part of the text //Note: In addition to the usual Icicles key bindings, during file-name completion you can use the following keys. (These minibuffer bindings are also available for autofile bookmark commands.)//  Thanks again -- [[NealMcBurnett]]
+
+
+[new:DrewAdams:2012-08-12 21:08 UTC]
+1. Glad to hear that you found (and presumably solved) your problem.
+
+2. When I recommend recursively bisecting your init file I do not mean that you must bisect literally (exactly 50%) or completely blindly.  The point is to narrow things down in a systematic way, dividing the search domain roughly in half each time.
+
+If you can or must evaluate some particular code each time, IOW, not include it as part of the search space, that's fine.  Use your judgment to determine the space to be searched.  Within that space you can apply the idea of subdivision.  That's all.
+
+3. I don't know what you have in mind wrt "clarify that dynamic binding in places like [[Icicles - File-Name Input]]".  Can you elaborate?  What do you think would be helpful to add? -- DrewAdams
+
+[new]
+The issue is that you make it clear most of icicles is generic for most completion functions, but the stuff described here is specific to certain ways of getting to completion.  So I mean that the File-Name Input article should clarify, as part of the sentence I quoted or at least nearby the list of bindings, that they are dynamicly added bindings which you only get if you run a certain icicle function (or two?).  And that you only get that/those functions bound to file-finding keybindings like c-x c-f if icicles is initialized with those bindings pointing to a particular canonical emacs function, so stuff like ffap can mysteriously get in the way.  -- NealMcBurnett
+
+[new:DrewAdams:2012-08-13 23:31 UTC]
+Got it, I think.  See if the doc changes I made help.  Let me know if you have further suggestions.  Thx -- DrewAdams
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
 
 [:PasJaTrampIssue]
 [new] Hi Drew!
