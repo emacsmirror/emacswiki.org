@@ -5,11 +5,11 @@
 ;; Author: Matthew L. Fidler
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Fri Aug  3 22:33:41 2012 (-0500)
-;; Version: 0.19
+;; Version: 0.20
 ;; Package-Requires: ((http-post-simple "1.0") (yaoddmuse "0.1.1")(header2 "21.0") (lib-requires "21.0"))
-;; Last-Updated: Sat Aug 11 23:52:15 2012 (-0500)
+;; Last-Updated: Mon Aug 13 16:48:37 2012 (-0500)
 ;;           By: Matthew L. Fidler
-;;     Update #: 667
+;;     Update #: 670
 ;; URL: https://github.com/mlf176f2/org-readme
 ;; Keywords: Header2, Readme.org, Emacswiki, Git
 ;; Compatibility: Tested with Emacs 24.1 on Windows.
@@ -22,26 +22,57 @@
 ;; 
 ;;; Commentary: 
 ;; 
-;; * * Library Information
-;;  *org-readme.el* --- Integrates Readme.org and Commentary/Change-logs.
+;; * Using org-readme
+;; Org readme is used to:
 ;; 
-;;  - Filename :: [[file:org-readme.el][org-readme.el]]
-;;  - Description :: Integrate Readme.org and Commentary/Change Logs.
-;;  - Author :: Matthew L. Fidler
-;;  - Maintainer :: Matthew L. Fidler
-;;  - Created :: Fri Aug  3 22:33:41 2012 (-0500)
-;;  - Version :: 0.18
-;;  - Package-Requires :: ((http-post-simple "1.0") (yaoddmuse "0.1.1")(header2 "21.0") (lib-requires "21.0"))
-;;  - Last-Updated :: Sat Aug 11 17:13:51 2012 (-0500)
-;;  -           By :: Matthew L. Fidler
-;;  -     Update 
-;;  - URL :: https://github.com/mlf176f2/org-readme
-;;  - Keywords :: Header2, Readme.org, Emacswiki, Git
-;;  - Compatibility :: Tested with Emacs 24.1 on Windows.
+;; - Create/Update a "History" section in the Readme.org based on the changelog
+;;   section of the Emacs Log.
+;; - Create/Update a "Library Information" Section Based on the Emacs lisp header.
+;; - Create/Update a "Possible Dependencies" Section Based on the Emacs
+;;   lisp header.
+;; 
+;; All other sections of the Readme.org are then put into the
+;; "Commentary" section of the readme.org.
+;; 
+;; In addition this library defines `org-readme-sync',  a convenience function that:
+;; 
+;; - Asks for a commentary about the library change.
+;; - Syncs the Readme.org with the lisp file as described above.
+;; - Updates emacswiki with the library description and the library
+;;   itself (requires yaoddmuse).
+;; - Updates Marmalade-repo if the library version is different than the
+;;   version in the server (requires http-post-simple).
+;; - Updates the git repository with the differences that you posted.
+;; - If you are using github, this library creates a melpa recipie.
+;; - If you are using github, this library creates a el-get recipie. 
+;; 
+;; When `org-readme-sync' is called in a `Readme.org' file that is not a
+;; single lisp file, the function exports the readme in EmacsWiki format
+;; and posts it to the EmacsWiki.
+;; ** EmacsWiki Page Names
+;; EmacsWiki Page names are generated from the file.  `org-readme.el'
+;; would generate a page of OrgReadme.
+;; 
+;; ** Why each required library is needed
+;; There are a few required libraries.  This is a list of the require
+;; libraries and why they are needed.
+;; 
+;; |------------------+--------------------------------------|
+;; | Library          | Why it is needed                     |
+;; |------------------+--------------------------------------|
+;; | yaoddmuse        | Publish to emacswiki                 |
+;; | http-post-simple | Publish to marmalade-repo.org        |
+;; | header2          | To create header and changelog       |
+;; | lib-requires     | To generate the library dependencies |
+;; |------------------+--------------------------------------|
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 13-Aug-2012    Matthew L. Fidler  
+;;    Last-Updated: Mon Aug 13 16:44:23 2012 (-0500) #668 (Matthew L. Fidler)
+;;    Changed the `org-readme-remove-section' to use `org-cut-subtree'.
+;;    Hopefully all errors will resolve themselves now.
 ;; 11-Aug-2012    Matthew L. Fidler  
 ;;    Last-Updated: Sat Aug 11 23:51:30 2012 (-0500) #665 (Matthew L. Fidler)
 ;;    Reverted. Still buggy.
@@ -1004,18 +1035,7 @@ When AT-BEGINNING is non-nil, if the section is not found, insert it at the begi
                        "+" "")
                    section) nil t)
           (progn
-            (setq mtch (match-string 1))
-            (delete-region
-             (save-excursion
-               (beginning-of-line)
-               (skip-chars-backward " \t\n")
-               (forward-line 1)
-               (beginning-of-line)
-               (point))
-             (if (re-search-forward (format "^%s +" (regexp-quote mtch)) nil t)
-                 (progn
-                   (- (match-beginning 0) 1))
-               (point-max)))
+            (org-cut-subtree)
             (when txt
               (insert txt))
             t)
