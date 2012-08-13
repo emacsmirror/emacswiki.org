@@ -1,8 +1,7 @@
 This page is about library ##iedit.el##.
 
 You can obtain it here:
-Lisp:iedit.el or https://github.com/victorhge/iedit/blob/master/iedit.el. 
-The latter one has the latest updates.
+https://github.com/victorhge/iedit
 
 This package is an Emacs minor mode and allows you to edit one occurrence of
 some text in a buffer (possibly narrowed) or region, and simultaneously have other occurrences
@@ -21,15 +20,15 @@ Normal scenario of Iedit mode is like:
  - Finish - by pressing C-; again
 
 This package also provides rectangle support with *visible rectangle*
-highlighting, which is similar with cua mode rectangle support, but still quite
-different.
+highlighting, which is similar with cua mode rectangle support. But it's
+lighter weight and uses Iedit mechanisms.
 
 You can also use Iedit mode as a quick way to temporarily show only the
 buffer lines that match the current text being edited.  This gives you the
 effect of a temporary `keep-lines' or `occur'.  To get this effect, hit C-'
 when in Iedit mode - it toggles hiding non-matching lines.
 
-Renaming refactoring is convinient in Iedit mode
+Renaming refactoring is convenient in Iedit mode
 
  - The symbol under point is selected as occurrence by default and only complete
    symbols are matched
