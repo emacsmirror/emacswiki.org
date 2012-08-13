@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun Aug  5 19:57:02 2012 (-0700)
+;; Last-Updated: Mon Aug 13 16:25:00 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 26684
+;;     Update #: 26710
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -6388,60 +6388,14 @@
 ;;  used to read file-name input, but they do so in very different
 ;;  ways.
 ;;
-;;  In addition to the usual Icicles key bindings, during file-name
-;;  completion you can use the following keys.  (These minibuffer
-;;  bindings are also available for autofile bookmark commands.)
+;;  This section provides a reminder description of these two
+;;  functions, and then it describes the main Icicles commands that
+;;  read file names.
 ;;
-;;  * `C-backspace' (`icicle-up-directory') to navigate up the
-;;    directory hierarchy.  It removes the last directory component
-;;    (and any partial file name) from your minibuffer input.
-;;
-;;    (For Emacs versions before Emacs 22, this feature is available
-;;    only for completion of absolute file names.)
-;;
-;;  * `C-c +' (`icicle-make-directory') to create a directory on the
-;;    fly.
-;;
-;;  * `S-delete' to delete the file named by the current completion
-;;    candidate.
-;;
-;;  * `M-|' (`icicle-all-candidates-list-alt-action') to open Dired on
-;;    the currently matching file names.  That is, it opens a special
-;;    Dired buffer that contains only the matching files.  You are
-;;    prompted for the Dired buffer name.  See (@> "Alternative Actions").
-;;  * `C-x m' (`icicle-bookmark-file-other-window') to visit a
-;;    bookmarked file or directory.  This is available only if you use
-;;    library `Bookmark+' (`bookmark+.el').  It is a multi-command, so
-;;    you can actually visit any number of file bookmarks.  When
-;;    finished, you can continue with non-bookmark file-name
-;;    completion.
-;;
-;;  * `C-x a +' or `C-x a -' to add or remove tags for a file.  These
-;;    are delicious-style tags - any labels you like.  If there is not
-;;    already an autofile bookmark for the file, then one is created.
-;;    (The autofile bookmark is where the tags are persisted.)  You
-;;    need library `Bookmark+' for this feature.  See also
-;;    (@file :file-name "icicles-doc2.el" :to "Tagging Files and Jumping to Them").
-;;
-;;  * `C-x a a' to bookmark a file, that is, to create an autofile
-;;    bookmark.  This is the same as `C-x a +' and `C-x a -', except
-;;    that it does not prompt you for tags to add or remove.  You need
-;;    library `Bookmark+' for this feature.
-;;
-;;  In many cases for Icicles multi-commands that read a file name,
-;;  you can use `M-n' to pick up the file name at point, or if none
-;;  then the name of the file you are currently visiting.
-;;
-;;  Note: Whether a command supports file-name globbing wildcards such
-;;  as `*' is independent of whether it uses `read-file-name' or
-;;  `completing-read'.  It is the command itself that offers such
-;;  support or not.  Globbing takes place only after the file name
-;;  (with wildcards) is read.  All Icicles commands that visit files
-;;  (all of the commands mentioned in this section) let you use
-;;  globbing wildcards.  Remember also that file-name globbing, with
-;;  its special wildcards, has nothing to do with regexp completion
-;;  matching.  See (@> "What About Special-Character Conflicts?") for
-;;  more information about file-name globbing.
+;;  You do not need to use these Icicles commands to get the benefits
+;;  of Icicles enhancements to `completing-read' and `read-file-name'.
+;;  What these commands offer are additional benefits, which you might
+;;  or might not appreciate.
 ;;
 ;;(@* "Function `read-file-name'")
 ;;  ** Function `read-file-name' **
@@ -6494,6 +6448,100 @@
 ;;  directory portions of the candidate file names need not be the
 ;;  same - you can thus complete against a set of files in multiple
 ;;  directories.
+;;
+;;(@* "Remapping Vanilla File Commands to Icicles File Commands")
+;;  ** Remapping Vanilla File Commands to Icicles File Commands **
+;;
+;;  By default, that is, if you do not change the value of user option
+;;  `icicle-top-level-key-bindings', some commonly used Emacs commands
+;;  for accessing files are remapped to Icicles commands.  For
+;;  example, command `find-file', is by default remapped in Icicle
+;;  mode to multi-command `icicle-file'.  Remapping means that any
+;;  keys, such as `C-x C-f', that would normally be bound to
+;;  `find-file' are instead bound to `icicle-file' when you are in
+;;  Icicle mode.
+;;
+;;  Consult `icicle-top-level-key-bindings' to see how this works.  In
+;;  particular, note that if you normally bind a different command to
+;;  one of the keys mentioned here then the corresponding remapping in
+;;  `icicle-top-level-key-bindings' will not have the advertised
+;;  effect.
+;;
+;;  For example, if you normally use the key bindings provided by
+;;  library `ffap.el' ("find file at point"), meaning that you invoke
+;;  command `ffap-bindings', then for you `C-x C-f' is bound to
+;;  `find-file-at-point', not `find-file'.  By default, option
+;;  `icicle-top-level-key-bindings' does not remap
+;;  `find-file-at-point' to `icicle-file', so even in Icicle mode `C-x
+;;  C-f' remains bound to `find-file-at-point'.  If you want `C-x C-f'
+;;  to be bound to `icicle-file', then change the `find-file' entry in
+;;  `icicle-top-level-key-bindings' (or add another entry for
+;;  `find-file-at-point').
+;;
+;;  What has just been pointed out for Icicles file commands applies
+;;  more generally to all Icicle-mode command remapping provided by
+;;  option `icicle-top-level-key-bindings'.
+;;
+;;(@* "Action Keys Bound Dynamically During File-Name Input")
+;;  ** Action Keys Bound Dynamically During File-Name Input **
+;;
+;;  In addition to the usual Icicles key bindings, during file-name
+;;  completion the Icicles commands that read file names bind the
+;;  following keys dynamically in the minibuffer keymaps, so you can
+;;  use them while to perform various operations on the fly when you
+;;  input a file name.  These minibuffer bindings are also available
+;;  for autofile bookmark commands.
+;;
+;;  * `C-backspace' (`icicle-up-directory') to navigate up the
+;;    directory hierarchy.  It removes the last directory component
+;;    (and any partial file name) from your minibuffer input.
+;;
+;;    (For Emacs versions before Emacs 22, this feature is available
+;;    only for completion of absolute file names.)
+;;
+;;  * `C-c +' (`icicle-make-directory') to create a directory on the
+;;    fly.
+;;
+;;  * `S-delete' to delete the file named by the current completion
+;;    candidate.
+;;
+;;  * `M-|' (`icicle-all-candidates-list-alt-action') to open Dired on
+;;    the currently matching file names.  That is, it opens a special
+;;    Dired buffer that contains only the matching files.  You are
+;;    prompted for the Dired buffer name.  See (@> "Alternative Actions").
+;;  * `C-x m' (`icicle-bookmark-file-other-window') to visit a
+;;    bookmarked file or directory.  This is available only if you use
+;;    library `Bookmark+' (`bookmark+.el').  It is a multi-command, so
+;;    you can actually visit any number of file bookmarks.  When
+;;    finished, you can continue with non-bookmark file-name
+;;    completion.
+;;
+;;  * `C-x a +' or `C-x a -' to add or remove tags for a file.  These
+;;    are delicious-style tags - any labels you like.  If there is not
+;;    already an autofile bookmark for the file, then one is created.
+;;    (The autofile bookmark is where the tags are persisted.)  You
+;;    need library `Bookmark+' for this feature.  See also
+;;    (@file :file-name "icicles-doc2.el" :to "Tagging Files and Jumping to Them").
+;;
+;;  * `C-x a a' to bookmark a file, that is, to create an autofile
+;;    bookmark.  This is the same as `C-x a +' and `C-x a -', except
+;;    that it does not prompt you for tags to add or remove.  You need
+;;    library `Bookmark+' for this feature.
+;;
+;;  In many cases for Icicles multi-commands that read a file name,
+;;  you can use `M-n' to pick up the file name at point, or if none
+;;  then the name of the file you are currently visiting.
+;;
+;;  Note: Whether a command supports file-name globbing wildcards such
+;;  as `*' is independent of whether it uses `read-file-name' or
+;;  `completing-read'.  It is the command itself that offers such
+;;  support or not.  Globbing takes place only after the file name
+;;  (with wildcards) is read.  All Icicles commands that visit files
+;;  (all of the commands mentioned in this section) let you use
+;;  globbing wildcards.  Remember also that file-name globbing, with
+;;  its special wildcards, has nothing to do with regexp completion
+;;  matching.  See (@> "What About Special-Character Conflicts?") for
+;;  more information about file-name globbing.
 ;;
 ;;(@* "Icicles Commands that Read File Names")
 ;;  ** Icicles Commands that Read File Names **
