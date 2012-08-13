@@ -122,7 +122,7 @@ Better yet, use this to separate threads (puts space before and after the horizo
 </pre>
 
 [new]
-C-x m is normally bound to compose-mail by emacs (in simple.el).  When I use icicles and bookmark+ alone, it works for me as documented here.  But with my normal .emacs, it doesn't: I get a new *mail* buffer.  That's true even when I load both at the very end of my .emacs.  How can I fix this?  E.g. track down where the conflict comes up, or what to add to my .emacs to re-bind it for use with bookmarks?  -- [[nealmcb]]
+C-x m is normally bound to compose-mail by emacs (in simple.el).  When I use icicles and bookmark+ alone, it works for me as documented here.  But with my normal .emacs, it doesn't: I get a new *mail* buffer.  That's true even when I load both at the very end of my .emacs.  How can I fix this?  E.g. track down where the conflict comes up, or what to add to my .emacs to re-bind it for use with bookmarks?  -- [[NealMcBurnett]]
 
 [new:DrewAdams:2012-08-12 07:20 UTC]
 Sounds like somehow your ##.emacs## or something it loads is binding `C-x m' in a [[minibuffer]] keymap (which map depends on your Emacs release).
@@ -186,7 +186,7 @@ I had found that minibuffer-local-filename-completion-map keymap, and it looks m
      (6 . icicle-resolve-file-name))
 </pre>
 
-I was puzzled about why there was no function bound in "(109)".  At any rate, it looks the same both with and without my .emacs, but one works and the other doesn't, which just increased my confusion factor.  A bit of flipping thru the info pages on keymap didn't help.  What's going on?  And how can I just set it to the right thing, ignoring whatever is going on in my .emacs? -- [[nealmcb]]
+I was puzzled about why there was no function bound in "(109)".  At any rate, it looks the same both with and without my .emacs, but one works and the other doesn't, which just increased my confusion factor.  A bit of flipping thru the info pages on keymap didn't help.  What's going on?  And how can I just set it to the right thing, ignoring whatever is going on in my .emacs? -- [[NealMcBurnett]]
 
 [new:DrewAdams:2012-08-12 17:25 UTC]
 IIUC, it works OK for you from ##emacs -Q## but not when your ##.emacs## is loaded.  You will need to do what I suggested above, in my last paragraph: recursively bisect your ##.emacs## to find out what part of it is making the difference.  
@@ -199,7 +199,7 @@ But it seems clear that something in your ##.emacs## is interfering with that bi
 Aha - that's the issue - that it changes dynamically.  I didn't find any good google hits on an efficient process to do bisection on a .emacs, especially given the advice for icicles that we're supposed to load it after loading most of the rest of the .emacs.  So I just gave up on that aspect and fiddled with ##emacs -q .emacs## and eval-region for a while, and ran across the culprit: (ffap-bindings).  
 
 I found where you talk about those issues at [[Icicles - Inserting Text from Cursor]] but 
-I suggest you clarify that dynamic binding in places like [[Icicles - File-Name Input]] as part of the text //Note: In addition to the usual Icicles key bindings, during file-name completion you can use the following keys. (These minibuffer bindings are also available for autofile bookmark commands.)//  Thanks again -- [[nealmcb]]
+I suggest you clarify that dynamic binding in places like [[Icicles - File-Name Input]] as part of the text //Note: In addition to the usual Icicles key bindings, during file-name completion you can use the following keys. (These minibuffer bindings are also available for autofile bookmark commands.)//  Thanks again -- [[NealMcBurnett]]
 
 
 [new:DrewAdams:2012-08-12 21:08 UTC]
@@ -211,7 +211,8 @@ If you can or must evaluate some particular code each time, IOW, not include it 
 
 3. I don't know what you have in mind wrt "clarify that dynamic binding in places like [[Icicles - File-Name Input]]".  Can you elaborate?  What do you think would be helpful to add? -- DrewAdams
 
-
+[new]
+The issue is that you make it clear most of icicles is generic for most completion functions, but the stuff described here is specific to certain ways of getting to completion.  So I mean that the File-Name Input article should clarify, as part of the sentence I quoted or at least nearby the list of bindings, that they are dynamicly added bindings which you only get if you run a certain icicle function (or two?).  And that you only get that/those functions bound to c-x c-f if icicles is initialized with c-x-c-f pointing to a particular function, so stuff like ffap can mysteriously get in the way.  --[[NealMcBurnett]]
 
 
 
