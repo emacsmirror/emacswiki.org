@@ -8,12 +8,12 @@
 ;; Copyright (C) 1992 Free Software Foundation, Inc.
 ;; Created: Fri Dec  1 13:51:31 1995
 ;; Version: 21.0
-;; Last-Updated: Sat Jun  2 10:46:59 2012 (-0700)
+;; Last-Updated: Sun Aug 12 19:16:57 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 346
+;;     Update #: 350
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/delsel.el
 ;; Keywords: abbrev, emulations, local, convenience
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -88,6 +88,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/08/12 dadams
+;;     delete-selection-pre-hook-1: Updated for Emacs 24 bug #12161 fix.
 ;; 2012/06/02 dadams
 ;;     delete-selection-pre-hook-1: For yank, rotate kill-ring until get to diff one.
 ;; 2011/01/03 dadams
@@ -289,7 +291,7 @@ either \\[customize] or function `delete-selection-mode'."
     (when (and delete-selection-mode transient-mark-mode mark-active
                (not buffer-read-only))
       (let ((type  (and (symbolp this-command)  (get this-command 'delete-selection))))
-        (condition-case data
+        (condition-case err
             (cond ((eq type 'kill)
                    (delete-active-region t))
                   ((eq type 'yank)
@@ -308,12 +310,7 @@ either \\[customize] or function `delete-selection-mode'."
                      (unless empty-region (setq this-command  'ignore))))
                   (type
                    (delete-active-region)))
-          (file-supersession
-           ;; If ask-user-about-supersession-threat signals an error,
-           ;; stop safe_run_hooks from clearing out pre-command-hook.
-           (and (eq inhibit-quit 'pre-command-hook)
-                (setq inhibit-quit  'delete-selection-dummy))
-           (signal 'file-supersession (cdr data))))))))
+          (file-supersession (message "%s" (cadr err)) (ding)))))))
 
 (put 'self-insert-command 'delete-selection t)
 (put 'self-insert-iso 'delete-selection t)
