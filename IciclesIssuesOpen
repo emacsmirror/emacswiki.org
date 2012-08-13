@@ -212,7 +212,7 @@ If you can or must evaluate some particular code each time, IOW, not include it 
 3. I don't know what you have in mind wrt "clarify that dynamic binding in places like [[Icicles - File-Name Input]]".  Can you elaborate?  What do you think would be helpful to add? -- DrewAdams
 
 [new]
-The issue is that you make it clear most of icicles is generic for most completion functions, but the stuff described here is specific to certain ways of getting to completion.  So I mean that the File-Name Input article should clarify, as part of the sentence I quoted or at least nearby the list of bindings, that they are dynamicly added bindings which you only get if you run a certain icicle function (or two?).  And that you only get that/those functions bound to c-x c-f if icicles is initialized with c-x-c-f pointing to a particular function, so stuff like ffap can mysteriously get in the way.  --[[NealMcBurnett]]
+The issue is that you make it clear most of icicles is generic for most completion functions, but the stuff described here is specific to certain ways of getting to completion.  So I mean that the File-Name Input article should clarify, as part of the sentence I quoted or at least nearby the list of bindings, that they are dynamicly added bindings which you only get if you run a certain icicle function (or two?).  And that you only get that/those functions bound to file-finding keybindings like c-x c-f if icicles is initialized with those bindings pointing to a particular canonical emacs function, so stuff like ffap can mysteriously get in the way.  --NealMcBurnett
 
 
 
