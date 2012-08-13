@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 21.1
-;; Last-Updated: Mon Aug  6 15:00:34 2012 (-0700)
+;; Last-Updated: Mon Aug 13 14:49:38 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 2649
+;;     Update #: 2663
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/oneonone.el
 ;; Keywords: local, frames
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -275,6 +275,11 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/08/13 dadams
+;;     Fixes to prevent losing input focus to *Completions* frame:
+;;       1on1-fit-minibuffer-frame:
+;;         Use save-window-excursion, not save-selected-window (2 places).
+;;       1on1-set-minibuffer-frame-top/bottom: Use force-mode-line-update, not redisplay.
 ;; 2012/08/06 dadams
 ;;     Renamed: old-* to 1on1-ORIG-*:
 ;;       1on1-ORIG-abort-recursive-edit, 1on1-ORIG-top-level, 1on1-ORIG-y-or-n-p, 
@@ -1661,7 +1666,9 @@ Use `1on1-minibuffer-frame-top/bottom' if non-nil.
 Else, place minibuffer at bottom of display."
   (when 1on1-minibuffer-frame
     (condition-case nil
-        (if (fboundp 'redisplay) (redisplay t) (force-mode-line-update t))
+        (if nil;; $$$$$$ (fboundp 'redisplay)
+            (redisplay t)
+          (force-mode-line-update t))
       (error nil))                      ; Ignore errors from, e.g., killed buffers.
     (modify-frame-parameters
      1on1-minibuffer-frame
@@ -1700,12 +1707,12 @@ This command requires library `fit-frame.el'."
              ;; Do this because this command is on `post-command-hook', and an event such as
              ;; `handle-switch-frame' might have changed the selected frame.
              (eq last-event-frame (window-frame (minibuffer-window)))
-             (save-selected-window
+             (save-window-excursion
                (select-window (minibuffer-window))
                ;; We should be able to use just (one-window-p),
                ;; but an Emacs bug means we need this:
                (one-window-p nil 'selected-frame)))
-    (let* ((frame         (save-selected-window
+    (let* ((frame         (save-window-excursion
                             (select-window (minibuffer-window)) (selected-frame)))
            (frame-height  (frame-height frame)))
       (cond
