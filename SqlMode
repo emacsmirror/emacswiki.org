@@ -134,6 +134,8 @@ Also check out the Oracle FAQ at http://www.orafaq.com/
 
 If you're trying to use MS SQL Server in sql-mode, and the Microsoft command-line query processors osql and isql are not available to you, try jisql, a free, Java-based "workalike" provided by the clever (and generous) folks at Xigole Systems, Inc. http://www.xigole.com/software/jisql.jsp. Apache license.
 
+Another option for users lacking access to osql/isql is sqsh, another Java-based command-line SQL client. The primary advantage to sqsh is that it is in the Debian/Ubuntu repositories (I can't speak for Fedora, etc.) making it easier to install. When using sqsh to connect to SQL Server, use M-x sql-sybase, not sql-ms. Otherwise, Emacs won't pass the right command-line parameters and it won't connect.
+
 ----
 CategoryModes
 CategorySql
