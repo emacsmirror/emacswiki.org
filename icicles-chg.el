@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sun Aug 12 14:58:59 2012 (-0700)
+;; Last-Updated: Mon Aug 13 19:33:46 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8785
+;;     Update #: 8789
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -85,6 +85,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2012/08/13 dadams
+;;     icicle-customize-face: Doc string improvement.
 ;; 2012/08/10 dadams
 ;;     icicle-bookmark-set: If bookmark-make-record provides a name, use that as default.
 ;; 2012/08/06 dadams
@@ -1403,6 +1405,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2012/08/13 dadams
+;;     icicle-completing-read-multiple: Doc string improvement.
 ;; 2012/08/06 dadams
 ;;     Renamed old-* to icicle-ORIG-*:
 ;;       icicle-ORIG-choose-completion-string, icicle-ORIG-completing-read,
