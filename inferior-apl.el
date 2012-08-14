@@ -1,4 +1,4 @@
-;;; inferior-apl.el --- Basic Apl (Aplus) in a buffer functionality
+;;; inferior-apl.el ---  Basic Apl (Aplus) in a buffer functionality
 ;;; copyright Rusi Mody
 
 ;;; Uses Markus Triska's apl.el for encodings, input-methods etc
