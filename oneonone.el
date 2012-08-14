@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 21.1
-;; Last-Updated: Tue Aug 14 15:13:11 2012 (-0700)
+;; Last-Updated: Tue Aug 14 15:23:33 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 2673
+;;     Update #: 2677
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/oneonone.el
 ;; Keywords: local, frames
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -278,7 +278,7 @@
 ;; 2012/08/14 dadams
 ;;     1on1-fit-minibuffer-frame:
 ;;       Simplify by using window-frame and frame-first-window.  Thx to Martin Rudalics.
-;;       If in icicle-abort-recursive-edit then reset to default height and position.
+;;       Added optional arg RESETP (prefix arg), to reset to default height and position.
 ;; 2012/08/13 dadams
 ;;     Fixes to prevent losing input focus to *Completions* frame:
 ;;       1on1-fit-minibuffer-frame:
@@ -1696,13 +1696,14 @@ and display size, and depending on
             (* 100 (frame-char-width 1on1-minibuffer-frame)))))))
 
 ;;;###autoload
-(defun 1on1-fit-minibuffer-frame ()
+(defun 1on1-fit-minibuffer-frame (&optional resetp)
   "Fit the standalone minibuffer frame height to its contents.
 Repeat to increase the height by 1.
+With a prefix arg, reset the frame to its default position and height.
 Bind this in minibuffer keymaps to a key such as `C-o' that you can
 use during minibuffer input.
 This command requires library `fit-frame.el'."
-  (interactive)
+  (interactive "P")
   (unless (require 'fit-frame nil t)
     (error "You need to load library `fit-frame.el' to use this command"))
   ;; We could assume the minibuffer frame is `1on1-minibuffer-frame', but we do not.
@@ -1726,7 +1727,7 @@ This command requires library `fit-frame.el'."
     (let* ((frame         (window-frame (minibuffer-window)))
            (frame-height  (frame-height frame)))
       (cond
-        ((eq this-command 'icicle-abort-recursive-edit)
+        (resetp
          (set-frame-height frame 1on1-minibuffer-frame-height) ; Reset to default.
          (1on1-set-minibuffer-frame-top/bottom))
         ((eq last-command '1on1-fit-minibuffer-frame)
