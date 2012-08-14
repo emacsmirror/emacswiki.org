@@ -7,9 +7,9 @@
 ;; Created: Fri Aug  3 22:33:41 2012 (-0500)
 ;; Version: 0.22
 ;; Package-Requires: ((http-post-simple "1.0") (yaoddmuse "0.1.1")(header2 "21.0") (lib-requires "21.0"))
-;; Last-Updated: Mon Aug 13 17:25:06 2012 (-0500)
+;; Last-Updated: Mon Aug 13 21:53:26 2012 (-0500)
 ;;           By: Matthew L. Fidler
-;;     Update #: 678
+;;     Update #: 681
 ;; URL: https://github.com/mlf176f2/org-readme
 ;; Keywords: Header2, Readme.org, Emacswiki, Git
 ;; Compatibility: Tested with Emacs 24.1 on Windows.
@@ -69,6 +69,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 13-Aug-2012    Matthew L. Fidler  
+;;    Last-Updated: Mon Aug 13 21:52:37 2012 (-0500) #679 (Matthew L. Fidler)
+;;    Another attempt to make texinfo documents.
 ;; 13-Aug-2012    Matthew L. Fidler  
 ;;    Last-Updated: Mon Aug 13 17:23:40 2012 (-0500) #676 (Matthew L. Fidler)
 ;;    Added texinfo output.  Allows native emacs documentation.
@@ -907,6 +910,11 @@ When COMMENT-ADDED is non-nil, the comment has been added and the syncing should
         (when org-readme-build-texi
           (when (executable-find "pandoc")
             (let ((default-directory (file-name-directory (buffer-file-name))))
+              (message "%s\n%s" default-directory
+                       (concat "pandoc Readme.md -s -o "
+                               (file-name-sans-extension
+                                (file-name-nondirectory (buffer-file-name)))
+                               ".texi"))
               (shell-command (concat "pandoc Readme.md -s -o "
                                      (file-name-sans-extension
                                       (file-name-nondirectory (buffer-file-name)))
