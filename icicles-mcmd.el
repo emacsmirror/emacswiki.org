@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Aug  6 08:50:48 2012 (-0700)
+;; Last-Updated: Tue Aug 14 15:00:50 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 18403
+;;     Update #: 18407
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2281,6 +2281,9 @@ you do not want this remapping, then customize option
   (interactive)
   (if (not (active-minibuffer-window))
       (when (get-buffer "*Completions*") (kill-buffer (get-buffer "*Completions*")))
+    (when (and (boundp '1on1-fit-minibuffer-frame-flag) ; In `oneonone.el'.
+               1on1-fit-minibuffer-frame-flag  (require 'fit-frame nil t))
+      (1on1-fit-minibuffer-frame))
     (icicle-remove-Completions-window 'FORCE))
   (abort-recursive-edit))
 
@@ -3584,9 +3587,9 @@ Optional argument WORD-P non-nil means complete only a word at a time."
                           (setq icicle-default-directory  (icicle-abbreviate-or-expand-file-name
                                                            inserted))))
                       (save-selected-window (icicle-remove-Completions-window))
-                      ;; Do not transform multi-completion here.  It should be done in the function that acts
-                      ;; on the chosen completion candidate.  For a multi-command, that means it should be
-                      ;; done in the action function.
+                      ;; Do not transform multi-completion here.  It should be done in the function that
+                      ;; acts on the chosen completion candidate.  For a multi-command, that means it
+                      ;; should be done in the action function.
                       ;; $$$$$$ (icicle-transform-sole-candidate)
                       icicle-current-input)))
              (unless (boundp 'icicle-prefix-complete-and-exit-p)
