@@ -1,0 +1,2 @@
+#REDIRECT [[rcirc-notify.el]]
+   

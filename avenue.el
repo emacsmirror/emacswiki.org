@@ -1,0 +1,1 @@
+#REDIRECT [[avenue-mode.el]]

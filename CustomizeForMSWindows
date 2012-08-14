@@ -1,0 +1,192 @@
+#REDIRECT MsWindowsCustomize
+
+
+==INTRODUCTION==
+
+This page discusses setting the initial /size/ and /position/ of the Emacs window, the
+/font/ and /colours/ used, the /indentation behaviour/ when editing programs, the behaviour
+of /regions/ selected with the mouse, and redefining /keyboard shortcuts/, in the case when
+Emacs is used under MS-Windows.  There are at least five basic ways to customize Emacs:
+
+# edit the MS-Windows registry with regedit (see MsWindowsRegistry)
+
+# add command line options to the shortcut used to start Emacs
+
+# edit the InitFile ##.emacs## (details are on CategoryDotEmacs, and specific MS-Windows
+  issues are on WThirtyTwoDotEmacs)
+
+# go through the menu commands under "Options -- Customize Emacs"
+
+# run any of a number of Emacs-commands beginning with /customize/ (actually the menu
+  commands do just this).
+
+Currently the best help about the customize commands is probably the
+[http://www.gnu.org/software/emacs/manual/html_mono/emacs.html#Customization chapter on
+customization in the Emacs manual]
+
+==INITIAL WINDOW SIZE AND POSITION==
+
+*Initial size of the window* (or frame): One good way is to use the
+MsWindowsRegistry (see that page for how). Another way is to change the
+properties of the shortcut used to start Emacs. Right-click on it and select
+/Properties -- Target/ and edit the target to end with ## -geometry 100x40## (or whatever ---
+note there is a space before ##-geometry##). However, the latter way does not work when
+Emacs is started from a command prompt (e.g. from a Cygwin window).
+
+*Position of initial window:* To change the location of the top-left corner of the frame
+to be at 30 pixels from the left edge of the screen and 10 pixels from the top edge,
+specify the geometry as ##50x100+30+10##.
+
+The window size may also be set in ##.emacs## (for instance with ##(set-frame-height
+(selected-frame) 40)## and ##(set-frame-width (selected-frame) 80)##) but this causes the
+window size to jump when starting Emacs.
+
+==DEFAULT FONT==
+
+Again there is a choice: use the MsWindowsRegistry, or use a
+command line option set through the properties of the Emacs starting shortcut (again not
+applied when Emacs is started from a command prompt). For both
+methods a first step is to determine the name of the font. Type (or copy)
+##(w32-select-font)## into the scratch buffer followed by ^J. In the dialog window that
+appears select the desired font. After clicking OK the X-name of the font will be displayed
+in the scratch buffer, ready to be copied to the clipboard. To set the font using a command
+line option, proceed as when setting the initial window size and let Target end with ## -fn
+"-outline-Lucida Sans Typewriter-normal-r-normal-normal-12-90-96-96-c-*-iso8859-1"## (or
+whichever font name was displayed). See also ChangeFontsPermanentlyOnWindows.
+
+As with the window size the font may be set in ##.emacs## (using ##(set-default-font
+"## /fontname/ ##")##), but as before this causes the window size to jump when starting
+Emacs.
+
+==COLOUR CUSTOMIZATION==
+
+Emacs uses so-called "syntax highlighting" to colour different elements of programming
+languages (e.g. strings, keywords, comments, variable names) with different colours. The
+Emacs term is actually /face/ as it is possible to use e.g. boldface or italics instead of
+colours. The default colours when Emacs has been set up on MS-Windows are too light. The
+following initialization code may be put in the ##.emacs## file to make the most common
+colours a little darker:
+
+   ; Default colours are too light (to see colour names do M-x list-colors-display
+   ; and to see faces do M-x list-faces-display):
+   (set-face-foreground font-lock-type-face          "dark green")
+   (set-face-foreground font-lock-builtin-face       "Orchid4")
+   (set-face-foreground font-lock-constant-face      "CadetBlue4")
+   (set-face-foreground font-lock-keyword-face       "Purple4")
+   (set-face-foreground font-lock-string-face        "IndianRed4")
+   (set-face-foreground font-lock-variable-name-face "SaddleBrown")
+
+The comments at the start show how one may obtain lists of colour names and names used for
+the syntactical elements. See also AngryFruitSalad.
+
+==AUTOMATICALLY INDENT PROGRAMS==
+
+Many IDE's and editors on MS-Windows automatically jump to the "correct" column when the
+Return-key is pressed while editing a program. Emacs can be made to behave in this way by
+inserting the following in the ##.emacs## file:
+
+   (define-key global-map (kbd "RET") 'newline-and-indent)
+   (add-hook 'f90-mode-hook (lambda ()
+     (local-set-key (kbd "RET") 'reindent-then-newline-and-indent)))
+
+The first line does the trick for many programming languages (including C, C++, Java and
+relatives).  For Fortran 90 (and possibly other languages) it is necessary to use a "hook"
+(as has been done in lines 2 and 3 --- see AutoIndentation).
+
+==KEYBOARD SHORTCUTS==
+
+Many MS-Windows users have grown used to keyboard shortcuts (and mouse commands) common to
+various MS-Windows application programs. Here, these will be referred to as
+/Windows-native-keystrokes, WNK/, and they differ considerably from standard Emacs
+keystrokes (/Emacs-native-keystrokes, ENK/). For example the WNK-keystroke to save file is
+^S and to paste (or /yank/) one presses ^V. The following picture shows the most common
+MS-Windows and Emacs keystrokes.
+
+[[image:WnkEnkShortcuts]]
+ 
+
+The table lists keystrokes of 5 common MS-Windows applications, and here (maybe rather
+arbitrarily) a keystroke appearing in 4 of these is considered to be a WNK-shortcut.
+
+The most recent versions of Emacs (certainly 22.1.1 and later) there is an inbuilt feature
+called CuaMode which emulates to some extent the WNK-shortcuts (in particular ^Z, ^X, ^C
+and ^V) and other common MS-Windows features such as using shifted cursor movement keys (or
+mouse movement) to select a region, and showing this seleceted region highlighted
+(coloured). As may be seen from the table above this mode does not include all the
+WNK-shortcuts: ^N, ^O, ^S, ^P, Alt-F4, ^A and ^F are missing. Of course most of these have
+meanings as ENK-s (^N is /next-line/, ^O /open-line/, ^S /isearch-forward/, ^P
+/previous-line/, ^A /beginning-of-line/ and ^F /forward-char/), but all except ^O and ^S
+have alternative Emacs-keybindings that are in fact the same as most MS-Windows users are
+used to (^N, ^P and ^F are down, up and right arrow; ^A is Home). In addition
+/isearch-forward/ is more naturally bound to ^F for an MS-Windows accustomed user, which
+only leaves ^O. Its function is not commonly found in MS-Windows editors (it opens up a new
+empty line). Thus it turns out that one can change Emacs into an editor that behaves very
+much like what is usual for MS-Windows editors. The initialization file below redefines all
+the above listed keystrokes to follow the MS-Windows custom. In addition, ^W is bound to
+the command /kill-this-buffer/ and ^Tab to /other-window/.
+
+==AN INITIALIZATION FILE FOR MS-WINDOWS==
+
+In addition to redefining keystrokes the following initialization file defines a few
+additional features that also make Emacs behave more like what one may be used to from
+MS-Windows. The initial splash-screen is turned off (this otherwise hides the file being
+edited) and copying the selected region does not turn off the selection. In addition the
+file contains the initialization code given above for darkening colours and make the return
+key jump to the correct indentation level in programs. There are also commands to make
+Emacs understand Cygwin-paths (see NTEmacsWithCygwin), and if Cygwin is not being used
+these could be commented out. One pixel is added to the line spacing. Finally the first
+command adds a directory ##~/elisp## to the Emacs load path.
+
+One idea behind this file is to make it simple for the user to customize the settings to
+his or her preferences. Thus the settings are not changed via a new mode (similarly to
+Cua-mode), but simply by direct /global-set-key/ commands. It is common that people have
+both some Emacs- and some Windows experience and they might well want a subset of the key
+redefinitions.
+
+   ; Various settings:
+   (add-to-list 'load-path "~/elisp")  ;; Additional .el and .elc files can be placed here
+   (setq inhibit-splash-screen t)      ;; Don't show initial Emacs-logo and info
+   (cua-mode 1)                        ;; Enable ^Z, ^X, ^C, ^V, select with mouse and shift-cursor-movement
+   (transient-mark-mode 1)             ;; No region when it is not highlighted
+   (setq cua-keep-region-after-copy t) ;; Standard MS-Windows behaviour
+   (require 'cygwin-mount)             ;; Let emacs recognize cygwin ...
+   (cygwin-mount-activate)             ;; ...paths (e.g. /usr/local/lib)
+   (setq-default line-spacing 1)       ;; Add 1 pixel between lines
+
+   ; Define some additional "native-Windows" keystrokes (^tab, Alt/F4, ^A, ^F, ^O,
+   ; ^S, ^W) and redefine (some of) the overridden Emacs functions.
+   (global-set-key [C-tab] 'other-window)
+   (global-set-key [M-f4] 'save-buffers-kill-emacs)
+   (global-set-key "\C-a" 'mark-whole-buffer)
+   (global-set-key "\C-f" 'isearch-forward)
+   (global-set-key "\C-o" 'find-file)
+   (global-set-key "\C-s" 'save-buffer)
+   (global-set-key "\C-w" 'kill-this-buffer)
+   (global-set-key (kbd "C-S-o") 'open-line)
+   (global-set-key (kbd "C-S-w") 'kill-region)
+   (define-key global-map (kbd "RET") 'newline-and-indent) ; For programming language modes
+   (define-key isearch-mode-map "\C-f" 'isearch-repeat-forward)
+   
+   ; Make Fortran 90 also auto-indent:
+   (add-hook 'f90-mode-hook (lambda ()
+     (local-set-key (kbd "RET") 'reindent-then-newline-and-indent)))
+   
+   ; Default colours are too light (to see colour names do M-x list-colors-display
+   ; and to see faces do M-x list-faces-display):
+   (set-face-foreground font-lock-type-face          "dark green")
+   (set-face-foreground font-lock-builtin-face       "Orchid4")
+   (set-face-foreground font-lock-constant-face      "CadetBlue4")
+   (set-face-foreground font-lock-keyword-face       "Purple4")
+   (set-face-foreground font-lock-string-face        "IndianRed4")
+   (set-face-foreground font-lock-variable-name-face "SaddleBrown")
+
+To make Emacs obey these initializations, create a file named ##.emacs## in the [[MsWindowsInstallation#HomeDirectory|home directory]], for instance using Emacs (use ^X^F to
+find-file, ^X^S to save and ^X^C to
+exit). The file could also be created using Notepad. The next time Emacs is started it
+should understand all the WNK's.
+
+Note that if only Cua-mode is required, one may select /Options -- C-x...(CUA)/ followed by
+/Save -- Options/ from within Emacs. Note also the alternative, CuaLightMode.
+
+----
+CategoryWThirtyTwo

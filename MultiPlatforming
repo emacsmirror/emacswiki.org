@@ -1,0 +1,94 @@
+#REDIRECT CustomizingBoth
+
+It's nice to have one emacs configuration (i.e. .emacs or _emacs
+together with any elisp files you have factored out) be capable of
+running on multiple "platforms." By multiple platforms, I mean either
+
+* different kinds of emacs. E.g., you may have been running (native) GNU <nowiki>NTEmacs</nowiki>, and decide that you also want to try GNU emacs on CygWin, or a native XEmacs.
+* different OSs. E.g. you may have been running emacs on Windows, and then get a nice new Linux box.
+
+Basically, you want to be able to
+
+* plop your finely-honed configuration down wherever and on whatever you happen to be, and get to work
+* not hafta maintain n different sets of configuration files for n different configurations
+
+How to do this?
+
+One approach uses environment variables (or "envvars"). Perhaps the
+simplest thing to do is to always call emacs from a script (or "batch
+file" on windows): have the script set some envvar, and then have
+your .emacs read that envvar. E.g. on windows you could have one
+shortcut called "Cygwinized Emacs" call a batch file like
+
+<pre>
+@echo off
+rem Set vars for Emacs
+set PLATFORM=cygwin
+set HOME=t:\tlroche
+
+rem Use bash to start X
+cd /d D:\bin\cygwin\1.3.13-1\bin
+bash --login -c "startx"
+rem emacs gets called by my .xinitrc
+
+rem unset vars
+set HOME=
+set PLATFORM=
+</pre>
+
+and another called "NT Emacs" call
+
+<pre>
+@echo off
+set PLATFORM=native
+F:\tlroche\emacs-21.1\bin\runemacs.exe
+set PLATFORM=
+</pre>
+
+Then, in your .emacs, do a test like
+
+<pre>
+(defvar platform (getenv "PLATFORM"))
+(if (integer-or-marker-p (string-match "native" platform))
+  (progn
+    ; do what you need to do, e.g. setq load-path
+))
+(if (integer-or-marker-p (string-match "cygwin" platform))
+  (progn
+    ; ditto
+))
+</pre>
+
+Of course, this requires using scripts, and presumes that you don't
+screw them up. Another approach eschews the scripts, and has .emacs
+try to discover its platform. E.g. for the above case:
+
+<pre>
+; Are we running on X Windows?
+(defconst running-on-x (eq window-system 'x))
+
+; Are we running on MS Windows?
+(defconst running-on-windows (eq window-system 'w32))
+
+(if running-on-x
+  (progn
+; and so on, as above
+))
+</pre>
+
+Usually more specific tests are better, however, such that your script adapts to partial updates, user-installed libraries, etc.  See ComparativeEmacsology.  Example: Test wether functions are defined, test wether variables are bound, test how many colors are available:
+
+    (when (fboundp 'goto-address)
+      (add-hook 'text-mode-hook 'goto-address))
+
+    (when (and (boundp 'gnuserv-minor-mode)
+	       gnuserv-minor-mode)
+       ...
+
+    (when (> (display-color-cells) 8)
+       (color-theme-robin-hood))
+
+Additional tests:
+
+; <tt>(system-name)</tt>: hostname of the current machine
+; <tt>(getenv "TERM")</tt>: the terminal used when Emacs was started

@@ -1,0 +1,15 @@
+#REDIRECT CustomizingBoth
+
+Say you've been running (native) NTEmacs or XEmacs happily. Then you
+hear about Cygwin, but you don't wanna "cut the cord":
+
+<pre>
+Chris Lott wrote:
+> I would like to keep both Emacs available for a while, but use the
+> same home directory and such until I am comfortable. Do you have any
+> tips on how to reliably delineate setup in my .emacs so that I can
+> branch for blocks depending upon which emacs I am running?
+</pre>
+
+This is a subset of MultiPlatforming, so look there.
+

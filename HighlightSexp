@@ -1,0 +1,28 @@
+highlight-sexp is a minor mode to highlight the s-exp at the current position.
+
+Lisp:highlight-sexp.el
+
+The development version is available on github:
+http://github.com/daimrod/highlight-sexp
+
+== Installation and configuration ==
+
+Put the file somewhere is your load-path and add the following line to
+your .emacs
+
+  (require 'highlight-sexp)
+  (add-hook 'lisp-mode-hook 'highlight-sexp-mode)
+  (add-hook 'emacs-lisp-mode-hook 'highlight-sexp-mode)
+
+== Customization ==
+  The following variables are available for customization:
+  - hl-sexp-background-color
+  - hl-sexp-foreground-color
+  - hl-sexp-face
+
+
+
+== See Also ==
+
+* HighlightTemporarily
+* HighlightSexps

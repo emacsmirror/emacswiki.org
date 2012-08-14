@@ -1,0 +1,43 @@
+#REDIRECT MsWindowsDotEmacs
+
+Here's how to set up your Emacs initialization file on Windows.
+
+First, the Emacs InitFile can be called <code>.emacs</code> or <code>_emacs</code>. Some people may find it's easier to work with '''<code>_emacs</code>''' on Windows.
+
+The Emacs Windows FAQ [http://www.gnu.org/software/emacs/windows/faq3.html#startup includes some instructions.]
+
+You can take three paths:
+* put it in <code>C:\</code>
+* Set environment variable <code>HOME</code>.
+* Set registry settings.
+
+Note that you can always edit the official Emacs startup file by typing '''C-x C-f ~/.emacs'''.  This will get translated to one of the locations supported above.  After the file is loaded, to see what the true path is type: '''C-h v buffer-file-name RET'''
+
+'''HOME setting'''
+
+Note that your HOME environment variable might not be set on your system, but GNU Emacs 22 appears to set this variable in its wrapper script.  Thus, the InitFile is often in a location like ##c:\Documents and Settings\user\Application Data\.emacs##.
+
+'''registry settings'''
+
+In the registry, set:
+
+* <code>HKEY_CURRENT_USER\\SOFTWARE\\GNU\\Emacs</code> & set key <code>HOME</code>
+
+Or, if you want changes system wide:
+
+* <code>HKEY_LOCAL_MACHINE\\SOFTWARE\\GNU\\Emacs</code> & set key <code>HOME</code>
+
+'''environment variable'''
+
+If you take the environment variable path, you'll need to figure out how to do it for your particular system. There are some [http://www.chem.gla.ac.uk/~louis/software/faq/q1.html notes on setting Windows environment variables] out on the web. 
+
+If you have Windows NT or XP, you can set the <code>HOME</code> environment variable as follows: 
+
+# Right-click '''My Computer'''. 
+# Choose '''Properties'''.
+# Choose the '''Advanced''' panel (tab).
+# Click '''Environment Variables'''.
+# Under '''User Variables''', click '''New''' and create a variable named <code>HOME</code> that points to where you want your home folder. 
+
+----
+CategoryWThirtyTwo CategoryDotEmacs

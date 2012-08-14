@@ -1,0 +1,49 @@
+#REDIRECT DestructiveOperations
+
+A descructive function is a function that changes the parameters passed to it.
+`sort' is such a function.
+
+Here is an example.  The variable `foo' points to the first cons cell in the list.
+This cons-cell has a car of "berta" and the cdr points to the next cell whose car
+is "alex", etc.  When you use the destructive `sort' function, it saves time and
+memory by reusing the cons cell, essentially just changing the pointers between
+the cells.  It then returns the pointer to the first element in the new list.
+
+    ELISP> (setq foo '("berta" "alex" "claudia"))
+    ("berta" "alex" "claudia")
+    ELISP> (sort foo 'string-lessp)
+    ("alex" "berta" "claudia")
+    ELISP> foo
+    ("berta" "claudia")
+
+Note that `foo' still points to the same cons cell as before!
+This cons-cell has a car of "berta" and the cdr points to the next cell -- but this
+is a different cell, now.
+
+This is why for destructive functions, you should always assign the result back
+to the original variable:
+
+    ELISP> (setq foo '("berta" "alex" "claudia"))
+    ("berta" "alex" "claudia")
+    ELISP> (setq foo (sort foo 'string-lessp))
+    ("alex" "berta" "claudia")
+    ELISP> foo
+    ("alex" "berta" "claudia")
+
+But note the problem you have when you use two variables:
+
+    ELISP> (setq foo '("berta" "alex" "claudia"))
+    ("berta" "alex" "claudia")
+    ELISP> (setq bar foo)
+    ("berta" "alex" "claudia")
+    ELISP> (setq foo (sort foo 'string-lessp))
+    ("alex" "berta" "claudia")
+    ELISP> foo
+    ("alex" "berta" "claudia")
+    ELISP> bar
+    ("berta" "claudia")
+
+This can lead to strange problems in your code.
+
+----
+CategoryCode

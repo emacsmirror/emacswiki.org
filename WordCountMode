@@ -1,0 +1,16 @@
+Lisp:wc-mode.el
+
+A simple minor mode to display output similar to that of the standard Unix <code>wc</code> command in the mode line: character count, word count, and line count.
+
+Please send bug reports and suggestions to [mailto:toby-predictive@dr-qubit.org toby-wc-mode@dr-qubit.org] (you can post them here as well if you like, of course). I don't check this page regularly, so anything not emailed to me is likely to languish here unnoticed for some time.
+
+Note that other useful and very similar WordCount code is also available. But I had this code lying around, and it works well, so it might as well be made available.
+
+--TobyCubitt
+
+
+
+----
+CategoryDisplay
+CategoryModeLine
+CategoryModeLineConfiguration
