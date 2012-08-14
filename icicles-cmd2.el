@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Sun Aug 12 14:57:12 2012 (-0700)
+;; Last-Updated: Tue Aug 14 09:36:46 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5741
+;;     Update #: 5748
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1642,8 +1642,11 @@ See `icicle-widget-color-complete'."
       :notify   'widget-color-notify
       :action   'widget-color-action)
 
-    (unless (fboundp 'icicle-ORIG-widget-color-complete)
-      (defalias 'icicle-ORIG-widget-color-complete (symbol-function 'widget-color-complete)))
+    ;; Emacs < 24 defines `widget-color-complete'.  Save that as `icicle-ORIG-*'.  Do nothing for Emacs 24+.
+    (unless (or (> emacs-major-version 23)  (fboundp 'icicle-ORIG-widget-color-complete))
+      (require 'wid-edit)
+      (when (fboundp 'widget-color-complete)
+        (defalias 'icicle-ORIG-widget-color-complete (symbol-function 'widget-color-complete))))
 
 ;;;###autoload (autoload 'icicle-lisp-complete-symbol "icicles")
     (defun icicle-widget-color-complete (widget)

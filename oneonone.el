@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 21.1
-;; Last-Updated: Mon Aug 13 14:49:38 2012 (-0700)
+;; Last-Updated: Tue Aug 14 10:27:18 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 2663
+;;     Update #: 2669
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/oneonone.el
 ;; Keywords: local, frames
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -275,6 +275,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/08/14 dadams
+;;     1on1-fit-minibuffer-frame:
+;;       Simplify by using window-frame and frame-first-window.  Thx to Martin Rudalics.
 ;; 2012/08/13 dadams
 ;;     Fixes to prevent losing input focus to *Completions* frame:
 ;;       1on1-fit-minibuffer-frame:
@@ -1707,13 +1710,19 @@ This command requires library `fit-frame.el'."
              ;; Do this because this command is on `post-command-hook', and an event such as
              ;; `handle-switch-frame' might have changed the selected frame.
              (eq last-event-frame (window-frame (minibuffer-window)))
-             (save-window-excursion
-               (select-window (minibuffer-window))
-               ;; We should be able to use just (one-window-p),
-               ;; but an Emacs bug means we need this:
-               (one-window-p nil 'selected-frame)))
-    (let* ((frame         (save-window-excursion
-                            (select-window (minibuffer-window)) (selected-frame)))
+             (eq (frame-first-window last-event-frame) (minibuffer-window))
+
+             ;; $$$$$$ Previous sexp replaces this, which should do the same thing:
+             ;; (one-window-p nil (window-frame (minibuffer-window)))
+             ;;
+             ;; And that replaces this, which, again, should do the same thing:
+             ;; (save-window-excursion
+             ;;  (select-window (minibuffer-window))
+             ;;  ;; We should be able to use just (one-window-p),
+             ;;  ;; but an Emacs bug means we need this:
+             ;;  (one-window-p nil 'selected-frame))
+             )
+    (let* ((frame         (window-frame (minibuffer-window)))
            (frame-height  (frame-height frame)))
       (cond
         ((eq last-command '1on1-fit-minibuffer-frame)
