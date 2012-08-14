@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 21.1
-;; Last-Updated: Tue Aug 14 10:27:18 2012 (-0700)
+;; Last-Updated: Tue Aug 14 15:09:07 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 2669
+;;     Update #: 2671
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/oneonone.el
 ;; Keywords: local, frames
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -278,6 +278,7 @@
 ;; 2012/08/14 dadams
 ;;     1on1-fit-minibuffer-frame:
 ;;       Simplify by using window-frame and frame-first-window.  Thx to Martin Rudalics.
+;;       If (icicle-)abort-recursive-edit then reset to default height and position.
 ;; 2012/08/13 dadams
 ;;     Fixes to prevent losing input focus to *Completions* frame:
 ;;       1on1-fit-minibuffer-frame:
@@ -1725,6 +1726,9 @@ This command requires library `fit-frame.el'."
     (let* ((frame         (window-frame (minibuffer-window)))
            (frame-height  (frame-height frame)))
       (cond
+        ((memq this-command '(icicle-abort-recursive-edit abort-recursive-edit))
+         (set-frame-height frame 1on1-minibuffer-frame-height) ; Reset to default.
+         (1on1-set-minibuffer-frame-top/bottom))
         ((eq last-command '1on1-fit-minibuffer-frame)
          (set-frame-height frame (1+ (frame-height frame)))
          (1on1-set-minibuffer-frame-top/bottom)
