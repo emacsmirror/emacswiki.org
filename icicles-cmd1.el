@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Aug 10 11:23:16 2012 (-0700)
+;; Last-Updated: Mon Aug 13 19:32:51 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 24490
+;;     Update #: 24493
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1758,11 +1758,15 @@ Use `mouse-2', `RET', or `S-RET' to finally choose a candidate,
 or `C-g' to quit.
 
 With a prefix argument, you can enter multiple faces at the same time
-with `RET' (in Emacs 22 or later).  This gives you the completion
-behavior of `customize-face' in vanilla Emacs.  The advantage is that
-the default value is the list of all faces under the cursor.  The
-disadvantage is that face candidates are not WYSIWYG in buffer
-`*Completions*'.
+with a single `RET' (in Emacs 22 or later).  This gives you more or
+less the `crm' completion behavior of `customize-face' in vanilla
+Emacs.  Most Icicles completion features are still available, but
+`TAB' performs `crm' completion, so it does not also cycle among
+completion candidates.  You can, as always, use `down' to do that.
+
+A advantage of using a prefix argument is that the default value is
+the list of all faces under the cursor.  A disadvantage is that face
+candidates are not WYSIWYG in buffer `*Completions*'.
 
 This is an Icicles command - see command `icicle-mode'."
   (interactive
