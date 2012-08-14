@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue Aug 14 09:31:05 2012 (-0700)
+;; Last-Updated: Tue Aug 14 15:11:59 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8792
+;;     Update #: 8793
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3293,6 +3293,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2012/08/14 dadams
+;;     icicle-abort-recursive-edit: Call 1on1-fit-minibuffer-frame.
 ;; 2012/08/06 dadams
 ;;     Renamed old-* to icicle-ORIG-*:
 ;;       icicle-ORIG-choose-completion, icicle-ORIG-exit-minibuffer,
