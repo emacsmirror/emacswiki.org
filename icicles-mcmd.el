@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Aug 14 15:00:50 2012 (-0700)
+;; Last-Updated: Tue Aug 14 15:20:58 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 18407
+;;     Update #: 18408
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2283,7 +2283,7 @@ you do not want this remapping, then customize option
       (when (get-buffer "*Completions*") (kill-buffer (get-buffer "*Completions*")))
     (when (and (boundp '1on1-fit-minibuffer-frame-flag) ; In `oneonone.el'.
                1on1-fit-minibuffer-frame-flag  (require 'fit-frame nil t))
-      (1on1-fit-minibuffer-frame))
+      (1on1-fit-minibuffer-frame 'RESET))
     (icicle-remove-Completions-window 'FORCE))
   (abort-recursive-edit))
 
