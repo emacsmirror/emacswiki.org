@@ -1,23 +1,12 @@
-A major mode for editing [http://www.digitalmars.com/d/index.html D Language] programs.
-D is a modern replacement for C which attempts to recitfy the mistakes made by C++ and Java.
+A major mode for editing programs in the [http://dlang.org D Programming Language]. D is a modern replacement for C which attempts to rectify the mistakes made by C++ and Java.
 
-More information about the d-mode, including how to install it, can be found here: [http://www.digitalmars.com/d/archives/19993.html].
-----
+== Current version ==
 
-The [http://www.wikiservice.at/d/wiki.cgi?EditorSupport/EmacsEditor EmacsEditor] page at the [http://www.wikiservice.at/d/wiki.cgi?FrontPage Wiki4D] site contains a link to a newer major mode (purported to work with 22.x onwards), as well as tips on integrating the D compiler further with Emacs.
+The current version of the d-mode, compatible with Emacs23 and Emacs24, can be found at its [https://github.com/Emacs-D-Mode-Maintainers/Emacs-D-Mode development page at Github].
 
-== d-mode.el (based on cc-mode 5.3x) ==
+== Older version ==
 
-* http://www.prowiki.org/wiki4d/wiki.cgi?EditorSupport/EmacsDMode
-
-This version works with Emacs22.  It will also work with Emacs21 after upgrading cc-mode (http://cc-mode.sourceforge.net).
-
-== Older d-mode.el (based on cc-mode 5.28) ==
-
-* http://home.comcast.net/~benhinkle/d-mode.zip
-
-This version works on Emacs21, but does not work on Emacs22 (because Emacs22 comes with cc-mode 5.31).
-
+An older incarnation of d-mode, based on cc-mode 5.28, can be downloaded [http://home.comcast.net/~benhinkle/d-mode.zip here]. This version works on Emacs21, but does not work on Emacs22 (because Emacs22 comes with cc-mode 5.31).
 
 ----
 ProgrammingModes DProgrammingLanguage
