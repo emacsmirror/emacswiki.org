@@ -2,12 +2,9 @@ In January 1978, EugeneCiccarelli wrote an internal document for the [MeatBall:M
 The title of the report was ''An Introduction to the EMACS Editor''.
 
 * [ftp://publications.ai.mit.edu/ai-publications/pdf/AIM-447.pdf Original scanned copies as PDF (large file size)]
-* [http://agave.garden.org/~aaronh/emacs/doc/emacs-1978.html Typeset HTML version]
-* [http://agave.garden.org/~aaronh/emacs/doc/emacs-1978.pdf Typeset PDF version]
-* [http://agave.garden.org/~aaronh/emacs/doc/emacs-1978.texi Texinfo source file]
-
-[new:DrewAdams:2012-08-16 04:26 UTC]
-The last 3 URLs above are at a gardening site that asks for a login. Not to mention that this page (not that page, this one) is linked from [http://en.wikipedia.org/wiki/Incremental_search Wikipedia!].
+* [http://www.burlingtontelecom.net/~ashawley/gnu/emacs/doc/emacs-1978.html Typeset HTML version]
+* [http://www.burlingtontelecom.net/~ashawley/gnu/emacs/doc/emacs-1978.pdf Typeset PDF version]
+* [http://www.burlingtontelecom.net/~ashawley/gnu/emacs/doc/emacs-1978.texi Texinfo source file]
 
 ----
 CategoryHistory
