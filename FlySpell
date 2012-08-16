@@ -142,5 +142,9 @@ Meta-F8 calls ispell for the FlySpell highlighted word after the cursor's positi
 (global-set-key (kbd "M-<f8>") 'flyspell-check-next-highlighted-word)
 </pre>
 
+[new]
+
+How can I position the flyspell suggestions in a window that is below the current window? Currently, on Aquamacs, running leuven color theme, when the suggestions come up, the tabs do not disappear (they did when i wasn't using the color theme). The theme is really nice (in conjunction with org-mode) so I do not wish to get rid of that. How can i force the suggestion window to appear just above the modeline?
+
 ----
 CategoryModes | CategorySpelling
