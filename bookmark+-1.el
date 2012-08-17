@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Fri Aug 10 13:07:33 2012 (-0700)
+;; Last-Updated: Fri Aug 17 13:58:14 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5790
+;;     Update #: 5792
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -956,8 +956,8 @@ Some functions you might want to use in the option value:
 The first of these is defined in library `thingatpt+.el'.  It returns
 the text in the region, if it is active and not empty.  Otherwise it
 returns the name of the (non-`nil') symbol nearest point, within
-maximum search distances `near-point-x-distance' (left and right) and
-`near-point-y-distance' (up and down)."
+maximum search distances `tap-near-point-x-distance' (left and right)
+and `tap-near-point-y-distance' (up and down)."
   :type '(repeat function) :group 'bookmark-plus)
 
 ;;;###autoload
