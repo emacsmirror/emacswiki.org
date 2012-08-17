@@ -2,11 +2,11 @@
 
 ;; Copyright (C) 2003-2011 Rob Giardina
 
-;; Version: 1.3.1
+;; Version: 1.3.2
 ;; Keywords: dired, hide
 ;; Author: Rob Giardina <rob.giardina.ohmmanepadmespam@oracle.com>
 ;; Maintainer: Rob Giardina
-;; Last updated: Feb 20, 2011
+;; Last updated: Aug 17, 2012
 ;; Contributors: Harold Maier, Klaus Berndl
 
 ;; This file is not part of GNU Emacs.
@@ -66,6 +66,8 @@
 ;;
 ;; CHANGES:
 ;;
+;; * 1.3.2: Added sr-mode to dired-details-hide function to make it word with
+;;          Sunrise Commander
 ;; * 1.3.1: Allow "misc lines (total used, find-dired statuses, etc)" to be hidden;
 ;;          suggested by Chris Poole
 ;; * 1.3: dired-details-toggle and customization support added by Klaus Berndl
