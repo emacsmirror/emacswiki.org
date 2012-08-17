@@ -7,9 +7,9 @@
 ;; Copyright (C) 2006-2012, Drew Adams, all rights reserved.
 ;; Created: Sun Jul 30 16:40:29 2006
 ;; Version: 20.1
-;; Last-Updated: Sun Jan  1 14:05:08 2012 (-0800)
+;; Last-Updated: Fri Aug 17 16:19:22 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 668
+;;     Update #: 672
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/thing-cmds.el
 ;; Keywords: thingatpt, thing, region, selection
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -64,6 +64,8 @@
 ;; 
 ;;; Change Log:
 ;;
+;; 2012/08/17 dadams
+;;     Invoke tap-define-aliases-wo-prefix if thingatpt+.el is loaded.
 ;; 2011/12/15 dadams
 ;;     mark-thing:
 ;;       If not on a thing, use thing-region to capture one.  If in a thing and not extending
@@ -134,7 +136,10 @@
 ;; 
 ;;; Code:
 
-(require 'thingatpt+ nil t) ;; (no error if not found): bounds-of-thing-at-point
+(when (and (require 'thingatpt+ nil t) ;; (no error if not found): bounds-of-thing-at-point
+           (fboundp 'tap-define-aliases-wo-prefix)) ; >= 2012-08-17
+  (tap-define-aliases-wo-prefix))
+
 (require 'thingatpt) ;; bounds-of-thing-at-point
 (require 'hide-comnt) ;; with-comments-hidden, so also hide/show-comments, ignore-comments-flag.
 
