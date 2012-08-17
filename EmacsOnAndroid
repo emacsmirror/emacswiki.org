@@ -3,8 +3,7 @@ This is about installing Emacs into an Android device. See GoogleAndroid for tip
 == Introduction: ways to run Emacs on Android devices ==
 Some of them are hypothetical.
 ===Native port (installable Android application)===
-That would be very nice, but for the moment is not possible because Emacs depends on libraries which have no Android version or are not present there.
-See: http://android.stackexchange.com/questions/19558/emacs-on-android
+A first version of a native port was released August 2012.  See https://github.com/zielmicha/emacs-android for the github repository, and https://play.google.com/store/apps/details?id=com.zielm.emacs for the playstore link.
 ===Remove Android, install another GNU/Linux, install Emacs there===
 This is known to work, but you need to get root access to your tablet and remove Android.
 See below for some experiences with particular tablets.
