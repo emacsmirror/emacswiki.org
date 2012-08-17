@@ -170,7 +170,7 @@ show them."
   "Make an invisible, evaporable overlay for each file-line's details
 in this dired buffer."
   (interactive)
-  (unless (memq major-mode '(dired-mode vc-dired-mode))
+  (unless (memq major-mode '(dired-mode vc-dired-mode sr-mode))
     (error "dired-details-hide can only be called in dired mode"))
 
   (when dired-details-debug
