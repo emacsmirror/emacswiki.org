@@ -763,6 +763,11 @@ association list.  Here are cases when the car values are strings.
   (assoc "2" '(("2" . 2) ("1" . 1) ("2") ("3" . 3)))
   ==> ("2" . 2)
 
+Extract the value (may wish to test for nil before doing so):
+
+  (cdr (assoc "2" '(("2" . 2) ("1" . 1) ("2") ("3" . 3)))
+  ==> 2
+
 Deleting:
 
   (let ((alist '(("a" . 1) ("b" . 2))))
