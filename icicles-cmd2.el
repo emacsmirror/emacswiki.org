@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Tue Aug 14 09:36:46 2012 (-0700)
+;; Last-Updated: Sat Aug 18 08:47:13 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5748
+;;     Update #: 5752
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2052,8 +2052,8 @@ candidates than `icicle-Info-visited-max-candidates'"
 (defun icicle-Info-index-20 ()
   "Like `Info-index', but you can use completion for the index topic."
   (interactive)
-  (let* ((symb (or (and (fboundp 'symbol-nearest-point) ; Defined in `thingatpt+.el'.
-                        (symbol-nearest-point))
+  (let* ((symb (or (and (fboundp 'tap-symbol-nearest-point) ; Defined in `thingatpt+.el'.
+                        (tap-symbol-nearest-point))
                    (symbol-at-point)))
          (topic (and symb (symbol-name symb))))
     (icicle-ORIG-Info-index "")
@@ -2345,7 +2345,8 @@ remapping, then customize option `icicle-top-level-key-bindings'." ; Doc string
                 (where-is symb (and pref-arg (consp pref-arg)))))
   (if pref-arg "Where is command: " "Where is bound command: ")
   obarray (and icompletep pred) t nil nil ; `completing-read' args
-  (let ((fn  (or (and (fboundp 'symbol-nearest-point) (symbol-nearest-point))
+  (let ((fn  (or (and (fboundp 'tap-symbol-nearest-point) ; Defined in `thingatpt+.el'.
+                      (tap-symbol-nearest-point))
                  (function-called-at-point))))
     (and fn (symbol-name fn)))
   t
