@@ -7,9 +7,9 @@
 ;; Copyright (C) 1995-2012, Drew Adams, all rights reserved.
 ;; Created: Wed Aug  2 11:12:24 1995
 ;; Version: 21.1
-;; Last-Updated: Sat Aug 11 09:53:15 2012 (-0700)
+;; Last-Updated: Sat Aug 18 09:36:01 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 2937
+;;     Update #: 2938
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/start.el
 ;; Keywords: abbrev, internal, local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -31,23 +31,22 @@
 ;;   `eyedropper', `facemenu', `facemenu+', `faces', `faces+',
 ;;   `ffap', `files+', `find-dired', `find-dired+', `find-dired-',
 ;;   `finder', `finder+', `finder-inf', `fit-frame', `font-lock',
-;;   `font-menus', `frame', `frame+', `frame-cmds', `frame-fns',
-;;   `fuzzy-match', `header2', `help+20', `hexrgb', `hide-comnt',
-;;   `highlight', `icomplete', `icomplete+', `imenu', `imenu+',
-;;   `info', `info+', `isearch+', `iso-transl', `lacarte',
-;;   `lib-requires', `lisp-mnt', `loadhist', `local-lpr',
-;;   `local-ps-print', `lpr', `ls-lisp', `ls-lisp+',
-;;   `ls-lisp-verbosity', `menu-bar', `menu-bar+', `misc-cmds',
-;;   `misc-fns', `moccur-edit', `mouse', `mouse+', `mwheel', `naked',
-;;   `occur-schroeder', `oneonone', `paren', `pcmpl-auto', `pp',
-;;   `pp+', `pp-c-l', `printing', `ps-print', `replace+', `ring',
-;;   `ring+', `savehist-20+', `second-sel', `sendmail', `setup',
-;;   `setup-keys', `simple+', `speedbar', `start', `strings',
-;;   `subr-21', `swiss-move', `synonyms', `thing-cmds', `thingatpt',
-;;   `thingatpt+', `thumb-frm', `timer', `timer+', `unaccent', `vc',
-;;   `vc+', `vc-', `vc-hooks', `vc-hooks+', `w32-browser',
-;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget',
-;;   `window+', `zoom-frm'.
+;;   `font-menus', `frame-cmds', `frame-fns', `fuzzy-match',
+;;   `header2', `help+20', `hexrgb', `hide-comnt', `highlight',
+;;   `icomplete', `icomplete+', `imenu', `imenu+', `info', `info+',
+;;   `isearch+', `iso-transl', `lacarte', `lib-requires', `lisp-mnt',
+;;   `loadhist', `local-lpr', `local-ps-print', `lpr', `ls-lisp',
+;;   `ls-lisp+', `ls-lisp-verbosity', `menu-bar', `menu-bar+',
+;;   `misc-cmds', `misc-fns', `moccur-edit', `mouse', `mouse+',
+;;   `mwheel', `naked', `occur-schroeder', `oneonone', `paren',
+;;   `pcmpl-auto', `pp', `pp+', `pp-c-l', `printing', `ps-print',
+;;   `replace+', `ring', `ring+', `savehist-20+', `second-sel',
+;;   `sendmail', `setup', `setup-keys', `simple+', `speedbar',
+;;   `start', `strings', `subr-21', `swiss-move', `synonyms',
+;;   `thing-cmds', `thingatpt', `thingatpt+', `thumb-frm', `timer',
+;;   `timer+', `unaccent', `vc', `vc+', `vc-', `vc-hooks',
+;;   `vc-hooks+', `w32-browser', `w32browser-dlgopen', `wid-edit',
+;;   `wid-edit+', `widget', `window+', `zoom-frm'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -83,6 +82,8 @@
 ;;
 ;; Change Log:
 ;;
+;; 2012/08/18 dadams
+;;     Invoke tap-define-aliases-wo-prefix if thingatpt+.el is loaded.
 ;; 2012/08/11 dadams
 ;;     Do not require frame+.el if window+.el was loaded.
 ;; 2012/08/10 dadams
@@ -501,7 +502,9 @@ See the Dired-X Info pages (type \\[info]) for information on this package.")
 ;; $$$$$$(require 'isearch+ nil t)    ; Extensions to `isearch.el'.
 (require 'occur-schroeder nil t)        ; Occur alternative & isearch option.
 (load-library "delsel")
-(require 'thingatpt+ nil t)             ; Thing-at-point extensions.
+(when (and (require 'thingatpt+ nil t)  ; Thing-at-point extensions.
+           (fboundp 'tap-define-aliases-wo-prefix)) ; >= 2012-08-17
+  (tap-define-aliases-wo-prefix))
 (when (require 'thing-cmds nil t)       ; Thing-at-point commands and default key bindings.
   (thgcmd-bind-keys))
 
