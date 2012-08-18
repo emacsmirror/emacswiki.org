@@ -9,9 +9,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Wed Jan 10 14:31:50 1996
 ;; Version: 20.0
-;; Last-Updated: Sun Jan  1 14:22:36 2012 (-0800)
+;; Last-Updated: Sat Aug 18 08:28:04 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 610
+;;     Update #: 611
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/find-dired+.el
 ;; Keywords: internal, unix, tools, matching, local
 ;; Compatibility: GNU Emacs 20.x
@@ -19,13 +19,11 @@
 ;; Features that might be required by this library:
 ;;
 ;;   `bookmark', `bookmark+', `bookmark+-1', `bookmark+-bmu',
-;;   `bookmark+-key', `bookmark+-lit', `bookmark+-mac', `cl',
-;;   `custom', `dired', `dired+', `dired-aux', `dired-x', `easymenu',
-;;   `ediff-diff', `ediff-help', `ediff-init', `ediff-merg',
-;;   `ediff-mult', `ediff-util', `ediff-wind', `ffap', `find-dired',
-;;   `find-dired-', `fit-frame', `info', `info+', `misc-fns',
-;;   `mkhtml', `mkhtml-htmlize', `pp', `pp+', `strings', `thingatpt',
-;;   `thingatpt+', `w32-browser', `widget'.
+;;   `bookmark+-key', `bookmark+-lit', `cl', `dired', `dired+',
+;;   `dired-aux', `dired-x', `ediff-diff', `ediff-help',
+;;   `ediff-init', `ediff-merg', `ediff-mult', `ediff-util',
+;;   `ediff-wind', `ffap', `find-dired', `find-dired-', `misc-fns',
+;;   `pp', `pp+', `thingatpt', `thingatpt+', `w32-browser'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -77,6 +75,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/08/18 dadams
+;;     Invoke tap-define-aliases-wo-prefix if thingatpt+.el is loaded.
 ;; 2011/08/30 dadams
 ;;     find-dired-default-fn:
 ;;       devar -> defcustom.
@@ -156,8 +156,11 @@
                         ;; dired-insert-set-properties,
                         ;; diredp-menu-bar-subdir-menu
  ;; Note: `dired+.el' does a (require 'dired): dired-mode-map
-(require 'thingatpt+ nil t) ;; (no error if not found):
-                            ;; region-or-non-nil-symbol-name-nearest-point
+
+(when (and (require 'thingatpt+ nil t);; (no error if not found)
+           (fboundp 'tap-define-aliases-wo-prefix)) ; >= 2012-08-17
+  (tap-define-aliases-wo-prefix))
+ ;; region-or-non-nil-symbol-name-nearest-point
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
 
