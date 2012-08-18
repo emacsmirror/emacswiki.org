@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Mar 16 14:18:11 1999
 ;; Version: 20.0
-;; Last-Updated: Sat Aug 18 08:36:11 2012 (-0700)
+;; Last-Updated: Sat Aug 18 16:41:58 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 2135
+;;     Update #: 2139
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/help+.el
 ;; Keywords: help
 ;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x
@@ -71,6 +71,7 @@
 ;;
 ;; 2012/08/18 dadams
 ;;     Invoke tap-define-aliases-wo-prefix if thingatpt+.el is loaded.
+;;     help-on-click/key: Use tap-symbol-at-point, not symbol-at-point, if defined.
 ;; 2012/04/01 dadams
 ;;     where-is: Wrap individual key sequences in `', not just all of them together.
 ;; 2011/10/07 dadams
@@ -115,7 +116,7 @@
 (when (and (require 'thingatpt+ nil t) ;; (no error if not found)
            (fboundp 'tap-define-aliases-wo-prefix)) ; >= 2012-08-17
   (tap-define-aliases-wo-prefix))
- ;; symbol-nearest-point
+ ;; symbol-nearest-point, tap-symbol-at-point
 
 (require 'frame-fns nil t)  ;; (no error if not found): 1-window-frames-on
 (require 'naked nil t) ;; (no error if not found): naked-key-description
@@ -507,8 +508,11 @@ If you click elsewhere in a buffer other than the minibuffer, then
                            (Info-goto-node "(emacs)Minibuffer")
                            (message "Minibuffer: decribed in buffer `*info*'."))
                           (t
-                           (let ((symb            (save-excursion (mouse-set-point key)
-                                                       (symbol-at-point)))
+                           (let ((symb            (save-excursion
+                                                    (mouse-set-point key)
+                                                    (if (fboundp 'tap-symbol-at-point)
+                                                        (tap-symbol-at-point)
+                                                      (symbol-at-point))))
                                  (apropos-do-all  t)
                                  (found-doc       nil)
                                  (found           nil)
