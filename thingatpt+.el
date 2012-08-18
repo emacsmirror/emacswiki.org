@@ -7,12 +7,12 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Feb 13 16:47:45 1996
 ;; Version: 21.0
-;; Last-Updated: Fri Aug 17 16:06:02 2012 (-0700)
+;; Last-Updated: Sat Aug 18 08:52:29 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1589
+;;     Update #: 1596
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/thingatpt+.el
 ;; Keywords: extensions, matching, mouse
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -118,11 +118,17 @@
 ;;  you can invoke `tap-define-aliases-wo-prefix' to provide alias
 ;;  functions that have the same names but without the prefix `tap-'.
 ;;  These aliases do not collide with any standard Emacs functions.
+;;  For example, you might do this:
+;;
+;;    (when (require 'thingatpt+ nil t)  ; (no error if not found)
+;;      (tap-define-aliases-wo-prefix))
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
 ;;
+;; 2012/08/18 dadams
+;;     tap-define-aliases-wo-prefix: Return non-nil so can use in Boolean guards.
 ;; 2012/08/17 dadams
 ;;     Added: tap-define-aliases-wo-prefix, tap-redefine-std-fns.
 ;;     Added group thing-at-point-plus.  Use for defcustoms.
@@ -1215,7 +1221,7 @@ The standard functions replaced are these:
   (when (fboundp 'defvaralias)          ; Emacs 22+
     (defvaralias 'near-point-x-distance 'tap-near-point-x-distance)
     (defvaralias 'near-point-y-distance 'tap-near-point-y-distance))
-  )
+  t)                                    ; Return non-nil so can use with `and' etc.
 
 ;;;###autoload
 ;; This `intern' is in order to have the symbol, e.g., for `thing-types' in `thing-cmds.el'.
