@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Jan 30 15:01:06 1996
 ;; Version: 21.0
-;; Last-Updated: Sat Aug  4 08:19:15 2012 (-0700)
+;; Last-Updated: Sat Aug 18 09:33:03 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1274
+;;     Update #: 1277
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/replace+.el
 ;; Keywords: matching, help, internal, tools, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -111,6 +111,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/08/18 dadams
+;;     Invoke tap-define-aliases-wo-prefix if thingatpt+.el is loaded.
 ;; 2012/08/04 dadams
 ;;     occur-unhighlight-visited-hits: Removed requirement that it be called from occur mode.
 ;; 2012/08/03 dadams
@@ -251,7 +253,11 @@
 (eval-when-compile (require 'cl)) ;; incf (plus, for Emacs 20: push)
 
 (require 'thingatpt nil t) ;; (no error if not found): word-at-point
-(require 'thingatpt+ nil t) ;; (no error if not found): non-nil-symbol-name-nearest-point
+(when (and (require 'thingatpt+ nil t);; (no error if not found)
+           (fboundp 'tap-define-aliases-wo-prefix)) ; >= 2012-08-17
+  (tap-define-aliases-wo-prefix))
+ ;; non-nil-symbol-name-nearest-point
+
 (require 'frame-cmds nil t) ;; (no error if not found): show-a-frame-on
 (require 'frame-fns nil t) ;; (no error if not found): get-a-frame
 (require 'fit-frame nil t) ;; (no error if not found): fit-frame
