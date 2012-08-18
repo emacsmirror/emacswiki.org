@@ -7,12 +7,12 @@
 ;; Copyright (C) 2005-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 16 13:36:47 2005
 ;; Version: 22.0
-;; Last-Updated: Sun Jan  1 14:33:34 2012 (-0800)
+;; Last-Updated: Sat Aug 18 08:33:08 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 623
+;;     Update #: 628
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/grep+.el
 ;; Keywords: tools, processes, compile
-;; Compatibility: GNU Emacs: 22.x, 23.x
+;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x
 ;; 
 ;; Features that might be required by this library:
 ;;
@@ -84,8 +84,10 @@
 ;; 
 ;;; Change Log:
 ;;
+;; 2012/08/18 dadams
+;;     Invoke tap-define-aliases-wo-prefix if thingatpt+.el is loaded.
 ;; 2011/10/03 dadams
-;;     Updated to fit latest Emac 24.
+;;     Updated to fit latest Emacs 24.
 ;;       grep-default-command: Wrapped replacement of file pattern in condition-case.
 ;;       grep: Added read-shell-command from Emacs 24 code, but commented it out, for now.
 ;;       grep-regexp-alist: Removed initial regexp to match file and line.
@@ -150,7 +152,11 @@
 
 (require 'compile+ nil t) ;; (no error if not found) - to pick up enhancements for grep too.
 (require 'grep)
-(require 'thingatpt+ nil t) ;; (no error if not found) non-nil-symbol-name-nearest-point
+
+(when (and (require 'thingatpt+ nil t);; (no error if not found)
+           (fboundp 'tap-define-aliases-wo-prefix)) ; >= 2012-08-17
+  (tap-define-aliases-wo-prefix))
+ ;; non-nil-symbol-name-nearest-point
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 
