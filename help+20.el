@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Mar 16 14:18:11 1999
 ;; Version: 20.0
-;; Last-Updated: Sat Aug 18 08:38:55 2012 (-0700)
+;; Last-Updated: Sat Aug 18 16:44:46 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 2188
+;;     Update #: 2191
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/help+20.el
 ;; Keywords: help
 ;; Compatibility: GNU Emacs 20.x
@@ -92,6 +92,7 @@
 ;;
 ;; 2012/08/18 dadams
 ;;     Invoke tap-define-aliases-wo-prefix if thingatpt+.el is loaded.
+;;     help-on-click/key: Use tap-symbol-at-point, not symbol-at-point, if defined.
 ;; 2012/01/11 dadams
 ;;     describe-variable: Remove * from beginning of doc string.
 ;; 2011/12/19 dadams
@@ -247,9 +248,10 @@
                        ;; Info-goto-emacs-key-command-node (returns found-p)
 (require 'thingatpt nil t) ;; (no error if not found): symbol-at-point
 
-(when (and (require 'thingatpt+ nil t);; (no error if not found): symbol-nearest-point
+(when (and (require 'thingatpt+ nil t);; (no error if not found)
            (fboundp 'tap-define-aliases-wo-prefix)) ; >= 2012-08-17
   (tap-define-aliases-wo-prefix))
+  ;;  symbol-nearest-point, tap-symbol-at-point
 
 (require 'frame-fns nil t) ;; (no error if not found): 1-window-frames-on
 (require 'wid-edit+ nil t) ;; (no error if not found):
@@ -1206,8 +1208,11 @@ If you click elsewhere in a buffer other than the minibuffer, then
                            (Info-goto-node "(emacs)Minibuffer")
                            (message "Minibuffer: decribed in *info* buffer."))
                           (t
-                           (let ((symb            (save-excursion (mouse-set-point key)
-                                                                  (symbol-at-point)))
+                           (let ((symb            (save-excursion
+                                                    (mouse-set-point key)
+                                                    (if (fboundp 'tap-symbol-at-point)
+                                                        (tap-symbol-at-point)
+                                                      (symbol-at-point))))
                                  (apropos-do-all  t)
                                  (found-doc       nil)
                                  (found           nil)
