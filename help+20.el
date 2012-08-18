@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Mar 16 14:18:11 1999
 ;; Version: 20.0
-;; Last-Updated: Wed Jan 11 06:33:03 2012 (-0800)
+;; Last-Updated: Sat Aug 18 08:38:55 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 2187
+;;     Update #: 2188
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/help+20.el
 ;; Keywords: help
 ;; Compatibility: GNU Emacs 20.x
@@ -90,6 +90,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/08/18 dadams
+;;     Invoke tap-define-aliases-wo-prefix if thingatpt+.el is loaded.
 ;; 2012/01/11 dadams
 ;;     describe-variable: Remove * from beginning of doc string.
 ;; 2011/12/19 dadams
@@ -244,7 +246,11 @@
 (require 'info+ nil t) ;; (no error if not found):
                        ;; Info-goto-emacs-key-command-node (returns found-p)
 (require 'thingatpt nil t) ;; (no error if not found): symbol-at-point
-(require 'thingatpt+ nil t) ;; (no error if not found): symbol-nearest-point
+
+(when (and (require 'thingatpt+ nil t);; (no error if not found): symbol-nearest-point
+           (fboundp 'tap-define-aliases-wo-prefix)) ; >= 2012-08-17
+  (tap-define-aliases-wo-prefix))
+
 (require 'frame-fns nil t) ;; (no error if not found): 1-window-frames-on
 (require 'wid-edit+ nil t) ;; (no error if not found):
                            ;; redefined color widget (for help-var-is-of-type-p)
