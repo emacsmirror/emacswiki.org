@@ -7,12 +7,12 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Wed Aug  2 11:20:41 1995
 ;; Version: 21.1
-;; Last-Updated: Fri Mar  2 07:59:10 2012 (-0800)
+;; Last-Updated: Sat Aug 18 09:27:34 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 3017
+;;     Update #: 3023
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/misc-cmds.el
 ;; Keywords: internal, unix, extensions, maint, local
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -70,6 +70,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/08/18 dadams
+;;     resolve-file-name: Invoke tap-define-aliases-wo-prefix if thingatpt+.el loaded.
 ;; 2011/12/21 dadams
 ;;     Replaced redefinition of rename-buffer with defadvice.
 ;; 2011/12/19 dadams
@@ -965,6 +967,7 @@ region was active then its content was already added to the ring.)"
    (let* ((regionp   (and transient-mark-mode mark-active))
           (thg+bnds  (and (not regionp)
                           (require 'thingatpt+ nil t)
+                          (tap-define-aliases-wo-prefix) ; Defined in `thingatpt+.el'.
                           (thing-nearest-point-with-bounds 'filename)))
           (bnds      (if regionp
                          (cons (region-beginning) (region-end))
