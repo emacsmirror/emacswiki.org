@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Sat Aug 18 08:47:13 2012 (-0700)
+;; Last-Updated: Sat Aug 18 11:22:46 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5752
+;;     Update #: 5758
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4796,8 +4796,11 @@ the bounds of THING.  Return nil if no such THING is found."
       (if (not thg+bds)
           nil
         ;; $$$$$$ Which is better, > or >=, < or <=, for the comparisons?
+        ;; $$$$$$ For `list' it seems that <= is better than <.  But I belive I changed it to < because of
+        ;; $$$$$$ other considerations (perhaps XML (or char props or visibility or predicate or transform?)).
+        ;; $$$$$$ Changed it to < on 2011-05-14.  Leaving it that way, for now.
         ;; $$$$$$ (while (and thg+bds
-        ;;                    (if backward  (> (cddr thg+bds) (point)) (<= (cadr thg+bds) (point))))
+        ;;                    (if backward (> (cddr thg+bds) (point))  (<= (cadr thg+bds) (point))))
         (while (and thg+bds  (if backward  (> (cddr thg+bds) (point))  (< (cadr thg+bds) (point))))
           (if backward
               (setq start  (max end (1- (cadr thg+bds))))
