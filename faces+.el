@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Jun 28 15:07:06 1996
 ;; Version: 21.0
-;; Last-Updated: Sat Aug 18 16:37:34 2012 (-0700)
+;; Last-Updated: Sat Aug 18 16:50:40 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 286
+;;     Update #: 290
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/faces+.el
 ;; Keywords: faces, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -50,7 +50,6 @@
 ;;
 ;; 2012/08/18 dadams
 ;;     Invoke tap-define-aliases-wo-prefix if thingatpt+.el is loaded.
-;;     make-face: Use tap-symbol-at-point, not symbol-at-point, if defined.
 ;; 2011/01/04 dadams
 ;;     Removed autoload cookies from non def* sexps and non-interactive functions.
 ;; 2009/11/16 dadams
@@ -109,10 +108,9 @@
 (eval-when-compile (when (< emacs-major-version 21) (require 'cl))) ;; dolist, pop, push
 
 (require 'thingatpt nil t) ;; (no error if not found): symbol-at-point
-(when (and (require 'thingatpt+ nil t) ;; (no error if not found)
+(when (and (require 'thingatpt+ nil t) ;; (no error if not found): symbol-nearest-point
            (fboundp 'tap-define-aliases-wo-prefix)) ; >= 2012-08-17
   (tap-define-aliases-wo-prefix))
-  ;; symbol-nearest-point, tap-symbol-at-point
 
 ;;;;;;;;;;;;;;;;;;;;
 
@@ -136,7 +134,7 @@ Prompts with arg PROMPT (a string)."
 
 ;; REPLACES ORIGINAL in `faces.el':
 ;; Uses `completing-read' in interactive spec, with `symbol-nearest-point'.
-;; `symbol-nearest-point' and `tap-symbol-at-point' are defined in `thingatpt+.el'.
+;; `symbol-nearest-point' is defined in `thingatpt+.el'.
 ;; `symbol-at-point' is defined in `thingatpt.el'.
 ;;
 (if (< emacs-major-version 21)
@@ -152,7 +150,6 @@ If the face already exists, it is unmodified.
 The argument, NAME, is returned."
       (interactive
        (let ((symb (cond ((fboundp 'symbol-nearest-point) (symbol-nearest-point))
-                         ((fboundp 'tap-symbol-at-point) (tap-symbol-at-point))
                          ((fboundp 'symbol-at-point) (symbol-at-point))
                          (t nil)))
              (enable-recursive-minibuffers t))
@@ -187,7 +184,6 @@ in the global variable `face-x-resources'.)  If FACE is already known
 as a face, leave it unmodified.  Value is FACE."
     (interactive
      (let ((symb (cond ((fboundp 'symbol-nearest-point) (symbol-nearest-point))
-                       ((fboundp 'tap-symbol-at-point) (tap-symbol-at-point))
                        ((fboundp 'symbol-at-point) (symbol-at-point))
                        (t nil)))
            (enable-recursive-minibuffers t))
