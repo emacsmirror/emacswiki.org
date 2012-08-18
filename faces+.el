@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Jun 28 15:07:06 1996
 ;; Version: 21.0
-;; Last-Updated: Fri Mar  2 07:50:13 2012 (-0800)
+;; Last-Updated: Sat Aug 18 08:25:29 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 278
+;;     Update #: 280
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/faces+.el
 ;; Keywords: faces, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -48,6 +48,8 @@
 ;; 
 ;;; Change Log:
 ;;
+;; 2012/08/18 dadams
+;;     Invoke tap-define-aliases-wo-prefix if thingatpt+.el is loaded.
 ;; 2011/01/04 dadams
 ;;     Removed autoload cookies from non def* sexps and non-interactive functions.
 ;; 2009/11/16 dadams
@@ -106,7 +108,9 @@
 (eval-when-compile (when (< emacs-major-version 21) (require 'cl))) ;; dolist, pop, push
 
 (require 'thingatpt nil t) ;; (no error if not found): symbol-at-point
-(require 'thingatpt+ nil t) ;; (no error if not found): symbol-nearest-point
+(when (and (require 'thingatpt+ nil t) ;; (no error if not found): symbol-nearest-point
+           (fboundp 'tap-define-aliases-wo-prefix)) ; >= 2012-08-17
+  (tap-define-aliases-wo-prefix))
 
 ;;;;;;;;;;;;;;;;;;;;
 
