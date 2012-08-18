@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Wed Aug  2 11:20:41 1995
 ;; Version: 21.1
-;; Last-Updated: Sat Aug 18 09:27:34 2012 (-0700)
+;; Last-Updated: Sat Aug 18 15:51:34 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 3023
+;;     Update #: 3025
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/misc-cmds.el
 ;; Keywords: internal, unix, extensions, maint, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -72,6 +72,7 @@
 ;;
 ;; 2012/08/18 dadams
 ;;     resolve-file-name: Invoke tap-define-aliases-wo-prefix if thingatpt+.el loaded.
+;;                        Use tap-bounds-of-thing-at-point if defined.
 ;; 2011/12/21 dadams
 ;;     Replaced redefinition of rename-buffer with defadvice.
 ;; 2011/12/19 dadams
@@ -973,7 +974,9 @@ region was active then its content was already added to the ring.)"
                          (cons (region-beginning) (region-end))
                        (if thg+bnds
                            (cdr thg+bnds)
-                         (bounds-of-thing-at-point 'filename))))
+                         (if (fboundp 'tap-bounds-of-thing-at-point)
+                             (tap-bounds-of-thing-at-point 'filename)
+                           (bounds-of-thing-at-point 'filename)))))
           (fname     (if bnds
                          (buffer-substring (car bnds) (cdr bnds))
                        (message "No file name at point"))))
