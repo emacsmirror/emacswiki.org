@@ -7,9 +7,9 @@
 ;; Copyright (C) 2005-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Dec 20 14:39:26 2005
 ;; Version: 1.0
-;; Last-Updated: Fri Mar  2 08:53:54 2012 (-0800)
+;; Last-Updated: Sat Aug 18 09:40:43 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 2500
+;;     Update #: 2501
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/synonyms.el
 ;; Keywords: text, dictionary, thesaurus, spelling, apropos, help
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -582,8 +582,10 @@
 
 (eval-when-compile (when (< emacs-major-version 21) (require 'cl))) ;; push, pop
 
-(require 'thingatpt+ nil t) ;; (no error if not found): word-nearest-point
 (require 'thingatpt nil t)  ;; (no error if not found): word-at-point
+(when (and (require 'thingatpt+ nil t);; (no error if not found): word-nearest-point
+           (fboundp 'tap-define-aliases-wo-prefix)) ; >= 2012-08-17
+  (tap-define-aliases-wo-prefix))
 
 ;; Note: You might get byte-compiler warnings that variables `appendp'
 ;;       and `morep' are free: .  This is OK.
