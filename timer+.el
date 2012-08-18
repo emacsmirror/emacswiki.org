@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Jul 15 08:45:19 1996
 ;; Version: 20.0
-;; Last-Updated: Fri Mar  2 08:59:08 2012 (-0800)
+;; Last-Updated: Sat Aug 18 09:43:52 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 83
+;;     Update #: 85
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/timer+.el
 ;; Keywords: processes, calendar
 ;; Compatibility: GNU Emacs 20.x
@@ -41,6 +41,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/08/18 dadams
+;;     Invoke tap-define-aliases-wo-prefix if thingatpt+.el is loaded.
 ;; 2012/02/25 dadams
 ;;     Removed soft require of Icicles.
 ;; 2005/10/31 dadams
@@ -75,7 +77,10 @@
 (eval-when-compile (when (< emacs-major-version 21) (require 'cl))) ;; pop
 
 (require 'thingatpt nil t) ;; (no error if not found): symbol-at-point
-(require 'thingatpt+ nil t) ;; (no error if not found): symbol-nearest-point
+(when (and (require 'thingatpt+ nil t);; (no error if not found)
+           (fboundp 'tap-define-aliases-wo-prefix)) ; >= 2012-08-17
+  (tap-define-aliases-wo-prefix))
+ ;; symbol-nearest-point
 
 ;; (require 'icicles nil t) ;; (no error if not found): completing-read
 
