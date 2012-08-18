@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Fri Aug 17 13:58:14 2012 (-0700)
+;; Last-Updated: Sat Aug 18 08:12:22 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5792
+;;     Update #: 5793
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -561,7 +561,9 @@
 (eval-when-compile (require 'gnus-sum)) ;; gnus-summary-article-header
 (eval-when-compile (require 'cl)) ;; case, multiple-value-bind, typecase (plus, for Emacs 20: dolist)
 
-(require 'thingatpt+ nil t) ;; (no error if not found):
+(when (and (require 'thingatpt+ nil t) ;; (no error if not found):
+           (fboundp 'tap-define-aliases-wo-prefix)) ; >= 2012-08-17
+  (tap-define-aliases-wo-prefix))
 ;; region-or-non-nil-symbol-name-nearest-point, symbol-nearest-point
 
 (require 'bookmark)
