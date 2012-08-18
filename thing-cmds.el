@@ -7,12 +7,12 @@
 ;; Copyright (C) 2006-2012, Drew Adams, all rights reserved.
 ;; Created: Sun Jul 30 16:40:29 2006
 ;; Version: 20.1
-;; Last-Updated: Sat Aug 18 16:09:53 2012 (-0700)
+;; Last-Updated: Sat Aug 18 16:26:04 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 691
+;;     Update #: 696
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/thing-cmds.el
 ;; Keywords: thingatpt, thing, region, selection
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
 ;; 
 ;; Features that might be required by this library:
 ;;
@@ -460,7 +460,10 @@ the bounds of THING.  Return nil if no such THING is found."
   (let ((thg+bds  (thgcmd-next-visible-thing-2 thing start end backward)))
     (if (not thg+bds)
         nil
-      ;; $$$$$$ Which is better, > or >=, for (> (cddr thg+bds) (point))?
+      ;; $$$$$$ Which is better, > or >=, < or <=, for the comparisons?
+      ;; $$$$$$ For `list' it seems that <= is better than <.  But I changed it to <, I think
+      ;; $$$$$$ because of other considerations.  Changed it in Icicles version to < on 2011-05-14.
+      ;; $$$$$$ Put it back to <= on 12-08-18, which is what it always was for `thing-cmds.el'.
       (while (and thg+bds  (if backward  (> (cddr thg+bds) (point))  (<= (cadr thg+bds) (point))))
         (if backward
             (setq start  (max end (1- (cadr thg+bds))))
