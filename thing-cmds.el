@@ -7,9 +7,9 @@
 ;; Copyright (C) 2006-2012, Drew Adams, all rights reserved.
 ;; Created: Sun Jul 30 16:40:29 2006
 ;; Version: 20.1
-;; Last-Updated: Sat Aug 18 09:51:28 2012 (-0700)
+;; Last-Updated: Sat Aug 18 16:09:53 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 674
+;;     Update #: 691
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/thing-cmds.el
 ;; Keywords: thingatpt, thing, region, selection
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -42,9 +42,9 @@
 ;;
 ;;  Non-interactive functions defined here:
 ;;
-;;    `thgcmd-invisible-p', `thgcmd-next-visible-thing-1',
-;;    `thgcmd-next-visible-thing-2', `thgcmd-repeat-command',
-;;    `thgcmd-things-alist'.
+;;    `thgcmd-bounds-of-thing-at-point', `thgcmd-invisible-p',
+;;    `thgcmd-next-visible-thing-1', `thgcmd-next-visible-thing-2',
+;;    `thgcmd-repeat-command', `thgcmd-things-alist'.
 ;;
 ;;  Internal variables defined here:
 ;;
@@ -64,6 +64,9 @@
 ;; 
 ;;; Change Log:
 ;;
+;; 2012/08/18 dadams
+;;     Added: thgcmd-bounds-of-thing-at-point.
+;;     bounds-of-thing-at-point -> thgcmd-bounds-of-thing-at-point everywhere.
 ;; 2012/08/17 dadams
 ;;     Invoke tap-define-aliases-wo-prefix if thingatpt+.el is loaded.
 ;;     Require thingatpt.el before thingatpt+.el.
@@ -138,9 +141,10 @@
 ;;; Code:
 
 (require 'thingatpt) ;; bounds-of-thing-at-point
-(when (and (require 'thingatpt+ nil t) ;; (no error if not found): bounds-of-thing-at-point
+(when (and (require 'thingatpt+ nil t) ;; (no error if not found): tap-bounds-of-thing-at-point
            (fboundp 'tap-define-aliases-wo-prefix)) ; >= 2012-08-17
   (tap-define-aliases-wo-prefix))
+  ;; tap-bounds-of-thing-at-point, bounds-of-thing-nearest-point
 
 (require 'hide-comnt) ;; with-comments-hidden, so also hide/show-comments, ignore-comments-flag.
 
@@ -149,15 +153,27 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; Same as `icicle-bounds-of-thing-at-point'.
+(defun thgcmd-bounds-of-thing-at-point (thing &optional syntax-table)
+  "`thingatpt+.el' version of `bounds-of-thing-at-point', if possible.
+`tap-bounds-of-thing-at-point' if defined, else
+`bounds-of-thing-at-point'.
+if non-nil, set SYNTAX-TABLE for the duration."
+  (if (fboundp 'tap-bounds-of-thing-at-point)
+      (tap-bounds-of-thing-at-point thing syntax-table)
+    (if (fboundp 'with-syntax-table)    ; Emacs 21+.
+        (with-syntax-table syntax-table (bounds-of-thing-at-point thing syntax-table))
+      (bounds-of-thing-at-point thing syntax-table))))
+
 (defun thgcmd-defined-thing-p (thing)
   "Return non-nil if THING (type) is defined for `thing-at-point'."
   (let ((forward-op    (or (get thing 'forward-op)  (intern-soft (format "forward-%s" thing))))
         (beginning-op  (get thing 'beginning-op))
         (end-op        (get thing 'end-op))
-        (bounds-fn     (get thing 'bounds-of-thing-at-point))
+        (bounds-fn     (get thing 'thgcmd-bounds-of-thing-at-point))
         (thing-fn      (get thing 'thing-at-point)))
     (or (functionp forward-op)
-        (and (functionp beginning-op) (functionp end-op))
+        (and (functionp beginning-op)  (functionp end-op))
         (functionp bounds-fn)
         (functionp thing-fn))))
 
@@ -222,10 +238,10 @@ Non-interactively, THING is a string naming a thing type."
   (setq thgcmd-last-thing-type  (intern thing))
   (let* ((bds    (if (fboundp 'bounds-of-thing-nearest-point) ; In `thingatpt+.el'.
                      (bounds-of-thing-nearest-point (intern thing))
-                   (bounds-of-thing-at-point (intern thing))))
+                   (thgcmd-bounds-of-thing-at-point (intern thing))))
          (start  (car bds))
          (end    (cdr bds)))
-    (cond ((and start end)
+    (cond ((and start  end)
            (push-mark (point) t)        ; Mark position, so can use `C-u C-SPC'.
            (goto-char end)
            (push-mark start t 'activate)
@@ -302,8 +318,8 @@ to select more THINGS of the last kind selected."
                         (forward-thing thgcmd-last-thing-type (prefix-numeric-value arg))
                         (point))
                       nil t)))
-    (let ((bnds  (bounds-of-thing-at-point thgcmd-last-thing-type)))
-      (unless (or regionp bnds)
+    (let ((bnds  (thgcmd-bounds-of-thing-at-point thgcmd-last-thing-type)))
+      (unless (or regionp  bnds)
         ;; If we are not on a thing, use `thing-region' to capture one.
         ;; Because it always puts point after mark, flip them if necessary.
         (thing-region (symbol-name thgcmd-last-thing-type))
@@ -352,7 +368,7 @@ This command does not work if point is in a string or a comment."
 (defun mark-enclosing-sexp-forward (&optional arg) ; `C-M-F' or maybe `C-M-)'
   "`mark-enclosing-sexp' leaving point at region end."
   (interactive "P")
-  (if (or (and (eq last-command this-command) (mark t))  (and transient-mark-mode mark-active))
+  (if (or (and (eq last-command this-command)  (mark t))  (and transient-mark-mode  mark-active))
       (mark-enclosing-sexp nil (prefix-numeric-value arg))
     (mark-enclosing-sexp (prefix-numeric-value arg) t)))
 
@@ -360,7 +376,7 @@ This command does not work if point is in a string or a comment."
 (defun mark-enclosing-sexp-backward (&optional arg) ; `C-M-B' or maybe `C-M-('
   "`mark-enclosing-sexp' leaving point at region start."
   (interactive "P")
-  (if (or (and (eq last-command this-command) (mark t))  (and transient-mark-mode mark-active))
+  (if (or (and (eq last-command this-command)  (mark t))  (and transient-mark-mode  mark-active))
       (mark-enclosing-sexp nil (- (prefix-numeric-value arg)))
     (mark-enclosing-sexp (- (prefix-numeric-value arg)) t)))
 
@@ -429,11 +445,11 @@ the bounds of THING.  Return nil if no such THING is found."
                                             (symbol-name thgcmd-last-thing-type))))
                thgcmd-last-thing-type))
          (point)
-         (if mark-active (max (region-beginning) (region-end)) (point-max))))
+         (if mark-active  (max (region-beginning) (region-end))  (point-max))))
   (setq thgcmd-last-thing-type  thing)
   (unless start (setq start  (point)))
   (unless end   (setq end  (if backward (point-min) (point-max))))
-  (cond ((< start end) (when backward (setq start  (prog1 end (setq end  start)))))
+  (cond ((< start end) (when   backward (setq start  (prog1 end (setq end  start)))))
         ((> start end) (unless backward (setq start  (prog1 end (setq end  start))))))
   (if (interactive-p)
       (with-comments-hidden start end (thgcmd-next-visible-thing-1 thing start end backward))
@@ -465,7 +481,7 @@ the bounds of THING.  Return nil if no such THING is found."
              (while (if backward (> start end) (< start end))
                (goto-char start)
                ;; Skip invisible text.
-               (when (and (if backward (> start end) (< start end)) (thgcmd-invisible-p start))
+               (when (and (if backward (> start end) (< start end))  (thgcmd-invisible-p start))
                  (setq start  (if (get-text-property start 'invisible) ; Text prop.
                                   (if backward
                                       (previous-single-property-change start 'invisible nil end)
@@ -474,7 +490,7 @@ the bounds of THING.  Return nil if no such THING is found."
                                     (previous-overlay-change start)
                                   (next-overlay-change start))))
                  (goto-char start))
-               (when (and (setq bounds  (bounds-of-thing-at-point thing))
+               (when (and (setq bounds  (thgcmd-bounds-of-thing-at-point thing))
                           (not (equal (car bounds) (cdr bounds)))) ; Not an empty thing, "".
                  (throw 'thgcmd-next-visible-thing-2
                    (cons (buffer-substring (car bounds) (cdr bounds)) bounds)))
@@ -488,7 +504,7 @@ the bounds of THING.  Return nil if no such THING is found."
     (let ((prop  (get-char-property position 'invisible))) ; Overlay or text property.
       (if (eq buffer-invisibility-spec t)
           prop
-        (or (memq prop buffer-invisibility-spec) (assq prop buffer-invisibility-spec))))))
+        (or (memq prop buffer-invisibility-spec)  (assq prop buffer-invisibility-spec))))))
 
 (defun thgcmd-repeat-command (command)
   "Repeat COMMAND."
@@ -537,7 +553,7 @@ repeatable keys, such as `f11' and `f12'.  Because such keys are rare
 \(mostly taken already), the only bindings made here for thing
 navigation are `C-x down' and `C-x up'."
   (interactive "p")
-  (when (or (not msgp) (y-or-n-p "Bind thing-command default keys?"))
+  (when (or (not msgp)  (y-or-n-p "Bind thing-command default keys?"))
     ;;   The first two replace the standard bindings for `mark-sexp' & `mark-word':
     (global-set-key [(control meta ? )] 'mark-thing) ; vs `mark-sexp'
     (global-set-key [(meta ?@)] 'cycle-thing-region) ; vs `mark-word'
