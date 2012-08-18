@@ -7,9 +7,9 @@
 ;; Copyright (C) 1995-2012, Drew Adams, all rights reserved.
 ;; Created: Wed Aug  2 11:12:24 1995
 ;; Version: 21.1
-;; Last-Updated: Sat Aug 18 09:36:01 2012 (-0700)
+;; Last-Updated: Sat Aug 18 09:55:50 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 2938
+;;     Update #: 2941
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/start.el
 ;; Keywords: abbrev, internal, local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -84,6 +84,7 @@
 ;;
 ;; 2012/08/18 dadams
 ;;     Invoke tap-define-aliases-wo-prefix if thingatpt+.el is loaded.
+;;     Explicitly require thingatpt.el, before thingatpt+.el.  (Removed eval-after-load thingatpt.el.)
 ;; 2012/08/11 dadams
 ;;     Do not require frame+.el if window+.el was loaded.
 ;; 2012/08/10 dadams
@@ -502,7 +503,9 @@ See the Dired-X Info pages (type \\[info]) for information on this package.")
 ;; $$$$$$(require 'isearch+ nil t)    ; Extensions to `isearch.el'.
 (require 'occur-schroeder nil t)        ; Occur alternative & isearch option.
 (load-library "delsel")
-(when (and (require 'thingatpt+ nil t)  ; Thing-at-point extensions.
+
+(require 'thingatpt)                    ; Basic thing-at-point.
+(when (and (require 'thingatpt+ nil t)  ; Thing-at-point extensions - load this after `thingatpt.el'.
            (fboundp 'tap-define-aliases-wo-prefix)) ; >= 2012-08-17
   (tap-define-aliases-wo-prefix))
 (when (require 'thing-cmds nil t)       ; Thing-at-point commands and default key bindings.
@@ -653,7 +656,6 @@ See the Dired-X Info pages (type \\[info]) for information on this package.")
 (eval-after-load "ring" '(require 'ring+ nil t)) ; Extensions to `ring.el'.
 (unless (> emacs-major-version 19)
   (eval-after-load "sort" '(require 'sort+))) ; Extensions to `sort.el'.
-(eval-after-load "thingatpt" '(require 'thingatpt+ nil t)) ; Extensions to `thingatpt.el'.
 (when (< emacs-major-version 21)
   (eval-after-load "timer" '(require 'timer+ nil t))) ; Extensions to `timer.el'.
 ;(eval-after-load "c-mode" '(require 'cc-mode+)) ; Extensions to `cc-mode.el'.
