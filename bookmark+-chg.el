@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Aug 18 08:13:06 2012 (-0700)
+;; Last-Updated: Sat Aug 18 16:30:36 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 15008
+;;     Update #: 15009
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -147,6 +147,7 @@
 ;;
 ;; 2012/08/18 dadams
 ;;     Invoke tap-define-aliases-wo-prefix if thingatpt+.el is loaded.
+;;     bmkp-read-variable: Use tap-symbol-at-point, not symbol-at-point, if available.
 ;; 2012/08/10 dadams
 ;;     Info-bookmark-make-record: Updated wrt Emacs 24.
 ;;     Renamed: old-bookmark-insert to bmkp-ORIG-bookmark-insert.
