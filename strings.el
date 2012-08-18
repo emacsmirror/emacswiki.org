@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Mar  5 17:09:08 1996
 ;; Version: 21.0
-;; Last-Updated: Mon Apr 16 13:42:24 2012 (-0700)
+;; Last-Updated: Sat Aug 18 09:39:01 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 539
+;;     Update #: 541
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/strings.el
 ;; Keywords: internal, strings, text
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -64,6 +64,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/08/18 dadams
+;;     Invoke tap-define-aliases-wo-prefix if thingatpt+.el is loaded.
 ;; 2012/04/16 dadams
 ;;     Added: fill-string.
 ;; 2011/12/12 dadams
@@ -149,7 +151,11 @@
 (eval-when-compile (require 'cl)) ;; psetq
 
 (require 'thingatpt nil t) ;; (no error if not found): symbol-at-point
-(require 'thingatpt+ nil t)  ;; (no error if not found): symbol-nearest-point
+(when (and (require 'thingatpt+ nil t);; (no error if not found)
+           (fboundp 'tap-define-aliases-wo-prefix)) ; >= 2012-08-17
+  (tap-define-aliases-wo-prefix))
+ ;; symbol-nearest-point
+
 (require 'misc-fns nil t) ;; (no error if not found): another-buffer
 
 
