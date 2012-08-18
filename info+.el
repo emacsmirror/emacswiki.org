@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 21.1
-;; Last-Updated: Sun Aug 12 08:51:09 2012 (-0700)
+;; Last-Updated: Sat Aug 18 09:17:17 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 4636
+;;     Update #: 4638
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/info+.el
 ;; Keywords: help, docs, internal
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -184,6 +184,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/08/18 dadams
+;;     Invoke tap-define-aliases-wo-prefix if thingatpt+.el is loaded.
 ;; 2012/08/12 dadams
 ;;     Added: info-constant-ref-item (face).
 ;;     info-fontify-reference-items: Handle constants, using face info-constant-ref-item.
@@ -493,7 +495,11 @@
 
 ;; These are optional, for cosmetic purposes.
 (require 'thingatpt nil t) ;; (no error if not found): symbol-at-point
-(require 'thingatpt+ nil t) ;; (no error if not found): symbol-nearest-point
+
+(when (and (require 'thingatpt+ nil t);; (no error if not found): symbol-nearest-point
+           (fboundp 'tap-define-aliases-wo-prefix)) ; >= 2012-08-17
+  (tap-define-aliases-wo-prefix))
+
 (require 'strings nil t) ;; (no error if not found): concat-w-faces
 (require 'fit-frame nil t) ;; (no error if not found): fit-frame
 
