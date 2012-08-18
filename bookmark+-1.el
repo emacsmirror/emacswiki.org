@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sat Aug 18 16:29:37 2012 (-0700)
+;; Last-Updated: Sat Aug 18 16:52:37 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5794
+;;     Update #: 5795
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -7716,8 +7716,6 @@ to the cursor if it is a variable."
   (setq option  (if option 'user-variable-p 'boundp))
   (let ((symb                                        (cond ((fboundp 'symbol-nearest-point)
                                                             (symbol-nearest-point)) ; In `thingatpt+.el'.
-                                                           ((fboundp 'tap-symbol-at-point)
-                                                            (tap-symbol-at-point))
                                                            ((fboundp 'symbol-at-point) (symbol-at-point))
                                                            (t nil)))
         (enable-recursive-minibuffers                t)
