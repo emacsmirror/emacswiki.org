@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Aug  6 09:03:01 2012 (-0700)
+;; Last-Updated: Sat Aug 18 09:04:59 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5295
+;;     Update #: 5298
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -245,8 +245,10 @@
 (eval-when-compile (when (< emacs-major-version 21) (require 'cl))) ;; dolist, push
 
 (require 'thingatpt)        ;; symbol-at-point, thing-at-point, thing-at-point-url-at-point
-(require 'thingatpt+ nil t) ;; (no error if not found): list-nearest-point-as-string,
-                            ;; region-or-word-nearest-point, symbol-name-nearest-point
+
+(when (require 'thingatpt+ nil t);; (no error if not found)
+  (tap-define-aliases-wo-prefix))
+ ;; list-nearest-point-as-string, non-nil-symbol-name-nearest-point, word-nearest-point
 
 (require 'hexrgb nil t) ;; (no error if not found): hexrgb-approx-equal, hexrgb-saturation
 (when (featurep 'hexrgb) (require 'icicles-face))
