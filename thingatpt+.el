@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Feb 13 16:47:45 1996
 ;; Version: 21.0
-;; Last-Updated: Sat Aug 18 08:52:29 2012 (-0700)
+;; Last-Updated: Sat Aug 18 09:09:10 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1596
+;;     Update #: 1602
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/thingatpt+.el
 ;; Keywords: extensions, matching, mouse
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -129,6 +129,7 @@
 ;;
 ;; 2012/08/18 dadams
 ;;     tap-define-aliases-wo-prefix: Return non-nil so can use in Boolean guards.
+;;     word-nearest-point -> tap-word-nearest-point (typo).
 ;; 2012/08/17 dadams
 ;;     Added: tap-define-aliases-wo-prefix, tap-redefine-std-fns.
 ;;     Added group thing-at-point-plus.  Use for defcustoms.
@@ -748,7 +749,7 @@ Some related functions:
    or \"\" if none.
  `word-at-point' returns the word at point,
    or nil if none.
- `word-nearest-point' returns the word nearest point,
+ `tap-word-nearest-point' returns the word nearest point,
    or \"\" if none.
  `word-before-point' returns the word at or before the cursor as a string.
 Note that these last three functions return strings, not symbols."
@@ -977,7 +978,7 @@ See `tap-non-nil-symbol-name-nearest-point'."
           region-text))
     (tap-non-nil-symbol-name-nearest-point)))
 
-(defun word-nearest-point (&optional syntax-table)
+(defun tap-word-nearest-point (&optional syntax-table)
   "Return the word (a string) nearest to point, if any, else \"\".
 \"Nearest\" to point is determined as for `tap-thing-nearest-point'.
 SYNTAX-TABLE is a syntax table to use."
@@ -985,11 +986,11 @@ SYNTAX-TABLE is a syntax table to use."
 
 (defun tap-region-or-word-nearest-point (&optional syntax-table)
   "Return non-empty active region or word nearest point.
-See `word-nearest-point'."
+See `tap-word-nearest-point'."
   (if (and transient-mark-mode mark-active
            (not (eq (region-beginning) (region-end))))
       (buffer-substring-no-properties (region-beginning) (region-end))
-    (word-nearest-point syntax-table)))
+    (tap-word-nearest-point syntax-table)))
 
 
 (put 'region-or-word 'thing-at-point 'tap-region-or-word-at-point)
