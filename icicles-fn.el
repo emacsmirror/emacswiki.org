@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Aug 13 19:24:00 2012 (-0700)
+;; Last-Updated: Sat Aug 18 17:07:35 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 13245
+;;     Update #: 13256
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -53,6 +53,7 @@
 ;;    `icicle-barf-if-outside-Completions',
 ;;    `icicle-barf-if-outside-Completions-and-minibuffer',
 ;;    `icicle-barf-if-outside-minibuffer',
+;;    `icicle-bounds-of-thing-at-point',
 ;;    `icicle-buffer-file/process-name-less-p',
 ;;    `icicle-buffer-smaller-p',
 ;;    `icicle-call-then-update-Completions', `icicle-candidate-set-1',
@@ -183,7 +184,8 @@
 ;;    `icicle-strip-ignored-files-and-sort',
 ;;    `icicle-subst-envvar-in-file-name',
 ;;    `icicle-substring-no-properties', `icicle-substrings-of-length',
-;;    `icicle-take', `icicle-toggle-icicle-mode-twice',
+;;    `icicle-take', `icicle-thing-at-point',
+;;    `icicle-toggle-icicle-mode-twice',
 ;;    `icicle-transform-candidates',
 ;;    `icicle-transform-multi-completion', `icicle-try-switch-buffer',
 ;;    `icicle-ucs-names', `icicle-unhighlight-lighter',
@@ -1891,7 +1893,7 @@ candidate `*point face name*' to use the face at point."
                                     (push `,(concat "'" (symbol-name cand) "'") ipc))))
                                ipc))))
                (face-list  (face-list))
-               (def        (thing-at-point 'symbol))
+               (def        (icicle-thing-at-point 'symbol))
                face)
            (cond ((assoc def face-list) (setq prompt  (concat prompt " (default " def "): ")))
                  (t (setq def     nil
@@ -1949,8 +1951,8 @@ choose proxy candidate `*point face name*' to use the face at point."
            (when (save-match-data (string-match ": $" prompt))
              (setq prompt  (substring prompt 0 -2)))
            ;; Try to get a face name from the buffer.
-           (when (memq (intern-soft (thing-at-point 'symbol)) (face-list))
-             (setq faces  (list (intern-soft (thing-at-point 'symbol)))))
+           (when (memq (intern-soft (icicle-thing-at-point 'symbol)) (face-list))
+             (setq faces  (list (intern-soft (icicle-thing-at-point 'symbol)))))
            ;; Add the named faces that the `face' property uses.
            (if (and (consp faceprop)
                     ;; Don't treat an attribute spec as a list of faces.
@@ -2067,8 +2069,8 @@ choose proxy candidate `*point face name*' to use the face at point."
            (when (save-match-data (string-match ": $" prompt))
              (setq prompt  (substring prompt 0 -2)))
            ;; Try to get a face name from the buffer.
-           (when (memq (intern-soft (thing-at-point 'symbol)) (face-list))
-             (setq faces  (list (intern-soft (thing-at-point 'symbol)))))
+           (when (memq (intern-soft (icicle-thing-at-point 'symbol)) (face-list))
+             (setq faces  (list (intern-soft (icicle-thing-at-point 'symbol)))))
            ;; Add the named faces that the `face' property uses.
            (if (and (consp faceprop)
                     ;; Don't treat an attribute spec as a list of faces.
@@ -6386,6 +6388,27 @@ argument, so we drop that arg in that case."
   (condition-case nil                   ; Emacs 23.2+ has no 4th parameter.
       (all-completions string collection predicate hide-spaces)
     (wrong-number-of-arguments (all-completions string collection predicate))))
+
+(defun icicle-bounds-of-thing-at-point (thing &optional syntax-table)
+  "`thingatpt+.el' version of `bounds-of-thing-at-point', if possible.
+`tap-bounds-of-thing-at-point' if defined, else
+`bounds-of-thing-at-point'.
+if non-nil, set SYNTAX-TABLE for the duration."
+  (if (fboundp 'tap-bounds-of-thing-at-point)
+      (tap-bounds-of-thing-at-point thing syntax-table)
+    (if (fboundp 'with-syntax-table)    ; Emacs 21+.
+        (with-syntax-table syntax-table (bounds-of-thing-at-point thing syntax-table))
+      (bounds-of-thing-at-point thing syntax-table))))
+
+(defun icicle-thing-at-point (thing &optional syntax-table)
+  "`thingatpt+.el' version of `thing-at-point', if possible.
+`tap-thing-at-point' if defined, else `thing-at-point'.
+if non-nil, set SYNTAX-TABLE for the duration."
+  (if (fboundp 'tap-thing-at-point)
+      (tap-thing-at-point thing syntax-table)
+    (if (fboundp 'with-syntax-table)    ; Emacs 21+.
+        (with-syntax-table syntax-table (thing-at-point thing syntax-table))
+      (thing-at-point thing syntax-table))))
  
 ;;(@* "Icicles functions - sort functions")
 
