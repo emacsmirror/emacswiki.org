@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Aug 18 17:37:45 2012 (-0700)
+;; Last-Updated: Sat Aug 18 18:41:25 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8807
+;;     Update #: 8808
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -686,7 +686,8 @@
 ;;     symbol-nearest-point -> tap-symbol-nearest-point.
 ;;     bounds-of-thing-at-point -> icicle-bounds-of-thing-at-point.
 ;;     next-visible-thing-(1|2) -> thgcmd-next-visible-thing-(1|2).
-;;     next-visible-thing-1: Use <=, not <, for comparison.
+;;     next-visible-thing-1: Note: < seems better than <= for comparison.  I changed it to < for
+;;       Icicles version on 2011-05-14.  But just changed the thing-cmd.el version to < today.
 ;; 2012/08/14 dadams
 ;;     icicle-cmd2-after-load-highlight:
 ;;       For Emacs < 24, require wid-edit.el before defalias to widget-color-complete.
