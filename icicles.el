@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Mon Aug  6 09:24:57 2012 (-0700)
+;; Last-Updated: Sat Aug 18 17:06:44 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 23180
+;;     Update #: 23183
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -859,7 +859,7 @@
 ;;    `icicle-bookmark-bind-narrow-commands',
 ;;    `icicle-bookmark-cleanup', `icicle-bookmark-cleanup-on-quit',
 ;;    `icicle-bookmark-delete-action', `icicle-bookmark-help-string',
-;;    `icicle-bookmark-jump-1',
+;;    `icicle-bookmark-jump-1', `icicle-bounds-of-thing-at-point',
 ;;    `icicle-buffer-file/process-name-less-p',
 ;;    `icicle-buffer-name-prompt', `icicle-buffer-smaller-p',
 ;;    `icicle-buffer-sort-*...*-last',
@@ -1153,7 +1153,7 @@
 ;;    `icicle-subst-envvar-in-file-name',
 ;;    `icicle-substring-no-properties', `icicle-substrings-of-length',
 ;;    `icicle-substitute-keymap-vars', `icicle-successive-action',
-;;    `icicle-take', `icicle-things-alist',
+;;    `icicle-take', `icicle-thing-at-point', `icicle-things-alist',
 ;;    `icicle-this-command-keys-prefix',
 ;;    `icicle-toggle-icicle-mode-twice', `icicle-top-level-prep',
 ;;    `icicle-transform-candidates',
