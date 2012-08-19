@@ -556,3 +556,25 @@ Patches, modifications, or suggestions can be sent to the mail list. To learn Lu
 
 == How can I remove the mime-buttons? ==
 The mime buttons is what shows up in the beginning and end of your messages as <code>[1 <text/plain; iso-8859-1 (quoted-printable)>]</code>. You can toggle on/off with C-c m (in summary buffer), or set <code>(setq mime-view-buttons-visible nil) </code>
+
+== Wanderlust sometimes seem to hang emacs when I try to save mails with non-ascii characters — what should I do? ==
+
+Basically, Wanderlust’s mime-encoding does not play nice with Emacs 23. A workaround is to outsource the mime-encoding;
+add the following to your Wanderlust init file:
+
+{{{
+(setq mel-b-ccl-module nil)
+(setq mel-q-ccl-module nil)
+(setq base64-external-encoder '("mimencode"))
+(setq base64-external-decoder '("mimencode" "-u"))
+(setq base64-external-decoder-option-to-specify-file '("-o"))
+(setq quoted-printable-external-encoder '("mimencode" "-q"))
+(setq quoted-printable-external-decoder '("mimencode" "-q" "-u"))
+(setq quoted-printable-external-decoder-option-to-specify-file '("-o"))
+(setq base64-internal-decoding-limit 0)
+(setq base64-internal-encoding-limit 0)
+(setq quoted-printable-internal-decoding-limit 0)
+(setq quoted-printable-internal-encoding-limit 0)
+(setq-default mime-transfer-level 8)
+(setq mime-header-accept-quoted-encoded-words t)
+}}}
