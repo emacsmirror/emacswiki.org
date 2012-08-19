@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Aug 18 17:07:35 2012 (-0700)
+;; Last-Updated: Sat Aug 18 17:36:33 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 13256
+;;     Update #: 13258
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -184,8 +184,7 @@
 ;;    `icicle-strip-ignored-files-and-sort',
 ;;    `icicle-subst-envvar-in-file-name',
 ;;    `icicle-substring-no-properties', `icicle-substrings-of-length',
-;;    `icicle-take', `icicle-thing-at-point',
-;;    `icicle-toggle-icicle-mode-twice',
+;;    `icicle-take', `icicle-toggle-icicle-mode-twice',
 ;;    `icicle-transform-candidates',
 ;;    `icicle-transform-multi-completion', `icicle-try-switch-buffer',
 ;;    `icicle-ucs-names', `icicle-unhighlight-lighter',
@@ -6399,16 +6398,6 @@ if non-nil, set SYNTAX-TABLE for the duration."
     (if (fboundp 'with-syntax-table)    ; Emacs 21+.
         (with-syntax-table syntax-table (bounds-of-thing-at-point thing syntax-table))
       (bounds-of-thing-at-point thing syntax-table))))
-
-(defun icicle-thing-at-point (thing &optional syntax-table)
-  "`thingatpt+.el' version of `thing-at-point', if possible.
-`tap-thing-at-point' if defined, else `thing-at-point'.
-if non-nil, set SYNTAX-TABLE for the duration."
-  (if (fboundp 'tap-thing-at-point)
-      (tap-thing-at-point thing syntax-table)
-    (if (fboundp 'with-syntax-table)    ; Emacs 21+.
-        (with-syntax-table syntax-table (thing-at-point thing syntax-table))
-      (thing-at-point thing syntax-table))))
  
 ;;(@* "Icicles functions - sort functions")
 
