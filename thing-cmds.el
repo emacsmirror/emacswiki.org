@@ -7,9 +7,9 @@
 ;; Copyright (C) 2006-2012, Drew Adams, all rights reserved.
 ;; Created: Sun Jul 30 16:40:29 2006
 ;; Version: 20.1
-;; Last-Updated: Sat Aug 18 17:48:31 2012 (-0700)
+;; Last-Updated: Sat Aug 18 18:42:34 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 698
+;;     Update #: 701
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/thing-cmds.el
 ;; Keywords: thingatpt, thing, region, selection
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -461,10 +461,9 @@ the bounds of THING.  Return nil if no such THING is found."
     (if (not thg+bds)
         nil
       ;; $$$$$$ Which is better, > or >=, < or <=, for the comparisons?
-      ;; $$$$$$ For `list' it seems that <= is better than <.  But I changed it to <, I think
-      ;; $$$$$$ because of other considerations.  Changed it in Icicles version to < on 2011-05-14.
-      ;; $$$$$$ Put it back to <= on 12-08-18, which is what it always was for `thing-cmds.el'.
-      (while (and thg+bds  (if backward  (> (cddr thg+bds) (point))  (<= (cadr thg+bds) (point))))
+      ;; $$$$$$ Seems that < is better than <=, at least for `icicle-search-thing':
+      ;; $$$$$$ for XML elements and lists, <= misses the first one.
+      (while (and thg+bds  (if backward  (> (cddr thg+bds) (point))  (< (cadr thg+bds) (point))))
         (if backward
             (setq start  (max end (1- (cadr thg+bds))))
           (setq start  (min end (1+ (cddr thg+bds)))))
