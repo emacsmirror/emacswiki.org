@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sat Aug 18 16:52:37 2012 (-0700)
+;; Last-Updated: Sat Aug 18 17:24:35 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5795
+;;     Update #: 5800
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -447,14 +447,14 @@
 ;;    `bmkp-string-less-case-fold-p', `bmkp-tagged-bookmark-p',
 ;;    `bmkp-tagged-cp', `bmkp-tag-name', `bmkp-tags-in-bookmark-file',
 ;;    `bmkp-tags-list', `bmkp-temporary-alist-only',
-;;    `bmkp-temporary-bookmark-p', `bmkp-this-buffer-alist-only',
-;;    `bmkp-this-buffer-p', `bmkp-this-file-alist-only',
-;;    `bmkp-this-file/buffer-alist-only', `bmkp-this-file-p',
-;;    `bmkp-unmarked-bookmarks-only', `bmkp-upcase',
-;;    `bmkp-update-autonamed-bookmark', `bmkp-url-alist-only',
-;;    `bmkp-url-bookmark-p', `bmkp-url-browse-alist-only',
-;;    `bmkp-url-browse-bookmark-p', `bmkp-url-cp',
-;;    `bmkp-variable-list-alist-only',
+;;    `bmkp-temporary-bookmark-p', `bmkp-thing-at-point',
+;;    `bmkp-this-buffer-alist-only', `bmkp-this-buffer-p',
+;;    `bmkp-this-file-alist-only', `bmkp-this-file/buffer-alist-only',
+;;    `bmkp-this-file-p', `bmkp-unmarked-bookmarks-only',
+;;    `bmkp-upcase', `bmkp-update-autonamed-bookmark',
+;;    `bmkp-url-alist-only', `bmkp-url-bookmark-p',
+;;    `bmkp-url-browse-alist-only', `bmkp-url-browse-bookmark-p',
+;;    `bmkp-url-cp', `bmkp-variable-list-alist-only',
 ;;    `bmkp-variable-list-bookmark-p', `bmkp-visited-more-cp',
 ;;    `bmkp-w3m-alist-only', `bmkp-w3m-bookmark-p', `bmkp-w3m-cp',
 ;;    `bmkp-w3m-set-new-buffer-name'.
@@ -6365,11 +6365,13 @@ Non-interactively:
 * Non-nil MSG-P means display a status message."
   (interactive
    (list (if (require 'ffap nil t)
-             (ffap-read-file-or-url "URL: " (or (thing-at-point 'url)  (and (fboundp 'url-get-url-at-point)
-                                                                            (url-get-url-at-point))))
+             (ffap-read-file-or-url "URL: " (or (bmkp-thing-at-point 'url)
+                                                (and (fboundp 'url-get-url-at-point)
+                                                     (url-get-url-at-point))))
            (let ((icicle-unpropertize-completion-result-flag  t))
-             (read-file-name "URL: " nil (or (thing-at-point 'url)  (and (fboundp 'url-get-url-at-point)
-                                                                         (url-get-url-at-point))))))
+             (read-file-name "URL: " nil (or (bmkp-thing-at-point 'url)
+                                             (and (fboundp 'url-get-url-at-point)
+                                                  (url-get-url-at-point))))))
          current-prefix-arg
          (if current-prefix-arg
              (read-string "Prefix for bookmark name: ")
@@ -6422,7 +6424,7 @@ Non-interactively:
                            (or (if (boundp 'file-name-at-point-functions) ; In `files.el', Emacs 23.2+.
                                    (run-hook-with-args-until-success 'file-name-at-point-functions)
                                  (ffap-guesser))
-                               (thing-at-point 'filename)
+                               (bmkp-thing-at-point 'filename)
                                (buffer-file-name))))
          current-prefix-arg
          (if current-prefix-arg
@@ -6516,7 +6518,7 @@ Non-interactively:
                                (let ((deflts  ())
                                      def)
                                  (when (setq def  (buffer-file-name)) (push def deflts))
-                                 (when (setq def  (thing-at-point 'filename)) (push def deflts))
+                                 (when (setq def  (bmkp-thing-at-point 'filename)) (push def deflts))
                                  (when (setq def  (ffap-guesser)) (push def deflts))
                                  (when (and (boundp 'file-name-at-point-functions)
                                             (setq def  (run-hook-with-args-until-success
@@ -6526,7 +6528,7 @@ Non-interactively:
                              (or (if (boundp 'file-name-at-point-functions) ; In `files.el', Emacs 23.2+.
                                      (run-hook-with-args-until-success 'file-name-at-point-functions)
                                    (ffap-guesser))
-                                 (thing-at-point 'filename)
+                                 (bmkp-thing-at-point 'filename)
                                  (buffer-file-name)))))
          nil
          (and current-prefix-arg  (read-string "Prefix for bookmark name: "))
@@ -6606,7 +6608,7 @@ Non-interactively:
                            (or (if (boundp 'file-name-at-point-functions) ; In `files.el', Emacs 23.2+.
                                    (run-hook-with-args-until-success 'file-name-at-point-functions)
                                  (ffap-guesser))
-                               (thing-at-point 'filename)
+                               (bmkp-thing-at-point 'filename)
                                (buffer-file-name))))
          (bmkp-read-tags-completing nil nil (and current-prefix-arg
                                                  (< (prefix-numeric-value current-prefix-arg) 1)))
@@ -6659,7 +6661,7 @@ Non-interactively:
                               (or (if (boundp 'file-name-at-point-functions) ; In `files.el', Emacs 23.2+.
                                       (run-hook-with-args-until-success 'file-name-at-point-functions)
                                     (ffap-guesser))
-                                  (thing-at-point 'filename)
+                                  (bmkp-thing-at-point 'filename)
                                   (buffer-file-name))
                               t nil (lambda (ff) ; PREDICATE - only for Emacs 22+.
                                       (let* ((bmk   (bmkp-get-autofile-bookmark ff nil pref))
@@ -6670,7 +6672,7 @@ Non-interactively:
                                                          (throw 'bmkp-autofile-remove-tags-pred nil)))
                                                      t)))))
                            (error (read-file-name "File: " nil (or (ffap-guesser)
-                                                                   (thing-at-point 'filename)
+                                                                   (bmkp-thing-at-point 'filename)
                                                                    (buffer-file-name)))))))
      (list fil tgs nil pref 'MSG)))
   (bmkp-remove-tags (bmkp-autofile-set file dir prefix no-update-p) tags no-update-p msg-p))
@@ -10351,6 +10353,17 @@ Non-interactively:
                   (when msg-p (message "Deleted bookmark `%s'" (car bmks-to-delete))))
                  (t
                   (when msg-p (message "No bookmarks at point to delete"))))))))
+
+;; Same as `icicle-thing-at-point'.
+(defun bmkp-thing-at-point (thing &optional syntax-table)
+  "`thingatpt+.el' version of `thing-at-point', if possible.
+`tap-thing-at-point' if defined, else `thing-at-point'.
+if non-nil, set SYNTAX-TABLE for the duration."
+  (if (fboundp 'tap-thing-at-point)
+      (tap-thing-at-point thing syntax-table)
+    (if (fboundp 'with-syntax-table)    ; Emacs 21+.
+        (with-syntax-table syntax-table (thing-at-point thing syntax-table))
+      (thing-at-point thing syntax-table))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 
