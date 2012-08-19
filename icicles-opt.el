@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Aug 18 09:04:59 2012 (-0700)
+;; Last-Updated: Sat Aug 18 17:36:44 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5298
+;;     Update #: 5301
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -195,7 +195,7 @@
 ;;    `icicle-bind-top-level-commands',
 ;;    `icicle-buffer-sort-*...*-last',
 ;;    `icicle-compute-shell-command-candidates', `icicle-remap',
-;;    `icicle-widgetp'.
+;;    `icicle-thing-at-point', `icicle-widgetp'.
 ;;
 ;;  For descriptions of changes to this file, see `icicles-chg.el'.
 ;;
@@ -3548,6 +3548,16 @@ during Icicles search).  You can also use multi-command
                (icicle-toggle-remote-file-testing))))
   :type 'boolean :group 'Icicles-Matching)
 
+(defun icicle-thing-at-point (thing &optional syntax-table)
+  "`thingatpt+.el' version of `thing-at-point', if possible.
+`tap-thing-at-point' if defined, else `thing-at-point'.
+if non-nil, set SYNTAX-TABLE for the duration."
+  (if (fboundp 'tap-thing-at-point)
+      (tap-thing-at-point thing syntax-table)
+    (if (fboundp 'with-syntax-table)    ; Emacs 21+.
+        (with-syntax-table syntax-table (thing-at-point thing syntax-table))
+      (thing-at-point thing syntax-table))))
+
 ;;;###autoload
 (defcustom icicle-thing-at-point-functions
   (progn (or (require 'ffap- nil t) (require 'ffap nil t)) ; Try `ffap-.el' first.
@@ -3557,7 +3567,7 @@ during Icicles search).  You can also use multi-command
                  (lambda () (symbol-name (symbol-at-point))))
             ,(if (fboundp 'word-nearest-point)
                  'word-nearest-point
-                 (lambda () (thing-at-point 'word)))
+                 (lambda () (icicle-thing-at-point 'word)))
             ,@(and (fboundp 'list-nearest-point-as-string) '(list-nearest-point-as-string))
             ,@(and (fboundp 'list-nearest-point-as-string)
                    '((lambda () (list-nearest-point-as-string 2))))
