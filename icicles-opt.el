@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Aug 18 17:36:44 2012 (-0700)
+;; Last-Updated: Sun Aug 19 14:41:44 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5301
+;;     Update #: 5305
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3576,7 +3576,8 @@ if non-nil, set SYNTAX-TABLE for the duration."
             ,@(and (fboundp 'ffap-guesser) '(ffap-guesser))
             thing-at-point-url-at-point)
           'forward-word))
-  "*Functions that return a string at or near the cursor when you use `M-.'.
+  "*Functions that return a string at or near point, or else nil.
+One of the functions is called when you hit `M-.' in the minibuffer.
 A cons cell whose car and cdr may each be empty.
 
 The car of the cons cell is a list of functions that grab different
