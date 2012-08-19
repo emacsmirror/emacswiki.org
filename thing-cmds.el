@@ -7,9 +7,9 @@
 ;; Copyright (C) 2006-2012, Drew Adams, all rights reserved.
 ;; Created: Sun Jul 30 16:40:29 2006
 ;; Version: 20.1
-;; Last-Updated: Sat Aug 18 16:26:04 2012 (-0700)
+;; Last-Updated: Sat Aug 18 17:48:31 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 696
+;;     Update #: 698
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/thing-cmds.el
 ;; Keywords: thingatpt, thing, region, selection
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -166,11 +166,11 @@ if non-nil, set SYNTAX-TABLE for the duration."
       (bounds-of-thing-at-point thing syntax-table))))
 
 (defun thgcmd-defined-thing-p (thing)
-  "Return non-nil if THING (type) is defined for `thing-at-point'."
+  "Return non-nil if THING (type) is defined as a thing-at-point type."
   (let ((forward-op    (or (get thing 'forward-op)  (intern-soft (format "forward-%s" thing))))
         (beginning-op  (get thing 'beginning-op))
         (end-op        (get thing 'end-op))
-        (bounds-fn     (get thing 'thgcmd-bounds-of-thing-at-point))
+        (bounds-fn     (get thing 'bounds-of-thing-at-point))
         (thing-fn      (get thing 'thing-at-point)))
     (or (functionp forward-op)
         (and (functionp beginning-op)  (functionp end-op))
