@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Feb 13 16:47:45 1996
 ;; Version: 21.0
-;; Last-Updated: Sun Aug 19 15:58:44 2012 (-0700)
+;; Last-Updated: Sun Aug 19 16:17:56 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1826
+;;     Update #: 1827
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/thingatpt+.el
 ;; Keywords: extensions, matching, mouse
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -104,7 +104,8 @@
 ;;  That makes all code that uses the following functions use the
 ;;  their versions that are defined here, not the standard versions.
 ;;
-;;  `bounds-of-thing-at-point' - Accept optional arg SYNTAX-TABLE.
+;;  `bounds-of-thing-at-point' - Better behavior.
+;;                               Accept optional arg SYNTAX-TABLE.
 ;;  `form-at-point'            - Accept optional arg SYNTAX-TABLE.
 ;;  `list-at-point'            - Better behavior.
 ;;  `symbol-at-point'          - Use `emacs-lisp-mode-syntax-table'.
@@ -1195,7 +1196,8 @@ See also `tap-string-at-point'."
 (defun tap-redefine-std-fns ()
   "Redefine some standard `thingatpt.el' functions, to fix them.
 The standard functions replaced are these:
- `bounds-of-thing-at-point' - Accept optional arg SYNTAX-TABLE.
+ `bounds-of-thing-at-point' - Better behavior.
+                              Accept optional arg SYNTAX-TABLE.
  `form-at-point'            - Accept optional arg SYNTAX-TABLE.
  `list-at-point'            - Better behavior.
                               Accept optional arg SYNTAX-TABLE.
