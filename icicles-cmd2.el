@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Sat Aug 18 11:22:46 2012 (-0700)
+;; Last-Updated: Sat Aug 18 17:19:14 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5758
+;;     Update #: 5774
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4400,10 +4400,10 @@ future search commands, not the current one.)" ; Doc string
 Enter the type of THING to search: `sexp', `sentence', `list',
 `string', `comment', etc.
 
-Possible THINGs are those for which `bounds-of-thing-at-point' returns
-non-nil (and for which the bounds are not equal: an empty thing).
-This does not include all THINGs for which `thing-at-point' returns
-non-nil.
+Possible THINGs are those for which `icicle-bounds-of-thing-at-point'
+returns non-nil (and for which the bounds are not equal: an empty
+thing).  This does not include everything THING that is defined as a
+thing-at-point type.
 
 You can search the region, buffer, multiple buffers, or multiple
 files.  See `icicle-search' for a full explanation.
@@ -4497,7 +4497,7 @@ list includes the names of the symbols that satisfy
 
 ;;; Same as `thgcmd-defined-thing-p' in `thing-cmds.el'.
 (defun icicle-defined-thing-p (thing)
-  "Return non-nil if THING (type) is defined for `thing-at-point'."
+  "Return non-nil if THING (type) is defined as a thing-at-point type."
   (let ((forward-op    (or (get thing 'forward-op)  (intern-soft (format "forward-%s" thing))))
         (beginning-op  (get thing 'beginning-op))
         (end-op        (get thing 'end-op))
@@ -4787,21 +4787,20 @@ the bounds of THING.  Return nil if no such THING is found."
       (icicle-with-comments-hidden start end (icicle-next-visible-thing-1 thing start end backward))
     (icicle-next-visible-thing-1 thing start end backward)))
 
-;;; Same as `next-visible-thing-1' in `thing-cmds.el'.
-(if (fboundp 'next-visible-thing-1)
-    (defalias 'icicle-next-visible-thing-1 'next-visible-thing-1)
+;;; Same as `thgcmd-next-visible-thing-1' in `thing-cmds.el'.
+(if (fboundp 'thgcmd-next-visible-thing-1)
+    (defalias 'icicle-next-visible-thing-1 'thgcmd-next-visible-thing-1)
   (defun icicle-next-visible-thing-1 (thing start end backward)
     "Helper for `icicle-next-visible-thing'.  Get thing past point."
     (let ((thg+bds  (icicle-next-visible-thing-2 thing start end backward)))
       (if (not thg+bds)
           nil
         ;; $$$$$$ Which is better, > or >=, < or <=, for the comparisons?
-        ;; $$$$$$ For `list' it seems that <= is better than <.  But I belive I changed it to < because of
+        ;; $$$$$$ For `list' it seems that <= is better than <.  But I changed it to <, I think because of
         ;; $$$$$$ other considerations (perhaps XML (or char props or visibility or predicate or transform?)).
-        ;; $$$$$$ Changed it to < on 2011-05-14.  Leaving it that way, for now.
-        ;; $$$$$$ (while (and thg+bds
-        ;;                    (if backward (> (cddr thg+bds) (point))  (<= (cadr thg+bds) (point))))
-        (while (and thg+bds  (if backward  (> (cddr thg+bds) (point))  (< (cadr thg+bds) (point))))
+        ;; $$$$$$ Changed it to < on 2011-05-14.  Put it back to <= 12-08-18, which is what it always was for
+        ;; $$$$$$ `thgcmd-next-visible-thing-1'.
+        (while (and thg+bds  (if backward  (> (cddr thg+bds) (point))  (<= (cadr thg+bds) (point))))
           (if backward
               (setq start  (max end (1- (cadr thg+bds))))
             (setq start  (min end (1+ (cddr thg+bds)))))
@@ -4809,9 +4808,9 @@ the bounds of THING.  Return nil if no such THING is found."
         (when thg+bds (goto-char (cadr thg+bds)))
         thg+bds))))
 
-;;; Same as `next-visible-thing-2' in `thing-cmds.el'.
-(if (fboundp 'next-visible-thing-2)
-    (defalias 'icicle-next-visible-thing-2 'next-visible-thing-2)
+;;; Same as `thgcmd-next-visible-thing-2' in `thing-cmds.el'.
+(if (fboundp 'thgcmd-next-visible-thing-2)
+    (defalias 'icicle-next-visible-thing-2 'thgcmd-next-visible-thing-2)
   (defun icicle-next-visible-thing-2 (thing start end &optional backward)
     "Helper for `icicle-next-visible-thing-1'.  Thing might not be past START."
     (and (not (= start end))
@@ -4833,7 +4832,7 @@ the bounds of THING.  Return nil if no such THING is found."
                                       (previous-overlay-change start)
                                     (next-overlay-change start))))
                    (goto-char start))
-                 (when (and (setq bounds  (bounds-of-thing-at-point thing))
+                 (when (and (setq bounds  (icicle-bounds-of-thing-at-point thing))
                             (not (equal (car bounds) (cdr bounds)))) ; Not an empty thing, "".
                    (throw 'icicle-next-visible-thing-2
                      (cons (buffer-substring (car bounds) (cdr bounds)) bounds)))
