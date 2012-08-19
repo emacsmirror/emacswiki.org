@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Sat Aug 18 17:19:14 2012 (-0700)
+;; Last-Updated: Sat Aug 18 18:43:13 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5774
+;;     Update #: 5778
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4796,11 +4796,9 @@ the bounds of THING.  Return nil if no such THING is found."
       (if (not thg+bds)
           nil
         ;; $$$$$$ Which is better, > or >=, < or <=, for the comparisons?
-        ;; $$$$$$ For `list' it seems that <= is better than <.  But I changed it to <, I think because of
-        ;; $$$$$$ other considerations (perhaps XML (or char props or visibility or predicate or transform?)).
-        ;; $$$$$$ Changed it to < on 2011-05-14.  Put it back to <= 12-08-18, which is what it always was for
-        ;; $$$$$$ `thgcmd-next-visible-thing-1'.
-        (while (and thg+bds  (if backward  (> (cddr thg+bds) (point))  (<= (cadr thg+bds) (point))))
+        ;; $$$$$$ Seems that < is better than <=, at least for `icicle-search-thing':
+        ;; $$$$$$ for XML elements and lists, <= misses the first one.
+        (while (and thg+bds  (if backward  (> (cddr thg+bds) (point))  (< (cadr thg+bds) (point))))
           (if backward
               (setq start  (max end (1- (cadr thg+bds))))
             (setq start  (min end (1+ (cddr thg+bds)))))
@@ -4854,8 +4852,9 @@ buffer text that is outside such elements.  To do this, use `C-M-~'
 during completion.  (This is a toggle, and it affects only future
 search commands, not the current one.)
 
-You probably need nXML for this command.  It is included in vanilla
-Emacs, starting with Emacs 23."
+You will no doubt need nXML for this command.  It is included in
+vanilla Emacs, starting with Emacs 23.  And you will need to load
+`thingatpt+.el', because of bugs in vanilla `thingatpt.el'."
   (interactive
    (let* ((where    (icicle-search-where-arg))
           (beg+end  (icicle-region-or-buffer-limits))
@@ -4888,8 +4887,9 @@ buffer text that is outside the text nodes of such elements.  To do
 this, use `C-M-~' during completion.  (This is a toggle, and it
 affects only future search commands, not the current one.)
 
-You probably need nXML for this command.  It is included in vanilla
-Emacs, starting with Emacs 23."
+You will no doubt need nXML for this command.  It is included in
+vanilla Emacs, starting with Emacs 23.  And you will need to load
+`thingatpt+.el', because of bugs in vanilla `thingatpt.el'."
   (interactive
    (let* ((where    (icicle-search-where-arg))
           (beg+end  (icicle-region-or-buffer-limits))
