@@ -1,4 +1,4 @@
-;;; persistent-soft --- Persistent storage, returning nil on failure
+;;; persistent-soft.el --- Persistent storage, returning nil on failure
 ;;
 ;; Copyright (c) 2012 Roland Walker
 ;;
