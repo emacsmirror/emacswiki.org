@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Aug 18 09:03:12 2012 (-0700)
+;; Last-Updated: Sat Aug 18 17:37:45 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8796
+;;     Update #: 8807
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -684,6 +684,9 @@
 ;;
 ;; 2012/08/18 dadams
 ;;     symbol-nearest-point -> tap-symbol-nearest-point.
+;;     bounds-of-thing-at-point -> icicle-bounds-of-thing-at-point.
+;;     next-visible-thing-(1|2) -> thgcmd-next-visible-thing-(1|2).
+;;     next-visible-thing-1: Use <=, not <, for comparison.
 ;; 2012/08/14 dadams
 ;;     icicle-cmd2-after-load-highlight:
 ;;       For Emacs < 24, require wid-edit.el before defalias to widget-color-complete.
@@ -1410,6 +1413,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2012/08/18 dadams
+;;     Added: icicle-bounds-of-thing-at-point.
+;;     thing-at-point -> icicle-thing-at-point, everywhere.
 ;; 2012/08/13 dadams
 ;;     icicle-completing-read-multiple: Doc string improvement.
 ;; 2012/08/06 dadams
@@ -3297,6 +3303,7 @@
 ;;
 ;; 2012/08/18 dadams
 ;;     icicle-resolve-file-name: Call tap-define-aliases-wo-prefix.
+;;     bounds-of-thing-at-point -> icicle-bounds-of-thing-at-point.
 ;; 2012/08/14 dadams
 ;;     icicle-abort-recursive-edit: Call 1on1-fit-minibuffer-frame.
 ;; 2012/08/06 dadams
@@ -5905,7 +5912,9 @@
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
 ;; 2012/08/18 dadams
+;;     Added: icicle-thing-at-point.
 ;;     Invoke tap-define-aliases-wo-prefix if thingatpt+.el is loaded.
+;;     thing-at-point -> icicle-thing-at-point.
 ;; 2012/08/06 dadams
 ;;     icicle-functions-to-redefine: Updated doc string for new name prefix icicle-ORIG-.
 ;; 2012/08/05 dadams
