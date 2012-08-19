@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Aug 18 08:58:29 2012 (-0700)
+;; Last-Updated: Sat Aug 18 15:45:02 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 18410
+;;     Update #: 18411
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4424,7 +4424,7 @@ region was active then its content was already added to the ring.)"
                          (cons (region-beginning) (region-end))
                        (if thg+bnds
                            (cdr thg+bnds)
-                         (bounds-of-thing-at-point 'filename))))
+                         (icicle-bounds-of-thing-at-point 'filename))))
           (fname     (if bnds
                          (buffer-substring (car bnds) (cdr bnds))
                        (message "No file name at point"))))
