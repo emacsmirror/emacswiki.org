@@ -1,0 +1,815 @@
+;;; back-button.el --- Visual navigation through mark rings
+;;
+;; Copyright (c) 2012 Roland Walker
+;;
+;; Author: Roland Walker walker@pobox.com
+;; URL: https://github.com/rolandwalker/back-button.el
+;; Version: 0.6.0
+;; Last-Updated: 26 Jul 2012
+;; EmacsWiki: BackButton
+;; Keywords: Navigation
+;; Package-Requires: ((nav-flash "1.0.0") (smartrep "0.0.3") (ucs-utils "0.6.0"))
+;;
+;; Simplified BSD License
+;;
+;;; Commentary:
+;;
+;; Back-button provides an alternative method for navigation by
+;; analogy with the "back" button in a web browser.
+;;
+;; Every Emacs command which pushes the mark leaves behind an
+;; invisible record of the location of the point at that moment.
+;; Back-button moves the point back and forth over all the positions
+;; where some command pushed the mark.
+;;
+;; This is essentially a replacement for `pop-global-mark', and the
+;; default keybindings (when the minor mode is activated) override
+;; that command.  The differences with `pop-global-mark' are:
+;;
+;;    - Visual index showing how far you have traveled in the
+;;      mark ring.
+;;
+;;    - Easy way to move both forward and backward in the ring.
+;;
+;;    - Pushes a mark on the first of a series of invocations, so you
+;;      can always return to where you issued the command.
+;;
+;;    - Skips duplicate positions, so that the interactive command
+;;      always moves the point if possible.
+;;
+;; Commands and keybindings are also included to give identical
+;; semantics for navigating the local (per-buffer) `mark-ring'.  This
+;; consistency in navigation comes at the cost of pushing the mark
+;; twice, so experienced Emacs users may prefer to unbind these
+;; commands and/or set `back-button-never-push-mark' in customize.
+;;
+;; To use back-button, place the back-button.el library somewhere
+;; Emacs can find it, and add the following to your ~/.emacs file:
+;;
+;;    (require 'back-button)
+;;    (back-button-mode 1)
+;;
+;; Default key bindings:
+;;
+;;    C-x C-<SPC>    go back in `global-mark-ring', respects prefix arg
+;;    C-x C-<left>   go back in `global-mark-ring'
+;;    C-x C-<right>  go forward in `global-mark-ring'
+;;
+;;    C-x <SPC>      go back in (buffer-local) `mark-ring', respects prefix arg
+;;    C-x <left>     go back in (buffer-local) `mark-ring'
+;;    C-x <right>    go forward in (buffer-local) `mark-ring'
+;;
+;; When the smartrep package is installed, the C-x prefix need not
+;; be used for consecutive back-button commands.
+;;
+;; When the visible-marks package is installed, marks will be
+;; made visible in the current buffer during navigation.
+;;
+;; See Also
+;;
+;;    M-x customize-group RET back-button RET
+;;    M-x customize-group RET editing-basics RET
+;;    M-x customize-group RET visible-mark RET
+;;    M-x customize-group RET nav-flash RET
+;;
+;; Notes
+;;
+;;    This library depends upon other commands pushing the mark to
+;;    provide useful waypoints for navigation.  This is a common
+;;    convention, but not universal.
+;;
+;;    The function `back-button-push-mark-local-and-global' may be
+;;    useful to call from Lisp.  It is essentially a replacement for
+;;    `push-mark' which unconditionally pushes onto the global mark
+;;    ring, functionality which is not possible using vanilla
+;;    `push-mark'.
+;;
+;;    Theoretically, `back-button-push-mark-local-and-global' could
+;;    cause issues with Lisp code which depends on the convention that
+;;    `global-mark-ring' not contain consecutive marks in the same
+;;    buffer.  However, no such issues have been observed.
+;;
+;; Compatibility
+;;
+;;    Tested only on GNU Emacs version 24.1
+;;
+;; Bugs
+;;
+;;    Pressing the toolbar back-button can navigate to a different
+;;    buffer with a different toolbar (and no back-button).
+;;
+;;    Toolbar button disabling is not dependable.  Logic is left
+;;    in place but unused.
+;;
+;;    Toolbar shift-click does not work in Cocoa Emacs.
+;;
+;;    Toolbar shift-click is not consistent with keyboard bindings
+;;    (control for global ring, unmodified for local ring)
+;;
+;;    Displaying the index in a popup requires unreleased popup-volatile.el
+;;
+;; TODO
+;;
+;;    better toolbar icons
+;;
+;;    bug in visible-mark bug when mark is on last char of line
+;;
+;;    integrated delete-mark
+;;
+;;    could remove smartrep and implement mini-mode that includes
+;;    extra commands such as delete-mark and perhaps digits
+;;    for visible marks
+;;
+;;    Used to remember thumb between series, so long as no mark was
+;;    pushed, now that does not work b/c these functions themselves
+;;    push the mark -- make that an option?  Maybe the right way is
+;;    to keep it out-of-band.
+;;
+;;    this is a crude but general way to force a navigation
+;;    command to push the mark:
+;;
+;;        (defvar push-mark-before-goto-char nil)
+;;        (defadvice goto-char (before push-mark-first activate)
+;;          (when push-mark-before-goto-char
+;;            (back-button-push-mark-local-and-global nil t)))
+;;        ;; example use
+;;        (defun ido-imenu-push-mark ()
+;;          (interactive)
+;;          (let ((push-mark-before-goto-char t))
+;;            (ido-imenu)))
+;;
+;;    A better way would be: using a pre-command-hook, track series of
+;;    related navigation commands (defined by a property placed on
+;;    each command).  Push a global mark for the first of a related
+;;    series, don't push for subsequent.  There is already a property
+;;    placed on some navigation commands which might be sufficient -
+;;    or is that only scroll commands?  There is a package AutoMark
+;;    which purports to do this, but it doesn't do the hard part of
+;;    classifying all commands.
+;;
+;;; License
+;;
+;; Simplified BSD License:
+;;
+;; Redistribution and use in source and binary forms, with or
+;; without modification, are permitted provided that the following
+;; conditions are met:
+;;
+;;    1. Redistributions of source code must retain the above
+;;       copyright notice, this list of conditions and the following
+;;       disclaimer.
+;;
+;;    2. Redistributions in binary form must reproduce the above
+;;       copyright notice, this list of conditions and the following
+;;       disclaimer in the documentation and/or other materials
+;;       provided with the distribution.
+;;
+;; This software is provided by Roland Walker "AS IS" and any express
+;; or implied warranties, including, but not limited to, the implied
+;; warranties of merchantability and fitness for a particular
+;; purpose are disclaimed. In no event shall Roland Walker or
+;; contributors be liable for any direct, indirect, incidental,
+;; special, exemplary, or consequential damages (including, but not
+;; limited to, procurement of substitute goods or services; loss of
+;; use, data, or profits; or business interruption) however caused
+;; and on any theory of liability, whether in contract, strict
+;; liability, or tort (including negligence or otherwise) arising in
+;; any way out of the use of this software, even if advised of the
+;; possibility of such damage.
+;;
+;; The views and conclusions contained in the software and
+;; documentation are those of the authors and should not be
+;; interpreted as representing official policies, either expressed
+;; or implied, of Roland Walker.
+;;
+;;; Code:
+;;
+
+;;; requires
+
+;; for let*, decf, remove-if-not, callf, position
+(eval-when-compile
+  (require 'cl))
+
+(require 'smartrep     nil t)
+(require 'nav-flash    nil t)
+(require 'visible-mark nil t)
+(require 'ucs-utils    nil t)
+
+;;; customizable variables
+
+;;;###autoload
+(defgroup back-button nil
+  "Visual navigation through mark rings."
+  :version "0.6.0"
+  :link '(emacs-commentary-link "back-button")
+  :prefix "back-button-"
+  :group 'extensions
+  :group 'navigation)
+
+(defcustom back-button-mode-lighter " back"
+  "This string appears in the mode-line when `back-button-mode' is active.
+
+Set to nil or the empty string to disable the mode-line
+lighter for `back-button-mode'."
+  :type 'string
+  :risky t
+  :group 'back-button)
+
+(defcustom back-button-less-feedback nil
+  "Give less echo area feedback."
+  :type 'boolean
+  :group 'back-button)
+
+(defcustom back-button-show-toolbar-buttons t
+  "Add buttons to the toolbar."
+  :type 'boolean
+  :group 'back-button)
+
+(defcustom back-button-show-visible-marks t
+  "Temporarily show marks using `visible-mark' when available."
+  :type 'boolean
+  :group 'back-button)
+
+(defcustom back-button-no-wrap nil
+  "Do not wrap around the ring when navigating marks."
+  :type 'boolean
+  :group 'back-button)
+
+(defcustom back-button-never-push-mark nil
+  "Never add a mark while navigating marks.
+
+This option makes the back-button command work more like the
+standard `pop-global-mark command', but breaks the functionality
+of remembering the start location."
+  :type 'boolean
+  :group 'back-button)
+
+;;;###autoload
+(defgroup back-button-index nil
+  "How to display the mark-ring index after interactive commands."
+  :group 'back-button)
+
+(defcustom back-button-show-index 'echo
+  "How to display the mark-ring index.
+
+This indicator shows progress through the ring after each
+command."
+  :type '(choice
+          (const :tag "Echo Area"  echo)
+          (const :tag "Popup"      popup)
+          (const :tag "None"       nil))
+  :group 'back-button-index)
+
+(defcustom back-button-index-timeout 2
+  "How long to display the mark-ring index after each command.
+
+Set to nil or 0 for no timeout."
+  :type 'number
+  :group 'back-button-index)
+
+(defcustom back-button-index-spacer-ucs-name "Middle Dot"
+  "UCS character name for index display spacer."
+  :type 'string
+  :group 'back-button-index)
+
+(defcustom back-button-index-thumb-ucs-name "Circled Dot Operator"
+  "UCS character name for index display thumb."
+  :type 'string
+  :group 'back-button-index)
+
+;;;###autoload
+(defgroup back-button-keys nil
+  "Key bindings for `back-button-mode'."
+  :group 'back-button)
+
+(defcustom back-button-smartrep-prefix "C-x"
+  "Prefix key for smartrep.el bindings.
+
+Smartrep bindings will be installed for all keystrokes below
+which match this prefix.
+
+The format for key sequences is as defined by `kbd'.
+
+Set to nil or the empty string to disable smartrep for
+`back-button-mode'."
+  :group 'back-button-keys
+  :type 'string)
+
+(defcustom back-button-global-keystrokes '("C-x <C-SPC>")
+  "List of key sequences to invoke `back-button-global'.
+
+The default binding overrides `pop-global-mark'.
+
+The key bindings are effect when `back-button-mode' minor mode is
+active.
+
+The format for key sequences is as defined by `kbd'."
+  :group 'back-button-keys
+  :type '(repeat string))
+
+(defcustom back-button-global-backward-keystrokes '("C-x <C-left>")
+  "List of key sequences to invoke `back-button-global-backward'.
+
+The key bindings are effect when `back-button-mode' minor mode is
+active.
+
+The format for key sequences is as defined by `kbd'."
+  :group 'back-button-keys
+  :type '(repeat string))
+
+(defcustom back-button-global-forward-keystrokes '("C-x <C-right>")
+  "List of key sequences to invoke `back-button-global-forward'.
+
+The key bindings are effect when `back-button-mode' minor mode is
+active.
+
+The format for key sequences is as defined by `kbd'."
+  :group 'back-button-keys
+  :type '(repeat string))
+
+(defcustom back-button-local-keystrokes '("C-x <SPC>")
+  "List of key sequences to invoke `back-button-local'.
+
+The key bindings are effect when `back-button-mode' minor mode is
+active.
+
+The format for key sequences is as defined by `kbd'."
+  :group 'back-button-keys
+  :type '(repeat string))
+
+(defcustom back-button-local-backward-keystrokes '("C-x <left>")
+  "List of key sequences to invoke `back-button-local-backward'.
+
+The key bindings are effect when `back-button-mode' minor mode is
+active.
+
+The format for key sequences is as defined by `kbd'."
+  :group 'back-button-keys
+  :type '(repeat string))
+
+(defcustom back-button-local-forward-keystrokes '("C-x <right>")
+  "List of key sequences to invoke `back-button-local-forward'.
+
+The key bindings are effect when `back-button-mode' minor mode is
+active.
+
+The format for key sequences is as defined by `kbd'."
+  :group 'back-button-keys
+  :type '(repeat string))
+
+;;; variables
+
+(defvar back-button-mode                     nil "Whether back-button-mode minor-mode is on.")
+(defvar back-button-local-marks-copy         nil "A remembered set of local marks.")
+(defvar back-button-global-marks-copy        nil "A remembered set of global marks.")
+(defvar back-button-global-disable-direction nil "Supplementary info for disabling toolbar buttons.")
+(defvar back-button-commands '(
+                               back-button-global
+                               back-button-global-backward
+                               back-button-global-forward
+                               back-button-local
+                               back-button-local-backward
+                               back-button-local-forward
+                               ))
+
+(defvar back-button-spacer-char     ?.  "Character used to indicate marks available for navigation.")
+(defvar back-button-thumb-char      ?o  "Character used to indicate current mark.")
+
+(when (featurep 'ucs-utils)
+  (setq back-button-spacer-char (ucs-utils-char back-button-index-spacer-ucs-name back-button-spacer-char 'cdp))
+  (setq back-button-thumb-char  (ucs-utils-char back-button-index-thumb-ucs-name  back-button-thumb-char  'cdp)))
+
+;;; keymaps
+
+(defvar back-button-mode-map (make-sparse-keymap) "Keymap for `back-button-mode' minor-mode.")
+
+(if (and (stringp back-button-smartrep-prefix)
+         (length back-button-smartrep-prefix))
+    (let ((keys nil))
+      (dolist (cmd '(
+                     back-button-global
+                     back-button-global-backward
+                     back-button-global-forward
+                     back-button-local
+                     back-button-local-backward
+                     back-button-local-forward
+                     ))
+        (dolist (k (remove-if-not #'(lambda (x)
+                                      (string-match-p (concat "\\`" back-button-smartrep-prefix "\\>") x))
+                                  (symbol-value (intern (concat (symbol-name cmd) "-keystrokes")))))
+          (push (cons (replace-regexp-in-string (concat "\\`" back-button-smartrep-prefix "\\>[ \t]*") "" k) cmd) keys)))
+      (smartrep-define-key back-button-mode-map back-button-smartrep-prefix keys))
+  ;; else
+  (define-key back-button-mode-map (read-kbd-macro back-button-global-keystrokes)           'back-button-global)
+  (define-key back-button-mode-map (read-kbd-macro back-button-global-backward-keystrokes)  'back-button-global-backward)
+  (define-key back-button-mode-map (read-kbd-macro back-button-global-forward-keystrokes)   'back-button-global-forward)
+  (define-key back-button-mode-map (read-kbd-macro back-button-local-keystrokes)            'back-button-local)
+  (define-key back-button-mode-map (read-kbd-macro back-button-local-backward-keystrokes)   'back-button-local-backward)
+  (define-key back-button-mode-map (read-kbd-macro back-button-local-forward-keystrokes)    'back-button-local-forward))
+
+;;; toolbar
+
+(when back-button-show-toolbar-buttons
+
+  (define-key-after tool-bar-map [separator-backb] menu-bar-separator)
+
+  (tool-bar-add-item "left-arrow"
+                     'back-button-global-backward
+                     'back-button
+                     :label "Back By Mark"
+                     :visible '(and back-button-mode back-button-show-toolbar-buttons))
+                     ;; todo why is this not reliable?
+                     ;; :enable '(and (not (eq back-button-global-disable-direction 'back))
+                     ;;               (> (length global-mark-ring) 0)))
+
+  (tool-bar-add-item "mpc/add"
+                     'back-button-push-mark-local-and-global
+                     'back-button-push
+                     :label "push Mark"
+                     :visible '(and back-button-mode back-button-show-toolbar-buttons))
+
+  (tool-bar-add-item "right-arrow"
+                     'back-button-global-forward
+                     'forward-button
+                     :label "Forward By Mark"
+                     :visible '(and back-button-mode back-button-show-toolbar-buttons))
+                     ;; todo why is this not reliable?
+                     ;; :enable '(and (not (eq back-button-global-disable-direction 'forward))
+                     ;;               (> (length global-mark-ring) 0)
+                     ;;               this-command
+                     ;;               (memq this-command back-button-commands)))
+
+  ;; Note, this seems to not work on some platforms, eg Cocoa
+  (define-key global-map (kbd "<tool-bar> <S-back-button>")    'back-button-local-backward)
+  (define-key global-map (kbd "<tool-bar> <S-forward-button>") 'back-button-local-forward))
+
+;;; lighter
+
+(defvar back-button-lighter-map  (let ((map (make-sparse-keymap))
+                                       (menu-map (make-sparse-keymap "Back Button")))
+                                   (define-key menu-map [customize]                   '(menu-item "Customize"      (lambda (e) (interactive "e") (customize-group 'back-button))))
+                                   (define-key menu-map [separator-2]                 '(menu-item "--"))
+                                   (define-key menu-map [local-forward]               '(menu-item "Local Forward"  back-button-local-forward))
+                                   (define-key menu-map [local-back]                  '(menu-item "Local Back"     back-button-local-backward))
+                                   (define-key menu-map [forward]                     '(menu-item "Forward"        back-button-global-forward))
+                                   (define-key menu-map [back]                        '(menu-item "Back"           back-button-global-backward))
+                                   (define-key menu-map [separator-1]                 '(menu-item "--"))
+                                   (define-key menu-map [turn-off-back-button-mode]   '(menu-item "Turn Off Back Button Mode"  back-button-mode))
+                                   (define-key map (kbd "<mode-line> <mouse-1>"      ) 'ignore)
+                                   (define-key map (kbd "<mode-line> <mouse-2>"      ) 'ignore)
+                                   (define-key map (kbd "<mode-line> <wheel-up>"     ) 'back-button-global-backward)
+                                   (define-key map (kbd "<mode-line> <wheel-down>"   ) 'back-button-global-forward)
+                                   (define-key map (kbd "<mode-line> <C-wheel-up>"   ) 'back-button-local-backward)
+                                   (define-key map (kbd "<mode-line> <C-wheel-down>" ) 'back-button-local-forward)
+                                   (define-key map (kbd "<mode-line> <down-mouse-3>" )  menu-map)
+                                   map) "Keymap for the back-button lighter")
+
+(callf propertize back-button-mode-lighter 'local-map back-button-lighter-map
+                                           'help-echo "Back-button: mouse-wheel and control-mouse-wheel to navigate")
+
+;;; macros
+
+(defmacro back-button-called-interactively-p (&optional kind)
+  "A backward-compatible version of `called-interactively-p'."
+  `(if (eq 0 (cdr (subr-arity (symbol-function 'called-interactively-p))))
+      (called-interactively-p)
+    (called-interactively-p ,kind)))
+
+;;; aliases et al
+
+;; this fset is done so that (although it is unused herein) the
+;; following construct is legal
+;;    (flet ((push-mark (&optional location nomsg activate)
+;;                      (back-button-push-mark-local-and-global location nomsg activate)))
+;;      ... do something that pushes the mark...)
+(fset 'back-button-push-mark (symbol-function 'push-mark))
+
+;;; minor-mode setup
+
+(define-minor-mode back-button-mode
+  "Turn on back-button-mode.
+
+When called interactively with no prefix argument this command
+toggles the mode.  With a prefix argument, it enables the mode
+if the argument is positive and otherwise disables the mode.
+
+When called from Lisp, this command enables the mode if the
+argument is omitted or nil, and toggles the mode if the argument
+is 'toggle."
+  :lighter back-button-mode-lighter
+  :keymap back-button-mode-map
+  :group 'back-button
+  :global t
+  (cond
+   (back-button-mode
+    (add-hook 'pre-command-hook 'back-button-pre-command-hook)
+    (when (and (back-button-called-interactively-p 'interactive) (not back-button-less-feedback))
+      (message "back-button mode enabled")))
+   (t
+    (remove-hook 'pre-command-hook 'back-button-pre-command-hook)
+    (when (and (back-button-called-interactively-p 'interactive) (not back-button-less-feedback))
+      (message "back-button mode disabled")))))
+
+;;; interactive commands
+
+(defun back-button-local-backward ()
+  "Run `back-button-local' in the backward direction.
+
+Unlike `back-button-local', ignores any prefix argument.
+
+This command is somewhat like a fancier version of
+`pop-to-mark-command', though it leaves the mark and
+`mark-ring' in a different state."
+  (interactive)
+  (back-button-maybe-record-start 'local (called-interactively-p 'any))
+  (back-button-local nil))
+
+(defun back-button-local-forward ()
+  "Run `back-button-local' in the forward direction.
+
+Unlike `back-button-local', ignores any prefix argument.
+
+This command is somewhat like the reverse of
+`pop-to-mark-command'."
+  (interactive)
+  (back-button-maybe-record-start 'local (called-interactively-p 'any))
+  (back-button-local '(4)))
+
+(defun back-button-global-backward ()
+  "Run `back-button-global' in the backward direction.
+
+Unlike `back-button-global', ignores any prefix argument.
+
+This command is much like a fancier version of
+`pop-global-mark'."
+  (interactive)
+  (back-button-maybe-record-start 'global (called-interactively-p 'any))
+  (back-button-global nil))
+
+(defun back-button-global-forward ()
+  "Run `back-button-global' in the forward direction.
+
+Unlike `back-button-global', ignores any prefix argument.
+
+This command is much like the reverse of `pop-global-mark'."
+  (interactive)
+  (back-button-maybe-record-start 'global (called-interactively-p 'any))
+  (back-button-global '(4)))
+
+(defun back-button-local (arg)
+  "Navigate through `mark-ring', using `back-button-pop-local-mark'.
+
+If the point does not move, continue popping the ring until
+motion occurs.
+
+With universal prefix ARG, rotate the ring in the opposite
+direction.  (The \"forward\" direction by analogy with a
+web browser back-button.)"
+  (interactive "P")
+  (back-button-maybe-record-start 'local (called-interactively-p 'any))
+  (let ((pos (point))
+        (counter (length mark-ring))
+        (thumb nil)
+        (posn nil)
+        (stopper :no-stopper))
+    (when (or (not back-button-local-marks-copy)
+              (not (car mark-ring))
+              (not (memq (car mark-ring) back-button-local-marks-copy)))
+      (setq back-button-local-marks-copy (copy-sequence mark-ring)))
+    (when back-button-no-wrap
+      (if (consp arg)
+          (setq stopper (car back-button-local-marks-copy))
+        (setq stopper (car (last back-button-local-marks-copy)))))
+    (when (consp arg)
+      (setq mark-ring (nreverse mark-ring)))
+    (when back-button-no-wrap
+      (setq thumb (car mark-ring)))
+    (while (and (not (eq thumb stopper))
+                (eq pos (point))
+                (> counter 0))
+      (back-button-pop-local-mark)
+      (setq thumb (car (last mark-ring)))
+      (decf counter))
+    (when (consp arg)
+      (setq mark-ring (nreverse mark-ring)))
+    (when (and (not (eq thumb stopper))
+               (eq pos (point)))
+      (error (concat "local-mark" (if (consp arg) " forward" " back") " failed")))
+    (when (eq thumb stopper)
+      (goto-char stopper))
+    (setq posn (back-button-find-position thumb 'local))
+    (back-button-visible-mark-show 'local)
+    (when (fboundp 'nav-flash-show)
+      (nav-flash-show))
+    (back-button-display-index (concat "local marks "
+                                       (make-string (- (length back-button-local-marks-copy) posn 1) back-button-spacer-char)
+                                       (string back-button-thumb-char)
+                                       (make-string posn back-button-spacer-char)))))
+
+
+(defun back-button-global (arg)
+  "Navigate through `global-mark-ring', using `pop-global-mark'.
+
+If the point would not move, continue popping the ring until
+motion occurs.
+
+With universal prefix ARG, rotate the ring in the opposite
+direction.  (The \"forward\" direction by analogy with a
+web browser back-button.)"
+  (interactive "P")
+  (back-button-maybe-record-start 'global (called-interactively-p 'any))
+  (let ((pos (point))
+        (buf (current-buffer))
+        (counter (length global-mark-ring))
+        (thumb nil)
+        (posn nil)
+        (stopper :no-stopper))
+    (when (or (not back-button-global-marks-copy)
+              (not (car global-mark-ring))
+              (not (memq (car global-mark-ring) back-button-global-marks-copy)))
+      (setq back-button-global-marks-copy (copy-sequence global-mark-ring)))
+    (when back-button-no-wrap
+      (if (consp arg)
+          (setq stopper (car back-button-global-marks-copy))
+        (setq stopper (car (last back-button-global-marks-copy)))))
+    (when (consp arg)
+      (setq global-mark-ring (nreverse global-mark-ring)))
+    (when back-button-no-wrap
+      (setq thumb (car global-mark-ring)))
+    (while (and (not (eq thumb stopper))
+                (or (minibufferp (current-buffer))
+                    (and (eq pos (point))
+                         (eq buf (current-buffer))
+                         (> counter 0))))
+      (pop-global-mark)
+      (setq thumb (car (last global-mark-ring)))
+      (decf counter))
+    (when (consp arg)
+      (setq global-mark-ring (nreverse global-mark-ring)))
+    (when (and (not (eq thumb stopper))
+               (or (minibufferp (current-buffer))
+                   (and (eq pos (point))
+                        (eq buf (current-buffer)))))
+      (error (concat "global-mark" (if (consp arg) " forward" " back") " failed")))
+    (when (eq thumb stopper)
+      (setq back-button-global-disable-direction (if (consp arg) 'forward 'back))
+      (goto-char stopper))
+    (setq posn (back-button-find-position thumb 'global))
+    (back-button-visible-mark-show 'global)
+    (when (fboundp 'nav-flash-show)
+      (nav-flash-show))
+    (back-button-display-index (concat "global marks "
+                                       (make-string (- (length back-button-global-marks-copy) posn 1) back-button-spacer-char)
+                                       (string back-button-thumb-char)
+                                       (make-string posn back-button-spacer-char)))))
+
+
+;;; utility functions
+
+(defun back-button-pre-command-hook ()
+  "Re-enable toolbar buttons and hide visible marks."
+  (when (and (featurep 'visible-mark)
+             (not visible-mark-mode))
+    (dolist (buf (buffer-list))
+      (with-current-buffer buf
+        (when visible-mark-overlays
+          (mapcar 'delete-overlay visible-mark-overlays)
+          (setq visible-mark-overlays nil)))))
+  (setq back-button-global-disable-direction nil))
+
+(defun back-button-visible-mark-show (type)
+  "Show marks temporarily using `visible-mark'."
+  (when (and (featurep 'visible-mark)
+             (not visible-mark-mode))
+    (dolist (win (window-list))
+      (with-current-buffer (window-buffer win)
+        (when (not (minibufferp (current-buffer)))
+          (let ((visible-mark-max (length mark-ring)))
+            (visible-mark-initialize-overlays)
+            (visible-mark-initialize-faces)
+            (let ((mark-ring mark-ring))
+              (when (eq type 'global)
+                (setq mark-ring global-mark-ring))
+              (visible-mark-move-overlays))))))))
+
+(defun back-button-find-position (thumb type)
+  "Find the position of the thumb in the mark ring.
+
+TYPE may be 'global or 'local."
+  (let ((ring global-mark-ring)
+        (copy back-button-global-marks-copy)
+        (posn nil))
+    (when (eq type 'local)
+      (setq ring mark-ring)
+      (setq copy back-button-local-marks-copy))
+    (setq posn (or (position thumb copy) 1))
+    ;; scan across duplicates and place visible thumb
+    ;; on a consistent boundary; looks more intuitive
+    (while (and (> posn 0)
+                (equal (nth (1- posn) copy) (nth posn copy)))
+      (setq posn (1- posn)))
+    posn))
+
+(defun back-button-display-index (msg)
+  "Briefly display MSG.
+
+MSG is expected to contain a visual representation of mark-ring
+traversal progress."
+  (let ((message-log-max nil))
+    (cond
+      ((and (eq back-button-show-index 'echo)
+            (numberp back-button-index-timeout)
+            (> back-button-index-timeout 0))
+       (with-temp-message msg
+         (sit-for back-button-index-timeout)))
+    ((eq back-button-show-index 'echo)
+     (message msg))
+    ((and (eq back-button-show-index 'popup)
+          (fboundp 'popup-volatile))
+     (popup-volatile msg :box t :around t :delay back-button-index-timeout :face '(:background "Gray20" :foreground "#C0C0C0"))))))
+
+(defun back-button-maybe-record-start (type interactive)
+  "Push mark for the first of a series of interactive back-button commands."
+  (when (and interactive
+             (not (memq last-command back-button-commands))
+             (not back-button-never-push-mark))
+    (cond
+      ((eq type 'global)
+       (back-button-push-mark-local-and-global (point) t nil))
+      ((eq type 'local)
+       ;; push twice to get position onto mark-ring
+       (back-button-push-mark (point) t nil)
+       (back-button-push-mark (point) t nil)))))
+
+;; This totally different approach (compared to pop-mark) is needed in
+;; the first case b/c pop-mark creates/destroys markers, breaking the
+;; memq tests used in back-button-local and back-button-find-index.
+(defun back-button-pop-local-mark ()
+  "Pop off local `mark-ring' and jump to the top location.
+
+This differs from `pop-mark' completely, instead following the
+semantics of `pop-global-mark', moving the point instead of
+setting the mark."
+  (when mark-ring
+    (let* ((marker (car mark-ring))
+           (position (marker-position marker)))
+    (setq mark-ring (nconc (cdr mark-ring)
+                           (list (car mark-ring))))
+    (when (and (>= position (point-min))
+               (<= position (point-max)))
+      (if widen-automatically
+          (widen)
+        (error "Local mark position is outside accessible part of buffer")))
+    (goto-char position))))
+
+;; this function can replace push-mark in many circumstances
+;; todo make handling of duplicates consistent btw local and global
+(defun back-button-push-mark-local-and-global (&optional location nomsg activate consecutives)
+  "Push mark at LOCATION, and unconditionally add to `global-mark-ring'.
+
+This function differs from `push-mark' in that `global-mark-ring'
+is always updated.
+
+LOCATION is optional, and defaults to the current point.
+
+NOMSG and ACTIVATE are as documented at `push-mark'.
+
+When CONSECUTIVES is set to 'limit and the new mark is in the same
+buffer as the first entry in `global-mark-ring', the first entry
+in `global-mark-ring' will be replaced.  Otherwise, a new entry
+is pushed onto `global-mark-ring'.
+
+When CONSECUTIVES is set to 'allow-dupes, it is possible to push
+an exact duplicate of the current topmost mark onto `global-mark-ring'."
+  (interactive)
+  (callf or location (point))
+  (back-button-push-mark location nomsg activate)
+  (when (or (eq consecutives 'allow-dupes)
+            (not (equal (mark-marker)
+                        (car global-mark-ring))))
+    (when (and (eq consecutives 'limit)
+               (eq (marker-buffer (car global-mark-ring)) (current-buffer)))
+      (move-marker (car global-mark-ring) nil)
+      (pop global-mark-ring))
+    (push (copy-marker (mark-marker)) global-mark-ring)
+    (when (> (length global-mark-ring) global-mark-ring-max)
+      (move-marker (car (nthcdr global-mark-ring-max global-mark-ring)) nil)
+      (setcdr (nthcdr (1- global-mark-ring-max) global-mark-ring) nil))))
+
+(provide 'back-button)
+
+;;
+;; Emacs
+;;
+;; Local Variables:
+;; indent-tabs-mode: nil
+;; mangle-whitespace: t
+;; require-final-newline: t
+;; coding: utf-8
+;; End:
+;;
+;; LocalWords:
+;;
+
+;;; back-button.el ends here
