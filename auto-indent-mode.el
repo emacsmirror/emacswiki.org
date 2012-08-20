@@ -5,10 +5,10 @@
 ;; Author: Matthew L. Fidler, Le Wang & Others
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Sat Nov  6 11:02:07 2010 (-0500)
-;; Version: 0.64
-;; Last-Updated: Sat Aug  4 23:50:19 2012 (-0500)
+;; Version: 0.66
+;; Last-Updated: Mon Aug 20 10:15:12 2012 (-0500)
 ;;           By: Matthew L. Fidler
-;;     Update #: 1410
+;;     Update #: 1417
 ;; URL: https://github.com/mlf176f2/auto-indent-mode.el/
 ;; Keywords: Auto Indentation
 ;; Compatibility: Tested with Emacs 23.x
@@ -21,10 +21,24 @@
 ;;
 ;;; Commentary:
 ;; 
-;; * About auto-indent-mode
+;; *auto-indent-mode.el* --- Auto indent Minor mode
 ;; 
-;;  Provides auto-indentation minor mode for Emacs.  This allows the
-;;   following: 
+;;  - Filename :: [[file:auto-indent-mode.el][auto-indent-mode.el]]
+;;  - Description :: Auto Indent text on Yank/Paste
+;;  - Author :: Matthew L. Fidler, Le Wang & Others
+;;  - Maintainer :: Matthew L. Fidler
+;;  - Created :: Sat Nov  6 11:02:07 2010 (-0500)
+;;  - Version :: 0.64
+;;  - Last-Updated :: Tue Aug  7 19:28:44 2012 (-0500)
+;;  -           By :: Matthew L. Fidler
+;;  -     Update 
+;;  - URL :: https://github.com/mlf176f2/auto-indent-mode.el/
+;;  - Keywords :: Auto Indentation
+;;  - Compatibility :: Tested with Emacs 23.x
+;; 
+;; * About auto-indent-mode
+;; Provides auto-indentation minor mode for Emacs.  This allows the
+;; following: 
 ;; 
 ;;   - Return automatically indents the code appropriately (if enabled)
 ;; 
@@ -44,43 +58,43 @@
 ;;     (if desired and enabled)
 ;; 
 ;;   - Automatically indent balanced parenthetical expression, or sexp, if desired
-;;      <tt>auto-indent-current-pairs</tt> or <tt>auto-indent-next-pair</tt> is set
-;;     to be true (enabled by default).  This is not immediate but occurs
-;;     after 1/4 a second to allow better responsiveness in emacs.
+;;     `auto-indent-current-pairs' or `auto-indent-next-pair' is set
+;;     to be true (disabled by default).  This is not immediate but occurs
+;;     after a bit to allow better responsiveness in emacs.
 ;; 
-;;   All of these options can be customized. (customize auto-indent)
+;; All of these options can be customized. (customize auto-indent)
 ;; * Installing auto-indent-mode
-;;   To use put this in your load path and then put the following in your emacs
-;;   file:
+;; To use put this in your load path and then put the following in your emacs
+;; file:
 ;; 
 ;;   (setq auto-indent-on-visit-file t) ;; If you want auto-indent on for files
 ;;   (require 'auto-indent-mode)
 ;; 
 ;; 
-;;   If you (almost) always want this on, add the following to ~/.emacs:
+;; If you (almost) always want this on, add the following to ~/.emacs:
 ;; 
 ;; 
 ;;    (auto-indent-global-mode)
 ;; 
-;;  
 ;; 
-;;   Excluded modes are defined in <tt>auto-indent-disabled-modes-list</tt>
 ;; 
-;;   If you only want this on for a single mode, you would add the following to
-;;   ~/.emacs
+;; Excluded modes are defined in `auto-indent-disabled-modes-list'
+;; 
+;; If you only want this on for a single mode, you would add the following to
+;; ~/.emacs
 ;; 
 ;; 
 ;;   (add-hook 'emacs-lisp-mode-hook 'auto-indent-minor-mode)
 ;; 
 ;; 
 ;; 
-;;   You could always turn on the minor mode with the command
-;;   <tt>auto-indent-minor-mode</tt>
+;; You could always turn on the minor mode with the command
+;; `auto-indent-minor-mode'
 ;; * TextMate Meta-Return behavior
-;;   If you would like TextMate behavior of Meta-RETURN going to the
-;;   end of the line and then inserting a newline, as well as
-;;   Meta-shift return going to the end of the line, inserting a
-;;   semi-colon then inserting a newline, use the following:
+;; If you would like TextMate behavior of Meta-RETURN going to the
+;; end of the line and then inserting a newline, as well as
+;; Meta-shift return going to the end of the line, inserting a
+;; semi-colon then inserting a newline, use the following:
 ;; 
 ;; 
 ;;   (setq auto-indent-key-for-end-of-line-then-newline "<M-return>")
@@ -89,9 +103,9 @@
 ;;   (auto-indent-global-mode)
 ;; 
 ;; 
-;;   This may or may not work on your system.  Many times emacs cannot
-;;   distinguish between M-RET and M-S-RET, so if you don't mind a
-;;   slight redefinition use:
+;; This may or may not work on your system.  Many times emacs cannot
+;; distinguish between M-RET and M-S-RET, so if you don't mind a
+;; slight redefinition use:
 ;; 
 ;; 
 ;;   (setq auto-indent-key-for-end-of-line-then-newline "<M-return>")
@@ -100,21 +114,21 @@
 ;;   (auto-indent-global-mode)
 ;; 
 ;; 
-;;   If you want to insert something other than a semi-colon (like a
-;;   colon) in a specific mode, say colon-mode, do the following:
+;; If you want to insert something other than a semi-colon (like a
+;; colon) in a specific mode, say colon-mode, do the following:
 ;; 
 ;; 
 ;;   (add-hook 'colon-mode-hook (lambda () (setq auto-indent-eol-char ":")))
 ;; 
 ;; * Notes about autopair-mode and yasnippet compatibility
-;;   If you wish to use this with autopairs and yasnippet, please load
-;;   this library first.
+;; If you wish to use this with autopairs and yasnippet, please load
+;; this library first.
 ;; * Using specific functions from auto-indent-mode
 ;; 
-;;   Also if you wish to just use specific functions from this library
-;;   that is possible as well.
+;; Also if you wish to just use specific functions from this library
+;; that is possible as well.
 ;; 
-;;   To have the auto-indentation-paste use:
+;; To have the auto-indentation-paste use:
 ;; 
 ;; 
 ;;   (autoload 'auto-indent-yank "auto-indent-mode" "" t)
@@ -131,15 +145,15 @@
 ;;   
 ;; 
 ;; 
-;;  
-;;   However, this does not honor the excluded modes in
-;;   <tt>auto-indent-disabled-modes-list</tt>
+;; 
+;; However, this does not honor the excluded modes in
+;; `auto-indent-disabled-modes-list'
 ;; 
 ;; 
 ;; * Making certain modes perform tasks on paste/yank.
 ;; Sometimes, like in R, it is convenient to paste c:\ and change it to
 ;; c:/.  This can be accomplished by modifying the
-;; <tt>auto-indent-after-yank-hook</tt>.
+;; `auto-indent-after-yank-hook'.
 ;; 
 ;; The code for changing the paths is as follows:  
 ;; 
@@ -200,16 +214,36 @@
 ;;     (when (string= "S" ess-language)
 ;;       (add-hook 'auto-indent-after-yank-hook 'kicker-ess-fix-code t t)))
 ;;   (add-hook 'ess-mode-hook 'kicker-ess-turn-on-fix-code)
+;;   
+;; 
+;; 
+;; * FAQ
+;; ** How can you control the number of spaces auto-indent uses for indentation?
+;; Currently this is unsupported.  This is controlled by the major mode,
+;; and there is very little standards on how each mode implements
+;; indentation.  
+;; 
+;; It could be possibly supported by attempting to create a function that
+;; takes over `indent-line-function', and normalizes to the default
+;; tab-stop/number of spaces in the mode, but this has not been
+;; implemented yet.
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 20-Aug-2012    Matthew L. Fidler  
+;;    Last-Updated: Wed Aug  8 23:02:18 2012 (-0500) #1415 (Matthew L. Fidler)
+;;    Added some documentation about major mode indentation issues.
+;; 7-Aug-2012    Matthew L. Fidler  
+;;    Last-Updated: Sun Aug  5 12:36:11 2012 (-0500) #1411 (Matthew L. Fidler)
+;;    Changed a mistake in the documentation; Autoindenting of balanced
+;;    sexps are not supported by default but need to be enabled.
 ;; 04-Aug-2012    Matthew L. Fidler  
 ;;    Last-Updated: Sat Aug  4 21:30:02 2012 (-0500) #1403 (Matthew L. Fidler)
 ;;    Added ability to turn off dynamic growth of timers per mode.
 ;;    The algorithm to change has not been perfected yet.
 ;; 04-Aug-2012    Matthew L. Fidler
-;;    Last-Updated: Sat Aug  4 01:25:56 2012 (-0500) #1390 (Matthew L. Fidler)
+;;    Last-Updated: Sat Aug  4 01:25:56 2012 (-0500) #1390 (Matthew L. Idler)
 ;;    Fixed a bug introduced by cleaning typos.
 ;;    Changing again.
 ;; 03-Aug-2012    Matthew L. Fidler  
