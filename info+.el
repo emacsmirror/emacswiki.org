@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 21.1
-;; Last-Updated: Sat Aug 18 09:17:17 2012 (-0700)
+;; Last-Updated: Mon Aug 20 08:21:17 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 4638
+;;     Update #: 4655
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/info+.el
 ;; Keywords: help, docs, internal
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -65,7 +65,8 @@
 ;;  Internal variables defined here:
 ;;
 ;;    `Info-breadcrumbs-depth-internal' (Emacs 23+),
-;;    `Info-merged-map', `Info-mode-syntax-table'.
+;;    `Info-file-attributes' (Emacs 23.2, 24.1), `Info-merged-map',
+;;    `Info-mode-syntax-table'.
 ;;
 ;;
 ;;  ***** NOTE: The following standard faces defined in `info.el'
@@ -184,6 +185,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/08/20 dadams
+;;     Applied Juri's fix for Emacs bug #12230:
+;;       Added: Info-file-attributes.
+;;       Info-find-file: Clear caches of modified Info files.
 ;; 2012/08/18 dadams
 ;;     Invoke tap-define-aliases-wo-prefix if thingatpt+.el is loaded.
 ;; 2012/08/12 dadams
@@ -995,6 +1000,13 @@ For example, type `^Q^L^Q^J* ' to set this to \"\\f\\n* \"."
 ;; Added final clause to `cond', to handle virtual books.  (Emacs 23.2+)
 ;;
 (when (or (> emacs-major-version 23) (and (= emacs-major-version 23) (> emacs-minor-version 1)))
+
+  ;; Used for Juri's fix for Emacs bug #12230.
+  (unless (boundp 'Info-file-attributes)
+    (defvar Info-file-attributes ()
+      "List of the file attributes of visited Info files.
+Each element is a list (FILE-NAME FILE-ATTRIBUTES...)."))
+
   (defun Info-find-file (filename &optional noerror)
     "Return expanded FILENAME, or t if FILENAME is \"dir\".
 Optional second argument NOERROR, if t, means if file is not found
@@ -1042,6 +1054,18 @@ just return nil (no error)."
            (if noerror
                (setq filename nil)
              (error "Info file %s does not exist" filename)))
+         ;; Clear the caches of modified Info files.  This is Juri's fix for Emacs bug #12230.
+         (let* ((attribs-old  (cdr (assoc filename Info-file-attributes)))
+                (modtime-old  (and attribs-old  (nth 5 attribs-old)))
+                (attribs-new  (and (stringp filename)  (file-attributes filename)))
+                (modtime-new  (and attribs-new  (nth 5 attribs-new))))
+           (when (and modtime-old  modtime-new  (> (float-time modtime-new) (float-time modtime-old)))
+             (setq Info-index-nodes  (remove (assoc filename Info-index-nodes) Info-index-nodes)
+                   Info-toc-nodes    (remove (assoc filename Info-toc-nodes)   Info-toc-nodes)))
+           ;; Add new modtime to `Info-file-attributes'.
+           (setq Info-file-attributes  (cons (cons filename attribs-new)
+                                             (remove (assoc filename Info-file-attributes)
+                                                     Info-file-attributes))))         
          filename))
       ((member filename '(apropos history toc))  filename))) ; Handle virtual books - `toc'.
   )
