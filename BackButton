@@ -43,8 +43,7 @@ cause issues with Lisp code which depends on the convention that
 `global-mark-ring' not contain consecutive marks in the same
 buffer.  However, no such issues have been observed.
 
-Default key bindings
------------
+==Default key bindings==
 : C-x C-&lt;SPC&gt;    go back in `global-mark-ring', respects prefix arg  
 : C-x C-&lt;left&gt;   go back in `global-mark-ring'  
 : C-x C-&lt;right&gt;  go forward in `global-mark-ring'  
@@ -55,3 +54,13 @@ Default key bindings
 
 When the smartrep package is installed, the `C-x' prefix need not
 be used for consecutive `back-button' commands.
+
+==Availability==
+back-button is available at github:
+
+: https://github.com/rolandwalker/back-button
+
+and via <nowiki>EmacsWiki</nowiki>:
+
+: Lisp:back-button.el
+
