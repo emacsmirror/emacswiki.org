@@ -6,9 +6,9 @@
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Sat Nov  6 11:02:07 2010 (-0500)
 ;; Version: 0.66
-;; Last-Updated: Mon Aug 20 10:15:12 2012 (-0500)
+;; Last-Updated: Mon Aug 20 10:30:53 2012 (-0500)
 ;;           By: Matthew L. Fidler
-;;     Update #: 1417
+;;     Update #: 1419
 ;; URL: https://github.com/mlf176f2/auto-indent-mode.el/
 ;; Keywords: Auto Indentation
 ;; Compatibility: Tested with Emacs 23.x
@@ -20,21 +20,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Commentary:
-;; 
-;; *auto-indent-mode.el* --- Auto indent Minor mode
-;; 
-;;  - Filename :: [[file:auto-indent-mode.el][auto-indent-mode.el]]
-;;  - Description :: Auto Indent text on Yank/Paste
-;;  - Author :: Matthew L. Fidler, Le Wang & Others
-;;  - Maintainer :: Matthew L. Fidler
-;;  - Created :: Sat Nov  6 11:02:07 2010 (-0500)
-;;  - Version :: 0.64
-;;  - Last-Updated :: Tue Aug  7 19:28:44 2012 (-0500)
-;;  -           By :: Matthew L. Fidler
-;;  -     Update 
-;;  - URL :: https://github.com/mlf176f2/auto-indent-mode.el/
-;;  - Keywords :: Auto Indentation
-;;  - Compatibility :: Tested with Emacs 23.x
 ;; 
 ;; * About auto-indent-mode
 ;; Provides auto-indentation minor mode for Emacs.  This allows the
@@ -64,6 +49,7 @@
 ;; 
 ;; All of these options can be customized. (customize auto-indent)
 ;; * Installing auto-indent-mode
+;; 
 ;; To use put this in your load path and then put the following in your emacs
 ;; file:
 ;; 
@@ -219,18 +205,19 @@
 ;; 
 ;; * FAQ
 ;; ** How can you control the number of spaces auto-indent uses for indentation?
-;; Currently this is unsupported.  This is controlled by the major mode,
-;; and there is very little standards on how each mode implements
-;; indentation.  
+;; Currently this is unsupported.  This is controlled by the major mode.
 ;; 
-;; It could be possibly supported by attempting to create a function that
-;; takes over `indent-line-function', and normalizes to the default
-;; tab-stop/number of spaces in the mode, but this has not been
-;; implemented yet.
+;; See [[http://kb.iu.edu/data/abde.html][In Emacs how can I change tab sizes?]]
+;; 
+;; There is a possibility of supporting this, however it would take some
+;; additional functionality.
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 20-Aug-2012    Matthew L. Fidler  
+;;    Last-Updated: Mon Aug 20 10:15:12 2012 (-0500) #1417 (Matthew L. Fidler)
+;;    Clarified documentation
 ;; 20-Aug-2012    Matthew L. Fidler  
 ;;    Last-Updated: Wed Aug  8 23:02:18 2012 (-0500) #1415 (Matthew L. Fidler)
 ;;    Added some documentation about major mode indentation issues.
