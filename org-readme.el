@@ -5,11 +5,11 @@
 ;; Author: Matthew L. Fidler
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Fri Aug  3 22:33:41 2012 (-0500)
-;; Version: 0.22
+;; Version: 0.23
 ;; Package-Requires: ((http-post-simple "1.0") (yaoddmuse "0.1.1")(header2 "21.0") (lib-requires "21.0"))
-;; Last-Updated: Mon Aug 13 21:53:26 2012 (-0500)
+;; Last-Updated: Mon Aug 20 09:34:36 2012 (-0500)
 ;;           By: Matthew L. Fidler
-;;     Update #: 681
+;;     Update #: 686
 ;; URL: https://github.com/mlf176f2/org-readme
 ;; Keywords: Header2, Readme.org, Emacswiki, Git
 ;; Compatibility: Tested with Emacs 24.1 on Windows.
@@ -69,6 +69,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 20-Aug-2012    Matthew L. Fidler  
+;;    Last-Updated: Mon Aug 20 09:33:22 2012 (-0500) #684 (Matthew L. Fidler)
+;;    Added pandoc markdown table support (optional)
 ;; 13-Aug-2012    Matthew L. Fidler  
 ;;    Last-Updated: Mon Aug 13 21:52:37 2012 (-0500) #679 (Matthew L. Fidler)
 ;;    Another attempt to make texinfo documents.
@@ -294,6 +297,11 @@
 
 (defcustom org-readme-build-markdown t
   "Builds Readme.md from Readme.org"
+  :type 'boolean
+  :group 'org-readme)
+
+(defcustom org-readme-use-pandoc-markdown t
+  "Uses pandoc's grid tables instead of transferring the tables to html."
   :type 'boolean
   :group 'org-readme)
 
@@ -641,10 +649,15 @@ Returns file name if created."
         (end-of-line)
         (save-restriction
           (narrow-to-region p1 (point))
-          (org-replace-region-by-html (point-min) (point-max))
-          (goto-char (point-min))
-          (while (re-search-forward "class" nil t)
-            (replace-match "align"))))
+          (if org-readme-use-pandoc-markdown
+              (progn
+                (goto-char (point-min))
+                (while (re-search-forward "^\\([ \t]*\\)|\\(-.*?-\\)|\\([ \t]*\\)$" nil t)
+                  (replace-match "\\1+\\2+\\3")))
+            (org-replace-region-by-html (point-min) (point-max))
+            (goto-char (point-min))
+            (while (re-search-forward "class" nil t)
+              (replace-match "align")))))
       
       ;; Lists are the same.
       (setq readme (buffer-string)))
@@ -910,11 +923,6 @@ When COMMENT-ADDED is non-nil, the comment has been added and the syncing should
         (when org-readme-build-texi
           (when (executable-find "pandoc")
             (let ((default-directory (file-name-directory (buffer-file-name))))
-              (message "%s\n%s" default-directory
-                       (concat "pandoc Readme.md -s -o "
-                               (file-name-sans-extension
-                                (file-name-nondirectory (buffer-file-name)))
-                               ".texi"))
               (shell-command (concat "pandoc Readme.md -s -o "
                                      (file-name-sans-extension
                                       (file-name-nondirectory (buffer-file-name)))
