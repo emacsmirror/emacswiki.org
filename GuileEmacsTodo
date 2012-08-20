@@ -10,3 +10,4 @@
 * '''DONE''' Use guile-snarf for subr definition
 * Installation instructions
 * Debugging instructions
+* Eliminate forwarded variables (either use normal variables or implement symbol macros)
