@@ -9,10 +9,10 @@
 * <b>Author </b> --  Matthew L. Fidler, Le Wang & Others
 * <b>Maintainer </b> --  Matthew L. Fidler
 * <b>Created </b> --  Sat Nov  6 11:02:07 2010 (-0500)
-* <b>Version </b> --  0.64
-* <b>Last-Updated </b> --  Tue Aug  7 19:28:44 2012 (-0500)
+* <b>Version </b> --  0.66
+* <b>Last-Updated </b> --  Mon Aug 20 10:14:41 2012 (-0500)
 * <b>By </b> --  Matthew L. Fidler
-* <b>Update # </b> --  1412
+* <b>Update # </b> --  1416
 * <B>URL </B> --  https://github.com/mlf176f2/auto-indent-mode.el/
 * <b>Keywords </b> --  Auto Indentation
 * <b>Compatibility </b> --  Tested with Emacs 23.x
@@ -20,6 +20,21 @@
 == Possible Dependencies ==
 
 None
+
+== auto-indent-mode.el* --- Auto indent Minor mode ==
+
+* <b>Filename </b> --  [[auto-indent-mode.el]]
+* <b>Description </b> --  Auto Indent text on Yank/Paste
+* <b>Author </b> --  Matthew L. Fidler, Le Wang & Others
+* <b>Maintainer </b> --  Matthew L. Fidler
+* <b>Created </b> --  Sat Nov  6 11:02:07 2010 (-0500)
+* <b>Version </b> --  0.64
+* <b>Last-Updated </b> --  Tue Aug  7 19:28:44 2012 (-0500)
+* <b>By </b> --  Matthew L. Fidler
+* <b>Update # </b> --  1412
+* <B>URL </B> --  https://github.com/mlf176f2/auto-indent-mode.el/
+* <b>Keywords </b> --  Auto Indentation
+* <b>Compatibility </b> --  Tested with Emacs 23.x
 
 == About auto-indent-mode ==
 Provides auto-indentation minor mode for Emacs.  This allows the
@@ -206,12 +221,19 @@ This is setup by the following code snippet:
 
 }}}
 
+== FAQ ==
+=== How can you control the number of spaces auto-indent uses for indentation? ===
+Currently this is unsupported.  This is controlled by the major mode,
+and there is very little standards on how each mode implements
+indentation.  
+
+It could be possibly supported by attempting to create a function that
+takes over <tt>indent-line-function</tt>, and normalizes to the default
+tab-stop/number of spaces in the mode, but this has not been
+implemented yet.
 == History ==
 
-7-Aug-2012    Matthew L. Fidler  
-Last-Updated: Tue Aug  7 19:28:47 2012 (-0500)
-Changed a mistake in the documentation; Autoindenting of balanced
-sexps are not supported by default but need to be enabled.
+* <b>20-Aug-2012 </b> --   Added some documentation about major mode indentation issues. 7-Aug-2012 Matthew L. Fidler Last-Updated: Mon Aug 20 10:15:01 2012 (-0500)
 * <b>04-Aug-2012 </b> --   Added ability to turn off dynamic growth of timers per mode. The algorithm to change has not been perfected yet. (Matthew L. Fidler)
 * <b>04-Aug-2012 </b> --   Fixed a bug introduced by cleaning typos. Changing again. (Matthew L. Fidler)
 * <b>03-Aug-2012 </b> --   Save indentation settings on exit emacs. (Matthew L. Fidler)
