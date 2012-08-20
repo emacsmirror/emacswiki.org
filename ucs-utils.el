@@ -1,4 +1,3 @@
-
 ;;; ucs-utils.el --- Utilities for Unicode characters
 ;;
 ;; Copyright (c) 2012 Roland Walker
