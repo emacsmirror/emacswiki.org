@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue Aug 21 15:58:12 2012 (-0700)
+;; Last-Updated: Tue Aug 21 16:09:55 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8816
+;;     Update #: 8818
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3304,6 +3304,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2012/08/21 dadams
+;;     icicle-resolve-file-name: Call tap-put-thing-at-point-props after load thingatpt+.el.
 ;; 2012/08/18 dadams
 ;;     icicle-resolve-file-name: Call tap-define-aliases-wo-prefix.
 ;;     bounds-of-thing-at-point -> icicle-bounds-of-thing-at-point.
