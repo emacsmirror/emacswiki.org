@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Jun 28 15:07:06 1996
 ;; Version: 21.0
-;; Last-Updated: Sat Aug 18 16:50:40 2012 (-0700)
+;; Last-Updated: Tue Aug 21 14:53:01 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 290
+;;     Update #: 292
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/faces+.el
 ;; Keywords: faces, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -48,6 +48,8 @@
 ;; 
 ;;; Change Log:
 ;;
+;; 2012/08/21 dadams
+;;     Call tap-put-thing-at-point-props after load thingatpt+.el.
 ;; 2012/08/18 dadams
 ;;     Invoke tap-define-aliases-wo-prefix if thingatpt+.el is loaded.
 ;; 2011/01/04 dadams
@@ -109,8 +111,9 @@
 
 (require 'thingatpt nil t) ;; (no error if not found): symbol-at-point
 (when (and (require 'thingatpt+ nil t) ;; (no error if not found): symbol-nearest-point
-           (fboundp 'tap-define-aliases-wo-prefix)) ; >= 2012-08-17
-  (tap-define-aliases-wo-prefix))
+           (fboundp 'tap-put-thing-at-point-props)) ; >= 2012-08-21
+  (tap-define-aliases-wo-prefix)
+  (tap-put-thing-at-point-props))
 
 ;;;;;;;;;;;;;;;;;;;;
 
