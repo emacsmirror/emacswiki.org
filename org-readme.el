@@ -5,11 +5,11 @@
 ;; Author: Matthew L. Fidler
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Fri Aug  3 22:33:41 2012 (-0500)
-;; Version: 0.25
+;; Version: 0.26
 ;; Package-Requires: ((http-post-simple "1.0") (yaoddmuse "0.1.1")(header2 "21.0") (lib-requires "21.0"))
-;; Last-Updated: Tue Aug 21 12:40:04 2012 (-0500)
+;; Last-Updated: Tue Aug 21 12:59:45 2012 (-0500)
 ;;           By: Matthew L. Fidler
-;;     Update #: 785
+;;     Update #: 788
 ;; URL: https://github.com/mlf176f2/org-readme
 ;; Keywords: Header2, Readme.org, Emacswiki, Git
 ;; Compatibility: Tested with Emacs 24.1 on Windows.
@@ -77,6 +77,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 21-Aug-2012    Matthew L. Fidler  
+;;    Last-Updated: Tue Aug 21 12:57:54 2012 (-0500) #786 (Matthew L. Fidler)
+;;    Bug fix.  When variables/functions are documented with an initial
+;;    asterisk, change that asterisk to a bulleted item.
 ;; 21-Aug-2012    Matthew L. Fidler  
 ;;    Last-Updated: Tue Aug 21 12:34:00 2012 (-0500) #783 (Matthew L. Fidler)
 ;;    Another documentation update where I document how to change the
@@ -401,6 +405,9 @@
                    (goto-char (point-min))
                    (while (re-search-forward "`\\(.*?\\)'" nil t)
                      (replace-match "=\\1="))
+                   (goto-char (point-min))
+                   (while (re-search-forward "^[ \t]*[*]+[ \t]+" nil t)
+                     (replace-match " - "))
                    (goto-char (point-max))
                    (insert "\n")
                    (buffer-string))))
@@ -450,6 +457,9 @@
                    (goto-char (point-min))
                    (while (re-search-forward "`\\(.*?\\)'" nil t)
                      (replace-match "=\\1="))
+                   (goto-char (point-min))
+                   (while (re-search-forward "^[ \t]*[*]+[ \t]+" nil t)
+                     (replace-match " - "))
                    (goto-char (point-max))
                    (insert "\n")
                    (buffer-string))))
