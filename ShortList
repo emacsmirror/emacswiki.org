@@ -38,8 +38,8 @@ ideas from iflipb and !PinBar as a starting point. This new system is called
 
 *Development notes:*
 
-A separate mode was overkill, yet some key strokes need to captured and redefined 
-to do the buffer switching.  All user interaction would be through the 
+A separate mode is overkill, yet some key strokes need to captured and redefined 
+to do the buffer switching.  All user interaction is through the 
 minibuffer.  The core of SL uses the Emacs built-in function (read-key-sequence-vector) and the 
 Emacs built-in variable unread-command-events.  (read-key-sequence-vector) captures a keystroke 
 as a vector without executing the bound function.  In the SL-show function, the 
