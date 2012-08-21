@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  2 16:55:16 1999
 ;; Version: 20.0
-;; Last-Updated: Sat Aug 18 08:21:55 2012 (-0700)
+;; Last-Updated: Tue Aug 21 14:48:37 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 929
+;;     Update #: 934
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/compile+20.el
 ;; Keywords: tools, processes
 ;; Compatibility: GNU Emacs 20.x, GNU Emacs 21.x
@@ -80,7 +80,9 @@
 ;;
 ;;; Change Log:
 ;;
-;; 2012/08/19 dadams
+;; 2012/08/21 dadams
+;;     Call tap-put-thing-at-point-props after load thingatpt+.el.
+;; 2012/08/18 dadams
 ;;     Invoke tap-define-aliases-wo-prefix if thingatpt+.el is loaded.
 ;; 2011/12/19 dadams
 ;;     grep: Use buffer-substring-no-properties, not buffer-substring.
@@ -169,8 +171,9 @@
 
 (require 'thingatpt nil t) ;; (no error if not found): word-at-point
 (when (and (require 'thingatpt+ nil t);; (no error if not found)
-           (fboundp 'tap-define-aliases-wo-prefix)) ; >= 2012-08-17
-  (tap-define-aliases-wo-prefix))
+           (fboundp 'tap-put-thing-at-point-props)) ; >= 2012-08-21
+  (tap-define-aliases-wo-prefix)
+  (tap-put-thing-at-point-props))
  ;; non-nil-symbol-name-nearest-point
 
 (require 'highlight nil t) ;; (no error if not found): hlt-highlight-regexp-region
