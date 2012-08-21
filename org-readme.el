@@ -7,9 +7,9 @@
 ;; Created: Fri Aug  3 22:33:41 2012 (-0500)
 ;; Version: 0.25
 ;; Package-Requires: ((http-post-simple "1.0") (yaoddmuse "0.1.1")(header2 "21.0") (lib-requires "21.0"))
-;; Last-Updated: Mon Aug 20 22:58:29 2012 (-0500)
+;; Last-Updated: Tue Aug 21 12:34:00 2012 (-0500)
 ;;           By: Matthew L. Fidler
-;;     Update #: 781
+;;     Update #: 783
 ;; URL: https://github.com/mlf176f2/org-readme
 ;; Keywords: Header2, Readme.org, Emacswiki, Git
 ;; Compatibility: Tested with Emacs 24.1 on Windows.
@@ -30,6 +30,10 @@
 ;; - Create/Update a "Library Information" Section Based on the Emacs lisp header.
 ;; - Create/Update a "Possible Dependencies" Section Based on the Emacs
 ;;   lisp header.
+;; - Create/Update a "Functions" Section based on the functions defined
+;;   in the single lisp library.
+;; - Create/Update a "Variables" Section based on the variables defined
+;;   in the single lisp library.
 ;; 
 ;; All other sections of the Readme.org are then put into the
 ;; "Commentary" section of the readme.org.
@@ -69,6 +73,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 21-Aug-2012    Matthew L. Fidler  
+;;    Last-Updated: Mon Aug 20 22:58:29 2012 (-0500) #781 (Matthew L. Fidler)
+;;    Updated the documentation for org-readme.
 ;; 20-Aug-2012    Matthew L. Fidler  
 ;;    Last-Updated: Mon Aug 20 22:56:08 2012 (-0500) #779 (Matthew L. Fidler)
 ;;    Bug fix for variables that don't really transport well to the documentation.
