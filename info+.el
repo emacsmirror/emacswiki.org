@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 21.1
-;; Last-Updated: Mon Aug 20 08:21:17 2012 (-0700)
+;; Last-Updated: Tue Aug 21 15:12:53 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 4655
+;;     Update #: 4657
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/info+.el
 ;; Keywords: help, docs, internal
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -185,6 +185,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/08/21 dadams
+;;     Call tap-put-thing-at-point-props after load thingatpt+.el.
 ;; 2012/08/20 dadams
 ;;     Applied Juri's fix for Emacs bug #12230:
 ;;       Added: Info-file-attributes.
@@ -502,8 +504,9 @@
 (require 'thingatpt nil t) ;; (no error if not found): symbol-at-point
 
 (when (and (require 'thingatpt+ nil t);; (no error if not found): symbol-nearest-point
-           (fboundp 'tap-define-aliases-wo-prefix)) ; >= 2012-08-17
-  (tap-define-aliases-wo-prefix))
+           (fboundp 'tap-put-thing-at-point-props)) ; >= 2012-08-21
+  (tap-define-aliases-wo-prefix)
+  (tap-put-thing-at-point-props))
 
 (require 'strings nil t) ;; (no error if not found): concat-w-faces
 (require 'fit-frame nil t) ;; (no error if not found): fit-frame
