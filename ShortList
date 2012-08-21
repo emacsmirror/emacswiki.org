@@ -97,7 +97,7 @@ short list if the buffer is killed).
 
 ----------------------------
 
-!ShortList functionality:
+*!ShortList functionality:*
 
 When the <SL function key> is pressed, SL-show is executed.  If SL-list is empty, 
 this immediately brings up the BS list (my own preferred built-in buffer list 
