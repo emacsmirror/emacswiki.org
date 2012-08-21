@@ -9,9 +9,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Wed Jan 10 14:31:50 1996
 ;; Version: 20.0
-;; Last-Updated: Sat Aug 18 08:28:04 2012 (-0700)
+;; Last-Updated: Tue Aug 21 15:00:10 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 611
+;;     Update #: 614
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/find-dired+.el
 ;; Keywords: internal, unix, tools, matching, local
 ;; Compatibility: GNU Emacs 20.x
@@ -75,6 +75,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/08/21 dadams
+;;     Call tap-put-thing-at-point-props after load thingatpt+.el.
 ;; 2012/08/18 dadams
 ;;     Invoke tap-define-aliases-wo-prefix if thingatpt+.el is loaded.
 ;; 2011/08/30 dadams
@@ -158,8 +160,9 @@
  ;; Note: `dired+.el' does a (require 'dired): dired-mode-map
 
 (when (and (require 'thingatpt+ nil t);; (no error if not found)
-           (fboundp 'tap-define-aliases-wo-prefix)) ; >= 2012-08-17
-  (tap-define-aliases-wo-prefix))
+           (fboundp 'tap-put-thing-at-point-props)) ; >= 2012-08-21
+  (tap-define-aliases-wo-prefix)
+  (tap-put-thing-at-point-props))
  ;; region-or-non-nil-symbol-name-nearest-point
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
