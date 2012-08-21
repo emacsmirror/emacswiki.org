@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Mar 16 14:18:11 1999
 ;; Version: 20.0
-;; Last-Updated: Sat Aug 18 16:41:58 2012 (-0700)
+;; Last-Updated: Tue Aug 21 15:02:25 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 2139
+;;     Update #: 2142
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/help+.el
 ;; Keywords: help
 ;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x
@@ -69,6 +69,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/08/21 dadams
+;;     Call tap-put-thing-at-point-props after load thingatpt+.el.
 ;; 2012/08/18 dadams
 ;;     Invoke tap-define-aliases-wo-prefix if thingatpt+.el is loaded.
 ;;     help-on-click/key: Use tap-symbol-at-point, not symbol-at-point, if defined.
@@ -114,8 +116,9 @@
 (require 'thingatpt nil t)  ;; (no error if not found): symbol-at-point
 
 (when (and (require 'thingatpt+ nil t) ;; (no error if not found)
-           (fboundp 'tap-define-aliases-wo-prefix)) ; >= 2012-08-17
-  (tap-define-aliases-wo-prefix))
+           (fboundp 'tap-put-thing-at-point-props)) ; >= 2012-08-21
+  (tap-define-aliases-wo-prefix)
+  (tap-put-thing-at-point-props))
  ;; symbol-nearest-point, tap-symbol-at-point
 
 (require 'frame-fns nil t)  ;; (no error if not found): 1-window-frames-on
