@@ -7,9 +7,9 @@
 ;; Created: Fri Aug  3 22:33:41 2012 (-0500)
 ;; Version: 0.24
 ;; Package-Requires: ((http-post-simple "1.0") (yaoddmuse "0.1.1")(header2 "21.0") (lib-requires "21.0"))
-;; Last-Updated: Mon Aug 20 22:28:11 2012 (-0500)
+;; Last-Updated: Mon Aug 20 22:36:02 2012 (-0500)
 ;;           By: Matthew L. Fidler
-;;     Update #: 759
+;;     Update #: 772
 ;; URL: https://github.com/mlf176f2/org-readme
 ;; Keywords: Header2, Readme.org, Emacswiki, Git
 ;; Compatibility: Tested with Emacs 24.1 on Windows.
@@ -69,6 +69,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 20-Aug-2012    Matthew L. Fidler  
+;;    Last-Updated: Mon Aug 20 22:34:35 2012 (-0500) #770 (Matthew L. Fidler)
+;;    Added ability to customize which sections are added to the Readme.org
 ;; 20-Aug-2012    Matthew L. Fidler  
 ;;    Last-Updated: Mon Aug 20 22:26:41 2012 (-0500) #757 (Matthew L. Fidler)
 ;;    Bug fix for creating function readme
@@ -327,7 +330,27 @@
 (defcustom org-readme-drop-markdown-after-build-texi t
   "Removes Readme.md after texinfo is generated"
   :type 'boolean
-  :group 'rg-readme)
+  :group 'org-readme)
+
+(defcustom org-readme-add-functions-to-readme t
+  "Add a Functions section to Readme.org"
+  :type 'boolean
+  :group 'org-readme)
+
+(defcustom org-readme-add-variables-to-readme t
+  "Add a Variables section to Readme.org"
+  :type 'boolean
+  :group 'org-readme)
+
+(defcustom org-readme-add-changelog-to-readme t
+  "Add a Variables section to Readme.org"
+  :type 'boolean
+  :group 'org-readme)
+
+(defcustom org-readme-add-top-header-to-readme t
+  "Add Top Header information to Readme.org"
+  :type 'boolean
+  :group 'org-readme)
 
 (defun org-readme-insert-functions ()
   "Extracts function documentation and places it in the Readme.org file."
@@ -1033,13 +1056,17 @@ When COMMENT-ADDED is non-nil, the comment has been added and the syncing should
       
       (message "Adding Readme to Header Commentary")
       (org-readme-to-commentary)
-      (message "Updating Functions.")
-      (org-readme-insert-functions)
-      (message "Updating Variables.")
-      (org-readme-insert-variables)
-      (message "Updating Changelog in current file.")
-      (org-readme-changelog-to-readme)
-      (org-readme-top-header-to-readme)
+      (when org-readme-add-functions-to-readme
+        (message "Updating Functions.")
+        (org-readme-insert-functions))
+      (when org-readme-add-variables-to-readme
+        (message "Updating Variables.")
+        (org-readme-insert-variables))
+      (when org-readme-add-changelog-to-readme
+        (message "Updating Changelog in current file.")
+        (org-readme-changelog-to-readme))
+      (when org-readme-add-top-header-to-readme
+        (org-readme-top-header-to-readme))
       (save-buffer)
       
       (when org-readme-build-markdown 
