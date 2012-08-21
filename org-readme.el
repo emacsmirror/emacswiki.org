@@ -7,9 +7,9 @@
 ;; Created: Fri Aug  3 22:33:41 2012 (-0500)
 ;; Version: 0.24
 ;; Package-Requires: ((http-post-simple "1.0") (yaoddmuse "0.1.1")(header2 "21.0") (lib-requires "21.0"))
-;; Last-Updated: Mon Aug 20 22:23:41 2012 (-0500)
+;; Last-Updated: Mon Aug 20 22:28:11 2012 (-0500)
 ;;           By: Matthew L. Fidler
-;;     Update #: 756
+;;     Update #: 759
 ;; URL: https://github.com/mlf176f2/org-readme
 ;; Keywords: Header2, Readme.org, Emacswiki, Git
 ;; Compatibility: Tested with Emacs 24.1 on Windows.
@@ -69,6 +69,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 20-Aug-2012    Matthew L. Fidler  
+;;    Last-Updated: Mon Aug 20 22:26:41 2012 (-0500) #757 (Matthew L. Fidler)
+;;    Bug fix for creating function readme
 ;; 20-Aug-2012    Matthew L. Fidler  
 ;;    Last-Updated: Mon Aug 20 22:22:04 2012 (-0500) #754 (Matthew L. Fidler)
 ;;    Will now remove the Functions and Variables sections before putting
@@ -351,6 +354,8 @@
                    (goto-char (point-min))
                    (while (re-search-forward "`\\(.*?\\)'" nil t)
                      (replace-match "=\\1="))
+                   (goto-char (point-max))
+                   (insert "\n")
                    (buffer-string))))
         (setq ret1 "** Interactive Functions\n")
         (setq ret2 "** Internal Functions\n")
