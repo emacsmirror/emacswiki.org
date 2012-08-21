@@ -7,9 +7,9 @@
 ;; Created: Fri Aug  3 22:33:41 2012 (-0500)
 ;; Version: 0.25
 ;; Package-Requires: ((http-post-simple "1.0") (yaoddmuse "0.1.1")(header2 "21.0") (lib-requires "21.0"))
-;; Last-Updated: Tue Aug 21 12:34:00 2012 (-0500)
+;; Last-Updated: Tue Aug 21 12:40:04 2012 (-0500)
 ;;           By: Matthew L. Fidler
-;;     Update #: 783
+;;     Update #: 785
 ;; URL: https://github.com/mlf176f2/org-readme
 ;; Keywords: Header2, Readme.org, Emacswiki, Git
 ;; Compatibility: Tested with Emacs 24.1 on Windows.
@@ -41,6 +41,10 @@
 ;; In addition this library defines `org-readme-sync',  a convenience function that:
 ;; 
 ;; - Asks for a commentary about the library change.
+;;   - To exit/save press `C-c C-c'
+;; - Asks if this is a minor revision
+;;   - If it is a minor revision, bumps the revision up so the new
+;;     library will be posted to marmalade-repo.org
 ;; - Syncs the Readme.org with the lisp file as described above.
 ;; - Updates emacswiki with the library description and the library
 ;;   itself (requires yaoddmuse).
@@ -73,6 +77,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 21-Aug-2012    Matthew L. Fidler  
+;;    Last-Updated: Tue Aug 21 12:34:00 2012 (-0500) #783 (Matthew L. Fidler)
+;;    Another documentation update where I document how to change the
+;;    comment and that org-readme may change the minor revision of the library.
 ;; 21-Aug-2012    Matthew L. Fidler  
 ;;    Last-Updated: Mon Aug 20 22:58:29 2012 (-0500) #781 (Matthew L. Fidler)
 ;;    Updated the documentation for org-readme.
