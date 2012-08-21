@@ -7,9 +7,9 @@
 ;; Created: Fri Aug  3 22:33:41 2012 (-0500)
 ;; Version: 0.24
 ;; Package-Requires: ((http-post-simple "1.0") (yaoddmuse "0.1.1")(header2 "21.0") (lib-requires "21.0"))
-;; Last-Updated: Mon Aug 20 22:36:02 2012 (-0500)
+;; Last-Updated: Mon Aug 20 22:43:07 2012 (-0500)
 ;;           By: Matthew L. Fidler
-;;     Update #: 772
+;;     Update #: 774
 ;; URL: https://github.com/mlf176f2/org-readme
 ;; Keywords: Header2, Readme.org, Emacswiki, Git
 ;; Compatibility: Tested with Emacs 24.1 on Windows.
@@ -69,6 +69,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 20-Aug-2012    Matthew L. Fidler  
+;;    Last-Updated: Mon Aug 20 22:36:02 2012 (-0500) #772 (Matthew L. Fidler)
+;;    Attempt to fix the History list 
 ;; 20-Aug-2012    Matthew L. Fidler  
 ;;    Last-Updated: Mon Aug 20 22:34:35 2012 (-0500) #770 (Matthew L. Fidler)
 ;;    Added ability to customize which sections are added to the Readme.org
@@ -1347,6 +1350,9 @@ When AT-BEGINNING is non-nil, if the section is not found, insert it at the begi
               (goto-char (point-min))
               (while (re-search-forward "`\\(.*?\\)'" nil t)
                 (replace-match "=\\1="))
+              (goto-char (point-min))
+              (while (re-search-forward "^[ \t][ \t]+[-]" nil t)
+                (replace-match " -"))
               (goto-char (point-min))
               (insert "* History\n")
               (setq txt (buffer-substring (point-min) (point-max))))
