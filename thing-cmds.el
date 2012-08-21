@@ -7,9 +7,9 @@
 ;; Copyright (C) 2006-2012, Drew Adams, all rights reserved.
 ;; Created: Sun Jul 30 16:40:29 2006
 ;; Version: 20.1
-;; Last-Updated: Sat Aug 18 18:42:34 2012 (-0700)
+;; Last-Updated: Tue Aug 21 15:26:08 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 701
+;;     Update #: 702
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/thing-cmds.el
 ;; Keywords: thingatpt, thing, region, selection
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -64,6 +64,8 @@
 ;; 
 ;;; Change Log:
 ;;
+;; 2012/08/21 dadams
+;;     Call tap-put-thing-at-point-props after load thingatpt+.el.
 ;; 2012/08/18 dadams
 ;;     Added: thgcmd-bounds-of-thing-at-point.
 ;;     bounds-of-thing-at-point -> thgcmd-bounds-of-thing-at-point everywhere.
@@ -141,9 +143,10 @@
 ;;; Code:
 
 (require 'thingatpt) ;; bounds-of-thing-at-point
-(when (and (require 'thingatpt+ nil t) ;; (no error if not found): tap-bounds-of-thing-at-point
-           (fboundp 'tap-define-aliases-wo-prefix)) ; >= 2012-08-17
-  (tap-define-aliases-wo-prefix))
+(when (and (require 'thingatpt+ nil t)  ; (no error if not found): tap-bounds-of-thing-at-point
+           (fboundp 'tap-put-thing-at-point-props)) ; >= 2012-08-21
+  (tap-define-aliases-wo-prefix)
+  (tap-put-thing-at-point-props))
   ;; tap-bounds-of-thing-at-point, bounds-of-thing-nearest-point
 
 (require 'hide-comnt) ;; with-comments-hidden, so also hide/show-comments, ignore-comments-flag.
