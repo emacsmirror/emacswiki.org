@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Wed Aug  2 11:20:41 1995
 ;; Version: 21.1
-;; Last-Updated: Sat Aug 18 15:51:34 2012 (-0700)
+;; Last-Updated: Tue Aug 21 15:16:26 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 3025
+;;     Update #: 3027
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/misc-cmds.el
 ;; Keywords: internal, unix, extensions, maint, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -70,6 +70,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/08/21 dadams
+;;     Call tap-put-thing-at-point-props after load thingatpt+.el.
 ;; 2012/08/18 dadams
 ;;     resolve-file-name: Invoke tap-define-aliases-wo-prefix if thingatpt+.el loaded.
 ;;                        Use tap-bounds-of-thing-at-point if defined.
@@ -969,6 +971,7 @@ region was active then its content was already added to the ring.)"
           (thg+bnds  (and (not regionp)
                           (require 'thingatpt+ nil t)
                           (tap-define-aliases-wo-prefix) ; Defined in `thingatpt+.el'.
+                          (tap-put-thing-at-point-props)
                           (thing-nearest-point-with-bounds 'filename)))
           (bnds      (if regionp
                          (cons (region-beginning) (region-end))
