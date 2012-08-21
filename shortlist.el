@@ -79,7 +79,7 @@ Return -1 if entire array is nil."
   (interactive)
   (if (= -1 (SL-curbuf-active))
       (progn
-	(setq SL-list (append SL-list (list (current-buffer))))
+	(setq SL-list (append SL-list (list (current-buffer))))))
   (if slshow (SL-show)))
 
 (defun SL-add-key ()
