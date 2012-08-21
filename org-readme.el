@@ -5,11 +5,11 @@
 ;; Author: Matthew L. Fidler
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Fri Aug  3 22:33:41 2012 (-0500)
-;; Version: 0.24
+;; Version: 0.25
 ;; Package-Requires: ((http-post-simple "1.0") (yaoddmuse "0.1.1")(header2 "21.0") (lib-requires "21.0"))
-;; Last-Updated: Mon Aug 20 22:43:07 2012 (-0500)
+;; Last-Updated: Mon Aug 20 22:46:18 2012 (-0500)
 ;;           By: Matthew L. Fidler
-;;     Update #: 774
+;;     Update #: 776
 ;; URL: https://github.com/mlf176f2/org-readme
 ;; Keywords: Header2, Readme.org, Emacswiki, Git
 ;; Compatibility: Tested with Emacs 24.1 on Windows.
@@ -69,6 +69,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 20-Aug-2012    Matthew L. Fidler  
+;;    Last-Updated: Mon Aug 20 22:43:07 2012 (-0500) #774 (Matthew L. Fidler)
+;;    Bump minor version for marmalade-repo.org
 ;; 20-Aug-2012    Matthew L. Fidler  
 ;;    Last-Updated: Mon Aug 20 22:36:02 2012 (-0500) #772 (Matthew L. Fidler)
 ;;    Attempt to fix the History list 
