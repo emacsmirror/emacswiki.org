@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Aug 18 15:45:02 2012 (-0700)
+;; Last-Updated: Tue Aug 21 16:07:43 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 18411
+;;     Update #: 18412
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4419,6 +4419,7 @@ region was active then its content was already added to the ring.)"
           (thg+bnds  (and (not regionp)
                           (require 'thingatpt+ nil t)
                           (tap-define-aliases-wo-prefix) ; Dispense with `tap-' prefix.
+                          (tap-put-thing-at-point-props)
                           (thing-nearest-point-with-bounds 'filename)))
           (bnds      (if regionp
                          (cons (region-beginning) (region-end))
