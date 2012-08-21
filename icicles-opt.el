@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Aug 19 14:41:44 2012 (-0700)
+;; Last-Updated: Tue Aug 21 15:10:36 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5305
+;;     Update #: 5307
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -246,8 +246,10 @@
 
 (require 'thingatpt)        ;; symbol-at-point, thing-at-point, thing-at-point-url-at-point
 
-(when (require 'thingatpt+ nil t);; (no error if not found)
-  (tap-define-aliases-wo-prefix))
+(when (and (require 'thingatpt+ nil t)  ; (no error if not found)
+           (fboundp 'tap-put-thing-at-point-props)) ; >= 2012-08-21
+  (tap-define-aliases-wo-prefix)
+  (tap-put-thing-at-point-props))
  ;; list-nearest-point-as-string, non-nil-symbol-name-nearest-point, word-nearest-point
 
 (require 'hexrgb nil t) ;; (no error if not found): hexrgb-approx-equal, hexrgb-saturation
