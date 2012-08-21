@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Jan 30 15:01:06 1996
 ;; Version: 21.0
-;; Last-Updated: Sat Aug 18 09:33:03 2012 (-0700)
+;; Last-Updated: Tue Aug 21 15:19:03 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1277
+;;     Update #: 1278
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/replace+.el
 ;; Keywords: matching, help, internal, tools, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -111,6 +111,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/08/21 dadams
+;;     Call tap-put-thing-at-point-props after load thingatpt+.el.
 ;; 2012/08/18 dadams
 ;;     Invoke tap-define-aliases-wo-prefix if thingatpt+.el is loaded.
 ;; 2012/08/04 dadams
@@ -253,9 +255,11 @@
 (eval-when-compile (require 'cl)) ;; incf (plus, for Emacs 20: push)
 
 (require 'thingatpt nil t) ;; (no error if not found): word-at-point
+
 (when (and (require 'thingatpt+ nil t);; (no error if not found)
-           (fboundp 'tap-define-aliases-wo-prefix)) ; >= 2012-08-17
-  (tap-define-aliases-wo-prefix))
+           (fboundp 'tap-put-thing-at-point-props)) ; >= 2012-08-21
+  (tap-define-aliases-wo-prefix)
+  (tap-put-thing-at-point-props))
  ;; non-nil-symbol-name-nearest-point
 
 (require 'frame-cmds nil t) ;; (no error if not found): show-a-frame-on
