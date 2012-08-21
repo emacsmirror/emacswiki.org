@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Sat Aug 18 18:43:13 2012 (-0700)
+;; Last-Updated: Tue Aug 21 15:09:19 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5778
+;;     Update #: 5779
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2052,8 +2052,8 @@ candidates than `icicle-Info-visited-max-candidates'"
 (defun icicle-Info-index-20 ()
   "Like `Info-index', but you can use completion for the index topic."
   (interactive)
-  (let* ((symb (or (and (fboundp 'tap-symbol-nearest-point) ; Defined in `thingatpt+.el'.
-                        (tap-symbol-nearest-point))
+  (let* ((symb (or (and (fboundp 'symbol-nearest-point) ; `icicles-opt.el' soft-requires `thingatpt+.el'.
+                        (symbol-nearest-point))
                    (symbol-at-point)))
          (topic (and symb (symbol-name symb))))
     (icicle-ORIG-Info-index "")
