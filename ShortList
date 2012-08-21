@@ -122,4 +122,4 @@ minibuffer (the C-x C-v keystrokes are "pushed back"), and (courtesy of some
 "around advice" to find-alternate-file) the newly loaded buffer remains on the 
 SL-list.
 
-Parwnt page : [[CategoryBufferSwitching|BufferSwitching]]
+Parent page : [[CategoryBufferSwitching|BufferSwitching]]
