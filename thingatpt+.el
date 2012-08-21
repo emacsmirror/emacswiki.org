@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Feb 13 16:47:45 1996
 ;; Version: 21.0
-;; Last-Updated: Sun Aug 19 16:17:56 2012 (-0700)
+;; Last-Updated: Tue Aug 21 15:06:24 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1827
+;;     Update #: 1916
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/thingatpt+.el
 ;; Keywords: extensions, matching, mouse
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -28,7 +28,8 @@
 ;;  Commands defined here:
 ;;
 ;;    `find-fn-or-var-nearest-point', `forward-char-same-line',
-;;    `forward-whitespace-&-newlines', `tap-redefine-std-fns'.
+;;    `forward-whitespace-&-newlines', `tap-put-thing-at-point-props',
+;;    `tap-redefine-std-fns'.
 ;;
 ;;  User options defined here:
 ;;
@@ -89,20 +90,57 @@
 ;;  `constrain-to-field', `field-beginning', `field-end'.
 ;;
 ;;
-;;  This file should be loaded after loading the standard GNU file
-;;  `thingatpt.el'.  So, in your init file (`~/.emacs'), do this:
+;;  How To Use This Library
+;;  =======================
 ;;
-;;    (eval-after-load "thingatpt" '(require 'thingatpt+))
+;;  End Users
+;;  ---------
 ;;
-;;  But to get the most out of this library, use the following in your
-;;  init file, instead:
+;;  Load this library after loading the standard GNU file
+;;  `thingatpt.el'.  You can put this in your init file (`~/.emacs'):
+;;
+;;    (eval-after-load "thingatpt"
+;;      '(require 'thingatpt+))
+;;
+;;  That defines new functions and improved versions of some of the
+;;  standard thing-at-point functions.  All such functions have the
+;;  prefix `tap-', so they are not used by default in any way.
+;;
+;;  That does not at all, however, make Emacs use the improved
+;;  functions.  Merely loading this library does not change the
+;;  behavior of thing-at-point features.
+;;
+;;  If you want functions defined here to be used for calls to
+;;  standard Emacs functions that make use of the `thing-at-point' and
+;;  `bounds-of-thing-at-point' symbol properties for standard thing
+;;  types (e.g. `list'), then put this in your init file, instead:
+;;
+;;    (eval-after-load "thingatpt"
+;;      '(require 'thingatpt+)
+;;       (tap-put-thing-at-point-props))
+;;
+;;  A further step, which I recommend, is to use the `tap-' versions
+;;  of standard functions, defined here, everywhere in place of those
+;;  standard functions.  In other words, redefine the standard
+;;  functions as the `tap-' versions defined here.  For example,
+;;  redefine `bounds-of-thing-at-point' to do what
+;;  `tap-bounds-of-thing-at-point' does.
+;;
+;;  (If you do that then you need not invoke
+;;  `tap-put-thing-at-point-props', since the property values set by
+;;  vanilla library `thingatpt.el' will be OK because the functions
+;;  themselves will have been redefined in that case.)
+;;
+;;  So to get the most out of this library, I recommend that you put
+;;  (only) the following in your init file:
 ;;
 ;;    (eval-after-load "thingatpt"
 ;;      '(require 'thingatpt+)
 ;;       (tap-redefine-std-fns))
 ;;
-;;  That makes all code that uses the following functions use the
-;;  their versions that are defined here, not the standard versions.
+;;  That makes all Emacs code that uses the following standard
+;;  functions use the their versions that are defined here, not the
+;;  vanilla versions defined in `thingatpt.el'.
 ;;
 ;;  `bounds-of-thing-at-point' - Better behavior.
 ;;                               Accept optional arg SYNTAX-TABLE.
@@ -115,30 +153,59 @@
 ;;                             - Better behavior.  Accept optional
 ;;                               args UP and UNQUOTEDP.
 ;;
-;;  If you write code that uses the functions here, for convenience
-;;  you can invoke `tap-define-aliases-wo-prefix' to provide alias
-;;  functions that have the same names but without the prefix `tap-'.
-;;  These aliases do not collide with any standard Emacs functions.
+;;
+;;  Lisp Programmers
+;;  ----------------
+;;
+;;  If you write code that uses some of the functions defined here,
+;;  for convenience you can invoke `tap-define-aliases-wo-prefix' to
+;;  provide alias functions that have the same names but without the
+;;  prefix `tap-'.  This affects only functions defined here that have
+;;  no vanilla counterpart, so the aliases do not collide with any
+;;  standard Emacs functions.
+;;
 ;;  For example, you might do this:
 ;;
 ;;    (when (require 'thingatpt+ nil t)  ; (no error if not found)
 ;;      (tap-define-aliases-wo-prefix))
 ;;
 ;;  But because that does not redefine any standard functions, if you
-;;  want the improvements defined here then you will also need to
-;;  either call `tap-redefine-std-fns' or call the individual `tap-*'
-;;  versions explicitly for each of the standard functions that would
-;;  be redefined by `tap-redefine-std-fns'.
+;;  want all of the improvements defined here then you will also need
+;;  to do ONE of the following (#1 or #2):
 ;;
-;;  For example, to get the improvements offered by
-;;  `tap-bounds-of-thing-at-point', you will need to call it as such,
-;;  unless you invoke `tap-redefine-std-fns' to use it everywhere as
-;;  the definition of `bounds-of-thing-at-point'.
+;;  1. Call `tap-redefine-std-fns', to redefine standard functions.
+;;
+;;  2. Do BOTH of these things:
+;;
+;;    a. Call `tap-put-thing-at-point-props', to substitute `tap-'
+;;       functions for standard functions as the values of symbol
+;;       properties `thing-at-point' and `bounds-of-thing-at-point'.
+;;
+;;    b. Call the individual `tap-*' functions explicitly for each of
+;;       the standard functions that would be redefined by
+;;       `tap-redefine-std-fns'.
+;;
+;;    For example, to get the improvements offered by
+;;    `tap-list-at-point', you need to call it explicitly, unless you
+;;    invoke `tap-redefine-std-fns' to use it everywhere as the
+;;    definition of `list-at-point'.
+;;
+;;    Be aware that this (#2a) changes (improves) the behavior of
+;;    things like (thing-at-point 'list), even though it does not
+;;    redefine any standard functions.  This is because the generic
+;;    functions `thing-at-point' and `bounds-of-thing-at-point' use
+;;    the symbol properties `thing-at-point' and
+;;    `bounds-of-thing-at-point', and `tap-put-thing-at-point-props'
+;;    changes which functions are used for those property values.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
 ;;
+;; 2012/08/21 dadams
+;;     Added: tap-put-thing-at-point-props.
+;;     Moved puts for list and number to tap-put-thing-at-point-props.
+;;     tap-define-aliases-wo-prefix: Return non-nil so can use in Boolean test.
 ;; 2012/08/19 dadams
 ;;     Added: tap-symbol-name-at-point.
 ;;     tap(-bounds-of)-symbol-at-point(-with-bounds):
@@ -883,8 +950,6 @@ Non-nil UNQUOTEDP means remove the car if it is `quote' or
   (tap-list-at/nearest-point-with-bounds 'tap-sexp-nearest-point-with-bounds up unquotedp))
 
 
-(put 'list 'bounds-of-thing-at-point 'tap-bounds-of-list-at-point)
-
 (defun tap-bounds-of-list-at-point (&optional up unquotedp)
   "Return the start and end locations for the non-empty list at point.
 See `tap-list-at-point'.
@@ -910,9 +975,6 @@ Optional args:
   (let ((thing+bds  (tap-list-nearest-point-with-bounds up unquotedp)))
     (and thing+bds
          (cdr thing+bds))))
-
-
-(put 'list 'thing-at-point 'tap-list-at-point)
 
 
 ;; REPLACE ORIGINAL defined in `thingatpt.el'.
@@ -1108,7 +1170,7 @@ Optional arg SYNTAX-TABLE is a syntax table to use."
   (tap-form-nearest-point 'sexp 'numberp syntax-table))
 
 
-;; `defun' type
+;; `defun' type.  These are defined in recent `thingatpt.el', but not for older versions.
 (unless (get 'defun 'beginning-op) (put 'defun 'beginning-op 'beginning-of-defun))
 (unless (get 'defun 'end-op)       (put 'defun 'end-op       'end-of-defun))
 (unless (get 'defun 'forward-op)   (put 'defun 'forward-op   'end-of-defun))
@@ -1151,13 +1213,6 @@ Return nil if none is found."
          (string-to-number strg 16))))
 
 
-;; Make these work for vanilla `number' too.
-(put 'number 'thing-at-point 'number-at-point)
-(put 'number 'bounds-of-thing-at-point
-     (lambda () (and (number-at-point)
-                     (tap-bounds-of-thing-at-point 'sexp))))
-
-
 (when (fboundp 'syntax-ppss)            ; Based on `comint-extract-string'.
 
   (put 'string 'bounds-of-thing-at-point 'tap-bounds-of-string-at-point)
@@ -1193,6 +1248,27 @@ See also `tap-string-at-point'."
  
 ;;; COMMANDS ---------------------------------------------------------
 
+;;;###autoload
+(defun tap-put-thing-at-point-props ()
+  "Change `(bounds-of-)thing-at-point' properties for standard things.
+This makes some things normally handled by `thingatpt.el' be handled
+instead by functions defined in `thingatpt+.el'.
+
+This also affects some things that are handled by `thingatpt.el' in
+another way, not by setting these properties."
+  (interactive)
+  ;; This one is set in `thingatpt.el'.
+  (put 'list   'bounds-of-thing-at-point 'tap-bounds-of-list-at-point)
+
+  ;; These are not set in `thingatpt.el', but a function for the THING is defined there.
+  (put 'list   'thing-at-point           'tap-list-at-point)
+  (put 'number 'thing-at-point           'number-at-point)
+  (put 'number 'bounds-of-thing-at-point (lambda ()
+                                           (and (number-at-point)
+                                                (tap-bounds-of-thing-at-point 'sexp))))
+  t)                                    ; Return non-nil so can use with `and' etc.
+
+;;;###autoload
 (defun tap-redefine-std-fns ()
   "Redefine some standard `thingatpt.el' functions, to fix them.
 The standard functions replaced are these:
@@ -1259,7 +1335,7 @@ The standard functions replaced are these:
   ;;
   (when (fboundp 'thing-at-point-bounds-of-list-at-point)
     (defalias 'thing-at-point-bounds-of-list-at-point 'tap-bounds-of-list-at-point))
-  )
+  t)                                    ; Return non-nil so can use with `and' etc.
 
 (defun tap-define-aliases-wo-prefix ()
   "Provide aliases for `tap-' functions and variables, without prefix."
