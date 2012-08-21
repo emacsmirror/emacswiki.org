@@ -7,9 +7,9 @@
 ;; Created: Fri Aug  3 22:33:41 2012 (-0500)
 ;; Version: 0.24
 ;; Package-Requires: ((http-post-simple "1.0") (yaoddmuse "0.1.1")(header2 "21.0") (lib-requires "21.0"))
-;; Last-Updated: Mon Aug 20 22:08:17 2012 (-0500)
+;; Last-Updated: Mon Aug 20 22:18:20 2012 (-0500)
 ;;           By: Matthew L. Fidler
-;;     Update #: 746
+;;     Update #: 752
 ;; URL: https://github.com/mlf176f2/org-readme
 ;; Keywords: Header2, Readme.org, Emacswiki, Git
 ;; Compatibility: Tested with Emacs 24.1 on Windows.
@@ -68,6 +68,7 @@
 ;; 
 ;; * Functions
 ;; ** Interactive Functions
+;; 
 ;; *** org-readme-changelog-to-readme
 ;; =(org-readme-changelog-to-readme)=
 ;; 
@@ -96,10 +97,10 @@
 ;; =(org-readme-git)=
 ;; 
 ;; Add The files to git.
-;; *** org-readme-insert-functions
-;; =(org-readme-insert-functions)=
+;; *** org-readme-insert-variables
+;; =(org-readme-insert-variables)=
 ;; 
-;; Extracts function/variable documentation and places it in the Readme.org file.
+;; Extracts variable documentation and places it in the Readme.org file.
 ;; *** org-readme-marmalade-post
 ;; =(org-readme-marmalade-post)=
 ;; 
@@ -119,6 +120,7 @@
 ;; 
 ;; This puts the top header into the Readme.org file as Library Information
 ;; ** Internal Functions
+;; 
 ;; *** org-readme-buffer-version
 ;; =(org-readme-buffer-version)=
 ;; 
@@ -149,6 +151,10 @@
 ;; =(org-readme-in-readme-org-p)=
 ;; 
 ;; Determine if the currently open buffer is the Readme.org
+;; *** org-readme-insert-functions
+;; =(org-readme-insert-functions)=
+;; 
+;; Extracts function documentation and places it in the Readme.org file.
 ;; *** org-readme-marmalade-version
 ;; =(org-readme-marmalade-version PACKAGE)=
 ;; 
@@ -168,8 +174,52 @@
 ;; *** org-readme-token
 ;; =(org-readme-token)=
 ;; 
-;; Gets marmalade-token, if not already saved.
+;; Gets marmalade-token, if not already saved.* Variables
+;; ** Customizable Variables
 ;; 
+;; *** org-readme-build-el-get-recipe
+;; Builds a el-get recipe based on github information
+;; 
+;; *** org-readme-build-markdown
+;; Builds Readme.md from Readme.org
+;; 
+;; *** org-readme-build-melpa-recipe
+;; Builds a melpa recipe based on github information
+;; 
+;; *** org-readme-build-texi
+;; Builds library-name.texi from Readme.org, using Readme.md and pandoc.  Requires `org-readme-build-markdown' to be non-nil as pandoc to be found.
+;; 
+;; *** org-readme-default-template
+;; Default template for blank Readme.org Files. LIB-NAME is replaced with the library.
+;; 
+;; *** org-readme-marmalade-server
+;; Marmalade server website.  This should start with http: and should notend with a trailing forward slash, just like the default value of http://marmalade-repo.org
+;; 
+;; *** org-readme-marmalade-token
+;; Marmalade token to upload content to the marmalade server.
+;; 
+;; *** org-readme-marmalade-user-name
+;; Marmalade user name to upload content to the marmalade server.
+;; 
+;; *** org-readme-remove-sections
+;; List of sections to remove when changing the Readme.org to Change-log.
+;; 
+;; *** org-readme-sync-emacswiki
+;; Posts library to the emacswiki. Requires `yaoddmuse'
+;; 
+;; *** org-readme-sync-git
+;; Posts library to git
+;; 
+;; *** org-readme-sync-marmalade
+;; Posts library to marmalade-repo.org
+;; 
+;; *** org-readme-use-pandoc-markdown
+;; Uses pandoc's grid tables instead of transferring the tables to html.
+;; 
+;; ** Internal Variables
+;; 
+;; *** org-readme-edit-mode-map
+;; Keymap for editing change-logs.
 ;; * Variables
 ;; ** Customizable Variables
 ;; 
@@ -217,9 +267,22 @@
 ;; *** org-readme-edit-mode-map
 ;; Keymap for editing change-logs.
 ;; 
+;; Value: (keymap
+;;  (24 keymap
+;;      (19 . org-readme-edit-commit))
+;;  (3 keymap
+;;     (11 . org-readme-edit-cancel)
+;;     (3 . org-readme-edit-commit))
+;;  keymap
+;;  (27 keymap
+;;      (9 . ispell-complete-word)))
+;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 20-Aug-2012    Matthew L. Fidler  
+;;    Last-Updated: Mon Aug 20 22:17:03 2012 (-0500) #750 (Matthew L. Fidler)
+;;    Attempt to remove Readme.md when not needed.
 ;; 20-Aug-2012    Matthew L. Fidler  
 ;;    Last-Updated: Mon Aug 20 22:06:30 2012 (-0500) #744 (Matthew L. Fidler)
 ;;    Added ability to add function documentation and variable documentation
@@ -464,6 +527,11 @@
   "Builds library-name.texi from Readme.org, using Readme.md and pandoc.  Requires `org-readme-build-markdown' to be non-nil as pandoc to be found."
   :type 'boolean
   :group 'org-readme)
+
+(defcustom org-readme-drop-markdown-after-build-texi t
+  "Removes Readme.md after texinfo is generated"
+  :type 'boolean
+  :group 'rg-readme)
 
 (defun org-readme-insert-functions ()
   "Extracts function documentation and places it in the Readme.org file."
@@ -1071,20 +1139,25 @@ Returns file name if created."
      (format "git add %s"
              (file-name-nondirectory (org-readme-find-readme))))
     
-    (when (file-exists-p "Readme.md")
-      (shell-command
-       "git add Readme.md"))
-
     (when (file-exists-p (concat
                           (file-name-sans-extension
                            (file-name-nondirectory (buffer-file-name)))
                           ".texi"))
+      (when (and org-readme-drop-markdown-after-build-texi
+                 (file-exists-p "Readme.md"))
+        (delete-file "Readme.md")
+        (shell-command
+         (concat "git rm Readme.md")))
       (shell-command
        (concat "git add "
                (concat
                 (file-name-sans-extension
                  (file-name-nondirectory (buffer-file-name)))
                 ".texi"))))
+    
+    (when (file-exists-p "Readme.md")
+      (shell-command
+       "git add Readme.md"))
     
     (message "Git Adding %s" (file-name-nondirectory (buffer-file-name)))
     (shell-command
