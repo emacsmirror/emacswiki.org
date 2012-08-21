@@ -7,9 +7,9 @@
 ;; Created: Fri Aug  3 22:33:41 2012 (-0500)
 ;; Version: 0.25
 ;; Package-Requires: ((http-post-simple "1.0") (yaoddmuse "0.1.1")(header2 "21.0") (lib-requires "21.0"))
-;; Last-Updated: Mon Aug 20 22:46:18 2012 (-0500)
+;; Last-Updated: Mon Aug 20 22:58:29 2012 (-0500)
 ;;           By: Matthew L. Fidler
-;;     Update #: 776
+;;     Update #: 781
 ;; URL: https://github.com/mlf176f2/org-readme
 ;; Keywords: Header2, Readme.org, Emacswiki, Git
 ;; Compatibility: Tested with Emacs 24.1 on Windows.
@@ -69,6 +69,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 20-Aug-2012    Matthew L. Fidler  
+;;    Last-Updated: Mon Aug 20 22:56:08 2012 (-0500) #779 (Matthew L. Fidler)
+;;    Bug fix for variables that don't really transport well to the documentation.
 ;; 20-Aug-2012    Matthew L. Fidler  
 ;;    Last-Updated: Mon Aug 20 22:43:07 2012 (-0500) #774 (Matthew L. Fidler)
 ;;    Bump minor version for marmalade-repo.org
@@ -390,14 +393,16 @@
         (setq ret2 "** Internal Functions\n")
         (mapc
          (lambda(x)
-           (when (intern x)
-             (setq tmp (describe-function (intern x)))
-             (cond
-              ((string-match "Not documented" tmp))
-              ((string-match "interactive" tmp)
-               (setq ret1 (concat ret1 "\n*** " x "\n" (fd tmp))))
-              (t
-               (setq ret2 (concat ret2 "\n*** " x "\n" (fd tmp)))))))
+           (condition-case err
+               (when (intern x)
+                 (setq tmp (describe-function (intern x)))
+                 (cond
+                  ((string-match "Not documented" tmp))
+                  ((string-match "interactive" tmp)
+                   (setq ret1 (concat ret1 "\n*** " x "\n" (fd tmp))))
+                  (t
+                   (setq ret2 (concat ret2 "\n*** " x "\n" (fd tmp))))))
+             (error nil)))
          lst)
         (setq ret (concat "* Functions\n" ret1 "\n" ret2)))
       (with-temp-buffer
@@ -437,14 +442,16 @@
         (setq ret2 "** Internal Variables\n")
         (mapc
          (lambda(x)
-           (when (intern x)
-             (setq tmp (describe-variable (intern x)))
-             (cond
-              ((string-match "Not documented" tmp))
-              ((string-match "customize" tmp)
-               (setq ret1 (concat ret1 "\n*** " x "\n" (fd tmp))))
-              (t
-               (setq ret2 (concat ret2 "\n*** " x "\n" (fd tmp)))))))
+           (condition-case err
+               (when (intern x)
+                 (setq tmp (describe-variable (intern x)))
+                 (cond
+                  ((string-match "Not documented" tmp))
+                  ((string-match "customize" tmp)
+                   (setq ret1 (concat ret1 "\n*** " x "\n" (fd tmp))))
+                  (t
+                   (setq ret2 (concat ret2 "\n*** " x "\n" (fd tmp))))))
+             (error nil)))
          lst)
         (setq ret (concat "* Variables\n" ret1 "\n" ret2)))
       (with-temp-buffer
