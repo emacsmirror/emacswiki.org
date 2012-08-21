@@ -10,9 +10,9 @@
 * <b>Created </b> --  Fri Aug  3 22:33:41 2012 (-0500)
 * <b>Version </b> --  0.24
 * <b>Package-Requires </b> --  ((http-post-simple "1.0") (yaoddmuse "0.1.1")(header2 "21.0") (lib-requires "21.0"))
-* <b>Last-Updated </b> --  Mon Aug 20 22:17:18 2012 (-0500)
+* <b>Last-Updated </b> --  Mon Aug 20 22:22:37 2012 (-0500)
 * <b>By </b> --  Matthew L. Fidler
-* <b>Update # </b> --  751
+* <b>Update # </b> --  755
 * <B>URL </B> --  https://github.com/mlf176f2/org-readme
 * <b>Keywords </b> --  Header2, Readme.org, Emacswiki, Git
 * <b>Compatibility </b> --  Tested with Emacs 24.1 on Windows.
@@ -170,65 +170,7 @@ If so, return the name of that lisp file, otherwise return nil.
 ==== org-readme-token ====
 <tt>(org-readme-token)</tt>
 
-Gets marmalade-token, if not already saved.* Variables
-=== Customizable Variables ===
-
-==== org-readme-build-el-get-recipe ====
-Builds a el-get recipe based on github information
-
-==== org-readme-build-markdown ====
-Builds Readme.md from Readme.org
-
-==== org-readme-build-melpa-recipe ====
-Builds a melpa recipe based on github information
-
-==== org-readme-build-texi ====
-Builds library-name.texi from Readme.org, using Readme.md and pandoc.  Requires <tt>org-readme-build-markdown</tt> to be non-nil as pandoc to be found.
-
-==== org-readme-default-template ====
-Default template for blank Readme.org Files. LIB-NAME is replaced with the library.
-
-==== org-readme-marmalade-server ====
-Marmalade server website.  This should start with http: and should notend with a trailing forward slash, just like the default value of http://marmalade-repo.org
-
-==== org-readme-marmalade-token ====
-Marmalade token to upload content to the marmalade server.
-
-==== org-readme-marmalade-user-name ====
-Marmalade user name to upload content to the marmalade server.
-
-==== org-readme-remove-sections ====
-List of sections to remove when changing the Readme.org to Change-log.
-
-==== org-readme-sync-emacswiki ====
-Posts library to the emacswiki. Requires <tt>yaoddmuse</tt>
-
-==== org-readme-sync-git ====
-Posts library to git
-
-==== org-readme-sync-marmalade ====
-Posts library to marmalade-repo.org
-
-==== org-readme-use-pandoc-markdown ====
-Uses pandoc's grid tables instead of transferring the tables to html.
-
-=== Internal Variables ===
-
-==== org-readme-edit-mode-map ====
-Keymap for editing change-logs.
-
-Value: (keymap
-(24 keymap
-(19 . org-readme-edit-commit))
-(3 keymap
-(11 . org-readme-edit-cancel)
-(3 . org-readme-edit-commit))
-keymap
-(27 keymap
-(9 . ispell-complete-word)))
-
-
-== History ==
+Gets marmalade-token, if not already saved.* History
 
 * <b>20-Aug-2012 </b> --   Attempt to remove Readme.md when not needed. (Matthew L. Fidler)
 * <b>20-Aug-2012 </b> --   Added ability to add function documentation and variable documentation to the Readme.org file (Matthew L. Fidler)
@@ -271,7 +213,7 @@ keymap
 * <b>11-Aug-2012 </b> --   Bug fix to upload to emacswiki and upload to marmalade-repo (Matthew L. Fidler)
 * <b>11-Aug-2012 </b> --   Added marmalade-repo support. Now org-readme should upload to marmalade-repo when the version is different from the latest version. (Matthew L. Fidler)
 * <b>08-Aug-2012 </b> --   Fixed preformatting tags in emacswiki post. Previously they may have been replaced with <PRE></pre> instead of <pre></pre>. This makes the emacswiki page display correctly. (Matthew L. Fidler)
-* <b>07-Aug-2012 </b> --   To use, put (require 'ess-smart-underscore) in your ~/.emacs file 7-Aug-2012 Matthew L. Fidler Last-Updated: Mon Aug 20 22:18:10 2012 (-0500)
+* <b>07-Aug-2012 </b> --   To use, put (require 'ess-smart-underscore) in your ~/.emacs file 7-Aug-2012 Matthew L. Fidler Last-Updated: Mon Aug 20 22:23:30 2012 (-0500)
 * <b>06-Aug-2012 </b> --   Added support for uploading Readme.org files to emacswiki without having to have a single associated lisp file. (Matthew L. Fidler)
 * <b>06-Aug-2012 </b> --   Bug fix for syncing from the single lisp file. (Matthew L. Fidler)
 * <b>06-Aug-2012 </b> --   Added the ability to call <tt>org-readme-sync</tt> from Readme.org (Matthew L. Fidler)
@@ -339,6 +281,119 @@ keymap
 (9 . ispell-complete-word)))
 
 
+== Variables ==
+=== Customizable Variables ===
+
+==== org-readme-build-el-get-recipe ====
+Builds a el-get recipe based on github information
+
+==== org-readme-build-markdown ====
+Builds Readme.md from Readme.org
+
+==== org-readme-build-melpa-recipe ====
+Builds a melpa recipe based on github information
+
+==== org-readme-build-texi ====
+Builds library-name.texi from Readme.org, using Readme.md and pandoc.  Requires <tt>org-readme-build-markdown</tt> to be non-nil as pandoc to be found.
+
+==== org-readme-default-template ====
+Default template for blank Readme.org Files. LIB-NAME is replaced with the library.
+
+==== org-readme-drop-markdown-after-build-texi ====
+Removes Readme.md after texinfo is generated
+
+==== org-readme-marmalade-server ====
+Marmalade server website.  This should start with http: and should notend with a trailing forward slash, just like the default value of http://marmalade-repo.org
+
+==== org-readme-marmalade-token ====
+Marmalade token to upload content to the marmalade server.
+
+==== org-readme-marmalade-user-name ====
+Marmalade user name to upload content to the marmalade server.
+
+==== org-readme-remove-sections ====
+List of sections to remove when changing the Readme.org to Commentary.
+
+==== org-readme-sync-emacswiki ====
+Posts library to the emacswiki. Requires <tt>yaoddmuse</tt>
+
+==== org-readme-sync-git ====
+Posts library to git
+
+==== org-readme-sync-marmalade ====
+Posts library to marmalade-repo.org
+
+==== org-readme-use-pandoc-markdown ====
+Uses pandoc's grid tables instead of transferring the tables to html.
+
+=== Internal Variables ===
+
+==== org-readme-edit-mode-map ====
+Keymap for editing change-logs.
+
+Value: (keymap
+(24 keymap
+(19 . org-readme-edit-commit))
+(3 keymap
+(11 . org-readme-edit-cancel)
+(3 . org-readme-edit-commit))
+keymap
+(27 keymap
+(9 . ispell-complete-word)))
+
+
+== History ==
+
+* <b>20-Aug-2012 </b> --   Will now remove the Functions and Variables sections before putting them in the commentary section. (Matthew L. Fidler)
+* <b>20-Aug-2012 </b> --   Attempt to remove Readme.md when not needed. (Matthew L. Fidler)
+* <b>20-Aug-2012 </b> --   Added ability to add function documentation and variable documentation to the Readme.org file (Matthew L. Fidler)
+* <b>20-Aug-2012 </b> --   Added pandoc markdown table support (optional) (Matthew L. Fidler)
+* <b>13-Aug-2012 </b> --   Another attempt to make texinfo documents. (Matthew L. Fidler)
+* <b>13-Aug-2012 </b> --   Added texinfo output. Allows native emacs documentation. (Matthew L. Fidler)
+* <b>13-Aug-2012 </b> --   Tried to post behind firewall. Reattempting. (Matthew L. Fidler)
+* <b>13-Aug-2012 </b> --   Changed the <tt>org-readme-remove-section</tt> to use <tt>org-cut-subtree</tt>. Hopefully all errors will resolve themselves now. (Matthew L. Fidler)
+* <b>11-Aug-2012 </b> --   Reverted. Still buggy. (Matthew L. Fidler)
+* <b>11-Aug-2012 </b> --   Another attempt at bug fix to remove section. (Matthew L. Fidler)
+* <b>11-Aug-2012 </b> --   Another attempt at a remove-section fix. (Matthew L. Fidler)
+* <b>11-Aug-2012 </b> --   Bug fix for org-readme version tagging. (Matthew L. Fidler)
+* <b>11-Aug-2012 </b> --   Test the bug where some of the section text is deleted  (Matthew L. Fidler)
+* <b>11-Aug-2012 </b> --   Added more documentation (Matthew L. Fidler)
+* <b>11-Aug-2012 </b> --   One last bug fix to the markdown export engine. (Matthew L. Fidler)
+* <b>11-Aug-2012 </b> --   Markdown bug fix (Matthew L. Fidler)
+* <b>11-Aug-2012 </b> --   Bug fix for el-get recipe. (Matthew L. Fidler)
+* <b>11-Aug-2012 </b> --   Added the ability to create a markdown Readme (Readme.md) as well as adding a el-get recipe. (Matthew L. Fidler)
+* <b>11-Aug-2012 </b> --   Bug fix for emacswiki post and melpa bug fix (Matthew L. Fidler)
+* <b>11-Aug-2012 </b> --   Bug fix for adding melpa recipes.  (Matthew L. Fidler)
+* <b>11-Aug-2012 </b> --   Bug fix for creating melpa recipe. (Matthew L. Fidler)
+* <b>11-Aug-2012 </b> --   Added ability to add melpa recipe (Matthew L. Fidler)
+* <b>11-Aug-2012 </b> --   Bug fix for pushing tags to a git repository (Matthew L. Fidler)
+* <b>11-Aug-2012 </b> --   Another fix for git tags. (Matthew L. Fidler)
+* <b>11-Aug-2012 </b> --   Found a bug, let see if tagging works now. (Matthew L. Fidler)
+* <b>11-Aug-2012 </b> --   Added Git tagging of new versions. Lets see if it works. (Matthew L. Fidler)
+* <b>11-Aug-2012 </b> --   Git push worked. Bumping minor version. (Matthew L. Fidler)
+* <b>11-Aug-2012 </b> --   Attempted to push repository again. (Matthew L. Fidler)
+* <b>11-Aug-2012 </b> --   Attempt to push with git. Something changed. (Matthew L. Fidler)
+* <b>11-Aug-2012 </b> --   Added better Package-Requires tag. (Matthew L. Fidler)
+* <b>11-Aug-2012 </b> --   Made request for minor revision earlier, and fixed bug. (Matthew L. Fidler)
+* <b>11-Aug-2012 </b> --   Fixed code typo (Matthew L. Fidler)
+* <b>11-Aug-2012 </b> --   Bug fix for deleting a section of a Readme.org file. (Matthew L. Fidler)
+* <b>11-Aug-2012 </b> --   Testing bug. (Matthew L. Fidler)
+* <b>11-Aug-2012 </b> --   Minor bug fix. (Matthew L. Fidler)
+* <b>11-Aug-2012 </b> --   Bug fix for comment sync, now Readme.org <tt>file</tt> is translated to lisp <tt>file</tt>. Additionally, asks for version bump. (Matthew L. Fidler)
+* <b>11-Aug-2012 </b> --   Bug fix for syncing readme. Now the returns should not be as prevalent. (Matthew L. Fidler)
+* <b>11-Aug-2012 </b> --   Attempting to post to marmlade again... (Matthew L. Fidler)
+* <b>11-Aug-2012 </b> --   Attempting to fix org-readme-marmalade-post. (Matthew L. Fidler)
+* <b>11-Aug-2012 </b> --   Bug fix to upload to emacswiki and upload to marmalade-repo (Matthew L. Fidler)
+* <b>11-Aug-2012 </b> --   Added marmalade-repo support. Now org-readme should upload to marmalade-repo when the version is different from the latest version. (Matthew L. Fidler)
+* <b>08-Aug-2012 </b> --   Fixed preformatting tags in emacswiki post. Previously they may have been replaced with <PRE></pre> instead of <pre></pre>. This makes the emacswiki page display correctly. (Matthew L. Fidler)
+* <b>07-Aug-2012 </b> --   To use, put (require 'ess-smart-underscore) in your ~/.emacs file 7-Aug-2012 Matthew L. Fidler Last-Updated: Tue Aug 7 19:14:34 2012 (-0500) #331 (Matthew L. Fidler) Added a Comment to !EmcsWiki pages that states that the content of the page will likely be overwitten since it is automatically generated by <tt>org-readme</tt> 7-Aug-2012 Matthew L. Fidler Last-Updated: Mon Aug 6 23:42:02 2012 (-0500) #328 (Matthew L. Fidler) Added more documentation. (Matthew L. Fidler)
+* <b>06-Aug-2012 </b> --   Added support for uploading Readme.org files to emacswiki without having to have a single associated lisp file. (Matthew L. Fidler)
+* <b>06-Aug-2012 </b> --   Bug fix for syncing from the single lisp file. (Matthew L. Fidler)
+* <b>06-Aug-2012 </b> --   Added the ability to call <tt>org-readme-sync</tt> from Readme.org (Matthew L. Fidler)
+* <b>05-Aug-2012 </b> --   Added git pushing to org-readme (Matthew L. Fidler)
+* <b>05-Aug-2012 </b> --   Added git support as well as a comment mode. The only thing that should need to be called is <tt>org-readme-sync</tt> (Matthew L. Fidler)
+* <b>04-Aug-2012 </b> --   Added syncing with emacswiki.  (Matthew L. Fidler)
+* <b>04-Aug-2012 </b> --   Initial Release  (Matthew L. Fidler)
 
 
 This was generated with OrgReadme.  On updating the library, this page is likely to be replaced with updated content.
