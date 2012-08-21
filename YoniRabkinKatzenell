@@ -32,6 +32,8 @@ I wrote and use rt-liberation.el every day. It is an interface to the [http://be
 
 Some of the Emacs Lisp hacks I wrote to facilitate Android hacking in Emacs found their way into emacs-android.el. You can get a copy with: git clone http://yrk.nfshost.com/repos/emacs-android.git
 
+For Emacs integration with PMD (http://pmd.sourceforge.net/), see emacs-pmd.el here: http://yrk.nfshost.com/projects/emacs-pmd/
+
 Bug reports and patches are welcome. Happy hacking.
 
 ----
