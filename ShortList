@@ -82,7 +82,7 @@ of keys.
 *Set up:*
 
 The initial version of !ShortList has been posted.
-After loading shortlist.el, you will need to define three global keys:
+After loading [[shortlist.el]], you will need to define three global keys:
 
 (In !ShortList, the internal short list of buffers is called SL-list.)
 
