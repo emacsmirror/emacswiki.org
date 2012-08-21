@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Apr 22 08:42:10 1996
 ;; Version: 21.0
-;; Last-Updated: Sat Aug 18 09:21:48 2012 (-0700)
+;; Last-Updated: Tue Aug 21 15:14:27 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 183
+;;     Update #: 185
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/macros+.el
 ;; Keywords: abbrev, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -48,6 +48,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/08/21 dadams
+;;     Call tap-put-thing-at-point-props after load thingatpt+.el.
 ;; 2012/08/18 dadams
 ;;     Invoke tap-define-aliases-wo-prefix if thingatpt+.el is loaded.
 ;; 2012/02/25 dadams
@@ -103,9 +105,11 @@
 ;; (require 'icicles nil t) ;; (no error if not found): completing-read
 
 (require 'thingatpt nil t);; (no error if not found): symbol-at-point
+
 (when (and (require 'thingatpt+ nil t);; (no error if not found)
-           (fboundp 'tap-define-aliases-wo-prefix)) ; >= 2012-08-17
-  (tap-define-aliases-wo-prefix))
+           (fboundp 'tap-put-thing-at-point-props)) ; >= 2012-08-21
+  (tap-define-aliases-wo-prefix)
+  (tap-put-thing-at-point-props))
  ;; symbol-nearest-point
 
 ;; Free variable here: LAST-KBD-MACRO
