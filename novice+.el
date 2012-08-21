@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu Jul 11 17:10:39 1996
 ;; Version: 21.0
-;; Last-Updated: Sat Aug 18 09:29:59 2012 (-0700)
+;; Last-Updated: Tue Aug 21 15:17:37 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 145
+;;     Update #: 147
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/novice+.el
 ;; Keywords: internal, help
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -42,6 +42,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/08/21 dadams
+;;     Call tap-put-thing-at-point-props after load thingatpt+.el.
 ;; 2012/08/18 dadams
 ;;     Invoke tap-define-aliases-wo-prefix if thingatpt+.el is loaded.
 ;; 2012/02/25 dadams
@@ -85,9 +87,11 @@
 ;; (require 'icicles nil t) ;; (no error if not found): completing-read
 
 (require 'thingatpt nil t) ;; (no error if not found): symbol-at-point
+
 (when (and (require 'thingatpt+ nil t);; (no error if not found): symbol-nearest-point
-           (fboundp 'tap-define-aliases-wo-prefix)) ; >= 2012-08-17
-  (tap-define-aliases-wo-prefix))
+           (fboundp 'tap-put-thing-at-point-props)) ; >= 2012-08-21
+  (tap-define-aliases-wo-prefix)
+  (tap-put-thing-at-point-props))
 
 ;;; Variable USER-INIT-FILE is free here (defined in `files.el').
 
