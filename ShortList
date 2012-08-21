@@ -1,4 +1,4 @@
-ShortList (SL)
+!ShortList (SL)
 
 Because of the nature of my work, I need to have a large number of buffers at my 
 fingertips.  My buffer list becomes somewhat large, and I need to switch between 
@@ -81,10 +81,10 @@ of keys.
 
 *Set up:*
 
-The initial version of ShortList has been posted.
+The initial version of !ShortList has been posted.
 After loading shortlist.el, you will need to define three global keys:
 
-(In ShortList, the internal short list of buffers is called SL-list.)
+(In !ShortList, the internal short list of buffers is called SL-list.)
 
 1) The <SL add key>, bound to function (SL-add-key), to add the current buffer to 
 SL-list. (I map M-a to (SL-add-key)).
