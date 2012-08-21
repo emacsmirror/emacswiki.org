@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Aug 18 18:41:25 2012 (-0700)
+;; Last-Updated: Tue Aug 21 15:58:12 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8808
+;;     Update #: 8816
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -682,6 +682,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2012/08/21 dadams
+;;     tap-symbol-nearest-point -> symbol-nearest-point. (icicles-opt.el DTRT.)
 ;; 2012/08/18 dadams
 ;;     symbol-nearest-point -> tap-symbol-nearest-point.
 ;;     bounds-of-thing-at-point -> icicle-bounds-of-thing-at-point.
@@ -5912,6 +5914,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2012/08/21 dadams
+;;     Call tap-put-thing-at-point-props after load thingatpt+.el.
 ;; 2012/08/18 dadams
 ;;     Added: icicle-thing-at-point.
 ;;     Invoke tap-define-aliases-wo-prefix if thingatpt+.el is loaded.
