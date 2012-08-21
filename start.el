@@ -7,9 +7,9 @@
 ;; Copyright (C) 1995-2012, Drew Adams, all rights reserved.
 ;; Created: Wed Aug  2 11:12:24 1995
 ;; Version: 21.1
-;; Last-Updated: Sat Aug 18 09:55:50 2012 (-0700)
+;; Last-Updated: Tue Aug 21 15:21:17 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 2941
+;;     Update #: 2942
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/start.el
 ;; Keywords: abbrev, internal, local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -82,6 +82,8 @@
 ;;
 ;; Change Log:
 ;;
+;; 2012/08/21 dadams
+;;     Call tap-put-thing-at-point-props after load thingatpt+.el.
 ;; 2012/08/18 dadams
 ;;     Invoke tap-define-aliases-wo-prefix if thingatpt+.el is loaded.
 ;;     Explicitly require thingatpt.el, before thingatpt+.el.  (Removed eval-after-load thingatpt.el.)
@@ -506,8 +508,9 @@ See the Dired-X Info pages (type \\[info]) for information on this package.")
 
 (require 'thingatpt)                    ; Basic thing-at-point.
 (when (and (require 'thingatpt+ nil t)  ; Thing-at-point extensions - load this after `thingatpt.el'.
-           (fboundp 'tap-define-aliases-wo-prefix)) ; >= 2012-08-17
-  (tap-define-aliases-wo-prefix))
+           (fboundp 'tap-put-thing-at-point-props)) ; >= 2012-08-21
+  (tap-define-aliases-wo-prefix)
+  (tap-put-thing-at-point-props))
 (when (require 'thing-cmds nil t)       ; Thing-at-point commands and default key bindings.
   (thgcmd-bind-keys))
 
