@@ -5,10 +5,10 @@
 ;; Author: Matthew L. Fidler, Le Wang & Others
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Sat Nov  6 11:02:07 2010 (-0500)
-;; Version: 0.66
-;; Last-Updated: Mon Aug 20 10:30:53 2012 (-0500)
+;; Version: 0.67
+;; Last-Updated: Mon Aug 20 23:02:51 2012 (-0500)
 ;;           By: Matthew L. Fidler
-;;     Update #: 1419
+;;     Update #: 1450
 ;; URL: https://github.com/mlf176f2/auto-indent-mode.el/
 ;; Keywords: Auto Indentation
 ;; Compatibility: Tested with Emacs 23.x
@@ -47,6 +47,9 @@
 ;;     to be true (disabled by default).  This is not immediate but occurs
 ;;     after a bit to allow better responsiveness in emacs.
 ;; 
+;;   - Attempts to set the indentation level (number of spaces for an
+;;     indent) for a major-mode.
+;; 
 ;; All of these options can be customized. (customize auto-indent)
 ;; * Installing auto-indent-mode
 ;; 
@@ -76,6 +79,21 @@
 ;; 
 ;; You could always turn on the minor mode with the command
 ;; `auto-indent-minor-mode'
+;; * Setting the number of spaces for indenting major modes
+;; While this is controlled by the major mode, as a convenience,
+;; auto-indent-mode attempts to set the default number of spaces for an
+;; indentation for specific major mode.  
+;; 
+;; This is done by:
+;; 1. Making local variables of all the variables specified in
+;;    `auto-indent-known-indent-level-variables' and setting them to
+;;    auto-indent's `auto-indent-assign-indent-level'
+;; 2. Looking to see if major mode variables
+;;    `major-mode-indent-level' and `major-mode-basic-offset' variables
+;;    are present.  If either of these variables are present,
+;;    `auto-indent-mode' sets these variables to the default
+;;    `auto-indent-assign-indent-level'.   
+;; 
 ;; * TextMate Meta-Return behavior
 ;; If you would like TextMate behavior of Meta-RETURN going to the
 ;; end of the line and then inserting a newline, as well as
@@ -204,17 +222,38 @@
 ;; 
 ;; 
 ;; * FAQ
-;; ** How can you control the number of spaces auto-indent uses for indentation?
-;; Currently this is unsupported.  This is controlled by the major mode.
+;; ** Why isn't my mode indenting?
+;; Some modes are excluded for compatability reasons, such as
+;; text-modes.  This is controlled by the variable
+;; `auto-indent-disabled-modes-list'
+;; ** Why isn't my specific mode have the right number of spaces?
+;; Actually, the number of spaces for indentation is controlled by the
+;; major mode. If there is a major-mode specific variable that controls
+;; this offset, you can add this variable to
+;; `auto-indent-known-indent-level-variables' to change the indentation
+;; for this mode when auto-indent-mode starts.
 ;; 
-;; See [[http://kb.iu.edu/data/abde.html][In Emacs how can I change tab sizes?]]
+;; See:
 ;; 
-;; There is a possibility of supporting this, however it would take some
-;; additional functionality.
+;; - [[http://www.pement.org/emacs_tabs.htm][Understanding GNU Emacs and tabs]]
+;; - [[http://kb.iu.edu/data/abde.html][In Emacs how can I change tab sizes?]]
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 20-Aug-2012    Matthew L. Fidler  
+;;    Last-Updated: Mon Aug 20 23:01:35 2012 (-0500) #1448 (Matthew L. Fidler)
+;;    Drop Readme.md
+;; 20-Aug-2012    Matthew L. Fidler  
+;;    Last-Updated: Mon Aug 20 13:18:48 2012 (-0500) #1444 (Matthew L. Fidler)
+;;    Another documentation revision.
+;; 20-Aug-2012    Matthew L. Fidler  
+;;    Last-Updated: Mon Aug 20 12:47:45 2012 (-0500) #1442 (Matthew L. Fidler)
+;;    Documentation update.
+;; 20-Aug-2012    Matthew L. Fidler  
+;;    Last-Updated: Mon Aug 20 12:46:02 2012 (-0500) #1440 (Matthew L. Fidler)
+;;    Added a generic function to change the number of spaces for an
+;;    indentation.  Should fix issue #4.
 ;; 20-Aug-2012    Matthew L. Fidler  
 ;;    Last-Updated: Mon Aug 20 10:15:12 2012 (-0500) #1417 (Matthew L. Fidler)
 ;;    Clarified documentation
@@ -623,17 +662,17 @@ beginning of the line.  When
 `auto-indent-home-is-beginning-of-indent-when-spaces-follow' is
 enabled, a home key press from
 
- (defadvice move-beginning-of-line (around auto-indent-minor-mode-advice)
-  | (let (at-beginning)
+    (defadvice move-beginning-of-line (around auto-indent-minor-mode-advice)
+    | (let (at-beginning)
 
 will change to
 
- (defadvice move-beginning-of-line (around auto-indent-minor-mode-advice)
-   |(let (at-beginning)
+    (defadvice move-beginning-of-line (around auto-indent-minor-mode-advice)
+      |(let (at-beginning)
 
 Another home-key will chang to cursor
 
- (defadvice move-beginning-of-line (around auto-indent-minor-mode-advice)
+    (defadvice move-beginning-of-line (around auto-indent-minor-mode-advice)
 |   (let (at-beginning)"
   :type 'boolean
   :group 'auto-indent)
@@ -649,12 +688,12 @@ Another home-key will chang to cursor
   "Automatically indent the next parenthetical statement.  For example in R:
 
 d| <- read.csv(\"dat.csv\",
-               na.strings=c(\".\",\"NA\"))
+                  na.strings=c(\".\",\"NA\"))
 
 When typing .old, the indentation will be updated as follows:
 
 d.old <- read.csv(\"dat.csv\",
-                  na.strings=c(\".\",\"NA\"))
+                     na.strings=c(\".\",\"NA\"))
 
 This will slow down your computation, so if you use it make sure
 that the `auto-indent-next-pair-timer-interval' is appropriate
@@ -827,7 +866,7 @@ expressions like lists can be removed in a less than optimal
 manner.  For example, assuming ``|'' is the cursor:
 
 c(\"Vehicle QD TO\",|
-  \"1 ug IVT\",\"3 ug IVT\",...
+     \"1 ug IVT\",\"3 ug IVT\",...
 
 would be deleted to the following
 
@@ -840,7 +879,7 @@ c(\"Vehicle QD TO\",|\"1 ug IVT\",\"3 ug IVT\",...
 However cases like sentences:
 
 Lorem ipsum dolor sit amet,|
-  consectetur adipiscing elit. Morbi id
+     consectetur adipiscing elit. Morbi id
 
 Deletes to
 Lorem ipsum dolor sit amet,| consectetur adipiscing elit. Morbi id
@@ -884,16 +923,16 @@ expressions defined in
 When killing lines, if at the end of a line,
 
 nil - join next line to the current line.  Deletes white-space at
-      join.  [this essentially duplicated delete-char]
+         join.  [this essentially duplicated delete-char]
 
-      See also `auto-indent-kill-remove-extra-spaces'
+         See also `auto-indent-kill-remove-extra-spaces'
 
 whole-line - kill next lines
 
 subsequent-whole-lines - merge lines on first call, subsequent kill whole lines
 
 blanks - kill all empty lines after the current line, and then
-         any lines specified.
+            any lines specified.
 
 You should also set the function `kill-whole-line' to do what you
 want."
@@ -913,7 +952,7 @@ want."
 
 When killing lines, if point is before any text, act as if
 point is at BOL.  And if point is after text, act as if point
-  is at EOL"
+     is at EOL"
   :type 'boolean
   :group 'auto-indent)
 
@@ -1028,7 +1067,7 @@ a mode that instead of using a semi-colon for an end of
 statement, you use a colon, this can be added to the mode as
 follows:
 
-  (add-hook 'strange-mode-hook (lambda() (setq auto-indent-eol-char \":\")))
+     (add-hook 'strange-mode-hook (lambda() (setq auto-indent-eol-char \":\")))
 
 autoThis is similar to Textmate's behavior.  This is useful when used
 in conjunction with something that pairs delimiters like `autopair-mode'."
@@ -1074,6 +1113,26 @@ work in some modes but may cause things such as `company-mode' or
   "* List of auto-indent's known text-modes."
   :type '(repeat (sexp :tag "Major mode"))
   :tag "Auto-indent known text modes"
+  :group 'auto-indent)
+
+(defcustom auto-indent-assign-indent-level 2
+  "Indent level assigned when an indent-level variable is found."
+  :type 'integer
+  :group 'auto-indent)
+
+(defcustom auto-indent-assign-indent-level-variables t
+  "Attempt to assign `auto-indent-known-indent-level-variables' as local variables.
+If the major mode has `major-mode-indent-level', `major-indent-level', `major-mode-basic-offset', or
+`major-basic-offset' then attempt to set that variable as well."
+  :type 'boolean
+  :group 'auto-indent)
+
+(defcustom auto-indent-known-indent-level-variables
+  '( c-basic-offset lisp-body-indent
+                    sgml-basic-offset
+                    python-indent)
+  "Known indent-level-variables for major modes.  Set locally when auto-indent-mode initializes."
+  :type '(repeat (symbol :tag "Variable"))
   :group 'auto-indent)
 
 (make-variable-buffer-local 'auto-indent-eol-char)
@@ -1171,6 +1230,30 @@ http://www.emacswiki.org/emacs/AutoIndentation
   :group 'auto-indent
   (auto-indent-setup-map)
   (cond (auto-indent-minor-mode
+         ;;
+         (when auto-indent-assign-indent-level-variables
+           (let* ((mm (symbol-name major-mode))
+                  (mm2 mm))
+             (when (string-match "-mode" mm2)
+               (setq mm2 (replace-match "" nil nil mm2)))
+             (mapc
+              (lambda(var)
+                (set (make-local-variable var)
+                     auto-indent-assign-indent-level))
+              auto-indent-known-indent-level-variables)
+             (cond
+              ((intern (format "%s-indent-level" mm))
+               (set (make-local-variable (intern (format "%s-indent-level" mm)))
+                    auto-indent-assign-indent-level))
+              ((intern (format "%s-indent-level" mm2))
+               (set (make-local-variable (intern (format "%s-indent-level" mm2)))
+                    auto-indent-assign-indent-level))
+              ((intern (format "%s-basic-offset" mm2))
+               (set (make-local-variable (intern (format "%s-basic-offset" mm2)))
+                    auto-indent-assign-indent-level))
+              ((intern (format "%s-basic-offset" mm))
+               (set (make-local-variable (intern (format "%s-basic-offset" mm)))
+                    auto-indent-assign-indent-level)))))
          ;; Setup
          (cond
           ((eq auto-indent-engine 'keys) ;; Auto-indent engine
@@ -2001,10 +2084,10 @@ around and the whitespace was deleted from the line."
               (indent-according-to-mode)))
            ((and auto-indent-blank-lines-on-move
                  auto-indent-mode-pre-command-hook-line
-		 (not (= (line-number-at-pos)
-			 auto-indent-mode-pre-command-hook-line)))
-	    (when (and (looking-back "^[ \t]*") (looking-at "[ \t]*$"))
-	      (indent-according-to-mode))))))
+                 (not (= (line-number-at-pos)
+                         auto-indent-mode-pre-command-hook-line)))
+            (when (and (looking-back "^[ \t]*") (looking-at "[ \t]*$"))
+              (indent-according-to-mode))))))
     (error (message "[Auto-Indent-Mode]: Ignored indentation error in `auto-indent-mode-post-command-hook' %s" (error-message-string err)))))
 (provide 'auto-indent-mode)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
