@@ -36,3 +36,5 @@ using arrow keys and/or mouse wheel
 * [[iflipb]] -- interactively flip between recently visited buffers
 * TabBarMode -- buffer tabs
 * [[PinBar]] -- create tabs at the top and switch associated buffers with a single stroke
+* [[ShortList]] -- an efficient way to access a short list of buffers
+
