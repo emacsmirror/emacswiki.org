@@ -5,11 +5,11 @@
 ;; Author: Matthew L. Fidler
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Fri Aug  3 22:33:41 2012 (-0500)
-;; Version: 0.23
+;; Version: 0.24
 ;; Package-Requires: ((http-post-simple "1.0") (yaoddmuse "0.1.1")(header2 "21.0") (lib-requires "21.0"))
-;; Last-Updated: Mon Aug 20 09:34:36 2012 (-0500)
+;; Last-Updated: Mon Aug 20 22:08:17 2012 (-0500)
 ;;           By: Matthew L. Fidler
-;;     Update #: 686
+;;     Update #: 746
 ;; URL: https://github.com/mlf176f2/org-readme
 ;; Keywords: Header2, Readme.org, Emacswiki, Git
 ;; Compatibility: Tested with Emacs 24.1 on Windows.
@@ -66,9 +66,164 @@
 ;; | lib-requires     | To generate the library dependencies |
 ;; |------------------+--------------------------------------|
 ;; 
+;; * Functions
+;; ** Interactive Functions
+;; *** org-readme-changelog-to-readme
+;; =(org-readme-changelog-to-readme)=
+;; 
+;; This puts the emacs lisp change-log into the Readme.org file.
+;; *** org-readme-convert-to-emacswiki
+;; =(org-readme-convert-to-emacswiki)=
+;; 
+;; Converts Readme.org to oddmuse markup and uploads to emacswiki.
+;; *** org-readme-convert-to-markdown
+;; =(org-readme-convert-to-markdown)=
+;; 
+;; Converts Readme.org to markdown Readme.md.
+;; *** org-readme-edit
+;; =(org-readme-edit)=
+;; 
+;; Edit change comment for commit.
+;; *** org-readme-edit-cancel
+;; =(org-readme-edit-cancel)=
+;; 
+;; Cancel the edit log.
+;; *** org-readme-edit-commit
+;; =(org-readme-edit-commit)=
+;; 
+;; Changelog for editing.
+;; *** org-readme-git
+;; =(org-readme-git)=
+;; 
+;; Add The files to git.
+;; *** org-readme-insert-functions
+;; =(org-readme-insert-functions)=
+;; 
+;; Extracts function/variable documentation and places it in the Readme.org file.
+;; *** org-readme-marmalade-post
+;; =(org-readme-marmalade-post)=
+;; 
+;; Posts the current buffer to Marmalade.
+;; *** org-readme-sync
+;; =(org-readme-sync &optional COMMENT-ADDED)=
+;; 
+;; Syncs Readme.org with current buffer.
+;; When COMMENT-ADDED is non-nil, the comment has been added and the syncing should begin.
+;; 
+;; *** org-readme-to-commentary
+;; =(org-readme-to-commentary)=
+;; 
+;; Change Readme.org to a Commentary section.
+;; *** org-readme-top-header-to-readme
+;; =(org-readme-top-header-to-readme)=
+;; 
+;; This puts the top header into the Readme.org file as Library Information
+;; ** Internal Functions
+;; *** org-readme-buffer-version
+;; =(org-readme-buffer-version)=
+;; 
+;; Gets the version of the current buffer.
+;; *** org-readme-build-el-get
+;; =(org-readme-build-el-get)=
+;; 
+;; Builds an el-get recipe. This assumes github, though others could be added.
+;; Returns file name if created.
+;; *** org-readme-build-melpa
+;; =(org-readme-build-melpa)=
+;; 
+;; Builds a melpa recipe. This assumes github, though other could be added.
+;; Returns file name if created.
+;; *** org-readme-find-readme
+;; =(org-readme-find-readme)=
+;; 
+;; Find the Readme.org.
+;; *** org-readme-get-change
+;; =(org-readme-get-change)=
+;; 
+;; Get file for changelog commits.
+;; *** org-readme-get-emacswiki-name
+;; =(org-readme-get-emacswiki-name)=
+;; 
+;; Gets emacswiki-style name based on buffer.
+;; *** org-readme-in-readme-org-p
+;; =(org-readme-in-readme-org-p)=
+;; 
+;; Determine if the currently open buffer is the Readme.org
+;; *** org-readme-marmalade-version
+;; =(org-readme-marmalade-version PACKAGE)=
+;; 
+;; Gets the marmalade version of the PACKAGE.
+;; *** org-readme-remove-section
+;; =(org-readme-remove-section SECTION &optional TXT ANY-LEVEL
+;; AT-BEGINNING)=
+;; 
+;; Remove `org-mode' SECTION. Optionally insert TXT.
+;; When ANY-LEVEL is non-nil, any level may be specified.
+;; When AT-BEGINNING is non-nil, if the section is not found, insert it at the beginning.
+;; *** org-readme-single-lisp-p
+;; =(org-readme-single-lisp-p)=
+;; 
+;; Determine if the Readme.org is in a directory with a single lisp file.
+;; If so, return the name of that lisp file, otherwise return nil.
+;; *** org-readme-token
+;; =(org-readme-token)=
+;; 
+;; Gets marmalade-token, if not already saved.
+;; 
+;; * Variables
+;; ** Customizable Variables
+;; 
+;; *** org-readme-build-el-get-recipe
+;; Builds a el-get recipe based on github information
+;; 
+;; *** org-readme-build-markdown
+;; Builds Readme.md from Readme.org
+;; 
+;; *** org-readme-build-melpa-recipe
+;; Builds a melpa recipe based on github information
+;; 
+;; *** org-readme-build-texi
+;; Builds library-name.texi from Readme.org, using Readme.md and pandoc.  Requires `org-readme-build-markdown' to be non-nil as pandoc to be found.
+;; 
+;; *** org-readme-default-template
+;; Default template for blank Readme.org Files. LIB-NAME is replaced with the library.
+;; 
+;; *** org-readme-marmalade-server
+;; Marmalade server website.  This should start with http: and should notend with a trailing forward slash, just like the default value of http://marmalade-repo.org
+;; 
+;; *** org-readme-marmalade-token
+;; Marmalade token to upload content to the marmalade server.
+;; 
+;; *** org-readme-marmalade-user-name
+;; Marmalade user name to upload content to the marmalade server.
+;; 
+;; *** org-readme-remove-sections
+;; List of sections to remove when changing the Readme.org to Change-log.
+;; 
+;; *** org-readme-sync-emacswiki
+;; Posts library to the emacswiki. Requires `yaoddmuse'
+;; 
+;; *** org-readme-sync-git
+;; Posts library to git
+;; 
+;; *** org-readme-sync-marmalade
+;; Posts library to marmalade-repo.org
+;; 
+;; *** org-readme-use-pandoc-markdown
+;; Uses pandoc's grid tables instead of transferring the tables to html.
+;; 
+;; ** Internal Variables
+;; 
+;; *** org-readme-edit-mode-map
+;; Keymap for editing change-logs.
+;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 20-Aug-2012    Matthew L. Fidler  
+;;    Last-Updated: Mon Aug 20 22:06:30 2012 (-0500) #744 (Matthew L. Fidler)
+;;    Added ability to add function documentation and variable documentation
+;;    to the Readme.org file
 ;; 20-Aug-2012    Matthew L. Fidler  
 ;;    Last-Updated: Mon Aug 20 09:33:22 2012 (-0500) #684 (Matthew L. Fidler)
 ;;    Added pandoc markdown table support (optional)
@@ -286,7 +441,7 @@
   :group 'org-readme)
 
 (defcustom org-readme-build-melpa-recipe t
-  "Builds a mepla recipe based on github information"
+  "Builds a melpa recipe based on github information"
   :type 'boolean
   :group 'org-readme)
 
@@ -309,6 +464,98 @@
   "Builds library-name.texi from Readme.org, using Readme.md and pandoc.  Requires `org-readme-build-markdown' to be non-nil as pandoc to be found."
   :type 'boolean
   :group 'org-readme)
+
+(defun org-readme-insert-functions ()
+  "Extracts function documentation and places it in the Readme.org file."
+  (save-excursion
+    (goto-char (point-min))
+    (let ((lst1 '()) tmp ret1 ret2 ret
+          (readme (org-readme-find-readme)))
+      (while (re-search-forward "(defun[*]?[ \t\n]+\\([^ \t\n]+\\)" nil t)
+        (add-to-list 'lst1 (match-string-no-properties 1)))
+      (setq lst (sort lst1 'string<))
+      (flet ((fd (x)
+                 (with-temp-buffer
+                   (insert x)
+                   (goto-char (point-min))
+                   (when (re-search-forward "'[.]" nil t)
+                     (skip-chars-forward " \t\n")
+                     (delete-region (point) (point-min)))
+                   (goto-char (point-min))
+                   (when (re-search-forward "[(]" nil t)
+                     (goto-char (match-beginning 0))
+                     (insert "=")
+                     (forward-list)
+                     (insert "="))
+                   (goto-char (point-min))
+                   (while (re-search-forward "`\\(.*?\\)'" nil t)
+                     (replace-match "=\\1="))
+                   (buffer-string))))
+        (setq ret1 "** Interactive Functions\n")
+        (setq ret2 "** Internal Functions\n")
+        (mapc
+         (lambda(x)
+           (when (intern x)
+             (setq tmp (describe-function (intern x)))
+             (cond
+              ((string-match "Not documented" tmp))
+              ((string-match "interactive" tmp)
+               (setq ret1 (concat ret1 "\n*** " x "\n" (fd tmp))))
+              (t
+               (setq ret2 (concat ret2 "\n*** " x "\n" (fd tmp)))))))
+         lst)
+        (setq ret (concat "* Functions\n" ret1 "\n" ret2)))
+      (with-temp-buffer
+        (insert-file-contents readme)
+        (org-readme-remove-section "Functions" ret)
+        (write-file readme)))))
+
+(defun org-readme-insert-variables ()
+  "Extracts variable documentation and places it in the Readme.org file."
+  (interactive)
+  (eval-buffer)
+  (save-excursion
+    (goto-char (point-min))
+    (let ((lst1 '()) tmp ret1 ret2 ret
+          (readme (org-readme-find-readme)))
+      (while (re-search-forward "(def\\(?:var\\|custom\\)[*]?[ \t\n]+\\([^ \t\n]+\\)" nil t)
+        (add-to-list 'lst1 (match-string-no-properties 1)))
+      (setq lst (sort lst1 'string<))
+      (flet ((fd (x)
+                 (with-temp-buffer
+                   (insert x)
+                   (goto-char (point-min))
+                   (when (re-search-forward "Documentation:" nil t)
+                     (skip-chars-forward " \t\n")
+                     (delete-region (point) (point-min)))
+                   (when (re-search-forward "You can customize this variable" nil t)
+                     (goto-char (match-beginning 0))
+                     (skip-chars-backward " \t\n")
+                     (delete-region (point) (point-max)))
+                   (goto-char (point-min))
+                   (while (re-search-forward "`\\(.*?\\)'" nil t)
+                     (replace-match "=\\1="))
+                   (goto-char (point-max))
+                   (insert "\n")
+                   (buffer-string))))
+        (setq ret1 "** Customizable Variables\n")
+        (setq ret2 "** Internal Variables\n")
+        (mapc
+         (lambda(x)
+           (when (intern x)
+             (setq tmp (describe-variable (intern x)))
+             (cond
+              ((string-match "Not documented" tmp))
+              ((string-match "customize" tmp)
+               (setq ret1 (concat ret1 "\n*** " x "\n" (fd tmp))))
+              (t
+               (setq ret2 (concat ret2 "\n*** " x "\n" (fd tmp)))))))
+         lst)
+        (setq ret (concat "* Variables\n" ret1 "\n" ret2)))
+      (with-temp-buffer
+        (insert-file-contents readme)
+        (org-readme-remove-section "Variables" ret)
+        (write-file readme)))))
 
 (defun org-readme-build-el-get ()
   "Builds an el-get recipe. This assumes github, though others could be added.
@@ -913,6 +1160,10 @@ When COMMENT-ADDED is non-nil, the comment has been added and the syncing should
       
       (message "Adding Readme to Header Commentary")
       (org-readme-to-commentary)
+      (message "Updating Functions.")
+      (org-readme-insert-functions)
+      (message "Updating Variables.")
+      (org-readme-insert-variables)
       (message "Updating Changelog in current file.")
       (org-readme-changelog-to-readme)
       (org-readme-top-header-to-readme)
