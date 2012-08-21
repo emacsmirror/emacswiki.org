@@ -7,9 +7,9 @@
 ;; Copyright (C) 2005-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Dec 20 14:39:26 2005
 ;; Version: 1.0
-;; Last-Updated: Sat Aug 18 09:40:43 2012 (-0700)
+;; Last-Updated: Tue Aug 21 15:24:26 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 2501
+;;     Update #: 2503
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/synonyms.el
 ;; Keywords: text, dictionary, thesaurus, spelling, apropos, help
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -469,6 +469,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/08/21 dadams
+;;     Call tap-put-thing-at-point-props after load thingatpt+.el.
+;; 2012/08/18 dadams
+;;     Invoke tap-define-aliases-wo-prefix if thingatpt+.el is loaded.
 ;; 2012/03/02 dadams
 ;;     Require cl.el at compile time only for Emacs 20.
 ;; 2011/07/30 dadams
@@ -584,8 +588,9 @@
 
 (require 'thingatpt nil t)  ;; (no error if not found): word-at-point
 (when (and (require 'thingatpt+ nil t);; (no error if not found): word-nearest-point
-           (fboundp 'tap-define-aliases-wo-prefix)) ; >= 2012-08-17
-  (tap-define-aliases-wo-prefix))
+           (fboundp 'tap-put-thing-at-point-props)) ; >= 2012-08-21
+  (tap-define-aliases-wo-prefix)
+  (tap-put-thing-at-point-props))
 
 ;; Note: You might get byte-compiler warnings that variables `appendp'
 ;;       and `morep' are free: .  This is OK.
