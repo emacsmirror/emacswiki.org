@@ -6,7 +6,7 @@ Tell ERC where to save log files by setting the variable `erc-log-channels-direc
 
     (setq erc-log-channels-directory "~/.erc/logs/")
 
-Hitting C-c C-l (or calling the function `erc-save-buffer-in-logs') in an ERC-mode buffer will save a log.
+Calling the function `erc-save-buffer-in-logs' in an ERC-mode buffer will save a log.
 
 If you want log files automatically written when you part a channel (or quit), add the following line:
 
