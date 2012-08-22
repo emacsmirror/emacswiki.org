@@ -7,9 +7,9 @@
 ;; Created: Fri Aug  3 22:33:41 2012 (-0500)
 ;; Version: 0.27
 ;; Package-Requires: ((http-post-simple "1.0") (yaoddmuse "0.1.1")(header2 "21.0") (lib-requires "21.0"))
-;; Last-Updated: Wed Aug 22 13:05:14 2012 (-0500)
+;; Last-Updated: Wed Aug 22 13:11:26 2012 (-0500)
 ;;           By: Matthew L. Fidler
-;;     Update #: 792
+;;     Update #: 794
 ;; URL: https://github.com/mlf176f2/org-readme
 ;; Keywords: Header2, Readme.org, Emacswiki, Git
 ;; Compatibility: Tested with Emacs 24.1 on Windows.
@@ -77,6 +77,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 22-Aug-2012    Matthew L. Fidler  
+;;    Last-Updated: Wed Aug 22 13:05:14 2012 (-0500) #792 (Matthew L. Fidler)
+;;    Attempting to upload again
 ;; 22-Aug-2012    Matthew L. Fidler  
 ;;    Last-Updated: Wed Aug 22 13:03:44 2012 (-0500) #790 (Matthew L. Fidler)
 ;;    Now will remove variable name and functions from markdown and
