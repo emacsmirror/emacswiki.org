@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Feb 13 16:47:45 1996
 ;; Version: 21.0
-;; Last-Updated: Tue Aug 21 15:06:24 2012 (-0700)
+;; Last-Updated: Wed Aug 22 11:30:28 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1916
+;;     Update #: 1980
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/thingatpt+.el
 ;; Keywords: extensions, matching, mouse
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -41,6 +41,9 @@
 ;;    `tap-bounds-of-form-nearest-point',
 ;;    `tap-bounds-of-list-at-point',
 ;;    `tap-bounds-of-list-nearest-point',
+;;    `tap-bounds-of-number-at-point',
+;;    `tap-bounds-of-number-at-point-decimal',
+;;    `tap-bounds-of-number-at-point-hex',
 ;;    `tap-bounds-of-sexp-at-point',
 ;;    `tap-bounds-of-sexp-nearest-point',
 ;;    `tap-bounds-of-string-at-point',
@@ -116,8 +119,8 @@
 ;;  types (e.g. `list'), then put this in your init file, instead:
 ;;
 ;;    (eval-after-load "thingatpt"
-;;      '(require 'thingatpt+)
-;;       (tap-put-thing-at-point-props))
+;;      '(when (require 'thingatpt+)
+;;         (tap-put-thing-at-point-props))
 ;;
 ;;  A further step, which I recommend, is to use the `tap-' versions
 ;;  of standard functions, defined here, everywhere in place of those
@@ -135,8 +138,8 @@
 ;;  (only) the following in your init file:
 ;;
 ;;    (eval-after-load "thingatpt"
-;;      '(require 'thingatpt+)
-;;       (tap-redefine-std-fns))
+;;      '(when (require 'thingatpt+)
+;;         (tap-redefine-std-fns))
 ;;
 ;;  That makes all Emacs code that uses the following standard
 ;;  functions use the their versions that are defined here, not the
@@ -202,6 +205,13 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/08/22 dadams
+;;     Added: tap-bounds-of-number-at-point(-decimal|-hex).
+;;     tap-thing-at-point, tap-bounds-of-thing-at-point-1:  Check first the tap-* property.
+;;     For things (unquoted-)list, (non-nil-)symbol-name, region-or-word,
+;;      (decimal-|hex-)number, string:
+;;         put tap-* properties also.
+;;     tap-put-thing-at-point-props: Use tap-bounds-of-number-at-point, not lambda.
 ;; 2012/08/21 dadams
 ;;     Added: tap-put-thing-at-point-props.
 ;;     Moved puts for list and number to tap-put-thing-at-point-props.
@@ -408,8 +418,9 @@ this setting temporarily."
 ;;
 ;; 1. Fix Emacs bug #8667 (do not return an empty thing).
 ;; 2. Add optional argument SYNTAX-TABLE.
+;; 3. Check first the property `tap-bounds-of-thing-at-point'.
 ;;
-;; NOTE: All of the other functions here are based on this function.
+;; NOTE: Most of the other functions here are based on this function.
 ;;
 (defun tap-bounds-of-thing-at-point (thing &optional syntax-table)
   "Return the start and end locations for the THING at point.
@@ -434,49 +445,51 @@ Optional arg SYNTAX-TABLE is a syntax table to use."
 (defun tap-bounds-of-thing-at-point-1 (thing)
   "Helper for `tap-bounds-of-thing-at-point'.
 Do everything except handle the optional SYNTAX-TABLE arg."
-  (if (get thing 'bounds-of-thing-at-point)
-      (funcall (get thing 'bounds-of-thing-at-point))
-    (let ((orig  (point)))
-      (condition-case nil
-          (save-excursion
-            ;; Try moving forward, then back.
-            (funcall (or (get thing 'end-op) ; Move to end.
-                         (lambda () (forward-thing thing 1))))
-            (constrain-to-field nil orig)
-            (funcall (or (get thing 'beginning-op) ; Move to beg.
-                         (lambda () (forward-thing thing -1))))
-            (constrain-to-field nil orig)
-            (let ((beg  (point)))
-              (if (<= beg orig)
-                  ;; If that brings us all the way back to ORIG,
-                  ;; it worked.  But END may not be the real end.
-                  ;; So find the real end that corresponds to BEG.
-                  ;; FIXME: in which cases can `real-end' differ from `end'?
-                  (let ((real-end  (progn (funcall
-                                           (or (get thing 'end-op)
-                                               (lambda () (forward-thing thing 1))))
+  (let ((bounds-fn  (or (get thing 'tap-bounds-of-thing-at-point)
+                        (get thing 'bounds-of-thing-at-point))))
+    (if bounds-fn
+        (funcall bounds-fn)
+      (let ((orig  (point)))
+        (condition-case nil
+            (save-excursion
+              ;; Try moving forward, then back.
+              (funcall (or (get thing 'end-op) ; Move to end.
+                           (lambda () (forward-thing thing 1))))
+              (constrain-to-field nil orig)
+              (funcall (or (get thing 'beginning-op) ; Move to beg.
+                           (lambda () (forward-thing thing -1))))
+              (constrain-to-field nil orig)
+              (let ((beg  (point)))
+                (if (<= beg orig)
+                    ;; If that brings us all the way back to ORIG,
+                    ;; it worked.  But END may not be the real end.
+                    ;; So find the real end that corresponds to BEG.
+                    ;; FIXME: in which cases can `real-end' differ from `end'?
+                    (let ((real-end  (progn (funcall
+                                             (or (get thing 'end-op)
+                                                 (lambda () (forward-thing thing 1))))
+                                            (constrain-to-field nil orig)
+                                            (point))))
+                      (and (< orig real-end)  (< beg real-end)
+                           (cons beg real-end)))
+                  (goto-char orig)
+                  ;; Try a second time, moving first backward and then forward,
+                  ;; so that we can find a thing that ends at ORIG.
+                  (funcall (or (get thing 'beginning-op) ; Move to beg.
+                               (lambda () (forward-thing thing -1))))
+                  (constrain-to-field nil orig)
+                  (funcall (or (get thing 'end-op) ; Move to end.
+                               (lambda () (forward-thing thing 1))))
+                  (constrain-to-field nil orig)
+                  (let ((end       (point))
+                        (real-beg  (progn (funcall
+                                           (or (get thing 'beginning-op)
+                                               (lambda () (forward-thing thing -1))))
                                           (constrain-to-field nil orig)
                                           (point))))
-                    (and (< orig real-end)  (< beg real-end)
-                         (cons beg real-end)))
-                (goto-char orig)
-                ;; Try a second time, moving first backward and then forward,
-                ;; so that we can find a thing that ends at ORIG.
-                (funcall (or (get thing 'beginning-op) ; Move to beg.
-                             (lambda () (forward-thing thing -1))))
-                (constrain-to-field nil orig)
-                (funcall (or (get thing 'end-op) ; Move to end.
-                             (lambda () (forward-thing thing 1))))
-                (constrain-to-field nil orig)
-                (let ((end       (point))
-                      (real-beg  (progn (funcall
-                                         (or (get thing 'beginning-op)
-                                             (lambda () (forward-thing thing -1))))
-                                        (constrain-to-field nil orig)
-                                        (point))))
-                  (and (<= real-beg orig)  (< orig end)  (< real-beg end)
-                       (cons real-beg end))))))
-        (error nil)))))
+                    (and (<= real-beg orig)  (< orig end)  (< real-beg end)
+                         (cons real-beg end))))))
+          (error nil))))))
 
 (defun tap-thing-at-point-with-bounds (thing &optional syntax-table)
   "Return the thing of type THING at point, plus its bounds.
@@ -495,7 +508,8 @@ Optional arg SYNTAX-TABLE is a syntax table to use."
 
 ;; REPLACE ORIGINAL in `thingatpt.el'.
 ;;
-;; Add optional argument SYNTAX-TABLE.
+;; 1. Add optional argument SYNTAX-TABLE.
+;; 2. Check first the property `tap-thing-at-point'.
 ;;
 (defun tap-thing-at-point (thing &optional syntax-table)
   "Return the THING at point as a string.
@@ -513,15 +527,16 @@ returned by this function also.  Otherwise, that value is converted to
 a string and returned.
 
 Optional arg SYNTAX-TABLE is a syntax table to use."
-  (if (get thing 'thing-at-point)
-      (let* ((opoint  (point))
-             (thg     (prog1 (funcall (get thing 'thing-at-point))
-                        (constrain-to-field nil opoint))))
-        (if (stringp thg)
-            thg
-          (and thg  (format "%s" thing))))
-    (let ((bounds  (tap-bounds-of-thing-at-point thing syntax-table)))
-      (and bounds  (buffer-substring (car bounds) (cdr bounds))))))
+  (let ((thing-fn  (or (get thing 'tap-thing-at-point)  (get thing 'thing-at-point))))
+    (if thing-fn
+        (let* ((opoint  (point))
+               (thg     (prog1 (funcall thing-fn)
+                          (constrain-to-field nil opoint))))
+          (if (stringp thg)
+              thg
+            (and thg  (format "%s" thing))))
+      (let ((bounds  (tap-bounds-of-thing-at-point thing syntax-table)))
+        (and bounds  (buffer-substring (car bounds) (cdr bounds)))))))
 
 (defun tap-thing-nearest-point-with-bounds (thing &optional syntax-table)
   "Return the THING nearest point, plus its bounds: (THING START . END).
@@ -532,7 +547,7 @@ START and END are the buffer positions of THING - see
 
 Optional arg SYNTAX-TABLE is a syntax table to use."
   (tap-thing/form-nearest-point-with-bounds #'tap-thing-at-point-with-bounds
-                                             thing nil syntax-table))
+                                            thing nil syntax-table))
 
 (defun tap-thing/form-nearest-point-with-bounds (fn thing predicate syntax-table)
   "Thing or form nearest point, plus bounds: (THING-OR-FORM START . END).
@@ -727,7 +742,7 @@ Optional args:
   PREDICATE is a predicate that the form must satisfy to qualify.
   SYNTAX-TABLE is a syntax table to use."
   (tap-thing/form-nearest-point-with-bounds #'tap-form-at-point-with-bounds
-                                             thing predicate syntax-table))
+                                            thing predicate syntax-table))
 
 ;; Essentially an alias for the default case.
 (defun tap-sexp-nearest-point-with-bounds (&optional predicate syntax-table)
@@ -949,7 +964,6 @@ Non-nil UNQUOTEDP means remove the car if it is `quote' or
  `backquote-backquote-symbol'."
   (tap-list-at/nearest-point-with-bounds 'tap-sexp-nearest-point-with-bounds up unquotedp))
 
-
 (defun tap-bounds-of-list-at-point (&optional up unquotedp)
   "Return the start and end locations for the non-empty list at point.
 See `tap-list-at-point'.
@@ -977,6 +991,10 @@ Optional args:
          (cdr thing+bds))))
 
 
+(put 'list 'tap-thing-at-point 'tap-list-at-point)
+(put 'list 'tap-bounds-of-thing-at-point 'tap-bounds-of-list-at-point)
+
+
 ;; REPLACE ORIGINAL defined in `thingatpt.el'.
 ;;
 ;; 1. Added optional arg UP.
@@ -999,7 +1017,8 @@ Note: If point is inside a string that is inside a list:
          (car list+bds))))
 
 
-(put 'unquoted-list 'thing-at-point 'tap-unquoted-list-at-point)
+(put 'unquoted-list 'thing-at-point     'tap-unquoted-list-at-point)
+(put 'unquoted-list 'tap-thing-at-point 'tap-unquoted-list-at-point)
 
 (defun tap-unquoted-list-at-point (&optional up)
   "Return the non-nil list at point, or nil if none.
@@ -1081,7 +1100,8 @@ UP (default: 0) is the number of list levels to go up to start with."
 ;;; SYMBOL NAMES, WORDS, SENTENCES, etc. -----------------------
 
 
-(put 'non-nil-symbol-name 'thing-at-point 'tap-non-nil-symbol-name-at-point)
+(put 'non-nil-symbol-name 'thing-at-point     'tap-non-nil-symbol-name-at-point)
+(put 'non-nil-symbol-name 'tap-thing-at-point 'tap-non-nil-symbol-name-at-point)
 
 (defun tap-non-nil-symbol-name-at-point ()
   "String naming a non-nil Emacs Lisp symbol at point, or nil if none."
@@ -1089,7 +1109,8 @@ UP (default: 0) is the number of list levels to go up to start with."
     (and (not (equal "nil" name))  name)))
 
 
-(put 'symbol-name 'thing-at-point 'tap-symbol-name-at-point)
+(put 'symbol-name 'thing-at-point     'tap-symbol-name-at-point)
+(put 'symbol-name 'tap-thing-at-point 'tap-symbol-name-at-point)
 
 (defun tap-symbol-name-at-point ()
   "String naming the Emacs Lisp symbol at point, or nil if none.
@@ -1139,7 +1160,8 @@ See `tap-word-nearest-point'."
     (tap-word-nearest-point syntax-table)))
 
 
-(put 'region-or-word 'thing-at-point 'tap-region-or-word-at-point)
+(put 'region-or-word 'thing-at-point     'tap-region-or-word-at-point)
+(put 'region-or-word 'tap-thing-at-point 'tap-region-or-word-at-point)
 
 (defun tap-region-or-word-at-point ()
   "Return non-empty active region or word at point."
@@ -1175,14 +1197,31 @@ Optional arg SYNTAX-TABLE is a syntax table to use."
 (unless (get 'defun 'end-op)       (put 'defun 'end-op       'end-of-defun))
 (unless (get 'defun 'forward-op)   (put 'defun 'forward-op   'end-of-defun))
 
+
+(put 'number 'tap-bounds-of-thing-at-point 'tap-bounds-of-number-at-point)
+
+(defun tap-bounds-of-number-at-point ()
+  "Return the bounds of the number represented by the numeral point.
+Return nil if none is found."
+  (and (number-at-point)  (tap-bounds-of-thing-at-point 'sexp)))
+
+
 ;;; `number-at-point' returns the char value when point is on char syntax.
 ;;; E.g., when on ?A it returns 65 (not nil); when on ?\A-\^@ it returns 4194304.
 ;;; So we add these functions, which do what you would normally expect.
 
-(put 'decimal-number 'thing-at-point 'tap-number-at-point-decimal)
-(put 'decimal-number 'bounds-of-thing-at-point
-     (lambda () (and (tap-number-at-point-decimal)
-                     (tap-bounds-of-thing-at-point 'sexp))))
+
+(put 'decimal-number 'bounds-of-thing-at-point     'tap-bounds-of-number-at-point-decimal)
+(put 'decimal-number 'tap-bounds-of-thing-at-point 'tap-bounds-of-number-at-point-decimal)
+
+(defun tap-bounds-of-number-at-point-decimal ()
+  "Return bounds of number represented by the decimal numeral at point.
+Return nil if none is found."
+  (and (tap-number-at-point-decimal)  (tap-bounds-of-thing-at-point 'sexp)))
+
+
+(put 'decimal-number 'thing-at-point     'tap-number-at-point-decimal)
+(put 'decimal-number 'tap-thing-at-point 'tap-number-at-point-decimal)
 
 (defalias 'decimal-number-at-point 'tap-number-at-point-decimal)
 (defun tap-number-at-point-decimal ()
@@ -1196,10 +1235,17 @@ Return nil if none is found."
          (string-to-number strg))))
 
 
-(put 'hex-number 'thing-at-point 'tap-number-at-point-hex)
-(put 'hex-number 'bounds-of-thing-at-point
-     (lambda () (and (tap-number-at-point-hex)
-                     (tap-bounds-of-thing-at-point 'sexp))))
+(put 'hex-number 'bounds-of-thing-at-point     'tap-bounds-of-number-at-point-hex)
+(put 'hex-number 'tap-bounds-of-thing-at-point 'tap-bounds-of-number-at-point-hex)
+
+(defun tap-bounds-of-number-at-point-hex ()
+  "Return bounds of number represented by the hexadecimal numeral at point.
+Return nil if none is found."
+  (and (tap-number-at-point-hex)  (tap-bounds-of-thing-at-point 'sexp)))
+
+
+(put 'hex-number 'thing-at-point     'tap-number-at-point-hex)
+(put 'hex-number 'tap-thing-at-point 'tap-number-at-point-hex)
 
 (defalias 'hex-number-at-point 'tap-number-at-point-hex)
 (defun tap-number-at-point-hex ()
@@ -1215,7 +1261,8 @@ Return nil if none is found."
 
 (when (fboundp 'syntax-ppss)            ; Based on `comint-extract-string'.
 
-  (put 'string 'bounds-of-thing-at-point 'tap-bounds-of-string-at-point)
+  (put 'string 'bounds-of-thing-at-point     'tap-bounds-of-string-at-point)
+  (put 'string 'tap-bounds-of-thing-at-point 'tap-bounds-of-string-at-point)
 
   (defun tap-bounds-of-string-at-point ()
     "Return the start and end locations for the string at point.
@@ -1232,7 +1279,8 @@ See `tap-string-at-point'."
                (error nil))
              (cons beg end)))))
 
-  (put 'string 'thing-at-point 'tap-string-at-point)
+  (put 'string 'thing-at-point     'tap-string-at-point)
+  (put 'string 'tap-thing-at-point 'tap-string-at-point)
 
   (defun tap-string-at-point ()
     "Return the string at point, or nil if there is not string at point.
@@ -1263,9 +1311,7 @@ another way, not by setting these properties."
   ;; These are not set in `thingatpt.el', but a function for the THING is defined there.
   (put 'list   'thing-at-point           'tap-list-at-point)
   (put 'number 'thing-at-point           'number-at-point)
-  (put 'number 'bounds-of-thing-at-point (lambda ()
-                                           (and (number-at-point)
-                                                (tap-bounds-of-thing-at-point 'sexp))))
+  (put 'number 'bounds-of-thing-at-point 'tap-bounds-of-number-at-point)
   t)                                    ; Return non-nil so can use with `and' etc.
 
 ;;;###autoload
