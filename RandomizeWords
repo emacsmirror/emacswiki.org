@@ -47,6 +47,41 @@ You never know.
 
 Use `C-x z' to repeat until properly shuffled.
 
+== Working with Comma-Separated Lists ==
+
+The following can be used to comma-separated lists. Thus, you can use it where multiple words are a token such as the names of people.
+
+  (defun randomize-comma-separated-list (start end)
+    "Randomize order of the comma separated list in the region."
+    (interactive "r")
+    (let ((str (mapconcat 'identity
+			  (sort (split-string (replace-regexp-in-string
+					       "\\s-+" " "
+					       (buffer-substring start end))
+					      " ?, ?" t)
+				(lambda (a b) (= 1 (random 2))))
+			  ", ")))
+      (delete-region start end)
+      (insert str)))
+
+Here's an example of how it works.
+
+Input:
+
+<pre>
+Nigel Terry, Helen Mirren, Nicholas Clay, Cherie Lunghi, Paul
+Geoffrey, Nicol Williamson, Robert Addie, Gabriel Byrne
+</pre>
+
+Output:
+
+<pre>
+Gabriel Byrne, Nigel Terry, Nicol Williamson, Helen Mirren, Robert Addie, Paul Geoffrey, Nicholas Clay, Cherie Lunghi
+</pre>
+
+== Alternatives ==
+
+
 See SortWords for sorting the order of words alphabetically.
 
 ----
