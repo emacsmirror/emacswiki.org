@@ -12,7 +12,7 @@ You can't look at the contents first before picking a buffer to type into.
 To look at one buffer before typing into another necessitates using BS twice.
 Splitting windows helps with this, but I felt that I could devise something better.
 
-In many situations there are usually a set of few buffers that are frequently 
+In many situations there is usually a set of few buffers that are frequently 
 switched to; other buffers are useful to keep on hand, but they don't need to be 
 looked at as frequently.  The similarity of this behavior to paging schemes in 
 operating systems is obvious; the "locality of reference" principle, the
