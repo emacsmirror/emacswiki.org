@@ -218,7 +218,7 @@ The following deletes the context around the match on the same line.
 list-matching-lines does almost the same as occur. There's also delete-matching-lines.
 
 == Occur-like minor mode ==
-[https://sourceforge.net/projects/loccur/ loccur.el] 
+[https://github.com/fourier/loccur loccur.el] 
 
 There is a minor mode for Emacs acting like occur but w/o creating a new window.
 It just hides all the text excepting lines containing matches. To use it,
