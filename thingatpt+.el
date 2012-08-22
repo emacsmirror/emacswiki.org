@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Feb 13 16:47:45 1996
 ;; Version: 21.0
-;; Last-Updated: Wed Aug 22 11:30:28 2012 (-0700)
+;; Last-Updated: Wed Aug 22 13:55:33 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1980
+;;     Update #: 2008
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/thingatpt+.el
 ;; Keywords: extensions, matching, mouse
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -161,20 +161,49 @@
 ;;  ----------------
 ;;
 ;;  If you write code that uses some of the functions defined here,
-;;  for convenience you can invoke `tap-define-aliases-wo-prefix' to
+;;  this section is for you.
+;;
+;;  You can use the functions defined in `thingatpt+.el' that have
+;;  prefix `tap-' to obtain, for your code, the improvements they
+;;  provide.  Doing only that has no effect on any code that calls
+;;  vanilla thing-at-point functions (which have no prefix `tap-').
+;;
+;;  For convenience you can invoke `tap-define-aliases-wo-prefix' to
 ;;  provide alias functions that have the same names but without the
 ;;  prefix `tap-'.  This affects only functions defined here that have
 ;;  no vanilla counterpart, so the aliases do not collide with any
-;;  standard Emacs functions.
+;;  standard Emacs functions.  This is just a naming convenience.
 ;;
 ;;  For example, you might do this:
 ;;
 ;;    (when (require 'thingatpt+ nil t)  ; (no error if not found)
 ;;      (tap-define-aliases-wo-prefix))
 ;;
-;;  But because that does not redefine any standard functions, if you
-;;  want all of the improvements defined here then you will also need
-;;  to do ONE of the following (#1 or #2):
+;;  You can optionally enable the improvements defined here to have
+;;  wider application, so that code that does not directly invoke the
+;;  functions defined here nevertheless uses them indirectly.
+;;
+;;  You can, for example, put `tap-' functions on THING-type symbols
+;;  as property `thing-at-point' or property
+;;  `bounds-of-thing-at-point'.  That has the effect of using those
+;;  `tap-' functions for those THING types only.
+;;
+;;  For example, to get the improvements for lists offered by
+;;  `tap-list-at-point', you can do this:
+;;
+;;    (put 'list 'bounds-of-thing-at-point
+;;         'tap-bounds-of-list-at-point)
+;;    (put 'list 'thing-at-point 'tap-list-at-point)
+;;
+;;  That causes the vanilla thing-at-point functions to invoke those
+;;  `tap-' functions when handling lists.  It has an effect only on
+;;  lists, not on other THINGs.  This behavior happens because the
+;;  generic vanilla functions `thing-at-point' and
+;;  `bounds-of-thing-at-point' use those standard symbol properties.
+;;
+;;  For even wider application, that is, if you want all of the
+;;  improvements defined here to be available generally, then you will
+;;  also need to do ONE of the following (#1 or #2):
 ;;
 ;;  1. Call `tap-redefine-std-fns', to redefine standard functions.
 ;;
@@ -186,20 +215,16 @@
 ;;
 ;;    b. Call the individual `tap-*' functions explicitly for each of
 ;;       the standard functions that would be redefined by
-;;       `tap-redefine-std-fns'.
+;;       `tap-redefine-std-fns'.  Or call standard functions that make
+;;       use of property `thing-at-point' or
+;;       `bounds-of-thing-at-point'.
 ;;
-;;    For example, to get the improvements offered by
-;;    `tap-list-at-point', you need to call it explicitly, unless you
-;;    invoke `tap-redefine-std-fns' to use it everywhere as the
-;;    definition of `list-at-point'.
-;;
-;;    Be aware that this (#2a) changes (improves) the behavior of
-;;    things like (thing-at-point 'list), even though it does not
-;;    redefine any standard functions.  This is because the generic
-;;    functions `thing-at-point' and `bounds-of-thing-at-point' use
-;;    the symbol properties `thing-at-point' and
-;;    `bounds-of-thing-at-point', and `tap-put-thing-at-point-props'
-;;    changes which functions are used for those property values.
+;;    This (#2) changes (improves) the behavior of things like
+;;    (thing-at-point 'list), even though it does not redefine any
+;;    standard functions.  Again, this is because functions
+;;    `thing-at-point' and `bounds-of-thing-at-point' use symbol
+;;    properties `thing-at-point' and `bounds-of-thing-at-point', and
+;;    `tap-put-thing-at-point-props' changes those property values.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
