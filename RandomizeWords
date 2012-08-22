@@ -1,3 +1,7 @@
+There are various ways to randomize words.
+
+== Randomizing Words And Not Touching Punctuation ==
+
 Randomly sorting words in a [[region]] can be done with:
 
   (defun randomize-region (beg end)
