@@ -2,7 +2,7 @@ The command `M-x reverse-region' will reverse the lines a region.  To get the wo
 
   (defun reverse-words (beg end)
     "Reverse the order of words in region."
-    (interactive "r")
+    (interactive "*r")
     (apply
      'insert
       (reverse
