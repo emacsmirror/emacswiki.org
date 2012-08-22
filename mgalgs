@@ -1,5 +1,8 @@
 <b>##(message "hello, emacswiki!")##</b>
 
+== Why I love emacs ==
+Because to me, Emacs stands for: <b>E</b>ternally <b>M</b>odifying <b>A</b>ll <b>C</b>onfiguration <b>S</b>ettings. This means I can make it perfect. Or at least continually strive to make it perfect. It's really a metaphor on life.
+
 More information about my projects is available on my web site: http://mgalgs.github.com
 
 Here are a few of my elisp projects:
