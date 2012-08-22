@@ -5,11 +5,11 @@
 ;; Author: Matthew L. Fidler
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Fri Aug  3 22:33:41 2012 (-0500)
-;; Version: 0.26
+;; Version: 0.27
 ;; Package-Requires: ((http-post-simple "1.0") (yaoddmuse "0.1.1")(header2 "21.0") (lib-requires "21.0"))
-;; Last-Updated: Tue Aug 21 12:59:45 2012 (-0500)
+;; Last-Updated: Wed Aug 22 13:05:14 2012 (-0500)
 ;;           By: Matthew L. Fidler
-;;     Update #: 788
+;;     Update #: 792
 ;; URL: https://github.com/mlf176f2/org-readme
 ;; Keywords: Header2, Readme.org, Emacswiki, Git
 ;; Compatibility: Tested with Emacs 24.1 on Windows.
@@ -77,6 +77,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 22-Aug-2012    Matthew L. Fidler  
+;;    Last-Updated: Wed Aug 22 13:03:44 2012 (-0500) #790 (Matthew L. Fidler)
+;;    Now will remove variable name and functions from markdown and
+;;    outputted texinfo.
 ;; 21-Aug-2012    Matthew L. Fidler  
 ;;    Last-Updated: Tue Aug 21 12:57:54 2012 (-0500) #786 (Matthew L. Fidler)
 ;;    Bug fix.  When variables/functions are documented with an initial
@@ -670,6 +674,12 @@ Returns file name if created."
   :group 'org-readme
   :type '(repeat (string :tag "Section")))
 
+(defcustom org-readme-remove-sections-from-markdown
+  '("Functions" "Variables")
+  "List of sections to remove when changing the Readme.org to Markdown which is an intermediary for texinfo (using pandoc)."
+  :group 'org-readme
+  :type '(repeat (string :tag "Section")))
+
 (defvar org-readme-edit-mode-map nil
   "Keymap for editing change-logs.")
 
@@ -730,6 +740,11 @@ Returns file name if created."
         p1 md tmp tmp2)
     (with-temp-buffer
       (insert-file-contents readme)
+
+      (mapc
+       (lambda(section)
+         (org-readme-remove-section section))
+       org-readme-remove-sections-from-markdown)
       
       (goto-char (point-min))
       (while (re-search-forward "#[+]TITLE:" nil t)
