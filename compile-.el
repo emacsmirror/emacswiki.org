@@ -7,10 +7,11 @@
 ;; Copyright (C) 2004-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 16 17:04:11 2004
 ;; Version: 21.0
-;; Last-Updated: Sun Jan  1 14:18:26 2012 (-0800)
+;; Last-Updated: Thu Aug 23 09:53:44 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 108
+;;     Update #: 109
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/compile-.el
+;; Doc URL: http://www.emacswiki.org/emacs/CompilationMode
 ;; Keywords: tools, processes
 ;; Compatibility: GNU Emacs: 21.x, 22.x, 23.x
 ;;
