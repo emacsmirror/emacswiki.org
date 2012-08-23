@@ -7,10 +7,11 @@
 ;; Copyright (C) 2006-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 08 13:09:19 2006
 ;; Version: 22.0
-;; Last-Updated: Fri May 18 07:22:07 2012 (-0700)
+;; Last-Updated: Thu Aug 23 09:56:38 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 465
+;;     Update #: 467
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/crosshairs.el
+;; Doc URL: http://www.emacswiki.org/emacs/CrosshairHighlighting
 ;; Keywords: faces, frames, emulation, highlight, cursor, accessibility
 ;; Compatibility: GNU Emacs: 22.x, 23.x
 ;; 
