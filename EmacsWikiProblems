@@ -156,7 +156,7 @@ There's some technical information available here, if you want to take a look at
 
 I just edited and saved a reply someone posted at DrewsElispLibraries. I refrefreshed RecentChanges (with rollbacks and minor changes included), but my edit does not appear. That wiki page is listed, but still at the time and user of the previous edit. However, after clicking List only major changes it was listed. I had previously cleared my cache, so I don't think that was the problem. I'm guessing it was a cache problem nevertheless, but thought I'd mention it, in case it's not. -- DrewAdams
 
-== Invisible change ==
+=== Invisible change ===
 
 [new]
 Someone edited [[Emacsmirror]] months ago but the change is not visible on the page. When I edit the page I can see the added text.  I haven't tried yet what happens when I save the page.  Maybe that would cause the old edit to become effective but I wanted to leave it as-is so you can see for yourself. -- JonasBernoulli
