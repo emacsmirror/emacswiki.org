@@ -18,7 +18,7 @@ Now search for just "apropos-fn", and you will find them -- 4 pages of links.
 
 Now try searching for "BrowseKillRing" -- that page is not found.  Now try "browse kill ring" or "browse-kill-ring".  After checking the 10 pages of links you discover that page BrowseKillRing appeards nowhere.
 
-Now try to find this page: BufferMenuPlus.  Now try clicking the title of page <tt>[[buff-menu+.el]]</tt> and looking through the search-hit links for page BufferMenuPlus.  No luck.
+Now try to find this page: BufferMenuPlus.  Now try clicking the title of page <tt>[[buff-menu+.el]]</tt> and looking through the search-hit links for page BufferMenuPlus.  No luck.  Same thing for DiredPlus from <tt>[[dired+.el]]</tt>.
 
 What's wrong? -- DrewAdams
 
