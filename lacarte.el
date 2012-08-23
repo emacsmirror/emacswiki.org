@@ -7,17 +7,18 @@
 ;; Copyright (C) 2005-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Aug 12 17:18:02 2005
 ;; Version: 22.0
-;; Last-Updated: Sun Jan  1 14:05:15 2012 (-0800)
+;; Last-Updated: Thu Aug 23 14:36:14 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 672
+;;     Update #: 673
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/lacarte.el
+;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/LaCarte
 ;; Keywords: menu-bar, menu, command, help, abbrev, minibuffer, keys,
 ;;           completion, matching, local, internal, extensions,
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   None
+;;   `subr-21'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
