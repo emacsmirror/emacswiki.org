@@ -6,10 +6,11 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Aug 21 14:46:32 2012 (-0700)
+;; Last-Updated: Thu Aug 23 09:19:55 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 15014
+;;     Update #: 15015
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
+;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
 ;;
