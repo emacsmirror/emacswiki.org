@@ -31,7 +31,9 @@ Edit 2: We cannot rename every page that google cannot find like done for the be
 
 -- JonasBernoulli
 
-== Site search misses main page for highlight.el ==
+I see a trend here:
+
+=== Site search misses main page for highlight.el ===
 
 Visit <tt>[[highlight.el]]</tt>. Click the title to google-search for references to that page.  There are 5 pages of hits, but none of them are HighLight, which is the main page documenting Lisp:highlight.el.  There is even a link ##Lisp:highlight.el## on page HighLight, so it can't just be a problem of using ##<tt>[[highlight.el]]</tt>## instead of ##Lisp:##.  Maybe the problem has something to do with case-sensitivity in the page name "##HighLight##"? -- DrewAdams
 
@@ -45,6 +47,38 @@ Wrt your suggestion, I don't think that's the solution here, but I might rename 
 
 [new]
 I can't say I understand completely, either. Google ought to know that there is a page with Url bla/HighLight, title High Light and h1 HighLight -- why doesn't a search for "highlight" find it? I don't know. :(
+
+=== Page not found by search ===
+
+Just mentioning in case it indicates a bug: Search for ##DiredPlus## and you will not see the DiredPlus page in the list.  But search for ##GrepPlus## and you will see the GrepPlus page.  Wonder why. -- DrewAdams
+
+=== Problem with Google search ===
+
+[new] If you search for the word "sticky" you do not find the page StickyModifiers, but that word is on that page. -- LennartBorgman
+[new] hmm searching  for "sticky site:.emacswiki.org" google find thse page with the url: www.emacswiki.org/cgi-bin/emacs-en/StickyModifiers, maybe it's just a problem of adding a couple more url in the custom search  -- PierreGaston 
+[new] I added ##http://www.emacswiki.org/cgi-bin/emacs-*## to the list of sites. Previously the site list contained only ##http://www.emacswiki.org/cgi-bin/wiki/*##. I think the real problem is that I would want all the URLs matching ##http://www.emacswiki.org/cgi-bin/emacs-*## to be registered as ##http://www.emacswiki.org/cgi-bin/wiki##. Ah the joys of fiddling with search engines. :) -- AlexSchroeder
+[new] Thanks! -- LennartBorgman
+[new] Is there something magic with StickyModifiers (except that it saves you)? You can't search for StickyModifiers now. Or for "sticky modifiers". Anyone understands this? -- LennartBorgman
+[new] I set my search languages to Chinese in google search preferences, so when I search in emacswiki.org, only a few pages can be found, can I just search all languages in emacswiki.org without change my google preferences? Or in the page of search result provides a radio button to select language.  
+-- [[Ye_Wenbin]]
+
+== Search Flooded with Source Code ==
+
+(this issue is actually different from the above)
+
+No idea how much control you have over the search. However, currently searches often are useless to me, because they show only source code files. Try searching for "defmacro", for instance; maybe that is because it isn't discussed anywhere on the wiki, but I have no way of finding out. Please allow to exclude sources from the search results. -- OlafB
+
+[new]
+The ElispArea used to be separate, but now it is not.  Oddmuse:Searching would need to be improved to be able to differentiate code. -- AaronHawley
+
+[new]
+I'm not sure what to do. Fiddling with the search engine configuration might work, but how would we search for code examples, then? Add a second search box for code only? Yuck. There\s not much configuration going on because we are using Google Search. I don't see a way to add checkboxes and other options to influence it.
+
+Somebody could start working on a multi-lingual setup for Lucene or whatever the search engine of choice is for people who want to do it themselves. I remember looking at it and thinking that it looked like a lot of work for little gain.
+
+For the example given, Google returns MacroBasics on third place. That's not so bad, is it?
+
+We could certainly add options to the [[Search]] page. would that be acceptable? -- AlexSchroeder
 
 == Site is very slow now ==
 
@@ -61,22 +95,6 @@ I just got this error when trying to save a page after some simple (trivial) edi
 [new]
 Anybody else? I've never seen this before. -- AlexSchroeder
 
-== Search Flooded with Source Code ==
-
-No idea how much control you have over the search. However, currently searches often are useless to me, because they show only source code files. Try searching for "defmacro", for instance; maybe that is because it isn't discussed anywhere on the wiki, but I have no way of finding out. Please allow to exclude sources from the search results. -- OlafB
-
-[new]
-The ElispArea used to be separate, but now it is not.  Oddmuse:Searching would need to be improved to be able to differentiate code. -- AaronHawley
-
-[new]
-I'm not sure what to do. Fiddling with the search engine configuration might work, but how would we search for code examples, then? Add a second search box for code only? Yuck. There\s not much configuration going on because we are using Google Search. I don't see a way to add checkboxes and other options to influence it.
-
-Somebody could start working on a multi-lingual setup for Lucene or whatever the search engine of choice is for people who want to do it themselves. I remember looking at it and thinking that it looked like a lot of work for little gain.
-
-For the example given, Google returns MacroBasics on third place. That's not so bad, is it?
-
-We could certainly add options to the [[Search]] page. would that be acceptable? -- AlexSchroeder
-
 == FYI - still getting Server Error ==
 
 Just an FYI that this problem has not disappeared, even if it is less frequent. -- DrewAdams
@@ -90,12 +108,6 @@ How to make a `##Manual:##' link to `##(elisp) Circular Objects##'?  I tried ##[
 
 [new]
 Manual:Circular%20Objects is the right form. In a wiki URL, space is represented by an underscore. Using double square brackets might do the wrong thing in this context. -- AlexSchroeder
-
-== Page not found by search ==
-
-Just mentioning in case it indicates a bug: Search for ##DiredPlus## and you will not see the DiredPlus page in the list.  But search for ##GrepPlus## and you will see the GrepPlus page.  Wonder why. -- DrewAdams
-
-
 
 
 == Conflict from my own edit 25 minutes ago? ==
@@ -317,22 +329,6 @@ Any news on this issue? -- AlexSchroeder
 2006-10-06 For me its the same as Toby describes (Firfox 1.0.8 under Fedora and IE under Windows).
 
 Update 2006-10-14: My file seems too big, the wiki program blocked any furhter editing.  Alex Schroeder had to remove it by hand and uploaded a compressed version. -- [[dida]]
-
-
-
-
-
-== Problem with Google search ==
-
-[new] If you search for the word "sticky" you do not find the page StickyModifiers, but that word is on that page. -- LennartBorgman
-[new] hmm searching  for "sticky site:.emacswiki.org" google find thse page with the url: www.emacswiki.org/cgi-bin/emacs-en/StickyModifiers, maybe it's just a problem of adding a couple more url in the custom search  -- PierreGaston 
-[new] I added ##http://www.emacswiki.org/cgi-bin/emacs-*## to the list of sites. Previously the site list contained only ##http://www.emacswiki.org/cgi-bin/wiki/*##. I think the real problem is that I would want all the URLs matching ##http://www.emacswiki.org/cgi-bin/emacs-*## to be registered as ##http://www.emacswiki.org/cgi-bin/wiki##. Ah the joys of fiddling with search engines. :) -- AlexSchroeder
-[new] Thanks! -- LennartBorgman
-[new] Is there something magic with StickyModifiers (except that it saves you)? You can't search for StickyModifiers now. Or for "sticky modifiers". Anyone understands this? -- LennartBorgman
-[new] I set my search languages to Chinese in google search preferences, so when I search in emacswiki.org, only a few pages can be found, can I just search all languages in emacswiki.org without change my google preferences? Or in the page of search result provides a radio button to select language.  
--- [[Ye_Wenbin]]
-
-
 
 == RSS for single-pages doesn't work in Google Reader ==
 
