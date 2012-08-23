@@ -8,10 +8,11 @@
 ;; Copyright (C) 1989, Hewlett-Packard, all rights reserved.
 ;; Created: Wed Mar 31 16:18:24 1999
 ;; Version: 21.0
-;; Last-Updated: Fri Mar  2 08:27:06 2012 (-0800)
+;; Last-Updated: Thu Aug 23 16:03:55 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 212
+;;     Update #: 213
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/line-num.el
+;; Doc URL: http://emacswiki.org/emacs/LineNumbers
 ;; Keywords: local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;;
