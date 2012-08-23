@@ -7,10 +7,11 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Jun 28 14:47:12 1996
 ;; Version: 21.0
-;; Last-Updated: Fri Mar  2 08:31:44 2012 (-0800)
+;; Last-Updated: Thu Aug 23 16:19:48 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 549
+;;     Update #: 550
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/mouse+.el
+;; Doc URL: http://emacswiki.org/emacs/MousePlus
 ;; Keywords: mouse
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;; 
