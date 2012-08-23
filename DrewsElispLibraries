@@ -939,9 +939,9 @@ Thanks. Please do. I don't mean to put you off. I will take a look when we know 
 
 
 [new:DrewAdams:2012-08-23 15:31 UTC]
-I do try to do that.  Also, for libraries that have a [[Customize]] group, I provide direct links in the group Customize buffer to such wiki pages.
+I haven't done that, but I could.  I've just updated <tt>[[header2.el]]</tt> to add a '''Doc URL:''' field for that.
 
-No doubt there are some libraries where I still need to add such things.  I'll try to do that.
+Note that for libraries that have a [[Customize]] group, I typically provide direct links in the group `Customize' buffer to such wiki doc pages, as well as links to wiki code pages.
 
 Remember too that from the wiki page for the Lisp code you can just click the page header to get links to all of the wiki pages that link to that page.  That list will include any pages that discuss the library in question.  That is what I do when I forget the exact page that introduces the library.  It's pretty quick.
 
