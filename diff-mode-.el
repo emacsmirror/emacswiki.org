@@ -7,10 +7,11 @@
 ;; Copyright (C) 2004-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Nov 08 16:36:09 2004
 ;; Version: 21.0
-;; Last-Updated: Sun Jan  1 14:26:39 2012 (-0800)
+;; Last-Updated: Thu Aug 23 10:10:17 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 702
+;;     Update #: 703
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/diff-mode-.el
+;; Doc URL: http://www.emacswiki.org/DiffEnhancements
 ;; Keywords: data, matching, tools, unix, local, font, face
 ;; Compatibility: GNU Emacs: 21.x, 22.x, 23.x
 ;;
