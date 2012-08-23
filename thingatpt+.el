@@ -1,4 +1,4 @@
-j;;; thingatpt+.el --- Extensions to `thingatpt.el'.
+;;; thingatpt+.el --- Extensions to `thingatpt.el'.
 ;;
 ;; Filename: thingatpt+.el
 ;; Description: Extensions to `thingatpt.el'.
@@ -7,9 +7,9 @@ j;;; thingatpt+.el --- Extensions to `thingatpt.el'.
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Feb 13 16:47:45 1996
 ;; Version: 21.0
-;; Last-Updated: Thu Aug 23 06:27:50 2012 (-0700)
+;; Last-Updated: Wed Aug 22 13:55:33 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 2015
+;;     Update #: 2008
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/thingatpt+.el
 ;; Keywords: extensions, matching, mouse
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -439,7 +439,7 @@ this setting temporarily."
 ;;; THINGS -----------------------------------------------------------
 
 
-;; If you invoke `tap-redefine-std-fns', this def replaces the original in `thingatpt.el'.
+;; REPLACE ORIGINAL in `thingatpt.el'.
 ;;
 ;; 1. Fix Emacs bug #8667 (do not return an empty thing).
 ;; 2. Add optional argument SYNTAX-TABLE.
@@ -531,10 +531,10 @@ Optional arg SYNTAX-TABLE is a syntax table to use."
     (and bounds  (cons (buffer-substring (car bounds) (cdr bounds)) bounds))))
 
 
-;; If you invoke `tap-redefine-std-fns', this def replaces the original in `thingatpt.el'.
+;; REPLACE ORIGINAL in `thingatpt.el'.
 ;;
 ;; 1. Add optional argument SYNTAX-TABLE.
-;; 2. Check first the symbol property `tap-thing-at-point'.
+;; 2. Check first the property `tap-thing-at-point'.
 ;;
 (defun tap-thing-at-point (thing &optional syntax-table)
   "Return the THING at point as a string.
@@ -734,7 +734,7 @@ Optional args are the same as for `tap-bounds-of-form-at-point'."
   (tap-bounds-of-form-at-point 'sexp predicate syntax-table))
 
 
-;; If you invoke `tap-redefine-std-fns', this def replaces the original in `thingatpt.el'.
+;; REPLACE ORIGINAL in `thingatpt.el'.
 ;;
 ;; Add optional argument SYNTAX-TABLE.
 ;;
@@ -837,7 +837,7 @@ Return nil if no symbol is found or if the symbol at point is `nil'."
          (cdr symb+bds))))
 
 
-;; If you invoke `tap-redefine-std-fns', this def replaces the original in `thingatpt.el'.
+;; REPLACE ORIGINAL in `thingatpt.el':
 ;;
 ;; Use `tap-form-at-point', passing `emacs-lisp-mode-syntax-table'.
 ;; (Vanilla `symbol-at-point' interns (thing-at-point 'symbol).)
@@ -1020,8 +1020,7 @@ Optional args:
 (put 'list 'tap-bounds-of-thing-at-point 'tap-bounds-of-list-at-point)
 
 
-;; If you invoke `tap-redefine-std-fns' or `tap-put-thing-at-point-props', this definition
-;; replaces the original in `thingatpt.el'.
+;; REPLACE ORIGINAL defined in `thingatpt.el'.
 ;;
 ;; 1. Added optional arg UP.
 ;; 2. Better, consistent behavior.
@@ -1322,9 +1321,6 @@ See also `tap-string-at-point'."
  
 ;;; COMMANDS ---------------------------------------------------------
 
-
-;; This REPLACES ORIGINAL definitions in `thingatpt.el'.
-;;
 ;;;###autoload
 (defun tap-put-thing-at-point-props ()
   "Change `(bounds-of-)thing-at-point' properties for standard things.
@@ -1334,7 +1330,6 @@ instead by functions defined in `thingatpt+.el'.
 This also affects some things that are handled by `thingatpt.el' in
 another way, not by setting these properties."
   (interactive)
-
   ;; This one is set in `thingatpt.el'.
   (put 'list   'bounds-of-thing-at-point 'tap-bounds-of-list-at-point)
 
