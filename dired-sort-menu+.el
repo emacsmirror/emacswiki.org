@@ -7,10 +7,11 @@
 ;; Copyright (C) 2005-2012, Drew Adams, all rights reserved.
 ;; Created: Thu Jul 07 12:39:36 2005
 ;; Version: 20
-;; Last-Updated: Sun Jan  1 14:26:04 2012 (-0800)
+;; Last-Updated: Thu Aug 23 10:19:46 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 96
+;;     Update #: 97
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired-sort-menu+.el
+;; Doc URL: http://emacswiki.org/emacs/DiredSortMenu
 ;; Keywords: directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;; 
