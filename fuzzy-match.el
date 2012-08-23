@@ -8,10 +8,11 @@
 ;; Copyright (C) 1993, 1994 Simon Marshall, all rights reserved.
 ;; Created: 1993, by Simon Marshall
 ;; Version: 1.04
-;; Last-Updated: Sun Jan  1 14:05:19 2012 (-0800)
+;; Last-Updated: Thu Aug 23 12:46:15 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 176
+;;     Update #: 177
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/fuzzy-match.el
+;; Doc URL: http://emacswiki.org/emacs/Icicles_-_Fuzzy_Completion
 ;; Keywords: matching completion string
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;; 
