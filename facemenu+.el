@@ -7,10 +7,12 @@
 ;; Copyright (C) 2005-2012, Drew Adams, all rights reserved.
 ;; Created: Sat Jun 25 14:42:07 2005
 ;; Version:
-;; Last-Updated: Wed Jul 11 10:30:31 2012 (-0700)
+;; Last-Updated: Thu Aug 23 10:37:04 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1769
+;;     Update #: 1770
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/facemenu+.el
+;; Doc URL: http://www.emacswiki.org/emacs/CustomizingFaces
+;; Doc URL: http://www.emacswiki.org/emacs/HighlightLibrary
 ;; Keywords: faces, extensions, convenience, menus, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;;
