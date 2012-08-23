@@ -7,10 +7,10 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Apr 12 10:56:45 1996
 ;; Version: 21.0
-;; Last-Updated: Fri Mar  2 08:41:00 2012 (-0800)
+;; Last-Updated: Thu Aug 23 16:55:45 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 452
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/simple+.el
+;;     Update #: 453
+;; URL: http://www.emacswiki.org/emacs-en/simple%2b.el
 ;; Keywords: internal, lisp, extensions, abbrev
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;;
