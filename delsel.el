@@ -8,10 +8,11 @@
 ;; Copyright (C) 1992 Free Software Foundation, Inc.
 ;; Created: Fri Dec  1 13:51:31 1995
 ;; Version: 21.0
-;; Last-Updated: Sun Aug 12 19:16:57 2012 (-0700)
+;; Last-Updated: Thu Aug 23 10:01:59 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 350
+;;     Update #: 351
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/delsel.el
+;; Doc URL: http://emacswiki.org/emacs/DeleteSelectionMode
 ;; Keywords: abbrev, emulations, local, convenience
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
 ;;
