@@ -7,10 +7,11 @@
 ;; Copyright (C) 2009-2012, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 17 14:26:21 2009 (-0700)
 ;; Version: 23.1
-;; Last-Updated: Sun Jan  1 14:24:41 2012 (-0800)
+;; Last-Updated: Thu Aug 23 10:35:16 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 160
+;;     Update #: 162
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/face-remap+.el
+;; Doc URL: http://emacswiki.org/emacs/SetFonts
 ;; Keywords: window frame face font
 ;; Compatibility: GNU Emacs 23.x
 ;;
