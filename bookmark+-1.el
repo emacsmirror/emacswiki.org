@@ -7,10 +7,11 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Tue Aug 21 14:48:09 2012 (-0700)
+;; Last-Updated: Thu Aug 23 09:19:21 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5803
+;;     Update #: 5804
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
+;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
 ;;
