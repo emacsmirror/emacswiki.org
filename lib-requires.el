@@ -7,10 +7,11 @@
 ;; Copyright (C) 2004-2012, Drew Adams, all rights reserved.
 ;; Created: Thu Dec 30 12:29:29 2004
 ;; Version: 21.0
-;; Last-Updated: Fri Mar  2 08:26:06 2012 (-0800)
+;; Last-Updated: Thu Aug 23 16:01:38 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 744
+;;     Update #: 746
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/lib-requires.el
+;; Doc URL: http://emacswiki.org/emacs/LibraryDependencies
 ;; Keywords: libraries, files
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;; 
