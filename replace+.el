@@ -7,10 +7,11 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Jan 30 15:01:06 1996
 ;; Version: 21.0
-;; Last-Updated: Tue Aug 21 15:19:03 2012 (-0700)
+;; Last-Updated: Thu Aug 23 16:39:37 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1278
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/replace+.el
+;;     Update #: 1282
+;; URL: http://www.emacswiki.org/emacs-en/replace%2b.el
+;; Doc URL: http://www.emacswiki.org/emacs/ReplacePlus
 ;; Keywords: matching, help, internal, tools, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
 ;;
