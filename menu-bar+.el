@@ -7,10 +7,11 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu Aug 17 10:05:46 1995
 ;; Version: 21.1
-;; Last-Updated: Fri Mar  2 08:28:39 2012 (-0800)
+;; Last-Updated: Thu Aug 23 16:11:21 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 3551
+;;     Update #: 3552
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/menu-bar+.el
+;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/MenuBarPlus
 ;; Keywords: internal, local, convenience
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;;
