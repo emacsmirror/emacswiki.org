@@ -7,10 +7,11 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 21.1
-;; Last-Updated: Tue Aug 21 15:12:53 2012 (-0700)
+;; Last-Updated: Thu Aug 23 14:31:04 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 4657
+;;     Update #: 4658
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/info+.el
+;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/InfoPlus
 ;; Keywords: help, docs, internal
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
 ;;
