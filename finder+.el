@@ -7,10 +7,11 @@
 ;; Copyright (C) 2008-2012, Drew Adams, all rights reserved.
 ;; Created: Wed Mar 12 10:00:16 2008 (Pacific Standard Time)
 ;; Version: 21.0
-;; Last-Updated: Sun Jan 15 16:18:15 2012 (-0800)
+;; Last-Updated: Thu Aug 23 10:50:49 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 111
+;;     Update #: 112
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/finder+.el
+;; Doc URL: http://emacswiki.org/emacs/FinderMode
 ;; Keywords: help
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;;
