@@ -7,10 +7,11 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Tue Jul 17 10:23:08 2012 (-0700)
+;; Last-Updated: Thu Aug 23 10:13:39 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 6055
+;;     Update #: 6056
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
+;; Doc URL: http://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
 ;;
