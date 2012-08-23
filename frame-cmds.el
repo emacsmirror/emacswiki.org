@@ -7,10 +7,13 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Mar  5 16:30:45 1996
 ;; Version: 21.0
-;; Last-Updated: Wed Feb 29 10:26:51 2012 (-0800)
+;; Last-Updated: Thu Aug 23 11:42:21 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 2667
+;;     Update #: 2670
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/frame-cmds.el
+;; Doc URL: http://emacswiki.org/emacs/FrameModes
+;; Doc URL: http://www.emacswiki.org/emacs/OneOnOneEmacs
+;; Doc URL: http://emacswiki.org/emacs/Frame_Tiling_Commands
 ;; Keywords: internal, extensions, mouse, frames, windows, convenience
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;;
