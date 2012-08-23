@@ -923,11 +923,29 @@ Thanks for your response.  I will get back to you when I get around to narrowing
 
 FidelSalas
 
+
 [new:DrewAdams:2011-10-12 06:26 UTC]
 Thanks. Please do. I don't mean to put you off. I will take a look when we know what we're dealing with.  Thx -- DrewAdams
 
+
+
+
+
+----
+
 [new:PhilHudson:2012-08-23 12:08 UTC]
 *RFE*: Please consider including in the header of each feature-enhancement file ##foo+.el## the URL of the corresponding %%EmacsWiki%% documentation/discussion page %%FooPlus%%. It is not obvious that this is where to look unless you already know (and remember from last time you had to work it out).
+
+
+
+[new:DrewAdams:2012-08-23 15:31 UTC]
+I do try to do that.  Also, for libraries that have a [[Customize]] group, I provide direct links in the group Customize buffer to such wiki pages.
+
+No doubt there are some libraries where I still need to add such things.  I'll try to do that.
+
+Remember too that from the wiki page for the Lisp code you can just click the page header to get links to all of the wiki pages that link to that page.  That list will include any pages that discuss the library in question.  That is what I do when I forget the exact page that introduces the library.  It's pretty quick.
+
+Thx -- DrewAdams
 
 
 ----
