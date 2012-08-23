@@ -62,7 +62,7 @@ Just mentioning in case it indicates a bug: Search for ##DiredPlus## and you wil
 [new] I set my search languages to Chinese in google search preferences, so when I search in emacswiki.org, only a few pages can be found, can I just search all languages in emacswiki.org without change my google preferences? Or in the page of search result provides a radio button to select language.  
 -- [[Ye_Wenbin]]
 
-== Search Flooded with Source Code ==
+=== Search Flooded with Source Code ===
 
 (this issue is actually different from the above)
 
