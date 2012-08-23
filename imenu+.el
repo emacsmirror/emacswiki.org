@@ -7,10 +7,11 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Thu Aug 26 16:05:01 1999
 ;; Version: 21.0
-;; Last-Updated: Thu Mar 15 14:13:02 2012 (-0700)
+;; Last-Updated: Thu Aug 23 14:29:13 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 733
+;;     Update #: 736
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/imenu+.el
+;; Doc URL: http://emacswiki.org/emacs/ImenuMode
 ;; Keywords: tools, menus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;;
@@ -213,7 +214,8 @@ See also `imenu-emacs-key-defn-regexp-1'.")
               (regexp-opt '("defvar" "defconst" "defconstant" "defcustom"
                             "defparameter" "define-symbol-macro") t)
               "\\s-+\\(\\sw\\(\\sw\\|\\s_\\)+\\)"
-              "\\(\\s-\\|[\n]\\)+"      ; Because \n has char syntax `>', not whitespace.
+              ;; Because \n has char syntax `>', not whitespace.  See Emacs bug #8638.
+              "\\(\\s-\\|[\n]\\)+"
               "[^) \t\n]")
     "(\\s-*def\\(var\\|const\\)\\s-+\\([^ \t()]+\\)")
   "*Regexp that recognizes global Lisp variable definitions.")
