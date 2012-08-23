@@ -7,10 +7,11 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 15 09:33:29 1996
 ;; Version: 21.0
-;; Last-Updated: Sun Jan  1 14:27:17 2012 (-0800)
+;; Last-Updated: Thu Aug 23 10:06:38 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 573
+;;     Update #: 574
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/diff+.el
+;; Doc URL: http://emacswiki.org/emacs/DiffEnhancements
 ;; Keywords: data, matching, tools, unix, local
 ;; Compatibility: GNU Emacs: 21.x, 22.x, 23.x
 ;;
