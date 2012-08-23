@@ -7,10 +7,11 @@
 ;; Copyright (C) 2009-2012, Drew Adams, all rights reserved.
 ;; Created: Sat Aug 26 18:17:18 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Jan  1 14:37:16 2012 (-0800)
+;; Last-Updated: Thu Aug 23 13:57:36 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 458
+;;     Update #: 466
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/hl-spotlight.el
+;; Doc URL: http://www.emacswiki.org/emacs/HighlightCurrentLine
 ;; Keywords: highlight, cursor, accessibility
 ;; Compatibility: GNU Emacs: 22.x, 23.x
 ;; 
