@@ -7,10 +7,11 @@
 ;; Copyright (C) 2005-2012, Drew Adams, all rights reserved.
 ;; Created: Wed Feb 08 10:47:56 2006
 ;; Version: 20
-;; Last-Updated: Sun Jan  1 14:22:56 2012 (-0800)
+;; Last-Updated: Thu Aug 23 10:39:18 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 109
+;;     Update #: 110
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/ffap-.el
+;; Doc URL: http://emacswiki.org/emacs/FindFileAtPoint
 ;; Keywords: files, hypermedia, matching, mouse, convenience
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;; 
