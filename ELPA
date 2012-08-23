@@ -15,11 +15,11 @@ Any combination of repositories is fine.  You should probably always include GNU
 
 You can add just one like this:
 
-  (add-to-list package-archives '("marmalade" . "http://marmalade-repo.org/packages"))
+  (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages"))
 
 or for Melpa:
 
-  (add-to-list package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
+  (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
 
 You can also customize these variables.
 
