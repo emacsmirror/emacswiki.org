@@ -10,6 +10,11 @@ Note that this page is not about EmacsWikiMode.
 
 ----
 
+== Site search misses stuff ==
+
+Search for "apropos-fn+var.el", or even just "apropos-fn+var".  You will not find most of the pages that link to page <tt>[[apropos-fn+var.el]]</tt>.
+
+Now search for just "apropos-fn", and you will find them -- 4 pages of links.  What's wrong? -- DrewAdams
 
 
 == Site search misses main page for highlight.el ==
