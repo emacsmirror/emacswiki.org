@@ -7,10 +7,10 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 21.1
-;; Last-Updated: Sun Jul  8 22:51:22 2012 (-0700)
+;; Last-Updated: Thu Aug 23 16:50:15 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1141
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/setup-keys.el
+;;     Update #: 1142
+;; URL: http://www.emacswiki.org/emacs-en/setup-keys.el
 ;; Keywords: mouse, keyboard, menus, menu-bar
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;;
