@@ -7,10 +7,11 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Tue Aug 21 15:09:19 2012 (-0700)
+;; Last-Updated: Thu Aug 23 14:07:33 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5779
+;;     Update #: 5780
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
+;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
