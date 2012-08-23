@@ -7,10 +7,11 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Sep 11 10:29:56 1995
 ;; Version: 21.0
-;; Last-Updated: Thu Jun 21 10:43:21 2012 (-0700)
+;; Last-Updated: Thu Aug 23 09:41:05 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 2779
+;;     Update #: 2781
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/buff-menu+.el
+;; Doc URL: http://www.emacswiki.org/emacs/BufferMenuPlus
 ;; Keywords: mouse, local, convenience
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;;
