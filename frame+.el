@@ -7,10 +7,11 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Apr 12 16:42:12 1996
 ;; Version: 21.0
-;; Last-Updated: Sat Aug 11 09:51:09 2012 (-0700)
+;; Last-Updated: Thu Aug 23 11:38:12 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 249
+;;     Update #: 250
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/frame+.el
+;; Doc URL: http://emacswiki.org/emacs/OneOnOneEmacs
 ;; Keywords: frames
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;;
