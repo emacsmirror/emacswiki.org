@@ -7,10 +7,11 @@
 ;; Copyright (C) 2004-2012, Drew Adams, all rights reserved.
 ;; Created: Sat Nov 06 15:14:12 2004
 ;; Version: 21.0
-;; Last-Updated: Sun Jan  1 14:36:20 2012 (-0800)
+;; Last-Updated: Thu Aug 23 13:06:14 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 104
+;;     Update #: 105
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/help-mode+.el
+;; Doc URL: http://emacswiki.org/emacs/HelpPlus
 ;; Keywords: help
 ;; Compatibility: GNU Emacs: 22.x, 23.x
 ;;
