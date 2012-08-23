@@ -7,10 +7,11 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Sep 18 10:17:13 2000
 ;; Version: 20.0
-;; Last-Updated: Sun Jan  1 14:21:26 2012 (-0800)
+;; Last-Updated: Thu Aug 23 10:47:19 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 35
+;;     Update #: 36
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/find-dired-.el
+;; Doc URL: http://emacswiki.org/emacs/LocateFilesAnywhere
 ;; Keywords: internal, unix, tools, matching, local
 ;; Compatibility: GNU Emacs 20.x
 ;;
