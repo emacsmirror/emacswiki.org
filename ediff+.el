@@ -7,10 +7,11 @@
 ;; Copyright (C) 2005-2012, Drew Adams, all rights reserved.
 ;; Created: Thu Jan 26 11:14:34 2006
 ;; Version: 20
-;; Last-Updated: Sun Jan  1 14:25:11 2012 (-0800)
+;; Last-Updated: Thu Aug 23 10:27:18 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 118
+;;     Update #: 119
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/ediff+.el
+;; Doc URL: http://emacswiki.org/emacs/EdiffMode
 ;; Keywords: comparing, merging, patching, version control
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;;
