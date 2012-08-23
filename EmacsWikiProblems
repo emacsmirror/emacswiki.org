@@ -29,6 +29,8 @@ Edit: In case of apropos-fn or org-something it gets worse: fn? that's not a wor
 
 Edit 2: We cannot rename every page that google cannot find like done for the below issue.  Maybe we should switch to another search engine instead.
 
+Edit 3: Or maybe google just/additionally penalizes the emacswiki for offering N different urls for the same content.  I think it would be worth while using just a single url and redirect all the others even if it wasn't for the google issue.
+
 -- JonasBernoulli
 
 I see a trend here:
@@ -79,6 +81,18 @@ Somebody could start working on a multi-lingual setup for Lucene or whatever the
 For the example given, Google returns MacroBasics on third place. That's not so bad, is it?
 
 We could certainly add options to the [[Search]] page. would that be acceptable? -- AlexSchroeder
+
+=== both www.emacsen.org and emacsen.org work without one redirecting to the other ===
+
+This might not be the best setup, Google-juice-wise. Permanently redirecting from one to the other seems like the way to go.
+
+Additionally, even with a domain, pages lack a canonical URI; ##/cgi-bin/emacs/foo##, ##/cgi-bin/emacs-en/foo##, and ##/cgi-bin/wiki/foo## all work. I suggest redirecting all of those to ##/wiki/foo##.
+
+[new]
+Yeah, I think you're right. I'm not comfortable enough with mod_alias, mod_rewrite, and all those and I don't have an automated test suite that would point out how changes to .htaccess are affecting the site. That's why I hesitate to fix these. -- AlexSchroeder
+
+
+
 
 == Site is very slow now ==
 
@@ -284,18 +298,6 @@ I think the first regexp matches keys and the second matches symbols. Thus `RET'
 [new]
 Alright, I'll just use `C-m C-i'.  I'll have to try and find time to investigate the consequences of changing that regexp, though. -- AaronHawley
 
-
-
-
-
-== both www.emacsen.org and emacsen.org work without one redirecting to the other ==
-
-This might not be the best setup, Google-juice-wise. Permanently redirecting from one to the other seems like the way to go.
-
-Additionally, even with a domain, pages lack a canonical URI; ##/cgi-bin/emacs/foo##, ##/cgi-bin/emacs-en/foo##, and ##/cgi-bin/wiki/foo## all work. I suggest redirecting all of those to ##/wiki/foo##.
-
-[new]
-Yeah, I think you're right. I'm not comfortable enough with mod_alias, mod_rewrite, and all those and I don't have an automated test suite that would point out how changes to .htaccess are affecting the site. That's why I hesitate to fix these. -- AlexSchroeder
 
 
 
