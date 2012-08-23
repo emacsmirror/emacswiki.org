@@ -7,10 +7,11 @@
 ;; Copyright (C) 2004-2012, Drew Adams, all rights reserved.
 ;; Created: Sun Sep 12 17:13:58 2004
 ;; Version: 21.0
-;; Last-Updated: Sun Jan  1 14:25:28 2012 (-0800)
+;; Last-Updated: Thu Aug 23 10:22:34 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 333
+;;     Update #: 334
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/doremi-cmd.el
+;; Doc URL: http://www.emacswiki.org/emacs/DoReMi
 ;; Keywords: keys, cycle, repeat
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;;
