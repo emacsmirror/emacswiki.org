@@ -321,24 +321,7 @@ Try this solution, been using it a while now --[[pft]]:
             (w3m-view-this-url)
           (w3m-submit-form))))
 
-
-
-== Connection broken when uploading Elisp files ==
-
-I can't upload files via the "replace this text with a file" link. After clicking the Save button, I get the error "The document contains no data" in Firefox 1.0.7 and "An error occurred while loading http://www.emacswiki.org/cgi-bin/wiki: Connection to host www.emacswiki.org is broken" in Konqueror 3.4.1. Is anyone else getting this? --TobyCubitt
-
-Update: I have the same problem under windows, using both Firefox and IE.
--- TobyCubitt
-
-[new]
-Any news on this issue? -- AlexSchroeder
-
-[new]
-2006-10-06 For me its the same as Toby describes (Firfox 1.0.8 under Fedora and IE under Windows).
-
-Update 2006-10-14: My file seems too big, the wiki program blocked any furhter editing.  Alex Schroeder had to remove it by hand and uploaded a compressed version. -- [[dida]]
-
-== RSS for single-pages doesn't work in Google Reader ==
+=== RSS for single-pages doesn't work in Google Reader ===
 
 I haven't figured out what the problem is yet, but I added http://www.emacswiki.org/emacs/?action=rss;rcidonly=IciclesDiscussion to Google Reader, and it didn't get a "new item" notification when the page was changed. -- EthanGlasserCamp
 
