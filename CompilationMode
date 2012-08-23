@@ -106,7 +106,7 @@ http://ant.apache.org/faq.html#emacs-mode has some hints on the use of ant and e
 
 == compile-.el, compile+.el: Extensions to compile.el ==
 
-DrewAdams has written libraries Lisp:compile-.el and Lisp:compile+.el, which together provide some minor enhancements to standard library ##compile.el##.  Some additional key bindings are made, mouseover highlighting is modified, and a single-window compilation results frame is shrink-wrapped to fit the buffer.
+Together, <tt>[[compile-.el]]</tt> and <tt>[[compile+.el]]</tt> provide some minor enhancements to standard library ##compile.el##.  Some additional key bindings are made, mouseover highlighting is modified, and a single-window compilation results frame is shrink-wrapped to fit the buffer.
 
 
 
