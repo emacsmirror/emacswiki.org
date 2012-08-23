@@ -94,37 +94,10 @@ Yeah, I think you're right. I'm not comfortable enough with mod_alias, mod_rewri
 
 
 
-== Site is very slow now ==
 
-Takes me several minutes to load the Elisp Area page -- or else it hangs altogether (times out). Likewise to get to one of the Lisp files there.  Likewise, it takes a long time to preview (e.g. this edit).  And yes, I tried closing the browser and deleting the cache. -- DrewAdams
+== Revisioning Problems ==
 
-[new]
-Is this happening to anybody else? What about the time? Whenever I use the site, it seems to be working just fine. -- AlexSchroeder
-
-
-== CGI Internal error: 400 Bad request (malformed multipart POST) ==
-
-I just got this error when trying to save a page after some simple (trivial) editing.  No idea what caused it or what the problem is.  I then clicked the browser `Back' button and tried, successfully, to save again.  -- DrewAdams
-
-[new]
-Anybody else? I've never seen this before. -- AlexSchroeder
-
-== FYI - still getting Server Error ==
-
-Just an FYI that this problem has not disappeared, even if it is less frequent. -- DrewAdams
-
-
-
-
-== Problem with `Manual:' syntax? ==
-
-How to make a `##Manual:##' link to `##(elisp) Circular Objects##'?  I tried ##[[Manual:Circular Objects]]## and a few variants, but didn't find anything that works.  -- DrewAdams
-
-[new]
-Manual:Circular%20Objects is the right form. In a wiki URL, space is represented by an underscore. Using double square brackets might do the wrong thing in this context. -- AlexSchroeder
-
-
-== Conflict from my own edit 25 minutes ago? ==
+=== Conflict from my own edit 25 minutes ago? ===
 
 I edited page [[icicles-opt.el]] and saved. Later I tried to do the same thing. I got a lock message. I used the browser Back button to get to the editing again and saved again. I then got this:
 
@@ -170,6 +143,59 @@ That's very strange indeed! I thought that once you're using a username -- which
 
 [new:DrewAdams:2010-06-05 13:55 UTC]
 It just happened that once. And I simply pasted and saved the file again, so there was no damage in the end. -- DrewAdams
+
+[:EditingGetsOldPageText]
+=== editing does not get most recent version ===
+
+I tried yet again to get emacs-w3m to work as described above.  I edited.  It didn't work.  I edited the page with Safari.  It worked.  Then I followed the instructions again in emacs-w3m.  The Safari edit did not show up in the compose edit box, even though the page did show it.  Therefore, the text that the user edits is not the same as the text that is shown.  Is this a cache issue?  Thanks.
+
+[new]
+There's some technical information available here, if you want to take a look at it: Oddmuse:Caching. As I'm currently in Costa Rica, I can't help you. All I know is that it worked for me -- and I went through all the trouble of downloading and compiling w3m and dependencies. -- AlexSchroeder
+
+=== RecentChanges doesn't reflect recent changes ===
+
+I just edited and saved a reply someone posted at DrewsElispLibraries. I refrefreshed RecentChanges (with rollbacks and minor changes included), but my edit does not appear. That wiki page is listed, but still at the time and user of the previous edit. However, after clicking List only major changes it was listed. I had previously cleared my cache, so I don't think that was the problem. I'm guessing it was a cache problem nevertheless, but thought I'd mention it, in case it's not. -- DrewAdams
+
+== Invisible change ==
+
+[new]
+Someone edited [[Emacsmirror]] months ago but the change is not visible on the page. When I edit the page I can see the added text.  I haven't tried yet what happens when I save the page.  Maybe that would cause the old edit to become effective but I wanted to leave it as-is so you can see for yourself. -- JonasBernoulli
+
+[new]
+Hm, I'm not sure. When [http://www.emacswiki.org/emacs/Emacsmirror?cache=0 using the cache=0 parameter] the page doesn't mention "solarized" so I think editing the page will not make a big change. I wonder where the diff comes from, however.
+
+
+
+
+
+== Site is very slow now ==
+
+Takes me several minutes to load the Elisp Area page -- or else it hangs altogether (times out). Likewise to get to one of the Lisp files there.  Likewise, it takes a long time to preview (e.g. this edit).  And yes, I tried closing the browser and deleting the cache. -- DrewAdams
+
+[new]
+Is this happening to anybody else? What about the time? Whenever I use the site, it seems to be working just fine. -- AlexSchroeder
+
+
+== CGI Internal error: 400 Bad request (malformed multipart POST) ==
+
+I just got this error when trying to save a page after some simple (trivial) editing.  No idea what caused it or what the problem is.  I then clicked the browser `Back' button and tried, successfully, to save again.  -- DrewAdams
+
+[new]
+Anybody else? I've never seen this before. -- AlexSchroeder
+
+== FYI - still getting Server Error ==
+
+Just an FYI that this problem has not disappeared, even if it is less frequent. -- DrewAdams
+
+
+
+
+== Problem with `Manual:' syntax? ==
+
+How to make a `##Manual:##' link to `##(elisp) Circular Objects##'?  I tried ##[[Manual:Circular Objects]]## and a few variants, but didn't find anything that works.  -- DrewAdams
+
+[new]
+Manual:Circular%20Objects is the right form. In a wiki URL, space is represented by an underscore. Using double square brackets might do the wrong thing in this context. -- AlexSchroeder
 
 
 == Apostrophes etc. not prettified in links ==
@@ -227,14 +253,6 @@ Vegard's update wiped out my previous update. -- DrewAdams
 [new]
 Hm, maybe this is unrelated. Possibly it just took him more than nine minutes to edit the page before he saved it? Perhaps diff3 will sometimes merge things and drop changes without marking them as a conflict? Or he used a raw client that interacts with the wiki text directly, didn't post back the last modification date, thus diff3 was unable to determine the ancestor for conflict resolution, and he ended up overwriting what you had done. I think the caching problem you reported earlier is something else (and much trickier, apparently). -- AlexSchroeder
 
-[:EditingGetsOldPageText]
-== editing does not get most recent version ==
-
-I tried yet again to get emacs-w3m to work as described above.  I edited.  It didn't work.  I edited the page with Safari.  It worked.  Then I followed the instructions again in emacs-w3m.  The Safari edit did not show up in the compose edit box, even though the page did show it.  Therefore, the text that the user edits is not the same as the text that is shown.  Is this a cache issue?  Thanks.
-
-[new]
-There's some technical information available here, if you want to take a look at it: Oddmuse:Caching. As I'm currently in Costa Rica, I can't help you. All I know is that it worked for me -- and I went through all the trouble of downloading and compiling w3m and dependencies. -- AlexSchroeder
-
 == Browser `Open in New Window' no longer works on wiki pages ==
 
 This has changed in the last day or so -- since the spam attack. 
@@ -252,18 +270,6 @@ I believe you. Unfortunately I don't know what to do about it. I'm sure your bro
 
 [new:DrewAdams:2008-09-07 06:27 UTC]
 Yes, as I said, I've done that. The point was that it's a shame that users will now need to do that -- some might become discouraged or not understand. What's odd is that I've never seen this (treating '''Open in New Window''' as a popup) on any other site. Anyway, it's not a biggee. And perhaps it affects only IE6 users who happen to use Google Toolbar -- dunno. -- DrewAdams
-
-
-
-
-
-
-
-
-== RecentChanges doesn't reflect recent changes ==
-
-I just edited and saved a reply someone posted at DrewsElispLibraries. I refrefreshed RecentChanges (with rollbacks and minor changes included), but my edit does not appear. That wiki page is listed, but still at the time and user of the previous edit. However, after clicking List only major changes it was listed. I had previously cleared my cache, so I don't think that was the problem. I'm guessing it was a cache problem nevertheless, but thought I'd mention it, in case it's not. -- DrewAdams
-
 
 == TOC heading in wrong language ==
 
@@ -339,12 +345,5 @@ I haven't figured out what the problem is yet, but I added http://www.emacswiki.
 [new]
 When I look at the RSS feed, I get to see the latest revision of the page. I must therefore assume that it's Google Reader's fault. I can imagine two problems: 1. It takes very long for changes to be picked up by Google. That's the explanation I currently favor because I have several of my own wikis in Google Reader and I often have the impression that Google Reader is up to a day late. 2. Google Reader thinks that you're looking at an update to an existing page and will not show it anymore. I remember there was such an option for Blog Lines, but I can't find anything like it for Google Reader. -- AlexSchroeder
 
-== Invisible change ==
-
-[new]
-Someone edited [[Emacsmirror]] months ago but the change is not visible on the page. When I edit the page I can see the added text.  I haven't tried yet what happens when I save the page.  Maybe that would cause the old edit to become effective but I wanted to leave it as-is so you can see for yourself. -- JonasBernoulli
-
-[new]
-Hm, I'm not sure. When [http://www.emacswiki.org/emacs/Emacsmirror?cache=0 using the cache=0 parameter] the page doesn't mention "solarized" so I think editing the page will not make a big change. I wonder where the diff comes from, however.
 ----
 CategoryEmacsWikiSite
