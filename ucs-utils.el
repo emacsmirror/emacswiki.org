@@ -4,8 +4,8 @@
 ;;
 ;; Author: Roland Walker walker@pobox.com
 ;; URL: https://github.com/rolandwalker/ucs-utils.el
-;; Version: 0.6.0
-;; Last-Updated: 19 Aug 2012
+;; Version: 0.6.1
+;; Last-Updated: 23 Aug 2012
 ;; EmacsWiki: UcsUtils
 ;; Package-Requires: ((persistent-soft "0.8.0"))
 ;; Keywords: I18n
@@ -378,17 +378,17 @@ When optional REGENERATE is given, re-generate cache."
        (progress-reporter-done reporter))))
   ucs-utils-all-prettified-names)
 
-(defun ucs-utils--subst-char-in-region-1 (start end fromchar tochar)
+(defun ucs-utils--subst-char-in-region-1 (start end from-char to-char)
   "Internal driver for `usr-utils-subst-char-in-region'.
 
-Arguments START, END, FROMCHAR, and TOCHAR are as documented at
+Arguments START, END, FROM-CHAR, and TO-CHAR are as documented at
 `ucs-utils-subst-char-in-region'."
   ;; done in a specific fashion to maintain markers
   (loop for i from start to (1- end)
-        if (eq (char-after i) fromchar)
+        if (eq (char-after i) from-char)
         do (save-excursion
              (goto-char i)
-             (insert tochar)
+             (insert to-char)
              (delete-char 1))))
 
 ;;; external interface
@@ -596,10 +596,10 @@ found."
        (ucs-utils-prettify-ucs-string name)))))
 
 ;;;###autoload
-(defun ucs-utils-subst-char-in-region (start end fromchar tochar &optional noundo)
-  "From START to END, replace FROMCHAR with TOCHAR each time it occurs.
+(defun ucs-utils-subst-char-in-region (start end from-char to-char &optional no-undo)
+  "From START to END, replace FROM-CHAR with TO-CHAR each time it occurs.
 
-If optional arg NOUNDO is non-nil, don't record this change for
+If optional arg NO-UNDO is non-nil, don't record this change for
 undo and don't mark the buffer as really changed.
 
 Characters may be of differing byte-lengths.
@@ -608,13 +608,13 @@ The character at the position END is not included, matching the
 behavior of `subst-char-in-region'.
 
 This function is slower than `subst-char-in-region'."
-  (if noundo
+  (if no-undo
       (let ((buffer-undo-list nil)
             (modified (buffer-modified-p)))
-        (ucs-utils--subst-char-in-region-1 start end fromchar tochar)
+        (ucs-utils--subst-char-in-region-1 start end from-char to-char)
         (set-buffer-modified-p modified))
     ;; else
-    (ucs-utils--subst-char-in-region-1 start end fromchar tochar)))
+    (ucs-utils--subst-char-in-region-1 start end from-char to-char)))
 
 (fset 'ucs-utils-orig-read-char-by-name (symbol-function 'read-char-by-name))
 
@@ -753,7 +753,9 @@ The following aliases will be installed
 ;; coding: utf-8
 ;; End:
 ;;
-;; LocalWords:
+;; LocalWords:  UcsUtils utils eval callf flet YOGH alist ZHAR PHAR
+;; LocalWords:  KHAR GHAN JHAN KIYEOK PIEUP CIEUC HALFWIDTH Fleur
+;; LocalWords:  JUNGSEONG
 ;;
 
 ;;; ucs-utils.el ends here
