@@ -2,7 +2,7 @@ This page is about repeatedly using the same [[key]] or [[command]] and getting 
 
 Starting with Emacs 23, `C-l' (`recenter-top-bottom') is an example of this: When you hit `C-l' it moves the current line (with [[point]]) to the middle, the top, or the bottom of the screen, in sequence: middle, top, bottom, middle,...  
 
-The code for this is in standard library GIT:window.el.  It is based on `recenter-top-bottom' from <tt>[[misc-cmds.el]]</tt> which is based on material submitted to SequentialCommand.  See the source code for the technique used.
+The code for this is in standard library GIT:window.el.  It is based on `recenter-top-bottom' from <tt>[[misc-cmds.el]]</tt>.  See the source code for the technique used.
 
 The following are additional ways to make a command or key act differently when it is repeated.
 
