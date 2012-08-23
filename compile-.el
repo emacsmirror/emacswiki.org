@@ -7,17 +7,18 @@
 ;; Copyright (C) 2004-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 16 17:04:11 2004
 ;; Version: 21.0
-;; Last-Updated: Thu Aug 23 09:53:44 2012 (-0700)
+;; Last-Updated: Thu Aug 23 12:53:02 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 109
+;;     Update #: 110
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/compile-.el
+;; Doc URL: http://www.emacswiki.org/emacs/GrepPlus
 ;; Doc URL: http://www.emacswiki.org/emacs/CompilationMode
 ;; Keywords: tools, processes
 ;; Compatibility: GNU Emacs: 21.x, 22.x, 23.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `avoid', `fit-frame', `frame-fns'.
+;;   None
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
