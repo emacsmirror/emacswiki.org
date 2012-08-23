@@ -7,10 +7,10 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu Apr 18 10:16:50 1996
 ;; Version: 20.0
-;; Last-Updated: Fri Mar  2 08:46:13 2012 (-0800)
+;; Last-Updated: Thu Aug 23 16:57:08 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 93
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/sort+.el
+;;     Update #: 94
+;; URL: http://www.emacswiki.org/emacs-en/sort%2b.el
 ;; Keywords: unix, tools, sorting
 ;; Compatibility: GNU Emacs 20.x
 ;;
