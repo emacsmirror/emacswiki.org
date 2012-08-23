@@ -1,4 +1,4 @@
-;;; wcy-desktop.el --- faster than destop.el and less features.
+;;; wcy-desktop.el --- faster than desktop.el and less features.
 
 ;; Copyright (C) 2009  
 
