@@ -7,10 +7,12 @@
 ;; Copyright (C) 2004-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Sep 20 22:58:45 2004
 ;; Version: 21.0
-;; Last-Updated: Sat Mar 17 19:00:37 2012 (-0700)
+;; Last-Updated: Thu Aug 23 13:13:38 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 897
+;;     Update #: 898
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/hexrgb.el
+;; Doc URL: http://www.emacswiki.org/emacs/SetColor
+;; Doc URL: http://emacswiki.org/emacs/ColorPalette
 ;; Keywords: number, hex, rgb, color, background, frames, display
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;;
