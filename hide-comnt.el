@@ -7,10 +7,11 @@
 ;; Copyright (C) 2011-2012, Drew Adams, all rights reserved.
 ;; Created: Wed May 11 07:11:30 2011 (-0700)
 ;; Version:
-;; Last-Updated: Thu May 10 06:56:04 2012 (-0700)
+;; Last-Updated: Thu Aug 23 13:37:49 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 39
+;;     Update #: 40
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/hide-comnt.el
+;; Doc URL: http://www.emacswiki.org/emacs/HideOrIgnoreComments
 ;; Keywords: comment, hide, show
 ;; Compatibility: GNU Emacs: 21.x, 22.x, 23.x
 ;;
