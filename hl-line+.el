@@ -7,10 +7,12 @@
 ;; Copyright (C) 2006-2012, Drew Adams, all rights reserved.
 ;; Created: Sat Aug 26 18:17:18 2006
 ;; Version: 22.0
-;; Last-Updated: Fri May 18 07:04:49 2012 (-0700)
+;; Last-Updated: Thu Aug 23 13:50:31 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 465
+;;     Update #: 467
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/hl-line+.el
+;; Doc URL: http://www.emacswiki.org/emacs/HighlightCurrentLine
+;; Doc URL: http://www.emacswiki.org/emacs/CrosshairHighlighting
 ;; Keywords: highlight, cursor, accessibility
 ;; Compatibility: GNU Emacs: 22.x, 23.x
 ;; 
