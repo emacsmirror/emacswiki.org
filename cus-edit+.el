@@ -7,10 +7,11 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Thu Jun 29 13:19:36 2000
 ;; Version: 21.1
-;; Last-Updated: Sat Apr 21 10:58:38 2012 (-0700)
+;; Last-Updated: Thu Aug 23 09:59:06 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1406
+;;     Update #: 1407
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/cus-edit+.el
+;; Doc URL: http://emacswiki.org/emacs/CustomizingAndSaving
 ;; Keywords: help, customize, help, faces
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;;
