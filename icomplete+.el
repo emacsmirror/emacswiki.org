@@ -7,10 +7,11 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Oct 16 13:33:18 1995
 ;; Version: 21.0
-;; Last-Updated: Mon Aug  6 10:26:42 2012 (-0700)
+;; Last-Updated: Thu Aug 23 14:27:06 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1345
+;;     Update #: 1346
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icomplete+.el
+;; Doc URL: http://emacswiki.org/emacs/IcompleteMode
 ;; Keywords: help, abbrev, internal, extensions, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;;
