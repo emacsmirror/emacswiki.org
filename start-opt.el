@@ -7,10 +7,10 @@
 ;; Copyright (C) 1995-2012, Drew Adams, all rights reserved.
 ;; Created: Thu Dec 28 09:15:00 1995
 ;; Version: 21.0
-;; Last-Updated: Fri Mar  2 08:45:15 2012 (-0800)
+;; Last-Updated: Thu Aug 23 16:58:50 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1941
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/start-opt.el
+;;     Update #: 1942
+;; URL: http://www.emacswiki.org/emacs-en/start-opt.el
 ;; Keywords: local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;;
