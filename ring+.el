@@ -7,10 +7,11 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu Apr 11 16:46:04 1996
 ;; Version: 21.0
-;; Last-Updated: Sun Jan  1 14:05:12 2012 (-0800)
+;; Last-Updated: Thu Aug 23 16:41:27 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 212
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/ring+.el
+;;     Update #: 214
+;; URL: http://www.emacswiki.org/emacs-en/ring%2b.el
+;; Doc URL: http://emacswiki.org/emacs/RingPlus
 ;; Keywords: extensions, lisp, emacs-lisp
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;;
