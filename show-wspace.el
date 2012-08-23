@@ -7,10 +7,11 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 21 08:54:53 2000
 ;; Version: 21.0
-;; Last-Updated: Sun Jul 29 16:04:40 2012 (-0700)
+;; Last-Updated: Thu Aug 23 16:54:33 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 718
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/show-wspace.el
+;;     Update #: 720
+;; URL: http://www.emacswiki.org/emacs-en/show-wspace.el
+;; Doc URL: http://emacswiki.org/emacs/ShowWhiteSpace
 ;; Keywords: highlight, whitespace, characters, Unicode
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
 ;;
