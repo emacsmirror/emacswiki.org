@@ -1,13 +1,13 @@
-;;; button-lock.el --- clickable text defined by regular expression, controlled by font-lock
+;;; button-lock.el --- Clickable text defined by regular expression
 ;;
-;; Copyright (c) 2011 D Roland Walker
+;; Copyright (c) 2011-12 D Roland Walker
 ;;
 ;; Author: D Roland Walker <walker@pobox.com>
 ;; URL: https://github.com/rolandwalker/button-lock/raw/master/button-lock.el
-;; Version: 0.82
-;; Last-Updated: 16 Nov 2011
+;; Version: 0.9.5
+;; Last-Updated: 23 Aug 2012
 ;; EmacsWiki: ButtonLockMode
-;; Keywords: mouse, button, hyperlink
+;; Keywords: mouse, button, hypermedia
 ;;
 ;; Simplified BSD License
 ;;
@@ -20,8 +20,10 @@
 ;;
 ;; Button-lock buttons (links) can execute any function.
 ;;
-;; See wiki-nav.el for a user-friendly library built on top of
-;; button-lock.el.  Wiki-nav.el is available here:
+;; There is little user-level interface for button-lock.el, which is
+;; intended to be used from Emacs Lisp.  See wiki-nav.el for a
+;; user-friendly library built on top of button-lock.el.  Wiki-nav.el
+;; is available here:
 ;;
 ;;    https://github.com/rolandwalker/button-lock
 ;;
@@ -30,17 +32,18 @@
 ;;    (require 'button-lock)
 ;;    (global-button-lock-mode 1)
 ;;
-;;    ; add a mouseable button to all occurences of a word
+;;    ;; add a mouseable button to all occurrences of a word
 ;;    (button-lock-set-button "hello" 'beginning-of-line)
 ;;
-;;    ; to remove that button later, pass all the same arguments to
-;;    ; button-lock-unset-button
+;;    ;; to remove that button later, pass all the same arguments to
+;;    ;; button-lock-unset-button
 ;;    (button-lock-unset-button "hello" 'beginning-of-line)
 ;;
-;;    ; or, to remove the most recently added button
-;;    (button-lock-pop-button)
+;;    ;; or, save the result and pass it back to the unset function
+;;    (setq mybutton (button-lock-set-button "hello" 'beginning-of-line))
+;;    (button-lock-unset-button mybutton)
 ;;
-;;    ; create a fancy raised button
+;;    ;; create a fancy raised button
 ;;    (button-lock-set-button "hello" #'(lambda ()
 ;;                                              (interactive)
 ;;                                              (save-match-data
@@ -53,17 +56,17 @@
 ;;                                                      (goto-char (match-beginning 0))))))
 ;;                            :face 'custom-button-face :mouse-face 'custom-button-mouse)
 ;;
-;;    ; activate hyperlinks
+;;    ;; activate hyperlinks
 ;;    (button-lock-set-button "\\<http://[^[:space:]\n]+"
 ;;                            'browse-url-at-mouse
 ;;                            :face 'link :face-policy 'prepend)
 ;;
-;;    ; activate hyperlinks only in lines that begin with a comment character
+;;    ;; activate hyperlinks only in lines that begin with a comment character
 ;;    (button-lock-set-button "^\\s-*\\s<.*?\\<\\(http://[^[:space:]\n]+\\)"
 ;;                            'browse-url-at-mouse
 ;;                            :face 'link :face-policy 'prepend :grouping 1)
 ;;
-;;    ; turn folding-mode delimiters into mouseable buttons
+;;    ;; turn folding-mode delimiters into mouseable buttons
 ;;    (add-hook 'folding-mode-hook  #'(lambda ()
 ;;                                      (button-lock-mode 1)
 ;;                                      (button-lock-set-button
@@ -73,7 +76,7 @@
 ;;                                       (concat "^" (regexp-quote (cadr (folding-get-mode-marks))))
 ;;                                       'folding-toggle-show-hide)))
 ;;
-;;    ; create a button that responds to the keyboard, but not the mouse
+;;    ;; create a button that responds to the keyboard, but not the mouse
 ;;    (button-lock-set-button "\\<http://[^[:space:]\n]+"
 ;;                            'browse-url-at-point
 ;;                            :mouse-binding     nil
@@ -82,8 +85,20 @@
 ;;                            :face-policy      'prepend
 ;;                            :keyboard-binding "RET")
 ;;
-;;    ; define a global button, to be set whenever the minor mode is activated
-;;    (button-lock-set-global-button '("hello" 'beginning-of-line))
+;;    ;; define a global button, to be set whenever the minor mode is activated
+;;    (button-lock-register-global-button "hello" 'beginning-of-line)
+;;
+;; Interface
+;;
+;; Button lock is intended to be used via the following functions
+;;
+;;    `button-lock-set-button'
+;;    `button-lock-unset-button'
+;;    `button-lock-extend-binding'
+;;    `button-lock-clear-all-buttons'
+;;    `button-lock-register-global-button'
+;;    `button-lock-unregister-global-button'
+;;    `button-lock-unregister-all-global-buttons'
 ;;
 ;; See Also
 ;;
@@ -92,7 +107,7 @@
 ;; Prior Art
 ;;
 ;;    hi-lock.el
-;;    David M.  Koppelman <koppel@ece.lsu.edu>
+;;    David M. Koppelman <koppel@ece.lsu.edu>
 ;;
 ;;    buttons.el
 ;;    Miles Bader <miles@gnu.org>
@@ -126,45 +141,66 @@
 ;;
 ;; Compatibility
 ;;
-;;     Tested only on GNU Emacs version 23.x
+;;     Tested only on GNU Emacs version 24.1
 ;;
 ;; Bugs
 ;;
 ;;     Case-sensitivity of matches depends on how font-lock-defaults
 ;;     was called for the current mode (setting
 ;;     font-lock-keywords-case-fold-search).  So, it is safest to
-;;     assume that button-lock pattern matches are case-sensistive --
+;;     assume that button-lock pattern matches are case-sensitive --
 ;;     though they might not be.
 ;;
-;;     Return value for button-lock-set-global-button is inconsistent
+;;     Return value for button-lock-register-global-button is inconsistent
 ;;     with button-lock-set-button.  The global function does not
 ;;     return a button which could be later passed to
-;;     button-lock-extend-binding.  The other global functions are
-;;     similarly inconsistent; they can only be depended on to return
-;;     nil on failure.
-;;
-;;     button-lock-mode gets activated twice for each buffer when
-;;     global-button-lock-mode is on.
+;;     button-lock-extend-binding, nor are the arguments parsed and
+;;     checked for validity.  Any errors for global buttons are also
+;;     deferred until the mode is activated.
 ;;
 ;; TODO
 ;;
+;;     Validate arguments to button-lock-register-global-button.
+;;     maybe split set-button into create/set functions, where
+;;     the create function does all validation and returns a
+;;     button object.  Pass in button object to unset as well.
+;;
+;;     Why are mouse and keyboard separate, can't mouse be passed
+;;     through kbd macro?  The issue may have been just surrounding
+;;     mouse events with "<>" before passing to kbd.
+;;
+;;     Look into new syntax-propertize-function variable (Emacs 24.x).
+;;
+;;     A refresh function to toggle every buffer?
+;;
+;;     Peek into font-lock-keywords and deduplicate based on the
+;;     stored patterns.
+;;
+;;     Substitute a function for regexp to make properties invisible
+;;     unless button-lock mode is on - esp for keymaps.
+;;
+;;     Add predicate argument to button-set where predicate is
+;;     evaluated during matcher.  This could be used to test for
+;;     comment-only.
+;;
 ;;     Consider defining mode-wide button locks (pass the mode as the
 ;;     first argument of font-lock-add-keywords).  Could use functions
-;;     named eg button-lock-set-mode-button.
+;;     named eg button-lock-set-modal-button.
 ;;
-;;     language-specific navigation library (header files in C, etc)
+;;     Add a language-specific navigation library (header files in C,
+;;     etc).
 ;;
-;;     example of exchanging text values on wheel event
+;;     Example of exchanging text values on wheel event.
 ;;
-;;     right-click menus
+;;     Convenience parameters for right-click menus.
 ;;
-;;     button-down visual effects as with Emacs widgets
+;;     Button-down visual effects as with Emacs widgets.
 ;;
 ;; License
 ;;
 ;;    Simplified BSD License
 ;;
-;;    Copyright (c) 2011, D Roland Walker
+;;    Copyright (c) 2011-12, D Roland Walker
 ;;    All rights reserved.
 ;;
 ;;    Redistribution and use in source and binary forms, with or
@@ -198,26 +234,62 @@
 ;;    interpreted as representing official policies, either expressed
 ;;    or implied, of D Roland Walker.
 ;;
+;;; Change Log:
+;;
+;; 22 Aug 2012
+;; Rewrite.  Incompatible changes:
+;;
+;;    * `button-lock-pop-button' removed, replaced with the ability to
+;;      pass a button "object" to `button-lock-unset-button'.
+;;
+;;    * `button-lock-unset-all-buttons' replaced by
+;;      `button-lock-clear-all-buttons'.
+;;
+;;    * `button-lock-set-global-button' and `button-lock-unset-global-button'
+;;      replaced by `button-lock-register-global-button' and
+;;      `button-lock-unregister-global-button'.
+;;
+;;    * `button-lock-unset-all-global-buttons' replaced by
+;;      `button-lock-unregister-all-global-buttons'.
+;;
+;;    * `button-lock-pop-global-button' removed.
+;;
+;;    * lighter variable name and content changed.
+;;
 ;;; Code:
 ;;
 
-(eval-when-compile
-  (require 'font-lock))
+;;; requires
 
-(require 'cl)
-(autoload 'font-lock-remove-keywords "font-lock" nil nil)
+;; for callf, callf2, defun*, union
+(eval-when-compile
+  (require 'cl))
+
+(require 'font-lock)
+
+;;; customizable variables
 
 ;;;###autoload
-(defgroup button-lock nil "Clickable text defined by regexp")
+(defgroup button-lock nil
+  "Clickable text defined by regular expression."
+  :version "0.9.5"
+  :link '(emacs-commentary-link "button-lock")
+  :prefix "button-lock-"
+  :group 'navigation
+  :group 'extensions)
 
-(defcustom button-lock-modestring " bl"
-  "This string appears in the modeline when button-lock mode is active."
-  :group 'button-lock
-  :type 'string)
-
-(defcustom button-lock-exclude-modes
-  '(rmail-mode mime/viewer-mode gnus-article-mode term-mode eshell-mode dired-mode bc-menu-mode)
-  "List of major modes in which global button-lock will not be activated.
+(defcustom button-lock-exclude-modes '(
+                                       fundamental-mode
+                                       Buffer-menu-mode
+                                       bm-show-mode
+                                       dired-mode
+                                       eshell-mode
+                                       gnus-article-mode
+                                       mime/viewer-mode
+                                       rmail-mode
+                                       term-mode
+                                       )
+  "Modes for which global button-lock will not be activated.
 
 Modes may be excluded for reasons of security (since buttons can
 execute arbitrary functions), efficiency, or to avoid conflicts
@@ -225,8 +297,8 @@ with modes that provide similar functionality."
   :type '(repeat symbol)
   :group 'button-lock)
 
-(defcustom button-lock-exclude-pattern "\\(^\\*.*\\*$\\)\\|^ "
-  "Global button-lock will not be activated in buffers whose names match this regular expression.
+(defcustom button-lock-buffer-name-exclude-pattern "\\`[* ]"
+  "Do not activate minor made in buffers matching this regular expression.
 
 Buffers may be excluded for reasons of security (since buttons
 can execute arbitrary functions), efficiency, or to avoid
@@ -234,8 +306,37 @@ conflicts with modes that provide similar functionality.
 
 The default pattern is designed to match buffers which are
 programatically generated or internal to Emacs."
-  :type 'string
+  :type 'regexp
   :group 'button-lock)
+
+(defcustom button-lock-buffer-include-functions '()
+  "Do not activate minor mode in a buffer unless all functions evaluate non-nil.
+
+Each function should take a single argument (a buffer).
+
+Set this value to nil to disable."
+  :type '(repeat function)
+  :group 'button-lock)
+
+(defcustom button-lock-buffer-exclude-functions '()
+  "Do not activate minor mode in a buffer if any function evaluates non-nil.
+
+Each function should take a single argument (a buffer).
+
+Set this value to nil to disable."
+  :type '(repeat function)
+  :group 'button-lock)
+
+(defcustom button-lock-mode-lighter " b-loc"
+  "This string appears in the mode-line when `button-lock-mode' is active.
+
+Set to nil or the empty string to disable the mode-line
+lighter for `button-lock-mode'."
+  :type 'string
+  :risky t
+  :group 'button-lock)
+
+;;; faces
 
 (defface button-lock-button-face
     '((t nil))
@@ -250,19 +351,35 @@ already provided by font-lock."
    "Face used to highlight button-lock buttons when the mouse hovers over."
    :group 'button-lock)
 
+;;; variables
+
 (defvar button-lock-global-button-list nil
-  "A list of global button definitions to be applied each time the button-lock minor-mode is activated.
+  "Global button definitions added to every button-lock buffer.
 
 The form is a list of lists, each member being a set of arguments
 to `button-lock-set-button'.
 
-This variable should be set by calling `button-lock-set-global-button' and friends.")
+This variable should be set by calling
+`button-lock-register-global-button' and friends.")
 
 (defvar button-lock-button-list nil
   "An internal variable used to keep track of button-lock buttons.")
 
 (make-variable-buffer-local 'button-lock-button-list)
 (put 'button-lock-button-list 'permanent-local t)
+
+;;; macros
+
+(defmacro button-lock-called-interactively-p (&optional kind)
+  "A backward-compatible version of `called-interactively-p'.
+
+Optional KIND is as documented at `called-interactively-p'
+in GNU Emacs 24.1 or higher."
+  `(if (eq 0 (cdr (subr-arity (symbol-function 'called-interactively-p))))
+      (called-interactively-p)
+    (called-interactively-p ,kind)))
+
+;;; minor-mode definition
 
 (define-minor-mode button-lock-mode
   "Toggle button-lock-mode, a minor mode for making text clickable.
@@ -271,77 +388,252 @@ Button-lock uses `font-lock-mode' to create and maintain its text
 properties.  Therefore this mode can only be used where
 `font-lock-mode' is active.
 
-When button-lock mode is active, `button-lock-set-button' may be
-called to create a new button.  When button-lock mode is
-disabled, all button definition are cleared.
+`button-lock-set-button' may be called to create a new button.
+`button-lock-clear-all-buttons' may be called to clear all button
+definitions in a buffer.
 
-With no argument, this command toggles the mode. Non-null prefix
-argument turns on the mode.  Null prefix argument turns off the
-mode."
-  nil button-lock-modestring nil
-  (when (or noninteractive (eq (aref (buffer-name) 0) ?\s))  ; don't set up button-lock on hidden or noninteractive
-    (setq button-lock-mode nil))                             ; buffers, b/c there will be no font-lock
-   (if button-lock-mode
-       (progn
-         (font-lock-mode 1)
-         (button-lock-maybe-fontify-buffer)
-         (button-lock-maybe-activate-global-buttons)
-         (when (called-interactively-p)
-           (message "button-lock mode enabled")))
-     (button-lock-unset-all-buttons t)
+When called interactively with no prefix argument, this command
+toggles the mode. When called interactively, with a prefix
+argument, it enables the mode if the argument is positive and
+otherwise disables it.  When called from Lisp, it enables the
+mode if the argument is omitted or nil, and toggles the mode if
+the argument is 'toggle."
+  nil button-lock-mode-lighter nil
+  (cond
+    ((and button-lock-mode
+          (or noninteractive                    ; never turn on button-lock where
+              (eq (aref (buffer-name) 0) ?\s))  ; there can be no font-lock
+          (setq button-lock-mode nil)))
+    (button-lock-mode
+     (font-lock-mode 1)
+     (button-lock-merge-global-buttons-to-local)
+     (add-hook 'font-lock-mode-hook 'button-lock-do-tell nil t)
+     (button-lock-tell-font-lock)
      (button-lock-maybe-fontify-buffer)
-     (when (called-interactively-p)
-       (message "button-lock mode disabled"))))
+     (when (button-lock-called-interactively-p 'interactive)
+       (message "button-lock mode enabled")))
+    (t
+     (button-lock-tell-font-lock 'forget)
+     (button-lock-maybe-unbuttonify-buffer)   ; cperl-mode workaround
+     (button-lock-maybe-fontify-buffer)
+     (when (button-lock-called-interactively-p 'interactive)
+       (message "button-lock mode disabled")))))
 
-;; The define-globalized-minor-mode macro adds some complexity and causes some bugs.
-;; Specifically, it will cause multiple cycles of on/off toggling at each open, particularly
-;; when used by both wiki-nav.el and button-lock.el.
-;;
-;; This setup does not eliminate multiple invocations of the minor mode.  However it seems
-;; that the second invocation is the needed one, so no questions asked.
-(define-minor-mode global-button-lock-mode
-  "Toggle global `button-lock-mode'.
+(define-globalized-minor-mode global-button-lock-mode button-lock-mode button-lock-maybe-turn-on
+  :group 'button-lock)
 
-The global mode will cause button-lock to be activated in every buffer,
-unless specifically excluded by `button-lock-exclude-modes' or
-`button-lock-exclude-pattern',
+;;; compatibility functions
 
-With no argument, this command toggles the mode. Non-null prefix
-argument turns on the mode.  Null prefix argument turns off the
-mode."
-  nil nil nil
-  :global t
-  :group 'button-lock
-  (if global-button-lock-mode
-      (progn
-         (dolist (buf (buffer-list))
-           (with-current-buffer buf
-             (maybe-local-button-lock)))
-         ;; seems to work fine without find-file hooks
-        (add-hook 'after-change-major-mode-hook 'maybe-local-button-lock))
-    (remove-hook 'after-change-major-mode-hook  'maybe-local-button-lock)
-    (dolist (buf (buffer-list))
-      (with-current-buffer buf
-        (maybe-local-button-lock -1)))))
+;; string-match-p is new in 23.x and above
+(unless (fboundp 'string-match-p)
+  (defsubst string-match-p (regexp string &optional start)
+    "Same as `string-match' except this function does not change the match data."
+    (let ((inhibit-changing-match-data t))
+      (string-match regexp string start))))
 
-(defun maybe-local-button-lock (&optional arg)
-  "Called by global-button-lock-mode to activate button-lock mode in a buffer if appropriate.
+;;; utility functions
+
+;; buffer functions
+
+(defun button-lock-maybe-turn-on (&optional arg)
+  "Activate `button-lock-mode' in a buffer if appropriate.
+
+button-lock mode will be activated in every buffer, except
+
+   minibuffers
+   buffers with names that begin with space
+   buffers excluded by `button-lock-exclude-modes'
+   buffers excluded by `button-lock-buffer-name-exclude-pattern'
 
 If called with a negative ARG, deactivate button-lock mode in the
 buffer."
-  (setq arg (or arg 1))
-  (unless (or button-lock-mode
-              (or noninteractive (eq (aref (buffer-name) 0) ?\s))
-              (memq major-mode button-lock-exclude-modes)
-              (string-match-p button-lock-exclude-pattern (buffer-name (current-buffer))))
+  (callf or arg 1)
+  (when (or (< arg 0)
+            (button-lock-buffer-included-p (current-buffer)))
     (button-lock-mode arg)))
 
+(defun button-lock-buffer-included-p (buf)
+  "Return BUF if global button-lock should enable button-lock in BUF."
+  (when (and (not noninteractive)
+             (bufferp buf)
+             (buffer-name buf))
+    (with-current-buffer buf
+      (when (and (not (minibufferp buf))
+                 (not (eq (aref (buffer-name) 0) ?\s))           ; overlaps with exclude-pattern
+                 (not (memq major-mode button-lock-exclude-modes))
+                 (not (string-match-p button-lock-buffer-name-exclude-pattern (buffer-name buf)))
+                 (catch 'success
+                   (dolist (filt button-lock-buffer-exclude-functions)
+                     (when (funcall filt buf)
+                       (throw 'success nil)))
+                   t)
+                 (catch 'failure
+                   (dolist (filt button-lock-buffer-include-functions)
+                     (unless (funcall filt buf)
+                       (throw 'failure nil)))
+                   t))
+        buf))))
+
+(defun button-lock-maybe-unbuttonify-buffer ()
+  "This is a workaround for cperl mode, which clobbers `font-lock-unfontify-region-function'."
+  (when (and (boundp 'font-lock-fontified)
+             font-lock-fontified
+             (not (eq font-lock-unfontify-region-function 'font-lock-default-unfontify-region)))
+    (font-lock-default-unfontify-region (point-min) (point-max))))
+
+(defun button-lock-maybe-fontify-buffer ()
+  "Fontify, but only if font-lock is already on.
+
+This is to avoid turning on font-lock if we are in the process of
+disabling button-lock."
+  (when (and (boundp 'font-lock-fontified)
+             font-lock-fontified)
+    (font-lock-fontify-buffer)))
+
+;; font lock functions
+
+(defun button-lock-tell-font-lock (&optional forget)
+  "Tell `font-lock-keywords' about the buttons in `button-lock-button-list'.
+
+When FORGET is set, tell `font-lock-keywords' to forget about
+the buttons in `button-lock-button-list', as well as any other
+keywords with the 'button-lock property."
+  (if forget
+      (let ((keywords (copy-tree font-lock-keywords)))
+        (when (eq t (car keywords))
+          ;; get uncompiled keywords
+          (setq keywords (cadr keywords)))
+        (dolist (kw (union keywords button-lock-button-list))
+          (when (button-lock-button-p kw)
+            (font-lock-remove-keywords nil (list kw)))))
+  (unless button-lock-mode
+    (error "Button-lock mode is not in effect"))
+  (dolist (button button-lock-button-list)
+    (font-lock-remove-keywords nil (list button))
+    (font-lock-add-keywords nil (list button)))))
+
+(defun button-lock-do-tell ()
+  "Run `button-lock-tell-font-lock' appropriately in hooks."
+  (when button-lock-mode
+    (if font-lock-mode
+        (button-lock-tell-font-lock)
+      (button-lock-tell-font-lock 'forget))))
+
+;; button functions
+
+;;;###autoload
+(defun button-lock-button-p (button)
+  "Return t if BUTTON is a button-lock button."
+  (ignore-errors
+    (car (memq 'button-lock (button-lock-button-properties button)))))
+
+;;;###autoload
+(defun button-lock-button-properties (button)
+  "Return list of properties for BUTTON."
+  (when (listp button)
+    (cadr (cadr (cadr button)))))
+
+;;;###autoload
+(defun button-lock-button-pattern (button)
+  "Return pattern for BUTTON."
+  (when (listp button)
+    (car button)))
+
+;;;###autoload
+(defun button-lock-button-grouping (button)
+  "Return grouping for BUTTON."
+  (when (listp button)
+    (car (cadr button))))
+
+;;;###autoload
+(defun button-lock-find-extent (&optional pos property)
+  "Find the extent of a button-lock property around some point.
+
+POS defaults to the current point.  PROPERTY defaults to
+'button-lock.
+
+Returns a cons in the form (START . END), or nil if there
+is no such PROPERTY around POS."
+  (callf or pos (point))
+  (callf or property 'button-lock)
+  (when (get-text-property pos property)
+    (cons (if (and (> pos (point-min)) (get-text-property (1- pos) property)) (previous-single-property-change pos property) pos)
+          (next-single-property-change pos property))))
+
+;; internal driver for local buttons
+
+(defun button-lock-add-to-button-list (button &optional no-replace)
+  "Add BUTTON to `button-lock-button-list' and `font-lock-keywords'.
+
+The regexp used by the button is checked against the existing
+data structure.  If the regexp duplicates that of an existing button,
+the existing duplicate is replaced.
+
+If NO-REPLACE is set, no replacement is made for a duplicate button."
+  (let ((conflict (catch 'hit
+                    (dolist (b button-lock-button-list)
+                      (when (equal (car b) (car button))
+                        (throw 'hit b))))))
+    (if (and conflict no-replace)
+        conflict
+      (when (and conflict (not no-replace))
+        (button-lock-remove-from-button-list conflict))
+      (add-to-list 'button-lock-button-list button)
+      (when button-lock-mode
+        (font-lock-add-keywords nil (list button))
+        (button-lock-maybe-fontify-buffer))
+      button)))
+
+(defun button-lock-remove-from-button-list (button)
+  "Remove BUTTON from `button-lock-button-list' and `font-lock-keywords'."
+  (when button-lock-mode
+    (font-lock-remove-keywords nil (list button))
+    (button-lock-maybe-unbuttonify-buffer)     ; cperl-mode workaround
+    (button-lock-maybe-fontify-buffer))
+  (callf2 delete button button-lock-button-list)
+  nil)
+
+;; internal driver for global buttons
+
+(defun button-lock-add-to-global-button-list (button &optional no-replace)
+  "Add BUTTON to `button-lock-global-button-list'.
+
+The regexp used by the button is checked against the existing
+data structure.  If the regexp duplicates that of an existing button,
+the existing duplicate is replaced.
+
+If NO-REPLACE is set, no replacement is made for a duplicate button."
+  (let ((conflict (catch 'hit
+                    (dolist (b button-lock-global-button-list)
+                      (when (equal (car b) (car button))
+                        (throw 'hit b))))))
+    (unless (and conflict no-replace)
+      (when (and conflict (not no-replace))
+        (button-lock-remove-from-global-button-list conflict))
+      (add-to-list 'button-lock-global-button-list button))))
+
+(defun button-lock-remove-from-global-button-list (button)
+  "Remove BUTTON from `button-lock-global-button-list'."
+  (callf2 delete button button-lock-global-button-list))
+
+(defun button-lock-merge-global-buttons-to-local ()
+  "Add predefined, non-conflicting global buttons to the local list."
+  (dolist (button button-lock-global-button-list)
+    (unless (member button button-lock-button-list)
+      (apply 'button-lock-set-button (append button '(:no-replace t))))))
+
+;;; principal external interface
+
+;;;###autoload
 (defun* button-lock-set-button (pattern action &key
 
                                  (face 'button-lock-face)
                                  (mouse-face 'button-lock-mouse-face)
                                  (face-policy 'append)
+                                 help-echo
                                  help-text
+                                 kbd-help
+                                 kbd-help-multiline
 
                                  (grouping 0)
 
@@ -349,7 +641,10 @@ buffer."
                                  keyboard-binding
                                  keyboard-action
                                  additional-property
+                                 rear-sticky
+
                                  remove
+                                 no-replace
 
                                  mouse-2
                                  mouse-3
@@ -417,8 +712,16 @@ If the function called by ACTION uses (interactive \"e\") it may
 receive the relevant mouse event.  Note that you may wish to use
 the mouse event to reposition the point.
 
+ACTION may alternatively contain a prepared keymap, in which case
+the convenience parameters :MOUSE-BINDING, :KEYBOARD-BINDING,
+and :KEYBOARD-ACTION will be ignored.
+
 Following PATTERN and ACTION is a Common Lisp-style series of
 keyword/value arguments:
+
+Setting :NO-REPLACE causes the function to have no effect when
+a button already exists using the given PATTERN.  By default,
+any existing button using PATTERN will be replaced.
 
 :FACE is a font face to set on matching text, like hi-lock mode.
 By default, :FACE has no properties, and :FACE-POLICY is :APPEND.
@@ -435,8 +738,15 @@ to `button-lock-mouse-face'.
 values are nil, 'keep, 'prepend, and 'append (the default).  See
 the documentation for OVERRIDE in `font-lock-keywords'.
 
-:HELP-TEXT is applied to the help-echo text property, and may
+:HELP-ECHO is applied to the 'help-echo text property, and may
 become visible in a tooltip depending on your Emacs setup.
+:HELP-TEXT is a deprecated synonym.
+
+:KBD-HELP is applied to the 'kbd-help text property, accessible
+to the user via `display-local-help',
+
+:KBD-HELP-MULTILINE is applied to the non-standard
+'kbd-help-multline text property.
 
 :GROUPING designates a subgroup in the pattern match to receive
 the new text properties.  Subgroups, delimited by parentheses,
@@ -457,9 +767,7 @@ to pass keyboard events into :MOUSE-BINDING and vice versa.
 :KEYBOARD-ACTION is an alternate event to be run by
 :KEYBOARD-BINDING.  The default is nil, meaning that
 :KEYBOARD-BINDING will invoke ACTION.  This is intended for cases
-where ACTION is dependent on the position of the mouse. See also
-`button-lock-extend-binding' for a general method of adding
-alternate bindings.
+where ACTION is dependent on the position of the mouse.
 
 :ADDITIONAL-PROPERTY defines an arbitrary text property which
 will be set to t in for text which matches PATTERN, as optionally
@@ -470,26 +778,28 @@ As a convenience, :MOUSE-2 through :MOUSE-5 can be used to attach
 an alternate ACTION, as can :M-MOUSE-1 ..., :A-MOUSE-1 ...,
 :DOUBLE-MOUSE-1 ..., :WHEEL-UP..., and :WHEEL-DOWN... The list is
 not exhaustive.  For a general method of adding alternate
-bindings, see `button-lock-extend-binding'.
+bindings, pass a keymap for :ACTION or use
+ `button-lock-extend-binding'.
 
-If :REMOVE is non-nil, any button matching the exact properties
-given will be removed and forgotten by font-lock.
+If :REAR-STICKY is non-nil, the rear-nonsticky text property will
+not be added, as it is by default.  Changing this setting is not
+recommended.
+
+If :REMOVE is non-nil, any existing button using PATTERN will
+be removed and forgotten by font-lock.
 
 If successful, this function returns the button which was added
 or removed from `font-lock-keywords'. Otherwise it returns nil.
 The button value can be passed to `button-lock-extend-binding'."
 
-  (if (not button-lock-mode)
-      (progn
-        (message "button-lock mode is not active")
-        nil)
+  (let ((map (make-sparse-keymap))
+        (properties nil)
+        (fl-keyword nil))
 
-    ;; else (not button-lock-mode)
-    (let ((map (make-sparse-keymap))
-          (properties nil)
-          (success nil)
-          (fl-keyword nil))
+    (if (keymapp action)
+        (setq map (copy-sequence action))
 
+      ;; else
       (define-key map `[,mouse-binding] action)
 
       (dolist (var '(
@@ -550,52 +860,57 @@ The button value can be passed to `button-lock-extend-binding'."
           (define-key map `[,var] (symbol-value var))))
 
       (when keyboard-binding
-        (define-key map (eval `(kbd ,keyboard-binding)) (or keyboard-action action)))
+        (define-key map (read-kbd-macro keyboard-binding) (or keyboard-action action))))
 
-      (setq props `(face ,face keymap ,map button-lock t))
-      (add-to-list 'font-lock-extra-managed-props 'keymap)
-      (add-to-list 'font-lock-extra-managed-props 'button-lock)
+    (setq properties `(face ,face keymap ,map button-lock t))
+    (add-to-list 'font-lock-extra-managed-props 'keymap)
+    (add-to-list 'font-lock-extra-managed-props 'button-lock)
 
-      (when additional-property
-        (setq props (append props `(,additional-property t)))
-        (add-to-list 'font-lock-extra-managed-props additional-property))
+    (when additional-property
+      (callf append properties `(,additional-property t))
+      (add-to-list 'font-lock-extra-managed-props additional-property))
 
-      (when mouse-face
-        (setq props (append props `(mouse-face ,mouse-face)))
-        (add-to-list 'font-lock-extra-managed-props 'mouse-face))
+    (when mouse-face
+      (callf append properties `(mouse-face ,mouse-face))
+      (add-to-list 'font-lock-extra-managed-props 'mouse-face))
 
-      (when help-text
-        (setq props (append props `(help-echo ,help-text)))
-        (add-to-list 'font-lock-extra-managed-props 'help-echo))
+    (when (or help-echo help-text)
+      (callf append properties `(help-echo ,(or help-echo help-text)))
+      (add-to-list 'font-lock-extra-managed-props 'help-echo))
 
-      (setq fl-keyword `((,pattern (,grouping ',props ,face-policy))))
+    (when kbd-help
+      (callf append properties `(kbd-help ,kbd-help))
+      (add-to-list 'font-lock-extra-managed-props 'kbd-help))
 
-      (if remove
-          (progn
-            (condition-case nil
-                (setq success (font-lock-remove-keywords nil fl-keyword))
-              (error nil))
-            (when success
-              (setq button-lock-button-list (delete fl-keyword button-lock-button-list)))
-            (button-lock-maybe-unbuttonify-buffer))   ; cperl-mode workaround
-        ;; else
-        (condition-case nil
-            (setq success (font-lock-add-keywords nil fl-keyword))
-          (error nil))
-        (when success
-          (add-to-list 'button-lock-button-list fl-keyword)))
-      (button-lock-maybe-fontify-buffer)
-      (if success
-          fl-keyword
-        nil))))
+    (when kbd-help-multiline
+      (callf append properties `(kbd-help-multiline ,kbd-help-multiline))
+      (add-to-list 'font-lock-extra-managed-props 'kbd-help-multiline))
 
-(defmacro button-lock-unset-button (&rest args)
-  "This is equivalent to running `button-lock-set-button' with :REMOVE set to true.
+    (unless rear-sticky
+      (callf append properties `(rear-nonsticky t))
+      (add-to-list 'font-lock-extra-managed-props 'rear-nonsticky))
+
+    (setq fl-keyword `(,pattern (,grouping ',properties ,face-policy)))
+
+    (if remove
+        (button-lock-remove-from-button-list fl-keyword)
+      (button-lock-add-to-button-list fl-keyword no-replace))))
+
+;;;###autoload
+(defun button-lock-unset-button (&rest button)
+  "Equivalent to running `button-lock-set-button' with :REMOVE set to true.
 
 The syntax is otherwise identical to `button-lock-set-button',
-which see."
-  `(button-lock-set-button ,@args :remove t))
+which see.
 
+A single argument BUTTON object may also be passed, which was returned
+from `button-lock-set-button'."
+  (if (and (= 1 (length button))
+           (button-lock-button-p (car button)))
+      (button-lock-remove-from-button-list (car button))
+    (apply 'button-lock-set-button (append button '(:remove t)))))
+
+;;;###autoload
 (defun button-lock-extend-binding (existing-button action mouse-binding &optional keyboard-binding)
   "Add a binding to an existing button.
 
@@ -609,192 +924,91 @@ EXISTING-BUTTON is a button value as returned by
 
 ACTION, MOUSE-BINDING and KEYBOARD-BINDING are as documented in
 `button-lock-set-button'.  It is possible to pass a nil
-MOUSE-BINDING in order to set only a KEYBOARD-BINDING."
-  (if (and (not (member existing-button button-lock-button-list))
-           (not (member (car existing-button) (cdr (cdr font-lock-keywords)))))
-      (progn
-        (message "no such button")
-        nil)
-    ;; else
-    (let ((success nil)
-          (map nil))
-      (condition-case nil
-          (setq success (font-lock-remove-keywords nil existing-button))
-        (error nil))
-      (if (not success)
-          nil
-        ;; else
-        (setq map (nth 3 (nth 1 (nth 1 (nth 1 (car (car (member existing-button button-lock-button-list))))))))
-        (when mouse-binding
-          (define-key map `[,mouse-binding] action))
-        (when keyboard-binding
-          (define-key map (eval `(kbd ,keyboard-binding)) action))
-        (setf (nth 3 (nth 1 (nth 1 (nth 1 (car (car (member existing-button button-lock-button-list))))))) map)
-        (setf (nth 3 (nth 1 (nth 1 (nth 1 (car existing-button))))) map)
-        (condition-case nil
-            (setq success (font-lock-add-keywords nil existing-button))
-          (error nil))
-        success))))
+MOUSE-BINDING in order to set only a KEYBOARD-BINDING.
 
-(defun button-lock-pop-button (&optional first force)
-"Unset the most recently added button-lock button.
+When passing a prepared keymap for ACTION, set MOUSE-BINDING
+to nil."
+  (when (not (member existing-button button-lock-button-list))
+    (error "No such button"))
+  (let ((map (memq 'keymap (button-lock-button-properties (car (member existing-button button-lock-button-list))))))
+    (when button-lock-mode
+      (font-lock-remove-keywords nil (list existing-button)))
+    (if (keymapp action)
+        (dolist (cell (cdr action))
+          (define-key map (vector (car cell)) (cdr cell)))
+      ;; else
+      (when mouse-binding
+        (define-key map `[,mouse-binding] action))
+      (when keyboard-binding
+        (define-key map (read-kbd-macro keyboard-binding) action)))
+    (when button-lock-mode
+      (font-lock-add-keywords nil (list existing-button)))))
 
-If FIRST is non-nil, instead unset the earliest-added button.
-
-If FORCE is non-nil, try to remove buttons even when the minor
-mode is not active.
-
-When successful, returns the number of button patterns removed,
-which should always be 1."
-  (interactive)
-   (if (and (not force)
-            (not button-lock-mode))
-       (progn
-         (message "button-lock mode is not active")
-         nil)
-     ;; else
-     (if (not button-lock-button-list)
-         nil
-       ;; else
-       (let ((fl-keyword nil)
-             (num (length button-lock-button-list)))
-         (when first
-           (setq button-lock-button-list (nreverse button-lock-button-list)))
-         (setq fl-keyword (pop button-lock-button-list))
-         (when first
-           (setq button-lock-button-list (nreverse button-lock-button-list)))
-         (font-lock-remove-keywords nil fl-keyword)
-         (button-lock-maybe-unbuttonify-buffer) ; cperl-mode workaround
-         (button-lock-maybe-fontify-buffer)
-         (setq num (- num (length button-lock-button-list)))
-         (when (called-interactively-p)
-           (message "removed %d button patterns" num))
-         num))))
-
-(defun button-lock-unset-all-buttons (&optional force)
-  "Unset all active button-lock buttons.
+;;;###autoload
+(defun button-lock-clear-all-buttons ()
+  "Remove and deactivate all button-lock buttons in the buffer.
 
 If FORCE is non-nil, try to remove buttons even when the minor
 mode is not active."
   (interactive)
-  (if (and (not force)
-           (not button-lock-mode))
-      (progn
-        (message "button-lock mode is not active")
-        nil)
-    ;; else
-    (let ((fl-keyword nil)
-          (num (length button-lock-button-list)))
-      (while (setq fl-keyword (pop button-lock-button-list))
-        (font-lock-remove-keywords nil fl-keyword))
-      (button-lock-maybe-unbuttonify-buffer)   ; cperl-mode workaround
-      (button-lock-maybe-fontify-buffer)
-      (when (and
-             (called-interactively-p)
-             num)
-        (message "removed %d button patterns" num))
-      num)))
+  (let ((num (length button-lock-button-list)))
+    (button-lock-tell-font-lock 'forget)
+    (setq button-lock-button-list nil)
+    (button-lock-maybe-unbuttonify-buffer)   ; cperl-mode workaround
+    (button-lock-maybe-fontify-buffer)
+    (when (and
+           (button-lock-called-interactively-p 'interactive)
+           (> num 0))
+      (message "removed %d button patterns" num))
+    num))
 
-(defun button-lock-set-global-button (args)
-  "Add a global button-lock button definition, to be applied each time the button-lock minor mode is activated.
+;;;###autoload
+(defun button-lock-register-global-button (&rest button)
+  "Register a global button-lock button definition.
 
-ARGS is a list of arguments, following the form of
-`button-lock-set-button'.
+Arguments follow the form of `button-lock-set-button'.
 
-To see an effect, button-lock mode must be deactivated and
-reactivated."
-  (add-to-list 'button-lock-global-button-list args))
+The BUTTON defined here will applied each time the button-lock
+minor mode is activated in a buffer.
 
-(defun button-lock-unset-global-button (args)
-  "Remove a global button-lock button definition.
+To see an effect in any given buffer, button-lock mode must be
+deactivated and reactivated."
+  (button-lock-add-to-global-button-list button))
 
-ARGS is a list of arguments, following the form of
-`button-lock-set-button'.
+;;;###autoload
+(defun button-lock-unregister-global-button (&rest button)
+  "Remove global button-lock BUTTON.
 
-To see an effect, button-lock mode must be deactivated and
-reactivated."
-  (if (member args button-lock-global-button-list)
-      (setq button-lock-global-button-list (delete args button-lock-global-button-list))
-    nil))
+Arguments follow the form of `button-lock-set-button'.
 
-(defun button-lock-pop-global-button (&optional first)
-"Unset the most recently added global button-lock button definition.
+To see an effect in any given buffer, button-lock mode must be
+deactivated and reactivated."
+  (button-lock-remove-from-global-button-list button))
 
-If FIRST is non-nil, instead unset the earliest-added button
-definition.
+;;;###autoload
+(defun button-lock-unregister-all-global-buttons ()
+  "Remove all global button-lock buttons definitions.
 
-To see an effect, button-lock mode must be deactivated and
-reactivated.
-
-When successful, this function returns the number of button
-definitions removed, which should always be 1."
-  (interactive)
-  (if (not button-lock-global-button-list)
-      nil
-    ;; else
-    (let ((num (length button-lock-global-button-list)))
-      (when first
-        (setq button-lock-global-button-list (nreverse button-lock-global-button-list)))
-      (pop button-lock-global-button-list)
-      (when first
-        (setq button-lock-global-button-list (nreverse button-lock-global-button-list)))
-      (setq num (- num (length button-lock-global-button-list)))
-      (when (called-interactively-p)
-        (message "removed %d button patterns" num))
-      num)))
-
-(defun button-lock-unset-all-global-buttons ()
-  "Unset all global button-lock buttons definitions.
-
-To see an effect, button-lock mode must be deactivated and
-reactivated."
+To see an effect in any given buffer, button-lock mode must be
+deactivated and reactivated."
   (interactive)
   (setq button-lock-global-button-list nil)
   t)
 
-(defun button-lock-maybe-activate-global-buttons ()
-  "If there are any predefined global buttons, activate them."
-  (dolist (button button-lock-global-button-list)
-    (eval `(button-lock-set-button ,@button))))
-
-(defun button-lock-find-extent (&optional pos property)
-  "Find the extent of a button-lock property around some point.
-
-POS defaults to the current point.  PROPERTY defaults to
-'button-lock.
-
-Returns list containing the start and end, or nil if there is no
-such property around the point."
-  (setq pos (or pos (point)))
-  (let ((start nil)
-        (end nil))
-    (setq property (or property 'button-lock))
-    (if (not (get-text-property pos property))
-        nil
-      ;; else
-      (setq start pos)
-      (setq end pos)
-      (while (and (> start (point-min))
-                  (get-text-property (- start 1) property))
-        (setq start (- start 1)))
-      (while (and (< end (point-max))
-                  (get-text-property (+ end 1) property))
-        (setq end (+ end 1)))
-      (setq end (min (point-max) (+ end 1)))
-      (list start end))))
-
-(defun button-lock-maybe-unbuttonify-buffer ()
-  "This is a workaround for cperl mode, which clobbers `font-lock-unfontify-region-function'."
-  (when (and (boundp 'font-lock-fontified)
-             font-lock-fontified
-             (not (eq font-lock-unfontify-region-function 'font-lock-default-unfontify-region)))
-    (font-lock-default-unfontify-region (point-min) (point-max))))
-
-(defun button-lock-maybe-fontify-buffer ()
-  "This is to avoid turning on font-lock if we are currently in the process of disabling button-lock."
-  (when (and (boundp 'font-lock-fontified)
-             font-lock-fontified)
-    (font-lock-fontify-buffer)))
-
 (provide 'button-lock)
+
+;;
+;; Emacs
+;;
+;; Local Variables:
+;; indent-tabs-mode: nil
+;; mangle-whitespace: t
+;; require-final-newline: t
+;; coding: utf-8
+;; End:
+;;
+;; LocalWords: ButtonLockMode mouseable mybutton keymap propertize
+;; LocalWords: callf cperl nonsticky
+;;
+
 ;;; button-lock.el ends here
