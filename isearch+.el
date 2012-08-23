@@ -7,10 +7,11 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 21.0
-;; Last-Updated: Sun Aug 12 10:17:45 2012 (-0700)
+;; Last-Updated: Thu Aug 23 14:32:40 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1275
+;;     Update #: 1276
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/isearch+.el
+;; Doc URL: http://www.emacswiki.org/emacs/IsearchPlus
 ;; Keywords: help, matching, internal, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;;
