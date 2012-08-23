@@ -7,10 +7,11 @@
 ;; Copyright (C) 2006-2012, Drew Adams, all rights reserved.
 ;; Created: Tue May 25 16:35:05 2004
 ;; Version: 21.0
-;; Last-Updated: Wed Feb  8 10:46:39 2012 (-0800)
+;; Last-Updated: Thu Aug 23 09:38:51 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 958
+;;     Update #: 960
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/browse-kill-ring+.el
+;; Doc URL: http://www.emacswiki.org/emacs/BrowseKillRing
 ;; Keywords: convenience
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;;
