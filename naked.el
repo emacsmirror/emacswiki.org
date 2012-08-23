@@ -7,10 +7,11 @@
 ;; Copyright (C) 2011-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Oct  7 13:12:52 2011 (-0700)
 ;; Version: 21.0
-;; Last-Updated: Sun Jan  1 16:35:50 2012 (-0800)
+;; Last-Updated: Thu Aug 23 16:25:19 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 102
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/
+;;     Update #: 104
+;; URL: http://www.emacswiki.org/emacs-en/naked.el
+;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/NaKeD
 ;; Keywords: lisp, key, print, format, help
 ;; Compatibility: GNU Emacs 20.x, 21.x, 22.x, 23.x
 ;;
