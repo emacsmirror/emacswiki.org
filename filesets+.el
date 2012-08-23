@@ -7,10 +7,11 @@
 ;; Copyright (C) 2008-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Sep 16 14:11:36 2008 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Sun Jan  1 14:22:13 2012 (-0800)
+;; Last-Updated: Thu Aug 23 10:43:45 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 38
+;;     Update #: 40
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/filesets+.el
+;; Doc URL: http://www.emacswiki.org/FileSets
 ;; Keywords:
 ;; Compatibility: GNU Emacs: 22.x, 23.x
 ;;
