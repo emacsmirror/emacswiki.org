@@ -14,7 +14,12 @@ Note that this page is not about EmacsWikiMode.
 
 Search for "apropos-fn+var.el", or even just "apropos-fn+var".  You will not find most of the pages that link to page <tt>[[apropos-fn+var.el]]</tt>.
 
-Now search for just "apropos-fn", and you will find them -- 4 pages of links.  What's wrong? -- DrewAdams
+Now search for just "apropos-fn", and you will find them -- 4 pages of links.
+
+Now try searching for "BrowseKillRing" -- that page is not found.  Now try "browse kill ring" or "browse-kill-ring".  After checking the 10 pages of links you discover that page BrowseKillRing appeards nowhere.
+
+
+What's wrong? -- DrewAdams
 
 
 == Site search misses main page for highlight.el ==
