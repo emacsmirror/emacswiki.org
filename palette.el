@@ -7,10 +7,11 @@
 ;; Copyright (C) 2006-2012, Drew Adams, all rights reserved.
 ;; Created: Sat May 20 07:56:06 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Mar 18 07:45:29 2012 (-0700)
+;; Last-Updated: Thu Aug 23 16:30:18 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 728 4
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/palette.el
+;;     Update #: 729 4
+;; URL: http://www.emacswiki.org/emacs-en/palette.el
+;; Doc URL: http://emacswiki.org/emacs/ColorPalette
 ;; Keywords: color, rgb, hsv, hexadecimal, face, frame
 ;; Compatibility: GNU Emacs: 22.x, 23.x
 ;;
