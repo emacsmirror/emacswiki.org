@@ -168,29 +168,9 @@ Hm, I'm not sure. When [http://www.emacswiki.org/emacs/Emacsmirror?cache=0 using
 
 
 
-== Site is very slow now ==
+== Markup/Generation Issues==
 
-Takes me several minutes to load the Elisp Area page -- or else it hangs altogether (times out). Likewise to get to one of the Lisp files there.  Likewise, it takes a long time to preview (e.g. this edit).  And yes, I tried closing the browser and deleting the cache. -- DrewAdams
-
-[new]
-Is this happening to anybody else? What about the time? Whenever I use the site, it seems to be working just fine. -- AlexSchroeder
-
-
-== CGI Internal error: 400 Bad request (malformed multipart POST) ==
-
-I just got this error when trying to save a page after some simple (trivial) editing.  No idea what caused it or what the problem is.  I then clicked the browser `Back' button and tried, successfully, to save again.  -- DrewAdams
-
-[new]
-Anybody else? I've never seen this before. -- AlexSchroeder
-
-== FYI - still getting Server Error ==
-
-Just an FYI that this problem has not disappeared, even if it is less frequent. -- DrewAdams
-
-
-
-
-== Problem with `Manual:' syntax? ==
+=== Problem with `Manual:' syntax? ===
 
 How to make a `##Manual:##' link to `##(elisp) Circular Objects##'?  I tried ##[[Manual:Circular Objects]]## and a few variants, but didn't find anything that works.  -- DrewAdams
 
@@ -198,7 +178,7 @@ How to make a `##Manual:##' link to `##(elisp) Circular Objects##'?  I tried ##[
 Manual:Circular%20Objects is the right form. In a wiki URL, space is represented by an underscore. Using double square brackets might do the wrong thing in this context. -- AlexSchroeder
 
 
-== Apostrophes etc. not prettified in links ==
+=== Apostrophes etc. not prettified in links ==
 
 * ##ain't -- it -- "nice"## => ain't -- it -- "nice"
 * ##[EmacsWikiProblems ain't -- it -- "nice"]## => [EmacsWikiProblems ain't -- it -- "nice"]
@@ -206,14 +186,74 @@ Manual:Circular%20Objects is the right form. In a wiki URL, space is represented
 The link text retains its crude ASCII formatting. -- VegardOye
 
 
+=== TOC heading in wrong language ===
+
+At TreeMode (http://www.emacswiki.org/cgi-bin/wiki/TreeMode), the page is in English, but the TOC title is in Chinese. -- DrewAdams.
+
+[new]
+This is also happening on [[CSS]]. I tried faking an edit, but it doesn't seem to have done any good. -- SamuelBronson.
+
+[new]
+Yeah, it's saving the TOC title in the language of the user saving it and not re-generating it for the current user. Samuel's attempt at faking an edit probably failed because you have to actually change a byte of the page text -- appending an extra newline at the end usually works for me. As to the general issue: Would getting rid of the TOC title work for you? It seems a bit superfluous. -- Alex
+
+[new]
+More info on this at [[2006-01-12]]. -- AaronHawley
+
+
+=== Markup of `RET C-i' ===
+
+Why doesn't the quoted markup of `RET C-i' work?  `RET' works. -- AaronHawley
+
+[new]
+At the very end of the [http://emacswiki.org/emacs/config config file] you can see the rule I'm using:
+
+         /\G(\`|‘)([CM][- ][- A-Za-z0-9<>;:#]+)(\'|’)/cg
+      or /\G(\`|‘)([-A-Za-z0-9\/\*]+[=]?)(\'|’)/cg
+
+I think the first regexp matches keys and the second matches symbols. Thus `RET' works because it looks like a symbol. The tricky part is coming up with something that doesn't cause false positives... Untested suggestion...
+
+         /\G(\`|‘)(([CM][- ][- A-Za-z0-9<>;:#]+|RET|TAB|DEL|<(tab|f[0-9]+)>) ?)+(\'|’)/cg
+
+-- AlexSchroeder
+
+[new]
+Alright, I'll just use `C-m C-i'.  I'll have to try and find time to investigate the consequences of changing that regexp, though. -- AaronHawley
 
 
 
 
 
+== Server Issues ==
+
+=== Site is very slow now ===
+
+Takes me several minutes to load the Elisp Area page -- or else it hangs altogether (times out). Likewise to get to one of the Lisp files there.  Likewise, it takes a long time to preview (e.g. this edit).  And yes, I tried closing the browser and deleting the cache. -- DrewAdams
+
+[new]
+Is this happening to anybody else? What about the time? Whenever I use the site, it seems to be working just fine. -- AlexSchroeder
+
+
+=== CGI Internal error: 400 Bad request (malformed multipart POST) ===
+
+I just got this error when trying to save a page after some simple (trivial) editing.  No idea what caused it or what the problem is.  I then clicked the browser `Back' button and tried, successfully, to save again.  -- DrewAdams
+
+[new]
+Anybody else? I've never seen this before. -- AlexSchroeder
+
+=== FYI - still getting Server Error ===
+
+Just an FYI that this problem has not disappeared, even if it is less frequent. -- DrewAdams
+
+
+
+
+
+== Client Issues ==
+
+In some cases the server might actually be at fault - still makes sense to group them like this.
 
 [:StalePagesServed]
-== Browser Cache Not Refreshed - Stale Pages Served ==
+=== Browser Cache Not Refreshed - Stale Pages Served ===
 
 This might be the same problem as [[#EditingGetsOldPageText]], below, but since that speaks specifically about emacs-w3m, I'm not sure.
 
@@ -253,62 +293,7 @@ Vegard's update wiped out my previous update. -- DrewAdams
 [new]
 Hm, maybe this is unrelated. Possibly it just took him more than nine minutes to edit the page before he saved it? Perhaps diff3 will sometimes merge things and drop changes without marking them as a conflict? Or he used a raw client that interacts with the wiki text directly, didn't post back the last modification date, thus diff3 was unable to determine the ancestor for conflict resolution, and he ended up overwriting what you had done. I think the caching problem you reported earlier is something else (and much trickier, apparently). -- AlexSchroeder
 
-== Browser `Open in New Window' no longer works on wiki pages ==
-
-This has changed in the last day or so -- since the spam attack. 
-
-On EmacsWiki, I can no longer right-click a link (any link) and choose '''Open in New Window'''. I use IE6, and I have Google Toolbar installed (since a long time ago). When I try to open a link in a new window, Google Toolbar treats the attempt as a pop-up and blocks it.
-
-I am forced to duplicate the browser window (`C-n') and then find and click the link. This is very slow, since the current page needs to be reloaded  in the new window even though I'm going to move away from it.
-
-I have this problem only for %%EmacsWiki%% pages, and I have changed nothing in my browser etc.  Does this perhaps have something to do with the change to use [http://recaptcha.net/ reCAPTCHA]? 
-
-This is really quite annoying. I can make the problem go away by choosing '''Popups okay''' for Google Toolbar (for %%EmacsWiki%%), but users shouldn't need to do that. %%EmacsWiki%% appears unfriendly to people with this behavior. -- DrewAdams
-
-[new]
-I believe you. Unfortunately I don't know what to do about it. I'm sure your browsing environment will allow you to define exceptions to the popup blocker. -- AlexSchroeder
-
-[new:DrewAdams:2008-09-07 06:27 UTC]
-Yes, as I said, I've done that. The point was that it's a shame that users will now need to do that -- some might become discouraged or not understand. What's odd is that I've never seen this (treating '''Open in New Window''' as a popup) on any other site. Anyway, it's not a biggee. And perhaps it affects only IE6 users who happen to use Google Toolbar -- dunno. -- DrewAdams
-
-== TOC heading in wrong language ==
-
-At TreeMode (http://www.emacswiki.org/cgi-bin/wiki/TreeMode), the page is in English, but the TOC title is in Chinese. -- DrewAdams.
-
-[new]
-This is also happening on [[CSS]]. I tried faking an edit, but it doesn't seem to have done any good. -- SamuelBronson.
-
-[new]
-Yeah, it's saving the TOC title in the language of the user saving it and not re-generating it for the current user. Samuel's attempt at faking an edit probably failed because you have to actually change a byte of the page text -- appending an extra newline at the end usually works for me. As to the general issue: Would getting rid of the TOC title work for you? It seems a bit superfluous. -- Alex
-
-[new]
-More info on this at [[2006-01-12]]. -- AaronHawley
-
-
-== Markup of `RET C-i' ==
-
-Why doesn't the quoted markup of `RET C-i' work?  `RET' works. -- AaronHawley
-
-[new]
-At the very end of the [http://emacswiki.org/emacs/config config file] you can see the rule I'm using:
-
-         /\G(\`|‘)([CM][- ][- A-Za-z0-9<>;:#]+)(\'|’)/cg
-      or /\G(\`|‘)([-A-Za-z0-9\/\*]+[=]?)(\'|’)/cg
-
-I think the first regexp matches keys and the second matches symbols. Thus `RET' works because it looks like a symbol. The tricky part is coming up with something that doesn't cause false positives... Untested suggestion...
-
-         /\G(\`|‘)(([CM][- ][- A-Za-z0-9<>;:#]+|RET|TAB|DEL|<(tab|f[0-9]+)>) ?)+(\'|’)/cg
-
--- AlexSchroeder
-
-[new]
-Alright, I'll just use `C-m C-i'.  I'll have to try and find time to investigate the consequences of changing that regexp, though. -- AaronHawley
-
-
-
-
-
-== emacswiki and w3m ==
+=== emacswiki and w3m ===
 
 EmacsWiki doesnt appear to work well with w3m, specifically the search button. --JoakimVerona
 
@@ -327,6 +312,24 @@ I haven't figured out what the problem is yet, but I added http://www.emacswiki.
 
 [new]
 When I look at the RSS feed, I get to see the latest revision of the page. I must therefore assume that it's Google Reader's fault. I can imagine two problems: 1. It takes very long for changes to be picked up by Google. That's the explanation I currently favor because I have several of my own wikis in Google Reader and I often have the impression that Google Reader is up to a day late. 2. Google Reader thinks that you're looking at an update to an existing page and will not show it anymore. I remember there was such an option for Blog Lines, but I can't find anything like it for Google Reader. -- AlexSchroeder
+
+=== Browser `Open in New Window' no longer works on wiki pages ===
+
+This has changed in the last day or so -- since the spam attack. 
+
+On EmacsWiki, I can no longer right-click a link (any link) and choose '''Open in New Window'''. I use IE6, and I have Google Toolbar installed (since a long time ago). When I try to open a link in a new window, Google Toolbar treats the attempt as a pop-up and blocks it.
+
+I am forced to duplicate the browser window (`C-n') and then find and click the link. This is very slow, since the current page needs to be reloaded  in the new window even though I'm going to move away from it.
+
+I have this problem only for %%EmacsWiki%% pages, and I have changed nothing in my browser etc.  Does this perhaps have something to do with the change to use [http://recaptcha.net/ reCAPTCHA]? 
+
+This is really quite annoying. I can make the problem go away by choosing '''Popups okay''' for Google Toolbar (for %%EmacsWiki%%), but users shouldn't need to do that. %%EmacsWiki%% appears unfriendly to people with this behavior. -- DrewAdams
+
+[new]
+I believe you. Unfortunately I don't know what to do about it. I'm sure your browsing environment will allow you to define exceptions to the popup blocker. -- AlexSchroeder
+
+[new:DrewAdams:2008-09-07 06:27 UTC]
+Yes, as I said, I've done that. The point was that it's a shame that users will now need to do that -- some might become discouraged or not understand. What's odd is that I've never seen this (treating '''Open in New Window''' as a popup) on any other site. Anyway, it's not a biggee. And perhaps it affects only IE6 users who happen to use Google Toolbar -- dunno. -- DrewAdams
 
 ----
 CategoryEmacsWikiSite
