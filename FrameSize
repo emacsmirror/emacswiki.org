@@ -17,6 +17,8 @@ These packages also let you configure Emacs to ''automatically'' fit ''all'' fra
 '''See Also:'''
 * Libraries <tt>[[frame-cmds.el]]</tt> and <tt>[[doremi-frm.el]]</tt> have commands for ''incrementally'' resizing a frame (by using the arrow keys or mouse wheel).
 
+* [[Shrink-Wrapping Frames]] for more information about <tt>[[fit-frame.el]]</tt> and <tt>[[autofit-frame.el]]</tt>.
+
 * FisheyeWithThumbs for commands to temporarily shrink frames to thumbnail size.
 
 == Maximize window on startup ==
