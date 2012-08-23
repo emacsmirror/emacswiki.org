@@ -10,9 +10,9 @@
 ;; Copyright (C) 1988 Lynn Randolph Slater, Jr.
 ;; Created: Tue Aug  4 17:06:46 1987
 ;; Version: 21.0
-;; Last-Updated: Fri Mar  2 08:18:45 2012 (-0800)
+;; Last-Updated: Thu Aug 23 09:09:07 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1817
+;;     Update #: 1824
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/header2.el
 ;; Keywords: tools, docs, maint, abbrev, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -40,14 +40,15 @@
 ;;   `header-blank', `header-code', `header-commentary',
 ;;   `header-compatibility', `header-copyright',
 ;;   `header-creation-date', `header-date-string',
-;;   `header-description', `header-end-line', `header-eof',
-;;   `header-file-name', `header-free-software', `header-history',
-;;   `header-keywords', `header-lib-requires', `header-maintainer',
-;;   `header-mode-line', `header-modification-author',
-;;   `header-modification-date', `header-prefix-string',
-;;   `header-rcs-id', `header-rcs-log', `header-sccs', `header-shell',
-;;   `header-status', `header-title', `header-toc',
-;;   `header-update-count', `header-version', `headerable-file-p',
+;;   `header-description', `header-doc-url',`header-end-line',
+;;   `header-eof', `header-file-name', `header-free-software',
+;;   `header-history', `header-keywords', `header-lib-requires',
+;;   `header-maintainer', `header-mode-line',
+;;   `header-modification-author', `header-modification-date',
+;;   `header-multiline', `header-prefix-string', `header-rcs-id',
+;;   `header-rcs-log', `header-sccs', `header-shell', `header-status',
+;;   `header-title', `header-toc', `header-update-count',
+;;   `header-url', `header-version', `headerable-file-p',
 ;;   `make-box-comment', `make-divider', `make-revision',
 ;;   `register-file-header-action', `section-comment-start',
 ;;   `true-mode-name', `uniquify-list', `update-file-name',
@@ -61,8 +62,8 @@
 ;;
 ;; Other variables defined here:
 ;;
-;;   `header-auto-update-enabled', `file-header-update-alist',
-;;   `header-prefix-string', `return-to'.
+;;   `file-header-update-alist', `header-auto-update-enabled',
+;;   `header-multiline', `header-prefix-string', `return-to'.
 ;;
 ;;
 ;; To have Emacs update file headers automatically whenever you save a
@@ -163,6 +164,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/08/23 dadams
+;;     Added: header-doc-url.
+;;     make-header-hook: Added header-doc-url to default value.
 ;; 2011/12/19 dadams
 ;;     delete-and-forget-line: Use line-end-position, not end-of-line + point.
 ;; 2011/11/15 dadams
@@ -402,6 +406,7 @@ t means use local time with timezone; nil means use UTC."
                               header-modification-author
                               header-update-count
                               header-url
+                              header-doc-url
                               header-keywords
                               header-compatibility
                               header-blank
@@ -653,6 +658,10 @@ This is normally overwritten with each file save."
 (defsubst header-url ()
   "Insert \"URL: \" line."
   (insert header-prefix-string "URL: \n"))
+
+(defsubst header-doc-url ()
+  "Insert \"Doc URL: \" line."
+  (insert header-prefix-string "Doc URL: \n"))
 
 (defsubst header-keywords ()
   "Insert \"Keywords: \" line."
