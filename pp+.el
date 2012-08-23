@@ -7,10 +7,11 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep  3 13:45:40 1999
 ;; Version: 21.0
-;; Last-Updated: Sun Jul 22 19:40:42 2012 (-0700)
+;; Last-Updated: Thu Aug 23 16:32:27 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 207
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/pp+.el
+;;     Update #: 208
+;; URL: http://www.emacswiki.org/emacs-en/pp%2b.el
+;; Doc URL: http://emacswiki.org/emacs/EvaluatingExpressions
 ;; Keywords: lisp
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;;
