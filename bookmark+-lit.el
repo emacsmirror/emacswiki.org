@@ -6,10 +6,11 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2010-2112, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 23 07:49:32 2010 (-0700)
-;; Last-Updated: Tue Jul 17 10:27:35 2012 (-0700)
+;; Last-Updated: Thu Aug 23 09:20:29 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 780
+;;     Update #: 781
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-lit.el
+;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus
 ;; Keywords: bookmarks, highlighting, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
 ;; 
