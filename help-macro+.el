@@ -7,10 +7,11 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug 24 15:36:18 1999
 ;; Version: 20.0
-;; Last-Updated: Sun Jan  1 14:05:19 2012 (-0800)
+;; Last-Updated: Thu Aug 23 13:04:35 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 116
+;;     Update #: 117
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/help-macro+.el
+;; Doc URL: http://emacswiki.org/emacs/HelpPlus
 ;; Keywords: help
 ;; Compatibility: GNU Emacs 20.x
 ;;
