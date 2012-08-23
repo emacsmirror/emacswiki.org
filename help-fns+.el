@@ -7,10 +7,11 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 22.1
-;; Last-Updated: Fri Jul 20 15:02:47 2012 (-0700)
+;; Last-Updated: Thu Aug 23 13:03:20 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1257
+;;     Update #: 1258
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/help-fns+.el
+;; Doc URL: http://emacswiki.org/emacs/HelpPlus
 ;; Keywords: help, faces, characters, packages, description
 ;; Compatibility: GNU Emacs: 22.x, 23.x
 ;;
