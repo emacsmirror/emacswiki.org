@@ -7,10 +7,11 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Sun Mar 25 15:21:07 2007
 ;; Version: 22.0
-;; Last-Updated: Sun Jan  1 15:48:55 2012 (-0800)
+;; Last-Updated: Thu Aug 23 11:35:50 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 80
+;;     Update #: 81
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/font-lock+.el
+;; Doc URL: http://www.emacswiki.org/emacs/HighlightLibrary
 ;; Keywords: languages, faces, highlighting
 ;; Compatibility: GNU Emacs: 22.x, 23.x
 ;; 
