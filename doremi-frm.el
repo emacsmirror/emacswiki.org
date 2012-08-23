@@ -7,10 +7,11 @@
 ;; Copyright (C) 2004-2012, Drew Adams, all rights reserved.
 ;; Created: Sat Sep 11 10:40:32 2004
 ;; Version: 22.0
-;; Last-Updated: Fri Mar  2 07:41:52 2012 (-0800)
+;; Last-Updated: Thu Aug 23 10:23:41 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 2985
+;;     Update #: 2987
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/doremi-frm.el
+;; Doc URL: http://www.emacswiki.org/emacs/DoReMi
 ;; Keywords: frames, extensions, convenience, keys, repeat, cycle
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;;
@@ -922,6 +923,7 @@ after removing frame parameters `buffer-list' and `minibuffer'."
                           (nth 2 fr+parms)))) ; window config
                 (cdr frame-config))))   ; frames alist
 
+;; Define this to avoid requiring `cl.el' at runtime.
 (defun doremi-delete-if (predicate list)
   "Remove all occurrences of ITEM in LIST that satisfy PREDICATE.
 This is a destructive function: It reuses the storage of LIST whenever
