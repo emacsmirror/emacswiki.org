@@ -7,10 +7,11 @@
 ;; Copyright (C) 2010-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 30 15:22:56 2010 (-0800)
 ;; Version: 
-;; Last-Updated: Mon Jun 18 09:44:38 2012 (-0700)
+;; Last-Updated: Thu Aug 23 16:22:22 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1452
+;;     Update #: 1453
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/mouse3.el
+;; Doc URL: http://www.emacswiki.org/emacs/Mouse3
 ;; Keywords: mouse menu keymap kill rectangle region
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;; 
