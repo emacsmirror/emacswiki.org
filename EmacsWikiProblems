@@ -23,7 +23,7 @@ Now try to find this page: BufferMenuPlus.  Now try clicking the title of page <
 What's wrong? -- DrewAdams
 
 [new]
-Google.  I am noticing similar issues with global google search more and more often.  E.g. it seems google treats "-" as whitespace and then looks for the resulting separate words. It's becoming harder and harder to "google" documentation of lisp symbol.  The same happens for camelCase and file/paths, or at least I am getting that impression.  -- JonasBernoulli
+Google.  I am noticing similar issues with global google search more and more often.  E.g. it seems google treats "-" as whitespace and then looks for the resulting separate words. It's becoming harder and harder to "google" documentation of lisp symbol.  The same happens for camelCase and file/paths, or at least I am getting that impression.  Edit: In case of apropos-fn or org-something it gets worse: fn? that's not a word let's just ignore it. org? that's certainly organisation. -- JonasBernoulli
 
 == Site search misses main page for highlight.el ==
 
