@@ -926,27 +926,8 @@ FidelSalas
 [new:DrewAdams:2011-10-12 06:26 UTC]
 Thanks. Please do. I don't mean to put you off. I will take a look when we know what we're dealing with.  Thx -- DrewAdams
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+[new:PhilHudson:2012-08-23 12:08 UTC]
+*RFE*: Please consider including in the header of each feature-enhancement file ##foo+.el## the URL of the corresponding %%EmacsWiki%% documentation/discussion page %%FooPlus%%. It is not obvious that this is where to look unless you already know (and remember from last time you had to work it out).
 
 
 ----
