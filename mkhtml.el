@@ -7,10 +7,11 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Jul 18 13:11:51 2000
 ;; Version: 20.1
-;; Last-Updated: Sun Jan  1 14:05:14 2012 (-0800)
+;; Last-Updated: Thu Aug 23 16:18:31 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 2326
+;;     Update #: 2327
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/mkhtml.el
+;; Doc URL: http://emacswiki.org/emacs/SaveAsHtml
 ;; Keywords: tools, hypermedia, www, info
 ;; Compatibility: Emacs 20.x
 ;;
@@ -18,7 +19,7 @@
 ;;
 ;;   `cl', `custom', `dired', `easymenu', `fit-frame', `info',
 ;;   `info+', `misc-fns', `mkhtml-htmlize', `strings', `thingatpt',
-;;   `thingatpt+', `widget'.
+;;   `thingatpt+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
