@@ -7,10 +7,11 @@
 ;; Copyright (C) 2004-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 16 16:38:23 2004
 ;; Version: 21.0
-;; Last-Updated: Thu Aug 23 09:51:15 2012 (-0700)
+;; Last-Updated: Thu Aug 23 12:54:17 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 904
+;;     Update #: 905
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/compile+.el
+;; Doc URL: http://www.emacswiki.org/emacs/GrepPlus
 ;; Doc URL: http://www.emacswiki.org/emacs/CompilationMode
 ;; Keywords: tools, processes
 ;; Compatibility: GNU Emacs: 22.x, 23.x
