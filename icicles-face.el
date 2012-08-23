@@ -7,10 +7,11 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:19:43 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Jul 17 10:03:46 2012 (-0700)
+;; Last-Updated: Thu Aug 23 14:13:11 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 653
+;;     Update #: 662
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-face.el
+;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -391,15 +392,15 @@ Don't forget to mention your Emacs and Icicles library versions."))
 
 ;;;###autoload
 (defface icicle-complete-input
-  '((((background dark)) (:foreground "#B19E6A64B19E")) ; a dark magenta
-    (t (:foreground "DarkGreen")))
+    '((((background dark)) (:foreground "#B19E6A64B19E")) ; a dark magenta
+      (t (:foreground "DarkGreen")))
   "*Face used to highlight input when it is complete."
   :group 'Icicles-Minibuffer-Display :group 'faces)
 
 ;;;###autoload
 (defface icicle-completion
     '((((background dark)) (:foreground "#0000D53CD53C")) ; a dark cyan
-      (t (:foreground "Red")))                            ; red
+      (t (:foreground "Red")))          ; red
   "*Face used to indicate minibuffer completion.
 It highlights the minibuffer indicator and the `Icy' minor-mode
 lighter during completion.
@@ -408,8 +409,8 @@ Not used for versions of Emacs before version 21."
 
 ;;;###autoload
 (defface icicle-Completions-instruction-1
-  '((((background dark)) (:foreground "#AC4AAC4A0000")) ; a dark yellow
-    (t (:foreground "Blue")))
+    '((((background dark)) (:foreground "#AC4AAC4A0000")) ; a dark yellow
+      (t (:foreground "Blue")))
   "*Face used to highlight first line of `*Completions*' buffer."
   :group 'Icicles-Completions-Display :group 'faces)
 
@@ -422,8 +423,8 @@ Not used for versions of Emacs before version 21."
 
 ;;;###autoload
 (defface icicle-current-candidate-highlight
-  '((((background dark)) (:background "#69D40A460000")) ; a red brown
-    (t (:background "CadetBlue1")))
+    '((((background dark)) (:background "#69D40A460000")) ; a red brown
+      (t (:background "CadetBlue1")))
   "*Face used to highlight the current candidate, in `*Completions*'."
   :group 'Icicles-Completions-Display :group 'faces)
 
@@ -437,8 +438,8 @@ This means that they belong to list `icicle-extra-candidates'."
 
 ;;;###autoload
 (defface icicle-historical-candidate
-  '((((background dark)) (:foreground "#DBD599DF0000")) ; a dark orange
-    (t (:foreground "Blue")))
+    '((((background dark)) (:foreground "#DBD599DF0000")) ; a dark orange
+      (t (:foreground "Blue")))
   "*Face used to highlight `*Completions*' candidates that have been used."
   :group 'Icicles-Completions-Display :group 'faces)
 
@@ -484,21 +485,21 @@ a given set of candidates is governed by option
 
 ;;;###autoload
 (defface icicle-mode-line-help
-  '((((background dark)) (:foreground "#AC4AAC4A0000")) ; a dark yellow
-    (t (:foreground "Blue")))
+    '((((background dark)) (:foreground "#AC4AAC4A0000")) ; a dark yellow
+      (t (:foreground "Blue")))
   "*Face used to highlight help shown in the mode-line."
   :group 'Icicles-Completions-Display :group 'Icicles-Miscellaneous :group 'faces)
 
 ;;;###autoload
 (defface icicle-msg-emphasis
-  '((((background dark)) (:foreground "#B19E6A64B19E")) ; a dark magenta
-    (t (:foreground "DarkGreen")))
+    '((((background dark)) (:foreground "#B19E6A64B19E")) ; a dark magenta
+      (t (:foreground "DarkGreen")))
   "*Face used to emphasize (part of) a message."
   :group 'Icicles-Minibuffer-Display :group 'faces)
 
 ;;;###autoload
 (defface icicle-multi-command-completion
-    '((((background dark)) ; a dark cyan on a dark magenta
+    '((((background dark))              ; a dark cyan on a dark magenta
        (:foreground "#0000D53CD53C" :background "#8B3500007533"))
       (t (:foreground "Red" :background "#78F6FFFF8E4F"))) ; red on a light green
   "*Face used to indicate Icicles multi-command completion.
@@ -528,15 +529,15 @@ Not used for versions of Emacs before version 21."
 
 ;;;###autoload
 (defface icicle-saved-candidate
-    '((((background dark)) (:background "gray20"))   ; a dark gray
-      (t (:background "gray80"))) ; a light gray
+    '((((background dark)) (:background "gray20")) ; a dark gray
+      (t (:background "gray80")))       ; a light gray
   "*Face used to highlight `*Completions*' candidates that have been saved."
   :group 'Icicles-Completions-Display :group 'faces)
 
 ;;;###autoload
 (defface icicle-search-main-regexp-current
-  '((((background dark)) (:background "#00004AA652F1")) ; a dark cyan
-    (t (:background "misty rose")))
+    '((((background dark)) (:background "#00004AA652F1")) ; a dark cyan
+      (t (:background "misty rose")))
   "*Face used to highlight current match of your search context regexp.
 This highlighting is done during Icicles searching."
   :group 'Icicles-Searching :group 'faces)
@@ -683,8 +684,8 @@ search context corresponds to the entire regexp."
 
 ;;;###autoload
 (defface icicle-search-main-regexp-others
-  '((((background dark)) (:background "#348608690000")) ; a very dark brown
-    (t (:background "CadetBlue1")))
+    '((((background dark)) (:background "#348608690000")) ; a very dark brown
+      (t (:background "CadetBlue1")))
   "*Face used to highlight other matches of your search context regexp.
 If user option `icicle-search-highlight-threshold' is less than one,
 then this face is not used.
@@ -694,7 +695,7 @@ This highlighting is done during Icicles searching."
 ;;;###autoload
 (defface icicle-special-candidate
     '((((background dark)) (:background "#176900004E0A")) ; a dark blue
-      (t (:background "#EF47FFFFC847")))   ; A light yellow.
+      (t (:background "#EF47FFFFC847"))) ; A light yellow.
   "*Face used to highlight `*Completions*' candidates that are special.
 The meaning of special is that their names match
 `icicle-special-candidate-regexp'."
