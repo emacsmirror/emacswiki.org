@@ -1,0 +1,25 @@
+This package provides a secondary behaviour to `keyboard-escape-quit'.
+Basically, it will clean up your windows to get a more useful state.
+
+Upon activation, several things happen. First, all buffers that are
+disposable (as specified in `non-interesting-modes') will be killed.  By
+default, this is used for completion lists and the like.
+
+Next, any buffer that are neither bound to a file nor have a mode specified
+in `interesting-modes' are buried (but not killed).  Furthermore, if an
+interesting buffer is showing in `next-window', it is buried as well
+(assuming it has been auto-opened through some help command and should now be
+hidden again).
+
+Finally, any duplicate visible buffers are replaced by the next interesting
+buffer that is not already showing.
+
+All other effects of `keyboard-escape-quit' still apply, of course. Think of
+this as the ultimate "Get me out of here and make things nice again!"
+
+Installation:
+
+To use, save interesting-buffers.el to a a directory on your load-path
+(e.g., ~/.emacs.d/elisp), then add the following to your .emacs file:
+
+(require 'interesting-buffers)
