@@ -7,10 +7,11 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Mar 16 14:18:11 1999
 ;; Version: 20.0
-;; Last-Updated: Tue Aug 21 15:03:25 2012 (-0700)
+;; Last-Updated: Thu Aug 23 12:59:30 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 2192
+;;     Update #: 2193
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/help+20.el
+;; Doc URL: http://emacswiki.org/emacs/HelpPlus
 ;; Keywords: help
 ;; Compatibility: GNU Emacs 20.x
 ;;
