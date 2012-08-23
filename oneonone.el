@@ -7,10 +7,11 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 21.1
-;; Last-Updated: Tue Aug 14 15:23:33 2012 (-0700)
+;; Last-Updated: Thu Aug 23 16:27:38 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 2677
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/oneonone.el
+;;     Update #: 2678
+;; URL: http://www.emacswiki.org/emacs-en/oneonone.el
+;; Doc URL: http://emacswiki.org/emacs/OneOnOneEmacs
 ;; Keywords: local, frames
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
 ;;
