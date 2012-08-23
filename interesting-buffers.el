@@ -1,81 +1,128 @@
-#FILE text/x-emacs-lisp 
-Ozs7IGludGVyZXN0aW5nLWJ1ZmZlcnMuZWwgLS0tIEFkZCBrZXliaW5kaW5nIHRvIGNsZWFudXAg
-ZGlzcGxheWVkIGJ1ZmZlcnMKCjs7IENvcHlyaWdodCDCqSAyMDEwLCAyMDExLCAyMDEyIErDtnJn
-IFdhbHRlciA8aW5mb0BzeW50YXgtay5kZT4KOzsgQXV0aG9yOiBKw7ZyZyBXYWx0ZXIgPGluZm9A
-c3ludGF4LWsuZGU+Cjs7IFVSTDogaHR0cDovL3d3dy5lbWFjc3dpa2kub3JnL2VtYWNzL0ludGVy
-ZXN0aW5nQnVmZmVycwo7OyBDcmVhdGVkOiAyMDEwCjs7IFZlcnNpb246IDAuMQo7OyBLZXl3b3Jk
-czogYnVmZmVyIGRpc3Bvc2UKCjs7IFRoaXMgZmlsZSBpcyBub3QgcGFydCBvZiBHTlUgRW1hY3Mu
-Cgo7OzsgTGljZW5zZToKCjs7IFRoaXMgZmlsZSBpcyBmcmVlIHNvZnR3YXJlOiB5b3UgY2FuIHJl
-ZGlzdHJpYnV0ZSBpdCBhbmQvb3IgbW9kaWZ5Cjs7IGl0IHVuZGVyIHRoZSB0ZXJtcyBvZiB0aGUg
-R05VIEdlbmVyYWwgUHVibGljIExpY2Vuc2UgYXMgcHVibGlzaGVkIGJ5Cjs7IHRoZSBGcmVlIFNv
-ZnR3YXJlIEZvdW5kYXRpb24sIGVpdGhlciB2ZXJzaW9uIDIgb2YgdGhlIExpY2Vuc2UsIG9yCjs7
-IChhdCB5b3VyIG9wdGlvbikgYW55IGxhdGVyIHZlcnNpb24uCjs7Cjs7IFRoaXMgZmlsZSBpcyBk
-aXN0cmlidXRlZCBpbiB0aGUgaG9wZSB0aGF0IGl0IHdpbGwgYmUgdXNlZnVsLAo7OyBidXQgV0lU
-SE9VVCBBTlkgV0FSUkFOVFk7IHdpdGhvdXQgZXZlbiB0aGUgaW1wbGllZCB3YXJyYW50eSBvZgo7
-OyBNRVJDSEFOVEFCSUxJVFkgb3IgRklUTkVTUyBGT1IgQSBQQVJUSUNVTEFSIFBVUlBPU0UuICBT
-ZWUgdGhlCjs7IEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlIGZvciBtb3JlIGRldGFpbHMuCjs7
-Cjs7IFlvdSBzaG91bGQgaGF2ZSByZWNlaXZlZCBhIGNvcHkgb2YgdGhlIEdOVSBHZW5lcmFsIFB1
-YmxpYyBMaWNlbnNlCjs7IGFsb25nIHdpdGggdGhpcyBmaWxlLiAgSWYgbm90LCBzZWUgPGh0dHA6
-Ly93d3cuZ251Lm9yZy9saWNlbnNlcy8+LgoKOzs7IENvbW1lbnRhcnk6Cgo7OyBUaGlzIHBhY2th
-Z2UgcHJvdmlkZXMgYSBzZWNvbmRhcnkgYmVoYXZpb3VyIHRvIGBrZXlib2FyZC1lc2NhcGUtcXVp
-dCcuCjs7IEJhc2ljYWxseSwgaXQgd2lsbCBjbGVhbiB1cCB5b3VyIHdpbmRvd3MgdG8gZ2V0IGEg
-bW9yZSB1c2VmdWwgc3RhdGUuCjs7Cjs7IFVwb24gYWN0aXZhdGlvbiwgc2V2ZXJhbCB0aGluZ3Mg
-aGFwcGVuLiBGaXJzdCwgYWxsIGJ1ZmZlcnMgdGhhdCBhcmUKOzsgZGlzcG9zYWJsZSAoYXMgc3Bl
-Y2lmaWVkIGluIGBub24taW50ZXJlc3RpbmctbW9kZXMnKSB3aWxsIGJlIGtpbGxlZC4gIEJ5Cjs7
-IGRlZmF1bHQsIHRoaXMgaXMgdXNlZCBmb3IgY29tcGxldGlvbiBsaXN0cyBhbmQgdGhlIGxpa2Uu
-Cjs7Cjs7IE5leHQsIGFueSBidWZmZXIgdGhhdCBhcmUgbmVpdGhlciBib3VuZCB0byBhIGZpbGUg
-bm9yIGhhdmUgYSBtb2RlIHNwZWNpZmllZAo7OyBpbiBgaW50ZXJlc3RpbmctbW9kZXMnIGFyZSBi
-dXJpZWQgKGJ1dCBub3Qga2lsbGVkKS4gIEZ1cnRoZXJtb3JlLCBpZiBhbgo7OyBpbnRlcmVzdGlu
-ZyBidWZmZXIgaXMgc2hvd2luZyBpbiBgbmV4dC13aW5kb3cnLCBpdCBpcyBidXJpZWQgYXMgd2Vs
-bAo7OyAoYXNzdW1pbmcgaXQgaGFzIGJlZW4gYXV0by1vcGVuZWQgdGhyb3VnaCBzb21lIGhlbHAg
-Y29tbWFuZCBhbmQgc2hvdWxkIG5vdyBiZQo7OyBoaWRkZW4gYWdhaW4pLgo7Owo7OyBGaW5hbGx5
-LCBhbnkgZHVwbGljYXRlIHZpc2libGUgYnVmZmVycyBhcmUgcmVwbGFjZWQgYnkgdGhlIG5leHQg
-aW50ZXJlc3RpbmcKOzsgYnVmZmVyIHRoYXQgaXMgbm90IGFscmVhZHkgc2hvd2luZy4KOzsKOzsg
-QWxsIG90aGVyIGVmZmVjdHMgb2YgYGtleWJvYXJkLWVzY2FwZS1xdWl0JyBzdGlsbCBhcHBseSwg
-b2YgY291cnNlLiBUaGluayBvZgo7OyB0aGlzIGFzIHRoZSB1bHRpbWF0ZSAiR2V0IG1lIG91dCBv
-ZiBoZXJlIGFuZCBtYWtlIHRoaW5ncyBuaWNlIGFnYWluISIKCjs7OyBJbnN0YWxsYXRpb246Cgo7
-OyBUbyB1c2UsIHNhdmUgaW50ZXJlc3RpbmctYnVmZmVycy5lbCB0byBhIGEgZGlyZWN0b3J5IG9u
-IHlvdXIgbG9hZC1wYXRoCjs7IChlLmcuLCB+Ly5lbWFjcy5kL2VsaXNwKSwgdGhlbiBhZGQgdGhl
-IGZvbGxvd2luZyB0byB5b3VyIC5lbWFjcyBmaWxlOgo7Owo7OyAocmVxdWlyZSAnaW50ZXJlc3Rp
-bmctYnVmZmVycykKCihkZWZncm91cCBpbnRlcmVzdGluZy1tb2RlcyBuaWwKICAiT3B0aW9ucyBm
-b3IgYGludGVyZXN0aW5nLW1vZGVzLmVsJy4iKQoKKGRlZmN1c3RvbSBub24taW50ZXJlc3Rpbmct
-bW9kZXMgJyhoZWxwLW1vZGUgY29tcGxldGlvbi1saXN0LW1vZGUgYXByb3Bvcy1tb2RlIGltYWdl
-LW1vZGUpCiAgIkJ1ZmZlcnMgdGhhdCBzaG91bGQgYWx3YXlzIGJlIGRpc3Bvc2VkIG9mLiIKICA6
-dHlwZSAnc2V4cAogIDpncm91cCAnaW50ZXJlc3RpbmctbW9kZXMKICApCgooZGVmY3VzdG9tIGlu
-dGVyZXN0aW5nLW1vZGVzICcoSW5mby1tb2RlIGRpcmVkLW1vZGUgbWFuLW1vZGUgdGV4dC1tb2Rl
-KQogICJOb24tZmlsZSBidWZmZXJzIHRoYXQgdXN1YWxseSBpbnRlcmVzdGluZywgdW5sZXNzIHNo
-b3dpbmcgaW4gYG5leHQtd2luZG93Jy4iCiAgOnR5cGUgJ3NleHAKICA6Z3JvdXAgJ2ludGVyZXN0
-aW5nLW1vZGVzCiAgKQoKKGRlZnVuIGludGVyZXN0aW5nLWJ1ZmZlci1wIChidWZmZXIpCiAgKG9y
-IChidWZmZXItbG9jYWwtdmFsdWUgJ2J1ZmZlci1maWxlLW5hbWUgYnVmZmVyKQogICAgICAoZmlu
-ZCAoYnVmZmVyLWxvY2FsLXZhbHVlICdtYWpvci1tb2RlIGJ1ZmZlcikgaW50ZXJlc3RpbmctbW9k
-ZXMpCiAgICAgIChtaW5pYnVmZmVycCBidWZmZXIpKSkKCihkZWZ1biBzaG93LW9ubHktaW50ZXJl
-c3RpbmctYnVmZmVycyAoKQogIChpbnRlcmFjdGl2ZSkKICAobGV0ICgoY3Vyd2luIChzZWxlY3Rl
-ZC13aW5kb3cpKSkKCgkJCQkJOyBBIG5vbi1maWxlIGJ1ZmZlcnMgdGhhdCdzIGludGVyZXN0aW5n
-CgkJCQkJOyB3aWxsIHN0aWxsIGJlIGJ1cmllZCBpZiBpdCBpcwoJCQkJCTsgY3VycmVudGx5IHZp
-c2libGUgaW4gKG5leHQtd2luZG93KS4gSXQKCQkJCQk7IG1heSByZWFwcGVhciBsYXRlciBpZiB0
-aGVyZSBhcmUgbGVzcwoJCQkJCTsgaW50ZXJlc3RpbmcgYnVmZmVycyB0aGFuIHdpbmRvd3MKICAg
-IChzZWxlY3Qtd2luZG93IChuZXh0LXdpbmRvdykpCiAgICAoaWYgKGZpbmQgbWFqb3ItbW9kZSBp
-bnRlcmVzdGluZy1tb2RlcykgKGJ1cnktYnVmZmVyKSkKCgkJCQkJOyBidXJ5IG90aGVyIG5vbi1m
-aWxlIGJ1ZmZlcnMsIGtpbGwKCQkJCQk7IGRpc3Bvc2FibGUgb25lcwogICAgKGxvb3AgZm9yIGJ1
-ZmZlciBiZWluZyB0aGUgYnVmZmVycwoJICBpZiAoZmluZCBidWZmZXIgbm9uLWludGVyZXN0aW5n
-LW1vZGVzKQoJICBkbyAoa2lsbC1idWZmZXIgYnVmZmVyKQoJICBlbHNlIGlmIChub3QgKGludGVy
-ZXN0aW5nLWJ1ZmZlci1wIGJ1ZmZlcikpCgkgIGRvIChidXJ5LWJ1ZmZlciBidWZmZXIpKQoKCQkJ
-CQk7IHN3aXRjaCBhd2F5IGZyb20gcHJlY2lvdXMgYnVmZmVyLAoJCQkJCTsgYWx0aG91Z2ggaXQg
-bWF5IHJlYXBwZWFyIGxhdGVyIGlmCgkJCQkJOyB0aGVyZSBhcmUgb25seSBmZXcgaW50ZXJlc3Rp
-bmcgYnVmZmVycwogICAgKGlmIChmaW5kIG1ham9yLW1vZGUgaW50ZXJlc3RpbmctbW9kZXMpIChz
-d2l0Y2gtdG8tYnVmZmVyIG5pbCkpCgoJCQkJCTsgbWFrZSBzdXJlIHdlIG9ubHkgaGF2ZSBpbnRl
-cmVzdGluZwoJCQkJCTsgYnVmZmVycyB2aXNpYmxlCiAgICAobG9vcCBmb3Igd2luIGJlaW5nIHRo
-ZSB3aW5kb3dzCgkgIGlmIChub3QgKGludGVyZXN0aW5nLWJ1ZmZlci1wICh3aW5kb3ctYnVmZmVy
-IHdpbikpKQoJICBkbwoJICAoc2VsZWN0LXdpbmRvdyB3aW4pCgkgIChzd2l0Y2gtdG8tYnVmZmVy
-IG5pbCkpCgoJCQkJCTsgZWxpbWluYXRlIGR1cGxpY2F0ZXMKICAgIChsZXQgKChidWZmZXJzIChs
-aXN0ICh3aW5kb3ctYnVmZmVyIGN1cndpbikpKSkKCiAgICAgIChsb29wIGZvciB3aW4gPSAobmV4
-dC13aW5kb3cgY3Vyd2luIDApIHRoZW4gKG5leHQtd2luZG93IHdpbiAwKQoJICAgIHdoaWxlIChu
-b3QgKGVxIHdpbiBjdXJ3aW4pKQoJICAgIGlmIChmaW5kICh3aW5kb3ctYnVmZmVyIHdpbikgYnVm
-ZmVycykKCSAgICBkbwoJICAgIChzZWxlY3Qtd2luZG93IHdpbikKCSAgICAoc3dpdGNoLXRvLWJ1
-ZmZlciBuaWwpCgkgICAgKHNldHEgYnVmZmVycyAoY29ucyAoY3VycmVudC1idWZmZXIpIGJ1ZmZl
-cnMpKSkpCgogICAgKHNlbGVjdC13aW5kb3cgY3Vyd2luKSkpCgooZGVmYWR2aWNlIGtleWJvYXJk
-LWVzY2FwZS1xdWl0IChhcm91bmQga2V5Ym9hcmQtZXNjYXBlLXF1aXQtaW50ZXJlc3RpbmctYnVm
-ZmVycyBhY3RpdmF0ZSkKICAoaWYgKG5vdCAobWluaWJ1ZmZlcnAgKGN1cnJlbnQtYnVmZmVyKSkp
-CiAgICAgIChzaG93LW9ubHktaW50ZXJlc3RpbmctYnVmZmVycykpCiAgKHNhdmUtd2luZG93LWV4
-Y3Vyc2lvbiBhZC1kby1pdCkpCgoocHJvdmlkZSAnaW50ZXJlc3RpbmctYnVmZmVycykKCjs7OyBp
-bnRlcmVzdGluZy1idWZmZXJzLmVsIGVuZHMgaGVyZQo=
+;;; interesting-buffers.el --- Add keybinding to cleanup displayed buffers
+
+;; Copyright © 2010, 2011, 2012 Jörg Walter <info@syntax-k.de>
+;; Author: Jörg Walter <info@syntax-k.de>
+;; URL: http://www.emacswiki.org/emacs/InterestingBuffers
+;; Created: 2010
+;; Version: 0.1
+;; Keywords: buffer dispose
+
+;; This file is not part of GNU Emacs.
+
+;;; License:
+
+;; This file is free software: you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 2 of the License, or
+;; (at your option) any later version.
+;;
+;; This file is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+;;
+;; You should have received a copy of the GNU General Public License
+;; along with this file.  If not, see <http://www.gnu.org/licenses/>.
+
+;;; Commentary:
+
+;; This package provides a secondary behaviour to `keyboard-escape-quit'.
+;; Basically, it will clean up your windows to get a more useful state.
+;;
+;; Upon activation, several things happen. First, all buffers that are
+;; disposable (as specified in `non-interesting-modes') will be killed.  By
+;; default, this is used for completion lists and the like.
+;;
+;; Next, any buffer that are neither bound to a file nor have a mode specified
+;; in `interesting-modes' are buried (but not killed).  Furthermore, if an
+;; interesting buffer is showing in `next-window', it is buried as well
+;; (assuming it has been auto-opened through some help command and should now be
+;; hidden again).
+;;
+;; Finally, any duplicate visible buffers are replaced by the next interesting
+;; buffer that is not already showing.
+;;
+;; All other effects of `keyboard-escape-quit' still apply, of course. Think of
+;; this as the ultimate "Get me out of here and make things nice again!"
+
+;;; Installation:
+
+;; To use, save interesting-buffers.el to a a directory on your load-path
+;; (e.g., ~/.emacs.d/elisp), then add the following to your .emacs file:
+;;
+;; (require 'interesting-buffers)
+
+(defgroup interesting-modes nil
+  "Options for `interesting-modes.el'.")
+
+(defcustom non-interesting-modes '(help-mode completion-list-mode apropos-mode image-mode)
+  "Buffers that should always be disposed of."
+  :type 'sexp
+  :group 'interesting-modes
+  )
+
+(defcustom interesting-modes '(Info-mode dired-mode man-mode text-mode)
+  "Non-file buffers that usually interesting, unless showing in `next-window'."
+  :type 'sexp
+  :group 'interesting-modes
+  )
+
+(defun interesting-buffer-p (buffer)
+  (or (buffer-local-value 'buffer-file-name buffer)
+      (find (buffer-local-value 'major-mode buffer) interesting-modes)
+      (minibufferp buffer)))
+
+(defun show-only-interesting-buffers ()
+  (interactive)
+  (let ((curwin (selected-window)))
+
+					; A non-file buffers that's interesting
+					; will still be buried if it is
+					; currently visible in (next-window). It
+					; may reappear later if there are less
+					; interesting buffers than windows
+    (select-window (next-window))
+    (if (find major-mode interesting-modes) (bury-buffer))
+
+					; bury other non-file buffers, kill
+					; disposable ones
+    (loop for buffer being the buffers
+	  if (find buffer non-interesting-modes)
+	  do (kill-buffer buffer)
+	  else if (not (interesting-buffer-p buffer))
+	  do (bury-buffer buffer))
+
+					; switch away from precious buffer,
+					; although it may reappear later if
+					; there are only few interesting buffers
+    (if (find major-mode interesting-modes) (switch-to-buffer nil))
+
+					; make sure we only have interesting
+					; buffers visible
+    (loop for win being the windows
+	  if (not (interesting-buffer-p (window-buffer win)))
+	  do
+	  (select-window win)
+	  (switch-to-buffer nil))
+
+					; eliminate duplicates
+    (let ((buffers (list (window-buffer curwin))))
+
+      (loop for win = (next-window curwin 0) then (next-window win 0)
+	    while (not (eq win curwin))
+	    if (find (window-buffer win) buffers)
+	    do
+	    (select-window win)
+	    (switch-to-buffer nil)
+	    (setq buffers (cons (current-buffer) buffers))))
+
+    (select-window curwin)))
+
+(defadvice keyboard-escape-quit (around keyboard-escape-quit-interesting-buffers activate)
+  (if (not (minibufferp (current-buffer)))
+      (show-only-interesting-buffers))
+  (save-window-excursion ad-do-it))
+
+(provide 'interesting-buffers)
+
+;;; interesting-buffers.el ends here
