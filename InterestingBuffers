@@ -19,7 +19,7 @@ this as the ultimate "Get me out of here and make things nice again!"
 
 Installation:
 
-To use, save interesting-buffers.el to a a directory on your load-path
+To use, save Lisp:interesting-buffers.el to a a directory on your load-path
 (e.g., ~/.emacs.d/elisp), then add the following to your .emacs file:
 
 (require 'interesting-buffers)
