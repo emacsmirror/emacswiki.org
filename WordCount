@@ -1,7 +1,9 @@
 == The Simple Solution: Counting Words on Demand ==
 
 1. Select a region.
+
 2. Run "wc" over that region: M-| wc
+
 3. See the count of lines, words, and characters, in the mode-line.
 
 == Show the number of words in the mode-line ==
