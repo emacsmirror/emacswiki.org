@@ -7,10 +7,11 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 21 10:25:32 2007
 ;; Version: 22.0
-;; Last-Updated: Tue Mar 20 10:09:38 2012 (-0700)
+;; Last-Updated: Thu Aug 23 20:21:47 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 255
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/wid-edit+.el
+;;     Update #: 262
+;; URL: http://www.emacswiki.org/emacs-en/wid-edit%2b.el
+;; Doc URL: http://emacswiki.org/emacs/UseCustomizeForKeyBindings
 ;; Keywords: widget, color
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;;
@@ -209,8 +210,8 @@ Return nil if color validates, or WIDGET otherwise."
   "Return non-nil if STRING is an RGB hex string #XXXXXXXXXXXX.
 Each X is a hexadecimal digit.  The number of Xs must be a multiple of
 three, with the same number of Xs for each of red, green, and blue."
-   (save-match-data
-     (string-match "^#\\([a-fA-F0-9][a-fA-F0-9][a-fA-F0-9]\\)+$" string)))
+  (save-match-data
+    (string-match "^#\\([a-fA-F0-9][a-fA-F0-9][a-fA-F0-9]\\)+$" string)))
 
 
 ;;; REPLACE ORIGINAL `color' widget in `wid-edit.el'.
