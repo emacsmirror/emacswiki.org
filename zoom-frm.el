@@ -7,10 +7,11 @@
 ;; Copyright (C) 2005-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Jan 07 10:24:35 2005
 ;; Version: 20
-;; Last-Updated: Sun Jan  1 14:05:07 2012 (-0800)
+;; Last-Updated: Thu Aug 23 20:36:08 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 244
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/zoom-frm.el
+;;     Update #: 246
+;; URL: http://www.emacswiki.org/emacs-en/zoom-frm.el
+;; Doc URL: http://emacswiki.org/emacs/SetFonts
 ;; Keywords: frames, extensions, convenience
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;;
