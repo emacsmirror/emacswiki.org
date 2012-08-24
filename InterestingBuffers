@@ -23,3 +23,8 @@ To use, save Lisp:interesting-buffers.el to a a directory on your load-path
 (e.g., ~/.emacs.d/elisp), then add the following to your .emacs file:
 
 (require 'interesting-buffers)
+
+
+'''See also'''
+[[PopWin]] : You can show temporary buffer in a predefined position/size and press Ctrl-G to dismiss it.
+
