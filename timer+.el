@@ -7,10 +7,10 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Jul 15 08:45:19 1996
 ;; Version: 20.0
-;; Last-Updated: Tue Aug 21 15:27:35 2012 (-0700)
+;; Last-Updated: Thu Aug 23 17:11:15 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 86
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/timer+.el
+;;     Update #: 87
+;; URL: http://www.emacswiki.org/emacs-en/timer%2b.el
 ;; Keywords: processes, calendar
 ;; Compatibility: GNU Emacs 20.x
 ;;
