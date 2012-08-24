@@ -7,10 +7,11 @@
 ;; Copyright (C) 2011-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Oct  4 07:32:20 2011 (-0700)
 ;; Version: 23.0
-;; Last-Updated: Fri Jun  1 15:59:11 2012 (-0700)
+;; Last-Updated: Thu Aug 23 17:15:57 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 151
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/ucs-cmds.el
+;;     Update #: 153
+;; URL: http://www.emacswiki.org/emacs-en/ucs-cmds.el
+;; Doc URL: http://emacswiki.org/emacs/UnicodeEncoding
 ;; Keywords: unicode, characters, encoding, commands, ucs-names
 ;; Compatibility: GNU Emacs 23.x
 ;;
