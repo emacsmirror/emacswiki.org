@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 21.1
-;; Last-Updated: Fri Aug 24 14:23:05 2012 (-0700)
+;; Last-Updated: Fri Aug 24 15:16:25 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 4667
+;;     Update #: 4669
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/info+.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/InfoPlus
 ;; Keywords: help, docs, internal
@@ -186,6 +186,7 @@
 ;;; Change Log:
 ;;
 ;; 2012/08/24 dadams
+;;     info-fontify-reference-items: Fontify parameters on continuation lines also.
 ;;     Info-fontify-node: Juri's fix for Emacs bug #12187.
 ;;     Reverted Juri's change from 08/20, since Juri fixed it elsewhere afterward.
 ;; 2012/08/21 dadams
@@ -4077,7 +4078,7 @@ If ... contains \" or ' then that character must be backslashed.")
 (defun info-fontify-reference-items ()
   "Fontify reference items such as \"Function:\" in Info buffer."
   (while (re-search-forward "^ --? \\(Command:\\|Constant:\\|Function:\\|Macro:\\|Special Form:\\|\
-Syntax class:\\|User Option:\\|Variable:\\)\\(.*\\)"
+Syntax class:\\|User Option:\\|Variable:\\)\\(.*\\)\\([\n]          \\(.*\\)\\)*"
                             nil t)
     (let ((symb  (intern (match-string 1))))
       (put-text-property (match-beginning 1)
@@ -4094,7 +4095,12 @@ Syntax class:\\|User Option:\\|Variable:\\)\\(.*\\)"
                            ('Variable:       'info-variable-ref-item)))
       (put-text-property (match-beginning 2) (match-end 2)
                          (if (> emacs-major-version 21) 'font-lock-face 'face)
-                         'info-reference-item))))
+                         'info-reference-item)
+      (when (match-beginning 4)
+        (put-text-property (match-beginning 4) (match-end 4)
+                           (if (> emacs-major-version 21) 'font-lock-face 'face)
+                           'info-reference-item)))))
+
 
 
 ;; REPLACES ORIGINAL in `info.el':
