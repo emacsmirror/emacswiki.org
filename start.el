@@ -7,10 +7,10 @@
 ;; Copyright (C) 1995-2012, Drew Adams, all rights reserved.
 ;; Created: Wed Aug  2 11:12:24 1995
 ;; Version: 21.1
-;; Last-Updated: Tue Aug 21 15:21:17 2012 (-0700)
+;; Last-Updated: Thu Aug 23 17:00:04 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 2942
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/start.el
+;;     Update #: 2943
+;; URL: http://www.emacswiki.org/emacs-en/start.el
 ;; Keywords: abbrev, internal, local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
 ;;
