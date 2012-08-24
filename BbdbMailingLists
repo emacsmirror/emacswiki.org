@@ -8,7 +8,7 @@ family, you can define a _mail-alias_ for every group-member in your
 database.  Here is an example for how I do it:
 
 * Search for all family members.  Use `M-x bbdb' and search for "schroeder".
-* Elide any non-family records using `o'.
+* Elide (mark to omit) any non-family records using `o'.
 * Add a mail-alias for all remaining records.  Use `*a' and type the mail-alias "schroeder".
 
 You also need to tell the BBDB to define the mail abbreviations for
