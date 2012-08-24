@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Feb 13 16:47:45 1996
 ;; Version: 21.0
-;; Last-Updated: Thu Aug 23 17:08:14 2012 (-0700)
+;; Last-Updated: Fri Aug 24 13:41:02 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 2016
+;;     Update #: 2055
 ;; URL: http://www.emacswiki.org/emacs-en/thingatpt%2b.el
 ;; Doc URL: http://www.emacswiki.org/emacs/ThingAtPointPlus#ThingAtPoint%2b
 ;; Keywords: extensions, matching, mouse
@@ -56,8 +56,8 @@
 ;;    `tap-list-at/nearest-point-with-bounds',
 ;;    `tap-list-at-point-with-bounds', `tap-list-nearest-point',
 ;;    `tap-list-nearest-point-with-bounds',
-;;    `tap-list-nearest-point-as-string',
-;;    `tap-non-nil-symbol-name-at-point',
+;;    `tap-list-nearest-point-as-string', `tap-looking-at-p',
+;;    `tap-looking-back-p', `tap-non-nil-symbol-name-at-point',
 ;;    `tap-non-nil-symbol-name-nearest-point',
 ;;    `tap-non-nil-symbol-nearest-point',
 ;;    `tap-number-at-point-decimal', `tap-number-at-point-hex',
@@ -66,9 +66,10 @@
 ;;    `tap-region-or-non-nil-symbol-name-nearest-point',
 ;;    `tap-sentence-nearest-point', `tap-sexp-at-point-with-bounds',
 ;;    `tap-sexp-nearest-point', `tap-sexp-nearest-point-with-bounds',
-;;    `tap-string-at-point', `tap-string-nearest-point',
-;;    `tap-symbol-at-point-with-bounds', `tap-symbol-name-at-point',
-;;    `tap-symbol-name-nearest-point', `tap-symbol-nearest-point',
+;;    `tap-string-at-point', `tap-string-match-p',
+;;    `tap-string-nearest-point', `tap-symbol-at-point-with-bounds',
+;;    `tap-symbol-name-at-point', `tap-symbol-name-nearest-point',
+;;    `tap-symbol-nearest-point',
 ;;    `tap-symbol-nearest-point-with-bounds',
 ;;    `tap-thing-at-point-with-bounds',
 ;;    `tap-thing/form-nearest-point-with-bounds',
@@ -231,6 +232,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/08/24 dadams
+;;     Added: tap-string-match-p, tap-looking-at-p, tap-looking-back-p.
+;;     tap-list-at/nearest-point-with-bounds: Handle point inside a string.
+;;     tap-number-at-point-(hex|decimal): Use tap-string-match-p.
 ;; 2012/08/22 dadams
 ;;     Added: tap-bounds-of-number-at-point(-decimal|-hex).
 ;;     tap-thing-at-point, tap-bounds-of-thing-at-point-1:  Check first the tap-* property.
@@ -436,6 +441,50 @@ this setting temporarily."
 (unless (fboundp 'constrain-to-field) (defun constrain-to-field (&rest _ignore) (point)))
 (unless (fboundp 'field-beginning)    (defalias 'field-beginning (symbol-function 'ignore)))
 (unless (fboundp 'field-end)          (defalias 'field-end (symbol-function 'ignore)))
+ 
+;;; Utility Functions ------------------------------------------------
+
+
+(if (fboundp 'string-match-p)
+    (defalias 'tap-string-match-p 'string-match-p) ; Emacs 23+
+  (defun tap-string-match-p (regexp string &optional start)
+    "Like `string-match', but this saves and restores the match data."
+    (save-match-data (string-match regexp string start))))
+
+(if (fboundp 'looking-at-p)
+    (defalias 'tap-looking-at-p 'looking-at-p) ; Emacs 23+
+  (defun tap-looking-at-p (regexp)
+    "Like `looking-at', but this saves and restores the match data."
+    (save-match-data (looking-at regexp))))
+
+(defun tap-looking-back-p (regexp &optional limit greedy)
+  "Like `looking-back', but this does not change the match data."
+  (save-match-data
+    (let ((start  (point))
+          (pos    (save-excursion
+                    (and (re-search-backward
+                          (if (> emacs-major-version 21)
+                              (concat "\\(?:" regexp "\\)\\=")
+                            (concat "\\(" regexp "\\)\\="))
+                          limit t)
+                         (point)))))
+      (if (and greedy  pos)
+          (save-restriction
+            (narrow-to-region (point-min) start)
+            (while (and (> pos (point-min))
+                        (save-excursion (goto-char pos)
+                                        (backward-char 1)
+                                        (tap-looking-at-p
+                                         (if (> emacs-major-version 21)
+                                             (concat "\\(?:" regexp "\\)\\'")
+                                           (concat "\\(" regexp "\\)\\'")))))
+              (setq pos  (1- pos)))
+            (save-excursion (goto-char pos)
+                            (tap-looking-at-p
+                             (if (> emacs-major-version 21)
+                                 (concat "\\(?:" regexp "\\)\\'")
+                               (concat "\\(" regexp "\\)\\'"))))))
+      (not (null pos)))))
  
 ;;; THINGS -----------------------------------------------------------
 
@@ -667,6 +716,7 @@ Optional arg SYNTAX-TABLE is a syntax table to use."
   "Return the THING nearest point, if any, else nil.
 See also `tap-thing-at-point'.
 \"Nearest\" to point is determined as follows:
+
   The nearest THING on the same line is returned, if there is any.
       Between two THINGs equidistant from point on the same line, the
       leftmost is considered nearer.
@@ -675,6 +725,12 @@ See also `tap-thing-at-point'.
       This means that between two THINGs equidistant from point in
       lines above and below it, the THING in the line above point
       (previous Nth) is considered nearer to it.
+
+However, for some THINGs whitespace between THINGs might be considered
+insignificant, as well as the amount of it.  This means that if point
+is between two THINGs and surrounded by whitespace then the \"nearest\"
+THING returned might not be the one that is absolutely closest.
+
 Optional arg SYNTAX-TABLE is a syntax table to use."
   (let ((thing+bds  (tap-thing-nearest-point-with-bounds thing syntax-table)))
     (and thing+bds
@@ -942,12 +998,19 @@ AT/NEAR is a function called to grab the initial list and its bounds.
 UP (default: 0) is the number of list levels to go up to start with.
 Non-nil UNQUOTEDP means remove the car if it is `quote' or
  `backquote-backquote-symbol'.
+
 Return (LIST START . END) with START and END of the non-empty LIST.
 Return nil if no non-empty list is found."
   (save-excursion
     (unless (eq at/near 'tap-sexp-at-point-with-bounds)
-      (cond ((looking-at "\\s-*\\s(") (skip-syntax-forward "-"))
-            ((looking-at "\\s)\\s-*") (skip-syntax-backward "-"))))
+      ;; Skip over whitespace, including newlines.
+      ;; "Nearest" here treats all contiguous whitespace as if it were a single char.
+      (cond ((tap-looking-at-p   "\\(\\s-*\\|[\n]*\\)\\s(") (skip-syntax-forward "->"))
+            ((tap-looking-back-p "\\s)\\(\\s-*\\|[\n]*\\)") (skip-syntax-backward "->"))))
+    (let (strg-end)
+      (while (setq strg-end  (in-string-p))
+        (skip-syntax-forward "^\"")     ; Skip past string element of list.
+        (skip-syntax-forward "\"")))    ; Skip past new string opening, `"', into next string.
     (let ((sexp+bnds  (funcall at/near)))
       (condition-case nil               ; Handle an `up-list' error.
           (progn
@@ -967,7 +1030,6 @@ Return nil if no non-empty list is found."
                     ((eq backquote-backquote-symbol (caar sexp+bnds))
                      (setq sexp+bnds  (cons (cadr (car sexp+bnds))
                                             (cons (+ 1 (cadr sexp+bnds)) (cddr sexp+bnds)))))))
-
             (while (not (consp (car sexp+bnds)))
               (up-list -1)
               (setq sexp+bnds  (tap-sexp-at-point-with-bounds))))
@@ -1082,27 +1144,6 @@ Same as `tap-list-nearest-point', but removes the car if it is
   (let ((list+bds  (tap-list-nearest-point-with-bounds up 'UNQUOTED)))
     (and list+bds
          (car list+bds))))
-
-;;; $$$$$$
-;;; (defun tap-list-at/nearest-point (at/near &optional up unquotedp)
-;;;   "Helper for `tap-list-at-point', `tap-list-nearest-point' and similar functions.
-;;; AT/NEAR is a function that is called to grab the initial sexp.
-;;; UP (default: 0) is the number of list levels to go up to start with..
-;;; Non-nil UNQUOTEDP means remove the car if it is `quote' or
-;;;  `backquote-backquote-symbol'."
-;;;   (save-excursion
-;;;     (cond ((looking-at "\\s-*\\s(") (skip-syntax-forward "-"))
-;;;           ((looking-at "\\s)\\s-*") (skip-syntax-backward "-")))
-;;;     (let ((sexp  (funcall at/near)))
-;;;       (condition-case nil               ; Handle an `up-list' error.
-;;;           (progn (when up (up-list (- up)) (setq sexp  (sexp-at-point)))
-;;;                  (while (not (listp sexp)) (up-list -1) (setq sexp  (sexp-at-point)))
-;;;                  (when (and unquotedp (consp sexp)
-;;;                             (memq (car sexp) (list backquote-backquote-symbol 'quote)))
-;;;                    (setq sexp  (cadr sexp)))
-;;;                  (while (not (listp sexp)) (up-list -1) (setq sexp  (sexp-at-point))))
-;;;         (error (setq sexp  nil)))
-;;;       sexp)))
 
 
 ;; The following functions return a string, not a list.
@@ -1255,10 +1296,8 @@ Return nil if none is found."
   "Return the number represented by the decimal numeral at point.
 Return nil if none is found."
   (let ((strg  (tap-thing-at-point 'sexp)))
-    (and (stringp strg)        
-         (if (fboundp 'string-match-p)
-             (string-match-p "\\`[0-9]+\\'" strg)
-           (string-match "\\`[0-9]+\\'" strg))
+    (and (stringp strg)
+         (tap-string-match-p "\\`[0-9]+\\'" strg)
          (string-to-number strg))))
 
 
@@ -1280,9 +1319,7 @@ Return nil if none is found."
 Return nil if none is found."
   (let ((strg  (tap-thing-at-point 'sexp)))
     (and (stringp strg)
-         (if (fboundp 'string-match-p)
-             (string-match-p "\\`[0-9a-fA-F]+\\'" strg)
-           (string-match "\\`[0-9a-fA-F]+\\'" strg))
+         (tap-string-match-p "\\`[0-9a-fA-F]+\\'" strg)
          (string-to-number strg 16))))
 
 
