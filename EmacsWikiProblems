@@ -36,6 +36,14 @@ Edit 3: Or maybe google just/additionally penalizes the emacswiki for offering N
 [new]
 Perhaps a second search box that just searched page names would help? Self:action=index;match=example -- AlexSchroeder
 
+[new:DrewAdams:2012-08-24 01:50 UTC]
+Maybe.  
+
+BTW, I notice that short things like `hl' in `hl-line+.el' '''''ARE''''' being used by the google search.  So Jonas's hypothesis that `fn' not being a word is a problem does not seem to be a problem.
+
+And even searching for a full page title sometimes does not find it.  It seems that titles themselves are not being included in the text that is indexed/searched.  Perhaps that is the real problem (or one of them). -- DrewAdams
+
+
 === Site search misses main page for highlight.el ===
 
 Visit <tt>[[highlight.el]]</tt>. Click the title to google-search for references to that page.  There are 5 pages of hits, but none of them are HighLight, which is the main page documenting Lisp:highlight.el.  There is even a link ##Lisp:highlight.el## on page HighLight, so it can't just be a problem of using ##<tt>[[highlight.el]]</tt>## instead of ##Lisp:##.  Maybe the problem has something to do with case-sensitivity in the page name "##HighLight##"? -- DrewAdams
