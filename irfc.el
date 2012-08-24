@@ -9,9 +9,9 @@
 ;; Copyright (C) 2009, Juanma Barranquero, all rights reserved.
 ;; Copyright (C) 2010, Niels Widger, all rights reserved.
 ;; Created: 2009-01-14 08:13:15
-;; Version: 0.5.5
-;; Last-Updated: 2009-02-13 10:33:22
-;;           By: Andy Stewart
+;; Version: 0.5.6
+;; Last-Updated: Fri Aug 17 19:42:29 2012 (-0400)
+;;           By: Samuel Bronson
 ;; URL: http://www.emacswiki.org/emacs/download/irfc.el
 ;; Keywords: RFC, IETF
 ;; Compatibility: GNU Emacs 22 ~ 23
@@ -187,6 +187,13 @@
 ;;
 
 ;;; Change log:
+;; 2012/08/17
+;;   * Samuel Bronson:
+;;      * Added `autoload' cookies in key locations.
+;;      * Modified `irfc-open' to create the `irfc-directory' if it's
+;;        missing (after verifying that the user is okay with this).
+;;      * Now, the user can install using e.g. `el-get' and never have
+;;        to touch init!
 ;;
 ;; 2011/07/12
 ;;   * Juanma Barranquero:
@@ -333,10 +340,14 @@
 ;;; Code:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Customize ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;###autoload
 (defgroup irfc nil
   "Interface for IETF RFC documents."
   :group 'edit)
 
+;; This is autoloaded so that it will take effect without users having
+;; to `load'/`require' this package in their init file.  
+;;;###autoload
 (defcustom irfc-assoc-mode nil
   "If non-nil, RFC documents are associated with `irfc-mode'.
 Default is nil."
@@ -581,6 +592,7 @@ regular-expressions that match a normative/informative
 reference.")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Interactive functions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;###autoload
 (define-derived-mode irfc-mode text-mode "Irfc"
   "Major mode for IETF RFC documents."
   ;; Setup.
@@ -851,6 +863,7 @@ ARG defaults to 1."
         (back-to-indentation))
     (message "This RFC document has no Table of Contents.")))
 
+;;;###autoload
 (defun irfc-follow ()
   "Open RFC document around point.
 Download and open RFC document if it
@@ -862,6 +875,7 @@ does not exist in `irfc-directory'."
         (irfc-open rfc-file-name)
       (message "No valid RFC link found at cursor."))))
 
+;;;###autoload
 (defun irfc-visit (&optional rfc-number)
   "Open RFC document RFC-NUMBER.
 Download and open RFC document if it
@@ -977,6 +991,14 @@ If optional argument PRINT is non-nil, print the name before returning it."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Utilities functions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun irfc-open (rfc-file-name)
   "Open RFC document with RFC-FILE-NAME."
+
+  ;; Make sure `irfc-directory' exists.
+  (unless (file-directory-p irfc-directory)
+    (if (y-or-n-p (format "Create directory %s to hold RFCs? "
+			  irfc-directory))
+	(make-directory irfc-directory t)
+      (error "Customize `irfc-directory', then!")))
+
   (let (filepath)
     (if (string-equal rfc-file-name (buffer-name))
         ;; Notify user if current buffer is search RFC document.
