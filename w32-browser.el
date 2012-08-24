@@ -7,10 +7,11 @@
 ;; Copyright (C) 2004-2012, Drew Adams, all rights reserved.
 ;; Created: Thu Mar 11 13:40:52 2004
 ;; Version: 21.0
-;; Last-Updated: Sat Mar 10 10:00:37 2012 (-0800)
+;; Last-Updated: Thu Aug 23 20:17:57 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 218
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/w32-browser.el
+;;     Update #: 220
+;; URL: http://www.emacswiki.org/emacs-en/w32-browser.el
+;; Doc URL: http://emacswiki.org/emacs/MsShellExecute
 ;; Keywords: mouse, dired, w32, explorer
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;;
