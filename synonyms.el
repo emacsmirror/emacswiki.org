@@ -7,10 +7,11 @@
 ;; Copyright (C) 2005-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Dec 20 14:39:26 2005
 ;; Version: 1.0
-;; Last-Updated: Tue Aug 21 15:24:26 2012 (-0700)
+;; Last-Updated: Thu Aug 23 17:04:10 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 2503
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/synonyms.el
+;;     Update #: 2505
+;; URL: http://www.emacswiki.org/emacs-en/synonyms.el
+;; Doc URL: http://www.emacswiki.org/emacs/ThesauriAndSynonyms
 ;; Keywords: text, dictionary, thesaurus, spelling, apropos, help
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;;
