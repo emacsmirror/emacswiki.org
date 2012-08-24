@@ -7,10 +7,10 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Mar  5 17:09:08 1996
 ;; Version: 21.0
-;; Last-Updated: Tue Aug 21 15:22:27 2012 (-0700)
+;; Last-Updated: Thu Aug 23 17:01:25 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 544
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/strings.el
+;;     Update #: 545
+;; URL: http://www.emacswiki.org/emacs-en/strings.el
 ;; Keywords: internal, strings, text
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;;
