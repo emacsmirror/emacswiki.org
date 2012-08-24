@@ -45,6 +45,8 @@ BTW, I notice that short things like `hl' in `hl-line+.el' '''''ARE''''' being u
 
 And even searching for a full page title sometimes does not find it.  It seems that titles themselves are not being included in the text that is indexed/searched.  Perhaps that is the real problem (or one of them). -- DrewAdams
 
+[new]
+I think it must be a bug in Google's code. Without the quotes [http://www.google.com/cse?cx=004774160799092323420:6-ff2s0o6yi&q=%22apropos-fn%2bvar.el%22#gsc.tab=0&gsc.q=apropos-fn%2Bvar.el returns more results] that seem to be missing in the search with quotes. At this point I feel that maybe Jonas is right: "Maybe we should switch to another search engine instead." when I last looked at ylucene it seemed like a pain to setup and I think I felt it didn't handle a multi-lingual corpus very well. Does anybody feel like writing something? With the remote repositories it should be possible to write an external indexing and searching service that we could just integrate. -- Alex
 
 === Site search misses main page for highlight.el ===
 
