@@ -7,10 +7,12 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu Jan 25 14:22:13 1996
 ;; Version: 21.0
-;; Last-Updated: Sat Aug 11 09:44:01 2012 (-0700)
+;; Last-Updated: Thu Aug 23 20:33:50 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 161
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/window+.el
+;;     Update #: 163
+;; URL: http://www.emacswiki.org/emacs-en/window%2b.el
+;; Doc URL: http://emacswiki.org/emacs/Delete_Frames_Easily_-_But_Not_Too_Easily
+;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/OneOnOneEmacs
 ;; Keywords: internal, window
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
 ;;
