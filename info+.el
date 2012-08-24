@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 21.1
-;; Last-Updated: Thu Aug 23 14:31:04 2012 (-0700)
+;; Last-Updated: Fri Aug 24 14:23:05 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 4658
+;;     Update #: 4667
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/info+.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/InfoPlus
 ;; Keywords: help, docs, internal
@@ -66,8 +66,7 @@
 ;;  Internal variables defined here:
 ;;
 ;;    `Info-breadcrumbs-depth-internal' (Emacs 23+),
-;;    `Info-file-attributes' (Emacs 23.2, 24.1), `Info-merged-map',
-;;    `Info-mode-syntax-table'.
+;;    `Info-merged-map', `Info-mode-syntax-table'.
 ;;
 ;;
 ;;  ***** NOTE: The following standard faces defined in `info.el'
@@ -186,6 +185,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/08/24 dadams
+;;     Info-fontify-node: Juri's fix for Emacs bug #12187.
+;;     Reverted Juri's change from 08/20, since Juri fixed it elsewhere afterward.
 ;; 2012/08/21 dadams
 ;;     Call tap-put-thing-at-point-props after load thingatpt+.el.
 ;; 2012/08/20 dadams
@@ -1005,12 +1007,6 @@ For example, type `^Q^L^Q^J* ' to set this to \"\\f\\n* \"."
 ;;
 (when (or (> emacs-major-version 23) (and (= emacs-major-version 23) (> emacs-minor-version 1)))
 
-  ;; Used for Juri's fix for Emacs bug #12230.
-  (unless (boundp 'Info-file-attributes)
-    (defvar Info-file-attributes ()
-      "List of the file attributes of visited Info files.
-Each element is a list (FILE-NAME FILE-ATTRIBUTES...)."))
-
   (defun Info-find-file (filename &optional noerror)
     "Return expanded FILENAME, or t if FILENAME is \"dir\".
 Optional second argument NOERROR, if t, means if file is not found
@@ -1058,18 +1054,6 @@ just return nil (no error)."
            (if noerror
                (setq filename nil)
              (error "Info file %s does not exist" filename)))
-         ;; Clear the caches of modified Info files.  This is Juri's fix for Emacs bug #12230.
-         (let* ((attribs-old  (cdr (assoc filename Info-file-attributes)))
-                (modtime-old  (and attribs-old  (nth 5 attribs-old)))
-                (attribs-new  (and (stringp filename)  (file-attributes filename)))
-                (modtime-new  (and attribs-new  (nth 5 attribs-new))))
-           (when (and modtime-old  modtime-new  (> (float-time modtime-new) (float-time modtime-old)))
-             (setq Info-index-nodes  (remove (assoc filename Info-index-nodes) Info-index-nodes)
-                   Info-toc-nodes    (remove (assoc filename Info-toc-nodes)   Info-toc-nodes)))
-           ;; Add new modtime to `Info-file-attributes'.
-           (setq Info-file-attributes  (cons (cons filename attribs-new)
-                                             (remove (assoc filename Info-file-attributes)
-                                                     Info-file-attributes))))         
          filename))
       ((member filename '(apropos history toc))  filename))) ; Handle virtual books - `toc'.
   )
@@ -3710,7 +3694,15 @@ to search again for `%s'.")
                     ((not (bobp))
                      ;; Hide the punctuation at the end, too.
                      (skip-chars-backward " \t,")
-                     (put-text-property (point) header-end 'invisible t))))))
+                     (put-text-property (point) header-end 'invisible t)
+                     ;; Hide the suffix (`.info') of the Info file name.
+                     (beginning-of-line)
+                     (if (re-search-forward (format "File: %s\\([^,\n\t]+\\),"
+                                                    (if (stringp Info-current-file)
+                                                        (file-name-nondirectory Info-current-file)
+                                                      Info-current-file))
+                                            header-end t)
+                         (put-text-property (match-beginning 1) (match-end 1) 'invisible t)))))))
 
         ;; Fontify `...' and "..."
         (goto-char (point-min))
