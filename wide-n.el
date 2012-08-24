@@ -7,10 +7,11 @@
 ;; Copyright (C) 2010-2012, Drew Adams, all rights reserved.
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 20.0
-;; Last-Updated: Sun Jan  1 14:44:01 2012 (-0800)
+;; Last-Updated: Thu Aug 23 20:24:53 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 340
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/wide-n.el
+;;     Update #: 342
+;; URL: http://www.emacswiki.org/emacs-en/wide-n.el
+;; Doc URL: http://www.emacswiki.org/emacs/MultipleNarrowings
 ;; Keywords: narrow restriction widen
 ;; Compatibility: Emacs 21.x, 22.x, 23.x
 ;; 
