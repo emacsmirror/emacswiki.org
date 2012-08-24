@@ -7,10 +7,11 @@
 ;; Copyright (C) 2004-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 10 16:44:55 2004
 ;; Version: 21.0
-;; Last-Updated: Sun Jun 24 06:10:32 2012 (-0700)
+;; Last-Updated: Thu Aug 23 17:10:16 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1460
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/thumb-frm.el
+;;     Update #: 1462
+;; URL: http://www.emacswiki.org/emacs-en/thumb-frm.el
+;; Doc URL: http://www.emacswiki.org/FisheyeWithThumbs
 ;; Keywords: frame, icon
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;;
