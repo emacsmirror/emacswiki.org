@@ -37,7 +37,9 @@ Edit 3: Or maybe google just/additionally penalizes the emacswiki for offering N
 Perhaps a second search box that just searched page names would help? Self:action=index;match=example -- AlexSchroeder
 
 [new:DrewAdams:2012-08-24 01:50 UTC]
-Maybe.  
+Maybe.
+
+But I don't see how that would help with the problem of finding the page that documents a library, by clicking the Elisp page's title.  E.g., clicking the title of page <tt>[[wide-n.el]]</tt> to find the page MultipleNarrowings as one of the pages that link to it.
 
 BTW, I notice that short things like `hl' in `hl-line+.el' '''''ARE''''' being used by the google search.  So Jonas's hypothesis that `fn' not being a word is a problem does not seem to be a problem.
 
