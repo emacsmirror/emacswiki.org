@@ -7,10 +7,11 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Thu Dec  7 09:32:12 2000
 ;; Version: 21.0
-;; Last-Updated: Sun Jan  1 14:05:07 2012 (-0800)
+;; Last-Updated: Thu Aug 23 20:20:00 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 181
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/w32browser-dlgopen.el
+;;     Update #: 183
+;; URL: http://www.emacswiki.org/emacs-en/w32browser-dlgopen.el
+;; Doc URL: http://emacswiki.org/emacs/MsShellExecute
 ;; Keywords: files, extensions, convenience, dialog
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;;
