@@ -7,10 +7,11 @@
 ;; Copyright (C) 2004-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Oct 05 17:02:16 2004
 ;; Version: 21.0
-;; Last-Updated: Sun Jan  1 14:42:40 2012 (-0800)
+;; Last-Updated: Thu Aug 23 17:13:30 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 217
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/tool-bar+.el
+;;     Update #: 218
+;; URL: http://www.emacswiki.org/emacs-en/tool-bar%2b.el
+;; Doc URL: http://emacswiki.org/emacs/ToolBar
 ;; Keywords: tool-bar, convenience, mouse, button, frame
 ;; Compatibility: GNU Emacs: 21.x, 22.x, 23.x
 ;;
