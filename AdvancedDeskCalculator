@@ -107,6 +107,7 @@ Even "operator overloading" works.  If you use defmath instead of
 defun, then all operators will be replaced with their bignum
 equivalents.  Thus, you can now use < instead of math-lessp.
 
+[::elispexample]
 === Example of calc used from EmacsLisp ===
 
 calc from EmacsLisp is quite hard to grok, NicFerrier used it in the BSON decoding implementation for mongo-el (MongoDb database adapter for EmacsLisp). 
