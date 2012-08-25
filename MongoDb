@@ -1,5 +1,5 @@
 [[http://www.mongodb.org/|MongoDb]] is a NoSQL, document oriented database from 10gen.
 
-There is an [[https://github.com/m2ym/mongo-el|EmacsLisp module for accessing mongo databases from EmacsLisp]].
+There is an [[https://github.com/m2ym/mongo-el|EmacsLisp module]] for accessing mongo databases from EmacsLisp. It is in [[MarmaladeRepo]] [[http://marmalade-repo.org/packages/mongo|here]].
 
 There is also an [[Elnode]] adapter for MongoDb [[https://github.com/nicferrier/emacs-mongo-elnode-db|here]] and in [[MarmaladeRepo]] [[http://marmalade-repo.org/packages/mongo-elnode|here]].
