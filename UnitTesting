@@ -36,7 +36,7 @@ The following unit test frameworks exist for Emacs Lisp.
 '''[[http://github.com/rocky/emacs-test-simple|test-simple.el]]''' is intended to be
 * Simple -- no need for ''contexts'', ''specifications'', or ''test tags''. But if you want, you still can add custom assert failure messages or add notes before a group of tests.
 * Facilitate interactive use with ##eval-last-sexp##, ##eval-region##, and ##eval-buffer##
-* Allow running non-interactively batch use over a number of test files
+* Allow running non-interactively
 
 I use this my Debugger front-end https://github.com/rocky/emacs-dbgr
 
