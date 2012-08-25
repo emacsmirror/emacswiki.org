@@ -101,7 +101,7 @@ The 1.0.0 version is planned and will include:
 
 Because database access is such an important part of web applications, [[Elnode]] includes a simple database layer.  The builtin implementation serializes Lisp objects to files.
 
-Other database implementations are being worked on, NicFerrier is working on a MongoDb implementation and on a [[PostgreSQL]] implementation.
+Other database implementations are being worked on, NicFerrier is working on a MongoDb implementation and on a [[PostGreSQL]] implementation.
 
 
 == Talking about Elnode ==
