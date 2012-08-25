@@ -18,23 +18,13 @@ looked at as frequently.  The similarity of this behavior to paging schemes in
 operating systems is obvious; the "locality of reference" principle, the
 "working set" of pages in internal memory, etc.
 
-Therefore, the new system would let one flip through the "working set" of buffers 
-with a minimum of keystrokes but would also allow quick access to the whole 
-buffer list.  Moreover, a minimal system without a lot of unneeded extras was 
-desired; a simple system that can be understood and tweaked was deemed essential.
+An improved system would let one flip through a "working set" of buffers 
+with minimum effort but would also allow rapid access to the whole 
+buffer list.  The system would be minimal and easily tweaked.  It would
+not interrupt the normal work flow, require only the 
+absolute minimum of keystrokes, and be natural to use.
 
-A few of the entries in the buffer switching category on the Emacs wiki were 
-examined.  Two were found that looked close to what was desired:  [[iflipb]] and 
-PinBar.  They each had features that were good, but neither was exactly what was 
-sought.  A method that would keep the interruption to the normal work flow down 
-to a minimum, use the absolute minimum of keystrokes, and be natural to use, were 
-essential.
-
-So it was decided that a new buffer switching solution would be created using 
-ideas from iflipb and !PinBar as a starting point. This new system is called 
-!ShortList (SL).
-
-
+This new system is called !ShortList (SL).
 
 *Development notes:*
 
