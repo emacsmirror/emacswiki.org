@@ -4,7 +4,7 @@ them quickly while maintaining a train of thought.  A good buffer selection
 mechanism is crucial for productive work.  For several years I found that setting 
 a key to the BS buffer list command (see BSBufferSelection) gave me most of what I needed.
 I learned about sorting and subsetting the list through variables and hooks that BS 
-provides, to locate the desired buffer quickly.
+provides, to locate desired buffers quickly.
 
 Eventually, though, using BS only is somewhat onerous.  To switch buffers, one 
 needs to bring up the list of buffers, then find and pick the one desired.  
