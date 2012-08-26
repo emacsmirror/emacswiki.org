@@ -39,12 +39,6 @@ Each subset have a list with all commands in it.  If a new command is
 defined this list is normally not updated automatically.  One way to
 update the list is to repeat the command.  In the example above this
 would be done by hitting ##M-z M-z##.  
- 
-Another way is to call ##(jcl-command-subset-setup t)##.  That will advice
-##eval-region##, ##eval-buffer##, ##eval-defun##, ##load## and ##require## so that any
-defined command subset's lists are updated.  (The manual warns about
-advising primitives.  I have however never experienced any problems
-with that.)
 
 
 ----
