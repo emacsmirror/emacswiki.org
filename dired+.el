@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Thu Aug 23 10:13:39 2012 (-0700)
+;; Last-Updated: Sat Aug 25 20:37:28 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 6056
+;;     Update #: 6059
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Doc URL: http://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -424,6 +424,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/08/25 dadams
+;;     dired-mark-pop-up: If buffer is shown in a separate frame, do not show menu bar.
 ;; 2012/07/10 dadams
 ;;     Removed unneeded substitute-key-definition for (next|previous)-line.
 ;; 2012/07/09 dadams
@@ -5999,8 +6001,10 @@ non-empty directories is allowed."
 
 ;; REPLACE ORIGINAL in `dired.el':
 ;;
-;; Delete the window or frame popped up, afterward, and bury its buffer.
-;; Fixes Emacs bug #7533.
+;; 1. Delete the window or frame popped up, afterward, and bury its buffer.
+;;    Fixes Emacs bug #7533.
+;;
+;; 2, If buffer is shown in a separate frame, do not show a menu bar for that frame.
 ;;
 (defun dired-mark-pop-up (bufname op-symbol files function &rest args)
   "Return FUNCTION's result on ARGS after showing which files are marked.
@@ -6032,7 +6036,12 @@ just the current file."
                                 '(mouse-face nil help-echo nil)))
       (unwind-protect
            (save-window-excursion
-             (dired-pop-to-buffer bufname)
+             ;; Do not show menu bar, if buffer is popped up in a separate frame.
+             (let ((special-display-frame-alist  (cons '(menu-bar-lines . 0)
+                                                       special-display-frame-alist))
+                   (default-frame-alist          (cons '(menu-bar-lines . 0)
+                                                       default-frame-alist)))
+               (dired-pop-to-buffer bufname))
              (setq result  (apply function args)))
         (save-excursion
           (condition-case nil           ; Ignore error if user already deleted window.
