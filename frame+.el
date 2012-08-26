@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Apr 12 16:42:12 1996
 ;; Version: 21.0
-;; Last-Updated: Thu Aug 23 11:38:12 2012 (-0700)
+;; Last-Updated: Sat Aug 25 20:49:50 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 250
+;;     Update #: 253
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/frame+.el
 ;; Doc URL: http://emacswiki.org/emacs/OneOnOneEmacs
 ;; Keywords: frames
@@ -47,6 +47,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/08/25 dadams
+;;     special-display-popup-frame:
+;;       Put back missing (set-window-buffer window buffer) - removed accidentally.
+;;       Call fit-frame with the buffer's WINDOW selected.  Inhibit before then.
 ;; 2012/08/11 dadams
 ;;     special-display-popup-frame:
 ;;       Do not redefine if window+.el was loaded.
@@ -111,7 +115,7 @@
 ;;    any frame hooks (e.g. `after-make-frame-functions') will use BUFFER,
 ;;    not the previously current buffer.
 ;;
-;; 2. Calls `fit-frame'.
+;; 2. Call `fit-frame', with BUFFER's window selected.  Inhibit fitting before then.
 ;;
 (unless (featurep 'window+)             ; Same definition is in `window+.el'.
   (defun special-display-popup-frame (buffer &optional args)
@@ -142,37 +146,43 @@ arguments."
       (let ((window  (get-buffer-window buffer 0)))
         (or
          ;; If we have a window already, make it visible.
-         (when window
-           (let ((frame  (window-frame window)))
-             (make-frame-visible frame)
-             (raise-frame frame)
-             (when (fboundp 'display-buffer-record-window) ; Emacs 24+
-               (display-buffer-record-window 'reuse window buffer))
-             (when (fboundp 'fit-frame) (fit-frame frame))
-             window))                   ; Return the window.
+         (and window
+              (let ((frame  (window-frame window)))
+                (make-frame-visible frame)
+                (raise-frame frame)
+                (when (fboundp 'display-buffer-record-window) ; Emacs 24+
+                  (display-buffer-record-window 'reuse window buffer))
+                (when (fboundp 'fit-frame) (fit-frame frame))
+                window))                ; Return the window.
          ;; Reuse the selected window if the caller requested it.
-         (when (cdr (assq 'same-window args))
-           (condition-case nil          ; Try Emacs 24 `switch-to-buffer' first.
-               (progn (switch-to-buffer buffer nil t) (selected-window))
-             (error                     ; Try again, with old `switch-to-buffer'.
-              (condition-case nil
-                  (progn (switch-to-buffer buffer) (selected-window))
-                (error nil)))))
+         (and (cdr (assq 'same-window args))
+              (condition-case nil       ; Try Emacs 24 `switch-to-buffer' first.
+                  (progn (switch-to-buffer buffer nil t) (selected-window))
+                (error                  ; Try again, with old `switch-to-buffer'.
+                 (condition-case nil
+                     (progn (switch-to-buffer buffer) (selected-window))
+                   (error nil)))))
          ;; Stay on the same frame if requested.
-         (when (or (cdr (assq 'same-frame args)) (cdr (assq 'same-window args)))
-           (let ((pop-up-windows t)
-                 pop-up-frames  special-display-buffer-names  special-display-regexps)
-             (display-buffer buffer)))
+         (and (or (cdr (assq 'same-frame args))  (cdr (assq 'same-window args)))
+              (let ((pop-up-windows                t)
+                    (pop-up-frames                 nil)
+                    (special-display-buffer-names  ())
+                    (special-display-regexps       ()))
+                (display-buffer buffer)))
          ;; If no window yet, make one in a new frame.
-         (let* ((frame   (with-current-buffer buffer
-                           (make-frame (append args special-display-frame-alist))))
-                (window  (frame-selected-window frame)))
+         ;; `make-frame' creates the frame before the buffer is shown in it, so do not
+         ;; call `fit-frame' until we can select the buffer's window.
+         (let* ((make-frame-functions  (delq 'fit-frame after-make-frame-functions))
+                (frame                 (with-current-buffer buffer
+                                         (make-frame
+                                          (append args special-display-frame-alist))))
+                (window                (frame-selected-window frame)))
+           (set-window-buffer window buffer)
+           (set-window-dedicated-p window t)
            (when (fboundp 'display-buffer-record-window) ; Emacs 24+
              (display-buffer-record-window 'frame window buffer))
-           (when (and (fboundp 'fit-frame)
-                      (not (memq 'fit-frame after-make-frame-functions)))
-             (with-current-buffer buffer (fit-frame frame)))
-           (set-window-dedicated-p window t)
+           ;; Now call `fit-frame', with WINDOW selected.
+           (with-selected-window window (fit-frame))
            window))))))                 ; Return the window.
 
 ;;;;;;;;;;;;;;;;;;;;;;;
