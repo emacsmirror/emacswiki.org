@@ -4,7 +4,7 @@
 ;; Author: Johan Claesson <johan.claesson@ericsson.com>
 ;; Keywords: menu
 ;; Created:    <2008-11-10>
-;; Time-stamp: <2012-08-26 16:10:39 jcl>
+;; Time-stamp: <2012-08-26 18:37:39 jcl>
 ;; Compatibility: GNU Emacs 23-24
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -193,28 +193,16 @@ all the commands in the subset along with their documentation."
 
 
 (defun jcl-command-subset-setup ()
-  "Setup things to re-compile command subset lists when needed.
-
-This will compile all defined command subsets once at the end of
-Emacs startup and also insert individual commands evaluated with
-`eval-defun'.
+  "Compile all defined command subsets once at the end of Emacs startup.
 
 Calling this function is optional.  It is also possible to
 compile the subset list of a particular command by executing that
 command twice in a row."
-  (if after-init-time
+  (if after-init-time  
       ;; Emacs startup is finished.  Compile command subsets now.
       (jcl-compile-command-subsets)
     ;; Emacs is in the process of starting up.
-    (add-hook 'emacs-startup-hook 'jcl-compile-command-subsets))
-  (defadvice eval-defun (around jcl-add-command-subset activate compile)
-    (let* ((symbol ad-do-it))
-      (when (and (symbolp symbol)
-                 (commandp symbol))
-        (let ((name (symbol-name symbol)))
-          (loop for (list-variable . regex) in jcl-command-subset-alist
-                when (string-match regex name)
-                do (add-to-list list-variable name)))))))
+    (add-hook 'emacs-startup-hook 'jcl-compile-command-subsets)))
 
 (defun jcl-compile-command-subsets ()
   "Update all command subset lists."
@@ -234,6 +222,7 @@ command twice in a row."
                         (string-match regex name))
               collect name)
         'string-lessp))
+
 
 (defun jcl-consecutive-calls ()
   "Return the number of times the current command have been called in a row.
