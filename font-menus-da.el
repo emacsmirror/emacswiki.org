@@ -8,9 +8,9 @@
 ;; Copyright (C) 2012, Drew Adams, all rights reserved.
 ;; Created: Sun Aug 26 07:06:14 2012 (-0700)
 ;; Version: 
-;; Last-Updated: Sun Aug 26 09:50:34 2012 (-0700)
+;; Last-Updated: Sun Aug 26 16:06:49 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 46
+;;     Update #: 130
 ;; URL: http://www.emacswiki.org/emacs-en/start.el
 ;; Doc URL: 
 ;; Keywords: font, highlighting, syntax, decoration
@@ -26,10 +26,18 @@
 ;; 
 ;; Additional font menus.  `font-menus.el' fixed for Emacs 24+.
 ;;
-;; This is `font-menus.el', by Francis J. Wright, modified slightly so
-;; that it continues to work with GNU Emacs 24 and later (as well as
-;; older versions).
+;; This is `font-menus.el', by Francis J. Wright, modified so that it
+;; continues to work with GNU Emacs 24 and later (as well as older
+;; versions), and with minor enhancements.
 ;;
+;; Enhancements:
+;;
+;; User option `font-lock-menu-wrap-flag': non-nil means wrap when
+;; changing levels, instead of just raising an error.  This has no
+;; effect when the commands are called from a menu, but you can bind
+;; them to keys.
+;;
+;; -------------------------------------------------------------------
 ;;
 ;; Here is the original Commentary, by F.J. Wright:
 ;;
@@ -58,8 +66,14 @@
 ;;; Change Log:
 ;;
 ;; 2012/08/26 dadams
-;;     Use font-lock-defaults if font-lock-defaults-alist no longer exists (24+).
+;;     font-lock-fontify-level: Updated for Emacs 22-24+.
+;;     font-lock-set-menu: Fix for Emacs 22-24+: Do nothing if font-lock-fontified.
+;;     Added user option font-lock-menu-wrap-flag.
+;;     font-lock-fontify-(less|more): Wrap around if font-lock-menu-wrap-flag.
+;;     Use only font-lock-defaults if font-lock-defaults-alist no longer exists (24+).
 ;;     Don't put `Display Fonts' at end of menu. Put it after `Display Colors'.
+;;     Changed menu item name: appended (Font Lock).
+;;
 ;;     Created from font-menus.el.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -87,11 +101,12 @@
   (require 'easymenu)
   (require 'font-lock))
 
-;; `Syntax Highlighting' menu.  Add to `Edit' menu, before `Text Properties' menu.
+;; `Syntax Highlighting (Font Lock)' menu.
+;; Add to `Edit' menu, before `Text Properties' menu.
 (easy-menu-add-item			; (map path item &optional before)
  menu-bar-edit-menu nil
  (easy-menu-create-menu			; (menu-name menu-items)
-  "Syntax Highlighting"
+  "Syntax Highlighting (Font Lock)"
   '(["In All Buffers" global-font-lock-mode
      :style toggle :selected global-font-lock-mode :active t]
     ["In Current Buffer" font-lock-mode
@@ -113,51 +128,60 @@ CURRENT-LEVEL, respectively.")
 (defun font-lock-fontify-level (level)
   "Set font-lock highlighting level for current buffer to LEVEL."
   (let ((font-lock-maximum-decoration  level))
-    (when font-lock-mode (font-lock-mode))
-    (font-lock-mode)
-    (when font-lock-verbose
-      (message "Fontifying `%s'... level %d" (buffer-name) level))))
+    (when font-lock-mode (font-lock-mode -1))
+    (kill-local-variable 'font-lock-set-defaults)
+    (font-lock-mode 1)
+    (when font-lock-verbose (message "Fontifying `%s'... level %d" (buffer-name) level))))
+
+(defcustom font-lock-menu-wrap-flag t
+  "Non-nil (on) means `font-lock-fontify-(more|less)' wrap around.
+If nil (off), they raise an error when you cannot fontify any more/less."
+  :type 'boolean :group 'font-lock)
 
 (defun font-lock-fontify-less ()
   "Fontify the current buffer using less highlighting (decoration).
 See `font-lock-maximum-decoration'."
   (interactive)
-  ;; Check in case we get called interactively.
   (if (nth 1 font-lock-fontify-level)
       (font-lock-fontify-level (1- (car font-lock-fontify-level)))
-    (error "No less decoration possible")))
+    (if font-lock-menu-wrap-flag
+        (font-lock-fontify-level
+         (1- (length (or (nth 0 font-lock-defaults)
+                         (and (boundp 'font-lock-defaults-alist)
+                              (nth 1 (assq major-mode font-lock-defaults-alist)))))))
+      (error "It is not possible to fontify less"))))
 
 (defun font-lock-fontify-more ()
   "Fontify the current buffer using more highlighting (decoration).
 See `font-lock-maximum-decoration'."
   (interactive)
-  ;; Check in case we get called interactively.
   (if (nth 2 font-lock-fontify-level)
       (font-lock-fontify-level (1+ (car font-lock-fontify-level)))
-    (error "No more decoration possible")))
+    (if font-lock-menu-wrap-flag
+        (font-lock-fontify-level 1)
+      (error "It is not possible to fontify more"))))
 
 ;; This should be called by `font-lock-set-defaults'.
 (defun font-lock-set-menu ()
   "Activate fewer/more fontification entries.
 Do nothing if there are not multiple levels for the current buffer.
 Sets `font-lock-fontify-level'."
-  (let ((keywords  (or (nth 0 font-lock-defaults)
-                       (and (boundp 'font-lock-defaults-alist)
-                            (nth 1 (assq major-mode font-lock-defaults-alist)))
-                       (and (consp font-lock-defaults)
-                            (car font-lock-defaults))))
-	(level     (font-lock-value-in-major-mode font-lock-maximum-decoration)))
-    (make-local-variable 'font-lock-fontify-level)
-    (if (or (symbolp keywords)  (= (length keywords) 1))
-	(font-lock-unset-menu)
-      (cond ((eq level t) (setq level  (1- (length keywords))))
-	    ((or (null level)  (zerop level))
-	     ;; The default level is usually, but not necessarily, level 1.
-	     (setq level  (- (length keywords)
-                             (length (member (eval (car keywords))
-                                             (mapcar 'eval (cdr keywords))))))))
-      (setq font-lock-fontify-level  (list level (> level 1)
-                                           (< level (1- (length keywords))))))))
+  (unless font-lock-fontified
+    (let ((keywords  (or (nth 0 font-lock-defaults)
+                         (and (boundp 'font-lock-defaults-alist)
+                              (nth 1 (assq major-mode font-lock-defaults-alist)))))
+          (level     (font-lock-value-in-major-mode font-lock-maximum-decoration)))
+      (make-local-variable 'font-lock-fontify-level)
+      (if (or (symbolp keywords)  (= (length keywords) 1))
+          (font-lock-unset-menu)
+        (cond ((eq level t) (setq level  (1- (length keywords))))
+              ((or (null level)  (zerop level))
+               ;; The default level is usually, but not necessarily, level 1.
+               (setq level  (- (length keywords)
+                               (length (member (eval (car keywords))
+                                               (mapcar 'eval (cdr keywords))))))))
+        (setq font-lock-fontify-level  (list level (> level 1)
+                                             (< level (1- (length keywords)))))))))
 
 ;; This should be called by `font-lock-unset-defaults'.
 (defun font-lock-unset-menu ()
@@ -193,11 +217,10 @@ Sets `font-lock-fontify-level'."
 	      (sort (x-list-fonts "*") 'string-lessp)))
     (print-help-return-message)))
 
-;; DADAMS: Don't put `Display Fonts' at end of menu. Put after `Display Colors'.
-;; (define-key-after facemenu-menu [display-fonts]
-;;   '("Display Fonts" . display-fonts) t)
-;;
 (define-key-after facemenu-menu [display-fonts] '("Display Fonts" . display-fonts) 'dc)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;
 
 (provide 'font-menus)                   ; Need provide this also.
 (provide 'font-menus-da)
