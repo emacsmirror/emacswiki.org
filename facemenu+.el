@@ -7,9 +7,9 @@
 ;; Copyright (C) 2005-2012, Drew Adams, all rights reserved.
 ;; Created: Sat Jun 25 14:42:07 2005
 ;; Version:
-;; Last-Updated: Thu Aug 23 10:37:04 2012 (-0700)
+;; Last-Updated: Sun Aug 26 16:44:30 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1770
+;;     Update #: 1780
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/facemenu+.el
 ;; Doc URL: http://www.emacswiki.org/emacs/CustomizingFaces
 ;; Doc URL: http://www.emacswiki.org/emacs/HighlightLibrary
@@ -192,6 +192,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/08/26 dadams
+;;     Added submenu Syntax Highlighting (Font Lock), from font-menus(-da).el.
 ;; 2012/06/20 dadams
 ;;     facemenu-add-face: Updated to Emacs 24 definition.
 ;; 2011/11/26 dadams
@@ -375,9 +377,25 @@ palette using `x'."
 (defvar facemenup-last-face-fg nil
   "Foreground of last face changed using face menu, before the change.")
 
-;; `font-menus.el' puts Display Fonts last in menu. Move it after Display Colors.
+;; `font-menus.el' puts `Display Fonts' last in menu.  Move it after `Display Colors'.
 (when (featurep 'font-menus)
   (define-key-after facemenu-menu [display-fonts] '("Display Fonts" . display-fonts) 'dc))
+
+(when (featurep 'font-menus)            ; `font-menus.el' submenu for font-lock levels.
+  (easy-menu-add-item facemenu-menu () (easy-menu-create-menu ; (menu-name menu-items)
+                                        "Syntax Highlighting (Font Lock)"
+                                        '(["In All Buffers" global-font-lock-mode
+                                           :style toggle :selected global-font-lock-mode
+                                           :active t]
+                                          ["In Current Buffer" font-lock-mode
+                                           :style toggle :selected font-lock-mode :active t]
+                                          "--"
+                                          ["More In Current Buffer" font-lock-fontify-more
+                                           (nth 2 font-lock-fontify-level)]
+                                          ["Less In Current Buffer" font-lock-fontify-less
+                                           (nth 1 font-lock-fontify-level)]
+                                          ))
+                      "Syntax Highlighting (Font Lock)"))
 
 ;;;###autoload
 (defconst facemenup-highlight-menu
