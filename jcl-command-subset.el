@@ -4,7 +4,7 @@
 ;; Author: Johan Claesson <johan.claesson@ericsson.com>
 ;; Keywords: menu
 ;; Created:    <2008-11-10>
-;; Time-stamp: <2012-08-26 18:37:39 jcl>
+;; Time-stamp: <2012-08-26 18:53:38 jcl>
 ;; Compatibility: GNU Emacs 23-24
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -113,58 +113,63 @@ of commands will be updated.
 Call this command 3 times in a row and it will display a list of
 all the commands in the subset along with their documentation."
          (interactive)
-         (case (jcl-consecutive-calls)
-           (1 (let ((cmd (let ((ido-confirm-unique-completion t)
-                               ;; During ido-completing-read the local map
-                               ;; ido-completion-map is active.  If this command
-                               ;; was bound only to a local map it will not be
-                               ;; in ido-completion-map.  Therefore temporarily
-                               ;; bind this command.  Note that
-                               ;; ido-completion-map is rebuilt for every call
-                               ;; to ido-completing-read.  Therefore do the
-                               ;; rebind in ido-setup-hook.
-                               ;; (Must assign ido-setup-hook in a
-                               ;; separate let in case cmd in turn
-                               ;; will call ido-something.)
-                               (ido-setup-hook (cons (lambda ()
-                                                       (define-key ido-completion-map
-                                                         [??] ',doc-command)
-                                                       (define-key ido-completion-map
-                                                         (this-command-keys-vector) ',symbol))
-                                                     ido-setup-hook)))
-                           (intern-soft (ido-completing-read ,prompt
-                                                             ,symbol
-                                                             nil
-                                                             nil
-                                                             ,initial-input
-                                                             ,history)))))
-                (and cmd
-                     (commandp cmd)
-                     (setq this-command cmd)
-                     (call-interactively cmd))))
-           (2 (progn
-                (message "Rebuilding command subset %s" ,name)
-                (setq ,symbol (jcl-compile-command-subset ,regex))
-                (message "Rebuilding command subset %s...found %s commands"
-                         ,name
-                         (length ,symbol))
-                (setq ido-matches nil
-                      ido-exit 'done)
-                (exit-minibuffer)))
-           (3 (let ((inside-minibuffer-p (minibufferp (current-buffer))))
-                (,doc-command)
-                (when inside-minibuffer-p
-                  ;; Called from inside ido-completing-read.
-                  ;; Exit from minibuffer will restore windows.
-                  ;; Install temporary hook that goes to created window.
-                  (add-hook 'post-command-hook
-                            (defun ,post-function ()
-                              (switch-to-buffer "*Command Subset*")
-                              (remove-hook 'post-command-hook
-                                           ',post-function)))
+         (let ((nr-calls (jcl-consecutive-calls)))
+           (case nr-calls
+             ((1 4)
+              (when (eq nr-calls 4)
+                ;; Kill the *Command Subset* buffer created by 3rd call.
+                (kill-buffer))
+              (let ((cmd (let ((ido-confirm-unique-completion t)
+                                 ;; During ido-completing-read the local map
+                                 ;; ido-completion-map is active.  If this command
+                                 ;; was bound only to a local map it will not be
+                                 ;; in ido-completion-map.  Therefore temporarily
+                                 ;; bind this command.  Note that
+                                 ;; ido-completion-map is rebuilt for every call
+                                 ;; to ido-completing-read.  Therefore do the
+                                 ;; rebind in ido-setup-hook.
+                                 ;; (Must assign ido-setup-hook in a
+                                 ;; separate let in case cmd in turn
+                                 ;; will call ido-something.)
+                                 (ido-setup-hook (cons (lambda ()
+                                                         (define-key ido-completion-map
+                                                           [??] ',doc-command)
+                                                         (define-key ido-completion-map
+                                                           (this-command-keys-vector) ',symbol))
+                                                       ido-setup-hook)))
+                             (intern-soft (ido-completing-read ,prompt
+                                                               ,symbol
+                                                               nil
+                                                               nil
+                                                               ,initial-input
+                                                               ,history)))))
+                  (and cmd
+                       (commandp cmd)
+                       (setq this-command cmd)
+                       (call-interactively cmd))))
+             (2 (progn
+                  (message "Rebuilding command subset %s" ,name)
+                  (setq ,symbol (jcl-compile-command-subset ,regex))
+                  (message "Rebuilding command subset %s...found %s commands"
+                           ,name
+                           (length ,symbol))
                   (setq ido-matches nil
                         ido-exit 'done)
-                  (exit-minibuffer))))))
+                  (exit-minibuffer)))
+             (3 (let ((inside-minibuffer-p (minibufferp (current-buffer))))
+                  (,doc-command)
+                  (when inside-minibuffer-p
+                    ;; Called from inside ido-completing-read.
+                    ;; Exit from minibuffer will restore windows.
+                    ;; Install temporary hook that goes to created window.
+                    (add-hook 'post-command-hook
+                              (defun ,post-function ()
+                                (switch-to-buffer "*Command Subset*")
+                                (remove-hook 'post-command-hook
+                                             ',post-function)))
+                    (setq ido-matches nil
+                          ido-exit 'done)
+                    (exit-minibuffer)))))))
        (defun ,doc-command ()
          (interactive)
          (let ((inside-minibuffer-p (minibufferp (current-buffer))))
@@ -174,22 +179,22 @@ all the commands in the subset along with their documentation."
            (insert "Undocumented commands:\n\n"
                    (loop for command in ,symbol
                          for doc = (documentation (intern-soft command))
-                       if doc
-                       do (insert (upcase command) "\n" doc "\n\n\n")
-                       else concat (concat command "\n")))
+                         if doc
+                         do (insert (upcase command) "\n" doc "\n\n\n")
+                         else concat (concat command "\n")))
            (goto-char (point-min))
            (when inside-minibuffer-p
-                  ;; Called from inside ido-completing-read.
-                  ;; Exit from minibuffer will restore windows.
-                  ;; Install temporary hook that goes to created window.
-                  (add-hook 'post-command-hook
-                            (defun ,post-function ()
-                              (switch-to-buffer "*Command Subset*")
-                              (remove-hook 'post-command-hook
-                                           ',post-function)))
-                  (setq ido-matches nil
-                        ido-exit 'done)
-                  (exit-minibuffer)))))))
+             ;; Called from inside ido-completing-read.
+             ;; Exit from minibuffer will restore windows.
+             ;; Install temporary hook that goes to created window.
+             (add-hook 'post-command-hook
+                       (defun ,post-function ()
+                         (switch-to-buffer "*Command Subset*")
+                         (remove-hook 'post-command-hook
+                                      ',post-function)))
+             (setq ido-matches nil
+                   ido-exit 'done)
+             (exit-minibuffer)))))))
 
 
 (defun jcl-command-subset-setup ()
