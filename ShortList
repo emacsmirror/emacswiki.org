@@ -3,7 +3,7 @@ fingertips.  My buffer list becomes somewhat large, and I need to switch between
 them quickly while maintaining a train of thought.  A good buffer selection 
 mechanism is crucial for productive work.  For several years I found that setting 
 a key to the BS buffer list command (see BSBufferSelection) gave me most of what I needed.
-I learned about sorting and subsetting the list through variables and hooks that BS 
+I learned about sorting and sub-setting the list through variables and hooks that BS 
 provides to locate desired buffers quickly.
 
 Eventually, though, using BS only is somewhat onerous.  To switch buffers, one 
@@ -38,10 +38,9 @@ short list if the buffer is killed).
 
 3) The <SL function key>, bound to (SL-show) (I use [kp-0]).
 
-When the <SL function key> is pressed, SL-show is executed.  If SL-list is empty, 
-this immediately brings up the BS list (my own preferred built-in buffer list 
-function).  However, if the user has selected some buffers for SL-list, the 
-behavior changes.
+When the <SL function key> is pressed, and if SL-list is empty, BS list (my own preferred built-in buffer list 
+function) is invoked.  This matches my prior scheme.  However, if the user has selected some buffers for SL-list,
+the behavior changes.
 
 With a non-empty SL-list, when <SL function key> is pressed, the ShortList is displayed 
 in the minibuffer.  The current (visible) buffer is highlighted in the ShortList.  
