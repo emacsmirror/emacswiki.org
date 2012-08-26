@@ -89,22 +89,16 @@ this immediately brings up the BS list (my own preferred built-in buffer list
 function).  However, if the user has selected some buffers for SL-list, the 
 behavior changes.
 
-With a non-empty SL-list, when <SL function key> is pressed, a horizontal display 
-of SL-list (called SL-line) appears in the minibuffer.  The current (visible) 
-buffer is highlighted in SL-line.  To view another buffer, press either a number 
-or left or right cursor keys.  As a new buffer is selected that buffer is 
-immediately displayed, and SL-line is updated.  Whenever SL-line shows in the 
+With a non-empty SL-list, when <SL function key> is pressed, the ShortList is displayed 
+in the minibuffer.  The current (visible) buffer is highlighted in the ShortList.  
+To view another buffer, press either a number 
+or left or right cursor keys.  The newly selected buffer is immediately displayed 
+and the ShortList display is updated.  Whenever the ShortList list shows in the 
 minibuffer the left and right arrow keys and number keys are intercepted to 
 switch buffers.  If <SL function key> is pressed again, the full BS list of all 
-buffers appears.  Pressing any other key while SL-line is shown will cause its 
-function to be executed by the mode of the current buffer, and the SL-line 
+buffers appears.  Pressing any other key while the Shortlis is shown will cause its 
+function to be executed by the mode of the current buffer, and the ShortList display 
 disappears.  For instance, pressing a letter while the SL-line shows will cause 
 (self-insert-command) to be executed in most modes.
-
-Very often I want to switch to a buffer and reload the associated file using C-x 
-C-v (find-alternate-file).  I can do this while the SL-line appears in the 
-minibuffer (the C-x C-v keystrokes are "pushed back"), and (courtesy of some 
-"around advice" to find-alternate-file) the newly loaded buffer remains on the 
-SL-list.
 
 Parent page : [[CategoryBufferSwitching|BufferSwitching]]
