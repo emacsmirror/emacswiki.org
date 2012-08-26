@@ -8,9 +8,9 @@
 ;; Copyright (C) 2012, Drew Adams, all rights reserved.
 ;; Created: Sun Aug 26 07:06:14 2012 (-0700)
 ;; Version: 
-;; Last-Updated: Sun Aug 26 08:12:09 2012 (-0700)
+;; Last-Updated: Sun Aug 26 08:22:21 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 37
+;;     Update #: 41
 ;; URL: http://www.emacswiki.org/emacs-en/start.el
 ;; Doc URL: 
 ;; Keywords: font, highlighting, syntax, decoration
@@ -104,7 +104,11 @@
  'props)
 
 (defvar font-lock-fontify-level nil	; For less/more fontification.
-  "@@@@@@@@@@@@@@@@@")
+  "Font-lock levels for the current buffer.
+The form is (CURRENT-LEVEL  IS-LOWER-LEVEL-P  IS-HIGHER-LEVEL-P)
+where CURRENT-LEVEL is the current level and the other elements are
+Boolean values specifying whether the CURRENT-LEVEL is lower/higher
+than the default, respectively.")
 
 (defun font-lock-fontify-level (level)
   "Set font-lock highlighting level for current buffer to LEVEL."
@@ -136,9 +140,7 @@ See `font-lock-maximum-decoration'."
 (defun font-lock-set-menu ()
   "Activate fewer/more fontification entries.
 Do nothing if there are not multiple levels for the current buffer.
-Sets `font-lock-fontify-level' to be of this form:
-
- (CURRENT-LEVEL  IS-LOWER-LEVEL-P  IS-HIGHER-LEVEL-P)"
+Sets `font-lock-fontify-level'."
   (let ((keywords  (or (nth 0 font-lock-defaults)
                        (and (boundp 'font-lock-defaults-alist)
                             (nth 1 (assq major-mode font-lock-defaults-alist)))
@@ -149,7 +151,7 @@ Sets `font-lock-fontify-level' to be of this form:
     (if (or (symbolp keywords)  (= (length keywords) 1))
 	(font-lock-unset-menu)
       (cond ((eq level t) (setq level  (1- (length keywords))))
-	    ((or (null level) (zerop level))
+	    ((or (null level)  (zerop level))
 	     ;; The default level is usually, but not necessarily, level 1.
 	     (setq level  (- (length keywords)
                              (length (member (eval (car keywords))
