@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Sat Aug 25 20:37:28 2012 (-0700)
+;; Last-Updated: Sat Aug 25 22:03:27 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 6059
+;;     Update #: 6068
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Doc URL: http://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -376,6 +376,10 @@
 ;;                              only for MS Windows)
 ;;  `dired-insert-set-properties' - `mouse-face' on whole line.
 ;;  `dired-mark-files-regexp' - Add regexp to `regexp-search-ring'.
+;;  `dired-mark-pop-up'       - Delete the window or frame popped up,
+;;                              afterward, and bury its buffer. Do not
+;;                              show a menu bar for pop-up frame.
+;;  `dired-pop-to-buffer'     - Put window point at bob (bug #12281).
 ;;
 ;;; NOT YET:
 ;;; ;;  `dired-readin-insert'     - Use t as WILDCARD arg to
@@ -425,6 +429,7 @@
 ;;; Change Log:
 ;;
 ;; 2012/08/25 dadams
+;;     Added: redefinition of dired-pop-to-buffer (fix for bug #12281).
 ;;     dired-mark-pop-up: If buffer is shown in a separate frame, do not show menu bar.
 ;; 2012/07/10 dadams
 ;;     Removed unneeded substitute-key-definition for (next|previous)-line.
@@ -5997,6 +6002,34 @@ non-empty directories is allowed."
   (if (> emacs-major-version 23)
       (dired-internal-do-deletions l arg trash)
     (dired-internal-do-deletions l arg)))
+
+
+;; REPLACE ORIGINAL in `dired.el':
+;;
+;; Put window point at bob.  Fixes bug #12281.
+;;
+(when (> emacs-major-version 22)
+  (defun dired-pop-to-buffer (buf)
+  "Pop up buffer BUF in a way suitable for Dired."
+  (let ((split-window-preferred-function
+         (lambda (window)
+           (or (and (let ((split-height-threshold 0))
+                      (window-splittable-p (selected-window)))
+                    ;; Try to split the selected window vertically if
+                    ;; that's possible.  (Bug#1806)
+                    (if (fboundp 'split-window-below)
+                        (split-window-below)
+                      (split-window-vertically)))
+               ;; Otherwise, try to split WINDOW sensibly.
+               (split-window-sensibly window))))
+        pop-up-frames)
+    (pop-to-buffer (get-buffer-create buf)))
+  (set-window-start (selected-window) 1)
+  ;; If dired-shrink-to-fit is t, make its window fit its contents.
+  (when dired-shrink-to-fit
+    ;; Try to not delete window when we want to display less than
+    ;; `window-min-height' lines.
+    (fit-window-to-buffer (get-buffer-window buf) nil 1))))
 
 
 ;; REPLACE ORIGINAL in `dired.el':
