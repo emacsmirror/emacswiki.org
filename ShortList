@@ -42,16 +42,16 @@ When the <SL function key> is pressed, and if SL-list is empty, BS list (my own 
 function) is invoked.  This matches my prior scheme.  However, if the user has selected some buffers for SL-list,
 the behavior changes.
 
-With a non-empty SL-list, when <SL function key> is pressed, the ShortList is displayed 
-in the minibuffer.  The current (visible) buffer is highlighted in the ShortList.  
+With a non-empty SL-list, when <SL function key> is pressed, the !ShortList is displayed 
+in the minibuffer.  The current (visible) buffer is highlighted in the !ShortList.  
 To view another buffer, press either a number 
 or left or right cursor keys.  The newly selected buffer is immediately displayed 
-and the ShortList display is updated.  Whenever the ShortList list shows in the 
+and the !ShortList display is updated.  Whenever the !ShortList list shows in the 
 minibuffer the left and right arrow keys and number keys are intercepted to 
 switch buffers.  If <SL function key> is pressed again, the full BS list of all 
-buffers appears.  Pressing any other key while the Shortlis is shown will cause its 
-function to be executed by the mode of the current buffer, and the ShortList display 
-disappears.  For instance, pressing a letter while the SL-line shows will cause 
+buffers appears.  Pressing any other key while the Shortlist is shown will cause its 
+function to be executed by the mode of the current buffer, and the !ShortList display 
+disappears.  For instance, pressing a letter while the !ShortList shows will cause 
 (self-insert-command) to be executed in most modes.
 
 *Set up:*
