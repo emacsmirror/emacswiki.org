@@ -4,8 +4,21 @@
 ;; Author: Johan Claesson <johan.claesson@ericsson.com>
 ;; Keywords: menu
 ;; Created:    <2008-11-10>
-;; Time-stamp: <2011-10-23 20:03:55 jcl>
-;; Compatibility: GNU Emacs 23
+;; Time-stamp: <2012-08-26 16:10:39 jcl>
+;; Compatibility: GNU Emacs 23-24
+
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ;;; Commentary:
 
@@ -34,22 +47,14 @@
 ;; (defalias 'monkey 'jcl-monkey-command-subset)
 ;;
 ;; (jcl-command-subset-setup)
+;; 
 
-
-;; This program is free software; you can redistribute it and/or modify
-;; it under the terms of the GNU General Public License as published by
-;; the Free Software Foundation, either version 3 of the License, or
-;; (at your option) any later version.
-
-;; This program is distributed in the hope that it will be useful,
-;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-;; GNU General Public License for more details.
-
-;; You should have received a copy of the GNU General Public License
-;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-;;; Code:
+;; Note:
+;; Implementation of this library could be simplified by something
+;; like: 
+;; (let ((completion-regexp-list '("monkey")))
+;;   (read-command "Cmd: "))
+;; But ido do not seem to care about completion-regexp-list. 
 
 
 (eval-when-compile
@@ -68,7 +73,9 @@ Use `jcl-define-command-subset' to add to this list.")
 (defvar jcl-consecutive-calls-lambda-alist ())
 
 
-
+;;
+;; Entry points
+;;
 
 (defmacro jcl-define-command-subset (symbol prompt regex &optional initial-input)
   "Define a command subset.
@@ -95,6 +102,7 @@ of all the commands in the subset along with their documentation."
        (add-to-list 'jcl-command-subset-alist '(,symbol . ,regex))
        (defvar ,symbol (when after-init-time
                          (jcl-compile-command-subset ,regex)))
+       (put ',symbol 'risky-local-variable t)
        (defvar ,history nil)
        (defun ,symbol ()
          "Command subset command created by `jcl-define-command-subset'.
@@ -184,8 +192,39 @@ all the commands in the subset along with their documentation."
                   (exit-minibuffer)))))))
 
 
+(defun jcl-command-subset-setup ()
+  "Setup things to re-compile command subset lists when needed.
 
+This will compile all defined command subsets once at the end of
+Emacs startup and also insert individual commands evaluated with
+`eval-defun'.
 
+Calling this function is optional.  It is also possible to
+compile the subset list of a particular command by executing that
+command twice in a row."
+  (if after-init-time
+      ;; Emacs startup is finished.  Compile command subsets now.
+      (jcl-compile-command-subsets)
+    ;; Emacs is in the process of starting up.
+    (add-hook 'emacs-startup-hook 'jcl-compile-command-subsets))
+  (defadvice eval-defun (around jcl-add-command-subset activate compile)
+    (let* ((symbol ad-do-it))
+      (when (and (symbolp symbol)
+                 (commandp symbol))
+        (let ((name (symbol-name symbol)))
+          (loop for (list-variable . regex) in jcl-command-subset-alist
+                when (string-match regex name)
+                do (add-to-list list-variable name)))))))
+
+(defun jcl-compile-command-subsets ()
+  "Update all command subset lists."
+  (interactive)
+  (loop for (list-variable . regex) in jcl-command-subset-alist
+        do (set list-variable (jcl-compile-command-subset regex))))
+
+;;
+;; Internal functions
+;;
 
 (defun jcl-compile-command-subset (regex)
   "Return all commands in the symbol table that match REGEX."
@@ -195,12 +234,6 @@ all the commands in the subset along with their documentation."
                         (string-match regex name))
               collect name)
         'string-lessp))
-
-(defun jcl-compile-command-subsets ()
-  "Update all command subset lists."
-  (interactive)
-  (loop for (list-variable . regex) in jcl-command-subset-alist
-        do (set list-variable (jcl-compile-command-subset regex))))
 
 (defun jcl-consecutive-calls ()
   "Return the number of times the current command have been called in a row.
@@ -228,85 +261,6 @@ be increased for each call."
           (put symbol 'jcl-consecutive-calls 2)
         1))))
 
-
-(defun jcl-command-subset-setup (&optional enable-slow-and-dangerous-advice)
-  "Setup things to re-compile command subset lists when needed.
-
-The default is to compile everything once at the end of Emacs
-startup and also insert individual commands evaluated with
-`eval-defun'.
-
-Calling this function is optional.  It is also possible to
-compile the subset list of a particular command by executing that
-command twice in a row.
-
-If ENABLE-SLOW-AND-DANGEROUS-ADVICE is non-nil a number of
-primitives will be adviced.  According to the elisp manual (17.9
-Advising Primitives) this is dangerous.  The author have never
-experienced any problems with this but have only tested it on GNU
-Emacs 23.3.  Also note that the advices will slow down these
-primitives a lot."
-  (if after-init-time
-      ;; Emacs startup is finished.  Compile command subsets now.
-      (jcl-compile-command-subsets)
-    ;; Emacs is in the process of starting up.
-    (add-hook 'emacs-startup-hook
-              (defun jcl-command-subset-compile ()
-                (jcl-compile-command-subsets)
-                (remove-hook 'pre-command-hook 'jcl-command-subset-compile-again))))
-  (defadvice eval-defun (around jcl-add-command-subset activate)
-    (let* ((symbol ad-do-it))
-      (when (and (symbolp symbol)
-                 (commandp symbol))
-        (let ((name (symbol-name symbol)))
-          (loop for (list-variable . regex) in jcl-command-subset-alist
-                when (string-match regex name)
-                do (add-to-list list-variable name))
-          symbol))))
-  (when enable-slow-and-dangerous-advice
-    ;; It would be nice to advice only the function intern instead of all
-    ;; these eval commands.  But my attempts to advice intern have all
-    ;; messed up emacs completely.
-    (macrolet ((advice (f)
-                       `(defadvice ,f (after
-                                       jcl-compile-command-subsets-after-eval
-                                       activate)
-                          "Update the lists of command subsets."
-                          (jcl-compile-command-subsets))))
-      (advice eval-region)
-      (advice eval-buffer))
-
-    (if after-init-time
-        ;; Emacs startup is finished.  Advice load and require now.
-        (jcl-command-subset-compile-at-load)
-      ;; Emacs is in the process of starting up.  We want to rebuild
-      ;; lists when load or require is called.  But do not activate this
-      ;; until after all startup is finished.
-      (add-hook 'emacs-startup-hook 'jcl-command-subset-compile-at-load)
-      ;; If emacs init fails emacs-startup-hook will not be runned.  But
-      ;; pre-command-hook will be.
-      (add-hook 'pre-command-hook
-                (defun jcl-command-subset-compile-again ()
-                  (jcl-compile-command-subsets)
-                  (remove-hook 'pre-command-hook 'jcl-command-subset-compile-again))))))
-
-(defun jcl-command-subset-compile-at-load ()
-  "Advice `load' and `require' to recompile command subsets."
-  (ad-define-subr-args 'load '(file
-                               &optional
-                               noerror
-                               nomessage
-                               nosuffix
-                               must-suffix))
-  (defadvice load (after jcl-compile-command-subsets-after-load activate)
-    (jcl-compile-command-subsets))
-  ;; (ad-define-subr-args 'require '(feature filename noerror))
-  (defadvice require (around jcl-compile-command-subsets-after-require activate)
-    (let ((jcl-been-there-done-that (featurep (ad-get-arg 0)))
-          (rc ad-do-it))
-      (unless jcl-been-there-done-that
-        (jcl-compile-command-subsets))
-      rc)))
 
 (provide 'jcl-command-subset)
 
