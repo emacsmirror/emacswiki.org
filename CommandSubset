@@ -35,10 +35,9 @@ It can be used like this:
 (jcl-command-subset-setup)
 }}}
        
-Each subset have a list with all commands in it.  If a new command is
-defined this list is normally not updated automatically.  One way to
-update the list is to repeat the command.  In the example above this
-would be done by hitting ##M-z M-z##.  
+Each subset have a list with all commands in it.  One way to update
+the list is to repeat the command.  In the example above this would be
+done by hitting ##M-z M-z##.
 
 
 ----
