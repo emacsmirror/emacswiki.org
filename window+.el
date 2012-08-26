@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu Jan 25 14:22:13 1996
 ;; Version: 21.0
-;; Last-Updated: Sat Aug 25 20:50:28 2012 (-0700)
+;; Last-Updated: Sat Aug 25 21:27:25 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 175
+;;     Update #: 177
 ;; URL: http://www.emacswiki.org/emacs-en/window%2b.el
 ;; Doc URL: http://emacswiki.org/emacs/Delete_Frames_Easily_-_But_Not_Too_Easily
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/OneOnOneEmacs
@@ -194,7 +194,7 @@ arguments."
          (when (fboundp 'display-buffer-record-window) ; Emacs 24+
            (display-buffer-record-window 'frame window buffer))
          ;; Now call `fit-frame', with WINDOW selected.
-         (with-selected-window window (fit-frame))
+         (save-selected-window (select-window window) (fit-frame))
          window)))))                    ; Return the window.
 
 
