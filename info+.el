@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 21.1
-;; Last-Updated: Fri Aug 24 15:16:25 2012 (-0700)
+;; Last-Updated: Sat Aug 25 22:16:57 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 4669
+;;     Update #: 4676
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/info+.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/InfoPlus
 ;; Keywords: help, docs, internal
@@ -185,6 +185,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/08/25 dadams
+;;     Info-fontify-node: Hide any empty lines at end of node (fixes bug #12272).
 ;; 2012/08/24 dadams
 ;;     info-fontify-reference-items: Fontify parameters on continuation lines also.
 ;;     Info-fontify-node: Juri's fix for Emacs bug #12187.
@@ -2472,6 +2474,10 @@ to search again for `%s'.")
         ;;  Fontify reference items: `-- Function:', `-- Variable:', etc.
         (goto-char (point-min))
         (when Info-fontify-reference-items-flag (info-fontify-reference-items))
+        ;; Hide any empty lines at the end of the node.
+        (goto-char (point-max))
+        (skip-chars-backward "\n")
+        (when (< (1+ (point)) (point-max)) (put-text-property (1+ (point)) (point-max) 'invisible t))
         (set-buffer-modified-p nil)))))
 
 
@@ -2876,6 +2882,11 @@ to search again for `%s'.")
                                    mouse-face highlight
                                    help-echo "mouse-2: go to this URL"))))
 
+        ;; Hide any empty lines at the end of the node.
+        (goto-char (point-max))
+        (skip-chars-backward "\n")
+        (when (< (1+ (point)) (point-max)) (put-text-property (1+ (point)) (point-max) 'invisible t))
+
         (set-buffer-modified-p nil)))))
 
 
@@ -3242,6 +3253,11 @@ to search again for `%s'.")
                                  '(font-lock-face info-xref
                                    mouse-face highlight
                                    help-echo "mouse-2: go to this URL"))))
+
+        ;; Hide any empty lines at the end of the node.
+        (goto-char (point-max))
+        (skip-chars-backward "\n")
+        (when (< (1+ (point)) (point-max)) (put-text-property (1+ (point)) (point-max) 'invisible t))
 
         (set-buffer-modified-p nil)))))
 
@@ -3612,6 +3628,11 @@ to search again for `%s'.")
                                  '(font-lock-face info-xref
                                    mouse-face highlight
                                    help-echo "mouse-2: go to this URL"))))
+
+        ;; Hide any empty lines at the end of the node.
+        (goto-char (point-max))
+        (skip-chars-backward "\n")
+        (when (< (1+ (point)) (point-max)) (put-text-property (1+ (point)) (point-max) 'invisible t))
 
         (set-buffer-modified-p nil)))))
 
@@ -3986,6 +4007,11 @@ to search again for `%s'.")
                                  '(font-lock-face info-xref
                                    mouse-face highlight
                                    help-echo "mouse-2: go to this URL"))))
+
+        ;; Hide any empty lines at the end of the node.
+        (goto-char (point-max))
+        (skip-chars-backward "\n")
+        (when (< (1+ (point)) (point-max)) (put-text-property (1+ (point)) (point-max) 'invisible t))
 
         (set-buffer-modified-p nil)))))
 
