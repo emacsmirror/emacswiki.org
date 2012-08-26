@@ -26,6 +26,18 @@ This new system is called !ShortList (SL).
 
 <b>!ShortList functionality:</b>
 
+In !ShortList, the list of buffers stored internally is called SL-list.
+Three keys are user-defined:
+
+1) The <SL add key>, bound to function (SL-add-key), to add the current buffer to 
+SL-list. (I map M-a to (SL-add-key)).
+
+2) The <SL delete key>, bound to (SL-del-key), to delete the current buffer from 
+SL-list (I map M-d to (SL-del-key); the system also deletes buffers from the 
+short list if the buffer is killed).
+
+3) The <SL function key>, bound to (SL-show) (I use [kp-0]).
+
 When the <SL function key> is pressed, SL-show is executed.  If SL-list is empty, 
 this immediately brings up the BS list (my own preferred built-in buffer list 
 function).  However, if the user has selected some buffers for SL-list, the 
@@ -45,19 +57,8 @@ disappears.  For instance, pressing a letter while the SL-line shows will cause
 
 *Set up:*
 
-The initial version of !ShortList has been posted.
-After loading [[shortlist.el]], you will need to define three global keys:
-
-(In !ShortList, the internal short list of buffers is called SL-list.)
-
-1) The <SL add key>, bound to function (SL-add-key), to add the current buffer to 
-SL-list. (I map M-a to (SL-add-key)).
-
-2) The <SL delete key>, bound to (SL-del-key), to delete the current buffer from 
-SL-list (I map M-d to (SL-del-key); the system also deletes buffers from the 
-short list if the buffer is killed).
-
-3) The <SL function key>, bound to (SL-show) (I use [kp-0]).
+Here's a pointer to the !ShortList code.
+After loading [[shortlist.el]], you will need to define the three global keys mentioned above.
 
 *Development notes:*
 
