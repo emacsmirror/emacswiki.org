@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Apr 12 16:42:12 1996
 ;; Version: 21.0
-;; Last-Updated: Sat Aug 25 20:49:50 2012 (-0700)
+;; Last-Updated: Sat Aug 25 21:34:15 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 253
+;;     Update #: 254
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/frame+.el
 ;; Doc URL: http://emacswiki.org/emacs/OneOnOneEmacs
 ;; Keywords: frames
@@ -182,7 +182,7 @@ arguments."
            (when (fboundp 'display-buffer-record-window) ; Emacs 24+
              (display-buffer-record-window 'frame window buffer))
            ;; Now call `fit-frame', with WINDOW selected.
-           (with-selected-window window (fit-frame))
+           (save-selected-window (select-window window) (fit-frame))
            window))))))                 ; Return the window.
 
 ;;;;;;;;;;;;;;;;;;;;;;;
