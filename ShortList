@@ -24,6 +24,41 @@ absolute minimum of keystrokes, and be natural to use.
 
 This new system is called !ShortList (SL).
 
+<b>!ShortList functionality:</b>
+
+When the <SL function key> is pressed, SL-show is executed.  If SL-list is empty, 
+this immediately brings up the BS list (my own preferred built-in buffer list 
+function).  However, if the user has selected some buffers for SL-list, the 
+behavior changes.
+
+With a non-empty SL-list, when <SL function key> is pressed, the ShortList is displayed 
+in the minibuffer.  The current (visible) buffer is highlighted in the ShortList.  
+To view another buffer, press either a number 
+or left or right cursor keys.  The newly selected buffer is immediately displayed 
+and the ShortList display is updated.  Whenever the ShortList list shows in the 
+minibuffer the left and right arrow keys and number keys are intercepted to 
+switch buffers.  If <SL function key> is pressed again, the full BS list of all 
+buffers appears.  Pressing any other key while the Shortlis is shown will cause its 
+function to be executed by the mode of the current buffer, and the ShortList display 
+disappears.  For instance, pressing a letter while the SL-line shows will cause 
+(self-insert-command) to be executed in most modes.
+
+*Set up:*
+
+The initial version of !ShortList has been posted.
+After loading [[shortlist.el]], you will need to define three global keys:
+
+(In !ShortList, the internal short list of buffers is called SL-list.)
+
+1) The <SL add key>, bound to function (SL-add-key), to add the current buffer to 
+SL-list. (I map M-a to (SL-add-key)).
+
+2) The <SL delete key>, bound to (SL-del-key), to delete the current buffer from 
+SL-list (I map M-d to (SL-del-key); the system also deletes buffers from the 
+short list if the buffer is killed).
+
+3) The <SL function key>, bound to (SL-show) (I use [kp-0]).
+
 *Development notes:*
 
 A separate mode is overkill, yet some key strokes need to captured and redefined 
@@ -64,41 +99,5 @@ This scheme works beautifully; see the skeleton function below:
 In the !ShortList system, SL-show is the function that does this.  
 If you adopt this technique you will modify this function to define your own set 
 of keys.
-
-*Set up:*
-
-The initial version of !ShortList has been posted.
-After loading [[shortlist.el]], you will need to define three global keys:
-
-(In !ShortList, the internal short list of buffers is called SL-list.)
-
-1) The <SL add key>, bound to function (SL-add-key), to add the current buffer to 
-SL-list. (I map M-a to (SL-add-key)).
-
-2) The <SL delete key>, bound to (SL-del-key), to delete the current buffer from 
-SL-list (I map M-d to (SL-del-key); the system also deletes buffers from the 
-short list if the buffer is killed).
-
-3) The <SL function key>, bound to (SL-show) (I use [kp-0]).
-
-
-<b>!ShortList functionality:</b>
-
-When the <SL function key> is pressed, SL-show is executed.  If SL-list is empty, 
-this immediately brings up the BS list (my own preferred built-in buffer list 
-function).  However, if the user has selected some buffers for SL-list, the 
-behavior changes.
-
-With a non-empty SL-list, when <SL function key> is pressed, the ShortList is displayed 
-in the minibuffer.  The current (visible) buffer is highlighted in the ShortList.  
-To view another buffer, press either a number 
-or left or right cursor keys.  The newly selected buffer is immediately displayed 
-and the ShortList display is updated.  Whenever the ShortList list shows in the 
-minibuffer the left and right arrow keys and number keys are intercepted to 
-switch buffers.  If <SL function key> is pressed again, the full BS list of all 
-buffers appears.  Pressing any other key while the Shortlis is shown will cause its 
-function to be executed by the mode of the current buffer, and the ShortList display 
-disappears.  For instance, pressing a letter while the SL-line shows will cause 
-(self-insert-command) to be executed in most modes.
 
 Parent page : [[CategoryBufferSwitching|BufferSwitching]]
