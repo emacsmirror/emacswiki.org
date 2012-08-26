@@ -8,9 +8,9 @@
 ;; Copyright (C) 2012, Drew Adams, all rights reserved.
 ;; Created: Sun Aug 26 07:06:14 2012 (-0700)
 ;; Version: 
-;; Last-Updated: Sun Aug 26 08:57:28 2012 (-0700)
+;; Last-Updated: Sun Aug 26 09:50:34 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 42
+;;     Update #: 46
 ;; URL: http://www.emacswiki.org/emacs-en/start.el
 ;; Doc URL: 
 ;; Keywords: font, highlighting, syntax, decoration
@@ -105,10 +105,10 @@
 
 (defvar font-lock-fontify-level nil	; For less/more fontification.
   "Font-lock levels for the current buffer.
-The form is (CURRENT-LEVEL  IS-LOWER-LEVEL-P  IS-HIGHER-LEVEL-P)
+The form is (CURRENT-LEVEL EXISTS-LOWER-LEVEL-P EXISTS-HIGHER-LEVEL-P)
 where CURRENT-LEVEL is the current level and the other elements are
-Boolean values specifying whether the CURRENT-LEVEL is lower/higher
-than the default, respectively.")
+Boolean values specifying whether there is a lower/higher level than
+CURRENT-LEVEL, respectively.")
 
 (defun font-lock-fontify-level (level)
   "Set font-lock highlighting level for current buffer to LEVEL."
