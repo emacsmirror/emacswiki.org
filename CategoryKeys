@@ -33,6 +33,7 @@ For information on using the menu for actions instead of keys, see CategoryMenus
 * MissingKeys -- How to make undefined keys accessible
 * AltGrKey -- Emacs keys may be hidden because on Windows /AltGr/ + /Control/ + /key/ is just /AltGr/ + /key/
 * ConsoleKeys -- Emacs keys on the Linux console, even C-M-H-internet
+* ScreenKeys -- Similar to the above, for screen(1)
 * MovingTheMetaKey -- How to move your meta-key if it's not in the right position
 * MovingTheCtrlKey -- How to move your ctrl-key if it's not in the right position
 * BindingControlReturn -- How to bind Control-Return in a local mode
