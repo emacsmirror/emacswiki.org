@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Sat Aug 25 22:03:27 2012 (-0700)
+;; Last-Updated: Sun Aug 26 16:55:01 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 6068
+;;     Update #: 6085
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Doc URL: http://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -428,6 +428,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/08/26 dadams
+;;     Set font-lock-defaults to a 3-element list, so it works with font-menus(-da).el.
 ;; 2012/08/25 dadams
 ;;     Added: redefinition of dired-pop-to-buffer (fix for bug #12281).
 ;;     dired-mark-pop-up: If buffer is shown in a separate frame, do not show menu bar.
@@ -2652,8 +2654,10 @@ In particular, inode number, number of hard links, and file size."
 (add-hook 'dired-mode-hook
           '(lambda ()
             (set (make-local-variable 'font-lock-defaults)
-             (cons '(dired-font-lock-keywords diredp-font-lock-keywords-1) ; Two levels.
-              (cdr font-lock-defaults)))
+             ;; Two levels.  Use 3-element list, since it is standard to have one more than the
+             ;; number of levels.  This is necessary for it to work with font-menus(-da).el.
+             '((dired-font-lock-keywords dired-font-lock-keywords diredp-font-lock-keywords-1)
+               t nil nil beginning-of-line))
             ;; Refresh `font-lock-keywords' from `font-lock-defaults'
             (when (fboundp 'font-lock-refresh-defaults) (font-lock-refresh-defaults))))
  
