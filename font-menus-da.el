@@ -8,9 +8,9 @@
 ;; Copyright (C) 2012, Drew Adams, all rights reserved.
 ;; Created: Sun Aug 26 07:06:14 2012 (-0700)
 ;; Version: 
-;; Last-Updated: Sun Aug 26 08:22:21 2012 (-0700)
+;; Last-Updated: Sun Aug 26 08:57:28 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 41
+;;     Update #: 42
 ;; URL: http://www.emacswiki.org/emacs-en/start.el
 ;; Doc URL: 
 ;; Keywords: font, highlighting, syntax, decoration
@@ -145,7 +145,7 @@ Sets `font-lock-fontify-level'."
                        (and (boundp 'font-lock-defaults-alist)
                             (nth 1 (assq major-mode font-lock-defaults-alist)))
                        (and (consp font-lock-defaults)
-                            (carfont-lock-defaults))))
+                            (car font-lock-defaults))))
 	(level     (font-lock-value-in-major-mode font-lock-maximum-decoration)))
     (make-local-variable 'font-lock-fontify-level)
     (if (or (symbolp keywords)  (= (length keywords) 1))
