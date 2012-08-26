@@ -62,12 +62,11 @@ you will need to define the three global keys mentioned above.
 *Development notes:*
 
 A separate mode is overkill, yet some key strokes need to captured and redefined 
-to do the buffer switching.  All user interaction is through the 
-minibuffer.  The core of SL uses the Emacs built-in function (read-key-sequence-vector) and the 
+to do the buffer switching.  The core of SL uses the Emacs built-in function (read-key-sequence-vector) and the 
 Emacs built-in variable unread-command-events.  (read-key-sequence-vector) captures a keystroke 
-as a vector without executing the bound function.  In the SL-show function, the 
+as a vector without executing the bound function.  Inside the SL-show function, the 
 key is tested and if the keystroke is used for buffer switching it executes 
-within the function.  If the key is not one used by the function, then it is 
+within the function.  If the key is one not used by the function, then it is 
 "pushed back" (to the variable unread-command-events), to be by reread and 
 executed in the current buffer's mode.
 
@@ -97,8 +96,7 @@ This scheme works beautifully; see the skeleton function below:
 </pre>
 
 In the !ShortList system, SL-show is the function that does this.
-If you adopt this technique you will modify this function to define your own set 
-of keys.
+You can modify this function to define your own set of keys.
 
 Parent page : [[CategoryBufferSwitching|BufferSwitching]]
  
