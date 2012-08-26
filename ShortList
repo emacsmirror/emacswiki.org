@@ -57,8 +57,8 @@ disappears.  For instance, pressing a letter while the SL-line shows will cause
 
 *Set up:*
 
-Here's a pointer to the !ShortList code.
-After loading [[shortlist.el]], you will need to define the three global keys mentioned above.
+Here's a pointer to the !ShortList code ([[shortlist.el]]); after loading
+you will need to define the three global keys mentioned above.
 
 *Development notes:*
 
@@ -97,8 +97,9 @@ This scheme works beautifully; see the skeleton function below:
 	(setq unread-command-events (append (listify-key-sequence ky) unread-command-events)))))))
 </pre>
 
-In the !ShortList system, SL-show is the function that does this.  
+In the !ShortList system, SL-show is the function that does this.
 If you adopt this technique you will modify this function to define your own set 
 of keys.
 
 Parent page : [[CategoryBufferSwitching|BufferSwitching]]
+ 
