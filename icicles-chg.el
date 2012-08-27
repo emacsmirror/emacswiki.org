@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sun Aug 26 21:32:21 2012 (-0700)
+;; Last-Updated: Mon Aug 27 08:18:40 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8822
+;;     Update #: 8827
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -3305,6 +3305,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2012/08/27 dadams
+;;     icicle-make-directory:
+;;       Use (icicle-file-name-directory-w-default (icicle-input-from-minibuffer)) as default dir-name.
 ;; 2012/08/21 dadams
 ;;     icicle-resolve-file-name: Call tap-put-thing-at-point-props after load thingatpt+.el.
 ;; 2012/08/18 dadams
