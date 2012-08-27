@@ -7,9 +7,9 @@
 ;; Copyright (C) 1995-2012, Drew Adams, all rights reserved.
 ;; Created: Wed Aug  2 11:12:24 1995
 ;; Version: 21.1
-;; Last-Updated: Thu Aug 23 17:00:04 2012 (-0700)
+;; Last-Updated: Sun Aug 26 07:05:23 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 2943
+;;     Update #: 2945
 ;; URL: http://www.emacswiki.org/emacs-en/start.el
 ;; Keywords: abbrev, internal, local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -82,6 +82,8 @@
 ;;
 ;; Change Log:
 ;;
+;; 2012/08/26 dadams
+;;     Soft require font-menus-da.el if possible (fixes font-menus.el for Emacs 24).
 ;; 2012/08/21 dadams
 ;;     Call tap-put-thing-at-point-props after load thingatpt+.el.
 ;; 2012/08/18 dadams
@@ -601,9 +603,12 @@ See the Dired-X Info pages (type \\[info]) for information on this package.")
 (require 'local-lpr nil t)              ; Local settings for `lpr.el'.
 (require 'local-ps-print nil t)         ; Local settings for PostScript printing.
 (require 'printing nil t)               ; Printing from menu bar etc.
-;; Load `font-menus' before `facemenu+'.
-(when (< emacs-major-version 24)        ; (Needs to be fixed for 24: uses `font-lock-defaults-alist'.)
-  (require 'font-menus nil t))          ; Additional font menus.
+
+;; `font-menus': Additional font menus.  Load before `facemenu+'.
+(require 'font-menus-da nil t)          ; My version - works also for Emacs 24.
+(when (and (not (featurep 'font-menus-da))
+           (< emacs-major-version 24))  ; Uses `font-lock-defaults-alist', removed from Emacs 24.
+  (require 'font-menus nil t))
 (require 'facemenu+ nil t)              ; New Text Properties menu items.
 (when (> emacs-major-version 21)
   (require 'font-lock+ nil t))             ; Enhancements to `font-lock.el'.
