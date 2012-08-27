@@ -30,3 +30,9 @@ unicode-progress-reporter.el is available at github:
 and via <nowiki>EmacsWiki</nowiki>:
 
 : Lisp:unicode-progress-reporter.el
+
+==Compatibility and Requirements==
+
+Tested only on GNU Emacs version 24.1
+
+Requires ucs-utils.el
