@@ -1,3 +1,5 @@
+==Overview==
+
 Nav-flash temporarily highlights the line containing the point,
 which is sometimes useful after a navigation command.
 
@@ -7,6 +9,8 @@ nav-flash-show in your ~/.emacs file.  For example, the following
 hook causes the nav-flash to appear after navigating via imenu:
 
    (add-hook 'imenu-after-jump-hook 'nav-flash-show nil t)
+
+==Comparison with pulse.el==
 
 Pulse.el provides similar functionality and is included with
 Emacs.  This library can use pulse.el, but does not do so by
@@ -22,6 +26,8 @@ by default) the flash and message appear simultaneously.
 
 Nav-flash.el is also simpler than pulse.el.
 
+==Availability==
+
 Nav-flash is available at github:
 
 : https://github.com/rolandwalker/nav-flash
@@ -30,3 +36,8 @@ and via <nowiki>EmacsWiki</nowiki>:
 
 : Lisp:nav-flash.el
 
+==Compatibility and Requirements==
+
+Tested only on GNU Emacs version 24.1
+
+No external dependencies
