@@ -65,7 +65,7 @@
 ;;    to existing paths.  Workarounds:
 ;;
 ;;       1. Use ELPA/package.el, in which case this assumption always works.
-;;       2. Wait for the cache expire (7 days).
+;;       2. Wait for the cache to expire (7 days).
 ;;       3. Give universal prefix argument to `ido-load-library'
 ;;          to force invalidation of the cache.
 ;;
