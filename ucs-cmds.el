@@ -7,9 +7,9 @@
 ;; Copyright (C) 2011-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Oct  4 07:32:20 2011 (-0700)
 ;; Version: 23.0
-;; Last-Updated: Thu Aug 23 17:15:57 2012 (-0700)
+;; Last-Updated: Mon Aug 27 15:47:50 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 153
+;;     Update #: 164
 ;; URL: http://www.emacswiki.org/emacs-en/ucs-cmds.el
 ;; Doc URL: http://emacswiki.org/emacs/UnicodeEncoding
 ;; Keywords: unicode, characters, encoding, commands, ucs-names
@@ -28,12 +28,14 @@
 ;;  characters.
 ;;
 ;;  Command `ucsc-insert' is a replacement for vanilla command
-;;  `ucs-insert', which is bound by default to `C-x 8 RET' and which
-;;  lets you type input to complete against a Unicode character name
-;;  and then inserts that character.
+;;  `insert-char' (called `ucs-insert' prior to Emacs 24), which is
+;;  bound by default to `C-x 8 RET' and which lets you type input to
+;;  complete against a Unicode character name and then inserts that
+;;  character.
 ;;
-;;  Its behavior and code are identical to those of `ucs-insert',
-;;  except for what happens when you use a negative prefix argument:
+;;  The behavior and code of `ucsc-insert' are identical to those of
+;;  `insert-char' except for what happens when you use a negative
+;;  prefix argument:
 ;;
 ;;  1. It acts as if the prefix-arg value was positive.  So a value of
 ;;     -3 inserts three copies of the character, just as 3 does.
@@ -49,16 +51,16 @@
 ;;  Unicode character.  You can then bind the command to a key
 ;;  sequence, effectively adding Unicode characters to your keyboard.
 ;;
-;;  Whenever `ucs-insert' does anything (it does nothing for a
+;;  Whenever `insert-char' does anything (it does nothing for a
 ;;  negative prefix arg), `ucsc-insert' does the same thing.  Because
 ;;  of this, I recommend that you bind `ucsc-insert' to `C-x 8 RET' as
-;;  a replacement for `ucs-insert'.  Put this in your init file:
+;;  a replacement for `insert-char'.  Put this in your init file:
 ;;
-;;    (define-key global-map [remap ucs-insert] 'ucsc-insert)
+;;    (define-key global-map [remap insert-char] 'ucsc-insert)
 ;;
 ;;  If you only need a few such commands for inserting particular
 ;;  Unicode characters, then using `ucsc-insert' to define them is
-;;  sufficiently convenient.  But it, like `ucs-insert', can be a bit
+;;  sufficiently convenient.  But it, like `insert-char', can be a bit
 ;;  slow if you use completion, because there are many, *MANY*
 ;;  completion candidates.
 ;;
@@ -93,7 +95,7 @@
 ;;  ----------------
 ;;
 ;;  The commands created using macro `ucsc-make-commands' or the more
-;;  general command `ucsc-insert' (or `ucs-insert') are enhanced if
+;;  general command `ucsc-insert' (or `insert-char') are enhanced if
 ;;  you use `Icicles'
 ;;  (http://www.emacswiki.org/cgi-bin/wiki/icicles.el).
 ;;
@@ -180,7 +182,7 @@ hyphens (`-'), and the command names are lowercase."
                (insert (make-string arg ,(cdr name.code))))))))
 
 
-;; Same as `ucs-insert', except:
+;; Same as `insert-char' (aka `ucs-insert'), except:
 ;;
 ;; 1) A negative prefix arg has the same COUNT effect as a positive one.
 ;;
@@ -221,7 +223,7 @@ named `greek-capital-letter-delta'.
 
 You can then bind the created command to a convenient key.
 
-Non-nil MSGP (prefix arg, if interactive) means echo confirmation of a
+Interactively, or with non-nil MSGP arg, echo confirmation of the
 command creation."
   (interactive
    (list (read-char-by-name "Unicode (name or hex): ")
@@ -230,7 +232,9 @@ command creation."
          t))
   (let ((create-cmd-p  (< count 0)))
     (setq count  (abs count))
-    (ucs-insert character count inherit)
+    (if (commandp 'insert-char)         ; Deal with the renaming this way.
+        (insert-char count inherit)
+      (ucs-insert character count inherit))
     (when create-cmd-p
       (let* ((char-name  (car (rassq character (ucs-names))))
              (cmd-name   (downcase
