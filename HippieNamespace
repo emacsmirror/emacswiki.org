@@ -1,3 +1,4 @@
+==Overview==
 Enabling this minor mode adds a limited number of very common
 prefixes to the `hippie-expand' expansion list.  These prefixes
 (deduced from buffer content) will be the first completions
@@ -20,10 +21,14 @@ others.  In most languages, the declared "namespace" is
 infrequently used in its own context.  (For Emacs Lisp that is
 not the case.)
 
+==Keybinding==
+
 Note that you should also have `hippie-expand' bound to a key.
 Many people override dabbrev expansion:
 
     (define-key global-map (kbd "M-/") 'hippie-expand)
+
+==Availability==
 
 The library is available at github:
 
@@ -32,6 +37,16 @@ The library is available at github:
 and via <nowiki>EmacsWiki</nowiki>:
 
 : Lisp:hippie-namespace.el
+
+==Compatibility and Requirements==
+
+Tested only on GNU Emacs version 24.1
+
+No external dependencies
+
+==See Also==
+
+HippieExpand
 
 ----
 CategoryCompletion
