@@ -1,6 +1,9 @@
+==Overview==
 This is a (trivial) wrapper around pcache.el, providing "soft"
 fetch and store routines which never throw an error, but instead
 return nil on failure.
+
+==Availability==
 
 The library is available at github:
 
@@ -9,6 +12,13 @@ The library is available at github:
 and via <nowiki>EmacsWiki</nowiki>:
 
 : Lisp:persistent-soft.el
+
+==Compatibility and Requirements==
+
+Tested only on GNU Emacs version 24.1
+
+Uses if present: pcache.el (all operations are noops when
+not present)
 
 ----
 CategoryData
