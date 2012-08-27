@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Aug 23 14:19:18 2012 (-0700)
+;; Last-Updated: Sun Aug 26 21:34:41 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5308
+;;     Update #: 5312
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -3554,12 +3554,12 @@ during Icicles search).  You can also use multi-command
 (defun icicle-thing-at-point (thing &optional syntax-table)
   "`thingatpt+.el' version of `thing-at-point', if possible.
 `tap-thing-at-point' if defined, else `thing-at-point'.
-if non-nil, set SYNTAX-TABLE for the duration."
+If SYNTAX-TABLE is a syntax table, use it for the duration."
   (if (fboundp 'tap-thing-at-point)
       (tap-thing-at-point thing syntax-table)
-    (if (fboundp 'with-syntax-table)    ; Emacs 21+.
-        (with-syntax-table syntax-table (thing-at-point thing syntax-table))
-      (thing-at-point thing syntax-table))))
+    (if (and (syntax-table-p syntax-table)  (fboundp 'with-syntax-table)) ; Emacs 21+.
+        (with-syntax-table syntax-table (thing-at-point thing))
+      (thing-at-point thing))))         ; Ignore any SYNTAX-TABLE arg for Emacs 20, for vanilla.
 
 ;;;###autoload
 (defcustom icicle-thing-at-point-functions
