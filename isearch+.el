@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 21.0
-;; Last-Updated: Thu Aug 23 14:32:40 2012 (-0700)
+;; Last-Updated: Mon Aug 27 11:44:57 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1276
+;;     Update #: 1285
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/emacs/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -254,6 +254,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2012/08/27 dadams
+;;     isearch(p)-message-(prefix|suffix): Emacs 24.2 turned out to use the same code as 24.1.
 ;; 2012/08/12 dadams
 ;;     isearch-edit-string: isearchp-fail-pos -> (or (isearch-fail-pos) (length isearch-string)).
 ;; 2012/08/08 dadams
@@ -716,19 +718,19 @@ This is used only for Transient Mark mode."
   "Version of `isearch-message-prefix' that works for all Emacs releases."
   (if (or (< emacs-major-version 24)
           (and (= emacs-major-version 24)
-               (= emacs-minor-version 1)
+               (< emacs-minor-version 3)
                (not (string-match "^[0-9]+\\.[0-9]+\\.[0-9]+" emacs-version))))
-      (isearch-message-prefix arg1 arg2 arg3) ; Emacs 20 through 24.1.
-    (isearch-message-prefix arg1 arg2))) ; Emacs 24.1.N and 24.2+
+      (isearch-message-prefix arg1 arg2 arg3) ; Emacs 20 through 24.2.
+    (isearch-message-prefix arg1 arg2))) ; Emacs 24.1.N and 24.3+
     
 (defun isearchp-message-suffix (&optional arg1 arg2)
   "Version of `isearch-message-suffix' that works for all Emacs releases."
   (if (or (< emacs-major-version 24)
           (and (= emacs-major-version 24)
-               (= emacs-minor-version 1)
+               (< emacs-minor-version 3)
                (not (string-match "^[0-9]+\\.[0-9]+\\.[0-9]+" emacs-version))))
-      (isearch-message-suffix arg1 arg2) ; Emacs 20 through 24.1.
-    (isearch-message-suffix arg1)))     ; Emacs 24.1.N and  24.2+
+      (isearch-message-suffix arg1 arg2) ; Emacs 20 through 24.2.
+    (isearch-message-suffix arg1)))     ; Emacs 24.1.N and  24.3+
 
 
 ;; REPLACE ORIGINAL in `isearch.el'.
@@ -1115,9 +1117,9 @@ If MSG is non-nil, use `isearch-message', otherwise `isearch-string'."
 ;;
 ;; Highlight message according to search characteristics.
 ;;
-(when (and (> emacs-major-version 21)   ; Emacs 22 through Emacs 24.1
+(when (and (> emacs-major-version 21)   ; Emacs 22 through Emacs 24.2
            (or (< emacs-major-version 24)
-               (and (= emacs-major-version 24)  (= emacs-minor-version 1))))
+               (and (= emacs-major-version 24)  (< emacs-minor-version 3))))
   (defun isearch-message-prefix (&optional _c-q-hack ellipsis nonincremental)
     ;; If about to search, and previous search regexp was invalid,
     ;; check that it still is.  If it is valid now,
@@ -1158,9 +1160,9 @@ If MSG is non-nil, use `isearch-message', otherwise `isearch-string'."
                                  'face 'minibuffer-prompt))))
       (concat (upcase (substring m 0 1)) (substring m 1)))))
 
-(when (and (> emacs-major-version 23)   ; Emacs 24.2+
+(when (and (> emacs-major-version 23)   ; Emacs 24.3+
            (or (> emacs-major-version 24)
-               (and (= emacs-major-version 24)  (> emacs-minor-version 1))))
+               (and (= emacs-major-version 24)  (> emacs-minor-version 2))))
   (defun isearch-message-prefix (&optional ellipsis nonincremental)
     ;; If about to search, and previous search regexp was invalid,
     ;; check that it still is.  If it is valid now,
