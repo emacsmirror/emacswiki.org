@@ -398,9 +398,7 @@ the option value.  This lets you see the candidate characters in
 quick way to insert characters.
 
 Starting with Emacs 23, vanilla Emacs has ''Unicode'' support, and you
-can insert any Unicode characters using either an input method or  '''`C-x 8 RET''''
-(command '''`ucs-insert'''' or, if you use my library <tt>[[ucs-cmds.el]]</tt>, command '''`ucsc-insert''''), which lets you complete against the Unicode
-character name.
+can insert any Unicode characters using either an input method or  '''`C-x 8 RET''''.   `C-x 8 RET' is bound by default in Emacs to command `insert-char' (called `ucs-insert' prior to Emacs 24).  If you use my library <tt>[[ucs-cmds.el]]</tt> then you might want to remap that command to command '''`ucsc-insert'''', which is an enhancement.
 
 '''Icicles''' enhances this by (a) showing the
 character to be inserted after its name in `*Completions*' (but
@@ -408,7 +406,7 @@ you complete against only the name), and (b) showing the current
 character and its code point in the [[mode line]] when you cycle.
 
 I recommend that you use
-`ucs-insert' (or better, `ucsc-insert'), not key completion, to insert Unicode characters.
+`insert-char' (or better, `ucsc-insert'), not key completion, to insert Unicode characters.
 
 There are thousands of Unicode characters.  So if you do use a non-`nil' value for
 `icicle-complete-keys-self-insert-ranges' then use only small
