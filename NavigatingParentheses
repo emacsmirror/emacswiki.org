@@ -64,11 +64,10 @@ last parenthesis. That is, the cursor jumped over the next parenthesis group,
 given by <code>(insert " \\emph{first chapter} ")</code>.
 
 
-== vi emulation of the % command ==
+== Emulation of the vi % command ==
 
 This code from http://emacro.sourceforge.net/  gives a vi-like way of moving
-over parenthesis groups. I bind it to C-%, from vi heritage. 
-(Note M-% searches and replaces)
+over parenthesis groups. I bind it to C-%, from vi heritage.
 <pre>
 (defun goto-match-paren (arg)
   "Go to the matching parenthesis if on parenthesis, otherwise insert %.
@@ -81,20 +80,19 @@ vi style of % jumping to matching brace."
 
 === Alternative method with added flexibility ==
 
-This modification of the above code works when the point is either right before or right after (), {}, or []
-Note: when you are in a cluster of nested brackets, the default association is with the bracket that you are immediately *outside* of, to match the behavior of forward-sexp and backward-sexp
+This modification of the above code works when the point is either right before or right after a parenthesis character, and also works with shift-selection.
+Note: when you are in a cluster of nested sexps, the default association is with the bracket that you are immediately *outside* of, to match the behavior of forward-sexp and backward-sexp.
 
 <pre>
-(defun goto-match-paren (arg)
-  "Go to the matching  if on (){}[], similar to vi style of % "
-  (interactive "p")
-  ;; first, check for "outside of bracket" positions expected by forward-sexp, etc.
-  (cond ((looking-at "[\[\(\{]") (forward-sexp))
-        ((looking-back "[\]\)\}]" 1) (backward-sexp))
-        ;; now, try to succeed from inside of a bracket
-        ((looking-at "[\]\)\}]") (forward-char) (backward-sexp))
-        ((looking-back "[\[\(\{]" 1) (backward-char) (forward-sexp))
-        (t nil)))
+(defun forward-or-backward-sexp (&optional arg)
+  "Go to the matching parenthesis character if one is adjacent to point."
+  (interactive "^p")
+  (cond ((looking-at "\\s(") (forward-sexp arg))
+        ((looking-back "\\s)" 1) (backward-sexp arg))
+        ;; Now, try to succeed from inside of a bracket
+        ((looking-at "\\s)" (forward-char) (backward-sexp arg))
+        ((looking-back "\\s(" 1) (backward-char) (forward-sexp arg))
+        (t nil))))
 </pre>
 
 
