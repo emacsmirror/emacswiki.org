@@ -8,9 +8,9 @@
 ;; Copyright (C) 2012, Drew Adams, all rights reserved.
 ;; Created: Sun Aug 26 07:06:14 2012 (-0700)
 ;; Version: 
-;; Last-Updated: Sun Aug 26 20:14:20 2012 (-0700)
+;; Last-Updated: Sun Aug 26 21:18:24 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 135
+;;     Update #: 142
 ;; URL: http://www.emacswiki.org/emacs-en/start.el
 ;; Doc URL: 
 ;; Keywords: font, highlighting, syntax, decoration
@@ -35,10 +35,14 @@
 ;; * User option `font-lock-menu-wrap': non-nil means wrap around when
 ;;   changing levels, instead of just raising an error.  This has no
 ;;   effect when the commands are called from a menu, but you can bind
-;;   them to keys.  If the non-nil value is `off' (the default value)
-;;   then font-lock mode is turned off (absolute minimum font locking)
-;;   when cycling wraps around.  Any other non-nil value means cycle
-;;   only among font-lock states.
+;;   commands `font-lock-fontify-more' and `font-lock-fontify-less' to
+;;   keys.
+;;
+;;   If the non-nil value is `off' (the default value) then font-lock
+;;   mode is turned off (absolute minimum font locking) when cycling
+;;   wraps around.  Any other non-nil value means cycle only among
+;;   font-lock states.  If the value is `off' then you can cycle
+;;   on/off even if there is only one font-lock level.
 ;;
 ;; -------------------------------------------------------------------
 ;;
@@ -69,9 +73,9 @@
 ;;; Change Log:
 ;;
 ;; 2012/08/26 dadams
+;;     Added user option font-lock-menu-wrap.
 ;;     font-lock-fontify-level: Updated for Emacs 22-24+.
 ;;     font-lock-set-menu: Fix for Emacs 22-24+: Do nothing if font-lock-fontified.
-;;     Added user option font-lock-menu-wrap.
 ;;     font-lock-fontify-(less|more): Wrap around if font-lock-menu-wrap.
 ;;     Use only font-lock-defaults if font-lock-defaults-alist no longer exists (24+).
 ;;     Don't put `Display Fonts' at end of menu. Put it after `Display Colors'.
