@@ -29,3 +29,10 @@ window-end-visible.el is available at github:
 and via <nowiki>EmacsWiki</nowiki>:
 
 : Lisp:window-end-visible.el
+
+==Compatibility and Requirements==
+
+Tested only on GNU Emacs version 24.1
+
+No external dependencies
+
