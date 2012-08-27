@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 21.1
-;; Last-Updated: Thu Aug 23 16:50:15 2012 (-0700)
+;; Last-Updated: Mon Aug 27 15:59:05 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1142
+;;     Update #: 1147
 ;; URL: http://www.emacswiki.org/emacs-en/setup-keys.el
 ;; Keywords: mouse, keyboard, menus, menu-bar
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -67,6 +67,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/08/27 dadams
+;;     Treat Emacs 24+ insert-char the same as ucs-insert (old name).
 ;; 2012/07/08 dadams
 ;;     Bind C-mouse-1 to ignore, so don't see error msg on up event.
 ;; 2012/07/02 dadams
@@ -581,8 +583,11 @@
     ))
 
 (eval-after-load "ucs-cmds"
-  '(when (> emacs-major-version 22)     ; Need Emacs 23+ version of `ucs-insert'.
-    (define-key global-map [remap ucs-insert] 'ucsc-insert)))
+  '(when (> emacs-major-version 22)     ; Need Emacs 23+ version of `insert-char'/`ucs-insert'.
+    (when (commandp 'insert-char)       ; `ucs-insert' renamed to `insert-char' in Emacs 24.
+      (define-key global-map [remap insert-char] 'ucsc-insert))
+    (when (fboundp 'ucs-insert)
+      (define-key global-map [remap ucs-insert] 'ucsc-insert))))
 
 (define-key help-map "\C-\M-f" 'describe-face)                                 ; `C-h C-M-f'
 
