@@ -1,0 +1,15 @@
+bibtex-utils.el fails when the bibtex entry has "keywords = {}," by placing the keyword outside the curly braces.
+
+This modification works for me:
+
+    (if (assoc "keywords" elist)
+        (progn (and (not (equal "" (bibtex-text-in-field "keywords"))) 
+                    (setq append t)) 
+	       (bibtex-beginning-of-entry)
+	       (goto-char (bibtex-end-of-text-in-field
+                           (bibtex-search-forward-field "keywords" t))))
+        (bibtex-make-field "keywords" t nil))
+    (skip-chars-backward "}")
+
+-- [http://tsd@tsdye.com ThomasDye] 2012-08-27 22:57 UTC
+
