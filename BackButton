@@ -65,9 +65,15 @@ and via <nowiki>EmacsWiki</nowiki>:
 
 : Lisp:back-button.el
 
-See Also: MarkCommands
+==Compatibility and Requirements==
 
+Tested only on GNU Emacs version 24.1
 
+Uses if present: smartrep.el, nav-flash.el, visible-mark.el,
+ucs-utils.el
+
+==See Also==
+MarkCommands
 
 ----
 CategoryEditing
