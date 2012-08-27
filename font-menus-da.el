@@ -8,9 +8,9 @@
 ;; Copyright (C) 2012, Drew Adams, all rights reserved.
 ;; Created: Sun Aug 26 07:06:14 2012 (-0700)
 ;; Version: 
-;; Last-Updated: Sun Aug 26 16:06:49 2012 (-0700)
+;; Last-Updated: Sun Aug 26 20:14:20 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 130
+;;     Update #: 135
 ;; URL: http://www.emacswiki.org/emacs-en/start.el
 ;; Doc URL: 
 ;; Keywords: font, highlighting, syntax, decoration
@@ -32,10 +32,13 @@
 ;;
 ;; Enhancements:
 ;;
-;; User option `font-lock-menu-wrap-flag': non-nil means wrap when
-;; changing levels, instead of just raising an error.  This has no
-;; effect when the commands are called from a menu, but you can bind
-;; them to keys.
+;; * User option `font-lock-menu-wrap': non-nil means wrap around when
+;;   changing levels, instead of just raising an error.  This has no
+;;   effect when the commands are called from a menu, but you can bind
+;;   them to keys.  If the non-nil value is `off' (the default value)
+;;   then font-lock mode is turned off (absolute minimum font locking)
+;;   when cycling wraps around.  Any other non-nil value means cycle
+;;   only among font-lock states.
 ;;
 ;; -------------------------------------------------------------------
 ;;
@@ -68,8 +71,8 @@
 ;; 2012/08/26 dadams
 ;;     font-lock-fontify-level: Updated for Emacs 22-24+.
 ;;     font-lock-set-menu: Fix for Emacs 22-24+: Do nothing if font-lock-fontified.
-;;     Added user option font-lock-menu-wrap-flag.
-;;     font-lock-fontify-(less|more): Wrap around if font-lock-menu-wrap-flag.
+;;     Added user option font-lock-menu-wrap.
+;;     font-lock-fontify-(less|more): Wrap around if font-lock-menu-wrap.
 ;;     Use only font-lock-defaults if font-lock-defaults-alist no longer exists (24+).
 ;;     Don't put `Display Fonts' at end of menu. Put it after `Display Colors'.
 ;;     Changed menu item name: appended (Font Lock).
@@ -133,10 +136,19 @@ CURRENT-LEVEL, respectively.")
     (font-lock-mode 1)
     (when font-lock-verbose (message "Fontifying `%s'... level %d" (buffer-name) level))))
 
-(defcustom font-lock-menu-wrap-flag t
+(defcustom font-lock-menu-wrap 'off
   "Non-nil (on) means `font-lock-fontify-(more|less)' wrap around.
-If nil (off), they raise an error when you cannot fontify any more/less."
-  :type 'boolean :group 'font-lock)
+If nil (off), these commands raise an error when you cannot fontify
+any more/less.
+
+If the non-nil value is `off' (the default value) then cycling turns
+font-lock mode off as the first state of wrapping (absolute minimum).
+Any other non-nil value cycles only among font-lock levels."
+  :type '(choice
+          (const :tag "Do not wrap - raise an error"  nil)
+          (const :tag "Wrap to OFF"                   off)
+          (other :tag "Wrap, but stay font-locked"    t))
+  :group 'font-lock)
 
 (defun font-lock-fontify-less ()
   "Fontify the current buffer using less highlighting (decoration).
@@ -144,11 +156,13 @@ See `font-lock-maximum-decoration'."
   (interactive)
   (if (nth 1 font-lock-fontify-level)
       (font-lock-fontify-level (1- (car font-lock-fontify-level)))
-    (if font-lock-menu-wrap-flag
-        (font-lock-fontify-level
-         (1- (length (or (nth 0 font-lock-defaults)
-                         (and (boundp 'font-lock-defaults-alist)
-                              (nth 1 (assq major-mode font-lock-defaults-alist)))))))
+    (if font-lock-menu-wrap
+        (if (and font-lock-mode  (eq font-lock-menu-wrap 'off))
+            (progn (font-lock-mode -1) (message "Font lock turned OFF"))
+          (font-lock-fontify-level
+           (1- (length (or (nth 0 font-lock-defaults)
+                           (and (boundp 'font-lock-defaults-alist)
+                                (nth 1 (assq major-mode font-lock-defaults-alist))))))))
       (error "It is not possible to fontify less"))))
 
 (defun font-lock-fontify-more ()
@@ -157,8 +171,10 @@ See `font-lock-maximum-decoration'."
   (interactive)
   (if (nth 2 font-lock-fontify-level)
       (font-lock-fontify-level (1+ (car font-lock-fontify-level)))
-    (if font-lock-menu-wrap-flag
-        (font-lock-fontify-level 1)
+    (if font-lock-menu-wrap
+        (if (and font-lock-mode  (eq font-lock-menu-wrap 'off))
+            (progn (font-lock-mode -1) (message "Font lock turned OFF"))
+          (font-lock-fontify-level 1))
       (error "It is not possible to fontify more"))))
 
 ;; This should be called by `font-lock-set-defaults'.
