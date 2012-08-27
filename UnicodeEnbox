@@ -34,3 +34,9 @@ unicode-enbox.el is available at github:
 and via <nowiki>EmacsWiki</nowiki>:
 
 : Lisp:unicode-enbox.el
+
+==Compatibility and Requirements==
+
+Tested only on GNU Emacs version 24.1
+
+Requires string-utils.el, ucs-utils.el
