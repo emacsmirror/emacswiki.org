@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Sun Aug 26 16:55:01 2012 (-0700)
+;; Last-Updated: Sun Aug 26 19:43:32 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 6085
+;;     Update #: 6086
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Doc URL: http://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -6028,7 +6028,7 @@ non-empty directories is allowed."
                (split-window-sensibly window))))
         pop-up-frames)
     (pop-to-buffer (get-buffer-create buf)))
-  (set-window-start (selected-window) 1)
+  (set-window-start (selected-window) (point-min))
   ;; If dired-shrink-to-fit is t, make its window fit its contents.
   (when dired-shrink-to-fit
     ;; Try to not delete window when we want to display less than
