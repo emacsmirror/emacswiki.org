@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Thu Aug 23 14:10:43 2012 (-0700)
+;; Last-Updated: Mon Aug 27 16:04:16 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 26711
+;;     Update #: 26713
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -5465,16 +5465,17 @@
 ;;
 ;;  Starting with Emacs 23, vanilla Emacs has Unicode support, and you
 ;;  can insert any Unicode characters using either an input method or
-;;  `C-x 8 RET' (command `ucs-insert' or, if you use my library
-;;  `ucs-cmds.el', command `ucsc-insert'), which lets you complete
-;;  against the Unicode character name.
+;;  `C-x 8 RET'.  `C-x 8 RET' is bound by default in Emacs to command
+;;  `insert-char' (called `ucs-insert' prior to Emacs 24).  If you use
+;;  my library `ucs-cmds.el' then you might want to remap that command
+;;  to command `ucsc-insert', which is an enhancement.
 ;;
 ;;  Icicles enhances this by (a) showing the character to be inserted
 ;;  after its name in `*Completions*' (but you complete against only
 ;;  the name), and (b) showing the current character and its code
 ;;  point in the mode line when you cycle.
 ;;
-;;  I recommend that you use `ucs-insert' (or better, `ucsc-insert'),
+;;  I recommend that you use `insert-char' (or better, `ucsc-insert'),
 ;;  not key completion, to insert Unicode characters.
 ;;
 ;;  There are thousands of Unicode characters.  So if you do use a
