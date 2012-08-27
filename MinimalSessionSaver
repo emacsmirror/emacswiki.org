@@ -38,3 +38,10 @@ minimal-session-saver.el is available at github:
 and via <nowiki>EmacsWiki</nowiki>:
 
 : Lisp:minimal-session-saver.el
+
+==Compatibility and Requirements==
+
+Tested only on GNU Emacs version 24.1
+
+No external dependencies
+
