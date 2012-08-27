@@ -1,7 +1,9 @@
 ==Overview==
+
 String-manipulation utilities
 
 ==string-utils==
+
 String-utils is a collection of functions for string manipulation.
 This library has no user-level interface; it is only useful
 for programming in Emacs Lisp.
@@ -18,8 +20,9 @@ The following functions are provided:
 	string-utils-quotemeta
 	string-utils-pad
 	string-utils-pad-list
+	string-utils-propertize-fillin
 
-The most complex function is `string-utils-pad`, the docstring
+The most complex function is `string-utils-pad', the docstring
 for which is reproduced below:
 
 (string-utils-pad STR-VAL WIDTH &optional MODE CHAR THROW-ERROR)
@@ -48,11 +51,12 @@ would cause the result to exceed WIDTH.  When THROW-ERROR is not
 set (the default), a best-attempt result is always returned.
 
 Tabs are expanded to spaces according to the value of
-`tab-width`.
+`tab-width'.
 
 Returns a padded copy of string STR-VAL.
 
 ==Availability==
+
 string-utils.el is available at github:
 
 : https://github.com/rolandwalker/string-utils
@@ -60,3 +64,10 @@ string-utils.el is available at github:
 and via <nowiki>EmacsWiki</nowiki>:
 
 : Lisp:string-utils.el
+
+==Compatibility and Requirements==
+
+Tested only on GNU Emacs version 24.1
+
+No external dependencies
+
