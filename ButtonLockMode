@@ -1,3 +1,5 @@
+==Overview==
+
 Button-lock mode is a minor mode which provides simple facilities to
 define clickable text based on regular expressions.  Button-lock
 piggybacks on font-lock, and is efficient.
@@ -6,6 +8,8 @@ Button-lock buttons (links) can execute any function.
 
 See WikiNavMode for a user-friendly library built on top of button-lock mode.
 
+==Availability==
+
 Both button-lock mode and WikiNavMode are available at github:
 
 : https://github.com/rolandwalker/button-lock
@@ -13,6 +17,8 @@ Both button-lock mode and WikiNavMode are available at github:
 and via <nowiki>EmacsWiki</nowiki>:
 
 : Lisp:button-lock.el
+
+==Example==
 
 Here's a trivial example, showing how to use button-lock to activate hyperlinks
 in all buffers:
@@ -39,6 +45,12 @@ and here's an interesting example, showing how to turn folding-mode delimiters i
                                       'folding-toggle-show-hide)))
 
 It is probably more interesting to use button-lock from another library than it is to use button-lock directly.
+
+==Compatibility and Requirements==
+
+Tested only on GNU Emacs version 24.1
+
+No external dependencies
 
 ----
 CategoryModes
