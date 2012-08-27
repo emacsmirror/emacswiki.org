@@ -255,3 +255,10 @@ unicode-fonts.el is available at github:
 and via <nowiki>EmacsWiki</nowiki>:
 
 : Lisp:unicode-fonts.el
+
+==Compatibility and Requirements==
+
+Tested only on GNU Emacs version 24.1
+
+Requires dynamic-fonts.el, ucs-utils.el
+
