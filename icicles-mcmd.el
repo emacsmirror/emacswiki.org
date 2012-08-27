@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Aug 23 14:16:22 2012 (-0700)
+;; Last-Updated: Sun Aug 26 22:06:12 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 18413
+;;     Update #: 18418
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1033,14 +1033,17 @@ See description of `kill-region-wimpy'."
   "Create a directory."
   (interactive
    (let ((enable-recursive-minibuffers  t))
-     (list (funcall (if (fboundp 'read-directory-name) #'read-directory-name #'read-file-name)
-                    "Create directory: " default-directory default-directory))))
+     (list (funcall
+            (if (fboundp 'read-directory-name) #'read-directory-name #'read-file-name)
+            "Create directory: " default-directory (icicle-file-name-directory-w-default
+                                                    (icicle-input-from-minibuffer))))))
   (setq dir  (directory-file-name (expand-file-name dir)))
   (while (file-exists-p dir)            ; This will cause Tramp to access if remote, but that's OK here.
     (message "%s already exists" dir) (sit-for 1)
     (let ((enable-recursive-minibuffers  t))
       (setq dir  (funcall (if (fboundp 'read-directory-name) #'read-directory-name #'read-file-name)
-                          "Create directory: " default-directory default-directory))))
+                          "Create directory: " default-directory (icicle-file-name-directory-w-default
+                                                                  (icicle-input-from-minibuffer))))))
   ;;(setq dir  (directory-file-name (expand-file-name dir)))
   (if (not (y-or-n-p (format "Really create %s? " (file-name-as-directory dir))))
       (message "Directory creation canceled")
