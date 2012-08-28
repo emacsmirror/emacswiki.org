@@ -4,10 +4,10 @@
 ;;
 ;; Author: Roland Walker walker@pobox.com
 ;; URL: https://github.com/rolandwalker/nav-flash.el
-;; Version: 1.0.0
-;; Last-Updated: 27 Jul 2012
+;; Version: 1.0.1
+;; Last-Updated: 27 Aug 2012
 ;; EmacsWiki: NavFlash
-;; Keywords: navigation
+;; Keywords: extensions, navigation, interface
 ;;
 ;; Simplified BSD License
 ;;
@@ -52,9 +52,11 @@
 ;;
 ;;    Nav-flash.el is also simpler than pulse.el.
 ;;
-;; Compatibility
+;; Compatibility and Requirements
 ;;
 ;;    Tested only on GNU Emacs version 24.1
+;;
+;;    No external dependencies
 ;;
 ;; Bugs
 ;;
@@ -84,7 +86,7 @@
 ;; This software is provided by Roland Walker "AS IS" and any express
 ;; or implied warranties, including, but not limited to, the implied
 ;; warranties of merchantability and fitness for a particular
-;; purpose are disclaimed. In no event shall Roland Walker or
+;; purpose are disclaimed.  In no event shall Roland Walker or
 ;; contributors be liable for any direct, indirect, incidental,
 ;; special, exemplary, or consequential damages (including, but not
 ;; limited to, procurement of substitute goods or services; loss of
@@ -117,7 +119,7 @@
 ;;;###autoload
 (defgroup nav-flash nil
   "Briefly highlight the current line."
-  :version "1.0.0"
+  :version "1.0.1"
   :link '(emacs-commentary-link "nav-flash")
   :prefix "nav-flash-"
   :group 'extensions)
@@ -155,8 +157,8 @@ If optional END-POS is set, flash the characters between
 the two points, otherwise flash the entire line in which
 POS is found.
 
-Optional FACE defaults to `nav-flash-face'. Optional DELAY
-defaults to `nav-flash-delay' seconds. Setting DELAY to 0 makes
+Optional FACE defaults to `nav-flash-face'.  Optional DELAY
+defaults to `nav-flash-delay' seconds.  Setting DELAY to 0 makes
 this function a no-op."
   (callf or pos (point))
   (unless end-pos
@@ -212,7 +214,7 @@ this function a no-op."
 ;; coding: utf-8
 ;; End:
 ;;
-;; LocalWords:
+;; LocalWords:  NavFlash imenu callf
 ;;
 
 ;;; nav-flash.el ends here
