@@ -1,0 +1,36 @@
+Anything having to do with editing, encoding, or displaying Unicode characters in Emacs.
+
+== Encoding ==
+
+* UnicodeEncoding
+
+== Built-in Functionality ==
+
+* ucs-insert -- use this command to insert any Unicode character by name.
+
+== Unicode Libraries ==
+
+These libraries are intended to help users who edit Unicode files.
+
+* UnicodeHelperMode
+* UnicodeFonts
+
+== Unicode Interface ==
+
+Ways to use Unicode to prettify the Emacs user interface.
+
+* PrettySymbolsForLanguages
+* UnicodeProgressReporter
+
+== Utility Extensions ==
+
+These libraries are useful to call from Emacs Lisp but do not focus on user-facing functionality.
+
+* [[ucs-cmds.el]]
+* UcsUtils
+* UnicodeEnbox
+
+== See Also ==
+
+* CategoryFaces
+* CategoryDisplay
