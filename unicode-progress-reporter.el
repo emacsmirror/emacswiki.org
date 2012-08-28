@@ -4,11 +4,11 @@
 ;;
 ;; Author: Roland Walker walker@pobox.com
 ;; URL: https://github.com/rolandwalker/unicode-progress-reporter.el
-;; Version: 0.5.0
-;; Last-Updated: 13 Aug 2012
+;; Version: 0.5.2
+;; Last-Updated: 27 Aug 2012
 ;; EmacsWiki: UnicodeProgressReporter
-;; Package-Requires: ((ucs-utils "0.6.0"))
-;; Keywords:
+;; Package-Requires: ((ucs-utils "0.6.0") (persistent-soft "0.8.0") (pcache "0.2.3"))
+;; Keywords: interface
 ;;
 ;; GPLv3 License
 ;;
@@ -36,9 +36,11 @@
 ;;
 ;;    alters private variable `progress-reporter--pulse-characters'
 ;;
-;; Compatibility
+;; Compatibility and Requirements
 ;;
 ;;    Tested only on GNU Emacs version 24.1
+;;
+;;    Requires ucs-utils.el
 ;;
 ;; Bugs
 ;;
@@ -66,6 +68,7 @@
 
 ;; for let*
 (eval-when-compile
+  (defvar unicode-progress-reporter-type)
   (require 'cl))
 
 (autoload 'ucs-utils-vector "ucs-utils" "Return a vector corresponding to SEQUENCE of UCS names or characters.")
@@ -223,15 +226,15 @@ VALUE should be a key in `unicode-progress-reporter-pulse-characters'."
 ;;;###autoload
 (defgroup unicode-progress-reporter nil
   "Progress-reporter with fancy characters."
-  :version "0.5.0"
+  :version "0.5.2"
   :link '(emacs-commentary-link "unicode-progress-reporter")
   :prefix "unicode-progress-reporter-"
   :group 'extensions)
 
 (defcustom unicode-progress-reporter-type "Horizontal Blocks"
   "Type of spinner characters to use for progress-reporter."
-  :type `(choice ,@(mapcar '(lambda (x)
-                              (list 'const (car x)))
+  :type `(choice ,@(mapcar #'(lambda (x)
+                               (list 'const (car x)))
                            unicode-progress-reporter-pulse-characters))
   :initialize 'custom-initialize-default
   :set 'unicode-progress-reporter-redefine-spinner
