@@ -27,10 +27,8 @@ An additional command
 
 installs shorter command aliases for the above.
 
-==See Also==
-	M-x customize-group RET minimal-session-saver RET
-
 ==Availability==
+
 minimal-session-saver.el is available at github:
 
 : https://github.com/rolandwalker/minimal-session-saver
@@ -44,6 +42,10 @@ and via <nowiki>EmacsWiki</nowiki>:
 Tested only on GNU Emacs version 24.1
 
 No external dependencies
+
+==See Also==
+
+desktop.el (included with Emacs)
 
 ----
 CategoryPersistence
