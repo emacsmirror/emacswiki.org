@@ -4,10 +4,10 @@
 ;;
 ;; Author: Roland Walker walker@pobox.com
 ;; URL: https://github.com/rolandwalker/string-utils.el
-;; Version: 0.0.1
-;; Last-Updated: 21 Aug 2012
+;; Version: 0.0.2
+;; Last-Updated: 27 Aug 2012
 ;; EmacsWiki: StringUtils
-;; Keywords:
+;; Keywords: extensions
 ;;
 ;; Simplified BSD License
 ;;
@@ -29,6 +29,7 @@
 ;;    string-utils-quotemeta
 ;;    string-utils-pad
 ;;    string-utils-pad-list
+;;    string-utils-propertize-fillin
 ;;
 ;; To use string-utils, place the string-utils.el library somewhere
 ;; Emacs can find it, and add the following to your ~/.emacs file:
@@ -37,13 +38,26 @@
 ;;
 ;; Notes
 ;;
-;; Compatibility
+;; Compatibility and Requirements
 ;;
 ;;    Tested only on GNU Emacs version 24.1
+;;
+;;    No external dependencies
 ;;
 ;; Bugs
 ;;
 ;; TODO
+;;
+;;    In string-utils-propertize-fillin, strip properties which are
+;;    set to nil at start, which will create more contiguity in the
+;;    result see this example, where the first two characters have the
+;;    same properties
+;;
+;;       (let ((text "text"))
+;;         (add-text-properties 0 1 '(face nil) text)
+;;         (add-text-properties 2 3 '(face error) text)
+;;         (string-utils-propertize-fillin text 'face 'highlight)
+;;         text)
 ;;
 ;;; License
 ;;
@@ -89,46 +103,53 @@
 (eval-when-compile
   (require 'cl))
 
+(autoload 'font-lock-fillin-text-property "font-lock"
+  "Fill in one property of the text from START to END.")
+
 ;; variables
 
-(defvar string-utils-whitespace (concat [#x0000d  ; "Carriage Return (CR)"
-                                         #x00088  ; "Character Tabulation Set"
-                                         #x00089  ; "Character Tabulation With Justification"
-                                         #x00009  ; "Character Tabulation" (ordinary ASCII tab)
-                                         #x0034f  ; "Combining Grapheme Joiner"
-                                         #x02001  ; "Em Quad"
-                                         #x02003  ; "Em Space"
-                                         #x02000  ; "En Quad"
-                                         #x02002  ; "En Space"
-                                         #x02007  ; "Figure Space"
-                                         #x0000c  ; "Form Feed (FF)"
-                                         #x02005  ; "Four-Per-Em Space"
-                                         #x0200a  ; "Hair Space"
-                                         #x03000  ; "Ideographic Space"
-                                         #x0000a  ; "Line Feed (LF)"
-                                         #x02028  ; "Line Separator"
-                                         #x0008a  ; "Line Tabulation Set"
-                                         #x0000b  ; "Line Tabulation"
-                                         #x0205f  ; "Medium Mathematical Space"
-                                         #x0180e  ; "Mongolian Vowel Separator"
-                                         #x0202f  ; "Narrow No-Break Space"
-                                         #x00085  ; "Next Line (NEL)"
-                                         #x000a0  ; "No-Break Space"
-                                         #x01680  ; "Ogham Space Mark"
-                                         #x02029  ; "Paragraph Separator"
-                                         #x02008  ; "Punctuation Space"
-                                         #x02006  ; "Six-Per-Em Space"
-                                         #x00020  ; "Space" (ordinary ASCII space)
-                                         #xe0020  ; "Tag Space"
-                                         #x02009  ; "Thin Space"
-                                         #x02004  ; "Three-Per-Em Space"
-                                         #x02d7f  ; "Tifinagh Consonant Joiner"
-                                         #x02060  ; "Word Joiner"
-                                         #x0200d  ; "Zero Width Joiner"
-                                         #x0feff  ; "Zero Width No-Break Space"
-                                         #x0200c  ; "Zero Width Non-Joiner"
-                                         #x0200b  ; "Zero Width Space"
-                                         ])
+(defvar string-utils-whitespace (concat
+                                 (apply 'vector
+                                        (mapcar #'(lambda (x)
+                                                    (decode-char 'ucs x))
+                                                '(#x0000d  ; "Carriage Return (CR)"
+                                                  #x00088  ; "Character Tabulation Set"
+                                                  #x00089  ; "Character Tabulation With Justification"
+                                                  #x00009  ; "Character Tabulation" (ordinary ASCII tab)
+                                                  #x0034f  ; "Combining Grapheme Joiner"
+                                                  #x02001  ; "Em Quad"
+                                                  #x02003  ; "Em Space"
+                                                  #x02000  ; "En Quad"
+                                                  #x02002  ; "En Space"
+                                                  #x02007  ; "Figure Space"
+                                                  #x0000c  ; "Form Feed (FF)"
+                                                  #x02005  ; "Four-Per-Em Space"
+                                                  #x0200a  ; "Hair Space"
+                                                  #x03000  ; "Ideographic Space"
+                                                  #x0000a  ; "Line Feed (LF)"
+                                                  #x02028  ; "Line Separator"
+                                                  #x0008a  ; "Line Tabulation Set"
+                                                  #x0000b  ; "Line Tabulation"
+                                                  #x0205f  ; "Medium Mathematical Space"
+                                                  #x0180e  ; "Mongolian Vowel Separator"
+                                                  #x0202f  ; "Narrow No-Break Space"
+                                                  #x00085  ; "Next Line (NEL)"
+                                                  #x000a0  ; "No-Break Space"
+                                                  #x01680  ; "Ogham Space Mark"
+                                                  #x02029  ; "Paragraph Separator"
+                                                  #x02008  ; "Punctuation Space"
+                                                  #x02006  ; "Six-Per-Em Space"
+                                                  #x00020  ; "Space" (ordinary ASCII space)
+                                                  #xe0020  ; "Tag Space"
+                                                  #x02009  ; "Thin Space"
+                                                  #x02004  ; "Three-Per-Em Space"
+                                                  #x02d7f  ; "Tifinagh Consonant Joiner"
+                                                  #x02060  ; "Word Joiner"
+                                                  #x0200d  ; "Zero Width Joiner"
+                                                  #x0feff  ; "Zero Width No-Break Space"
+                                                  #x0200c  ; "Zero Width Non-Joiner"
+                                                  #x0200b  ; "Zero Width Space"
+                                                  )))
   "Definition of whitespace characters used by string-utils.
 
 Includes Unicode whitespace characters.")
@@ -334,6 +355,19 @@ Returns padded STR-LIST."
           (setq mode (* -1 mode))))
       (mapcar #'(lambda (str)
                   (string-utils-pad str width mode char throw-error)) str-list))))
+
+(defun string-utils-propertize-fillin (str-val &rest properties)
+  "Return a copy of STRING with text properties added, without overriding.
+
+Works exactly like `propertize', except that (character-by-character)
+already existing properties are respected."
+  (unless (= 0 (% (length properties) 2))
+    (error "Wrong number of arguments"))
+  (while properties
+    (let ((prop (pop properties))
+          (val  (pop properties)))
+      (font-lock-fillin-text-property 0 (length str-val) prop val str-val)))
+   str-val)
 
 (provide 'string-utils)
 
