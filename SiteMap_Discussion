@@ -15,6 +15,10 @@ Here's what SiteMap does:
 
 == Open Issues ==
 
+=== Creation of Categories and CategoryCategories ===
+
+In the past day or so, [[roland.walker]] has created several new category pages and a meta-category page, CategoryCategories.  I thought, but don't find it now, that categories were to be created only after discussion (where? here?).  Doesn't seem like a good idea that people should just be creating category pages willy nilly. -- DrewAdams
+
 === Bookmarking ===
 
 I propose that we create CategoryBookmark and add a `Bookmarking' entry under `General Use'.  This is at least as important as some of the others (e.g. `HideStuff'), and it does not appear anywhere. -- DrewAdams
