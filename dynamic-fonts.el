@@ -4,11 +4,11 @@
 ;;
 ;; Author: Roland Walker walker@pobox.com
 ;; URL: https://github.com/rolandwalker/dynamic-fonts.el
-;; Version: 0.5.1
-;; Last-Updated: 22 Aug 2012
+;; Version: 0.5.3
+;; Last-Updated: 27 Aug 2012
 ;; EmacsWiki: DynamicFonts
-;; Keywords:
-;; Package-Requires: ((persistent-soft "0.8.0"))
+;; Keywords: faces, frames
+;; Package-Requires: ((persistent-soft "0.8.0") (pcache "0.2.3"))
 ;;
 ;; Simplified BSD License
 ;;
@@ -36,9 +36,11 @@
 ;; utility functions to be called from Lisp.  See in particular
 ;; `dynamic-fonts-font-exists-p', which tests font availability.
 ;;
-;; Compatibility
+;; Compatibility and Requirements
 ;;
 ;;     Tested only on GNU Emacs version 24.1
+;;
+;;     Requires persistent-soft.el
 ;;
 ;; Bugs
 ;;
@@ -112,12 +114,18 @@
 (autoload 'persistent-soft-exists-p  "persistent-soft" "Return t if SYMBOL exists in the LOCATION persistent data store."   t)
 (autoload 'persistent-soft-flush     "persistent-soft" "Flush data for the LOCATION data store to disk."                    t)
 
+(declare-function remove-if-not "cl-seq.el")
+(declare-function intersection  "cl-seq.el")
+(declare-function gensym        "cl-macs.el")
+(declare-function memoize       "memoize.el")
+(declare-function memoize-wrap  "memoize.el")
+
 ;;; customizable variables
 
 ;;;###autoload
 (defgroup dynamic-fonts nil
   "Set faces based on available fonts."
-  :version "0.5.1"
+  :version "0.5.3"
   :link '(emacs-commentary-link "dynamic-fonts")
   :prefix "dynamic-fonts-"
   :group 'extensions)
@@ -603,6 +611,7 @@ the values above as alternatives."
 ;; mangle-whitespace: t
 ;; require-final-newline: t
 ;; coding: utf-8
+;; byte-compile-warnings: (not cl-functions redefine)
 ;; End:
 ;;
 ;; LocalWords:  DynamicFonts XQuartz Lucida callf Segoe DejaVu Arial
