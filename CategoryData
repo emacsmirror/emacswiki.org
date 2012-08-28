@@ -14,6 +14,7 @@ This page is intended for the subject of parsing, editing, and storing data usin
 * EmacsDataBase
 * [http://cedet.sourceforge.net/eieio.shtml Eieio]
 * [https://github.com/sigma/pcache Pcache]
+* TinyDb
 * PersistentSoft
 
 == See Also ==
