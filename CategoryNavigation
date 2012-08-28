@@ -1,0 +1,24 @@
+Navigating large buffers, or multiple buffers, especially code.
+
+== Navigation Libraries ==
+
+* ImenuMode
+* WhichFuncMode
+* [http://cedet.sourceforge.net CEDET]
+* [[EAssist]]
+* WikiNavMode
+* BackButton
+
+== Utility Libraries ==
+
+These utility libraries are useful from Emacs Lisp, but do not have user-facing interfaces.
+
+* NavFlash
+* ButtonLockMode
+
+== See Also ==
+
+* CScopeAndEmacs
+* EmacsTags
+* MarkCommands
+* CategoryProgrammerUtils
