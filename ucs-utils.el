@@ -4,11 +4,11 @@
 ;;
 ;; Author: Roland Walker walker@pobox.com
 ;; URL: https://github.com/rolandwalker/ucs-utils.el
-;; Version: 0.6.1
-;; Last-Updated: 23 Aug 2012
+;; Version: 0.6.4
+;; Last-Updated: 27 Aug 2012
 ;; EmacsWiki: UcsUtils
-;; Package-Requires: ((persistent-soft "0.8.0"))
-;; Keywords: I18n
+;; Package-Requires: ((persistent-soft "0.8.0") (pcache "0.2.3"))
+;; Keywords: i18n, extensions
 ;;
 ;; Simplified BSD License
 ;;
@@ -48,9 +48,13 @@
 ;;
 ;; Notes
 ;;
-;; Compatibility
+;; Compatibility and Requirements
 ;;
 ;;    Tested only on GNU Emacs version 24.1
+;;
+;;    Requires persistent-soft.el
+;;
+;;    Uses if present: memoize.el
 ;;
 ;; Bugs
 ;;
@@ -112,12 +116,17 @@
 (autoload 'persistent-soft-exists-p  "persistent-soft" "Return t if SYMBOL exists in the LOCATION persistent data store."   t)
 (autoload 'persistent-soft-flush     "persistent-soft" "Flush data for the LOCATION data store to disk."                    t)
 
+(declare-function gensym                           "cl-macs.el")
+(declare-function memoize                          "memoize.el")
+(declare-function memoize-wrap                     "memoize.el")
+(declare-function ucs-utils-orig-read-char-by-name "ucs-utils.el")
+
 ;;; customizable variables
 
 ;;;###autoload
 (defgroup ucs-utils nil
   "Utilities for Unicode characters."
-  :version "0.6.0"
+  :version "0.6.4"
   :link '(emacs-commentary-link "ucs-utils")
   :prefix "ucs-utils-"
   :group 'extensions)
@@ -342,6 +351,7 @@ Returns nil if NAME does not exist."
         (setq name (replace-match "NKo" 'fixed-case 'literal name))))
     name))
 
+;;;###autoload
 (defun ucs-utils-all-prettified-names (&optional progress regenerate)
   "All prettified UCS names, cached in list `ucs-utils-all-prettified-names'.
 
@@ -751,6 +761,7 @@ The following aliases will be installed
 ;; mangle-whitespace: t
 ;; require-final-newline: t
 ;; coding: utf-8
+;; byte-compile-warnings: (not cl-functions redefine)
 ;; End:
 ;;
 ;; LocalWords:  UcsUtils utils eval callf flet YOGH alist ZHAR PHAR
