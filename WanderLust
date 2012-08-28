@@ -1,8 +1,6 @@
-Wanderlust is a mail and news reader for Emacs with excellent IMAP support, written by Yuuichi Teranishi and others.
+Wanderlust is a mail and news reader for Emacs with excellent IMAP support. It is written by Yuuichi Teranishi and others.
 
-Wandlerlust is hosted on [https://github.com/wanderlust/wanderlust GitHub].
-
-Note: The [http://www.gohome.org/wl web page on gohome.org] is [http://comments.gmane.org/gmane.mail.wanderlust.general.japanese/9108 outdated].
+Wandlerlust is hosted on [https://github.com/wanderlust/wanderlust GitHub]. The [http://www.gohome.org/wl web page on gohome.org] is [http://comments.gmane.org/gmane.mail.wanderlust.general.japanese/9108 outdated].
 
 == Features ==
 
