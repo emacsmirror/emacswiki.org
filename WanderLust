@@ -1,8 +1,8 @@
-Wanderlust is a mail/news reader for Emacs with excellent IMAP support. Wanderlust was written by Yuuichi Teranishi and others.
+Wanderlust is a mail and news reader for Emacs with excellent IMAP support, written by Yuuichi Teranishi and others.
 
-The last official stable version was 2.14.0 and current unstable version is 2.15.9. The most up-to-date code is to be found on [http://github.com/wanderlust github].
+Wandlerlust is hosted on [https://github.com/wanderlust/wanderlust GitHub].
 
-New upstream mailing list addresses: <code>wl@ml.gentei.org</code> and <code>wl-en@ml.gentei.org</code>, respectively.
+Note: The [http://www.gohome.org/wl web page on gohome.org] is [http://comments.gmane.org/gmane.mail.wanderlust.general.japanese/9108 outdated].
 
 == Features ==
 
@@ -33,7 +33,7 @@ New upstream mailing list addresses: <code>wl@ml.gentei.org</code> and <code>wl-
 It is the only emacs mail reader that I have used that seems to handle IMAP properly (i.e., leaves messages on server, cacheing, etc.). Gnus (CategoryGnus) users may disagree. It integrates with BBDB (CategoryBbdb), supports MIME, can handle integrating with mailcrypt (cvs version) (WanderLustEncryption). MIME and PGP/MIME is handled via SEMI (SemiIsEmacsMimeInterface). Key-bindings are, at least to me, a little foreign at first. Documentation in English is sufficient though not overwhelming. 
 
 == Installing Wanderlust ==
-Best way to get the latest wanderlust and all its dependencies is by installing it through [http://www.emacswiki.org/emacs/el-get el-get], which is an elisp package manager, that downloads and installs all dependencies automatically. You can also install wanderlust through your package manager (for GNU/Linux); search for "wanderlust", "wl", or "wl-beta" (recommended for Debian-based systems).
+An easy way to get the latest Wanderlust and all its dependencies is by installing it through [http://www.emacswiki.org/emacs/el-get el-get], which is an elisp package manager, that downloads and installs all dependencies from GitHub automatically. You can also install wanderlust through your package manager (for GNU/Linux); search for "wanderlust", "wl", or "wl-beta" (recommended for Debian-based systems).
 
 
 == Basic Usage ==
