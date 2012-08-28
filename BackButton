@@ -69,8 +69,8 @@ and via <nowiki>EmacsWiki</nowiki>:
 
 Tested only on GNU Emacs version 24.1
 
-Uses if present: smartrep.el, nav-flash.el, visible-mark.el,
-ucs-utils.el
+Uses if present: [[smartrep.el]], NavFlash, VisibleMark,
+UcsUtils
 
 ==See Also==
 MarkCommands
