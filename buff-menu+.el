@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Sep 11 10:29:56 1995
 ;; Version: 21.0
-;; Last-Updated: Thu Aug 23 09:41:05 2012 (-0700)
+;; Last-Updated: Tue Aug 28 07:54:50 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 2781
+;;     Update #: 2791
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/buff-menu+.el
 ;; Doc URL: http://www.emacswiki.org/emacs/BufferMenuPlus
 ;; Keywords: mouse, local, convenience
@@ -92,7 +92,9 @@
 ;;  ***** NOTE: The following hook defined in `buff-menu.el'
 ;;              has been REDEFINED HERE:
 ;;
-;;  `buffer-menu-mode-hook' - Fontifies buffer and fits its frame.
+;;  `Buffer-menu-mode-hook' (aka `buffer-menu-mode-hook') -
+;;     Fontify buffer and fits its frame.
+;;     Add number of marked and flagged lines to mode in mode line.
 ;;
 ;;
 ;;  ***** NOTE: The following functions defined in `buff-menu.el'
@@ -144,6 +146,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/08/28 dadams
+;;     Handle Emacs 23 capitalization of buffer-menu-mode-hook.
 ;; 2012/06/21 dadams
 ;;     Added: buffer-menu-nb-marked-in-mode-name.
 ;; 2012/01/15 dadams
@@ -850,7 +854,7 @@ Click a column heading to sort by that field and update this option."
       (goto-char (if eobp (point-max) opoint)))))
 
 (defun Buffer-menu-fontify-and-adjust-frame ()
-  "Use for `buffer-menu-mode-hook'.  Fontify, fit and raise frame."
+  "Use for `Buffer-menu-mode-hook'.  Fontify, fit and raise frame."
   (with-current-buffer (get-buffer-create "*Buffer List*")
     (when (< emacs-major-version 21) (make-local-variable 'font-lock-defaults))
     (setq font-lock-defaults  '(buffer-menu-font-lock-keywords t))
@@ -863,8 +867,10 @@ Click a column heading to sort by that field and update this option."
     ;; Refresh `font-lock-keywords' from `font-lock-defaults'
     (when (fboundp 'font-lock-refresh-defaults) (font-lock-refresh-defaults))))
 
-;; Fontify buffer, then fit and raise its frame.
-(add-hook 'buffer-menu-mode-hook 'Buffer-menu-fontify-and-adjust-frame)
+;; Fontify buffer, then fit and raise its frame.  (In Emacs 23 they capitalized the name.)
+(if (> emacs-major-version 22)
+    (add-hook 'Buffer-menu-mode-hook 'Buffer-menu-fontify-and-adjust-frame)
+  (add-hook 'buffer-menu-mode-hook 'Buffer-menu-fontify-and-adjust-frame))
 
 
 ;; REPLACE ORIGINAL in `buff-menu.el'.
@@ -1037,7 +1043,9 @@ Bindings in Buffer Menu mode:
     (setq truncate-lines    t
           buffer-read-only  t)
     (if (> emacs-major-version 21)
-        (run-mode-hooks 'buffer-menu-mode-hook)
+        (if (> emacs-major-version 22)  ; Capitalized in Emacs 23.
+            (run-mode-hooks 'Buffer-menu-mode-hook)
+          (run-mode-hooks 'buffer-menu-mode-hook))
       (run-hooks 'buffer-menu-mode-hook))))
 
 
@@ -1856,7 +1864,9 @@ marked/flagged."
     "*Face for flagged number in mode line `mode-name' for Dired buffers."
     :group 'Buffer-Menu-Plus :group 'font-lock-highlighting-faces)
 
-  (add-hook 'buffer-menu-mode-hook 'buffer-menu-nb-marked-in-mode-name))
+  (if (> emacs-major-version 22)
+      (add-hook 'Buffer-menu-mode-hook 'buffer-menu-nb-marked-in-mode-name)
+    (add-hook 'buffer-menu-mode-hook 'buffer-menu-nb-marked-in-mode-name)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 
