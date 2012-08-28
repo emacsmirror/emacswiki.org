@@ -260,7 +260,8 @@ and via <nowiki>EmacsWiki</nowiki>:
 
 Tested only on GNU Emacs version 24.1
 
-Requires dynamic-fonts.el, ucs-utils.el
+Requires DynamicFonts, UcsUtils
 
 ----
 CategoryFaces
+CategoryInternationalization
