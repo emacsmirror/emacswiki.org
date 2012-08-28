@@ -9,6 +9,7 @@ instance, when editing BbdbMode notes, which tend to be multiline, right?
 You can get it from here:
 
 * http://www.gnufans.net/~deego/emacspub/lisp-mine/miniedit/
+* http://github.com/emacsmirror/miniedit
 
 ----
 CategoryModes
