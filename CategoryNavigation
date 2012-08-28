@@ -1,5 +1,12 @@
 Navigating large buffers, or multiple buffers, especially code.
 
+== Navigation Facilities Included with Emacs ==
+
+* MarkCommands
+* GrepMode
+* OccurMode
+* CompilationMode
+
 == Navigation Libraries ==
 
 * ImenuMode
@@ -20,5 +27,4 @@ These utility libraries are useful from Emacs Lisp, but do not have user-facing 
 
 * CScopeAndEmacs
 * EmacsTags
-* MarkCommands
 * CategoryProgrammerUtils
