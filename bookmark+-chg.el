@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Thu Aug 23 09:19:55 2012 (-0700)
+;; Last-Updated: Tue Aug 28 16:01:45 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 15015
+;;     Update #: 15016
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2012/08/28 dadams
+;;     bookmark-send-edited-annotation: Record an empty annotation as nil, not "".
 ;; 2012/08/21 dadams
 ;;     Call tap-put-thing-at-point-props after load thingatpt+.el.
 ;; 2012/08/18 dadams
