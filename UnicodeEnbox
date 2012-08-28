@@ -39,4 +39,8 @@ and via <nowiki>EmacsWiki</nowiki>:
 
 Tested only on GNU Emacs version 24.1
 
-Requires string-utils.el, ucs-utils.el
+Requires StringUtils, UcsUtils
+
+----
+CategoryFaces
+CategoryExtensions
