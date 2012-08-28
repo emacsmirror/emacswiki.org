@@ -122,7 +122,7 @@ present.
 
 Tested only on GNU Emacs version 24.1
 
-Uses if present: string-utils.el, notify.el, todochiku.el,
+Uses if present: StringUtils, [[notify.el]], ToDoChiKu,
 popup.el
 
 ==Availability==
@@ -134,3 +134,7 @@ Alert.el is available at github:
 and via <nowiki>EmacsWiki</nowiki>:
 
 : Lisp:alert.el
+
+----
+CategoryDisplay
+CategoryExtensions
