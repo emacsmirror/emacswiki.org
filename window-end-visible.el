@@ -4,10 +4,10 @@
 ;;
 ;; Author: Roland Walker walker@pobox.com
 ;; URL: https://github.com/rolandwalker/window-end-visible.el
-;; Version: 0.0.1
-;; Last-Updated: 21 Aug 2012
+;; Version: 0.0.2
+;; Last-Updated: 22 Aug 2012
 ;; EmacsWiki: WindowEndVisible
-;; Keywords:
+;; Keywords: extensions
 ;;
 ;; Simplified BSD License
 ;;
@@ -40,9 +40,11 @@
 ;;
 ;; Notes
 ;;
-;; Compatibility
+;; Compatibility and Requirements
 ;;
 ;;    Tested only on GNU Emacs version 24.1
+;;
+;;    No external dependencies
 ;;
 ;; Bugs
 ;;
@@ -120,6 +122,7 @@ cleared."
 
 ;;; main interface
 
+;;;###autoload
 (defun window-end-visible (&optional window update)
   "Return the last visible position in WINDOW.
 
@@ -145,7 +148,6 @@ WINDOW and UPDATE are as documented at `window-end'."
       (let* ((pos (window-end window update))
              (orig-pos pos)
              (lim (max (window-start window) (with-current-buffer (window-buffer window) (point-min)))))
-        (setq pos-visible-in-window-p-memoized-alist nil)
         ;; hop back and forth to minimize the number of tests, may not
         ;; matter much now that it is memoized
         (while (and (not (window-end-visible-pos-visible-p pos window cwc))
