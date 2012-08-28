@@ -1,0 +1,26 @@
+Project management in Emacs.  Managing groups of files together, especially code.
+
+== Full Project Management Libraries ==
+
+These libraries have the goal to be full project-management solutions.
+
+* [https://github.com/bbatsov/projectile projectile]
+* [http://wiki.github.com/jrockway/eproject eproject]
+* a different library named [[eproject]]
+* [http://cedet.sourceforge.net/projects.shtml CEDET]
+* [[project-buffer-mode.el]]
+* [[mk-project.el]]
+
+== Project Helpers or Simplified Project Libraries ==
+
+These libraries address some aspect of project management without being complete solutions.
+
+* [https://github.com/eglaysher/find-things-fast find-things-fast]
+* desktop.el (included with Emacs)
+* FindFileInProject
+* ProjectLocalVariables
+* MinimalSessionSaver
+
+== See Also ==
+
+* CategoryProgrammerUtils
