@@ -1,0 +1,68 @@
+Extensions (using the category name from `finder-by-keyword'), are utility libraries intended to be used by programmers writing Emacs Lisp.  These libraries offer no (or little) user-facing functionality.
+
+This is just a start -- this page is potentially long.
+
+== Comprehensive Utility Sets ==
+* APortableEmacsLibrary (APEL)
+* [[mon-utils.el]]
+
+== Data Structures and Types ==
+
+* ArrayExtension
+* [[Heaps]]
+* [[Queues]]
+* RecordType
+* [[Tries]]
+
+== Algorithms ==
+
+* TaggedNFA
+
+== Strings ==
+
+* StringUtils
+* UcsUtils
+* [[ucs-cmds.el]]
+
+== Numbers ==
+
+* [http://www.astro.princeton.edu/~rhl/skyserver/bigint.el bigint.el]
+
+== Buffer Text ==
+
+* ThingAtPoint
+
+== User Interface ==
+
+* LuiMode
+* tabulated-list.el -- included with Emacs
+* ButtonLockMode
+* [[Alert]]
+* NavFlash
+* UnicodeEnbox
+
+== Windows ==
+
+* WindowEndVisible
+
+== Frames ==
+
+* todo
+
+== Buffers ==
+
+* todo
+
+== Persistence ==
+
+* [http://cedet.sourceforge.net/eieio.shtml Eieio]
+* [https://github.com/sigma/pcache Pcache]
+* PersistentSoft
+
+== Testing ==
+
+* See UnitTesting
+
+== See Also ==
+
+* CategoryProgrammerUtils
