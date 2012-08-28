@@ -116,7 +116,6 @@
                                                   #x00088  ; "Character Tabulation Set"
                                                   #x00089  ; "Character Tabulation With Justification"
                                                   #x00009  ; "Character Tabulation" (ordinary ASCII tab)
-                                                  #x0034f  ; "Combining Grapheme Joiner"
                                                   #x02001  ; "Em Quad"
                                                   #x02003  ; "Em Space"
                                                   #x02000  ; "En Quad"
@@ -143,13 +142,10 @@
                                                   #xe0020  ; "Tag Space"
                                                   #x02009  ; "Thin Space"
                                                   #x02004  ; "Three-Per-Em Space"
-                                                  #x02d7f  ; "Tifinagh Consonant Joiner"
                                                   #x02060  ; "Word Joiner"
-                                                  #x0200d  ; "Zero Width Joiner"
                                                   #x0feff  ; "Zero Width No-Break Space"
-                                                  #x0200c  ; "Zero Width Non-Joiner"
                                                   #x0200b  ; "Zero Width Space"
-                                                  )))
+                                                  ))))
   "Definition of whitespace characters used by string-utils.
 
 Includes Unicode whitespace characters.")
