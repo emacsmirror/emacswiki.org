@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Aug 23 14:13:57 2012 (-0700)
+;; Last-Updated: Tue Aug 28 07:21:58 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 13259
+;;     Update #: 13262
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1438,7 +1438,7 @@ whose value or whose custom type is compatible with type `integer',
                        ipc)))
 
                ;; Emacs 23 allows DEFAULT to be a list of strings - use the first one for prompt etc.
-               (default1  (if (consp default) (car default) default)))
+               (default1  (if (atom default)  default  (setq default  (delq nil default))  (car default))))
            (when default
              (save-match-data
                (setq prompt  (if (string-match "\\(\\):[ \t]*\\'" prompt)
