@@ -4,10 +4,10 @@
 ;;
 ;; Author: D Roland Walker <walker@pobox.com>
 ;; URL: https://github.com/rolandwalker/button-lock/raw/master/button-lock.el
-;; Version: 0.9.5
-;; Last-Updated: 23 Aug 2012
+;; Version: 0.9.7
+;; Last-Updated: 27 Aug 2012
 ;; EmacsWiki: ButtonLockMode
-;; Keywords: mouse, button, hypermedia
+;; Keywords: mouse, button, hypermedia, extensions
 ;;
 ;; Simplified BSD License
 ;;
@@ -139,9 +139,11 @@
 ;;         buttons.  Button-lock.el is for changing all matching text
 ;;         into a button.
 ;;
-;; Compatibility
+;; Compatibility and Requirements
 ;;
 ;;     Tested only on GNU Emacs version 24.1
+;;
+;;     No external dependencies
 ;;
 ;; Bugs
 ;;
@@ -267,12 +269,14 @@
 
 (require 'font-lock)
 
+(declare-function union "cl-seq.el")
+
 ;;; customizable variables
 
 ;;;###autoload
 (defgroup button-lock nil
   "Clickable text defined by regular expression."
-  :version "0.9.5"
+  :version "0.9.7"
   :link '(emacs-commentary-link "button-lock")
   :prefix "button-lock-"
   :group 'navigation
@@ -375,12 +379,13 @@ This variable should be set by calling
 
 Optional KIND is as documented at `called-interactively-p'
 in GNU Emacs 24.1 or higher."
-  `(if (eq 0 (cdr (subr-arity (symbol-function 'called-interactively-p))))
-      (called-interactively-p)
-    (called-interactively-p ,kind)))
+  (if (eq 0 (cdr (subr-arity (symbol-function 'called-interactively-p))))
+      '(called-interactively-p)
+    `(called-interactively-p ,kind)))
 
 ;;; minor-mode definition
 
+;;;###autoload
 (define-minor-mode button-lock-mode
   "Toggle button-lock-mode, a minor mode for making text clickable.
 
@@ -419,6 +424,7 @@ the argument is 'toggle."
      (when (button-lock-called-interactively-p 'interactive)
        (message "button-lock mode disabled")))))
 
+;;;###autoload
 (define-globalized-minor-mode global-button-lock-mode button-lock-mode button-lock-maybe-turn-on
   :group 'button-lock)
 
@@ -1005,6 +1011,7 @@ deactivated and reactivated."
 ;; mangle-whitespace: t
 ;; require-final-newline: t
 ;; coding: utf-8
+;; byte-compile-warnings: (not cl-functions)
 ;; End:
 ;;
 ;; LocalWords: ButtonLockMode mouseable mybutton keymap propertize
