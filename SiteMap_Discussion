@@ -19,6 +19,13 @@ Here's what SiteMap does:
 
 In the past day or so, [[roland.walker]] has created several new category pages and a meta-category page, CategoryCategories.  I thought, but don't find it now, that categories were to be created only after discussion (where? here?).  Doesn't seem like a good idea that people should just be creating category pages willy nilly. -- DrewAdams
 
+[new]
+At the top of SiteMap it says:
+
+: Please check SiteMap Discussion before editing this SiteMap page, however.
+
+I think CategoryCategories is a tradition from the Portland Pattern Repository (the first wiki). It doesn't seem quite so useful here since the SiteMap is supposed do double duty as a commented list of all the categories. I'll read through the changes made and leave comments where appropriate. -- AlexSchroeder
+
 === Bookmarking ===
 
 I propose that we create CategoryBookmark and add a `Bookmarking' entry under `General Use'.  This is at least as important as some of the others (e.g. `HideStuff'), and it does not appear anywhere. -- DrewAdams
