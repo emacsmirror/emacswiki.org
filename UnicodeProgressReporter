@@ -35,4 +35,7 @@ and via <nowiki>EmacsWiki</nowiki>:
 
 Tested only on GNU Emacs version 24.1
 
-Requires ucs-utils.el
+Requires UcsUtils
+
+----
+CategoryFaces
