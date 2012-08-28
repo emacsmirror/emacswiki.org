@@ -4,10 +4,10 @@
 ;;
 ;; Author: Roland Walker walker@pobox.com
 ;; URL: https://github.com/rolandwalker/persistent-soft.el
-;; Version: 0.8.0
-;; Last-Updated: 17 Aug 2012
+;; Version: 0.8.1
+;; Last-Updated: 27 Aug 2012
 ;; EmacsWiki: PersistentSoft
-;; Keywords: data
+;; Keywords: data, extensions
 ;; Package-Requires: ((pcache "0.2.3"))
 ;;
 ;; Simplified BSD License
@@ -47,9 +47,12 @@
 ;;
 ;;    This library provides something of a workaround.
 ;;
-;; Compatibility
+;; Compatibility and Requirements
 ;;
-;;    Tested only on GNU Emacs version 24.x
+;;    Tested only on GNU Emacs version 24.1
+;;
+;;    Uses if present: pcache.el (all operations are noops when
+;;    not present)
 ;;
 ;; Bugs
 ;;
@@ -107,12 +110,18 @@
 
 (require 'pcache nil t)
 
+(declare-function pcache-get         "pcache.el")
+(declare-function pcache-has         "pcache.el")
+(declare-function pcache-put         "pcache.el")
+(declare-function pcache-repository  "pcache.el")
+(declare-function pcache-save        "pcache.el")
+
 ;;; customizable variables
 
 ;;;###autoload
 (defgroup persistent-soft nil
   "Persistent storage, returning nil on failure."
-  :version "0.8.0"
+  :version "0.8.1"
   :link '(emacs-commentary-link "persistent-soft")
   :prefix "persistent-soft-"
   :group 'extensions)
@@ -202,7 +211,7 @@ on failure, without throwing an error."
 ;; coding: utf-8
 ;; End:
 ;;
-;; LocalWords:
+;; LocalWords:  pcache eieio callf
 ;;
 
 ;;; persistent-soft.el ends here
