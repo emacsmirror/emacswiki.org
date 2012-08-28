@@ -11,6 +11,7 @@ These libraries have the goal to be full project-management solutions.
 * [http://www.shellarchive.co.uk/content/lisp/project-root.el project-root.el]
 * [[project-buffer-mode.el]]
 * [[mk-project.el]]
+* [http://www.ozymandias.dk/emacs/emacs.html#vps vps]
 
 == Project Helpers or Simplified Project Libraries ==
 
@@ -20,8 +21,10 @@ These libraries address some aspect of project management without being complete
 * desktop.el (included with Emacs)
 * FindFileInProject
 * ProjectLocalVariables
+* SimpleProjectManagment
 * MinimalSessionSaver
 
 == See Also ==
 
+* ProjectSettings
 * CategoryProgrammerUtils
