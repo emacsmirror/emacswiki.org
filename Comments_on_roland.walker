@@ -13,3 +13,24 @@ There's only 36 keywords, some of which already exist. Covering half of them wou
 
 -- roland.walker 2012-08-28 16:10 UTC
 
+
+----
+
+Categories should be as mutually exclusive (orthogonal) as possible (within reason, and modulo other considerations that might exist).  The reason is that it provides a simpler organization and helps users find things.
+
+One could argue for a different set of categories than what we have, which would provide a different basic organization.  But it doesn't make much sense to add categories that overlap (especially considerably) in meaning. (It's obviously OK for a page to be in several categories, but they should have ~independent meanings.)
+
+One could argue to add a category for a large subset S of some category, C but in that case it would be best to restrict the content & definition of the larger category C to just C - S, i.e., to the complement of S, and perhaps rename C to reflect that restriction.
+
+The keywords in `finder-known-keywords' are not about (Emacs) wiki categories; they are about Emacs packages/libraries/features.  There is some relation, but they do not have the same ends.  (And the actual keywords used by `finder' include anything that someone puts in the `Keywords' field of a Lisp file in `load-path' -- IOW, ''anything at all''.)
+
+I would say that it might be useful to look at `finder-known-keywords' for inspiration, to see if there is something there that might be missing or useful for the wiki, but I don't think it should be taken as catechism.
+
+The Emacs wiki organization is what it is.  The existing set of categories could be changed, but that should involve some discussion, and it would no doubt involve some work after consensus were reached.
+
+A better approach at this point, IMO, is to consider proposals for categories that are truly needed -- new categories that would fit well with the existing set.  And I don't expect 36 of those.  We've gotten by pretty well with the same set (adding one or two every few years), for quite a while.
+
+The fewer categories there are, the easier it is to classify something, but the less accurate a given classification might be.  But with the ability to assign multiple categories, and especially if they are more or less orthogonal, you can get finer tuning.
+
+-- DrewAdams 2012-08-28 23:39 UTC
+
