@@ -8,6 +8,7 @@ These libraries have the goal to be full project-management solutions.
 * [http://wiki.github.com/jrockway/eproject eproject]
 * a different library named [[eproject]]
 * [http://cedet.sourceforge.net/projects.shtml CEDET]
+* [http://www.shellarchive.co.uk/content/lisp/project-root.el project-root.el]
 * [[project-buffer-mode.el]]
 * [[mk-project.el]]
 
