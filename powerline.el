@@ -1,9 +1,11 @@
 ;;; powerline.el --- fancy statusline
 
 ;; Name: Emacs Powerline
-;; Author: Unknown (NicolasRougier perhaps?  with modifications from milypostman?) 
+;; Author: Nicolas Rougier and Chen Yuan
 ;; Version: 1.2
 ;; Keywords: statusline
+;; Repository: https://github.com/yuanotes/powerline (not maintained)
+;; Alternative: https://github.com/milkypostman/powerline by Donald Curtis
 
 ;;; Commentary:
 
@@ -11,7 +13,7 @@
 
 ;;; Changelog:
 
-;; v1.0 - Unknown posted to wiki
+;; v1.0 - Nicolas Rougier posted to wiki (http://www.emacswiki.org/emacs/PowerLine)
 ;; v1.1 - Guard clause around the powerline output, so that if
 ;;        powerline tries to output something unexpected, it won't
 ;;        just fail and flail-barf.  (JonathanArkell)
