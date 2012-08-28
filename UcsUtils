@@ -38,6 +38,10 @@ and via <nowiki>EmacsWiki</nowiki>:
 
 Tested only on GNU Emacs version 24.1
 
-Requires persistent-soft.el
+Requires PersistentSoft
 
-Uses if present: memoize.el
+Uses if present: [[https://github.com/skeeto/emacs-memoize memoize.el]]
+
+----
+CategoryInternationalization
+CategoryExtensions
