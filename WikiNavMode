@@ -19,9 +19,11 @@ and is also available via <nowiki>EmacsWiki</nowiki>
 ==Compatibility and Requirements==
 Tested only on GNU Emacs version 24.1
 
-Uses if present: nav-flash.el
+Requires ButtonLockMode
+
+Uses if present: NavFlash, BackButton
 
 ----
-CategoryModes
 CategoryHypermedia
 CategoryNavigation
+CategoryModes
