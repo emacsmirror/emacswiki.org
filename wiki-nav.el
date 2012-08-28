@@ -4,11 +4,11 @@
 ;;
 ;; Author: D Roland Walker <walker@pobox.com>
 ;; URL: https://github.com/rolandwalker/button-lock/raw/master/wiki-nav.el
-;; Version: 0.6.0
-;; Last-Updated: 23 Aug 2012
+;; Version: 0.6.3
+;; Last-Updated: 27 Aug 2012
 ;; EmacsWiki: WikiNavMode
 ;; Keywords: mouse, button, hypermedia, navigation
-;; Package-Requires: ((button-lock "0.9.5") (nav-flash "1.0.0") (back-button "0.5.0"))
+;; Package-Requires: ((button-lock "0.9.6") (nav-flash "1.0.0"))
 ;;
 ;; Simplified BSD License
 ;;
@@ -24,7 +24,7 @@
 ;; [[Prior Art]]
 ;; [[Notes]]
 ;; [[Bugs]]
-;; [[Compatibility]]
+;; [[Compatibility and Requirements]]
 ;; [[Todo]]
 ;; [[License]]
 ;; [[Code]]
@@ -132,7 +132,6 @@
 ;;
 ;;     M-x customize-group RET wiki-nav RET
 ;;     M-x customize-group RET nav-flash RET
-;;     M-x customize-group RET back-button RET
 ;;
 ;; [[<Prior Art]]
 ;;
@@ -180,11 +179,17 @@
 ;;     The global minor mode causes button-lock to be turned off/back
 ;;     on for every buffer.
 ;;
-;; [[<Compatibility]]
+;; [[<Compatibility and Requirements]]
 ;;
 ;;     Tested on GNU Emacs 24.1 only.
 ;;
+;;     Requires button-lock.el
+;;
+;;     Uses if present: nav-flash.el, back-button.el
+;;
 ;; [[<Todo]]
+;;
+;;    ido support - document and provide default bindings
 ;;
 ;;    instead of comment-only modes, check if comment syntax is present
 ;;    in buffer as is done in fixmee-mode, and use syntax-ppss rather
@@ -293,6 +298,7 @@
 
 ;; for callf, let*
 (eval-when-compile
+  (defvar button-lock-mode)
   (require 'cl))
 
 (require 'font-lock)
@@ -301,12 +307,20 @@
 
 (autoload 'button-lock-mode "button-lock" "Toggle button-lock-mode, a minor mode for making text clickable." nil)
 
+(declare-function back-button-push-mark                   "back-button.el")
+(declare-function back-button-push-mark-local-and-global  "back-button.el")
+(declare-function button-lock-unset-button                "button-lock.el")
+(declare-function button-lock-set-button                  "button-lock.el")
+(declare-function button-lock-extend-binding              "button-lock.el")
+(declare-function button-lock-find-extent                 "button-lock.el")
+(declare-function button-lock-called-interactively-p      "button-lock.el")
+
 ;;; customizable variables
 
 ;;;###autoload
 (defgroup wiki-nav nil
   "Simple file navigation using [[WikiStrings]]."
-  :version "0.6.0"
+  :version "0.6.3"
   :link '(emacs-commentary-link "wiki-nav")
   :prefix "wiki-nav-"
   :group 'button-lock
@@ -558,6 +572,8 @@ Set this value to the empty string to disable the feature entirely."
 
 ;;; variables
 
+(defvar wiki-nav-mode nil "Mode variable for wiki-nav.")
+
 (defvar wiki-nav-button nil "Holds the buffer-local button definition when the mode is active.")
 (make-variable-buffer-local 'wiki-nav-button)
 
@@ -741,6 +757,7 @@ seconds to complete."
     (wiki-nav-alist-flatten l-alist)))
 
 ;; bindable action dispatch commands
+;;;###autoload
 (defun wiki-nav-default-multi-action (event)
   "Dispatch the default double-click navigation action.
 
@@ -762,6 +779,7 @@ mouse event."
                                           (regexp-quote wiki-nav-link-stop))
                                           t)))))
 
+;;;###autoload
 (defun wiki-nav-mouse-action (event)
   "Dispatch the default action for the wiki-nav link at the mouse location.
 
@@ -769,6 +787,7 @@ Mouse location is defined by the mouse event EVENT."
   (interactive "e")
   (wiki-nav-action-1 (posn-point (event-end event))))
 
+;;;###autoload
 (defun wiki-nav-keyboard-action ()
   "Dispatch the default navigation action for the wiki-nav link under the point."
   (interactive)
@@ -911,6 +930,7 @@ Mouse location is defined by the mouse event EVENT."
 
 ;;; minor mode definition
 
+;;;###autoload
 (define-minor-mode wiki-nav-mode
   "Turn on navigation by bracketed [[WikiStrings]] within a document.
 
@@ -974,11 +994,13 @@ mode."
      (when (button-lock-called-interactively-p 'interactive)
        (message "wiki-nav mode disabled")))))
 
+;;;###autoload
 (define-globalized-minor-mode global-wiki-nav-mode wiki-nav-mode wiki-nav-maybe-turn-on
   :group 'wiki-nav)
 
 ;;; interactive commands
 
+;;;###autoload
 (defun wiki-nav-find-any-link (&optional arg)
   "Skip forward to the next defined wiki-nav link.
 
@@ -1045,6 +1067,7 @@ previous defined wiki-nav link."
           (when (fboundp 'nav-flash-show)
             (nav-flash-show)))))))
 
+;;;###autoload
 (defun wiki-nav-find-any-previous-link ()
   "Skip backward to the previous defined wiki-nav link.
 
@@ -1055,6 +1078,7 @@ previous defined wiki-nav link."
   (interactive)
   (wiki-nav-find-any-link -1))
 
+;;;###autoload
 (defun wiki-nav-ido (arg)
   "Navigate to wiki-nav strings using `ido-completing-read'.
 
