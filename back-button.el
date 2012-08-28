@@ -4,11 +4,11 @@
 ;;
 ;; Author: Roland Walker walker@pobox.com
 ;; URL: https://github.com/rolandwalker/back-button.el
-;; Version: 0.6.0
-;; Last-Updated: 26 Jul 2012
+;; Version: 0.6.2
+;; Last-Updated: 27 Aug 2012
 ;; EmacsWiki: BackButton
-;; Keywords: Navigation
-;; Package-Requires: ((nav-flash "1.0.0") (smartrep "0.0.3") (ucs-utils "0.6.0"))
+;; Keywords: convenience, navigation, interface
+;; Package-Requires: ((nav-flash "1.0.0") (smartrep "0.0.3") (ucs-utils "0.6.0") (persistent-soft "0.8.0") (pcache "0.2.3"))
 ;;
 ;; Simplified BSD License
 ;;
@@ -89,9 +89,12 @@
 ;;    `global-mark-ring' not contain consecutive marks in the same
 ;;    buffer.  However, no such issues have been observed.
 ;;
-;; Compatibility
+;; Compatibility and Requirements
 ;;
 ;;    Tested only on GNU Emacs version 24.1
+;;
+;;    Uses if present: smartrep.el, nav-flash.el, visible-mark.el,
+;;                     ucs-utils.el
 ;;
 ;; Bugs
 ;;
@@ -167,7 +170,7 @@
 ;; This software is provided by Roland Walker "AS IS" and any express
 ;; or implied warranties, including, but not limited to, the implied
 ;; warranties of merchantability and fitness for a particular
-;; purpose are disclaimed. In no event shall Roland Walker or
+;; purpose are disclaimed.  In no event shall Roland Walker or
 ;; contributors be liable for any direct, indirect, incidental,
 ;; special, exemplary, or consequential damages (including, but not
 ;; limited to, procurement of substitute goods or services; loss of
@@ -189,6 +192,8 @@
 
 ;; for let*, decf, remove-if-not, callf, position
 (eval-when-compile
+  (defvar visible-mark-mode)
+  (defvar visible-mark-overlays)
   (require 'cl))
 
 (require 'smartrep     nil t)
@@ -196,12 +201,21 @@
 (require 'visible-mark nil t)
 (require 'ucs-utils    nil t)
 
+(declare-function ucs-utils-char                    "ucs-utils.el")
+(declare-function smartrep-define-key               "smartrep.el")
+(declare-function visible-mark-initialize-overlays  "visible-mark.el")
+(declare-function visible-mark-initialize-faces     "visible-mark.el")
+(declare-function visible-mark-move-overlays        "visible-mark.el")
+(declare-function back-button-push-mark             "back-button.el")
+(declare-function remove-if-not                     "cl-seq.el")
+(declare-function position                          "cl-seq.el")
+
 ;;; customizable variables
 
 ;;;###autoload
 (defgroup back-button nil
   "Visual navigation through mark rings."
-  :version "0.6.0"
+  :version "0.6.2"
   :link '(emacs-commentary-link "back-button")
   :prefix "back-button-"
   :group 'extensions
@@ -360,7 +374,7 @@ The format for key sequences is as defined by `kbd'."
 
 ;;; variables
 
-(defvar back-button-mode                     nil "Whether back-button-mode minor-mode is on.")
+(defvar back-button-mode                     nil "Whether `back-button-mode' minor-mode is on.")
 (defvar back-button-local-marks-copy         nil "A remembered set of local marks.")
 (defvar back-button-global-marks-copy        nil "A remembered set of global marks.")
 (defvar back-button-global-disable-direction nil "Supplementary info for disabling toolbar buttons.")
@@ -463,7 +477,7 @@ The format for key sequences is as defined by `kbd'."
                                    (define-key map (kbd "<mode-line> <C-wheel-up>"   ) 'back-button-local-backward)
                                    (define-key map (kbd "<mode-line> <C-wheel-down>" ) 'back-button-local-forward)
                                    (define-key map (kbd "<mode-line> <down-mouse-3>" )  menu-map)
-                                   map) "Keymap for the back-button lighter")
+                                   map) "Keymap for the back-button lighter.")
 
 (callf propertize back-button-mode-lighter 'local-map back-button-lighter-map
                                            'help-echo "Back-button: mouse-wheel and control-mouse-wheel to navigate")
@@ -471,10 +485,13 @@ The format for key sequences is as defined by `kbd'."
 ;;; macros
 
 (defmacro back-button-called-interactively-p (&optional kind)
-  "A backward-compatible version of `called-interactively-p'."
-  `(if (eq 0 (cdr (subr-arity (symbol-function 'called-interactively-p))))
-      (called-interactively-p)
-    (called-interactively-p ,kind)))
+  "A backward-compatible version of `called-interactively-p'.
+
+Optional KIND is as documented at `called-interactively-p'
+in GNU Emacs 24.1 or higher."
+  (if (eq 0 (cdr (subr-arity (symbol-function 'called-interactively-p))))
+      '(called-interactively-p)
+    `(called-interactively-p ,kind)))
 
 ;;; aliases et al
 
@@ -487,6 +504,7 @@ The format for key sequences is as defined by `kbd'."
 
 ;;; minor-mode setup
 
+;;;###autoload
 (define-minor-mode back-button-mode
   "Turn on back-button-mode.
 
@@ -513,6 +531,7 @@ is 'toggle."
 
 ;;; interactive commands
 
+;;;###autoload
 (defun back-button-local-backward ()
   "Run `back-button-local' in the backward direction.
 
@@ -522,9 +541,10 @@ This command is somewhat like a fancier version of
 `pop-to-mark-command', though it leaves the mark and
 `mark-ring' in a different state."
   (interactive)
-  (back-button-maybe-record-start 'local (called-interactively-p 'any))
+  (back-button-maybe-record-start 'local (back-button-called-interactively-p 'any))
   (back-button-local nil))
 
+;;;###autoload
 (defun back-button-local-forward ()
   "Run `back-button-local' in the forward direction.
 
@@ -533,9 +553,10 @@ Unlike `back-button-local', ignores any prefix argument.
 This command is somewhat like the reverse of
 `pop-to-mark-command'."
   (interactive)
-  (back-button-maybe-record-start 'local (called-interactively-p 'any))
+  (back-button-maybe-record-start 'local (back-button-called-interactively-p 'any))
   (back-button-local '(4)))
 
+;;;###autoload
 (defun back-button-global-backward ()
   "Run `back-button-global' in the backward direction.
 
@@ -544,9 +565,10 @@ Unlike `back-button-global', ignores any prefix argument.
 This command is much like a fancier version of
 `pop-global-mark'."
   (interactive)
-  (back-button-maybe-record-start 'global (called-interactively-p 'any))
+  (back-button-maybe-record-start 'global (back-button-called-interactively-p 'any))
   (back-button-global nil))
 
+;;;###autoload
 (defun back-button-global-forward ()
   "Run `back-button-global' in the forward direction.
 
@@ -554,9 +576,10 @@ Unlike `back-button-global', ignores any prefix argument.
 
 This command is much like the reverse of `pop-global-mark'."
   (interactive)
-  (back-button-maybe-record-start 'global (called-interactively-p 'any))
+  (back-button-maybe-record-start 'global (back-button-called-interactively-p 'any))
   (back-button-global '(4)))
 
+;;;###autoload
 (defun back-button-local (arg)
   "Navigate through `mark-ring', using `back-button-pop-local-mark'.
 
@@ -567,7 +590,7 @@ With universal prefix ARG, rotate the ring in the opposite
 direction.  (The \"forward\" direction by analogy with a
 web browser back-button.)"
   (interactive "P")
-  (back-button-maybe-record-start 'local (called-interactively-p 'any))
+  (back-button-maybe-record-start 'local (back-button-called-interactively-p 'any))
   (let ((pos (point))
         (counter (length mark-ring))
         (thumb nil)
@@ -608,6 +631,7 @@ web browser back-button.)"
                                        (make-string posn back-button-spacer-char)))))
 
 
+;;;###autoload
 (defun back-button-global (arg)
   "Navigate through `global-mark-ring', using `pop-global-mark'.
 
@@ -618,7 +642,7 @@ With universal prefix ARG, rotate the ring in the opposite
 direction.  (The \"forward\" direction by analogy with a
 web browser back-button.)"
   (interactive "P")
-  (back-button-maybe-record-start 'global (called-interactively-p 'any))
+  (back-button-maybe-record-start 'global (back-button-called-interactively-p 'any))
   (let ((pos (point))
         (buf (current-buffer))
         (counter (length global-mark-ring))
@@ -674,12 +698,14 @@ web browser back-button.)"
     (dolist (buf (buffer-list))
       (with-current-buffer buf
         (when visible-mark-overlays
-          (mapcar 'delete-overlay visible-mark-overlays)
+          (mapc 'delete-overlay visible-mark-overlays)
           (setq visible-mark-overlays nil)))))
   (setq back-button-global-disable-direction nil))
 
 (defun back-button-visible-mark-show (type)
-  "Show marks temporarily using `visible-mark'."
+  "Show marks temporarily using `visible-mark'.
+
+TYPE may be 'global or 'local."
   (when (and (featurep 'visible-mark)
              (not visible-mark-mode))
     (dolist (win (window-list))
@@ -694,7 +720,7 @@ web browser back-button.)"
               (visible-mark-move-overlays))))))))
 
 (defun back-button-find-position (thumb type)
-  "Find the position of the thumb in the mark ring.
+  "Find the position of THUMB in the mark ring.
 
 TYPE may be 'global or 'local."
   (let ((ring global-mark-ring)
@@ -730,7 +756,12 @@ traversal progress."
      (popup-volatile msg :box t :around t :delay back-button-index-timeout :face '(:background "Gray20" :foreground "#C0C0C0"))))))
 
 (defun back-button-maybe-record-start (type interactive)
-  "Push mark for the first of a series of interactive back-button commands."
+  "Push mark for the first of a series of interactive back-button commands.
+
+TYPE may be 'local or 'global.
+
+INTERACTIVE is a boolean value, noting whether this function was
+called from an interactive command."
   (when (and interactive
              (not (memq last-command back-button-commands))
              (not back-button-never-push-mark))
@@ -765,6 +796,8 @@ setting the mark."
 
 ;; this function can replace push-mark in many circumstances
 ;; todo make handling of duplicates consistent btw local and global
+
+;;;###autoload
 (defun back-button-push-mark-local-and-global (&optional location nomsg activate consecutives)
   "Push mark at LOCATION, and unconditionally add to `global-mark-ring'.
 
@@ -807,9 +840,11 @@ an exact duplicate of the current topmost mark onto `global-mark-ring'."
 ;; mangle-whitespace: t
 ;; require-final-newline: t
 ;; coding: utf-8
+;; byte-compile-warnings: (not cl-functions)
 ;; End:
 ;;
-;; LocalWords:
+;; LocalWords:  BackButton smartrep NOMSG CONSECUTIVES fset nomsg
+;; LocalWords:  callf imenu
 ;;
 
 ;;; back-button.el ends here
