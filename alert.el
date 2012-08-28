@@ -4,10 +4,11 @@
 ;;
 ;; Author: Roland Walker walker@pobox.com
 ;; URL: https://github.com/rolandwalker/alert.el
-;; Version: 0.5.2
-;; Last-Updated: 20 Aug 2012
+;; Version: 0.5.3
+;; Last-Updated: 27 Aug 2012
 ;; EmacsWiki: Alert
-;; Keywords: message, interface
+;; Keywords: extensions, message, interface
+;; Package-Requires: ((string-utils "0.0.2"))
 ;;
 ;; Simplified BSD License
 ;;
@@ -80,9 +81,12 @@
 ;;    degrade to an ordinary message if the external library is not
 ;;    present.
 ;;
-;; Compatibility
+;; Compatibility and Requirements
 ;;
 ;;    Tested only on GNU Emacs version 24.1
+;;
+;;    Uses if present: string-utils.el, notify.el, todochiku.el,
+;;                     popup.el
 ;;
 ;; Bugs
 ;;
@@ -141,12 +145,17 @@
 (autoload 'popup-tip         "popup"          "Show a tooltip of STRING at POINT.")
 (autoload 'popup-volatile    "popup-volatile" "Create a volatile tooltip using `popup-tip'.")
 
+(require 'string-utils nil t)
+
+(declare-function string-utils-propertize-fillin "string-utils.el")
+(declare-function alert-message                  "alert.el")
+
 ;;; customizable variables
 
 ;;;###autoload
 (defgroup alert nil
   "Alternatives to `message'."
-  :version "0.5.2"
+  :version "0.5.3"
   :link '(emacs-commentary-link "alert")
   :prefix "alert-"
   :group 'extensions)
@@ -171,8 +180,8 @@
 
 ;;; compatibility functions
 
-(unless (fboundp 'propertize-fillin)
-  (defun propertize-fillin (str-val &rest properties)
+(unless (fboundp 'string-utils-propertize-fillin)
+  (defun string-utils-propertize-fillin (str-val &rest properties)
     "Return a copy of STRING with text properties added, without overriding.
 
 Works exactly like `propertize', except that (character-by-character)
@@ -262,8 +271,8 @@ The following forms using `message` and `alert` are equivalent:
         (callf2 format "%s" content))
       (unless nocolor
         (callf concat colored-content (propertize " " 'display '(space :align-to right-margin)))
-        (callf propertize-fillin colored-content 'face (append (face-attr-construct 'default)
-                                                               (face-attr-construct alert-face))))
+        (callf string-utils-propertize-fillin colored-content 'face (append (face-attr-construct 'default)
+                                                                            (face-attr-construct alert-face))))
       (if (and (numberp alert-message-seconds)
                (> alert-message-seconds 0))
           (alert-message-temp colored-content)
@@ -271,14 +280,14 @@ The following forms using `message` and `alert` are equivalent:
   content)
 
 (defun alert-message-maybe-formatted (&rest args)
-  "Dispatch `message' ac coring to the variable `alert-message-preformatted'.
+  "Dispatch `message' according to the variable `alert-message-preformatted'.
 
 Formatting is not performed if `alert-message-preformatted' is
 bound and non-nil.
 
 When formatting is performed, ARGS are treated as for `message', including
 a format-string.  When formatting is not performed, only the first element
-of ARGS is respected.  It should be a preformatted string."
+of ARGS is respected.  It should be a pre-formatted string."
     (if (and (boundp 'alert-message-preformatted)
              alert-message-preformatted)
         (apply 'alert-message-noformat args)
@@ -287,7 +296,7 @@ of ARGS is respected.  It should be a preformatted string."
 
 ;;;###autoload
 (defun alert-message-noformat (content &rest args)
-  "An alternative for `message' which assumes a preformatted CONTENT string.
+  "An alternative for `message' which assumes a pre-formatted CONTENT string.
 
 ARGS are ignored, meaning this is not functionally equivalent to `message'.
 However, flet'ing `message' to this function is safe in the sense that
@@ -319,15 +328,15 @@ ARGS are as for `message', including a format-string."
           (save-excursion
             (goto-char (point-max))
             (let ((msg (if (and (boundp 'alert-message-preformatted)
-                                              alert-message-preformatted)
-                                         (car args)
-                                       (apply 'format args))))
-              (alert-message--insert-1 msg)
+                                alert-message-preformatted)
+                           (car args)
+                         (apply 'format args))))
+              (alert--message-insert-1 msg)
               msg)))
       ;; else
-      (let ((current-msg (current-message))
-            (apply 'alert-message-maybe-formatted args)
-            (alert-message current-msg))))))
+      (let ((current-msg (current-message)))
+        (apply 'alert-message-maybe-formatted args)
+        (alert-message current-msg)))))
 
 ;;;###autoload
 (defun alert-message-highlight (&rest args)
@@ -340,8 +349,8 @@ ARGS are as for `message', including a format-string."
   (let ((retval (apply 'alert-message-logonly args)))
     (when (stringp (car args))
       (callf concat (car args) (propertize " " 'display '(space :align-to right-margin)))
-      (callf propertize-fillin (car args) 'face (append (face-attr-construct 'default)
-                                                        (face-attr-construct alert-face))))
+      (callf string-utils-propertize-fillin (car args) 'face (append (face-attr-construct 'default)
+                                                                     (face-attr-construct alert-face))))
     (let ((message-log-max nil))
       (apply 'alert-message-maybe-formatted args))
     retval))
@@ -369,13 +378,13 @@ ARGS are as for `message', including a format-string."
   (let ((msg (if (and (boundp 'alert-message-preformatted) alert-message-preformatted) (car args) (apply 'format args)))
         (alert-message-preformatted t))
     (alert-message-logonly msg)
-    (alert-message--insert-1 msg)
+    (alert--message-insert-1 msg)
     msg))
 
-(defun alert-message--insert-1 (msg)
+(defun alert--message-insert-1 (msg)
   "Internal driver for `alert-message-insert'.
 
-Inserts preformatted MSG at the current position with line feeds as needed."
+Inserts pre-formatted MSG at the current position with line feeds as needed."
   (unless (eq (line-beginning-position) (point))
     (insert "\n"))
   (insert msg)
@@ -386,7 +395,7 @@ Inserts preformatted MSG at the current position with line feeds as needed."
 (defun alert-message-popup (&rest args)
   "An flet'able replacement for `message' which uses popups instead of echoing.
 
-The functions `popup-volatile' and `popup' are attempteded in
+The functions `popup-volatile' and `popup' are attempted in
 order to create a popup.  If both functions fail, the message
 content will appear in the echo area as usual.
 
@@ -469,8 +478,8 @@ The following aliases will be installed:
 ;; coding: utf-8
 ;; End:
 ;;
-;; LocalWords:
+;; LocalWords: noformat logonly nolog flet'able NOCOLOR nocolor fsets
+;; LocalWords: flet todochiku ARGS args callf
 ;;
-
 
 ;;; alert.el ends here
