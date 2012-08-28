@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Mon Aug 27 08:18:40 2012 (-0700)
+;; Last-Updated: Tue Aug 28 07:26:03 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8827
+;;     Update #: 8830
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1417,6 +1417,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2012/08/28 dadams
+;;     icicle-read-number: Allow for DEFAULT to be a cons with nil elements.  Thx to C. Schmidt.
 ;; 2012/08/18 dadams
 ;;     Added: icicle-bounds-of-thing-at-point.
 ;;     thing-at-point -> icicle-thing-at-point, everywhere.
