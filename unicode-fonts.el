@@ -4,11 +4,11 @@
 ;;
 ;; Author: Roland Walker walker@pobox.com
 ;; URL: https://github.com/rolandwalker/unicode-fonts.el
-;; Version: 0.3.0
-;; Last-Updated: 22 Aug 2012
+;; Version: 0.3.2
+;; Last-Updated: 27 Aug 2012
 ;; EmacsWiki: UnicodeFonts
-;; Keywords: i18n
-;; Package-Requires: ((dynamic-fonts "0.5.1") (ucs-utils "0.6.0"))
+;; Keywords: i18n, faces, frames, wp, interface
+;; Package-Requires: ((dynamic-fonts "0.5.1") (ucs-utils "0.6.0") (persistent-soft "0.8.0") (pcache "0.2.3"))
 ;;
 ;; Simplified BSD License
 ;;
@@ -253,9 +253,11 @@
 ;;
 ;;       Conakry                       ; N'ko
 ;;
-;; Compatibility
+;; Compatibility and Requirements
 ;;
 ;;    Tested only on GNU Emacs version 24.1
+;;
+;;    Requires dynamic-fonts.el, ucs-utils.el
 ;;
 ;; Bugs
 ;;
@@ -374,9 +376,15 @@
 (autoload 'dynamic-fonts-font-exists-p            "dynamic-fonts"  "Test whether FONT-NAME (a string or font object) exists.")
 (autoload 'dynamic-fonts-read-font-name           "dynamic-fonts"  "Read a font name using `completing-read'.")
 (autoload 'dynamic-fonts-lenient-font-name-equal  "dynamic-fonts"  "Leniently match two strings, FONT-NAME-A and FONT-NAME-B.")
+(autoload 'dynamic-fonts-first-existing-font      "dynamic-fonts"  "Return the (normalized) first existing font name from FONT-NAMES.")
+(autoload 'dynamic-fonts-font-name-from-xlfd      "dynamic-fonts"  "Return the font-family name from XLFD, a string.")
 
 (autoload 'ucs-utils-char                         "ucs-utils"      "Return the character corresponding to NAME, a UCS name.")
 (autoload 'ucs-utils-pretty-name                  "ucs-utils"      "Return a prettified UCS name for CHAR.")
+
+(declare-function remove-if     "cl-seq.el")
+(declare-function remove-if-not "cl-seq.el")
+(declare-function member*       "cl-seq.el")
 
 ;;; constants
 
@@ -1150,7 +1158,7 @@
 ;;;###autoload
 (defgroup unicode-fonts nil
   "Configure Unicode fonts."
-  :version "0.3.0"
+  :version "0.3.2"
   :link '(emacs-commentary-link "unicode-fonts")
   :prefix "unicode-fonts-"
   :group 'extensions)
@@ -2836,6 +2844,7 @@ these mappings."
 
 ;;; utility functions
 
+;;;###autoload
 (defun unicode-fonts-first-existing-font (font-names)
   "Return the (normalized) first existing font name from FONT-NAMES.
 
@@ -2848,6 +2857,7 @@ not checked."
                                                     (member* x unicode-fonts-skipped-fonts-computed :test 'dynamic-fonts-lenient-font-name-equal))
                                                 font-names)))
 
+;;;###autoload
 (defun unicode-fonts-font-exists-p (font-name &optional point-size strict)
   "Run `unicode-fonts-font-exists-p' with a limited scope.
 
@@ -2931,6 +2941,7 @@ error."
         (push name unicode-fonts-skipped-fonts-computed))
       (delete-dups unicode-fonts-skipped-fonts-computed))))
 
+;;;###autoload
 (defun unicode-fonts-read-block-name (&optional ido)
   "Read a Unicode block name using `completing-read'.
 
@@ -2974,7 +2985,7 @@ Use `ido-completing-read' if IDO is set."
           (callf concat font-name "-" font-size))
         (unless (and (stringp font-name)
                      (> (length font-name) 0))
-          (setq font-name (format "%s" (font-xlfd-name (car char-font-info))))))
+          (setq font-name (dynamic-fonts-font-name-from-xlfd (font-xlfd-name font)))))
       (setq block-name
            (catch 'bn
              (dolist (cell unicode-fonts-blocks)
@@ -3483,6 +3494,7 @@ FONTSET-NAME is a fontset to modify using `set-fontset-font'."
 ;; mangle-whitespace: t
 ;; require-final-newline: t
 ;; coding: utf-8
+;; byte-compile-warnings: (not cl-functions)
 ;; End:
 ;;
 ;; LocalWords: cleartype Consolas Ethiopic Samyak BabelStone Symbola
