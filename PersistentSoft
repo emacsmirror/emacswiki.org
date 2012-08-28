@@ -17,9 +17,10 @@ and via <nowiki>EmacsWiki</nowiki>:
 
 Tested only on GNU Emacs version 24.1
 
-Uses if present: pcache.el (all operations are noops when
-not present)
+Uses if present: [https://github.com/sigma/pcache pcache.el] (all operations are noops
+when pcache.el is not present)
 
 ----
 CategoryData
 CategoryPersistence
+CategoryExtensions
