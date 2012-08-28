@@ -2,23 +2,25 @@ Navigating large buffers, or multiple buffers, especially code.
 
 == Navigation Facilities Included with Emacs ==
 
+* BookMarks
 * MarkCommands
 * GrepMode
 * OccurMode
 * CompilationMode
-
-== Navigation Libraries ==
-
 * ImenuMode
 * WhichFuncMode
 * [http://cedet.sourceforge.net CEDET]
+
+== Navigation Libraries ==
+
+* VisibleBookmarks
 * [[EAssist]]
 * WikiNavMode
 * BackButton
 
 == Utility Libraries ==
 
-These utility libraries are useful from Emacs Lisp, but do not have user-facing interfaces.
+These navigation utility libraries are useful from Emacs Lisp, but do not have user-facing interfaces.
 
 * NavFlash
 * ButtonLockMode
@@ -28,3 +30,4 @@ These utility libraries are useful from Emacs Lisp, but do not have user-facing 
 * CScopeAndEmacs
 * EmacsTags
 * CategoryProgrammerUtils
+* CategoryBookmarking
