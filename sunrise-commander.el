@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 6
-;; RCS Version: $Rev: 434 $
+;; RCS Version: $Rev: 435 $
 ;; Keywords: files, dired, midnight commander, norton, orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -355,6 +355,14 @@ run-time."
   :type '(choice
           (string :tag "Literal text")
           (sexp :tag "Symbolic expression")))
+
+(defcustom sr-traditional-other-window nil
+  "Sunrise modifies the behavior of the `other-window' command,
+so that focus is always given to the currently selected pane when
+switching from external windows. If you'd prefer the original
+Emacs behavior instead, then set this flag to t."
+  :group 'sunrise
+  :type 'boolean)
 
 (defcustom sr-fuzzy-negation-character ?!
   "Character to use for negating patterns when fuzzy-narrowing a pane."
@@ -726,6 +734,7 @@ automatically:
   (set-keymap-parent sr-mode-map dired-mode-map)
   (sr-highlight)
   (dired-omit-mode dired-omit-mode)
+  (setq buffer-read-only t)
 
   (make-local-variable 'truncate-partial-width-windows)
   (setq truncate-partial-width-windows (sr-truncate-v t))
@@ -748,6 +757,7 @@ automatically:
   (set-keymap-parent sr-virtual-mode-map sr-mode-map)
   (sr-highlight)
   (enriched-mode -1)
+  (setq buffer-read-only t)
 
   (make-local-variable 'truncate-partial-width-windows)
   (setq truncate-partial-width-windows (sr-truncate-v t))
@@ -976,7 +986,8 @@ immediately loaded, but only if `sr-autoload-extensions' is not nil."
       ad-do-it
     (let ((from (selected-window)))
       ad-do-it
-      (unless (memq from (list sr-left-window sr-right-window))
+      (unless (or sr-traditional-other-window
+                  (memq from (list sr-left-window sr-right-window)))
         ;; switching from outside
         (sr-select-window sr-selected-window))
       (with-no-warnings
