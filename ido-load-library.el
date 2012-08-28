@@ -8,7 +8,7 @@
 ;; Last-Updated:  27 Aug 2012
 ;; EmacsWiki: IdoLoadLibrary
 ;; Package-Requires: ((persistent-soft "0.1.0") (pcache "0.2.3"))
-;; Keywords:
+;; Keywords: maint, completion
 ;;
 ;; Simplified BSD License
 ;;
