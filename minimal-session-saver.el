@@ -4,10 +4,10 @@
 ;;
 ;; Author: Roland Walker walker@pobox.com
 ;; URL: https://github.com/rolandwalker/minimal-session-saver.el
-;; Version: 0.5.0
-;; Last-Updated: 19 Aug 2012
+;; Version: 0.5.1
+;; Last-Updated: 27 Aug 2012
 ;; EmacsWiki: MinimalSessionSaver
-;; Keywords: session, project
+;; Keywords: frames, tools, session, project
 ;;
 ;; Simplified BSD License
 ;;
@@ -50,9 +50,11 @@
 ;;
 ;; Notes
 ;;
-;; Compatibility
+;; Compatibility and Requirements
 ;;
 ;;     Tested only on GNU Emacs version 24.1
+;;
+;;     No external dependencies
 ;;
 ;; Bugs
 ;;
@@ -114,12 +116,15 @@
 (eval-when-compile
   (require 'cl))
 
+(declare-function remove-if     "cl-seq.el")
+(declare-function remove-if-not "cl-seq.el")
+
 ;;; customizable variables
 
 ;;;###autoload
 (defgroup minimal-session-saver nil
   "Very lean session saver."
-  :version "0.5.0"
+  :version "0.5.1"
   :link '(emacs-commentary-link "minimal-session-saver")
   :prefix "minimal-session-saver-"
   :group 'extensions)
@@ -141,9 +146,9 @@
 
 Optional KIND is as documented at `called-interactively-p'
 in GNU Emacs 24.1 or higher."
-  `(if (eq 0 (cdr (subr-arity (symbol-function 'called-interactively-p))))
-      (called-interactively-p)
-    (called-interactively-p ,kind)))
+  (if (eq 0 (cdr (subr-arity (symbol-function 'called-interactively-p))))
+      '(called-interactively-p)
+    `(called-interactively-p ,kind)))
 
 ;;; utility functions
 
@@ -362,6 +367,7 @@ The following aliases will be installed
 ;; mangle-whitespace: t
 ;; require-final-newline: t
 ;; coding: utf-8
+;; byte-compile-warnings: (not cl-functions)
 ;; End:
 ;;
 ;; LocalWords: MinimalSessionSaver incf callf bufs
