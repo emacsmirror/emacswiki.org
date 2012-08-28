@@ -11,12 +11,19 @@ Navigating large buffers, or multiple buffers, especially code.
 * WhichFuncMode
 * [http://cedet.sourceforge.net CEDET]
 
-== Navigation Libraries ==
+== Other Navigation Libraries ==
 
 * VisibleBookmarks
 * [[EAssist]]
-* WikiNavMode
+* GnuGlobal
+* GonzuiForEmacs
 * BackButton
+
+== Navigation By Hyperlink ==
+
+* EevMode
+* LinkdMode
+* WikiNavMode
 
 == Utility Libraries ==
 
