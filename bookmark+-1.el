@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Thu Aug 23 09:19:21 2012 (-0700)
+;; Last-Updated: Tue Aug 28 15:54:17 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5804
+;;     Update #: 5807
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -1775,10 +1775,11 @@ BOOKMARK is a bookmark name or a bookmark record.
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
-;; 1. BUG fix: Put point back where it was (on the bookmark just annotated).
-;; 2. Refresh menu list, to pick up the `a' marker.
-;; 3. Make sure it's the annotation buffer that gets killed.
-;; 4. Delete window also, if `misc-cmds.el' loaded.
+;; 1. Record an empty annotation as nil, not "".
+;; 2. BUG fix: Put point back where it was (on the bookmark just annotated).
+;; 3. Refresh menu list, to pick up the `a' marker.
+;; 4. Make sure it's the annotation buffer that gets killed.
+;; 5. Delete window also, if `misc-cmds.el' loaded.
 ;;
 ;;;###autoload
 (defun bookmark-send-edited-annotation ()
@@ -1795,6 +1796,7 @@ Lines beginning with `#' are ignored."
   (let ((annotation      (buffer-substring-no-properties (point-min) (point-max)))
 	(bookmark        bookmark-annotation-name)
         (annotation-buf  (current-buffer)))
+    (when (string= annotation "") (setq annotation  nil))
     (bookmark-set-annotation bookmark annotation)
     (setq bookmark-alist-modification-count  (1+ bookmark-alist-modification-count))
     (bmkp-refresh/rebuild-menu-list bookmark) ; So display `a' and `*' markers (updated).
