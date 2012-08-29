@@ -35,3 +35,22 @@ Alex, if you think that was reasonable work, I'll follow through on three or fou
 
 -- roland.walker 2012-08-29 22:00 UTC
 
+
+----
+
+I see. Then what I guess I disagree with is that bold-faced warning.
+
+It is not uncommon that a library has both features that extend EmacsLisp and features that provide something for end users.  The point of such a category should be that the library or snippet gives you something useful for Elisp code.  Whether it might also provide stuff for end users should be irrelevant.
+
+Sure, it's a judgment call, and if a library is 99% for end users and just happens to offer something small that might be useful to Lisp programmers, then I guess you might not want to include it in this category.
+
+Or more reasonably, what counts is probably the degree to which a library helps in coding Lisp, regardless of whether its Lisp extensions constitute 10% or 70% of its code.
+
+It might not be best to include [[Icicles]] after all, I guess.  CompletionUI (IIUC), and DoReMi however, do offer stuff for Lisp programmers.  (For DoReMi, it is mainly <tt>[[doremi.el]]</tt> that is a Lisp extension (macro `doremi').  <tt>[[doremi-frm.el]]</tt> is a combination, but is mostly for end users. <tt>[[doremi-cmd.el]]</tt> is only for end users -- not a Lisp extension.)
+
+That said, I still do not see the point of separating, in CategoryCode, "Extensions" from "Other Lisp Libraries for Emacs Coders".
+
+HTH.  Sorry if I misunderstood something or overreacted.
+
+-- DrewAdams 2012-08-29 23:20 UTC
+
