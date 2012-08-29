@@ -1,6 +1,7 @@
+This page lists major modes used to edit data.
 
-* CsvMode
-
+* CsvMode -- comma separated files
+* MoMode -- gettext <code>.mo</code> compiled message catalogues
 
 ----
 CategoryModes
