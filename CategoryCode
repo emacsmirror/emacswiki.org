@@ -131,9 +131,9 @@ Writing code that works on different versions of Emacs and XEmacs is Comparative
 
 == Extensions ==
 
-* See CategoryExtensions
+* See CategoryExtensions -- utility libraries intended to be used by programmers
 
-== Emacs Lisp Libraries ==
+== Other Lisp Libraries for Emacs Coders ==
 
 * CompletionUI -- Completion user interface, providing various highly customizable completion mechanisms (dynamic, hotkeys, cycling, tab-completion, help-echo, tooltip, menu...)
 * DoReMi -- Macro `define-doremi' and command `doremi'.  Use them to define commands that let you use the arrow keys and/or mouse wheel to ''make incremental changes'' to things or ''cycle through a ring'' of things.
