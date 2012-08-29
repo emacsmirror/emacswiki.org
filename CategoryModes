@@ -13,6 +13,10 @@ Subpages:
 * DataModes -- other data formats
 * FrameModes -- Frame configurations, functions, commands; see also CategoryFrames
 
+See also CategoryCode if you want to write a new major mode, or if
+you are looking for Emacs features that augment the the basic modes
+listed on this page.
+
 Other pages (could this please be split in major and minor modes?):
 
 * AbbrevMode
@@ -154,9 +158,5 @@ Other pages (could this please be split in major and minor modes?):
 Other functionality specific to some modes:
 
 * ScreenPlay
-
-See also CategoryCode if you want to write a new major mode, or if
-you are looking for Emacs features that augment the the basic modes
-listed on this page.
 
 For a list of orphaned modes that might need a new maintainer, see AbandonedModes.
