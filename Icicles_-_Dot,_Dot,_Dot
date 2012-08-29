@@ -81,7 +81,7 @@ entered before remain plain.
 
 So when is a multi-line dot useful?  Whenever you want to match
 against multi-line candidates.  Typical use cases include
-`icicle-search' and the Icicles doc commands, `icicle-vardoc',
+`icicle-search' and the '''Icicles''' doc commands, `icicle-vardoc',
 `icicle-fundoc', and `icicle-doc'.
 
 Note that the dot-matching behavior described here applies only to
