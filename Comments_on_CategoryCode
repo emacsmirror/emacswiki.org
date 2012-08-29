@@ -13,3 +13,12 @@ More on [[Comments on roland.walker]].
 
 -- AlexSchroeder 2012-08-29 19:46 UTC
 
+
+----
+
+What I disagree with is the specific content of the split that was made. DoReMi has some things for end users, but the main thing it provides is an extension (a macro) to be used by EmacsLisp programmers. Similarly, CompletionUI and [[Icicles]] offer both, as well.
+
+Sure, we can always list a page twice, in two places.  But I don't see the distinction of "Extensions" from "Other Lisp Libraries for Emacs Coders".  I don't see it as a clear (thus useful) distinction.  That was why I rolled back CategoryCode.
+
+-- DrewAdams 2012-08-29 20:42 UTC
+
