@@ -1,0 +1,58 @@
+Coverage of finder-by-keyword keywords in CategoryCategories is already fairly strong.  Only 13/36 keywords are entirely missing by my count:
+
+These 12 keywords have exact matches in Category-space by name, and reasonable overlap in content:
+
+* calendar
+* data
+* extensions
+* faces
+* files
+* frames
+* games
+* help
+* hypermedia
+* mail
+* mouse
+* tex        
+
+These 8 keywords have matches in Category-space under different spellings.  In many cases the EmacsWiki name is superior for both humans and search engines.  Though it would not hurt to have redirect pages:
+
+* CategoryEmulation / emulations
+* CategoryInternationalization / i18n
+* CategoryModes / languages
+* CategoryOutline / outlines
+* CategoryProgrammerUtils / tools
+* CategorySearchAndReplace / matching
+* CategoryVersionControl / vc
+* CategoryWriting / wp
+
+1 keyword already has a redirect to matching content:
+
+* CategoryCode / lisp  (CategoryLisp redirects to CategoryCode)
+
+1 keyword matches a page which could become a category (could be other hits like this one)
+
+* MultimediaModes / multimedia
+
+1 keyword is not meaningful in the context of a public Wiki
+
+* local
+
+13 remaining finder-by-keyword terms have no match in Category-space.  Some omissions are surprising -- no CategoryC or CategoryUnix:
+
+* abbrev        -- abbreviation handling, typing shortcuts, and macros
+* bib           -- bibliography processors
+* c             -- C and related programming languages
+* comm          -- communications, networking, and remote file access
+* convenience   -- convenience features for faster editing
+* docs          -- Emacs documentation facilities
+* hardware      -- interfacing with system hardware
+* internal      -- code for Emacs internals, build process, defaults
+* maint         -- Emacs development tools and aids
+* news          -- USENET news reading and posting
+* processes     -- processes, subshells, and compilation
+* terminals     -- text terminals (ttys)
+* unix          -- UNIX feature interfaces and emulators
+
+-- roland.walker 2012-08-29 13:30 UTC
+
