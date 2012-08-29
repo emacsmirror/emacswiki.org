@@ -129,39 +129,15 @@ Writing code that works on different versions of Emacs and XEmacs is Comparative
 * [http://www.cb1.com/~john/computing/emacs/lisp/basics/use-package.el use-package.el] -- Arrange use of an elisp package
 * UsePackage - Describe how to get and configure a package, then install on demand with an autoload-like mechanism
 
+== Extensions ==
+
+* See CategoryExtensions
+
 == Emacs Lisp Libraries ==
 
-* ArrayExtension -- Support for arrays, and matrixes.
-* AutoOverlays -- Overlays defined by regexps, automatically created, updated and destroyed as buffer is modified.
-* [[AVLtrees]] -- AVL tree data structures (self-balancing binary trees)
 * CompletionUI -- Completion user interface, providing various highly customizable completion mechanisms (dynamic, hotkeys, cycling, tab-completion, help-echo, tooltip, menu...)
 * DoReMi -- Macro `define-doremi' and command `doremi'.  Use them to define commands that let you use the arrow keys and/or mouse wheel to ''make incremental changes'' to things or ''cycle through a ring'' of things.
-* DictionaryTrees -- Advanced dictionary data structures
-* ElispParser -- A small parser tool written in EmacsLisp.
-* EmacsDataBase is a flexible system for defining, accessing, modifying, summarizing, and generally playing with, a set of records.  You can view each record individually or summarized (with other records) in separate buffer. Record format (field names and their types) can be arbitrarily complex.
-* TinyDb -- A mini-database, smaller than EmacsDataBase
-* ParserCompiler -- A macro that compiles Recursive Descent parsers in elisp.
-* [[Heaps]] -- Heap data structures (a.k.a. priority queues)
 * [[Icicles]] -- New possibilities for using completion and cycling of completion candidates.
-* IncrementalRead -- support building libraries that act incrementally on input.
-* LaterDo -- Calling functions later, thus do some sort of fake threading
-* LuiMode -- A Linewise User Interface
-* MacroUtilities -- Utilities for writing macros.
-* ModeLocal -- Causing a variable or function to have a value/behavior based on major mode.
-* PasswordGenerator
-* [[Queues]] -- Queue data structures
-* RecordType -- Definition of a new type: record. A record is a set of named fields with their associated type.
-* SemanticBovinator -- A flex/bison lexer and parser generator written in EmacsLisp.
-* SubdirsToList -- Adding subdirectories to a list recursively
-* TaggedNFA -- Tagged non-deterministic finite state automata (generally used for regular expression matching algorithms)
-* TcpClient -- Network interface to ease the creation of network related script
-* TernarySearchTrees -- ternary search tree data structures (obsolete - use [[Tries]] instead)
-* ThingAtPoint -- Functions to return various kinds of Emacs Lisp entity at or near point. For example, return the Lisp symbol name nearest point.
-* [[Tries]] -- General trie data structures (including ternary search trees)
-* UseCustomizeForKeyBindings -- Widget and `defcustom' code to let users use Customize for key bindings.
-* VectorModificationLibrary -- Functions to modify vectors
-* XmlParser -- Writing code which reads and manipulates XML.  Pointers to DOM, XPath, etc.
-* [[Infix]]    -- Writing infix math expressions
 
 == Proof of Concept ==
 
