@@ -14,4 +14,4 @@ In a <code>/po</code> directory of a project you normally don't want to visit th
 Emacs 22 has this setup by default.
 
 ----
-[[Gettext]] CategoryModes
+[[Gettext]] CategoryModes DataModes
