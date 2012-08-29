@@ -88,8 +88,7 @@ with words prefixed by $ as fields, and mirrors properly set up."
   (multiple-value-bind (s head tail) (current-string-position)
     (flet ((parse (in vars out)
 		  (if in
-		      (let ((p ;; (string-match "\\$\\([^\s()]+\\)" in)
-			     (string-match "\\$\\([a-z0-9-]+\\)" in)))
+		      (let ((p (string-match "\\$\\([a-z0-9-]+\\)" in)))
 			(if p
 			    (let* ((var (match-string 1 in))
 				   (mult (assoc var vars))
