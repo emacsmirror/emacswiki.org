@@ -1,4 +1,3 @@
-
 ;;; unicode-whitespace.el --- teach whitespace-mode about fancy characters
 ;;
 ;; Copyright (c) 2012 Roland Walker
