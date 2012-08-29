@@ -13,3 +13,10 @@ It does have overlap with many things.  I had three motivations
 
 -- roland.walker 2012-08-28 15:49 UTC
 
+
+----
+
+Maybe we can simply extract those elements from CategoryCode that might better fit into CategoryExtensions. If I understand the distinction correctly, everything under the "Emacs Lisp Libraries" header can be moved from Code to Extensions?
+
+-- AlexSchroeder 2012-08-29 08:35 UTC
+
