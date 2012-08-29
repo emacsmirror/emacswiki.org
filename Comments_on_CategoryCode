@@ -22,3 +22,16 @@ Sure, we can always list a page twice, in two places.  But I don't see the disti
 
 -- DrewAdams 2012-08-29 20:42 UTC
 
+
+----
+
+I'm a bit confused by the hubub, as I created a small CategoryExtensions page to match the canonical term in the Emacs sources, and then reorganized (moved) items from CategoryCode to CategoryExtensions only when prompted to do so by AlexShroeder.
+
+None of us has any love for the term "extensions", but it has standing as EmacsJargon just like other idiosyncratic terms such as "frame" for "window" and "window" for "pane".
+
+Drew, I did not want to put DoReMe, Icicles, and CompletionUI beneath a boldfaced warning "this is not for end users" since all three advertise commands for end users. That was simply a conservative choice, which can be fixed in the next iteration.  If you argue in particular that DoReMi is primarily an "extension" I'll add that. 
+
+Alex, if you think that was reasonable work, I'll follow through on three or four more, keeping an ear out for your feedback.
+
+-- roland.walker 2012-08-29 22:00 UTC
+
