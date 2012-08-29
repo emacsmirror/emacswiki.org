@@ -5,6 +5,7 @@ ExuberantCtags is superior to etags in many ways.  You can find it here:
 How is it better than etags?:
 
 * Supports more languages than etags.
+(note ExuberantCtags Version 5.8 does not support Objective-C but etags does)
 * Has better rules for matching files to languages.
 * Has decent handling of preprocessor switches.
 * Generates tag files compatible with a variety of editors.
