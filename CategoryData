@@ -1,13 +1,11 @@
-This page is intended for the subject of parsing, editing, and storing data using Emacs Lisp.
+This page is intended for the subject of parsing and storing data using Emacs Lisp.
+
+DataModes has more about /editing/ data using specialized major modes.
 
 == Parsing Libraries ==
 
 * GIT:xml.el
 * [http://edward.oconnor.cx/elisp/json.el json.el]
-
-== Data Editing Modes ==
-
-* CsvMode
 
 == Storing Data ==
 
