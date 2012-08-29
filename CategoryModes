@@ -148,7 +148,6 @@ Other pages (could this please be split in major and minor modes?):
 * WriteOrDieMode -- Minor mode emulating some of the behaviour from [http://lab.drwicked.com/writeordie.html Dr. Wicked's webapp] of the same name.
 * XResourceGenericMode
 * XSymbolMode
-* YamlMode -- edit YAML <code>.yml</code> files
 * YangMode -- edit YANG files, RFC 6020 compliant
 
 
