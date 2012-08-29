@@ -50,7 +50,7 @@ characters.
 If you prefer to see the full regexp, `##\(.\|[\n]\)##', but
 highlighted, then set [[option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-dot-show-regexp-flag|icicle-dot-show-regexp-flag]]</tt>'''' to
 non-`nil'.  (In Emacs 20, the newline-matching dot is always shown
-as that full regexp.)  If you prefer to turn on newline matching
+as that full regexp.)  And remember that you can use [[multi-command]] `icicle-toggle-option' anytime to toggle the option.  If you prefer to turn on newline matching
 by default, then just customize option '''`<tt>[[Icicles - Customization and General Tips#icicle-dot-string|icicle-dot-string]]</tt>''''.
 
 This match-anything dot is handy, but sometimes you might want to
