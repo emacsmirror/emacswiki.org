@@ -78,3 +78,11 @@ default file names and dot suffixes:
 
 -- xyzzy 2012-08-29 05:10 UTC
 
+
+----
+
+= For Objective-C user =
+ExuberantCtags Version 5.8 does not support objc.  Cygwin etags (standalone 21.4.22) fails to pick up C functions within @implementation - @end.  etags in GNU Emacs (24.2.50) works fine.
+
+-- xyzzy 2012-08-29 05:33 UTC
+
