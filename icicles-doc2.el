@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Thu Aug 23 14:12:12 2012 (-0700)
+;; Last-Updated: Wed Aug 29 09:15:02 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 28976
+;;     Update #: 28981
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -4118,8 +4118,10 @@
 ;;  If you prefer to see the full regexp, `\(.\|[\n]\)', but
 ;;  highlighted, then set option `icicle-dot-show-regexp-flag' to
 ;;  non-`nil'.  (In Emacs 20, the newline-matching dot is always shown
-;;  as that full regexp.)  If you prefer to turn on newline matching
-;;  by default, then just customize option `icicle-dot-string'.
+;;  as that full regexp.)  And remember that you can use multi-command
+;;  `icicle-toggle-option' anytime to toggle the option.  If you
+;;  prefer to turn on newline matching by default, then just customize
+;;  option `icicle-dot-string'.
 ;;
 ;;  This match-anything dot is handy, but sometimes you might want to
 ;;  match anything except a newline, perhaps in the same input pattern
