@@ -5,7 +5,8 @@ the underlying text, not what is currently being displayed.
 
 The following defun will allow you to turn the overlays into plain text, allowing you to save or copy it as you want.
 
-[new] Fix to read display attribute. -- [[rubikitch]]
+[new]
+Fix to read display attribute. -- [[rubikitch]]
 
 {{{
 ;;; Originally posted to #emacs by phf on 2007-10-24.
