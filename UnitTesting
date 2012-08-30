@@ -119,6 +119,8 @@ Functions can be temporarily rebound with ##flet## from <tt>[CommonLispForEmacs 
 
 The above will suppress an ##arith-error## when dividing by ##0##.
 
+For more complex scenarios, [https://github.com/sigma/mocker.el mocker.el] is a layer on top of ##flet## that supports programmable mock functions.
+
 === Fixtures ===
 
 While fixtures are a great syntactic simplification in other languages, they are not very useful in Lisp, where higher-order functions and ##unwind-protect## are available. One approach is
