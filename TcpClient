@@ -50,3 +50,5 @@ This library is dependending on **record-type.el** (RecordType)
   			      :sentinel-handler 'sample-sentinel-report
   			      :filter-handler 'sample-filter-report))
 
+----
+CategoryExtensions
