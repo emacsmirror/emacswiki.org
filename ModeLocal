@@ -38,3 +38,6 @@ Return the string NAME for no change, or a list if it needs to be split.")
 </pre>
 
 There is also support for constants, mode-inheritance (such as when C++ inherits behaviors and values of C), and support for to help multi-modes, though no explicit support for any particular multi-mode.
+
+----
+CategoryExtensions
