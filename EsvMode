@@ -126,3 +126,5 @@ problem) and attempts to fix the multiline problem too
 1.25 fixes a bug when quitting esv-display-mode with only one window present
 
 1.26 fixes a bug introduced in 1.24
+
+1.27 Updated the library headers (thanks Tarsius on Github!) to spec at <code>(info "(elisp)Library Headers")</code>
