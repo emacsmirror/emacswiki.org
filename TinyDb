@@ -4,3 +4,6 @@ EmacsDataBase.
 
 Tinydb helps packages store persisting data in a database-like way.
 It is currently used by [[Emtest]] and [[Org2BlogAtom]].
+
+----
+CategoryExtensions
