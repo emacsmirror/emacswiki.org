@@ -72,6 +72,7 @@ Extensions (using the category name from `finder-by-keyword'), are utility libra
 == Windows ==
 
 * WindowEndVisible --  Find the last visible point in a window
+* [https://github.com/kiwanami/emacs-window-layout window-layout.el] -- window layout manager
 
 == Frames ==
 
