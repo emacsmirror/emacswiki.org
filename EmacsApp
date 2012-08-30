@@ -81,6 +81,14 @@ I had some trouble with the above suggestions on Mac OS X Lion. I use bash as th
        (setenv "PATH"
                (shell-command-to-string "source $HOME/.bashrc && printf $PATH")))
 
+Assuming all you want to do is let Emacs have the same $PATH as your shell, the following will work for several different default shells. Some modes look for subprocess executables in exec-path rather than $PATH, so set that as well.
+
+  (if (not (getenv "TERM_PROGRAM"))
+      (let ((path (shell-command-to-string
+              "$SHELL -c \"printf %s \\\"\\\$PATH\\\"\"")))
+        (setenv "PATH" path)
+        (setq exec-path (split-string path ":"))))
+
 == Launching from Spotlight ==
 
 Because Spotlight's parent process is launchd, Emacs won't pick up any environment variables you have set in your ##.bashrc## or similar. To set environment variables for launchd, put them in in ##/etc/launchd.conf## or ##$HOME/.launchd.conf##. The syntax is tcsh.
