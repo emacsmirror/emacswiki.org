@@ -4,3 +4,6 @@ This interface is closely oriented on the user interface of [[ERC]], but
 can be used by any emacs lisp program.
 
 It is now used by [[Circe]], and ships with that.
+
+----
+CategoryExtensions
