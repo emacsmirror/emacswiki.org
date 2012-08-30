@@ -67,6 +67,7 @@ Code navigation and hints:
 ** [[Icicles - Other Search Commands#IciclesImenu|Icicles Imenu]] -- Imenu with [[regexp]] [[completion]]. Like EmacsTags, works across multiple buffers, files, and saved regions.
 * SimpleCallTree -- A call-tree data structure that says which function calls which function. Highlights functions.
 * XreFactory -- Code completion, source browsing, and code refactoring.
+* SrSpeedbar
 
 File changes:
 
@@ -103,7 +104,6 @@ Projects (code) -- Creating and managing:
 * ProjectWizard
 * ProjmanMode
 * SimpleProjectManagment
-* SrSpeedbar
 * [http://www.ozymandias.dk/emacs/emacs.html#vps vps] Projects as directory sets (by VagnJohansen).
 
 Bug tracking:
