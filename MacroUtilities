@@ -31,3 +31,4 @@ then <i>(double (foo))</i> would call the function /foo/ twice.  That may be und
 
 ----
 CategoryCode
+CategoryExtensions
