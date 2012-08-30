@@ -1,10 +1,26 @@
-Hi
+== About me ==
 
-I'm an emacs user since about 2004 and I use it every day and find it endlessly fun. I did use it once in about 1992 on my Commodore Amiga and a few years later on a PC, but it seemed like a lot of hard work. However once I got the time and inclination to get over the learning hump it became a very powerful tool for me.
+I've been an emacs user since about 2004 and I use it every day and find it endlessly fun. I did use it once in about 1992 on my Commodore Amiga and a few years later on a PC, but it seemed like a lot of hard work. However once I got the time and inclination to get over the learning hump it became a very powerful tool for me.
 
 I have the name [::justinhj] on many services including twitter and gmail.
 
-My programming related blog which has a lot of emacs stuff:
+== Emacs lisp ==
+
+=== Emacs Redis (eredis) ===
+
+I wrote an emacs lisp wrapper for Redis. The interesting part for me was that you can easily paste data from Redis into an emacs buffer and convert it to an org table with just a couple of built in commands. I wrote code that then lets you edit the values in the table and write them back to Redis. This kind of technique makes it possible to do things like server control or status panels with little effort inside emacs.
+
+http://justinsboringpage.blogspot.ca/2011/07/eredis-redis-client-in-emacs-lisp.html
+
+eredis is available through marmalade.
+
+=== Duplicate files in dired ===
+
+This simple extension let's you mark all the duplicate files in a dired buffer.
+
+RemoveDuplicateFiles
+
+== Blog ==
 
 <rss http://justinsboringpage.blogspot.com/feeds/posts/default?alt=rss>
 
