@@ -1,80 +1,89 @@
-;;; esv.el --- Recognize and retrive ESV passages
+;;; esv.el --- Support for Crossway's ESV API in Emacs
 
-;;; Copyright: (C) 2008, 2009, 2011 Charles Sebold
+;; Copyright (C) 2008-2012 Charles Sebold
+
+;; Author: Charles Sebold <csebold@gmail.com>
+;; Created: 1 Jan 2008
+;; Version: 1.27
+;; Keywords: comm, hypermedia
+
+;; This file is not part of GNU Emacs.
+
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation; either version 2 of the License, or (at
+;; your option) any later version.
 ;; 
-;;     This program is free software; you can redistribute it and/or
-;;     modify it under the terms of the GNU General Public License as
-;;     published by the Free Software Foundation; either version 2 of
-;;     the License, or (at your option) any later version.
-;;     
-;;     This program is distributed in the hope that it will be useful,
-;;     but WITHOUT ANY WARRANTY; without even the implied warranty of
-;;     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-;;     GNU General Public License for more details.
-;;     
-;;     You should have received a copy of the GNU General Public License
-;;     along with GNU Emacs; if not, write to the Free Software
-;;     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-;;     02110-1301 USA
-;;
-;; Latest version should be available at:
-;;    <URL:http://www.emacswiki.org/cgi-bin/wiki/EsvMode>
-;;
-;; To use this, you must customize or otherwise set the variable
-;; ESV-KEY!  Otherwise by default the ESV API handlers will not call out
-;; to the ESV website.  At the minimum, do this:
-;;
-;;   M-x customize-variable RET esv-key RET
-;;
-;; And set it to "Non-keyed usage" (IP) if you're just going to use this
-;; for personal use in Emacs.  Details of the ESV license for this
-;; information can be found at http://www.esvapi.org/ and I recommend
-;; looking it over.
-;;
-;; This package consists of two functionalities:  one is to recognize
-;; passages in your buffers and make it easy for you to look them up in
-;; the ESV (that's esv-mode), and one is a way to retrieve ESV passages
-;; using their web API and display them internally in Emacs.  This can
-;; be used to get individual passages (which you can specify or retrieve
-;; from your text using esv-mode), or you can go through a daily reading
-;; plan (great for those of us who live in Emacs).
-;;
-;; To use this package, you can save this file somewhere in your
-;; load-path and put the following in your .emacs at a minimum:
-;;
-;;   (require 'esv)
-;;   ; the following keys should be mapped to whatever works best for
-;;   ; you:
-;;   ; C-c e looks up a passage and displays it in a pop-up window
-;;   (define-key global-map [(control c) ?e] 'esv-passage)
-;;   ; C-c i inserts an ESV passage in plain-text format at point
-;;   (define-key global-map [(control c) ?i] 'esv-insert-passage)
-;;   ; If you don't want to use customize, you can set this for casual
-;;   ; usage (but read http://www.esvapi.org/ for license):
-;;   (setq esv-key "IP")
-;;
-;; To make esv-mode work whenever text-mode does, you can put this in
-;; your .emacs as well:
-;;
-;;   (add-hook 'text-mode-hook 'turn-on-esv-mode)
-;;
-;; If you only want it in certain files, you can add it to the first
-;; line or the local variables (see (info "(emacs)File Variables") for
-;; more information):
-;;
-;;     -*- mode: text; mode: esv; -*-
-;;
-;; or
-;;
-;;     Local Variables:
-;;     mode: esv;
-;;     End:
-;;
-;; However, note the warning about imposing your individual preferences
-;; on files at the end of the info node above.
+;; This program is distributed in the hope that it will be useful, but
+;; WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+;; General Public License for more details.
+;; 
+;; You should have received a copy of the GNU General Public License
+;; along with GNU Emacs; if not, see <http://www.gnu.org/licenses/>.
 
-; The ESV API is documented at:
-; http://www.esvapi.org/v2/rest/
+;;; Commentary:
+
+;;; Latest version should be available at:
+;;;    <URL:http://www.emacswiki.org/cgi-bin/wiki/EsvMode>
+;;;
+;;; To use this, you must customize or otherwise set the variable
+;;; ESV-KEY!  Otherwise by default the ESV API handlers will not call out
+;;; to the ESV website.  At the minimum, do this:
+;;;
+;;;   M-x customize-variable RET esv-key RET
+;;;
+;;; And set it to "Non-keyed usage" (IP) if you're just going to use this
+;;; for personal use in Emacs.  Details of the ESV license for this
+;;; information can be found at http://www.esvapi.org/ and I recommend
+;;; looking it over.
+;;;
+;;; This package consists of two functionalities:  one is to recognize
+;;; passages in your buffers and make it easy for you to look them up in
+;;; the ESV (that's esv-mode), and one is a way to retrieve ESV passages
+;;; using their web API and display them internally in Emacs.  This can
+;;; be used to get individual passages (which you can specify or retrieve
+;;; from your text using esv-mode), or you can go through a daily reading
+;;; plan (great for those of us who live in Emacs).
+;;;
+;;; To use this package, you can save this file somewhere in your
+;;; load-path and put the following in your .emacs at a minimum:
+;;;
+;;;   (require 'esv)
+;;;   ; the following keys should be mapped to whatever works best for
+;;;   ; you:
+;;;   ; C-c e looks up a passage and displays it in a pop-up window
+;;;   (define-key global-map [(control c) ?e] 'esv-passage)
+;;;   ; C-c i inserts an ESV passage in plain-text format at point
+;;;   (define-key global-map [(control c) ?i] 'esv-insert-passage)
+;;;   ; If you don't want to use customize, you can set this for casual
+;;;   ; usage (but read http://www.esvapi.org/ for license):
+;;;   (setq esv-key "IP")
+;;;
+;;; To make esv-mode work whenever text-mode does, you can put this in
+;;; your .emacs as well:
+;;;
+;;;   (add-hook 'text-mode-hook 'turn-on-esv-mode)
+;;;
+;;; If you only want it in certain files, you can add it to the first
+;;; line or the local variables (see (info "(emacs)File Variables") for
+;;; more information):
+;;;
+;;;     -*- mode: text; mode: esv; -*-
+;;;
+;;; or
+;;;
+;;;     Local Variables:
+;;;     mode: esv;
+;;;     End:
+;;;
+;;; However, note the warning about imposing your individual preferences
+;;; on files at the end of the info node above.
+;;;
+;;; The ESV API is documented at:
+;;; http://www.esvapi.org/v2/rest/
+
+;;; Code:
 
 (require 'xml)
 (require 'url)
@@ -654,3 +663,5 @@ change that by customizing `esv-reading-plan'."
 (defalias 'esv 'esv-passage)
 
 (provide 'esv)
+
+;;; esv.el ends here
