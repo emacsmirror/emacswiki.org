@@ -67,6 +67,7 @@ Extensions (using the category name from `finder-by-keyword'), are utility libra
 * NavFlash -- Briefly highlight the current line
 * UnicodeEnbox -- Surround a string with box-drawing characters
 * AutoOverlays -- Overlays defined by regexps, automatically created, updated and destroyed as buffer is modified.
+* DoReMi -- Incremental change using arrow keys or mouse wheel.
 
 == Windows ==
 
