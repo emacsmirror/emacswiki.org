@@ -24,6 +24,11 @@ This will all place all auto-saves and [BackupDirectory backups] in the director
           find -name "#*#" -print0 | xargs -0 rm
           find -name "#*#" -exec rm {} \;
 
+== Interlock symlinks and auto-save files ==
+
+Be aware that symbolic links of the form ".#*" are not auto-save files but interlocks to prevent the simultaneous editing of the same file.
+See the Emacs [http://www.gnu.org/software/emacs/manual/html_node/emacs/Interlocking.html#Interlocking manual entry] for details.
+
 == Discussion ==
 
 How do I turn on auto-saving globally or on a per-buffer basis?
