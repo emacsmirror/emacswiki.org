@@ -5,6 +5,8 @@ the underlying text, not what is currently being displayed.
 
 The following defun will allow you to turn the overlays into plain text, allowing you to save or copy it as you want.
 
+[new] Fix to read display attribute. -- [[rubikitch]]
+
 {{{
 ;;; Originally posted to #emacs by phf on 2007-10-24.
 
@@ -24,7 +26,8 @@ into real text."
     (mapc (lambda (o)
             (let ((bt (buffer-substring-no-properties s (overlay-start o)))
                   (b (overlay-get o 'before-string))
-                  (text (buffer-substring-no-properties (overlay-start o) (overlay-end o)))
+                  (text (or (overlay-get o 'display)
+                            (buffer-substring-no-properties (overlay-start o) (overlay-end o))))
                   (a (overlay-get o 'after-string))
                   (inv (overlay-get o 'invisible)))
               (with-current-buffer tb
