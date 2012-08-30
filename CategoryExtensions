@@ -107,6 +107,10 @@ Extensions (using the category name from `finder-by-keyword'), are utility libra
 
 * PasswordGenerator
 
+== Project Management ==
+
+* ProjectBufferMode
+
 == Testing ==
 
 * See UnitTesting
