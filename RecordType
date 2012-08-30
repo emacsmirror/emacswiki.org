@@ -90,3 +90,6 @@ Here is another sample, this time to demonstrate, how to use the newly-defined f
 
 [new]
 I have been striving with something like this for defcustom. Is it possible to write a defcustom with fields that are prompted for?
+
+----
+CategoryExtensions
