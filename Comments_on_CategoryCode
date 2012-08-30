@@ -54,3 +54,18 @@ HTH.  Sorry if I misunderstood something or overreacted.
 
 -- DrewAdams 2012-08-29 23:20 UTC
 
+
+----
+
+It's cool, bro.
+
+Yes, there's that whole judgment call thing: an end-user library **could** be used by a clever programmer as a building brick (and it happens all the time), and a building-brick extension **could** be used by a clever end-user in their .emacs (and it happens all the time).
+
+Yet the distinction between the two types of library is real enough.  I side-stepped the judgment call by taking the library's doc as gospel.
+
+Another rationale for creating CategoryExtensions is that, with the advent of package.el and the various repos, this type of library will grow in popularity.
+
+As for CategoryCode, do with it what you will.  I was only following feedback from Alex and your revert is just another variety of community feedback.
+
+-- roland.walker 2012-08-30 12:52 UTC
+
