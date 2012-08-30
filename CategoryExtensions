@@ -61,7 +61,7 @@ Extensions (using the category name from `finder-by-keyword'), are utility libra
 * IncrementalRead -- support building libraries that act incrementally on input.
 * LuiMode -- A Linewise User Interface
 * UseCustomizeForKeyBindings -- Widget and `defcustom' code to let users use Customize for key bindings.
-* tabulated-list.el -- included with Emacs
+* GIT:emacs-lisp/tabulated-list.el -- display and interact with tables
 * ButtonLockMode -- Clickable text defined by regular expression
 * [[Alert]] -- Alternatives to `message'
 * NavFlash -- Briefly highlight the current line
@@ -84,7 +84,7 @@ Extensions (using the category name from `finder-by-keyword'), are utility libra
 
 == Modes ==
 
-* easy-mmode.el -- easy definition for major and minor modes (included with Emacs)
+* GIT:emacs-lisp/easy-mmode.el -- easy definition for major and minor modes (included with Emacs)
 * ModeLocal -- Causing a variable or function to have a value/behavior based on major mode.
 
 == Networking ==
@@ -97,7 +97,7 @@ Extensions (using the category name from `finder-by-keyword'), are utility libra
 
 == Persistence ==
 
-* [http://cedet.sourceforge.net/eieio.shtml Eieio] -- provided with Emacs
+* [http://cedet.sourceforge.net/eieio.shtml Eieio] -- provided with Emacs (GIT:emacs-lisp/eieio.el)
 * [https://github.com/sigma/pcache Pcache] -- persistent caching
 * PersistentSoft -- persistent storage, returning nil on failure
 * EmacsDataBase -- a flexible system for defining, accessing, modifying, summarizing, and generally playing with, a set of records.  You can view each record individually or summarized (with other records) in separate buffer. Record format (field names and their types) can be arbitrarily complex.
@@ -114,3 +114,4 @@ Extensions (using the category name from `finder-by-keyword'), are utility libra
 == See Also ==
 
 * CategoryProgrammerUtils
+* CategoryCode
