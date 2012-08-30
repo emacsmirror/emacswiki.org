@@ -1079,4 +1079,4 @@ The following pages discuss things that are in the spirit of DoReMi, even though
 ----
 Lisp:doremi.el, Lisp:doremi-cmd.el, Lisp:doremi-frm.el, Lisp:doremi-mac.el, Lisp:facemenu+.el, Lisp:frame-cmds.el, Lisp:hexrgb.el, Lisp:menu-bar+.el, Lisp:ring+.el, Lisp:setup-keys.el, Lisp:thumb-frm.el, Lisp:zoom-frm.el
 
-CategoryDisplay CategoryFrames CategoryCode CategoryFaces CategoryCommands CategoryCustomize CategoryWindows
+CategoryDisplay CategoryFrames CategoryCode CategoryFaces CategoryCommands CategoryCustomize CategoryWindows CategoryExtensions
