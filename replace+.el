@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Jan 30 15:01:06 1996
 ;; Version: 21.0
-;; Last-Updated: Fri Aug 31 11:38:38 2012 (-0700)
+;; Last-Updated: Fri Aug 31 13:13:26 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1365
+;;     Update #: 1366
 ;; URL: http://www.emacswiki.org/emacs-en/replace%2b.el
 ;; Doc URL: http://www.emacswiki.org/emacs/ReplacePlus
 ;; Keywords: matching, help, internal, tools, local
@@ -984,7 +984,7 @@ the matching is case-sensitive."
                                  (read-regexp (if perform-collect
                                                   "Collect strings matching regexp"
                                                 "List lines matching regexp")
-                                              default)
+                                              (if (consp default) (car default) default))
                                (read-from-minibuffer ; Emacs 20-22
                                 (if default
                                     (format "List lines matching regexp (default `%s'): "
