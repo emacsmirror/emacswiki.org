@@ -32,6 +32,11 @@ These libraries address some aspect of project management without trying to be a
 ** [https://github.com/eglaysher/find-things-fast find-things-fast] -- leverage Git for faster searching
 ** FindFileInProject -- file finder
 ** ProjectBufferOccur -- Occur plugin for ProjectBufferMode
+** [http://github.com/technomancy/rinari/tree/master rinari-find-file-in-project] -- file finder
+** [http://github.com/justinweiss/fuzzy-find-in-project fuzzy-find-in-project] -- file finder
+** [[Gpicker]] -- file finder
+** Lisp:ifind-mode.el -- file finder
+** [http://github.com/re5et/simp simp] -- file finder
 * Persistence
 ** GIT:desktop.el (included with Emacs) -- session saver
 ** MinimalSessionSaver -- session saver
