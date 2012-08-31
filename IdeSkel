@@ -143,3 +143,4 @@ The second error is (at least for me) a bit harder to fix: *ide-skel cannot hand
 A <code>C-x-0</code> or <code>C-x-1</code> always close the bottom window(s) if any of the side windows is open.
 ----
 CategoryProgrammerUtils
+CategoryProject
