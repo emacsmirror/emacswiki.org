@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu Jan 25 14:22:13 1996
 ;; Version: 21.0
-;; Last-Updated: Sat Aug 25 21:27:25 2012 (-0700)
+;; Last-Updated: Fri Aug 31 07:46:01 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 177
+;;     Update #: 180
 ;; URL: http://www.emacswiki.org/emacs-en/window%2b.el
 ;; Doc URL: http://emacswiki.org/emacs/Delete_Frames_Easily_-_But_Not_Too_Easily
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/OneOnOneEmacs
@@ -45,6 +45,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/08/31 dadams
+;;     special-display-popup-frame:
+;;       save-selected-window -> save-window-excursion -
+;;         fixes bug that moved point to bob when use pp-eval-last-sexp.
 ;; 2012/08/25 dadams
 ;;     special-display-popup-frame:
 ;;       Put back missing (set-window-buffer window buffer) - removed accidentally.
@@ -120,7 +124,7 @@ even if it is active.  (See function `walk-windows'.)"
     count))
 
 
-;; REPLACE ORIGINAL in `window.el'.
+;; REPLACE ORIGINAL in `window.el' (in `frame.el' prior to Emacs 24).
 ;;
 ;; 1. (Emacs 20 only) Call `make-frame' while BUFFER is current, so that
 ;;    any frame hooks (e.g. `after-make-frame-functions') will use BUFFER,
@@ -194,7 +198,8 @@ arguments."
          (when (fboundp 'display-buffer-record-window) ; Emacs 24+
            (display-buffer-record-window 'frame window buffer))
          ;; Now call `fit-frame', with WINDOW selected.
-         (save-selected-window (select-window window) (fit-frame))
+         ;; Needs to be `save-window-excursion', not just `save-selected-window'.
+         (save-window-excursion (select-window window) (fit-frame))
          window)))))                    ; Return the window.
 
 
