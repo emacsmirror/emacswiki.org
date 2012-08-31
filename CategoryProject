@@ -10,7 +10,6 @@ It is probably not useful to use more than one of these at the same time, for th
 * [http://wiki.github.com/jrockway/eproject eproject] -- assign files to projects, programatically
 * a different library named [[eproject]] -- Project workspaces for Emacs.
 * [http://cedet.sourceforge.net/projects.shtml CEDET]
-* [http://www.shellarchive.co.uk/content/lisp/project-root.el project-root.el]
 * [[project-buffer-mode.el]]
 * [http://github.com/mattkeller/mk-project mk-project] --  Quickly switch between projects and perform operations on a per-project basis.
 * [http://www.ozymandias.dk/emacs/emacs.html#vps vps] Projects as directory sets (by VagnJohansen).
