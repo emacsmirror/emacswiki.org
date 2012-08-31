@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Aug 28 07:21:58 2012 (-0700)
+;; Last-Updated: Fri Aug 31 10:08:15 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 13262
+;;     Update #: 13285
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1310,45 +1310,59 @@ Returns the modified copy of PLIST."
 The optional second arg INITIAL-CONTENTS is an alternative to
   DEFAULT-VALUE.  Vanilla Emacs considers it to be obsolete, but
   Icicles does not.  It is discussed in more detail below.
+
 Third arg KEYMAP is a keymap to use while reading;
   if omitted or nil, the default is `minibuffer-local-map'.
-If fourth arg READ is non-nil, then interpret the result as a Lisp object
-  and return that object:
-  in other words, do `(car (read-from-string INPUT-STRING))'
+
+If fourth arg READ is non-nil, then interpret the result as a Lisp
+  object and return that object.  In other words, return this:
+
+   (car (read-from-string INPUT-STRING))
+
 Fifth arg HIST, if non-nil, specifies a history list and optionally
   the initial position in the list.  It can be a symbol, which is the
   history list variable to use, or it can be a cons cell
-  (HISTVAR . HISTPOS).  In that case, HISTVAR is the history list variable
-  to use, and HISTPOS is the initial position for use by the minibuffer
-  history commands.  For consistency, you should also specify that
-  element of the history as the value of INITIAL-CONTENTS.  Positions
-  are counted starting from 1 at the beginning of the list.
-Sixth arg DEFAULT-VALUE is the default value.  If non-nil, it is available
-  for history commands; but, unless READ is non-nil, `read-from-minibuffer'
-  does NOT return DEFAULT-VALUE if the user enters empty input!  It returns
-  the empty string.  DEFAULT-VALUE can be a string or a list of strings.
-  These  become the minibuffer's future history, available using `M-n'.
-Seventh arg INHERIT-INPUT-METHOD, if non-nil, means the minibuffer inherits
- the current input method and the setting of `enable-multibyte-characters'.
-Eighth arg KEEP-ALL, if non-nil, says to put all inputs in the history list,
- even empty or duplicate inputs.  This is available starting with Emacs 22.
-If the variable `minibuffer-allow-text-properties' is non-nil,
- then the string which is returned includes whatever text properties
- were present in the minibuffer.  Otherwise the value has no text properties.
+  (HISTVAR . HISTPOS).  If a cons cell, HISTVAR is the history list
+  variable to use and HISTPOS is the initial position for use by the
+  minibuffer history commands.  For consistency, you should also
+  specify that element of the history as the value of
+  INITIAL-CONTENTS.  Positions are counted starting from 1 at the
+  beginning of the list.
+
+Sixth arg DEFAULT-VALUE is a string, nil, or (for Emacs 23 and later)
+  a non-empty list of strings.  The strings are available to the user
+  as input via `\\<minibuffer-local-map>\\[next-history-element]'.
+
+  NOTE: Unlike a default-value parameter for some other functions such
+  as `completing-read', if the user hits `RET' with empty input then
+  DEFAULT-VALUE is NOT returned.  In that case, if READ is nil then
+  the empty string, \"\", is returned.  If READ is non-nil then the
+  DEFAULT-VALUE string (or the first string in DEFAULT-VALUE if
+  DEFAULT-VALUE is a list) is read.
+
+Seventh arg INHERIT-INPUT-METHOD, if non-nil, means the minibuffer
+  inherits the current input method and the setting of
+  `enable-multibyte-characters'.
+
+If variable `minibuffer-allow-text-properties' is non-nil then the
+  string returned includes whatever text properties were present in
+  the minibuffer.  Otherwise the return value has no text properties.
 
 Option `icicle-default-value' controls how the default value,
 DEFAULT-VALUE, is treated.
 
-The remainder of this documentation string describes the
-INITIAL-CONTENTS argument in more detail.  If non-nil,
-INITIAL-CONTENTS is a string to be inserted into the minibuffer before
-reading input.  Normally, point is put at the end of that string.
-However, if INITIAL-CONTENTS is (STRING . POSITION), the initial input
-is STRING, but point is placed at one-indexed position POSITION in the
-minibuffer.  Any integer value less than or equal to one puts point at
-the beginning of the string.  *Note* that this behavior differs from
-the way such arguments are used in `completing-read' and some related
-functions, which use zero-indexing for POSITION."
+The remainder of this documentation string describes parameter
+INITIAL-CONTENTS in more detail.
+
+If non-nil, INITIAL-CONTENTS is a string to be inserted into the
+minibuffer before reading input.  Normally, point is put at the end of
+that string.  However, if INITIAL-CONTENTS is (STRING . POSITION), the
+initial input is STRING and point is placed at one-indexed position
+POSITION in the minibuffer.  Any integer value less than or equal to
+one puts point at the beginning of the string.  Note that this
+behavior differs from the way such arguments are used in
+`completing-read' and some other functions, which use zero-indexing
+for POSITION."
   (unless initial-contents (setq initial-contents  ""))
 
   ;; Filter DEFAULT-VALUE using `icicle-filter-wo-input'.
