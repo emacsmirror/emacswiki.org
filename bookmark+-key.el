@@ -7,9 +7,9 @@
 ;; Copyright (C) 2010-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  1 15:34:50 2011 (-0700)
 ;; Version:
-;; Last-Updated: Thu Aug 23 09:20:15 2012 (-0700)
+;; Last-Updated: Fri Aug 31 14:07:20 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 570
+;;     Update #: 572
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-key.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -233,19 +233,21 @@
                 (define-key occur-mode-map [(control ?c) (control meta shift ?b)]
                   'bmkp-occur-create-autonamed-bookmarks)))) ; `C-c C-M-B' (aka `C-c C-M-S-b')
 
-(add-hook 'compilation-mode-hook
-          #'(lambda ()
-              (unless (lookup-key occur-mode-map "\C-c\C-b")
-                (define-key occur-mode-map "\C-c\C-b" 'bmkp-compilation-target-set)) ; `C-c C-b'
-              (unless (lookup-key occur-mode-map "\C-c\C-\M-b") ; `C-c C-M-b'
-                (define-key occur-mode-map "\C-c\C-\M-b" 'bmkp-compilation-target-set-all))))
+(when (fboundp 'bmkp-compilation-target-set)
+  (add-hook 'compilation-mode-hook
+            #'(lambda ()
+                (unless (lookup-key occur-mode-map "\C-c\C-b")
+                  (define-key occur-mode-map "\C-c\C-b" 'bmkp-compilation-target-set)) ; `C-c C-b'
+                (unless (lookup-key occur-mode-map "\C-c\C-\M-b") ; `C-c C-M-b'
+                  (define-key occur-mode-map "\C-c\C-\M-b" 'bmkp-compilation-target-set-all)))))
 
-(add-hook 'compilation-minor-mode-hook
-          #'(lambda ()
-              (unless (lookup-key occur-mode-map "\C-c\C-b")
-                (define-key occur-mode-map "\C-c\C-b" 'bmkp-compilation-target-set)) ; `C-c C-b'
-              (unless (lookup-key occur-mode-map "\C-c\C-\M-b") ; `C-c C-M-b'
-                (define-key occur-mode-map "\C-c\C-\M-b" 'bmkp-compilation-target-set-all))))
+(when (fboundp 'bmkp-compilation-target-set)
+  (add-hook 'compilation-minor-mode-hook
+            #'(lambda ()
+                (unless (lookup-key occur-mode-map "\C-c\C-b")
+                  (define-key occur-mode-map "\C-c\C-b" 'bmkp-compilation-target-set)) ; `C-c C-b'
+                (unless (lookup-key occur-mode-map "\C-c\C-\M-b") ; `C-c C-M-b'
+                  (define-key occur-mode-map "\C-c\C-\M-b" 'bmkp-compilation-target-set-all)))))
 
 
 ;; `bmkp-tags-map': prefix `C-x p t'
