@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Jan 30 15:01:06 1996
 ;; Version: 21.0
-;; Last-Updated: Fri Aug 31 14:53:01 2012 (-0700)
+;; Last-Updated: Fri Aug 31 15:17:49 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1425
+;;     Update #: 1426
 ;; URL: http://www.emacswiki.org/emacs-en/replace%2b.el
 ;; Doc URL: http://www.emacswiki.org/emacs/ReplacePlus
 ;; Keywords: matching, help, internal, tools, local
@@ -645,7 +645,7 @@ insert a `SPC' or `TAB' character, you will need to preceed it by \
 Prompt with PROMPT, which should not include a final `: '.
 
 Non-nil optional arg DEFAULTS is a string or a list of strings that
-are prepended to a list of standard default values,, which include the
+are prepended to a list of standard default values, which include the
 string at point, the last isearch regexp, the last isearch string, and
 the last replacement regexp.
 
