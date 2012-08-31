@@ -28,5 +28,9 @@ define it using the function 'setl':
 
     (setl ruby-indent-level 4)
 
-----
+== See Also ==
+
 ProjectSettings
+
+----
+CategoryProject
