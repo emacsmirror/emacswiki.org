@@ -102,6 +102,7 @@ This is annoying especially when editing HTML or XML.  The following advice igno
 At this time when you open an absolute path in a remote tramp buffer, it will open this file locally.
 I wrote a new function to fix this and make the line number recognition enhanced.
 
+{{{
 (defun my-find-file-at-point-with-line ()
   "Opens the file at point and goes to line-number."
   (interactive)
@@ -126,6 +127,7 @@ I wrote a new function to fix this and make the line number recognition enhanced
         (find-file-existing fname)
         (when line (goto-line line)))
       (error "File does not exist."))))
+}}}
 
 -- Jingtao Xu.
 
