@@ -30,3 +30,5 @@ Add the following line to your .emacs:
 (iproject-key-binding)
 }}}
 
+----
+CategoryProject
