@@ -40,8 +40,5 @@ Because projman makes use of the find command it will only work on a unix type e
 
 See ##projman-find-command## for a way to specify the command path if needed.
 
-== Related Libraries ==
-See [[CategoryProgrammerUtils#ProjectSupport|Project Support]]
-
 ----
-CategoryProgramming CategoryProgrammerUtils
+CategoryProgramming CategoryProgrammerUtils CategoryProject
