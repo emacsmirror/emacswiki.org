@@ -47,4 +47,4 @@ I didn't found how can I reopen an existent project. Is there a way or its in th
 [new]
 Of course you can do this (search for "Switch to" in online help; `C-h m' if online help not visible).  -- Rene
 ----
-CategoryCalendar | CategoryTodo
+CategoryCalendar | CategoryTodo | CategoryProject
