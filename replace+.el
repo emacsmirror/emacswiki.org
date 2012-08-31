@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Jan 30 15:01:06 1996
 ;; Version: 21.0
-;; Last-Updated: Fri Aug 31 13:13:26 2012 (-0700)
+;; Last-Updated: Fri Aug 31 14:53:01 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1366
+;;     Update #: 1425
 ;; URL: http://www.emacswiki.org/emacs-en/replace%2b.el
 ;; Doc URL: http://www.emacswiki.org/emacs/ReplacePlus
 ;; Keywords: matching, help, internal, tools, local
@@ -92,6 +92,9 @@
 ;;                                   `search/replace-default-fn'.
 ;;    `query-replace-read-(from|to)' - Like `query-replace-read-args',
 ;;                                     but for Emacs 21+.
+;;    `read-regexp' (Emacs 23+) -
+;;                        1. Allow DEFAULTS to be a list of strings.
+;;                        2. Prepend DEFAULTS to the vanilla defaults.
 ;;
 ;;
 ;;  This file should be loaded after loading the standard GNU file
@@ -122,7 +125,7 @@
 ;;; Change Log:
 ;;
 ;; 2012/08/31 dadams
-;;     Added: search/replace-2nd-sel-as-default-flag, search/replace-default.
+;;     Added: search/replace-2nd-sel-as-default-flag, search/replace-default, redefinition of read-regexp.
 ;;     query-replace-read-(from|to|read-args), (keep|flush)-lines, how-many, occur(-read-primary-args):
 ;;       Respect search/replace-2nd-sel-as-default-flag.
 ;; 2012/08/21 dadams
@@ -346,7 +349,7 @@ This toggles the value of option `replace-w-completion-flag'."
 (defcustom search/replace-2nd-sel-as-default-flag t
   "*Non-nil means use secondary selection as default for search/replace.
 That is, if there is currently a nonempty secondary selection, use it
-as the default input."
+as the default input.  All text properties are removed from the text."
   :type 'boolean :group 'matching)
 
 (defcustom search/replace-default-fn (if (fboundp 'non-nil-symbol-name-nearest-point)
@@ -392,13 +395,15 @@ The possible strings are, in order:
   `search/replace-default-fn', if non-nil.
 
 * The first entry in the history list HISTORY."
-  (if (> emacs-major-version 22)
-      (delq nil (list (and search/replace-2nd-sel-as-default-flag (x-get-selection 'SECONDARY))
-                      (and (functionp search/replace-default-fn) (funcall search/replace-default-fn))
-                      (car (symbol-value query-replace-from-history-variable))))
-    (or (and search/replace-2nd-sel-as-default-flag (x-get-selection 'SECONDARY))
-        (and (functionp search/replace-default-fn) (funcall search/replace-default-fn))
-        (car history))))
+  (let ((second-sel  (and search/replace-2nd-sel-as-default-flag  (x-get-selection 'SECONDARY))))
+    (when second-sel (set-text-properties 0 (length second-sel) () second-sel))
+    (if (> emacs-major-version 22)
+        (delq nil (list second-sel
+                        (and (functionp search/replace-default-fn) (funcall search/replace-default-fn))
+                        (car (symbol-value query-replace-from-history-variable))))
+      (or second-sel
+          (and (functionp search/replace-default-fn) (funcall search/replace-default-fn))
+          (car history)))))
 
 
 
@@ -626,6 +631,48 @@ insert a `SPC' or `TAB' character, you will need to preceed it by \
       (list oldx newx current-prefix-arg))))
 
 
+
+;; REPLACE ORIGINAL in `replace.el':
+;;
+;; 1. Allow DEFAULTS to be a list of strings.
+;; 2. Prepend DEFAULTS to the vanilla defaults.
+;;
+;; $$$$$$ Should we let this return empty input ("") under some conditions?  E.g., if DEFAULTS contains ""?
+;;
+(when (> emacs-major-version 22)
+  (defun read-regexp (prompt &optional defaults)
+    "Read and return a regular expression as a string.
+Prompt with PROMPT, which should not include a final `: '.
+
+Non-nil optional arg DEFAULTS is a string or a list of strings that
+are prepended to a list of standard default values,, which include the
+string at point, the last isearch regexp, the last isearch string, and
+the last replacement regexp.
+
+Retrieve defaults using `M-n'.  Use `M-p' to access `regexp-history'."
+    (when (and defaults  (atom defaults)) (setq defaults  (list defaults)))
+    (let* ((deflts                 (append
+                                    defaults
+                                    (list (regexp-quote
+                                           (or (funcall
+                                                (or find-tag-default-function
+                                                    (get major-mode 'find-tag-default-function)
+                                                    'find-tag-default))
+                                               ""))
+                                          (car regexp-search-ring)
+                                          (regexp-quote (or (car search-ring)  ""))
+                                          (car (symbol-value query-replace-from-history-variable)))))
+           (deflts                 (delete-dups (delq nil (delete "" deflts))))
+           (history-add-new-input  nil) ; Do not automatically add INPUT to the history, in case it is "".
+           (input                  (read-from-minibuffer
+                                    (if defaults
+                                        (format "%s (default `%s'): " prompt
+                                                (mapconcat 'isearch-text-char-description (car deflts) ""))
+                                      (format "%s: " prompt))
+                                    nil nil nil 'regexp-history deflts t)))
+      (if (equal input "")
+          (or (car defaults)  input)
+        (prog1 input (add-to-history 'regexp-history input))))))
 
 
 ;; REPLACE ORIGINAL in `replace.el':
@@ -945,7 +992,7 @@ the matching is case-sensitive."
 ;;
 ;; Save regexp as `occur-regexp' for use by `occur-mode-mouse-goto' and `occur-mode-goto-occurrence'.
 ;;
-(when (>= emacs-major-version 21)
+(when (> emacs-major-version 20)
   (defadvice occur (before occur-save-regexp activate compile)
     (setq occur-regexp  (ad-get-arg 0)))) ; Save for highlighting.
 
@@ -955,7 +1002,7 @@ the matching is case-sensitive."
 ;;
 ;; Save regexp as `occur-regexp' for use by `occur-mode-mouse-goto' and `occur-mode-goto-occurrence'.
 ;;
-(when (>= emacs-major-version 21)
+(when (> emacs-major-version 20)
   (defadvice multi-occur (before multi-occur-save-regexp activate compile)
     (setq occur-regexp  (ad-get-arg 1)))) ; Save for highlighting.
 
@@ -965,7 +1012,7 @@ the matching is case-sensitive."
 ;;
 ;; Save regexp as `occur-regexp' for use by `occur-mode-mouse-goto' and `occur-mode-goto-occurrence'.
 ;;
-(when (>= emacs-major-version 21)
+(when (> emacs-major-version 20)
   (defadvice multi-occur-in-matching-buffers (before multi-occur-in-matching-buffers-save-regexp
                                                      activate compile)
     (setq occur-regexp  (ad-get-arg 1)))) ; Save for highlighting.
@@ -976,7 +1023,7 @@ the matching is case-sensitive."
 ;;
 ;; Provide default input using `search/replace-default-fn'.
 ;;
-(when (>= emacs-major-version 21)
+(when (> emacs-major-version 20)
   (defun occur-read-primary-args ()
     (let* ((perform-collect  (and (> emacs-major-version 23)  (consp current-prefix-arg)))
            (default          (search/replace-default regexp-history))
@@ -984,7 +1031,8 @@ the matching is case-sensitive."
                                  (read-regexp (if perform-collect
                                                   "Collect strings matching regexp"
                                                 "List lines matching regexp")
-                                              (if (consp default) (car default) default))
+                                              default)
+                               (when (consp default) (setq default  (car default)))
                                (read-from-minibuffer ; Emacs 20-22
                                 (if default
                                     (format "List lines matching regexp (default `%s'): "
