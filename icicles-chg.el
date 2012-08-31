@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue Aug 28 07:26:03 2012 (-0700)
+;; Last-Updated: Fri Aug 31 10:07:11 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8830
+;;     Update #: 8832
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1417,6 +1417,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2012/08/31 dadams
+;;     icicle-read-from-minibuffer: Improved doc string.
 ;; 2012/08/28 dadams
 ;;     icicle-read-number: Allow for DEFAULT to be a cons with nil elements.  Thx to C. Schmidt.
 ;; 2012/08/18 dadams
