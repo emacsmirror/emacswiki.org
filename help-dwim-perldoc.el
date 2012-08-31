@@ -1,4 +1,4 @@
-;;; help-dwim-perldoc.el --- 
+;;; help-dwim-perldoc.el --- dwim interface to perldoc
 
 ;; Copyright 2007 Ye Wenbin
 ;;
