@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Aug 28 16:01:45 2012 (-0700)
+;; Last-Updated: Fri Aug 31 14:08:44 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 15016
+;;     Update #: 15018
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -1140,6 +1140,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-key.el'")
 ;;
+;; 2012/08/31 dadams
+;;     Do not bind bmkp-compilation-target-set(-all) unless defined.
 ;; 2012/06/26 dadams
 ;;     Wrapped require of bookmark+-mac.el in eval-when-compile.
 ;; 2012/06/21 dadams
