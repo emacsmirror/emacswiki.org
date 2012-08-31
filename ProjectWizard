@@ -24,3 +24,6 @@ If asked to kill foo.wxproj, answer 'y' and toggle the template.el option to cre
 <i>Note: Any number of files can be made in this way, each capable of using replacement statements like (>>>FILE_SANS<<<) from templates.el with the exception of (>>>POINT<<<), since the opened file is actually cut up after it's made. If someone can modify the function code to add an extension to allow (>>>POINT<<<) to be used for each file in the project (including the last), and adhere to templates.el conventions, that would be great. Also, if you know of any similar, better "wizards", please link them.
 
 Check example to see format of "project" templates.
+
+----
+CategoryProject
