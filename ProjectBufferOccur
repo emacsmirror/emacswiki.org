@@ -21,3 +21,6 @@ Put the following lines in your .emacs:
     (require 'project-buffer-occur)
     (define-key project-buffer-mode-map [(control ?f)] 'project-buffer-occur)))
 }}}
+
+----
+CategoryProject
