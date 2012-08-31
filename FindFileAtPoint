@@ -116,7 +116,7 @@ I wrote a new function to fix this and make the line number recognition enhanced
                     (string-to-int (match-string 1))))))
         ;; (message "file:%s,line:%s" fname line)
         (when (and (tramp-tramp-file-p default-directory)
-                   (not (tramp-tramp-file-p fname)))
+                   (= ?/ (aref fname 0)))
           ;; if fname is an absolute path in remote machine, it will not return a tramp path,fix it here.
           (let ((pos (position ?: default-directory)))
             (if (not pos) (error "failed find first tramp indentifier ':'"))
