@@ -10,7 +10,8 @@ provided with recent emacs versions and described above.
   
 * ColumnizeWords is an extension written by Rick Bielawski. It provides the
 <code>columnize-text</code> command, which lines up words or numbers, 
-either by rows or columns.
+either by rows or columns.  This function is designed to be used manually
+when editing buffers.
 
   
 * AlignLet is meant to align <code>let</code> assignments in Lisp code.
