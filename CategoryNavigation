@@ -53,7 +53,6 @@ Navigating through the text of large buffers, or multiple buffers, especially co
 These navigation utility libraries are useful from Emacs Lisp, but do not have user-facing interfaces.
 
 * NavFlash -- Temporarily highlight the line containing the point.
-* ButtonLockMode -- Simple facilities to define clickable text based on regular expressions.
 
 == See Also ==
 
