@@ -1,42 +1,61 @@
-Navigating large buffers, or multiple buffers, especially code.
+Navigating through the text of large buffers, or multiple buffers, especially code.
 
-== Navigation Facilities Included with Emacs ==
+== General Navigation Facilities Included with Emacs ==
 
-* BookMarks
-* MarkCommands
-* GrepMode
-* OccurMode
-* CompilationMode
-* ImenuMode
-* WhichFuncMode
-* [http://cedet.sourceforge.net CEDET]
+* BookMarks -- Record locations so you can return to them later.
+* MarkCommands -- Common commands for manipulating and using the [[mark]].
+* GrepMode -- Search via external "grep" utility.
+* OccurMode -- List all lines of the current buffer that match a regexp.
+* CompilationMode -- Navigate based on the output of compilers or any other utility that gives the line numbers.
+* ImenuMode -- Move quickly among definitions of functions, macros, classes, types, whatever.
+* WhichFuncMode -- Displays the current function name in the mode line.
+* [http://cedet.sourceforge.net CEDET] -- An advanced development environment in Emacs.
 
-== Other Navigation Libraries ==
+== Navigation by Tags ==
 
-* VisibleBookmarks
-* [[EAssist]]
-* GnuGlobal
-* GonzuiForEmacs
-* BackButton
-* FixmeeMode
-* FixmeMode
+* Emacs tags -- Record and locate identifier definitions in source files based on a [[tags file]].
+** Overview: EmacsTags (etags)
+** Building tags files
+*** BuildTags -- How to create them.
+*** ExuberantCtags (ctags) -- Support for more languages and editors than etags.
+** Navigating to tags (definitions)
+*** [[Icicles - Emacs Tags Enhancements]] -- Find or browse tags from all tags files (including multiple matches for a tag).
+*** EtagsSelect -- Select from multiple matches to a tag.
+*** EctagsSelect -- Etags replacement that uses ExuberantCtags and eldoc.
+*** EtagsStack -- Navigate the tags stack.
+*** EtagsTable -- Set the tags-table-list based on the current file.
+* GnuGlobal -- Database of code identifiers and tags.
 
 == Navigation By Hyperlink ==
 
-* EevMode
-* LinkdMode
-* WikiNavMode
+* EevMode -- EmacsLisp hyperlinks that help navigate source code.
+* LinkdMode -- Embed hyperlinks in all kinds of text files
+* WikiNavMode -- Navigate text files via &#91;&#91;wiki-style&#93;&#93; double-bracketed links
+
+== Other Navigation Libraries ==
+
+* VisibleBookmarks -- Visible buffer-local bookmarks and the ability to jump between them.
+* [[EAssist]] -- find a function name by typing only part of it
+* GonzuiForEmacs -- Emacs interface of `gonzui', a source code search engine.
+* BackButton -- an alternative method for navigation by analogy with the “back” button in a web browser
+* FixmeeMode -- Quickly navigate to FIXME notices in code.
+* FixmeMode -- Highlighting FIXME, TODO, BUG, and other warning comments, and jumping to these tags
+* IdeBridge -- Code completion, refactoring, and compilation for C# (only available on win32 now).
+* IdUtils -- Database of code identifiers.
+* [[Icicles - Other Search Commands#IciclesImenu|Icicles Imenu]] -- Imenu with [[regexp]] [[completion]]. Like EmacsTags, works across multiple buffers, files, and saved regions.
+* SimpleCallTree -- A call-tree data structure that says which function calls which function. Highlights functions.
+* XreFactory -- Code completion, source browsing, and code refactoring.
+* SrSpeedbar -- Displays information about the current buffer, allowing you to better navigate your sources.
+* CScopeAndEmacs -- Look up where a symbol is defined, called, and so on.
 
 == Extension Libraries ==
 
 These navigation utility libraries are useful from Emacs Lisp, but do not have user-facing interfaces.
 
-* NavFlash
-* ButtonLockMode
+* NavFlash -- Temporarily highlight the line containing the point.
+* ButtonLockMode -- Simple facilities to define clickable text based on regular expressions.
 
 == See Also ==
 
-* CScopeAndEmacs
-* EmacsTags
 * CategoryProgrammerUtils
 * CategoryBookmarking
