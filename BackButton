@@ -45,13 +45,13 @@ cause issues with Lisp code which depends on the convention that
 buffer.  However, no such issues have been observed.
 
 ==Default key bindings==
-: C-x C-&lt;SPC&gt;    go back in `global-mark-ring', respects prefix arg  
-: C-x C-&lt;left&gt;   go back in `global-mark-ring'  
-: C-x C-&lt;right&gt;  go forward in `global-mark-ring'  
+	C-x C-<SPC>    go back in `global-mark-ring', respects prefix arg  
+	C-x C-<left>   go back in `global-mark-ring'  
+	C-x C-<right>  go forward in `global-mark-ring'  
 
-: C-x &lt;SPC&gt;      go back in (buffer-local) `mark-ring', respects prefix arg  
-: C-x &lt;left&gt;     go back in (buffer-local) `mark-ring'  
-: C-x &lt;right&gt;    go forward in (buffer-local) `mark-ring'  
+	C-x <SPC>      go back in (buffer-local) `mark-ring', respects prefix arg  
+	C-x <left>     go back in (buffer-local) `mark-ring'  
+	C-x <right>    go forward in (buffer-local) `mark-ring'  
 
 When the smartrep package is installed, the `C-x' prefix need not
 be used for consecutive `back-button' commands.
