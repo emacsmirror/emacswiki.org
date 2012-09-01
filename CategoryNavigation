@@ -19,6 +19,7 @@ Navigating large buffers, or multiple buffers, especially code.
 * GonzuiForEmacs
 * BackButton
 * FixmeeMode
+* FixmeMode
 
 == Navigation By Hyperlink ==
 
@@ -26,7 +27,7 @@ Navigating large buffers, or multiple buffers, especially code.
 * LinkdMode
 * WikiNavMode
 
-== Utility Libraries ==
+== Extension Libraries ==
 
 These navigation utility libraries are useful from Emacs Lisp, but do not have user-facing interfaces.
 
