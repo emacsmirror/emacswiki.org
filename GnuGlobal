@@ -93,7 +93,8 @@ CEDET (CollectionOfEmacsDevelopmentEnvironmentTools) supports the use of GNU Glo
 * SemanticBovinator Symref backend, for finding symbol usages.
 * Semantic Database backend, for finding tags by name.
 
---
+----
 CategoryProgrammerUtils
 CategoryExternalUtilities
 CategoryCompletion
+CategoryNavigation
