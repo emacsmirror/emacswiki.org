@@ -78,33 +78,9 @@ File changes:
 * EmergeDiff -- Graphical interface to `diff'.
 * DircmpMode -- Compare two directories recursively. Display a list of all differing files in a single buffer. Invoke Ediff on any pair of files compared.
 
-[:ProjectSupport]
-Projects (code) -- Creating and managing:
+Project Management
 
-* [[Bookmark+]] -- Tag files in different projects a la [[http://delicious.com|del.icio.us]]. Bookmark a set of files in arbitrary locations and jump to it in [[Dired]]. Save/restore Dired states (markings, expanded subdirs).
-* CollectionOfEmacsDevelopmentEnvironmentTools (CEDET)
-* DiredMode -- Operate on project files.
-** [[GrepMode#GrepOnlyMarkedFiles|grep only marked files in Dired]] -- search project files
-* [[ELPA]]
-* EmacsCodeBrowser (ECB)
-* [[Emacs-IDE]]
-* [[eproject]] - Project workspaces for Emacs.
-* EtaskMode
-* FindFileInProject
-* [[Icicles - Support for Projects]]
-* IdeSkel
-* JavaDevelopmentEnvironment
-* [http://github.com/mattkeller/mk-project mk-project] --  Quickly switch between projects and perform operations on a per-project basis.
-* MultiTerm
-* [[Profiles]] - Non-invasive user settings common to multiple projects.
-* ProjectBufferMode -- Generic mode to handle projects.
-* ProjectLocalVariables
-* [http://www.shellarchive.co.uk/content/lisp/project-root.el project-root.el] (link down as of 2010-12-15)
-* ProjectSettings
-* ProjectWizard
-* ProjmanMode
-* SimpleProjectManagment
-* [http://www.ozymandias.dk/emacs/emacs.html#vps vps] Projects as directory sets (by VagnJohansen).
+* See CategoryProject
 
 Bug tracking:
 
