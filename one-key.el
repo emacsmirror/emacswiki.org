@@ -449,6 +449,7 @@
 ;; 
 ;;; Require
 (eval-when-compile (require 'cl))
+(require 'dired)
 (require 'hexrgb)
 ;;; Code:
 
@@ -708,9 +709,9 @@ buffer."
                            (cola (or (cadr (get-text-property 0 'face (cdar a))) bg))
                            (colb (or (cadr (get-text-property 0 'face (cdar b))) bg))
                            (hsva (destructuring-bind (r g b) (color-values cola)
-                                   (color-rgb-to-hsv r g b)))
+                                   (hexrgb-rgb-to-hsv r g b)))
                            (hsvb (destructuring-bind (r g b) (color-values colb)
-                                   (color-rgb-to-hsv r g b))))
+                                   (hexrgb-rgb-to-hsv r g b))))
                       (> (first hsva) (first hsvb)))))
     (colour_brightness . (lambda (a b)
                            (let* ((bg (cdr (assq 'background-color (frame-parameters))))
@@ -720,10 +721,10 @@ buffer."
                                    (or (cadr (get-text-property 0 'face (cdar b))) bg))
                                   (hsva (destructuring-bind (r g b)
                                             (color-values cola)
-                                          (color-rgb-to-hsv r g b)))
+                                          (hexrgb-rgb-to-hsv r g b)))
                                   (hsvb (destructuring-bind (r g b)
                                             (color-values colb)
-                                          (color-rgb-to-hsv r g b))))
+                                          (hexrgb-rgb-to-hsv r g b))))
                              (> (third hsva) (third hsvb)))))
     (colour_saturation . (lambda (a b)
                            (let* ((bg (cdr (assq 'background-color (frame-parameters))))
@@ -733,10 +734,10 @@ buffer."
                                    (or (cadr (get-text-property 0 'face (cdar b))) bg))
                                   (hsva (destructuring-bind (r g b)
                                             (color-values cola)
-                                          (color-rgb-to-hsv r g b)))
+                                          (hexrgb-rgb-to-hsv r g b)))
                                   (hsvb (destructuring-bind (r g b)
                                             (color-values colb)
-                                          (color-rgb-to-hsv r g b))))
+                                          (hexrgb-rgb-to-hsv r g b))))
                              (> (second hsva) (second hsvb)))))
     (length . (lambda (a b) (> (length (cdar a)) (length (cdar b))))))
   "An alist of sorting methods to use on the `one-key' menu items.
@@ -1148,13 +1149,13 @@ recognized the same way.")
 
 ;; some menus for the toplevel
 (defvar one-key-menu-sorting-commands-alist
-  '((("l" . "Sort lines lexicographically (M-x sort-lines)") . sort-lines)
-    (("p" . "Sort paragraphs lexicographically (M-x sort-paragraphs)") . sort-paragraphs)
-    (("P" . "Sort pages lexicographically (M-x sort-pages)") . sort-pages)
-    (("f" . "Sort lines lexicographically by whitespace seperated fields (M-x sort-fields)") . sort-fields)
+  '((("l" . "Sort lines alphabetically (M-x sort-lines)") . sort-lines)
+    (("p" . "Sort paragraphs alphabetically (M-x sort-paragraphs)") . sort-paragraphs)
+    (("P" . "Sort pages alphabetically (M-x sort-pages)") . sort-pages)
+    (("f" . "Sort lines alphabetically by whitespace seperated fields (M-x sort-fields)") . sort-fields)
     (("n" . "Sort lines numerically by whitespace seperated fields (M-x sort-numeric-fields)") . sort-numeric-fields)
-    (("c" . "Sort lines lexicographically by columns defined by point and mark (M-x sort-columns)") . sort-columns)
-    (("r" . "Sort lines matching 1st regexp by field matching 2nd regexp, lexicographically (M-x sort-regexp-fields)") . sort-regexp-fields)
+    (("c" . "Sort lines alphabetically by columns defined by point and mark (M-x sort-columns)") . sort-columns)
+    (("r" . "Sort lines matching 1st regexp by field matching 2nd regexp, alphabetically (M-x sort-regexp-fields)") . sort-regexp-fields)
     (("R" . "Reverse order of lines in region (M-x reverse-region)") . reverse-region))
   "The `one-key' menu alist for sorting commands.")
 
@@ -1174,13 +1175,13 @@ recognized the same way.")
     (("C-p" . "Mark page (C-x C-p)") . mark-page)
     (("h" . "Mark paragraph (M-h)") . mark-paragraph)
     (("C-x" . "Exchange point and mark (C-x C-x)") . exchange-point-and-mark)
-    (("M-w" . "Copy selected region (M-w, C-Insert)") . kill-ring-save)
-    (("C-w" . "Cut selected region (C-w, S-DEL)") . kill-region)
+    (("M-w" . "Copy selected region (M-w OR C-Insert)") . kill-ring-save)
+    (("C-w" . "Cut selected region (C-w OR S-DEL)") . kill-region)
     (("C-y" . "Paste/yank last copied/cut text (C-y)") . yank)
     (("M-y" . "Paste/yank ealier copied/cut text (M-y)") . yank-pop)
     (("C-d" . "Delete character forward (C-d)") . delete-char)
     (("M-DEL" . "Delete word backward (M-DEL)") . backward-kill-word)
-    (("M-D" . "Delete word forward (M-D, C-S-DEL)") . kill-word)
+    (("M-D" . "Delete word forward (M-D OR C-S-DEL)") . kill-word)
     (("C-k" . "Delete to end of line (C-k)") . kill-line)
     (("M-k" . "Delete to end of sentence (M-k)") . kill-sentence)
     (("M-u" . "Make word uppercase (M-u)") . upcase-word)
@@ -1643,7 +1644,7 @@ function, and is called within that function."
             okm-menu-names (if multi (concatenate 'list (list okm-this-name) newnames)
                              (list okm-this-name newnames))))))
 
-(defun* one-key-delete-menu (&optional (name this-name))
+(defun* one-key-delete-menu (&optional (name okm-this-name))
   "Remove the menu with name NAME from the list of menus, or the current menu if NAME is not supplied.
 This function will only work if called within the context of the `one-key-menu' function since it depends on the dynamic
 binding of the okm-menu-alists, okm-menu-number and okm-menu-names variables."
@@ -1661,7 +1662,6 @@ binding of the okm-menu-alists, okm-menu-number and okm-menu-names variables."
                            (subseq okm-menu-alists 0 pos)
                            (subseq okm-menu-alists (1+ pos) listlen))
               okm-menu-number (min pos (- listlen 2))
-              this-name name
               one-key-menu-call-first-time t))
     (one-key-menu-close)))
 
@@ -2234,37 +2234,40 @@ These keys will only be excluded from the toplevel menu, not the submenus."
          menu-alist)
     ;; loop over the items in the keymap which have keybindings
     (loop for key being the key-codes of keymap2 using (key-bindings bind)
-          for itemiscons = (not (listp (cdr bind)))
+	  for itemislist = (listp bind)
+          for itemiscons = (and itemislist (not (listp (cdr bind))))
           ;; if the item is a keymap (to be used as a submenu), extract it
-          for itemkeymap = (if (not itemiscons)
+          for itemkeymap = (if (and itemislist (not itemiscons))
                                (let ((pos (position 'keymap bind)))
                                  (if pos (nthcdr pos bind)
                                    (find-if 'keymapp bind))))
           ;; if the item is a command, extract it
           for itemcmd = (if itemiscons (cdr bind)
-                          (and (position 'menu-item bind)
-                               (find-if (lambda (x) (and (not (stringp x)) (commandp x))) bind)))
+			  (if itemislist
+			      (and (position 'menu-item bind)
+				   (find-if (lambda (x) (and (not (stringp x)) (commandp x))) bind))))
           ;; get a description for the command or submenu
           for desc = (if itemiscons (let ((bind0 (car bind))
                                           (bind1 (cdr bind)))
                                       (if (stringp bind0) bind0
                                         (replace-regexp-in-string "-" " " (symbol-name bind1))))
-                       (let* ((bind0 (car bind))
-                              ;; use either the first string in the item, or the keyname or the command name
-                              (str (or (find-if 'stringp bind)
-                                       (and bind0 (symbolp bind0) (symbol-name bind0))
-                                       (if itemcmd
-                                           (capitalize
-                                            (replace-regexp-in-string "-" " " (symbol-name itemcmd)))
-                                         "unknown"))))
-                         ;; if the item is a submenu highlight it, otherwise don't
-                         (cond (itemkeymap
-                                (propertize str 'face
-                                            (list :background "cyan"
-                                                  :foreground one-key-item-foreground-colour)))
-                               (t str))))
+		       (if itemislist
+			   (let* ((bind0 (car bind))
+				  ;; use either the first string in the item, or the keyname or the command name
+				  (str (or (find-if 'stringp bind)
+					   (and bind0 (symbolp bind0) (symbol-name bind0))
+					   (if itemcmd
+					       (capitalize
+						(replace-regexp-in-string "-" " " (symbol-name itemcmd)))
+					     "unknown"))))
+			     ;; if the item is a submenu highlight it, otherwise don't
+			     (cond (itemkeymap
+				    (propertize str 'face
+						(list :background "cyan"
+						      :foreground one-key-item-foreground-colour)))
+				   (t str)))))
           ;; get a unique key for the item
-          for keystr = (one-key-generate-key desc usedkeys)
+          for keystr = (if itemislist (one-key-generate-key desc usedkeys))
           ;; get the command for the one-key menu item
           for cmd = (cond (itemcmd itemcmd) ;if the keymap item is a command then use that
                           (itemkeymap ;if the item is a keymap then create a submenu item for the one-key menu
@@ -2286,7 +2289,7 @@ These keys will only be excluded from the toplevel menu, not the submenus."
                                (push (car submenuitems) menu-alist)
                                (unintern varname)
                                nil))))
-          for skip = (string-match "^--" desc)
+          for skip = (if desc (string-match "^--" desc))
           unless (or skip (not cmd)) do ; skip menu divider and null items
           ;; add the item to the one-key menu list
           (push (cons (cons keystr desc) cmd) menu-alist)
