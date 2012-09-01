@@ -52,3 +52,6 @@ Would be nice to integrate FixmeMode and WcheckMode with [http://www.emacswiki.o
 http://imgur.com/RqBj7.png
 
 actually, I built a simple fixme that does this, depends on rfringe. The code is here: Lisp:myfixme.el
+
+----
+CategoryNavigation
