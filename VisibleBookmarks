@@ -39,3 +39,5 @@ If you want to be able to toggle bookmarks by clicking in the fringe, this works
 * [[BookmarkPlus#HighlightingBookmarkLocations|Bookmark+]] -- Similar %%VisualStudio%%-like behavior.  Visible bookmarks that also function as normal (standard) bookmarks.  Cycle, highlight in various ways.  A bookmark can be, but need not be, highlighted.  It can be temporary or persistent.
 
 
+----
+CategoryNavigation
