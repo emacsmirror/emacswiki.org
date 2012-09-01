@@ -19,8 +19,16 @@ A good place to save a general tags file is ##~/.java.tags##. This file is used 
 
 So here's how to generate the home directory's tags file:
 
+(for Unix-like system)
+
     javac -d ~/ Tags.java
     java -cp ~/:$JAVA_HOME/jre/lib/rt.jar Tags "java.*" > ~/.java.tags
+
+(for Windows)
+
+    cd %HOME%
+    javac Tags.java
+    java -cp .;"%JAVA_HOME%/jre/lib/rt.jar" Tags "java.*" > .java.tags
 
 Make sure ##java-complete.el## is installed in your LoadPath.
 
