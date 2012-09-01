@@ -1,0 +1,57 @@
+==Overview==
+
+Improve flyspell responsiveness using idle timers.
+
+==flyspell-lazy==
+
+`flyspell-mode' has performance issues on some platforms.
+Specifically, keyboard responsiveness may be significantly
+degraded on OS X.
+
+This package reduces the amount of work done by flyspell.  Instead
+of checking *instantly* as you type, spelling will be checked when
+the current buffer has been idle for a short time.  (Vanilla
+`flyspell-mode' does not use idle timers but a subtle combination
+of hooks and `sit-for'.)
+
+This package also turns off `flyspell-mode' completely for certain
+buffers.
+
+To use this library, add the following to your ~/.emacs
+
+	(require 'flyspell-lazy)
+	(flyspell-lazy-mode 1)
+
+Then use `flyspell-mode' as you normally would.  This package does
+not load flyspell for you.
+
+`flyspell-lazy-mode' will invoke spellcheck less frequently than
+vanilla `flyspell-mode', though this can be changed somewhat via
+`customize'.
+
+==Notes==
+
+`Flyspell-lazy-mode' probably works best if you also set
+
+	(setq flyspell-large-region 1)
+
+If you are using "aspell" instead of "ispell" on the backend,
+the following setting may improve performance:
+
+	(add-to-list 'ispell-extra-args "--sug-mode=ultra")
+
+==Compatibility and Requirements==
+
+Tested only on GNU Emacs version 24.1
+
+No external dependencies
+
+==Availability==
+
+flyspell-lazy is available at github:
+
+: https://github.com/rolandwalker/flyspell-lazy
+
+and via <nowiki>EmacsWiki</nowiki>:
+
+: Lisp:flyspell-lazy.el
