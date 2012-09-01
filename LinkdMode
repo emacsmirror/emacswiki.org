@@ -203,6 +203,5 @@ I'm not the maintainer of Linkd, but I applied your fix to the Wiki copy of <tt>
 
 Wrt your comment about not rendering in non-code sections: I'm not sure that's always appropriate. We could check for comment syntax, but Linkd is also useful for buffers that have no notion of comments (e.g. text files). -- DrewAdams
 
-
-CategoryHypermedia CategoryModes 
-
+----
+CategoryHypermedia CategoryModes CategoryNavigation
