@@ -17,7 +17,7 @@ instead.
 
 See also CategoryVersionControl.
 
-Compiling:
+== Compiling ==
 
 * AntCall -- Run `ant' from a buffer.
 * CompilationMode
@@ -32,10 +32,10 @@ Compiling:
 * CreatingYourOwnCompileErrorRegexp
 * FlyMake -- Run `make' on the fly, highlighting errors/warnings in source buffer.
 
-Interpreted files:
+== Interpreted files ==
 * MakingScriptsExecutableOnSave
 
-Documenting code:
+== Documenting code ==
 
 * ArScanner -- Help free-software developers manage author rights and licenses.
 * DoxyMacs -- Documentation system for C and C++.
@@ -44,7 +44,7 @@ Documenting code:
 * SemanticRecoder -- Smart comment writer and texinfo code generator.
 * TexiDoclet -- Generate Java documentation in [[Info]] format.
 
-Code navigation and hints:
+== Code navigation and hints ==
 
 * CScopeAndEmacs -- Look up where a symbol is defined, called, and so on.
 * EevMode -- EmacsLisp hyperlinks that help navigate source code.
@@ -69,7 +69,7 @@ Code navigation and hints:
 * XreFactory -- Code completion, source browsing, and code refactoring.
 * SrSpeedbar
 
-File changes:
+== File changes ==
 
 * DiffMode -- Inspect, edit and apply diffs.
 * EdiffMode -- Interactively diff, merge, and patch.
@@ -78,25 +78,25 @@ File changes:
 * EmergeDiff -- Graphical interface to `diff'.
 * DircmpMode -- Compare two directories recursively. Display a list of all differing files in a single buffer. Invoke Ediff on any pair of files compared.
 
-Project Management
+== Project Management ==
 
 * See CategoryProject
 
-Bug tracking:
+== Bug tracking ==
 
 * DitzMode -- Interface to the Ditz distributed bug tracker.
 
-Package management and installers:
+== Package management and installers ==
 
 * PortageMode -- Search and install Gentoo packages -- see also EmacsForGentoo.
 * RpmSpecMode -- Edit SPEC files for building RPMs.
 * WajigMode -- An interface for wajig.
 
-Testing:
+== Testing ==
 
 * TestR -- Minor mode for Ruby TDD.
 
-Related tools and information:
+== Related tools and information ==
 
 * AsciiMode -- Display ASCII code.
 * AsciiTable and EbcdicTable -- Display charts of characters and their codes for reference purposes.
