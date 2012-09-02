@@ -67,6 +67,9 @@ Is there any way to sort the *Newsticker Tree* buffer?
 : Currently (2009-12-16) there are keys for adding groups (M-a) and for moving feeds to groups (M-m). In order to sort feeds and groups one has to edit  ##~/.emacs.d/newsticker/groups## (##`newsticker-dir'/groups##). UlfJasper
 
 [new]
+Where can I find example ##~/.emacs.d/newsticker/groups## file? The format seems to be completely undocumented.
+
+[new]
 Is Newsticker not maintained anymore?
 
 : Newsticker is part of GNU Emacs. UlfJasper
