@@ -80,7 +80,7 @@ Install it and you will gain preciouscouple of seconds on startup.
 http://www.gnu.org/software/emacs/manual/html_node/gnus/_005b9_002e2_005d.html
 
 Namely:
-* (gnus-compile)
+* (gnus-compile) --removed http://git.gnus.org/cgit/gnus.git/commit/?id=59403f318f769dc0ff91a59405c4d8d122a10ab6
 * (setq gc-cons-threshold 3500000)
 * (setq gnus-use-correct-string-widths nil)
 
