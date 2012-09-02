@@ -76,11 +76,11 @@ Extensions (using the category name from `finder-by-keyword'), are utility libra
 
 == Frames ==
 
-* todo
+* Lisp:frame-fns.el
 
 == Buffers ==
 
-* todo
+* BufferUtils
 
 == Modes ==
 
