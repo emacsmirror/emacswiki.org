@@ -134,6 +134,8 @@ Here's the Elisp for your init file:
    (make-conditional-key-translation (kbd "ch") (kbd "C-h") 'my-translate-keys-p)
    (make-conditional-key-translation (kbd "cx") (kbd "C-x") 'my-translate-keys-p)
 
+=== Key Translations in operator state ===
+
 One last thing to mention about Key Translations is that they are not recognized in the Evil operator state.  A [https://bitbucket.org/lyro/evil/issue/177/key-translation-map-not-honored-in-evil-o bug report] is filed with Evil for this.
 
 == Discussion ==
