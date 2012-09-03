@@ -88,7 +88,7 @@ An example of defining a Key Translation: I don't have much use for Evil's c com
    (define-key evil-normal-state-map "c" nil)
    (define-key evil-motion-state-map "cu" 'universal-argument)
 
-The second line automatically makes c a Prefix Key, and is somewhat arbitrary.  Now we define the Key Translations:
+The second line automatically made c a Prefix Key, and was somewhat arbitrary.  Now we define the Key Translations:
 
    (define-key key-translation-map (kbd "ch") (kbd "C-h"))
    (define-key key-translation-map (kbd "cx") (kbd "C-x"))
