@@ -1,0 +1,76 @@
+==Overview==
+
+Ignore backups, build files, et al.
+
+==Quickstart==
+
+    (require 'ignoramus)
+
+    (ignoramus-setup)    ; sets `vc-directory-exclusion-list',
+                         ; `dired-omit-files', `ido-ignore-directories',
+                         ; `completion-ignored-extensions', etc.
+
+    C-x C-j              ; backups and build files now omitted from dired
+
+==Explanation==
+
+Every library has its own method for defining uninteresting files
+to ignore.  Ignoramus puts the listing of ignorable-file patterns
+and the logic for applying those patterns together in one place.
+
+To use ignoramus, place the ignoramus.el library somewhere
+Emacs can find it, and add the following to your ~/.emacs file:
+
+    (require 'ignoramus)
+    (ignoramus-setup)
+
+By default, `ignoramus-setup' will apply every action that it
+knows about for ignoring files.  Currently these are
+
+    comint
+    completions
+    dired
+    eshell
+    grep
+    ido
+    nav
+    pcomplete
+    projectile
+    shell
+    speedbar
+    vc
+
+You can specify a shorter list of actions as an argument
+
+    (ignoramus-setup '(pcomplete shell ido))
+
+or customize the value of `ignoramus-default-actions'.
+
+
+==Availability==
+
+Ignoramus is available at github:
+
+: https://github.com/rolandwalker/ignoramus
+
+and via <nowiki>EmacsWiki</nowiki>:
+
+: Lisp:ignoramus.el
+
+==Compatibility and Requirements==
+
+Tested only on GNU Emacs version 24.1
+
+No external dependencies
+
+
+==Notes==
+
+One function is provided to be called from Lisp:
+
+    `ignoramus-boring-p'
+
+==Bugs==
+
+The one-size-fits-all approach necessarily makes this library
+a blunt instrument.
