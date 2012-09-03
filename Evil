@@ -98,10 +98,7 @@ Note that this won't interfere with insert state because c is bound to self-inse
 
 The Key Translations above have a couple of disadvantages: it won't allow single letter Key Translations, and if a mode offers its own binding for ch or cx, it is unavailable to you (not even via \).  The following more robust solution solves these issues by making the Key Translation conditioned on what the Evil state is.  For this to work correctly, you'll need to pull in recent Emacs bug fixes, enable lexical binding, and copy a small amount of Elisp into your init file.
 
-There were two Emacs bugs which are fixed on the Emacs development trunk, but not present in the 24.2 release.  You can either use Emacs from latest on trunk, or apply two patch files to the 24.2 source tree.
-
-   [http://lists.gnu.org/archive/html/emacs-devel/2012-08/msg00449.html First patch]
-   [http://lists.gnu.org/archive/html/emacs-devel/2012-08/msg00628.html Second patch]
+There were two Emacs bugs which are fixed on the Emacs development trunk, but not present in the 24.2 release.  You can either use Emacs from latest on trunk, or apply two patch files to the 24.2 source tree: [http://lists.gnu.org/archive/html/emacs-devel/2012-08/msg00449.html this] and [http://lists.gnu.org/archive/html/emacs-devel/2012-08/msg00628.html this].
 
 To apply the patches on Unix systems, cd into the Emacs source tree and enter:
 
