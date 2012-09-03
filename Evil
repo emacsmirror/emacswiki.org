@@ -163,7 +163,7 @@ The following Elisp shows how to define C-c as an escape key, using a Key Transl
 
 In Emacs, C-g is somewhat analogous to what C-c was in Vim.  And since C-c is more ergonomic than C-g, I decided it's useful and intuitive to translate C-c to C-g if I'm already escaped out of insert state.
 
-Emacs defines C-c as a useful global prefix key.  In order to use it, you may define a Key Translation as described in the Key Translation section.  Emacs does not apply Key Translation twice so if you define a Key Translation from cc to C-c, cc will not escape but access the global prefix key for C-c.
+Emacs defines C-c as a useful global prefix key.  In order to use it, you may define a Key Translation as described in the Key Translation section.  Emacs does not apply Key Translation twice so if you define a Key Translation from cc to C-c, cc will not escape but access the global prefix key for C-c as desired.
 
 == Discussion ==
 
