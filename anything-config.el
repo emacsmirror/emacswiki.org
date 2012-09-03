@@ -12614,6 +12614,16 @@ You can set your own list of commands with
   (anything :sources 'anything-c-source-xrandr-change-resolution
             :buffer "*anything xrandr*"))
 
+;;;###autoload
+(defun anything-ctags-current-file ()
+  "Preconfigured `anything' to list function/variable definitions.
+
+Needs Exuberant Ctags.
+
+http://ctags.sourceforge.net/"
+  (interactive)
+  (anything :sources 'anything-c-source-ctags
+            :buffer "*anything ctags*"))
  
 ;;; Unit tests are now in ../developer-tools/unit-test-anything-config.el.
 
