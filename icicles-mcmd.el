@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Aug 26 22:06:12 2012 (-0700)
+;; Last-Updated: Sun Sep  2 21:33:55 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 18418
+;;     Update #: 18423
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -3679,7 +3679,11 @@ Optional argument WORD-P non-nil means complete only a word at a time."
                                                                     (1- (length icicle-current-input))))))
                                             (not (string= icicle-last-input word-complete-input))))
                                  (or (get last-command 'icicle-prefix-completing-command)
-                                     (get last-command 'icicle-action-command))))
+                                     (get last-command 'icicle-action-command)
+                                     ;; This is necessary because when this option is non-nil
+                                     ;; `icicle-(prefix|apropos)-complete' is called from code,
+                                     ;; so `last-command' has not been set to it.
+                                     icicle-show-Completions-initially-flag)))
                           ;; Second prefix complete in a row.  Cycle down.
                           (icicle-next-candidate 1 (if (icicle-file-name-input-p)
                                                        'icicle-file-name-prefix-candidates
@@ -4047,7 +4051,11 @@ message either.  NO-DISPLAY-P is passed to
                     (if (and (or iac1-was-cycling-p  icicle-next-apropos-complete-cycles-p)
                              (get icicle-last-completion-command 'icicle-apropos-completing-command)
                              (or (get last-command 'icicle-apropos-completing-command)
-                                 (get last-command 'icicle-action-command)))
+                                 (get last-command 'icicle-action-command)
+                                 ;; This is necessary because when this option is non-nil
+                                 ;; `icicle-(prefix|apropos)-complete' is called from code,
+                                 ;; so `last-command' has not been set to it.
+                                 icicle-show-Completions-initially-flag))
                         ;; Second `S-TAB' in a row.  Cycle down.
                         (icicle-next-candidate 1 (if (icicle-file-name-input-p)
                                                      'icicle-file-name-apropos-candidates
