@@ -55,7 +55,7 @@ There are Emacs modes that provide their own single letter key bindings, indepen
 With these customizations made, there are still some familiar Evil key bindings that are unavailable in Buffer Menu.  These pertain to commands that edit raw text, disabled because raw text editing doesn't make much sense in the Buffer Menu, and realized by the Buffer-menu-mode entry in the evil-motion-state-maps variable.  With the evil-normal-state-map inactive, Buffer Menu commands like x and d are directly available.
 
 === Temporary execution in Emacs state ===
-You may still wish to use a mode's key bindings, if you removed its keymap from evil-overriding-maps or evil-intercept-maps.  Evil defines the \ command to temporarily interpret the subsequent Key Sequence in the Emacs state.  Unfortunately, by default Evil places this command in the evil-normal-state-map.  The following rectifies this:
+You may still wish to use a mode's key bindings, if you decided to remove its keymap from evil-overriding-maps or evil-intercept-maps.  Evil defines the \ command to temporarily interpret the subsequent Key Sequence in the Emacs state.  Unfortunately, by default Evil places this command in the evil-normal-state-map.  The following rectifies this:
 
    (defun my-move-key (keymap-from keymap-to key)
      "Moves key binding from one keymap to another, deleting from the old location. "
