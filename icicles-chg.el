@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sun Sep  2 21:35:16 2012 (-0700)
+;; Last-Updated: Mon Sep  3 10:24:08 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8834
+;;     Update #: 8840
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -3309,6 +3309,11 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2012/09/03 dadams
+;;     icicle-history: Let first TAB or S-TAB cycle, depending on icicle-default-cycling-mode.
+;;       Put properties icicle(-prefix|-apropos)-completing-command on it.
+;;       Set icicle-last-completion-command per icicle-default-cycling-mode.  Use instead of apropos.
+;;       Do not set last-command to icicle-history.
 ;; 2012/09/02 dadams
 ;;     icicle-(prefix|apropos)-complete-1:
 ;;       Non-nil icicle-show-Completions-initially-flag means consider this is the second (S-)TAB.
