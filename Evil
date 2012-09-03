@@ -100,8 +100,8 @@ The Key Translations above have a couple of disadvantages: it won't allow single
 
 There were two Emacs bugs which are fixed on the Emacs development trunk, but not present in the 24.2 release.  You can either use Emacs from latest on trunk, or apply two patch files to the 24.2 source tree.
 
-   [http://lists.gnu.org/archive/html/emacs-devel/2012-08/msg00449.html]
-   [http://lists.gnu.org/archive/html/emacs-devel/2012-08/msg00628.html]
+   [http://lists.gnu.org/archive/html/emacs-devel/2012-08/msg00449.html First patch]
+   [http://lists.gnu.org/archive/html/emacs-devel/2012-08/msg00628.html Second patch]
 
 To apply the patches on Unix systems, cd into the Emacs source tree and enter:
 
