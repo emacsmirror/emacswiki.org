@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Aug 31 14:08:44 2012 (-0700)
+;; Last-Updated: Mon Sep  3 16:41:29 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 15018
+;;     Update #: 15023
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -808,6 +808,10 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2012/09/03 dadams
+;;     bookmark-bmenu-toggle-filenames: Added missing nil FORCE arg.
+;;     bmkp-bmenu-list-1: Call bookmark-bmenu-toggle-filenames with NO-MSGP arg.
+;;     Removed: bmkp-bmenu-filter-prompt.  bmkp-bmenu-read-filter-input: hard-code the prompt.
 ;; 2012/06/26 dadams
 ;;     Moved here from bookmark+-mac.el: bmkp-assoc-delete-all, bmkp-replace-regexp-in-string.
 ;;     Wrapped require of bookmark+-mac.el in eval-when-compile.
