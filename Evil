@@ -55,16 +55,7 @@ There are Emacs modes that provide their own single letter key bindings, indepen
 With these customizations made, there are still some familiar Evil key bindings that are unavailable in Buffer Menu.  These pertain to commands that edit raw text, disabled because raw text editing doesn't make much sense in the Buffer Menu, and realized by the Buffer-menu-mode entry in the evil-motion-state-maps variable.  With the evil-normal-state-map inactive, Buffer Menu commands like x and d are directly available.
 
 === Temporary execution in Emacs state ===
-You may still wish to use a mode's key bindings, if you decided to remove its keymap from evil-overriding-maps or evil-intercept-maps.  Evil defines the \ command to temporarily interpret the subsequent Key Sequence in the Emacs state.  Unfortunately, by default Evil places this command in the evil-normal-state-map.  The following rectifies this:
-
-   (defun my-move-key (keymap-from keymap-to key)
-     "Moves key binding from one keymap to another, deleting from the old location. "
-     (define-key keymap-to key (lookup-key keymap-from key))
-     (define-key keymap-from key nil)
-     )
-   (my-move-key evil-normal-state-map evil-motion-state-map "\\")
-
-Now if you wish to use Buffer Menu's b command, you can do so with two key strokes: \b .  This is pretty reasonable in most cases, but if you want to have a one letter key binding you can add it specifically with the evil-define-key function.
+You may still wish to use a mode's key bindings, if you decided to remove its keymap from evil-overriding-maps or evil-intercept-maps.  Evil defines the \ command to temporarily interpret the subsequent Key Sequence in the Emacs state.  If you wish to use Buffer Menu's b command, you can do so with two key strokes: \b .  This is pretty reasonable in most cases, but if you want to have a one letter key binding you can add it specifically with the evil-define-key function.
 
 === Modes' initial state ===
 
@@ -75,8 +66,13 @@ While Buffer Menu comes up in motion state, other modes such as Ediff come up in
 
 === Making the most of RET and SPC ===
 
-It is common for Emacs modes like these to define key bindings for RET and SPC.  Since these are motion commands, Evil places its key bindings for these in evil-motion-state-map.  However, these commands are fairly worthless to a seasoned Vim user, since they do the same thing as j and l commands.  Thus it is useful to remove them from evil-motion-state-map so as when modes define them, RET and SPC bindings are available directly.  Using the above my-move-key function:
+It is common for Emacs modes like these to define key bindings for RET and SPC.  Since these are motion commands, Evil places its key bindings for these in evil-motion-state-map.  However, these commands are fairly worthless to a seasoned Vim user, since they do the same thing as j and l commands.  Thus it is useful to remove them from evil-motion-state-map so as when modes define them, RET and SPC bindings are available directly.
 
+   (defun my-move-key (keymap-from keymap-to key)
+     "Moves key binding from one keymap to another, deleting from the old location. "
+     (define-key keymap-to key (lookup-key keymap-from key))
+     (define-key keymap-from key nil)
+     )
    (my-move-key evil-motion-state-map evil-normal-state-map (kbd "RET"))
    (my-move-key evil-motion-state-map evil-normal-state-map " ")
 
