@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Sep  2 21:33:55 2012 (-0700)
+;; Last-Updated: Mon Sep  3 10:11:06 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 18423
+;;     Update #: 18436
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -7109,6 +7109,13 @@ If `icicle-scroll-Completions-reverse-p' is non-nil, scroll forward."
   (let ((icicle-scroll-Completions-reverse-p  (not icicle-scroll-Completions-reverse-p)))
     (icicle-scroll-Completions-forward)))
 
+
+;; Consider `icicle-history' as both kinds of completion command,
+;; so that a first `TAB' or `S-TAB' cycles, depending on `icicle-default-cycling-mode'.
+(put 'icicle-history 'icicle-cycling-command            t)
+(put 'icicle-history 'icicle-prefix-completing-command  t)
+(put 'icicle-history 'icicle-apropos-completing-command t)
+
 ;;;###autoload (autoload 'icicle-history "icicles")
 (defun icicle-history ()                ; Bound to `M-h' in minibuffer.
   "Access the appropriate history list using completion or cycling.
@@ -7166,15 +7173,21 @@ See also `\\[icicle-keep-only-past-inputs]' (`icicle-keep-only-past-inputs')."
                           (if (eq 'command-history minibuffer-history-variable)
                               (mapcar #'prin1-to-string (symbol-value minibuffer-history-variable))
                             (symbol-value minibuffer-history-variable))))))
-  (save-selected-window (unless icicle-last-completion-command (icicle-apropos-complete)))
-  (cond (icicle-cycling-p ;; $$$ (and (symbolp last-command) (get last-command 'icicle-cycling-command))
+  (save-selected-window
+    (unless icicle-last-completion-command
+      (setq icicle-last-completion-command  (case icicle-default-cycling-mode
+                                              (apropos    'icicle-apropos-complete)
+                                              (otherwise  'icicle-prefix-complete))) ; Prefix, by default.
+      (funcall icicle-last-completion-command)))
+  (cond (icicle-cycling-p;; $$$ (and (symbolp last-command) (get last-command 'icicle-cycling-command))
          (setq icicle-current-input  icicle-last-input)
          (icicle-retrieve-last-input))
         (t
          (setq icicle-current-input  (icicle-input-from-minibuffer)
                icicle-last-input     nil ; So `icicle-save-or-restore-input' thinks input has changed.
-               last-command          'icicle-history)
-         (funcall (or icicle-last-completion-command  'icicle-apropos-complete)))))
+               ;; $$$$ last-command          'icicle-history
+               )
+         (funcall icicle-last-completion-command))))
 
 ;; Not actually a minibuffer command, since `isearch' technically uses the echo area.  This is not
 ;; shadowed by any `icicle-mode-map' binding, since `isearch-mode-map' is also a minor mode map.
