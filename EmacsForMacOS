@@ -31,6 +31,7 @@ Custom distributions contain startup routines and tweaks to make Emacs' UI behav
 
 * [http://members.shaw.ca/akochoi-xemacs/ XEmacs 21.5.18 *beta*], AndrewChoi.  Also available via !DarwinPorts.  Via patches from his home page, you can fix a number of issues, and the patches apply to XEmacs 21.5.22 (See AkochoiXEmacsGplCompliance).
 
+* [https://github.com/railwaycat/emacs-mac-port Emacs Mac Port] by Yamamoto Mitsuharu is based on the latest stable release of GNU Emacs (24.2 as of 9/3/12) and claims to incorporate most of the features of Carbon Emacs and the Carbon+AppKit port for Emacs 22.3. As such, it has improved C-g support, an emulation of `select' that doesn't require periodic polling, and smooth (pixel) scrolling. See the [https://github.com/railwaycat/emacs-mac-port/blob/master/README-mac readme] for more details.
 
 == Building Emacs From Source ==
 
