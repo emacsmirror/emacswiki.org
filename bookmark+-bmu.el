@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Thu Aug 23 09:19:42 2012 (-0700)
+;; Last-Updated: Mon Sep  3 16:36:01 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 2195
+;;     Update #: 2201
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -241,15 +241,15 @@
 ;;    `bmkp-bmenu-before-hide-marked-alist',
 ;;    `bmkp-bmenu-before-hide-unmarked-alist',
 ;;    `bmkp-bmenu-define-command-menu', `bmkp-bmenu-filter-function',
-;;    `bmkp-bmenu-filter-pattern', `bmkp-bmenu-filter-prompt',
-;;    `bmkp-bmenu-filter-timer', `bmkp-bmenu-first-time-p',
-;;    `bmkp-flagged-bookmarks', `bmkp-bmenu-header-lines',
-;;    `bmkp-bmenu-highlight-menu', `bmkp-bmenu-line-overlay',
-;;    `bmkp-bmenu-mark-menu', `bmkp-bmenu-marked-bookmarks',
-;;    `bmkp-bmenu-marks-width', `bmkp-bmenu-menubar-menu',
-;;    `bmkp-bmenu-omit-menu', `bmkp-bmenu-show-menu',
-;;    `bmkp-bmenu-sort-menu', `bmkp-bmenu-tags-menu',
-;;    `bmkp-bmenu-title', `bmkp-last-bmenu-bookmark'.
+;;    `bmkp-bmenu-filter-pattern', `bmkp-bmenu-filter-timer',
+;;    `bmkp-bmenu-first-time-p', `bmkp-flagged-bookmarks',
+;;    `bmkp-bmenu-header-lines', `bmkp-bmenu-highlight-menu',
+;;    `bmkp-bmenu-line-overlay', `bmkp-bmenu-mark-menu',
+;;    `bmkp-bmenu-marked-bookmarks', `bmkp-bmenu-marks-width',
+;;    `bmkp-bmenu-menubar-menu', `bmkp-bmenu-omit-menu',
+;;    `bmkp-bmenu-show-menu', `bmkp-bmenu-sort-menu',
+;;    `bmkp-bmenu-tags-menu', `bmkp-bmenu-title',
+;;    `bmkp-last-bmenu-bookmark'.
 ;;
 ;;
 ;;  ***** NOTE: The following commands defined in `bookmark.el'
@@ -761,8 +761,6 @@ Bookmark names thus begin in this column number (since zero-based).")
 
 (defvar bmkp-bmenu-filter-pattern "" "Regexp for incremental filtering.")
 
-(defvar bmkp-bmenu-filter-prompt "Pattern: " "Prompt for `bmkp-bmenu-filter-incrementally'.")
-
 (defvar bmkp-bmenu-filter-timer nil "Timer used for incremental filtering.")
 
 (defvar bmkp-bmenu-first-time-p t
@@ -1201,7 +1199,7 @@ Non-nil INTERACTIVEP means `bookmark-bmenu-list' was called
         (insert "\n")))
     (goto-char (point-min)) (forward-line bmkp-bmenu-header-lines)
     (bookmark-bmenu-mode)
-    (when bookmark-bmenu-toggle-filenames (bookmark-bmenu-toggle-filenames t))
+    (when bookmark-bmenu-toggle-filenames (bookmark-bmenu-toggle-filenames t 'NO-MSG-P))
     (when (and (fboundp 'fit-frame-if-one-window)
                (eq (selected-window) (get-buffer-window (get-buffer-create "*Bookmark List*") 0)))
       (fit-frame-if-one-window)))
@@ -1679,8 +1677,8 @@ Non-nil optional arg NO-MSG-P means do not show progress messages."
   (unless show  (setq bookmark-bmenu-toggle-filenames  (not bookmark-bmenu-toggle-filenames)))
   (let ((bookmark-bmenu-toggle-filenames  (or show  bookmark-bmenu-toggle-filenames)))
     (if bookmark-bmenu-toggle-filenames
-        (bookmark-bmenu-show-filenames no-msg-p)
-      (bookmark-bmenu-hide-filenames no-msg-p))))
+        (bookmark-bmenu-show-filenames nil no-msg-p)
+      (bookmark-bmenu-hide-filenames nil no-msg-p))))
 
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
@@ -2385,8 +2383,7 @@ From Lisp, non-nil optional arg MSG-P means show progress messages."
                     char)
                 (catch 'bmkp-bmenu-read-filter-input
                   (while (condition-case nil
-                             (setq char  (read-char (concat bmkp-bmenu-filter-prompt
-                                                            bmkp-bmenu-filter-pattern)))
+                             (setq char  (read-char (concat "Pattern: " bmkp-bmenu-filter-pattern)))
                            ;; `read-char' raises an error for non-char event.
                            (error (throw 'bmkp-bmenu-read-filter-input nil)))
                     (case char
@@ -2395,7 +2392,7 @@ From Lisp, non-nil optional arg MSG-P means show progress messages."
                                   (throw 'bmkp-bmenu-read-filter-input 'QUIT)) ; Quit.
                       (?\d        (or (null tmp-list) ; No-op if no chars to delete.
                                       (pop tmp-list)
-                                      t)) ; Delete last char of `*-filter-pattern'.
+                                      t)) ; Delete last char of `bmkp-bmenu-filter-pattern'.
                       (t          (push (text-char-description char) tmp-list))) ; Accumulate CHAR.
                     (setq bmkp-bmenu-filter-pattern  (mapconcat #'identity (reverse tmp-list) ""))))))
       (message "Restoring display prior to incremental filtering...")
