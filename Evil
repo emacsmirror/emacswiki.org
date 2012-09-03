@@ -94,7 +94,9 @@ The second line automatically makes c a Prefix Key, and is somewhat arbitrary.  
 
 Note that this won't interfere with insert state because c is bound to self-insert-command, and the evil-motion-state-map defining c as a Prefix Key is inactive.
 
-This approach has a couple of disadvantages: it won't allow single letter Key Translations, and if a mode offers its own binding for ch or cx, it is unavailable to you (not even via \).  The following more robust solution solves these issues by making the Key Translation conditioned on what the Evil state is.  For this to work correctly, you'll need to pull in recent Emacs bug fixes, enable lexical binding, and copy a small amount of Elisp into your init file.
+=== Key Translations (advanced) ===
+
+The Key Translations above have a couple of disadvantages: it won't allow single letter Key Translations, and if a mode offers its own binding for ch or cx, it is unavailable to you (not even via \).  The following more robust solution solves these issues by making the Key Translation conditioned on what the Evil state is.  For this to work correctly, you'll need to pull in recent Emacs bug fixes, enable lexical binding, and copy a small amount of Elisp into your init file.
 
 There were two Emacs bugs which are fixed on the Emacs development trunk, but not present in the 24.2 release.  You can either use Emacs from latest on trunk, or apply two patch files to the 24.2 source tree.
 
