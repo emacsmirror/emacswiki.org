@@ -139,7 +139,7 @@ Here's the Elisp for your init file:
 
 You can define any key sequence you like for escaping from Evil insert state back to normal state.  C-c is one of the options available in Vim by default, but Evil cannot define C-c this way because Emacs coding standards require packages to reserve C-c for the user.  One could probably use keychords.el as the basis for an escape key sequence, though I have not tried it.
 
-The following Elisp shows how to define C-c as an escape key, using a Key Translation.  Be sure to read the Key Translation section above.
+The following Elisp shows how to define C-c as an escape key, using a Key Translation.
 
    ;;; C-c as general purpose escape key sequence.
    ;;;
