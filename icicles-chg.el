@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Aug 31 10:07:11 2012 (-0700)
+;; Last-Updated: Sun Sep  2 21:35:16 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8832
+;;     Update #: 8834
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -3309,6 +3309,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2012/09/02 dadams
+;;     icicle-(prefix|apropos)-complete-1:
+;;       Non-nil icicle-show-Completions-initially-flag means consider this is the second (S-)TAB.
 ;; 2012/08/27 dadams
 ;;     icicle-make-directory:
 ;;       Use (icicle-file-name-directory-w-default (icicle-input-from-minibuffer)) as default dir-name.
