@@ -44,30 +44,9 @@ See also CategoryVersionControl.
 * SemanticRecoder -- Smart comment writer and texinfo code generator.
 * TexiDoclet -- Generate Java documentation in [[Info]] format.
 
-== Code navigation and hints ==
+== Code Navigation ==
 
-* CScopeAndEmacs -- Look up where a symbol is defined, called, and so on.
-* EevMode -- EmacsLisp hyperlinks that help navigate source code.
-* Emacs tags -- Record and locate identifier definitions in source files based on a [[tags file]].
-** Overview: EmacsTags (etags)
-** Building tags files
-*** BuildTags -- How to create them.
-*** ExuberantCtags (ctags) -- Support for more languages and editors than etags.
-** Navigating to tags (definitions)
-*** [[Icicles - Emacs Tags Enhancements]] -- Find or browse tags from all tags files (including multiple matches for a tag).
-*** EtagsSelect -- Select from multiple matches to a tag.
-*** EctagsSelect -- Etags replacement that uses ExuberantCtags and eldoc.
-*** EtagsStack -- Navigate the tags stack.
-*** EtagsTable -- Set the tags-table-list based on the current file.
-* GnuGlobal -- Database of code identifiers and tags.
-* GonzuiForEmacs -- Emacs interface of `gonzui', a source code search engine.
-* IdeBridge -- Code completion, refactoring, and compilation for C# (only available on win32 now).
-* IdUtils -- Database of code identifiers.
-* ImenuMode -- Move quickly among definitions of functions, macros, classes, types, whatever.
-** [[Icicles - Other Search Commands#IciclesImenu|Icicles Imenu]] -- Imenu with [[regexp]] [[completion]]. Like EmacsTags, works across multiple buffers, files, and saved regions.
-* SimpleCallTree -- A call-tree data structure that says which function calls which function. Highlights functions.
-* XreFactory -- Code completion, source browsing, and code refactoring.
-* SrSpeedbar
+* See CategoryNavigation
 
 == File changes ==
 
