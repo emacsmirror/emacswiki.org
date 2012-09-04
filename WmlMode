@@ -5,13 +5,30 @@ is a GPLed turn-based strategy game.
 Everything in the game (campaign, scenario, units, terrain e.t.c) are defined in WML.
 Actually more than just a "markup Language" (it include conditional and function definition).
 
-Get the mode from
+Read about this mode at:
 
-: http://svn.gna.org/viewcvs/*checkout*/wesnoth/trunk/data/tools/wesnoth-mode.el
+: http://wiki.wesnoth.org/Wesnoth_Mode
 
-And see the discussion forum:
+Development version available at:
+
+: http://repo.or.cz/w/wesnoth-mode.git
+
+To get development version:
+
+: git clone git://repo.or.cz/wesnoth-mode.git
+
+See the discussion forum:
 
 : http://www.wesnoth.org/forum/viewtopic.php?t=13798
+
+Also this mode commited to Wesnoth source tree:
+You can get the mode from Wesnoth source tree
+
+: http://svn.gna.org/svn/wesnoth/trunk/data/tools/emacs_mode/wesnoth-mode.el
+: http://svn.gna.org/svn/wesnoth/trunk/data/tools/emacs_mode/README
+: http://svn.gna.org/svn/wesnoth/trunk/data/tools/emacs_mode/Makefile
+: http://svn.gna.org/svn/wesnoth/trunk/data/tools/emacs_mode/
+
 
 ----
 CategoryGames
