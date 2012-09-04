@@ -109,7 +109,7 @@ In the Elisp you're about to copy into your init file, I wished to allow concise
 
 Lexical binding is enabled on a per-file basis.  If you don't have much Elisp in your init file then this won't have a noticable effect.  However, if you've copied Elisp from elsewhere, it's conceivable that it might rely on dynamic binding.  If functions stop working correctly with lexical binding, you may either revise the functions or move them to another file where lexical binding is not enabled.
 
-Here's the Elisp for your init file:
+Here's the Elisp for your init file, to implement the ch and cx Key Translations:
 
    (defun make-conditional-key-translation (key-from key-to translate-keys-p)
      "Make a Key Translation such that if the translate-keys-p function returns true,
@@ -130,6 +130,8 @@ Here's the Elisp for your init file:
    (define-key evil-motion-state-map "cu" 'universal-argument)
    (make-conditional-key-translation (kbd "ch") (kbd "C-h") 'my-translate-keys-p)
    (make-conditional-key-translation (kbd "cx") (kbd "C-x") 'my-translate-keys-p)
+
+You may use make-conditional-key-translation for single letter Key Translations.  And if another keymap defines a binding for "ch", you can access it with \ch , because my-translate-keys-p returns false in the Emacs state, resulting in a Key Translation of "ch" to itself.
 
 == Defining your own escape ==
 
