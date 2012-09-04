@@ -2,10 +2,11 @@
 ;;
 ;; Copyright (c) 2012 Roland Walker
 ;;
-;; Author: Roland Walker walker@pobox.com
-;; URL: https://github.com/rolandwalker/back-button.el
-;; Version: 0.6.2
-;; Last-Updated: 27 Aug 2012
+;; Author: Roland Walker <walker@pobox.com>
+;; Homepage: http://github.com/rolandwalker/back-button
+;; URL: http://raw.github.com/rolandwalker/back-button/master/back-button.el
+;; Version: 0.6.3
+;; Last-Updated: 30 Aug 2012
 ;; EmacsWiki: BackButton
 ;; Keywords: convenience, navigation, interface
 ;; Package-Requires: ((nav-flash "1.0.0") (smartrep "0.0.3") (ucs-utils "0.6.0") (persistent-soft "0.8.0") (pcache "0.2.3"))
@@ -13,6 +14,16 @@
 ;; Simplified BSD License
 ;;
 ;;; Commentary:
+;;
+;; Quickstart
+;;
+;;     (require 'back-button)
+;;     (back-button-mode 1)
+;;     press the plus sign in the toolbar to create a mark
+;;     press the arrows in the toolbar to navigate marks
+;;     or use C-x C-Space as usual
+;;
+;; Explanation
 ;;
 ;; Back-button provides an alternative method for navigation by
 ;; analogy with the "back" button in a web browser.
@@ -215,10 +226,10 @@
 ;;;###autoload
 (defgroup back-button nil
   "Visual navigation through mark rings."
-  :version "0.6.2"
+  :version "0.6.3"
   :link '(emacs-commentary-link "back-button")
   :prefix "back-button-"
-  :group 'extensions
+  :group 'convenience
   :group 'navigation)
 
 (defcustom back-button-mode-lighter " back"
@@ -300,15 +311,15 @@ Set to nil or 0 for no timeout."
 (defcustom back-button-smartrep-prefix "C-x"
   "Prefix key for smartrep.el bindings.
 
-Smartrep bindings will be installed for all keystrokes below
-which match this prefix.
+Smartrep bindings will be installed for all back-button key
+bindings which match this prefix.
 
 The format for key sequences is as defined by `kbd'.
 
 Set to nil or the empty string to disable smartrep for
 `back-button-mode'."
-  :group 'back-button-keys
-  :type 'string)
+  :type 'string
+  :group 'back-button-keys)
 
 (defcustom back-button-global-keystrokes '("C-x <C-SPC>")
   "List of key sequences to invoke `back-button-global'.
@@ -319,8 +330,8 @@ The key bindings are effect when `back-button-mode' minor mode is
 active.
 
 The format for key sequences is as defined by `kbd'."
-  :group 'back-button-keys
-  :type '(repeat string))
+  :type '(repeat string)
+  :group 'back-button-keys)
 
 (defcustom back-button-global-backward-keystrokes '("C-x <C-left>")
   "List of key sequences to invoke `back-button-global-backward'.
@@ -329,8 +340,8 @@ The key bindings are effect when `back-button-mode' minor mode is
 active.
 
 The format for key sequences is as defined by `kbd'."
-  :group 'back-button-keys
-  :type '(repeat string))
+  :type '(repeat string)
+  :group 'back-button-keys)
 
 (defcustom back-button-global-forward-keystrokes '("C-x <C-right>")
   "List of key sequences to invoke `back-button-global-forward'.
@@ -339,8 +350,8 @@ The key bindings are effect when `back-button-mode' minor mode is
 active.
 
 The format for key sequences is as defined by `kbd'."
-  :group 'back-button-keys
-  :type '(repeat string))
+  :type '(repeat string)
+  :group 'back-button-keys)
 
 (defcustom back-button-local-keystrokes '("C-x <SPC>")
   "List of key sequences to invoke `back-button-local'.
@@ -349,8 +360,8 @@ The key bindings are effect when `back-button-mode' minor mode is
 active.
 
 The format for key sequences is as defined by `kbd'."
-  :group 'back-button-keys
-  :type '(repeat string))
+  :type '(repeat string)
+  :group 'back-button-keys)
 
 (defcustom back-button-local-backward-keystrokes '("C-x <left>")
   "List of key sequences to invoke `back-button-local-backward'.
@@ -359,8 +370,8 @@ The key bindings are effect when `back-button-mode' minor mode is
 active.
 
 The format for key sequences is as defined by `kbd'."
-  :group 'back-button-keys
-  :type '(repeat string))
+  :type '(repeat string)
+  :group 'back-button-keys)
 
 (defcustom back-button-local-forward-keystrokes '("C-x <right>")
   "List of key sequences to invoke `back-button-local-forward'.
@@ -369,8 +380,8 @@ The key bindings are effect when `back-button-mode' minor mode is
 active.
 
 The format for key sequences is as defined by `kbd'."
-  :group 'back-button-keys
-  :type '(repeat string))
+  :type '(repeat string)
+  :group 'back-button-keys)
 
 ;;; variables
 
@@ -385,7 +396,8 @@ The format for key sequences is as defined by `kbd'."
                                back-button-local
                                back-button-local-backward
                                back-button-local-forward
-                               ))
+                               )
+  "List of back-button interactive navigation commands.")
 
 (defvar back-button-spacer-char     ?.  "Character used to indicate marks available for navigation.")
 (defvar back-button-thumb-char      ?o  "Character used to indicate current mark.")
@@ -399,28 +411,19 @@ The format for key sequences is as defined by `kbd'."
 (defvar back-button-mode-map (make-sparse-keymap) "Keymap for `back-button-mode' minor-mode.")
 
 (if (and (stringp back-button-smartrep-prefix)
-         (length back-button-smartrep-prefix))
+         (length back-button-smartrep-prefix)
+         (featurep 'smartrep))
     (let ((keys nil))
-      (dolist (cmd '(
-                     back-button-global
-                     back-button-global-backward
-                     back-button-global-forward
-                     back-button-local
-                     back-button-local-backward
-                     back-button-local-forward
-                     ))
+      (dolist (cmd back-button-commands)
         (dolist (k (remove-if-not #'(lambda (x)
                                       (string-match-p (concat "\\`" back-button-smartrep-prefix "\\>") x))
                                   (symbol-value (intern (concat (symbol-name cmd) "-keystrokes")))))
           (push (cons (replace-regexp-in-string (concat "\\`" back-button-smartrep-prefix "\\>[ \t]*") "" k) cmd) keys)))
       (smartrep-define-key back-button-mode-map back-button-smartrep-prefix keys))
   ;; else
-  (define-key back-button-mode-map (read-kbd-macro back-button-global-keystrokes)           'back-button-global)
-  (define-key back-button-mode-map (read-kbd-macro back-button-global-backward-keystrokes)  'back-button-global-backward)
-  (define-key back-button-mode-map (read-kbd-macro back-button-global-forward-keystrokes)   'back-button-global-forward)
-  (define-key back-button-mode-map (read-kbd-macro back-button-local-keystrokes)            'back-button-local)
-  (define-key back-button-mode-map (read-kbd-macro back-button-local-backward-keystrokes)   'back-button-local-backward)
-  (define-key back-button-mode-map (read-kbd-macro back-button-local-forward-keystrokes)    'back-button-local-forward))
+  (dolist (cmd back-button-commands)
+    (dolist (k (symbol-value (intern (concat (symbol-name cmd) "-keystrokes"))))
+      (define-key back-button-mode-map (read-kbd-macro k) cmd))))
 
 ;;; toolbar
 
@@ -476,10 +479,15 @@ The format for key sequences is as defined by `kbd'."
                                    (define-key map (kbd "<mode-line> <wheel-down>"   ) 'back-button-global-forward)
                                    (define-key map (kbd "<mode-line> <C-wheel-up>"   ) 'back-button-local-backward)
                                    (define-key map (kbd "<mode-line> <C-wheel-down>" ) 'back-button-local-forward)
+                                   (define-key map (kbd "<mode-line> <mouse-4>"      ) 'back-button-global-backward)
+                                   (define-key map (kbd "<mode-line> <mouse-5>"      ) 'back-button-global-forward)
+                                   (define-key map (kbd "<mode-line> <C-mouse-4>"    ) 'back-button-local-backward)
+                                   (define-key map (kbd "<mode-line> <C-mouse-5>"    ) 'back-button-local-forward)
                                    (define-key map (kbd "<mode-line> <down-mouse-3>" )  menu-map)
                                    map) "Keymap for the back-button lighter.")
 
 (callf propertize back-button-mode-lighter 'local-map back-button-lighter-map
+                                           'keymap back-button-lighter-map
                                            'help-echo "Back-button: mouse-wheel and control-mouse-wheel to navigate")
 
 ;;; macros
