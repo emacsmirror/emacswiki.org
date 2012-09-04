@@ -90,7 +90,7 @@ Extensions (using the category name from `finder-by-keyword'), are utility libra
 == Networking ==
 
 * TcpClient -- Network interface to ease the creation of network related script
-* Websocket -- Emacs WebSocket client and server
+* [[Websocket]] -- Emacs <nowiki>WebSocket</nowiki> client and server
 * Lisp:elnode.el -- simple emacs async HTTP server
 
 == Filesystem ==
