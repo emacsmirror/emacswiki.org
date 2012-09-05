@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Sun Aug 26 19:43:32 2012 (-0700)
+;; Last-Updated: Wed Sep  5 09:56:33 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 6086
+;;     Update #: 6091
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Doc URL: http://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -428,6 +428,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/09/05 dadams
+;;     diredp-(rename|copy|(rel)symlink|hardlink)-this-file: Bind use-file-dialog to nil.
 ;; 2012/08/26 dadams
 ;;     Set font-lock-defaults to a 3-element list, so it works with font-menus(-da).el.
 ;; 2012/08/25 dadams
@@ -6150,27 +6152,37 @@ Makes the first char of the name uppercase and the others lowercase."
 ;;;###autoload
 (defun diredp-rename-this-file ()       ; Bound to `r'
   "In Dired, rename the file on the cursor line."
-  (interactive) (dired-do-rename 1))
+  (interactive)
+  (let ((use-file-dialog  nil))
+    (dired-do-rename 1)))
 
 ;;;###autoload
 (defun diredp-copy-this-file ()         ; Not bound
   "In Dired, copy the file on the cursor line."
-  (interactive) (dired-do-copy 1))
+  (interactive)
+  (let ((use-file-dialog  nil))
+    (dired-do-copy 1)))
 
 ;;;###autoload
 (defun diredp-relsymlink-this-file ()   ; Bound to `y'
   "In Dired, make a relative symbolic link to file on cursor line."
-  (interactive) (and (fboundp 'dired-do-relsymlink) (dired-do-relsymlink 1)))
+  (interactive)
+  (let ((use-file-dialog  nil))
+    (and (fboundp 'dired-do-relsymlink) (dired-do-relsymlink 1))))
 
 ;;;###autoload
 (defun diredp-symlink-this-file ()      ; Not bound
   "In Dired, make a symbolic link to the file on the cursor line."
-  (interactive) (dired-do-symlink 1))
+  (interactive)
+  (let ((use-file-dialog  nil))
+    (dired-do-symlink 1)))
 
 ;;;###autoload
 (defun diredp-hardlink-this-file ()     ; Not bound
   "In Dired, add a name (hard link) to the file on the cursor line."
-  (interactive) (dired-do-hardlink 1))
+  (interactive)
+  (let ((use-file-dialog  nil))
+    (dired-do-hardlink 1)))
 
 ;;;###autoload
 (defun diredp-print-this-file ()        ; Bound to `M-p'
