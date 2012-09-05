@@ -117,6 +117,10 @@ Extensions (using the category name from `finder-by-keyword'), are utility libra
 
 * See UnitTesting
 
+== Web APIs ==
+
+[https://github.com/rsanders/github-api-v3.el github-api-v3.el] -- Emacs library for the v3 GitHub API
+
 == See Also ==
 
 * CategoryProgrammerUtils
