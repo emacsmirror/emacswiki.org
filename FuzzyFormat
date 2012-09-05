@@ -7,3 +7,5 @@ Features:
 * Auto identation.
 * Auto format (tabify, untabify, delete-trailing-whitespace).
 
+----
+CategoryIndentation
