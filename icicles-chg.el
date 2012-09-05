@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Mon Sep  3 10:24:08 2012 (-0700)
+;; Last-Updated: Wed Sep  5 13:40:54 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8840
+;;     Update #: 8841
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -683,6 +683,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2012/09/05 dadams
+;;     Added: icicle-select-text-at-point.
 ;; 2012/08/21 dadams
 ;;     tap-symbol-nearest-point -> symbol-nearest-point. (icicles-opt.el DTRT.)
 ;; 2012/08/18 dadams
