@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Thu Aug 23 14:07:33 2012 (-0700)
+;; Last-Updated: Wed Sep  5 13:48:12 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5780
+;;     Update #: 5785
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -145,6 +145,7 @@
 ;;    (+)`icicle-search-xml-element',
 ;;    (+)`icicle-search-xml-element-text-node',
 ;;    (+)`icicle-select-frame', `icicle-select-frame-by-name',
+;;    (+)`icicle-select-text-at-point',
 ;;    `icicle-set-S-TAB-methods-for-command',
 ;;    `icicle-set-TAB-methods-for-command', (+)`icicle-show-faces',
 ;;    (+)`icicle-show-only-faces', (+)`icicle-synonyms',
@@ -6970,6 +6971,17 @@ filtering:
      (intern
       (completing-read (format "Which (%s value of variable): " predicate) obarray (and icompletep pred))))))
 
+(icicle-define-command icicle-select-text-at-point
+  "Invoke a function in `er/try-expand-list' to select text at point.
+This command requires library `expand-region.el'."
+  (lambda (fn) (ignore-errors (funcall (intern fn)))) ; Action function
+  "Text selection function: "           ; `completing-read' args
+  (mapcar (lambda (fn) (list (symbol-name fn))) (and (boundp 'er/try-expand-list)  er/try-expand-list))
+  nil t nil nil "er/mark-word" nil
+  ((icicle-sort-comparer nil))          ; Bindings
+  (unless (require 'expand-region nil t) ; First code
+    (error "This command requires library `expand-region.el'")))
+  
 (defvar icicle-key-prefix nil
   "A prefix key.")
 
