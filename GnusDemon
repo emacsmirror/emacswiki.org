@@ -43,7 +43,7 @@ Scanning all the news can be slow. If you want a fast scan only of the important
 (gnus-demon-add-handler 'gnus-demon-scan-news-3 12 1)
 }}}
 
-This checks you mail every 2 minutes on condition that you have been idle for 10 seconds. No check message is displayed and gnus is not stalling emacs (that is, on user input the process is aborted because of the while-no-input wraper).
+This checks your mail every 2 minutes on condition that you have been idle for 10 seconds. No check message is displayed and gnus is not stalling emacs (that is, on user input the process is aborted because of the while-no-input wraper).
 
 (this doesn't work with virtual groups (gnus bug), remove level in gnus-group-get-new-news call)
 
