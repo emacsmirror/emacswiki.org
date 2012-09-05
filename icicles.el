@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Thu Aug 23 14:25:05 2012 (-0700)
+;; Last-Updated: Wed Sep  5 13:38:33 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 23187
+;;     Update #: 23188
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Doc URL: http://emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -360,9 +360,10 @@
 ;;    `icicle-search-xml-element',
 ;;    `icicle-search-xml-element-text-node',
 ;;    `icicle-select-bookmarked-region', `icicle-select-frame',
-;;    `icicle-select-frame-by-name', `icicle-select-window',
-;;    `icicle-select-window-by-name', `icicle-send-bug-report',
-;;    `icicle-send-signal-to-process', `icicle-set-option-to-t',
+;;    `icicle-select-frame-by-name', `icicle-select-text-at-point',
+;;    `icicle-select-window', `icicle-select-window-by-name',
+;;    `icicle-send-bug-report', `icicle-send-signal-to-process',
+;;    `icicle-set-option-to-t',
 ;;    `icicle-set-S-TAB-methods-for-command',
 ;;    `icicle-set-TAB-methods-for-command', `icicle-sexp-list',
 ;;    `icicle-shell-command', `icicle-shell-command-on-region',
