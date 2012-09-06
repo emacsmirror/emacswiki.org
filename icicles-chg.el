@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Wed Sep  5 13:40:54 2012 (-0700)
+;; Last-Updated: Thu Sep  6 09:28:37 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8841
+;;     Update #: 8846
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -683,6 +683,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2012/09/06 dadams
+;;     Use icicle-string-match-p.
 ;; 2012/09/05 dadams
 ;;     Added: icicle-select-text-at-point.
 ;; 2012/08/21 dadams
@@ -1419,6 +1421,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2012/09/06 dadams
+;;     Added icicle-string-match-p.  Use it.
 ;; 2012/08/31 dadams
 ;;     icicle-read-from-minibuffer: Improved doc string.
 ;; 2012/08/28 dadams
@@ -3311,6 +3315,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2012/09/06 dadams
+;;     Use icicle-string-match-p.
 ;; 2012/09/03 dadams
 ;;     icicle-history: Let first TAB or S-TAB cycle, depending on icicle-default-cycling-mode.
 ;;       Put properties icicle(-prefix|-apropos)-completing-command on it.
