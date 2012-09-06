@@ -49,7 +49,7 @@ This is a little function that is useful when editing several files that might f
           (revert-buffer t t t) )))
     (message "Refreshed open files.") )
 
-== Reverting, but protecting undo ==
+== Reverting as an undo substitute ==
 
 There's no way to save the undo history if the file is changed behind Emacs's back.   Emacs needs to re-read the file from disk and reverting a buffer with `revert-buffer' or reopening the file with `C-x C-v RET' will lose the buffer's undo history.  If you only want to revert the buffer to undo just your own changes, you can hit the UndoCommands repeatedly until the buffer is no longer modified. Sometimes this is too onerous.  The following command will run undo iteratively in the buffer for you and as far as possible or until the last time the file was saved.
 
@@ -66,7 +66,31 @@ There's no way to save the undo history if the file is changed behind Emacs's ba
 
 It can undo changes to a buffer, whether or not it is associated with a file.
 
+== Reverting whilst preserving undo history ==
 
+From http://stackoverflow.com/a/12304982/509706
+
+{{{
+;; emacs doesn't actually save undo history with revert-buffer
+;; see http://lists.gnu.org/archive/html/bug-gnu-emacs/2011-04/msg00151.html
+;; fix that.
+(defun revert-buffer-keep-history (&optional IGNORE-AUTO NOCONFIRM PRESERVE-MODES)
+  (interactive)
+
+  ;; tell Emacs the modtime is fine, so we can edit the buffer
+  (clear-visited-file-modtime)
+
+  ;; insert the current contents of the file on disk
+  (widen)
+  (delete-region (point-min) (point-max))
+  (insert-file-contents (buffer-file-name))
+
+  ;; mark the buffer as not modified
+  (not-modified)
+  (set-visited-file-modtime))
+
+(setq revert-buffer-function 'revert-buffer-keep-history)
+}}}
 
 
 
