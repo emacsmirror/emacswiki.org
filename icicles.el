@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Wed Sep  5 13:38:33 2012 (-0700)
+;; Last-Updated: Thu Sep  6 09:04:32 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 23188
+;;     Update #: 23189
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Doc URL: http://emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1151,7 +1151,7 @@
 ;;    `icicle-sit-for', `icicle-some',
 ;;    `icicle-special-candidates-first-p',
 ;;    `icicle-start-of-candidates-in-Completions',
-;;    `icicle-strip-ignored-files-and-sort',
+;;    `icicle-string-match-p', `icicle-strip-ignored-files-and-sort',
 ;;    `icicle-subst-envvar-in-file-name',
 ;;    `icicle-substring-no-properties', `icicle-substrings-of-length',
 ;;    `icicle-substitute-keymap-vars', `icicle-successive-action',
