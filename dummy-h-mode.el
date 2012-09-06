@@ -4,7 +4,7 @@
 
 ;; Author:   yascentur <screenname at gmail dot com>
 ;; Keywords: c-mode c++-mode objc-mode
-;; Version:  1.0.0
+;; Version:  1.0.1b
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -86,16 +86,15 @@
   :group 'dummy-h-mode)
 
 (defcustom dummy-h-mode-c-keywords
-  '(("_Bool[ \t\n\r]" . 1)
-    ("_Complex[ \t\n\r]" . 1)
-    ("_Imaginary[ \t\n\r]" . 1))
+  '(("_Bool[\* \t\n\r]" . 1)
+    ("_Complex[\* \t\n\r]" . 1)
+    ("_Imaginary[\* \t\n\r]" . 1))
   "C keywords and their minimum counts of appearance"
   :type  '(repeat (cons regexp number))
   :group 'dummy-h-mode)
 
 (defcustom dummy-h-mode-cc-keywords
-  '(("[\n\r][ \t]*#if[^\n\r]+[( \t]__cplusplus[) \t\n\r]" . 1)
-    ("[\n\r][ \t]*private:" . 1)
+  '(("[\n\r][ \t]*private:" . 1)
     ("[\n\r][ \t]*public:" . 1)
     ("[\n\r][ \t]*protected:" . 1)
     ("::" . 1)
@@ -105,8 +104,7 @@
   :group 'dummy-h-mode)
 
 (defcustom dummy-h-mode-objc-keywords
-  '(("[\n\r][ \t]*#if[^\n\r]+[( \t]__OBJC__[) \t\n\r]" . 1)
-    ("[\n\r][ \t]*@class[ \t\n\r]" . 1)
+  '(("[\n\r][ \t]*@class[ \t\n\r]" . 1)
     ("[\n\r][ \t]*@end[ \t\n\r]" . 1)
     ("[\n\r][ \t]*@implementation[ \t\n\r]" . 1)
     ("[\n\r][ \t]*@interface[ \t\n\r]" . 1)
@@ -122,18 +120,20 @@
 
 (defun dummy-h-mode-get-major-mode-by-source-file ()
   "Get major mode by checking corresponding source file"
-  (let ((file-name-wo-h (file-name-sans-extension (buffer-file-name))))
-    (cond
-     ((file-exists-p (concat file-name-wo-h ".c"))
-      'c-mode)
-     ((or (file-exists-p (concat file-name-wo-h ".cc"))
-          (file-exists-p (concat file-name-wo-h ".cxx"))
-          (file-exists-p (concat file-name-wo-h ".cpp"))
-          (file-exists-p (concat file-name-wo-h ".cp")))
-      'c++-mode)
-     ((or (file-exists-p (concat file-name-wo-h ".m"))
-          (file-exists-p (concat file-name-wo-h ".mm")))
-      'objc-mode))))
+  (if (buffer-file-name)
+      (let ((file-name-wo-h (file-name-sans-extension (buffer-file-name))))
+        (cond
+         ((file-exists-p (concat file-name-wo-h ".c"))
+          'c-mode)
+         ((or (file-exists-p (concat file-name-wo-h ".cc"))
+              (file-exists-p (concat file-name-wo-h ".cxx"))
+              (file-exists-p (concat file-name-wo-h ".cpp"))
+              (file-exists-p (concat file-name-wo-h ".cp")))
+          'c++-mode)
+         ((or (file-exists-p (concat file-name-wo-h ".m"))
+              (file-exists-p (concat file-name-wo-h ".mm")))
+          'objc-mode)))
+    nil))
 
 (defun dummy-h-mode-if-containing-keywords (keywords)
   "Get if containing keywords"
@@ -164,25 +164,28 @@
 
 (defun dummy-h-mode-get-major-mode-by-files-directory ()
   "Get major mode by checking all files in directory"
-  (let* ((dir-files
-          (directory-files (file-name-directory (buffer-file-name))))
-         (count-c-files
-          (dummy-h-mode-count-file-extension dir-files "c"))
-         (count-cc-files
-          (+ (dummy-h-mode-count-file-extension dir-files "cc")
-             (dummy-h-mode-count-file-extension dir-files "cxx")
-             (dummy-h-mode-count-file-extension dir-files "cpp")
-             (dummy-h-mode-count-file-extension dir-files "cp")))
-         (count-objc-files
-          (+ (dummy-h-mode-count-file-extension dir-files "m")
-             (dummy-h-mode-count-file-extension dir-files "mm"))))
-    (cond
-     ((and (> count-c-files count-cc-files) (> count-c-files count-objc-files))
-      'c-mode)
-     ((> count-cc-files count-objc-files)
-      'c++-mode)
-     ((> count-objc-files 0)
-      'objc-mode))))
+  (if (buffer-file-name)
+      (let* ((dir-files
+              (directory-files (file-name-directory (buffer-file-name))))
+             (count-c-files
+              (dummy-h-mode-count-file-extension dir-files "c"))
+             (count-cc-files
+              (+ (dummy-h-mode-count-file-extension dir-files "cc")
+                 (dummy-h-mode-count-file-extension dir-files "cxx")
+                 (dummy-h-mode-count-file-extension dir-files "cpp")
+                 (dummy-h-mode-count-file-extension dir-files "cp")))
+             (count-objc-files
+              (+ (dummy-h-mode-count-file-extension dir-files "m")
+                 (dummy-h-mode-count-file-extension dir-files "mm"))))
+        (cond
+         ((and (> count-c-files count-cc-files)
+               (> count-c-files count-objc-files))
+          'c-mode)
+         ((> count-cc-files count-objc-files)
+          'c++-mode)
+         ((> count-objc-files 0)
+          'objc-mode)))
+    nil))
 
 (defun dummy-h-mode-switch ()
   "Switch major mode"
@@ -196,7 +199,7 @@
   (interactive)
   (kill-all-local-variables)
   (setq major-mode 'dummy-h-mode)
-  (setq mode-name "Dummy H")
+  (setq mode-name "DummyH")
   (run-hooks 'dummy-h-mode-hook)
   (dummy-h-mode-switch))
 
