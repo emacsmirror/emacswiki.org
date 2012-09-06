@@ -91,7 +91,7 @@ Extensions (using the category name from `finder-by-keyword'), are utility libra
 
 * TcpClient -- Network interface to ease the creation of network related script
 * [[Websocket]] -- Emacs <nowiki>WebSocket</nowiki> client and server
-* Lisp:elnode.el -- simple emacs async HTTP server
+* [[Elnode]] -- simple emacs async HTTP server
 
 == Filesystem ==
 
@@ -100,6 +100,8 @@ Extensions (using the category name from `finder-by-keyword'), are utility libra
 == Persistence ==
 
 * [http://cedet.sourceforge.net/eieio.shtml Eieio] -- provided with Emacs (GIT:emacs-lisp/eieio.el)
+* GIT:gnus/registry -- Track and remember data items by various fields
+* [https://github.com/tarsius/object-registry.el object-registry.el] -- track data items by various instance slots
 * [https://github.com/sigma/pcache Pcache] -- persistent caching
 * PersistentSoft -- persistent storage, returning nil on failure
 * EmacsDataBase -- a flexible system for defining, accessing, modifying, summarizing, and generally playing with, a set of records.  You can view each record individually or summarized (with other records) in separate buffer. Record format (field names and their types) can be arbitrarily complex.
@@ -119,6 +121,7 @@ Extensions (using the category name from `finder-by-keyword'), are utility libra
 
 == Web APIs ==
 
+* [https://github.com/sigma/gh.el gh.el] -- GitHub Api library making use of Eieio
 * [https://github.com/rsanders/github-api-v3.el github-api-v3.el] -- Emacs library for the v3 GitHub API
 
 == See Also ==
