@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Sep  3 16:41:29 2012 (-0700)
+;; Last-Updated: Thu Sep  6 09:17:26 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 15023
+;;     Update #: 15024
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2012/09/06 dadams
+;;     Added: bmkp-string-match-p.
 ;; 2012/08/28 dadams
 ;;     bookmark-send-edited-annotation: Record an empty annotation as nil, not "".
 ;; 2012/08/21 dadams
