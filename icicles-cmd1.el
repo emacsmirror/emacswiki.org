@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Aug 23 14:06:12 2012 (-0700)
+;; Last-Updated: Thu Sep  6 08:30:09 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 24494
+;;     Update #: 24513
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2505,7 +2505,7 @@ This is used as the value of `minibuffer-completion-table'."
                  (tp          (and (not (string= "" tps))
                                    ;; Use regexp if no prefix arg or negative; else use sexp.
                                    (if (memq mode '(inherit-or-regexp direct-or-regexp)) tps (read tps))))
-                 (result      nil))
+                 (result      ()))
     (mapatoms
      (lambda (symb)                   ; FREE here: RESULT.
        (when (if (fboundp 'custom-variable-p) (custom-variable-p symb) (user-variable-p symb))
@@ -3273,8 +3273,7 @@ you use library `Bookmark+'."
                                          nil nil nil 'icicle-completion-set-history)))
          (icicle-retrieve-candidates-from-set set-name)
          (let* ((default-directory  (if prompt-for-dir-p
-                                        (read-file-name "Dired directory: " nil
-                                                        default-directory nil)
+                                        (read-file-name "Dired directory: " nil default-directory nil)
                                       default-directory))
                 (file-names         ()))
            (dolist (ff  icicle-saved-completion-candidates)
@@ -3317,8 +3316,7 @@ you use library `Bookmark+'."
                                          nil nil nil 'icicle-completion-set-history)))
          (icicle-retrieve-candidates-from-set set-name)
          (let* ((default-directory  (if prompt-for-dir-p
-                                        (read-file-name "Dired directory: " nil
-                                                        default-directory nil)
+                                        (read-file-name "Dired directory: " nil default-directory nil)
                                       default-directory))
                 (file-names         ()))
            (dolist (ff  icicle-saved-completion-candidates)
@@ -3407,7 +3405,7 @@ commands, it need not be.  It can be useful anytime you need to use
         (icicle-orig-win-explore                (selected-window))
         result)
     (setq icicle-act-before-cycle-flag      nil
-          icicle-candidates-alist           nil
+          icicle-candidates-alist           ()
           icicle-explore-final-choice       nil
           icicle-explore-final-choice-full  nil)
     (icicle-highlight-lighter)
@@ -3415,8 +3413,7 @@ commands, it need not be.  It can be useful anytime you need to use
     (when define-candidates-fn (funcall define-candidates-fn))
     (unless icicle-candidates-alist (error "No candidates defined"))
     (when (= (length icicle-candidates-alist) 1)
-      (setq icicle-explore-final-choice  (icicle-display-cand-from-full-cand
-                                          (car icicle-candidates-alist))))
+      (setq icicle-explore-final-choice  (icicle-display-cand-from-full-cand (car icicle-candidates-alist))))
     (unwind-protect
          (icicle-condition-case-no-debug failure
              (progn
@@ -3425,8 +3422,7 @@ commands, it need not be.  It can be useful anytime you need to use
                        (let ((icicle-remove-icicles-props-p  nil)) ; Keep Icicles text properties.
                          (apply #'completing-read prompt icicle-candidates-alist compl-read-args))))
                (setq icicle-explore-final-choice-full
-                     (funcall icicle-get-alist-candidate-function
-                              icicle-explore-final-choice 'no-error-p))
+                     (funcall icicle-get-alist-candidate-function icicle-explore-final-choice 'no-error-p))
                (unless icicle-explore-final-choice-full (error "No such occurrence"))
                (setq result  (if final-action-fn
                                  (funcall final-action-fn)
@@ -4190,7 +4186,7 @@ instead of those for the current buffer."
                (prompt                                 "Bookmark: ")
                (icicle-list-use-nth-parts              '(1))
                (icicle-candidate-properties-alist      (if (not icicle-show-multi-completion-flag)
-                                                           nil
+                                                           ()
                                                          (if (facep 'file-name-shadow)
                                                              '((2 (face file-name-shadow))
                                                                (3 (face bookmark-menu-heading)))
@@ -4313,8 +4309,8 @@ instead of those for the current buffer."
              (if bookmark-use-annotations
                  (bookmark-edit-annotation bname)
                (goto-char bookmark-current-point)))
-           (setq bookmark-yank-point     nil
-                 bookmark-current-buffer nil))
+           (setq bookmark-yank-point      nil
+                 bookmark-current-buffer  nil))
       (icicle-bookmark-cleanup))))
 
 (defun icicle-make-bookmark-candidate (bookmark)
@@ -4457,7 +4453,7 @@ position is highlighted."               ; Doc string
    (prompt                                 "Bookmark: ")
    (icicle-list-use-nth-parts              '(1))
    (icicle-candidate-properties-alist      (if (not icicle-show-multi-completion-flag)
-                                               nil
+                                               ()
                                              (if (facep 'file-name-shadow)
                                                  '((2 (face file-name-shadow))
                                                    (3 (face bookmark-menu-heading)))
@@ -4540,7 +4536,7 @@ Same as `icicle-bookmark', but uses another window." ; Doc string
    (prompt                                 "Bookmark: ")
    (icicle-list-use-nth-parts              '(1))
    (icicle-candidate-properties-alist      (if (not icicle-show-multi-completion-flag)
-                                               nil
+                                               ()
                                              (if (facep 'file-name-shadow)
                                                  '((2 (face file-name-shadow))
                                                    (3 (face bookmark-menu-heading)))
@@ -4667,7 +4663,7 @@ Same as `icicle-bookmark', but uses another window." ; Doc string
   (when (or (and (not icicle-bookmark-refresh-cache-flag)
                  (not (consp current-prefix-arg)))
             (and icicle-bookmark-refresh-cache-flag  (consp current-prefix-arg)))
-    (setq bmkp-sorted-alist (bmkp-sort-omit bookmark-alist))))
+    (setq bmkp-sorted-alist  (bmkp-sort-omit bookmark-alist))))
 
 (defun icicle-bookmark-propertize-candidate (cand)
   "Return bookmark name CAND, with a face indicating its type."
@@ -5416,10 +5412,8 @@ See `icicle-explore', argument DEFINE-CANDIDATES-FN."
         (when (and arg  (wholenump (prefix-numeric-value arg))) (setq morep  nil))
         (setq first-time               nil
               icicle-candidates-alist  (append icicle-candidates-alist
-                                               (nreverse
-                                                (icicle-find-tag-define-candidates-1
-                                                 regexp (> (prefix-numeric-value arg)
-                                                           0)))))))))
+                                               (nreverse (icicle-find-tag-define-candidates-1
+                                                          regexp (> (prefix-numeric-value arg) 0)))))))))
 
 (defun icicle-find-tag-define-candidates-1 (regexp show-file-p)
   "Helper function for `icicle-find-tag-define-candidates'.
@@ -5489,8 +5483,7 @@ Either LINE or POSITION can be nil.  POSITION is used if present."
 (defun icicle-find-tag-action (ignored-string)
   "Action function for `icicle-find-tag'."
   ;; Ignore (TAG FILE-LABEL) part.  Use only (TAG-INFO FILE-PATH GOTO-FUNC) part.
-  (let* ((cand       (cdr (elt (icicle-filter-alist icicle-candidates-alist
-                                                    icicle-completion-candidates)
+  (let* ((cand       (cdr (elt (icicle-filter-alist icicle-candidates-alist icicle-completion-candidates)
                                icicle-candidate-nb)))
          (tag-info   (nth 0 cand))
          (goto-func  (nth 2 cand)))
@@ -5508,8 +5501,7 @@ Either LINE or POSITION can be nil.  POSITION is used if present."
 
 (defun icicle-find-tag-help (cand)
   "Use as `icicle-candidate-help-fn' for `icicle-find-tag'."
-  (let* ((cand      (cdr (elt (icicle-filter-alist icicle-candidates-alist
-                                                   icicle-completion-candidates)
+  (let* ((cand      (cdr (elt (icicle-filter-alist icicle-candidates-alist icicle-completion-candidates)
                               icicle-candidate-nb)))
          (tag-info  (nth 0 cand)))
     (message (if (eq t (car tag-info))
@@ -5707,7 +5699,7 @@ Otherwise, use only windows from the selected frame."
   "Delete windows showing a buffer, anywhere." ; Doc string
   delete-windows-on                     ; Action function
   "Delete windows on buffer: "          ; `completing-read' args
-  (let ((cand-bufs  nil))
+  (let ((cand-bufs  ()))
     (dolist (buf  (buffer-list))
       (when (get-buffer-window buf 0) (push (list (buffer-name buf)) cand-bufs)))
     cand-bufs)
@@ -6221,7 +6213,7 @@ candidates to yank in different ways (repeat)
    (icicle-delete-candidate-object  selection-ring)
    (kills-in-order                  (icicle-delete-dups
                                      (if (eq selection-ring 'kill-ring)
-                                         (append kill-ring-yank-pointer kill-ring nil)
+                                         (append kill-ring-yank-pointer kill-ring ())
                                        (copy-sequence (symbol-value selection-ring)))))))
 
 (defun icicle-insert-for-yank (string)
@@ -7433,7 +7425,7 @@ and a final-choice key (e.g. `RET', `mouse-2') to choose the last one." ; Doc st
       (message "Added keyword `%s'" (icicle-propertize name 'face 'icicle-msg-emphasis)) (sit-for 1)))
   prompt (mapcar #'list (icicle-remove-duplicates regexp-history)) ; `completing-read' args
   nil nil nil 'regexp-history nil nil
-  ((keywords                              nil) ; Bindings
+  ((keywords                              ()) ; Bindings
    (icicle-use-candidates-only-once-flag  t)
    (prompt                                (or icicle-prompt
                                               "Choose keyword (regexp) (`RET' when done): ")))
@@ -7607,7 +7599,7 @@ Non-interactively:
    (completion-ignore-case                      bookmark-completion-ignore-case)
    (icicle-list-use-nth-parts                   '(1))
    (icicle-candidate-properties-alist           (if (not icicle-show-multi-completion-flag)
-                                                    nil
+                                                    ()
                                                   (if (facep 'file-name-shadow)
                                                       '((2 (face file-name-shadow))
                                                         (3 (face bookmark-menu-heading)))
