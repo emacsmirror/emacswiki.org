@@ -1,10 +1,10 @@
 ;;; judge-indent.el --- judge indent and tab widths
 
-;;; Copyright (C) 2012 yascentur
+;;; Copyright (C) 2011, 2012 yascentur
 
 ;; Author:   yascentur <screenname at gmail dot com>
 ;; Keywords: indent tab
-;; Version:  1.1.1
+;; Version:  1.1.2b
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -21,21 +21,27 @@
 
 ;;; Commentary:
 
-;; The `judge-indent-mode' distinguish, soon after finding file,
-;; indent and tab widths into following 9 (strictly 7) patterns.
-;; You can easily write your own code without breaking existing indent style.
+;; The `judge-indent-mode' detects, soon after finding a file,
+;; indent and tab widths as one of the following 9 (strictly 7) patterns.
 ;;
 ;;       \  indent
 ;;        \  2 4 8
 ;;     tab \------
-;;       2 | U - -
-;;       4 | X U -
-;;       8 | X X U <- It cannot distinguish between `U's.
-;;     nil | X X X
+;;       2 | U
+;;       4 | X U
+;;       8 | X X U <- It cannot distinguish between three `U's.
+;;       - | X X X
+;;
+;; The detection method is counting 2-space, 4-space, 8-space and 1-tab
+;; at the beginning of every line and comparing among them.  The behavior
+;; of your Emacs is then switched to go along with the detected indent style.
+;; You can easily write your own code into another person's or your team's
+;; code without breaking the existing indent style.
 
 ;;; Usage:
 
-;; Add following 3 lines into your emacs config file.
+;; Add following 3 lines into your init file.
+;;
 ;;     (require 'judge-indent)
 ;;     (global-judge-indent-mode t)
 ;;     (setq judge-indent-major-modes '(c-mode python-mode sh-mode))
@@ -44,25 +50,31 @@
 
 ;; Set default indent width (2, 4 or 8).
 ;; Default: default value of `c-basic-offset' or 4.
+;;
 ;;     (setq judge-indent-default-indent-width 2)
 ;;
 ;; Set default tab width (2, 4 or 8).
 ;; Default: default value of `tab-width' or 8.
+;;
 ;;     (setq judge-indent-default-tab-width 4)
 ;;
 ;; Set flag of preferring tab or not when indent is not so deep.
-;; Default: default value of `indent-tabs-mode' or nil.
+;; Default: default value of `indent-tabs-mode' or `nil'.
+;;
 ;;     (setq judge-indent-prefer-tabs-mode t)
 ;;
 ;; Set relative tolerance [%] for judging indent and tab widths.
-;; Default: 5 %.
+;; Default: 0 %.
+;;
 ;;     (setq judge-indent-relative-tolerance 3)
 ;;
 ;; Set search limit for large size files.
 ;; Default: 30000 chars (equal to ca. 1000 lines).
+;;
 ;;     (setq judge-indent-search-limit 60000)
 ;;
 ;; Set additional variable holding indent width
+;;
 ;;     (add-to-list 'judge-indent-variables-indent-width 'c-basic-offset)
 
 ;;; Functions:
@@ -93,31 +105,28 @@
 
 (defcustom judge-indent-major-modes '()
   "Major modes of applying judge-indent-mode"
-  :type  '(list symbol)
+  :type  '(repeat symbol)
   :group 'judge-indent)
 
 (defcustom judge-indent-default-indent-width
-  (if (default-boundp 'c-basic-offset)
-      (default-value  'c-basic-offset) 4)
+  (if (default-boundp 'c-basic-offset) (default-value 'c-basic-offset) 4)
   "Default indent width (2, 4 or 8)"
   :type  'number
   :group 'judge-indent)
 
 (defcustom judge-indent-default-tab-width
-  (if (default-boundp 'tab-width)
-      (default-value  'tab-width) 8)
+  (if (default-boundp 'tab-width) (default-value 'tab-width) 8)
   "Default tab width (4 or 8)"
   :type  'number
   :group 'judge-indent)
 
 (defcustom judge-indent-prefer-tabs-mode
-  (if (default-boundp 'indent-tabs-mode)
-      (default-value  'indent-tabs-mode) nil)
+  (if (default-boundp 'indent-tabs-mode) (default-value 'indent-tabs-mode) nil)
   "Prefer tab or not when indent is not so deep"
   :type  'boolean
   :group 'judge-indent)
 
-(defcustom judge-indent-relative-tolerance 5
+(defcustom judge-indent-relative-tolerance 0
   "Relative tolerance [%] for judging indent and tab widths"
   :type  'number
   :group 'judge-indent)
@@ -148,13 +157,15 @@
     html-helper-basic-offset
     yahtml-environment-indent
     nxml-child-indent
+    nxml-attribute-indent
     css-indent-level
     cssm-indent-level
     javascript-indent-level
     js-indent-level
+    js-expr-indent-offset
     js2-basic-offset)
   "Variables of indent width"
-  :type  'list
+  :type  '(repeat symbol)
   :group 'judge-indent)
 
 (defvar judge-indent-indent-width judge-indent-default-indent-width
@@ -169,7 +180,7 @@
   "Count of 4-space indents")
 (defvar judge-indent-count-8space 0
   "Count of 8-space indents")
-(defvar judge-indent-minor-mode-lighter "JI"
+(defvar judge-indent-minor-mode-lighter " JI"
   "Minor mode lighter")
 
 (defun judge-indent-set-minor-mode-lighter (indent tab)
@@ -186,8 +197,7 @@
 (defun judge-indent-set-to-list (list value)
   "Set value to variables list"
   (when list
-    (when (boundp (car list))
-      (set (car list) value))
+    (when (boundp (car list)) (set (car list) value))
     (judge-indent-set-to-list (cdr list) value)))
 
 ;; set indent width
@@ -512,13 +522,12 @@
 
 (defun judge-indent-judge-from-indent-counts ()
   "Judge indent from indent counts"
-  (let ((tolerance 0))
-    (setq tolerance
-          (/ (* (+ judge-indent-count-1tab
-                   judge-indent-count-2space
-                   judge-indent-count-4space
-                   judge-indent-count-8space)
-                judge-indent-relative-tolerance) 100))
+  (let ((tolerance (/ (* (+ judge-indent-count-1tab
+                            judge-indent-count-2space
+                            judge-indent-count-4space
+                            judge-indent-count-8space)
+                         judge-indent-relative-tolerance)
+                      100)))
     (if (and (= judge-indent-count-1tab   0)
              (= judge-indent-count-2space 0)
              (= judge-indent-count-4space 0)
@@ -571,8 +580,8 @@
   (let ((count 0))
     (save-excursion
       (goto-char pos1)
-      (while (and (search-forward (concat "\n" string)
-                                  judge-indent-search-limit t)
+      (while (and (search-forward
+                   (concat "\n" string) judge-indent-search-limit t)
                   (<= (point) pos2))
         (unless (or (char-equal (char-after) ?\ )
                     (char-equal (char-after) ?\t)
@@ -580,8 +589,8 @@
                     (char-equal (char-after) ?\r))
           (incf count)))
       (goto-char pos1)
-      (while (and (search-forward (concat "\r" string)
-                                  judge-indent-search-limit t)
+      (while (and (search-forward
+                   (concat "\r" string) judge-indent-search-limit t)
                   (<= (point) pos2))
         (unless (or (char-equal (char-after) ?\ )
                     (char-equal (char-after) ?\t)
@@ -613,27 +622,29 @@
   (judge-indent-count-indents (region-beginning) (region-end))
   (judge-indent-judge-from-indent-counts))
 
+(defun judge-indent-message-indent-counts ()
+  "Message indent counts"
+  (message (concat "One-tab: "
+                   (number-to-string judge-indent-count-1tab)
+                   "; two-space: "
+                   (number-to-string judge-indent-count-2space)
+                   "; four-space: "
+                   (number-to-string judge-indent-count-4space)
+                   "; eight-space: "
+                   (number-to-string judge-indent-count-8space)
+                   ";")))
+
 (defun judge-indent-message-indent-counts-buffer ()
   "Message indent counts of buffer"
   (interactive)
   (judge-indent-count-indents (point-min) (point-max))
-  (message
-   (concat "One-tab: "       (number-to-string judge-indent-count-1tab)
-           "; two-space: "   (number-to-string judge-indent-count-2space)
-           "; four-space: "  (number-to-string judge-indent-count-4space)
-           "; eight-space: " (number-to-string judge-indent-count-8space)
-           ";")))
+  (judge-indent-message-indent-counts))
 
 (defun judge-indent-message-indent-counts-region ()
   "Message indent counts of region"
   (interactive)
   (judge-indent-count-indents (region-beginning) (region-end))
-  (message
-   (concat "One-tab: "       (number-to-string judge-indent-count-1tab)
-           "; two-space: "   (number-to-string judge-indent-count-2space)
-           "; four-space: "  (number-to-string judge-indent-count-4space)
-           "; eight-space: " (number-to-string judge-indent-count-8space)
-           ";")))
+  (judge-indent-message-indent-counts))
 
 ;; minor mode
 
