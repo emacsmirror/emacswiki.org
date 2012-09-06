@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Aug 31 10:08:15 2012 (-0700)
+;; Last-Updated: Thu Sep  6 09:04:01 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 13285
+;;     Update #: 13289
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -182,7 +182,7 @@
 ;;    `icicle-show-in-mode-line', `icicle-some',
 ;;    `icicle-special-candidates-first-p',
 ;;    `icicle-start-of-candidates-in-Completions',
-;;    `icicle-strip-ignored-files-and-sort',
+;;    `icicle-string-match-p', `icicle-strip-ignored-files-and-sort',
 ;;    `icicle-subst-envvar-in-file-name',
 ;;    `icicle-substring-no-properties', `icicle-substrings-of-length',
 ;;    `icicle-take', `icicle-toggle-icicle-mode-twice',
@@ -3151,10 +3151,7 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
                                   (icicle-transform-multi-completion
                                    (icicle-current-completion-in-Completions)))))
                            (when (and (require 'image-dired nil t)
-                                      (if (fboundp 'string-match-p)
-                                          (string-match-p (image-file-name-regexp) image-file)
-                                        (save-match-data
-                                          (string-match (image-file-name-regexp) image-file))))
+                                      (icicle-string-match-p (image-file-name-regexp) image-file))
                              (let ((thumb-img  (append (image-dired-get-thumbnail-image image-file)
                                                        '(:margin 2)))
                                    (img-ov     (overlays-in (point) (min (point-max) (1+ (point))))))
@@ -6155,6 +6152,13 @@ If OBJECT is not a string, then use `prin1-to-string' to get a string."
   (let ((new  (if (stringp object) (copy-sequence object) (prin1-to-string object))))
     (add-text-properties 0 (length new) properties new)
     new))
+
+;; Same as `tap-string-match-p' in `thingatpt+.el'.
+(if (fboundp 'string-match-p)
+    (defalias 'icicle-string-match-p 'string-match-p) ; Emacs 23+
+  (defun icicle-string-match-p (regexp string &optional start)
+    "Like `string-match', but this saves and restores the match data."
+    (save-match-data (string-match regexp string start))))
 
 (defun icicle-unpropertize-completion (string)
   "Remove text properties from STRING.
