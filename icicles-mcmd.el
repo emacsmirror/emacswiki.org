@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Sep  3 10:11:06 2012 (-0700)
+;; Last-Updated: Thu Sep  6 09:06:57 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 18436
+;;     Update #: 18438
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -5309,10 +5309,7 @@ this case, a prefix arg shows the internal form of the bookmark."
              (inode           (nth 10 attrs))
              (device          (nth 11 attrs))
              (thumb-string    (and (fboundp 'image-file-name-regexp) ; In `image-file.el' (Emacs 22+).
-                                   (if (fboundp 'string-match-p)
-                                       (string-match-p (image-file-name-regexp) filename)
-                                     (save-match-data
-                                       (string-match (image-file-name-regexp) filename)))
+                                   (icicle-string-match-p (image-file-name-regexp) filename)
                                    (if (fboundp 'display-graphic-p) (display-graphic-p) window-system)
                                    (require 'image-dired nil t)
                                    (image-dired-get-thumbnail-image filename)
@@ -5331,10 +5328,7 @@ this case, a prefix arg shows the internal form of the bookmark."
                                                            (find-file ,filename))))))))
              (image-info      (and (require 'image-dired nil t)
                                    (fboundp 'image-file-name-regexp)
-                                   (if (fboundp 'string-match-p)
-                                       (string-match-p (image-file-name-regexp) filename)
-                                     (save-match-data
-                                       (string-match (image-file-name-regexp) filename)))
+                                   (icicle-string-match-p (image-file-name-regexp) filename)
                                    (progn (message "Gathering image data...") t)
                                    (icicle-condition-case-no-debug nil
                                        (let ((all  (icicle-all-exif-data (expand-file-name filename))))
