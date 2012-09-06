@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Tue Aug 28 15:54:17 2012 (-0700)
+;; Last-Updated: Thu Sep  6 09:15:30 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5807
+;;     Update #: 5815
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -445,17 +445,18 @@
 ;;    `bmkp-sort-omit', `bmkp-sound-jump',
 ;;    `bmkp-specific-buffers-alist-only',
 ;;    `bmkp-specific-files-alist-only',
-;;    `bmkp-string-less-case-fold-p', `bmkp-tagged-bookmark-p',
-;;    `bmkp-tagged-cp', `bmkp-tag-name', `bmkp-tags-in-bookmark-file',
-;;    `bmkp-tags-list', `bmkp-temporary-alist-only',
-;;    `bmkp-temporary-bookmark-p', `bmkp-thing-at-point',
-;;    `bmkp-this-buffer-alist-only', `bmkp-this-buffer-p',
-;;    `bmkp-this-file-alist-only', `bmkp-this-file/buffer-alist-only',
-;;    `bmkp-this-file-p', `bmkp-unmarked-bookmarks-only',
-;;    `bmkp-upcase', `bmkp-update-autonamed-bookmark',
-;;    `bmkp-url-alist-only', `bmkp-url-bookmark-p',
-;;    `bmkp-url-browse-alist-only', `bmkp-url-browse-bookmark-p',
-;;    `bmkp-url-cp', `bmkp-variable-list-alist-only',
+;;    `bmkp-string-less-case-fold-p', `bmkp-string-match-p',
+;;    `bmkp-tagged-bookmark-p', `bmkp-tagged-cp', `bmkp-tag-name',
+;;    `bmkp-tags-in-bookmark-file', `bmkp-tags-list',
+;;    `bmkp-temporary-alist-only', `bmkp-temporary-bookmark-p',
+;;    `bmkp-thing-at-point', `bmkp-this-buffer-alist-only',
+;;    `bmkp-this-buffer-p', `bmkp-this-file-alist-only',
+;;    `bmkp-this-file/buffer-alist-only', `bmkp-this-file-p',
+;;    `bmkp-unmarked-bookmarks-only', `bmkp-upcase',
+;;    `bmkp-update-autonamed-bookmark', `bmkp-url-alist-only',
+;;    `bmkp-url-bookmark-p', `bmkp-url-browse-alist-only',
+;;    `bmkp-url-browse-bookmark-p', `bmkp-url-cp',
+;;    `bmkp-variable-list-alist-only',
 ;;    `bmkp-variable-list-bookmark-p', `bmkp-visited-more-cp',
 ;;    `bmkp-w3m-alist-only', `bmkp-w3m-bookmark-p', `bmkp-w3m-cp',
 ;;    `bmkp-w3m-set-new-buffer-name'.
@@ -2688,7 +2689,7 @@ If called from Lisp:
 ;; 3. Insert code piecewise, to improve performance when saving `bookmark-alist'.
 ;;    (Do not let `pp' parse all of `bookmark-alist' at once.)
 ;; 4. Unless `bmkp-propertize-bookmark-names-flag', remove text properties from bookmark name and file name.
-;; 5. Bind `print-circle' to t around pp, to record bookmark name with `bmkp-full-record' property.
+;; 5. Bind `print-circle' to t around `pp', to record bookmark name with `bmkp-full-record' property.
 ;; 6. Use `case', not `cond'.
 ;;
 (defun bookmark-write-file (file &optional alt-msg)
@@ -2745,7 +2746,7 @@ contain a `%s' construct, so that it can be passed along with FILE to
 ;;    * Update `bmkp-current-bookmark-file' to FILE .
 ;;    * If `bmkp-last-as-first-bookmark-file', then update it to FILE and save it to disk.
 ;; 4. If the bookmark-file buffer already existed, do not kill it after loading.
-;; 5.  Set `bookmarks-already-loaded' regardless of FILE (not just `bookmark-default-file').
+;; 5. Set `bookmarks-already-loaded' regardless of FILE (not just `bookmark-default-file').
 ;; 6. Update `bmkp-sorted-alist' (it's a cache).
 ;; 7. Final msg says whether overwritten.
 ;; 8. Call `bmkp-bmenu-refresh-menu-list' at end.
@@ -4586,9 +4587,7 @@ If it is a record then it need not belong to `bookmark-alist'."
   (setq bookmark  (bookmark-get-bookmark bookmark))
   (and (bmkp-dired-bookmark-p bookmark)
        (let ((file  (bookmark-get-filename bookmark)))
-         (and (stringp file)  (if (fboundp 'string-match-p)
-                                  (string-match-p (regexp-quote "*") file)
-                                (save-match-data (string-match (regexp-quote "*") file)))))))
+         (and (stringp file)  (bmkp-string-match-p (regexp-quote "*") file)))))
 
 (defun bmkp-file-bookmark-p (bookmark)
   "Return non-nil if BOOKMARK bookmarks a file or directory.
@@ -4640,10 +4639,7 @@ If it is a record then it need not belong to `bookmark-alist'."
       (and (fboundp 'image-file-name-regexp) ; In `image-file.el' (Emacs 22+).
            (bmkp-file-bookmark-p bookmark)
            (not (bmkp-dired-bookmark-p bookmark))
-           (if (fboundp 'string-match-p)
-               (string-match-p (image-file-name-regexp) (bookmark-get-filename bookmark))
-             (save-match-data
-               (string-match (image-file-name-regexp) (bookmark-get-filename bookmark)))))))
+           (bmkp-string-match-p (image-file-name-regexp) (bookmark-get-filename bookmark)))))
 
 (defun bmkp-info-bookmark-p (bookmark)
   "Return non-nil if BOOKMARK is an Info bookmark.
@@ -5354,6 +5350,13 @@ Test using `equal' by default, or `eq' if optional USE-EQ is non-nil."
           (push (car tail) new))
         (pop tail))
       (nreverse new))))
+
+;; Same as `icicle-string-match-p' in `icicles-fn.el'.
+(if (fboundp 'string-match-p)
+    (defalias 'bmkp-string-match-p 'string-match-p) ; Emacs 23+
+  (defun bmkp-string-match-p (regexp string &optional start)
+    "Like `string-match', but this saves and restores the match data."
+    (save-match-data (string-match regexp string start))))
 
 ;; For a name propertized with `bmkp-full-record', this is similar to `bmkp-assoc-delete-all'.
 (defun bmkp-delete-bookmark-name-from-list (delname bnames)
@@ -7078,20 +7081,14 @@ Inserted subdirs:\t%s\nHidden subdirs:\t\t%s\n"
              (and annot   (format "\nAnnotation:\n%s\n" annot))
              (and (not no-image)
                   (fboundp 'image-file-name-regexp) ; In `image-file.el' (Emacs 22+).
-                  (if (fboundp 'string-match-p)
-                      (string-match-p (image-file-name-regexp) file)
-                    (save-match-data
-                      (string-match (image-file-name-regexp) file)))
+                  (bmkp-string-match-p (image-file-name-regexp) file)
                   (if (fboundp 'display-graphic-p) (display-graphic-p) window-system)
                   (require 'image-dired nil t)
                   (image-dired-get-thumbnail-image file)
                   (concat "\n@#%&()_IMAGE-HERE_()&%#@" file "\n"))
              (and (not no-image)
                   (fboundp 'image-file-name-regexp) ; In `image-file.el' (Emacs 22+).
-                  (if (fboundp 'string-match-p)
-                      (string-match-p (image-file-name-regexp) file)
-                    (save-match-data
-                      (string-match (image-file-name-regexp) file)))
+                  (bmkp-string-match-p (image-file-name-regexp) file)
                   (progn (message "Gathering image data...") t)
                   (condition-case nil
                       (let ((all  (bmkp-all-exif-data (expand-file-name file))))
