@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Wed Sep  5 13:48:12 2012 (-0700)
+;; Last-Updated: Thu Sep  6 09:03:02 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5785
+;;     Update #: 5803
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -393,6 +393,7 @@
 (defvar anything-idle-delay)            ; In `anything.el'
 (defvar bmkp-non-file-filename)         ; In `bookmark+-1.el'
 (defvar bmkp-sorted-alist)              ; In `bookmark+-1.el'
+(defvar er/try-expand-list)             ; In `expand-region.el'
 (defvar eyedrop-picked-background)      ; In `eyedrop.el' or `palette.el'
 (defvar eyedrop-picked-foreground)      ; In `eyedrop.el' or `palette.el'
 (defvar hlt-act-on-any-face-flag)       ; In `highlight.el'
@@ -2111,8 +2112,7 @@ See `icicle-ORIG-Info-menu'."
    (icicle-whole-candidate-as-text-prop-p  t)
    (Info-complete-menu-buffer              (current-buffer))
    (icicle-candidates-alist                (mapcar (lambda (m) (cons m (Info-extract-menu-item m)))
-                                                   (reverse
-                                                    (all-completions "" 'Info-complete-menu-item))))
+                                                   (reverse (all-completions "" 'Info-complete-menu-item))))
    menu-eol))
 
 ;;;###autoload (autoload 'icicle-Info-goto-node "icicles")
@@ -2195,8 +2195,7 @@ You can use `C-x m' during completion to access Info bookmarks, if you
     (unwind-protect
          (let* ((completion-ignore-case           t)
                 (Info-read-node-completion-table  (icicle-Info-build-node-completions include-file-p))
-                (nodename                         (completing-read prompt 'Info-read-node-name-1
-                                                                   nil nil)))
+                (nodename                         (completing-read prompt 'Info-read-node-name-1 nil nil)))
            (if (equal nodename "") (icicle-Info-read-node-name prompt) nodename))
       (define-key minibuffer-local-completion-map (icicle-kbd "C-x m") C-x-m))))
 
@@ -2885,8 +2884,7 @@ Use `mouse-2', `RET', or `S-RET' to choose a candidate as the final
 destination, or `C-g' to quit.  This is an Icicles command - see
 command `icicle-mode'."
   (interactive)
-  (let ((icicle-sort-orders-alist  (cons '("by position" .  icicle-cdr-lessp)
-                                         icicle-sort-orders-alist))
+  (let ((icicle-sort-orders-alist  (cons '("by position" .  icicle-cdr-lessp) icicle-sort-orders-alist))
         (icicle-sort-comparer      'icicle-cdr-lessp))
     (icicle-goto-marker-1 mark-ring)))
 
@@ -2900,9 +2898,8 @@ marker's buffer, to facilitate orientation."
   (let ((icicle-list-nth-parts-join-string  "\t")
         (icicle-list-join-string            "\t")
         ;; $$$$$$ (icicle-list-end-string             "")
-        (icicle-sort-orders-alist
-         (cons '("by buffer, then by position" . icicle-part-1-cdr-lessp)
-               icicle-sort-orders-alist))
+        (icicle-sort-orders-alist           (cons '("by buffer, then by position" . icicle-part-1-cdr-lessp)
+                                                  icicle-sort-orders-alist))
         (icicle-sort-comparer               'icicle-part-1-cdr-lessp)
         (icicle-candidate-properties-alist  (and icicle-show-multi-completion-flag
                                                  '((1 (face icicle-candidate-part))))))
@@ -3458,7 +3455,7 @@ The arguments are for use by `completing-read' to read the regexp.
   `(case major-mode
     ,@(append icicle-search-modes
               '((t (error "Icicles search WHERE is not implemented for this mode")))
-              nil)))
+              ())))
 
 (defun icicle-search-where-arg ()
   "Return WHERE arg for `icicle-search*' commands, based on prefix arg."
@@ -4067,7 +4064,7 @@ No such highlighting is done if any of these conditions holds:
     (when (and (not icicle-search-highlight-all-current-flag)
                (overlayp icicle-search-refined-overlays))
       (delete-overlay icicle-search-refined-overlays)
-      (setq icicle-search-refined-overlays  nil))
+      (setq icicle-search-refined-overlays  ()))
     (unless icicle-search-highlight-all-current-flag
       (while icicle-search-refined-overlays
         (delete-overlay (car icicle-search-refined-overlays))
@@ -4241,7 +4238,7 @@ future search commands, not the current one.)" ; Doc string
    (bookmark-automatically-show-annotations  nil) ; Do not show annotations
    (icicle-list-use-nth-parts                '(1))
    (icicle-candidate-properties-alist        (if (not icicle-show-multi-completion-flag)
-                                                 nil
+                                                 ()
                                                (if (facep 'file-name-shadow)
                                                    '((2 (face file-name-shadow))
                                                      (3 (face bookmark-menu-heading)))
@@ -4868,10 +4865,7 @@ vanilla Emacs, starting with Emacs 23.  And you will need to load
     (icicle-search-thing
      'sexp beg end require-match where
      `(lambda (thg+bds)
-       (and thg+bds
-        (if (fboundp 'string-match-p)
-            (string-match-p ,(format "\\`\\s-*<\\s-*%s\\s-*>" element) (car thg+bds))
-          (string-match ,(format "\\`\\s-*<\\s-*%s\\s-*>" element) (car thg+bds))))))))
+       (and thg+bds  (icicle-string-match-p ,(format "\\`\\s-*<\\s-*%s\\s-*>" element) (car thg+bds)))))))
 
 ;;;###autoload (autoload 'icicle-search-xml-element-text-node "icicles")
 (defun icicle-search-xml-element-text-node (beg end require-match where element)
@@ -4903,10 +4897,7 @@ vanilla Emacs, starting with Emacs 23.  And you will need to load
     (icicle-search-thing
      'sexp beg end require-match where
      `(lambda (thg+bds)
-       (and thg+bds
-        (if (fboundp 'string-match-p)
-            (string-match-p ,(format "\\`\\s-*<\\s-*%s\\s-*>" element) (car thg+bds))
-          (string-match ,(format "\\`\\s-*<\\s-*%s\\s-*>" element) (car thg+bds)))))
+       (and thg+bds  (icicle-string-match-p ,(format "\\`\\s-*<\\s-*%s\\s-*>" element) (car thg+bds))))
      `(lambda (thg+bds)
        (save-excursion
          (let* ((tag-end     (string-match ,(format "\\`\\s-*<\\s-*%s\\s-*>" element)
@@ -4920,11 +4911,7 @@ vanilla Emacs, starting with Emacs 23.  And you will need to load
                                            "\\(?:[_[:alpha:]][-._[:alnum:]]*\\)")
                                        "\\([_a-zA-Z][-._a-zA-Z0-9]\\)")
                                      "\\s-*>")))
-           (and child
-                (not (if (fboundp 'string-match-p)
-                         (string-match-p tag-regexp (car child))
-                       (string-match tag-regexp (car child))))
-                child)))))))
+           (and child   (not (icicle-string-match-p tag-regexp (car child)))   child)))))))
 
 ;;;###autoload (autoload 'icicle-search-char-property "icicles")
 (defun icicle-search-char-property (beg end require-match ; Bound to `M-s M-s c'.
@@ -5684,8 +5671,7 @@ information about the arguments, see the doc for command
         (icicle-transform-function  'icicle-remove-duplicates))
     (add-hook 'icicle-search-hook 'icicle-comint-search-send-input)
     (unwind-protect
-         (icicle-search beg end
-                        (concat comint-prompt-regexp "\\S-.*") nil) ; Match not required (edit).
+         (icicle-search beg end (concat comint-prompt-regexp "\\S-.*") nil) ; Match not required (edit).
       (remove-hook 'icicle-search-hook 'icicle-comint-search-send-input)))
   (goto-char (point-max))
   (unless (pos-visible-in-window-p) (recenter icicle-recenter)))
@@ -6588,7 +6574,7 @@ This command is intended for use only in Icicle mode."
 Used only when `anything-sources' is non-nil - see `anything.el'."
     (and (boundp 'anything-sources) (consp anything-sources)
          (let ((anything-candidate-cache  ())
-               (candidates                nil))
+               (candidates                ()))
            (dolist (source  (anything-get-sources))
              (let ((init-fn  (assoc-default 'init source))) (when init-fn (funcall init-fn)))
              (when (or (eq type (assoc-default 'type source))
@@ -6682,10 +6668,10 @@ ACTIONS is the list of all actions for type TYPE."
            (icicle-Completions-display-min-input-chars  (icicle-get-anything-req-pat-chars type))
            (icicle-incremental-completion-delay         (icicle-get-anything-input-delay type))
            (icicle-whole-candidate-as-text-prop-p       icicle-anything-transform-candidates-flag)
-           (icicle-candidates-alist
-            (if (or (functionp candidates) icicle-whole-candidate-as-text-prop-p)
-                candidates
-              icicle-candidates-alist))
+           (icicle-candidates-alist                     (if (or (functionp candidates)
+                                                                icicle-whole-candidate-as-text-prop-p)
+                                                            candidates
+                                                          icicle-candidates-alist))
            (icicle-candidate-action-fn
             (lambda (obj)
               (when icicle-whole-candidate-as-text-prop-p
@@ -7167,7 +7153,7 @@ Use `mouse-2', `RET', or `S-RET' to finally choose a candidate, or
                (setq cmd-name  (substring candidate (match-beginning 2) (match-end 2))))
              (cond ((string= ".." cmd-name) ; Go back up to parent prefix.
                     (setq last-command  'icicle-complete-keys)
-                    (icicle-complete-keys-1 (vconcat (nbutlast (append icicle-key-prefix nil)))))
+                    (icicle-complete-keys-1 (vconcat (nbutlast (append icicle-key-prefix ())))))
                    ((and key (string= "..." cmd-name)) ; Go down to prefix.
                     (setq last-command  'icicle-complete-keys)
                     (icicle-complete-keys-1 (vconcat icicle-key-prefix key)))
