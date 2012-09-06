@@ -100,7 +100,7 @@ Extensions (using the category name from `finder-by-keyword'), are utility libra
 == Persistence ==
 
 * [http://cedet.sourceforge.net/eieio.shtml Eieio] -- provided with Emacs (GIT:emacs-lisp/eieio.el)
-* GIT:gnus/registry -- Track and remember data items by various fields
+* GIT:gnus/registry.el -- Track and remember data items by various fields
 * [https://github.com/tarsius/object-registry.el object-registry.el] -- track data items by various instance slots
 * [https://github.com/sigma/pcache Pcache] -- persistent caching
 * PersistentSoft -- persistent storage, returning nil on failure
