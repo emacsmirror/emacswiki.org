@@ -6,7 +6,6 @@ Here is my (EmilioLopes') version of it, using a functional predicate for more f
     (defun display-buffers-matching (predicate)
       "Displays all buffers matching PREDICATE.
     The function PREDICATE will be called with each buffer as its only argument."
-      (interactive "sMatch buffer names: \nsMatch buffer modes: ")
       (let ((buffers
              (let (buffers)
                (dolist (buffer (buffer-list) buffers)
