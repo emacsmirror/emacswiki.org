@@ -49,10 +49,7 @@ Extensions (using the category name from `finder-by-keyword'), are utility libra
 
 == Parsers and Lexers ==
 
-* ElispParser -- A small parser tool written in EmacsLisp.
-* ParserCompiler -- A macro that compiles Recursive Descent parsers in elisp.
-* SemanticBovinator -- A flex/bison lexer and parser generator written in EmacsLisp.
-* XmlParser -- Writing code which reads and manipulates XML.  Pointers to DOM, XPath, etc.
+* See CategoryData
 
 == Buffer Text ==
 
