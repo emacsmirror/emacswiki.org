@@ -7,7 +7,7 @@ My Emacs pages:
 My codes:
 * SeijiZenitaniDotEmacs
 * Lisp:smart-compile.el --- SmartCompile
-* [http://svn.sourceforge.jp/cgi-bin/viewcvs.cgi/zenitani/elisp/?root=macwiki smart-dnd.el] --- This code provides a user-configurable drag & drop feature: For example, when you drop a jpg file to the buffer visiting an html file, ##<img src="...## will be inserted.
+* Lisp:smart-dnd.el --- This code provides a user-configurable drag & drop feature: For example, when you drop a jpg file to the buffer visiting an html file, ##<img src="...## will be inserted.
 * MacKeyMode --- Tools for CarbonEmacsPackage
 
 ----
