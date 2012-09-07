@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Mon Aug 27 16:04:16 2012 (-0700)
+;; Last-Updated: Fri Sep  7 11:06:00 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 26713
+;;     Update #: 26715
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -3106,10 +3106,11 @@
 ;;       by setting property `icicle-Completions-window-max-height' on
 ;;       the command symbol to a different maximum window height
 ;;       value.  This property value is predefined for commands, such
-;;       as `icicle-buffer' and `icicle-file', that do not involve the
-;;       content of the current buffer during completion.  A large
-;;       value is used for these commands, so that nearly all of the
-;;       frame real estate is given to the `*Completions*' window.
+;;       as `icicle-buffer' and `icicle-file', for which you do not
+;;       need to see much of the current buffer contents during
+;;       completion.  A large value is used for these commands, so
+;;       that nearly all of the frame real estate is given to the
+;;       `*Completions*' window.
 ;;
 ;;    For example, you can use the following code to set the maximum
 ;;    `*Completions*' height for command `foo' to 100 and turn off
