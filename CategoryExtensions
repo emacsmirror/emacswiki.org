@@ -18,6 +18,7 @@ Extensions (using the category name from `finder-by-keyword'), are utility libra
 * TernarySearchTrees -- ternary search tree data structures (obsolete - use [[Tries]] instead)
 * [[Tries]] -- General trie data structures (including ternary search trees)
 * [http://github.com/nicferrier/emacs-kv kv.el] -- key/value data structure functions
+* [http://github.com/VincentToups/emacs-utils/blob/master/ra-lists.el ra-lists.el] -- Random-Access Pairs and Lists
 
 == Algorithms ==
 
