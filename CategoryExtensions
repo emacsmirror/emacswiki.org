@@ -17,6 +17,7 @@ Extensions (using the category name from `finder-by-keyword'), are utility libra
 * RecordType -- Definition of a new type: record. A record is a set of named fields with their associated type.
 * TernarySearchTrees -- ternary search tree data structures (obsolete - use [[Tries]] instead)
 * [[Tries]] -- General trie data structures (including ternary search trees)
+* [http://github.com/nicferrier/emacs-kv kv.el] -- key/value data structure functions
 
 == Algorithms ==
 
