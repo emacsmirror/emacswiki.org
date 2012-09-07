@@ -22,3 +22,6 @@ async-eval can take care of exporting function definitions to the new process:
   (async-eval-with-export '(fib)
       (lambda (result) (message "async result: <%s>" result))
     (fib 30))
+
+----
+CategoryExtensions
