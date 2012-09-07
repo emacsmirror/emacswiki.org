@@ -49,6 +49,7 @@ Extensions (using the category name from `finder-by-keyword'), are utility libra
 * LaterDo -- Calling functions later, thus do some sort of fake threading
 * AsyncEval -- allows forms to be evaluated in a different Emacs process
 * CoRoutines -- Coroutines for Emacs Lisp
+* [http://github.com/jwiegley/emacs-async async.el] -- a module for doing asynchronous processing
 * See also ConcurrentEmacs
 
 == Parsers and Lexers ==
