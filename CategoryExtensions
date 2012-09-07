@@ -47,6 +47,9 @@ Extensions (using the category name from `finder-by-keyword'), are utility libra
 == Concurrency ==
 
 * LaterDo -- Calling functions later, thus do some sort of fake threading
+* AsyncEval -- allows forms to be evaluated in a different Emacs process
+* CoRoutines -- Coroutines for Emacs Lisp
+* See also ConcurrentEmacs
 
 == Parsers and Lexers ==
 
@@ -92,6 +95,8 @@ Extensions (using the category name from `finder-by-keyword'), are utility libra
 * TcpClient -- Network interface to ease the creation of network related script
 * [[Websocket]] -- Emacs <nowiki>WebSocket</nowiki> client and server
 * [[Elnode]] -- simple emacs async HTTP server
+* [ftp://ftp.newartisans.com/pub/emacs/httpd.el httpd.el] -- a web server in Emacs Lisp
+* XmlRpc -- make asynchronous remote procedure calls over http
 
 == Filesystem ==
 
