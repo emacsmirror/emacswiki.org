@@ -27,6 +27,7 @@ Extensions (using the category name from `finder-by-keyword'), are utility libra
 * StringUtils -- General string-manipulation utilities
 * UcsUtils -- General utilities for Unicode characters, strings, and vectors
 * [[ucs-cmds.el]] -- Create commands that insert Unicode chars
+* [[strings.el]] -- Miscellaneous string functions
 
 == Numbers and Mathematics ==
 
