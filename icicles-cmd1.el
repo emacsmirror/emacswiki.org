@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Sep  6 08:30:09 2012 (-0700)
+;; Last-Updated: Fri Sep  7 13:47:53 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 24513
+;;     Update #: 24523
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -5865,7 +5865,9 @@ the behavior."                          ; Doc string
   (mapcar (lambda (buf) (list (buffer-name buf))) icicle-bufflist) nil ; `icicle-bufflist' is free.
   (and (fboundp 'confirm-nonexistent-file-or-buffer)  (confirm-nonexistent-file-or-buffer)) ; Emacs 23.
   nil 'buffer-name-history (icicle-default-buffer-names current-prefix-arg) nil
-  (icicle-buffer-bindings)              ; Bindings
+  (icicle-buffer-bindings               ; Bindings
+   ()
+   ((icicle-bufflist  (setq icicle-bufflist  (delete icicle-orig-buff icicle-bufflist)))))
   (icicle-bind-buffer-candidate-keys)   ; First code
   nil                                   ; Undo code
   (icicle-unbind-buffer-candidate-keys)) ; Last code
@@ -5902,7 +5904,9 @@ Same as `icicle-buffer' except it uses a different window." ; Doc string
   (mapcar (lambda (buf) (list (buffer-name buf))) icicle-bufflist) nil ; `icicle-bufflist' is free.
   (and (fboundp 'confirm-nonexistent-file-or-buffer)  (confirm-nonexistent-file-or-buffer)) ; Emacs 23.
   nil 'buffer-name-history (icicle-default-buffer-names current-prefix-arg) nil
-  (icicle-buffer-bindings)              ; Bindings
+  (icicle-buffer-bindings               ; Bindings
+   ()
+   ((icicle-bufflist  (setq icicle-bufflist  (delete icicle-orig-buff icicle-bufflist)))))
   (icicle-bind-buffer-candidate-keys)   ; First code
   nil                                   ; Undo code
   (icicle-unbind-buffer-candidate-keys)) ; Last code
