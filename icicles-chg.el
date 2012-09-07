@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Thu Sep  6 09:28:37 2012 (-0700)
+;; Last-Updated: Fri Sep  7 13:49:47 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8846
+;;     Update #: 8848
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -86,6 +86,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2012/09/07 dadams
+;;     icicle-buffer(-other-window): Exclude icicle-orig-buff from candidates.
 ;; 2012/08/13 dadams
 ;;     icicle-customize-face: Doc string improvement.
 ;; 2012/08/10 dadams
