@@ -197,7 +197,6 @@ bindings, among others:
   (icicle-must-pass-after-match-predicate  icicle-buffer-predicate)
   (icicle-require-match-flag               icicle-buffer-require-match-flag)
   (icicle-extra-candidates                 icicle-buffer-extras)
-  (icicle-ignore-space-prefix-flag         icicle-buffer-ignore-space-prefix-flag)
   (icicle-delete-candidate-object          'icicle-kill-a-buffer)
 
 
