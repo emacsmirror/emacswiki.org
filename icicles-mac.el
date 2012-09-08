@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:24:28 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Aug 23 14:02:44 2012 (-0700)
+;; Last-Updated: Sat Sep  8 10:35:55 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1002
+;;     Update #: 1020
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mac.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -400,7 +400,8 @@ created after the others."
   ;; in later Emacs releases.
   `,(append
      pre-bindings
-     `((completion-ignore-case                      (or (and (boundp 'read-buffer-completion-ignore-case)
+     `((icicle-buffer-name-input-p                  t) ; Must also be non-nil for non multi-commands.
+       (completion-ignore-case                      (or (and (boundp 'read-buffer-completion-ignore-case)
                                                          read-buffer-completion-ignore-case)
                                                      completion-ignore-case))
        (icicle-show-Completions-initially-flag      (or icicle-show-Completions-initially-flag
@@ -416,7 +417,6 @@ created after the others."
        (icicle-must-pass-after-match-predicate      icicle-buffer-predicate)
        (icicle-require-match-flag                   icicle-buffer-require-match-flag)
        (icicle-extra-candidates                     icicle-buffer-extras)
-       (icicle-ignore-space-prefix-flag             icicle-buffer-ignore-space-prefix-flag)
        (icicle-delete-candidate-object              'icicle-kill-a-buffer) ; `S-delete' kills current buf
        (icicle-transform-function                   'icicle-remove-dups-if-extras)
        (icicle--temp-orders
@@ -445,30 +445,25 @@ created after the others."
         (or icicle-candidate-alt-action-fn (icicle-alt-act-fn-for-type "buffer")))
        (icicle-all-candidates-list-alt-action-fn
         (or icicle-all-candidates-list-alt-action-fn (icicle-alt-act-fn-for-type "buffer")))
-       (bufflist
-        (if (and icicle-ignore-space-prefix-flag  (eq icicle-current-TAB-method 'vanilla))
-            (icicle-remove-if (lambda (buf) (eq ?\   (aref (buffer-name buf) 0)))
-                              (buffer-list))
-          (buffer-list)))
        (icicle-bufflist
         (if current-prefix-arg
             (cond ((and (consp current-prefix-arg)  (fboundp 'derived-mode-p)) ; `C-u'
                    (icicle-remove-if-not (lambda (bf)
                                            (derived-mode-p (with-current-buffer bf major-mode)))
-                                         bufflist))
+                                         (buffer-list)))
                   ((zerop (prefix-numeric-value current-prefix-arg)) ; `C-0'
                    (let ((this-mode  major-mode))
                      (icicle-remove-if-not `(lambda (bf)
                                              (with-current-buffer bf (eq major-mode ',this-mode)))
-                                           bufflist)))
+                                           (buffer-list))))
                   ((< (prefix-numeric-value current-prefix-arg) 0) ; `C--'
                    (cdr (assq 'buffer-list (frame-parameters))))
                   (t                    ; `C-1'
                    (icicle-remove-if-not (lambda (bf)
                                            (or (buffer-file-name bf)
                                                (with-current-buffer bf (eq major-mode 'dired-mode))))
-                                         bufflist)))
-          bufflist)))
+                                         (buffer-list))))
+          (buffer-list))))
      post-bindings))
 
 (defmacro icicle-file-bindings (&optional pre-bindings post-bindings)
@@ -654,8 +649,11 @@ This is an Icicles command - see command `icicle-mode'.")
                 nil))))                 ; Return nil for success.
       ,first-sexp
       (icicle-condition-case-no-debug act-on-choice
-          (let ((cmd-choice  (completing-read ,prompt ,collection ,predicate ,require-match
-                                              ,initial-input ,hist ,def ,inherit-input-method)))
+          (let ((cmd-choice
+                 (if icicle-buffer-name-input-p
+                     (icicle-read-buffer ,prompt ,def ,require-match)
+                   (completing-read ,prompt ,collection ,predicate ,require-match
+                                    ,initial-input ,hist ,def ,inherit-input-method))))
             ;; Reset after reading input, so that commands can tell whether input has been read.
             (setq icicle-candidate-action-fn  nil)
             (funcall #',function cmd-choice))
