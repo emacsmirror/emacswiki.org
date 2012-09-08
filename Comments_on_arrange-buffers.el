@@ -44,3 +44,10 @@ Here is my (EmilioLopes') version of it, using a functional predicate for more f
 
 -- EmilioLopes 2012-09-07 12:27 UTC
 
+
+----
+
+Why don't comment pages link back to the page in question?
+
+-- RyanDavis 2012-09-08 07:11 UTC
+
