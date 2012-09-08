@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Aug 23 14:22:40 2012 (-0700)
+;; Last-Updated: Fri Sep  7 16:39:56 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1637
+;;     Update #: 1642
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-var.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -40,7 +40,7 @@
 ;;    `icicle-allowed-sort-predicate', `icicle-apply-nomsg',
 ;;    `icicle-apropos-complete-match-fn', `icicle-bookmark-history',
 ;;    `icicle-bookmark-list-names-only-p', `icicle-bookmark-types',
-;;    `icicle-buffer-config-history',
+;;    `icicle-buffer-config-history', `icicle-buffer-name-input-p',
 ;;    `icicle-buffer-sort-first-time-p', `icicle-bufflist',
 ;;    `icicle-candidate-action-fn', `icicle-candidate-alt-action-fn',
 ;;    `icicle-candidate-entry-fn', `icicle-candidate-help-fn',
@@ -272,6 +272,9 @@ An empty list and the singleton list `(all)', where `all' is a symbol,
 are equivalent and stand for the set of all bookmarks (of any type).")
 
 (defvar icicle-buffer-config-history nil "History for buffer configuration names.")
+
+(defvar icicle-buffer-name-input-p nil
+  "Non-nil means we are reading a buffer name using `read-buffer'.")
 
 (defvar icicle-buffer-sort-first-time-p t
   "Non-nil means buffer-name completion has not yet been used.")
@@ -595,7 +598,6 @@ noted in parentheses.
 * `icicle-highlight-input-initial-whitespace-flag'
                                          - Highlight input whitespace?
 * `icicle-highlight-lighter-flag'        - Highlight mode-line `Icy'
-* `icicle-ignore-space-prefix-flag'      - See initial space? (`M-_')
 * `icicle-incremental-completion'        - Icompletion? (`C-#')
 * `icicle-incremental-completion-delay'  - Delay before update cands
 * `icicle-incremental-completion-threshold'- # of candidates for delay
