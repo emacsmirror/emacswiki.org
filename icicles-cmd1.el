@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Sep  7 13:47:53 2012 (-0700)
+;; Last-Updated: Fri Sep  7 15:59:54 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 24523
+;;     Update #: 24524
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -7525,7 +7525,6 @@ the behavior."                          ; Doc string
    (icicle-must-pass-after-match-predicate  (and (not icompletep)  icicle-buffer-predicate))
    (icicle-require-match-flag               icicle-buffer-require-match-flag)
    (icicle-extra-candidates                 icicle-buffer-extras)
-   (icicle-ignore-space-prefix-flag         icicle-buffer-ignore-space-prefix-flag)
    (icicle-delete-candidate-object          'icicle-kill-a-buffer) ; `S-delete' kills current buf
    (icicle-transform-function               'icicle-remove-dups-if-extras)
    (icicle-sort-comparer                    (or icicle-buffer-sort  icicle-sort-comparer))
