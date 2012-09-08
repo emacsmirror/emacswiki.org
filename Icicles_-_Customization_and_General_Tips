@@ -1186,32 +1186,18 @@ behavior.  To apropos-complete and exit the minibuffer, use
 `S-RET' instead of `RET'.  See [[Icicles - S-RET]].
 
 ----
-[:icicle-ignore-space-prefix-flag]
-==== Option icicle-ignore-space-prefix-flag ====
-
-Non-`nil' user option '''`icicle-ignore-space-prefix-flag'''' means to
-ignore completion candidates that start with a space.  However,
-such candidates are ''not'' ignored for ''prefix'' completion if the
-input also starts with a space.  Naturally, apropos completion
-is not affected by whether or not the input starts with a space.
-
-----
 [:icicle-buffer-ignore-space-prefix-flag]
 ==== Option icicle-buffer-ignore-space-prefix-flag ====
 
-User option '''`icicle-buffer-ignore-space-prefix-flag'''' lets you
-override the value of `<tt>[[#icicle-ignore-space-prefix-flag]]</tt>' for use
-with buffer-name completion (the names of internal buffers start
-with a space).  It is provided mainly for binding when using
+Non-`nil' user option '''`icicle-buffer-ignore-space-prefix-flag'''' means to
+ignore [[buffer]]-name completion candidates that start with a space.  However,
+such candidates are ''not'' ignored if your 
+input also starts with a space or if the names of all internal buffers start
+with a space).  This option is provided mainly for binding when using
 `icicle-define-command' (`icicle-buffer' does this).
 
-You can ''toggle'' `<tt>[[#icicle-ignore-space-prefix-flag]]</tt>' at any time
-using '''`##M-_##'''' in the minibuffer.  If the current command binds
-this option locally, then it is the local, not the global, value
-that is changed.  For example, if
-`icicle-buffer-ignore-space-prefix-flag' is non-`nil', then `##M-_##'
-toggles `<tt>[[#icicle-ignore-space-prefix-flag]]</tt>' to `nil' only for the
-duration of the buffer command (e.g. `icicle-buffer').
+You can ''toggle'' `icicle-buffer-ignore-space-prefix-flag' using '''`##M-_##'''' in the minibuffer (except during `icicle-search').
+
 
 ----
 [:icicle-test-for-remote-files-flag]
