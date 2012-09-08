@@ -155,6 +155,8 @@ Here's a function based on hippie expand dabbrev expansion which performs substr
 
 </pre>
 
+I did substring expansion only when input begins from delimited chars. Try M-x hippie-expand-dabbrev-limited-chars in Lisp:hippie-exp-ext.el -- [[rubikitch]]
+
 == Flexible match expansion ==
 
 I find it hard to give this hack a name but I know a similar feature in ido is called "flexible" matching, or similar, so I will use that in lack of a better term. 
