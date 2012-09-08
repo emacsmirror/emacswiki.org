@@ -5,7 +5,7 @@
 ;; Author: rubikitch <rubikitch@ruby-lang.org>
 ;; Maintainer: rubikitch <rubikitch@ruby-lang.org>
 ;; Copyright (C) 2012, rubikitch, all rights reserved.
-;; Time-stamp: <2012-09-08 17:40:49 rubikitch>
+;; Time-stamp: <2012-09-08 17:42:17 rubikitch>
 ;; Created: 2012-09-08 12:56:37
 ;; Version: 0.1
 ;;           By: rubikitch
@@ -56,7 +56,7 @@
 ;;
 ;; Example:
 ;;
-;; -ex [M-x try-expand-dabbrev-limited-chars] -> hippie-expand
+;; -ex [M-x hippie-expand-dabbrev-limited-chars] -> hippie-expand
 
 ;;; Installation:
 ;;
