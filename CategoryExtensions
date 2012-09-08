@@ -43,6 +43,7 @@ Extensions (using the category name from `finder-by-keyword'), are utility libra
 == Macros ==
 
 * MacroUtilities -- Utilities for writing macros.
+* [http://www.mahalito.net/~harley/elisp/nlet.el nlet.el] -- Scheme's "named let"
 
 == Concurrency ==
 
