@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Wed Aug 29 09:15:02 2012 (-0700)
+;; Last-Updated: Sat Sep  8 11:33:11 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 28981
+;;     Update #: 28988
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -5614,25 +5614,15 @@
 ;;    (@file :file-name "icicles-doc1.el" :to "Exiting the Minibuffer Without Confirmation"),
 ;;    for more information.
 ;;
-;;  * Non-`nil' user option `icicle-ignore-space-prefix-flag' means to
-;;    ignore completion candidates that start with a space.  However,
-;;    such candidates are not ignored for prefix completion if the
-;;    input also starts with a space.  Naturally, apropos completion
-;;    is not affected by whether or not the input starts with a space.
+;;  * Non-`nil' user option `icicle-buffer-ignore-space-prefix-flag'
+;;    means to ignore buffer-name completion candidates that start
+;;    with a space.  However, such candidates are not ignored if your
+;;    input also starts with a space or if the names of all buffers
+;;    start with a space.  This option is provided mainly for binding
+;;    when using `icicle-define-command' (`icicle-buffer' does this).
 ;;
-;;    Option `icicle-buffer-ignore-space-prefix-flag' lets you
-;;    override the value of `icicle-ignore-space-prefix-flag' for use
-;;    with buffer-name completion (the names of internal buffers start
-;;    with a space).  It is provided mainly for binding when using
-;;    `icicle-define-command' (`icicle-buffer' does this).
-;;
-;;    You can toggle `icicle-ignore-space-prefix-flag' at any time
-;;    using `M-_' in the minibuffer.  If the current command binds
-;;    this option locally, then it is the local, not the global, value
-;;    that is changed.  For example, if
-;;    `icicle-buffer-ignore-space-prefix-flag' is non-`nil', then
-;;    `M-_' toggles `icicle-ignore-space-prefix-flag' to `nil' only
-;;    for the duration of the buffer command (e.g. `icicle-buffer').
+;;    You can toggle `icicle-buffer-ignore-space-prefix-flag' using
+;;    `M-_' in the minibuffer (except during `icicle-search').
 ;;
 ;;  * Non-`nil' user option `icicle-test-for-remote-files-flag' means
 ;;    that Icicles tests for remote file names; `nil' means that it
@@ -9473,8 +9463,6 @@
 ;;   (icicle-must-pass-after-match-predicate  icicle-buffer-predicate)
 ;;   (icicle-require-match-flag      icicle-buffer-require-match-flag)
 ;;   (icicle-extra-candidates                    icicle-buffer-extras)
-;;   (icicle-ignore-space-prefix-flag
-;;                             icicle-buffer-ignore-space-prefix-flag)
 ;;   (icicle-delete-candidate-object            'icicle-kill-a-buffer)
 ;;
 ;;  As an example of using this macro, here is the core definition of
