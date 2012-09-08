@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Sep  7 15:59:54 2012 (-0700)
+;; Last-Updated: Sat Sep  8 16:41:18 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 24524
+;;     Update #: 24539
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -161,6 +161,8 @@
 ;;    `icicle-bookmark-w3m-narrow',
 ;;    (+)`icicle-bookmark-w3m-other-window', (+)`icicle-buffer',
 ;;    (+)`icicle-buffer-config', (+)`icicle-buffer-list',
+;;    (+)`icicle-buffer-of-content',
+;;    (+)`icicle-buffer-of-content-other-window',
 ;;    (+)`icicle-buffer-other-window', `icicle-cd-for-abs-files',
 ;;    `icicle-cd-for-loc-files', (+)`icicle-clear-history',
 ;;    (+)`icicle-clear-current-history', (+)`icicle-color-theme',
@@ -263,7 +265,8 @@
 ;;    `icicle-bookmark-cleanup', `icicle-bookmark-cleanup-on-quit',
 ;;    `icicle-bookmark-delete-action', `icicle-bookmark-help-string',
 ;;    `icicle-bookmark-jump-1', `icicle-buffer-name-prompt',
-;;    `icicle-clear-history-1', `icicle-clear-history-entry',
+;;    `icicle-buffer-of-content-complete', `icicle-clear-history-1',
+;;    `icicle-clear-history-entry',
 ;;    `icicle-comint-completion-at-point',
 ;;    `icicle-comint-dynamic-complete-as-filename',
 ;;    `icicle-comint-dynamic-simple-complete',
@@ -5910,6 +5913,137 @@ Same as `icicle-buffer' except it uses a different window." ; Doc string
   (icicle-bind-buffer-candidate-keys)   ; First code
   nil                                   ; Undo code
   (icicle-unbind-buffer-candidate-keys)) ; Last code
+
+;;;###autoload (autoload 'icicle-buffer-of-content "icicles")
+(icicle-define-command icicle-buffer-of-content ; Command name
+  "Switch to a different buffer, whose content contains a regexp match.
+Completion candidates are two-part multi-completions, with the second
+part optional.  If both parts are present they are separated by
+`icicle-list-join-string' (\"^G^J\", by default).
+
+The first part is matched as a regexp against a buffer name.
+The second part is matched as a regexp against buffer content.
+Candidates that do not match are filtered out.
+
+Your minibuffer input can match a buffer name or buffer content, or
+both.  Use `C-M-j' (equivalent here to `C-q C-g C-j') to input the
+default separator.
+
+For example, use input
+
+\"icicles^G
+buffer-w\"
+
+to match Icicles buffers whose content matches \"buffer-w\".
+
+Only the matching buffer names are shown in *Completions*, and only
+the chosen buffer name is returned.  The actual content matches are
+unimportant anyway: content matching is used only to filter
+candidates.
+
+This is a buffer-switching command.  If you insteadwant to navigate to
+text searched for in buffers then use `icicle-search'.
+
+In all respects besides matching/completion, this command behaves like
+`icicle-buffer' (which see), in particular, with respect to prefix
+arguments, default values, user options, and extra key bindings in
+effect during the command."             ; Doc string
+  switch-to-buffer                      ; Action function
+  prompt 'icicle-buffer-of-content-complete nil ;  `completing-read' args
+  (and (fboundp 'confirm-nonexistent-file-or-buffer)  (confirm-nonexistent-file-or-buffer)) ; Emacs 23.
+  nil 'buffer-name-history (icicle-default-buffer-names current-prefix-arg) nil
+  (icicle-buffer-bindings               ; Bindings
+   ((prompt                             (icicle-buffer-name-prompt
+                                         (format "Switch to `%s'"
+                                                 (icicle-propertize "BUFFER C-M-j CONTENT"
+                                                                    'face 'icicle-msg-emphasis))))
+    (icicle-list-use-nth-parts          '(1))
+    ;; Bind `icicle-apropos-complete-match-fn' to nil to prevent automatic input matching in
+    ;; `icicle-unsorted-apropos-candidates' etc., because `icicle-buffer-of-content-complete' does everything.
+    (icicle-apropos-complete-match-fn   nil)
+    (icicle-show-multi-completion-flag  t) ; Override user setting.
+    (icicle-candidate-help-fn           (lambda (cand)
+                                          (setq cand  (icicle-transform-multi-completion cand))
+                                          (when (and (bufferp (get-buffer cand))
+                                                     (with-current-buffer cand
+                                                       (if (fboundp 'describe-buffer) ; In `help-fns+.el'.
+                                                           (describe-buffer)
+                                                         (describe-mode)) t))))))
+   ((icicle-buffer-complete-fn          'icicle-buffer-of-content-complete)
+    ;; `icicle-bufflist' is free here.
+    (icicle-bufflist  (setq icicle-bufflist  (delete icicle-orig-buff icicle-bufflist)))))
+  (progn (icicle-bind-buffer-candidate-keys)
+         (put-text-property 0 1 'icicle-fancy-candidates t prompt) ; First code
+         (icicle-highlight-lighter)
+         (message "Matching buffer contents..."))
+  nil                                   ; Undo code
+  (icicle-unbind-buffer-candidate-keys)) ; Last code
+
+;;;###autoload (autoload 'icicle-buffer-of-content-other-window "icicles")
+(icicle-define-command icicle-buffer-of-content-other-window ; Command name
+  "Switch to a buffer whose content matches a regexp, in another window.
+Same as `icicle-buffer-of-content' except it uses a different window." ; Doc string
+  switch-to-buffer-other-window         ; Action function
+  prompt
+  'icicle-buffer-of-content-complete nil ; `completing-read' args
+  (and (fboundp 'confirm-nonexistent-file-or-buffer)  (confirm-nonexistent-file-or-buffer)) ; Emacs 23.
+  nil 'buffer-name-history (icicle-default-buffer-names current-prefix-arg) nil
+  (icicle-buffer-bindings               ; Bindings
+   ((prompt                             (icicle-buffer-name-prompt
+                                         (format "Switch to `%s'"
+                                                 (icicle-propertize "BUFFER C-M-j CONTENT"
+                                                                    'face 'icicle-msg-emphasis))))
+    (icicle-list-use-nth-parts          '(1))
+    ;; Bind `icicle-apropos-complete-match-fn' to nil to prevent automatic input matching in
+    ;; `icicle-unsorted-apropos-candidates' etc., because `icicle-buffer-of-content-complete' does everything.
+    (icicle-apropos-complete-match-fn   nil)
+    (icicle-show-multi-completion-flag  t) ; Override user setting.
+    (icicle-candidate-help-fn           (lambda (cand)
+                                          (setq cand  (icicle-transform-multi-completion cand))
+                                          (when (and (bufferp (get-buffer cand))
+                                                     (with-current-buffer cand
+                                                       (if (fboundp 'describe-buffer) ; In `help-fns+.el'.
+                                                           (describe-buffer)
+                                                         (describe-mode)) t))))))
+   ((icicle-buffer-complete-fn          'icicle-buffer-of-content-complete)
+    ;; `icicle-bufflist' is free here.
+    (icicle-bufflist  (setq icicle-bufflist  (delete icicle-orig-buff icicle-bufflist)))))
+  (progn (icicle-bind-buffer-candidate-keys)
+         (put-text-property 0 1 'icicle-fancy-candidates t prompt) ; First code
+         (icicle-highlight-lighter)
+         (message "Matching buffer contents..."))
+  nil                                   ; Undo code
+  (icicle-unbind-buffer-candidate-keys)) ; Last code
+
+(defun icicle-buffer-of-content-complete (strg pred completion-mode)
+  "Completion function for `icicle-buffer-of-content'.
+Used as the value of `icicle-buffer-complete-fn' and hence as
+`minibuffer-completion-table'."
+  (setq strg  icicle-current-input)
+  (lexical-let* ((buf-pat      (let ((icicle-list-use-nth-parts  '(1)))
+                                 (icicle-transform-multi-completion strg)))
+                 (buf-pat      (if (memq icicle-current-completion-mode '(nil apropos))
+                                   buf-pat
+                                 (concat "^" buf-pat)))
+                 (content-pat  (let ((icicle-list-use-nth-parts  '(2)))
+                                 (icicle-transform-multi-completion strg)))
+                 (bfnames      (mapcar (lambda (buf) (buffer-name buf)) icicle-bufflist))
+                 (bfnames      (if icicle-buffer-ignore-space-prefix-flag
+                                   (icicle-remove-if (lambda (bfname) (icicle-string-match-p "^ " bfname))
+                                                     bfnames)
+                                 bfnames))
+                 (bfnames      (icicle-remove-if-not (lambda (bfname) (icicle-string-match-p buf-pat bfname))
+                                                     bfnames))
+                 (bfnames      (icicle-remove-if-not
+                                (lambda (bfname)
+                                  (with-current-buffer bfname
+                                    (save-excursion
+                                      (goto-char (point-min))
+                                      (re-search-forward content-pat nil t))))
+                                bfnames)))
+    (if completion-mode
+        bfnames                         ; `all-completions', `test-completion'
+      (try-completion strg (mapcar #'list bfnames) pred))))
 
 ;;;###autoload (autoload 'icicle-insert-buffer "icicles")
 (icicle-define-command icicle-insert-buffer
