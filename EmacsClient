@@ -934,6 +934,23 @@ The bad thing about <tt>e</tt> is that it relies on an undocumented feature of e
 It is assumed that <tt>emacsclient --alternate-editor /usr/bin/false ...</tt> returns the exit code of <tt>false</tt> if the alternate editor is used and that it returns SUCCESS if the server can successfully be contacted.
 
 -- TN
+
+I've simplified this down to the following shell script, which I keep in ~/bin/e:
+
+<pre>
+if [ -z "$1" ]
+then
+    TMP="$(mktemp /tmp/stdin-XXX)"
+    cat >$TMP
+    emacsclient -a emacs $TMP
+    rm $TMP
+else
+    emacsclient -a emacs "$@"
+fi
+</pre>
+
+It's not *quite* the same but I value the simplicity of it. With this you no longer need 'e -' to indicate STDIN, e will just look for STDIN whenever no files are specified.
+
 [new]
 
 If you happen to be using Eshell, you can get this via:
