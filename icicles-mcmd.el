@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Sep  6 09:06:57 2012 (-0700)
+;; Last-Updated: Sat Sep  8 08:08:00 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 18438
+;;     Update #: 18451
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -369,18 +369,18 @@
      (require 'icicles-mac)))           ; Require, so can load separately if not on `load-path'.
   ;; icicle-assoc-delete-all, icicle-define-sort-command
 (require 'icicles-opt)                  ; (This is required anyway by `icicles-var.el'.)
-  ;; icicle-alternative-sort-comparer, icicle-move-Completions-frame,
-  ;; icicle-Completions-mouse-3-menu-entries, icicle-default-cycling-mode,
+  ;; icicle-alternative-sort-comparer, icicle-buffer-ignore-space-prefix-flag,
+  ;; icicle-move-Completions-frame, icicle-Completions-mouse-3-menu-entries, icicle-default-cycling-mode,
   ;; icicle-default-thing-insertion, icicle-expand-input-to-common-match,
   ;; icicle-hide-common-match-in-Completions-flag, icicle-hide-non-matching-lines-flag,
-  ;; icicle-ignore-space-prefix-flag, icicle-incremental-completion, icicle-input-string,
+  ;; icicle-incremental-completion, icicle-input-string,
   ;; icicle-key-descriptions-use-<>-flag, icicle-regexp-quote-flag, icicle-saved-completion-sets,
   ;; icicle-search-cleanup-flag, icicle-search-highlight-all-current-flag, icicle-sort-comparer,
   ;; icicle-sort-orders-alist, icicle-TAB-shows-candidates-flag, icicle-thing-at-point-functions,
   ;; icicle-transform-function
 (eval-and-compile (require 'icicles-var)) ; (This is required anyway by `icicles-fn.el'.)
-  ;; lacarte-menu-items-alist, icicle-candidate-action-fn, icicle-candidate-nb,
-  ;; icicle-complete-keys-alist, icicle-completion-candidates, 
+  ;; lacarte-menu-items-alist, icicle-buffer-name-input-p, icicle-candidate-action-fn,
+  ;; icicle-candidate-nb, icicle-complete-keys-alist, icicle-completion-candidates, 
   ;; icicle-current-completion-candidate-overlay, icicle-current-completion-mode,
   ;; icicle-current-input, icicle-current-raw-input, icicle-default-directory,
   ;; icicle-default-thing-insertion-flipped-p, icicle-edit-update-p, icicle-general-help-string,
@@ -1347,12 +1347,9 @@ Otherwise, sort alphabetically.  Ignore letter case if
   "Do the right thing for `M-_'.
 During Icicles search, call `icicle-toggle-search-replace-whole'.
 Otherwise, call `icicle-toggle-ignored-space-prefix'.
-
 Bound to `M-_' in the minibuffer."
   (interactive)
-  (if icicle-searching-p
-      (icicle-toggle-search-replace-whole)
-    (call-interactively #'icicle-toggle-ignored-space-prefix)))
+  (if icicle-searching-p (icicle-toggle-search-replace-whole) (icicle-toggle-ignored-space-prefix)))
 
 ;;; No longer used.
 ;;; (defun icicle-dispatch-C-comma ()
@@ -2014,7 +2011,7 @@ These are the main Icicles actions and their minibuffer key bindings:
                   (if icicle-network-drive-means-remote-flag 'yes 'no)))
 
      (format "\\<minibuffer-local-completion-map>
-     Ignoring space prefix                   \\[icicle-dispatch-M-_]\t%S
+     Ignoring space prefix for buffer names  \\[icicle-dispatch-M-_]\t%S
      Using `C-' for multi-command actions    \\[icicle-toggle-C-for-actions]\t%S
      Using `~' for your home directory       \\[icicle-toggle-~-for-home-dir]\t%S
      `icicle-search' all-current highlights  \\[icicle-dispatch-C-^]\t%S
@@ -2178,7 +2175,7 @@ This calls `icicle-pp-eval-expression-in-minibuffer', which displays
 the result in the echo area or a popup buffer, *Pp Eval Output*.
 It also provides some of the Emacs-Lisp key bindings during expression
 editing."
-             (if icicle-ignore-space-prefix-flag 'yes 'no)
+             (if icicle-buffer-ignore-space-prefix-flag 'yes 'no)
              (if icicle-use-C-for-actions-flag 'yes 'no)
              (if icicle-use-~-for-home-dir-flag 'yes 'no)
              (if icicle-search-highlight-all-current-flag 'yes 'no)
@@ -6205,9 +6202,11 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
   (interactive)
   (when (interactive-p) (icicle-barf-if-outside-Completions-and-minibuffer))
   (message "Complementing current set of candidates...")
-  (let ((initial-cands  (icicle-all-completions "" minibuffer-completion-table
-                                                minibuffer-completion-predicate
-                                                icicle-ignore-space-prefix-flag)))
+  (let ((initial-cands  (icicle-all-completions
+                         "" minibuffer-completion-table
+                         minibuffer-completion-predicate
+                         (and icicle-buffer-name-input-p ; Used only by Emacs < 23.2.
+                              icicle-buffer-ignore-space-prefix-flag))))
     (setq icicle-completion-candidates  (icicle-set-difference
                                          (if icicle-must-pass-after-match-predicate
                                              (icicle-remove-if-not
@@ -7657,32 +7656,16 @@ Bound to `M-m' in the minibuffer."
 ;;;###autoload (autoload 'toggle-icicle-ignored-space-prefix "icicles")
 (defalias 'toggle-icicle-ignored-space-prefix 'icicle-toggle-ignored-space-prefix)
 ;;;###autoload (autoload 'icicle-toggle-ignored-space-prefix "icicles")
-(defun icicle-toggle-ignored-space-prefix (&optional buffer-instead-p)
+(defun icicle-toggle-ignored-space-prefix ()
                                         ; Bound to `M-_' in minibuffer, except when searching.
-  "Toggle `icicle-ignore-space-prefix-flag'.
-Bound to `M-_' in the minibuffer, except during Icicles searching.
-
-With a prefix arg, toggle `icicle-buffer-ignore-space-prefix-flag'
-instead (not `icicle-ignore-space-prefix-flag').
-
-With no prefix arg: If the current command binds
-`icicle-ignore-space-prefix-flag' locally, then it is the local, not
-the global, value that is changed.  For example, `icicle-buffer' binds
-it to the value of `icicle-buffer-ignore-space-prefix-flag'.  If that
-is non-nil, then \\<minibuffer-local-completion-map>`\\[icicle-dispatch-M-_]' toggles \
-`icicle-ignore-space-prefix-flag' to
-nil only for the duration of `icicle-buffer'."
-  (interactive "P")
-  (let ((opt  (if buffer-instead-p
-                  'icicle-buffer-ignore-space-prefix-flag
-                'icicle-ignore-space-prefix-flag)))
-    (set opt (not (symbol-value opt)))
-    (icicle-complete-again-update)
-    (icicle-msg-maybe-in-minibuffer
-     "Ignoring space prefix is now %s%s"
-     (icicle-propertize (if (symbol-value opt) "ON" "OFF")
-                        'face 'icicle-msg-emphasis)
-     (if buffer-instead-p " for buffers" ""))))
+  "Toggle `icicle-buffer-ignore-space-prefix-flag'.
+Bound to `M-_' in the minibuffer, except during Icicles searching."
+  (interactive)
+  (setq icicle-buffer-ignore-space-prefix-flag  (not icicle-buffer-ignore-space-prefix-flag))
+  (icicle-complete-again-update)
+  (icicle-msg-maybe-in-minibuffer
+   "Ignoring space prefix in buffer names is now %s"
+   (icicle-propertize (if icicle-buffer-ignore-space-prefix-flag "ON" "OFF") 'face 'icicle-msg-emphasis)))
 
 ;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;
