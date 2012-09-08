@@ -51,3 +51,12 @@ Why don't comment pages link back to the page in question?
 
 -- RyanDavis 2012-09-08 07:11 UTC
 
+
+----
+
+At the bottom of the page, on the left, is a link back to the page in question. It does not say "Back" etc. It has just the page name. 
+
+It took me a while also to figure this out. Perhaps it could be in a more prominent place, instead of mixed in with 13 other links.
+
+-- DrewAdams 2012-09-08 13:36 UTC
+
