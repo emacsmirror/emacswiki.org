@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Thu Sep  6 09:03:02 2012 (-0700)
+;; Last-Updated: Fri Sep  7 16:02:22 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5803
+;;     Update #: 5808
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -330,9 +330,8 @@
   ;; icicle-alternative-sort-comparer, icicle-buffer-extras, icicle-buffer-ignore-space-prefix-flag,
   ;; icicle-buffer-match-regexp, icicle-buffer-no-match-regexp, icicle-buffer-predicate,
   ;; icicle-buffer-require-match-flag, icicle-buffer-sort, icicle-complete-keys-self-insert-ranges,
-  ;; icicle-ignore-space-prefix-flag, icicle-key-descriptions-use-<>-flag, icicle-recenter,
-  ;; icicle-require-match-flag, icicle-saved-completion-sets,
-  ;; icicle-search-cleanup-flag, icicle-search-highlight-all-current-flag,
+  ;; icicle-key-descriptions-use-<>-flag, icicle-recenter, icicle-require-match-flag,
+  ;; icicle-saved-completion-sets, icicle-search-cleanup-flag, icicle-search-highlight-all-current-flag,
   ;; icicle-search-highlight-threshold, icicle-search-hook, icicle-sort-comparer,
   ;; icicle-transform-function
 (require 'icicles-var)                  ; (This is required anyway by `icicles-fn.el'.)
@@ -2733,8 +2732,9 @@ Use `mouse-2', `RET', or `S-RET' to finally choose a candidate, or
 `C-g' to quit.  This is an Icicles command - see command
 `icicle-mode'.
 
-`icicle-apply' overrides `icicle-ignore-space-prefix-flag', binding it
-to nil so that candidates with initial spaces can be matched."
+`icicle-apply' overrides `icicle-buffer-ignore-space-prefix-flag',
+binding it to nil so that candidates with initial spaces can be
+matched."
   (interactive
    (list (symbol-value
           (intern
@@ -2771,11 +2771,11 @@ to nil so that candidates with initial spaces can be matched."
              (if (boundp 'function-name-history) 'function-name-history 'icicle-function-name-history))))))
 
   (setq icicle-candidate-entry-fn  fn)  ; Save in global variable - used by `icicle-apply-action'.
-  (let ((icicle-candidate-action-fn            'icicle-apply-action)
-        (icicle-all-candidates-list-action-fn  'icicle-apply-list-action)
-        (icicle-ignore-space-prefix-flag       nil)
-        (icicle-apply-nomsg                    nomsg)
-        (enable-recursive-minibuffers          t))
+  (let ((icicle-candidate-action-fn              'icicle-apply-action)
+        (icicle-all-candidates-list-action-fn    'icicle-apply-list-action)
+        (icicle-buffer-ignore-space-prefix-flag  nil)
+        (icicle-apply-nomsg                      nomsg)
+        (enable-recursive-minibuffers            t))
     (icicle-explore
      (lambda ()
        (setq icicle-candidates-alist    ; Ensure that keys of ALIST are strings or conses.
@@ -3339,9 +3339,6 @@ otherwise, it is strict.
 
 After you visit a completion candidate, the hooks in variable
 `icicle-search-hook' are run.
-
-`icicle-search' overrides `icicle-ignore-space-prefix-flag', binding
-it to nil, so that candidates with initial spaces can be matched.
 
 `icicle-search' sets `icicle-search-final-choice' to the final user
 choice, which might not be one of the search candidates if
@@ -6796,7 +6793,6 @@ filtering:
               (icicle-must-pass-after-match-predicate  icicle-buffer-predicate)
               (icicle-require-match-flag               icicle-buffer-require-match-flag)
               (icicle-extra-candidates                 icicle-buffer-extras)
-              (icicle-ignore-space-prefix-flag         icicle-buffer-ignore-space-prefix-flag)
               (icicle-delete-candidate-object          'icicle-kill-a-buffer) ; `S-delete' kills buf
               (icicle-transform-function               'icicle-remove-dups-if-extras)
               (icicle--temp-orders
