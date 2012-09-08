@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Sep  7 13:49:47 2012 (-0700)
+;; Last-Updated: Sat Sep  8 11:19:46 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8848
+;;     Update #: 8899
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -86,6 +86,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2012/09/08 dadams
+;;     icicle-buffer-list: Remove binding of icicle-ignore-space-prefix-flag.
 ;; 2012/09/07 dadams
 ;;     icicle-buffer(-other-window): Exclude icicle-orig-buff from candidates.
 ;; 2012/08/13 dadams
@@ -685,6 +687,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2012/09/08 dadams
+;;     icicle-apply: Override icicle-buffer-ignore-space-prefix-flag, not icicle-ignore-space-prefix*.
+;;     icicle-search: Remove mention of overriding icicle-ignore-space-prefix-flag.
+;;     icicle-choose-candidate-of-type: Remove binding of icicle-ignore-space-prefix-flag.
 ;; 2012/09/06 dadams
 ;;     Use icicle-string-match-p.
 ;; 2012/09/05 dadams
@@ -1423,6 +1429,16 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2012/09/08 dadams
+;;     Added: icicle-read-buffer, icicle-ORIG-read-buffer.
+;;     icicle-unsorted-(prefix|apropos)-candidates:
+;;       Use buffer-name alist, if not ignoring space prefix and not internal-complete-buffer.
+;;       Ensure icicle-buffer-name-input-p to pass icicle-buffer-ignore-space-prefix-flag arg.
+;;     icicle-unsorted-file-name-(prefix|apropos)-candidates,
+;;       icicle-apropos-any-file-name-candidates-p:
+;;         Do not pass icicle-ignore-space-prefix-flag arg to icicle-all-completions.
+;;     icicle-display-Completions, icicle-apropos-any-candidates-p:
+;;       Ensure icicle-buffer-name-input-p to pass icicle-buffer-ignore-space-prefix-flag arg.
 ;; 2012/09/06 dadams
 ;;     Added icicle-string-match-p.  Use it.
 ;; 2012/08/31 dadams
@@ -3135,6 +3151,12 @@
 ;;       macros needs to be byte-compiled anew after loading the updated macros.
 ;; ****************************************************************************************************
 ;;
+;; 2012/09/08 dadams
+;;     icicle-buffer-bindings: Bind icicle-buffer-name-input-p to t.
+;;                             Remove bindings of icicle-ignore-space-prefix-flag and bufflist.
+;;                             (bufflist used icicle-ignore-space-prefix-flag to remove SPC buffers.)
+;;     icicle-define-command:
+;;       If icicle-buffer-name-input-p then use icicle-read-buffer (it is new), not completing-read.
 ;; 2012/07/24 dadams
 ;;     icicle-buffer-bindings: If icicle-ignore-space-prefix-flag & VANILLA then remove internal bufs.
 ;; 2012/07/19 dadams
@@ -3317,6 +3339,13 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2012/09/08 dadams
+;;     icicle-dispatch-M-_: Call icicle-toggle-ignored-space-prefix normally, not interactively.
+;;     icicle-help-string-completion: *-buffer-ignore-space-prefix-flag, not *-ignore-space-prefix*.
+;;     icicle-candidate-set-complement:
+;;       Ensure icicle-buffer-name-input-p to pass icicle-buffer-ignore-space-prefix-flag arg.
+;;     icicle-toggle-ignored-space-prefix: Removed optional arg BUFFER-INSTEAD-P.
+;;       It now toggles icicle-buffer-ignore-space-prefix-flag, not icicle-ignore-space-prefix-flag.
 ;; 2012/09/06 dadams
 ;;     Use icicle-string-match-p.
 ;; 2012/09/03 dadams
@@ -4808,6 +4837,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2012/09/08 dadams
+;;     icicle-define-icicle-maps: *-buffer-ignore-space-prefix-flag, not *-ignore-space-prefix-flag.
+;;     icicle-(redefine|restore)-std-completion-fns: Added icicle(-ORIG)-read-buffer.
 ;; 2012/08/06 dadams
 ;;     Renamed old-* to icicle-ORIG-*:
 ;;       icicle-ORIG-bbdb-complete-name, icicle-ORIG-comint-dynamic-complete,
@@ -5942,6 +5974,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2012/09/08 dadams
+;;     Removed: icicle-ignore-space-prefix-flag.
+;;     icicle-buffer-ignore-space-prefix-flag: Updated doc to be self-contained.
 ;; 2012/08/26 dadams
 ;;     icicle-thing-at-point:
 ;;       If SYNTAX-TABLE is nil, then do not use with-syntax-table.  Removed SYNTAX-TABLE args.
@@ -6669,6 +6704,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2012/09/08 dadams
+;;     Added: icicle-buffer-name-input-p.
+;;     icicle-general-help-string: Removed reference to icicle-ignore-space-prefix-flag.
 ;; 2012/08/06 dadams
 ;;     Renamed: icicle-old-read-file-name-fn to icicle-orig-read-file-name-fn.
 ;; 2012/07/07 dadams
