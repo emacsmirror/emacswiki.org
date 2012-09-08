@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Aug 27 16:00:47 2012 (-0700)
+;; Last-Updated: Fri Sep  7 16:22:35 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5320
+;;     Update #: 5323
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -108,7 +108,6 @@
 ;;    `icicle-highlight-lighter-flag',
 ;;    `icicle-highlight-saved-candidates-flag',
 ;;    `icicle-ignore-comments-flag', `icicle-ignored-directories',
-;;    `icicle-ignore-space-prefix-flag',
 ;;    `icicle-image-files-in-Completions',
 ;;    `icicle-incremental-completion',
 ;;    `icicle-incremental-completion-delay',
@@ -771,7 +770,11 @@ List elements are strings."
 
 ;;;###autoload
 (defcustom icicle-buffer-ignore-space-prefix-flag t
-  "*Override `icicle-ignore-space-prefix-flag' for `icicle-buffer*'.
+  "*Non-nil means ignore buffer-name completions that start with a space.
+However, such candidates are not ignored when your input also starts
+with a space or when there are no buffers whose names do not start
+with a space.
+
 Note: This option is provided mainly for use (binding) in
 `icicle-define-command' and `icicle-define-file-command'.
 You probably do not want to set this globally, but you can.
@@ -2021,19 +2024,6 @@ toggle the option."
                                            vc-directory-exclusion-list)
   "*Directories ignored by `icicle-locate-file'."
   :type '(repeat string) :group 'Icicles-Files)
-
-;;;###autoload
-(defcustom icicle-ignore-space-prefix-flag nil ; Toggle with `M-_'.
-  "*Non-nil means ignore completion candidates that start with a space.
-However, such candidates are not ignored for prefix completion when
-the input also starts with a space.
-
-You can toggle this option from the minibuffer using `M-_'.  You can
-also use multi-command `icicle-toggle-option' anytime to toggle the
-option.
-
-Note: Some Icicles functionalities ignore the value of this option."
-  :type 'boolean :group 'Icicles-Matching)
 
 ;;;###autoload
 (defcustom icicle-image-files-in-Completions (and (fboundp 'image-file-name-regexp)
