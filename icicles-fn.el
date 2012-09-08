@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Sep  6 09:04:01 2012 (-0700)
+;; Last-Updated: Sat Sep  8 10:56:14 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 13289
+;;     Update #: 13339
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -61,6 +61,7 @@
 ;;    `icicle-candidate-short-help',
 ;;    `icicle-case-insensitive-string-less-p',
 ;;    `icicle-case-string-less-p', `icicle-cdr-lessp',
+;;    `icicle-char-cands-from-charlist',
 ;;    `icicle-choose-completion-string', `icicle-clear-lighter',
 ;;    `icicle-clear-minibuffer', `icicle-color-name-w-bg',
 ;;    `icicle-color-rgb-lessp', `icicle-command-abbrev-save',
@@ -142,7 +143,8 @@
 ;;    `icicle-ORIG-display-completion-list',
 ;;    `icicle-ORIG-face-valid-attribute-values',
 ;;    `icicle-ORIG-minibuffer-default-add-completions',
-;;    `icicle-ORIG-read-char-by-name', `icicle-ORIG-read-face-name',
+;;    `icicle-ORIG-read-buffer', `icicle-ORIG-read-char-by-name',
+;;    `icicle-ORIG-read-face-name',
 ;;    `icicle-ORIG-read-from-minibuffer', `icicle-ORIG-read-number',
 ;;    `icicle-ORIG-read-string', `icicle-ORIG-shell-command',
 ;;    `icicle-ORIG-shell-command-on-region',
@@ -156,7 +158,7 @@
 ;;    `icicle-propertize', `icicle-proxy-candidate-first-p',
 ;;    `icicle-put-at-head', `icicle-put-whole-cand-prop',
 ;;    `icicle-quote-file-name-part-of-cmd',
-;;    `icicle-readable-to-markers', `icicle-char-cands-from-charlist',
+;;    `icicle-readable-to-markers', `icicle-read-buffer',
 ;;    `icicle-read-char-by-name', `icicle-read-char-exclusive',
 ;;    `icicle-read-char-maybe-completing', `icicle-read-face-name',
 ;;    `icicle-read-file-name', `icicle-read-from-minibuffer',
@@ -292,10 +294,10 @@
   ;; icicle-with-selected-window
 
 (require 'icicles-opt)                  ; (This is required anyway by `icicles-var.el'.)
-  ;; icicle-Completions-display-min-input-chars, icicle-expand-input-to-common-match,
-  ;; icicle-hide-common-match-in-Completions-flag, icicle-hide-non-matching-lines-flag,
-  ;; icicle-highlight-historical-candidates-flag, icicle-highlight-input-initial-whitespace-flag,
-  ;; icicle-ignore-space-prefix-flag, icicle-incremental-completion-delay,
+  ;; icicle-buffer-ignore-space-prefix-flag, icicle-Completions-display-min-input-chars,
+  ;; icicle-expand-input-to-common-match, icicle-hide-common-match-in-Completions-flag,
+  ;; icicle-hide-non-matching-lines-flag, icicle-highlight-historical-candidates-flag,
+  ;; icicle-highlight-input-initial-whitespace-flag, icicle-incremental-completion-delay,
   ;; icicle-incremental-completion, icicle-incremental-completion-threshold,
   ;; icicle-default-value, icicle-list-join-string, icicle-mark-position-in-candidate,
   ;; icicle-point-position-in-candidate, icicle-regexp-quote-flag, icicle-require-match-flag,
@@ -303,15 +305,16 @@
   ;; icicle-transform-function, icicle-use-~-for-home-dir-flag
 
 (require 'icicles-var)
-  ;; icicle-candidate-nb, icicle-candidate-action-fn, icicle-candidate-properties-alist,
-  ;; icicle-cmd-calling-for-completion, icicle-common-match-string, icicle-complete-input-overlay,
-  ;; icicle-completing-p (variable), icicle-completion-candidates, icicle-current-completion-mode,
-  ;; icicle-current-input, icicle-current-raw-input, icicle-default-directory, icicle-edit-update-p,
-  ;; icicle-extra-candidates, icicle-ignored-extensions-regexp, icicle-incremental-completion-p,
-  ;; icicle-initial-value, icicle-last-completion-candidate, icicle-last-input,
-  ;; icicle-must-match-regexp, icicle-must-not-match-regexp, icicle-must-pass-predicate,
-  ;; icicle-must-pass-after-match-predicate, icicle-nb-of-other-cycle-candidates, icicle-re-no-dot,
-  ;; icicle-reverse-sort-p, icicle-saved-completion-candidates
+  ;; icicle-buffer-name-input-p, icicle-candidate-nb, icicle-candidate-action-fn,
+  ;; icicle-candidate-properties-alist, icicle-cmd-calling-for-completion, icicle-common-match-string,
+  ;; icicle-complete-input-overlay, icicle-completing-p (variable), icicle-completion-candidates,
+  ;; icicle-current-completion-mode, icicle-current-input, icicle-current-raw-input,
+  ;; icicle-default-directory, icicle-edit-update-p, icicle-extra-candidates,
+  ;; icicle-ignored-extensions-regexp, icicle-incremental-completion-p, icicle-initial-value,
+  ;; icicle-last-completion-candidate, icicle-last-input, icicle-must-match-regexp,
+  ;; icicle-must-not-match-regexp, icicle-must-pass-predicate, icicle-must-pass-after-match-predicate,
+  ;; icicle-nb-of-other-cycle-candidates, icicle-re-no-dot, icicle-reverse-sort-p,
+  ;; icicle-saved-completion-candidates
 
 ;; This requirement is real, but leads to recursion.
 ;; You should, in any case, just load everything by loading `icicles.el'.
@@ -363,7 +366,7 @@
 (defvar icicle-read-char-history)       ; In `icicles-var.el' for Emacs 23+.
 (defvar list-colors-sort)               ; In `facemenu.el'
 (defvar 1on1-*Completions*-frame-flag)  ; In `oneonone.el'
-(defvar shell-completion-execonly)      ; In `shell.el'
+(defvar read-buffer-completion-ignore-case) ; Emacs 23+.
 (defvar recentf-list)                   ; In `recentf.el'
 (defvar recentf-menu-filter-commands)
 (defvar recentf-menu-filter)
@@ -371,6 +374,7 @@
 (defvar recentf-menu-open-all-flag)
 (defvar recentf-menu-filter-commands)
 (defvar recentf-menu-items-for-commands)
+(defvar shell-completion-execonly)      ; In `shell.el'
 (defvar ucs-names)                      ; In `mule-cmds.el'.
 
 
@@ -1414,6 +1418,57 @@ for POSITION."
                                            (icicle-filter-wo-input cand)))
                                        all))
       (if (listp def) (append def all) (cons def (delete def all))))))
+
+
+;; REPLACE ORIGINAL `read-buffer' (built-in).
+;;
+;; 1. Interactively, uses `another-buffer' or `other-buffer' if no default.
+;; 2. Emacs 23+ compatible: handles `read-buffer-function'
+;;    and `read-buffer-completion-ignore-case'.
+;; 3. Respects `icicle-buffer-ignore-space-prefix-flag'.
+;;
+(unless (fboundp 'icicle-ORIG-read-buffer)
+  (defalias 'icicle-ORIG-read-buffer (symbol-function 'read-buffer)))
+
+(defun icicle-read-buffer (prompt &optional default require-match)
+  "Read the name of a buffer and return it as a string.
+Prompt with first arg, PROMPT (a string).
+
+If user input is empty (just `RET') then return the default value,
+which is:
+ - optional second arg DEFAULT, if non-nil
+ - `another-buffer' or `other-buffer', otherwise.
+
+If `another-buffer' is undefined, then use `other-buffer'.
+
+Starting with Emacs 23, DEFAULT can be a list of names (strings), in
+which case the first name in the list is returned on empty input.
+
+Non-nil REQUIRE-MATCH means to allow only names of existing buffers.
+It is the same as for `completing-read'.
+
+Case sensitivity is determined by
+`read-buffer-completion-ignore-case', if defined, or
+`completion-ignore-case' otherwise.
+
+This binds variable `icicle-buffer-name-input-p' to non-nil."
+  (let ((icicle-buffer-name-input-p  t))
+    (if (and (boundp 'read-buffer-function)  read-buffer-function)
+        (funcall read-buffer-function prompt)
+      (when (interactive-p)
+        (setq default  (or default  (if (fboundp 'another-buffer) ; In `misc-fns.el'.
+                                        (another-buffer nil t)
+                                      (other-buffer (current-buffer))))))
+      (when (bufferp default) (setq default  (buffer-name default))) ; Need a string as default.
+      (let ((completion-ignore-case  (if (boundp 'read-buffer-completion-ignore-case)
+                                         read-buffer-completion-ignore-case
+                                       completion-ignore-case)))
+        (completing-read prompt (if (and icicle-buffer-ignore-space-prefix-flag
+                                         (fboundp 'internal-complete-buffer))
+                                    'internal-complete-buffer ; Emacs 22+
+                                  (mapcar (lambda (buf) (and (buffer-live-p buf)  (list (buffer-name buf))))
+                                          (buffer-list)))
+                         nil require-match nil 'buffer-name-history default nil)))))
 
 
 ;; REPLACE ORIGINAL `read-number' defined in `subr.el',
@@ -3540,18 +3595,23 @@ When `icicle-expand-input-to-common-match' = 3 or 4, which implies
 prefix auto-expansion, this also sets `icicle-common-match-string' to
 the expanded common match of the input over all candidates."
   (condition-case nil
-      (let* ((candidates
+      (let* ((m-c-table
+              ;; Prevent Emacs 23.2+ from using `internal-complete-buffer' if not ignoring space prefixes.
+              ;; This lets `icicle-toggle-ignored-space-prefix' refresh to include space prefixes.
+              (if (or (not (eq minibuffer-completion-table 'internal-complete-buffer))
+                      icicle-buffer-ignore-space-prefix-flag)
+                  minibuffer-completion-table
+                (mapcar (lambda (buf) (and (buffer-live-p buf)  (list (buffer-name buf)))) (buffer-list))))
+             (candidates
               (if (icicle-not-basic-prefix-completion-p)
-                  (icicle-completion-all-completions input minibuffer-completion-table
-                                                     minibuffer-completion-predicate
+                  (icicle-completion-all-completions input m-c-table minibuffer-completion-predicate
                                                      ;; $$$$$$ (- (point) (field-beginning)))
                                                      (length input)
-                                                     (and (fboundp 'completion--field-metadata) ;Emacs24
-                                                          (completion--field-metadata
-                                                           (field-beginning))))
-                (icicle-all-completions input minibuffer-completion-table
-                                        minibuffer-completion-predicate
-                                        icicle-ignore-space-prefix-flag)))
+                                                     (and (fboundp 'completion--field-metadata) ;Emacs 24
+                                                          (completion--field-metadata (field-beginning))))
+                (icicle-all-completions input m-c-table minibuffer-completion-predicate
+                                        (and icicle-buffer-name-input-p ; Used only by Emacs < 23.2.
+                                             icicle-buffer-ignore-space-prefix-flag))))
              (icicle-extra-candidates
               (icicle-remove-if-not
                (lambda (cand)
@@ -3575,15 +3635,13 @@ the expanded common match of the input over all candidates."
         (when (and (memq icicle-expand-input-to-common-match '(3 4))  (consp filtered-candidates))
           (let ((common-prefix
                  (if (icicle-not-basic-prefix-completion-p)
-                     (icicle-completion-try-completion input minibuffer-completion-table
-                                                       minibuffer-completion-predicate
+                     (icicle-completion-try-completion input m-c-table minibuffer-completion-predicate
                                                        ;; $$$$$$ (- (point) (field-beginning)))
                                                        (length input)
                                                        (and (fboundp 'completion--field-metadata)
                                                             (completion--field-metadata ; Emacs 24
                                                              (field-beginning))))
-                   (try-completion input minibuffer-completion-table
-                                   minibuffer-completion-predicate))))
+                   (try-completion input m-c-table minibuffer-completion-predicate))))
             (setq icicle-common-match-string  (if (eq t common-prefix) input common-prefix))))
         (unless filtered-candidates  (setq icicle-common-match-string  nil))
         filtered-candidates)
@@ -3616,8 +3674,7 @@ the expanded common match of the input over all candidates."
                      input  minibuffer-completion-table  pred  (length input)
                      (and (fboundp 'completion--field-metadata) ;Emacs24
                           (completion--field-metadata (field-beginning))))
-                  (icicle-all-completions input  minibuffer-completion-table  pred
-                                          icicle-ignore-space-prefix-flag)))
+                  (icicle-all-completions input minibuffer-completion-table pred)))
                (icicle-extra-candidates
                 (icicle-remove-if-not
                  (lambda (cand)
@@ -3701,16 +3758,22 @@ expanded common match of the input over all candidates."
   (condition-case nil
       (progn
         (when icicle-regexp-quote-flag  (setq input  (regexp-quote input)))
-        (let* ((candidates
-                (if (and (functionp minibuffer-completion-table)
-                         (not icicle-apropos-complete-match-fn))
+        (let* ((m-c-table
+                ;; Prevent Emacs 23.2+ from using `internal-complete-buffer' if not ignoring space prefixes.
+                ;; This lets `icicle-toggle-ignored-space-prefix' refresh to include space prefixes.
+                (if (or (not (eq minibuffer-completion-table 'internal-complete-buffer))
+                        icicle-buffer-ignore-space-prefix-flag)
+                    minibuffer-completion-table
+                  (mapcar (lambda (buf) (and (buffer-live-p buf)  (list (buffer-name buf)))) (buffer-list))))
+               (candidates
+                (if (and (functionp m-c-table)  (not icicle-apropos-complete-match-fn))
                     ;; Let the function do it all.
-                    (icicle-all-completions input minibuffer-completion-table
-                                            minibuffer-completion-predicate
-                                            icicle-ignore-space-prefix-flag)
-                  (icicle-all-completions "" minibuffer-completion-table
-                                          minibuffer-completion-predicate
-                                          icicle-ignore-space-prefix-flag)))
+                    (icicle-all-completions input m-c-table minibuffer-completion-predicate
+                                            (and icicle-buffer-name-input-p ; Used only by Emacs < 23.2.
+                                                 icicle-buffer-ignore-space-prefix-flag))
+                  (icicle-all-completions "" m-c-table minibuffer-completion-predicate
+                                          (and icicle-buffer-name-input-p ; Used only by Emacs < 23.2.
+                                               icicle-buffer-ignore-space-prefix-flag))))
                (icicle-extra-candidates
                 (icicle-remove-if-not
                  (lambda (cand) (save-match-data (string-match input cand))) icicle-extra-candidates))
@@ -3764,10 +3827,8 @@ expanded common match of the input over all candidates."
                          (not icicle-apropos-complete-match-fn)
                          (functionp minibuffer-completion-table))
                     ;; Let the function do it all.
-                    (icicle-all-completions input minibuffer-completion-table pred
-                                            icicle-ignore-space-prefix-flag)
-                  (icicle-all-completions "" minibuffer-completion-table pred
-                                          icicle-ignore-space-prefix-flag)))
+                    (icicle-all-completions input minibuffer-completion-table pred)
+                  (icicle-all-completions "" minibuffer-completion-table pred)))
                (icicle-extra-candidates
                 (icicle-remove-if-not
                  (lambda (cand) (save-match-data (string-match input cand)))
@@ -4871,7 +4932,8 @@ MESSAGE is the confirmation message to display in the minibuffer."
   "Display `*Completions*' buffer."
   (let ((completions  (icicle-all-completions "" minibuffer-completion-table
                                               minibuffer-completion-predicate
-                                              icicle-ignore-space-prefix-flag)))
+                                              (and icicle-buffer-name-input-p ; Used only by Emacs < 23.2.
+                                                   icicle-buffer-ignore-space-prefix-flag))))
     (when (> (length icicle-completion-candidates) icicle-incremental-completion-threshold)
       (message "Displaying completion candidates..."))
     (with-output-to-temp-buffer "*Completions*"
@@ -5483,9 +5545,11 @@ those functions are not defined then return nil."
   (when icicle-regexp-quote-flag (setq input  (regexp-quote input)))
   (let* ((minibuffer-completion-table      minibuffer-completion-table)
          (minibuffer-completion-predicate  minibuffer-completion-predicate)
-         (all                              (icicle-all-completions "" minibuffer-completion-table
-                                                                   minibuffer-completion-predicate
-                                                                   icicle-ignore-space-prefix-flag)))
+         (all                              (icicle-all-completions
+                                            "" minibuffer-completion-table
+                                            minibuffer-completion-predicate
+                                            (and icicle-buffer-name-input-p ; Used only by Emacs < 23.2.
+                                                 icicle-buffer-ignore-space-prefix-flag))))
     (catch 'icicle-apropos-any-candidates-p
       (dolist (cand all)
         ;; Assume no match if error - e.g. due to `string-match' with binary data in Emacs 20.
@@ -5507,9 +5571,7 @@ those functions are not defined then return nil."
                (let* ((pred              (if (< emacs-major-version 23)
                                              default-directory
                                            minibuffer-completion-predicate))
-                      (candidates        (icicle-all-completions "" minibuffer-completion-table
-                                                                 pred
-                                                                 icicle-ignore-space-prefix-flag))
+                      (candidates        (icicle-all-completions "" minibuffer-completion-table pred))
                       (case-fold-search  (if (boundp 'read-file-name-completion-ignore-case)
                                              read-file-name-completion-ignore-case
                                            completion-ignore-case)))
@@ -6401,7 +6463,7 @@ This resets variable `icicle-current-TAB-method' when needed."
 
 (defun icicle-all-completions (string collection &optional predicate hide-spaces)
   "Version of vanilla `all-completions' that works for all Emacs releases.
-Starting with Emacs23.2, `all-completions' no longer accepts a fourth
+Starting with Emacs 23.2, `all-completions' no longer accepts a fourth
 argument, so we drop that arg in that case."
   (condition-case nil                   ; Emacs 23.2+ has no 4th parameter.
       (all-completions string collection predicate hide-spaces)
