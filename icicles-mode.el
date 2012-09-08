@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Aug 23 14:17:56 2012 (-0700)
+;; Last-Updated: Fri Sep  7 16:21:46 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 9095
+;;     Update #: 9097
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1267,7 +1267,7 @@ Used on `pre-command-hook'."
         :keys "C-M-;" :help "Toggle option `icicle-ignore-comments-flag'"))
     (define-key icicle-options-menu-map [icicle-toggle-ignored-space-prefix]
       '(menu-item "Toggle Ignoring Space Prefix" icicle-toggle-ignored-space-prefix
-        :keys "M-_" :help "Toggle option `icicle-ignore-space-prefix-flag'"))
+        :keys "M-_" :help "Toggle option `icicle-buffer-ignore-space-prefix-flag'"))
     (define-key icicle-options-menu-map [icicle-toggle-ignored-extensions]
       '(menu-item "Toggle Ignored File Extensions" icicle-toggle-ignored-extensions
         :keys "C-." :help "Toggle respect of `completion-ignored-extensions'"))
@@ -4354,6 +4354,7 @@ if `icicle-change-region-background-flag' is non-nil."
     (defalias 'minibuffer-complete-and-exit 'icicle-minibuffer-complete-and-exit)
     (defalias 'mouse-choose-completion      'icicle-mouse-choose-completion)
     (defalias 'next-history-element         'icicle-next-history-element)
+    (defalias 'read-buffer                  'icicle-read-buffer)
     (defalias 'read-face-name               'icicle-read-face-name)
     (if (boundp 'read-file-name-function) ; Emacs 22+
         (setq icicle-orig-read-file-name-fn  (prog1 (and (not (eq read-file-name-function
@@ -4393,6 +4394,7 @@ if `icicle-change-region-background-flag' is non-nil."
     (defalias 'minibuffer-complete-and-exit 'icicle-ORIG-minibuffer-complete-and-exit)
     (defalias 'mouse-choose-completion      'icicle-ORIG-mouse-choose-completion)
     (defalias 'next-history-element         'icicle-ORIG-next-history-element)
+    (defalias 'read-buffer                  'icicle-ORIG-read-buffer)
     (defalias 'read-face-name               'icicle-ORIG-read-face-name)
     (if (boundp 'read-file-name-function) ; Emacs 22+
         (setq read-file-name-function  (and (not (eq icicle-orig-read-file-name-fn
