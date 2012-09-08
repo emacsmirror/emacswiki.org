@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Sep  7 16:39:56 2012 (-0700)
+;; Last-Updated: Sat Sep  8 14:31:53 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1642
+;;     Update #: 1645
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-var.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -40,12 +40,13 @@
 ;;    `icicle-allowed-sort-predicate', `icicle-apply-nomsg',
 ;;    `icicle-apropos-complete-match-fn', `icicle-bookmark-history',
 ;;    `icicle-bookmark-list-names-only-p', `icicle-bookmark-types',
-;;    `icicle-buffer-config-history', `icicle-buffer-name-input-p',
-;;    `icicle-buffer-sort-first-time-p', `icicle-bufflist',
-;;    `icicle-candidate-action-fn', `icicle-candidate-alt-action-fn',
-;;    `icicle-candidate-entry-fn', `icicle-candidate-help-fn',
-;;    `icicle-candidate-nb', `icicle-candidate-properties-alist',
-;;    `icicle-candidates-alist', `icicle-char-property-value-history',
+;;    `icicle-buffer-complete-fn', `icicle-buffer-config-history',
+;;    `icicle-buffer-name-input-p', `icicle-buffer-sort-first-time-p',
+;;    `icicle-bufflist', `icicle-candidate-action-fn',
+;;    `icicle-candidate-alt-action-fn', `icicle-candidate-entry-fn',
+;;    `icicle-candidate-help-fn', `icicle-candidate-nb',
+;;    `icicle-candidate-properties-alist', `icicle-candidates-alist',
+;;    `icicle-char-property-value-history',
 ;;    `icicle-cmd-calling-for-completion', `icicle-cmd-reading-input',
 ;;    `icicle-color-history', `icicle-color-theme-history',
 ;;    `icicle-command-abbrev-history', `icicle-commands-for-abbrev',
@@ -271,10 +272,19 @@ The list represents the set of all bookmarks of the given types.
 An empty list and the singleton list `(all)', where `all' is a symbol,
 are equivalent and stand for the set of all bookmarks (of any type).")
 
+(defvar icicle-buffer-complete-fn nil
+  "If the value is non-nil then it is a buffer-name completion function.
+The function is used as the COLLECTION argument to `completing-read'.
+
+However, if the value is `internal-complete-buffer' then it is used
+only if `icicle-buffer-ignore-space-prefix-flag' is non-nil.
+
+Otherwise, all buffer names are used as candidates.")
+
 (defvar icicle-buffer-config-history nil "History for buffer configuration names.")
 
 (defvar icicle-buffer-name-input-p nil
-  "Non-nil means we are reading a buffer name using `read-buffer'.")
+  "Non-nil means we are reading a buffer name.")
 
 (defvar icicle-buffer-sort-first-time-p t
   "Non-nil means buffer-name completion has not yet been used.")
