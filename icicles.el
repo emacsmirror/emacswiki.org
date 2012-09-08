@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Thu Sep  6 09:04:32 2012 (-0700)
+;; Last-Updated: Sat Sep  8 10:51:35 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 23189
+;;     Update #: 23193
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Doc URL: http://emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -312,13 +312,14 @@
 ;;    `icicle-ORIG-dired-read-shell-command',
 ;;    `icicle-ORIG-ess-complete-object-name',
 ;;    `icicle-ORIG-gud-gdb-complete-command',
-;;    `icicle-ORIG-read-file-name', `icicle-ORIG-read-shell-command',
+;;    `icicle-ORIG-read-buffer', `icicle-ORIG-read-file-name',
+;;    `icicle-ORIG-read-shell-command',
 ;;    `icicle-other-window-or-frame', `icicle-pick-color-by-name',
 ;;    `icicle-plist', `icicle-pop-tag-mark',
 ;;    `icicle-pp-eval-expression', `icicle-previous-visible-thing',
-;;    `icicle-read-color', `icicle-read-color-wysiwyg',
-;;    `icicle-read-kbd-macro', `icicle-recent-file',
-;;    `icicle-recent-file-other-window',
+;;    `icicle-read-buffer', `icicle-read-color',
+;;    `icicle-read-color-wysiwyg', `icicle-read-kbd-macro',
+;;    `icicle-recent-file', `icicle-recent-file-other-window',
 ;;    `icicle-recompute-shell-command-candidates',
 ;;    `icicle-regexp-list', `icicle-remove-buffer-candidate',
 ;;    `icicle-remove-buffer-config',
@@ -747,7 +748,6 @@
 ;;    `icicle-highlight-lighter-flag',
 ;;    `icicle-highlight-saved-candidates-flag',
 ;;    `icicle-ignore-comments-flag', `icicle-ignored-directories',
-;;    `icicle-ignore-space-prefix-flag',
 ;;    `icicle-image-files-in-Completions',
 ;;    `icicle-incremental-completion',
 ;;    `icicle-incremental-completion-delay',
@@ -1192,7 +1192,7 @@
 ;;    `icicle-apply-nomsg', `icicle-apropos-complete-match-fn',
 ;;    `icicle-bookmark-history', `icicle-bookmark-list-names-only-p',
 ;;    `icicle-bookmark-menu-map', `icicle-bookmark-types',
-;;    `icicle-buffer-config-history',
+;;    `icicle-buffer-config-history', `icicle-buffer-name-input-p',
 ;;    `icicle-buffer-sort-first-time-p', `icicle-bufflist',
 ;;    `icicle-candidate-action-fn', `icicle-candidate-alt-action-fn',
 ;;    `icicle-candidate-entry-fn', `icicle-candidate-help-fn',
