@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Sep  8 11:19:46 2012 (-0700)
+;; Last-Updated: Sat Sep  8 16:47:58 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8899
+;;     Update #: 8904
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -87,6 +87,7 @@
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
 ;; 2012/09/08 dadams
+;;     Added: icicle-buffer-of-content(-other-window), icicle-buffer-of-content-complete.
 ;;     icicle-buffer-list: Remove binding of icicle-ignore-space-prefix-flag.
 ;; 2012/09/07 dadams
 ;;     icicle-buffer(-other-window): Exclude icicle-orig-buff from candidates.
@@ -3152,9 +3153,11 @@
 ;; ****************************************************************************************************
 ;;
 ;; 2012/09/08 dadams
-;;     icicle-buffer-bindings: Bind icicle-buffer-name-input-p to t.
-;;                             Remove bindings of icicle-ignore-space-prefix-flag and bufflist.
-;;                             (bufflist used icicle-ignore-space-prefix-flag to remove SPC buffers.)
+;;     icicle-buffer-bindings:
+;;       Bind icicle-buffer-complete-fn to internal-complete-buffer for Emacs 22+.
+;;       Bind icicle-buffer-name-input-p to t.
+;;       Remove bindings of icicle-ignore-space-prefix-flag and bufflist.
+;;       (bufflist used icicle-ignore-space-prefix-flag to remove SPC buffers.)
 ;;     icicle-define-command:
 ;;       If icicle-buffer-name-input-p then use icicle-read-buffer (it is new), not completing-read.
 ;; 2012/07/24 dadams
@@ -6705,7 +6708,7 @@
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
 ;; 2012/09/08 dadams
-;;     Added: icicle-buffer-name-input-p.
+;;     Added: icicle-buffer-name-input-p, icicle-buffer-complete-fn.
 ;;     icicle-general-help-string: Removed reference to icicle-ignore-space-prefix-flag.
 ;; 2012/08/06 dadams
 ;;     Renamed: icicle-old-read-file-name-fn to icicle-orig-read-file-name-fn.
