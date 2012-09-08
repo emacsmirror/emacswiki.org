@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Sep  8 10:56:14 2012 (-0700)
+;; Last-Updated: Sat Sep  8 14:14:07 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 13339
+;;     Update #: 13340
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1463,11 +1463,14 @@ This binds variable `icicle-buffer-name-input-p' to non-nil."
       (let ((completion-ignore-case  (if (boundp 'read-buffer-completion-ignore-case)
                                          read-buffer-completion-ignore-case
                                        completion-ignore-case)))
-        (completing-read prompt (if (and icicle-buffer-ignore-space-prefix-flag
-                                         (fboundp 'internal-complete-buffer))
-                                    'internal-complete-buffer ; Emacs 22+
-                                  (mapcar (lambda (buf) (and (buffer-live-p buf)  (list (buffer-name buf))))
-                                          (buffer-list)))
+        (completing-read prompt
+                         (cond ((and (eq icicle-buffer-complete-fn 'internal-complete-buffer)
+                                     icicle-buffer-ignore-space-prefix-flag)
+                                'internal-complete-buffer) ; Emacs 22+
+                               (icicle-buffer-complete-fn)
+                               (t
+                                (mapcar (lambda (buf) (and (buffer-live-p buf)  (list (buffer-name buf))))
+                                        (buffer-list))))
                          nil require-match nil 'buffer-name-history default nil)))))
 
 
