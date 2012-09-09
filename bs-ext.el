@@ -235,7 +235,9 @@ will be used."
                                          (mapconcat (lambda (conf)
                                                       (let* ((name (car conf))
                                                              (key (car (rassoc name bs-ext-config-keys)))
-                                                             (item (if key (concat name "(" key ")") name)))
+                                                             (item (if key (concat name "(" key ")")
+                                                                     (if (equal name "regexp") "regexp(/)"
+                                                                       name))))
                                                         (if (equal name bs-current-configuration)
                                                             (propertize item 'face font-lock-comment-face) 
                                                           item)))
