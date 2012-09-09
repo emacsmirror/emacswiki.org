@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Sep  8 16:41:18 2012 (-0700)
+;; Last-Updated: Sun Sep  9 00:05:20 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 24539
+;;     Update #: 24540
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -5932,9 +5932,9 @@ default separator.
 For example, use input
 
 \"icicles^G
-buffer-w\"
+buffer-of\"
 
-to match Icicles buffers whose content matches \"buffer-w\".
+to match Icicles buffers whose content matches \"buffer-of\".
 
 Only the matching buffer names are shown in *Completions*, and only
 the chosen buffer name is returned.  The actual content matches are
