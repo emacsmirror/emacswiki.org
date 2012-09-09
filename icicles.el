@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Sep  8 16:28:20 2012 (-0700)
+;; Last-Updated: Sun Sep  9 10:50:23 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 23195
+;;     Update #: 23196
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Doc URL: http://emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -402,10 +402,12 @@
 ;;    `icicle-toggle-show-multi-completion', `icicle-toggle-sorting',
 ;;    `icicle-toggle-transforming',
 ;;    `icicle-toggle-WYSIWYG-Completions', `icicle-untag-a-file',
-;;    `icicle-vardoc', `icicle-where-is',
-;;    `icicle-widget-file-complete', `icicle-yank-maybe-completing',
-;;    `icicle-yank-pop-commands', `icicle-zap-to-char', `toggle',
-;;    `synonyms', `toggle-icicle-~-for-home-dir',
+;;    `icicle-vardoc', `icicle-visit-marked-file-of-content',
+;;    `icicle-visit-marked-file-of-content-other-window',
+;;    `icicle-where-is', `icicle-widget-file-complete',
+;;    `icicle-yank-maybe-completing', `icicle-yank-pop-commands',
+;;    `icicle-zap-to-char', `toggle', `synonyms',
+;;    `toggle-icicle-~-for-home-dir',
 ;;    `toggle-icicle-alternative-sorting',
 ;;    `toggle-icicle-angle-brackets',
 ;;    `toggle-icicle-case-sensitivity', `toggle-icicle-C-for-actions',
