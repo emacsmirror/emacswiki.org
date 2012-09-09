@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Sep  9 00:05:20 2012 (-0700)
+;; Last-Updated: Sun Sep  9 11:06:04 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 24540
+;;     Update #: 24557
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -252,6 +252,8 @@
 ;;    `icicle-shell-dynamic-complete-environment-variable',
 ;;    `icicle-shell-dynamic-complete-filename',
 ;;    (+)`icicle-string-list', (+)`icicle-toggle-option',
+;;    (+)`icicle-visit-marked-file-of-content',
+;;    (+)`icicle-visit-marked-file-of-content-other-window',
 ;;    `icicle-widget-file-complete',
 ;;    (+)`icicle-yank-maybe-completing',
 ;;    (+)`icicle-yank-pop-commands', `icicle-zap-to-char',
@@ -5892,11 +5894,13 @@ the prefix argument in Icicles buffer commands:
                                  (another-buffer nil t)
                                (other-buffer (current-buffer))))))
     (if (< emacs-major-version 23)
-        bname
-      (let ((bufs  (mapcar #'buffer-name ; Emacs 23 accepts a list of default values.
-                           (delete (current-buffer) ; Just keep the first 4.  (This could be an option.)
-                                   (icicle-first-N 4 (or icicle-bufflist  (buffer-list)))))))
-        (if arg  bufs  (cons bname bufs))))))
+        (if icicle-bufflist
+            ;; If BNAME is not in `icicle-bufflist', then do not use it.
+            (if (member bname icicle-bufflist) bname (car icicle-bufflist))
+          bname)
+      (mapcar #'buffer-name             ; Emacs 23 accepts a list of default values.
+              (delete (current-buffer)  ; Just keep the first 4.  (This could be an option.)
+                      (icicle-first-N 4 (or icicle-bufflist  (buffer-list))))))))
 
 ;;;###autoload (autoload 'icicle-buffer-other-window "icicles")
 (icicle-define-command icicle-buffer-other-window ; Bound to `C-x 4 b' in Icicle mode.
@@ -5971,7 +5975,7 @@ effect during the command."             ; Doc string
                                                          (describe-mode)) t))))))
    ((icicle-buffer-complete-fn          'icicle-buffer-of-content-complete)
     ;; `icicle-bufflist' is free here.
-    (icicle-bufflist  (setq icicle-bufflist  (delete icicle-orig-buff icicle-bufflist)))))
+    (icicle-bufflist                    (setq icicle-bufflist  (delete icicle-orig-buff icicle-bufflist)))))
   (progn (icicle-bind-buffer-candidate-keys)
          (put-text-property 0 1 'icicle-fancy-candidates t prompt) ; First code
          (icicle-highlight-lighter)
@@ -5984,8 +5988,7 @@ effect during the command."             ; Doc string
   "Switch to a buffer whose content matches a regexp, in another window.
 Same as `icicle-buffer-of-content' except it uses a different window." ; Doc string
   switch-to-buffer-other-window         ; Action function
-  prompt
-  'icicle-buffer-of-content-complete nil ; `completing-read' args
+  prompt 'icicle-buffer-of-content-complete nil ; `completing-read' args
   (and (fboundp 'confirm-nonexistent-file-or-buffer)  (confirm-nonexistent-file-or-buffer)) ; Emacs 23.
   nil 'buffer-name-history (icicle-default-buffer-names current-prefix-arg) nil
   (icicle-buffer-bindings               ; Bindings
@@ -6007,7 +6010,7 @@ Same as `icicle-buffer-of-content' except it uses a different window." ; Doc str
                                                          (describe-mode)) t))))))
    ((icicle-buffer-complete-fn          'icicle-buffer-of-content-complete)
     ;; `icicle-bufflist' is free here.
-    (icicle-bufflist  (setq icicle-bufflist  (delete icicle-orig-buff icicle-bufflist)))))
+    (icicle-bufflist                    (setq icicle-bufflist  (delete icicle-orig-buff icicle-bufflist)))))
   (progn (icicle-bind-buffer-candidate-keys)
          (put-text-property 0 1 'icicle-fancy-candidates t prompt) ; First code
          (icicle-highlight-lighter)
@@ -6044,6 +6047,93 @@ Used as the value of `icicle-buffer-complete-fn' and hence as
     (if completion-mode
         bfnames                         ; `all-completions', `test-completion'
       (try-completion strg (mapcar #'list bfnames) pred))))
+
+;;;###autoload (autoload 'icicle-visit-marked-file-of-content "icicles")
+(icicle-define-command icicle-visit-marked-file-of-content ; Command name
+  "Visit a marked file whose content matches a regexp.
+The marked files are examined, and those whose file names and/or
+contents match your multi-completion input are available as candidate
+buffers to visit.  This command is like `icicle-buffer-of-content'.
+See that command for more information.
+You must be in Dired to use this command." ; Doc string
+  switch-to-buffer-other-window         ; Action function
+  prompt 'icicle-buffer-of-content-complete nil ; `completing-read' args
+  (and (fboundp 'confirm-nonexistent-file-or-buffer)  (confirm-nonexistent-file-or-buffer)) ; Emacs 23.
+  nil 'buffer-name-history (icicle-default-buffer-names current-prefix-arg) nil
+  (icicle-buffer-bindings               ; Bindings
+   ((prompt                             (icicle-buffer-name-prompt
+                                         (format "Switch to `%s'"
+                                                 (icicle-propertize "BUFFER C-M-j CONTENT"
+                                                                    'face 'icicle-msg-emphasis))))
+    (icicle-list-use-nth-parts          '(1))
+    ;; Bind `icicle-apropos-complete-match-fn' to nil to prevent automatic input matching in
+    ;; `icicle-unsorted-apropos-candidates' etc., because `icicle-buffer-of-content-complete' does everything.
+    (icicle-apropos-complete-match-fn   nil)
+    (icicle-show-multi-completion-flag  t) ; Override user setting.
+    (icicle-candidate-help-fn           (lambda (cand)
+                                          (setq cand  (icicle-transform-multi-completion cand))
+                                          (when (and (bufferp (get-buffer cand))
+                                                     (with-current-buffer cand
+                                                       (if (fboundp 'describe-buffer) ; In `help-fns+.el'.
+                                                           (describe-buffer)
+                                                         (describe-mode)) t))))))
+   ((icicle-buffer-complete-fn          'icicle-buffer-of-content-complete)
+    ;; `icicle-bufflist' is free here.
+    (icicle-bufflist                    (save-excursion
+                                          (let* ((files  (icicle-remove-if #'file-directory-p
+                                                                           (dired-get-marked-files)))
+                                                 (bufs   ()))
+                                            (dolist (file  files) (push (find-file-noselect file) bufs))
+                                            bufs)))))
+  (progn (unless (eq major-mode 'dired-mode) (error "Use this command only in Dired mode"))
+         (icicle-bind-buffer-candidate-keys)
+         (put-text-property 0 1 'icicle-fancy-candidates t prompt) ; First code
+         (icicle-highlight-lighter)
+         (message "Matching buffer contents..."))
+  nil                                   ; Undo code
+  (icicle-unbind-buffer-candidate-keys)) ; Last code
+
+;;;###autoload (autoload 'icicle-visit-marked-file-of-content-other-window "icicles")
+(icicle-define-command icicle-visit-marked-file-of-content-other-window ; Command name
+  "Visit a marked file whose content matches a regexp, in another window.
+Same as `icicle-visit-marked-file-of-content' except it uses a
+different window.  You must be in Dired to use this command." ; Doc string
+  switch-to-buffer-other-window         ; Action function
+  prompt 'icicle-buffer-of-content-complete nil ; `completing-read' args
+  (and (fboundp 'confirm-nonexistent-file-or-buffer)  (confirm-nonexistent-file-or-buffer)) ; Emacs 23.
+  nil 'buffer-name-history (icicle-default-buffer-names current-prefix-arg) nil
+  (icicle-buffer-bindings               ; Bindings
+   ((prompt                             (icicle-buffer-name-prompt
+                                         (format "Switch to `%s'"
+                                                 (icicle-propertize "BUFFER C-M-j CONTENT"
+                                                                    'face 'icicle-msg-emphasis))))
+    (icicle-list-use-nth-parts          '(1))
+    ;; Bind `icicle-apropos-complete-match-fn' to nil to prevent automatic input matching in
+    ;; `icicle-unsorted-apropos-candidates' etc., because `icicle-buffer-of-content-complete' does everything.
+    (icicle-apropos-complete-match-fn   nil)
+    (icicle-show-multi-completion-flag  t) ; Override user setting.
+    (icicle-candidate-help-fn           (lambda (cand)
+                                          (setq cand  (icicle-transform-multi-completion cand))
+                                          (when (and (bufferp (get-buffer cand))
+                                                     (with-current-buffer cand
+                                                       (if (fboundp 'describe-buffer) ; In `help-fns+.el'.
+                                                           (describe-buffer)
+                                                         (describe-mode)) t))))))
+   ((icicle-buffer-complete-fn          'icicle-buffer-of-content-complete)
+    ;; `icicle-bufflist' is free here.
+    (icicle-bufflist                    (save-excursion
+                                          (let* ((files  (icicle-remove-if #'file-directory-p
+                                                                           (dired-get-marked-files)))
+                                                 (bufs   ()))
+                                            (dolist (file  files) (push (find-file-noselect file) bufs))
+                                            bufs)))))
+  (progn (unless (eq major-mode 'dired-mode) (error "Use this command only in Dired mode"))
+         (icicle-bind-buffer-candidate-keys)
+         (put-text-property 0 1 'icicle-fancy-candidates t prompt) ; First code
+         (icicle-highlight-lighter)
+         (message "Matching buffer contents..."))
+  nil                                   ; Undo code
+  (icicle-unbind-buffer-candidate-keys)) ; Last code
 
 ;;;###autoload (autoload 'icicle-insert-buffer "icicles")
 (icicle-define-command icicle-insert-buffer
