@@ -3,3 +3,5 @@
 Use the Tumble package. See https://github.com/febuiles/tumble for details.
 
 Another tumblr tool [https://github.com/qxj/tumblr-mode tumblr-mode.el].
+
+A third tumblr tool: [https://github.com/gcr/tumblesocks Tumblesocks], which supports composing posts and viewing the dashboard using the Tumblr v2 oauth API.
