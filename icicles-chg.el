@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Sep  8 16:47:58 2012 (-0700)
+;; Last-Updated: Sun Sep  9 11:00:21 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8904
+;;     Update #: 8907
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -86,6 +86,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2012/09/09 dadams
+;;     Added: icicle-visit-marked-file-of-content(-other-window).
+;;     icicle-default-buffer-names: If BNAME is not in icicle-bufflist then do not use it.
 ;; 2012/09/08 dadams
 ;;     Added: icicle-buffer-of-content(-other-window), icicle-buffer-of-content-complete.
 ;;     icicle-buffer-list: Remove binding of icicle-ignore-space-prefix-flag.
