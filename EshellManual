@@ -1,6 +1,6 @@
 Here is a longer EshellTexi than what comes in the eshell tarball. It was posted to comp.emacs on 2001-09-07 by Christoph Conrad.
 
-NicFerrier has turned this texi into an installable [[package http://marmalade-repo.org/packages/eshell-info/0.0.1]]
+NicFerrier has turned this texi into an installable [[http://marmalade-repo.org/packages/eshell-info/0.0.1 package]]
 
 The github repo for this is [[https://github.com/nicferrier/eshell-manual here]].
 ----
