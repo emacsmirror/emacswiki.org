@@ -3,6 +3,12 @@ just add them to `eshell-visual-commands'.
 
     (add-to-list 'eshell-visual-commands "mutt")
 
+If you get a 
+
+     "eterm: unknown term type"
+
+error message, that means you need the /usr/share/terminfo/e/eterm file on your system. On Debian/Ubuntu systems, this file is part of the ncurses-term package.
+
 [new]
 How can we automate this for all the applications who need it ? -- CamilleBourgoin
 
