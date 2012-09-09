@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Sep  7 16:22:35 2012 (-0700)
+;; Last-Updated: Sat Sep  8 23:40:04 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5323
+;;     Update #: 5327
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -779,10 +779,10 @@ Note: This option is provided mainly for use (binding) in
 `icicle-define-command' and `icicle-define-file-command'.
 You probably do not want to set this globally, but you can.
 
-You can toggle this option from the minibuffer at any time using
-`C-u \\<minibuffer-local-completion-map>\\[icicle-dispatch-M-_]'.  You can also use multi-command \
-`icicle-toggle-option'
-anytime to toggle the option."
+You can toggle this option from the minibuffer using
+`\\<minibuffer-local-completion-map>\\[icicle-dispatch-M-_]' (except during Icicles searching).  \
+You can also use
+multi-command `icicle-toggle-option' anytime to toggle the option."
   :type 'boolean :group 'Icicles-Buffers :group 'Icicles-Matching)
 
 ;;;###autoload
