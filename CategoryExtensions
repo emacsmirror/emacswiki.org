@@ -116,6 +116,7 @@ Extensions (using the category name from `finder-by-keyword'), are utility libra
 == Security ==
 
 * PasswordGenerator
+* OAuthLibrary
 
 == Project Management ==
 
