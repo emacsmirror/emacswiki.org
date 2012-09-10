@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu Jan 25 14:22:13 1996
 ;; Version: 21.0
-;; Last-Updated: Fri Aug 31 07:46:01 2012 (-0700)
+;; Last-Updated: Mon Sep 10 09:41:16 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 180
+;;     Update #: 182
 ;; URL: http://www.emacswiki.org/emacs-en/window%2b.el
 ;; Doc URL: http://emacswiki.org/emacs/Delete_Frames_Easily_-_But_Not_Too_Easily
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/OneOnOneEmacs
@@ -45,6 +45,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/09/10 dadams
+;;     special-display-popup-frame: Protect fit-frame call with fboundp.
 ;; 2012/08/31 dadams
 ;;     special-display-popup-frame:
 ;;       save-selected-window -> save-window-excursion -
@@ -199,7 +201,8 @@ arguments."
            (display-buffer-record-window 'frame window buffer))
          ;; Now call `fit-frame', with WINDOW selected.
          ;; Needs to be `save-window-excursion', not just `save-selected-window'.
-         (save-window-excursion (select-window window) (fit-frame))
+         (when (fboundp 'fit-frame)
+           (save-window-excursion (select-window window) (fit-frame)))
          window)))))                    ; Return the window.
 
 
