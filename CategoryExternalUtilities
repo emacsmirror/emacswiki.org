@@ -75,6 +75,7 @@ Command-line tools:
 * [[Sdcv]] -- A interface for *sdcv* (StarDict console version).
 * [[CheatFuMode]] -- cheat_fu mode
 * QuickRun -- Run editing buffer and show its output quickly.
+* [[AWK_It]] -- interactively run AWK on region.
 
 Unclassified:
 
@@ -87,4 +88,3 @@ Unclassified:
 * OnScreenDisplay -- interfaces with the X OSD Library through the `osd_cat' utility
 * [[Bibus]] -- a reference manager in emacs
 * VerbisteEl -- conjugate/deconjugate French verbs
-
