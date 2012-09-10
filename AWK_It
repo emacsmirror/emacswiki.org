@@ -1,0 +1,86 @@
+AWK it! sends selected region to awk and uses yasnippet as interactive UI.
+
+You can get the latest version here: Lisp:awk-it.el
+
+AWK it! supports both simplified(default) and raw AWK syntax and has support for multiple lines.
+
+Simplest usage is selecting mark and point and running M-x awk-it. Default
+field separator is space. AWK it! matches every non empty row in region ($0 !~ /^$/).
+
+After invoking command buffer will change to show the following interface:
+
+<pre>
+    Data: <First line with most fields>
+    AWK pattern: <AWK code; see below; may be multiple lines without extra formatting>
+    <AWK output>
+</pre>
+
+Example:
+
+From:
+
+<pre>
+    John 26 London
+    Mark 27 Seattle 50
+    Scott 26 Sydney
+</pre>
+
+to ('_' is text cursor, ignoring the extra field in example pattern):
+
+<pre>
+    Data: Mark 27 Seattle 50
+    AWK pattern: <person name="$1" age="$2">
+        <location>$3</location>
+    </person>_
+    <person name="John" age="26">
+        <location>London</location>
+    </person>
+    <person name="Mark" age="27">
+        <location>Seattle</location>
+    </person>
+    <person name="Scott" age="26">
+        <location>Sydney</location>
+    </person>
+</pre>
+
+and after expansion:
+
+<pre>
+    <person name="John" age="26">
+        <location>London</location>
+    </person>
+    <person name="Mark" age="27">
+        <location>Seattle</location>
+    </person>
+    <person name="Scott" age="26">
+        <location>Sydney</location>
+    </person>
+</pre>
+
+Simplified AWK code differs from regular in that it:
+  - prints code(print "<code>")
+  - escapes double and single quotes (latter for shell interaction)
+  - escapes newline
+  - concatenates fields with rest of the text
+
+The previous example written in raw AWK code would be:
+
+<pre>
+    print "<person name=\"" $1 "\" age=\"" $2 "\">\n"\
+    "    <location>" $3 "</location>\n"\
+    "</person>"
+</pre>
+
+AWK it can also be invoked with custom separator: awk-it-with-separator. Combining
+everything the following functions are available:
+* awk-it
+* awk-it-raw
+* awk-it-with-separator
+* awk-it-raw-with-separator
+
+Also AWK it! can be customized in External -> Awk it:
+* awk-it-load-hook; Hook that gets run after the AWK it! has been loaded
+* awk-it-default-separator; Default AWK field separator - if nil AWK default is used
+* awk-it-default-row-filter; Default AWK row filter - if nil '$0 !~ /^$/' is used
+
+Bugs & questions: isikacek@gmail.com (Igor Sikaček)
