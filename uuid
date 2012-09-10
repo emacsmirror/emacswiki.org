@@ -1,5 +1,3 @@
-= UUID =
-
 Globally unique identifiers.  There's a specification: http://www.ietf.org/internet-drafts/draft-mealling-uuid-urn-05.txt
 
 There are 2 packages here on the Wiki:
