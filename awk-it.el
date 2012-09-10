@@ -77,8 +77,8 @@
 
 ;; Simplified AWK code differs from regular in that it:
 ;;   - prints code(print "<code>")
-;;   - excapes double and single quotes (latter for shell interaction)
-;;   - excapes newline
+;;   - escapes double and single quotes (latter for shell interaction)
+;;   - escapes newline
 ;;   - concatenates fields with rest of the text
 
 ;; The previous example written in raw AWK code would be:
