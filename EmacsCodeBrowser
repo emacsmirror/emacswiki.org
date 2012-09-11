@@ -63,6 +63,8 @@ command:
 
 <code>cvs -z3 -d:pserver:anonymous@ecb.cvs.sourceforge.net:/cvsroot/ecb co -P ecb</code> 
 
+As of september 2012, the CVS ecb version does not work with the bzr Emacs version: <em>ECB 2.40 - Error: ECB can only be used with cedet [1.0pre6, 1.0.9]! Please install it and restart Emacs!</em>. The current CEDET is 1.1
+
 ----
 CategoryModes
 CategoryProgrammerUtils
