@@ -2,6 +2,7 @@
 * http://ecb.sourceforge.net/
 * http://ecb.sourceforge.net/screenshots/index.html
 
+== What is ECB ==
 From the web page:
 
 : [::ECB] stands for "Emacs Code Browser".  While Emacs already has good
@@ -29,14 +30,6 @@ even when you use C-x 1 and similar commands.
 informational windows should be displayed where. ECB comes with a number of
 ready-made window layouts to choose from.
 
-: ECB requires:
-
-* Version 1.4 of Eric Ludlam's SemanticBovinator or higher
-* Version 0.17 of eieio or higher
-* Version 0.15 of speedbar or higher
-* Optional: If Java code is edited the ECB works best when the JDEE package
-  is installed.
-
 : If you use XEmacs you must have installed the package c-support (contains
 hideshow.el). If you want to read the online-help of ECB in HTML-format you
 must have the library browse-url (part of the mail-lib XEmacs package)
@@ -52,7 +45,17 @@ Developers
 * KevinBurton
 * EricLudlam
 
-----
+== Installation ==
+
+=== ECB requires ===
+
+* Version 1.4 of Eric Ludlam's SemanticBovinator or higher
+* Version 0.17 of eieio or higher
+* Version 0.15 of speedbar or higher
+* Optional: If Java code is edited the ECB works best when the JDEE package
+  is installed.
+
+=== Get latest version ===
 To get the development version easily and set it up you can use [NxhtmlMode nXhtml] which has a tool for this in the nXhtml menus (see nXhtml / Tools / ECB).
 
 <strong>The latest ECB version (2.40) does not work with the CEDET in Emacs 23.2</strong>. The CVS version of ECB, however, works with 23.2. You can get it with the following
