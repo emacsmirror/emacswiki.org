@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Thu Sep  6 09:15:30 2012 (-0700)
+;; Last-Updated: Tue Sep 11 08:48:15 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5815
+;;     Update #: 5820
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -9862,15 +9862,16 @@ Non-interactively:
 
 ;;;###autoload
 (defun bmkp-set-autonamed-bookmark-at-line (&optional number)
-  "Set an autonamed bookmark at the beginning of the given line NUMBER.
-If NUMBER is nil, use the current line."
-  (interactive "nSet bookmark on line: ")
-  (unless number (setq number  (count-lines (point-min) (point))))
-  (save-excursion
-    (goto-char (point-min))
-    (unless (zerop (forward-line (1- number)))
-      (error "No such line: %d (%d lines total)" number (1+ (count-lines (point-min) (point-max)))))
-    (bmkp-set-autonamed-bookmark (point))))
+  "Set an autonamed bookmark at the beginning of the current line.
+With a prefix arg, set it at the line whose number is the numeric
+prefix value."
+  (interactive (list (and current-prefix-arg  (prefix-numeric-value current-prefix-arg))))
+  (if (not number)
+      (bmkp-set-autonamed-bookmark (line-beginning-position))
+    (save-excursion
+      (goto-char (point-min))
+      (let ((inhibit-field-text-motion  t))
+        (bmkp-set-autonamed-bookmark (line-beginning-position number))))))
 
 (when (> emacs-major-version 21)
   (defun bmkp-occur-create-autonamed-bookmarks ( &optional msg-p) ; Bound to `C-c C-M-B' (aka `C-c C-M-S-b')
