@@ -61,6 +61,7 @@ You can obtain `grep' and `find' from the [http://gnuwin32.sourceforge.net/ GnuW
 
 * [http://gnuwin32.sourceforge.net/packages/grep.htm Grep for Windows]
 * [http://gnuwin32.sourceforge.net/packages/findutils.htm FindUtils for Windows]
+* It appears that you also need the LS command: [http://gnuwin32.sourceforge.net/packages/coreutils.htm FileUtils for Windows]
 
 If you installed `GnuWin32' under, say, "C:\GNU\gnuwin32", consider adding the following commands to Emacs initialization file:
 
