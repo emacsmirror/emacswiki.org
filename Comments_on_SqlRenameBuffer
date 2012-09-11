@@ -1,0 +1,19 @@
+Thanks, I was just going to program this myself.
+
+However, the regexp for the connect-string is too weak.
+# There may be leading blanks
+# You can use "conn" "Conne" "Connec" and "connect"
+# The username can be much more than just a-z_. I added numbers but that's still not all (can be quoted)
+# The password is more complicated
+# All, username, passord and database my be omitted and and interactively entered.
+
+I use this, but it is still not perfect:
+{{{
+(when  (string-match "^ *conn\\(e\\(c\\(t\\)?\\)?\\)? +\\([a-z0-9_]+\\)\\(/[^@]+\\)?@\\([a-z0-9_]+\\)" line)
+	(setq sql-user (match-string 4 line)
+	      sql-password (match-string 5 line)
+	      sql-database (match-string 6 line)
+}}}
+
+-- Joe 2012-09-11 12:01 UTC
+
