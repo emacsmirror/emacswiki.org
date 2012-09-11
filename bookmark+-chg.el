@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Thu Sep  6 09:17:26 2012 (-0700)
+;; Last-Updated: Tue Sep 11 08:23:00 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 15024
+;;     Update #: 15026
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2012/09/11 dadams
+;;     bmkp-set-autonamed-bookmark-at-line: Use prefix arg for line no.  Use line-beginning-position.
 ;; 2012/09/06 dadams
 ;;     Added: bmkp-string-match-p.
 ;; 2012/08/28 dadams
