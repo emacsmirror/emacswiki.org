@@ -2,8 +2,9 @@
 ;;
 ;; Copyright (c) 2012 Roland Walker
 ;;
-;; Author: Roland Walker walker@pobox.com
-;; URL: https://github.com/rolandwalker/persistent-soft.el
+;; Author: Roland Walker <walker@pobox.com>
+;; Homepage: http://github.com/rolandwalker/persistent-soft
+;; URL: http://raw.github.com/rolandwalker/persistent-soft/master/persistent-soft.el
 ;; Version: 0.8.1
 ;; Last-Updated: 27 Aug 2012
 ;; EmacsWiki: PersistentSoft
@@ -14,6 +15,19 @@
 ;;
 ;;; Commentary:
 ;;
+;; Quickstart
+;;
+;;     (require 'persistent-soft)
+;;     (persistent-soft-store 'hundred 100 "mydatastore")
+;;     (persistent-soft-fetch 'hundred "mydatastore")    ; 100
+;;     (persistent-soft-fetch 'thousand "mydatastore")   ; nil
+;;
+;;     quit and restart Emacs
+;;
+;;     (persistent-soft-fetch 'hundred "mydatastore")    ; 100
+;;
+;; Explanation
+;;
 ;; This is a (trivial) wrapper around pcache.el, providing "soft"
 ;; fetch and store routines which never throw an error, but instead
 ;; return nil on failure.
@@ -23,46 +37,46 @@
 ;;
 ;; The following functions are provided
 ;;
-;;    persistent-soft-exists-p
-;;    persistent-soft-fetch
-;;    persistent-soft-flush
-;;    persistent-soft-store
+;;     `persistent-soft-store'
+;;     `persistent-soft-fetch'
+;;     `persistent-soft-exists-p'
+;;     `persistent-soft-flush'
 ;;
 ;; To use persistent-soft, place the persistent-soft.el library
 ;; somewhere Emacs can find it, and add the following to your
 ;; ~/.emacs file:
 ;;
-;;    (require 'persistent-soft)
+;;     (require 'persistent-soft)
 ;;
 ;; See Also
 ;;
-;;    M-x customize-group RET persistent-soft RET
+;;     M-x customize-group RET persistent-soft RET
 ;;
 ;; Notes
 ;;
-;;    Using pcache with a more recent version of CEDET gives
+;;     Using pcache with a more recent version of CEDET gives
 ;;
-;;       Unsafe call to `eieio-persistent-read'.
-;;       eieio-persistent-read: Wrong type argument: class-p, nil
+;;         Unsafe call to `eieio-persistent-read'.
+;;         eieio-persistent-read: Wrong type argument: class-p, nil
 ;;
-;;    This library provides something of a workaround.
+;;     This library provides something of a workaround.
 ;;
 ;; Compatibility and Requirements
 ;;
-;;    Tested only on GNU Emacs version 24.1
+;;     Tested on GNU Emacs versions 23.3 and 24.1
 ;;
-;;    Uses if present: pcache.el (all operations are noops when
-;;    not present)
+;;     Uses if present: pcache.el (all operations are noops when
+;;     not present)
 ;;
 ;; Bugs
 ;;
-;;    Persistent-soft is a wrapper around pcache which is a wrapper
-;;    around eieio.  Therefore, persistent-soft should probably be
-;;    rewritten to use eieio directly or recast as a patch to pcache.
+;;     Persistent-soft is a wrapper around pcache which is a wrapper
+;;     around eieio.  Therefore, persistent-soft should probably be
+;;     rewritten to use eieio directly or recast as a patch to pcache.
 ;;
 ;; TODO
 ;;
-;;    Notice and delete old data files.
+;;     Notice and delete old data files.
 ;;
 ;;; License
 ;;
@@ -104,7 +118,7 @@
 
 ;;; requires
 
-;; for callf
+;; for callf, flet
 (eval-when-compile
   (require 'cl))
 
