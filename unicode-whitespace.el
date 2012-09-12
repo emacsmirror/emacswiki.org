@@ -2,26 +2,37 @@
 ;;
 ;; Copyright (c) 2012 Roland Walker
 ;;
-;; Author: Roland Walker walker@pobox.com
-;; URL: https://github.com/rolandwalker/unicode-whitespace.el
-;; Version: 0.2.0
-;; Last-Updated: 28 Aug 2012
+;; Author: Roland Walker <walker@pobox.com>
+;; Homepage: http://github.com/rolandwalker/unicode-whitespace
+;; URL: http://raw.github.com/rolandwalker/unicode-whitespace/master/unicode-whitespace.el
+;; Version: 0.2.2
+;; Last-Updated: 7 Sep 2012
 ;; EmacsWiki: UnicodeWhitespace
-;; Package-Requires: ((ucs-utils "0.6.0") (persistent-soft "0.8.0") (pcache "0.2.3"))
+;; Package-Requires: ((ucs-utils "0.7.0") (persistent-soft "0.8.0") (pcache "0.2.3"))
 ;; Keywords: faces, wp, interface
 ;;
 ;; Simplified BSD License
 ;;
 ;;; Commentary:
 ;;
+;; Quickstart
+;;
+;;     (require 'unicode-whitespace)
+;;
+;;     (unicode-whitespace-setup 'subdued-faces)
+;;
+;;     M-x whitespace-mode RET
+;;
+;; Explanation
+;;
 ;; Unicode-whitespace makes `whitespace-mode' Unicode-aware in two
 ;; different ways:
 ;;
-;;    1. Recognizing Unicode whitespace characters in your buffer,
-;;       such as "No-Break Space" or "Hair Space".
+;;     1. Recognizing Unicode whitespace characters in your buffer,
+;;        such as "No-Break Space" or "Hair Space".
 ;;
-;;    2. Displaying Unicode characters such as "Paragraph Sign"
-;;       (pilcrow) in place of whitespace.
+;;     2. Displaying Unicode characters such as "Paragraph Sign"
+;;        (pilcrow) in place of whitespace.
 ;;
 ;; This library also makes some minor adjustments to the default
 ;; settings of `whitespace-mode', and exposes character-by-character
@@ -31,20 +42,20 @@
 ;; somewhere Emacs can find it, and add the following to your ~/.emacs
 ;; file:
 ;;
-;;    (require 'unicode-whitespace)
-;;    (unicode-whitespace-setup 'subdued-faces)  ; 'subdued-faces is optional
+;;     (require 'unicode-whitespace)
+;;     (unicode-whitespace-setup 'subdued-faces)  ; 'subdued-faces is optional
 ;;
 ;; Then invoke `whitespace-mode' as usual.
 ;;
 ;; The display of newlines is changed from the default.  Newlines are
 ;; not displayed unless one of the following conditions is met:
 ;;
-;;    1. `truncate-lines' is non-nil
+;;     1. `truncate-lines' is non-nil
 ;;
-;;    2. `word-wrap' is non-nil
+;;     2. `word-wrap' is non-nil
 ;;
-;;    3. The major mode of the buffer is listed in
-;;       `unicode-whitespace-newline-mark-modes'.
+;;     3. The major mode of the buffer is listed in
+;;        `unicode-whitespace-newline-mark-modes'.
 ;;
 ;; A new `whitespace-style' is provided: 'echo causes the name of the
 ;; whitespace character under the point to be displayed in the echo
@@ -53,103 +64,103 @@
 ;; Two interactive commands are provided to manipulate these settings
 ;; when `whitespace-mode' is active:
 ;;
-;;    `unicode-whitespace-toggle-newlines'
-;;    `unicode-whitespace-toggle-echo'
+;;     `unicode-whitespace-toggle-newlines'
+;;     `unicode-whitespace-toggle-echo'
 ;;
 ;; See Also
 ;;
-;;    M-x customize-group RET unicode-whitespace RET
-;;    M-x customize-group RET whitespace RET
+;;     M-x customize-group RET unicode-whitespace RET
+;;     M-x customize-group RET whitespace RET
 ;;
 ;; Notes
 ;;
-;;    If the extended characters used to represent whitespace do
-;;    not display correctly on your system, install unicode-fonts.el
-;;    and/or read the setup tips therein.
+;;     If the extended characters used to represent whitespace do
+;;     not display correctly on your system, install unicode-fonts.el
+;;     and/or read the setup tips therein.
 ;;
-;;    Be aware when setting customizable variables for `whitespace-mode'
-;;    that unicode-whitespace works by overwriting those same variables.
+;;     Be aware when setting customizable variables for `whitespace-mode'
+;;     that unicode-whitespace works by overwriting those same variables.
 ;;
-;;    Unicode-whitespace causes alternative line terminators such as
-;;    "Line Separator" to visually break lines so long as
-;;    `whitespace-mode' is on.  Extra newline characters are not
-;;    inserted.  This is a visual effect only, which ceases when
-;;    `whitespace-mode' is turned off.
+;;     Unicode-whitespace causes alternative line terminators such as
+;;     "Line Separator" to visually break lines so long as
+;;     `whitespace-mode' is on.  Extra newline characters are not
+;;     inserted.  This is a visual effect only, which ceases when
+;;     `whitespace-mode' is turned off.
 ;;
-;;    Unicode-whitespace turns off the long-line indicators built
-;;    into whitespace-mode because of a font-lock bug.  To reverse
-;;    this, do
+;;     Unicode-whitespace turns off the long-line indicators built
+;;     into whitespace-mode because of a font-lock bug.  To reverse
+;;     this, do
 ;;
-;;       (add-to-list 'whitespace-styles 'lines)
+;;         (add-to-list 'whitespace-styles 'lines)
 ;;
-;;    or use a separate long-lines detection package.
+;;     or use a separate long-lines detection package.
 ;;
 ;; Compatibility and Requirements
 ;;
-;;    Tested only on GNU Emacs version 24.1
+;;     Tested on GNU Emacs versions 23.3 and 24.1
 ;;
-;;    Requires ucs-utils.el
+;;     Requires ucs-utils.el
 ;;
-;;    Uses if present: unicode-fonts.el
+;;     Uses if present: unicode-fonts.el
 ;;
 ;; Bugs
 ;;
-;;    Gray faces won't look good on a gray background such as that
-;;    used by Zenburn color theme.  Does Zenburn set background to
-;;    light or dark?  Provide a way to force faces?
+;;     Gray faces won't look good on a gray background such as that
+;;     used by Zenburn color theme.  Does Zenburn set background to
+;;     light or dark?  Provide a way to force faces?
 ;;
-;;    The face for alternative line terminators is often incorrect;
-;;    font-lock overrides the settings from unicode-whitespace.  This
-;;    is because `whitespace-display-char-on' hardcodes \n as the
-;;    line terminator.
+;;     The face for alternative line terminators is often incorrect;
+;;     font-lock overrides the settings from unicode-whitespace.  This
+;;     is because `whitespace-display-char-on' hardcodes \n as the
+;;     line terminator.
 ;;
-;;    Calling alternative line terminators 'space-mark is a hack to
-;;    make it possible to toggle display of standard newlines
-;;    without affecting the alternates.  They really should all be
-;;    called newline-mark.  whitespace.el could be updated to
-;;    allow this.
+;;     Calling alternative line terminators 'space-mark is a hack to
+;;     make it possible to toggle display of standard newlines
+;;     without affecting the alternates.  They really should all be
+;;     called newline-mark.  whitespace.el could be updated to
+;;     allow this.
 ;;
-;;    Trailing space that ends with \r or \f sometimes does not get
-;;    fontified -- though it usually get picked up after some
-;;    typing.  This could be because of some assumptions in the
-;;    post-command-hook of whitespace.el.
+;;     Trailing space that ends with \r or \f sometimes does not get
+;;     fontified -- though it usually get picked up after some
+;;     typing.  This could be because of some assumptions in the
+;;     post-command-hook of whitespace.el.
 ;;
 ;;
 ;; TODO
 ;;
-;;    There should be separate faces for each of these classes, would
-;;    need to patch or override whitespace.el
+;;     There should be separate faces for each of these classes, would
+;;     need to patch or override whitespace.el
 ;;
-;;       unicode-whitespace-tab-names
-;;       unicode-whitespace-tab-set-names
-;;       unicode-whitespace-soft-space-names
-;;       unicode-whitespace-hard-space-names
-;;       unicode-whitespace-pseudo-space-names
-;;       unicode-whitespace-standard-line-terminator-names
-;;       unicode-whitespace-alternative-line-terminator-names
-;;       form feed
+;;         unicode-whitespace-tab-names
+;;         unicode-whitespace-tab-set-names
+;;         unicode-whitespace-soft-space-names
+;;         unicode-whitespace-hard-space-names
+;;         unicode-whitespace-pseudo-space-names
+;;         unicode-whitespace-standard-line-terminator-names
+;;         unicode-whitespace-alternative-line-terminator-names
+;;         form feed
 ;;
-;;    There are probably more nonprinting characters to include as
-;;    pseudo-spaces by default.  A list of glyphless chars could be
-;;    gotten from variable `glyphless-char-display'.
+;;     There are probably more nonprinting characters to include as
+;;     pseudo-spaces by default.  A list of glyphless chars could be
+;;     gotten from variable `glyphless-char-display'.
 ;;
-;;    Regexps should probably be redone with only \t for certain
-;;    things.
+;;     Regexps should probably be redone with only \t for certain
+;;     things.
 ;;
-;;    A whitespace-cycle command could turn on the mode and cycle
-;;    through a few levels of visibility.
+;;     A whitespace-cycle command could turn on the mode and cycle
+;;     through a few levels of visibility.
 ;;
-;;    Add a test function that dumps an extended example to scratch
-;;    buffer.
+;;     Add a test function that dumps an extended example to scratch
+;;     buffer.
 ;;
-;;    Consistent marker symbol for thin spaces, and a way to see the
-;;    intersection between thin and nonbreaking - maybe nonbreaking
-;;    should be a consistent face and thin a consistent symbol.
+;;     Consistent marker symbol for thin spaces, and a way to see the
+;;     intersection between thin and nonbreaking - maybe nonbreaking
+;;     should be a consistent face and thin a consistent symbol.
 ;;
-;;    The tab-visibility bug in whitespace.el could probably be fixed
-;;    with an overlay.  Also, stipple can show tabs as arrows without
-;;    changing display, seen here (http://emacswiki.org/emacs/BlankMode).
-;;    However, the stipple face is dependent on frame-char-width/height.
+;;     The tab-visibility bug in whitespace.el could probably be fixed
+;;     with an overlay.  Also, stipple can show tabs as arrows without
+;;     changing display, seen here (http://emacswiki.org/emacs/BlankMode).
+;;     However, the stipple face is dependent on frame-char-width/height.
 ;;
 ;;; License
 ;;
@@ -221,7 +232,6 @@
 (defvar unicode-whitespace-subdued-space             'unicode-whitespace-subdued-space             "Face variable to make font-lock happy.")
 (defvar unicode-whitespace-subdued-hspace            'unicode-whitespace-subdued-hspace            "Face variable to make font-lock happy.")
 (defvar unicode-whitespace-subdued-newline           'unicode-whitespace-subdued-newline           "Face variable to make font-lock happy.")
-(defvar unicode-whitespace-subdued-highlight         'unicode-whitespace-subdued-highlight         "Face variable to make font-lock happy.")
 (defvar unicode-whitespace-subdued-line              'unicode-whitespace-subdued-line              "Face variable to make font-lock happy.")
 
 ;;; customizable variables
@@ -229,10 +239,11 @@
 ;;;###autoload
 (defgroup unicode-whitespace nil
   "Teach whitespace-mode about fancy characters."
-  :version "0.2.0"
+  :version "0.2.2"
   :link '(emacs-commentary-link "unicode-whitespace")
   :prefix "unicode-whitespace-"
-  :group 'extensions)
+  :group 'i18n
+  :group 'faces)
 
 ;;;###autoload
 (defgroup unicode-whitespace-definitions nil
@@ -532,12 +543,6 @@ a single character."
   "Unicode-whitespace face for newline characters."
   :group 'unicode-whitespace-faces)
 
-(defface unicode-whitespace-subdued-highlight
-  '((((background dark))  (:inherit font-lock-warning-face))
-    (((background light)) (:inherit font-lock-warning-face)))
-  "Unicode-whitespace face for highlighted characters."
-  :group 'unicode-whitespace-faces)
-
 (defface unicode-whitespace-subdued-line
   '((((background dark))  nil)
     (((background light)) nil))
@@ -685,13 +690,13 @@ trailing tabs."
         (when (and (member from-charname form-feed-names)
                    (string-match-p "box drawing"
                                    (ucs-utils-pretty-name
-                                    (ucs-utils-char (ucs-utils-first-existing-char to-charnames 'cdp)))))
+                                    (ucs-utils-first-existing-char to-charnames 'cdp))))
           (setq display-len 20))
         (when (member from-charname unicode-whitespace-tab-names)
           (setq mark-type 'tab-mark))
         (push (list mark-type
                     (ucs-utils-char from-charname 'error)
-                    (make-vector display-len (ucs-utils-char (ucs-utils-first-existing-char to-charnames 'cdp))))
+                    (make-vector display-len (ucs-utils-first-existing-char to-charnames 'cdp)))
               whitespace-display-mappings)))
 
     (dolist (cell (append unicode-whitespace-standard-line-terminator-mappings
@@ -711,9 +716,9 @@ trailing tabs."
         (push (list mark-type
                     (ucs-utils-char from-charname 'error)
                     (if (eq (ucs-utils-char from-charname 'error) (ucs-utils-char "Carriage Return (CR)" 'error))
-                        (vector (ucs-utils-char (ucs-utils-first-existing-char to-charnames 'cdp)))
+                        (vector (ucs-utils-first-existing-char to-charnames 'cdp))
                       ;; note below, a newline is placed in the vector and displayed in the substitution
-                      (vector (ucs-utils-char (ucs-utils-first-existing-char to-charnames 'cdp)) ?\n)))
+                      (vector (ucs-utils-first-existing-char to-charnames 'cdp) ?\n)))
               whitespace-display-mappings)))))
 
 (defun unicode-whitespace-configure-styles ()
@@ -784,7 +789,6 @@ With negative prefix ARG, sets faces back to default values."
         (setq whitespace-space             'whitespace-space           )
         (setq whitespace-hspace            'whitespace-hspace          )
         (setq whitespace-newline           'whitespace-newline         )
-        (setq whitespace-highlight         'whitespace-highlight       )
         (setq whitespace-line              'whitespace-line            ))
     ;; else
     (setq whitespace-empty             'unicode-whitespace-subdued-empty           )
@@ -796,7 +800,6 @@ With negative prefix ARG, sets faces back to default values."
     (setq whitespace-space             'unicode-whitespace-subdued-space           )
     (setq whitespace-hspace            'unicode-whitespace-subdued-hspace          )
     (setq whitespace-newline           'unicode-whitespace-subdued-newline         )
-    (setq whitespace-highlight         'unicode-whitespace-subdued-highlight       )
     (setq whitespace-line              'unicode-whitespace-subdued-line            )))
 
 ;;;###autoload
