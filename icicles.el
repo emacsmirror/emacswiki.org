@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun Sep  9 10:50:23 2012 (-0700)
+;; Last-Updated: Tue Sep 11 16:34:11 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 23196
+;;     Update #: 23200
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Doc URL: http://emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -203,8 +203,8 @@
 ;;    `icicle-bookmark-url', `icicle-bookmark-url-other-window'
 ;;    `icicle-bookmark-w3m-other-window', `icicle-buffer',
 ;;    `icicle-buffer-config', `icicle-buffer-list',
-;;    `icicle-buffer-of-content',
-;;    `icicle-buffer-of-content-other-window',
+;;    `icicle-buffer-no-search',
+;;    `icicle-buffer-no-search-other-window',
 ;;    `icicle-buffer-other-window',
 ;;    `icicle-change-alternative-sort-order', `icicle-choose-faces',
 ;;    `icicle-choose-invisible-faces', `icicle-choose-visible-faces',
@@ -867,9 +867,8 @@
 ;;    `icicle-bookmark-delete-action', `icicle-bookmark-help-string',
 ;;    `icicle-bookmark-jump-1', `icicle-bounds-of-thing-at-point',
 ;;    `icicle-buffer-file/process-name-less-p',
-;;    `icicle-buffer-name-prompt',
-;;    `icicle-buffer-of-content-complete', `icicle-buffer-smaller-p',
-;;    `icicle-buffer-sort-*...*-last',
+;;    `icicle-buffer-multi-complete', `icicle-buffer-name-prompt',
+;;    `icicle-buffer-smaller-p', `icicle-buffer-sort-*...*-last',
 ;;    `icicle-call-then-update-Completions',
 ;;    `icicle-cancel-Help-redirection', `icicle-candidate-action-1',
 ;;    `icicle-candidate-set-1', `icicle-candidate-set-retrieve-1',
