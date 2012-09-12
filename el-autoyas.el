@@ -27,6 +27,21 @@
 ;;
 ;;; Commentary: 
 ;; 
+;; *el-autoyas.el* --- Automatically create Emacs-Lisp Yasnippets
+;; 
+;;  - Filename :: [[file:el-autoyas.el][el-autoyas.el]]
+;;  - Description :: Automatically create Emacs-Lisp Yasnippets
+;;  - Author :: Matthew L. Fidler
+;;  - Maintainer :: Matthew L. Fidler
+;;  - Created :: Mon Nov 21 10:55:55 2011 (-0600)
+;;  - Version :: 0.2
+;;  - Last-Updated :: Mon Nov 28 08:46:55 2011 (-0600)
+;;  -           By :: Matthew L. Fidler
+;;  -     Update 
+;;  - URL :: https://github.com/mlf176f2/el-autoyas.el
+;;  - Keywords :: Emacs Lisp Mode Yasnippet
+;; Compatibility: 
+;; 
 ;; * About
 ;; el-autoyas is a small complement to yasnippet for emacs-lisp-mode.  It
 ;; provides automatically created yasnippets from eldoc argument lists.
@@ -39,6 +54,8 @@
 ;;  - To jump to the next field press `TAB'.  If you did not change the
 ;;    field, either the parameter is kept, or replaced with `nil' or
 ;;    nothing depending on the argument list.
+;;  - *NOTE* To use some of the more common functions, you may wish to
+;;    delete all the emacs-lisp snippets in the snippets directory.
 ;; * Limitations
 ;;  - Currently does not support common lisp key functions
 ;;  - Unclear if nested snippet expansion is supported.
@@ -47,11 +64,30 @@
 ;; into your load-path and put the following in =~/.emacs=:
 ;; 
 ;; 
-;; (require 'el-autoyas)
+;;     (require 'el-autoyas)
+;; 
+;; *Hook run on package load.
+;; Suggestion: Add `el-autoyas-install'.
+;; 
+;; *** yas-backward-compatability
+;; Yasnippet backward compatability functions used in el-autoyas.el
+;; 
+;; Value: ((yas/expand-snippet yas-expand-snippet)
+;; (yas/modified-p yas-modified-p)
+;; (yas/moving-away-p yas-moving-away-p)
+;; (yas/text yas-text)
+;; (yas/skip-and-clear-or-delete-char yas-skip-and-clear-or-delete-char)
+;; (yas/snippets-at-point yas--snippets-at-point)
+;; (yas/update-mirrors yas--update-mirrors)
+;; (yas/fallback-behavior yas-fallback-behavior)
+;; (yas/minor-mode yas-minor-mode))
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 12-Sep-2012      
+;;    Last-Updated: Mon Nov 28 08:46:55 2011 (-0600) #194 (Matthew L. Fidler)
+;;    Documentation change
 ;; 12-Sep-2012      
 ;;    Last-Updated: Mon Nov 28 08:46:55 2011 (-0600) #194 (Matthew L. Fidler)
 ;;    Updated el-autoyas to support yasnippet 0.8 naming conventions
