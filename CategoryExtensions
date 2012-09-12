@@ -49,6 +49,7 @@ Extensions (using the category name from `finder-by-keyword'), are utility libra
 * [http://www.mahalito.net/~harley/elisp/nlet.el nlet.el] -- Scheme's "named let"
 * [http://github.com/skeeto/elisp-fakespace fakespace.el] -- fake namespaces with defpackage
 * [http://github.com/skeeto/emacs-memoize memoize.el] -- memoize functions
+* [[Anaphora]] -- anaphoric macros providing implicit temp variables
 
 == Concurrency ==
 
