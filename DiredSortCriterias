@@ -1,3 +1,5 @@
+;;; sort by different criterias
+
 
 (defun dired-sort-criteria (criteria)
   "sort-dired by different criteria by Robert Gloeckner "
