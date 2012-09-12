@@ -9,11 +9,21 @@
 ;; Last-Updated: 30 Aug 2012
 ;; EmacsWiki: FixmeeMode
 ;; Keywords: navigation, convenience
-;; Package-Requires: ((button-lock 0.9.8) (nav-flash "1.0.0") (back-button "0.6.0") (smartrep "0.0.3"))
+;; Package-Requires: ((button-lock "0.9.8") (nav-flash "1.0.0") (back-button "0.6.0") (smartrep "0.0.3"))
 ;;
 ;; Simplified BSD License
 ;;
 ;;; Commentary:
+;;
+;; Quickstart
+;;
+;;     (require 'fixmee)
+;;
+;;     (global-fixmee-mode 1)
+;;
+;;     right-click on the word "fixme" in a comment
+;;
+;; Explanation
 ;;
 ;; Fixmee-mode tracks "fixme" notices in code comments, highlights
 ;; them, ranks them by urgency, and lets you navigate to them quickly.
@@ -22,9 +32,7 @@
 ;; character.  For example, one might write "FIXMEEEEEEEEE" for an
 ;; important issue.
 ;;
-;; Quickstart:
-;;
-;; Add the following to your ~/.emacs
+;; To use fixmee-mode, add the following to your ~/.emacs
 ;;
 ;;     (require 'fixmee)
 ;;     (global-fixmee-mode 1)
@@ -40,14 +48,19 @@
 ;;
 ;;     M-x fixmee RET
 ;;
-;; Key Bindings:
+;; or
+;;
+;;    roll the mouse wheel when hovering over the text "fixm"
+;;    in the modeline.
+;;
+;; Key Bindings
 ;;
 ;; The default key bindings are
 ;;
-;;     C-c f `fixmee-goto-nextmost-urgent'
-;;     C-c F `fixmee-goto-prevmost-urgent'
-;;     M-n   `fixmee-goto-next-by-position'      ; only when the point is
-;;     M-p   `fixmee-goto-previous-by-position'  ; inside a fixme notice
+;;     C-c f  `fixmee-goto-nextmost-urgent'
+;;     C-c F  `fixmee-goto-prevmost-urgent'
+;;     M-n    `fixmee-goto-next-by-position'      ; only when the point is
+;;     M-p    `fixmee-goto-previous-by-position'  ; inside a fixme notice
 ;;
 ;; When the smartrep package is installed, the "C-c" prefix need not
 ;; be used for consecutive fixmee-mode keyboard commands.  Instead,
@@ -56,11 +69,11 @@
 ;; There is also a context menu and mouse-wheel bindings on the
 ;; minor-mode lighter in the modeline:
 ;;
-;;             mouse-1   context menu
-;;       wheel-down/up   next/prev by urgency
-;;     M-wheel-down/up   next/prev by position
+;;             mouse-1  context menu
+;;       wheel-down/up  next/prev by urgency
+;;     M-wheel-down/up  next/prev by position
 ;;
-;; Patterns:
+;; Patterns
 ;;
 ;; The following fixme patterns are supported by default:
 ;;
@@ -81,7 +94,7 @@
 ;;
 ;; Compatibility and Requirements
 ;;
-;;     Tested only on GNU Emacs version 24.1
+;;     Tested on GNU Emacs versions 23.3 and 24.1
 ;;
 ;;     Requires button-lock.el
 ;;
@@ -89,47 +102,47 @@
 ;;
 ;; Bugs
 ;;
-;;    When comment-start is defined, only the first notice on a line
-;;    is lit up by button-lock, though fixme-mode is aware of multiple
-;;    notices on a line.  This is worked around for the moment by
-;;    stripping these cases from fixmee-notice-list.  Better would be
-;;    to add comment-sensitivity logic to button-lock, and remove the
-;;    comment-matching section of the regexp passed to button-lock.
+;;     When comment-start is defined, only the first notice on a line
+;;     is lit up by button-lock, though fixmee-mode is aware of multiple
+;;     notices on a line.  This is worked around for the moment by
+;;     stripping these cases from fixmee-notice-list.  Better would be
+;;     to add comment-sensitivity logic to button-lock, and remove the
+;;     comment-matching section of the regexp passed to button-lock.
 ;;
-;;    Fixmee-maybe-turn-on gets called multiple times when a file
-;;    is loaded.
+;;     Fixmee-maybe-turn-on gets called multiple times when a file
+;;     is loaded.
 ;;
-;;    Fixmee-buffer-include-functions may not contain the function
-;;    'frame-bufs-associated-p, because a new buffer is not yet
-;;    associated with the frame at the time the global mode check
-;;    calls fixmee-maybe-turn-on.
+;;     Fixmee-buffer-include-functions may not contain the function
+;;     'frame-bufs-associated-p, because a new buffer is not yet
+;;     associated with the frame at the time the global mode check
+;;     calls fixmee-maybe-turn-on.
 ;;
 ;; TODO
 ;;
-;;    Better feedback messages for end-of-list and start-of-list.
+;;     Consider changing prefix arg to mean "constrain this command to
+;;     the current file".
 ;;
-;;    Integrate with next-error (make a separate buffer showing hits) -
-;;    for first pass at this just send regexp to occur, second pass
-;;    build a buffer from the contents of fixmee-notice-list.
+;;     Better feedback messages for end-of-list and start-of-list.
 ;;
-;;    Consider changing prefix arg to mean "constrain this command to
-;;    the current file".
+;;     Integrate with next-error (make a separate buffer showing hits) -
+;;     for first pass at this just send regexp to occur, second pass
+;;     build a buffer from the contents of fixmee-notice-list.
 ;;
-;;    Bookmark integration? (implicit bookmarking on notices).
+;;     Bookmark integration? (implicit bookmarking on notices).
 ;;
-;;    Wrap/cycle options on navigation-by-position.
+;;     Wrap/cycle options on navigation-by-position.
 ;;
-;;    How to get last-command when user does M-x? (smex is not helping
-;;    here).  (nth 0 command-history) ?
+;;     How to get last-command when user does M-x? (smex is not helping
+;;     here).  (nth 0 command-history) ?
 ;;
-;;    Navigation can land on line near vertical edge of window -
-;;    should respect user settings and scroll in as needed for
-;;    context.
+;;     Navigation can land on line near vertical edge of window -
+;;     should respect user settings and scroll in as needed for
+;;     context.
 ;;
-;;    Project support.
+;;     Project support.
 ;;
-;;    Some kind of extra comment indicating a notice is to be ignored?
-;;    Lead with a backwhack?
+;;     Some kind of extra comment indicating a notice is to be ignored?
+;;     Lead with a backwhack?
 ;;
 ;;; License
 ;;
@@ -204,7 +217,7 @@
   :link '(emacs-commentary-link "fixmee")
   :prefix "fixmee-"
   :group 'navigation
-  :group 'extensions)
+  :group 'convenience)
 
 (defcustom fixmee-notice-regexp "\\(@@@+\\|\\_<\\(?:[Tt][Oo][Dd][Oo]+\\|[Ff][Ii][Xx][Mm][Ee]+\\|XXX+\\)\\_>\\)"
   "Pattern for matching \"fixme\" notices.
@@ -395,21 +408,21 @@ The format for key sequences is as defined by `kbd'."
   "Command bound to mouse-1 when clicking on \"fixme\" notices.
 
 The format for key sequences is as defined by `kbd'."
-   :type 'symbol
+   :type 'function
    :group 'fixmee-keys)
 
 (defcustom fixmee-within-notice-mouse-2-command 'ignore
   "Command bound to mouse-2 when clicking on \"fixme\" notices.
 
 The format for key sequences is as defined by `kbd'."
-   :type 'symbol
+   :type 'function
    :group 'fixmee-keys)
 
 (defcustom fixmee-within-notice-down-mouse-3-command 'fixmee-notice-popup
   "Command bound to down-mouse-3 when clicking on \"fixme\" notices.
 
 The format for key sequences is as defined by `kbd'."
-   :type 'symbol
+   :type 'function
    :group 'fixmee-keys)
 
 (defcustom fixmee-within-notice-goto-next-by-position-keystrokes '("M-n")
@@ -471,20 +484,23 @@ Expressed as an element of `fixmee-notice-list'.")
 
 (defvar fixmee-mode-map (make-sparse-keymap) "Keymap for `fixmee-mode' minor-mode.")
 
-(let ((fixmee-navigation-commands (remq 'fixmee fixmee-navigation-commands)))
-  (if (and (stringp fixmee-smartrep-prefix)
-           (length fixmee-smartrep-prefix))
-      (let ((keys nil))
-        (dolist (cmd fixmee-navigation-commands)
-          (dolist (k (remove-if-not #'(lambda (x)
-                                        (string-match-p (concat "\\`" fixmee-smartrep-prefix "\\>") x))
-                                    (symbol-value (intern (concat (symbol-name cmd) "-keystrokes")))))
-            (push (cons (replace-regexp-in-string (concat "\\`" fixmee-smartrep-prefix "\\>[ \t]*") "" k) cmd) keys)))
-        (smartrep-define-key fixmee-mode-map fixmee-smartrep-prefix keys))
-    ;; else
-    (dolist (cmd fixmee-navigation-commands)
-      (dolist (k (symbol-value (intern (concat (symbol-name cmd) "-keystrokes"))))
-        (define-key fixmee-mode-map (read-kbd-macro k) cmd)))))
+(let ((smart-keys nil))
+  (dolist (cmd (remq 'fixmee fixmee-navigation-commands))
+    (dolist (k (symbol-value (intern (concat (symbol-name cmd) "-keystrokes"))))
+      (if (and (featurep 'smartrep)
+               (stringp fixmee-smartrep-prefix)
+               (> (length fixmee-smartrep-prefix) 0)
+               (string-match-p (concat "\\`" fixmee-smartrep-prefix "\\>") k))
+          (push (cons (replace-regexp-in-string
+                       (concat "\\`" fixmee-smartrep-prefix "\\>[ \t]*")
+                       ""
+                       k)
+                      cmd)
+                smart-keys)
+        ;; else
+        (define-key fixmee-mode-map (read-kbd-macro k) cmd))))
+  (when smart-keys
+    (smartrep-define-key fixmee-mode-map fixmee-smartrep-prefix smart-keys)))
 
 ;;; lighter
 
@@ -501,12 +517,17 @@ Expressed as an element of `fixmee-notice-list'.")
                               (define-key map (kbd "<mode-line> <wheel-down>"   )      'fixmee-goto-nextmost-urgent)
                               (define-key map (kbd "<mode-line> <M-wheel-up>"   )      'fixmee-goto-previous-by-position)
                               (define-key map (kbd "<mode-line> <M-wheel-down>" )      'fixmee-goto-next-by-position)
+                              (define-key map (kbd "<mode-line> <mouse-4>"      )      'fixmee-goto-prevmost-urgent)
+                              (define-key map (kbd "<mode-line> <mouse-5>"      )      'fixmee-goto-nextmost-urgent)
+                              (define-key map (kbd "<mode-line> <M-mouse-4>"    )      'fixmee-goto-previous-by-position)
+                              (define-key map (kbd "<mode-line> <M-mouse-5>"    )      'fixmee-goto-next-by-position)
                               (define-key map (read-kbd-macro fixmee-lighter-context-menu-keystrokes) menu-map)
                               map) "Keymap for the `fixmee-mode' lighter.")
 
 (when (stringp fixmee-mode-lighter)
-      (callf propertize fixmee-mode-lighter 'local-map fixmee-lighter-map
-                                            'help-echo "fixmee-mode: mouse-3 menu\nwheel down/up by urgency\nwheel M-down/M-up by position."))
+  (callf propertize fixmee-mode-lighter 'local-map fixmee-lighter-map
+                                        'keymap fixmee-lighter-map
+                                        'help-echo "fixmee-mode: mouse-1 menu\nwheel down/up by urgency\nwheel M-down/M-up by position."))
 
 ;;; aliases and fsets
 
