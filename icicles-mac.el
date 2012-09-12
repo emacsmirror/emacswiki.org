@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:24:28 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Sep  8 10:35:55 2012 (-0700)
+;; Last-Updated: Tue Sep 11 16:58:00 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1020
+;;     Update #: 1032
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mac.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -400,7 +400,9 @@ created after the others."
   ;; in later Emacs releases.
   `,(append
      pre-bindings
-     `((icicle-buffer-name-input-p                  t) ; Must also be non-nil for non multi-commands.
+     `((icicle-buffer-name-input-p                  t) ; But must also be non-nil for non multi-commands.
+       (icicle-buffer-complete-fn                   (and (fboundp 'internal-complete-buffer)
+                                                     'internal-complete-buffer))
        (completion-ignore-case                      (or (and (boundp 'read-buffer-completion-ignore-case)
                                                          read-buffer-completion-ignore-case)
                                                      completion-ignore-case))
@@ -463,7 +465,11 @@ created after the others."
                                            (or (buffer-file-name bf)
                                                (with-current-buffer bf (eq major-mode 'dired-mode))))
                                          (buffer-list))))
-          (buffer-list))))
+          (buffer-list)))
+       (icicle-bufflist
+        (icicle-remove-if                           
+         (lambda (bf) (icicle-string-match-p "^ [*]Minibuf-[0-9]" (buffer-name bf)))
+         icicle-bufflist)))
      post-bindings))
 
 (defmacro icicle-file-bindings (&optional pre-bindings post-bindings)
