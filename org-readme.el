@@ -5,7 +5,7 @@
 ;; Author: Matthew L. Fidler
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Fri Aug  3 22:33:41 2012 (-0500)
-;; Version: 0.27
+;; Version: 0.29
 ;; Package-Requires: ((http-post-simple "1.0") (yaoddmuse "0.1.1")(header2 "21.0") (lib-requires "21.0"))
 ;; Last-Updated: Wed Aug 22 13:11:26 2012 (-0500)
 ;;           By: Matthew L. Fidler
@@ -77,6 +77,12 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 12-Sep-2012      
+;;    Last-Updated: Wed Aug 22 13:11:26 2012 (-0500) #794 (Matthew L. Fidler)
+;;    Bug fix when org todo faces are not set.
+;; 12-Sep-2012      
+;;    Last-Updated: Wed Aug 22 13:11:26 2012 (-0500) #794 (Matthew L. Fidler)
+;;    Added bug fix when `org-todo-keyword-faces' is undefined.
 ;; 22-Aug-2012    Matthew L. Fidler  
 ;;    Last-Updated: Wed Aug 22 13:05:14 2012 (-0500) #792 (Matthew L. Fidler)
 ;;    Attempting to upload again
@@ -1164,6 +1170,7 @@ When COMMENT-ADDED is non-nil, the comment has been added and the syncing should
   (let ((readme (org-readme-find-readme)) p1)
     (with-temp-buffer
       (insert-file-contents readme)
+      
       (mapc
        (lambda(section)
          (org-readme-remove-section section))
@@ -1177,18 +1184,23 @@ When COMMENT-ADDED is non-nil, the comment has been added and the syncing should
       (while (re-search-forward "#.*" nil t)
         (replace-match ""))
       (goto-char (point-min))
+      
       (while (re-search-forward "^[ \t]*[A-Z]+:[ \t]*\\[[0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}.*" nil t)
         (replace-match ""))
       (goto-char (point-min))
+      
       (while (re-search-forward "^:" nil t)
         (replace-match ""))
       (goto-char (point-min))
-      (while (org-readme-remove-section
-              (regexp-opt
-               (mapcar
-                (lambda(x)
-                  (nth 0 x))
-                org-todo-keyword-faces)) nil t))
+      
+      (when org-todo-keyword-faces
+        (while (org-readme-remove-section
+                (regexp-opt
+                 (mapcar
+                  (lambda(x)
+                    (nth 0 x))
+                  org-todo-keyword-faces)) nil t)))
+      
       (goto-char (point-min))
       (skip-chars-forward " \t\n")
       (delete-region (point-min) (point))
@@ -1200,7 +1212,7 @@ When COMMENT-ADDED is non-nil, the comment has been added and the syncing should
       (goto-char (point-min))
       (while (re-search-forward "^" nil t)
         (insert ";; "))
-      (setq readme (buffer-substring (point-min) (point-max))))
+      (setq readme (buffer-string)))
     (goto-char (point-min))
     (when (re-search-forward "^;;;[ \t]*Commentary:[ \t]*$" nil t)
       (skip-chars-forward "\n")
