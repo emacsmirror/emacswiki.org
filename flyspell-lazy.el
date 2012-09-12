@@ -5,14 +5,24 @@
 ;; Author: Roland Walker <walker@pobox.com>
 ;; Homepage: http://github.com/rolandwalker/flyspell-lazy
 ;; URL: http://raw.github.com/rolandwalker/flyspell-lazy/master/flyspell-lazy.el
-;; Version: 0.6.0
-;; Last-Updated: 1 Sep 2012
+;; Version: 0.6.1
+;; Last-Updated: 7 Sep 2012
 ;; EmacsWiki: FlyspellLazy
 ;; Keywords: spelling
 ;;
 ;; Simplified BSD License
 ;;
 ;;; Commentary:
+;;
+;; Quickstart
+;;
+;;     (require 'flyspell-lazy)
+;;
+;;     (flyspell-lazy-mode 1)
+;;
+;;     (flyspell-mode 1)      ; or (flyspell-prog-mode)
+;;
+;; Explanation
 ;;
 ;; `flyspell-mode' has performance issues on some platforms.
 ;; Specifically, keyboard responsiveness may be significantly
@@ -47,10 +57,6 @@
 ;;
 ;; Notes
 ;;
-;;    `flyspell-lazy-mode' probably works best if you also set
-;;
-;;         (setq flyspell-large-region 1)
-;;
 ;;     If you are using "aspell" instead of "ispell" on the backend,
 ;;     the following setting may improve performance:
 ;;
@@ -58,7 +64,7 @@
 ;;
 ;; Compatibility and Requirements
 ;;
-;;     Tested only on GNU Emacs version 24.1
+;;     Tested on GNU Emacs versions 23.3 and 24.1
 ;;
 ;;     No external dependencies
 ;;
@@ -80,9 +86,6 @@
 ;;     inside a word.
 ;;
 ;; TODO
-;;
-;;     Determine if flyspell-large-region should be set, and set it to
-;;     the best value when flyspell-lazy is activated.
 ;;
 ;;     Let flyspell-issue-message-flag and flyspell-issue-welcome-flag
 ;;     to nil wherever needed to improve performance.
@@ -169,6 +172,7 @@
 ;; for let*, flet, callf, callf2, setf
 (eval-when-compile
   (defvar flyspell-changes)
+  (defvar flyspell-large-region)
   (defvar ispell-process)
   (require 'cl))
 
@@ -184,11 +188,11 @@
 ;;;###autoload
 (defgroup flyspell-lazy nil
   "Improve flyspell responsiveness using idle timers."
-  :version "0.6.0"
+  :version "0.6.1"
   :link '(emacs-commentary-link "flyspell-lazy")
   :prefix "flyspell-lazy-"
   :group 'flyspell
-  :group 'extensions)
+  :group 'wp)
 
 (defcustom flyspell-lazy-idle-seconds 3
   "How many seconds of idle time before running flyspell on recent changes."
@@ -245,15 +249,6 @@ Spellchecking is also disabled in the minibuffer."
   :type 'boolean
   :group 'flyspell-lazy)
 
-(defcustom flyspell-lazy-mode-lighter " flylz"
-  "This string appears in the mode-line when `flyspell-lazy-mode' is active.
-
-Set to nil or the empty string to disable the mode-line
-lighter for `flyspell-lazy-mode'."
-  :type 'string
-  :risky t
-  :group 'flyspell-lazy)
-
 ;; so far this does not work
 (defvar flyspell-lazy-single-ispell nil)
 ;; (defcustom flyspell-lazy-single-ispell nil
@@ -300,19 +295,6 @@ in GNU Emacs 24.1 or higher."
     `(called-interactively-p ,kind)))
 
 ;;; utility functions
-
-;; generic utility functions
-
-;; note this strips out nils
-(defun flyspell-lazy-list-flatten (list)
-  "Flatten LIST which may contain other lists."
-  (cond
-    ((null list)
-     nil)
-    ((listp list)
-     (append (flyspell-lazy-list-flatten (car list)) (flyspell-lazy-list-flatten (cdr list))))
-    (t
-     (list list))))
 
 ;; defsubsts
 
@@ -393,9 +375,11 @@ When ADD-POINT is set, add a span around the current point."
 
         ;; always order min-to-max within cells
         (dolist (chg flyspell-changes)
-          (let ((fixed (apply 'cons (sort (flyspell-lazy-list-flatten chg) '<))))
-            (setf (car chg) (car fixed))
-            (setf (cdr chg) (cdr fixed))))
+          (when (> (car chg) (cdr chg))
+            (let ((a (car chg))
+                  (d (cdr chg)))
+              (setf (cdr chg) a)
+              (setf (car chg) d))))
 
         ;; sort and merge contiguous spans
         ;; we do this more than once.  here the purpose is to
@@ -578,25 +562,25 @@ START, STOP, and LEN are as passed to a hook on
 If GLOBAL is set, removes global hook from `flyspell-mode-hook',
 with the result that `flyspell-lazy' will no longer
 be activated in every flyspell buffer."
-    (when flyspell-mode
-      (flyspell-mode-off))
-    (when global
-      (flyspell-lazy-debug-progn
-        (message "unloading flyspell-lazy globally"))
-      (setq flyspell-lazy-buffer-list nil)
-      (remove-hook 'flyspell-mode-hook 'flyspell-lazy-load)
-      (when (timerp flyspell-lazy-timer)
-        (cancel-timer flyspell-lazy-timer))
-      (when (timerp flyspell-lazy-window-timer)
-        (cancel-timer flyspell-lazy-window-timer))
-      (setq flyspell-lazy-timer nil)
-      (setq flyspell-lazy-window-timer nil))
+  (when flyspell-mode
+    (flyspell-mode-off))
+  (when global
     (flyspell-lazy-debug-progn
-      (message "unloading flyspell-lazy for buffer"))
-    (setq flyspell-lazy-hurry-flag nil)
-    (setq flyspell-lazy-local nil)
-    (flyspell-lazy-uncheck-buffer)
-    (remove-hook 'after-change-functions 'flyspell-lazy-after-change-function t))
+      (message "unloading flyspell-lazy globally"))
+    (setq flyspell-lazy-buffer-list nil)
+    (remove-hook 'flyspell-mode-hook 'flyspell-lazy-load)
+    (when (timerp flyspell-lazy-timer)
+      (cancel-timer flyspell-lazy-timer))
+    (when (timerp flyspell-lazy-window-timer)
+      (cancel-timer flyspell-lazy-window-timer))
+    (setq flyspell-lazy-timer nil)
+    (setq flyspell-lazy-window-timer nil))
+  (flyspell-lazy-debug-progn
+    (message "unloading flyspell-lazy for buffer"))
+  (setq flyspell-lazy-hurry-flag nil)
+  (setq flyspell-lazy-local nil)
+  (flyspell-lazy-uncheck-buffer)
+  (remove-hook 'after-change-functions 'flyspell-lazy-after-change-function t))
 
 (defun flyspell-lazy-load ()
   "Setup for `flyspell-lazy'.  Designed to be used inside `flyspell-mode-hook'."
@@ -611,46 +595,49 @@ be activated in every flyspell buffer."
       (message "setting up flyspell-lazy for buffer"))
 
     (unless (flyspell-lazy-ignored-buffer-p (current-buffer))
+
       (setq flyspell-lazy-local t)
-      (add-to-list 'flyspell-lazy-buffer-list (current-buffer)))
+      (add-to-list 'flyspell-lazy-buffer-list (current-buffer))
 
-    (when (and flyspell-lazy-single-ispell
-               (not ispell-process))
-      (ispell-set-spellchecker-params))
+      (set (make-local-variable 'flyspell-large-region) 1)
 
-    (unless (> flyspell-lazy-idle-seconds 0)
-      (setq flyspell-lazy-idle-seconds 1))
+      (when (and flyspell-lazy-single-ispell
+                 (not ispell-process))
+        (ispell-set-spellchecker-params))
 
-    (unless (numberp flyspell-lazy-minimum-word-length)
-      (setq flyspell-lazy-minimum-word-length 1))
-    (callf round flyspell-lazy-minimum-word-length)
-    (unless (> flyspell-lazy-minimum-word-length 0)
-      (setq flyspell-lazy-minimum-word-length 1))
+      (unless (> flyspell-lazy-idle-seconds 0)
+        (setq flyspell-lazy-idle-seconds 1))
 
-    ;; Remove hooks that bog down responsiveness.  These are the main
-    ;; things that bog down Cocoa Emacs.
-    (remove-hook 'post-command-hook      (function flyspell-post-command-hook) t)
-    (remove-hook 'pre-command-hook       (function flyspell-pre-command-hook) t)
-    (remove-hook 'pre-command-hook       (function flyspell-auto-correct-previous-hook) t)
+      (unless (numberp flyspell-lazy-minimum-word-length)
+        (setq flyspell-lazy-minimum-word-length 1))
+      (callf round flyspell-lazy-minimum-word-length)
+      (unless (> flyspell-lazy-minimum-word-length 0)
+        (setq flyspell-lazy-minimum-word-length 1))
 
-    ;; todo Still using the data gathered by this hook, though it seems like
-    ;;      a more clever idea would be to remove it as well and then piggyback
-    ;;      spellchecking on the data in buffer-undo-list.
-    ;; (remove-hook 'after-change-functions 'fly-spell-after-change-function t)
+      ;; Remove hooks that bog down responsiveness.  These are the main
+      ;; things that bog down Cocoa Emacs.
+      (remove-hook 'post-command-hook      (function flyspell-post-command-hook) t)
+      (remove-hook 'pre-command-hook       (function flyspell-pre-command-hook) t)
+      (remove-hook 'pre-command-hook       (function flyspell-auto-correct-previous-hook) t)
 
-    ;; Add the hooks and timers used by flyspell-lazy, which are hopefully
-    ;; more efficient than the above.
-    (unless (and flyspell-lazy-timer
-                 (memq flyspell-lazy-timer timer-idle-list))
-      (setq flyspell-lazy-timer (run-with-idle-timer flyspell-lazy-idle-seconds t 'flyspell-lazy-check-pending)))
+      ;; todo Still using the data gathered by this hook, though it seems like
+      ;;      a more clever idea would be to remove it as well and then piggyback
+      ;;      spellchecking on the data in buffer-undo-list.
+      ;; (remove-hook 'after-change-functions 'fly-spell-after-change-function t)
 
-    (unless (and flyspell-lazy-window-timer
-                 (memq flyspell-lazy-window-timer timer-idle-list))
-      (setq flyspell-lazy-window-timer (run-with-idle-timer flyspell-lazy-window-idle-seconds t 'flyspell-lazy-check-visible)))
+      ;; Add the hooks and timers used by flyspell-lazy, which are hopefully
+      ;; more efficient than the above.
+      (unless (and flyspell-lazy-timer
+                   (memq flyspell-lazy-timer timer-idle-list))
+        (setq flyspell-lazy-timer (run-with-idle-timer flyspell-lazy-idle-seconds t 'flyspell-lazy-check-pending)))
 
-    (add-hook 'kill-buffer-hook #'(lambda ()
-                                    (with-demoted-errors (flyspell-lazy-uncheck-buffer))))
-    (add-hook 'after-change-functions 'flyspell-lazy-after-change-function nil t)))
+      (unless (and flyspell-lazy-window-timer
+                   (memq flyspell-lazy-window-timer timer-idle-list))
+        (setq flyspell-lazy-window-timer (run-with-idle-timer flyspell-lazy-window-idle-seconds t 'flyspell-lazy-check-visible)))
+
+      (add-hook 'kill-buffer-hook #'(lambda ()
+                                      (with-demoted-errors (flyspell-lazy-uncheck-buffer))))
+      (add-hook 'after-change-functions 'flyspell-lazy-after-change-function nil t))))
 
 ;; spellchecker functions
 
@@ -731,6 +718,8 @@ This is the primary driver for `flyspell-lazy'."
                 (redisplay)
                 (sleep-for .5)
                 (compilation-goto-locus-delete-o))
+              ;; compensate for inaccuracy of window-end
+              (setq end (min (+ end (window-body-width)) (point-max)))
               (with-timeout (1 (message "Spellcheck interrupted"))
                 (if flyspell-lazy-single-ispell
                     (flet ((ispell-set-spellchecker-params (&rest args) t)
@@ -769,7 +758,6 @@ if the argument is positive and otherwise disables the mode.
 When called from Lisp, this command enables the mode if the
 argument is omitted or nil, and toggles the mode if the argument
 is 'toggle."
-  :lighter flyspell-lazy-mode-lighter
   :group 'flyspell-lazy
   :global t
   (cond
