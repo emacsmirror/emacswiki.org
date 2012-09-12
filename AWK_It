@@ -58,10 +58,10 @@ and after expansion:
 </pre>
 
 Simplified AWK code differs from regular in that it:
-  - prints code(print "<code>")
-  - escapes double and single quotes (latter for shell interaction)
-  - escapes newline
-  - concatenates fields with rest of the text
+* prints code(print "<code>")
+* escapes double and single quotes (latter for shell interaction)
+* escapes newline
+* concatenates fields with rest of the text
 
 The previous example written in raw AWK code would be:
 
