@@ -2,10 +2,11 @@
 ;;
 ;; Copyright (c) 2012 Roland Walker
 ;;
-;; Author: Roland Walker walker@pobox.com
-;; URL: https://github.com/rolandwalker/alert.el
-;; Version: 0.5.3
-;; Last-Updated: 27 Aug 2012
+;; Author: Roland Walker <walker@pobox.com>
+;; Homepage: http://github.com/rolandwalker/alert
+;; URL: http://raw.github.com/rolandwalker/alert/master/alert.el
+;; Version: 0.5.4
+;; Last-Updated: 5 Sep 2012
 ;; EmacsWiki: Alert
 ;; Keywords: extensions, message, interface
 ;; Package-Requires: ((string-utils "0.0.2"))
@@ -14,11 +15,20 @@
 ;;
 ;;; Commentary:
 ;;
+;; Quickstart
+;;
+;;    (require 'alert)
+;;    (alert "important message")
+;;
+;; Explanation
+;;
 ;; Alert.el provides alternatives to Emacs' built-in `message'
-;; function.  This library is generally only useful when programming
-;; in Emacs Lisp.  However, some end-users may find it useful to
-;; control messaging, especially for the case of quietening chatty
-;; libraries in their ~/.emacs files (see below).
+;; function.
+;;
+;; This library is generally only useful when programming in Emacs
+;; Lisp.  However, some end-users may find it useful to control
+;; messaging, especially for the case of quietening chatty libraries
+;; in their ~/.emacs files (see below).
 ;;
 ;; The principal `alert' function by default works differently from
 ;; `message' in almost every respect, displaying with sound and
@@ -28,13 +38,13 @@
 ;; The following functions provided by this library are drop-in
 ;; alternatives to `message':
 ;;
-;;    alert-message-nolog
-;;    alert-message-logonly
-;;    alert-message-highlight
-;;    alert-message-insert
-;;    alert-message-notify
-;;    alert-message-popup
-;;    alert-message-temp
+;;    `alert-message-nolog'
+;;    `alert-message-logonly'
+;;    `alert-message-highlight'
+;;    `alert-message-insert'
+;;    `alert-message-notify'
+;;    `alert-message-popup'
+;;    `alert-message-temp'
 ;;
 ;; which may be useful in an `flet' construct to control messaging.
 ;; For example, the following code would redirect messages from a very
@@ -83,7 +93,7 @@
 ;;
 ;; Compatibility and Requirements
 ;;
-;;    Tested only on GNU Emacs version 24.1
+;;    Tested on GNU Emacs versions 23.3 and 24.1
 ;;
 ;;    Uses if present: string-utils.el, notify.el, todochiku.el,
 ;;                     popup.el
@@ -155,7 +165,7 @@
 ;;;###autoload
 (defgroup alert nil
   "Alternatives to `message'."
-  :version "0.5.3"
+  :version "0.5.4"
   :link '(emacs-commentary-link "alert")
   :prefix "alert-"
   :group 'extensions)
@@ -250,6 +260,11 @@ The following forms using `message` and `alert` are equivalent:
         (message-log-max message-log-max)
         (colored-content content)
         (alert-message-preformatted t))
+    (unless (or quiet
+                (eq log 'log-only)
+                (eq notify 'replace-echo)
+                (eq popup 'replace-echo))
+      (ding t))
     (when log
       (alert-message-logonly content))
     (when notify
@@ -262,8 +277,6 @@ The following forms using `message` and `alert` are equivalent:
        (setq alert-message-seconds seconds))
       ((not (null seconds))
        (setq alert-message-seconds 0)))
-    (unless (or quiet (eq log 'log-only))
-      (ding t))
     (unless (or (eq log 'log-only)
                 (eq notify 'replace-echo)
                 (eq popup 'replace-echo))
@@ -440,7 +453,7 @@ ARGS are as for `message', including a format-string."
            (error nil
                 (alert-message-nolog msg)))))))
 
-;;; interactive functions
+;;; interactive commands
 
 ;;;###autoload
 (defun alert-install-aliases ()
