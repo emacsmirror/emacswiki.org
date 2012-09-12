@@ -29,5 +29,10 @@ http://groups.google.com/groups?hl=en&lr=&ie=UTF-8&th=52b56e235ffba787
 --> Is possible to make windmove jump between [[frame]]s? 
 
 *Yes*. To jump between frames, see FrameMove (which can integrate seamlessly with windmove)
+
+[new]
+
+Look also at `M-x next-multiframe-window' command and possibly bound it to a handy keybinding! 
+
 ----
 CategoryWindows
