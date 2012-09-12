@@ -2,8 +2,9 @@
 ;;
 ;; Copyright (c) 2012 Roland Walker
 ;;
-;; Author: Roland Walker walker@pobox.com
-;; URL: https://github.com/rolandwalker/minimal-session-saver.el
+;; Author: Roland Walker <walker@pobox.com>
+;; Homepage: http://github.com/rolandwalker/minimal-session-saver
+;; URL: http://raw.github.com/rolandwalker/minimal-session-saver/master/minimal-session-saver.el
 ;; Version: 0.5.1
 ;; Last-Updated: 27 Aug 2012
 ;; EmacsWiki: MinimalSessionSaver
@@ -12,6 +13,20 @@
 ;; Simplified BSD License
 ;;
 ;;; Commentary:
+;;
+;; Quickstart
+;;
+;;     (require 'minimal-session-saver)
+;;
+;;     (minimal-session-saver-install-aliases)
+;;
+;;     M-x mss-store RET
+;;
+;;     ;; quit and restart Emacs
+;;
+;;     M-x mss-load RET
+;;
+;; Explanation
 ;;
 ;; The only information stored by this library is a list of visited
 ;; files.  Not window configuration, nor point position.
@@ -25,34 +40,34 @@
 ;; library somewhere Emacs can find it, and add the following to your
 ;; ~/.emacs file:
 ;;
-;;    (require 'minimal-session-saver)
+;;     (require 'minimal-session-saver)
 ;;
 ;; Five interactive commands are provided to manage sessions:
 ;;
-;;    minimal-session-saver-store
-;;    minimal-session-saver-store-frame
-;;    minimal-session-saver-load
-;;    minimal-session-saver-add-buffer
-;;    minimal-session-saver-remove-buffer
-;;    minimal-session-saver-mark-stored-buffers
+;;     minimal-session-saver-store
+;;     minimal-session-saver-store-frame
+;;     minimal-session-saver-load
+;;     minimal-session-saver-add-buffer
+;;     minimal-session-saver-remove-buffer
+;;     minimal-session-saver-mark-stored-buffers
 ;;
 ;; without keybindings.
 ;;
 ;; An additional command
 ;;
-;;    minimal-session-saver-install-aliases
+;;     minimal-session-saver-install-aliases
 ;;
 ;; installs shorter command aliases for the above.
 ;;
 ;; See Also
 ;;
-;;    M-x customize-group RET minimal-session-saver RET
+;;     M-x customize-group RET minimal-session-saver RET
 ;;
 ;; Notes
 ;;
 ;; Compatibility and Requirements
 ;;
-;;     Tested only on GNU Emacs version 24.1
+;;     Tested on GNU Emacs versions 23.3 and 24.1
 ;;
 ;;     No external dependencies
 ;;
@@ -127,14 +142,15 @@
   :version "0.5.1"
   :link '(emacs-commentary-link "minimal-session-saver")
   :prefix "minimal-session-saver-"
-  :group 'extensions)
+  :group 'tools)
 
 (defcustom minimal-session-saver-less-feedback nil
   "Give less echo area feedback."
   :type 'boolean
   :group 'minimal-session-saver)
 
-(defcustom minimal-session-saver-data-file "~/.emacs.d/data/minimal-session-saver/minimal-session-saver-data.el"
+(defcustom minimal-session-saver-data-file (expand-file-name "minimal-session-saver-data.el"
+                                                             (locate-user-emacs-file "data/minimal-session-saver"))
   "Path to store/retrieve the set of visited files."
   :type 'string
   :group 'minimal-session-saver)
