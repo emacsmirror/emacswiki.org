@@ -592,6 +592,20 @@ Thus, I define below standalone function, for the case that we want to browse ur
     (w3m-browse-url url new-session)))
 </pre>
 
+==Improving w3m-browse-*==
+
+Some w3m-browse-* functions (e.g. w3m-browse-generic) rely on finding urls via browse-url-url-at-point, which in turn relies on (thing-at-point 'url). However, thing-at-point does not seem to find urls for w3m's links. That's because a w3m link contains the url in the w3m-href-anchor text property. I use the following piece of advice to make sure that browse-url finds w3m's own links.
+
+<pre>
+;; make browse-url-url-at-point find w3m links
+(defadvice browse-url-url-at-point (after w3m-anchor-at-point activate)
+  "If browse-url-url-at-point finds no url at point, but w3m-anchor does, return the value of w3m-anchor."
+  (unless ad-return-value
+      (setq ad-return-value (w3m-anchor))))
+</pre>
+
+-ghf
+
 ----
 CategoryExternalUtilities
 CategoryHypermedia
