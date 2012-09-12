@@ -56,6 +56,10 @@ Download from Lisp:framemove.el
            (sort
 }}}
 
+[new]
+
+Look also at 'next-multiframe-window` command and possibly bound it to a handy keybinding! 
+
 ----
 CategoryFrames CategoryWindows
 
