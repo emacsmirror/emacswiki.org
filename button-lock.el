@@ -1,11 +1,12 @@
 ;;; button-lock.el --- Clickable text defined by regular expression
 ;;
-;; Copyright (c) 2011-12 D Roland Walker
+;; Copyright (c) 2011-12 Roland Walker
 ;;
-;; Author: D Roland Walker <walker@pobox.com>
-;; URL: https://github.com/rolandwalker/button-lock/raw/master/button-lock.el
-;; Version: 0.9.7
-;; Last-Updated: 27 Aug 2012
+;; Author: Roland Walker <walker@pobox.com>
+;; Homepage: http://github.com/rolandwalker/button-lock
+;; URL: http://raw.github.com/rolandwalker/button-lock/master/button-lock.el
+;; Version: 0.9.9
+;; Last-Updated: 7 Sep 2012
 ;; EmacsWiki: ButtonLockMode
 ;; Keywords: mouse, button, hypermedia, extensions
 ;;
@@ -13,135 +14,149 @@
 ;;
 ;;; Commentary:
 ;;
+;; Quickstart
+;;
+;;     (require 'button-lock)
+;;
+;;     (global-button-lock-mode 1)
+;;
+;;     (setq url-button (button-lock-set-button
+;;                       "\\<http://[^[:space:]\n]+"
+;;                       'browse-url-at-mouse
+;;                       :face 'link :face-policy 'prepend))
+;;
+;; Explanation
+;;
 ;; Button-lock is a minor mode which provides simple facilities to
-;; define clickable text based regular expressions.  Button-lock.el
+;; define clickable text based on regular expressions.  Button-lock.el
 ;; piggybacks on font-lock.el, and is efficient.  Overlays are not
 ;; used.
 ;;
 ;; Button-lock buttons (links) can execute any function.
 ;;
 ;; There is little user-level interface for button-lock.el, which is
-;; intended to be used from Emacs Lisp.  See wiki-nav.el for a
-;; user-friendly library built on top of button-lock.el.  Wiki-nav.el
-;; is available here:
+;; intended to be used from Emacs Lisp.  For a user-friendly library
+;; built on top of button-lock.el, see wiki-nav.el or fixmee.el
 ;;
-;;    https://github.com/rolandwalker/button-lock
+;;     http://github.com/rolandwalker/button-lock/blob/master/wiki-nav.el
+;;     http://github.com/rolandwalker/fixmee
 ;;
 ;; Example usage
 ;;
-;;    (require 'button-lock)
-;;    (global-button-lock-mode 1)
+;;     (require 'button-lock)
+;;     (global-button-lock-mode 1)
 ;;
-;;    ;; add a mouseable button to all occurrences of a word
-;;    (button-lock-set-button "hello" 'beginning-of-line)
+;;     ;; add a mouseable button to all occurrences of a word
+;;     (button-lock-set-button "hello" 'beginning-of-line)
 ;;
-;;    ;; to remove that button later, pass all the same arguments to
-;;    ;; button-lock-unset-button
-;;    (button-lock-unset-button "hello" 'beginning-of-line)
+;;     ;; to remove that button later, pass all the same arguments to
+;;     ;; button-lock-unset-button
+;;     (button-lock-unset-button "hello" 'beginning-of-line)
 ;;
-;;    ;; or, save the result and pass it back to the unset function
-;;    (setq mybutton (button-lock-set-button "hello" 'beginning-of-line))
-;;    (button-lock-unset-button mybutton)
+;;     ;; or, save the result and pass it back to the unset function
+;;     (setq mybutton (button-lock-set-button "hello" 'beginning-of-line))
+;;     (button-lock-unset-button mybutton)
 ;;
-;;    ;; create a fancy raised button
-;;    (button-lock-set-button "hello" #'(lambda ()
-;;                                              (interactive)
-;;                                              (save-match-data
-;;                                                (deactivate-mark)
-;;                                                (if (re-search-forward "hello" nil t)
-;;                                                    (goto-char (match-beginning 0))
-;;                                                  (goto-char (point-min))
-;;                                                  (deactivate-mark)
-;;                                                  (if (re-search-forward "hello" nil t)
-;;                                                      (goto-char (match-beginning 0))))))
-;;                            :face 'custom-button-face :mouse-face 'custom-button-mouse)
+;;     ;; create a fancy raised button
+;;     (require 'cus-edit)
+;;     (button-lock-set-button "hello" #'(lambda ()
+;;                                               (interactive)
+;;                                               (save-match-data
+;;                                                 (deactivate-mark)
+;;                                                 (if (re-search-forward "hello" nil t)
+;;                                                     (goto-char (match-beginning 0))
+;;                                                   (goto-char (point-min))
+;;                                                   (deactivate-mark)
+;;                                                   (if (re-search-forward "hello" nil t)
+;;                                                       (goto-char (match-beginning 0))))))
+;;                             :face 'custom-button-face :mouse-face 'custom-button-mouse)
 ;;
-;;    ;; activate hyperlinks
-;;    (button-lock-set-button "\\<http://[^[:space:]\n]+"
-;;                            'browse-url-at-mouse
-;;                            :face 'link :face-policy 'prepend)
+;;     ;; activate hyperlinks
+;;     (button-lock-set-button "\\<http://[^[:space:]\n]+"
+;;                             'browse-url-at-mouse
+;;                             :face 'link :face-policy 'prepend)
 ;;
-;;    ;; activate hyperlinks only in lines that begin with a comment character
-;;    (button-lock-set-button "^\\s-*\\s<.*?\\<\\(http://[^[:space:]\n]+\\)"
-;;                            'browse-url-at-mouse
-;;                            :face 'link :face-policy 'prepend :grouping 1)
+;;     ;; activate hyperlinks only in lines that begin with a comment character
+;;     (button-lock-set-button "^\\s-*\\s<.*?\\<\\(http://[^[:space:]\n]+\\)"
+;;                             'browse-url-at-mouse
+;;                             :face 'link :face-policy 'prepend :grouping 1)
 ;;
-;;    ;; turn folding-mode delimiters into mouseable buttons
-;;    (add-hook 'folding-mode-hook  #'(lambda ()
-;;                                      (button-lock-mode 1)
-;;                                      (button-lock-set-button
-;;                                       (concat "^" (regexp-quote (car (folding-get-mode-marks))))
-;;                                       'folding-toggle-show-hide)
-;;                                      (button-lock-set-button
-;;                                       (concat "^" (regexp-quote (cadr (folding-get-mode-marks))))
-;;                                       'folding-toggle-show-hide)))
+;;     ;; turn folding-mode delimiters into mouseable buttons
+;;     (add-hook 'folding-mode-hook  #'(lambda ()
+;;                                       (button-lock-mode 1)
+;;                                       (button-lock-set-button
+;;                                        (concat "^" (regexp-quote (car (folding-get-mode-marks))))
+;;                                        'folding-toggle-show-hide)
+;;                                       (button-lock-set-button
+;;                                        (concat "^" (regexp-quote (cadr (folding-get-mode-marks))))
+;;                                        'folding-toggle-show-hide)))
 ;;
-;;    ;; create a button that responds to the keyboard, but not the mouse
-;;    (button-lock-set-button "\\<http://[^[:space:]\n]+"
-;;                            'browse-url-at-point
-;;                            :mouse-binding     nil
-;;                            :mouse-face        nil
-;;                            :face             'link
-;;                            :face-policy      'prepend
-;;                            :keyboard-binding "RET")
+;;     ;; create a button that responds to the keyboard, but not the mouse
+;;     (button-lock-set-button "\\<http://[^[:space:]\n]+"
+;;                             'browse-url-at-point
+;;                             :mouse-binding     nil
+;;                             :mouse-face        nil
+;;                             :face             'link
+;;                             :face-policy      'prepend
+;;                             :keyboard-binding "RET")
 ;;
-;;    ;; define a global button, to be set whenever the minor mode is activated
-;;    (button-lock-register-global-button "hello" 'beginning-of-line)
+;;     ;; define a global button, to be set whenever the minor mode is activated
+;;     (button-lock-register-global-button "hello" 'beginning-of-line)
 ;;
 ;; Interface
 ;;
-;; Button lock is intended to be used via the following functions
+;; Button-lock is intended to be used via the following functions
 ;;
-;;    `button-lock-set-button'
-;;    `button-lock-unset-button'
-;;    `button-lock-extend-binding'
-;;    `button-lock-clear-all-buttons'
-;;    `button-lock-register-global-button'
-;;    `button-lock-unregister-global-button'
-;;    `button-lock-unregister-all-global-buttons'
+;;     `button-lock-set-button'
+;;     `button-lock-unset-button'
+;;     `button-lock-extend-binding'
+;;     `button-lock-clear-all-buttons'
+;;     `button-lock-register-global-button'
+;;     `button-lock-unregister-global-button'
+;;     `button-lock-unregister-all-global-buttons'
 ;;
 ;; See Also
 ;;
-;;    M-x customize-group RET button-lock RET
+;;     M-x customize-group RET button-lock RET
 ;;
 ;; Prior Art
 ;;
-;;    hi-lock.el
-;;    David M. Koppelman <koppel@ece.lsu.edu>
+;;     hi-lock.el
+;;     David M. Koppelman <koppel@ece.lsu.edu>
 ;;
-;;    buttons.el
-;;    Miles Bader <miles@gnu.org>
+;;     buttons.el
+;;     Miles Bader <miles@gnu.org>
 ;;
 ;; Notes
 ;;
-;;    By default, button-lock uses newfangled left-clicks rather than
-;;    Emacs-traditional middle clicks.
+;;     By default, button-lock uses newfangled left-clicks rather than
+;;     Emacs-traditional middle clicks.
 ;;
-;;    Font lock is very efficient, but it is still possible to bog
-;;    things down if you feed it expensive regular expressions.  Use
-;;    anchored expressions, and be careful about backtracking.  See
-;;    `regexp-opt'.
+;;     Font lock is very efficient, but it is still possible to bog
+;;     things down if you feed it expensive regular expressions.  Use
+;;     anchored expressions, and be careful about backtracking.  See
+;;     `regexp-opt'.
 ;;
-;;    Some differences between button-lock.el and hi-lock.el:
+;;     Some differences between button-lock.el and hi-lock.el:
 ;;
-;;       * The purpose of hi-lock.el is to change the _appearance_
-;;         of keywords.  The purpose of button-lock is to change the
-;;         _bindings_ on keywords.
+;;         * The purpose of hi-lock.el is to change the _appearance_
+;;           of keywords.  The purpose of button-lock is to change the
+;;           _bindings_ on keywords.
 ;;
-;;       * Hi-lock also supports embedding new keywords in files,
-;;         which is too risky of an approach for button-lock.
+;;         * Hi-lock also supports embedding new keywords in files,
+;;           which is too risky of an approach for button-lock.
 ;;
-;;       * Hi-lock supports overlays and can work without font-lock.
+;;         * Hi-lock supports overlays and can work without font-lock.
 ;;
-;;    Some differences between button-lock.el and buttons.el
+;;     Some differences between button-lock.el and buttons.el
 ;;
-;;       * Buttons.el is for inserting individually defined
-;;         buttons.  Button-lock.el is for changing all matching text
-;;         into a button.
+;;         * Buttons.el is for inserting individually defined
+;;           buttons.  Button-lock.el is for changing all matching text
+;;           into a button.
 ;;
 ;; Compatibility and Requirements
 ;;
-;;     Tested only on GNU Emacs version 24.1
+;;     Tested on GNU Emacs versions 23.3 and 24.1
 ;;
 ;;     No external dependencies
 ;;
@@ -200,63 +215,63 @@
 ;;
 ;; License
 ;;
-;;    Simplified BSD License
+;; Simplified BSD License
 ;;
-;;    Copyright (c) 2011-12, D Roland Walker
-;;    All rights reserved.
+;; Copyright (c) 2011-12, Roland Walker
+;; All rights reserved.
 ;;
-;;    Redistribution and use in source and binary forms, with or
-;;    without modification, are permitted provided that the following
-;;    conditions are met:
+;; Redistribution and use in source and binary forms, with or
+;; without modification, are permitted provided that the following
+;; conditions are met:
 ;;
-;;       1. Redistributions of source code must retain the above
-;;          copyright notice, this list of conditions and the following
-;;          disclaimer.
+;;    1. Redistributions of source code must retain the above
+;;       copyright notice, this list of conditions and the following
+;;       disclaimer.
 ;;
-;;       2. Redistributions in binary form must reproduce the above
-;;          copyright notice, this list of conditions and the following
-;;          disclaimer in the documentation and/or other materials
-;;          provided with the distribution.
+;;    2. Redistributions in binary form must reproduce the above
+;;       copyright notice, this list of conditions and the following
+;;       disclaimer in the documentation and/or other materials
+;;       provided with the distribution.
 ;;
-;;    This software is provided by D Roland Walker "AS IS" and any express
-;;    or implied warranties, including, but not limited to, the implied
-;;    warranties of merchantability and fitness for a particular
-;;    purpose are disclaimed.  In no event shall D Roland Walker or
-;;    contributors be liable for any direct, indirect, incidental,
-;;    special, exemplary, or consequential damages (including, but not
-;;    limited to, procurement of substitute goods or services; loss of
-;;    use, data, or profits; or business interruption) however caused
-;;    and on any theory of liability, whether in contract, strict
-;;    liability, or tort (including negligence or otherwise) arising in
-;;    any way out of the use of this software, even if advised of the
-;;    possibility of such damage.
+;; Ths software is provided by Roland Walker "AS IS" and any express
+;; or implied warranties, including, but not limited to, the implied
+;; warranties of merchantability and fitness for a particular
+;; purpose are disclaimed.  In no event shall Roland Walker or
+;; contributors be liable for any direct, indirect, incidental,
+;; special, exemplary, or consequential damages (including, but not
+;; limited to, procurement of substitute goods or services; loss of
+;; use, data, or profits; or business interruption) however caused
+;; and on any theory of liability, whether in contract, strict
+;; liability, or tort (including negligence or otherwise) arising in
+;; any way out of the use of this software, even if advised of the
+;; possibility of such damage.
 ;;
-;;    The views and conclusions contained in the software and
-;;    documentation are those of the authors and should not be
-;;    interpreted as representing official policies, either expressed
-;;    or implied, of D Roland Walker.
+;; The views and conclusions contained in the software and
+;; documentation are those of the authors and should not be
+;; interpreted as representing official policies, either expressed
+;; or implied, of Roland Walker.
 ;;
 ;;; Change Log:
 ;;
 ;; 22 Aug 2012
 ;; Rewrite.  Incompatible changes:
 ;;
-;;    * `button-lock-pop-button' removed, replaced with the ability to
-;;      pass a button "object" to `button-lock-unset-button'.
+;;     * `button-lock-pop-button' removed, replaced with the ability to
+;;        pass a button "object" to `button-lock-unset-button'.
 ;;
-;;    * `button-lock-unset-all-buttons' replaced by
-;;      `button-lock-clear-all-buttons'.
+;;     * `button-lock-unset-all-buttons' replaced by
+;;       `button-lock-clear-all-buttons'.
 ;;
-;;    * `button-lock-set-global-button' and `button-lock-unset-global-button'
-;;      replaced by `button-lock-register-global-button' and
-;;      `button-lock-unregister-global-button'.
+;;     * `button-lock-set-global-button' and `button-lock-unset-global-button'
+;;       replaced by `button-lock-register-global-button' and
+;;       `button-lock-unregister-global-button'.
 ;;
-;;    * `button-lock-unset-all-global-buttons' replaced by
-;;      `button-lock-unregister-all-global-buttons'.
+;;     * `button-lock-unset-all-global-buttons' replaced by
+;;       `button-lock-unregister-all-global-buttons'.
 ;;
-;;    * `button-lock-pop-global-button' removed.
+;;     * `button-lock-pop-global-button' removed.
 ;;
-;;    * lighter variable name and content changed.
+;;     * lighter variable name and content changed.
 ;;
 ;;; Code:
 ;;
@@ -276,10 +291,11 @@
 ;;;###autoload
 (defgroup button-lock nil
   "Clickable text defined by regular expression."
-  :version "0.9.7"
+  :version "0.9.9"
   :link '(emacs-commentary-link "button-lock")
   :prefix "button-lock-"
   :group 'navigation
+  :group 'mouse
   :group 'extensions)
 
 (defcustom button-lock-exclude-modes '(
@@ -407,8 +423,8 @@ the argument is 'toggle."
   (cond
     ((and button-lock-mode
           (or noninteractive                    ; never turn on button-lock where
-              (eq (aref (buffer-name) 0) ?\s))  ; there can be no font-lock
-          (setq button-lock-mode nil)))
+              (eq (aref (buffer-name) 0) ?\s))) ; there can be no font-lock
+     (setq button-lock-mode nil))
     (button-lock-mode
      (font-lock-mode 1)
      (button-lock-merge-global-buttons-to-local)
@@ -659,11 +675,23 @@ If NO-REPLACE is set, no replacement is made for a duplicate button."
                                  wheel-down
                                  wheel-up
 
+                                 down-mouse-1
+                                 down-mouse-2
+                                 down-mouse-3
+                                 down-mouse-4
+                                 down-mouse-5
+
                                  double-mouse-1
                                  double-mouse-2
                                  double-mouse-3
                                  double-mouse-4
                                  double-mouse-5
+
+                                 triple-mouse-1
+                                 triple-mouse-2
+                                 triple-mouse-3
+                                 triple-mouse-4
+                                 triple-mouse-5
 
                                  A-mouse-1
                                  A-mouse-2
@@ -782,10 +810,9 @@ set.
 
 As a convenience, :MOUSE-2 through :MOUSE-5 can be used to attach
 an alternate ACTION, as can :M-MOUSE-1 ..., :A-MOUSE-1 ...,
-:DOUBLE-MOUSE-1 ..., :WHEEL-UP..., and :WHEEL-DOWN... The list is
-not exhaustive.  For a general method of adding alternate
-bindings, pass a keymap for :ACTION or use
- `button-lock-extend-binding'.
+:DOUBLE-MOUSE-1 ..., :WHEEL-UP..., and :WHEEL-DOWN... The list is not
+exhaustive.  For a general method of adding alternate bindings, pass
+a keymap for :ACTION or use `button-lock-extend-binding'.
 
 If :REAR-STICKY is non-nil, the rear-nonsticky text property will
 not be added, as it is by default.  Changing this setting is not
@@ -816,11 +843,23 @@ The button value can be passed to `button-lock-extend-binding'."
                      wheel-down
                      wheel-up
 
+                     down-mouse-1
+                     down-mouse-2
+                     down-mouse-3
+                     down-mouse-4
+                     down-mouse-5
+
                      double-mouse-1
                      double-mouse-2
                      double-mouse-3
                      double-mouse-4
                      double-mouse-5
+
+                     triple-mouse-1
+                     triple-mouse-2
+                     triple-mouse-3
+                     triple-mouse-4
+                     triple-mouse-5
 
                      A-mouse-1
                      A-mouse-2
@@ -936,7 +975,7 @@ When passing a prepared keymap for ACTION, set MOUSE-BINDING
 to nil."
   (when (not (member existing-button button-lock-button-list))
     (error "No such button"))
-  (let ((map (memq 'keymap (button-lock-button-properties (car (member existing-button button-lock-button-list))))))
+  (let ((map (cadr (memq 'keymap (button-lock-button-properties (car (member existing-button button-lock-button-list)))))))
     (when button-lock-mode
       (font-lock-remove-keywords nil (list existing-button)))
     (if (keymapp action)
