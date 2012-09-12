@@ -2,8 +2,9 @@
 ;;
 ;; Copyright (c) 2012 Roland Walker
 ;;
-;; Author: Roland Walker walker@pobox.com
-;; URL: https://github.com/rolandwalker/nav-flash.el
+;; Author: Roland Walker <walker@pobox.com>
+;; Homepage: http://github.com/rolandwalker/nav-flash
+;; URL: http://raw.github.com/rolandwalker/nav-flash/master/nav-flash.el
 ;; Version: 1.0.1
 ;; Last-Updated: 27 Aug 2012
 ;; EmacsWiki: NavFlash
@@ -12,6 +13,13 @@
 ;; Simplified BSD License
 ;;
 ;;; Commentary:
+;;
+;; Quickstart
+;;
+;;     (require 'nav-flash)
+;;     (nav-flash-show)
+;;
+;; Explanation
 ;;
 ;; Nav-flash temporarily highlights the line containing the point,
 ;; which is sometimes useful after a navigation command.
@@ -22,9 +30,9 @@
 ;;    (require 'nav-flash)
 ;;
 ;; There is no user-level interface for this library; it is only used
-;; by other Lisp libraries.  However you might find it useful to call
+;; by other Lisp libraries.  However, you might find it useful to call
 ;; `nav-flash-show' in your ~/.emacs file.  For example, the following
-;; hook causes the nav-flash to appear after navigating via imenu:
+;; hook causes a flash to appear after navigating via imenu:
 ;;
 ;;    (add-hook 'imenu-after-jump-hook 'nav-flash-show nil t)
 ;;
@@ -35,12 +43,12 @@
 ;;
 ;; Notes
 ;;
-;;    This library reuses an overlay defined in compile.el, but should
-;;    not affect the normal use of compile.el / next-error.
+;;    This library reuses a timer and overlay defined in compile.el,
+;;    but should not affect the normal use of compile.el / `next-error'.
 ;;
 ;;    Pulse.el provides similar functionality and is included with
 ;;    Emacs.  This library can use pulse.el, but does not do so by
-;;    default, because pulse.el uses sit-for, breaking this type
+;;    default, because pulse.el uses `sit-for', breaking this type
 ;;    of construction:
 ;;
 ;;       (nav-flash-show)
@@ -54,7 +62,7 @@
 ;;
 ;; Compatibility and Requirements
 ;;
-;;    Tested only on GNU Emacs version 24.1
+;;    Tested on GNU Emacs versions 23.3 and 24.1
 ;;
 ;;    No external dependencies
 ;;
@@ -122,6 +130,7 @@
   :version "1.0.1"
   :link '(emacs-commentary-link "nav-flash")
   :prefix "nav-flash-"
+  :group 'navigation
   :group 'extensions)
 
 (defcustom nav-flash-use-pulse nil
