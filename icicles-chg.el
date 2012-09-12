@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sun Sep  9 11:00:21 2012 (-0700)
+;; Last-Updated: Tue Sep 11 17:17:02 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8907
+;;     Update #: 8916
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -86,6 +86,13 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2012/09/11 dadams
+;;     Renamed:
+;;       *-buffer(-other-window) to *-buffer-no-search(-other-window)
+;;       *-buffer-of-content(-other-window|complete) to *-buffer(-other-window|multi-complete)
+;;     icicle-buffer(-other-window): Simplified prompt (no multi-completion hint).
+;;     Updated doc strings for this icicle-buffer switch.
+;;     icicle-default-buffer-names: Respect icicle-buffer-ignore-space-prefix-flag.  Optimize a bit.
 ;; 2012/09/09 dadams
 ;;     Added: icicle-visit-marked-file-of-content(-other-window).
 ;;     icicle-default-buffer-names: If BNAME is not in icicle-bufflist then do not use it.
@@ -3155,6 +3162,8 @@
 ;;       macros needs to be byte-compiled anew after loading the updated macros.
 ;; ****************************************************************************************************
 ;;
+;; 2012/09/11 dadams
+;;     icicle-buffer-bindings: Remove minibuffers from icicle-bufflist.
 ;; 2012/09/08 dadams
 ;;     icicle-buffer-bindings:
 ;;       Bind icicle-buffer-complete-fn to internal-complete-buffer for Emacs 22+.
