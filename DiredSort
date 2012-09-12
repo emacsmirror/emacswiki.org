@@ -32,8 +32,6 @@ in ~/.emacs
 =See also:=
 
 * DiredSorting - tips and add-ons for sorting Dired file listings
-* DiredSortCriterias - minimalistic all-in-one-small function of above
-
 
 ----
 CategoryDirectories DiredMode
