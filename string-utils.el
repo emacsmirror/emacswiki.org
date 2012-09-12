@@ -2,10 +2,11 @@
 ;;
 ;; Copyright (c) 2012 Roland Walker
 ;;
-;; Author: Roland Walker walker@pobox.com
-;; URL: https://github.com/rolandwalker/string-utils.el
-;; Version: 0.0.2
-;; Last-Updated: 27 Aug 2012
+;; Author: Roland Walker <walker@pobox.com>
+;; Homepage: http://github.com/rolandwalker/string-utils
+;; URL: http://raw.github.com/rolandwalker/string-utils/master/string-utils.el
+;; Version: 0.0.4
+;; Last-Updated:  5 Sep 2012
 ;; EmacsWiki: StringUtils
 ;; Keywords: extensions
 ;;
@@ -19,17 +20,18 @@
 ;;
 ;; The following functions are provided:
 ;;
-;;    string-utils-stringify-anything
-;;    string-utils-has-darkspace-p
-;;    string-utils-has-whitespace-p
-;;    string-utils-trim-whitespace
-;;    string-utils-compress-whitespace
-;;    string-utils-string-repeat
-;;    string-utils-escape-double-quotes
-;;    string-utils-quotemeta
-;;    string-utils-pad
-;;    string-utils-pad-list
-;;    string-utils-propertize-fillin
+;;    `string-utils-stringify-anything'
+;;    `string-utils-has-darkspace-p'
+;;    `string-utils-has-whitespace-p'
+;;    `string-utils-trim-whitespace'
+;;    `string-utils-compress-whitespace'
+;;    `string-utils-string-repeat'
+;;    `string-utils-escape-double-quotes'
+;;    `string-utils-quotemeta'
+;;    `string-utils-pad'
+;;    `string-utils-pad-list'
+;;    `string-utils-propertize-fillin'
+;;    `string-utils-plural-ending'
 ;;
 ;; To use string-utils, place the string-utils.el library somewhere
 ;; Emacs can find it, and add the following to your ~/.emacs file:
@@ -40,7 +42,7 @@
 ;;
 ;; Compatibility and Requirements
 ;;
-;;    Tested only on GNU Emacs version 24.1
+;;    Tested on GNU Emacs versions 23.3 and 24.1
 ;;
 ;;    No external dependencies
 ;;
@@ -50,8 +52,8 @@
 ;;
 ;;    In string-utils-propertize-fillin, strip properties which are
 ;;    set to nil at start, which will create more contiguity in the
-;;    result see this example, where the first two characters have the
-;;    same properties
+;;    result.  See this example, where the first two characters have
+;;    the same properties
 ;;
 ;;       (let ((text "text"))
 ;;         (add-text-properties 0 1 '(face nil) text)
@@ -178,8 +180,9 @@ on success.
 
 If optional ASCII-ONLY is set, use an ASCII-only definition
 of whitespace characters."
-  (let ((str-val (if (stringp obj) obj (string-utils-stringify-anything obj))))
-    (string-match-p (concat "[^" string-utils-whitespace "]+") str-val)))
+  (let ((str-val (if (stringp obj) obj (string-utils-stringify-anything obj)))
+        (string-utils-whitespace (if ascii-only string-utils-whitespace-ascii string-utils-whitespace)))
+    (string-match-p (concat "[^" string-utils-whitespace "]") str-val)))
 
 ;;;###autoload
 (defun string-utils-has-whitespace-p (obj &optional ascii-only)
@@ -192,7 +195,7 @@ If optional ASCII-ONLY is set, use an ASCII-only definition
 of whitespace characters."
   (let ((str-val (if (stringp obj) obj (string-utils-stringify-anything obj)))
         (string-utils-whitespace (if ascii-only string-utils-whitespace-ascii string-utils-whitespace)))
-    (string-match-p (concat "[" string-utils-whitespace "]+") str-val)))
+    (string-match-p (concat "[" string-utils-whitespace "]") str-val)))
 
 ;;;###autoload
 (defun string-utils-trim-whitespace (str-val &optional ascii-only multi-line)
@@ -365,6 +368,16 @@ already existing properties are respected."
       (font-lock-fillin-text-property 0 (length str-val) prop val str-val)))
    str-val)
 
+(defun string-utils-plural-ending (num)
+  "Return \"s\" or \"\", depending on whether NUM requires a plural in English.
+
+Intended to be used in a format string as follows:
+
+    (message \"%s item%s deleted\" del-counter (string-utils-plural-ending del-counter))"
+  (if (and (numberp num)
+           (= num 1))
+      "" "s"))
+
 (provide 'string-utils)
 
 ;;
@@ -378,6 +391,7 @@ already existing properties are respected."
 ;; End:
 ;;
 ;; LocalWords:  StringUtils ARGS alist utils darkspace quotemeta
+;; LocalWords:  propertize fillin callf MULTI
 ;;
 
 ;;; string-utils.el ends here
