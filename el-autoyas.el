@@ -5,7 +5,7 @@
 ;; Author: Matthew L. Fidler
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Mon Nov 21 10:55:55 2011 (-0600)
-;; Version: 0.2
+;; Version: 0.3
 ;; Last-Updated: Mon Nov 28 08:46:55 2011 (-0600)
 ;;           By: Matthew L. Fidler
 ;;     Update #: 194
@@ -92,6 +92,40 @@
 ;; Yasnippet backward compatability functions used in el-autoyas.el
 ;; 
 ;; Value: ((yas/expand-snippet yas-expand-snippet)
+;;  (yas/modified-p yas-modified-p)
+;;  (yas/moving-away-p yas-moving-away-p)
+;;  (yas/text yas-text)
+;;  (yas/skip-and-clear-or-delete-char yas-skip-and-clear-or-delete-char)
+;;  (yas/snippets-at-point yas--snippets-at-point)
+;;  (yas/update-mirrors yas--update-mirrors)
+;;  (yas/fallback-behavior yas-fallback-behavior)
+;;  (yas/minor-mode yas-minor-mode))
+;; 
+;; 
+;; *Hook run on package load.
+;; Suggestion: Add `el-autoyas-install'.
+;; 
+;; *** yas-backward-compatability
+;; Yasnippet backward compatability functions used in el-autoyas.el
+;; 
+;; Value: ((yas/expand-snippet yas-expand-snippet)
+;;  (yas/modified-p yas-modified-p)
+;;  (yas/moving-away-p yas-moving-away-p)
+;;  (yas/text yas-text)
+;;  (yas/skip-and-clear-or-delete-char yas-skip-and-clear-or-delete-char)
+;;  (yas/snippets-at-point yas--snippets-at-point)
+;;  (yas/update-mirrors yas--update-mirrors)
+;;  (yas/fallback-behavior yas-fallback-behavior)
+;;  (yas/minor-mode yas-minor-mode))
+;; 
+;; 
+;; *Hook run on package load.
+;; Suggestion: Add `el-autoyas-install'.
+;; 
+;; *** yas-backward-compatability
+;; Yasnippet backward compatability functions used in el-autoyas.el
+;; 
+;; Value: ((yas/expand-snippet yas-expand-snippet)
 ;; (yas/modified-p yas-modified-p)
 ;; (yas/moving-away-p yas-moving-away-p)
 ;; (yas/text yas-text)
@@ -121,6 +155,13 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 12-Sep-2012      
+;;    Last-Updated: Mon Nov 28 08:46:55 2011 (-0600) #194 (Matthew L. Fidler)
+;;    Fixed variable yas-backward-compatibility to be
+;;    el-autoyas-backward-compatability so that things will not collide
+;; 12-Sep-2012      
+;;    Last-Updated: Mon Nov 28 08:46:55 2011 (-0600) #194 (Matthew L. Fidler)
+;;    Another attempt to fix emacswiki documentation
 ;; 12-Sep-2012      
 ;;    Last-Updated: Mon Nov 28 08:46:55 2011 (-0600) #194 (Matthew L. Fidler)
 ;;    Org-readme sync attempt -- trying to fix bug in org-readme.
@@ -168,7 +209,7 @@
   "Automatic gerenation of Yasnippets based on Emacs Lisp documentation"
   :group 'yasnippet)
 
-(defvar yas-backward-compatability
+(defvar el-autoyas-backward-compatability
   '((yas/expand-snippet yas-expand-snippet)
     (yas/modified-p yas-modified-p)
     (yas/moving-away-p yas-moving-away-p)
@@ -186,7 +227,7 @@
  (lambda(what)
    (unless (eval `(or (fboundp ',(nth 1 what))(boundp ',(nth 1 what))))
      (eval `(defalias ',(nth 1 what) ',(nth 0 what)))))
- yas-backward-compatability)
+ el-autoyas-backward-compatability)
 
 (defcustom el-autoyas-abbrevs
   '(
