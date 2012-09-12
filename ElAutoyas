@@ -21,6 +21,21 @@ Compatibility:
 `assoc', `button', `cl', `easymenu', `eldoc', `help-fns',
 `help-mode', `view', `yasnippet', `yasnippet-bundle'.
 
+== el-autoyas.el* --- Automatically create Emacs-Lisp Yasnippets ==
+
+* <b>Filename </b> --  [[el-autoyas.el]]
+* <b>Description </b> --  Automatically create Emacs-Lisp Yasnippets
+* <b>Author </b> --  Matthew L. Fidler
+* <b>Maintainer </b> --  Matthew L. Fidler
+* <b>Created </b> --  Mon Nov 21 10:55:55 2011 (-0600)
+* <b>Version </b> --  0.2
+* <b>Last-Updated </b> --  Mon Nov 28 08:46:55 2011 (-0600)
+* <b>By </b> --  Matthew L. Fidler
+* <b>Update # </b> --  194
+* <B>URL </B> --  https://github.com/mlf176f2/el-autoyas.el
+* <b>Keywords </b> --  Emacs Lisp Mode Yasnippet
+Compatibility: 
+
 == About ==
 el-autoyas is a small complement to yasnippet for emacs-lisp-mode.  It
 provides automatically created yasnippets from eldoc argument lists.
@@ -33,6 +48,8 @@ then press <tt>TAB</tt>
 * To jump to the next field press <tt>TAB</tt>.  If you did not change the
 field, either the parameter is kept, or replaced with <tt>nil</tt> or
 nothing depending on the argument list.
+* *NOTE* To use some of the more common functions, you may wish to
+delete all the emacs-lisp snippets in the snippets directory.
 == Limitations ==
 * Currently does not support common lisp key functions
 * Unclear if nested snippet expansion is supported.
@@ -41,7 +58,7 @@ You may use marmalade-repo and ELPA to install el-autoyas, or put it
 into your load-path and put the following in <tt>~/.emacs</tt>:
 
 {{{
-(require 'el-autoyas)
+    (require 'el-autoyas)
 }}}
 == Functions ==
 === Interactive Functions ===
@@ -82,7 +99,24 @@ A list of abbreviations that expand to a set function
 === Internal Variables ===
 
 ==== el-autoyas-load-hook ====
-*Hook run on package load.
+== Hook run on package load. ==
+Suggestion: Add <tt>el-autoyas-install</tt>.
+
+==== yas-backward-compatability ====
+Yasnippet backward compatability functions used in el-autoyas.el
+
+Value: ((yas/expand-snippet yas-expand-snippet)
+(yas/modified-p yas-modified-p)
+(yas/moving-away-p yas-moving-away-p)
+(yas/text yas-text)
+(yas/skip-and-clear-or-delete-char yas-skip-and-clear-or-delete-char)
+(yas/snippets-at-point yas--snippets-at-point)
+(yas/update-mirrors yas--update-mirrors)
+(yas/fallback-behavior yas-fallback-behavior)
+(yas/minor-mode yas-minor-mode))
+
+
+== Hook run on package load. ==
 Suggestion: Add <tt>el-autoyas-install</tt>.
 
 ==== yas-backward-compatability ====
@@ -101,6 +135,7 @@ Value: ((yas/expand-snippet yas-expand-snippet)
 
 == History ==
 
+* <b>12-Sep-2012 </b> --   Documentation change ()
 * <b>12-Sep-2012 </b> --   Updated el-autoyas to support yasnippet 0.8 naming conventions  ()
 
 
