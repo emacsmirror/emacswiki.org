@@ -5,19 +5,18 @@
 ;; Author: Matthew L. Fidler
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Mon Nov 21 10:55:55 2011 (-0600)
-;; Version: 0.20
-;; Last-Updated: Tue May 29 21:43:49 2012 (-0500)
+;; Version: 0.2
+;; Last-Updated: Mon Nov 28 08:46:55 2011 (-0600)
 ;;           By: Matthew L. Fidler
-;;     Update #: 196
+;;     Update #: 194
 ;; URL: https://github.com/mlf176f2/el-autoyas.el
 ;; Keywords: Emacs Lisp Mode Yasnippet
 ;; Compatibility: 
 ;; 
 ;; Features that might be required by this library:
 ;;
-;;   `assoc', `button', `cl', `dropdown-list', `easymenu', `eldoc',
-;;   `help-fns', `help-mode', `view', `yasnippet',
-;;   `yasnippet-bundle'.
+;;   `assoc', `button', `cl', `easymenu', `eldoc', `help-fns',
+;;   `help-mode', `view', `yasnippet', `yasnippet-bundle'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
@@ -28,14 +27,34 @@
 ;;
 ;;; Commentary: 
 ;; 
-;;   
+;; * About
+;; el-autoyas is a small complement to yasnippet for emacs-lisp-mode.  It
+;; provides automatically created yasnippets from eldoc argument lists.
+;; * Requirements
+;;  - [[https://github.com/capitaomorte/yasnippet][yasnippet]]
+;;  - eldoc
+;; * Usage
+;;  - To expand the snippet, type the function name or abbrevation and
+;;    then press `TAB'
+;;  - To jump to the next field press `TAB'.  If you did not change the
+;;    field, either the parameter is kept, or replaced with `nil' or
+;;    nothing depending on the argument list.
+;; * Limitations
+;;  - Currently does not support common lisp key functions
+;;  - Unclear if nested snippet expansion is supported.
+;; * Loading el-autoyas in ~/.emacs
+;; You may use marmalade-repo and ELPA to install el-autoyas, or put it
+;; into your load-path and put the following in =~/.emacs=:
+;; 
+;; 
+;; (require 'el-autoyas)
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
-;; 29-May-2012    Matthew L. Fidler  
+;; 12-Sep-2012      
 ;;    Last-Updated: Mon Nov 28 08:46:55 2011 (-0600) #194 (Matthew L. Fidler)
-;;    Typo fixed (rdparker)
+;;    Updated el-autoyas to support yasnippet 0.8 naming conventions
 ;; 
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -66,6 +85,26 @@
 (defgroup el-autoyas nil
   "Automatic gerenation of Yasnippets based on Emacs Lisp documentation"
   :group 'yasnippet)
+
+(defvar yas-backward-compatability
+  '((yas/expand-snippet yas-expand-snippet)
+    (yas/modified-p yas-modified-p)
+    (yas/moving-away-p yas-moving-away-p)
+    (yas/text yas-text)
+    (yas/skip-and-clear-or-delete-char yas-skip-and-clear-or-delete-char)
+    (yas/snippets-at-point yas--snippets-at-point)
+    (yas/update-mirrors yas--update-mirrors)
+    (yas/fallback-behavior yas-fallback-behavior)
+    (yas/minor-mode yas-minor-mode))
+  "Yasnippet backward compatability functions used in el-autoyas.el")
+
+
+;; Add backward compatability when needed.
+(mapc
+ (lambda(what)
+   (unless (eval `(or (fboundp ',(nth 1 what))(boundp ',(nth 1 what))))
+     (eval `(defalias ',(nth 1 what) ',(nth 0 what)))))
+ yas-backward-compatability)
 
 (defcustom el-autoyas-abbrevs
   '(
@@ -174,8 +213,8 @@ Suggestion: Add `el-autoyas-install'.")
       (if (looking-back "([^ \n\t()]*" nil t)
           (progn
             (setq what (match-string 0)))
-          (if (looking-back "[^ \n\t()]*" nil t)
-           (setq what (match-string 0)))))
+        (if (looking-back "[^ \n\t()]*" nil t)
+            (setq what (match-string 0)))))
     (if what
         (el-autoyas-snippet what del arg)
       (indent-for-tab-command arg))))
@@ -250,33 +289,36 @@ Suggestion: Add `el-autoyas-install'.")
           (when (and del-char (looking-at ")"))
             (replace-match ""))
           (delete-region (- (point) (length symbol-name)) (point))
-          (yas/expand-snippet snippet))))))
+          (yas-expand-snippet snippet))))))
 
 (defun el-autoyas-text-on-moving-away (default-text &optional orig-text)
   "* Changes text when moving away AND original text has not changed"
   (cond
-   ((or (and (not yas/modified-p) yas/moving-away-p)
-        (and yas/moving-away-p orig-text (string= orig-text yas/text)))
+   ((or (and (not yas-modified-p) yas-moving-away-p)
+        (and yas-moving-away-p orig-text (string= orig-text yas-text)))
     (let (el-autoyas-not-editing)
       (if (string= "" default-text)
-          (yas/skip-and-clear-or-delete-char)
+          (yas-skip-and-clear-or-delete-char)
         (insert default-text))
       (el-autoyas-update)))))
 
 (defun el-autoyas-update ()
   "Update fields"
-  (let ((snippet (first (yas/snippets-at-point))))
+  (let ((snippet (first (yas--snippets-at-point))))
     (when snippet
-      (yas/update-mirrors snippet))))
+      (yas--update-mirrors snippet))))
+
+
 
 ;;;###autoload
 (defun el-autoyas-enable ()
   "Load and activate package."
+  (interactive)
   (require 'el-autoyas nil t)
   (when (featurep 'el-autoyas)
-    (set (make-local-variable 'yas/fallback-behavior)
+    (set (make-local-variable 'yas-fallback-behavior)
 	 '(apply el-autoyas-expand-maybe))
-    (yas/minor-mode 1)))
+    (yas-minor-mode 1)))
 
 (provide 'el-autoyas)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
