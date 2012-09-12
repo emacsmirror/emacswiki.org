@@ -5,11 +5,11 @@
 ;; Author: Roland Walker <walker@pobox.com>
 ;; Homepage: http://github.com/rolandwalker/browse-url-dwim
 ;; URL: http://raw.github.com/rolandwalker/browse-url-dwim/master/browse-url-dwim.el
-;; Version: 0.5.0
-;; Last-Updated: 1 Sep 2012
+;; Version: 0.5.1
+;; Last-Updated: 6 Sep 2012
 ;; EmacsWiki: BrowseUrlDwim
 ;; Keywords: hypermedia
-;; Package-Requires: ((string-utils 0.0.3))
+;; Package-Requires: ((string-utils "0.0.3"))
 ;;
 ;; Simplified BSD License
 ;;
@@ -90,7 +90,7 @@
 ;;
 ;; Compatibility and Requirements
 ;;
-;;     Tested only on GNU Emacs version 24.1
+;;     Tested on GNU Emacs versions 23.3 and 24.1
 ;;
 ;;     Uses if present: string-utils.el
 ;;
@@ -179,7 +179,7 @@
 ;;;###autoload
 (defgroup browse-url-dwim nil
   "Context-sensitive external browse URL or Internet search."
-  :version "0.5.0"
+  :version "0.5.1"
   :link '(emacs-commentary-link "browse-url-dwim")
   :prefix "browse-url-dwim-"
   :group 'external
@@ -398,7 +398,10 @@ behavior, and is constrained narrowly to defined Web protocols
 and popular top-level domains.
 
 If no prospective URL is found, returns nil."
-  (let ((thing-at-point-short-url-regexp (concat thing-at-point-short-url-regexp
+
+  (let ((thing-at-point-short-url-regexp (concat (if (boundp 'thing-at-point-short-url-regexp)
+                                                     thing-at-point-short-url-regexp
+                                                   "[-A-Za-z0-9]+\\.[-A-Za-z0-9.]+[^]\t\n\"'<>[^`{}]*[^]\t\n\"'<>[^`{}.,;]+")
                                                  "?\\."
                                                  (regexp-opt browse-url-dwim-permitted-tlds)))
         (case-fold-search t))
@@ -521,7 +524,6 @@ DEFAULT-STRING may be nil, in which case no default is inserted."
   "Turn on `browse-url-dwim-mode'.
 
 Turning on `browse-url-dwim' will activate keybindings as defined
-by `browse-url-dwim-keystrokes' and `browse-url-dwim-search-keystrokes'
 in `customize'.  It may also install a command alias for `browse'
 and `google' as controlled by `browse-url-dwim-install-aliases'.
 
@@ -552,7 +554,7 @@ is 'toggle."
                (not browse-url-dwim-less-feedback))
       (message "browse-url-dwim mode disabled")))))
 
-;;; interactive functions
+;;; interactive commands
 
 ;;;###autoload
 (defun browse-url-dwim (url)
