@@ -5,15 +5,11 @@
 ;; Author: Sven Hartenstein & Matthew Fidler
 ;; Maintainer: Matthew Fidler
 ;; Created: Fri Mar 25 10:36:08 2011 (-0500)
-;; Version: 0.25
-;; Last-Updated: Mon Jun  4 14:46:02 2012 (-0500)
+;;
+;; Version: 0.27
+;; Last-Updated: Mon Jun 25 15:12:20 2012 (-0500)
 ;;           By: Matthew L. Fidler
-;;     Update #: 845
-
-;; Version: 0.26
-;; Last-Updated: Mon Jun  4 14:38:55 2012 (-0500)
-;;           By: Matthew L. Fidler
-;;     Update #: 864
+;;     Update #: 873
 
 ;; URL: https://github.com/mlf176f2/r-autoyas.el
 ;; Keywords: R yasnippet
@@ -22,52 +18,83 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Commentary:
-;;
-;;
-
-;; Changes by Matthew Fidler
-
-;; The snippet expansion occurs with the normal tab key.
-
-;; Attempted to support nested autosnippets;  I'm not sure it works
-;; yet.
-
-;; Install:
-
-;; Put this in the load path, and then add the following to your
-;; .emacs or startup files:
-
+;; 
+;; * About
+;; r-autoyas is a small ESS complement. It provides automatically created
+;; yasnippets for R function argument lists.
+;; 
+;; * Requirements
+;; The following are needed:
+;; - yasnippet https://github.com/capitaomorte/yasnippet
+;; - R & ESS
+;; - R process must be running.
+;; * Usage
+;; - To expand the snipped type the function name and them press `TAB'.
+;; - To jump from field to feild press `TAB'.  If you did not change the
+;;   field, the parameter will be deleted from this list
+;; - To exit the snipped and delete remaining arguments, press `C-g'
+;; * Options
+;; This is an incomplete list of user definable options.  The complete
+;; list can be retrieved by 
+;; `M-x customize-group r-autoyas'
+;; ** Debugging
+;; Debugging messages can be put on-screen.  This is done by
+;; 
+;; (setq r-autoyas-debug t)
+;; 
+;; ** Sending a ... replacement to R via emacs instead of by a global options statement
+;; Uses Lisp-based dot-replacement defined by
+;; `r-autoyas-r-based-dot-replacement' instead of specifying through
+;; options in R startup.  This is on by default but can be turned off by
+;; 
+;; (setq r-autoyas-use-r-based-dot-replacement nil)
+;; 
+;; ** Specifying the `...' replacement via the R options() statement
+;; Emacs can change the functions `...' replacement through lisp.  The
+;; easiest way to change this is, typing:
+;; 
+;; `M-x customize-variable r-autoyas-r-based-dot-replacement'
+;; ** Using functions within a namespace only
+;; By default, R-autoyas only expands predefined functions in
+;; namespaces/package that are loaded in R.  This ignores any
+;; user-defined functions.  However, R-autoyas may be used to expand
+;; user-defined functions as well.  This is done with the
+;; `r-autoyas-expand-package-functions-only' variable.  To turn on
+;; r-autoyas's expansion of user-defined functions, the following code
+;; may be used:
+;; 
+;; (setq r-autoyas-expand-package-functions-only nil)
+;; 
+;; 
+;; This variable may also be customized.
+;; 
+;; * Limitations
+;; - No nice error handling when no R process is found
+;; - Partial nested support -- not perfected
+;; * Loading r-autoyas in ~/.emacs
+;; You may use marmalade-repo and ELPA to install r-autoyas
+;; (http://marmalade-repo.org/), or put it into your load-path and put
+;; the following in ~/.emacs
+;; 
+;; 
 ;; (require 'r-autoyas)
 ;; (add hook 'ess-mode-hook 'r-autoyas-ess-activate)
 ;; 
-
-;; Usage:
-;; * Start yas/minor-mode
-
-;; * To expand a snippet write the function name and press <TAB>
-
-;; * The value is highlighted.  If you wish to delete the argument,
-;;   press C-d and the value will disappear
-
-;; * Alternatively you may press <TAB> to keep the default value.
-;;   Currently it will be removed unless yasnippet cannot tell if it
-;;   is modified.
-
-;; * To exit a snippet and delete remaining arguments, press C-g.
-
-;; Limitations
-;;
-;; * No nice error handling (e.g. when no R process is found).
-;;
-;; * No nested autosnippets supported. I think it should be possible
-;;   to support them, but it turned out that my knowledge of lisp and
-;;   of yasnippet's snippet organisation is far too limited. I guess
-;;   the use of yas/exit-all-snippets would have to be replaced by
-;;   exiting just the "inner" snippets. Can anyone help?
-;;
+;; 
+;; 
+;; 
+;; * Wish-List/To-Do
+;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 12-Sep-2012      
+;;    Last-Updated: Mon Jun 25 15:12:20 2012 (-0500) #873 (Matthew L. Fidler)
+;;    Have attempted to make r-autoyas compatible with yasnippet 0.8.  This
+;;    will possibly address github issue #4
+;; 04-Jun-2012    Matthew L. Fidler  
+;;    Last-Updated: Mon Jun  4 15:25:23 2012 (-0500) #865 (Matthew L. Fidler)
+;;    Bug fix for autopair-mode
 ;; 04-Jun-2012    Matthew L. Fidler  
 ;;    Last-Updated: Mon Jun  4 14:37:39 2012 (-0500) #863 (Matthew L. Fidler)
 ;;    Changed syntax table for yas/expand so that write.csv will
@@ -95,7 +122,7 @@
 ;; 17-Nov-2011    Matthew L. Fidler  
 ;;    Last-Updated: Thu Nov 17 10:50:16 2011 (-0600) #790 (Matthew L. Fidler)
 ;;    Added which to the default ignored parenthetical statements
-;; 17-Nov-2011    Matthew L. Fidler  
+;; 17-Nov-2011    Matthew L. Fidler
 ;;    Last-Updated: Thu Nov 17 09:05:49 2011 (-0600) #787 (Matthew L. Fidler)
 ;;    Fixed `r-autoyas-defined-p'
 ;; 17-Nov-2011    Matthew L. Fidler  
@@ -126,7 +153,7 @@
 ;; 16-May-2011    Matthew L. Fidler  
 ;;    Last-Updated: Mon May 16 18:27:44 2011 (-0500) #678 (Matthew L. Fidler)
 ;;    Added wrapping capaibilites to code.  Currently only works on Ctl-G.
-;; 16-May-2011    Matthew L. Fidler  
+;; 16-May-2011    Matthew L. Fidler
 ;;    Last-Updated: Mon May 16 16:15:25 2011 (-0500) #634 (Matthew L. Fidler)
 ;;    Added option to remove explicit parameter names for functions if not needed.
 ;; 16-May-2011    Matthew L. Fidler  
@@ -209,6 +236,40 @@
 (require 'ess-site)
 (require 'yasnippet nil t)
 (require 'yasnippet-bundle nil t)
+
+(defvar r-autoyas-backward-compatability
+  '((yas/expand-snippet yas-expand-snippet)
+    (yas/active-field-overlay yas--active-field-overlay)
+    (yas/wrap-around-region yas-wrap-around-region)
+    (yas/moving-away-p yas-moving-away-p)
+    (yas/expand yas-expand)
+    (yas/modified-p yas-modified-p)     
+    (yas/moving-away-p yas-moving-away-p)
+    (yas/text yas-text)
+    (yas/skip-and-clear-or-delete-char yas-skip-and-clear-or-delete-char)
+    (yas/snippet-fields yas--snippet-fields)
+    (yas/snippets-at-point yas--snippets-at-point)
+    (yas/update-mirrors yas--update-mirrors)
+    (yas/fallback-behavior yas-fallback-behavior)
+    (yas/minor-mode yas-minor-mode)
+    (yas/field-probably-deleted-p yas--field-probably-deleted-p)
+    (yas/field yas-field)
+    (yas/field-text-for-display yas--field-text-for-display)
+    (yas/snippet-control-overlay yas--snippet-control-overlay)
+    (yas/exit-snippet yas-exit-snippet)
+    (yas/check-commit-snippet yas--check-commit-snippet)
+    (yas/define-snippets yas--check-commit-snippet)
+    (yas/after-exit-snippet-hook yas-after-exit-snippet-hook)
+    )
+  "Yasnippet backward compatability functions used in r-autoyas.el")
+
+
+;; Add backward compatability when needed.
+(mapc
+ (lambda(what)
+   (unless (eval `(or (fboundp ',(nth 1 what))(boundp ',(nth 1 what))))
+     (eval `(defalias ',(nth 1 what) ',(nth 0 what)))))
+ r-autoyas-backward-compatability)
 
 (defgroup r-autoyas nil
   "R auto Yasnippet generation."
@@ -391,49 +452,49 @@ write.table(d,
             (string :tag "Extra argument: "))))
   :group 'r-autoyas)
 
-(defvar rayas/last-active nil)
-(make-variable-buffer-local 'rayas/last-active)
+(defvar rayas-last-active nil)
+(make-variable-buffer-local 'rayas-last-active)
 
-(defun rayas/require-explicit-p (num)
+(defun rayas-require-explicit-p (num)
   "Should the explicit x= be required?"
   ;; Checks to see if the explicit x= is required.
   (let ((i (- num 1))
 	(ret nil)
-        (snippet (if yas/snippets (first yas/snippets) nil))
-        (fields (if snippet (yas/snippet-fields snippet) nil))
+        (snippet (if yas-snippets (first yas-snippets) nil))
+        (fields (if snippet (yas--snippet-fields snippet) nil))
         (anum (r-autoyas-active-field-number) ))
     (when anum
-      (setq rayas/last-active anum))
+      (setq rayas-last-active anum))
     (if (not anum)
-	(if rayas/last-active
-	    (setq anum (+ 1 rayas/last-active))))
+	(if rayas-last-active
+	    (setq anum (+ 1 rayas-last-active))))
     (cond
      ((not snippet)
-      (setq rayas/last-active nil)
+      (setq rayas-last-active nil)
       (setq ret t))
      ( (and anum (>= (- num 1) anum) )
        (setq ret t))
      (t
       (while (<= 0 i)
 	(when fields
-	  (when (string= "" (yas/field-text-for-display (nth i fields)))
+	  (when (string= "" (yas--field-text-for-display (nth i fields)))
 	    (setq ret t)))
 	(setq i (- i 1)))))
     (symbol-value 'ret)))
 
-(defun rayas/comma (field num)
+(defun rayas-comma (field num)
   "Inserts comma and field number if needed"
-  (let* ((comma/text yas/text)
-         (yas/snippets (yas/snippets-at-point))
-	 (snippet (if yas/snippets (first yas/snippets) nil)) ;; Check to see if this is the first "comma" statement when editing snippet.
-	 (control-overlay (if snippet (yas/snippet-control-overlay snippet)))
+  (let* ((comma-text yas-text)
+         (yas-snippets (yas--snippets-at-point))
+	 (snippet (if yas-snippets (first yas-snippets) nil)) ;; Check to see if this is the first "comma" statement when editing snippet.
+	 (control-overlay (if snippet (yas--snippet-control-overlay snippet)))
 	 n-space
 	 snippet-end
 	 (snippet-beg (and control-overlay (overlay-buffer control-overlay)
 			   (overlay-start control-overlay))))
-    (if (and (string= yas/text "")
+    (if (and (string= yas-text "")
 	     (r-autoyas-editing-field-num-p (- num 1)))
-	(setq comma/text " "))
+	(setq comma-text " "))
     (concat
      (cond
       ((and (boundp 'function-name) ;; When initially creating snippet.
@@ -441,7 +502,7 @@ write.table(d,
 	    function-name
 	    (looking-back (format "%s(" function-name)))
        "")
-      ((string= "" comma/text) ; Deleted text.
+      ((string= "" comma-text) ; Deleted text.
        "")
       ((if (not snippet-beg) nil
 	 (string-match "($" (buffer-substring-no-properties snippet-beg (point))))
@@ -464,8 +525,8 @@ write.table(d,
 		   (setq n-space (current-column)))
 		 (if (= 1 num) ""
                    (concat ",\n" (make-string n-space ? ))))))))))
-     (if (and field (not (string= "" comma/text)))
-         (if (or (not r-autoyas-remove-explicit-assignments) (rayas/require-explicit-p num))
+     (if (and field (not (string= "" comma-text)))
+         (if (or (not r-autoyas-remove-explicit-assignments) (rayas-require-explicit-p num))
              (concat field "=")
 	   "")
        ""))))
@@ -498,7 +559,7 @@ write.table(d,
 	(save-excursion
 	  (goto-char (point-min))
 	  (when (re-search-forward
-		 "\\${\\([0-9]+\\):\\$(rayas/comma .*?)}\\${\\1:...\\$(rayas/ma \"\")}" nil t)
+		 "\\${\\([0-9]+\\):\\$(rayas-comma .*?)}\\${\\1:...\\$(rayas-ma \"\")}" nil t)
 	    (save-match-data
 	      (setq num (string-to-number (match-string 1)))
 	      (setq snip
@@ -507,13 +568,13 @@ write.table(d,
 		       (prog1
 			   (if (string-match "^[ \t]*\\(.*?\\)[ \t]*=[ \t]*\\(.*?\\)[ \t]*$" x)
 			       (progn
-				 (format "${%s:$(rayas/comma \"%s\" %s)}${%s:%s$(rayas/ma \"\")}"
+				 (format "${%s:$(rayas-comma \"%s\" %s)}${%s:%s$(rayas-ma \"\")}"
 					 num (match-string 1 x) num num (if (< 0 (length (match-string 2 x))) (match-string 2 x) " ")))
-			     (format "${%s:$(rayas/comma \"%s\" %s)}${%s:NULL$(rayas/ma \"\")}" num x num num))
+			     (format "${%s:$(rayas-comma \"%s\" %s)}${%s:NULL$(rayas-ma \"\")}" num x num num))
                          (setq num (+ num 1))))
 		     (nth 1 (assoc func r-autoyas-lisp-based-dot-replacement))
 		     "")))
-	    (replace-match (format "%s${%s:$(rayas/comma nil %s)}${%s:...$(rayas/ma \"\")}" snip num num num) t t)))
+	    (replace-match (format "%s${%s:$(rayas-comma nil %s)}${%s:...$(rayas-ma \"\")}" snip num num num) t t)))
 	(r-autoyas-m "Snippet: %s" snip)
 	(symbol-value 'snip)))))
 
@@ -543,8 +604,8 @@ write.table(d,
   (r-autoyas-m "Call `r-autoyas-exit-snippet-delete-remaining'")
   (r-autoyas-update)
   (let ((deletefrom (point)))
-    (yas/exit-snippet (nth 0 (yas/snippets-at-point)))
-    (yas/check-commit-snippet)
+    (yas-exit-snippet (nth 0 (yas--snippets-at-point)))
+    (yas--check-commit-snippet)
     (delete-region (save-excursion
                      (goto-char deletefrom)
 		     (or (re-search-backward "[,(][^,(]*[ \t]*=[ \t]*\\=" nil t)
@@ -630,15 +691,15 @@ RM-PAREN removes the inserted parenthesis"
                        (not r-autoyas-expand-package-functions-only))
                   (if snippet
                       (progn
-                        (setq n-comma (- (length (split-string snippet (regexp-quote "(rayas/comma") t)) 1))
+                        (setq n-comma (- (length (split-string snippet (regexp-quote "(rayas-comma") t)) 1))
                         (if (or (not namespace) (not r-autoyas-save-expression-to-memory))
                             (let ((function-name funcname)
                                   (n-comma n-comma))
                               (r-autoyas-m "R-autoyas expanding snippet but not saving to memory")
-                              (yas/expand-snippet snippet)
+                              (yas-expand-snippet snippet)
                               (setq ret t))
                           (r-autoyas-m "R-autoyas saving snippet to `ess-mode'")
-                          (yas/define-snippets 'ess-mode
+                          (yas-define-snippets 'ess-mode
                                                `((,(format "%s" funcname)
                                                   ,(concat funcname snippet)
                                                   ,(format "%s" funcname)
@@ -647,17 +708,17 @@ RM-PAREN removes the inserted parenthesis"
                                                   ,(format
                                                     "((function-name \"%s\") (n-comma %s))"
                                                     funcname n-comma))))
-                          (yas/expand)
+                          (yas-expand)
                           (setq ret t)))
                     (setq ret t))))))
           (symbol-value 'ret)))))
   (modify-syntax-entry ?. "_"))
 
-(defun rayas/space (field-number)
+(defun rayas-space (field-number)
   "Adds a dummy space so that reducing the yasnippet field to zero doesn't cause strange errors."
   (condition-case err
       (cond
-       (yas/moving-away-p
+       (yas-moving-away-p
 	"")
        ((r-autoyas-editing-field-num-p (- field-number 1))
 	" ")
@@ -704,33 +765,34 @@ str <- NULL;
 for (field in names(formals)) {
 type <- typeof(formals[[field]]);
 if (type=='symbol' & field!='...') {
-str <- append(str, paste('${',nr,':$(rayas/comma \\\"',field,'\\\" ',nr,')}${',nr ,':',' $(rayas/ma \\\"\\\")}${',nr,':$(rayas/space ',nr,')}', sep=''));
+str <- append(str, paste('${',nr,':$(rayas-comma \\\"',field,'\\\" ',nr,')}${',nr ,':',' $(rayas-ma \\\"\\\")}${',nr,':$(rayas-space ',nr,')}', sep=''));
 nr <- nr+1;
 } else if (type=='symbol' & field=='...') {
-str <- append(str, paste('${',nr,':$(rayas/comma nil ',nr,')}${',nr,':',field,'$(rayas/ma \\\"\\\")}${',nr,':$(rayas/space ',nr,')}', sep=''));
+str <- append(str, paste('${',nr,':$(rayas-comma nil ',nr,')}${',nr,':',field,'$(rayas-ma \\\"\\\")}${',nr,':$(rayas-space ',nr,')}', sep=''));
 nr <- nr+1;
 } else if (type=='character') {
 tmp <- .r.autoyas.esc(encodeString(formals[[field]]))
 tmp <- gsub(\"\\\"\",\"\\\\\\\\\\\\\\\"\",tmp);
 tmp <- paste(\"\\\"\",tmp,\"\\\"\",sep=\"\");
-str <- append(str, paste('${',nr,':$(rayas/comma \\\"',field,'\\\" ',nr,')}${',nr,':',tmp,'$(rayas/ma \\\"\\\")}${',nr,':$(rayas/space ',nr,')}', sep=''));
+str <- append(str, paste('${',nr,':$(rayas-comma \\\"',field,'\\\" ',nr,')}${',nr,':',tmp,'$(rayas-ma \\\"\\\")}${',nr,':$(rayas-space ',nr,')}', sep=''));
 nr <- nr+1;
 } else if (type=='logical') {
-str <- append(str, paste('${',nr,':$(rayas/comma \\\"',field,'\\\" ',nr,')}${',nr,':',as.character(formals[[field]]),'$(rayas/ma \\\"\\\")}${',nr,':$(rayas/space ',nr,')}', sep=''));
+str <- append(str, paste('${',nr,':$(rayas-comma \\\"',field,'\\\" ',nr,')}${',nr,':',as.character(formals[[field]]),'$(rayas-ma \\\"\\\")}${',nr,':$(rayas-space ',nr,')}', sep=''));
 nr <- nr+1;
 } else if (type=='double') {
-str <- append(str, paste('${',nr,':$(rayas/comma \\\"',field,'\\\" ',nr,')}${',nr,':',as.character(formals[[field]]),'$(rayas/ma \\\"\\\")}${',nr,':$(rayas/space ',nr,')}', sep=''));
+str <- append(str, paste('${',nr,':$(rayas-comma \\\"',field,'\\\" ',nr,')}${',nr,':',as.character(formals[[field]]),'$(rayas-ma \\\"\\\")}${',nr,':$(rayas-space ',nr,')}', sep=''));
 nr <- nr+1;
 } else if (type=='NULL') {
-str <- append(str, paste('${',nr,':$(rayas/comma \\\"',field,'\\\" ',nr,')}${',nr,':NULL$(rayas/ma \\\"\\\")}${',nr,':$(rayas/space ',nr,')}', sep=''));
+str <- append(str, paste('${',nr,':$(rayas-comma \\\"',field,'\\\" ',nr,')}${',nr,':NULL$(rayas-ma \\\"\\\")}${',nr,':$(rayas-space ',nr,')}', sep=''));
 nr <- nr+1;
 } else if (type=='language') {
 tmp <- deparse(formals[[field]]);
 if (all(regexpr(\"[{}\\n]\", tmp) == -1)){
 tmp <- .r.autoyas.esc(tmp);
-tmp2 <- gsub(\"\\\"\",\"\\\\\\\\\\\\\\\"\",tmp);
+#tmp2 <- gsub(\"\\\"\",\"\\\\\\\\\\\\\\\"\",tmp);
+tmp2 <- gsub(\"\\\"\",\"%`%\",tmp);
 tmp2 <- paste(\"\\\"\",tmp2,\"\\\"\",sep=\"\");
-str <- append(str, paste('${',nr,':$(rayas/comma \\\"',field,'\\\" ',nr,')}${',nr,':',tmp,'$(rayas/ma \"\" ',tmp2,')}${',nr,':$(rayas/space ',nr,')}', sep=''));
+str <- append(str, paste('${',nr,':$(rayas-comma \\\"',field,'\\\" ',nr,')}${',nr,':',tmp,'$(rayas-ma \"\" ',tmp2,')}${',nr,':$(rayas-space ',nr,')}', sep=''));
 nr <- nr+1;
 } else {
 tmp <- .r.autoyas.esc(tmp)
@@ -740,11 +802,11 @@ if (length(str) > 1){
 str[1] <-  paste('`(progn (add-to-list \\'r-autoyas-cache \\'((',funcname,' ',nr,') ',tmp2,')) \"\")`', str[1],sep=\"\");
 tmp <- paste(\"(cdr (assoc '(\",funcname,\" \",nr,\") r-autoyas-cache))\",sep=\"\")
 tmp2 <- paste(\"`\",tmp,\"`\",sep=\"\")
-str <- append(str, paste('${',nr,':$(rayas/comma \\\"',field,'\\\" ',nr,')}${',nr,':',tmp2,'$(rayas/ma \"\" ',tmp,')}${',nr,':$(rayas/space ',nr,')}', sep=''));
+str <- append(str, paste('${',nr,':$(rayas-comma \\\"',field,'\\\" ',nr,')}${',nr,':',tmp2,'$(rayas-ma \"\" ',tmp,')}${',nr,':$(rayas-space ',nr,')}', sep=''));
 } else {
 tmp <- paste(\"(cdr (assoc '(\",funcname,\" \",nr,\") r-autoyas-cache))\",sep=\"\")
 tmp3 <- paste(\"`\",tmp,\"`\",sep=\"\")
-str <- append(str, paste('`(progn (add-to-list \\'r-autoyas-cache \\'((',funcname,' ',nr,') ',tmp2,')) \"\")`','${',nr,':$(rayas/comma \\\"',field,'\\\" ',nr,')}${',nr,':',tmp3,'$(rayas/ma \"\" ',tmp,')}${',nr,':$(rayas/space ',nr,')}', sep='')); 
+str <- append(str, paste('`(progn (add-to-list \\'r-autoyas-cache \\'((',funcname,' ',nr,') ',tmp2,')) \"\")`','${',nr,':$(rayas-comma \\\"',field,'\\\" ',nr,')}${',nr,':',tmp3,'$(rayas-ma \"\" ',tmp,')}${',nr,':$(rayas-space ',nr,')}', sep='')); 
 }
 nr <-  nr+1;
 }
@@ -772,6 +834,13 @@ cat(\"Loaded r-autoyas\\n\");
   ad-do-it)
 
 (ad-activate 'yas/abort-snippet)
+
+(defadvice yas-abort-snippet (around r-delete-remaining)
+  (if (and (member major-mode '(ess-mode inferior-ess-mode))
+           (string= "R" ess-dialect))
+      (r-autoyas-exit-snippet-delete-remaining))
+  ad-do-it)
+(ad-activate 'yas-abort-snippet)
 
 
 (add-hook 'ess-post-run-hook (lambda ()
@@ -863,15 +932,15 @@ cat(\"Loaded r-autoyas\\n\");
 (defun r-autoyas-ess-activate ()
   "R autoyas ESS hook"
   (when (featurep 'r-autoyas)
-    (set (make-local-variable 'yas/fallback-behavior)
+    (set (make-local-variable 'yas-fallback-behavior)
          '(apply r-autoyas-expand-maybe))
     (when (boundp 'autopair-handle-action-fns)
       (set (make-local-variable 'autopair-handle-action-fns)
            (list                        
             #'autopair-r-autoyas-paren-action)))
-    (yas/minor-mode 1)
-    (when (boundp 'yas/after-exit-snippet-hook)
-      (add-hook 'yas/after-exit-snippet-hook
+    (yas-minor-mode 1)
+    (when (boundp 'yas-after-exit-snippet-hook)
+      (add-hook 'yas-after-exit-snippet-hook
                 (lambda()
                   (interactive)
                   (when r-autoyas-wrap-on-exit
@@ -905,7 +974,7 @@ cat(\"Loaded r-autoyas\\n\");
   "Autopair R autoyas paren-action"
   (if (string= ess-dialect "R")
       (condition-case err
-          (let ((yas/wrap-around-region yas/wrap-around-region)
+          (let ((yas-wrap-around-region yas-wrap-around-region)
                 (ret (and
 		      r-autoyas-auto-expand-with-paren
 		      (eq action 'opening)
@@ -914,15 +983,16 @@ cat(\"Loaded r-autoyas\\n\");
                 (pt (point)))
 	    (if (not ret)
                 (autopair-default-handle-action action pair pos-before)
-              (when (eq yas/wrap-around-region 'cua)
+              (when (eq yas-wrap-around-region 'cua)
                 ;;TODO: Fix this to work with CUA-type wrapping
-                (setq yas/wrap-around-region nil))
+                (setq yas-wrap-around-region nil))
               (r-autoyas-expand t)
               (message "%s,%s" pt (point))
               (when (= (- pt 1) (point))
                 (insert "(")
-                (autopair-default-handle-action action pair pos-before)
-                )))
+                (autopair-default-handle-action action pair pos-before))
+              (when (= pt (point))
+                (autopair-default-handle-action action pair pos-before))))
         (error (message "[r-autoyas-pair-error]: %s" (error-message-string err))))
     (autopair-default-handle-action action pair pos-before)))
 
@@ -935,12 +1005,12 @@ cat(\"Loaded r-autoyas\\n\");
       nil
     (let* ((arg (or arg
                     0))
-           (snippet (first (yas/snippets-at-point)))
-           (active-field (if snippet (overlay-get yas/active-field-overlay 'yas/field) nil))
+           (snippet (first (yas--snippets-at-point)))
+           (active-field (if snippet (overlay-get yas-active-field-overlay 'yas-field) nil))
            (live-fields (if (not snippet) nil (remove-if #'(lambda (field)
                                                              (and (not (eq field active-field))
-                                                                  (yas/field-probably-deleted-p snippet field)))
-                                                         (yas/snippet-fields snippet))))
+                                                                  (yas--field-probably-deleted-p snippet field)))
+                                                         (yas--snippet-fields snippet))))
            (active-field-pos (if (not snippet) nil (position active-field live-fields))))
       (if (not snippet) nil
         active-field-pos))))
@@ -956,18 +1026,18 @@ cat(\"Loaded r-autoyas\\n\");
 
 (defun r-autoyas-update ()
   "Update fields"
-  (let ((snippet (first (yas/snippets-at-point))))
+  (let ((snippet (first (yas--snippets-at-point))))
     (when snippet
-      (yas/update-mirrors snippet))))
+      (yas-update-mirrors snippet))))
 
 (defun r-autoyas-text-on-moving-away (default-text &optional orig-text)
   "* Changes text when moving away AND original text has not changed"
   (cond
-   ((or (and (not yas/modified-p) yas/moving-away-p)
-        (and yas/moving-away-p orig-text (string= orig-text yas/text)))
+   ((or (and (not yas-modified-p) yas-moving-away-p)
+        (and yas-moving-away-p orig-text (string= orig-text yas-text)))
     (let (r-autoyas-not-editing)
       (if (string= "" default-text)
-          (yas/skip-and-clear-or-delete-char)
+          (yas-skip-and-clear-or-delete-char)
         (insert default-text))
       (r-autoyas-update)))))
 
@@ -994,7 +1064,19 @@ cat(\"Loaded r-autoyas\\n\");
   (let (r-autoyas-not-editing)
     (r-autoyas-update)))
 
+(defadvice yas-next-field (around r-autoyas-update)
+  "Updates fields upon [TAB] for r-autoyas-snippets."
+  ad-do-it
+  (let (r-autoyas-not-editing)
+    (r-autoyas-update)))
+
 (defadvice yas/skip-and-clear-or-delete-char (around r-autoyas-update)
+  "Updates fields upon C-d for r-autoyas-snippets."
+  ad-do-it
+  (let (r-autoyas-not-editing)
+    (r-autoyas-update)))
+
+(defadvice yas-skip-and-clear-or-delete-char (around r-autoyas-update)
   "Updates fields upon C-d for r-autoyas-snippets."
   ad-do-it
   (let (r-autoyas-not-editing)
@@ -1010,11 +1092,25 @@ cat(\"Loaded r-autoyas\\n\");
            (string= "R" ess-dialect))
       (modify-syntax-entry ?. "_")))
 
+(defadvice yas-expand-from-trigger-key (around r-autoyas-expand)
+  "Changes Syntax table to allow proper expansion in R"
+  (if (and (member major-mode '(ess-mode inferior-ess-mode))
+           (string= "R" ess-dialect))
+      (modify-syntax-entry ?. "w"))
+  ad-do-it
+  (if (and (member major-mode '(ess-mode inferior-ess-mode))
+           (string= "R" ess-dialect))
+      (modify-syntax-entry ?. "_")))
+
 (ad-activate 'yas/next-field)
 (ad-activate 'yas/skip-and-clear-or-delete-char)
 (ad-activate 'yas/expand-from-trigger-key)
 
-(defalias 'rayas/ma 'r-autoyas-text-on-moving-away)
+(ad-activate 'yas-next-field)
+(ad-activate 'yas-skip-and-clear-or-delete-char)
+(ad-activate 'yas-expand-from-trigger-key)
+
+(defalias 'rayas-ma 'r-autoyas-text-on-moving-away)
 
 (provide 'r-autoyas)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
