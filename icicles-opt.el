@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Sep  8 23:40:04 2012 (-0700)
+;; Last-Updated: Tue Sep 11 17:05:52 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5327
+;;     Update #: 5329
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -771,9 +771,9 @@ List elements are strings."
 ;;;###autoload
 (defcustom icicle-buffer-ignore-space-prefix-flag t
   "*Non-nil means ignore buffer-name completions that start with a space.
-However, such candidates are not ignored when your input also starts
-with a space or when there are no buffers whose names do not start
-with a space.
+However, apart from minibuffer names such as \" *Minibuf-0*\", such
+candidates are not ignored when your input also starts with a space or
+when there are no buffers whose names do not start with a space.
 
 Note: This option is provided mainly for use (binding) in
 `icicle-define-command' and `icicle-define-file-command'.
@@ -3741,6 +3741,9 @@ toggle Icicle mode off and then back on."
      icicle-goto-marker-or-set-mark-command                            t) ; `C-@', `C-SPC'
     (switch-to-buffer              icicle-buffer                       t) ; `C-x b'
     (switch-to-buffer-other-window icicle-buffer-other-window          t) ; `C-x 4 b'
+    ;; You might want to use these two instead of the previous two.
+    ;; (switch-to-buffer              icicle-buffer-no-search               t)
+    ;; (switch-to-buffer-other-window icicle-buffer-no-search-other-window  t)
     (where-is                      icicle-where-is                     t) ; `C-h w'
     (,icicle-yank-function         icicle-yank-maybe-completing        t) ; `C-y'
     (yank-pop                      icicle-yank-pop-commands            (featurep 'second-sel)) ; `M-y'
