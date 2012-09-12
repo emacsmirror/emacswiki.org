@@ -2,8 +2,9 @@
 ;;
 ;; Copyright (c) 2012 Roland Walker
 ;;
-;; Author: Roland Walker walker@pobox.com
-;; URL: https://github.com/rolandwalker/unicode-fonts.el
+;; Author: Roland Walker <walker@pobox.com>
+;; Homepage: http://github.com/rolandwalker/unicode-fonts
+;; URL: http://raw.github.com/rolandwalker/unicode-fonts/master/unicode-fonts.el
 ;; Version: 0.3.2
 ;; Last-Updated: 27 Aug 2012
 ;; EmacsWiki: UnicodeFonts
@@ -255,7 +256,7 @@
 ;;
 ;; Compatibility and Requirements
 ;;
-;;    Tested only on GNU Emacs version 24.1
+;;    Tested on GNU Emacs versions 23.3 and 24.1
 ;;
 ;;    Requires dynamic-fonts.el, ucs-utils.el
 ;;
@@ -1161,7 +1162,8 @@
   :version "0.3.2"
   :link '(emacs-commentary-link "unicode-fonts")
   :prefix "unicode-fonts-"
-  :group 'extensions)
+  :group 'i18n
+  :group 'faces)
 
 ;;;###autoload
 (defgroup unicode-fonts-tweaks nil
@@ -1177,8 +1179,8 @@ and the font backend used by your Emacs build.
 
 This defaults to nil when using the Cocoa or native Mac font
 backends on OS X, t otherwise."
-  :group 'unicode-fonts-tweaks
-  :type 'boolean)
+  :type 'boolean
+  :group 'unicode-fonts-tweaks)
 
 (defcustom unicode-fonts-existence-checks 'all
   "How unicode-fonts will dynamically check fonts at startup.
@@ -1286,8 +1288,8 @@ Leave the list empty for no per-group exclusions."
 
 Leaving this off allows you to see the impact of this
 library on startup time."
-  :group 'unicode-fonts
-  :type 'boolean)
+  :type 'boolean
+  :group 'unicode-fonts)
 
 (defcustom unicode-fonts-fallback-font-list '("Symbola" "Quivira")
   "Candidates for a general fallback font.
