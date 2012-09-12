@@ -16,6 +16,7 @@
 ;;
 ;; Quickstart
 ;;
+;;     (require 'dired-x)
 ;;     (require 'ignoramus)
 ;;
 ;;     (ignoramus-setup)    ; sets `vc-directory-exclusion-list',
@@ -70,7 +71,7 @@
 ;;
 ;; Compatibility and Requirements
 ;;
-;;     Tested only on GNU Emacs version 24.1
+;;     Tested on GNU Emacs versions 23.3 and 24.1
 ;;
 ;;     No external dependencies
 ;;
@@ -627,6 +628,9 @@ fully-qualified pathname."
   "Tell `dired-mode' to ignore unwanted files."
 
   (setq dired-omit-mode t)
+  (add-hook 'dired-mode-hook #'(lambda ()
+                                 (when (eq major-mode 'dired-mode)
+                                   (dired-omit-mode 1))))
 
   ;; Ignoramus merges the patterns for "garbage" (dired.el) and
   ;; "omit" (dired-x.el) so they are identical.
