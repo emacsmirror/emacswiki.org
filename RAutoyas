@@ -1,0 +1,135 @@
+
+
+== Library Information ==
+/r-autoyas.el/ --- Provides automatically created yasnippets for R function argument lists.
+
+* <b>Filename </b> --  [[r-autoyas.el]]
+* <b>Description </b> --  r-autoyas is a small ESS complement. It provides automatically created yasnippets for R function argument lists.
+* <b>Author </b> --  Sven Hartenstein & Matthew Fidler
+* <b>Maintainer </b> --  Matthew Fidler
+* <b>Created </b> --  Fri Mar 25 10:36:08 2011 (-0500)
+
+* <b>Version </b> --  0.27
+* <b>Last-Updated </b> --  Mon Jun 25 15:12:20 2012 (-0500)
+* <b>By </b> --  Matthew L. Fidler
+* <b>Update # </b> --  873
+
+* <B>URL </B> --  https://github.com/mlf176f2/r-autoyas.el
+* <b>Keywords </b> --  R yasnippet
+Compatibility:
+
+
+== About ==
+r-autoyas is a small ESS complement. It provides automatically created
+yasnippets for R function argument lists.
+
+== Requirements ==
+The following are needed:
+* yasnippet https://github.com/capitaomorte/yasnippet
+* R & ESS
+* R process must be running.
+== Usage ==
+* To expand the snipped type the function name and them press <tt>TAB</tt>.
+* To jump from field to feild press <tt>TAB</tt>.  If you did not change the
+field, the parameter will be deleted from this list
+* To exit the snipped and delete remaining arguments, press <tt>C-g</tt>
+== Options ==
+This is an incomplete list of user definable options.  The complete
+list can be retrieved by 
+<tt>M-x customize-group r-autoyas</tt>
+=== Debugging ===
+Debugging messages can be put on-screen.  This is done by
+{{{
+(setq r-autoyas-debug t)
+}}}
+=== Sending a ... replacement to R via emacs instead of by a global options statement ===
+Uses Lisp-based dot-replacement defined by
+`r-autoyas-r-based-dot-replacement' instead of specifying through
+options in R startup.  This is on by default but can be turned off by
+{{{
+(setq r-autoyas-use-r-based-dot-replacement nil)
+}}}
+=== Specifying the `...' replacement via the R options() statement ===
+Emacs can change the functions `...' replacement through lisp.  The
+easiest way to change this is, typing:
+
+<tt>M-x customize-variable r-autoyas-r-based-dot-replacement</tt>
+=== Using functions within a namespace only ===
+By default, R-autoyas only expands predefined functions in
+namespaces/package that are loaded in R.  This ignores any
+user-defined functions.  However, R-autoyas may be used to expand
+user-defined functions as well.  This is done with the
+<tt>r-autoyas-expand-package-functions-only</tt> variable.  To turn on
+r-autoyas's expansion of user-defined functions, the following code
+may be used:
+{{{
+(setq r-autoyas-expand-package-functions-only nil)
+}}}
+
+This variable may also be customized.
+
+== Limitations ==
+* No nice error handling when no R process is found
+* Partial nested support -- not perfected
+== Loading r-autoyas in ~/.emacs ==
+You may use marmalade-repo and ELPA to install r-autoyas
+(http://marmalade-repo.org/), or put it into your load-path and put
+the following in ~/.emacs
+
+{{{
+(require 'r-autoyas)
+(add hook 'ess-mode-hook 'r-autoyas-ess-activate)
+}}}
+
+
+
+== Wish-List/To-Do ==
+== Functions ==
+=== Interactive Functions ===
+
+=== Internal Functions ===
+== Variables ==
+=== Customizable Variables ===
+
+=== Internal Variables ===
+== History ==
+
+* <b>12-Sep-2012 </b> --   Have attempted to make r-autoyas compatible with yasnippet 0.8. This will possibly address github issue #4 ()
+* <b>04-Jun-2012 </b> --   Bug fix for autopair-mode (Matthew L. Fidler)
+* <b>04-Jun-2012 </b> --   Changed syntax table for yas/expand so that write.csv will expand if you have a snippet named csv. (Matthew L. Fidler)
+* <b>04-Jun-2012 </b> --   Bug fix for autopair. (Matthew L. Fidler)
+* <b>07-May-2012 </b> --   Changed the syntax table for <tt>r-autoyas-expand</tt> so that when a snippet <tt>csv</tt> is defined and you expand at write.csv, write.csv will be expanded instead of <tt>csv</tt> (Matthew L. Fidler)
+* <b>02-Feb-2012 </b> --   This package no longer auto-loads. (Matthew L. Fidler)
+* <b>29-Nov-2011 </b> --   Change the *r-autoyas* buffer to be hidden (ie " *r-autoyas*") (Matthew L. Fidler)
+* <b>18-Nov-2011 </b> --   Added gihub URL (Matthew L. Fidler)
+* <b>17-Nov-2011 </b> --   Fixed <tt>called-interactively-p</tt> to have a single argument. (Matthew L. Fidler)
+* <b>17-Nov-2011 </b> --   Added which to the default ignored parenthetical statements (Matthew L. Fidler)
+* <b>17-Nov-2011 </b> --   Fixed <tt>r-autoyas-defined-p</tt> (Matthew L. Fidler)
+* <b>17-Nov-2011 </b> --   Added Forward compatablilty for (interactive-p) (Matthew L. Fidler)
+* <b>17-Nov-2011 </b> --   Changed the order of r-autoyas alais of old (Matthew L. Fidler)
+* <b>16-Nov-2011 </b> --   Changed ignored expressions to only be ignore when using a parenthesis, and added more ignored expressions (Matthew L. Fidler)
+* <b>16-Nov-2011 </b> --   Updated to have better wrapping after exiting a snippet. (Matthew L. Fidler)
+* <b>08-Jun-2011 </b> --   A partial fix for noweb (Rnw) (Matthew L. Fidler)
+* <b>06-Jun-2011 </b> --   Small update to fix lisp-based replacements. (Matthew L. Fidler)
+* <b>06-Jun-2011 </b> --   Added a bug-fix for complex language statements like reshape. (Matthew L. Fidler)
+* <b>16-May-2011 </b> --   Bug Fixes for cached snippets. (Matthew L. Fidler)
+* <b>16-May-2011 </b> --   Added wrapping capaibilites to code. Currently only works on Ctl-G. (Matthew L. Fidler)
+* <b>16-May-2011 </b> --   Added option to remove explicit parameter names for functions if not needed. (Matthew L. Fidler)
+* <b>16-May-2011 </b> --   Allow autopair backspace to delete autostarted template. (Matthew L. Fidler)
+* <b>16-May-2011 </b> --   Changed language constructs to make sure its not a default text. (Matthew L. Fidler)
+* <b>16-May-2011 </b> --   Changed quoting method to fix read.table() (Matthew L. Fidler)
+* <b>16-May-2011 </b> --   Removed if (grepl(', ', str, fixed=TRUE)) str <- sub(', ', '', str); from R code to fix write.table()  (Matthew L. Fidler)
+* <b>26-Apr-2011 </b> --   Now when using Control-G to exit snippets, it will not delete anything inside the snippet. For example, using ls(name=".txt|",...) where the cursor is at |, pressing Cntrl-G (Matthew L. Fidler)
+* <b>26-Apr-2011 </b> --   Added a space to try to fix the strange duplication issues. (Matthew L. Fidler)
+* <b>25-Apr-2011 </b> --   Bug fix for nested auto-expansion using (. (Matthew L. Fidler)
+* <b>21-Apr-2011 </b> --   Tried to fix the autobrackets in r-auotyas. (Matthew L. Fidler)
+* <b>15-Apr-2011 </b> --   Bugfix for ess-eval-linewise option (Matthew L. Fidler)
+* <b>15-Apr-2011 </b> --   Fixed autopair bug. (Matthew L. Fidler)
+* <b>15-Apr-2011 </b> --   Changed <tt>r-autoyas-inject-commnads</tt> to use <tt>ess-eval-linewise</tt> in mering with Svens' version. (Its an option) (Matthew L. Fidler)
+* <b>11-Apr-2011 </b> --    (Matthew L. Fidler)
+* <b>10-Apr-2011 </b> --  09-Apr-2011 Added autoload. ()
+* <b>09-Apr-2011 </b> --  30-Mar-2011 Matthew L. Fidler Attempted to allow nested expansion, as well as changing the mechanism of Yasnippet expansion.  ()
+* <b>25-Mar-2011 </b> --    (Matthew L. Fidler)
+
+
+This was generated with OrgReadme.  On updating the library, this page is likely to be replaced with updated content.
