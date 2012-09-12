@@ -5,7 +5,7 @@
 ;; Author: Igor Sikaček <isikacek@gmail.com>
 ;; Maintainer: Igor Sikaček <isikacek@gmail.com>
 ;; Created: 10 Sep 2012
-;; Version: 0.5
+;; Version: 0.5.1
 ;; Keywords: awk
 
 ;; This file is not part of Emacs
@@ -171,13 +171,13 @@
     (setq awk-it-data (buffer-substring beg end)
           awk-it-point beg)
     (add-hook 'yas/after-exit-snippet-hook 'awk-it-yas-completed)
-    (yas/expand-snippet beg end (concat
+    (yas/expand-snippet (concat
       "Data: " (awk-it-get-line-with-max-separators beg end) "
 AWK pattern: ${1:pattern}
 ${1:$(awk-it-process text "
       "\"" (if fs fs " ") "\""
       (if raw " t")
-      ")}"))))
+      ")}") beg end)))
 
 
 
