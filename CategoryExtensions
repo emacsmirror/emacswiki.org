@@ -131,6 +131,10 @@ Extensions (using the category name from `finder-by-keyword'), are utility libra
 * [https://github.com/sigma/gh.el gh.el] -- <nowiki>GitHub</nowiki> Api library making use of Eieio
 * [https://github.com/rsanders/github-api-v3.el github-api-v3.el] -- Emacs library for the v3 <nowiki>GitHub</nowiki> API
 
+== Miscellaneous ==
+
+* [[uuid]] -- Globally unique identifiers
+
 == See Also ==
 
 * CategoryProgrammerUtils
