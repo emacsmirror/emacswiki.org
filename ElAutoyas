@@ -1,14 +1,14 @@
 
 
 == Library Information ==
-*el-autoyas.el* --- Automatically create Emacs-Lisp Yasnippets
+/el-autoyas.el/ --- Automatically create Emacs-Lisp Yasnippets
 
 * <b>Filename </b> --  [[el-autoyas.el]]
 * <b>Description </b> --  Automatically create Emacs-Lisp Yasnippets
 * <b>Author </b> --  Matthew L. Fidler
 * <b>Maintainer </b> --  Matthew L. Fidler
 * <b>Created </b> --  Mon Nov 21 10:55:55 2011 (-0600)
-* <b>Version </b> --  0.2
+* <b>Version </b> --  0.3
 * <b>Last-Updated </b> --  Mon Nov 28 08:46:55 2011 (-0600)
 * <b>By </b> --  Matthew L. Fidler
 * <b>Update # </b> --  194
@@ -20,21 +20,6 @@ Compatibility:
 
 `assoc', `button', `cl', `easymenu', `eldoc', `help-fns',
 `help-mode', `view', `yasnippet', `yasnippet-bundle'.
-
-== el-autoyas.el* --- Automatically create Emacs-Lisp Yasnippets ==
-
-* <b>Filename </b> --  [[el-autoyas.el]]
-* <b>Description </b> --  Automatically create Emacs-Lisp Yasnippets
-* <b>Author </b> --  Matthew L. Fidler
-* <b>Maintainer </b> --  Matthew L. Fidler
-* <b>Created </b> --  Mon Nov 21 10:55:55 2011 (-0600)
-* <b>Version </b> --  0.2
-* <b>Last-Updated </b> --  Mon Nov 28 08:46:55 2011 (-0600)
-* <b>By </b> --  Matthew L. Fidler
-* <b>Update # </b> --  194
-* <B>URL </B> --  https://github.com/mlf176f2/el-autoyas.el
-* <b>Keywords </b> --  Emacs Lisp Mode Yasnippet
-Compatibility: 
 
 == About ==
 el-autoyas is a small complement to yasnippet for emacs-lisp-mode.  It
@@ -98,7 +83,58 @@ A list of abbreviations that expand to a set function
 
 === Internal Variables ===
 
+==== el-autoyas-backward-compatability ====
+Yasnippet backward compatability functions used in el-autoyas.el
+
+Value: ((yas/expand-snippet yas-expand-snippet)
+(yas/modified-p yas-modified-p)
+(yas/moving-away-p yas-moving-away-p)
+(yas/text yas-text)
+(yas/skip-and-clear-or-delete-char yas-skip-and-clear-or-delete-char)
+(yas/snippets-at-point yas--snippets-at-point)
+(yas/update-mirrors yas--update-mirrors)
+(yas/fallback-behavior yas-fallback-behavior)
+(yas/minor-mode yas-minor-mode))
+
+
+
 ==== el-autoyas-load-hook ====
+== Hook run on package load. ==
+Suggestion: Add <tt>el-autoyas-install</tt>.
+== Hook run on package load. ==
+Suggestion: Add <tt>el-autoyas-install</tt>.
+
+==== yas-backward-compatability ====
+Yasnippet backward compatability functions used in el-autoyas.el
+
+Value: ((yas/expand-snippet yas-expand-snippet)
+(yas/modified-p yas-modified-p)
+(yas/moving-away-p yas-moving-away-p)
+(yas/text yas-text)
+(yas/skip-and-clear-or-delete-char yas-skip-and-clear-or-delete-char)
+(yas/snippets-at-point yas--snippets-at-point)
+(yas/update-mirrors yas--update-mirrors)
+(yas/fallback-behavior yas-fallback-behavior)
+(yas/minor-mode yas-minor-mode))
+
+
+== Hook run on package load. ==
+Suggestion: Add <tt>el-autoyas-install</tt>.
+
+==== yas-backward-compatability ====
+Yasnippet backward compatability functions used in el-autoyas.el
+
+Value: ((yas/expand-snippet yas-expand-snippet)
+(yas/modified-p yas-modified-p)
+(yas/moving-away-p yas-moving-away-p)
+(yas/text yas-text)
+(yas/skip-and-clear-or-delete-char yas-skip-and-clear-or-delete-char)
+(yas/snippets-at-point yas--snippets-at-point)
+(yas/update-mirrors yas--update-mirrors)
+(yas/fallback-behavior yas-fallback-behavior)
+(yas/minor-mode yas-minor-mode))
+
+
 == Hook run on package load. ==
 Suggestion: Add <tt>el-autoyas-install</tt>.
 
@@ -169,6 +205,9 @@ Value: ((yas/expand-snippet yas-expand-snippet)
 
 == History ==
 
+* <b>12-Sep-2012 </b> --   Fixed variable yas-backward-compatibility to be el-autoyas-backward-compatability so that things will not collide ()
+* <b>12-Sep-2012 </b> --   Another attempt to fix emacswiki documentation ()
+* <b>12-Sep-2012 </b> --   Org-readme sync attempt -- trying to fix bug in org-readme. ()
 * <b>12-Sep-2012 </b> --   Another attempt to upload el-autoyas without the documentation issues previously observed. ()
 * <b>12-Sep-2012 </b> --   Another attempt to sync. ()
 * <b>12-Sep-2012 </b> --   Documentation change ()
