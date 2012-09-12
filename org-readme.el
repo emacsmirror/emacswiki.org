@@ -5,7 +5,7 @@
 ;; Author: Matthew L. Fidler
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Fri Aug  3 22:33:41 2012 (-0500)
-;; Version: 0.30
+;; Version: 0.31
 ;; Package-Requires: ((http-post-simple "1.0") (yaoddmuse "0.1.1")(header2 "21.0") (lib-requires "21.0"))
 ;; Last-Updated: Wed Aug 22 13:11:26 2012 (-0500)
 ;;           By: Matthew L. Fidler
@@ -77,6 +77,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 12-Sep-2012      
+;;    Last-Updated: Wed Aug 22 13:11:26 2012 (-0500) #794 (Matthew L. Fidler)
+;;    Handle errors with the package gracefully.
 ;; 12-Sep-2012      
 ;;    Last-Updated: Wed Aug 22 13:11:26 2012 (-0500) #794 (Matthew L. Fidler)
 ;;    Bug fix to eliminate duplicate headers in Readme.org and emacswiki
@@ -451,7 +454,9 @@
 (defun org-readme-insert-variables ()
   "Extracts variable documentation and places it in the Readme.org file."
   (interactive)
-  (eval-buffer)
+  (condition-case err
+      (eval-buffer)
+    (error nil))
   (save-excursion
     (goto-char (point-min))
     (let ((lst1 '()) tmp ret1 ret2 ret
@@ -540,7 +545,9 @@ Returns file name if created."
                                 (setq tmp (match-string 1))
                                 (with-temp-buffer
                                   (insert (format "(setq tmp '%s)" tmp))
-                                  (eval-buffer))
+                                  (condition-case err
+                                      (eval-buffer)
+                                    (error nil)))
                                 (format "\n :depends (%s)"
                                         (mapconcat
                                          (lambda(x)
