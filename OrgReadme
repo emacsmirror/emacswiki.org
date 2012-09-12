@@ -1,14 +1,14 @@
 
 
 == Library Information ==
-*org-readme.el* --- Integrates Readme.org and Commentary/Change-logs.
+/org-readme.el/ --- Integrates Readme.org and Commentary/Change-logs.
 
 * <b>Filename </b> --  [[org-readme.el]]
 * <b>Description </b> --  Integrate Readme.org and Commentary/Change Logs.
 * <b>Author </b> --  Matthew L. Fidler
 * <b>Maintainer </b> --  Matthew L. Fidler
 * <b>Created </b> --  Fri Aug  3 22:33:41 2012 (-0500)
-* <b>Version </b> --  0.29
+* <b>Version </b> --  0.30
 * <b>Package-Requires </b> --  ((http-post-simple "1.0") (yaoddmuse "0.1.1")(header2 "21.0") (lib-requires "21.0"))
 * <b>Last-Updated </b> --  Wed Aug 22 13:11:26 2012 (-0500)
 * <b>By </b> --  Matthew L. Fidler
@@ -280,6 +280,7 @@ keymap
 
 == History ==
 
+* <b>12-Sep-2012 </b> --   Bug fix to eliminate duplicate headers in Readme.org and emacswiki ()
 * <b>12-Sep-2012 </b> --   Bug fix when org todo faces are not set. ()
 * <b>12-Sep-2012 </b> --   Added bug fix when <tt>org-todo-keyword-faces</tt> is undefined. ()
 * <b>22-Aug-2012 </b> --   Attempting to upload again (Matthew L. Fidler)
