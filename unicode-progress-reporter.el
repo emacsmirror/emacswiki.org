@@ -2,45 +2,57 @@
 ;;
 ;; Copyright (c) 2012 Roland Walker
 ;;
-;; Author: Roland Walker walker@pobox.com
-;; URL: https://github.com/rolandwalker/unicode-progress-reporter.el
+;; Author: Roland Walker <walker@pobox.com>
+;; Homepage: http://github.com/rolandwalker/unicode-progress-reporter
+;; URL: http://raw.github.com/rolandwalker/unicode-progress-reporter/master/unicode-progress-reporter.el
 ;; Version: 0.5.2
 ;; Last-Updated: 27 Aug 2012
 ;; EmacsWiki: UnicodeProgressReporter
-;; Package-Requires: ((ucs-utils "0.6.0") (persistent-soft "0.8.0") (pcache "0.2.3"))
+;; Package-Requires: ((emacs "24.1.0") (ucs-utils "0.6.0") (persistent-soft "0.8.0") (pcache "0.2.3"))
 ;; Keywords: interface
 ;;
 ;; GPLv3 License
 ;;
 ;;; Commentary:
 ;;
+;; Quickstart
+;;
+;;     (require 'unicode-progress-reporter)
+;;
+;;     (unicode-progress-reporter-setup)
+;;
+;;     ;; to see a demo
+;;     (unicode-progress-reporter-test)
+;;
+;; Explanation
+;;
 ;; This is a trivial modification to Emacs' built-in progress
-;; reporter to display spinners using unicode characters.
+;; reporter to display spinners using Unicode characters.
 ;;
 ;; To use unicode-progress-reporter, place the
 ;; unicode-progress-reporter.el library somewhere Emacs can
 ;; find it, and add the following to your ~/.emacs file:
 ;;
-;;    (require 'unicode-progress-reporter)
-;;    (unicode-progress-reporter-setup)
+;;     (require 'unicode-progress-reporter)
+;;     (unicode-progress-reporter-setup)
 ;;
 ;; See Also
 ;;
-;;    M-x customize-group RET unicode-progress-reporter RET
+;;     M-x customize-group RET unicode-progress-reporter RET
 ;;
-;;    (unicode-progress-reporter-test)
+;;     (unicode-progress-reporter-test)
 ;;
 ;; Notes
 ;;
-;;    redefines `progress-reporter-do-update'
+;;     redefines `progress-reporter-do-update'
 ;;
-;;    alters private variable `progress-reporter--pulse-characters'
+;;     alters private variable `progress-reporter--pulse-characters'
 ;;
 ;; Compatibility and Requirements
 ;;
-;;    Tested only on GNU Emacs version 24.1
+;;     Requires GNU Emacs version 24.1 or above
 ;;
-;;    Requires ucs-utils.el
+;;     Requires ucs-utils.el
 ;;
 ;; Bugs
 ;;
@@ -229,7 +241,7 @@ VALUE should be a key in `unicode-progress-reporter-pulse-characters'."
   :version "0.5.2"
   :link '(emacs-commentary-link "unicode-progress-reporter")
   :prefix "unicode-progress-reporter-"
-  :group 'extensions)
+  :group 'faces)
 
 (defcustom unicode-progress-reporter-type "Horizontal Blocks"
   "Type of spinner characters to use for progress-reporter."
