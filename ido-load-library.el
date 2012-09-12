@@ -2,8 +2,9 @@
 ;;
 ;; Copyright (c) 2012 Roland Walker
 ;;
-;; Author: Roland Walker walker@pobox.com
-;; URL: https://github.com/rolandwalker/ido-load-library.el
+;; Author: Roland Walker <walker@pobox.com>
+;; Homepage: http://github.com/rolandwalker/ido-load-library
+;; URL: http://raw.github.com/rolandwalker/ido-load-library/master/ido-load-library.el
 ;; Version: 0.1.0
 ;; Last-Updated:  27 Aug 2012
 ;; EmacsWiki: IdoLoadLibrary
@@ -14,6 +15,13 @@
 ;;
 ;;; Commentary:
 ;;
+;; Quickstart
+;;
+;;     (require 'ido-load-library)
+;;     M-x ido-load-library RET
+;;
+;; Explanation
+;;
 ;; Ido-load-library is an alternative to `load-library' which
 ;; uses `ido-completing-read' for completion against all
 ;; available libraries in your `load-path'.
@@ -22,20 +30,20 @@
 ;; somewhere Emacs can find it, and add the following to your
 ;; ~/.emacs file:
 ;;
-;;    (require 'ido-load-library)
+;;     (require 'ido-load-library)
 ;;
 ;; The interactive command `ido-load-library' is then available,
 ;; though not bound to any key.  It can be executed via
 ;;
-;;    M-x ido-load-library
+;;     M-x ido-load-library
 ;;
 ;; or bound via something like
 ;;
-;;    (define-key global-map (kbd "C-c l") 'ido-load-library)
+;;     (define-key global-map (kbd "C-c l") 'ido-load-library)
 ;;
 ;; or safely aliased to load-library
 ;;
-;;    (defalias 'load-library 'ido-load-library)
+;;     (defalias 'load-library 'ido-load-library)
 ;;
 ;; The interactive command `ido-load-library-find' is also
 ;; available.  Like `ido-load-library', it searches your
@@ -44,33 +52,34 @@
 ;;
 ;; See Also
 ;;
-;;    M-x customize-group RET ido-load-library RET
-;;    M-x customize-group RET ido RET
+;;     M-x customize-group RET ido-load-library RET
+;;     M-x customize-group RET ido RET
 ;;
 ;; Notes
 ;;
-;;    Defines the variable `library-name-history' outside of the
-;;    `ido-load-library-' namespace.
+;;     Defines the variable `library-name-history' outside of the
+;;     `ido-load-library-' namespace.
 ;;
 ;; Compatibility and Requirements
 ;;
-;;    Tested only on GNU Emacs version 24.1
+;;     Tested on GNU Emacs versions 23.3 and 24.1
 ;;
-;;    Requires persistent-soft.el
+;;     Requires persistent-soft.el
 ;;
 ;; Bugs
 ;;
-;;    When invalidating the disk cache, ido-load-library only checks
-;;    whether load-path has changed, not whether new files were added
-;;    to existing paths.  Workarounds:
+;;     When invalidating the disk cache, `ido-load-library' only checks
+;;     whether `load-path' has changed, not whether new files were added
+;;     to existing paths.  Workarounds:
 ;;
-;;       1. Use ELPA/package.el, in which case this assumption always works.
-;;       2. Wait for the cache to expire (7 days).
-;;       3. Give universal prefix argument to `ido-load-library'
-;;          to force invalidation of the cache.
+;;         1. Install libraries using ELPA/package.el, in which case this
+;;            assumption always works.
+;;         2. Wait for the cache to expire (7 days).
+;;         3. Give universal prefix argument to `ido-load-library'
+;;            to force invalidation of the cache.
 ;;
-;;    Should not remove -autoloads and -pkg library names unless there
-;;    is another name found with the same base.
+;;     Should not remove -autoloads and -pkg library names unless there
+;;     is another name found with the same base.
 ;;
 ;; TODO
 ;;
@@ -135,7 +144,8 @@
   :version "0.1.0"
   :link '(emacs-commentary-link "ido-load-library")
   :prefix "ido-load-library-"
-  :group 'extensions)
+  :group 'abbreviations
+  :group 'convenience)
 
 (defcustom ido-load-library-less-feedback nil
   "Give less echo area feedback."
