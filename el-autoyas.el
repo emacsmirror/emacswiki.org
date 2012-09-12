@@ -73,6 +73,23 @@
 ;; Yasnippet backward compatability functions used in el-autoyas.el
 ;; 
 ;; Value: ((yas/expand-snippet yas-expand-snippet)
+;;  (yas/modified-p yas-modified-p)
+;;  (yas/moving-away-p yas-moving-away-p)
+;;  (yas/text yas-text)
+;;  (yas/skip-and-clear-or-delete-char yas-skip-and-clear-or-delete-char)
+;;  (yas/snippets-at-point yas--snippets-at-point)
+;;  (yas/update-mirrors yas--update-mirrors)
+;;  (yas/fallback-behavior yas-fallback-behavior)
+;;  (yas/minor-mode yas-minor-mode))
+;; 
+;; 
+;; *Hook run on package load.
+;; Suggestion: Add `el-autoyas-install'.
+;; 
+;; *** yas-backward-compatability
+;; Yasnippet backward compatability functions used in el-autoyas.el
+;; 
+;; Value: ((yas/expand-snippet yas-expand-snippet)
 ;; (yas/modified-p yas-modified-p)
 ;; (yas/moving-away-p yas-moving-away-p)
 ;; (yas/text yas-text)
@@ -102,6 +119,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 12-Sep-2012      
+;;    Last-Updated: Mon Nov 28 08:46:55 2011 (-0600) #194 (Matthew L. Fidler)
+;;    Another attempt to upload el-autoyas without the documentation issues
+;;    previously observed.
 ;; 12-Sep-2012      
 ;;    Last-Updated: Mon Nov 28 08:46:55 2011 (-0600) #194 (Matthew L. Fidler)
 ;;    Another attempt to sync.
