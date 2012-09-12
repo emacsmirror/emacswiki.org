@@ -5,7 +5,7 @@
 ;; Author: Matthew L. Fidler
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Fri Aug  3 22:33:41 2012 (-0500)
-;; Version: 0.29
+;; Version: 0.30
 ;; Package-Requires: ((http-post-simple "1.0") (yaoddmuse "0.1.1")(header2 "21.0") (lib-requires "21.0"))
 ;; Last-Updated: Wed Aug 22 13:11:26 2012 (-0500)
 ;;           By: Matthew L. Fidler
@@ -79,6 +79,9 @@
 ;;; Change Log:
 ;; 12-Sep-2012      
 ;;    Last-Updated: Wed Aug 22 13:11:26 2012 (-0500) #794 (Matthew L. Fidler)
+;;    Bug fix to eliminate duplicate headers in Readme.org and emacswiki
+;; 12-Sep-2012      
+;;    Last-Updated: Wed Aug 22 13:11:26 2012 (-0500) #794 (Matthew L. Fidler)
 ;;    Bug fix when org todo faces are not set.
 ;; 12-Sep-2012      
 ;;    Last-Updated: Wed Aug 22 13:11:26 2012 (-0500) #794 (Matthew L. Fidler)
@@ -107,7 +110,7 @@
 ;; 20-Aug-2012    Matthew L. Fidler  
 ;;    Last-Updated: Mon Aug 20 22:43:07 2012 (-0500) #774 (Matthew L. Fidler)
 ;;    Bump minor version for marmalade-repo.org
-;; 20-Aug-2012    Matthew L. Fidler  
+;; 20-Aug-2012    Matthew L. Fidler
 ;;    Last-Updated: Mon Aug 20 22:36:02 2012 (-0500) #772 (Matthew L. Fidler)
 ;;    Attempt to fix the History list 
 ;; 20-Aug-2012    Matthew L. Fidler  
@@ -120,7 +123,7 @@
 ;;    Last-Updated: Mon Aug 20 22:22:04 2012 (-0500) #754 (Matthew L. Fidler)
 ;;    Will now remove the Functions and Variables sections before putting
 ;;    them in the commentary section.
-;; 20-Aug-2012    Matthew L. Fidler  
+;; 20-Aug-2012    Matthew L. Fidler
 ;;    Last-Updated: Mon Aug 20 22:17:03 2012 (-0500) #750 (Matthew L. Fidler)
 ;;    Attempt to remove Readme.md when not needed.
 ;; 20-Aug-2012    Matthew L. Fidler  
@@ -1300,8 +1303,10 @@ When AT-BEGINNING is non-nil, if the section is not found, insert it at the begi
                    section) nil t)
           (progn
             (org-cut-subtree)
-            (when txt
-              (insert txt))
+            (save-excursion
+              (when txt
+                (insert txt)))
+            
             t)
         (when txt
           (goto-char (if at-beginning
@@ -1312,7 +1317,7 @@ When AT-BEGINNING is non-nil, if the section is not found, insert it at the begi
               (while (re-search-forward "\\=[ \t]*#.*\n" nil t))
             (while (re-search-backward "\n[ \t]*#.*\\=" nil t)))
           (beginning-of-line)
-          (insert txt))
+          (save-excursion (insert txt)))
         nil))))
 
 ;;;###autoload
@@ -1330,7 +1335,7 @@ When AT-BEGINNING is non-nil, if the section is not found, insert it at the begi
       (insert top-header)
       (goto-char (point-min))
       (when (looking-at ";;; *\\(.*?\\) *--+ *\\(.*\\)")
-        (replace-match " *\\1* --- \\2"))
+        (replace-match " /\\1/ --- \\2"))
       
       (goto-char (point-min))
       (while (re-search-forward "^ *;; ?" nil t)
