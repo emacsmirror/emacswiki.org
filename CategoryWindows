@@ -21,7 +21,7 @@ Move among windows -- alternatives to `C-x o' (`other-window').
 ** WindowNumberingMode
 * Use a transient keymap to move among windows
 ** WinSwitch -- a dynamic, transient mode that enables easy, efficient navigation among windows (and frames)
-
+* `M-x next-multiframe-window' -- similar to `other-window' but cycles both through windows and frames.
 
 == Resizing, Splitting,... Windows ==
 
