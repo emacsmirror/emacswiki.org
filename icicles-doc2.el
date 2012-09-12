@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Sep  8 11:33:11 2012 (-0700)
+;; Last-Updated: Tue Sep 11 17:05:03 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 28988
+;;     Update #: 28990
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -5616,10 +5616,13 @@
 ;;
 ;;  * Non-`nil' user option `icicle-buffer-ignore-space-prefix-flag'
 ;;    means to ignore buffer-name completion candidates that start
-;;    with a space.  However, such candidates are not ignored if your
-;;    input also starts with a space or if the names of all buffers
-;;    start with a space.  This option is provided mainly for binding
-;;    when using `icicle-define-command' (`icicle-buffer' does this).
+;;    with a space.
+;;
+;;    However, apart from minibuffer names such as " *Minibuf-0*",
+;;    such candidates are not ignored if your input also starts with a
+;;    space or if the names of all buffers start with a space.  This
+;;    option is provided mainly for binding when using
+;;    `icicle-define-command' (`icicle-buffer' does this).
 ;;
 ;;    You can toggle `icicle-buffer-ignore-space-prefix-flag' using
 ;;    `M-_' in the minibuffer (except during `icicle-search').
