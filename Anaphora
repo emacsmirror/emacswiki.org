@@ -1,0 +1,73 @@
+==Overview==
+
+Anaphoric expressions providing implicit temporary variables.
+
+==Quickstart==
+
+	(require 'anaphora)
+
+	(awhen (big-long-calculation)
+	  (foo it)      ; `it' is provided as
+	  (bar it))     ; a temporary variable
+
+	;; anonymous function to compute factorial using `self'
+	(alambda (x) (if (= x 0) 1 (* x (self (1- x)))))
+
+==anaphora==
+
+Anaphoric expressions implicitly create one or more temporary
+variables which can be referred to during the expression.  This
+technique can improve clarity in certain cases.  It also enables
+recursion for anonymous functions.
+
+To use anaphora, place the anaphora.el library somewhere
+Emacs can find it, and add the following to your ~/.emacs file:
+
+	(require 'anaphora)
+
+The following macros are made available
+
+	`aif'
+	`aprog1'
+	`awhen'
+	`awhile'
+	`aand'
+	`acond'
+	`alambda'
+	`ablock'
+	`acase'
+	`aecase'
+	`atypecase'
+	`aetypecase'
+
+==See Also==
+
+* http://en.wikipedia.org/wiki/On_Lisp
+* http://en.wikipedia.org/wiki/Anaphoric_macro
+
+==Notes==
+
+Principally based on examples from the book "On Lisp", by Paul Graham.
+
+When this library is loaded, the provided anaphoric forms are
+registered as keywords in font-lock. This may be disabled via
+customize.
+
+==Availability==
+
+anaphora is available at github:
+
+: http://github.com/rolandwalker/anaphora
+
+and via <nowiki>EmacsWiki</nowiki>:
+
+: Lisp:anaphora.el
+
+==Compatibility and Requirements==
+
+Tested on GNU Emacs versions 23.3 and 24.1
+
+No external dependencies
+
+----
+CategoryExtensions
