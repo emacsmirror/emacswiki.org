@@ -150,8 +150,26 @@ Value: ((yas/expand-snippet yas-expand-snippet)
 (yas/minor-mode yas-minor-mode))
 
 
+== Hook run on package load. ==
+Suggestion: Add <tt>el-autoyas-install</tt>.
+
+==== yas-backward-compatability ====
+Yasnippet backward compatability functions used in el-autoyas.el
+
+Value: ((yas/expand-snippet yas-expand-snippet)
+(yas/modified-p yas-modified-p)
+(yas/moving-away-p yas-moving-away-p)
+(yas/text yas-text)
+(yas/skip-and-clear-or-delete-char yas-skip-and-clear-or-delete-char)
+(yas/snippets-at-point yas--snippets-at-point)
+(yas/update-mirrors yas--update-mirrors)
+(yas/fallback-behavior yas-fallback-behavior)
+(yas/minor-mode yas-minor-mode))
+
+
 == History ==
 
+* <b>12-Sep-2012 </b> --   Another attempt to upload el-autoyas without the documentation issues previously observed. ()
 * <b>12-Sep-2012 </b> --   Another attempt to sync. ()
 * <b>12-Sep-2012 </b> --   Documentation change ()
 * <b>12-Sep-2012 </b> --   Updated el-autoyas to support yasnippet 0.8 naming conventions  ()
