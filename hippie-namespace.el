@@ -2,10 +2,11 @@
 ;;
 ;; Copyright (c) 2012 Roland Walker
 ;;
-;; Author: Roland Walker walker@pobox.com
-;; URL: https://github.com/rolandwalker/hippie-namespace.el
-;; Version: 0.5.2
-;; Last-Updated: 27 Aug 2012
+;; Author: Roland Walker <walker@pobox.com>
+;; Homepage: http://github.com/rolandwalker/hippie-namespace
+;; URL: http://raw.github.com/rolandwalker/hippie-namespace/master/hippie-namespace.el
+;; Version: 0.5.3
+;; Last-Updated: 8 Sep 2012
 ;; EmacsWiki: HippieNamespace
 ;; Keywords: convenience, lisp, tools, completion
 ;;
@@ -13,9 +14,23 @@
 ;;
 ;;; Commentary:
 ;;
+;; Quickstart
+;;
+;;     (require 'hippie-namespace)
+;;
+;;     (global-hippie-namespace-mode 1)
+;;
+;;     (define-key global-map (kbd "M-/") 'hippie-expand)
+;;
+;;     hi [M-/]     ; The first one or two letters of a namespace
+;;                  ; found in the current buffer, followed by the
+;;                  ; key bound to `hippie-expand'.
+;;
+;; Explanation
+;;
 ;; The purpose of hippie-namespace is to save typing.
 ;;
-;; Enabling the minor mode adds a limited number of very common
+;; Enabling this minor mode adds a limited number of very common
 ;; prefixes to the `hippie-expand' expansion list.  These prefixes
 ;; (deduced from buffer content) will be the first completions
 ;; considered.
@@ -35,44 +50,50 @@
 ;; To use this library, install the file somewhere that Emacs can find
 ;; it and add the following to your ~/.emacs file
 ;;
-;;    (require 'hippie-namespace)
-;;    (global-hippie-namespace-mode 1)
+;;     (require 'hippie-namespace)
+;;     (global-hippie-namespace-mode 1)
 ;;
 ;; The minor mode will examine each buffer to guess namespace prefixes
 ;; dynamically.  If the guess is not good enough, you may add to the
 ;; list by executing
 ;;
-;;    M-x hippie-namespace-add
+;;     M-x hippie-namespace-add
 ;;
 ;; or by adding a file-local variable at the end of your file:
 ;;
-;;    ;; Local Variables:
-;;    ;; hippie-namespace-local-list: (namespace-1 namespace-2)
-;;    ;; End:
+;;     ;; Local Variables:
+;;     ;; hippie-namespace-local-list: (namespace-1 namespace-2)
+;;     ;; End:
 ;;
 ;; Note that you should also have `hippie-expand' bound to a key.
 ;; Many people override dabbrev expansion:
 ;;
-;;    (define-key global-map (kbd "M-/") 'hippie-expand)
+;;     (define-key global-map (kbd "M-/") 'hippie-expand)
 ;;
 ;; See Also
 ;;
-;;    M-x customize-group RET hippie-namespace RET
-;;    M-x customize-group RET hippie-expand RET
+;;     M-x customize-group RET hippie-namespace RET
+;;     M-x customize-group RET hippie-expand RET
 ;;
 ;; Notes
 ;;
-;;    This mode makes more sense for some languages and less sense for
-;;    others.  In most languages, the declared "namespace" is
-;;    infrequently used in its own context.  (For Emacs Lisp that is
-;;    not the case.)
+;;     This mode makes more sense for some languages and less sense for
+;;     others.  In most languages, the declared "namespace" is
+;;     infrequently used in its own context.  (For Emacs Lisp that is
+;;     not the case.)
 ;;
-;;    Some attempt is made to detect the import of external
-;;    namespaces, and a textual analysis is done, but nothing fancy.
+;;     Some attempt is made to detect the import of external
+;;     namespaces, and a textual analysis is done, but nothing fancy.
+;;
+;;     Integrates with `expand-region', adding an expansion which is
+;;     aware of the namespace and non-namespace portions of a symbol.
+;;
+;;     Mode-specific namespace finders are easy to add.  Search for
+;;     "Howto" in the source.
 ;;
 ;; Compatibility and Requirements
 ;;
-;;     Tested only on GNU Emacs version 24.1
+;;     Tested on GNU Emacs versions 23.3 and 24.1
 ;;
 ;;     No external dependencies
 ;;
@@ -139,6 +160,7 @@
 
 ;; for setf, loop, position, remove-if, remove-if-not, callf, callf2
 (eval-when-compile
+  (defvar er/try-expand-list)
   (require 'cl))
 
 (require 'imenu)
@@ -155,12 +177,12 @@
 ;;;###autoload
 (defgroup hippie-namespace nil
   "Special treatment for namespace prefixes in `hippie-expand'."
-  :version "0.5.2"
+  :version "0.5.3"
   :link '(emacs-commentary-link "hippie-namespace")
   :prefix "hippie-namespace-"
   :group 'hippie-expand
   :group 'abbreviations
-  :group 'extensions)
+  :group 'convenience)
 
 (defcustom hippie-namespace-full-text-search nil
   "Run a full-text analysis of the buffer looking for prefixes.
@@ -209,6 +231,14 @@ lighter for `hippie-namespace-mode'."
 
 (defcustom hippie-namespace-no-localize-try-functions nil
   "Don't make `try-functions-list' buffer-local."
+  :type 'boolean
+  :group 'hippie-namespace)
+
+(defcustom hippie-namespace-expand-region t
+  "Integrate with `expand-region' if present.
+
+Add an expansion to `expand-region' which matches the namespace
+or non-namespace portion of a symbol."
   :type 'boolean
   :group 'hippie-namespace)
 
@@ -537,9 +567,9 @@ not symbols may be included in the result."
       (imenu--cleanup))
     (setq imenu--index-alist nil)
     (imenu--make-index-alist))
-  (remove-if-not #'stringp (hippie-namespace-list-flatten (mapcar (lambda (item)
-                                                               (if (and item (imenu--subalist-p item))
-                                                                   (cdr item) item)) imenu--index-alist))))
+  (remove-if-not 'stringp (hippie-namespace-list-flatten (mapcar #'(lambda (item)
+                                                                     (if (and item (imenu--subalist-p item))
+                                                                         (cdr item) item)) imenu--index-alist))))
 
 
 ;;; mode-specific namespace finder functions
@@ -646,14 +676,16 @@ not symbols may be included in the result."
 
 ;;; utility functions
 
-;; this strips nils, which would be a bug in some contexts
 (defun hippie-namespace-list-flatten (list)
   "Flatten LIST which may contain other lists."
   (cond
     ((null list)
      nil)
-    ((listp list)
+    ((and (listp list)
+          (consp (car list)))
      (append (hippie-namespace-list-flatten (car list)) (hippie-namespace-list-flatten (cdr list))))
+    ((listp list)
+     (cons (car list) (hippie-namespace-list-flatten (cdr list))))
     (t
      (list list))))
 
@@ -689,6 +721,45 @@ A modified copy of COLLECTION is returned."
             (throw 'next t)))
         (push elt uniques)))
     (nreverse uniques)))
+
+;;; expand-region integration
+
+;;;###autoload
+(defun hippie-namespace-mark-symbol-portion ()
+  "Mark the namespace or non-namespace portion of a symbol under the point.
+
+Intended for use with `expand-region' as an element of
+`er/try-expand-list'.
+
+If the point is in the namespace or non-namespace portion of
+a symbol, mark only that portion of the symbol.
+
+If the point is in a symbol which does not match a namespace,
+there is no effect."
+  (interactive)
+  (when (and (boundp 'hippie-namespace-mode)
+             hippie-namespace-mode
+             (boundp 'hippie-namespace-computed-list)
+             (> (length hippie-namespace-computed-list) 0))
+    (let ((orig-point (point)))
+      (save-match-data
+        (skip-syntax-backward "_w")
+        (when (looking-at (regexp-opt hippie-namespace-computed-list))
+          (set-mark (match-end 0))
+          (if (> (match-end 0) orig-point)
+              (goto-char (match-beginning 0))
+            ;; else
+            (skip-syntax-forward "_w")
+            (exchange-point-and-mark)))))))
+
+(when hippie-namespace-expand-region
+  (eval-after-load "expand-region"
+    '(progn
+       ;; insert in front of 'er/mark-symbol
+       (unless (memq 'hippie-namespace-mark-symbol-portion er/try-expand-list)
+         (push 'hippie-namespace-mark-symbol-portion
+               (nthcdr (or (position 'er/mark-symbol er/try-expand-list) 0)
+                       er/try-expand-list))))))
 
 (provide 'hippie-namespace)
 
