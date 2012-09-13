@@ -7,9 +7,9 @@
 ;; Copyright (C) 2005-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Aug 12 17:18:02 2005
 ;; Version: 22.0
-;; Last-Updated: Thu Aug 23 14:36:14 2012 (-0700)
+;; Last-Updated: Thu Sep 13 15:40:19 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 673
+;;     Update #: 696
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/lacarte.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/LaCarte
 ;; Keywords: menu-bar, menu, command, help, abbrev, minibuffer, keys,
@@ -79,7 +79,8 @@
 ;;    `lacarte-escape-w32-accel', `lacarte-get-a-menu-item-alist',
 ;;    `lacarte-get-a-menu-item-alist-1',
 ;;    `lacarte-get-overall-menu-item-alist', `lacarte-menu-first-p',
-;;    `lacarte-remove-w32-keybd-accelerators'.
+;;    `lacarte-remove-w32-keybd-accelerators',
+;;    `lacarte-string-match-p'.
 ;;
 ;;  Internal variables defined here:
 ;;
@@ -259,6 +260,11 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2012/09/13 dadams
+;;     Added: lacarte-string-match-p.
+;;     lacarte-get-overall-menu-item-alist: Use lookup-key, not assq.
+;;     lacarte-execute-command: Prepend dotted cons, not two-elt list, for lacarte-menu-first-p entry.
+;;     lacarte-menu-first-p: Corrected to sort alphabetically in menus and non-menus.
 ;; 2011/11/28 dadams
 ;;     lacarte-get-a-menu-item-alist-1:
 ;;       Added optional DONE arg, to handle recursive structures.  Thx to Michael Heerdegen.
@@ -420,8 +426,7 @@ using face `icicle-special-candidate'."
         (icicle-sort-orders-alist         (and (boundp 'icicle-sort-orders-alist)
                                                (if no-commands-p
                                                    icicle-sort-orders-alist
-                                                 (cons '("menu items first"
-                                                         .  lacarte-menu-first-p)
+                                                 (cons (cons "menu items first" 'lacarte-menu-first-p)
                                                        icicle-sort-orders-alist))))
         (icicle-sort-comparer             (and (boundp 'icicle-sort-comparer)
                                                (if no-commands-p
@@ -453,10 +458,18 @@ using face `icicle-special-candidate'."
                  last-command-event  choice)))
     (call-interactively cmd)))
 
+;; Same as `icicle-string-match-p' in `icicles-fn.el'.
+(if (fboundp 'string-match-p)
+    (defalias 'lacarte-string-match-p 'string-match-p) ; Emacs 23+
+  (defun lacarte-string-match-p (regexp string &optional start)
+    "Like `string-match', but this saves and restores the match data."
+    (save-match-data (string-match regexp string start))))
+
 (defun lacarte-menu-first-p (s1 s2)
   "Return non-nil if S1 is a menu item and S2 is not."
-  (save-match-data
-    (and (string-match " > " s1) (not (string-match " > " s2)))))    
+  (if (lacarte-string-match-p " > " s1)
+      (or (not (lacarte-string-match-p " > " s2))  (string-lessp s1 s2))
+    (and (not (lacarte-string-match-p " > " s2))  (string-lessp s1 s2))))
 
 ;;;###autoload
 (defun lacarte-execute-menu-command ()
@@ -469,8 +482,7 @@ in different ways, using `C-,'."
   (interactive)
   (let* ((lacarte-menu-items-alist  (lacarte-get-overall-menu-item-alist))
          (completion-ignore-case    t)  ; Not case-sensitive, by default.
-         (menu-item                 (completing-read "Menu command: "
-                                                     lacarte-menu-items-alist
+         (menu-item                 (completing-read "Menu command: " lacarte-menu-items-alist
                                                      nil t nil 'lacarte-history))
          (cmd                       (cdr (assoc menu-item lacarte-menu-items-alist))))
     (unless cmd (error "No such menu command"))
@@ -499,9 +511,11 @@ As a side effect, this modifies `lacarte-get-a-menu-item-alist' and
 then resets it to ()"
   (let ((alist
          (apply #'nconc
-                (lacarte-get-a-menu-item-alist (assq 'menu-bar (current-local-map)))
-                (lacarte-get-a-menu-item-alist (assq 'menu-bar (current-global-map)))
-                (mapcar (lambda (map) (lacarte-get-a-menu-item-alist (assq 'menu-bar map)))
+                (and (current-local-map)
+                     (lacarte-get-a-menu-item-alist (lookup-key (current-local-map) [menu-bar])))
+                (and (current-global-map)
+                     (lacarte-get-a-menu-item-alist (lookup-key (current-global-map) [menu-bar])))
+                (mapcar (lambda (map) (lacarte-get-a-menu-item-alist (lookup-key map [menu-bar])))
                         (current-minor-mode-maps)))))
     (setq lacarte-menu-items-alist  ())
     (if nil;; `lacarte-sort-menu-bar-order-flag' ; Not yet implemented.
