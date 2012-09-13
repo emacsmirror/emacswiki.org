@@ -1,4 +1,4 @@
-== Emacsclient as externat tool ==
+== Emacsclient as external tool ==
 
 Create the file ediff.bat with content:
 
@@ -34,7 +34,7 @@ CALL SET merged=%merged:\=\\%
 START /MIN %client% -c -e "(ediff-merge-files-with-ancestor""%mine%""""%theirs""""%base%""nil""%merged%"")"
 }}}
 
-Then configure Tortoise SVN to use the previous files as external commands; For example, if you saved the files under the directory C:\Users\Dupont\Scripts\ then, in Settings>External Programs>Merge Tool, you can set:
+Then configure Tortoise SVN to use the previous files as external commands. For example, if you saved the files under the directory C:\Users\Dupont\Scripts\ then, in Settings>External Programs>Merge Tool, you can set:
 {{{
 C:\Users\Dupont\Scripts\emerge.bat %mine %theirs %base %merged
 }}}
