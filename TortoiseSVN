@@ -1,3 +1,46 @@
+== Emacsclient as externat tool ==
+
+Create the file ediff.bat with content:
+
+{{{
+SET "client=c:\GNU\emacs-24.2\bin\emacsclient.exe" 
+
+SET "mine=%1"
+CALL SET mine=%mine:\=\\%
+
+SET "base=%2"
+CALL SET base=%base:\=\\%
+
+START /MIN %client% -c -e "(ediff""%mine%""""%base%"")"
+}}}
+
+and the file emerge.bat with content:
+
+{{{
+SET "client=c:\GNU\emacs-24.2\bin\emacsclient.exe" 
+
+SET "mine=%1"
+CALL SET mine=%mine:\=\\%
+
+SET "theirs=%2"
+CALL SET theirs=%theirs:\=\\%
+
+SET "base=%3"
+CALL SET base=%base:\=\\%
+
+SET "merged=%4"
+CALL SET merged=%merged:\=\\%
+
+START /MIN %client% -c -e "(ediff-merge-files-with-ancestor""%mine%""""%theirs""""%base%""nil""%merged%"")"
+}}}
+
+Then configure Tortoise SVN to use the previous files as external commands; For example, if you saved the files under the directory C:\Users\Dupont\Scripts\ then, in Settings>External Programs>Merge Tool, you can set:
+{{{
+C:\Users\Dupont\Scripts\emerge.bat %mine %theirs %base %merged
+}}}
+
+= Library to use Tortoise SVN command line =
+
 Lisp:tortoise-svn.el
 
 ----
