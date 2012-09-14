@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue Sep 11 17:05:03 2012 (-0700)
+;; Last-Updated: Fri Sep 14 14:29:08 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 28990
+;;     Update #: 28998
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -118,6 +118,11 @@
 ;;  (@file :file-name "icicles-doc1.el" :to "Multi-Commands")
 ;;    (@file :file-name "icicles-doc1.el" :to "What Is a Multi-Command?")
 ;;    (@file :file-name "icicles-doc1.el" :to "How Does a Multi-Command Work?")
+;;
+;;  (@file :file-name "icicles-doc2.el" :to "Multi-Completions")
+;;    (@file :file-name "icicles-doc2.el" :to "Icicles Multi-Completion Commands")
+;;    (@file :file-name "icicles-doc2.el" :to "How Multi-Completions Work")
+;;    (@file :file-name "icicles-doc2.el" :to "Multi-Completions vs `completing-read-multiple'")
 ;;
 ;;  (@file :file-name "icicles-doc1.el" :to "More about Multi-Commands")
 ;;    (@file :file-name "icicles-doc1.el" :to "Alternative Actions")
@@ -266,11 +271,6 @@
 ;;    (@> "M-RET")
 ;;    (@> "`icicle-object-action' and `icicle-anything'")
 ;;    (@> "Icicles with Anything")
-;;
-;;  (@> "Multi-Completions")
-;;    (@> "Icicles Multi-Completion Commands")
-;;    (@> "How Multi-Completions Work")
-;;    (@> "Multi-Completions vs `completing-read-multiple'")
 ;;
 ;;  (@> "Dot, Dot, Dot")
 ;;  (@> "Fuzzy Completion")
@@ -3753,322 +3753,6 @@
 ;;  Finally, remember that you can use both `anything' and `any' -
 ;;  choose whichever is most convenient for the current task.
  
-;;(@* "Multi-Completions")
-;;
-;;  Multi-Completions
-;;  -----------------
-;;
-;;  This section is about using completion candidates that are
-;;  composed of more than one part: strings that you can complete
-;;  against separately and simultaneously.
-;;
-;;(@* "Icicles Multi-Completion Commands")
-;;  ** Icicles Multi-Completion Commands **
-;;
-;;  Have you ever used standard Emacs command `apropos-documentation'?
-;;  It searches the doc strings of all Emacs-Lisp symbols for matches
-;;  to an input regexp, and displays the hits.  It can be useful when
-;;  you do not remember the name of a function or variable but you can
-;;  guess at terms that might occur in its doc string.  Typically,
-;;  people resort to it only after first trying apropos commands that
-;;  match against the function or variable name.
-;;
-;;  The idea behind `apropos-documentation' also motivates Icicles
-;;  command `icicle-doc'.  This is a multi-command (see
-;;  (@file :file-name "icicles-doc1.el" :to "Multi-Commands")),
-;;  so you can use `C-RET' and `C-next' to browse the regexp matches,
-;;  displaying the documentation of each match in turn, and you can
-;;  change the regexp to get different matches during the same command
-;;  invocation.
-;;
-;;  Like `apropos-documentation', `icicle-doc' lets you match a regexp
-;;  against the doc strings of symbols such as functions, variables,
-;;  and faces.  You can of course use progressive completion to match
-;;  multiple regexps.  Here, for example, is a query that shows all doc
-;;  strings (functions, variables, faces - a lot! of doc strings)
-;;  that match both `mail' and `mode line', in either order,
-;;  as completion candidates:
-;;
-;;    M-x icicle-doc RET mail S-SPC mode line
-;;
-;;  You cannot do that with vanilla Emacs `apropos-documentation' or
-;;  with any other vanilla Emacs `apropos*' command.
-;;
-;;  Commands `icicle-vardoc', `icicle-fundoc', and `icicle-plist' are
-;;  similar to `icicle-doc' in the kind of functionality they provide.
-;;
-;;  Each of these commands gathers a tremendous amount of information
-;;  to construct an initial set of completion candidates based on all
-;;  existing Emacs symbols (in the standard `obarray').  This is
-;;  time-consuming.  Since the set of symbols that have property lists
-;;  or that name functions, variables, or faces changes little, you
-;;  can optionally bypass this gathering and reuse the last initial
-;;  set of candidates for that command.  You do this by invoking the
-;;  command using a prefix argument (non-negative prefix arg, for
-;;  `icicle-vardoc' and `icicle-plist').
-;;
-;;  Each of these particular commands also uses Icicles
-;;  multi-completion.  A "multi-completion" is a completion candidate
-;;  that has multiple parts.  A multi-completion command lets your
-;;  input match any or all parts individually, at the same time.
-;;
-;;  * Commands `icicle-vardoc' and `icicle-fundoc' let you match both
-;;    the function or variable name and the doc string.
-;;
-;;  * Command `icicle-doc' lets you match any combination of the
-;;    following:
-;;
-;;    - the function, variable, or face name
-;;    - the type: FUNCTION, VARIABLE, or FACE (uppercase)
-;;    - the doc string
-;;
-;;  * Command `icicle-plist' lets you match both a symbol name and its
-;;    property list.  You can use it to find symbols with certain
-;;    property-list keys or values.  By default (for Emacs 22 or
-;;    later), plists are pretty-printed (in `*Help*' and
-;;    `*Completions*'), but if you use a negative prefix argument then
-;;    pretty-printing is skipped, gaining a little time.
-;;
-;;  * Commands `icicle-describe-option-of-type' (bound to `C-h C-o' in
-;;    Icicle mode), `icicle-apropos-options-of-type', and
-;;    `icicle-customize-apropos-options-of-type' each let you match
-;;    both an option name and the option's `defcustom' type
-;;    definition.  There are several ways to match type definitions,
-;;    controlled by the prefix argument.  You can match a type
-;;    directly or taking type inheritance into account.  You can match
-;;    a type as a sexp or using a regexp.  You can match a type
-;;    expression or match the option's current value against a type.
-;;    See (@file :file-name "icicles-doc1.el" :to "Type-Aware Variable-Apropos Multi-Commands").
-;;
-;;  Other Icicles commands that use multi-completion include
-;;  `icicle-locate-file', `icicle-locate-file-other-window',
-;;  `icicle-recent-file', and `icicle-recent-file-other-window'.
-;;  These commands let you match against two-part multi-completion
-;;  candidates that are composed of an absolute file name and the
-;;  file's last modification date.  This means that you can easily
-;;  find those notes you took sometime last week...
-;;
-;;  The way multi-completion commands work is a bit inelegant perhaps,
-;;  and it can take a little getting used to, but it is quite powerful
-;;  and lets you do things with completion that are otherwise
-;;  impossible.
-;;
-;;  In the case of commands that use two-part multi-completions, you
-;;  provide two regexps as input, one to match the name of a symbol
-;;  (e.g. a function or variable) and one to match some associated
-;;  information (doc string, property list, or type definition).
-;;
-;;  However, since completion candidates are not actually multipart,
-;;  you in fact type a single regexp that is the concatenation of the
-;;  two.  You join these two regexps using `icicle-list-join-string'
-;;  (a user option), which, by default, is `^G^J', that is, a
-;;  control-G character followed by a control-J (newline) character.
-;;  As always, you can input control characters using `C-q', so to
-;;  input `^G^J' you can use `C-q C-g C-q C-j'.
-;;
-;;  However, in Icicles, `C-j' (newline) is self-inserting during
-;;  completion, so you do not need to quote it with `C-q' - you can
-;;  use just `C-q C-g C-j'.  Better yet, you can use `C-M-j'
-;;  (`icicle-insert-list-join-string') to insert `^G^J'.
-;;
-;;  This has the added benefit (in Emacs 22 or later) of hiding the
-;;  `^G' - it's there, but you do not see it.  This hiding is only
-;;  cosmetic; you still match the characters `^G' and `^J'.  In the
-;;  same way, Icicles hides the `^G' part of `^G^J' in
-;;  `*Completions*', so the join string appears as a newline
-;;  character.
-;;
-;;  This hiding of `^G' happens only when option
-;;  `icicle-list-join-string' has its (ugly but useful) default value.
-;;  If not seeing the join string confuses you and you would prefer to
-;;  distinguish multi-completion part separators from ordinary newline
-;;  characters, then customize `icicle-list-join-string' - just remove
-;;  the following from the Lisp sexp that defines the default value:
-;;
-;;    (set-text-properties 0 1 '(display "") strg)
-;;
-;;  As an example of using a multi-completion command, you can use the
-;;  following to match a function name that contains `dired' and its
-;;  doc string that contains `file':
-;;
-;;    M-x icicle-fundoc dired^G^Jfile S-TAB
-;;
-;;  That is, you type this:
-;;
-;;    M-x icicle-fundoc dired C-q C-g C-j file S-TAB
-;;
-;;  or this:
-;;
-;;    M-x icicle-fundoc dired C-M-j file S-TAB
-;;
-;;  Well, almost.  The way it actually works is that the completion
-;;  candidates are themselves formed by concatenating symbol names
-;;  with their doc strings, using `icicle-list-join-string'.  Your
-;;  input regexp is matched against those candidates.  This means that
-;;  the input regexp `dired^G^Jfile' would actually match only
-;;  function names that *end* with `dired' and doc strings that
-;;  *begin* with `file'.
-;;
-;;  To match `file' against any part of the doc string, you must
-;;  explicitly link the two component regexps with a regexp that
-;;  matches anything.  If you want to search only the first lines of
-;;  doc strings, you can use `.*' to do that: `dired.*^G^J.*file' will
-;;  match all functions whose names contain `dired' and whose doc
-;;  strings' first lines contain `file'.
-;;
-;;  Why only the first lines?  Because `.' matches any character
-;;  except a newline - it does not look past the first line.  If you
-;;  want to search the entire doc strings (or property lists, for
-;;  `icicle-plist'), then you need to use a connecting regexp that
-;;  matches any character, including a newline.  That means a regexp
-;;  such as `\(.\|\n\)'.  Or you can just use the Icicles multi-line
-;;  dot feature - see (@> "Dot, Dot, Dot").
-;;
-;;  Without a multi-line dot, you would use something like this to
-;;  search whole, multi-line doc strings for `file':
-;;
-;;    M-x icicle-fundoc dired.*^G^J\(.\|\n\)*file S-TAB
-;;
-;;  That is, you would type (without the spaces):
-;;
-;;    M-x icicle-fundoc dired.* C-M-j \ ( . \ | C-j \ ) * file S-TAB
-;;
-;;  With a multi-line dot, you would type just this:
-;;
-;;    M-x icicle-fundoc dired.* C-M-j . * file S-TAB
-;;
-;;  What if you want to match, say, `file' in either the function name
-;;  or the doc string, not necessarily both?  Remember that a
-;;  multi-completion is in fact a single string, with a separator such
-;;  as `^G^J' in the middle somewhere.  Because it is a single string,
-;;  the simple minibuffer input `file' matches the substring `file'
-;;  anywhere in the multi-completion.  So the answer is just this:
-;;
-;;    M-x icicle-fundoc file S-TAB
-;;
-;;  Even this simple command expression combines the effect of Emacs
-;;  commands `apropos-function' with that of `apropos-documentation'.
-;;
-;;(@* "How Multi-Completions Work")
-;;  ** How Multi-Completions Work **
-;;
-;;  These commands that accept a multipart regexp are examples of
-;;  Icicles multi-completion.  Icicles extends standard function
-;;  `completing-read' so that it will accept, as the set of completion
-;;  candidates, an alist argument whose candidates are not only
-;;  individual strings but can also be lists of strings.  Each string
-;;  in the list is one part of a multipart completion candidate, that
-;;  is, a multi-completion.  The strings are joined together pairwise
-;;  using `icicle-list-join-string' by `completing-read'.  Commands
-;;  `icicle-fundoc' and`icicle-vardoc' each use lists of two strings
-;;  (name and doc), but a multi-completion can have any number of
-;;  strings.
-;;
-;;  Why is the default value of `icicle-list-join-string' so odd:
-;;  `^G^J'?  You can use any string you like, but here is the
-;;  rationale behind the default choice:
-;;
-;;  - ^G does not normally occur in simple strings such as doc strings
-;;  - a newline (^J) visually separates the multiple component strings
-;;  - ^G^J is not too difficult to enter: `C-M-j' or `C-q C-g C-j'
-;;
-;;  It is important that the value of `icicle-list-join-string' not be
-;;  something that is, itself, likely to match any of the candidates.
-;;  Otherwise, it would not serve its role as separator.
-;;
-;;  I find that it helps a bit (in Emacs 22 or later) to customize
-;;  face `escape-glyph', which is used for control characters such as
-;;  `^G', in such a way that it stands out a bit, especially because
-;;  control characters can be used in regexps that also use `^' as a
-;;  special character.  I use an orange background with a blue
-;;  foreground for this face.
-;;
-;;(@* "Multi-Completions Let You Match Multiple Things in Parallel")
-;;  ** Multi-Completions Let You Match Multiple Things in Parallel **
-;;
-;;  Consider the command `describe-option-of-type', defined in my
-;;  library `help-fns+.el' (or `help+.el', for Emacs 20).  This lets
-;;  you first pick a `defcustom' type using completion and then pick
-;;  an option of that type to describe.  There are two separate,
-;;  sequential acts of completion.  For each completion act, your
-;;  current input defines a set of matches.  You can see all option
-;;  types that match, say, the regexp `.*string', which means all
-;;  types that contain `string'.  After you choose one of those types,
-;;  you can see all options of that type whose names start with
-;;  `icicle' and then pick one.
-;;
-;;  You can thus tweak the type regexp to filter types, and you can
-;;  tweak the name regexp to filter option names.  And you can of
-;;  course use progressive completion to whittle down either set of
-;;  matches, piecemeal.
-;;
-;;  What you cannot do, however, using `describe-option-of-type' is
-;;  filter both sets at the same time: narrow down the set of type
-;;  matches and name matches simultaneously.  For that, you need
-;;  Icicles multi-completion.  Without it, you must commit 100% to a
-;;  type before you can choose among the options of that type.  With
-;;  it, you can change the type (or the name) part of your input
-;;  regexp on the fly, and see immediately the set of matching names
-;;  (or types) as well.
-;;
-;;(@* "Multi-Completions vs `completing-read-multiple'")
-;;  ** Multi-Completions vs `completing-read-multiple' **
-;;
-;;  Note that there is (only) a superficial similarity between Icicles
-;;  multi-completion and the functionality provided by function
-;;  `completing-read-multiple' of standard Emacs library `crm.el'.
-;;  The latter lets you complete multiple strings in the minibuffer,
-;;  one at a time.  It involves ordinary Emacs prefix completion, and
-;;  it uses the same set of completion candidates for each of the
-;;  strings in the input.
-;;
-;;  By contrast, Icicles multi-completion completes each part of your
-;;  input against a different set of completion candidates.  For
-;;  example, when you use `icicle-vardoc', it completes the
-;;  variable-name part of your input against the names of defined
-;;  variables, and the variable-description part against the doc
-;;  strings of defined variables.  Standard Emacs command
-;;  `completing-read-multiple' lets you complete several different
-;;  variable names at the same minibuffer prompt, but they each
-;;  complete against the same set of variable names.
-;;
-;;  Multi-completion matches a list of regexps in parallel.  See also
-;;  the descriptions of `M-*' and `S-SPC', which match a list of
-;;  regexps in series:
-;;  (@file :file-name "icicles-doc1.el" :to "Progressive Completion").
-;;  You can combine these features, of course.
-;;
-;;(@* "Sorting Candidates by Their Second Part")
-;;  ** Sorting Candidates by Their Second Part **
-;;
-;;  Most multi-completions have two parts.  Typically, the first part
-;;  is the main part, that is, the part that you will most frequently
-;;  complete against.  Many candidate sort orders involve some flavor
-;;  of alphabetic order, and this means alphabetizing first with
-;;  respect to the first multi-completion part.
-;;
-;;  However, it can sometimes be convenient to sort instead by the
-;;  second part first.  That is what the Icicles sort order "by 2nd
-;;  parts alphabetically" is for.  You can use it, for example, with
-;;  command `icicle-locate-file' to sort file-name candidates first by
-;;  date, and then by file-name for the same date.  This gives you an
-;;  easy way to look up files that you modified during a given time
-;;  period.  For example, your input regexp can limit candidates to
-;;  those files last modified sometime in July, 2008, and you can then
-;;  access these chronologically (by cycling or in buffer
-;;  `*Completions*').  And do not forget that you can always reverse
-;;  the current sort order, using `C-N C-,' where N is an integer.
-;;
-;;  See Also:
-;;
-;;  * (@> "Programming Multi-Completions") for information about
-;;    changing the appearance and behavior of Icicles
-;;    multi-completions using Emacs-Lisp code.
-;;
-;;  * (@file :file-name "icicles-doc1.el" :to "Sorting Candidates and Removing Duplicates")
-;;
-;;  * (@file :file-name "icicles-doc1.el" :to "Progressive Completion")
- 
 ;;(@* "Dot, Dot, Dot")
 ;;
 ;;  Dot, Dot, Dot
@@ -5963,7 +5647,8 @@
 ;;
 ;;  * User options `icicle-list-join-string' and
 ;;    `icicle-list-nth-parts-join-string' are described in sections
-;;    (@> "Multi-Completions") and (@> "Programming Multi-Completions").
+;;    (@file :file-name "icicles-doc2.el" :to "Multi-Completions")
+;;    and (@> "Programming Multi-Completions").
 ;;    Option `icicle-list-join-string' is the separator string that
 ;;    joins together the parts of a multi-completion.  The end string
 ;;    is appended to each multi-completion candidate.  Option
@@ -7006,7 +6691,7 @@
 ;;
 ;;    `C-M-j' - `icicle-insert-list-join-string': Insert
 ;;              `icicle-list-join-string'. See also
-;;              (@> "Multi-Completions").
+;;              (@file :file-name "icicles-doc2.el" :to "Multi-Completions")
 ;;
 ;;  You can insert a single Icicles multi-line dot using `C-u .', or
 ;;  by turning on this dot magic generally, using `C-M-.':
@@ -7027,7 +6712,7 @@
 ;;    `SPC' (space)
 ;;
 ;;    `C-j' (newline) - see also `C-o', above, and
-;;                      (@> "Multi-Completions")
+;;                      (@file :file-name "icicles-doc2.el" :to "Multi-Completions")
 ;;
 ;;  The following minibuffer bindings are made to clear minibuffer
 ;;  input, making them handy for editing and removing completions
@@ -7745,8 +7430,8 @@
 ;;
 ;;  Multi-completions are completion candidates that are composed of
 ;;  parts separated by `icicle-list-join-string'.  See
-;;  (@> "Multi-Completions") for information about how users interact
-;;  with multi-completions.
+;;  (@file :file-name "icicles-doc2.el" :to "Multi-Completions") for
+;;  information about how users interact with multi-completions.
 ;;
 ;;  Multi-completions are examples of fancy candidates.
 ;;  See (@> "Programming with Fancy Candidates").
@@ -7940,7 +7625,7 @@
 ;;
 ;;  See Also:
 ;;
-;;  * (@> "Multi-Completions")
+;;  * (@file :file-name "icicles-doc2.el" :to "Multi-Completions")
 ;;  * (@> "Programming with Fancy Candidates")
 ;;  * (@> "Candidates with Text Properties")
  
@@ -9708,7 +9393,7 @@
 ;;  * (@> "Defining Multiple-Choice Menus")
 ;;  * (@> "Global Filters")
 ;;  * (@> "Specifying Match Functions for Commands")
-;;  * (@> "Multi-Completions")
+;;  * (@file :file-name "icicles-doc2.el" :to "Multi-Completions")
  
 ;;(@* "La Petite Histoire")
 ;;
