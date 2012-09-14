@@ -1,6 +1,6 @@
 : [[image:iciclesimage]]
 
-|| *Previous:*  [[Icicles - Object-Action Interaction]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Multi-Completions]] ||
+|| *Previous:*  [[Icicles - Object-Action Interaction]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Fuzzy Completion]] ||
 
 ----
 
@@ -142,7 +142,7 @@ choose whichever is most convenient for the current task.
 ----
 
 
-|| *Previous:*  [[Icicles - Object-Action Interaction]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Multi-Completions]] ||
+|| *Previous:*  [[Icicles - Object-Action Interaction]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Fuzzy Completion]] ||
 
 
 DrewsElispLibraries referenced here: Lisp:icicles.el
