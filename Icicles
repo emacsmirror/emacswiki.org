@@ -120,6 +120,7 @@ The most important links are '''bold''' here.
 
 * '''[[Icicles - Multi-Commands]]''' -- making ''multiple input choices'' in a single command execution; performing actions on candidates while cycling
 * '''[[Icicles - Multi-Completions]]''' -- matching a list of regexps in parallel -- e.g., matching against names and their doc strings
+* [[Icicles - Dot, Dot, Dot]] -- a multi-line `##.##', for matching any character, including newline, in [[regexp]]s
 * '''[[Icicles - More About Multi-Commands]]''' -- more about multi-commands
 * [[Icicles - Tripping]] -- multi-commands for navigating and exploring
 * '''[[Icicles - Key Completion]]''' -- completing [[key sequence]]s, instead of commands
@@ -145,7 +146,6 @@ The most important links are '''bold''' here.
 * '''[[Icicles - Complex Completions]]''' -- ''applying a function'' to complex candidates (e.g. Lisp structures -- more than just strings) that you choose interactively
 * [[Icicles - Object-Action Interaction]] -- choose an object first and then the function to act on it
 * [[Icicles - Anything]] -- object-action interaction on objects of [[Anything]] types
-* [[Icicles - Dot, Dot, Dot]] -- a multi-line `##.##', for matching any character, including newline, in [[regexp]]s
 * [[Icicles - Fuzzy Completion]] -- completion using fuzzy matching
 * [[Icicles - Completion in Other Buffers]] -- non-minibuffer completion of words and other text
 * '''[[Icicles - Customization and General Tips]]''' -- how to ''customize'' '''Icicles''' to your preferences
