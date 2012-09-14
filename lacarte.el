@@ -7,9 +7,9 @@
 ;; Copyright (C) 2005-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Aug 12 17:18:02 2005
 ;; Version: 22.0
-;; Last-Updated: Thu Sep 13 15:40:19 2012 (-0700)
+;; Last-Updated: Fri Sep 14 10:38:01 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 696
+;;     Update #: 721
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/lacarte.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/LaCarte
 ;; Keywords: menu-bar, menu, command, help, abbrev, minibuffer, keys,
@@ -134,6 +134,10 @@
 ;;  is on a menu.  Then, if you want a command that affects a buffer,
 ;;  just type `buf'.  This is especially useful if you use Icicles -
 ;;  see below.
+;;
+;;  You can use a prefix arg with `lacarte-execute-menu-command' to
+;;  have it offer only items from specific keymaps: the local (major
+;;  mode) keymap, the global keymap, or the minor-mode keymaps.
 ;;
 ;;  By default, in Icicle mode, `ESC M-x' is bound to
 ;;  `lacarte-execute-command', and `M-`' is bound to
@@ -260,6 +264,9 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2012/09/14 dadams
+;;     lacarte-execute-menu-command, lacarte-get-overall-menu-item-alist:
+;;       Added prefix arg treatment (arg MAPS), so you can choose keymaps.
 ;; 2012/09/13 dadams
 ;;     Added: lacarte-string-match-p.
 ;;     lacarte-get-overall-menu-item-alist: Use lookup-key, not assq.
@@ -472,15 +479,27 @@ using face `icicle-special-candidate'."
     (and (not (lacarte-string-match-p " > " s2))  (string-lessp s1 s2))))
 
 ;;;###autoload
-(defun lacarte-execute-menu-command ()
+(defun lacarte-execute-menu-command (maps)
   "Execute a menu-bar menu command.
 Type a menu item.  Completion is available.
+
+A prefix argument controls which menus are available:
+
+* None: current major mode, global, and minor-mode keymaps.
+* Positive (including plain `C-u'): current major mode keymap.
+* Zero (e.g., `C-0'): current global keymap.
+* Negative (e.g., `C--'): current minor mode keymaps.
+
 Completion is not case-sensitive.  However, if you use Icicles, then
 you can use `C-A' in the minibuffer to toggle case-sensitivity.
 If you use Icicles, then you can also sort the completion candidates
 in different ways, using `C-,'."
-  (interactive)
-  (let* ((lacarte-menu-items-alist  (lacarte-get-overall-menu-item-alist))
+  (interactive
+   (cond ((not current-prefix-arg)                        '((local global minor)))
+         ((> (prefix-numeric-value current-prefix-arg) 0) '((local)))
+         ((= (prefix-numeric-value current-prefix-arg) 0) '((global)))
+         ((< (prefix-numeric-value current-prefix-arg) 0) '((minor)))))
+  (let* ((lacarte-menu-items-alist  (lacarte-get-overall-menu-item-alist maps))
          (completion-ignore-case    t)  ; Not case-sensitive, by default.
          (menu-item                 (completing-read "Menu command: " lacarte-menu-items-alist
                                                      nil t nil 'lacarte-history))
@@ -504,19 +523,26 @@ in different ways, using `C-,'."
                  last-command-event  menu-item)))
     (call-interactively cmd)))
 
-(defun lacarte-get-overall-menu-item-alist ()
+(defun lacarte-get-overall-menu-item-alist (&optional maps)
   "Alist formed from menu items in current active keymaps.
-See `lacarte-get-a-menu-item-alist' for the structure.
-As a side effect, this modifies `lacarte-get-a-menu-item-alist' and
-then resets it to ()"
+See `lacarte-get-a-menu-item-alist' for the alist structure.
+
+Optional argument MAPS is a list specifying which keymaps to use: it
+can contain the symbols `local', `global', and `minor', mean the
+current local map, current global map, and all current minor maps.
+
+As a side effect, this function modifies
+`lacarte-get-a-menu-item-alist' and then resets it to ()"
+  (unless maps (setq maps  '(local global minor)))
   (let ((alist
          (apply #'nconc
-                (and (current-local-map)
+                (and (memq 'local maps)   (current-local-map)
                      (lacarte-get-a-menu-item-alist (lookup-key (current-local-map) [menu-bar])))
-                (and (current-global-map)
+                (and (memq 'global maps)  (current-global-map)
                      (lacarte-get-a-menu-item-alist (lookup-key (current-global-map) [menu-bar])))
-                (mapcar (lambda (map) (lacarte-get-a-menu-item-alist (lookup-key map [menu-bar])))
-                        (current-minor-mode-maps)))))
+                (and (memq 'minor maps)
+                     (mapcar (lambda (map) (lacarte-get-a-menu-item-alist (lookup-key map [menu-bar])))
+                             (current-minor-mode-maps))))))
     (setq lacarte-menu-items-alist  ())
     (if nil;; `lacarte-sort-menu-bar-order-flag' ; Not yet implemented.
         (setq alist  (sort alist SOME-PREDICATE))
