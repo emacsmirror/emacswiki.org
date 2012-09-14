@@ -59,7 +59,8 @@ Use `lacarte-execute-command' if you don't care whether a command
 is on a menu.  Then, if you want a command that affects a [[buffer]],
 just type `buf'.  This is especially useful if you use '''Icicles''' -- see [[#IciclesEnhancesDining|below]]. By default, in ''Icicle'' mode, `##ESC M-x##' is bound to `lacarte-execute-command', and `##M-`##' is bound to `lacarte-execute-menu-command'.
 
-
+You can use a [[prefix argument]] with `lacarte-execute-menu-command' to
+have it offer only items from specific keymaps: the local ([[major mode]]) keymap, the global keymap, or the [[minor mode|minor-mode]] keymaps.
 
 
 
