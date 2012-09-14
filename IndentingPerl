@@ -153,34 +153,6 @@ I found default string indentation for concatenated strings very irritating
 but solved it by setting cperl-continued-statement-offset to 0. 
 I'm not sure this is the best solution but at least now the result is readable. -- Peter
 
-[new]
-I made a little modification on latest CPerl Mode 6.2. It seems working for me.
-
-Around line 4541:
-
-		       (progn
-			 ;;(cperl-backward-to-start-of-continued-exp containing-sexp) ;; commented out.
-                         ;; added 3 lines.
-                         (goto-char containing-sexp)
-                         (forward-char 1)
-                         (skip-chars-forward " \t\n")
-			 (vector 'continuation (point) char-after is-block delim))
-
-Now I get:
-
-  my $test = "a string"
-    . "just"
-    . "for"
-    . "test";
-  sub routine {
-    my $test = "a string"
-      . "just"
-      . "for"
-      . "test";
-  }
-
--- KukiYomanai
-
 Rather than hacking into the source, I think it's better to just redefine that small function that you commented out to do the right thing; i.e. in .emacs, add:
 
 
@@ -238,15 +210,23 @@ Peter; it looks like the more args you put on a line, the farther it indents; i.
 --SteveSanbeg
 
 Above one by SteveSanbeg works fine and portable except the continued statement inside parentheses goes left from the opening parenthesis, so I made my hack into a function and also added a part to prevent continuation inside parentheses from being indented. This indents much like CC Mode.
+
+Edit: Updated to my latest settings.
   
- (require 'cperl-mode)
- (defun cperl-backward-to-start-of-continued-exp (lim)
-   (goto-char containing-sexp)
-   (let ((sexp-start (following-char)))
-     (forward-char)
-     (skip-chars-forward " \t\n")
-     (if (memq sexp-start (append "([" nil)) ; this hack is for continued statements inside parentheses
-         (backward-char cperl-continued-statement-offset))))
+ (setq
+  after-load-alist
+  (append
+   after-load-alist
+   '((cperl-mode
+      (defun cperl-backward-to-start-of-continued-exp (lim)
+        (goto-char containing-sexp)
+        (let ((sexp-start (following-char)))
+          (forward-char)
+          (skip-chars-forward " \t\n")
+          (if (and (> (current-column) cperl-continued-statement-offset)
+                   (memq sexp-start (append "([" nil)))
+              (backward-char cperl-continued-statement-offset)))))
+     )))
 
 --KukiYomanai
 
