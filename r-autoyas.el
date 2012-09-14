@@ -19,75 +19,13 @@
 ;;
 ;;; Commentary:
 ;; 
-;; * About
-;; r-autoyas is a small ESS complement. It provides automatically created
-;; yasnippets for R function argument lists.
-;; 
-;; * Requirements
-;; The following are needed:
-;; - yasnippet https://github.com/capitaomorte/yasnippet
-;; - R & ESS
-;; - R process must be running.
-;; * Usage
-;; - To expand the snipped type the function name and them press `TAB'.
-;; - To jump from field to feild press `TAB'.  If you did not change the
-;;   field, the parameter will be deleted from this list
-;; - To exit the snipped and delete remaining arguments, press `C-g'
-;; * Options
-;; This is an incomplete list of user definable options.  The complete
-;; list can be retrieved by 
-;; `M-x customize-group r-autoyas'
-;; ** Debugging
-;; Debugging messages can be put on-screen.  This is done by
-;; 
-;; (setq r-autoyas-debug t)
-;; 
-;; ** Sending a ... replacement to R via emacs instead of by a global options statement
-;; Uses Lisp-based dot-replacement defined by
-;; `r-autoyas-r-based-dot-replacement' instead of specifying through
-;; options in R startup.  This is on by default but can be turned off by
-;; 
-;; (setq r-autoyas-use-r-based-dot-replacement nil)
-;; 
-;; ** Specifying the `...' replacement via the R options() statement
-;; Emacs can change the functions `...' replacement through lisp.  The
-;; easiest way to change this is, typing:
-;; 
-;; `M-x customize-variable r-autoyas-r-based-dot-replacement'
-;; ** Using functions within a namespace only
-;; By default, R-autoyas only expands predefined functions in
-;; namespaces/package that are loaded in R.  This ignores any
-;; user-defined functions.  However, R-autoyas may be used to expand
-;; user-defined functions as well.  This is done with the
-;; `r-autoyas-expand-package-functions-only' variable.  To turn on
-;; r-autoyas's expansion of user-defined functions, the following code
-;; may be used:
-;; 
-;; (setq r-autoyas-expand-package-functions-only nil)
-;; 
-;; 
-;; This variable may also be customized.
-;; 
-;; * Limitations
-;; - No nice error handling when no R process is found
-;; - Partial nested support -- not perfected
-;; * Loading r-autoyas in ~/.emacs
-;; You may use marmalade-repo and ELPA to install r-autoyas
-;; (http://marmalade-repo.org/), or put it into your load-path and put
-;; the following in ~/.emacs
-;; 
-;; 
-;; (require 'r-autoyas)
-;; (add hook 'ess-mode-hook 'r-autoyas-ess-activate)
-;; 
-;; 
-;; 
-;; 
-;; * Wish-List/To-Do
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 13-Sep-2012      
+;;    Last-Updated: Mon Jun 25 15:12:20 2012 (-0500) #873 (Matthew L. Fidler)
+;;    Did not catch yas--update-mirrors.  Need to fix this.
 ;; 12-Sep-2012      
 ;;    Last-Updated: Mon Jun 25 15:12:20 2012 (-0500) #873 (Matthew L. Fidler)
 ;;    Have attempted to make r-autoyas compatible with yasnippet 0.8.  This
@@ -1028,7 +966,7 @@ cat(\"Loaded r-autoyas\\n\");
   "Update fields"
   (let ((snippet (first (yas--snippets-at-point))))
     (when snippet
-      (yas-update-mirrors snippet))))
+      (yas--update-mirrors snippet))))
 
 (defun r-autoyas-text-on-moving-away (default-text &optional orig-text)
   "* Changes text when moving away AND original text has not changed"
