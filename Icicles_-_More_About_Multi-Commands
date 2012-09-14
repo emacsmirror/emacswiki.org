@@ -8,7 +8,7 @@
 
 A '''[[multi-command]]''' is any [[command]] that uses input [[completion]] and lets
 you perform actions on any number of individual completion candidates without
-exiting completion.
+exiting completion.  See [[Icicles - Multi-Commands]].
 
 The ''default'' action is invoked on the current candidate by `C-RET'
 (`icicle-candidate-action').  There are three other kinds of
