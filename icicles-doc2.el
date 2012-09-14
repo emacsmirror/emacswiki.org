@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Sep 14 14:29:08 2012 (-0700)
+;; Last-Updated: Fri Sep 14 15:47:39 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 28998
+;;     Update #: 29005
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -119,11 +119,12 @@
 ;;    (@file :file-name "icicles-doc1.el" :to "What Is a Multi-Command?")
 ;;    (@file :file-name "icicles-doc1.el" :to "How Does a Multi-Command Work?")
 ;;
-;;  (@file :file-name "icicles-doc2.el" :to "Multi-Completions")
-;;    (@file :file-name "icicles-doc2.el" :to "Icicles Multi-Completion Commands")
-;;    (@file :file-name "icicles-doc2.el" :to "How Multi-Completions Work")
-;;    (@file :file-name "icicles-doc2.el" :to "Multi-Completions vs `completing-read-multiple'")
+;;  (@file :file-name "icicles-doc1.el" :to "Multi-Completions")
+;;    (@file :file-name "icicles-doc1.el" :to "Icicles Multi-Completion Commands")
+;;    (@file :file-name "icicles-doc1.el" :to "How Multi-Completions Work")
+;;    (@file :file-name "icicles-doc1.el" :to "Multi-Completions vs `completing-read-multiple'")
 ;;
+;;  (@file :file-name "icicles-doc1.el" :to "Dot, Dot, Dot")
 ;;  (@file :file-name "icicles-doc1.el" :to "More about Multi-Commands")
 ;;    (@file :file-name "icicles-doc1.el" :to "Alternative Actions")
 ;;    (@file :file-name "icicles-doc1.el" :to "Deleting Objects")
@@ -272,7 +273,6 @@
 ;;    (@> "`icicle-object-action' and `icicle-anything'")
 ;;    (@> "Icicles with Anything")
 ;;
-;;  (@> "Dot, Dot, Dot")
 ;;  (@> "Fuzzy Completion")
 ;;    (@> "Partial Completion")
 ;;    (@> "Scatter-Match Completion")
@@ -430,8 +430,10 @@
 ;;
 ;;  `\f' is the form-feed, or page-separator, character.  You input
 ;;  `\f', `\t', and `\n' using `C-q l', `C-q TAB', and `C-j',
-;;  respectively.  See (@> "Dot, Dot, Dot") for information about
-;;  multi-line dot (`.'), which matches also newline.
+;;  respectively.  See
+;;  (@file :file-name "icicles-doc1.el" :to "Dot, Dot, Dot")
+;;  for information about multi-line dot (`.'), which matches also
+;;  newline.
 ;;
 ;;  Again, you can use progressive completion (`M-*' or `S-SPC') to
 ;;  match several different regexps within the same page or the same
@@ -3753,112 +3755,6 @@
 ;;  Finally, remember that you can use both `anything' and `any' -
 ;;  choose whichever is most convenient for the current task.
  
-;;(@* "Dot, Dot, Dot")
-;;
-;;  Dot, Dot, Dot
-;;  -------------
-;;
-;;  This section is about dot, that is, `.', and its role as a regexp
-;;  special character in apropos completion.
-;;
-;;  Since the inception of regular-expression matching, `.' has
-;;  matched any character *except* a newline character (aka `^J', aka
-;;  `C-j').  Recent languages typically have an additional mode in
-;;  which `.' can match any character, including a newline.  See, for
-;;  example, http://www.regular-expressions.info/dot.html and this
-;;  language comparison for regexp features:
-;;  http://www.regular-expressions.info/refflavors.html.
-;;
-;;  It is not unusual to manipulate multi-line completion candidates
-;;  in Icicles, in which case it can be handy to let `.' match any
-;;  character, including a newline.  For this and more general
-;;  reasons, I long ago requested such a mode for Emacs, but there was
-;;  little interest in implementing it.  In Emacs, dot never matches a
-;;  newline.  Too bad.
-;;
-;;  The regexp `\(.\|[\n]\)' is good enough, of course: it matches any
-;;  character: any character any except newline, plus newline.  But it
-;;  is a bit unwieldly, especially when used within a larger regexp,
-;;  and especially if used more than once in the same regexp.
-;;  Interactively, you input the `\n' using `C-j', and it appears in
-;;  the minibuffer as a newline character; that is, it creates another
-;;  line of input.
-;;
-;;  For convenience in multi-line matching, I added a *multi-line
-;;  dot*, or dot-matches-newline-too, hack to Icicles.  This feature
-;;  is turned off, by default.  You can toggle it on/off, using
-;;  command `icicle-toggle-dot' (aka `icicle-toggle-.'), which is
-;;  bound to `C-M-.' in the minibuffer during completion.
-;;
-;;  When this is turned on, `.' is highlighted in the minibuffer
-;;  (using face `highlight'), and it matches newlines also.  In fact,
-;;  although it appears as just a highlighted dot, the ugly regexp
-;;  `\(.\|[\n]\)' (the value of constant `icicle-anychar-regexp') is
-;;  really used, under the covers.  Icicles takes care of things so
-;;  that you can edit normally (delete and transpose characters,
-;;  etc.): A multi-line `.' acts just like a normal, single character,
-;;  even though it is really a string of ten characters.
-;;
-;;  If you prefer to see the full regexp, `\(.\|[\n]\)', but
-;;  highlighted, then set option `icicle-dot-show-regexp-flag' to
-;;  non-`nil'.  (In Emacs 20, the newline-matching dot is always shown
-;;  as that full regexp.)  And remember that you can use multi-command
-;;  `icicle-toggle-option' anytime to toggle the option.  If you
-;;  prefer to turn on newline matching by default, then just customize
-;;  option `icicle-dot-string'.
-;;
-;;  This match-anything dot is handy, but sometimes you might want to
-;;  match anything except a newline, perhaps in the same input pattern
-;;  where you also want to match any character (possibly a newline) at
-;;  other positions.  How can you get the plain dot behavior, when
-;;  multi-line dot is turned on?
-;;
-;;  One way is just to use a regexp that matches anything except
-;;  newline: `[^\n]' (which you input using `[ ^ C-j ]').  Another way
-;;  is to use a plain prefix argument: `C-u .'.  (A numeric prefix
-;;  argument N inserts N multi-line dots, each of which matches any
-;;  single character.)
-;;
-;;  `C-u' flips the behavior of `.' when you hit it: If by default `.'
-;;  enters a multi-line dot, then `C-u .' enters a plain dot.  If by
-;;  default `.' enters a plain dot, then `C-u .' enters a multi-line
-;;  dot.  So `C-u' also gives you a way to enter a one-off multi-line
-;;  dot, if you prefer to generally have `.' not match a newline.
-;;  Either way, what you see in the minibuffer is the single character
-;;  `.', highlighted if it is a multi-line dot, unhighlighted if it is
-;;  a plain dot.
-;;
-;;  Multi-line dots are converted to plain dots automatically when you
-;;  use prefix completion.  And if you then move back to apropos
-;;  completion during the same completion operation, you get back any
-;;  multi-line dots you had before, and any plain dots that you
-;;  entered before remain plain.
-;;
-;;  So when is a multi-line dot useful?  Whenever you want to match
-;;  against multi-line candidates.  Typical use cases include
-;;  `icicle-search' and the Icicles doc commands, `icicle-vardoc',
-;;  `icicle-fundoc', and `icicle-doc'.
-;;
-;;  Note that the dot-matching behavior described here applies only to
-;;  matching minibuffer input against completion candidates.  It does
-;;  not mean that whenever you type `.' in the minibuffer it is
-;;  interpreted specially.  For example, when you input (using `RET')
-;;  a regexp as the context pattern for Icicles search, a `.'  has its
-;;  usual meaning in Emacs regexps - it does not match newlines.
-;;
-;;  If you want a regexp that you input (using `RET') to match any
-;;  character including a newline, then you can use `C-u C-=
-;;  icicle-anychar-regexp' to insert the proper string explicitly.
-;;  You can shorten this to just `C-=' if you use command
-;;  `icicle-save-string-to-variable':
-;;
-;;   M-x icicle-save-string-to-variable C-u C-= icicle-anychar-regexp
-;;
-;;  See Also:
-;;
-;;  * (@> "Using Regexps with Icicles Search")
-;;  * (@file :file-name "icicles-doc1.el" :to "Inserting a Regexp from a Variable or Register")
- 
 ;;(@* "Fuzzy Completion")
 ;;
 ;;  Fuzzy Completion
@@ -5647,7 +5543,7 @@
 ;;
 ;;  * User options `icicle-list-join-string' and
 ;;    `icicle-list-nth-parts-join-string' are described in sections
-;;    (@file :file-name "icicles-doc2.el" :to "Multi-Completions")
+;;    (@file :file-name "icicles-doc1.el" :to "Multi-Completions")
 ;;    and (@> "Programming Multi-Completions").
 ;;    Option `icicle-list-join-string' is the separator string that
 ;;    joins together the parts of a multi-completion.  The end string
@@ -6691,7 +6587,7 @@
 ;;
 ;;    `C-M-j' - `icicle-insert-list-join-string': Insert
 ;;              `icicle-list-join-string'. See also
-;;              (@file :file-name "icicles-doc2.el" :to "Multi-Completions")
+;;              (@file :file-name "icicles-doc1.el" :to "Multi-Completions")
 ;;
 ;;  You can insert a single Icicles multi-line dot using `C-u .', or
 ;;  by turning on this dot magic generally, using `C-M-.':
@@ -6712,7 +6608,7 @@
 ;;    `SPC' (space)
 ;;
 ;;    `C-j' (newline) - see also `C-o', above, and
-;;                      (@file :file-name "icicles-doc2.el" :to "Multi-Completions")
+;;                      (@file :file-name "icicles-doc1.el" :to "Multi-Completions")
 ;;
 ;;  The following minibuffer bindings are made to clear minibuffer
 ;;  input, making them handy for editing and removing completions
@@ -7430,7 +7326,7 @@
 ;;
 ;;  Multi-completions are completion candidates that are composed of
 ;;  parts separated by `icicle-list-join-string'.  See
-;;  (@file :file-name "icicles-doc2.el" :to "Multi-Completions") for
+;;  (@file :file-name "icicles-doc1.el" :to "Multi-Completions") for
 ;;  information about how users interact with multi-completions.
 ;;
 ;;  Multi-completions are examples of fancy candidates.
@@ -7625,7 +7521,7 @@
 ;;
 ;;  See Also:
 ;;
-;;  * (@file :file-name "icicles-doc2.el" :to "Multi-Completions")
+;;  * (@file :file-name "icicles-doc1.el" :to "Multi-Completions")
 ;;  * (@> "Programming with Fancy Candidates")
 ;;  * (@> "Candidates with Text Properties")
  
@@ -9393,7 +9289,7 @@
 ;;  * (@> "Defining Multiple-Choice Menus")
 ;;  * (@> "Global Filters")
 ;;  * (@> "Specifying Match Functions for Commands")
-;;  * (@file :file-name "icicles-doc2.el" :to "Multi-Completions")
+;;  * (@file :file-name "icicles-doc1.el" :to "Multi-Completions")
  
 ;;(@* "La Petite Histoire")
 ;;
