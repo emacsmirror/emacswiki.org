@@ -1,7 +1,7 @@
 
 
 == Library Information ==
-/r-autoyas.el/ --- Provides automatically created yasnippets for R function argument lists.
+*r-autoyas.el* --- Provides automatically created yasnippets for R function argument lists.
 
 * <b>Filename </b> --  [[r-autoyas.el]]
 * <b>Description </b> --  r-autoyas is a small ESS complement. It provides automatically created yasnippets for R function argument lists.
@@ -17,7 +17,6 @@
 * <B>URL </B> --  https://github.com/mlf176f2/r-autoyas.el
 * <b>Keywords </b> --  R yasnippet
 Compatibility:
-
 
 == About ==
 r-autoyas is a small ESS complement. It provides automatically created
@@ -87,13 +86,240 @@ the following in ~/.emacs
 == Functions ==
 === Interactive Functions ===
 
+==== r-autoyas-defined-p ====
+<tt>(r-autoyas-defined-p &optional WITH-PAREN)</tt>
+
+Is the current function defined (like plot )
+
+==== r-autoyas-exit-snippet-delete-remaining ====
+<tt>(r-autoyas-exit-snippet-delete-remaining)</tt>
+
+Exit yas snippet and delete the remaining argument list.
+
+==== r-autoyas-expand ====
+<tt>(r-autoyas-expand &optional RM-PAREN)</tt>
+
+Insert argument list for R function before the point as intelligent yas snippets and
+expand the snippets.
+RM-PAREN removes the inserted parenthesis
+
+==== r-autoyas-expand-maybe ====
+<tt>(r-autoyas-expand-maybe &rest IGNORE)</tt>
+
+Might auto-expand snippet.
+
+==== r-autoyas-paren ====
+<tt>(r-autoyas-paren)</tt>
+
+Function to allow Auto-yas to insert parenthesis
+
+==== r-autoyas-wrap ====
+<tt>(r-autoyas-wrap)</tt>
+
+Wrap code
+
 === Internal Functions ===
+
+==== autopair-r-autoyas-paren-action ====
+<tt>(autopair-r-autoyas-paren-action ACTION PAIR POS-BEFORE)</tt>
+
+Autopair R autoyas paren-action
+
+==== r-autoyas-active-field-number ====
+<tt>(r-autoyas-active-field-number &optional ARG)</tt>
+
+Get the active field position
+
+==== r-autoyas-editing-field-num-p ====
+<tt>(r-autoyas-editing-field-num-p &optional ARG)</tt>
+
+Which field is active?
+
+==== r-autoyas-ess-activate ====
+<tt>(r-autoyas-ess-activate)</tt>
+
+R autoyas ESS hook
+
+==== r-autoyas-generate-dotreplace-list ====
+<tt>(r-autoyas-generate-dotreplace-list)</tt>
+
+Generates dot-replace R-code
+
+==== r-autoyas-generte-dotreplace-list-lisp ====
+<tt>(r-autoyas-generte-dotreplace-list-lisp FUNC)</tt>
+
+Generates dot-replacement yasnippet based on lisp options
+
+==== r-autoyas-m ====
+<tt>(r-autoyas-m &rest OBJECTS)</tt>
+
+Message when debugging is on.
+
+==== r-autoyas-namespace ====
+<tt>(r-autoyas-namespace FUNCTION-NAME)</tt>
+
+Returns the namespace for FUNCTION-NAME, or nil if it cannot be determined.
+
+==== r-autoyas-preloaded-namespace-p ====
+<tt>(r-autoyas-preloaded-namespace-p NAMESPACE)</tt>
+
+Determines if NAMESPACE is preloaded in R.  It is based on the variable <tt>r-autoyas-preloaded-packages</tt>
+
+==== r-autoyas-text-on-moving-away ====
+<tt>(r-autoyas-text-on-moving-away DEFAULT-TEXT &optional ORIG-TEXT)</tt>
+
+* Changes text when moving away AND original text has not changed
+
+==== r-autoyas-update ====
+<tt>(r-autoyas-update)</tt>
+
+Update fields
+
+==== rayas-comma ====
+<tt>(rayas-comma FIELD NUM)</tt>
+
+Inserts comma and field number if needed
+
+==== rayas-require-explicit-p ====
+<tt>(rayas-require-explicit-p NUM)</tt>
+
+Should the explicit x= be required?
+
+==== rayas-space ====
+<tt>(rayas-space FIELD-NUMBER)</tt>
+
+Adds a dummy space so that reducing the yasnippet field to zero doesn't cause strange errors.
 == Variables ==
 === Customizable Variables ===
 
+==== r-autoyas-auto-expand-with-paren ====
+* When true will automatically expand with the ( key.
+
+==== r-autoyas-debug ====
+Add debugging comments for<tt>r-autoyas</tt>
+
+==== r-autoyas-echo-inject-commands ====
+* When true use <tt>ess-eval-linewise</tt> to echo the commands to the R process.  Otherwise use <tt>ess-command</tt> to quietly add the lines to the R process.
+
+==== r-autoyas-expand-package-functions-only ====
+Automatically expand only functions defined in a package/library.
+
+==== r-autoyas-lisp-based-dot-replacement ====
+Defines default the ... replacement using lisp.
+
+==== r-autoyas-number-of-commas-before-return ====
+Defines the number of commas before the snippet is inserted as:
+
+plot(x= ,
+y=NULL,
+type='p',
+xlim=NULL,
+ylim=NULL,
+log='',
+main=NULL,
+sub=NULL,
+xlab=NULL,
+ylab=NULL,
+ann=par("ann"),
+axes=TRUE,
+frame.plot= ,
+panel.first=NULL,
+panel.last=NULL,
+asp=NA, ...)
+
+insetad of:
+
+plot(x<tt> , y</tt>NULL, type<tt>'p', xlim</tt>NULL, ylim<tt>NULL, log</tt>'', main<tt>NULL, sub</tt>NULL, xlab<tt>NULL, ylab</tt>NULL, ann<tt>par("ann"), axes</tt>TRUE, frame.plot<tt> , panel.first</tt>NULL, panel.last<tt>NULL, asp</tt>NA, ...)
+
+If this number is zero or below, always insert as a single line.
+
+==== r-autoyas-paren-ignored-functions ====
+List of functions to ignore when creating auto-snippets by inserting a parenthesis
+
+==== r-autoyas-preloaded-packages ====
+List of preloaded packages in R.  All other packages need to be included by a require(package) or library(package) statement.
+
+==== r-autoyas-r-based-dot-replacement ====
+Defines default the ... replacement sent to the options() statement in R. quote() is used to keep the expression instead of evaluating it.
+
+==== r-autoyas-remove-explicit-assignments ====
+* Remove explicit assignments when appropriate.
+
+This option removes explicit assignments after tabbing away.  For example
+
+write.table(x= ,
+file="",
+append=FALSE,
+quote=TRUE,
+sep=" ",
+eol="\n",
+na="NA",
+dec=".",
+row.names=TRUE,
+col.names=TRUE,
+qmethod=c("escape", "double"))
+
+Becomes
+
+write.table(d,
+"file-name.csv",
+append=FALSE,
+quote=TRUE,
+sep=" ",
+eol="\n",
+na="NA",
+dec=".",
+row.names=TRUE,
+col.names=TRUE,
+qmethod=c("escape", "double"));
+
+==== r-autoyas-save-expression-to-memory ====
+Defines if r-autoyas should save the snippet to memory instead of calling the R communcation again.
+
+==== r-autoyas-use-lisp-based-dot-replacement ====
+Uses Lisp-based dot-replacement defined by <tt>r-autoyas-lisp-based-dot-replacement</tt> instead of specifying through options in R startup.
+
+==== r-autoyas-use-r-based-dot-replacement ====
+Uses Lisp-based dot-replacement defined by <tt>r-autoyas-r-based-dot-replacement</tt> instead of specifying through options in R startup.
+
+==== r-autoyas-wrap-on-exit ====
+Defines if R-autoyas attempts to wrap end of lines.
+
 === Internal Variables ===
+
+==== r-autoyas-backward-compatability ====
+Yasnippet backward compatability functions used in r-autoyas.el
+
+Value: ((yas/expand-snippet yas-expand-snippet)
+(yas/active-field-overlay yas--active-field-overlay)
+(yas/wrap-around-region yas-wrap-around-region)
+(yas/moving-away-p yas-moving-away-p)
+(yas/expand yas-expand)
+(yas/modified-p yas-modified-p)
+(yas/moving-away-p yas-moving-away-p)
+(yas/text yas-text)
+(yas/skip-and-clear-or-delete-char yas-skip-and-clear-or-delete-char)
+(yas/snippet-fields yas--snippet-fields)
+(yas/snippets-at-point yas--snippets-at-point)
+(yas/update-mirrors yas--update-mirrors)
+(yas/fallback-behavior yas-fallback-behavior)
+(yas/minor-mode yas-minor-mode)
+(yas/field-probably-deleted-p yas--field-probably-deleted-p)
+(yas/field yas-field)
+(yas/field-text-for-display yas--field-text-for-display)
+(yas/snippet-control-overlay yas--snippet-control-overlay)
+(yas/exit-snippet yas-exit-snippet)
+(yas/check-commit-snippet yas--check-commit-snippet)
+(yas/define-snippets yas--check-commit-snippet)
+(yas/after-exit-snippet-hook yas-after-exit-snippet-hook))
+
+
+
+==== r-autoyas-cache ====
+Cache of complex language statments for R-autoyas
 == History ==
 
+* <b>13-Sep-2012 </b> --   Did not catch yas--update-mirrors. Need to fix this. ()
 * <b>12-Sep-2012 </b> --   Have attempted to make r-autoyas compatible with yasnippet 0.8. This will possibly address github issue #4 ()
 * <b>04-Jun-2012 </b> --   Bug fix for autopair-mode (Matthew L. Fidler)
 * <b>04-Jun-2012 </b> --   Changed syntax table for yas/expand so that write.csv will expand if you have a snippet named csv. (Matthew L. Fidler)
