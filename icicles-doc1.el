@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Sep 14 17:59:21 2012 (-0700)
+;; Last-Updated: Sat Sep 15 09:42:25 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 26754
+;;     Update #: 26755
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -4892,6 +4892,8 @@
 ;;  `icicle-visit-marked-file-of-content' and
 ;;  `icicle-visit-marked-file-of-content-other-window', which let you
 ;;  visit marked files whose names and/or contents match your input.
+;;  They are bound to `C-S-f' and `C-S-o' (aka `C-F' and `C-O'),
+;;  respectively.
 ;;
 ;;  See Also:
 ;;
