@@ -533,6 +533,7 @@ I use ##emacs --daemon## with both, X and tty frames. My goal is: On ttys, no ta
     (set-frame-parameter frame 'default-header-line-format nil)
     (set-frame-parameter frame 'menu-bar-lines 0))))
 
+(add-hook 'after-make-frame-functions 'customize-terminal-frame)
 }}}
 
 ----
