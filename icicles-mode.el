@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Sep  7 16:21:46 2012 (-0700)
+;; Last-Updated: Sat Sep 15 09:48:59 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 9097
+;;     Update #: 9117
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -2325,6 +2325,16 @@ Used on `pre-command-hook'."
     (define-key icicle-dired-multiple-menu-map [icicle-dired-save-marked]
       '(menu-item "Save Names as Completion Candidates" icicle-dired-save-marked
         :help "Save the marked names as a set of completion candidates"))
+    (define-key icicle-dired-multiple-menu-map [separator-dired-multiple-1] '(menu-item "--" nil))
+    (define-key icicle-dired-multiple-menu-map [icicle-visit-marked-file-of-content-other-window]
+      '(menu-item "Open File of Content (Other Window)"
+        icicle-visit-marked-file-of-content-other-window
+        :help "Visit a marked file whose content matches a regexp, in another window"
+        :enable (dired-get-marked-files nil nil (lambda (file) (not (file-directory-p file))))))
+    (define-key icicle-dired-multiple-menu-map [icicle-visit-marked-file-of-content]
+      '(menu-item "Open File of Content" icicle-visit-marked-file-of-content
+        :help "Visit a marked file whose content matches a regexp"
+        :enable (dired-get-marked-files nil nil (lambda (file) (not (file-directory-p file))))))
 
     (when (boundp 'diredp-menu-bar-recursive-marked-menu) ; Defined in `dired+.el'
       (define-key icicle-dired-recursive-marked-menu-map [icicle-search-dired-marked-recursive]
@@ -2519,7 +2529,12 @@ Used on `pre-command-hook'."
     (unless (lookup-key dired-mode-map (icicle-kbd "C-M-}")) ; Dired `C-M-}'
       (define-key dired-mode-map (icicle-kbd "C-M-}") 'icicle-dired-save-marked-to-variable))
     (unless (lookup-key dired-mode-map (icicle-kbd "C-}")) ; Dired `C-}'
-      (define-key dired-mode-map (icicle-kbd "C-}") 'icicle-dired-save-marked-as-project)))
+      (define-key dired-mode-map (icicle-kbd "C-}") 'icicle-dired-save-marked-as-project))
+    (unless (lookup-key dired-mode-map (icicle-kbd "C-S-f")) ; Dired `C-S-f', aka `C-F'
+      (define-key dired-mode-map (icicle-kbd "C-S-f") 'icicle-visit-marked-file-of-content))
+    (unless (lookup-key dired-mode-map (icicle-kbd "C-S-o")) ; Dired `C-S-o', aka `C-O'
+      (define-key dired-mode-map (icicle-kbd "C-S-o")
+        'icicle-visit-marked-file-of-content-other-window)))
 
   ;; More Dired keys, but these require `dired+.el'.
   (when (boundp 'diredp-recursive-map)
@@ -2671,6 +2686,8 @@ is bound in all keymaps accessible from keymap MAP."
     (define-key dired-mode-map (icicle-kbd "C->")      nil)
     (define-key dired-mode-map (icicle-kbd "C-M-}")    nil)
     (define-key dired-mode-map (icicle-kbd "C-}")      nil)
+    (define-key dired-mode-map (icicle-kbd "C-S-f")    nil)
+    (define-key dired-mode-map (icicle-kbd "C-S-o")    nil)
     (define-key dired-mode-map icicle-search-key-prefix  nil))
 
   ;; Unbind keys in Ibuffer mode.
