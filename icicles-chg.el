@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue Sep 11 17:17:02 2012 (-0700)
+;; Last-Updated: Sat Sep 15 09:55:38 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8916
+;;     Update #: 8920
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -86,6 +86,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2012/09/15 dadams
+;;     icicle-visit-marked-file-of-content*: *-remove-if -> use filter as dired-get-marked-files arg.
 ;; 2012/09/11 dadams
 ;;     Renamed:
 ;;       *-buffer(-other-window) to *-buffer-no-search(-other-window)
@@ -4852,6 +4854,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2012/09/15 dadams
+;;     icicle-define-icicle-maps, icicle-(bind|restore)-other-keymap-keys:
+;;       Added icicle-visit-marked-file-of-content(-other-window).
 ;; 2012/09/08 dadams
 ;;     icicle-define-icicle-maps: *-buffer-ignore-space-prefix-flag, not *-ignore-space-prefix-flag.
 ;;     icicle-(redefine|restore)-std-completion-fns: Added icicle(-ORIG)-read-buffer.
