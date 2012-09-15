@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Sep 14 15:47:39 2012 (-0700)
+;; Last-Updated: Fri Sep 14 18:03:53 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 29005
+;;     Update #: 29009
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -2463,6 +2463,12 @@
 ;;  * You can use file-name completion when you use `!'  or `&' to
 ;;    execute a shell command.  This is an optional feature that is
 ;;    not enabled by default.  See also (@> "Icicles Shell-Command Enhancements").
+;;
+;;  * You can use the multi-completion multi-commands
+;;    `icicle-visit-marked-file-of-content' and
+;;    `icicle-visit-marked-file-of-content-other-window' to visit
+;;    marked files whose names and/or whose content matches your
+;;    minibuffer input.  See (@file :file-name "icicles-doc1.el" :to "Multi-Completions").
 ;;
 ;;(@* "Search-and-Replace Marked Files")
 ;;  ** Search-and-Replace Marked Files **
