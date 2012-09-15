@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Sep 14 15:57:51 2012 (-0700)
+;; Last-Updated: Fri Sep 14 17:59:21 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 26738
+;;     Update #: 26754
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -4627,7 +4627,7 @@
 ;;    expression or match the option's current value against a type.
 ;;    See (@> "Type-Aware Variable-Apropos Multi-Commands").
 ;;
-;;  Other Icicles commands that use multi-completion include
+;;  Icicles file-name commands that use multi-completion include
 ;;  `icicle-locate-file', `icicle-locate-file-other-window',
 ;;  `icicle-recent-file', and `icicle-recent-file-other-window'.
 ;;  These commands let you match against two-part multi-completion
@@ -4845,8 +4845,57 @@
 ;;  `*Completions*').  And do not forget that you can always reverse
 ;;  the current sort order, using `C-N C-,' where N is an integer.
 ;;
+;;(@* "`icicle-buffer': Multi-Completions with a Part You Never See")
+;;  ** `icicle-buffer': Multi-Completions with a Part You Never See
+;;
+;;  Now that you understand multi-completions a bit, I can say more
+;;  about commands `icicle-buffer' and `icicle-buffer-other-window',
+;;  which by default are bound to `C-x b' and `C-x 4 b', replacing
+;;  `switch-to-buffer(-other-window)', in Icicle mode.
+;;
+;;  These are multi-commands, which means that you can act on multiple
+;;  buffers in the same command invocation.  And they each provide
+;;  extra key bindings for special buffer actions.  Use `C-h f' to
+;;  learn more.
+;;
+;;  But what is interesting here about these commands is that their
+;;  completion candidates are multi-completions.  The candidates have
+;;  two parts, the first of which is a buffer name.  If you want, you
+;;  can simply complete against the buffer-name part, which gives you
+;;  a multi-command version of `switch-to-buffer' (but with some
+;;  additional features).
+;;
+;;  But you can also - or instead - complete against the second part,
+;;  which is the content of the buffer.  You never see the second part
+;;  in buffer `*Completions*' or the minibuffer, as you don't really
+;;  care about which part of the buffer content matches your input.
+;;
+;;  All you care about is whether the buffer content matches your
+;;  input.  In other words, you use the second part to filter
+;;  candidates to retain only those whose buffer contents match your
+;;  input pattern.  As is typical, you use `C-M-j' to match
+;;  `icicle-list-join-string', which separates the candidate parts.
+;;
+;;  So for example, you can type `f TAB' to match buffers whose names
+;;  begin with `f'.  Or you can type `C-M-j bar TAB' to match buffers
+;;  that contain `bar'.  Or you can type `f C-M-j bar TAB' to match
+;;  buffers whose names begin with `f' and whose contents match `bar'.
+;;  You can of course use a more complex regexp for either part.
+;;
+;;  This can be quite handy.  But as a general rule it is a good idea
+;;  to first narrow down the set of candidates by matching buffer
+;;  names, before you set off to search buffer contents.  Otherwise,
+;;  if you have many buffers or large buffers with no content matches
+;;  then you will waste time searching unnecessarily.
+;;
+;;  In Dired mode there are related multi-completion multi-commands,
+;;  `icicle-visit-marked-file-of-content' and
+;;  `icicle-visit-marked-file-of-content-other-window', which let you
+;;  visit marked files whose names and/or contents match your input.
+;;
 ;;  See Also:
 ;;
+;;  * (@> "Multi-Commands")
 ;;  * (@> "Programming Multi-Completions") for information about
 ;;    changing the appearance and behavior of Icicles
 ;;    multi-completions using Emacs-Lisp code.
