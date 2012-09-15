@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Sep 11 16:33:11 2012 (-0700)
+;; Last-Updated: Sat Sep 15 09:23:58 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 24617
+;;     Update #: 24619
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -6084,8 +6084,9 @@ You must be in Dired to use this command." ; Doc string
    ((icicle-buffer-complete-fn          'icicle-buffer-multi-complete)
     ;; `icicle-bufflist' is free here.
     (icicle-bufflist                    (save-excursion
-                                          (let* ((files  (icicle-remove-if #'file-directory-p
-                                                                           (dired-get-marked-files)))
+                                          (let* ((files  (dired-get-marked-files
+                                                          nil nil
+                                                          (lambda (file) (not (file-directory-p file)))))
                                                  (bufs   ()))
                                             (dolist (file  files) (push (find-file-noselect file) bufs))
                                             bufs)))))
@@ -6123,8 +6124,9 @@ different window.  You must be in Dired to use this command." ; Doc string
    ((icicle-buffer-complete-fn          'icicle-buffer-multi-complete)
     ;; `icicle-bufflist' is free here.
     (icicle-bufflist                    (save-excursion
-                                          (let* ((files  (icicle-remove-if #'file-directory-p
-                                                                           (dired-get-marked-files)))
+                                          (let* ((files  (dired-get-marked-files
+                                                          nil nil
+                                                          (lambda (file) (not (file-directory-p file)))))
                                                  (bufs   ()))
                                             (dolist (file  files) (push (find-file-noselect file) bufs))
                                             bufs)))))
