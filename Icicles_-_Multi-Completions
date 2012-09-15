@@ -322,6 +322,7 @@ forget that you can always reverse the current sort order, using
 
 [:icicle-buffer]
 [:icicle-visit-marked-file-of-content]
+[:icicle-visit-marked-file-of-content-other-window]
 [:InvisibleMulti-CompletionParts]
 == `icicle-buffer': Multi-Completions with a Part You Never See ==
 
@@ -369,7 +370,7 @@ In [[Dired]] mode there are related multi-completion multi-commands,
 '''`icicle-visit-marked-file-of-content'''' and
 '''`icicle-visit-marked-file-of-content-other-window'''', which let you
 visit marked files whose names and/or contents match your input.
-
+They are bound to '''`C-S-f'''' and '''`C-S-o'''' (aka '''`C-F'''' and '''`C-O''''), respectively.
 
 
 
