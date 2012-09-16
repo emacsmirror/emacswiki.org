@@ -1,15 +1,14 @@
 : <i>Indenting Perl is hard. Let's go shopping!</i> -- EdwardOConnor
 
-Most [PerlLanguage Perl] indenting solutions revolve around customizing the settings of a particular mode.  However, in some cases you need to normalize indententation of code in a team of heterogenous editor users.  In other words I use perltidy at my work to indent perl code, and here is the elisp code I wrote to do it. PerlTidyElisp 
-
---[[wjt]]
-
-Using a "better" mode will also make indentation easier--
-CPerlMode instead of plain PerlMode.
+Using a "better" mode will make indentation easier -- CPerlMode instead of plain PerlMode.
 
 You can force all attempts to invoke perl-mode to invoke cperl-mode instead via the following:
 
    (fset 'perl-mode 'cperl-mode)
+
+== Using perltidy
+
+Most [PerlLanguage Perl] indenting solutions revolve around customizing the settings of a particular mode.  However, in some cases you need to normalize indententation of code in a team of heterogenous editor users.  In other words I use perltidy at my work to indent perl code, and here is the elisp code I wrote to do it: PerlTidyElisp. -- [[wjt]]
 
 == Basic indentation ==
 
