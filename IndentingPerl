@@ -168,10 +168,12 @@ Rather than hacking into the source, I think it's better to just redefine that s
 
 -- SteveSanbeg
 
+[new]
 The above bit from SteveSanbeg works great except that it screws up indents on continuing  -- pushing them far over to the right. Does anybody have a fix?
 
 --JohnAnderson
 
+[new]
 Does anybody have an idea about how to influence the indentation of subs as arguments?
 I often run into situations like this:
 
@@ -186,6 +188,7 @@ impossible to limit the line length to 80 chars.
 -- PeterD
 
 
+[new]
 John; yes, it looks like just commenting a few parts out doesn't work.  I've looked at it a bit more, and wrote a simple version of that function from scratch, which so far seems to work pretty well:
 
  ;;load cperl, then work around indent issue
@@ -208,6 +211,7 @@ Peter; it looks like the more args you put on a line, the farther it indents; i.
 
 --SteveSanbeg
 
+[new]
 Above one by SteveSanbeg works fine and portable except the continued statement inside parentheses goes left from the opening parenthesis, so I made my hack into a function and also added a part to prevent continuation inside parentheses from being indented. This indents much like CC Mode.
 
 Edit: Updated to my latest settings.
@@ -229,6 +233,7 @@ Edit: Updated to my latest settings.
 
 --KukiYomanai
 
+[new]
 Is there customization to have auto-indent like this:
 
     $something->create('sphere', sub {
