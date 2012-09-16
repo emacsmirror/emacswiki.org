@@ -65,6 +65,8 @@ command:
 
 As of september 2012, the CVS ecb version does not work with the bzr Emacs version: <em>ECB 2.40 - Error: ECB can only be used with cedet [1.0pre6, 1.0.9]! Please install it and restart Emacs!</em>. The current CEDET is 1.1
 
+There is patched version of ECB that works with fresh Emacs & CEDET.  See http://alexott.blogspot.com/2012/06/ecb-fresh-emacscedet.html for more details on installation
+
 ----
 CategoryModes
 CategoryProgrammerUtils
