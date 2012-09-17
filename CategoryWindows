@@ -6,6 +6,9 @@ Click on the heading to find all pages related to window management in Emacs.
 * WindowConfiguration -- what a window configuration is
 * ModeLine, ModeLinePosition -- the mode-line of a window
 
+
+
+[:Navigation]
 == Windows Navigation (Selection) ==
 
 Move among windows -- alternatives to `C-x o' (`other-window').
