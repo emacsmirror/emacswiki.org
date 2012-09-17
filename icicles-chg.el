@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Sep 15 09:55:38 2012 (-0700)
+;; Last-Updated: Mon Sep 17 11:43:19 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8920
+;;     Update #: 8931
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1442,6 +1442,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2012/09/17 dadams
+;;     icicle-insert-candidates:
+;;       Add an extra newline after multi-line candidates only, not after all cands if ANY-MULTILINE-P.
 ;; 2012/09/08 dadams
 ;;     Added: icicle-read-buffer, icicle-ORIG-read-buffer.
 ;;     icicle-unsorted-(prefix|apropos)-candidates:
@@ -3356,6 +3359,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2012/09/17 dadams
+;;     icicle-(next|previous)-line:
+;;       Move to (next|previous) line when CURR-COL is 1 (fixes bug for multi-line candidates).
 ;; 2012/09/08 dadams
 ;;     icicle-dispatch-M-_: Call icicle-toggle-ignored-space-prefix normally, not interactively.
 ;;     icicle-help-string-completion: *-buffer-ignore-space-prefix-flag, not *-ignore-space-prefix*.
