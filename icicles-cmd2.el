@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Fri Sep  7 16:02:22 2012 (-0700)
+;; Last-Updated: Mon Sep 17 14:21:49 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5808
+;;     Update #: 5809
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2133,8 +2133,8 @@ With a prefix argument:
    node and the rest of the book following it.  In this case, the
    first candidate is `..', which means go up.
 
- * A negative numeric prefix arg (e.g. `C-1') means show the target
-   node in a new Info buffer (not available prior to Emacs 21).
+ * A non-negative numeric prefix arg (e.g. `C-1') means show the
+   target node in a new Info buffer (not available prior to Emacs 21).
    (This applies only to the final completion choice, not to
    intermediate candidate actions using, e.g., `C-RET'.)
 
