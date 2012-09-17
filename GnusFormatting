@@ -185,7 +185,7 @@ and so on:
     (defvar gnus-user-format-function-g-prev "" "")
     (defun empty-common-prefix (left right)
       "Given `left' '(\"foo\" \"bar\" \"fie\") and `right' '(\"foo\"
-    \"bar\" \"fum\"), return '(\" \" \" \" \"fum\")."
+    \"bar\" \"fum\"), return '(\"   \" \"   \" \"fum\")."
       (if (and (cdr right)			; always keep the last part of right
     	   (equal (car left) (car right)))
           (cons (make-string (length (car left)) ? )
