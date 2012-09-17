@@ -121,5 +121,11 @@ Finally, for TODO and FIXME entries (point 6) I've coded simple org-mode help fu
 
 Some days, while using emacs, I feel like a silly young boy listening the incredible stories of elder people... everything is there you only have to find...
 
+[new]
+
+You can get number 2 with auto complete mode: http://www.emacswiki.org/emacs/AutoComplete , http://cx4a.org/software/auto-complete/
+
+For tab expansion a combination of abbrev-mode and skeleton-mode does almost what is shown in the Scribes video. I'm not sure if it can move between multiple input points, but then I haven't tried.
+
 ----
 CategoryWishList
