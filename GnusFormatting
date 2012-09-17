@@ -167,5 +167,44 @@ This code uses a prettified group name format based on a server name to "pretty 
       ;; construct new group format line with a small envelope taking the place of any INBOX
       (concat (format "%-8s" (cdr (assoc server-key rgr/server-name-maps))) " -- " (replace-regexp-in-string "INBOX" "\x2709" (match-string 3 gnus-tmp-group))))))
 
+=== Replacing common prefixes of group names with spaces ===
+Here's a user-format-function that prints the group name, but if the first part of it is the same as the above group name, it'll replace the common prefix with spaces. So instead of
+
+    *        0: nntp+news.gmane.org:gmane.emacs.gnus.user
+    *        0: nntp+news.gmane.org:gmane.emacs.bbdb.user
+    *        0: INBOX
+
+you get
+
+    *        0: nntp+news.gmane.org:gmane.emacs.gnus.user
+    *        0:          .     .         .     .bbdb.user
+    *        0: INBOX
+
+and so on:
+
+    (defvar gnus-user-format-function-g-prev "" "")
+    (defun empty-common-prefix (left right)
+      "Given `left' '(\"foo\" \"bar\" \"fie\") and `right' '(\"foo\"
+    \"bar\" \"fum\"), return '(\" \" \" \" \"fum\")."
+      (if (and (cdr right)			; always keep the last part of right
+    	   (equal (car left) (car right)))
+          (cons (make-string (length (car left)) ? )
+    	    (empty-common-prefix (cdr left) (cdr right)))
+        right))
+    (defun gnus-user-format-function-g (arg)
+      "The full group name, but if it starts with a previously seen
+    prefix, empty that prefix."
+      (if (equal gnus-user-format-function-g-prev gnus-tmp-group) ; line-format is updated on exiting the summary, making prev equal this
+          gnus-tmp-group
+        (let* ((prev (split-string-and-unquote gnus-user-format-function-g-prev "\\."))
+    	   (this (split-string-and-unquote gnus-tmp-group "\\.")))
+          (setq gnus-user-format-function-g-prev gnus-tmp-group)
+          (combine-and-quote-strings
+           (empty-common-prefix prev this)
+           "."))))
+    (setq gnus-group-line-format "%M%S%p%P%5y:%B%(%ug%)\n")
+
+
+
 ----
 CategoryGnus
