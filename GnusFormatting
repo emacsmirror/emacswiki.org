@@ -172,12 +172,14 @@ Here's a user-format-function that prints the group name, but if the first part 
 
     *        0: nntp+news.gmane.org:gmane.emacs.gnus.user
     *        0: nntp+news.gmane.org:gmane.emacs.bbdb.user
+    *        0: nntp+news.gmane.org:gmane.linux.hardware.thinkpad
     *        0: INBOX
 
 you get
 
     *        0: nntp+news.gmane.org:gmane.emacs.gnus.user
     *        0:          .     .         .     .bbdb.user
+    *        0:          .     .         .linux.hardware.thinkpad
     *        0: INBOX
 
 and so on:
