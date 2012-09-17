@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Sep 17 11:26:36 2012 (-0700)
+;; Last-Updated: Sat Sep  8 08:08:00 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 18453
+;;     Update #: 18451
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -4336,10 +4336,9 @@ You can use this command only from buffer `*Completions*' (`\\<completion-list-m
       (save-excursion
         (beginning-of-line)
         (while (re-search-forward "[^ ] +[^ ]" eol t) (setq next-line-cols  (1+ next-line-cols)))))
-    (icicle-move-to-next-completion
-     (cond ((eq 1 curr-col)              -1)
-           ((> curr-col next-line-cols)  (1- next-line-cols))
-           (t                            (1- curr-col))))))
+    (if (> curr-col next-line-cols)
+        (icicle-move-to-next-completion (1- next-line-cols))
+      (icicle-move-to-next-completion (1- curr-col)))))
 
 ;;;###autoload (autoload 'icicle-next-line "icicles")
 (defun icicle-next-line ()              ; Bound to `down' in `*Completions*'.
@@ -4362,10 +4361,9 @@ You can use this command only from buffer `*Completions*' (`\\<completion-list-m
       (save-excursion
         (beginning-of-line)
         (while (re-search-forward "[^ ] +[^ ]" eol t) (setq next-line-cols  (1+ next-line-cols)))))
-    (icicle-move-to-next-completion
-     (cond ((eq 1 curr-col)              1)
-           ((> curr-col next-line-cols)  (1- next-line-cols))
-           (t                            (1- curr-col))))))
+    (if (> curr-col next-line-cols)
+        (icicle-move-to-next-completion (1- next-line-cols))
+      (icicle-move-to-next-completion (1- curr-col)))))
 
 ;; Same as `end-of-line+' in `misc-cmds.el'.
 ;;
