@@ -1,4 +1,4 @@
-<code>htmlize.el</code> by HrvojeNiksic is a package for converting Emacs fontification (colours, italics, etc) into HTML.  Get it from,
+<code>htmlize.el</code> by HrvojeNiksic is a package for exporting the contents of an Emacs buffer to HTML while respecting display properties such as colors, fonts, underlining, invisibility, etc.  Its typical usage is to export fontified (syntax-highlighted) source code to HTML, but it can be used for any Emacs buffer, such as Gnus or <code>org-mode</code> buffers. Get it from,
 
 * The author at http://fly.srk.fer.hr/~hniksic/emacs/htmlize.el.cgi
 * On [[Debian]] in DebianPackage:emacs-goodies-el
