@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Sep  8 14:14:07 2012 (-0700)
+;; Last-Updated: Mon Sep 17 11:30:12 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 13340
+;;     Update #: 13341
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -3456,7 +3456,7 @@ The optional second arg is ignored."
             (setq column-nb  (mod (1+ column-nb) columns))
           (if (> column-nb 0) (forward-line) (insert "\n")) ; Vertical layout.
           (setq row  (1+ row)))
-        (when any-multiline-p  (insert (if (eq 'vertical icicle-completions-format) "\n" "\n\n"))))
+        (when (funcall multilinep cand) (insert (if (eq 'vertical icicle-completions-format) "\n" "\n\n"))))
       (when (eq icicle-completions-format 'vertical) ; Remove extra newline we inserted at eob.
         (save-excursion (goto-char (point-max)) (when (bolp) (delete-backward-char 1)))))))
 
