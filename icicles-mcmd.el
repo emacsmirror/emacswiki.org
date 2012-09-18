@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Sep 17 11:26:36 2012 (-0700)
+;; Last-Updated: Mon Sep 17 22:08:24 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 18453
+;;     Update #: 18496
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -2904,8 +2904,11 @@ You need library `fit-frame.el' for the frame-fitting part."
 ;;;###autoload (autoload 'icicle-next-candidate-per-mode "icicles")
 (defun icicle-next-candidate-per-mode (&optional nth)
   "Replace input by NTH next completion candidate.
-Default value of NTH is 1, meaning use the next candidate.
+The default value of NTH is 1, meaning use the next candidate.
 Negative NTH means use a previous, not subsequent, candidate.
+
+Interactively, NTH is  the numeric prefix argument.
+A plain prefix arg (`C-u') means use the first candidate.
 
 Uses the next prefix or apropos completion command, depending on
 `icicle-current-completion-mode'.  If that is nil and
@@ -2914,7 +2917,10 @@ element instead.
 
 You can use this command only from the minibuffer (`\\<minibuffer-local-completion-map>\
 \\[icicle-next-candidate-per-mode]')."
-  (interactive)
+  (interactive "p")
+  (when (and current-prefix-arg  (consp current-prefix-arg))
+    (setq icicle-candidate-nb  0
+          nth                  0))
   (unless nth (setq nth  1))
   (when (interactive-p) (icicle-barf-if-outside-minibuffer))
   (case icicle-current-completion-mode
@@ -2934,8 +2940,11 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
 ;;;###autoload (autoload 'icicle-previous-candidate-per-mode "icicles")
 (defun icicle-previous-candidate-per-mode (&optional nth)
   "Replace input by NTH previous completion candidate.
-Default value of NTH is 1, meaning use the previous candidate.
+The default value of NTH is 1, meaning use the previous candidate.
 Negative NTH means use a subsequent, not previous, candidate.
+
+Interactively, NTH is  the numeric prefix argument.
+A plain prefix arg (`C-u') means use the first candidate.
 
 Uses the previous prefix or apropos completion command, depending on
 `icicle-current-completion-mode'. If that is nil and
@@ -2944,7 +2953,7 @@ element instead.
 
 You can use this command only from the minibuffer (`\\<minibuffer-local-completion-map>\
 \\[icicle-previous-candidate-per-mode]')."
-  (interactive)
+  (interactive "p")
   (when (interactive-p) (icicle-barf-if-outside-minibuffer))
   (icicle-next-candidate-per-mode (- (or nth  1))))
 
@@ -2959,12 +2968,14 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
 Default value of NTH is 1, meaning use the previous prefix completion.
 Negative NTH means use a subsequent, not previous, prefix completion.
 
+Interactively, NTH is  the numeric prefix argument.
+A plain prefix arg (`C-u') means use the first candidate.
+
 You can use this command only from the minibuffer (`\\<minibuffer-local-completion-map>\
 \\[icicle-previous-prefix-candidate]')."
-  (interactive)
+  (interactive "p")
   (when (interactive-p) (icicle-barf-if-outside-minibuffer))
-  (setq nth  (or nth  1))
-  (icicle-next-prefix-candidate (- nth)))
+  (icicle-next-prefix-candidate (- (or nth  1))))
 
 
 ;; Bound in minibuffer to keys in `icicle-next-cycle-previous-keys' (`end').
@@ -2974,15 +2985,22 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
 ;;;###autoload (autoload 'icicle-next-prefix-candidate "icicles")
 (defun icicle-next-prefix-candidate (&optional nth)
   "Replace input by NTH next prefix completion for an input.
-Default value of NTH is 1, meaning use the next prefix completion.
+The default value of NTH is 1, meaning use the next prefix completion.
 Negative NTH means use a previous, not subsequent, prefix completion.
+
+Interactively, NTH is  the numeric prefix argument.
+A plain prefix arg (`C-u') means use the first candidate.
 
 You can use this command only from the minibuffer (`\\<minibuffer-local-completion-map>\
 \\[icicle-next-prefix-candidate]')."
-  (interactive)
+  (interactive "p")
   (when (interactive-p) (icicle-barf-if-outside-minibuffer))
   (setq icicle-current-completion-mode         'prefix
         icicle-next-apropos-complete-cycles-p  nil)
+  (when (and current-prefix-arg  (consp current-prefix-arg))
+    (setq icicle-candidate-nb  0
+          nth                  0))
+  (unless nth (setq nth  1))
   (icicle-next-candidate nth (if (icicle-file-name-input-p)
                                  'icicle-file-name-prefix-candidates
                                'icicle-prefix-candidates)))
@@ -2995,15 +3013,17 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
 ;;;###autoload (autoload 'icicle-previous-apropos-candidate "icicles")
 (defun icicle-previous-apropos-candidate (&optional nth)
   "Replace input by NTH previous apropos completion for an input.
-Default value of NTH is 1, meaning use the previous apropos completion.
+Default value of NTH is 1, meaning use previous apropos completion.
 Negative NTH means use a subsequent, not previous, apropos completion.
+
+Interactively, NTH is  the numeric prefix argument.
+A plain prefix arg (`C-u') means use the first candidate.
 
 You can use this command only from the minibuffer (`\\<minibuffer-local-completion-map>\
 \\[icicle-previous-apropos-candidate]')."
-  (interactive)
+  (interactive "p")
   (when (interactive-p) (icicle-barf-if-outside-minibuffer))
-  (setq nth  (or nth  1))
-  (icicle-next-apropos-candidate (- nth)))
+  (icicle-next-apropos-candidate (- (or nth  1))))
 
 
 ;; Bound in minibuffer to keys in `icicle-apropos-cycle-next-keys' (`next').
@@ -3016,12 +3036,19 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
 Default value of NTH is 1, meaning use the next apropos completion.
 Negative NTH means use a previous, not subsequent, apropos completion.
 
+Interactively, NTH is  the numeric prefix argument.
+A plain prefix arg (`C-u') means use the first candidate.
+
 You can use this command only from the minibuffer (`\\<minibuffer-local-completion-map>\
 \\[icicle-next-apropos-candidate]')."
-  (interactive)
+  (interactive "p")
   (when (interactive-p) (icicle-barf-if-outside-minibuffer))
   (setq icicle-current-completion-mode        'apropos
         icicle-next-prefix-complete-cycles-p  nil)
+  (when (and current-prefix-arg  (consp current-prefix-arg))
+    (setq icicle-candidate-nb  0
+          nth                  0))
+  (unless nth (setq nth  1))
   (icicle-next-candidate nth (if (icicle-file-name-input-p)
                                  'icicle-file-name-apropos-candidates
                                'icicle-apropos-candidates)
@@ -3037,11 +3064,12 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
   "`icicle-previous-candidate-per-mode' and `icicle-candidate-action'.
 Option `icicle-act-before-cycle-flag' determines which occurs first.
 
-Optional argument NTH is as for `icicle-previous-candidate-per-mode'.
+Optional argument NTH (the numeric prefix argument) is as for
+`icicle-previous-candidate-per-mode'.
 
 You can use this command only from the minibuffer (`\\<minibuffer-local-completion-map>\
 \\[icicle-previous-candidate-per-mode-action]')."
-  (interactive)
+  (interactive "p")
   (when (interactive-p) (icicle-barf-if-outside-minibuffer))
   (icicle-successive-action #'icicle-previous-candidate-per-mode #'icicle-candidate-action nth))
 
@@ -3052,11 +3080,12 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
   "`icicle-previous-candidate-per-mode' and `icicle-candidate-alt-action'.
 Option `icicle-act-before-cycle-flag' determines which occurs first.
 
-Optional argument NTH is as for `icicle-previous-candidate-per-mode'.
+Optional argument NTH (the numeric prefix argument) is as for
+`icicle-previous-candidate-per-mode'.
 
 You can use this command only from the minibuffer (`\\<minibuffer-local-completion-map>\
 \\[icicle-previous-candidate-per-mode-alt-action]')."
-  (interactive)
+  (interactive "p")
   (when (interactive-p) (icicle-barf-if-outside-minibuffer))
   (icicle-successive-action #'icicle-previous-candidate-per-mode #'icicle-candidate-alt-action nth))
 
@@ -3071,11 +3100,12 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
   "`icicle-next-candidate-per-mode' and `icicle-candidate-action'.
 Option `icicle-act-before-cycle-flag' determines which occurs first.
 
-Optional argument NTH is as for `icicle-next-candidate-per-mode'.
+Optional argument NTH (the numeric prefix argument) is as for
+`icicle-next-candidate-per-mode'.
 
 You can use this command only from the minibuffer (`\\<minibuffer-local-completion-map>\
 \\[icicle-next-candidate-per-mode-action]')."
-  (interactive)
+  (interactive "p")
   (when (interactive-p) (icicle-barf-if-outside-minibuffer))
   (icicle-successive-action #'icicle-next-candidate-per-mode #'icicle-candidate-action nth))
 
@@ -3086,11 +3116,12 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
   "`icicle-next-candidate-per-mode' and `icicle-candidate-alt-action'.
 Option `icicle-act-before-cycle-flag' determines which occurs first.
 
-Optional argument NTH is as for `icicle-next-candidate-per-mode'.
+Optional argument NTH (the numeric prefix argument) is as for
+`icicle-next-candidate-per-mode'.
 
 You can use this command only from the minibuffer (`\\<minibuffer-local-completion-map>\
 \\[icicle-next-candidate-per-mode-alt-action]')."
-  (interactive)
+  (interactive "p")
   (when (interactive-p) (icicle-barf-if-outside-minibuffer))
   (icicle-successive-action #'icicle-next-candidate-per-mode #'icicle-candidate-alt-action nth))
 
@@ -3101,11 +3132,12 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
   "`icicle-previous-candidate-per-mode' and `icicle-help-on-candidate'.
 Option `icicle-act-before-cycle-flag' determines which occurs first.
 
-Optional argument NTH is as for `icicle-previous-candidate-per-mode'.
+Optional argument NTH (the numeric prefix argument) is as for
+`icicle-previous-candidate-per-mode'.
 
 You can use this command only from the minibuffer (`\\<minibuffer-local-completion-map>\
 \\[icicle-previous-candidate-per-mode-help]')."
-  (interactive)
+  (interactive "p")
   (when (interactive-p) (icicle-barf-if-outside-minibuffer))
   (icicle-successive-action #'icicle-previous-candidate-per-mode #'icicle-help-on-candidate nth))
 
@@ -3116,11 +3148,12 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
   "`icicle-next-candidate-per-mode' and `icicle-help-on-candidate'.
 Option `icicle-act-before-cycle-flag' determines which occurs first.
 
-Optional argument NTH is as for `icicle-next-candidate-per-mode'.
+Optional argument NTH (the numeric prefix argument) is as for
+`icicle-next-candidate-per-mode'.
 
 You can use this command only from the minibuffer (`\\<minibuffer-local-completion-map>\
 \\[icicle-next-candidate-per-mode-help]')."
-  (interactive)
+  (interactive "p")
   (when (interactive-p) (icicle-barf-if-outside-minibuffer))
   (icicle-successive-action #'icicle-next-candidate-per-mode #'icicle-help-on-candidate nth))
 
@@ -3135,11 +3168,12 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
   "`icicle-previous-prefix-candidate' and `icicle-candidate-action'.
 Option `icicle-act-before-cycle-flag' determines which occurs first.
 
-Optional argument NTH is as for `icicle-previous-prefix-candidate'.
+Optional argument NTH (the numeric prefix argument) is as for
+`icicle-previous-prefix-candidate'.
 
 You can use this command only from the minibuffer (`\\<minibuffer-local-completion-map>\
 \\[icicle-previous-prefix-candidate-action]')."
-  (interactive)
+  (interactive "p")
   (when (interactive-p) (icicle-barf-if-outside-minibuffer))
   (icicle-successive-action #'icicle-previous-prefix-candidate #'icicle-candidate-action nth))
 
@@ -3154,11 +3188,12 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
   "`icicle-next-prefix-candidate' and `icicle-candidate-action'.
 Option `icicle-act-before-cycle-flag' determines which occurs first.
 
-Optional argument NTH is as for `icicle-next-prefix-candidate'.
+Optional argument NTH (the numeric prefix argument) is as for
+`icicle-next-prefix-candidate'.
 
 You can use this command only from the minibuffer (`\\<minibuffer-local-completion-map>\
 \\[icicle-next-prefix-candidate-action]')."
-  (interactive)
+  (interactive "p")
   (when (interactive-p) (icicle-barf-if-outside-minibuffer))
   (icicle-successive-action #'icicle-next-prefix-candidate #'icicle-candidate-action nth))
 
@@ -3173,11 +3208,12 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
   "`icicle-previous-apropos-candidate' and `icicle-candidate-action'.
 Option `icicle-act-before-cycle-flag' determines which occurs first.
 
-Optional argument NTH is as for `icicle-previous-apropos-candidate'.
+Optional argument NTH (the numeric prefix argument) is as for
+`icicle-previous-apropos-candidate'.
 
 You can use this command only from the minibuffer (`\\<minibuffer-local-completion-map>\
 \\[icicle-previous-apropos-candidate-action]')."
-  (interactive)
+  (interactive "p")
   (when (interactive-p) (icicle-barf-if-outside-minibuffer))
   (icicle-successive-action #'icicle-previous-apropos-candidate #'icicle-candidate-action nth))
 
@@ -3192,11 +3228,12 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
   "`icicle-next-apropos-candidate' and `icicle-candidate-action'.
 Option `icicle-act-before-cycle-flag' determines which occurs first.
 
-Optional argument NTH is as for `icicle-next-apropos-candidate'.
+Optional argument NTH (the numeric prefix argument) is as for
+`icicle-next-apropos-candidate'.
 
 You can use this command only from the minibuffer (`\\<minibuffer-local-completion-map>\
 \\[icicle-next-apropos-candidate-action]')."
-  (interactive)
+  (interactive "p")
   (when (interactive-p) (icicle-barf-if-outside-minibuffer))
   (icicle-successive-action #'icicle-next-apropos-candidate #'icicle-candidate-action nth))
 
@@ -3210,11 +3247,11 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
   "`icicle-previous-prefix-candidate' and `icicle-candidate-alt-action'.
 Option `icicle-act-before-cycle-flag' determines which occurs first.
 
-Optional argument NTH is as for `icicle-previous-prefix-candidate'.
+Optional argument NTH (the numeric prefix argument) is as for `icicle-previous-prefix-candidate'.
 
 You can use this command only from the minibuffer (`\\<minibuffer-local-completion-map>\
 \\[icicle-previous-prefix-candidate-alt-action]')."
-  (interactive)
+  (interactive "p")
   (when (interactive-p) (icicle-barf-if-outside-minibuffer))
   (icicle-successive-action #'icicle-previous-prefix-candidate #'icicle-candidate-alt-action nth))
 
@@ -3228,11 +3265,12 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
   "`icicle-next-prefix-candidate' and `icicle-candidate-alt-action'.
 Option `icicle-act-before-cycle-flag' determines which occurs first.
 
-Optional argument NTH is as for `icicle-next-prefix-candidate'.
+Optional argument NTH (the numeric prefix argument) is as for
+`icicle-next-prefix-candidate'.
 
 You can use this command only from the minibuffer (`\\<minibuffer-local-completion-map>\
 \\[icicle-next-prefix-candidate-alt-action]')."
-  (interactive)
+  (interactive "p")
   (when (interactive-p) (icicle-barf-if-outside-minibuffer))
   (icicle-successive-action #'icicle-next-prefix-candidate #'icicle-candidate-alt-action nth))
 
@@ -3246,11 +3284,12 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
   "`icicle-previous-apropos-candidate' and `icicle-candidate-alt-action'.
 Option `icicle-act-before-cycle-flag' determines which occurs first.
 
-Optional argument NTH is as for `icicle-previous-apropos-candidate'.
+Optional argument NTH (the numeric prefix argument) is as for
+`icicle-previous-apropos-candidate'.
 
 You can use this command only from the minibuffer (`\\<minibuffer-local-completion-map>\
 \\[icicle-previous-apropos-candidate-alt-action]')."
-  (interactive)
+  (interactive "p")
   (when (interactive-p) (icicle-barf-if-outside-minibuffer))
   (icicle-successive-action #'icicle-previous-apropos-candidate #'icicle-candidate-alt-action nth))
 
@@ -3264,11 +3303,12 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
   "`icicle-next-apropos-candidate' and `icicle-candidate-alt-action'.
 Option `icicle-act-before-cycle-flag' determines which occurs first.
 
-Optional argument NTH is as for `icicle-next-apropos-candidate'.
+Optional argument NTH (the numeric prefix argument) is as for
+`icicle-next-apropos-candidate'.
 
 You can use this command only from the minibuffer (`\\<minibuffer-local-completion-map>\
 \\[icicle-next-apropos-candidate-alt-action]')."
-  (interactive)
+  (interactive "p")
   (when (interactive-p) (icicle-barf-if-outside-minibuffer))
   (icicle-successive-action #'icicle-next-apropos-candidate #'icicle-candidate-alt-action nth))
 
@@ -3282,11 +3322,12 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
   "`icicle-previous-prefix-candidate' and `icicle-help-on-candidate'.
 Option `icicle-act-before-cycle-flag' determines which occurs first.
 
-Optional argument NTH is as for `icicle-previous-prefix-candidate'.
+Optional argument NTH (the numeric prefix argument) is as for
+`icicle-previous-prefix-candidate'.
 
 You can use this command only from the minibuffer (`\\<minibuffer-local-completion-map>\
 \\[icicle-help-on-previous-prefix-candidate]')."
-  (interactive)
+  (interactive "p")
   (when (interactive-p) (icicle-barf-if-outside-minibuffer))
   (icicle-successive-action #'icicle-previous-prefix-candidate #'icicle-help-on-candidate nth))
 
@@ -3300,11 +3341,12 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
   "`icicle-next-prefix-candidate' and `icicle-help-on-candidate'.
 Option `icicle-act-before-cycle-flag' determines which occurs first.
 
-Optional argument NTH is as for `icicle-next-prefix-candidate'.
+Optional argument NTH (the numeric prefix argument) is as for
+`icicle-next-prefix-candidate'.
 
 You can use this command only from the minibuffer (`\\<minibuffer-local-completion-map>\
 \\[icicle-help-on-next-prefix-candidate]')."
-  (interactive)
+  (interactive "p")
   (when (interactive-p) (icicle-barf-if-outside-minibuffer))
   (icicle-successive-action #'icicle-next-prefix-candidate #'icicle-help-on-candidate nth))
 
@@ -3318,11 +3360,12 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
   "`icicle-previous-apropos-candidate' and `icicle-help-on-candidate'.
 Option `icicle-act-before-cycle-flag' determines which occurs first.
 
-Optional argument NTH is as for `icicle-previous-apropos-candidate'.
+Optional argument NTH (the numeric prefix argument) is as for
+`icicle-previous-apropos-candidate'.
 
 You can use this command only from the minibuffer (`\\<minibuffer-local-completion-map>\
 \\[icicle-help-on-previous-apropos-candidate]')."
-  (interactive)
+  (interactive "p")
   (when (interactive-p) (icicle-barf-if-outside-minibuffer))
   (icicle-successive-action #'icicle-previous-apropos-candidate #'icicle-help-on-candidate nth))
 
@@ -3336,11 +3379,12 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
   "`icicle-next-apropos-candidate' and `icicle-help-on-candidate'.
 Option `icicle-act-before-cycle-flag' determines which occurs first.
 
-Optional argument NTH is as for `icicle-next-apropos-candidate'.
+Optional argument NTH (the numeric prefix argument) is as for
+`icicle-next-apropos-candidate'.
 
 You can use this command only from the minibuffer (`\\<minibuffer-local-completion-map>\
 \\[icicle-help-on-next-apropos-candidate]')."
-  (interactive)
+  (interactive "p")
   (when (interactive-p) (icicle-barf-if-outside-minibuffer))
   (icicle-successive-action #'icicle-next-apropos-candidate #'icicle-help-on-candidate nth))
 
