@@ -1,14 +1,14 @@
 
 
 == Library Information ==
-*el-autoyas.el* --- Automatically create Emacs-Lisp Yasnippets
+/el-autoyas.el/ --- Automatically create Emacs-Lisp Yasnippets
 
 * <b>Filename </b> --  [[el-autoyas.el]]
 * <b>Description </b> --  Automatically create Emacs-Lisp Yasnippets
 * <b>Author </b> --  Matthew L. Fidler
 * <b>Maintainer </b> --  Matthew L. Fidler
 * <b>Created </b> --  Mon Nov 21 10:55:55 2011 (-0600)
-* <b>Version </b> --  0.4
+* <b>Version </b> --  0.5
 * <b>Last-Updated </b> --  Mon Nov 28 08:46:55 2011 (-0600)
 * <b>By </b> --  Matthew L. Fidler
 * <b>Update # </b> --  194
@@ -73,6 +73,8 @@ Value: ((yas/expand-snippet yas-expand-snippet)
 
 
 ==== el-autoyas-load-hook ====
+== Hook run on package load. ==
+Suggestion: Add <tt>el-autoyas-install</tt>.
 == Hook run on package load. ==
 Suggestion: Add <tt>el-autoyas-install</tt>.
 == Hook run on package load. ==
@@ -181,6 +183,7 @@ Value: ((yas/expand-snippet yas-expand-snippet)
 
 == History ==
 
+* <b>18-Sep-2012 </b> --   Tested with 0.6. Bug fixes applied. ()
 * <b>18-Sep-2012 </b> --   Bug fix for backward compatability ()
 * <b>12-Sep-2012 </b> --   Fixed variable yas-backward-compatibility to be el-autoyas-backward-compatability so that things will not collide ()
 * <b>12-Sep-2012 </b> --   Another attempt to fix emacswiki documentation ()
