@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Mon Sep 17 11:43:19 2012 (-0700)
+;; Last-Updated: Mon Sep 17 22:15:57 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8931
+;;     Update #: 8939
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -3360,6 +3360,8 @@
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
 ;; 2012/09/17 dadams
+;;     icicle(-help-on)-(next|previous)-(prefix-|apropos-)candidate(-per-mode)((-alt)-action|-help):
+;;       NTH is prefix arg.  Plain C-u means use first candidate.
 ;;     icicle-(next|previous)-line:
 ;;       Move to (next|previous) line when CURR-COL is 1 (fixes bug for multi-line candidates).
 ;; 2012/09/08 dadams
