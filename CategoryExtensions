@@ -39,6 +39,7 @@ Extensions (using the category name from `finder-by-keyword'), are utility libra
 == Sequences ==
 
 * VectorModificationLibrary -- Functions to modify vectors
+* ListUtils -- List-manipulation utility functions
 
 == Macros ==
 
