@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Sep 15 09:42:25 2012 (-0700)
+;; Last-Updated: Mon Sep 17 22:25:28 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 26755
+;;     Update #: 26758
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1837,6 +1837,11 @@
 ;;  minibuffer input) is highlighted in each candidate of the
 ;;  `*Completions*' display.  The `*Completions*' window is
 ;;  automatically scrolled as needed, to show the current candidate.
+;;
+;;  A numeric prefix argument N means cycle forward or backward N
+;;  candidates (default = 1).  A plain prefix argument (`C-u') means
+;;  use the first candidate directly, instead of cycling forward or
+;;  backward.
 ;;
 ;;  Do not become a cycling drone!  Input some text to narrow the set
 ;;  of candidates, before cycling among them to choose one.  This is a
