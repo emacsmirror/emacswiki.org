@@ -6,7 +6,7 @@
 ;; Maintainer: Matthew Fidler
 ;; Created: Fri Mar 25 10:36:08 2011 (-0500)
 ;;
-;; Version: 0.27
+;; Version: 0.28
 ;; Last-Updated: Mon Jun 25 15:12:20 2012 (-0500)
 ;;           By: Matthew L. Fidler
 ;;     Update #: 873
@@ -23,6 +23,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 18-Sep-2012      
+;;    Last-Updated: Mon Jun 25 15:12:20 2012 (-0500) #873 (Matthew L. Fidler)
+;;    Should be compatible with 0.6 and 0.8 versions of Yasnippet and fix
+;;    issue #4
 ;; 17-Sep-2012      
 ;;    Last-Updated: Mon Jun 25 15:12:20 2012 (-0500) #873 (Matthew L. Fidler)
 ;;    Should now work with yasnippet 0.8 -- Mostly fixes issue #4, but needs
@@ -203,17 +207,22 @@
     (yas/snippet-control-overlay yas--snippet-control-overlay)
     (yas/exit-snippet yas-exit-snippet)
     (yas/check-commit-snippet yas--check-commit-snippet)
-    (yas/define-snippets yas--check-commit-snippet)
+    (yas/define-snippets yas-define-snippets)
     (yas/after-exit-snippet-hook yas-after-exit-snippet-hook)
     )
   "Yasnippet backward compatability functions used in r-autoyas.el")
 
-
+(defvar r-autoyas-backward nil
+  "R-autoyas use backward compatability?")
 ;; Add backward compatability when needed.
 (mapc
  (lambda(what)
-   (unless (eval `(or (fboundp ',(nth 1 what))(boundp ',(nth 1 what))))
-     (eval `(defalias ',(nth 1 what) ',(nth 0 what)))))
+   (when (not (eval `(or (fboundp ',(nth 1 what)) (boundp ',(nth 1 what)))))
+     (if (eval `(functionp ',(nth 0 what)))
+         (progn
+           (setq r-autoyas-backward t)
+           (eval `(defalias ',(nth 1 what) ',(nth 0 what))))
+       (eval `(defvaralias ',(nth 1 what) ',(nth 0 what))))))
  r-autoyas-backward-compatability)
 
 (defgroup r-autoyas nil
@@ -951,7 +960,10 @@ cat(\"Loaded r-autoyas\\n\");
       nil
     (let* ((arg (or arg  0))
            (snippet (first (yas--snippets-at-point)))
-           (active-field (if snippet (overlay-get yas--active-field-overlay 'yas--field) nil))
+           (active-field (if snippet (overlay-get yas--active-field-overlay 
+                                                  (if r-autoyas-backward
+                                                      'yas/field
+                                                    'yas--field)) nil))
            (live-fields (if (not snippet) nil
                           (remove-if #'
                            (lambda (field)
@@ -960,7 +972,6 @@ cat(\"Loaded r-autoyas\\n\");
                                      (yas--snippet-fields snippet))))
            (active-field-pos (if (not snippet) nil (position active-field live-fields))))
       (if (not snippet) nil
-        (message "Active Field: %s" active-field-pos)
         active-field-pos))))
 
 (defun r-autoyas-editing-field-num-p (&optional arg)
