@@ -12,11 +12,7 @@ Three sources `ac-source-R-args', `ac-source-R-objects' and `ac-source-R' are in
 
 == Initialization ==
 
-The easiest way to initialize:
-
-{{{
-(setq ess-use-auto-complete t)
-}}}
+From ESS 12.09 auto-complete is activated by default if you have auto-complete package installed. See the documentation of `ess-use-auto-complete` variable for more. 
 
 This activates 'ac-source-R in both ESS and iESS buffers. If you want AC only in your ESS buffers do:
 
