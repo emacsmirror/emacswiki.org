@@ -1,14 +1,14 @@
 
 
 == Library Information ==
-*textmate-to-yas.el* --- Import Textmate macros into yasnippet syntax
+/textmate-to-yas.el/ --- Import Textmate macros into yasnippet syntax
 
 * <b>Filename </b> --  [[textmate-to-yas.el]]
 * <b>Description </b> --  Import Textmate macros into yasnippet syntax
 * <b>Author </b> --  Matthew L. Fidler
 * <b>Maintainer </b> --  Matthew L. Fidler
 * <b>Created </b> --  Wed Oct 20 15:08:50 2010 (-0500)
-* <b>Version </b> --  0.15
+* <b>Version </b> --  0.16
 * <b>Last-Updated </b> --  Fri Jun 29 12:22:42 2012 (-0500)
 * <b>By </b> --  Matthew L. Fidler
 * <b>Update # </b> --  1747
@@ -16,51 +16,6 @@
 * <b>Keywords </b> --  Yasnippet Textmate
 * <b>Compatibility </b> --  Tested with Windows Emacs 23.2
 
-
-This library allows you to import !TextMate bundle snippets to
-Yasnippet
-
-To use, put in a directory in the load path, like ~/elisp and put
-the following in ~/.emacs
-
-{{{
-(require 'textmate-to-yas)
-}}}
-
-If you wish to use a snippet from !GitHub, just drag the .tar.gz
-file to emacs while Yasnippet is running
-
-Notes about importing:
-* Importing depends on what emacs knows about your system.  If a <tt>.R</tt>
-file is opened in <tt>ess-mode</tt>, then it is imported to <tt>ess-mode</tt> snippets.
-Similarly if an <tt>.Rd</tt> file is associated to <tt>Rd-mode</tt>, then it is
-imported to <tt>Rd-mode</tt>.  Hence bundles like
-https://github.com/swissr/rmate.tmbundle will import to two
-different snippet directories.
-
-* The translations depend on implementing Textmate regular
-expressions in emacs.  Therefore, <tt>textmate-to-yas</tt> needs to be sourced for
-translated snippets since it implements condition insertions syntax
-of Textmated based on a emacs regular expression. (See
-http://manual.macromates.com/en/regular_expressions#conditional_insertions.html)
-
-* Textmate regular expressions has features that emacs regular
-expressions do not have, for example:
-
-* look-ahead
-* negative look-ahead
-* look-behind
-* negative look-behind
-
-These regular expressions are not supported in emacs and cannot be
-translated to yasnippet programatically.  Currently they will be
-ignored.  You may wish to implement  an elisp solution yourself.
-
-* Binary plists are partially supported with command line tools:
-* Under a mac <tt>plutil</tt> is used to convert binary to xml formats.
-* Under other operating systems <tt>plutil.pl</tt> is used to convert
-binary to xml formats.  Therefore this requires perl to be
-installed for binary conversion.
 == Importing A Textmate bundle from the Textmate SVN url ==
 This is done with the command <tt>textmate-import-svn-from-url</tt>.
 == Importing from an unzipped Textmate tmBundle ==
@@ -74,49 +29,7 @@ importing (like text-mode).
 == Variables ==
 === Customizable Variables ===
 
-==== textmate-default-key-prefix ====
-When importing key codes, this prefix is used as well.
-
-For example if a Textmate snippet specifies a key of Meta-A, the emacs key specified is
-<tt>textmate-default-key-prefix</tt> added to the detected key.  With the default C-c C-y, this
-becomes:
-
-C-c C-y M-a
-
-==== textmate-import-convert-known-expressions ====
-Known Textmate Expressions
-
-==== textmate-import-key-bindings ====
-Import key bindings into the snippets.
-
-==== textmate-import-plutil.pl ====
-plutil.pl path to deal with binary plists.
-
-==== textmate-key-to-emacs-key-known ====
-Textmate Key to Emacs Key
-
-==== textmate-regexp-emacs-unsupported ====
-Emacs Unsupported Regular Expression
-
-==== textmate-regexp-to-emacs-regexp-known ====
-Known Textmate to Emacs regular expression translations.
-
-==== textmate-use-define-menu ====
-* Use <tt>yas/define-menu</tt> or <tt>yas-define-menu</tt> (0.8+) instead of placing the menu choice in the group tag.
-
 === Internal Variables ===
-
-==== textmate-import-convert-env-lst ====
-List to convert Textmate Environmental variables to customizable fields.
-
-==== textmate-import-saved-guesses ====
-Saved guesses for textmate import
-
-==== textmate-import-svn-pkgs-cache ====
-* Cached list of Textmate svn bundles
-
-==== textmate-import-svn-url ====
-* Url for Textmate svn
 
 ==== textmate-to-yas-backward-compatability ====
 Yasnippet backward compatability functions used in textmate-to-yas.el
@@ -145,14 +58,9 @@ Value: ((yas/expand-snippet yas-expand-snippet)
 (yas/after-exit-snippet-hook yas-after-exit-snippet-hook))
 
 
-
-==== textmate-yas-known-uuid ====
-Known UUIDs for current import.
-
-==== yas---t-lst ====
-Variable for expanding textmate transformations with Yasnippet
 == History ==
 
+* <b>18-Sep-2012 </b> --   Backward compatibility update. ()
 * <b>12-Sep-2012 </b> --   First attempt to support 0.8x. Currently untested. ()
 * <b>29-Jun-2012 </b> --   Should convert binary plists with either perl and plutil.pl or Mac OSX and plutil (Matthew L. Fidler)
 * <b>29-Jun-2012 </b> --   Will not import Textmate snippets that cannot be translated to emacs regular expressions. (Matthew L. Fidler)
