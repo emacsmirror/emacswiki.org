@@ -5,7 +5,7 @@
 ;; Author: Matthew L. Fidler
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Wed Oct 20 15:08:50 2010 (-0500)
-;; Version: 0.15
+;; Version: 0.16
 ;; Last-Updated: Fri Jun 29 12:22:42 2012 (-0500)
 ;;           By: Matthew L. Fidler
 ;;     Update #: 1747
@@ -17,54 +17,19 @@
 ;;
 ;;; Commentary:
 ;; 
-;; This library allows you to import TextMate bundle snippets to
-;; Yasnippet
-;; 
-;; To use, put in a directory in the load path, like ~/elisp and put
-;; the following in ~/.emacs
-;; 
-;; 
-;; (require 'textmate-to-yas)
-;; 
-;; 
-;; If you wish to use a snippet from GitHub, just drag the .tar.gz
-;; file to emacs while Yasnippet is running
-;; 
-;; Notes about importing:
-;;  - Importing depends on what emacs knows about your system.  If a =.R=
-;;    file is opened in `ess-mode', then it is imported to `ess-mode' snippets.
-;;    Similarly if an =.Rd= file is associated to `Rd-mode', then it is
-;;    imported to `Rd-mode'.  Hence bundles like
-;;    https://github.com/swissr/rmate.tmbundle will import to two
-;;    different snippet directories.
-;; 
-;;  - The translations depend on implementing Textmate regular
-;;    expressions in emacs.  Therefore, `textmate-to-yas' needs to be sourced for
-;;    translated snippets since it implements condition insertions syntax
-;;    of Textmated based on a emacs regular expression. (See
-;;    http://manual.macromates.com/en/regular_expressions
-;; 
-;;  - Textmate regular expressions has features that emacs regular
-;;    expressions do not have, for example:
-;; 
-;;    - look-ahead
-;;    - negative look-ahead
-;;    - look-behind
-;;    - negative look-behind
-;; 
-;;    These regular expressions are not supported in emacs and cannot be
-;;    translated to yasnippet programatically.  Currently they will be
-;;    ignored.  You may wish to implement  an elisp solution yourself.
-;; 
-;;  - Binary plists are partially supported with command line tools:
-;;    - Under a mac `plutil' is used to convert binary to xml formats.
-;;    - Under other operating systems `plutil.pl' is used to convert
-;;      binary to xml formats.  Therefore this requires perl to be
-;;      installed for binary conversion.
+;; * Importing A Textmate bundle from the Textmate SVN url
+;; This is done with the command `textmate-import-svn-from-url'.
+;; * Importing from an unzipped Textmate tmBundle
+;; This is done with the command `textmate-import-bundle'.  You need to
+;; specify both the root directory of the bundle ant the parent modes for
+;; importing (like text-mode).
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 18-Sep-2012      
+;;    Last-Updated: Fri Jun 29 12:22:42 2012 (-0500) #1747 (Matthew L. Fidler)
+;;    Backward compatibility update.
 ;; 12-Sep-2012      
 ;;    Last-Updated: Fri Jun 29 12:22:42 2012 (-0500) #1747 (Matthew L. Fidler)
 ;;    First attempt to support 0.8x.  Currently untested.
@@ -294,7 +259,9 @@
 (mapc
  (lambda(what)
    (unless (eval `(or (fboundp ',(nth 1 what))(boundp ',(nth 1 what))))
-     (eval `(defalias ',(nth 1 what) ',(nth 0 what)))))
+     (if (eval `(functionp ,(nth 0 what)))
+         (eval `(defalias ',(nth 1 what) ',(nth 0 what)))
+       (eval `(defvaralias ',(nth 1 what) ',(nth 0 what))))))
  textmate-to-yas-backward-compatability)
 
 (defgroup textmate-import nil
