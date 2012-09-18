@@ -55,6 +55,13 @@ What this screenshot does ''not'' show, however, is [[mode line]] help on the cu
 
 ([[lacarte-w-icicles|Screenshot]] showing mode-line candidate help.)
 
+A [[numeric prefix argument]] ''N'' means cycle forward or backward ''N''
+candidates (default = 1).  A plain [[prefix argument]] (`C-u') means
+use the first candidate directly, instead of cycling forward or
+backward.
+
+
+
 
 [:Drone]
 Do not become a cycling drone! '''''Input some text to narrow the set of candidates, before cycling''''' among them to choose one. This is a good habit to adopt, generally, in '''Icicles'''.  Most of the power of '''Icicles''' comes in your ability to filter a set of candidates. This is especially true when it comes to [[regexp]] filtering (see [[Icicles - Apropos Completions]]). 
