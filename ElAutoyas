@@ -1,14 +1,14 @@
 
 
 == Library Information ==
-/el-autoyas.el/ --- Automatically create Emacs-Lisp Yasnippets
+*el-autoyas.el* --- Automatically create Emacs-Lisp Yasnippets
 
 * <b>Filename </b> --  [[el-autoyas.el]]
 * <b>Description </b> --  Automatically create Emacs-Lisp Yasnippets
 * <b>Author </b> --  Matthew L. Fidler
 * <b>Maintainer </b> --  Matthew L. Fidler
 * <b>Created </b> --  Mon Nov 21 10:55:55 2011 (-0600)
-* <b>Version </b> --  0.3
+* <b>Version </b> --  0.4
 * <b>Last-Updated </b> --  Mon Nov 28 08:46:55 2011 (-0600)
 * <b>By </b> --  Matthew L. Fidler
 * <b>Update # </b> --  194
@@ -48,33 +48,7 @@ into your load-path and put the following in <tt>~/.emacs</tt>:
 == Functions ==
 === Interactive Functions ===
 
-==== el-autoyas-enable ====
-<tt>(el-autoyas-enable)</tt>
-
-Load and activate package.
-
-==== el-autoyas-expand-maybe ====
-<tt>(el-autoyas-expand-maybe &optional ARG)</tt>
-
-Expands autoyas snippets.  Falls back to
-<tt>indent-for-tab-command</tt> if it does not expand.
-
 === Internal Functions ===
-
-==== el-autoyas-snippet ====
-<tt>(el-autoyas-snippet SYMBOL-NAME &optional DEL-CHAR ARG)</tt>
-
-Creates a snippet based on the currently defined symbol
-
-==== el-autoyas-text-on-moving-away ====
-<tt>(el-autoyas-text-on-moving-away DEFAULT-TEXT &optional ORIG-TEXT)</tt>
-
-* Changes text when moving away AND original text has not changed
-
-==== el-autoyas-update ====
-<tt>(el-autoyas-update)</tt>
-
-Update fields
 == Variables ==
 === Customizable Variables ===
 
@@ -99,6 +73,8 @@ Value: ((yas/expand-snippet yas-expand-snippet)
 
 
 ==== el-autoyas-load-hook ====
+== Hook run on package load. ==
+Suggestion: Add <tt>el-autoyas-install</tt>.
 == Hook run on package load. ==
 Suggestion: Add <tt>el-autoyas-install</tt>.
 == Hook run on package load. ==
@@ -205,6 +181,7 @@ Value: ((yas/expand-snippet yas-expand-snippet)
 
 == History ==
 
+* <b>18-Sep-2012 </b> --   Bug fix for backward compatability ()
 * <b>12-Sep-2012 </b> --   Fixed variable yas-backward-compatibility to be el-autoyas-backward-compatability so that things will not collide ()
 * <b>12-Sep-2012 </b> --   Another attempt to fix emacswiki documentation ()
 * <b>12-Sep-2012 </b> --   Org-readme sync attempt -- trying to fix bug in org-readme. ()
