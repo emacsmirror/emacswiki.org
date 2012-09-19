@@ -10,10 +10,10 @@ It distinguishes between different header levels and the plain text.  The defaul
 
 You can then use Headings, Show, and Hide menus to selectively show parts of the text, or the following keys:
 
-C-c @ C-a show all
-C-c @ C-t show only the headings
-C-c @ C-s show subtree at cursor location
-C-c @ C-d hide subtree at cursor location
+* C-c @ C-a show all
+* C-c @ C-t show only the headings
+* C-c @ C-s show subtree at cursor location
+* C-c @ C-d hide subtree at cursor location
 
 See also [[Manual:Outline Mode]].
 Screencasts for using the outline-mode is available at ScreencastSources and ScreencastRecordings.
