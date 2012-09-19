@@ -68,7 +68,6 @@ Buffers:
       (buffer-substring 2 4))
     ==> "bc"
 
-
 === starts-with and ends-with predicates ===
 
     (defun string/ends-with (s ending)
@@ -81,7 +80,6 @@ Buffers:
       (cond ((>= (length s) (length arg))
              (string-equal (substring s 0 (length arg)) arg))
             (t nil)))
-
 
 === Processing characters ===
 
@@ -226,7 +224,6 @@ Or simplest of all,
 
    (delete-region (line-beginning-position) (point))
 
-
 === Delete line to next line  ===
 
 The equivalent of killing the line and the newline (`C-1 C-k') but without kill ring side effects:
@@ -333,11 +330,11 @@ Alternatively, replacing the `let' with `save-excursion'.
 
   (defun decimal-number (string)
     (let ((n (string-to-number string)))
-      (if (and (zerop n)
-               (not (save-match-data
-                      (string-match "\\`\\s-*0+\\.?0*\\s-*\\'" string))))
-          nil
-        n)))
+      (save-match-data
+        (if (and (not (zerop n))
+                 (string-match "\\`\\s-*0+\\.?0*\\s-*\\'" string))
+            n
+          nil))))
   
   (decimal-number "536870911")
   ==> 536870911
@@ -537,7 +534,8 @@ This finds numbers and increments them by one.  It depends on `decimal-number' t
     (when (and (looking-at "[-+]?[0-9]+\\.?[0-9]*")
                (decimal-number (match-string 0)))
       (replace-match
-       (number-to-string (1+ (string-to-number (match-string 0)))))))
+       (number-to-string (1+ (string-to-number (match-string 0)))))
+      (goto-char (match-end 0))))
 
 This loads Emacs Lisp files listed one per line in a text file.
 
@@ -581,7 +579,6 @@ An example use might be:
          (when (file-exists-p filename)
            (load-file filename))))))
 
-
 === Verifying ===
 
 Sometimes you just want to check whether you're at the right place:
@@ -612,7 +609,6 @@ Datatypes used to represent sequences of things:
     |          | |____________| |_____________| | |
     |          |________________________________| |
     |_____________________________________________|
-
 
 === Lists ===
 
@@ -763,10 +759,15 @@ association list.  Here are cases when the car values are strings.
   (assoc "2" '(("2" . 2) ("1" . 1) ("2") ("3" . 3)))
   ==> ("2" . 2)
 
-Extract the value (may wish to test for nil before doing so):
-
-  (cdr (assoc "2" '(("2" . 2) ("1" . 1) ("2") ("3" . 3)))
-  ==> 2
+  (mapcar (lambda (c) (cons c (string c))) (number-sequence 56 65))
+  ==> ((56 . "8") (57 . "9") (58 . ":") (59 . ";") (60 . "<")
+       (61 . "=") (62 . ">") (63 . "?") (64 . "@") (65 . "A"))
+  (assq 64
+        (mapcar (lambda (c) (cons c (string c))) (number-sequence 56 65)))
+  ==> (64 . "@")
+  (assq 55
+        (mapcar (lambda (c) (cons c (string c))) (number-sequence 56 65)))
+  ==> nil
 
 Deleting:
 
@@ -779,6 +780,31 @@ Matches with a test function other than `equal':
   (let ((alist '(("ab" . 1) ("bc" . 2) ("cd" . 3))))
     (assoc-default "c" alist (lambda (x y) (string-match y x))))
   ==> 2
+
+The association list functions are incidentally useful for finding the first instance of a value in any list, not just association lists, and even when there's duplicates.
+
+The following uses `mapcar' to associate the `major-mode' to each buffer returned by `buffer-list', then `assq' to find the first buffer where the major mode is `fundamental-mode'.
+
+  (assq 'fundamental-mode
+        (mapcar
+         (lambda (b)
+           (cons (buffer-local-value 'major-mode b) b))
+         (buffer-list)))
+  ==> (fundamental-mode . #<buffer *Messages*>)
+
+You can also find values in regular lists, by converting them to association lists with a null cdr.
+
+Here's an association list of random numbers with no associated value.
+
+  '((8 . nil) (3 . nil) (1 . nil) (7 . nil) (3 . nil) (6 . nil) (9 . nil))
+  ==> ((8) (3) (1) (7) (3) (6) (9))
+
+This is really just making a list for each number -- a "list of lists" -- which can be done with `mapcar' and `list'.
+
+  (mapcar 'list '(8 3 1 7 3 6 9))
+  ==> ((8) (3) (1) (7) (3) (6) (9))
+  (assq 3 (mapcar 'list '(8 3 1 7 3 6 9)))
+  ==> (3)
 
 === Vectors ===
 
@@ -844,6 +870,8 @@ the list:
 
 === Read ===
 
+A file can be inserted at point with `insert-file-contents' or `insert-file-contents-literally'.  To get a file as a string,
+
   (defun file-string (file)
     "Read the contents of a file and return as a string."
     (with-temp-buffer
@@ -892,8 +920,6 @@ Another way to do this is via with-temp-file:
    (interactive "sEnter the string: \nFFile to save to: ")
    (with-temp-file file
      (insert string)))
-
-
 
 === Input and output (I/O) ===
 
@@ -1094,7 +1120,9 @@ Run a command return its output as a string.
 
   (shell-command-to-string "seq 8 12 | sort")
 
-XEmacs also comes with `exec-to-string'.
+Run a command return and insert its output at point in the current buffer.
+
+  (insert (shell-command-to-string "date"))
 
 === Handling signals ===
 
@@ -1116,12 +1144,9 @@ or
 
   (call-interactively (key-binding (kbd "M-TAB")))
 
-
-
-== Windows-specific things == 
+== Windows-specific things ==
 
 === Multi-line message box ===
-
 
     (defun multiline-message-box (msg)
       "display a multiline message box on Windows.
@@ -1154,8 +1179,6 @@ or
                           :keys ""
                           :enable t)))
           (x-popup-menu t menu-1))))
-
-
 
 === Messagebox via Powershell ===
 
@@ -1200,7 +1223,6 @@ pop a message box using Powershell, which is builtin to all Windows.
             (shell-command-on-region (point) (point)
                                      shell-command
                                      nil nil nil)))))
-
 
 === Read Windows Registry ===
 
@@ -1267,7 +1289,6 @@ This fn reads a registry key - retrieves all the values and the names of all the
         (and keyname
              (list keyname values subkeys))))
 
-
 === Read one Registry Value ===
 
 This fn depends on the previous one, shown above. 
@@ -1296,7 +1317,6 @@ This fn depends on the previous one, shown above.
 
 This fn depends on the prior fn that allows reading a specific value from the Windows registry.
 
-
     (defun w32reg-get-ie-proxy-config ()
       "Return the Proxy Server settings configured for IE, if enabled.
     The result is a list of cons cells; like this:
@@ -1318,7 +1338,6 @@ This fn depends on the prior fn that allows reading a specific value from the Wi
                          (let ((x (split-string elt "=" t)))
                            (cons (car x) (cadr x))))
                       (split-string (nth 2 proxy) ";" t))))))
-
 
 === HTTP GET via Powershell ===
 
@@ -1370,9 +1389,6 @@ Here is a complete example:
     (if (eq (car eval-buffer-list) (current-buffer))
         (message "foo-foo is %d" foo-foo)
     )
-
-
-
 
 ----
 CategoryCode
