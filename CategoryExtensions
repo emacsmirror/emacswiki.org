@@ -40,6 +40,7 @@ Extensions (using the category name from `finder-by-keyword'), are utility libra
 
 * VectorModificationLibrary -- Functions to modify vectors
 * ListUtils -- List-manipulation utility functions
+* [http://www.splode.com/~friedman/software/emacs-lisp/src/list-fns.el list-fns.el] -- list-searching and manipulation functions
 
 == Macros ==
 
