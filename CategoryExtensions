@@ -65,6 +65,10 @@ Extensions (using the category name from `finder-by-keyword'), are utility libra
 
 * See CategoryData
 
+== Text Processing ==
+
+* [http://github.com/yuutayamada/stem stem.el] -- routines for stemming English words
+
 == Buffer Text ==
 
 * ThingAtPoint -- Functions to return various kinds of Emacs Lisp entity at or near point. For example, return the Lisp symbol name nearest point.
