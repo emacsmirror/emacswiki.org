@@ -93,7 +93,8 @@ displayed as λ in lisp modes."
   (if pretty-mode
       (progn
         (font-lock-add-keywords nil (pretty-keywords) t)
-        (font-lock-fontify-buffer))
+        (when font-lock-mode
+          (font-lock-fontify-buffer)))
     (font-lock-remove-keywords nil (pretty-keywords))
     (remove-text-properties (point-min) (point-max) '(composition nil))))
 
