@@ -129,9 +129,9 @@ There's another trick. Right before loading flymake mode (M-x flymake-mode), ope
 
 (defun flymake-simple-make-init () (list "make" (list "-C" MY_CMAKE_BUILD_DIR)))
 
-where MY_CMAKE_BUILD_DIR is the root of the build directory of your project. To be faster you can even take the build dir corresponding to the file. Note that with that trick you need to save your file to activate flymake (it actually get activated anyway but on the old unsaved file ofc, which is not what you want).
+where MY_CMAKE_BUILD_DIR is the root of the build directory of your project. For faster flymake you can even take the build dir corresponding to the file. Note that with that trick you need to save your file to activate flymake (it actually gets activated anyway when you type but on the old unsaved file, so the errors aren't reported in your buffer).
 
-I think having to save a file is acceptable, besides it provides an advantage, what you compile for flymake is not wasted, so when you're done with your coding, changes are that you code is already compiled as well.
+I think having to save the file is acceptable, besides it provides an advantage, what you compile for flymake is not wasted, basically when you are done with your coding, chances are that you code is already compiled.
 
 An improvement of that would be to write a elisp function that look for the right build dir automatically.
 
