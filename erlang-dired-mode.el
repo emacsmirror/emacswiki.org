@@ -1,15 +1,14 @@
-;;; erlang-dired.el --- erlang dired mode    -*- coding:utf-8 -*-
+;;; erlang-dired-mode.el --- erlang dired mode    -*- coding:utf-8 -*-
 
 ;; Description: erlang dired mode
 ;; Created: 2011-12-20 22:41
-;; Last Updated: Joseph 2012-02-13 13:49:20 月曜日
+;; Last Updated: Joseph 2012-09-19 17:10:04 星期三
 ;; Author: Joseph(纪秀峰)  jixiuf@gmail.com
-;; Maintainer:  Joseph(纪秀峰)  jixiuf@gmail.com
 ;; Keywords: erlang dired Emakefile
 ;; URL: http://www.emacswiki.org/emacs/erlang-dired-mode.el
 ;; X-URL:git://github.com/jixiuf/erlang-dired-mode.git
 
-;; Copyright (C) 2011, 纪秀峰, all rights reserved.
+;; Copyright (C) 2011,2012 纪秀峰, all rights reserved.
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -36,7 +35,7 @@
 ;;  if Emakefile exists in project root directory ,call "make:all[load]"
 ;;  if not call `erlang-compile'
 ;;  with  prefix `C-u':
-;;  if Makefile exists in project root directory ,all make --directory project-root-directory
+;;  if Makefile exists in project root directory ,call make --directory project-root-directory
 ;;  if not call default make command (maybe ks "make -k")
 ;;
 ;;; Commands:
@@ -133,6 +132,7 @@
     (make-directory root-dir))
   (unless (file-directory-p root-dir)
     (error "%s is not a directory!"  root-dir))
+
   (make-directory (expand-file-name  "src"  root-dir) t)
   (make-directory (expand-file-name  "include" root-dir) t)
   (make-directory (expand-file-name "ebin" root-dir) t)
@@ -149,12 +149,17 @@
   (unless (or (file-exists-p (expand-file-name "makefile" root-dir))
               (file-exists-p  (expand-file-name "Makefile" root-dir)))
     (with-temp-file (expand-file-name "Makefile" root-dir)
+      (insert (format "PROJECT=%s\n"  (file-name-nondirectory root-dir)))
+      (insert "PREVIOUS_RELEASE_VERSION=0.1")
       (insert "PREFIX:=../\n")
       (insert "DEST:=$(PREFIX)$(PROJECT)\n")
       (insert "REBAR=./rebar\n")
+      (insert "REBAR_UP=../rebar\n")
+      (insert ".PHONY:test\n")
       (insert "\n")
-      (insert "all:\n")
+      (insert "compile:\n")
       (insert "	@$(REBAR) get-deps compile\n")
+      (insert "	@-cp src/$(PROJECT).appup.src ebin/$(PROJECT).appup\n")
       (insert "edoc:\n")
       (insert "	@$(REBAR) doc\n")
       (insert "test:\n")
@@ -168,7 +173,33 @@
       (insert "dialyzer:\n")
       (insert "	@$(REBAR) dialyze\n")
       (insert "app:\n")
-      (insert "	@$(REBAR) create template=mochiwebapp dest=$(DEST) appid=$(PROJECT)\n")
+      (insert "	@$(REBAR) create-app dest=$(DEST) appid=$(PROJECT)\n\n")
+      (insert "createnode:\n")
+      (insert "	@-mkdir rel\n")
+      (insert "	cd rel && $(REBAR_UP) create-node nodeid=$(PROJECT)\n")
+      (insert "create-node:createnode\n")
+      (insert "cn:createnode\n\n")
+      (insert "generate:\n")
+      (insert "	$(REBAR) generate\n")
+      (insert "gen:generate\n")
+      (insert "generatef:\n")
+      (insert "	$(REBAR) generate -f\n\n")
+      (insert "appup:\n")
+      (insert "	$(REBAR) generate-appups previous_release=$(PROJECT)-$(PREVIOUS_RELEASE_VERSION)\n")
+      (insert "upgrade:\n")
+      (insert "	$(REBAR) generate-upgrade previous_release=$(PROJECT)-$(PREVIOUS_RELEASE_VERSION)\n")
+      (insert "up:appup upgrade\n")
+      )
+    )
+  (unless  (file-exists-p (expand-file-name "rebar.config" root-dir))
+    (with-temp-file (expand-file-name "rebar.config" root-dir)
+      (insert "%% -*- erlang -*-\n")
+      (insert "{erl_opts, [debug_info]}.\n")
+      (insert "{sub_dirs, [\"rel\"]}.\n")
+      (insert "{lib_dirs,[\"..\"]}.\n")
+      (insert "{deps, [  ]}.\n")
+      (insert "{cover_enabled, true}.\n")
+      (insert "{eunit_opts, [verbose, {report,{eunit_surefire,[{dir,\".\"}]}}]}.\n")
       )
     )
   (dired root-dir)
@@ -202,6 +233,14 @@ if found return the directory or nil
     (if (not project-root)
         (call-interactively 'erlang-compile)
       (save-some-buffers)
+      (dolist (filename (directory-files (expand-file-name "src/" project-root)))
+        (cond
+         ((string=  (file-name-extension filename) "app")
+          (copy-file (expand-file-name (concat "src/" filename) project-root)
+                     (expand-file-name (concat "ebin/" filename) project-root) t) )
+         ((string=  (file-name-extension filename) "src")
+          (copy-file (expand-file-name (concat "src/" filename) project-root)
+                     (expand-file-name (concat "ebin/" (file-name-sans-extension  filename)) project-root) t) )))
       (inferior-erlang-prepare-for-input)
       (let* (end)
         (with-current-buffer inferior-erlang-buffer
@@ -212,13 +251,13 @@ if found return the directory or nil
         (sit-for 0)
         (inferior-erlang-wait-prompt)
 
-        (inferior-erlang-send-command
-         "make:all([load])." nil)
+        (setq end (inferior-erlang-send-command
+                   "make:all([load])." nil))
         (sit-for 0)
         (inferior-erlang-wait-prompt)
-
-        (setq end (inferior-erlang-send-command
-                   "cd(\"ebin/\")." nil))
+        (when (file-exists-p (expand-file-name "ebin" project-root))
+          (setq end (inferior-erlang-send-command
+                     "cd(\"ebin/\")." nil))  )
         (sit-for 0)
         (inferior-erlang-wait-prompt)
         (with-current-buffer inferior-erlang-buffer
@@ -238,6 +277,15 @@ if found return the directory or nil
         (compile-command compile-command))
     (when project-root
       (setq compile-command (concat "make --directory=" project-root))
+      ;; copy src/*.app.src to ebin/*.app
+      (dolist (filename (directory-files (expand-file-name "src/" project-root)))
+        (cond
+         ((string=  (file-name-extension filename) "app")
+          (copy-file (expand-file-name (concat "src/" filename) project-root)
+                     (expand-file-name (concat "ebin/" filename) project-root) t) )
+         ((string=  (file-name-extension filename) "src")
+          (copy-file (expand-file-name (concat "src/" filename) project-root)
+                     (expand-file-name (concat "ebin/" (file-name-sans-extension  filename)) project-root) t))))
       )
     (call-interactively 'compile)
     )
@@ -286,4 +334,4 @@ if found return the directory or nil
 (add-hook 'erlang-mode-hook 'erlang-mode-hook-1)
 
 (provide 'erlang-dired-mode)
-;;; erlang-dired.el ends here
+;;; erlang-dired-mode.el ends here
