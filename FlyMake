@@ -122,7 +122,20 @@ Nil's scripts didn't work for me out of the box, so I've modified them to genera
 -- SeanFisk
 
 SeanFisk's script has some problem because relative path issue. I re-wrote it in python at [https://github.com/redguardtoo/pycmake-flymake|HERE]. It should work out of the box now.
+
 -- Chen Bin
+
+There's another trick. Right before loading flymake mode (M-x flymake-mode), open ielm (M-x ielm) and add the following line
+
+(defun flymake-simple-make-init () (list "make" (list "-C" MY_CMAKE_BUILD_DIR)))
+
+where MY_CMAKE_BUILD_DIR is the root of the build directory of your project. To be faster you can even take the build dir corresponding to the file. Note that with that trick you need to save your file to activate flymake (it actually get activated anyway but on the old unsaved file ofc, which is not what you want).
+
+I think having to save a file is acceptable, besides it provides an advantage, what you compile for flymake is not wasted, so when you're done with your coding, changes are that you code is already compiled as well.
+
+An improvement of that would be to write a elisp function that look for the right build dir automatically.
+
+-- Nil Geisweiller
 
 === Mozart/Oz ===
 
