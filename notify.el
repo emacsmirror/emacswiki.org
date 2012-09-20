@@ -42,7 +42,7 @@ May be overridden with key-value additional arguments to `notify'.")
   "Minimum time allowed between notifications in time format.")
 (defvar notify-last-notification '(0 0 0) "Time of last notification.")
 (defvar notify-method nil "Notification method among
-'notify-via-dbus, 'notify-via-libnotify, 'notify-via-message or 
+'notify-via-dbus, 'notify-via-libnotify, 'notify-via-message or
 'notify-via-growl")
 
 ;; determine notification method unless already set
