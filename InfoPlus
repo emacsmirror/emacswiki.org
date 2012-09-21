@@ -1,6 +1,4 @@
-DrewAdams has written library <tt>[[info+.el]]</tt> ('''info+'''), which extends the standard Emacs library ##info.el##.
-
-'''[::Info+]''' provides:
+Library <tt>[[info+.el]]</tt> extends the standard Emacs library ##info.el## in several ways.  '''[::Info+]''' provides:
 
 * Additional, finer-grained highlighting.  This makes a '''''big''''' difference in readability.
 ** Quoted names, like this: `name-stands-out', and strings, like this: "<code>string-stands-out</code>" are highlighted if '''`Info-fontify-quotations-flag'''' is non-`nil'.
@@ -25,10 +23,10 @@ DrewAdams has written library <tt>[[info+.el]]</tt> ('''info+'''), which extends
 ** `info-display-manual': Completion for manual name.
 ** `Info-goto-emacs-key-command-node': If the key's [[command]] is not found, then it searches for the KeySequence in the text.
 
-* Syntax table that respects EmacsLisp: apostrophe ('''##'##''') and non-breaking space have ''punctuation'' syntax, not ''word'' syntax.  So for example, you can easily use `C-s C-w' to select text between ##`##...##'## without also grabbing the ##'## at the end. (I reported this as Emacs bug [[http://emacsbugs.donarmstrong.com/cgi-bin/bugreport.cgi?bug=3312|#3312]], but so far it hasn't been fixed.)
+* Syntax table that respects EmacsLisp: apostrophe ('''##'##''') and non-breaking space have ''punctuation'' syntax, not ''word'' syntax.  So for example, you can easily use `C-s C-w' to select text between ##`##...##'## without also grabbing the ##'## at the end. (I reported this as Emacs bug [[http://emacsbugs.donarmstrong.com/cgi-bin/bugreport.cgi?bug=3312|#3312]], which was fixed a couple years later in Emacs 24.)
 
 * Redefinitions of some standard Emacs functions
-** Info [[Frame]] is dynamically shrink-wrapped to fit each node individually (if `Info-fit-frame-flag' is non-`nil').
+** An Info [[frame]] is dynamically shrink-wrapped to fit each node individually (if `Info-fit-frame-flag' is non-`nil').
 ** Searching highlights the found regexp (if `search-highlight' is non-`nil').
 ** Better default values for input.
 ** More informative messages -- e.g. how many additional matches found.
@@ -40,7 +38,7 @@ DrewAdams has written library <tt>[[info+.el]]</tt> ('''info+'''), which extends
 ** '''`Info-save-current-node'''' (bound to '''`##.##'''') -- Save name of current node to list `Info-saved-nodes', for use by `v' (`Info-virtual-book').
 ** '''`Info-merge-subnodes'''' -- Integrate the current Info node with its subnodes (the nodes in its Menu), perhaps recursively. 
 
-:: Use `Info-merge-subnodes' to ''extract a self-contained report'' (possibly the whole manual!) from an Info manual. The report is itself an Info buffer, with hyperlinks and normal Info behavior.
+:: Use `Info-merge-subnodes' to extract a self-contained report (possibly the whole manual) from an Info manual. The report is itself an Info buffer, with hyperlinks and normal Info behavior.
 
 :: There are various prefix-argument options that govern just how subnodes are treated (recursively or not, for instance). There are a few user variables that let you customize the report appearance.
 
@@ -48,7 +46,7 @@ DrewAdams has written library <tt>[[info+.el]]</tt> ('''info+'''), which extends
 
 :: [[image:DrewsEmacsInfoMerged]]
 
-:: You can ''convert such a report to HTML'' using menu Tools > HTMLize Buffer (`mkhtml-any-buffer') from library Lisp:mkhtml.el. For more information, see SaveAsHtml.
+:: You can convert such a report to HTML using menu Tools > HTMLize Buffer (`mkhtml-any-buffer') from library Lisp:mkhtml.el. For more information, see SaveAsHtml.  (That code is quite old, however.)
 
 
 '''See Also:''' [[Icicles - Info Enhancements]].
