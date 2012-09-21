@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 22.1
-;; Last-Updated: Fri Sep 21 11:29:44 2012 (-0700)
+;; Last-Updated: Fri Sep 21 13:27:05 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1289
+;;     Update #: 1303
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/help-fns+.el
 ;; Doc URL: http://emacswiki.org/emacs/HelpPlus
 ;; Keywords: help, faces, characters, packages, description
@@ -69,7 +69,7 @@
 ;;    `help-substitute-command-keys', `help-value-satisfies-type-p',
 ;;    `help-var-inherits-type-p', `help-var-is-of-type-p',
 ;;    `help-var-matches-type-p', `help-var-val-satisfies-type-p',
-;;    `Info-any-index-occurrences-p' (Emacs 23.2+),
+;;    `Info-first-index-occurrence' (Emacs 23.2+),
 ;;    `Info-indexed-find-file' (Emacs 23.2+), `Info-indexed-find-node'
 ;;    (Emacs 23.2+), `Info-index-entries-across-manuals' (Emacs
 ;;    23.2+), `Info-index-occurrences' (Emacs 23.2+),
@@ -119,6 +119,8 @@
 ;;; Change Log:
 ;;
 ;; 2012/09/21 dadams
+;;     Renamed Info-any-index-occurrences-p to Info-first-index-occurrence.
+;;     Info-any-index-occurrences-p: Return the first successful lookup, not t.
 ;;     Info-index-entries-across-manuals, Info-index-occurrences, Info-any-index-occurrences-p:
 ;;       Added optional arg INDEX-NODES.
 ;;     Adjust calls to those fns accordingly, e.g., in define-button-type for help-info-manual-lookup
@@ -549,12 +551,12 @@ manuals.  Otherwise, create the link only if there are search hits in
 the manuals."
     (when (or (stringp object)  (symbolp object)) ; Exclude, e.g., a keymap as OBJECT.
       (unless manuals-spec (setq manuals-spec  help-cross-reference-manuals))
-      (when (car manuals-spec)    ; Create no link if no manuals to search.
+      (when (car manuals-spec) ; Create no link if no manuals to search.
         (let ((books         (car manuals-spec))
               (search-now-p  (cdr manuals-spec))
               (symb-name     (if (stringp object) object (symbol-name object))))
           (when (or (not search-now-p)
-                    (save-current-buffer (Info-any-index-occurrences-p symb-name () books nomsg)))
+                    (save-current-buffer (Info-first-index-occurrence symb-name () books nomsg)))
             (let ((buffer-read-only  nil))
               (insert (format "\n\nFor more information %s the "
                               (if (cdr manuals-spec) "see" "check")))
@@ -595,13 +597,13 @@ Optional arg NOMSG non-nil means do not display a progress message."
   ;; Similar to `Info-apropos-matches', but using exact matches (ignoring case). 
   (defun Info-index-occurrences (index-entry &optional index-nodes manuals nomsg)
     "Collect occurrences of INDEX-ENTRY in INDEX-NODES of MANUALS.
-Return a list of the form ((FILE INDEX-ENTRY NODE LINE)), where:
+Return a list of the form ((FILE INDEX-ENTRY NODE LINE) ...), where:
  FILE is the name of an Info file,
  NODE is an Info node name,
  LINE is the line number of the INDEX-ENTRY occurrence in that node.
 
 Optional arg INDEX-NODES are the index nodes in MANUALS to search.
- By default (nil value), all indexes are searched.
+ By default (nil value), search all indexes of each manual.
 Optional arg MANUALS is the list of manuals to search, or the symbol
   `all', to search all.
 Optional arg NOMSG non-nil means do not display a progress message."
@@ -648,11 +650,15 @@ Optional arg NOMSG non-nil means do not display a progress message."
           (error nil))
         matches)))
 
-  ;; Like `Info-index-occurrences', but just return non-nil as soon as we know there is a match.
-  (defun Info-any-index-occurrences-p (index-entry &optional index-nodes manuals nomsg)
-    "Return non-nil if there INDEX-ENTRY occurs in INDEX-NODES of MANUALS.
-Optional arg INDEX-NODES are the index nodes in MANUALS to search.
- By default (nil value), all indexes are searched.
+  ;; Like `Info-index-occurrences', but return only the first occurrence found.
+  (defun Info-first-index-occurrence (index-entry &optional index-nodes manuals nomsg)
+    "Return nil or an occurrence of INDEX-ENTRY in INDEX-NODES of MANUALS.
+Search INDEX-NODES and MANUALS in order.
+A non-nil return value is the first first successful index lookup, in
+the form (FILE INDEX-ENTRY NODE LINE) - see `Info-index-occurrences'.
+
+Optional arg INDEX-NODES are the index nodes of MANUALS to search.
+ By default (nil value), search all indexes of each manual.
 Optional arg MANUALS is the list of manuals to search, or the symbol
   `all', to search all.
 Optional arg NOMSG non-nil means do not display a progress message."
@@ -661,7 +667,7 @@ Optional arg NOMSG non-nil means do not display a progress message."
          (let ((pattern  (format "\n\\* +\\(%s\\):[ \t]+\\([^\n]+\\)\
 \\.\\(?:[ \t\n]*(line +\\([0-9]+\\))\\)?"
                                  (regexp-quote index-entry)))
-               (any?     nil)
+               (found    nil)
                node)
            (unless nomsg
              (message "Searching indexes of %s..." (if (eq manuals 'all)
@@ -682,23 +688,27 @@ Optional arg NOMSG non-nil means do not display a progress message."
                        (setq manual  (match-string 1))
                        (set-text-properties 0 (length manual) nil manual)
                        (add-to-list 'manuals manual))))
-                 (setq any?  (catch 'Info-any-index-occurrences-p
-                               (dolist (manual  manuals)
-                                 (unless nomsg
-                                   (message "Searching indexes of manual `%s'..." manual))
-                                 (when (or index-nodes
-                                           (setq index-nodes  (Info-index-nodes
-                                                               (Info-find-file manual))))
-                                   (Info-find-node manual (car index-nodes))
-                                   (while (progn (goto-char (point-min))
-                                                 (when (re-search-forward pattern nil t)
-                                                   (throw 'Info-any-index-occurrences-p t))
-                                                 (setq index-nodes  (cdr index-nodes)
-                                                       node         (car index-nodes)))
-                                     (Info-goto-node node))))
-                               nil)))
+                 (setq found  (catch 'Info-first-index-occurrence
+                                (dolist (manual  manuals)
+                                  (unless nomsg
+                                    (message "Searching indexes of manual `%s'..." manual))
+                                  (when (or index-nodes
+                                            (setq index-nodes  (Info-index-nodes
+                                                                (Info-find-file manual))))
+                                    (Info-find-node manual (car index-nodes))
+                                    (while (progn (goto-char (point-min))
+                                                  (when (re-search-forward pattern nil t)
+                                                    (throw 'Info-first-index-occurrence
+                                                      (list manual
+                                                            (match-string-no-properties 1)
+                                                            (match-string-no-properties 2)
+                                                            (match-string-no-properties 3))))
+                                                  (setq index-nodes  (cdr index-nodes)
+                                                        node         (car index-nodes)))
+                                      (Info-goto-node node))))
+                                nil)))
              (error nil))
-           any?)))
+           found)))
 
   (defun describe-buffer (&optional buffer-name) ; Bound to `C-h B'
     "Describe the existing buffer named BUFFER-NAME.
