@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 22.1
-;; Last-Updated: Thu Aug 23 13:03:20 2012 (-0700)
+;; Last-Updated: Fri Sep 21 11:29:44 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1258
+;;     Update #: 1289
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/help-fns+.el
 ;; Doc URL: http://emacswiki.org/emacs/HelpPlus
 ;; Keywords: help, faces, characters, packages, description
@@ -118,6 +118,11 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/09/21 dadams
+;;     Info-index-entries-across-manuals, Info-index-occurrences, Info-any-index-occurrences-p:
+;;       Added optional arg INDEX-NODES.
+;;     Adjust calls to those fns accordingly, e.g., in define-button-type for help-info-manual-lookup
+;;       and help-insert-xref-button in Info-make-manuals-xref.
 ;; 2012/07/20 dadams
 ;;     Added: describe-buffer, describe-mode-1.  Bound describe-buffer to C-h B.
 ;;     describe-mode: Redefined to use describe-mode-1.
@@ -529,31 +534,31 @@ so that matches are exact (ignoring case).")
                                      ;; (slow . t) ; $$$$$$ Useless here?
                                      ))
 
-  (defun Info-make-manuals-xref (object &optional no-newlines-after-p manuals nomsg)
+  (defun Info-make-manuals-xref (object &optional no-newlines-after-p manuals-spec nomsg)
     "Create a cross-ref link for index entries for OBJECT in manuals.
 Non-`nil' optional arg NO-NEWLINES-AFTER-P means do not add two
 newlines after the cross reference.
 
-Optional arg MANUALS controls which manuals to search.  It has the
-same form as option `help-cross-reference-manuals', and it defaults to
-the value of that option.
+Optional arg MANUALS-SPEC controls which manuals to search.  It has
+the same form as option `help-cross-reference-manuals', and it
+defaults to the value of that option.
 
-Do nothing if the car of MANUALS is nil (no manuals to search).  If
-its cdr is `nil' then create the link without first searching any
+Do nothing if the car of MANUALS-SPEC is nil (no manuals to search).
+If its cdr is `nil' then create the link without first searching any
 manuals.  Otherwise, create the link only if there are search hits in
 the manuals."
     (when (or (stringp object)  (symbolp object)) ; Exclude, e.g., a keymap as OBJECT.
-      (unless manuals (setq manuals  help-cross-reference-manuals))
-      (when (car manuals)    ; Create no link if no manuals to search.
-        (let ((books         (car manuals))
-              (search-now-p  (cdr manuals))
+      (unless manuals-spec (setq manuals-spec  help-cross-reference-manuals))
+      (when (car manuals-spec)    ; Create no link if no manuals to search.
+        (let ((books         (car manuals-spec))
+              (search-now-p  (cdr manuals-spec))
               (symb-name     (if (stringp object) object (symbol-name object))))
           (when (or (not search-now-p)
-                    (save-current-buffer (Info-any-index-occurrences-p symb-name books nomsg)))
+                    (save-current-buffer (Info-any-index-occurrences-p symb-name () books nomsg)))
             (let ((buffer-read-only  nil))
               (insert (format "\n\nFor more information %s the "
-                              (if (cdr manuals) "see" "check")))
-              (help-insert-xref-button "manuals" 'help-info-manual-lookup symb-name books)
+                              (if (cdr manuals-spec) "see" "check")))
+              (help-insert-xref-button "manuals" 'help-info-manual-lookup symb-name () books)
               (insert ".")
               (unless no-newlines-after-p (insert "\n\n"))))))))
 
@@ -563,39 +568,49 @@ the manuals."
              (get 'help-xref 'button-category-symbol)) ; In `button.el'
     (define-button-type 'help-info-manual-lookup
         :supertype 'help-xref
-        'help-function #'(lambda (string &optional manuals nomsg)
-                           (Info-index-entries-across-manuals string manuals nomsg))
+        'help-function #'(lambda (string &optional index-nodes books nomsg)
+                           (Info-index-entries-across-manuals string () books nomsg))
         'help-echo "mouse-2, RET: Look it up in the manuals"))
 
-  (defun Info-index-entries-across-manuals (string &optional manuals nomsg)
-    "Look up STRING in indexes of Info MANUALS on your system.
+  (defun Info-index-entries-across-manuals (string &optional index-nodes manuals nomsg)
+    "Look up STRING in Info MANUALS on your system.
 Looks for exact matches (ignoring case): STRING is expected to be an
 index entry.  Build an Info menu of the possible matches.
-MANUALS has the form of `help-cross-reference-manuals'."
+
+Optional arg INDEX-NODES are the index nodes in MANUALS to search.
+ By default (nil value), all indexes are searched.
+Optional arg MANUALS is the list of manuals to search, or the symbol
+  `all', to search all.
+Optional arg NOMSG non-nil means do not display a progress message."
     (let ((nodes  Info-indexed-nodes)
           nodename)
       (while (and nodes  (not (equal string (nth 1 (car nodes)))))  (setq nodes  (cdr nodes)))
       (if nodes
           (Info-find-node Info-indexed-file (car (car nodes)))
         (setq nodename  (format "Index for `%s'" string))
-        (push (list nodename string (Info-index-occurrences string manuals nomsg)) Info-indexed-nodes)
+        (push (list nodename string (Info-index-occurrences string index-nodes manuals nomsg))
+              Info-indexed-nodes)
         (Info-find-node Info-indexed-file nodename))))
 
   ;; Similar to `Info-apropos-matches', but using exact matches (ignoring case). 
-  (defun Info-index-occurrences (index-entry &optional manuals nomsg)
-    "Collect occurrences of INDEX-ENTRY in MANUALS.
-Optional arg MANUALS has the form of `help-cross-reference-manuals'.
+  (defun Info-index-occurrences (index-entry &optional index-nodes manuals nomsg)
+    "Collect occurrences of INDEX-ENTRY in INDEX-NODES of MANUALS.
 Return a list of the form ((FILE INDEX-ENTRY NODE LINE)), where:
  FILE is the name of an Info file,
  NODE is an Info node name,
  LINE is the line number of the INDEX-ENTRY occurrence in that node.
+
+Optional arg INDEX-NODES are the index nodes in MANUALS to search.
+ By default (nil value), all indexes are searched.
+Optional arg MANUALS is the list of manuals to search, or the symbol
+  `all', to search all.
 Optional arg NOMSG non-nil means do not display a progress message."
     (unless (string= index-entry "")
       ;; Unlike `Info-apropos-matches', we match only the exact string as an index entry.
       (let ((pattern  (format "\n\\* +\\(%s\\):[ \t]+\\([^\n]+\\)\
 \\.\\(?:[ \t\n]*(line +\\([0-9]+\\))\\)?"
                               (regexp-quote index-entry)))
-            matches index-nodes node)
+            matches node)
         (unless nomsg
           (message "Searching indexes of %s..." (if (eq manuals 'all)
                                                     "all manuals"
@@ -617,7 +632,8 @@ Optional arg NOMSG non-nil means do not display a progress message."
                     (add-to-list 'manuals manual))))
               (dolist (manual  manuals)
                 (unless nomsg (message "Searching indexes of manual `%s'..." manual))
-                (when (setq index-nodes  (Info-index-nodes (Info-find-file manual)))
+                (when (or index-nodes
+                          (setq index-nodes  (Info-index-nodes (Info-find-file manual))))
                   (Info-find-node manual (car index-nodes))
                   (while (progn (goto-char (point-min))
                                 (while (re-search-forward pattern nil t)
@@ -633,9 +649,12 @@ Optional arg NOMSG non-nil means do not display a progress message."
         matches)))
 
   ;; Like `Info-index-occurrences', but just return non-nil as soon as we know there is a match.
-  (defun Info-any-index-occurrences-p (index-entry &optional manuals nomsg)
-    "Return non-nil if there are any occurrences of INDEX-ENTRY in MANUALS.
-Optional arg MANUALS has the form of `help-cross-reference-manuals'.
+  (defun Info-any-index-occurrences-p (index-entry &optional index-nodes manuals nomsg)
+    "Return non-nil if there INDEX-ENTRY occurs in INDEX-NODES of MANUALS.
+Optional arg INDEX-NODES are the index nodes in MANUALS to search.
+ By default (nil value), all indexes are searched.
+Optional arg MANUALS is the list of manuals to search, or the symbol
+  `all', to search all.
 Optional arg NOMSG non-nil means do not display a progress message."
     (and (not (string= index-entry ""))
          ;; Unlike `Info-apropos-matches', we match only the exact string as an index entry.
@@ -643,7 +662,7 @@ Optional arg NOMSG non-nil means do not display a progress message."
 \\.\\(?:[ \t\n]*(line +\\([0-9]+\\))\\)?"
                                  (regexp-quote index-entry)))
                (any?     nil)
-               index-nodes node)
+               node)
            (unless nomsg
              (message "Searching indexes of %s..." (if (eq manuals 'all)
                                                        "all manuals"
@@ -667,7 +686,9 @@ Optional arg NOMSG non-nil means do not display a progress message."
                                (dolist (manual  manuals)
                                  (unless nomsg
                                    (message "Searching indexes of manual `%s'..." manual))
-                                 (when (setq index-nodes  (Info-index-nodes (Info-find-file manual)))
+                                 (when (or index-nodes
+                                           (setq index-nodes  (Info-index-nodes
+                                                               (Info-find-file manual))))
                                    (Info-find-node manual (car index-nodes))
                                    (while (progn (goto-char (point-min))
                                                  (when (re-search-forward pattern nil t)
