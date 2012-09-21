@@ -1,0 +1,10 @@
+This page is about emacs options to silence prompts that make things safer at the expense of slowing down experts.
+
+== Making Emacs Shut Up ==
+
+There are a number of commands that as a safety feature prompt the user before continuing.  These prompts can be an annoyance to an experienced user who might prefer to live dangerously. This is a place to list ways of silencing some of these prompts. 
+
+* Copying directories using Dired without "Recursive copies of --" question:
+
+   (setq dired-recursive-copies 'always)
+
