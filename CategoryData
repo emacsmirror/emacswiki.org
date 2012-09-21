@@ -9,6 +9,8 @@ DataModes has more about /editing/ data using specialized major modes.
 * ElispParser -- A small parser tool written in EmacsLisp.
 * ParserCompiler -- A macro that compiles Recursive Descent parsers in elisp.
 * SemanticBovinator -- A flex/bison lexer and parser generator written in EmacsLisp.
+* [http://github.com/skeeto/rdp rdp.el] -- Recursive Descent Parser library
+* Lisp:peg.el -- Parsing Expression Grammars in Emacs Lisp
 
 == Storing Data ==
 
