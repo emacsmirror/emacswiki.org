@@ -1,4 +1,4 @@
-;;; dired-single.el -- reuse the current dired buffer to visit another directory
+;;; dired-single.el --- Reuse the current dired buffer to visit another directory
 ;; @(#) $Id: dired-single.el,v 1.6 2001/01/11 02:56:01 root Exp $
 
 ;; This file is not part of Emacs
@@ -337,5 +337,5 @@
 ;;; ***** we're done
 ;;; **************************************************************************
 (provide 'dired-single)
-;; dired-single.el ends here
+;;; dired-single.el ends here
 
