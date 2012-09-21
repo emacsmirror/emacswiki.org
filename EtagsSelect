@@ -79,6 +79,25 @@ otherwise raises an error."
 	'(lambda () (jds-set-tags-file-path)))
 </pre>
 
+== Mixing etags-select and Ido ==
+
+[new:dchenbecker:2012-09-21 13:55 UTC]
+I love etags-select, but I also really like ido's fuzzy matching, so I mixed the two. Based on a contribution on the [[InteractivelyDoThings]] page, I came up with this function:
+
+<pre>
+;; Use ido to list tags, but then select via etags-select (best of both worlds!)
+(defun my-ido-find-tag ()
+  "Find a tag using ido"
+  (interactive)
+  (tags-completion-table)
+  (let (tag-names)
+    (mapatoms (lambda (x)
+                (push (prin1-to-string x t) tag-names))
+              tags-completion-table)
+    (etags-select-find (ido-completing-read "Tag: " tag-names))))
+(global-set-key (kbd "M-.") 'my-ido-find-tag)
+</pre>
+
 == Related Commands From Other Packages ==
 
 [new:DrewAdams:2008-02-18 21:33 UTC]
