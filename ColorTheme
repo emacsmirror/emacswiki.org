@@ -481,6 +481,9 @@ Pomgranate Explosion, an elegant and soft color theme for GNU Emacs. Available a
 [new]
 My take on Monokai for emacs: https://github.com/stafu/AnotherMonokai -- SM
 
+[new]
+Color theme I use daily. It's highly contrast black-purple theme. Lisp:color-theme-black-purple.el -- Anonymous
+
 == History ==
 The original color theme code was written by Jonadab the Unsightly
 One.
