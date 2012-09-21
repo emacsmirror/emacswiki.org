@@ -8,3 +8,11 @@ There are a number of commands that as a safety feature prompt the user before c
 
    (setq dired-recursive-copies 'always)
 
+* Delete directories recursively without asking:
+
+   (setq dired-recursive-deletes 'always)
+
+* Alternately, ask only at the top level, before deleting a tree:
+
+   (setq dired-recursive-deletes 'top)
+
