@@ -294,5 +294,6 @@ The correct thing to do is just to re-find it with `C-x C-m c utf-8'.
 
 It seems Emacs does not support some combining characters. For instance if you paste or read from a file the word страни́ца (as seen in Wiktionary) you will see страни´ца. -- DanielClemente, Apr2012, 24.1.50.4 in X.org in Debian
 
+: Combining characters work for me with the Freemono font. Interestingly, no other (monospace) fonts seem to work.
 ----
 CategoryInternationalization
