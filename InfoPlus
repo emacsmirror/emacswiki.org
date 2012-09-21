@@ -21,7 +21,7 @@ Library <tt>[[info+.el]]</tt> extends the standard Emacs library ##info.el## in 
 * New key bindings, commands, and menus.
 * Improved standard commands.  For example:
 ** `info-display-manual': Completion for manual name.
-** `Info-goto-emacs-key-command-node': If the key's [[command]] is not found, then it searches for the KeySequence in the text.
+** `Info-goto-emacs-key-command-node': If the key's [[command]] is not found, then it searches for the [[key sequence]] in the text.
 
 * Syntax table that respects EmacsLisp: apostrophe ('''##'##''') and non-breaking space have ''punctuation'' syntax, not ''word'' syntax.  So for example, you can easily use `C-s C-w' to select text between ##`##...##'## without also grabbing the ##'## at the end. (I reported this as Emacs bug [[http://emacsbugs.donarmstrong.com/cgi-bin/bugreport.cgi?bug=3312|#3312]], which was fixed a couple years later in Emacs 24.)
 
