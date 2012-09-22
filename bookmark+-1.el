@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Tue Sep 11 08:48:15 2012 (-0700)
+;; Last-Updated: Sat Sep 22 08:38:39 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5820
+;;     Update #: 5824
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -3856,7 +3856,10 @@ BOOKMARK is a bookmark name or a bookmark record."
 (defun bmkp-autonamed-this-buffer-bookmark-p (bookmark)
   "Return non-nil if BOOKMARK is an autonamed bookmark for this buffer."
   (unless (stringp bookmark) (setq bookmark  (bmkp-bookmark-name-from-record bookmark)))
-  (and (bmkp-autonamed-bookmark-p bookmark)  (bmkp-this-buffer-p bookmark)))
+  ;; $$$$$$ This did not require the buffer name part to match:
+  ;;        (and (bmkp-autonamed-bookmark-p bookmark)  (bmkp-this-buffer-p bookmark)))
+  (and (string-match (format bmkp-autoname-format (buffer-name)) bookmark)
+       (bmkp-this-buffer-p bookmark)))  ; Just to be sure.
 
 (defun bmkp-autonamed-bookmark-for-buffer-p (bookmark buffer-name)
   "Return non-nil if BOOKMARK is an autonamed bookmark for BUFFER.
@@ -4954,7 +4957,7 @@ A new list is returned (no side effects)."
   "`bookmark-alist', with only autonamed bookmarks for the current buffer.
 A new list is returned (no side effects)."
   (bookmark-maybe-load-default-file)
-  (bmkp-remove-if-not (lambda (bmk) (bmkp-this-buffer-p bmk)) bookmark-alist))
+  (bmkp-remove-if-not (lambda (bmk) (bmkp-autonamed-this-buffer-bookmark-p bmk)) bookmark-alist))
 
 (defun bmkp-bookmark-file-alist-only ()
   "`bookmark-alist', filtered to retain only bookmark-file bookmarks.
