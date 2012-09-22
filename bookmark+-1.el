@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sat Sep 22 08:38:39 2012 (-0700)
+;; Last-Updated: Sat Sep 22 08:56:46 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5824
+;;     Update #: 5826
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -2061,12 +2061,10 @@ bookmarks)."
              (non-autonamed-bookmark   (unless (bmkp-autonamed-bookmark-p bname)
                                          (bmkp-light-bookmark bname)))
              (any-bookmark             (bmkp-light-bookmark bname))
-             (autonamed-in-buffer      (bmkp-light-bookmarks
-                                        (bmkp-remove-if-not #'bmkp-autonamed-bookmark-p
-                                                            (bmkp-this-buffer-alist-only))
-                                        nil interactivep))
+             (autonamed-in-buffer      (bmkp-light-bookmarks (bmkp-autonamed-this-buffer-alist-only)
+                                                             nil interactivep))
              (non-autonamed-in-buffer  (bmkp-light-bookmarks
-                                        (bmkp-remove-if #'bmkp-autonamed-bookmark-p
+                                        (bmkp-remove-if #'bmkp-autonamed-this-buffer-bookmark-p
                                                         (bmkp-this-buffer-alist-only))
                                         nil interactivep))
              (all-in-buffer            (bmkp-light-this-buffer nil interactivep)))
