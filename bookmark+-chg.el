@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Sep 22 08:46:57 2012 (-0700)
+;; Last-Updated: Sat Sep 22 08:59:49 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 15029
+;;     Update #: 15031
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -147,6 +147,7 @@
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
 ;; 2012/09/22 dadams
+;;     bookmark-set: Updated handling of bmkp-auto-light-when-set for (non-)autonamed-in-buffer.
 ;;     bmkp-autonamed-this-buffer-bookmark-p: Require that the buffer name part match also.
 ;;     bmkp-autonamed-this-buffer-alist-only: Corrected to use bmkp-autonamed-this-buffer-bookmark-p.
 ;; 2012/09/11 dadams
