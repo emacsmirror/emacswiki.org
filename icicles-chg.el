@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Mon Sep 17 22:15:57 2012 (-0700)
+;; Last-Updated: Sat Sep 22 10:54:32 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8939
+;;     Update #: 8940
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -86,6 +86,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2012/09/22 dadams
+;;     icicle-bookmark-jump-1:
+;;       Use full bookmark, not name, after jump and before crosshairs, in case renamed autonamed bmk.
 ;; 2012/09/15 dadams
 ;;     icicle-visit-marked-file-of-content*: *-remove-if -> use filter as dired-get-marked-files arg.
 ;; 2012/09/11 dadams
