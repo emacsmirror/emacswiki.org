@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 22.1
-;; Last-Updated: Fri Sep 21 13:27:05 2012 (-0700)
+;; Last-Updated: Sat Sep 22 15:14:48 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1303
+;;     Update #: 1311
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/help-fns+.el
 ;; Doc URL: http://emacswiki.org/emacs/HelpPlus
 ;; Keywords: help, faces, characters, packages, description
@@ -118,6 +118,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/09/22 dadams
+;;     Info-index-occurrences, Info-first-index-occurrence: Better Searching msg.
 ;; 2012/09/21 dadams
 ;;     Renamed Info-any-index-occurrences-p to Info-first-index-occurrence.
 ;;     Info-any-index-occurrences-p: Return the first successful lookup, not t.
@@ -614,10 +616,10 @@ Optional arg NOMSG non-nil means do not display a progress message."
                               (regexp-quote index-entry)))
             matches node)
         (unless nomsg
-          (message "Searching indexes of %s..." (if (eq manuals 'all)
-                                                    "all manuals"
-                                                  (concat "manuals "
-                                                          (mapconcat #'identity manuals ", ")))))
+          (message "Searching indexes of %s..."
+                   (cond ((eq manuals 'all) "all manuals")
+                         ((null (cadr manuals)) (concat (car manuals) " manual"))
+                         (t (concat "manuals " (mapconcat #'identity manuals ", "))))))
         (condition-case nil
             (with-temp-buffer
               (Info-mode)
@@ -670,10 +672,10 @@ Optional arg NOMSG non-nil means do not display a progress message."
                (found    nil)
                node)
            (unless nomsg
-             (message "Searching indexes of %s..." (if (eq manuals 'all)
-                                                       "all manuals"
-                                                     (concat "manuals "
-                                                             (mapconcat #'identity manuals ", ")))))
+             (message "Searching indexes of %s..."
+                      (cond ((eq manuals 'all) "all manuals")
+                            ((null (cadr manuals)) (concat (car manuals) " manual"))
+                            (t (concat "manuals " (mapconcat #'identity manuals ", "))))))
            (condition-case nil
                (with-temp-buffer
                  (Info-mode)
