@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Sep 15 09:23:58 2012 (-0700)
+;; Last-Updated: Sat Sep 22 10:32:48 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 24619
+;;     Update #: 24621
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -4721,6 +4721,8 @@ You probably don't want to use this.  Use
   "Helper function for `icicle-bookmark-jump(-other-window)'."
   (unless bookmark (error "No bookmark specified"))
   (bookmark-maybe-historicize-string bookmark)
+  ;; In case the jump renames it (as for an autonamed bookmark).
+  (setq bookmark  (bookmark-get-bookmark bookmark 'NOERROR))
   (if (fboundp 'bookmark--jump-via)
       (bookmark--jump-via bookmark (if other-window-p 'pop-to-buffer 'switch-to-buffer))
     (let ((cell  (bookmark-jump-noselect bookmark))) ; Emacs < 23 and without `Bookmark+'.
