@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 22.1
-;; Last-Updated: Sat Sep 22 15:14:48 2012 (-0700)
+;; Last-Updated: Sat Sep 22 15:31:49 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1311
+;;     Update #: 1317
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/help-fns+.el
 ;; Doc URL: http://emacswiki.org/emacs/HelpPlus
 ;; Keywords: help, faces, characters, packages, description
@@ -119,7 +119,8 @@
 ;;; Change Log:
 ;;
 ;; 2012/09/22 dadams
-;;     Info-index-occurrences, Info-first-index-occurrence: Better Searching msg.
+;;     Info-index-occurrences, Info-first-index-occurrence:
+;;       Replace Info-directory call by short version.  Better Searching msg.
 ;; 2012/09/21 dadams
 ;;     Renamed Info-any-index-occurrences-p to Info-first-index-occurrence.
 ;;     Info-any-index-occurrences-p: Return the first successful lookup, not t.
@@ -622,12 +623,14 @@ Optional arg NOMSG non-nil means do not display a progress message."
                          (t (concat "manuals " (mapconcat #'identity manuals ", "))))))
         (condition-case nil
             (with-temp-buffer
+              (when (eq manuals 'all) (setq manuals  ()))
               (Info-mode)
-              (Info-directory)
-              (goto-char (point-min))
-              (re-search-forward "\\* Menu: *\n" nil t)
-              (when (eq manuals 'all)
-                (setq manuals  ())
+              ;; Next two lines are essentially `(Info-directory)'.
+              (info-initialize)
+              (Info-find-node-2 "dir" "top" 'NO-GOING-BACK)
+              (unless manuals
+                (goto-char (point-min))
+                (re-search-forward "\\* Menu: *\n" nil t)
                 (let (manual)
                   (while (re-search-forward "\\*.*: *(\\([^)]+\\))" nil t)
                     ;; `add-to-list' ensures no dups in `manuals', so the `dolist' runs faster.
@@ -678,12 +681,14 @@ Optional arg NOMSG non-nil means do not display a progress message."
                             (t (concat "manuals " (mapconcat #'identity manuals ", "))))))
            (condition-case nil
                (with-temp-buffer
+                 (when (eq manuals 'all) (setq manuals  ()))
                  (Info-mode)
-                 (Info-directory)
-                 (goto-char (point-min))
-                 (re-search-forward "\\* Menu: *\n" nil t)
-                 (when (eq manuals 'all)
-                   (setq manuals  ())
+                 ;; Next two lines are essentially `(Info-directory)'.
+                 (info-initialize)
+                 (Info-find-node-2 "dir" "top" 'NO-GOING-BACK)
+                 (unless manuals
+                   (goto-char (point-min))
+                   (re-search-forward "\\* Menu: *\n" nil t)
                    (let (manual)
                      (while (re-search-forward "\\*.*: *(\\([^)]+\\))" nil t)
                        ;; `add-to-list' ensures no dups in `manuals', so the `dolist' runs faster.
