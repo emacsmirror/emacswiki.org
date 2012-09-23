@@ -1,9 +1,9 @@
 ;;; el-mock.el --- Tiny Mock and Stub framework in Emacs Lisp
-;; $Id: el-mock.el,v 1.22 2010/05/04 08:49:20 rubikitch Exp $
 
-;; Copyright (C) 2008, 2010  rubikitch
+;; Copyright (C) 2008, 2010, 2012  rubikitch
 
 ;; Author: rubikitch <rubikitch@ruby-lang.org>
+;; Version: 1.23
 ;; Keywords: lisp, testing, unittest
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/download/el-mock.el
 
@@ -75,85 +75,6 @@
 ;;  7) Describe the bug using a precise recipe.
 ;;  8) Type C-c C-c to send.
 ;;  # If you are a Japanese, please write in Japanese:-)
-
-;;; History:
-
-;; $Log: el-mock.el,v $
-;; Revision 1.22  2010/05/04 08:49:20  rubikitch
-;; Added bug report command
-;;
-;; Revision 1.21  2010/03/29 12:17:35  rubikitch
-;; Fix an error when stubbed value is nil
-;;
-;; Revision 1.20  2010/03/26 06:25:08  rubikitch
-;; more mock :times support
-;;
-;; Revision 1.19  2010/03/26 02:52:01  rubikitch
-;; document
-;;
-;; Revision 1.18  2010/03/26 02:48:34  rubikitch
-;; mock :times support / refactoring
-;;
-;; Revision 1.17  2008/08/28 19:04:48  rubikitch
-;; Implement `not-called' mock.
-;;
-;; Revision 1.16  2008/08/28 18:23:28  rubikitch
-;; unit test: use dont-compile
-;;
-;; Revision 1.15  2008/04/18 18:02:24  rubikitch
-;; bug fix about symbol
-;;
-;; Revision 1.14  2008/04/13 18:23:43  rubikitch
-;; removed `message' advice.
-;; mock-suppress-redefinition-message: suppress by empty message
-;;
-;; Revision 1.13  2008/04/12 17:36:11  rubikitch
-;; raise mock-syntax-error when invalid `mock' and `stub' spec.
-;;
-;; Revision 1.12  2008/04/12 17:30:33  rubikitch
-;; inhibit using `mock' and `stub' outside `mock-protect' function.
-;;
-;; Revision 1.11  2008/04/12 17:10:42  rubikitch
-;; * added docstrings.
-;; * `stublet' is an alias of `mocklet'.
-;;
-;; Revision 1.10  2008/04/12 16:14:16  rubikitch
-;; * allow omission of return value
-;; * (mock foo 2) and (stub foo 2) cause error now
-;; * arranged test
-;;
-;; Revision 1.9  2008/04/12 15:10:32  rubikitch
-;; changed mocklet syntax
-;;
-;; Revision 1.8  2008/04/12 14:54:16  rubikitch
-;; added Commentary
-;;
-;; Revision 1.7  2008/04/10 16:14:02  rubikitch
-;; fixed advice-related bug
-;;
-;; Revision 1.6  2008/04/10 14:08:32  rubikitch
-;; *** empty log message ***
-;;
-;; Revision 1.5  2008/04/10 14:01:48  rubikitch
-;; arranged code/test
-;;
-;; Revision 1.4  2008/04/10 12:57:00  rubikitch
-;; mock verify
-;;
-;; Revision 1.3  2008/04/10 07:50:10  rubikitch
-;; *** empty log message ***
-;;
-;; Revision 1.2  2008/04/10 07:48:04  rubikitch
-;; New functions:
-;; stub/setup
-;; stub/teardown
-;; stub/parse-spec
-;;
-;; refactored with-stub-function
-;;
-;; Revision 1.1  2008/04/10 07:37:54  rubikitch
-;; Initial revision
-;;
 
 ;;; Code:
 
@@ -244,14 +165,19 @@ When you adapt Emacs Lisp Mock to a testing framework, wrap test method around t
   (let (mock-verify-list
         -stubbed-functions
         -mocked-functions
-        (in-mocking t))
+        (in-mocking t)
+        any-error)
     ;; (setplist 'mock-original-func nil)
     ;; (setplist 'mock-call-count nil)
     (unwind-protect
-        (funcall body-fn)
+        (condition-case e
+            (funcall body-fn)
+          (error (setq any-error e)))
       (mapc #'stub/teardown -stubbed-functions)
       (unwind-protect
-          (mock-verify)
+          (if any-error
+              (signal (car any-error) (cdr any-error))
+            (mock-verify))
         (mapc #'mock/teardown -mocked-functions)))))
 
 ;;;; message hack
@@ -554,6 +480,11 @@ How to send a bug report:
         (with-mock
           (mock (f 2))                  ;omission of return value
           (f 4)))
+      (expect (error-message "error-in-test1")
+        (defun test1 () (error "error-in-test1"))
+        (with-mock
+          (mock (test2))
+          (test1)))
       (desc "abused mock macro")
       (expect (error mock-syntax-error '("Use `(mock FUNC-SPEC)' or `(mock FUNC-SPEC => RETURN-VALUE)'"))
         (with-mock
