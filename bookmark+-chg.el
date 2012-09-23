@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Sep 22 19:35:46 2012 (-0700)
+;; Last-Updated: Sun Sep 23 15:13:58 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 15033
+;;     Update #: 15044
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -1242,6 +1242,10 @@
 ;;;(@* "CHANGE LOG FOR `bookmark+-lit.el'")
 ;;
 ;; 2012/09/22 dadams
+;;     bmkp-light-bookmark(s): Put full bookmark, not name, on overlay as its bookmark property.
+;;     bmkp-unlight-bookmark: Test using eq against full bookmark, not using equal against name.
+;;     bmkp-a-bookmark-lighted-at-pos: overlay-get now returns full bookmark, so get name if needed.
+;;     bmkp-overlay-of-bookmark: Use bookmark, not its name, like overlay-get does now.  Test with eq.
 ;;     bmkp-light-bookmarks: Use add-to-list instead of unconditionally adding ov to ov-symb.
 ;; 2012/04/28 dadams
 ;;     bmkp-make/move-overlay-of-style, bmkp-make/move-fringe: Use FRONT-ADVANCE arg for make-overlay.
