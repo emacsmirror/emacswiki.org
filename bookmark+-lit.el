@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2010-2112, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 23 07:49:32 2010 (-0700)
-;; Last-Updated: Sun Sep 23 12:26:57 2012 (-0700)
+;; Last-Updated: Sun Sep 23 15:06:27 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 818
+;;     Update #: 837
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-lit.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus
 ;; Keywords: bookmarks, highlighting, bookmark+
@@ -528,7 +528,7 @@ BOOKMARK is a bookmark name or a bookmark record."
       (unless (or noerrorp  (bmkp-lighted-p bmk-name))
         (error "Bookmark `%s' is not highlighted" bmk-name))
       (dolist (ov  (if autonamedp bmkp-autonamed-overlays bmkp-non-autonamed-overlays))
-        (when (equal bmk-name (overlay-get ov 'bookmark))  (delete-overlay ov))))
+        (when (eq bmk (overlay-get ov 'bookmark))  (delete-overlay ov)))) ; Check full bookmark, not name.
     (when msgp (message "UNhighlighted bookmark `%s'" bmk-name))))
 
 ;;;###autoload
@@ -779,9 +779,9 @@ Non-interactively:
                                                       bmkp-light-priorities))
                                           (apply #'min (mapcar #'cdr bmkp-light-priorities))))
                          (unless (memq styl '(lfringe rfringe none)) (overlay-put ov 'face fac))
-                         (overlay-put ov 'evaporate t)
-                         (overlay-put ov 'category  'bookmark-plus)
-                         (overlay-put ov 'bookmark  bmk-name))
+                         (overlay-put ov 'evaporate  t)
+                         (overlay-put ov 'category   'bookmark-plus)
+                         (overlay-put ov 'bookmark   bmk)) ; Use full bookmark, because name can change.
                        (when msgp
                          (message "%sighlighted bookmark `%s'" (if ov "H" "UNh") bmk-name)))))))
               (t
@@ -826,7 +826,8 @@ A prefix argument determines which bookmarks to highlight:
  C-u     - All buffers (all bookmarks) - after confirmation.
  C-u C-u - Navlist (all bookmarks).
 
-Non-interactively, ALIST is the alist of bookmarks to highlight."
+Non-interactively, ALIST is the alist of bookmarks to highlight.
+It must be provided: if nil then do not highlight any bookmarks."
   (interactive
    (list (cond ((not current-prefix-arg)     (bmkp-this-buffer-alist-only))
                ((consp current-prefix-arg)   (if (> (prefix-numeric-value current-prefix-arg) 4)
@@ -858,7 +859,7 @@ Non-interactively, ALIST is the alist of bookmarks to highlight."
         bmk bmk-name autonamedp face style pos buf bmk-ov passes-when-p)
     (catch 'bmkp-light-bookmarks
       (dolist (bookmark  alist)
-        (setq bmk            (bookmark-get-bookmark bookmark 'NOERROR)
+        (setq bmk            (bookmark-get-bookmark bookmark 'NOERROR) ; Should be a no-op.
               bmk-name       (and bmk  (bmkp-bookmark-name-from-record bmk))
               autonamedp     (and bmk  (bmkp-autonamed-bookmark-p bmk-name))
               face           (and bmk  (bmkp-light-face bmk))
@@ -866,7 +867,7 @@ Non-interactively, ALIST is the alist of bookmarks to highlight."
               bmk-ov         (bmkp-overlay-of-bookmark bmk)
               passes-when-p  (and bmk  (or bmk-ov ; Always highlight if already highlighted.
                                            (bmkp-light-when bmk))))
-        (when (and bmk  passes-when-p)   ; Skip bad bookmark and respect `:when' (unless highlighted).
+        (when (and bmk  passes-when-p)  ; Skip bad bookmark and respect `:when' (unless highlighted).
           (setq pos  (bookmark-get-position bmk)
                 buf  (bmkp-get-buffer-name bmk))
           (save-excursion
@@ -906,9 +907,9 @@ Non-interactively, ALIST is the alist of bookmarks to highlight."
                                      (or (cdr (assoc ov-symb bmkp-light-priorities))
                                          (apply #'min (mapcar #'cdr bmkp-light-priorities))))
                         (unless (memq style '(lfringe rfringe none)) (overlay-put ov 'face face))
-                        (overlay-put ov 'evaporate t)
-                        (overlay-put ov 'category 'bookmark-plus)
-                        (overlay-put ov 'bookmark bmk-name)))))))))))
+                        (overlay-put ov 'evaporate  t)
+                        (overlay-put ov 'category  'bookmark-plus)
+                        (overlay-put ov 'bookmark  bmk))))))))))) ; Use full bookmark - name can change.
     (when msgp (message "%s New: %d auto + %d other,  Total: %d auto + %d other = %d"
                         (if (consp current-prefix-arg)
                             (if (> (prefix-numeric-value current-prefix-arg) 4)
@@ -1146,7 +1147,8 @@ BOOKMARK is a bookmark name or a bookmark record."
   (bookmark-prop-get bookmark 'lighting))
 
 (defun bmkp-bookmark-overlay-p (overlay)
-  "Return non-nil if OVERLAY is a bookmark overlay."
+  "Return non-nil if OVERLAY is a bookmark overlay.
+The non-nil value returned is in fact the full bookmark."
   (and (overlayp overlay)  (overlay-get overlay 'bookmark)))
 
 (defun bmkp-default-lighted ()
@@ -1186,15 +1188,15 @@ Return nil if there is none such.
 POSITION defaults to point.
 Return the bookmark name or, if FULLP non-nil, the full bookmark data."
   (unless position (setq position  (point)))
-  (let (bname)
+  (let (bmk)
     (catch 'bmkp-a-bookmark-lighted-at-pos
       (dolist (ov  (overlays-at position))
-        (when (setq bname  (overlay-get ov 'bookmark))
-          (throw 'bmkp-a-bookmark-lighted-at-pos bname)))
+        (when (setq bmk  (overlay-get ov 'bookmark))
+          (throw 'bmkp-a-bookmark-lighted-at-pos bmk)))
       nil)
-    (let ((full  (bmkp-get-bookmark-in-alist bname 'NOERROR)))
-      (and full                         ; Must be in current bookmark list.
-           (if fullp full bname)))))
+    (let ((b-in-list  (bmkp-get-bookmark-in-alist bmk 'NOERROR)))
+      (and b-in-list                    ; Must be in current bookmark list.
+           (if fullp  b-in-list  (bmkp-bookmark-name-from-record bmk))))))
 
 (defun bmkp-read-set-lighting-args (&optional default-style default-face default-when)
   "Read args STYLE, FACE, and WHEN for commands that set `lighting' prop.
@@ -1253,12 +1255,11 @@ Optional arg OVERLAYS is the list of overlays to check.
 If nil, check overlays for both autonamed and non-autonamed bookmarks."
   (setq bookmark  (bookmark-get-bookmark bookmark 'NOERROR))
   (and bookmark                         ; Return nil for no such bookmark.
-       (setq bookmark  (bmkp-bookmark-name-from-record bookmark))
        (catch 'bmkp-overlay-of-bookmark
          (dolist (ov  (if overlays
                           (apply #'append (mapcar #'symbol-value overlays))
                         (append bmkp-autonamed-overlays bmkp-non-autonamed-overlays)))
-           (when (and (overlay-buffer ov)  (equal bookmark (overlay-get ov 'bookmark)))
+           (when (and (overlay-buffer ov)  (eq bookmark (overlay-get ov 'bookmark)))
              (throw 'bmkp-overlay-of-bookmark ov)))
          nil)))
 
