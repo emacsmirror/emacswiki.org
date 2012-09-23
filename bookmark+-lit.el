@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2010-2112, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 23 07:49:32 2010 (-0700)
-;; Last-Updated: Thu Aug 23 09:20:29 2012 (-0700)
+;; Last-Updated: Sun Sep 23 12:26:57 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 781
+;;     Update #: 818
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-lit.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus
 ;; Keywords: bookmarks, highlighting, bookmark+
@@ -187,9 +187,9 @@
 ;;
 ;; 1. Fix incompatibility introduced by gratuitous Emacs name change.
 ;;
-(cond ((and (fboundp 'bookmark-name-from-record) (not (fboundp 'bookmark-name-from-full-record)))
+(cond ((and (fboundp 'bookmark-name-from-record)  (not (fboundp 'bookmark-name-from-full-record)))
        (defalias 'bookmark-name-from-full-record 'bookmark-name-from-record))
-      ((and (fboundp 'bookmark-name-from-full-record) (not (fboundp 'bookmark-name-from-record)))
+      ((and (fboundp 'bookmark-name-from-full-record)  (not (fboundp 'bookmark-name-from-record)))
        (defalias 'bookmark-name-from-record 'bookmark-name-from-full-record)))
 
 ;; 2. The vanilla name of the first is misleading, as it returns only the cdr of the record.
@@ -433,9 +433,9 @@ You are prompted for the highlight style, face, and condition (when)."
           (bmk-face   (bmkp-lighting-face bmk))
           (bmk-when   (bmkp-lighting-when bmk)))
      (append (bmkp-read-set-lighting-args
-              (and bmk-style (format "%s" (car (rassq bmk-style bmkp-light-styles-alist))))
-              (and bmk-face  (format "%S" bmk-face))
-              (and bmk-when  (format "%S" bmk-when)))
+              (and bmk-style  (format "%s" (car (rassq bmk-style bmkp-light-styles-alist))))
+              (and bmk-face   (format "%S" bmk-face))
+              (and bmk-when   (format "%S" bmk-when)))
              '(MSG))))
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (bmkp-set-lighting-for-bookmark (bookmark-bmenu-bookmark) style face when 'MSG))
@@ -451,11 +451,11 @@ You are prompted for the highlight style, face, and condition (when)."
         (curr-bmk  (bookmark-bmenu-bookmark)))
     (unless marked (error "No marked bookmarks"))
     (dolist (bmk  marked)
-      (if (or face style when)
+      (if (or face  style  when)
           (bookmark-prop-set bmk 'lighting
-                             `(,@(and face  (not (eq face 'auto))  `(:face ,face))
-                               ,@(and style (not (eq style 'none)) `(:style ,style))
-                               ,@(and when  (not (eq when 'auto))  `(:when ,when))))
+                             `(,@(and face   (not (eq face 'auto))   `(:face ,face))
+                               ,@(and style  (not (eq style 'none))  `(:style ,style))
+                               ,@(and when   (not (eq when 'auto))   `(:when ,when))))
         (bookmark-prop-set bmk 'lighting nil)))
     (when (get-buffer-create "*Bookmark List*") (bmkp-refresh-menu-list curr-bmk)))
   (when msgp (message "Setting highlighting...done")))
@@ -525,7 +525,7 @@ BOOKMARK is a bookmark name or a bookmark record."
          (bmk-name    (bmkp-bookmark-name-from-record bmk))
          (autonamedp  (and bmk  (bmkp-autonamed-bookmark-p bmk))))
     (when bmk                           ; Skip bad bookmark, but not already highlighted bookmark.
-      (unless (or noerrorp (bmkp-lighted-p bmk-name))
+      (unless (or noerrorp  (bmkp-lighted-p bmk-name))
         (error "Bookmark `%s' is not highlighted" bmk-name))
       (dolist (ov  (if autonamedp bmkp-autonamed-overlays bmkp-non-autonamed-overlays))
         (when (equal bmk-name (overlay-get ov 'bookmark))  (delete-overlay ov))))
@@ -535,7 +535,7 @@ BOOKMARK is a bookmark name or a bookmark record."
 (defun bmkp-unlight-bookmark-here (&optional noerrorp msgp) ; `C-x p C-u'
   "Unhighlight a bookmark at point or the same line (in that order)."
   (interactive (list nil 'MSG))
-  (let ((bmk  (or (bmkp-a-bookmark-lighted-at-pos) (bmkp-a-bookmark-lighted-on-this-line))))
+  (let ((bmk  (or (bmkp-a-bookmark-lighted-at-pos)  (bmkp-a-bookmark-lighted-on-this-line))))
     (unless bmk (error "No highlighted bookmark on this line"))
     (bmkp-unlight-bookmark bmk noerrorp msgp)))
 
@@ -566,11 +566,11 @@ A prefix argument determines which bookmarks to unhighlight:
  >= 0    - Current buffer, autonamed bookmarks only.
  < 0     - Current buffer, non-autonamed bookmarks only.
  C-u     - All buffers (all bookmarks)."
-  (interactive (list (cond ((or (not current-prefix-arg) (consp current-prefix-arg))
+  (interactive (list (cond ((or (not current-prefix-arg)  (consp current-prefix-arg))
                             '(bmkp-autonamed-overlays bmkp-non-autonamed-overlays))
                            ((natnump current-prefix-arg) '(bmkp-autonamed-overlays))
                            (current-prefix-arg           '(bmkp-non-autonamed-overlays)))
-                     (or (not current-prefix-arg) (atom current-prefix-arg))
+                     (or (not current-prefix-arg)  (atom current-prefix-arg))
                      'MSG))
   (unless overlays-symbols
     (setq overlays-symbols  '(bmkp-autonamed-overlays bmkp-non-autonamed-overlays)))
@@ -581,7 +581,7 @@ A prefix argument determines which bookmarks to unhighlight:
     (dolist (ov-symb  overlays-symbols)
       (dolist (ov  (symbol-value ov-symb))
         (let ((ov-buf  (overlay-buffer ov)))
-          (when (and ov-buf  (or (not this-buffer-p) (eq ov-buf this-buf)))
+          (when (and ov-buf  (or (not this-buffer-p)  (eq ov-buf this-buf)))
             (when (eq 'bmkp-autonamed-overlays ov-symb)
               (setq count-auto  (1+ count-auto)
                     count       (1+ count)))
@@ -628,23 +628,22 @@ Non-nil MSGP means display a highlighting progress message.
 Non-nil LIGHT-NOW-P means apply the highlighting now."
   (interactive
    (let* ((bmk        (bookmark-completing-read "Highlight bookmark"
-                                                (or (bmkp-default-lighted)
-                                                    (bmkp-default-bookmark-name))))
+                                                (or (bmkp-default-lighted)  (bmkp-default-bookmark-name))))
           (bmk-style  (bmkp-lighting-style bmk))
           (bmk-face   (bmkp-lighting-face bmk))
           (bmk-when   (bmkp-lighting-when bmk)))
      (append (list bmk)
              (bmkp-read-set-lighting-args
-              (and bmk-style (format "%s" (car (rassq bmk-style bmkp-light-styles-alist))))
-              (and bmk-face  (format "%S" bmk-face))
-              (and bmk-when  (format "%S" bmk-when)))
+              (and bmk-style  (format "%s" (car (rassq bmk-style bmkp-light-styles-alist))))
+              (and bmk-face   (format "%S" bmk-face))
+              (and bmk-when   (format "%S" bmk-when)))
              (list 'MSGP (not current-prefix-arg)))))
   (when msgp (message "Setting highlighting..."))
-  (if (or face style when)
+  (if (or face  style  when)
       (bookmark-prop-set bookmark-name
-                         'lighting `(,@(and face  (not (eq face 'auto))  `(:face ,face))
-                                     ,@(and style (not (eq style 'none)) `(:style ,style))
-                                     ,@(and when  (not (eq when 'auto))  `(:when ,when))))
+                         'lighting `(,@(and face   (not (eq face 'auto))   `(:face ,face))
+                                     ,@(and style  (not (eq style 'none))  `(:style ,style))
+                                     ,@(and when   (not (eq when 'auto))   `(:when ,when))))
     (bookmark-prop-set bookmark-name 'lighting nil))
   (when (get-buffer-create "*Bookmark List*") (bmkp-refresh-menu-list bookmark-name))
   (when msgp (message "Setting highlighting...done"))
@@ -705,11 +704,11 @@ Non-interactively:
  BOOKMARK is a bookmark name or a bookmark record, or it is ignored.
  STYLE and FACE override the defaults.
  POINT-P non-nil means highlight point rather than the recorded
-  bookmark `position."
+  bookmark position."
   (interactive
-   (let* ((bmk   (bookmark-completing-read "Highlight bookmark" (bmkp-default-bookmark-name)))
-          (sty  (and current-prefix-arg (or (consp current-prefix-arg)
-                                            (<= (prefix-numeric-value current-prefix-arg) 0))
+   (let* ((bmk  (bookmark-completing-read "Highlight bookmark" (bmkp-default-bookmark-name)))
+          (sty  (and current-prefix-arg  (or (consp current-prefix-arg)
+                                             (<= (prefix-numeric-value current-prefix-arg) 0))
                      (cdr (assoc (let ((completion-ignore-case  t))
                                    (completing-read
                                     "Style: " bmkp-light-styles-alist nil t nil nil
@@ -717,8 +716,8 @@ Non-interactively:
                                          (format "%s" (car (rassq (bmkp-lighting-style bmk)
                                                                   bmkp-light-styles-alist))))))
                                  bmkp-light-styles-alist))))
-          (fac  (and current-prefix-arg (or (consp current-prefix-arg)
-                                            (natnump (prefix-numeric-value current-prefix-arg)))
+          (fac  (and current-prefix-arg  (or (consp current-prefix-arg)
+                                             (natnump (prefix-numeric-value current-prefix-arg)))
                      (not (member sty '(lfringe rfringe none))) ; No face possible for these.
                      (condition-case nil ; Emacs 22+ accepts a default.
                          (read-face-name "Face: " (format "%S" (bmkp-lighting-face  bmk)))
@@ -730,21 +729,23 @@ Non-interactively:
          (pos              (and bmk  (bookmark-get-position bmk)))
          (buf              (and bmk  (bmkp-get-buffer-name bmk)))
          (autonamedp       (and bmk  (bmkp-autonamed-bookmark-p bmk)))
-         (styl             (or style (and bmk (bmkp-light-style bmk))))
-         (fac              (or face  (and bmk (not (member styl '(lfringe rfringe none)))
-                                          (bmkp-light-face  bmk))))
-         (passes-when-p    (and bmk (or face style ; Always highlight if changed face or style.
-                                        (bmkp-light-when bmk))))
+         (styl             (or style  (and bmk  (bmkp-light-style bmk))))
+         (fac              (or face   (and bmk
+                                           (not (member styl '(lfringe rfringe none)))
+                                           (bmkp-light-face  bmk))))
+         (passes-when-p    (and bmk  (or face
+                                         style ; Always highlight if changed face or style.
+                                         (bmkp-light-when bmk))))
          (nb-lit           (bmkp-number-lighted))
          bmk-ov)
     (catch 'bmkp-light-bookmark
       (when bmk                         ; Just skip bad bookmark if not interactive.
-        (cond ((setq bmk-ov  (bmkp-overlay-of-bookmark bmk))
-               (if (not (or style face))
+        (cond ((setq bmk-ov  (bmkp-overlay-of-bookmark bmk)) ; Already highlighted.
+               (if (not (or style  face))
                    (when msgp           ; No-op batch.
                      (error "Already highlighted - use prefix arg to change"))
                  (when style (bmkp-make/move-overlay-of-style style pos autonamedp bmk-ov))
-                 (when (and face (not (memq styl '(lfringe rfringe none))))
+                 (when (and face  (not (memq styl '(lfringe rfringe none))))
                    (overlay-put bmk-ov 'face face)))
                (when msgp (message "%sighlighted bookmark `%s'" (if bmk-ov "H" "UNh") bmk-name)))
               (passes-when-p
@@ -753,13 +754,14 @@ Non-interactively:
                  ;; See note in comments of `bmkp-light-bookmarks' - same considerations here.
                  ;; (let ((bmkp-jump-display-function  nil)) (bookmark-handle-bookmark bmk))
                  ;;
-                 (with-current-buffer (or (and buf (get-buffer buf)) (current-buffer))
+                 (with-current-buffer (or (and buf  (get-buffer buf))
+                                          (current-buffer))
 
                    ;; POINTP is non-nil when `bmkp-light-bookmark' is called from
                    ;; `bookmark--jump-via'.
-                   (when (and pointp bmkp-auto-light-relocate-when-jump-flag)
+                   (when (and pointp  bmkp-auto-light-relocate-when-jump-flag)
                      (setq pos  (point)))
-                   (when (and pos (< pos (point-max)))
+                   (when (and pos  (< pos (point-max)))
                      (let ((ov  (bmkp-make/move-overlay-of-style styl pos autonamedp)))
                        (when ov         ; nil means `none' style.
                          (let ((ovs  (if autonamedp
@@ -795,8 +797,8 @@ With a prefix arg you are prompted for the style and/or face to use:
 See `bmkp-light-boookmark' for argument descriptions."
   (interactive
    (let* ((bmk  (bookmark-completing-read "Highlight bookmark" nil (bmkp-this-buffer-alist-only)))
-          (sty  (and current-prefix-arg (or (consp current-prefix-arg)
-                                            (<= (prefix-numeric-value current-prefix-arg) 0))
+          (sty  (and current-prefix-arg  (or (consp current-prefix-arg)
+                                             (<= (prefix-numeric-value current-prefix-arg) 0))
                      (cdr (assoc (let ((completion-ignore-case  t))
                                    (completing-read
                                     "Style: " bmkp-light-styles-alist nil t nil nil
@@ -804,8 +806,8 @@ See `bmkp-light-boookmark' for argument descriptions."
                                          (format "%s" (car (rassq (bmkp-lighting-style bmk)
                                                                   bmkp-light-styles-alist))))))
                                  bmkp-light-styles-alist))))
-          (fac  (and current-prefix-arg (or (consp current-prefix-arg)
-                                            (natnump (prefix-numeric-value current-prefix-arg)))
+          (fac  (and current-prefix-arg  (or (consp current-prefix-arg)
+                                             (natnump (prefix-numeric-value current-prefix-arg)))
                      (not (member sty '(lfringe rfringe none))) ; No face possible for these.
                      (condition-case nil ; Emacs 22+ accepts a default.
                          (read-face-name "Face: " (format "%S" (bmkp-lighting-face  bmk)))
@@ -839,7 +841,7 @@ Non-interactively, ALIST is the alist of bookmarks to highlight."
                ((< current-prefix-arg 0)     (bmkp-remove-if #'bmkp-autonamed-bookmark-p
                                                              (bmkp-this-buffer-alist-only)))
                ((= current-prefix-arg 0)     (bmkp-this-buffer-lighted-alist-only)))
-         (cond ((or (not current-prefix-arg) (consp current-prefix-arg))
+         (cond ((or (not current-prefix-arg)  (consp current-prefix-arg))
                 '(bmkp-autonamed-overlays bmkp-non-autonamed-overlays))
                ((natnump current-prefix-arg) '(bmkp-autonamed-overlays))
                (current-prefix-arg           '(bmkp-non-autonamed-overlays)))
@@ -862,9 +864,9 @@ Non-interactively, ALIST is the alist of bookmarks to highlight."
               face           (and bmk  (bmkp-light-face bmk))
               style          (and bmk  (bmkp-light-style bmk))
               bmk-ov         (bmkp-overlay-of-bookmark bmk)
-              passes-when-p  (and bmk (or bmk-ov ; Always highlight if already highlighted.
-                                          (bmkp-light-when bmk))))
-        (when (and bmk passes-when-p)   ; Skip bad bookmark and respect `:when' (unless highlighted).
+              passes-when-p  (and bmk  (or bmk-ov ; Always highlight if already highlighted.
+                                           (bmkp-light-when bmk))))
+        (when (and bmk  passes-when-p)   ; Skip bad bookmark and respect `:when' (unless highlighted).
           (setq pos  (bookmark-get-position bmk)
                 buf  (bmkp-get-buffer-name bmk))
           (save-excursion
@@ -881,21 +883,22 @@ Non-interactively, ALIST is the alist of bookmarks to highlight."
             ;; all Dired bookmarks in a given directory to also do all the file marking and
             ;; subdir hiding associated with each of the bookmarks.  So we do just the
             ;; highlighting, no handling, putting the code in side `with-current-buffer'.
-            (with-current-buffer (or (and buf (get-buffer buf)) (current-buffer))
-              (when (and pos (< pos (point-max)))
+            (with-current-buffer (or (and buf  (get-buffer buf))
+                                     (current-buffer))
+              (when (and pos  (< pos (point-max)))
                 (dolist (ov-symb  overlays-symbols)
-                  (when (or (and (eq 'bmkp-autonamed-overlays     ov-symb) autonamedp)
-                            (and (eq 'bmkp-non-autonamed-overlays ov-symb) (not autonamedp)))
+                  (when (or (and (eq 'bmkp-autonamed-overlays     ov-symb)  autonamedp)
+                            (and (eq 'bmkp-non-autonamed-overlays ov-symb)  (not autonamedp)))
                     (let ((ov  (bmkp-make/move-overlay-of-style style pos autonamedp bmk-ov)))
                       (when ov          ; nil means `none' style.
-                        (set ov-symb (cons ov (symbol-value ov-symb)))
+                        (add-to-list ov-symb ov)
                         (when (eq 'bmkp-autonamed-overlays ov-symb)
                           (unless bmk-ov (setq new-auto  (1+ new-auto)))
                           (setq nb-auto  (1+ nb-auto)))
                         (when (eq 'bmkp-non-autonamed-overlays ov-symb)
                           (unless bmk-ov (setq new-non-auto  (1+ new-non-auto)))
                           (setq nb-non-auto  (1+ nb-non-auto)))
-                        (when (and (not bmk-ov) (> (setq nb-lit  (1+ nb-lit)) bmkp-light-threshold))
+                        (when (and (not bmk-ov)  (> (setq nb-lit  (1+ nb-lit)) bmkp-light-threshold))
                           (setq nb-lit  (1- nb-lit))
                           (throw 'bmkp-light-bookmarks bmk))
                         (setq total  (1+ total))
@@ -954,7 +957,7 @@ Prefix arg < 0:  non-autonamed bookmarks only."
                (current-prefix-arg '(bmkp-non-autonamed-overlays)))
          'MSG))
   (bmkp-light-bookmarks (bmkp-remove-if-not (lambda (bmk) (let ((pos  (bookmark-get-position bmk)))
-                                                            (and (>= pos start) (<= pos end))))
+                                                            (and (>= pos start)  (<= pos end))))
                                             (bmkp-this-buffer-alist-only))
                         overlays-symbols msgp))
 
@@ -997,7 +1000,8 @@ In Lisp code:
   (let ((bmkp-sort-comparer  bmkp-this-file/buffer-cycle-sort-comparer))
     (setq bmkp-nav-alist  (bmkp-sort-omit (bmkp-this-buffer-lighted-alist-only))))
   (unless bmkp-nav-alist (error "No lighted bookmarks for cycling"))
-  (unless (and bmkp-current-nav-bookmark  (not startoverp)
+  (unless (and bmkp-current-nav-bookmark
+               (not startoverp)
                (bookmark-get-bookmark bmkp-current-nav-bookmark 'NOERROR)
                (bmkp-this-buffer-p bmkp-current-nav-bookmark)) ; Exclude desktops etc.
     (setq bmkp-current-nav-bookmark  (car bmkp-nav-alist)))
@@ -1065,10 +1069,10 @@ Returns:
  or `bmkp-light-non-autonamed' otherwise."
   (setq bookmark  (bookmark-get-bookmark bookmark 'NOERROR))
   (or (bmkp-lighting-face bookmark)
-      (and bookmark (if (string-match (format bmkp-autoname-format ".*")
-                                      (bmkp-bookmark-name-from-record bookmark))
-                        'bmkp-light-autonamed
-                      'bmkp-light-non-autonamed))))
+      (and bookmark  (if (string-match (format bmkp-autoname-format ".*")
+                                       (bmkp-bookmark-name-from-record bookmark))
+                         'bmkp-light-autonamed
+                       'bmkp-light-non-autonamed))))
 
 (defun bmkp-light-style (bookmark)
   "Return the style to use to highlight BOOKMARK.
@@ -1080,10 +1084,10 @@ Returns:
  or the value of `bmkp-light-style-non-autonamed' otherwise."
   (setq bookmark  (bookmark-get-bookmark bookmark 'NOERROR))
   (or (bmkp-lighting-style bookmark)
-      (and bookmark (if (string-match (format bmkp-autoname-format ".*")
-                                      (bmkp-bookmark-name-from-record bookmark))
-                        bmkp-light-style-autonamed
-                      bmkp-light-style-non-autonamed))))
+      (and bookmark  (if (string-match (format bmkp-autoname-format ".*")
+                                       (bmkp-bookmark-name-from-record bookmark))
+                         bmkp-light-style-autonamed
+                       bmkp-light-style-non-autonamed))))
 
 (defun bmkp-light-when (bookmark)
   "Return non-nil if BOOKMARK should be highlighted.
@@ -1143,7 +1147,7 @@ BOOKMARK is a bookmark name or a bookmark record."
 
 (defun bmkp-bookmark-overlay-p (overlay)
   "Return non-nil if OVERLAY is a bookmark overlay."
-  (and (overlayp overlay) (overlay-get overlay 'bookmark)))
+  (and (overlayp overlay)  (overlay-get overlay 'bookmark)))
 
 (defun bmkp-default-lighted ()
   "Return a highlighted bookmark at point or on this line, or nil if none.
@@ -1173,7 +1177,7 @@ Return the bookmark name or, if FULLP non-nil, the full bookmark data."
           (throw 'bmkp-a-bookmark-lighted-on-this-line bmk))
         (setq pos  (1+ pos)))
       nil)
-    (when (and bmk fullp) (setq bmk  (bookmark-get-bookmark bmk)))
+    (when (and bmk  fullp)  (setq bmk  (bookmark-get-bookmark bmk)))
     bmk))
 
 (defun bmkp-a-bookmark-lighted-at-pos (&optional position fullp)
@@ -1229,7 +1233,7 @@ A new list is returned (no side effects)."
   "`bookmark-alist', with only highlighted bookmarks for the current buffer.
 A new list is returned (no side effects)."
   (bookmark-maybe-load-default-file)
-  (bmkp-remove-if-not (lambda (bmk) (and (bmkp-this-buffer-p bmk) (bmkp-lighted-p bmk)))
+  (bmkp-remove-if-not (lambda (bmk) (and (bmkp-this-buffer-p bmk)  (bmkp-lighted-p bmk)))
                       bookmark-alist))
 
 (defun bmkp-number-lighted (&optional overlays-symbols)
@@ -1254,7 +1258,7 @@ If nil, check overlays for both autonamed and non-autonamed bookmarks."
          (dolist (ov  (if overlays
                           (apply #'append (mapcar #'symbol-value overlays))
                         (append bmkp-autonamed-overlays bmkp-non-autonamed-overlays)))
-           (when (and (overlay-buffer ov) (equal bookmark (overlay-get ov 'bookmark)))
+           (when (and (overlay-buffer ov)  (equal bookmark (overlay-get ov 'bookmark)))
              (throw 'bmkp-overlay-of-bookmark ov)))
          nil)))
 
@@ -1267,7 +1271,7 @@ If STYLE is `none' then:
  If OVERLAY is non-nil, delete it.
  Return nil."
   (let ((ov  overlay))
-    (when (and (< emacs-major-version 22) (not (rassq style bmkp-light-styles-alist)))
+    (when (and (< emacs-major-version 22)  (not (rassq style bmkp-light-styles-alist)))
       (message "Fringe styles not supported before Emacs 22 - changing to `line' style")
       (setq style 'line))
     (case style
