@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Sep 22 08:59:49 2012 (-0700)
+;; Last-Updated: Sat Sep 22 19:35:46 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 15031
+;;     Update #: 15033
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -1241,6 +1241,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-lit.el'")
 ;;
+;; 2012/09/22 dadams
+;;     bmkp-light-bookmarks: Use add-to-list instead of unconditionally adding ov to ov-symb.
 ;; 2012/04/28 dadams
 ;;     bmkp-make/move-overlay-of-style, bmkp-make/move-fringe: Use FRONT-ADVANCE arg for make-overlay.
 ;; 2011/12/30 dadams
