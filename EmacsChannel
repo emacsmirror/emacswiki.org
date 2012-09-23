@@ -53,11 +53,18 @@ EmacsChannelLogging -- To log or not to log.
 
 * LangPollResults -- preliminary results of the language poll on the #emacs channel
 
+== Conduct ==
+
+In addition to [http://freenode.net/policy.shtml freenode's network-wide policies], we have some of our own (somewhat redundant) rules:
+
+* Don't be a jerk
+* Don't start or participate in flame wars
+* Be friendly to newbies
+* And, please, for the love of GNU, don't use 1337-5p34k
+
 == Law and Order =
 
-If you need the help of a friendly *operator* (usually for kicking and banning
-obnoxious fellow channel members), you can get a list of these from
-fsbot. Just say:
+If you need the help of a friendly *operator* (usually for kicking and banning obnoxious fellow channel members), you can get a list of these from fsbot. Just say:
 
 : ops?
 
