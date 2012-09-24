@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:24:28 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Sep 11 16:58:00 2012 (-0700)
+;; Last-Updated: Mon Sep 24 16:02:25 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1032
+;;     Update #: 1033
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mac.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -515,7 +515,7 @@ created after the others."
                        (cons `("by `icicle-file-sort'" ,@icicle-file-sort) icicle--temp-orders)))
                  icicle--temp-orders)))
        (icicle-candidate-help-fn                    (lambda (cand)
-                                                      (icicle-describe-file cand current-prefix-arg)))
+                                                      (icicle-describe-file cand current-prefix-arg t)))
        (icicle-candidate-alt-action-fn
         (or icicle-candidate-alt-action-fn (icicle-alt-act-fn-for-type "file")))
        (icicle-all-candidates-list-alt-action-fn
