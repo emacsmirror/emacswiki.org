@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Sep 23 15:13:58 2012 (-0700)
+;; Last-Updated: Mon Sep 24 11:47:17 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 15044
+;;     Update #: 15046
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2012/09/24 dadams
+;;     bookmark-write-file: Use write-file, not write-region, so backups are made.  Emacs bug #12507.
 ;; 2012/09/22 dadams
 ;;     bookmark-set: Updated handling of bmkp-auto-light-when-set for (non-)autonamed-in-buffer.
 ;;     bmkp-autonamed-this-buffer-bookmark-p: Require that the buffer name part match also.
