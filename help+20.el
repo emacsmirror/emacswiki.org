@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Mar 16 14:18:11 1999
 ;; Version: 20.0
-;; Last-Updated: Thu Aug 23 12:59:30 2012 (-0700)
+;; Last-Updated: Mon Sep 24 15:58:57 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 2193
+;;     Update #: 2199
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/help+20.el
 ;; Doc URL: http://emacswiki.org/emacs/HelpPlus
 ;; Keywords: help
@@ -91,6 +91,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/09/24 dadams
+;;     describe-file: Added optional arg NO-ERROR-P.
 ;; 2012/08/21 dadams
 ;;     Call tap-put-thing-at-point-props after load thingatpt+.el.
 ;; 2012/08/18 dadams
@@ -923,62 +925,71 @@ before you call this function."
     (nreverse new)))
 
 ;;;###autoload
-(defun describe-file (filename &optional internal-form-p)
+(defun describe-file (filename &optional internal-form-p no-error-p)
   "Describe the file named FILENAME.
 If FILENAME is nil, describe current directory (`default-directory').
 If FILENAME is the name of an autofile bookmark and you use library
 `Bookmark+', then show also the bookmark information (tags etc.).  In
-this case, a prefix arg shows the internal form of the bookmark."
+this case, a prefix arg shows the internal form of the bookmark.
+
+In Lisp code:
+
+Non-nil optional arg INTERNAL-FORM-P shows the internal form.
+Non-nil optional arg NO-ERROR-P prints an error message but does not
+ raise an error."
   (interactive "FDescribe file: \nP")
-  (unless filename (setq filename  default-directory))
-  (help-setup-xref `(describe-file ,filename ,internal-form-p) (interactive-p))
+  (unless filename (setq filename default-directory))
+  (help-setup-xref `(describe-file ,filename ,internal-form-p ,no-error-p) (interactive-p))
   (let ((attrs  (file-attributes filename))
         ;; Functions `bmkp-*' are defined in `bookmark+.el'.
         (bmk   (and (fboundp 'bmkp-get-autofile-bookmark)  (bmkp-get-autofile-bookmark filename))))
-    (unless attrs (error(format "Cannot open file `%s'" filename)))
-    (let* ((type             (nth 0 attrs))
-           (numlinks         (nth 1 attrs))
-           (uid              (nth 2 attrs))
-           (gid              (nth 3 attrs))
-           (last-access      (nth 4 attrs))
-           (last-mod         (nth 5 attrs))
-           (last-status-chg  (nth 6 attrs))
-           (size             (nth 7 attrs))
-           (permissions      (nth 8 attrs))
-           ;; Skip 9: t iff file's gid would change if file were deleted and recreated.
-           (inode            (nth 10 attrs))
-           (device           (nth 11 attrs))
-           (help-text
-            (concat
-             (format "`%s'\n%s\n\n" filename (make-string (+ 2 (length filename)) ?-))
-             (format "File Type:                       %s\n"
-                     (cond ((eq t type) "Directory")
-                           ((stringp type) (format "Symbolic link to `%s'" type))
-                           (t "Normal file")))
-             (format "Permissions:                %s\n" permissions)
-             (and (not (eq t type)) (format "Size in bytes:              %g\n" size))
-             (format-time-string
-              "Time of last access:        %a %b %e %T %Y (%Z)\n" last-access)
-             (format-time-string
-              "Time of last modification:  %a %b %e %T %Y (%Z)\n" last-mod)
-             (format-time-string
-              "Time of last status change: %a %b %e %T %Y (%Z)\n" last-status-chg)
-             (format "Number of links:            %d\n" numlinks)
-             (format "User ID (UID):              %s\n" uid)
-             (format "Group ID (GID):             %s\n" gid)
-             (format "Inode:                      %S\n" inode)
-             (format "Device number:              %s\n" device))))
-      (with-output-to-temp-buffer "*Help*"
-        (when bmk
-          (if internal-form-p
-              (let* ((bname     (bookmark-name-from-full-record bmk))
-                     (bmk-defn  (format "Bookmark `%s'\n%s\n\n%s"
-                                        bname   (make-string (+ 11 (length bname)) ?-)
-                                        (pp-to-string bmk))))
-                (princ bmk-defn) (terpri) (terpri))
-            (princ (bmkp-bookmark-description bmk 'NO-IMAGE)) (terpri) (terpri)))
-        (princ help-text))
-      help-text)))                      ; Return displayed text.
+    (if (not attrs)
+        (if no-error-p
+            (message "Cannot open file `%s'" filename)
+          (error "Cannot open file `%s'" filename))
+      (let* ((type             (nth 0 attrs))
+             (numlinks         (nth 1 attrs))
+             (uid              (nth 2 attrs))
+             (gid              (nth 3 attrs))
+             (last-access      (nth 4 attrs))
+             (last-mod         (nth 5 attrs))
+             (last-status-chg  (nth 6 attrs))
+             (size             (nth 7 attrs))
+             (permissions      (nth 8 attrs))
+             ;; Skip 9: t iff file's gid would change if file were deleted and recreated.
+             (inode            (nth 10 attrs))
+             (device           (nth 11 attrs))
+             (help-text
+              (concat
+               (format "`%s'\n%s\n\n" filename (make-string (+ 2 (length filename)) ?-))
+               (format "File Type:                       %s\n"
+                       (cond ((eq t type) "Directory")
+                             ((stringp type) (format "Symbolic link to `%s'" type))
+                             (t "Normal file")))
+               (format "Permissions:                %s\n" permissions)
+               (and (not (eq t type)) (format "Size in bytes:              %g\n" size))
+               (format-time-string
+                "Time of last access:        %a %b %e %T %Y (%Z)\n" last-access)
+               (format-time-string
+                "Time of last modification:  %a %b %e %T %Y (%Z)\n" last-mod)
+               (format-time-string
+                "Time of last status change: %a %b %e %T %Y (%Z)\n" last-status-chg)
+               (format "Number of links:            %d\n" numlinks)
+               (format "User ID (UID):              %s\n" uid)
+               (format "Group ID (GID):             %s\n" gid)
+               (format "Inode:                      %S\n" inode)
+               (format "Device number:              %s\n" device))))
+        (with-output-to-temp-buffer "*Help*"
+          (when bmk
+            (if internal-form-p
+                (let* ((bname     (bookmark-name-from-full-record bmk))
+                       (bmk-defn  (format "Bookmark `%s'\n%s\n\n%s"
+                                          bname   (make-string (+ 11 (length bname)) ?-)
+                                          (pp-to-string bmk))))
+                  (princ bmk-defn) (terpri) (terpri))
+              (princ (bmkp-bookmark-description bmk 'NO-IMAGE)) (terpri) (terpri)))
+          (princ help-text))
+        help-text))))                   ; Return displayed text.
 
 ;;;###autoload
 (defun describe-keymap (keymap)
