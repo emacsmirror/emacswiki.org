@@ -25,6 +25,8 @@ This page is about library '''<tt>[[hide-comnt.el]]</tt>''' and related features
 
 ** Commands '''`icicle-next-visible-thing'''' and '''`icicle-previous-visible-thing'''' are similar to `next-visible-thing' and `previous-visible-thing' from <tt>[[thing-cmds.el]]</tt>.
 
+== Comments ==
+
 
 
 
