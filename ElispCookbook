@@ -589,6 +589,26 @@ Sometimes you just want to check whether you're at the right place:
       (looking-at "fight"))
     ==> t
 
+=== Finding all the strings that matched ===
+
+If you want to list all the matched strings, including the subexpressions:
+
+    (defun match-strings-all (&optional str)
+      "Return a list of all the strings that matched.
+
+    STR is optionally the string that was used to do the match."
+      (let ((m (if str (match-data str) (match-data))))
+        (loop for i
+           from 0 to (- (/ (length m) 2) 1)
+           collect (match-string i str))))
+
+Here's an example:
+
+    (let ((str "time help"))
+      (string-match "time \\([A-Za-z]+\\)$" str)
+      (match-strings-all str))
+
+
 == Sequences ==
 
 Datatypes used to represent sequences of things:
