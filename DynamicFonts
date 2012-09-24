@@ -16,11 +16,7 @@ Emacs can find it, and add the following to your ~/.emacs file:
 
 ==See Also==
 M-x customize-group RET dynamic-fonts RET
-
-==Notes==
-The secondary purpose of this library is to provide some font
-utility functions to be called from Lisp.  See in particular
-`dynamic-fonts-font-exists-p', which tests font availability.
+M-x customize-group RET font-utils RET
 
 ==Availability==
 dynamic-fonts.el is available at github:
@@ -33,9 +29,9 @@ and via <nowiki>EmacsWiki</nowiki>:
 
 ==Compatibility and Requirements==
 
-Tested only on GNU Emacs version 24.1
+Tested on GNU Emacs versions 23.3 and 24.1
 
-Requires PersistentSoft
+Requires FontUtils
 
 ----
 CategoryFaces
