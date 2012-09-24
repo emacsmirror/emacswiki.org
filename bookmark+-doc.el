@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Thu Aug 23 09:20:07 2012 (-0700)
+;; Last-Updated: Sun Sep 23 17:50:31 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 14576
+;;     Update #: 14583
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -1441,8 +1441,8 @@
 ;;  by default), then Bookmark+ will guess a shell command to use.  It
 ;;  does this by matching the file name against
 ;;  `dired-guess-shell-alist-default' (also from Dired X).  In Emacs
-;;  23+, if it finds no shell command that way then it guesses one
-;;  based on mailcap entries.
+;;  23 and later, if it finds no shell command that way then it
+;;  guesses one based on mailcap entries.
 ;;
 ;;  When a bookmark is created using `C-x p c f' or `C-x p c a' for a
 ;;  file that matches `bmkp-default-handlers-for-file-types', the
@@ -3248,10 +3248,10 @@
 ;;  resulting files in any Emacs version.
 ;;
 ;;  But if you happen to save bookmark information using a later
-;;  version of Emacs (e.g. Emacs 23) and you then read that recorded
-;;  state using Emacs 20, the read will fail.  If this happens then
-;;  you will need to re-save the affected file(s) using a later Emacs
-;;  version. In the later Emacs version:
+;;  version of Emacs and you then read that recorded state using Emacs
+;;  20, the read will fail.  If this happens then you will need to
+;;  re-save the affected file(s) using a later Emacs version. In the
+;;  later Emacs version:
 ;;
 ;;  1. `M-x set-variable bmkp-propertize-bookmark-names-flag nil',
 ;;     to stop using propertized bookmark names.
@@ -3276,17 +3276,18 @@
 ;;(@* "Bookmark Compatibility with Vanilla Emacs (`bookmark.el')")
 ;;  ** Bookmark Compatibility with Vanilla Emacs (`bookmark.el') **
 ;;
-;;  Bookmark+ is generally compatible with GNU Emacs versions 20
-;;  through 23.
+;;  Bookmark+ is generally compatible with all GNU Emacs versions 20
+;;  and later.
 ;;
 ;;  1. All bookmarks created using any version of vanilla Emacs
 ;;     (library `bookmark.el') continue to work with Bookmark+.
 ;;
 ;;  2. All bookmarks created using Bookmark+ will work with all Emacs
-;;     versions (20-23), provided you use Bookmark+ to access them.
+;;     versions (20 and later), provided you use Bookmark+ to access
+;;     them.
 ;;
 ;;  3. Most bookmarks created using Bookmark+ will not interfere with
-;;     the behavior of vanilla Emacs, versions 21-23.  The new
+;;     the behavior of vanilla Emacs, versions 21 and later.  The new
 ;;     bookmark types are simply ignored by vanilla Emacs.  For
 ;;     example, a bookmark with a region is treated like a simple
 ;;     position bookmark: the destination is the region start
@@ -3303,10 +3304,9 @@
 ;;
 ;;     The Emacs bookmark data structure has changed from (Emacs)
 ;;     version to version.  Bookmark+ always creates bookmarks that
-;;     have the most recent structure (defined in Emacs 23).  As is
-;;     the case for any bookmarks that have the Emacs 23 structure,
-;;     these bookmarks will not work in vanilla Emacs 20 (that is,
-;;     without Bookmark+).
+;;     have the most recent structure.  As is the case for any
+;;     bookmarks that have the latest structure, these bookmarks will
+;;     not work in vanilla Emacs 20 (that is, without Bookmark+).
 ;;
 ;;  Bottom line: Use `bookmark+.el' to access bookmarks created using
 ;;  `bookmark+.el'.
