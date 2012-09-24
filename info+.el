@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 21.1
-;; Last-Updated: Sat Aug 25 22:16:57 2012 (-0700)
+;; Last-Updated: Mon Sep 24 13:42:20 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 4676
+;;     Update #: 4682
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/info+.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/InfoPlus
 ;; Keywords: help, docs, internal
@@ -185,6 +185,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/09/24 dadams
+;;     Info-search. Info-mode: Applied latest Emacs 24 updates by Juri (from 2012-09-12).
 ;; 2012/08/25 dadams
 ;;     Info-fontify-node: Hide any empty lines at end of node (fixes bug #12272).
 ;; 2012/08/24 dadams
@@ -4459,9 +4461,7 @@ To remove the highlighting, just start an incremental search: \
                 (while (and (not give-up)
                             (or (null found)
                                 (not (funcall isearch-filter-predicate beg-found found))))
-                  (let ((search-spaces-regexp  (and (or (not isearch-mode) isearch-regexp)
-                                                    ;; `Info-*' is free here.
-                                                    Info-search-whitespace-regexp)))
+                  (let ((search-spaces-regexp  Info-search-whitespace-regexp))
                     (if (if backward
                             (re-search-backward regexp bound t)
                           (re-search-forward regexp bound t))
@@ -4478,9 +4478,7 @@ To remove the highlighting, just start an incremental search: \
             ;; If no subfiles, give error now.
             (if give-up
                 (if (null Info-current-subfile)
-                    (let ((search-spaces-regexp  (and (or (not isearch-mode) isearch-regexp)
-                                                      ;; `Info-*' is free here.
-                                                      Info-search-whitespace-regexp)))
+                    (let ((search-spaces-regexp  Info-search-whitespace-regexp))
                       (if backward (re-search-backward regexp) (re-search-forward regexp)))
                   (setq found  nil)))
 
@@ -4535,9 +4533,7 @@ To remove the highlighting, just start an incremental search: \
                        (while (and (not give-up)
                                    (or (null found)
                                        (not (funcall isearch-filter-predicate beg-found found))))
-                         (let ((search-spaces-regexp  (and (or (not isearch-mode) isearch-regexp)
-                                                           ;; `Info-*' is free here.
-                                                           Info-search-whitespace-regexp)))
+                         (let ((search-spaces-regexp  Info-search-whitespace-regexp))
                            (if (if backward
                                    (re-search-backward regexp nil t)
                                  (re-search-forward regexp nil t))
@@ -5163,7 +5159,9 @@ These are all of the current Info Mode bindings:
     (set (make-local-variable 'isearch-wrap-function) 'Info-isearch-wrap)
     (set (make-local-variable 'isearch-push-state-function) 'Info-isearch-push-state)
     (set (make-local-variable 'isearch-filter-predicate) 'Info-isearch-filter)
-    (set (make-local-variable 'search-whitespace-regexp) Info-search-whitespace-regexp)
+    (unless (or (> emacs-major-version 24)
+                (and (= emacs-major-version 24)  (> emacs-minor-version 2)))
+      (set (make-local-variable 'search-whitespace-regexp) Info-search-whitespace-regexp))
     (set (make-local-variable 'revert-buffer-function) 'Info-revert-buffer-function)
     (Info-set-mode-line)
     (set (make-local-variable 'bookmark-make-record-function) 'Info-bookmark-make-record)
