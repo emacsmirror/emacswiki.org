@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue Sep 11 16:34:11 2012 (-0700)
+;; Last-Updated: Mon Sep 24 14:34:22 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 23200
+;;     Update #: 23202
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Doc URL: http://emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -587,6 +587,7 @@
 ;;    `icicle-sort-by-abbrev-frequency',
 ;;    `icicle-sort-by-directories-first',
 ;;    `icicle-sort-by-directories-last', `icicle-sort-by-file-type.',
+;;    `icicle-sort-by-last-file-access-time',
 ;;    `icicle-sort-by-last-file-modification-time',
 ;;    `icicle-sort-by-last-use-as-input',
 ;;    `icicle-sort-by-previous-use-alphabetically',
@@ -1017,9 +1018,9 @@
 ;;    `icicle-key-description', `icicle-keys+cmds-w-prefix',
 ;;    `icicle-kill-a-buffer',
 ;;    `icicle-kill-a-buffer-and-update-completions',
-;;    `icicle-kmacro-action', `icicle-last-modified-first-p',
-;;    `icicle-levenshtein-match', `icicle-levenshtein-one-match',
-;;    `icicle-levenshtein-one-regexp',
+;;    `icicle-kmacro-action', `icicle-last-accessed-first-p',
+;;    `icicle-last-modified-first-p', `icicle-levenshtein-match',
+;;    `icicle-levenshtein-one-match', `icicle-levenshtein-one-regexp',
 ;;    `icicle-levenshtein-strict-match',
 ;;    `icicle-lisp-completion-at-point',
 ;;    `icicle-lisp-vanilla-completing-read',
