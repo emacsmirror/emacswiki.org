@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Sep 23 17:50:31 2012 (-0700)
+;; Last-Updated: Mon Sep 24 07:52:15 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 14583
+;;     Update #: 14603
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -166,7 +166,6 @@
 ;;      (@> "Highlighting Automatically")
 ;;    (@> "Using Highlighted Bookmarks")
 ;;    (@> "Use Bookmark+ with Icicles")
-;;    (@> "If you use Emacs 20 and Also a More Recent Version")
 ;;    (@> "Bookmark Compatibility with Vanilla Emacs (`bookmark.el')")
 ;;    (@> "New Bookmark Structure")
  
@@ -842,12 +841,12 @@
 ;;
 ;;  By default, you create bookmarks without tags and add tags to them
 ;;  later.  If you prefer, you can customize option
-;;  `bmkp-prompt-for-tags-flag' to non-nil so that you are prompted to
-;;  add tags immediately whenever you set (create) a bookmark.  There
-;;  are also some commands, such as `bmkp-tag-a-file' (`C-x p t + a')
-;;  and `bmkp-untag-a-file' (`C-x p t - a'), that always prompt for
-;;  tags to add or remove.  (In general, the key `a' is used in key
-;;  sequences for autofile bookmarks.)
+;;  `bmkp-prompt-for-tags-flag' to non-`nil' so that you are prompted
+;;  to add tags immediately whenever you set (create) a bookmark.
+;;  There are also some commands, such as `bmkp-tag-a-file' (`C-x p t
+;;  + a') and `bmkp-untag-a-file' (`C-x p t - a'), that always prompt
+;;  for tags to add or remove.  (In general, the key `a' is used in
+;;  key sequences for autofile bookmarks.)
 ;;
 ;;  When you are prompted to enter a tag, you type some text then hit
 ;;  `RET'.  If you want to include a newline character in the tag
@@ -1173,7 +1172,7 @@
 ;;(@* "Quitting Saves the Bookmark-List State")
 ;;  *** Quitting Saves the Bookmark-List State ***
 ;;
-;;  If option `bmkp-bmenu-state-file' is non-nil, which it is by
+;;  If option `bmkp-bmenu-state-file' is non-`nil', which it is by
 ;;  default, then Bookmark+ remembers the last state of the bookmark
 ;;  list when you quit it or you quit Emacs, and it restores that
 ;;  state when you show the list again (which could be in the next
@@ -1192,8 +1191,8 @@
 ;;
 ;;  You can turn off this automatic bookmark-list display state
 ;;  saving, if you want, by customizing option `bmkp-bmenu-state-file'
-;;  to nil.  And you can toggle this option at any time, using `C-M-~'
-;;  in the bookmark list (command
+;;  to `nil'.  And you can toggle this option at any time, using
+;;  `C-M-~' in the bookmark list (command
 ;;  `bmkp-toggle-saving-menu-list-state').  In particular, if you want
 ;;  your next visit to the bookmark list to start out with a
 ;;  previously recorded state instead of the current state, just hit
@@ -1437,9 +1436,9 @@
 ;;
 ;;  If no matching file association is found in
 ;;  `bmkp-default-handlers-for-file-types', and if option
-;;  `bmkp-guess-default-handler-for-file-flag' is non-nil (it is nil
-;;  by default), then Bookmark+ will guess a shell command to use.  It
-;;  does this by matching the file name against
+;;  `bmkp-guess-default-handler-for-file-flag' is non-`nil' (it is
+;;  `nil' by default), then Bookmark+ will guess a shell command to
+;;  use.  It does this by matching the file name against
 ;;  `dired-guess-shell-alist-default' (also from Dired X).  In Emacs
 ;;  23 and later, if it finds no shell command that way then it
 ;;  guesses one based on mailcap entries.
@@ -1524,7 +1523,7 @@
 ;;  by default to `C-x p c a'.  (In general, the key `a' is used in
 ;;  key sequences for autofile bookmarks.)
 ;;
-;;  If user option `bmkp-propertize-bookmark-names-flag' is non-nil,
+;;  If user option `bmkp-propertize-bookmark-names-flag' is non-`nil',
 ;;  which it is by default with Emacs 21 and later, then you can have
 ;;  multiple bookmarks with the same name.  This is important for
 ;;  autofile bookmarks because the bookmark name is only the
@@ -1806,9 +1805,9 @@
 ;;  in the current bookmark file.
 ;;
 ;;  You can turn off the automatic saving of the current bookmark
-;;  file, by customizing option `bookmark-save-flag' to nil.  And you
-;;  can toggle this option at any time, using `M-~' in the bookmark
-;;  list (command `bmkp-toggle-saving-bookmark-file').
+;;  file, by customizing option `bookmark-save-flag' to `nil'.  And
+;;  you can toggle this option at any time, using `M-~' in the
+;;  bookmark list (command `bmkp-toggle-saving-bookmark-file').
 ;;
 ;;  Besides using multiple bookmark files as *alternatives*, you can
 ;;  combine them, using them as component bookmark subsets (like
@@ -2264,7 +2263,7 @@
 ;;  access.
 ;;
 ;;  Bookmarks shown in the bookmark list are sorted using the current
-;;  value of option `bmkp-sort-comparer'.  (If that is nil, they are
+;;  value of option `bmkp-sort-comparer'.  (If that is `nil', they are
 ;;  unsorted, which means they appear in reverse chronological order
 ;;  of their creation.)
 ;;
@@ -2676,7 +2675,7 @@
 ;;  automatically relocated using the recorded bookmark context (some
 ;;  buffer text surrounding the original position).
 ;;
-;;  If option `bmkp-save-new-location-flag' is non-nil then, after
+;;  If option `bmkp-save-new-location-flag' is non-`nil' then, after
 ;;  jumping, the recorded position of the bookmark is automatically
 ;;  updated to reflect the new location jumped to.  This is true for
 ;;  any bookmark.
@@ -3221,95 +3220,107 @@
 ;;  * Remove tags from one or more files (autofile bookmarks), using
 ;;    `C-x a -'.
  
-;;(@* "If you use Emacs 20 and Also a More Recent Version")
-;;  ** If you use Emacs 20 and Also a More Recent Version **
-;;
-;;  This section pertains to you *ONLY* in the rare case that you use
-;;  both Emacs 20 and a later version, and you share the same bookmark
-;;  file or bookmark-list display state file between the versions.
-;;
-;;  By default starting with Emacs 21, Bookmark+ uses bookmark names
-;;  that are propertized with the full bookmark information, in order
-;;  to let you use multiple bookmarks with the same bookmark name.  An
-;;  example of this is having two autofile bookmarks for files with
-;;  the same name in different directories.
-;;
-;;  When you save the bookmark list (`bookmark-alist') or a full
-;;  snapshot of the bookmark-list display state (e.g., using command
-;;  `bmkp-bmenu-define-full-snapshot-command'), these propertized
-;;  names are saved.
-;;
-;;  However, Emacs 20 cannot read a serialized version of the bookmark
-;;  list if it has such propertized names (the property value is a
-;;  list that contains the propertized string, hence circular) - it
-;;  will raise a `read' error.  To avoid this, when Bookmark+ in Emacs
-;;  20 saves bookmarks or a full snapshot of the bookmark-list display
-;;  state, it unpropertizes the bookmark names.  You can read the
-;;  resulting files in any Emacs version.
-;;
-;;  But if you happen to save bookmark information using a later
-;;  version of Emacs and you then read that recorded state using Emacs
-;;  20, the read will fail.  If this happens then you will need to
-;;  re-save the affected file(s) using a later Emacs version. In the
-;;  later Emacs version:
-;;
-;;  1. `M-x set-variable bmkp-propertize-bookmark-names-flag nil',
-;;     to stop using propertized bookmark names.
-;;  2. `C-x p e' or `C-x r l' to display the bookmark list.
-;;  3. `g', to refresh the display.
-;;  4. `S' to save the bookmark list.
-;;  5. `M-x bmkp-save-menu-list-state', to save the display state.
-;;
-;;  You will now be able to use your bookmarks in Emacs 20 again.
-;;
-;;  If you will often be going back and forth between Emacs 20 and a
-;;  later version, then you may prefer to simply turn off the use of
-;;  propertized bookmark names, to avoid the hassle mentioned above.
-;;  You can do that by customizing user option
-;;  `bmkp-propertize-bookmark-names-flag' to nil.
-;;
-;;  Be aware, however, that if you do that you will not be able to
-;;  take full advantage of Bookmark+ features such as autofile
-;;  bookmarks, which require the ability to have multiple bookmarks
-;;  with the same name.  See (@> "Autofile Bookmarks").
- 
 ;;(@* "Bookmark Compatibility with Vanilla Emacs (`bookmark.el')")
 ;;  ** Bookmark Compatibility with Vanilla Emacs (`bookmark.el') **
 ;;
-;;  Bookmark+ is generally compatible with all GNU Emacs versions 20
-;;  and later.
+;;  Bookmark+ is generally compatible with GNU Emacs versions 20 and
+;;  later.  You can use bookmarks with Bookmark+ regardless of whether
+;;  they were created using Bookmark+ or vanilla Emacs (i.e., library
+;;  `bookmark.el').
 ;;
-;;  1. All bookmarks created using any version of vanilla Emacs
-;;     (library `bookmark.el') continue to work with Bookmark+.
+;;  But for best results, if you have bookmarks that you created using
+;;  Bookmark+ then use Bookmark+, not vanilla Emacs, to access them.
+;;  This section provides details.
 ;;
-;;  2. All bookmarks created using Bookmark+ will work with all Emacs
-;;     versions (20 and later), provided you use Bookmark+ to access
-;;     them.
+;;  Set user option `bmkp-propertize-bookmark-names-flag', depending
+;;  on your usage scenario (the default is `t' for Emacs 21 and later,
+;;  `nil' for Emacs 20):
 ;;
-;;  3. Most bookmarks created using Bookmark+ will not interfere with
-;;     the behavior of vanilla Emacs, versions 21 and later.  The new
-;;     bookmark types are simply ignored by vanilla Emacs.  For
-;;     example, a bookmark with a region is treated like a simple
-;;     position bookmark: the destination is the region start
-;;     position.
+;;  1. Set it to `nil' if you will often be going back and forth
+;;     between using Bookmark+ and using vanilla Emacs.  (Do this also
+;;     if you use Emacs 20.)
 ;;
-;;     However, there are two cases in which Bookmark+ bookmarks will
-;;     raise an error in vanilla Emacs:
+;;  2. Set it to non-`nil' if you instead always use only Bookmark+
+;;     (with Emacs 21 or later), or you use vanilla Emacs only to jump
+;;     to bookmarks but never to update or create bookmarks.
 ;;
-;;     * You cannot use non-file (e.g. buffer-only) bookmarks with
-;;       some versions of vanilla Emacs.
+;;  #1 is VERY IMPORTANT.  You can lose data if you do not respect it.
 ;;
-;;     * You cannot use any bookmarks created using Bookmark+ with
-;;       vanilla Emacs 20.
+;;  The reason for rule #1 is this: When the option is non-`nil'
+;;  Bookmark+ writes bookmarks to your bookmark file in a format that
+;;  can be read and used by vanilla Emacs (21 and later) but which
+;;  vanilla Emacs then saves as unreadable.  If the option value is
+;;  `nil' there is no such problem.
 ;;
-;;     The Emacs bookmark data structure has changed from (Emacs)
-;;     version to version.  Bookmark+ always creates bookmarks that
-;;     have the most recent structure.  As is the case for any
-;;     bookmarks that have the latest structure, these bookmarks will
-;;     not work in vanilla Emacs 20 (that is, without Bookmark+).
+;;  #2 is not a requirement.  It is just a good idea, to be able to
+;;  take better advantage of Bookmark+.  If you set the option to
+;;  `nil' then you cannot use multiple bookmarks that have the same
+;;  name.  Vanilla Emacs does not make good use of such critters, but
+;;  Bookmark+ does.  Having multiple bookmarks with the same name is
+;;  particularly useful for autofiles.  It means you can have
+;;  different autofiles in different directories but with the same
+;;  name. See (@> "Autofile Bookmarks").
 ;;
-;;  Bottom line: Use `bookmark+.el' to access bookmarks created using
-;;  `bookmark+.el'.
+;;  Here is what happens when `bmkp-propertize-bookmark-names-flag' is
+;;  non-nil:
+;;
+;;  Besides its name, which is what you see and use most of the time,
+;;  a bookmark contains other information such as the target location,
+;;  textual context hints, and last access time.  Non-`nil'
+;;  `bmkp-propertize-bookmark-names-flag' has no effect on vanilla
+;;  Emacs, but it causes Bookmark+ to put the full bookmark
+;;  information on the bookmark name as a text property.
+;;
+;;  The name thus encapsulates all of the information contained in the
+;;  full bookmark of which it is part.  Knowing the name is then
+;;  enough to know everything about the bookmark.  Part of the
+;;  bookmark (its name) refers to the whole of it.  In Lisp this
+;;  self-reference is implemented using circular structures.
+;;
+;;  When Bookmark+ saves such circular structures to your bookmark
+;;  file, if the option is non-`nil' then it takes care to do so in
+;;  such a way that they can be read in again when your bookmark file
+;;  is loaded.  In Lisp terms, it binds `print-circle' to non-`nil'
+;;  when it writes your bookmarks.  If the option value is `nil' then
+;;  the circularity (self-reference) is removed before your bookmarks
+;;  are saved.  Either way, the file is readable.
+;;
+;;  Vanilla Emacs (21 and later) has no problem reading your bookmark
+;;  file if it contains such circular structures.  But if you then use
+;;  it to save the file again, the Lisp code it writes has invalid
+;;  Lisp `read' syntax (because it does not remove the circularity but
+;;  it also does not bind `print-circle' to non-`nil').
+;;
+;;  If that happens, the result is a bookmark file that is UNREADABLE.
+;;  It cannot be loaded into either vanilla Emacs or Bookmark+.  If
+;;  you do not have an uncorrupted backup version of the file to
+;;  revert to, then you will need to edit it by hand to clean it up.
+;;
+;;  So do not let that happen to you!  For best results use only
+;;  Bookmark+ to access bookmarks created using Bookmark+.
+;;
+;;  If you must use vanilla Emacs with your bookmarks, then make sure
+;;  they are not saved by Bookmark+ with the option non-`nil': Using
+;;  Bookmark+, set the option to `nil' and then save the file.
+;;
+;;  That is:
+;;
+;;  1. `M-x set-variable bmkp-propertize-bookmark-names-flag nil',
+;;     to stop using propertized bookmark names.
+;;  2. `C-x p e' or `C-x r l', to display the bookmark list.
+;;  3. `g', to refresh the display.
+;;  4. `S', to save the bookmark list.
+;;  5. `M-x bmkp-save-menu-list-state', to save the display state.
+;;
+;;  Then you can use your bookmark file with vanilla Emacs (but
+;;  without the possibility of having multiple bookmarks with the same
+;;  name).
+;;
+;;  Note that when the option value is non-`nil', propertized bookmark
+;;  names are saved not only to your bookmark file but also to any
+;;  full snapshots you create of the bookmark-list display state using
+;;  command `bmkp-bmenu-define-full-snapshot-command'.
+;;  See (@> "State-Restoring Commands and Bookmarks").
  
 ;;(@* "New Bookmark Structure")
 ;;  ** New Bookmark Structure **
