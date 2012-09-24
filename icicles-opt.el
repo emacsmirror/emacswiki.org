@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Sep 11 17:05:52 2012 (-0700)
+;; Last-Updated: Mon Sep 24 14:35:02 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5329
+;;     Update #: 5330
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1695,9 +1695,10 @@ You probably do not want to set this globally, but you can."
 ;;;###autoload
 (defcustom icicle-file-sort nil
   "*A sort function for file names, or nil.
-Examples of sort functions are `icicle-dirs-last-p' and
-`icicle-last-modified-first-p'.  If nil, then file names are not
-sorted."
+
+Examples of sort functions are `icicle-dirs-last-p',
+`icicle-last-accessed-first-p', and `icicle-last-modified-first-p'.
+If nil, then file names are not sorted."
   :type '(choice (const :tag "None" nil) function)
   :group 'Icicles-Files :group 'Icicles-Completions-Display)
 
