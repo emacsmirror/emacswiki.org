@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Sep 24 07:52:15 2012 (-0700)
+;; Last-Updated: Mon Sep 24 13:14:15 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 14603
+;;     Update #: 14614
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -549,7 +549,7 @@
 ;;  #2 is on disk.  It is a persistent record of a set of bookmarks.
 ;;
 ;;  The bookmark list (#1) is the current value of internal variable
-;;  `bookmark-alist'.  The bookmark file (#2)can be anywhere.  Its
+;;  `bookmark-alist'.  The bookmark file (#2) can be anywhere.  Its
 ;;  default filename is the value of user option
 ;;  `bookmark-default-file'.
 ;;
@@ -613,6 +613,15 @@
 ;;
 ;;(@* "Automatic Saving")
 ;;  *** Automatic Saving ***
+;;
+;;  Before getting into the topic of automatic saving, let me say this
+;;  clearly once: Back up your bookmark file(s)!  I recommend that you
+;;  set option `bookmark-version-control' to `t', so that you get
+;;  numbered backups.  See also nodes `Backup Names' and `Backup
+;;  Deletion' in the Emacs manual.
+;;
+;;  (Bookmark+ creates backups when your bookmark file is saved.
+;;  Until bug #12507 is fixed, vanilla Emacs does not.)
 ;;
 ;;  User option `bookmark-save-flag' controls whether and how often to
 ;;  automatically save the bookmark list to the bookmark file, thus
