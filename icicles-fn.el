@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Sep 17 11:30:12 2012 (-0700)
+;; Last-Updated: Mon Sep 24 16:01:32 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 13341
+;;     Update #: 13361
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -118,8 +118,9 @@
 ;;    `icicle-insert-Completions-help-string',
 ;;    `icicle-isearch-complete-past-string', `icicle-join-nth-parts',
 ;;    `icicle-key-description', `icicle-kill-a-buffer',
-;;    `icicle-last-modified-first-p', `icicle-levenshtein-match',
-;;    `icicle-levenshtein-one-match', `icicle-levenshtein-one-regexp',
+;;    `icicle-last-accessed-first-p', `icicle-last-modified-first-p',
+;;    `icicle-levenshtein-match', `icicle-levenshtein-one-match',
+;;    `icicle-levenshtein-one-regexp',
 ;;    `icicle-levenshtein-strict-match',
 ;;    `icicle-lisp-vanilla-completing-read',
 ;;    `icicle-local-keys-first-p', `icicle-make-plain-predicate',
@@ -2735,7 +2736,7 @@ the file's properties."
                                                                (shell-command-to-string
                                                                 (concat "apropos "
                                                                         (shell-quote-argument cand)))))
-                                                          (icicle-describe-file cand))))
+                                                          (icicle-describe-file cand nil 'NO-ERROR-P))))
          (icicle-extra-candidates                     icicle-extra-candidates)
          (icicle-must-match-regexp                    icicle-file-match-regexp)
          (icicle-must-not-match-regexp                icicle-file-no-match-regexp)
@@ -3501,7 +3502,7 @@ This must be called in the minibuffer."
   (when (and icicle-highlight-input-initial-whitespace-flag (not (string= "" input)))
     (let ((case-fold-search
            ;; Don't bother with buffer completion and `read-buffer-completion-ignore-case'.
-           (if (and (or (icicle-file-name-input-p) icicle-abs-file-candidates)
+           (if (and (or (icicle-file-name-input-p)  icicle-abs-file-candidates)
                     (boundp 'read-file-name-completion-ignore-case))
                read-file-name-completion-ignore-case
              completion-ignore-case)))
@@ -3897,7 +3898,7 @@ Completion', for details."
   ;; all CANDIDATES and also contains the first match in the first candidate.
   (let ((case-fold-search
          ;; Don't bother with buffer completion and `read-buffer-completion-ignore-case'.
-         (if (and (or (icicle-file-name-input-p) icicle-abs-file-candidates)
+         (if (and (or (icicle-file-name-input-p)  icicle-abs-file-candidates)
                   (boundp 'read-file-name-completion-ignore-case))
              read-file-name-completion-ignore-case
            completion-ignore-case))
@@ -4137,7 +4138,7 @@ REGEXP-P non-nil means use regexp matching to highlight root."
   (let ((inp  (icicle-minibuf-input-sans-dir icicle-current-input))
         (case-fold-search
          ;; Don't bother with buffer completion and `read-buffer-completion-ignore-case'.
-         (if (and (or (icicle-file-name-input-p) icicle-abs-file-candidates)
+         (if (and (or (icicle-file-name-input-p)  icicle-abs-file-candidates)
                   (boundp 'read-file-name-completion-ignore-case))
              read-file-name-completion-ignore-case
            completion-ignore-case))
@@ -4491,7 +4492,7 @@ INPUT is the current user input, that is, the completion root.
 Optional argument DONT-ACTIVATE-P means do not activate the mark."
   (let ((case-fold-search
          ;; Don't bother with buffer completion and `read-buffer-completion-ignore-case'.
-         (if (and (or (icicle-file-name-input-p) icicle-abs-file-candidates)
+         (if (and (or (icicle-file-name-input-p)  icicle-abs-file-candidates)
                   (boundp 'read-file-name-completion-ignore-case))
              read-file-name-completion-ignore-case
            completion-ignore-case))
@@ -4662,7 +4663,7 @@ This means that completion candidates are relative file names.
 If instead you want to test whether input is a file name, absolute or
 relative, use this test:
 
- (or (icicle-file-name-input-p) icicle-abs-file-candidates)"
+ (or (icicle-file-name-input-p)  icicle-abs-file-candidates)"
   minibuffer-completing-file-name)
 
 (defun icicle-file-directory-p (file)
@@ -4911,7 +4912,7 @@ MESSAGE is the confirmation message to display in the minibuffer."
 
 (defun icicle-maybe-sort-and-strip-candidates ()
   "Sort `icicle-completion-candidates'.  Strip ignored file names too."
-  (if (or (icicle-file-name-input-p) icicle-abs-file-candidates) ; File names: relative or absolute.
+  (if (or (icicle-file-name-input-p)  icicle-abs-file-candidates) ; File names: relative or absolute.
       (setq icicle-completion-candidates
             (icicle-strip-ignored-files-and-sort icicle-completion-candidates))
     (setq icicle-completion-candidates  (icicle-maybe-sort-maybe-truncate
@@ -5227,7 +5228,7 @@ Overlay `icicle-complete-input-overlay' is created with `match' face,
 unless it exists."
   (let ((case-fold-search
          ;; Don't bother with buffer completion and `read-buffer-completion-ignore-case'.
-         (if (and (or (icicle-file-name-input-p) icicle-abs-file-candidates)
+         (if (and (or (icicle-file-name-input-p)  icicle-abs-file-candidates)
                   (boundp 'read-file-name-completion-ignore-case))
              read-file-name-completion-ignore-case
            completion-ignore-case))
@@ -6142,7 +6143,7 @@ Highlighting indicates the current completion status."
   (when icicle-highlight-lighter-flag
     (let ((strg
            ;; Don't bother with buffer completion and `read-buffer-completion-ignore-case'.
-           (if (if (and (or (icicle-file-name-input-p) icicle-abs-file-candidates)
+           (if (if (and (or (icicle-file-name-input-p)  icicle-abs-file-candidates)
                         (boundp 'read-file-name-completion-ignore-case))
                    read-file-name-completion-ignore-case
                  completion-ignore-case)
@@ -6512,20 +6513,19 @@ each of which is sorted alphabetically separately: matching previous
 inputs, followed by matching candidates that have not yet been used."
   ;; We could use `icicle-delete-duplicates' to shorten the history, but that takes time too.
   ;; And, starting in Emacs 22, histories will not contain duplicates anyway.
-  (let ((hist  (and (symbolp minibuffer-history-variable) (boundp minibuffer-history-variable)
+  (let ((hist  (and (symbolp minibuffer-history-variable)  (boundp minibuffer-history-variable)
                     (symbol-value minibuffer-history-variable)))
         (dir   (and (icicle-file-name-input-p)
-                    (icicle-file-name-directory-w-default (or icicle-last-input
-                                                              icicle-current-input)))))
+                    (icicle-file-name-directory-w-default (or icicle-last-input  icicle-current-input)))))
     (if (not (consp hist))
         (icicle-case-string-less-p s1 s2)
       (when dir (setq s1  (expand-file-name s1 dir)
                       s2  (expand-file-name s2 dir)))
       (let ((s1-previous-p  (member s1 hist))
             (s2-previous-p  (member s2 hist)))
-        (or (and (not s1-previous-p) (not s2-previous-p) (icicle-case-string-less-p s1 s2))
-            (and s1-previous-p (not s2-previous-p))
-            (and s1-previous-p s2-previous-p (icicle-case-string-less-p s1 s2)))))))
+        (or (and (not s1-previous-p)  (not s2-previous-p)  (icicle-case-string-less-p s1 s2))
+            (and s1-previous-p  (not s2-previous-p))
+            (and s1-previous-p  s2-previous-p  (icicle-case-string-less-p s1 s2)))))))
 
 ;; $$ Alternative definition, but it doesn't seem any faster, and is slightly less clear.
 ;; (defun icicle-most-recent-first-p (s1 s2)
@@ -6539,8 +6539,7 @@ inputs, followed by matching candidates that have not yet been used."
 ;;   (let ((hist  (and (symbolp minibuffer-history-variable)
 ;;                     (symbol-value minibuffer-history-variable)))
 ;;         (dir   (and (icicle-file-name-input-p)
-;;                     (icicle-file-name-directory-w-default
-;;                      (or icicle-last-input icicle-current-input))))
+;;                     (icicle-file-name-directory-w-default (or icicle-last-input  icicle-current-input))))
 ;;         (s1-in-hist nil)
 ;;         (s2-in-hist nil))
 ;;     (if (not (consp hist))
@@ -6552,18 +6551,17 @@ inputs, followed by matching candidates that have not yet been used."
 ;;       (or (and hist s1-in-hist) (and (not s2-in-hist) (icicle-case-string-less-p s1 s2))))))
 
 (defun icicle-most-recent-first-p (s1 s2)
-  "Non-nil means S1 was used more recently than S2.
+  "Non-nil means S1 was used as input more recently than S2.
 Also:
- S1 < S2 if S1 was used previously but S2 was not.
- S1 < S2 if neither was used previously
+ S1 < S2 if S1 was used as input previously but S2 was not.
+ S1 < S2 if neither was used as input previously
   and S1 `icicle-case-string-less-p' S2."
   ;; We could use `icicle-delete-duplicates' to shorten the history, but that takes time too.
   ;; And, starting in Emacs 22, histories do not contain duplicates anyway.
   (let ((hist     (and (symbolp minibuffer-history-variable) (boundp minibuffer-history-variable)
                        (symbol-value minibuffer-history-variable)))
         (dir      (and (icicle-file-name-input-p)
-                       (icicle-file-name-directory-w-default (or icicle-last-input
-                                                                 icicle-current-input))))
+                       (icicle-file-name-directory-w-default (or icicle-last-input  icicle-current-input))))
         (s1-tail  ())
         (s2-tail  ()))
     (if (not (consp hist))
@@ -6572,10 +6570,10 @@ Also:
                       s2  (expand-file-name s2 dir)))
       (setq s1-tail  (member s1 hist)
             s2-tail  (member s2 hist))
-      (cond ((and s1-tail s2-tail)  (>= (length s1-tail) (length s2-tail)))
-            (s1-tail                t)
-            (s2-tail                nil)
-            (t                      (icicle-case-string-less-p s1 s2))))))
+      (cond ((and s1-tail  s2-tail)  (>= (length s1-tail) (length s2-tail)))
+            (s1-tail                 t)
+            (s2-tail                 nil)
+            (t                       (icicle-case-string-less-p s1 s2))))))
 
 
 (put 'icicle-buffer-smaller-p 'icicle-buffer-sort-predicate t)
@@ -6638,10 +6636,10 @@ The type of a non-directory is its extension.  Extensions are compared
  alphabetically.
 If not doing file-name completion, then this is the same as
 `icicle-case-string-less-p'."
-  (if (icicle-file-name-input-p)
+  (if (or (icicle-file-name-input-p)  icicle-abs-file-candidates)
       (let ((s1-dir-p  (icicle-file-directory-p s1))
             (s2-dir-p  (icicle-file-directory-p s2)))
-        (cond ((and s1-dir-p s2-dir-p) (icicle-case-string-less-p s1 s2)) ; Both are dirs, so alpha.
+        (cond ((and s1-dir-p  s2-dir-p) (icicle-case-string-less-p s1 s2)) ; Both are dirs, so alpha.
               ((not (or s1-dir-p s2-dir-p)) ; Neither is a dir.  Compare extensions.
                (let ((es1  (file-name-extension s1 t))
                      (es2  (file-name-extension s2 t)))
@@ -6658,7 +6656,7 @@ If not doing file-name completion, then this is the same as
   "Non-nil means S1 is a dir and S2 a file, or S1 < S2 (alphabet).
 If not doing file-name completion, then this is the same as
 `icicle-case-string-less-p'."
-  (if (icicle-file-name-input-p)
+  (if (or (icicle-file-name-input-p)  icicle-abs-file-candidates)
       (let ((s1-dir-p  (icicle-file-directory-p s1))
             (s2-dir-p  (icicle-file-directory-p s2)))
         (if (or (and s1-dir-p s2-dir-p) ; Both or neither are directories.
@@ -6674,7 +6672,7 @@ If not doing file-name completion, then this is the same as
   "Non-nil means S1 is a file and S2 a dir, or S1 < S2 (alphabet).
 If not doing file-name completion, then this is the same as
 `icicle-case-string-less-p'."
-  (if (icicle-file-name-input-p)
+  (if (or (icicle-file-name-input-p)  icicle-abs-file-candidates)
       (let ((s1-dir-p  (icicle-file-directory-p s1))
             (s2-dir-p  (icicle-file-directory-p s2)))
         (if (or (and s1-dir-p s2-dir-p) ; Both or neither are directories.
@@ -6708,13 +6706,28 @@ Alphabetical comparison is done using `icicle-case-string-less-p'."
                     (s2-1st                     (icicle-transform-multi-completion s2))))))))
 
 
+(put 'icicle-last-accessed-first-p 'icicle-file-name-sort-predicate t)
+;; This predicate is used for file-name completion.
+(defun icicle-last-accessed-first-p (s1 s2)
+  "Non-nil means file S1 was last accessed after S2 was.
+If not doing file-name completion, then this is the same as
+`icicle-case-string-less-p'."
+  (if (or (icicle-file-name-input-p)  icicle-abs-file-candidates)
+      (let ((acc-date1  (nth 4 (file-attributes s1)))
+            (acc-date2  (nth 4 (file-attributes s2))))
+        (or (< (car acc-date2)  (car acc-date1)) ; High-order bits.
+            (and (= (car acc-date2) (car acc-date1)) ; Low-order bits.
+                 (< (cadr acc-date2) (cadr acc-date1)))))
+    (icicle-case-string-less-p s1 s2)))
+
+
 (put 'icicle-last-modified-first-p 'icicle-file-name-sort-predicate t)
 ;; This predicate is used for file-name completion.
 (defun icicle-last-modified-first-p (s1 s2)
-  "Non-nil means file S1 was last modified after S2.
+  "Non-nil means file S1 was last modified after S2 was.
 If not doing file-name completion, then this is the same as
 `icicle-case-string-less-p'."
-  (if (icicle-file-name-input-p)
+  (if (or (icicle-file-name-input-p)  icicle-abs-file-candidates)
       (let ((mod-date1  (nth 5 (file-attributes s1)))
             (mod-date2  (nth 5 (file-attributes s2))))
         (or (< (car mod-date2)  (car mod-date1)) ; High-order bits.
@@ -6859,7 +6872,7 @@ candidates."
         (s2-special  (get (intern s2) 'icicle-special-candidate)))
     (when (or case-fold-search completion-ignore-case
               ;; Don't bother with buffer completion and `read-buffer-completion-ignore-case'.
-              (and (or (icicle-file-name-input-p) icicle-abs-file-candidates)
+              (and (or (icicle-file-name-input-p)  icicle-abs-file-candidates)
                    (boundp 'read-file-name-completion-ignore-case)
                    read-file-name-completion-ignore-case))
       (setq s1  (icicle-upcase s1)
@@ -6878,7 +6891,7 @@ candidates.  An extra candidate is one that is a member of
         (s2-extra  (member s2 icicle-extra-candidates)))
     (when (or case-fold-search completion-ignore-case
               ;; Don't bother with buffer completion and `read-buffer-completion-ignore-case'.
-              (and (or (icicle-file-name-input-p) icicle-abs-file-candidates)
+              (and (or (icicle-file-name-input-p)  icicle-abs-file-candidates)
                    (boundp 'read-file-name-completion-ignore-case)
                    read-file-name-completion-ignore-case))
       (setq s1  (icicle-upcase s1)
@@ -6912,7 +6925,7 @@ Otherwise, return non-nil if S1 is `string-lessp' S2."
   "Like `string-lessp', but respects `completion-ignore-case'."
   (when (if icicle-completing-p         ; Use var, not fn, `icicle-completing-p', or else too slow.
             ;; Don't bother with buffer completion and `read-buffer-completion-ignore-case'.
-            (if (and (or (icicle-file-name-input-p) icicle-abs-file-candidates)
+            (if (and (or (icicle-file-name-input-p)  icicle-abs-file-candidates)
                      (boundp 'read-file-name-completion-ignore-case))
                 read-file-name-completion-ignore-case
               completion-ignore-case)
