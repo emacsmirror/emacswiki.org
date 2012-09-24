@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 22.1
-;; Last-Updated: Sat Sep 22 15:31:49 2012 (-0700)
+;; Last-Updated: Mon Sep 24 15:49:39 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1317
+;;     Update #: 1324
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/help-fns+.el
 ;; Doc URL: http://emacswiki.org/emacs/HelpPlus
 ;; Keywords: help, faces, characters, packages, description
@@ -118,6 +118,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/09/24 dadams
+;;     describe-file: Added optional arg NO-ERROR-P.
 ;; 2012/09/22 dadams
 ;;     Info-index-occurrences, Info-first-index-occurrence:
 ;;       Replace Info-directory call by short version.  Better Searching msg.
@@ -2110,7 +2112,7 @@ If FRAME is omitted or nil, use the selected frame."
               (terpri))))))))
 
 ;;;###autoload
-(defun describe-file (filename &optional internal-form-p) ; Bound to `C-h M-f'
+(defun describe-file (filename &optional internal-form-p no-error-p) ; Bound to `C-h M-f'
   "Describe the file named FILENAME.
 If FILENAME is nil, describe current directory (`default-directory').
 
@@ -2123,97 +2125,104 @@ Starting with Emacs 22, if the file is an image file then:
 
 If FILENAME is the name of an autofile bookmark and you use library
 `Bookmark+', then show also the bookmark information (tags etc.).  In
-this case, a prefix arg shows the internal form of the bookmark."
+this case, a prefix arg shows the internal form of the bookmark.
+
+In Lisp code:
+
+Non-nil optional arg INTERNAL-FORM-P shows the internal form.
+Non-nil optional arg NO-ERROR-P prints an error message but does not
+ raise an error."
   (interactive "FDescribe file: \nP")
   (unless filename (setq filename default-directory))
-  (help-setup-xref `(describe-file ,filename ,internal-form-p) (interactive-p))
+  (help-setup-xref `(describe-file ,filename ,internal-form-p ,no-error-p) (interactive-p))
   (let ((attrs  (file-attributes filename))
         ;; Functions `bmkp-*' are defined in `bookmark+.el'.
         (bmk    (and (fboundp 'bmkp-get-autofile-bookmark)  (bmkp-get-autofile-bookmark filename))))
-    (unless attrs (error(format "Cannot open file `%s'" filename)))
-    (let* ((type             (nth 0 attrs))
-           (numlinks         (nth 1 attrs))
-           (uid              (nth 2 attrs))
-           (gid              (nth 3 attrs))
-           (last-access      (nth 4 attrs))
-           (last-mod         (nth 5 attrs))
-           (last-status-chg  (nth 6 attrs))
-           (size             (nth 7 attrs))
-           (permissions      (nth 8 attrs))
-           ;; Skip 9: t iff file's gid would change if file were deleted and recreated.
-           (inode            (nth 10 attrs))
-           (device           (nth 11 attrs))
-           (thumb-string     (and (fboundp 'image-file-name-regexp) ; In `image-file.el' (Emacs 22+).
-                                  (if (fboundp 'string-match-p)
-                                      (string-match-p (image-file-name-regexp) filename)
-                                    (save-match-data
-                                      (string-match (image-file-name-regexp) filename)))
-                                  (if (fboundp 'display-graphic-p) (display-graphic-p) window-system)
-                                  (require 'image-dired nil t)
-                                  (image-dired-get-thumbnail-image filename)
-                                  (apply #'propertize "XXXX"
-                                         `(display ,(append (image-dired-get-thumbnail-image filename)
-                                                            '(:margin 10))
-                                                   rear-nonsticky (display)
-                                                   mouse-face highlight
-                                                   follow-link t
-                                                   help-echo "`mouse-2' or `RET': Show full image"
-                                                   keymap (keymap
-                                                           (mouse-2 . (lambda (e) (interactive "e")
-                                                                         (find-file ,filename)))
-                                                           (13 . (lambda () (interactive)
-                                                                    (find-file ,filename))))))))
-           (image-info       (and (require 'image-dired nil t)
-                                  (fboundp 'image-file-name-regexp)
-                                  (if (fboundp 'string-match-p)
-                                      (string-match-p (image-file-name-regexp) filename)
-                                    (save-match-data
-                                      (string-match (image-file-name-regexp) filename)))
-                                  (progn (when (interactive-p) (message "Gathering image data..."))  t)
-                                  (condition-case nil
-                                      (let ((all  (help-all-exif-data (expand-file-name filename))))
-                                        (concat
-                                         (and all  (not (zerop (length all)))
-                                              (format "\nImage Data (EXIF)\n-----------------\n%s"
-                                                      all))))
-                                    (error nil))))
-           (help-text        (concat
-                              (format "`%s'\n%s\n\n" filename (make-string (+ 2 (length filename)) ?-))
-                              (format "File Type:                       %s\n"
-                                      (cond ((eq t type)  "Directory")
-                                            ((stringp type)  (format "Symbolic link to `%s'" type))
-                                            (t  "Normal file")))
-                              (format "Permissions:                %s\n" permissions)
-                              (and (not (eq t type))  (format "Size in bytes:              %g\n" size))
-                              (format-time-string
-                               "Time of last access:        %a %b %e %T %Y (%Z)\n" last-access)
-                              (format-time-string
-                               "Time of last modification:  %a %b %e %T %Y (%Z)\n" last-mod)
-                              (format-time-string
-                               "Time of last status change: %a %b %e %T %Y (%Z)\n" last-status-chg)
-                              (format "Number of links:            %d\n" numlinks)
-                              (format "User ID (UID):              %s\n" uid)
-                              (format "Group ID (GID):             %s\n" gid)
-                              (format "Inode:                      %S\n" inode)
-                              (format "Device number:              %s\n" device)
-                              image-info)))
-      (with-output-to-temp-buffer "*Help*"
-        (when bmk
-          (if internal-form-p
-              (let* ((bname     (bookmark-name-from-full-record bmk))
-                     (bmk-defn  (format "Bookmark `%s'\n%s\n\n%s" bname
-                                        (make-string (+ 11 (length bname)) ?-)
-                                        (pp-to-string bmk))))
-                (princ bmk-defn) (terpri) (terpri))
-            (princ (bmkp-bookmark-description bmk 'NO-IMAGE)) (terpri) (terpri)))
-        (princ help-text))
-      (when thumb-string
-        (with-current-buffer "*Help*"
-          (save-excursion
-            (goto-char (point-min))
-            (let ((buffer-read-only  nil))
-              (when (re-search-forward "Device number:.+\n" nil t) (insert thumb-string))))))
-      help-text)))                      ; Return displayed text.
+    (if (not attrs)
+        (if no-error-p (message "Cannot open file `%s'" filename) (error "Cannot open file `%s'" filename))
+      (let* ((type             (nth 0 attrs))
+             (numlinks         (nth 1 attrs))
+             (uid              (nth 2 attrs))
+             (gid              (nth 3 attrs))
+             (last-access      (nth 4 attrs))
+             (last-mod         (nth 5 attrs))
+             (last-status-chg  (nth 6 attrs))
+             (size             (nth 7 attrs))
+             (permissions      (nth 8 attrs))
+             ;; Skip 9: t iff file's gid would change if file were deleted and recreated.
+             (inode            (nth 10 attrs))
+             (device           (nth 11 attrs))
+             (thumb-string     (and (fboundp 'image-file-name-regexp) ; In `image-file.el' (Emacs 22+).
+                                    (if (fboundp 'string-match-p)
+                                        (string-match-p (image-file-name-regexp) filename)
+                                      (save-match-data
+                                        (string-match (image-file-name-regexp) filename)))
+                                    (if (fboundp 'display-graphic-p) (display-graphic-p) window-system)
+                                    (require 'image-dired nil t)
+                                    (image-dired-get-thumbnail-image filename)
+                                    (apply #'propertize "XXXX"
+                                           `(display ,(append (image-dired-get-thumbnail-image filename)
+                                                              '(:margin 10))
+                                                     rear-nonsticky (display)
+                                                     mouse-face highlight
+                                                     follow-link t
+                                                     help-echo "`mouse-2' or `RET': Show full image"
+                                                     keymap (keymap
+                                                             (mouse-2 . (lambda (e) (interactive "e")
+                                                                           (find-file ,filename)))
+                                                             (13 . (lambda () (interactive)
+                                                                      (find-file ,filename))))))))
+             (image-info       (and (require 'image-dired nil t)
+                                    (fboundp 'image-file-name-regexp)
+                                    (if (fboundp 'string-match-p)
+                                        (string-match-p (image-file-name-regexp) filename)
+                                      (save-match-data
+                                        (string-match (image-file-name-regexp) filename)))
+                                    (progn (when (interactive-p) (message "Gathering image data..."))  t)
+                                    (condition-case nil
+                                        (let ((all  (help-all-exif-data (expand-file-name filename))))
+                                          (concat
+                                           (and all  (not (zerop (length all)))
+                                                (format "\nImage Data (EXIF)\n-----------------\n%s"
+                                                        all))))
+                                      (error nil))))
+             (help-text        (concat
+                                (format "`%s'\n%s\n\n" filename (make-string (+ 2 (length filename)) ?-))
+                                (format "File Type:                       %s\n"
+                                        (cond ((eq t type)  "Directory")
+                                              ((stringp type)  (format "Symbolic link to `%s'" type))
+                                              (t  "Normal file")))
+                                (format "Permissions:                %s\n" permissions)
+                                (and (not (eq t type))  (format "Size in bytes:              %g\n" size))
+                                (format-time-string
+                                 "Time of last access:        %a %b %e %T %Y (%Z)\n" last-access)
+                                (format-time-string
+                                 "Time of last modification:  %a %b %e %T %Y (%Z)\n" last-mod)
+                                (format-time-string
+                                 "Time of last status change: %a %b %e %T %Y (%Z)\n" last-status-chg)
+                                (format "Number of links:            %d\n" numlinks)
+                                (format "User ID (UID):              %s\n" uid)
+                                (format "Group ID (GID):             %s\n" gid)
+                                (format "Inode:                      %S\n" inode)
+                                (format "Device number:              %s\n" device)
+                                image-info)))
+        (with-output-to-temp-buffer "*Help*"
+          (when bmk
+            (if internal-form-p
+                (let* ((bname     (bookmark-name-from-full-record bmk))
+                       (bmk-defn  (format "Bookmark `%s'\n%s\n\n%s" bname
+                                          (make-string (+ 11 (length bname)) ?-)
+                                          (pp-to-string bmk))))
+                  (princ bmk-defn) (terpri) (terpri))
+              (princ (bmkp-bookmark-description bmk 'NO-IMAGE)) (terpri) (terpri)))
+          (princ help-text))
+        (when thumb-string
+          (with-current-buffer "*Help*"
+            (save-excursion
+              (goto-char (point-min))
+              (let ((buffer-read-only  nil))
+                (when (re-search-forward "Device number:.+\n" nil t) (insert thumb-string))))))
+        help-text))))                   ; Return displayed text.
 
 (defun help-all-exif-data (file)
   "Return all EXIF data from FILE, using command-line tool `exiftool'."
