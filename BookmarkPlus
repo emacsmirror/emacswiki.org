@@ -6,7 +6,7 @@ This page is about package '''[::Bookmark+]''' , which enhances vanilla Emacs [[
 
 The internal bookmark format (data structure) used by '''Bookmark+''' is compatible with that of vanilla GnuEmacs. It extends that structure in new ways, to accommodate new bookmark types.
 
-With '''Bookmark+''' you can use bookmarks that were created with any Emacs version in any other Emacs version. In particular, '''Bookmark+''' lets you use Emacs prior to release 23 with bookmarks created using Emacs 23 (or created using any older version). (See also [[#Compatibility]], below.)
+With '''Bookmark+''' you can use bookmarks that were created with any Emacs version in any other Emacs version. But see also [[#Compatibility]], below.
 
 
 [:Libraries]
@@ -1497,7 +1497,7 @@ If no matching file association is found in
 `bmkp-default-handlers-for-file-types', and if option
 '''`bmkp-guess-default-handler-for-file-flag'''' is non-`nil' (it is `nil'
 by default), then '''Bookmark+''' will ''guess'' a shell command to use.  It does this by matching the file name against
-`dired-guess-shell-alist-default' (also from [[Dired X]]).  In Emacs 23+, if it finds no
+`dired-guess-shell-alist-default' (also from [[Dired X]]).  In Emacs 23 and later, if it finds no
 shell command that way then it guesses one based on mailcap
 entries.
 
@@ -3568,7 +3568,7 @@ state, it unpropertizes the bookmark names.  You can read the
 resulting files in any Emacs version.
 
 But if you happen to save bookmark information using a later
-version of Emacs (e.g. Emacs 23) and you then read that recorded
+version of Emacs and you then read that recorded
 state using Emacs 20, the read will fail.  If this happens then
 you will need to re-save the affected file(s) using a later Emacs
 version. In the later Emacs version:
@@ -3615,17 +3615,17 @@ with the same name.  See [[#AutofileBookmarks|Autofile Bookmarks]].
 [:Compatibility]
 == Bookmark Compatibility with Vanilla Emacs ==
 
-'''Bookmark+''' is generally compatible with GnuEmacs
-versions 20 through 23.
+'''Bookmark+''' is generally compatible with all GnuEmacs
+versions 20 and later.
 
 1. All bookmarks created using any version of vanilla Emacs
    (library ##bookmark.el##) continue to work with '''Bookmark+'''.
 
 2. All bookmarks created using '''Bookmark+''' will work
-   with all Emacs versions (20-23), provided you use '''Bookmark+''' to access them.
+   with all Emacs versions (20 and later), provided you use '''Bookmark+''' to access them.
 
 3. Most bookmarks created using '''Bookmark+''' will not interfere
-   with the behavior of vanilla Emacs, versions 21-23.  The new
+   with the behavior of vanilla Emacs, versions 21 and later.  The new
    bookmark types are simply ignored by vanilla Emacs.  For
    example, a bookmark with a region is treated like a simple
    position bookmark: the destination is the region start position.
@@ -3640,8 +3640,8 @@ However, there are two cases in which '''Bookmark+''' bookmarks will raise an er
 
 The Emacs bookmark data structure has changed from (Emacs) version to
 version.  '''Bookmark+''' always creates bookmarks that
-have the most recent structure (defined in Emacs 23).  As is the case for
-any bookmarks that have the Emacs 23 structure, these bookmarks
+have the most recent structure.  As is the case for
+any bookmarks that have the latest structure, these bookmarks
 will not work in vanilla Emacs 20 (that is, without
 '''Bookmark+''').
 
