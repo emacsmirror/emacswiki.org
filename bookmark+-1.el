@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sat Sep 22 08:56:46 2012 (-0700)
+;; Last-Updated: Mon Sep 24 11:33:43 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5826
+;;     Update #: 5828
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -2682,13 +2682,14 @@ If called from Lisp:
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
-;; 1. Do not save temporary bookmarks (`bmkp-temporary-bookmark-p').
-;; 2. Added optional arg ALT-MSG.
-;; 3. Insert code piecewise, to improve performance when saving `bookmark-alist'.
+;; 1. Use `write-file', not `write-region', so backup files are made.
+;; 2. Do not save temporary bookmarks (`bmkp-temporary-bookmark-p').
+;; 3. Added optional arg ALT-MSG.
+;; 4. Insert code piecewise, to improve performance when saving `bookmark-alist'.
 ;;    (Do not let `pp' parse all of `bookmark-alist' at once.)
-;; 4. Unless `bmkp-propertize-bookmark-names-flag', remove text properties from bookmark name and file name.
-;; 5. Bind `print-circle' to t around `pp', to record bookmark name with `bmkp-full-record' property.
-;; 6. Use `case', not `cond'.
+;; 5. Unless `bmkp-propertize-bookmark-names-flag', remove text properties from bookmark name and file name.
+;; 6. Bind `print-circle' to t around `pp', to record bookmark name with `bmkp-full-record' property.
+;; 7. Use `case', not `cond'.
 ;;
 (defun bookmark-write-file (file &optional alt-msg)
   "Write `bookmark-alist' to FILE.
@@ -2729,7 +2730,8 @@ contain a `%s' construct, so that it can be passed along with FILE to
                                   (t          t)))
               (errorp           nil))
           (condition-case nil
-              (write-region (point-min) (point-max) file)
+              ;; $$$$$$ (write-region (point-min) (point-max) file)
+              (write-file file)
             (file-error (setq errorp  t) (message "CANNOT WRITE FILE `%s'" file) (sit-for 4)))
           (kill-buffer (current-buffer))
           (unless errorp (message (concat msg "done") file)))))))
