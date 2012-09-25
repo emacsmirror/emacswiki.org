@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Sep 22 10:32:48 2012 (-0700)
+;; Last-Updated: Mon Sep 24 16:18:20 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 24621
+;;     Update #: 24630
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -7021,6 +7021,8 @@ Ido-like behavior."                     ; Doc string
                                           ,(if current-prefix-arg
                                                '(icicle-make-file+date-candidate file)
                                                '(list file))))
+    (icicle-transform-before-sort-p         t)
+    (icicle-sort-comparer                   'icicle-last-accessed-first-p)
     (icicle-abs-file-candidates
      (progn (unless (boundp 'recentf-list) (require 'recentf))
             (when (fboundp 'recentf-mode) (recentf-mode 99))
@@ -7061,6 +7063,8 @@ Ido-like behavior."                     ; Doc string
                                               ,(if current-prefix-arg
                                                    '(icicle-make-file+date-candidate file)
                                                    '(list file))))
+    (icicle-transform-before-sort-p         t)
+    (icicle-sort-comparer                   'icicle-last-accessed-first-p)
     (icicle-abs-file-candidates
      (progn (unless (boundp 'recentf-list) (require 'recentf))
             (when (fboundp 'recentf-mode) (recentf-mode 99))
