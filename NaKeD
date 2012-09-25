@@ -105,6 +105,10 @@ Anyways what do you think about adding the above function (or similar) to `naked
               (naked-remove-key keymap key)
             (naked-define-key keymap key def)))))
 
+[new]
+
+Do you have a suggestion how `naked-remove-key' could be fixed?  The biggest is that it assumes that ##(naked-read-kdb-macro "M-a")## return [27 97] and not [134217825]. Would it be hard to write a function that did return the former, so that I can reliably get the "keymap containg the final binding"? (Then I should also remove keymaps on the way that become empty as binding in their respective containing keymap, but that's an other issue).
+
 -- JonasBernoulli
 
 ----
