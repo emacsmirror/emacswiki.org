@@ -88,7 +88,7 @@ Anyways what do you think about adding the above function (or similar) to `naked
       (declare (indent 2))
       (if feature
           `(eval-after-load ',feature
-             (naked-define-keys-1 ',mapvar ',plist))
+             '(naked-define-keys-1 ',mapvar ',plist))
         `(naked-define-keys-1 ',mapvar ',plist)))
 
     (defun naked-define-keys-1 (keymap plist)
