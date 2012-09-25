@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Sep 22 10:54:32 2012 (-0700)
+;; Last-Updated: Mon Sep 24 17:20:57 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8940
+;;     Update #: 8957
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -86,6 +86,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2012/09/24 dadams
+;;     icicle-recent-file(-other-window): Bind icicle-transform-before-sort-p to t,
+;;                                             icicle-sort-comparer to icicle-last-accessed-first-p.
 ;; 2012/09/22 dadams
 ;;     icicle-bookmark-jump-1:
 ;;       Use full bookmark, not name, after jump and before crosshairs, in case renamed autonamed bmk.
@@ -1445,6 +1448,11 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2012/09/24 dadams
+;;     Added: icicle-last-accessed-first-p.
+;;     icicle-read-shell-command-completing: Pass non-nil NO-ERROR-P arg to icicle-describe-file.
+;;     icicle-file-type-less-p, icicle-dirs-(first|last)-p, icicle-last-modified-first-p:
+;;       Use file comparison also if icicle-abs-file-candidates.
 ;; 2012/09/17 dadams
 ;;     icicle-insert-candidates:
 ;;       Add an extra newline after multi-line candidates only, not after all cands if ANY-MULTILINE-P.
@@ -3170,6 +3178,8 @@
 ;;       macros needs to be byte-compiled anew after loading the updated macros.
 ;; ****************************************************************************************************
 ;;
+;; 2012/09/24 dadams
+;;     icicle-file-bindings: Pass non-nil NO-ERROR-P arg to icicle-describe-file.
 ;; 2012/09/11 dadams
 ;;     icicle-buffer-bindings: Remove minibuffers from icicle-bufflist.
 ;; 2012/09/08 dadams
@@ -3362,6 +3372,11 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2012/09/24 dadams
+;;     Added: icicle-sort-by-last-file-access-time.
+;;     icicle-describe-file: Added optional arg NO-ERROR-P.
+;;     icicle-current-sort-functions: Use file comparison also if icicle-abs-file-candidates.
+;;     icicle-help-on-candidate(-symbol): Pass non-nil NO-ERROR-P arg to icicle-describe-file.
 ;; 2012/09/17 dadams
 ;;     icicle(-help-on)-(next|previous)-(prefix-|apropos-)candidate(-per-mode)((-alt)-action|-help):
 ;;       NTH is prefix arg.  Plain C-u means use first candidate.
