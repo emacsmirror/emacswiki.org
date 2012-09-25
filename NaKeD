@@ -77,7 +77,7 @@ Anyways what do you think about adding the above function (or similar) to `naked
       (if (> (length key) 1)
           (delete (last (setq key (append key nil)))
                   (lookup-key keymap (apply 'vector (butlast key))))
-        (delete (cons key nil) keymap)))
+        (delete (cons (aref key 0) nil) keymap)))
 
     (defmacro naked-define-keys (mapvar feature &rest plist)
       "Define all keys in PLIST in the keymap stored in MAPVAR.
