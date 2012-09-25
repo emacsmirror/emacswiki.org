@@ -4,7 +4,7 @@ Emacs has a powerful undo system. Unlike the standard undo/redo system in most s
 
 Both the loss of data with standard undo/redo, and the confusion of Emacs' undo, stem from trying to treat undo history as a linear sequence of changes. It's not. The ##undo-tree-mode## provided by this package replaces Emacs' undo system with a system that treats undo history as what it is: a branching tree of changes. This simple idea allows the more intuitive behaviour of the standard undo/redo system to be combined with the power of never losing any history. An added side bonus is that undo history can in some cases be stored more efficiently, allowing more changes to accumulate before Emacs starts discarding history.
 
-It gets better. You don't have to imagine the undo tree, because ##undo-tree-mode## includes an undo-tree visualizer which draws it for you, and lets you browse around the undo history.
+It gets better. You don't have to imagine the undo tree, because ##undo-tree-mode## includes an undo-tree visualizer which draws it for you, and lets you browse around the undo history. It also sports various other nifty features: persistent saving of undo history across sessions (only works with sufficiently recent Emacsen), storing and restoring past buffer states in registers, a diff view of the changes that will be made by undoing, and probably more besides.
 
 The only downside to this more advanced yet simpler undo system is that it was inspired by Vim. But, after all, most successful religions steal the best ideas from their competitors!
 
@@ -13,7 +13,7 @@ For more information, see the Commentary at the top of the ##undo-tree.el## file
 
 == Downloading ==
 
-The latest "stable" version (version 0.5.2, released May 2012) can be obtained from:
+The undo-tree package is available from GNU [[ELPA]] in recent Emacsen. The latest "stable" version (version 0.5.6, released September 2012) can also be downloaded from:
 
 * Undo-tree package download: http://www.dr-qubit.org/download.php?file=undo-tree/undo-tree.el
 * Web-site: http://www.dr-qubit.org/emacs.php#undo-tree
@@ -41,6 +41,12 @@ If you have code you would like to contribute to undo-tree, either send a patch 
 Showing the undo-tree visualizer, with some undo states stored in registers, and the visualizer's diff view: 
 
 [[image:UndoTreeScreenshot]]
+
+
+== Discussion ==
+
+(Add any comments here)
+
 
 ----
 CategoryUndo
