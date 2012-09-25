@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Mon Sep 24 17:20:57 2012 (-0700)
+;; Last-Updated: Tue Sep 25 10:50:23 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8957
+;;     Update #: 8962
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1448,6 +1448,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2012/09/25 dadams
+;;     icicle-input-from-minibuffer, icicle-minibuf-input-sans-dir,
+;;       icicle-highlight-input-noncompletion:
+;;         Handle the icicle-abs-file-candidates case also - same as the icicle-file-name-input-p case.
 ;; 2012/09/24 dadams
 ;;     Added: icicle-last-accessed-first-p.
 ;;     icicle-read-shell-command-completing: Pass non-nil NO-ERROR-P arg to icicle-describe-file.
