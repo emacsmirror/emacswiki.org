@@ -7,9 +7,9 @@
 ;; Copyright (C) 2011-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Oct  7 13:12:52 2011 (-0700)
 ;; Version: 21.0
-;; Last-Updated: Thu Aug 23 16:25:19 2012 (-0700)
+;; Last-Updated: Tue Sep 25 15:39:49 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 104
+;;     Update #: 113
 ;; URL: http://www.emacswiki.org/emacs-en/naked.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/NaKeD
 ;; Keywords: lisp, key, print, format, help
@@ -125,6 +125,15 @@ Non-nil optional arg ANGLES means use angle brackets."
     result))
 
 ;; Same as `icicle-edmacro-parse-keys' in `icicles-mac.el'.
+;; Based on `edmacro-parse-keys' in standard library `edmacro.el'
+;; Differences are:
+;;
+;; 1. Addition of optional arg ANGLES.
+;; 2. Not handling (not expecting) angle brackets, unless ANGLES is non-nil.
+;; 3. Handling names without angle brackets, unless ANGLES is non-nil.
+;; 4. Thus, testing REM before [ACHMsS]- etc.
+;; 5. Expect symbols inside angle brackets to have at least two chars (always the case anyway).
+;;
 (defun naked-edmacro-parse-keys (string &optional need-vector angles)
   "Like `edmacro-parse-keys', but does not use angle brackets, by default.
 Non-nil optional arg ANGLES means to use angle brackets, exactly like
