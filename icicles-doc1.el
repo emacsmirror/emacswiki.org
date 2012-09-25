@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Mon Sep 17 22:25:28 2012 (-0700)
+;; Last-Updated: Mon Sep 24 17:36:23 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 26758
+;;     Update #: 26797
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1085,6 +1085,62 @@
 ;;  See (@> "Multi-Commands") for more information about Icicles
 ;;  multi-commands.
 ;;
+;;(@* "Match Multiple Things Together")
+;;  ** Match Multiple Things Together **
+;;
+;;  Some Icicles commands that ask for your input provide completion
+;;  candidates that are multi-part, called "multi-completions".
+;;
+;;  For instance, with a non-positive prefix argument, command
+;;  `icicle-locate-file' lets you find files anywhere under a given
+;;  directory by matching the file name or the last-modification date,
+;;  or both.  The first part of the multi-completion is the file name;
+;;  the second part is the date.  The two-part candidates are shown in
+;;  `*Completions*' like this:
+;;
+;;    c:/foo/bar.el
+;;    2012 09 24 16:20:14
+;;
+;;    c:/foo/bar-none.el
+;;    2012 08 06 10:02:17
+;;
+;;  You use the key sequence `C-M-j' to separate the two parts of your
+;;  input.  So if you type `.* C-M-j .*14 S-TAB' then your input
+;;  matches only the first candidate above.  The first `.*' matches
+;;  any file name, and the `.*14' matches the date of only the first
+;;  candidate.
+;;
+;;  If you instead type `.*on S-TAB' then only the second candidate is
+;;  matched, by its file name this time.  In this case you do not
+;;  bother matching a date - no `C-M-j' or second part, just a first
+;;  part to match.
+;;
+;;  Command `icicle-fundoc' describes a function.  You match the
+;;  function name or the function documentation or both, as the two
+;;  multi-completion parts.  Sometimes it is easy to choose by name,
+;;  sometimes by doc content, sometimes by a combination.
+;;
+;;  By default, `C-x b' is bound to `icicle-buffer' in Icicle mode.
+;;  Here, the second multi-completion part is never shown.  The first
+;;  part matches buffer names, so if you do not input a second part
+;;  then `C-x b' just matches buffer names, as you are used to (except
+;;  that Icicles completion is available - apropos, progressive,
+;;  etc.).
+;;
+;;  The second multi-completion part is buffer content.  Matching
+;;  searches the available buffers (whose names match the first part
+;;  of your input, if present), and only those whose contents match
+;;  the second part of your input remain candidates.  You see the
+;;  buffer-name matches in `*Completions*', but not the content
+;;  matches.
+;;
+;;  For example:
+;;
+;;    C-x b foo             ; Match buffer names against `foo'
+;;    C-x b C-M-j toto      ; Match buffer contents against `toto'
+;;    C-x b foo C-M-j toto  ; Match both buffer name and contents
+;;
+;;  See (@> "Multi-Completions").
 ;;(@* "Perform Alternative Operations on the Fly")
 ;;  ** Perform Alternative Operations on the Fly **
 ;;
