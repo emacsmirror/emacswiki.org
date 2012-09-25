@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Sep 24 16:01:32 2012 (-0700)
+;; Last-Updated: Tue Sep 25 10:43:14 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 13361
+;;     Update #: 13369
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -4065,7 +4065,7 @@ the current candidate is shown in the mode line."
     (unless (stringp icicle-last-completion-candidate)
       (setq icicle-last-completion-candidate  icicle-initial-value))
     (setq nth                   (or nth 1)
-          icicle-current-input  (if (icicle-file-name-input-p)
+          icicle-current-input  (if (icicle-file-name-input-p) ; But not for `icicle-abs-file-candidates'.
                                     (abbreviate-file-name (icicle-input-from-minibuffer 'leave-envar))
                                   (icicle-input-from-minibuffer))
           icicle-cycling-p      t)
@@ -4491,7 +4491,7 @@ Positions are `icicle-point-position-in-candidate' and
 INPUT is the current user input, that is, the completion root.
 Optional argument DONT-ACTIVATE-P means do not activate the mark."
   (let ((case-fold-search
-         ;; Don't bother with buffer completion and `read-buffer-completion-ignore-case'.
+         ;; Do not bother with buffer completion and `read-buffer-completion-ignore-case'.
          (if (and (or (icicle-file-name-input-p)  icicle-abs-file-candidates)
                   (boundp 'read-file-name-completion-ignore-case))
              read-file-name-completion-ignore-case
@@ -4689,7 +4689,7 @@ The current buffer must be a minibuffer."
     ;; $$$$$$$$ (if (fboundp 'minibuffer-contents-no-properties)
     ;;              (minibuffer-contents-no-properties) ; e.g. Emacs 22
     ;;            (buffer-substring-no-properties (point-min) (point-max))))) ; e.g. Emacs 20
-    (when (and (icicle-file-name-input-p)
+    (when (and (or (icicle-file-name-input-p)  icicle-abs-file-candidates)
                (not (string= "" input)) ; Do nothing if user deleted everything in minibuffer.
                (not leave-envvars-p))
       (let ((last-char  ""))
@@ -4711,7 +4711,9 @@ The current buffer must be a minibuffer."
 (defun icicle-minibuf-input-sans-dir (&optional input)
   "Return the user input, except for a directory portion if reading a file."
   (unless input (setq input  (icicle-minibuf-input)))
-  (if (icicle-file-name-input-p)  (icicle-file-name-nondirectory input)  input))
+  (if (or (icicle-file-name-input-p)  icicle-abs-file-candidates)
+      (icicle-file-name-nondirectory input)
+    input))
 
 (defun icicle-subst-envvar-in-file-name (input)
   "Substitute any environment vars in INPUT by their values.
@@ -5363,9 +5365,9 @@ If no highlighting was attempted, return nil."
          (delete-overlay icicle-input-completion-fail-overlay))
        nil)                             ; Return nil: no highlighting attempted.
 
-      ;; Remote file-name input, user didn't say to skip testing for remote files,
+      ;; Remote file-name input, user did not say to skip testing for remote files,
       ;; and highlighting is not `always' or `explicit-remote'.
-      ((and (icicle-file-name-input-p)
+      ((and (or (icicle-file-name-input-p)  icicle-abs-file-candidates)
             (not (memq icicle-highlight-input-completion-failure '(always explicit-remote)))
             icicle-test-for-remote-files-flag
             (let ((remotep  (icicle-file-remote-p input)))
