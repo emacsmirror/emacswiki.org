@@ -73,6 +73,7 @@ Anyways what do you think about adding the above function (or similar) to `naked
       (when (stringp key)
         (setq key (naked-read-kbd-macro key t)))
       (define-key keymap key nil)
+      ;; FIXME
       (if (> (length key) 1)
           (delete (last (setq key (append key nil)))
                   (lookup-key keymap (apply 'vector (butlast key))))
