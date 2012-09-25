@@ -43,6 +43,10 @@ I don't know if this is a new feature of GNU ls, but you can use the ``--group-d
 (setq dired-listing-switches "-lXGh --group-directories-first")
 </pre>
 
+BEWARE ! This option breaks ange-ftp!!! This option is not compatible with 'ls' on ftp.
+
+----
+
 Alternatively, type C-u s while in a Dired buffer will prompt you for new ``ls'' switches which will let you sort the buffer any way you want that is available to ``ls''.  The key is to read the ``ls'' manual :) -- [[parolang]]
 
 
