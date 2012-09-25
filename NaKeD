@@ -30,6 +30,18 @@ But you can also have it both ways if or when you might need to: All of these ac
 
 ''Enjoy!''
 
+[new]
+
+`naked-edmacro-parse-keys' doesn't do the right thing with strings like ##M-TAB##:
+
+    (naked "M-TAB")=> [M-TAB]
+    (kbd "M-TAB") => [134217737]
+
+As a result `define-key' (at least in 24.2.1) complains
+
+    To bind the key M-TAB, use "\M-\t\", not [M-TAB]
+
+Thanks for this library, and for looking into this issue. -- JonasBernoulli
 
 ----
 CategoryCode
