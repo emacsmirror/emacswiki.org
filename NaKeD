@@ -41,17 +41,6 @@ As a result `define-key' (at least in 24.2.1) complains
 
     To bind the key M-TAB, use "\M-\t\", not [M-TAB]
 
-I tried working around it like this:
-
-    (read-kbd-macro
-     (key-description
-      (naked-edmacro-parse-keys
-       "M-TAB") => [M-TAB]
-      )         => "<M-TAB>"
-     )          => [M-TAB]
-
-but that doesn't work because of what `key-description' returns.
-
 What I am trying to do is this:
 
     (defun naked-define-key (keymap key def)
@@ -65,6 +54,57 @@ What I am trying to do is this:
         def))
 
 Thanks for this library, and for looking into this issue. -- JonasBernoulli
+
+[new]
+Ahhh... had a closer look at `naked.el' turns out you already took care of this but forgot to add TAB to ##"\\<\\(NUL\\|RET\\|LFD\\|ESC\\|SPC\\|DEL\\)$"##
+
+Anyways what do you think about adding the above function (or similar) to `naked.el'.  Maybe even something like this too:
+
+    (defun naked-remove-key (keymap key)
+      "In KEYMAP, remove key sequence KEY.
+    If KEY is a string it has to be in the `naked' format without
+    angle brackets.
+
+    This removes the key sequence KEY from KEYMAP.  This differs from
+    using `undefined' or nil as definition.  `undefined' is a command
+    like any other and calling `define-key' with nil as definition
+    merely \"undefines\" the key by setting it to nil (but without
+    actually removing the event from the keymap)."
+      (when (stringp key)
+        (setq key (naked-read-kbd-macro key t)))
+      (define-key keymap key nil)
+      (if (> (length key) 1)
+          (delete (last (setq key (append key nil)))
+                  (lookup-key keymap (apply 'vector (butlast key))))
+        (delete (cons key nil) keymap)))
+
+    (defmacro naked-define-keys (mapvar feature &rest plist)
+      "Define all keys in PLIST in the keymap stored in MAPVAR.
+    If a key in PLIST is a string it has to be in the `naked' format
+    without angle brackets.  `:remove' as a key definition means that
+    the existing definition (if any) should be remove from the keymap
+    using `naked-remove-key'."
+      (declare (indent 2))
+      (if feature
+          `(eval-after-load ',feature
+             (naked-define-keys-1 ',mapvar ',plist))
+        `(naked-define-keys-1 ',mapvar ',plist)))
+
+    (defun naked-define-keys-1 (keymap plist)
+      (when (symbolp keymap)
+        (setq keymap (symbol-value keymap)))
+      (unless (keymapp keymap)
+        (error "Not a keymap"))
+      (while plist
+        (unless (cdr plist)
+            (error "Odd number of elements in PLIST"))
+        (let ((key (pop plist))
+              (def (pop plist)))
+          (if (eq def :remove)
+              (naked-remove-key keymap key)
+            (naked-define-key keymap key def)))))
+
+-- JonasBernoulli
 
 ----
 CategoryCode
