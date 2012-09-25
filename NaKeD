@@ -41,6 +41,29 @@ As a result `define-key' (at least in 24.2.1) complains
 
     To bind the key M-TAB, use "\M-\t\", not [M-TAB]
 
+I tried working around it like this:
+
+    (read-kbd-macro
+     (key-description
+      (naked-edmacro-parse-keys
+       "M-TAB") => [M-TAB]
+      )         => "<M-TAB>"
+     )          => [M-TAB]
+
+but that doesn't work because of what `key-description' returns.
+
+What I am trying to do is this:
+
+    (defun naked-define-key (keymap key def)
+      "In KEYMAP, define key sequence KEY as DEF.
+    Like `define-key' but if KEY is a string it has to be in the
+    `naked' format without angle brackets."
+      (define-key keymap
+        (if (stringp key)
+            (naked-read-kbd-macro key)
+          key)
+        def))
+
 Thanks for this library, and for looking into this issue. -- JonasBernoulli
 
 ----
