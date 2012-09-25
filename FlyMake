@@ -6,6 +6,17 @@ below works out-of-the-box there.
 
 * http://flymake.sourceforge.net/
 
+Unfortunately, this project is outdated and last change was 3 years ago.
+
+Currently new and improved version of Flymake is maintained by Sam Graham and available on github:
+
+* https://github.com/illusori/emacs-flymake
+
+More info here:
+
+* http://www.illusori.co.uk/projects/emacs-flymake/
+
+
 From its home page:
 
 : "Flymake is implemented as an Emacs minor mode. It runs the syntax check tool in the background, passing it a temporary copy of the current buffer, and parses the output for known error/warning message patterns. Flymake then highlights erroneous lines (that is, lines for which at least one error or warning has been reported), and displays an overall buffer status in the mode line."
