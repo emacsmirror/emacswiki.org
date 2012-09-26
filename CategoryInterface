@@ -14,6 +14,7 @@ Emacs Interfaces to Online Utilities.
 *** Lisp:sdcv.el -- Interface for sdcv (StartDict console version).
 *** AutoCompressionMode -- for viewing a whole <code>.dz</code> dict file
 ** DictionaryDotCom -- lookup stuff on dictionary.com with one line of elisp (requires emacs-w3m)
+** [http://sourceforge.jp/projects/dic-lookup-w3m/ dic-lookup-w3m] -- Lookup online dictionaries or translate text using emacs-w3m.
 ** [http://www.emacswiki.org/cgi-bin/emacs/google-define Google-Define] -- Find definitions using google.
 ** Hachette (Lisp:hachette.el) -- Lookup a word on the Hachette's online french dictionary (by JeanPhilippeTheberge) NB. This is currently broken!
 ** LookUp -- unified search interface for several online dictionaries
