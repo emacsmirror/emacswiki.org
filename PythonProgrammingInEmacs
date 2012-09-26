@@ -442,5 +442,33 @@ You can set the mode for python files with file names not ending with '.py' by a
 <pre># -*- python -*-
 </pre>as second line in your file (the first usually being #!/usr/bin/env python).
 
+
+== Using PythonTidy to pretty-print a buffer ==
+
+[http://lacusveris.com/PythonTidy/ PythonTidy] can be used to pretty-print a buffer in combination
+with shell-command-on-region.
+Installing PythonTidy somewhere on the path, and add this to your .emacs
+
+<pre>
+(defun pytidy-whole-buffer ()
+  (interactive)
+  (let ((a (point)))
+    (shell-command-on-region (point-min) (point-max) "<Name_Of_Executable_Script>" t)
+    (goto-char a)))
+</pre>
+
+Note: <Name_Of_Executable_Script> should match the name of the pythonTidy script on your path, make
+sure you set execute permissions.
+
+bind this to any key you wish, I have:
+
+<pre>
+(define-key python-mode-map  (kbd "<f9>") 'pytidy-whole-buffer)
+</pre>
+
+in my python-mode-hook.
+invoking the command pretty-prints the hole buffer, you can invoke undo if something went
+wrong, and the cursor stays put.
+
 ----
 Categories: CategoryProgramming, ProgrammingModes
