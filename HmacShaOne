@@ -104,3 +104,6 @@ For keys and values that are already unibyte, the
 
 (provide 'hmac-sha1)
 </pre>
+
+----
+CategoryExtensions
