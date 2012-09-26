@@ -7,14 +7,15 @@
 ;; ;; load all *.elc files...
 ;; (mapcar (lambda (x)(load-file x))(directory-files "~/lib/emacs" t "\\.elc$"))
 
-
 ;; basic setup
 (setq inhibit-startup-message t)        ; don't show the startup message
 (setq kill-whole-line t)                ; C-k deletes the end of line
 (setq make-backup-files nil)            ; don't make *~
 (setq auto-save-list-file-prefix nil)   ; don't make ~/.saves-PID-hostname
 (setq auto-save-default nil)            ; disable auto-saving
+(setq history-length 100)               ; length for history lists (default: 30)
 (column-number-mode 1)
+(setq yank-excluded-properties t)       ; text-only yanking
 
 ;; recentf
 (require 'recentf)
@@ -60,7 +61,7 @@
   )
 
 ;; smart-compile
-;; ref. http://homepage.mac.com/zenitani/elisp-j.html#smart-compile
+;; ref. http://th.nao.ac.jp/MEMBER/zenitani/elisp-j.html#smart-compile
 (when (require 'smart-compile "smart-compile" t)
   (global-set-key "\C-c\C-c" 'smart-compile)
   (add-hook 'c-mode-common-hook
@@ -70,7 +71,7 @@
   )
 
 ;; chmod +x
-;; ref. http://homepage.mac.com/zenitani/elisp-j.html#chmod
+;; ref. http://th.nao.ac.jp/MEMBER/zenitani/elisp-j.html#chmod
 (add-hook 'after-save-hook
           'executable-make-buffer-file-executable-if-script-p)
 
@@ -85,6 +86,44 @@
         (kill-buffer (current-buffer))
         (message (concat "Deleted " (file-name-nondirectory filename)))
         ))))
+
+;; automatically run background TeX process
+(defun my-autotex ()
+  (when (string-match "\\.tex$" (buffer-file-name))
+    (let ((buf (get-buffer "*Background TeX proccess*")))
+      (if (bufferp buf) (kill-buffer buf)) ) ;; flush previous log
+    (require 'smart-compile) ;; for smart-compile-string
+    (start-process-shell-command
+     "Background TeX" "*Background TeX proccess*"
+     (if (and (boundp 'TeX-PDF-mode) TeX-PDF-mode)
+         (smart-compile-string "pdflatex -interaction=nonstopmode %f || say oops") ;; PDFTeX
+       (smart-compile-string "( platex -interaction=nonstopmode %f && dvipdfmx %n ) || say oops") ;; pTeX
+       )
+     )))
+;; wrapper
+(define-minor-mode my-autotex-mode
+  "My autotex mode."
+  :global nil
+  :lighter " Auto"
+  (if my-autotex-mode
+      (add-hook 'after-save-hook 'my-autotex t t) ;; set the local flag to t
+    (remove-hook 'after-save-hook 'my-autotex t)
+    ))
+;; PDF preview
+(defun my-preview ()
+  (interactive)
+  (start-process-shell-command
+   "Background TeX" "*Background TeX proccess*"
+   (smart-compile-string "open -a /Applications/Preview.app %n.pdf")
+   ))
+;; hook
+;; (add-hook 'TeX-mode-hook
+;;           (lambda ()
+;;             (TeX-PDF-mode 1)
+;;             (imenu-add-menubar-index)
+;;          (my-autotex-mode 1)
+;;          (local-set-key "\C-c\C-v" 'my-preview)
+;;             ))
 
 
 ;; --------- Window system ---------
@@ -120,26 +159,28 @@
   (set-scroll-bar-mode 'right)
   )
 
-;; nxhtml
-(when (load "autostart" t)
-  (setq nxhtml-skip-welcome t)
-  )
-
 ;; additional menu
 (require 'easymenu)
 (setq my-encoding-map (make-sparse-keymap "Encoding Menu"))
 (easy-menu-define my-encoding-menu my-encoding-map
   "Encoding Menu."
  '("Change File Encoding"
-   ["UTF8 - Unix (LF)" (set-buffer-file-coding-system 'utf-8-unix) t]
-   ["UTF8 - Mac (CR)" (set-buffer-file-coding-system 'utf-8-mac) t]
-   ["UTF8 - Win (CR+LF)" (set-buffer-file-coding-system 'utf-8-dos) t]
+   ["UTF8 - Unix (LF)" (set-buffer-file-coding-system 'mule-utf-8-unix)
+    :style toggle :selected (eq buffer-file-coding-system 'mule-utf-8-unix)]
+   ["UTF8 - Mac (CR)" (set-buffer-file-coding-system 'mule-utf-8-mac)
+    :style toggle :selected (eq buffer-file-coding-system 'mule-utf-8-mac)]
+   ["UTF8 - Win (CR+LF)" (set-buffer-file-coding-system 'mule-utf-8-dos)
+    :style toggle :selected (eq buffer-file-coding-system 'mule-utf-8-dos)]
    ["--" nil nil]
-   ["Shift JIS - Mac (CR)" (set-buffer-file-coding-system 'sjis-mac) t]
-   ["Shift JIS - Win (CR+LF)" (set-buffer-file-coding-system 'sjis-dos) t]
+   ["Shift JIS - Mac (CR)" (set-buffer-file-coding-system 'sjis-mac)
+    :style toggle :selected (eq buffer-file-coding-system 'sjis-mac)]
+   ["Shift JIS - Win (CR+LF)" (set-buffer-file-coding-system 'sjis-dos)
+    :style toggle :selected (eq buffer-file-coding-system 'sjis-dos)]
    ["--" nil nil]
-   ["EUC - Unix (LF)"  (set-buffer-file-coding-system 'euc-jp-unix) t]
-   ["JIS - Unix (LF)"  (set-buffer-file-coding-system 'junet-unix) t]
+   ["EUC - Unix (LF)"  (set-buffer-file-coding-system 'euc-jp-unix)
+    :style toggle :selected (eq buffer-file-coding-system 'euc-jp-unix)]
+   ["JIS - Unix (LF)"  (set-buffer-file-coding-system 'iso-2022-7bit-unix)
+    :style toggle :selected (eq buffer-file-coding-system 'iso-2022-7bit-unix)]
    ))
 (define-key-after menu-bar-file-menu [my-file-separator]
   '("--" . nil) 'kill-buffer)
@@ -149,4 +190,3 @@
 )
 
 ;;; start.el ends here.
-
