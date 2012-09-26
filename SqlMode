@@ -31,10 +31,6 @@ that haven't made it out of CVS, so don't use the latest version if you're not r
 
 If those with pre-22.1 versions of Emacs can identify changes needed to run on older releases, send them to MichaelMauger for consideration.  However, the emphasis is on improving future versions of Emacs.
 
-For those who really want to be on the bleeding edge, try Lisp:sql.el.  MichaelMauger uploads the latest changes which fully flesh out the multi-product functionality.  This has not been posted to CVS to be part of Emacs 22.1 because it is not release quality yet.  
-
-Please send him feedback on the sql-send-* functions and behavior on databases other than Oracle.  If this functionality proves to be stable, it will be released to CVS post-22.1.  MichaelMauger uses local modules with the core to implement data dictionary browsing, and name completion.  The plan is to cleanup and release that code, at least here on the wiki, once the core sql.el has been complete.
-
 ==  Prompt for "as sysdba" or "as sysoper" ==
 
 TomPopovich modified sql-mode.el so users are able to specify as-sysdba prompt so you can log in as "as sysdba"  or "as sysoper".  Code changes
