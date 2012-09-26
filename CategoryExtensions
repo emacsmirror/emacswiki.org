@@ -33,7 +33,7 @@ Extensions (using the category name from `finder-by-keyword'), are utility libra
 
 == Numbers and Mathematics ==
 
-* [http://www.astro.princeton.edu/~rhl/skyserver/bigint.el bigint.el]
+* [http://www.astro.princeton.edu/~rhl/skyserver/bigint.el bigint.el] -- A simple bigint package for emacs
 * [[Infix]]    -- Writing infix math expressions
 
 == Sequences ==
@@ -93,12 +93,12 @@ Extensions (using the category name from `finder-by-keyword'), are utility libra
 
 == Frames ==
 
-* Lisp:frame-fns.el
+* Lisp:frame-fns.el -- Non-interactive frame and window functions
 * FontUtils -- utility functions for working with fonts
 
 == Buffers ==
 
-* BufferUtils
+* BufferUtils -- Buffer-manipulation utility functions
 
 == Modes ==
 
@@ -125,13 +125,13 @@ Extensions (using the category name from `finder-by-keyword'), are utility libra
 
 == Security ==
 
-* PasswordGenerator
+* PasswordGenerator -- generate password strings
 * OAuthLibrary -- OAuth authentication
 * HmacShaOne -- generate HMAC-SHA1 authentication signatures from strings
 
 == Project Management ==
 
-* ProjectBufferMode
+* ProjectBufferMode -- a generic mode to handle projects
 
 == Testing ==
 
