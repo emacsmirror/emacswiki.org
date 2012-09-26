@@ -94,6 +94,7 @@ Extensions (using the category name from `finder-by-keyword'), are utility libra
 == Frames ==
 
 * Lisp:frame-fns.el
+* FontUtils -- utility functions for working with fonts
 
 == Buffers ==
 
@@ -111,6 +112,8 @@ Extensions (using the category name from `finder-by-keyword'), are utility libra
 * [[Elnode]] -- simple emacs async HTTP server
 * [ftp://ftp.newartisans.com/pub/emacs/httpd.el httpd.el] -- a web server in Emacs Lisp
 * XmlRpc -- make asynchronous remote procedure calls over http
+* CorbaImplementation -- CORBA Dynamic Invocation interface using the IIOP protocol
+* SoapClient -- access to SOAP web-services from Emacs
 
 == Filesystem ==
 
@@ -123,7 +126,8 @@ Extensions (using the category name from `finder-by-keyword'), are utility libra
 == Security ==
 
 * PasswordGenerator
-* OAuthLibrary
+* OAuthLibrary -- OAuth authentication
+* HmacShaOne -- generate HMAC-SHA1 authentication signatures from strings
 
 == Project Management ==
 
