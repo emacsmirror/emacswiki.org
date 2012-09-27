@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue Sep 25 10:50:23 2012 (-0700)
+;; Last-Updated: Thu Sep 27 15:24:10 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8962
+;;     Update #: 8965
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -3182,6 +3182,9 @@
 ;;       macros needs to be byte-compiled anew after loading the updated macros.
 ;; ****************************************************************************************************
 ;;
+;; 2012/09/27 dadams
+;;     icicle-edmacro-parse-keys: Fix handling of M-TAB.  Function keys are lowercase.
+;;                                So M-TAB returns [134217737], but M-tab returns [M-tab].
 ;; 2012/09/24 dadams
 ;;     icicle-file-bindings: Pass non-nil NO-ERROR-P arg to icicle-describe-file.
 ;; 2012/09/11 dadams
