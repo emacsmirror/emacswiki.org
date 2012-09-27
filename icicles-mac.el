@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:24:28 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Sep 27 15:20:34 2012 (-0700)
+;; Last-Updated: Thu Sep 27 15:30:58 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1034
+;;     Update #: 1037
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mac.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -150,6 +150,16 @@
 
 
 ;; Same as `naked-edmacro-parse-keys' in `naked.el'.
+;; Based on `edmacro-parse-keys' in standard library `edmacro.el'
+;; Differences are:
+;;
+;; 1. Addition of optional arg ANGLES.
+;; 2. Not handling (not expecting) angle brackets, unless ANGLES is non-nil.
+;; 3. Handling names without angle brackets, unless ANGLES is non-nil.
+;; 4. Thus, testing REM before [ACHMsS]- etc.
+;; 5. Expect symbols inside angle brackets to have at least two chars, the first of which is
+;;    a letter and the others alphanumeric or `-'.
+;;
 (defun icicle-edmacro-parse-keys (string &optional need-vector angles)
   "Like `edmacro-parse-keys', but does not use angle brackets, by default.
 Non-nil optional arg ANGLES means to use angle brackets, exactly like
@@ -186,7 +196,7 @@ ANGLES."
               ((and (string-match (if angles
                                       "^\\(\\([ACHMsS]-\\)*\\)<\\(..+\\)>$"
                                     ;; Rely on the fact that function keys are lowercase.
-                                    "^\\(\\([ACHMsS]-\\)*\\)\\([a-z][a-z0-9]+\\)$")
+                                    "^\\(\\([ACHMsS]-\\)*\\)\\([a-z][-a-z0-9]+\\)$")
                                   word)
                     (or angles
                         ;; Do not count `C-' etc. when at end of string.
