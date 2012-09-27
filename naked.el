@@ -7,9 +7,9 @@
 ;; Copyright (C) 2011-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Oct  7 13:12:52 2011 (-0700)
 ;; Version: 21.0
-;; Last-Updated: Tue Sep 25 15:39:49 2012 (-0700)
+;; Last-Updated: Thu Sep 27 15:11:02 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 113
+;;     Update #: 116
 ;; URL: http://www.emacswiki.org/emacs-en/naked.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/NaKeD
 ;; Keywords: lisp, key, print, format, help
@@ -89,6 +89,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/09/27 dadams
+;;     naked-edmacro-parse-keys: Fix handling of M-TAB.  Function keys are lowercase.
+;;                               So M-TAB returns [134217737], but M-tab returns [M-tab].
 ;; 2011/10/07 dadams
 ;;     Created.
 ;;
@@ -169,7 +172,8 @@ ANGLES."
                (setq pos  (string-match "$" string pos)))
               ((and (string-match (if angles
                                       "^\\(\\([ACHMsS]-\\)*\\)<\\(..+\\)>$"
-                                    "^\\(\\([ACHMsS]-\\)*\\)\\([^ \t\f\n][^ \t\f\n]+\\)$")
+                                    ;; Rely on the fact that function keys are lowercase.
+                                    "^\\(\\([ACHMsS]-\\)*\\)\\([a-z][a-z]+\\)$")
                                   word)
                     (or angles
                         ;; Do not count `C-' etc. when at end of string.
