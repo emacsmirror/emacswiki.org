@@ -7,9 +7,9 @@
 ;; Copyright (C) 2011-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Oct  7 13:12:52 2011 (-0700)
 ;; Version: 21.0
-;; Last-Updated: Thu Sep 27 15:11:02 2012 (-0700)
+;; Last-Updated: Thu Sep 27 15:14:05 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 116
+;;     Update #: 117
 ;; URL: http://www.emacswiki.org/emacs-en/naked.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/NaKeD
 ;; Keywords: lisp, key, print, format, help
@@ -173,7 +173,7 @@ ANGLES."
               ((and (string-match (if angles
                                       "^\\(\\([ACHMsS]-\\)*\\)<\\(..+\\)>$"
                                     ;; Rely on the fact that function keys are lowercase.
-                                    "^\\(\\([ACHMsS]-\\)*\\)\\([a-z][a-z]+\\)$")
+                                    "^\\(\\([ACHMsS]-\\)*\\)\\([a-z][a-z0-9]+\\)$")
                                   word)
                     (or angles
                         ;; Do not count `C-' etc. when at end of string.
