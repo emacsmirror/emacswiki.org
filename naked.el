@@ -7,9 +7,9 @@
 ;; Copyright (C) 2011-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Oct  7 13:12:52 2011 (-0700)
 ;; Version: 21.0
-;; Last-Updated: Thu Sep 27 15:27:03 2012 (-0700)
+;; Last-Updated: Thu Sep 27 15:30:48 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 118
+;;     Update #: 119
 ;; URL: http://www.emacswiki.org/emacs-en/naked.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/NaKeD
 ;; Keywords: lisp, key, print, format, help
@@ -135,7 +135,8 @@ Non-nil optional arg ANGLES means use angle brackets."
 ;; 2. Not handling (not expecting) angle brackets, unless ANGLES is non-nil.
 ;; 3. Handling names without angle brackets, unless ANGLES is non-nil.
 ;; 4. Thus, testing REM before [ACHMsS]- etc.
-;; 5. Expect symbols inside angle brackets to have at least two chars (always the case anyway).
+;; 5. Expect symbols inside angle brackets to have at least two chars, the first of which is
+;;    a letter and the others alphanumeric or `-'.
 ;;
 (defun naked-edmacro-parse-keys (string &optional need-vector angles)
   "Like `edmacro-parse-keys', but does not use angle brackets, by default.
