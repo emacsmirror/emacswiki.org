@@ -35,7 +35,7 @@ I will contact you by mail once I have looked into this a bit more. -- JonasBern
 
 
 [new:DrewAdams:2012-09-27 22:04 UTC]
-Yes, please do.  I too will look into it.  I've noticed a bug for `M-TAB', but I'm not sure what the right fix is.  Thx. -- DrewAdams
+Please try the latest.  I uploaded a fix for the `M-TAB' case, which was indeed a bug.  The code was not handling `M-TAB' differently from `M-tab'.  Function keys (including pseudo function keys) are always lowercase (and always at least two chars, the first of which is a letter and the second alphanumeric).  Thx.  Feel free to follow with anything else (e.g., your functions). -- DrewAdams
 
 
 
