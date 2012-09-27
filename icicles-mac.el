@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:24:28 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Sep 24 16:02:25 2012 (-0700)
+;; Last-Updated: Thu Sep 27 15:20:34 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1033
+;;     Update #: 1034
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mac.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -185,7 +185,8 @@ ANGLES."
                (setq pos  (string-match "$" string pos)))
               ((and (string-match (if angles
                                       "^\\(\\([ACHMsS]-\\)*\\)<\\(..+\\)>$"
-                                    "^\\(\\([ACHMsS]-\\)*\\)\\([^ \t\f\n][^ \t\f\n]+\\)$")
+                                    ;; Rely on the fact that function keys are lowercase.
+                                    "^\\(\\([ACHMsS]-\\)*\\)\\([a-z][a-z0-9]+\\)$")
                                   word)
                     (or angles
                         ;; Do not count `C-' etc. when at end of string.
