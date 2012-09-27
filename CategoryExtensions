@@ -77,14 +77,22 @@ Extensions (using the category name from `finder-by-keyword'), are utility libra
 
 * IncrementalRead -- support building libraries that act incrementally on input.
 * LuiMode -- A Linewise User Interface
-* UseCustomizeForKeyBindings -- Widget and `defcustom' code to let users use Customize for key bindings.
 * GIT:emacs-lisp/tabulated-list.el -- display and interact with tables
 * ButtonLockMode -- Clickable text defined by regular expression
 * [[Alert]] -- Alternatives to `message'
 * NavFlash -- Briefly highlight the current line
 * UnicodeEnbox -- Surround a string with box-drawing characters
 * AutoOverlays -- Overlays defined by regexps, automatically created, updated and destroyed as buffer is modified.
+
+== Key Bindings ==
+
+* NaKeD -- Provide for naked key descriptions: no angle brackets.
 * DoReMi -- Incremental change using arrow keys or mouse wheel.
+* UseCustomizeForKeyBindings -- Widget and `defcustom' code to let users use Customize for key bindings.
+
+== Menus ==
+
+* EasyMenu -- write menu definitions which work under both, Emacs and XEmacs (provided with Emacs)
 
 == Windows ==
 
