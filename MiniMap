@@ -143,6 +143,8 @@ Then I can bind single shortcut to minimap toggling, it's handy.
 (defun minimap-toggle ()
   "Toggle minimap for current buffer."
   (interactive)
+  (if (not (boundp 'minimap-bufname))
+      (setf minimap-bufname nil))
   (if (null minimap-bufname)
       (progn (minimap-create)
 	     (set-frame-width (selected-frame) 100))
