@@ -18,7 +18,7 @@ Emacs Interfaces to Online Utilities.
 ** [http://www.emacswiki.org/cgi-bin/emacs/google-define Google-Define] -- Find definitions using google.
 ** Hachette (Lisp:hachette.el) -- Lookup a word on the Hachette's online french dictionary (by JeanPhilippeTheberge) NB. This is currently broken!
 ** LookUp -- unified search interface for several online dictionaries
-** Rdict ([http://lgarc.narod.r_u/xemacs-tips/packages/rdict-0.2.tar.gz rdict-0.2.tar.gz]) -- Emacs interface to the Lingvo online English<->Russian Dictionary.
+** Rdict ([http://lgarc.narod.ru/xemacs-tips/packages/rdict-0.2.tar.gz rdict-0.2.tar.gz]) -- Emacs interface to the Lingvo online English<->Russian Dictionary.
 * LookUpHTMLDoc -- Look up documentation in HTML form
 * [http://github.com/cefstat/simplenote.el simplenote.el] -- using [http://simplenoteapp.com Simplenote] from within Emacs
 * Slashdot ([http://www.tardis.ed.ac.uk/~skx/win/slashdot.el slashdot.el] -- '''''broken link''''') -- View headlines from Slashdot.org (by SteveKemp)
