@@ -9,6 +9,7 @@ The ido.el package by KimStorm lets you interactively do things with buffers and
 To activate, place this in your InitFile:
 
     (require 'ido)
+    (ido-mode t)
 
 Then do
 
