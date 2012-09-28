@@ -387,9 +387,9 @@ characters that can't be set by the syntax-table alone.")
    powershell-font-lock-keywords-1
    `(;; Built-in variables
      (,(concat "\\$\\(" powershell-builtin-variables "\\)\\>")
-      1 font-lock-builtin-face t)
+      0 font-lock-builtin-face t)
      (,(concat "\\$\\(" powershell-config-variables "\\)\\>")
-      1 font-lock-builtin-face t)))
+      0 font-lock-builtin-face t)))
   "Keywords for the second level of font-locking in Powershell mode.")
 
 (defvar powershell-font-lock-keywords-3
