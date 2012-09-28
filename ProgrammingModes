@@ -54,6 +54,7 @@ This is a subpage of CategoryModes.  It lists modes for programming languages or
 * GoLispMode -- navigate lisp files as hypertext
 * GroovyMode
 * HaskellMode 
+* HaxeMode
 * IdlMode, IdlWaveMode
 * ILispMode -- CommonLisp / [[Scheme]]
 * JasminMode -- Jasmin Java bytecode assembler
