@@ -400,6 +400,11 @@ characters that can't be set by the syntax-table alone.")
       (0 font-lock-variable-name-face)
       (1 (cons font-lock-type-face '(underline)) t t)
       (2 (cons font-lock-type-face '(underline)) t t))
+     ;; function argument names
+     (,powershell-function-switch-names
+      (0 font-lock-reference-face)
+      (1 (cons font-lock-type-face '(underline)) t t)
+      (2 (cons font-lock-type-face '(underline)) t t))
      ;; function names
      (,powershell-function-names
       (0 font-lock-function-name-face)
