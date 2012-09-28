@@ -1,0 +1,10 @@
+Haxe mode for Emacs:
+
+* https://bitbucket.org/jpsecher/haxe-mode - from https://bitbucket.org/jpsecher/haxe-mode 
+* http://lists.motion-twin.com/pipermail/haxe/attachments/20090430/2feee92b/haxe-mode.obj - from David Bergman
+
+Haxe completion:
+
+* https://github.com/cloudshift/hx-emacs [seems a bit flaky, may need some tweaking --AmitPatel]
+* https://groups.google.com/forum/#!topic/haxelang/9Z-j1B2qgsg - discussion and partial code
+* http://www.dafishinsea.com/blog/2010/01/21/getting-ctags-to-work-with-actionscript-and-haxe/ - ctags and haxe
