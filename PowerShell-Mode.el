@@ -32,16 +32,28 @@
 ;; Functions to quote, unquote and escape a selection and one to wrap
 ;; a selection in $().  Meanwhile I hope I didn't break anything.
 
-(defvar powershell-indent 4
+;; Variables you may want to customize.
+(defgroup powershell nil
+  "Customization of PowerShell mode."
+  :link '(custom-group-link :tag "Font Lock Faces group" font-lock-faces)
+  :group 'languages   )
+
+(defcustom powershell-indent 4
   "Amount of horizontal space to indent after, for instance, an
-opening brace")
+opening brace"
+  :type 'integer
+  :group 'powershell)
 
-(defvar powershell-continuation-indent 2
-  "Amount of horizontal space to indent a continuation line")
+(defcustom powershell-continuation-indent 2
+  "Amount of horizontal space to indent a continuation line"
+  :type 'integer
+  :group 'powershell)
 
-(defvar powershell-continued-regexp  ".*\\(|[\\t ]*\\|`\\)$"
+(defcustom powershell-continued-regexp  ".*\\(|[\\t ]*\\|`\\)$"
   "Regexp matching a continued line (ending either with an
-explicit backtick, or with a pipe).")
+explicit backtick, or with a pipe)."
+  :type 'integer
+  :group 'powershell)
 
 (defun powershell-continuation-line-p ()
   "Returns t is the current line is a continuation line (i.e. the
