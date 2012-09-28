@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:24:28 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Sep 27 15:30:58 2012 (-0700)
+;; Last-Updated: Fri Sep 28 14:52:33 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1037
+;;     Update #: 1038
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mac.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -154,11 +154,11 @@
 ;; Differences are:
 ;;
 ;; 1. Addition of optional arg ANGLES.
-;; 2. Not handling (not expecting) angle brackets, unless ANGLES is non-nil.
-;; 3. Handling names without angle brackets, unless ANGLES is non-nil.
-;; 4. Thus, testing REM before [ACHMsS]- etc.
-;; 5. Expect symbols inside angle brackets to have at least two chars, the first of which is
-;;    a letter and the others alphanumeric or `-'.
+;; 2. Ensure same behavior as `edmacro-parse-keys', if ANGLES is non-nil.
+;; 2. Handle angle brackets, whether ANGLES is nil or non-nil.
+;; 3. Handle `TAB' correctly, if ANGLES is nil.
+;; 4. Handle names without angle brackets, if ANGLES is nil.
+;; 5. Works for all Emacs versions.
 ;;
 (defun icicle-edmacro-parse-keys (string &optional need-vector angles)
   "Like `edmacro-parse-keys', but does not use angle brackets, by default.
@@ -175,7 +175,8 @@ ANGLES."
 	     (word      (substring string word-beg len))
 	     (times     1)
              (key       nil))
-        (if (and angles  (string-match "\\`<[^ <>\t\n\f][^>\t\n\f]*>" word))
+	;; Try to catch events of the form "<as df>".
+        (if (string-match "\\`<[^ <>\t\n\f][^>\t\n\f]*>" word)
             (setq word  (match-string 0 word)
                   pos   (+ word-beg (match-end 0)))
           (setq word  (substring string word-beg word-end)
@@ -191,21 +192,45 @@ ANGLES."
                                                'execute-extended-command))
                                          [?\M-x]))
                                    (substring word 2 -2) "\r")))
+
+              ;; Must test this before [ACHMsS]- etc., to prevent match.
               ((or (equal word "REM") (string-match "^;;" word))
                (setq pos  (string-match "$" string pos)))
-              ((and (string-match (if angles
-                                      "^\\(\\([ACHMsS]-\\)*\\)<\\(..+\\)>$"
-                                    ;; Rely on the fact that function keys are lowercase.
-                                    "^\\(\\([ACHMsS]-\\)*\\)\\([a-z][-a-z0-9]+\\)$")
-                                  word)
-                    (or angles
-                        ;; Do not count `C-' etc. when at end of string.
-                        (save-match-data (not (string-match "\\([ACHMsS]-.\\)+$" word))))
+
+              ;; Straight `edmacro-parse-keys' case - ensure same behavior.
+              ;; Includes same bugged handling of `TAB'.  That is Emacs bug #12535.
+              ;; The bug fix is to add `TAB' to the list in this clause.
+	      ((and angles  (string-match "^\\(\\([ACHMsS]-\\)*\\)<\\(.+\\)>$" word)
+		    (progn
+		      (setq word  (concat (substring word (match-beginning 1)
+                                                     (match-end 1))
+                                          (substring word (match-beginning 3)
+                                                     (match-end 3))))
+		      (not (string-match "\\<\\(NUL\\|RET\\|LFD\\|ESC\\|SPC\\|DEL\\)$" word))))
+	       (setq key  (list (intern word))))
+
+              ;; NaKeD handling of <...>.  Recognize it anyway, even without non-nil ANGLES.
+              ;; But unlike `edmacro-parse-keys', include <TAB>, to handle it correctly.
+              ((and (string-match "^\\(\\([ACHMsS]-\\)*\\)<\\(..+\\)>$" word)
                     (progn
                       (setq word  (concat (substring word (match-beginning 1) (match-end 1))
                                           (substring word (match-beginning 3) (match-end 3))))
-                      (not (string-match "\\<\\(NUL\\|RET\\|LFD\\|ESC\\|SPC\\|DEL\\)$" word))))
+                      (not (string-match "\\<\\(NUL\\|RET\\|LFD\\|ESC\\|SPC\\|DEL\\|TAB\\)$"
+                                         word))))
                (setq key  (list (intern word))))
+
+              ;; NaKeD handling of names without <...>.
+              ((and (not angles)
+                    (string-match "^\\(\\([ACHMsS]-\\)*\\)\\([^ \t\f\n][^ \t\f\n]+\\)$" word)
+                    ;; Do not count `C-' etc. when at end of string.
+                    (save-match-data (not (string-match "\\([ACHMsS]-.\\)+$" word)))
+                    (progn
+                      (setq word  (concat (substring word (match-beginning 1) (match-end 1))
+                                          (substring word (match-beginning 3) (match-end 3))))
+                      (not (string-match "\\<\\(NUL\\|RET\\|LFD\\|ESC\\|SPC\\|DEL\\|TAB\\)$"
+                                         word))))
+               (setq key  (list (intern word))))
+              
               (t
                (let ((orig-word  word)
                      (prefix     0)
@@ -220,10 +245,9 @@ ANGLES."
                    (incf bits ?\C-\^@)
                    (incf prefix)
                    (callf substring word 1))
-                 (let ((found  (assoc word '(("NUL" . "\0") ("RET" . "\r")
-                                             ("LFD" . "\n") ("TAB" . "\t")
-                                             ("ESC" . "\e") ("SPC" . " ")
-                                             ("DEL" . "\177")))))
+                 (let ((found  (assoc word '(("NUL" . "\0") ("RET" . "\r") ("LFD" . "\n")
+                                             ("ESC" . "\e") ("SPC" . " ") ("DEL" . "\177")
+                                             ("TAB" . "\t")))))
                    (when found (setq word  (cdr found))))
                  (when (string-match "^\\\\[0-7]+$" word)
                    (loop for ch across word
