@@ -27,7 +27,7 @@ Here's what you need.  It won't completely purge Emacs from insulting you with t
 
 All of these also accept an optional argument ##ANGLES## which, if non-`nil', returns the behavior to the brain-dead vanilla one, expecting function keys to be fully clothed in angle brackets.  Example: ##(naked "C-M-<delete>" t)##.
 
-In fact, when you use non-`nil' argument ##ANGLES## they even respect the vanilla behavior when it is bugged -- E.g. [[http://debbugs.gnu.org/cgi/bugreport.cgi?bug=12535|bug #12535]].  For an argument of "##M-<TAB>##" they return ##[M-TAB]## instead of [134217737] (which is what `kbd' returns for argument "M-TAB").
+In fact, when you use non-`nil' argument ##ANGLES## they even respect the vanilla behavior when it is bugged -- E.g. [[http://debbugs.gnu.org/cgi/bugreport.cgi?bug=12535|bug #12535]].  For an argument of "##M-<TAB>##" they return ##[M-TAB]## instead of ##[134217737]## (which is what `kbd' returns for argument "##M-TAB##").
 
 ''Enjoy!''
 
