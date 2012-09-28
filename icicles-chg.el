@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Thu Sep 27 15:24:10 2012 (-0700)
+;; Last-Updated: Fri Sep 28 14:57:38 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8965
+;;     Update #: 8966
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -3182,6 +3182,10 @@
 ;;       macros needs to be byte-compiled anew after loading the updated macros.
 ;; ****************************************************************************************************
 ;;
+;; 2012/09/28 dadams
+;;     naked-edmacro-parse-keys:
+;;       Better fix for M-TAB.  Do not assume that function keys are lowercase.
+;;       Handle angle brackets even if ANGLES is nil.  But keep vanilla bug #12535 if non-nil.
 ;; 2012/09/27 dadams
 ;;     icicle-edmacro-parse-keys: Fix handling of M-TAB.  Function keys are lowercase.
 ;;                                So M-TAB returns [134217737], but M-tab returns [M-tab].
