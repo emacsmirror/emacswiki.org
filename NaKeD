@@ -35,7 +35,9 @@ I will contact you by mail once I have looked into this a bit more. -- JonasBern
 
 
 [new:DrewAdams:2012-09-27 22:04 UTC]
-Please try the latest.  I uploaded a fix for the `M-TAB' case, which was indeed a bug.  The code was not handling `M-TAB' differently from `M-tab'.  Function keys (including pseudo function keys) are always lowercase (and always at least two chars, the first of which is a letter and the others alphanumeric or `-').  Thx.  Feel free to follow with anything else (e.g., your functions). -- DrewAdams
+Please try the latest.  I uploaded a fix for the `M-TAB' case, which was indeed a bug.  The code was not handling `M-TAB' differently from `M-tab'.  This is fixed in <tt>[[naked.el]]</tt>, and I submitted vanilla Emacs bug [[http://debbugs.gnu.org/cgi/bugreport.cgi?bug=12535|#12535]] about this, with a patch.  I also made macro `naked' handle angle-bracketed key descriptions even without non-`nil' arg ##ANGLES##.  In that case, #12535 is fixed, but I left it unfixed for the non-`nil' ##ANGLES## case, to be consistent with vanilla Emacs.
+
+Thx.  Feel free to follow with anything else (e.g., your functions). -- DrewAdams
 
 
 
