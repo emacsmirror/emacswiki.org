@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Sep 24 11:47:17 2012 (-0700)
+;; Last-Updated: Sat Sep 29 15:40:47 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 15046
+;;     Update #: 15096
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,18 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2012/09/29 dadams
+;;     bookmark--jump-via:
+;;       When bmkp-use-w32-browser-p, just handle, do after-jump hook & jump-fn, and show annotation.
+;;     bookmark-handle-bookmark:
+;;       When bmkp-use-w32-browser-p, just invoke w32-browser and throw to bookmark--jump-via.
+;;     bookmark-write-file: Use find-file-noselect.
+;;     bmkp-save-menu-list-state:
+;;       Bind print-circle, version-control.  Use find-file-noselect.
+;;       Copy shared bookmark lists and single strings, to avoid circular refs.
+;;       Raise error, not just msg, if file-error.
+;; 2012/09/26 dadams
+;;     bmkp-save-menu-list-state: Use write-file, not write-region, so backups are made.
 ;; 2012/09/24 dadams
 ;;     bookmark-write-file: Use write-file, not write-region, so backups are made.  Emacs bug #12507.
 ;; 2012/09/22 dadams
@@ -818,6 +830,22 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2012/09/29 dadams
+;;     Added: bmkp-maybe-unpropertize-string.
+;;     bmkp-maybe-unpropertize-bookmark-names: Added optional arg COPY.
+;;     bmkp-bmenu-define-jump-marked-command, bmkp-bmenu-define-command,
+;;       bmkp-bmenu-define-full-snapshot-command, bmkp-define-tags-sort-command:
+;;         Bind print-circle, version-control.  Use find-file-noselect & write-file, not write-region.
+;;     bmkp-bmenu-define-jump-marked-command: Use bmkp-maybe-unpropertize-bookmark-names on bookmarks.
+;;     bmkp-bmenu-define-full-snapshot-command:
+;;       Copy shared bookmark lists and single strings, to avoid circular refs.
+;;       Expand file names and use convert-standard-filename, for bookmark file names.
+;; 2012/09/28 dadams
+;;     Added: bmkp-bmenu-jump-to-marked.
+;;     Renamed: bmkp-bmenu-w32-open-select to bmkp-bmenu-w32-jump-to-marked.
+;;     Replace bookmark-bmenu-select with bmkp-bmenu-jump-to-marked, everywhere.
+;;     bmkp-bmenu-w32-open-with-mouse:
+;;       Rewrote to directly call bookmark-handle-bookmark, jump-fn, and show annotations.
 ;; 2012/09/03 dadams
 ;;     bookmark-bmenu-toggle-filenames: Added missing nil FORCE arg.
 ;;     bmkp-bmenu-list-1: Call bookmark-bmenu-toggle-filenames with NO-MSGP arg.
