@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Sat Sep 29 15:01:08 2012 (-0700)
+;; Last-Updated: Sat Sep 29 15:28:14 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 2254
+;;     Update #: 2260
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -3942,11 +3942,9 @@ the omit list and the sort & filter information."
                   bmkp-latest-bookmark-alist             ',(bmkp-maybe-unpropertize-bookmark-names
                                                             bmkp-latest-bookmark-alist)
                   bmkp-bmenu-omitted-bookmarks           ',(bmkp-maybe-unpropertize-bookmark-names
-                                                            bmkp-bmenu-omitted-bookmarks
-                                                            'COPY)
+                                                            bmkp-bmenu-omitted-bookmarks 'COPY)
                   bmkp-bmenu-marked-bookmarks            ',(bmkp-maybe-unpropertize-bookmark-names
-                                                            bmkp-bmenu-marked-bookmarks
-                                                            'COPY)
+                                                            bmkp-bmenu-marked-bookmarks 'COPY)
                   bmkp-bmenu-filter-function             ',bmkp-bmenu-filter-function
                   bmkp-bmenu-filter-pattern              ',bmkp-bmenu-filter-pattern
                   bmkp-bmenu-title                       ',bmkp-bmenu-title
@@ -3954,21 +3952,23 @@ the omit list and the sort & filter information."
                                                                 (with-current-buffer
                                                                     (get-buffer "*Bookmark List*")
                                                                   (bmkp-maybe-unpropertize-string
-                                                                   (bookmark-bmenu-bookmark)
-                                                                   'COPY)))
+                                                                   (bookmark-bmenu-bookmark) 'COPY)))
                   ;; Use `copy-sequence' here just in case, to avoid circular references when
                   ;; `bmkp-propertize-bookmark-names-flag' is nil.
                   bmkp-last-specific-buffer              ',(copy-sequence bmkp-last-specific-buffer)
                   bmkp-last-specific-file                ',(copy-sequence bmkp-last-specific-file)
                   bookmark-bmenu-toggle-filenames        ',bookmark-bmenu-toggle-filenames
                   bmkp-bmenu-before-hide-marked-alist    ',(bmkp-maybe-unpropertize-bookmark-names
-                                                            bmkp-bmenu-before-hide-marked-alist
-                                                            'COPY)
+                                                            bmkp-bmenu-before-hide-marked-alist 'COPY)
                   bmkp-bmenu-before-hide-unmarked-alist  ',(bmkp-maybe-unpropertize-bookmark-names
-                                                            bmkp-bmenu-before-hide-unmarked-alist
-                                                            'COPY)
-                  bmkp-last-bookmark-file                ',(copy-sequence bmkp-last-bookmark-file)
-                  bmkp-current-bookmark-file             ',(copy-sequence bmkp-current-bookmark-file))
+                                                            bmkp-bmenu-before-hide-unmarked-alist 'COPY)
+                  bmkp-last-bookmark-file                ',(copy-sequence
+                                                            (convert-standard-filename
+                                                             (expand-file-name bmkp-last-bookmark-file)))
+                  bmkp-current-bookmark-file             ',(copy-sequence
+                                                            (convert-standard-filename
+                                                             (expand-file-name
+                                                              bmkp-current-bookmark-file))))
                  ;;(bmkp-bmenu-refresh-menu-list)
                  (let ((bookmark-alist  (or bmkp-latest-bookmark-alist  bookmark-alist)))
                    (bmkp-bmenu-list-1 'filteredp nil (interactive-p)))
