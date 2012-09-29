@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Fri Sep 28 19:21:07 2012 (-0700)
+;; Last-Updated: Fri Sep 28 21:02:42 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 2218
+;;     Update #: 2226
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -3611,13 +3611,23 @@ Unlike `bookmark-bmenu-select', this command:
   "Use `w32-browser' to open this bookmark."
   (interactive) (let ((bmkp-use-w32-browser-p  t))  (bookmark-bmenu-this-window)))
 
+;; $$$$$$ FIXME?: If `Open' action opens a window-manager window, it might be behind all Emacs frames.
 ;;;###autoload
 (defun bmkp-bmenu-w32-open-with-mouse (event) ; Bound to `M-mouse-2' in bookmark list.
   "Use `w32-browser' to open the bookmark clicked."
   (interactive "e")
-  (with-current-buffer (window-buffer (posn-window (event-end event)))
-    (save-excursion (goto-char (posn-point (event-end event)))
-                    (let ((bmkp-use-w32-browser-p  t))  (bookmark-bmenu-other-window)))))
+  (let ((bmkp-use-w32-browser-p  t)
+        (bmk                     (with-current-buffer (window-buffer (posn-window (event-end event)))
+                                   (bmkp-bmenu-barf-if-not-in-menu-list)
+                                   (save-excursion (goto-char (posn-point (event-end event)))
+                                                   (bookmark-bmenu-bookmark)))))
+    (bookmark-handle-bookmark bmk)
+    ;; Probably do not want this.  Users can use `jump-fn' tag if need be.
+    ;; (let ((orig-buff  (current-buffer))) ; Used by `crosshairs-highlight'.
+    ;;   (run-hooks 'bookmark-after-jump-hook))
+    (let ((jump-fn  (bmkp-get-tag-value bmk "bmkp-jump")))
+      (when jump-fn (funcall jump-fn)))
+    (when bookmark-automatically-show-annotations (bookmark-show-annotation bmk))))
 
 ;;;###autoload
 (defun bmkp-bmenu-w32-jump-to-marked ()    ; Bound to `M-o' in bookmark-list.
