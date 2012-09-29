@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Mon Sep 24 11:33:43 2012 (-0700)
+;; Last-Updated: Sat Sep 29 15:34:58 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5828
+;;     Update #: 5858
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -2161,27 +2161,28 @@ BOOKMARK is a bookmark name or a bookmark record."
   (setq bmkp-jump-display-function  display-function)
   (catch 'bookmark--jump-via
     (bookmark-handle-bookmark bookmark)
-    (let ((win  (get-buffer-window (current-buffer) 0)))
-      (when win (set-window-point win (point))))
-    ;; If this is an autonamed bookmark, update its name and position, in case it moved.
-    ;; But don't do this if we're using w32, since we might not have moved to the bookmark position.
-    (when (and (bmkp-autonamed-bookmark-for-buffer-p bookmark (buffer-name))
-               (not bmkp-use-w32-browser-p))
-      (setq bookmark  (bmkp-update-autonamed-bookmark bookmark)))
-    (case (and (boundp 'bmkp-auto-light-when-jump)  bmkp-auto-light-when-jump)
-      (autonamed-bookmark       (when (bmkp-autonamed-bookmark-p bookmark)
-                                  (bmkp-light-bookmark bookmark nil nil nil 'USE-POINT)))
-      (non-autonamed-bookmark   (unless (bmkp-autonamed-bookmark-p bookmark)
-                                  (bmkp-light-bookmark bookmark nil nil nil 'USE-POINT)))
-      (any-bookmark             (bmkp-light-bookmark bookmark nil nil nil 'USE-POINT))
-      (autonamed-in-buffer      (bmkp-light-bookmarks
-                                 (bmkp-remove-if-not #'bmkp-autonamed-bookmark-p
-                                                     (bmkp-this-buffer-alist-only))
-                                 nil 'MSG))
-      (non-autonamed-in-buffer  (bmkp-light-bookmarks
-                                 (bmkp-remove-if #'bmkp-autonamed-bookmark-p (bmkp-this-buffer-alist-only))
-                                 nil 'MSG))
-      (all-in-buffer            (bmkp-light-this-buffer nil 'MSG)))
+    (unless (and bmkp-use-w32-browser-p  (fboundp 'w32-browser)  (bookmark-get-filename bookmark))
+      (let ((win  (get-buffer-window (current-buffer) 0)))
+        (when win (set-window-point win (point))))
+      ;; If this is an autonamed bookmark, update its name and position, in case it moved.
+      ;; But don't do this if we're using w32, since we might not have moved to the bookmark position.
+      (when (and (bmkp-autonamed-bookmark-for-buffer-p bookmark (buffer-name))
+                 (not bmkp-use-w32-browser-p))
+        (setq bookmark  (bmkp-update-autonamed-bookmark bookmark)))
+      (case (and (boundp 'bmkp-auto-light-when-jump)  bmkp-auto-light-when-jump)
+        (autonamed-bookmark       (when (bmkp-autonamed-bookmark-p bookmark)
+                                    (bmkp-light-bookmark bookmark nil nil nil 'USE-POINT)))
+        (non-autonamed-bookmark   (unless (bmkp-autonamed-bookmark-p bookmark)
+                                    (bmkp-light-bookmark bookmark nil nil nil 'USE-POINT)))
+        (any-bookmark             (bmkp-light-bookmark bookmark nil nil nil 'USE-POINT))
+        (autonamed-in-buffer      (bmkp-light-bookmarks
+                                   (bmkp-remove-if-not #'bmkp-autonamed-bookmark-p
+                                                       (bmkp-this-buffer-alist-only))
+                                   nil 'MSG))
+        (non-autonamed-in-buffer  (bmkp-light-bookmarks (bmkp-remove-if #'bmkp-autonamed-bookmark-p
+                                                                        (bmkp-this-buffer-alist-only))
+                                                        nil 'MSG))
+        (all-in-buffer            (bmkp-light-this-buffer nil 'MSG))))
     (let ((orig-buff  (current-buffer))) ; Used by `crosshairs-highlight'.
       (run-hooks 'bookmark-after-jump-hook))
     (let ((jump-fn  (bmkp-get-tag-value bookmark "bmkp-jump")))
@@ -2270,12 +2271,14 @@ See `bookmark-jump', in particular for info about using a prefix arg."
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
-;; 1. Privilege property `file-handler' over `handler'.  If the former is available, apply it to the file.
+;; 1. Invoke MS Windows `Open' action if `bmkp-use-w32-browser-p' and if `w32-browser' is defined.
 ;;
-;; 2. If BOOKMARK has its own handler but that is not a defined function, then use the default handler.
+;; 2. Favor property `file-handler' over `handler'.  If the former is available, apply it to the file.
+;;
+;; 3. If BOOKMARK has its own handler but that is not a defined function, then use the default handler.
 ;;    This lets Emacs 22, for instance, handle Emacs 23+ image bookmarks.
 ;;
-;; 3. Different relocation message for non-file bookmark.
+;; 4. Different relocation message for non-file bookmark.
 ;;
 (defun bookmark-handle-bookmark (bookmark)
   "Call BOOKMARK's handler, or `bookmark-default-handler' if it has none.
@@ -2285,8 +2288,11 @@ BOOKMARK is a bookmark name or a bookmark record.
 
 More precisely:
 
-  If BOOKMARK has both `file-handler' and `filename' entries then
-  apply the former to the latter.
+  If `bmkp-use-w32-browser-p' is non-`nil' and `w32-browser' is
+  defined then invoke the MS Windows `Open' action.
+
+  Else, if BOOKMARK has both `file-handler' and `filename' entries
+  then apply the former to the latter.
 
   Else, if BOOKMARK has a `handler' property that is a defined
   function then apply it to BOOKMARK.
@@ -2301,7 +2307,12 @@ is handled as follows:
  If BOOKMARK has no `filename' entry, do nothing.
  Else prompt to relocate the file.
    If relocated, then try again to handle.  Else raise a file error."
-  (cond ((functionp (bookmark-prop-get bookmark 'file-handler))
+  (cond ((and bmkp-use-w32-browser-p  (fboundp 'w32-browser)  (bookmark-get-filename bookmark))
+         (w32-browser (bookmark-get-filename bookmark))
+         ;; This `throw' is only for the case where this handler is called from `bookmark--jump-via'.
+         ;; It tells `bookmark--jump-via' to skip the rest of what it does after calling the handler.
+         (condition-case nil (throw 'bookmark--jump-via 'BOOKMARK-HANDLE-BOOKMARK) (no-catch nil)))
+        ((functionp (bookmark-prop-get bookmark 'file-handler))
          (funcall (bookmark-prop-get bookmark 'file-handler) (bookmark-get-filename bookmark)))
         ((functionp (bookmark-get-handler bookmark))
          (funcall (bookmark-get-handler bookmark) (bookmark-get-bookmark bookmark)))
@@ -2703,7 +2714,7 @@ contain a `%s' construct, so that it can be passed along with FILE to
 `format'.  At the end, \"done\" is appended to the message."
   (let ((msg  (or alt-msg "Saving bookmarks to file `%s'..." file)))
     (message (or alt-msg "Saving bookmarks to file `%s'...") file)
-    (with-current-buffer (get-buffer-create " *Bookmarks*")
+    (with-current-buffer (find-file-noselect file)
       (goto-char (point-min))
       (delete-region (point-min) (point-max))
       (let ((print-length  nil)
@@ -2730,7 +2741,6 @@ contain a `%s' construct, so that it can be passed along with FILE to
                                   (t          t)))
               (errorp           nil))
           (condition-case nil
-              ;; $$$$$$ (write-region (point-min) (point-max) file)
               (write-file file)
             (file-error (setq errorp  t) (message "CANNOT WRITE FILE `%s'" file) (sit-for 4)))
           (kill-buffer (current-buffer))
@@ -3560,38 +3570,47 @@ Non-interactively, optional arg MSG-P means display progress messages."
              (last-latest-bookmark-alist            . ,(bmkp-maybe-unpropertize-bookmark-names
                                                         bmkp-latest-bookmark-alist))
              (last-bmenu-omitted-bookmarks          . ,(bmkp-maybe-unpropertize-bookmark-names
-                                                        bmkp-bmenu-omitted-bookmarks))
+                                                        bmkp-bmenu-omitted-bookmarks 'COPY))
              (last-bmenu-marked-bookmarks           . ,(bmkp-maybe-unpropertize-bookmark-names
-                                                        bmkp-bmenu-marked-bookmarks))
+                                                        bmkp-bmenu-marked-bookmarks 'COPY))
              (last-bmenu-filter-function            . ,bmkp-bmenu-filter-function)
              (last-bmenu-filter-pattern             . ,bmkp-bmenu-filter-pattern)
              (last-bmenu-title                      . ,bmkp-bmenu-title)
              (last-bmenu-bookmark                   . ,(and (get-buffer "*Bookmark List*")
                                                             (with-current-buffer
                                                                 (get-buffer "*Bookmark List*")
-                                                              (bookmark-bmenu-bookmark))))
-             (last-specific-buffer                  . ,bmkp-last-specific-buffer)
-             (last-specific-file                    . ,bmkp-last-specific-file)
+                                                              (bmkp-maybe-unpropertize-string
+                                                               (bookmark-bmenu-bookmark) 'COPY))))
+             ;; Use `copy-sequence' here just in case, to avoid circular references when
+             ;; `bmkp-propertize-bookmark-names-flag' is nil.
+             (last-specific-buffer                  . ,(copy-sequence bmkp-last-specific-buffer))
+             (last-specific-file                    . ,(copy-sequence bmkp-last-specific-file))
              (last-bmenu-toggle-filenames           . ,bookmark-bmenu-toggle-filenames)
              (last-bmenu-before-hide-marked-alist   . ,(bmkp-maybe-unpropertize-bookmark-names
-                                                        bmkp-bmenu-before-hide-marked-alist))
+                                                        bmkp-bmenu-before-hide-marked-alist 'COPY))
              (last-bmenu-before-hide-unmarked-alist . ,(bmkp-maybe-unpropertize-bookmark-names
-                                                        bmkp-bmenu-before-hide-unmarked-alist))
-             (last-bookmark-file                    . ,(convert-standard-filename
-                                                        (expand-file-name
-                                                         bmkp-current-bookmark-file))))))
-      (with-current-buffer (get-buffer-create " *Menu-List State*")
-        (goto-char (point-min))
-        (delete-region (point-min) (point-max))
-        (let ((print-length  nil)
-              (print-level   nil)
-              (print-circle  t))
-          (pp config-list (current-buffer)))
-        (condition-case nil
-            (write-region (point-min) (point-max) bmkp-bmenu-state-file)
-          (file-error (message "Cannot write `%s'" bmkp-bmenu-state-file)))
-        (kill-buffer (current-buffer)))
-      (when msg-p (message "Saving bookmark-list display state...done")))))
+                                                        bmkp-bmenu-before-hide-unmarked-alist 'COPY))
+             (last-bookmark-file                    . ,(copy-sequence
+                                                        (convert-standard-filename
+                                                         (expand-file-name
+                                                          bmkp-current-bookmark-file)))))))
+      (with-current-buffer (find-file-noselect bmkp-bmenu-state-file)
+        (goto-char (point-max))
+        (let ((print-length     nil)
+              (print-level      nil)
+              (print-circle     t)
+              (version-control  (case bookmark-version-control
+                                  ((nil)      nil)
+                                  (never      'never)
+                                  (nospecial  version-control)
+                                  (t          t)))
+              (errorp           nil))
+          (pp config-list (current-buffer))
+          (condition-case nil
+              (write-file bmkp-bmenu-state-file)
+            (file-error (setq errorp  t) (error "CANNOT WRITE FILE `%s'" bmkp-bmenu-state-file)))
+          (kill-buffer (current-buffer))
+          (when (and msg-p  (not errorp)) (message "Saving bookmark-list display state...done")))))))
 
 ;;;###autoload
 (defun bmkp-toggle-saving-bookmark-file (&optional msg-p) ; Bound to `M-~' in bookmark list
