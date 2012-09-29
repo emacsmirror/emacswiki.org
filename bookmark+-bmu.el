@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Fri Sep 28 21:02:42 2012 (-0700)
+;; Last-Updated: Sat Sep 29 15:01:08 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 2226
+;;     Update #: 2254
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -234,6 +234,7 @@
 ;;    `bmkp-bmenu-mark/unmark-bookmarks-tagged-some/not-all',
 ;;    `bmkp-bmenu-propertize-item', `bmkp-bmenu-read-filter-input',
 ;;    `bmkp-face-prop', `bmkp-maybe-unpropertize-bookmark-names',
+;;    `bmkp-maybe-unpropertize-string',
 ;;    `bmkp-replace-regexp-in-string',
 ;;    `bmkp-reverse-multi-sort-order', `bmkp-reverse-sort-order'.
 ;;
@@ -3838,28 +3839,36 @@ Save the command definition in `bmkp-bmenu-commands-file'."
   (interactive)
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (let* ((cands  (mapcar #'list
-                         (bmkp-remove-if #'(lambda (bmk)
-                                             (bmkp-bookmark-name-member bmk
-                                                                        bmkp-bmenu-omitted-bookmarks))
-                                         bmkp-bmenu-marked-bookmarks)))
+                         (bmkp-maybe-unpropertize-bookmark-names
+                          (bmkp-remove-if #'(lambda (bmk)
+                                              (bmkp-bookmark-name-member bmk
+                                                                         bmkp-bmenu-omitted-bookmarks))
+                                          bmkp-bmenu-marked-bookmarks))))
          (fn     (intern (read-string "Define command to jump to a bookmark now marked: " nil
                                       'bmkp-bmenu-define-command-history)))
          (def    `(defun ,fn (bookmark-name &optional use-region-p)
                    (interactive (list (bmkp-read-bookmark-for-type nil ',cands t) current-prefix-arg))
                    (bmkp-jump-1 bookmark-name 'bmkp-select-buffer-other-window use-region-p))))
     (eval def)
-    (with-current-buffer (get-buffer-create " *User Bookmark List Commands*")
-      (goto-char (point-min))
-      (delete-region (point-min) (point-max))
-      (let ((print-length  nil)
-            (print-level   nil))
+    (with-current-buffer (find-file-noselect bmkp-bmenu-commands-file)
+      (goto-char (point-max))
+      (let ((print-length     nil)
+            (print-level      nil)
+            (print-circle     t)
+            (version-control  (case bookmark-version-control
+                                ((nil)      nil)
+                                (never      'never)
+                                (nospecial  version-control)
+                                (t          t)))
+            (errorp           nil))
         (pp def (current-buffer))
         (insert "\n")
         (condition-case nil
-            (write-region (point-min) (point-max) bmkp-bmenu-commands-file 'append)
-          (file-error (error "Cannot write `%s'" bmkp-bmenu-commands-file)))
-        (kill-buffer (current-buffer))))
-    (message "Command `%s' defined and saved in file `%s'" fn bmkp-bmenu-commands-file)))
+            (write-file bmkp-bmenu-commands-file)
+          (file-error (setq errorp  t) (error "CANNOT WRITE FILE `%s'" bmkp-bmenu-commands-file)))
+        (kill-buffer (current-buffer))
+        (unless errorp (message "Command `%s' defined and saved in file `%s'"
+                                fn bmkp-bmenu-commands-file))))))
 
 ;;;###autoload
 (defun bmkp-bmenu-define-command ()     ; Bound to `c' in bookmark list
@@ -3890,18 +3899,25 @@ Use the command at any time to restore them."
                    (bmkp-msg-about-sort-order
                     (car (rassoc bmkp-sort-comparer bmkp-sort-orders-alist)))))))
     (eval def)
-    (with-current-buffer (get-buffer-create " *User Bookmark List Commands*")
-      (goto-char (point-min))
-      (delete-region (point-min) (point-max))
-      (let ((print-length  nil)
-            (print-level   nil))
+    (with-current-buffer (find-file-noselect bmkp-bmenu-commands-file)
+      (goto-char (point-max))
+      (let ((print-length     nil)
+            (print-level      nil)
+            (print-circle     t)
+            (version-control  (case bookmark-version-control
+                                ((nil)      nil)
+                                (never      'never)
+                                (nospecial  version-control)
+                                (t          t)))
+            (errorp           nil))
         (pp def (current-buffer))
         (insert "\n")
         (condition-case nil
-            (write-region (point-min) (point-max) bmkp-bmenu-commands-file 'append)
-          (file-error (error "Cannot write `%s'" bmkp-bmenu-commands-file)))
-        (kill-buffer (current-buffer))))
-    (message "Command `%s' defined and saved in file `%s'" fn bmkp-bmenu-commands-file)))
+            (write-file bmkp-bmenu-commands-file)
+          (file-error (setq errorp  t) (error "CANNOT WRITE FILE `%s'" bmkp-bmenu-commands-file)))
+        (kill-buffer (current-buffer))
+        (unless errorp (message "Command `%s' defined and saved in file `%s'"
+                                fn bmkp-bmenu-commands-file))))))
 
 ;;;###autoload
 (defun bmkp-bmenu-define-full-snapshot-command () ; Bound to `C' in bookmark list
@@ -3926,25 +3942,33 @@ the omit list and the sort & filter information."
                   bmkp-latest-bookmark-alist             ',(bmkp-maybe-unpropertize-bookmark-names
                                                             bmkp-latest-bookmark-alist)
                   bmkp-bmenu-omitted-bookmarks           ',(bmkp-maybe-unpropertize-bookmark-names
-                                                            bmkp-bmenu-omitted-bookmarks)
+                                                            bmkp-bmenu-omitted-bookmarks
+                                                            'COPY)
                   bmkp-bmenu-marked-bookmarks            ',(bmkp-maybe-unpropertize-bookmark-names
-                                                            bmkp-bmenu-marked-bookmarks)
+                                                            bmkp-bmenu-marked-bookmarks
+                                                            'COPY)
                   bmkp-bmenu-filter-function             ',bmkp-bmenu-filter-function
                   bmkp-bmenu-filter-pattern              ',bmkp-bmenu-filter-pattern
                   bmkp-bmenu-title                       ',bmkp-bmenu-title
                   bmkp-last-bmenu-bookmark               ',(and (get-buffer "*Bookmark List*")
                                                                 (with-current-buffer
                                                                     (get-buffer "*Bookmark List*")
-                                                                  (bookmark-bmenu-bookmark)))
-                  bmkp-last-specific-buffer              ',bmkp-last-specific-buffer
-                  bmkp-last-specific-file                ',bmkp-last-specific-file
+                                                                  (bmkp-maybe-unpropertize-string
+                                                                   (bookmark-bmenu-bookmark)
+                                                                   'COPY)))
+                  ;; Use `copy-sequence' here just in case, to avoid circular references when
+                  ;; `bmkp-propertize-bookmark-names-flag' is nil.
+                  bmkp-last-specific-buffer              ',(copy-sequence bmkp-last-specific-buffer)
+                  bmkp-last-specific-file                ',(copy-sequence bmkp-last-specific-file)
                   bookmark-bmenu-toggle-filenames        ',bookmark-bmenu-toggle-filenames
                   bmkp-bmenu-before-hide-marked-alist    ',(bmkp-maybe-unpropertize-bookmark-names
-                                                            bmkp-bmenu-before-hide-marked-alist)
+                                                            bmkp-bmenu-before-hide-marked-alist
+                                                            'COPY)
                   bmkp-bmenu-before-hide-unmarked-alist  ',(bmkp-maybe-unpropertize-bookmark-names
-                                                            bmkp-bmenu-before-hide-unmarked-alist)
-                  bmkp-last-bookmark-file                ',bmkp-last-bookmark-file
-                  bmkp-current-bookmark-file             ',bmkp-current-bookmark-file)
+                                                            bmkp-bmenu-before-hide-unmarked-alist
+                                                            'COPY)
+                  bmkp-last-bookmark-file                ',(copy-sequence bmkp-last-bookmark-file)
+                  bmkp-current-bookmark-file             ',(copy-sequence bmkp-current-bookmark-file))
                  ;;(bmkp-bmenu-refresh-menu-list)
                  (let ((bookmark-alist  (or bmkp-latest-bookmark-alist  bookmark-alist)))
                    (bmkp-bmenu-list-1 'filteredp nil (interactive-p)))
@@ -3955,21 +3979,30 @@ the omit list and the sort & filter information."
                    (bmkp-msg-about-sort-order
                     (car (rassoc bmkp-sort-comparer bmkp-sort-orders-alist)))))))
     (eval def)
-    (with-current-buffer (get-buffer-create " *User Bookmark List Commands*")
-      (goto-char (point-min))
-      (delete-region (point-min) (point-max))
-      (let ((print-length  nil)
-            (print-level   nil)
-            (print-circle  t))
+    (with-current-buffer (find-file-noselect bmkp-bmenu-commands-file)
+      (goto-char (point-max))
+      (let ((print-length     nil)
+            (print-level      nil)
+            (print-circle     t)
+            (version-control  (case bookmark-version-control
+                                ((nil)      nil)
+                                (never      'never)
+                                (nospecial  version-control)
+                                (t          t)))
+            (errorp           nil))
         (pp def (current-buffer))
         (insert "\n")
         (condition-case nil
-            (write-region (point-min) (point-max) bmkp-bmenu-commands-file 'append)
-          (file-error (error "Cannot write `%s'" bmkp-bmenu-commands-file)))
-        (kill-buffer (current-buffer))))
-    (message "Command `%s' defined and saved in file `%s'" fn bmkp-bmenu-commands-file)))
+            (write-file bmkp-bmenu-commands-file)
+          (file-error (setq errorp  t) (error "CANNOT WRITE FILE `%s'" bmkp-bmenu-commands-file)))
+        (kill-buffer (current-buffer))
+        (unless errorp (message "Command `%s' defined and saved in file `%s'"
+                                fn bmkp-bmenu-commands-file))))))
 
-(defun bmkp-maybe-unpropertize-bookmark-names (list)
+;; We use this because Emacs 20 has no `print-circle'. and otherwise
+;; property `bmkp-full-record' would make the state file unreadable.
+;;
+(defun bmkp-maybe-unpropertize-bookmark-names (list &optional copy)
   "Strip properties from the bookmark names in a copy of LIST.
 LIST is a bookmark alist or a list of bookmark names (strings).
 Return the updated copy.
@@ -3977,8 +4010,9 @@ Return the updated copy.
 Note, however, that this is a shallow copy, so the names are also
 stripped within any alist elements of the original LIST.
 
-We do this because Emacs 20 has no `print-circle'. and otherwise
-property `bmkp-full-record' would make the state file unreadable.
+Non-nil optional arg COPY means copy also each element of LIST.  Use
+this if, for example, you have bookmark lists that share bookmarks and
+you want to treat the shared bookmarks separately.
 
 Do nothing in Emacs 21 or later or if
 `bmkp-propertize-bookmark-names-flag' is nil.  In these cases, just
@@ -3990,7 +4024,24 @@ return the list."
       (dolist (bmk  new-list)
         (when (and (consp bmk)  (stringp (car bmk))) (setq bmk  (car bmk)))
         (when (stringp bmk) (set-text-properties 0 (length bmk) nil bmk)))
-      new-list)))
+      (if copy
+          (mapcar #'copy-sequence new-list)
+        new-list))))
+
+(defun bmkp-maybe-unpropertize-string (string &optional copy)
+  "Strip properties from STRING.
+Return the unpropertized STRING.
+Non-nil optional arg COPY means return a copy of the unpropertized
+STRING.
+
+Do nothing in Emacs 21 or later or if
+`bmkp-propertize-bookmark-names-flag' is nil.  In these cases, just
+return STRING unmodified."
+  (unless (and (> emacs-major-version 20) ; Emacs 21+.  Cannot just use (boundp 'print-circle).
+               bmkp-propertize-bookmark-names-flag)
+    (set-text-properties 0 (length string) nil string)
+    (when copy (setq string  (copy-sequence string))))
+  string)
 
 ;; This is a general command.  It is in this file because it uses macro `bmkp-define-sort-command'
 ;; and it is used mainly in the bookmark list display.
@@ -4030,18 +4081,25 @@ specified tags, in order, separated by hyphens (`-').  E.g., for TAGS
     (setq comparer  (nreverse comparer)
           comparer  (list comparer 'bmkp-alpha-p))
     (eval (setq def  (macroexpand `(bmkp-define-sort-command ,sort-order ,comparer ,doc-string))))
-    (with-current-buffer (get-buffer-create " *User Bookmark List Commands*")
-      (goto-char (point-min))
-      (delete-region (point-min) (point-max))
-      (let ((print-length  nil)
-            (print-level   nil))
+    (with-current-buffer (find-file-noselect bmkp-bmenu-commands-file)
+      (goto-char (point-max))
+      (let ((print-length     nil)
+            (print-level      nil)
+            (print-circle     t)
+            (version-control  (case bookmark-version-control
+                                ((nil)      nil)
+                                (never      'never)
+                                (nospecial  version-control)
+                                (t          t)))
+            (errorp           nil))
         (pp def (current-buffer))
         (insert "\n")
         (condition-case nil
-            (write-region (point-min) (point-max) bmkp-bmenu-commands-file 'append)
-          (file-error (error "Cannot write `%s'" bmkp-bmenu-commands-file)))
-        (kill-buffer (current-buffer))))
-    (when msg-p (message "Defined and saved command `%s'" (concat "bmkp-bmenu-sort-" sort-order)))))
+            (write-file bmkp-bmenu-commands-file)
+          (file-error (setq errorp  t) (error "CANNOT WRITE FILE `%s'" bmkp-bmenu-commands-file)))
+        (kill-buffer (current-buffer))
+        (when (and msg-p  (not errorp))
+          (message "Defined and saved command `%s'" (concat "bmkp-bmenu-sort-" sort-order)))))))
 
 ;;;###autoload
 (defun bmkp-bmenu-edit-bookmark-name-and-file (&optional internalp) ; Bound to `r' in bookmark list
