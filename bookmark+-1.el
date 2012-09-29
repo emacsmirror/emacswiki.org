@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sat Sep 29 15:57:44 2012 (-0700)
+;; Last-Updated: Sat Sep 29 16:16:52 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5859
+;;     Update #: 5861
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -2734,12 +2734,13 @@ contain a `%s' construct, so that it can be passed along with FILE to
             (when (setq last-fname  (assq 'filename bmk)) (setcdr last-fname fname))
             (let ((print-circle  t)) (pp bmk (current-buffer)))))
         (insert ")")
-        (let ((version-control  (case bookmark-version-control
-                                  ((nil)      nil)
-                                  (never      'never)
-                                  (nospecial  version-control)
-                                  (t          t)))
-              (errorp           nil))
+        (let ((version-control        (case bookmark-version-control
+                                        ((nil)      nil)
+                                        (never      'never)
+                                        (nospecial  version-control)
+                                        (t          t)))
+              (require-final-newline  t)
+              (errorp                 nil))
           (condition-case nil
               (write-file file)
             (file-error (setq errorp  t) (message "CANNOT WRITE FILE `%s'" file) (sit-for 4)))
@@ -3600,12 +3601,13 @@ Non-interactively, optional arg MSG-P means display progress messages."
         (let ((print-length     nil)
               (print-level      nil)
               (print-circle     t)
-              (version-control  (case bookmark-version-control
-                                  ((nil)      nil)
-                                  (never      'never)
-                                  (nospecial  version-control)
-                                  (t          t)))
-              (errorp           nil))
+              (version-control        (case bookmark-version-control
+                                        ((nil)      nil)
+                                        (never      'never)
+                                        (nospecial  version-control)
+                                        (t          t)))
+              (require-final-newline  t)
+              (errorp                 nil))
           (pp config-list (current-buffer))
           (condition-case nil
               (write-file bmkp-bmenu-state-file)
