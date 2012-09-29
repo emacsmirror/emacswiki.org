@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Wed Sep  5 09:56:33 2012 (-0700)
+;; Last-Updated: Fri Sep 28 20:37:26 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 6091
+;;     Update #: 6096
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Doc URL: http://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -428,6 +428,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/09/28 dadams
+;;     Moved dired-*w32* bindings after normal mouse bindings, so they override them.
 ;; 2012/09/05 dadams
 ;;     diredp-(rename|copy|(rel)symlink|hardlink)-this-file: Bind use-file-dialog to nil.
 ;; 2012/08/26 dadams
@@ -2232,13 +2234,6 @@ If HDR is non-nil, insert a header line with the directory name."
 (define-key diredp-menu-bar-subdir-menu [revert]
   '(menu-item "Refresh (Sync \& Show All)" revert-buffer :help "Update directory contents"))
 
-;; On Windows, bind more.
-(eval-after-load "w32-browser"
-  '(progn
-    (define-key dired-mode-map [(control return)] 'dired-w32explore) ; `C-RET'
-    (define-key dired-mode-map [(meta return)] 'dired-w32-browser) ; `M-RET'
-    (define-key dired-mode-map [mouse-2] 'dired-mouse-w32-browser))) ; `mouse-2'
-
 
 ;;; Mouse-3 menu binding.
 (define-key dired-mode-map [down-mouse-3] 'diredp-mouse-3-menu)
@@ -2255,11 +2250,18 @@ If HDR is non-nil, insert a header line with the directory name."
 (define-key dired-mode-map [S-down-mouse-1] 'ignore) ; (normally `mouse-set-font')
 ;; `diredp-mouse-mark-region-files' provides Windows-Explorer behavior
 ;; for selecting (marking) files.
-(define-key dired-mode-map [S-mouse-1] 'diredp-mouse-mark-region-files)
-(define-key dired-mode-map [mouse-2] 'dired-mouse-find-file-other-window)
-(define-key dired-mode-map [S-down-mouse-2] 'diredp-mouse-find-file)
+(define-key dired-mode-map [S-mouse-1] 'diredp-mouse-mark-region-files)     ; `S-mouse-1'
+(define-key dired-mode-map [mouse-2] 'dired-mouse-find-file-other-window)   ; `mouse-2'
+(define-key dired-mode-map [S-down-mouse-2] 'diredp-mouse-find-file)        ; `S-mouse-2'
 (define-key dired-mode-map [S-mouse-2] 'ignore)
-(define-key dired-mode-map [M-mouse-2] 'diredp-mouse-find-file-other-frame)
+(define-key dired-mode-map [M-mouse-2] 'diredp-mouse-find-file-other-frame) ; `M-mouse-2'
+
+;; On Windows, bind more.
+(eval-after-load "w32-browser"
+  '(progn
+    (define-key dired-mode-map [(control return)] 'dired-w32explore)        ; `C-RET'
+    (define-key dired-mode-map [(meta return)] 'dired-w32-browser)          ; `M-RET'
+    (define-key dired-mode-map [mouse-2] 'dired-mouse-w32-browser)))        ; `mouse-2'
 
 (define-key dired-mode-map "="       'diredp-ediff)
 ;; This replaces the `dired-x.el' binding of `dired-mark-extension'.
