@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Sat Sep 29 15:28:14 2012 (-0700)
+;; Last-Updated: Sat Sep 29 16:23:03 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 2260
+;;     Update #: 2265
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -1078,7 +1078,7 @@ list has been filtered, which means:
                      bmkp-bmenu-marked-bookmarks       (cdr (assq 'last-bmenu-marked-bookmarks  state))
                      bmkp-bmenu-filter-function        (cdr (assq 'last-bmenu-filter-function   state))
                      bmkp-bmenu-filter-pattern
-                     (or (cdr (assq 'last-bmenu-filter-pattern   state))  "")
+                     (or (cdr (assq 'last-bmenu-filter-pattern state))  "")
                      bmkp-bmenu-title                  (cdr (assq 'last-bmenu-title             state))
                      bmkp-last-bmenu-bookmark          (cdr (assq 'last-bmenu-bookmark          state))
                      bmkp-last-specific-buffer         (cdr (assq 'last-specific-buffer         state))
@@ -3852,15 +3852,16 @@ Save the command definition in `bmkp-bmenu-commands-file'."
     (eval def)
     (with-current-buffer (find-file-noselect bmkp-bmenu-commands-file)
       (goto-char (point-max))
-      (let ((print-length     nil)
-            (print-level      nil)
-            (print-circle     t)
-            (version-control  (case bookmark-version-control
-                                ((nil)      nil)
-                                (never      'never)
-                                (nospecial  version-control)
-                                (t          t)))
-            (errorp           nil))
+      (let ((print-length           nil)
+            (print-level            nil)
+            (print-circle           t)
+            (version-control        (case bookmark-version-control
+                                      ((nil)      nil)
+                                      (never      'never)
+                                      (nospecial  version-control)
+                                      (t          t)))
+            (require-final-newline  t)
+            (errorp                 nil))
         (pp def (current-buffer))
         (insert "\n")
         (condition-case nil
@@ -3901,15 +3902,16 @@ Use the command at any time to restore them."
     (eval def)
     (with-current-buffer (find-file-noselect bmkp-bmenu-commands-file)
       (goto-char (point-max))
-      (let ((print-length     nil)
-            (print-level      nil)
-            (print-circle     t)
-            (version-control  (case bookmark-version-control
-                                ((nil)      nil)
-                                (never      'never)
-                                (nospecial  version-control)
-                                (t          t)))
-            (errorp           nil))
+      (let ((print-length           nil)
+            (print-level            nil)
+            (print-circle           t)
+            (version-control        (case bookmark-version-control
+                                      ((nil)      nil)
+                                      (never      'never)
+                                      (nospecial  version-control)
+                                      (t          t)))
+            (require-final-newline  t)
+            (errorp                 nil))
         (pp def (current-buffer))
         (insert "\n")
         (condition-case nil
@@ -3981,15 +3983,16 @@ the omit list and the sort & filter information."
     (eval def)
     (with-current-buffer (find-file-noselect bmkp-bmenu-commands-file)
       (goto-char (point-max))
-      (let ((print-length     nil)
-            (print-level      nil)
-            (print-circle     t)
-            (version-control  (case bookmark-version-control
-                                ((nil)      nil)
-                                (never      'never)
-                                (nospecial  version-control)
-                                (t          t)))
-            (errorp           nil))
+      (let ((print-length           nil)
+            (print-level            nil)
+            (print-circle           t)
+            (version-control        (case bookmark-version-control
+                                      ((nil)      nil)
+                                      (never      'never)
+                                      (nospecial  version-control)
+                                      (t          t)))
+            (require-final-newline  t)
+            (errorp                 nil))
         (pp def (current-buffer))
         (insert "\n")
         (condition-case nil
@@ -4083,15 +4086,16 @@ specified tags, in order, separated by hyphens (`-').  E.g., for TAGS
     (eval (setq def  (macroexpand `(bmkp-define-sort-command ,sort-order ,comparer ,doc-string))))
     (with-current-buffer (find-file-noselect bmkp-bmenu-commands-file)
       (goto-char (point-max))
-      (let ((print-length     nil)
-            (print-level      nil)
-            (print-circle     t)
-            (version-control  (case bookmark-version-control
-                                ((nil)      nil)
-                                (never      'never)
-                                (nospecial  version-control)
-                                (t          t)))
-            (errorp           nil))
+      (let ((print-length           nil)
+            (print-level            nil)
+            (print-circle           t)
+            (version-control        (case bookmark-version-control
+                                      ((nil)      nil)
+                                      (never      'never)
+                                      (nospecial  version-control)
+                                      (t          t)))
+            (require-final-newline  t)
+            (errorp                 nil))
         (pp def (current-buffer))
         (insert "\n")
         (condition-case nil
