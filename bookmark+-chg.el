@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Sep 29 15:40:47 2012 (-0700)
+;; Last-Updated: Sat Sep 29 16:26:31 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 15096
+;;     Update #: 15101
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -153,9 +153,10 @@
 ;;       When bmkp-use-w32-browser-p, just invoke w32-browser and throw to bookmark--jump-via.
 ;;     bookmark-write-file: Use find-file-noselect.
 ;;     bmkp-save-menu-list-state:
-;;       Bind print-circle, version-control.  Use find-file-noselect.
+;;       Bind print-circle, version-control, require-final-new-line.  Use find-file-noselect.
 ;;       Copy shared bookmark lists and single strings, to avoid circular refs.
 ;;       Raise error, not just msg, if file-error.
+;;     bookmark-write-file: Bind require-final-newline.
 ;; 2012/09/26 dadams
 ;;     bmkp-save-menu-list-state: Use write-file, not write-region, so backups are made.
 ;; 2012/09/24 dadams
@@ -833,9 +834,9 @@
 ;; 2012/09/29 dadams
 ;;     Added: bmkp-maybe-unpropertize-string.
 ;;     bmkp-maybe-unpropertize-bookmark-names: Added optional arg COPY.
-;;     bmkp-bmenu-define-jump-marked-command, bmkp-bmenu-define-command,
-;;       bmkp-bmenu-define-full-snapshot-command, bmkp-define-tags-sort-command:
-;;         Bind print-circle, version-control.  Use find-file-noselect & write-file, not write-region.
+;;     bmkp-bmenu-define(-jump-marked|-full-snapshot|-tags-sort)-command:
+;;       Bind print-circle, version-control, require-final-newline.
+;;       Use find-file-noselect & write-file, not write-region.
 ;;     bmkp-bmenu-define-jump-marked-command: Use bmkp-maybe-unpropertize-bookmark-names on bookmarks.
 ;;     bmkp-bmenu-define-full-snapshot-command:
 ;;       Copy shared bookmark lists and single strings, to avoid circular refs.
