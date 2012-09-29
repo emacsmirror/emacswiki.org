@@ -35,7 +35,7 @@ vc-git.el also includes support for git blame, in the vc-annotate command (C-x v
 *Egg* (*Emacs got Git*) was forked from Magit and has developed independently since 2008. Egg has built-in
 blame-mode that can relocate the blamed commit back into the DAG view (log-buffer.) Normally unreachable
 commits in the reflogs can also be brought back into the DAG view, making refs recovery error-proof.
-Egg supports interactive rebase by marking the directly on commits (to be picked, edited or squashed) in
+Egg supports interactive rebase by marking directly on commits (to be picked, edited or squashed) in
 the DAG view. Egg also has extensive support for pickaxing (only showing the diffs with the search term,
 highlighting the search term, etc.) The default colours are terrible but can all be customized.
 
