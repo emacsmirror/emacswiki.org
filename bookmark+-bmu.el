@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Mon Sep  3 16:36:01 2012 (-0700)
+;; Last-Updated: Fri Sep 28 19:21:07 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 2201
+;;     Update #: 2218
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -112,6 +112,7 @@
 ;;    `bmkp-bmenu-flag-for-deletion-backwards',
 ;;    `bmkp-bmenu-isearch-marked-bookmarks' (Emacs 23+),
 ;;    `bmkp-bmenu-isearch-marked-bookmarks-regexp' (Emacs 23+),
+;;    `bmkp-bmenu-jump-to-marked',
 ;;    `bmkp-bmenu-make-sequence-from-marked', `bmkp-bmenu-mark-all',
 ;;    `bmkp-bmenu-mark-autofile-bookmarks',
 ;;    `bmkp-bmenu-mark-bookmark-file-bookmarks',
@@ -1333,7 +1334,7 @@ Jump to (Visit) Bookmarks
 
 Here:
 
-\\[bookmark-bmenu-select]\t- This bookmark and also visit bookmarks marked `>'
+\\[bmkp-bmenu-jump-to-marked]\t- Bookmarks marked `>', in other windows
 \\[bookmark-bmenu-this-window]\t- Bookmark in the same window
 \\[bookmark-bmenu-other-window]\t- Bookmark in another window
 \\[bookmark-bmenu-switch-other-window]\t- Bookmark in other window, without selecting it
@@ -3595,6 +3596,17 @@ With no prefix arg, show the annotation.  With a prefix arg, edit it."
     (bookmark-bmenu-show-annotation msg-p)))
 
 ;;;###autoload
+(defun bmkp-bmenu-jump-to-marked ()
+  "Jump to each bookmark marked `>', in another window.
+Unlike `bookmark-bmenu-select', this command:
+* does not bury buffer `*Bookmark List*' or replace it in its window
+* does not unmark the marked bookmarks
+* does not include the current bookmark - only the marked are accessed"
+  (interactive)
+  (dolist (bmk  bmkp-bmenu-marked-bookmarks)
+    (bookmark-jump-other-window bmk)))
+
+;;;###autoload
 (defun bmkp-bmenu-w32-open ()           ; Bound to `M-RET' in bookmark list.
   "Use `w32-browser' to open this bookmark."
   (interactive) (let ((bmkp-use-w32-browser-p  t))  (bookmark-bmenu-this-window)))
@@ -3603,15 +3615,14 @@ With no prefix arg, show the annotation.  With a prefix arg, edit it."
 (defun bmkp-bmenu-w32-open-with-mouse (event) ; Bound to `M-mouse-2' in bookmark list.
   "Use `w32-browser' to open the bookmark clicked."
   (interactive "e")
-  (save-excursion
-    (with-current-buffer (window-buffer (posn-window (event-end event)))
-      (save-excursion (goto-char (posn-point (event-end event)))
-                      (let ((bmkp-use-w32-browser-p  t))  (bookmark-bmenu-other-window))))))
+  (with-current-buffer (window-buffer (posn-window (event-end event)))
+    (save-excursion (goto-char (posn-point (event-end event)))
+                    (let ((bmkp-use-w32-browser-p  t))  (bookmark-bmenu-other-window)))))
 
 ;;;###autoload
-(defun bmkp-bmenu-w32-open-select ()    ; Bound to `M-o' in bookmark-list.
+(defun bmkp-bmenu-w32-jump-to-marked ()    ; Bound to `M-o' in bookmark-list.
   "Use `w32-browser' to open this bookmark and all marked bookmarks."
-  (interactive) (let ((bmkp-use-w32-browser-p  t))  (bookmark-bmenu-select)))
+  (interactive) (let ((bmkp-use-w32-browser-p  t))  (bmkp-bmenu-jump-to-marked)))
 
 ;;;###autoload
 (defun bmkp-bmenu-mode-status-help ()   ; Bound to `C-h m' and `?' in bookmark list
@@ -4805,10 +4816,11 @@ Marked bookmarks that have no associated file are ignored."
 (define-key bookmark-bmenu-mode-map "\M-u"                 nil) ; For Emacs 20
 (define-key bookmark-bmenu-mode-map "\M-u\M-m"             'bmkp-bmenu-mark-url-bookmarks)
 (define-key bookmark-bmenu-mode-map "\M-u\M-s"             'bmkp-bmenu-show-only-urls)
+(define-key bookmark-bmenu-mode-map "v"                    'bmkp-bmenu-w32-jump-to-marked)
 (define-key bookmark-bmenu-mode-map "V"                    nil) ; For Emacs20
 (define-key bookmark-bmenu-mode-map "VM"                   'bmkp-bmenu-mark-variable-list-bookmarks)
 (define-key bookmark-bmenu-mode-map "VS"                   'bmkp-bmenu-show-only-variable-lists)
-(define-key bookmark-bmenu-mode-map "\M-o"                 'bmkp-bmenu-w32-open-select)
+(define-key bookmark-bmenu-mode-map "\M-o"                 'bmkp-bmenu-w32-jump-to-marked)
 (define-key bookmark-bmenu-mode-map "W"                    nil) ; For Emacs 20
 (define-key bookmark-bmenu-mode-map "WM"                   'bmkp-bmenu-mark-w3m-bookmarks)
 (define-key bookmark-bmenu-mode-map "WS"                   'bmkp-bmenu-show-only-w3m-urls)
@@ -4966,9 +4978,9 @@ Marked bookmarks that have no associated file are ignored."
 (define-key bmkp-bmenu-menubar-menu [bmkp-bmenu-search-marked-bookmarks-regexp]
   '(menu-item "Search Marked..." bmkp-bmenu-search-marked-bookmarks-regexp
     :help "Regexp-search the files whose bookmarks are marked, in their current order"))
-(define-key bmkp-bmenu-menubar-menu [bookmark-bmenu-select]
-  '(menu-item "Jump to Marked" bookmark-bmenu-select
-    :help "Jump to this line's bookmark.  Also visit each bookmark marked with `>'"))
+(define-key bmkp-bmenu-menubar-menu [bmkp-bmenu-jump-to-marked]
+  '(menu-item "Jump to Marked" bmkp-bmenu-jump-to-marked
+    :help "Jump to each bookmark marked `>', in another window"))
 
 
 ;;; `Define Command' submenu -----------------------------------------
