@@ -53,6 +53,8 @@ A partial list of the better known C styles:
 * "##java##": The default style for java-mode (see below)
 * "##user##": When you want to define your own style
 
+See [WikiPedia:Indent_style Indent style] article on Wikipedia with examples how different predefined C styles looks like.
+
 == C-like Automatic Style Input (casi) ==
 
 Casi allows you to tune the behavior of many keystrokes for every specified style in CC mode. For example, you can tell Emacs to insert a space (" ") when you type '(', and delete this space when you type DEL while point is after a '(', in a CC mode buffer and the style of the buffer is "gnu", but keep the default behavior when the style is not "gnu". This is useful for some cases, e.g. when you are used to "bsd" style, but have to write programs in "gnu" style, and you don't want to change your key-pressing habit. Plus "c-auto-newline", casi makes Emacs a more convenient tool of writing C/C++ programs, since it allows one to keep a single key-pressing habit to write programs in many different styles. For more information about casi, see http://sourceforge.net/projects/casi-mode.
