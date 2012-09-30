@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 21.0
-;; Last-Updated: Mon Aug 27 11:44:57 2012 (-0700)
+;; Last-Updated: Sun Sep 30 09:21:31 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1285
+;;     Update #: 1303
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/emacs/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -95,6 +95,7 @@
 ;;  ***** NOTE: The following functions defined in `isearch.el' have
 ;;              been REDEFINED HERE:
 ;;
+;;  `isearch-abort'       - Save search string when `C-g'.
 ;;  `isearch-edit-string' - Put point at mismatch position.
 ;;  `isearch-mode-help'   - End isearch.  List bindings.
 ;;  `isearch-message'     - Highlight failed part of search string in
@@ -254,6 +255,10 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2012/09/30 dadams
+;;     Added: isearchp-last-quit(-regexp)-search, isearchp-retrieve-last-quit-search,
+;;            redefinition of isearch-abort.
+;;     Bound isearchp-retrieve-last-quit-search to M-g.
 ;; 2012/08/27 dadams
 ;;     isearch(p)-message-(prefix|suffix): Emacs 24.2 turned out to use the same code as 24.1.
 ;; 2012/08/12 dadams
@@ -560,6 +565,12 @@ outside of Isearch."
 (defvar isearchp-last-non-nil-invisible (or search-invisible 'open)
   "Last non-nil value of `search-invisible'.")
 
+(defvar isearchp-last-quit-search nil
+  "Last successful search string when you hit `C-g' to quit Isearch.")
+
+(defvar isearchp-last-quit-regexp-search nil
+  "Last successful search regexp when you hit `C-g' to quit regexp Isearch.")
+
 ;; An alternative to binding `isearch-edit-string' (but less flexible):
 ;; (setq search-exit-option 'edit) ; M- = edit search string, not exit.
  
@@ -599,6 +610,7 @@ outside of Isearch."
 (define-key isearch-mode-map "\C-c"            'isearch-toggle-case-fold)
 ;; This one is needed only for Emacs 20.  It is automatic after release 20.
 (define-key isearch-mode-map "\M-e"            'isearch-edit-string)
+(define-key isearch-mode-map "\M-g"            'isearchp-retrieve-last-quit-search)
 ;; This one is needed only for Emacs 20.  It is automatic after release 20.
 (define-key isearch-mode-map "\M-r"            'isearch-toggle-regexp)
 (define-key isearch-mode-map "\M-w"            'isearch-toggle-word)
@@ -665,7 +677,7 @@ This is used only for Transient Mark mode."
 (defun isearchp-toggle-regexp-quote-yank () ; Bound to `C-`'
   "Toggle `isearchp-regexp-quote-yank-flag'."
   (interactive)
-  (setq isearchp-regexp-quote-yank-flag (not isearchp-regexp-quote-yank-flag))
+  (setq isearchp-regexp-quote-yank-flag  (not isearchp-regexp-quote-yank-flag))
   (if isearchp-regexp-quote-yank-flag
       (message "Escaping regexp special chars for yank is now ON")
     (message "Escaping regexp special chars for yank is now OFF"))
@@ -676,7 +688,7 @@ This is used only for Transient Mark mode."
 (defun isearchp-toggle-set-region ()    ; Bound to `C-SPC'
   "Toggle `isearchp-set-region-flag'."
   (interactive)
-  (setq isearchp-set-region-flag (not isearchp-set-region-flag))
+  (setq isearchp-set-region-flag  (not isearchp-set-region-flag))
   (if isearchp-set-region-flag
       (message "Setting region around search target is now ON")
     (message "Setting region around search target is now OFF"))
@@ -963,6 +975,16 @@ If first char entered is \\[isearch-yank-word-or-char], then do word search inst
            (forward-char 1)))
        (point)))))
 
+(defun isearchp-retrieve-last-quit-search () ; Bound to `M-g'.
+  "Insert last successful search string from when you hit `C-g' in Isearch.
+Bound to `\\<isearch-mode-map>\\[isearchp-retrieve-last-quit-search]' during Isearch."
+  (interactive)
+  (cond ((and isearch-regexp  isearchp-last-quit-regexp-search)
+         (let ((isearchp-regexp-quote-yank-flag  nil))
+           (isearch-yank-string isearchp-last-quit-regexp-search)))
+        (isearchp-last-quit-search
+         (isearch-yank-string isearchp-last-quit-search))))
+
 (when (> emacs-major-version 20)
   (defun isearchp-fontify-buffer-now ()
     "Fontify buffer completely, right now.
@@ -991,6 +1013,38 @@ not necessarily fontify the whole buffer."
 
 ;; REPLACE ORIGINAL in `isearch.el'.
 ;;
+;; Save last successful search string or regexp as `isearchp-last-quit-search' or
+;; `isearchp-last-quit-regexp-search', for retrieval via `isearchp-retrieve-last-quit-search'.
+;;
+(defun isearch-abort ()
+  "Abort incremental search mode if searching is successful, signaling quit.
+Otherwise, revert to previous successful search and continue searching.
+Use `isearch-exit' to quit without signaling."
+  (interactive)
+  ;; (ding)  signal instead below, if quitting
+  (discard-input)
+  (if (and isearch-success
+           (or (not (boundp 'isearch-error))  (not isearch-error))) ; Emacs 24+
+      ;; If search is successful and has no incomplete regexp, move back to starting point and quit.
+      (progn (setq isearch-success  nil)
+             (set (if isearch-regexp 'isearchp-last-quit-regexp-search 'isearchp-last-quit-search)
+                  isearch-string)
+             ;; Exit isearch and pass on quit signal.
+             (if (fboundp 'isearch-cancel) ; Emacs 22+
+                 (isearch-cancel)
+               (goto-char isearch-opoint) ; Emacs 20-21
+               (isearch-done t)
+               (isearch-clean-overlays)
+               (signal 'quit nil)))
+    ;; If search is failing, or has an incomplete regexp, rub out until it is once more successful.
+    (while (or (not isearch-success)
+               (if (boundp 'isearch-error) isearch-error isearch-invalid-regexp))
+      (isearch-pop-state))
+    (isearch-update)))
+
+
+;; REPLACE ORIGINAL in `isearch.el'.
+;;
 ;; Respect `isearchp-regexp-quote-yank-flag'.
 ;;
 (defun isearch-yank-string (string)
@@ -998,7 +1052,7 @@ not necessarily fontify the whole buffer."
   ;; Downcase the string if not supposed to case-fold yanked strings.
   (if (and isearch-case-fold-search  (eq 'not-yanks search-upper-case))
       (setq string  (downcase string)))
-  (when (and isearch-regexp isearchp-regexp-quote-yank-flag)  (setq string  (regexp-quote string)))
+  (when (and isearch-regexp  isearchp-regexp-quote-yank-flag) (setq string  (regexp-quote string)))
   (setq isearch-yank-flag  t)           ; Don't move cursor in reverse search.
   (if (fboundp 'isearch-process-search-string) ; Emacs 24
       (isearch-process-search-string string (mapconcat 'isearch-text-char-description string ""))
