@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 21.0
-;; Last-Updated: Sun Sep 30 09:21:31 2012 (-0700)
+;; Last-Updated: Sun Sep 30 09:34:29 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1303
+;;     Update #: 1311
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/emacs/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -56,6 +56,7 @@
 ;;    `isearchp-char-prop-forward-regexp',
 ;;    `isearchp-fontify-buffer-now', `isearchp-init-edit',
 ;;    `isearchp-put-prop-on-region',
+;;    `isearchp-retrieve-last-quit-search',
 ;;    `isearchp-set-region-around-search-target',
 ;;    `isearchp-sexp-symbol-or-char', `isearchp-toggle-invisible',
 ;;    `isearchp-toggle-regexp-quote-yank',
@@ -89,7 +90,8 @@
 ;;
 ;;    `isearchp-char-prop-prop', `isearchp-char-prop-type',
 ;;    `isearchp-char-prop-values', `isearchp-filter-predicate-orig',
-;;    `isearchp-last-non-nil-invisible'.
+;;    `isearchp-last-non-nil-invisible',
+;;    `isearchp-last-quit-regexp-search', `isearchp-last-quit-search'.
 ;;
 ;;
 ;;  ***** NOTE: The following functions defined in `isearch.el' have
@@ -191,6 +193,14 @@
 ;;    quoting (escaping) of regexp special characters.  With escaping
 ;;    turned off, you can yank text such as `^\*.*' without it being
 ;;    transformed to `\^\\\*\.\*'.
+;;
+;;  * `M-g' yanks the last successful search string (regexp or plain)
+;;    from when you last hit `C-g' in Isearch.  Sometimes you search
+;;    for something but abandon the search - you just want to check
+;;    the locations of something, without staying at any of them.
+;;    Afterward, if you want to find them again, use `M-g'.  This
+;;    yanks that search string, so you can append it to whatever you
+;;    are already searching for.
 ;;
 ;;  * `C-M-y' yanks the secondary selection into the search string, if
 ;;    you also use library `second-sel.el'.
