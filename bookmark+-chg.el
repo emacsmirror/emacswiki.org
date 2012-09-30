@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Sep 29 16:26:31 2012 (-0700)
+;; Last-Updated: Sat Sep 29 17:00:14 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 15101
+;;     Update #: 15102
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -147,6 +147,7 @@
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
 ;; 2012/09/29 dadams
+;;     Added redefinition of bookmark-version-control.
 ;;     bookmark--jump-via:
 ;;       When bmkp-use-w32-browser-p, just handle, do after-jump hook & jump-fn, and show annotation.
 ;;     bookmark-handle-bookmark:
