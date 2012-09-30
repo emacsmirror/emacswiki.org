@@ -2,7 +2,8 @@
 
 There are several GrepMode-like interfaces for Ack:
 
-* [http://www.shellarchive.co.uk/content/emacs.html ack.el]
+* [http://www.shellarchive.co.uk/content/emacs.html ack.el(link dead)]
+* [https://github.com/leoliu/ack-el ack.el and pcmpl-ack.el]
 * [http://rooijan.za.net/code/emacs-lisp/ack-el Another ack.el]
 * FullAck
 * [https://github.com/jhelwig/ack-and-a-half ack-and-a-half]
