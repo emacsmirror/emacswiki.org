@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sat Sep 29 16:16:52 2012 (-0700)
+;; Last-Updated: Sat Sep 29 17:01:03 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5861
+;;     Update #: 5881
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -526,7 +526,8 @@
 ;;
 ;;    `bookmark-alist' (doc string only),
 ;;    `bookmark-make-record-function' (Emacs 20-22),
-;;    `bookmarks-already-loaded' (doc string only).
+;;    `bookmarks-already-loaded' (doc string only),
+;;    `bookmark-version-control'.
 ;;
 ;;
 ;;  ***** NOTE: The following functions defined in `info.el'
@@ -581,7 +582,7 @@
 ;; bookmark-maybe-upgrade-file-format, bookmark-menu-popup-paned-menu, bookmark-name-from-full-record,
 ;; bookmark-name-from-record, bookmark-popup-menu-and-apply-function, bookmark-prop-get, bookmark-save-flag,
 ;; bookmark-search-size, bookmark-set-annotation, bookmark-set-filename, bookmark-set-position,
-;; bookmark-time-to-save-p, bookmark-use-annotations, bookmark-version-control, bookmark-yank-point
+;; bookmark-time-to-save-p, bookmark-use-annotations, bookmark-yank-point
 
 
 ;; Some general Renamings.
@@ -1615,6 +1616,34 @@ See `bookmark-jump-other-window'."
  
 ;;(@* "Core Replacements (`bookmark-*' except `bookmark-bmenu-*')")
 ;;; Core Replacements (`bookmark-*' except `bookmark-bmenu-*') -------
+
+
+
+;; REPLACES ORIGINAL in `bookmark.el'.
+;;
+;; Changed default value to t.
+;; Added `:tag' strings for clarity.
+;; Doc string says that it applies to all Bookmark+ files, and recommends that you back up your files.
+;;
+(defcustom bookmark-version-control t
+  "Whether to make numbered backups of your bookmarking files.
+This includes bookmark files such as `bookmark-default-file' and also
+Bookmark+ files `bmkp-bmenu-commands-file' and
+`bmkp-bmenu-state-file'.
+
+The option can have value `nospecial', `t', `nil', or `never' .  Value
+`nospecial' means to use the `version-control' value.  The others have
+the same meanings as for option `version-control'.
+
+Use value `t' if your bookmarks are important to you.  Consider also
+using numeric backups.  See also nodes `Backup Names' and `Backup
+Deletion' in the Emacs manual."
+  :type '(choice :tag "When to make numbered backups"
+          (const :tag "Use value of option `version-control'" nospecial)
+          (const :tag "Never"                                 never)
+          (const :tag "If existing already"                   nil)
+          (other :tag "Always"                                t))
+  :group 'bookmark)
 
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
