@@ -1,4 +1,7 @@
-http://github.com/ruediger/emacs-codepad
+* http://github.com/ruediger/emacs-codepad --- paste to codepad.org from Emacs. (now defunct)
+* https://github.com/ruediger/osm-mode --- [http://www.openstreetmap.org/ OpenStreetMap] and Geonames support in Emacs (work in progress)
+* https://github.com/ruediger/weather-metno-el --- Weather data from met.no in Emacs (work in progress) See also EmacsWeather
+* https://github.com/ruediger/gcc-etags --- Generate EmacsTags (etags) with a GCC plugin (work in progress)
 
 [new]
 Welcome! -- JonasBernoulli
