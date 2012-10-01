@@ -25,12 +25,16 @@
 ;; it had issues I wanted to correct, but unfortunately there were no
 ;; licence indication, and Vivek didn't answered my mails.
 ;;
-;;; Rick Bielawski Comments:
+;;; Rick Bielawski Comments 2012/09/28:
 ;; On March 31, 2012 Frédéric gave me permission to take over support.
 ;; I've added support for multi-line comments and here-strings as well
 ;; as enhancement/features such as:
 ;; Functions to quote, unquote and escape a selection, and one to wrap
 ;; a selection in $().  Meanwhile I hope I didn't break anything.
+;;
+;;; Updates
+;; 2012/10/01 Fixed several bugs in highlighting variables and types.
+;;            Renamed some variables to be more descriptive.
 
 ;; Variables you may want to customize.
 (defgroup powershell nil
