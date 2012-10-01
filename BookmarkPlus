@@ -4378,6 +4378,15 @@ Anyway, I'm glad to see people using and building upon '''Bookmark+'''.
 
 [new:JoeBloggs:2012-10-01 22:25 UTC]
 On the case...
+Btw, if you're interested in trying it out while I fix those bugs, here's a howto:
+
+# Use a wide frame to open the `##*One-Key*##' buffer
+# Press <C-f9> to add a new menu
+# Select "bookmarks+" from the list
+# You should see a menu of your bookmark tags aswell as a few other items. Selecting an item adds it to the logical expression. Press SPC/RET to open/close brackets (or just use the bracket keys), or ! to negate an item. The logical connective alternates between | (OR) and & (AND) according to the depth of bracketing.
+# Once you've finished your logical expression press RET and you will be prompted to save the filter.
+# After that you should see a menu of all the filtered bookmarks.
+
 -- JoeBloggs
 
 ----
