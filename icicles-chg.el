@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Sep 28 14:57:38 2012 (-0700)
+;; Last-Updated: Mon Oct  1 13:06:48 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8966
+;;     Update #: 8971
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1448,6 +1448,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2012/10/01 dadams
+;;     icicle-file-name-(non)directory, icicle-input-from-minibuffer:
+;;       Rewrote to be more robust: do not hard-code ^G as the REPL-CHAR.  Use a char not in string.
 ;; 2012/09/25 dadams
 ;;     icicle-input-from-minibuffer, icicle-minibuf-input-sans-dir,
 ;;       icicle-highlight-input-noncompletion:
