@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Fri Sep 28 20:37:26 2012 (-0700)
+;; Last-Updated: Mon Oct  1 16:51:13 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 6096
+;;     Update #: 6142
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Doc URL: http://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -1029,6 +1029,25 @@ Return value is the number of files marked, or nil if none were marked."
     (and (> count 0)  count)))
 
 
+;; Just a helper function for `dired-map-over-marks'.
+(defun diredp-get-file-or-dir-name (arg)
+  "Return name of next file or directory or nil if none.
+Argument ARG:
+ `all-files-no-dirs' or nil means skip directories.
+ `all-files-no-dots' means skip `.' and `..'."
+  (let ((fname  nil))
+    (while (and (not fname)  (not (eobp)))
+      (setq fname  (dired-get-filename t t))
+      (when (and fname  (or (not arg) (eq arg 'all-files-no-dirs))  (file-directory-p fname))
+        (setq fname  nil))
+      (when (and fname  (eq arg 'all-files-no-dots)
+                 (or (member fname '("." "..")) (string-match "/\.\.?$" fname)))
+        (setq fname  nil))
+      (forward-line 1))
+    (forward-line -1)
+    fname))
+
+
 ;; REPLACE ORIGINAL in `dired.el'.
 ;;
 ;; Treat multiple `C-u' specially.
@@ -1110,24 +1129,6 @@ If DISTINGUISH-ONE-MARKED is non-nil, then return (t FILENAME) instead
           (if found results (list ,body)))))
     ;; `save-excursion' loses, again
     (dired-move-to-filename)))
-
-;; Just a helper function for `dired-map-over-marks'.
-(defun diredp-get-file-or-dir-name (arg)
-  "Return name of next file or directory or nil if none.
-Argument ARG:
- `all-files-no-dirs' or nil means skip directories.
- `all-files-no-dots' means skip `.' and `..'."
-  (let ((fname  nil))
-    (while (and (not fname)  (not (eobp)))
-      (setq fname  (dired-get-filename t t))
-      (when (and fname  (or (not arg) (eq arg 'all-files-no-dirs))  (file-directory-p fname))
-        (setq fname  nil))
-      (when (and fname  (eq arg 'all-files-no-dots)
-                 (or (member fname '("." "..")) (string-match "/\.\.?$" fname)))
-        (setq fname  nil))
-      (forward-line 1))
-    (forward-line -1)
-    fname))
 
  
 ;;; UNALTERED vanilla Emacs code to be reloaded, to use the new definition
@@ -1260,6 +1261,7 @@ a prefix arg lets you edit the `ls' switches used for the new listing."
                             arg)
       (dired-move-to-filename)
       (message "Redisplaying...done"))))
+
 
 ;; REPLACE ORIGINAL in `dired.el'.
 ;;
@@ -5769,7 +5771,8 @@ Optional arg LOCALP with value `no-dir' means don't include directory
 name in result.  A value of `verbatim' means to return the name exactly as
 it occurs in the buffer, and a value of t means construct name relative to
 `default-directory', which still may contain slashes if in a subdirectory.
-Optional arg NO-ERROR-IF-NOT-FILEP means treat `.' and `..' as
+
+Non-nil optional arg NO-ERROR-IF-NOT-FILEP means treat `.' and `..' as
 regular filenames and return nil if no filename on this line.
 Otherwise, an error occurs in these cases."
   (let (case-fold-search file p1 p2 already-absolute)
@@ -5834,7 +5837,8 @@ Otherwise, an error occurs in these cases."
     (cond ((null file) nil)
           ((eq localp 'verbatim) file)
           ;; This is the essential Dired+ change: Added ./ and ../, not just . and ..
-          ((and (not no-error-if-not-filep)  (member file '("." ".." "./" "../")))
+          ((and (not no-error-if-not-filep)
+                (member file '("." ".." "./" "../")))
            (error "Cannot operate on `.' or `..'"))
           ((and (eq localp 'no-dir)  already-absolute)
            (file-name-nondirectory file))
