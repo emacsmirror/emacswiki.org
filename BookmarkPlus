@@ -4393,6 +4393,15 @@ Btw, if you're interested in trying it out while I fix those bugs, here's a howt
 [new:DrewAdams:2012-10-01 22:11 UTC]
 OK, thanks. I'm busy now, but I'll play with it a bit later. -- DrewAdams
 
+[new:JoeBloggs:2012-10-02 00:30 UTC]
+Btw, I found a bug in the bmkp-thing-at-point function in bookmark+-1.el
+I get an error about syntax-table being nil. If you use the common lisp extensions in cl.el I think you could fix it by changing the function signature to:
+
+  (defun* bmkp-thing-at-point (thing &optional (syntax-table (syntax-table)))
+  
+-- JoeBloggs
+
+
 ----
 CategoryBookmarking CategoryHypermedia CategoryPersistence 
 CategoryProgramming CategoryRegion CategoryWThirtyTwo
