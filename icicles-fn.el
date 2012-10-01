@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Sep 25 10:43:14 2012 (-0700)
+;; Last-Updated: Mon Oct  1 11:26:52 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 13369
+;;     Update #: 13376
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -4637,11 +4637,30 @@ what it returns."
   "`icicle-file-name-directory', or `default-directory' if that is nil."
   (or (icicle-file-name-directory file) default-directory))
 
-(defun icicle-file-name-nondirectory (file)
+(defun icicle-file-name-nondirectory (filename)
   "Like `file-name-nondirectory', but does not treat backslash specially.
 That is, backslash is never treated as a directory separator."
-  (let ((escaped-file  (subst-char-in-string ?\\ ?\a file)))
-    (subst-char-in-string ?\a ?\\ (file-name-nondirectory escaped-file))))
+  (let ((max-char-in-name  0)
+        (repl-char       0))            ; NULL char: ?\^@
+    (when (eq ?\$ (aref filename (1- (length filename))))
+      (setq last-char  "$"
+            filename      (substring filename 0 (1- (length filename)))))
+    ;; Set REPL-CHAR to 1+ the highest char code used in FILENAME, or NULL if that is not possible.
+    (dolist (char  (string-to-list filename))
+      (when (> char max-char-in-name) (setq max-char-in-name  char)))
+    ;; Make sure we do not go past the max allowable char for Emacs.  If so, just use NULL char.
+    ;; Emacs 20-22 has no `max-char' function, so just try adding 1 and see if result is valid.
+    (when (or (and (fboundp 'max-char)  ; Emacs 23+
+                   (< (1+ max-char-in-name) (max-char)))
+              (char-valid-p (1+ max-char-in-name))) ; Emacs 20-22.
+      (setq repl-char  (1+ max-char-in-name)))
+    (setq filename
+          (subst-char-in-string repl-char ?\\ ; Replace REPL-CHAR by \
+                                (file-name-nondirectory
+                                 (subst-char-in-string ?\\ repl-char ; Replace \ by REPL-CHAR
+                                                       filename 'IN-PLACE))
+                                'IN-PLACE)))
+  filename)
 
 ;; $$$$$
 ;; (defun icicle-file-name-input-p ()
@@ -4692,19 +4711,32 @@ The current buffer must be a minibuffer."
     (when (and (or (icicle-file-name-input-p)  icicle-abs-file-candidates)
                (not (string= "" input)) ; Do nothing if user deleted everything in minibuffer.
                (not leave-envvars-p))
-      (let ((last-char  ""))
+      (let ((last-char       "")
+            (max-input-char  0)
+            (repl-char       0))        ; NULL char: ?\^@
         (when (eq ?\$ (aref input (1- (length input))))
           (setq last-char  "$"
                 input      (substring input 0 (1- (length input)))))
+        ;; Set REPL-CHAR to 1+ the highest char code used in INPUT, or NULL if that is not possible.
+        (dolist (char  (string-to-list input))
+          (when (> char max-input-char) (setq max-input-char  char)))
+        ;; Make sure we do not go past the max allowable char for Emacs.  If so, just use NULL char.
+        ;; Emacs 20-22 has no `max-char' function, so just try adding 1 and see if result is valid.
+        (when (or (and (fboundp 'max-char) ; Emacs 23+
+                       (< (1+ max-input-char) (max-char)))
+                  (char-valid-p (1+ max-input-char))) ; Emacs 20-22.
+          (setq repl-char  (1+ max-input-char)))
         (setq input
-              (save-match-data
-                (concat (subst-char-in-string ?\a ?\\
-                                              (condition-case nil
-                                                  (substitute-in-file-name
-                                                   (icicle-subst-envvar-in-file-name
-                                                    (subst-char-in-string ?\\ ?\a input 'in-place)))
-                                                (error input))
-                                              'in-place)
+              (save-match-data          ; Need `save-match-data' around `icicle-subst-envvar-in-file-name'.
+                (concat (subst-char-in-string
+                         repl-char ?\\  ; Replace REPL-CHAR by \
+                         (condition-case nil
+                             (substitute-in-file-name
+                              (icicle-subst-envvar-in-file-name
+                               (subst-char-in-string ?\\ repl-char ; Replace \ by REPL-CHAR
+                                                     input 'IN-PLACE)))
+                           (error input))
+                         'IN-PLACE)
                         last-char)))))
     input))
 
