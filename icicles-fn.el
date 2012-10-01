@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Oct  1 11:26:52 2012 (-0700)
+;; Last-Updated: Mon Oct  1 13:07:28 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 13376
+;;     Update #: 13388
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -4624,27 +4624,13 @@ The parts to join are specified by `icicle-list-use-nth-parts'."
         ;;                       icicle-list-end-string) ; $$$$$$
         (mapconcat #'identity parts icicle-list-join-string)))))
 
-(defun icicle-file-name-directory (file)
+(defun icicle-file-name-directory (filename)
   "Like `file-name-directory', but backslash is not a directory separator.
 Do not treat backslash as a directory separator, even on MS Windows.
 Escape any backslashes, then call `file-name-directory' and return
 what it returns."
-  (let* ((escaped-file  (subst-char-in-string ?\\ ?\a file))
-         (dir           (file-name-directory escaped-file)))
-    (and dir (subst-char-in-string ?\a ?\\ dir))))
-
-(defun icicle-file-name-directory-w-default (file)
-  "`icicle-file-name-directory', or `default-directory' if that is nil."
-  (or (icicle-file-name-directory file) default-directory))
-
-(defun icicle-file-name-nondirectory (filename)
-  "Like `file-name-nondirectory', but does not treat backslash specially.
-That is, backslash is never treated as a directory separator."
   (let ((max-char-in-name  0)
-        (repl-char       0))            ; NULL char: ?\^@
-    (when (eq ?\$ (aref filename (1- (length filename))))
-      (setq last-char  "$"
-            filename      (substring filename 0 (1- (length filename)))))
+        (repl-char         0))          ; NULL char: ?\^@
     ;; Set REPL-CHAR to 1+ the highest char code used in FILENAME, or NULL if that is not possible.
     (dolist (char  (string-to-list filename))
       (when (> char max-char-in-name) (setq max-char-in-name  char)))
@@ -4654,12 +4640,36 @@ That is, backslash is never treated as a directory separator."
                    (< (1+ max-char-in-name) (max-char)))
               (char-valid-p (1+ max-char-in-name))) ; Emacs 20-22.
       (setq repl-char  (1+ max-char-in-name)))
-    (setq filename
-          (subst-char-in-string repl-char ?\\ ; Replace REPL-CHAR by \
-                                (file-name-nondirectory
-                                 (subst-char-in-string ?\\ repl-char ; Replace \ by REPL-CHAR
-                                                       filename 'IN-PLACE))
-                                'IN-PLACE)))
+    (let* ((escaped-file  (subst-char-in-string ?\\ repl-char ; Replace \ by REPL-CHAR
+                                                filename 'IN-PLACE))
+           (dir           (file-name-directory escaped-file)))
+      (setq filename  (and dir  (subst-char-in-string repl-char ?\\ ; Replace REPL-CHAR by \
+                                                      dir 'IN-PLACE)))))
+  filename)
+
+(defun icicle-file-name-directory-w-default (file)
+  "`icicle-file-name-directory', or `default-directory' if that is nil."
+  (or (icicle-file-name-directory file) default-directory))
+
+(defun icicle-file-name-nondirectory (filename)
+  "Like `file-name-nondirectory', but does not treat backslash specially.
+That is, backslash is never treated as a directory separator."
+  (let ((max-char-in-name  0)
+        (repl-char         0))          ; NULL char: ?\^@
+    ;; Set REPL-CHAR to 1+ the highest char code used in FILENAME, or NULL if that is not possible.
+    (dolist (char  (string-to-list filename))
+      (when (> char max-char-in-name) (setq max-char-in-name  char)))
+    ;; Make sure we do not go past the max allowable char for Emacs.  If so, just use NULL char.
+    ;; Emacs 20-22 has no `max-char' function, so just try adding 1 and see if result is valid.
+    (when (or (and (fboundp 'max-char)  ; Emacs 23+
+                   (< (1+ max-char-in-name) (max-char)))
+              (char-valid-p (1+ max-char-in-name))) ; Emacs 20-22.
+      (setq repl-char  (1+ max-char-in-name)))
+    (setq filename  (subst-char-in-string repl-char ?\\ ; Replace REPL-CHAR by \
+                                          (file-name-nondirectory
+                                           (subst-char-in-string ?\\ repl-char ; Replace \ by REPL-CHAR
+                                                                 filename 'IN-PLACE))
+                                          'IN-PLACE)))
   filename)
 
 ;; $$$$$
