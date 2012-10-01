@@ -4361,7 +4361,9 @@ Tried again, this time with Emacs 24.2.  This time, when I hit the key to pop up
     one-key-open-associated-menu-set()
     call-interactively(one-key-open-associated-menu-set nil nil)
 
-So it looks like you might have a minor problem with a negative value for `dif'.  (Feel free to delete this long backtrace if you respond here.)
+So it looks like you might have a minor problem with a negative value for `dif'.  The error seems to arise whenever the frame for buffer `##*One Key*##' would be wider than the frame from which I invoked it.  (For me, `##*One Key*##' is a special-display buffer, so it is shown in a separate, special-display frame.)
+
+(Feel free to delete this long backtrace if you respond here.)
 
 Anyway, I'm glad to see people using and building upon '''Bookmark+'''.
 
