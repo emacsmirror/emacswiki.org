@@ -27,9 +27,9 @@
 ;;
 ;;; Rick Bielawski Comments:
 ;; On March 31, 2012 Frédéric gave me permission to take over support.
-;; I've added support multi-line comments and here-strings as well
-;; as many other enhancement/features such as:
-;; Functions to quote, unquote and escape a selection and one to wrap
+;; I've added support for multi-line comments and here-strings as well
+;; as enhancement/features such as:
+;; Functions to quote, unquote and escape a selection, and one to wrap
 ;; a selection in $().  Meanwhile I hope I didn't break anything.
 
 ;; Variables you may want to customize.
@@ -256,44 +256,47 @@ in place if it is inside the meat of the line"
   "Powershell operators")
 
 (defvar powershell-scope-names
-  (regexp-opt
-  '("env" "function" "global" "local" "private" "script" "variable") t)
+  '("global" "local" "private" "script")
   "Names of scopes in Powershell mode.")
 
-(defconst powershell-variables
+(defvar powershell-variable-drive-names
+  (append '("env" "function" "variable" "alias" ) powershell-scope-names)
+  "Names of scopes in Powershell mode.")
+
+(defconst powershell-variables-regexp
   ;; There are 2 syntaxes detected: ${[scope:]name} and $[scope:]name
   ;; Match 0 is the entire variable name.
   ;; Match 1 is scope when the former syntax is found.
   ;; Match 2 is scope when the latter syntax is found.
   (concat
-   "\\_<$\\(?:{\\(?:" powershell-scope-names ":\\)?[^}]+}\\|"
-   "\\(?:" powershell-scope-names ":\\)?[a-zA-Z0-9_]+\\_>\\)")
+   "\\_<$\\(?:{\\(?:" (regexp-opt powershell-variable-drive-names t) ":\\)?[^}]+}\\|"
+   "\\(?:" (regexp-opt powershell-variable-drive-names t) ":\\)?[a-zA-Z0-9_]+\\_>\\)")
   "Identifies legal powershell variable names")
 
-(defconst powershell-function-names
+(defconst powershell-function-names-regex
   ;; Syntax detected is [scope:]verb-noun
   ;; Match 0 is the entire name.
   ;; Match 1 is the scope if any.
   ;; Match 2 is the function name (which must exist)
   (concat
-   "\\_<\\(?:\\(global\\|local\\|script\\|private\\):\\)?"
+   "\\_<\\(?:" (regexp-opt powershell-scope-names t) ":\\)?"
    "\\([a-zA-Z][a-zA-Z0-9]*-[a-zA-Z0-9]+\\)\\_>")
   "Identifies legal function names")
 
-(defconst powershell-object-types
+(defconst powershell-object-types-regexp
   ;; Syntax is \[name[.name]\] (where the escaped []s are literal)
   ;; Only Match 0 is returned.
-  "\\_<\\[\\(?:[a-zA-Z_][a-zA-Z0-9]*\\)\\(?:\\.[a-zA-Z_][a-zA-Z0-9]*\\)*]\\>"
+  "\\[\\(?:[a-zA-Z_][a-zA-Z0-9]*\\)\\(?:\\.[a-zA-Z_][a-zA-Z0-9]*\\)*\\]"
   "Identifies object type references.  I.E. [object.data.type] syntax")
 
-(defconst powershell-function-switch-names
+(defconst powershell-function-switch-names-regexp
   ;; Only Match 0 is returned.
   "\\_<-[a-zA-Z][a-zA-Z0-9]*\\_>"
   "Identifies function parameter names of the form -xxxx")
 
 ;; Taken from Get-Variable on a fresh shell, merged with man
 ;; about_automatic_variables
-(defvar powershell-builtin-variables
+(defvar powershell-builtin-variables-regexp
   (regexp-opt
    '("$" "?"  "^" "_" "args" "ConsoleFileName" "Error" "Event"
     "EventSubscriber" "ExecutionContext" "false" "Foreach" "HOME" "Host"
@@ -305,7 +308,8 @@ in place if it is inside the meat of the line"
     "SourceArgs" "SourceEventArgs" "StackTrace" "this" "true") t)
   "Names of the built-in Powershell variables. They are hilighted
 differently from the other variables.")
-(defvar powershell-config-variables
+
+(defvar powershell-config-variables-regexp
   (regexp-opt
    '("ConfirmPreference" "DebugPreference" "ErrorActionPreference"
     "ErrorView" "FormatEnumerationLimit" "LogCommandHealthEvent"
@@ -385,7 +389,7 @@ characters that can't be set by the syntax-table alone.")
  
 (defvar powershell-font-lock-keywords-1
   `(;; Type annotations
-    (,powershell-object-types . font-lock-type-face)
+    (,powershell-object-types-regexp . font-lock-type-face)
     ;; syntaxic keywords
     (,powershell-keywords . font-lock-keyword-face)
     ;; operators
@@ -398,9 +402,9 @@ characters that can't be set by the syntax-table alone.")
   (append
    powershell-font-lock-keywords-1
    `(;; Built-in variables
-     (,(concat "\\$\\(" powershell-builtin-variables "\\)\\>")
+     (,(concat "\\$\\(" powershell-builtin-variables-regexp "\\)\\>")
       0 font-lock-builtin-face t)
-     (,(concat "\\$\\(" powershell-config-variables "\\)\\>")
+     (,(concat "\\$\\(" powershell-config-variables-regexp "\\)\\>")
       0 font-lock-builtin-face t)))
   "Keywords for the second level of font-locking in Powershell mode.")
 
@@ -408,17 +412,17 @@ characters that can't be set by the syntax-table alone.")
   (append
    powershell-font-lock-keywords-2
    `(;; user variables
-     (,powershell-variables
+     (,powershell-variables-regexp
       (0 font-lock-variable-name-face)
       (1 (cons font-lock-type-face '(underline)) t t)
       (2 (cons font-lock-type-face '(underline)) t t))
      ;; function argument names
-     (,powershell-function-switch-names
+     (,powershell-function-switch-names-regexp
       (0 font-lock-reference-face)
       (1 (cons font-lock-type-face '(underline)) t t)
       (2 (cons font-lock-type-face '(underline)) t t))
      ;; function names
-     (,powershell-function-names
+     (,powershell-function-names-regex
       (0 font-lock-function-name-face)
       (1 (cons font-lock-type-face '(underline)) t t))))
   "Keywords for the maximum level of font-locking in Powershell mode.")
@@ -486,9 +490,10 @@ characters that can't be set by the syntax-table alone.")
 
  
 (defvar powershell-imenu-expression
-  `(("Functions" "function \\(\\w+\\)" 1)
-    ("Top variables" ,(concat "^\\$\\(" powershell-scope-names "\\)?:?"
-			      "\\([[:alnum:]_]+\\)")
+  `(("Functions" ,(concat "function " powershell-function-names-regex) 2)
+    ("Top variables"
+     , (concat "^\\(" powershell-object-types-regexp "\\)?\\("
+              powershell-variables-regexp "\\)\\s-*=")
      2))
   "List of regexps matching important expressions, for speebar & imenu.")
 
