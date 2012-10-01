@@ -55,8 +55,7 @@
 ;; After defining a filter, or on loading a saved filter, the one-key menu will contain all bookmarks matching the
 ;; corresponding filter. Pressing a menu item key visits the associated bookmark.
 ;; Press <F1> to see the special keys associated with the menu which allow you to add/remove tags, and edit bookmarks,
-;; aswell as visit the *Bookmark List* buffer, and save the current state of all bookmarks (don't forget to do this after
-;; making alterations).
+;; aswell as visit the *Bookmark List* buffer.
 
 ;;; Installation:
 ;;
@@ -203,20 +202,23 @@ Should contain the car of one of the items in `one-key-bmkp-sort-method-alist'."
                                                  (tags (bmkp-read-tags-completing)))
                                              (dolist (bmk bookmarks)
                                                (bmkp-add-tags bmk tags))
-                                             ;; update tags list 
-                                             (bmkp-tags-list)) t))
+                                             ;; update tags list and save bookmarks
+                                             (bmkp-tags-list)
+                                             (bookmark-bmenu-save nil)) t))
                            (bmk-remove-tags swap-keys "Remove tags from displayed bookmarks"
                                             (lambda nil
                                               (let ((bookmarks (one-key-bmkp-extract-bookmarks-from-menus
                                                                 (list okm-filtered-list)))
                                                     (tags (bmkp-read-tags-completing)))
-                                                (dolist (bmk bookmarks)
-                                                  (bmkp-remove-tags bmk tags))
-                                                ;; update tags list 
-                                                (bmkp-tags-list)) t))
-                           (bmk-save-state save-menu "Save state of all bookmarks"
-                                           (lambda nil
-                                             (bookmark-bmenu-save nil) t)))
+                                                (unless (not (y-or-n-p
+                                                              (concat
+                                                               "The following tags will be removed from the displayed bookmarks: "
+                                                               (mapconcat 'identity tags ",") "\nAre you sure")))
+                                                  (dolist (bmk bookmarks)
+                                                    (bmkp-remove-tags bmk tags))
+                                                  ;; update tags list and save bookmarks
+                                                  (bmkp-tags-list)
+                                                  (bookmark-bmenu-save nil))) t)))
                          t))
 
 (defcustom one-key-bmkp-special-keybindings
