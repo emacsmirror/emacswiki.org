@@ -4361,9 +4361,16 @@ Tried again, this time with Emacs 24.2.  This time, when I hit the key to pop up
     one-key-open-associated-menu-set()
     call-interactively(one-key-open-associated-menu-set nil nil)
 
-So it looks like you might have a minor problem with a negative value for `dif'.  The error seems to arise whenever the frame for buffer `##*One Key*##' would be wider than the frame from which I invoked it.  (For me, `##*One Key*##' is a special-display buffer, so it is shown in a separate, special-display frame.)
-
 (Feel free to delete this long backtrace if you respond here.)
+
+
+So it looks like you might have a minor problem with a negative value for `dif'.  The error seems to arise whenever the frame for buffer `##*One Key*##' would be wider than the frame from which I invoked it.  (For me, `##*One Key*##' is a special-display buffer, so it is shown in a separate, special-display frame.)  All of that is just with <tt>[[one-key.el]]</tt>, without <tt>[[one-key-bmkp.el]]</tt>.
+
+Using a wider frame, to avoid the error, and after loading ##one-key-bmkp.el##, I can bring up the menu OK, but I see nothing there about bookmarks.  You might want to add a little more explanation to your instructions.
+
+Also, if I click mouse-1 in the `##*One Key*##' buffer, I get this error:
+
+  "Invalid key sequence: (down-mouse-1 (#<window 38 on *One-Key*> 422 (479 . 48) 24812906 nil 422 (59 . 4) nil (7 . 6) (8 . 14)))"
 
 Anyway, I'm glad to see people using and building upon '''Bookmark+'''.
 
