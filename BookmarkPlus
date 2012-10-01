@@ -4312,7 +4312,8 @@ If you can also send me the definition of the bookmark after applying the workar
 And please let me know your Emacs version, using `M-x emacs-version'.  Thx -- DrewAdams
 
 ----
-Hi Drew, I've made a bookmark+ plugin for [[OneKey]]. It makes navigating bookmarks a bit faster, and allows filtering using arbitrary boolean expressions. Here it is [[one-key-bmkp.el]] -- JoeBloggs
+Hi Drew, I've made a bookmark+ plugin for [[OneKey]]. It makes navigating bookmarks a bit faster, and allows filtering using arbitrary boolean expressions. Here it is: [[one-key-bmkp.el]]
+ -- JoeBloggs
 
 ----
 CategoryBookmarking CategoryHypermedia CategoryPersistence 
