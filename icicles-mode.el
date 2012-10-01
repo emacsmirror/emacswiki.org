@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Sep 15 09:48:59 2012 (-0700)
+;; Last-Updated: Mon Oct  1 16:54:24 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 9117
+;;     Update #: 9121
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -2330,11 +2330,15 @@ Used on `pre-command-hook'."
       '(menu-item "Open File of Content (Other Window)"
         icicle-visit-marked-file-of-content-other-window
         :help "Visit a marked file whose content matches a regexp, in another window"
-        :enable (dired-get-marked-files nil nil (lambda (file) (not (file-directory-p file))))))
+        :enable (condition-case nil     ; Avoid an Emacs 22 error with cursor on ./ or ../
+                    (dired-get-marked-files nil nil (lambda (file) (not (file-directory-p file))))
+                  (error nil))))
     (define-key icicle-dired-multiple-menu-map [icicle-visit-marked-file-of-content]
       '(menu-item "Open File of Content" icicle-visit-marked-file-of-content
         :help "Visit a marked file whose content matches a regexp"
-        :enable (dired-get-marked-files nil nil (lambda (file) (not (file-directory-p file))))))
+        :enable (condition-case nil     ; Avoid an Emacs 22 error with cursor on ./ or ../
+                    (dired-get-marked-files nil nil (lambda (file) (not (file-directory-p file))))
+                  (error nil))))
 
     (when (boundp 'diredp-menu-bar-recursive-marked-menu) ; Defined in `dired+.el'
       (define-key icicle-dired-recursive-marked-menu-map [icicle-search-dired-marked-recursive]
