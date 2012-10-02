@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Sep 24 16:03:00 2012 (-0700)
+;; Last-Updated: Tue Oct  2 11:21:14 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 18509
+;;     Update #: 18531
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -54,7 +54,7 @@
 ;;    `icicle-apropos-complete-and-narrow',
 ;;    `icicle-apropos-complete-and-widen',
 ;;    `icicle-apropos-complete-no-display',
-;;    `icicle-backward-char-dots',
+;;    `icicle-backward-char-magic',
 ;;    `icicle-backward-delete-char-untabify',
 ;;    `icicle-backward-kill-paragraph',
 ;;    `icicle-backward-kill-sentence', `icicle-backward-kill-sexp',
@@ -97,7 +97,7 @@
 ;;    `icicle-doremi-zoom-Completions+', `icicle-end-of-line+',
 ;;    `icicle-erase-minibuffer',
 ;;    `icicle-erase-minibuffer-or-history-element',
-;;    `icicle-exit-minibuffer', `icicle-forward-char-dots',
+;;    `icicle-exit-minibuffer', `icicle-forward-char-magic',
 ;;    `icicle-goto/kill-failed-input', `icicle-help-on-candidate',
 ;;    `icicle-help-on-next-apropos-candidate',
 ;;    `icicle-help-on-next-prefix-candidate',
@@ -253,7 +253,7 @@
 ;;    `icicle-anychar-regexp', `icicle-apply-to-saved-candidate',
 ;;    `icicle-apropos-complete-1', `icicle-apropos-complete-2',
 ;;    `icicle-autofile-action',
-;;    `icicle-backward-delete-char-untabify-dots',
+;;    `icicle-backward-delete-char-untabify-magic',
 ;;    `icicle-bind-buffer-candidate-keys',
 ;;    `icicle-bind-file-candidate-keys', `icicle-candidate-action-1',
 ;;    `icicle-candidate-set-retrieve-1',
@@ -263,15 +263,14 @@
 ;;    `icicle-Completions-popup-choice-1', `icicle-convert-dots',
 ;;    `icicle-current-completion-in-Completions',
 ;;    `icicle-current-sort-functions', `icicle-current-sort-order',
-;;    `icicle-delete-backward-char-dots',
-;;    `icicle-delete-candidate-object-1', `icicle-delete-char-dots',
+;;    `icicle-delete-backward-char-magic',
+;;    `icicle-delete-candidate-object-1', `icicle-delete-char-magic',
 ;;    `icicle-delete-current-candidate-object',
 ;;    `icicle-ensure-overriding-map-is-bound',
 ;;    `icicle-help-on-candidate-symbol',
 ;;    `icicle-input-is-a-completion-p', `icicle-insert-dot',
 ;;    `icicle-insert-input', `icicle-insert-thing',
-;;    `icicle-looking-at-anychar-regexp-p',
-;;    `icicle-looking-back-at-anychar-regexp-p',
+;;    `icicle-looking-at-p', `icicle-looking-back-at-p',
 ;;    `icicle-markers-to-readable',
 ;;    `icicle-maybe-multi-completion-completing-p',
 ;;    `icicle-mouse-candidate-action-1', `icicle-nb-Completions-cols',
@@ -286,7 +285,7 @@
 ;;    `icicle-row-wise-cand-nb', `icicle-signum',
 ;;    `icicle-substitute-keymap-vars', `icicle-successive-action',
 ;;    `icicle-transform-sole-candidate',
-;;    `icicle-transpose-chars-dots',
+;;    `icicle-transpose-chars-magic',
 ;;    `icicle-unbind-buffer-candidate-keys',
 ;;    `icicle-unbind-file-candidate-keys',
 ;;    `icicle-upcase-if-ignore-case', `icicle-update-and-next'.
@@ -862,37 +861,45 @@ POSITION is a buffer position."
 ;;; All except `icicle-erase-minibuffer' are bound in the minibuffer to whatever the same
 ;;; command without `icicle-' is bound to globally.
 
-(defun icicle-looking-back-at-anychar-regexp-p ()
-  "Return non-nil if `icicle-anychar-regexp' immediately precedes point."
-  (let ((len  (length icicle-anychar-regexp)))
-    (save-excursion (save-match-data
-                      (search-backward icicle-anychar-regexp
-                                       (max (- (point) len) (icicle-minibuffer-prompt-end)) t)))))
+(defun icicle-looking-at-p (string)
+  "Return non-nil if STRING immediately succeeds point."
+  (let ((len  (length string)))
+    (save-excursion (save-match-data (search-forward string (min (+ (point) len) (point-max)) t)))))
 
-(defun icicle-looking-at-anychar-regexp-p ()
-  "Return non-nil if `icicle-anychar-regexp' immediately succeeds point."
-  (let ((len  (length icicle-anychar-regexp)))
+(defun icicle-looking-back-at-p (string)
+  "Return non-nil if STRING immediately precedes point."
+  (let ((len  (length string)))
     (save-excursion (save-match-data
-                      (search-forward icicle-anychar-regexp (min (+ (point) len) (point-max)) t)))))
+                      (search-backward string (max (- (point) len) (icicle-minibuffer-prompt-end)) t)))))
 
-;;;###autoload (autoload 'icicle-forward-char-dots "icicles")
-(defun icicle-forward-char-dots (&optional n)
-  "Move forward N chars (backward if N is negative).  Handles dots (`.')."
+;; Used only in `icicle-transpose-chars-magic'.
+;;;###autoload (autoload 'icicle-forward-char-magic "icicles")
+(defun icicle-forward-char-magic (&optional n)
+  "Move forward N chars (backward if N is negative).
+Handles Icicles dots (`.') and `icicle-list-join-string'."
   (interactive "p")
-  (let ((len  (length icicle-anychar-regexp)))
+  (let ((len-dot   (length icicle-anychar-regexp))
+        (len-join  (length icicle-list-join-string)))
     (dotimes (i  (abs n))
       (or (save-match-data
             (if (wholenump n)
-                (search-forward icicle-anychar-regexp (min (+ (point) len) (point-max)) t)
+                (search-forward icicle-anychar-regexp (min (+ (point) len-dot) (point-max)) t)
               (search-backward icicle-anychar-regexp
-                               (max (- (point) len) (icicle-minibuffer-prompt-end)) t)))
+                               (max (- (point) len-dot) (icicle-minibuffer-prompt-end)) t)))
+          (save-match-data
+            (if (wholenump n)
+                (search-forward icicle-list-join-string (min (+ (point) len-join) (point-max)) t)
+              (search-backward icicle-list-join-string
+                               (max (- (point) len-join) (icicle-minibuffer-prompt-end)) t)))
           (forward-char (if (wholenump n) 1 -1))))))
 
-;;;###autoload (autoload 'icicle-backward-char-dots "icicles")
-(defun icicle-backward-char-dots (&optional n)
-  "Move backward N chars (forward if N is negative).  Handles dots (`.')."
+;; Not used.
+;;;###autoload (autoload 'icicle-backward-char-magic "icicles")
+(defun icicle-backward-char-magic (&optional n)
+  "Move backward N chars (forward if N is negative).
+Handles Icicles dots (`.') and `icicle-list-join-string'."
   (interactive "p")
-  (icicle-forward-char-dots (- n)))
+  (icicle-forward-char-magic (- n)))
 
 
 ;; Make delete-selection mode recognize it, so region is deleted.
@@ -901,17 +908,22 @@ POSITION is a buffer position."
 ;;;###autoload (autoload 'icicle-backward-delete-char-untabify "icicles")
 (defun icicle-backward-delete-char-untabify (n &optional killflag)
   "`backward-delete-char-untabify' + update `*Completions*' with matches.
-Handles Icicles dots (`.')."
+Handles Icicles dots (`.') and `icicle-list-join-string'."
   (interactive "*p\nP")
-  (icicle-call-then-update-Completions #'icicle-backward-delete-char-untabify-dots n killflag))
+  (icicle-call-then-update-Completions #'icicle-backward-delete-char-untabify-magic n killflag))
 
-(defun icicle-backward-delete-char-untabify-dots (n killflag)
-  "`backward-delete-char-untabify', but also handle dots (`.')."
-  (let ((len  (length icicle-anychar-regexp)))
+(defun icicle-backward-delete-char-untabify-magic (n killflag)
+  "`backward-delete-char-untabify', but also handle magic chars.
+That is, handle dots (`.') and `icicle-list-join-string'."
+  (let ((len-dot   (length icicle-anychar-regexp))
+        (len-join  (length icicle-list-join-string)))
     (dotimes (i  (abs n))
-      (if (icicle-looking-back-at-anychar-regexp-p)
-          (backward-delete-char-untabify len killflag)
-        (backward-delete-char-untabify 1 killflag)))))
+      (cond ((icicle-looking-back-at-p icicle-anychar-regexp)
+             (backward-delete-char-untabify len-dot  killflag))
+            ((icicle-looking-at-p icicle-list-join-string)
+             (backward-delete-char-untabify len-join killflag))
+            (t
+             (backward-delete-char-untabify 1        killflag))))))
 
 
 ;; Make delete-selection mode recognize it, so region is deleted.
@@ -920,17 +932,18 @@ Handles Icicles dots (`.')."
 ;;;###autoload (autoload 'icicle-delete-backward-char "icicles")
 (defun icicle-delete-backward-char (n &optional killflag) ; Bound to `DEL' in minibuffer.
   "`delete-backward-char' and update `*Completions*' with input matches.
-Handles Icicles dots (`.')."
+Handles Icicles dots (`.') and `icicle-list-join-string'."
   (interactive "*p\nP")
-  (icicle-call-then-update-Completions #'icicle-delete-backward-char-dots n killflag))
+  (icicle-call-then-update-Completions #'icicle-delete-backward-char-magic n killflag))
 
-(defun icicle-delete-backward-char-dots (n killflag)
-  "`delete-backward-char', but also handle dots (`.')."
-  (let ((len  (length icicle-anychar-regexp)))
+(defun icicle-delete-backward-char-magic (n killflag)
+  "`delete-backward-char', but also handle dots (`.') and join string."
+  (let ((len-dot   (length icicle-anychar-regexp))
+        (len-join  (length icicle-list-join-string)))
     (dotimes (i  (abs n))
-      (if (icicle-looking-back-at-anychar-regexp-p)
-          (delete-char (- len) killflag)
-        (delete-char -1 killflag)))))
+      (cond ((icicle-looking-back-at-p icicle-anychar-regexp)   (delete-char (- len-dot)  killflag))
+            ((icicle-looking-back-at-p icicle-list-join-string) (delete-char (- len-join) killflag))
+            (t                                                  (delete-char -1           killflag))))))
 
 
 ;; Make delete-selection mode recognize it, so region is deleted.
@@ -939,17 +952,18 @@ Handles Icicles dots (`.')."
 ;;;###autoload (autoload 'icicle-delete-char "icicles")
 (defun icicle-delete-char (n &optional killflag) ; Bound to `C-d' in minibuffer.
   "`delete-char' and update `*Completions*' with input matches.
-Handles Icicles dots (`.')."
+Handles Icicles dots (`.') and `icicle-list-join-string'."
   (interactive "*p\nP")
-  (icicle-call-then-update-Completions #'icicle-delete-char-dots n killflag))
+  (icicle-call-then-update-Completions #'icicle-delete-char-magic n killflag))
 
-(defun icicle-delete-char-dots (n killflag)
-  "`delete-char', but also handle dots (`.')."
-  (let ((len  (length icicle-anychar-regexp)))
+(defun icicle-delete-char-magic (n killflag)
+  "`delete-char', but also handle dot (`.') and `icicle-list-join-string'."
+  (let ((len-dot   (length icicle-anychar-regexp))
+        (len-join  (length icicle-list-join-string)))
     (dotimes (i  (abs n))
-      (if (icicle-looking-at-anychar-regexp-p)
-          (delete-char len killflag)
-        (delete-char 1 killflag)))))
+      (cond ((icicle-looking-at-p icicle-anychar-regexp)   (delete-char len-dot  killflag))
+            ((icicle-looking-at-p icicle-list-join-string) (delete-char len-join killflag))
+            (t                                             (delete-char 1        killflag))))))
 
 ;;;###autoload (autoload 'icicle-backward-kill-word "icicles")
 (defun icicle-backward-kill-word (arg)  ; Bound to `M-DEL' (`M-backspace') in minibuffer.
@@ -1100,14 +1114,14 @@ Repeat to delete more."
 ;;;###autoload (autoload 'icicle-transpose-chars "icicles")
 (defun icicle-transpose-chars (arg)     ; Bound to `C-t' in minibuffer.
   "`transpose-chars' and update `*Completions*' with regexp input matches.
-Handles Icicles dots (`.')."
+Handles Icicles dots (`.') and `icicle-list-join-string'."
   (interactive "*P")
-  (icicle-call-then-update-Completions #'icicle-transpose-chars-dots arg))
+  (icicle-call-then-update-Completions #'icicle-transpose-chars-magic arg))
 
-(defun icicle-transpose-chars-dots (arg)
-  "`transpose-chars', but also handle dots (`.')."
-  (and (null arg)  (eolp)  (icicle-forward-char-dots -1))
-  (transpose-subr 'icicle-forward-char-dots (prefix-numeric-value arg)))
+(defun icicle-transpose-chars-magic (arg)
+  "`transpose-chars', but handle dots (`.') and `icicle-list-join-string'."
+  (and (null arg)  (eolp)  (icicle-forward-char-magic -1))
+  (transpose-subr 'icicle-forward-char-magic (prefix-numeric-value arg)))
 
 ;;;###autoload (autoload 'icicle-transpose-words "icicles")
 (defun icicle-transpose-words (arg)     ; Bound to `M-t' in minibuffer.
