@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Mon Oct  1 13:06:48 2012 (-0700)
+;; Last-Updated: Mon Oct  1 16:55:28 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8971
+;;     Update #: 8973
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -4894,6 +4894,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2012/10/01 dadams
+;;     icicle-define-icicle-maps: Protect dired-get-marked-files with condition-case.
 ;; 2012/09/15 dadams
 ;;     icicle-define-icicle-maps, icicle-(bind|restore)-other-keymap-keys:
 ;;       Added icicle-visit-marked-file-of-content(-other-window).
