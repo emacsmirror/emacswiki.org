@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Sep 24 16:18:20 2012 (-0700)
+;; Last-Updated: Tue Oct  2 15:36:42 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 24630
+;;     Update #: 24635
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2512,7 +2512,7 @@ This is used as the value of `minibuffer-completion-table'."
                                    (if (memq mode '(inherit-or-regexp direct-or-regexp)) tps (read tps))))
                  (result      ()))
     (mapatoms
-     (lambda (symb)                   ; FREE here: RESULT.
+     (lambda (symb)                     ; FREE here: RESULT.
        (when (if (fboundp 'custom-variable-p) (custom-variable-p symb) (user-variable-p symb))
          (condition-case nil
              (push (list symb (get symb 'custom-type)) result)
@@ -2523,7 +2523,7 @@ This is used as the value of `minibuffer-completion-table'."
                                      ops
                                    (concat "^" ops))))
             (icicle-remove-if-not
-             (lambda (opt+typ)        ; FREE here: OPS-RE, MODE, TP.
+             (lambda (opt+typ)          ; FREE here: OPS-RE, MODE, TP.
                (and (string-match ops-re (symbol-name (car opt+typ)))
                     (or (null tp)
                         (condition-case nil
@@ -2544,7 +2544,7 @@ This is used as the value of `minibuffer-completion-table'."
                             ;;                           entry icicle-list-join-string)
                             ;;                icicle-list-end-string)) ; $$$$$$
                             (mapconcat (lambda (e) (pp-to-string e))  entry  icicle-list-join-string))
-                           (doc       ; Don't bother to look up doc, if user won't see it.
+                           (doc         ; Don't bother to look up doc, if user won't see it.
                             (and (or (> icicle-help-in-mode-line-delay 0)
                                      (and (boundp 'tooltip-mode)  tooltip-mode))
                                  (documentation-property (car entry) 'variable-documentation t)))
@@ -2554,7 +2554,7 @@ This is used as the value of `minibuffer-completion-table'."
                   result))
     (if completion-mode
         result                          ; `all-completions', `test-completion'
-      (try-completion strg (mapcar #'list result) pred)))) ; `try-completion'
+      (try-completion strg (mapcar #'list result) (lambda (ss) (funcall pred ss)))))) ; `try-completion'
 
 ;;;###autoload (autoload 'icicle-describe-var-w-val-satisfying "icicles")
 (defun icicle-describe-var-w-val-satisfying (predicate variable &optional optionp)
@@ -6015,7 +6015,7 @@ Used as the value of `icicle-buffer-complete-fn' and hence as
                                 bfnames)))
     (if completion-mode
         bfnames                         ; `all-completions', `test-completion'
-      (try-completion strg (mapcar #'list bfnames) pred))))
+      (try-completion strg (mapcar #'list bfnames) (lambda (ss) (funcall pred ss))))))
 
 (put 'icicle-buffer-no-search 'icicle-Completions-window-max-height 200)
 
