@@ -375,7 +375,7 @@ If NAME does not correspond to a saved bookmarks filter in `one-key-bmkp-filter-
 create a new filter. This function is used in the \"bookmarks\" item in `one-key-types-of-menu'."
   (setq one-key-menu-call-first-time t)
   (let* ((filtername (and name
-                          (string-match "^bmk:\\(.*\\)" name)
+                          (string-match "^bmkp:\\(.*\\)" name)
                           (match-string 1 name)))
          (one-key-menu-window-close t)
          (pair (one-key-bmkp-get-filter filtername))
@@ -416,7 +416,7 @@ If there are no existing filters, print a message saying so and return nil."
 ;; Add new menu types to `one-key-types-of-menu'
 (one-key-add-to-alist 'one-key-types-of-menu
                       (list "bookmarks+"
-                            (lambda (name) (or (and name (string-match "^bmk:\\(.*\\)" name))
+                            (lambda (name) (or (and name (string-match "^bmkp:\\(.*\\)" name))
                                                (equal name "bookmarks+")))
                             'one-key-bmkp-create-menu
                             nil
