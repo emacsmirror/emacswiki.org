@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Mon Sep 24 14:34:22 2012 (-0700)
+;; Last-Updated: Tue Oct  2 11:21:02 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 23202
+;;     Update #: 23209
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Doc URL: http://emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -446,7 +446,7 @@
 ;;    `icicle-bookmark-autofile-narrow',
 ;;    `icicle-bookmark-autonamed-narrow',
 ;;    `icicle-bookmark-autonamed-this-buffer-narrow',
-;;    `icicle-backward-char-dots',
+;;    `icicle-backward-char-magic',
 ;;    `icicle-backward-delete-char-untabify',
 ;;    `icicle-backward-kill-paragraph',
 ;;    `icicle-backward-kill-sentence', `icicle-backward-kill-sexp',
@@ -506,7 +506,7 @@
 ;;    `icicle-doremi-zoom-Completions+', `icicle-end-of-line+',
 ;;    `icicle-erase-minibuffer',
 ;;    `icicle-erase-minibuffer-or-history-element',
-;;    `icicle-exit-minibuffer', `icicle-forward-char-dots',
+;;    `icicle-exit-minibuffer', `icicle-forward-char-magic',
 ;;    `icicle-goto/kill-failed-input', `icicle-help-on-candidate',
 ;;    `icicle-help-on-next-apropos-candidate',
 ;;    `icicle-help-on-next-prefix-candidate',
@@ -852,7 +852,7 @@
 ;;    `icicle-apropos-candidates', `icicle-apropos-complete-1',
 ;;    `icicle-apropos-complete-2', `icicle-apropos-opt-action',
 ;;    `icicle-autofile-action',
-;;    `icicle-backward-delete-char-untabify-dots',
+;;    `icicle-backward-delete-char-untabify-magic',
 ;;    `icicle-barf-if-outside-Completions',
 ;;    `icicle-barf-if-outside-Completions-and-minibuffer',
 ;;    `icicle-barf-if-outside-minibuffer', `icicle-binary-option-p',
@@ -934,8 +934,8 @@
 ;;    `icicle-define-crm-completion-map', ,
 ;;    `icicle-define-cycling-keys', `icicle-defined-thing-p',
 ;;    `icicle-define-icicle-maps', `icicle-define-minibuffer-maps',
-;;    `icicle-delete-alist-dups', `icicle-delete-backward-char-dots',
-;;    `icicle-delete-candidate-object-1', `icicle-delete-char-dots',
+;;    `icicle-delete-alist-dups', `icicle-delete-backward-char-magic',
+;;    `icicle-delete-candidate-object-1', `icicle-delete-char-magic',
 ;;    `icicle-delete-count', `icicle-delete-current-candidate-object',
 ;;    `icicle-delete-dups', `icicle-delete-file-or-directory',
 ;;    `icicle-delete-whitespace-from-string',
@@ -1027,10 +1027,8 @@
 ;;    `icicle-local-keys-first-p', `icicle-locate-file-1',
 ;;    `icicle-locate-file-action',
 ;;    `icicle-locate-file-other-window-action',
-;;    `icicle-locate-file-use-locate-p',
-;;    `icicle-looking-at-anychar-regexp-p',
-;;    `icicle-looking-back-at-anychar-regexp-p',
-;;    `icicle-major-mode-name-less-p',
+;;    `icicle-locate-file-use-locate-p', `icicle-looking-at-p',
+;;    `icicle-looking-back-at-p', `icicle-major-mode-name-less-p',
 ;;    `icicle-make-bookmark-candidate', `icicle-make-color-candidate',
 ;;    `icicle-make-face-candidate', `icicle-make-frame-alist',
 ;;    `icicle-make-plain-predicate', `icicle-make-window-alist',
@@ -1166,7 +1164,7 @@
 ;;    `icicle-transform-candidates',
 ;;    `icicle-transform-multi-completion',
 ;;    `icicle-transform-sole-candidate',
-;;    `icicle-transpose-chars-dots', `icicle-try-switch-buffer',
+;;    `icicle-transpose-chars-magic', `icicle-try-switch-buffer',
 ;;    `icicle-ucs-names', `icicle-unbind-buffer-candidate-keys',
 ;;    `icicle-unbind-file-candidate-keys',
 ;;    `icicle-unbind-isearch-keys',
