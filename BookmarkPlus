@@ -4362,10 +4362,17 @@ I get an error about syntax-table being nil. If you use the common lisp extensio
   
 -- JoeBloggs
 
+[new:DrewAdams:2012-10-02 04:12 UTC]
+
+Should be OK now; thanks.  That's supposed to be the same as `icicle-thing-at-point', but it hadn't been updated.  Avoiding `require's among libraries can have its drawbacks. -- DrewAdams
+
 [new:JoeBloggs:2012-10-02 03:17 UTC]
 OK, I think I've fixed those bugs in [[OneKey]] now. Btw, in future to report a bug please use M-x one-key-submit-bug-report, or press <C-f11> in the `##*One-Key*##' buffer.
 
 -- JoeBloggs
+
+[new:DrewAdams:2012-10-02 04:12 UTC]
+Dunno when I'll get around to trying it out again, but I'll try to find some time.  Thx -- DrewAdams
 
 ----
 CategoryBookmarking CategoryHypermedia CategoryPersistence 
