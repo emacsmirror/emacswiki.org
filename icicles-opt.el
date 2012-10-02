@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Sep 24 14:35:02 2012 (-0700)
+;; Last-Updated: Tue Oct  2 10:27:11 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5330
+;;     Update #: 5331
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -2317,7 +2317,7 @@ value incrementally."
                                      ;; Emacs 20 ignores `display', so don't bother.
                                      ;; Emacs 21 has a big bug, which interprets `display' badly.
                                      (when (> emacs-major-version 21) ; Avoid Emacs 21 bug.
-                                       (set-text-properties 0 1 '(display "") strg))
+                                       (set-text-properties 0 (length strg) '(display "\n") strg))
                                      strg)
   "*String joining items in a completion that is a list of strings.
 When a completion candidate is a list of strings, this string is used
