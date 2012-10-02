@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue Oct  2 11:20:25 2012 (-0700)
+;; Last-Updated: Tue Oct  2 15:40:03 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8986
+;;     Update #: 8989
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -86,6 +86,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2012/10/02 dadams
+;;     icicle-describe-opt-of-type-complete, icicle-buffer-multi-complete:
+;;       In try-completion: change PRED to a predicate that works on a singleton list, not a string.
 ;; 2012/09/24 dadams
 ;;     icicle-recent-file(-other-window): Bind icicle-transform-before-sort-p to t,
 ;;                                             icicle-sort-comparer to icicle-last-accessed-first-p.
