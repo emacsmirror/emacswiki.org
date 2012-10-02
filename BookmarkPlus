@@ -4374,6 +4374,10 @@ OK, I think I've fixed those bugs in [[OneKey]] now. Btw, in future to report a 
 [new:DrewAdams:2012-10-02 04:12 UTC]
 Dunno when I'll get around to trying it out again, but I'll try to find some time.  Thx -- DrewAdams
 
+
+[new:DrewAdams:2012-10-02 04:59 UTC]
+Just to let you know. I spent just a little time with it.  I again ran into problems with Emacs hanging etc.  The problems are too general & vague for me to be able to report a concrete bug.  It does not seem to play well with using separate frames for different buffers.  Will try to find time to try it more later.  I did look the code over, and it looks interesting.  HTH -- DrewAdams
+
 ----
 CategoryBookmarking CategoryHypermedia CategoryPersistence 
 CategoryProgramming CategoryRegion CategoryWThirtyTwo
