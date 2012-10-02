@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Sep 29 17:00:14 2012 (-0700)
+;; Last-Updated: Mon Oct  1 21:08:39 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 15102
+;;     Update #: 15104
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2012/10/01 dadams
+;;     bmkp-thing-at-point: Updated per icicle-thing-at-point.  Thx to Joe Bloggs.
 ;; 2012/09/29 dadams
 ;;     Added redefinition of bookmark-version-control.
 ;;     bookmark--jump-via:
