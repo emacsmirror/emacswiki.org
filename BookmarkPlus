@@ -4356,7 +4356,7 @@ OK, thanks. I'm busy now, but I'll play with it a bit later. -- DrewAdams
 
 [new:JoeBloggs:2012-10-02 00:30 UTC]
 Btw, I found a bug in the bmkp-thing-at-point function in bookmark+-1.el
-I get an error about syntax-table being nil. If you use the common lisp extensions in cl.el I think you could fix it by changing the function signature to:
+ I get an error about syntax-table being nil. If you use the common lisp extensions in cl.el I think you could fix it by changing the function signature to:
 
   (defun* bmkp-thing-at-point (thing &optional (syntax-table (syntax-table)))
   
@@ -4377,6 +4377,11 @@ Dunno when I'll get around to trying it out again, but I'll try to find some tim
 
 [new:DrewAdams:2012-10-02 04:59 UTC]
 Just to let you know. I spent just a little time with it.  I again ran into problems with Emacs hanging etc.  The problems are too general & vague for me to be able to report a concrete bug.  It does not seem to play well with using separate frames for different buffers.  Will try to find time to try it more later.  I did look the code over, and it looks interesting.  HTH -- DrewAdams
+
+[new:JoeBloggs:2012-10-02 18:59 UTC]
+OK, I've made a few changes so it works better when opened in its own frame now. Still not perfect (help is shown in original frame instead of new frame), but working on it.. I usually just stick to one frame and hadn't thought about the possibility of multiple frames. Are there any other situations that I may have overlooked?
+-- JoeBloggs
+
 
 ----
 CategoryBookmarking CategoryHypermedia CategoryPersistence 
