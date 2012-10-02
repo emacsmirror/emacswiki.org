@@ -35,6 +35,8 @@
 ;;; Updates
 ;; 2012/10/01 Fixed several bugs in highlighting variables and types.
 ;;            Renamed some variables to be more descriptive.
+;; 2012/10/01 Enhanced PowerShell-mode indenting & syntax table.
+;;            Fixed dangling parens and re-indented the elisp itself.
 
 ;; Variables you may want to customize.
 (defgroup powershell nil
@@ -67,46 +69,66 @@ previous line is a continued line, ending with a backtick or a pipe"
     (forward-line -1)
     (looking-at powershell-continued-regexp)))
 
+;; Rick added significant complexity to Frédéric's original version
 (defun powershell-indent-line-amount ()
   "Returns the column to which the current line ought to be indented."
   (interactive)
-  (beginning-of-line)
-  (let ((closing-paren (looking-at "[\t ]*[])}]")))
-    ;; a very simple indentation method: if on a continuation line (i.e. the
-    ;; previous line ends with a trailing backtick or pipe), we indent relative
-    ;; to the continued line; otherwise, we indent relative to the ([{ that
-    ;; opened the current block.
+  (save-excursion
+    (beginning-of-line)
     (if (powershell-continuation-line-p)
-	(progn
-	  (while (powershell-continuation-line-p)
-	    (forward-line -1))
-	  (+ (current-indentation) powershell-continuation-indent))
-      (condition-case nil
-	  (progn
-	    (backward-up-list)
-	    ;; indentation relative to the opening paren: if there is text (no
-	    ;; comment) after the opening paren, vertically align the block
-	    ;; with this text; if we were looking at the closing paren, reset
-	    ;; the indentation; otherwise, indent the block by powershell-indent.
-	    (cond ((not (looking-at ".[\t ]*\\(#.*\\)?$"))
-		   (forward-char)
-		   (skip-chars-forward " \t")
-		   (current-column))
-		  (closing-paren
-		   (current-indentation))
-		  (t
-		   (+ (current-indentation) powershell-indent))))
-	(scan-error ;; most likely, we are at the top-level
-	 0)))))
+        ;; on a continuation line (i.e. prior line ends with backtick
+        ;; or pipe), indent relative to the continued line.
+        (progn
+          (while (powershell-continuation-line-p)
+            (forward-line -1))
+          (+ (current-indentation) powershell-continuation-indent))
+      ;; otherwise, indent relative to the block's opening char ([{
+      (let ((closing-paren (looking-at "\\s-*\\s)"))
+            new-indent
+            block-open-line)
+        (condition-case nil
+            (progn
+              (backward-up-list)   ;when at top level, throw to no-indent
+              (setq block-open-line (line-number-at-pos))
+              ;; We're in a block, calculate/return indent amount.
+              (if (not (looking-at "\\s(\\s-*\\(#.*\\)?$"))
+                  ;; code (not comments) follow the block open so
+                  ;; vertically align the block with the code.
+                  (if closing-paren
+                      ;; closing indent = open
+                      (setq new-indent (current-column))
+                    ;; block indent = first line of code
+                    (forward-char)
+                    (skip-syntax-forward " ")
+                    (setq new-indent (current-column)))
+                ;; otherwise block open is at eol so indent is relative to
+                ;; bol or another block open on the same line.
+                (if closing-paren       ; this sets the default indent
+                    (setq new-indent (current-indentation))
+                  (setq new-indent (+ powershell-indent (current-indentation))))
+                ;; now see if the block is nested on the same line
+                (when (condition-case nil
+                          (progn
+                            (backward-up-list)
+                            (= block-open-line (line-number-at-pos)))
+                        (scan-error nil))
+                  (forward-char)
+                  (skip-syntax-forward " ")
+                  (if closing-paren
+                      (setq new-indent (current-column))
+                    (setq new-indent (+ powershell-indent (current-column))))))
+              new-indent)
+          (scan-error ;; most likely, we are at the top-level
+           0))))))
 
 (defun powershell-indent-line ()
   "Indent the current line of powershell mode, leaving the point
 in place if it is inside the meat of the line"
   (interactive)
   (let ((savep (> (current-column) (current-indentation)))
-	(amount (save-excursion (powershell-indent-line-amount))))
+        (amount (powershell-indent-line-amount)))
     (if savep
-	(save-excursion (indent-line-to amount))
+        (save-excursion (indent-line-to amount))
       (indent-line-to amount))))
  
 (defun powershell-quote-selection (beg end)
@@ -121,8 +143,8 @@ in place if it is inside the meat of the line"
   (insert "'")
   (setq end (1+ end))
   (goto-char end)
-  (insert "'")
-)
+  (insert "'"))
+
 (defun powershell-unquote-selection (beg end)
   "Unquotes the selected text removing doubles as we go"
   (interactive `(,(region-beginning) ,(region-end)))
@@ -156,11 +178,9 @@ in place if it is inside the meat of the line"
            (while (search-forward "`" end t)
              (delete-char -1)
              (forward-char)
-             (setq end (1- end)))
-         ))
-        (t (error "Must select quoted text exactly."))
-  )
-)
+             (setq end (1- end)))))
+        (t (error "Must select quoted text exactly."))))
+
 (defun powershell-escape-selection (beg end)
   "Escapes variables in the selection and extends existing escapes."
   (interactive `(,(region-beginning) ,(region-end)))
@@ -174,8 +194,8 @@ in place if it is inside the meat of the line"
     (goto-char (car (match-data)))
     (forward-char)
     (insert "`")
-    (setq end (1+ end)))
-)
+    (setq end (1+ end))))
+
 (defun powershell-doublequote-selection (beg end)
   "Quotes the selection with double quotes, doubles embedded quotes"
   (interactive `(,(region-beginning) ,(region-end)))
@@ -191,8 +211,8 @@ in place if it is inside the meat of the line"
   (insert "\"")
   (setq end (1+ end))
   (goto-char end)
-  (insert "\"")
-)
+  (insert "\""))
+
 (defun powershell-DollarParen-selection (beg end)
   "Wraps the selected text with $() leaving point after closing paren."
   (interactive `(,(region-beginning) ,(region-end)))
@@ -202,10 +222,9 @@ in place if it is inside the meat of the line"
     (goto-char end)
     (insert ")")
     (goto-char beg)
-    (insert "$(")
-  )
-  (forward-char)
-)
+    (insert "$("))
+  (forward-char))
+
 (defun powershell-regexp-to-regex (beg end)
   "Turns the selected string (assumed to be regexp-opt output) into a regex"
   (interactive `(,(region-beginning) ,(region-end)))
@@ -221,9 +240,7 @@ in place if it is inside the meat of the line"
       (replace-match ")"))
     (goto-char (point-min))
     (while (re-search-forward "\\\\|" nil t)
-      (replace-match "|"))
-  )
-)
+      (replace-match "|"))))
 
  
 ;; Taken from About_Keywords
@@ -254,8 +271,8 @@ in place if it is inside the meat of the line"
              "-is" "-as" "-f"
              ;; Questionable --> specific to certain contexts
              "-casesensitive" "-wildcard" "-regex" "-exact" ;specific to case
-             "-begin" "-process" "-end"                     ;specific to scriptblock
-            ) t)
+             "-begin" "-process" "-end" ;specific to scriptblock
+             ) t)
           "\\_>")
   "Powershell operators")
 
@@ -303,28 +320,28 @@ in place if it is inside the meat of the line"
 (defvar powershell-builtin-variables-regexp
   (regexp-opt
    '("$" "?"  "^" "_" "args" "ConsoleFileName" "Error" "Event"
-    "EventSubscriber" "ExecutionContext" "false" "Foreach" "HOME" "Host"
-    "input" "LASTEXITCODE" "Matches" "MyInvocation" "NestedPromptLevel"
-    "null" "PID" "PROFILE" "PSBoundParameters" "PSCmdlet" "PSCulture"
-    "PSDebugContext" "PSHOME" "PSScriptRoot" "PSUICulture" "PSVersionTable"
-    "PWD" "ReportErrorShowExceptionClass" "ReportErrorShowInnerException"
-    "ReportErrorShowSource" "ReportErrorShowStackTrace" "Sender" "ShellId"
-    "SourceArgs" "SourceEventArgs" "StackTrace" "this" "true") t)
+     "EventSubscriber" "ExecutionContext" "false" "Foreach" "HOME" "Host"
+     "input" "LASTEXITCODE" "Matches" "MyInvocation" "NestedPromptLevel"
+     "null" "PID" "PROFILE" "PSBoundParameters" "PSCmdlet" "PSCulture"
+     "PSDebugContext" "PSHOME" "PSScriptRoot" "PSUICulture" "PSVersionTable"
+     "PWD" "ReportErrorShowExceptionClass" "ReportErrorShowInnerException"
+     "ReportErrorShowSource" "ReportErrorShowStackTrace" "Sender" "ShellId"
+     "SourceArgs" "SourceEventArgs" "StackTrace" "this" "true") t)
   "Names of the built-in Powershell variables. They are hilighted
 differently from the other variables.")
 
 (defvar powershell-config-variables-regexp
   (regexp-opt
    '("ConfirmPreference" "DebugPreference" "ErrorActionPreference"
-    "ErrorView" "FormatEnumerationLimit" "LogCommandHealthEvent"
-    "LogCommandLifecycleEvent" "LogEngineHealthEvent"
-    "LogEngineLifecycleEvent" "LogProviderHealthEvent"
-    "LogProviderLifecycleEvent" "MaximumAliasCount" "MaximumDriveCount"
-    "MaximumErrorCount" "MaximumFunctionCount" "MaximumHistoryCount"
-    "MaximumVariableCount" "OFS" "OutputEncoding" "ProgressPreference"
-    "PSEmailServer" "PSSessionApplicationName" "PSSessionConfigurationName"
-    "PSSessionOption" "VerbosePreference" "WarningPreference"
-    "WhatIfPreference") t)
+     "ErrorView" "FormatEnumerationLimit" "LogCommandHealthEvent"
+     "LogCommandLifecycleEvent" "LogEngineHealthEvent"
+     "LogEngineLifecycleEvent" "LogProviderHealthEvent"
+     "LogProviderLifecycleEvent" "MaximumAliasCount" "MaximumDriveCount"
+     "MaximumErrorCount" "MaximumFunctionCount" "MaximumHistoryCount"
+     "MaximumVariableCount" "OFS" "OutputEncoding" "ProgressPreference"
+     "PSEmailServer" "PSSessionApplicationName" "PSSessionConfigurationName"
+     "PSSessionOption" "VerbosePreference" "WarningPreference"
+     "WhatIfPreference") t)
   "Names of variables that configure powershell features.")
 
  
@@ -387,12 +404,12 @@ Returns match 3 and match 4 for @\" \"@ sequences respectively."
                                         (3 "<" t t) (4 ">" t t))
     (powershell-find-syntactic-quotes (1 "|" t t) (2 "|" t t)
                                       (3 "|" t t) (4 "|" t t)))
- "A list of regexp's or functions.  Used to add syntax-table properties to
+  "A list of regexp's or functions.  Used to add syntax-table properties to
 characters that can't be set by the syntax-table alone.")
 
  
 (defvar powershell-font-lock-keywords-1
-  `(;; Type annotations
+  `( ;; Type annotations
     (,powershell-object-types-regexp . font-lock-type-face)
     ;; syntaxic keywords
     (,powershell-keywords . font-lock-keyword-face)
@@ -405,7 +422,7 @@ characters that can't be set by the syntax-table alone.")
 (defvar powershell-font-lock-keywords-2
   (append
    powershell-font-lock-keywords-1
-   `(;; Built-in variables
+   `( ;; Built-in variables
      (,(concat "\\$\\(" powershell-builtin-variables-regexp "\\)\\>")
       0 font-lock-builtin-face t)
      (,(concat "\\$\\(" powershell-config-variables-regexp "\\)\\>")
@@ -415,7 +432,7 @@ characters that can't be set by the syntax-table alone.")
 (defvar powershell-font-lock-keywords-3
   (append
    powershell-font-lock-keywords-2
-   `(;; user variables
+   `( ;; user variables
      (,powershell-variables-regexp
       (0 font-lock-variable-name-face)
       (1 (cons font-lock-type-face '(underline)) t t)
@@ -441,27 +458,26 @@ characters that can't be set by the syntax-table alone.")
   ;; font-lock-defaults has its value, setting font-lock-mode true should
   ;; cause all your syntax highlighting dreams to come true.
   (setq font-lock-defaults
-         ;; The first value is all the keyword expressions.
+        ;; The first value is all the keyword expressions.
         '((powershell-font-lock-keywords-1
            powershell-font-lock-keywords-2
            powershell-font-lock-keywords-3)
-         ;; keywords-only means no strings or comments get fontified
-         nil
-         ;; case-fold (t ignores case)
-         t
-         ;; syntax-alist nothing special here
-         nil
-         ;; syntax-begin - no function defined to move outside syntactic block
-         nil
-         ;; font-lock-syntactic-keywords
-         ;; takes (matcher (match syntax override lexmatch) ...)...
-         (font-lock-syntactic-keywords . powershell-font-lock-syntactic-keywords))))
+          ;; keywords-only means no strings or comments get fontified
+          nil
+          ;; case-fold (t ignores case)
+          t
+          ;; syntax-alist nothing special here
+          nil
+          ;; syntax-begin - no function defined to move outside syntactic block
+          nil
+          ;; font-lock-syntactic-keywords
+          ;; takes (matcher (match syntax override lexmatch) ...)...
+          (font-lock-syntactic-keywords . powershell-font-lock-syntactic-keywords))))
 
 (defvar powershell-mode-syntax-table
   (let ((powershell-mode-syntax-table (make-syntax-table)))
     (modify-syntax-entry ?$  "_" powershell-mode-syntax-table)
     (modify-syntax-entry ?-  "_" powershell-mode-syntax-table)
-    (modify-syntax-entry ?=  "_" powershell-mode-syntax-table)
     (modify-syntax-entry ?:  "_" powershell-mode-syntax-table)
     (modify-syntax-entry ?^  "_" powershell-mode-syntax-table)
     (modify-syntax-entry ?\\ "_" powershell-mode-syntax-table)
@@ -473,6 +489,8 @@ characters that can't be set by the syntax-table alone.")
     (modify-syntax-entry ?) ")(" powershell-mode-syntax-table)
     (modify-syntax-entry ?` "\\" powershell-mode-syntax-table)
     (modify-syntax-entry ?_  "w" powershell-mode-syntax-table)
+    (modify-syntax-entry ?=  "." powershell-mode-syntax-table)
+    (modify-syntax-entry ?|  "." powershell-mode-syntax-table)
     (modify-syntax-entry ?' "\"" powershell-mode-syntax-table)
     (modify-syntax-entry ?#  "<" powershell-mode-syntax-table)
     powershell-mode-syntax-table)
@@ -480,7 +498,7 @@ characters that can't be set by the syntax-table alone.")
 
 (defvar powershell-mode-map
   (let ((powershell-mode-map (make-keymap)))
-;;    (define-key powershell-mode-map "\r" 'powershell-indent-line)
+    ;;    (define-key powershell-mode-map "\r" 'powershell-indent-line)
     (define-key powershell-mode-map "\t" 'powershell-indent-line)
     (define-key powershell-mode-map (kbd "M-\"") 'powershell-doublequote-selection)
     (define-key powershell-mode-map (kbd "M-'") 'powershell-quote-selection)
@@ -491,25 +509,24 @@ characters that can't be set by the syntax-table alone.")
     powershell-mode-map)
   "Keymap for PS major mode")
 
-
  
 (defvar powershell-imenu-expression
   `(("Functions" ,(concat "function " powershell-function-names-regex) 2)
     ("Top variables"
      , (concat "^\\(" powershell-object-types-regexp "\\)?\\("
-              powershell-variables-regexp "\\)\\s-*=")
+               powershell-variables-regexp "\\)\\s-*=")
      2))
   "List of regexps matching important expressions, for speebar & imenu.")
 
 (defun powershell-setup-imenu ()
   "Installs powershell-imenu-expression."
   (when (require 'imenu nil t)
-      ;; imenu doc says these are buffer-local by default
-      (setq imenu-generic-expression powershell-imenu-expression)
-      (setq imenu-case-fold-search nil)
-      (imenu-add-menubar-index)
-      (when (require 'which-func nil t)
-        (which-function-mode t))))
+    ;; imenu doc says these are buffer-local by default
+    (setq imenu-generic-expression powershell-imenu-expression)
+    (setq imenu-case-fold-search nil)
+    (imenu-add-menubar-index)
+    (when (require 'which-func nil t)
+      (which-function-mode t))))
 
 (if (require 'speedbar nil t)
     (speedbar-add-supported-extension ".ps1?"))
@@ -527,7 +544,7 @@ characters that can't be set by the syntax-table alone.")
 ;; the default in this mode, we will not capture the column number.
 (setq compilation-error-regexp-alist
       (cons '("At \\(.*\\):\\([0-9]+\\) char:\\([0-9]+\\)" 1 2)
-	    compilation-error-regexp-alist))
+            compilation-error-regexp-alist))
 
  
 ;; the hook is automatically run by derived-mode
