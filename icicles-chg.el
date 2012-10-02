@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Mon Oct  1 16:55:28 2012 (-0700)
+;; Last-Updated: Tue Oct  2 10:29:24 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8973
+;;     Update #: 8975
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -6036,6 +6036,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2012/10/02 dadams
+;;     icicle-list-join-string:
+;;       Make display prop cover whole string and display \n rather than just hide ^G part.
+;;       Important for cursor movement and visible char deletion: join string acts like one char.
 ;; 2012/09/08 dadams
 ;;     Removed: icicle-ignore-space-prefix-flag.
 ;;     icicle-buffer-ignore-space-prefix-flag: Updated doc to be self-contained.
