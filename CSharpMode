@@ -110,6 +110,7 @@ http://i42.tinypic.com/29pdmjd.jpg
 ||FlymakeCsharp||||now included with csharp-mode. check syntax more-or-less continually, and use overlays to highlight syntax problems in the code.||
 ||FlymakeCursor||||display flymake messages in the minibuffer, automatically, after a delay.||
 ||[http://code.google.com/p/csharpmode/source/browse/trunk/aspx-mode.el aspx-mode.el]||||multi-mode for editing ASPX files within emacs. Handles HTML, JS, CSS, and C#.||
+||[http://web-mode.org web-mode.el]||||multi-mode for editing ASPX/JSP/PHP that also embed  JS and CSS.||
 ||[[MSTFS]]||||Emacs integration with Team foundation server, via the tf.exe tool||
 ||[http://stud4.tuwien.ac.at/~e0225855/linum/linum.html Linum.el]||||line numbers (See local elisp: Lisp:linum-ex.el)||
 ||[http://www.gnu.org/software/emacs/manual/html_node/emacs/Reverting.html Auto-Revert]||||refresh .cs buffers, after you've edited them externally, for example, in Visual Studio.||
