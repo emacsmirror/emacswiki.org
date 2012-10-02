@@ -69,7 +69,7 @@ Configure your emacs init file to use it:
 </pre> 
 === Install Arduino IDE ===
 
-Download the [http://arduino.cc/en/Main/Software IDE] and move it your Applications folder. Connect your Arduino to the USB port,
+Download the [http://arduino.cc/en/Main/Software IDE] and move it to your Applications folder. Connect your Arduino to the USB port,
  compile the blink example, and upload it. Verify that everything works fine. After that, from a terminal shell, create a directory in your $HOME 
 folder and add a link to it following this steps:
 
