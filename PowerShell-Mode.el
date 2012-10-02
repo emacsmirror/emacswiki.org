@@ -35,7 +35,7 @@
 ;;; Updates
 ;; 2012/10/01 Fixed several bugs in highlighting variables and types.
 ;;            Renamed some variables to be more descriptive.
-;; 2012/10/01 Enhanced PowerShell-mode indenting & syntax table.
+;; 2012/10/02 Enhanced PowerShell-mode indenting & syntax table.
 ;;            Fixed dangling parens and re-indented the elisp itself.
 
 ;; Variables you may want to customize.
