@@ -1,12 +1,11 @@
 ;;; pabbrev.el --- Predictive abbreviation expansion
 
-;; Version: 2.0
+;; Version: 3.1
 
 ;; This file is not part of Emacs
 
-;; Author: Phillip Lord <p.lord@russet.org.uk>
-;; Maintainer: Phillip Lord <p.lord@russet.org.uk>
-;; Maintainer (XEmacs): Martin Kuehl (martin.kuehl@gmail.com)
+;; Author: Phillip Lord <phillip.lord@newcastle.ac.uk>
+;; Maintainer: Phillip Lord <phillip.lord@newcastle.ac.uk>
 ;; Website: http://www.russet.org.uk
 
 ;; COPYRIGHT NOTICE
@@ -445,8 +444,10 @@ I'm not telling you which version, I prefer."
  (lambda(x)
    (put x 'pabbrev-global-mode-excluded-modes t))
  '(shell-mode 
+   Custom-mode
    custom-mode 
    telnet-mode
+   term-mode
    dired-mode 
    eshell-mode
    ;; gnus article mode is read-only so should be missed anyway,
@@ -706,9 +707,7 @@ start and end positions")
 
 (defun pabbrev-mode-on()
   "Turn `pabbrev-mode' on."
-  (make-local-hook 'pre-command-hook)
   (add-hook 'pre-command-hook 'pabbrev-pre-command-hook nil t)
-  (make-local-hook 'post-command-hook)
   (add-hook 'post-command-hook 'pabbrev-post-command-hook nil t))
 
 (defun pabbrev-mode-off()
@@ -856,6 +855,25 @@ anything. Toggling it off, and then on again will usually restore functionality.
 	  ;; set an overlay at 1 1. Originally this used to be a 0 0 but
 	  ;; it crashes xemacs...well I never....
 	  (make-overlay 1 1)))
+  ;; for when we are not in font-lock-mode
+  (overlay-put pabbrev-overlay 'face
+               (if (> count 1) 'pabbrev-suggestions-face
+                 'pabbrev-single-suggestion-face))
+  ;; for when we are. If we just set face, font-lock tends to reset the face
+  ;; immediately. This isn't working for me. font-lock still just blithely
+  ;; resets the properties we have so carefully just placed
+  (overlay-put pabbrev-overlay 'font-lock-face
+               (if (> count 1) 'pabbrev-suggestions-face
+                 'pabbrev-single-suggestion-face))
+  (move-overlay pabbrev-overlay start end (current-buffer)))
+  
+(defun pabbrev-set-overlay(start end count)
+  "Move overlay to START END location."
+  (unless pabbrev-overlay
+    (setq pabbrev-overlay
+	  ;; set an overlay at 1 1. Originally this used to be a 0 0 but
+	  ;; it crashes xemacs...well I never....
+	  (make-overlay 1 1)))
   (overlay-put pabbrev-overlay 'face
                (if (> count 1) 'pabbrev-suggestions-face
                  'pabbrev-single-suggestion-face))
@@ -959,7 +977,8 @@ With prefix argument, bring up a menu of all full expansions."
         (pabbrev-suggestions-goto-buffer pabbrev-expansion-suggestions)
       (pabbrev-call-previous-tab-binding)))
    ((eq last-command 'pabbrev-expand-maybe)
-    (if (> (length pabbrev-last-expansion-suggestions) 1)
+    (if (and (> (length pabbrev-expansion-suggestions) 1)
+             (> (length pabbrev-last-expansion-suggestions) 1))
         (pabbrev-suggestions-goto-buffer pabbrev-last-expansion-suggestions)
       (pabbrev-call-previous-tab-binding)))
    (pabbrev-expansion
@@ -1103,7 +1122,7 @@ before the command gets run.")
 	  "Best Match: " (car pabbrev-suggestions-best-suggestion)
 	  "\n"))
 	(if suggestions
-	    (loop for i from 0 to 9 do
+	    (loop for iv from 0 to 9 do
 	      ;; are we less than the suggestions
 	      (if (< i (length suggestions))
 		  (progn
@@ -1732,7 +1751,3 @@ to the dictionary."
 
 (provide 'pabbrev)
 ;;; pabbrev.el ends here
-
-;; Local Variables:
-;; no-byte-compile: t
-;; End:
