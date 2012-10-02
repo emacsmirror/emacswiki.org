@@ -8,3 +8,122 @@ The Arduino IDE is useful for beginners, but Emacs is better.
 To compile sketches outside of the Arduino IDE, you will need to use [http://mjo.tc/atelier/2009/02/arduino-cli.html Arduino.mk] which is comes with the Arduino development environment.  This enables command line compilation of your sketches, and is used by the CEDET support.
 
 Alternately, to use the Arduino IDE for compilation, but edit in Emacs, open the preferences in the IDE, and choose "Use External Editor".
+
+== Arduino Support for OS X ==
+
+This is what I did in order to get Arduino support for OS X:
+
+=== Install CEDET===
+
+[http://cedet.sourceforge.net CEDET] is a very complex and powerful  package, but I will perform a simple installation from the bazaar repository:
+
+<pre>
+~/.emacs.d/vendor $ /opt/local/bin/bzr checkout bzr://cedet.bzr.sourceforge.net/bzrroot/cedet/code/trunk cedet
+~/.emacs.d/vendor $ cd cedet
+~/.emacs.d/vendor $ make EMACS=/Applications/Emacs.app/Contents/MacOS/Emacs
+</pre>
+
+Then, following the INSTALL file, add this to your emacs config file:
+
+<pre>
+;; Load CEDET.
+;; See cedet/common/cedet.info for configuration details.
+;; IMPORTANT: For Emacs >= 23.2, you must place this *before* any
+;; CEDET component (including EIEIO) gets activated by another 
+;; package (Gnus, auth-source, ...).
+(load-file "~/.emacs.d/vendor/cedet/cedet-devel-load.el")
+
+;; Add further minor-modes to be enabled by semantic-mode.
+;; See doc-string of `semantic-default-submodes' for other things
+;; you can use here.
+(add-to-list 'semantic-default-submodes 'global-semantic-idle-summary-mode t)
+(add-to-list 'semantic-default-submodes 'global-semantic-idle-completions-mode t)
+(add-to-list 'semantic-default-submodes 'global-cedet-m3-minor-mode t)
+
+;; Enable Semantic
+(semantic-mode 1)
+
+;; Enable EDE (Project Management) features
+(global-ede-mode 1)
+
+;; Configure arduino OS X dirs.
+(setq ede-arduino-appdir "/Applications/Arduino.app/Contents/Resources/Java")
+
+</pre>
+
+You must add the last line in order to tell CEDET the path where the Arduino libraries are.
+=== Install Arduino mode ===
+
+Go to your emacs config directory and get a git copy of the [https://github.com/bookest/arduino-mode Arduino-mode]:
+
+<pre>
+~/.emacs.d/vendor $ git clone git://github.com/bookest/arduino-mode.git
+</pre>
+
+Configure your emacs init file to use it:
+
+<pre>
+(add-to-list 'load-path "~/.emacs.d/vendor/arduino")
+(setq auto-mode-alist (cons '("\\.\\(pde\\|ino\\)$" . arduino-mode) auto-mode-alist))
+(autoload 'arduino-mode "arduino-mode" "Arduino editing mode." t)
+</pre> 
+=== Install Arduino IDE ===
+
+Download the [http://arduino.cc/en/Main/Software IDE] and move it your Applications folder. Connect your Arduino to the USB port,
+ compile the blink example, and upload it. Verify that everything works fine. After that, from a terminal shell, create a directory in your $HOME 
+folder and add a link to it following this steps:
+
+<pre>
+~/ $ mkdir .arduino
+~/ $ cd .arduino
+~/.arduino $ ln -s /Users/yourusername/Library/Arduino/preferences.txt .
+</pre>
+
+=== Install Arduino-cli tools ===
+
+We need this [http://mjo.tc/atelier/2009/02/arduino-cli.html tools] in order to create the Makefile file. I downloaded them 
+in my /opt/local/share dir.
+
+<pre>
+/opt/local/share $ sudo git clone git://github.com/mjoldfield/Arduino-Makefile.git
+</pre>
+
+Edit the Aduino.mk file inside the new Arduino-Makefile/arduino-mk directory. Modify and uncomment this lines 
+according to your installation:
+
+<pre>
+   ARDUINO_DIR   = /Applications/Arduino.app/Contents/Resources/Java
+   ARDMK_DIR     = /opt/local/share/Arduino-Makefile
+</pre>
+
+Add a link in your ARDUINO_DIR to the Arduino.mk file:
+
+<pre>
+/Applications/Arduino.app/Contents/Resources/Java $ ln -s
+/opt/local/share/Arduino-Makefile/arduino-mk/Arduino.mk ./Arduino.mk
+</pre>
+
+=== Install required Perl modules ===
+
+Do this as root:
+
+<pre>
+sudo /usr/bin/perl -MCPAN -e shell
+
+.
+.
+.
+
+cpan[1]> install YAML
+
+.
+.
+.
+
+cpan[2]> install Device::SerialPort
+</pre>
+
+===Test the installation ===
+
+Open a .ino file. C-c . c will create the makefile and compile the code. C-c . U will upload it to the arduino.
+If you get this error: Cannot invoke project-compile-target, try M-x  global-ede-mode.
