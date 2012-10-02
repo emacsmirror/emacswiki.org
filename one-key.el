@@ -2147,18 +2147,17 @@ in `one-key-types-of-menu' or using `one-key-default-title-func' if that doesn't
   ;; Update key brightnesses if necessary
   (if one-key-auto-brighten-used-keys
       (one-key-menu-brighten-most-used okm-info-alist))
-  ;; Generate buffer information.
-  (with-current-buffer (get-buffer-create one-key-buffer-name)
-    (erase-buffer)
-    (goto-char (point-min))
-    (save-excursion
-      (insert (one-key-highlight-menu (one-key-menu-format okm-filtered-list) okm-menu-names okm-menu-number title-string)))
-    (one-key-mode))
-  ;; Pop `one-key' buffer.
-  (pop-to-buffer one-key-buffer-name)
+  ;; Create one-key buffer, and open it.
+  (pop-to-buffer (get-buffer-create one-key-buffer-name))
   (set-buffer one-key-buffer-name)
+  ;; Fill buffer with menu items.
+  (erase-buffer)
+  (goto-char (point-min))
+  (save-excursion
+    (insert (one-key-highlight-menu (one-key-menu-format okm-filtered-list) okm-menu-names okm-menu-number title-string)))
+  (one-key-mode)
   ;; Adjust height of menu window appropriately.
-  ;; If `one-key-current-window-state' is a string then we have switched
+  ;; If one-key-current-window-state is a string then we have switched
   ;; from another menu at full height, and so should make this window full height too.
   (if (stringp one-key-current-window-state)
       (fit-window-to-buffer nil (frame-height) one-key-menu-window-max-height)
@@ -2171,15 +2170,24 @@ in `one-key-types-of-menu' or using `one-key-default-title-func' if that doesn't
 (defun one-key-menu-window-close (&optional norestore)
   "Close the menu window and restore the window configuration to what it was before one-key was started.
 If NORESTORE is non-nil don't restore the window configuration."
-  ;; Kill menu buffer.
-  (when (bufferp (get-buffer one-key-buffer-name))
+  (let* ((onekeybuf (get-buffer one-key-buffer-name))
+         (onekeywin (get-buffer-window onekeybuf t))    ;get-buffer-window-list
+         (thisframe (selected-frame))
+         (onewindow (= (length (window-list thisframe)) 1))
+         (manyframes (> (length (frame-list)) 1)))
+    ;; If necessary open previous buffer 
+  (when (bufferp onekeybuf)
     (if (and (stringp one-key-current-window-state)
              (get-buffer one-key-current-window-state))
         (pop-to-buffer one-key-current-window-state))
-    (delete-window (get-buffer-window one-key-buffer-name))
-    (kill-buffer one-key-buffer-name)
-    (setq one-key-current-window-state nil))
-  ;; Restore window layout if `one-key-menu-window-configuration' is valid value.
+    ;; Kill window/frame containing the one-key buffer 
+    (if (and onewindow manyframes onekeywin)
+        (delete-frame (selected-frame))
+      (unless (not onekeywin)
+        (delete-window onekeywin)
+        (kill-buffer onekeybuf)))
+    (setq one-key-current-window-state nil)))
+  ;; Restore window layout if one-key-menu-window-configuration has a valid value.
   (when (and (not norestore)
              one-key-menu-window-configuration
              (boundp 'one-key-menu-window-configuration))
