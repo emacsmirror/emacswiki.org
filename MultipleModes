@@ -64,7 +64,7 @@ This is a built-in feature in Emacs. Indirect buffers feature does not exactly g
 
 = web-mode.el = 
 
-Major Mode for PHP templates. Features: Syntax Highligthing and indentation according to the type of bloc ( PHP/HTML/JS/CSS). Maintained by François-Xavier Bois. For PHP templates files. 
+Major Mode for PHP templates. Features: Syntax Highligthing and indentation according to the type of bloc ( PHP/ASPX/JSP/HTML/JS/CSS). Maintained by François-Xavier Bois. For PHP templates files. 
 
 * http://web-mode.org
 
