@@ -1,0 +1,3 @@
+BABYL is the name of an e-mail package created under ITS at the MIT AI Lab, written in TECO. It was a replacement for an earlier package called RMAIL. BABYL is still available under ITS and TOPS-20 (a DEC development of the TENEX operating system) both on real hardware and under the KLH10 and SimH emulators of the PDP-10 processor; the original RMAIL was restricted to ITS, and the sources appear to have been lost.
+
+The internal format of BABYL mailbox files was retained when GNU Emacs was created, even though the facility was renamed "RMail".
