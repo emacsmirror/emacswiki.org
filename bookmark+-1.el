@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sat Sep 29 17:01:03 2012 (-0700)
+;; Last-Updated: Mon Oct  1 21:07:12 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5881
+;;     Update #: 5887
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -1643,7 +1643,7 @@ Deletion' in the Emacs manual."
           (const :tag "Never"                                 never)
           (const :tag "If existing already"                   nil)
           (other :tag "Always"                                t))
-  :group 'bookmark)
+  :group 'bookmark :group 'bookmark-plus)
 
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
@@ -10417,9 +10417,9 @@ Non-interactively:
 if non-nil, set SYNTAX-TABLE for the duration."
   (if (fboundp 'tap-thing-at-point)
       (tap-thing-at-point thing syntax-table)
-    (if (fboundp 'with-syntax-table)    ; Emacs 21+.
-        (with-syntax-table syntax-table (thing-at-point thing syntax-table))
-      (thing-at-point thing syntax-table))))
+    (if (and (syntax-table-p syntax-table)  (fboundp 'with-syntax-table)) ; Emacs 21+.
+        (with-syntax-table syntax-table (thing-at-point thing))
+      (thing-at-point thing))))         ; Ignore any SYNTAX-TABLE arg for Emacs 20, for vanilla.
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 
