@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Mon Oct  1 16:51:13 2012 (-0700)
+;; Last-Updated: Tue Oct  2 22:43:00 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 6142
+;;     Update #: 6144
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Doc URL: http://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -2658,12 +2658,15 @@ In particular, inode number, number of hard links, and file size."
 
 ;;; Provide for the second level of fontifying.
 (add-hook 'dired-mode-hook
-          '(lambda ()
+          (lambda ()
             (set (make-local-variable 'font-lock-defaults)
-             ;; Two levels.  Use 3-element list, since it is standard to have one more than the
-             ;; number of levels.  This is necessary for it to work with font-menus(-da).el.
-             '((dired-font-lock-keywords dired-font-lock-keywords diredp-font-lock-keywords-1)
-               t nil nil beginning-of-line))
+                 ;; Two levels.  Use 3-element list, since it is standard to have one more
+                 ;; than the number of levels.  This is necessary for it to work with
+                 ;; font-menus(-da).el.
+                 '((dired-font-lock-keywords
+                    dired-font-lock-keywords
+                    diredp-font-lock-keywords-1)
+                   t nil nil beginning-of-line))
             ;; Refresh `font-lock-keywords' from `font-lock-defaults'
             (when (fboundp 'font-lock-refresh-defaults) (font-lock-refresh-defaults))))
  
