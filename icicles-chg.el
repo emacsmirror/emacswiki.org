@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue Oct  2 15:40:03 2012 (-0700)
+;; Last-Updated: Tue Oct  2 22:15:51 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8989
+;;     Update #: 8996
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1451,6 +1451,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2012/10/02 dadams
+;;     icicle-file-name-(non)directory, icicle-input-from-minibuffer:
+;;       string-to-list -> append the string to (),
+;;         Because Emacs 24 now breaks older byte-compiled code, since it removed string-to-sequence.
 ;; 2012/10/01 dadams
 ;;     icicle-file-name-(non)directory, icicle-input-from-minibuffer:
 ;;       Rewrote to be more robust: do not hard-code ^G as the REPL-CHAR.  Use a char not in string.
