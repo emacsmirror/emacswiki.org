@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Oct  1 13:07:28 2012 (-0700)
+;; Last-Updated: Tue Oct  2 22:00:36 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 13388
+;;     Update #: 13391
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -4632,7 +4632,7 @@ what it returns."
   (let ((max-char-in-name  0)
         (repl-char         0))          ; NULL char: ?\^@
     ;; Set REPL-CHAR to 1+ the highest char code used in FILENAME, or NULL if that is not possible.
-    (dolist (char  (string-to-list filename))
+    (dolist (char  (append filename ())) ; `string-to-list'
       (when (> char max-char-in-name) (setq max-char-in-name  char)))
     ;; Make sure we do not go past the max allowable char for Emacs.  If so, just use NULL char.
     ;; Emacs 20-22 has no `max-char' function, so just try adding 1 and see if result is valid.
@@ -4657,7 +4657,7 @@ That is, backslash is never treated as a directory separator."
   (let ((max-char-in-name  0)
         (repl-char         0))          ; NULL char: ?\^@
     ;; Set REPL-CHAR to 1+ the highest char code used in FILENAME, or NULL if that is not possible.
-    (dolist (char  (string-to-list filename))
+    (dolist (char  (append filename ())) ; `string-to-list'
       (when (> char max-char-in-name) (setq max-char-in-name  char)))
     ;; Make sure we do not go past the max allowable char for Emacs.  If so, just use NULL char.
     ;; Emacs 20-22 has no `max-char' function, so just try adding 1 and see if result is valid.
@@ -4728,7 +4728,7 @@ The current buffer must be a minibuffer."
           (setq last-char  "$"
                 input      (substring input 0 (1- (length input)))))
         ;; Set REPL-CHAR to 1+ the highest char code used in INPUT, or NULL if that is not possible.
-        (dolist (char  (string-to-list input))
+        (dolist (char  (append input ())) ; `string-to-list'
           (when (> char max-input-char) (setq max-input-char  char)))
         ;; Make sure we do not go past the max allowable char for Emacs.  If so, just use NULL char.
         ;; Emacs 20-22 has no `max-char' function, so just try adding 1 and see if result is valid.
