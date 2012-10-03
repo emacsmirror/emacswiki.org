@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Thu Aug 26 16:05:01 1999
 ;; Version: 21.0
-;; Last-Updated: Thu Aug 23 14:29:13 2012 (-0700)
+;; Last-Updated: Tue Oct  2 22:42:46 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 736
+;;     Update #: 739
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/imenu+.el
 ;; Doc URL: http://emacswiki.org/emacs/ImenuMode
 ;; Keywords: tools, menus
@@ -250,18 +250,18 @@ See `imenu-generic-expression'.")
 See `imenu-generic-expression'.")
 
 (add-hook 'lisp-mode-hook
-          '(lambda ()
+          (lambda ()
             (setq imenu-generic-expression  lisp-imenu-generic-expression)
             (condition-case nil
                 (imenu-add-defs-to-menubar)
               (error nil))))
 
 (add-hook 'emacs-lisp-mode-hook
-          '(lambda ()
-             (setq imenu-generic-expression  emacs-lisp-imenu-generic-expression)
-             (condition-case nil
-                 (imenu-add-defs-to-menubar)
-               (error nil))))
+          (lambda ()
+            (setq imenu-generic-expression  emacs-lisp-imenu-generic-expression)
+            (condition-case nil
+                (imenu-add-defs-to-menubar)
+              (error nil))))
 
 
 ;;; Internal variables
