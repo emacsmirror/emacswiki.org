@@ -7,9 +7,9 @@
 ;; Copyright (C) 1995-2012, Drew Adams, all rights reserved.
 ;; Created: Thu Dec 28 09:15:00 1995
 ;; Version: 21.0
-;; Last-Updated: Thu Aug 23 16:58:50 2012 (-0700)
+;; Last-Updated: Tue Oct  2 20:06:37 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1942
+;;     Update #: 1945
 ;; URL: http://www.emacswiki.org/emacs-en/start-opt.el
 ;; Keywords: local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -56,6 +56,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/10/02 dadams
+;;     Handle obsolescence of face modeline.
 ;; 2011/11/29 dadams
 ;;     Add *.bmk to auto-mode-alist for emacs-lisp-mode (for editing/viewing bookmarks files).
 ;; 2011/08/07 dadams
@@ -238,7 +240,8 @@
 (condition-case nil
     (progn
       (set-face-background 'highlight "Cyan") ; Highlight face.
-      (set-face-foreground 'modeline "Black") ; Mode-line (Netscape/X: 000000).
+      (set-face-foreground (if (facep 'modeline) 'modeline 'mode-line) ; Mode-line.
+                           "Black")
       (set-face-background 'region "MediumAquamarine")
       (set-face-background list-matching-lines-face "SkyBlue") ; Defined in `replace.el'
       (set-face-background 'secondary-selection "White") ; Secondary sel.
