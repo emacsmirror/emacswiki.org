@@ -9,7 +9,7 @@ directory tree you accumulate Dired buffers, one for each directory you visit.
 In Emacs 22 and later, you can use `a' in a Dired buffer, instead of `e', `f', and `RET'. This method does not affect mouse clicks on directory names, however. Alternatively you can use this code (mouse clicks is still not affected, but `RET' works): 
 
 <pre>
-(put 'dired-find-alternate-file 'disabled nil)''.
+(put 'dired-find-alternate-file 'disabled nil)
 </pre>
 
 When moving to parent directory by `^´, Dired by default creates a new buffer for each movement up. The following rebinds `^´ to use the same buffer.
