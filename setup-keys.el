@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 21.1
-;; Last-Updated: Mon Aug 27 15:59:05 2012 (-0700)
+;; Last-Updated: Tue Oct  2 22:42:10 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1147
+;;     Update #: 1148
 ;; URL: http://www.emacswiki.org/emacs-en/setup-keys.el
 ;; Keywords: mouse, keyboard, menus, menu-bar
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -750,8 +750,8 @@
     (global-set-key [S-next]  'swiss-move-line-down)))                        ; `S-next'
 
 ;; [up], [down], [left], [right] keys.
-(global-set-key [S-down] '(lambda () (interactive) (scroll-up 1)))            ; `S-down'
-(global-set-key [S-up] '(lambda () (interactive) (scroll-down 1)))            ; `S-up'
+(global-set-key [S-down] (lambda () (interactive) (scroll-up 1)))            ; `S-down'
+(global-set-key [S-up] (lambda () (interactive) (scroll-down 1)))            ; `S-up'
 ;;(global-set-key [M-up] (lookup-key esc-map "p")) ; Probably not defined.
 ;;(global-set-key [M-down] (lookup-key esc-map "n")) ; Probably not defined.
 ;;(global-set-key [M-left] (lookup-key esc-map "b")) ; Predefined.
