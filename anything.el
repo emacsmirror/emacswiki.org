@@ -977,11 +977,7 @@ which affects `anything-samewindow'.")
 
 (defvar anything-delayed-init-executed nil)
 
-(defvar anything-mode-line-string "\\<anything-map>\\[anything-help]:help \
-\\[anything-select-action]:Acts \
-\\[anything-exit-minibuffer]/\\[anything-select-2nd-action-or-end-of-line]/\
-\\[anything-select-3rd-action]:NthAct \
-\\[anything-send-bug-report-from-anything]:BugReport"
+(defvar anything-mode-line-string nil
   "Help string displayed in mode-line in `anything'.
 It can be a string or a list of two args, in this case,
 first arg is a string that will be used as name for candidates number,
