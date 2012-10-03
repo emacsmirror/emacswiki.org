@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 21.1
-;; Last-Updated: Thu Aug 23 16:27:38 2012 (-0700)
+;; Last-Updated: Tue Oct  2 20:08:48 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 2678
+;;     Update #: 2680
 ;; URL: http://www.emacswiki.org/emacs-en/oneonone.el
 ;; Doc URL: http://emacswiki.org/emacs/OneOnOneEmacs
 ;; Keywords: local, frames
@@ -276,6 +276,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/10/02 dadams
+;;     Handle obsolescence of face modeline.
 ;; 2012/08/14 dadams
 ;;     1on1-fit-minibuffer-frame:
 ;;       Simplify by using window-frame and frame-first-window.  Thx to Martin Rudalics.
@@ -1653,7 +1655,8 @@ Also accepts SPC to mean yes, or DEL to mean no."
 (defun 1on1-setup-mode-line ()
   "Set up mode-line faces."
   (when 1on1-color-mode-line-flag
-    (set-face-background 'modeline 1on1-active-mode-line-background)
+    (set-face-background (if (facep 'modeline) 'modeline 'mode-line)
+                         1on1-active-mode-line-background)
     (when (facep 'mode-line-inactive)   ; Emacs 22
       (set-face-background 'mode-line-inactive 1on1-inactive-mode-line-background))))
 
