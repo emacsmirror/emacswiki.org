@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Oct  2 15:36:42 2012 (-0700)
+;; Last-Updated: Tue Oct  2 22:26:10 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 24635
+;;     Update #: 24640
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2554,7 +2554,8 @@ This is used as the value of `minibuffer-completion-table'."
                   result))
     (if completion-mode
         result                          ; `all-completions', `test-completion'
-      (try-completion strg (mapcar #'list result) (lambda (ss) (funcall pred ss)))))) ; `try-completion'
+      (try-completion                   ; `try-completion'
+       strg (mapcar #'list result) (and pred  (lambda (ss) (funcall pred ss)))))))
 
 ;;;###autoload (autoload 'icicle-describe-var-w-val-satisfying "icicles")
 (defun icicle-describe-var-w-val-satisfying (predicate variable &optional optionp)
@@ -6015,7 +6016,8 @@ Used as the value of `icicle-buffer-complete-fn' and hence as
                                 bfnames)))
     (if completion-mode
         bfnames                         ; `all-completions', `test-completion'
-      (try-completion strg (mapcar #'list bfnames) (lambda (ss) (funcall pred ss))))))
+      (try-completion                   ; `try-completion'
+       strg (mapcar #'list bfnames) (and pred  (lambda (ss) (funcall pred ss)))))))
 
 (put 'icicle-buffer-no-search 'icicle-Completions-window-max-height 200)
 
