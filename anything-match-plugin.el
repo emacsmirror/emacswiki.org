@@ -395,10 +395,12 @@ This is done only if `anything-mp-3-pattern-str' is same as PATTERN."
   "Return a list of predicate/regexp cons cells.
 e.g ((identity . \"foo\") (identity . \"bar\"))."
   (unless (string= pattern "")
-    (loop for pat in (anything-mp-make-regexps pattern)
-          collect (if (string= "!" (substring pat 0 1))
-                      (cons 'not (substring pat 1))
-                      (cons 'identity pat)))))
+    (if (string-match "^!" pattern)
+        (anything-mp-3-get-patterns-internal (concat ". " pattern))
+      (loop for pat in (anything-mp-make-regexps pattern)
+            collect (if (string= "!" (substring pat 0 1))
+                        (cons 'not (substring pat 1))
+                      (cons 'identity pat))))))
 
 (defun anything-mp-3-match (str &optional pattern)
   "Check if PATTERN match STR.
@@ -422,11 +424,14 @@ i.e (identity (string-match \"foo\" \"foo bar\")) => t."
         while (funcall searchfn1 (or (cdar pat) "") nil t)
         for bol = (point-at-bol)
         for eol = (point-at-eol)
+        for (b . e) = (if (eq searchfn2 're-search-backward)
+                          (cons eol bol)
+                        (cons bol eol))
         if (loop for (pred . str) in (cdr pat) always
-                 (progn (goto-char bol)
-                        (funcall pred (funcall searchfn2 str eol t))))
-        do (goto-char eol) and return t
-        else do (goto-char eol)
+                 (progn (goto-char b)
+                        (funcall pred (funcall searchfn2 str e t))))
+        do (goto-char e) and return t
+        else do (goto-char e)
         finally return nil))
 
 (defun anything-mp-3-search (pattern &rest ignore)
