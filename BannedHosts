@@ -1,9 +1,9 @@
 # This page lists all banned hosts and IP numbers.  The page is
 # locked; only administrators can edit it.
 
-# Post on EmacsWikiAdministrators if you would like to get unbanned,
-# or if you would like to help maintain this list.  That page also
-# shows how we arrived at IP ranges, if we're blocking ranges.
+# Leave a comment if you would like to get unbanned,
+# or if you would like to help maintain this list.
+# http://www.emacswiki.org/emacs/Comments_on_BannedHosts
 
 # A lot of innocent people can be banned if entire networks are being
 # banned.  Sometimes this is the only solution since the banned person
@@ -16,9 +16,6 @@
 # pages), please get the page database instead.  See
 # http://emacswiki.org/cgi-bin/wiki/WikiDownload
 
-dsl\.teksavvy\.com  # for vandalizing the site in March 2012
-mail\.wishmobile\.ca # for vandalizing the site in March 2012
-# 60.190.240.64 - 60.190.240.95
 ^60\.190\.240\.(6[456789]|[78][0-9]|9[0-5]) # for spamming our category pages
 ^89\.163\.39\.37 # for spamming us with links to hacked boards and the like
 46-105-54-85.kimsufi.com # for spamming, creating new pages with links
