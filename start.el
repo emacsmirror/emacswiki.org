@@ -7,9 +7,9 @@
 ;; Copyright (C) 1995-2012, Drew Adams, all rights reserved.
 ;; Created: Wed Aug  2 11:12:24 1995
 ;; Version: 21.1
-;; Last-Updated: Sun Aug 26 07:05:23 2012 (-0700)
+;; Last-Updated: Tue Oct  2 22:43:41 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 2945
+;;     Update #: 2947
 ;; URL: http://www.emacswiki.org/emacs-en/start.el
 ;; Keywords: abbrev, internal, local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -31,7 +31,7 @@
 ;;   `eyedropper', `facemenu', `facemenu+', `faces', `faces+',
 ;;   `ffap', `files+', `find-dired', `find-dired+', `find-dired-',
 ;;   `finder', `finder+', `finder-inf', `fit-frame', `font-lock',
-;;   `font-menus', `frame-cmds', `frame-fns', `fuzzy-match',
+;;   `font-menus-da', `frame-cmds', `frame-fns', `fuzzy-match',
 ;;   `header2', `help+20', `hexrgb', `hide-comnt', `highlight',
 ;;   `icomplete', `icomplete+', `imenu', `imenu+', `info', `info+',
 ;;   `isearch+', `iso-transl', `lacarte', `lib-requires', `lisp-mnt',
@@ -396,7 +396,7 @@
   (require 'autofit-frame nil t))       ; Automatically fit frames to sole window.
 (unless (> emacs-major-version 22)
   (autoload 'wdired-change-to-wdired-mode "wdired") ; Easily rename files etc.
-  (add-hook 'dired-load-hook '(lambda ()
+  (add-hook 'dired-load-hook (lambda ()
                                (define-key dired-mode-map "\C-x\C-q" 'wdired-change-to-wdired-mode))))
 (when (fboundp 'text-scale-increase)    ; Emacs 23+
   (require 'face-remap+ nil t))         ; Resize window/frame when scale text.
@@ -671,10 +671,10 @@ See the Dired-X Info pages (type \\[info]) for information on this package.")
 (when (< emacs-major-version 21)
   (eval-after-load "cc-mode"
     '(progn (require 'imenu+ nil t)
-            (add-hook 'c-mode-common-hook
-                      '(lambda () (condition-case nil
-                                      (imenu-add-defs-to-menubar)
-                                    (error nil)))))))
+      (add-hook 'c-mode-common-hook
+       (lambda () (condition-case nil
+                      (imenu-add-defs-to-menubar)
+                    (error nil)))))))
 (when (> emacs-major-version 21) (eval-after-load "find-func" '(require 'find-func+ nil t)))
 ;(eval-after-load "vc" '(require 'vc+)) ; Extensions to `vc.el'.
 (autoload 'insert-time-string "insert-time-string" t "Insert current time at point.")
