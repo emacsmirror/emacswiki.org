@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue Oct  2 22:15:51 2012 (-0700)
+;; Last-Updated: Thu Oct  4 08:43:28 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8996
+;;     Update #: 8997
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -86,6 +86,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2012/10/04 dadams
+;;     icicle-find-file(-other-window): If precede C-! with prefix arg, then open all read-only.
 ;; 2012/10/02 dadams
 ;;     icicle-describe-opt-of-type-complete, icicle-buffer-multi-complete:
 ;;       In try-completion: change PRED to a predicate that works on a singleton list, not a string.
