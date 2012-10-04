@@ -9,7 +9,7 @@ you're loading a file (e.g your .emacs) and emacs raises weird errors regarding
 the read syntax. 
 
 == gdb ==
-
+=== connect to the Emacs process ===
 This is what I use to attach gdb to a running Emacs process.  This
 only makes sense if you have the C source code lying somewhere.  This
 way, if Emacs ever crashes (happened a few times only!), I can at
@@ -25,7 +25,7 @@ source directory (this is important for the .gdbinit file there which
 contains some nice Emacs Lisp-debugging things).  Read the etc/DEBUG file
 in your Emacs distribution for more information.
 
-=== Other or older shell script suggestions ===
+==== Other or older shell script suggestions ====
 
 This shell script starts emacs and attaches gdb to it.
 
@@ -39,6 +39,49 @@ This shell script starts emacs and attaches gdb to it.
  else
      /usr/local/bin/emacs $* &amp;
  fi
+
+==== What to do to analyze Emacs once you are connected ====
+A backtrace (command: *bt*) can be very cryptic:
+
+<pre>
+(gdb) bt
+#0  0x08169113 in buf_charpos_to_bytepos (b=0xfa578e0, charpos=13097) at marker.c:178
+#1  0x081f4140 in Fparse_partial_sexp (from=52388, to=53488, targetdepth=139108554, stopbefore=139108554, oldstate=243681062, 
+    commentstop=139108554) at syntax.c:3344
+#2  0x081bc70e in Ffuncall (nargs=6, args=0xbfcf87e4) at eval.c:2810
+#3  0x081f748c in exec_byte_code (bytestr=137726505, vector=288541077, maxdepth=52, args_template=0, nargs=0, args=0xbfcf8b14)
+    at bytecode.c:899
+#4  0x081bcc7c in funcall_lambda (fun=288541205, nargs=0, arg_vector=0x0) at eval.c:2955
+#5  0x081bc824 in Ffuncall (nargs=1, args=0xbfcf8b10) at eval.c:2838
+#6  0x081bb408 in eval_sub (form=265705694) at eval.c:2119
+#7  0x081b9d5d in internal_lisp_condition_case (var=142845490, bodyform=265705694, handlers=265705646) at eval.c:1252
+#8  0x081f8139 in exec_byte_code (bytestr=137726401, vector=137726421, maxdepth=72, args_template=1024, nargs=0, 
+    args=0xbfcf9068) at bytecode.c:1095
+#9  0x081bcc7c in funcall_lambda (fun=137726373, nargs=0, arg_vector=0x400) at eval.c:2955
+#10 0x081bc824 in Ffuncall (nargs=1, args=0xbfcf9064) at eval.c:2838
+#11 0x081f748c in exec_byte_code (bytestr=171125761, vector=171161333, maxdepth=12, args_template=139108554, nargs=0, 
+    args=0x0) at bytecode.c:899
+#12 0x081bcf02 in funcall_lambda (fun=171161381, nargs=1, arg_vector=0x84aa0ca) at eval.c:3021
+#13 0x081bc824 in Ffuncall (nargs=2, args=0xbfcf9354) at eval.c:2838
+#14 0x081f748c in exec_byte_code (bytestr=171310609, vector=171261757, maxdepth=8, args_template=139108554, nargs=0, args=0x0)
+    at bytecode.c:899
+#15 0x081bcf02 in funcall_lambda (fun=171261797, nargs=0, arg_vector=0x84aa0ca) at eval.c:3021
+#16 0x081bc824 in Ffuncall (nargs=1, args=0xbfcf9644) at eval.c:2838
+#17 0x081f748c in exec_byte_code (bytestr=171185209, vector=171169165, maxdepth=8, args_template=139108554, nargs=0, args=0x0)
+    at bytecode.c:899
+#18 0x081bcf02 in funcall_lambda (fun=171169197, nargs=0, arg_vector=0x84aa0ca) at eval.c:3021
+#19 0x081bc824 in Ffuncall (nargs=1, args=0xbfcf9934) at eval.c:2838
+…
+</pre>
+
+
+Can someone provide some light as to how to understand what is Emacs doing? In particular:
+* when it's in Ffuncall, how to know the name of the Lisp function being called?
+* when it's in exec_byte_code, how to know which file the code is from?
+* when it's executing a Lisp function, how to print the arguments?
+* when it's executing funcall_lambda, how to print the exact function?
+* how to print a Lisp stack trace?
+* etc. 
 
 ----
 CategoryCode, CategoryDebug
