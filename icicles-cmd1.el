@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Oct  2 22:26:10 2012 (-0700)
+;; Last-Updated: Thu Oct  4 08:43:08 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 24640
+;;     Update #: 24647
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -6644,8 +6644,8 @@ With a prefix argument, use absolute file names
 With a negative prefix argument, you can choose also by date:
  Completion candidates include the last modification date.
 
-Note that when you use a prefix argument completion matches candidates
-as ordinary strings.  It knows nothing of file names per se.  In
+Note that when you use a prefix arg, completion matches candidates as
+ordinary strings.  It knows nothing of file names per se.  In
 particular, you cannot use remote file-name syntax if you use a prefix
 argument.
 
@@ -6840,7 +6840,8 @@ Ido-like behavior."                     ; Doc string
 (icicle-define-file-command icicle-find-file
   "Visit a file or directory.
 If you use a prefix argument when you act on a candidate file name,
-then you visit the file in read-only mode.
+then you visit the file in read-only mode.  This includes when you act
+on each candidate using `C-!': precede the `C-!' with a prefix arg.
 
 If you use a prefix arg for the command itself, this reverses the
 effect of using a prefix arg on individual candidates.  That is, with
@@ -6877,7 +6878,7 @@ option `icicle-require-match-flag'.
 Option `icicle-files-ido-like' non-nil gives this command a more
 Ido-like behavior."                     ; Doc string
   (lambda (file)                        ; FREE here: CURRENT-PREFIX-ARG, INIT-PREF-ARG, THIS-COMMAND.
-    (let* ((r-o  (if (eq this-command 'icicle-candidate-action)
+    (let* ((r-o  (if (memq this-command '(icicle-candidate-action icicle-all-candidates-action))
                      (or (and init-pref-arg        (not current-prefix-arg))
                          (and (not init-pref-arg)  current-prefix-arg))
                    init-pref-arg))
@@ -6904,7 +6905,7 @@ Ido-like behavior."                     ; Doc string
 (icicle-define-file-command icicle-find-file-other-window
   "Same as `icicle-find-file', except uses another window." ; Doc string
   (lambda (file)                        ; FREE here: CURRENT-PREFIX-ARG, INIT-PREF-ARG, THIS-COMMAND.
-    (let* ((r-o  (if (eq this-command 'icicle-candidate-action)
+    (let* ((r-o  (if (memq this-command '(icicle-candidate-action icicle-all-candidates-action))
                      (or (and init-pref-arg        (not current-prefix-arg))
                          (and (not init-pref-arg)  current-prefix-arg))
                    init-pref-arg))
