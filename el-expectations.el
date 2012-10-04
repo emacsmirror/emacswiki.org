@@ -1,5 +1,5 @@
 ;;; el-expectations.el --- minimalist unit testing framework
-;; Time-stamp: <2010-12-12 17:47:08 rubikitch>
+;; Time-stamp: <2012-10-04 11:44:42 rubikitch>
 
 ;; Copyright (C) 2008, 2009, 2010  rubikitch
 
@@ -363,11 +363,20 @@ Example:
 With prefix argument, do `batch-expectations-in-emacs'."
   (interactive)
   (setq exps-last-error-position nil)
-  (if current-prefix-arg
-      (batch-expectations-in-emacs)
-    (exps-display
-     (mapcar 'exps-execute-test (or testcase exps-last-testcase))))
-  (exps-cleanup))
+  (let ((res
+         (if current-prefix-arg
+             (batch-expectations-in-emacs)
+           (let ((results (mapcar 'exps-execute-test (or testcase
+exps-last-testcase))))
+             (exps-display results)
+             (exps-errors results)))))
+    (exps-cleanup)
+    res))
+(defun exps-errors (results)
+  "calcs if there where fails or errors"
+  (destructuring-bind (pass fails errors desc)
+      (exps-classify-results results)
+    (+ (length errors) (length fails))))
 
 ;;;; assertions
 (defvar exps-assert-functions
