@@ -9,6 +9,11 @@ JoeBloggs, why don't you put this on github.  This way you get issue tracking, g
 [new]
 
 Here is the github repo: https://github.com/vapniks/one-key -- JoeBloggs
+
+[new]
+
+IMPORTANT NOTE: one-key.el is currently undergoing some major internal refactoring so don't build on it while this message is still here.
+
 ==What is OneKey ?==
 OneKey is a popup help window which appears when you type a *Top Key*.
 It shows *Keystrokes* and *Commands* in a help window.
