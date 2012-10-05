@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Oct  2 11:21:14 2012 (-0700)
+;; Last-Updated: Fri Oct  5 14:32:40 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 18531
+;;     Update #: 18554
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -382,13 +382,12 @@
   ;; lacarte-menu-items-alist, icicle-buffer-name-input-p, icicle-candidate-action-fn,
   ;; icicle-candidate-nb, icicle-complete-keys-alist, icicle-completion-candidates, 
   ;; icicle-current-completion-candidate-overlay, icicle-current-completion-mode,
-  ;; icicle-current-input, icicle-current-raw-input, icicle-default-directory,
-  ;; icicle-default-thing-insertion-flipped-p, icicle-edit-update-p, icicle-general-help-string,
-  ;; icicle-get-alist-candidate-function, icicle-ignored-extensions, icicle-ignored-extensions-regexp,
-  ;; icicle-incremental-completion-p, icicle-insert-string-at-pt-end, `icicle-insert-string-at-pt-start,
-  ;; icicle-last-completion-candidate, icicle-last-completion-command, icicle-last-input,
-  ;; icicle-last-sort-comparer, icicle-last-transform-function, 
-  ;; icicle-nb-of-other-cycle-candidates, icicle-pre-minibuffer-buffer,
+  ;; icicle-current-input, icicle-current-raw-input, icicle-default-thing-insertion-flipped-p,
+  ;; icicle-edit-update-p, icicle-general-help-string, icicle-get-alist-candidate-function,
+  ;; icicle-ignored-extensions, icicle-ignored-extensions-regexp, icicle-incremental-completion-p,
+  ;; icicle-insert-string-at-pt-end, `icicle-insert-string-at-pt-start, icicle-last-completion-candidate,
+  ;; icicle-last-completion-command, icicle-last-input, icicle-last-sort-comparer,
+  ;; icicle-last-transform-function, icicle-nb-of-other-cycle-candidates, icicle-pre-minibuffer-buffer,
   ;; icicle-saved-candidates-variables-obarray, icicle-saved-completion-candidates,
   ;; icicle-saved-ignored-extensions, icicle-successive-grab-count, icicle-thing-at-pt-fns-pointer,
   ;; icicle-universal-argument-map, icicle-variable-name-history
@@ -3646,12 +3645,7 @@ Optional argument WORD-P non-nil means complete only a word at a time."
                                             icicle-last-completion-candidate
                                             (icicle-file-name-directory-w-default icicle-current-input))
                                          icicle-last-completion-candidate)))
-                        (insert inserted)
-                        (when (and (icicle-file-name-input-p)
-                                   (icicle-file-directory-p (icicle-abbreviate-or-expand-file-name
-                                                             inserted)))
-                          (setq icicle-default-directory  (icicle-abbreviate-or-expand-file-name
-                                                           inserted))))
+                        (insert inserted))
                       (save-selected-window (icicle-remove-Completions-window))
                       ;; Do not transform multi-completion here.  It should be done in the function that
                       ;; acts on the chosen completion candidate.  For a multi-command, that means it
@@ -3822,9 +3816,6 @@ existing content (do not replace it), and set default dir."
       (1on1-fit-minibuffer-frame)))
   (deactivate-mark)
   (icicle-highlight-initial-whitespace icicle-current-input)
-  (when (and (icicle-file-name-input-p)  (icicle-file-directory-p icicle-last-completion-candidate))
-    (setq icicle-default-directory  (icicle-abbreviate-or-expand-file-name
-                                     icicle-last-completion-candidate)))
   (let ((complete-&-not-exiting-p  (and (not (boundp 'icicle-prefix-complete-and-exit-p))
                                         (icicle-input-is-a-completion-p icicle-current-input))))
     (when complete-&-not-exiting-p (icicle-highlight-complete-input))
@@ -4039,12 +4030,7 @@ message either.  NO-DISPLAY-P is passed to
                                           icicle-last-completion-candidate
                                           (icicle-file-name-directory-w-default icicle-current-input))
                                        icicle-last-completion-candidate)))
-                      (insert inserted)
-                      (when (and (icicle-file-name-input-p)
-                                 (icicle-file-directory-p (icicle-abbreviate-or-expand-file-name
-                                                           inserted)))
-                        (setq icicle-default-directory  (icicle-abbreviate-or-expand-file-name
-                                                         inserted)))))
+                      (insert inserted)))
                   (save-selected-window (icicle-remove-Completions-window))
                   ;; Do not transform multi-completion here.  It should be done in the function that acts
                   ;; on the chosen completion candidate.  For a multi-command, that means it should be
@@ -4164,9 +4150,6 @@ value of this condition: nil or non-nil."
     (1on1-fit-minibuffer-frame))        ; In `oneonone.el'.
   (deactivate-mark)
   (icicle-highlight-initial-whitespace icicle-current-input)
-  (when (and (icicle-file-name-input-p)  (icicle-file-directory-p icicle-last-completion-candidate))
-    (setq icicle-default-directory  (icicle-abbreviate-or-expand-file-name
-                                     icicle-last-completion-candidate)))
   (let* ((input-sans-dir            (icicle-minibuf-input-sans-dir icicle-current-input))
          (complete-&-not-exiting-p  (and (member (icicle-upcase-if-ignore-case input-sans-dir)
                                                  (mapcar #'icicle-upcase-if-ignore-case
@@ -4752,10 +4735,7 @@ Optional arg CAND non-nil means it is the candidate to act on."
            (icicle-remove-candidate-display-others 'all))
          (icicle-raise-Completions-frame))
         (t
-         (let ((icicle-last-input         (or cand  (icicle-input-from-minibuffer)))
-               (icicle-default-directory  icicle-default-directory))
-           (when (and (icicle-file-name-input-p)  (icicle-file-directory-p icicle-last-input))
-             (setq icicle-default-directory  icicle-last-input))
+         (let ((icicle-last-input  (or cand  (icicle-input-from-minibuffer))))
            ;; NOTE: We no longer save and restore these things here.
            ;; We purposely allow an action function to modify these for subsequent actions.
            ;; If you need to save and restore these for a particular action function you define,
@@ -4831,14 +4811,8 @@ performed: display help on the candidate - see
                 end  (or (next-single-property-change end 'mouse-face)  (point-max)))
           (setq choice  (buffer-substring beg end))
           (remove-text-properties 0 (length choice) '(mouse-face nil) choice))))
-
-
-    (let ((icicle-last-input         choice)
-          (icicle-default-directory  icicle-default-directory))
-      (when (and (icicle-file-name-input-p)  (icicle-file-directory-p icicle-last-input))
-        (setq icicle-default-directory  icicle-last-input))
+    (let ((icicle-last-input  choice))
       (setq icicle-candidate-nb  (icicle-nb-of-cand-at-Completions-pos posn-pt))
-
       (save-window-excursion
         (select-window (active-minibuffer-window))
         (delete-region (icicle-minibuffer-prompt-end) (point-max))
@@ -4846,7 +4820,6 @@ performed: display help on the candidate - see
       (if (not fn-var)
           (with-current-buffer (or icicle-orig-buff  posn-buf)
             (icicle-help-on-candidate)) ; Does not `icicle-raise-Completions-frame'.
-
         ;; NOTE: We no longer save and restore these things here.
         ;; We purposely allow an action function to modify these for subsequent actions.
         ;; If you need to save and restore these for a particular action function you define,
