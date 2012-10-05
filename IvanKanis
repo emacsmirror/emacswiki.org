@@ -1,11 +1,11 @@
 I have a [http://ivan.kanis.fr web page] which contains a blog that talks about emacs.
 
-I have used emacs since around 1997.
+I have used emacs since 1997.
 
-In 2002 I got more proficient with elisp. 
+In 2002 I became proficient with elisp. 
 
-In 2007, I have declared .emacs bankruptcy like [http://www.emacsblog.org/2007/10/07/declaring-emacs-bankruptcy/ Ryan McGeary]. My configuration file grew so large it was unmaintainable. I took the time to split it up in small manageable chunks.
+I wrote the mercurial backend and the world clock that are parts of emacs.
 
-I wrote the mercurial backend and a world clock that are now part of emacs. I have also written a vt100 terminal emulator called [http://ivan.kanis.fr/nterm.html nterm].
+I am writing a vt100 terminal emulator called [http://ivan.kanis.fr/nterm.html nterm].
 
 CategoryHomepage
