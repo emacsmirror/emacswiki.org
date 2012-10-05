@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Oct  4 10:24:04 2012 (-0700)
+;; Last-Updated: Fri Oct  5 09:06:59 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 24652
+;;     Update #: 24708
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -6000,24 +6000,33 @@ Used as the value of `icicle-buffer-complete-fn' and hence as
                                  (concat "^" buf-pat)))
                  (content-pat  (let ((icicle-list-use-nth-parts  '(2)))
                                  (icicle-transform-multi-completion strg)))
-                 (bfnames      (mapcar (lambda (buf) (buffer-name buf)) icicle-bufflist))
-                 (bfnames      (if icicle-buffer-ignore-space-prefix-flag
-                                   (icicle-remove-if (lambda (bfname) (icicle-string-match-p "^ " bfname))
-                                                     bfnames)
-                                 bfnames))
-                 (bfnames      (icicle-remove-if-not (lambda (bfname) (icicle-string-match-p buf-pat bfname))
-                                                     bfnames))
-                 (bfnames      (icicle-remove-if-not
-                                (lambda (bfname)
-                                  (with-current-buffer bfname
-                                    (save-excursion
-                                      (goto-char (point-min))
-                                      (re-search-forward content-pat nil t))))
-                                bfnames)))
+                 (bufs         (mapcar (lambda (buf) (buffer-name buf)) icicle-bufflist))
+                 (bufs         (if icicle-buffer-ignore-space-prefix-flag
+                                   (icicle-remove-if (lambda (buf) (icicle-string-match-p "^ " buf)) bufs)
+                                 bufs))
+                 (bufs         (icicle-remove-if-not (lambda (buf) (icicle-string-match-p buf-pat buf)) bufs))
+                 (bufs         (cond ((equal "" content-pat)
+                                      (dolist (buf  bufs)
+                                        ;; Free vars here: EXISTING-BUFFERS, NEW-BUFS--TO-KILL
+                                        (when (and (boundp 'existing-bufs)  (boundp 'new-bufs--to-kill)
+                                                   (not (memq (setq buf  (get-buffer buf)) existing-bufs)))
+                                          (add-to-list 'new-bufs--to-kill buf)))
+                                      bufs)
+                                     (t
+                                      (icicle-remove-if-not
+                                       (lambda (buf)
+                                         (with-current-buffer buf
+                                           (save-excursion (goto-char (point-min))
+                                                           (re-search-forward content-pat nil t)))
+                                         ;; Free vars here: EXISTING-BUFFERS, NEW-BUFS--TO-KILL
+                                         (when (and (boundp 'existing-bufs)  (boundp 'new-bufs--to-kill)
+                                                    (not (memq (setq buf  (get-buffer buf)) existing-bufs)))
+                                           (add-to-list 'new-bufs--to-kill buf)))
+                                       bufs)))))
     (if completion-mode
-        bfnames                         ; `all-completions', `test-completion'
+        bufs                            ; `all-completions', `test-completion'
       (try-completion                   ; `try-completion'
-       strg (mapcar #'list bfnames) (and pred  (lambda (ss) (funcall pred ss)))))))
+       strg (mapcar #'list bufs) (and pred  (lambda (ss) (funcall pred ss)))))))
 
 (put 'icicle-buffer-no-search 'icicle-Completions-window-max-height 200)
 
@@ -6066,18 +6075,29 @@ The marked files are examined, and those whose file names and/or
 contents match your multi-completion input are available as candidate
 buffers to visit.  This command is like `icicle-buffer'.
 See that command for more information.
-You must be in Dired to use this command." ; Doc string
-  switch-to-buffer-other-window         ; Action function
+You must be in Dired to use this command.
+
+When this command is finished, any unused buffers that were created
+for content matching are killed, if option
+`icicle-kill-visited-buffers-flag' is non-nil.  But a prefix argument
+flips the behavior specified by that option." ; Doc string
+  (lambda (buf)                         ; Action function.  Free var here: NEW-BUFS--TO-KEEP.
+    (push (switch-to-buffer (icicle-transform-multi-completion buf))
+          new-bufs--to-keep))           ; Add the visited buffer to those we will keep (not kill).
   prompt 'icicle-buffer-multi-complete nil ; `completing-read' args
   (and (fboundp 'confirm-nonexistent-file-or-buffer)  (confirm-nonexistent-file-or-buffer)) ; Emacs 23.
   nil 'buffer-name-history (icicle-default-buffer-names current-prefix-arg) nil
   (icicle-buffer-bindings               ; Bindings
    ((prompt                             (icicle-buffer-name-prompt "Visit file"))
     (icicle-list-use-nth-parts          '(1))
+    (icicle-show-multi-completion-flag  t) ; Override user setting.
     ;; Bind `icicle-apropos-complete-match-fn' to nil to prevent automatic input matching in
     ;; `icicle-unsorted-apropos-candidates' etc., because `icicle-buffer-multi-complete' does everything.
     (icicle-apropos-complete-match-fn   nil)
-    (icicle-show-multi-completion-flag  t) ; Override user setting.
+    (init-pref-arg                      current-prefix-arg)
+    (existing-bufs                      (buffer-list))
+    (new-bufs--to-kill                  ())
+    (new-bufs--to-keep                  ())
     (icicle-candidate-help-fn           (lambda (cand)
                                           (setq cand  (icicle-transform-multi-completion cand))
                                           (when (and (bufferp (get-buffer cand))
@@ -6100,24 +6120,34 @@ You must be in Dired to use this command." ; Doc string
          (icicle-highlight-lighter)
          (message "Matching buffer contents..."))
   nil                                   ; Undo code
-  (icicle-unbind-buffer-candidate-keys)) ; Last code
+  (progn (icicle-unbind-buffer-candidate-keys) ; Last code
+         (when (or (and init-pref-arg        (not icicle-kill-visited-buffers-flag))
+                   (and (not init-pref-arg)  icicle-kill-visited-buffers-flag))
+           (dolist (buf  new-bufs--to-kill)
+             (unless (memq buf new-bufs--to-keep) (kill-buffer buf))))))
 
 ;;;###autoload (autoload 'icicle-visit-marked-file-of-content-other-window "icicles")
 (icicle-define-command icicle-visit-marked-file-of-content-other-window ; Command name
   "Visit a marked file whose content matches a regexp, in another window.
 Same as `icicle-visit-marked-file-of-content' except it uses a
 different window.  You must be in Dired to use this command." ; Doc string
-  switch-to-buffer-other-window         ; Action function
+  (lambda (buf)                         ; Action function.  Free var here: NEW-BUFS--TO-KEEP.
+    (push (switch-to-buffer-other-window (icicle-transform-multi-completion buf))
+          new-bufs--to-keep))           ; Add the visited buffer to those we will keep (not kill).
   prompt 'icicle-buffer-multi-complete nil ; `completing-read' args
   (and (fboundp 'confirm-nonexistent-file-or-buffer)  (confirm-nonexistent-file-or-buffer)) ; Emacs 23.
   nil 'buffer-name-history (icicle-default-buffer-names current-prefix-arg) nil
   (icicle-buffer-bindings               ; Bindings
    ((prompt                             (icicle-buffer-name-prompt "Visit file"))
     (icicle-list-use-nth-parts          '(1))
+    (icicle-show-multi-completion-flag  t) ; Override user setting.
     ;; Bind `icicle-apropos-complete-match-fn' to nil to prevent automatic input matching in
     ;; `icicle-unsorted-apropos-candidates' etc., because `icicle-buffer-multi-complete' does everything.
     (icicle-apropos-complete-match-fn   nil)
-    (icicle-show-multi-completion-flag  t) ; Override user setting.
+    (init-pref-arg                      current-prefix-arg)
+    (existing-bufs                      (buffer-list))
+    (new-bufs--to-kill                  ())
+    (new-bufs--to-keep                  ())
     (icicle-candidate-help-fn           (lambda (cand)
                                           (setq cand  (icicle-transform-multi-completion cand))
                                           (when (and (bufferp (get-buffer cand))
@@ -6140,7 +6170,11 @@ different window.  You must be in Dired to use this command." ; Doc string
          (icicle-highlight-lighter)
          (message "Matching buffer contents..."))
   nil                                   ; Undo code
-  (icicle-unbind-buffer-candidate-keys)) ; Last code
+  (progn (icicle-unbind-buffer-candidate-keys) ; Last code
+         (when (or (and init-pref-arg        (not icicle-kill-visited-buffers-flag))
+                   (and (not init-pref-arg)  icicle-kill-visited-buffers-flag))
+           (dolist (buf  new-bufs--to-kill)
+             (unless (memq buf new-bufs--to-keep) (kill-buffer buf))))))
 
 ;;;###autoload (autoload 'icicle-insert-buffer "icicles")
 (icicle-define-command icicle-insert-buffer
