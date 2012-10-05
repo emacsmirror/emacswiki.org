@@ -288,7 +288,7 @@ layout.  If you use another keyboard layout, feel free to modify
 </pre>
 
 If ampc is suspended, you can still use every interactive command that does
-not directly operate on or with the user interace of ampc.  For example it is
+not directly operate on or with the user interface of ampc.  For example it is
 perfectly fine to call `ampc-increase-volume' or `ampc-toggle-play' via M-x
 RET.  Especially the commands `ampc-status' and `ampc-mini' are predesignated
 to be bound in the global keymap and called when ampc is suspended.
