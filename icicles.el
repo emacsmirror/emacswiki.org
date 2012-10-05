@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue Oct  2 11:21:02 2012 (-0700)
+;; Last-Updated: Fri Oct  5 11:46:58 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 23209
+;;     Update #: 23213
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Doc URL: http://emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -265,6 +265,8 @@
 ;;    `icicle-find-file-handle-bookmark-other-window',
 ;;    `icicle-find-file-in-tags-table',
 ;;    `icicle-find-file-in-tags-table-other-window',
+;;    `icicle-find-file-of-content',
+;;    `icicle-find-file-of-content-other-window',
 ;;    `icicle-find-file-other-window', `icicle-find-file-read-only',
 ;;    `icicle-find-file-read-only-other-window',
 ;;    `icicle-find-file-some-tags',
@@ -764,7 +766,8 @@
 ;;    `icicle-key-complete-keys-for-minibuffer',
 ;;    `icicle-key-descriptions-use-<>-flag',
 ;;    `icicle-key-descriptions-use-angle-brackets-flag',
-;;    `icicle-keymaps-for-key-completion', `icicle-kmacro-ring-max',
+;;    `icicle-keymaps-for-key-completion',
+;;    `icicle-kill-visited-buffers-flag', `icicle-kmacro-ring-max',
 ;;    `icicle-levenshtein-distance', `icicle-list-join-string',
 ;;    `icicle-list-nth-parts-join-string',
 ;;    `icicle-mark-position-in-candidate', `icicle-max-candidates',
@@ -966,6 +969,8 @@
 ;;    `icicle-file-writable-p', `icicle-filesets-files-under',
 ;;    `icicle-files-within', `icicle-files-within-1',
 ;;    `icicle-filter-alist', `icicle-filter-wo-input',
+;;    `icicle-find-file-of-content-multi-complete',
+;;    `icicle-find-file-of-content-read-file-name',
 ;;    `icicle-find-first-tag-action',
 ;;    `icicle-find-first-tag-other-window-action',
 ;;    `icicle-find-tag-action', `icicle-find-tag-define-candidates',
