@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Oct  2 10:27:11 2012 (-0700)
+;; Last-Updated: Fri Oct  5 08:19:40 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5331
+;;     Update #: 5332
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -119,7 +119,8 @@
 ;;    `icicle-key-complete-keys-for-minibuffer',
 ;;    `icicle-key-descriptions-use-<>-flag',
 ;;    `icicle-key-descriptions-use-angle-brackets-flag',
-;;    `icicle-keymaps-for-key-completion', `icicle-kmacro-ring-max',
+;;    `icicle-keymaps-for-key-completion',
+;;    `icicle-kill-visited-buffers-flag', `icicle-kmacro-ring-max',
 ;;    `icicle-levenshtein-distance', `icicle-list-join-string',
 ;;    `icicle-list-nth-parts-join-string',
 ;;    `icicle-mark-position-in-candidate', `icicle-max-candidates',
@@ -2260,6 +2261,14 @@ Do not add any of the translation keymaps, `function-key-map',
 `key-translation-map', or `iso-transl-ctl-x-8-map' to the list - that
 will not work."
   :type '(repeat symbol) :group 'Icicles-Key-Completion :group 'Icicles-Key-Bindings)
+
+(defcustom icicle-kill-visited-buffers-flag t
+  "*Non-nil means kill buffers visited temporarily to search files.
+This applies to commands such as `icicle-find-file-of-content', which
+search files that match your completion input.  If non-nil then any
+such buffers for files that you do not actually choose are killed when
+the command is finished.  If nil then they are not killed."
+  :type 'boolean :group 'Icicles-Buffers :group 'Icicles-Files :group 'Icicles-Matching)
 
 (when (boundp 'kmacro-ring)             ; Emacs 22+
   (defcustom icicle-kmacro-ring-max (if (boundp 'most-positive-fixnum)
