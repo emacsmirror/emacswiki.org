@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Oct  5 11:47:47 2012 (-0700)
+;; Last-Updated: Fri Oct  5 14:46:20 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 9014
+;;     Update #: 9027
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1461,6 +1461,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2012/10/05 dadams
+;;     icicle-next-candidate: Removed setting of icicle-default-directory (unused).
 ;; 2012/10/02 dadams
 ;;     icicle-file-name-(non)directory, icicle-input-from-minibuffer:
 ;;       string-to-list -> append the string to (),
@@ -3406,6 +3408,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2012/10/05 dadams
+;;     icicle-(prefix|apropos)-complete-(1|2), icicle(-mouse)-candidate-action-1:
+;;       Removed setting of icicle-default-directory (unused).
 ;; 2012/10/02 dadams
 ;;     Added: icicle-looking-at-p, icicle-looking-back-at-p.
 ;;     Removed: icicle-looking(-back)-at-anychar-regexp-p.
@@ -4919,6 +4924,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2012/10/05 dadams
+;;     icicle-minibuffer-setup: Removed binding of icicle-default-directory (unused).
 ;; 2012/10/01 dadams
 ;;     icicle-define-icicle-maps: Protect dired-get-marked-files with condition-case.
 ;; 2012/09/15 dadams
@@ -6797,6 +6804,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2012/10/05 dadams
+;;     Removed: icicle-default-directory (unused).
 ;; 2012/09/08 dadams
 ;;     Added: icicle-buffer-name-input-p, icicle-buffer-complete-fn.
 ;;     icicle-general-help-string: Removed reference to icicle-ignore-space-prefix-flag.
