@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Thu Oct  4 08:43:28 2012 (-0700)
+;; Last-Updated: Thu Oct  4 22:55:47 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 8997
+;;     Update #: 9002
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -3194,6 +3194,9 @@
 ;;       macros needs to be byte-compiled anew after loading the updated macros.
 ;; ****************************************************************************************************
 ;;
+;; 2012/10/04 dadams
+;;     icicle-define-file-command:
+;;       When call expand-file-name, wrap i-last-input with directory-file-name, to use parent dir.
 ;; 2012/09/28 dadams
 ;;     naked-edmacro-parse-keys:
 ;;       Better fix for M-TAB.  Do not assume that function keys are lowercase.
