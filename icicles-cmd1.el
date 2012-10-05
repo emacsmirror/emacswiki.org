@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Oct  4 08:43:08 2012 (-0700)
+;; Last-Updated: Thu Oct  4 10:24:04 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 24647
+;;     Update #: 24652
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -6839,9 +6839,13 @@ Ido-like behavior."                     ; Doc string
 ;;;###autoload (autoload 'icicle-find-file "icicles")
 (icicle-define-file-command icicle-find-file
   "Visit a file or directory.
-If you use a prefix argument when you act on a candidate file name,
-then you visit the file in read-only mode.  This includes when you act
-on each candidate using `C-!': precede the `C-!' with a prefix arg.
+\(Option `find-file-run-dired' determines whether you can actually
+visit a directory candidate that you choose.)
+
+If you use a prefix argument when you act on a completion candidate,
+then you visit the file or dir in read-only mode.  This includes when
+you act on all candidates using `C-!': precede the `C-!' with a prefix
+arg.
 
 If you use a prefix arg for the command itself, this reverses the
 effect of using a prefix arg on individual candidates.  That is, with
