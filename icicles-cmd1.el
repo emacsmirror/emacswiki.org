@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Oct  5 09:06:59 2012 (-0700)
+;; Last-Updated: Fri Oct  5 11:46:33 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 24708
+;;     Update #: 24745
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -213,6 +213,8 @@
 ;;    (+)`icicle-find-file-absolute-other-window',
 ;;    (+)`icicle-find-file-in-tags-table',
 ;;    (+)`icicle-find-file-in-tags-table-other-window',
+;;    (+)`icicle-find-file-of-content',
+;;    (+)`icicle-find-file-of-content-other-window',
 ;;    (+)`icicle-find-file-other-window',
 ;;    (+)`icicle-find-file-read-only',
 ;;    (+)`icicle-find-file-read-only-other-window',
@@ -282,6 +284,8 @@
 ;;    `icicle-delete-file-or-directory', `icicle-describe-opt-action',
 ;;    `icicle-describe-opt-of-type-complete',
 ;;    `icicle-execute-extended-command-1', `icicle-explore',
+;;    `icicle-find-file-of-content-multi-complete',
+;;    `icicle-find-file-of-content-read-file-name',
 ;;    `icicle-find-first-tag-action',
 ;;    `icicle-find-first-tag-other-window-action',
 ;;    `icicle-find-tag-action', `icicle-find-tag-define-candidates',
@@ -493,6 +497,7 @@
   (defvar eval-expression-debug-on-error))
 
 (when (< emacs-major-version 22)
+  (defvar history-delete-duplicates)
   (defvar icicle-kmacro-alist)          ; In `icicles-var.el'
   (defvar kmacro-ring)                  ; In `kmacro.el'
   (defvar read-file-name-completion-ignore-case) ;  In `minibuffer.el'
@@ -502,6 +507,9 @@
 
 (when (< emacs-major-version 23)
   (defvar read-buffer-completion-ignore-case))
+
+(when (< emacs-major-version 24)
+  (defvar minibuffer-local-filename-syntax))
 
 (defvar apropos-do-all)                 ; In `apropos.el'
 (defvar bbdb-complete-name-allow-cycling) ; In `bbdb-com.el'
@@ -520,9 +528,12 @@
 (defvar color-themes)                   ; In `color-theme.el'
 (defvar color-theme-initialized)        ; In `color-theme.el'
 (defvar cookie-cache)
+(defvar dabbrev--last-obarray)
+(defvar dabbrev--last-completion-buffer)
 (defvar ess-current-process-name)       ; In `ess-inf.el'
 (defvar ess-mode-syntax-table)          ; In `ess-cust.el'
 (defvar ess-use-R-completion)           ; In `ess-cust.el'
+(defvar existing-bufs)                  ; `icicle-visit-marked-file-of-content', `icicle-find-file-of-content'
 (defvar filesets-data)                  ; In `filesets.el'
 (defvar find-tag-default-function)      ; In `etags.el'
 (defvar find-tag-marker-ring)           ; In `etags.el'
@@ -6999,6 +7010,312 @@ During completion (`*' means this requires library `Bookmark+'):
   (interactive)
   (let ((current-prefix-arg  (not current-prefix-arg)))
     (icicle-find-file-other-window)))
+
+
+;;;###autoload (when (> emacs-major-version 22) (autoload 'icicle-find-file-of-content "icicles"))
+;;;###autoload (when (> emacs-major-version 22) (autoload 'icicle-find-file-of-content-other-window "icicles"))
+(when (> emacs-major-version 22)
+
+  (put 'icicle-find-file-of-content 'icicle-Completions-window-max-height 200)
+
+  (icicle-define-file-command icicle-find-file-of-content ; Not bound by default.
+    "Visit a file or dir whose name and/or content matches.
+Candidate files and directories for completion are examined, and those
+whose names and/or contents match your multi-completion input are
+available to visit.
+
+\(Option `find-file-run-dired' determines whether you can actually
+visit a directory candidate that you choose.)
+
+If you use a prefix argument when you act on a completion candidate,
+then you visit the file or dir in read-only mode.  This includes when
+you act on all candidates using `C-!': precede the `C-!' with a prefix
+arg.  (See below for the use of a prefix arg for the command itself.)
+
+Completion candidates are two-part multi-completions, with the second
+part optional.  If both parts are present they are separated by
+`icicle-list-join-string' (\"^G^J\", by default).
+
+The first part is matched as a regexp against a file or directory
+name.  The second part is matched as a regexp against the file or
+directory content.  Candidates that do not match are filtered out.
+
+Your minibuffer input can match a name or content, or both.  Use
+`C-M-j' (equivalent here to `C-q C-g C-j') to input the default
+separator.
+
+For example:
+
+ To match `foo' against file and dir names, use input `foo'.
+ To match `bar' against file and dir contents, use input `C-M-j bar'.
+ To match both names and content, use input `foo C-M-j bar'.
+
+Only the matching file and directory names are shown in buffer
+`*Completions*', and only the chosen name is returned.  The actual
+content matches are unimportant anyway: content matching is used only
+to filter the candidates.
+
+If your input does not include a content-matching part then this
+command acts similar to `icicle-find-file' (but with a different use
+of the prefix argument).
+
+If your input includes a content-matching part then all files and
+directories matching the name part of your input (or all, if no name
+part) are visited.  This creates buffers visiting each matching
+candidate.
+
+For a directory, a Dired buffer is used - that is the content that is
+searched.  (Actually, this is determined by option
+`find-directory-functions'.)
+
+As you would expect, content matching can be costly in time, even
+though it can be quite helpful.  Use name matching to narrow the set
+of files that must be visited to search their contents.
+
+When this command is finished, any unused buffers that were created
+for content matching are killed, if option
+`icicle-kill-visited-buffers-flag' is non-nil.  But a prefix argument
+flips the behavior specified by that option." ; Doc string
+    (lambda (file)                      ; Action function
+      ;; Free vars here: CURRENT-PREFIX-ARG, INIT-PREF-ARG, THIS-COMMAND, NEW-BUFS--TO-KEEP.
+      (let* ((r-o  (and (memq this-command '(icicle-candidate-action icicle-mouse-candidate-action
+                                             icicle-all-candidates-action))
+                        current-prefix-arg))
+             (fn   (if r-o 'find-file-read-only-other-window 'find-file-other-window)))
+        (setq file  (icicle-transform-multi-completion file))
+        (funcall fn file 'WILDCARDS)
+        ;; Add the visited buffer to those we will keep (not kill).
+        ;; If FILE uses wildcards then there will be multiple such buffers.
+        ;; For a directory, get the Dired buffer instead of using `get-file-buffer'.
+        (let ((fil2  (if (string= "" (file-name-nondirectory file))  (directory-file-name file)  file)))
+          (dolist (fil  (file-expand-wildcards fil2))
+            (when (setq fil  (if (file-directory-p fil)
+                                 (get-buffer (file-name-nondirectory fil))
+                               (get-file-buffer fil)))
+              (push fil new-bufs--to-keep))))))
+    prompt nil (if (eq major-mode 'dired-mode) ; `read-file-name' args
+                   (condition-case nil  ; E.g. error because not on file line (ignore)
+                       (abbreviate-file-name (dired-get-file-for-visit))
+                     (error nil))
+                 default-directory)
+    (confirm-nonexistent-file-or-buffer) nil nil
+    (icicle-file-bindings               ; Bindings
+     ((init-pref-arg                      current-prefix-arg)
+      (prompt                             "File or directory: ")
+      (read-file-name-function            'icicle-find-file-of-content-read-file-name)
+      (icicle-list-use-nth-parts          '(1))
+      (icicle-transform-before-sort-p     t)
+      (icicle-show-multi-completion-flag  t) ; Override user setting.
+      ;; Bind `icicle-apropos-complete-match-fn' to nil to prevent automatic input matching in
+      ;; `icicle-unsorted-file-name-apropos-candidates' etc., because
+      ;; `icicle-find-file-of-content-read-file-name' does everything.
+      (icicle-apropos-complete-match-fn   nil)
+      (existing-bufs                      (buffer-list))
+      (new-bufs--to-kill                  ())
+      (new-bufs--to-keep                  ())
+      (icicle-all-candidates-list-alt-action-fn ; `M-|'
+       (lambda (files) (let ((enable-recursive-minibuffers  t))
+                         (dired-other-window (cons (read-string "Dired buffer name: ") files)))))))
+    (progn (icicle-bind-file-candidate-keys) ; First code
+           (put-text-property 0 1 'icicle-fancy-candidates t prompt)
+           (icicle-highlight-lighter))
+    nil                                 ; Undo code
+    (progn (icicle-unbind-file-candidate-keys) ; Last code
+           (when (or (and init-pref-arg        (not icicle-kill-visited-buffers-flag))
+                     (and (not init-pref-arg)  icicle-kill-visited-buffers-flag))
+             (dolist (buf  new-bufs--to-kill)
+               (unless (memq buf new-bufs--to-keep) (kill-buffer buf))))))
+
+
+  (put 'icicle-find-file-of-content-other-window 'icicle-Completions-window-max-height 200)
+
+  (icicle-define-file-command icicle-find-file-of-content-other-window ; Not bound by default.
+    "Visit a file or dir whose name and/or content matches, in another window.
+Same as `icicle-find-file-of-content' except it uses a different window." ; Doc string
+    (lambda (file)                      ; Action function
+      ;; Free vars here: CURRENT-PREFIX-ARG, INIT-PREF-ARG, THIS-COMMAND, NEW-BUFS--TO-KEEP.
+      (let* ((r-o  (and (memq this-command '(icicle-candidate-action icicle-mouse-candidate-action
+                                             icicle-all-candidates-action))
+                        current-prefix-arg))
+             (fn   (if r-o 'find-file-read-only-other-window 'find-file-other-window)))
+        (setq file  (icicle-transform-multi-completion file))
+        (funcall fn file 'WILDCARDS)
+        ;; Add the visited buffer to those we will keep (not kill).
+        ;; If FILE uses wildcards then there will be multiple such buffers.
+        ;; For a directory, get the Dired buffer instead of using `get-file-buffer'.
+        (let ((fil2  (if (string= "" (file-name-nondirectory file))  (directory-file-name file)  file)))
+          (dolist (fil  (file-expand-wildcards fil2))
+            (when (setq fil  (if (file-directory-p fil)
+                                 (get-buffer (file-name-nondirectory fil))
+                               (get-file-buffer fil)))
+              (push fil new-bufs--to-keep))))))
+    prompt nil (if (eq major-mode 'dired-mode) ; `read-file-name' args
+                   (condition-case nil  ; E.g. error because not on file line (ignore)
+                       (abbreviate-file-name (dired-get-file-for-visit))
+                     (error nil))
+                 default-directory)
+    (confirm-nonexistent-file-or-buffer) nil nil
+    (icicle-file-bindings               ; Bindings
+     ((init-pref-arg                      current-prefix-arg)
+      (prompt                             "File or directory: ")
+      (read-file-name-function            'icicle-find-file-of-content-read-file-name)
+      (icicle-list-use-nth-parts          '(1))
+      (icicle-transform-before-sort-p     t)
+      (icicle-show-multi-completion-flag  t) ; Override user setting.
+      ;; Bind `icicle-apropos-complete-match-fn' to nil to prevent automatic input matching in
+      ;; `icicle-unsorted-file-name-apropos-candidates' etc., because
+      ;; `icicle-find-file-of-content-read-file-name' does everything.
+      (icicle-apropos-complete-match-fn   nil)
+      (existing-bufs                      (buffer-list))
+      (new-bufs--to-kill                  ())
+      (new-bufs--to-keep                  ())
+      (icicle-all-candidates-list-alt-action-fn ; `M-|'
+       (lambda (files) (let ((enable-recursive-minibuffers  t))
+                         (dired-other-window (cons (read-string "Dired buffer name: ") files)))))))
+    (progn (icicle-bind-file-candidate-keys)
+           (put-text-property 0 1 'icicle-fancy-candidates t prompt) ; First code
+           (icicle-highlight-lighter))
+    nil                                 ; Undo code
+    (progn (icicle-unbind-file-candidate-keys) ; Last code
+           (when (or (and init-pref-arg        (not icicle-kill-visited-buffers-flag))
+                     (and (not init-pref-arg)  icicle-kill-visited-buffers-flag))
+             (dolist (buf  new-bufs--to-kill)
+               (unless (memq buf new-bufs--to-keep) (kill-buffer buf))))))
+
+  (defun icicle-find-file-of-content-multi-complete (strg pred completion-mode)
+    "Completion function for `icicle-find-file-of-content'.
+Used as the value of `minibuffer-completion-table'.."
+    (setq strg  (icicle-minibuf-input-sans-dir))
+    (lexical-let* ((file-pat     (let ((icicle-list-use-nth-parts  '(1)))
+                                   (icicle-transform-multi-completion strg)))
+                   (file-pat     (if (memq icicle-current-completion-mode '(nil apropos))
+                                     file-pat
+                                   (concat "^" file-pat)))
+                   (content-pat  (let ((icicle-list-use-nth-parts  '(2)))
+                                   (icicle-transform-multi-completion strg)))
+                   (filnames      (all-completions
+                                   ""
+                                   ;; This is just `read-file-name-internal'.
+                                   (completion-table-in-turn #'completion--embedded-envvar-table
+                                                             #'completion--file-name-table)
+                                   pred))
+                   (filnames      (icicle-remove-if-not
+                                   (lambda (filname) (icicle-string-match-p file-pat filname))
+                                   filnames))
+                   (filnames      (if (equal "" content-pat)
+                                      filnames
+                                    (icicle-remove-if-not
+                                     (lambda (filname)
+                                       ;; Avoid the error raised by calling `find-file-noselect' on a directory
+                                       ;; when `find-file-run-dired' is nil.
+                                       (and (or find-file-run-dired  (not (file-directory-p filname)))
+                                            (let* ((buf    (find-file-noselect filname))
+                                                   (found  (with-current-buffer buf
+                                                             (message "Matching buffer contents...")
+                                                             (save-excursion
+                                                               (goto-char (point-min))
+                                                               (re-search-forward content-pat nil t)))))
+                                              ;; Free vars here: EXISTING-BUFFERS, NEW-BUFS--TO-KILL
+                                              (when (and (boundp 'existing-bufs)  (boundp 'new-bufs--to-kill)
+                                                         (not (memq buf existing-bufs)))
+                                                (add-to-list 'new-bufs--to-kill buf))
+                                              found)))
+                                     filnames))))
+      (if completion-mode
+          filnames                      ; `all-completions', `test-completion'
+        (try-completion file-pat (mapcar #'list filnames) (and pred  (lambda (ff) (funcall pred (car ff))))))))
+
+  ;; This is based on code from Emacs 24 `read-file-name-default'.  It works only for Emacs 23+.
+  (defun icicle-find-file-of-content-read-file-name (prompt &optional
+                                                     dir default-filename mustmatch initial predicate)
+    "Function to read file name for `icicle-find-file-of-content'.
+Used as the value of `read-file-name-function'."
+    (unless dir (setq dir  default-directory))
+    (unless (file-name-absolute-p dir) (setq dir  (expand-file-name dir)))
+    (unless default-filename
+      (setq default-filename  (if initial (expand-file-name initial dir) buffer-file-name)))
+    (setq dir  (abbreviate-file-name dir))
+    (when default-filename
+      (setq default-filename  (if (consp default-filename)
+                                  (mapcar 'abbreviate-file-name default-filename)
+                                (abbreviate-file-name default-filename))))
+    (let ((insdef                           (cond ((and insert-default-directory  (stringp dir))
+                                                   (if initial
+                                                       (cons (minibuffer--double-dollars (concat dir initial))
+                                                             (length (minibuffer--double-dollars dir)))
+                                                     (minibuffer--double-dollars dir)))
+                                                  (initial (cons (minibuffer--double-dollars initial) 0))))
+          (completion-ignore-case           read-file-name-completion-ignore-case)
+          (minibuffer-completing-file-name  t)
+          (pred                             (or predicate  'file-exists-p))
+          (add-to-history                   nil))
+      (let* ((val
+              (if (or (not (next-read-file-uses-dialog-p)) ; File dialogs cannot handle remote (Emacs bug#99).
+                      (file-remote-p dir))
+                  (let ((dir  (file-name-as-directory (expand-file-name dir))))
+                    (minibuffer-with-setup-hook
+                     (lambda ()
+                       (setq default-directory  dir)
+                       ;; If first default in `minibuffer-default' duplicates initial input INSDEF, reset.
+                       (when (equal (or (car-safe insdef) insdef)
+                                    (or (car-safe minibuffer-default)  minibuffer-default))
+                         (setq minibuffer-default  (cdr-safe minibuffer-default)))
+                       ;; On first `M-n': fill `minibuffer-default' with a list of defaults.
+                       (set (make-local-variable 'minibuffer-default-add-function)
+                            (lambda () (with-current-buffer (window-buffer (minibuffer-selected-window))
+                                         (read-file-name--defaults dir initial))))
+                       (when (boundp 'minibuffer-local-filename-syntax)
+                         (set-syntax-table minibuffer-local-filename-syntax)))
+                     (completing-read prompt #'icicle-find-file-of-content-multi-complete pred mustmatch
+                                      insdef 'file-name-history default-filename)))
+                ;; If DEFAULT-FILENAME not supplied, and DIR contains a file name, split it.
+                (let ((file              (file-name-nondirectory dir))
+                      ;; When using a dialog, revert to nil and non-nil interpretation of MUSTMATCH.
+                      ;; Confirm options need to be interpreted as nil, otherwise it is impossible to create
+                      ;; new files using dialogs with the default settings.
+                      (dialog-mustmatch  (not (memq mustmatch '(nil confirm confirm-after-completion)))))
+                  (when (and (not default-filename)  (not (zerop (length file))))
+                    (setq default-filename  file
+                          dir               (file-name-directory dir)))
+                  (when default-filename
+                    (setq default-filename  (expand-file-name (if (consp default-filename)
+                                                                  (car default-filename)
+                                                                default-filename)
+                                                              dir)))
+                  (setq add-to-history  t)
+                  (x-file-dialog prompt dir default-filename dialog-mustmatch (eq predicate
+                                                                                  'file-directory-p)))))
+             (replace-in-history  (eq (car-safe file-name-history) val)))
+
+        ;; If `completing-read' returned the inserted default string itself (rather than a new string with
+        ;; the same contents), it means that the user typed RET with an empty minibuffer.  In that case,
+        ;; return "" so that commands such as `set-visited-file-name' can distinguish.
+        (when (consp default-filename) (setq default-filename  (car default-filename)))
+        (when (eq val default-filename)
+          ;; `completing-read' has not added an element to the history.  Maybe we should.
+          (unless replace-in-history (setq add-to-history  t))
+          (setq val  ""))
+        (unless val (error "No file name specified"))
+        (when (and default-filename  (string-equal val (if (consp insdef) (car insdef) insdef)))
+          (setq val  default-filename))
+        (setq val  (substitute-in-file-name val))
+        (if replace-in-history
+            ;; Replace what `Fcompleting_read' added to the history with what we will actually return.
+            ;; As an exception, if that's the same as the second item in `file-name-history', it is really
+            ;; a repeat (Bug#4657).
+            (let ((val1  (minibuffer--double-dollars val)))
+              (when history-delete-duplicates (setcdr file-name-history (delete val1 (cdr file-name-history))))
+              (if (string= val1 (cadr file-name-history))
+                  (pop file-name-history)
+                (setcar file-name-history val1)))
+          (when add-to-history          ; Add value to history, but not if it matches last value already there.
+            (let ((val1  (minibuffer--double-dollars val)))
+              (unless (and (consp file-name-history)  (equal (car file-name-history) val1))
+                (setq file-name-history  (cons val1 (if history-delete-duplicates
+                                                        (delete val1 file-name-history)
+                                                      file-name-history)))))))
+        val)))
+  )
 
 
 (put 'icicle-recent-file 'icicle-Completions-window-max-height 200)
