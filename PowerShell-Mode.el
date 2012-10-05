@@ -37,6 +37,8 @@
 ;;            Renamed some variables to be more descriptive.
 ;; 2012/10/02 Enhanced PowerShell-mode indenting & syntax table.
 ;;            Fixed dangling parens and re-indented the elisp itself.
+;; 2012/10/05 Added eldoc support.  Fixed bug where indent could loop.
+;;            See comment below on how to generate powershell-eldoc.el
 
 ;; Variables you may want to customize.
 (defgroup powershell nil
@@ -79,7 +81,7 @@ previous line is a continued line, ending with a backtick or a pipe"
         ;; on a continuation line (i.e. prior line ends with backtick
         ;; or pipe), indent relative to the continued line.
         (progn
-          (while (powershell-continuation-line-p)
+          (while (and (not (bobp))(powershell-continuation-line-p))
             (forward-line -1))
           (+ (current-indentation) powershell-continuation-indent))
       ;; otherwise, indent relative to the block's opening char ([{
@@ -190,10 +192,11 @@ in place if it is inside the meat of the line"
   (while (re-search-forward "`" end t)
     (replace-match "```")(setq end (+ end 2)))
   (goto-char beg)
-  (while (re-search-forward "[^`][$]" end t)
-    (goto-char (car (match-data)))
-    (forward-char)
+  (while (re-search-forward "\\(?:\\=\\|[^`]\\)[$]" end t)
+    (goto-char (car (cdr (match-data))))
+    (backward-char)
     (insert "`")
+    (forward-char)
     (setq end (1+ end))))
 
 (defun powershell-doublequote-selection (beg end)
@@ -213,7 +216,7 @@ in place if it is inside the meat of the line"
   (goto-char end)
   (insert "\""))
 
-(defun powershell-DollarParen-selection (beg end)
+(defun powershell-dollarparen-selection (beg end)
   "Wraps the selected text with $() leaving point after closing paren."
   (interactive `(,(region-beginning) ,(region-end)))
   (if (not mark-active)
@@ -247,11 +250,16 @@ in place if it is inside the meat of the line"
 (defvar powershell-keywords
   (concat "\\_<"
           (regexp-opt
-           '("begin" "break" "catch" "continue" "data" "do" "default"
-             "dynamicparam" "else" "elseif" "end" "exit" "filter"
-             "finally" "for" "foreach" "from" "function" "if" "in"
-             "param" "process" "return" "switch" "throw" "trap" "try"
-             "until" "where" "while") t)
+           '("begin"         "break"         "catch"         
+             "continue"      "data"          "do"            
+             "default"       "dynamicparam"  "else"          
+             "elseif"        "end"           "exit"          
+             "filter"        "finally"       "for"           
+             "foreach"       "from"          "function"      
+             "if"            "in"            "param"         
+             "process"       "return"        "switch"        
+             "throw"         "trap"          "try"           
+             "until"         "where"         "while"         ) t)
           "\\_>")
   "Powershell keywords")
 
@@ -277,11 +285,11 @@ in place if it is inside the meat of the line"
   "Powershell operators")
 
 (defvar powershell-scope-names
-  '("global" "local" "private" "script")
+  '("global"   "local"    "private"  "script"   )
   "Names of scopes in Powershell mode.")
 
 (defvar powershell-variable-drive-names
-  (append '("env" "function" "variable" "alias" ) powershell-scope-names)
+  (append '("env"       "function"  "variable"  "alias"     ) powershell-scope-names)
   "Names of scopes in Powershell mode.")
 
 (defconst powershell-variables-regexp
@@ -301,8 +309,8 @@ in place if it is inside the meat of the line"
   ;; Match 2 is the function name (which must exist)
   (concat
    "\\_<\\(?:" (regexp-opt powershell-scope-names t) ":\\)?"
-   "\\([a-zA-Z][a-zA-Z0-9]*-[a-zA-Z0-9]+\\)\\_>")
-  "Identifies legal function names")
+   "\\([A-Z][a-zA-Z0-9]*-[A-Z0-9][a-zA-Z0-9]*\\)\\_>")
+  "Identifies legal function & filter names")
 
 (defconst powershell-object-types-regexp
   ;; Syntax is \[name[.name]\] (where the escaped []s are literal)
@@ -319,29 +327,46 @@ in place if it is inside the meat of the line"
 ;; about_automatic_variables
 (defvar powershell-builtin-variables-regexp
   (regexp-opt
-   '("$" "?"  "^" "_" "args" "ConsoleFileName" "Error" "Event"
-     "EventSubscriber" "ExecutionContext" "false" "Foreach" "HOME" "Host"
-     "input" "LASTEXITCODE" "Matches" "MyInvocation" "NestedPromptLevel"
-     "null" "PID" "PROFILE" "PSBoundParameters" "PSCmdlet" "PSCulture"
-     "PSDebugContext" "PSHOME" "PSScriptRoot" "PSUICulture" "PSVersionTable"
-     "PWD" "ReportErrorShowExceptionClass" "ReportErrorShowInnerException"
-     "ReportErrorShowSource" "ReportErrorShowStackTrace" "Sender" "ShellId"
-     "SourceArgs" "SourceEventArgs" "StackTrace" "this" "true") t)
+   '("$"                              "?"                              
+     "^"                              "_"                              
+     "args"                           "ConsoleFileName"                
+     "Error"                          "Event"                          
+     "EventSubscriber"                "ExecutionContext"               
+     "false"                          "Foreach"                        
+     "HOME"                           "Host"                           
+     "input"                          "LASTEXITCODE"                   
+     "Matches"                        "MyInvocation"                   
+     "NestedPromptLevel"              "null"                           
+     "PID"                            "PROFILE"                        
+     "PSBoundParameters"              "PSCmdlet"                       
+     "PSCulture"                      "PSDebugContext"                 
+     "PSHOME"                         "PSScriptRoot"                   
+     "PSUICulture"                    "PSVersionTable"                 
+     "PWD"                            "ReportErrorShowExceptionClass"  
+     "ReportErrorShowInnerException"  "ReportErrorShowSource"          
+     "ReportErrorShowStackTrace"      "Sender"                         
+     "ShellId"                        "SourceArgs"                     
+     "SourceEventArgs"                "StackTrace"                     
+     "this"                           "true"                           ) t)
   "Names of the built-in Powershell variables. They are hilighted
 differently from the other variables.")
 
 (defvar powershell-config-variables-regexp
   (regexp-opt
-   '("ConfirmPreference" "DebugPreference" "ErrorActionPreference"
-     "ErrorView" "FormatEnumerationLimit" "LogCommandHealthEvent"
-     "LogCommandLifecycleEvent" "LogEngineHealthEvent"
-     "LogEngineLifecycleEvent" "LogProviderHealthEvent"
-     "LogProviderLifecycleEvent" "MaximumAliasCount" "MaximumDriveCount"
-     "MaximumErrorCount" "MaximumFunctionCount" "MaximumHistoryCount"
-     "MaximumVariableCount" "OFS" "OutputEncoding" "ProgressPreference"
-     "PSEmailServer" "PSSessionApplicationName" "PSSessionConfigurationName"
-     "PSSessionOption" "VerbosePreference" "WarningPreference"
-     "WhatIfPreference") t)
+   '("ConfirmPreference"           "DebugPreference"             
+     "ErrorActionPreference"       "ErrorView"                   
+     "FormatEnumerationLimit"      "LogCommandHealthEvent"       
+     "LogCommandLifecycleEvent"    "LogEngineHealthEvent"        
+     "LogEngineLifecycleEvent"     "LogProviderHealthEvent"      
+     "LogProviderLifecycleEvent"   "MaximumAliasCount"           
+     "MaximumDriveCount"           "MaximumErrorCount"           
+     "MaximumFunctionCount"        "MaximumHistoryCount"         
+     "MaximumVariableCount"        "OFS"                         
+     "OutputEncoding"              "ProgressPreference"          
+     "PSEmailServer"               "PSSessionApplicationName"    
+     "PSSessionConfigurationName"  "PSSessionOption"             
+     "VerbosePreference"           "WarningPreference"           
+     "WhatIfPreference"            ) t)
   "Names of variables that configure powershell features.")
 
  
@@ -477,8 +502,8 @@ characters that can't be set by the syntax-table alone.")
 (defvar powershell-mode-syntax-table
   (let ((powershell-mode-syntax-table (make-syntax-table)))
     (modify-syntax-entry ?$  "_" powershell-mode-syntax-table)
-    (modify-syntax-entry ?-  "_" powershell-mode-syntax-table)
     (modify-syntax-entry ?:  "_" powershell-mode-syntax-table)
+    (modify-syntax-entry ?-  "_" powershell-mode-syntax-table)
     (modify-syntax-entry ?^  "_" powershell-mode-syntax-table)
     (modify-syntax-entry ?\\ "_" powershell-mode-syntax-table)
     (modify-syntax-entry ?{ "(}" powershell-mode-syntax-table)
@@ -491,6 +516,9 @@ characters that can't be set by the syntax-table alone.")
     (modify-syntax-entry ?_  "w" powershell-mode-syntax-table)
     (modify-syntax-entry ?=  "." powershell-mode-syntax-table)
     (modify-syntax-entry ?|  "." powershell-mode-syntax-table)
+    (modify-syntax-entry ?+  "." powershell-mode-syntax-table)
+    (modify-syntax-entry ?*  "." powershell-mode-syntax-table)
+    (modify-syntax-entry ?/  "." powershell-mode-syntax-table)
     (modify-syntax-entry ?' "\"" powershell-mode-syntax-table)
     (modify-syntax-entry ?#  "<" powershell-mode-syntax-table)
     powershell-mode-syntax-table)
@@ -505,13 +533,116 @@ characters that can't be set by the syntax-table alone.")
     (define-key powershell-mode-map (kbd "C-'") 'powershell-unquote-selection)
     (define-key powershell-mode-map (kbd "C-\"") 'powershell-unquote-selection)
     (define-key powershell-mode-map (kbd "M-`") 'powershell-escape-selection)
-    (define-key powershell-mode-map (kbd "C-$") 'powershell-DollarParen-selection)
+    (define-key powershell-mode-map (kbd "C-$") 'powershell-dollarparen-selection)
     powershell-mode-map)
   "Keymap for PS major mode")
+
+(defun powershell-setup-menu ()
+  "Adds a menu of PowerShell specific functions to the menu bar."
+  (define-key (current-local-map) [menu-bar powershell-menu]
+    (cons "PowerShell" (make-sparse-keymap "PowerShell")))
+  (define-key (current-local-map) [menu-bar powershell-menu doublequote]
+    '(menu-item "DoubleQuote Selection" powershell-doublequote-selection
+                :key-sequence(kbd "M-\"")
+                :help "DoubleQuotes the selection escaping embedded double quotes"))
+  (define-key (current-local-map) [menu-bar powershell-menu quote]
+    '(menu-item "SingleQuote Selection" powershell-quote-selection
+                :key-sequence (kbd "M-'")
+                :help "SingleQuotes the selection escaping embedded single quotes"))
+  (define-key (current-local-map) [menu-bar powershell-menu unquote]
+    '(menu-item "UnQuote Selection" powershell-unquote-selection
+                :key-sequence (kbd "C-'")
+                :help "Un-Quotes the selection un-escaping any escaped quotes"))
+  (define-key (current-local-map) [menu-bar powershell-menu escape]
+    '(menu-item "Escape Selection" powershell-escape-selection
+                :key-sequence (kbd "M-`")
+                :help "Escapes variables in the selection and extends existing escapes."))
+  (define-key (current-local-map) [menu-bar powershell-menu dollarparen]
+    '(menu-item "DollarParen Selection" powershell-dollarparen-selection
+                :key-sequence (kbd "C-$")
+                :help "Wraps the selection in $()")))
+
+ 
+;;; Eldoc support
+
+(eval-when-compile (require 'thingatpt))
+(defcustom powershell-eldoc-def-files nil
+  "List of files containing function help strings used by `eldoc-mode'.
+These are the strings eldoc-mode displays as help for functions near point.
+The format of the file must be exactly as follows or who knows what happens.
+
+   (set (intern \"<fcn-name1>\" powershell-eldoc-obarray) \"<helper string1>\")
+   (set (intern \"<fcn-name2>\" powershell-eldoc-obarray) \"<helper string2>\")
+...
+
+Where <fcn-name> is the name of the function to which <helper string> applies.
+      <helper-string> is the string to display when point is near <fcn-name>."
+  :type '(repeat string)
+  :group 'powershell)
+
+(defvar powershell-eldoc-obarray ()
+  "Array into which powershell-eldoc-def-files entries are added for use by eldoc.")
+
+(defun powershell-eldoc-function ()
+  "Returns a documentation string appropriate for the current context or nil"
+  (let ((word (thing-at-point 'symbol)))
+    (if word
+        (eval (intern-soft word powershell-eldoc-obarray)))))
+
+(defun powershell-setup-eldoc ()
+  "Loads the function documentation for use with eldoc."
+  (when (not (null powershell-eldoc-def-files))
+    (set (make-local-variable 'eldoc-documentation-function)
+         'powershell-eldoc-function)
+    (unless (vectorp powershell-eldoc-obarray)
+      (setq powershell-eldoc-obarray (make-vector 41 0))
+      (condition-case var (mapc 'load powershell-eldoc-def-files)
+        (error (message "*** powershell-setup-eldoc ERROR *** %s" var))))))
+;;; Note: You can create quite a bit of help with these commands:
+;;
+;; function Get-Signature ($Cmd) {
+;;   if ($Cmd -is [Management.Automation.PSMethod]) {
+;;     $List = @($Cmd)}
+;;   elseif ($Cmd -isnot [string]) {
+;;     throw ("Get-Signature {<method>|<command>}`n" +
+;;            "'$Cmd' is not a method or command")}
+;;     else {$List = @(Get-Command $Cmd -ErrorAction SilentlyContinue)}
+;;   if (!$List[0] ) {
+;;     throw "Command '$Cmd' not found"}
+;;   foreach ($O in $List) {
+;;     switch -regex ($O.GetType().Name) {
+;;       'AliasInfo' {
+;;         Get-Signature ($O.Definition)}
+;;       '(Cmdlet|ExternalScript)Info' {
+;;         $O.Definition}          # not sure what to do with ExternalScript
+;;       'F(unction|ilter)Info'{
+;;         if ($O.Definition -match '^param *\(') {
+;;           $t = [Management.Automation.PSParser]::tokenize($O.Definition,
+;;                                                           [ref]$null)
+;;           $c = 1;$i = 1
+;;           while($c -and $i++ -lt $t.count) {
+;;             switch ($t[$i].Type.ToString()) {
+;;               GroupStart {$c++}
+;;               GroupEnd   {$c--}}}
+;;           $O.Definition.substring(0,$t[$i].start + 1)} #needs parsing
+;;         else {$O.Name}}
+;;       'PSMethod' {
+;;         foreach ($t in @($O.OverloadDefinitions)) {
+;;           while (($b=$t.IndexOf('`1[[')) -ge 0) {
+;;             $t=$t.remove($b,$t.IndexOf(']]')-$b+2)}
+;;             $t}}}}}
+;; get-command|
+;;   ?{$_.CommandType -ne 'Alias' -and $_.Name -notlike '*:'}|
+;;   %{$_.Name}|
+;;   sort|
+;;   %{("(set (intern ""$($_.Replace('\','\\'))"" powershell-eldoc-obarray)" +
+;;      " ""$(Get-Signature $_|%{$_.Replace('\','\\').Replace('"','\"')})"")" 
+;;     ).Replace("`r`n"")",""")")} > .\powershell-eldoc.el
 
  
 (defvar powershell-imenu-expression
   `(("Functions" ,(concat "function " powershell-function-names-regex) 2)
+    ("Filters" ,(concat "filter " powershell-function-names-regex) 2)
     ("Top variables"
      , (concat "^\\(" powershell-object-types-regexp "\\)?\\("
                powershell-variables-regexp "\\)\\s-*=")
@@ -528,6 +659,7 @@ characters that can't be set by the syntax-table alone.")
     (when (require 'which-func nil t)
       (which-function-mode t))))
 
+(eval-when-compile (require 'speedbar))
 (if (require 'speedbar nil t)
     (speedbar-add-supported-extension ".ps1?"))
 
@@ -552,7 +684,7 @@ characters that can't be set by the syntax-table alone.")
   "Hook run after the initialization of Powershell mode.")
 
 (defun powershell-mode ()
-  "Major mode for editing PowerShell scripts"
+  "Major mode for editing PowerShell scripts."
   (interactive)
   (kill-all-local-variables)
   (setq major-mode 'powershell-mode)
@@ -566,6 +698,8 @@ characters that can't be set by the syntax-table alone.")
   (set (make-local-variable 'comment-start-skip) "#+\\s*")
   (set (make-local-variable 'parse-sexp-ignore-comments) t)
   (powershell-setup-imenu)
+  (powershell-setup-menu)
+  (powershell-setup-eldoc)
   (run-hooks 'powershell-mode-hook))
 
 (provide 'powershell-mode)
