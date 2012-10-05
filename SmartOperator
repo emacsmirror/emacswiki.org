@@ -77,4 +77,8 @@ It also fails with --:
 * "i++" -> "i ++"
 * "i--" works fine
 
+-- adam
 
+more tests on this with all kinds of C/C++ operators:
+* "-1" or "-ENOMEM" -> "- 1" or "- ENOMEM"
+* "ioctl(fd, HPET_INFO, &info) -> "ioctl(fd, HPET_INFO, & info)
