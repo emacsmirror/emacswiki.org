@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Oct  1 16:54:24 2012 (-0700)
+;; Last-Updated: Fri Oct  5 14:34:13 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 9121
+;;     Update #: 9123
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -167,11 +167,10 @@
 (require 'icicles-var)                  ; (This is required anyway by `icicles-fn.el'.)
   ;; icicle-candidate-action-fn, icicle-candidate-nb, icicle-cmd-calling-for-completion,
   ;; icicle-completing-p, icicle-completion-candidates,
-  ;; icicle-current-completion-mode, icicle-default-directory, icicle-ignored-extensions,
-  ;; icicle-ignored-extensions-regexp, icicle-incremental-completion-p, icicle-initial-value,
-  ;; icicle-last-completion-candidate, icicle-last-completion-command, icicle-last-input,
-  ;; icicle-menu-map, icicle-pre-minibuffer-buffer, icicle-minor-mode-map-entry,
-  ;; icicle-saved-completion-candidates, icicle-saved-kmacro-ring-max,
+  ;; icicle-current-completion-mode, icicle-ignored-extensions, icicle-ignored-extensions-regexp,
+  ;; icicle-incremental-completion-p, icicle-initial-value, icicle-last-completion-candidate,
+  ;; icicle-last-completion-command, icicle-last-input, icicle-menu-map, icicle-pre-minibuffer-buffer,
+  ;; icicle-minor-mode-map-entry, icicle-saved-completion-candidates, icicle-saved-kmacro-ring-max,
   ;; icicle-saved-regexp-search-ring-max, icicle-saved-region-background,
   ;; icicle-saved-search-ring-max, icicle-search-current-overlay, icicle-search-overlays,
   ;; icicle-search-refined-overlays
@@ -4118,7 +4117,6 @@ Usually run by inclusion in `minibuffer-setup-hook'."
                                                         (otherwise  nil)))
           icicle-next-apropos-complete-cycles-p  nil
           icicle-next-prefix-complete-cycles-p   nil
-          icicle-default-directory               default-directory
           icicle-incremental-completion-p        icicle-incremental-completion
           icicle-initial-value                   nil
           icicle-cmd-reading-input               this-command
