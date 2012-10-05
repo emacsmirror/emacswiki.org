@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Sep  8 14:31:53 2012 (-0700)
+;; Last-Updated: Fri Oct  5 14:35:08 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1645
+;;     Update #: 1647
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-var.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -61,8 +61,7 @@
 ;;    `icicle-current-completion-candidate-overlay',
 ;;    `icicle-current-completion-mode', `icicle-current-input',
 ;;    `icicle-current-raw-input', `icicle-current-TAB-method',
-;;    `icicle-cycling-p', `icicle-default-directory',
-;;    `icicle-default-thing-insertion-flipped-p',
+;;    `icicle-cycling-p', `icicle-default-thing-insertion-flipped-p',
 ;;    `icicle-delete-candidate-object', `icicle-dictionary-history',
 ;;    `icicle-dir-candidate-can-exit-p',
 ;;    `icicle-doc-last-initial-cand-set',
@@ -431,10 +430,6 @@ This can be different from `icicle-current-input' only when
 
 (defvar icicle-cycling-p nil
   "Non-nil means the user is currently cycling completion candidates.")
-
-(defvar icicle-default-directory default-directory
-  "Local copy of `default-directory'.
-Set whenever minibuffer is entered or input is completed.")
 
 (defvar icicle-default-thing-insertion-flipped-p nil
   "Non-nil means a previous `M-.' in this succession was used with `C-u'.
