@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Oct  5 11:46:58 2012 (-0700)
+;; Last-Updated: Fri Oct  5 14:36:03 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 23213
+;;     Update #: 23215
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Doc URL: http://emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1230,7 +1230,6 @@
 ;;    `icicle-current-completion-mode', `icicle-current-input',
 ;;    `icicle-current-raw-input', `icicle-current-TAB-method',
 ;;    `icicle-custom-menu-map', `icicle-cycling-p',
-;;    `icicle-default-directory',
 ;;    `icicle-default-thing-insertion-flipped-p',
 ;;    `icicle-delete-candidate-object', `icicle-describe-menu-map',
 ;;    `icicle-dictionary-history', `icicle-dir-candidate-can-exit-p',
