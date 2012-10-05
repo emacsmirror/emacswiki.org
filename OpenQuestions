@@ -12,6 +12,15 @@ The [EmacsWiki:action=rc;rcidonly=OpenQuestions;from=1;showedit=1 change log] sh
 
 
 
+===How to open the same directory in the passive pane of Sunrise Commander?===
+
+In Sunrise Commander, how can I open the same directory that is currently open in the active pane in the passive pane too?
+
+I can do this quickly in Mucommander by using "CTRL+e". Is there any way to do this quickly in Sunrise Commander as well? Otherwise, if I want to rename a file, I have to manually browse to ensure that the same folder is opened in both panes before pressing F6 (else, I will be asked if I want to move rather than renaming that folder). In absence of a shortcut to have the same directory open in both panes, the process is rather slow.
+
+Many thanks for the help.
+
+
 ===How to Program/Customize Emacs Commands?===
 
 I apologize for this note. I've been using the basic features of Emacs for many years, but am trying to implement some more advanced features. I found this site through Google and would like to implement the code to remove duplicate lines (http://www.emacswiki.org/emacs/DuplicateLines). Unfortunately that page provides no context (where to put this code, etc.) I've been hunting around the site for some time and have yet to find such information anywhere. The site is set up for people with a certain minimum knowledge of the Emacs terminology. The documents for newbies are so voluminous that it would take me forever to go through and figure out what I need to know. 
