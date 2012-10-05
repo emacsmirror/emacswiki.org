@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Thu Oct  4 22:55:47 2012 (-0700)
+;; Last-Updated: Fri Oct  5 09:16:40 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 9002
+;;     Update #: 9012
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -86,6 +86,13 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2012/10/05 dadams
+;;     icicle-buffer-multi-complete: Add new bufs to NEW-BUFS--TO-KILL, so can kill them when done.
+;;     icicle-visit-marked-file-of-content(-other-window):
+;;       Action arg: Transform multi-completion before passing to switch-to-buffer*.
+;;                   Save visited buffer to NEW-BUFS--TO-KEEP.
+;;       When done, kill any unused buffers that were created, per new option
+;;         icicle-kill-visited-buffers-flag.  But prefix arg flips that.
 ;; 2012/10/04 dadams
 ;;     icicle-find-file(-other-window): If precede C-! with prefix arg, then open all read-only.
 ;; 2012/10/02 dadams
@@ -6053,6 +6060,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2012/10/05 dadams
+;;     Added: icicle-kill-visited-buffers-flag.
 ;; 2012/10/02 dadams
 ;;     icicle-list-join-string:
 ;;       Make display prop cover whole string and display \n rather than just hide ^G part.
