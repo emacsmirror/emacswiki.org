@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Oct  5 09:16:40 2012 (-0700)
+;; Last-Updated: Fri Oct  5 11:47:47 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 9012
+;;     Update #: 9014
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -87,6 +87,7 @@
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
 ;; 2012/10/05 dadams
+;;     Added: icicle-find-file-of-content(-other-window|-multi-complete|-read-file-name).
 ;;     icicle-buffer-multi-complete: Add new bufs to NEW-BUFS--TO-KILL, so can kill them when done.
 ;;     icicle-visit-marked-file-of-content(-other-window):
 ;;       Action arg: Transform multi-completion before passing to switch-to-buffer*.
