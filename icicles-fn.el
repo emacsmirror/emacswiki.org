@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Oct  2 22:00:36 2012 (-0700)
+;; Last-Updated: Fri Oct  5 14:29:27 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 13391
+;;     Update #: 13394
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -310,12 +310,11 @@
   ;; icicle-candidate-properties-alist, icicle-cmd-calling-for-completion, icicle-common-match-string,
   ;; icicle-complete-input-overlay, icicle-completing-p (variable), icicle-completion-candidates,
   ;; icicle-current-completion-mode, icicle-current-input, icicle-current-raw-input,
-  ;; icicle-default-directory, icicle-edit-update-p, icicle-extra-candidates,
-  ;; icicle-ignored-extensions-regexp, icicle-incremental-completion-p, icicle-initial-value,
-  ;; icicle-last-completion-candidate, icicle-last-input, icicle-must-match-regexp,
-  ;; icicle-must-not-match-regexp, icicle-must-pass-predicate, icicle-must-pass-after-match-predicate,
-  ;; icicle-nb-of-other-cycle-candidates, icicle-re-no-dot, icicle-reverse-sort-p,
-  ;; icicle-saved-completion-candidates
+  ;; icicle-edit-update-p, icicle-extra-candidates, icicle-ignored-extensions-regexp,
+  ;; icicle-incremental-completion-p, icicle-initial-value, icicle-last-completion-candidate,
+  ;; icicle-last-input, icicle-must-match-regexp, icicle-must-not-match-regexp, icicle-must-pass-predicate,
+  ;; icicle-must-pass-after-match-predicate, icicle-nb-of-other-cycle-candidates, icicle-re-no-dot,
+  ;; icicle-reverse-sort-p, icicle-saved-completion-candidates
 
 ;; This requirement is real, but leads to recursion.
 ;; You should, in any case, just load everything by loading `icicles.el'.
@@ -4077,8 +4076,6 @@ the current candidate is shown in the mode line."
                              icicle-apropos-complete icicle-apropos-complete-no-display))))
       (setq icicle-common-match-string  nil)) ; Don't use old one, in `icicle-save-or-restore-input'.
     (icicle-save-or-restore-input)
-    (when (and (icicle-file-name-input-p)  (icicle-file-directory-p icicle-current-input))
-      (setq icicle-default-directory  icicle-current-input))
     (unless (eq this-command last-command)
       (icicle-recompute-candidates nth candidates-fn saved-last-input))
     (icicle-save-or-restore-input)      ; Again, based on updated `icicle-common-match-string'.
