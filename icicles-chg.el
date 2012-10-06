@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Oct  6 09:02:10 2012 (-0700)
+;; Last-Updated: Sat Oct  6 09:48:35 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 9028
+;;     Update #: 9031
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -719,6 +719,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2012/10/06 dadams
+;;     icicle-hide/show-comments: Call comment-normalize-vars first.  Thx to Stefan Monnier.
 ;; 2012/09/08 dadams
 ;;     icicle-apply: Override icicle-buffer-ignore-space-prefix-flag, not icicle-ignore-space-prefix*.
 ;;     icicle-search: Remove mention of overriding icicle-ignore-space-prefix-flag.
