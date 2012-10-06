@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:24:28 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Oct  4 22:34:19 2012 (-0700)
+;; Last-Updated: Sat Oct  6 08:23:05 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1043
+;;     Update #: 1046
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mac.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -38,7 +38,8 @@
 ;;    `icicle-define-command', `icicle-define-file-command',
 ;;    `icicle-define-search-bookmark-command',
 ;;    `icicle-define-sort-command', `icicle-file-bindings',
-;;    `icicle-kbd', `icicle-with-selected-window'.
+;;    `icicle-kbd', `icicle-with-selected-window'
+;;    `minibuffer-with-setup-hook' (Emacs <22).
 ;;
 ;;  Commands defined here:
 ;;
@@ -148,6 +149,28 @@
 ;;             (funcall ,bodysym)
 ;;           ,@handlers)))))
 
+;; Provide macro for code byte-compiled using Emacs < 22.
+(eval-when-compile
+ (when (< emacs-major-version 22)
+   (defmacro minibuffer-with-setup-hook (fun &rest body)
+     "Temporarily add FUN to `minibuffer-setup-hook' while executing BODY.
+BODY should use the minibuffer at most once.
+Recursive uses of the minibuffer are unaffected (FUN is not
+called additional times).
+
+This macro actually adds an auxiliary function that calls FUN,
+rather than FUN itself, to `minibuffer-setup-hook'."
+     ;; (declare (indent 1) (debug t))
+     (let ((hook  (make-symbol "setup-hook")))
+       `(let (,hook)
+         (setq ,hook  (lambda ()
+                        ;; Clear out this hook so it does not interfere
+                        ;; with any recursive minibuffer usage.
+                        (remove-hook 'minibuffer-setup-hook ,hook)
+                        (funcall ,fun)))
+         (unwind-protect
+              (progn (add-hook 'minibuffer-setup-hook ,hook) ,@body)
+           (remove-hook 'minibuffer-setup-hook ,hook)))))))
 
 ;; Same as `naked-edmacro-parse-keys' in `naked.el'.
 ;; Based on `edmacro-parse-keys' in standard library `edmacro.el'
