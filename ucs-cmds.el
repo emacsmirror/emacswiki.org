@@ -7,9 +7,9 @@
 ;; Copyright (C) 2011-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Oct  4 07:32:20 2011 (-0700)
 ;; Version: 23.0
-;; Last-Updated: Mon Aug 27 15:47:50 2012 (-0700)
+;; Last-Updated: Sat Oct  6 13:53:39 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 164
+;;     Update #: 166
 ;; URL: http://www.emacswiki.org/emacs-en/ucs-cmds.el
 ;; Doc URL: http://emacswiki.org/emacs/UnicodeEncoding
 ;; Keywords: unicode, characters, encoding, commands, ucs-names
@@ -127,6 +127,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/10/06 dadams
+;;     ucsc-insert: Provided missing CHARACTER arg to insert-char.
 ;; 2012/06/01 dadams
 ;;     Added: ucsc-insert.
 ;;     Renamed ucs-make-commands to ucsc-make-commands.
@@ -233,7 +235,7 @@ command creation."
   (let ((create-cmd-p  (< count 0)))
     (setq count  (abs count))
     (if (commandp 'insert-char)         ; Deal with the renaming this way.
-        (insert-char count inherit)
+        (insert-char character count inherit)
       (ucs-insert character count inherit))
     (when create-cmd-p
       (let* ((char-name  (car (rassq character (ucs-names))))
