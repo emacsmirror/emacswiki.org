@@ -26,6 +26,7 @@
 
 ;; miscellaneous
 
+;; 2012-10-06 modified macros copy-something & dove-roll-buffers
 ;; 2010-08-04 improved rename-buffer-in-ssh-login function
 ;; 2010-08-08 rewrote function rename-buffer-in-ssh-login
 ;; 2010-08-08 added function rename-buffer-in-ssh-exit
@@ -275,51 +276,43 @@
             (string= x major-mode))
   dove-auto-paste-mode-list))
 
-(defmacro copy-something (begin-fn end-fn arg)
+(defmacro copy-something-to-mark (begin-fn end-fn arg)
   `(progn (copy-thing  ,begin-fn ,end-fn ,arg)
           (paste-to-mark 'dove-paste-condition ,arg)))
 
-(macroexpand '(copy-something 
-               beginning-of-line end-of-line arg))
+; (macroexpand '(copy-something-to-mark 
+;                beginning-of-string end-of-string arg))
+
+
 
 (defun copy-line (&optional arg)
- "Copy lines at point and paste them to mark
-
-With prefix 1, copy but not paste.
-with prefix N, copy N lines from the point."
-
+ "Copy lines at point and paste them to mark"
  (interactive "P")
- (copy-something 'beginning-of-line 'end-of-line arg))
+ (copy-something-to-mark 'beginning-of-line 'end-of-line arg))
+
+; (progn 
+;   (copy-thing 'beginning-of-line 'end-of-line arg) 
+;   (paste-to-mark (quote dove-paste-condition) arg)))
+
 
 (defun copy-word (&optional arg)
- "Copy words at point and paste them to mark
-
-With prefix 1, copy but not paste.
-with prefix N, copy N words from the point."
-
+ "Copy words at point and paste them to mark"
   (interactive "P")
-  (copy-something 'backward-word 'forward-word arg))
+  (copy-something-to-mark 'backward-word 'forward-word arg))
 
 (defun copy-paragraph (&optional arg)
- "Copy paragraphes at point and paste them to mark
-
-With prefix 1, copy but not paste.
-with prefix N, copy N paragraphs from the point."
-
+ "Copy paragraphes at point and paste them to mark"
   (interactive "P")
-  (copy-something 'backward-paragraph 'forward-paragraph arg))
+  (copy-something-to-mark 'backward-paragraph 'forward-paragraph arg))
 
 (defun thing-copy-string-to-mark(&optional arg)
-  "Copy string at point or region selected and paste them to mark
-
-With prefix 1, copy but not paste.
-with prefix N, copy N strings from the point."
-
+  "Copy string at point or region selected and paste them to mark"
   (interactive "P")
-  (cond                   ; This cannot be done by copy-something macro
+  (cond                   ; This cannot be done by copy-something-to-mark macro
    ((and mark-active transient-mark-mode)
     (pop-mark))
    (t
+;    (copy-something-to-mark 'beginning-of-string 'end-of-string arg)))
     (copy-thing 'beginning-of-string 'end-of-string arg)))
   (paste-to-mark 'dove-paste-condition arg))
 
@@ -330,7 +323,7 @@ with prefix N, copy N strings from the point."
 Automatic due with nesting {[(<\"''\">)]} characters"
 
   (interactive "P")
-  (copy-something 'beginning-of-parenthesis 'end-of-parenthesis arg))
+  (copy-something-to-mark 'beginning-of-parenthesis 'end-of-parenthesis arg))
 
 
 (defun duplicate-line(&optional arg)
@@ -353,42 +346,20 @@ Automatic due with nesting {[(<\"''\">)]} characters"
     )
 )
 
-;; (defun copy-string-to-mark (&optional arg)
-;;  "Copy a sequence of string into kill-ring and then paste to the mark point"
-;;   (interactive "P")
-;;   (let (
-;;	 (onPoint (point))
-;;	 )
-;;     (let (
-;;
-;;	 ( beg 	(progn (re-search-backward "[\t ]" (line-beginning-position) 3 1)
-;;			  (if (looking-at "[\t ]") (+ (point) 1) (point) ) )
-;;		)
-;;          ( end  (progn  (goto-char onPoint) (re-search-forward "[\t ]" (line-end-position) 3 1)
-;;			  (if (looking-back "[\t ]") (- (point) 1) (point) ) )
-;;		 )
-;;	  )
-;;       (copy-region-as-kill beg end)
-;;       (message "%s" major-mode)
-;;       (if (string= "shell-mode" major-mode)
-;;	   (progn (comint-next-prompt 25535) (yank))
-;;	 ;; unless arg == 0, paste content to mark, else hold in kill ring
-;;	   (unless (> (or arg 0) 0) (progn (goto-char (mark)) (yank) )))
-;;
-;;       )
-;;     )
-;; )
-
 
 (defun beginning-of-string(&optional arg)
   "  "
   (re-search-backward "[ \t]" (line-beginning-position) 3 1)
-	     (if (looking-at "[\t ]")  (goto-char (+ (point) 1)) )
+	     (if (looking-at "[\t ]") 
+                 (goto-char (+ (point) 1)) 
+               (point))
 )
 (defun end-of-string(&optional arg)
   " "
-  (re-search-forward "[ \t]" (line-end-position) 3 arg)
-	     (if (looking-back "[\t ]") (goto-char (- (point) 1)) )
+  (re-search-forward "[ \t,]" (line-end-position) 3 arg)
+	     (if (looking-back "[,;\.\t ]") 
+                 (goto-char (- (point) 1)) 
+               (point))
 )
 
 (defun go-there(arg) 
@@ -541,49 +512,6 @@ Parenthesis character was defined by beginning-of-parenthesis"
    )
 )
 
-;;  +----------------------+                 +----------- +-----------+ 
-;;  |                      |           \     |            |           | 
-;;  |                      |   +-------+\    |            |           | 
-;;  +----------------------+   +-------+/    |            |           |
-;;  |                      |           /     |            |           | 
-;;  |                      |                 |            |           | 
-;;  +----------------------+                 +----------- +-----------+ 
-;
-;(defun split-v ()
-;  (interactive)
-;  (if (= 2 (length (window-list)))
-;    (let (( thisBuf (window-buffer))
-;	  ( nextBuf (progn (other-window 1) (buffer-name))))
-;	  (progn   (delete-other-windows)
-;		   (split-window-horizontally)
-;		   (set-window-buffer nil thisBuf)
-;		   (set-window-buffer (next-window) nextBuf)
-;		   ))
-;    )
-;)
-
-
-;;  +----------- +-----------+                  +----------------------+ 
-;;  |            |           |            \     |                      | 
-;;  |            |           |    +-------+\    |                      | 
-;;  |            |           |    +-------+/    +----------------------+ 
-;;  |            |           |            /     |                      | 
-;;  |            |           |                  |                      | 
-;;  +----------- +-----------+                  +----------------------+ 
-;
-;(defun split-h ()
-;  (interactive)
-;  (if (= 2 (length (window-list)))
-;    (let (( thisBuf (window-buffer))
-;	  ( nextBuf (progn (other-window 1) (buffer-name))))
-;	  (progn   (delete-other-windows)
-;		   (split-window-vertically)
-;		   (set-window-buffer nil thisBuf)
-;		   (set-window-buffer (next-window) nextBuf)
-;		   ))
-;    )
-;)
-
 
 ;  +----------------------+                +---------- +----------+
 ;  |                      |          \     |           |          |
@@ -606,6 +534,8 @@ Parenthesis character was defined by beginning-of-parenthesis"
 (defun change-split-type ()
   "Changes splitting from vertical to horizontal and vice-versa"
   (interactive)
+  (message "%s --> %d" (window-list) (length (window-list)))
+
   (if (= 2 (length (window-list)))
       (let ((thisBuf (window-buffer))
             (nextBuf (progn (other-window 1) (buffer-name)))
@@ -629,13 +559,13 @@ Parenthesis character was defined by beginning-of-parenthesis"
 ;  |           |           |                  |            |           | 
 ;  +-----------------------+                  +----------- +-----------+ 
 
-;  +----------- +-----------+                  +----------------------+ 
-;  |            |           |            \     |                      | 
-;  |            |           |    +-------+\    |                      | 
-;  |            |-----------|    +-------+/    +----------------------+ 
-;  |            |           |            /     |           |          | 
-;  |            |           |                  |           |          | 
-;  +----------- +-----------+                  +----------------------+ 
+;  +----------- +-----------+                 +------------------------+ 
+;  |            |           |            \    |                        | 
+;  |            |           |    +-------+\   |                        | 
+;  |            |-----------|    +-------+/   +------------------------+ 
+;  |            |           |            /    |            |           | 
+;  |            |           |                 |            |           | 
+;  +----------- +-----------+                 +------------------------+ 
 
 (defun change-split-type-3 ()
   "Change 3 window style from horizontal to vertical and vice-versa"
@@ -643,15 +573,75 @@ Parenthesis character was defined by beginning-of-parenthesis"
   (select-window (get-largest-window))
   (if (= 3 (length (window-list)))
       (let ((winList (window-list)))
-            (let ((1stBuf (window-buffer (car winList)))
-                  (2ndBuf (window-buffer (car (cdr winList))))
-                  (3rdBuf (window-buffer (car (cdr (cdr winList)))))
+        (let ((1stBuf (window-buffer (car winList)))
+              (2ndBuf (window-buffer (car (cdr winList))))
+              (3rdBuf (window-buffer (car (cdr (cdr winList)))))
 
-                  (split-3 
-                   (lambda(1stBuf 2ndBuf 3rdBuf split-1 split-2)
-                     "change 3 window from horizontal to vertical and vice-versa"
-                     (message "%s %s %s" 1stBuf 2ndBuf 3rdBuf)
+              (split-3 
+               (lambda(1stBuf 2ndBuf 3rdBuf split-1 split-2)
+                 "change 3 window from horizontal to vertical and vice-versa"
+                 (message "%s %s %s" 1stBuf 2ndBuf 3rdBuf)
+                 
+                     (delete-other-windows)
+                     (funcall split-1)
+                     (set-window-buffer nil 2ndBuf)
+                     (funcall split-2)
+                     (set-window-buffer (next-window) 3rdBuf)
+                     (other-window 2)
+                     (set-window-buffer nil 1stBuf)))         
 
+                  (split-type-1 nil)
+                  (split-type-2 nil)
+                  )
+              (if (= (window-width) (frame-width))
+                  (setq split-type-1 'split-window-horizontally 
+                        split-type-2 'split-window-vertically)
+                (setq split-type-1 'split-window-vertically  
+                      split-type-2 'split-window-horizontally))
+              (funcall split-3 1stBuf 2ndBuf 3rdBuf split-type-1 split-type-2)
+
+))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;(defmacro dove-change-3-buffers ((buf_1 buf_2 buf_3) &body body)
+;  `(progn (select-window (get-largest-window))
+;    (if (= 3 (length (window-list)))
+;        (let ((winList (window-list)))
+;          (let ((1stWin (car winList))
+;                (2ndWin (car (cdr winList)))
+;                (3rdWin (car (cdr (cdr winList)))))
+;            (let ((1stBuf (window-buffer 1stWin))
+;                  (2ndBuf (window-buffer 2ndWin))
+;                  (3rdBuf (window-buffer 3rdWin)))
+;              (progn ,@body)))))))
+;
+;(macroexpand '(dove-change-3-buffers 
+;               (3rdBuf 1stBuf 2ndBuf))
+;             (progn
+;               (set-window-buffer 1stWin ,buf_1)
+;               (set-window-buffer 2ndWin ,buf_2)
+;               (set-window-buffer 3rdWin ,buf_3)))
+;
+;;               (lambda () (message "%s" '123))))
+
+
+
+(defun change-split-type-3 ()
+  "Change 3 window style from horizontal to vertical and vice-versa"
+  (interactive)
+  (select-window (get-largest-window))
+  (if (= 3 (length (window-list)))
+      (let ((winList (window-list)))
+        (let ((1stBuf (window-buffer (car winList)))
+              (2ndBuf (window-buffer (car (cdr winList))))
+              (3rdBuf (window-buffer (car (cdr (cdr winList)))))
+
+              (split-3 
+               (lambda(1stBuf 2ndBuf 3rdBuf split-1 split-2)
+                 "change 3 window from horizontal to vertical and vice-versa"
+                 (message "%s %s %s" 1stBuf 2ndBuf 3rdBuf)
+                 
                      (delete-other-windows)
                      (funcall split-1)
                      (set-window-buffer nil 2ndBuf)
@@ -673,38 +663,10 @@ Parenthesis character was defined by beginning-of-parenthesis"
 ))))
 
 
-;;  +----------- +-----------+                  +----------------------+ 
-;;  |            |           |            \     |                      | 
-;;  |            |           |    +-------+\    |                      | 
-;;  |            |-----------|    +-------+/    +----------------------+ 
-;;  |            |           |            /     |          |           | 
-;;  |            |           |                  |          |           | 
-;;  +----------- +-----------+                  +----------------------+ 
-;
-;
-;(defun split-h-3 ()
-;  "Change 3 window style from vertical to horizontal"
-;  (interactive)
-;  (select-window (get-largest-window))
-;  (if (= 3 (length (window-list)))
-;      (let ((winList (window-list)))
-;	    (let ((1stBuf (window-buffer (car winList)))
-;		  (2ndBuf (window-buffer (car (cdr winList))))
-;		  (3rdBuf (window-buffer (car (cdr (cdr winList))))))
-;
-;		(message "%s %s %s" 1stBuf 2ndBuf 3rdBuf)
-;		(delete-other-windows)
-;		(split-window-vertically)
-;		(set-window-buffer nil 1stBuf)
-;		(other-window 1)
-;		(set-window-buffer nil 2ndBuf)
-;		(split-window-horizontally)
-;		(set-window-buffer (next-window) 3rdBuf)
-;		(select-window (get-largest-window))
-;	      )
-;	    )
-;    )
-;)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 
 ;  +----------- +-----------+                    +----------- +-----------+ 
 ;  |            |     C     |            \       |            |     A     | 
@@ -722,30 +684,29 @@ Parenthesis character was defined by beginning-of-parenthesis"
 ;  |           |            |                     |           |            | 
 ;  +------------------------+                     +------------------------+ 
 
-(defmacro dove-roll-3-buffers (buf_1 buf_2 buf_3)
+
+(defmacro dove-roll-buffers (sort_fn)
   `(progn (select-window (get-largest-window))
-    (if (= 3 (length (window-list)))
-        (let ((winList (window-list)))
-          (let ((1stWin (car winList))
-                (2ndWin (car (cdr winList)))
-                (3rdWin (car (cdr (cdr winList)))))
-            (let ((1stBuf (window-buffer 1stWin))
-                  (2ndBuf (window-buffer 2ndWin))
-                  (3rdBuf (window-buffer 3rdWin)))
-              (set-window-buffer 1stWin ,buf_1)
-              (set-window-buffer 2ndWin ,buf_2)
-              (set-window-buffer 3rdWin ,buf_3)))))))
+              (let ((winList (window-list))  ; sort buffer list by plugin function sort_fn
+                    (bufferList (funcall ,sort_fn (mapcar 'window-buffer (window-list)))))
+                (mapcar* (lambda (win buf) 
+                           "set bufffer to window"
+                           (set-window-buffer win buf))
+                         winList bufferList))))
 
 (defun roll-3-buffers-anti-clockwise ()
   "Roll 3 window buffers anti-clockwise"
   (interactive)
-  (dove-roll-3-buffers 3rdBuf 1stBuf 2ndBuf))
+  (if (= 3 (length (window-list)))
+      (dove-roll-buffers '(lambda (bufList)  ; put the last to the first
+                              (cons (car (last bufList)) (butlast bufList))))))
 
 (defun roll-3-buffers-clockwise ()
   "Roll 3 window buffers clockwise"
   (interactive)
-  (dove-roll-3-buffers 2ndBuf 3rdBuf 1stBuf))
-
+  (if (= 3 (length (window-list)))
+      (dove-roll-buffers '(lambda (bufList)  ; put the first to the last
+                              (append (cdr bufList) (list (car bufList)))))))
 
 ;(defun dove-hide-shell-output()
 ;  "Hide Shell Output"
@@ -842,20 +803,20 @@ Parenthesis character was defined by beginning-of-parenthesis"
 
 (defmacro dove-org-babel-shortcut-para (str-begin str-end &optional arg)
   `(i-babel-quote (+ (progn (backward-paragraph) (point)) 1)
-                   (- (progn (forward-paragraph arg) (point)) 1)
-                   ,str-begin ,str-end))
+                  (- (progn (forward-paragraph arg) (point)) 1)
+                  ,str-begin ,str-end))
+
                
 (defun iexp-para (&optional arg)
-  "Enclose code for org-mode"
+  "Enclose code at point for org-mode"
   (interactive "P")
   (dove-org-babel-shortcut-para "#+BEGIN_EXAMPLE" "#+END_EXAMPLE" arg))
 
 
 (defun isrc-para (&optional arg)
-  "Enclose code for org-mode"
+  "Enclose code at point for org-mode"
   (interactive "P")
   (dove-org-babel-shortcut-para "#+begin_src " "#+end_src" arg))
-
 
 
 (defmacro dove-org-babel-shortcut (St Ed x)
@@ -896,6 +857,28 @@ Used in org-mode. For operating on multiple lines, use prefix argument"
         (progn 
           (beginning-of-line 2)
           (insert ": ")))))
+
+
+;  (cond
+;   ((and mark-active transient-mark-mode)
+;    (i-babel-quote-str St Ed "="))
+;   (t
+;    (let ((St (and (beginning-of-string) (point)))
+;          (Ed (and (end-of-string) (point))))
+;      (i-babel-quote-str St Ed "="))))
+;)
+
+
+
+;  (cond
+;   ((and mark-active transient-mark-mode)
+;    (i-babel-quote-str St Ed "*"))
+;   (t
+;    (let ((St (and (beginning-of-string) (point)))
+;          (Ed (and (end-of-string) (point))))
+;      (i-babel-quote-str St Ed "*"))))
+;)
+
 
 (defun action-to-list (action lst)
   "Perform action to each element in the list"
@@ -939,23 +922,6 @@ Used in org-mode. For operating on multiple lines, use prefix argument"
 		     (list (kbd "C-c C-e") 'show-entry)))
 )
 
-(add-hook 'slime-repl-mode-hook 
-          (lambda ()
-            (set-key-bindings 'local-set-key
-                              (list
-                               (list (kbd "C-c C-q") 'slime-close-all-parens-in-sexp)
-                               )))
-)
-
-
-(add-hook 'slime-mode-hook 
-          (lambda ()
-            (set-key-bindings 'local-set-key
-                              (list
-                               (list (kbd "C-c C-q") 'slime-close-all-parens-in-sexp)
-                               )))
-)
-
 
 
 (defun hs-hide-all-comments ()
@@ -988,6 +954,9 @@ Used in org-mode. For operating on multiple lines, use prefix argument"
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-
+(defun sdcv (&optional arg)
+  "sdcv dictionary plugin"
+  (interactive "P")
+  (shell-command (concat "sdcv " (current-word nil nil))))
 
 (provide 'dove-ext)
