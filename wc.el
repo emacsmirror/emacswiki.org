@@ -1,9 +1,9 @@
 ;;; wc.el --- count words
 
-;; Version: 0.1
-;; Copyright (C) 2007 Theron Tlax
-;; Time-stamp: <2007-09-01 14:24:41 thorne>
-;; Author: thorne <thorne@timbral.net>
+;; Version: 2
+;; Copyright (C) 2007 Evans Winner
+;; Time-stamp: <2012-10-06 14:31:52 evansw>
+;; Author: thorne <ego111@gmail.com>
 ;; Created: 2007.9.1
 ;; Keywords: wp
 ;; Favorite day: Monday
@@ -42,9 +42,22 @@
   "Count the number of words in the current region."
   (save-excursion
     (save-restriction
-      (narrow-to-region start end)
-      (goto-char (point-min))
-      (count-matches "\\sw+"))))
+      (wc-count-matches "\\sw+"
+			(if (> end start)
+			    start end)
+			(if (> end start)
+			    end start)))))
+
+;; Taken from somewhere for emacs 21 compat.  Where did I find this?
+;; Something called puppet-mode, apparently.  No idea what it's for.
+(defun wc-count-matches (re start end)
+  "The same as Emacs 22 count-matches, for portability to other
+versions of Emacs."
+  (save-excursion
+    (let ((n 0))
+      (goto-char start)
+      (while (re-search-forward re end t) (setq n (1+ n)))
+      n)))
 
 ;;;###autoload
 (defun wc-buffer ()
@@ -73,7 +86,7 @@ If not, display a word count for the whole buffer."
   (if mark-active
       (wc-region (point) (mark))
     (wc-buffer)))
-
+  
 (defalias 'wc 'wc-dwim)
 
 (provide 'wc)
