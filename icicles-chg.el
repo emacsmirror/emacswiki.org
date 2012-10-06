@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Oct  5 14:46:20 2012 (-0700)
+;; Last-Updated: Sat Oct  6 09:02:10 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 9027
+;;     Update #: 9028
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -3204,6 +3204,8 @@
 ;;       macros needs to be byte-compiled anew after loading the updated macros.
 ;; ****************************************************************************************************
 ;;
+;; 2012/10/06 dadams
+;;     Added: minibuffer-with-setup-hook for code byte-compiled using Emacs < 22.
 ;; 2012/10/04 dadams
 ;;     icicle-define-file-command:
 ;;       When call expand-file-name, wrap i-last-input with directory-file-name, to use parent dir.
