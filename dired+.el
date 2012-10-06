@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Tue Oct  2 22:43:00 2012 (-0700)
+;; Last-Updated: Sat Oct  6 09:00:42 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 6144
+;;     Update #: 6157
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Doc URL: http://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -197,11 +197,6 @@
 ;;  ancestor Dired buffer.
 ;;
 ;;
-;;  Options defined here:
-;;
-;;    `diff-switches', `diredp-prompt-for-bookmark-prefix-flag',
-;;    `diredp-w32-local-drives'.
-;;
 ;;  Faces defined here:
 ;;
 ;;    `diredp-compressed-file-suffix', `diredp-date-time',
@@ -313,6 +308,11 @@
 ;;    `diredp-untag-this-file', `diredp-upcase-recursive',
 ;;    `diredp-upcase-this-file', `diredp-w32-drives',
 ;;    `diredp-w32-drives-mode', `toggle-diredp-find-file-reuse-dir'.
+;;
+;;  User options defined here:
+;;
+;;    `diff-switches', `diredp-prompt-for-bookmark-prefix-flag',
+;;    `diredp-w32-local-drives'.
 ;;
 ;;  Non-interactive functions defined here:
 ;;
@@ -428,6 +428,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/10/06 dadams
+;;     Added: minibuffer-with-setup-hook for code byte-compiled using Emacs < 22.
 ;; 2012/09/28 dadams
 ;;     Moved dired-*w32* bindings after normal mouse bindings, so they override them.
 ;; 2012/09/05 dadams
@@ -926,6 +928,29 @@
 
 ;; Don't require Icicles, else get recursive requires.
 ;; (require 'icicles nil t) ;; (no error if not found): icicle-read-string-completing
+
+;; Provide macro for code byte-compiled using Emacs < 22.
+(eval-when-compile
+ (when (< emacs-major-version 22)
+   (defmacro minibuffer-with-setup-hook (fun &rest body)
+     "Temporarily add FUN to `minibuffer-setup-hook' while executing BODY.
+BODY should use the minibuffer at most once.
+Recursive uses of the minibuffer are unaffected (FUN is not
+called additional times).
+
+This macro actually adds an auxiliary function that calls FUN,
+rather than FUN itself, to `minibuffer-setup-hook'."
+     ;; (declare (indent 1) (debug t))
+     (let ((hook (make-symbol "setup-hook")))
+       `(let (,hook)
+         (setq ,hook  (lambda ()
+                        ;; Clear out this hook so it does not interfere
+                        ;; with any recursive minibuffer usage.
+                        (remove-hook 'minibuffer-setup-hook ,hook)
+                        (funcall ,fun)))
+         (unwind-protect
+              (progn (add-hook 'minibuffer-setup-hook ,hook) ,@body)
+           (remove-hook 'minibuffer-setup-hook ,hook)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 
