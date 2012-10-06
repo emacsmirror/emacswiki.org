@@ -7,9 +7,9 @@
 ;; Copyright (C) 2011-2012, Drew Adams, all rights reserved.
 ;; Created: Wed May 11 07:11:30 2011 (-0700)
 ;; Version:
-;; Last-Updated: Thu Aug 23 13:37:49 2012 (-0700)
+;; Last-Updated: Sat Oct  6 09:43:48 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 40
+;;     Update #: 48
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/hide-comnt.el
 ;; Doc URL: http://www.emacswiki.org/emacs/HideOrIgnoreComments
 ;; Keywords: comment, hide, show
@@ -47,6 +47,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/10/06 dadams
+;;     hide/show-comments: Call comment-normalize-vars first.  Thx to Stefan Monnier.
+;;     hide/show-comments-toggle: Do nothing if newcomment.el not available.
 ;; 2012/05/10 dadams
 ;;     Added: hide/show-comments-toggle.  Thx to Denny Zhang for the suggestion.
 ;; 2011/11/23 dadams
@@ -119,14 +122,15 @@ show invisible text that you previously hid using this command.
 From Lisp, a HIDE/SHOW value of `hide' hides comments.  Other values
 show them.
 
-This function does nothing in Emacs versions prior to Emacs 21,
-because it needs `comment-search-forward'."
+This command does nothing in Emacs versions prior to Emacs 21, because
+it needs `comment-search-forward'."
   (interactive
    (cons (if current-prefix-arg 'show 'hide)
          (if (or (not mark-active) (null (mark)) (= (point) (mark)))
              (list (point-min) (point-max))
            (if (< (point) (mark)) (list (point) (mark)) (list (mark) (point))))))
   (when (require 'newcomment nil t)     ; `comment-search-forward', Emacs 21+.
+    (comment-normalize-vars)            ; Per Stefan, should call this first.
     (unless start (setq start  (point-min)))
     (unless end   (setq end    (point-max)))
     (unless (<= start end) (setq start  (prog1 end (setq end  start))))
@@ -151,6 +155,9 @@ because it needs `comment-search-forward'."
 If the region is active then toggle in the region.  Otherwise, in the
 whole buffer.
 
+This command does nothing in Emacs versions prior to Emacs 21, because
+it needs `comment-search-forward'.
+
 Interactively, START and END default to the region limits, if active.
 Otherwise, including non-interactively, they default to `point-min'
 and `point-max'.
@@ -159,10 +166,12 @@ See `hide/show-comments' for more information."
   (interactive (if (or (not mark-active)  (null (mark))  (= (point) (mark)))
                    (list (point-min) (point-max))
                  (if (< (point) (mark)) (list (point) (mark)) (list (mark) (point)))))
-  (if (save-excursion (goto-char start) (and (comment-search-forward end 'NOERROR)
-                                             (get-text-property (point) 'invisible)))
-      (hide/show-comments 'show start end)
-    (hide/show-comments 'hide start end)))
+  (when (require 'newcomment nil t) ; `comment-search-forward', Emacs 21+.
+    (comment-normalize-vars)     ; Per Stefan, should call this first.
+    (if (save-excursion (goto-char start) (and (comment-search-forward end 'NOERROR)
+                                               (get-text-property (point) 'invisible)))
+        (hide/show-comments 'show start end)
+      (hide/show-comments 'hide start end))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;
 
