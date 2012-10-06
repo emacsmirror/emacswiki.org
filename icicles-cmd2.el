@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Mon Sep 17 14:21:49 2012 (-0700)
+;; Last-Updated: Sat Oct  6 09:46:58 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5809
+;;     Update #: 5810
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -4527,6 +4527,7 @@ This function does nothing in Emacs versions prior to Emacs 21,
 because it needs `comment-search-forward'."
   (interactive `(,(if current-prefix-arg 'show 'hide) ,@(icicle-region-or-buffer-limits)))
   (when (require 'newcomment nil t)     ; `comment-search-forward'
+    (comment-normalize-vars)            ; Per Stefan, should call this first.
     (unless start (setq start  (point-min)))
     (unless end   (setq end    (point-max)))
     (unless (<= start end) (setq start  (prog1 end (setq end  start))))
