@@ -124,12 +124,20 @@ Here's one way to check which '''Icicles''' libraries have changed recently: '''
 
 
 
+
+
+
+
+
+
+
+
 [:BulkIciclesDownload]
 == Downloading Icicles Libraries ==
 
-You can download the '''Icicles''' files individually, by right-clicking the Download link for each and choosing `Save As' in your browser.  You will need to do that on ''each'' file page.
+You can download the '''Icicles''' files individually from ElispArea, by clicking the file link and then right-clicking the `Download' link for each, and choosing `Save As' in your browser.  You will need to do that on ''each'' file page.
 
-Alternatively, there are a few ways you can download all of the files at once. Some of these means were provided by '''Icicles''' users.
+Alternatively, there are ways you can download all of the files at once. Some of these means were provided by '''Icicles''' users.
 
 [new:DrewAdams:2009-04-17 07:54 UTC]
 '''Note:''' The %%EmacsWiki%% ElispArea always has the latest version of '''Icicles'''.  If you want to be sure to have the latest version, then either download the files individually there or use one of the first two methods described below (within Emacs and using a shell script).  The files obtained by the other methods are updated only periodically (e.g. once a week).
@@ -137,7 +145,16 @@ Alternatively, there are a few ways you can download all of the files at once. S
 
 
 
-'''1.''' '''Within Emacs''' -- Two alternative ways:
+'''1.''' '''Within Emacs''' -- Alternative ways:
+
+* If you use Emacs 24 or later, you can download and install '''Icicles''' from [[MELPA]].  To do that, you first need to add `melpa' to list `package-archives'.  Then use `M-x list-packages' and click `icicles' in the list of available pacakges.  Use code like this to add `melpa' to the list of available archives:
+
+       (when (> emacs-major-version 23)
+        (require 'package)
+        (package-initialize)
+        (add-to-list 'package-archives 
+                     '("melpa" . "http://melpa.milkbox.net/packages/")
+                     'APPEND))
 
 * Use library <tt>[[icicles-install.el]]</tt>. See the simple instructions in the file header. Based on the [[ELPA]] initialization code. It uses [[UrlPackage]], if available; else it uses `wget'. Thanks to AnupamSengupta for this.
 
