@@ -219,8 +219,13 @@ Finally, you can also save file names as Emacs [[fileset]]s and use those the sa
 * [[Icicles - Bookmark Enhancements]]
 * [[Icicles - Progressive Completion]]
 * [[Icicles - Nutshell View#ChippingAway| Chipping Away the Non-Elephant]]
-* [[Icicles - File-Name Input]]
+* [[Icicles - File-Name Input#MatchFileContent|Match File Names and File Content Too]]
 * [[Icicles - Dired Enhancements#SaveFilesAsCandidates|Icicles - Save Marked Names as Completion Candidates]]
+
+
+
+
+
 
 
 
