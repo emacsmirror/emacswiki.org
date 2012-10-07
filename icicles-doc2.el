@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun Oct  7 12:57:06 2012 (-0700)
+;; Last-Updated: Sun Oct  7 13:25:01 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 29022
+;;     Update #: 29025
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -5957,6 +5957,16 @@
 ;;  This section contains some tips about completing file and
 ;;  directory names.
 ;;
+;;  See Also:
+;;
+;;  * (@> "Customization and General Tips") for general tips about
+;;    using Icicles.  Many of those tips apply also to file-name and
+;;    directory-name completion.
+;;  * (@file :file-name "icicles-doc1.el" :to "File-Name Input and Locating Files Anywhere").
+;;
+;;
+;;  Tips:
+;;
 ;;  * Functions `icicle-file-type-less-p', `icicle-dirs-first-p', and
 ;;    `icicle-dirs-last-p' are provided as possible values for user
 ;;    option `icicle-sort-comparer'.  When choosing a sort order using
@@ -6101,13 +6111,6 @@
 ;;    `icicle-kill-visited-buffers-flag' controls whether to keep or
 ;;    kill any file buffers that were searched but whose files did not
 ;;    ultimately choose.  Keeping them is essentially caching them.
-;;
-;;  See Also:
-;;
-;;  * (@> "Customization and General Tips") for general tips about
-;;    using Icicles.  Many of those tips apply also to file-name and
-;;    directory-name completion.
-;;  * (@file :file-name "icicles-doc1.el" :to "File-Name Input and Locating Files Anywhere").
  
 ;;(@* "Key Bindings")
 ;;
