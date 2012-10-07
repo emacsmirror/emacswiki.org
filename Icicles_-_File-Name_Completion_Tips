@@ -160,7 +160,7 @@ that they are actually file names.  This is
 the case for commands `icicle-locate-file', `icicle-recent-file', `icicle-find-file-in-tags-table', and `icicle-find-file-absolute', as well as `icicle-file' with a [[prefix argument]].
 
 Such candidates are often ''absolute'' file names.  In that case, you can regexp-match against ''any part'' of the
-absolute file name, including ''directory'' components.  See [[Icicles - File-Name Input]].
+absolute file name, including ''directory'' components.  See [[Icicles - File-Name Input#FindFilesAnywhere|Find Files Anywhere, Without Knowing Where]].
 
 
 
@@ -173,6 +173,26 @@ If you have symbolic links that might get in the way of exploring directories wh
 This also gives you a way to temporarily avoid descending into a subdirectory you are not interested in: put a symbolic link in its place temporarily.
 
 Another, cleaner way to skip certain directories is to [[Customize]] or `let'-bind option '''`<tt>[[Icicles - Customization and General Tips#icicle-ignored-directories|icicle-ignored-directories]]</tt>''''. By default, this is the value of `vc-directory-exclusion-list', which means that it ignores version-control directories.
+
+
+
+
+----
+[:MatchFileNamesBeforeContent]
+==== Match File Names Before File Content ====
+
+If you use commands such as '''`<tt>[[Icicles - File-Name Input#icicle-find-file-of-content|icicle-find-file-of-content]]<tt>'''' and
+'''`icicle-visit-marked-file-of-content'''', which let you match a
+file ''name'' and/or file ''contents'', remember that it is far quicker
+to match names than contents.  So the more you match names to
+narrow the set of files whose contents need to be searched, the
+quicker matching will be.  Remember too that option
+
+'''`<tt>[[Icicles - Customization and General Tips#icicle-kill-visited-buffers-flag|icicle-kill-visited-buffers-flag]]</tt>'''' controls whether to keep or
+kill any file [[buffer]]s that were searched but whose files did not
+ultimately choose.  Keeping them is essentially caching them.
+
+
 
 
 
