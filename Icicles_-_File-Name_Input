@@ -247,7 +247,9 @@ portion is often a long directory substring.
 
 
 
-[:icicle-file, icicle-find-file, icicle-find-file-absolute]
+[:icicle-file]
+[:icicle-find-file]
+[:icicle-find-file-absolute]
 ==== `icicle-file', `icicle-find-file', `icicle-find-file-absolute' ====
 
 [[multi-command|Multi-command]] '''`icicle-file'''' is bound, by default, to '''`C-x C-f'''' in ''Icicle''
