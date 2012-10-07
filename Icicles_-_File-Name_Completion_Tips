@@ -187,7 +187,6 @@ file ''name'' and/or file ''contents'', remember that it is far quicker
 to match names than contents.  So the more you match names to
 narrow the set of files whose contents need to be searched, the
 quicker matching will be.  Remember too that option
-
 '''`<tt>[[Icicles - Customization and General Tips#icicle-kill-visited-buffers-flag|icicle-kill-visited-buffers-flag]]</tt>'''' controls whether to keep or
 kill any file [[buffer]]s that were searched but whose files did not
 ultimately choose.  Keeping them is essentially caching them.
