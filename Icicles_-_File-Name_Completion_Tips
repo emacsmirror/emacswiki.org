@@ -9,6 +9,18 @@
 
 This page contains some tips about [[completion|completing]] file and directory names.
 
+
+
+'''See Also:'''
+
+* [[Icicles - Customization and General Tips]] for
+general tips about using '''Icicles'''.  Many of those tips apply also
+to file-name and directory-name completion.
+
+* [[Icicles - File-Name Input]]
+
+
+
 ----
 [:icicle-file-type-less-p]
 [:icicle-dirs-first-p]
@@ -195,13 +207,10 @@ ultimately choose.  Keeping them is essentially caching them.
 
 
 
-'''See Also:'''
 
-* [[Icicles - Customization and General Tips]] for
-general tips about using '''Icicles'''.  Many of those tips apply also
-to file-name and directory-name completion.
 
-* [[Icicles - File-Name Input]]
+
+
 
 ----
 
