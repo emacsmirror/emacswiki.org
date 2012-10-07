@@ -1780,7 +1780,7 @@ binding of args to that function."
         (length indices))
     (one-key-menu-window-close) 1))
 
-(defun one-key-delete-associated-menus (&optional (menunum okm-menu-number))
+(defun* one-key-delete-associated-menus (&optional (menunum okm-menu-number))
   "Remove all menus (from the currently loaded menus) that are associated with the current menu.
 Associated menus are those with the same base-name but different numbers appended to the end of the name (in brackets).
 If MENUNUM is supplied it should be the index into `okm-menu-alists' of a menu to be deleted.
