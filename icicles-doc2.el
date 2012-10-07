@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Sep 14 18:03:53 2012 (-0700)
+;; Last-Updated: Sun Oct  7 12:57:06 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 29009
+;;     Update #: 29022
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -174,6 +174,10 @@
 ;;    (@file :file-name "icicles-doc1.el" :to "Function `read-file-name'")
 ;;    (@file :file-name "icicles-doc1.el" :to "Function `completing-read'")
 ;;    (@file :file-name "icicles-doc1.el" :to "Icicles Commands that Read File Names")
+;;      (@file :file-name "icicles-doc1.el" :to "`icicle-file', `icicle-find-file', `icicle-find-file-absolute'")
+;;      (@file :file-name "icicles-doc1.el" :to "Match File Names and File Content Too")
+;;      (@file :file-name "icicles-doc1.el" :to "Visit Recent Files or Files for Emacs Tags")
+;;      (@file :file-name "icicles-doc1.el" :to "Find Files Anywhere, Without Knowing Where")
 ;;    (@file :file-name "icicles-doc1.el" :to "Absolute File Names and Different Directories")
 ;;
 ;;  (@file :file-name "icicles-doc1.el" :to "Persistent Sets of Completion Candidates")
@@ -2157,7 +2161,7 @@
 ;;  See Also:
 ;;
 ;;  * (@> "Support for Projects")
-;;  * (@file :file-name "icicles-doc1.el" :to "File-Name Input and Locating Files Anywhere")
+;;  * (@file :file-name "icicles-doc1.el" :to "Visit Recent Files or Files for Emacs Tags")
 ;;
 ;;(@* "`icicle-find-tag': Find Tags in All Tags Tables")
 ;;  ** `icicle-find-tag': Find Tags in All Tags Tables **
@@ -3155,7 +3159,7 @@
 ;;  * (@> "Icicles Bookmark Enhancements")
 ;;  * (@file :file-name "icicles-doc1.el" :to "Progressive Completion")
 ;;  * (@file :file-name "icicles-doc1.el" :to "Chip Away the Non-Elephant")
-;;  * (@file :file-name "icicles-doc1.el" :to "File-Name Input and Locating Files Anywhere")
+;;  * (@file :file-name "icicles-doc1.el" :to "Match File Names and File Content Too")
 ;;  * (@> "Save Marked Names as Completion Candidates") (Dired)
 ;;
 ;;(@* "Retrieving and Reusing a Saved Project")
@@ -5430,22 +5434,6 @@
 ;;    the cache is refreshed whenever you use `S-delete' to delete a
 ;;    candidate bookmark.
 ;;
-;;  * Non-`nil' user option `icicle-show-multi-completion-flag' means
-;;    that for some commands additional information is shown along
-;;    with each completion candidate.  That is, a multi-completion is
-;;    used.  You can match against any parts of the multi-completion.
-;;    The default value is `t'.
-;;
-;;    For example, for command `icicle-search', the name of the buffer
-;;    associated with each completion candidate is added to the
-;;    candidate and highlighted.  You can match against the buffer
-;;    name, as well as the search hit within the buffer.
-;;
-;;    Note that even when the value of this option is `nil', you can
-;;    often see the multi-completion information in the mode-line when
-;;    you cycle candidates, and you can typically see it in the help
-;;    that is displayed by `C-M-mouse-2' and so on.
-;;
 ;;  * User options `icicle-buffer-match-regexp',
 ;;    `icicle-buffer-no-match-regexp', `icicle-buffer-predicate', and
 ;;    `icicle-buffer-extras' determine the behavior of Icicles buffer
@@ -5546,6 +5534,31 @@
 ;;    underlying regexp (value of constant `icicle-anychar-regexp')
 ;;    explicitly for a multi-line dot (`.').  A `nil' value works only
 ;;    for Emacs versions 21 and later.
+;;
+;;  * Non-`nil' user option `icicle-show-multi-completion-flag' means
+;;    that for some commands additional information is shown along
+;;    with each completion candidate.  That is, a multi-completion is
+;;    used.  You can match against any parts of the multi-completion.
+;;    The default value is `t'.
+;;
+;;    For example, for command `icicle-search', the name of the buffer
+;;    associated with each completion candidate is added to the
+;;    candidate and highlighted.  You can match against the buffer
+;;    name, as well as the search hit within the buffer.
+;;
+;;    Note that even when the value of this option is `nil', you can
+;;    often see the multi-completion information in the mode-line when
+;;    you cycle candidates, and you can typically see it in the help
+;;    that is displayed by `C-M-mouse-2' and so on.
+;;
+;;  * Non-`nil' user option `icicle-kill-visited-buffers-flag' means
+;;    kill buffers visited temporarily to search files.  This applies
+;;    to commands such as `icicle-find-file-of-content', which search
+;;    files that match your completion input.  If non-`nil' then any
+;;    such buffers for files that you do not actually choose are
+;;    killed when the command is finished.  If `nil' then they are not
+;;    killed.  The commands affected by this option are available only
+;;    for Emacs 23 and later.
 ;;
 ;;  * User options `icicle-list-join-string' and
 ;;    `icicle-list-nth-parts-join-string' are described in sections
@@ -6063,7 +6076,7 @@
 ;;    prefix argument.  Such candidates are often absolute file names.
 ;;    In that case, you can regexp-match against any part of the
 ;;    absolute file name, including directory components.  See
-;;    (@file :file-name "icicles-doc1.el" :to "File-Name Input and Locating Files Anywhere").
+;;    (@file :file-name "icicles-doc1.el" :to "Find Files Anywhere, Without Knowing Where").
 ;;
 ;;  * If you have symbolic links that might get in the way of
 ;;    exploring directories while locating files, you can use command
@@ -6078,6 +6091,16 @@
 ;;    or `let'-bind option `icicle-ignored-directories'. By default
 ;;    this is the value of `vc-directory-exclusion-list', which means
 ;;    that it ignores version-control directories.
+;;
+;;  * If you use commands such as `icicle-find-file-of-content' and
+;;    `icicle-visit-marked-file-of-content', which let you match a
+;;    file name and/or file contents, remember that it is far quicker
+;;    to match names than contents.  So the more you match names to
+;;    narrow the set of files whose contents need to be searched, the
+;;    quicker matching will be.  Remember too that option
+;;    `icicle-kill-visited-buffers-flag' controls whether to keep or
+;;    kill any file buffers that were searched but whose files did not
+;;    ultimately choose.  Keeping them is essentially caching them.
 ;;
 ;;  See Also:
 ;;
