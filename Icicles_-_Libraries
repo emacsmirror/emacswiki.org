@@ -140,7 +140,9 @@ You can download the '''Icicles''' files individually from ElispArea, by clickin
 Alternatively, there are ways you can download all of the files at once. Some of these means were provided by '''Icicles''' users.
 
 [new:DrewAdams:2009-04-17 07:54 UTC]
-'''Note:''' The %%EmacsWiki%% ElispArea always has the latest version of '''Icicles'''.  If you want to be sure to have the latest version, then either download the files individually there or use one of the first two methods described below (within Emacs and using a shell script).  The files obtained by the other methods are updated only periodically (e.g. once a week).
+'''Note:''' The %%EmacsWiki%% ElispArea always has the latest version of '''Icicles'''.  If you want to be sure to have the latest version, then either download the files individually there or use one of the first two methods described below (within Emacs and using a shell script).  The files obtained by the other methods are updated only periodically (e.g. once a week).  
+
+If you have Emacs 24 or later, then the first method is probably the easiest way to obtain up-to-date '''Icicles''' files.
 [new]
 
 
