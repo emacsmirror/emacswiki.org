@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Mon Sep 24 17:36:23 2012 (-0700)
+;; Last-Updated: Sun Oct  7 12:27:25 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 26797
+;;     Update #: 26852
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -198,6 +198,7 @@
 ;;    (@> "Proxy Candidates, `M-.'")
 ;;    (@> "Repeat `M-.' To Grab More or Different")
 ;;    (@> "Resolve File Names")
+;;
 ;;  (@> "Background on Vanilla Emacs Input Completion")
 ;;  (@> "Cycling Completions")
 ;;  (@> "Traversing Minibuffer Histories")
@@ -230,6 +231,7 @@
 ;;  (@> "A Propos d'Apropos")
 ;;    (@> "Get Help on Completion Candidates")
 ;;      (@> "Use Candidate Help Like You Use Emacs Command `apropos'")
+;;
 ;;    (@> "Icicles Apropos Commands")
 ;;      (@> "Replacements for Standard Apropos Commands")
 ;;      (@> "Documentation-Apropos Multi-Commands")
@@ -244,6 +246,8 @@
 ;;    (@> "Icicles Multi-Completion Commands")
 ;;    (@> "How Multi-Completions Work")
 ;;    (@> "Multi-Completions vs `completing-read-multiple'")
+;;    (@> "Sorting Candidates by Their Second Part")
+;;    (@*>"Multi-Completions with a Part You Never See")
 ;;
 ;;  (@> "Dot, Dot, Dot")
 ;;  (@> "More about Multi-Commands")
@@ -273,6 +277,7 @@
 ;;  (@> "Icicles Multi `M-x'")
 ;;    (@> "Examples of Using Multi `M-x'")
 ;;      (@> "What about describe-variable and describe-function?")
+;;
 ;;    (@> "Multi `M-x' Turns Every Command into a Multi-Command")
 ;;
 ;;  (@> "Choose All Completion Candidates")
@@ -280,6 +285,7 @@
 ;;    (@> "Saving and Retrieving Completion Candidates")
 ;;    (@> "Different Places for Saving and Retrieving Candidates")
 ;;    (@> "Set Operations")
+;;
 ;;  (@> "Google Matching")
 ;;    (@> "Domain of Discourse")
 ;;    (@> "Global Filtering")
@@ -293,6 +299,11 @@
 ;;    (@> "Function `read-file-name'")
 ;;    (@> "Function `completing-read'")
 ;;    (@> "Icicles Commands that Read File Names")
+;;      (@> "`icicle-file', `icicle-find-file', `icicle-find-file-absolute'")
+;;      (@> "Match File Names and File Content Too")
+;;      (@> "Visit Recent Files or Files for Emacs Tags")
+;;      (@> "Find Files Anywhere, Without Knowing Where")
+;;
 ;;    (@> "Absolute File Names and Different Directories")
 ;;
 ;;  (@> "Persistent Sets of Completion Candidates")
@@ -312,11 +323,13 @@
 ;;    (@> "Using Other Histories; Commands Any Which Way")
 ;;      (@> "Completing Against All Interactive Commands")
 ;;      (@> "Using an Alternative History")
+;;
 ;;    (@> "Cleaning Up History Lists")
 ;;
 ;;  (@> "Isearch Enhancements")
 ;;    (@> "Launch Occur using the Isearch Search String")
 ;;    (@> "Launch Icicles Search using the Isearch Search String")
+;;
 ;;
 ;;  (@file :file-name "icicles-doc2.el" :to "Documentation in File `icicles-doc2.el'")
 ;;  -----------------------------------------------------------
@@ -3965,7 +3978,7 @@
 ;;    - extra candidates first - see
 ;;      (@file :file-name "icicles-doc2.el" :to "Global Filters")
 ;;    - by second multi-completion part (multi-completions) - see
-;;      (@file :file-name "icicles-doc2.el" :to "Sorting Candidates by Their Second Part")
+;;      (@> "Sorting Candidates by Their Second Part")
 ;;    - turned OFF  (does not sort at all)
 ;;
 ;;  As you can see, some are appropriate for color-name completion,
@@ -4906,8 +4919,8 @@
 ;;  `*Completions*').  And do not forget that you can always reverse
 ;;  the current sort order, using `C-N C-,' where N is an integer.
 ;;
-;;(@* "`icicle-buffer': Multi-Completions with a Part You Never See")
-;;  ** `icicle-buffer': Multi-Completions with a Part You Never See
+;;(@* "Multi-Completions with a Part You Never See")
+;;  ** Multi-Completions with a Part You Never See
 ;;
 ;;  Now that you understand multi-completions a bit, I can say more
 ;;  about commands `icicle-buffer' and `icicle-buffer-other-window',
@@ -4949,16 +4962,17 @@
 ;;  if you have many buffers or large buffers with no content matches
 ;;  then you will waste time searching unnecessarily.
 ;;
-;;  In Dired mode there are related multi-completion multi-commands,
-;;  `icicle-visit-marked-file-of-content' and
-;;  `icicle-visit-marked-file-of-content-other-window', which let you
-;;  visit marked files whose names and/or contents match your input.
-;;  They are bound to `C-S-f' and `C-S-o' (aka `C-F' and `C-O'),
-;;  respectively.
+;;  There are similar multi-completion multi-commands for visiting
+;;  files.  The general command `icicle-find-file-of-content' does
+;;  this for all files and directories, and in Dired mode command
+;;  `icicle-visit-marked-file-of-content' (bound to `C-S-f', aka
+;;  `C-F') does it for marked files and directories.
 ;;
 ;;  See Also:
 ;;
 ;;  * (@> "Multi-Commands")
+;;  * (@> "Match File Names and File Content Too") for information
+;;    about command `icicle-find-file-of-content'
 ;;  * (@> "Programming Multi-Completions") for information about
 ;;    changing the appearance and behavior of Icicles
 ;;    multi-completions using Emacs-Lisp code.
@@ -6933,11 +6947,13 @@
 ;;(@* "Function `read-file-name'")
 ;;  ** Function `read-file-name' **
 ;;
-;;  Function `read-file-name' is specialized for file-name input with
-;;  completion.  It knows about files and file names for your current
-;;  platform.  It knows about Emacs remote file name syntax (Tramp,
-;;  Ange FTP).  And starting with Emacs 23, `TAB' also completes
-;;  environment variables during `read-file-name' completion.
+;;  Function `read-file-name' uses relative file-name completion.
+
+;;  It is specialized for file-name input with completion.  It knows
+;;  about files and file names for your current platform.  It knows
+;;  about Emacs remote file name syntax (Tramp, Ange FTP).  And
+;;  starting with Emacs 23, `TAB' also completes environment variables
+;;  during `read-file-name' completion.
 ;;
 ;;  Using `read-file-name' is the most flexible way to read a file
 ;;  name in Emacs, and it is the traditional way.  Unless stated
@@ -6946,11 +6962,17 @@
 ;;
 ;;  When `read-file-name' reads input, only the file name itself, not
 ;;  the directory portion, is used for matching.  The directory is
-;;  understood to be the value of variable `default-directory' (which
-;;  you can change using command `cd', for instance).  The behavior is
-;;  thus the same whether or not the directory name is present in the
-;;  minibuffer.  If you prefer, you can delete the directory name
-;;  first, using `M-k'.
+;;  understood to be the directory that is present in the minibuffer,
+;;  or the value of variable `default-directory' (which you can change
+;;  using command `cd', for instance) if there is no directory there.
+;;
+;;  Whether the value of `default-directory' is automatically inserted
+;;  in the minibuffer is controlled by user option
+;;  `insert-default-directory'.  But if you do not change the
+;;  directory seen in the minibuffer then the behavior is the same
+;;  whether or not the `default-directory' name is present in the
+;;  minibuffer: it is the assumed directory.  If you prefer, you can
+;;  delete the directory name first, using `M-k'.
 ;;
 ;;  With `read-file-name', you can thus use apropos completion to
 ;;  match a file-name substring, without needing to prefix the
@@ -7080,7 +7102,8 @@
 ;;  ** Icicles Commands that Read File Names **
 ;;
 ;;  Icicles commands that use `read-file-name' include all
-;;  multi-commands, such as `icicle-find-file', that are defined using
+;;  multi-commands, such as `icicle-find-file' and
+;;  `icicle-find-file-of-content', that are defined using
 ;;  `icicle-define-file-command'.  Vanilla Emacs command `find-file'
 ;;  is another example of a command that uses `read-file-name'.
 ;;
@@ -7107,18 +7130,62 @@
 ;;  common match portions of the candidates in `*Completions*'.  This
 ;;  portion is often a long directory substring.
 ;;
-;;  Command `icicle-file' is bound, by default, to `C-x C-f' in Icicle
-;;  mode, thus taking the place of `find-file'.  It combines
-;;  `icicle-find-file' and `icicle-find-file-absolute'.  With no
-;;  prefix argument, it matches relative file names; with a prefix
-;;  argument, it matches absolute names (as ordinary strings).  With a
-;;  negative prefix argument, you can match also the modification
-;;  date.
+;;(@* "`icicle-file', `icicle-find-file', `icicle-find-file-absolute'")
+;;  *** `icicle-file', `icicle-find-file', `icicle-find-file-absolute' ***
+;;
+;;  Multi-command `icicle-file' is bound, by default, to `C-x C-f' in
+;;  Icicle mode, thus taking the place of `find-file'.  It combines
+;;  multi-commands `icicle-find-file' and `icicle-find-file-absolute'.
+;;  With no prefix argument, it matches relative file names; with a
+;;  prefix argument, it matches absolute names (as ordinary strings).
+;;  With a negative prefix argument, you can match also the
+;;  modification date.
 ;;
 ;;  An additional feature of `icicle-find-file-absolute' and
 ;;  `icicle-find-file-absolute-other-window' is that candidates that
 ;;  are directory names are highlighted in buffer `*Completions*'
 ;;  using face `icicle-special-candidate'.
+;;
+;;(@* "Match File Names and File Content Too")
+;;  *** Match File Names and File Content Too ***
+;;
+;;  Command `icicle-find-file-of-content', available for Emacs 23 and
+;;  later, is similar to `icicle-find-file' (i.e., to `icicle-file'
+;;  with no prefix arg).  But it also lets you optionally provide a
+;;  regexp pattern to match against file contents.  In this it is
+;;  similar to the buffer-switching multi-command `icicle-buffer'
+;;  (see (@*>"Multi-Completions with a Part You Never See")).
+;;
+;;  If you do not try to match file contents, then
+;;  `icicle-find-file-of-content' behaves just like
+;;  `icicle-find-file'.  In particular, there is no loss of
+;;  performance.  But if you do provide a pattern to match contents
+;;  then all files whose names match the file-name part of your input
+;;  are searched for the content pattern.
+;;
+;;  That search operation is obviously more costly than file-name
+;;  matching, so clearly if you can provide some information about the
+;;  file name, that improves performance.  IOW, the more you can limit
+;;  the number of files to search, the better.
+;;
+;;  To search file contents, the candidate files are visited, that is,
+;;  buffers are created for them and searched.  By default, after the
+;;  command is finished these buffers are killed, except for those of
+;;  the file(s) you actually chose as completion candidate(s), and
+;;  except for any others that existed prior to invoking the command.
+;;
+;;  This automatic extra-buffers cleanup is controlled by option
+;;  `icicle-kill-visited-buffers-flag'.  But providing a prefix
+;;  argument to the command flips the behavior specified by that
+;;  option for the command duration.
+;;
+;;  In Dired there is a related content-matching multi-command,
+;;  `icicle-visit-marked-file-of-content' (bound to `C-S-f', aka
+;;  `C-F').  And there are other-window versions of such commands as
+;;  well (`C-O' in Dired).
+;;
+;;(@* "Visit Recent Files or Files for Emacs Tags")
+;;  *** Visit Recent Files or Files for Emacs Tags ***
 ;;
 ;;  Commands `icicle-find-file-in-tags-table' and
 ;;  `icicle-find-file-in-tags-table-other-window' let you visit files
@@ -7128,6 +7195,9 @@
 ;;
 ;;  You can use `icicle-recent-file' to open any file that you have
 ;;  visited recently, perhaps in a previous Emacs session.
+;;
+;;(@* "Find Files Anywhere, Without Knowing Where")
+;;  *** Find Files Anywhere, Without Knowing Where ***
 ;;
 ;;  You can use `icicle-locate' or `icicle-locate-file' to find a file
 ;;  when you do not know what directory it is in.  The former requires
