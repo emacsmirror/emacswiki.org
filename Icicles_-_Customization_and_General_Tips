@@ -565,11 +565,6 @@ the input history is to use `M-p' and `M-n'.
 
 
 ----
-==== Option icicle-cycle-into-subdirs-flag ====
-
-See [[Icicles - File-Name Completion Tips#icicle-cycle-into-subdirs-flag|Icicles - File-Name Completion Tips]]
-
-----
 ==== Option icicle-use-~-for-home-dir-flag ====
 
 See [[Icicles - File-Name Completion Tips#icicle-use-tilde-for-home-dir-flag|Icicles - File-Name Completion Tips]]
@@ -1517,24 +1512,6 @@ the cache is refreshed whenever you use `S-delete' to delete a
 candidate bookmark.
 
 ----
-[:icicle-show-multi-completion-flag]
-==== Option icicle-show-multi-completion-flag ====
-
-Non-`nil' user option '''`icicle-show-multi-completion-flag'''' means that for some commands additional information is shown along
-with each completion candidate.  That is, a [[multi-completion]] is
-used.  You can match against any parts of the multi-completion.
-The default value is `t'.
-
-For example, for command `icicle-search', the name of the buffer associated with each completion candidate is added
-to the candidate and highlighted. You can match against the buffer name, as well as the search hit within the buffer. 
-
-Note that even when the value of this option is `nil',
-you can often see the multi-completion information in the [[mode line]] when you
-[[Icicles - Cycling Completions|cycle]] candidates, and you can typically see it in the help that is 
-displayed by `C-M-mouse-2' and so on.
-
-
-----
 [:icicle-buffer-match-regexp]
 [:icicle-buffer-no-match-regexp]
 [:icicle-buffer-predicate]
@@ -1655,6 +1632,45 @@ Non-`nil' option '''`icicle-dot-show-regexp-flag'''' means show the
 underlying regexp (value of constant `icicle-anychar-regexp') explicitly
 for a multi-line dot ('''`##.##'''').  A `nil' value works only for Emacs
 versions 21 and later.
+
+
+
+----
+[:icicle-show-multi-completion-flag]
+==== Option icicle-show-multi-completion-flag ====
+
+Non-`nil' user option '''`icicle-show-multi-completion-flag'''' means that for some commands additional information is shown along
+with each completion candidate.  That is, a [[multi-completion]] is
+used.  You can match against any parts of the multi-completion.
+The default value is `t'.
+
+For example, for command `icicle-search', the name of the buffer associated with each completion candidate is added
+to the candidate and highlighted. You can match against the buffer name, as well as the search hit within the buffer. 
+
+Note that even when the value of this option is `nil',
+you can often see the multi-completion information in the [[mode line]] when you
+[[Icicles - Cycling Completions|cycle]] candidates, and you can typically see it in the help that is 
+displayed by `C-M-mouse-2' and so on.
+
+
+
+----
+[:icicle-kill-visited-buffers-flag]
+==== Option icicle-kill-visited-buffers-flag ====
+
+Non-`nil' user option '''`icicle-kill-visited-buffers-flag'''' means
+kill [[buffer]]s visited temporarily to search files.  This applies
+to commands such as `<tt>[[Icicles - File-Name Input#icicle-find-file-of-content|icicle-find-file-of-content]]</tt>',
+which search
+files that match your completion input.  If non-`nil' then any
+such buffers for files that you do not actually choose are
+killed when the command is finished.  If `nil' then they are not
+killed.  The commands affected by this option are available only
+for Emacs 23 and later.
+
+
+
+
 
 ----
 [:icicle-list-join-string]
