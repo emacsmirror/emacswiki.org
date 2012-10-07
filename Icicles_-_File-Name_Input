@@ -274,6 +274,10 @@ using face `icicle-special-candidate'.
 
 
 
+
+
+[:icicle-visit-marked-file-of-content]
+[:icicle-find-file-of-content]
 [:MatchFileContent]
 ==== Match File Names and File Content Too ====
 
@@ -304,11 +308,10 @@ the file(s) you actually chose as completion candidate(s), and
 except for any others that existed prior to invoking the command.
 
 This automatic extra-buffers cleanup is controlled by option
-`icicle-kill-visited-buffers-flag'.  But providing a prefix
-argument to the command flips the behavior specified by that
+'''`<tt>[[Icicles - Customization and General Tips#icicle-kill-visited-buffers-flag|icicle-kill-visited-buffers-flag]]</tt>''''.  But providing a [[prefix argument]] to the command flips the behavior specified by that
 option for the command duration.
 
-In Dired there is a related content-matching multi-command,
+In [[Dired]] there is a related content-matching multi-command,
 `icicle-visit-marked-file-of-content' (bound to `C-S-f', aka
 `C-F').  And there are other-window versions of such commands as
 well (`C-O' in Dired).
