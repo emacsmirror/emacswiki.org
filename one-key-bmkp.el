@@ -117,7 +117,7 @@
 The car of each element is a name for the filter, and the cdr is a lisp form which returns non-nil when a bookmark bmk should
 be included in the menu. The variable bmk will be set to the bookmark being tested, and bmk-tags will be set to the list of tags
 of that bookmark."
-  :type '(alist :key-type (string :tag "Filter name") :value-type (function :tag "Filter function"))
+  :type '(alist :key-type (string :tag "Filter name") :value-type (sexp :tag "Filter function"))
   :group 'one-key-bmkp)
 
 (defvar one-key-bmkp-sort-method-alist
@@ -388,7 +388,8 @@ create a new filter. This function is used in the \"bookmarks\" item in `one-key
                         (while (and (setq newname (read-string "Filter name: "))
                                     (assoc newname one-key-bmkp-filter-alist)
                                     (not (y-or-n-p "Filter with that name already exists, overwrite?"))))
-                        (one-key-add-to-alist 'one-key-bmkp-filter-alist (cons newname predfunc))
+                        (customize-save-variable 'one-key-bmkp-filter-alist
+                                                 (one-key-add-to-alist 'one-key-bmkp-filter-alist (cons newname predfunc)))
                         newname))))
          (bookmarks (if predfunc (bmkp-remove-if-not predfunc bookmark-alist)
                       (message "Invalid filter name!")))
