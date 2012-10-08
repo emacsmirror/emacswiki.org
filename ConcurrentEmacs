@@ -247,6 +247,8 @@ So what does everyone most want to do concurrently? Download mail in the
 background, render webpages while editing, font-lock with 8 CPUs at once, ..?
 Important question! -- LukeGorrie
 
+GNUS! I really want to love Gnus, but it is beyond pathetic that all of Emacs blocks when Gnus is blocked on IO. My internet connection is quite slow/spotty, so I often find myself pressing spacebar in Gnus and then finding all of Emacs locks up for several minutes while it tries to open the next message. Then I find myself reaching for a different editor just so I can edit some files while I wait for Gnus! What is that? This is not Emacs' fault. Compare ERC, it uses subprocesses to be able to receive messages asynchronously without blocking all of Emacs. The functionality is there. Gnus just needs to *use* it. *sigh*
+
 [new] Most of the times when I would need this is when doing work in dired
 that takes long time; it could be listings on a file server at another office,
 it can be "% g" searches I want to do, etc. Dired is a very handy tool for
