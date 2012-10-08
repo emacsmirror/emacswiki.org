@@ -132,43 +132,56 @@
 (defvar one-key-dir-current-dir nil
   "Current directory which is visited by one-key.")
 
-(defvar one-key-dir-sort-method-alist '((name . (lambda (a b) (string< a b)))
-                                        (extension . (lambda (a b)
-                                                       (flet ((get-ext (file-name) ; function to get file extension
-                                                                       (car (cdr (split-string file-name "\\.")))))
-                                                         (let ((filea (file-name-nondirectory a))
-                                                               (fileb (file-name-nondirectory b)))
+(defvar one-key-dir-sort-method-alist '((name . (lambda (itema itemb)
+                                                  (let* ((a (one-key-dir-extract-file-from-item itema))
+                                                         (b (one-key-dir-extract-file-from-item itemb)))
+                                                    (string< a b))))
+                                        (extension . (lambda (itema itemb)
+                                                       (let* ((a (one-key-dir-extract-file-from-item itema))
+                                                              (b (one-key-dir-extract-file-from-item itemb))
+                                                              (filea (file-name-nondirectory a))
+                                                              (fileb (file-name-nondirectory b)))
+                                                         (flet ((get-ext (file-name) ; function to get file extension
+                                                                         (car (cdr (split-string file-name "\\.")))))
                                                            (cond ((file-directory-p a) t)
                                                                  ((file-directory-p b) nil)
                                                                  (t (string< (get-ext filea) (get-ext fileb))))))))
-                                        (size . (lambda (a b)
-                                                  (let ((attriba (file-attributes a))
-                                                        (attribb (file-attributes b)))
+                                        (size . (lambda (itema itemb)
+                                                  (let* ((a (one-key-dir-extract-file-from-item itema))
+                                                         (b (one-key-dir-extract-file-from-item itemb))
+                                                         (attriba (file-attributes a))
+                                                         (attribb (file-attributes b)))
                                                     (> (nth 7 attriba) (nth 7 attribb)))))
-                                        (time-accessed . (lambda (a b)
-                                                           (let* ((attriba (file-attributes a))
+                                        (time-accessed . (lambda (itema itemb)
+                                                           (let* ((a (one-key-dir-extract-file-from-item itema))
+                                                                  (b (one-key-dir-extract-file-from-item itemb))
+                                                                  (attriba (file-attributes a))
                                                                   (attribb (file-attributes b))
                                                                   (x (nth 4 attriba))
                                                                   (y (nth 4 attribb)))
                                                              (or (> (car x) (car y))
                                                                  (and (= (car x) (car y))
                                                                       (> (cadr x) (cadr y)))))))
-                                        (time-modified . (lambda (a b)
-                                                           (let* ((attriba (file-attributes a))
+                                        (time-modified . (lambda (itema itemb)
+                                                           (let* ((a (one-key-dir-extract-file-from-item itema))
+                                                                  (b (one-key-dir-extract-file-from-item itemb))
+                                                                  (attriba (file-attributes a))
                                                                   (attribb (file-attributes b))
                                                                   (x (nth 5 attriba))
                                                                   (y (nth 5 attribb)))
                                                              (or (> (car x) (car y))
                                                                  (and (= (car x) (car y))
                                                                       (> (cadr x) (cadr y)))))))
-                                        (time-changed . (lambda (a b)
-                                                          (let* ((attriba (file-attributes a))
-                                                                 (attribb (file-attributes b))
-                                                                 (x (nth 6 attriba))
-                                                                 (y (nth 6 attribb)))
-                                                            (or (> (car x) (car y))
-                                                                (and (= (car x) (car y))
-                                                                     (> (cadr x) (cadr y))))))))
+                                        (time-changed . (lambda (itema itemb)
+                                                       (let* ((a (one-key-dir-extract-file-from-item itema))
+                                                              (b (one-key-dir-extract-file-from-item itemb))
+                                                              (attriba (file-attributes a))
+                                                              (attribb (file-attributes b))
+                                                              (x (nth 6 attriba))
+                                                              (y (nth 6 attribb)))
+                                                         (or (> (car x) (car y))
+                                                             (and (= (car x) (car y))
+                                                                  (> (cadr x) (cadr y))))))))
   "An alist of sort predicates to use for sorting directory listings.
 Each element is a cons cell in the form (NAME . PREDICATE) where NAME is a symbol naming the predicate and PREDICATE
 is a function which takes two items as arguments and returns non-nil if the first item should come before the second
@@ -217,13 +230,13 @@ This should not be a letter or number key."
                                                 (progn (widget-put w :error "That key is already used! Try another")
                                                        w))))))
 
-(defcustom one-key-dir-topdir "~/"
+(defcustom one-key-dir-topdir "/"
   "The default top level dir that can't be navigated above.
 This is the default value for the topdir arg to `one-key-dir-build-menu-alist' and `one-key-dir-visit'."
   :group 'one-key-dir
   :type 'directory)
 
-(defcustom one-key-dir-max-items-per-page 40
+(defcustom one-key-dir-max-items-per-page 60
   "The maximum number of menu items to display on each page."
   :group 'one-key-dir
   :type '(number :match (lambda (w val)
@@ -234,37 +247,42 @@ This is the default value for the topdir arg to `one-key-dir-build-menu-alist' a
                         (one-key-add-elements-to-alist
                          'one-key-special-keybindings
                          '((sort-dir-next sort-next "Sort items by next method"
-                                          (lambda nil (one-key-dir-sort-by-next-method) t))
+                                          (lambda nil (one-key-sort-items-by-next-method
+                                                       nil t
+                                                       'one-key-dir-current-sort-method
+                                                       'one-key-dir-sort-method-alist) t))
                            (sort-dir-prev sort-prev "Sort items by previous method"
-                                          (lambda nil (one-key-dir-sort-by-next-method t) t))) t))
+                                          (lambda nil (one-key-sort-items-by-next-method
+                                                       t t
+                                                       'one-key-dir-current-sort-method
+                                                       'one-key-dir-sort-method-alist) t))
+                           (dir-documentation documentation "Show one-key-dir documentation"
+                                               (lambda nil (finder-commentary (locate-library "one-key-dir"))
+                                                 (setq one-key-menu-window-configuration nil)
+                                                 nil))
+                           ) t))
 
 (defcustom one-key-dir-special-keybindings
   '(quit-close quit-open toggle-persistence toggle-display next-menu prev-menu up down scroll-down scroll-up
-               toggle-help toggle-row/column-order sort-dir-next sort-dir-prev reverse-order limit-items highlight-items
-               add-menu remove-menu move-item donate report-bug)
+               toggle-help dir-documentation toggle-row/column-order sort-dir-next sort-dir-prev reverse-order
+               limit-items highlight-items add-menu remove-menu move-item donate report-bug)
   "List of special keys to be used for one-key-dir menus (see `one-key-default-special-keybindings' for more info)."  
   :group 'one-key-dir
   :type '(repeat (symbol :tag "Name" :help-echo "The name/symbol corresponding to the keybinding.")))
-  
-(defun one-key-dir-sort-by-next-method (&optional prev)
-  "Sort the `one-key-dir' menu by the method in `one-key-dir-sort-method-alist' after `one-key-dir-current-sort-method'.
-If PREV is non-nil then sort by the previous method instead."
-  (let* ((nextmethod (car (one-key-get-next-alist-item one-key-dir-current-sort-method
-                                                       one-key-dir-sort-method-alist
-                                                       prev)))
-         (dir (car (string-split okm-this-name " ")))
-         (pos (position (concat dir " (1)") okm-menu-names :test 'equal)))
-    (setq one-key-dir-current-sort-method nextmethod)
-    (let* ((sortedlists (one-key-dir-build-menu-alist dir :initial-sort-method nextmethod))
-           (nlists (length sortedlists)))
-      (loop for n from 1 to nlists
-            for nstr = (number-to-string n)
-            for pos = (position (concat dir " (" nstr ")") okm-menu-names :test 'equal)
-            do (replace okm-menu-alists sortedlists
-                        :start1 pos :end1 (1+ pos)
-                        :start2 (1- n) :end2 n)))
-    (setq one-key-menu-call-first-time t)
-    (one-key-menu-window-close)))
+
+(defun one-key-dir-extract-file-from-item (item)
+  "Given a one-key-dir menu item ITEM, return corresponding file/directory (as a string).
+Alternatively, if ITEM is a string it will be returned as is (this is so that we can also use the sort functions
+for sorting files directly)."
+  (if (stringp item) (if (file-exists-p item)
+                         (if (file-directory-p item)
+                             (concat (file-truename item) "/")
+                           (file-truename item))
+                       (error "Non-existing file!"))
+    (let* ((part (fourth (cdr item)))
+           (isfile (eq (car part) 'funcall)))
+      (if isfile (third part)
+        (second (cadar (second part)))))))
 
 (defun* one-key-dir-visit (dir)
   "Visit DIR using one-key.
@@ -301,7 +319,7 @@ Default values for TOPDIR and VISITABLE are `one-key-dir-topdir' and t respectiv
                                           (dirfunc one-key-dir-default-dir-func)
                                           filename-map-func
                                           (exclude-regex one-key-dir-default-exclude-regex)
-                                          (initial-sort-method 'extension)
+                                          (initial-sort-method one-key-dir-current-sort-method)
                                           (keyfunc 'one-key-generate-key)
                                           (topdir one-key-dir-topdir)
                                           (visitable t))
@@ -316,7 +334,7 @@ FILENAME-MAP-FUNC). Any matching items will be omitted from the results.
 By default EXCLUDE-REGEX is set to `one-key-dir-default-exclude-regex'.
 The returned menu alist will initially be sorted by the method indicated by the INITIAL-SORT-METHOD arg which should be
 the car of one of the items in `one-key-dir-sort-method-alist' (a symbol). By default INITIAL-SORT-METHOD is set to
-'extension and the items will be sorted by file extension.
+`one-key-dir-current-sort-method'.
 The KEYFUNC arg should be a function for generating keys for the menu items.
 This function should take two args, an item description and a list of used keys, and return a key for the item.
 By default KEYFUNC is set to `one-key-generate-key' and you will probably not need to change it.
@@ -367,7 +385,7 @@ lists will be returned (as list of lists). These lists can be navigated from the
            (items (sort (remove-if 'exclude (directory-files dirname t)) sortfunc))
            (commands (mapcar 'cmdfunc items))
            (descriptions (mapcar 'descfunc items))
-           (menus (one-key-create-menu-lists commands descriptions nil one-key-dir-max-items-per-page keyfunc))
+           (menus (one-key-create-menu-lists commands descriptions nil nil one-key-dir-max-items-per-page keyfunc))
            (thisdircmd `(lambda nil (interactive) (funcall ',dirfunc ,dirname)))
            (updircmd (cmdfunc (file-name-directory (file-truename (if (equal (substring dir -1) "/")
                                                                       (substring dir 0 -1)
@@ -412,9 +430,7 @@ If ALLOW-EQUAL is non-nil also return t if DIR is the same dir as TOPDIR."
                                      (names (if dir (one-key-append-numbers-to-menu-name
                                                      (concat "dir:" dir) nummenus))))
                                 (if dir (cons names menulists))))
-                            (lambda nil (format "Files sorted by %s (%s first). Press <f1> for help.\n"
-                                                one-key-dir-current-sort-method
-                                                (if one-key-column-major-order "columns" "rows")))
+                            nil
                             'one-key-dir-special-keybindings) t)
 
 (provide 'one-key-dir)
