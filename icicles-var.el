@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Oct  5 14:35:08 2012 (-0700)
+;; Last-Updated: Tue Oct  9 13:32:30 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1647
+;;     Update #: 1649
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-var.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -97,8 +97,8 @@
 ;;    `icicle-last-transform-function', `icicle-lighter-truncation',
 ;;    `icicle-list-use-nth-parts', `icicle-menu-map',
 ;;    `icicle-minibuffer-message-ok-p', `icicle-minor-mode-map-entry',
-;;    `icicle-ms-windows-drive-hash', `icicle-must-match-regexp',
-;;    `icicle-must-not-match-regexp',
+;;    `icicle-ms-windows-drive-hash', `icicle-multi-completing-p',
+;;    `icicle-must-match-regexp', `icicle-must-not-match-regexp',
 ;;    `icicle-must-pass-after-match-predicate',
 ;;    `icicle-must-pass-predicate',
 ;;    `icicle-nb-candidates-before-truncation',
@@ -1037,6 +1037,9 @@ This affects only `icicle-msg-maybe-in-minibuffer'.")
   "Hash table for caching result of MS Windows `NET USE' system calls.
 For Emacs 20 and 21, this is not used unless you load library `cl.el'
 at runtime.")
+
+(defvar icicle-multi-completing-p nil
+  "Non-nil means we are currently completing with multi-completions.")
 
 (defvar icicle-must-match-regexp nil
   "A regexp that completion candidates must match, or nil.
