@@ -29,6 +29,8 @@ M-o (or Alt-o, if you prefer) is what you need:
 
 you can always press h in any of the panes in SC to get a full list of all the currently available bindings.
 
+OTOH if all you want is to rename one or more files, the easiest way is to do it in place: press C-x C-q to enter editable mode, change the name of the file(s) and press C-c C-c to commit your changes, or C-c C-k to discard them.
+
 Hope this helps. Cheers.
 
 ===How to Program/Customize Emacs Commands?===
