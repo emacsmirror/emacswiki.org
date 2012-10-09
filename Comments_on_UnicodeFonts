@@ -1,7 +1,7 @@
 This may be of help if you are having trouble with Emacs
 finding a font even though you have installed it correctly. On
 my system Emacs could not find the fonts "Dai Banna SIL Book"
-and "BabelStone Phags-pa Book." The solution was to append
+and "!BabelStone Phags-pa Book." The solution was to append
 ":style=Regular" to the names.  In the first case each font
 style was in a separate file so this may have been the reason
 this was necessary but I couldn't see any reason for it in the
