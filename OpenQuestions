@@ -69,6 +69,14 @@ Variable `custom-file' is an [[option]], but it is (exceptionally) usually bette
 
 HTH -- DrewAdams
 
+=== Is it possible to use fontsets outside emacs? ===
+
+[new:Bernard Hurley:2012-10-09 08:44 UTC]
+Using the UnicodeFonts package it is quite easy to set up very sophisticated fontsets in emacs but it is a lot of work and takes quite a lot of time. Emacs uses the fontset like one enormous unicode font with glyphs from many others. It would be nice if the results of this work could be made available to other applications. Is there any way of doing this e.g. by using emacs as a font server or running other applications inside emacs (not necessarily in an emacs window)? Has anyone looked at anything like this?
+
+Perhaps I should add that I use an Ubuntu Linux system and have had quite a lot of C and Common Lisp programming experience in the dim and distant past so I might be able to tackle the problem myself. Can anyone give any pointers as to where to start?
+
+Thanks in advance -- [[Bernard Hurley]]
 
 == extent-at function ==
 
@@ -446,7 +454,6 @@ These questions are kept here to let people avoid asking frequently asked questi
 [new]
 
 '''Question:''' Is it possible to tunnel info to emacs via SSH without using X11?  I prefer using the built-in emacs version shipped with OS X within Terminal.app.  Though, when I "ssh -X" it opens the server's version & config for Emacs within an X window on OS X.  Is there a way to bypass X11?
-
 
 
 ----
