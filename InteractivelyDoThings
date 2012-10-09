@@ -651,7 +651,7 @@ The relevant zsh config is here: http://zshwiki.org/home/examples/compquickstart
 
 === ido and ibus ===
 [new:]
-I have a number of files named in Chinese. In the standard find-file I can use ibus to enter their names, of part of their names. This doesn't work with ido-find-file.
+I have a number of files named in Chinese. In the standard find-file I can use ibus to enter their names, or part of their names. This doesn't work with ido-find-file.
 
 -- [[Bernard Hurley]]
 
