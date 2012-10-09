@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Oct  5 14:32:40 2012 (-0700)
+;; Last-Updated: Tue Oct  9 15:40:59 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 18554
+;;     Update #: 18559
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -3514,6 +3514,11 @@ Optional argument NO-DISPLAY-P non-nil means do not display buffer
   message either.  NO-DISPLAY-P is passed to
  `icicle-display-candidates-in-Completions' as its second arg.
 Optional argument WORD-P non-nil means complete only a word at a time."
+  (when (and icicle-multi-completing-p  (icicle-string-match-p (regexp-quote icicle-list-join-string)
+                                                               (icicle-input-from-minibuffer)))
+    (icicle-msg-maybe-in-minibuffer
+     (substitute-command-keys
+     "Use APROPOS completion (`S-TAB') to match multi-completions past first part")))
   (let ((ipc1-was-cycling-p  icicle-cycling-p)
         (mode-line-help      nil))
     (setq icicle-current-input                   (if (and icicle-last-input
