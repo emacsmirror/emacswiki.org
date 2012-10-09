@@ -1,6 +1,8 @@
 '''Emacs Lisp Expectations''' is the simplest unit testing framework by [[rubikitch]]. It is very easy to use/read.
 
-Lisp:el-expectations.el
+[new]
+The new generation of EmacsLispExpectations is available, Lisp:ert-expectations.el , using ErtTestLibrary.
+Lisp:el-expectations.el is obsolete.
 
 Mocking is done utilizing '''EmacsLispMock'''. You should download it, too:
 
