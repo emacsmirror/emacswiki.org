@@ -113,6 +113,11 @@ I used "M x ispell-region", and the words that ispell considered having incorrec
 
 -- Namo Amitabha
 
+[new]
+You can also type "a" to make the word session-local and "A" to make it buffer-local (i.e. to add it to your !LocalWords list.)
+
+-- [[Bernard_Hurley]]
+
 == Easy Spell Check: key bindings and function to make FlySpell/ispell/aspell easy to use w/ out a mouse ==
 
 Place the below code in your .emacs
