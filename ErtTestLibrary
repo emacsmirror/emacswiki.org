@@ -6,5 +6,8 @@ For examples of how to write tests with ERT, take a look at its [http://github.c
 
 LennartBorgman has written ##ert2.el## ("additions to ##ert.el##"), which contains functions for emulating the command loop and setting up a file/buffer to play with. It was distributed with [[NxhtmlMode|nXhtml]], but has since been integrated into ERT.
 
+[new]
+Lisp:ert-expectations.el translates EmacsLispExpectations syntax into ert. -- [[rubikitch]]
+
 ----
 See also UnitTesting
