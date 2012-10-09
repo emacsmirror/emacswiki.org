@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Sep 24 13:14:15 2012 (-0700)
+;; Last-Updated: Tue Oct  9 10:59:20 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 14614
+;;     Update #: 14615
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -464,7 +464,7 @@
 ;;         bookmark list.  Click button `Doc in Commentary' or button
 ;;         `Doc on the Web' to access the complete documentation.
 ;;
-;;         (Use button `Customize' to customize all '''Bookmark+'''
+;;         (Use button `Customize' to customize all `Bookmark+'
 ;;         faces and options.)
 ;;
 ;;       . In the bookmark list, `?' and `C-h m' are the same as `M-x
