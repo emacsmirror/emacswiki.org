@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Sun Aug 15 11:12:30 2010 (-0700)
-;; Last-Updated: Thu Aug 23 09:20:39 2012 (-0700)
+;; Last-Updated: Tue Oct  9 10:37:01 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 103
+;;     Update #: 109
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-mac.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -161,7 +161,7 @@
 
 ;;; Macros -----------------------------------------------------------
 
-;;;###autoload
+;;;###autoload (autoload 'bmkp-with-output-to-plain-temp-buffer "bookmark+")
 (defmacro bmkp-with-output-to-plain-temp-buffer (buf &rest body)
   "Like `with-output-to-temp-buffer', but with no *Help* navigation stuff."
   `(unwind-protect
@@ -172,7 +172,7 @@
     (add-hook 'temp-buffer-setup-hook 'help-mode-setup)
     (add-hook 'temp-buffer-show-hook  'help-mode-finish)))
 
-;;;###autoload
+;;;###autoload (autoload 'bmkp-define-cycle-command "bookmark+")
 (defmacro bmkp-define-cycle-command (type &optional otherp)
   "Define a cycling command for bookmarks of type TYPE.
 Non-nil OTHERP means define a command that cycles in another window."
@@ -197,7 +197,7 @@ In Lisp code:
     (let ((bmkp-nav-alist  (bmkp-sort-omit (,(intern (format "bmkp-%s-alist-only" type))))))
       (bmkp-cycle increment ,otherp startoverp))))
 
-;;;###autoload
+;;;###autoload (autoload 'bmkp-define-next+prev-cycle-commands "bookmark+")
 (defmacro bmkp-define-next+prev-cycle-commands (type)
   "Define `next' and `previous' commands for bookmarks of type TYPE."
   `(progn
@@ -237,7 +237,7 @@ See `bmkp-next-%s-bookmark-repeat'." type type)
       (require 'repeat)
       (bmkp-repeat-command ',(intern (format "bmkp-previous-%s-bookmark" type))))))
 
-;;;###autoload
+;;;###autoload (autoload 'bmkp-define-sort-command "bookmark+")
 (defmacro bmkp-define-sort-command (sort-order comparer doc-string)
   "Define a command to sort bookmarks in the bookmark list by SORT-ORDER.
 SORT-ORDER is a short string or symbol describing the sorting method.
@@ -290,7 +290,7 @@ sort, and unsorted.")
                  ((equal bmkp-sort-comparer ',comparer)       "(Repeat: unsorted)")
                  (t                                           "(Repeat: sort)"))))))))
 
-;;;###autoload
+;;;###autoload (autoload 'bmkp-define-file-sort-predicate "bookmark+")
 (defmacro bmkp-define-file-sort-predicate (att-nb)
   "Define a predicate for sorting bookmarks by file attribute ATT-NB.
 See function `file-attributes' for the meanings of the various file
@@ -373,7 +373,7 @@ If either is a record then it need not belong to `bookmark-alist'."
             (t;; Neither is a file.
              nil)))))
 
-;;;###autoload
+;;;###autoload (autoload 'bmkp-menu-bar-make-toggle "bookmark+")
 (defmacro bmkp-menu-bar-make-toggle (name variable doc message help &rest body)
   "Return a valid `menu-bar-make-toggle' call in Emacs 20 or later.
 NAME is the name of the toggle command to define.
