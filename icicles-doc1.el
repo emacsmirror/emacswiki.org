@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun Oct  7 12:27:25 2012 (-0700)
+;; Last-Updated: Tue Oct  9 09:34:24 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 26852
+;;     Update #: 26857
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1128,6 +1128,11 @@
 ;;  bother matching a date - no `C-M-j' or second part, just a first
 ;;  part to match.
 ;;
+;;  Notice that I said `S-TAB', not `TAB'.  You use apropos, not
+;;  prefix, completion with multi-completion candidates, at least
+;;  whenever you use an input pattern that matches other than just the
+;;  first multi-completion part.
+;;
 ;;  Command `icicle-fundoc' describes a function.  You match the
 ;;  function name or the function documentation or both, as the two
 ;;  multi-completion parts.  Sometimes it is easy to choose by name,
@@ -1154,6 +1159,7 @@
 ;;    C-x b foo C-M-j toto  ; Match both buffer name and contents
 ;;
 ;;  See (@> "Multi-Completions").
+;;
 ;;(@* "Perform Alternative Operations on the Fly")
 ;;  ** Perform Alternative Operations on the Fly **
 ;;
@@ -4673,6 +4679,11 @@
 ;;  that has multiple parts.  A multi-completion command lets your
 ;;  input match any or all parts individually, at the same time.
 ;;
+;;  With commands that provide multi-completion candidates, you use
+;;  apropos completion (`S-TAB'), not prefix completion (`TAB'), at
+;;  least whenever your input pattern tries to matches other than just
+;;  the first multi-completion part.
+;;
 ;;  * Commands `icicle-vardoc' and `icicle-fundoc' let you match both
 ;;    the function or variable name and the doc string.
 ;;
@@ -4715,12 +4726,12 @@
 ;;  impossible.
 ;;
 ;;  In the case of commands that use two-part multi-completions, you
-;;  provide two regexps as input, one to match the name of a symbol
+;;  provide two patterns as input, one to match the name of a symbol
 ;;  (e.g. a function or variable) and one to match some associated
 ;;  information (doc string, property list, or type definition).
 ;;
 ;;  However, since completion candidates are not actually multipart,
-;;  you in fact type a single regexp that is the concatenation of the
+;;  you in fact type a single pattern that is the concatenation of the
 ;;  two.  You join these two regexps using `icicle-list-join-string'
 ;;  (a user option), which, by default, is `^G^J', that is, a
 ;;  control-G character followed by a control-J (newline) character.
