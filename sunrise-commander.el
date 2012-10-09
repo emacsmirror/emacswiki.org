@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 6
-;; RCS Version: $Rev: 436 $
+;; RCS Version: $Rev: 437 $
 ;; Keywords: files, dired, midnight commander, norton, orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -3716,7 +3716,7 @@ cd's to the current directory of the active pane."
   (interactive "sShell program to use: ")
   (sr-term t t program))
 
-(defmacro sr-term-excursion (newterm form &optional is-external)
+(defmacro sr-term-excursion (cd newterm form &optional is-external)
   "Take care of the common mechanics of launching or switching to a terminal.
 Helper macro."
   `(let* ((start-buffer (current-buffer))
@@ -3726,7 +3726,9 @@ Helper macro."
           (new-name) (is-line-mode))
      (sr-select-viewer-window t)
      (if (not new-term)
-         (switch-to-buffer next-buffer)
+         ;;don't switch anywhere else if we're in a term and we want only to cd:
+         (unless (and ,cd (memq (current-buffer) sr-ti-openterms))
+           (switch-to-buffer next-buffer))
        (when next-buffer
          (with-current-buffer next-buffer
            (setq is-line-mode (and (boundp 'sr-term-line-minor-mode)
@@ -3767,7 +3769,7 @@ See `sr-term' for a description of the arguments."
         (cd (or cd (null sr-ti-openterms)))
         (line-mode (if (buffer-live-p aterm)
                        (with-current-buffer aterm (term-in-line-mode)))))
-    (sr-term-excursion newterm (term program) t)
+    (sr-term-excursion cd newterm (term program) t)
     (sr-term-char-mode)
     (when (or line-mode (term-in-line-mode))
       (sr-term-line-mode))
@@ -3780,7 +3782,7 @@ See `sr-term' for a description of the arguments."
   "Implementation of `sr-term' when using `eshell'."
   (let ((dir (expand-file-name (sr-choose-cd-target)))
         (cd (or cd (null sr-ti-openterms))))
-    (sr-term-excursion newterm (eshell))
+    (sr-term-excursion cd newterm (eshell))
     (when cd
       (insert (concat "cd " (shell-quote-wildcard-pattern dir)))
       (eshell-send-input))
