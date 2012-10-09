@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:24:28 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Oct  6 08:23:05 2012 (-0700)
+;; Last-Updated: Mon Oct  8 13:55:31 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1046
+;;     Update #: 1047
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mac.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -891,7 +891,7 @@ Elements of ALIST that are not conses are ignored."
   "Define a command to sort completions by SORT-ORDER.
 SORT-ORDER is a short string (or symbol) describing the sort order.
  It is used after the phrase \"Sorting is now \".  Examples: \"by date\",
- \"alphabetically\", \"directories first\", and \"previously used first\".
+ \"alphabetical\", \"directories first\", and \"previously used first\".
 
 The new command is named by replacing any spaces in SORT-ORDER with
 hyphens (`-') and then adding the prefix `icicle-sort-'.
