@@ -78,6 +78,13 @@ Perhaps I should add that I use an Ubuntu Linux system and have had quite a lot 
 
 Thanks in advance -- [[Bernard Hurley]]
 
+=== Some problems with ispell ====
+
+[new:]
+Is it possible to scroll the ispell Changes buffer? And is it possible to select from the buffer other then by the keyboard? If you use the "l" option and search in the Ispell Alternative Dictionary you can get an enormous list of words that doesn't fit on the screen (hence the need for scrolling) and some of the choices use really obscure characters (hence the problems with choosing from the keyboard.)  I am not a mousey-clicky person myself but this is one case where being able to use the rodent would be really useful.
+
+Thanks -- [[Bernard Hurley]]
+
 == extent-at function ==
 
 The latest available spice-mode, http://spice-mode.4t.com/, uses the *extent-at* function. This is not found in emacs 23.3. Did this function go away with some release? (That is hard to believe). Is it Xemacs-only? Note, this is also used in the verilog-mode (same URL). -- KevinBuchs
