@@ -61,15 +61,8 @@ together.
 
 "
   (and (buffer-stack-filter-exclusive proposed-buffer)
-       (let ((proposed-buffer-major-mode (with-current-buffer proposed-buffer major-mode))
-             (frame-major-mode (frame-parameter nil 'major-mode)))
-         (cond (frame-major-mode
-                (if (eq frame-major-mode proposed-buffer-major-mode)
-                    t
-                  nil))
-               ((buffer-available-in-frame-local-p proposed-buffer)
-                nil)
-               ((and (boundp 'rinari-minor-mode)
+       (let ((proposed-buffer-major-mode (with-current-buffer proposed-buffer major-mode)))
+         (cond ((and (boundp 'rinari-minor-mode)
                      rinari-minor-mode)
                 (with-current-buffer proposed-buffer
                   rinari-minor-mode))
@@ -89,7 +82,6 @@ together.
 (defun buffer-stack-no-compilation-filter (proposed-buffer)
   "specifically removes some major-modes, and specific buffers"
   (and (buffer-stack-filter-exclusive proposed-buffer)
-       (not (buffer-available-in-frame-local-p proposed-buffer))
        (let ((proposed-buffer-major-mode (with-current-buffer proposed-buffer major-mode))
              (skip-modes '(compilation-mode)))
          (not (memq proposed-buffer-major-mode skip-modes)))))
