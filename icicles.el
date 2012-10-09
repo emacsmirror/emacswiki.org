@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Oct  5 14:36:03 2012 (-0700)
+;; Last-Updated: Tue Oct  9 13:33:10 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 23215
+;;     Update #: 23224
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Doc URL: http://emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1272,7 +1272,8 @@
 ;;    `icicle-list-use-nth-parts', `icicle-menu-map',
 ;;    `icicle-minibuffer-message-ok-p', `icicle-minor-mode-map-entry',
 ;;    `icicle-mode-map', `icicle-ms-windows-drive-hash',
-;;    `icicle-must-match-regexp', `icicle-must-not-match-regexp',
+;;    `icicle-multi-completing-p', `icicle-must-match-regexp',
+;;    `icicle-must-not-match-regexp',
 ;;    `icicle-must-pass-after-match-predicate',
 ;;    `icicle-must-pass-predicate', `icicle-named-colors',
 ;;    `icicle-nb-candidates-before-truncation',
@@ -1473,6 +1474,8 @@
 (put 'icicle-define-add-to-alist-command 'common-lisp-indent-function '(4 &body))
 (put 'icicle-with-selected-window        'common-lisp-indent-function '(4 &body))
 (put 'icicle-condition-case-no-debug     'common-lisp-indent-function '(4 4 &body))
+
+
 
 ;; You might also want to use the following or something similar.
 ;; (defun lisp-indentation-hack ()
