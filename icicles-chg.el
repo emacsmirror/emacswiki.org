@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Oct  6 09:48:35 2012 (-0700)
+;; Last-Updated: Tue Oct  9 16:40:56 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 9031
+;;     Update #: 9084
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -86,6 +86,14 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2012/10/09 dadams
+;;     icicle-customize-face*, icicle(-customize)-apropos-options-of-type,
+;;       icicle-describe-option-of-type, icicle-dired-saved-file-candidates*, icicle-bookmark*,
+;;       icicle-buffer*, icicle-visit-marked-file-of-content*, icicle-send-signal-to-process,
+;;       icicle-find-file-absolute*, icicle-find-file-of-content*, icicle-recent-file*,
+;;       icicle-locate-file-1, icicle-find-file-in-tags-table*, icicle-face-list, icicle-bookmark-list:
+;;         Bind icicle-multi-completing-p.
+;;       icicle-cd-for-(abs|loc)-files: Test icicle-multi-completing-p, not icicle-list-use-nth-parts.
 ;; 2012/10/05 dadams
 ;;     Added: icicle-find-file-of-content(-other-window|-multi-complete|-read-file-name).
 ;;     icicle-buffer-multi-complete: Add new bufs to NEW-BUFS--TO-KILL, so can kill them when done.
@@ -719,6 +727,12 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2012/10/09 dadams
+;;     icicle-find-file-tagged*, icicle-read-color(-wysiwyg), icicle-frame-(bg|fg),
+;;       icicle-choose(-(in)visible)-faces, icicle-(var|fun)doc, icicle-plist,
+;;       icicle-goto-global-marker, icicle-occur, icicle-imenu-1,
+;;       icicle-search(-bookmark(s-together|list-marked)|-buffer|-file|-sentences|-paragraphs|-pages):
+;;         Bind icicle-multi-completing-p.
 ;; 2012/10/06 dadams
 ;;     icicle-hide/show-comments: Call comment-normalize-vars first.  Thx to Stefan Monnier.
 ;; 2012/09/08 dadams
@@ -1463,6 +1477,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2012/10/09 dadams
+;;     icicle-read-face-name: Bind icicle-multi-completing-p to t.
 ;; 2012/10/05 dadams
 ;;     icicle-next-candidate: Removed setting of icicle-default-directory (unused).
 ;; 2012/10/02 dadams
@@ -3206,6 +3222,8 @@
 ;;       macros needs to be byte-compiled anew after loading the updated macros.
 ;; ****************************************************************************************************
 ;;
+;; 2012/10/08 dadams
+;;     icicle-define-sort-command: alphabetically -> alphabetical in doc string.
 ;; 2012/10/06 dadams
 ;;     Added: minibuffer-with-setup-hook for code byte-compiled using Emacs < 22.
 ;; 2012/10/04 dadams
@@ -3412,6 +3430,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2012/10/09 dadams
+;;     icicle-prefix-complete-1: When icicle-multi-completing-p and match join string, show warning.
 ;; 2012/10/05 dadams
 ;;     icicle-(prefix|apropos)-complete-(1|2), icicle(-mouse)-candidate-action-1:
 ;;       Removed setting of icicle-default-directory (unused).
@@ -6808,6 +6828,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2012/10/09 dadams
+;;     Added: icicle-multi-completing-p.
 ;; 2012/10/05 dadams
 ;;     Removed: icicle-default-directory (unused).
 ;; 2012/09/08 dadams
