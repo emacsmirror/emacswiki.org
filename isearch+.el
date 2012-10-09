@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 21.0
-;; Last-Updated: Sun Sep 30 09:34:29 2012 (-0700)
+;; Last-Updated: Tue Oct  9 16:02:01 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1311
+;;     Update #: 1313
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/emacs/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -265,6 +265,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2012/10/09 dadams
+;;     isearchp-read-face-names: Bind icicle-multi-completing-p to t.
 ;; 2012/09/30 dadams
 ;;     Added: isearchp-last-quit(-regexp)-search, isearchp-retrieve-last-quit-search,
 ;;            redefinition of isearch-abort.
@@ -1279,7 +1281,8 @@ names) for empty user input.
 
 Non-nil optional arg ONLY-ONE-P means read only one face name and
 return its symbol."
-  (let ((icicle-list-nth-parts-join-string           ": ")
+  (let ((icicle-multi-completing-p                   t)
+        (icicle-list-nth-parts-join-string           ": ")
         (icicle-list-join-string                     ": ")
         (icicle-list-use-nth-parts                   '(1))
         (icicle-proxy-candidates
