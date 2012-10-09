@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Oct  5 11:46:33 2012 (-0700)
+;; Last-Updated: Tue Oct  9 15:27:39 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 24745
+;;     Update #: 24791
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -483,7 +483,6 @@
   ;; icicle-whole-candidate-as-text-prop-p, icicle-variable-name-history
 (require 'icicles-fn)                   ; (This is required anyway by `icicles-mcmd.el'.)
   ;; icicle-delete-dups, icicle-highlight-lighter, icicle-read-from-minibuf-nil-default
-
 
 
 ;; Byte-compiling this file, you will likely get some byte-compiler warning messages.
@@ -1717,7 +1716,8 @@ Each Icicles file has a header `Update #' that you can use to identify it.\
   "Customize face FACE in another window.
 Same as `icicle-customize-face' except it uses a different window."
   (interactive
-   (list (let* ((icicle-list-use-nth-parts             '(1))
+   (list (let* ((icicle-multi-completing-p             t)
+                (icicle-list-use-nth-parts             '(1))
                 (icicle-candidate-action-fn
                  (lambda (x)
                    (icicle-ORIG-customize-face-other-window (intern (icicle-transform-multi-completion x)))
@@ -1787,7 +1787,8 @@ candidates are not WYSIWYG in buffer `*Completions*'.
 
 This is an Icicles command - see command `icicle-mode'."
   (interactive
-   (list (let* ((icicle-list-use-nth-parts             '(1))
+   (list (let* ((icicle-multi-completing-p             t)
+                (icicle-list-use-nth-parts             '(1))
                 (icicle-candidate-action-fn
                  (lambda (x)
                    (icicle-ORIG-customize-face (intern (icicle-transform-multi-completion x)))
@@ -1815,7 +1816,7 @@ This is an Icicles command - see command `icicle-mode'."
   "Open Customize buffer on all faces in list FACES."
   (let ((icicle-list-nth-parts-join-string  ": ")
         (icicle-list-join-string            ": ")
-        ;; $$$$$$ (icicle-list-end-string             "")
+        ;; $$$$$$ (icicle-list-end-string   "")
         (icicle-list-use-nth-parts          '(1)))
     (custom-buffer-create
      (custom-sort-items
@@ -2008,6 +2009,7 @@ the use of a prefix argument."          ; Doc string
   prompt                                ; `completing-read' args
   'icicle-describe-opt-of-type-complete nil nil nil nil nil nil
   ((prompt                             "OPTION `C-M-j' TYPE: ") ; Bindings
+   (icicle-multi-completing-p          t)
    (icicle-candidate-properties-alist  '((1 (face icicle-candidate-part))))
    ;; Bind `icicle-apropos-complete-match-fn' to nil to prevent automatic input matching
    ;; in `icicle-unsorted-apropos-candidates' etc., because `icicle-describe-opt-of-type-complete'
@@ -2353,6 +2355,7 @@ the use of a prefix argument."          ; Doc string
   prompt                                ; `completing-read' args
   'icicle-describe-opt-of-type-complete nil nil nil nil nil nil
   ((prompt                             "OPTION `C-M-j' TYPE: ") ; Bindings
+   (icicle-multi-completing-p          t)
    (icicle-candidate-properties-alist  '((1 (face icicle-candidate-part))))
    ;; Bind `icicle-apropos-complete-match-fn' to nil to prevent automatic input matching
    ;; in `icicle-unsorted-apropos-candidates' etc., because `icicle-describe-opt-of-type-complete'
@@ -2480,6 +2483,7 @@ Remember that you can use `\\<minibuffer-local-completion-map>\
   prompt                                ; `completing-read' args
   'icicle-describe-opt-of-type-complete nil nil nil nil nil nil
   ((prompt                             "OPTION `C-M-j' TYPE: ") ; Bindings
+   (icicle-multi-completing-p          t)
    (icicle-candidate-properties-alist  '((1 (face icicle-candidate-part))))
    ;; Bind `icicle-apropos-complete-match-fn' to nil to prevent automatic input matching
    ;; in `icicle-unsorted-apropos-candidates' etc., because `icicle-describe-opt-of-type-complete'
@@ -3206,7 +3210,7 @@ You need library `Dired+' for this command."
   "Open Dired on a set of files and directories of your choice.
 If you have saved a set of file names using \\<minibuffer-local-completion-map>\
 `\\[icicle-candidate-set-save]', then it is used.
-If not, you are prompted to choose the files.
+If not, you are reminded to do so.
 With a prefix argument, you are prompted for the default directory to use.
 Otherwise, the current value of `default-directory' is used.
 Names that do not correspond to existing files are ignored.
@@ -3220,6 +3224,7 @@ Use \\<minibuffer-local-completion-map>`\\[icicle-candidate-set-save]' to save c
   (let* ((default-directory           (if prompt-for-dir-p
                                           (read-file-name "Directory: " nil default-directory nil)
                                         default-directory))
+         (icicle-multi-completing-p   t)
          (icicle-list-use-nth-parts   '(1))
          (file-names                  (icicle-remove-if
                                        (lambda (fil)
@@ -3239,7 +3244,7 @@ Use \\<minibuffer-local-completion-map>`\\[icicle-candidate-set-save]' to save c
   "Open Dired in other window on set of files & directories of your choice.
 If you have saved a set of file names using \\<minibuffer-local-completion-map>\
 `\\[icicle-candidate-set-save]', then it is used.
-If not, you are prompted to choose the files.
+If not, you are reminded to do so.
 With a prefix arg, you are prompted for the default directory to use.
 Otherwise, the current value of `default-directory' is used.
 Names that do not correspond to existing files are ignored.
@@ -3250,6 +3255,7 @@ directory (default directory)."
   (let* ((default-directory           (if prompt-for-dir-p
                                           (read-file-name "Directory: " nil default-directory nil)
                                         default-directory))
+         (icicle-multi-completing-p   t)
          (icicle-list-use-nth-parts   '(1))
          (file-names                  (icicle-remove-if
                                        (lambda (fil)
@@ -4201,6 +4207,7 @@ instead of those for the current buffer."
          (let ((enable-recursive-minibuffers           t) ; In case read input, e.g. File changed...
                (completion-ignore-case                 bookmark-completion-ignore-case)
                (prompt                                 "Bookmark: ")
+               (icicle-multi-completing-p              icicle-show-multi-completion-flag)
                (icicle-list-use-nth-parts              '(1))
                (icicle-candidate-properties-alist      (if (not icicle-show-multi-completion-flag)
                                                            ()
@@ -4208,8 +4215,7 @@ instead of those for the current buffer."
                                                              '((2 (face file-name-shadow))
                                                                (3 (face bookmark-menu-heading)))
                                                            '((3 (face bookmark-menu-heading))))))
-               (icicle-transform-function              (and (not (interactive-p))
-                                                            icicle-transform-function))
+               (icicle-transform-function              (and (not (interactive-p))  icicle-transform-function))
                (icicle-whole-candidate-as-text-prop-p  t)
                (icicle-transform-before-sort-p         t)
                (icicle-candidates-alist
@@ -4468,6 +4474,7 @@ position is highlighted."               ; Doc string
   ((enable-recursive-minibuffers           t) ; In case we read input, e.g. File changed on disk...
    (completion-ignore-case                 bookmark-completion-ignore-case)
    (prompt                                 "Bookmark: ")
+   (icicle-multi-completing-p              icicle-show-multi-completion-flag)
    (icicle-list-use-nth-parts              '(1))
    (icicle-candidate-properties-alist      (if (not icicle-show-multi-completion-flag)
                                                ()
@@ -4551,6 +4558,7 @@ Same as `icicle-bookmark', but uses another window." ; Doc string
   ((enable-recursive-minibuffers           t) ; In case we read input, e.g. File changed on disk...
    (completion-ignore-case                 bookmark-completion-ignore-case)
    (prompt                                 "Bookmark: ")
+   (icicle-multi-completing-p              icicle-show-multi-completion-flag)
    (icicle-list-use-nth-parts              '(1))
    (icicle-candidate-properties-alist      (if (not icicle-show-multi-completion-flag)
                                                ()
@@ -5916,11 +5924,12 @@ the behavior."                          ; Doc string
   nil 'buffer-name-history (icicle-default-buffer-names current-prefix-arg) nil
   (icicle-buffer-bindings               ; Bindings
    ((prompt                             (icicle-buffer-name-prompt "Switch to"))
+    (icicle-show-multi-completion-flag  t) ; Override user setting.
+    (icicle-multi-completing-p          t)
     (icicle-list-use-nth-parts          '(1))
     ;; Bind `icicle-apropos-complete-match-fn' to nil to prevent automatic input matching in
     ;; `icicle-unsorted-apropos-candidates' etc., because `icicle-buffer-multi-complete' does everything.
     (icicle-apropos-complete-match-fn   nil)
-    (icicle-show-multi-completion-flag  t) ; Override user setting.
     (icicle-candidate-help-fn           (lambda (cand)
                                           (setq cand  (icicle-transform-multi-completion cand))
                                           (when (and (bufferp (get-buffer cand))
@@ -5977,11 +5986,12 @@ Same as `icicle-buffer' except it uses a different window." ; Doc string
   nil 'buffer-name-history (icicle-default-buffer-names current-prefix-arg) nil
   (icicle-buffer-bindings               ; Bindings
    ((prompt                             (icicle-buffer-name-prompt "Switch to"))
+    (icicle-show-multi-completion-flag  t) ; Override user setting.
+    (icicle-multi-completing-p          t)
     (icicle-list-use-nth-parts          '(1))
     ;; Bind `icicle-apropos-complete-match-fn' to nil to prevent automatic input matching in
     ;; `icicle-unsorted-apropos-candidates' etc., because `icicle-buffer-multi-complete' does everything.
     (icicle-apropos-complete-match-fn   nil)
-    (icicle-show-multi-completion-flag  t) ; Override user setting.
     (icicle-candidate-help-fn           (lambda (cand)
                                           (setq cand  (icicle-transform-multi-completion cand))
                                           (when (and (bufferp (get-buffer cand))
@@ -6100,8 +6110,9 @@ flips the behavior specified by that option." ; Doc string
   nil 'buffer-name-history (icicle-default-buffer-names current-prefix-arg) nil
   (icicle-buffer-bindings               ; Bindings
    ((prompt                             (icicle-buffer-name-prompt "Visit file"))
-    (icicle-list-use-nth-parts          '(1))
     (icicle-show-multi-completion-flag  t) ; Override user setting.
+    (icicle-multi-completing-p          t)
+    (icicle-list-use-nth-parts          '(1))
     ;; Bind `icicle-apropos-complete-match-fn' to nil to prevent automatic input matching in
     ;; `icicle-unsorted-apropos-candidates' etc., because `icicle-buffer-multi-complete' does everything.
     (icicle-apropos-complete-match-fn   nil)
@@ -6150,8 +6161,9 @@ different window.  You must be in Dired to use this command." ; Doc string
   nil 'buffer-name-history (icicle-default-buffer-names current-prefix-arg) nil
   (icicle-buffer-bindings               ; Bindings
    ((prompt                             (icicle-buffer-name-prompt "Visit file"))
-    (icicle-list-use-nth-parts          '(1))
     (icicle-show-multi-completion-flag  t) ; Override user setting.
+    (icicle-multi-completing-p          t)
+    (icicle-list-use-nth-parts          '(1))
     ;; Bind `icicle-apropos-complete-match-fn' to nil to prevent automatic input matching in
     ;; `icicle-unsorted-apropos-candidates' etc., because `icicle-buffer-multi-complete' does everything.
     (icicle-apropos-complete-match-fn   nil)
@@ -6558,6 +6570,7 @@ default separator."
     ((prompt                             "COMMAND `C-M-j' USER `C-M-j' PID: ") ; Bindings
      (completion-ignore-case             t) ; For sorting.
      (icicle-candidate-properties-alist  ())
+     (icicle-multi-completing-p          t)
      (icicle-list-use-nth-parts          '(3))
      (get-pid                            (lambda (cand) (string-to-number cand)))
      (get-attr                           (lambda (cand attr) ; FREE here: GET-PID.
@@ -6803,6 +6816,7 @@ Ido-like behavior."                     ; Doc string
                        (dired-other-window (cons (read-string "Dired buffer name: ") files)))))
     (icicle-special-candidate-regexp    (or icicle-special-candidate-regexp  ".+/$"))
     (icicle-candidate-properties-alist  (and current-prefix-arg  '((1 (face icicle-candidate-part)))))
+    (icicle-multi-completing-p          current-prefix-arg)
     (icicle-list-use-nth-parts          (and current-prefix-arg  '(1)))))
   (progn                                ; First code
     (when current-prefix-arg (put-text-property 0 1 'icicle-fancy-candidates t prompt))
@@ -6842,6 +6856,7 @@ Ido-like behavior."                     ; Doc string
                        (dired-other-window (cons (read-string "Dired buffer name: ") files)))))
     (icicle-special-candidate-regexp    (or icicle-special-candidate-regexp  ".+/$"))
     (icicle-candidate-properties-alist  (and current-prefix-arg  '((1 (face icicle-candidate-part)))))
+    (icicle-multi-completing-p          current-prefix-arg)
     (icicle-list-use-nth-parts          (and current-prefix-arg  '(1)))))
   (progn                                ; First code
     (when current-prefix-arg (put-text-property 0 1 'icicle-fancy-candidates t prompt))
@@ -6873,7 +6888,7 @@ Ido-like behavior."                     ; Doc string
   (let ((icicle-abs-file-candidates
          (mapcar (lambda (file)
                    (setq file  (if (file-directory-p file) (file-name-as-directory file) file))
-                   (if icicle-list-use-nth-parts (icicle-make-file+date-candidate file) (list file)))
+                   (if icicle-multi-completing-p (icicle-make-file+date-candidate file) (list file)))
                  (directory-files default-directory 'full nil 'nosort))))
     (setq minibuffer-completion-table
           (car (icicle-mctize-all icicle-abs-file-candidates minibuffer-completion-predicate)))))
@@ -7103,9 +7118,10 @@ flips the behavior specified by that option." ; Doc string
      ((init-pref-arg                      current-prefix-arg)
       (prompt                             "File or directory: ")
       (read-file-name-function            'icicle-find-file-of-content-read-file-name)
+      (icicle-show-multi-completion-flag  t) ; Override user setting.
+      (icicle-multi-completing-p          t)
       (icicle-list-use-nth-parts          '(1))
       (icicle-transform-before-sort-p     t)
-      (icicle-show-multi-completion-flag  t) ; Override user setting.
       ;; Bind `icicle-apropos-complete-match-fn' to nil to prevent automatic input matching in
       ;; `icicle-unsorted-file-name-apropos-candidates' etc., because
       ;; `icicle-find-file-of-content-read-file-name' does everything.
@@ -7159,9 +7175,10 @@ Same as `icicle-find-file-of-content' except it uses a different window." ; Doc 
      ((init-pref-arg                      current-prefix-arg)
       (prompt                             "File or directory: ")
       (read-file-name-function            'icicle-find-file-of-content-read-file-name)
+      (icicle-show-multi-completion-flag  t) ; Override user setting.
+      (icicle-multi-completing-p          t)
       (icicle-list-use-nth-parts          '(1))
       (icicle-transform-before-sort-p     t)
-      (icicle-show-multi-completion-flag  t) ; Override user setting.
       ;; Bind `icicle-apropos-complete-match-fn' to nil to prevent automatic input matching in
       ;; `icicle-unsorted-file-name-apropos-candidates' etc., because
       ;; `icicle-find-file-of-content-read-file-name' does everything.
@@ -7392,6 +7409,7 @@ Ido-like behavior."                     ; Doc string
     (icicle-candidate-alt-action-fn         'icicle-remove-from-recentf-candidate-action)
     (icicle-use-candidates-only-once-alt-p  t)
     (icicle-candidate-properties-alist      (and current-prefix-arg  '((1 (face icicle-candidate-part)))))
+    (icicle-multi-completing-p              current-prefix-arg)
     (icicle-list-use-nth-parts              (and current-prefix-arg  '(1)))
     (icicle-all-candidates-list-alt-action-fn ; M-|'
      (lambda (files) (let ((enable-recursive-minibuffers  t))
@@ -7434,6 +7452,7 @@ Ido-like behavior."                     ; Doc string
     (icicle-candidate-alt-action-fn         'icicle-remove-from-recentf-candidate-action)
     (icicle-use-candidates-only-once-alt-p  t)
     (icicle-candidate-properties-alist      (and current-prefix-arg  '((1 (face icicle-candidate-part)))))
+    (icicle-multi-completing-p              current-prefix-arg)
     (icicle-list-use-nth-parts              (and current-prefix-arg  '(1)))
     (icicle-all-candidates-list-alt-action-fn ; M-|'
      (lambda (files) (let ((enable-recursive-minibuffers  t))
@@ -7705,6 +7724,7 @@ could temporarily set `icicle-file-predicate' to:
     (use-dialog-box                     nil)
     (icicle-candidate-properties-alist  (and (<= (prefix-numeric-value current-prefix-arg) 0)
                                              '((1 (face icicle-candidate-part)))))
+    (icicle-multi-completing-p          (<= (prefix-numeric-value current-prefix-arg) 0))
     (icicle-list-use-nth-parts          (and (<= (prefix-numeric-value current-prefix-arg) 0)  '(1)))
     (IGNORED--FOR-SIDE-EFFECT
      (progn (icicle-highlight-lighter)
@@ -7768,7 +7788,7 @@ Optional arg NO-SYMLINKS-P non-nil means do not follow symbolic links."
   (cd dir)
   (let ((icicle-abs-file-candidates
          (mapcar (lambda (file)       ; FREE here: ICICLE-LIST-USE-NTH-PARTS.
-                   (if icicle-list-use-nth-parts (icicle-make-file+date-candidate file) (list file)))
+                   (if icicle-multi-completing-p (icicle-make-file+date-candidate file) (list file)))
                  (icicle-files-within (directory-files dir 'full icicle-re-no-dot) nil no-symlinks-p))))
     (setq minibuffer-completion-table
           (car (icicle-mctize-all icicle-abs-file-candidates minibuffer-completion-predicate)))))
@@ -7850,6 +7870,7 @@ Ido-like behavior."                     ; Doc string
                                                '(list file))))
     (icicle-special-candidate-regexp    (or icicle-special-candidate-regexp  ".+/$"))
     (icicle-candidate-properties-alist  (and current-prefix-arg  '((1 (face icicle-candidate-part)))))
+    (icicle-multi-completing-p          current-prefix-arg)
     (icicle-list-use-nth-parts          (and current-prefix-arg  '(1)))
     (icicle-all-candidates-list-alt-action-fn ; M-|'
      (lambda (files) (let ((enable-recursive-minibuffers  t))
@@ -7888,6 +7909,7 @@ Ido-like behavior."                     ; Doc string
                                                '(list file))))
     (icicle-special-candidate-regexp    (or icicle-special-candidate-regexp  ".+/$"))
     (icicle-candidate-properties-alist  (and current-prefix-arg  '((1 (face icicle-candidate-part)))))
+    (icicle-multi-completing-p          current-prefix-arg)
     (icicle-list-use-nth-parts          (and current-prefix-arg  '(1)))
     (icicle-all-candidates-list-alt-action-fn ; M-|'
      (lambda (files) (let ((enable-recursive-minibuffers  t))
@@ -8046,7 +8068,8 @@ and a final-choice key (e.g. `RET', `mouse-2') to choose the last one." ; Doc st
                                               "Choose face (`RET' when done): ")) ; Bindings
    (icicle-list-nth-parts-join-string     ": ")
    (icicle-list-join-string               ": ")
-   ;; $$$$$$ (icicle-list-end-string                "")
+   ;; $$$$$$ (icicle-list-end-string      "")
+   (icicle-multi-completing-p             t)
    (icicle-list-use-nth-parts             '(1))
    (icicle-use-candidates-only-once-flag  t)
    (icicle-candidate-alt-action-fn
@@ -8191,6 +8214,7 @@ Non-interactively:
                                                     "Choose bookmark (`RET' when done): "))
    (enable-recursive-minibuffers                t) ; In case we read input, e.g. File changed on disk...
    (completion-ignore-case                      bookmark-completion-ignore-case)
+   (icicle-multi-completing-p                   icicle-show-multi-completion-flag)
    (icicle-list-use-nth-parts                   '(1))
    (icicle-candidate-properties-alist           (if (not icicle-show-multi-completion-flag)
                                                     ()
