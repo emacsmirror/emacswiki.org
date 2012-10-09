@@ -58,8 +58,13 @@ command using a [[prefix argument]] (non-negative prefix arg, for
 
 Each of these particular commands also uses '''Icicles''' multi-completion.  A '''[::multi-completion]''' is a completion
 candidate that has multiple parts.  A multi-completion command
-lets your input match any or all parts individually, at the same
-time.
+lets your input match any or all parts individually, at the same time.
+
+With commands that provide multi-completion candidates, you use
+[[apropos completion]] ('''`S-TAB''''), not [[prefix completion]] (`TAB'), at
+least whenever your input pattern tries to matches other than just
+the first multi-completion part.
+
 
 * Commands '''`icicle-vardoc'''' and '''`icicle-fundoc'''' let you match both the function or variable ''name'' and the ''doc'' string.
 
