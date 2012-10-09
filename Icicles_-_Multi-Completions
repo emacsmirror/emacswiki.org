@@ -100,9 +100,9 @@ find those notes you took sometime last week...
 The way multi-completion commands work is a bit inelegant perhaps, and it can take a little getting used to, but it is quite powerful and lets you do things with completion that are otherwise impossible.
 
 In the case of commands that use two-part multi-completions, you provide two
-regexps as input, one to match the name of a function or variable and
+patterns as input, one to match the name of a function or variable and
 one to match  some associated information (doc string, property list, or type definition).  However, since completion candidates
-are not actually multipart, you in fact type a single regexp that is the
+are not actually multipart, you in fact type a single pattern that is the
 concatenation of the two.  You join these two regexps using
 '''`<tt>[[Icicles - Customization and General Tips#icicle-list-join-string|icicle-list-join-string]]</tt>'''' (a user option), which, by default, is
 `##^G^J##', that is, a control-G character followed by a control-J
