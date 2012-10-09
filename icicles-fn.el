@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Oct  5 14:29:27 2012 (-0700)
+;; Last-Updated: Tue Oct  9 13:35:00 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 13394
+;;     Update #: 13398
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1911,7 +1911,8 @@ A face-name variable is a variable with custom-type `face'.
 If library `eyedropper.el' is used, then you can also choose proxy
 candidate `*point face name*' to use the face at point."
          (require 'eyedropper nil t)
-         (let ((icicle-list-nth-parts-join-string  ": ")
+         (let ((icicle-multi-completing-p          t)
+               (icicle-list-nth-parts-join-string  ": ")
                (icicle-list-join-string            ": ")
                ;; $$$$$$ (icicle-list-end-string             "")
                (icicle-list-use-nth-parts          '(1))
@@ -1951,7 +1952,8 @@ A face-name variable is a variable with custom-type `face'.
 If library `eyedropper.el' is used, then you can also choose proxy
 candidate `*point face name*' to use the face at point."
          (require 'eyedropper nil t)
-         (let ((icicle-list-nth-parts-join-string  ": ")
+         (let ((icicle-multi-completing-p          t)
+               (icicle-list-nth-parts-join-string  ": ")
                (icicle-list-join-string            ": ")
                ;; $$$$$$ (icicle-list-end-string             "")
                (icicle-list-use-nth-parts          '(1))
@@ -2075,7 +2077,8 @@ choose proxy candidate `*point face name*' to use the face at point."
                     output))            ; Return the list of faces
                  (t
                   (when (consp faces) (setq faces  (list (car faces))))
-                  (let ((icicle-list-nth-parts-join-string  ": ")
+                  (let ((icicle-multi-completing-p          t)
+                        (icicle-list-nth-parts-join-string  ": ")
                         (icicle-list-join-string            ": ")
                         ;; $$$$$$ (icicle-list-end-string             "")
                         (icicle-list-use-nth-parts          '(1))
@@ -2181,7 +2184,8 @@ choose proxy candidate `*point face name*' to use the face at point."
                     output))            ; Return the list of faces
                  (t
                   (when (consp faces) (setq faces  (list (car faces))))
-                  (let ((icicle-list-nth-parts-join-string  ": ")
+                  (let ((icicle-multi-completing-p          t)
+                        (icicle-list-nth-parts-join-string  ": ")
                         (icicle-list-join-string            ": ")
                         ;; $$$$$$ (icicle-list-end-string             "")
                         (icicle-list-use-nth-parts          '(1))
