@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Oct  1 21:08:39 2012 (-0700)
+;; Last-Updated: Tue Oct  9 11:17:38 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 15104
+;;     Update #: 15109
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2012/10/09 dadams
+;;     Made all autoload cookies explicitly load bookmark+.el(c).  Should help ELPA (e.g. MELPA).
 ;; 2012/10/01 dadams
 ;;     bmkp-thing-at-point: Updated per icicle-thing-at-point.  Thx to Joe Bloggs.
 ;; 2012/09/29 dadams
@@ -834,6 +836,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2012/10/09 dadams
+;;     Made all autoload cookies explicitly load bookmark+.el(c).  Should help ELPA (e.g. MELPA).
 ;; 2012/09/29 dadams
 ;;     Added: bmkp-maybe-unpropertize-string.
 ;;     bmkp-maybe-unpropertize-bookmark-names: Added optional arg COPY.
@@ -1275,6 +1279,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-lit.el'")
 ;;
+;; 2012/10/09 dadams
+;;     Made all autoload cookies explicitly load bookmark+.el(c).  Should help ELPA (e.g. MELPA).
 ;; 2012/09/22 dadams
 ;;     bmkp-light-bookmark(s): Put full bookmark, not name, on overlay as its bookmark property.
 ;;     bmkp-unlight-bookmark: Test using eq against full bookmark, not using equal against name.
@@ -1329,6 +1335,8 @@
 ;;       that depends on macros needs to be byte-compiled anew after loading the updated macros.
 ;; **************************************************************************************************
 ;;
+;; 2012/10/09 dadams
+;;     Made all autoload cookies explicitly load bookmark+.el(c).  Should help ELPA (e.g. MELPA).
 ;; 2012/06/26 dadams
 ;;     Moved bmkp-assoc-delete-all, bmkp-replace-regexp-in-string to bookmark+-bmu.el.
 ;; 2012/04/27
@@ -1356,6 +1364,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+.el'")
 ;;
+;; 2012/10/09 dadams
+;;     Made all autoload cookies explicitly load bookmark+.el(c).  Should help ELPA (e.g. MELPA).
 ;; 2012/06/26 dadams
 ;;     Wrapped require of bookmark+-mac.el in eval-when-compile.
 ;; 2012/06/21 dadams
