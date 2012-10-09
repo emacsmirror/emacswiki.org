@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2010-2112, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 23 07:49:32 2010 (-0700)
-;; Last-Updated: Sun Sep 23 15:06:27 2012 (-0700)
+;; Last-Updated: Tue Oct  9 11:05:35 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 837
+;;     Update #: 838
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-lit.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus
 ;; Keywords: bookmarks, highlighting, bookmark+
@@ -260,14 +260,14 @@ This face must be combinable with face `bmkp-t-mark'."
 ;;(@* "User Options (Customizable)")
 ;;; User Options (Customizable) --------------------------------------
 
-;;;###autoload
+;;;###autoload (autoload 'bmkp-auto-light-relocate-when-jump-flag "bookmark+")
 (defcustom bmkp-auto-light-relocate-when-jump-flag t
   "*Non-nil means highlight the relocated, instead of the recorded, position.
 This has an effect only when the highlighting style for the bookmark
 is `point'."
   :type 'boolean :group 'bookmark-plus)
 
-;;;###autoload
+;;;###autoload (autoload 'bmkp-auto-light-when-jump "bookmark+")
 (defcustom bmkp-auto-light-when-jump nil
   "*Which bookmarks to automatically highlight when jumped to.
 NOTE: The values that specify highlighting in the current buffer
@@ -286,7 +286,7 @@ will be the buffer before jumping."
           (const :tag "None (no automatic highlighting)"   nil))
   :group 'bookmark-plus)
 
-;;;###autoload
+;;;###autoload (autoload 'bmkp-auto-light-when-set "bookmark+")
 (defcustom bmkp-auto-light-when-set nil
   "*Which bookmarks to automatically highlight when set."
   :type '(choice
@@ -299,7 +299,7 @@ will be the buffer before jumping."
           (const :tag "None (no automatic highlighting)"   nil))
   :group 'bookmark-plus)
 
-;;;###autoload
+;;;###autoload (autoload 'bmkp-light-priorities "bookmark+")
 (defcustom bmkp-light-priorities '((bmkp-autonamed-overlays        . 160)
                                    (bmkp-non-autonamed-overlays    . 150))
   "*Priorities of bookmark highlighting overlay types.
@@ -339,21 +339,21 @@ This option is not used for Emacs versions before Emacs 22."
   (cons 'choice
         (mapcar (lambda (xx) (list 'const :tag (car xx) (cdr xx))) bmkp-light-styles-alist)))
 
-;;;###autoload
+;;;###autoload (autoload 'bmkp-light-style-autonamed "bookmark+")
 (defcustom bmkp-light-style-autonamed (if (not (fboundp 'fringe-columns)) ; Emacs 20-21.
                                           'line
                                         'line+lfringe)
   "*Default highlight style for autonamed bookmarks."
   :group 'bookmark-plus :type (bmkp-light-style-choices))
 
-;;;###autoload
+;;;###autoload (autoload 'bmkp-light-style-non-autonamed "bookmark+")
 (defcustom bmkp-light-style-non-autonamed (if (not (fboundp 'fringe-columns)) ; Emacs 20-21.
                                               'line
                                             'line+rfringe)
   "*Default highlight style for non-autonamed bookmarks."
   :group 'bookmark-plus :type (bmkp-light-style-choices))
 
-;;;###autoload
+;;;###autoload (autoload 'bmkp-light-threshold "bookmark+")
 (defcustom bmkp-light-threshold 100000
   "*Maximum number of bookmarks to highlight."
   :type 'integer :group 'bookmark-plus)
@@ -374,7 +374,7 @@ This option is not used for Emacs versions before Emacs 22."
 ;;(@* "Menu-List (`*-bmenu-*') Commands")
 ;;  *** Menu-List (`*-bmenu-*') Commands ***
 
-;;;###autoload
+;;;###autoload (autoload 'bmkp-bmenu-show-only-lighted "bookmark+")
 (defun bmkp-bmenu-show-only-lighted () ; `H S' in bookmark list
   "Display a list of highlighted bookmarks (only)."
   (interactive)
@@ -387,14 +387,14 @@ This option is not used for Emacs versions before Emacs 22."
   (when (interactive-p)
     (bmkp-msg-about-sort-order (bmkp-current-sort-order) "Only highlighted bookmarks are shown")))
 
-;;;###autoload
+;;;###autoload (autoload 'bmkp-bmenu-light "bookmark+")
 (defun bmkp-bmenu-light ()              ; `H H' in bookmark list
   "Highlight the location of this line's bookmark."
   (interactive)
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (bmkp-light-bookmark (bookmark-bmenu-bookmark) nil nil 'MSG))
 
-;;;###autoload
+;;;###autoload (autoload 'bmkp-bmenu-light-marked "bookmark+")
 (defun bmkp-bmenu-light-marked (&optional parg msgp) ; `H > H' in bookmark list
   "Highlight the marked bookmarks."
   (interactive (list 'MSG))
@@ -405,14 +405,14 @@ This option is not used for Emacs versions before Emacs 22."
     (dolist (bmk  marked) (bmkp-light-bookmark bmk)))
   (when msgp (message "Highlighting marked bookmarks...done")))
 
-;;;###autoload
+;;;###autoload (autoload 'bmkp-bmenu-unlight "bookmark+")
 (defun bmkp-bmenu-unlight ()            ; `H U' in bookmark list
   "Unhighlight the location of this line's bookmark."
   (interactive)
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (bmkp-unlight-bookmark (bookmark-bmenu-bookmark) 'NOERROR))
 
-;;;###autoload
+;;;###autoload (autoload 'bmkp-bmenu-unlight-marked "bookmark+")
 (defun bmkp-bmenu-unlight-marked (&optional parg msgp) ; `H > U' in bookmark list
   "Unhighlight the marked bookmarks."
   (interactive (list 'MSG))
@@ -423,7 +423,7 @@ This option is not used for Emacs versions before Emacs 22."
     (dolist (bmk  marked) (bmkp-unlight-bookmark bmk t)))
   (when msgp (message "Unhighlighting marked bookmarks...done")))
 
-;;;###autoload
+;;;###autoload (autoload 'bmkp-bmenu-set-lighting "bookmark+")
 (defun bmkp-bmenu-set-lighting (style face when &optional msgp) ; `H +' in bookmark list
   "Set the `lighting' property for this line's bookmark.
 You are prompted for the highlight style, face, and condition (when)."
@@ -440,7 +440,7 @@ You are prompted for the highlight style, face, and condition (when)."
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (bmkp-set-lighting-for-bookmark (bookmark-bmenu-bookmark) style face when 'MSG))
 
-;;;###autoload
+;;;###autoload (autoload 'bmkp-bmenu-set-lighting-for-marked "bookmark+")
 (defun bmkp-bmenu-set-lighting-for-marked (style face when &optional msgp) ; `H > +' in bookmark list
   "Set the `lighting' property for the marked bookmarks.
 You are prompted for the highlight style, face, and condition (when)."
@@ -464,7 +464,7 @@ You are prompted for the highlight style, face, and condition (when)."
 ;;(@* "General Highlight Commands")
 ;;  *** General Highlight Commands ***
 
-;;;###autoload
+;;;###autoload (autoload 'bmkp-bookmarks-lighted-at-point "bookmark+")
 (defun bmkp-bookmarks-lighted-at-point (&optional position fullp msgp) ; `C-x p ='
   "Return a list of the bookmarks highlighted at point.
 Include only those in the current bookmark list (`bookmark-alist').
@@ -489,7 +489,7 @@ Non-interactively:
       (when msgp (pp-eval-expression 'bmks)))
     bmks))
 
-;;;###autoload
+;;;###autoload (autoload 'bmkp-lighted-jump "bookmark+")
 (defun bmkp-lighted-jump (bookmark-name &optional use-region-p) ; `C-x j h'
   "Jump to a highlighted bookmark.
 This is a specialization of `bookmark-jump' - see that, in particular
@@ -500,7 +500,7 @@ for info about using a prefix argument."
      (list (bookmark-completing-read "Jump to highlighted bookmark" nil alist) current-prefix-arg)))
   (bmkp-jump-1 bookmark-name 'switch-to-buffer use-region-p))
 
-;;;###autoload
+;;;###autoload (autoload 'bmkp-lighted-jump-other-window "bookmark+")
 (defun bmkp-lighted-jump-other-window (bookmark-name &optional use-region-p) ; `C-x 4 j h'
   "Jump to a highlighted bookmark in another window.
 See `bmkp-lighted-jump'."
@@ -511,7 +511,7 @@ See `bmkp-lighted-jump'."
            current-prefix-arg)))
   (bmkp-jump-1 bookmark-name 'bmkp-select-buffer-other-window use-region-p))
 
-;;;###autoload
+;;;###autoload (autoload 'bmkp-unlight-bookmark "bookmark+")
 (defun bmkp-unlight-bookmark (bookmark &optional noerrorp msgp)
   "Unhighlight BOOKMARK.
 BOOKMARK is a bookmark name or a bookmark record."
@@ -531,7 +531,7 @@ BOOKMARK is a bookmark name or a bookmark record."
         (when (eq bmk (overlay-get ov 'bookmark))  (delete-overlay ov)))) ; Check full bookmark, not name.
     (when msgp (message "UNhighlighted bookmark `%s'" bmk-name))))
 
-;;;###autoload
+;;;###autoload (autoload 'bmkp-unlight-bookmark-here "bookmark+")
 (defun bmkp-unlight-bookmark-here (&optional noerrorp msgp) ; `C-x p C-u'
   "Unhighlight a bookmark at point or the same line (in that order)."
   (interactive (list nil 'MSG))
@@ -539,7 +539,7 @@ BOOKMARK is a bookmark name or a bookmark record."
     (unless bmk (error "No highlighted bookmark on this line"))
     (bmkp-unlight-bookmark bmk noerrorp msgp)))
 
-;;;###autoload
+;;;###autoload (autoload 'bmkp-unlight-bookmark-this-buffer "bookmark+")
 (defun bmkp-unlight-bookmark-this-buffer (bookmark &optional noerrorp msgp) ; `C-x p u'
   "Unhighlight a BOOKMARK in this buffer.
 BOOKMARK is a bookmark name or a bookmark record.
@@ -558,7 +558,7 @@ buffer."
            'MSG)))
   (bmkp-unlight-bookmark bookmark noerrorp msgp))
 
-;;;###autoload
+;;;###autoload (autoload 'bmkp-unlight-bookmarks "bookmark+")
 (defun bmkp-unlight-bookmarks (&optional overlays-symbols this-buffer-p msgp) ; `C-x p U'
   "Unhighlight bookmarks.
 A prefix argument determines which bookmarks to unhighlight:
@@ -593,7 +593,7 @@ A prefix argument determines which bookmarks to unhighlight:
                         count (if this-buffer-p "in this buffer" "(all buffers)")
                         count-auto count-non-auto))))
 
-;;;###autoload
+;;;###autoload (autoload 'bmkp-unlight-autonamed-this-buffer "bookmark+")
 (defun bmkp-unlight-autonamed-this-buffer (&optional everywherep)
   "Unhighlight autonamed bookmarks.
 No prefix arg: unhighlight them only in the current buffer.
@@ -601,7 +601,7 @@ Prefix arg, unhighlight them everywhere."
   (interactive "P")
   (bmkp-unlight-bookmarks '(bmkp-autonamed-overlays) (not everywherep)))
  
-;;;###autoload
+;;;###autoload (autoload 'bmkp-unlight-non-autonamed-this-buffer "bookmark+")
 (defun bmkp-unlight-non-autonamed-this-buffer (&optional everywherep)
   "Unhighlight non-autonamed bookmarks.
 No prefix arg: unhighlight them only in the current buffer.
@@ -609,13 +609,13 @@ Prefix arg, unhighlight them everywhere."
   (interactive "P")
   (bmkp-unlight-bookmarks '(bmkp-non-autonamed-overlays) (not everywherep)))
 
-;;;###autoload
+;;;###autoload (autoload 'bmkp-unlight-this-buffer "bookmark+")
 (defun bmkp-unlight-this-buffer ()
   "Unhighlight all bookmarks in the current buffer."
   (interactive)
   (bmkp-unlight-bookmarks))
 
-;;;###autoload
+;;;###autoload (autoload 'bmkp-set-lighting-for-bookmark "bookmark+")
 (defun bmkp-set-lighting-for-bookmark (bookmark-name style face when &optional msgp light-now-p)
   "Set the `lighting' property for bookmark BOOKMARK-NAME.
 You are prompted for the bookmark, highlight style, face, and condition.
@@ -649,7 +649,7 @@ Non-nil LIGHT-NOW-P means apply the highlighting now."
   (when msgp (message "Setting highlighting...done"))
   (when light-now-p (bmkp-light-bookmark bookmark-name nil nil msgp))) ; This msg is more informative.
 
-;;;###autoload
+;;;###autoload (autoload 'bmkp-set-lighting-for-buffer "bookmark+")
 (defun bmkp-set-lighting-for-buffer (buffer style face when &optional msgp light-now-p)
   "Set the `lighting' property for each of the bookmarks for BUFFER.
 You are prompted for the highlight style, face, and condition (when).
@@ -667,7 +667,7 @@ Non-nil LIGHT-NOW-P means apply the highlighting now."
    (let ((bmkp-last-specific-buffer  buffer)) (bmkp-last-specific-buffer-alist-only))
    style face when msgp light-now-p))
 
-;;;###autoload
+;;;###autoload (autoload 'bmkp-set-lighting-for-this-buffer "bookmark+")
 (defun bmkp-set-lighting-for-this-buffer (style face when &optional msgp light-now-p)
   "Set the `lighting' property for each of the bookmarks for this buffer.
 You are prompted for the highlight style, face, and condition (when).
@@ -692,7 +692,7 @@ Non-nil LIGHT-NOW-P means apply the highlighting now."
   (when msgp (message "Setting highlighting...done"))
   (when light-now-p (bmkp-light-bookmarks alist nil msgp))) ; Do separately so we get its message.
 
-;;;###autoload
+;;;###autoload (autoload 'bmkp-light-bookmark "bookmark+")
 (defun bmkp-light-bookmark (bookmark &optional style face msgp pointp)
   "Highlight BOOKMARK.
 With a prefix arg you are prompted for the style and/or face to use:
@@ -787,7 +787,7 @@ Non-interactively:
               (t
                (when msgp (message "Bookmark's condition canceled highlighting"))))))))
 
-;;;###autoload
+;;;###autoload (autoload 'bmkp-light-bookmark-this-buffer "bookmark+")
 (defun bmkp-light-bookmark-this-buffer (bookmark &optional style face msgp) ; `C-x p h'
   "Highlight a BOOKMARK in the current buffer.
 With a prefix arg you are prompted for the style and/or face to use:
@@ -815,7 +815,7 @@ See `bmkp-light-boookmark' for argument descriptions."
      (list bmk sty fac 'MSG)))
   (bmkp-light-bookmark bookmark style face msgp))
 
-;;;###autoload
+;;;###autoload (autoload 'bmkp-light-bookmarks "bookmark+")
 (defun bmkp-light-bookmarks (&optional alist overlays-symbols msgp) ; `C-x p H'
   "Highlight bookmarks.
 A prefix argument determines which bookmarks to highlight:
@@ -918,7 +918,7 @@ It must be provided: if nil then do not highlight any bookmarks."
                           "[This buffer]")
                         new-auto new-non-auto nb-auto nb-non-auto total))))
 
-;;;###autoload
+;;;###autoload (autoload 'bmkp-light-navlist-bookmarks "bookmark+")
 (defun bmkp-light-navlist-bookmarks (&optional overlays-symbols msgp)
   "Highlight bookmarks in the navigation list.
 No prefix arg:   all bookmarks.
@@ -931,7 +931,7 @@ Prefix arg < 0:  non-autonamed bookmarks only."
          'MSG))
   (bmkp-light-bookmarks bmkp-nav-alist overlays-symbols msgp))
 
-;;;###autoload
+;;;###autoload (autoload 'bmkp-light-this-buffer "bookmark+")
 (defun bmkp-light-this-buffer (&optional overlays-symbols msgp)
   "Highlight bookmarks in the current buffer.
 No prefix arg:   all bookmarks.
@@ -944,7 +944,7 @@ Prefix arg < 0:  non-autonamed bookmarks only."
          'MSG))
   (bmkp-light-bookmarks (bmkp-this-buffer-alist-only) overlays-symbols msgp))
 
-;;;###autoload
+;;;###autoload (autoload 'bmkp-light-bookmarks-in-region "bookmark+")
 (defun bmkp-light-bookmarks-in-region (start end &optional overlays-symbols msgp)
   "Highlight bookmarks in the region.
 No prefix arg:   all bookmarks.
@@ -962,20 +962,20 @@ Prefix arg < 0:  non-autonamed bookmarks only."
                                             (bmkp-this-buffer-alist-only))
                         overlays-symbols msgp))
 
-;;;###autoload
+;;;###autoload (autoload 'bmkp-light-autonamed-this-buffer "bookmark+")
 (defun bmkp-light-autonamed-this-buffer (&optional msgp)
   "Highlight all autonamed bookmarks."
   (interactive (list 'MSG))
   (bmkp-light-bookmarks (bmkp-autonamed-this-buffer-alist-only) '(bmkp-autonamed-overlays) msgp))
 
-;;;###autoload
+;;;###autoload (autoload 'bmkp-light-non-autonamed-this-buffer "bookmark+")
 (defun bmkp-light-non-autonamed-this-buffer (&optional msgp)
   "Highlight all non-autonamed bookmarks."
   (interactive (list 'MSG))
   (bmkp-light-bookmarks (bmkp-remove-if #'bmkp-autonamed-bookmark-p (bmkp-this-buffer-alist-only))
                         '(bmkp-non-autonamed-overlays) msgp))
 
-;;;###autoload
+;;;###autoload (autoload 'bmkp-cycle-lighted-this-buffer "bookmark+")
 (defun bmkp-cycle-lighted-this-buffer (increment &optional other-window startoverp)
   "Cycle through highlighted bookmarks in this buffer by INCREMENT.
 Positive INCREMENT cycles forward.  Negative INCREMENT cycles backward.
@@ -1013,14 +1013,14 @@ In Lisp code:
                                                           bmkp-current-nav-bookmark)))
     (message "Invalid bookmark: `%s'" (bmkp-bookmark-name-from-record bmkp-current-nav-bookmark))))
 
-;;;###autoload
+;;;###autoload (autoload 'bmkp-cycle-lighted-this-buffer-other-window "bookmark+")
 (defun bmkp-cycle-lighted-this-buffer-other-window (increment &optional startoverp)
   "Same as `bmkp-cycle-lighted-this-buffer' but uses another window."
   (interactive (let ((startovr  (consp current-prefix-arg)))
                  (list (if startovr 1 (prefix-numeric-value current-prefix-arg)) startovr)))
   (bmkp-cycle-lighted-this-buffer increment 'OTHER-WINDOW startoverp))
 
-;;;###autoload
+;;;###autoload (autoload 'bmkp-next-lighted-this-buffer "bookmark+")
 (defun bmkp-next-lighted-this-buffer (n &optional startoverp) ; Repeatable key, e.g. `S-f2'
   "Jump to the Nth-next highlighted bookmark in the current buffer.
 N defaults to 1, meaning the next one.
@@ -1030,7 +1030,7 @@ See also `bmkp-cycle-lighted-this-buffer'."
                  (list (if startovr 1 (prefix-numeric-value current-prefix-arg)) startovr)))
   (bmkp-cycle-lighted-this-buffer n nil startoverp))
 
-;;;###autoload
+;;;###autoload (autoload 'bmkp-previous-lighted-this-buffer "bookmark+")
 (defun bmkp-previous-lighted-this-buffer (n &optional startoverp) ; Repeatable key, e.g. `f2'
   "Jump to the Nth-previous highlighted bookmark in the current buffer.
 See `bmkp-next-lighted-this-buffer'."
@@ -1038,7 +1038,7 @@ See `bmkp-next-lighted-this-buffer'."
                  (list (if startovr 1 (prefix-numeric-value current-prefix-arg)) startovr)))
   (bmkp-cycle-lighted-this-buffer (- n) nil startoverp))
 
-;;;###autoload
+;;;###autoload (autoload 'bmkp-next-lighted-this-buffer-repeat "bookmark+")
 (defun bmkp-next-lighted-this-buffer-repeat (arg) ; `C-x p C-down'
   "Jump to the Nth next highlighted bookmark in the current buffer.
 This is a repeatable version of `bmkp-next-bookmark-this-buffer'.
@@ -1048,7 +1048,7 @@ Plain `C-u' means start over at the first one (and no repeat)."
   (require 'repeat)
   (bmkp-repeat-command 'bmkp-next-lighted-this-buffer))
 
-;;;###autoload
+;;;###autoload (autoload 'bmkp-previous-lighted-this-buffer-repeat "bookmark+")
 (defun bmkp-previous-lighted-this-buffer-repeat (arg) ; `C-x p C-up'
   "Jump to the Nth previous highlighted bookmark in the current buffer.
 See `bmkp-next-lighted-this-buffer-repeat'."
