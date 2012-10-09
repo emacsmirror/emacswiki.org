@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Sat Oct  6 09:46:58 2012 (-0700)
+;; Last-Updated: Tue Oct  9 14:39:58 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5810
+;;     Update #: 5863
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -583,6 +583,7 @@ During completion (`*': requires library `Bookmark+'):
          result))
       (icicle-dot-string                      (icicle-anychar-regexp))
       (icicle-candidate-properties-alist      '((1 (face icicle-candidate-part))))
+      (icicle-multi-completing-p              t)
       (icicle-list-use-nth-parts              '(1))
       (icicle-whole-candidate-as-text-prop-p  t)))
     (progn                              ; First code
@@ -613,6 +614,7 @@ During completion (`*': requires library `Bookmark+'):
          result))
       (icicle-dot-string                      (icicle-anychar-regexp))
       (icicle-candidate-properties-alist      '((1 (face icicle-candidate-part))))
+      (icicle-multi-completing-p              t)
       (icicle-list-use-nth-parts              '(1))
       (icicle-whole-candidate-as-text-prop-p  t)))
     (progn                              ; First code
@@ -919,9 +921,9 @@ Interactively, or with non-nil MSGP, show chosen color in echo area."
     (interactive "i\np\ni\np")          ; Always convert to RGB interactively.
     (let* ((icicle-require-match-p  (not allow-empty-name-p))
            (color                   (icicle-read-color-wysiwyg (if convert-to-RGB-p 2 1) prompt)))
-      (when (and (not allow-empty-name-p) (string= "" color))
-        (error "No such color: %S" color))
-      (let ((icicle-list-use-nth-parts  (if convert-to-RGB-p '(2) '(1)))
+      (when (and (not allow-empty-name-p) (string= "" color)) (error "No such color: %S" color))
+      (let ((icicle-multi-completing-p  t)
+            (icicle-list-use-nth-parts  (if convert-to-RGB-p '(2) '(1)))
             (colr                       (icicle-transform-multi-completion color)))
         (when msgp (message "Color: `%s'" (icicle-propertize colr 'face 'icicle-msg-emphasis)))
         colr)))
@@ -1005,7 +1007,8 @@ used with `C-u', with Icicle mode turned off)."
 
         ;; Complete against name+RGB pairs, but user can enter invalid value without completing.
         (when arg (setq arg  (prefix-numeric-value arg))) ; Convert `-' to -1.
-        (let ((icicle-list-use-nth-parts
+        (let ((icicle-multi-completing-p  t)
+              (icicle-list-use-nth-parts
                (or (and arg (if (< arg 2) '(1) '(2))) ; 1 or 2, by program or via `C-1' or `C-2'.
                    icicle-list-use-nth-parts ; Bound externally by program.
                    '(1 2)))             ; Both parts, by default.
@@ -1121,6 +1124,7 @@ This command is intended only for use in Icicle mode." ; Doc string
     ((icicle-orig-frame                  (selected-frame)) ; Bindings
      (orig-bg                            (frame-parameter nil 'background-color))
      (icicle-prompt                      "Background color: ")
+     (icicle-multi-completing-p          t)
      (icicle-list-use-nth-parts          '(2)) ; Use RGB part.
      (icicle-candidate-alt-action-fn
       (or icicle-candidate-alt-action-fn (icicle-alt-act-fn-for-type "color")))
@@ -1146,6 +1150,7 @@ See `icicle-frame-bg' - but this is for foreground, not background." ; Doc strin
     ((icicle-orig-frame                  (selected-frame)) ; Bindings
      (orig-bg                            (frame-parameter nil 'foreground-color))
      (icicle-prompt                      "Foreground color: ")
+     (icicle-multi-completing-p          t)
      (icicle-list-use-nth-parts          '(2)) ; Use RGB part.
      (icicle-candidate-alt-action-fn
       (or icicle-candidate-alt-action-fn (icicle-alt-act-fn-for-type "color")))
@@ -1473,6 +1478,7 @@ returned."
       ((icicle-list-nth-parts-join-string  ": ") ; Additional bindings
        (icicle-list-join-string            ": ")
        ;; $$$$$$ (icicle-list-end-string             "")
+       (icicle-multi-completing-p          t)
        (icicle-list-use-nth-parts          '(1))
        (prompt                             (copy-sequence "Choose face (`RET' when done): "))
        (face-names                         ()))
@@ -1498,6 +1504,7 @@ returned."
       ((icicle-list-nth-parts-join-string  ": ") ; Additional bindings
        (icicle-list-join-string            ": ")
        ;; $$$$$$ (icicle-list-end-string             "")
+       (icicle-multi-completing-p          t)
        (icicle-list-use-nth-parts          '(1))
        (prompt                             (copy-sequence "Choose face (`RET' when done): "))
        (face-names                         ()))
@@ -1522,7 +1529,8 @@ returned."
       (if (boundp 'face-name-history) 'face-name-history 'icicle-face-name-history) nil nil
       ((icicle-list-nth-parts-join-string  ": ") ; Additional bindings
        (icicle-list-join-string            ": ")
-       ;; $$$$$$ (icicle-list-end-string             "")
+       ;; $$$$$$ (icicle-list-end-string   "")
+       (icicle-multi-completing-p          t)
        (icicle-list-use-nth-parts          '(1))
        (prompt                             (copy-sequence "Choose face (`RET' when done): "))
        (face-names                         ()))
@@ -2429,6 +2437,7 @@ Remember that you can use `\\<minibuffer-local-completion-map>\
   nil nil nil 'icicle-doc-history nil nil
   ((prompt                             "VAR `C-M-j' DOC: ") ; Bindings
    (icicle-candidate-properties-alist  '((1 (face icicle-candidate-part))))
+   (icicle-multi-completing-p          t)
    (icicle-list-use-nth-parts          '(1))
    (pref-arg                           current-prefix-arg))
   (progn
@@ -2484,6 +2493,7 @@ Remember that you can use `\\<minibuffer-local-completion-map>\
   nil nil nil 'icicle-doc-history nil nil
   ((prompt                             "FUNC `C-M-j' DOC: ") ; Bindings
    (icicle-candidate-properties-alist  '((1 (face icicle-candidate-part))))
+   (icicle-multi-completing-p          t)
    (icicle-list-use-nth-parts          '(1))
    (pref-arg                           current-prefix-arg))
   (progn
@@ -2547,6 +2557,7 @@ Remember that you can use `\\<minibuffer-local-completion-map>\
   nil nil nil nil nil nil
   ((prompt                             "SYMB `C-M-j' PLIST: ") ; Bindings
    (icicle-candidate-properties-alist  '((1 (face icicle-candidate-part))))
+   (icicle-multi-completing-p          t)
    (icicle-list-use-nth-parts          '(1))
    (pref-arg                           current-prefix-arg))
   (progn
@@ -2615,6 +2626,7 @@ Remember that you can use \\<minibuffer-local-completion-map>\
   nil nil nil 'icicle-doc-history nil nil
   ((prompt                             "Find doc using regexp: ") ; Bindings
    (icicle-candidate-properties-alist  '((1 (face icicle-candidate-part))))
+   (icicle-multi-completing-p          t)
    (icicle-list-use-nth-parts          '(1))
    (icicle-transform-function          'icicle-remove-duplicates) ; Duplicates are due to `fset's.
    (icicle-candidate-help-fn           'icicle-doc-action)
@@ -2895,7 +2907,8 @@ If user option `icicle-show-multi-completion-flag' is non-nil, then
 each completion candidate is annotated (prefixed) with the name of the
 marker's buffer, to facilitate orientation."
   (interactive)
-  (let ((icicle-list-nth-parts-join-string  "\t")
+  (let ((icicle-multi-completing-p          icicle-show-multi-completion-flag)
+        (icicle-list-nth-parts-join-string  "\t")
         (icicle-list-join-string            "\t")
         ;; $$$$$$ (icicle-list-end-string             "")
         (icicle-sort-orders-alist           (cons '("by buffer, then by position" . icicle-part-1-cdr-lessp)
@@ -2956,16 +2969,16 @@ prefixed by MARKER's buffer name."
       (goto-char marker)
       (let ((line  (let ((inhibit-field-text-motion  t)) ; Just to be sure, for `line-end-position'.
                      (buffer-substring-no-properties (line-beginning-position) (line-end-position))))
-            (buff  (and globalp icicle-show-multi-completion-flag (buffer-name)))
+            (buff  (and globalp  icicle-show-multi-completion-flag  (buffer-name)))
             (help  (and (or (> icicle-help-in-mode-line-delay 0) ; Get it only if user will see it.
-                            (and (boundp 'tooltip-mode) tooltip-mode))
+                            (and (boundp 'tooltip-mode)  tooltip-mode))
                         (format "Line: %d, Char: %d" (line-number-at-pos) (point)))))
         (when (string= "" line) (setq line  "<EMPTY LINE>"))
         (when help
           (icicle-candidate-short-help help line)
-          (when (and globalp icicle-show-multi-completion-flag)
+          (when (and globalp  icicle-show-multi-completion-flag)
             (icicle-candidate-short-help help buff)))
-        (if (and globalp icicle-show-multi-completion-flag)
+        (if (and globalp  icicle-show-multi-completion-flag)
             (cons (list buff line) marker)
           (cons line marker))))))
 
@@ -2974,8 +2987,7 @@ prefixed by MARKER's buffer name."
   (let ((markers  ()))
     (dolist (mkr  ring)
       (when (and (buffer-live-p (marker-buffer mkr))
-                 (not (string-match "\\` \\*Minibuf-[0-9]+\\*\\'"
-                                    (buffer-name (marker-buffer mkr)))))
+                 (not (string-match "\\` \\*Minibuf-[0-9]+\\*\\'" (buffer-name (marker-buffer mkr)))))
         (push mkr markers)))
     markers))
 
@@ -3393,7 +3405,11 @@ This command is intended for use only in Icicle mode."
         (icicle-current-input               "")
         (icicle-list-nth-parts-join-string  "\t")
         (icicle-list-join-string            "\t")
-        ;; $$$$$$ (icicle-list-end-string             "")
+        ;; $$$$$$ (icicle-list-end-string   "")
+        ;; In general, we do not assume that `C-0' implies the use of multi-completions.
+        (icicle-multi-completing-p          (and current-prefix-arg
+                                                 (not (zerop (prefix-numeric-value current-prefix-arg)))
+                                                 icicle-show-multi-completion-flag))
         (icicle-list-use-nth-parts          '(1))
         (icicle-sort-comparer               nil)
 
@@ -3614,7 +3630,7 @@ If PREDICATE is non-nil, then push only the hits for which it holds.
 
 Highlight the matches in face `icicle-search-main-regexp-others'."
   (setq regexp  (or regexp  (icicle-search-read-context-regexp)))
-  (let ((add-bufname-p  (and buffer icicle-show-multi-completion-flag))
+  (let ((add-bufname-p  (and buffer  icicle-show-multi-completion-flag))
         (temp-list      ())
         (last-beg       nil))
     (unless buffer (setq buffer  (current-buffer)))
@@ -4233,6 +4249,7 @@ future search commands, not the current one.)" ; Doc string
    (prompt                                   "Search bookmark: ")
    (icicle-search-context-regexp             (icicle-search-read-context-regexp))
    (bookmark-automatically-show-annotations  nil) ; Do not show annotations
+   (icicle-multi-completing-p                icicle-show-multi-completion-flag)
    (icicle-list-use-nth-parts                '(1))
    (icicle-candidate-properties-alist        (if (not icicle-show-multi-completion-flag)
                                                  ()
@@ -4598,7 +4615,7 @@ does not dig inside the current thing to look for a qualified THING.
 
 This function respects both `icicle-search-complement-domain-p' and
 `icicle-ignore-comments-flag'."
-  (let ((add-bufname-p  (and buffer icicle-show-multi-completion-flag))
+  (let ((add-bufname-p  (and buffer  icicle-show-multi-completion-flag))
         (temp-list      ())
         (last-beg       nil))
     (unless buffer (setq buffer  (current-buffer)))
@@ -5322,9 +5339,10 @@ searches the bookmarked regions/buffers you choose one at a time."
                       (icicle-search-read-word)
                       (icicle-search-read-context-regexp))
                  ,(not icicle-show-multi-completion-flag)))
-  (apply #'icicle-search nil nil scan-fn-or-regexp require-match
-         (let ((current-prefix-arg  '(4))) (icicle-search-where-arg))
-         args))
+  (let ((icicle-multi-completing-p  icicle-show-multi-completion-flag))
+    (apply #'icicle-search nil nil scan-fn-or-regexp require-match
+           (let ((current-prefix-arg  '(4))) (icicle-search-where-arg))
+           args)))
 
 ;;;###autoload (autoload 'icicle-search-buffer "icicles")
 (defun icicle-search-buffer (scan-fn-or-regexp require-match &rest args) ; Bound to `M-s M-s b'.
@@ -5344,14 +5362,15 @@ affects only future search commands, not the current one.)"
                       (icicle-search-read-word)
                       (icicle-search-read-context-regexp))
                  ,(not icicle-show-multi-completion-flag)))
-  (apply #'icicle-search nil nil scan-fn-or-regexp require-match
-         (let ((icicle-show-Completions-initially-flag  t))
-           (mapcar #'get-buffer
-                   (let ((icicle-buffer-require-match-flag  'partial-match-ok)
-                         (icicle-prompt
-                          "Choose buffer to search (`RET' when done): "))
-                     (icicle-buffer-list))))
-         args))
+  (let ((icicle-multi-completing-p  icicle-show-multi-completion-flag))
+    (apply #'icicle-search nil nil scan-fn-or-regexp require-match
+           (let ((icicle-show-Completions-initially-flag  t))
+             (mapcar #'get-buffer
+                     (let ((icicle-buffer-require-match-flag  'partial-match-ok)
+                           (icicle-prompt
+                            "Choose buffer to search (`RET' when done): "))
+                       (icicle-buffer-list))))
+           args)))
 
 ;;;###autoload (autoload 'icicle-search-file "icicles")
 (defun icicle-search-file (scan-fn-or-regexp require-match &rest args) ; Bound to `M-s M-s f'.
@@ -5371,11 +5390,12 @@ future search commands, not the current one.)"
                       (icicle-search-read-word)
                       (icicle-search-read-context-regexp))
                  ,(not icicle-show-multi-completion-flag)))
-  (apply #'icicle-search nil nil scan-fn-or-regexp require-match
-         (let ((icicle-show-Completions-initially-flag  t)
-               (icicle-prompt                           "Choose file to search (`RET' when done): "))
-           (icicle-file-list))
-         args))
+  (let ((icicle-multi-completing-p  icicle-show-multi-completion-flag))
+    (apply #'icicle-search nil nil scan-fn-or-regexp require-match
+           (let ((icicle-show-Completions-initially-flag  t)
+                 (icicle-prompt                           "Choose file to search (`RET' when done): "))
+             (icicle-file-list))
+           args)))
 
 ;;;###autoload (autoload 'icicle-search-bookmark-list-marked "icicles")
 (defun icicle-search-bookmark-list-marked (scan-fn-or-regexp require-match ; Bound to `M-s M-s m'.
@@ -5391,7 +5411,8 @@ BEG, END, and WHERE."
   (unless (fboundp 'bmkp-bmenu-get-marked-files)
     (error "Command `icicle-bookmark-save-marked-files' requires library Bookmark+"))
   (bmkp-bmenu-barf-if-not-in-menu-list)
-  (apply #'icicle-search nil nil scan-fn-or-regexp require-match (bmkp-bmenu-get-marked-files) args))
+  (let ((icicle-multi-completing-p  icicle-show-multi-completion-flag))
+    (apply #'icicle-search nil nil scan-fn-or-regexp require-match (bmkp-bmenu-get-marked-files) args)))
 
 ;;;###autoload (autoload 'icicle-search-dired-marked-recursive "icicles")
 (defun icicle-search-dired-marked-recursive (ignore-marks-p scan-fn-or-regexp require-match &rest args)
@@ -5499,7 +5520,10 @@ This command is intended only for use in Icicle mode.  It is defined
 using `icicle-search'.  For more information, see the doc for command
 `icicle-search'."
   (interactive `(,@(icicle-region-or-buffer-limits) ,(icicle-search-where-arg)))
-  (let ((fg (face-foreground        'icicle-search-main-regexp-others))
+  (let ((icicle-multi-completing-p  (and current-prefix-arg
+                                         (not (zerop (prefix-numeric-value current-prefix-arg)))
+                                         icicle-show-multi-completion-flag))
+        (fg (face-foreground        'icicle-search-main-regexp-others))
         (bg (face-background        'icicle-search-main-regexp-others))
         (icicle-transform-function  (if (interactive-p) nil icicle-transform-function)))
     (unwind-protect
@@ -5538,7 +5562,10 @@ This command is intended only for use in Icicle mode.  It is defined
 using `icicle-search'.  For more information, see the doc for command
 `icicle-search'."
   (interactive `(,@(icicle-region-or-buffer-limits) ,(icicle-search-where-arg)))
-  (let ((fg (face-foreground        'icicle-search-main-regexp-others))
+  (let ((icicle-multi-completing-p  (and current-prefix-arg
+                                         (not (zerop (prefix-numeric-value current-prefix-arg)))
+                                         icicle-show-multi-completion-flag))
+        (fg (face-foreground        'icicle-search-main-regexp-others))
         (bg (face-background        'icicle-search-main-regexp-others))
         (icicle-transform-function  (if (interactive-p) nil icicle-transform-function)))
     (unwind-protect
@@ -5572,14 +5599,16 @@ This command is intended only for use in Icicle mode.  It is defined
 using `icicle-search'.  For more information, see the doc for command
 `icicle-search'."
   (interactive `(,@(icicle-region-or-buffer-limits) ,(icicle-search-where-arg)))
-  (let ((fg (face-foreground        'icicle-search-main-regexp-others))
+  (let ((icicle-multi-completing-p  (and current-prefix-arg
+                                         (not (zerop (prefix-numeric-value current-prefix-arg)))
+                                         icicle-show-multi-completion-flag))
+        (fg (face-foreground        'icicle-search-main-regexp-others))
         (bg (face-background        'icicle-search-main-regexp-others))
         (icicle-transform-function  (if (interactive-p) nil icicle-transform-function)))
     (unwind-protect
          (progn (set-face-foreground 'icicle-search-main-regexp-others nil)
                 (set-face-background 'icicle-search-main-regexp-others nil)
-                (icicle-search beg end "\\(.+\n\\)+"
-                               (not icicle-show-multi-completion-flag) where))
+                (icicle-search beg end "\\(.+\n\\)+" (not icicle-show-multi-completion-flag) where))
       (when icicle-search-cleanup-flag (icicle-search-highlight-cleanup))
       (set-face-foreground 'icicle-search-main-regexp-others fg)
       (set-face-background 'icicle-search-main-regexp-others bg))))
@@ -5605,7 +5634,10 @@ This command is intended only for use in Icicle mode.  It is defined
 using `icicle-search'.  For more information, see the doc for command
 `icicle-search'."
   (interactive `(,@(icicle-region-or-buffer-limits) ,(icicle-search-where-arg)))
-  (let ((fg (face-foreground        'icicle-search-main-regexp-others))
+  (let ((icicle-multi-completing-p  (and current-prefix-arg
+                                         (not (zerop (prefix-numeric-value current-prefix-arg)))
+                                         icicle-show-multi-completion-flag))
+        (fg (face-foreground        'icicle-search-main-regexp-others))
         (bg (face-background        'icicle-search-main-regexp-others))
         (icicle-transform-function  (if (interactive-p) nil icicle-transform-function)))
     (unwind-protect
@@ -6242,13 +6274,16 @@ Optional arg SUBMENU-FN is a function to apply to the list of Imenu
  completion.
 The other args are as for `icicle-search'."
   (unless imenu-generic-expression (error "No Imenu pattern for this buffer"))
-  (let ((case-fold-search  (if (or (local-variable-p 'imenu-case-fold-search)
-                                   (not (local-variable-p 'font-lock-defaults)))
-                               imenu-case-fold-search
-                             (nth 2 font-lock-defaults)))
-        (old-table         (syntax-table))
-        (table             (copy-syntax-table (syntax-table)))
-        (slist             imenu-syntax-alist))
+  (let ((icicle-multi-completing-p  (and current-prefix-arg
+                                         (not (zerop (prefix-numeric-value current-prefix-arg)))
+                                         icicle-show-multi-completion-flag))
+        (case-fold-search           (if (or (local-variable-p 'imenu-case-fold-search)
+                                            (not (local-variable-p 'font-lock-defaults)))
+                                        imenu-case-fold-search
+                                      (nth 2 font-lock-defaults)))
+        (old-table                  (syntax-table))
+        (table                      (copy-syntax-table (syntax-table)))
+        (slist                      imenu-syntax-alist))
     (dolist (syn  slist)                ; Modify the syntax table used while matching regexps.
       (if (numberp (car syn))
           (modify-syntax-entry (car syn) (cdr syn) table) ; Single character.
