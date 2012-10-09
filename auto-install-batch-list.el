@@ -167,7 +167,7 @@
            "http://nschum.de/src/emacs/test-case-mode/test-case-mode.el"))
          ("el-expectations" nil nil
           (
-           "http://www.emacswiki.org/emacs/download/el-expectations.el"
+           "http://www.emacswiki.org/emacs/download/ert-expectations.el"
            "http://www.emacswiki.org/emacs/download/el-mock.el"
            "http://www.emacswiki.org/emacs/download/el-expectations-success-sample.el"
            "http://www.emacswiki.org/emacs/download/el-expectations-failure-sample.el"))
