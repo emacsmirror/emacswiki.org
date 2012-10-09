@@ -1,5 +1,5 @@
 ;;; el-expectations.el --- minimalist unit testing framework
-;; Time-stamp: <2012-10-04 11:44:42 rubikitch>
+;; Time-stamp: <2012-10-09 17:47:14 rubikitch>
 
 ;; Copyright (C) 2008, 2009, 2010  rubikitch
 
@@ -26,6 +26,9 @@
 
 ;; Emacs Lisp Expectations framework is a minimalist unit testing
 ;; framework in Emacs Lisp.
+;;
+;; This program is OBSOLETE in Emacs24. Use ert-expectations.el instead.
+;; URL: http://www.emacswiki.org/cgi-bin/wiki/download/ert-expectations.el
 
 ;;; Commands:
 ;;
