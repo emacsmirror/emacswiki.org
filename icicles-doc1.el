@@ -4681,7 +4681,7 @@
 ;;
 ;;  With commands that provide multi-completion candidates, you use
 ;;  apropos completion (`S-TAB'), not prefix completion (`TAB'), at
-;;  least whenever your input pattern tries to matches other than just
+;;  least whenever your input pattern tries to match other than just
 ;;  the first multi-completion part.
 ;;
 ;;  * Commands `icicle-vardoc' and `icicle-fundoc' let you match both
