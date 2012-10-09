@@ -761,8 +761,12 @@ candidate.
 
 If you instead type `##.*on S-TAB##' then only the second candidate is
 matched, by its file name this time.  In this case you do not
-bother matching a date -- no `C-M-j' or second part, just a first
-part to match.
+bother matching a date -- no `C-M-j' or second part, just a first part to match.
+
+Notice that I said '''`S-TAB'''', not `TAB'.  You use [[apropos completion|apropos]], not
+[[prefix completion|prefix]], completion with multi-completion candidates, at least
+whenever you use an input pattern that matches other than just the
+first multi-completion part.
 
 Command `icicle-fundoc' describes a function.  You match the
 function name or the function documentation or both, as the two
