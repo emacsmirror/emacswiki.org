@@ -40,3 +40,18 @@ If you have any other tips from your font configuration feel free to send them a
 
 -- roland.walker 2012-10-10 00:17 UTC
 
+
+----
+
+I basically have an ubuntu Linux system but is changed out of all recognition - I use stumpwm as my window manager and conkeror as my web browser as I try not to use the mouse if I can help it. I am using Emacs 24.2 and am using elpa repositories (gnu, marmalade and melpa) for extra packages when at all possible. So I amusing the marmalade version.
+
+Many of my fonts are installed "globally" from Ubuntu packages and many are installed "locally" in my .fonts directory or subdirectories thereof. In the case of "Dai Banna SIL Book", I first downloaded it from the sil website and installed it "locally" and found Emacs could not recognise it. Then I discovered there was an official sil ppa with most of their fonts in it so I uninstalled the "local" version and installed the Ubuntu package. Unfortunately this made no difference but:
+
+$ fc-list grep Banna
+
+listed each variant Bold, Regular, Oblique etc. as if it were a different font with font name "Dai Banna SIL Book:style=Regular" etc.  That's why I tried appending ":style=Regular" to the font name and it worked and seems to make sense why it should. OTOH I have no idea why the same solution works for “BabelStone Phags-pa Book" but it does!
+
+Incidentally once you know all the fonts can be found there seems no reason to have "Unicode Fonts Debug Availability" set to "on" and " Unicode Fonts Existence Checks" may as well be set to "Load All Fonts Without Checking." If this is done the package loads very fast and I can't see any reason to change these unless I do something to my font settings and want to debug the changes.
+
+-- [http://bernardhurley.posterous.com/ Bernard Hurley] 2012-10-10 10:33 UTC
+
