@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Wed Oct 10 15:27:51 2012 (-0700)
+;; Last-Updated: Wed Oct 10 16:21:28 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 9097
+;;     Update #: 9098
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -6102,6 +6102,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2012/10/10 dadams
+;;     icicle-shell-command-candidates-cache:
+;;       Removed autoload cookie due to default value dependency.  Thx to Michael Heerdegen.
 ;; 2012/10/05 dadams
 ;;     Added: icicle-kill-visited-buffers-flag.
 ;; 2012/10/02 dadams
