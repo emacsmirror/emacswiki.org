@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Oct  5 08:19:40 2012 (-0700)
+;; Last-Updated: Wed Oct 10 16:20:24 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5332
+;;     Update #: 5333
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -3014,7 +3014,7 @@ The candidates are the executable files in your search path or, if
       (setq path-dirs  (cdr path-dirs)))
     completions))
 
-;;;###autoload
+;; Do NOT use an autoload cookie here.  Default value needs `icicle-compute-shell-command-candidates'.
 (defcustom icicle-shell-command-candidates-cache (and (eq icicle-guess-commands-in-path 'load)
                                                       (icicle-compute-shell-command-candidates))
   "*Cache for shell command candidates.
