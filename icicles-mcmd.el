@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Oct  9 15:40:59 2012 (-0700)
+;; Last-Updated: Wed Oct 10 15:29:13 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 18559
+;;     Update #: 18569
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1513,6 +1513,8 @@ Bound to `C-x t' in the minibuffer."
                                       " and "
                                       (icicle-propertize "NAMES" 'face 'icicle-msg-emphasis)))))))))
 
+;; This works hand in hand with `icicle-maybe-sort-maybe-truncate'.  Update both together.
+;;
 ;;;###autoload (autoload 'icicle-doremi-increment-max-candidates+ "icicles")
 (defun icicle-doremi-increment-max-candidates+ (&optional increment) ; `C-x #' in minibuffer
   "Change `icicle-max-candidates' incrementally.
@@ -1523,7 +1525,7 @@ A plain prefix arg (`C-u') resets `icicle-max-candidates' to nil,
  meaning no limit."
   (interactive "P")
   (cond ((consp increment)
-         (setq icicle-max-candidates  nil)
+         (setq icicle-max-candidates  'RESET) ; `icicle-maybe-sort-maybe-truncate' will reset to nil.
          (icicle-msg-maybe-in-minibuffer "No longer any limit on number of candidates"))
         (t
          (setq increment  (prefix-numeric-value increment))
@@ -1535,12 +1537,12 @@ A plain prefix arg (`C-u') resets `icicle-max-candidates' to nil,
                   (unless icicle-completion-candidates (message "Hit `TAB' or `S-TAB'"))
                   (let ((enable-recursive-minibuffers  t)
                         (nb-cands                      (length icicle-completion-candidates)))
-                    (when (or (not icicle-max-candidates)  (> icicle-max-candidates nb-cands))
+                    (when (or (not (integerp icicle-max-candidates)) ; Not `RESET' or nil.
+                              (> icicle-max-candidates nb-cands))
                       (setq icicle-max-candidates  nb-cands))
-                    (when (zerop icicle-max-candidates) (setq icicle-max-candidates 10))
+                    (when (zerop icicle-max-candidates) (setq icicle-max-candidates  10))
                     (doremi (lambda (new-val)
-                              (setq icicle-max-candidates
-                                    (setq new-val (doremi-limit new-val 2 nil)))
+                              (setq icicle-max-candidates  (setq new-val  (doremi-limit new-val 2 nil)))
                               (unless (input-pending-p)
                                 (let ((icicle-edit-update-p  t)
                                       (icicle-last-input     nil))
