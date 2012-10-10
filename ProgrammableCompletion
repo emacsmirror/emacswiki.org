@@ -13,7 +13,7 @@ pressing TAB here gives the error "Text is read-only".  Anyone verify this?  -- 
 
 This will be because the standard eshell-prompt-regexp expects there to be only a single $ before your command.  I use ##"^[^#\n]* [#$] "## instead.  Note that you'll need to escape any $ signs in the eshell command line, eg., ##cd //evon620c/c\$/home/##  -- RohanHart
 
-This same issue appears even without a $ in the path if the directory to be completed starts with ~, using emacs 24  -- TuomasKuismin
+This same issue appears even without a $ in the path if the directory to be completed starts with ~ and eshell-cmpl-ignore-case is true, using emacs 24  -- TuomasKuismin
 
 
 = Adding programmable completion using pcomplete =
