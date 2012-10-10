@@ -31,3 +31,12 @@ Also, I hope you installed from marmalade or github rather than the versions hos
 
 -- roland.walker 2012-10-10 00:04 UTC
 
+
+----
+
+As to using Emacs as a font server -- I suppose that fontsets are weighed down by historical considerations to which other applications would not be willing to subscribe.
+
+If you have any other tips from your font configuration feel free to send them along for inclusion here or (better) file an issue on github.  I'm certain that many additional fonts ought to be included.
+
+-- roland.walker 2012-10-10 00:17 UTC
+
