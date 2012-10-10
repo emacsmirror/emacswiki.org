@@ -567,6 +567,15 @@ Hi!  I am a big fan of whitespace.el; so much so, I have <code>(global-whitespac
 
 : Thanks for your tiny patch. -- ViniciusJoseLatorre
 
+-----
+[new]
+Hi Jose...
+
+Can you please add this to the defcustom for whitespace-style?
+
+			 (const :tag "(Face) Lines Tail" lines-tail)
+
+I'd have sent you a proper patch, but I don't know where your repository is. -- RyanDavis
 
 ------
 
