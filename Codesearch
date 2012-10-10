@@ -1,0 +1,7 @@
+Codesearch is a source code indexing system, similar to ctags, based on the now-defunct Google Code Search. It is designed to handle huge code bases with very high performance.
+
+[http://code.google.com/p/codesearch/]
+
+Codesearch.el allows you to interact with codesearch from emacs. In particular, it lets you search an index with a regular expression and select from the matches in a results buffer.
+
+[https://github.com/abingham/codesearch.el]
