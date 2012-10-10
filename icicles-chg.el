@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue Oct  9 16:40:56 2012 (-0700)
+;; Last-Updated: Wed Oct 10 15:27:51 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 9084
+;;     Update #: 9097
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1477,6 +1477,13 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2012/10/10 dadams
+;;     icicle-display-candidates-in-Completions:
+;;       Add lighter and completion mode to *Completions* mode line. 
+;;     icicle-(prefix|apropos)-candidates:
+;;       Call *-maybe-sort-maybe-truncate even if *-sort-comparer is nil.  Needed for truncation.
+;;     icicle-maybe-sort-maybe-truncate:
+;;       Handle new icicle-max-candidates value of RESET, from icicle-doremi-increment-max-candidates+
 ;; 2012/10/09 dadams
 ;;     icicle-read-face-name: Bind icicle-multi-completing-p to t.
 ;; 2012/10/05 dadams
@@ -3430,6 +3437,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2012/10/10 dadams
+;;     icicle-doremi-increment-max-candidates+:
+;;       C-u sets to RESET, not nil, so icicle-maybe-sort-maybe-truncate can reset lighter.
 ;; 2012/10/09 dadams
 ;;     icicle-prefix-complete-1: When icicle-multi-completing-p and match join string, show warning.
 ;; 2012/10/05 dadams
