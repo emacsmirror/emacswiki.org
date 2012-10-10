@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Oct  9 13:35:00 2012 (-0700)
+;; Last-Updated: Wed Oct 10 15:22:38 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 13398
+;;     Update #: 13438
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -3244,17 +3244,50 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
                  (set-buffer-modified-p nil)
                  (setq buffer-read-only  t))))
 
+           ;; Put lighter, number of candidates, completion mode, and sort order in mode line.
            (with-current-buffer (get-buffer "*Completions*")
-             (set (make-local-variable 'mode-line-frame-identification)
-                  (format "  %d %s  "
-                          nb-cands
+             (set (make-local-variable 'mode-line-format)
+                  (format "  %s%s%s, sorting %s%s"
+                          (icicle-propertize (format "%d" nb-cands) 'face 'icicle-mode-line-help)
                           (if (and icicle-max-candidates
+                                   (integerp icicle-max-candidates) ; Not `RESET'.
                                    (< icicle-max-candidates icicle-nb-candidates-before-truncation))
-                              (format "shown / %d" icicle-nb-candidates-before-truncation)
-                            "candidates")))
-             (put-text-property 0 (length mode-line-frame-identification)
-                                'face 'icicle-mode-line-help
-                                mode-line-frame-identification)
+                              (format
+                               "%s candidates shown"
+                               (icicle-propertize (format "/%d" icicle-nb-candidates-before-truncation)
+                                                  'face 'icicle-mode-line-help))
+                            " candidates")
+                          (if (memq icicle-current-completion-mode '(prefix apropos))
+                              (format ", %s completion"
+                                      (icicle-propertize
+                                       (cond ((eq 'apropos icicle-current-completion-mode)
+                                              (or (car (rassq icicle-apropos-complete-match-fn
+                                                              icicle-S-TAB-completion-methods-alist))
+                                                  ""))
+                                             ((eq 'prefix icicle-current-completion-mode)
+                                              (case (icicle-current-TAB-method)
+                                                (fuzzy        "fuzzy")
+                                                (swank        "swank (fuzzy symbol)")
+                                                (vanilla      "vanilla")
+                                                (t            "prefix"))))
+                                       'face 'icicle-mode-line-help))
+                            "")
+                          (icicle-propertize (or (car (rassoc icicle-sort-comparer icicle-sort-orders-alist))
+                                                 "turned OFF")
+                                             'face 'icicle-mode-line-help)
+                          (if (and icicle-reverse-sort-p  icicle-sort-comparer)
+                              (icicle-propertize " (reversed)" 'face 'icicle-mode-line-help)
+                            "")))
+             (let* ((lighter  (cadr (assoc 'icicle-mode minor-mode-alist)))
+                    (regexp   (and lighter  (concat (regexp-quote icicle-lighter-truncation) "$")))
+                    props)
+               (when lighter
+                 (setq lighter  (concat lighter " ")
+                       props    (text-properties-at 0 lighter))
+                 (when (string-match regexp lighter)
+                   (setq lighter  (substring lighter 0 (match-beginning 0))))
+                 (add-text-properties 0 (length lighter) props lighter))
+               (setq mode-line-format  (concat lighter mode-line-format)))
              (goto-char (icicle-start-of-candidates-in-Completions))
              (set-window-point (get-buffer-window "*Completions*" 0) (point))
              (icicle-fit-completions-window))
@@ -3546,9 +3579,9 @@ INPUT is a string.  Each candidate is a string."
                                                (icicle-fuzzy-candidates input)))
         (quit (top-level)))             ; Let `C-g' stop it.
     (let ((cands  (icicle-unsorted-prefix-candidates input)))
-      (cond (icicle-abs-file-candidates  (icicle-strip-ignored-files-and-sort cands))
-            (icicle-sort-comparer        (icicle-maybe-sort-maybe-truncate cands))
-            (t                           cands)))))
+      (if icicle-abs-file-candidates
+          (icicle-strip-ignored-files-and-sort cands)
+        (icicle-maybe-sort-maybe-truncate cands)))))
 
 (defun icicle-fuzzy-candidates (input)
   "Return fuzzy matches for INPUT.  Handles also swank fuzzy symbol match."
@@ -3753,9 +3786,9 @@ the expanded common match of the input over all candidates."
 INPUT is a string.  Each candidate is a string."
   (setq icicle-candidate-nb  nil)
   (let ((cands  (icicle-unsorted-apropos-candidates input)))
-    (cond (icicle-abs-file-candidates  (icicle-strip-ignored-files-and-sort cands))
-          (icicle-sort-comparer        (icicle-maybe-sort-maybe-truncate cands))
-          (t                           cands))))
+    (if icicle-abs-file-candidates
+        (icicle-strip-ignored-files-and-sort cands)
+      (icicle-maybe-sort-maybe-truncate cands))))
 
 (defun icicle-unsorted-apropos-candidates (input)
   "Unsorted list of apropos completions for the current partial INPUT.
@@ -4988,6 +5021,7 @@ MESSAGE is the confirmation message to display in the minibuffer."
     (with-output-to-temp-buffer "*Completions*"
       (display-completion-list (icicle-maybe-sort-maybe-truncate completions)))))
 
+;; This works hand in hand with `icicle-doremi-increment-max-candidates+'.  Update both together.
 (defun icicle-maybe-sort-maybe-truncate (cands)
   "Return a copy of candidate list CANDS, maybe sorted, maybe truncated.
 Sort according to `icicle-sort-comparer'.
@@ -4997,12 +5031,13 @@ Truncate according to `icicle-max-candidates'."
     (when icicle-max-candidates
       (let ((lighter  (cadr (assoc 'icicle-mode minor-mode-alist)))
             (regexp   (concat (regexp-quote icicle-lighter-truncation) "$")))
-        (cond ((and new-cands (< icicle-max-candidates ; Save total number before truncation
-                                 (setq icicle-nb-candidates-before-truncation  (length new-cands))))
+        (cond ((and new-cands
+                    (integerp icicle-max-candidates) ; Not `RESET'.
+                    (< icicle-max-candidates ; Save total number before truncation
+                       (setq icicle-nb-candidates-before-truncation  (length new-cands))))
                (unless (string-match regexp lighter)
                  (icicle-clear-lighter 'not-truncated)
-                 (add-to-list
-                  'minor-mode-alist `(icicle-mode ,(concat lighter icicle-lighter-truncation)))))
+                 (add-to-list 'minor-mode-alist `(icicle-mode ,(concat lighter icicle-lighter-truncation)))))
               (new-cands
                ;; Save total number before truncation in `icicle-nb-candidates-before-truncation'.
                (setq icicle-nb-candidates-before-truncation  (length new-cands))
@@ -5011,9 +5046,10 @@ Truncate according to `icicle-max-candidates'."
                  (add-to-list
                   'minor-mode-alist
                   `(icicle-mode
-                    ,(substring lighter 0
-                                (- (length lighter) (length icicle-lighter-truncation)))))))))
-      (setq new-cands  (icicle-take icicle-max-candidates new-cands)))
+                    ,(substring lighter 0 (- (length lighter) (length icicle-lighter-truncation))))))))
+        (if (eq 'RESET icicle-max-candidates) ; `RESET' is from `icicle-doremi-increment-max-candidates+'.
+            (setq icicle-max-candidates  nil)
+          (setq new-cands  (icicle-take icicle-max-candidates new-cands)))))
     new-cands))
 
 (defun icicle-take (num xs)
