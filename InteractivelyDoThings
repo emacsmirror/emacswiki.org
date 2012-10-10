@@ -657,6 +657,10 @@ I have a number of files named in Chinese. In the standard find-file I can use i
 [new:DrewAdams:2012-10-09 22:59 UTC]
 You might get some help here, but this sounds like a bug.  Please use `M-x report-emacs-bug', providing a recipe from ##emacs -Q##.  -- DrewAdams
 
+[new:Bernard Hurley:2012-10-10 02:04 UTC]
+
+Done!! -- [[Bernard Hurley]]
+
 
 
 
