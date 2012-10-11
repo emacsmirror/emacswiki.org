@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun Oct  7 13:25:01 2012 (-0700)
+;; Last-Updated: Thu Oct 11 16:18:10 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 29025
+;;     Update #: 29034
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -2237,6 +2237,34 @@
 ;;
 ;;  See Also (@> "Icicles Search Commands, Overview") for information
 ;;  about `icicle-search.
+;;
+;;(@* "Trip Among Emacs Tags Using Bookmarks")
+;; ** Trip Among Emacs Tags Using Bookmarks **
+;;
+;;  The idea here is to (a) automatically set (that is, create and
+;;  update) a bookmark each time you visit an Emacs tag and then (b)
+;;  use an Icicles bookmark-jump multi-command to navigate among those
+;;  bookmarks.
+;;
+;;  For (a), just define a function that creates or sets a bookmark
+;;  that has the same name as an Emacs tag.  Then use that function on
+;;  `find-tag-hook'.  That hook is run in function
+;;  `find-tag-noselect', which accepts the tag name as parameter
+;;  TAGNAME.  This code will do the trick:
+;;
+;;    (defun bookmark-this-emacs-tag ()
+;;      "Bookmark the currently visited tag.
+;;    Use on `find-tag-hook'.  The bookmark name is the tagname, which
+;;    is the value of (free) variable `tagname'."
+;;      (bookmark-set tagname))
+;;
+;;    (add-hook 'find-tag-hook 'bookmark-this-emacs-tag)
+;;
+;;  For (b), remember that with Icicles you can sort candidate
+;;  bookmarks in various ways on the fly.  You can, for example, sort
+;;  them by last access time or frequency of access.
+;;
+;;  See Also (@> "Jumping to a Bookmark")
  
 ;;(@* "Icicles Shell-Command Enhancements")
 ;;
