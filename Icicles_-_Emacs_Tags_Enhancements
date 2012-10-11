@@ -111,6 +111,39 @@ applied to the relevant source files.
 
 
 
+
+
+
+
+[:EmacsTagBookmarks]
+=== Trip Among Emacs Tags Using Bookmarks ===
+
+The idea here is to (a) automatically set (that is, create and
+update) a bookmark each time you visit an Emacs tag and then (b)
+use an '''Icicles''' bookmark-jump multi-command to navigate among those
+bookmarks.
+
+For (a), just define a function that creates or sets a bookmark
+that has the same name as an Emacs tag.  Then use that function on
+`find-tag-hook'.  That hook is run in function
+`find-tag-noselect', which accepts the tag name as parameter
+##TAGNAME##.  This code will do the trick:
+
+   (defun bookmark-this-emacs-tag ()
+     "Bookmark the currently visited tag.
+   Use on `find-tag-hook'.  The bookmark name is the tagname, which
+   is the value of (free) variable `tagname'."
+     (bookmark-set tagname))
+
+   (add-hook 'find-tag-hook 'bookmark-this-emacs-tag)
+
+For (b), remember that with '''Icicles''' you can [[Icicles - Sorting Candidates|sort]] candidate
+bookmarks in various ways on the fly.  You can, for example, sort
+them by last access time or frequency of access.
+
+
+'''See Also:''' [[Icicles - Bookmark Enhancements#JumpingToABookmark|Jumping to a Bookmark]]
+
 ----
 
 
