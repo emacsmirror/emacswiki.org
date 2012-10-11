@@ -149,7 +149,7 @@ If you have Emacs 24 or later, then the first method is probably the easiest way
 
 '''1.''' '''Within Emacs''' -- Alternative ways:
 
-* If you use Emacs 24 or later, you can download and install '''Icicles''' from [[MELPA]].  To do that, you first need to add `melpa' to list `package-archives'.  Then use `M-x list-packages' and click `icicles' in the list of available pacakges.  Use code like this to add `melpa' to the list of available archives:
+* You can download '''Icicles''' from [[MELPA]].  If you use Emacs 24 or later, you can both download and install it from within Emacs, easily.  To do that, you first need to add `melpa' to list `package-archives'.  Then use `M-x list-packages' and click `icicles' in the list of available pacakges.  Use code like this to add `melpa' to the list of available archives:
 
        (when (> emacs-major-version 23)
         (require 'package)
