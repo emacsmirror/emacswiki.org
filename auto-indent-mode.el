@@ -29,6 +29,10 @@
 ;; 
 ;; *Auto-indent function for `end-of-line' and then newline.
 ;; 
+;; *Auto-indent function for `end-of-line' and then newline.
+;; 
+;; *Auto indentation on moving cursor to blank lines.
+;; 
 ;; *Auto indentation on moving cursor to blank lines.
 ;; 
 ;; *Auto indentation on moving cursor to blank lines.
@@ -40,6 +44,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 12-Oct-2012    Matthew L. Fidler  
+;;    Last-Updated: Tue Aug 21 13:08:42 2012 (-0500) #1467 (Matthew L. Fidler)
+;;    Took out documentation that started with a star since it messes up org-readme.
 ;; 12-Oct-2012    Matthew L. Fidler  
 ;;    Last-Updated: Tue Aug 21 13:08:42 2012 (-0500) #1467 (Matthew L. Fidler)
 ;;    Trying to fix header
@@ -1027,7 +1034,7 @@ If the major mode has `major-mode-indent-level', `major-indent-level', `major-mo
 
 ;;;###autoload
 (defun auto-indent-eol-newline ()
-  "*Auto-indent function for `end-of-line' and then newline."
+  "Auto-indent function for `end-of-line' and then newline."
   (interactive)
   (end-of-line)
   (if auto-indent-alternate-return-function-for-end-of-line-then-newline
@@ -1036,7 +1043,7 @@ If the major mode has `major-mode-indent-level', `major-indent-level', `major-mo
 
 ;;;###autoload
 (defun auto-indent-eol-char-newline ()
-  "* Auto-indent function for `end-of-line', insert `auto-indent-eol-char', and then newline."
+  "Auto-indent function for `end-of-line', insert `auto-indent-eol-char', and then newline."
   (interactive)
   (end-of-line)
   (unless (looking-back "; *")
@@ -1194,7 +1201,7 @@ http://www.emacswiki.org/emacs/AutoIndentation
 (add-hook 'org-mode-hook 'auto-indent-turn-on-org-indent)
 ;;;###autoload
 (defun auto-indent-minor-mode-on ()
-  "* Turn on auto-indent minor mode."
+  "Turn on auto-indent minor mode."
   (interactive)
   (unless (or (minibufferp)
               (memq major-mode auto-indent-disabled-modes-list))
@@ -1339,13 +1346,13 @@ buffer."
       (untabify (point-min) (point-max)))))
 
 (defun auto-indent-file-when-save ()
-  "* Auto-indent file when save."
+  "Auto-indent file when save."
   (if (not (minibufferp))
       (if (and auto-indent-minor-mode (buffer-file-name) auto-indent-on-save-file)
           (auto-indent-whole-buffer 't))))
 
 (defun auto-indent-file-when-visit ()
-  "* auto-indent file when visit."
+  "auto-indent file when visit."
   (save-excursion
     (when (buffer-file-name)
       (auto-indent-whole-buffer)
