@@ -5,8 +5,8 @@
 ;; Author: Roland Walker <walker@pobox.com>
 ;; Homepage: http://github.com/rolandwalker/ignoramus
 ;; URL: http://raw.github.com/rolandwalker/ignoramus/master/ignoramus.el
-;; Version: 0.5.0
-;; Last-Updated:  3 Sep 2012
+;; Version: 0.6.2
+;; Last-Updated: 11 Oct 2012
 ;; EmacsWiki: Ignoramus
 ;; Keywords: convenience, tools
 ;;
@@ -65,13 +65,18 @@
 ;;
 ;; Notes
 ;;
-;; One function is provided to be called from Lisp:
+;; Three functions are provided to be called from Lisp:
 ;;
 ;;     `ignoramus-boring-p'
+;;     `ignoramus-register-datafile'
+;;     `ignoramus-matches-datafile'
 ;;
 ;; Compatibility and Requirements
 ;;
-;;     Tested on GNU Emacs versions 23.3 and 24.1
+;;     GNU Emacs version 24.3-devel     : yes, at the time of writing
+;;     GNU Emacs version 24.1 & 24.2    : yes
+;;     GNU Emacs version 23.3           : yes
+;;     GNU Emacs version 22.3 and lower : no
 ;;
 ;;     No external dependencies
 ;;
@@ -89,6 +94,10 @@
 ;;     Overwrites customizable variables from other libraries.
 ;;
 ;;     Hardcoded directory separator.
+;;
+;;     Different results may be obtained from the datafiles
+;;     functions depending on whether external libraries are
+;;     loaded.
 ;;
 ;; TODO
 ;;
@@ -131,10 +140,23 @@
 ;; interpreted as representing official policies, either expressed
 ;; or implied, of Roland Walker.
 ;;
+;;; Change Log:
+;;
+;; 09 Oct 2012
+;;     Incompatible change: defcustom variable names changed in
+;;     anticipation of separating file and directory components.
+;;     Obsolete aliases are included.
+;;
 ;;; Code:
 ;;
 
 ;;; requires
+
+;; for callf
+(require 'cl)
+
+(declare-function dired-omit-mode "dired-x.el")
+(declare-function file-equal-p    "files.el")
 
 (eval-when-compile
   ;; declarations for byte compiler
@@ -154,8 +176,7 @@
   (defvar shell-completion-fignore)
   (defvar speedbar-directory-unshown-regexp)
   (defvar speedbar-file-unshown-regexp)
-  ;; for callf
-  (require 'cl))
+  (defvar comint-completion-fignore))
 
 ;;; variables
 
@@ -179,12 +200,66 @@
 (defvar ignoramus-boring-file-regexp nil "A computed regexp matching uninteresting files.")
 (defvar ignoramus-boring-dir-regexp  nil "A computed regexp matching uninteresting directories.")
 
+(defvar ignoramus-datafile-basename '(
+                                      desktop-base-file-name
+                                      ".emacs.desktop.lock"
+                                      )
+  "List of symbols or strings holding file basenames used for persistence by Emacs packages.")
+
+(defvar ignoramus-datafile-completepath '(
+                                          abbrev-file-name
+                                          ac-comphist-file
+                                          bm-repository-file
+                                          bmkp-bmenu-commands-file
+                                          bmkp-bmenu-state-file
+                                          bookmark-default-file
+                                          flymake-log-file-name
+                                          guess-style-override-file
+                                          ido-save-directory-list-file
+                                          minimal-session-saver-data-file
+                                          recentf-save-file
+                                          save-place-file
+                                          savehist-file
+                                          smex-save-file
+                                          tramp-persistency-file-name
+                                          woman-cache-filename
+                                          )
+  "List of symbols or strings holding complete paths used for persistence by Emacs packages.")
+
+(defvar ignoramus-datafile-prefix '(
+                                    auto-save-list-file-prefix
+                                    )
+  "List of symbols or strings holding file prefixes used for persistence by Emacs packages.
+
+A prefix is a leading absolute path component plus leading fragment of basename.")
+
+(defvar ignoramus-datafile-dirprefix '(
+                                       ac-dictionary-directories
+                                       ede-simple-save-directory
+                                       eshell-directory-name
+                                       pcache-directory
+                                       semanticdb-default-save-directory
+                                       tramp-auto-save-directory
+                                       url-configuration-directory
+                                       )
+  "List of symbols or strings holding directory prefixes used for persistence by Emacs packages.
+
+A directory prefix is a leading absolute path component.")
+
 ;;; customizable variables
+
+;;;###autoload
+(progn
+  ;; obsolete forms
+  (define-obsolete-variable-alias 'ignoramus-file-endings     'ignoramus-file-basename-endings)
+  (define-obsolete-variable-alias 'ignoramus-file-beginnings  'ignoramus-file-basename-beginnings)
+  (define-obsolete-variable-alias 'ignoramus-file-exact-names 'ignoramus-file-basename-exact-names)
+  (define-obsolete-variable-alias 'ignoramus-file-regexps     'ignoramus-file-basename-regexps))
 
 ;;;###autoload
 (defgroup ignoramus nil
   "Ignore backups, build files, et al."
-  :version "0.5.0"
+  :version "0.6.2"
   :link '(emacs-commentary-link "ignoramus")
   :prefix "ignoramus-"
   :group 'tools
@@ -197,12 +272,30 @@
                                       (list 'const x)) ignoramus-known-actions)))
   :group 'ignoramus)
 
+(defcustom ignoramus-use-known-datafiles t
+  "Whether to read variables from other packages to recognize datafiles.
+
+When this option is set, ignoramus reads the current settings of
+variables such as `tramp-auto-save-directory' or `woman-cache-filename'
+to supplement its lists of regular expressions."
+  :type 'boolean
+  :group 'ignoramus)
+
+(defcustom ignoramus-case-insensitive t
+  "Make string and regexp matches case-insensitive where possible.
+
+This affects the results from `ignoramus-boring-p' and
+`ignoramus-matches-datafile', but generally does not affect
+the behavior of other libraries configured by ignoramus."
+  :type 'boolean
+  :group 'ignoramus)
+
 ;;;###autoload
 (defgroup ignoramus-patterns nil
   "File patterns to ignore."
   :group 'ignoramus)
 
-(defcustom ignoramus-file-endings
+(defcustom ignoramus-file-basename-endings
   '(
     ".386"                                    ; compiled binary
     ".a"                                      ; compiled binary
@@ -337,6 +430,8 @@
     ".sx64fsl"                                ; LISP
     ".synctex.gz"                             ; latex
     ".tfm"                                    ; latex
+    ".tmproj"                                 ; textmate
+    ".tmproject"                              ; textmate
     ".toc"                                    ; latex
     ".tp"                                     ; texinfo
     ".tps"                                    ; texinfo
@@ -370,7 +465,7 @@ occur at the ends of file names to ignore."
   :type '(repeat string)
   :group 'ignoramus-patterns)
 
-(defcustom ignoramus-file-beginnings
+(defcustom ignoramus-file-basename-beginnings
   '(
     ".#"                                   ; emacs
     "core."                                ; unix
@@ -387,7 +482,7 @@ fully-qualified pathname."
   :type '(repeat string)
   :group 'ignoramus-patterns)
 
-(defcustom ignoramus-file-exact-names
+(defcustom ignoramus-file-basename-exact-names
   '(
     "$RECYCLE.BIN"                         ; ms-windows
     ".AppleDouble"                         ; OS X
@@ -437,8 +532,6 @@ fully-qualified pathname."
     ".sass-cache"                          ; sass
     ".scala_dependencies"                  ; scala
     ".svn"                                 ; subversion
-    ".tmproj"                              ; textmate
-    ".tmproject"                           ; textmate
     ".tox"                                 ; python
     ".wmncach.el"                          ; emacs WoMan
     ".yardoc"                              ; yard
@@ -463,6 +556,7 @@ fully-qualified pathname."
     "build"                                ; various
     "Build"                                ; various
     "Build.bat"                            ; perl
+    "COMMIT_EDITMSG"                       ; git
     "cmake_install.cmake"                  ; cmake
     "CMakeCache.txt"                       ; cmake
     "CMakeFiles"                           ; cmake
@@ -481,6 +575,7 @@ fully-qualified pathname."
     "DerivedData"                          ; xcode
     "Desktop.ini"                          ; ms-windows
     "ehthumbs.db"                          ; ms-windows
+    "git-rebase-todo"                      ; git
     "gwt-unitCache"                        ; gwt
     "gwt_bree"                             ; gwt
     "install-sh"                           ; automake
@@ -489,6 +584,7 @@ fully-qualified pathname."
     "Makefile.in"                          ; automake
     "MCVS"                                 ; meta-CVS
     "META.yml"                             ; perl
+    "MERGE_MSG"                            ; git
     "minimal-session-saver-data.el"        ; emacs minimal-session-saver
     "MYMETA.yml"                           ; perl
     "nbbuild"                              ; netbeans
@@ -503,13 +599,13 @@ fully-qualified pathname."
     "SCCS"                                 ; SCCS
     "Session.vim"                          ; vim
     "slprj"                                ; matlab
+    "SQUASH_MSG"                           ; git
     "TAGS"                                 ; ctags/etags
     "tags"                                 ; ctags/etags
     "TestResult"                           ; visualstudio
     "testresult"                           ; visualstudio
     "Thumbs.db"                            ; ms-windows
     "tmtags"                               ; textmate
-    "tramp"                                ; emacs tramp
     "xcuserdata"                           ; xcode
     "xhtml-loader.rnc"                     ; emacs nxhtml
     "{arch}"                               ; arch - todo is this correct?
@@ -517,6 +613,10 @@ fully-qualified pathname."
     "~.dot"                                ; xcode
     "~.nib"                                ; xcode
     "~.plst"                               ; xcode
+    "test.out"                             ; generic testing
+    "test_out"                             ; generic testing
+    "test.output"                          ; generic testing
+    "test_output"                          ; generic testing
     )
   "List of exact filenames to ignore.
 
@@ -528,7 +628,7 @@ fully-qualified pathname."
   :type '(repeat string)
   :group 'ignoramus-patterns)
 
-(defcustom ignoramus-file-regexps
+(defcustom ignoramus-file-basename-regexps
   '(
     "\\`#.*#\\'"                              ; emacs
     "\\`.*\\.mex[^.]*\\'"                     ; matlab
@@ -539,6 +639,7 @@ fully-qualified pathname."
     "\\`hg-editor-[[:alnum:]]+\\.txt\\'"      ; emacs
     "\\`svn-commit\\.tmp\\'"                  ; emacs
     "\\`zshecl[0-9]+\\'"                      ; zsh
+    "\\`bash-fc-[0-9]+\\'"                    ; bash
     )
   "List of regexps matching filenames to ignore.
 
@@ -547,26 +648,124 @@ fully-qualified pathname."
   :type '(repeat regexp)
   :group 'ignoramus-patterns)
 
+;;; compatibility functions
+(unless (fboundp 'file-equal-p)
+  ;; added in GNU Emacs 24.x
+  (defun file-equal-p (file1 file2)
+    "Return non-nil if files FILE1 and FILE2 name the same file.
+If FILE1 or FILE2 does not exist, the return value is unspecified."
+    (let ((handler (or (find-file-name-handler file1 'file-equal-p)
+                       (find-file-name-handler file2 'file-equal-p))))
+      (if handler
+          (funcall handler 'file-equal-p file1 file2)
+        (let (f1-attr f2-attr)
+          (and (setq f1-attr (file-attributes (file-truename file1)))
+               (setq f2-attr (file-attributes (file-truename file2)))
+               (equal f1-attr f2-attr)))))))
+
 ;;; utility functions
 
+;; generic functions
+
+(defun ignoramus--overly-broad-path-p (str-val)
+  "Identify path elements which would match too broadly to be useful.
+
+Also identify bogons."
+  (or (not (string-match-p "[^ ]" str-val))
+      (string-match-p "\\`/*\\'" str-val)
+      (string-match-p "\\`~/*\\'" str-val)
+      (string-match-p (downcase (concat "\\`" (expand-file-name "~") "/*\\'")) (downcase str-val))
+      (file-equal-p "~/" (file-name-as-directory str-val))
+      (file-equal-p "/" (file-name-as-directory str-val))))
+
+(defun ignoramus--string-or-symbol (str-or-sym)
+  "Return the string for STR-OR-SYM."
+  (cond
+    ((and (symbolp str-or-sym)
+          (boundp str-or-sym))
+     (ignoramus--string-or-symbol (symbol-value str-or-sym)))
+    ((and (stringp str-or-sym)
+          (ignoramus--overly-broad-path-p str-or-sym))
+     nil)
+    ((stringp str-or-sym)
+     str-or-sym)
+    ((consp str-or-sym)
+     (mapcar 'ignoramus--string-or-symbol str-or-sym))
+    (t
+     nil)))
+
+(defun ignoramus-list-flatten (list)
+  "Flatten LIST which may contain other lists."
+  (cond
+    ((null list)
+     nil)
+    ((and (listp list)
+          (consp (car list)))
+     (append (ignoramus-list-flatten (car list)) (ignoramus-list-flatten (cdr list))))
+    ((listp list)
+     (cons (car list) (ignoramus-list-flatten (cdr list))))
+    (t
+     (list list))))
+
+(defun ignoramus--extract-strings (arg)
+  "Return a list of strings which may be contained in or referred to in ARG."
+  (remove-if-not 'stringp
+                 (ignoramus-list-flatten
+                  (ignoramus--string-or-symbol arg))))
+
+(defun ignoramus--extract-pathstrings (arg)
+  "Return a list of path strings which may be contained in or referred to in ARG."
+  (mapcar 'file-truename
+      (mapcar 'expand-file-name
+         (ignoramus--extract-strings arg))))
+
+(defun ignoramus-strip-trailing-slash (path)
+  "Remove any trailing slashes from directory string PATH.
+
+On non-POSIX systems, remove the appropriate directory separator
+character for that system."
+  (while (not (string-equal path (setq path (directory-file-name path)))) t)
+  path)
+
+(defun ignoramus-ensure-trailing-slash (path)
+  "Ensure that directory string PATH has a trailing slash.
+
+On non-POSIX systems, ensure the appropriate directory separator
+character for that system."
+  (setq path (ignoramus-strip-trailing-slash path))
+  (file-name-as-directory path))
+
+;; regular expression functions
 (defun ignoramus-compute-common-regexps ()
   "Compute common regexps used by plugins."
-  (setq ignoramus-boring-dir-regexp (concat
-                                     "\\`" (regexp-opt ignoramus-file-beginnings)         "\\|"
-                                     "\\`" (regexp-opt ignoramus-file-exact-names) "\\'"  "\\|"
-                                     (mapconcat 'identity ignoramus-file-regexps "\\|")))
-  (setq ignoramus-boring-file-regexp (concat
-                                      "\\`" (regexp-opt ignoramus-file-beginnings)         "\\|"
-                                            (regexp-opt ignoramus-file-endings)     "\\'"  "\\|"
-                                      "\\`" (regexp-opt ignoramus-file-exact-names) "\\'"  "\\|"
-                                      (mapconcat 'identity ignoramus-file-regexps "\\|"))))
+  (setq ignoramus-boring-dir-regexp ignoramus-file-basename-regexps)
+  (when ignoramus-file-basename-exact-names
+    (push (concat "\\`" (regexp-opt (append ignoramus-file-basename-exact-names
+                                            (if ignoramus-use-known-datafiles
+                                                (ignoramus--extract-strings ignoramus-datafile-basename)
+                                              nil))) "\\'")
+          ignoramus-boring-dir-regexp))
+  (when ignoramus-file-basename-beginnings
+    (push (concat "\\`" (regexp-opt ignoramus-file-basename-beginnings))
+          ignoramus-boring-dir-regexp))
+  (when ignoramus-boring-dir-regexp
+    (setq ignoramus-boring-dir-regexp (mapconcat 'identity ignoramus-boring-dir-regexp "\\|")))
+  (setq ignoramus-boring-file-regexp ignoramus-file-basename-regexps)
+  (when ignoramus-file-basename-exact-names
+    (push (concat "\\`" (regexp-opt (append ignoramus-file-basename-exact-names
+                                            (if ignoramus-use-known-datafiles
+                                                (ignoramus--extract-strings ignoramus-datafile-basename)
+                                              nil))) "\\'")
+          ignoramus-boring-file-regexp))
+  (when ignoramus-file-basename-endings
+    (push (concat       (regexp-opt ignoramus-file-basename-endings) "\\'")
+          ignoramus-boring-file-regexp))
+  (when ignoramus-file-basename-beginnings
+    (push (concat "\\`" (regexp-opt ignoramus-file-basename-beginnings))
+          ignoramus-boring-file-regexp))
+  (when ignoramus-boring-file-regexp
+    (setq ignoramus-boring-file-regexp (mapconcat 'identity ignoramus-boring-file-regexp "\\|"))))
 
-;;;###autoload
-(defun ignoramus-boring-p (file)
-  "Return non-nil if ignoramus thinks FILE is uninteresting."
-  (unless ignoramus-boring-file-regexp
-    (ignoramus-compute-common-regexps))
-  (string-match-p ignoramus-boring-file-regexp (file-name-nondirectory file)))
 
 ;;; configuration action plugins
 
@@ -576,32 +775,32 @@ fully-qualified pathname."
 
 (defun ignoramus-do-ignore-vc ()
   "Tell `vc-mode' to ignore unwanted files."
-  (setq vc-directory-exclusion-list ignoramus-file-exact-names))
+  (setq vc-directory-exclusion-list ignoramus-file-basename-exact-names))
 
 
 (defun ignoramus-do-ignore-grep ()
   "Tell `grep-mode' to ignore unwanted files."
   (setq grep-find-ignored-files (cons ".#*" (delq nil (mapcar #'(lambda (pat)
-                                                                  (concat "*" pat)) ignoramus-file-endings))))
-  (setq grep-find-ignored-directories ignoramus-file-exact-names))
+                                                                  (concat "*" pat)) ignoramus-file-basename-endings))))
+  (setq grep-find-ignored-directories ignoramus-file-basename-exact-names))
 
 
 (defun ignoramus-do-ignore-shell ()
   "Tell `shell-mode' to ignore unwanted files."
-  (setq shell-completion-fignore ignoramus-file-endings))
+  (setq shell-completion-fignore ignoramus-file-basename-endings))
 
 
 (defun ignoramus-do-ignore-comint ()
   "Tell `comint-mode' and derived modes to ignore unwanted files."
-  (setq comint-completion-fignore ignoramus-file-endings))
+  (setq comint-completion-fignore ignoramus-file-basename-endings))
 
 
 (defun ignoramus-do-ignore-completions ()
   "Tell built-in completions to ignore unwanted files."
   (setq completion-ignored-extensions (append
-                                       ignoramus-file-endings
+                                       ignoramus-file-basename-endings
                                        (mapcar (lambda (pat)
-                                                 (concat pat "/")) ignoramus-file-exact-names))))
+                                                 (concat pat "/")) ignoramus-file-basename-exact-names))))
 
 
 (defun ignoramus-do-ignore-nav ()
@@ -620,7 +819,7 @@ fully-qualified pathname."
   (setq eshell-cmpl-file-ignore ignoramus-boring-file-regexp)
   ;; todo use more patterns here
   (setq eshell-cmpl-dir-ignore (concat "\\`"
-                                       (regexp-opt (append '("." "..") ignoramus-file-exact-names))
+                                       (regexp-opt (append '("." "..") ignoramus-file-basename-exact-names))
                                        "/\\'")))
 
 
@@ -639,7 +838,7 @@ fully-qualified pathname."
   (setq dired-garbage-files-regexp ignoramus-boring-file-regexp)
 
   ;; The "omit" regexps affect dired-x.el when `dired-omit-mode' is set.
-  (setq dired-omit-extensions ignoramus-file-endings)
+  (setq dired-omit-extensions ignoramus-file-basename-endings)
   (setq dired-omit-files ignoramus-boring-file-regexp))
 
 
@@ -649,15 +848,15 @@ fully-qualified pathname."
   ;; according to what projectile expects
   ;; (setq projectile-ignored-file-extensions (mapcar #'(lambda (ext)
   ;;                                                      (replace-regexp-in-string "\\`\\." "" ext))
-  ;;                                                 ignoramus-file-endings))
-  ;; (setq projectile-ignored-files ignoramus-file-exact-names)
-  ;; (setq projectile-ignored-directories ignoramus-file-exact-names)
+  ;;                                                 ignoramus-file-basename-endings))
+  ;; (setq projectile-ignored-files ignoramus-file-basename-exact-names)
+  ;; (setq projectile-ignored-directories ignoramus-file-basename-exact-names)
 
   ;; a better test than what projectile does - note no longer just extensions
   (eval-after-load "projectile"
     '(progn
        (defun projectile-ignored-extension-p (file)
-         (let ((case-fold-search t))
+         (let ((case-fold-search ignoramus-case-insensitive))
            (string-match-p ignoramus-boring-file-regexp file))))))
 
 
@@ -673,6 +872,63 @@ fully-qualified pathname."
   (setq pcomplete-file-ignore ignoramus-boring-file-regexp))
 
 ;;; principal external interface
+
+;;;###autoload
+(defun ignoramus-matches-datafile (file)
+  "Return non-nil if FILE is used for data storage by a known Lisp library.
+
+This function identifies specific files used for persistence by
+tramp, semantic, woman, etc."
+  (when (stringp file)
+    (setq file (file-truename (expand-file-name file)))
+    (let ((file-basename (file-name-nondirectory file))
+          (case-convert (if ignoramus-case-insensitive 'downcase 'identity)))
+      (catch 'known
+        (dolist (basename (ignoramus--extract-strings ignoramus-datafile-basename))
+          (when (equal (funcall case-convert basename) (funcall case-convert file-basename))
+            (throw 'known (list file 'basename basename file-basename))))
+        (dolist (completepath (ignoramus--extract-pathstrings ignoramus-datafile-completepath))
+          (when (or (file-equal-p completepath file)
+                    (equal (funcall case-convert completepath) (funcall case-convert file)))
+            (throw 'known (list file 'completepath completepath file))))
+        (dolist (prefix (ignoramus--extract-pathstrings ignoramus-datafile-prefix))
+          (when (string-prefix-p (file-truename (expand-file-name prefix)) file ignoramus-case-insensitive)
+            (throw 'known (list file 'prefix (file-truename (expand-file-name prefix)) file))))
+        (dolist (dirprefix (ignoramus--extract-pathstrings ignoramus-datafile-dirprefix))
+          (when (string-prefix-p (ignoramus-ensure-trailing-slash (file-truename (expand-file-name dirprefix))) file ignoramus-case-insensitive)
+            (throw 'known (list file 'dirprefix (ignoramus-ensure-trailing-slash (file-truename (expand-file-name dirprefix))) file))))))))
+
+;;;###autoload
+(defun ignoramus-register-datafile (symbol-or-string type &optional unregister)
+  "Register a generated file used for data storage.
+
+This generated file will be ignored by ignoramus.
+
+SYMBOL-OR-STRING may be the name of a symbol to consult, or a
+string.  If a symbol, it should refer to a string or list of
+strings.
+
+TYPE may be one of 'basename, 'completepath, 'prefix, or
+'dirprefix.
+
+Optional UNREGISTER tells ignoramus to forget about
+SYMBOL-OR-STRING."
+  (assert (memq type '(basename completepath prefix dirprefix)) nil "bad TYPE")
+  (let ((sym (intern (format "ignoramus-datafile-%s" type))))
+    (if unregister
+        (set sym (delete symbol-or-string (symbol-value sym)))
+      ;; else
+      (push symbol-or-string (symbol-value sym)))))
+
+;;;###autoload
+(defun ignoramus-boring-p (file)
+  "Return non-nil if ignoramus thinks FILE is uninteresting."
+  (unless ignoramus-boring-file-regexp
+    (ignoramus-compute-common-regexps))
+  (let ((case-fold-search ignoramus-case-insensitive))
+    (or (string-match-p ignoramus-boring-file-regexp (file-name-nondirectory file))
+        (and ignoramus-use-known-datafiles
+             (ignoramus-matches-datafile file)))))
 
 ;;;###autoload
 (defun ignoramus-setup (&optional actions)
@@ -706,11 +962,11 @@ actions in `ignoramus-known-actions'."
 ;; mangle-whitespace: t
 ;; require-final-newline: t
 ;; coding: utf-8
-;; byte-compile-warnings: (not cl-functions)
+;; byte-compile-warnings: (not cl-functions redefine)
 ;; End:
 ;;
 ;; LocalWords: Ignoramus ARGS alist Howto pathname dired ignorable
-;; LocalWords: callf
+;; LocalWords: callf datafiles datafile completepath dirprefix
 ;;
 
 ;;; ignoramus.el ends here
