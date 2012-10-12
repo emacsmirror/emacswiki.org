@@ -27,6 +27,10 @@
 ;; 
 ;; *Auto-indent function for `end-of-line' and then newline.
 ;; 
+;; *Auto-indent function for `end-of-line' and then newline.
+;; 
+;; *Auto indentation on moving cursor to blank lines.
+;; 
 ;; *Auto indentation on moving cursor to blank lines.
 ;; 
 ;; *Auto indentation on moving cursor to blank lines.
@@ -36,6 +40,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 12-Oct-2012    Matthew L. Fidler  
+;;    Last-Updated: Tue Aug 21 13:08:42 2012 (-0500) #1467 (Matthew L. Fidler)
+;;    Trying to fix header
 ;; 12-Oct-2012    Matthew L. Fidler  
 ;;    Last-Updated: Tue Aug 21 13:08:42 2012 (-0500) #1467 (Matthew L. Fidler)
 ;;    Added better org-mode support for code-blocks.
