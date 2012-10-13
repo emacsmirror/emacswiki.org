@@ -5,10 +5,10 @@
 ;; Author: Roland Walker <walker@pobox.com>
 ;; Homepage: http://github.com/rolandwalker/list-utils
 ;; URL: http://raw.github.com/rolandwalker/list-utils/master/list-utils.el
-;; Version: 0.1.0
-;; Last-Updated: 17 Sep 2012
+;; Version: 0.2.2
+;; Last-Updated: 13 Oct 2012
 ;; EmacsWiki: ListUtils
-;; Keywords:
+;; Keywords: extensions
 ;;
 ;; Simplified BSD License
 ;;
@@ -51,11 +51,15 @@
 ;;     `tconc'
 ;;     `list-utils-cons-cell-p'
 ;;     `list-utils-cyclic-length'
+;;     `list-utils-improper-p'
+;;     `list-utils-make-proper'
+;;     `list-utils-make-improper'
 ;;     `list-utils-linear-p'
 ;;     `list-utils-linear-subseq'
 ;;     `list-utils-cyclic-p'
 ;;     `list-utils-cyclic-subseq'
 ;;     `list-utils-safe-length'
+;;     `list-utils-depth'
 ;;     `list-utils-flatten'
 ;;     `list-utils-alist-flatten'
 ;;     `list-utils-insert-before'
@@ -77,13 +81,26 @@
 ;;
 ;; Compatibility and Requirements
 ;;
-;;     Tested on GNU Emacs versions 23.3 and 24.1
+;;     GNU Emacs version 24.3-devel     : yes, at the time of writing
+;;     GNU Emacs version 24.1 & 24.2    : yes
+;;     GNU Emacs version 23.3           : yes
+;;     GNU Emacs version 22.3           : yes
 ;;
 ;;     No external dependencies
 ;;
 ;; Bugs
 ;;
 ;; TODO
+;;
+;;     actual benchmarks on tconc
+;;
+;;     should list-utils-make-improper accept nil as a special case?
+;;
+;;     Improper lists as input to tconc functions?
+;;
+;;     Better document which functions return copies.
+;;
+;;     Make sure every function accepts cyclic lists gracefully
 ;;
 ;;; License
 ;;
@@ -128,10 +145,22 @@
 ;; for defstruct, assert, setf, callf
 (require 'cl)
 
+(declare-function list-utils-cyclic-length "list-utils.el")
+
+;;;###autoload
+(defgroup list-utils nil
+  "List-manipulation utility functions."
+  :version "0.2.2"
+  :link '(emacs-commentary-link "list-utils")
+  :prefix "list-utils-"
+  :group 'extensions)
+
 ;;; tconc - this section of code is in the public domain
 
 ;;;###autoload
-(defstruct tconc head tail)
+(progn
+  (require 'cl)
+  (defstruct tconc head tail))
 
 ;;;###autoload
 (defun tconc-list (tc list)
@@ -174,9 +203,12 @@ next cons cell, eg
 
 In addition, a list which is not nil-terminated is not a proper
 list and will be recognized by this function as a cons cell.
-Such a list is using dot notation for the last two elements, eg
+Such a list is printed using dot notation for the last two
+elements, eg
 
-    '(1 2 3 4 . 5)"
+    '(1 2 3 4 . 5)
+
+Such improper lists are produced by `list*'."
   (let ((len (safe-length cell)))
     (when (and (consp cell)
                (> len 0)
@@ -184,48 +216,27 @@ Such a list is using dot notation for the last two elements, eg
       (nthcdr len cell))))
 
 ;;;###autoload
-(defun list-utils-cyclic-length (list)
-  "Return the number of cyclic elements in LIST.
+(defun list-utils-make-proper (list)
+  "Make a cons cell or improper LIST into a proper list.
 
-If some portion of LIST is linear, only the cyclic
-elements will be counted.
-
-If LIST is completely linear, return 0."
-  (if (list-utils-cons-cell-p list)
-      0
-    ;;else
-    (let ((fast list)
-          (slow list)
-          (counter 0))
-      (catch 'cycle
-        (while slow
-          (incf counter)
-          (setq slow (cdr slow))
-          (setq fast (cdr (cdr fast)))
-          (when (eq slow list)
-            (throw 'cycle t))
-          (when (eq slow fast)
-            (setq list slow)
-            (setq counter 0)
-            (setq fast nil))))
-      counter)))
+Improper lists consist of proper lists consed onto a final
+element, and are produced by `list*'."
+  (assert (listp list) nil "LIST is not a list")
+  (when (list-utils-cons-cell-p list)
+    (callf list (nthcdr (safe-length list) list)))
+  list)
 
 ;;;###autoload
-(defun list-utils-cyclic-p (list &optional perfect)
-  "Return non-nil if LIST contains any cyclic structures.
+(defun list-utils-make-improper (list)
+  "Make proper LIST into an improper list.
 
-If optional PERFECT is set, only return non-nil if LIST is a
-perfect non-branching cycle in the last element points to the
-first."
-  (let ((cycle (list-utils-cyclic-subseq list)))
-    (when (or (not perfect)
-              (not (list-utils-linear-subseq list (list-utils-cyclic-length cycle))))
-        cycle)))
-
-;;;###autoload
-(defun list-utils-linear-p (list)
-  "Return non-nil if LIST is linear (no cyclic structure)."
-  (not (list-utils-cyclic-subseq list)))
+Improper lists consist of proper lists consed onto a final
+element, and are produced by `list*'."
+  (assert (listp list) nil "LIST is not a list")
+  (unless (list-utils-cons-cell-p list)
+    (assert (> (safe-length list) 1) nil "LIST has only one element")
+    (setcdr (last list 2) (car (last list))))
+  list)
 
 ;;;###autoload
 (defun list-utils-linear-subseq (list &optional cycle-length)
@@ -279,22 +290,92 @@ If there is no cycle in LIST, return nil."
              (throw 'cycle slow))))))))
 
 ;;;###autoload
+(defun list-utils-cyclic-length (list)
+  "Return the number of cyclic elements in LIST.
+
+If some portion of LIST is linear, only the cyclic
+elements will be counted.
+
+If LIST is completely linear, return 0."
+  (if (list-utils-cons-cell-p list)
+      0
+    ;;else
+    (let ((fast list)
+          (slow list)
+          (counter 0))
+      (catch 'cycle
+        (while slow
+          (incf counter)
+          (setq slow (cdr slow))
+          (setq fast (cdr (cdr fast)))
+          (when (eq slow list)
+            (throw 'cycle t))
+          (when (eq slow fast)
+            (setq list slow)
+            (setq counter 0)
+            (setq fast nil))))
+      counter)))
+
+;;;###autoload
+(defun list-utils-cyclic-p (list &optional perfect)
+  "Return non-nil if LIST contains any cyclic structures.
+
+If optional PERFECT is set, only return non-nil if LIST is a
+perfect non-branching cycle in the last element points to the
+first."
+  (let ((cycle (list-utils-cyclic-subseq list)))
+    (when (or (not perfect)
+              (not (list-utils-linear-subseq list (list-utils-cyclic-length cycle))))
+        cycle)))
+
+;;;###autoload
+(defun list-utils-linear-p (list)
+  "Return non-nil if LIST is linear (no cyclic structure)."
+  (not (list-utils-cyclic-subseq list)))
+
+;;;###autoload
+(defalias 'list-utils-improper-p 'list-utils-cons-cell-p)
+
+;;;###autoload
 (defun list-utils-safe-length (list)
   "Return the number of elements in LIST.
 
 LIST may be linear or cyclic.
 
-If LIST is not really a list, returns 0."
+If LIST is not really a list, returns 0.
+
+If LIST is an improper list, return the number of proper list
+elements, like `safe-length'."
   (if (not (listp list))
       0
     ;; else
     (let ((cycle-length (list-utils-cyclic-length list)))
       (+ cycle-length
-         (length (list-utils-linear-subseq list cycle-length))))))
+         (safe-length (list-utils-linear-subseq list cycle-length))))))
+
+;;;###autoload
+(defun list-utils-depth (list)
+  "Find the depth of LIST, which may contain other lists.
+
+If LIST is not a list, returns 0.
+
+If LIST is a cons cell or a list which does not contain other
+lists, returns 1."
+  (when (and (listp list)
+             (list-utils-cyclic-subseq list))
+    (setq list (subseq list 0 (list-utils-safe-length list))))
+  (cond
+    ((or (not (listp list))
+         (null list))
+     0)
+    ((list-utils-cons-cell-p list)
+     (+ 1 (apply 'max (mapcar 'list-utils-depth (list-utils-make-proper list)))))
+    (t
+     (+ 1 (apply 'max (mapcar 'list-utils-depth list))))))
 
 ;;;###autoload
 (defun list-utils-flatten (list)
-  "Flatten LIST which may contain other lists.
+  "Flatten LIST, which may contain other lists.
 
 This function flattens cons cells as lists, and
 flattens circular list structures."
@@ -325,9 +406,15 @@ flattens circular list structures."
   "Look in LIST for ELEMENT and insert NEW-ELEMENT before it.
 
 LIST is modified and the new value is returned."
-  (let ((pos (position element list)))
+  (let ((improper (list-utils-improper-p list))
+        (pos nil))
+    (when improper
+      (callf list-utils-make-proper list))
+    (setq pos (position element list))
     (assert pos nil "Element not found: %s" element)
-    (push new-element (nthcdr pos list)))
+    (push new-element (nthcdr pos list))
+    (when improper
+      (callf list-utils-make-improper list)))
   list)
 
 ;;;###autoload
@@ -335,9 +422,15 @@ LIST is modified and the new value is returned."
   "Look in LIST for ELEMENT and insert NEW-ELEMENT after it.
 
 LIST is modified and the new value is returned."
-  (let ((pos (position element list)))
+  (let ((improper (list-utils-improper-p list))
+        (pos nil))
+    (when improper
+      (callf list-utils-make-proper list))
+    (setq pos (position element list))
     (assert pos nil "Element not found: %s" element)
-    (push new-element (cdr (nthcdr pos list))))
+    (push new-element (cdr (nthcdr pos list)))
+    (when improper
+      (callf list-utils-make-improper list)))
   list)
 
 ;;;###autoload
@@ -347,11 +440,16 @@ LIST is modified and the new value is returned."
 POS is zero-indexed.
 
 LIST is modified and the new value is returned."
-  (assert (and (integerp pos)
-               (>= pos 0)
-               (< pos (length list))) nil "No such position %s" pos)
-  (push new-element
-        (nthcdr pos list))
+  (let ((improper (list-utils-improper-p list)))
+    (when improper
+      (callf list-utils-make-proper list))
+    (assert (and (integerp pos)
+                 (>= pos 0)
+                 (< pos (length list))) nil "No such position %s" pos)
+    (push new-element
+          (nthcdr pos list))
+    (when improper
+      (callf list-utils-make-improper list)))
   list)
 
 ;;;###autoload
@@ -359,18 +457,27 @@ LIST is modified and the new value is returned."
   "Look in LIST for position POS, and insert NEW-ELEMENT after.
 
 LIST is modified and the new value is returned."
-  (assert (and (integerp pos)
-               (>= pos 0)
-               (< pos (length list))) nil "No such position %s" pos)
-  (push new-element
-        (cdr (nthcdr pos list)))
+  (let ((improper (list-utils-improper-p list)))
+    (when improper
+      (callf list-utils-make-proper list))
+    (assert (and (integerp pos)
+                 (>= pos 0)
+                 (< pos (length list))) nil "No such position %s" pos)
+    (push new-element
+          (cdr (nthcdr pos list)))
+    (when improper
+      (callf list-utils-make-improper list)))
   list)
+
+
+
+(yaoddmuse-post-file "list-utils.el" yaoddmuse-default-wiki "list-utils.el" "updated version")
 
 ;;; alists
 
 ;;;###autoload
 (defun list-utils-alist-flatten (list)
-  "Flatten LIST which may contain other lists.  Do not flatten cons cells.
+  "Flatten LIST, which may contain other lists.  Do not flatten cons cells.
 
 It is not guaranteed that the result contains *only* cons cells.
 The result could contain other data types present in LIST.
@@ -428,8 +535,8 @@ This functionality overlaps with the undocumented `cl-do-remf'."
   (let ((prop-pos (position prop plist)))
     (when (and prop-pos
                (= 0 (% prop-pos 2)))
-      (setf (nthcdr prop-pos plist) (nthcdr (+ 2 prop-pos) plist))))
-    plist)
+      (callf cddr (nthcdr prop-pos plist))))
+  plist)
 
 (provide 'list-utils)
 
@@ -441,7 +548,7 @@ This functionality overlaps with the undocumented `cl-do-remf'."
 ;; mangle-whitespace: t
 ;; require-final-newline: t
 ;; coding: utf-8
-;; byte-compile-warnings: (not cl-functions)
+;; byte-compile-warnings: (not cl-functions redefine)
 ;; End:
 ;;
 ;; LocalWords: ListUtils ARGS alist utils nconc tconc defstruct setf
