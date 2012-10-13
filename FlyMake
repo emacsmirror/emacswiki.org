@@ -148,6 +148,10 @@ An improvement of that would be to write a elisp function that look for the righ
 
 -- Nil Geisweiller
 
+I've made a CMake minor-mode, [https://github.com/alamaison/emacs-cmake-project|cmake-project], that fixes up Flymake to support builds via CMake.  If anything doesn't work as it should or there are features you would like, please [https://github.com/alamaison/emacs-cmake-project/issues|report a new issue].
+
+-- AlexanderLamaison
+
 === Mozart/Oz ===
 
 Here are instructions how to make flymake work with Mozart/Oz: 
