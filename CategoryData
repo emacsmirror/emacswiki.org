@@ -11,6 +11,7 @@ DataModes has more about /editing/ data using specialized major modes.
 * SemanticBovinator -- A flex/bison lexer and parser generator written in EmacsLisp.
 * [http://github.com/skeeto/rdp rdp.el] -- Recursive Descent Parser library
 * Lisp:peg.el -- Parsing Expression Grammars in Emacs Lisp
+* [http://github.com/funkenblatt/EPDF EPDF] -- pdf parsing routines
 
 == Storing Data ==
 
