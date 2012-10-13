@@ -5,8 +5,9 @@
 ;; Author: Roland Walker <walker@pobox.com>
 ;; Homepage: http://github.com/rolandwalker/string-utils
 ;; URL: http://raw.github.com/rolandwalker/string-utils/master/string-utils.el
-;; Version: 0.0.4
-;; Last-Updated:  5 Sep 2012
+;; Version: 0.0.8
+;; Last-Updated: 10 Oct 2012
+;; Package-Requires: ((list-utils "0.1.2"))
 ;; EmacsWiki: StringUtils
 ;; Keywords: extensions
 ;;
@@ -14,52 +15,82 @@
 ;;
 ;;; Commentary:
 ;;
+;; Quickstart
+;;
+;;     (require 'string-utils)
+;;
+;;     (string-utils-squeeze-filename (buffer-file-name (current-buffer)) 20)
+;;
+;;     (string-utils-stringify-anything (selected-frame))
+;;
+;;     (progn
+;;       (message (string-utils-pad (buffer-name (current-buffer)) (window-width) 'right))
+;;       (sit-for 1)
+;;       (message (string-utils-pad (buffer-name (current-buffer)) (window-width) 'center))
+;;       (sit-for 1)
+;;       (message (string-utils-pad (buffer-name (current-buffer)) (window-width) 'left))
+;;       (sit-for 1))
+;;
+;; Explanation
+;;
 ;; String-utils is a collection of functions for string manipulation.
 ;; This library has no user-level interface; it is only useful
 ;; for programming in Emacs Lisp.
 ;;
 ;; The following functions are provided:
 ;;
-;;    `string-utils-stringify-anything'
-;;    `string-utils-has-darkspace-p'
-;;    `string-utils-has-whitespace-p'
-;;    `string-utils-trim-whitespace'
-;;    `string-utils-compress-whitespace'
-;;    `string-utils-string-repeat'
-;;    `string-utils-escape-double-quotes'
-;;    `string-utils-quotemeta'
-;;    `string-utils-pad'
-;;    `string-utils-pad-list'
-;;    `string-utils-propertize-fillin'
-;;    `string-utils-plural-ending'
+;;     `string-utils-stringify-anything'
+;;     `string-utils-has-darkspace-p'
+;;     `string-utils-has-whitespace-p'
+;;     `string-utils-trim-whitespace'
+;;     `string-utils-compress-whitespace'
+;;     `string-utils-string-repeat'
+;;     `string-utils-escape-double-quotes'
+;;     `string-utils-quotemeta'
+;;     `string-utils-pad'
+;;     `string-utils-pad-list'
+;;     `string-utils-propertize-fillin'
+;;     `string-utils-plural-ending'
+;;     `string-utils-squeeze-filename'
+;;     `string-utils-split'
 ;;
 ;; To use string-utils, place the string-utils.el library somewhere
 ;; Emacs can find it, and add the following to your ~/.emacs file:
 ;;
-;;    (require 'string-utils)
+;;     (require 'string-utils)
 ;;
 ;; Notes
 ;;
 ;; Compatibility and Requirements
 ;;
-;;    Tested on GNU Emacs versions 23.3 and 24.1
+;;     GNU Emacs version 24.3-devel     : yes, at the time of writing
+;;     GNU Emacs version 24.1 & 24.2    : yes
+;;     GNU Emacs version 23.3           : yes
+;;     GNU Emacs version 22.3 and lower : no
 ;;
-;;    No external dependencies
+;;     Uses if present: list-utils.el
 ;;
 ;; Bugs
 ;;
+;;     Some objects such as window-configuration are completely
+;;     opaque and won't be stringified usefully.
+;;
 ;; TODO
 ;;
-;;    In string-utils-propertize-fillin, strip properties which are
-;;    set to nil at start, which will create more contiguity in the
-;;    result.  See this example, where the first two characters have
-;;    the same properties
+;;     Useful stringification for network and serial processes
 ;;
-;;       (let ((text "text"))
-;;         (add-text-properties 0 1 '(face nil) text)
-;;         (add-text-properties 2 3 '(face error) text)
-;;         (string-utils-propertize-fillin text 'face 'highlight)
-;;         text)
+;;     In string-utils-propertize-fillin, strip properties which are
+;;     set to nil at start, which will create more contiguity in the
+;;     result.  See this example, where the first two characters have
+;;     the same properties
+;;
+;;         (let ((text "text"))
+;;           (add-text-properties 0 1 '(face nil) text)
+;;           (add-text-properties 2 3 '(face error) text)
+;;           (string-utils-propertize-fillin text 'face 'highlight)
+;;           text)
+;;
+;;      Adapt squeeze-filename for URLs
 ;;
 ;;; License
 ;;
@@ -101,12 +132,16 @@
 
 ;;; requires
 
-;; for callf, callf2
-(eval-when-compile
-  (require 'cl))
+;; for callf, callf2, assert
+(require 'cl)
+
+(require 'eieio nil t)
+(require 'list-utils nil t)
 
 (autoload 'font-lock-fillin-text-property "font-lock"
   "Fill in one property of the text from START to END.")
+
+(declare-function object-name-string "eieio.el")
 
 ;; variables
 
@@ -153,76 +188,256 @@
 Includes Unicode whitespace characters.")
 
 (defvar string-utils-whitespace-ascii " \n\t\r\f" "ASCII-only whitespace characters used by string-utils.")
+(defvar string-utils-whitespace-syntax "\\s-"     "Whitespace regular expression according to `syntax-table'.")
 
 ;;; utility functions
 
 ;;;###autoload
-(defun string-utils-stringify-anything (obj)
+(defun string-utils-stringify-anything (obj &optional separator ints-are-chars)
   "Coerce any object OBJ into a string.
 
-Contrary to usual conventions, return the empty string for nil."
-  (if (null obj)
-    ""
-    ;; else
-    (typecase obj
-      (string   obj)
-      (symbol   (symbol-name obj))
-      (integer  (number-to-string obj))
-      (float    (number-to-string obj))
-      (t        (format "%s" obj)))))
+Contrary to usual conventions, return the empty string for nil.
+
+Sequences are flattened down to atoms and joined with string
+SEPARATOR, which defaults to a single space.  Cyclic lists
+may give unpredictable results (similar to `format') unless
+list-utils.el is installed.
+
+When INTS-ARE-CHARS is non-nil, interpret positive integers in
+OBJ as characters.
+
+This is not a pretty-printer for OBJ, but a way to look at
+the *contents* of OBJ (so much as is possible) as if it was
+an ordinary string."
+  (callf or separator " ")
+  (cond
+
+    ;; nil
+    ((null obj)
+     "")
+
+    ;; string
+    ((stringp obj)
+     obj)
+
+    ;; symbol
+    ((symbolp obj)
+     (symbol-name obj))
+
+    ;; character
+    ((and
+      ints-are-chars
+      (characterp obj))
+     (string obj))
+
+    ;; number
+    ((numberp obj)
+     (number-to-string obj))
+
+    ;; frame
+    ((framep obj)
+     (or (ignore-errors (frame-parameter obj 'name)) ""))
+
+    ;; window
+    ((windowp obj)
+     (buffer-name (window-buffer obj)))
+
+    ;; marker
+    ((markerp obj)
+     (string-utils-stringify-anything (list (marker-position obj)
+                                            (marker-buffer obj)) separator ints-are-chars))
+    ;; overlay
+    ((overlayp obj)
+     (string-utils-stringify-anything (list (overlay-start obj)
+                                            (overlay-end obj)
+                                            (overlay-buffer obj)) separator ints-are-chars))
+    ;; process
+    ((processp obj)
+     (string-utils-stringify-anything (process-command obj) separator ints-are-chars))
+
+    ;; EIEIO object
+    ((and (fboundp 'object-p)
+          (object-p obj))
+     (object-name-string obj))
+
+    ;; font object
+    ((fontp obj)
+     (string-utils-stringify-anything (or (font-get obj :name)
+                                          (font-get obj :family)
+                                          "") separator))
+
+    ;; font vector as returned by `font-info'
+    ((and (vectorp obj)
+          (= 7 (length obj))
+          (stringp (aref obj 0))
+          (stringp (aref obj 1))
+          (numberp (aref obj 2))
+          (numberp (aref obj 3))
+          (numberp (aref obj 4))
+          (numberp (aref obj 5))
+          (numberp (aref obj 6))
+          (> (length (aref obj 1)) 0)
+          (string-match-p "\\`\\(?:-[^-]+\\)\\{14,20\\}\\'" (aref obj 0)))
+     (aref obj 1))
+
+    ;; hash-table
+    ((hash-table-p obj)
+     (let ((output nil))
+       (maphash #'(lambda (k v)
+                    (push (string-utils-stringify-anything k separator ints-are-chars) output)
+                    (push (string-utils-stringify-anything v separator ints-are-chars) output)) obj)
+       (mapconcat 'identity (nreverse output) separator)))
+
+    ;; char-table
+    ((char-table-p obj)
+     (let ((output nil))
+       (map-char-table #'(lambda (k v)
+                           (push (string-utils-stringify-anything k separator t) output)
+                           (push (string-utils-stringify-anything v separator ints-are-chars) output)) obj)
+       (mapconcat 'identity (nreverse output) separator)))
+
+    ;; subr
+    ((subrp obj)
+     (subr-name obj))
+
+    ;; compiled byte-code
+    ((byte-code-function-p obj)
+     (mapconcat #'(lambda (x)
+                    (string-utils-stringify-anything x separator ints-are-chars)) (append obj nil) separator))
+
+    ;; keymap, function, frame-configuration
+    ((or (keymapp obj)
+         (functionp obj)
+         (frame-configuration-p obj))
+     (string-utils-stringify-anything (cdr obj) separator ints-are-chars))
+
+    ;; list
+    ((listp obj)
+     ;; convert cons cells into lists before mapconcat chokes
+     (when (let ((len (safe-length obj)))
+             (and (consp obj)
+                  (> len 0)
+                  (not (listp (nthcdr len obj)))))
+       (callf list (nthcdr (safe-length obj) obj)))
+     ;; truncate cyclic lists
+     (let ((measurer (if (fboundp 'list-utils-safe-length) 'list-utils-safe-length 'safe-length)))
+       (setq obj (subseq obj 0 (funcall measurer obj))))
+     ;; accumulate output
+     (let ((output nil))
+       (push (string-utils-stringify-anything (car obj) separator ints-are-chars) output)
+       (when (cdr obj)
+         (push (string-utils-stringify-anything (cdr obj) separator ints-are-chars) output))
+       (mapconcat 'identity (nreverse output) separator)))
+
+    ;; defstruct
+    ((and (vectorp obj)
+          (symbolp (aref obj 0))
+          (string-match-p "\\`cl-" (symbol-name (aref obj 0))))
+     (mapconcat #'(lambda (x)
+                    (string-utils-stringify-anything x separator ints-are-chars)) (cdr (append obj nil)) separator))
+
+    ;; bool-vector
+    ((bool-vector-p obj)
+     (mapconcat #'(lambda (x)
+                    (string-utils-stringify-anything x separator ints-are-chars)) (append obj nil) separator))
+
+    ;; ordinary vector
+    ((vectorp obj)
+     (mapconcat #'(lambda (x)
+                    (string-utils-stringify-anything x separator ints-are-chars)) obj separator))
+
+    ;; fallback
+    (t
+     (format "%s" obj))))
 
 ;;;###autoload
-(defun string-utils-has-darkspace-p (obj &optional ascii-only)
+(defun string-utils-has-darkspace-p (obj &optional whitespace-type)
   "Test whether OBJ, when coerced to a string, has any non-whitespace characters.
 
 Returns the position of the first non-whitespace character
 on success.
 
-If optional ASCII-ONLY is set, use an ASCII-only definition
-of whitespace characters."
-  (let ((str-val (if (stringp obj) obj (string-utils-stringify-anything obj)))
-        (string-utils-whitespace (if ascii-only string-utils-whitespace-ascii string-utils-whitespace)))
-    (string-match-p (concat "[^" string-utils-whitespace "]") str-val)))
+If optional WHITESPACE-TYPE is 'ascii or t, use an ASCII-only
+definition of whitespace characters.  If WHITESPACE-TYPE is
+'syntax, is the definition of whitespace from the current
+`syntax-table'.  Otherwise, use a broad, Unicode-aware
+definition of whitespace from `string-utils-whitespace'."
+  (assert (memq whitespace-type '(ascii ascii-only t syntax unicode nil)) nil "Bad WHITESPACE-TYPE")
+  (let* ((str-val (if (stringp obj) obj (string-utils-stringify-anything obj "")))
+         (string-utils-whitespace (if (memq whitespace-type '(ascii ascii-only t))
+                                      string-utils-whitespace-ascii
+                                    string-utils-whitespace))
+         (darkspace-regexp (if (eq whitespace-type 'syntax)
+                               (upcase string-utils-whitespace-syntax)
+                             (concat "[^" string-utils-whitespace "]"))))
+    (string-match-p darkspace-regexp str-val)))
 
 ;;;###autoload
-(defun string-utils-has-whitespace-p (obj &optional ascii-only)
+(defun string-utils-has-whitespace-p (obj &optional whitespace-type)
   "Test whether OBJ, when coerced to a string, has any whitespace characters.
 
 Returns the position of the first whitespace character on
 success.
 
-If optional ASCII-ONLY is set, use an ASCII-only definition
-of whitespace characters."
-  (let ((str-val (if (stringp obj) obj (string-utils-stringify-anything obj)))
-        (string-utils-whitespace (if ascii-only string-utils-whitespace-ascii string-utils-whitespace)))
-    (string-match-p (concat "[" string-utils-whitespace "]") str-val)))
+If optional WHITESPACE-TYPE is 'ascii or t, use an ASCII-only
+definition of whitespace characters.  If WHITESPACE-TYPE is
+'syntax, is the definition of whitespace from the current
+`syntax-table'.  Otherwise, use a broad, Unicode-aware
+definition of whitespace from `string-utils-whitespace'."
+  (assert (memq whitespace-type '(ascii ascii-only t syntax unicode nil)) nil "Bad WHITESPACE-TYPE")
+  (let* ((str-val (if (stringp obj) obj (string-utils-stringify-anything obj "")))
+         (string-utils-whitespace (if (memq whitespace-type '(ascii ascii-only t))
+                                      string-utils-whitespace-ascii
+                                    string-utils-whitespace))
+         (whitespace-regexp (if (eq whitespace-type 'syntax)
+                                string-utils-whitespace-syntax
+                              (concat "[" string-utils-whitespace "]"))))
+    (string-match-p whitespace-regexp str-val)))
 
 ;;;###autoload
-(defun string-utils-trim-whitespace (str-val &optional ascii-only multi-line)
+(defun string-utils-trim-whitespace (str-val &optional whitespace-type multi-line)
   "Return STR-VAL with leading and trailing whitespace removed.
 
-If optional ASCII-ONLY is set, use an ASCII-only definition
-of whitespace characters.
+If optional WHITESPACE-TYPE is 'ascii or t, use an ASCII-only
+definition of whitespace characters.  If WHITESPACE-TYPE is
+'syntax, is the definition of whitespace from the current
+`syntax-table'.  Otherwise, use a broad, Unicode-aware
+definition of whitespace from `string-utils-whitespace'.
 
 If optional MULTI-LINE is set, trim spaces at starts and
 ends of all lines throughout STR-VAL."
-  (let ((string-utils-whitespace (if ascii-only string-utils-whitespace-ascii string-utils-whitespace))
-        (start-pat (if multi-line "^" "\\`"))
-        (end-pat   (if multi-line "$" "\\'")))
+  (assert (memq whitespace-type '(ascii ascii-only t syntax unicode nil)) nil "Bad WHITESPACE-TYPE")
+  (let* ((string-utils-whitespace (if (memq whitespace-type '(ascii ascii-only t))
+                                      string-utils-whitespace-ascii
+                                    string-utils-whitespace))
+         (whitespace-regexp (if (eq whitespace-type 'syntax)
+                                string-utils-whitespace-syntax
+                              (concat "[" string-utils-whitespace "]")))
+         (start-pat (if multi-line "^" "\\`"))
+         (end-pat   (if multi-line "$" "\\'")))
     (save-match-data
-      (replace-regexp-in-string (concat start-pat "[" string-utils-whitespace "]+") ""
-         (replace-regexp-in-string (concat "[" string-utils-whitespace "]+" end-pat) ""
+      (replace-regexp-in-string (concat start-pat whitespace-regexp "+") ""
+         (replace-regexp-in-string (concat whitespace-regexp "+" end-pat) ""
             str-val)))))
 
 ;;;###autoload
-(defun string-utils-compress-whitespace (str-val &optional ascii-only)
+(defun string-utils-compress-whitespace (str-val &optional whitespace-type)
   "Return STR-VAL with all contiguous whitespace compressed to one space.
 
-If optional ASCII-ONLY is set, use an ASCII-only definition
-of whitespace characters."
-  (let ((string-utils-whitespace (if ascii-only string-utils-whitespace-ascii string-utils-whitespace)))
+If optional WHITESPACE-TYPE is 'ascii or t, use an ASCII-only
+definition of whitespace characters.  If WHITESPACE-TYPE is
+'syntax, is the definition of whitespace from the current
+`syntax-table'.  Otherwise, use a broad, Unicode-aware
+definition of whitespace from `string-utils-whitespace'."
+  (assert (memq whitespace-type '(ascii ascii-only t syntax unicode nil)) nil "Bad WHITESPACE-TYPE")
+  (let* ((string-utils-whitespace (if (memq whitespace-type '(ascii ascii-only t))
+                                      string-utils-whitespace-ascii
+                                    string-utils-whitespace))
+         (whitespace-regexp (if (eq whitespace-type 'syntax)
+                                string-utils-whitespace-syntax
+                              (concat "[" string-utils-whitespace "]"))))
     (save-match-data
-      (replace-regexp-in-string (concat "[" string-utils-whitespace "]+") " "
+      (replace-regexp-in-string (concat whitespace-regexp "+") " "
          str-val))))
 
 ;;;###autoload
@@ -355,11 +570,15 @@ Returns padded STR-LIST."
       (mapcar #'(lambda (str)
                   (string-utils-pad str width mode char throw-error)) str-list))))
 
+;;;###autoload
 (defun string-utils-propertize-fillin (str-val &rest properties)
-  "Return a copy of STRING with text properties added, without overriding.
+  "Return a copy of STR-VAL with text properties added, without overriding.
 
 Works exactly like `propertize', except that (character-by-character)
-already existing properties are respected."
+already existing properties are respected.
+
+STR-VAL and PROPERTIES are treated as documented for the STRING
+and PROPERTIES arguments to `propertize'."
   (unless (= 0 (% (length properties) 2))
     (error "Wrong number of arguments"))
   (while properties
@@ -368,6 +587,7 @@ already existing properties are respected."
       (font-lock-fillin-text-property 0 (length str-val) prop val str-val)))
    str-val)
 
+;;;###autoload
 (defun string-utils-plural-ending (num)
   "Return \"s\" or \"\", depending on whether NUM requires a plural in English.
 
@@ -377,6 +597,182 @@ Intended to be used in a format string as follows:
   (if (and (numberp num)
            (= num 1))
       "" "s"))
+
+;;;###autoload
+(defun string-utils-squeeze-filename (name maxlen &optional path-removal ellipsis no-tail)
+  "Intelligibly squeeze file-name or buffer-name NAME to fit within MAXLEN.
+
+When shortening file or buffer names for presentation to human
+readers, it is often preferable not to truncate the ends, but to
+remove leading or middle portions of the string.
+
+This function keeps basename intact, and (failing that) the
+beginning and end of the basename, so that a shortened file or
+buffer name is more identifiable to a human reader.
+
+The heuristic
+
+   1.  Works equally for file names or buffer names.
+
+   2.  Applies abbreviations to file names such as \"~\" for home
+       directory.
+
+   3.  Selectively removes the longest leading directory
+       components from a path, preferring to keep the rightmost
+       components, leaving a single ellipsis where any number of
+       path elements were removed.
+
+   4.  Shortens the basename of NAME if needed, preserving the
+       meaningful file extension.
+
+The string returned is as long as MAXLEN or shorter.
+
+When PATH-REMOVAL is non nil, it is permitted to shorten a
+pathname by removing the directory components completely,
+substituting no ellipsis.
+
+ELLIPSIS is a string inserted wherever characters were removed.
+It defaults to the UCS character \"Horizontal Ellipsis\", or
+\"...\" if extended characters are not displayable.
+
+If NO-TAIL is set, do not preserve the trailing letters of
+a filename unless there is a dotted extension."
+  ;; character x2026 = Horizontal Ellipsis
+  (callf or ellipsis (if (char-displayable-p (decode-char 'ucs #x2026)) (string (decode-char 'ucs #x2026)) "..."))
+  (cond
+    ;; corner cases for tiny MAXLEN
+    ((< maxlen 0)
+     (error "Length must be greater than or equal to 0"))
+    ((= maxlen 0)
+     "")
+    ((and (<= maxlen (length ellipsis))
+          (> (length ellipsis) 0))
+     (substring ellipsis 0 maxlen))
+    (t
+     ;; most cases
+     (save-match-data
+       (let ((dir-sep "/")
+             (path nil)
+             (used-last-elt 'first)
+             (orig-name nil)
+             (added-path ""))
+         (when (bufferp name)
+           (setq name (buffer-name name)))
+         (setq path (nreverse (split-string (directory-file-name (abbreviate-file-name name)) dir-sep)))
+         (setq name (pop path))
+         (setq orig-name name)
+
+         ;; prepend path components, so long as within MAXLEN
+         (while path
+           (if (and (<= (+ (length (car path))
+                           (length name)
+                           (length dir-sep)
+                           (if (> (length path) 1) (+ (length dir-sep) (length ellipsis)) 0))
+                        maxlen)
+                    ;; leading "/" followed by ellipsis is not meaningful
+                    (not (and (not used-last-elt)
+                              (= (length (car path)) 0))))
+               (progn
+                 (setq added-path (concat (car path) dir-sep added-path))
+                 (setq name (concat (car path) dir-sep name))
+                 (setq used-last-elt t))
+             ;; else
+             (when used-last-elt
+               (setq name (concat ellipsis dir-sep name))
+               (setq added-path (concat ellipsis dir-sep added-path)))
+             (setq used-last-elt nil))
+           (pop path))
+
+         ;; PATH-REMOVAL logic
+         (when (and (> (length name) maxlen)
+                    path-removal)
+           (setq added-path "")
+           (setq name orig-name))
+
+         ;; squeeze basename
+         (when (> (length name) maxlen)
+
+           ;; find extension or tail
+           (let ((extension ""))
+             (when (string-match "\\(\\.[^.]\\{1,6\\}\\)\\'" name)
+               (setq extension (match-string 1 name))
+               (setq name (replace-match "" t t name 0)))
+             (when (and (equal extension "")
+                        (not no-tail)
+                        (string-match ".\\(.\\{4\\}\\)\\'" name))
+               (setq extension (match-string 1 name))
+               (setq name (replace-match "" t t name 1)))
+
+             ;; these conditionals are just corner cases for small MAXLEN
+             (when (>= (+ (length extension) (length ellipsis)) maxlen)
+               (setq extension ""))
+             (when (and (not (string-match-p "\\`\\." extension))
+                        (>= (+ (* 2 (length extension)) (length ellipsis)) maxlen))
+               (setq extension ""))
+             (when (<= (- maxlen (length ellipsis) (length extension))
+                       (length added-path))
+               (setq extension ""))
+             (when (and (>= (+ (length extension) (length ellipsis)) maxlen)
+                        (> (length ellipsis) 1))
+               (callf substring ellipsis 0 (1- (length ellipsis))))
+             (when (and (<= (- maxlen (length ellipsis) (length extension))
+                            (length added-path))
+                        (> (length ellipsis) 1))
+               (callf substring ellipsis 0 (1- (length ellipsis))))
+
+             ;; truncate and add back ellipsis and extension
+             (callf substring name 0 (- maxlen (length ellipsis) (length extension)))
+             (callf concat name ellipsis extension)))))
+
+     ;; hardcode one last corner case
+     (when (equal name ".../.")
+       (setq name "....."))
+
+     ;; defensive driving - name should already be <= than MAXLEN
+     (substring name 0 (min maxlen (length name))))))
+
+(defun string-utils--repair-split-list (list-val separator)
+  "Repair list LIST-VAL, split at string SEPARATOR, if SEPARATOR was escaped.
+
+The escape character is backslash \(\\\)."
+  (let ((ret-val nil))
+    (while list-val
+      (let ((top (pop list-val)))
+        (while (string-match-p "\\\\\\'" top)
+          (callf concat top separator)
+          (when list-val
+            (callf concat top (pop list-val))))
+        (push top ret-val)))
+    (setq ret-val (nreverse ret-val))))
+
+;; todo
+;;
+;;  - fully re-implement split-string, so that SEPARATORS may be a regexp when
+;;    respect-escapes is set.
+;;
+;;  - implement 'include-separators, allowing separators to be returned
+;;    in the list as with perl split
+;;
+;;  - remove string-utils--repair-split-list
+;;
+;;;###autoload
+(defun string-utils-split (string &optional separators omit-nulls include-separators respect-escapes)
+  "Like `split-string', with additional options.
+
+STRING, SEPARATORS, and OMIT-NULLS are as documented at `split-string'.
+
+INCLUDE-SEPARATORS is currently unimplmented.
+
+When RESPECT-ESCAPES is set, STRING is not split where the
+separator is escaped with backslash.  This currently has the
+limitation that SEPARATORS must be an explicit string rather than
+a regular expression."
+  (cond
+    (respect-escapes
+     (assert separators nil "SEPARATORS must be a string")
+     (string-utils--repair-split-list (split-string string separators omit-nulls) separators))
+    (t
+     (split-string string separators omit-nulls))))
 
 (provide 'string-utils)
 
@@ -388,10 +784,12 @@ Intended to be used in a format string as follows:
 ;; mangle-whitespace: t
 ;; require-final-newline: t
 ;; coding: utf-8
+;; byte-compile-warnings: (not cl-functions redefine)
 ;; End:
 ;;
-;; LocalWords:  StringUtils ARGS alist utils darkspace quotemeta
-;; LocalWords:  propertize fillin callf MULTI
+;; LocalWords: StringUtils ARGS alist utils darkspace quotemeta bool
+;; LocalWords: propertize fillin callf MULTI MAXLEN mapconcat progn
+;; LocalWords: defstruct stringified Stringification INTS ascii subr
 ;;
 
 ;;; string-utils.el ends here
