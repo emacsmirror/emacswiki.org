@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 6
-;; RCS Version: $Rev: 437 $
+;; RCS Version: $Rev: 438 $
 ;; Keywords: files, dired, midnight commander, norton, orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -196,18 +196,19 @@
 
 ;;; Code:
 
+(require 'advice)
+(require 'desktop)
 (require 'dired)
+(require 'dired-aux)
 (require 'dired-x)
 (require 'enriched)
+(require 'esh-mode)
 (require 'find-dired)
 (require 'font-lock)
 (require 'hl-line)
 (require 'sort)
 (require 'term)
 (eval-when-compile (require 'cl)
-                   (require 'desktop)
-                   (require 'dired-aux)
-                   (require 'esh-mode)
                    (require 'recentf)
                    (require 'tramp))
 
