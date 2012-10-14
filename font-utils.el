@@ -5,10 +5,10 @@
 ;; Author: Roland Walker <walker@pobox.com>
 ;; Homepage: http://github.com/rolandwalker/font-utils
 ;; URL: http://raw.github.com/rolandwalker/font-utils/master/font-utils.el
-;; Version: 0.6.1
-;; Last-Updated: 24 Sep 2012
+;; Version: 0.6.8
+;; Last-Updated: 10 Oct 2012
 ;; EmacsWiki: FontUtils
-;; Package-Requires: ((persistent-soft "0.8.0") (pcache "0.2.3"))
+;; Package-Requires: ((persistent-soft "0.8.6") (pcache "0.2.3"))
 ;; Keywords: extensions
 ;;
 ;; Simplified BSD License
@@ -32,9 +32,12 @@
 ;;
 ;;     `font-utils-exists-p'
 ;;     `font-utils-first-existing-font'
+;;     `font-utils-is-qualified-variant'
 ;;     `font-utils-lenient-name-equal'
 ;;     `font-utils-list-names'
 ;;     `font-utils-name-from-xlfd'
+;;     `font-utils-normalize-name'
+;;     `font-utils-parse-name'
 ;;     `font-utils-read-name'
 ;;
 ;; The most generally useful of these is `font-utils-exists-p', which
@@ -54,9 +57,12 @@
 ;;
 ;; Compatibility and Requirements
 ;;
-;;     Tested on GNU Emacs versions 23.3 and 24.1
+;;     GNU Emacs version 24.3-devel     : yes, at the time of writing
+;;     GNU Emacs version 24.1 & 24.2    : yes
+;;     GNU Emacs version 23.3           : yes
+;;     GNU Emacs version 22.3 and lower : no
 ;;
-;;     Requires persistent-soft.el
+;;     Uses if present: persistent-soft.el (Recommended)
 ;;
 ;; Bugs
 ;;
@@ -125,17 +131,19 @@
 ;; for callf, callf2, intersection, remove-if-not
 (require 'cl)
 
-(autoload 'persistent-soft-store     "persistent-soft" "Under SYMBOL, store VALUE in the LOCATION persistent data store."   t)
-(autoload 'persistent-soft-fetch     "persistent-soft" "Return the value for SYMBOL in the LOCATION persistent data store." t)
-(autoload 'persistent-soft-exists-p  "persistent-soft" "Return t if SYMBOL exists in the LOCATION persistent data store."   t)
-(autoload 'persistent-soft-flush     "persistent-soft" "Flush data for the LOCATION data store to disk."                    t)
+(autoload 'persistent-soft-store             "persistent-soft" "Under SYMBOL, store VALUE in the LOCATION persistent data store."    )
+(autoload 'persistent-soft-fetch             "persistent-soft" "Return the value for SYMBOL in the LOCATION persistent data store."  )
+(autoload 'persistent-soft-exists-p          "persistent-soft" "Return t if SYMBOL exists in the LOCATION persistent data store."    )
+(autoload 'persistent-soft-flush             "persistent-soft" "Flush data for the LOCATION data store to disk."                     )
+(autoload 'persistent-soft-location-readable "persistent-soft" "Return non-nil if LOCATION is a readable persistent-soft data store.")
+(autoload 'persistent-soft-location-destroy  "persistent-soft" "Destroy LOCATION (a persistent-soft data store)."                    )
 
 ;;; customizable variables
 
 ;;;###autoload
 (defgroup font-utils nil
   "Utility functions for working with fonts."
-  :version "0.6.1"
+  :version "0.6.8"
   :link '(emacs-commentary-link "font-utils")
   :prefix "font-utils-"
   :group 'extensions)
@@ -191,7 +199,41 @@ the pathological case with regard to startup time."
 (defvar font-utils-exists-p-mem (make-hash-table :test 'equal)
   "Memoization data for `font-utils-exists-p'.")
 
+;;; compatibility functions
+
+(defun persistent-softest-store (symbol value location &optional expiration)
+  "Call `persistent-soft-store' but don't fail when library not present."
+  (ignore-errors (persistent-soft-store symbol value location expiration)))
+(defun persistent-softest-fetch (symbol location)
+  "Call `persistent-soft-fetch' but don't fail when library not present."
+  (ignore-errors (persistent-soft-fetch symbol location)))
+(defun persistent-softest-exists-p (symbol location)
+  "Call `persistent-soft-exists-p' but don't fail when library not present."
+  (ignore-errors (persistent-soft-exists-p symbol location)))
+(defun persistent-softest-flush (location)
+  "Call `persistent-soft-flush' but don't fail when library not present."
+  (ignore-errors (persistent-soft-flush location)))
+(defun persistent-softest-location-readable (location)
+  "Call `persistent-soft-location-readable' but don't fail when library not present."
+  (ignore-errors (persistent-soft-location-readable location)))
+(defun persistent-softest-location-destroy (location)
+  "Call `persistent-soft-location-destroy' but don't fail when library not present."
+  (ignore-errors (persistent-soft-location-destroy location)))
+
 ;;; utility functions
+
+;; copied from string-utils
+(defun font-utils--repair-split-list (list-val separator)
+  "Repair list LIST-VAL, split at string SEPARATOR, if SEPARATOR was escaped."
+  (let ((ret-val nil))
+    (while list-val
+      (let ((top (pop list-val)))
+        (while (string-match-p "\\\\\\'" top)
+          (callf concat top separator)
+          (when list-val
+            (callf concat top (pop list-val))))
+        (push top ret-val)))
+    (setq ret-val (nreverse ret-val))))
 
 ;;;###autoload
 (defun font-utils-name-from-xlfd (xlfd)
@@ -199,9 +241,10 @@ the pathological case with regard to startup time."
 
 This function accounts for the fact that the XLFD
 delimiter, \"-\", is a legal character within fields."
-  (let ((elts (split-string
-               (replace-regexp-in-string
-                "\\-\\(semi\\|demi\\|half\\|double\\|ultra\\|extra\\)-" "-\\1_" xlfd) "-")))
+  (let ((elts (font-utils--repair-split-list
+               (split-string
+                (replace-regexp-in-string
+                 "\\-\\(semi\\|demi\\|half\\|double\\|ultra\\|extra\\)-" "-\\1_" xlfd) "-") "-")))
     (if (>= (length elts) 15)
         (mapconcat 'identity
                    (nreverse
@@ -210,6 +253,72 @@ delimiter, \"-\", is a legal character within fields."
                      (nreverse
                       (nthcdr 2 elts)))) "-")
       (nth 2 elts))))
+
+;; todo validation of specifications,
+;;  - detection of duplication
+;;  - expansion of aliases
+;;;###autoload
+(defun font-utils-parse-name (font-name)
+  "Parse FONT-NAME which may contain fontconfig-style specifications.
+
+Returns two-element list.  The car is the font family name as a string.
+The cadr is the specifications as a normalized and sorted list."
+  (save-match-data
+    (let ((specs nil))
+      (when (string-match "[^\\]\\(:.+\\)\\'" font-name)
+        (callf or specs "")
+        (setq specs (match-string 1 font-name))
+        (setq font-name (replace-match "" 'fixedcase 'literal font-name 1)))
+      (when (string-match "[^\\]\\(-\\([0-9]+\\(?:\\.[0-9]+\\)?\\)\\)\\'" font-name)
+        (callf or specs "")
+        (callf concat specs (format ":size=%s" (match-string 2 font-name)))
+        (setq font-name (replace-match "" 'fixedcase 'literal font-name 1)))
+      (when specs
+         (setq specs
+               (sort
+                (mapcar 'downcase
+                        (font-utils--repair-split-list
+                         (split-string specs ":" t) ":"))
+                'string<)))
+      (list font-name specs))))
+
+;;;###autoload
+(defun font-utils-normalize-name (font-name)
+  "Normalize FONT-NAME which may contain fontconfig-style specifications."
+  (let ((parsed (font-utils-parse-name font-name)))
+    (mapconcat 'identity (cons (car parsed) (cadr parsed)) ":")))
+
+;;;###autoload
+(defun font-utils-lenient-name-equal (font-name-a font-name-b)
+  "Leniently match two strings, FONT-NAME-A and FONT-NAME-B."
+  (setq font-name-a (car (font-utils-parse-name font-name-a)))
+  (setq font-name-b (car (font-utils-parse-name font-name-b)))
+  (setq font-name-a (replace-regexp-in-string "[ \t_'\"-]+" "" font-name-a))
+  (setq font-name-b (replace-regexp-in-string "[ \t_'\"-]+" "" font-name-b))
+  (string-equal (downcase font-name-a) (downcase font-name-b)))
+
+;;;###autoload
+(defun font-utils-is-qualified-variant (font-name-1 font-name-2)
+  "Whether FONT-NAME-1 and FONT-NAME-2 are different variants of the same font.
+
+Qualifications are fontconfig-style specifications added to a
+font name, such as \":width=condensed\".
+
+To return t, the font families must be identical, and the
+qualifications must differ.  If FONT-NAME-1 and FONT-NAME-2 are
+identical, returns nil."
+  (let ((parsed-name-1 (font-utils-parse-name font-name-1))
+        (parsed-name-2 (font-utils-parse-name font-name-2)))
+    (cond
+      ((and (null (cadr parsed-name-1))
+            (null (cadr parsed-name-2)))
+       nil)
+      ((not (font-utils-lenient-name-equal (car parsed-name-1) (car parsed-name-2)))
+       nil)
+      ((not (equal (cadr parsed-name-1) (cadr parsed-name-2)))
+       t)
+      (t
+       nil))))
 
 (defun font-utils-create-fuzzy-matches (font-name &optional keep-size)
   "Return a list of approximate matches to FONT-NAME.
@@ -264,25 +373,35 @@ echo area.
 When optional REGENERATE is true, always rebuild from
 scratch."
   (when (display-multi-font-p)
+    (when (and font-utils-use-persistent-storage
+               (not (stringp (persistent-softest-fetch 'font-utils-data-version font-utils-use-persistent-storage))))
+      (setq regenerate t))
+    (when (and font-utils-use-persistent-storage
+               (stringp (persistent-softest-fetch 'font-utils-data-version font-utils-use-persistent-storage))
+               (version<
+                (persistent-softest-fetch 'font-utils-data-version font-utils-use-persistent-storage)
+                (get 'font-utils 'custom-version)))
+      (setq regenerate t))
     (when regenerate
       (setq font-utils-all-names nil)
-      (persistent-soft-store (intern (format "checksum-%s" window-system))
+      (persistent-softest-store (intern (format "checksum-%s" window-system))
                              nil font-utils-use-persistent-storage)
-      (persistent-soft-store (intern (format "font-names-%s" window-system))
+      (persistent-softest-store (intern (format "font-names-%s" window-system))
                              nil font-utils-use-persistent-storage)
-      (persistent-soft-flush font-utils-use-persistent-storage))
+      (persistent-softest-flush font-utils-use-persistent-storage))
     (unless (or (hash-table-p font-utils-all-names)
                 (not font-utils-use-memory-cache))
       (when progress
         (message "Font cache ... checking"))
-      (let* ((old-checksum (persistent-soft-fetch (intern (format "checksum-%s" window-system)) font-utils-use-persistent-storage))
+      (let* ((old-checksum (persistent-softest-fetch
+                            (intern (format "checksum-%s" window-system)) font-utils-use-persistent-storage))
              (listing (font-utils-list-names))
              (new-checksum (md5 (mapconcat 'identity (sort listing 'string<) "") nil nil 'utf-8))
              (dupes nil))
         (when (equal old-checksum new-checksum)
-          (setq font-utils-all-names (persistent-soft-fetch
-                                          (intern (format "font-names-%s" window-system))
-                                          font-utils-use-persistent-storage)))
+          (setq font-utils-all-names (persistent-softest-fetch
+                                      (intern (format "font-names-%s" window-system))
+                                      font-utils-use-persistent-storage)))
         (unless (hash-table-p font-utils-all-names)
           (when progress
             (message "Font cache ... rebuilding"))
@@ -297,11 +416,15 @@ scratch."
           (delete-dups dupes)
           (dolist (fuzzy-name dupes)
             (remhash fuzzy-name font-utils-all-names))
-          (persistent-soft-store (intern (format "checksum-%s" window-system))
-                                 new-checksum font-utils-use-persistent-storage)
-          (persistent-soft-store (intern (format "font-names-%s" window-system))
-                                 font-utils-all-names font-utils-use-persistent-storage)
-          (persistent-soft-flush font-utils-use-persistent-storage)))
+          (persistent-softest-store (intern (format "checksum-%s" window-system))
+                                    new-checksum font-utils-use-persistent-storage)
+          (let ((persistent-soft-inhibit-sanity-checks t))
+            (persistent-softest-store (intern (format "font-names-%s" window-system))
+                                      font-utils-all-names font-utils-use-persistent-storage))
+          (persistent-softest-store 'font-utils-data-version
+                                    (get 'font-utils 'custom-version)
+                                    font-utils-use-persistent-storage)
+          (persistent-softest-flush font-utils-use-persistent-storage)))
       (when progress
         (message "Font cache ... done")))))
 
@@ -320,17 +443,6 @@ Uses `ido-completing-read' if optional IDO is set."
                               (font-utils-list-names))))
       (replace-regexp-in-string "_" " "
          (funcall reader prompt font-names nil nil nil font-name-history)))))
-
-;;;###autoload
-(defun font-utils-lenient-name-equal (font-name-a font-name-b)
-  "Leniently match two strings, FONT-NAME-A and FONT-NAME-B."
-  (setq font-name-a (replace-regexp-in-string ":[^:]*\\'"   "" font-name-a))
-  (setq font-name-b (replace-regexp-in-string ":[^:]*\\'"   "" font-name-b))
-  (setq font-name-a (replace-regexp-in-string "-[0-9.]+\\'" "" font-name-a))
-  (setq font-name-b (replace-regexp-in-string "-[0-9.]+\\'" "" font-name-b))
-  (setq font-name-a (replace-regexp-in-string "[ \t_'\"-]+" "" font-name-a))
-  (setq font-name-b (replace-regexp-in-string "[ \t_'\"-]+" "" font-name-b))
-  (string-equal (downcase font-name-a) (downcase font-name-b)))
 
 ;;;###autoload
 (defun font-utils-exists-p (font-name &optional point-size strict scope)
@@ -462,7 +574,7 @@ from the XLFD returned by `font-info'."
 ;; mangle-whitespace: t
 ;; require-final-newline: t
 ;; coding: utf-8
-;; byte-compile-warnings: (not cl-functions)
+;; byte-compile-warnings: (not cl-functions redefine)
 ;; End:
 ;;
 ;; LocalWords: FontUtils ARGS alist utils pcache XLFD demi fontconfig callf
