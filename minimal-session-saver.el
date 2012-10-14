@@ -5,8 +5,8 @@
 ;; Author: Roland Walker <walker@pobox.com>
 ;; Homepage: http://github.com/rolandwalker/minimal-session-saver
 ;; URL: http://raw.github.com/rolandwalker/minimal-session-saver/master/minimal-session-saver.el
-;; Version: 0.5.1
-;; Last-Updated: 27 Aug 2012
+;; Version: 0.5.2
+;; Last-Updated: 14 Sep 2012
 ;; EmacsWiki: MinimalSessionSaver
 ;; Keywords: frames, tools, session, project
 ;;
@@ -67,7 +67,10 @@
 ;;
 ;; Compatibility and Requirements
 ;;
-;;     Tested on GNU Emacs versions 23.3 and 24.1
+;;     GNU Emacs version 24.3-devel     : yes, at the time of writing
+;;     GNU Emacs version 24.1 & 24.2    : yes
+;;     GNU Emacs version 23.3           : yes
+;;     GNU Emacs version 22.3 and lower : no
 ;;
 ;;     No external dependencies
 ;;
@@ -127,19 +130,15 @@
 
 ;;; requires
 
-;; for callf, assert, let*, remove-if-not, incf
-(eval-when-compile
-  (require 'cl))
-
-(declare-function remove-if     "cl-seq.el")
-(declare-function remove-if-not "cl-seq.el")
+;; for callf, assert, incf, remove-if, remove-if-not
+(require 'cl)
 
 ;;; customizable variables
 
 ;;;###autoload
 (defgroup minimal-session-saver nil
   "Very lean session saver."
-  :version "0.5.1"
+  :version "0.5.2"
   :link '(emacs-commentary-link "minimal-session-saver")
   :prefix "minimal-session-saver-"
   :group 'tools)
@@ -383,7 +382,7 @@ The following aliases will be installed
 ;; mangle-whitespace: t
 ;; require-final-newline: t
 ;; coding: utf-8
-;; byte-compile-warnings: (not cl-functions)
+;; byte-compile-warnings: (not cl-functions redefine)
 ;; End:
 ;;
 ;; LocalWords: MinimalSessionSaver incf callf bufs
