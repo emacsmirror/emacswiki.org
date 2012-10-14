@@ -5,11 +5,11 @@
 ;; Author: Roland Walker <walker@pobox.com>
 ;; Homepage: http://github.com/rolandwalker/unicode-fonts
 ;; URL: http://raw.github.com/rolandwalker/unicode-fonts/master/unicode-fonts.el
-;; Version: 0.3.2
-;; Last-Updated: 27 Aug 2012
+;; Version: 0.3.4
+;; Last-Updated: 10 Oct 2012
 ;; EmacsWiki: UnicodeFonts
 ;; Keywords: i18n, faces, frames, wp, interface
-;; Package-Requires: ((dynamic-fonts "0.5.1") (ucs-utils "0.6.0") (persistent-soft "0.8.0") (pcache "0.2.3"))
+;; Package-Requires: ((font-utils "0.6.8") (ucs-utils "0.7.2") (persistent-soft "0.8.6") (pcache "0.2.3"))
 ;;
 ;; Simplified BSD License
 ;;
@@ -17,27 +17,27 @@
 ;;
 ;; Quickstart:
 ;;
-;;    Configure an extended Latin font for your default face, such
-;;    as Monaco, Consolas, or DejaVu Sans Mono.
+;;     Configure an extended Latin font for your default face, such
+;;     as Monaco, Consolas, or DejaVu Sans Mono.
 ;;
-;;    Install these fonts
+;;     Install these fonts
 ;;
-;;       http://users.teilar.gr/~g1951d/Symbola702.zip
-;;       http://www.quivira-font.com/files/Quivira.ttf
-;;       http://sourceforge.net/projects/dejavu/files/dejavu/2.33/dejavu-fonts-ttf-2.33.tar.bz2
+;;        http://users.teilar.gr/~g1951d/Symbola702.zip
+;;        http://www.quivira-font.com/files/Quivira.ttf
+;;        http://sourceforge.net/projects/dejavu/files/dejavu/2.33/dejavu-fonts-ttf-2.33.tar.bz2
 ;;
-;;    Remove Unifont from your system.
+;;     Remove Unifont from your system.
 ;;
-;;    (require 'unicode-fonts)
+;;     (require 'unicode-fonts)
 ;;
-;;    (unicode-fonts-setup)
+;;     (unicode-fonts-setup)
 ;;
 ;; Testing:
 ;;
-;;    C-h h                                         ; M-x view-hello-file
-;;    M-x list-charset-chars RET unicode-bmp RET    ; search for 210x
-;;    M-x list-charset-chars RET unicode-smp RET    ; if your backend supports astral chars
-;;    M-x unicode-fonts-debug-insert-block RET Mathematical_Operators RET
+;;     C-h h                                         ; M-x view-hello-file
+;;     M-x list-charset-chars RET unicode-bmp RET    ; search for 210x
+;;     M-x list-charset-chars RET unicode-smp RET    ; if your backend supports astral chars
+;;     M-x unicode-fonts-debug-insert-block RET Mathematical_Operators RET
 ;;
 ;; Explanation:
 ;;
@@ -55,15 +55,15 @@
 ;; ranges into logical groups called "blocks".  This library configures
 ;; Emacs in a Unicode-friendly way by providing mappings from
 ;;
-;;    each Unicode block  ---to--->   a font with good coverage
+;;     each Unicode block  ---to--->   a font with good coverage
 ;;
 ;; and makes the settings available via the customization interface.
 ;;
 ;; To use unicode-fonts, place the unicode-fonts.el file somewhere
 ;; Emacs can find it, and add the following to your ~/.emacs file:
 ;;
-;;    (require 'unicode-fonts)
-;;    (unicode-fonts-setup)
+;;     (require 'unicode-fonts)
+;;     (unicode-fonts-setup)
 ;;
 ;; See important notes about startup speed below.
 ;;
@@ -75,15 +75,15 @@
 ;;
 ;; From http://dejavu-fonts.org/wiki/Download
 ;;
-;;    DejaVu Sans, DejaVu Sans Mono
+;;     DejaVu Sans, DejaVu Sans Mono
 ;;
 ;; From http://www.quivira-font.com/downloads.php
 ;;
-;;    Quivira
+;;     Quivira
 ;;
 ;; From http://users.teilar.gr/~g1951d/
 ;;
-;;    Symbola
+;;     Symbola
 ;;
 ;; Many non-free fonts are referenced by the default settings.
 ;; However, free alternatives are also given wherever possible, and
@@ -94,10 +94,10 @@
 ;; face, no separate mappings are provided for the following Unicode
 ;; blocks:
 ;;
-;;    Latin Extended Additional
-;;    Latin Extended-A
-;;    Latin-1 Supplement
-;;    Spacing Modifier Letters
+;;     Latin Extended Additional
+;;     Latin Extended-A
+;;     Latin-1 Supplement
+;;     Spacing Modifier Letters
 ;;
 ;; It is also recommended to remove GNU Unifont from your system.
 ;; Unifont is very useful for debugging, but not useful for reading.
@@ -109,11 +109,11 @@
 ;; further increase startup speed, enter the customization interface
 ;; and
 ;;
-;;    1. Remove fonts from `unicode-fonts-block-font-mapping'
-;;       which are not present on your system.
+;;     1. Remove fonts from `unicode-fonts-block-font-mapping'
+;;        which are not present on your system.
 ;;
-;;    2. Disable blocks in `unicode-fonts-block-font-mapping'
-;;       which you are not interested in displaying.
+;;     2. Disable blocks in `unicode-fonts-block-font-mapping'
+;;        which you are not interested in displaying.
 ;;
 ;; If you are using a language written in Chinese or Arabic script,
 ;; try customizing `unicode-fonts-skip-font-groups' to control which
@@ -121,214 +121,217 @@
 ;;
 ;; See Also
 ;;
-;;    M-x customize-group RET unicode-fonts RET
-;;    M-x customize-variable RET unicode-fonts-block-font-mapping RET
+;;     M-x customize-group RET unicode-fonts RET
+;;     M-x customize-variable RET unicode-fonts-block-font-mapping RET
 ;;
 ;; Notes
 ;;
-;;  Free fonts recognized by this package may be downloaded
-;;  from the following locations:
+;; Free fonts recognized by this package may be downloaded
+;; from the following locations:
 ;;
-;;    From http://scripts.sil.org/cms/scripts/page.php?item_id=DoulosSIL_download
+;;     From http://scripts.sil.org/cms/scripts/page.php?item_id=DoulosSIL_download
 ;;
-;;       Doulos SIL                    ; Extended European and diacritics
+;;         Doulos SIL                    ; Extended European and diacritics
 ;;
-;;    From http://scripts.sil.org/cms/scripts/page.php?item_id=Gentium_download
+;;     From http://scripts.sil.org/cms/scripts/page.php?item_id=Gentium_download
 ;;
-;;       Gentium Plus                  ; Greek
+;;         Gentium Plus                  ; Greek
 ;;
-;;    From http://users.teilar.gr/~g1951d/
+;;     From http://users.teilar.gr/~g1951d/
 ;;
-;;       Aegean, Aegyptus, Akkadian    ; Ancient languages
-;;       Analecta                      ; Ancient languages, Deseret
-;;       Musica                        ; Musical Symbols
+;;         Aegean, Aegyptus, Akkadian    ; Ancient languages
+;;         Analecta                      ; Ancient languages, Deseret
+;;         Musica                        ; Musical Symbols
 ;;
-;;    From http://www.wazu.jp/gallery/views/View_MPH2BDamase.html
+;;     From http://www.wazu.jp/gallery/views/View_MPH2BDamase.html
 ;;
-;;       MPH 2B Damase                 ; Arabic, Armenian, Buginese, Cherokee, Georgian,
-;;                                     ; Glagolitic, Hanunoo, Kharoshthi, Limbu, Osmanya,
-;;                                     ; Shavian, Syloti Nagri, Tai Le, Thaana
+;;         MPH 2B Damase                 ; Arabic, Armenian, Buginese, Cherokee, Georgian,
+;;                                       ; Glagolitic, Hanunoo, Kharoshthi, Limbu, Osmanya,
+;;                                       ; Shavian, Syloti Nagri, Tai Le, Thaana
 ;;
-;;    From http://wenq.org/enindex.cgi?Home
+;;     From http://wenq.org/enindex.cgi?Home
 ;;
-;;       WenQuanYi Zen Hei             ; CJK (Simplified Chinese)
+;;         WenQuanYi Zen Hei             ; CJK (Simplified Chinese)
 ;;
-;;    From http://babelstone.co.uk/Fonts/
+;;     From http://babelstone.co.uk/Fonts/
 ;;
-;;       BabelStone Han                ; CJK (Simplified Chinese)
-;;       BabelStone Phags-pa Book      ; Phags-pa
+;;         BabelStone Han                ; CJK (Simplified Chinese)
+;;         BabelStone Phags-pa Book      ; Phags-pa
 ;;
-;;    From http://kldp.net/projects/unfonts/
+;;     From http://kldp.net/projects/unfonts/
 ;;
-;;       Un Batang                     ; CJK (Hangul)
+;;         Un Batang                     ; CJK (Hangul)
 ;;
-;;    From http://sourceforge.jp/projects/hanazono-font/releases/
+;;     From http://sourceforge.jp/projects/hanazono-font/releases/
 ;;
-;;       Hana Min A, Hana Min B        ; CJK (Japanese)
+;;         Hana Min A, Hana Min B        ; CJK (Japanese)
 ;;
-;;    From http://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=SILYi_home
+;;     From http://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=SILYi_home
 ;;
-;;       Nuosu SIL                     ; CJK (Yi)
+;;         Nuosu SIL                     ; CJK (Yi)
 ;;
-;;    From http://www.daicing.com/manchu/index.php?page=fonts-downloads
+;;     From http://www.daicing.com/manchu/index.php?page=fonts-downloads
 ;;
-;;       Daicing Xiaokai               ; Mongolian
+;;         Daicing Xiaokai               ; Mongolian
 ;;
-;;    From http://www.library.gov.bt/IT/fonts.html
+;;     From http://www.library.gov.bt/IT/fonts.html
 ;;
-;;       Jomolhari                     ; Tibetan
+;;         Jomolhari                     ; Tibetan
 ;;
-;;    From http://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=
+;;     From http://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=
 ;;
-;;       Padauk                        ; Myanmar
+;;         Padauk                        ; Myanmar
 ;;
-;;    From http://sarovar.org/projects/samyak/
+;;     From http://sarovar.org/projects/samyak/
 ;;
-;;       Samyak                        ; Devanagari, Gujarati, Malayalam, Oriya, Tamil
+;;         Samyak                        ; Devanagari, Gujarati, Malayalam, Oriya, Tamil
 ;;
-;;    From http://guca.sourceforge.net/typography/fonts/anmoluni/
+;;     From http://guca.sourceforge.net/typography/fonts/anmoluni/
 ;;
-;;       AnmolUni                      ; Gurmukhi
+;;         AnmolUni                      ; Gurmukhi
 ;;
-;;    From http://brahmi.sourceforge.net/downloads2.html
+;;     From http://brahmi.sourceforge.net/downloads2.html
 ;;
-;;       Kedage                        ; Kannada
+;;         Kedage                        ; Kannada
 ;;
-;;    From http://www.omicronlab.com/bangla-fonts.html
+;;     From http://www.omicronlab.com/bangla-fonts.html
 ;;
-;;       Mukti Narrow                  ; Bengali
+;;         Mukti Narrow                  ; Bengali
 ;;
-;;    From http://www.kamban.com.au/downloads.html
+;;     From http://www.kamban.com.au/downloads.html
 ;;
-;;       Akshar Unicode                ; Sinhala
+;;         Akshar Unicode                ; Sinhala
 ;;
-;;    From http://tabish.freeshell.org/eeyek/download.html
+;;     From http://tabish.freeshell.org/eeyek/download.html
 ;;
-;;       Eeyek Unicode                 ; Meetei Mayek
+;;         Eeyek Unicode                 ; Meetei Mayek
 ;;
-;;    From http://scripts.sil.org/CMS/scripts/page.php?&item_id=Mondulkiri
+;;     From http://scripts.sil.org/CMS/scripts/page.php?&item_id=Mondulkiri
 ;;
-;;       Khmer Mondulkiri              ; Khmer
+;;         Khmer Mondulkiri              ; Khmer
 ;;
-;;    From http://www.laoscript.net/downloads/
+;;     From http://www.laoscript.net/downloads/
 ;;
-;;       Saysettha MX                  ; Lao
+;;         Saysettha MX                  ; Lao
 ;;
-;;    From http://www.geocities.jp/simsheart_alif/taithamunicode.html
+;;     From http://www.geocities.jp/simsheart_alif/taithamunicode.html
 ;;
-;;       Lanna Alif                    ; Tai Tham
+;;         Lanna Alif                    ; Tai Tham
 ;;
-;;    From http://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=DaiBannaSIL
+;;     From http://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=DaiBannaSIL
 ;;
-;;       Dai Banna SIL                 ; New Tai Lue
+;;         Dai Banna SIL                 ; New Tai Lue
 ;;
-;;    From http://scripts.sil.org/cms/scripts/page.php?item_id=TaiHeritage
+;;     From http://scripts.sil.org/cms/scripts/page.php?item_id=TaiHeritage
 ;;
-;;       Tai Heritage Pro              ; Tai Viet
+;;         Tai Heritage Pro              ; Tai Viet
 ;;
-;;    From http://sabilulungan.org/aksara/
+;;     From http://sabilulungan.org/aksara/
 ;;
-;;       Sundanese Unicode             ; Sundanese
+;;         Sundanese Unicode             ; Sundanese
 ;;
-;;    From http://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=ArabicFonts
+;;     From http://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=ArabicFonts
 ;;
-;;       Scheherazade                  ; Arabic
+;;         Scheherazade                  ; Arabic
 ;;
-;;    From http://www.farsiweb.ir/wiki/Persian_fonts
+;;     From http://www.farsiweb.ir/wiki/Persian_fonts
 ;;
-;;       Koodak                        ; Arabic (Farsi)
+;;         Koodak                        ; Arabic (Farsi)
 ;;
-;;    From http://openfontlibrary.org/font/ahuramazda/
+;;     From http://openfontlibrary.org/font/ahuramazda/
 ;;
-;;       Ahuramzda                     ; Avestan
+;;         Ahuramzda                     ; Avestan
 ;;
-;;    From http://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=AbyssinicaSIL
+;;     From http://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=AbyssinicaSIL
 ;;
-;;       Abyssinica SIL                ; Ethiopic
+;;         Abyssinica SIL                ; Ethiopic
 ;;
-;;    From http://www.bethmardutho.org/index.php/resources/fonts.html
+;;     From http://www.bethmardutho.org/index.php/resources/fonts.html
 ;;
-;;       Estrangelo Nisibin            ; Syriac
+;;         Estrangelo Nisibin            ; Syriac
 ;;
-;;    From http://www.evertype.com/fonts/nko/
+;;     From http://www.evertype.com/fonts/nko/
 ;;
-;;       Conakry                       ; N'ko
+;;         Conakry                       ; N'ko
 ;;
 ;; Compatibility and Requirements
 ;;
-;;    Tested on GNU Emacs versions 23.3 and 24.1
+;;     GNU Emacs version 24.3-devel     : yes, at the time of writing
+;;     GNU Emacs version 24.1 & 24.2    : yes
+;;     GNU Emacs version 23.3           : yes
+;;     GNU Emacs version 22.3 and lower : no
 ;;
-;;    Requires dynamic-fonts.el, ucs-utils.el
+;;     Requires font-utils.el, ucs-utils.el
 ;;
 ;; Bugs
 ;;
-;;    The default choice of font for each code block balances coverage
-;;    versus appearance.  This is necessarily subjective.
+;;     The default choice of font for each code block balances coverage
+;;     versus appearance.  This is necessarily subjective.
 ;;
-;;    Checking for font availability is slow.  This library can
-;;    add anywhere between 0.1 - 10 secs to startup time.  It is
-;;    slowest under X11.  Some per-architecture limitations are
-;;    documented in dynamic-fonts.el
+;;     Checking for font availability is slow.  This library can
+;;     add anywhere between 0.1 - 10 secs to startup time.  It is
+;;     slowest under X11.  Some per-architecture limitations are
+;;     documented in font-utils.el
 ;;
-;;    Calling `set-fontset-font' can easily crash Emacs.  There is a
-;;    workaround, but it may not be sufficient on all platforms.
-;;    Tested on Cocoa Emacs, Native Mac Emacs, X11/XQuartz,
-;;    MS Windows XP.
+;;     Calling `set-fontset-font' can easily crash Emacs.  There is a
+;;     workaround, but it may not be sufficient on all platforms.
+;;     Tested on Cocoa Emacs, Native Mac Emacs, X11/XQuartz,
+;;     MS Windows XP.
 ;;
-;;    Glyph-by-glyph fallthrough happens differently depending on the
-;;    font backend.  On Cocoa Emacs, glyph-by-glyph fallthrough does not
-;;    occur, and manual per-glyph overrides are required to maximize
-;;    coverage.  Fallthrough works on MS Windows, but not perfectly.
-;;    X11/FreeType behaves most predictably.
+;;     Glyph-by-glyph fallthrough happens differently depending on the
+;;     font backend.  On Cocoa Emacs, glyph-by-glyph fallthrough does not
+;;     occur, and manual per-glyph overrides are required to maximize
+;;     coverage.  Fallthrough works on MS Windows, but not perfectly.
+;;     X11/FreeType behaves most predictably.
 ;;
-;;    The following ranges cannot be overridden within the
-;;    "fontset-default" fontset:
+;;     The following ranges cannot be overridden within the
+;;     "fontset-default" fontset:
 ;;
-;;       Latin Extended Additional
-;;       Latin Extended-B
-;;       Spacing Modifier Letters
+;;         Latin Extended Additional
+;;         Latin Extended-B
+;;         Spacing Modifier Letters
 ;;
-;;    `unicode-fonts-overrides-mapping' shows some order-dependence,
-;;    which must indicate a bug in this code.
+;;     `unicode-fonts-overrides-mapping' shows some order-dependence,
+;;     which must indicate a bug in this code.
 ;;
-;;    A number of the entries in `unicode-fonts-overrides-mapping'
-;;    are workarounds for the font Monaco, and therefore specific
-;;    to OS X.
+;;     A number of the entries in `unicode-fonts-overrides-mapping'
+;;     are workarounds for the font Monaco, and therefore specific
+;;     to OS X.
 ;;
-;;    Widths of alternate fonts do not act as expected on MS Windows.
-;;    For example, DejaVu Sans Mono box-drawing characters may use
-;;    a different width than the default font.
+;;     Widths of alternate fonts do not act as expected on MS Windows.
+;;     For example, DejaVu Sans Mono box-drawing characters may use
+;;     a different width than the default font.
 ;;
 ;; TODO
 ;;
-;;    @@@@@@@ test again on windows with new dynamic-fonts
+;;     @@@@@@@ test again on windows with new font-utils
 ;;
-;;    (set-language-environment "UTF-8") ?
+;;     (set-language-environment "UTF-8") ?
 ;;
-;;    add coverage comments to all mapping entries
+;;     add coverage comments to all mapping entries
 ;;
-;;    Remove very old Microsoft entries (eg Monotype.com which was
-;;    renamed Andale)
+;;     Remove very old Microsoft entries (eg Monotype.com which was
+;;     renamed Andale)
 ;;
-;;    Recognize the default font and make smarter choices when it is
-;;    one of the provided mappings.  (On Cocoa, the default font is
-;;    returned when font-info fails, which is not a good thing
-;;    overall.)
+;;     Recognize the default font and make smarter choices when it is
+;;     one of the provided mappings.  (On Cocoa, the default font is
+;;     returned when font-info fails, which is not a good thing
+;;     overall.)
 ;;
-;;    For every font, list font version and unicode blocks which are
-;;    complete.
+;;     For every font, list font version and unicode blocks which are
+;;     complete.
 ;;
-;;    Note all decorative fonts
+;;     Note all decorative fonts
 ;;
-;;    Get Windows 8 font listing
+;;     Get Windows 8 font listing
 ;;
-;;    Adobe international fonts which are supplied with Reader
+;;     Adobe international fonts which are supplied with Reader
 ;;
-;;    Apple fonts which could not be mapped
-;;       Wawati TC
-;;       Weibei TC
-;;       Weibei SC
-;;       Wawati SC
+;;     Apple fonts which could not be mapped
+;;         Wawati TC
+;;         Weibei TC
+;;         Weibei SC
+;;         Wawati SC
 ;;
 ;;; License
 ;;
@@ -365,27 +368,27 @@
 ;; interpreted as representing official policies, either expressed
 ;; or implied, of Roland Walker.
 ;;
+;; No rights are claimed over data created by the Unicode
+;; Consortium, which are included here under the terms of
+;; the Unicode Terms of Use.
+;;
 ;;; Code:
 ;;
 
 ;;; requires
 
-;; for callf, callf2, let*, remove-if-not, member*, incf
-(eval-when-compile
-  (require 'cl))
+;; for callf, callf2, member*, incf, remove-if, remove-if-not
+(require 'cl)
 
-(autoload 'dynamic-fonts-font-exists-p            "dynamic-fonts"  "Test whether FONT-NAME (a string or font object) exists.")
-(autoload 'dynamic-fonts-read-font-name           "dynamic-fonts"  "Read a font name using `completing-read'.")
-(autoload 'dynamic-fonts-lenient-font-name-equal  "dynamic-fonts"  "Leniently match two strings, FONT-NAME-A and FONT-NAME-B.")
-(autoload 'dynamic-fonts-first-existing-font      "dynamic-fonts"  "Return the (normalized) first existing font name from FONT-NAMES.")
-(autoload 'dynamic-fonts-font-name-from-xlfd      "dynamic-fonts"  "Return the font-family name from XLFD, a string.")
+(autoload 'font-utils-exists-p                 "font-utils"  "Test whether FONT-NAME (a string or font object) exists.")
+(autoload 'font-utils-read-name                "font-utils"  "Read a font name using `completing-read'.")
+(autoload 'font-utils-lenient-name-equal       "font-utils"  "Leniently match two strings, FONT-NAME-A and FONT-NAME-B.")
+(autoload 'font-utils-first-existing-font      "font-utils"  "Return the (normalized) first existing font name from FONT-NAMES.")
+(autoload 'font-utils-name-from-xlfd           "font-utils"  "Return the font-family name from XLFD, a string.")
+(autoload 'font-utils-is-qualified-variant     "font-utils"  "Test whether FONT-NAME-1 and FONT-NAME-2 are qualified variants of the same font.")
 
-(autoload 'ucs-utils-char                         "ucs-utils"      "Return the character corresponding to NAME, a UCS name.")
-(autoload 'ucs-utils-pretty-name                  "ucs-utils"      "Return a prettified UCS name for CHAR.")
-
-(declare-function remove-if     "cl-seq.el")
-(declare-function remove-if-not "cl-seq.el")
-(declare-function member*       "cl-seq.el")
+(autoload 'ucs-utils-char                      "ucs-utils"   "Return the character corresponding to NAME, a UCS name.")
+(autoload 'ucs-utils-pretty-name               "ucs-utils"   "Return a prettified UCS name for CHAR.")
 
 ;;; constants
 
@@ -1159,7 +1162,7 @@
 ;;;###autoload
 (defgroup unicode-fonts nil
   "Configure Unicode fonts."
-  :version "0.3.2"
+  :version "0.3.4"
   :link '(emacs-commentary-link "unicode-fonts")
   :prefix "unicode-fonts-"
   :group 'i18n
@@ -2319,6 +2322,7 @@ Set to nil to disable."
                                                          ))
     ("New Tai Lue"                                      (
                                                          "Dai Banna SIL Book"
+                                                         "Dai Banna SIL Book:style=Regular"
                                                          ))
     ("Number Forms"                                     (
                                                          "DejaVu Sans:width=condensed"  ; 55/58
@@ -2370,6 +2374,7 @@ Set to nil to disable."
     ("Phags-pa"                                         (
                                                          "Microsoft PhagsPa"
                                                          "BabelStone Phags-pa Book"     ; 56/56
+                                                         "BabelStone Phags-pa Book:style=Regular"
                                                          "Code2000"                     ; 56/56
                                                          ))
     ("Phaistos Disc"                                    (
@@ -2855,19 +2860,19 @@ font-name format.
 
 The font existence-check is lazy; fonts after the first hit are
 not checked."
-  (dynamic-fonts-first-existing-font (remove-if #'(lambda (x)
-                                                    (member* x unicode-fonts-skipped-fonts-computed :test 'dynamic-fonts-lenient-font-name-equal))
+  (font-utils-first-existing-font (remove-if #'(lambda (x)
+                                                    (member* x unicode-fonts-skipped-fonts-computed :test 'font-utils-lenient-name-equal))
                                                 font-names)))
 
 ;;;###autoload
 (defun unicode-fonts-font-exists-p (font-name &optional point-size strict)
-  "Run `unicode-fonts-font-exists-p' with a limited scope.
+  "Run `font-utils-exists-p' with a limited scope.
 
 The scope is defined by `unicode-fonts-restrict-to-fonts'.
 
 FONT-NAME, POINT-SIZE, and STRICT are as documented at
-`unicode-fonts-font-exists-p'."
-  (dynamic-fonts-font-exists-p font-name point-size strict unicode-fonts-restrict-to-fonts))
+`font-utils-exists-p'."
+  (font-utils-exists-p font-name point-size strict unicode-fonts-restrict-to-fonts))
 
 (defsubst unicode-fonts--create-char-range (range)
   "Create a numeric character range from RANGE.
@@ -2987,7 +2992,7 @@ Use `ido-completing-read' if IDO is set."
           (callf concat font-name "-" font-size))
         (unless (and (stringp font-name)
                      (> (length font-name) 0))
-          (setq font-name (dynamic-fonts-font-name-from-xlfd (font-xlfd-name font)))))
+          (setq font-name (font-utils-name-from-xlfd (font-xlfd-name font)))))
       (setq block-name
            (catch 'bn
              (dolist (cell unicode-fonts-blocks)
@@ -3014,7 +3019,7 @@ Temporarily change the font used for BLOCK-NAME to FONT-NAME.
 To permanently change the font for BLOCK-NAME, use the
 customization interface."
   (callf or block-name (unicode-fonts-read-block-name 'ido))
-  (callf or font-name (dynamic-fonts-read-font-name 'ido))
+  (callf or font-name (font-utils-read-name 'ido))
   (assert (assoc-string block-name unicode-fonts-blocks 'case-fold) nil "No such block")
   (assert (unicode-fonts-font-exists-p font-name) nil "Font does not is exist or is not understood: %s" font-name)
   (when (y-or-n-p (propertize "Really risk crashing Emacs?" 'face 'highlight))
@@ -3029,7 +3034,7 @@ customization interface."
   "Calling this command can crash Emacs.
 
 Temporarily change the font used for all blocks to FONT-NAME."
-  (callf or font-name (dynamic-fonts-read-font-name 'ido))
+  (callf or font-name (font-utils-read-name 'ido))
   (assert (unicode-fonts-font-exists-p font-name) nil "Font does not is exist or is not understood: %s" font-name)
   (when (y-or-n-p (propertize "Really risk crashing Emacs?" 'face 'highlight))
     (dolist (fontset-name (remove-if-not #'(lambda (fs) (ignore-errors (fontset-info fs))) unicode-fonts-fontset-names))
@@ -3239,13 +3244,17 @@ See also: `list-charset-chars'."
 
 Returns a list of duplicates when there is more than one
 occurrence, otherwise nil."
-  (let ((matches (copy-list (member* font-name font-list :test 'dynamic-fonts-lenient-font-name-equal)))
-        (hit nil)
+  (let ((matches (copy-list (member* font-name font-list :test 'font-utils-lenient-name-equal)))
+        (hits nil)
         (dupes nil))
+    (setq matches (sort matches #'(lambda (a b)
+                                    (equal a font-name))))
     (push (pop matches) dupes)
-    (while (setq hit (copy-list (member* font-name matches :test 'dynamic-fonts-lenient-font-name-equal)))
-      (push (pop hit) dupes)
-      (setq matches hit))
+    (while (setq hits (copy-list (member* font-name matches :test 'font-utils-lenient-name-equal)))
+      (let ((hit (pop hits)))
+        (unless (font-utils-is-qualified-variant font-name hit)
+          (push hit dupes)))
+      (setq matches hits))
     (when (> (length dupes) 1)
       dupes)))
 
@@ -3261,7 +3270,8 @@ buffer instead of sending it to the *Messages* log."
         (counter 0)
         (all-override-ranges nil))
     (when insert
-      (setq message-function 'message-insert))
+      (require 'alert)
+      (setq message-function 'alert-message-insert))
 
     ;; known fonts
     (setq reporter (make-progress-reporter "Checking fonts for duplicates ... " 0 (length known-fonts)))
@@ -3280,20 +3290,22 @@ buffer instead of sending it to the *Messages* log."
       (progress-reporter-update reporter (incf counter))
       (let* ((block-name (car cell))
              (char-range (cdr (assoc-string block-name unicode-fonts-blocks 'case-fold)))
-             (all-fonts (mapcar #'(lambda (x) (replace-regexp-in-string ":.*\\'" "" x)) (cadr cell)))
+             (all-fonts-with-qualifiers (cadr cell))
+             (all-fonts (mapcar #'(lambda (x) (replace-regexp-in-string ":.*\\'" "" x)) all-fonts-with-qualifiers))
              (existing-fonts (remove-if-not 'unicode-fonts-font-exists-p all-fonts))
              (existing-unskipped-fonts (remove-if #'(lambda (x)
-                                                      (member* x unicode-fonts-skipped-fonts-computed :test 'dynamic-fonts-lenient-font-name-equal)) existing-fonts))
+                                                      (member* x unicode-fonts-skipped-fonts-computed :test 'font-utils-lenient-name-equal)) existing-fonts))
              (best-font (pop existing-unskipped-fonts))
              (licenses nil))
         (funcall message-function "\n-----\nBlock %s\n-----" block-name)
-        (dolist (font all-fonts)
-          (when (setq dupes (unicode-fonts-debug-check-duplicate-fonts font all-fonts))
-            (funcall message-function "ERROR: font occurs at least twice in block: %s" dupes))
-          (let ((plist (cdr (assoc-string font unicode-fonts-known-font-characteristics))))
-            (if plist
-                (setq licenses (append licenses (plist-get plist :licenses)))
-              (funcall message-function "ERROR: Font %s is not listed" font))))
+        (dolist (qualified-font all-fonts-with-qualifiers)
+          (let ((font (replace-regexp-in-string ":.*\\'" "" qualified-font)))
+            (when (setq dupes (unicode-fonts-debug-check-duplicate-fonts qualified-font all-fonts-with-qualifiers))
+              (funcall message-function "ERROR: font occurs at least twice in block: %s" dupes))
+            (let ((plist (cdr (assoc-string font unicode-fonts-known-font-characteristics))))
+              (if plist
+                  (setq licenses (append licenses (plist-get plist :licenses)))
+                (funcall message-function "ERROR: Font %s is not listed" font)))))
         (unless (memq 'microsoft licenses)
           (funcall message-function "No Microsoft font for block %s" block-name))
         (unless (memq 'free licenses)
@@ -3315,7 +3327,7 @@ buffer instead of sending it to the *Messages* log."
              (all-fonts (mapcar #'(lambda (x) (replace-regexp-in-string ":.*\\'" "" x)) (car (last cell))))
              (existing-fonts (remove-if-not 'unicode-fonts-font-exists-p all-fonts))
              (existing-unskipped-fonts (remove-if #'(lambda (x)
-                                                      (member* x unicode-fonts-skipped-fonts-computed :test 'dynamic-fonts-lenient-font-name-equal)) existing-fonts))
+                                                      (member* x unicode-fonts-skipped-fonts-computed :test 'font-utils-lenient-name-equal)) existing-fonts))
              (best-font (pop existing-unskipped-fonts))
              (licenses nil))
         (funcall message-function "\n-----\nOverride %s\n-----" (list (car cell) (cadr cell)))
@@ -3343,28 +3355,7 @@ buffer instead of sending it to the *Messages* log."
           )))
     (progress-reporter-done reporter)))
 
-;;; main entry point
-
-;;;###autoload
-(defun unicode-fonts-setup (&optional fontset-names)
-  "Set up Unicode fonts for FONTSET-NAMES.
-
-FONTSET-NAMES must be a list of strings.  Fontset names
-which do not currently exist will be ignored.  The
-default value is `unicode-fonts-fontset-names'."
-  (interactive)
-  (unicode-fonts-compute-skipped-fonts)
-  (callf or fontset-names unicode-fonts-fontset-names)
-  (dolist (fontset-name (remove-if-not #'(lambda (fs) (ignore-errors (fontset-info fs))) fontset-names))
-    ;; Cocoa Emacs often crashes if this is run more than once for a fontset
-    (unless (member fontset-name unicode-fonts-setup-done)
-      (push fontset-name unicode-fonts-setup-done)
-      (if (and (memq window-system '(ns))
-               (not after-init-time))
-          ;; Cocoa Emacs crashes unless this is deferred.  set-language-environment-hook
-          ;; seems more logical than after-init-hook, but s-l-h appears to have already happened.
-          (add-hook 'after-init-hook `(lambda () (unicode-fonts--setup-1 ,fontset-name)))
-        (unicode-fonts--setup-1 fontset-name)))))
+;;; driver for setup
 
 (defun unicode-fonts--setup-1 (fontset-name)
   "Driver for `unicode-fonts-setup'.
@@ -3395,7 +3386,7 @@ FONTSET-NAME is a fontset to modify using `set-fontset-font'."
       ;; first, install fallback mapping
       (let* ((fonts (remove-if #'(lambda (x)
                                    (member* x unicode-fonts-skipped-fonts-computed
-                                            :test 'dynamic-fonts-lenient-font-name-equal))
+                                            :test 'font-utils-lenient-name-equal))
                                unicode-fonts-fallback-font-list))
              (best-font nil))
         (cond
@@ -3423,7 +3414,7 @@ FONTSET-NAME is a fontset to modify using `set-fontset-font'."
                (char-range (cdr (assoc-string block-name unicode-fonts-blocks 'case-fold)))
                (fonts (remove-if #'(lambda (x)
                                      (member* x unicode-fonts-skipped-fonts-computed
-                                              :test 'dynamic-fonts-lenient-font-name-equal))
+                                              :test 'font-utils-lenient-name-equal))
                                  (cadr cell)))
                (best-font nil))
         (when char-range
@@ -3457,7 +3448,7 @@ FONTSET-NAME is a fontset to modify using `set-fontset-font'."
           (let* ((char-range (unicode-fonts--create-char-range (list (car cell) (cadr cell))))
                  (fonts (remove-if #'(lambda (x)
                                        (member* x unicode-fonts-skipped-fonts-computed
-                                                :test 'dynamic-fonts-lenient-font-name-equal))
+                                                :test 'font-utils-lenient-name-equal))
                                    (car (last cell))))
                  (best-font nil))
             (when char-range
@@ -3486,6 +3477,29 @@ FONTSET-NAME is a fontset to modify using `set-fontset-font'."
             (unless unicode-fonts-less-feedback
               (progress-reporter-done reporter))))))
 
+;;; main entry point
+
+;;;###autoload
+(defun unicode-fonts-setup (&optional fontset-names)
+  "Set up Unicode fonts for FONTSET-NAMES.
+
+FONTSET-NAMES must be a list of strings.  Fontset names
+which do not currently exist will be ignored.  The
+default value is `unicode-fonts-fontset-names'."
+  (interactive)
+  (unicode-fonts-compute-skipped-fonts)
+  (callf or fontset-names unicode-fonts-fontset-names)
+  (dolist (fontset-name (remove-if-not #'(lambda (fs) (ignore-errors (fontset-info fs))) fontset-names))
+    ;; Cocoa Emacs often crashes if this is run more than once for a fontset
+    (unless (member fontset-name unicode-fonts-setup-done)
+      (push fontset-name unicode-fonts-setup-done)
+      (if (and (memq window-system '(ns))
+               (not after-init-time))
+          ;; Cocoa Emacs crashes unless this is deferred.  set-language-environment-hook
+          ;; seems more logical than after-init-hook, but s-l-h appears to have already happened.
+          (add-hook 'after-init-hook `(lambda () (unicode-fonts--setup-1 ,fontset-name)))
+        (unicode-fonts--setup-1 fontset-name)))))
+
 (provide 'unicode-fonts)
 
 ;;
@@ -3496,7 +3510,7 @@ FONTSET-NAME is a fontset to modify using `set-fontset-font'."
 ;; mangle-whitespace: t
 ;; require-final-newline: t
 ;; coding: utf-8
-;; byte-compile-warnings: (not cl-functions)
+;; byte-compile-warnings: (not cl-functions redefine)
 ;; End:
 ;;
 ;; LocalWords: cleartype Consolas Ethiopic Samyak BabelStone Symbola
