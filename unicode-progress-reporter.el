@@ -5,10 +5,10 @@
 ;; Author: Roland Walker <walker@pobox.com>
 ;; Homepage: http://github.com/rolandwalker/unicode-progress-reporter
 ;; URL: http://raw.github.com/rolandwalker/unicode-progress-reporter/master/unicode-progress-reporter.el
-;; Version: 0.5.2
-;; Last-Updated: 27 Aug 2012
+;; Version: 0.5.3
+;; Last-Updated: 14 Sep 2012
 ;; EmacsWiki: UnicodeProgressReporter
-;; Package-Requires: ((emacs "24.1.0") (ucs-utils "0.6.0") (persistent-soft "0.8.0") (pcache "0.2.3"))
+;; Package-Requires: ((emacs "24.1.0") (ucs-utils "0.7.2") (persistent-soft "0.8.6") (pcache "0.2.3"))
 ;; Keywords: interface
 ;;
 ;; GPLv3 License
@@ -50,7 +50,9 @@
 ;;
 ;; Compatibility and Requirements
 ;;
-;;     Requires GNU Emacs version 24.1 or above
+;;     GNU Emacs version 24.3-devel     : yes, at the time of writing
+;;     GNU Emacs version 24.1 & 24.2    : yes
+;;     GNU Emacs version 23.3 and lower : no
 ;;
 ;;     Requires ucs-utils.el
 ;;
@@ -78,10 +80,9 @@
 
 ;;; requires
 
-;; for let*
 (eval-when-compile
-  (defvar unicode-progress-reporter-type)
-  (require 'cl))
+  ;; declarations for byte compiler
+  (defvar unicode-progress-reporter-type))
 
 (autoload 'ucs-utils-vector "ucs-utils" "Return a vector corresponding to SEQUENCE of UCS names or characters.")
 (autoload 'ucs-utils-char   "ucs-utils" "Return the character corresponding to NAME, a UCS name.")
@@ -238,7 +239,7 @@ VALUE should be a key in `unicode-progress-reporter-pulse-characters'."
 ;;;###autoload
 (defgroup unicode-progress-reporter nil
   "Progress-reporter with fancy characters."
-  :version "0.5.2"
+  :version "0.5.3"
   :link '(emacs-commentary-link "unicode-progress-reporter")
   :prefix "unicode-progress-reporter-"
   :group 'faces)
@@ -256,8 +257,8 @@ VALUE should be a key in `unicode-progress-reporter-pulse-characters'."
 
 (defun unicode-progress-reporter-test ()
   "Test unicode-progress-reporter."
-  (let ((reporter (make-progress-reporter "Testing... ")))
-    (dotimes (i 200)
+  (let ((reporter (make-progress-reporter (concat "Testing " unicode-progress-reporter-type "... "))))
+    (dotimes (i 100)
       (progress-reporter-update reporter)
       (sit-for .1))
     (progress-reporter-done reporter)))
@@ -281,6 +282,7 @@ VALUE should be a key in `unicode-progress-reporter-pulse-characters'."
 ;; mangle-whitespace: t
 ;; require-final-newline: t
 ;; coding: utf-8
+;; byte-compile-warnings: (not cl-functions redefine)
 ;; End:
 ;;
 ;; LocalWords: UnicodeProgressReporter utils Oclock Ogham
