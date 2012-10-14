@@ -5,8 +5,8 @@
 ;; Author: Roland Walker <walker@pobox.com>
 ;; Homepage: http://github.com/rolandwalker/button-lock
 ;; URL: http://raw.github.com/rolandwalker/button-lock/master/button-lock.el
-;; Version: 0.9.9
-;; Last-Updated: 7 Sep 2012
+;; Version: 0.9.10
+;; Last-Updated: 14 Sep 2012
 ;; EmacsWiki: ButtonLockMode
 ;; Keywords: mouse, button, hypermedia, extensions
 ;;
@@ -156,7 +156,10 @@
 ;;
 ;; Compatibility and Requirements
 ;;
-;;     Tested on GNU Emacs versions 23.3 and 24.1
+;;     GNU Emacs version 24.3-devel     : yes, at the time of writing
+;;     GNU Emacs version 24.1 & 24.2    : yes
+;;     GNU Emacs version 23.3           : yes
+;;     GNU Emacs version 22.3 and lower : no
 ;;
 ;;     No external dependencies
 ;;
@@ -279,19 +282,16 @@
 ;;; requires
 
 ;; for callf, callf2, defun*, union
-(eval-when-compile
-  (require 'cl))
+(require 'cl)
 
 (require 'font-lock)
-
-(declare-function union "cl-seq.el")
 
 ;;; customizable variables
 
 ;;;###autoload
 (defgroup button-lock nil
   "Clickable text defined by regular expression."
-  :version "0.9.9"
+  :version "0.9.10"
   :link '(emacs-commentary-link "button-lock")
   :prefix "button-lock-"
   :group 'navigation
@@ -385,6 +385,10 @@ This variable should be set by calling
 (defvar button-lock-button-list nil
   "An internal variable used to keep track of button-lock buttons.")
 
+(defvar button-lock-mode nil
+  "Mode variable for `button-lock-mode'.")
+
+(make-variable-buffer-local 'button-lock-mode)
 (make-variable-buffer-local 'button-lock-button-list)
 (put 'button-lock-button-list 'permanent-local t)
 
@@ -398,6 +402,189 @@ in GNU Emacs 24.1 or higher."
   (if (eq 0 (cdr (subr-arity (symbol-function 'called-interactively-p))))
       '(called-interactively-p)
     `(called-interactively-p ,kind)))
+
+;;; compatibility functions
+
+;; string-match-p is new in 23.x and above
+(unless (fboundp 'string-match-p)
+  (defsubst string-match-p (regexp string &optional start)
+    "Same as `string-match' except this function does not change the match data."
+    (let ((inhibit-changing-match-data t))
+      (string-match regexp string start))))
+
+;;; utility functions
+
+;; buffer functions
+
+(defun button-lock-buffer-included-p (buf)
+  "Return BUF if global button-lock should enable button-lock in BUF."
+  (when (and (not noninteractive)
+             (bufferp buf)
+             (buffer-name buf))
+    (with-current-buffer buf
+      (when (and (not (minibufferp buf))
+                 (not (eq (aref (buffer-name) 0) ?\s))           ; overlaps with exclude-pattern
+                 (not (memq major-mode button-lock-exclude-modes))
+                 (not (string-match-p button-lock-buffer-name-exclude-pattern (buffer-name buf)))
+                 (catch 'success
+                   (dolist (filt button-lock-buffer-exclude-functions)
+                     (when (funcall filt buf)
+                       (throw 'success nil)))
+                   t)
+                 (catch 'failure
+                   (dolist (filt button-lock-buffer-include-functions)
+                     (unless (funcall filt buf)
+                       (throw 'failure nil)))
+                   t))
+        buf))))
+
+(defun button-lock-maybe-unbuttonify-buffer ()
+  "This is a workaround for cperl mode, which clobbers `font-lock-unfontify-region-function'."
+  (when (and (boundp 'font-lock-fontified)
+             font-lock-fontified
+             (not (eq font-lock-unfontify-region-function 'font-lock-default-unfontify-region)))
+    (font-lock-default-unfontify-region (point-min) (point-max))))
+
+(defun button-lock-maybe-fontify-buffer ()
+  "Fontify, but only if font-lock is already on.
+
+This is to avoid turning on font-lock if we are in the process of
+disabling button-lock."
+  (when (and (boundp 'font-lock-fontified)
+             font-lock-fontified)
+    (font-lock-fontify-buffer)))
+
+;; button functions
+
+;;;###autoload
+(defun button-lock-button-properties (button)
+  "Return list of properties for BUTTON."
+  (when (listp button)
+    (cadr (cadr (cadr button)))))
+
+;;;###autoload
+(defun button-lock-button-p (button)
+  "Return t if BUTTON is a button-lock button."
+  (ignore-errors
+    (car (memq 'button-lock (button-lock-button-properties button)))))
+
+;;;###autoload
+(defun button-lock-button-pattern (button)
+  "Return pattern for BUTTON."
+  (when (listp button)
+    (car button)))
+
+;;;###autoload
+(defun button-lock-button-grouping (button)
+  "Return grouping for BUTTON."
+  (when (listp button)
+    (car (cadr button))))
+
+;;;###autoload
+(defun button-lock-find-extent (&optional pos property)
+  "Find the extent of a button-lock property around some point.
+
+POS defaults to the current point.  PROPERTY defaults to
+'button-lock.
+
+Returns a cons in the form (START . END), or nil if there
+is no such PROPERTY around POS."
+  (callf or pos (point))
+  (callf or property 'button-lock)
+  (when (get-text-property pos property)
+    (cons (if (and (> pos (point-min)) (get-text-property (1- pos) property)) (previous-single-property-change pos property) pos)
+          (next-single-property-change pos property))))
+
+;; font-lock functions
+
+(defun button-lock-tell-font-lock (&optional forget)
+  "Tell `font-lock-keywords' about the buttons in `button-lock-button-list'.
+
+When FORGET is set, tell `font-lock-keywords' to forget about
+the buttons in `button-lock-button-list', as well as any other
+keywords with the 'button-lock property."
+  (if forget
+      (let ((keywords (copy-tree font-lock-keywords)))
+        (when (eq t (car keywords))
+          ;; get uncompiled keywords
+          (setq keywords (cadr keywords)))
+        (dolist (kw (union keywords button-lock-button-list))
+          (when (button-lock-button-p kw)
+            (font-lock-remove-keywords nil (list kw)))))
+  (unless button-lock-mode
+    (error "Button-lock mode is not in effect"))
+  (dolist (button button-lock-button-list)
+    (font-lock-remove-keywords nil (list button))
+    (font-lock-add-keywords nil (list button)))))
+
+(defun button-lock-do-tell ()
+  "Run `button-lock-tell-font-lock' appropriately in hooks."
+  (when button-lock-mode
+    (if font-lock-mode
+        (button-lock-tell-font-lock)
+      (button-lock-tell-font-lock 'forget))))
+
+;; internal driver for local buttons
+
+(defun button-lock-remove-from-button-list (button)
+  "Remove BUTTON from `button-lock-button-list' and `font-lock-keywords'."
+  (when button-lock-mode
+    (font-lock-remove-keywords nil (list button))
+    (button-lock-maybe-unbuttonify-buffer)     ; cperl-mode workaround
+    (button-lock-maybe-fontify-buffer))
+  (callf2 delete button button-lock-button-list)
+  nil)
+
+(defun button-lock-add-to-button-list (button &optional no-replace)
+  "Add BUTTON to `button-lock-button-list' and `font-lock-keywords'.
+
+The regexp used by the button is checked against the existing
+data structure.  If the regexp duplicates that of an existing button,
+the existing duplicate is replaced.
+
+If NO-REPLACE is set, no replacement is made for a duplicate button."
+  (let ((conflict (catch 'hit
+                    (dolist (b button-lock-button-list)
+                      (when (equal (car b) (car button))
+                        (throw 'hit b))))))
+    (if (and conflict no-replace)
+        conflict
+      (when (and conflict (not no-replace))
+        (button-lock-remove-from-button-list conflict))
+      (add-to-list 'button-lock-button-list button)
+      (when button-lock-mode
+        (font-lock-add-keywords nil (list button))
+        (button-lock-maybe-fontify-buffer))
+      button)))
+
+;; internal driver for global buttons
+
+(defun button-lock-remove-from-global-button-list (button)
+  "Remove BUTTON from `button-lock-global-button-list'."
+  (callf2 delete button button-lock-global-button-list))
+
+(defun button-lock-add-to-global-button-list (button &optional no-replace)
+  "Add BUTTON to `button-lock-global-button-list'.
+
+The regexp used by the button is checked against the existing
+data structure.  If the regexp duplicates that of an existing button,
+the existing duplicate is replaced.
+
+If NO-REPLACE is set, no replacement is made for a duplicate button."
+  (let ((conflict (catch 'hit
+                    (dolist (b button-lock-global-button-list)
+                      (when (equal (car b) (car button))
+                        (throw 'hit b))))))
+    (unless (and conflict no-replace)
+      (when (and conflict (not no-replace))
+        (button-lock-remove-from-global-button-list conflict))
+      (add-to-list 'button-lock-global-button-list button))))
+
+(defun button-lock-merge-global-buttons-to-local ()
+  "Add predefined, non-conflicting global buttons to the local list."
+  (dolist (button button-lock-global-button-list)
+    (unless (member button button-lock-button-list)
+      (apply 'button-lock-set-button (append button '(:no-replace t))))))
 
 ;;; minor-mode definition
 
@@ -440,22 +627,7 @@ the argument is 'toggle."
      (when (button-lock-called-interactively-p 'interactive)
        (message "button-lock mode disabled")))))
 
-;;;###autoload
-(define-globalized-minor-mode global-button-lock-mode button-lock-mode button-lock-maybe-turn-on
-  :group 'button-lock)
-
-;;; compatibility functions
-
-;; string-match-p is new in 23.x and above
-(unless (fboundp 'string-match-p)
-  (defsubst string-match-p (regexp string &optional start)
-    "Same as `string-match' except this function does not change the match data."
-    (let ((inhibit-changing-match-data t))
-      (string-match regexp string start))))
-
-;;; utility functions
-
-;; buffer functions
+;;; global minor-mode definition
 
 (defun button-lock-maybe-turn-on (&optional arg)
   "Activate `button-lock-mode' in a buffer if appropriate.
@@ -474,175 +646,9 @@ buffer."
             (button-lock-buffer-included-p (current-buffer)))
     (button-lock-mode arg)))
 
-(defun button-lock-buffer-included-p (buf)
-  "Return BUF if global button-lock should enable button-lock in BUF."
-  (when (and (not noninteractive)
-             (bufferp buf)
-             (buffer-name buf))
-    (with-current-buffer buf
-      (when (and (not (minibufferp buf))
-                 (not (eq (aref (buffer-name) 0) ?\s))           ; overlaps with exclude-pattern
-                 (not (memq major-mode button-lock-exclude-modes))
-                 (not (string-match-p button-lock-buffer-name-exclude-pattern (buffer-name buf)))
-                 (catch 'success
-                   (dolist (filt button-lock-buffer-exclude-functions)
-                     (when (funcall filt buf)
-                       (throw 'success nil)))
-                   t)
-                 (catch 'failure
-                   (dolist (filt button-lock-buffer-include-functions)
-                     (unless (funcall filt buf)
-                       (throw 'failure nil)))
-                   t))
-        buf))))
-
-(defun button-lock-maybe-unbuttonify-buffer ()
-  "This is a workaround for cperl mode, which clobbers `font-lock-unfontify-region-function'."
-  (when (and (boundp 'font-lock-fontified)
-             font-lock-fontified
-             (not (eq font-lock-unfontify-region-function 'font-lock-default-unfontify-region)))
-    (font-lock-default-unfontify-region (point-min) (point-max))))
-
-(defun button-lock-maybe-fontify-buffer ()
-  "Fontify, but only if font-lock is already on.
-
-This is to avoid turning on font-lock if we are in the process of
-disabling button-lock."
-  (when (and (boundp 'font-lock-fontified)
-             font-lock-fontified)
-    (font-lock-fontify-buffer)))
-
-;; font lock functions
-
-(defun button-lock-tell-font-lock (&optional forget)
-  "Tell `font-lock-keywords' about the buttons in `button-lock-button-list'.
-
-When FORGET is set, tell `font-lock-keywords' to forget about
-the buttons in `button-lock-button-list', as well as any other
-keywords with the 'button-lock property."
-  (if forget
-      (let ((keywords (copy-tree font-lock-keywords)))
-        (when (eq t (car keywords))
-          ;; get uncompiled keywords
-          (setq keywords (cadr keywords)))
-        (dolist (kw (union keywords button-lock-button-list))
-          (when (button-lock-button-p kw)
-            (font-lock-remove-keywords nil (list kw)))))
-  (unless button-lock-mode
-    (error "Button-lock mode is not in effect"))
-  (dolist (button button-lock-button-list)
-    (font-lock-remove-keywords nil (list button))
-    (font-lock-add-keywords nil (list button)))))
-
-(defun button-lock-do-tell ()
-  "Run `button-lock-tell-font-lock' appropriately in hooks."
-  (when button-lock-mode
-    (if font-lock-mode
-        (button-lock-tell-font-lock)
-      (button-lock-tell-font-lock 'forget))))
-
-;; button functions
-
 ;;;###autoload
-(defun button-lock-button-p (button)
-  "Return t if BUTTON is a button-lock button."
-  (ignore-errors
-    (car (memq 'button-lock (button-lock-button-properties button)))))
-
-;;;###autoload
-(defun button-lock-button-properties (button)
-  "Return list of properties for BUTTON."
-  (when (listp button)
-    (cadr (cadr (cadr button)))))
-
-;;;###autoload
-(defun button-lock-button-pattern (button)
-  "Return pattern for BUTTON."
-  (when (listp button)
-    (car button)))
-
-;;;###autoload
-(defun button-lock-button-grouping (button)
-  "Return grouping for BUTTON."
-  (when (listp button)
-    (car (cadr button))))
-
-;;;###autoload
-(defun button-lock-find-extent (&optional pos property)
-  "Find the extent of a button-lock property around some point.
-
-POS defaults to the current point.  PROPERTY defaults to
-'button-lock.
-
-Returns a cons in the form (START . END), or nil if there
-is no such PROPERTY around POS."
-  (callf or pos (point))
-  (callf or property 'button-lock)
-  (when (get-text-property pos property)
-    (cons (if (and (> pos (point-min)) (get-text-property (1- pos) property)) (previous-single-property-change pos property) pos)
-          (next-single-property-change pos property))))
-
-;; internal driver for local buttons
-
-(defun button-lock-add-to-button-list (button &optional no-replace)
-  "Add BUTTON to `button-lock-button-list' and `font-lock-keywords'.
-
-The regexp used by the button is checked against the existing
-data structure.  If the regexp duplicates that of an existing button,
-the existing duplicate is replaced.
-
-If NO-REPLACE is set, no replacement is made for a duplicate button."
-  (let ((conflict (catch 'hit
-                    (dolist (b button-lock-button-list)
-                      (when (equal (car b) (car button))
-                        (throw 'hit b))))))
-    (if (and conflict no-replace)
-        conflict
-      (when (and conflict (not no-replace))
-        (button-lock-remove-from-button-list conflict))
-      (add-to-list 'button-lock-button-list button)
-      (when button-lock-mode
-        (font-lock-add-keywords nil (list button))
-        (button-lock-maybe-fontify-buffer))
-      button)))
-
-(defun button-lock-remove-from-button-list (button)
-  "Remove BUTTON from `button-lock-button-list' and `font-lock-keywords'."
-  (when button-lock-mode
-    (font-lock-remove-keywords nil (list button))
-    (button-lock-maybe-unbuttonify-buffer)     ; cperl-mode workaround
-    (button-lock-maybe-fontify-buffer))
-  (callf2 delete button button-lock-button-list)
-  nil)
-
-;; internal driver for global buttons
-
-(defun button-lock-add-to-global-button-list (button &optional no-replace)
-  "Add BUTTON to `button-lock-global-button-list'.
-
-The regexp used by the button is checked against the existing
-data structure.  If the regexp duplicates that of an existing button,
-the existing duplicate is replaced.
-
-If NO-REPLACE is set, no replacement is made for a duplicate button."
-  (let ((conflict (catch 'hit
-                    (dolist (b button-lock-global-button-list)
-                      (when (equal (car b) (car button))
-                        (throw 'hit b))))))
-    (unless (and conflict no-replace)
-      (when (and conflict (not no-replace))
-        (button-lock-remove-from-global-button-list conflict))
-      (add-to-list 'button-lock-global-button-list button))))
-
-(defun button-lock-remove-from-global-button-list (button)
-  "Remove BUTTON from `button-lock-global-button-list'."
-  (callf2 delete button button-lock-global-button-list))
-
-(defun button-lock-merge-global-buttons-to-local ()
-  "Add predefined, non-conflicting global buttons to the local list."
-  (dolist (button button-lock-global-button-list)
-    (unless (member button button-lock-button-list)
-      (apply 'button-lock-set-button (append button '(:no-replace t))))))
+(define-globalized-minor-mode global-button-lock-mode button-lock-mode button-lock-maybe-turn-on
+  :group 'button-lock)
 
 ;;; principal external interface
 
@@ -1050,7 +1056,7 @@ deactivated and reactivated."
 ;; mangle-whitespace: t
 ;; require-final-newline: t
 ;; coding: utf-8
-;; byte-compile-warnings: (not cl-functions)
+;; byte-compile-warnings: (not cl-functions redefine)
 ;; End:
 ;;
 ;; LocalWords: ButtonLockMode mouseable mybutton keymap propertize
