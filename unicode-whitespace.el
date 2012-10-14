@@ -5,10 +5,10 @@
 ;; Author: Roland Walker <walker@pobox.com>
 ;; Homepage: http://github.com/rolandwalker/unicode-whitespace
 ;; URL: http://raw.github.com/rolandwalker/unicode-whitespace/master/unicode-whitespace.el
-;; Version: 0.2.2
-;; Last-Updated: 7 Sep 2012
+;; Version: 0.2.3
+;; Last-Updated: 14 Sep 2012
 ;; EmacsWiki: UnicodeWhitespace
-;; Package-Requires: ((ucs-utils "0.7.0") (persistent-soft "0.8.0") (pcache "0.2.3"))
+;; Package-Requires: ((ucs-utils "0.7.2") (persistent-soft "0.8.6") (pcache "0.2.3"))
 ;; Keywords: faces, wp, interface
 ;;
 ;; Simplified BSD License
@@ -97,7 +97,10 @@
 ;;
 ;; Compatibility and Requirements
 ;;
-;;     Tested on GNU Emacs versions 23.3 and 24.1
+;;     GNU Emacs version 24.3-devel     : yes, at the time of writing
+;;     GNU Emacs version 24.1 & 24.2    : yes
+;;     GNU Emacs version 23.3           : yes
+;;     GNU Emacs version 22.3 and lower : no
 ;;
 ;;     Requires ucs-utils.el
 ;;
@@ -202,10 +205,6 @@
 
 ;;; requires
 
-;; for let*
-(eval-when-compile
-  (require 'cl))
-
 (require 'whitespace)
 
 (autoload 'ucs-utils-char                "ucs-utils"    "Return the character corresponding to NAME, a UCS name.")
@@ -239,7 +238,7 @@
 ;;;###autoload
 (defgroup unicode-whitespace nil
   "Teach whitespace-mode about fancy characters."
-  :version "0.2.2"
+  :version "0.2.3"
   :link '(emacs-commentary-link "unicode-whitespace")
   :prefix "unicode-whitespace-"
   :group 'i18n
@@ -630,7 +629,7 @@ trailing tabs."
        ;; not buffer-local, and the whitespace library looks at both variables
        (let ((whitespace-style whitespace-style))
          (add-to-list 'whitespace-style 'newline-mark)
-         (set (make-local-variable 'whitespace-active-style) (copy-seq whitespace-style))
+         (set (make-local-variable 'whitespace-active-style) (copy-sequence whitespace-style))
          (whitespace-display-char-off)
          (whitespace-display-char-on))))))
 
@@ -757,22 +756,6 @@ trailing tabs."
 ;;; interactive commands
 
 ;;;###autoload
-(defun unicode-whitespace-setup (&optional subdued-faces)
-  "Configure `whitespace-mode' to be aware of extended characters.
-
-This only needs to be run once per session.
-
-When optional FACES is non-nil, change whitespace faces to
-subdued coloring, on the theory that the new display glyphs
-are sufficient to distinguish whitespace."
-  (interactive "P")
-  (unicode-whitespace-recognize-extended-characters)
-  (unicode-whitespace-display-extended-characters)
-  (unicode-whitespace-configure-styles)
-  (when subdued-faces
-    (unicode-whitespace-subdued-faces 1)))
-
-;;;###autoload
 (defun unicode-whitespace-subdued-faces (&optional arg)
   "Change the faces used by `whitespace-mode' to subdued coloring.
 
@@ -801,6 +784,22 @@ With negative prefix ARG, sets faces back to default values."
     (setq whitespace-hspace            'unicode-whitespace-subdued-hspace          )
     (setq whitespace-newline           'unicode-whitespace-subdued-newline         )
     (setq whitespace-line              'unicode-whitespace-subdued-line            )))
+
+;;;###autoload
+(defun unicode-whitespace-setup (&optional subdued-faces)
+  "Configure `whitespace-mode' to be aware of extended characters.
+
+This only needs to be run once per session.
+
+When optional FACES is non-nil, change whitespace faces to
+subdued coloring, on the theory that the new display glyphs
+are sufficient to distinguish whitespace."
+  (interactive "P")
+  (unicode-whitespace-recognize-extended-characters)
+  (unicode-whitespace-display-extended-characters)
+  (unicode-whitespace-configure-styles)
+  (when subdued-faces
+    (unicode-whitespace-subdued-faces 1)))
 
 ;;;###autoload
 (defun unicode-whitespace-toggle-echo ()
@@ -835,7 +834,7 @@ With negative prefix ARG, sets faces back to default values."
 ;; mangle-whitespace: t
 ;; require-final-newline: t
 ;; coding: utf-8
-;; byte-compile-warnings: (not cl-functions)
+;; byte-compile-warnings: (not cl-functions redefine)
 ;; End:
 ;;
 ;; LocalWords: UnicodeWhitespace ARGS alist nonbreak glyphless
