@@ -5,8 +5,8 @@
 ;; Author: Roland Walker <walker@pobox.com>
 ;; Homepage: http://github.com/rolandwalker/flyspell-lazy
 ;; URL: http://raw.github.com/rolandwalker/flyspell-lazy/master/flyspell-lazy.el
-;; Version: 0.6.1
-;; Last-Updated: 7 Sep 2012
+;; Version: 0.6.3
+;; Last-Updated: 28 Sep 2012
 ;; EmacsWiki: FlyspellLazy
 ;; Keywords: spelling
 ;;
@@ -62,9 +62,21 @@
 ;;
 ;;         (add-to-list 'ispell-extra-args "--sug-mode=ultra")
 ;;
+;;     If you see the cursor flicker over the region during spellcheck,
+;;     make sure that `flyspell-large-region' is set to 1 (this library
+;;     tries to do that for you), and try adding the following to your
+;;     ~/.emacs
+;;
+;;         (defadvice flyspell-small-region (around flyspell-small-region-no-sit-for activate)
+;;           (flet ((sit-for (&rest args) t))
+;;             ad-do-it))
+;;
 ;; Compatibility and Requirements
 ;;
-;;     Tested on GNU Emacs versions 23.3 and 24.1
+;;     GNU Emacs version 24.3-devel     : yes, at the time of writing
+;;     GNU Emacs version 24.1 & 24.2    : yes
+;;     GNU Emacs version 23.3           : yes
+;;     GNU Emacs version 22.3 and lower : no
 ;;
 ;;     No external dependencies
 ;;
@@ -169,17 +181,24 @@
 ;;; requires
 ;;;
 
-;; for let*, flet, callf, callf2, setf
-(eval-when-compile
-  (defvar flyspell-changes)
-  (defvar flyspell-large-region)
-  (defvar ispell-process)
-  (require 'cl))
+(eval-and-compile
+  ;; for flet/cl-flet, callf, callf2, setf
+  (require 'cl)
+  (unless (fboundp 'cl-flet)
+    (defalias 'cl-flet 'flet)
+    (put 'cl-flet 'lisp-indent-function 1)
+    (put 'cl-flet 'edebug-form-spec '((&rest (defun*)) cl-declarations body))))
 
 (declare-function flyspell-overlay-p             "flyspell.el")
 (declare-function flyspell-minibuffer-p          "flyspell.el")
 (declare-function flyspell-word                  "flyspell.el")
 (declare-function ispell-set-spellchecker-params "ispell.el"  )
+
+(eval-when-compile
+  ;; declarations for byte compiler
+  (defvar flyspell-changes)
+  (defvar flyspell-large-region)
+  (defvar ispell-process))
 
 ;;;
 ;;; customizable variables
@@ -188,7 +207,7 @@
 ;;;###autoload
 (defgroup flyspell-lazy nil
   "Improve flyspell responsiveness using idle timers."
-  :version "0.6.1"
+  :version "0.6.3"
   :link '(emacs-commentary-link "flyspell-lazy")
   :prefix "flyspell-lazy-"
   :group 'flyspell
@@ -263,6 +282,7 @@ Spellchecking is also disabled in the minibuffer."
 
 ;;; variables
 
+(defvar flyspell-lazy-mode         nil "Mode variable for `flyspell-lazy-mode'.")
 (defvar flyspell-lazy-local        nil "Whether flyspell-lazy is active in the current buffer.")
 (defvar flyspell-lazy-buffer-list  nil "List of buffers in which to run flyspell-lazy idle timer.")
 (defvar flyspell-lazy-timer        nil "Idle timer used by flyspell-lazy.")
@@ -687,7 +707,7 @@ This is the primary driver for `flyspell-lazy'."
                       (put 'flyspell-lazy-last-text 'stripped nil)
                       (with-timeout (1 (message "Spellcheck interrupted"))
                         (if flyspell-lazy-single-ispell
-                            (flet ((ispell-set-spellchecker-params (&rest args) t)
+                            (cl-flet ((ispell-set-spellchecker-params (&rest args) t)
                                    (flyspell-accept-buffer-local-defs (&rest args) t))
                               (flyspell-region start end))
                           (flyspell-region start end)))))
@@ -719,10 +739,21 @@ This is the primary driver for `flyspell-lazy'."
                 (sleep-for .5)
                 (compilation-goto-locus-delete-o))
               ;; compensate for inaccuracy of window-end
-              (setq end (min (+ end (window-body-width)) (point-max)))
+              (setq end (min (+ end (window-width)) (point-max)))
+              ;; move to word boundaries
+              (setq start (save-excursion
+                            (save-match-data
+                              (goto-char start)
+                              (search-backward-regexp "[ \n\t\r\f]" (- (point) 50) t)
+                              (point))))
+              (setq end (save-excursion
+                          (save-match-data
+                            (goto-char end)
+                            (search-forward-regexp "[ \n\t\r\f]" (+ (point) 50) t)
+                            (point))))
               (with-timeout (1 (message "Spellcheck interrupted"))
                 (if flyspell-lazy-single-ispell
-                    (flet ((ispell-set-spellchecker-params (&rest args) t)
+                    (cl-flet ((ispell-set-spellchecker-params (&rest args) t)
                            (flyspell-accept-buffer-local-defs (&rest args) t))
                       (flyspell-region start end))
                   (flyspell-region start end))))))))))
@@ -792,7 +823,7 @@ would usually be skipped."
           (let ((font-lock-fontify-buffer-function 'font-lock-default-fontify-buffer))
             (font-lock-fontify-buffer)))
         (if flyspell-lazy-single-ispell
-            (flet ((ispell-set-spellchecker-params (&rest args) t)
+            (cl-flet ((ispell-set-spellchecker-params (&rest args) t)
                    (flyspell-accept-buffer-local-defs (&rest args) t))
               (flyspell-buffer))
           ;; else
@@ -808,12 +839,12 @@ would usually be skipped."
 ;; mangle-whitespace: t
 ;; require-final-newline: t
 ;; coding: utf-8
-;; byte-compile-warnings: (not cl-functions)
+;; byte-compile-warnings: (not cl-functions redefine)
 ;; End:
 ;;
 ;; LocalWords: FlyspellLazy aspell setq args prog flyspell's flet
 ;; LocalWords: callf setf flylz nils defsubsts defsubst checkable
-;; LocalWords: inflooping punct
+;; LocalWords: inflooping punct cl-flet
 ;;
 
 ;;; flyspell-lazy.el ends here
