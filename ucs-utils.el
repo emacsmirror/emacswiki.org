@@ -5,10 +5,10 @@
 ;; Author: Roland Walker <walker@pobox.com>
 ;; Homepage: http://github.com/rolandwalker/ucs-utils
 ;; URL: http://raw.github.com/rolandwalker/ucs-utils/master/ucs-utils.el
-;; Version: 0.7.0
-;; Last-Updated: 6 Sep 2012
+;; Version: 0.7.2
+;; Last-Updated:  5 Oct 2012
 ;; EmacsWiki: UcsUtils
-;; Package-Requires: ((persistent-soft "0.8.0") (pcache "0.2.3"))
+;; Package-Requires: ((persistent-soft "0.8.6") (pcache "0.2.3"))
 ;; Keywords: i18n, extensions
 ;;
 ;; Simplified BSD License
@@ -75,20 +75,23 @@
 ;;
 ;; Compatibility and Requirements
 ;;
-;;     Tested on GNU Emacs versions 23.3 and 24.1
+;;     GNU Emacs version 24.3-devel     : yes, at the time of writing
+;;     GNU Emacs version 24.1 & 24.2    : yes
+;;     GNU Emacs version 23.3           : yes (*)
+;;     GNU Emacs version 22.3 and lower : no
 ;;
-;;     For full Emacs 23.x support, the library ucs-utils-6.0-delta.el
-;;     should also be installed.
+;;     (*) For full Emacs 23.x support, the library ucs-utils-6.0-delta.el
+;;         should also be installed.
 ;;
-;;     Requires persistent-soft.el
-;;
-;;     Uses if present: memoize.el
+;;     Uses if present: persistent-soft.el (Recommended)
 ;;
 ;; Bugs
 ;;
 ;; TODO
 ;;
 ;;     Accept synonyms on inputs? at least Tab would be nice.
+;;
+;;     Separate test run without persistent-soft.el
 ;;
 ;;; License
 ;;
@@ -125,28 +128,33 @@
 ;; interpreted as representing official policies, either expressed
 ;; or implied, of Roland Walker.
 ;;
+;; No rights are claimed over data created by the Unicode
+;; Consortium, which are included here under the terms of
+;; the Unicode Terms of Use.
+;;
 ;;; Code:
 ;;
 
 ;;; requires
 
-;; for callf, callf2, assert, flet, loop, let*
-(eval-when-compile
-  (require 'cl))
-
-(require 'memoize nil t)
+(eval-and-compile
+  ;; for callf, callf2, assert, flet/cl-flet, loop, gensym
+  (require 'cl)
+  (unless (fboundp 'cl-flet)
+    (defalias 'cl-flet 'flet)
+    (put 'cl-flet 'lisp-indent-function 1)
+    (put 'cl-flet 'edebug-form-spec '((&rest (defun*)) cl-declarations body))))
 
 (autoload 'pp                        "pp"              "Output the pretty-printed representation of OBJECT, any Lisp object.")
 (autoload 'pp-display-expression     "pp"              "Prettify and display EXPRESSION in an appropriate way, depending on length.")
 
-(autoload 'persistent-soft-store     "persistent-soft" "Under SYMBOL, store VALUE in the LOCATION persistent data store."   t)
-(autoload 'persistent-soft-fetch     "persistent-soft" "Return the value for SYMBOL in the LOCATION persistent data store." t)
-(autoload 'persistent-soft-exists-p  "persistent-soft" "Return t if SYMBOL exists in the LOCATION persistent data store."   t)
-(autoload 'persistent-soft-flush     "persistent-soft" "Flush data for the LOCATION data store to disk."                    t)
+(autoload 'persistent-soft-store             "persistent-soft" "Under SYMBOL, store VALUE in the LOCATION persistent data store."    )
+(autoload 'persistent-soft-fetch             "persistent-soft" "Return the value for SYMBOL in the LOCATION persistent data store."  )
+(autoload 'persistent-soft-exists-p          "persistent-soft" "Return t if SYMBOL exists in the LOCATION persistent data store."    )
+(autoload 'persistent-soft-flush             "persistent-soft" "Flush data for the LOCATION data store to disk."                     )
+(autoload 'persistent-soft-location-readable "persistent-soft" "Return non-nil if LOCATION is a readable persistent-soft data store.")
+(autoload 'persistent-soft-location-destroy  "persistent-soft" "Destroy LOCATION (a persistent-soft data store)."                    )
 
-(declare-function gensym                           "cl-macs.el")
-(declare-function memoize                          "memoize.el")
-(declare-function memoize-wrap                     "memoize.el")
 (declare-function ucs-utils-orig-read-char-by-name "ucs-utils.el")
 
 ;;; customizable variables
@@ -154,7 +162,7 @@
 ;;;###autoload
 (defgroup ucs-utils nil
   "Utilities for Unicode characters."
-  :version "0.7.0"
+  :version "0.7.2"
   :link '(emacs-commentary-link "ucs-utils")
   :prefix "ucs-utils-"
   :group 'i18n
@@ -990,28 +998,29 @@ of the persistent data store."
 ;; note: outside the ucs-utils- namespace
 (defvar character-name-history nil "History of character names entered in the minibuffer.")
 
+(defvar ucs-utils-char-mem (make-hash-table :test 'equal)
+  "Memoization data for `ucs-utils-char'.")
+
 ;;; compatibility functions
 
-(unless (fboundp 'memoize)
-  ;; by Christopher Wellons <mosquitopsu@gmail.com>
-  (defun memoize (func)
-    "Memoize the given function. If argument is a symbol then
-install the memoized function over the original function."
-    (typecase func
-      (symbol (fset func (memoize-wrap (symbol-function func))) func)
-      (function (memoize-wrap func))))
-  (defun memoize-wrap (func)
-    "Return the memoized version of the given function."
-    (let ((table-sym (gensym))
-          (val-sym (gensym))
-          (args-sym (gensym)))
-      (set table-sym (make-hash-table :test 'equal))
-      `(lambda (&rest ,args-sym)
-         ,(concat (documentation func) "\n(memoized function)")
-         (let ((,val-sym (gethash ,args-sym ,table-sym)))
-           (if ,val-sym
-               ,val-sym
-             (puthash ,args-sym (apply ,func ,args-sym) ,table-sym)))))))
+(defun persistent-softest-store (symbol value location &optional expiration)
+  "Call `persistent-soft-store' but don't fail when library not present."
+  (ignore-errors (persistent-soft-store symbol value location expiration)))
+(defun persistent-softest-fetch (symbol location)
+  "Call `persistent-soft-fetch' but don't fail when library not present."
+  (ignore-errors (persistent-soft-fetch symbol location)))
+(defun persistent-softest-exists-p (symbol location)
+  "Call `persistent-soft-exists-p' but don't fail when library not present."
+  (ignore-errors (persistent-soft-exists-p symbol location)))
+(defun persistent-softest-flush (location)
+  "Call `persistent-soft-flush' but don't fail when library not present."
+  (ignore-errors (persistent-soft-flush location)))
+(defun persistent-softest-location-readable (location)
+  "Call `persistent-soft-location-readable' but don't fail when library not present."
+  (ignore-errors (persistent-soft-location-readable location)))
+(defun persistent-softest-location-destroy (location)
+  "Call `persistent-soft-location-destroy' but don't fail when library not present."
+  (ignore-errors (persistent-soft-location-destroy location)))
 
 ;;; utility functions
 
@@ -1035,11 +1044,11 @@ a famous example of a conflict.
 
 Returns nil if NAME does not exist."
   (when (and ucs-utils-use-persistent-storage
-             (or (null (persistent-soft-fetch 'names-hash-emacs-version ucs-utils-use-persistent-storage))
-                 (version< (persistent-soft-fetch 'names-hash-emacs-version ucs-utils-use-persistent-storage)
+             (or (null (persistent-softest-fetch 'names-hash-emacs-version ucs-utils-use-persistent-storage))
+                 (version< (persistent-softest-fetch 'names-hash-emacs-version ucs-utils-use-persistent-storage)
                            emacs-version)))
     (setq ucs-utils-names-hash nil)
-    (persistent-soft-store 'ucs-utils-names-hash nil ucs-utils-use-persistent-storage))
+    (persistent-softest-store 'ucs-utils-names-hash nil ucs-utils-use-persistent-storage))
   (save-match-data
     (callf upcase name)
     (setq name (replace-regexp-in-string "\\`[ \t\"]+" ""
@@ -1048,7 +1057,7 @@ Returns nil if NAME does not exist."
                         (replace-regexp-in-string "_" " "  name)))))
     (when (and ucs-utils-trade-memory-for-speed
                (not (hash-table-p ucs-utils-names-hash)))
-      (unless (hash-table-p (setq ucs-utils-names-hash (persistent-soft-fetch 'ucs-utils-names-hash ucs-utils-use-persistent-storage)))
+      (unless (hash-table-p (setq ucs-utils-names-hash (persistent-softest-fetch 'ucs-utils-names-hash ucs-utils-use-persistent-storage)))
         (let ((dupes nil)
               (key nil))
           (setq ucs-utils-names-hash (make-hash-table :size (length (ucs-names)) :test 'equal))
@@ -1063,9 +1072,10 @@ Returns nil if NAME does not exist."
             (remhash key ucs-utils-names-hash))
           (dolist (cell ucs-utils-names-corrections)
             (puthash (car cell) (cdr cell) ucs-utils-names-hash))
-          (persistent-soft-store 'names-hash-emacs-version emacs-version ucs-utils-use-persistent-storage)
-          (persistent-soft-store 'ucs-utils-names-hash ucs-utils-names-hash ucs-utils-use-persistent-storage)
-          (persistent-soft-flush ucs-utils-use-persistent-storage))))
+          (persistent-softest-store 'names-hash-emacs-version emacs-version ucs-utils-use-persistent-storage)
+          (let ((persistent-soft-inhibit-sanity-checks t))
+            (persistent-softest-store 'ucs-utils-names-hash ucs-utils-names-hash ucs-utils-use-persistent-storage))
+          (persistent-softest-flush ucs-utils-use-persistent-storage))))
     (cond
       ((hash-table-p ucs-utils-names-hash)
        (gethash name ucs-utils-names-hash))
@@ -1162,19 +1172,28 @@ cache.
 
 When optional REGENERATE is given, re-generate cache."
   (when (and ucs-utils-use-persistent-storage
-             (or (null (persistent-soft-fetch 'prettified-names-emacs-version ucs-utils-use-persistent-storage))
-                 (version< (persistent-soft-fetch 'prettified-names-emacs-version ucs-utils-use-persistent-storage)
+             (or (null (persistent-softest-fetch 'prettified-names-emacs-version ucs-utils-use-persistent-storage))
+                 (version< (persistent-softest-fetch 'prettified-names-emacs-version ucs-utils-use-persistent-storage)
                            emacs-version)))
+    (setq regenerate t))
+  (when (and ucs-utils-use-persistent-storage
+             (not (stringp (persistent-softest-fetch 'ucs-utils-data-version ucs-utils-use-persistent-storage))))
+    (setq regenerate t))
+  (when (and ucs-utils-use-persistent-storage
+             (stringp (persistent-softest-fetch 'ucs-utils-data-version ucs-utils-use-persistent-storage))
+             (version<
+              (persistent-softest-fetch 'ucs-utils-data-version ucs-utils-use-persistent-storage)
+              (get 'ucs-utils 'custom-version)))
     (setq regenerate t))
   (when regenerate
     (setq ucs-utils-all-prettified-names nil)
-    (persistent-soft-store 'ucs-utils-all-prettified-names nil ucs-utils-use-persistent-storage))
+    (persistent-softest-store 'ucs-utils-all-prettified-names nil ucs-utils-use-persistent-storage))
   (cond
     (ucs-utils-all-prettified-names
      t)
     ((and (not regenerate)
-          (persistent-soft-exists-p 'ucs-utils-all-prettified-names ucs-utils-use-persistent-storage)
-          (consp (setq ucs-utils-all-prettified-names (persistent-soft-fetch 'ucs-utils-all-prettified-names ucs-utils-use-persistent-storage))))
+          (persistent-softest-exists-p 'ucs-utils-all-prettified-names ucs-utils-use-persistent-storage)
+          (consp (setq ucs-utils-all-prettified-names (persistent-softest-fetch 'ucs-utils-all-prettified-names ucs-utils-use-persistent-storage))))
      t)
     (t
      (let ((reporter (make-progress-reporter "Caching formatted UCS names... " 0 (length (ucs-names))))
@@ -1190,9 +1209,11 @@ When optional REGENERATE is given, re-generate cache."
            (push name ucs-utils-all-prettified-names))
          (setq prev-name name))
        (callf nreverse ucs-utils-all-prettified-names)
-       (persistent-soft-store 'ucs-utils-all-prettified-names ucs-utils-all-prettified-names ucs-utils-use-persistent-storage)
-       (persistent-soft-store 'prettified-names-emacs-version emacs-version ucs-utils-use-persistent-storage)
-       (persistent-soft-flush ucs-utils-use-persistent-storage)
+       (let ((persistent-soft-inhibit-sanity-checks t))
+         (persistent-softest-store 'ucs-utils-all-prettified-names ucs-utils-all-prettified-names ucs-utils-use-persistent-storage))
+       (persistent-softest-store 'prettified-names-emacs-version emacs-version ucs-utils-use-persistent-storage)
+       (persistent-softest-store 'ucs-utils-data-version (get 'ucs-utils 'custom-version) ucs-utils-use-persistent-storage)
+       (persistent-softest-flush ucs-utils-use-persistent-storage)
        (progress-reporter-done reporter))))
   ucs-utils-all-prettified-names)
 
@@ -1233,31 +1254,38 @@ symbol.
 When NAME is a character, it passes through unchanged, unless
 TEST is set, in which case it must pass TEST."
   (let ((char name)
-        (orig-fallback fallback))
-    (when (and (eq test 'cdp)
-               (not (fboundp 'cdp)))
-      (setq test 'char-displayable-p))
-    (when (stringp char)
-      (setq char (ucs-utils--lookup char)))
-    (when (stringp fallback)
-      (setq fallback (ucs-utils--lookup fallback))
-      (assert (integerp fallback) nil "Invalid fallback: %s" orig-fallback))
-    (cond
-      ((and (integerp char)
-            (or (not test) (funcall test char)))
-       char)
-      ((eq fallback 'error)
-       (error "Character invalid or undisplayable: %s" name))
-      ((or (eq fallback 'drop)
-           (null fallback))
-       nil)
-      ((vectorp fallback)
-       fallback)
-      (t
-       (assert (integerp fallback) nil "Invalid fallback: %s" orig-fallback)
-       fallback))))
-(when ucs-utils-trade-memory-for-speed
-  (memoize 'ucs-utils-char))
+        (orig-fallback fallback)
+        (args (list name fallback test))
+        (retval nil))
+    (if (and ucs-utils-trade-memory-for-speed
+             (gethash args ucs-utils-char-mem))
+        (gethash args ucs-utils-char-mem)
+      ;; else
+      (when (and (eq test 'cdp)
+                 (not (fboundp 'cdp)))
+        (setq test 'char-displayable-p))
+      (when (stringp char)
+        (setq char (ucs-utils--lookup char)))
+      (when (stringp fallback)
+        (setq fallback (ucs-utils--lookup fallback))
+        (assert (integerp fallback) nil "Invalid fallback: %s" orig-fallback))
+      (setq retval (cond
+                     ((and (integerp char)
+                           (or (not test) (funcall test char)))
+                      char)
+                     ((eq fallback 'error)
+                      (error "Character invalid or undisplayable: %s" name))
+                     ((or (eq fallback 'drop)
+                          (null fallback))
+                      nil)
+                     ((vectorp fallback)
+                      fallback)
+                     (t
+                      (assert (integerp fallback) nil "Invalid fallback: %s" orig-fallback)
+                      fallback)))
+      (when ucs-utils-trade-memory-for-speed
+        (puthash args retval ucs-utils-char-mem))
+      retval)))
 
 ;;;###autoload
 (defun ucs-utils-first-existing-char (sequence &optional test)
@@ -1473,7 +1501,7 @@ its UCS name translation."
     (assert result nil "Failed to find name for character at: %s" pos)
     (cond
       ((equal arg '(4))
-       (flet ((frame-width (&rest args) 0))
+       (cl-flet ((frame-width (&rest args) 0))
          (pp-display-expression result "*Pp Eval Output*")))
       ((consp arg)
        (if (and (not pos)
@@ -1517,7 +1545,10 @@ INHERIT is as documented at `ucs-insert'."
       (ucs-utils-read-char-by-name "Unicode (name or hex): " 'ido))
     (prefix-numeric-value current-prefix-arg)
     t))
-  (ucs-insert (ucs-utils-char character 'error) count inherit))
+  (let ((insert-func 'ucs-insert))
+    (when (get insert-func 'byte-obsolete-info)
+      (setq insert-func 'insert-char))
+    (funcall insert-func (ucs-utils-char character 'error) count inherit)))
 
 ;;;###autoload
 (defun ucs-utils-install-aliases ()
