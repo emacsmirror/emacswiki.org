@@ -5,10 +5,10 @@
 ;; Author: Roland Walker <walker@pobox.com>
 ;; Homepage: http://github.com/rolandwalker/unicode-enbox
 ;; URL: http://raw.github.com/rolandwalker/unicode-enbox/master/unicode-enbox.el
-;; Version: 0.1.2
-;; Last-Updated: 27 Aug 2012
+;; Version: 0.1.3
+;; Last-Updated: 14 Sep 2012
 ;; EmacsWiki: UnicodeEnbox
-;; Package-Requires: ((string-utils "0.0.1") (ucs-utils "0.6.0") (persistent-soft "0.8.0") (pcache "0.2.3"))
+;; Package-Requires: ((string-utils "0.0.1") (ucs-utils "0.7.2") (persistent-soft "0.8.6") (pcache "0.2.3"))
 ;; Keywords: extensions, interface
 ;;
 ;; Simplified BSD License
@@ -57,7 +57,10 @@
 ;;
 ;; Compatibility and Requirements
 ;;
-;;     Tested on GNU Emacs versions 23.3 and 24.1
+;;     GNU Emacs version 24.3-devel     : yes, at the time of writing
+;;     GNU Emacs version 24.1 & 24.2    : yes
+;;     GNU Emacs version 23.3           : yes
+;;     GNU Emacs version 22.3 and lower : no
 ;;
 ;;     Requires string-utils.el, ucs-utils.el
 ;;
@@ -121,8 +124,7 @@
 ;;; requires
 
 ;; for callf
-(eval-when-compile
-  (require 'cl))
+(require 'cl)
 
 (autoload 'string-utils-has-darkspace-p  "string-utils" "Test whether OBJ, when coerced to a string, has any non-whitespace characters.")
 (autoload 'string-utils-pad-list         "string-utils" "Pad each member of STR-LIST to match the longest width.")
@@ -194,7 +196,7 @@
 ;;;###autoload
 (defgroup unicode-enbox nil
   "Surround a string with box-drawing characters."
-  :version "0.1.2"
+  :version "0.1.3"
   :link '(emacs-commentary-link "unicode-enbox")
   :prefix "unicode-enbox-"
   :group 'extensions)
@@ -216,6 +218,55 @@
 ;;; principal interface
 
 ;;;###autoload
+(defun unicode-enbox-debox (str-val &optional force box-type)
+  "Remove box drawing from the border of STR-VAL.
+
+Unless optional FORCE is set, do not attempt to debox unless
+`unicode-enbox' was previously run on STR-VAL.  This is detected
+by means of the text property `unicode-enbox-type', or falls
+back to `unicode-enbox-default-type'.
+
+Optional BOX-TYPE overrides the `unicode-enbox-type' text property
+or default type."
+  (if (and (not force)
+           (not (get-text-property 0 'unicode-enbox-type str-val)))
+      str-val
+    (callf or box-type (get-text-property 0 'unicode-enbox-type str-val) unicode-enbox-default-type)
+    (destructuring-bind (top-left-corner
+                         top-right-corner
+                         bottom-left-corner
+                         bottom-right-corner
+                         horizontal-line
+                         vertical-line
+                         vertical-line-left-conx
+                         vertical-line-right-conx)
+        (mapcar #'(lambda (cell)
+                    (ucs-utils-string (cdr cell) ?. 'cdp))
+                (cdr (assoc-string box-type unicode-enbox-box-drawing-characters)))
+      (let ((str-list (split-string str-val "\n")))
+        (when (and str-list
+                   (string-match-p (concat "\\`[" top-left-corner horizontal-line top-right-corner "]+\\'")
+                                   (car str-list)))
+          (pop str-list))
+        (callf nreverse str-list)
+        (when (and str-list
+                   (string-match-p (concat "\\`[" bottom-left-corner horizontal-line bottom-right-corner "]+\\'")
+                                   (car str-list)))
+          (pop str-list))
+        (callf nreverse str-list)
+        (callf2 mapcar #'(lambda (str)
+                           (replace-regexp-in-string
+                            (concat "\\`[" vertical-line vertical-line-left-conx vertical-line-right-conx "]" ) "" str))
+                str-list)
+        (callf2 mapcar #'(lambda (str)
+                           (replace-regexp-in-string
+                            (concat "["    vertical-line vertical-line-left-conx vertical-line-right-conx "]\\'") "" str))
+                str-list)
+        (dolist (str str-list)
+          (remove-text-properties 0 (length str) '(unicode-enbox-type nil) str))
+        (mapconcat 'identity str-list "\n")))))
+
+;;;###autoload
 (defun unicode-enbox (str-val &optional unicode-only side-mode top-mode force box-type)
   "Return multi-line STR-VAL enclosed in a box.
 
@@ -234,19 +285,20 @@ overwrite content or append/prepend to it.
 
 Unless optional FORCE is set, do not attempt to debox unless
 `unicode-enbox' was previously run on STR-VAL.  This is detected
-by means of the text property `unicode-enbox-default-type'.
+by means of the text property `unicode-enbox-type'.
 
 Optional BOX-TYPE overrides the `unicode-enbox-default-type'
 customizable variable, which defaults to \"Standard\".
 
-The text property `unicode-enbox-default-type' will be set on the
-return value to match BOX-TYPE."
-  (if (or (and (get-text-property 0 'unicode-enbox-default-type str-val)
-               (not force))
-          (and unicode-only
-               (not (unicode-enbox-unicode-display-p))))
+The text property `unicode-enbox-type' will be set on the return
+value to match BOX-TYPE."
+  (if (and unicode-only
+           (not (unicode-enbox-unicode-display-p)))
       str-val
     ;; else
+    (when (or force
+              (get-text-property 0 'unicode-enbox-type str-val))
+      (callf unicode-enbox-debox str-val force))
     (callf or box-type unicode-enbox-default-type)
     (unless (unicode-enbox-unicode-display-p)
       (setq box-type "ASCII"))
@@ -335,55 +387,7 @@ return value to match BOX-TYPE."
                     str-list))
 
           ;; glue together and propertize the return value
-          (propertize (mapconcat 'identity str-list "\n") 'unicode-enbox-default-type box-type)))))
-
-;;;###autoload
-(defun unicode-enbox-debox (str-val &optional force box-type)
-  "Remove box drawing from the border of STR-VAL.
-
-Unless optional FORCE is set, do not attempt to debox unless
-`unicode-enbox' was previously run on STR-VAL.  This is detected
-by means of the text property `unicode-enbox-default-type'.
-
-Optional BOX-TYPE overrides the `unicode-enbox-default-type' text property
-on STR-VAL."
-  (if (and (not force)
-           (not (get-text-property 0 'unicode-enbox-default-type str-val)))
-      str-val
-    (callf or box-type (get-text-property 0 'unicode-enbox-default-type str-val))
-    (destructuring-bind (top-left-corner
-                         top-right-corner
-                         bottom-left-corner
-                         bottom-right-corner
-                         horizontal-line
-                         vertical-line
-                         vertical-line-left-conx
-                         vertical-line-right-conx)
-        (mapcar #'(lambda (cell)
-                    (ucs-utils-string (cdr cell) ?. 'cdp))
-                (cdr (assoc-string box-type unicode-enbox-box-drawing-characters)))
-      (let ((str-list (split-string str-val "\n")))
-        (when (and str-list
-                   (string-match-p (concat "\\`[" top-left-corner horizontal-line top-right-corner "]+\\'")
-                                   (car str-list)))
-          (pop str-list))
-        (callf nreverse str-list)
-        (when (and str-list
-                   (string-match-p (concat "\\`[" bottom-left-corner horizontal-line bottom-right-corner "]+\\'")
-                                   (car str-list)))
-          (pop str-list))
-        (callf nreverse str-list)
-        (callf2 mapcar #'(lambda (str)
-                           (replace-regexp-in-string
-                            (concat "\\`[" vertical-line vertical-line-left-conx vertical-line-right-conx "]" ) "" str))
-                str-list)
-        (callf2 mapcar #'(lambda (str)
-                           (replace-regexp-in-string
-                            (concat "["    vertical-line vertical-line-left-conx vertical-line-right-conx "]\\'") "" str))
-                str-list)
-        (dolist (str str-list)
-          (remove-text-properties 0 (length str) '(unicode-enbox-default-type nil) str))
-        (mapconcat 'identity str-list "\n")))))
+          (propertize (mapconcat 'identity str-list "\n") 'unicode-enbox-type box-type)))))
 
 (provide 'unicode-enbox)
 
@@ -395,6 +399,7 @@ on STR-VAL."
 ;; mangle-whitespace: t
 ;; require-final-newline: t
 ;; coding: utf-8
+;; byte-compile-warnings: (not cl-functions redefine)
 ;; End:
 ;;
 ;; LocalWords:  UnicodeEnbox ARGS alist utils enbox deboxing debox
