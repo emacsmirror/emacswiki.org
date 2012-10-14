@@ -5,10 +5,10 @@
 ;; Author: Roland Walker <walker@pobox.com>
 ;; Homepage: http://github.com/rolandwalker/ido-load-library
 ;; URL: http://raw.github.com/rolandwalker/ido-load-library/master/ido-load-library.el
-;; Version: 0.1.0
-;; Last-Updated:  27 Aug 2012
+;; Version: 0.1.2
+;; Last-Updated:  5 Oct 2012
 ;; EmacsWiki: IdoLoadLibrary
-;; Package-Requires: ((persistent-soft "0.1.0") (pcache "0.2.3"))
+;; Package-Requires: ((persistent-soft "0.8.6") (pcache "0.2.3"))
 ;; Keywords: maint, completion
 ;;
 ;; Simplified BSD License
@@ -41,7 +41,7 @@
 ;;
 ;;     (define-key global-map (kbd "C-c l") 'ido-load-library)
 ;;
-;; or safely aliased to load-library
+;; or safely aliased to `load-library'
 ;;
 ;;     (defalias 'load-library 'ido-load-library)
 ;;
@@ -62,9 +62,12 @@
 ;;
 ;; Compatibility and Requirements
 ;;
-;;     Tested on GNU Emacs versions 23.3 and 24.1
+;;     GNU Emacs version 24.3-devel     : yes, at the time of writing
+;;     GNU Emacs version 24.1 & 24.2    : yes
+;;     GNU Emacs version 23.3           : yes
+;;     GNU Emacs version 22.3 and lower : no
 ;;
-;;     Requires persistent-soft.el
+;;     Uses if present: persistent-soft.el (Recommended)
 ;;
 ;; Bugs
 ;;
@@ -123,25 +126,23 @@
 
 ;;; requires
 
-(eval-when-compile
-  (require 'cl))
+;; for callf, incf, assert, remove-if, remove-if-not
+(require 'cl)
 
-(autoload 'persistent-soft-store     "persistent-soft" "Under SYMBOL, store VALUE in the LOCATION persistent data store."   t)
-(autoload 'persistent-soft-fetch     "persistent-soft" "Return the value for SYMBOL in the LOCATION persistent data store." t)
-(autoload 'persistent-soft-exists-p  "persistent-soft" "Return t if SYMBOL exists in the LOCATION persistent data store."   t)
-(autoload 'persistent-soft-flush     "persistent-soft" "Flush data for the LOCATION data store to disk."                    t)
-
-(autoload 'thing-at-point            "thingatpt"       "Return the THING at point."                                       nil)
-
-(declare-function remove-if          "cl-seq.el")
-(declare-function remove-if-not      "cl-seq.el")
+(autoload 'persistent-soft-store             "persistent-soft" "Under SYMBOL, store VALUE in the LOCATION persistent data store."    )
+(autoload 'persistent-soft-fetch             "persistent-soft" "Return the value for SYMBOL in the LOCATION persistent data store."  )
+(autoload 'persistent-soft-exists-p          "persistent-soft" "Return t if SYMBOL exists in the LOCATION persistent data store."    )
+(autoload 'persistent-soft-flush             "persistent-soft" "Flush data for the LOCATION data store to disk."                     )
+(autoload 'persistent-soft-location-readable "persistent-soft" "Return non-nil if LOCATION is a readable persistent-soft data store.")
+(autoload 'persistent-soft-location-destroy  "persistent-soft" "Destroy LOCATION (a persistent-soft data store)."                    )
+(autoload 'thing-at-point                    "thingatpt"       "Return the THING at point."                                       nil)
 
 ;;; customizable variables
 
 ;;;###autoload
 (defgroup ido-load-library nil
   "Load-library alternative using `ido-completing-read'."
-  :version "0.1.0"
+  :version "0.1.2"
   :link '(emacs-commentary-link "ido-load-library")
   :prefix "ido-load-library-"
   :group 'abbreviations
@@ -180,6 +181,27 @@ of the persistent data store."
 ;; note: outside of ido-load-library- namespace
 (defvar library-name-history nil "History of library names entered in the minibuffer.")
 
+;;; compatibility functions
+
+(defun persistent-softest-store (symbol value location &optional expiration)
+  "Call `persistent-soft-store' but don't fail when library not present."
+  (ignore-errors (persistent-soft-store symbol value location expiration)))
+(defun persistent-softest-fetch (symbol location)
+  "Call `persistent-soft-fetch' but don't fail when library not present."
+  (ignore-errors (persistent-soft-fetch symbol location)))
+(defun persistent-softest-exists-p (symbol location)
+  "Call `persistent-soft-exists-p' but don't fail when library not present."
+  (ignore-errors (persistent-soft-exists-p symbol location)))
+(defun persistent-softest-flush (location)
+  "Call `persistent-soft-flush' but don't fail when library not present."
+  (ignore-errors (persistent-soft-flush location)))
+(defun persistent-softest-location-readable (location)
+  "Call `persistent-soft-location-readable' but don't fail when library not present."
+  (ignore-errors (persistent-soft-location-readable location)))
+(defun persistent-softest-location-destroy (location)
+  "Call `persistent-soft-location-destroy' but don't fail when library not present."
+  (ignore-errors (persistent-soft-location-destroy location)))
+
 ;;; utility functions
 
 (defun ido-load-library-all-library-names (&optional progress regenerate)
@@ -192,22 +214,31 @@ With optional PROGRESS, report progress building cache.
 With optional REGENERATE, force rebuilding the cache."
   (when (not (equal load-path ido-load-library-load-path-saved))
     (setq regenerate t))
+  (when (and ido-load-library-use-persistent-storage
+             (not (stringp (persistent-softest-fetch 'ido-load-library-data-version ido-load-library-use-persistent-storage))))
+    (setq regenerate t))
+  (when (and ido-load-library-use-persistent-storage
+             (stringp (persistent-softest-fetch 'ido-load-library-data-version ido-load-library-use-persistent-storage))
+             (version<
+              (persistent-softest-fetch 'ido-load-library-data-version ido-load-library-use-persistent-storage)
+              (get 'ido-load-library 'custom-version)))
+    (setq regenerate t))
   (when regenerate
     (setq ido-load-library-all-library-names nil)
-    (persistent-soft-store 'ido-load-library-all-library-names nil
-                           ido-load-library-use-persistent-storage
-                           (round (* 60 60 24 ido-load-library-persistent-storage-expiration-days)))
-    (persistent-soft-store 'ido-load-library-all-library-paths nil
-                           ido-load-library-use-persistent-storage
-                           (round (* 60 60 24 ido-load-library-persistent-storage-expiration-days))))
+    (persistent-softest-store 'ido-load-library-all-library-names nil
+                              ido-load-library-use-persistent-storage
+                              (round (* 60 60 24 ido-load-library-persistent-storage-expiration-days)))
+    (persistent-softest-store 'ido-load-library-all-library-paths nil
+                              ido-load-library-use-persistent-storage
+                              (round (* 60 60 24 ido-load-library-persistent-storage-expiration-days))))
   (cond
     (ido-load-library-all-library-names
      t)
     ((and (not regenerate)
-          (persistent-soft-exists-p 'ido-load-library-all-library-names ido-load-library-use-persistent-storage)
-          (equal load-path (persistent-soft-fetch 'ido-load-library-load-path-saved ido-load-library-use-persistent-storage))
-          (consp (setq ido-load-library-all-library-names (persistent-soft-fetch 'ido-load-library-all-library-names ido-load-library-use-persistent-storage)))
-          (consp (setq ido-load-library-all-library-paths (persistent-soft-fetch 'ido-load-library-all-library-paths ido-load-library-use-persistent-storage))))
+          (persistent-softest-exists-p 'ido-load-library-all-library-names ido-load-library-use-persistent-storage)
+          (equal load-path (persistent-softest-fetch 'ido-load-library-load-path-saved ido-load-library-use-persistent-storage))
+          (consp (setq ido-load-library-all-library-names (persistent-softest-fetch 'ido-load-library-all-library-names ido-load-library-use-persistent-storage)))
+          (consp (setq ido-load-library-all-library-paths (persistent-softest-fetch 'ido-load-library-all-library-paths ido-load-library-use-persistent-storage))))
      (setq ido-load-library-load-path-saved load-path))
     (t
      (let ((reporter (when progress (make-progress-reporter "Caching library names..." 0 (length load-path))))
@@ -236,16 +267,20 @@ With optional REGENERATE, force rebuilding the cache."
        (delete-dups ido-load-library-all-library-paths)
 
        (setq ido-load-library-load-path-saved load-path)
-       (persistent-soft-store 'ido-load-library-all-library-names ido-load-library-all-library-names
-                              ido-load-library-use-persistent-storage
-                              (round (* 60 60 24 ido-load-library-persistent-storage-expiration-days)))
-       (persistent-soft-store 'ido-load-library-all-library-paths ido-load-library-all-library-paths
-                              ido-load-library-use-persistent-storage
-                              (round (* 60 60 24 ido-load-library-persistent-storage-expiration-days)))
-       (persistent-soft-store 'ido-load-library-load-path-saved   ido-load-library-load-path-saved
-                              ido-load-library-use-persistent-storage
-                              (round (* 60 60 24 ido-load-library-persistent-storage-expiration-days)))
-       (persistent-soft-flush ido-load-library-use-persistent-storage)
+       (let ((persistent-soft-inhibit-sanity-checks t))
+         (persistent-softest-store 'ido-load-library-all-library-names ido-load-library-all-library-names
+                                   ido-load-library-use-persistent-storage
+                                   (round (* 60 60 24 ido-load-library-persistent-storage-expiration-days)))
+         (persistent-softest-store 'ido-load-library-all-library-paths ido-load-library-all-library-paths
+                                   ido-load-library-use-persistent-storage
+                                   (round (* 60 60 24 ido-load-library-persistent-storage-expiration-days)))
+         (persistent-softest-store 'ido-load-library-load-path-saved   ido-load-library-load-path-saved
+                                   ido-load-library-use-persistent-storage
+                                   (round (* 60 60 24 ido-load-library-persistent-storage-expiration-days)))
+         (persistent-softest-store 'ido-load-library-data-version (get 'ido-load-library 'custom-version)
+                                   ido-load-library-use-persistent-storage
+                                   (round (* 60 60 24 ido-load-library-persistent-storage-expiration-days))))
+       (persistent-softest-flush ido-load-library-use-persistent-storage)
        (when progress
          (progress-reporter-done reporter)))))
   ido-load-library-all-library-names)
@@ -315,7 +350,7 @@ universal prefix argument."
 ;; mangle-whitespace: t
 ;; require-final-newline: t
 ;; coding: utf-8
-;; byte-compile-warnings: (not cl-functions)
+;; byte-compile-warnings: (not cl-functions redefine)
 ;; End:
 ;;
 ;; LocalWords: IdoLoadLibrary
