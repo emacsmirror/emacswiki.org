@@ -1,11 +1,12 @@
 ;;; wiki-nav.el --- Simple file navigation using [[WikiStrings]]
 ;;
-;; Copyright (c) 2011-12 D Roland Walker
+;; Copyright (c) 2011-12 Roland Walker
 ;;
-;; Author: D Roland Walker <walker@pobox.com>
-;; URL: https://github.com/rolandwalker/button-lock/raw/master/wiki-nav.el
-;; Version: 0.6.3
-;; Last-Updated: 27 Aug 2012
+;; Author: Roland Walker <walker@pobox.com>
+;; Homepage: http://github.com/rolandwalker/button-lock
+;; URL: http://raw.github.com/rolandwalker/button-lock/master/wiki-nav.el
+;; Version: 0.6.4
+;; Last-Updated: 14 Sep 2012
 ;; EmacsWiki: WikiNavMode
 ;; Keywords: mouse, button, hypermedia, navigation
 ;; Package-Requires: ((button-lock "0.9.6") (nav-flash "1.0.0"))
@@ -18,7 +19,8 @@
 ;;
 ;; Table of Contents
 ;;
-;; [[Intro]]
+;; [[Quickstart]]
+;; [[Explanation]]
 ;; [[Example usage]]
 ;; [[See Also]]
 ;; [[Prior Art]]
@@ -31,7 +33,15 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;
 ;;
-;; [[<Intro]]
+;; [[<Quickstart]]
+;;
+;;     (require 'wiki-nav)
+;;
+;;     (global-wiki-nav-mode 1)
+;;
+;;     Sprinkle double-bracketed [[links]] in your code comments
+;;
+;; [[<Explanation]]
 ;;
 ;; Wiki-nav.el is a minor mode which recognizes [[wiki-style]]
 ;; double-bracketed navigation links in any type of file, providing
@@ -42,18 +52,18 @@
 ;; font-lock.el.  Font-lock.el is provided with Emacs.
 ;; Button-lock.el is available here
 ;;
-;;    https://github.com/rolandwalker/button-lock
+;;     http://github.com/rolandwalker/button-lock
 ;;
 ;; [[<Example usage]]
 ;;
 ;;     Add the following to your ~/.emacs
 ;;
-;;        (require 'wiki-nav)
-;;        (global-wiki-nav-mode 1)
+;;         (require 'wiki-nav)
+;;         (global-wiki-nav-mode 1)
 ;;
 ;;     and sprinkle
 ;;
-;;        [[links]]
+;;         [[links]]
 ;;
 ;;     throughout your files.  That's it.  There's more functionality,
 ;;     but simple [[links]] may be all you need.
@@ -67,7 +77,7 @@
 ;;     To navigate upward to a previous matching link, add a '<'
 ;;     symbol before the search text
 ;;
-;;        [[<links]]
+;;         [[<links]]
 ;;
 ;;     You can insert the '>' symbol, too, but that simply indicates
 ;;     the default forward-search navigation.
@@ -79,47 +89,47 @@
 ;;
 ;;     From the keyboard:
 ;;
-;;        control-c w   skip forward in the buffer to the next link
+;;         control-c w   skip forward in the buffer to the next link
 ;;
-;;        control-c W   skip backward in the buffer to the previous link
+;;         control-c W   skip backward in the buffer to the previous link
 ;;
-;;        return        if positioned on a link, activate it
+;;         return        if positioned on a link, activate it
 ;;
-;;        tab           if positioned on a link, skip forward in the
-;;                      buffer to the next link of any kind (need not
-;;                      match the current link)
+;;         tab           if positioned on a link, skip forward in the
+;;                       buffer to the next link of any kind (need not
+;;                       match the current link)
 ;;
-;;        S-tab         if positioned on a link, skip backward in the
-;;                      buffer to the previous link of any kind (need not
-;;                      not match the current link)
+;;         S-tab         if positioned on a link, skip backward in the
+;;                       buffer to the previous link of any kind (need not
+;;                       not match the current link)
 ;;
 ;; Advanced usage:
 ;;
 ;;     Bracketed links may contain external URLs
 ;;
-;;        [[http://google.com]]
+;;         [[http://google.com]]
 ;;
 ;;     Or they may use various internally-recognized URI schemes:
 ;;
 ;;     visit: navigates to another file
 ;;
-;;        [[visit:/etc/hosts]]
+;;         [[visit:/etc/hosts]]
 ;;
-;;        [[visit:/path/to/another/file:NameOfLink]]
+;;         [[visit:/path/to/another/file:NameOfLink]]
 ;;
 ;;     func: navigates to the definition of a function
 ;;
-;;        [[func:main]]
+;;         [[func:main]]
 ;;
 ;;     line: navigates to a line number
 ;;
-;;        [[line:12]]
+;;         [[line:12]]
 ;;
 ;;     visit: may be combined with other schemes:
 ;;
-;;        [[visit:/path/to/another/file:func:main]]
+;;         [[visit:/path/to/another/file:func:main]]
 ;;
-;;        [[visit:/etc/hosts:line:5]]
+;;         [[visit:/etc/hosts:line:5]]
 ;;
 ;;     Path names and similar strings are subjected to URI-style
 ;;     unescaping before lookup.  To link a filename which contains a
@@ -181,7 +191,10 @@
 ;;
 ;; [[<Compatibility and Requirements]]
 ;;
-;;     Tested on GNU Emacs 24.1 only.
+;;     GNU Emacs version 24.3-devel     : yes, at the time of writing
+;;     GNU Emacs version 24.1 & 24.2    : yes
+;;     GNU Emacs version 23.3           : yes
+;;     GNU Emacs version 22.3 and lower : no
 ;;
 ;;     Requires button-lock.el
 ;;
@@ -189,106 +202,106 @@
 ;;
 ;; [[<Todo]]
 ;;
-;;    ido support - document and provide default bindings
+;;     ido support - document and provide default bindings
 ;;
-;;    instead of comment-only modes, check if comment syntax is present
-;;    in buffer as is done in fixmee-mode, and use syntax-ppss rather
-;;    than regexp to detect comment context
+;;     instead of comment-only modes, check if comment syntax is present
+;;     in buffer as is done in fixmee-mode, and use syntax-ppss rather
+;;     than regexp to detect comment context
 ;;
-;;    support kbd-help property
+;;     support kbd-help property
 ;;
-;;    follow the doc for defgroup to find link functions which are
-;;    built-in to Emacs
+;;     follow the doc for defgroup to find link functions which are
+;;     built-in to Emacs
 ;;
-;;    these and other widgets are used in customize/help
-;;    wiki-nav should reuse the widget functions (wid-edit.el and others)
-;;       emacs-commentary-link
-;;       emacs-library-link
-;;    and the xref functions in help-mode.el
+;;     these and other widgets are used in customize/help
+;;     wiki-nav should reuse the widget functions (wid-edit.el and others)
+;;         emacs-commentary-link
+;;         emacs-library-link
+;;     and the xref functions in help-mode.el
 ;;
-;;    use a function matcher in font-lock keywords instead of regexp to
-;;    get comment-only matches to work perfectly.  fixmee.el has correct
-;;    code to match in comment
+;;     use a function matcher in font-lock keywords instead of regexp to
+;;     get comment-only matches to work perfectly.  fixmee.el has correct
+;;     code to match in comment
 ;;
-;;    wiki-nav-external-link-pattern might be replaced with functions
-;;    from url-util
+;;     wiki-nav-external-link-pattern might be replaced with functions
+;;     from url-util
 ;;
-;;    visit:-1 counts from end of file
+;;     visit:-1 counts from end of file
 ;;
-;;    keyboard analog for double-click
+;;     keyboard analog for double-click
 ;;
-;;    right-click context menu
+;;     right-click context menu
 ;;
-;;    link any string <<<text>>> together within a file
-;;    like org-mode radio links
+;;     link any string <<<text>>> together within a file
+;;     like org-mode radio links
 ;;
-;;    patch font-lock to support keyword searching in comment only,
-;;    like 'keep, only different - maybe not needed if using a func
-;;    instead of a regexp in keyword
+;;     patch font-lock to support keyword searching in comment only,
+;;     like 'keep, only different - maybe not needed if using a func
+;;     instead of a regexp in keyword
 ;;
-;;    raised button style option
+;;     raised button style option
 ;;
-;;    break down monolithic dispatch function wiki-nav-action-1
+;;     break down monolithic dispatch function wiki-nav-action-1
 ;;
-;;    schemes to add
-;;       search:
-;;       regexp:
-;;       elisp:
+;;     schemes to add
+;;         search:
+;;         regexp:
+;;         elisp:
 ;;
-;;    wiki-nav-links can be optimized by tracking which buffers are
-;;    completely fontified - doesn't font-lock do that?
+;;     wiki-nav-links can be optimized by tracking which buffers are
+;;     completely fontified - doesn't font-lock do that?
 ;;
-;;    similarly, speed up wiki-nav-find-any-link by remembering if
-;;    the buffer is fontified, or switch to searching by regexp
+;;     similarly, speed up wiki-nav-find-any-link by remembering if
+;;     the buffer is fontified, or switch to searching by regexp
 ;;
-;;    version of wiki-nav-find-any-link that does not wrap
+;;     version of wiki-nav-find-any-link that does not wrap
 ;;
-;;    wiki-nav-ido can only go to one occurrence of a duplicate -
-;;    may not always be first
+;;     wiki-nav-ido can only go to one occurrence of a duplicate -
+;;     may not always be first
 ;;
-;;    toggle key for switching to all buffers within wiki-nav-ido
-;;    prompt
+;;     toggle key for switching to all buffers within wiki-nav-ido
+;;     prompt
 ;;
-;;    sort recently-used items first in wiki-nav-ido - see
-;;    yas/insert-snippet for example
+;;     sort recently-used items first in wiki-nav-ido - see
+;;     yas/insert-snippet for example
 ;;
 ;; [[<License]]
 ;;
-;;    Simplified BSD License
+;; Simplified BSD License
 ;;
-;;    Copyright (c) 2011-12, D Roland Walker
-;;    All rights reserved.
+;; Copyright (c) 2011-12, Roland Walker
+;; All rights reserved.
 ;;
-;;    Redistribution and use in source and binary forms, with or
-;;    without modification, are permitted provided that the following
-;;    conditions are met:
+;; Redistribution and use in source and binary forms, with or
+;; without modification, are permitted provided that the following
+;; conditions are met:
 ;;
-;;       1. Redistributions of source code must retain the above
-;;          copyright notice, this list of conditions and the following
-;;          disclaimer.
+;;    1. Redistributions of source code must retain the above
+;;       copyright notice, this list of conditions and the following
+;;       disclaimer.
 ;;
-;;       2. Redistributions in binary form must reproduce the above
-;;          copyright notice, this list of conditions and the following
-;;          disclaimer in the documentation and/or other materials
-;;          provided with the distribution.
+;;    2. Redistributions in binary form must reproduce the above
+;;       copyright notice, this list of conditions and the following
+;;       disclaimer in the documentation and/or other materials
+;;       provided with the distribution.
 ;;
-;;    This software is provided by D Roland Walker "AS IS" and any express
-;;    or implied warranties, including, but not limited to, the implied
-;;    warranties of merchantability and fitness for a particular
-;;    purpose are disclaimed.  In no event shall D Roland Walker or
-;;    contributors be liable for any direct, indirect, incidental,
-;;    special, exemplary, or consequential damages (including, but not
-;;    limited to, procurement of substitute goods or services; loss of
-;;    use, data, or profits; or business interruption) however caused
-;;    and on any theory of liability, whether in contract, strict
-;;    liability, or tort (including negligence or otherwise) arising in
-;;    any way out of the use of this software, even if advised of the
-;;    possibility of such damage.
+;; This software is provided by Roland Walker "AS IS" and any express
+;; or implied warranties, including, but not limited to, the implied
+;; warranties of merchantability and fitness for a particular
+;; purpose are disclaimed.  In no event shall Roland Walker or
+;; contributors be liable for any direct, indirect, incidental,
+;; special, exemplary, or consequential damages (including, but not
+;; limited to, procurement of substitute goods or services; loss of
+;; use, data, or profits; or business interruption) however caused
+;; and on any theory of liability, whether in contract, strict
+;; liability, or tort (including negligence or otherwise) arising in
+;; any way out of the use of this software, even if advised of the
+;; possibility of such damage.
 ;;
-;;    The views and conclusions contained in the software and
-;;    documentation are those of the authors and should not be
-;;    interpreted as representing official policies, either expressed
-;;    or implied, of D Roland Walker.
+;; The views and conclusions contained in the software and
+;; documentation are those of the authors and should not be
+;; interpreted as representing official policies, either expressed
+;; or implied, of Roland Walker.
 ;;
 ;; [[<Code]]
 ;;; Code:
@@ -296,16 +309,14 @@
 
 ;;; requires
 
-;; for callf, let*
-(eval-when-compile
-  (defvar button-lock-mode)
-  (require 'cl))
+;; for callf
+(require 'cl)
 
 (require 'font-lock)
 (require 'nav-flash nil t)
 (require 'back-button nil t)
 
-(autoload 'button-lock-mode "button-lock" "Toggle button-lock-mode, a minor mode for making text clickable." nil)
+(autoload 'button-lock-mode "button-lock" "Toggle button-lock-mode, a minor mode for making text clickable.")
 
 (declare-function back-button-push-mark                   "back-button.el")
 (declare-function back-button-push-mark-local-and-global  "back-button.el")
@@ -313,24 +324,27 @@
 (declare-function button-lock-set-button                  "button-lock.el")
 (declare-function button-lock-extend-binding              "button-lock.el")
 (declare-function button-lock-find-extent                 "button-lock.el")
-(declare-function button-lock-called-interactively-p      "button-lock.el")
+
+(eval-when-compile
+  ;; declarations for byte compiler
+  (defvar button-lock-mode))
 
 ;;; customizable variables
 
 ;;;###autoload
 (defgroup wiki-nav nil
   "Simple file navigation using [[WikiStrings]]."
-  :version "0.6.3"
+  :version "0.6.4"
   :link '(emacs-commentary-link "wiki-nav")
   :prefix "wiki-nav-"
-  :group 'button-lock
   :group 'navigation
-  :group 'extensions)
+  :group 'mouse
+  :group 'convenience)
 
 (defcustom wiki-nav-less-feedback nil
   "Give less echo area feedback."
-  :group 'wiki-nav
-  :type 'boolean)
+  :type 'boolean
+  :group 'wiki-nav)
 
 (defcustom wiki-nav-mode-lighter " wikn"
   "This string appears in the mode-line when `wiki-nav-mode' is active.
@@ -362,8 +376,8 @@ particularly inexact, but avoids being slow.
 
 It will not work for `c-mode' and many other modes which have
 multi-line comments or multi-character comment delimiters."
-  :group 'wiki-nav
-  :type '(repeat symbol))
+  :type '(repeat symbol)
+  :group 'wiki-nav)
 
 (defcustom wiki-nav-exclude-modes  '(
                                      fundamental-mode
@@ -411,7 +425,7 @@ Set this value to nil to disable."
 
 (defcustom wiki-nav-multi-action-function 'wiki-nav-default-multi-action
   "Function to run on double-click of a wiki-nav link."
-  :type 'symbol
+  :type 'function
   :group 'wiki-nav)
 
 ;;;###autoload
@@ -427,8 +441,8 @@ The key binding is in effect anywhere in the buffer when wiki-nav
 mode is active.
 
 The format for key sequences is as defined by `kbd'."
-  :group 'wiki-nav-keys
-  :type '(repeat string))
+  :type '(repeat string)
+  :group 'wiki-nav-keys)
 
 (defcustom wiki-nav-find-any-previous-link-keys '("C-c W")
   "List of key sequences to search backward for the previous wiki-nav link.
@@ -438,8 +452,8 @@ buffer.  The key binding is in effect anywhere in the buffer when
 wiki-nav mode is active.
 
 The format for key sequences is as defined by `kbd'."
-  :group 'wiki-nav-keys
-  :type '(repeat string))
+  :type '(repeat string)
+  :group 'wiki-nav-keys)
 
 (defcustom wiki-nav-activate-keys '("RET")
   "List of key sequences to activate a wiki-nav link under the point.
@@ -447,8 +461,8 @@ The format for key sequences is as defined by `kbd'."
 The key binding is active only when the point is on a wiki-nav link.
 
 The format for key sequences is as defined by `kbd'."
-  :group 'wiki-nav-keys
-  :type '(repeat string))
+  :type '(repeat string)
+  :group 'wiki-nav-keys)
 
 (defcustom wiki-nav-skip-to-next-keys '("<tab>")
   "List of key sequences to skip forward from a wiki-nav link to the next link.
@@ -456,8 +470,8 @@ The format for key sequences is as defined by `kbd'."
 The key binding is active only when the point is on a wiki-nav link.
 
 The format for key sequences is as defined by `kbd'."
-  :group 'wiki-nav-keys
-  :type '(repeat string))
+  :type '(repeat string)
+  :group 'wiki-nav-keys)
 
 (defcustom wiki-nav-skip-to-previous-keys '("S-TAB" "S-<tab>" "<backtab>" "S-<iso-lefttab>")
   "List of key sequences to skip back from a wiki-nav link to the previous link.
@@ -465,8 +479,8 @@ The format for key sequences is as defined by `kbd'."
 The key binding is active only when the point is on a wiki-nav link.
 
 The format for key sequences is as defined by `kbd'."
-  :group 'wiki-nav-keys
-  :type '(repeat string))
+  :type '(repeat string)
+  :group 'wiki-nav-keys)
 
 ;;;###autoload
 (defgroup wiki-nav-faces nil
@@ -573,6 +587,7 @@ Set this value to the empty string to disable the feature entirely."
 ;;; variables
 
 (defvar wiki-nav-mode nil "Mode variable for wiki-nav.")
+(make-variable-buffer-local 'wiki-nav-mode)
 
 (defvar wiki-nav-button nil "Holds the buffer-local button definition when the mode is active.")
 (make-variable-buffer-local 'wiki-nav-button)
@@ -584,6 +599,17 @@ Set this value to the empty string to disable the feature entirely."
     (dolist (key wiki-nav-find-any-previous-link-keys)
       (define-key map (read-kbd-macro key) 'wiki-nav-find-any-previous-link))
     map))
+
+;;; macros
+
+(defmacro wiki-nav-called-interactively-p (&optional kind)
+  "A backward-compatible version of `called-interactively-p'.
+
+Optional KIND is as documented at `called-interactively-p'
+in GNU Emacs 24.1 or higher."
+  (if (eq 0 (cdr (subr-arity (symbol-function 'called-interactively-p))))
+      '(called-interactively-p)
+    `(called-interactively-p ,kind)))
 
 ;;; compatibility functions
 
@@ -641,29 +667,15 @@ Returns `point-min' if the point is at the minimum."
     ((and (consp list)
           (nthcdr (safe-length list) list))
      (list list))
-    ((listp list)
+    ((and (listp list)
+          (consp (car list)))
      (append (wiki-nav-alist-flatten (car list)) (wiki-nav-alist-flatten (cdr list))))
+    ((listp list)
+     (cons (car list) (wiki-nav-alist-flatten (cdr list))))
     (t
      (list list))))
 
 ;; buffer functions
-(defun wiki-nav-maybe-turn-on (&optional arg)
-  "Called by `global-wiki-nav-mode' to activate wiki-nav mode in a buffer.
-
-wiki-nav mode will be activated in every buffer, except
-
-   minibuffers
-   buffers with names that begin with space
-   buffers excluded by `wiki-nav-exclude-modes'
-   buffers excluded by `button-lock-exclude-modes'
-   buffers excluded by `wiki-nav-buffer-name-exclude-pattern'
-   buffers excluded by `button-lock-buffer-name-exclude-pattern'
-
-If called with a negative ARG, deactivate wiki-nav mode in the buffer."
-  (callf or arg 1)
-  (when (or (< arg 0)
-            (wiki-nav-buffer-included-p (current-buffer)))
-    (wiki-nav-mode arg)))
 
 (defun wiki-nav-buffer-included-p (buf)
   "Return BUF if global wiki-nav should enable wiki-nav in BUF."
@@ -689,7 +701,7 @@ If called with a negative ARG, deactivate wiki-nav mode in the buffer."
 
 ;; link functions
 (defun wiki-nav-link-set (&optional arg)
-  "Use button-lock to set up wiki-nav links in a buffer.
+  "Use `button-lock-mode' to set up wiki-nav links in a buffer.
 
 If called with negative ARG, remove the links."
   (callf or arg 1)
@@ -754,7 +766,7 @@ seconds to complete."
         (progress-reporter-update reporter (incf counter)))
       (push (wiki-nav-links buf) l-alist))
     (progress-reporter-done reporter)
-    (wiki-nav-alist-flatten l-alist)))
+    (delq nil (wiki-nav-alist-flatten l-alist))))
 
 ;; bindable action dispatch commands
 ;;;###autoload
@@ -778,20 +790,6 @@ mouse event."
                                           "[[:space:]<>]*" str-val "[[:space:]]*"
                                           (regexp-quote wiki-nav-link-stop))
                                           t)))))
-
-;;;###autoload
-(defun wiki-nav-mouse-action (event)
-  "Dispatch the default action for the wiki-nav link at the mouse location.
-
-Mouse location is defined by the mouse event EVENT."
-  (interactive "e")
-  (wiki-nav-action-1 (posn-point (event-end event))))
-
-;;;###autoload
-(defun wiki-nav-keyboard-action ()
-  "Dispatch the default navigation action for the wiki-nav link under the point."
-  (interactive)
-  (wiki-nav-action-1 (point)))
 
 ;; Monolithic function to dispatch any link action.
 (defun wiki-nav-action-1 (pos)
@@ -928,6 +926,20 @@ Mouse location is defined by the mouse event EVENT."
                  (message wrap-message))))))))
     found))
 
+;;;###autoload
+(defun wiki-nav-mouse-action (event)
+  "Dispatch the default action for the wiki-nav link at the mouse location.
+
+Mouse location is defined by the mouse event EVENT."
+  (interactive "e")
+  (wiki-nav-action-1 (posn-point (event-end event))))
+
+;;;###autoload
+(defun wiki-nav-keyboard-action ()
+  "Dispatch the default navigation action for the wiki-nav link under the point."
+  (interactive)
+  (wiki-nav-action-1 (point)))
+
 ;;; minor mode definition
 
 ;;;###autoload
@@ -983,16 +995,36 @@ mode."
   (cond
     ((and wiki-nav-mode
           (or noninteractive                    ; never turn on wiki-nav where
-              (eq (aref (buffer-name) 0) ?\s))  ; there can be no font-lock
-          (setq wiki-nav-mode nil)))
+              (eq (aref (buffer-name) 0) ?\s))) ; there can be no font-lock
+     (setq wiki-nav-mode nil))
     (wiki-nav-mode
      (wiki-nav-link-set)
-     (when (button-lock-called-interactively-p 'interactive)
+     (when (wiki-nav-called-interactively-p 'interactive)
        (message "wiki-nav mode enabled")))
     (t
      (wiki-nav-link-set -1)
-     (when (button-lock-called-interactively-p 'interactive)
+     (when (wiki-nav-called-interactively-p 'interactive)
        (message "wiki-nav mode disabled")))))
+
+;;; global minor-mode definition
+
+(defun wiki-nav-maybe-turn-on (&optional arg)
+  "Called by `global-wiki-nav-mode' to activate `wiki-nav-mode' in a buffer.
+
+`wiki-nav-mode' will be activated in every buffer, except
+
+   minibuffers
+   buffers with names that begin with space
+   buffers excluded by `wiki-nav-exclude-modes'
+   buffers excluded by `button-lock-exclude-modes'
+   buffers excluded by `wiki-nav-buffer-name-exclude-pattern'
+   buffers excluded by `button-lock-buffer-name-exclude-pattern'
+
+If called with a negative ARG, deactivate `wiki-nav-mode' in the buffer."
+  (callf or arg 1)
+  (when (or (< arg 0)
+            (wiki-nav-buffer-included-p (current-buffer)))
+    (wiki-nav-mode arg)))
 
 ;;;###autoload
 (define-globalized-minor-mode global-wiki-nav-mode wiki-nav-mode wiki-nav-maybe-turn-on
@@ -1108,6 +1140,7 @@ buffers."
 ;; mangle-whitespace: t
 ;; require-final-newline: t
 ;; coding: utf-8
+;; byte-compile-warnings: (not cl-functions redefine)
 ;; End:
 ;;
 
