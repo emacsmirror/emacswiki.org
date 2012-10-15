@@ -156,7 +156,7 @@ necessarily toggle their global values.
 You can tell whether completion is currently case-sensitive by
 looking at the ''Icicle'' [[minor mode]] lighter in the [[mode line]], if
 `icicle-highlight-lighter-flag' is non-`nil'.  If case-sensitive,
-then the lighter text (with or without [[multi-command]] symbol `##+##')
+then the lighter text (with or without the [[multi-command]] suffix `##+##' and the [[multi-completion]] suffix `##||##')
 is '''`Icy''''; if not, it is '''`ICY''''.
 
 ----
