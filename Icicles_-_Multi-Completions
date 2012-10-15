@@ -384,6 +384,22 @@ this for all files and directories, and in [[Dired]] mode command
 
 
 
+
+[:ModeLineIndicator]
+== Mode-Line Lighter Indication of Multi-Completion ==
+
+Whenever multi-completion candidates are available, the `Icy'
+minor-mode lighter has the suffix '''`##||##'''' (think "parallel") appended
+to it.  You can see this lighter at the left of the [[mode line]] of
+buffer `*Completions*' or in the [[minor mode]] part of other mode
+lines.
+
+
+
+
+
+
+
 '''See Also:'''
 
 * [[Icicles - Multi-Commands]]
