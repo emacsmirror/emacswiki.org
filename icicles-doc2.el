@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Thu Oct 11 16:18:10 2012 (-0700)
+;; Last-Updated: Mon Oct 15 13:23:12 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 29034
+;;     Update #: 29035
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -4499,8 +4499,9 @@
 ;;    You can tell whether completion is currently case-sensitive by
 ;;    looking at the Icicle minor-mode lighter in the mode line, if
 ;;    `icicle-highlight-lighter-flag' is non-`nil'.  If
-;;    case-sensitive, then the lighter text (with or without
-;;    multi-command symbol `+') is `Icy'; if not, it is `ICY'.
+;;    case-sensitive, then the lighter text (with or without the
+;;    multi-command suffix `+' and the multi-completion suffix `||')
+;;    is `Icy'; if not, it is `ICY'.
 ;;
 ;;  * User options `icicle-region-background',
 ;;    `icicle-point-position-in-candidate',
