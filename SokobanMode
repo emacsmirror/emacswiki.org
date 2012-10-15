@@ -12,6 +12,8 @@ install it in my ~/.emacs file:
 
 == GNU Emacs Sokoban ==
 
+sokoban in XEmacs has been ported to GNU emacs: https://github.com/leoliu/sokoban
+
 There is a small sokoban by Sascha Wilde, written specifically for the GNU Emacs
 
 * http://www.sha-bang.de/content/15_emacs/emacs-sokoban-0.14.1.tar.gz
