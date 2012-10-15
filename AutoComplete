@@ -499,7 +499,7 @@ I got tired of removing a character from a function name in order to see the doc
                   nil
                   -1)))
 
-(define-key lisp-mode-shared-map (kbd "C-c C-h") 'jsj-ac-show-helm)
+(define-key lisp-mode-shared-map (kbd "C-c C-h") 'jsj-ac-show-help)
 </pre>
 
 [new]
