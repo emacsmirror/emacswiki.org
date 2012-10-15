@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Wed Oct 10 16:21:28 2012 (-0700)
+;; Last-Updated: Mon Oct 15 11:16:57 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 9098
+;;     Update #: 9100
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1477,6 +1477,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2012/10/15 dadams
+;;     icicle-(highlight|clear)-lighter: Use || to indicate multi-completion.
 ;; 2012/10/10 dadams
 ;;     icicle-display-candidates-in-Completions:
 ;;       Add lighter and completion mode to *Completions* mode line. 
