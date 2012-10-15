@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Oct 10 15:22:38 2012 (-0700)
+;; Last-Updated: Mon Oct 15 10:44:52 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 13438
+;;     Update #: 13440
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -6230,13 +6230,17 @@ Highlighting indicates the current completion status."
                  completion-ignore-case)
                " ICY"
              " Icy"))
-          (face  (cond ((and icicle-candidate-action-fn (icicle-require-match-p))
+          (face  (cond ((and icicle-candidate-action-fn  (icicle-require-match-p))
                         '(icicle-multi-command-completion icicle-mustmatch-completion))
-                       (icicle-candidate-action-fn 'icicle-multi-command-completion)
+                       (icicle-candidate-action-fn
+                        'icicle-multi-command-completion)
                        ((icicle-require-match-p)
                         '(icicle-completion icicle-mustmatch-completion))
-                       (t 'icicle-completion))))
+                       (t
+                        'icicle-completion))))
       (when icicle-candidate-action-fn (setq strg  (concat strg "+")))
+      (when (and icicle-multi-completing-p  icicle-show-multi-completion-flag)
+        (setq strg  (concat strg "||")))
       (put-text-property 0 (length strg) 'face face strg)
       (icicle-clear-lighter)
       (add-to-list 'minor-mode-alist `(icicle-mode ,strg)))
@@ -6257,18 +6261,30 @@ Highlighting indicates the current completion status."
 (defun icicle-clear-lighter (&optional only)
   "Remove Icicle mode lighter from `minor-mode-alist'."
   (unless (eq only 'truncated)
-    (setq minor-mode-alist  (delete '(icicle-mode " Icy")  minor-mode-alist)
-          minor-mode-alist  (delete '(icicle-mode " Icy+") minor-mode-alist)
-          minor-mode-alist  (delete '(icicle-mode " ICY")  minor-mode-alist)
-          minor-mode-alist  (delete '(icicle-mode " ICY+") minor-mode-alist)))
+    (setq minor-mode-alist  (delete '(icicle-mode " Icy")    minor-mode-alist)
+          minor-mode-alist  (delete '(icicle-mode " Icy+")   minor-mode-alist)
+          minor-mode-alist  (delete '(icicle-mode " ICY")    minor-mode-alist)
+          minor-mode-alist  (delete '(icicle-mode " ICY+")   minor-mode-alist)
+          minor-mode-alist  (delete '(icicle-mode " Icy||")  minor-mode-alist)
+          minor-mode-alist  (delete '(icicle-mode " Icy+||") minor-mode-alist)
+          minor-mode-alist  (delete '(icicle-mode " ICY||")  minor-mode-alist)
+          minor-mode-alist  (delete '(icicle-mode " ICY+||") minor-mode-alist)))
   (unless (eq only 'not-truncated)
-    (setq minor-mode-alist  (delete `(icicle-mode ,(concat " Icy" icicle-lighter-truncation))
+    (setq minor-mode-alist  (delete `(icicle-mode ,(concat " Icy"    icicle-lighter-truncation))
                                     minor-mode-alist)
-          minor-mode-alist  (delete `(icicle-mode ,(concat " Icy+" icicle-lighter-truncation))
+          minor-mode-alist  (delete `(icicle-mode ,(concat " Icy+"   icicle-lighter-truncation))
                                     minor-mode-alist)
-          minor-mode-alist  (delete `(icicle-mode ,(concat " ICY" icicle-lighter-truncation))
+          minor-mode-alist  (delete `(icicle-mode ,(concat " ICY"    icicle-lighter-truncation))
                                     minor-mode-alist)
-          minor-mode-alist  (delete `(icicle-mode ,(concat " ICY+" icicle-lighter-truncation))
+          minor-mode-alist  (delete `(icicle-mode ,(concat " ICY+"   icicle-lighter-truncation))
+                                    minor-mode-alist)
+          minor-mode-alist  (delete `(icicle-mode ,(concat " Icy||"  icicle-lighter-truncation))
+                                    minor-mode-alist)
+          minor-mode-alist  (delete `(icicle-mode ,(concat " Icy+||" icicle-lighter-truncation))
+                                    minor-mode-alist)
+          minor-mode-alist  (delete `(icicle-mode ,(concat " ICY||"  icicle-lighter-truncation))
+                                    minor-mode-alist)
+          minor-mode-alist  (delete `(icicle-mode ,(concat " ICY+||" icicle-lighter-truncation))
                                     minor-mode-alist))))
 
 (defun icicle-ding ()
