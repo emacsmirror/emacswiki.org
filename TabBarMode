@@ -94,6 +94,19 @@ Here's a example of tab group function that define all tabs to be one of 3 possi
 
  (setq tabbar-buffer-groups-function 'tabbar-buffer-groups)
 
+The function above doesn't work at least for me (Emacs 24.2). The problem is with the return values; instead of '("Dired"), the first branch should return simply "Dired", etc. The following works for me (I only use two groups, "emacs" and "user"):
+
+ (defun my-tabbar-buffer-groups () ;; customize to show all normal files in one group
+  (list (cond ((string-equal "*" (substring (buffer-name) 0 1)) "emacs")
+              ((eq major-mode 'dired-mode) "emacs")
+              (t "user"))))
+ (setq tabbar-buffer-groups-function 'my-tabbar-buffer-groups)
+
+I also define the meta-right-arrow and meta-left-arrow keys for navigating among the tabs of one tab group. (Those keys normally bind to functions right-word and left-word, which are also bound to ctrl-right-arrow and ctrl-left-arrow.)
+
+ (global-set-key [M-left] 'tabbar-backward-tab)
+ (global-set-key [M-right] 'tabbar-forward-tab)
+
 Another tabbar-buffer-groups example (based on the original tabbar.el's function):
 
     (defun tabbar-buffer-groups ()
