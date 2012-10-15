@@ -19,55 +19,55 @@ emacs-goodies-el] package.
 Tabbar is a package originally written by David Ponce from 2003 to
 2005, and now maintained by others.
 
-The tabbar.el is extensively modified and used by AquamacsEmacs to be
-as close to modern UI's tab bar as possible. A fork of the Aquamacs
-version of TabBarMode which is intended to be Emacs agnostic is
-available [[https://github.com/dholm/tabbar here]]. (see
-AquamacsEmacs's [[http://aquamacs.org/images/smaller-home-ss.png
-official website screenshot]] for a look. You can also try to get the
+The mode comes in a single file, <code>tabbar.el</code>, which has been
+extensively modified and used by AquamacsEmacs to be as close to modern UI's tab
+bar as possible. A fork of the Aquamacs version of TabBarMode which is intended
+to be Emacs agnostic is available [[https://github.com/dholm/tabbar here]]. (See
+AquamacsEmacs's [[http://aquamacs.org/images/smaller-home-ss.png official
+website screenshot]] for a look.) You can also try to get the
 [[http://github.com/davidswelt/aquamacs-emacs/tree/master/aquamacs/src/site-lisp/tabbar/tabbar.el
-source code]] from AquamacsEmacs, but it may not work with standard
-emacs.)
+source code]] from AquamacsEmacs, but it might not work with standard Emacs.
 
-Note that tabbar mode as implemented in Emacs is a bit different than
-tabs in web browsers or IDEs. In a web browser, each window may have
-several tabs, and each window's tabs stay with that window. Namely,
-you cannot have Window A's tab jump to window B, unless you drag it
-over (Firefox 3 support this, for example. Safari 3.2 does not.).
-However, the tabs implemented in emacs with tabbar mode is more like a
-GUI-based display of buffer listing, displayed on top of the window.
-In particular, tabs does not stick to a particular emacs's Frame, and
-conversely, each Emacs Frame can display a tab that is also shown in
+Note that tabbar mode as implemented in Emacs is a bit different than tabs in
+web browsers or IDEs. In a web browser, each window may have several tabs, and
+each window's tabs stay with that window. Namely, you cannot have Window A's tab
+jump to window B, unless you drag it over (Firefox 3 support this, for
+example. Safari 3.2 does not.).  However, the tabs implemented in emacs with
+tabbar mode is more like a GUI-based display of buffer listing, displayed on top
+of the window.  In particular, tabs does not stick to a particular emacs's
+Frame, and conversely, each Emacs Frame can display a tab that is also shown in
 another Emacs Frame.
 
-Also, emacs's tabbar mode's tab can be hidden, as if showing
-only the current “page” of a tab set, called a “group”. By default,
-tabs are grouped by major mode. So, for example, if current buffer is
-in html-mode, all the tabs shown are other buffers in html-mode. If
-there are no other html-mode buffers, then you will have only one tab,
-even if you have lots other buffers. All your dired buffers, C-mode
-buffers, java-buffers, etc, are in other tab group and is hidden. You
-have to click on a special tab widget to switch to them, or use
+Also, emacs's tabbar mode's tab can be hidden, as if showing only the current
+“page” of a tab set, called a “group”. By default, tabs are grouped by major
+mode. So, for example, if current buffer is in html-mode, all the tabs shown are
+other buffers in html-mode. If there are no other html-mode buffers, then you
+will have only one tab, even if you have lots other buffers. All your dired
+buffers, C-mode buffers, java-buffers, etc, are in other tab group and is
+hidden. You have to click on a special tab widget to switch to them, or use
 keyboard shortcut to switch tab or tab group.
 
-What is considered as a tab group can be customized. You could set it up so every buffer is of the same group.
+What is considered a tab group can be customized (see section Customization
+below). You can even set it up to include every buffer in one group.
 
-Tab bar mode is implemented using a special emacs display area at the top of Emacs Window, not Emacs Frame. (For example, if you split a window into 3 panes, each will have a tab bar). Some other modes also use this area. For example Info, Dired, Slime, [[ERC]], ruler-mode, etc. So that when switching to these modes, the tabs will not shown. You can get the tabs back by typing “M-x tabbar-local-mode”.
-
-== Pop-Up Tool Bar Solution 2 tabbar-ruler ==
-
-This allows a popup tabbar AND menu bar based on cursor location.  It also switches between tab-bar and ruler mode.  It is included in EmacsPortable.  It requries xpm images [[close-tab.xpm]] [[down.xpm]] [[left.xpm]] [[left-disabled.xpm]] [[right.xpm]] [[right-disabled.xpm]] [[up.xpm]] as well as Lisp:tabbar.el.  It is located in Lisp:tabbar-ruler.el
-
+Tab bar mode is implemented using a special Emacs display area at the top of the
+Emacs window, not the Emacs frame. (From this it follows that each Emacs window
+will have its own tab bar, no matter how many times you split the frame.) Some
+other modes also use this area, for instance Info, Dired, Slime, [[ERC]],
+ruler-mode, etc. These modes override tabbar for their own purposes, but you can
+get the tabs back by typing <code>M-x tabbar-local-mode</code>.
 
 == Documentation ==
 
-Tabbar mode does not have a documentation. However, the header file in the source code contains useful information.
+The tabbar mode does not have documentation except in the comments of the source
+file <code>tabbar.el</code>.
 
-== Customizations ==
+== Customization ==
 
-Tabbar mode has many customizable options, and it supports emacs customization system. To customize, type M-x customize-group [RET] tabbar [RET].
+Tabbar mode has many customizable options, and it supports emacs customization
+system. To customize, type <code>M-x customize-group [RET] tabbar [RET]</code>.
 
-=== Tab group customizations ===
+=== Tab groups ===
 
 To define your own tab grouping, you need to either set
 <code>tabbar-buffer-groups</code> to your own function that returns a list of
@@ -76,22 +76,23 @@ strings, or define your own function with another name and then write
 way works.
 
 Here's a example of tab group function that define all tabs to be one of two
-possible groups: “emacs” and “user”.  This has been tested in Emacs v24.2 using
-tabbar.el v1.7.
+possible groups: “emacs” and “user”.
 
  (defun my-tabbar-buffer-groups () ;; customize to show all normal files in one group
    "Returns the name of the tab group names the current buffer belongs to.
  There are two groups: Emacs buffers (those whose name starts with “*”, plus
- dired buffers), and the rest."
+ dired buffers), and the rest.  This works at least with Emacs v24.2 using
+ tabbar.el v1.7.
    (list (cond ((string-equal "*" (substring (buffer-name) 0 1)) "emacs")
                ((eq major-mode 'dired-mode) "emacs")
                (t "user")))
  (setq tabbar-buffer-groups-function 'my-tabbar-buffer-groups)
 
-Another tabbar-buffer-groups example (based on the original tabbar.el's
-function).  (Note that here, since the original function name is used, it
-overrides the original function, and so there's no need to call <code>(setq
-tabbar-buffer-groups-function 'your-function-name)</code>.)
+Another tabbar-buffer-groups example, based on the original
+<code>tabbar.el</code>'s function of the same name.  (Note that this function
+overrides the original <code>tabbar-buffer-groups</code> function, so there's no
+need to call <code>(setq tabbar-buffer-groups-function
+'your-function-name)</code>.)
 
  (defun tabbar-buffer-groups ()
    "Return the list of group names the current buffer belongs to.
@@ -165,6 +166,9 @@ This code simply puts all tabs in one group, "All":
           (lambda ()
             (list "All")))
 
+To put most buffers into one group, see
+http://www.ficml.org/jemimap/wordpress/2004/10/11/tabbar/.
+
 === Sort tabbar buffers by name ===
 
  (defun tabbar-add-tab (tabset object &optional append_ignored)
@@ -182,19 +186,20 @@ This code simply puts all tabs in one group, "All":
 
 === Tab navigation made easy ===
 
-You can define keystrokes for navigating among the tabs of one tab group. Here we use the meta-right-arrow and meta-left-arrow keystrokes. (They keys normally bind to functions right-word and left-word, which are also bound to ctrl-right-arrow and ctrl-left-arrow, so we're not losing convenience.)
+You can define keystrokes for navigating among the tabs of one tab group. Here
+we use the meta-right-arrow and meta-left-arrow keystrokes. (These keys normally
+bind to functions right-word and left-word, which are also bound to
+ctrl-right-arrow and ctrl-left-arrow, so we're not losing convenience.)
 
  (global-set-key [M-left] 'tabbar-backward-tab)
  (global-set-key [M-right] 'tabbar-forward-tab)
 
 
-== Discussions ==
-
-
-
 === Windows-style behaviour and key bindings ===
 
-The following will provide windows style (shift-)control tab behaviour and autoload tabbar-mode. Use a prefix to change groups and no prefix to change the buffer.
+The following will provide windows style (shift-)control tab behaviour and
+autoload tabbar-mode. Use a prefix to change groups and no prefix to change the
+buffer.
 
     (dolist (func '(tabbar-mode tabbar-forward-tab tabbar-forward-group tabbar-backward-tab tabbar-backward-group))
       (autoload func "tabbar" "Tabs at the top of buffers and easy control-tab navigation"))
@@ -213,7 +218,15 @@ The following will provide windows style (shift-)control tab behaviour and autol
     (global-set-key [(control tab)] 'shk-tabbar-next)
     (global-set-key [(control shift tab)] 'shk-tabbar-prev)
 
-== Hide for special buffers ==
+=== Pop-up tool-bar Solution 2 tabbar-ruler ===
+
+This allows a popup tabbar AND a menu bar based on the cursor's location.  It
+also switches between tab-bar and ruler mode.  It is included in EmacsPortable.
+It requries xpm images [[close-tab.xpm]] [[down.xpm]] [[left.xpm]]
+[[left-disabled.xpm]] [[right.xpm]] [[right-disabled.xpm]] [[up.xpm]] as well as
+<code>tabbar.el</code>.  It is located in <code>tabbar-ruler.el</code>.
+
+=== Hide for special buffers ===
 
 You can limit the display to just the non-scratch by adding the following code
 snippet to the .emacs file:
@@ -259,11 +272,15 @@ Some buffers can be hidden with this code:
                        thereis (string-equal (buffer-name buffer) name))))
           (buffer-list))))
 
-== Locally disabling, depending on the MajorMode ==
+=== Disabling locally, depending on the MajorMode ===
 
-I tried to enable the tabbar for my terminals only with the above configuration, and it turned out that it remains visible even when it does not contain any tab: some empty space remains as headline.
+I tried to enable the tabbar for my terminals only with the above configuration,
+and it turned out that it remains visible even when it does not contain any tab:
+some empty space remains as headline.
 
-So, I use the following configuration to display the tabbar on certain buffers only (for buffers in <code>term-mode</code> major mode in this case, but it can easily be extended). The tabbar is disabled on the other buffers.
+So, I use the following configuration to display the tabbar on certain buffers
+only (for buffers in <code>term-mode</code> major mode in this case, but it can
+easily be extended). The tabbar is disabled on the other buffers.
 
  (when (require 'tabbar nil t)
    ;; Enable tabbars globally:
@@ -298,7 +315,7 @@ So, I use the following configuration to display the tabbar on certain buffers o
    ;; Eventually, switch on this global filter for tabbars:
    (global-tabbar-on-term-only-mode 1))
 
-== Add a buffer modification state indicator in the label ==
+=== Add a buffer modification state indicator in the label ===
 
  ;; Add a buffer modification state indicator in the tab label, and place a
  ;; space around the label to make it looks less crowd.
@@ -324,13 +341,10 @@ So, I use the following configuration to display the tabbar on certain buffers o
  ;;(add-hook 'after-revert-hook 'ztl-modification-state-change)
  (add-hook 'first-change-hook 'ztl-on-buffer-modification)
 
-== Put most buffers into one group ==
+=== Show buffers in the current directory ===
 
-See http://www.ficml.org/jemimap/wordpress/2004/10/11/tabbar/
-
-== Show buffers in the current directory ==
-
-I have too many buffers to reasonably put them all into tabbar at the same time, and I wanted to group by project instead of by major-mode, so I use this:
+I have too many buffers to reasonably put them all into tabbar at the same time,
+and I wanted to group by project instead of by major-mode, so I use this:
 
  (setq tabbar-buffer-groups-function
      (lambda (buffer)
@@ -366,9 +380,49 @@ associated buffers like compilation) get put together. For multi-directory
 projects I plan to add special cases like the one for <code>.emacs.d</code> to
 group buffers under the parent directory.
 
+=== Autohide ===
+
+ (defun autohide-tabbar ()
+   "Make tabbar briefly show itself while you are switching
+ buffers with shortcuts.  Tested with GNU Emacs 23."
+   (defvar *tabbar-autohide-delay* 3)
+
+   (interactive)
+   (tabbar-mode nil)
+   (defvar *tabbar-autohide-timer* nil)
+   (defun renew-tabbar-autohide-timer ()
+     (if (timerp *tabbar-autohide-timer*)
+         (cancel-timer *tabbar-autohide-timer*))
+     (setf *tabbar-autohide-timer*
+           (run-with-timer
+            3 nil (lambda ()
+                    (tabbar-mode nil)
+                    (setf *tabbar-autohide-timer*
+                          nil)))))
+
+   (global-set-key
+    [C-next]
+    (lambda ()
+      (interactive)
+      (if tabbar-mode
+          (tabbar-forward)
+        (tabbar-mode t))
+      (renew-tabbar-autohide-timer)))
+   (global-set-key
+    [C-prior]
+    (lambda ()
+      (interactive)
+      (if tabbar-mode
+          (tabbar-backward)
+        (tabbar-mode t))
+      (renew-tabbar-autohide-timer))))
+
+ (autohide-tabbar)
+
 == Integrating tabbar with eproject.el ==
 
-After some tests, here is one approach for integrating tabbar groups with eproject.el:
+Here is one approach for integrating tabbar groups with
+<code>eproject.el</code>:
 
   (defun my-tabbar-buffer-groups ()
     "Return the list of group names BUFFER belongs to.
@@ -422,57 +476,21 @@ This will show something like:
 
   Projectname > file.ext  (37, 1) [mode]...
 
-== Autohide ==
-
- (defun autohide-tabbar ()
-   "Make tabbar briefly show itself while you are switching
- buffers with shortcuts.  Tested with GNU Emacs 23."
-   (defvar *tabbar-autohide-delay* 3)
-
-   (interactive)
-   (tabbar-mode nil)
-   (defvar *tabbar-autohide-timer* nil)
-   (defun renew-tabbar-autohide-timer ()
-     (if (timerp *tabbar-autohide-timer*)
-         (cancel-timer *tabbar-autohide-timer*))
-     (setf *tabbar-autohide-timer*
-           (run-with-timer
-            3 nil (lambda ()
-                    (tabbar-mode nil)
-                    (setf *tabbar-autohide-timer*
-                          nil)))))
-
-   (global-set-key
-    [C-next]
-    (lambda ()
-      (interactive)
-      (if tabbar-mode
-          (tabbar-forward)
-        (tabbar-mode t))
-      (renew-tabbar-autohide-timer)))
-   (global-set-key
-    [C-prior]
-    (lambda ()
-      (interactive)
-      (if tabbar-mode
-          (tabbar-backward)
-        (tabbar-mode t))
-      (renew-tabbar-autohide-timer))))
-
- (autohide-tabbar)
-
 == Questions and Answers ==
-
 
 ----
 
-Any way to turn off the tabbar for a specific window/frame, i.e., not globally and not per a specific buffer? -- DrewAdams
+Any way to turn off the tabbar for a specific window/frame, i.e., not globally
+and not per a specific buffer? -- DrewAdams
 
 [new]
 
 Here is one way to do it. It is quite hackish and uses deprecated stuff, but it works fine on 24.1.
 
-I use ##emacs --daemon## with both, X and tty frames. My goal is: On ttys, no tab bar (or menu bar) should show in order to preserve screen real-estate. X frames should have all bells and whistles. Since this works on a per-frame base, you can easily adapt it to other scenarios.
+I use ##emacs --daemon## with both, X and tty frames. My goal is: On ttys, no
+tab bar (or menu bar) should show in order to preserve screen real-estate. X
+frames should have all bells and whistles. Since this works on a per-frame base,
+you can easily adapt it to other scenarios.
 
  ;; Allow tab-bar-mode to be frame-local.  This is deprecated and exploits
  ;; the fact that `default-header-line-format' is an alias of the global
@@ -520,34 +538,56 @@ Where is it on the GNU emacs CVS site? I was unable to find it (but have to conf
 ----
 
 [new]
-I'm having trouble combining tabbar with color-theme mode. If I load a color-theme at startup, it isn't applied to tabbar. Only if I manually change the color-theme mode, using M-x color-theme-charcoal-black, is the styling applied to tabbar. If anybpdy knoqws why this may be, please comment back here. -- TroelsKn
+I'm having trouble combining tabbar with color-theme mode. If I load a
+color-theme at startup, it isn't applied to tabbar. Only if I manually change
+the color-theme mode, using M-x color-theme-charcoal-black, is the styling
+applied to tabbar. If anybpdy knoqws why this may be, please comment back
+here. -- TroelsKn
 
 ----
 
 [new]
-I would like to change this mode's behaviour. I want to show only the most N recent files for each mode, which get re-ordered each time i change buffer. Would it be possible to do this? Can anyone tell me which functions should i modify? I've been reading tabbar.el but i am not suere where to start with.
+I would like to change this mode's behaviour. I want to show only the most N
+recent files for each mode, which get re-ordered each time i change
+buffer. Would it be possible to do this? Can anyone tell me which functions
+should i modify? I've been reading tabbar.el but i am not suere where to start
+with.
 
 Thanks! -- Matiyam
 
 [new]
-You could follow the defadvice defined in "Add a buffer modification state indicator in the label", and instead of adding a + sign to mark modified buffers, you could sort the list according to the buffer's last visit time. I don't know if the last visit time is stored somewhere. If not, add a variable to each buffer and hook a function that updates that variable with the current time to the hook that's executed when one leaves a buffer (couldn't find what hook it is). -- js
+You could follow the defadvice defined in "Add a buffer modification state
+indicator in the label", and instead of adding a + sign to mark modified
+buffers, you could sort the list according to the buffer's last visit time. I
+don't know if the last visit time is stored somewhere. If not, add a variable to
+each buffer and hook a function that updates that variable with the current time
+to the hook that's executed when one leaves a buffer (couldn't find what hook it
+is). -- js
 
 
 ----
 
 
 [new]
-Is there a way to stop emacs from splitting the window when opening multiple files from the command line?  (i.e. "emacs file1 file2")  The tabbar makes the window splitting unnecessary, but there doesn't seem to be any command line arguments to stop this from happening.  Thanks in advance.
+Is there a way to stop emacs from splitting the window when opening multiple
+files from the command line?  (i.e. "emacs file1 file2") The tabbar makes the
+window splitting unnecessary, but there doesn't seem to be any command line
+arguments to stop this from happening.  Thanks in advance.
 
 - Kristi
 [new:tipper:2009-04-07 18:29 UTC]
-You could put something like (delete-other-windows) at the end of your .emacs or alternatively use something like: "emacs file1 file2 --eval '(delete-other-windows)'"   Its a bit of a hack I agree, and could cause problems in odd situations but it should do the trick.
+You could put something like (delete-other-windows) at the end of your .emacs or
+alternatively use something like: "emacs file1 file2 --eval
+'(delete-other-windows)'" Its a bit of a hack I agree, and could cause problems
+in odd situations but it should do the trick.
 
 [new]
 (add-hook 'window-setup-hook 'delete-other-windows)
 -- from http://stackoverflow.com/questions/1144729/how-do-i-prevent-emacs-from-horizontally-splitting-the-screen-when-opening-multip
 
-Matiyam -- sounds like swbuff/swbuff-y. It's a different interface, though, but I've used shift-left/right to switch buffers with swbuff for awhile. I didn't like the re-ordering, which is what led me to tabbar...
+Matiyam -- sounds like swbuff/swbuff-y. It's a different interface, though, but
+I've used shift-left/right to switch buffers with swbuff for awhile. I didn't
+like the re-ordering, which is what led me to tabbar...
 
 
 ----
@@ -560,7 +600,8 @@ For emacs 23.1 I have to changed above codes to get list all buffers as one grou
 
 - dixiecko
 
-The function expects one argument; the buffer name. Here is how the example above looks with a regular expression:
+The function expects one argument; the buffer name. Here is how the example
+above looks with a regular expression:
 <pre>
 (lambda (a-buffer-name)
         (cond ((string-match "^\\*.+\\*$" a-buffer-name) '("Emacs"))
@@ -575,9 +616,11 @@ Grant, should the above work in xemacs?  I cannot get xemacs to force all files 
 
 Aquamacs tabbar work with standard emacs.Just check it out. -- Emmett
 
-Has anyone else managed to get the aquamacs tabbar mode working with gnu emacs, and could provide further instructions? Thanks - Josh
+Has anyone else managed to get the aquamacs tabbar mode working with gnu emacs,
+and could provide further instructions? Thanks - Josh
 
-Aquamacs tabbar and even the fork doesn't work with the recent bzr emacs. Need help! -- Emmett
+Aquamacs tabbar and even the fork doesn't work with the recent bzr emacs. Need
+help! -- Emmett
 
 ----
 CategoryModes
