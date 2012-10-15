@@ -7,9 +7,9 @@
 ;; Copyright (C) 2005-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Aug 12 17:18:02 2005
 ;; Version: 22.0
-;; Last-Updated: Fri Sep 14 16:01:52 2012 (-0700)
+;; Last-Updated: Mon Oct 15 08:26:42 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 722
+;;     Update #: 734
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/lacarte.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/LaCarte
 ;; Keywords: menu-bar, menu, command, help, abbrev, minibuffer, keys,
@@ -264,6 +264,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2012/10/15 dadams
+;;     lacarte-get-a-menu-item-alist-1: Add entry for separator form (menu-item "--..." . WHATEVER).
 ;; 2012/09/14 dadams
 ;;     lacarte-execute-menu-command, lacarte-get-overall-menu-item-alist:
 ;;       Added prefix arg treatment (arg MAPS), so you can choose keymaps.
@@ -580,6 +582,14 @@ Returns `lacarte-menu-items-alist', which it modifies."
             ;; (ITEM-STRING): non-selectable item - skip it.
             ((and (stringp (car-safe defn)) (null (cdr-safe defn)))
              (setq defn  nil))          ; So `keymapp' test, below, fails.
+
+            ;; (menu-item "--..." . WHATEVER): separator - skip it.
+            ;; Users can use `easy-menu-define' with an item such as ["--" nil], which produces
+            ;; (menu-item "--" nil)
+            ((and (eq 'menu-item (car-safe defn))
+                  (stringp (car-safe (cdr-safe defn)))
+                  (string-match "\\`--" (car-safe (cdr-safe defn))))
+             (setq defn  nil))
 
             ;; (menu-item ITEM-STRING REAL-BINDING . PROPERTIES), with `:filter'
             ((and (eq 'menu-item (car-safe defn))
