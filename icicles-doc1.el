@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue Oct  9 09:34:24 2012 (-0700)
+;; Last-Updated: Mon Oct 15 14:21:36 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 26857
+;;     Update #: 26880
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1243,10 +1243,11 @@
 ;;  completion is lax (permissive), there is no box.
 ;;
 ;;  The `Icy' minor-mode lighter text is highlighted red during
-;;  completion.  `+' is added to the lighter (`Icy+') for
-;;  multi-command completion, and the lighter is boxed for strict
-;;  completion.  When minibuffer input is read without completion, the
-;;  lighter is not highlighted in any way.
+;;  completion.  `+' is appended to the lighter (`Icy+') for
+;;  multi-command completion, `||' is appended if completion
+;;  candidates are multi-completions, and the lighter is boxed for
+;;  strict completion.  When minibuffer input is read without Icicles
+;;  completion, the lighter is not highlighted in any way.
 ;;
 ;;  If the list of candidates shown in `*Completions*' is truncated
 ;;  (because of option `icicle-max-candidates'), then the lighter text
@@ -1256,10 +1257,10 @@
 ;;  (@file :file-name "icicles-doc2.el" :to "Customization and General Tips")
 ;;  for info about `C-x #' and option `icicle-max-candidates'.
 ;;
-;;  In addition, the lighter text (with or without `+' and `...') is
-;;  `Icy' if completion is case-sensitive and `ICY' if not.  You can
-;;  toggle case-sensitivity at any time using `C-A' (that is, `C-S-a')
-;;  in the minibuffer.
+;;  In addition, the lighter text (with or without `+', `||', and
+;;  `...') is `Icy' if completion is case-sensitive and `ICY' if not.
+;;  You can toggle case-sensitivity at any time using `C-A' (that is,
+;;  `C-S-a') in the minibuffer.
 ;;
 ;;  The faces used for this highlighting in the minibuffer and the
 ;;  mode line are `icicle-completion',
@@ -1270,8 +1271,8 @@
 ;;
 ;;  When you are inputting, keep an eye out for this highlighting.  If
 ;;  you do not see it when you are prompted for input, it means that
-;;  input completion is not available.  This in turn means that
-;;  `S-TAB' is available, not for input completion, but for key
+;;  Icicles input completion is not available.  This in turn means
+;;  that `S-TAB' is available, not for input completion, but for key
 ;;  completion - see (@> "Key Completion").
 ;;
 ;;(@* "Icicles Search")
@@ -3142,13 +3143,32 @@
 ;;      doc string) is displayed in the mode line, provided user
 ;;      option `icicle-help-in-mode-line-delay' is greater than zero.
 ;;
-;;  * The total number of completion candidates is displayed in the
-;;    mode-line of buffer `*Completions*' - e.g. `567 candidates'.
-;;    If the number of candidates is currently truncated (because of
-;;    option `icicle-max-candidates' - see
-;;    (@file :file-name "icicles-doc2.el" :to "Customization and General Tips"),
-;;    then the total number of candidates before truncation is also
-;;    shown - e.g. `149 shown / 567'.
+;;  * The mode line of buffer `*Completions*' shows information about
+;;    the current completion state, in order from the left:
+;;
+;;    . The minor-mode lighter for Icicles, `Icy'.  This includes one
+;;      or more of these suffixes when appropriate:
+;;
+;;      `+'   for a multi-command
+;;      `||'  when candidates are multi-completions
+;;      `...' if the set of candidates in `*Completions' is truncated
+;;
+;;    . The total number of completion candidates - e.g. `567
+;;      candidates'.  If the set of candidates in `*Completions*' is
+;;      currently truncated (because of option `icicle-max-candidates'
+;;      - see (@file :file-name "icicles-doc2.el" :to "Customization and General Tips"),
+;;      then the total number of candidates before truncation is also
+;;      shown - e.g. `149/567 candidates shown'.
+;;
+;;    . The current completion method: (basic) prefix, vanilla, fuzzy,
+;;      swank (fuzzy symbol), apropos, scatter, Levenshtein,
+;;      Levenshtein strict.  See
+;;      (@file :file-name "icicles-doc2.el" :to "Fuzzy Completion")
+;;      and user options `icicle-TAB-completion-methods' and
+;;      `icicle-S-TAB-completion-methods-alist'.
+;;
+;;    . The current sort order, and whether it is reversed.  See
+;;      (@> "Sorting Candidates and Removing Duplicates")
 ;;
 ;;  * You can use `C-insert' to move back and forth between the
 ;;    minibuffer and `*Completions*'.  In each direction, the current
@@ -4978,6 +4998,15 @@
 ;;  this for all files and directories, and in Dired mode command
 ;;  `icicle-visit-marked-file-of-content' (bound to `C-S-f', aka
 ;;  `C-F') does it for marked files and directories.
+;;
+;;(@* "Mode-Line Lighter Indication of Multi-Completion")
+;;  ** Mode-Line Lighter Indication of Multi-Completion **
+;;
+;;  Whenever multi-completion candidates are available, the `Icy'
+;;  minor-mode lighter has the suffix `||' (think "parallel") appended
+;;  to it.  You can see this lighter at the left of the mode line of
+;;  buffer `*Completions*' or in the minor-mode part of other mode
+;;  lines.
 ;;
 ;;  See Also:
 ;;
