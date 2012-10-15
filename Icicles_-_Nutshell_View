@@ -897,8 +897,9 @@ of the candidates), then this character is enclosed in a box.  If
 completion is ''[[lax]]'' (permissive), there is no box.
 
 The `Icy' minor-mode lighter text is highlighted red during
-completion.  '''`##+##'''' is added to the lighter (`##Icy+##') for
-multi-command completion, and the lighter is boxed for strict
+completion.  '''`##+##'''' is appended to the lighter (`##Icy+##') for
+[[multi-command]] completion, '''`##||##'''' is appended if completion
+candidates are [[multi-completion]]s, and the lighter is boxed for strict
 completion.  When minibuffer input is read without completion, the
 lighter is not highlighted in any way.
 
@@ -907,7 +908,7 @@ If the list of candidates shown in `*Completions*' is truncated
 then the lighter text is suffixed by `##...##'.  So if you see `##...##' then you know that
 if you increase `icicle-max-candidates' (e.g. by using '''`<tt>[[Icicles - Customization and General Tips#icicle-max-candidates|C-x #]]</tt>'''' during completion) then more candidates will be available.  
 
-In addition, the lighter text (with or without `##+##' and `##...##') is '''`Icy'''' if
+In addition, the lighter text (with or without `##+##', `##||##', and `##...##') is '''`Icy'''' if
 completion is case-sensitive and '''`ICY'''' if not.  You can toggle
 case-sensitivity at any time using `C-A' (that is, `C-S-a') in the
 minibuffer.
@@ -920,7 +921,7 @@ information.  These faces are combined to produce the various
 highlighting effects -- keep that in mind if you customize them.
 
 When you are inputting, keep an eye out for this highlighting.  If
-you do not see it when you are prompted for input, it means that
+you do not see it when you are prompted for input, it means that '''Icicles'''
 input completion is not available.  This in turn means that
 `S-TAB' is available, not for input completion, but for '''Icicles''' [[Icicles - Key Completion | key
 completion]].
