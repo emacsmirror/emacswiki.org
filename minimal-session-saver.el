@@ -5,10 +5,10 @@
 ;; Author: Roland Walker <walker@pobox.com>
 ;; Homepage: http://github.com/rolandwalker/minimal-session-saver
 ;; URL: http://raw.github.com/rolandwalker/minimal-session-saver/master/minimal-session-saver.el
-;; Version: 0.5.2
-;; Last-Updated: 14 Sep 2012
+;; Version: 0.6.0
+;; Last-Updated: 15 Oct 2012
 ;; EmacsWiki: MinimalSessionSaver
-;; Keywords: frames, tools, session, project
+;; Keywords: tools, frames, project
 ;;
 ;; Simplified BSD License
 ;;
@@ -45,8 +45,9 @@
 ;; Five interactive commands are provided to manage sessions:
 ;;
 ;;     minimal-session-saver-store
-;;     minimal-session-saver-store-frame
 ;;     minimal-session-saver-load
+;;     minimal-session-saver-store-frame
+;;     minimal-session-saver-load-frame
 ;;     minimal-session-saver-add-buffer
 ;;     minimal-session-saver-remove-buffer
 ;;     minimal-session-saver-mark-stored-buffers
@@ -57,7 +58,8 @@
 ;;
 ;;     minimal-session-saver-install-aliases
 ;;
-;; installs shorter command aliases for the above.
+;; installs shorter command aliases for the above, and can
+;; be run at autoload-time through a setting in customize.
 ;;
 ;; See Also
 ;;
@@ -72,23 +74,18 @@
 ;;     GNU Emacs version 23.3           : yes
 ;;     GNU Emacs version 22.3 and lower : no
 ;;
-;;     No external dependencies
+;;     Uses if present: frame-bufs.el
 ;;
 ;; Bugs
 ;;
 ;; TODO
 ;;
-;;     Load to a frame
-;;
-;;     Optional save or prompt on kill-emacs hook
+;;     Store multiple sets/frames in same data file and
+;;     prompt for choice on load?
 ;;
 ;;     Prompt to save all files before running -store
 ;;
-;;     timestamp in data file header
-;;
 ;;     don't count already marked buffers in buff-menu function
-;;
-;;     separate history variable?
 ;;
 ;;; License
 ;;
@@ -133,12 +130,27 @@
 ;; for callf, assert, incf, remove-if, remove-if-not
 (require 'cl)
 
+(eval-when-compile
+  (defvar minimal-session-saver-store-on-exit))
+
+(declare-function frame-bufs-add-buffer "frame-bufs.el")
+
 ;;; customizable variables
+
+;;;###autoload
+(defun minimal-session-saver-customize-set-hooks (symbol value)
+  "Set function which adds or removes hooks.
+
+SYMBOL and VALUE are passed to `custom-set-default'."
+  (custom-set-default symbol value)
+  (if minimal-session-saver-store-on-exit
+      (add-hook 'kill-emacs-hook 'minimal-session-saver-kill-emacs-hook)
+    (remove-hook 'kill-emacs-hook 'minimal-session-saver-kill-emacs-hook)))
 
 ;;;###autoload
 (defgroup minimal-session-saver nil
   "Very lean session saver."
-  :version "0.5.2"
+  :version "0.6.0"
   :link '(emacs-commentary-link "minimal-session-saver")
   :prefix "minimal-session-saver-"
   :group 'tools)
@@ -154,6 +166,69 @@
   :type 'string
   :group 'minimal-session-saver)
 
+;;;###autoload
+(defcustom minimal-session-saver-store-on-exit nil
+  "Automatically store the session data every time you quit Emacs.
+
+This value may also be a string representing a separate data file
+to be used for store-on-exit session data."
+  :set 'minimal-session-saver-customize-set-hooks
+  :type '(choice
+          (const  :tag "No"   nil)
+          (const  :tag "Yes"  t)
+          (string :tag "Custom Location"))
+  :group 'minimal-session-saver)
+
+;;;###autoload
+(defcustom minimal-session-saver-install-short-aliases nil
+  "Install short aliases such as `mss-load' for `minimal-session-saver-load'."
+  :type 'boolean
+  :group 'minimal-session-saver)
+
+;;; variables
+
+(defvar minimal-session-saver-file-name-history nil
+  "History of data file names entered in minimal-session-saver.")
+
+;;; aliases
+
+;;;###autoload
+(defun minimal-session-saver-install-aliases (&optional arg)
+  "Install aliases outside the \"minimal-session-saver-\" namespace.
+
+With optional negative ARG, uninstall aliases.
+
+The following aliases will be installed
+
+   mss-store                for   minimal-session-saver-store
+   mss-load                 for   minimal-session-saver-load
+   mss-store-frame          for   minimal-session-saver-store-frame
+   mss-load-frame           for   minimal-session-saver-load-frame
+   mss-add-buffer           for   minimal-session-saver-add-buffer
+   mss-remove-buffer        for   minimal-session-saver-remove-buffer
+   mss-mark-stored-buffers  for   minimal-session-saver-mark-stored-buffers"
+  (let ((syms '(
+                store
+                load
+                store-frame
+                load-frame
+                add-buffer
+                remove-buffer
+                mark-stored-buffers
+                )))
+    (cond
+      ((and (numberp arg)
+            (< arg 0))
+       (dolist (sym syms)
+         (fmakunbound (intern (format "mss-%s" sym)))))
+      (t
+       (dolist (sym syms)
+         (defalias (intern (format "mss-%s" sym)) (intern (format "minimal-session-saver-%s" sym))))))))
+
+;;;###autoload
+(when minimal-session-saver-install-short-aliases
+  (minimal-session-saver-install-aliases))
+
 ;;; macros
 
 (defmacro minimal-session-saver-called-interactively-p (&optional kind)
@@ -167,6 +242,18 @@ in GNU Emacs 24.1 or higher."
 
 ;;; utility functions
 
+(defun minimal-session-saver-read-file-name (prompt &optional dir default-filename mustmatch initial predicate)
+  "Prompt for a data file for use by minimal-session-saver.
+
+PROMPT, DIR, DEFAULT-FILENAME, MUSTMATCH, INITIAL, and PREDICATE
+are as documented for `read-file-name'.
+
+History of input is kept in `minimal-session-saver-file-name-history'."
+  (let ((file-name-history minimal-session-saver-file-name-history))
+    (prog1
+        (read-file-name prompt dir default-filename mustmatch initial predicate)
+      (setq minimal-session-saver-file-name-history file-name-history))))
+
 (defun minimal-session-saver-read (path)
   "Read and return the file list from PATH."
   (ignore-errors
@@ -176,9 +263,22 @@ in GNU Emacs 24.1 or higher."
       (read (current-buffer)))))
 
 (defun minimal-session-saver-write (path file-list)
-  "Write FILE-LIST to PATH."
+  "Write to fully-qualified filename PATH, the contents of FILE-LIST."
   (let ((print-level nil)
-        (print-length nil))
+        (print-length nil)
+        (time (current-time)))
+    (when (file-directory-p path)
+      (error "PATH is an existing directory, not a file"))
+    (when (file-exists-p path)
+      (unless
+          (string-match-p
+           "\\`;+ *minimal-session-saver data file"
+           (with-temp-buffer
+             (insert-file-contents path)
+             (goto-char (point-min))
+             (buffer-substring (point-min) (line-end-position))))
+        (error "PATH exists and is not a minimal-session-saver data file"))
+      (copy-file path (concat path "~") t))
     (condition-case nil
         (progn
           (assert file-list)
@@ -186,6 +286,9 @@ in GNU Emacs 24.1 or higher."
             (set-buffer-file-coding-system 'utf-8)
             (insert ";; minimal-session-saver data file. -*- coding: utf-8 -*-\n")
             (insert ";; Do not edit this file.\n")
+            (insert (format ";; Timestamp: %s <%s>\n"
+                            (float-time time)
+                            (format-time-string "%e %b %Y %r" time)))
             (prin1 file-list (current-buffer))
             (insert "\n")))
       (error "Cannot save file listing to %s" path))))
@@ -208,7 +311,7 @@ With universal prefix argument, enter PATH interactively."
   (callf or path minimal-session-saver-data-file)
   (when (or (consp current-prefix-arg)
             (eq path 'prompt))
-    (setq path (read-file-name "Store visited files to: " path)))
+    (setq path (minimal-session-saver-read-file-name "Store visited files to: " nil path)))
   (minimal-session-saver-mkdir-for-file path)
   (callf or file-list (delq nil (mapcar 'buffer-file-name (buffer-list))))
   (when (or file-list (prog1 (y-or-n-p (propertize "Really store an empty list?" 'face 'highlight)) (message "")))
@@ -223,17 +326,18 @@ With universal prefix argument, enter PATH interactively."
 
 Requires frame-bufs.el.
 
-With universal prefix argument, enter PATH interactively."
+When PATH is not supplied, prompts to enter value interactively."
   (interactive)
   (assert (fboundp 'frame-bufs-associated-p) nil "Frame-bufs library not loaded")
-  (callf or path minimal-session-saver-data-file)
+  (callf or path 'prompt)
   (when (or (consp current-prefix-arg)
             (eq path 'prompt))
-    (setq path (read-file-name "Store visited files on frame to: " path)))
+    (setq path (minimal-session-saver-read-file-name "Store visited files on frame to: " default-directory "")))
   (let ((file-list (delq nil (mapcar 'buffer-file-name
                                      (remove-if-not 'frame-bufs-associated-p
                                                     (buffer-list))))))
-    (minimal-session-saver-store path file-list)
+    (let ((current-prefix-arg nil))
+      (minimal-session-saver-store path file-list))
     (when (and (minimal-session-saver-called-interactively-p 'any)
                (not minimal-session-saver-less-feedback))
       (message "Stored %s filenames" (length file-list)))))
@@ -247,7 +351,7 @@ With universal prefix argument, enter PATH interactively."
   (callf or path minimal-session-saver-data-file)
   (when (or (consp current-prefix-arg)
             (eq path 'prompt))
-    (setq path (read-file-name "Load visited files from: " path)))
+    (setq path (minimal-session-saver-read-file-name "Load visited files from: " nil path)))
   (let* ((file-list (minimal-session-saver-read path))
          (nonexistent-list (remove-if 'file-exists-p
                                       (remove-if 'file-remote-p file-list)))
@@ -267,7 +371,34 @@ With universal prefix argument, enter PATH interactively."
         (callf concat warning (format ", %s already open" (length visiting-list))))
       (when nonexistent-list
         (callf concat warning (format ", creating %s" (length nonexistent-list))))
-      (message "Visited %s files%s" (length file-list) warning))))
+      (when (> (- (length file-list) (length visiting-list)) 25)
+        (callf concat warning " -- it may take a moment for hooks to run"))
+      (message "Visited %s files%s" (length file-list) warning)
+      (sit-for 1))))
+
+;;;###autoload
+(defun minimal-session-saver-load-frame (&optional path)
+  "Load the saved set of visited files from PATH into a new frame.
+
+Requires frame-bufs.el.
+
+When PATH is not supplied, prompts to enter value interactively."
+  (interactive)
+  (assert (fboundp 'frame-bufs-associated-p) nil "Frame-bufs library not loaded")
+  (callf or path 'prompt)
+  (when (or (consp current-prefix-arg)
+            (eq path 'prompt))
+    (setq path (minimal-session-saver-read-file-name "Load visited files from: " default-directory "")))
+  (let ((file-list (minimal-session-saver-read path))
+        (frame nil))
+    (with-current-buffer "*scratch*"
+      (setq frame (make-frame))
+      (let ((current-prefix-arg nil))
+        (minimal-session-saver-load path))
+      (dolist (f file-list)
+        (let ((buf (get-file-buffer f)))
+          (when buf
+            (frame-bufs-add-buffer buf frame)))))))
 
 ;;;###autoload
 (defun minimal-session-saver-add-buffer (&optional path buffer)
@@ -282,7 +413,7 @@ When BUFFER is not visiting a file, there is no effect."
   (callf or buffer (current-buffer))
   (when (or (consp current-prefix-arg)
             (eq path 'prompt))
-    (setq path (read-file-name "Add to session listing at: " path)))
+    (setq path (minimal-session-saver-read-file-name "Add to session listing at: " nil path)))
   (let* ((file-list (minimal-session-saver-read path))
          (orig-count (length file-list)))
     (add-to-list 'file-list (buffer-file-name buffer))
@@ -305,7 +436,7 @@ which was not in the list, there is no effect."
   (callf or buffer (current-buffer))
   (when (or (consp current-prefix-arg)
             (eq path 'prompt))
-    (setq path (read-file-name "Remove from session listing at: " path)))
+    (setq path (minimal-session-saver-read-file-name "Remove from session listing at: " nil path)))
   (let* ((file-list (minimal-session-saver-read path))
          (orig-count (length file-list)))
     (setq file-list (remove (buffer-file-name buffer) file-list))
@@ -332,7 +463,7 @@ This command can only be called from within a `buff-menu' buffer."
   (callf or path minimal-session-saver-data-file)
   (when (or (consp current-prefix-arg)
             (eq path 'prompt))
-    (setq path (read-file-name "Read session listing from: " path)))
+    (setq path (minimal-session-saver-read-file-name "Read session listing from: " nil path)))
   (callf or char (if (boundp 'buff-menu-marker-char) buff-menu-marker-char ?>))
   (callf or col 0)
   (let ((inhibit-read-only t)
@@ -352,25 +483,23 @@ This command can only be called from within a `buff-menu' buffer."
                (not minimal-session-saver-less-feedback))
       (message "Marked %s buffer/s" counter))))
 
+;;; hooks
+
 ;;;###autoload
-(defun minimal-session-saver-install-aliases ()
-  "Install aliases outside the \"minimal-session-saver-\" namespace.
+(defun minimal-session-saver-kill-emacs-hook ()
+  "Optionally save session data at shutdown time.
 
-The following aliases will be installed
+This function has not effect unless the variable
+`minimal-session-saver-store-on-exit' is non-nil."
+  (when minimal-session-saver-store-on-exit
+    (let ((minimal-session-saver-data-file (if (stringp minimal-session-saver-store-on-exit)
+                                               minimal-session-saver-store-on-exit
+                                             minimal-session-saver-data-file)))
+      (minimal-session-saver-store))))
 
-   mss-store                for   minimal-session-saver-store
-   mss-store-frame          for   minimal-session-saver-store-frame
-   mss-load                 for   minimal-session-saver-load
-   mss-add-buffer           for   minimal-session-saver-add-buffer
-   mss-remove-buffer        for   minimal-session-saver-remove-buffer
-   mss-mark-stored-buffers  for   minimal-session-saver-mark-stored-buffers"
-  (interactive)
-  (defalias 'mss-store                 'minimal-session-saver-store)
-  (defalias 'mss-store-frame           'minimal-session-saver-store-frame)
-  (defalias 'mss-load                  'minimal-session-saver-load)
-  (defalias 'mss-add-buffer            'minimal-session-saver-add-buffer)
-  (defalias 'mss-remove-buffer         'minimal-session-saver-remove-buffer)
-  (defalias 'mss-mark-stored-buffers   'minimal-session-saver-mark-stored-buffers))
+;;;###autoload
+(when minimal-session-saver-store-on-exit
+  (add-hook 'kill-emacs-hook 'minimal-session-saver-kill-emacs-hook))
 
 (provide 'minimal-session-saver)
 
@@ -385,7 +514,7 @@ The following aliases will be installed
 ;; byte-compile-warnings: (not cl-functions redefine)
 ;; End:
 ;;
-;; LocalWords: MinimalSessionSaver incf callf bufs
+;; LocalWords: MinimalSessionSaver incf callf bufs MUSTMATCH devel
 ;;
 
 ;;; minimal-session-saver.el ends here
