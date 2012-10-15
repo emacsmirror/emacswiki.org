@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu Jan 25 14:22:13 1996
 ;; Version: 21.0
-;; Last-Updated: Mon Sep 10 09:41:16 2012 (-0700)
+;; Last-Updated: Mon Oct 15 08:53:06 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 182
+;;     Update #: 192
 ;; URL: http://www.emacswiki.org/emacs-en/window%2b.el
 ;; Doc URL: http://emacswiki.org/emacs/Delete_Frames_Easily_-_But_Not_Too_Easily
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/OneOnOneEmacs
@@ -45,6 +45,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/10/15 dadams
+;;     Do not redefine quit-window for Emacs 24+, so do not delete frame for NEWS.
+;;       Thx to Martin Rudalics.
 ;; 2012/09/10 dadams
 ;;     special-display-popup-frame: Protect fit-frame call with fboundp.
 ;; 2012/08/31 dadams
@@ -208,14 +211,15 @@ arguments."
 
 ;; REPLACE ORIGINAL in `window.el':
 ;;
-;; Don't avoid calling `delete-window', even if `one-window-p'.
+;; Do not avoid calling `delete-window', even if `one-window-p'.
 ;; Instead, wrap the call in `condition-case'.
 ;; This way, if you use my version of `delete-window' (defined in
 ;; `frame-cmds.el'), then the frame is also deleted if `one-window-p'.
+;; Not needed (and not appropriate) for Emacs 24.
 ;;
-;;;###autoload
-(defun quit-window (&optional kill window)
-  "Quit the current buffer.  Bury it, and maybe delete the selected frame.
+(when (< emacs-major-version 24)
+  (defun quit-window (&optional kill window)
+    "Quit the current buffer.  Bury it, and maybe delete the selected frame.
 \(The frame is deleted if it contains a dedicated window for the buffer.)
 With a prefix argument, kill the buffer instead.
 
@@ -224,44 +228,44 @@ otherwise bury it.
 
 If WINDOW is non-nil, it specifies a window; we delete that window,
 and the buffer that is killed or buried is the one in that window."
-  (interactive "P")
-  (let ((buffer (window-buffer window))
-	(frame (window-frame (or window (selected-window))))
-	(window-solitary
-	 (save-selected-window
-	   (if window
-	       (select-window window))
-	   (one-window-p t)))
-	window-handled)
+    (interactive "P")
+    (let ((buffer (window-buffer window))
+          (frame (window-frame (or window (selected-window))))
+          (window-solitary
+           (save-selected-window
+             (if window
+                 (select-window window))
+             (one-window-p t)))
+          window-handled)
 
-    (save-selected-window
-      (if window
-	  (select-window window))
-      (or (window-minibuffer-p)
-	  (window-dedicated-p (selected-window))
-	  (switch-to-buffer (other-buffer))))
+      (save-selected-window
+        (if window
+            (select-window window))
+        (or (window-minibuffer-p)
+            (window-dedicated-p (selected-window))
+            (switch-to-buffer (other-buffer))))
 
-    ;; Get rid of the frame, if it has just one dedicated window
-    ;; and other visible frames exist.
-    (and (or (window-minibuffer-p) (window-dedicated-p window))
-	 (delq frame (visible-frame-list))
-	 window-solitary
-	 (if (and (eq default-minibuffer-frame frame)
-		  (= 1 (length (minibuffer-frame-list))))
-	     (setq window nil)
-	   (delete-frame frame)
-	   (setq window-handled t)))
+      ;; Get rid of the frame, if it has just one dedicated window
+      ;; and other visible frames exist.
+      (and (or (window-minibuffer-p) (window-dedicated-p window))
+           (delq frame (visible-frame-list))
+           window-solitary
+           (if (and (eq default-minibuffer-frame frame)
+                    (= 1 (length (minibuffer-frame-list))))
+               (setq window nil)
+             (delete-frame frame)
+             (setq window-handled t)))
 
-    ;; Deal with the buffer.
-    (if kill
-	(kill-buffer buffer)
-      (bury-buffer buffer))
+      ;; Deal with the buffer.
+      (if kill
+          (kill-buffer buffer)
+        (bury-buffer buffer))
 
-    ;; Maybe get rid of the window.
-    (unless window-handled
-      (condition-case nil
-          (delete-window window)
-        (error nil)))))
+      ;; Maybe get rid of the window.
+      (unless window-handled
+        (condition-case nil
+            (delete-window window)
+          (error nil))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 
