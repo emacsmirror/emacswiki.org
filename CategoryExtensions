@@ -38,10 +38,11 @@ Extensions (using the category name from `finder-by-keyword'), are utility libra
 
 == Sequences ==
 
-* VectorModificationLibrary -- Functions to modify vectors
 * ListUtils -- List-manipulation utility functions
 * [http://www.splode.com/~friedman/software/emacs-lisp/src/list-fns.el list-fns.el] -- list-searching and manipulation functions
 * [http://github.com/magnars/bang.el bang.el] -- a modern list api for Emacs. Does not require 'cl.
+* VectorUtils -- Vector-manipulation utility functions
+* [http://www.splode.com/~friedman/software/emacs-lisp/src/obarray-fns.el obarray-fns.el] -- obarray-manipulating routines
 
 == Macros ==
 
@@ -53,6 +54,7 @@ Extensions (using the category name from `finder-by-keyword'), are utility libra
 * [http://github.com/skeeto/elisp-fakespace fakespace.el] -- fake namespaces with defpackage
 * [http://github.com/skeeto/emacs-memoize memoize.el] -- memoize functions
 * [[Anaphora]] -- anaphoric macros providing implicit temp variables
+* [http://github.com/funkenblatt/combinators.el combinators.el]
 
 == Concurrency ==
 
