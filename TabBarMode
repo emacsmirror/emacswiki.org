@@ -63,99 +63,83 @@ This allows a popup tabbar AND menu bar based on cursor location.  It also switc
 
 Tabbar mode does not have a documentation. However, the header file in the source code contains useful information.
 
-== customizations ==
+== Customizations ==
 
 Tabbar mode has many customizable options, and it supports emacs customization system. To customize, type M-x customize-group [RET] tabbar [RET].
 
-=== tab group customizations ===
+=== Tab group customizations ===
 
-To define the grouping of tabs, you need to set tabbar-buffer-groups to your own function that returns a list of strings.
+To define your own tab grouping, you need to either set
+<code>tabbar-buffer-groups</code> to your own function that returns a list of
+strings, or define your own function with another name and then write
+<code>(setq tabbar-buffer-groups-function 'your-function-name)</code>. Either
+way works.
 
-Here's a example of tab group function that define all tabs to be one of 3 possible groups: “Emacs Buffer”, “Dired”, “User Buffer”.
+Here's a example of tab group function that define all tabs to be one of two
+possible groups: “emacs” and “user”.  This has been tested in Emacs v24.2 using
+tabbar.el v1.7.
+
+ (defun my-tabbar-buffer-groups () ;; customize to show all normal files in one group
+   "Returns the name of the tab group names the current buffer belongs to.
+ There are two groups: Emacs buffers (those whose name starts with “*”, plus
+ dired buffers), and the rest."
+   (list (cond ((string-equal "*" (substring (buffer-name) 0 1)) "emacs")
+               ((eq major-mode 'dired-mode) "emacs")
+               (t "user")))
+ (setq tabbar-buffer-groups-function 'my-tabbar-buffer-groups)
+
+Another tabbar-buffer-groups example (based on the original tabbar.el's
+function).  (Note that here, since the original function name is used, it
+overrides the original function, and so there's no need to call <code>(setq
+tabbar-buffer-groups-function 'your-function-name)</code>.)
 
  (defun tabbar-buffer-groups ()
    "Return the list of group names the current buffer belongs to.
- This function is a custom function for tabbar-mode's tabbar-buffer-groups.
- This function group all buffers into 3 groups:
- Those Dired, those user buffer, and those emacs buffer.
- Emacs buffer are those starting with “*”."
+     Return a list of one element based on major mode."
    (list
     (cond
+     ((or (get-buffer-process (current-buffer))
+          ;; Check if the major mode derives from `comint-mode' or
+          ;; `compilation-mode'.
+          (tabbar-buffer-mode-derived-p
+           major-mode '(comint-mode compilation-mode)))
+      "Process"
+      )
+     ;; ((member (buffer-name)
+     ;;          '("*scratch*" "*Messages*" "*Help*"))
+     ;;  "Common"
+     ;;  )
      ((string-equal "*" (substring (buffer-name) 0 1))
-      '("Emacs Buffer")
+      "Common"
+      )
+     ((member (buffer-name)
+              '("xyz" "day" "m3" "abi" "for" "nws" "eng" "f_g" "tim" "tmp"))
+      "Main"
       )
      ((eq major-mode 'dired-mode)
-      '("Dired")
+      "Dired"
+      )
+     ((memq major-mode
+            '(help-mode apropos-mode Info-mode Man-mode))
+      "Common"
+      )
+     ((memq major-mode
+            '(rmail-mode
+              rmail-edit-mode vm-summary-mode vm-mode mail-mode
+              mh-letter-mode mh-show-mode mh-folder-mode
+              gnus-summary-mode message-mode gnus-group-mode
+              gnus-article-mode score-mode gnus-browse-killed-mode))
+      "Mail"
       )
      (t
-      '("User Buffer")
-      )
-     ))) ;; from Xah Lee
-
- (setq tabbar-buffer-groups-function 'tabbar-buffer-groups)
-
-The function above doesn't work at least for me (Emacs 24.2). The problem is with the return values; instead of '("Dired"), the first branch should return simply "Dired", etc. The following works for me (I only use two groups, "emacs" and "user"):
-
- (defun my-tabbar-buffer-groups () ;; customize to show all normal files in one group
-  (list (cond ((string-equal "*" (substring (buffer-name) 0 1)) "emacs")
-              ((eq major-mode 'dired-mode) "emacs")
-              (t "user"))))
- (setq tabbar-buffer-groups-function 'my-tabbar-buffer-groups)
-
-I also define the meta-right-arrow and meta-left-arrow keys for navigating among the tabs of one tab group. (Those keys normally bind to functions right-word and left-word, which are also bound to ctrl-right-arrow and ctrl-left-arrow.)
-
- (global-set-key [M-left] 'tabbar-backward-tab)
- (global-set-key [M-right] 'tabbar-forward-tab)
-
-Another tabbar-buffer-groups example (based on the original tabbar.el's function):
-
-    (defun tabbar-buffer-groups ()
-      "Return the list of group names the current buffer belongs to.
-    Return a list of one element based on major mode."
-      (list
-       (cond
-        ((or (get-buffer-process (current-buffer))
-             ;; Check if the major mode derives from `comint-mode' or
-             ;; `compilation-mode'.
-             (tabbar-buffer-mode-derived-p
-              major-mode '(comint-mode compilation-mode)))
-         "Process"
-         )
-        ;; ((member (buffer-name)
-        ;;          '("*scratch*" "*Messages*" "*Help*"))
-        ;;  "Common"
-        ;;  )
-        ((string-equal "*" (substring (buffer-name) 0 1))
-         "Common"
-         )
-        ((member (buffer-name)
-                 '("xyz" "day" "m3" "abi" "for" "nws" "eng" "f_g" "tim" "tmp"))
-         "Main"
-         )
-        ((eq major-mode 'dired-mode)
-         "Dired"
-         )
-        ((memq major-mode
-               '(help-mode apropos-mode Info-mode Man-mode))
-         "Common"
-         )
-        ((memq major-mode
-               '(rmail-mode
-                 rmail-edit-mode vm-summary-mode vm-mode mail-mode
-                 mh-letter-mode mh-show-mode mh-folder-mode
-                 gnus-summary-mode message-mode gnus-group-mode
-                 gnus-article-mode score-mode gnus-browse-killed-mode))
-         "Mail"
-         )
-        (t
-         ;; Return `mode-name' if not blank, `major-mode' otherwise.
-         (if (and (stringp mode-name)
-                  ;; Take care of preserving the match-data because this
-                  ;; function is called when updating the header line.
-                  (save-match-data (string-match "[^ ]" mode-name)))
-             mode-name
-           (symbol-name major-mode))
-         ))))
+      ;; Return `mode-name' if not blank, `major-mode' otherwise.
+      (if (and (stringp mode-name)
+               ;; Take care of preserving the match-data because this
+               ;; function is called when updating the header line.
+               (save-match-data (string-match "[^ ]" mode-name)))
+          mode-name
+        (symbol-name major-mode))
+      ))))
 
 Here's a way to change the toggle tabbar groups:
 
@@ -173,10 +157,15 @@ Here's a way to change the toggle tabbar groups:
             (setq tabbar-buffer-groups-function 'tabbar-buffer-groups)
             (setq tbbr-md "groups"))))
 
-(must be called twice in the first time of the given emacs session.)
+(Must be called twice in the first time of the given emacs session.)
 
+This code simply puts all tabs in one group, "All":
 
-=== sort tabbar buffers by name ===
+ (setq tabbar-buffer-groups-function
+          (lambda ()
+            (list "All")))
+
+=== Sort tabbar buffers by name ===
 
  (defun tabbar-add-tab (tabset object &optional append_ignored)
   "Add to TABSET a tab with value OBJECT if there isn't one there yet.
@@ -191,45 +180,17 @@ Here's a way to change the toggle tabbar groups:
         (set tabset (sort (cons tab tabs)
                           (lambda (a b) (string< (buffer-name (car a)) (buffer-name (car b))))))))))
 
+=== Tab navigation made easy ===
+
+You can define keystrokes for navigating among the tabs of one tab group. Here we use the meta-right-arrow and meta-left-arrow keystrokes. (They keys normally bind to functions right-word and left-word, which are also bound to ctrl-right-arrow and ctrl-left-arrow, so we're not losing convenience.)
+
+ (global-set-key [M-left] 'tabbar-backward-tab)
+ (global-set-key [M-right] 'tabbar-forward-tab)
+
 
 == Discussions ==
 
-The code above doesn't work in emacs 23.2 & tabbar v. 1.3. Here is correct version:
 
- (defun tabbar-buffer-groups (buffer)
-   "Return the list of group names BUFFER belongs to.
- Return only one group for each buffer."
-   (with-current-buffer (get-buffer buffer)
-     (cond
-      ((string-equal "*" (substring (buffer-name) 0 1))
-       '("Emacs Buffer"))
-      ((eq major-mode 'dired-mode)
-       '("Dired"))
-      (t
-       '("User Buffer"))
-      )))
-
-I use it in conjunction with:
-
- ;; C-S-<tab> ;; C-S-<win>-<tab>
- (global-set-key (kbd "<C-S-iso-lefttab>") 'tabbar-forward-tab)
- (global-set-key (kbd "<C-S-s-iso-lefttab>") 'tabbar-backward-tab)
- ;; C-x C-<left> ;; C-x C-<right>
- (global-set-key (kbd "C-x C-<right>") 'tabbar-forward-group)
- (global-set-key (kbd "C-x C-<left>") 'tabbar-backward-group)
-
---A.Sidorov alx[dot]sidorov[at]gmail[dot]com
-
-
-Here is a example where all tabs is just one group
-
- (setq tabbar-buffer-groups-function
-          (lambda ()
-            (list "All"))) ;; code by Peter Barabas
-
-
-The first function only works if I change '("User Buffer") to just "User Buffer",
-and the same for the other strings?! --CH
 
 === Windows-style behaviour and key bindings ===
 
@@ -252,134 +213,122 @@ The following will provide windows style (shift-)control tab behaviour and autol
     (global-set-key [(control tab)] 'shk-tabbar-next)
     (global-set-key [(control shift tab)] 'shk-tabbar-prev)
 
---shjk
+== Hide for special buffers ==
 
-==Hide for special buffers==
-
-By adding the following code snippet to the .emacs file only the non-scratch buffers can be made to be displayed:
+You can limit the display to just the non-scratch by adding the following code
+snippet to the .emacs file:
 
  ;; 1- if remove-if is not found, add here (require 'cl)
  ;; 2- in my emacs 23, I had to remove the "b" from "lambda (b)"
+ (when (require 'tabbar nil t)
+   (setq tabbar-buffer-groups-function
+         (lambda (b) (list "All Buffers")))
+   (setq tabbar-buffer-list-function
+         (lambda ()
+           (remove-if
+            (lambda(buffer)
+              (find (aref (buffer-name buffer) 0) " *"))
+            (buffer-list))))
+   (tabbar-mode))
 
-    (when (require 'tabbar nil t)
-      (setq tabbar-buffer-groups-function
-    	(lambda (b) (list "All Buffers")))
-      (setq tabbar-buffer-list-function
-    	(lambda ()
-    	  (remove-if
-    	   (lambda(buffer)
-    	     (find (aref (buffer-name buffer) 0) " *"))
-    	   (buffer-list))))
-      (tabbar-mode))
+For the author, this only works if tabbar-mode is set on tob of this block and
+the when stuff is removed:
 
--Sundar
-
-
-For me this only if (tabbar-mode) is set on tob of this block
-and I removed the when stuff:
-
- ;; Tabbar
  (require 'tabbar)
  (tabbar-mode)
  (setq tabbar-buffer-groups-function
-           (lambda ()
-             (list "All Buffers")))
+       (lambda ()
+         (list "All Buffers")))
 
  (setq tabbar-buffer-list-function
-     	(lambda ()
-     	  (remove-if
-     	   (lambda(buffer)
-     	     (find (aref (buffer-name buffer) 0) " *"))
-     	   (buffer-list))))
+       (lambda ()
+         (remove-if
+          (lambda(buffer)
+            (find (aref (buffer-name buffer) 0) " *"))
+          (buffer-list))))
 
--Marco (marco[aet]rockiger.com)
+Some buffers can be hidden with this code:
 
-I hide some buffers with this:
-<pre>
-(setq *tabbar-ignore-buffers* '("idle.org" ".bbdb" "diary"))
-(setq tabbar-buffer-list-function
-             (lambda ()
-               (remove-if
-                (lambda (buffer)
-                  (and (not (eq (current-buffer) buffer)) ; Always include the current buffer.
-                       (loop for name in *tabbar-ignore-buffers* ;remove buffer name in this list.
-                          thereis (string-equal (buffer-name buffer) name))))
-                (buffer-list))))
-</pre>
-- Jingtao xu
+ (setq *tabbar-ignore-buffers* '("idle.org" ".bbdb" "diary"))
+ (setq tabbar-buffer-list-function
+       (lambda ()
+         (remove-if
+          (lambda (buffer)
+            (and (not (eq (current-buffer) buffer)) ; Always include the current buffer.
+                 (loop for name in *tabbar-ignore-buffers* ;remove buffer name in this list.
+                       thereis (string-equal (buffer-name buffer) name))))
+          (buffer-list))))
 
-==Locally disabling, depending on the MajorMode==
+== Locally disabling, depending on the MajorMode ==
 
 I tried to enable the tabbar for my terminals only with the above configuration, and it turned out that it remains visible even when it does not contain any tab: some empty space remains as headline.
 
 So, I use the following configuration to display the tabbar on certain buffers only (for buffers in <code>term-mode</code> major mode in this case, but it can easily be extended). The tabbar is disabled on the other buffers.
 
-  (when (require 'tabbar nil t)
-    ;; Enable tabbars globally:
-    (tabbar-mode 1)
+ (when (require 'tabbar nil t)
+   ;; Enable tabbars globally:
+   (tabbar-mode 1)
 
-    ;; I use this minor-mode mainly as a global mode (see below):
-    (define-minor-mode tabbar-on-term-only-mode
-        "Display tabbar on terminals and buffers in fundamental mode only."
-      :init-value t
-      :lighter nil
-      :keymap nil
-      (if tabbar-on-term-only-mode
-  	;; filter is enabled
-  	(if (eq major-mode 'term-mode); <- this can be easily customizable...
-  	    (tabbar-local-mode -1)
-  	    (tabbar-local-mode 1))
-  	;; always activate tabbar locally when we disable the minor mode:
-  	(tabbar-local-mode -1)))
+   ;; I use this minor-mode mainly as a global mode (see below):
+   (define-minor-mode tabbar-on-term-only-mode
+     "Display tabbar on terminals and buffers in fundamental mode only."
+     :init-value t
+     :lighter nil
+     :keymap nil
+     (if tabbar-on-term-only-mode
+         ;; filter is enabled
+         (if (eq major-mode 'term-mode); <- this can be easily customizable...
+             (tabbar-local-mode -1)
+           (tabbar-local-mode 1))
+       ;; always activate tabbar locally when we disable the minor mode:
+       (tabbar-local-mode -1)))
 
-    (defun tabbar-on-term-only-mode-on ()
-      "Turn on tabbar if current buffer is a terminal."
-      (unless (minibufferp) (tabbar-on-term-only-mode 1)))
+   (defun tabbar-on-term-only-mode-on ()
+     "Turn on tabbar if current buffer is a terminal."
+     (unless (minibufferp) (tabbar-on-term-only-mode 1)))
 
-    ;; Define a global switch for the mode. Note that this is not set for buffers
-    ;; in fundamental mode.
-    ;;
-    ;; I use it 'cause some major modes do not run the
-    ;; `after-change-major-mode-hook'...
-    (define-globalized-minor-mode global-tabbar-on-term-only-mode
-        tabbar-on-term-only-mode tabbar-on-term-only-mode-on)
+   ;; Define a global switch for the mode. Note that this is not set for buffers
+   ;; in fundamental mode.
+   ;;
+   ;; I use it 'cause some major modes do not run the
+   ;; `after-change-major-mode-hook'...
+   (define-globalized-minor-mode global-tabbar-on-term-only-mode
+     tabbar-on-term-only-mode tabbar-on-term-only-mode-on)
 
-    ;; Eventually, switch on this global filter for tabbars:
-    (global-tabbar-on-term-only-mode 1))
+   ;; Eventually, switch on this global filter for tabbars:
+   (global-tabbar-on-term-only-mode 1))
 
--- NicolasBerthier
+== Add a buffer modification state indicator in the label ==
 
-==Add a buffer modification state indicator in the label==
-
- ;; add a buffer modification state indicator in the tab label,
- ;; and place a space around the label to make it looks less crowd
+ ;; Add a buffer modification state indicator in the tab label, and place a
+ ;; space around the label to make it looks less crowd.
  (defadvice tabbar-buffer-tab-label (after fixup_tab_label_space_and_flag activate)
    (setq ad-return-value
-		(if (and (buffer-modified-p (tabbar-tab-value tab))
-				 (buffer-file-name (tabbar-tab-value tab)))
-			(concat " + " (concat ad-return-value " "))
-			(concat " " (concat ad-return-value " ")))))
+         (if (and (buffer-modified-p (tabbar-tab-value tab))
+                  (buffer-file-name (tabbar-tab-value tab)))
+             (concat " + " (concat ad-return-value " "))
+           (concat " " (concat ad-return-value " ")))))
 
- ;; called each time the modification state of the buffer changed
+ ;; Called each time the modification state of the buffer changed.
  (defun ztl-modification-state-change ()
    (tabbar-set-template tabbar-current-tabset nil)
    (tabbar-display-update))
- ;; first-change-hook is called BEFORE the change is made
+
+ ;; First-change-hook is called BEFORE the change is made.
  (defun ztl-on-buffer-modification ()
    (set-buffer-modified-p t)
    (ztl-modification-state-change))
  (add-hook 'after-save-hook 'ztl-modification-state-change)
- ;; this doesn't work for revert, I don't know
+
+ ;; This doesn't work for revert, I don't know.
  ;;(add-hook 'after-revert-hook 'ztl-modification-state-change)
  (add-hook 'first-change-hook 'ztl-on-buffer-modification)
 
---yswzing
-
-==Put most buffers into one group==
+== Put most buffers into one group ==
 
 See http://www.ficml.org/jemimap/wordpress/2004/10/11/tabbar/
 
-==Show buffers in the current directory==
+== Show buffers in the current directory ==
 
 I have too many buffers to reasonably put them all into tabbar at the same time, and I wanted to group by project instead of by major-mode, so I use this:
 
@@ -396,12 +345,30 @@ I have too many buffers to reasonably put them all into tabbar at the same time,
              ((string-match-p "/.emacs.d/" dir)
               (list ".emacs.d"))
              (t (list dir)))))))
+ (setq tabbar-buffer-groups-function
+       (lambda (buffer)
+         "Put all files in the same directory into the same tab bar"
+         (with-current-buffer (get-buffer buffer)
+           (let ((dir (expand-file-name default-directory)))
+             (cond ((member (buffer-name) '("*Completions*"
+                                            "*scratch*"
+                                            "*Messages*"
+                                            "*Ediff Registry*"))
+                    (list "#misc"))
+                   ((string-match-p "/.emacs.d/" dir)
+                    (list ".emacs.d"))
+                   (t (list dir)))))))
 
-Certain buffers get put into the #misc group; everything under <code>~/.emacs.d/</code> gets put into one group, and everything else gets put into a group with its directory, so that all files in that directory (and associated buffers like compilation) get put together. For multi-directory projects I plan to add special cases like the one for <code>.emacs.d</code> to group buffers under the parent directory. --AmitPatel
+Certain buffers get put into the #misc group; everything under
+<code>~/.emacs.d/</code> gets put into one group, and everything else gets put
+into a group with its directory, so that all files in that directory (and
+associated buffers like compilation) get put together. For multi-directory
+projects I plan to add special cases like the one for <code>.emacs.d</code> to
+group buffers under the parent directory.
 
-==Integrating tabbar with eproject.el==
+== Integrating tabbar with eproject.el ==
 
-After some tests, here is my take for integrating tabbar groups with eproject.el:
+After some tests, here is one approach for integrating tabbar groups with eproject.el:
 
   (defun my-tabbar-buffer-groups ()
     "Return the list of group names BUFFER belongs to.
@@ -439,7 +406,6 @@ or even better:
               (if (string= eproject-root (cdr proj))
                 (throw 'loop (car proj)))))))))
 
-
 An extra very useful feature is to show tabgroup in modeline:
 
   (setq-default mode-line-format
@@ -456,52 +422,46 @@ This will show something like:
 
   Projectname > file.ext  (37, 1) [mode]...
 
--- InigoSerna
+== Autohide ==
 
-==Autohide tabbar==
-{{{
-(defun autohide-tabbar ()
-"Make tabbar briefly show itself while
-you are switching buffers with shortcuts.
-Tested with GNU Emacs 23
-- Sabof"
-  (defvar *tabbar-autohide-delay* 3)
+ (defun autohide-tabbar ()
+   "Make tabbar briefly show itself while you are switching
+ buffers with shortcuts.  Tested with GNU Emacs 23."
+   (defvar *tabbar-autohide-delay* 3)
 
-  (interactive)
-  (tabbar-mode nil)
-  (defvar *tabbar-autohide-timer* nil)
-  (defun renew-tabbar-autohide-timer ()
-	(if (timerp *tabbar-autohide-timer*)
-		(cancel-timer *tabbar-autohide-timer*))
-	(setf *tabbar-autohide-timer*
-		  (run-with-timer
-		   3 nil (lambda ()
-				 (tabbar-mode nil)
-				 (setf *tabbar-autohide-timer*
-					nil)))))
+   (interactive)
+   (tabbar-mode nil)
+   (defvar *tabbar-autohide-timer* nil)
+   (defun renew-tabbar-autohide-timer ()
+     (if (timerp *tabbar-autohide-timer*)
+         (cancel-timer *tabbar-autohide-timer*))
+     (setf *tabbar-autohide-timer*
+           (run-with-timer
+            3 nil (lambda ()
+                    (tabbar-mode nil)
+                    (setf *tabbar-autohide-timer*
+                          nil)))))
 
-  (global-set-key
-   [C-next]
-   (lambda ()
-	 (interactive)
-	 (if tabbar-mode
-		 (tabbar-forward)
-		 (tabbar-mode t))
-	 (renew-tabbar-autohide-timer)))
-  (global-set-key
-   [C-prior]
-   (lambda ()
-	(interactive)
-	(if tabbar-mode
-		(tabbar-backward)
-		(tabbar-mode t))
-	 (renew-tabbar-autohide-timer))))
+   (global-set-key
+    [C-next]
+    (lambda ()
+      (interactive)
+      (if tabbar-mode
+          (tabbar-forward)
+        (tabbar-mode t))
+      (renew-tabbar-autohide-timer)))
+   (global-set-key
+    [C-prior]
+    (lambda ()
+      (interactive)
+      (if tabbar-mode
+          (tabbar-backward)
+        (tabbar-mode t))
+      (renew-tabbar-autohide-timer))))
 
-(autohide-tabbar)
-}}}
--- Sabof
+ (autohide-tabbar)
 
-==Questions and Answers==
+== Questions and Answers ==
 
 
 ----
@@ -514,40 +474,38 @@ Here is one way to do it. It is quite hackish and uses deprecated stuff, but it 
 
 I use ##emacs --daemon## with both, X and tty frames. My goal is: On ttys, no tab bar (or menu bar) should show in order to preserve screen real-estate. X frames should have all bells and whistles. Since this works on a per-frame base, you can easily adapt it to other scenarios.
 
-{{{
-;; Allow tab-bar-mode to be frame-local.  This is deprecated and exploits
-;; the fact that `default-header-line-format' is an alias of the global
-;; value of `header-line-format'. Tested with Emacs 24.1
-(make-variable-frame-local 'default-header-line-format)
+ ;; Allow tab-bar-mode to be frame-local.  This is deprecated and exploits
+ ;; the fact that `default-header-line-format' is an alias of the global
+ ;; value of `header-line-format'. Tested with Emacs 24.1.
+ (make-variable-frame-local 'default-header-line-format)
 
-;; These two are needed as the aliased frame-local value isn't recognized
-;; unless the variable is explicitly accessed once. Do so on those two
-;; occasions where this matters. Notably, `handle-switch-frame' need not
-;; be advised.
-(defadvice select-frame (after adapt-select-frame-parameters activate)
-  "Fix frame-local value of `default-header-line-format'."
-  (interactive)
-  default-header-line-format)
+ ;; These two are needed as the aliased frame-local value isn't recognized
+ ;; unless the variable is explicitly accessed once. Do so on those two
+ ;; occasions where this matters. Notably, `handle-switch-frame' need not
+ ;; be advised.
+ (defadvice select-frame (after adapt-select-frame-parameters activate)
+   "Fix frame-local value of `default-header-line-format'."
+   (interactive)
+   default-header-line-format)
 
-;; This absolutely must be after delete-frame, so
-;; `delete-frame-functions' won't work.
-(defadvice delete-frame (after adapt-delete-frame-parameters activate)
-  "Fix frame-local value of `default-header-line-format'."
-  (interactive)
-  default-header-line-format)
+ ;; This absolutely must be after delete-frame, so
+ ;; `delete-frame-functions' won't work.
+ (defadvice delete-frame (after adapt-delete-frame-parameters activate)
+   "Fix frame-local value of `default-header-line-format'."
+   (interactive)
+   default-header-line-format)
 
-;; Example usage: Set per-terminal (frame-local) options.
-(defun customize-terminal-frame (frame)
-  (cond
-   ((frame-parameter frame 'window-system)
-    (set-frame-parameter frame 'default-header-line-format '(:eval (tabbar-line)))
-    (tabbar-init-tabsets-store))
-   (t
-    (set-frame-parameter frame 'default-header-line-format nil)
-    (set-frame-parameter frame 'menu-bar-lines 0))))
+ ;; Example usage: Set per-terminal (frame-local) options.
+ (defun customize-terminal-frame (frame)
+   (cond
+    ((frame-parameter frame 'window-system)
+     (set-frame-parameter frame 'default-header-line-format '(:eval (tabbar-line)))
+     (tabbar-init-tabsets-store))
+    (t
+     (set-frame-parameter frame 'default-header-line-format nil)
+     (set-frame-parameter frame 'menu-bar-lines 0))))
 
-(add-hook 'after-make-frame-functions 'customize-terminal-frame)
-}}}
+ (add-hook 'after-make-frame-functions 'customize-terminal-frame)
 
 ----
 
