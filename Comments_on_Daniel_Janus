@@ -1,0 +1,4 @@
+Hi Daniel.  On EmacsNiftyTricks, perhaps inadvertently, you replaced `...' by â...â in a few places, and you replaced --- by â as well.  Please don't do that.  `...' and --- are markup.  The former renders the ... in a fixed-width font.  Thx -- DrewAdams
+
+-- DrewAdams 2012-10-16 15:30 UTC
+
