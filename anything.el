@@ -1727,7 +1727,8 @@ ANY-KEYMAP ANY-DEFAULT ANY-HISTORY See `anything'."
                    anything-source-name
                    anything-in-persistent-action
                    anything-quit
-                   (case-fold-search t)
+                   ;; [2012-10-16] move to `anything-update' to show right value of `case-fold-search'
+                   ;; (case-fold-search t)
                    (anything-buffer (or any-buffer anything-buffer))
                    ;; cua-mode ; avoid error when region is selected
                    )
@@ -2506,6 +2507,7 @@ is done on whole `anything-buffer' and not on current source."
     (when anything-enable-shortcuts
       (mapc 'delete-overlay anything-digit-overlays))
     (let (delayed-sources
+          (case-fold-search t)
           normal-sources)
       (unwind-protect ; Process normal sources and store delayed one's.
            (setq delayed-sources
