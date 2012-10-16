@@ -152,7 +152,7 @@ For those of us using earlier versions, use the PictureModeTrailingWhitespaceTri
 * Find which [[face]]s are used at [[point]] -- several ways:
 ** `M-x describe-text-properties'
 ** `##C-u C-=##'
-** `M-x describe-face' -- The faces applied to the text are listed as the default value for [[completion]]. If you use [[Icicles]], then âdescribe-faceâ shows the face-name candidates in buffer â*Completions*â using their own faces â WYSIWYG. ([[Icicles - Customization_and_General_Tips#icicle-WYSIWYG-Completions-flag|Screenshot]])
+** `M-x describe-face' -- The faces applied to the text are listed as the default value for [[completion]]. If you use [[Icicles]], then `describe-face' shows the face-name candidates in buffer `*Completions*' using their own faces ---WYSIWYG. ([[Icicles - Customization_and_General_Tips#icicle-WYSIWYG-Completions-flag|Screenshot]])
 ** `##M-: (face-at-point)##' (Emacs 23+)
 * ##mouse-drag.el## -- scroll the buffer by dragging it. For [[XEmacs]] you can use TrackScroll
 * ##(strokes-mode 1)## -- use mouse gestures as key events
