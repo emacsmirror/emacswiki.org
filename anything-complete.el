@@ -275,7 +275,8 @@ used by `anything-lisp-complete-symbol-set-timer' and `anything-apropos'"
 (defun alcs-describe-function (name)
   (describe-function (anything-c-symbolify name)))
 (defun alcs-describe-variable (name)
-  (describe-variable (anything-c-symbolify name)))
+  (with-current-buffer anything-current-buffer
+    (describe-variable (anything-c-symbolify name))))
 (defun alcs-describe-face (name)
   (describe-face (anything-c-symbolify name)))
 (defun alcs-customize-face (name)
@@ -574,7 +575,7 @@ used by `anything-lisp-complete-symbol-set-timer' and `anything-apropos'"
       (anything-old-completing-read prompt collection predicate require-match initial hist default inherit-input-method)
     ;; support only collection list.
     (setq hist (or (car-safe hist) hist))
-    (let* (anything-input-idle-delay
+    (let* ((anything-input-idle-delay 0.1)
            (result (or (anything-noresume (acr-sources
                                            prompt
                                            collection
