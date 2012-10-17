@@ -63,6 +63,14 @@ shown -- e.g. `##149/567 shown##'.
 
 * The current sort order, and whether it is reversed.  See [[Icicles - Sorting Candidates]].
 
+Here's a screenshot showing:
+
+* Multi-completion (`##||##') with a multi-command (`##+##'): `##Icy##'''##+||##''''
+* 18 candidates match the minibuffer content (not shown --`##i.*c##' in this case)
+* Apropos completion
+* Sorting by buffer size
+
+[[image:Icicles-Completion-mode-line]]
 
 
 
