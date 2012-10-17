@@ -5,7 +5,7 @@
 ;; Author: Matthew L. Fidler, Le Wang & Others
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Sat Nov  6 11:02:07 2010 (-0500)
-;; Version: 0.74
+;; Version: 0.76
 ;; Last-Updated: Tue Aug 21 13:08:42 2012 (-0500)
 ;;           By: Matthew L. Fidler
 ;;     Update #: 1467
@@ -237,6 +237,8 @@
 ;;    depending on the language.  When `auto-indent-fix-org-auto-fill' is
 ;;    true, auto-filling is turned off in`org-mode' source blocks.
 ;; 
+;;   
+;; 
 ;; * FAQ
 ;; ** Why isn't my mode indenting?
 ;; Some modes are excluded for compatability reasons, such as
@@ -371,308 +373,10 @@
 ;; autoThis is similar to Textmate's behavior.  This is useful when used
 ;; in conjunction with something that pairs delimiters like `autopair-mode'.
 ;; 
-;; *** auto-indent-fix-org-backspace
-;; Fixes `org-backspace' to use `auto-indent-backward-delete-char-behavior' for `org-mode' buffers.
-;; 
-;; *** auto-indent-fix-org-return
-;; Allows newline and indent behavior in source code blocks in org-mode.
-;; 
-;; *** auto-indent-force-interactive-advices
-;; Forces interactive advices.
-;; 
-;; This makes sure that this is called when this is an interactive
-;; call directly to the function.  However, if someone defines
-;; something such as `org-delete-char' to delete a character, when
-;; `org-delete-char' is called interactively and then calls
-;; `delete-char' the advice is never activated (when it should be).
-;; If this is activated, `auto-indent-mode' tries to do the right
-;; thing by guessing what key should have been pressed to get this
-;; event.  If it is the key that was pressed enable the advice.
-;; 
-;; *** auto-indent-home-is-beginning-of-indent
-;; The Home key, or rather the `move-beginning-of-line' function, will move to the beginning of the indentation when called interactively.  If it is already at the beginning of the indent, move to the beginning of the line.
-;; 
-;; *** auto-indent-home-is-beginning-of-indent-when-spaces-follow
-;; This is a customization for the home key.
-;; 
-;; If `auto-indent-home-is-beginning-of-indent' is enabled, the Home
-;; key, or rather the `move-beginning-of-line' function, will move
-;; to the beginning of the indentation when called interactively.
-;; 
-;; If it is already at the beginning of the indent,and move to the
-;; beginning of the line.  When
-;; `auto-indent-home-is-beginning-of-indent-when-spaces-follow' is
-;; enabled, a home key press from
-;; 
-;;     (defadvice move-beginning-of-line (around auto-indent-minor-mode-advice)
-;;     | (let (at-beginning)
-;; 
-;; will change to
-;; 
-;;     (defadvice move-beginning-of-line (around auto-indent-minor-mode-advice)
-;;       |(let (at-beginning)
-;; 
-;; Another home-key will chang to cursor
-;; 
-;;     (defadvice move-beginning-of-line (around auto-indent-minor-mode-advice)
-;; |   (let (at-beginning)
-;; 
-;; *** auto-indent-key-for-end-of-line-insert-char-then-newline
-;; Key for end of line, `auto-indent-eol-char', then newline.
-;; 
-;; By default the `auto-indent-eol-char' is the semicolon. TextMate
-;; uses shift-meta return, I believe (S-M-RET). If blank, no key is
-;; defined.  The key should be in a format used for having keyboard
-;; macros (see `edmacro-mode'). This is useful when used in
-;; conjunction with something that pairs delimiters like
-;; `autopair-mode'.
-;; 
-;; *** auto-indent-key-for-end-of-line-then-newline
-;; Key for end of line, then newline.
-;; 
-;; TextMate uses meta return, I believe (M-RET).  If blank, no key
-;; is defined. The key should be in a format used for saving
-;; keyboard macros (see `edmacro-mode'). This is useful when used in
-;; conjunction with something that pairs delimiters like `autopair-mode'.
-;; 
-;; *** auto-indent-kill-line-at-eol
-;; Determines how a kill at the end of line behaves.
-;; 
-;; When killing lines, if at the end of a line,
-;; 
-;; nil - join next line to the current line.  Deletes white-space at
-;;          join.  [this essentially duplicated delete-char]
-;; 
-;;          See also `auto-indent-kill-remove-extra-spaces'
-;; 
-;; whole-line - kill next lines
-;; 
-;; subsequent-whole-lines - merge lines on first call, subsequent kill whole lines
-;; 
-;; blanks - kill all empty lines after the current line, and then
-;;             any lines specified.
-;; 
-;; You should also set the function `kill-whole-line' to do what you
-;; want.
-;; 
-;; *** auto-indent-kill-line-kill-region-when-active
-;;  - When killing lines, if region is active, kill region instead.
-;; 
-;; *** auto-indent-kill-remove-extra-spaces
-;;  - Remove indentation before killing the line or region.
-;; 
-;; *** auto-indent-known-indent-level-variables
-;; Known indent-level-variables for major modes.  Set locally when auto-indent-mode initializes.
-;; 
-;; *** auto-indent-known-text-modes
-;;  - List of auto-indent's known text-modes.
-;; 
-;; *** auto-indent-minor-mode-symbol
-;;  - When true, Auto Indent puts AI on the mode line.
-;; 
-;; *** auto-indent-mode-untabify-on-yank-or-paste
-;;  - Untabify pasted or yanked region.
-;; 
-;; *** auto-indent-newline-function
-;;  - Auto indentation function for the return key.
-;; 
-;; *** auto-indent-next-pair
-;; Automatically indent the next parenthetical statement.  For example in R:
-;; 
-;; d| <- read.csv("dat.csv",
-;;                   na.strings=c(".","NA"))
-;; 
-;; When typing .old, the indentation will be updated as follows:
-;; 
-;; d.old <- read.csv("dat.csv",
-;;                      na.strings=c(".","NA"))
-;; 
-;; This will slow down your computation, so if you use it make sure
-;; that the `auto-indent-next-pair-timer-interval' is appropriate
-;; for your needs.
-;; 
-;; It is useful when using this option to have some sort of autopairing on.
-;; 
-;; *** auto-indent-next-pair-timer-interval
-;; Number of seconds before the observed parenthetical statement is indented.
-;; The faster the value, the slower Emacs responsiveness but the
-;; faster Emacs indents the region.  The slower the value, the
-;; faster Emacs responds.  This should be changed dynamically by
-;; typing with `auto-indent-next-pair-timer-interval-addition'.  The
-;; maximum that a particular mode can delay the timer is given by
-;; `auto-indent-next-pair-timer-interval-max'.
-;; 
-;; *** auto-indent-next-pair-timer-interval-addition
-;; If the indent operation for a file takes longer than the specified idle timer, grow that timer by this number for a particular mode.
-;; 
-;; *** auto-indent-next-pair-timer-interval-max
-;; Maximum number seconds that auto-indent-mode will grow a parenthetical statement.
-;; If this is less than or equal to zero, these will be no limit.
-;; 
-;; *** auto-indent-next-pairt-timer-interval-do-not-grow
-;; If true, do not magically grow the mode-based indent time for a region.
-;; 
-;; *** auto-indent-on-save-file
-;;  - Auto Indent on visit file.
-;; 
-;; *** auto-indent-on-visit-file
-;;  - Auto Indent file upon visit.
-;; 
-;; *** auto-indent-on-visit-pretend-nothing-changed
-;;  - When modifying the file on visit, pretend nothing changed.
-;; 
-;; *** auto-indent-on-yank-or-paste
-;;  - Indent pasted or yanked region.
-;; 
-;; *** auto-indent-start-org-indent
-;; Starts `org-indent-mode' when in org-mode.
-;; 
-;; *** auto-indent-untabify-on-save-file
-;;  - Change tabs to spaces on file-save.
-;; 
-;; *** auto-indent-untabify-on-visit-file
-;;  - Automatically convert tabs into spaces when visiting a file.
-;; 
-;; *** auto-indent-use-text-boundaries
-;; Use text boundaries when killing lines.
-;; 
-;; When killing lines, if point is before any text, act as if
-;; point is at BOL.  And if point is after text, act as if point
-;;      is at EOL
-;; 
-;; ** Internal Variables
-;; 
-;; *** auto-indent-eol-ret-save
-;; Saved variable for keyboard state.
-;; 
-;; *** auto-indent-eol-ret-semi-save
-;; Saved variable for keyboard state.
-;; 
-;; *** auto-indent-minor-mode-map
-;;  - Auto Indent mode map.
-;; 
-;; *** auto-indent-pairs-begin
-;; Defines where the pair region begins.
-;; 
-;; *** auto-indent-pairs-end
-;; Defines where the pair region ends.
-;; *Auto indentation on moving cursor to blank lines.
-;; 
-;; *** auto-indent-current-pairs
-;;  - Automatically indent the current parenthetical statement.
-;; 
-;; *** auto-indent-delete-line-char-add-extra-spaces
-;;  - When deleting a return, add a space (when appropriate)
-;; between the newly joined lines.
-;; 
-;; This takes care of the condition when deleting text
-;; 
-;; Lorem ipsum dolor sit|
-;; amet, consectetur adipiscing elit.  Morbi id
-;; 
-;; Lorem ipsum dolor sit|amet, consectetur adipiscing elit.  Morbi id
-;; 
-;; Which ideally should be deleted to:
-;; 
-;; Lorem ipsum dolor sit| amet, consectetur adipiscing elit.  Morbi id
-;; 
-;; This is controlled by the regular expressions in
-;; `auto-indent-delete-line-char-add-extra-spaces-prog-mode-regs'
-;; and
-;; `auto-indent-delete-line-char-add-extra-spaces-text-mode-regs'
-;; 
-;; *** auto-indent-delete-line-char-add-extra-spaces-prog-mode-regs
-;;  - Regular expressions for use with `auto-indent-delete-line-char-add-extra-spaces'.  This is used for programming modes as determined by `auto-indent-is-prog-mode-p'.
-;; 
-;; *** auto-indent-delete-line-char-add-extra-spaces-text-mode-regs
-;;  - Regular expressions for use with `auto-indent-delete-line-char-add-extra-spaces'.  This is used for programming modes as determined by `auto-indent-is-prog-mode-p'.
-;; 
-;; *** auto-indent-delete-line-char-remove-extra-spaces
-;; When deleting a return, delete any extra spaces between the newly joined lines.
-;; 
-;; *** auto-indent-delete-line-char-remove-last-space
-;; Remove last space when deleting a line.
-;; 
-;; When `auto-indent-delete-line-char-remove-extra-spaces' is enabled,
-;; expressions like lists can be removed in a less than optimal
-;; manner.  For example, assuming =`|=' is the cursor:
-;; 
-;; c("Vehicle QD TO",|
-;;      "1 ug IVT","3 ug IVT",...
-;; 
-;; would be deleted to the following
-;; 
-;; c("Vehicle QD TO",| "1 ug IVT","3 ug IVT",...
-;; 
-;; In this case it would be preferable to delete to:
-;; 
-;; c("Vehicle QD TO",|"1 ug IVT","3 ug IVT",...
-;; 
-;; However cases like sentences:
-;; 
-;; Lorem ipsum dolor sit amet,|
-;;      consectetur adipiscing elit. Morbi id
-;; 
-;; Deletes to
-;; Lorem ipsum dolor sit amet,| consectetur adipiscing elit. Morbi id
-;; 
-;; Which is a desired behavior.
-;; 
-;; When this is enabled, auto-indent attempts to be smarter by
-;; deleting the extra space when characters before and after match
-;; expressions defined in
-;; `auto-indent-delete-line-char-remove-last-space-prog-mode-regs' and
-;; `auto-indent-delete-line-char-remove-last-space-text-mode-regs'.
-;; 
-;; *** auto-indent-delete-line-char-remove-last-space-prog-mode-regs
-;;  - Regular expressions for use with `auto-indent-delete-line-char-remove-last-space'.  This is used for programming modes as determined by `auto-indent-is-prog-mode-p'.
-;; 
-;; *** auto-indent-delete-line-char-remove-last-space-text-mode-regs
-;; Regular expressions for use with `auto-indent-delete-line-char-remove-last-space'.  This is used for modes other than programming modes.  This is determined by `auto-indent-is-prog-mode-p'.
-;; 
-;; *** auto-indent-delete-trailing-whitespace-on-save-file
-;;  - When saving file delete trailing whitespace.
-;; 
-;; *** auto-indent-delete-trailing-whitespace-on-visit-file
-;;  - Automatically remove trailing whitespace when visiting  file.
-;; 
-;; *** auto-indent-disabled-indent-functions
-;; List of disabled indent functions.
-;; 
-;; List of functions that auto-indent ignores the `indent-region' on
-;; paste and automated indent by pressing return.  The default is
-;; `indent-relative' and `indent-relative-maybe'.  If these are used the
-;; indentation is may not specified for the current mode.
-;; 
-;; *** auto-indent-disabled-modes-list
-;; List of modes disabled when global `auto-indent-mode' is on.
-;; 
-;; *** auto-indent-disabled-modes-on-save
-;;  - List of modes where `indent-region' of the whole file is ignored.
-;; 
-;; *** auto-indent-engine
-;; Type of engine to use.  The possibilities are:
-;; 
-;; default: Use hooks and advices to implement auto-indent-mode
-;; 
-;; keymap: Use key remappings to implement auto-indent-mode.  This may
-;; work in some modes but may cause things such as `company-mode' or
-;; `auto-complete-mode' to function improperly
-;; 
-;; *** auto-indent-eol-char
-;; End of line/statement character, like C or matlab's semi-colon.
-;; 
-;; Character inserted when
-;; `auto-indent-key-for-end-of-line-inser-char-then-newline' is
-;; defined.  This is a buffer local variable, therefore if you have
-;; a mode that instead of using a semi-colon for an end of
-;; statement, you use a colon, this can be added to the mode as
-;; follows:
-;; 
-;;      (add-hook 'strange-mode-hook (lambda() (setq auto-indent-eol-char ":")))
-;; 
-;; autoThis is similar to Textmate's behavior.  This is useful when used
-;; in conjunction with something that pairs delimiters like `autopair-mode'.
+;; *** auto-indent-fix-org-auto-fill
+;; Fixes org-based
+;;   auto-fill-function (i.e. `org-auto-fill-function') to only
+;;   auto-fill for things outside of a source block.
 ;; 
 ;; *** auto-indent-fix-org-backspace
 ;; Fixes `org-backspace' to use `auto-indent-backward-delete-char-behavior' for `org-mode' buffers.
@@ -862,10 +566,942 @@
 ;; 
 ;; *** auto-indent-pairs-end
 ;; Defines where the pair region ends.
+;; *Auto indentation on moving cursor to blank lines.
+;; 
+;; *** auto-indent-current-pairs
+;;  - Automatically indent the current parenthetical statement.
+;; 
+;; *** auto-indent-delete-line-char-add-extra-spaces
+;;  - When deleting a return, add a space (when appropriate)
+;; between the newly joined lines.
+;; 
+;; This takes care of the condition when deleting text
+;; 
+;; Lorem ipsum dolor sit|
+;; amet, consectetur adipiscing elit.  Morbi id
+;; 
+;; Lorem ipsum dolor sit|amet, consectetur adipiscing elit.  Morbi id
+;; 
+;; Which ideally should be deleted to:
+;; 
+;; Lorem ipsum dolor sit| amet, consectetur adipiscing elit.  Morbi id
+;; 
+;; This is controlled by the regular expressions in
+;; `auto-indent-delete-line-char-add-extra-spaces-prog-mode-regs'
+;; and
+;; `auto-indent-delete-line-char-add-extra-spaces-text-mode-regs'
+;; 
+;; *** auto-indent-delete-line-char-add-extra-spaces-prog-mode-regs
+;;  - Regular expressions for use with `auto-indent-delete-line-char-add-extra-spaces'.  This is used for programming modes as determined by `auto-indent-is-prog-mode-p'.
+;; 
+;; *** auto-indent-delete-line-char-add-extra-spaces-text-mode-regs
+;;  - Regular expressions for use with `auto-indent-delete-line-char-add-extra-spaces'.  This is used for programming modes as determined by `auto-indent-is-prog-mode-p'.
+;; 
+;; *** auto-indent-delete-line-char-remove-extra-spaces
+;; When deleting a return, delete any extra spaces between the newly joined lines.
+;; 
+;; *** auto-indent-delete-line-char-remove-last-space
+;; Remove last space when deleting a line.
+;; 
+;; When `auto-indent-delete-line-char-remove-extra-spaces' is enabled,
+;; expressions like lists can be removed in a less than optimal
+;; manner.  For example, assuming =`|=' is the cursor:
+;; 
+;; c("Vehicle QD TO",|
+;;      "1 ug IVT","3 ug IVT",...
+;; 
+;; would be deleted to the following
+;; 
+;; c("Vehicle QD TO",| "1 ug IVT","3 ug IVT",...
+;; 
+;; In this case it would be preferable to delete to:
+;; 
+;; c("Vehicle QD TO",|"1 ug IVT","3 ug IVT",...
+;; 
+;; However cases like sentences:
+;; 
+;; Lorem ipsum dolor sit amet,|
+;;      consectetur adipiscing elit. Morbi id
+;; 
+;; Deletes to
+;; Lorem ipsum dolor sit amet,| consectetur adipiscing elit. Morbi id
+;; 
+;; Which is a desired behavior.
+;; 
+;; When this is enabled, auto-indent attempts to be smarter by
+;; deleting the extra space when characters before and after match
+;; expressions defined in
+;; `auto-indent-delete-line-char-remove-last-space-prog-mode-regs' and
+;; `auto-indent-delete-line-char-remove-last-space-text-mode-regs'.
+;; 
+;; *** auto-indent-delete-line-char-remove-last-space-prog-mode-regs
+;;  - Regular expressions for use with `auto-indent-delete-line-char-remove-last-space'.  This is used for programming modes as determined by `auto-indent-is-prog-mode-p'.
+;; 
+;; *** auto-indent-delete-line-char-remove-last-space-text-mode-regs
+;; Regular expressions for use with `auto-indent-delete-line-char-remove-last-space'.  This is used for modes other than programming modes.  This is determined by `auto-indent-is-prog-mode-p'.
+;; 
+;; *** auto-indent-delete-trailing-whitespace-on-save-file
+;;  - When saving file delete trailing whitespace.
+;; 
+;; *** auto-indent-delete-trailing-whitespace-on-visit-file
+;;  - Automatically remove trailing whitespace when visiting  file.
+;; 
+;; *** auto-indent-disabled-indent-functions
+;; List of disabled indent functions.
+;; 
+;; List of functions that auto-indent ignores the `indent-region' on
+;; paste and automated indent by pressing return.  The default is
+;; `indent-relative' and `indent-relative-maybe'.  If these are used the
+;; indentation is may not specified for the current mode.
+;; 
+;; *** auto-indent-disabled-modes-list
+;; List of modes disabled when global `auto-indent-mode' is on.
+;; 
+;; *** auto-indent-disabled-modes-on-save
+;;  - List of modes where `indent-region' of the whole file is ignored.
+;; 
+;; *** auto-indent-engine
+;; Type of engine to use.  The possibilities are:
+;; 
+;; default: Use hooks and advices to implement auto-indent-mode
+;; 
+;; keymap: Use key remappings to implement auto-indent-mode.  This may
+;; work in some modes but may cause things such as `company-mode' or
+;; `auto-complete-mode' to function improperly
+;; 
+;; *** auto-indent-eol-char
+;; End of line/statement character, like C or matlab's semi-colon.
+;; 
+;; Character inserted when
+;; `auto-indent-key-for-end-of-line-inser-char-then-newline' is
+;; defined.  This is a buffer local variable, therefore if you have
+;; a mode that instead of using a semi-colon for an end of
+;; statement, you use a colon, this can be added to the mode as
+;; follows:
+;; 
+;;      (add-hook 'strange-mode-hook (lambda() (setq auto-indent-eol-char ":")))
+;; 
+;; autoThis is similar to Textmate's behavior.  This is useful when used
+;; in conjunction with something that pairs delimiters like `autopair-mode'.
+;; 
+;; *** auto-indent-fix-org-auto-fill
+;; Fixes org-based
+;;   auto-fill-function (i.e. `org-auto-fill-function') to only
+;;   auto-fill for things outside of a source block.
+;; 
+;; *** auto-indent-fix-org-backspace
+;; Fixes `org-backspace' to use `auto-indent-backward-delete-char-behavior' for `org-mode' buffers.
+;; 
+;; *** auto-indent-fix-org-return
+;; Allows newline and indent behavior in source code blocks in org-mode.
+;; 
+;; *** auto-indent-fix-org-yank
+;; Allows org-mode yanks to be indented in source code blocks of org-mode.
+;; 
+;; *** auto-indent-force-interactive-advices
+;; Forces interactive advices.
+;; 
+;; This makes sure that this is called when this is an interactive
+;; call directly to the function.  However, if someone defines
+;; something such as `org-delete-char' to delete a character, when
+;; `org-delete-char' is called interactively and then calls
+;; `delete-char' the advice is never activated (when it should be).
+;; If this is activated, `auto-indent-mode' tries to do the right
+;; thing by guessing what key should have been pressed to get this
+;; event.  If it is the key that was pressed enable the advice.
+;; 
+;; *** auto-indent-home-is-beginning-of-indent
+;; The Home key, or rather the `move-beginning-of-line' function, will move to the beginning of the indentation when called interactively.  If it is already at the beginning of the indent, move to the beginning of the line.
+;; 
+;; *** auto-indent-home-is-beginning-of-indent-when-spaces-follow
+;; This is a customization for the home key.
+;; 
+;; If `auto-indent-home-is-beginning-of-indent' is enabled, the Home
+;; key, or rather the `move-beginning-of-line' function, will move
+;; to the beginning of the indentation when called interactively.
+;; 
+;; If it is already at the beginning of the indent,and move to the
+;; beginning of the line.  When
+;; `auto-indent-home-is-beginning-of-indent-when-spaces-follow' is
+;; enabled, a home key press from
+;; 
+;;     (defadvice move-beginning-of-line (around auto-indent-minor-mode-advice)
+;;     | (let (at-beginning)
+;; 
+;; will change to
+;; 
+;;     (defadvice move-beginning-of-line (around auto-indent-minor-mode-advice)
+;;       |(let (at-beginning)
+;; 
+;; Another home-key will chang to cursor
+;; 
+;;     (defadvice move-beginning-of-line (around auto-indent-minor-mode-advice)
+;; |   (let (at-beginning)
+;; 
+;; *** auto-indent-key-for-end-of-line-insert-char-then-newline
+;; Key for end of line, `auto-indent-eol-char', then newline.
+;; 
+;; By default the `auto-indent-eol-char' is the semicolon. TextMate
+;; uses shift-meta return, I believe (S-M-RET). If blank, no key is
+;; defined.  The key should be in a format used for having keyboard
+;; macros (see `edmacro-mode'). This is useful when used in
+;; conjunction with something that pairs delimiters like
+;; `autopair-mode'.
+;; 
+;; *** auto-indent-key-for-end-of-line-then-newline
+;; Key for end of line, then newline.
+;; 
+;; TextMate uses meta return, I believe (M-RET).  If blank, no key
+;; is defined. The key should be in a format used for saving
+;; keyboard macros (see `edmacro-mode'). This is useful when used in
+;; conjunction with something that pairs delimiters like `autopair-mode'.
+;; 
+;; *** auto-indent-kill-line-at-eol
+;; Determines how a kill at the end of line behaves.
+;; 
+;; When killing lines, if at the end of a line,
+;; 
+;; nil - join next line to the current line.  Deletes white-space at
+;;          join.  [this essentially duplicated delete-char]
+;; 
+;;          See also `auto-indent-kill-remove-extra-spaces'
+;; 
+;; whole-line - kill next lines
+;; 
+;; subsequent-whole-lines - merge lines on first call, subsequent kill whole lines
+;; 
+;; blanks - kill all empty lines after the current line, and then
+;;             any lines specified.
+;; 
+;; You should also set the function `kill-whole-line' to do what you
+;; want.
+;; 
+;; *** auto-indent-kill-line-kill-region-when-active
+;;  - When killing lines, if region is active, kill region instead.
+;; 
+;; *** auto-indent-kill-remove-extra-spaces
+;;  - Remove indentation before killing the line or region.
+;; 
+;; *** auto-indent-known-indent-level-variables
+;; Known indent-level-variables for major modes.  Set locally when auto-indent-mode initializes.
+;; 
+;; *** auto-indent-known-text-modes
+;;  - List of auto-indent's known text-modes.
+;; 
+;; *** auto-indent-minor-mode-symbol
+;;  - When true, Auto Indent puts AI on the mode line.
+;; 
+;; *** auto-indent-mode-untabify-on-yank-or-paste
+;;  - Untabify pasted or yanked region.
+;; 
+;; *** auto-indent-newline-function
+;;  - Auto indentation function for the return key.
+;; 
+;; *** auto-indent-next-pair
+;; Automatically indent the next parenthetical statement.  For example in R:
+;; 
+;; d| <- read.csv("dat.csv",
+;;                   na.strings=c(".","NA"))
+;; 
+;; When typing .old, the indentation will be updated as follows:
+;; 
+;; d.old <- read.csv("dat.csv",
+;;                      na.strings=c(".","NA"))
+;; 
+;; This will slow down your computation, so if you use it make sure
+;; that the `auto-indent-next-pair-timer-interval' is appropriate
+;; for your needs.
+;; 
+;; It is useful when using this option to have some sort of autopairing on.
+;; 
+;; *** auto-indent-next-pair-timer-interval
+;; Number of seconds before the observed parenthetical statement is indented.
+;; The faster the value, the slower Emacs responsiveness but the
+;; faster Emacs indents the region.  The slower the value, the
+;; faster Emacs responds.  This should be changed dynamically by
+;; typing with `auto-indent-next-pair-timer-interval-addition'.  The
+;; maximum that a particular mode can delay the timer is given by
+;; `auto-indent-next-pair-timer-interval-max'.
+;; 
+;; *** auto-indent-next-pair-timer-interval-addition
+;; If the indent operation for a file takes longer than the specified idle timer, grow that timer by this number for a particular mode.
+;; 
+;; *** auto-indent-next-pair-timer-interval-max
+;; Maximum number seconds that auto-indent-mode will grow a parenthetical statement.
+;; If this is less than or equal to zero, these will be no limit.
+;; 
+;; *** auto-indent-next-pairt-timer-interval-do-not-grow
+;; If true, do not magically grow the mode-based indent time for a region.
+;; 
+;; *** auto-indent-on-save-file
+;;  - Auto Indent on visit file.
+;; 
+;; *** auto-indent-on-visit-file
+;;  - Auto Indent file upon visit.
+;; 
+;; *** auto-indent-on-visit-pretend-nothing-changed
+;;  - When modifying the file on visit, pretend nothing changed.
+;; 
+;; *** auto-indent-on-yank-or-paste
+;;  - Indent pasted or yanked region.
+;; 
+;; *** auto-indent-start-org-indent
+;; Starts `org-indent-mode' when in org-mode.
+;; 
+;; *** auto-indent-untabify-on-save-file
+;;  - Change tabs to spaces on file-save.
+;; 
+;; *** auto-indent-untabify-on-visit-file
+;;  - Automatically convert tabs into spaces when visiting a file.
+;; 
+;; *** auto-indent-use-text-boundaries
+;; Use text boundaries when killing lines.
+;; 
+;; When killing lines, if point is before any text, act as if
+;; point is at BOL.  And if point is after text, act as if point
+;;      is at EOL
+;; 
+;; ** Internal Variables
+;; 
+;; *** auto-indent-eol-ret-save
+;; Saved variable for keyboard state.
+;; 
+;; *** auto-indent-eol-ret-semi-save
+;; Saved variable for keyboard state.
+;; 
+;; *** auto-indent-minor-mode-map
+;;  - Auto Indent mode map.
+;; 
+;; *** auto-indent-pairs-begin
+;; Defines where the pair region begins.
+;; 
+;; *** auto-indent-pairs-end
+;; Defines where the pair region ends.
+;; *Auto indentation on moving cursor to blank lines.
+;; 
+;; *** auto-indent-current-pairs
+;;  - Automatically indent the current parenthetical statement.
+;; 
+;; *** auto-indent-delete-line-char-add-extra-spaces
+;;  - When deleting a return, add a space (when appropriate)
+;; between the newly joined lines.
+;; 
+;; This takes care of the condition when deleting text
+;; 
+;; Lorem ipsum dolor sit|
+;; amet, consectetur adipiscing elit.  Morbi id
+;; 
+;; Lorem ipsum dolor sit|amet, consectetur adipiscing elit.  Morbi id
+;; 
+;; Which ideally should be deleted to:
+;; 
+;; Lorem ipsum dolor sit| amet, consectetur adipiscing elit.  Morbi id
+;; 
+;; This is controlled by the regular expressions in
+;; `auto-indent-delete-line-char-add-extra-spaces-prog-mode-regs'
+;; and
+;; `auto-indent-delete-line-char-add-extra-spaces-text-mode-regs'
+;; 
+;; *** auto-indent-delete-line-char-add-extra-spaces-prog-mode-regs
+;;  - Regular expressions for use with `auto-indent-delete-line-char-add-extra-spaces'.  This is used for programming modes as determined by `auto-indent-is-prog-mode-p'.
+;; 
+;; *** auto-indent-delete-line-char-add-extra-spaces-text-mode-regs
+;;  - Regular expressions for use with `auto-indent-delete-line-char-add-extra-spaces'.  This is used for programming modes as determined by `auto-indent-is-prog-mode-p'.
+;; 
+;; *** auto-indent-delete-line-char-remove-extra-spaces
+;; When deleting a return, delete any extra spaces between the newly joined lines.
+;; 
+;; *** auto-indent-delete-line-char-remove-last-space
+;; Remove last space when deleting a line.
+;; 
+;; When `auto-indent-delete-line-char-remove-extra-spaces' is enabled,
+;; expressions like lists can be removed in a less than optimal
+;; manner.  For example, assuming =`|=' is the cursor:
+;; 
+;; c("Vehicle QD TO",|
+;; "1 ug IVT","3 ug IVT",...
+;; 
+;; would be deleted to the following
+;; 
+;; c("Vehicle QD TO",| "1 ug IVT","3 ug IVT",...
+;; 
+;; In this case it would be preferable to delete to:
+;; 
+;; c("Vehicle QD TO",|"1 ug IVT","3 ug IVT",...
+;; 
+;; However cases like sentences:
+;; 
+;; Lorem ipsum dolor sit amet,|
+;; consectetur adipiscing elit. Morbi id
+;; 
+;; Deletes to
+;; Lorem ipsum dolor sit amet,| consectetur adipiscing elit. Morbi id
+;; 
+;; Which is a desired behavior.
+;; 
+;; When this is enabled, auto-indent attempts to be smarter by
+;; deleting the extra space when characters before and after match
+;; expressions defined in
+;; `auto-indent-delete-line-char-remove-last-space-prog-mode-regs' and
+;; `auto-indent-delete-line-char-remove-last-space-text-mode-regs'.
+;; 
+;; *** auto-indent-delete-line-char-remove-last-space-prog-mode-regs
+;;  - Regular expressions for use with `auto-indent-delete-line-char-remove-last-space'.  This is used for programming modes as determined by `auto-indent-is-prog-mode-p'.
+;; 
+;; *** auto-indent-delete-line-char-remove-last-space-text-mode-regs
+;; Regular expressions for use with `auto-indent-delete-line-char-remove-last-space'.  This is used for modes other than programming modes.  This is determined by `auto-indent-is-prog-mode-p'.
+;; 
+;; *** auto-indent-delete-trailing-whitespace-on-save-file
+;;  - When saving file delete trailing whitespace.
+;; 
+;; *** auto-indent-delete-trailing-whitespace-on-visit-file
+;;  - Automatically remove trailing whitespace when visiting  file.
+;; 
+;; *** auto-indent-disabled-indent-functions
+;; List of disabled indent functions.
+;; 
+;; List of functions that auto-indent ignores the `indent-region' on
+;; paste and automated indent by pressing return.  The default is
+;; `indent-relative' and `indent-relative-maybe'.  If these are used the
+;; indentation is may not specified for the current mode.
+;; 
+;; *** auto-indent-disabled-modes-list
+;; List of modes disabled when global `auto-indent-mode' is on.
+;; 
+;; *** auto-indent-disabled-modes-on-save
+;;  - List of modes where `indent-region' of the whole file is ignored.
+;; 
+;; *** auto-indent-engine
+;; Type of engine to use.  The possibilities are:
+;; 
+;; default: Use hooks and advices to implement auto-indent-mode
+;; 
+;; keymap: Use key remappings to implement auto-indent-mode.  This may
+;; work in some modes but may cause things such as `company-mode' or
+;; `auto-complete-mode' to function improperly
+;; 
+;; *** auto-indent-eol-char
+;; End of line/statement character, like C or matlab's semi-colon.
+;; 
+;; Character inserted when
+;; `auto-indent-key-for-end-of-line-inser-char-then-newline' is
+;; defined.  This is a buffer local variable, therefore if you have
+;; a mode that instead of using a semi-colon for an end of
+;; statement, you use a colon, this can be added to the mode as
+;; follows:
+;; 
+;; (add-hook 'strange-mode-hook (lambda() (setq auto-indent-eol-char ":")))
+;; 
+;; autoThis is similar to Textmate's behavior.  This is useful when used
+;; in conjunction with something that pairs delimiters like `autopair-mode'.
+;; 
+;; *** auto-indent-fix-org-auto-fill
+;; Fixes org-based
+;; auto-fill-function (i.e. `org-auto-fill-function') to only
+;; auto-fill for things outside of a source block.
+;; 
+;; *** auto-indent-fix-org-backspace
+;; Fixes `org-backspace' to use `auto-indent-backward-delete-char-behavior' for `org-mode' buffers.
+;; 
+;; *** auto-indent-fix-org-return
+;; Allows newline and indent behavior in source code blocks in org-mode.
+;; 
+;; *** auto-indent-fix-org-yank
+;; Allows org-mode yanks to be indented in source code blocks of org-mode.
+;; 
+;; *** auto-indent-force-interactive-advices
+;; Forces interactive advices.
+;; 
+;; This makes sure that this is called when this is an interactive
+;; call directly to the function.  However, if someone defines
+;; something such as `org-delete-char' to delete a character, when
+;; `org-delete-char' is called interactively and then calls
+;; `delete-char' the advice is never activated (when it should be).
+;; If this is activated, `auto-indent-mode' tries to do the right
+;; thing by guessing what key should have been pressed to get this
+;; event.  If it is the key that was pressed enable the advice.
+;; 
+;; *** auto-indent-home-is-beginning-of-indent
+;; The Home key, or rather the `move-beginning-of-line' function, will move to the beginning of the indentation when called interactively.  If it is already at the beginning of the indent, move to the beginning of the line.
+;; 
+;; *** auto-indent-home-is-beginning-of-indent-when-spaces-follow
+;; This is a customization for the home key.
+;; 
+;; If `auto-indent-home-is-beginning-of-indent' is enabled, the Home
+;; key, or rather the `move-beginning-of-line' function, will move
+;; to the beginning of the indentation when called interactively.
+;; 
+;; If it is already at the beginning of the indent,and move to the
+;; beginning of the line.  When
+;; `auto-indent-home-is-beginning-of-indent-when-spaces-follow' is
+;; enabled, a home key press from
+;; 
+;; (defadvice move-beginning-of-line (around auto-indent-minor-mode-advice)
+;; | (let (at-beginning)
+;; 
+;; will change to
+;; 
+;; (defadvice move-beginning-of-line (around auto-indent-minor-mode-advice)
+;; |(let (at-beginning)
+;; 
+;; Another home-key will chang to cursor
+;; 
+;; (defadvice move-beginning-of-line (around auto-indent-minor-mode-advice)
+;; |   (let (at-beginning)
+;; 
+;; *** auto-indent-key-for-end-of-line-insert-char-then-newline
+;; Key for end of line, `auto-indent-eol-char', then newline.
+;; 
+;; By default the `auto-indent-eol-char' is the semicolon. TextMate
+;; uses shift-meta return, I believe (S-M-RET). If blank, no key is
+;; defined.  The key should be in a format used for having keyboard
+;; macros (see `edmacro-mode'). This is useful when used in
+;; conjunction with something that pairs delimiters like
+;; `autopair-mode'.
+;; 
+;; *** auto-indent-key-for-end-of-line-then-newline
+;; Key for end of line, then newline.
+;; 
+;; TextMate uses meta return, I believe (M-RET).  If blank, no key
+;; is defined. The key should be in a format used for saving
+;; keyboard macros (see `edmacro-mode'). This is useful when used in
+;; conjunction with something that pairs delimiters like `autopair-mode'.
+;; 
+;; *** auto-indent-kill-line-at-eol
+;; Determines how a kill at the end of line behaves.
+;; 
+;; When killing lines, if at the end of a line,
+;; 
+;; nil - join next line to the current line.  Deletes white-space at
+;; join.  [this essentially duplicated delete-char]
+;; 
+;; See also `auto-indent-kill-remove-extra-spaces'
+;; 
+;; whole-line - kill next lines
+;; 
+;; subsequent-whole-lines - merge lines on first call, subsequent kill whole lines
+;; 
+;; blanks - kill all empty lines after the current line, and then
+;; any lines specified.
+;; 
+;; You should also set the function `kill-whole-line' to do what you
+;; want.
+;; 
+;; *** auto-indent-kill-line-kill-region-when-active
+;;  - When killing lines, if region is active, kill region instead.
+;; 
+;; *** auto-indent-kill-remove-extra-spaces
+;;  - Remove indentation before killing the line or region.
+;; 
+;; *** auto-indent-known-indent-level-variables
+;; Known indent-level-variables for major modes.  Set locally when auto-indent-mode initializes.
+;; 
+;; *** auto-indent-known-text-modes
+;;  - List of auto-indent's known text-modes.
+;; 
+;; *** auto-indent-minor-mode-symbol
+;;  - When true, Auto Indent puts AI on the mode line.
+;; 
+;; *** auto-indent-mode-untabify-on-yank-or-paste
+;;  - Untabify pasted or yanked region.
+;; 
+;; *** auto-indent-newline-function
+;;  - Auto indentation function for the return key.
+;; 
+;; *** auto-indent-next-pair
+;; Automatically indent the next parenthetical statement.  For example in R:
+;; 
+;; d| <- read.csv("dat.csv",
+;; na.strings=c(".","NA"))
+;; 
+;; When typing .old, the indentation will be updated as follows:
+;; 
+;; d.old <- read.csv("dat.csv",
+;; na.strings=c(".","NA"))
+;; 
+;; This will slow down your computation, so if you use it make sure
+;; that the `auto-indent-next-pair-timer-interval' is appropriate
+;; for your needs.
+;; 
+;; It is useful when using this option to have some sort of autopairing on.
+;; 
+;; *** auto-indent-next-pair-timer-interval
+;; Number of seconds before the observed parenthetical statement is indented.
+;; The faster the value, the slower Emacs responsiveness but the
+;; faster Emacs indents the region.  The slower the value, the
+;; faster Emacs responds.  This should be changed dynamically by
+;; typing with `auto-indent-next-pair-timer-interval-addition'.  The
+;; maximum that a particular mode can delay the timer is given by
+;; `auto-indent-next-pair-timer-interval-max'.
+;; 
+;; *** auto-indent-next-pair-timer-interval-addition
+;; If the indent operation for a file takes longer than the specified idle timer, grow that timer by this number for a particular mode.
+;; 
+;; *** auto-indent-next-pair-timer-interval-max
+;; Maximum number seconds that auto-indent-mode will grow a parenthetical statement.
+;; If this is less than or equal to zero, these will be no limit.
+;; 
+;; *** auto-indent-next-pairt-timer-interval-do-not-grow
+;; If true, do not magically grow the mode-based indent time for a region.
+;; 
+;; *** auto-indent-on-save-file
+;;  - Auto Indent on visit file.
+;; 
+;; *** auto-indent-on-visit-file
+;;  - Auto Indent file upon visit.
+;; 
+;; *** auto-indent-on-visit-pretend-nothing-changed
+;;  - When modifying the file on visit, pretend nothing changed.
+;; 
+;; *** auto-indent-on-yank-or-paste
+;;  - Indent pasted or yanked region.
+;; 
+;; *** auto-indent-start-org-indent
+;; Starts `org-indent-mode' when in org-mode.
+;; 
+;; *** auto-indent-untabify-on-save-file
+;;  - Change tabs to spaces on file-save.
+;; 
+;; *** auto-indent-untabify-on-visit-file
+;;  - Automatically convert tabs into spaces when visiting a file.
+;; 
+;; *** auto-indent-use-text-boundaries
+;; Use text boundaries when killing lines.
+;; 
+;; When killing lines, if point is before any text, act as if
+;; point is at BOL.  And if point is after text, act as if point
+;; is at EOL
+;; 
+;; ** Internal Variables
+;; 
+;; *** auto-indent-eol-ret-save
+;; Saved variable for keyboard state.
+;; 
+;; *** auto-indent-eol-ret-semi-save
+;; Saved variable for keyboard state.
+;; 
+;; *** auto-indent-minor-mode-map
+;;  - Auto Indent mode map.
+;; 
+;; *** auto-indent-pairs-begin
+;; Defines where the pair region begins.
+;; 
+;; *** auto-indent-pairs-end
+;; Defines where the pair region ends.
+;; *Auto indentation on moving cursor to blank lines.
+;; 
+;; *** auto-indent-current-pairs
+;;  - Automatically indent the current parenthetical statement.
+;; 
+;; *** auto-indent-delete-line-char-add-extra-spaces
+;;  - When deleting a return, add a space (when appropriate)
+;; between the newly joined lines.
+;; 
+;; This takes care of the condition when deleting text
+;; 
+;; Lorem ipsum dolor sit|
+;; amet, consectetur adipiscing elit.  Morbi id
+;; 
+;; Lorem ipsum dolor sit|amet, consectetur adipiscing elit.  Morbi id
+;; 
+;; Which ideally should be deleted to:
+;; 
+;; Lorem ipsum dolor sit| amet, consectetur adipiscing elit.  Morbi id
+;; 
+;; This is controlled by the regular expressions in
+;; `auto-indent-delete-line-char-add-extra-spaces-prog-mode-regs'
+;; and
+;; `auto-indent-delete-line-char-add-extra-spaces-text-mode-regs'
+;; 
+;; *** auto-indent-delete-line-char-add-extra-spaces-prog-mode-regs
+;;  - Regular expressions for use with `auto-indent-delete-line-char-add-extra-spaces'.  This is used for programming modes as determined by `auto-indent-is-prog-mode-p'.
+;; 
+;; *** auto-indent-delete-line-char-add-extra-spaces-text-mode-regs
+;;  - Regular expressions for use with `auto-indent-delete-line-char-add-extra-spaces'.  This is used for programming modes as determined by `auto-indent-is-prog-mode-p'.
+;; 
+;; *** auto-indent-delete-line-char-remove-extra-spaces
+;; When deleting a return, delete any extra spaces between the newly joined lines.
+;; 
+;; *** auto-indent-delete-line-char-remove-last-space
+;; Remove last space when deleting a line.
+;; 
+;; When `auto-indent-delete-line-char-remove-extra-spaces' is enabled,
+;; expressions like lists can be removed in a less than optimal
+;; manner.  For example, assuming =`|=' is the cursor:
+;; 
+;; c("Vehicle QD TO",|
+;; "1 ug IVT","3 ug IVT",...
+;; 
+;; would be deleted to the following
+;; 
+;; c("Vehicle QD TO",| "1 ug IVT","3 ug IVT",...
+;; 
+;; In this case it would be preferable to delete to:
+;; 
+;; c("Vehicle QD TO",|"1 ug IVT","3 ug IVT",...
+;; 
+;; However cases like sentences:
+;; 
+;; Lorem ipsum dolor sit amet,|
+;; consectetur adipiscing elit. Morbi id
+;; 
+;; Deletes to
+;; Lorem ipsum dolor sit amet,| consectetur adipiscing elit. Morbi id
+;; 
+;; Which is a desired behavior.
+;; 
+;; When this is enabled, auto-indent attempts to be smarter by
+;; deleting the extra space when characters before and after match
+;; expressions defined in
+;; `auto-indent-delete-line-char-remove-last-space-prog-mode-regs' and
+;; `auto-indent-delete-line-char-remove-last-space-text-mode-regs'.
+;; 
+;; *** auto-indent-delete-line-char-remove-last-space-prog-mode-regs
+;;  - Regular expressions for use with `auto-indent-delete-line-char-remove-last-space'.  This is used for programming modes as determined by `auto-indent-is-prog-mode-p'.
+;; 
+;; *** auto-indent-delete-line-char-remove-last-space-text-mode-regs
+;; Regular expressions for use with `auto-indent-delete-line-char-remove-last-space'.  This is used for modes other than programming modes.  This is determined by `auto-indent-is-prog-mode-p'.
+;; 
+;; *** auto-indent-delete-trailing-whitespace-on-save-file
+;;  - When saving file delete trailing whitespace.
+;; 
+;; *** auto-indent-delete-trailing-whitespace-on-visit-file
+;;  - Automatically remove trailing whitespace when visiting  file.
+;; 
+;; *** auto-indent-disabled-indent-functions
+;; List of disabled indent functions.
+;; 
+;; List of functions that auto-indent ignores the `indent-region' on
+;; paste and automated indent by pressing return.  The default is
+;; `indent-relative' and `indent-relative-maybe'.  If these are used the
+;; indentation is may not specified for the current mode.
+;; 
+;; *** auto-indent-disabled-modes-list
+;; List of modes disabled when global `auto-indent-mode' is on.
+;; 
+;; *** auto-indent-disabled-modes-on-save
+;;  - List of modes where `indent-region' of the whole file is ignored.
+;; 
+;; *** auto-indent-engine
+;; Type of engine to use.  The possibilities are:
+;; 
+;; default: Use hooks and advices to implement auto-indent-mode
+;; 
+;; keymap: Use key remappings to implement auto-indent-mode.  This may
+;; work in some modes but may cause things such as `company-mode' or
+;; `auto-complete-mode' to function improperly
+;; 
+;; *** auto-indent-eol-char
+;; End of line/statement character, like C or matlab's semi-colon.
+;; 
+;; Character inserted when
+;; `auto-indent-key-for-end-of-line-inser-char-then-newline' is
+;; defined.  This is a buffer local variable, therefore if you have
+;; a mode that instead of using a semi-colon for an end of
+;; statement, you use a colon, this can be added to the mode as
+;; follows:
+;; 
+;; (add-hook 'strange-mode-hook (lambda() (setq auto-indent-eol-char ":")))
+;; 
+;; autoThis is similar to Textmate's behavior.  This is useful when used
+;; in conjunction with something that pairs delimiters like `autopair-mode'.
+;; 
+;; *** auto-indent-fix-org-backspace
+;; Fixes `org-backspace' to use `auto-indent-backward-delete-char-behavior' for `org-mode' buffers.
+;; 
+;; *** auto-indent-fix-org-return
+;; Allows newline and indent behavior in source code blocks in org-mode.
+;; 
+;; *** auto-indent-fix-org-yank
+;; Allows org-mode yanks to be indented in source code blocks of org-mode.
+;; 
+;; *** auto-indent-force-interactive-advices
+;; Forces interactive advices.
+;; 
+;; This makes sure that this is called when this is an interactive
+;; call directly to the function.  However, if someone defines
+;; something such as `org-delete-char' to delete a character, when
+;; `org-delete-char' is called interactively and then calls
+;; `delete-char' the advice is never activated (when it should be).
+;; If this is activated, `auto-indent-mode' tries to do the right
+;; thing by guessing what key should have been pressed to get this
+;; event.  If it is the key that was pressed enable the advice.
+;; 
+;; *** auto-indent-home-is-beginning-of-indent
+;; The Home key, or rather the `move-beginning-of-line' function, will move to the beginning of the indentation when called interactively.  If it is already at the beginning of the indent, move to the beginning of the line.
+;; 
+;; *** auto-indent-home-is-beginning-of-indent-when-spaces-follow
+;; This is a customization for the home key.
+;; 
+;; If `auto-indent-home-is-beginning-of-indent' is enabled, the Home
+;; key, or rather the `move-beginning-of-line' function, will move
+;; to the beginning of the indentation when called interactively.
+;; 
+;; If it is already at the beginning of the indent,and move to the
+;; beginning of the line.  When
+;; `auto-indent-home-is-beginning-of-indent-when-spaces-follow' is
+;; enabled, a home key press from
+;; 
+;; (defadvice move-beginning-of-line (around auto-indent-minor-mode-advice)
+;; | (let (at-beginning)
+;; 
+;; will change to
+;; 
+;; (defadvice move-beginning-of-line (around auto-indent-minor-mode-advice)
+;; |(let (at-beginning)
+;; 
+;; Another home-key will chang to cursor
+;; 
+;; (defadvice move-beginning-of-line (around auto-indent-minor-mode-advice)
+;; |   (let (at-beginning)
+;; 
+;; *** auto-indent-key-for-end-of-line-insert-char-then-newline
+;; Key for end of line, `auto-indent-eol-char', then newline.
+;; 
+;; By default the `auto-indent-eol-char' is the semicolon. TextMate
+;; uses shift-meta return, I believe (S-M-RET). If blank, no key is
+;; defined.  The key should be in a format used for having keyboard
+;; macros (see `edmacro-mode'). This is useful when used in
+;; conjunction with something that pairs delimiters like
+;; `autopair-mode'.
+;; 
+;; *** auto-indent-key-for-end-of-line-then-newline
+;; Key for end of line, then newline.
+;; 
+;; TextMate uses meta return, I believe (M-RET).  If blank, no key
+;; is defined. The key should be in a format used for saving
+;; keyboard macros (see `edmacro-mode'). This is useful when used in
+;; conjunction with something that pairs delimiters like `autopair-mode'.
+;; 
+;; *** auto-indent-kill-line-at-eol
+;; Determines how a kill at the end of line behaves.
+;; 
+;; When killing lines, if at the end of a line,
+;; 
+;; nil - join next line to the current line.  Deletes white-space at
+;; join.  [this essentially duplicated delete-char]
+;; 
+;; See also `auto-indent-kill-remove-extra-spaces'
+;; 
+;; whole-line - kill next lines
+;; 
+;; subsequent-whole-lines - merge lines on first call, subsequent kill whole lines
+;; 
+;; blanks - kill all empty lines after the current line, and then
+;; any lines specified.
+;; 
+;; You should also set the function `kill-whole-line' to do what you
+;; want.
+;; 
+;; *** auto-indent-kill-line-kill-region-when-active
+;;  - When killing lines, if region is active, kill region instead.
+;; 
+;; *** auto-indent-kill-remove-extra-spaces
+;;  - Remove indentation before killing the line or region.
+;; 
+;; *** auto-indent-known-indent-level-variables
+;; Known indent-level-variables for major modes.  Set locally when auto-indent-mode initializes.
+;; 
+;; *** auto-indent-known-text-modes
+;;  - List of auto-indent's known text-modes.
+;; 
+;; *** auto-indent-minor-mode-symbol
+;;  - When true, Auto Indent puts AI on the mode line.
+;; 
+;; *** auto-indent-mode-untabify-on-yank-or-paste
+;;  - Untabify pasted or yanked region.
+;; 
+;; *** auto-indent-newline-function
+;;  - Auto indentation function for the return key.
+;; 
+;; *** auto-indent-next-pair
+;; Automatically indent the next parenthetical statement.  For example in R:
+;; 
+;; d| <- read.csv("dat.csv",
+;; na.strings=c(".","NA"))
+;; 
+;; When typing .old, the indentation will be updated as follows:
+;; 
+;; d.old <- read.csv("dat.csv",
+;; na.strings=c(".","NA"))
+;; 
+;; This will slow down your computation, so if you use it make sure
+;; that the `auto-indent-next-pair-timer-interval' is appropriate
+;; for your needs.
+;; 
+;; It is useful when using this option to have some sort of autopairing on.
+;; 
+;; *** auto-indent-next-pair-timer-interval
+;; Number of seconds before the observed parenthetical statement is indented.
+;; The faster the value, the slower Emacs responsiveness but the
+;; faster Emacs indents the region.  The slower the value, the
+;; faster Emacs responds.  This should be changed dynamically by
+;; typing with `auto-indent-next-pair-timer-interval-addition'.  The
+;; maximum that a particular mode can delay the timer is given by
+;; `auto-indent-next-pair-timer-interval-max'.
+;; 
+;; *** auto-indent-next-pair-timer-interval-addition
+;; If the indent operation for a file takes longer than the specified idle timer, grow that timer by this number for a particular mode.
+;; 
+;; *** auto-indent-next-pair-timer-interval-max
+;; Maximum number seconds that auto-indent-mode will grow a parenthetical statement.
+;; If this is less than or equal to zero, these will be no limit.
+;; 
+;; *** auto-indent-next-pairt-timer-interval-do-not-grow
+;; If true, do not magically grow the mode-based indent time for a region.
+;; 
+;; *** auto-indent-on-save-file
+;;  - Auto Indent on visit file.
+;; 
+;; *** auto-indent-on-visit-file
+;;  - Auto Indent file upon visit.
+;; 
+;; *** auto-indent-on-visit-pretend-nothing-changed
+;;  - When modifying the file on visit, pretend nothing changed.
+;; 
+;; *** auto-indent-on-yank-or-paste
+;;  - Indent pasted or yanked region.
+;; 
+;; *** auto-indent-start-org-indent
+;; Starts `org-indent-mode' when in org-mode.
+;; 
+;; *** auto-indent-untabify-on-save-file
+;;  - Change tabs to spaces on file-save.
+;; 
+;; *** auto-indent-untabify-on-visit-file
+;;  - Automatically convert tabs into spaces when visiting a file.
+;; 
+;; *** auto-indent-use-text-boundaries
+;; Use text boundaries when killing lines.
+;; 
+;; When killing lines, if point is before any text, act as if
+;; point is at BOL.  And if point is after text, act as if point
+;; is at EOL
+;; 
+;; ** Internal Variables
+;; 
+;; *** auto-indent-eol-ret-save
+;; Saved variable for keyboard state.
+;; 
+;; *** auto-indent-eol-ret-semi-save
+;; Saved variable for keyboard state.
+;; 
+;; *** auto-indent-minor-mode-map
+;;  - Auto Indent mode map.
+;; 
+;; *** auto-indent-pairs-begin
+;; Defines where the pair region begins.
+;; 
+;; *** auto-indent-pairs-end
+;; Defines where the pair region ends.
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 17-Oct-2012    Matthew L. Fidler  
+;;    Last-Updated: Tue Aug 21 13:08:42 2012 (-0500) #1467 (Matthew L. Fidler)
+;;    Bug fix for yanking in org-mode.
+;;    
 ;; 17-Oct-2012    Matthew L. Fidler  
 ;;    Last-Updated: Tue Aug 21 13:08:42 2012 (-0500) #1467 (Matthew L. Fidler)
 ;;    Now auto-indent-mode can suppress auto-fill in source code
@@ -1979,7 +2615,7 @@ http://www.emacswiki.org/emacs/AutoIndentation
               (when (fboundp ad)
                 (condition-case error
                     (progn
-                      (ad-enable-advice ad 'after 'auto-indent-minor-mode-advice)
+                      (ad-enable-advice ad 'around 'auto-indent-minor-mode-advice)
                       (ad-activate ad))
                   (error
                    (message "[auto-indent-mode]: Error enabling after-advices for `auto-indent-mode': %s" (error-message-string error))))))
@@ -2010,9 +2646,8 @@ http://www.emacswiki.org/emacs/AutoIndentation
    (lambda(ad)
      (condition-case error
          (progn
-           (ad-disable-advice ad 'after 'auto-indent-minor-mode-advice)
-           (ad-activate ad)
-           )
+           (ad-disable-advice ad 'around 'auto-indent-minor-mode-advice)
+           (ad-activate ad))
        (error
         (message "[auto-indent-mode] Error disabling advices: %s" (error-message-string error)))))
    '(yank yank-pop))
@@ -2029,7 +2664,9 @@ http://www.emacswiki.org/emacs/AutoIndentation
 (defun auto-indent-turn-on-org-indent ()
   "Turn on org-indent."
   (when auto-indent-start-org-indent
-    (org-indent-mode 1)))
+    (org-indent-mode 1))
+  (ad-activate 'yank)
+  (ad-activate 'yank-pop))
 
 (defadvice org-return (around auto-indent-mode activate)
   "Fixes org-return to press tab after a newline when `auto-indent-fix-org-return' is true"
@@ -2069,15 +2706,15 @@ http://www.emacswiki.org/emacs/AutoIndentation
   :group 'auto-indent
   :require 'auto-indent-mode)
 
-(defun auto-indent-remove-advice-p (&optional command)
+(defun auto-indent-remove-advice-p (&optional command) 
   "Should the advice be removed?
 
 This is based on either the current command (`this-command') or
 the provided COMMAND.  Removes advice if the function called is
 actually an auto-indent function OR it should be disabled in this
 mode."
-  (or (memq major-mode auto-indent-disabled-modes-list) (minibufferp)
-      (string-match "^auto-indent" (symbol-name (or command this-command)))))
+  (or (and (memq major-mode auto-indent-disabled-modes-list)) (minibufferp)
+           (string-match "^auto-indent" (symbol-name (or command this-command)))))
 
 (defun auto-indent-is-yank-p (&optional command)
   "Test if the `this-command' or COMMAND was a yank."
@@ -2118,15 +2755,16 @@ mode."
             (replace-match " ")))
         (let (p1 p2)
           (save-excursion
-            (save-restriction
-              (narrow-to-region (progn (goto-char (mark t)) (point-at-bol))
-                                (progn (goto-char pt) (point-at-eol)))
-              (condition-case err
-                  (run-hook-with-args 'auto-indent-after-yank-hook (point-min) (point-max))
-                (error
-                 (message "[Auto-Indent Mode] Ignoring error when running hook `auto-indent-after-yank-hook': %s" (error-message-string err))))
-              (setq p1 (point-min))
-              (setq p2 (point-max)))
+            (when (mark t)
+              (save-restriction
+                (narrow-to-region (progn (goto-char (mark t)) (point-at-bol))
+                                  (progn (goto-char pt) (point-at-eol)))
+                (condition-case err
+                    (run-hook-with-args 'auto-indent-after-yank-hook (point-min) (point-max))
+                  (error
+                   (message "[Auto-Indent Mode] Ignoring error when running hook `auto-indent-after-yank-hook': %s" (error-message-string err))))
+                (setq p1 (point-min))
+                (setq p2 (point-max))))
             (if auto-indent-on-yank-or-paste
                 (indent-region p1 p2))
             (save-restriction
@@ -2162,20 +2800,26 @@ mode."
 
 yank or `yank-pop' is defined in the COMMAND argument."
   `(progn
-     (defadvice ,command (after auto-indent-minor-mode-advice)
-       (when (and (or (not auto-indent-force-interactive-advices)
-                      (called-interactively-p 'any)
-                      (auto-indent-is-yank-p))
-                  (not (auto-indent-remove-advice-p))
-                  (not current-prefix-arg)
-                  (or auto-indent-minor-mode
-                      (and (eq major-mode 'org-mode)
-                            auto-indent-fix-org-yank)))
-         (if (eq major-mode 'org-mode)
-             (let ((org-src-strip-leading-and-trailing-blank-lines nil))
-               (org-babel-do-in-edit-buffer
-                (auto-indent-yank-engine)))
-           (auto-indent-yank-engine))))
+     (defadvice ,command (around auto-indent-minor-mode-advice)
+       (let ((do-it t))
+         (when (and auto-indent-fix-org-yank
+                    (eq major-mode 'org-mode)
+                    (org-babel-where-is-src-block-head))
+           (setq do-it nil)
+           (let ((org-src-strip-leading-and-trailing-blank-lines nil))
+             (org-babel-do-in-edit-buffer
+              (,command (ad-get-arg 0)))))
+         (when do-it
+           ad-do-it
+           (when (and (or (not auto-indent-force-interactive-advices)
+                          (called-interactively-p 'any)
+                          (auto-indent-is-yank-p))
+                      (not (auto-indent-remove-advice-p))
+                      (not current-prefix-arg)
+                      (or auto-indent-minor-mode
+                          (and auto-indent-fix-org-yank)))
+             
+             (auto-indent-yank-engine)))))
      (defun ,(intern (concat "auto-indent-" (symbol-name command))) (&optional prefix)
        ,(concat "Auto-indent-mode `" (symbol-name command) "' function replacement.  Instead of using advices you can change keybindings to this function.")
        (interactive ,(if (eq command 'yank) "*P" "*p"))
