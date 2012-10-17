@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Oct 15 10:44:52 2012 (-0700)
+;; Last-Updated: Wed Oct 17 13:44:38 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 13440
+;;     Update #: 13444
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -3261,9 +3261,15 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
                               (format ", %s completion"
                                       (icicle-propertize
                                        (cond ((eq 'apropos icicle-current-completion-mode)
-                                              (or (car (rassq icicle-apropos-complete-match-fn
-                                                              icicle-S-TAB-completion-methods-alist))
-                                                  ""))
+                                              ;; If nil, COLLECTION arg is probably a fn and we set it to nil
+                                              ;; to prevent automatic input matching in
+                                              ;; `icicle-unsorted-apropos-candidates', because COLLECTION fn
+                                              ;; does everything.  So here we treat nil like `apropos'.
+                                              (if icicle-apropos-complete-match-fn
+                                                  (or (car (rassq icicle-apropos-complete-match-fn
+                                                                  icicle-S-TAB-completion-methods-alist))
+                                                      "")
+                                                "apropos"))
                                              ((eq 'prefix icicle-current-completion-mode)
                                               (case (icicle-current-TAB-method)
                                                 (fuzzy        "fuzzy")
