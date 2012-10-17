@@ -5,7 +5,7 @@
 ;; Author: Matthew L. Fidler, Le Wang & Others
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Sat Nov  6 11:02:07 2010 (-0500)
-;; Version: 0.73
+;; Version: 0.74
 ;; Last-Updated: Tue Aug 21 13:08:42 2012 (-0500)
 ;;           By: Matthew L. Fidler
 ;;     Update #: 1467
@@ -224,6 +224,7 @@
 ;; * Auto-indent and org-mode
 ;; Auto-indent does not technically turn on for org-mode.  Instead the
 ;; following can be added/changed:
+;; 
 ;; 1. `org-indent-mode' is turned on when `auto-indent-start-org-indent' 
 ;;    is true
 ;; 2. The return behavior is changed to newline and indent in code blocks
@@ -232,6 +233,10 @@
 ;;    `auto-indent-delete-backward-char' is true.
 ;; 4. The yank/paste behavior is changed to auto-indent in a code block
 ;;    when `auto-indent-fix-org-yank' is true.
+;; 5. The auto-filling activity in source-code blocks can break your code
+;;    depending on the language.  When `auto-indent-fix-org-auto-fill' is
+;;    true, auto-filling is turned off in`org-mode' source blocks.
+;; 
 ;; * FAQ
 ;; ** Why isn't my mode indenting?
 ;; Some modes are excluded for compatability reasons, such as
@@ -675,6 +680,9 @@
 ;; *** auto-indent-fix-org-return
 ;; Allows newline and indent behavior in source code blocks in org-mode.
 ;; 
+;; *** auto-indent-fix-org-yank
+;; Allows org-mode yanks to be indented in source code blocks of org-mode.
+;; 
 ;; *** auto-indent-force-interactive-advices
 ;; Forces interactive advices.
 ;; 
@@ -858,6 +866,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 17-Oct-2012    Matthew L. Fidler  
+;;    Last-Updated: Tue Aug 21 13:08:42 2012 (-0500) #1467 (Matthew L. Fidler)
+;;    Now auto-indent-mode can suppress auto-fill in source code
+;;    blocks. Small bug fix for yanking.
 ;; 12-Oct-2012    Matthew L. Fidler  
 ;;    Last-Updated: Tue Aug 21 13:08:42 2012 (-0500) #1467 (Matthew L. Fidler)
 ;;    Add auto-indent on yank support for org-mode code buffers
@@ -1753,6 +1765,13 @@ in conjunction with something that pairs delimiters like `autopair-mode'."
   :type 'boolean
   :group 'auto-indent)
 
+(defcustom auto-indent-fix-org-auto-fill t
+  "Fixes org-based
+  auto-fill-function (i.e. `org-auto-fill-function') to only
+  auto-fill for things outside of a source block."
+  :type 'boolean
+  :group 'auto-indent)
+
 (defcustom auto-indent-fix-org-backspace t
   "Fixes `org-backspace' to use `auto-indent-backward-delete-char-behavior' for `org-mode' buffers."
   :type 'boolean
@@ -2026,6 +2045,16 @@ http://www.emacswiki.org/emacs/AutoIndentation
     (insert " ")
     (auto-indent-delete-backward-char 1)))
 
+(defadvice org-auto-fill-function (around auto-indent-mode activate)
+  "Fixes auto-fill for org-mode in source code blocks."
+  (let ((do-it t))
+    (when (and auto-indent-fix-org-auto-fill
+               (eq major-mode 'org-mode)
+               (org-babel-where-is-src-block-head))
+      (setq do-it nil))
+    (when do-it
+      ad-do-it)))
+
 (add-hook 'org-mode-hook 'auto-indent-turn-on-org-indent)
 ;;;###autoload
 (defun auto-indent-minor-mode-on ()
@@ -2139,8 +2168,10 @@ yank or `yank-pop' is defined in the COMMAND argument."
                       (auto-indent-is-yank-p))
                   (not (auto-indent-remove-advice-p))
                   (not current-prefix-arg)
-                  (or auto-indent-minor-mode (and org-mode auto-indent-fix-org-yank)))
-         (if org-mode
+                  (or auto-indent-minor-mode
+                      (and (eq major-mode 'org-mode)
+                            auto-indent-fix-org-yank)))
+         (if (eq major-mode 'org-mode)
              (let ((org-src-strip-leading-and-trailing-blank-lines nil))
                (org-babel-do-in-edit-buffer
                 (auto-indent-yank-engine)))
