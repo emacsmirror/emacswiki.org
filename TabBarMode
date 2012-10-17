@@ -623,4 +623,6 @@ Aquamacs tabbar and even the fork doesn't work with the recent bzr emacs. Need
 help! -- Emmett
 
 ----
+Tabbar is very nice, but I've noticed that at least on GNU Emacs v24.2.1, but when combined with setting variable <code>scroll-conservatively</code> to <code>10</code> and/or variable <code>scroll-margin</code> to <code>3</code>, it breaks function <code>next-line</code>.  That is, when I'm pressing the down key, and the cursor reaches the bottom of the window, pressing the down key again causes a sort of weird, slow, jerky scrolling down, which is not completely but almost broken. --TeemuLeisti 2012-10-17
+----
 CategoryModes
