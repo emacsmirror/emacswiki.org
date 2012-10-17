@@ -191,10 +191,10 @@ Dependency: camelize
 ---
 To check spelling of camel-cased words, you need to switch the default ispell program to aspell.
 
-(setq ispell-program-name "aspell")
-;; -C makes aspell accept run-together words
-;; --run-together-limit is maximum number of words that can be strung together.
-(setq ispell-extra-args '("-C" "--sug-mode=ultra" "--run-together-limit=5"))
+  (setq ispell-program-name "aspell")
+  ;; -C makes aspell accept run-together words
+  ;; --run-together-limit is maximum number of words that can be strung together.
+  (setq ispell-extra-args '("-C" "--sug-mode=ultra" "--run-together-limit=5"))
 
 ----
 CategoryModes
