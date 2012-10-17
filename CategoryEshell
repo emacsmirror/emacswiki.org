@@ -1,10 +1,4 @@
-An entire shell by JohnWiegley written in EmacsLisp.  Great stuff.  And very useful for people on weird operating systems without usable shells.  Also known as [::Eshell].
-
-CategoryShell
-
-Get it from here, if your Emacs does not come with it.  It is part of Emacs 21.
-
-* https://github.com/jwiegley/eshell
+An entire shell by JohnWiegley written in EmacsLisp.  Great stuff.  And very useful for people on weird operating systems without usable shells.  Also known as [::Eshell]. It was added to Emacs 21.
 
 Unfinished manual:
 
@@ -66,3 +60,6 @@ Here's an implementation of `eshell-other-window', should you ever need it. Make
     (other-window 1))
   (eshell arg))
 }}}
+
+----
+CategoryShell
