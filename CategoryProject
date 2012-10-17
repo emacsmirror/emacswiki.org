@@ -22,6 +22,7 @@ It is probably not useful to use more than one of these at the same time, for th
 * [[IProject]] -- interactive project plugin for ProjectBufferMode 
 * ProjmanMode -- emphasis on the ability to switch between projects
 * SimpleProjectManagment
+* [http://github.com/rdallasgray/project-persist project-persist.el] -- A minor mode to allow loading and saving of project settings.
 
 == Project Helpers or Simplified Project Libraries ==
 
