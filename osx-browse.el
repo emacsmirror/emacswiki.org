@@ -5,8 +5,8 @@
 ;; Author: Roland Walker <walker@pobox.com>
 ;; Homepage: http://github.com/rolandwalker/osx-browse
 ;; URL: http://raw.github.com/rolandwalker/osx-browse/master/osx-browse.el
-;; Version: 0.8.2
-;; Last-Updated: 16 Oct 2012
+;; Version: 0.8.4
+;; Last-Updated: 17 Oct 2012
 ;; EmacsWiki: OSXBrowse
 ;; Keywords: hypermedia, external
 ;; Package-Requires: ((browse-url-dwim "0.6.2"))
@@ -100,6 +100,9 @@
 ;;
 ;; Bugs
 ;;
+;;     `osx-browse-prefer-background' is only respected on
+;;     interactive calls.
+;;
 ;;     Keybindings don't work out of the box with Aquamacs, which
 ;;     does not think that ⌘ is the Super modifier.
 ;;
@@ -191,7 +194,7 @@
 ;;;###autoload
 (defgroup osx-browse nil
   "Web browsing helpers for OS X."
-  :version "0.8.2"
+  :version "0.8.4"
   :link '(emacs-commentary-link "osx-browse")
   :prefix "osx-browse-"
   :group 'external
@@ -521,7 +524,8 @@ BROWSER defaults to \"com.apple.Safari\".
 
 URL, NEW-WINDOW, and FOCUS are as documented for
 `osx-browse-url'."
-  (interactive (osx-browse-interactive-form nil nil "com.apple.Safari"))
+  (interactive (osx-browse-interactive-form))
+  (callf or browser "com.apple.Safari")
   (osx-browse-url url new-window browser focus))
 
 ;;;###autoload
@@ -532,7 +536,8 @@ BROWSER defaults to \"com.google.Chrome\".
 
 URL, NEW-WINDOW, and FOCUS are as documented for
 `osx-browse-url'."
-  (interactive (osx-browse-interactive-form nil nil "com.google.Chrome"))
+  (interactive (osx-browse-interactive-form))
+  (callf or browser "com.google.Chrome")
   (osx-browse-url url new-window browser focus))
 
 ;;;###autoload
@@ -543,7 +548,8 @@ BROWSER defaults to \"org.mozilla.Firefox\".
 
 URL, NEW-WINDOW, and FOCUS are as documented for
 `osx-browse-url'."
-  (interactive (osx-browse-interactive-form nil nil "org.mozilla.Firefox"))
+  (interactive (osx-browse-interactive-form))
+  (callf or browser "org.mozilla.Firefox")
   (osx-browse-url url new-window browser focus))
 
 (provide 'osx-browse)
