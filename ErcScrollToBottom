@@ -17,6 +17,7 @@ The latest text is also at the bottom of the screen, so it's easier to catch up 
 
 In version 3 there is a redisplay bug.   Put this in your ~/.emacs.d/.ercrc.el after you turn on scrolltobottom mode (written by kerimida):
 
+{{{
 ;;; Replacement functions to unbreak `erc-hide-list' for ERC 5.3
 
 (defun erc-buffer-hidden-p (parsed buffer)
@@ -81,6 +82,6 @@ See also `erc-format-message' and `erc-display-line'."
 	(unless (erc-buffer-hidden-p parsed buf)
 	  (erc-display-line string buf))))))
 
-
+}}}
 ----
 [[ERC]]
