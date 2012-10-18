@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Oct 18 08:21:51 2012 (-0700)
+;; Last-Updated: Thu Oct 18 14:01:56 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 24794
+;;     Update #: 24802
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -7714,14 +7714,18 @@ could temporarily set `icicle-file-predicate' to:
                                                  (read-file-name "Locate under which directory: "
                                                                  nil default-directory nil)
                                                default-directory)))
-    (icicle-full-cand-fn                `(lambda (file)
-                                           (setq file  (if (file-directory-p file)
-                                                           (file-name-as-directory file)
-                                                         file))
-                                           ,(if (and (not icicle-locate-file-use-locate-p)
-                                                     (<= (prefix-numeric-value current-prefix-arg) 0))
-                                                '(icicle-make-file+date-candidate file)
-                                                '(list file))))
+    (icicle-full-cand-fn                (if (and (not icicle-locate-file-use-locate-p)
+                                                 (<= (prefix-numeric-value current-prefix-arg) 0))
+                                            (lambda (file)
+                                              (setq file  (if (file-directory-p file)
+                                                              (file-name-as-directory file)
+                                                            file))
+                                              (icicle-make-file+date-candidate file))
+                                          (lambda (file)
+                                            (setq file  (if (file-directory-p file)
+                                                            (file-name-as-directory file)
+                                                          file))
+                                            (list file))))
     (use-dialog-box                     nil)
     (icicle-candidate-properties-alist  (and (not icicle-locate-file-use-locate-p)
                                              (<= (prefix-numeric-value current-prefix-arg) 0)
@@ -7738,11 +7742,10 @@ could temporarily set `icicle-file-predicate' to:
               (message "Gathering files within `%s' (this could take a while)..."
                        (icicle-propertize dir 'face 'icicle-msg-emphasis)))))
     (icicle-abs-file-candidates
-     (mapcar (lambda (file)                ; FREE here: CURRENT-PREFIX-ARG.
-               (if (and (not icicle-locate-file-use-locate-p)
-                        (<= (prefix-numeric-value current-prefix-arg) 0))
-                   (icicle-make-file+date-candidate file)
-                 (list file)))
+     (mapcar (if (and (not icicle-locate-file-use-locate-p)
+                      (<= (prefix-numeric-value current-prefix-arg) 0)) ; FREE here: CURRENT-PREFIX-ARG.
+                 #'icicle-make-file+date-candidate
+               #'list)
              (if icicle-locate-file-use-locate-p
                  (let* ((locate-buffer-name  " *Icicles Locate*")
                         (temp-locate-buffer  (get-buffer-create locate-buffer-name)))
@@ -7971,6 +7974,7 @@ custom type is compatible with type `string'." ; Doc string
   (when icicle-proxy-candidates (put-text-property 0 1 'icicle-fancy-candidates t prompt)) ; First code
   nil                                   ; Undo code
   (prog1 (setq strings  (nreverse (delete "" strings))) ; Last code - return the list of strings.
+    (setq icicle-proxy-candidates  ())
     (when (interactive-p) (message "Strings: %S" strings))))
 
 (when (fboundp 'read-char-by-name)
@@ -8393,6 +8397,7 @@ Ido-like behavior."                     ; Doc string
 ;;;###autoload (autoload 'icicle-directory-list "icicles")
 (icicle-define-file-command icicle-directory-list ; Command name
   "Choose a list of directory names (strings), and return it.
+You must include a slash (`/') at the end of each directory name.
 Use multi-command action keys (e.g. `C-RET', `C-mouse-2') to choose,
 and a final-choice key (e.g. `RET', `mouse-2') to choose the last one.
 
