@@ -15,5 +15,72 @@ The latest text is also at the bottom of the screen, so it's easier to catch up 
 
 :: In your ERC customisations.  See the docstring of that variable for more information.
 
+In version 3 there is a redisplay bug.   Put this in your ~/.emacs.d/.ercrc.el after you turn on scrolltobottom mode (written by kerimida):
+
+;;; Replacement functions to unbreak `erc-hide-list' for ERC 5.3
+
+(defun erc-buffer-hidden-p (parsed buffer)
+  "Check if a message of type `parsed' should be hidden in a
+`buffer'.  The buffer-local value of `erc-hide-list' is consulted
+to determine if the message type should be hidden."
+  (when (and parsed buffer)
+    (with-current-buffer buffer
+      (member (erc-response.command parsed) erc-hide-list))))
+
+(defun erc-buffer-list-expand (buffer)
+  "Expand BUFFER to a list of one or more ERC buffers.  If BUFFER
+is nil the default ERC buffer for the `erc-session-server' is
+used.  The BUFFER can be an actual buffer, a list of buffers,
+'all or 'active.  If BUFFER = 'all, a list of all the ERC buffers
+for the current session is returned. 'active means the current
+active buffer (`erc-active-buffer').  If the buffer can't be
+resolved, the current buffer is returned as the only item of the
+expanded buffer list."
+  (cond ((bufferp buffer) (list buffer))
+	((listp buffer) buffer)
+	((processp buffer) (list (process-buffer buffer)))
+	((eq 'all buffer)
+	 ;; Hmm, or all of the same session server?
+	 (erc-buffer-list nil erc-server-process))
+	((and (eq 'active buffer) (erc-active-buffer))
+	 (list (erc-active-buffer)))
+	((erc-server-buffer-live-p)
+	 (list (process-buffer erc-server-process)))
+	(t (list (current-buffer)))))
+
+(defun erc-display-message (parsed type buffer msg &rest args)
+  "Display MSG in BUFFER.
+
+ARGS, PARSED, and TYPE are used to format MSG sensibly.
+
+See also `erc-format-message' and `erc-display-line'."
+  (let ((string (if (symbolp msg)
+		    (apply 'erc-format-message msg args)
+		  msg)))
+    (setq string
+	  (cond
+	   ((null type)
+	    string)
+	   ((listp type)
+	    (mapc (lambda (type)
+		    (setq string
+			  (erc-display-message-highlight type string)))
+		  type)
+	    string)
+	   ((symbolp type)
+	    (erc-display-message-highlight type string))))
+
+    (if (not (erc-response-p parsed))
+	(erc-display-line string buffer)
+      (erc-put-text-property 0 (length string) 'erc-parsed parsed string)
+      (erc-put-text-property 0 (length string) 'rear-sticky t string)
+      (dolist (buf (erc-buffer-list-expand buffer))
+	(message "buffer |%s| cmd |%s| hidden |%s| string |%s|"
+		 buf (erc-response.command parsed)
+		 (erc-buffer-hidden-p parsed buf) string)
+	(unless (erc-buffer-hidden-p parsed buf)
+	  (erc-display-line string buf))))))
+
+
 ----
 [[ERC]]
