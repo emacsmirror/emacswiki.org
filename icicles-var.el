@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Oct  9 13:32:30 2012 (-0700)
+;; Last-Updated: Thu Oct 18 14:16:05 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1649
+;;     Update #: 1653
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-var.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -66,7 +66,7 @@
 ;;    `icicle-dir-candidate-can-exit-p',
 ;;    `icicle-doc-last-initial-cand-set',
 ;;    `icicle-dot-string-internal', `icicle-edit-update-p',
-;;    `icicle-explore-final-choice',
+;;    `icicle-exclude-default-proxies', `icicle-explore-final-choice',
 ;;    `icicle-explore-final-choice-full', `icicle-extra-candidates',
 ;;    `icicle-extra-candidates-dir-insert-p',
 ;;    `icicle-face-name-history', `icicle-fancy-candidates-p',
@@ -474,6 +474,9 @@ mode, whereas `icicle-dot-string' is changed only via user commands.")
 More precisely, non-nil when updating the completions list inside
 simple character-editing commands such as `icicle-self-insert' and
 `icicle-delete-backward-char'.")
+
+(defvar icicle-exclude-default-proxies nil
+  "Non-nil means exclude default proxy candidates.")
 
 (defvar icicle-explore-final-choice ""
   "Final `icicle-explore' completion choice (a string).")
