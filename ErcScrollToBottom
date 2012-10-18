@@ -15,7 +15,7 @@ The latest text is also at the bottom of the screen, so it's easier to catch up 
 
 :: In your ERC customisations.  See the docstring of that variable for more information.
 
-In version 3 there is a redisplay bug.   Put this in your ~/.emacs.d/.ercrc.el after you turn on scrolltobottom mode (written by kerimida):
+In version 3 there is a redisplay bug.   Put this in your ~/.emacs.d/.ercrc.el after you turn on scrolltobottom mode (written by GiorgosKeramidas):
 
 {{{
 ;;; Replacement functions to unbreak `erc-hide-list' for ERC 5.3
