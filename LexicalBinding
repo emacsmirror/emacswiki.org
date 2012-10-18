@@ -1,6 +1,6 @@
 For a discussion, see DynamicBindingVsLexicalBinding.
 
-Emacs 24 has lexical binding, if you want it (see Manual:Closures).
+Emacs 24 has lexical binding, if you want it.
 To use it, set `lexical-binding' and evaluate code in the same buffer.
 
 You can have closures in Emacs -- no need for FakeClosures!
