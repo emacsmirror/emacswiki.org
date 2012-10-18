@@ -1,5 +1,7 @@
 This is a problem about [[DynamicBindingVsLexicalBinding]]. Emacs Lisp uses dynamic binding, in contrast to for instance [[Scheme]]. This page explains how to write [[EmacsLisp]] code that simulates lexical binding.
 
+Note: LexicalBinding has been introduced in Emacs 24!
+
 ==With macros==
 You use macros to embed the generated
 symbol into the function's definition.
