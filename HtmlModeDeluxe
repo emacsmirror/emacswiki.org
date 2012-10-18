@@ -1,7 +1,4 @@
-With the help of mmm-mode (see MultipleModes), psgml-mode (see PsgmlMode), php-mode (see PhpMode) and css-mode (see CascadingStyleSheetMode) can be combined to create a powerful web programming environment. If you got it working correctly, it should look similar to this screenshot:
-
-http://www-users.rwth-aachen.de/g.ohrner/Download/HtmlModeDeluxe.png (broken)
-
+With the help of mmm-mode (see MultipleModes), psgml-mode (see PsgmlMode), php-mode (see PhpMode) and css-mode (see CascadingStyleSheetMode) can be combined to create a powerful web programming environment.
 (All fonts and colours can be adjusted as desired, of course.)
 
 First, you must install all four modes needed. The php-mode I tested so far and which seem to work well are Turadg Aleahmad's 1.0.2 and 1.0.4. As I had several reports during the last few weeks that the current mmm-mode cvs does <em>*NOT*</em> work, I now recomment to first try the version I'm using: http://www-users.rwth-aachen.de/g.ohrner/Download/mmm-mode-older_post0.4.7_cvs.tar.bz2
