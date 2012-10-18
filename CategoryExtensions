@@ -125,6 +125,12 @@ Extensions (using the category name from `finder-by-keyword'), are utility libra
 * XmlRpc -- make asynchronous remote procedure calls over http
 * CorbaImplementation -- CORBA Dynamic Invocation interface using the IIOP protocol
 * SoapClient -- access to SOAP web-services from Emacs
+* UrlPackage -- parse and handle URLs
+
+== Web APIs ==
+
+* [https://github.com/sigma/gh.el gh.el] -- <nowiki>GitHub</nowiki> Api library making use of Eieio
+* [https://github.com/rsanders/github-api-v3.el github-api-v3.el] -- Emacs library for the v3 <nowiki>GitHub</nowiki> API
 
 == Filesystem ==
 
@@ -147,11 +153,6 @@ Extensions (using the category name from `finder-by-keyword'), are utility libra
 == Testing ==
 
 * See UnitTesting
-
-== Web APIs ==
-
-* [https://github.com/sigma/gh.el gh.el] -- <nowiki>GitHub</nowiki> Api library making use of Eieio
-* [https://github.com/rsanders/github-api-v3.el github-api-v3.el] -- Emacs library for the v3 <nowiki>GitHub</nowiki> API
 
 == Miscellaneous ==
 
