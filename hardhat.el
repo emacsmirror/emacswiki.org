@@ -5,8 +5,8 @@
 ;; Author: Roland Walker <walker@pobox.com>
 ;; Homepage: http://github.com/rolandwalker/hardhat
 ;; URL: http://raw.github.com/rolandwalker/hardhat/master/hardhat.el
-;; Version: 0.3.4
-;; Last-Updated: 11 Oct 2012
+;; Version: 0.3.6
+;; Last-Updated: 18 Oct 2012
 ;; EmacsWiki: Hardhat
 ;; Package-Requires: ((ignoramus "0.6.2"))
 ;; Keywords: convenience
@@ -74,9 +74,10 @@
 ;; Notes
 ;;
 ;;     Hardhat-mode takes no action until the user attempts an
-;;     interactive command in a buffer.  This is for compatibility:
-;;     an Emacs Lisp library may freely open and write to a file
-;;     protected by hardhat-mode, so long as it is done programatically.
+;;     interactive command in a buffer.  This is (out of an abundance
+;;     of caution) for compatibility: an Emacs Lisp library may freely
+;;     open and write to a file protected by hardhat-mode, so long as
+;;     it is done programatically.
 ;;
 ;;     For any of the options settable in customize, rules making
 ;;     buffers "editable" override rules making buffers "protected".
@@ -166,6 +167,7 @@
 (defvar hardhat-computed-regexps (make-hash-table :test 'eq)
   "Per-mode cache for regexps computed from defcustom settings.")
 
+;;;###autoload
 (defun hardhat-customize-set-regexp (symbol value)
   "Set function which clears the computed regexp cache.
 
@@ -178,7 +180,7 @@ SYMBOL and VALUE are passed to `custom-set-default'."
 ;;;###autoload
 (defgroup hardhat nil
   "Protect against clobbering user-writable files."
-  :version "0.3.4"
+  :version "0.3.6"
   :link '(emacs-commentary-link "hardhat")
   :prefix "hardhat-"
   :group 'convenience)
@@ -264,13 +266,13 @@ All patterns are case-insensitive."
                                                 "~\\'"
                                                 "\\.lock\\'"
                                                 "\\.ix\\'"
-                                                "\\`test.out\\'"
+                                                "\\`test\\.out\\'"
                                                 "-autoloads\\.el\\'"
-                                                "\\`Desktop.ini\\'"
-                                                "\\`META.yml\\'"
-                                                "\\`MYMETA.yml\\'"
+                                                "\\`Desktop\\.ini\\'"
+                                                "\\`META\\.yml\\'"
+                                                "\\`MYMETA\\.yml\\'"
                                                 "\\`TAGS\\'"
-                                                "\\`Thumbs.db\\'"
+                                                "\\`Thumbs\\.db\\'"
                                                 "\\`\\.dropbox\\'"
                                                 "\\`\\.dropbox\\.cache\\'"
                                                 "\\`\\.emacs\\.desktop\\'"
@@ -301,7 +303,7 @@ All patterns are case-insensitive."
                                                 "~/\\.virtualenv/"
                                                 "~/\\.virthualenv/"
                                                 "~/\\.rvm/"
-                                                "/[\_]build/"
+                                                "/[._]build/"
                                                 "/\\.bzr/"
                                                 "/\\.coverage/"
                                                 "/\\.git/"
@@ -738,6 +740,8 @@ purpose of optimization."
     (let* ((file (file-truename (expand-file-name (buffer-file-name buf))))
            (basename (file-name-nondirectory file))
            (answer nil))
+      (when (fboundp 'ignoramus-compute-common-regexps)
+        (ignoramus-compute-common-regexps))
       (unless (eq 'file-local-variable (cadr hardhat-reasons))
         (setq hardhat-reasons (catch 'hardhat
                                 (dolist (directive hardhat-directives)
