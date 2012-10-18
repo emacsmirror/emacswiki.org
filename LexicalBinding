@@ -1,1 +1,18 @@
-#REDIRECT DynamicBindingVsLexicalBinding
+For a discussion, see DynamicBindingVsLexicalBinding.
+
+Emacs 24 has lexical binding, if you want it. To use it, set `lexical-binding' and evaluate code in the same buffer.
+
+You can have closures in Emacs -- no need for FakeClosures!
+
+{{{
+(setq lexical-binding t)
+(setq test (let ((foo "bar"))
+	     (lambda () 
+	       (message foo))))
+=> (closure ((foo . "bar") t) nil (message foo))
+(funcall test)
+=> "bar"
+}}}
+
+----
+CategoryCode
