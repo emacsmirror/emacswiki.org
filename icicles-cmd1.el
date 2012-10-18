@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Oct  9 15:27:39 2012 (-0700)
+;; Last-Updated: Thu Oct 18 08:21:51 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 24791
+;;     Update #: 24794
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -7715,17 +7715,22 @@ could temporarily set `icicle-file-predicate' to:
                                                                  nil default-directory nil)
                                                default-directory)))
     (icicle-full-cand-fn                `(lambda (file)
-                                          (setq file  (if (file-directory-p file)
-                                                          (file-name-as-directory file)
-                                                        file))
-                                          ,(if (<= (prefix-numeric-value current-prefix-arg) 0)
-                                               '(icicle-make-file+date-candidate file)
-                                               '(list file))))
+                                           (setq file  (if (file-directory-p file)
+                                                           (file-name-as-directory file)
+                                                         file))
+                                           ,(if (and (not icicle-locate-file-use-locate-p)
+                                                     (<= (prefix-numeric-value current-prefix-arg) 0))
+                                                '(icicle-make-file+date-candidate file)
+                                                '(list file))))
     (use-dialog-box                     nil)
-    (icicle-candidate-properties-alist  (and (<= (prefix-numeric-value current-prefix-arg) 0)
+    (icicle-candidate-properties-alist  (and (not icicle-locate-file-use-locate-p)
+                                             (<= (prefix-numeric-value current-prefix-arg) 0)
                                              '((1 (face icicle-candidate-part)))))
-    (icicle-multi-completing-p          (<= (prefix-numeric-value current-prefix-arg) 0))
-    (icicle-list-use-nth-parts          (and (<= (prefix-numeric-value current-prefix-arg) 0)  '(1)))
+    (icicle-multi-completing-p          (and (not icicle-locate-file-use-locate-p)
+                                             (<= (prefix-numeric-value current-prefix-arg) 0)))
+    (icicle-list-use-nth-parts          (and (not icicle-locate-file-use-locate-p)
+                                             (<= (prefix-numeric-value current-prefix-arg) 0)
+                                             '(1)))
     (IGNORED--FOR-SIDE-EFFECT
      (progn (icicle-highlight-lighter)
             (if icicle-locate-file-use-locate-p
@@ -7733,8 +7738,9 @@ could temporarily set `icicle-file-predicate' to:
               (message "Gathering files within `%s' (this could take a while)..."
                        (icicle-propertize dir 'face 'icicle-msg-emphasis)))))
     (icicle-abs-file-candidates
-     (mapcar (lambda (file)             ; FREE here: CURRENT-PREFIX-ARG.
-               (if (<= (prefix-numeric-value current-prefix-arg) 0)
+     (mapcar (lambda (file)                ; FREE here: CURRENT-PREFIX-ARG.
+               (if (and (not icicle-locate-file-use-locate-p)
+                        (<= (prefix-numeric-value current-prefix-arg) 0))
                    (icicle-make-file+date-candidate file)
                  (list file)))
              (if icicle-locate-file-use-locate-p
@@ -7756,8 +7762,7 @@ could temporarily set `icicle-file-predicate' to:
                        (dired-other-window (cons (read-string "Dired buffer name: ")
                                                  (mapcar #'icicle-transform-multi-completion files))))))))
   (progn                                ; First code
-    (when (and (not icicle-locate-file-use-locate-p)
-               (<= (prefix-numeric-value current-prefix-arg) 0))
+    (when (and (not icicle-locate-file-use-locate-p)  (<= (prefix-numeric-value current-prefix-arg) 0))
       (put-text-property 0 1 'icicle-fancy-candidates t prompt))
     (icicle-bind-file-candidate-keys)
     (unless icicle-locate-file-use-locate-p
