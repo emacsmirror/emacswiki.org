@@ -6,7 +6,7 @@ First, you must install all four modes needed.
 There are reports where this doesn't work as intended: indentation is totally screwed and Emacs erros and beeps like I'm using vi.  I fixed the problem by adding the  <code>(let ((vars [...])</code> part from
  [http://groups.google.com/groups?selm=u1xvfuyty.fsf%40noniq.at&output=gplain this Google group].
 
-Other said that the c-mode local variables are evidently something of a moving target. Here's how they made it work by getting all c-mode variables from a php-mode buffer:
+Others said that the c-mode local variables are evidently something of a moving target. Here's how they made it work by getting all c-mode variables from a php-mode buffer:
 
     (defun save-mmm-c-locals ()
       (with-temp-buffer
