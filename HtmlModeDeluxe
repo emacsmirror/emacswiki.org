@@ -1,14 +1,12 @@
 With the help of mmm-mode (see MultipleModes), psgml-mode (see PsgmlMode), php-mode (see PhpMode) and css-mode (see CascadingStyleSheetMode) can be combined to create a powerful web programming environment.
 (All fonts and colours can be adjusted as desired, of course.)
 
-First, you must install all four modes needed. The php-mode I tested so far and which seem to work well are Turadg Aleahmad's 1.0.2 and 1.0.4. As I had several reports during the last few weeks that the current mmm-mode cvs does <em>*NOT*</em> work, I now recomment to first try the version I'm using: http://www-users.rwth-aachen.de/g.ohrner/Download/mmm-mode-older_post0.4.7_cvs.tar.bz2
+First, you must install all four modes needed.
 
-It's an older post-0.4.7 CVS checkout and, regarding indentation in the submodes, it's much better than the 0.4.7 release. (While still not working perfectly, you can however work around some indentation-malfunctions - see below.) If you find a better working combination while experimenting, please tell me or update this page (and tell me anyway <nowiki>;)</nowiki>.
+There are reports where this doesn't work as intended: indentation is totally screwed and Emacs erros and beeps like I'm using vi.  I fixed the problem by adding the  <code>(let ((vars [...])</code> part from
+ [http://groups.google.com/groups?selm=u1xvfuyty.fsf%40noniq.at&output=gplain this Google group].
 
-: This doesn't worked well for me.  Indentation is totally screwed and emacs erros and beeps like I'm using vi.  I fixed the problem by adding the  <code>(let ((vars [...])</code> part from
- http://groups.google.com/groups?selm=u1xvfuyty.fsf%40noniq.at&output=gplain.
-
-:: I followed the advice in that link.  It worked yesterday, but after a cvs update of Emacs today it doesn't work again.  The c-mode local variables are evidently something of a moving target. I made it work by getting all c-mode variables from a php-mode buffer: 
+Other said that the c-mode local variables are evidently something of a moving target. Here's how they made it work by getting all c-mode variables from a php-mode buffer:
 
     (defun save-mmm-c-locals ()
       (with-temp-buffer
@@ -19,10 +17,8 @@ It's an older post-0.4.7 CVS checkout and, regarding indentation in the submodes
 
     (save-mmm-c-locals)
 
-:: This may be a bit indiscriminate, but it seems to work, and it should be reasonably future-proof.  JimOttaway
+== Notes about mmm-mode ==
 
-
-<em>Notes about mmm-mode</em>
 A new version of the mmm-mode <nowiki>(0.4.8)</nowiki> was released recently. Installing this one instead of the 0.4.7 version made the identation work properly! (Debian sid users should be able to download, extract and overwrite the files in /usr/share/emacs/site-lisp/mmm-mode and then do a dpkg-reconfigure mmm-mode to let these files recompile)
 
 The addition of
