@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Oct 17 13:44:38 2012 (-0700)
+;; Last-Updated: Thu Oct 18 14:23:52 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 13444
+;;     Update #: 13458
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1168,7 +1168,7 @@ and `read-file-name-function'."
                  (and ffap-available-p (ffap-guesser))))
               (icicle-proxy-candidates
                (append
-                (and icicle-add-proxy-candidates-flag
+                (and icicle-add-proxy-candidates-flag  (not icicle-exclude-default-proxies)
                      (append (and fap (list "*point file name*"))
                              (and ffap-available-p (list mouse-file))
                              (let ((ipc  ()))
@@ -1496,18 +1496,20 @@ whose value or whose custom type is compatible with type `integer',
     (unwind-protect
          (let ((num  nil)
                (icicle-proxy-candidates
-                (and icicle-add-proxy-candidates-flag
-                     (let ((ipc  ()))
-                       (mapatoms
-                        (lambda (cand)
-                          (when (and (user-variable-p cand)
-                                     (condition-case nil
-                                         (icicle-var-is-of-type-p cand (if (>= emacs-major-version 22)
-                                                                           '(number integer float)
-                                                                         '(number integer)))
-                                       (error nil)))
-                            (push (symbol-name cand) ipc))))
-                       ipc)))
+                (append
+                 (and icicle-add-proxy-candidates-flag  (not icicle-exclude-default-proxies)
+                      (let ((ipc  ()))
+                        (mapatoms
+                         (lambda (cand)
+                           (when (and (user-variable-p cand)
+                                      (condition-case nil
+                                          (icicle-var-is-of-type-p cand (if (>= emacs-major-version 22)
+                                                                            '(number integer float)
+                                                                          '(number integer)))
+                                        (error nil)))
+                             (push (symbol-name cand) ipc))))
+                        ipc))
+                 icicle-proxy-candidates))
 
                ;; Emacs 23 allows DEFAULT to be a list of strings - use the first one for prompt etc.
                (default1  (if (atom default)  default  (setq default  (delq nil default))  (car default))))
@@ -1548,15 +1550,16 @@ whose value is compatible with type `character'."
   (unwind-protect
        (let* ((char  nil)
               (icicle-proxy-candidates
-               (and icicle-add-proxy-candidates-flag
-                    (let ((ipc  ()))
-                      (mapatoms (lambda (cand)
-                                  (when (and (user-variable-p cand)
-                                             (condition-case nil
-                                                 (icicle-var-is-of-type-p cand '(character))
-                                               (error nil)))
-                                    (push (symbol-name cand) ipc))))
-                      ipc)))
+               (append (and icicle-add-proxy-candidates-flag  (not icicle-exclude-default-proxies)
+                            (let ((ipc  ()))
+                              (mapatoms (lambda (cand)
+                                          (when (and (user-variable-p cand)
+                                                     (condition-case nil
+                                                         (icicle-var-is-of-type-p cand '(character))
+                                                       (error nil)))
+                                            (push (symbol-name cand) ipc))))
+                              ipc))
+                       icicle-proxy-candidates))
               str temp)
          (when icicle-proxy-candidates (put-text-property 0 1 'icicle-fancy-candidates t prompt))
          (setq str   (completing-read prompt nil nil nil nil nil nil inherit-input-method)
@@ -1587,15 +1590,17 @@ whose value or whose custom type is compatible with type `string'."
   (unwind-protect
        (let ((strg  nil)
              (icicle-proxy-candidates
-              (and icicle-add-proxy-candidates-flag
-                   (let ((ipc  ()))
-                     (mapatoms (lambda (cand)
-                                 (when (and (user-variable-p cand)
-                                            (condition-case nil
-                                                (icicle-var-is-of-type-p cand '(string color regexp))
-                                              (error nil)))
-                                   (push (symbol-name cand) ipc))))
-                     ipc)))
+              (append
+               (and icicle-add-proxy-candidates-flag  (not icicle-exclude-default-proxies)
+                    (let ((ipc  ()))
+                      (mapatoms (lambda (cand)
+                                  (when (and (user-variable-p cand)
+                                             (condition-case nil
+                                                 (icicle-var-is-of-type-p cand '(string color regexp))
+                                               (error nil)))
+                                    (push (symbol-name cand) ipc))))
+                      ipc))
+               icicle-proxy-candidates))
              ;; Emacs 23 allows DEFAULT to be a list of strings - use the first one for prompt etc.
              (default1  (if (consp default) (car default) default)))
          (when default
@@ -1917,14 +1922,16 @@ candidate `*point face name*' to use the face at point."
                ;; $$$$$$ (icicle-list-end-string             "")
                (icicle-list-use-nth-parts          '(1))
                (icicle-proxy-candidates
-                (and icicle-add-proxy-candidates-flag
-                     (append (and (fboundp 'eyedrop-face-at-point) (list "*point face name*"))
-                             (let ((ipc  ()))
-                               (mapatoms
-                                (lambda (cand)
-                                  (when (and (user-variable-p cand) (eq (get cand 'custom-type) 'face))
-                                    (push `,(concat "'" (symbol-name cand) "'") ipc))))
-                               ipc))))
+                (append
+                 (and icicle-add-proxy-candidates-flag  (not icicle-exclude-default-proxies)
+                      (append (and (fboundp 'eyedrop-face-at-point) (list "*point face name*"))
+                              (let ((ipc  ()))
+                                (mapatoms
+                                 (lambda (cand)
+                                   (when (and (user-variable-p cand) (eq (get cand 'custom-type) 'face))
+                                     (push `,(concat "'" (symbol-name cand) "'") ipc))))
+                                ipc)))
+                 icicle-proxy-candidates))
                face)
            (setq prompt  (copy-sequence prompt)) ; So we can modify it by adding property.
            (put-text-property 0 1 'icicle-fancy-candidates t prompt)
@@ -1958,14 +1965,16 @@ candidate `*point face name*' to use the face at point."
                ;; $$$$$$ (icicle-list-end-string             "")
                (icicle-list-use-nth-parts          '(1))
                (icicle-proxy-candidates
-                (and icicle-add-proxy-candidates-flag
-                     (append (and (fboundp 'eyedrop-face-at-point) (list "*point face name*"))
-                             (let ((ipc ()))
-                               (mapatoms
-                                (lambda (cand)
-                                  (when (and (user-variable-p cand) (eq (get cand 'custom-type) 'face))
-                                    (push `,(concat "'" (symbol-name cand) "'") ipc))))
-                               ipc))))
+                (append
+                 (and icicle-add-proxy-candidates-flag  (not icicle-exclude-default-proxies)
+                      (append (and (fboundp 'eyedrop-face-at-point) (list "*point face name*"))
+                              (let ((ipc ()))
+                                (mapatoms
+                                 (lambda (cand)
+                                   (when (and (user-variable-p cand) (eq (get cand 'custom-type) 'face))
+                                     (push `,(concat "'" (symbol-name cand) "'") ipc))))
+                                ipc)))
+                 icicle-proxy-candidates))
                (face-list  (face-list))
                (def        (icicle-thing-at-point 'symbol))
                face)
@@ -2013,13 +2022,14 @@ choose proxy candidate `*point face name*' to use the face at point."
                (aliasfaces     ())
                (nonaliasfaces  ())
                (icicle-proxy-candidates
-                (and icicle-add-proxy-candidates-flag
-                     (let ((ipc  ()))
-                       (mapatoms
-                        (lambda (cand)
-                          (when (and (user-variable-p cand) (eq (get cand 'custom-type) 'face))
-                            (push `,(concat "'" (symbol-name cand) "'") ipc))))
-                       ipc)))
+                (append (and icicle-add-proxy-candidates-flag  (not icicle-exclude-default-proxies)
+                             (let ((ipc  ()))
+                               (mapatoms
+                                (lambda (cand)
+                                  (when (and (user-variable-p cand) (eq (get cand 'custom-type) 'face))
+                                    (push `,(concat "'" (symbol-name cand) "'") ipc))))
+                               ipc))
+                        icicle-proxy-candidates))
                faces)
            ;; Undo Emacs 22 brain-dead treatment of PROMPT arg.
            (when (save-match-data (string-match ": $" prompt))
@@ -2132,13 +2142,14 @@ choose proxy candidate `*point face name*' to use the face at point."
                (aliasfaces     ())
                (nonaliasfaces  ())
                (icicle-proxy-candidates
-                (and icicle-add-proxy-candidates-flag
-                     (let ((ipc  ()))
-                       (mapatoms
-                        (lambda (cand)
-                          (when (and (user-variable-p cand) (eq (get cand 'custom-type) 'face))
-                            (push `,(concat "'" (symbol-name cand) "'") ipc))))
-                       ipc)))
+                (append (and icicle-add-proxy-candidates-flag  (not icicle-exclude-default-proxies)
+                             (let ((ipc  ()))
+                               (mapatoms
+                                (lambda (cand)
+                                  (when (and (user-variable-p cand) (eq (get cand 'custom-type) 'face))
+                                    (push `,(concat "'" (symbol-name cand) "'") ipc))))
+                               ipc))
+                        icicle-proxy-candidates))
                faces)
            ;; Undo vanilla Emacs brain-dead treatment of PROMPT arg.
            (when (save-match-data (string-match ": $" prompt))
