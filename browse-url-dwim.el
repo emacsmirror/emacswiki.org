@@ -5,8 +5,8 @@
 ;; Author: Roland Walker <walker@pobox.com>
 ;; Homepage: http://github.com/rolandwalker/browse-url-dwim
 ;; URL: http://raw.github.com/rolandwalker/browse-url-dwim/master/browse-url-dwim.el
-;; Version: 0.5.2
-;; Last-Updated: 14 Sep 2012
+;; Version: 0.6.2
+;; Last-Updated: 16 Oct 2012
 ;; EmacsWiki: BrowseUrlDwim
 ;; Keywords: hypermedia
 ;; Package-Requires: ((string-utils "0.0.3"))
@@ -18,11 +18,17 @@
 ;; Quickstart
 ;;
 ;;     (require 'browse-url-dwim)
+;;
 ;;     (browse-url-dwim-mode 1)
+;;
 ;;     place the cursor on a URL
 ;;     press "C-c b"
+;;
 ;;     select some text
 ;;     press "C-c g"
+;;
+;;     ;; to turn off confirmations
+;;     (setq browse-url-dwim-always-confirm-extraction nil)
 ;;
 ;; Explanation
 ;;
@@ -184,7 +190,7 @@
 ;;;###autoload
 (defgroup browse-url-dwim nil
   "Context-sensitive external browse URL or Internet search."
-  :version "0.5.2"
+  :version "0.6.2"
   :link '(emacs-commentary-link "browse-url-dwim")
   :prefix "browse-url-dwim-"
   :group 'external
@@ -410,34 +416,34 @@ colon and slash characters.
 
 The value of `browse-url-dwim-permitted-tlds' is consulted when
 determining whether to add a scheme."
-  (unless (stringp 'add-scheme)
+  (unless (stringp add-scheme)
     (setq add-scheme "http://"))
   ;; stringify and clean up
   (unless (stringp url)
     (setq url (if url (format "%s" url) "")))
   (callf substring-no-properties url)
-  ;; must have non-whitespace
-  (when (not (string-utils-has-darkspace-p url))
-    (setq url nil))
-  ;; add scheme when missing, if text otherwise looks like a URL
-  (when (and url
-             (not (aref (url-generic-parse-url url) 1))
-             (string-match-p (concat "\\`[^/]+\\." (regexp-opt browse-url-dwim-permitted-tlds) "\\(/\\|\\'\\)") url))
-    (callf2 concat add-scheme url))
-  ;; invalid scheme
-  (when (and url
-             (not any-scheme)
-             (not (member (aref (url-generic-parse-url url) 1) browse-url-dwim-permitted-schemes)))
-    (setq url nil))
-  ;; no hostname
-  (when (and url
-             (not (aref (url-generic-parse-url url) 4)))
-    (setq url nil))
-  ;; invalid hostname
-  (when (and url
-             (member (aref (url-generic-parse-url url) 1) browse-url-dwim-host-mandatary-schemes)
-             (not (string-match-p "\\." (aref (url-generic-parse-url url) 4))))
-    (setq url nil))
+  (let ((parsed nil))
+    (setq url
+          (catch 'url
+            ;; must have non-whitespace
+            (when (not (string-utils-has-darkspace-p url))
+              (throw 'url nil))
+            (setq parsed (url-generic-parse-url url))
+            ;; add scheme when missing, if text otherwise looks like a URL
+            (when (and (not (aref parsed 1))
+                       (string-match-p (concat "\\`[^/]+\\." (regexp-opt browse-url-dwim-permitted-tlds) "\\(/\\|\\'\\)") url))
+              (callf2 concat add-scheme url)
+              (setq parsed (url-generic-parse-url url)))
+            ;; invalid scheme
+            (when (and (not any-scheme)
+                       (not (member (aref parsed 1) browse-url-dwim-permitted-schemes)))
+              (throw 'url nil))
+            ;; no hostname or invalid hostname
+            (when (and (member (aref parsed 1) browse-url-dwim-host-mandatary-schemes)
+                       (or (not (aref parsed 4))
+                           (not (string-match-p "\\." (aref parsed 4)))))
+              (throw 'url nil))
+            (throw 'url url))))
   (when url
     (url-normalize-url url)))
 
@@ -472,12 +478,13 @@ behavior, and is constrained narrowly to defined Web protocols
 and popular top-level domains.
 
 If no prospective URL is found, returns nil."
-
+  (require 'thingatpt nil t)
   (let ((thing-at-point-short-url-regexp (concat (if (boundp 'thing-at-point-short-url-regexp)
                                                      thing-at-point-short-url-regexp
                                                    "[-A-Za-z0-9]+\\.[-A-Za-z0-9.]+[^]\t\n\"'<>[^`{}]*[^]\t\n\"'<>[^`{}.,;]+")
                                                  "?\\."
-                                                 (regexp-opt browse-url-dwim-permitted-tlds)))
+                                                 (regexp-opt browse-url-dwim-permitted-tlds)
+                                                 "\\(?:/[^ \t\r\f\n]+\\)?"))
         (case-fold-search t))
     (or (and (use-region-p)
              (browse-url-dwim-coerce-to-web-url (buffer-substring-no-properties (region-beginning) (region-end))))
@@ -509,7 +516,8 @@ a candidate is not found by other means."
               (not extracted-text))
       (callf or extracted-text fallback-default)
       (callf browse-url-dwim-add-prompt-default prompt-string extracted-text)
-      (setq entered-text (read-from-minibuffer prompt-string nil nil nil 'browse-url-history-list)))
+      (setq entered-text (replace-regexp-in-string "[\t\r\n\f]+" " "
+                            (read-from-minibuffer prompt-string nil nil nil 'browse-url-history-list))))
     (if (string-utils-has-darkspace-p entered-text)
         entered-text
       extracted-text)))
@@ -524,6 +532,39 @@ The prompt string is based on `browse-url-dwim-prompt-list'."
                                (string-match-p (car cell) search-url))
                       (throw 'match (cdr cell)))))))
     (or prompt "Internet Search: ")))
+
+(defun browse-url-dwim-find-search-text (&optional search-url guess)
+  "Find some text on which to conduct a search.
+
+Finds a URL or search string from the region, or text near the
+point, or from an interactive prompt.
+
+SEARCH-URL defaults to `browse-url-dwim-search-url'.
+
+If GUESS is non-nil, assume a URL extracted from text is good
+and skip an interactive prompt."
+  (callf or search-url browse-url-dwim-search-url)
+  (let* ((region (when (use-region-p) (buffer-substring-no-properties (region-beginning) (region-end))))
+         (region-url (browse-url-dwim-coerce-to-web-url region))
+         (prompt-string (browse-url-dwim-make-search-prompt search-url))
+         (entered-text "")
+         (text (or region-url region)))
+    (when (stringp text)
+      (callf substring-no-properties text))
+    (when (or (null text)
+              browse-url-dwim-always-confirm-extraction)
+      (callf or text (thing-at-point 'symbol))
+      (callf browse-url-dwim-add-prompt-default prompt-string text)
+      (setq entered-text
+            (if guess
+                (browse-url-dwim-get-url nil (browse-url-dwim-make-search-prompt search-url) text)
+              (read-from-minibuffer prompt-string nil nil nil 'browse-url-history-list))))
+    (when (string-utils-has-darkspace-p entered-text)
+      (setq text entered-text))
+    (when (stringp text)
+      (setq text (replace-regexp-in-string "[\t\r\n\f]+" " " text)))
+    text))
+
 
 ;;; minor mode definition
 
@@ -547,17 +588,19 @@ is 'toggle."
   (cond
    (browse-url-dwim-mode
     (when browse-url-dwim-install-aliases
-      (defalias 'browse 'browse-url-dwim)
-      (defalias 'google 'browse-url-dwim-guess))
+      (unless (eq (symbol-function 'browse) 'osx-browse-url)
+        (defalias 'browse 'browse-url-dwim))
+      (unless (eq (symbol-function 'google) 'osx-browse-guess)
+        (defalias 'google 'browse-url-dwim-guess)))
     (when (and (browse-url-dwim-called-interactively-p 'interactive)
                (not browse-url-dwim-less-feedback))
       (message "browse-url-dwim mode enabled")))
    (t
     (when browse-url-dwim-install-aliases
       (when (eq (symbol-function 'browse) 'browse-url-dwim)
-        (defalias 'browse nil))
+        (fmakunbound 'browse))
       (when (eq (symbol-function 'google) 'browse-url-dwim-guess)
-        (defalias 'google nil)))
+        (fmakunbound 'google)))
     (when (and (browse-url-dwim-called-interactively-p 'interactive)
                (not browse-url-dwim-less-feedback))
       (message "browse-url-dwim mode disabled")))))
@@ -589,28 +632,13 @@ Optional SEARCH-URL specifies the URL fragment used to construct
 the search request.  If not specified, the customizable variable
 `browse-url-dwim-search-url' is used.
 
-If GUESS is non-nil, an attempt will be made to extract a URL from
-the context around the point.  If so, this command is equivalent to
-`browse-url-dwim'."
+If GUESS is non-nil, an attempt will be made to extract a URL
+from the context around the point.  If successful, this command
+is equivalent to `browse-url-dwim'."
   (interactive)
   (callf or search-url browse-url-dwim-search-url)
   (unless text
-    (let* ((region (if (use-region-p) (buffer-substring-no-properties (region-beginning) (region-end))))
-           (region-url (browse-url-dwim-coerce-to-web-url region))
-           (prompt-string (browse-url-dwim-make-search-prompt search-url))
-           (entered-text ""))
-      (setq text (or region-url region))
-      (when (or (null text)
-                browse-url-dwim-always-confirm-extraction)
-        (callf or text (thing-at-point 'symbol))
-        (when (stringp text)
-          (callf substring-no-properties text))
-        (callf browse-url-dwim-add-prompt-default prompt-string text)
-        (if guess
-            (setq entered-text (browse-url-dwim-get-url nil (browse-url-dwim-make-search-prompt browse-url-dwim-search-url) text))
-          (setq entered-text (read-from-minibuffer prompt-string nil nil nil 'browse-url-history-list))))
-      (when (string-utils-has-darkspace-p entered-text)
-        (setq text entered-text))))
+    (setq text (browse-url-dwim-find-search-text search-url guess)))
   (cond
     ((not (string-utils-has-darkspace-p text))
      (error "No valid query or URL"))
