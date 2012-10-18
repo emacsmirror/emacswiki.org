@@ -5,8 +5,8 @@
 ;; Author: Roland Walker <walker@pobox.com>
 ;; Homepage: http://github.com/rolandwalker/ignoramus
 ;; URL: http://raw.github.com/rolandwalker/ignoramus/master/ignoramus.el
-;; Version: 0.6.2
-;; Last-Updated: 11 Oct 2012
+;; Version: 0.6.4
+;; Last-Updated: 18 Oct 2012
 ;; EmacsWiki: Ignoramus
 ;; Keywords: convenience, tools
 ;;
@@ -155,11 +155,11 @@
 ;; for callf
 (require 'cl)
 
-(declare-function dired-omit-mode "dired-x.el")
-(declare-function file-equal-p    "files.el")
+(autoload 'dired-omit-mode "dired-x" "Toggle omission of uninteresting files in Dired (Dired-Omit mode)." t)
+
+;;; declarations
 
 (eval-when-compile
-  ;; declarations for byte compiler
   (defvar dired-garbage-files-regexp)
   (defvar dired-omit-extensions)
   (defvar dired-omit-files)
@@ -246,6 +246,18 @@ A prefix is a leading absolute path component plus leading fragment of basename.
 
 A directory prefix is a leading absolute path component.")
 
+(defvar ignoramus-datafile-computed-basenames nil
+  "A computed value based on `ignoramus-datafile-basename'.")
+
+(defvar ignoramus-datafile-computed-completepaths nil
+  "A computed value based on `ignoramus-datafile-completepath'.")
+
+(defvar ignoramus-datafile-computed-prefixes nil
+  "A computed value based on `ignoramus-datafile-prefix'.")
+
+(defvar ignoramus-datafile-computed-dirprefixes nil
+  "A computed value based on `ignoramus-datafile-dirprefix'.")
+
 ;;; customizable variables
 
 ;;;###autoload
@@ -259,7 +271,7 @@ A directory prefix is a leading absolute path component.")
 ;;;###autoload
 (defgroup ignoramus nil
   "Ignore backups, build files, et al."
-  :version "0.6.2"
+  :version "0.6.4"
   :link '(emacs-commentary-link "ignoramus")
   :prefix "ignoramus-"
   :group 'tools
@@ -648,21 +660,6 @@ fully-qualified pathname."
   :type '(repeat regexp)
   :group 'ignoramus-patterns)
 
-;;; compatibility functions
-(unless (fboundp 'file-equal-p)
-  ;; added in GNU Emacs 24.x
-  (defun file-equal-p (file1 file2)
-    "Return non-nil if files FILE1 and FILE2 name the same file.
-If FILE1 or FILE2 does not exist, the return value is unspecified."
-    (let ((handler (or (find-file-name-handler file1 'file-equal-p)
-                       (find-file-name-handler file2 'file-equal-p))))
-      (if handler
-          (funcall handler 'file-equal-p file1 file2)
-        (let (f1-attr f2-attr)
-          (and (setq f1-attr (file-attributes (file-truename file1)))
-               (setq f2-attr (file-attributes (file-truename file2)))
-               (equal f1-attr f2-attr)))))))
-
 ;;; utility functions
 
 ;; generic functions
@@ -674,9 +671,7 @@ Also identify bogons."
   (or (not (string-match-p "[^ ]" str-val))
       (string-match-p "\\`/*\\'" str-val)
       (string-match-p "\\`~/*\\'" str-val)
-      (string-match-p (downcase (concat "\\`" (expand-file-name "~") "/*\\'")) (downcase str-val))
-      (file-equal-p "~/" (file-name-as-directory str-val))
-      (file-equal-p "/" (file-name-as-directory str-val))))
+      (string-match-p (downcase (concat "\\`" (expand-file-name "~") "/*\\'")) (downcase str-val))))
 
 (defun ignoramus--string-or-symbol (str-or-sym)
   "Return the string for STR-OR-SYM."
@@ -715,9 +710,8 @@ Also identify bogons."
 
 (defun ignoramus--extract-pathstrings (arg)
   "Return a list of path strings which may be contained in or referred to in ARG."
-  (mapcar 'file-truename
-      (mapcar 'expand-file-name
-         (ignoramus--extract-strings arg))))
+  (mapcar 'expand-file-name
+          (ignoramus--extract-strings arg)))
 
 (defun ignoramus-strip-trailing-slash (path)
   "Remove any trailing slashes from directory string PATH.
@@ -764,7 +758,12 @@ character for that system."
     (push (concat "\\`" (regexp-opt ignoramus-file-basename-beginnings))
           ignoramus-boring-file-regexp))
   (when ignoramus-boring-file-regexp
-    (setq ignoramus-boring-file-regexp (mapconcat 'identity ignoramus-boring-file-regexp "\\|"))))
+    (setq ignoramus-boring-file-regexp (mapconcat 'identity ignoramus-boring-file-regexp "\\|")))
+  (setq ignoramus-datafile-computed-basenames (ignoramus--extract-strings ignoramus-datafile-basename))
+  (setq ignoramus-datafile-computed-completepaths (ignoramus--extract-pathstrings ignoramus-datafile-completepath))
+  (setq ignoramus-datafile-computed-prefixes (ignoramus--extract-pathstrings ignoramus-datafile-prefix))
+  (setq ignoramus-datafile-computed-dirprefixes (mapcar 'ignoramus-ensure-trailing-slash
+                                                        (ignoramus--extract-pathstrings ignoramus-datafile-dirprefix))))
 
 
 ;;; configuration action plugins
@@ -878,25 +877,32 @@ character for that system."
   "Return non-nil if FILE is used for data storage by a known Lisp library.
 
 This function identifies specific files used for persistence by
-tramp, semantic, woman, etc."
+tramp, semantic, woman, etc.
+
+If a Lisp library is loaded after ignoramus, its files may not
+be recognized, in which case `ignoramus-compute-common-regexps'
+maybe called."
   (when (stringp file)
-    (setq file (file-truename (expand-file-name file)))
-    (let ((file-basename (file-name-nondirectory file))
-          (case-convert (if ignoramus-case-insensitive 'downcase 'identity)))
+    (unless ignoramus-boring-file-regexp
+      (ignoramus-compute-common-regexps))
+    (setq file (expand-file-name file))
+    (let* ((file-basename (file-name-nondirectory file))
+           (case-convert (if ignoramus-case-insensitive 'downcase 'identity))
+           (converted-file (funcall case-convert file))
+           (converted-file-basename (funcall case-convert file-basename)))
       (catch 'known
-        (dolist (basename (ignoramus--extract-strings ignoramus-datafile-basename))
-          (when (equal (funcall case-convert basename) (funcall case-convert file-basename))
+        (dolist (basename ignoramus-datafile-computed-basenames)
+          (when (equal (funcall case-convert basename) converted-file-basename)
             (throw 'known (list file 'basename basename file-basename))))
-        (dolist (completepath (ignoramus--extract-pathstrings ignoramus-datafile-completepath))
-          (when (or (file-equal-p completepath file)
-                    (equal (funcall case-convert completepath) (funcall case-convert file)))
+        (dolist (completepath ignoramus-datafile-computed-completepaths)
+          (when (equal (funcall case-convert completepath) converted-file)
             (throw 'known (list file 'completepath completepath file))))
-        (dolist (prefix (ignoramus--extract-pathstrings ignoramus-datafile-prefix))
-          (when (string-prefix-p (file-truename (expand-file-name prefix)) file ignoramus-case-insensitive)
-            (throw 'known (list file 'prefix (file-truename (expand-file-name prefix)) file))))
-        (dolist (dirprefix (ignoramus--extract-pathstrings ignoramus-datafile-dirprefix))
-          (when (string-prefix-p (ignoramus-ensure-trailing-slash (file-truename (expand-file-name dirprefix))) file ignoramus-case-insensitive)
-            (throw 'known (list file 'dirprefix (ignoramus-ensure-trailing-slash (file-truename (expand-file-name dirprefix))) file))))))))
+        (dolist (prefix ignoramus-datafile-computed-prefixes)
+          (when (string-prefix-p prefix file ignoramus-case-insensitive)
+            (throw 'known (list file 'prefix (expand-file-name prefix) file))))
+        (dolist (dirprefix ignoramus-datafile-computed-dirprefixes)
+          (when (string-prefix-p dirprefix file ignoramus-case-insensitive)
+            (throw 'known (list file 'dirprefix dirprefix file))))))))
 
 ;;;###autoload
 (defun ignoramus-register-datafile (symbol-or-string type &optional unregister)
@@ -918,7 +924,8 @@ SYMBOL-OR-STRING."
     (if unregister
         (set sym (delete symbol-or-string (symbol-value sym)))
       ;; else
-      (push symbol-or-string (symbol-value sym)))))
+      (push symbol-or-string (symbol-value sym))))
+  (ignoramus-compute-common-regexps))
 
 ;;;###autoload
 (defun ignoramus-boring-p (file)
