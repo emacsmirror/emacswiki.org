@@ -8,7 +8,7 @@
 * <b>Author </b> --  Matthew L. Fidler
 * <b>Maintainer </b> --  Matthew L. Fidler
 * <b>Created </b> --  Wed Oct 20 15:08:50 2010 (-0500)
-* <b>Version </b> --  0.16
+* <b>Version </b> --  0.17
 * <b>Last-Updated </b> --  Fri Jun 29 12:22:42 2012 (-0500)
 * <b>By </b> --  Matthew L. Fidler
 * <b>Update # </b> --  1747
@@ -25,11 +25,206 @@ importing (like text-mode).
 == Functions ==
 === Interactive Functions ===
 
+==== textmate-import-bundle ====
+=(textmate-import-bundle DIR PARENT-MODES &optional ORIGINAL-AUTHOR
+YAS-DIR MODE TRANSFORM-FUNCTION)=
+
+Imports textmate bundle to new-dir.  Mode may be a string or a function determining which mode to place files in...
+
+==== textmate-import-git-tar.gz ====
+<tt>(textmate-import-git-tar\.gz FILE PARENT-MODES)</tt>
+
+* Imports a !TextMate git-hub bundle.
+
+==== textmate-import-svn-from-url ====
+<tt>(textmate-import-svn-from-url)</tt>
+
+* Imports a textmate bundle and extracts snippets from <tt>textmate-import-svn-url</tt>
+
+==== yas-editing-field-num-p ====
+<tt>(yas-editing-field-num-p &optional ARG)</tt>
+
+Which field is active?
+
 === Internal Functions ===
+
+==== textmate-get-group ====
+<tt>(textmate-get-group UUID PLIST)</tt>
+
+* Gets group from textmate info.plist file
+
+==== textmate-import-add-to-alist ====
+<tt>(textmate-import-add-to-alist ALIST-VAR ELT-CONS &optional NO-REPLACE)</tt>
+
+Add to the value of ALIST-VAR an element ELT-CONS if it isn't there yet.
+If an element with the same car as the car of ELT-CONS is already present,
+replace it with ELT-CONS unless NO-REPLACE is non-nil; if a matching
+element is not already present, add ELT-CONS to the front of the alist.
+The test for presence of the car of ELT-CONS is done with <tt>equal</tt>.
+
+==== textmate-import-convert-template ====
+<tt>(textmate-import-convert-template TEMPLATE)</tt>
+
+* Converts template to Yasnippet template
+
+==== textmate-import-convert-template-t ====
+<tt>(textmate-import-convert-template-t BEGIN-TEXT MAX)</tt>
+
+* Subroutine to convert regular expressions to (yas---t expressions)
+
+==== textmate-import-convert-to-xml ====
+<tt>(textmate-import-convert-to-xml FILE)</tt>
+
+Converts a binary plist to XML
+
+==== textmate-import-current-buffer ====
+=(textmate-import-current-buffer NEW-DIR &optional PLIST BUFFER-NAME
+ORIGINAL-AUTHOR MODE-STRING-OR-FUNCTION TRANSFORM-FUNCTION
+PARENT-MODES EXT)=
+
+* Changes Textmate (current buffer) plist to yas snippet.
+
+==== textmate-import-drag-and-drop ====
+<tt>(textmate-import-drag-and-drop URI &rest IGNORE)</tt>
+
+* Drag and drop interface to import files.
+
+==== textmate-import-file ====
+=(textmate-import-file FILE NEW-DIR &optional MODE ORIGINAL-AUTHOR
+PLIST TRANSFORM-FUNCTION PARENT-MODES)=
+
+* Imports textmate file
+
+==== textmate-import-get-property ====
+<tt>(textmate-import-get-property NAME START STOP)</tt>
+
+* Get property from plist
+
+==== textmate-import-guess-mode ====
+<tt>(textmate-import-guess-mode SCOPE-O &optional SNIPPET-Q)</tt>
+
+* Guesses mode based on Textmate scope.
+
+==== textmate-import-guess-possiblities ====
+<tt>(textmate-import-guess-possiblities P-QUOTE MATCH-STRING)</tt>
+
+* Guesses possible modes...
+
+==== textmate-import-rmate ====
+<tt>(textmate-import-rmate DIR &optional NEW-DIR)</tt>
+
+* Example Function for importing Rmate into Yasnippet
+
+==== textmate-import-snippets-supported ====
+<tt>(textmate-import-snippets-supported TEXTMATE-URL)</tt>
+
+Check to see if snippets are supported
+
+==== textmate-import-stata ====
+<tt>(textmate-import-stata DIR &optional NEW-DIR)</tt>
+
+== Example function for importing Sata snippets into Yasnippet ==
+
+==== textmate-import-svn-get-pkgs ====
+<tt>(textmate-import-svn-get-pkgs)</tt>
+
+* Gets textmate bundles from svn
+
+==== textmate-import-svn-snippets ====
+<tt>(textmate-import-svn-snippets SNIPPET-URL PLIST TEXTMATE-NAME)</tt>
+
+== Imports snippets based on textmate svn tree. ==
+
+==== textmate-regexp-to-emacs-regexp ====
+<tt>(textmate-regexp-to-emacs-regexp REXP)</tt>
+
+* Convert a textmate regular expression to an emacs regular expression (as much as possible)
+
+==== textmate-yas-menu ====
+<tt>(textmate-yas-menu PLIST &optional MODE-NAME)</tt>
+
+* Builds <tt>yas-define-menu</tt>from info.plist file
+
+==== textmate-yas-menu-get-items ====
+<tt>(textmate-yas-menu-get-items TXT)</tt>
+
+Gets items from TXT and puts them into a list
+
+==== yas---t/ ====
+<tt>(yas---t/ TEXTMATE-REG TEXTMATE-REP &optional TEXTMATE-OPTION T-TEXT)</tt>
+
+* Textmate like mirror.  Uses textmate regular expression and textmate formatting.
+
+==== yas-format-match-?-buf ====
+=(yas-format-match-\?-buf TEXT &optional STRING EMPTY-MISSING
+START-POINT STOP-POINT)=
+
+* Recursive call to temporary buffer to replace conditional formats.
+
+==== yas-getenv ====
+<tt>(yas-getenv VAR)</tt>
+
+* Gets environment variable or customized variable for Textmate->Yasnippet conversion
+
+==== yas-replace-match ====
+=(yas-replace-match TEXT &optional STRING
+TREAT-EMPTY-MATCHES-AS-MISSING-MATCHES SUBEXP)=
+
+* yas-replace-match is similar to emacs replace-match but using Textmate formats
+
+==== yas-text-on-moving-away ====
+<tt>(yas-text-on-moving-away DEFAULT-TEXT)</tt>
+
+* Changes text when moving away AND original text has not changed
 == Variables ==
 === Customizable Variables ===
 
+==== textmate-default-key-prefix ====
+When importing key codes, this prefix is used as well.
+
+For example if a Textmate snippet specifies a key of Meta-A, the emacs key specified is
+<tt>textmate-default-key-prefix</tt> added to the detected key.  With the default C-c C-y, this
+becomes:
+
+C-c C-y M-a
+
+==== textmate-import-convert-known-expressions ====
+Known Textmate Expressions
+
+==== textmate-import-key-bindings ====
+Import key bindings into the snippets.
+
+==== textmate-import-plutil.pl ====
+plutil.pl path to deal with binary plists.
+
+==== textmate-key-to-emacs-key-known ====
+Textmate Key to Emacs Key
+
+==== textmate-regexp-emacs-unsupported ====
+Emacs Unsupported Regular Expression
+
+==== textmate-regexp-to-emacs-regexp-known ====
+Known Textmate to Emacs regular expression translations.
+
+==== textmate-use-define-menu ====
+* Use <tt>yas/define-menu</tt> or <tt>yas-define-menu</tt> (0.8+) instead of placing the menu choice in the group tag.
+
 === Internal Variables ===
+
+==== textmate-import-backward ====
+textmate-import use backward compatability?
+
+==== textmate-import-convert-env-lst ====
+List to convert Textmate Environmental variables to customizable fields.
+
+==== textmate-import-saved-guesses ====
+Saved guesses for textmate import
+
+==== textmate-import-svn-pkgs-cache ====
+* Cached list of Textmate svn bundles
+
+==== textmate-import-svn-url ====
+* Url for Textmate svn
 
 ==== textmate-to-yas-backward-compatability ====
 Yasnippet backward compatability functions used in textmate-to-yas.el
@@ -58,10 +253,17 @@ Value: ((yas/expand-snippet yas-expand-snippet)
 (yas/after-exit-snippet-hook yas-after-exit-snippet-hook))
 
 
+
+==== textmate-yas-known-uuid ====
+Known UUIDs for current import.
+
+==== yas---t-lst ====
+Variable for expanding textmate transformations with Yasnippet
 == History ==
 
-* <b>18-Sep-2012 </b> --   Backward compatibility update. ()
-* <b>12-Sep-2012 </b> --   First attempt to support 0.8x. Currently untested. ()
+* <b>18-Oct-2012 </b> --   Bug fix for yasnippet backward compatibility. (Matthew L. Fidler)
+* <b>18-Sep-2012 </b> --   Backward compatibility update. (Matthew L. Fidler)
+* <b>12-Sep-2012 </b> --   First attempt to support 0.8x. Currently untested. (Matthew L. Fidler)
 * <b>29-Jun-2012 </b> --   Should convert binary plists with either perl and plutil.pl or Mac OSX and plutil (Matthew L. Fidler)
 * <b>29-Jun-2012 </b> --   Will not import Textmate snippets that cannot be translated to emacs regular expressions. (Matthew L. Fidler)
 * <b>29-Jun-2012 </b> --   Added yas/define-menu support. Should fix issue #2 (Matthew L. Fidler)
@@ -86,15 +288,9 @@ Value: ((yas/expand-snippet yas-expand-snippet)
 * <b>06-Nov-2010 </b> --   Handle nested conditional replacements. For example (?3:one:(?2:two:none)) (Matthew L. Fidler)
 * <b>05-Nov-2010 </b> --   Textmate import file handles errors gracefully. (Matthew L. Fidler)
 * <b>05-Nov-2010 </b> --   Added better textmate support by providing translations for mirrors. Requires the directive # type: command available in the SVN version of yasnippet.  (Matthew L. Fidler)
-05-Nov-2010
-Last-Updated: Fri Nov  5 09:59:30 2010 (-0500) #898 (US041375)
-Changed textmate-replace-in-string with replace-regexp-in-string
-04-Nov-2010
-Last-Updated: Thu Nov  4 12:38:32 2010 (-0500) #535 (us041375)
-Changed extension from .yasnippet to what the package is in a svn-import.
-04-Nov-2010
-Last-Updated: Thu Nov  4 10:55:27 2010 (-0500) #525 (us041375)
-replace-in-string changed to textmate-replace-in-string.  May be missing on some systems.
+* <b>05-Nov-2010 </b> --   Changed textmate-replace-in-string with replace-regexp-in-string (US041375)
+* <b>04-Nov-2010 </b> --   Changed extension from .yasnippet to what the package is in a svn-import. (us041375)
+* <b>04-Nov-2010 </b> --   replace-in-string changed to textmate-replace-in-string. May be missing on some systems. (us041375)
 * <b>01-Nov-2010 </b> --   Bug fix for expand-env (Matthew L. Fidler)
 * <b>01-Nov-2010 </b> --   Added more supported tags. (Matthew L. Fidler)
 * <b>01-Nov-2010 </b> --   Took out #scope pseudo-directive. (Matthew L. Fidler)
