@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Oct 18 14:01:56 2012 (-0700)
+;; Last-Updated: Thu Oct 18 17:04:19 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 24802
+;;     Update #: 24828
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -5253,9 +5253,9 @@ You are prompted for the FILES."
 ;;;###autoload (autoload 'icicle-bookmark-w3m-other-window "icicles")
 (icicle-define-bookmark-other-window-command "w3m")                           ; `C-x 4 j w'
 ;;;###autoload (autoload 'icicle-bookmark-temporary "icicles")
-(icicle-define-bookmark-command              "temporary") ; `C-x j x'
+(icicle-define-bookmark-command              "temporary")                     ; `C-x j x'
 ;;;###autoload (autoload 'icicle-bookmark-temporary-other-window "icicles")
-(icicle-define-bookmark-other-window-command "temporary") ; `C-x 4 j x'
+(icicle-define-bookmark-other-window-command "temporary")                     ; `C-x 4 j x'
 
 ;; Other-window means nothing for a bookmark file.
 ;;;###autoload (autoload 'icicle-bookmark-bookmark-file "icicles")
@@ -5543,7 +5543,7 @@ Either LINE or POSITION can be nil.  POSITION is used if present."
   "Go to the final tag choice."
   (let ((cand  (cdr icicle-explore-final-choice-full)))
     (unless cand (error "No such occurrence: %s" cand))
-    (switch-to-buffer-other-window ; Go to source file at FILE-PATH.
+    (switch-to-buffer-other-window      ; Go to source file at FILE-PATH.
      (if (fboundp 'tag-find-file-of-tag-noselect)
          (tag-find-file-of-tag-noselect (nth 1 cand))
        (find-file-noselect (nth 1 cand))))
@@ -5652,7 +5652,7 @@ names that differ only by their [NUMBER] is arbitrary."
 
 ;;;###autoload (autoload 'icicle-select-window "icicles")
 (icicle-define-command icicle-select-window ; Command name
-;; Free vars here: `icicle-window-alist' is bound in Bindings form.
+  ;; Free vars here: `icicle-window-alist' is bound in Bindings form.
   "Select window by its name.
 With no prefix arg, candidate windows are those of the selected frame.
 With a prefix arg, windows of all visible frames are candidates.
@@ -6049,6 +6049,7 @@ Used as the value of `icicle-buffer-complete-fn' and hence as
       (try-completion                   ; `try-completion'
        strg (mapcar #'list bufs) (and pred  (lambda (ss) (funcall pred ss)))))))
 
+
 (put 'icicle-buffer-no-search 'icicle-Completions-window-max-height 200)
 
 ;;;###autoload (autoload 'icicle-buffer-no-search "icicles")
@@ -6402,8 +6403,10 @@ available from http://www.emacswiki.org/cgi-bin/wiki.pl?ColorTheme." ; Doc strin
                                        color-themes))))
   (color-theme-snapshot))               ; Undo code
 
+
 ;; Make delete-selection mode recognize yanking, so it replaces region text.
 (put 'icicle-yank-pop-commands 'delete-selection 'yank)
+
 (defun icicle-yank-pop-commands (&optional arg) ; Bound to `M-y'.
   "`yank-pop', `yank-pop-secondary', or `icicle-completing-yank'.
 Which of these is used depends on the previous command, as follows:
@@ -6675,7 +6678,7 @@ During completion (`*' means this requires library `Bookmark+'):
 
 ;;;###autoload (autoload 'icicle-dired-other-window "icicles")
 (icicle-define-file-command icicle-dired-other-window
-  "Same as `icicle-dired', except uses another window."                           ; Doc string
+  "Same as `icicle-dired', except uses another window." ; Doc string
   (lambda (dir) (dired-other-window dir switches)) ; FREE here: SWITCHES.
   "Dired in other window (directory): " nil default-directory nil nil nil ; `read-file-name' args
   (icicle-file-bindings                 ; Bindings
@@ -7446,7 +7449,7 @@ Ido-like behavior."                     ; Doc string
             (when (fboundp 'recentf-mode) (recentf-mode 99))
             (unless (consp recentf-list)
               (error "No recently accessed files"))
-            (mapcar (lambda (file)    ; FREE here: CURRENT-PREFIX-ARG.
+            (mapcar (lambda (file)      ; FREE here: CURRENT-PREFIX-ARG.
                       (if current-prefix-arg (icicle-make-file+date-candidate file) (list file)))
                     recentf-list)))
     (icicle-candidate-alt-action-fn         'icicle-remove-from-recentf-candidate-action)
@@ -7501,14 +7504,23 @@ Non-nil means `icicle-locate-file-1' uses external command `locate'.")
 
 ;;;###autoload (autoload 'icicle-locate-file "icicles")
 (defun icicle-locate-file ()
-  "Visit a file within a directory or its subdirectories.
-With a non-negative (>= 0) prefix argument, you are prompted for the
-directory.  Otherwise, the current directory is used.
+  "Visit a file within one or more directories or their subdirectories.
+A prefix argument determines the behavior, as follows:
 
-With a non-positive (<= 0) prefix argument, you can choose also by
-date: Completion candidates include the last modification date.
+* None: The default (i.e., current) directory is used.
 
-The absolute names of all files within the directory and all of its
+* Plain (`C-u'): You are prompted for the directories, using
+  multi-command `icicle-directory-list'.
+
+* Non-negative (>= 0): You are prompted for the directory.
+
+* Non-positive (<= 0): You can choose files also by date: A completion
+  candidate includes the last modification date of the file.
+
+* Double plain (`C-u C-u'): You are prompted for the directories and
+  candidates include last-modification dates.
+
+The absolute names of all files within a directory and all of its
 subdirectories are targets for completion.  Regexp input is matched
 against all parts of the absolute name, not just the file-name part.
 
@@ -7708,14 +7720,20 @@ could temporarily set `icicle-file-predicate' to:
   nil 'file-name-history nil nil
   (icicle-file-bindings                 ; Bindings
    ((prompt                             "File (absolute): ")
-    (dir                                (and (not icicle-locate-file-use-locate-p)
-                                             (if (and current-prefix-arg
-                                                      (wholenump (prefix-numeric-value current-prefix-arg)))
-                                                 (read-file-name "Locate under which directory: "
-                                                                 nil default-directory nil)
-                                               default-directory)))
-    (icicle-full-cand-fn                (if (and (not icicle-locate-file-use-locate-p)
-                                                 (<= (prefix-numeric-value current-prefix-arg) 0))
+    (dirs                               (and (not icicle-locate-file-use-locate-p)
+                                             (cond ((and current-prefix-arg  (consp current-prefix-arg))
+                                                    (icicle-directory-list))
+                                                   ((and current-prefix-arg
+                                                         (wholenump (prefix-numeric-value current-prefix-arg)))
+                                                    (read-file-name "Locate under which directory: "
+                                                                    nil default-directory nil))
+                                                   (t  default-directory))))
+    (icicle-multi-completing-p          (and (not icicle-locate-file-use-locate-p)
+                                             ;; FREE here: CURRENT-PREFIX-ARG.
+                                             (or (<= (prefix-numeric-value current-prefix-arg) 0)
+                                                 (and current-prefix-arg  (consp current-prefix-arg)
+                                                      (= (car current-prefix-arg) 16)))))
+    (icicle-full-cand-fn                (if icicle-multi-completing-p
                                             (lambda (file)
                                               (setq file  (if (file-directory-p file)
                                                               (file-name-as-directory file)
@@ -7727,25 +7745,18 @@ could temporarily set `icicle-file-predicate' to:
                                                           file))
                                             (list file))))
     (use-dialog-box                     nil)
-    (icicle-candidate-properties-alist  (and (not icicle-locate-file-use-locate-p)
-                                             (<= (prefix-numeric-value current-prefix-arg) 0)
-                                             '((1 (face icicle-candidate-part)))))
-    (icicle-multi-completing-p          (and (not icicle-locate-file-use-locate-p)
-                                             (<= (prefix-numeric-value current-prefix-arg) 0)))
-    (icicle-list-use-nth-parts          (and (not icicle-locate-file-use-locate-p)
-                                             (<= (prefix-numeric-value current-prefix-arg) 0)
-                                             '(1)))
+    (icicle-candidate-properties-alist  (and icicle-multi-completing-p  '((1 (face icicle-candidate-part)))))
+    (icicle-list-use-nth-parts          (and icicle-multi-completing-p  '(1)))
     (IGNORED--FOR-SIDE-EFFECT
      (progn (icicle-highlight-lighter)
             (if icicle-locate-file-use-locate-p
                 (require 'locate)       ; Hard-require: error if not there.
-              (message "Gathering files within `%s' (this could take a while)..."
-                       (icicle-propertize dir 'face 'icicle-msg-emphasis)))))
+              (message "Gathering files %s (this could take a while)..."
+                       (if (or (symbolp dirs)  (consp dirs))
+                           (format "in `%s'" (icicle-propertize dirs 'face 'icicle-msg-emphasis))
+                         (format "within `%s'" (icicle-propertize dirs 'face 'icicle-msg-emphasis)))))))
     (icicle-abs-file-candidates
-     (mapcar (if (and (not icicle-locate-file-use-locate-p)
-                      (<= (prefix-numeric-value current-prefix-arg) 0)) ; FREE here: CURRENT-PREFIX-ARG.
-                 #'icicle-make-file+date-candidate
-               #'list)
+     (mapcar (if icicle-multi-completing-p #'icicle-make-file+date-candidate #'list)
              (if icicle-locate-file-use-locate-p
                  (let* ((locate-buffer-name  " *Icicles Locate*")
                         (temp-locate-buffer  (get-buffer-create locate-buffer-name)))
@@ -7758,15 +7769,22 @@ could temporarily set `icicle-file-predicate' to:
                              (lambda () (push (dired-get-filename nil t) cands))) ; FREE here: CANDS.
                             (nreverse cands)))
                      (kill-buffer temp-locate-buffer)))
-               (icicle-files-within (directory-files dir 'full icicle-re-no-dot)
-                                    nil icicle-locate-file-no-symlinks-p))))
+               (if (not (or (symbolp dirs)  (consp dirs)))
+                   (icicle-files-within (directory-files dirs 'full icicle-re-no-dot)
+                                        nil icicle-locate-file-no-symlinks-p)
+                 (apply #'append
+                        (mapcar (if icicle-locate-file-no-symlinks-p
+                                    (lambda (dir) 
+                                      (icicle-remove-if #'file-symlink-p
+                                                        (directory-files dir 'full icicle-re-no-dot 'NOSORT)))
+                                  (lambda (dir) (directory-files dir 'full icicle-re-no-dot 'NOSORT)))
+                                dirs))))))
     (icicle-all-candidates-list-alt-action-fn ; M-|'
      (lambda (files) (let ((enable-recursive-minibuffers  t))
                        (dired-other-window (cons (read-string "Dired buffer name: ")
                                                  (mapcar #'icicle-transform-multi-completion files))))))))
   (progn                                ; First code
-    (when (and (not icicle-locate-file-use-locate-p)  (<= (prefix-numeric-value current-prefix-arg) 0))
-      (put-text-property 0 1 'icicle-fancy-candidates t prompt))
+    (when icicle-multi-completing-p (put-text-property 0 1 'icicle-fancy-candidates t prompt))
     (icicle-bind-file-candidate-keys)
     (unless icicle-locate-file-use-locate-p
       (define-key minibuffer-local-completion-map "\C-c\C-d" 'icicle-cd-for-loc-files)
@@ -7795,7 +7813,7 @@ Optional arg NO-SYMLINKS-P non-nil means do not follow symbolic links."
                       (and (member cd-path '(nil ("./")))  (null (getenv "CDPATH"))))))))
   (cd dir)
   (let ((icicle-abs-file-candidates
-         (mapcar (lambda (file)       ; FREE here: ICICLE-LIST-USE-NTH-PARTS.
+         (mapcar (lambda (file)         ; FREE here: ICICLE-LIST-USE-NTH-PARTS.
                    (if icicle-multi-completing-p (icicle-make-file+date-candidate file) (list file)))
                  (icicle-files-within (directory-files dir 'full icicle-re-no-dot) nil no-symlinks-p))))
     (setq minibuffer-completion-table
@@ -8404,6 +8422,24 @@ and a final-choice key (e.g. `RET', `mouse-2') to choose the last one.
 You can navigate the directory tree, picking directories anywhere in
 the tree.
 
+If `icicle-add-proxy-candidates-flag' is non-nil, then certain Emacs
+variables whose values are lists of directories are available as proxy
+candidates.  This includes variables such as `load-path' and
+`exec-path'.  You can toggle `icicle-add-proxy-candidates-flag' using
+`\\<minibuffer-local-completion-map>\
+\\[icicle-toggle-proxy-candidates]'in the minibuffer.
+
+When you choose a proxy candidate all of its directories are added to
+the result list.  Non-directory elements in the variable value are
+ignored - only string elements are retained.  And none of the string
+elements are checked to see whether they actually correspond to an
+existing directory.
+
+Keep in mind that only those proxy candidates that match your current
+input are available.  In particular, if `insert-default-directory' is
+non-nil then you will want to use `M-k' to remove the default
+directory from the minibuffer when you want to match proxy candidates.
+
 During completion (`*' means this requires library `Bookmark+'):
 
  *You can use `C-x a +' or `C-x a -' to add or remove tags from the
@@ -8427,7 +8463,11 @@ option `icicle-require-match-flag'.
 Option `icicle-files-ido-like' non-nil gives this command a more
 Ido-like behavior."                     ; Doc string
   (lambda (name)                        ; FREE here: DIR-NAMES.
-    (push name dir-names)
+    (if (member (file-name-nondirectory name) ; Do this because choosing candidate adds default dir to it.
+                keep-proxy-cands)
+        (setq name       (symbol-value (intern (file-name-nondirectory name)))
+              dir-names  (append (icicle-remove-if-not #'stringp name) dir-names))
+      (push name dir-names))
     (when (interactive-p)
       (message "Added directory name `%s'" (icicle-propertize name 'face 'icicle-msg-emphasis))
       (sit-for 1)))
@@ -8436,6 +8476,22 @@ Ido-like behavior."                     ; Doc string
    ((prompt                             (or icicle-prompt ; Allow override.
                                             "Choose directory (`RET' when done): "))
     (dir-names                          ())
+    (icicle-exclude-default-proxies     t) ; Exclude non-dir file-name proxy candidates.
+    (icicle-proxy-candidates            ; Remove vars whose vals are not lists or whose vals are lists with no strings.
+     (let ((ipc  ()))
+       (when icicle-add-proxy-candidates-flag
+         (setq ipc  (mapcar #'symbol-name
+                            (icicle-remove-if-not
+                             (lambda (symb)
+                               (and (boundp symb)  (consp (symbol-value symb))
+                                    (let ((dirs  (symbol-value symb)))
+                                      (catch 'icicle-directory-list
+                                        (dolist (dir  dirs)
+                                          (when (stringp dir) (throw 'icicle-directory-list t)))
+                                        nil))))                         
+                             icicle-path-variables))))
+       ipc))
+    (keep-proxy-cands                   icicle-proxy-candidates) ; Need them after `read-file-name' resets to nil.
     (user-file-pred                     icicle-file-predicate)
     (icicle-file-predicate              (if user-file-pred
                                             (lambda (f) ; FREE here: USER-FILE-PRED.
@@ -8444,11 +8500,14 @@ Ido-like behavior."                     ; Doc string
     (icicle-comp-base-is-default-dir-p  t)
     ;; $$$$$ (icicle-dir-candidate-can-exit-p (not current-prefix-arg))
     ))
-  (icicle-bind-file-candidate-keys)     ; First code
+  (progn (icicle-bind-file-candidate-keys) ; First code
+         (when icicle-proxy-candidates (put-text-property 0 1 'icicle-fancy-candidates t prompt)))
   nil                                   ; Undo code
   (prog1 (setq dir-names  (nreverse (delete "" dir-names))) ; Last code - return the list of dirs
     (icicle-unbind-file-candidate-keys)
+    (setq icicle-proxy-candidates  ())
     (when (interactive-p) (message "Directories: %S" dir-names))))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
