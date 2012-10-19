@@ -740,9 +740,9 @@ candidates.
 Some '''Icicles''' commands that ask for your input provide completion
 candidates that are multi-part, called '''multi-completions'''.
 
-For instance, with a non-positive [[prefix argument]], command
+For instance, with a non-positive [[prefix argument]] (or with `C-u C-u'), command
 `icicle-locate-file' lets you find files anywhere under a given
-directory by matching the file name or the last-modification date,
+directory (or under each of a set of directories you choose) by matching the file name or the last-modification date,
 or both.  The first part of the multi-completion is the file name;
 the second part is the date.  The two-part candidates are shown in
 `*Completions*' like this:
