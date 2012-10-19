@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue Oct  9 13:33:10 2012 (-0700)
+;; Last-Updated: Thu Oct 18 15:31:52 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 23224
+;;     Update #: 23227
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Doc URL: http://emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1235,7 +1235,8 @@
 ;;    `icicle-dictionary-history', `icicle-dir-candidate-can-exit-p',
 ;;    `icicle-dirs-done', `icicle-doc-last-initial-cand-set',
 ;;    `icicle-dot-string-internal', `icicle-edit-menu-map',
-;;    `icicle-edit-update-p', `icicle-explore-final-choice',
+;;    `icicle-edit-update-p', `icicle-exclude-default-proxies',
+;;    `icicle-explore-final-choice',
 ;;    `icicle-explore-final-choice-full', `icicle-extra-candidates',
 ;;    `icicle-extra-candidates-dir-insert-p',
 ;;    `icicle-face-name-history', `icicle-fancy-candidates-p',
@@ -1290,7 +1291,8 @@
 ;;    `icicle-orig-pt-explore', `icicle-orig-read-file-name-fn',
 ;;    `icicle-orig-show-initially-flag',
 ;;    `icicle-orig-sort-orders-alist', `icicle-orig-window',
-;;    `icicle-other-window', `icicle-plist-last-initial-cand-set',
+;;    `icicle-other-window', `icicle-path-variables',
+;;    `icicle-plist-last-initial-cand-set',
 ;;    `icicle-pre-minibuffer-buffer', `icicle-post-command-hook',
 ;;    `icicle-pre-command-hook', `icicle-predicate-types-alist',
 ;;    `icicle-previous-raw-file-name-inputs',
