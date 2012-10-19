@@ -5,7 +5,7 @@
 ;; Author: Matthew L. Fidler
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Wed Oct 20 15:08:50 2010 (-0500)
-;; Version: 0.16
+;; Version: 0.17
 ;; Last-Updated: Fri Jun 29 12:22:42 2012 (-0500)
 ;;           By: Matthew L. Fidler
 ;;     Update #: 1747
@@ -27,6 +27,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 18-Oct-2012    Matthew L. Fidler  
+;;    Last-Updated: Fri Jun 29 12:22:42 2012 (-0500) #1747 (Matthew L. Fidler)
+;;    Bug fix for yasnippet backward compatibility.
 ;; 18-Sep-2012      
 ;;    Last-Updated: Fri Jun 29 12:22:42 2012 (-0500) #1747 (Matthew L. Fidler)
 ;;    Backward compatibility update.
@@ -251,16 +254,21 @@
     (yas/exit-snippet yas-exit-snippet)
     (yas/check-commit-snippet yas--check-commit-snippet)
     (yas/define-snippets yas--check-commit-snippet)
-    (yas/after-exit-snippet-hook yas-after-exit-snippet-hook)
-    )
+    (yas/field-probably-deleted-p yas--field-probably-deleted-p)
+    (yas/after-exit-snippet-hook yas-after-exit-snippet-hook))
   "Yasnippet backward compatability functions used in textmate-to-yas.el")
+
+(defvar textmate-import-backward nil
+  "textmate-import use backward compatability?")
 
 ;; Add backward compatability when needed.
 (mapc
  (lambda(what)
-   (unless (eval `(or (fboundp ',(nth 1 what))(boundp ',(nth 1 what))))
-     (if (eval `(functionp ,(nth 0 what)))
-         (eval `(defalias ',(nth 1 what) ',(nth 0 what)))
+   (unless (eval `(or (boundp ',(nth 1 what)) (fboundp ',(nth 1 what))))
+     (if (eval `(functionp ',(nth 0 what)))
+         (progn
+           (setq textmate-import-backward t)
+           (eval `(defalias ',(nth 1 what) ',(nth 0 what))))
        (eval `(defvaralias ',(nth 1 what) ',(nth 0 what))))))
  textmate-to-yas-backward-compatability)
 
@@ -1674,13 +1682,14 @@ Also tries to handle nested conditional statements like (?1:$0:(?2:\\t$0))
 (defun yas-editing-field-num-p (&optional arg)
   "Which field is active?"
   (interactive)
-  (let* ((arg (or arg
-                  0))
+  (let* ((arg (or arg 0))
          (snippet (first (yas--snippets-at-point)))
-         (active-field (overlay-get yas--active-field-overlay 'yas/field))
+         (active-field (overlay-get yas--active-field-overlay (if textmate-import-backward
+                                                                  'yas/field
+                                                                'yas--field)))
          (live-fields (remove-if #'(lambda (field)
                                      (and (not (eq field active-field))
-                                          (yas/field-probably-deleted-p snippet field)))
+                                          (yas--field-probably-deleted-p snippet field)))
                                  (yas--snippet-fields snippet)))
          (active-field-pos (position active-field live-fields)))
     (= active-field-pos arg)))
