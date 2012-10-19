@@ -13,6 +13,9 @@ You can have closures in Emacs -- no need for FakeClosures!
 => (closure ((foo . "bar") t) nil (message foo))
 (funcall test)
 => "bar"
+(let ((foo "something-else"))
+  (funcall test))
+=> "bar"                                ; would have printed "something-else" with dynamic binding
 }}}
 
 ----
