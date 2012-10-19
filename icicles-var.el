@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Oct 18 14:16:05 2012 (-0700)
+;; Last-Updated: Thu Oct 18 15:31:28 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1653
+;;     Update #: 1656
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-var.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -108,7 +108,8 @@
 ;;    `icicle-orig-must-pass-after-match-pred',
 ;;    `icicle-orig-pt-explore', `icicle-orig-read-file-name-fn',
 ;;    `icicle-orig-window', `icicle-orig-win-explore',
-;;    `icicle-other-window', `icicle-plist-last-initial-cand-set',
+;;    `icicle-other-window', `icicle-path-variables',
+;;    `icicle-plist-last-initial-cand-set',
 ;;    `icicle-predicate-types-alist', `icicle-pref-arg',
 ;;    `icicle-pre-minibuffer-buffer', `icicle-post-command-hook',
 ;;    `icicle-pre-command-hook',
@@ -1125,6 +1126,16 @@ For versions of Emacs < 22, this is the original `read-file-name'.")
 
 (defvar icicle-other-window nil
   "Window scrolled by `icicle-scroll-forward'/`icicle-scroll-backward'")
+
+(defvar icicle-path-variables '(cd-path  charset-map-path  compilation-search-path
+                                custom-theme-load-path  exec-path  ffap-bib-path  ffap-c-path
+                                ffap-fortran-path  ffap-tex-path  find-function-source-path
+                                image-load-path  load-path  x-bitmap-file-path)
+  "List of variables whose value can be a list containing directories.
+The variables are not checked until they are used.  At that time:
+* Any of them that are not bound are ignored.
+* If the value of any of them is not a list it is ignored.
+* If it is a list, any non-string elements in the list are ignored.")
 
 (defvar icicle-plist-last-initial-cand-set ()
   "Cache for initial set of completion candidates for `icicle-plist'.")
