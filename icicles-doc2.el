@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Mon Oct 15 13:23:12 2012 (-0700)
+;; Last-Updated: Thu Oct 18 19:19:25 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 29035
+;;     Update #: 29038
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -8447,12 +8447,17 @@
 ;;  Defining Multiple-Choice Menus
 ;;  ------------------------------
 ;;
+;;  By "multiple-choice" here I do not mean simply a menu of choices,
+;;  where you pick one, or even a menu where you can pick more than
+;;  one item, but a menu where you can choose any menu items (actions)
+;;  any number of times.
+;;
 ;;  Icicles multi-commands (see
 ;;  (@file :file-name "icicles-doc1.el" :to "Multi-Commands")) can be
-;;  used provide users with multiple-choice menus.  While the possible
-;;  choices can be accessed by minibuffer completion or cycling, a
-;;  user can also display them in buffer `*Completions*' using `TAB'
-;;  or `S-TAB', and click them there to choose them.
+;;  used provide users with such multiple-choice menus.  While the
+;;  possible choices can be accessed by minibuffer completion or
+;;  cycling, a user can also display them in buffer `*Completions*'
+;;  using `TAB' or `S-TAB', and click them there to choose them.
 ;;
 ;;  That is, buffer `*Completions*' can act as a multiple-choice menu.
 ;;
@@ -8561,7 +8566,7 @@
 ;;
 ;;  * `icicle-directory-list' - directory names, selected from
 ;;    subdirectories in the current directory and any directories you
-;;    navigate to
+;;    navigate to (and values of directory-list variables)
 ;;
 ;;  * `icicle-face-list' - face names, selected from `face-list'
 ;;
