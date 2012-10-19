@@ -6,9 +6,13 @@
 
 == Defining Multiple-Choice Menus ==
 
+By "multiple-choice" here I do not mean simply a menu of choices,
+where you pick one, or even a menu where you can pick more than
+one item, but a menu where you can choose any menu items (actions)
+any number of times.
 
 '''Icicles''' [[multi-command]]s can be used
-provide users with multiple-choice menus.  While the possible
+provide users with such multiple-choice menus.  While the possible
 choices can be accessed by [[minibuffer]] [[completion]] or [[Icicles - Cycling Completions|cycling]], a
 user can also display them in [[buffer]] `*Completions*' using `TAB' or
 `S-TAB', and click them there to choose them.
@@ -115,7 +119,7 @@ One common use of a multiple-choice menu is letting the user select a [[list]] o
 
 * '''`icicle-bookmark-list'''' -- [[bookmark]]s (bookmark names, with `C-u')
 * '''`icicle-buffer-list'''' -- [[buffer]] names, selected from `buffer-list' (possibly after filtering)
-* '''`icicle-directory-list'''' -- directory names, selected from subdirectories in the current directory and any directories you navigate to
+* '''`icicle-directory-list'''' -- directory names, selected from subdirectories in the current directory and any directories you navigate to (and values of directory-list [[variable]]s)
 * '''`icicle-face-list'''' -- [[face]] names, selected from `face-list'
 * '''`icicle-file-list'''' -- file names, selected from files in the current directory  and any directories you navigate to
 * '''`icicle-keyword-list'''' -- keywords ([[regexp]]s), selected from those you have previously entered
