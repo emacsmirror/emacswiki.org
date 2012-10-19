@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Oct 18 14:23:52 2012 (-0700)
+;; Last-Updated: Thu Oct 18 16:56:39 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 13458
+;;     Update #: 13464
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1211,6 +1211,8 @@ and `read-file-name-function'."
                 (symb  (and temp (intern (substring (car temp) 1 (1- (length (car temp))))))))
            (when (and symb (boundp symb)) (setq result  (symbol-value symb))))
          result)
+    ;; Because we do this here, if a command that uses `icicle-read-file-name' needs the proxies
+    ;; afterward then it needs to save a copy of them.
     (setq icicle-proxy-candidates  ())))
 
 (defun icicle-read-file-name-1 (prompt &optional dir default-filename
@@ -1534,6 +1536,8 @@ whose value or whose custom type is compatible with type `integer',
                       (icicle-ding) (message "Not a number.  Try again.") (sit-for 0.5 nil t)
                       t)))
            num)
+      ;; Because we do this here, if a command that uses `icicle-read-number' needs the proxies
+      ;; afterward then it needs to save a copy of them.
       (setq icicle-proxy-candidates  ()))))
 
 ;; Can't replace standard `read-char-exclusive' with this, because, starting with Emacs 22, it has
@@ -1573,6 +1577,8 @@ whose value is compatible with type `character'."
                                                      (elt str 0))
                                             (error nil)))))
          char)
+    ;; Because we do this here, if a command that uses `icicle-read-char-exclusive' needs the proxies
+    ;; afterward then it needs to save a copy of them.
     (setq icicle-proxy-candidates  ())))
 
 ;; Not used in Icicles code, but used by other libraries.
@@ -1626,6 +1632,8 @@ whose value or whose custom type is compatible with type `string'."
                               temp)
                              (t strg-read))))
          strg)
+    ;; Because we do this here, if a command that uses `icicle-read-string-completing' needs the proxies
+    ;; afterward then it needs to save a copy of them.
     (setq icicle-proxy-candidates  ())))
 
 ;; Same as `help-var-is-of-type-p'.
@@ -1947,6 +1955,7 @@ candidate `*point face name*' to use the face at point."
                     (eyedrop-face-at-point))
                    (proxy (symbol-value (intern (substring proxy 1 (1- (length proxy))))))
                    (t (intern face)))))))
+
       ((= emacs-major-version 21)       ; Emacs 21
        (defun icicle-read-face-name (prompt)
          "Read a face name with completion and return its face symbol.
