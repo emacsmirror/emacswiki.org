@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Oct  5 14:34:13 2012 (-0700)
+;; Last-Updated: Thu Oct 18 16:25:09 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 9123
+;;     Update #: 9125
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -3433,9 +3433,9 @@ MAP is `minibuffer-local-completion-map' or
     (define-key map [menu-bar minibuf separator-last] '("--"))
 
     (define-key map [menu-bar minibuf icicle-toggle-search-complementing-domain]
-        '(menu-item "Toggle Searching Complement"
-          icicle-toggle-search-complementing-domain
-          :help "Toggle `icicle-search-complement-domain-p'" :keys "C-M-~"))
+      '(menu-item "Toggle Searching Complement"
+        icicle-toggle-search-complementing-domain
+        :help "Toggle `icicle-search-complement-domain-p'" :keys "C-M-~"))
     (define-key map [menu-bar minibuf icicle-toggle-highlight-all-current]
       '(menu-item "Toggle All-Current Icicle-Search Highlighting"
         icicle-toggle-highlight-all-current :enable icicle-searching-p
@@ -3670,9 +3670,9 @@ complete)"))
 
   ;; Bind additional keys.
   (dolist (key  icicle-candidate-action-keys)
-    (define-key map key 'icicle-candidate-action)) ; `C-return'
-  (dolist (key  icicle-candidate-help-keys) ; `C-M-return', `C-help', `C-M-help', `C-f1', `C-M-f1'
-    (define-key map key 'icicle-help-on-candidate))
+    (define-key map key 'icicle-candidate-action)) ; `C-return', `C-RET'
+  (dolist (key  icicle-candidate-help-keys) ; `C-M-return', `C-M-RET', `C-help', `C-M-help',
+    (define-key map key 'icicle-help-on-candidate)) ;  `C-f1', `C-M-f1'
 
   (dolist (key  icicle-word-completion-keys)
     (define-key map key 'icicle-prefix-word-complete)) ; `M-SPC'
@@ -3703,7 +3703,7 @@ complete)"))
   (define-key map (icicle-kbd "M-pause")   'icicle-keep-only-past-inputs) ; `M-pause'
   (define-key map (icicle-kbd "C-pause") 'icicle-toggle-highlight-historical-candidates) ;`C-pause'
   (define-key map (icicle-kbd "S-pause")   'icicle-toggle-highlight-saved-candidates) ; `S-pause'
-;$$$$$$  (define-key map (icicle-kbd "C-M-pause") 'icicle-other-history) ; `C-M-pause'
+                                        ;$$$$$$  (define-key map (icicle-kbd "C-M-pause") 'icicle-other-history) ; `C-M-pause'
   (define-key map (icicle-kbd "C-insert")  'icicle-switch-to-Completions-buf) ; `C-insert'
   (define-key map (icicle-kbd "insert")    'icicle-save/unsave-candidate) ; `insert'
 
@@ -3760,7 +3760,7 @@ complete)"))
   (define-key map (icicle-kbd "C-:")       'icicle-candidate-set-define) ; `C-:'
   (define-key map (icicle-kbd "C-M-j")     'icicle-insert-list-join-string) ; `C-M-j'
   (define-key map (icicle-kbd "C-,")       'icicle-change-sort-order) ; `C-,'
-  (define-key map (icicle-kbd "C-M-;")     'icicle-toggle-ignoring-comments) ; `C-M-;'
+  (define-key map (icicle-kbd "C-M-     ;")     'icicle-toggle-ignoring-comments) ; `C-M-;'
   (define-key map (icicle-kbd "C-`")       'icicle-toggle-regexp-quote) ; `C-`'
   (define-key map (icicle-kbd "C-M-.")     'icicle-toggle-dot) ; `C-M-.'
   (define-key map (icicle-kbd "C-M-`")     'icicle-toggle-literal-replacement) ; `C-M-`'
@@ -3776,7 +3776,7 @@ complete)"))
   (define-key map (icicle-kbd "C-#")       'icicle-cycle-incremental-completion) ; `C-#'
   (define-key map (icicle-kbd "C-\"")      'icicle-toggle-expand-to-common-match) ; `C-"'
   (define-key map (icicle-kbd "C-M-\"")    'icicle-cycle-expand-to-common-match) ; `C-M-"'
-  (define-key map (icicle-kbd "M-;")       'icicle-toggle-search-replace-common-match) ; `M-;'
+  (define-key map (icicle-kbd "M-       ;")       'icicle-toggle-search-replace-common-match) ; `M-;'
   (define-key map (icicle-kbd "C-^")       'icicle-dispatch-C-^) ; `C-^'
   (define-key map (icicle-kbd "C-M-^")     'icicle-toggle-completions-format) ; `C-M-^'
   (define-key map (icicle-kbd "C-S-a")     'icicle-toggle-case-sensitivity) ; `C-S-a' (`C-A')
@@ -3798,7 +3798,7 @@ complete)"))
   (define-key map (icicle-kbd "M-v")       'icicle-scroll-Completions-backward) ; `M-v'
   (define-key map (icicle-kbd ".")         'icicle-insert-dot-command) ; `.'
   (define-key map (icicle-kbd "M-m")       'icicle-toggle-show-multi-completion) ; `M-m'
-  (define-key map (icicle-kbd "C-x .")     'icicle-dispatch-C-x.)                   ; `C-x .'
+  (define-key map (icicle-kbd "C-x .")     'icicle-dispatch-C-x.) ; `C-x .'
   (define-key map (icicle-kbd "C-x :")     'icicle-toggle-network-drives-as-remote) ; `C-x :'
   (when (fboundp 'icicle-cycle-image-file-thumbnail) ; Emacs 23+
     (define-key map (icicle-kbd "C-x t")   'icicle-cycle-image-file-thumbnail)) ; `C-x t'
