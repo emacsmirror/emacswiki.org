@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Thu Oct 18 14:38:56 2012 (-0700)
+;; Last-Updated: Thu Oct 18 17:14:13 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 9115
+;;     Update #: 9119
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -87,7 +87,10 @@
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
 ;; 2012/10/18 dadams
-;;     icicle-locate-file-1: Ensure correct prefix arg treatment for icicle-locate (vs *-locate-file*).
+;;     icicle-directory-list: New feature: proxy candidates = vars with dir-list (i.e., path) values.
+;;     icicle-locate-file-1:
+;;       New feature: Treat plain C-u and C-u C-u, prompting for dir list.
+;;       Ensure correct prefix arg treatment for icicle-locate (vs *-locate-file*).
 ;;     icicle-string-list: Last code: reset icicle-proxy-candidates to ().
 ;; 2012/10/09 dadams
 ;;     icicle-customize-face*, icicle(-customize)-apropos-options-of-type,
@@ -6855,6 +6858,7 @@
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
 ;; 2012/10/18 dadams
+;;     Added: icicle-path-variables.
 ;;     Added: icicle-exclude-default-proxies.  (Used by *-directory-list to exclude non-file proxies.)
 ;; 2012/10/09 dadams
 ;;     Added: icicle-multi-completing-p.
