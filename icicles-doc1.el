@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Mon Oct 15 14:21:36 2012 (-0700)
+;; Last-Updated: Thu Oct 18 19:29:01 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 26880
+;;     Update #: 26890
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1104,9 +1104,10 @@
 ;;  Some Icicles commands that ask for your input provide completion
 ;;  candidates that are multi-part, called "multi-completions".
 ;;
-;;  For instance, with a non-positive prefix argument, command
-;;  `icicle-locate-file' lets you find files anywhere under a given
-;;  directory by matching the file name or the last-modification date,
+;;  For instance, with a non-positive prefix argument (or with `C-u
+;;  C-u'), command `icicle-locate-file' lets you find files anywhere
+;;  under a given directory (or under each of a set of directories you
+;;  choose) by matching the file name or the last-modification date,
 ;;  or both.  The first part of the multi-completion is the file name;
 ;;  the second part is the date.  The two-part candidates are shown in
 ;;  `*Completions*' like this:
@@ -7240,9 +7241,9 @@
 ;;  *** Find Files Anywhere, Without Knowing Where ***
 ;;
 ;;  You can use `icicle-locate' or `icicle-locate-file' to find a file
-;;  when you do not know what directory it is in.  The former requires
-;;  GNU/Linux or UNIX command `locate', to work.  The latter does not
-;;  require any external program.
+;;  when you do not know precisely what directory it is in.  The
+;;  former requires GNU/Linux or UNIX command `locate', to work.  The
+;;  latter does not require any external program.
 ;;
 ;;  Because it takes advantage of `locate' having indexed files on
 ;;  your file system, `icicle-locate' can be much faster than
@@ -7261,6 +7262,19 @@
 ;;  current directory, but if you supply a non-negative numeric prefix
 ;;  argument (non-positive means include the date), then you are
 ;;  prompted for the directory to search.
+;;
+;;  If you use a plain prefix arg (`C-u') or a double plain prefix arg
+;;  (`C-u C-u') then you are prompted to choose a set of directories
+;;  to use.  This choosing uses multi-command `icicle-directory-list'.
+;;  Icicles searches for file-name matches under each of the
+;;  directories you choose.  For `C-u C-u', the candidate
+;;  multi-completions include the last file-modification date.
+;;
+;;  In addition, if you turn on the use of proxy candidates (`C-M-_'),
+;;  `icicle-directory-list' also offers proxy candidates that are
+;;  variables, such as `load-path', whose values are lists that
+;;  include directories.  Choosing a proxy candidate adds all of its
+;;  directories to the set to be searched.
 ;;
 ;;  If you use the root of your file system as the search directory,
 ;;  then the Icicles file-locating commands will match completion
