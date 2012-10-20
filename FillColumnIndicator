@@ -226,5 +226,15 @@ So in order to avoid fci rendering weirdly I added this to my ##~/.emacs## file:
 Essentially it checks if the frame-width is greater than ##80## (##80## is the value
 of ##fci-rule-column##) and conditionally enables ##fci##
 
+[new]
+
+I also use 
+##'truncate-lines t##
+because some people seem to dislike auto-fill and adding newlines, and in those cases it is a pain to not be able to read all text without scrolling.
+
+The above hack works fairly well, but it fails if I open two files at the same time:
+##emacs test.c test2.c##
+then, the first buffer will have the fill-column-marker, even if the size of the window is less than 80 columns.
+
 ----
 CategoryFilling 
