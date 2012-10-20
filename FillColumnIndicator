@@ -82,7 +82,12 @@ This mode of operation turned out to be both less popular than the rule-style in
 
 ==Discussion==
 
+===How to enabled fci-mode in text and programming modes, but not special buffers, dired, shell, etc.===
+
+This package is amazing and I hope it is eventually incorporated in default emacs. However, it would be good if, once loaded, fci-mode was enabled by default for most text and programming modes and disabled for special buffers (like ##*Messages*##, ##*Buffer List*##, ##*Completions*##, etc). It doesn't make sense either in Dired mode. Enabling fci-mode as a global minor mode is too brute-force. --Manu
+
 ===Problems when Using Emacs as a Daemon===
+
 [new]
 Really neat stuff :)
 
