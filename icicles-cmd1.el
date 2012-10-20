@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Oct 18 17:04:19 2012 (-0700)
+;; Last-Updated: Sat Oct 20 09:59:46 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 24828
+;;     Update #: 24832
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -6885,7 +6885,8 @@ Ido-like behavior."                     ; Doc string
      (list (funcall (if (fboundp 'read-directory-name)
                         #'read-directory-name
                       #'read-file-name)
-                    "Change default directory: " nil nil
+                    "Change default directory: " default-directory (icicle-file-name-directory-w-default
+                                                                    (icicle-input-from-minibuffer))
                     (and (member cd-path '(nil ("./")))  (null (getenv "CDPATH")))))))
   (cd dir)
   (let ((icicle-abs-file-candidates
@@ -7809,7 +7810,8 @@ Optional arg NO-SYMLINKS-P non-nil means do not follow symbolic links."
        (list (funcall (if (fboundp 'read-directory-name)
                           #'read-directory-name
                         #'read-file-name)
-                      "Change default directory: " nil nil
+                      "Change default directory: " default-directory (icicle-file-name-directory-w-default
+                                                                      (icicle-input-from-minibuffer))
                       (and (member cd-path '(nil ("./")))  (null (getenv "CDPATH"))))))))
   (cd dir)
   (let ((icicle-abs-file-candidates
@@ -8477,7 +8479,7 @@ Ido-like behavior."                     ; Doc string
                                             "Choose directory (`RET' when done): "))
     (dir-names                          ())
     (icicle-exclude-default-proxies     t) ; Exclude non-dir file-name proxy candidates.
-    (icicle-proxy-candidates            ; Remove vars whose vals are not lists or whose vals are lists with no strings.
+    (icicle-proxy-candidates            ; Remove vars whose vals are not lists or are lists with no strings.
      (let ((ipc  ()))
        (when icicle-add-proxy-candidates-flag
          (setq ipc  (mapcar #'symbol-name
@@ -8491,7 +8493,7 @@ Ido-like behavior."                     ; Doc string
                                         nil))))                         
                              icicle-path-variables))))
        ipc))
-    (keep-proxy-cands                   icicle-proxy-candidates) ; Need them after `read-file-name' resets to nil.
+    (keep-proxy-cands                   icicle-proxy-candidates) ; Needed after `read-file-name' resets to nil.
     (user-file-pred                     icicle-file-predicate)
     (icicle-file-predicate              (if user-file-pred
                                             (lambda (f) ; FREE here: USER-FILE-PRED.
