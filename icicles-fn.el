@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Oct 18 16:56:39 2012 (-0700)
+;; Last-Updated: Sat Oct 20 08:34:09 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 13464
+;;     Update #: 13491
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -3789,20 +3789,48 @@ the expanded common match of the input over all candidates."
           (unless filtered-candidates  (setq icicle-common-match-string  nil))
           filtered-candidates)
       (quit (top-level)))))             ; Let `C-g' stop it.
- 
+
+;;; Similar to the vanilla function.  Only the `let*' at the end is different.
 (when (> emacs-major-version 23)
   (defun icicle-completion--embedded-envvar-table (string _pred action)
-    "Completion table for environment variables embedded in file names."
+    "Completion table for environment variables embedded in a string.
+The envvar syntax (and escaping) rules followed by this table are the
+same as for `substitute-in-file-name'."
+    ;; Ignore _PRED arg, because predicates passed via `read-file-name-internal' are not 100% correct and
+    ;; fail here: e.g. predicates like `file-directory-p', whereas the filename completed needs to be passed
+    ;; through `substitute-in-file-name' before it can be passed to `file-directory-p'.
     (when (string-match completion--embedded-envvar-re string)
       (let* ((beg     (or (match-beginning 2)  (match-beginning 1)))
              (table   (completion--make-envvar-table))
              (prefix  (substring string 0 beg)))
-        (if (eq ?{  (aref string (1- beg)))
-            (setq table  (apply-partially 'completion-table-with-terminator "}" table)))
-        (let* ((completion-ignore-case  nil)
-               (comp                    (complete-with-action
-                                         action table (substring string beg) (lambda (&rest args) t))))
-          (if (stringp comp) (concat prefix comp) (mapcar (lambda (s) (concat prefix s)) comp)))))))
+        (cond ((eq action 'lambda)
+               ;; This table is expected to be used in conjunction with some other table that provides the
+               ;; main completion.  Let the other table handle the test-completion case.
+               nil)
+              ((or (eq (car-safe action) 'boundaries)  (eq action 'metadata))
+               ;; Return boundaries/metadata only if there's something to complete, since otherwise when
+               ;; used in `completion-table-in-turn', we could return boundaries and let some subsequent
+               ;; table return a list of completions.
+               ;;
+               ;; FIXME: Maybe it should rather be fixed in `completion-table-in-turn' instead, but it's
+               ;; difficult to do it efficiently there.
+               (when (try-completion (substring string beg) table nil)
+                 ;; Compute the boundaries of the subfield to which this completion applies.
+                 (if (eq action 'metadata)
+                     '(metadata (category . environment-variable))
+                   (let ((suffix  (cdr action)))
+                     `(boundaries
+                       ,(or (match-beginning 2)  (match-beginning 1))
+                       . ,(when (string-match "[^[:alnum:]_]" suffix) (match-beginning 0)))))))
+              (t
+               (if (eq ?{  (aref string (1- beg)))
+                   (setq table  (apply-partially 'completion-table-with-terminator "}" table)))
+               ;; Envvar completion must be case-sensitive, even when file-name completion is not.
+               (let* ((completion-ignore-case  nil)
+                      (comp                    (complete-with-action action table (substring string beg)
+                                                                     (lambda (&rest args) t))))
+                 (if (stringp comp) (concat prefix comp) (mapcar (lambda (s) (concat prefix s)) comp)))))))))
+ 
 ;;(@* "Icicles functions - S-TAB completion cycling")
 
 ;;; Icicles functions - S-TAB completion cycling -------------------
