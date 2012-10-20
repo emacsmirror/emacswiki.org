@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Oct 20 08:22:50 2012 (-0700)
+;; Last-Updated: Sat Oct 20 09:59:53 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 9120
+;;     Update #: 9125
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -86,6 +86,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2012/10/20 dadams
+;;     icicle-cd-for-(abs|loc)-files:
+;;       Same change as 2012/08/27 fix to *-make-directory: Use dir in minibuffer as default.
 ;; 2012/10/18 dadams
 ;;     icicle-directory-list: New feature: proxy candidates = vars with dir-list (i.e., path) values.
 ;;     icicle-locate-file-1:
