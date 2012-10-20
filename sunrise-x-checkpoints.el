@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 29 Dec 2009
 ;; Version: 1
-;; RCS Version: $Rev: 425 $
+;; RCS Version: $Rev: 440 $
 ;; Keywords: sunrise commander, checkpoints, bookmarks
 ;; URL: http://www.emacswiki.org/emacs/sunrise-x-checkpoints.el
 ;; Compatibility: GNU Emacs 23+
@@ -55,9 +55,9 @@
 
 ;;; Code:
 
-(eval-when-compile (require 'bookmark)
-                   (require 'cl)
-                   (require 'sunrise-commander))
+(require 'sunrise-commander)
+(require 'bookmark)
+(eval-when-compile (require 'cl))
 
 (defun sr-checkpoint-save (&optional _arg)
   "Create a new checkpoint bookmark to save the location of both panes."
