@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Thu Oct 18 17:14:13 2012 (-0700)
+;; Last-Updated: Sat Oct 20 08:22:50 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 9119
+;;     Update #: 9120
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1483,6 +1483,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2012/10/20 dadams
+;;     icicle-completion--embedded-envvar-table: Added more of vanilla code.  Thx to Michael Heerdegen.
 ;; 2012/10/18 dadams
 ;;     icicle-read-file-name, icicle-read-number, icicle-read-char-exclusive,
 ;;       icicle-read-string-completing, icicle-read-face-name:
