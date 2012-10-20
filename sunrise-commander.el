@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 6
-;; RCS Version: $Rev: 438 $
+;; RCS Version: $Rev: 439 $
 ;; Keywords: files, dired, midnight commander, norton, orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -4183,9 +4183,12 @@ Jj-ump, q-uit, m-ark, u-nmark, h-elp"))
 
 (defun sr-quote-marked ()
   "Return current pane's selected entries quoted and space-separated as a string."
-  (let ((marked (dired-get-marked-files t nil nil t)))
-    (if (< (length marked) 2)
-        (setq marked nil)
+  (let (marked)
+    (condition-case err
+        (setq marked (dired-get-marked-files t nil nil t))
+      (error (unless (string= "No file on this line" (cadr err))
+               (signal (car err) (cdr err)))))
+    (unless (< (length marked) 2)
       (if (eq t (car marked)) (setq marked (cdr marked)))
       (format "\"%s\"" (mapconcat 'identity marked "\" \"")))))
 
