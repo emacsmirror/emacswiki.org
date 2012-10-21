@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Thu Oct 18 15:31:52 2012 (-0700)
+;; Last-Updated: Sun Oct 21 14:52:57 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 23227
+;;     Update #: 23234
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Doc URL: http://emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -391,6 +391,8 @@
 ;;    `icicle-toggle-ignored-extensions',
 ;;    `icicle-toggle-ignored-space-prefix',
 ;;    `icicle-toggle-ignoring-comments',
+;;    `icicle-toggle-include-cached-files',
+;;    `icicle-toggle-include-recent-files',
 ;;    `icicle-toggle-literal-replacement',
 ;;    `icicle-toggle-network-drives-as-remote',
 ;;    `icicle-toggle-option', `icicle-toggle-proxy-candidates',
@@ -421,6 +423,8 @@
 ;;    `toggle-icicle-highlight-saved-candidates',
 ;;    `toggle-icicle-ignored-extensions',
 ;;    `toggle-icicle-ignored-space-prefix',
+;;    `toggle-icicle-include-cached-files',
+;;    `toggle-icicle-include-recent-files',
 ;;    `toggle-icicle-incremental-completion',
 ;;    `toggle-icicle-literal-replacement',
 ;;    `toggle-icicle-proxy-candidates', `toggle-icicle-regexp-quote',
@@ -710,6 +714,8 @@
 ;;    `icicle-bookmark-refresh-cache-flag', `icicle-buffer-configs',
 ;;    `icicle-buffer-extras',
 ;;    `icicle-buffer-ignore-space-prefix-flag',
+;;    `icicle-buffer-include-cached-files-nflag',
+;;    `icicle-buffer-include-recent-files-nflag',
 ;;    `icicle-buffer-match-regexp', `icicle-buffer-no-match-regexp',
 ;;    `icicle-buffer-predicate', `icicle-buffer-require-match-flag'
 ;;    `icicle-buffer-sort', `icicle-buffers-ido-like-flag',
@@ -873,6 +879,7 @@
 ;;    `icicle-buffer-file/process-name-less-p',
 ;;    `icicle-buffer-multi-complete', `icicle-buffer-name-prompt',
 ;;    `icicle-buffer-smaller-p', `icicle-buffer-sort-*...*-last',
+;;    `icicle-cached-files-without-buffers',
 ;;    `icicle-call-then-update-Completions',
 ;;    `icicle-cancel-Help-redirection', `icicle-candidate-action-1',
 ;;    `icicle-candidate-set-1', `icicle-candidate-set-retrieve-1',
@@ -1097,6 +1104,7 @@
 ;;    `icicle-read-shell-command-completing', `icicle-read-string',
 ;;    `icicle-read-string-completing',
 ;;    `icicle-read-var-value-satisfying', `icicle-rebind-global',
+;;    `icicle-recent-files-without-buffers.',
 ;;    `icicle-recentf-make-menu-items', `icicle-recompute-candidates',
 ;;    `icicle-redefine-standard-functions',
 ;;    `icicle-redefine-standard-options',
