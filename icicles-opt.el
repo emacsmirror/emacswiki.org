@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Oct 10 16:20:24 2012 (-0700)
+;; Last-Updated: Sun Oct 21 12:15:44 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5333
+;;     Update #: 5340
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -64,6 +64,8 @@
 ;;    `icicle-bookmark-refresh-cache-flag', `icicle-buffer-configs',
 ;;    `icicle-buffer-extras',
 ;;    `icicle-buffer-ignore-space-prefix-flag',
+;;    `icicle-buffer-include-cached-files-nflag',
+;;    `icicle-buffer-include-recent-files-nflag',
 ;;    `icicle-buffer-match-regexp', `icicle-buffer-no-match-regexp',
 ;;    `icicle-buffer-predicate', `icicle-buffer-require-match-flag'
 ;;    `icicle-buffer-sort', `icicle-buffers-ido-like-flag',
@@ -785,6 +787,42 @@ You can toggle this option from the minibuffer using
 You can also use
 multi-command `icicle-toggle-option' anytime to toggle the option."
   :type 'boolean :group 'Icicles-Buffers :group 'Icicles-Matching)
+
+;;;###autoload
+(defcustom icicle-buffer-include-cached-files-nflag (if (boundp 'most-positive-fixnum)
+                                                        (- most-positive-fixnum)
+                                                      -99999999)
+  "*An integer > 0 means include cached files during buffer-name completion.
+This means names cached using the Emacs file-name cache - see (emacs)
+`File Name Cache'.  An integer < 0 means do not include them.
+When they are included, the value is the maximum number of such
+candidates to include.
+
+You can toggle this option (between + and -) using `C-x F' in the
+minibuffer during buffer-name completion."
+  :type '(restricted-sexp :tag "Max number of cached file candidates (+/-)"
+          :match-alternatives ((lambda (x) (and (integerp x)  (not (zerop x)))))
+          :value ignore)
+  :group 'Icicles-Files :group 'Icicles-Buffers :group 'Icicles-Matching)
+
+;;;###autoload
+(defcustom icicle-buffer-include-recent-files-nflag (if (boundp 'most-positive-fixnum)
+                                                        (- most-positive-fixnum)
+                                                      -99999999)
+  "*An integer > 0 means include recent files during buffer-name completion.
+This means file names managed by `recentf-mode' - see (emacs) `File
+Conveniences'.  An integer < 0 means do not include them.
+When they are included, the value is the maximum number of such
+candidates to include.
+
+You can toggle this option (between + and -) using `C-x R' in the
+minibuffer during buffer-name completion.
+
+This option has no effect prior to Emacs 21 (no library `recentf.el')."
+  :type '(restricted-sexp :tag "Max number of recent file candidates (+/-)"
+          :match-alternatives ((lambda (x) (and (integerp x)  (not (zerop x)))))
+          :value ignore)
+  :group 'Icicles-Files :group 'Icicles-Buffers :group 'Icicles-Matching)
 
 ;;;###autoload
 (defcustom icicle-buffer-match-regexp nil
