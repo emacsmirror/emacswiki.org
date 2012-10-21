@@ -32,6 +32,14 @@ Below is an screenshot showing how the first occurences of each character are hi
 
 == Discussion ==
 
+[[new:LeWang:2012-10-21 14:18 UTC]] I developed JumpChar (https://github.com/lewang/jump-char) as a replacement iy-goto-char.  It ended up having very similar functionality to FastNav with some clear advantages:
+
+*  It's built on top of isearch and benefits from all of isearch's integration functions.
+*  It also integrates very nicely with ace-jump for jumping further away (which I believe FastNav handles with a prefix argument).
+
+However a drawback is that jumpchar focuses on jumping to characters and does not offer any of FastNav's other functionalities.
+
+[new]
 Nice. Is it possible to add memory to this thing? Like, '##M-s RET##' jumps forward to the character previously entered.
 
 I don't see the point. Why cannot you just hit '##M-s x##' if x is the character previously entered?
