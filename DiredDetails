@@ -32,7 +32,7 @@ The difference in [[Frame]] size is due to the automatic frame resizing provided
 [:DiredDetailsPlus]
 == Dired Details Plus ==
 
-DrewAdams has written library <tt>[[dired-details+.el]]</tt>, which provides some minor, but convenient, enhancements to <tt>[[dired-details.el]]</tt>. This loads <tt>dired-details.el</tt> and activates show/hide, so <tt>dired-details+.el</tt> is all you ever need to load.
+Library <tt>[[dired-details+.el]]</tt> provides some minor but convenient enhancements to <tt>[[dired-details.el]]</tt>. It loads <tt>dired-details.el</tt> and activates show/hide, so <tt>dired-details+.el</tt> is all you ever need to load.
 
 ##dired-details+.el## provides the following enhancements:
 
@@ -44,9 +44,9 @@ DrewAdams has written library <tt>[[dired-details+.el]]</tt>, which provides som
 
 * It automatically shrink-wraps a one-window Dired frame whenever you show/hide details (if you also load library Lisp:autofit-frame.el). See the screenshots above ([[#Screenshots]]).
 
-=== Bugs ===
+== Dired-Details and WDired ==
 
-* When editing file names with dired-toggle-read-only and committing everything works as expected, if changes are aborted details are displayed until the listing is refreshed.
+When editing file names with `dired-toggle-read-only' and committing, everything works as expected, but if changes are aborted details are displayed until the listing is refreshed.
 
 ----
 CategoryDirectories
