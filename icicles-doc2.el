@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Thu Oct 18 19:19:25 2012 (-0700)
+;; Last-Updated: Sun Oct 21 15:56:53 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 29038
+;;     Update #: 29043
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -5512,6 +5512,30 @@
 ;;                            file)
 ;;                       (throw 'nevfp t)))
 ;;                   nil)))))
+;;
+;;  * Options `icicle-buffer-include-cached-files-nflag' and
+;;    `icicle-buffer-include-recent-files-nflag' also determine the
+;;    behavior of commands `icicle-buffer' (`C-x b')
+;;    and`icicle-buffer-other-window' (`C-x 4 b').  They determine
+;;    whether the candidates available for completion include not only
+;;    existing buffer names but also the names of certain files that
+;;    are not currently visited.
+;;
+;;    For the former, these are the names cached by the Emacs
+;;    file-name cache.  For the latter, these are the names of
+;;    recently visited files.  See the Emacs manual, nodes `File Name
+;;    Cache' and `File Conveniences', respectively.
+;;
+;;    You can toggle these options using `C-x F' and `C-x R',
+;;    respectively, during buffer-name completion.
+;;
+;;    The option values are not exactly Boolean, however.  They are in
+;;    fact non-zero integer values.  Each option is turned on when
+;;    positive and off when negative.  The absolute value of the
+;;    option is the maximum number of such candidates to include when
+;;    turned on.  So for example, if the latter option value is 20,
+;;    then the names of only the twenty most recently visited files
+;;    are candidates.
 ;;
 ;;  * Option `icicle-ignored-directories' is a list of directories
 ;;    that are ignored by various Icicles commands, including
