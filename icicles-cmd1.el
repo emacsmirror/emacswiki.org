@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Oct 20 09:59:46 2012 (-0700)
+;; Last-Updated: Sun Oct 21 14:58:36 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 24832
+;;     Update #: 24857
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -269,7 +269,8 @@
 ;;    `icicle-bookmark-cleanup', `icicle-bookmark-cleanup-on-quit',
 ;;    `icicle-bookmark-delete-action', `icicle-bookmark-help-string',
 ;;    `icicle-bookmark-jump-1', `icicle-buffer-multi-complete',
-;;    `icicle-buffer-name-prompt', `icicle-clear-history-1',
+;;    `icicle-buffer-name-prompt',
+;;    `icicle-cached-files-without-buffers', `icicle-clear-history-1',
 ;;    `icicle-clear-history-entry',
 ;;    `icicle-comint-completion-at-point',
 ;;    `icicle-comint-dynamic-complete-as-filename',
@@ -302,6 +303,7 @@
 ;;    `icicle-bookmark-propertize-candidate',
 ;;    `icicle-pp-display-expression',
 ;;    `icicle-read-args-w-val-satisfying',
+;;    `icicle-recent-files-without-buffers.',
 ;;    `icicle-remove-buffer-candidate-action',
 ;;    `icicle-remove-buffer-config-action',
 ;;    `icicle-remove-from-recentf-candidate-action',
@@ -537,14 +539,15 @@
 (defvar find-tag-default-function)      ; In `etags.el'
 (defvar find-tag-marker-ring)           ; In `etags.el'
 (defvar goto-tag-location-function)     ; In `etags.el'
+(defvar icicle-buffer-easy-files)       ; Here
 (defvar icicle-clear-history-hist)      ; In `icicle-clear-history-1',`icicle-clear-current-history'
 (defvar icicle-window-alist)            ; In `icicle-select-window'
 (defvar locate-make-command-line)       ; In `locate.el'
 (defvar proced-signal-list)             ; In `proced.el' (Emacs 23+)
 (defvar shell-completion-execonly)      ; In `shell.el'
 (defvar snarf-tag-function)             ; In `etags.el'
-(defvar translation-table-for-input)    ; Built-in, Emacs 21+.
-(defvar w3m-current-title)              ; In `w3m.el'.
+(defvar translation-table-for-input)    ; Built-in, Emacs 21+
+(defvar w3m-current-title)              ; In `w3m.el'
 (defvar yow-after-load-message)
 (defvar yow-file)
 (defvar yow-load-message)
@@ -5883,6 +5886,10 @@ For Emacs 23 and later, the default values (via `M-n') are the
 
 You can use these additional keys during completion:
 
+* `C-x F'     Toggle including cached file names as candidates (option
+              `icicle-buffer-include-cached-files-nflag').
+* `C-x R'     Toggle including recent file names as candidates (option
+              `icicle-buffer-include-recent-files-nflag').
 * `C-x m'     Visit a bookmarked buffer (only if you use Bookmark+).
 * `C-x C-m -' Remove candidate buffers whose mode is derived from a
               given mode.  Repeatable.  (`C-m' = `RET'.)
@@ -5893,15 +5900,19 @@ You can use these additional keys during completion:
 
 These options, when non-nil, control candidate matching and filtering:
 
- `icicle-buffer-ignore-space-prefix-flag' - Ignore space-prefix names
  `icicle-buffer-extras'             - Extra buffers to display
+ `icicle-buffer-ignore-space-prefix-flag' - Ignore space-prefix names
+ `icicle-buffer-include-cached-files-nflag' - Include cached files
+ `icicle-buffer-include-recent-files-nflag' - Include recent files
  `icicle-buffer-match-regexp'       - Regexp that buffers must match
  `icicle-buffer-no-match-regexp'    - Regexp buffers must not match
  `icicle-buffer-predicate'          - Predicate buffer names satisfy
  `icicle-buffer-sort'               - Sort function for candidates
 
-For example, to show only buffers that are associated with files, set
-`icicle-buffer-predicate' to (lambda (buf) (buffer-file-name buf)).
+For example, to change the default behavior to show only buffers that
+are associated with files, set `icicle-buffer-predicate' to this:
+
+ (lambda (buf) (buffer-file-name buf))
 
 Option `icicle-buffer-require-match-flag' can be used to override
 option `icicle-require-match-flag'.
@@ -5918,7 +5929,10 @@ configuration of user options for commands such as `icicle-buffer'.
 Note: The prefix arg is tested, even when this is called
 noninteractively.  Lisp code can bind `current-prefix-arg' to control
 the behavior."                          ; Doc string
-  switch-to-buffer                      ; Action function
+  (lambda (buf)                         ; Action function
+    (when (and (not (get-buffer buf))  (member buf icicle-buffer-easy-files))
+      (setq buf  (find-file-noselect buf)))
+    (switch-to-buffer buf))        
   prompt 'icicle-buffer-multi-complete nil ;  `completing-read' args
   (and (fboundp 'confirm-nonexistent-file-or-buffer)  (confirm-nonexistent-file-or-buffer)) ; Emacs 23.
   nil 'buffer-name-history (icicle-default-buffer-names current-prefix-arg) nil
@@ -5936,9 +5950,10 @@ the behavior."                          ; Doc string
                                                      (with-current-buffer cand
                                                        (if (fboundp 'describe-buffer) ; In `help-fns+.el'.
                                                            (describe-buffer)
-                                                         (describe-mode)) t))))))
+                                                         (describe-mode)) t)))))
+    (icicle-buffer-easy-files           ()))
    ((icicle-buffer-complete-fn          'icicle-buffer-multi-complete)
-    ;; `icicle-bufflist' is free here.
+    ;; `icicle-bufflist' is FREE here.
     (icicle-bufflist                    (setq icicle-bufflist  (delete icicle-orig-buff icicle-bufflist)))))
   (progn (icicle-bind-buffer-candidate-keys)
          (put-text-property 0 1 'icicle-fancy-candidates t prompt) ; First code
@@ -5980,7 +5995,10 @@ the prefix argument in Icicles buffer commands:
 (icicle-define-command icicle-buffer-other-window ; Bound to `C-x 4 b' in Icicle mode.
   "Switch to a buffer whose content matches a regexp, in another window.
 Same as `icicle-buffer' except it uses a different window." ; Doc string
-  switch-to-buffer-other-window         ; Action function
+  (lambda (buf)                         ; Action function
+    (when (and (not (get-buffer buf))  (member buf icicle-buffer-easy-files))
+      (setq buf  (find-file-noselect buf)))
+    (switch-to-buffer-other-window buf))        
   prompt 'icicle-buffer-multi-complete nil ; `completing-read' args
   (and (fboundp 'confirm-nonexistent-file-or-buffer)  (confirm-nonexistent-file-or-buffer)) ; Emacs 23.
   nil 'buffer-name-history (icicle-default-buffer-names current-prefix-arg) nil
@@ -5998,9 +6016,10 @@ Same as `icicle-buffer' except it uses a different window." ; Doc string
                                                      (with-current-buffer cand
                                                        (if (fboundp 'describe-buffer) ; In `help-fns+.el'.
                                                            (describe-buffer)
-                                                         (describe-mode)) t))))))
+                                                         (describe-mode)) t)))))
+    (icicle-buffer-easy-files           ()))
    ((icicle-buffer-complete-fn          'icicle-buffer-multi-complete)
-    ;; `icicle-bufflist' is free here.
+    ;; `icicle-bufflist' is FREE here.
     (icicle-bufflist                    (setq icicle-bufflist  (delete icicle-orig-buff icicle-bufflist)))))
   (progn (icicle-bind-buffer-candidate-keys)
          (put-text-property 0 1 'icicle-fancy-candidates t prompt) ; First code
@@ -6014,18 +6033,19 @@ Same as `icicle-buffer' except it uses a different window." ; Doc string
 Used as the value of `icicle-buffer-complete-fn' and hence as
 `minibuffer-completion-table'."
   (setq strg  icicle-current-input)
-  (lexical-let* ((buf-pat      (let ((icicle-list-use-nth-parts  '(1)))
+  (lexical-let* ((name-pat     (let ((icicle-list-use-nth-parts  '(1)))
                                  (icicle-transform-multi-completion strg)))
-                 (buf-pat      (if (memq icicle-current-completion-mode '(nil apropos))
-                                   buf-pat
-                                 (concat "^" buf-pat)))
+                 (name-pat     (if (memq icicle-current-completion-mode '(nil apropos))
+                                   name-pat
+                                 (concat "^" name-pat)))
                  (content-pat  (let ((icicle-list-use-nth-parts  '(2)))
                                  (icicle-transform-multi-completion strg)))
                  (bufs         (mapcar (lambda (buf) (buffer-name buf)) icicle-bufflist))
                  (bufs         (if icicle-buffer-ignore-space-prefix-flag
                                    (icicle-remove-if (lambda (buf) (icicle-string-match-p "^ " buf)) bufs)
                                  bufs))
-                 (bufs         (icicle-remove-if-not (lambda (buf) (icicle-string-match-p buf-pat buf)) bufs))
+                 (bufs         (icicle-remove-if-not (lambda (buf) (icicle-string-match-p name-pat buf)) bufs))
+
                  (bufs         (cond ((equal "" content-pat)
                                       (dolist (buf  bufs)
                                         ;; Free vars here: EXISTING-BUFFERS, NEW-BUFS--TO-KILL
@@ -6043,11 +6063,77 @@ Used as the value of `icicle-buffer-complete-fn' and hence as
                                          (when (and (boundp 'existing-bufs)  (boundp 'new-bufs--to-kill)
                                                     (not (memq (setq buf  (get-buffer buf)) existing-bufs)))
                                            (add-to-list 'new-bufs--to-kill buf)))
-                                       bufs)))))
+                                       bufs))))
+                 (filnames    (and (> icicle-buffer-include-recent-files-nflag 0)
+                                   (require 'recentf nil t)
+                                   (or recentf-list  (recentf-load-list))
+                                   (icicle-recent-files-without-buffers bufs)))
+                 (filnames     (append filnames (and (> icicle-buffer-include-cached-files-nflag 0)
+                                                     (icicle-cached-files-without-buffers bufs))))
+                 (filnames     (icicle-remove-if-not (lambda (fil) (icicle-string-match-p name-pat fil))
+                                                     filnames))
+                 (filnames     (if (equal "" content-pat)
+                                   filnames
+                                 (icicle-remove-if-not
+                                  (lambda (filname)
+                                    ;; Avoid the error raised by calling `find-file-noselect' on a directory
+                                    ;; when `find-file-run-dired' is nil.
+                                    (and (or find-file-run-dired  (not (file-directory-p filname)))
+                                         (let* ((buf    (find-file-noselect filname))
+                                                (found  (with-current-buffer buf
+                                                          (message "Matching buffer contents...")
+                                                          (save-excursion
+                                                            (goto-char (point-min))
+                                                            (re-search-forward content-pat nil t)))))
+                                           ;; Free vars here: EXISTING-BUFFERS, NEW-BUFS--TO-KILL
+                                           (when (and (boundp 'existing-bufs)  (boundp 'new-bufs--to-kill)
+                                                      (not (memq buf existing-bufs)))
+                                             (add-to-list 'new-bufs--to-kill buf))
+                                           found)))
+                                  filnames))))
+    ;; `icicle-buffer-easy-files' is FREE here - bound in `icicle-buffer(-other-window)'.
+    (setq bufs  (append bufs (setq icicle-buffer-easy-files  filnames)))
     (if completion-mode
         bufs                            ; `all-completions', `test-completion'
       (try-completion                   ; `try-completion'
        strg (mapcar #'list bufs) (and pred  (lambda (ss) (funcall pred ss)))))))
+
+(defun icicle-cached-files-without-buffers (buffers)
+  "Return absolute file-name list represented by `file-cache-alist'.
+Do not include any files that are already visited in BUFFERS, which is
+a list of buffer names.  Return only the first
+`icicle-buffer-include-cached-files-nflag' names."
+  (and (boundp 'file-cache-alist)
+       file-cache-alist
+       (catch 'icicle-cached-files-without-buffers
+         (let ((result     ())
+               (buf-files  (mapcar #'buffer-file-name (mapcar #'get-buffer buffers)))
+               file)
+           (dolist (file+dirs  file-cache-alist)
+             (setq file  (car file+dirs))
+             (dolist (dir  (cdr file+dirs))
+               (setq file  (concat (or dir  default-directory) file))
+               (unless (member file buf-files) (push file result))
+               (when (>= (length result) icicle-buffer-include-cached-files-nflag)
+                 (throw 'icicle-cached-files-without-buffers result))))
+           result))))
+
+(defun icicle-recent-files-without-buffers (buffers)
+  "Return absolute file-name list represented by `recentf-list'.
+Do not include any files that are already visited in BUFFERS, which is
+a list of buffer names.  Return only the first
+`icicle-buffer-include-recent-files-nflag' names."
+  (and (boundp 'recentf-list)
+       recentf-list
+       (catch 'icicle-recent-files-without-buffers
+         (let ((result     ())
+               (buf-files  (mapcar #'buffer-file-name (mapcar #'get-buffer buffers)))
+               file)
+           (dolist (file  recentf-list)
+             (unless (member file buf-files) (push file result))
+             (when (>= (length result) icicle-buffer-include-recent-files-nflag)
+               (throw 'icicle-recent-files-without-buffers result)))
+           result))))
 
 
 (put 'icicle-buffer-no-search 'icicle-Completions-window-max-height 200)
@@ -7214,34 +7300,33 @@ Used as the value of `minibuffer-completion-table'.."
                                    (concat "^" file-pat)))
                    (content-pat  (let ((icicle-list-use-nth-parts  '(2)))
                                    (icicle-transform-multi-completion strg)))
-                   (filnames      (all-completions
-                                   ""
-                                   ;; This is just `read-file-name-internal'.
-                                   (completion-table-in-turn #'completion--embedded-envvar-table
-                                                             #'completion--file-name-table)
-                                   pred))
-                   (filnames      (icicle-remove-if-not
-                                   (lambda (filname) (icicle-string-match-p file-pat filname))
-                                   filnames))
-                   (filnames      (if (equal "" content-pat)
-                                      filnames
-                                    (icicle-remove-if-not
-                                     (lambda (filname)
-                                       ;; Avoid the error raised by calling `find-file-noselect' on a directory
-                                       ;; when `find-file-run-dired' is nil.
-                                       (and (or find-file-run-dired  (not (file-directory-p filname)))
-                                            (let* ((buf    (find-file-noselect filname))
-                                                   (found  (with-current-buffer buf
-                                                             (message "Matching buffer contents...")
-                                                             (save-excursion
-                                                               (goto-char (point-min))
-                                                               (re-search-forward content-pat nil t)))))
-                                              ;; Free vars here: EXISTING-BUFFERS, NEW-BUFS--TO-KILL
-                                              (when (and (boundp 'existing-bufs)  (boundp 'new-bufs--to-kill)
-                                                         (not (memq buf existing-bufs)))
-                                                (add-to-list 'new-bufs--to-kill buf))
-                                              found)))
-                                     filnames))))
+                   (filnames     (all-completions
+                                  ""
+                                  ;; This is just `read-file-name-internal'.
+                                  (completion-table-in-turn #'completion--embedded-envvar-table
+                                                            #'completion--file-name-table)
+                                  pred))
+                   (filnames     (icicle-remove-if-not (lambda (file) (icicle-string-match-p file-pat file))
+                                                       filnames))
+                   (filnames     (if (equal "" content-pat)
+                                     filnames
+                                   (icicle-remove-if-not
+                                    (lambda (filname)
+                                      ;; Avoid the error raised by calling `find-file-noselect' on a directory
+                                      ;; when `find-file-run-dired' is nil.
+                                      (and (or find-file-run-dired  (not (file-directory-p filname)))
+                                           (let* ((buf    (find-file-noselect filname))
+                                                  (found  (with-current-buffer buf
+                                                            (message "Matching buffer contents...")
+                                                            (save-excursion
+                                                              (goto-char (point-min))
+                                                              (re-search-forward content-pat nil t)))))
+                                             ;; Free vars here: EXISTING-BUFFERS, NEW-BUFS--TO-KILL
+                                             (when (and (boundp 'existing-bufs)  (boundp 'new-bufs--to-kill)
+                                                        (not (memq buf existing-bufs)))
+                                               (add-to-list 'new-bufs--to-kill buf))
+                                             found)))
+                                    filnames))))
       (if completion-mode
           filnames                      ; `all-completions', `test-completion'
         (try-completion file-pat (mapcar #'list filnames) (and pred  (lambda (ff) (funcall pred (car ff))))))))
