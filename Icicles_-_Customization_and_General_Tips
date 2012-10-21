@@ -1568,6 +1568,39 @@ Options '''`icicle-file-match-regexp'''',
 
 
 ----
+[:icicle-buffer-include-cached-files-nflag]
+[:icicle-buffer-include-recent-files-nflag]
+==== Options icicle-buffer-include-cached-files-nflag and icicle-buffer-include-recent-files-nflag ====
+
+Options '''`icicle-buffer-include-cached-files-nflag'''' and
+'''`icicle-buffer-include-recent-files-nflag'''' also determine the
+behavior of commands `icicle-buffer' ('''`C-x b'''')
+and`icicle-buffer-other-window' ('''`C-x 4 b'''').  They determine
+whether the candidates available for completion include not only
+existing [[buffer]] names but also the names of certain ''files'' that
+are not currently visited.
+
+For the former, these are the names cached by the Emacs
+''file-name cache''.  For the latter, these are the names of
+''recently visited files''.  See the Emacs manual, nodes [[Manual:File Name Cache|File Name Cache]] and [[Manual:File Conveniences|File Conveniences]], respectively.
+
+You can toggle these options using '''`C-x F'''' and '''`C-x R'''',
+respectively, during buffer-name completion.  The option values are not exactly Boolean, however.  They are
+in fact non-zero integer values.  Each option is turned on when
+positive and off when negative.
+
+The absolute value of the
+option is the maximum number of such candidates to include when
+turned on.  So for example, if the latter option value is 20,
+then the names of only the twenty most recently visited files are
+candidates.
+
+
+
+
+
+
+----
 [:icicle-ignored-directories]
 ==== Option icicle-ignored-directories ====
 
