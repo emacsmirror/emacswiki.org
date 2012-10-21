@@ -23,30 +23,36 @@ satisfy these conditions:
 In addition to the usual '''Icicles''' key bindings, during buffer-name
 completion you can use the following keys:
 
+[:icicle-toggle-include-cached-files]
+[:icicle-buffer-include-cached-files-nflag]
 * '''`C-x F'''' ('''`icicle-toggle-include-cached-files'''') Toggle whether
 `icicle-buffer' includes cached file names as candidates.  That
 is, toggle [[option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-buffer-include-cached-files-nflag|icicle-buffer-include-cached-files-nflag]]</tt>''''.
  
+[:icicle-toggle-include-recent-files]
+[:icicle-buffer-include-recent-files-nflag]
 * '''`C-x R'''' (`icicle-toggle-include-recent-files') Toggle whether
 `icicle-buffer' includes recent file names as candidates.  That
 is, toggle option '''`<tt>[[Icicles - Customization and General Tips#icicle-buffer-include-recent-files-nflag|icicle-buffer-include-recent-files-nflag]]</tt>''''.
 
+[:icicle-remove-buffer-cands-for-derived-mode]
 * '''`C-x C-m -'''' ('''`icicle-remove-buffer-cands-for-derived-mode'''') to ''remove'' the
   buffer-name candidates with a major
   mode that is ''derived from'' a given ''mode''.  You are prompted for the mode.  You can repeat this key to narrow buffer candidates by mode.  (`C-m' is the same key as `RET'.)
 
+[:icicle-keep-only-buffer-cands-for-derived-mode]
 * '''`##C-x C-m +##'''' ('''`icicle-keep-only-buffer-cands-for-derived-mode'''') to ''keep only'' the
   buffer-name candidates with a major
   mode that is ''derived from'' a given ''mode''.  You are prompted for the mode.   (`C-m' is the same key as `RET'.)
 
+
+[:icicle-remove-buffer-cands-for-mode]
 * '''`C-x M -'''' ('''`icicle-remove-buffer-cands-for-mode'''') -- same as `C-x C-m -', but excludes ancestor modes.
 
-
+[:icicle-keep-only-buffer-cands-for-mode]
 * '''`##C-x M +##'''' ('''`icicle-keep-only-buffer-cands-for-mode'''') -- same as `##C-x C-m +##', but excludes ancestor modes.
 
-
-
-
+[:icicle-bookmark-non-file-other-window]
 * '''`C-x m'''' ('''`icicle-bookmark-non-file-other-window'''') to visit a
   [[BookmarkPlus#AdditionalTypes|bookmarked buffer]].  This is available only if you use library
   '''[[Bookmark+]]'''.  This too is a [[multi-command]], so you can actually
