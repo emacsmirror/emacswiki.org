@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Oct 20 11:57:38 2012 (-0700)
+;; Last-Updated: Sun Oct 21 15:04:20 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 9130
+;;     Update #: 9145
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -86,6 +86,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2012/10/21 dadams
+;;     Added: icicle-cached-files-without-buffers, icicle-recent-files-without-buffers.
+;;     icicle-buffer-multi-complete, icicle-buffer(-other-window):
+;;       Add file names from recentf-list and file-cache-alist as candidates.
 ;; 2012/10/20 dadams
 ;;     icicle-cd-for-(abs|loc)-files:
 ;;       Same change as 2012/08/27 fix to *-make-directory: Use dir in minibuffer as default.
@@ -1488,6 +1492,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2012/10/21
+;;     icicle-take: Use a simpler definition.
 ;; 2012/10/20 dadams
 ;;     icicle-completion--embedded-envvar-table: Added more of vanilla code.  Thx to Michael Heerdegen.
 ;; 2012/10/18 dadams
@@ -3460,6 +3466,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2012/10/21 dadams
+;;     Added: icicle-toggle-include-cached-files, icicle-toggle-include-recent-files.
+;;     icicle-(un)bind-buffer-candidate-keys:
+;;       Bind icicle-toggle-include-(cached|recent)-files to C-x F and C-x R.
 ;; 2012/10/10 dadams
 ;;     icicle-doremi-increment-max-candidates+:
 ;;       C-u sets to RESET, not nil, so icicle-maybe-sort-maybe-truncate can reset lighter.
@@ -6125,6 +6135,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2012/10/21 dadams
+;;     Added: icicle-buffer-include-cached-files-nflag, icicle-buffer-include-recent-files-nflag.
 ;; 2012/10/10 dadams
 ;;     icicle-shell-command-candidates-cache:
 ;;       Removed autoload cookie due to default value dependency.  Thx to Michael Heerdegen.
