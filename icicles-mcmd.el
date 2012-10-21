@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Oct 10 15:29:13 2012 (-0700)
+;; Last-Updated: Sun Oct 21 14:31:11 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 18569
+;;     Update #: 18580
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -201,6 +201,8 @@
 ;;    `icicle-toggle-ignored-extensions',
 ;;    `icicle-toggle-ignored-space-prefix',
 ;;    `icicle-toggle-ignoring-comments',
+;;    `icicle-toggle-include-cached-files',
+;;    `icicle-toggle-include-recent-files',
 ;;    `icicle-toggle-literal-replacement',
 ;;    `icicle-toggle-network-drives-as-remote',
 ;;    `icicle-toggle-proxy-candidates', `icicle-toggle-regexp-quote',
@@ -233,6 +235,8 @@
 ;;    `toggle-icicle-highlight-saved-candidates',
 ;;    `toggle-icicle-ignored-extensions',
 ;;    `toggle-icicle-ignored-space-prefix',
+;;    `toggle-icicle-include-cached-files',
+;;    `toggle-icicle-include-recent-files',
 ;;    `toggle-icicle-incremental-completion',
 ;;    `toggle-icicle-literal-replacement',
 ;;    `toggle-icicle-network-drives-as-remote',
@@ -432,6 +436,7 @@
 (defvar minibuffer-local-filename-completion-map) ; In Emacs 22+.
 (defvar minibuffer-local-filename-must-match-map) ; In Emacs 23.2 (but not Emacs 24+).
 (defvar minibuffer-local-must-match-filename-map) ; In Emacs 22+.
+(defvar recentf-list)                   ; In `recentf.el' (Emacs 21+).
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
  
@@ -5998,7 +6003,17 @@ Return the string that was inserted."
   (define-key minibuffer-local-completion-map (icicle-kbd "C-x C-m +") ; `C-x C-m +', aka `C-x RET +'
     'icicle-keep-only-buffer-cands-for-derived-mode)
   (define-key minibuffer-local-must-match-map (icicle-kbd "C-x C-m +") ; `C-x C-m +', aka `C-x RET +'
-    'icicle-keep-only-buffer-cands-for-derived-mode))
+    'icicle-keep-only-buffer-cands-for-derived-mode)
+  (when (and (> icicle-buffer-include-cached-files-nflag 0)  (require 'filecache nil t))
+    (define-key minibuffer-local-completion-map (icicle-kbd "C-x F") ; `C-x F'
+      'icicle-toggle-include-cached-files)
+    (define-key minibuffer-local-must-match-map (icicle-kbd "C-x F") ; `C-x F'
+      'icicle-toggle-include-cached-files))
+  (when (and (> icicle-buffer-include-recent-files-nflag 0)  (require 'recentf nil t))
+    (define-key minibuffer-local-completion-map (icicle-kbd "C-x R") ; `C-x R'
+      'icicle-toggle-include-recent-files)
+    (define-key minibuffer-local-must-match-map (icicle-kbd "C-x R") ; `C-x R'
+      'icicle-toggle-include-recent-files)))
 
 ;;;###autoload (autoload 'icicle-unbind-buffer-candidate-keys "icicles")
 (defun icicle-unbind-buffer-candidate-keys () ; Use in last code of buffer-candidate commands.
@@ -6016,7 +6031,11 @@ Return the string that was inserted."
   (define-key minibuffer-local-completion-map (icicle-kbd "C-x C-m +") nil)
   (define-key minibuffer-local-must-match-map (icicle-kbd "C-x C-m +") nil)
   (define-key minibuffer-local-completion-map (icicle-kbd "C-x C-m")   nil)
-  (define-key minibuffer-local-must-match-map (icicle-kbd "C-x C-m")   nil))
+  (define-key minibuffer-local-must-match-map (icicle-kbd "C-x C-m")   nil)
+  (define-key minibuffer-local-completion-map (icicle-kbd "C-x F")     nil)
+  (define-key minibuffer-local-must-match-map (icicle-kbd "C-x F")     nil)
+  (define-key minibuffer-local-completion-map (icicle-kbd "C-x R")     nil)
+  (define-key minibuffer-local-must-match-map (icicle-kbd "C-x R")     nil))
 
 
 ;; `minibuffer-local-filename-completion-map' and `minibuffer-local-must-match-filename-map'
@@ -7711,22 +7730,6 @@ Bound to `M-m' in the minibuffer."
 
 ;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;
-;;;###autoload (autoload 'toggle-icicle-ignored-space-prefix "icicles")
-(defalias 'toggle-icicle-ignored-space-prefix 'icicle-toggle-ignored-space-prefix)
-;;;###autoload (autoload 'icicle-toggle-ignored-space-prefix "icicles")
-(defun icicle-toggle-ignored-space-prefix ()
-                                        ; Bound to `M-_' in minibuffer, except when searching.
-  "Toggle `icicle-buffer-ignore-space-prefix-flag'.
-Bound to `M-_' in the minibuffer, except during Icicles searching."
-  (interactive)
-  (setq icicle-buffer-ignore-space-prefix-flag  (not icicle-buffer-ignore-space-prefix-flag))
-  (icicle-complete-again-update)
-  (icicle-msg-maybe-in-minibuffer
-   "Ignoring space prefix in buffer names is now %s"
-   (icicle-propertize (if icicle-buffer-ignore-space-prefix-flag "ON" "OFF") 'face 'icicle-msg-emphasis)))
-
-;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
-;;
 ;;;###autoload (autoload 'toggle-icicle-highlight-historical-candidates "icicles")
 (defalias 'toggle-icicle-highlight-historical-candidates
     'icicle-toggle-highlight-historical-candidates)
@@ -7812,6 +7815,68 @@ Bound to `C-.' in minibuffer during file-name input."
   (icicle-msg-maybe-in-minibuffer
    "Ignoring selected file extensions is now %s"
    (icicle-propertize (if completion-ignored-extensions "ON" "OFF") 'face 'icicle-msg-emphasis)))
+
+;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
+;;
+;;;###autoload (autoload 'toggle-icicle-ignored-space-prefix "icicles")
+(defalias 'toggle-icicle-ignored-space-prefix 'icicle-toggle-ignored-space-prefix)
+;;;###autoload (autoload 'icicle-toggle-ignored-space-prefix "icicles")
+(defun icicle-toggle-ignored-space-prefix ()
+                                        ; Bound to `M-_' in minibuffer, except when searching.
+  "Toggle `icicle-buffer-ignore-space-prefix-flag'.
+Bound to `M-_' in the minibuffer, except during Icicles searching."
+  (interactive)
+  (setq icicle-buffer-ignore-space-prefix-flag  (not icicle-buffer-ignore-space-prefix-flag))
+  (icicle-complete-again-update)
+  (icicle-msg-maybe-in-minibuffer
+   "Ignoring space prefix in buffer names is now %s"
+   (icicle-propertize (if icicle-buffer-ignore-space-prefix-flag "ON" "OFF") 'face 'icicle-msg-emphasis)))
+
+;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
+;;
+;;;###autoload (autoload 'toggle-icicle-include-cached-files "icicles")
+(defalias 'toggle-icicle-include-cached-files 'icicle-toggle-include-cached-files)
+;;;###autoload (autoload 'icicle-toggle-include-cached-files "icicles")
+(defun icicle-toggle-include-cached-files ()
+  "Toggle the sign of option `icicle-buffer-include-cached-files-nflag'.
+Bound to `C-x F' in the minibuffer during buffer-name completion."
+  (interactive)
+  (setq icicle-buffer-include-cached-files-nflag  (- icicle-buffer-include-cached-files-nflag))
+  ;; Just in case someone used setq instead of Customize.
+  (when (zerop icicle-buffer-include-cached-files-nflag)
+    (setq icicle-buffer-include-cached-files-nflag  20))
+  (when (> icicle-buffer-include-cached-files-nflag 0)
+    (unless (require 'filecache nil t)
+      (error "Option toggled, but you need library `filecache.el' to use it")))
+  (icicle-msg-maybe-in-minibuffer
+   "Including cached file names for buffer completion is now %s"
+   (icicle-propertize (if (> icicle-buffer-include-cached-files-nflag 0)
+                          (format "ON (%s max)" icicle-buffer-include-cached-files-nflag) "OFF")
+                      'face 'icicle-msg-emphasis)))
+
+;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
+;;
+;;;###autoload (autoload 'toggle-icicle-include-recent-files "icicles")
+(defalias 'toggle-icicle-include-recent-files 'icicle-toggle-include-recent-files)
+;;;###autoload (autoload 'icicle-toggle-include-recent-files "icicles")
+(defun icicle-toggle-include-recent-files ()
+  "Toggle the sign of option `icicle-buffer-include-recent-files-nflag'.
+Bound to `C-x R' in the minibuffer during buffer-name completion."
+  (interactive)
+  (setq icicle-buffer-include-recent-files-nflag  (- icicle-buffer-include-recent-files-nflag))
+  ;; Just in case someone used setq instead of Customize.
+  (when (zerop icicle-buffer-include-recent-files-nflag)
+    (setq icicle-buffer-include-recent-files-nflag  20))
+  (when (> icicle-buffer-include-recent-files-nflag 0)
+    (if (require 'recentf nil t)
+        (unless recentf-list (recentf-load-list))
+      (error "Option toggled, but you need library `recentf.el' to use it")))
+  (icicle-msg-maybe-in-minibuffer
+   "Including recent file names for buffer completion is now %s"
+   (icicle-propertize (if (> icicle-buffer-include-recent-files-nflag 0)
+                          (format "ON (%s max)" icicle-buffer-include-recent-files-nflag)
+                        "OFF")
+                      'face 'icicle-msg-emphasis)))
 
 ;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;
