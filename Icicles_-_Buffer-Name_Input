@@ -23,6 +23,14 @@ satisfy these conditions:
 In addition to the usual '''Icicles''' key bindings, during buffer-name
 completion you can use the following keys:
 
+* '''`C-x F'''' ('''`icicle-toggle-include-cached-files'''') Toggle whether
+`icicle-buffer' includes cached file names as candidates.  That
+is, toggle [[option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-buffer-include-cached-files-nflag|icicle-buffer-include-cached-files-nflag]]</tt>''''.
+ 
+* '''`C-x R'''' (`icicle-toggle-include-recent-files') Toggle whether
+`icicle-buffer' includes recent file names as candidates.  That
+is, toggle option '''`<tt>[[Icicles - Customization and General Tips#icicle-buffer-include-recent-files-nflag|icicle-buffer-include-recent-files-nflag]]</tt>''''.
+
 * '''`C-x C-m -'''' ('''`icicle-remove-buffer-cands-for-derived-mode'''') to ''remove'' the
   buffer-name candidates with a major
   mode that is ''derived from'' a given ''mode''.  You are prompted for the mode.  You can repeat this key to narrow buffer candidates by mode.  (`C-m' is the same key as `RET'.)
