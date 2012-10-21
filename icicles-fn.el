@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Oct 20 08:34:09 2012 (-0700)
+;; Last-Updated: Sun Oct 21 11:00:12 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 13491
+;;     Update #: 13494
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -5107,18 +5107,16 @@ Truncate according to `icicle-max-candidates'."
     new-cands))
 
 (defun icicle-take (num xs)
-  "Return a copy of list XS but with only the first NUM items.
+  "Return a new list with the first NUM elements of list XS.
 No error handling.  NUM must be in the range 0 to (length XS)."
-  ;; Recursive version would be just this:
+  ;; A recursive version would be just this:
   ;; (and xs (not (zerop num)) (cons (car xs) (icicle-take (1- num) (cdr xs)))))
-  (and xs (not (zerop num))
-       (let ((new-xs  ())
-             (count   0))
-         (catch 'icicle-take
-           (dolist (x  xs)
-             (when (> (setq count  (1+ count)) num) (throw 'icicle-take new-xs))
-             (setq new-xs  (cons x new-xs)))
-           new-xs))))
+  (let (newlist)
+    (while (and xs  (> num 0))
+      (setq newlist  (cons (car xs) newlist)
+            num      (1- num)
+            xs       (cdr xs)))
+    (nreverse newlist)))
 
 ;; From `cl-seq.el', function `union', without keyword treatment.
 (defun icicle-set-union (list1 list2)
