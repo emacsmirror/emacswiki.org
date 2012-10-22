@@ -1595,7 +1595,7 @@ turned on.  So for example, if the latter option value is 20,
 then the names of only the twenty most recently visited files are
 candidates.
 
-
+A [[prefix argument]] to `C-x F' or `C-x R' sets the option value to the [[numeric prefix argument]] value.
 
 
 
