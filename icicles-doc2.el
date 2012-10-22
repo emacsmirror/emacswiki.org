@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun Oct 21 18:50:34 2012 (-0700)
+;; Last-Updated: Sun Oct 21 18:58:02 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 29044
+;;     Update #: 29046
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -5527,8 +5527,7 @@
 ;;    Cache' and `File Conveniences', respectively.
 ;;
 ;;    You can toggle these options using `C-x F' and `C-x R',
-;;    respectively, during buffer-name completion.  A prefix arg sets
-;;    the option value to the numeric prefix value.
+;;    respectively, during buffer-name completion.
 ;;
 ;;    The option values are not exactly Boolean, however.  They are in
 ;;    fact non-zero integer values.  Each option is turned on when
@@ -5537,6 +5536,9 @@
 ;;    turned on.  So for example, if the latter option value is 20,
 ;;    then the names of only the twenty most recently visited files
 ;;    are candidates.
+;;
+;;    A prefix argument to `C-x F' or `C-x R' sets the option value to
+;;    the numeric prefix argument value.
 ;;
 ;;  * Option `icicle-ignored-directories' is a list of directories
 ;;    that are ignored by various Icicles commands, including
