@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun Oct 21 15:14:55 2012 (-0700)
+;; Last-Updated: Sun Oct 21 18:50:18 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 26897
+;;     Update #: 26898
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -6906,10 +6906,12 @@
 ;;  * `C-x F' (`icicle-toggle-include-cached-files') Toggle whether
 ;;    `icicle-buffer' includes cached file names as candidates.  That
 ;;    is, toggle option `icicle-buffer-include-cached-files-nflag'.
+;;    A prefix arg sets the option value to the numeric prefix value.
 ;;    
 ;;  * `C-x R' (`icicle-toggle-include-recent-files') Toggle whether
 ;;    `icicle-buffer' includes recent file names as candidates.  That
 ;;    is, toggle option `icicle-buffer-include-recent-files-nflag'.
+;;    A prefix arg sets the option value to the numeric prefix value.
 ;;
 ;;  * `C-x m' (`icicle-bookmark-non-file-other-window') to visit a
 ;;    bookmarked buffer.  This is available only if you use library
