@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Oct 21 11:00:12 2012 (-0700)
+;; Last-Updated: Mon Oct 22 11:17:38 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 13494
+;;     Update #: 13501
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -3066,7 +3066,7 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
                        ;; Highlight Info index-entry cand (`icicle-historical-candidate-other')
                        ;; if its node has been visited.
                        ;;
-                       ;; FREE var here (bound in `icicle-Info-index'):`icicle-Info-hist-list'
+                       ;; FREE var here (bound in `icicle-Info-index'): `icicle-Info-hist-list'.
                        (when (and (> emacs-major-version 21)
                                   (memq icicle-last-top-level-command '(Info-index icicle-Info-index))
                                   icicle-highlight-historical-candidates-flag
@@ -3074,9 +3074,10 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
                                   (<= nb-cands icicle-Info-visited-max-candidates)
                                   (progn (message "Highlighting topics in visited nodes...") t))
                          (let ((candidate  (icicle-current-completion-in-Completions)))
-                           (when (icicle-some (mapcar 'cadr icicle-Info-hist-list)
-                                              candidate
-                                              #'icicle-Info-node-is-indexed-by-topic)
+                           (when (or (assoc candidate icicle-Info-index-cache)
+                                     (icicle-some (mapcar 'cadr icicle-Info-hist-list)
+                                                  candidate
+                                                  #'icicle-Info-node-is-indexed-by-topic))
                              (add-text-properties
                               beg end
                               `(face ,(setq faces  (cons 'icicle-historical-candidate-other faces)))))))
@@ -3339,7 +3340,9 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
 
 (when (> emacs-major-version 21)
   (defun icicle-Info-node-is-indexed-by-topic (node topic)
-    "Return non-nil if Info NODE is indexed by TOPIC."
+    "Return non-nil if Info NODE is indexed by TOPIC.
+The value returned is (TOPIC NODE Info-current-file), and it is
+cached in `icicle-Info-index-cache'."
     ;; FREE vars used here (bound in `icicle-Info-index'): `icicle-Info-index-nodes', `icicle-Info-manual'.
     (let ((pattern
            (format "\n\\* +\\([^\n]*%s[^\n]*\\):[ \t]+\\([^\n]*\\)\\.\\(?:[ \t\n]*(line +\\([0-9]+\\))\\)?"
@@ -3362,7 +3365,10 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
                    (while (progn (goto-char (point-min))
                                  (while (re-search-forward pattern nil t)
                                    (when (string= (match-string-no-properties 2) node)
-                                     (throw 'icicle-Info-node-is-indexed-by-topic node)))
+                                     (add-to-list 'icicle-Info-index-cache
+                                                  (list topic node Info-current-file))
+                                     (throw 'icicle-Info-node-is-indexed-by-topic
+                                       (list topic node Info-current-file))))
                                  (setq index-nodes  (cdr index-nodes)
                                        nextnode     (car index-nodes)))
                      (Info-goto-node nextnode)))
