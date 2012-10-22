@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Oct 21 15:08:12 2012 (-0700)
+;; Last-Updated: Sun Oct 21 18:48:31 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 18581
+;;     Update #: 18588
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -7837,34 +7837,40 @@ Bound to `M-_' in the minibuffer, except during Icicles searching."
 ;;;###autoload (autoload 'toggle-icicle-include-cached-files "icicles")
 (defalias 'toggle-icicle-include-cached-files 'icicle-toggle-include-cached-files)
 ;;;###autoload (autoload 'icicle-toggle-include-cached-files "icicles")
-(defun icicle-toggle-include-cached-files ()
+(defun icicle-toggle-include-cached-files (&optional newval)
   "Toggle the sign of option `icicle-buffer-include-cached-files-nflag'.
+A prefix arg sets the option value to the numeric prefix value.
 Bound to `C-x F' in the minibuffer during buffer-name completion."
-  (interactive)
-  (setq icicle-buffer-include-cached-files-nflag  (- icicle-buffer-include-cached-files-nflag))
-  ;; Just in case someone used setq instead of Customize.
+  (interactive "P")
+  (setq newval  (and newval  (prefix-numeric-value newval)))
+  (setq icicle-buffer-include-cached-files-nflag
+        (or newval  (- icicle-buffer-include-cached-files-nflag)))
+  ;; Just in case someone uses setq instead of Customize.
   (when (zerop icicle-buffer-include-cached-files-nflag)
     (setq icicle-buffer-include-cached-files-nflag  20))
   (when (> icicle-buffer-include-cached-files-nflag 0)
     (unless (require 'filecache nil t)
       (error "Option toggled, but you need library `filecache.el' to use it")))
   (icicle-msg-maybe-in-minibuffer
-   "Including cached file names for buffer completion is now %s"
-   (icicle-propertize (if (> icicle-buffer-include-cached-files-nflag 0)
-                          (format "ON (%s max)" icicle-buffer-include-cached-files-nflag) "OFF")
-                      'face 'icicle-msg-emphasis)))
+   "Including cached file names for buffer completion is now %s (max: %s)"
+   (icicle-propertize (if (> icicle-buffer-include-cached-files-nflag 0) "ON" "OFF")
+                      'face 'icicle-msg-emphasis)
+   (icicle-propertize (format "%d" icicle-buffer-include-cached-files-nflag) 'face 'icicle-msg-emphasis)))
 
 ;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;
 ;;;###autoload (autoload 'toggle-icicle-include-recent-files "icicles")
 (defalias 'toggle-icicle-include-recent-files 'icicle-toggle-include-recent-files)
 ;;;###autoload (autoload 'icicle-toggle-include-recent-files "icicles")
-(defun icicle-toggle-include-recent-files ()
+(defun icicle-toggle-include-recent-files (&optional newval)
   "Toggle the sign of option `icicle-buffer-include-recent-files-nflag'.
+A prefix arg sets the option value to the numeric prefix value.
 Bound to `C-x R' in the minibuffer during buffer-name completion."
-  (interactive)
-  (setq icicle-buffer-include-recent-files-nflag  (- icicle-buffer-include-recent-files-nflag))
-  ;; Just in case someone used setq instead of Customize.
+  (interactive "P")
+  (setq newval  (and newval  (prefix-numeric-value newval)))
+  (setq icicle-buffer-include-recent-files-nflag
+        (or newval  (- icicle-buffer-include-recent-files-nflag)))
+  ;; Just in case someone uses setq instead of Customize.
   (when (zerop icicle-buffer-include-recent-files-nflag)
     (setq icicle-buffer-include-recent-files-nflag  20))
   (when (> icicle-buffer-include-recent-files-nflag 0)
@@ -7872,11 +7878,10 @@ Bound to `C-x R' in the minibuffer during buffer-name completion."
         (unless recentf-list (recentf-load-list))
       (error "Option toggled, but you need library `recentf.el' to use it")))
   (icicle-msg-maybe-in-minibuffer
-   "Including recent file names for buffer completion is now %s"
-   (icicle-propertize (if (> icicle-buffer-include-recent-files-nflag 0)
-                          (format "ON (%s max)" icicle-buffer-include-recent-files-nflag)
-                        "OFF")
-                      'face 'icicle-msg-emphasis)))
+   "Including recent file names for buffer completion is now %s (max: %s)"
+   (icicle-propertize (if (> icicle-buffer-include-recent-files-nflag 0) "ON" "OFF")
+                       'face 'icicle-msg-emphasis)
+   (icicle-propertize (format "%d" icicle-buffer-include-recent-files-nflag) 'face 'icicle-msg-emphasis)))
 
 ;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;
