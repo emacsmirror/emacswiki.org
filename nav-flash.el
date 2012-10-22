@@ -5,8 +5,8 @@
 ;; Author: Roland Walker <walker@pobox.com>
 ;; Homepage: http://github.com/rolandwalker/nav-flash
 ;; URL: http://raw.github.com/rolandwalker/nav-flash/master/nav-flash.el
-;; Version: 1.0.2
-;; Last-Updated: 14 Sep 2012
+;; Version: 1.0.4
+;; Last-Updated: 20 Oct 2012
 ;; EmacsWiki: NavFlash
 ;; Keywords: extensions, navigation, interface
 ;;
@@ -116,7 +116,7 @@
 ;;; Code:
 ;;
 
-;;; requires
+;;; requirements
 
 ;; for callf
 (require 'cl)
@@ -130,7 +130,7 @@
 ;;;###autoload
 (defgroup nav-flash nil
   "Briefly highlight the current line."
-  :version "1.0.2"
+  :version "1.0.4"
   :link '(emacs-commentary-link "nav-flash")
   :prefix "nav-flash-"
   :group 'navigation
@@ -173,9 +173,11 @@ Setting this to nil or 0 will turn off the indicator."
 
 POS is optional, and defaults to the current point.
 
-If optional END-POS is set, flash the characters between
-the two points, otherwise flash the entire line in which
-POS is found.
+If optional END-POS is set, flash the characters between the two
+points, otherwise flash the entire line in which POS is found.
+
+The flash is normally not inclusive of END-POS.  However, when
+POS is equal to END-POS, the single character at POS will flash.
 
 Optional FACE defaults to `nav-flash-face'.  Optional DELAY
 defaults to `nav-flash-delay' seconds.  Setting DELAY to 0 makes
@@ -186,6 +188,8 @@ this function a no-op."
       (goto-char pos)
       (setq pos (line-beginning-position))
       (setq end-pos (1+ (line-end-position)))))
+  (when (eq pos end-pos)
+    (incf end-pos))
   (callf or delay nav-flash-delay)
   (callf or face 'nav-flash-face)
   (when (and (numberp delay)
