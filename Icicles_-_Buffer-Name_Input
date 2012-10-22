@@ -27,13 +27,14 @@ completion you can use the following keys:
 [:icicle-buffer-include-cached-files-nflag]
 * '''`C-x F'''' ('''`icicle-toggle-include-cached-files'''') Toggle whether
 `icicle-buffer' includes cached file names as candidates.  That
-is, toggle [[option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-buffer-include-cached-files-nflag|icicle-buffer-include-cached-files-nflag]]</tt>''''.
+is, toggle [[option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-buffer-include-cached-files-nflag|icicle-buffer-include-cached-files-nflag]]</tt>''''.  A [[prefix argument]] sets the option value to the numeric prefix value.
  
 [:icicle-toggle-include-recent-files]
 [:icicle-buffer-include-recent-files-nflag]
 * '''`C-x R'''' (`icicle-toggle-include-recent-files') Toggle whether
 `icicle-buffer' includes recent file names as candidates.  That
-is, toggle option '''`<tt>[[Icicles - Customization and General Tips#icicle-buffer-include-recent-files-nflag|icicle-buffer-include-recent-files-nflag]]</tt>''''.
+is, toggle option '''`<tt>[[Icicles - Customization and General Tips#icicle-buffer-include-recent-files-nflag|icicle-buffer-include-recent-files-nflag]]</tt>''''.  A prefix arg sets the option value to the numeric prefix value.
+
 
 [:icicle-remove-buffer-cands-for-derived-mode]
 * '''`C-x C-m -'''' ('''`icicle-remove-buffer-cands-for-derived-mode'''') to ''remove'' the
