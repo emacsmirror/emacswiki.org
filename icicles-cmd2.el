@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Sat Oct 20 11:48:50 2012 (-0700)
+;; Last-Updated: Mon Oct 22 09:30:50 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 6016
+;;     Update #: 6019
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2037,7 +2037,8 @@ candidates than `icicle-Info-visited-max-candidates'"
         ;; in `icicle-Info-node-is-indexed-by-topic' and `icicle-display-candidates-in-Completions'
         (icicle-Info-index-nodes     (and (fboundp 'Info-index-nodes)  (Info-index-nodes))) ; Emacs 22+
         (icicle-Info-manual          Info-current-file)
-        (icicle-Info-hist-list       (and (boundp 'Info-history-list)  Info-history-list))) ; Emacs 22+
+        (icicle-Info-hist-list       (and (boundp 'Info-history-list)  Info-history-list)) ; Emacs 22+
+        (icicle-transform-function   'icicle-remove-duplicates)) ; See Emacs bug #12705.
     (when (and (require 'bookmark+ nil t)  (fboundp 'icicle-bookmark-info-other-window))
       (define-key minibuffer-local-completion-map (icicle-kbd "C-x m")
         'icicle-bookmark-info-other-window))
