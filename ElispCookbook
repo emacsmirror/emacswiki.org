@@ -156,6 +156,20 @@ This only works in the simplest cases.  Unfortunately, this doesn't work for all
 
 == Killing text ==
 
+=== Killing the current line ===
+
+Kill the current N line(s)
+
+ (defun kill-current-line (&optional N)
+   "Kill current N line(s)"
+   (interactive "p")
+
+   (move-beginning-of-line 1)
+   (let ((beg (point)))
+     (forward-line N)
+     `(kill-region beg (point))))
+
+
 As the ElispManual says, "Most of the kill commands are primarily for
 interactive use [...]  When you need to delete text for internal
 purposes within a Lisp function, you should normally use deletion
