@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sun Oct 21 15:04:20 2012 (-0700)
+;; Last-Updated: Mon Oct 22 09:35:06 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 9145
+;;     Update #: 9148
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -740,6 +740,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2012/10/22 dadams
+;;     icicle-Info-index: Bind *-transform-function to *-remove-duplicates.  Emacs bug #12705.
 ;; 2012/10/20 dadams
 ;;     icicle-read-color: Fix case where user inputs without completing (WYSIWYG transforms to "").
 ;; 2012/10/09 dadams
@@ -6404,7 +6406,7 @@
 ;;              icicle-region-bookmarks-flag, icicle-regions-name-length-max.
 ;; 2010/03/14 dadams
 ;;     Added: icicle-bookmark-refresh-cache-flag.
-;; 2010/03/13 sadams
+;; 2010/03/13 dadams
 ;;     Renamed icicle-add-buffer-name-flag to icicle-show-multi-completion-flag.  Doc string.
 ;; 2010/03/09 dadams
 ;;     icicle-color-themes: Initialize to ().  Do real init in cmd icicle-color-theme.
