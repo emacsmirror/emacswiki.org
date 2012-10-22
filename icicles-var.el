@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Oct 18 15:31:28 2012 (-0700)
+;; Last-Updated: Mon Oct 22 11:07:18 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1656
+;;     Update #: 1658
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-var.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -81,7 +81,7 @@
 ;;    `icicle-get-alist-candidate-function',
 ;;    `icicle-hist-cands-no-highlight', `icicle-hist-var',
 ;;    `icicle-ignored-extensions', `icicle-ignored-extensions-regexp',
-;;    `icicle-incremental-completion-p',
+;;    `icicle-incremental-completion-p', `icicle-Info-index-cache',
 ;;    `icicle-Info-only-rest-of-book-p', `icicle-inhibit-sort-p',
 ;;    `icicle-inhibit-try-switch-buffer', `icicle-initial-value',
 ;;    `icicle-input-completion-fail-overlay', `icicle-input-fail-pos',
@@ -932,6 +932,10 @@ The ignored file extensions come from `completion-ignored-extensions'.")
   "Takes the place of `icicle-incremental-completion' during input.
 The program updates this to `always' from `t' after `*Completions*' has
 been displayed.")
+
+(defvar icicle-Info-index-cache ()
+  "Cache list of index entries and their nodes and files.
+Each cache entry has the form (TOPIC NODE INFO-FILE).")
 
 (defvar icicle-Info-only-rest-of-book-p nil
   "Non-nil means complete only Info nodes from the rest of the book.")
