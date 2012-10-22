@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun Oct 21 15:56:53 2012 (-0700)
+;; Last-Updated: Sun Oct 21 18:50:34 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 29043
+;;     Update #: 29044
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -5527,7 +5527,8 @@
 ;;    Cache' and `File Conveniences', respectively.
 ;;
 ;;    You can toggle these options using `C-x F' and `C-x R',
-;;    respectively, during buffer-name completion.
+;;    respectively, during buffer-name completion.  A prefix arg sets
+;;    the option value to the numeric prefix value.
 ;;
 ;;    The option values are not exactly Boolean, however.  They are in
 ;;    fact non-zero integer values.  Each option is turned on when
