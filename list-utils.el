@@ -5,8 +5,8 @@
 ;; Author: Roland Walker <walker@pobox.com>
 ;; Homepage: http://github.com/rolandwalker/list-utils
 ;; URL: http://raw.github.com/rolandwalker/list-utils/master/list-utils.el
-;; Version: 0.2.2
-;; Last-Updated: 13 Oct 2012
+;; Version: 0.2.4
+;; Last-Updated: 22 Oct 2012
 ;; EmacsWiki: ListUtils
 ;; Keywords: extensions
 ;;
@@ -85,6 +85,7 @@
 ;;     GNU Emacs version 24.1 & 24.2    : yes
 ;;     GNU Emacs version 23.3           : yes
 ;;     GNU Emacs version 22.3           : yes
+;;     GNU Emacs version 21.x and lower : unknown
 ;;
 ;;     No external dependencies
 ;;
@@ -92,15 +93,7 @@
 ;;
 ;; TODO
 ;;
-;;     actual benchmarks on tconc
-;;
 ;;     should list-utils-make-improper accept nil as a special case?
-;;
-;;     Improper lists as input to tconc functions?
-;;
-;;     Better document which functions return copies.
-;;
-;;     Make sure every function accepts cyclic lists gracefully
 ;;
 ;;; License
 ;;
@@ -140,17 +133,19 @@
 ;;; Code:
 ;;
 
-;;; requires
+;;; requirements
 
 ;; for defstruct, assert, setf, callf
 (require 'cl)
+
+;;; declarations
 
 (declare-function list-utils-cyclic-length "list-utils.el")
 
 ;;;###autoload
 (defgroup list-utils nil
   "List-manipulation utility functions."
-  :version "0.2.2"
+  :version "0.2.4"
   :link '(emacs-commentary-link "list-utils")
   :prefix "list-utils-"
   :group 'extensions)
@@ -220,7 +215,9 @@ Such improper lists are produced by `list*'."
   "Make a cons cell or improper LIST into a proper list.
 
 Improper lists consist of proper lists consed onto a final
-element, and are produced by `list*'."
+element, and are produced by `list*'.
+
+Modifies LIST and returns the modified value."
   (assert (listp list) nil "LIST is not a list")
   (when (list-utils-cons-cell-p list)
     (callf list (nthcdr (safe-length list) list)))
@@ -231,7 +228,9 @@ element, and are produced by `list*'."
   "Make proper LIST into an improper list.
 
 Improper lists consist of proper lists consed onto a final
-element, and are produced by `list*'."
+element, and are produced by `list*'.
+
+Modifies LIST and returns the modified value."
   (assert (listp list) nil "LIST is not a list")
   (unless (list-utils-cons-cell-p list)
     (assert (> (safe-length list) 1) nil "LIST has only one element")
@@ -357,10 +356,11 @@ elements, like `safe-length'."
 (defun list-utils-depth (list)
   "Find the depth of LIST, which may contain other lists.
 
-If LIST is not a list, returns 0.
+If LIST is not a list or is an empty list, returns a depth
+of 0.
 
 If LIST is a cons cell or a list which does not contain other
-lists, returns 1."
+lists, returns a depth of 1."
   (when (and (listp list)
              (list-utils-cyclic-subseq list))
     (setq list (subseq list 0 (list-utils-safe-length list))))
@@ -369,7 +369,7 @@ lists, returns 1."
          (null list))
      0)
     ((list-utils-cons-cell-p list)
-     (+ 1 (apply 'max (mapcar 'list-utils-depth (list-utils-make-proper list)))))
+     (+ 1 (apply 'max (mapcar 'list-utils-depth (list-utils-make-proper (copy-tree list))))))
     (t
      (+ 1 (apply 'max (mapcar 'list-utils-depth list))))))
 
@@ -468,10 +468,6 @@ LIST is modified and the new value is returned."
     (when improper
       (callf list-utils-make-improper list)))
   list)
-
-
-
-(yaoddmuse-post-file "list-utils.el" yaoddmuse-default-wiki "list-utils.el" "updated version")
 
 ;;; alists
 
