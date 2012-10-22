@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Mon Oct 22 09:35:06 2012 (-0700)
+;; Last-Updated: Mon Oct 22 11:17:57 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 9148
+;;     Update #: 9156
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1494,7 +1494,11 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
-;; 2012/10/21
+;; 2012/10/22 dadams
+;;     icicle-display-candidates-in-Completions: Check Info topic first in icicle-Info-index-cache.
+;;     icicle-Info-node-is-indexed-by-topic:
+;;       Return triplet: (TOPIC NODE FILE).  Cache triplet in icicle-Info-index-cache (new).
+;; 2012/10/21 dadams
 ;;     icicle-take: Use a simpler definition.
 ;; 2012/10/20 dadams
 ;;     icicle-completion--embedded-envvar-table: Added more of vanilla code.  Thx to Michael Heerdegen.
@@ -6878,6 +6882,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2012/10/22 dadams
+;;     Added: icicle-Info-index-cache.
 ;; 2012/10/18 dadams
 ;;     Added: icicle-path-variables.
 ;;     Added: icicle-exclude-default-proxies.  (Used by *-directory-list to exclude non-file proxies.)
