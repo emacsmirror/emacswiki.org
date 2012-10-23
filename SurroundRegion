@@ -13,3 +13,9 @@ If you omit CLOSE, it will reuse OPEN."
     (goto-char begin)
     (insert open)))
 }}}
+
+
+
+
+----
+CategoryEditing
