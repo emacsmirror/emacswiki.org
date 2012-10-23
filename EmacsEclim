@@ -17,7 +17,7 @@ This projects aims at creating an emacs frontend to Eclim, see http://eclim.sour
 Visit our [http://wiki.github.com/senny/emacs-eclim/ Wiki] for a detailed project overview: 
 
 == Issues & Questions ==
-
+I can't seem to get imports to work, and can't find any resolution to these errors. When I invoke eclim-java-import, I get the error "Unrecognized option: -n". When I invoke eclim-java-import-missing, I get the error "No command 'java_import_order' found." Seems like there may have been an update to eclim without a corresponding update to emacs eclim? Or maybe I have mismatched versions? Any ideas?
 
 == Contribute ==
 The project is living on github at http://github.com/senny/emacs-eclim. Since the active development has just started lately we are glad for every contribution. Feel free to fork the project and send me a pull-request when you got some new features implemented or some bugs fixed.
