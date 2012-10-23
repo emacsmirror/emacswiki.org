@@ -7,14 +7,21 @@
 
 ;; Darwinports and other paths, since my .bashrc is not being read
 (add-to-list 'load-path (expand-file-name "elisp" (getenv "HOME")))
-(setq exec-path (split-string "/Users/alex/bin:/opt/local/bin:/bin:/sbin:/usr/bin:/usr/local/bin:/usr/sbin" path-separator))
+(setq exec-path (split-string "/Users/alex/bin:/opt/local/bin:/bin:/sbin:/usr/local/bin:/usr/bin:/usr/sbin" path-separator))
 (setenv "PATH" (mapconcat 'identity exec-path ":"))
-(setenv "MANPATH" "/usr/local/man:/usr/share/man:/usr/X11R6/man:/man")
-(setenv "PERL5LIB" "/Library/Perl/5.8.1")
+;; (setenv "PERL5LIB" "/Library/Perl/5.8.1")
 (setenv "ODD" "/Users/Shared/Oddmuse")
 (setenv "CVS_RSH" "ssh")
-(setenv "WikiDataDir" "/Users/alex/oddmuse/test-data")
+(setenv "WikiDataDir" "/Users/alex/src/oddmuse/test-data")
 (server-start)
+
+;; man
+;; (unless (getenv "MANPATH")
+;;   (setenv "MANPATH"
+;; 	  (with-temp-buffer
+;; 	    (insert-file-contents-literally "~/.bashrc")
+;; 	    (when (re-search-forward "MANPATH=\\(.*\\)" nil t)
+;; 	      (match-string 1)))))
 
 ;; (when (> (display-color-cells) 100)
 ;;   (require 'pink-bliss)
@@ -226,6 +233,9 @@ in parsed XML OPML."
 (autoload 'css-mode "css-mode" nil t)
 (add-to-list 'auto-mode-alist '("\\.css\\'" . css-mode))
 
+;; action script
+(add-to-list 'auto-mode-alist '("\\.as\\'" . javascript-mode))
+
 ;;; ispell
 
 (setq ispell-program-name "aspell"
@@ -268,6 +278,9 @@ in parsed XML OPML."
 ;; Emacs.app -- is this a bug?
 (setq ns-alternate-modifier nil; such that Alt-7 results in |
       ns-command-modifier 'meta); such that Cmd-x is M-x
+
+;; I have not install GNU fileutils...
+(setq dired-use-ls-dired nil); get rid of the warning
 
 ;;; aquamacs
 ;; (global-set-key (kbd "H-q") (kbd "M-q"))
@@ -333,6 +346,19 @@ in parsed XML OPML."
 		 (url-unhex-string str)
 		 'utf-8)))
 
+(defun decode-utf-8-double-encoding (start end)
+  "Decode the region."
+  (interactive "r")
+  (let ((table '(("Ã¼" . "ü")
+		 ("Ã¤" . "ä")))
+	(case-fold-search nil))
+    (save-excursion
+      (dolist (row table)
+	(goto-char start)
+	(while (search-forward (car row) end t)
+	  (replace-match (cdr row) t))))))
+	
+
 ;;; hippie expand
 
 ;; (global-set-key (kbd "C-<tab>") 'dabbrev-expand)
@@ -344,6 +370,14 @@ in parsed XML OPML."
 
 ;;; eshell
 (global-set-key (kbd "C-z") 'eshell)
+(global-set-key (kbd "C-x 4 C-z") 'eshell-other-window)
+(defun eshell-other-window (&optional arg)
+  (interactive "P")
+  (if (one-window-p)
+      (split-window)
+    (other-window 1))
+  (eshell arg))
+
 (setq eshell-save-history-on-exit t)
 (add-hook 'eshell-mode-hook
 	  (lambda ()
@@ -394,26 +428,30 @@ in parsed XML OPML."
       rcirc-fill-column 79; side-by-side on my laptop
       rcirc-default-nick "kensanata"
       rcirc-keywords '("ken" "kens" "kensa" "alex")
+      rcirc-nick-prefix-chars "~&@%+!"
       rcirc-server-alist
       '(("irc.freenode.net" :channels
 	 ("#emacs" "#emacs-ops" "#rcirc" "#wiki" "#oddmuse"
-	  "#epfarms" "#biology" "#clojure" "#clojure.de"))
-	;; "#eclipse" "#eclipse-de" "#osgi"
-	;; "#googlewavebots" "#googlewave"
-	;; "#ubuntu" "#hcoop"
-	("ircnet.eversible.com" :channels ("#drsrm"))
+	  "#epfarms" "#inkscape"))
+	;; "#eclipse" "#eclipse-de" "#osgi" "#perl6"
+	;; "#ubuntu" "#hcoop" "#biology" "#clojure" "#clojure.de"
+	;; ("ircnet.eversible.com" :channels ("#drsrm"))
+	;; ("irc.euirc.net" :channels ("#tanelorn"))
 	;; ("irc.lugs.ch"   :channels ("#hackerfunk"))
 	("irc.perl.org" :channels ("#perlde"))
-	("irc.sorcery.net" :channels ("#rpmn"))
-	("irc.otherworlders.org" :channels ("#pathfinder"))
+	;; ("irc.sorcery.net" :channels ("#Stargazer"))
+	;; ("irc.otherworlders.org" :channels ("#pathfinder"))
 	;; "#enworld"
+	;; ("irc.sorcery.net" :channels ("#StargazersWorld"))
+	;; ("irc2.magicstar.net" :channels ("#magicstar" "#rpgnet"))
 	("localhost" :channels ("&bitlbee" "&roleplaying" "&emacs"
 				"&bsi"))
 	("irc.oftc.net" :channels ("#bitlbee")))
       rcirc-decode-coding-system 'undecided
       rcirc-coding-system-alist
       '(("#nihongo" undecided . iso-2022-jp))
-      rcirc-ignore-list '("consolers" "ams" "jordanb")
+      rcirc-ignore-list '("consolers" "ams" "jordanb" "Nihplod"
+			  "raela" "krisfremen" "dustpuppy" "rudybot")
       rcirc-log-flag t
       rcirc-authinfo (with-temp-buffer
 		       (insert-file-contents-literally "~/.rcirc-authinfo")
@@ -468,6 +506,22 @@ in parsed XML OPML."
 	  (lambda ()
 	    (rcirc-track-minor-mode 1)
 	    (local-set-key (kbd "M-q") 'rcirc-unfill)))
+
+(eval-after-load 'rcirc
+  '(define-key rcirc-mode-map (kbd "SPC")
+     (lambda ()
+       (interactive)
+       (if (< (point) rcirc-prompt-start-marker)
+	   (scroll-up)
+	 (call-interactively 'self-insert-command)))))
+
+(eval-after-load 'rcirc
+  '(define-key rcirc-mode-map (kbd "DEL")
+     (lambda ()
+       (interactive)
+       (if (< (point) rcirc-prompt-end-marker)
+	   (scroll-down)
+	 (backward-delete-char-untabify 1)))))
 
 ;; rcirc-ding
 
@@ -555,30 +609,31 @@ in parsed XML OPML."
   "Yadda yadda." t)
 
 (setq oddmuse-wikis
-      '(("Test Wiki" "http://www.emacswiki.org/cgi-bin/test" utf-8)
+      '(("Test Wiki" "http://www.emacswiki.org/cgi-bin/test"
+	 utf-8 "question" nil)
 	("Emacs Wiki" "http://www.emacswiki.org/cgi-bin/emacs"
-	 utf-8 "question")
+	 utf-8 "uihnscuskc" nil)
 	("Campaign Wiki" "http://www.campaignwiki.org/wiki"
- utf-8 "question")
-	("HagfishTavern" "http://www.campaignwiki.org/wiki/HagfishTavern"
-	 utf-8 "question")
+	 utf-8 "question" "Alex")
 	("DungeonMaps" "http://www.campaignwiki.org/wiki/DungeonMaps"
-	 utf-8 "question")
-	("Kaylash" "http://www.campaignwiki.org/wiki/Kaylash"
-	 utf-8 "question")
-	("Montag in Zürich"
-	 "http://www.campaignwiki.org/wiki/MontagInZ%C3%BCrich"
-	 utf-8 "question")
-	("Alder King" "http://www.campaignwiki.org/wiki/TheAlderKing"
-	 utf-8 "question")
-	("Golden Lanterns" "http://www.campaignwiki.org/wiki/GoldenLanterns"
-	 utf-8 "question")
+	 utf-8 "question" "Alex")
+	("Montag in Zürich" "http://www.campaignwiki.org/wiki/MontagInZ%C3%BCrich"
+	 utf-8 "question" "Alex")
+	("Mondschein Saga" "http://www.campaignwiki.org/wiki/MondscheinSaga"
+	 utf-8 "frodo" "Alex")
 	("Community Wiki" "http://www.communitywiki.org/cw"
-	 utf-8 "question")
+	 utf-8 "question" nil)
 	("Oddmuse Wiki" "http://www.oddmuse.org/cgi-bin/oddmuse"
-	 utf-8 "question")
+	 utf-8 "question" nil)
 	("Alex" "http://www.emacswiki.org/cgi-bin/alex"
 	 utf-8 "question")))
+
+(add-hook 'oddmuse-mode-hook
+	  (lambda ()
+	    (longlines-mode)
+	    (font-lock-add-keywords nil campaign-wiki-font-lock-keywords)))
+
+;; (setq oddmuse-mode-hook nil)
 
 (add-hook 'text-mode-hook
 	  (lambda ()
@@ -589,6 +644,7 @@ in parsed XML OPML."
 	  (lambda ()
 	    (font-lock-mode -1)))
 
+(defun oddmuse-toc () (interactive) (occur "^=.*"))
 (defun oddmuse-section () (interactive) (oddmuse-header ?=))
 (defun oddmuse-subsection () (interactive) (oddmuse-header ?-))
 (defun oddmuse-header (char)
@@ -705,29 +761,81 @@ add an empty line before it and make it italic."
   "Major mode for editing Oddmuse wiki files.
 The particular markup mix is specific to my preferences.")
 
-(define-generic-mode 'campaign-wiki-mode
-  nil; comments
-  nil; keywords
+(add-hook 'alex-oddmuse-mode-hook
+	  (lambda ()
+	    (auto-fill-mode 1)
+	    (flyspell-mode 1)))
+
+(defface strike-through
+  '((t (:strike-through t)))
+  "Strike-through for deleted text.")
+
+(defvar campaign-wiki-font-lock-keywords
   '(("^=[^=\n]+" . 'info-title-1)
     ("^==[^=\n]+" . 'info-title-2)
     ("^===[^=\n]+" . 'info-title-3)
     ("^====+[^=\n]+" . 'info-title-4)
+    ("\\[h1.*?\\[/h1\\]" . 'info-title-1)
+    ("\\[h2.*?\\[/h2\\]" . 'info-title-2)
+    ("\\[h3.*?\\[/h3\\]" . 'info-title-3)
+    ("\\[h4.*?\\[/h4\\]" . 'info-title-4)
     ("\\[\\[.*?\\]\\]" . 'link)
     ("\\[http:.*?\\]" . 'link)
     ("\\[url.*?\\[/url\\]" . 'link)
+    ("\\[code.*?\\[/code\\]" . 'fixed-pitch)
+    ("\\[/?\\(color\\|size\\|font\\|quote\\|left\\|right\\|center\\|list\\|code\\).*?\\]" . 'font-lock-constant-face)
+    ("\\[\\*\\]" . 'bold)
+    ("^\\(\\*+\\|#+\\|-\\) " . 'bold)
     ("\\[b\\].*?\\[/b\\]" . 'bold)
     ("\\[i\\].*?\\[/i\\]" . 'italic)
+    ("\\[u\\].*?\\[/u\\]" . 'underline)
+    ("\\[s\\].*?\\[/s\\]" . 'strike-through)
+    ("\\[strike\\].*?\\[/strike\\]" . 'strike-through)
+    ("\\[highlight\\].*?\\[/highlight\\]" . 'highlight)
     ("\\*\\*.*?\\*\\*" . 'bold)
-    ("\\*.*?\\*" . 'bold)
+    ("\\*\\b.*?\\b\\*" . 'bold)
     ("\\_<//.*?//" . 'italic)
     ("\\_</.*?/" . 'italic)
     ("__.*?__" . 'italic)
     ("_.*?_" . 'underline)
     ("|+=?" . font-lock-string-face)
-    ("\\\\\\\\[ \t]+" . font-lock-warning-face)); font-lock list
+    ("\\\\\\\\[ \t]+" . font-lock-warning-face)))
+
+(define-generic-mode 'campaign-wiki-mode
+  nil; comments
+  nil; keywords
+  campaign-wiki-font-lock-keywords
   '(".campaign\\'"); auto-mode-alist
-  '((lambda () (require 'info) (require 'goto-addr))); function-list
+  '((lambda ()
+      (require 'info)
+      (require 'goto-addr)
+      (local-set-key (kbd "C-c ?") 'oddmuse-toc)
+      (local-set-key (kbd "C-c C-b")
+		     (lambda ()
+		       (interactive)
+		       (bbcode-tag "b")))
+      (local-set-key (kbd "C-c C-i")
+		     (lambda ()
+		       (interactive)
+		       (bbcode-tag "i")))
+      (local-set-key (kbd "C-c C-u")
+		     (lambda ()
+		       (interactive)
+		       (bbcode-tag "u"))))); function-list
   "Campaign Wiki stuff including Creole Markup and BBCode.")
+
+(defun bbcode-tag (tag)
+  "Insert TAG."
+  (let (start end)
+    (if (use-region-p)
+	(setq start (region-beginning)
+	      end (region-end))
+      (setq start (point)
+	    end (point)))
+    (goto-char end)
+    (insert "[/" tag "]")
+    (goto-char start)
+    (insert "[" tag "]")))
 
 (defun oddmuse-creole-table (start end rows)
   "Transpose cells into a table.
@@ -785,6 +893,23 @@ cells by rows first."
       (while (re-search-forward (car item) nil t)
 	(replace-match (cdr item))))))
 
+(defun randomize-comma-separated-list (start end)
+  "Randomize order of the comma separated list in the region."
+  (interactive "r")
+  (let ((str (mapconcat 'identity
+			(sort (split-string (replace-regexp-in-string
+					     "\\s-+" " "
+					     (buffer-substring start end))
+					    " ?, ?" t)
+			      (lambda (a b) (= 1 (random 2))))
+			", ")))
+    (delete-region start end)
+    (insert str)))
+
+;;; wiki.el
+
+(setq wiki-extension "txt")
+
 ;;; isearch & occur
 
 (defun isearch-occur ()
@@ -831,8 +956,19 @@ cells by rows first."
 
 ;;; Mush Mode
 
- (autoload 'mu-open "mu" "Play on MUSHes and MUDs" t)
- (add-hook 'mu-connection-mode-hook 'ansi-color-for-comint-mode-on)
+;; (autoload 'mu-open "mu" "Play on MUSHes and MUDs" t)
+;; (add-hook 'mu-connection-mode-hook 'ansi-color-for-comint-mode-on)
+;; (setq mu-worlds 
+;;       (when (require 'netrc nil t)
+;; 	(let* ((server "mush.elendor.net")
+;; 	       (port "1892")
+;; 	       (elendor (netrc-machine (netrc-parse "~/.netrc")
+;; 				       server port))
+;; 	       (character (netrc-get elendor "login"))
+;; 	       (password (netrc-get elendor "password"))
+;; 	       (port (netrc-get elendor "port")))
+;; 	  (list (vector "Elendor" server (string-to-number port)
+;; 			character password)))))
 
 ;;; WriteRoom
 
@@ -943,16 +1079,16 @@ cells by rows first."
 
 ;;; Gnus
 
-(setq gnus-select-method '(nntp "news.hispeed.ch")
-      gnus-secondary-select-methods
-      '((nnimap "gmail"
-		(nnimap-address "imap.gmail.com")
-		(nnimap-authinfo-file "~/.netrc")
-		(nnimap-server-port 993)
-		(nnimap-stream ssl)
-		(nnmail-expiry-target "nnimap+gmail:[Gmail]/Trash")
-		(nnmail-expiry-wait immediate)))
-      gnus-treat-display-smileys nil)
+;; (setq gnus-select-method '(nntp "news.hispeed.ch")
+;;       gnus-secondary-select-methods
+;;       '((nnimap "gmail"
+;; 		(nnimap-address "imap.gmail.com")
+;; 		(nnimap-authinfo-file "~/.netrc")
+;; 		(nnimap-server-port 993)
+;; 		(nnimap-stream ssl)
+;; 		(nnmail-expiry-target "nnimap+gmail:[Gmail]/Trash")
+;; 		(nnmail-expiry-wait immediate)))
+;;       gnus-treat-display-smileys nil)
 (add-hook 'gnus-summary-mode-hook 'my-gnus-summary-keys)
 
 (defun my-gnus-summary-keys ()
@@ -992,6 +1128,38 @@ This moves them into the Spam folder."
 	 nil nil))
       smtpmail-auth-credentials "~/.netrc")
 
+;;; Labyrinth Lord (Fünf Winde) Gold & XP
+
+(defun fünf-winde-gold (gold)
+  (interactive "nAnteil: ")
+  (save-excursion
+    (while (re-search-forward "^\\(|\\[\\[\\(.*?\\)\\]\\][ \t]*|[ \t]*\\(1\\|1/3\\)[ \t]*|[^|]*|\\)\\([ \t]*[0-9]+\\)" nil t)
+      (let ((str (match-string 1))
+	    (name (match-string 2))
+	    (anteil (match-string 3))
+	    (num (match-string 4)))
+	(when (y-or-n-p (format "War %s dabei?" name))
+	  (replace-match (concat str
+				 (format (concat "%" (number-to-string
+						      (length num)) "d")
+					 (+  (string-to-number num)
+					     (/ gold (if (string= anteil "1")
+							 1 3)))))))))))
+
+(defun fünf-winde-xp (xp)
+  (interactive "nXP: ")
+  (save-excursion
+    (while (re-search-forward "^\\(|\\[\\[\\(.*?\\)\\]\\][ \t]*|[^|]*|\\)\\([ \t]*[0-9]+\\)" nil t)
+      (let ((str (match-string 1))
+	    (name (match-string 2))
+	    (num (match-string 3)))
+	(when (y-or-n-p (format "War %s dabei?" name))
+	  (replace-match (concat str
+				 (format (concat "%" (number-to-string
+						      (length num)) "d")
+					 (+  (string-to-number num)
+					     xp)))))))))
+
 ;;; D&D Alder King XP
 
 (defun alder-king-level (xp)
@@ -1006,16 +1174,44 @@ This moves them into the Spam folder."
 			       (mapconcat (lambda (s)
 					    (put-text-property 0 1 'face 'bold s)
 					    s)
-					  '("full" "half" "bonus" "none" "quit") "/")))
-	(?f (setq current (+ current xp)) (message "full"))
-	(?h (setq current (+ current (/ xp 2))) (message "half!"))
-	(?b (setq current (+ current xp (/ xp 2))) (message "bonus!"))
-	(?n (message "none!"))
+					  '("1 (normal)" "2 (halb)"
+					    "3 (bonus)" "4 (viertel)"
+					    "0 (nichts)" "quit") "/")))
+	(?1 (setq current (+ current xp)) (message "normal"))
+	(?2 (setq current (+ current (/ xp 2))) (message "halb!"))
+	(?3 (setq current (+ current xp (/ xp 2))) (message "bonus!"))
+	(?4 (setq current (+ current (/ xp 4))) (message "halb!"))
+	(?0 (message "nichts!"))
 	(?q (error "Quit")))
       (replace-match (format "|%-20s | %2d%s | %8d | %8d"
 			     (concat "[[" name "]]")
 			     lvl (if (>= current next) "!" " ")
 			     current next)))))
+
+;; (average 1.0 2)
+(unless (fboundp 'average)
+  (defun average (&rest args)
+    (/ (apply '+ args)
+       (length args))))
+
+;;; One Page Dungeon Contest: 1PDC
+
+(defun wuala-links (base)
+  "Turn a list of file names into links to Wuala."
+  (interactive (list (read-from-minibuffer
+		      "Wuala base: "
+		      (concat "http://content.wuala.com/contents/kensanata/Dokumente/1PDC%20"
+			      (format-time-string "%Y") "/"))))
+  (while (re-search-forward "^# " nil t)
+    (let* ((start (point))
+	   (end (min (let ((pos (save-excursion (search-forward " (" nil t))))
+		       (if pos
+			   (- pos 2)
+			 (point-max)))
+		     (line-end-position)))
+	   (str (buffer-substring start end)))
+      (delete-region start end)
+      (insert "[" base (url-escape str) ".pdf " str "]"))))
 
 ;;; automatic additions
 
@@ -1034,3 +1230,5 @@ This moves them into the Spam folder."
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
  )
+(put 'downcase-region 'disabled nil)
+(put 'upcase-region 'disabled nil)
