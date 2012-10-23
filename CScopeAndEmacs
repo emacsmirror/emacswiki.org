@@ -250,6 +250,10 @@ Here is a patch created from revision 1.14 of contrib/xcscope/xcscope.el in the 
  	    cscope-sentinel-func sentinel-func
 </pre>
 
+== xcscope+ ==
+
+Here's another that I found on emacswiki; I have no idea how it compares to the others: http://emacswiki.org/xcscope+.el
+
 == cscope-fu ==
 
 There is another cscope.el out there.
@@ -263,7 +267,6 @@ The CEDET (CollectionOfEmacsDevelopmentEnvironmentTools) suite can use cscope as
 * EDE Locate - Find files in a project, such as header files.
 * SemanticBovinator symref - Find symbol references
 * Semantic Database backend - Find tags by name in your project.
-
 
 ----
 CategoryProgrammerUtils
