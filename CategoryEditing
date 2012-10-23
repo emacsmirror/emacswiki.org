@@ -61,6 +61,7 @@ This category is about editing, not modes.  See CategoryModes, instead.
 ** RotateWordCapitalization -- rotate the capitalization of the current word
 ** SimplerWordCapitalization -- make `upcase-word' (M-u), `downcase-word' (M-l), and `capitalize-word' (M-c) work on [[region]]s too.
 ** [[Multiverse]] -- manage multiple versions of [[buffer]]s in an Emacs session
+** SurroundRegion -- surround the region with a string such as quotes, begin/end, etc.
 ** See also EmacsNiftyTricks
 * [[line|Lines]]:
 ** LineCommands
