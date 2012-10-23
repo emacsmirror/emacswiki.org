@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Mon Oct 22 11:17:57 2012 (-0700)
+;; Last-Updated: Mon Oct 22 20:18:14 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 9156
+;;     Update #: 9157
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -3472,6 +3472,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2012/10/22 dadams
+;;     icicle-(un)bind-buffer-candidate-keys: Remove soft-require conditions for C-x F and C-x R.
 ;; 2012/10/21 dadams
 ;;     Added: icicle-toggle-include-cached-files, icicle-toggle-include-recent-files.
 ;;     icicle-(un)bind-buffer-candidate-keys:
