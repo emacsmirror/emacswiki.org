@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Oct 21 18:48:31 2012 (-0700)
+;; Last-Updated: Mon Oct 22 20:15:01 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 18588
+;;     Update #: 18592
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -6004,15 +6004,14 @@ Return the string that was inserted."
     'icicle-keep-only-buffer-cands-for-derived-mode)
   (define-key minibuffer-local-must-match-map (icicle-kbd "C-x C-m +") ; `C-x C-m +', aka `C-x RET +'
     'icicle-keep-only-buffer-cands-for-derived-mode)
-  (when (require 'filecache nil t)
-    (define-key minibuffer-local-completion-map (icicle-kbd "C-x F") ; `C-x F'
-      'icicle-toggle-include-cached-files)
-    (define-key minibuffer-local-must-match-map (icicle-kbd "C-x F") ; `C-x F'
-      'icicle-toggle-include-cached-files))
-  (when (require 'recentf nil t)
-    (define-key minibuffer-local-completion-map (icicle-kbd "C-x R") ; `C-x R'
+  (define-key minibuffer-local-completion-map (icicle-kbd "C-x F") ; `C-x F'
+    'icicle-toggle-include-cached-files)
+  (define-key minibuffer-local-must-match-map (icicle-kbd "C-x F") ; `C-x F'
+    'icicle-toggle-include-cached-files)
+  (when (> emacs-major-version 20)
+    (define-key minibuffer-local-completion-map (icicle-kbd "C-x R")   ; `C-x R'
       'icicle-toggle-include-recent-files)
-    (define-key minibuffer-local-must-match-map (icicle-kbd "C-x R") ; `C-x R'
+    (define-key minibuffer-local-must-match-map (icicle-kbd "C-x R")   ; `C-x R'
       'icicle-toggle-include-recent-files)))
 
 ;;;###autoload (autoload 'icicle-unbind-buffer-candidate-keys "icicles")
