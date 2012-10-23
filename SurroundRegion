@@ -1,0 +1,15 @@
+Surround the region with a string such as quotes, begin/end:
+
+{{{
+(defun surround (begin end open close)
+  "Put OPEN at START and CLOSE at END of the region.
+If you omit CLOSE, it will reuse OPEN."
+  (interactive  "r\nsStart: \nsEnd: ")
+  (when (string= close "")
+    (setq close open))
+  (save-excursion
+    (goto-char end)
+    (insert close)
+    (goto-char begin)
+    (insert open)))
+}}}
