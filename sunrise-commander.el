@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 6
-;; RCS Version: $Rev: 439 $
+;; RCS Version: $Rev: 441 $
 ;; Keywords: files, dired, midnight commander, norton, orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -2211,6 +2211,7 @@ Selective hiding of specific attributes can be controlled by customizing the
             (mapc (lambda (do-display)
                     (search-forward-regexp "\\w")
                     (search-forward-regexp "\\s-")
+                    (forward-char -1)
                     (setq props (sr-make-display-props do-display))
                     (when props 
                       (add-text-properties cursor (point) props))
@@ -2218,7 +2219,7 @@ Selective hiding of specific attributes can be controlled by customizing the
                     (if (>= (point) end) (return-from block)))
                   sr-attributes-display-mask))
         (unless (>= cursor end)
-          (add-text-properties cursor end '(invisible t)))))))
+          (add-text-properties cursor (1- end) '(invisible t)))))))
 
 (defun sr-display-attributes (beg end visiblep)
   "Manage the display of file attributes in the region from BEG to END.
@@ -2232,7 +2233,7 @@ if VISIBLEP is nil then shows file attributes in region, otherwise hides them."
         (setq next (dired-move-to-filename)))
       (while (and next (< next end))
         (beginning-of-line)
-        (forward-char 2)
+        (forward-char 1)
         (if (not visiblep)
             (sr-mask-attributes (point) next)
           (remove-text-properties (point) next '(invisible t))
