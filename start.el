@@ -7,9 +7,9 @@
 ;; Copyright (C) 1995-2012, Drew Adams, all rights reserved.
 ;; Created: Wed Aug  2 11:12:24 1995
 ;; Version: 21.1
-;; Last-Updated: Tue Oct  2 22:43:41 2012 (-0700)
+;; Last-Updated: Tue Oct 23 14:51:18 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 2947
+;;     Update #: 2949
 ;; URL: http://www.emacswiki.org/emacs-en/start.el
 ;; Keywords: abbrev, internal, local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -82,6 +82,8 @@
 ;;
 ;; Change Log:
 ;;
+;; 2012/10/23 dadams
+;;     Applied renaming: imenu-add-defs-to-menubar to imenup-add-defs-to-menubar.
 ;; 2012/08/26 dadams
 ;;     Soft require font-menus-da.el if possible (fixes font-menus.el for Emacs 24).
 ;; 2012/08/21 dadams
@@ -672,9 +674,7 @@ See the Dired-X Info pages (type \\[info]) for information on this package.")
   (eval-after-load "cc-mode"
     '(progn (require 'imenu+ nil t)
       (add-hook 'c-mode-common-hook
-       (lambda () (condition-case nil
-                      (imenu-add-defs-to-menubar)
-                    (error nil)))))))
+       (lambda () (condition-case nil (imenup-add-defs-to-menubar) (error nil)))))))
 (when (> emacs-major-version 21) (eval-after-load "find-func" '(require 'find-func+ nil t)))
 ;(eval-after-load "vc" '(require 'vc+)) ; Extensions to `vc.el'.
 (autoload 'insert-time-string "insert-time-string" t "Insert current time at point.")
