@@ -474,7 +474,7 @@ notation to octal in SC:
              (combine (user group other)
                       (let ((flags (+ (* 4 (cadr user)) (* 2 (cadr group)) (cadr other))))
                         (concat (if (zerop flags) " " (number-to-string flags))
-                                (car user) (car group) (car other) " "))))
+                                (car user) (car group) (car other)))))
         (combine (convert (substring-no-properties input 1 4))
                  (convert (substring-no-properties input 4 7))
                  (convert (substring-no-properties input 7)))))
