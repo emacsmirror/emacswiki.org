@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Aug 30 13:01:25 1999
 ;; Version: 20.0
-;; Last-Updated: Sun Jan  1 14:28:55 2012 (-0800)
+;; Last-Updated: Tue Oct 23 14:53:02 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 68
+;;     Update #: 70
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/cc-mode+.el
 ;; Keywords: c, c++, programming
 ;; Compatibility: GNU Emacs 20.x
@@ -27,13 +27,15 @@
 ;;  Extensions to `c-mode.el' & `cc-mode.el'.
 ;;
 ;;
-;; Note: This code is quite old, and is likely obsolete now.  You
-;;       might find it useful in some way to mine - or not. ;-)
+;; Note: This code is quite OLD, and is likely OBSOLETE/USELESS now.
+;;       You might find it useful in some way to mine - or not. ;-)
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
 ;;
+;; 2012/10/23 dadams
+;;     Applied renaming: imenu-add-defs-to-menubar to imenup-add-defs-to-menubar.
 ;; 2007/05/18 dadams
 ;;     Require cl.el only at compile time, and only for Emacs < 20.
 ;;
@@ -94,7 +96,7 @@
 
 (add-hook 'c-mode-common-hook
           '(lambda ()
-             (setq imenu-generic-expression
+             (setq imenup-generic-expression
                    c-imenu-generic-expression)
              (condition-case nil
                  (imenu-add-defs-to-menubar) ; no error if not defined
