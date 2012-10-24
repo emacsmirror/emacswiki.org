@@ -33,6 +33,12 @@ Here's an example of how to require a "normal" diff from GNU diff with whitespac
   M-x set-variable RET vc-svn-diff-switches RET nil RET
   M-x set-variable RET vc-diff-switches RET ("--normal" "-bB") RET
 
+Alternatively, if you'd rather stick with Subversion's built-in diff tool, you can pass Subversion-specific diff switches by setting `vc-svn-diff-switches` to a string or list of strings.  For example, to tell `svn diff` to ignore EOL conventions and other whitespace, use
+
+  (setq vc-svn-diff-switches '("-x --ignore-eol-style" "-x -w"))
+
+in your `.emacs`.
+
 == Subversion 1.7 ==
 
 Emacs 24 supports Subversion 1.7, but Emacs 23 does not. If you want to use Subversion 1.7 on Emacs 23, you can use [[https://github.com/buzztaiki/vc-svn17-el/blob/master/vc-svn17.el vc-svn17.el]] for this purpose.
