@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Oct 22 11:17:38 2012 (-0700)
+;; Last-Updated: Wed Oct 24 07:34:05 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 13501
+;;     Update #: 13505
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -3796,7 +3796,8 @@ the expanded common match of the input over all candidates."
           filtered-candidates)
       (quit (top-level)))))             ; Let `C-g' stop it.
 
-;;; Similar to the vanilla function.  Only the `let*' at the end is different.
+;;; Similar to the vanilla function.  Only the `let' in each of the cond clauses is different.
+;;; We do not remove a `$' prefix.  (So we return 0 as the first boundary.)
 (when (> emacs-major-version 23)
   (defun icicle-completion--embedded-envvar-table (string _pred action)
     "Completion table for environment variables embedded in a string.
@@ -3825,8 +3826,7 @@ same as for `substitute-in-file-name'."
                  (if (eq action 'metadata)
                      '(metadata (category . environment-variable))
                    (let ((suffix  (cdr action)))
-                     `(boundaries
-                       ,(or (match-beginning 2)  (match-beginning 1))
+                     `(boundaries 0     ; Return 0 as first boundary, since we do not remove `$' prefix.
                        . ,(when (string-match "[^[:alnum:]_]" suffix) (match-beginning 0)))))))
               (t
                (if (eq ?{  (aref string (1- beg)))
