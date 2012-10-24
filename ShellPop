@@ -1,4 +1,7 @@
-Shell-Pop is a utility which helps you pop up and pop out shell buffer window easily.
+shell-pop.el helps you to use shell easily on Emacs. Only one key action to work.
+
+You can get the latest shell-pop with the manual from my github page below. This page is no longer updated.
+https://github.com/kyagi/shell-pop-el
 
 == Download ==
 ----
@@ -71,5 +74,4 @@ What's the best way to get those changes back to you to look at?
 Thank you for your requirement and it was already done. Now you can use ansi-term and your favorite shell with shell-pop!
 
 : -- KazuoYAGI
-
 
