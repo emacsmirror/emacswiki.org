@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Mon Oct 22 20:18:14 2012 (-0700)
+;; Last-Updated: Wed Oct 24 07:28:47 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 9157
+;;     Update #: 9158
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1494,6 +1494,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2012/10/24 dadams
+;;     icicle-completion--embedded-envvar-table: Return 0 as the first boundary.  Thx to M. Heerdegen.
 ;; 2012/10/22 dadams
 ;;     icicle-display-candidates-in-Completions: Check Info topic first in icicle-Info-index-cache.
 ;;     icicle-Info-node-is-indexed-by-topic:
