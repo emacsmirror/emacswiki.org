@@ -37,7 +37,7 @@ Alternatively, if you'd rather stick with Subversion's built-in diff tool, you c
 
   (setq vc-svn-diff-switches '("-x --ignore-eol-style" "-x -w"))
 
-in your `.emacs`.
+in your .emacs.
 
 == Subversion 1.7 ==
 
