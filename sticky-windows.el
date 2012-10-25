@@ -16,6 +16,7 @@
 ;;;
 ;;; Change Log: (optional)
 
+;;;###autoload
 (defun sticky-window-keep-window-visible ()
   "Insure the buffer associated with the current window stays visible.
 This is handy for ERC buffers where you would like to see the
@@ -25,6 +26,7 @@ A prefix arg reverses this operation."
   (interactive)
   (set-window-dedicated-p (selected-window) (not current-prefix-arg)))
 
+;;;###autoload
 (defun sticky-window-delete-window ()
   "This is intended to be a replacement for `delete-window', but
 that avoids deleting windows that have been marked as dedicated
@@ -36,6 +38,7 @@ with `sticky-window-keep-window-visible'."
 	  (set-window-dedicated-p (selected-window) nil)
 	  (delete-window window))))
 
+;;;###autoload
 (defun sticky-window-delete-other-windows ()
   "Delete all other windows that are not marked to be visible with `sticky-window-keep-window-visible'."
   (interactive)
