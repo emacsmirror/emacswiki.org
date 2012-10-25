@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Thu Aug 26 16:05:01 1999
 ;; Version: 21.0
-;; Last-Updated: Tue Oct 23 17:28:28 2012 (-0700)
+;; Last-Updated: Wed Oct 24 20:58:17 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 881
+;;     Update #: 885
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/imenu+.el
 ;; Doc URL: http://emacswiki.org/emacs/ImenuMode
 ;; Keywords: tools, menus
@@ -71,6 +71,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;;
+;; 2012/10/24 dadams
+;;     imenup-toggle-case-sensitive-sorting: Improve message in case not currently sorting by name.
 ;; 2012/10/23 dadams
 ;;     Added defgroup.  Added: imenup-toggle-case-sensitive-sorting.
 ;;     Initialize imenup-last-sort-function to imenu--sort-by-name, not nil.
@@ -328,9 +331,13 @@ This affects menu sorting using `imenu--sort-by-name'."
   (interactive)
   (setq imenup-sort-ignores-case  (not imenup-sort-ignores-case))
   (imenu--menubar-select imenu--rescan-item)
-  (message "Sorting menu items by name %s" (if imenup-sort-ignores-case
-                                                 "now ignores case"
-                                               "is now case SENSITIVE")))
+  (if (eq 'imenu--sort-by-name imenu-sort-function)
+      (message "Sorting menu items by name %s" (if imenup-sort-ignores-case
+                                                   "now ignores case"
+                                                 "is now case SENSITIVE"))
+    (message "NOT sorting by name now, but will %s if you do" (if imenup-sort-ignores-case
+                                                                  "IGNORE case"
+                                                                "RESPECT case"))))
 
 
 ;; REPLACE ORIGINAL in `imenu.el'.
