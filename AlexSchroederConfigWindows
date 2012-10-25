@@ -14,8 +14,6 @@
 (add-to-list 'exec-path "C:/Programme/cygwin/bin")
 (add-to-list 'exec-path "C:/Programme/GnuWin32/bin")
 (add-to-list 'exec-path "~/Eigene Dateien/Eigene Software")
-(add-to-list 'exec-path "C:/oracle/product/10.2.0/db_1/bin")
-(add-to-list 'exec-path "C:/oracle/product/10.2.0.3/db_1e/bin")
 (add-to-list 'exec-path "C:/Programme/Growl for Windows")
 (setenv "RSH" "SSH")
 
@@ -138,7 +136,7 @@
 	 (lambda (buf)
            (with-current-buffer buf
              (and (not (memq major-mode '(sql-mode sql-interactive-mode
-						   sqlplus-mode plsql-mode)))
+						   sqlplus-mode))) ;;  plsql-mode
 		  (not sqlplus-connect-string)))) nil)
         ("java" nil nil nil
 	 (lambda (buf)
@@ -270,14 +268,14 @@ Indent by DEPTH, if required"
 ;; 		("\\.sql\\'" . sqlplus-mode)))
 ;;   (add-to-list 'auto-mode-alist item))
 
-(autoload 'plsql-mode "plsql" nil t)
+;; (autoload 'plsql-mode "plsql" nil t)
 
-(dolist (item '(("\\.pls\\'" . plsql-mode) ("\\.pkg\\'" . plsql-mode)
-		("\\.pks\\'" . plsql-mode) ("\\.pkb\\'" . plsql-mode)
-		("\\.prc\\'" . plsql-mode) ("\\.fnc\\'" . plsql-mode)
-		("\\.trg\\'" . plsql-mode) ("\\.vw\\'" . plsql-mode)))
-  ;; ("\\.sql\\'" . plsql-mode)
-  (add-to-list 'auto-mode-alist item))
+;; (dolist (item '(("\\.pls\\'" . plsql-mode) ("\\.pkg\\'" . plsql-mode)
+;; 		("\\.pks\\'" . plsql-mode) ("\\.pkb\\'" . plsql-mode)
+;; 		("\\.prc\\'" . plsql-mode) ("\\.fnc\\'" . plsql-mode)
+;; 		("\\.trg\\'" . plsql-mode) ("\\.vw\\'" . plsql-mode)))
+;;   ("\\.sql\\'" . plsql-mode)
+;;   (add-to-list 'auto-mode-alist item))
 
 ;; (global-set-key (kbd "C-c q") 'sqlplus)
 
@@ -287,10 +285,10 @@ Indent by DEPTH, if required"
 	    (set-process-coding-system (get-process (sqlplus-get-process-name sqlplus-connect-string))
 				       'latin-1 'latin-1)))
 
-(add-hook 'plsql-mode-hook
-	  (lambda ()
-	    (setq indent-tabs-mode nil)
-	    (local-set-key (kbd "<C-return>") 'sqlplus-send-current)))
+;; (add-hook 'plsql-mode-hook
+;; 	  (lambda ()
+;; 	    (setq indent-tabs-mode nil)
+;; 	    (local-set-key (kbd "<C-return>") 'sqlplus-send-current)))
 
 ;; (add-hook 'sql-mode-hook (lambda () 
 ;; 			   (setq c-basic-offset 3
@@ -308,24 +306,26 @@ Indent by DEPTH, if required"
 
 (global-set-key (kbd "C-c q") 'sql-oracle)
 
-(setq sql-user "DEVUSER"
-      sql-password ""
-      sql-database "CMT")
+(setq sql-user "pista"
+      sql-password "pista"
+      sql-database "pista_11")
 ;; (setenv "NLS_LANG" "AMERICAN_AMERICA.UTF8")
 ;; (add-to-list 'process-coding-system-alist '("SQL" . utf-8));; no effect?
 
 (setq sql-input-ring-file-name "~/.sql_history"
       sql-product 'oracle
       comint-input-ring-size 500)
-;; (add-to-list 'auto-mode-alist '("\\.pls\\'" . sql-mode))
+(add-to-list 'auto-mode-alist '("\\.pls\\'" . sql-mode))
+(add-to-list 'auto-mode-alist '("\\.pkb\\'" . sql-mode))
+(add-to-list 'auto-mode-alist '("\\.pkg\\'" . sql-mode))
 
 (define-skeleton ors-uc
   "Insert ORS_UTIL.GET_USER_CODE(UID, LANGUAGE_ID)."
   nil
   "substr(ors_util.get_user_code(" _ ", 246), 0, 30) \"code\"")
 
-(eval-after-load 'sql
-  '(define-abbrev sql-mode-abbrev-table "orsuc" "" 'ors-uc))
+(define-abbrev-table 'sql-mode-abbrev-table nil)
+(define-abbrev sql-mode-abbrev-table "orsuc" "" 'ors-uc)
 
 (add-hook 'sql-mode-hook
 	  (lambda ()
@@ -366,11 +366,13 @@ Indent by DEPTH, if required"
   (setq end (copy-marker end))
   (goto-char end)
   (insert "\"")
+  (set-mark (point))
   (goto-char start)
   (save-excursion
     (while (search-forward "\n" end t)
       (replace-match " \" +\n\"")))
   (insert "\"")
+  (forward-char -1)
   (untabify start end))
 
 (defun my-code-quote-for-java (start end)
@@ -521,7 +523,8 @@ Each line consists of a lastname, a tab, and a firstname."
 ;;; session management, optional
 (when (require 'session nil t)
   (add-hook 'after-init-hook 'session-initialize)
-  (add-to-list 'session-globals-exclude 'org-mark-ring))
+  (add-to-list 'session-globals-exclude 'org-mark-ring)
+  (add-to-list 'session-locals-include 'buffer-undo-list))
 
 ;;; css mode
 (autoload 'css-mode "css-mode" nil t)
@@ -673,11 +676,12 @@ Each line consists of a lastname, a tab, and a firstname."
       '(("irc.freenode.net" :channels ("#rcirc" "#wiki" "#oddmuse" "#epfarms"
 	 "#emacs" "#sql" "#eclipse-de" "#osgi" "#eclipse-scout"
 	 "#eclipse-hudson"))
+	;; ("irc.sorcery.net" :channels ("#StargazersWorld"))
+	;; ("irc.magicstar.net" :channels ("#rpgnet"))
 	("irc.perl.org" :channels ("#perlde" "#oddmuse")))
       ;; ("ircnet.eversible.com" :channels ("#drsrm"))
       ;; ("irc.ch.euirc.net" :channels ("#tanelorn"))
       ;; irc.de.euirc.net
-      ;; ("irc.sorcery.net" :channels ("#rpmn"))
       ;; ("irc.otherworlders.org" :channels ("#enworld" "#pathfinder"))
       ;; "#scheme" "#nethack" "#atom" "#microformats" "#barcamp"
       ;; "#emacs-fu" "#haskell" "#openfire" "##jabber" "#tentacle"
@@ -1271,16 +1275,17 @@ br.page {
 (put 'not-modified 'disabled t)
 
 (custom-set-variables
-  ;; custom-set-variables was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
- '(canlock-password "f0e77d033338878513c7e4935cfac5eaa0da285c"))
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(canlock-password "f0e77d033338878513c7e4935cfac5eaa0da285c")
+ '(inhibit-startup-screen t))
 (custom-set-faces
-  ;; custom-set-faces was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
  )
 
 (put 'upcase-region 'disabled nil)
