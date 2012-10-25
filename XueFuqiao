@@ -1,0 +1,23 @@
+My name is Xue Fuqiao. I use GnuEmacs. I've used Emacs for many years now, but have never reached its maximum potential.
+
+== My GNU Emacs Invocation ==
+
+* emacs -nw --color==auto
+
+And sometimes:
+
+* emacs -fn "Monospace-12" -rv -cr 'slate blue' -fs -nbi &
+
+== My Accounts ==
+
+* Stack Overflow
+[http://stackoverflow.com/users/1767708/xfq xfq]
+
+* WikEmacs
+[http://wikemacs.org/wiki/User:Xfq Xfq]
+
+* Savannah
+[https://savannah.gnu.org/users/xfq xfq]
+
+----
+CategoryHomepage
