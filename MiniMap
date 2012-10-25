@@ -13,9 +13,9 @@ With Proggyfont Tiny, Height 20:
 
 http://randomsample.de/minimap2.jpg
 
-Get the latest version from http://randomsample.de/minimap.el
+It is in GNU ELPA, so you can get it directly from `M-x install-package', or you can find its code at http://bzr.savannah.gnu.org/lh/emacs/elpa/files/head:/packages/minimap/
 
-Alternatively, you can clone from the git repo:
+Alternatively, you can find a Git repository holding an older version:
 <pre>
 git://randomsample.de/minimap.git
 or
