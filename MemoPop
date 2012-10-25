@@ -1,4 +1,6 @@
-Memo-Pop is a utility which helps you pop up and pop out a specific file buffer window easily.
+memo-pop.el helps you to take notes easily on Emacs. Only one key action to work.
+
+You can get the latest memo-pop with the manual from my github page below. This page is no longer updated. https://github.com/kyagi/memo-pop-el
 
 == Download ==
 ----
