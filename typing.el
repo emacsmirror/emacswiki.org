@@ -7,7 +7,7 @@
 ;; Maintainer: Alex Schroeder <alex@gnu.org>
 ;; Version: 1.1.4
 ;; Keywords: games
-;; URL: http://www.geocities.com/kensanata/emacs.html
+;; URL: http://www.emacswiki.org/emacs/TypingOfEmacs
 
 ;; This file is not part of GNU Emacs.
 
