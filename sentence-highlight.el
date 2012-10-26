@@ -72,7 +72,7 @@
 
 (defgroup sentence-highlight-faces nil
   "Faces used in sentence highlight mode"
-  :group 'sentence-hightlight
+  :group 'sentence-highlight
   :group 'faces)
 
 (defface sentence-highlight-face
