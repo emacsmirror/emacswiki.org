@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun Oct 21 14:52:57 2012 (-0700)
+;; Last-Updated: Sat Oct 27 10:58:52 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 23234
+;;     Update #: 23240
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Doc URL: http://emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -379,7 +379,7 @@
 ;;    `icicle-string-list', `icicle-synonyms', `icicle-tag-a-file',
 ;;    `icicle-tags-search', `icicle-toggle-~-for-home-dir',
 ;;    `icicle-toggle-alternative-sorting',
-;;    `icicle-toggle-angle-brackets',
+;;    `icicle-toggle-angle-brackets', `icicle-toggle-annotation',
 ;;    `icicle-toggle-case-sensitivity', `icicle-toggle-C-for-actions',
 ;;    `icicle-toggle-completions-format', `icicle-toggle-dot',
 ;;    `icicle-toggle-expand-to-common-match'
@@ -413,7 +413,7 @@
 ;;    `icicle-zap-to-char', `toggle', `synonyms',
 ;;    `toggle-icicle-~-for-home-dir',
 ;;    `toggle-icicle-alternative-sorting',
-;;    `toggle-icicle-angle-brackets',
+;;    `toggle-icicle-angle-brackets', `toggle-icicle-annotation',
 ;;    `toggle-icicle-case-sensitivity', `toggle-icicle-C-for-actions',
 ;;    `toggle-icicle-fuzzy-completion',
 ;;    `toggle-icicle-hiding-common-match',
@@ -662,7 +662,7 @@
 ;;
 ;;  Faces defined in Icicles (in Custom group `icicles'):
 ;;
-;;    `icicle-candidate-part',
+;;    `icicle-annotation', `icicle-candidate-part',
 ;;    `icicle-common-match-highlight-Completions',
 ;;    `icicle-complete-input', `icicle-completion',
 ;;    `icicle-Completions-instruction-1',
@@ -819,6 +819,7 @@
 ;;    `icicle-search-replace-whole-candidate-flag',
 ;;    `icicle-search-ring-max', `icicle-search-whole-word-flag',
 ;;    `icicle-shell-command-candidates-cache',
+;;    `icicle-show-annotations-flag',
 ;;    `icicle-show-Completions-help-flag',
 ;;    `icicle-show-Completions-initially-flag',
 ;;    `icicle-show-multi-completion-flag', `icicle-sort-comparer',
@@ -1261,11 +1262,11 @@
 ;;    `icicle-hist-cands-no-highlight', `icicle-hist-var',
 ;;    `icicle-ignored-extensions', `icicle-ignored-extensions-regexp',
 ;;    `icicle-incremental-completion-p', `icicle-info-buff',
-;;    `icicle-info-menu-map', `icicle-Info-only-rest-of-book-p',
-;;    `icicle-info-window', `icicle-inhibit-sort-p',
-;;    `icicle-inhibit-try-switch-buffer', `icicle-initial-value',
-;;    `icicle-input-completion-fail-overlay', `icicle-input-fail-pos',
-;;    `icicle-insert-string-at-pt-end',
+;;    `icicle-Info-index-cache', `icicle-info-menu-map',
+;;    `icicle-Info-only-rest-of-book-p', `icicle-info-window',
+;;    `icicle-inhibit-sort-p', `icicle-inhibit-try-switch-buffer',
+;;    `icicle-initial-value', `icicle-input-completion-fail-overlay',
+;;    `icicle-input-fail-pos', `icicle-insert-string-at-pt-end',
 ;;    `icicle-insert-string-at-pt-start',
 ;;    `icicle-interactive-history', `icicle-key-prefix',
 ;;    `icicle-key-prefix-2', `icicle-key-prefix-description',
@@ -1335,6 +1336,7 @@
 ;;    `icicle-text-property-value-history',
 ;;    `icicle-thing-at-pt-fns-pointer', `icicle-this-cmd-keys',
 ;;    `icicle-transform-before-sort-p',
+;;    `icicle-toggle-transforming-message',
 ;;    `icicle-universal-argument-map',
 ;;    `icicle-vardoc-last-initial-cand-set',
 ;;    `icicle-vardoc-last-initial-option-cand-set',
