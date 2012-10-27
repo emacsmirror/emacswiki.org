@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Oct 24 07:34:05 2012 (-0700)
+;; Last-Updated: Sat Oct 27 10:49:10 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 13505
+;;     Update #: 13606
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -382,7 +382,7 @@
 
 ;; The name changed during development of Emacs 23.  They aliased it for 23.1, but removed it for 23.2.
 ;; Use the new name and alias the old, but don't declare old obsolete (let Emacs 23 do that.)
-(when (and (boundp 'minibuffer-local-must-match-filename-map) (fboundp 'defvaralias)) ; Emacs 22
+(when (and (boundp 'minibuffer-local-must-match-filename-map)  (fboundp 'defvaralias)) ; Emacs 22
   (defvar minibuffer-local-filename-must-match-map minibuffer-local-must-match-filename-map
     "Local keymap for minibuffer input with completion for filenames with exact match.")
   (defvaralias 'minibuffer-local-must-match-filename-map 'minibuffer-local-filename-must-match-map))
@@ -420,8 +420,8 @@ the following is true:
          (let* ((buffer  (or buffer completion-reference-buffer))
                 (mini-p  (minibufferp buffer)))
            ;; If BUFFER is a minibuffer, barf unless it's currently active.
-           (if (and mini-p (or (not (active-minibuffer-window))
-                               (not (equal buffer (window-buffer (active-minibuffer-window))))))
+           (if (and mini-p  (or (not (active-minibuffer-window))
+                                (not (equal buffer (window-buffer (active-minibuffer-window))))))
                (error "Minibuffer is not active for completion")
              ;; Set buffer so buffer-local `choose-completion-string-functions' works.
              (set-buffer buffer)
@@ -476,8 +476,8 @@ the following is true:
                 (mini-p  (save-match-data (string-match "\\` \\*Minibuf-[0-9]+\\*\\'"
                                                         (buffer-name buffer)))))
            ;; If BUFFER is a minibuffer, barf unless it's currently active.
-           (if (and mini-p (or (not (active-minibuffer-window))
-                               (not (equal buffer (window-buffer (active-minibuffer-window))))))
+           (if (and mini-p  (or (not (active-minibuffer-window))
+                                (not (equal buffer (window-buffer (active-minibuffer-window))))))
                (error "Minibuffer is not active for completion")
              ;; Insert the completion into the buffer where completion was requested.
              (set-buffer buffer)
@@ -523,8 +523,8 @@ the following is true:
                 (mini-p  (save-match-data (string-match "\\` \\*Minibuf-[0-9]+\\*\\'"
                                                         (buffer-name buffer)))))
            ;; If BUFFER is a minibuffer, barf unless it's currently active.
-           (when (and mini-p (or (not (active-minibuffer-window))
-                                 (not (equal buffer (window-buffer (active-minibuffer-window))))))
+           (when (and mini-p  (or (not (active-minibuffer-window))
+                                  (not (equal buffer (window-buffer (active-minibuffer-window))))))
              (error "Minibuffer is not active for completion"))
            ;; Insert the completion into the buffer where completion was requested.
            (set-buffer buffer)
@@ -574,7 +574,7 @@ so it is called after completion-list buffer text is written."
         ;; If reading file name and either `icicle-comp-base-is-default-dir-p' is nil or this is a
         ;; completion command, then set `default-directory' so it will be copied into `*Completions*'.
         (when (and dir-of-input
-                   (or (and (symbolp this-command) (get this-command 'icicle-completing-command))
+                   (or (and (symbolp this-command)  (get this-command 'icicle-completing-command))
                        (not icicle-comp-base-is-default-dir-p)))
           (with-current-buffer mainbuf (setq default-directory  dir-of-input)))
         (with-current-buffer standard-output
@@ -596,7 +596,7 @@ so it is called after completion-list buffer text is written."
                        0))))))))
 
 (when (or (= emacs-major-version 22)    ; Emacs 22 or 23.1
-          (and (= emacs-major-version 23) (= emacs-minor-version 1)))
+          (and (= emacs-major-version 23)  (= emacs-minor-version 1)))
   (defun icicle-completion-setup-function ()
     "Set up for completion.  This goes in `completion-setup-hook'
 so it is called after completion-list buffer text is written."
@@ -610,14 +610,14 @@ so it is called after completion-list buffer text is written."
         ;; If reading file name and either `icicle-comp-base-is-default-dir-p' is nil or this is a
         ;; completion command, then set `default-directory' so it will be copied into `*Completions*'.
         (when (and dir-of-input
-                   (or (and (symbolp this-command) (get this-command 'icicle-completing-command))
+                   (or (and (symbolp this-command)  (get this-command 'icicle-completing-command))
                        (not icicle-comp-base-is-default-dir-p)))
           (with-current-buffer mainbuf (setq default-directory  dir-of-input)))
         (with-current-buffer standard-output
           (completion-list-mode)
           (set (make-local-variable 'completion-reference-buffer) mainbuf)
           (setq completion-base-size
-                (cond ((and minibuffer-completing-file-name icicle-comp-base-is-default-dir-p
+                (cond ((and minibuffer-completing-file-name  icicle-comp-base-is-default-dir-p
                             (length default-directory)))
                       ((and (symbolp minibuffer-completion-table)
                             (get minibuffer-completion-table 'completion-base-size-function))
@@ -631,14 +631,15 @@ so it is called after completion-list buffer text is written."
                        (with-current-buffer mainbuf
                          (save-excursion (skip-chars-backward completion-root-regexp)
                                          (- (point) (minibuffer-prompt-end)))))
-                      ((and (boundp 'minibuffer-completing-symbol) minibuffer-completing-symbol) nil)
+                      ((and (boundp 'minibuffer-completing-symbol)  minibuffer-completing-symbol)
+                       nil)
                       ;; Otherwise, in minibuffer, the base size is 0.
                       ((minibufferp mainbuf) 0)))
           (setq common-string-length
                 (cond (completion-common-substring (length completion-common-substring))
                       (completion-base-size (- (length mbuf-contents) completion-base-size))))
           ;; Put faces on first uncommon characters and common parts.
-          (when (and (integerp common-string-length) (>= common-string-length 0))
+          (when (and (integerp common-string-length)  (>= common-string-length 0))
             (let ((element-start  (point-min))
                   (maxp           (point-max))
                   element-common-end)
@@ -655,7 +656,7 @@ so it is called after completion-list buffer text is written."
                                          'font-lock-face 'completions-first-difference)))))))))))
 
 (when (or (> emacs-major-version 23)    ; Emacs 23.2+
-          (and (= emacs-major-version 23) (>= emacs-minor-version 2)))
+          (and (= emacs-major-version 23)  (>= emacs-minor-version 2)))
   (defun icicle-completion-setup-function ()
     "Set up for completion.  This goes in `completion-setup-hook'
 so it is called after completion-list buffer text is written."
@@ -669,7 +670,7 @@ so it is called after completion-list buffer text is written."
         ;; If reading file name and either `icicle-comp-base-is-default-dir-p' is nil or this is a
         ;; completion command, then set `default-directory' so it will be copied into `*Completions*'.
         (when (and dir-of-input
-                   (or (and (symbolp this-command) (get this-command 'icicle-completing-command))
+                   (or (and (symbolp this-command)  (get this-command 'icicle-completing-command))
                        (not icicle-comp-base-is-default-dir-p)))
           (with-current-buffer mainbuf (setq default-directory  dir-of-input)))
         (with-current-buffer standard-output
@@ -681,9 +682,9 @@ so it is called after completion-list buffer text is written."
 This is controlled by `icicle-show-Completions-help-flag'.  Show help
 only if that option is non-nil."
   (if icicle-show-Completions-help-flag
-      (let ((instruction2  (or (and icicle-mode (substitute-command-keys
-                                                 (concat "(\\<minibuffer-local-completion-map>"
-                                                         "\\[icicle-minibuffer-help]: help) ")))
+      (let ((instruction2  (or (and icicle-mode  (substitute-command-keys
+                                                  (concat "(\\<minibuffer-local-completion-map>"
+                                                          "\\[icicle-minibuffer-help]: help) ")))
                                ""))
             instruction1)
         (cond ((< emacs-major-version 22)
@@ -729,7 +730,7 @@ history variable.  It defaults to `minibuffer-history'.  Completion is
 lax: a match is not required."
   (setq hist  (or hist 'minibuffer-history))
   (let ((hist-val  (icicle-remove-duplicates (symbol-value hist))))
-    (when (and (consp hist-val) (not (stringp (car hist-val)))) ; Convert, e.g. `comand-history'.
+    (when (and (consp hist-val)  (not (stringp (car hist-val)))) ; Convert, e.g. `comand-history'.
       (setq hist-val  (mapcar #'prin1-to-string hist-val)))
     (completing-read prompt (mapcar #'list hist-val) pred nil init-input hist def inherit-i-m)))
 
@@ -803,7 +804,7 @@ lax: a match is not required."
     ;; Use `icicle-filtered-default-value', not DEF, because `read-from-minibuffer' filters it.
     (when (consp icicle-filtered-default-value) ; Emacs 23 lets DEF be a list of strings - use first.
       (setq icicle-filtered-default-value  (car icicle-filtered-default-value)))
-    (when (and (stringp val) (string= val "") icicle-filtered-default-value)
+    (when (and (stringp val)  (string= val "")  icicle-filtered-default-value)
       (setq val  icicle-filtered-default-value))
     val))
 
@@ -946,15 +947,15 @@ Completion ignores case when `completion-ignore-case' is non-nil."
   (setq icicle-nb-of-other-cycle-candidates  0)
 
   ;; Use DEF for INITIAL-INPUT also, if `icicle-default-value' says so.
-  (when (and def icicle-default-value (not (eq icicle-default-value t))
-             (stringp initial-input) (string= "" initial-input))
+  (when (and def  icicle-default-value  (not (eq icicle-default-value t))
+             (stringp initial-input)  (string= "" initial-input))
     ;; Filter DEF using `icicle-filter-wo-input'.  Done in `read-from-minibuffer' anyway, but we
     ;; must also do it here, to reuse the correct default value for the init value.
     (if (atom def)
         (setq initial-input  (or (icicle-filter-wo-input def) "")) ; Ensure that it is non-nil.
       (let ((found  nil)
             (def1   def))
-        (while (and (not found) def1)
+        (while (and (not found)  def1)
           (setq found  (icicle-filter-wo-input (car def1))
                 def1   (cdr def1)))
         (setq initial-input  (or found ""))))
@@ -994,9 +995,9 @@ Completion ignores case when `completion-ignore-case' is non-nil."
                        (icicle-remove-property 'face minibuffer-prompt-properties)))
                  (minibuffer-completing-file-name
                   ;; Can't be file-name completion unless it's a function.
-                  (and (functionp collection) minibuffer-completing-file-name)))
+                  (and (functionp collection)  minibuffer-completing-file-name)))
              (when (< emacs-major-version 21)
-               (setq prompt  (concat (and icicle-candidate-action-fn "+ ") prompt)))
+               (setq prompt  (concat (and icicle-candidate-action-fn  "+ ") prompt)))
              (setq result  (catch 'icicle-read-top
                              (icicle-lisp-vanilla-completing-read
                               prompt collection predicate require-match initial-input
@@ -1030,9 +1031,9 @@ the cdr of an MCT entry.  If PRED is nil, so is NEWPRED."
     (setq coll  (mapcar #'icicle-mctized-full-candidate coll))
     ;; Convert non-nil PRED so that, for a cons entry with a string car, PRED uses the cdr
     ;; (which is the original entry) instead.
-    (and pred (lexical-let ((new-pred  pred))
-                (setq pred  (lambda (x)
-                              (funcall new-pred (if (and (consp x) (stringp (car x))) (cdr x) x)))))))
+    (and pred  (lexical-let ((new-pred  pred))
+                 (setq pred  (lambda (x)
+                               (funcall new-pred (if (and (consp x)  (stringp (car x))) (cdr x) x)))))))
   (list coll pred))
 
 (defun icicle-mctized-full-candidate (cand)
@@ -1062,14 +1063,14 @@ See the source code for details."
                   ;; $$$$$$ (cons (concat (mapconcat #'identity (car cand) icicle-list-join-string)
                   ;;                      icicle-list-end-string) ; $$$$$$
                   (cons (mapconcat #'identity (car cand) icicle-list-join-string) cand))
-                 ((and (consp cand) (stringp (car cand))) ; ("aa" . cc) -> ("aa" "aa" . cc)
+                 ((and (consp cand)  (stringp (car cand))) ; ("aa" . cc) -> ("aa" "aa" . cc)
                   (cons (copy-sequence (car cand)) cand))
                  ((stringp cand)        ; "aa" -> ("aa" "aa")
                   (list (copy-sequence cand) cand))
                  (t                     ; Anything else: (aa), aa -> no change
                   cand))))
       ;; Put original alist candidates on display candidates (strings), as a text property.
-      (when (and icicle-whole-candidate-as-text-prop-p (consp new-cand) (stringp (car new-cand)))
+      (when (and icicle-whole-candidate-as-text-prop-p  (consp new-cand)  (stringp (car new-cand)))
         (icicle-put-whole-cand-prop new-cand))
       new-cand)))
 
@@ -1161,23 +1162,22 @@ and `read-file-name-function'."
               (ffap-alist nil)                  (ffap-machine-p-known 'accept)
               (ffap-url-regexp nil)             (ffap-shell-prompt-regexp nil)
               (fap
-               (if (and (eq major-mode 'dired-mode) (fboundp 'dired-get-file-for-visit))
+               (if (and (eq major-mode 'dired-mode)  (fboundp 'dired-get-file-for-visit))
                    (condition-case nil
                        (abbreviate-file-name (dired-get-file-for-visit))
                      (error nil))
-                 (and ffap-available-p (ffap-guesser))))
+                 (and ffap-available-p  (ffap-guesser))))
               (icicle-proxy-candidates
                (append
                 (and icicle-add-proxy-candidates-flag  (not icicle-exclude-default-proxies)
-                     (append (and fap (list "*point file name*"))
-                             (and ffap-available-p (list mouse-file))
+                     (append (and fap  (list "*point file name*"))
+                             (and ffap-available-p  (list mouse-file))
                              (let ((ipc  ()))
                                (mapatoms
                                 (lambda (cand)
                                   (when (and (user-variable-p cand)
                                              (condition-case nil
-                                                 (icicle-var-is-of-type-p cand
-                                                                          '(file (file :must-match t)))
+                                                 (icicle-var-is-of-type-p cand '(file (file :must-match t)))
                                                (error nil)))
                                     (push (concat "'" (symbol-name cand) "'") ipc))))
                                ipc)))
@@ -1208,8 +1208,8 @@ and `read-file-name-function'."
                                      (or (ffap-guesser) (error "No such file"))))))))))
          (icicle-unpropertize-completion result)
          (let* ((temp  (member (file-name-nondirectory result) icicle-proxy-candidates))
-                (symb  (and temp (intern (substring (car temp) 1 (1- (length (car temp))))))))
-           (when (and symb (boundp symb)) (setq result  (symbol-value symb))))
+                (symb  (and temp  (intern (substring (car temp) 1 (1- (length (car temp))))))))
+           (when (and symb  (boundp symb)) (setq result  (symbol-value symb))))
          result)
     ;; Because we do this here, if a command that uses `icicle-read-file-name' needs the proxies
     ;; afterward then it needs to save a copy of them.
@@ -1228,7 +1228,7 @@ and `read-file-name-function'."
   ;; Use DEFAULT-FILENAME for INITIAL-INPUT also, if `icicle-default-value' says so.
   ;; But if so, remove the directory part first.
   ;; Note that if DEFAULT-FILENAME is null, then we let INITIAL-INPUT remain null too.
-  (when (and default-filename icicle-default-value (not (eq icicle-default-value t))
+  (when (and default-filename  icicle-default-value  (not (eq icicle-default-value t))
              ;; We don't use the same test as for `completing-read':
              ;; (stringp initial-input) (string= "" initial-input))
              (string= "" icicle-initial-value))
@@ -1238,7 +1238,7 @@ and `read-file-name-function'."
         (setq initial-input  (icicle-filter-wo-input (file-name-nondirectory default-filename)))
       (let ((found  nil)
             (def1   default-filename))
-        (while (and (not found) def1)
+        (while (and (not found)  def1)
           (setq found  (icicle-filter-wo-input (file-name-nondirectory (car def1)))
                 def1   (cdr def1)))
         (setq initial-input  (or found "")))))
@@ -1258,7 +1258,7 @@ and `read-file-name-function'."
            (and (boundp 'minibuffer-prompt-properties) ; Emacs 21+ only
                 (icicle-remove-property 'face minibuffer-prompt-properties))))
       (when (< emacs-major-version 21)
-        (setq prompt  (concat (and icicle-candidate-action-fn "+ ") prompt)))
+        (setq prompt  (concat (and icicle-candidate-action-fn  "+ ") prompt)))
       (condition-case nil               ; If Emacs 22+, use predicate arg.
           (setq result  (catch 'icicle-read-top
                           (funcall (or icicle-orig-read-file-name-fn  'read-file-name) prompt dir
@@ -1388,7 +1388,7 @@ for POSITION."
       (setq initial-contents  (if (integerp def-value) ; Character
                                   (char-to-string def-value)
                                 def-value)))
-;;; $$$$$$    (when (and def-value (eq icicle-default-value t)) ; Add DEFAULT-VALUE to PROMPT.
+;;; $$$$$$    (when (and def-value  (eq icicle-default-value t)) ; Add DEFAULT-VALUE to PROMPT.
 ;;;       (when (icicle-file-name-input-p) (setq def-value  (file-name-nondirectory def-value)))
 ;;;       (setq prompt  (if (string-match "\\(.*\\)\\(: *\\)$" prompt)
 ;;;                         (concat (substring prompt (match-beginning 1) (match-end 1)) " (" def-value
@@ -1526,7 +1526,7 @@ whose value or whose custom type is compatible with type `integer',
                     (let ((str  (completing-read prompt nil nil nil nil nil
                                                  (if (consp default)
                                                      (mapcar #'number-to-string default)
-                                                   (and default1 (number-to-string default1)))))
+                                                   (and default1  (number-to-string default1)))))
                           temp)
                       (setq num  (cond ((zerop (length str)) default1)
                                        ((setq temp  (member str icicle-proxy-candidates))
@@ -1617,16 +1617,15 @@ whose value or whose custom type is compatible with type `string'."
                               "[ \t]*\\'" (format " (default %s) " default1) prompt t t)))))
          (when icicle-proxy-candidates (put-text-property 0 1 'icicle-fancy-candidates t prompt))
          (let ((strg-read  (completing-read prompt nil pred nil
-                                            (and (consp hist)
-                                                 (nth (cdr hist) (symbol-value (car hist))))
+                                            (and (consp hist)  (nth (cdr hist) (symbol-value (car hist))))
                                             hist default))
                temp)
            (setq strg  (cond ((zerop (length strg-read)) (or default1 ""))
                              ((setq temp  (member strg-read icicle-proxy-candidates))
                               (setq temp  (symbol-value (intern (car temp))))
-                              (cond ((and (symbolp hist) (consp (symbol-value hist)))
+                              (cond ((and (symbolp hist)  (consp (symbol-value hist)))
                                      (setcar (symbol-value hist) temp))
-                                    ((and (consp hist) (symbolp (car hist))
+                                    ((and (consp hist)  (symbolp (car hist))
                                           (consp (symbol-value (car hist))))
                                      (setcar (symbol-value (car hist)) temp)))
                               temp)
@@ -1731,7 +1730,7 @@ impossible to know which concrete types a value must match."
         (setq type  (widget-convert type))
         ;; Satisfies if either :match or :validate.
         (when (condition-case nil
-                  (progn (when (and (widget-get type :match) (widget-apply type :match value))
+                  (progn (when (and (widget-get type :match)  (widget-apply type :match value))
                            (throw 'icicle-type-value-satisfies t))
                          (when (and (widget-get type :validate)
                                     (progn (widget-put type :value value)
@@ -1899,7 +1898,7 @@ Fifth arg INHERIT-INPUT-METHOD, if non-nil, means the minibuffer inherits
  the current input method and the setting of enable-multibyte-characters."
   (let ((value  (read-from-minibuffer prompt initial-input nil nil hist-m@%=!$+&^*z
                                       default-value inherit-input-method)))
-    (when (and default-value (equal value ""))
+    (when (and default-value  (equal value ""))
       (setq value (if (consp default-value) (car default-value) default-value)))
     value))
 
@@ -1932,11 +1931,11 @@ candidate `*point face name*' to use the face at point."
                (icicle-proxy-candidates
                 (append
                  (and icicle-add-proxy-candidates-flag  (not icicle-exclude-default-proxies)
-                      (append (and (fboundp 'eyedrop-face-at-point) (list "*point face name*"))
+                      (append (and (fboundp 'eyedrop-face-at-point)  (list "*point face name*"))
                               (let ((ipc  ()))
                                 (mapatoms
                                  (lambda (cand)
-                                   (when (and (user-variable-p cand) (eq (get cand 'custom-type) 'face))
+                                   (when (and (user-variable-p cand)  (eq (get cand 'custom-type) 'face))
                                      (push `,(concat "'" (symbol-name cand) "'") ipc))))
                                 ipc)))
                  icicle-proxy-candidates))
@@ -1976,11 +1975,11 @@ candidate `*point face name*' to use the face at point."
                (icicle-proxy-candidates
                 (append
                  (and icicle-add-proxy-candidates-flag  (not icicle-exclude-default-proxies)
-                      (append (and (fboundp 'eyedrop-face-at-point) (list "*point face name*"))
+                      (append (and (fboundp 'eyedrop-face-at-point)  (list "*point face name*"))
                               (let ((ipc ()))
                                 (mapatoms
                                  (lambda (cand)
-                                   (when (and (user-variable-p cand) (eq (get cand 'custom-type) 'face))
+                                   (when (and (user-variable-p cand)  (eq (get cand 'custom-type) 'face))
                                      (push `,(concat "'" (symbol-name cand) "'") ipc))))
                                 ipc)))
                  icicle-proxy-candidates))
@@ -2035,7 +2034,7 @@ choose proxy candidate `*point face name*' to use the face at point."
                              (let ((ipc  ()))
                                (mapatoms
                                 (lambda (cand)
-                                  (when (and (user-variable-p cand) (eq (get cand 'custom-type) 'face))
+                                  (when (and (user-variable-p cand)  (eq (get cand 'custom-type) 'face))
                                     (push `,(concat "'" (symbol-name cand) "'") ipc))))
                                ipc))
                         icicle-proxy-candidates))
@@ -2052,7 +2051,7 @@ choose proxy candidate `*point face name*' to use the face at point."
                     (not (keywordp (car faceprop)))
                     (not (memq (car faceprop) '(foreground-color background-color))))
                (dolist (f faceprop) (when (symbolp f) (push f faces)))
-             (when (and faceprop (symbolp faceprop)) (push faceprop faces)))
+             (when (and faceprop  (symbolp faceprop)) (push faceprop faces)))
            (delete-dups faces)
            (cond (multiple
                   ;; We leave this branch as it is.  Icicles does nothing special with
@@ -2085,7 +2084,7 @@ choose proxy candidate `*point face name*' to use the face at point."
                                    nil t nil (if (boundp 'face-name-history)
                                                  'face-name-history
                                                'icicle-face-name-history)
-                                   (and faces (mapconcat 'symbol-name faces ","))))
+                                   (and faces  (mapconcat 'symbol-name faces ","))))
                          (output  (cond ((or (equal input "") (equal input '(""))) ; Canonicalize.
                                          faces)
                                         ((stringp input)
@@ -2155,7 +2154,7 @@ choose proxy candidate `*point face name*' to use the face at point."
                              (let ((ipc  ()))
                                (mapatoms
                                 (lambda (cand)
-                                  (when (and (user-variable-p cand) (eq (get cand 'custom-type) 'face))
+                                  (when (and (user-variable-p cand)  (eq (get cand 'custom-type) 'face))
                                     (push `,(concat "'" (symbol-name cand) "'") ipc))))
                                ipc))
                         icicle-proxy-candidates))
@@ -2172,7 +2171,7 @@ choose proxy candidate `*point face name*' to use the face at point."
                     (not (keywordp (car faceprop)))
                     (not (memq (car faceprop) '(foreground-color background-color))))
                (dolist (f faceprop) (when (symbolp f) (push f faces)))
-             (when (and faceprop (symbolp faceprop)) (push faceprop faces)))
+             (when (and faceprop  (symbolp faceprop)) (push faceprop faces)))
            (delete-dups faces)
            (cond (multiple
                   ;; We leave this branch as it is.  Icicles does nothing special with
@@ -2193,9 +2192,9 @@ choose proxy candidate `*point face name*' to use the face at point."
                                    nil t nil (if (boundp 'face-name-history)
                                                  'face-name-history
                                                'icicle-face-name-history)
-                                   (and faces (mapconcat 'symbol-name faces ","))))
+                                   (and faces  (mapconcat 'symbol-name faces ","))))
                          (output  (cond ((or (equal input "") (equal input '(""))) ; Canonicalize.
-                                         (or faces (and (not (stringp default)) default)))
+                                         (or faces (and (not (stringp default))  default)))
                                         ((stringp input)
                                          (mapcar 'intern (split-string input ", *" t)))
                                         ((listp input)
@@ -2212,7 +2211,7 @@ choose proxy candidate `*point face name*' to use the face at point."
                         (face-list                          (face-list))
                         (def                                (if faces
                                                                 (mapconcat 'symbol-name faces ",")
-                                                              (and (not (stringp default)) default)))
+                                                              (and (not (stringp default))  default)))
                         face)
                     (setq prompt  (copy-sequence prompt)) ; So we can modify it by adding property.
                     (put-text-property 0 1 'icicle-fancy-candidates t prompt)
@@ -2315,7 +2314,7 @@ an integer value."
                                  (mapcar (lambda (c) (cons (symbol-name c) c)) (face-list))))
                  (t
                   (error "Internal error")))))
-          (if (and (listp valid) (not (memq attribute '(:inherit))))
+          (if (and (listp valid)  (not (memq attribute '(:inherit))))
               (nconc (list (cons "unspecified" 'unspecified)) valid)
             valid)))
     (defun icicle-face-valid-attribute-values (attribute &optional frame) ; Emacs 21-22.
@@ -2356,7 +2355,7 @@ an integer value."
                                (mapcar (lambda (c) (cons (symbol-name c) c)) (face-list))))
                (t
                 (error "Internal error")))))
-        (if (and (listp valid) (not (memq attribute '(:inherit))))
+        (if (and (listp valid)  (not (memq attribute '(:inherit))))
             (nconc (list (cons "unspecified" 'unspecified)) valid)
           valid))))
 
@@ -2429,7 +2428,7 @@ Returns the strings read, as a list."
         (if (fboundp 'crm-complete) #'crm-complete #'crm-minibuffer-complete))
       (when (fboundp 'crm-complete-word)
         (define-key map [remap minibuffer-complete-word] #'crm-complete-word))
-      (when (and (boundp 'icicle-word-completion-keys) (fboundp 'crm-complete-word))
+      (when (and (boundp 'icicle-word-completion-keys)  (fboundp 'crm-complete-word))
         (dolist (key icicle-word-completion-keys) (define-key map key #'crm-complete-word)))
       (define-key map [remap minibuffer-completion-help] ; Emacs 22, 23.
         (if (fboundp 'crm-completion-help) #'crm-completion-help #'crm-minibuffer-completion-help))
@@ -2572,7 +2571,7 @@ In an interactive call, the variable `shell-command-default-error-buffer'
 specifies the value of ERROR-BUFFER."
     (interactive
      (list (icicle-read-shell-command "Shell command: " nil nil
-                                      (and buffer-file-name (file-relative-name buffer-file-name)))
+                                      (and buffer-file-name  (file-relative-name buffer-file-name)))
            current-prefix-arg
            shell-command-default-error-buffer))
     (icicle-ORIG-shell-command command output-buffer error-buffer)))
@@ -2700,9 +2699,9 @@ Call `icicle-read-shell-command-completing', passing PROMPT and FILES."
 The commands are from `minibuffer-default-add-dired-shell-commands',
 and if `dired-x.el' is used, `dired-guess-default'."
   (interactive)
-  (let ((dired-guess-cmds  (and (boundp 'icicle-files) (fboundp 'dired-guess-default)
+  (let ((dired-guess-cmds  (and (boundp 'icicle-files)  (fboundp 'dired-guess-default)
                                 (dired-guess-default icicle-files)))
-        (mailcap-cmds      (and (boundp 'icicle-files) (require 'mailcap nil t)
+        (mailcap-cmds      (and (boundp 'icicle-files)  (require 'mailcap nil t)
                                 (mailcap-file-default-commands icicle-files))))
     (when (stringp dired-guess-cmds) (setq dired-guess-cmds  (list dired-guess-cmds)))
     (if (listp minibuffer-default)
@@ -2745,7 +2744,7 @@ Help is available for individual candidates, using `C-M-RET',
 shell command guessed to be appropriate), help is provided by the
 `apropos' shell command (if available).  For a file name, help shows
 the file's properties."
-  (let* ((dired-guess-files                           (and files (fboundp 'dired-guess-default)
+  (let* ((dired-guess-files                           (and files  (fboundp 'dired-guess-default)
                                                            (dired-guess-default files)))
          (icicle-sort-comparer                        'icicle-extra-candidates-first-p)
          (completion-ignore-case                      (memq system-type '(ms-dos windows-nt cygwin)))
@@ -2768,12 +2767,12 @@ the file's properties."
          ;; (icicle-sort-comparer                        (or icicle-file-sort icicle-sort-comparer))
          (icicle-require-match-flag                   icicle-file-require-match-flag)
          (icicle-default-value          ; Let user get default via `M-n', but don't insert it.
-          (and (memq icicle-default-value '(t nil)) icicle-default-value)))
-    (when (and dired-guess-files (atom dired-guess-files))
+          (and (memq icicle-default-value '(t nil))  icicle-default-value)))
+    (when (and dired-guess-files  (atom dired-guess-files))
       (setq dired-guess-files  (list dired-guess-files)))
     ;; Add dired-guess guesses and mailcap guesses to `icicle-extra-candidates'.
     (setq icicle-extra-candidates  (append dired-guess-files
-                                           (and files (require 'mailcap nil t) ; Emacs 23.
+                                           (and files  (require 'mailcap nil t) ; Emacs 23.
                                                 (fboundp 'mailcap-file-default-commands)
                                                 (mailcap-file-default-commands files))
                                            icicle-extra-candidates))
@@ -2820,7 +2819,7 @@ and file c:/Program Files/My Dir/mycmd.exe exists, then this returns
                                                   (if (> emacs-major-version 22)
                                                       minibuffer-completion-predicate
                                                     default-directory))))
-          (when (and (<= (length compl) (length strg)) (string-match compl strg 0)
+          (when (and (<= (length compl) (length strg))  (string-match compl strg 0)
                      (or (icicle-file-remote-p compl) ; Don't let Tramp try to access it.
                          (file-exists-p compl)))
             (setq filename compl)))
@@ -2854,8 +2853,8 @@ This is a menu filter function which ignores the MENU argument."
               (and (< recentf-max-menu-items (length recentf-list)) ; `recentf-list' is free here.
                    '(["More..." recentf-open-more-files
                       :help "Open files not in the menu through a dialog" :active t])))
-            (and recentf-menu-filter-commands    '("---")) recentf-menu-filter-commands
-            (and recentf-menu-items-for-commands '("---")) recentf-menu-items-for-commands
+            (and recentf-menu-filter-commands     '("---")) recentf-menu-filter-commands
+            (and recentf-menu-items-for-commands  '("---")) recentf-menu-items-for-commands
             (and icicle-mode
                  '(("Icicles"
                     ["+ Open Recent File..." icicle-recent-file]
@@ -2894,7 +2893,7 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
   ;; Upgrade `icicle-incremental-completion-p' if we are redisplaying, so that completions will
   ;; be updated by `icicle-call-then-update-Completions' when you edit.
   (setq icicle-incremental-completion-p  icicle-incremental-completion)
-  (when (and (eq t icicle-incremental-completion-p) (get-buffer-window "*Completions*" 0))
+  (when (and (eq t icicle-incremental-completion-p)  (get-buffer-window "*Completions*" 0))
     (setq icicle-incremental-completion-p  'always))
   (let ((nb-cands  (length icicle-completion-candidates)))
     ;; $$$$$$ Could use this binding to prevent frame fitting, to allow room for images.
@@ -2912,7 +2911,7 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
             (if (eq 'apropos icicle-current-completion-mode)
                 (let ((typ  (car (rassq icicle-apropos-complete-match-fn
                                         icicle-S-TAB-completion-methods-alist))))
-                  (concat "No " typ (and typ " ") "completions"))
+                  (concat "No " typ (and typ  " ") "completions"))
               (case (icicle-current-TAB-method)
                 (fuzzy        "No fuzzy completions")
                 (swank        "No swank (fuzzy symbol) completions")
@@ -2966,7 +2965,7 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
                                                           (stringp (get symb 'icicle-display-string))
                                                           (get symb 'icicle-display-string)))
                                       (new-cand      (or display-strg cand))
-                                      (spec-prop     (and symb (get symb 'icicle-special-candidate))))
+                                      (spec-prop     (and symb  (get symb 'icicle-special-candidate))))
                                  ;; Apply `icicle-special-candidate' property's value.
                                  ;; If the value is a plist, then apply the properties as text props.
                                  ;; Else (the value is t), apply face `icicle-special-candidate'.
@@ -3083,7 +3082,7 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
                               `(face ,(setq faces  (cons 'icicle-historical-candidate-other faces)))))))
 
                        ;; Highlight, inside the candidate, the expanded common match.
-                       (when (and icicle-current-input (not (string= "" icicle-current-input)))
+                       (when (and icicle-current-input  (not (string= "" icicle-current-input)))
                          (save-excursion
                            (save-restriction
                              (narrow-to-region beg end) ; Restrict to the completion candidate.
@@ -3106,14 +3105,13 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
                                  (put-text-property (match-beginning 0) (point) 'invisible t))))))
 
                        ;; Highlight, inside the candidate, what the input expression matches.
-                       (unless (and icicle-current-raw-input (string= "" icicle-current-raw-input)
+                       (unless (and icicle-current-raw-input  (string= "" icicle-current-raw-input)
                                     icicle-apropos-complete-match-fn)
                          (save-excursion
                            (save-restriction
                              (narrow-to-region beg end) ; Restrict to the completion candidate.
                              (let ((fn  (if (and (eq 'prefix icicle-current-completion-mode)
-                                                 (not (memq (icicle-current-TAB-method)
-                                                            '(fuzzy swank))))
+                                                 (not (memq (icicle-current-TAB-method) '(fuzzy swank))))
                                             ;; $$$$$$ What is best for `vanilla' (Emacs 23) completion?
                                             'search-forward
                                           (case icicle-apropos-complete-match-fn
@@ -3160,8 +3158,7 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
                                      (forward-line 1))))))))
 
                        ;; Highlight candidate if it has been saved.
-                       (when (and icicle-highlight-saved-candidates-flag
-                                  icicle-saved-completion-candidates)
+                       (when (and icicle-highlight-saved-candidates-flag  icicle-saved-completion-candidates)
                          (let ((candidate  (icicle-current-completion-in-Completions)))
                            (when (member candidate icicle-saved-completion-candidates)
                              (let ((ov  (make-overlay beg end)))
@@ -3260,7 +3257,7 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
                    ;; Remove all newlines for images-only display.
                    (when (eq icicle-image-files-in-Completions 'image-only)
                      (save-excursion (goto-char (icicle-start-of-candidates-in-Completions))
-                                     (while (and (re-search-forward "$") (not (eobp)))
+                                     (while (and (re-search-forward "$")  (not (eobp)))
                                        (delete-char 1)))))
                  (set-buffer-modified-p nil)
                  (setq buffer-read-only  t))))
@@ -3421,7 +3418,7 @@ The optional second arg is ignored."
           (let ((last  (last completions)))
             ;; Set base-size from the tail of the list.
             (set (make-local-variable 'completion-base-size)
-                 (or (cdr last) (and (minibufferp mainbuf) 0)))
+                 (or (cdr last) (and (minibufferp mainbuf)  0)))
             (setcdr last nil)))         ; Make completions a properly nil-terminated list.
         (icicle-insert-candidates completions)))
     ;; In vanilla Emacs < 23, the hook is run with `completion-common-substring' bound to
@@ -3440,9 +3437,9 @@ The optional second arg is ignored."
                                                       minibuffer-completion-table
                                                       minibuffer-completion-predicate)
                                  'annotation-function))
-                           (and (boundp 'completion-extra-properties) (plist-get completion-extra-properties
-                                                                                 :annotation-function))
-                           (and (boundp 'completion-annotate-function) completion-annotate-function))))
+                           (and (boundp 'completion-extra-properties)  (plist-get completion-extra-properties
+                                                                                  :annotation-function))
+                           (and (boundp 'completion-annotate-function)  completion-annotate-function))))
       (when annotation-fn               ; Emacs 23+ uses a list (CAND ANNOTATION) for the candidate.
         (setq candidates  (mapcar (lambda (cand)
                                     (let ((ann  (funcall annotation-fn cand)))
@@ -3514,13 +3511,14 @@ The optional second arg is ignored."
                (when (< endpos (point)) (set-text-properties endpos (point) nil))))
         ;; Convert candidate (but not annotation) to unibyte or to multibyte, if needed.
         (setq string  (if (consp cand) (car cand) cand))
-        (cond ((and (null enable-multibyte-characters) (multibyte-string-p string))
+        (cond ((and (null enable-multibyte-characters)  (multibyte-string-p string))
                (setq string  (string-make-unibyte string)))
-              ((and enable-multibyte-characters (not (multibyte-string-p string)))
+              ((and enable-multibyte-characters  (not (multibyte-string-p string)))
                (setq string  (string-make-multibyte string))))
-        ;; Insert candidate (and annotation).
-        (put-text-property (point) (progn (insert string) (point)) 'mouse-face 'highlight)
-        (unless (atom cand) (set-text-properties (point) (progn (insert (cadr cand)) (point)) nil))
+        (put-text-property (point) (progn (insert string) (point)) 'mouse-face 'highlight) ; Insert cand.
+        ;; Insert annotation, if `icicle-show-annotations-flag'.
+        (when (and icicle-show-annotations-flag  (consp cand)  (cadr cand))
+          (set-text-properties (point) (progn (insert (cadr cand)) (point)) '(face 'icicle-annotation)))
         (if (not (eq icicle-completions-format 'vertical))
             (setq column-nb  (mod (1+ column-nb) columns))
           (if (> column-nb 0) (forward-line) (insert "\n")) ; Vertical layout.
@@ -3548,7 +3546,7 @@ available only for Emacs 23+.  (No scaling in any case if using
   (unless (or (eq arg 'scale-only)
               (= emacs-major-version 23) ; `fit-window-to-buffer' is broken before 24: removes windows.
               (= emacs-major-version 22))
-    (when (and (eq major-mode 'completion-list-mode) (fboundp 'fit-window-to-buffer))
+    (when (and (eq major-mode 'completion-list-mode)  (fboundp 'fit-window-to-buffer))
       (let ((win  (get-buffer-window "*Completions*" 0)))
         (unless (< (window-width win) (frame-width)) ; Don't shrink if split horizontally.
           (fit-window-to-buffer
@@ -3567,7 +3565,7 @@ available only for Emacs 23+.  (No scaling in any case if using
 Only if `icicle-highlight-input-initial-whitespace-flag' is non-nil.
 INPUT is the current user input, that is, the completion root.
 This must be called in the minibuffer."
-  (when (and icicle-highlight-input-initial-whitespace-flag (not (string= "" input)))
+  (when (and icicle-highlight-input-initial-whitespace-flag  (not (string= "" input)))
     (let ((case-fold-search
            ;; Don't bother with buffer completion and `read-buffer-completion-ignore-case'.
            (if (and (or (icicle-file-name-input-p)  icicle-abs-file-candidates)
@@ -3576,12 +3574,12 @@ This must be called in the minibuffer."
              completion-ignore-case)))
       (save-excursion
         (goto-char (icicle-minibuffer-prompt-end))
-        (when (and (icicle-file-name-input-p) insert-default-directory)
+        (when (and (icicle-file-name-input-p)  insert-default-directory)
           (search-forward (icicle-file-name-directory-w-default input) nil t)) ; Skip directory.
         (save-excursion
           (save-restriction
             (narrow-to-region (point) (point-max)) ; Search within completion candidate.
-            (while (and (not (eobp)) (looking-at "\\(\\s-\\|\n\\)+"))
+            (while (and (not (eobp))  (looking-at "\\(\\s-\\|\n\\)+"))
               (put-text-property (point) (min (point-max) (1+ (point)))
                                  'face 'icicle-whitespace-highlight)
               (forward-char 1))
@@ -3604,8 +3602,8 @@ Version of `minibuffer-prompt-end' that works for Emacs 20 and later."
   "List of prefix or fuzzy completions for the current partial INPUT.
 INPUT is a string.  Each candidate is a string."
   (setq icicle-candidate-nb  nil)
-  (if (or (and (eq 'fuzzy (icicle-current-TAB-method)) (featurep 'fuzzy-match))
-          (and (eq 'swank (icicle-current-TAB-method)) (featurep 'el-swank-fuzzy)))
+  (if (or (and (eq 'fuzzy (icicle-current-TAB-method))  (featurep 'fuzzy-match))
+          (and (eq 'swank (icicle-current-TAB-method))  (featurep 'el-swank-fuzzy)))
       (condition-case nil
           (icicle-transform-candidates (append icicle-extra-candidates icicle-proxy-candidates
                                                (icicle-fuzzy-candidates input)))
@@ -3633,7 +3631,7 @@ INPUT is a string.  Each candidate is a string."
                                                input icicle-swank-timeout
                                                (or minibuffer-completion-predicate 'fboundp)
                                                (min (length input) icicle-swank-prefix-length))))))
-              ((and (consp minibuffer-completion-table) (consp (car minibuffer-completion-table)))
+              ((and (consp minibuffer-completion-table)  (consp (car minibuffer-completion-table)))
                (dolist (cand minibuffer-completion-table)
                  (when (or (null minibuffer-completion-predicate)
                            (funcall minibuffer-completion-predicate cand))
@@ -3744,7 +3742,7 @@ the expanded common match of the input over all candidates."
                 (if (icicle-not-basic-prefix-completion-p)
                     (icicle-completion-all-completions
                      input  minibuffer-completion-table  pred  (length input)
-                     (and (fboundp 'completion--field-metadata) ;Emacs24
+                     (and (fboundp 'completion--field-metadata) ; Emacs 24
                           (completion--field-metadata (field-beginning))))
                   (icicle-all-completions input minibuffer-completion-table pred)))
                (icicle-extra-candidates
@@ -4018,7 +4016,7 @@ Completion', for details."
              (if (= orig-match-beg end)
                  (setq ecm  "")         ; INPUT was, for instance, "$" or "\\>$; return "".
                ;; Compare with the rest of the candidates, reducing as needed.
-               (while (and rest ecm)
+               (while (and rest  ecm)
                  (condition-case nil
                      (funcall icicle-apropos-complete-match-fn input (car rest))
                    (error (throw 'ecm-error nil))) ; If input doesn't match candidate, return nil.
@@ -4035,10 +4033,10 @@ Completion', for details."
                    (setq ecm  (substring ecm 1)
                          beg  (1+ beg)))
                  ;; Remove any suffix that doesn't match some other candidate.
-                 (while (and (> end 0) (not (condition-case nil
-                                                (funcall icicle-apropos-complete-match-fn
-                                                         (regexp-quote ecm) (car rest))
-                                              (error (throw 'ecm-error nil)))))
+                 (while (and (> end 0)  (not (condition-case nil
+                                                 (funcall icicle-apropos-complete-match-fn
+                                                          (regexp-quote ecm) (car rest))
+                                               (error (throw 'ecm-error nil)))))
                    ;; Take a character off of the right.
                    (setq ecm  (substring ecm 0 (1- (length ecm)))
                          end  (1- end)))
@@ -4132,7 +4130,7 @@ If LEN is nil, treat it as the length of STRING."
 
 (defun icicle-try-switch-buffer (buffer)
   "Try to switch to BUFFER, first in same window, then in other window."
-  (when (and (buffer-live-p buffer) (not icicle-inhibit-try-switch-buffer))
+  (when (and (buffer-live-p buffer)  (not icicle-inhibit-try-switch-buffer))
     (condition-case err-switch-to
         (switch-to-buffer buffer)
       (error (and (string= "Cannot switch buffers in minibuffer window"
@@ -4165,8 +4163,8 @@ the current candidate is shown in the mode line."
                                     (abbreviate-file-name (icicle-input-from-minibuffer 'leave-envar))
                                   (icicle-input-from-minibuffer))
           icicle-cycling-p      t)
-    (unless (and (symbolp this-command) (get this-command 'icicle-apropos-cycling-command)
-                 (or (and (symbolp last-command) (get last-command 'icicle-apropos-cycling-command))
+    (unless (and (symbolp this-command)  (get this-command 'icicle-apropos-cycling-command)
+                 (or (and (symbolp last-command)  (get last-command 'icicle-apropos-cycling-command))
                      (memq last-command
                            '(icicle-candidate-action
                              icicle-remove-candidate icicle-mouse-remove-candidate
@@ -4237,7 +4235,7 @@ REGEXP-P non-nil means use regexp matching to highlight root."
              read-file-name-completion-ignore-case
            completion-ignore-case))
         indx)
-    (unless (and regexp-p (not icicle-regexp-quote-flag))  (setq inp  (regexp-quote inp)))
+    (unless (and regexp-p  (not icicle-regexp-quote-flag)) (setq inp  (regexp-quote inp)))
     (save-match-data
       (setq indx  (string-match inp icicle-last-completion-candidate))
       (when indx (put-text-property indx (match-end 0) 'face 'icicle-match-highlight-minibuffer
@@ -4258,7 +4256,7 @@ REGEXP-P non-nil means use regexp matching to highlight root."
   "Return the directory portion of FILENAME.
 If using partial completion, this is the portion before the first
 occurrence of `*'.  Otherwise, this is just `file-name-directory'."
-  (if (and (icicle-not-basic-prefix-completion-p) (boundp 'completion-styles)
+  (if (and (icicle-not-basic-prefix-completion-p)  (boundp 'completion-styles)
            (member 'partial-completion completion-styles)
            (string-match "/[^/]*\\*" filename))
       (substring filename 0 (1+ (match-beginning 0)))
@@ -4304,10 +4302,8 @@ the function to the candidate and use the result as the help."
                                           (let ((prop  (or (get-text-property 0 'icicle-mode-line-help
                                                                               candidate)
                                                            (get-text-property 0 'help-echo candidate))))
-                                            (if (functionp prop)
-                                                (funcall prop candidate)
-                                              prop))))
-                                    ((and cand (symbolp cand) ; Symbol.
+                                            (if (functionp prop)  (funcall prop candidate)  prop))))
+                                    ((and cand  (symbolp cand) ; Symbol.
                                           (cond ((get cand 'icicle-mode-line-help)) ; Icicles help prop.
                                                 ((get cand 'help-echo)) ; General help prop.
                                                 ((fboundp cand) ; Function.
@@ -4319,7 +4315,7 @@ the function to the candidate and use the result as the help."
                                                 ((facep cand) (face-documentation cand)) ; Face.
                                                 (t (documentation-property ; Variable.
                                                     cand 'variable-documentation t)))))
-                                    ((and (consp cand) (eq (car cand) 'lambda)) ; Lambda form.
+                                    ((and (consp cand)  (eq (car cand) 'lambda)) ; Lambda form.
                                      (format "%s" cand))
                                     ((and (stringp cand) ; Prefix key, `..'.
                                           (member cand '("Prefix key" "GO UP")))
@@ -4369,12 +4365,12 @@ Non-nil NO-FILE-P means do not include the buffer's file name."
 (defun icicle-help-line-file (file)
   "Simple help string for FILE."
   (let ((attrs  (file-attributes file)))
-    (and attrs (format "Bytes: %s, Saved: %s, Access: %s"
-                       (let ((size  (nth 7 attrs)))
-                         (if (> size most-positive-fixnum)
-                             (format "> %d" most-positive-fixnum)
-                           size))
-                       (format-time-string  "%c" (nth 5 attrs)) (nth 8 attrs))))) ; "%Y-%m-%d %H"
+    (and attrs  (format "Bytes: %s, Saved: %s, Access: %s"
+                        (let ((size  (nth 7 attrs)))
+                          (if (> size most-positive-fixnum)
+                              (format "> %d" most-positive-fixnum)
+                            size))
+                        (format-time-string  "%c" (nth 5 attrs)) (nth 8 attrs))))) ; "%Y-%m-%d %H"
 
 (defun icicle-show-in-mode-line (text &optional buffer)
   "Display TEXT in BUFFER's mode line.
@@ -4413,12 +4409,12 @@ SAVED-LAST-INPUT is the last input, as in `icicle-last-input'."
                             (get this-command 'icicle-prefix-cycling-command)))))
     (when (string= icicle-current-input saved-last-input) ; Changed completion type, not user input.
       ;; Set `icicle-last-completion-command', to record new completion type.
-      (cond ((and (symbolp this-command) (get this-command 'icicle-prefix-cycling-command))
+      (cond ((and (symbolp this-command)  (get this-command 'icicle-prefix-cycling-command))
              (setq icicle-last-completion-command
                    (if (eq icicle-last-completion-command 'icicle-apropos-complete-no-display)
                        'icicle-prefix-complete-no-display
                      'icicle-prefix-complete)))
-            ((and (symbolp this-command) (get this-command 'icicle-apropos-cycling-command))
+            ((and (symbolp this-command)  (get this-command 'icicle-apropos-cycling-command))
              (setq icicle-last-completion-command
                    (if (eq icicle-last-completion-command 'icicle-prefix-complete-no-display)
                        'icicle-apropos-complete-no-display
@@ -4458,7 +4454,7 @@ There are several particular cases that modulate the behavior - see
 the code."
   (cond
     ;; Restore last input, if there is some to restore and we are cycling.
-    ((and icicle-last-input icicle-cycling-p icicle-last-completion-candidate)
+    ((and icicle-last-input  icicle-cycling-p  icicle-last-completion-candidate)
      (setq icicle-current-input  icicle-last-input)) ; Return `icicle-current-input'.
     (t
      (cond
@@ -4474,7 +4470,7 @@ the code."
                  (and (eq icicle-current-completion-mode 'prefix)
                       (not (memq icicle-expand-input-to-common-match '(3 4))))
                  (not icicle-common-match-string)
-                 (and (symbolp last-command) (get last-command 'icicle-cycling-command)
+                 (and (symbolp last-command)  (get last-command 'icicle-cycling-command)
                       (not (get last-command 'icicle-completing-command))) ; Not `TAB' or `S-TAB'.
                  (and (equal icicle-last-input icicle-current-input)
                       (eq icicle-current-completion-mode
@@ -4518,7 +4514,7 @@ the code."
             ;; `file-directory-p' fails to consider "~/foo//usr/" a directory.
             ;; $$$$$$ We could use the `icicle-file-directory-p' code with `icicle-file-name-directory'
             ;;        instead of `icicle-file-name-directory-w-default', if that presents a problem.
-            (unless (and (icicle-file-name-input-p) (icicle-file-directory-p icicle-current-input))
+            (unless (and (icicle-file-name-input-p)  (icicle-file-directory-p icicle-current-input))
               (setq icicle-current-input  common)))))
 
        ;; Save input for `C-l'.
@@ -4528,9 +4524,9 @@ the code."
        ;;   or this command is the same as last command.
        ((not (or (memq this-command '(icicle-retrieve-previous-input icicle-retrieve-next-input))
                  icicle-cycling-p
-                 (and (symbolp last-command) (get last-command 'icicle-cycling-command)
+                 (and (symbolp last-command)  (get last-command 'icicle-cycling-command)
                       (not (get this-command 'icicle-completing-command)))
-                 ;;$$$ (and (symbolp last-command) (get last-command 'icicle-completing-command))
+                 ;;$$$ (and (symbolp last-command)  (get last-command 'icicle-completing-command))
                  (eq last-command this-command)))
         (setq icicle-current-raw-input  icicle-current-input)
         ;; Save it for `C-l', unless it is "".  Drop old entries when too big.
@@ -4574,7 +4570,7 @@ This is a destructive operation: the list structure is changed."
                                  (+ incr icicle-candidate-nb)
                                (if (natnump incr) 0 (1- max))))
   (let ((wrapped  (mod icicle-candidate-nb max)))
-    (when (and (/= wrapped icicle-candidate-nb) (eq last-command this-command))
+    (when (and (/= wrapped icicle-candidate-nb)  (eq last-command this-command))
       (let ((visible-bell  t))  (ding)))
     (setq icicle-candidate-nb  wrapped)))
 
@@ -4593,7 +4589,7 @@ Optional argument DONT-ACTIVATE-P means do not activate the mark."
         input-start-position)
     (goto-char (icicle-minibuffer-prompt-end))
     (setq input-start-position  (point))
-    (when (and (icicle-file-name-input-p) insert-default-directory)
+    (when (and (icicle-file-name-input-p)  insert-default-directory)
       (search-forward (icicle-file-name-directory-w-default input) nil t)
       (setq input-start-position  (point))) ; Skip directory.
     ;; Locate completion root within current completion candidate.
@@ -4684,7 +4680,7 @@ This transformation has nothing to do with that performed by
   "Transform display CANDIDATE according to `icicle-list-use-nth-parts'.
 If CANDIDATE is not a multi-completion, return CANDIDATE unchanged.
 Return the possibly transformed candidate."
-  (if (and icicle-list-use-nth-parts (not (equal "" candidate)))
+  (if (and icicle-list-use-nth-parts  (not (equal "" candidate)))
       (let ((parts  (split-string candidate icicle-list-join-string)))  (icicle-join-nth-parts parts))
     candidate))
 
@@ -4778,7 +4774,7 @@ That is, backslash is never treated as a directory separator."
 ;;   ;; Note that some Emacs 20 code uses this as the equivalent of
 ;;   ;; `minibuffer-completing-file-name':
 ;;   ;; (memq minibuffer-completion-table '(read-file-name-internal read-directory-name-internal))
-;;   (and (symbolp minibuffer-completion-table) (stringp minibuffer-completion-predicate)))
+;;   (and (symbolp minibuffer-completion-table)  (stringp minibuffer-completion-predicate)))
 
 (defun icicle-file-name-input-p ()
   "Return non-nil if reading a file name using `read-file-name'.
@@ -5116,7 +5112,7 @@ Truncate according to `icicle-max-candidates'."
   "Return a new list with the first NUM elements of list XS.
 No error handling.  NUM must be in the range 0 to (length XS)."
   ;; A recursive version would be just this:
-  ;; (and xs (not (zerop num)) (cons (car xs) (icicle-take (1- num) (cdr xs)))))
+  ;; (and xs  (not (zerop num))  (cons (car xs) (icicle-take (1- num) (cdr xs)))))
   (let (newlist)
     (while (and xs  (> num 0))
       (setq newlist  (cons (car xs) newlist)
@@ -5145,16 +5141,15 @@ necessary."
 (defun icicle-set-intersection (list1 list2)
   "Set intersection of lists LIST1 and LIST2.
 This is a non-destructive operation: it copies the data if necessary."
-  (and list1 list2
-       (if (equal list1 list2)
-           list1
-         (let ((result  ()))
-           (unless (>= (length list1) (length list2))
-             (setq list1  (prog1 list2 (setq list2  list1)))) ; Swap them.
-           (while list2
-             (when (member (car list2) list1)  (setq result  (cons (car list2) result)))
-             (setq list2  (cdr list2)))
-           result))))
+  (and list1  list2  (if (equal list1 list2)
+                         list1
+                       (let ((result  ()))
+                         (unless (>= (length list1) (length list2))
+                           (setq list1  (prog1 list2 (setq list2  list1)))) ; Swap them.
+                         (while list2
+                           (when (member (car list2) list1)  (setq result  (cons (car list2) result)))
+                           (setq list2  (cdr list2)))
+                         result))))
 
 ;; Like `cl-seq.el', function `set-difference', but without keyword treatment.  No TEST arg, just KEY.
 ;; Same as `frame-cmds-set-difference' in `frame-cmds.el'.
@@ -5264,7 +5259,7 @@ Optional arg SAVED-SET is the Icicles saved completion set to use.
 (defun icicle-saved-fileset-p (entry)
   "Return non-nil if ENTRY is a fileset entry in a saved completion set.
 ENTRY is a list whose car is `:fileset' - it is not a fileset name."
-  (and (consp entry) (eq (car entry) ':fileset)))
+  (and (consp entry)  (eq (car entry) ':fileset)))
 
 (defun icicle-displayable-cand-from-saved-set (cand)
   "Return display candidate for saved candidate CAND.
@@ -5280,7 +5275,7 @@ If CAND is an atom, then return it as is."
 A Lisp-readable candidate uses the following to represent a marker:
    (icicle-file-marker FILE-NAME   MARKER-POSITION)
 or (icicle-marker      BUFFER-NAME MARKER-POSITION)"
-  (if (and (consp cand) (consp (cdr cand)) (consp (cddr cand)) (null (cdr (cddr cand)))
+  (if (and (consp cand)  (consp (cdr cand))  (consp (cddr cand))  (null (cdr (cddr cand)))
            (memq (car cand) '(icicle-file-marker icicle-marker)))
       (let ((file-or-buf  (cadr cand))
             (pos          (car (cddr cand)))
@@ -5343,7 +5338,7 @@ ENTRY is a fileset.
 DIR is a directory.
 PATT is a regexp that included file names must match.
 RELATIVEP non-nil means use relative file names."
-  (and (or (= depth 0) (< level depth))
+  (and (or (= depth 0)  (< level depth))
        (let* ((dir         (file-name-as-directory dir))
               (files-here  (filesets-directory-files dir patt nil (not relativep)
                                                      (filesets-entry-get-filter-dirs-flag entry)))
@@ -5375,7 +5370,7 @@ unless it exists."
     (save-excursion
       (goto-char (icicle-minibuffer-prompt-end))
       (setq input-start-position  (point))
-      (when (and (icicle-file-name-input-p) insert-default-directory)
+      (when (and (icicle-file-name-input-p)  insert-default-directory)
         (search-forward (icicle-file-name-directory-w-default
                          (icicle-input-from-minibuffer 'leave-envvars))
                         nil t)
@@ -5429,7 +5424,7 @@ unless it exists."
                        (not (eq t icicle-incremental-completion-p)))
                    (let ((len  (length icicle-completion-candidates)))
 
-;;; $$$$$$           (or (and (> len 1) (> icicle-incremental-completion-threshold len)) ; Not many
+;;; $$$$$$           (or (and (> len 1)  (> icicle-incremental-completion-threshold len)) ; Not many
 ;;; REPLACED PREVIOUS LINE with next one: `sit-for' even if only one candidate.
                      (or (> icicle-incremental-completion-threshold len) ; Not many
                          (sit-for icicle-incremental-completion-delay)))) ; Wait, unless input.
@@ -5446,7 +5441,7 @@ unless it exists."
 ;;;                        ;; If value is, say, `always' or `display' then update anyway.
 ;;;                        (not (eq t icicle-incremental-completion-p)))
 ;;;                    (let ((len  (length icicle-completion-candidates)))
-;;;                      (or (and (> len 1) (> icicle-incremental-completion-threshold len)) ; Not many
+;;;                      (or (and (> len 1)  (> icicle-incremental-completion-threshold len)) ; Not many
 ;;;                          (sit-for icicle-incremental-completion-delay)))) ; Wait, unless input.
           (let ((icicle-edit-update-p  t))
             (funcall (or icicle-last-completion-command
@@ -5494,10 +5489,10 @@ If no highlighting was attempted, return nil."
        nil)                             ; Return nil: no highlighting attempted.
 
       ;; Cursor is to the left of the last mismatch position.
-      ((and icicle-input-fail-pos (< (point) icicle-input-fail-pos))
+      ((and icicle-input-fail-pos  (< (point) icicle-input-fail-pos))
        (setq icicle-input-fail-pos  nil) ; Reset failure position.
        ;; Remove vestigial highlighting on matched part (e.g. from another completion mode).
-       (when (and (> (or icicle-input-fail-pos (point-max)) input-start)
+       (when (and (> (or icicle-input-fail-pos  (point-max)) input-start)
                   (overlayp icicle-input-completion-fail-overlay))
          (delete-overlay icicle-input-completion-fail-overlay))
        nil)                             ; Return nil: no highlighting attempted.
@@ -5513,7 +5508,7 @@ If no highlighting was attempted, return nil."
        ;; Do the same as for the previous, except return indication that we know it is a remote file.
        (setq icicle-input-fail-pos  nil)
 
-       (when (and (> (or icicle-input-fail-pos (point-max)) input-start)
+       (when (and (> (or icicle-input-fail-pos  (point-max)) input-start)
                   (overlayp icicle-input-completion-fail-overlay))
          (delete-overlay icicle-input-completion-fail-overlay))
        'file-remote-p)                  ; Return `file-remote-p': we know it is a remote file.
@@ -5597,7 +5592,7 @@ If no highlighting was attempted, return nil."
   "Return result of calling MS Windows `NET USE' command on DRIVE.
 DRIVE is a Windows drive name, such as `f:'.
 A return value of zero means DRIVE is a mapped network drive."
-  (if (and (fboundp 'puthash) (hash-table-p icicle-ms-windows-drive-hash))
+  (if (and (fboundp 'puthash)  (hash-table-p icicle-ms-windows-drive-hash))
       (let ((lookup  (gethash drive icicle-ms-windows-drive-hash 'no-assoc)))
         (if (eq lookup 'no-assoc)
             (puthash drive (call-process shell-file-name nil nil nil shell-command-switch
@@ -5621,8 +5616,8 @@ A return value of zero means DRIVE is a mapped network drive."
 ;;;                 (icicle-ms-windows-NET-USE (match-string 1 file))
 ;;;               (error nil)))
 ;;;            icicle-network-drive-means-remote-flag)
-;;;       (and (fboundp 'ffap-file-remote-p) (ffap-file-remote-p file))
-;;;       (and (fboundp 'file-remote-p) (file-remote-p file))))
+;;;       (and (fboundp 'ffap-file-remote-p)  (ffap-file-remote-p file))
+;;;       (and (fboundp 'file-remote-p)  (file-remote-p file))))
 
 (defun icicle-file-remote-p (file)
   "Non-nil means FILE is likely to name a file on a remote system.
@@ -5703,7 +5698,7 @@ those functions are not defined then return nil."
 
 (defun icicle-apropos-any-file-name-candidates-p (input)
   "Return non-nil if partial file-name INPUT has apropos completions."
-  (when (and input (not (string= "" input)) (eq (aref input (1- (length input))) ?\/))
+  (when (and input  (not (string= "" input))  (eq (aref input (1- (length input))) ?\/))
     (setq input  (substring input 0 (1- (length input))))) ; So we don't non-match highlight the /.
   (let* ((default-directory                (icicle-file-name-directory-w-default input))
          (minibuffer-completion-table      minibuffer-completion-table)
@@ -5742,7 +5737,7 @@ This must be called from the minibuffer."
   "Delete from ALIST all elements whose car is `equal' to KEY.
 Return the modified alist.
 Elements of ALIST that are not conses are ignored."
-  (while (and (consp (car alist)) (equal (car (car alist)) key))
+  (while (and (consp (car alist))  (equal (car (car alist)) key))
     (setq alist  (cdr alist)))
   (let ((tail  alist)
         tail-cdr)
@@ -5967,8 +5962,8 @@ Similar to `expand-file-name', except:
 (defun icicle-expand-file-name-20 (input dir)
   "Emacs 20's `expand-file-name': does not collapse consecutive slashes."
   ;; Replace // with five ^Gs, then replace back again.
-  (let ((escaped-input  (and input (replace-regexp-in-string "//" (make-string 5 7) input)))
-        (escaped-dir    (and dir (replace-regexp-in-string "//" (make-string 5 7) dir))))
+  (let ((escaped-input  (and input  (replace-regexp-in-string "//" (make-string 5 7) input)))
+        (escaped-dir    (and dir  (replace-regexp-in-string "//" (make-string 5 7) dir))))
     (replace-regexp-in-string (make-string 5 7) "//" (expand-file-name escaped-input escaped-dir))))
 
 (defun icicle-start-of-candidates-in-Completions ()
@@ -5995,11 +5990,11 @@ Non-nil optional arg ANGLES means use angle brackets."
 ;; Return the modified alist.
 ;; Elements of ALIST that are not conses are ignored."
 ;;     (setq test  (or test #'eq))
-;;     (while (and (consp (car alist)) (funcall test (car (car alist)) key))
+;;     (while (and (consp (car alist))  (funcall test (car (car alist)) key))
 ;;       (setq alist  (cdr alist)))
 ;;     (let ((tail  alist) tail-cdr)
 ;;       (while (setq tail-cdr  (cdr tail))
-;;         (if (and (consp (car tail-cdr)) (funcall test (car (car tail-cdr)) key))
+;;         (if (and (consp (car tail-cdr))  (funcall test (car (car tail-cdr)) key))
 ;;             (setcdr tail (cdr tail-cdr))
 ;;           (setq tail  tail-cdr))))
 ;;     alist)
@@ -6021,7 +6016,7 @@ Non-nil optional arg ANGLES means use angle brackets."
     "Delete from ALIST all elements whose car is `eq' to KEY.
 Return the modified alist.
 Elements of ALIST that are not conses are ignored."
-    (while (and (consp (car alist)) (eq (car (car alist)) key)) (setq alist  (cdr alist)))
+    (while (and (consp (car alist))  (eq (car (car alist)) key))  (setq alist  (cdr alist)))
     (let ((tail  alist) tail-cdr)
       (while (setq tail-cdr  (cdr tail))
         (if (and (consp (car tail-cdr))  (eq (car (car tail-cdr)) key))
@@ -6032,7 +6027,7 @@ Elements of ALIST that are not conses are ignored."
 (defun icicle-first-N (n list)
   "Return a new list of at most the N first elements of LIST."
   (let ((firstN  ()))
-    (while (and list (> n 0))
+    (while (and list  (> n 0))
       (push (car list) firstN)
       (setq n     (1- n)
             list  (cdr list)))
@@ -6061,7 +6056,7 @@ Otherwise, use `icicle-sort-comparer' as the sort predicate.
 
 Optional arg KEY is a selector function to apply to each item to be be
 compared.  If nil, then the entire item is used."
-  ;;$$ (when (and icicle-edit-update-p icicle-completion-candidates
+  ;;$$ (when (and icicle-edit-update-p  icicle-completion-candidates
   ;;              (> (length icicle-completion-candidates) icicle-incremental-completion-threshold))
   ;;     (message "Sorting candidates..."))
   (unless key (setq key  'identity))
@@ -6162,10 +6157,9 @@ Otherwise, the full candidate is obtained from
                ;; one match.  However, we cannot just use `assoc', because candidates might be
                ;; multi-completions (lists).
                (let ((first-match  (icicle-first-matching-candidate string icicle-candidates-alist)))
-                 (if (and first-match
-                          (not (icicle-first-matching-candidate
-                                string
-                                (setq cand-entries  (delete first-match cand-entries)))))
+                 (if (and first-match  (not (icicle-first-matching-candidate
+                                             string
+                                             (setq cand-entries  (delete first-match cand-entries)))))
                      first-match        ; Only one match, so use it.
                    (let ((msg  "Ambiguous choice. Cycle or use `mouse-2' to choose unique matching \
 candidate."))
@@ -6217,7 +6211,7 @@ the concatenated multi-completion parts, joined by
   (let ((res  nil))
     (if (null candidates)
         (setq res  nil)
-      (while (and candidates (not res))
+      (while (and candidates  (not res))
         (when (or (and (consp (caar candidates)) ; Multi-completion candidate
                        (save-match-data
                          (string-match (regexp-quote cand)
@@ -6258,7 +6252,7 @@ minibuffer."
                                     (t
                                      (list minibuffer-local-completion-map
                                            minibuffer-local-must-match-map)))))
-               (and (or (and parent (member parent maps)) (member loc-map maps))
+               (and (or (and parent (member parent maps))  (member loc-map maps))
                     t)))))              ; Cache t, not the keymap portion.
 
 ;; This is just `substring-no-properties', defined also for Emacs < 22.
@@ -6397,7 +6391,7 @@ Otherwise remove only Icicles internal text properties:
     `icicle-mode-line-help', `icicle-special-candidate',
     `icicle-user-plain-dot', `icicle-whole-candidate', `invisible'.
     \(Property `mouse-face' is removed by `choose-completion-string'.\)"
-  (when (and (stringp string) icicle-remove-icicles-props-p) ; Do nothing if we're inhibiting removal.
+  (when (and (stringp string)  icicle-remove-icicles-props-p) ; Do nothing if we're inhibiting removal.
     (let ((len  (length string)))
       (if icicle-unpropertize-completion-result-flag
           (set-text-properties 0 len nil string)
@@ -6494,7 +6488,7 @@ Return STRING, whether propertized or not."
   (unless (equal "" string)
     (when (> icicle-help-in-mode-line-delay 0)
       (put-text-property 0 1 'icicle-mode-line-help help string))
-    (when (and (boundp 'tooltip-mode) tooltip-mode)
+    (when (and (boundp 'tooltip-mode)  tooltip-mode)
       (put-text-property 0 (length string) 'help-echo help string)))
   string)
 
@@ -6540,8 +6534,7 @@ is current before user input is read from the minibuffer."
              (anything-actions                 (and (> emacs-major-version 21)
                                                     icicle-use-anything-candidates-flag
                                                     (require 'anything nil t)
-                                                    (icicle-get-anything-actions-for-type
-                                                     (intern type))))
+                                                    (icicle-get-anything-actions-for-type (intern type))))
              (actions                   ; Must sort, for `icicle-candidates-alist',
               (sort                     ; or else `icicle-candidate-nb' will be wrong.
                (append anything-actions
@@ -6555,7 +6548,7 @@ is current before user input is read from the minibuffer."
                 (let ((icicle-candidate-alt-action-fn  (icicle-alt-act-fn-for-type "function"))
                       icicle-saved-completion-candidate)
                   (icicle-with-selected-window ; A macro in `icicles-mac.el'.
-                      (if (and (boundp 'icicle-orig-window) (window-live-p icicle-orig-window))
+                      (if (and (boundp 'icicle-orig-window)  (window-live-p icicle-orig-window))
                           icicle-orig-window
                         (selected-window)) ; Punt wo `icicle-orig-window'.
                     (dolist (cand  cands)
@@ -6571,7 +6564,7 @@ is current before user input is read from the minibuffer."
                                      ((memq (intern type)
                                             '(command face function option symbol variable))
                                       (intern obj))
-                                     ((and (eq (intern type) 'frame) (fboundp 'get-a-frame))
+                                     ((and (eq (intern type) 'frame)  (fboundp 'get-a-frame))
                                       (get-a-frame obj))
                                      (t  obj)))
                              cands))
@@ -6594,7 +6587,7 @@ is current before user input is read from the minibuffer."
                                                                   (completing-read "How (action): "
                                                                                    actions))))
                    (icicle-with-selected-window
-                       (if (and (boundp 'icicle-orig-window) (window-live-p icicle-orig-window))
+                       (if (and (boundp 'icicle-orig-window)  (window-live-p icicle-orig-window))
                            icicle-orig-window
                          (selected-window)) ; Punt: no `icicle-orig-window'.
                      (let ((icicle-candidate-alt-action-fn  (icicle-alt-act-fn-for-type "function")))
@@ -6606,7 +6599,7 @@ is current before user input is read from the minibuffer."
   "Toggle Icicle mode twice.  Load `icicles-mode.el' if not loaded."
   ;; Just a convenience function, to avoid Emacs warning about calling `icy-mode' with no arg.
   (require 'icicles-mode)
-  (let ((curr  (if (and (boundp 'icicle-mode) icicle-mode) 1 -1)))
+  (let ((curr  (if (and (boundp 'icicle-mode)  icicle-mode) 1 -1)))
     (icy-mode (- curr))  (icy-mode curr)))
 
 (defun icicle-current-TAB-method ()
@@ -6618,7 +6611,7 @@ This resets variable `icicle-current-TAB-method' when needed."
 
 (defun icicle-not-basic-prefix-completion-p ()
   "`icicle-current-TAB-method' is `vanilla', and Emacs > release 22."
-  (and (eq 'vanilla (icicle-current-TAB-method)) (boundp 'completion-styles)))
+  (and (eq 'vanilla (icicle-current-TAB-method))  (boundp 'completion-styles)))
 
 (defun icicle-all-completions (string collection &optional predicate hide-spaces)
   "Version of vanilla `all-completions' that works for all Emacs releases.
@@ -6700,10 +6693,10 @@ inputs, followed by matching candidates that have not yet been used."
 ;;     (if (not (consp hist))
 ;;         (icicle-case-string-less-p s1 s2)
 ;;       (when dir (setq s1  (expand-file-name s1 dir)  s2  (expand-file-name s2 dir)))
-;;       (while (and hist (not (setq s1-in-hist  (equal s1 (car hist)))))
+;;       (while (and hist  (not (setq s1-in-hist  (equal s1 (car hist)))))
 ;;         (when (setq s2-in-hist  (equal s2 (car hist))) (setq hist  nil))
 ;;         (setq hist  (cdr hist)))
-;;       (or (and hist s1-in-hist) (and (not s2-in-hist) (icicle-case-string-less-p s1 s2))))))
+;;       (or (and hist  s1-in-hist) (and (not s2-in-hist)  (icicle-case-string-less-p s1 s2))))))
 
 (defun icicle-most-recent-first-p (s1 s2)
   "Non-nil means S1 was used as input more recently than S2.
@@ -6773,13 +6766,13 @@ Buffers not associated with files or processes are sorted last."
   (setq b1  (get-buffer b1)
         b2  (get-buffer b2))
   (let ((fp-b1  (or (buffer-file-name b1) (let ((pb1  (get-buffer-process b1)))
-                                            (and (processp pb1) (process-name pb1)))))
+                                            (and (processp pb1)  (process-name pb1)))))
         (fp-b2  (or (buffer-file-name b2) (let ((pb2  (get-buffer-process b2)))
-                                            (and (processp pb2) (process-name pb2))))))
-    (and fp-b1 (or (not fp-b2)
-                   (if (memq system-type '(ms-dos windows-nt cygwin))
-                       (string-lessp (icicle-upcase fp-b1) (icicle-upcase fp-b2))
-                     (string-lessp fp-b1 fp-b2))))))
+                                            (and (processp pb2)  (process-name pb2))))))
+    (and fp-b1  (or (not fp-b2)
+                    (if (memq system-type '(ms-dos windows-nt cygwin))
+                        (string-lessp (icicle-upcase fp-b1) (icicle-upcase fp-b2))
+                      (string-lessp fp-b1 fp-b2))))))
 
 
 (put 'icicle-file-type-less-p 'icicle-file-name-sort-predicate t)
@@ -6814,7 +6807,7 @@ If not doing file-name completion, then this is the same as
   (if (or (icicle-file-name-input-p)  icicle-abs-file-candidates)
       (let ((s1-dir-p  (icicle-file-directory-p s1))
             (s2-dir-p  (icicle-file-directory-p s2)))
-        (if (or (and s1-dir-p s2-dir-p) ; Both or neither are directories.
+        (if (or (and s1-dir-p  s2-dir-p) ; Both or neither are directories.
                 (not (or s1-dir-p s2-dir-p)))
             (icicle-case-string-less-p s1 s2)  ; Compare equals.
           s1-dir-p))                 ; Directories come before files.
@@ -6830,7 +6823,7 @@ If not doing file-name completion, then this is the same as
   (if (or (icicle-file-name-input-p)  icicle-abs-file-candidates)
       (let ((s1-dir-p  (icicle-file-directory-p s1))
             (s2-dir-p  (icicle-file-directory-p s2)))
-        (if (or (and s1-dir-p s2-dir-p) ; Both or neither are directories.
+        (if (or (and s1-dir-p  s2-dir-p) ; Both or neither are directories.
                 (not (or s1-dir-p s2-dir-p)))
             (icicle-case-string-less-p s1 s2)  ; Compare equals.
           s2-dir-p))                 ; Files come before directories.
@@ -6901,13 +6894,13 @@ then return non-nil if S1 is `string-lessp' S2."
   (let* ((alist-tails  (mapcar #'cdr icicle-command-abbrev-alist))
          (s1-entry     (assq (intern s1) alist-tails))
          (s2-entry     (assq (intern s2) alist-tails)))
-    (if (and (not s1-entry) (not s2-entry))
+    (if (and (not s1-entry)  (not s2-entry))
         (string-lessp s1 s2)
       (let ((s1-rank  (elt s1-entry 1))
             (s2-rank  (elt s2-entry 1)))
-        (cond ((and (not s1-rank) (not s2-rank))           (string-lessp s1 s2))
-              ((and s1-rank s2-rank (eq s1-rank s2-rank))  (string-lessp s1 s2))
-              (t                                           (>= (or s1-rank 0) (or s2-rank 0))))))))
+        (cond ((and (not s1-rank)  (not s2-rank))            (string-lessp s1 s2))
+              ((and s1-rank  s2-rank  (eq s1-rank s2-rank))  (string-lessp s1 s2))
+              (t                                             (>= (or s1-rank 0) (or s2-rank 0))))))))
 
 (defun icicle-part-N-lessp (n s1 s2)
   "`icicle-case-string-less-p' applied to the Nth parts of S1 and S2.
@@ -6917,11 +6910,11 @@ Return non-nil if and only if the Nth part of S1 is less than the Nth
 part of S2.  The Nth parts are compared lexicographically without
 regard to letter case.  N is one-based, so a value of 1 means compare
 the first parts."
-  (unless (and (wholenump n) (> n 0)) (error "`icicle-part-N-lessp': N must be > 0"))
+  (unless (and (wholenump n)  (> n 0)) (error "`icicle-part-N-lessp': N must be > 0"))
   (let ((case-fold-search  t)
         (part-N-s1         (elt (split-string s1 icicle-list-join-string) (1- n)))
         (part-N-s2         (elt (split-string s2 icicle-list-join-string) (1- n))))
-    (and part-N-s1 part-N-s2            ; In case strings were not multipart.
+    (and part-N-s1  part-N-s2           ; In case strings were not multipart.
          (icicle-case-string-less-p part-N-s1 part-N-s2))))
 
 (defun icicle-part-1-lessp (s1 s2)
