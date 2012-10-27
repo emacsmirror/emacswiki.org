@@ -346,10 +346,11 @@ See [[Icicles - Candidate Sets#SavingAndRetrieving|Saving and Retrieving Complet
 [:icicle-match-highlight-minibuffer]
 [:icicle-match-highlight-Completions]
 [:icicle-common-match-highlight-Completions]
-==== Faces icicle-current-candidate-highlight, icicle-complete-input, icicle-match-highlight-minibuffer, icicle-match-highlight-Completions, icicle-common-match-highlight-Completions ====
+[:icicle-annotation]
+==== Faces icicle-current-candidate-highlight, icicle-common-match-highlight-Completions, icicle-annotation, icicle-match-highlight-Completions, icicle-match-highlight-minibuffer, icicle-complete-input  ====
 
 In buffer `*Completions*', face '''`icicle-current-candidate-highlight'''' highlights the current
-completion candidate, and face '''`icicle-common-match-highlight-Completions'''' highlights the [[Icicles - Expanded-Common-Match Completion|expanded common match]] among all completions.  Faces '''`icicle-match-highlight-Completions''''  and '''`icicle-match-highlight-minibuffer'''' 
+completion candidate, face '''`icicle-common-match-highlight-Completions'''' highlights the [[Icicles - Expanded-Common-Match Completion|expanded common match]] among all completions, and face '''`icicle-annotation'''' is used for candidate annotations.  Faces '''`icicle-match-highlight-Completions''''  and '''`icicle-match-highlight-minibuffer'''' 
 highlight whatever your input matches, in buffer `*Completions*' and in the minibuffer, respectively.  In the minibuffer, face '''`icicle-complete-input'''' highlights your input when it is complete.  You can customize these, as well as the other '''Icicles''' faces.
 
 
@@ -1669,13 +1670,23 @@ versions 21 and later.
 
 
 ----
+[:icicle-show-annotations-flag]
+==== Option icicle-show-annotations-flag ====
+
+
+Non-`nil' user option '''`icicle-show-annotations-flag'''' means show annotations, when available, next to candidates in `*Completions*'.  You can toggle this option from the minibuffer using '''`C-x C-a''''.
+
+
+
+----
 [:icicle-show-multi-completion-flag]
 ==== Option icicle-show-multi-completion-flag ====
 
 Non-`nil' user option '''`icicle-show-multi-completion-flag'''' means that for some commands additional information is shown along
 with each completion candidate.  That is, a [[multi-completion]] is
 used.  You can match against any parts of the multi-completion.
-The default value is `t'.
+The default value is `t'.  (By contrast, you cannot match the
+text controlled by option `icicle-show-annotations-flag'.)
 
 For example, for command `icicle-search', the name of the buffer associated with each completion candidate is added
 to the candidate and highlighted. You can match against the buffer name, as well as the search hit within the buffer. 
@@ -1685,7 +1696,9 @@ you can often see the multi-completion information in the [[mode line]] when you
 [[Icicles - Cycling Completions|cycle]] candidates, and you can typically see it in the help that is 
 displayed by `C-M-mouse-2' and so on.
 
-
+You can toggle this option from the minibuffer using '''`M-m''''.  The
+new value takes effect after you exit the minibuffer (i.e., for
+the next command).
 
 ----
 [:icicle-kill-visited-buffers-flag]
