@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 22.1
-;; Last-Updated: Mon Sep 24 15:49:39 2012 (-0700)
+;; Last-Updated: Fri Oct 26 17:29:22 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1324
+;;     Update #: 1481
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/help-fns+.el
 ;; Doc URL: http://emacswiki.org/emacs/HelpPlus
 ;; Keywords: help, faces, characters, packages, description
@@ -96,7 +96,8 @@
 ;;  ***** NOTE: The following functions defined in `help-fns.el'
 ;;              have been REDEFINED HERE:
 ;;
-;;  `describe-function', `describe-function-1', `describe-variable'.
+;;  `describe-function', `describe-function-1', `describe-variable',
+;;  `help-fns--key-bindings', `help-fns--signature', 
 ;;
 ;;
 ;;  ***** NOTE: The following command defined in `package.el'
@@ -118,6 +119,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/10/26 dadams
+;;     Added: help-fns--key-bindings, help-fns--signature, 
+;;     Added Emacs 24.3+ version of describe-function-1.  Updated version for 23.2-24.2.
+;;     help-substitute-command-keys: Fix for \= when no match for \[, \<, \{ past it.
 ;; 2012/09/24 dadams
 ;;     describe-file: Added optional arg NO-ERROR-P.
 ;; 2012/09/22 dadams
@@ -315,6 +320,7 @@
 (defvar file-local-variables-alist)
 (defvar Info-indexed-nodes)             ; In `info.el'
 (defvar help-cross-reference-manuals)   ; For Emacs < 23.2
+(defvar help-enable-auto-load)          ; For Emacs < 24.3
 (defvar package-alist)
 (defvar package-archive-contents)
 (defvar package--builtins)
@@ -363,7 +369,7 @@ descriptions, which link to the key's command help."
 
     ;; REPEAT:
     ;;  Search for first occurrence of any of the patterns: \[...], \{...}, or \<...>.
-    ;;  Handle escaping via \=, if present before the pattern.
+    ;;  Handle escaping via \=, if present before the pattern or if there is no pattern match.
     ;;  If pattern is a keymap (\<...>): use it from then on.
     ;;  If pattern is a command (\[...]): (a) substitute its key description, (b) put a button on it.
     ;;  If pattern is a bindings spec (\{...}): just substitute the usual text.
@@ -386,34 +392,37 @@ descriptions, which link to the key's command help."
                 strg      (substring strg ii))
           (save-match-data              ; ANY
             (setq ma  (string-match re-any strg))
-            (if (not ma)
-                (setq newstrg  (concat newstrg strg)
-                      ii       len-strg
-                      jj       len-strg)
-              (let ((escaped  nil)
-                    (odd      nil))
-                (save-match-data
-                  (let ((ma1  ma))
-                    (setq ii  ma)
-                    (while (string-match "\\\\=$" (substring strg 0 ma1))
-                      (setq odd  (not odd)
-                            ma1  (match-beginning 0))
-                      (when odd
-                        (setq ii       (- ii 2)
-                              escaped  ma1)))))
-                (if (not escaped)
-                    (setq ii       ma
-                          jj       (match-end 0)
-                          ma       (match-string-no-properties 0 strg)
-                          newstrg  (concat newstrg (substring strg 0 ii)))
-                  (setq jj       (match-end 0) ; End of \[...], \{...}, or \<...>
-                        newstrg  (if odd
-                                     (concat newstrg
-                                             (substring strg 0 ii) ; Unescaped \='s
-                                             (substring strg ma jj)) ; \[...], \{...}, or \<...>
-                                   (concat newstrg (substring strg 0 ii)))
-                        ma       (if odd nil (match-string-no-properties 0 strg))
-                        ii       jj)))))
+            (cond ((not ma)             ; No \[...], \{...}, or \<...>, but we need to handle \=
+                   (setq jj       0
+                         newstrg  (concat newstrg (replace-regexp-in-string
+                                                   "\\\\=\\(.\\)" "\\1" strg nil nil nil jj)))
+                   (when (match-beginning 1) (setq jj  (match-beginning 1)))
+                   (setq ii  len-strg))
+                  (t
+                   (let ((escaped  nil)
+                         (odd      nil))
+                     (save-match-data
+                       (let ((ma1  ma))
+                         (setq ii  ma)
+                         (while (string-match "\\\\=$" (substring strg 0 ma1))
+                           (setq odd  (not odd)
+                                 ma1  (match-beginning 0))
+                           (when odd
+                             (setq ii       (- ii 2)
+                                   escaped  ma1)))))
+                     (if (not escaped)
+                         (setq ii       ma
+                               jj       (match-end 0)
+                               ma       (match-string-no-properties 0 strg)
+                               newstrg  (concat newstrg (substring strg 0 ii)))
+                       (setq jj       (match-end 0) ; End of \[...], \{...}, or \<...>
+                             newstrg  (if odd
+                                          (concat newstrg
+                                                  (substring strg 0 ii) ; Unescaped \='s
+                                                  (substring strg ma jj)) ; \[...], \{...}, or \<...>
+                                        (concat newstrg (substring strg 0 ii)))
+                             ma       (if odd nil (match-string-no-properties 0 strg))
+                             ii       jj))))))
           (when ma
             (save-match-data            ; KEYMAP
               (setq ma  (copy-sequence ma))
@@ -1041,9 +1050,10 @@ Return the description that was displayed, as a string."
 ;; REPLACE ORIGINAL in `help-fns.el':
 ;;
 ;; 1. Call `Info-make-manuals-xref' to create a cross-ref link to manuals.
-;; 2. Add key-description buttons to command help.  Use `insert', not `princ'.
+;; 2. Add key-description buttons to command help.
 ;;
-(when (boundp 'Info-virtual-files)      ; Emacs 23.2+
+(when (and (boundp 'Info-virtual-files)      ; Emacs 23.2 through 24.2
+           (not (fboundp 'help-fns--autoloaded-p)))
   (defun describe-function-1 (function)
     (let* ((advised        (and (symbolp function)  (featurep 'advice)  (ad-get-advice-info function)))
            ;; If the function is advised, use the symbol that has the real def, if already set up.
@@ -1052,9 +1062,17 @@ Return the description that was displayed, as a string."
                                function))
            ;; Get the real definition.
            (def            (if (symbolp real-function) (symbol-function real-function) function))
+           (aliased        (symbolp def))
+           (real-def       (if aliased
+                               (let ((fn  def))
+                                 (while (and  (fboundp fn)  (symbolp (symbol-function fn)))
+                                   (setq fn  (symbol-function fn)))
+                                 fn)
+                             def))
+           (file-name      (find-lisp-object-file-name function def))
            (beg            (if (commandp def) "an interactive "  "a "))
            (pt1            (with-current-buffer (help-buffer) (point)))
-           file-name string errtype)
+           string errtype)
       (setq string  (cond ((or (stringp def)  (vectorp def))  "a keyboard macro")
                           ((subrp def)  (if (eq 'unevalled (cdr (subr-arity def)))
                                             (concat beg "special form")
@@ -1089,7 +1107,6 @@ Return the description that was displayed, as a string."
         (with-current-buffer standard-output
           (save-excursion (save-match-data (when (re-search-backward "alias for `\\([^`']+\\)'" nil t)
                                              (help-xref-button 1 'help-function def)))))
-        (setq file-name  (find-lisp-object-file-name function def))
         (when file-name
           (princ " in `")
           ;; We used to add `.el' to the file name, but that's wrong when the user used `load-file'.
@@ -1204,6 +1221,165 @@ Return the description that was displayed, as a string."
               (when (and doc  (boundp 'Info-virtual-files)) ; Emacs 23.2+
                 (Info-make-manuals-xref function)) ; Link to manuals.  (With progress message.)
               (insert (or doc  "Not documented.")))))))))
+
+(when (fboundp 'help-fns--autoloaded-p) ; Emacs 24.3+
+  (defun describe-function-1 (function)
+    (let* ((advised        (and (symbolp function)  (featurep 'advice)  (ad-get-advice-info function)))
+           ;; If the function is advised, use the symbol that has the real def, if already set up.
+           (real-function  (or (and advised  (let ((origname  (cdr (assq 'origname advised))))
+                                               (and (fboundp origname)  origname)))
+                               function))
+           ;; Get the real definition.
+           (def            (if (symbolp real-function) (symbol-function real-function) function))
+           (aliased        (symbolp def))
+           (real-def       (if aliased
+                               (let ((fn  def))
+                                 (while (and  (fboundp fn)  (symbolp (symbol-function fn)))
+                                   (setq fn  (symbol-function fn)))
+                                 fn)
+                             def))
+           (file-name      (find-lisp-object-file-name function def))
+           (pt1            (with-current-buffer (help-buffer) (point)))
+           (beg            (if (and (or (byte-code-function-p def)  (keymapp def)
+                                        (memq (car-safe def) '(macro lambda closure)))
+                                    file-name
+                                    (help-fns--autoloaded-p function file-name))
+                               (if (commandp def) "an interactive autoloaded " "an autoloaded ")
+                             (if (commandp def) "an interactive " "a "))))
+      ;; Print what kind of function-like object FUNCTION is.
+      (princ (cond ((or (stringp def)  (vectorp def))  "a keyboard macro")
+                   ((subrp def)  (if (eq 'unevalled (cdr (subr-arity def)))
+                                     (concat beg "special form")
+                                   (concat beg "built-in function")))
+                   ((byte-code-function-p def)  (concat beg "compiled Lisp function"))
+                   (aliased (format "an alias for `%s'" real-def))
+                   ((eq (car-safe def) 'lambda)  (concat beg "Lisp function"))
+                   ((eq (car-safe def) 'macro)  (concat beg "Lisp macro"))
+                   ((eq (car-safe def) 'closure)  (concat beg "Lisp closure"))
+                   ((autoloadp def)
+                    (format "%s autoloaded %s" (if (commandp def) "an interactive"  "an")
+                            (if (eq (nth 4 def) 'keymap)
+                                "keymap"
+                              (if (nth 4 def) "Lisp macro" "Lisp function"))))
+                   ((keymapp def)  (let ((is-full  nil)
+                                         (elts     (cdr-safe def)))
+                                     (while elts
+                                       (when (char-table-p (car-safe elts))
+                                         (setq is-full  t
+                                               elts     ()))
+                                       (setq elts  (cdr-safe elts)))
+                                     (concat beg (if is-full "keymap"  "sparse keymap"))))
+                   (t  "")))
+      (if (and aliased (not (fboundp real-def)))
+          (princ ",\nwhich is not defined.  Please submit a bug report.")
+        (with-current-buffer standard-output
+          (save-excursion (save-match-data (when (re-search-backward "alias for `\\([^`']+\\)'" nil t)
+                                             (help-xref-button 1 'help-function real-def)))))
+        (when file-name
+          (princ " in `")
+          ;; We used to add `.el' to the file name, but that's wrong when the user used `load-file'.
+          (princ (if (eq file-name 'C-source) "C source code" (file-name-nondirectory file-name)))
+          (princ "'")
+          ;; Make a hyperlink to the library.
+          (with-current-buffer standard-output
+            (save-excursion (re-search-backward "`\\([^`']+\\)'" nil t)
+                            (help-xref-button 1 'help-function-def function file-name))))
+        (princ ".")
+        (with-current-buffer (help-buffer)
+          (fill-region-as-paragraph (save-excursion (goto-char pt1) (forward-line 0) (point)) (point)))
+        (terpri) (terpri)
+        (let* ((doc-raw  (documentation function 'RAW))
+               ;; If the function is autoloaded, and its docstring has key substitution constructs,
+               ;; load the library.  In any case, add help buttons.
+               (doc      (if (and (autoloadp real-def)  doc-raw
+                                     help-enable-auto-load
+                                     (string-match "\\([^\\]=\\|[^=]\\|\\`\\)\\\\[[{<]" doc-raw)
+                                     (load (cadr real-def) t))
+                              (help-substitute-command-keys doc-raw 'ADD-HELP-BUTTONS)
+                           (condition-case err
+                               (help-documentation function nil 'ADD-HELP-BUTTONS)
+                             (error (format "No Doc! %S" err))))))
+          (help-fns--key-bindings function)
+          (with-current-buffer standard-output
+            (setq doc  (help-fns--signature function doc real-def real-function))
+            (help-fns--compiler-macro function)
+            (help-fns--parent-mode function)
+            (help-fns--obsolete function)
+            (insert "\n")
+            (when (and doc  (boundp 'Info-virtual-files)) ; Emacs 23.2+
+              (Info-make-manuals-xref function)) ; Link to manuals.  (With progress message.)
+            (insert (or doc  "Not documented.")))))))
+
+
+  ;; REPLACE ORIGINAL in `help-fns.el':
+  ;;
+  ;; Use `naked-key-description' if available.
+  ;;
+  (defun help-fns--key-bindings (function)
+    (when (commandp function)
+      (let ((pt2       (with-current-buffer standard-output (point)))
+            (remapped  (command-remapping function)))
+        (unless (memq remapped '(ignore undefined))
+          (let ((keys  (where-is-internal (or remapped  function) overriding-local-map nil nil))
+                non-modified-keys)
+            (if (and (eq function 'self-insert-command)  (vectorp (car-safe keys))
+                     (consp (aref (car keys) 0)))
+                (princ "It is bound to many ordinary text characters.\n")
+              (dolist (key  keys) ; Which non-control non-meta keys run this command?
+                (when (member (event-modifiers (aref key 0))  '(nil (shift)))  (push key non-modified-keys)))
+              (when remapped
+                (princ "Its keys are remapped to ")
+                (princ (if (symbolp remapped)
+                           (concat "`" (symbol-name remapped) "'")
+                         "an anonymous command"))
+                (princ ".\n"))
+              (when keys
+                (princ (if remapped "Without this remapping, it would be bound to " "It is bound to "))
+                ;; If lots of ordinary text characters run this command, don't mention them one by one.
+                (if (< (length non-modified-keys) 10)
+                    (princ (if (fboundp 'naked-key-description) #'naked-key-description #'key-description))
+                  (dolist (key  non-modified-keys) (setq keys  (delq key keys)))
+                  (if keys
+                      (progn (princ (if (fboundp 'naked-key-description)
+                                        #'naked-key-description
+                                      #'key-description))
+                             (princ ", and many ordinary text characters"))
+                    (princ "many ordinary text characters"))))
+              (when (or remapped  keys  non-modified-keys) (princ ".") (terpri)))))
+        (with-current-buffer standard-output
+          (fill-region-as-paragraph pt2 (point))
+          (unless (looking-back "\n\n") (terpri))))))
+
+
+  ;; REPLACE ORIGINAL in `help-fns.el'
+  ;;
+  ;; Add key-description buttons to command help.
+  ;;
+  (defun help-fns--signature (function doc real-def real-function)
+    (unless (keymapp function) ; If definition is a keymap, skip arglist note.
+      (let* ((advertised  (gethash real-def advertised-signature-table t))
+             (arglist     (if (listp advertised) advertised (help-function-arglist real-def)))
+             (usage       (help-split-fundoc doc function)))
+        (when usage (setq doc  (cdr usage)))
+        (let* ((use   (cond ((and usage  (not (listp advertised))) (car usage))
+                            ((listp arglist) (format "%S" (help-make-usage function arglist)))
+                            ((stringp arglist) arglist)
+                            ;; Maybe the arglist is in the docstring of a symbol this one is aliased to.
+                            ((let ((fun  real-function))
+                               (while (and (symbolp fun)  (setq fun  (symbol-function fun))
+                                           (not (setq usage  (help-split-fundoc
+                                                              (help-documentation fun nil 'ADD-HELP-BUTTONS)
+                                                              function)))))
+                               usage)
+                             (car usage))
+                            ((or (stringp real-def)  (vectorp real-def))
+                             (format "\nMacro: %s" (format-kbd-macro real-def)))
+                            (t "[Missing arglist.  Please submit a bug report.]")))
+               (high  (help-highlight-arguments use doc)))
+          (let ((fill-begin  (point)))
+            (insert (car high) "\n")
+            (fill-region fill-begin (point)))
+          (cdr high))))))
 
 ;;;###autoload
 (defun describe-command (function)      ; Bound to `C-h c'
