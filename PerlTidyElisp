@@ -58,8 +58,9 @@ But perltidy is too slow, is it the problem of my program?
 }}}
 
 
-Iâve noticed that the above two functions donât take special care to provide a PERLTIDY environment variable with the path to the "nearest" .perltidyrc. This is a problem if you are editing "project/lib/foo.pm" but your .perltidyrc is in "project/.perltidyrc". The following function fixes that, and it also keeps the current window configuration (another problem which Iâve noticed with the above functions):
+I've noticed that the above two functions don't take special care to provide a PERLTIDY environment variable with the path to the "nearest" .perltidyrc. This is a problem if you are editing "project/lib/foo.pm" but your .perltidyrc is in "project/.perltidyrc". The following function fixes that, and it also keeps the current window configuration (another problem which I've noticed with the above functions):
 
+{{{
 (defun perltidy-dwim (arg)
   "Perltidy a region of the entire buffer"
   (interactive "P")
@@ -92,3 +93,4 @@ Iâve noticed that the above two functions donât take special care to p
 (add-hook 'cperl-mode-hook
 	  (lambda ()
 	    (local-set-key (kbd "C-c t") 'perltidy-dwim)))
+}}}
