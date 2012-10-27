@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Oct 26 17:19:47 2012 (-0700)
+;; Last-Updated: Sat Oct 27 11:35:54 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 9160
+;;     Update #: 9188
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -86,6 +86,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2012/10/27 dadams
+;;     icicle-execute-extended-command, icicle-command-abbrev:
+;;       Bind icicle-last-transform-function: show only bound cmds.  Thx to Michael Heerdegen.
+;;       Bind completion-annotate-function: annotate with key bindings.
 ;; 2012/10/21 dadams
 ;;     Added: icicle-cached-files-without-buffers, icicle-recent-files-without-buffers.
 ;;     icicle-buffer-multi-complete, icicle-buffer(-other-window):
@@ -1373,6 +1377,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-face.el'")
 ;;
+;; 2012/10/27 dadams
+;;     Added icicle-annotation.
 ;; 2012/07/07 dadams
 ;;     Added: icicle-historical-candidate-other (used only for icicle-Info-index so far).
 ;; 2012/03/29 dadams
@@ -1496,6 +1502,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2012/10/27 dadams
+;;     icicle-insert-candidates:
+;;       Insert annotation only if icicle-show-annotations-flag.  Highlight w/ face icicle-annotation.
 ;; 2012/10/24 dadams
 ;;     icicle-completion--embedded-envvar-table: Return 0 as the first boundary.  Thx to M. Heerdegen.
 ;; 2012/10/22 dadams
@@ -3476,6 +3485,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2012/10/27 dadams
+;;     Added: icicle-toggle-annotation.
+;;     icicle-help-string-completion: Added icicle-toggle-annotation.
+;;     icicle-toggle-transforming: Use new variable icicle-toggle-transforming-message.
 ;; 2012/10/22 dadams
 ;;     icicle-(un)bind-buffer-candidate-keys: Remove soft-require conditions for C-x F and C-x R.
 ;; 2012/10/21 dadams
@@ -5003,6 +5016,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2012/10/27 dadams
+;;     icicle-define-icicle-maps: Added icicle-toggle-annotation.
+;;     icicle-(bind|restore)-completion-keys: Bind icicle-toggle-annotation to C-x C-a.
+;;     icicle-mode: Added icicle-toggle-annotation to doc string.
 ;; 2012/10/05 dadams
 ;;     icicle-minibuffer-setup: Removed binding of icicle-default-directory (unused).
 ;; 2012/10/01 dadams
@@ -6147,6 +6164,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2012/10/27 dadams
+;;     Added: icicle-show-annotations-flag.
 ;; 2012/10/26 dadams
 ;;     icicle-search-replace-whole-candidate-flag: Correct key in doc string: M-_, not C-,.
 ;; 2012/10/21 dadams
@@ -6890,6 +6909,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2012/10/27 dadams
+;;     Added: icicle-toggle-transforming-message.  Updated icicle-general-help-string.
 ;; 2012/10/22 dadams
 ;;     Added: icicle-Info-index-cache.
 ;; 2012/10/18 dadams
