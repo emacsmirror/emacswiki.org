@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Oct 26 17:12:30 2012 (-0700)
+;; Last-Updated: Sat Oct 27 10:26:03 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5343
+;;     Update #: 5347
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -167,6 +167,7 @@
 ;;    `icicle-search-replace-whole-candidate-flag',
 ;;    `icicle-search-ring-max', `icicle-search-whole-word-flag',
 ;;    `icicle-shell-command-candidates-cache',
+;;    `icicle-show-annotations-flag',
 ;;    `icicle-show-Completions-help-flag',
 ;;    `icicle-show-Completions-initially-flag',
 ;;    `icicle-show-multi-completion-flag', `icicle-sort-comparer',
@@ -3061,6 +3062,16 @@ You typically do not need to customize this option.
 It is an option mainly to persist its value.
 See `icicle-guess-commands-in-path'."
   :type '(repeat sexp) :group 'Icicles-Miscellaneous)
+
+(defcustom icicle-show-annotations-flag t
+  "*Non-nil means display candidate annotations in `*Completions*'.
+Annotations are available only in some contexts, and only for some
+candidates.  They are highlighted using face `icicle-annotation'.
+
+You can toggle this option from the minibuffer using `\\<minibuffer-local-completion-map>\
+\\[icicle-toggle-annotation]'.  You can also use multi-command `icicle-toggle-option'
+anytime to toggle the option."
+  :type 'boolean :group 'Icicles-Completions-Display)
 
 (defcustom icicle-show-Completions-help-flag t
   "*Non-nil means display help lines at the top of buffer `*Completions*'.
