@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Wed Oct 24 07:28:47 2012 (-0700)
+;; Last-Updated: Fri Oct 26 17:19:47 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 9158
+;;     Update #: 9160
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -740,6 +740,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2012/10/26 dadams
+;;     icicle-search: Use \\[...] in doc string instead of hard-coding some of the keys.
 ;; 2012/10/22 dadams
 ;;     icicle-Info-index: Bind *-transform-function to *-remove-duplicates.  Emacs bug #12705.
 ;; 2012/10/20 dadams
@@ -6145,6 +6147,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2012/10/26 dadams
+;;     icicle-search-replace-whole-candidate-flag: Correct key in doc string: M-_, not C-,.
 ;; 2012/10/21 dadams
 ;;     Added: icicle-buffer-include-cached-files-nflag, icicle-buffer-include-recent-files-nflag.
 ;; 2012/10/10 dadams
