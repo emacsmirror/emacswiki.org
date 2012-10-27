@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun Oct 21 18:58:02 2012 (-0700)
+;; Last-Updated: Sat Oct 27 11:49:25 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 29046
+;;     Update #: 29055
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -4640,9 +4640,10 @@
 ;;
 ;;  * In buffer `*Completions*', face
 ;;    `icicle-current-candidate-highlight' highlights the current
-;;    completion candidate, and face
+;;    completion candidate, face
 ;;    `icicle-common-match-highlight-Completions' highlights the
-;;    expanded common match among all completions.  Faces
+;;    expanded common match among all completions, and face
+;;    `icicle-annotation' is used for candidate annotations.  Faces
 ;;    `icicle-match-highlight-Completions' and
 ;;    `icicle-match-highlight-minibuffer' highlight whatever your
 ;;    input matches, in buffer `*Completions*' and in the minibuffer,
@@ -5591,11 +5592,17 @@
 ;;    explicitly for a multi-line dot (`.').  A `nil' value works only
 ;;    for Emacs versions 21 and later.
 ;;
+;;  * Non-`nil' user option `icicle-show-annotations-flag' means show
+;;    annotations, when available, next to candidates in
+;;    `*Completions*'.  You can toggle this option from the minibuffer
+;;    using `C-x C-a'.
+;;
 ;;  * Non-`nil' user option `icicle-show-multi-completion-flag' means
 ;;    that for some commands additional information is shown along
 ;;    with each completion candidate.  That is, a multi-completion is
 ;;    used.  You can match against any parts of the multi-completion.
-;;    The default value is `t'.
+;;    The default value is `t'.  (By contrast, you cannot match the
+;;    text controlled by option `icicle-show-annotations-flag'.)
 ;;
 ;;    For example, for command `icicle-search', the name of the buffer
 ;;    associated with each completion candidate is added to the
@@ -5606,6 +5613,10 @@
 ;;    often see the multi-completion information in the mode-line when
 ;;    you cycle candidates, and you can typically see it in the help
 ;;    that is displayed by `C-M-mouse-2' and so on.
+;;
+;;    You can toggle this option from the minibuffer using `M-m'.  The
+;;    new value takes effect after you exit the minibuffer (i.e., for
+;;    the next command).
 ;;
 ;;  * Non-`nil' user option `icicle-kill-visited-buffers-flag' means
 ;;    kill buffers visited temporarily to search files.  This applies
