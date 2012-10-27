@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:19:43 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Aug 23 14:13:11 2012 (-0700)
+;; Last-Updated: Sat Oct 27 10:03:18 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 662
+;;     Update #: 666
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-face.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -38,7 +38,7 @@
 ;;
 ;;  Faces defined here:
 ;;
-;;    `icicle-candidate-part',
+;;    `icicle-annotation', `icicle-candidate-part',
 ;;    `icicle-common-match-highlight-Completions',
 ;;    `icicle-complete-input', `icicle-completion',
 ;;    `icicle-Completions-instruction-1',
@@ -375,6 +375,13 @@ Don't forget to mention your Emacs and Icicles library versions."))
 ;;(@* "Faces, Organized Alphabetically")
 
 ;;; Faces, Organized Alphabetically ----------------------------------
+
+;;;###autoload
+(defface icicle-annotation
+    '((((background dark)) (:foreground "gray49"))
+      (t (:foreground "gray28")))
+  "*Face used to highlight a candidate annotation in `*Completions*'."
+  :group 'Icicles-Completions-Display :group 'faces)
 
 ;;;###autoload
 (defface icicle-candidate-part
