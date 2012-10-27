@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Oct 26 17:06:40 2012 (-0700)
+;; Last-Updated: Sat Oct 27 11:26:15 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 9128
+;;     Update #: 9135
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -601,6 +601,7 @@ there are also `-other-window' versions.
 `icicle-toggle-~-for-home-dir'         - Toggle using `~' for $HOME
 `icicle-toggle-alternative-sorting'    - Swap alternative sort
 `icicle-toggle-angle-brackets'         - Toggle using angle brackets
+`icicle-toggle-annotation'             - Toggle candidate annotations
 `icicle-toggle-case-sensitivity'       - Toggle case sensitivity
 `icicle-toggle-C-for-actions'          - Toggle using `C-' for actions
 `icicle-toggle-completions-format'     - Toggle horizontal/vertical
@@ -1024,6 +1025,7 @@ there are also `-other-window' versions.
 `icicle-toggle-~-for-home-dir'         - Toggle using `~' for $HOME
 `icicle-toggle-alternative-sorting'    - Swap alternative sort
 `icicle-toggle-angle-brackets'         - Toggle using angle brackets
+`icicle-toggle-annotation'             - Toggle candidate annotations
 `icicle-toggle-case-sensitivity'       - Toggle case sensitivity
 `icicle-toggle-C-for-actions'          - Toggle using `C-' for actions
 `icicle-toggle-completions-format'     - Toggle horizontal/vertical
@@ -1278,6 +1280,10 @@ Used on `pre-command-hook'."
       (define-key icicle-options-menu-map [icicle-toggle-angle-brackets]
         '(menu-item "Toggle Angle Brackets" icicle-toggle-angle-brackets
           :help "Toggle option `icicle-key-descriptions-use-<>-flag'")))
+    (define-key icicle-options-menu-map [icicle-toggle-annotation]
+      '(menu-item "Toggle Candidate Annotation"
+        icicle-toggle-annotation :keys "C-x C-a"
+        :help "Toggle option `icicle-show-annotations-flag': hide/show annotations"))
     (define-key icicle-options-menu-map [icicle-toggle-highlight-saved-candidates]
       '(menu-item "Toggle Highlighting Saved Candidates"
         icicle-toggle-highlight-saved-candidates :keys "S-pause"
@@ -3800,6 +3806,7 @@ complete)"))
   (define-key map (icicle-kbd "M-m")       'icicle-toggle-show-multi-completion) ; `M-m'
   (define-key map (icicle-kbd "C-x .")     'icicle-dispatch-C-x.) ; `C-x .'
   (define-key map (icicle-kbd "C-x :")     'icicle-toggle-network-drives-as-remote) ; `C-x :'
+  (define-key map (icicle-kbd "C-x C-a")   'icicle-toggle-annotation) ; `C-x C-a'
   (when (fboundp 'icicle-cycle-image-file-thumbnail) ; Emacs 23+
     (define-key map (icicle-kbd "C-x t")   'icicle-cycle-image-file-thumbnail)) ; `C-x t'
   (when (fboundp 'doremi)
@@ -4056,6 +4063,7 @@ MAP is `minibuffer-local-completion-map',
   (define-key map (icicle-kbd "M-m")       nil)
   (define-key map (icicle-kbd "C-x .")     nil)
   (define-key map (icicle-kbd "C-x :")     nil)
+  (define-key map (icicle-kbd "C-x C-a")   nil)
   (when (fboundp 'icicle-cycle-image-file-thumbnail) ; Emacs 23+
     (define-key map (icicle-kbd "C-x t")   nil))
   (when (fboundp 'doremi)
