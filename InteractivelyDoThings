@@ -376,8 +376,8 @@ It's a lot easier to scan long path names if they're displayed vertically, inste
   ;; Display ido results vertically, rather than horizontally
   (setq ido-decorations (quote ("\n-> " "" "\n   " "\n   ..." "[" "]" " [No match]" " [Matched]" " [Not readable]" " [Too big]" " [Confirm]")))
 
-  (defun ido-disable-line-trucation () (set (make-local-variable 'truncate-lines) nil))
-  (add-hook 'ido-minibuffer-setup-hook 'ido-disable-line-trucation)
+  (defun ido-disable-line-truncation () (set (make-local-variable 'truncate-lines) nil))
+  (add-hook 'ido-minibuffer-setup-hook 'ido-disable-line-truncation)
 
 -- [[timcharper]], [[jpkotta]]
 
