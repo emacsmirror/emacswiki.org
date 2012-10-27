@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Oct 18 16:25:09 2012 (-0700)
+;; Last-Updated: Fri Oct 26 17:06:40 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 9125
+;;     Update #: 9128
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -416,7 +416,7 @@ there are also `-other-window' versions.
 `icicle-describe-option-of-type'       - Describe option of given type
 `icicle-describe-process'              - Describe a computer process
 `icicle-describe-var-w-val-satisfying' - Describe var satisfying pred
- `icicle-directory-list'               - Choose a list of directories
+`icicle-directory-list'                - Choose a list of directories
 `icicle-dired'                         - Multi-command Dired
 `icicle-dired-chosen-files'            - Dired a set of files & dirs
 `icicle-dired-project'                 - Dired a saved project
@@ -848,7 +848,7 @@ there are also `-other-window' versions.
 `icicle-describe-file'                 - Describe a file
 `icicle-describe-option-of-type'       - Describe option of given type
 `icicle-describe-var-w-val-satisfying' - Describe var satisfying pred
- `icicle-directory-list'               - Choose a list of directories
+`icicle-directory-list'                - Choose a list of directories
 `icicle-dired'                         - Multi-command Dired
 `icicle-dired-chosen-files'            - Dired a set of files & dirs
 `icicle-dired-project'                 - Dired a saved project
@@ -3703,7 +3703,7 @@ complete)"))
   (define-key map (icicle-kbd "M-pause")   'icicle-keep-only-past-inputs) ; `M-pause'
   (define-key map (icicle-kbd "C-pause") 'icicle-toggle-highlight-historical-candidates) ;`C-pause'
   (define-key map (icicle-kbd "S-pause")   'icicle-toggle-highlight-saved-candidates) ; `S-pause'
-                                        ;$$$$$$  (define-key map (icicle-kbd "C-M-pause") 'icicle-other-history) ; `C-M-pause'
+  ;;$$$$$$  (define-key map (icicle-kbd "C-M-pause") 'icicle-other-history) ; `C-M-pause'
   (define-key map (icicle-kbd "C-insert")  'icicle-switch-to-Completions-buf) ; `C-insert'
   (define-key map (icicle-kbd "insert")    'icicle-save/unsave-candidate) ; `insert'
 
