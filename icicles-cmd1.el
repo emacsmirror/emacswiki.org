@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Oct 21 14:58:36 2012 (-0700)
+;; Last-Updated: Sat Oct 27 11:19:34 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 24857
+;;     Update #: 24895
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1067,7 +1067,9 @@ Reads a file name from an editable text field, with Icicles completion."
 ;;;###autoload (autoload 'icicle-widget-file-complete "icicles")
 (defun icicle-widget-file-complete (&optional replace-to-eol-p)
   "Perform Icicles completion on the file name at point.
-Like `widget-file-complete', but allows Icicles completion.
+Like `widget-file-complete' (`widget-complete', for Emacs 24+), but
+allows Icicles completion.
+
 With a prefix arg, replace everthing past point on the current line.
 Otherwise, replace only the filename-matching text before point."
   (interactive "P")
@@ -3465,6 +3467,13 @@ commands, it need not be.  It can be useful anytime you need to use
   "Read command name, then read its arguments and call it.
 This is `execute-extended-command', turned into a multi-command.
 
+You can use `\\<minibuffer-local-completion-map>\\[icicle-toggle-transforming]' \
+to toggle filtering of candidates to those that are
+bound to keys.
+
+You can use `\\[icicle-toggle-annotation]' to toggle showing key bindings as annotations.
+\(Menu bindings are not shown.)
+
 By default, Icicle mode remaps all key sequences that are normally
 bound to `execute-extended-command' to
 `icicle-execute-extended-command'.  If you do not want this remapping,
@@ -3481,7 +3490,7 @@ then customize option `icicle-top-level-key-bindings'." ; Doc string
    (alt-fn                                  nil)
    (icicle-orig-must-pass-after-match-pred  icicle-must-pass-after-match-predicate)
    (pred                                    (lambda (c)
-                                              (unless (symbolp c) (setq c  (intern c)))
+                                              (unless (symbolp c) (setq c  (intern-soft c)))
                                               (commandp c)))
    (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
    (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))
@@ -3489,8 +3498,22 @@ then customize option `icicle-top-level-key-bindings'." ; Doc string
                                                 (setq alt-fn  (icicle-alt-act-fn-for-type "command"))))
    (icicle-all-candidates-list-alt-action-fn ; M-|'
     (or icicle-all-candidates-list-alt-action-fn  alt-fn  (icicle-alt-act-fn-for-type "command")))
-   icicle-new-last-cmd)                 ; Set in `icicle-execute-extended-command-1'.
-  nil  nil                              ; First code, undo code
+   (icicle-toggle-transforming-message      "Filtering to commands bound to keys is now %s")
+   (icicle-last-transform-function          (lambda (cands) ; Because we bind `icicle-transform-function'.
+                                              (with-current-buffer icicle-pre-minibuffer-buffer
+                                                (loop for cand in cands
+                                                      for symb = (intern-soft cand)
+                                                      if (and (symbolp symb)
+                                                              (where-is-internal symb nil 'non-ascii))
+                                                      collect cand))))
+   (icicle-transform-function               nil)
+   (completion-annotate-function            (lambda (cand)
+                                              (and (setq cand  (intern-soft cand))  (symbolp cand)
+                                                   (let ((key  (where-is-internal cand nil t)))
+                                                     (and key
+                                                          (format " (`%s')" (icicle-key-description key)))))))
+   icicle-new-last-cmd)  ; Set in `icicle-execute-extended-command-1'.
+  nil  nil               ; First code, undo code
   (setq this-command  icicle-new-last-cmd)) ; Last code: this will update `last-command'
 
 ;; Free vars here: `icicle-orig-buff' and `icicle-orig-window' are bound by `icicle-define-command'.
@@ -3603,7 +3626,14 @@ If user option `icicle-command-abbrev-match-all-parts-flag' is nil
 then an abbreviation need not match all parts of a command name; it
 need match only a prefix.  For example, if nil then abbreviation `ff'
 also matches `find-file-other-window' and `fg' also matches
-`find-grep-dired'."                     ; Doc string
+`find-grep-dired'.
+
+You can use `\\<minibuffer-local-completion-map>\\[icicle-toggle-transforming]' \
+to toggle filtering of candidates to those that are
+bound to keys.
+
+You can use `\\[icicle-toggle-annotation]' to toggle showing key bindings as annotations.
+\(Menu bindings are not shown.)" ; Doc string
   icicle-command-abbrev-action          ; Function to perform the action
   prompt obarray (and icompletep  pred) nil nil ; `completing-read' args
   'icicle-command-abbrev-history nil nil
@@ -3628,14 +3658,28 @@ also matches `find-file-other-window' and `fg' also matches
    (alt-fn                                  nil)
    (icicle-orig-must-pass-after-match-pred  icicle-must-pass-after-match-predicate)
    (pred                                    (lambda (c)
-                                              (unless (symbolp c) (setq c  (intern c)))
+                                              (unless (symbolp c) (setq c  (intern-soft c)))
                                               (commandp c)))
    (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
    (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))
    (icicle-candidate-alt-action-fn          (or icicle-candidate-alt-action-fn
                                                 (setq alt-fn  (icicle-alt-act-fn-for-type "command"))))
    (icicle-all-candidates-list-alt-action-fn ; M-|'
-    (or icicle-all-candidates-list-alt-action-fn  alt-fn  (icicle-alt-act-fn-for-type "command"))))
+    (or icicle-all-candidates-list-alt-action-fn  alt-fn  (icicle-alt-act-fn-for-type "command")))
+   (icicle-toggle-transforming-message      "Filtering to commands bound to keys is now %s")
+   (icicle-last-transform-function          (lambda (cands) ; Because we bind `icicle-transform-function'.
+                                              (with-current-buffer icicle-pre-minibuffer-buffer
+                                                (loop for cand in cands
+                                                      for symb = (intern-soft cand)
+                                                      if (and (symbolp symb)
+                                                              (where-is-internal symb nil 'non-ascii))
+                                                      collect cand))))
+   (icicle-transform-function               nil)
+   (completion-annotate-function            (lambda (cand)
+                                              (and (setq cand  (intern-soft cand))  (symbolp cand)
+                                                   (let ((key  (where-is-internal cand nil t)))
+                                                     (and key
+                                                          (format " (`%s')" (icicle-key-description key))))))))
   (when icicle-proxy-candidates (put-text-property 0 1 'icicle-fancy-candidates t prompt)) ; First code
   nil (setq icicle-proxy-candidates  ())) ; Undo code, last code
 
