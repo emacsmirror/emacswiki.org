@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Oct 22 11:07:18 2012 (-0700)
+;; Last-Updated: Sat Oct 27 10:33:19 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1658
+;;     Update #: 1663
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-var.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -144,6 +144,7 @@
 ;;    `icicle-text-property-value-history',
 ;;    `icicle-thing-at-pt-fns-pointer',
 ;;    `icicle-transform-before-sort-p',
+;;    `icicle-toggle-transforming-message',
 ;;    `icicle-universal-argument-map',
 ;;    `icicle-use-candidates-only-once-alt-p',
 ;;    `icicle-vardoc-last-initial-cand-set',
@@ -869,6 +870,7 @@ input prompt is prefixed by `+'.
   `icicle-toggle-~-for-home-dir'       - Toggle using `~' for $HOME
   `icicle-toggle-alternative-sorting'  - Swap alternative sort
   `icicle-toggle-angle-brackets'       - Toggle using angle brackets
+  `icicle-toggle-annotation'           - Toggle candidate annotation
   `icicle-toggle-C-for-actions'        - Toggle using `C-' for actions
   `icicle-toggle-case-sensitivity'     - Toggle case sensitivity
   `icicle-toggle-dot'                  - Toggle `.' matching newlines
@@ -1505,6 +1507,10 @@ This points to the current function in the list.")
   "Non-nil means transform each multi-completion candidate before sorting.
 Bind this to non-nil if you do not want sorting to use the whole
 multi-completion.")
+
+(defvar icicle-toggle-transforming-message "Completion-candidate transformation is now %s"
+  "Message used by `icicle-toggle-transforming'.
+A format string which includes one `%s', to be replaced by `ON'/`OFF'.")
 
 (defvar icicle-universal-argument-map
   (let ((map  (make-sparse-keymap)))
