@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Oct 22 20:15:01 2012 (-0700)
+;; Last-Updated: Sat Oct 27 10:44:46 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 18592
+;;     Update #: 18606
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -189,7 +189,7 @@
 ;;    `icicle-switch-to/from-minibuffer', `icicle-toggle-.',
 ;;    `icicle-toggle-~-for-home-dir',
 ;;    `icicle-toggle-alternative-sorting',
-;;    `icicle-toggle-angle-brackets',
+;;    `icicle-toggle-angle-brackets', `icicle-toggle-annotation',
 ;;    `icicle-toggle-case-sensitivity', `icicle-toggle-C-for-actions',
 ;;    `icicle-toggle-completions-format', `icicle-toggle-dot',
 ;;    `icicle-toggle-expand-to-common-match',
@@ -224,7 +224,7 @@
 ;;    `icicle-yank-secondary', `toggle-icicle-.',
 ;;    `toggle-icicle-~-for-home-dir',
 ;;    `toggle-icicle-alternative-sorting',
-;;    `toggle-icicle-angle-brackets',
+;;    `toggle-icicle-angle-brackets', `toggle-icicle-annotation',
 ;;    `toggle-icicle-case-sensitivity', `toggle-icicle-C-for-actions',
 ;;    `toggle-icicle-completions-format', `toggle-icicle-dot',
 ;;    `toggle-icicle-expand-to-common-match',
@@ -1990,6 +1990,7 @@ These are the main Icicles actions and their minibuffer key bindings:
      S-TAB completion method                 \\[icicle-next-S-TAB-completion-method]\t%s
      TAB completion method                   \\[icicle-next-TAB-completion-method]\t%s
      Showing image-file thumbnails (E22+)    C-x t\t%s
+     Showing candidate annotations           \\[icicle-toggle-annotation]\t%S
      Inclusion of proxy candidates           \\[icicle-toggle-proxy-candidates]\t%S
      Ignoring certain file extensions        \\[icicle-dispatch-C-.]\t%S
      Checking for remote file names          \\[icicle-dispatch-C-^]\t%S"
@@ -2028,6 +2029,7 @@ These are the main Icicles actions and their minibuffer key bindings:
                ((nil) "no")
                (image "image only")
                (t "image and name"))
+             (if icicle-show-annotations-flag 'yes 'no)
              (if icicle-add-proxy-candidates-flag 'yes 'no)
              (if completion-ignored-extensions 'yes 'no)
              (if icicle-test-for-remote-files-flag 'yes 'no))
@@ -7461,6 +7463,21 @@ When sorting is active, comparison is done by `icicle-sort-comparer'."
 
 ;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;
+;;;###autoload (autoload 'toggle-icicle-annotation "icicles")
+(defalias 'toggle-icicle-annotation 'icicle-toggle-annotation)
+;;;###autoload (autoload 'icicle-toggle-annotation "icicles")
+(defun icicle-toggle-annotation ()      ; Bound to `C-x C-a' in minibuffer.
+  "Toggle `icicle-show-annotations-flag'.
+Bound to `\\<minibuffer-local-completion-map>\\[icicle-toggle-annotation]' in the minibuffer."
+  (interactive)
+  (setq icicle-show-annotations-flag  (not icicle-show-annotations-flag))
+  (icicle-complete-again-update)
+  (icicle-msg-maybe-in-minibuffer "Displaying candidate annotations is now %s"
+                                  (icicle-propertize (if icicle-show-annotations-flag "ON" "OFF")
+                                                     'face 'icicle-msg-emphasis)))
+
+;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
+;;
 ;;;###autoload (autoload 'toggle-icicle-proxy-candidates "icicles")
 (defalias 'toggle-icicle-proxy-candidates 'icicle-toggle-proxy-candidates)
 ;;;###autoload (autoload 'icicle-toggle-proxy-candidates "icicles")
@@ -7499,9 +7516,9 @@ Bound to `C-$' in the minibuffer."
             icicle-transform-function       nil)
     (setq icicle-transform-function  icicle-last-transform-function)) ; Restore it.
   (icicle-complete-again-update)
-  (icicle-msg-maybe-in-minibuffer
-   "Completion-candidate transformation is now %s"
-   (icicle-propertize (if icicle-transform-function "ON" "OFF") 'face 'icicle-msg-emphasis)))
+  (icicle-msg-maybe-in-minibuffer icicle-toggle-transforming-message
+                                  (icicle-propertize (if icicle-transform-function "ON" "OFF")
+                                                     'face 'icicle-msg-emphasis)))
 
 ;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;
