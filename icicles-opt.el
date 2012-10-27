@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Oct 21 12:15:44 2012 (-0700)
+;; Last-Updated: Fri Oct 26 17:12:30 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5340
+;;     Update #: 5343
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -2978,11 +2978,12 @@ toggle the option."
   :type 'boolean :group 'Icicles-Searching)
 
 ;;;###autoload
-(defcustom icicle-search-replace-whole-candidate-flag t ; Toggle with `C-,'.
+(defcustom icicle-search-replace-whole-candidate-flag t ; Toggle with `M-_'.
   "*Non-nil means replacement during search replaces the entire search hit.
 Otherwise (nil), replace only what matches your current input.
 
-You can use `C-,' to toggle this at any time during Icicles search.
+You can use `\\<minibuffer-local-completion-map>\\[icicle-dispatch-M-_]' to \
+toggle this at any time during Icicles search.
 You can also use multi-command `icicle-toggle-option' anytime to
 toggle the option."
   :type 'boolean :group 'Icicles-Searching)
