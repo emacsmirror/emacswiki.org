@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Mon Oct 22 09:30:50 2012 (-0700)
+;; Last-Updated: Fri Oct 26 17:10:09 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 6019
+;;     Update #: 6036
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -3042,11 +3042,12 @@ specifying a regexp (followed by `RET').
 After specifying the regexp that defines the search contexts, type
 input (e.g. regexp or other pattern) to match within the contexts.
 The contexts that match your input are available as completion
-candidates.  You can use `M-*' to further narrow the candidates,
+candidates.  You can use `\\<minibuffer-local-completion-map>\
+\\[icicle-apropos-complete-and-narrow]' to further narrow the candidates,
 typing additional patterns to match.
 
 By default, candidates are in order of buffer occurrence, but you can
-sort them in various ways using `C-,'.
+sort them in various ways using `\\[icicle-change-sort-order]'.
 
 You can replace individual matches with another string, as in
 `query-replace' or `query-replace-regexp'.  See the Icicles Search doc
@@ -3070,7 +3071,8 @@ beginning of the regexp.
 
 Search respects `icicle-regexp-quote-flag' and
 `icicle-search-whole-word-flag'.  You can toggle these during search,
-by using `C-`' and `M-q', respectively.  If `icicle-regexp-quote-flag'
+by using `\\[icicle-toggle-regexp-quote]' and `\\[icicle-dispatch-M-q]', respectively.  \
+If `icicle-regexp-quote-flag'
 is non-nil, then regexp special characters are quoted, so that they
 become non-special.  If `icicle-search-whole-word-flag' is non-nil,
 then whole-word searching is done.  (You can also use `M-s M-s w' to
@@ -3084,7 +3086,7 @@ defined.  For example, if you use `icicle-search-thing' and you define
 sexps as the search contexts, then this feature lets you search the
 zones of text that are not within a sexp.
 
-To do this, use `C-M-~' (`icicle-toggle-search-complementing-domain')
+To do this, use `\\[icicle-toggle-search-complementing-domain]' (`icicle-toggle-search-complementing-domain')
 during completion to turn on `icicle-search-complement-domain-p'.
 \(This is a toggle, and it affects only future search commands, not
 the current one.)
@@ -3173,14 +3175,14 @@ does the following:
   `icicle-search-current-input'.  Highlights all such matches if
   option `icicle-search-highlight-all-current-flag' is non-nil;
   otherwise, highlights just the currently visited match.
-  You can toggle this option using `C-^'.
+  You can toggle this option using `\\[icicle-dispatch-C-^]'.
 
 If user option `icicle-search-cleanup-flag' is non-nil (the default),
 then all search highlighting is removed from the search buffer when
 you are finished searching.  If it is nil, then you can remove this
 highlighting later using command `icicle-search-highlight-cleanup'.
 You can toggle `icicle-search-cleanup-flag' during Icicles search
-using `C-.' in the minibuffer.
+using `\\[icicle-dispatch-C-.]' in the minibuffer.
 
 
 `*Completions*' Display
@@ -3188,12 +3190,12 @@ using `C-.' in the minibuffer.
 
 In buffer `*Completions*', in addition to eliding the common match
 \(option `icicle-hide-common-match-in-Completions-flag', toggled
-anytime using `C-x .' - no prefix arg), you can elide all lines of a
+anytime using `\\[icicle-dispatch-C-x.]' - no prefix arg), you can elide all lines of a
 multi-line candidate that do not match your current minibuffer input.
 
 This hiding is governed by option
 `icicle-hide-non-matching-lines-flag', which you can toggle anytime
-during completion using `C-u C-x .' (this is not specfic to Icicles
+during completion using `C-u \\[icicle-dispatch-C-x.]' (this is not specfic to Icicles
 search).  This can be useful when candidates are very long, as can be
 the case for instance for the `icicle-imenu-*-full' commands.
 
@@ -3210,7 +3212,7 @@ search-and-replace space.)
 
 
 At the first use of any of these, you are prompted for the replacement
-string; it is used thereafter, or until you use `M-,'
+string; it is used thereafter, or until you use `\\[icicle-dispatch-M-comma]'
 \(`icicle-search-define-replacement') to change it (anytime).
 
 Unlike `query-replace', you need not visit search matches successively
@@ -3221,10 +3223,10 @@ What is meant here by a \"search match\"?  It can be either an entire
 search context or just a part of the context that your current
 minibuffer input matches.
 
-`C-,' toggles option `icicle-search-replace-whole-candidate-flag'.  By
+`\\[icicle-dispatch-M-_]' toggles option `icicle-search-replace-whole-candidate-flag'.  By
 default, the entire current search context is replaced, that is,
 whatever matches the context regexp that you entered initially using
-`RET'.  However, you can use `C-,' anytime during searching to toggle
+`RET'.  However, you can use `\\[icicle-dispatch-M-_]' anytime during searching to toggle
 between this default behavior and replacement of whatever your current
 minibuffer input matches.
 
