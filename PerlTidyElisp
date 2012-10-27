@@ -56,3 +56,39 @@ But perltidy is too slow, is it the problem of my program?
       (kill-buffer buffer)
       (goto-char point))))
 }}}
+
+
+Iâve noticed that the above two functions donât take special care to provide a PERLTIDY environment variable with the path to the "nearest" .perltidyrc. This is a problem if you are editing "project/lib/foo.pm" but your .perltidyrc is in "project/.perltidyrc". The following function fixes that, and it also keeps the current window configuration (another problem which Iâve noticed with the above functions):
+
+(defun perltidy-dwim (arg)
+  "Perltidy a region of the entire buffer"
+  (interactive "P")
+  (let ((old-point (point))
+	(old-mark (mark t))
+	(currconf (current-window-configuration))
+	(buffer (generate-new-buffer "*perltidy*"))
+	(start)
+	(end))
+    (if (and mark-active transient-mark-mode)
+	(setq start (region-beginning)
+	      end (region-end))
+      (setq start (point-min)
+	    end (point-max)))
+    ;; set the PERLTIDY environment variable to the closest instance
+    ;; of .perltidyrc, but keep its value if it was set before.
+    (let ((old-perltidy-env (getenv "PERLTIDY")))
+      (setenv "PERLTIDY" (or old-perltidy-env
+			     (expand-file-name
+			      (locate-dominating-file (buffer-file-name) ".perltidyrc"))))
+      (shell-command-on-region start end "perltidy" buffer)
+      (setenv "PERLTIDY" old-perltidy-env))
+    (delete-region start end)
+    (insert-buffer buffer)
+    (kill-buffer buffer)    
+    (goto-char (min old-point (point-max)))
+    (if old-mark (push-mark (min old-mark (point-max)) t))
+    (set-window-configuration currconf)))
+
+(add-hook 'cperl-mode-hook
+	  (lambda ()
+	    (local-set-key (kbd "C-c t") 'perltidy-dwim)))
