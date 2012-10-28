@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Oct 27 11:35:54 2012 (-0700)
+;; Last-Updated: Sat Oct 27 17:15:51 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 9188
+;;     Update #: 9192
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -87,6 +87,7 @@
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
 ;; 2012/10/27 dadams
+;;     Added: icicle-bbdb-complete-mail (version for BBDB 3.02).
 ;;     icicle-execute-extended-command, icicle-command-abbrev:
 ;;       Bind icicle-last-transform-function: show only bound cmds.  Thx to Michael Heerdegen.
 ;;       Bind completion-annotate-function: annotate with key bindings.
@@ -1503,6 +1504,7 @@
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
 ;; 2012/10/27 dadams
+;;     Added: icicle-member-ignore-case.
 ;;     icicle-insert-candidates:
 ;;       Insert annotation only if icicle-show-annotations-flag.  Highlight w/ face icicle-annotation.
 ;; 2012/10/24 dadams
@@ -5017,6 +5019,7 @@
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
 ;; 2012/10/27 dadams
+;;     Handle new BBDB version also.
 ;;     icicle-define-icicle-maps: Added icicle-toggle-annotation.
 ;;     icicle-(bind|restore)-completion-keys: Bind icicle-toggle-annotation to C-x C-a.
 ;;     icicle-mode: Added icicle-toggle-annotation to doc string.
