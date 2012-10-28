@@ -7,9 +7,9 @@
 ;; Copyright (C) 2005-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Aug 12 17:18:02 2005
 ;; Version: 22.0
-;; Last-Updated: Mon Oct 15 08:26:42 2012 (-0700)
+;; Last-Updated: Sun Oct 28 12:05:46 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 734
+;;     Update #: 791
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/lacarte.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/LaCarte
 ;; Keywords: menu-bar, menu, command, help, abbrev, minibuffer, keys,
@@ -264,6 +264,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2012/10/28 dadams
+;;     lacarte-get-a-menu-item-alist-1: Handle Emacs 24+ nested keymap (from multiple-keymap inheritance).
 ;; 2012/10/15 dadams
 ;;     lacarte-get-a-menu-item-alist-1: Add entry for separator form (menu-item "--..." . WHATEVER).
 ;; 2012/09/14 dadams
@@ -431,7 +433,7 @@ using face `icicle-special-candidate'."
   (interactive "P")
   (let ((lacarte-menu-items-alist         (lacarte-get-overall-menu-item-alist))
         (completion-ignore-case           t) ; Not case-sensitive, by default.
-        (icicle-special-candidate-regexp  (and (not no-commands-p) ".* > \\(.\\|\n\\)*"))
+        (icicle-special-candidate-regexp  (and (not no-commands-p)  ".* > \\(.\\|\n\\)*"))
         (icicle-sort-orders-alist         (and (boundp 'icicle-sort-orders-alist)
                                                (if no-commands-p
                                                    icicle-sort-orders-alist
@@ -536,15 +538,14 @@ current local map, current global map, and all current minor maps.
 As a side effect, this function modifies
 `lacarte-get-a-menu-item-alist' and then resets it to ()"
   (unless maps (setq maps  '(local global minor)))
-  (let ((alist
-         (apply #'nconc
-                (and (memq 'local maps)   (current-local-map)
-                     (lacarte-get-a-menu-item-alist (lookup-key (current-local-map) [menu-bar])))
-                (and (memq 'global maps)  (current-global-map)
-                     (lacarte-get-a-menu-item-alist (lookup-key (current-global-map) [menu-bar])))
-                (and (memq 'minor maps)
-                     (mapcar (lambda (map) (lacarte-get-a-menu-item-alist (lookup-key map [menu-bar])))
-                             (current-minor-mode-maps))))))
+  (let ((alist  (apply #'nconc
+                       (and (memq 'local maps)   (current-local-map)
+                            (lacarte-get-a-menu-item-alist (lookup-key (current-local-map) [menu-bar])))
+                       (and (memq 'global maps)  (current-global-map)
+                            (lacarte-get-a-menu-item-alist (lookup-key (current-global-map) [menu-bar])))
+                       (and (memq 'minor maps)
+                            (mapcar (lambda (map) (lacarte-get-a-menu-item-alist (lookup-key map [menu-bar])))
+                                    (current-minor-mode-maps))))))
     (setq lacarte-menu-items-alist  ())
     (if nil;; `lacarte-sort-menu-bar-order-flag' ; Not yet implemented.
         (setq alist  (sort alist SOME-PREDICATE))
@@ -565,93 +566,97 @@ Returns `lacarte-menu-items-alist' which it modifies."
   "Helper function for `lacarte-get-a-menu-item-alist'.
 This calls itself recursively, to process submenus.
 Returns `lacarte-menu-items-alist', which it modifies."
-  (let ((scan  keymap))
+  (let ((scan  keymap)
+        composite-name)
     (setq root  (or root))              ; nil, for top level.
     (while (consp scan)
-      (if (atom (car scan))
-          (setq scan  (cdr scan))
-        (let ((defn  (cdr (car scan)))
-              composite-name)
-          ;; Get REAL-BINDING for the menu item.
-          (cond
-            ;; (menu-item ITEM-STRING): non-selectable item - skip it.
-            ((and (eq 'menu-item (car-safe defn))
-                  (null (cdr-safe (cdr-safe defn))))
-             (setq defn  nil))          ; So `keymapp' test, below, fails.
+      (cond
+        ;; Nested keymap - recurse on it.  Emacs 24+ has multiple-keymap inheritance.
+        ((and (fboundp 'map-keymap)
+              (eq 'keymap (car-safe scan))
+              (consp (car-safe (cdr-safe scan)))
+              (eq 'keymap (car-safe (car-safe (cdr-safe scan)))))
+         (lacarte-get-a-menu-item-alist-1 (car-safe (cdr-safe scan)) composite-name done))
 
-            ;; (ITEM-STRING): non-selectable item - skip it.
-            ((and (stringp (car-safe defn)) (null (cdr-safe defn)))
-             (setq defn  nil))          ; So `keymapp' test, below, fails.
+        ((atom (car scan))  (setq scan  (cdr scan)))
 
-            ;; (menu-item "--..." . WHATEVER): separator - skip it.
-            ;; Users can use `easy-menu-define' with an item such as ["--" nil], which produces
-            ;; (menu-item "--" nil)
-            ((and (eq 'menu-item (car-safe defn))
-                  (stringp (car-safe (cdr-safe defn)))
-                  (string-match "\\`--" (car-safe (cdr-safe defn))))
-             (setq defn  nil))
+        (t
+         (let ((defn  (cdr (car scan))))
+           ;; Get REAL-BINDING for the menu item.
+           (cond
+             ;; (menu-item ITEM-STRING): non-selectable item - skip it.
+             ((and (eq 'menu-item (car-safe defn))  (null (cdr-safe (cdr-safe defn))))
+              (setq defn  nil))         ; So `keymapp' test, below, fails.
 
-            ;; (menu-item ITEM-STRING REAL-BINDING . PROPERTIES), with `:filter'
-            ((and (eq 'menu-item (car-safe defn))
-                  (member :filter (cdr (cddr defn))))
-             (let ((filt  (cadr (member :filter (cdr (cddr defn))))))
-               (setq composite-name
-                     (concat root (and root " > ") (eval (cadr defn))))
-               ;; Used to concat also the cached key, but Emacs abandoned this in Emacs 23.
-               ;; (let ((keys  (car-safe (cdr-safe (cdr-safe (cdr-safe defn))))))
-               ;;  (and (consp keys) (stringp (cdr keys)) (cdr keys)))))
-               (setq defn  (if (functionp filt) ; Apply the filter to REAL-BINDING.
-                               (funcall filt (car (cddr defn)))
-                             (car (cddr defn))))))
+             ;; (ITEM-STRING): non-selectable item - skip it.
+             ((and (stringp (car-safe defn))  (null (cdr-safe defn)))
+              (setq defn  nil))         ; So `keymapp' test, below, fails.
 
-            ;; (menu-item ITEM-STRING REAL-BINDING . PROPERTIES)
-            ((eq 'menu-item (car-safe defn))
-             (setq composite-name
-                   (concat root (and root " > ") (eval (cadr defn))))
-             ;; Used to concat also the cached key, but Emacs abandoned this in Emacs 23.
-             ;; (let ((keys  (car-safe (cdr-safe (cdr-safe (cdr-safe defn))))))
-             ;;   (and (consp keys) (stringp (cdr keys)) (cdr keys)))))
-             (setq defn  (car (cddr defn))))
+             ;; (menu-item "--..." . WHATEVER): separator - skip it.
+             ;; Users can use `easy-menu-define' with an item such as ["--" nil], which produces
+             ;; (menu-item "--" nil)
+             ((and (eq 'menu-item (car-safe defn))
+                   (stringp (car-safe (cdr-safe defn)))
+                   (string-match "\\`--" (car-safe (cdr-safe defn))))
+              (setq defn  nil))
 
-            ;; (ITEM-STRING . REAL-BINDING) or
-            ;; (ITEM-STRING [HELP-STRING] (KEYBD-SHORTCUTS) . REAL-BINDING)
-            ((stringp (car-safe defn))
-             (setq composite-name  (concat root (and root " > ") (eval (car defn)))
-                   defn            (cdr defn))
-             ;; Skip HELP-STRING
-             (when (stringp (car-safe defn)) (setq defn  (cdr defn)))
-             ;; Skip (KEYBD-SHORTCUTS): cached key-equivalence data for menu items.
-             (when (and (consp defn) (consp (car defn)))
-               ;; Used to use the cached key, but Emacs abandoned this in Emacs 23.
-               ;; (when (stringp (cdar defn))
-               ;;   (setq composite-name  (concat composite-name (cdar defn))))
-               (setq defn  (cdr defn)))))
+             ;; (menu-item ITEM-STRING REAL-BINDING . PROPERTIES), with `:filter'
+             ((and (eq 'menu-item (car-safe defn))  (member :filter (cdr (cddr defn))))
+              (let ((filt  (cadr (member :filter (cdr (cddr defn))))))
+                (setq composite-name  (concat root (and root  " > ") (eval (cadr defn))))
+                ;; Used to concat also the cached key, but Emacs abandoned this in Emacs 23.
+                ;; (let ((keys  (car-safe (cdr-safe (cdr-safe (cdr-safe defn))))))
+                ;;  (and (consp keys)  (stringp (cdr keys))  (cdr keys)))))
+                (setq defn  (if (functionp filt) ; Apply the filter to REAL-BINDING.
+                                (funcall filt (car (cddr defn)))
+                              (car (cddr defn))))))
 
-          ;; If REAL-BINDING is a keymap, then recurse on it.
-          (when (keymapp defn)
-            ;; Follow indirections to ultimate symbol naming a command.
-            (while (and (symbolp defn) (fboundp defn) (keymapp (symbol-function defn)))
-              (setq defn  (symbol-function defn)))
-            (unless (memq defn done)
-              (if (eq 'keymap (car-safe defn))
-                  (lacarte-get-a-menu-item-alist-1 (cdr defn) composite-name (cons defn done))
-                (lacarte-get-a-menu-item-alist-1 (symbol-function defn) composite-name (cons defn done)))))
+             ;; (menu-item ITEM-STRING REAL-BINDING . PROPERTIES)
+             ((eq 'menu-item (car-safe defn))
+              (setq composite-name  (concat root (and root  " > ") (eval (cadr defn))))
+              ;; Used to concat also the cached key, but Emacs abandoned this in Emacs 23.
+              ;; (let ((keys  (car-safe (cdr-safe (cdr-safe (cdr-safe defn))))))
+              ;;   (and (consp keys)  (stringp (cdr keys))  (cdr keys)))))
+              (setq defn  (car (cddr defn))))
 
-          ;; Add menu item + command pair to `lacarte-menu-items-alist' alist.
-          ;; Don't add it if `composite-name' is nil - that's a non-selectable item.
-          (when (and root composite-name (not (keymapp defn)))
-            (setq lacarte-menu-items-alist
-                  (cons
-                   (cons (concat (if (and (functionp lacarte-convert-menu-item-function)
-                                          (stringp composite-name)) ; Could be nil
-                                     (funcall lacarte-convert-menu-item-function composite-name)
-                                   composite-name)
-                                 ;; Add key description, if bound to a key.
-                                 (let ((key  (where-is-internal defn nil t)))
-                                   (and key (format " (%s)" (key-description key)))))
-                         defn)
-                   lacarte-menu-items-alist))))
-        (when (consp scan) (setq scan  (cdr scan)))))
+             ;; (ITEM-STRING . REAL-BINDING) or
+             ;; (ITEM-STRING [HELP-STRING] (KEYBD-SHORTCUTS) . REAL-BINDING)
+             ((stringp (car-safe defn))
+              (setq composite-name  (concat root (and root  " > ") (eval (car defn)))
+                    defn            (cdr defn))
+              ;; Skip HELP-STRING
+              (when (stringp (car-safe defn)) (setq defn  (cdr defn)))
+              ;; Skip (KEYBD-SHORTCUTS): cached key-equivalence data for menu items.
+              (when (and (consp defn)  (consp (car defn)))
+                ;; Used to use the cached key, but Emacs abandoned this in Emacs 23.
+                ;; (when (stringp (cdar defn))
+                ;;   (setq composite-name  (concat composite-name (cdar defn))))
+                (setq defn  (cdr defn)))))
+
+           ;; If REAL-BINDING is a keymap, then recurse on it.
+           (when (keymapp defn)
+             ;; Follow indirections to ultimate symbol naming a command.
+             (while (and (symbolp defn)  (fboundp defn)  (keymapp (symbol-function defn)))
+               (setq defn  (symbol-function defn)))
+             (unless (memq defn done)
+               (if (eq 'keymap (car-safe defn))
+                   (lacarte-get-a-menu-item-alist-1 (cdr defn) composite-name (cons defn done))
+                 (lacarte-get-a-menu-item-alist-1 (symbol-function defn) composite-name (cons defn done)))))
+
+           ;; Add menu item + command pair to `lacarte-menu-items-alist' alist.
+           ;; Don't add it if `composite-name' is nil - that's a non-selectable item.
+           (when (and root  composite-name  (not (keymapp defn)))
+             (setq lacarte-menu-items-alist
+                   (cons (cons (concat (if (and (functionp lacarte-convert-menu-item-function)
+                                                (stringp composite-name)) ; Could be nil
+                                           (funcall lacarte-convert-menu-item-function composite-name)
+                                         composite-name)
+                                       ;; Add key description, if bound to a key.
+                                       (let ((key  (where-is-internal defn nil t)))
+                                         (and key  (format " (%s)" (key-description key)))))
+                               defn)
+                         lacarte-menu-items-alist))))))
+      (when (consp scan) (setq scan  (cdr scan))))
     lacarte-menu-items-alist))
 
 (defun lacarte-remove-w32-keybd-accelerators (menu-item)
@@ -662,7 +667,7 @@ This is a candidate value for `lacarte-convert-menu-item-function'."
 
 (defun lacarte-escape-w32-accel (match-string)
   "If STRING is \"&&\", then return \"&\".  Else return \"\"."
-  (if (> (length match-string) 1) "&" ""))
+  (if (> (length match-string) 1)  "&"  ""))
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 
