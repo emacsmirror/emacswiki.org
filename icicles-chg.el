@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Oct 27 17:15:51 2012 (-0700)
+;; Last-Updated: Sun Oct 28 07:40:08 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 9192
+;;     Update #: 9194
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -86,6 +86,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2012/10/28 dadams
+;;     icicle-execute-extended-command, icicle-command-abbrev: With icicle-pre-minibuffer-buffer.
 ;; 2012/10/27 dadams
 ;;     Added: icicle-bbdb-complete-mail (version for BBDB 3.02).
 ;;     icicle-execute-extended-command, icicle-command-abbrev:
