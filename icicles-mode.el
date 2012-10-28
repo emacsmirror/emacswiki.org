@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Oct 27 11:26:15 2012 (-0700)
+;; Last-Updated: Sat Oct 27 17:03:12 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 9135
+;;     Update #: 9147
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -47,6 +47,7 @@
 ;;  Commands defined here:
 ;;
 ;;    `icicle-handle-switch-frame', `icicle-mode', `icy-mode',
+;;    `icicle-ORIG-bbdb-complete-mail',
 ;;    `icicle-ORIG-bbdb-complete-name',
 ;;    `icicle-ORIG-comint-dynamic-complete',
 ;;    `icicle-ORIG-comint-dynamic-complete-filename',
@@ -175,9 +176,9 @@
   ;; icicle-saved-search-ring-max, icicle-search-current-overlay, icicle-search-overlays,
   ;; icicle-search-refined-overlays
 (require 'icicles-cmd1)                 ; (This is required anyway by `icicles-cmd2.el'.)
-  ;; icicle-add-buffer-candidate, icicle-add-buffer-config, icicle-bbdb-complete-name,
-  ;; icicle-customize-face, icicle-customize-face-other-window, icicle-dabbrev-completion,
-  ;; icicle-select-bookmarked-region
+  ;; icicle-add-buffer-candidate, icicle-add-buffer-config, icicle-bbdb-complete-mail,
+  ;; icicle-bbdb-complete-name, icicle-customize-face, icicle-customize-face-other-window,
+  ;; icicle-dabbrev-completion, icicle-select-bookmarked-region
 (require 'icicles-cmd2)
   ;; icicle-imenu, icicle-occur, icicle-search, icicle-search-bookmark,
   ;; icicle-search-bookmarks-together, icicle-search-buffer, icicle-search-file,
@@ -326,6 +327,7 @@ there are also `-other-window' versions.
 `icicle-apropos-options-of-type'       - Show options of a given type
 `icicle-apropos-variable'              - Enhanced `apropos-variable'
 `icicle-apropos-vars-w-val-satisfying' - Show vars of given values
+`icicle-bbdb-complete-mail'            - Complete a user name/address
 `icicle-bbdb-complete-name'            - Complete a user name/address
 `icicle-bookmark'                      - Jump to a bookmark
 `icicle-bookmark-a-file'               - Create an autofile bookmark
@@ -766,6 +768,7 @@ there are also `-other-window' versions.
 `icicle-apropos-options-of-type'       - Show options of a given type
 `icicle-apropos-variable'              - Enhanced `apropos-variable'
 `icicle-apropos-vars-w-val-satisfying' - Show vars of given values
+`icicle-bbdb-complete-mail'            - Complete a user name/address
 `icicle-bbdb-complete-name'            - Complete a user name/address
 `icicle-bookmark'                      - Jump to a bookmark
 `icicle-bookmark-a-file'               - Create an autofile bookmark
@@ -4531,14 +4534,27 @@ if `icicle-change-region-background-flag' is non-nil."
                (when icyp (icicle-mode 1)))))
   (if (featurep 'info) (eval-after-load "icicles-mode" form) (eval-after-load "info" form)))
 
-;;; `bbdb-com.el' -  `bbdb-complete-name'.
-(let ((form  '(let ((icyp  (and (boundp 'icicle-mode) icicle-mode)))
+;;; `bbdb-com.el' version 2.35 - `bbdb-complete-name'.
+(let ((form  '(let ((icyp  (and (boundp 'icicle-mode)  icicle-mode)))
                (when icyp (icicle-mode -1))
                (when (and (fboundp 'bbdb-complete-name)
                           (not (fboundp 'icicle-ORIG-bbdb-complete-name)))
                  (defalias 'icicle-ORIG-bbdb-complete-name (symbol-function 'bbdb-complete-name)))
                (when icyp (icicle-mode 1)))))
-  (if (featurep 'bbdb-com) (eval-after-load "icicles-mode" form) (eval-after-load "bbdb-com" form)))
+  (if (and (featurep 'bbdb-com)  (fboundp 'bbdb-complete-name))
+      (eval-after-load "icicles-mode" form)
+    (eval-after-load "bbdb-com" form)))
+
+;;; `bbdb-com.el' version 3.02 - `bbdb-complete-mail'.
+(let ((form  '(let ((icyp  (and (boundp 'icicle-mode)  icicle-mode)))
+               (when icyp (icicle-mode -1))
+               (when (and (fboundp 'bbdb-complete-mail)
+                          (not (fboundp 'icicle-ORIG-bbdb-complete-mail)))
+                 (defalias 'icicle-ORIG-bbdb-complete-mail (symbol-function 'bbdb-complete-mail)))
+               (when icyp (icicle-mode 1)))))
+  (if (and (featurep 'bbdb-com) (fboundp 'bbdb-complete-mail))
+      (eval-after-load "icicles-mode" form)
+    (eval-after-load "bbdb-com" form)))
 
 ;;; `dired-aux.el' - `dired-read-shell-command'.
 (let ((form  '(let ((icyp  (and (boundp 'icicle-mode) icicle-mode)))
