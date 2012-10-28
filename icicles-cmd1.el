@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Oct 27 17:03:36 2012 (-0700)
+;; Last-Updated: Sun Oct 28 07:36:12 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 25055
+;;     Update #: 25059
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -3702,12 +3702,13 @@ then customize option `icicle-top-level-key-bindings'." ; Doc string
                                                       collect cand))))
    (icicle-transform-function               nil)
    (completion-annotate-function            (lambda (cand)
-                                              (and (setq cand  (intern-soft cand))  (symbolp cand)
-                                                   (let ((key  (where-is-internal cand nil t)))
-                                                     (and key
-                                                          (format " (`%s')" (icicle-key-description key)))))))
-   icicle-new-last-cmd)  ; Set in `icicle-execute-extended-command-1'.
-  nil  nil               ; First code, undo code
+                                              (with-current-buffer icicle-pre-minibuffer-buffer
+                                                (and (setq cand  (intern-soft cand))  (symbolp cand)
+                                                     (let ((key  (where-is-internal cand nil t)))
+                                                       (and key  (format " (`%s')"
+                                                                         (icicle-key-description key))))))))
+   icicle-new-last-cmd)                 ; Set in `icicle-execute-extended-command-1'.
+  nil  nil                              ; First code, undo code
   (setq this-command  icicle-new-last-cmd)) ; Last code: this will update `last-command'
 
 ;; Free vars here: `icicle-orig-buff' and `icicle-orig-window' are bound by `icicle-define-command'.
@@ -3827,7 +3828,7 @@ to toggle filtering of candidates to those that are
 bound to keys.
 
 You can use `\\[icicle-toggle-annotation]' to toggle showing key bindings as annotations.
-\(Menu bindings are not shown.)" ; Doc string
+\(Menu bindings are not shown.)"        ; Doc string
   icicle-command-abbrev-action          ; Function to perform the action
   prompt obarray (and icompletep  pred) nil nil ; `completing-read' args
   'icicle-command-abbrev-history nil nil
@@ -3870,10 +3871,11 @@ You can use `\\[icicle-toggle-annotation]' to toggle showing key bindings as ann
                                                       collect cand))))
    (icicle-transform-function               nil)
    (completion-annotate-function            (lambda (cand)
-                                              (and (setq cand  (intern-soft cand))  (symbolp cand)
-                                                   (let ((key  (where-is-internal cand nil t)))
-                                                     (and key
-                                                          (format " (`%s')" (icicle-key-description key))))))))
+                                              (with-current-buffer icicle-pre-minibuffer-buffer
+                                                (and (setq cand  (intern-soft cand))  (symbolp cand)
+                                                     (let ((key  (where-is-internal cand nil t)))
+                                                       (and key  (format " (`%s')"
+                                                                         (icicle-key-description key)))))))))
   (when icicle-proxy-candidates (put-text-property 0 1 'icicle-fancy-candidates t prompt)) ; First code
   nil (setq icicle-proxy-candidates  ())) ; Undo code, last code
 
