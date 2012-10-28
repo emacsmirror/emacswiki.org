@@ -283,11 +283,6 @@ Here are some screenshots of my Emacs.
 
 == Mailbox ==
 
-[new]
-Hello Drew! I noticed that LaCarte does not work properly with org-mode in Emacs 24. It seems to have to do with a new keymap format see e.g.
- http://debbugs.gnu.org/cgi/bugreport.cgi?bug=12744. It would be great if you update it. I do not have the lisp knowledge to do so.
-Thanks for your great libraries! -- LennartFricke
-
 ----
 
 [new]
@@ -517,6 +512,20 @@ If the guard `icicle-mode' is true then ##(fboundp 'icicle-completing-p)## is tr
 Not to mention the fact that adding the `fboundp' guard you propose will ''not'' prevent such a byte-compiler warning in older Emacs versions.
 
 That the byte-compiler cannot recognize the relation between `icicle-mode' being true and `icicle-completing-p' being defined is a byte-compiler limitation, not a code problem.  Enabling the byte compiler to detect more possibly problematic situations is in general a good thing.  But if sufficient smarts do not accompany and temper/control the printing of such warnings then the result can be extra noise, which is not always helpful. -- DrewAdams
+
+
+
+
+----
+
+[new]
+Hello Drew! I noticed that LaCarte does not work properly with org-mode in Emacs 24. It seems to have to do with a new keymap format see e.g.
+ http://debbugs.gnu.org/cgi/bugreport.cgi?bug=12744. It would be great if you update it. I do not have the lisp knowledge to do so.
+Thanks for your great libraries! -- LennartFricke
+
+
+[new:DrewAdams:2012-10-28 19:17 UTC]
+Hi Lennart.  Yes, I noticed that bug report and worked on a fix for LaCarte this morning.  Please try the latest and let me know what you find.  Thx -- DrewAdams
 
 ----
 
