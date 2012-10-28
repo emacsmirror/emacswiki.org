@@ -283,6 +283,11 @@ Here are some screenshots of my Emacs.
 
 == Mailbox ==
 
+[new]
+Hello Drew! I noticed that LaCarte does not work properly with org-mode in Emacs 24. It seems to have to do with a new keymap format see e.g.
+ http://debbugs.gnu.org/cgi/bugreport.cgi?bug=12744. It would be great if you update it. I do not have the lisp knowledge to do so.
+Thanks for your great libraries! -- LennartFricke
+
 ----
 
 [new]
