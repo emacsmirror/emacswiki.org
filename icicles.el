@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Oct 27 10:58:52 2012 (-0700)
+;; Last-Updated: Sat Oct 27 17:01:38 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 23240
+;;     Update #: 23242
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Doc URL: http://emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -128,8 +128,9 @@
 ;;    `icicle-apropos-function', `icicle-apropos-option',
 ;;    `icicle-apropos-options-of-type', `icicle-apropos-variable',
 ;;    `icicle-apropos-vars-w-val-satisfying', `icicle-apropos-zippy',
-;;    `icicle-bbdb-complete-name', `icicle-bookmark',
-;;    `icicle-bookmark-a-file', `icicle-bookmark-all-tags',
+;;    `icicle-bbdb-complete-mail', `icicle-bbdb-complete-name',
+;;    `icicle-bookmark', `icicle-bookmark-a-file',
+;;    `icicle-bookmark-all-tags',
 ;;    `icicle-bookmark-all-tags-other-window',
 ;;    `icicle-bookmark-all-tags-regexp',
 ;;    `icicle-bookmark-all-tags-regexp-other-window',
@@ -309,7 +310,8 @@
 ;;    `icicle-minibuffer-default-add-dired-shell-commands',
 ;;    `icicle-minibuffer-help', `icicle-mode', `icy-mode',
 ;;    `icicle-next-visible-thing', `icicle-object-action',
-;;    `icicle-occur', `icicle-ORIG-bbdb-complete-name',
+;;    `icicle-occur', `icicle-ORIG-bbdb-complete-mail',
+;;    `icicle-ORIG-bbdb-complete-name',
 ;;    `icicle-ORIG-comint-dynamic-complete',
 ;;    `icicle-ORIG-comint-dynamic-complete-filename',
 ;;    `icicle-ORIG-comint-replace-by-expanded-filename',
