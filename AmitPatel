@@ -78,5 +78,7 @@ I should post my `.emacs' file someday.  I've posted parts of it in blog posts. 
 
 [http://amitp.blogspot.com/2007/04/emacs-better-completion.html Completion]
 
+[http://amitp.blogspot.com/2012/10/emacs-helm-for-finding-files.html Using Helm with mdfind/locate]
+
 ----
 CategoryHomepage
