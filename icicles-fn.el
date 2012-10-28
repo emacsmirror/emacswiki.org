@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Oct 27 10:49:10 2012 (-0700)
+;; Last-Updated: Sat Oct 27 16:53:37 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 13606
+;;     Update #: 13610
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -128,7 +128,7 @@
 ;;    `icicle-maybe-sort-and-strip-candidates',
 ;;    `icicle-maybe-sort-maybe-truncate', `icicle-mctize-all',
 ;;    `icicle-mctized-display-candidate',
-;;    `icicle-mctized-full-candidate',
+;;    `icicle-mctized-full-candidate', `icicle-member-ignore-case',
 ;;    `icicle-merge-saved-order-less-p',
 ;;    `icicle-minibuffer-default-add-completions',
 ;;    `icicle-minibuf-input', `icicle-minibuf-input-sans-dir',
@@ -5732,6 +5732,18 @@ those functions are not defined then return nil."
   "Delete all user input in the minibuffer.
 This must be called from the minibuffer."
   (if (fboundp 'delete-minibuffer-contents)  (delete-minibuffer-contents)  (erase-buffer)))
+
+;; Same as `member-ignore-case' from Emacs 22+.
+(if (fboundp 'member-ignore-case)
+    (defalias 'icicle-member-ignore-case (symbol-function 'member-ignore-case))
+  (defun icicle-member-ignore-case (elt list)
+    "Like `member', but ignore differences in case and text representation.
+ELT must be a string: ignore non-string elements of LIST.
+Treat uppercase and lowercase letters as equal.
+Convert Unibyte strings to multibyte, for the comparison."
+    (while (and list  (not (and (stringp (car list))
+                                (eq t (compare-strings elt 0 nil (car list) 0 nil t)))))
+      (setq list  (cdr list)))))
 
 (defun icicle-assoc-delete-all (key alist)
   "Delete from ALIST all elements whose car is `equal' to KEY.
