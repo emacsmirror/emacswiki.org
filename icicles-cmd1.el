@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Oct 27 11:19:34 2012 (-0700)
+;; Last-Updated: Sat Oct 27 17:03:36 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 24895
+;;     Update #: 25055
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -61,8 +61,9 @@
 ;;    `icicle-apropos-option', (+)`icicle-apropos-options-of-type',
 ;;    `icicle-apropos-variable',
 ;;    (+)`icicle-apropos-vars-w-val-satisfying',
-;;    `icicle-apropos-zippy', `icicle-bbdb-complete-name',
-;;    (+)`icicle-bookmark', (+)`icicle-bookmark-all-tags',
+;;    `icicle-apropos-zippy', `icicle-bbdb-complete-mail',
+;;    `icicle-bbdb-complete-name', (+)`icicle-bookmark',
+;;    (+)`icicle-bookmark-all-tags',
 ;;    (+)`icicle-bookmark-all-tags-other-window',
 ;;    (+)`icicle-bookmark-all-tags-regexp',
 ;;    (+)`icicle-bookmark-all-tags-regexp-other-window',
@@ -513,14 +514,15 @@
   (defvar minibuffer-local-filename-syntax))
 
 (defvar apropos-do-all)                 ; In `apropos.el'
+(defvar bbdb-complete-mail-allow-cycling) ; In `bbdb-com.el'
 (defvar bbdb-complete-name-allow-cycling) ; In `bbdb-com.el'
+(defvar bbdb-completion-list)           ; In `bbdb-come.el'
 (defvar bbdb-extract-address-components-func) ; In `bbdb-com.el'
 (defvar bbdb-expand-mail-aliases)       ; In `bbdb-com.el'
 (defvar bbdb-complete-name-hooks)       ; In `bbdb-com.el'
 (defvar bbdb-completion-display-record) ; In `bbdb.el'
 (defvar bbdb-completion-type)           ; In `bbdb.el'
 (defvar bbdb-hashtable)                 ; In `bbdb.el'
-(defvar bmkp-bookmark-name-length-max)  ; In `bookmark+-1.el'
 (defvar bmkp-non-file-filename)         ; In `bookmark+-1.el'
 (defvar bmkp-prompt-for-tags-flag)      ; In `bookmark+-1.el'
 (defvar bmkp-sorted-alist)              ; In `bookmark+-1.el'
@@ -535,6 +537,7 @@
 (defvar ess-mode-syntax-table)          ; In `ess-cust.el'
 (defvar ess-use-R-completion)           ; In `ess-cust.el'
 (defvar existing-bufs)                  ; `icicle-visit-marked-file-of-content', `icicle-find-file-of-content'
+(defvar file-cache-alist)               ; In `filecache.el'
 (defvar filesets-data)                  ; In `filesets.el'
 (defvar find-tag-default-function)      ; In `etags.el'
 (defvar find-tag-marker-ring)           ; In `etags.el'
@@ -1351,9 +1354,10 @@ Vanilla `dabbrev--abbrev-at-point' raises an error if no match."
     abv))
 
 
-;; REPLACE ORIGINAL `bbdb-complete-name' defined in `bbdb-com.el',
+;; REPLACE ORIGINAL `bbdb-complete-name' defined in `bbdb-com.el' version 2.35,
 ;; saving it for restoration when you toggle `icicle-mode'.
-;; Note: BBDB, the Insidious Big Brother Database, is available here:
+;;
+;; Version 2.35 is an older version of BBDB, the Insidious Big Brother Database, available here:
 ;;       http://bbdb.sourceforge.net/.
 ;;
 ;; Uses Icicles completion when there are multiple candidates.
@@ -1377,8 +1381,9 @@ record.
 When called with a prefix arg, display a list of all nets.  You can
 control completion behaviour using `bbdb-completion-type'."
   (interactive)
-  (unless (and (require 'bbdb nil t)  (require 'bbdb-com nil t))
-    (error "`icicle-bbdb-complete-name' requires BBDB"))
+  (unless (and (require 'bbdb nil t)  (require 'bbdb-com nil t)
+               (fboundp 'bbdb-complete-name))
+    (error "`icicle-bbdb-complete-name' requires a BBDB version such as 2.35"))
   (lexical-let* ((end                  (point))
                  (beg                  (or start-pos  (save-excursion (re-search-backward
                                                                        "\\(\\`\\|[\n:,]\\)[ \t]*")
@@ -1604,6 +1609,195 @@ control completion behaviour using `bbdb-completion-type'."
                   (error nil))
                 (unless (eq (selected-window) (minibuffer-window))
                   (message "Making completion list...done")))))))))
+
+
+;; REPLACE ORIGINAL `bbdb-complete-mail' defined in `bbdb-com.el', version 3.02
+;; saving it for restoration when you toggle `icicle-mode'.
+;;
+;; BBDB Version 3.02, the Insidious Big Brother Database, is available here:
+;;       http://melpa.milkbox.net/.
+;;
+;; Uses Icicles completion when there are multiple candidates.
+;;
+;; Free vars here: `bbdb-*' are bound in `bbdb-com.el'.
+;;;###autoload (autoload 'icicle-bbdb-complete-mail "icicles")
+(defun icicle-bbdb-complete-mail (&optional start-pos cycle-completion-buffer)
+  "In a mail buffer, complete the user name or mail address before point.
+Completes up to the preceding newline, colon or comma, or the value of
+START-POS.
+Returns non-nil if there is a valid completion, else return nil.
+You can control completion behaviour using `bbdb-completion-list'
+\(`bbdb-completion-type' in older BBDB versions).
+
+If what has been typed is unique, insert an entry \"User Name
+<mail-address>\" - but see `bbdb-mail-allow-redundancy'
+\(`bbdb-dwim-net-address-allow-redundancy' in older BBDB versions).
+If it is a valid completion but not unique, you can choose from the
+list of completions using Icicles completion.
+
+If your input is completed and `bbdb-mail-allow-cycling' is true
+\(`bbdb-complete-name-allow-cycling' for older BBDB versions), you can
+repeat to cycle through the nets for the matching record.
+
+When called with a prefix arg, display a list of all mail messages
+available for cycling.
+
+See your version of BBDB for more information."
+  (interactive (list nil current-prefix-arg))
+  (unless (and (require 'bbdb nil t)  (require 'bbdb-com nil t)
+               (fboundp 'bbdb-complete-mail))
+    (error "`icicle-bbdb-complete-mail' requires a BBDB version such as 3.02"))
+  (bbdb-buffer)                         ; Make sure database is initialized.
+  (lexical-let* ((end                     (point))
+                 (beg                     (or start-pos  (save-excursion
+                                                           (re-search-backward "\\(\\`\\|[\n:,]\\)[ \t]*")
+                                                           (goto-char (match-end 0)) (point))))
+                 (orig                    (buffer-substring beg end))
+                 (typed                   (downcase orig))
+                 (pattern                 (bbdb-string-trim typed))
+                 (completion-ignore-case  t)
+                 (completion              (try-completion pattern bbdb-hashtable #'bbdb-completion-predicate))
+                 (all-the-completions     ())
+                 dwim-completions  one-record  done)
+    ;; [:,] match would be interpreted as START-POS (e.g., a comma in LF-NAME).  Compensate.
+    (when (and (stringp completion)  (string-match "[:,]" completion))
+      (setq completion  (substring completion 0 (match-beginning 0))))
+    ;; Cannot use `all-completions' to set `all-the-completions' because it converts symbols to strings.
+    (all-completions pattern bbdb-hashtable (lambda (sym)
+                                              (when (bbdb-completion-predicate sym)
+                                                (push sym all-the-completions))))
+    ;; Resolve records matching pattern.  Multiple completions could match the same record.
+    (let ((records  (icicle-delete-dups (apply #'append (mapcar #'symbol-value all-the-completions)))))
+      (setq one-record  (and (not (cdr records))  (car records)))) ; Only one matching record.
+    (icicle-remove-Completions-window)
+    (cond (one-record
+           ;; Only one matching record.
+           ;; Determine mail address of ONE-RECORD to use for ADDRESS.
+           ;; Do we have a preferential order for the following tests?
+           (let ((completion-list  (if (eq t bbdb-completion-list)
+                                       '(fl-name lf-name mail aka organization)
+                                     bbdb-completion-list))
+                 (mails            (bbdb-record-mail one-record))
+                 mail elt)
+             (unless mails (error "Matching record has no `mail' field"))
+             ;; (1) If PATTERN matches name, AKA, or organization of ONE-RECORD,
+             ;;     then ADDRESS is the first mail address of ONE-RECORD.
+             (if (try-completion pattern (append (and (memq 'fl-name completion-list)
+                                                      (list (or (bbdb-record-name one-record)  "")))
+                                                 (and (memq 'lf-name completion-list)
+                                                      (list (or (bbdb-record-name-lf one-record)  "")))
+                                                 (and (memq 'aka completion-list)
+                                                      (bbdb-record-field one-record 'aka-all))
+                                                 (and (memq 'organization completion-list)
+                                                      (bbdb-record-organization one-record))))
+                 (setq mail  (car mails)))
+             ;; (2) If PATTERN matches one or multiple mail addresses of ONE-RECORD,
+             ;;     then we take the first one matching PATTERN.
+             (unless mail (while (setq elt  (pop mails))
+                            (if (try-completion pattern (list elt))
+                                (setq mail   elt
+                                      mails  ()))))
+             (unless mail (error "ICICLE-BBDB-COMPLETE-MAIL: No match for `%s'" pattern)) ; Indicates a bug!
+             (let ((address  (bbdb-dwim-mail one-record mail)))
+               (if (string= address (buffer-substring-no-properties beg end))
+                   (unless (and bbdb-complete-mail-allow-cycling  (< 1 (length (bbdb-record-mail one-record))))
+                     (setq done  'UNCHANGED))
+                 (delete-region beg end) ; Replace text with expansion.
+                 (insert address)
+                 (bbdb-complete-mail-cleanup address)
+                 (setq done  'UNIQUE)))))
+          ;; Completed partially.
+          ;; Cannot use trimmed version of pattern here, else recurse infinitely on, e.g., common first names.
+          ((and (stringp completion)  (not (string= typed completion)))
+           (delete-region beg end)
+           (insert completion)
+           (setq done  'PARTIAL))
+          ;; Partial match not allowing further partial completion.
+          (completion
+           (let ((completion-list  (if (eq t bbdb-completion-list)
+                                       '(fl-name lf-name mail aka organization)
+                                     bbdb-completion-list))
+                 sname  records)
+             ;; Collect dwim-addresses for each completion, but only once for each record!
+             ;; Add if mail is part of the completions.
+             (dolist (sym  all-the-completions)
+               (setq sname  (symbol-name sym))
+               (dolist (record  (symbol-value sym))
+                 (unless (memq record records)
+                   (push record records)
+                   (let ((mails  (bbdb-record-mail record))
+                         accept)
+                     (when mails
+                       (dolist (field  completion-list)
+                         (if (case field
+                               (fl-name (bbdb-string= sname (bbdb-record-name record)))
+                               (lf-name (bbdb-string= sname (bbdb-cache-lf-name (bbdb-record-cache record))))
+                               (aka (member-ignore-case sname (bbdb-record-field record 'aka-all)))
+                               (organization (member-ignore-case sname (bbdb-record-organization record)))
+                               (primary (bbdb-string= sname (car mails)))
+                               (otherwise nil))
+                             (push (car mails) accept)
+                           (when (eq field 'mail)
+                             (dolist (mail  mails)
+                               (when (bbdb-string= sname mail) (push mail accept))))))
+                       (when accept
+                         ;; If DWIM-COMPLETIONS contains only one element, set DONE to `UNIQUE' (see below)
+                         ;;  and we want to know ONE-RECORD.
+                         (setq one-record  record)
+                         (dolist (mail  (delete-dups accept))
+                           (push (bbdb-dwim-mail record mail) dwim-completions))))))))
+             (cond ((not dwim-completions) (error "No mail address for \"%s\"" orig))
+                   ;; DWIM-COMPLETIONS might contain only one element, if multiple completions match the
+                   ;; same record.  In that case proceed with DONE set to `UNIQUE'.
+                   ((eq 1 (length dwim-completions))
+                    (delete-region beg end)
+                    (insert (car dwim-completions))
+                    (bbdb-complete-mail-cleanup (car dwim-completions))
+                    (setq done  'UNIQUE))
+                   (t
+                    (setq done  'CHOOSE))))))
+    ;; If no completion so far, consider cycling.
+    ;; Completion is controlled by option `bbdb-completion-list'.  Cycling assumes that ORIG already holds
+    ;; a valid RFC 822 mail address.  So cycling can consider different records than completion.
+    (when (and (not done)  bbdb-complete-mail-allow-cycling)
+      ;; Find the record we are working on.
+      (let* ((address  (mail-extract-address-components orig))
+             (record   (and (listp address)  (car (bbdb-message-search (nth 0 address) (nth 1 address)))))
+             (mails    (and record  (bbdb-record-mail record))))
+        (when mails
+          ;; Cycle, even if MAILS has only one address. `bbdb-dwim-mail' can give something different.
+          ;; E.g., header "JOHN SMITH <FOO@BAR.COM>" can be replaced by "John Smith <foo@bar.com>".
+          (cond ((and (= 1 (length mails))  (string= (bbdb-dwim-mail record (car mails))
+                                                     (buffer-substring-no-properties beg end)))
+                 (setq done  'UNCHANGED))
+                (cycle-completion-buffer ; Use completion buffer.
+                 (setq dwim-completions  (mapcar (lambda (n) (bbdb-dwim-mail record n)) mails)
+                       done              'CHOOSE))
+                (t                      ; Use next mail
+                 (let ((mail  (or (nth 1 (or (icicle-member-ignore-case (nth 1 address) mails)
+                                             (icicle-member-ignore-case orig mails)))
+                                  (nth 0 mails))))
+                   (delete-region beg end) ; Replace with new mail address
+                   (insert (bbdb-dwim-mail record mail))
+                   (setq done  'CYCLE)))))))
+    (when (eq done 'CHOOSE)
+      ;; Icicles completion.  `completion-in-region' does not work here as `dwim-completions' is not a
+      ;; collection for completion in the usual sense.  It is really a list of replacements.
+      (unless (eq (selected-window) (minibuffer-window)) (message "Making completion list..."))
+      (icicle-condition-case-no-debug nil
+          (let* ((icicle-show-Completions-initially-flag      t)
+                 (icicle-incremental-completion-p             'display)
+                 (icicle-top-level-when-sole-completion-flag  t)
+                 (completion-ignore-case                      t)
+                 (choice
+                  (save-excursion (completing-read "Complete: " (mapcar #'list dwim-completions)
+                                                   nil t pattern nil pattern))))
+            (when choice
+              (delete-region beg end)
+              (insert choice)))
+        (error nil))
+      (unless (eq (selected-window) (minibuffer-window)) (message "Making completion list...done")))
+    done))
 
 
 ;; REPLACE ORIGINAL `lisp-complete-symbol' (< Emacs 23.2),
