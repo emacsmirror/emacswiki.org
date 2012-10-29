@@ -49,7 +49,7 @@ Automatic due with nesting {[(<"\'\'">)]} characters
 
 === duplicate-line ===
 
-Duplicate current line. 
+Duplicate current line.
 
 Used for temporary comment out line of code and replace it with something else.
 
@@ -72,160 +72,140 @@ This function splits frame into 4 windows, like following.
 
 I used to run shell mode in these windows.
 
+
 === change-split-type ===
 
-Changes splitting from vertical to horizontal and vice-versa
+Change split type in both 2 windows & 3 windows are rewritten. Everything is based on a common function {{ change-split-type }}.
 
 {{{
 
-  +------------------------+                  +----------+-----------+ 
-  |                        |            \     |          |           | 
-  |                        |    +-------+\    |          |           | 
+  (defun change-split-type (split-fn &optional arg)
+    "Change 3 window style from horizontal to vertical and vice-versa"
+    (let ((bufList (mapcar 'window-buffer (window-list))))
+      (select-window (get-largest-window))
+      (funcall split-fn arg)
+      (mapcar* 'set-window-buffer (window-list) bufList)))
+
+}}}
+
+=== change split type in 2 windows mode ===
+
+Then I can implement {{ change-split-type-2 }} from it, which could rotate window splitting from
+vertically to horizontally and vice-versa.
+
+{{{
+
+  +------------------------+                  +----------+-----------+
+  |                        |            \     |          |           |
+  |                        |    +-------+\    |          |           |
   +------------------------+    +-------+/    |          |           |
-  |                        |            /     |          |           | 
-  |                        |                  |          |           | 
-  +------------------------+                  +----------+-----------+ 
+  |                        |            /     |          |           |
+  |                        |                  |          |           |
+  +------------------------+                  +----------+-----------+
 
-  +----------- +-----------+                  +----------------------+ 
-  |            |           |            \     |                      | 
-  |            |           |    +-------+\    |                      | 
-  |            |           |    +-------+/    +----------------------+ 
-  |            |           |            /     |                      | 
-  |            |           |                  |                      | 
-  +----------- +-----------+                  +----------------------+ 
+  +----------- +-----------+                  +----------------------+
+  |            |           |            \     |                      |
+  |            |           |    +-------+\    |                      |
+  |            |           |    +-------+/    +----------------------+
+  |            |           |            /     |                      |
+  |            |           |                  |                      |
+  +----------- +-----------+                  +----------------------+
+
+  (defun change-split-type-2 (&optional arg)
+    "Changes splitting from vertical to horizontal and vice-versa"
+    (interactive "P")
+    (let ((split-type (lambda (&optional arg)
+                        (delete-other-windows-internal)
+                        (if arg (split-window-vertically)
+                          (split-window-horizontally)))))
+      (change-split-type split-type arg)))
+
 
 }}}
 
 
-=== split-v ===
+=== change split type in 3 windows mode ===
 
-Deprecated
-
-This function change window from vertical style into horizontal style
+Change split type in 3 windows mode is more interesting now. You can change split type to vertical
+from anytime and exchange from 2 vertical types with a numeric prefix.
 
 {{{
 
-  +----------------------+                 +----------- +-----------+ 
-  |                      |           \     |            |           | 
-  |                      |   +-------+\    |            |           | 
-  +----------------------+   +-------+/    |            |           |
-  |                      |           /     |            |           | 
-  |                      |                 |            |           | 
-  +----------------------+                 +----------- +-----------+ 
+                             change-split-type-3-v
 
-}}}
+   +----------- +-----------+                   +----------- +-----------+
+   |            |           |     /       \     |            |           |
+   |            |           |    /+-------+\    |            |           |
+   |------------|           |    \+-------+/    |            |-----------|
+   |            |           |     \       /     |            |           |
+   |            |           |                   |            |           |
+   +----------- +-----------+                   +----------- +-----------+
 
-=== split-h ===
-
-Deprecated
-
-This function splits window from horizontal style into vertical style
+                      M-x 1 change-split-type-3-v
 
 
+  (defun change-split-type-3-v (&optional arg)
+    "change 3 window style from horizon to vertical"
+    (interactive "P")
+    (change-split-type 'split-window-3-horizontally arg))
+                                                                           
+}}}                                                                        
+                                                                           
+Same condition comes to horizontal mode.                                                                           
+                                                                                                         
 {{{
 
-  +----------- +-----------+                  +----------------------+ 
-  |            |           |            \     |                      | 
-  |            |           |    +-------+\    |                      | 
-  |            |           |    +-------+/    +----------------------+ 
-  |            |           |            /     |                      | 
-  |            |           |                  |                      | 
-  +----------- +-----------+                  +----------------------+ 
+                             change-split-type-3-h                                                                                          
+                                                                                                      
+   +-----------------------+                   +-----------------------+
+   |           |           |    /       \      |                       |
+   |           |           |   /+-------+\     |                       |
+   +-----------------------+   \+-------+/     +-----------------------+
+   |                       |    \       /      |           |           |
+   |                       |                   |           |           |
+   +-----------------------+                   +-----------------------+
+
+                      M-x 1 change-split-type-3-h
+
+
+  (defun change-split-type-3-h (&optional arg)
+    "change 3 window style from vertical to horizon"
+    (interactive "P")
+    (change-split-type 'split-window-3-vertically arg))
 
 }}}
 
-
-=== change-split-type-3 ===
-
-Change 3 window style from horizontal to vertical and vice-versa
-
-{{{
-
-
-  +-----------------------+                  +----------- +-----------+ 
-  |                       |            \     |            |           | 
-  |                       |    +-------+\    |            |           | 
-  +-----------------------+    +-------+/    |            |-----------|
-  |           |           |            /     |            |           | 
-  |           |           |                  |            |           | 
-  +-----------------------+                  +----------- +-----------+ 
-
-  +----------- +-----------+                 +------------------------+ 
-  |            |           |            \    |                        | 
-  |            |           |    +-------+\   |                        | 
-  |            |-----------|    +-------+/   +------------------------+ 
-  |            |           |            /    |            |           | 
-  |            |           |                 |            |           | 
-  +----------- +-----------+                 +------------------------+ 
-
-}}}
-
-
-
-=== split-v-3 ===
-
-Deprecated
-
-Similar as split-v, but works with 3 windows
-
-{{{
-
-  +------------------------+                 +----------- +-----------+ 
-  |                        |           \     |            |           | 
-  |                        |   +-------+\    |            |           | 
-  +------------------------+   +-------+/    |            |-----------|
-  |           |            |           /     |            |           | 
-  |           |            |                 |            |           | 
-  +------------------------+                 +----------- +-----------+ 
-
-}}}
-
-=== split-h-3 ===
-
-Deprecated
-
-Similar as split-h, but works with 3 windows
-
-{{{
-  +----------- +-----------+                  +------------------------+ 
-  |            |           |            \     |                        | 
-  |            |           |    +-------+\    |                        | 
-  |            |-----------|    +-------+/    +------------------------+ 
-  |            |           |            /     |            |           | 
-  |            |           |                  |            |           | 
-  +----------- +-----------+                  +------------------------+ 
-}}}
 
 === roll-3-buffers-clockwise ===
 
-Roll 3 window buffers clockwise
+Roll 3 window buffers clockwise with windows split type unchanged
 
-=== roll-3-buffers-anti-clockwise === 
+=== roll-3-buffers-anti-clockwise ===
 
-Roll 3 window buffers anti-clockwise
+Roll 3 window buffers anti-clockwise with windows split type unchanged
 
 
 {{{
-  +----------- +-----------+                    +----------- +-----------+ 
-  |            |     C     |            \       |            |     A     | 
-  |            |           |    +-------+\      |            |           | 
-  |     A      |-----------|    +-------+/      |     B      |-----------| 
-  |            |     B     |            /       |            |     C     | 
-  |            |           |                    |            |           | 
-  +----------- +-----------+                    +----------- +-----------+ 
+  +----------- +-----------+                    +----------- +-----------+
+  |            |     C     |            \       |            |     A     |
+  |            |           |    +-------+\      |            |           |
+  |     A      |-----------|    +-------+/      |     B      |-----------|
+  |            |     B     |            /       |            |     C     |
+  |            |           |                    |            |           |
+  +----------- +-----------+                    +----------- +-----------+
 
-  +------------------------+                     +------------------------+ 
-  |           A            |           \         |           B            | 
-  |                        |   +-------+\        |                        | 
-  +------------------------+   +-------+/        +------------------------+ 
-  |     B     |     C      |           /         |     C     |     A      | 
-  |           |            |                     |           |            | 
-  +------------------------+                     +------------------------+ 
+  +------------------------+                     +------------------------+
+  |           A            |           \         |           B            |
+  |                        |   +-------+\        |                        |
+  +------------------------+   +-------+/        +------------------------+
+  |     B     |     C      |           /         |     C     |     A      |
+  |           |            |                     |           |            |
+  +------------------------+                     +------------------------+
 
 }}}
 
 [new]
-Latest updates about these functions could be found in ThreeWindows 
+Latest updates about these functions could be found in ThreeWindows
 
 == Shell-mode related functions ==
 
@@ -247,13 +227,13 @@ Rename buffer to the destination hostname in ssh login
 
 Since I used to login to a lot of different machines in my daily work, I'd like to have the shell buffer name to represent the hostname of which I am working on.
 
-=== rename-buffer-in-ssh-exit === 
+=== rename-buffer-in-ssh-exit ===
 
 Rename buffer to its previous name when user exit from a ssh login.
 
-I do not just login to the destination machine from my GNU Emacs. Instead I used to login to a central host first, and then to login to any destinations from there. 
+I do not just login to the destination machine from my GNU Emacs. Instead I used to login to a central host first, and then to login to any destinations from there.
 
-So I need to have the shell buffer changes accordingly when I exit from a destination host and back to the central one. 
+So I need to have the shell buffer changes accordingly when I exit from a destination host and back to the central one.
 
 **This function is still in its babyhood. It could only work well in a single shell session. I am not sure how to handle multiple shell sessions simultaneously. And exit from a subshell is also a problem.**
 
@@ -262,16 +242,16 @@ So I need to have the shell buffer changes accordingly when I exit from a destin
 <pre>
 --8<-------------------------- §separator§ ------------------------>8--
 ,-----------
-|    DennyZhang: 
+|    DennyZhang:
 |    If you are meaning invoke multiple shells, we basically
 |    have two ways: Ctrl+u Alt+x shell, or (shell shell-buffer-name).
-|    
+|
 |    You can check below for detail.
 |        http://www.emacswiki.org/emacs/ShellMode#toc3
 |        EmacsWiki: Shell Mode
 |        http://mjtsai.com/blog/2003/01/02/multiple_emacs_shell_buff/
 |        Michael Tsai - Blog - Multiple Emacs Shell Buffers
-|    
+|
 |    Hi David, I have implemented bunches of lisp functions, which
 |    serves as a handy shell extension. I use it everyday. Maybe you
 |    can have a look.
@@ -279,7 +259,7 @@ So I need to have the shell buffer changes accordingly when I exit from a destin
 `-----------
 </pre>
 
-Yes. It is the native way. But a host name is more meaningful than a sequence number.  A similar problem occurs when find two files with the same name from different directories.  It would be more meaningful to attach a parent directory name as prefix in the buffer name than to attach a sequence number. But I didn't have time to make it. 
+Yes. It is the native way. But a host name is more meaningful than a sequence number.  A similar problem occurs when find two files with the same name from different directories.  It would be more meaningful to attach a parent directory name as prefix in the buffer name than to attach a sequence number. But I didn't have time to make it.
 
 === kill-shell-buffer-after-exit ===
 
@@ -291,7 +271,7 @@ I chose to use 'set-process-sentinel' function instead of monitor user commands.
 
 == Org-mode related functions ==
 
-=== isrc === 
+=== isrc ===
 
 Enclose code for org-mode
 
@@ -308,7 +288,7 @@ Enclose example for org-mode
 
 {{{
 #+BEGIN_EXAMPLE
-some 
+some
 examples
 #+END_EXAMPLE
 }}}
@@ -339,7 +319,7 @@ Like iexp but enclose code at point for org-mode
 
 === i(equal sign) ===
 
-Set string-at-point to =string-at-point= 
+Set string-at-point to =string-at-point=
 
 Used in org-mode. For arbitrary content, select them first
 
@@ -364,11 +344,11 @@ Calculation is doing from a predefined shell script named as 'matrixSum'
 
 === come-here ===
 
-Bring content from specific buffer to current buffer. 
+Bring content from specific buffer to current buffer.
 
 === jump ===
 
-Take the command at point, jump to another window, then paste it at prompt. 
+Take the command at point, jump to another window, then paste it at prompt.
 
 If the destination window is not in shell-mode, just paste it to the point over there. This makes jump useful in other text edit modes.
 
