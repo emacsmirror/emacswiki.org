@@ -6,7 +6,7 @@ provides the following capabilities:
 
 == Features ==
 
-* toggle back and forth between a spec and it's target (bound to
+* toggle back and forth between a spec and its target (bound to
    `\C-c ,t`)
 
 * verify the spec file associated with the current buffer (bound to
