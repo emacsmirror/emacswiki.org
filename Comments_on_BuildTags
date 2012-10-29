@@ -1,1 +1,88 @@
+= Supported Languages =
+----------------------------------------------------------------------------
+ExuberantCtags http://ctags.sourceforge.net/languages.html
+
+Ant
+    Assembler
+    ASP
+    Awk
+    BASIC
+    BETA
+    C
+    C++
+    C#
+    COBOL
+    DOS Batch
+    Eiffel
+    Erlang
+    Flex
+    Fortran
+    HTML
+    Java
+    JavaScript
+    Lisp
+    Lua
+    Make
+    MATLAB
+    Objective Caml
+    Pascal
+    Perl
+    PHP
+    PL/SQL
+    Python (Pyrex/Cython)
+    REXX
+    Ruby
+    Scheme
+    Shell scripts (Bourne/Korn/Z)
+    S-Lang
+    SML (Standard ML)
+    Tcl
+    TeX
+    Vera
+    Verilog
+    VHDL
+    Vim
+    YACC
+----------------------------------------------------------------------------
+C:\EMACS\NTEmacs\bin>.\etags --help
+
+These are the currently supported languages, along with the
+default file names and dot suffixes:
+
+  ada        .ads .adb .ada
+  asm        .a .asm .def .inc .ins .s .sa .S .src
+  c          .c .h
+  c++        .C .c++ .cc .cpp .cxx .H .h++ .hh .hpp .hxx .M .pdb
+  c*         .cs .hs
+  cobol      .COB .cob
+  erlang     .erl .hrl
+  forth      .fth .tok
+  fortran    .F .f .f90 .for
+  html       .htm .html .shtml
+  java       .java
+  lisp       .cl .clisp .el .l .lisp .LSP .lsp .ml
+  lua        .lua .LUA
+  makefile   Makefile makefile GNUMakefile Makefile.in Makefile.am
+  objc       .lm .m
+  pascal     .p .pas
+  perl       .pl .pm
+  php        .php .php3 .php4
+  postscript .ps .psw
+  proc       .pc
+  prolog     .prolog
+  python     .py
+  scheme     .oak .sch .scheme .SCM .scm .SM .sm .ss .t
+  tex        .bib .clo .cls .ltx .sty .TeX .tex
+  texinfo    .texi .texinfo .txi
+  yacc       .y .y++ .ym .yxx .yy
+
+-- xyzzy 2012-08-29 05:10 UTC
+
+
+----
+
+= For Objective-C user =
+ExuberantCtags Version 5.8 does not support objc.  Cygwin etags (standalone 21.4.22) fails to pick up C functions within @implementation - @end.  etags in GNU Emacs (24.2.50) works fine.
+
+-- xyzzy 2012-08-29 05:33 UTC
 
