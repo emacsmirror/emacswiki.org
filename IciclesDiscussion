@@ -2146,6 +2146,22 @@ I've just added what you requested, as an option. Set option '''`icicle-expand-i
 [new:DrewAdams:2006-03-20 23:11 UTC]
 : Non-`nil' `icicle-expand-input-to-common-match-flag' is now the default behavior. My concern previously was wiping out the regexp input, but you can now use `C-l' to restore (refresh) it. Thanks for the initial motivation for this feature. -- DrewAdams
 
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+[new]
+I have an 'uncustomized' Icicles setup. When my Emacs frame is small and square-ish with a single window, the *completions* buffer appears just above the minibuffer in new horizontal window. This is great! The minibuffer, with the next I'm trying to complete, is right next to the candidates I'm considering. 
+
+When emacs is set to fullscreen-mode (or even when it is just a little wider than square) or if I have the frame split horizontally, the *completions* buffer takes over one of those frames temporarily. It is still useful, but my eyes have to crawl all the way up to the top of the screen to read the first completion candidates, then back down to the minibuffer, ad nauseum. 
+
+I usually use emacs with a fullscreen frame, split horizontally into two big windows. Is there a way to force Icicles (or emacs - it's not clear to me who is responsible for deciding where to put the completions buffer) to use a short, temporary frame just above the minibuffer to show candidates? I rarely need space to see 50-100 completion candidates at once, and if I did, I would use some search refining or some such. 
+
+Any ideas? - JasonSewall
 
 
 ----
