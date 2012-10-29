@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 22.1
-;; Last-Updated: Fri Oct 26 17:29:22 2012 (-0700)
+;; Last-Updated: Sun Oct 28 18:51:09 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1481
+;;     Update #: 1487
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/help-fns+.el
 ;; Doc URL: http://emacswiki.org/emacs/HelpPlus
 ;; Keywords: help, faces, characters, packages, description
@@ -119,6 +119,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/10/28 dadams
+;;     help-fns--key-bindings: Fixed: forgot to mapconcat over keys.
 ;; 2012/10/26 dadams
 ;;     Added: help-fns--key-bindings, help-fns--signature, 
 ;;     Added Emacs 24.3+ version of describe-function-1.  Updated version for 23.2-24.2.
@@ -1337,12 +1339,16 @@ Return the description that was displayed, as a string."
                 (princ (if remapped "Without this remapping, it would be bound to " "It is bound to "))
                 ;; If lots of ordinary text characters run this command, don't mention them one by one.
                 (if (< (length non-modified-keys) 10)
-                    (princ (if (fboundp 'naked-key-description) #'naked-key-description #'key-description))
+                    (princ (mapconcat (if (fboundp 'naked-key-description)
+                                          #'naked-key-description
+                                        #'key-description)
+                                      keys ", "))
                   (dolist (key  non-modified-keys) (setq keys  (delq key keys)))
                   (if keys
-                      (progn (princ (if (fboundp 'naked-key-description)
-                                        #'naked-key-description
-                                      #'key-description))
+                      (progn (princ (mapconcat (if (fboundp 'naked-key-description)
+                                                   #'naked-key-description
+                                                 #'key-description)
+                                               keys ", "))
                              (princ ", and many ordinary text characters"))
                     (princ "many ordinary text characters"))))
               (when (or remapped  keys  non-modified-keys) (princ ".") (terpri)))))
