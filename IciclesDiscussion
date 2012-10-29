@@ -2161,7 +2161,18 @@ When emacs is set to fullscreen-mode (or even when it is just a little wider tha
 
 I usually use emacs with a fullscreen frame, split horizontally into two big windows. Is there a way to force Icicles (or emacs - it's not clear to me who is responsible for deciding where to put the completions buffer) to use a short, temporary frame just above the minibuffer to show candidates? I rarely need space to see 50-100 completion candidates at once, and if I did, I would use some search refining or some such. 
 
-Any ideas? - JasonSewall
+Any ideas? -- JasonSewall
+
+[new:DrewAdams:2012-10-29 23:20 UTC]
+Hi Jason. This is an Emacs question, not '''Icicles'''.  I believe it depends on your Emacs version, and I'm afraid I'm not knowledgable about the various possibilities.  It has changed a lot between Emacs 22, 23, and 24, and even among Emacs 24 versions.
+
+See if you don't notice the same behavior with ''Icicle'' mode turned off or (better) even with ##emacs -Q## (no [[init file]]).
+
+If so, then ask the question (about Emacs) at ##help-gnu-emacs@gnu.org## or similar.  If you find instead that the behavior is unique to '''Icicles''' (not Emacs), let me know.
+
+With '''Icicles''', BTW, it is not unusual at all to have 100 or more matching completion candidates.  But that's beside the point here.
+
+Let me know what you do find out.  Thx -- DrewAdams
 
 
 ----
