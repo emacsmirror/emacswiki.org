@@ -78,6 +78,11 @@ In particular, I bind
 ** <code>C-w</code> to <code>delete-backward-char</code>
 ** <code>M-v</code>  to <code>end-of-buffer</code>
 ** <code>M-w</code> to <code>beginning-of-buffer</code>
+
+[new]
+You probably meant something like `scroll-down-command' for `C-w' above.
+[new]
+
 ; Killing: Instead of <code>C-w</code> for <code>kill-region</code>, I associate the most
 common kill commands to k:
 ** <code>C-k</code>  to <code>kill-line</code>
