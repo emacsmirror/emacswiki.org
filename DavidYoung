@@ -95,6 +95,8 @@ vertically to horizontally and vice-versa.
 
 {{{
 
+                             change-split-type-2  -->
+
   +------------------------+                  +----------+-----------+
   |                        |            \     |          |           |
   |                        |    +-------+\    |          |           |
@@ -103,6 +105,7 @@ vertically to horizontally and vice-versa.
   |                        |                  |          |           |
   +------------------------+                  +----------+-----------+
 
+                     <--  M-1 change-split-type-2
   +----------- +-----------+                  +----------------------+
   |            |           |            \     |                      |
   |            |           |    +-------+\    |                      |
@@ -131,7 +134,7 @@ from anytime and exchange from 2 vertical types with a numeric prefix.
 
 {{{
 
-                             change-split-type-3-v
+                             change-split-type-3-v -->
 
    +----------- +-----------+                   +----------- +-----------+
    |            |           |     /       \     |            |           |
@@ -141,7 +144,7 @@ from anytime and exchange from 2 vertical types with a numeric prefix.
    |            |           |                   |            |           |
    +----------- +-----------+                   +----------- +-----------+
 
-                      M-x 1 change-split-type-3-v
+                 <--  M-1 change-split-type-3-v
 
 
   (defun change-split-type-3-v (&optional arg)
@@ -155,7 +158,7 @@ Same condition comes to horizontal mode.
                                                                                                          
 {{{
 
-                             change-split-type-3-h                                                                                          
+                             change-split-type-3-h  -->                                                                                     
                                                                                                       
    +-----------------------+                   +-----------------------+
    |           |           |    /       \      |                       |
@@ -165,7 +168,7 @@ Same condition comes to horizontal mode.
    |                       |                   |           |           |
    +-----------------------+                   +-----------------------+
 
-                      M-x 1 change-split-type-3-h
+                 <--  M-1 change-split-type-3-h
 
 
   (defun change-split-type-3-h (&optional arg)
@@ -194,13 +197,13 @@ Roll 3 window buffers anti-clockwise with windows split type unchanged
   |            |           |                    |            |           |
   +----------- +-----------+                    +----------- +-----------+
 
-  +------------------------+                     +------------------------+
-  |           A            |           \         |           B            |
-  |                        |   +-------+\        |                        |
-  +------------------------+   +-------+/        +------------------------+
-  |     B     |     C      |           /         |     C     |     A      |
-  |           |            |                     |           |            |
-  +------------------------+                     +------------------------+
+  +------------------------+                    +------------------------+
+  |           A            |            \       |           B            |
+  |                        |    +-------+\      |                        |
+  +------------------------+    +-------+/      +------------------------+
+  |     B     |     C      |            /       |     C     |     A      |
+  |           |            |                    |           |            |
+  +------------------------+                    +------------------------+
 
 }}}
 
