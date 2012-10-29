@@ -358,7 +358,7 @@ install dynamic keymaps of several flavors. I plan to use
 the <code>power-keys.el</code> mechanisms for this package in a later
 version.
 
-The code is also available from github [https://github.com/genovese/emacs-utils/tree/master/win-switch here].
+The code is also available from [https://github.com/genovese/win-switch github].
 
 == Footnotes ==
 
