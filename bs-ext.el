@@ -15,7 +15,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;; bs.el
+;; bs.el, color-moccur.el
 ;;
 
 ;;; This file is NOT part of GNU Emacs
@@ -51,6 +51,9 @@
 ;; <left>   : select previous config using `bs-ext-select-previous-configuration'
 ;; <right>  : select next config using `bs-ext-select-next-configuration'
 ;; x        : kill buffer on current line using `bs-delete'
+;;
+;; Also if you have color-moccur installed you can use M-O to find regexp matches in marked buffers.
+
 
 ;;; Installation:
 ;;
@@ -86,7 +89,8 @@
 
 ;;; TODO
 ;; 
-;; 
+;; Exclude empty groups? Allow manually adding buffers to a group.
+;; Create "fast" group that rebinds up/down arrow keys so that the buffers are show in the other window automatically?
 
 ;;; Require
 (require 'bs)
@@ -218,6 +222,8 @@ will be used."
 (define-key bs-mode-map (kbd "x") 'bs-delete)
 (define-key bs-mode-map (kbd "/") 'bs-ext-limit-by-regexp)
 (define-key bs-mode-map (kbd "?") 'bs-ext-help)
+(if (featurep 'color-moccur)
+    (define-key bs-mode-map (kbd "M-O") 'bs-ext-moccur-marked-buffers))
 ;; Set the config keys
 (bs-ext-set-keys 'bs-ext-config-keys bs-ext-config-keys)
 
@@ -283,6 +289,7 @@ available Buffer Selection Menu configuration.
 \\[bs-set-current-buffer-to-show-always] -- mark current line's buffer \
 to show always.
 \\[bs-visit-tags-table] -- call `visit-tags-table' on current line's buffer.
+\\[bs-ext-moccur-marked-buffers] -- run moccur on marked buffers
 \\[bs-help] -- display this help text.")
 
 ;; redefine 'bs-help so that it includes information about new keybindings
@@ -290,6 +297,13 @@ to show always.
   "Help for `bs-show'."
   (interactive)
   (describe-variable 'bs-ext-help))
+
+(defun bs-ext-moccur-marked-buffers (regexp arg)
+  "Apply `moccur' on marked buffers."
+  (interactive (list (moccur-regexp-read-from-minibuf)
+                     current-prefix-arg))
+  (moccur-kill-buffer t)
+  (moccur-search regexp t bs--marked-buffers))
 
 (provide 'bs-ext)
 
