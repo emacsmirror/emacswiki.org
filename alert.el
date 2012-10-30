@@ -5,8 +5,8 @@
 ;; Author: Roland Walker <walker@pobox.com>
 ;; Homepage: http://github.com/rolandwalker/alert
 ;; URL: http://raw.github.com/rolandwalker/alert/master/alert.el
-;; Version: 0.5.8
-;; Last-Updated: 10 Oct 2012
+;; Version: 0.5.10
+;; Last-Updated: 22 Oct 2012
 ;; EmacsWiki: Alert
 ;; Keywords: extensions, message, interface
 ;; Package-Requires: ((string-utils "0.0.2"))
@@ -170,7 +170,7 @@
 ;;; Code:
 ;;
 
-;;; requires
+;;; requirements
 
 (eval-and-compile
   ;; for callf, callf2, assert, flet/cl-flet
@@ -187,6 +187,8 @@
 
 (require 'string-utils nil t)
 
+;;; declarations
+
 (declare-function string-utils-propertize-fillin "string-utils.el")
 (declare-function alert-message                  "alert.el")
 
@@ -195,7 +197,7 @@
 ;;;###autoload
 (defgroup alert nil
   "Alternatives to `message'."
-  :version "0.5.8"
+  :version "0.5.10"
   :link '(emacs-commentary-link "alert")
   :prefix "alert-"
   :group 'extensions)
@@ -225,8 +227,9 @@
 (fset 'alert-message (symbol-function 'message))
 
 ;;;###autoload
-(defun alert-install-aliases (&optional arg)
-  "Install aliases outside the \"alert-\" namespace.
+(progn
+  (defun alert-install-aliases (&optional arg)
+    "Install aliases outside the \"alert-\" namespace.
 
 With optional negative ARG, uninstall aliases.
 
@@ -240,27 +243,33 @@ The following aliases will be installed:
    message-notify     for   alert-message-notify
    message-popup      for   alert-message-popup
    message-temp       for   alert-message-temp"
-  (let ((syms '(
-                nolog
-                logonly
-                highlight
-                insert
-                noformat
-                notify
-                popup
-                temp
-                string
-                )))
-    (cond
-      ((and (numberp arg)
-            (< arg 0))
-       (dolist (sym syms)
-         (fmakunbound (intern (format "message-%s" sym)))
-         (fmakunbound (intern (format "with-message-%s" sym)))))
-      (t
-       (dolist (sym syms)
-         (defalias (intern (format "message-%s" sym)) (intern (format "alert-message-%s" sym)))
-         (defalias (intern (format "with-message-%s" sym)) (intern (format "alert-with-message-%s" sym))))))))
+    (let ((syms '(
+                  nolog
+                  logonly
+                  highlight
+                  insert
+                  noformat
+                  notify
+                  popup
+                  temp
+                  string
+                  )))
+      (cond
+        ((and (numberp arg)
+              (< arg 0))
+         (dolist (sym syms)
+           (when (ignore-errors
+                   (eq (symbol-function (intern-soft (format "message-%s" sym)))
+                                        (intern-soft (format "alert-message-%s" sym))))
+             (fmakunbound (intern (format "message-%s" sym))))
+           (when (ignore-errors
+                   (eq (symbol-function (intern-soft (format "with-message-%s" sym)))
+                                        (intern-soft (format "alert-with-message-%s" sym))))
+             (fmakunbound (intern (format "with-message-%s" sym))))))
+        (t
+         (dolist (sym syms)
+           (defalias (intern (format "message-%s" sym)) (intern (format "alert-message-%s" sym)))
+           (defalias (intern (format "with-message-%s" sym)) (intern (format "alert-with-message-%s" sym)))))))))
 
 ;;;###autoload
 (when alert-install-short-aliases
@@ -285,12 +294,13 @@ already existing properties are respected."
 ;;; utility functions
 
 ;;;###autoload
-(defun alert-message-noformat (content &rest args)
+(defun alert-message-noformat (content &rest _ignored)
   "An alternative for `message' which assumes a pre-formatted CONTENT string.
 
-ARGS are ignored, meaning this is not functionally equivalent to `message'.
-However, flet'ing `message' to this function is safe in the sense that
-it does not call `message' directly."
+Any arguments after CONTENT are ignored, meaning this is not
+functionally equivalent to `message'.  However, flet'ing
+`message' to this function is safe in the sense that it does not
+call `message' directly."
   (if (null content)
       (alert-message content)
     ;; else
