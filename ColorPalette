@@ -453,6 +453,8 @@ I don't have a strong opinion about that.  But I'm not eager to modify this imme
 Thx -- DrewAdams
 
 
+[new]
+Should palette.el really provide eyedropper? -- JonasBernoulli
 
 ----
 Lisp:palette.el, Lisp:facemenu+.el
