@@ -165,7 +165,7 @@ Really quite impressive. I've tried it under Win32, you just need to customize s
 -- FabriceGabolde
 
 [new]
-[http://ivvprivate.blog.com/2012/06/27/connection-manager-for-the-sqlplus-mode/ Use] org-mode to keep your connection strings. 
+[http://ignatyev-dev.blogspot.com/2012/10/connection-manager-for-sqlplus-mode.html Connection Manager for the Sqlplus Mode].
 
 As a developer you have to deal with several different databases. It’s not easy to keep all of your environments in mind. Let’s use Org-mode to help yourself. Keep an environment’s description in "org-mode" table:
 <pre>
