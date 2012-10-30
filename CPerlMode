@@ -44,7 +44,7 @@ The version of CPerlMode you have loaded is given by the `cperl-version' variabl
 
 == Starting CPerl Mode ==
 
-If you have set up `auto-mode-list' (see above) then CPerlMode will start whenever you open a file ending <tt>.pl</tt>, <tt>.pm</tt>, etc. To start CPerlMode manually, or on an empty buffer, type `M-x cperl-mode'. 
+If you have set up `auto-mode-alist' (see above) then CPerlMode will start whenever you open a file ending <tt>.pl</tt>, <tt>.pm</tt>, etc. To start CPerlMode manually, or on an empty buffer, type `M-x cperl-mode'. 
 
 == Accessing the CPerl Mode Built-in Documentation ==
 
