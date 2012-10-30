@@ -1,0 +1,59 @@
+==Overview==
+
+Test the content of a value.
+
+==Quickstart==
+
+    (require 'truthy)
+ 
+    (truthy "")                   ; nil
+    (truthy '[])                  ; nil
+    (truthy 0)                    ; nil
+    (truthy (lambda ()))          ; nil
+    (truthy (make-sparse-keymap)) ; nil
+    (truthy 1)                    ; t
+    (truthy '(a b c))             ; t
+    (truthy '(nil nil nil))       ; nil
+
+==Explanation==
+
+This library has no user-level interface; it is only useful
+for programming in Emacs Lisp.  Two functions are provided:
+
+    `truthy'
+    `truthy-s'
+
+Truthy provides an alternative measure of the "truthiness" of a
+value.  Whereas Lisp considers any non-nil value to be "true" when
+evaluating a Boolean condition, `truthy' considers a value to be
+"true" if it has *content*.  If the value is a string or buffer, it
+must have non-zero length.  If a number, it must be non-zero.  If a
+hash, it must have keys.  If a window, it must be live.  See the
+docstring to `truthy' for more details.
+
+To use truthy, place the truthy.el library somewhere Emacs can find
+it, and add the following to your ~/.emacs file:
+
+    (require 'truthy)
+
+==Availability==
+
+truthy.el is available at github:
+
+: http://github.com/rolandwalker/truthy
+
+and via <nowiki>EmacsWiki</nowiki>:
+
+: Lisp:truthy.el
+
+==Compatibility and Requirements==
+
+    GNU Emacs version 24.3-devel     : yes, at the time of writing
+    GNU Emacs version 24.1 & 24.2    : yes
+    GNU Emacs version 23.3           : yes
+    GNU Emacs version 22.3 and lower : no
+
+Uses if present: ListUtils
+
+----
+CategoryExtensions
