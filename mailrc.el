@@ -1348,6 +1348,5 @@ Joakim Hove - hove@phys.ntnu.no
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(provide 'mailrc-mode)
 (provide 'mailrc)
 ;;; mailrc.el ends here
