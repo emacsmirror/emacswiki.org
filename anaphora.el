@@ -5,8 +5,8 @@
 ;; Author: Roland Walker <walker@pobox.com>
 ;; Homepage: http://github.com/rolandwalker/anaphora
 ;; URL: http://raw.github.com/rolandwalker/anaphora/master/anaphora.el
-;; Version: 0.0.6
-;; Last-Updated: 12 Oct 2012
+;; Version: 0.1.0
+;; Last-Updated: 30 Oct 2012
 ;; EmacsWiki: Anaphora
 ;; Keywords: extensions
 ;;
@@ -47,6 +47,7 @@
 ;;     `alambda'
 ;;     `alet'
 ;;     `aprog1'
+;;     `aprog2'
 ;;     `atypecase'
 ;;     `awhen'
 ;;     `awhile'
@@ -81,13 +82,12 @@
 ;;     GNU Emacs version 24.3-devel     : yes, except macros marked experimental
 ;;     GNU Emacs version 24.1 & 24.2    : yes
 ;;     GNU Emacs version 23.3           : yes
-;;     GNU Emacs version 22.3 and lower : yes
+;;     GNU Emacs version 22.3           : yes
+;;     GNU Emacs version 21.x and lower : unknown
 ;;
 ;; Bugs
 ;;
 ;; TODO
-;;
-;;     port anaphoric-setf to gv.el for Emacs 24.3 or delete it.
 ;;
 ;;     better face for it and self
 ;;
@@ -109,7 +109,7 @@
 ;;; Code:
 ;;
 
-;;; requires
+;;; requirements
 
 ;; for declare, labels, do, block, case, ecase, typecase, etypecase
 (require 'cl)
@@ -119,7 +119,7 @@
 ;;;###autoload
 (defgroup anaphora nil
   "Anaphoric macros providing implicit temp variables"
-  :version "0.0.6"
+  :version "0.1.0"
   :link '(emacs-commentary-link "anaphora")
   :prefix "anaphora-"
   :group 'extensions)
@@ -143,6 +143,7 @@
        (let ((new-keywords '(
                              "anaphoric-if"
                              "anaphoric-prog1"
+                             "anaphoric-prog2"
                              "anaphoric-when"
                              "anaphoric-while"
                              "anaphoric-and"
@@ -156,6 +157,7 @@
                              "anaphoric-let"
                              "aif"
                              "aprog1"
+                             "aprog2"
                              "awhen"
                              "awhile"
                              "aand"
@@ -175,54 +177,53 @@
          (font-lock-add-keywords 'emacs-lisp-mode `((,(concat "\\<" (regexp-opt special-variables 'paren) "\\>")
                                                      1 font-lock-variable-name-face)) 'append)
          (font-lock-add-keywords 'emacs-lisp-mode `((,(concat "(\\s-*" (regexp-opt new-keywords 'paren) "\\>")
-                                                     1 font-lock-keyword-face)) 'append))
-       (dolist (buf (buffer-list))
-         (with-current-buffer buf
-           (when (and (eq major-mode 'emacs-lisp-mode)
-                      (boundp 'font-lock-mode)
-                      font-lock-mode)
-             (font-lock-refresh-defaults)))))))
+                                                     1 font-lock-keyword-face)) 'append)))))
 
 ;;; aliases
 
 ;;;###autoload
-(defun anaphora--install-traditional-aliases (&optional arg)
-  "Install traditional short aliases for anaphoric macros.
+(progn
+  (defun anaphora--install-traditional-aliases (&optional arg)
+    "Install traditional short aliases for anaphoric macros.
 
 With negative numeric ARG, remove traditional aliases."
-  (let ((syms '(
-                (if         .  t)
-                (prog1      .  t)
-                (when       .  when)
-                (while      .  t)
-                (and        .  t)
-                (cond       .  cond)
-                (lambda     .  lambda)
-                (block      .  block)
-                (case       .  case)
-                (ecase      .  ecase)
-                (typecase   .  typecase)
-                (etypecase  .  etypecase)
-                (let        .  let)
-                (+          .  t)
-                (-          .  t)
-                (*          .  t)
-                (/          .  t)
-                )))
-    (cond
-      ((and (numberp arg)
-            (< arg 0))
-       (dolist (cell syms)
-         (fmakunbound (intern (format "a%s" (car cell))))))
-      (t
-       (dolist (cell syms)
-         (let* ((builtin (car cell))
-                (traditional (intern (format "a%s" builtin)))
-                (long (intern (format "anaphoric-%s" builtin))))
-           (defalias traditional long)
-           (put traditional 'lisp-indent-function
-                (get builtin 'lisp-indent-function))
-           (put traditional 'edebug-form-spec (cdr cell))))))))
+    (let ((syms '(
+                  (if         .  t)
+                  (prog1      .  t)
+                  (prog2      .  t)
+                  (when       .  when)
+                  (while      .  t)
+                  (and        .  t)
+                  (cond       .  cond)
+                  (lambda     .  lambda)
+                  (block      .  block)
+                  (case       .  case)
+                  (ecase      .  ecase)
+                  (typecase   .  typecase)
+                  (etypecase  .  etypecase)
+                  (let        .  let)
+                  (+          .  t)
+                  (-          .  t)
+                  (*          .  t)
+                  (/          .  t)
+                  )))
+      (cond
+        ((and (numberp arg)
+              (< arg 0))
+         (dolist (cell syms)
+           (when (ignore-errors
+                   (eq (symbol-function (intern-soft (format "a%s" (car cell))))
+                                        (intern-soft (format "anaphoric-%s" (car cell)))))
+             (fmakunbound (intern (format "a%s" (car cell)))))))
+        (t
+         (dolist (cell syms)
+           (let* ((builtin (car cell))
+                  (traditional (intern (format "a%s" builtin)))
+                  (long (intern (format "anaphoric-%s" builtin))))
+             (defalias traditional long)
+             (put traditional 'lisp-indent-function
+                  (get builtin 'lisp-indent-function))
+             (put traditional 'edebug-form-spec (cdr cell)))))))))
 
 ;;;###autoload
 (unless anaphora-use-long-names-only
@@ -254,6 +255,21 @@ FIRST and BODY are otherwise as documented for `prog1'."
   `(let ((it ,first))
      (progn ,@body)
      it))
+
+;;;###autoload
+(defmacro anaphoric-prog2 (form1 form2 &rest body)
+  "Like `prog2', but the result of evaluating FORM2 is bound to `it'.
+
+The variable `it' is available within BODY.
+
+FORM1, FORM2, and BODY are otherwise as documented for `prog2'."
+  (declare (debug t)
+           (indent 2))
+  `(progn
+     ,form1
+     (let ((it ,form2))
+       (progn ,@body)
+       it)))
 
 ;;;###autoload
 (defmacro anaphoric-when (cond &rest body)
