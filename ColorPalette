@@ -313,6 +313,9 @@ If I used facemenup-palette-face-fg-at-point, then I close palette, and then I u
 [new:DrewAdams:2009-11-17 18:49 UTC]
 Thx. Should be OK now.  -- DrewAdams
 
+
+----
+
 [new]
 1.
 I disable blink-cursor-mode, but when I execute M-x palette, it enable blink-cursor-mode. 
@@ -396,6 +399,7 @@ What do I mean? I mean that it is the output of vanilla Emacs function `describe
 
 
 
+==== Number of RGB hex digits ====
 
 [new:spinuvit:2012-03-17 16:34 UTC]
 Hi Drew,
@@ -453,8 +457,19 @@ I don't have a strong opinion about that.  But I'm not eager to modify this imme
 Thx -- DrewAdams
 
 
+
+
+==== Providing feature `eyedropper' ====
+
 [new]
 Should palette.el really provide eyedropper? -- JonasBernoulli
+
+[new:DrewAdams:2012-10-30 14:04 UTC]
+Yes, I think so.  -- DrewAdams 
+
+
+
+
 
 ----
 Lisp:palette.el, Lisp:facemenu+.el
