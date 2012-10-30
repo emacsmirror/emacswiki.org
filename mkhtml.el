@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Jul 18 13:11:51 2000
 ;; Version: 20.1
-;; Last-Updated: Thu Aug 23 16:18:31 2012 (-0700)
+;; Last-Updated: Tue Oct 30 06:59:37 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 2327
+;;     Update #: 2329
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/mkhtml.el
 ;; Doc URL: http://emacswiki.org/emacs/SaveAsHtml
 ;; Keywords: tools, hypermedia, www, info
@@ -32,7 +32,7 @@
 ;; `mkhtml.el' extends `htmlize.el' by trying to do that in a couple
 ;; of specific cases, interpreting mouse-face'd text in Info and Dired
 ;; buffers as links.  A version of `htmlize.el' named
-;; `mkhtml-htmlize.el' is provided with the MKHTML package.
+;; `mkhtml-htmlize.el' is provided with the MKHTML package.  Use that.
 ;;
 ;; Recent versions of `htmlize.el' do not work with `mkhtml.el' - I
 ;; just have not had a chance to update `mkhtml.el'.  For use other
@@ -130,7 +130,7 @@
 ;;
 ;;     (require 'mkhtml)
 ;;
-;; Only `htmlize.el' is strictly required by `mkhtml.el', but
+;; Only `mkhtml-htmlize.el' is strictly required by `mkhtml.el', but
 ;; `info+.el' is also needed if you want to take advantage of certain
 ;; functionalities in `mkhtml.el' (see next paragraph).  The other
 ;; files in this package are not strictly required, but they let you
