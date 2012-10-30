@@ -5,8 +5,8 @@
 ;; Author: Roland Walker <walker@pobox.com>
 ;; Homepage: http://github.com/rolandwalker/browse-url-dwim
 ;; URL: http://raw.github.com/rolandwalker/browse-url-dwim/master/browse-url-dwim.el
-;; Version: 0.6.2
-;; Last-Updated: 16 Oct 2012
+;; Version: 0.6.4
+;; Last-Updated: 22 Oct 2012
 ;; EmacsWiki: BrowseUrlDwim
 ;; Keywords: hypermedia
 ;; Package-Requires: ((string-utils "0.0.3"))
@@ -161,7 +161,7 @@
 ;;; Code:
 ;;
 
-;;; requires
+;;; requirements
 
 ;; for callf, callf2
 (require 'cl)
@@ -174,10 +174,11 @@
 (autoload 'url-hexify-string      "url-util"    "Return a new string that is STRING URI-encoded."  nil)
 (autoload 'browse-url             "browse-url"  "Ask a WWW browser to load a URL."                 t)
 
+;;; declarations
+
 (declare-function string-utils-has-darkspace-p "string-utils.el")
 
 (eval-when-compile
-  ;; declarations for byte compiler
   (defvar thing-at-point-short-url-regexp))
 
 ;;; constants
@@ -190,7 +191,7 @@
 ;;;###autoload
 (defgroup browse-url-dwim nil
   "Context-sensitive external browse URL or Internet search."
-  :version "0.6.2"
+  :version "0.6.4"
   :link '(emacs-commentary-link "browse-url-dwim")
   :prefix "browse-url-dwim-"
   :group 'external
@@ -588,18 +589,22 @@ is 'toggle."
   (cond
    (browse-url-dwim-mode
     (when browse-url-dwim-install-aliases
-      (unless (eq (symbol-function 'browse) 'osx-browse-url)
+      (unless (and (fboundp 'browse)
+                   (eq (symbol-function 'browse) 'osx-browse-url))
         (defalias 'browse 'browse-url-dwim))
-      (unless (eq (symbol-function 'google) 'osx-browse-guess)
+      (unless (and (fboundp 'google)
+                   (eq (symbol-function 'google) 'osx-browse-guess))
         (defalias 'google 'browse-url-dwim-guess)))
     (when (and (browse-url-dwim-called-interactively-p 'interactive)
                (not browse-url-dwim-less-feedback))
       (message "browse-url-dwim mode enabled")))
    (t
     (when browse-url-dwim-install-aliases
-      (when (eq (symbol-function 'browse) 'browse-url-dwim)
+      (when (and (fboundp 'browse)
+                 (eq (symbol-function 'browse) 'browse-url-dwim))
         (fmakunbound 'browse))
-      (when (eq (symbol-function 'google) 'browse-url-dwim-guess)
+      (when (and (fboundp 'google)
+                 (eq (symbol-function 'google) 'browse-url-dwim-guess))
         (fmakunbound 'google)))
     (when (and (browse-url-dwim-called-interactively-p 'interactive)
                (not browse-url-dwim-less-feedback))
