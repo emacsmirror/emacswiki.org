@@ -5,8 +5,8 @@
 ;; Author: Roland Walker <walker@pobox.com>
 ;; Homepage: http://github.com/rolandwalker/list-utils
 ;; URL: http://raw.github.com/rolandwalker/list-utils/master/list-utils.el
-;; Version: 0.2.4
-;; Last-Updated: 22 Oct 2012
+;; Version: 0.3.0
+;; Last-Updated: 29 Oct 2012
 ;; EmacsWiki: ListUtils
 ;; Keywords: extensions
 ;;
@@ -52,13 +52,18 @@
 ;;     `list-utils-cons-cell-p'
 ;;     `list-utils-cyclic-length'
 ;;     `list-utils-improper-p'
-;;     `list-utils-make-proper'
-;;     `list-utils-make-improper'
+;;     `list-utils-make-proper-copy'
+;;     `list-utils-make-proper-inplace'
+;;     `list-utils-make-improper-copy'
+;;     `list-utils-make-improper-inplace'
 ;;     `list-utils-linear-p'
 ;;     `list-utils-linear-subseq'
 ;;     `list-utils-cyclic-p'
 ;;     `list-utils-cyclic-subseq'
+;;     `list-utils-make-linear-copy'
+;;     `list-utils-make-linear-inplace'
 ;;     `list-utils-safe-length'
+;;     `list-utils-safe-equal'
 ;;     `list-utils-depth'
 ;;     `list-utils-flatten'
 ;;     `list-utils-alist-flatten'
@@ -135,7 +140,7 @@
 
 ;;; requirements
 
-;; for defstruct, assert, setf, callf
+;; for defstruct, assert, setf, callf, loop
 (require 'cl)
 
 ;;; declarations
@@ -145,7 +150,7 @@
 ;;;###autoload
 (defgroup list-utils nil
   "List-manipulation utility functions."
-  :version "0.2.4"
+  :version "0.3.0"
   :link '(emacs-commentary-link "list-utils")
   :prefix "list-utils-"
   :group 'extensions)
@@ -211,31 +216,119 @@ Such improper lists are produced by `list*'."
       (nthcdr len cell))))
 
 ;;;###autoload
-(defun list-utils-make-proper (list)
-  "Make a cons cell or improper LIST into a proper list.
+(defun list-utils-make-proper-copy (list &optional tree recur-internal)
+  "Copy a cons cell or improper LIST into a proper list.
 
-Improper lists consist of proper lists consed onto a final
-element, and are produced by `list*'.
+If optional TREE is non-nil, traverse LIST, making proper
+copies of any improper lists contained within.
 
-Modifies LIST and returns the modified value."
-  (assert (listp list) nil "LIST is not a list")
-  (when (list-utils-cons-cell-p list)
-    (callf list (nthcdr (safe-length list) list)))
-  list)
+Optional RECUR-INTERNAL is for internal use only.
+
+Improper lists consist of proper lists consed to a final
+element, and are produced by `list*'."
+  (assert (or recur-internal (listp list)) nil "LIST is not a list")
+  (cond
+    ((not tree)
+     (let ((tail (list-utils-cons-cell-p list)))
+       (cond
+         (tail
+          (append
+           (subseq list 0 (safe-length list))
+           (list tail)))
+         (t
+          (copy-sequence list)))))
+    ((consp list)
+     (mapcar #'(lambda (elt)
+                 (list-utils-make-proper-copy elt 'tree 'recur))
+             (list-utils-make-proper-copy list nil 'recur)))
+    (t
+     list)))
 
 ;;;###autoload
-(defun list-utils-make-improper (list)
-  "Make proper LIST into an improper list.
+(defun list-utils-make-proper-inplace (list &optional tree recur-internal)
+  "Make a cons cell or improper LIST into a proper list.
 
-Improper lists consist of proper lists consed onto a final
+Improper lists consist of proper lists consed to a final
 element, and are produced by `list*'.
 
+If optional TREE is non-nil, traverse LIST, making any
+improper lists contained within into proper lists.
+
+Optional RECUR-INTERNAL is for internal use only.
+
 Modifies LIST and returns the modified value."
-  (assert (listp list) nil "LIST is not a list")
-  (unless (list-utils-cons-cell-p list)
-    (assert (> (safe-length list) 1) nil "LIST has only one element")
-    (setcdr (last list 2) (car (last list))))
-  list)
+  (assert (or recur-internal (listp list)) nil "LIST is not a list")
+  (cond
+    ((not tree)
+     (when (list-utils-cons-cell-p list)
+       (callf list (nthcdr (safe-length list) list)))
+     list)
+    ((consp list)
+     (loop for elt in (list-utils-make-proper-inplace list nil 'recur)
+           do (list-utils-make-proper-inplace elt 'tree 'recur))
+     list)
+    (t
+     list)))
+(define-obsolete-function-alias 'list-utils-make-proper 'list-utils-make-proper-inplace)
+
+;;;###autoload
+(defun list-utils-make-improper-copy (list &optional tree recur-internal)
+  "Copy a proper LIST into an improper list.
+
+Improper lists consist of proper lists consed to a final
+element, and are produced by `list*'.
+
+If optional TREE is non-nil, traverse LIST, making proper
+copies of any improper lists contained within.
+
+Optional RECUR-INTERNAL is for internal use only."
+  (assert (or recur-internal (listp list)) nil "LIST is not a list")
+  (assert (or recur-internal (> (safe-length list) 1)) nil "LIST has only one element")
+  (cond
+    ((not tree)
+     (let ((tail (list-utils-cons-cell-p list)))
+       (cond
+         (tail
+          (copy-list list))
+         (t
+          (apply 'list* list)))))
+    ((and (consp list)
+          (> (safe-length list) 1))
+     (apply 'list*
+            (mapcar #'(lambda (elt)
+                        (list-utils-make-improper-copy elt 'tree 'recur))
+                    (list-utils-make-proper-copy list nil 'recur))))
+    (t
+     list)))
+
+;;;###autoload
+(defun list-utils-make-improper-inplace (list &optional tree recur-internal)
+  "Make proper LIST into an improper list.
+
+Improper lists consist of proper lists consed to a final
+element, and are produced by `list*'.
+
+If optional TREE is non-nil, traverse LIST, making any
+proper lists contained within into improper lists.
+
+Optional RECUR-INTERNAL is for internal use only.
+
+Modifies LIST and returns the modified value."
+  (assert (or recur-internal (listp list)) nil "LIST is not a list")
+  (assert (or recur-internal (> (safe-length list) 1)) nil "LIST has only one element")
+  (cond
+    ((not tree)
+     (unless (list-utils-cons-cell-p list)
+       (setcdr (last list 2) (car (last list))))
+     list)
+    ((and (consp list)
+          (> (safe-length list) 1))
+     (loop for elt in (list-utils-make-improper-inplace list nil 'recur)
+           do (list-utils-make-improper-inplace elt 'tree 'recur))
+     list)
+    (t
+     list)))
+(define-obsolete-function-alias 'list-utils-make-improper 'list-utils-make-improper-inplace)
 
 ;;;###autoload
 (defun list-utils-linear-subseq (list &optional cycle-length)
@@ -270,7 +363,7 @@ calculated from LIST."
 The first element of the cyclic structure is not guaranteed to be
 first element of the return value unless FROM-START is non-nil.
 
-To linearize the return value, use `list-utils-flatten'.
+To linearize the return value, use `list-utils-make-linear-inplace'.
 
 If there is no cycle in LIST, return nil."
   (cond
@@ -353,6 +446,94 @@ elements, like `safe-length'."
          (safe-length (list-utils-linear-subseq list cycle-length))))))
 
 ;;;###autoload
+(defun list-utils-make-linear-copy (list &optional tree)
+  "Return a linearized copy of LIST, which may be cyclic.
+
+If optional TREE is non-nil, traverse LIST, substituting
+linearized copies of any cyclic lists contained within."
+  (cond
+    ((not tree)
+     (subseq list 0 (list-utils-safe-length list)))
+    ((consp list)
+     (mapcar #'(lambda (elt)
+                 (list-utils-make-linear-copy elt 'tree))
+             (list-utils-make-linear-copy list)))
+    (t
+     list)))
+
+;;;###autoload
+(defun list-utils-make-linear-inplace (list &optional tree)
+  "Linearize LIST, which may be cyclic.
+
+Modifies LIST and returns the modified value.
+
+If optional TREE is non-nil, traverse LIST, linearizing any
+cyclic lists contained within."
+  (cond
+    ((not tree)
+     (setf (nthcdr (list-utils-safe-length list) list) nil)
+     list)
+    ((consp list)
+     (mapcar #'(lambda (elt)
+                 (list-utils-make-linear-inplace elt 'tree))
+             (list-utils-make-linear-inplace list)))
+    (t
+     list)))
+
+;;;###autoload
+(defun list-utils-safe-equal (list-1 list-2 &optional test)
+  "Compare LIST-1 and LIST-2, which may be cyclic lists.
+
+LIST-1 and LIST-2 may also contain cyclic lists, which are
+each traversed and compared.  This function will not infloop
+when cyclic lists are encountered.
+
+Non-nil is returned only if the leaves of LIST-1 and LIST-2 are
+`equal' and the structure is identical.
+
+Optional TEST specifies a test, defaulting to `equal'.
+
+If LIST-1 and LIST-2 are not actually lists, they are still
+compared according to TEST."
+  (callf or test 'equal)
+  (cond
+    ((and (not (listp list-1))
+          (not (listp list-2)))
+     (funcall test list-1 list-2))
+    ((or (not (listp list-1))
+         (not (listp list-2)))
+     nil)
+    (t
+     (catch 'match
+       (let* ((cyclic-1 (list-utils-make-linear-copy (list-utils-cyclic-subseq list-1 'from-start)))
+              (cyclic-2 (list-utils-make-linear-copy (list-utils-cyclic-subseq list-2 'from-start)))
+              (clen-1 (list-utils-safe-length cyclic-1))
+              (clen-2 (list-utils-safe-length cyclic-2))
+              (linear-1 nil)
+              (linear-2 nil)
+              (last-cdr-1 nil)
+              (last-cdr-2 nil))
+         (unless (= clen-1 clen-2)
+           (throw 'match nil))
+         (loop for a in cyclic-1
+               for b in cyclic-2
+               unless (list-utils-safe-equal a b) do (throw 'match nil))
+         (setq linear-1 (list-utils-linear-subseq list-1 clen-1))
+         (setq linear-2 (list-utils-linear-subseq list-2 clen-2))
+         (unless (= (list-utils-safe-length linear-1) (list-utils-safe-length linear-2))
+           (throw 'match nil))
+         (loop for a in linear-1
+               for b in linear-2
+               unless (list-utils-safe-equal a b) do (throw 'match nil))
+         (setq last-cdr-1 (list-utils-improper-p linear-1))
+         (setq last-cdr-2 (list-utils-improper-p linear-2))
+         (when (or (if last-cdr-1 (not last-cdr-2) last-cdr-2)
+                   (and last-cdr-1
+                        (not (funcall test last-cdr-1 last-cdr-2))))
+           (throw 'match nil)))
+       t))))
+
+;;;###autoload
 (defun list-utils-depth (list)
   "Find the depth of LIST, which may contain other lists.
 
@@ -361,33 +542,33 @@ of 0.
 
 If LIST is a cons cell or a list which does not contain other
 lists, returns a depth of 1."
-  (when (and (listp list)
-             (list-utils-cyclic-subseq list))
-    (setq list (subseq list 0 (list-utils-safe-length list))))
   (cond
     ((or (not (listp list))
          (null list))
      0)
+    ((and (listp list)
+          (list-utils-cyclic-p list))
+     (list-utils-depth (list-utils-make-linear-copy list)))
     ((list-utils-cons-cell-p list)
-     (+ 1 (apply 'max (mapcar 'list-utils-depth (list-utils-make-proper (copy-tree list))))))
+     (+ 1 (apply 'max (mapcar 'list-utils-depth (list-utils-make-proper-copy list)))))
     (t
      (+ 1 (apply 'max (mapcar 'list-utils-depth list))))))
 
 ;;;###autoload
 (defun list-utils-flatten (list)
-  "Flatten LIST, which may contain other lists.
+  "Return a flattened copy of LIST, which may contain other lists.
 
 This function flattens cons cells as lists, and
 flattens circular list structures."
-
-  (when (and (listp list)
-             (list-utils-cyclic-subseq list))
-    (setq list (subseq list 0 (list-utils-safe-length list))))
 
   (cond
 
     ((null list)
      nil)
+
+    ((and (listp list)
+          (list-utils-cyclic-p list))
+     (list-utils-flatten (list-utils-make-linear-copy list)))
 
     ((and (listp list)
           (consp (car list)))
@@ -402,35 +583,43 @@ flattens circular list structures."
      (list list))))
 
 ;;;###autoload
-(defun list-utils-insert-before (list element new-element)
+(defun list-utils-insert-before (list element new-element &optional test)
   "Look in LIST for ELEMENT and insert NEW-ELEMENT before it.
 
+Optional TEST sets the test used for a matching element, and
+defaults to `equal'.
+
 LIST is modified and the new value is returned."
+  (callf or test 'equal)
   (let ((improper (list-utils-improper-p list))
         (pos nil))
     (when improper
-      (callf list-utils-make-proper list))
-    (setq pos (position element list))
+      (callf list-utils-make-proper-inplace list))
+    (setq pos (position element list :test test))
     (assert pos nil "Element not found: %s" element)
     (push new-element (nthcdr pos list))
     (when improper
-      (callf list-utils-make-improper list)))
+      (callf list-utils-make-improper-inplace list)))
   list)
 
 ;;;###autoload
-(defun list-utils-insert-after (list element new-element)
+(defun list-utils-insert-after (list element new-element &optional test)
   "Look in LIST for ELEMENT and insert NEW-ELEMENT after it.
 
+Optional TEST sets the test used for a matching element, and
+defaults to `equal'.
+
 LIST is modified and the new value is returned."
+  (callf or test 'equal)
   (let ((improper (list-utils-improper-p list))
         (pos nil))
     (when improper
-      (callf list-utils-make-proper list))
-    (setq pos (position element list))
+      (callf list-utils-make-proper-inplace list))
+    (setq pos (position element list :test test))
     (assert pos nil "Element not found: %s" element)
     (push new-element (cdr (nthcdr pos list)))
     (when improper
-      (callf list-utils-make-improper list)))
+      (callf list-utils-make-improper-inplace list)))
   list)
 
 ;;;###autoload
@@ -442,14 +631,14 @@ POS is zero-indexed.
 LIST is modified and the new value is returned."
   (let ((improper (list-utils-improper-p list)))
     (when improper
-      (callf list-utils-make-proper list))
+      (callf list-utils-make-proper-inplace list))
     (assert (and (integerp pos)
                  (>= pos 0)
                  (< pos (length list))) nil "No such position %s" pos)
     (push new-element
           (nthcdr pos list))
     (when improper
-      (callf list-utils-make-improper list)))
+      (callf list-utils-make-improper-inplace list)))
   list)
 
 ;;;###autoload
@@ -459,14 +648,14 @@ LIST is modified and the new value is returned."
 LIST is modified and the new value is returned."
   (let ((improper (list-utils-improper-p list)))
     (when improper
-      (callf list-utils-make-proper list))
+      (callf list-utils-make-proper-inplace list))
     (assert (and (integerp pos)
                  (>= pos 0)
                  (< pos (length list))) nil "No such position %s" pos)
     (push new-element
           (cdr (nthcdr pos list)))
     (when improper
-      (callf list-utils-make-improper list)))
+      (callf list-utils-make-improper-inplace list)))
   list)
 
 ;;; alists
@@ -482,14 +671,14 @@ This function simply avoids flattening single conses or improper
 lists where the last two elements would be expressed as a dotted
 pair."
 
-  (when (and (listp list)
-             (list-utils-cyclic-subseq list))
-    (setq list (subseq list 0 (list-utils-safe-length list))))
-
   (cond
 
     ((null list)
      nil)
+
+    ((and (listp list)
+          (list-utils-cyclic-p list))
+     (list-utils-alist-flatten (list-utils-make-linear-copy list)))
 
     ((list-utils-cons-cell-p list)
      list)
@@ -513,10 +702,9 @@ pair."
 (defun list-utils-plist-reverse (plist)
   "Return reversed copy of property-list PLIST, maintaining pair associations."
   (assert (= 0 (% (length plist) 2)) nil "Not a PLIST")
-  (let ((alist nil))
-    (while plist
-      (push (cons (pop plist) (pop plist)) alist))
-    (list-utils-flatten alist)))
+  (loop for (a b) on (reverse plist) by 'cddr
+        collect b
+        collect a))
 
 ;;;###autoload
 (defun list-utils-plist-del (plist prop)
