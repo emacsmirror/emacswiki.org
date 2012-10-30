@@ -5,8 +5,8 @@
 ;; Author: Roland Walker <walker@pobox.com>
 ;; Homepage: http://github.com/rolandwalker/string-utils
 ;; URL: http://raw.github.com/rolandwalker/string-utils/master/string-utils.el
-;; Version: 0.0.8
-;; Last-Updated: 10 Oct 2012
+;; Version: 0.2.6
+;; Last-Updated: 30 Oct 2012
 ;; Package-Requires: ((list-utils "0.1.2"))
 ;; EmacsWiki: StringUtils
 ;; Keywords: extensions
@@ -52,6 +52,7 @@
 ;;     `string-utils-propertize-fillin'
 ;;     `string-utils-plural-ending'
 ;;     `string-utils-squeeze-filename'
+;;     `string-utils-squeeze-url'
 ;;     `string-utils-split'
 ;;
 ;; To use string-utils, place the string-utils.el library somewhere
@@ -68,7 +69,7 @@
 ;;     GNU Emacs version 23.3           : yes
 ;;     GNU Emacs version 22.3 and lower : no
 ;;
-;;     Uses if present: list-utils.el
+;;     Uses if present: list-utils.el, obarray-fns.el
 ;;
 ;; Bugs
 ;;
@@ -77,7 +78,11 @@
 ;;
 ;; TODO
 ;;
-;;     Useful stringification for network and serial processes
+;;     Stringification of autoload data type
+;;         http://www.gnu.org/software/emacs/manual/html_node/elisp/Autoload-Type.html
+;;
+;;     Maybe args should not be included when stringifying lambdas and
+;;     macros.
 ;;
 ;;     In string-utils-propertize-fillin, strip properties which are
 ;;     set to nil at start, which will create more contiguity in the
@@ -90,7 +95,8 @@
 ;;           (string-utils-propertize-fillin text 'face 'highlight)
 ;;           text)
 ;;
-;;      Adapt squeeze-filename for URLs
+;;      String-utils-squeeze-url needs improvement, sometimes using
+;;      two elisions where one would do.
 ;;
 ;;; License
 ;;
@@ -130,18 +136,22 @@
 ;;; Code:
 ;;
 
-;;; requires
+;;; requirements
 
-;; for callf, callf2, assert
+;; for callf, callf2, assert, loop
 (require 'cl)
 
 (require 'eieio nil t)
 (require 'list-utils nil t)
+(require 'obarray-fns nil t)
 
 (autoload 'font-lock-fillin-text-property "font-lock"
   "Fill in one property of the text from START to END.")
 
+;;; declarations
+
 (declare-function object-name-string "eieio.el")
+(declare-function ring-elements      "ring.el")
 
 ;; variables
 
@@ -193,7 +203,7 @@ Includes Unicode whitespace characters.")
 ;;; utility functions
 
 ;;;###autoload
-(defun string-utils-stringify-anything (obj &optional separator ints-are-chars)
+(defun string-utils-stringify-anything (obj &optional separator ints-are-chars record-separator)
   "Coerce any object OBJ into a string.
 
 Contrary to usual conventions, return the empty string for nil.
@@ -206,10 +216,15 @@ list-utils.el is installed.
 When INTS-ARE-CHARS is non-nil, interpret positive integers in
 OBJ as characters.
 
+Optional RECORD-SEPARATOR is a string (defaulting to the value of
+SEPARATOR) which delimits end-of-record for paired data types
+such as hash tables.
+
 This is not a pretty-printer for OBJ, but a way to look at
 the *contents* of OBJ (so much as is possible) as if it was
 an ordinary string."
   (callf or separator " ")
+  (callf or record-separator separator)
   (cond
 
     ;; nil
@@ -242,18 +257,51 @@ an ordinary string."
     ((windowp obj)
      (buffer-name (window-buffer obj)))
 
+    ;; buffer
+    ((bufferp obj)
+     (buffer-name obj))
+
     ;; marker
     ((markerp obj)
      (string-utils-stringify-anything (list (marker-position obj)
-                                            (marker-buffer obj)) separator ints-are-chars))
+                                            (marker-buffer obj)) separator ints-are-chars record-separator))
     ;; overlay
     ((overlayp obj)
      (string-utils-stringify-anything (list (overlay-start obj)
                                             (overlay-end obj)
-                                            (overlay-buffer obj)) separator ints-are-chars))
-    ;; process
+                                            (overlay-buffer obj)) separator ints-are-chars record-separator))
+
+    ;; network process
+    ((and (processp obj)
+          (eq 'network (process-type obj)))
+     (let ((contact (process-contact obj t)))
+       (cond
+         ((and (plist-get contact :server)
+               (or (plist-get contact :family)
+                   (plist-get contact :service)))
+          (format "%s:%s"
+                  (or (plist-get contact :family) "")
+                  (or (plist-get contact :service) "")))
+         ((plist-get contact :host)
+          (format "%s" (plist-get contact :host)))
+         (t
+          "network_process"))))
+
+    ;; serial process
+    ((and (processp obj)
+          (eq 'serial (process-type obj)))
+     (let ((contact (process-contact obj t)))
+       (format "%s" (or (plist-get contact :name)
+                        (plist-get contact :port)
+                        "serial_process"))))
+
+    ;; real process
     ((processp obj)
-     (string-utils-stringify-anything (process-command obj) separator ints-are-chars))
+     (string-utils-stringify-anything (process-command obj) separator ints-are-chars record-separator))
+
+    ;; ring
+    ((ring-p obj)
+     (string-utils-stringify-anything (ring-elements obj) separator ints-are-chars record-separator))
 
     ;; EIEIO object
     ((and (fboundp 'object-p)
@@ -264,7 +312,7 @@ an ordinary string."
     ((fontp obj)
      (string-utils-stringify-anything (or (font-get obj :name)
                                           (font-get obj :family)
-                                          "") separator))
+                                          "") separator ints-are-chars record-separator))
 
     ;; font vector as returned by `font-info'
     ((and (vectorp obj)
@@ -284,17 +332,33 @@ an ordinary string."
     ((hash-table-p obj)
      (let ((output nil))
        (maphash #'(lambda (k v)
-                    (push (string-utils-stringify-anything k separator ints-are-chars) output)
-                    (push (string-utils-stringify-anything v separator ints-are-chars) output)) obj)
-       (mapconcat 'identity (nreverse output) separator)))
+                    (push (string-utils-stringify-anything k separator ints-are-chars record-separator) output)
+                    (push (string-utils-stringify-anything v separator ints-are-chars record-separator) output)) obj)
+       (mapconcat 'identity
+                  (nbutlast
+                   (loop for (k v) on (nreverse output) by 'cddr
+                         collect k
+                         collect separator
+                         collect v
+                         collect record-separator)
+                   (if (equal record-separator separator) 1 0))
+                  "")))
 
     ;; char-table
     ((char-table-p obj)
      (let ((output nil))
        (map-char-table #'(lambda (k v)
-                           (push (string-utils-stringify-anything k separator t) output)
-                           (push (string-utils-stringify-anything v separator ints-are-chars) output)) obj)
-       (mapconcat 'identity (nreverse output) separator)))
+                           (push (string-utils-stringify-anything k separator t record-separator) output)
+                           (push (string-utils-stringify-anything v separator ints-are-chars record-separator) output)) obj)
+       (mapconcat 'identity
+                  (nbutlast
+                   (loop for (k v) on (nreverse output) by 'cddr
+                         collect k
+                         collect separator
+                         collect v
+                         collect record-separator)
+                   (if (equal record-separator separator) 1 0))
+                  "")))
 
     ;; subr
     ((subrp obj)
@@ -303,48 +367,91 @@ an ordinary string."
     ;; compiled byte-code
     ((byte-code-function-p obj)
      (mapconcat #'(lambda (x)
-                    (string-utils-stringify-anything x separator ints-are-chars)) (append obj nil) separator))
+                    (string-utils-stringify-anything x separator ints-are-chars record-separator)) (append obj nil) separator))
 
     ;; keymap, function, frame-configuration
     ((or (keymapp obj)
          (functionp obj)
          (frame-configuration-p obj))
-     (string-utils-stringify-anything (cdr obj) separator ints-are-chars))
+     (string-utils-stringify-anything (cdr obj) separator ints-are-chars record-separator))
+
+    ;; macro
+    ((and (listp obj)
+          (eq 'macro (car obj))
+          (functionp (cdr obj)))
+     (string-utils-stringify-anything (cddr obj) separator ints-are-chars record-separator))
 
     ;; list
     ((listp obj)
-     ;; convert cons cells into lists before mapconcat chokes
-     (when (let ((len (safe-length obj)))
-             (and (consp obj)
-                  (> len 0)
-                  (not (listp (nthcdr len obj)))))
-       (callf list (nthcdr (safe-length obj) obj)))
-     ;; truncate cyclic lists
-     (let ((measurer (if (fboundp 'list-utils-safe-length) 'list-utils-safe-length 'safe-length)))
-       (setq obj (subseq obj 0 (funcall measurer obj))))
-     ;; accumulate output
-     (let ((output nil))
-       (push (string-utils-stringify-anything (car obj) separator ints-are-chars) output)
-       (when (cdr obj)
-         (push (string-utils-stringify-anything (cdr obj) separator ints-are-chars) output))
-       (mapconcat 'identity (nreverse output) separator)))
+     (let* ((measurer (if (fboundp 'list-utils-safe-length) 'list-utils-safe-length 'safe-length))
+            (len (funcall measurer obj)))
+       (if (and (consp obj)
+                (> len 0)
+                (not (listp (nthcdr len obj))))
+           ;; cons or improper list would choke mapconcat
+           (string-utils-stringify-anything (append (subseq obj 0 len) (list (nthcdr len obj))) separator ints-are-chars record-separator)
+         ;; else
+         ;; accumulate output
+         (let ((output nil))
+           (push (string-utils-stringify-anything (car obj) separator ints-are-chars record-separator) output)
+           (when (> len 1)
+             ;; the subseq is to break cyclic lists
+             (push (string-utils-stringify-anything (subseq obj 1 len) separator ints-are-chars record-separator) output))
+           (mapconcat 'identity (nreverse output) separator)))))
 
     ;; defstruct
     ((and (vectorp obj)
           (symbolp (aref obj 0))
           (string-match-p "\\`cl-" (symbol-name (aref obj 0))))
      (mapconcat #'(lambda (x)
-                    (string-utils-stringify-anything x separator ints-are-chars)) (cdr (append obj nil)) separator))
+                    (string-utils-stringify-anything x separator ints-are-chars record-separator)) (cdr (append obj nil)) separator))
 
     ;; bool-vector
     ((bool-vector-p obj)
      (mapconcat #'(lambda (x)
-                    (string-utils-stringify-anything x separator ints-are-chars)) (append obj nil) separator))
+                    (string-utils-stringify-anything x separator ints-are-chars record-separator)) (append obj nil) separator))
+
+    ;; abbrev-table
+    ((ignore-errors (abbrev-table-p obj))
+     (let ((output nil))
+       (mapatoms #'(lambda (sym)
+                     (when (> (length (symbol-name sym)) 0)
+                       (if (stringp (symbol-value sym))
+                           (push (string-utils-stringify-anything (symbol-value sym) separator ints-are-chars record-separator) output)
+                         (push (string-utils-stringify-anything (symbol-function sym) separator ints-are-chars record-separator) output))
+                       (push (string-utils-stringify-anything sym separator ints-are-chars record-separator) output))) obj)
+       (mapconcat 'identity
+                  (nbutlast
+                   (loop for (k v) on output by 'cddr
+                         collect k
+                         collect separator
+                         collect v
+                         collect record-separator)
+                   (if (equal record-separator separator) 1 0))
+                  "")))
+
+    ;; obarray
+    ((and (fboundp 'obarrayp)
+          (obarrayp obj))
+     (let ((output nil))
+       (mapatoms #'(lambda (sym)
+                     (when (boundp sym)
+                       (push (string-utils-stringify-anything (symbol-value sym) separator ints-are-chars record-separator) output)
+                       (push (string-utils-stringify-anything sym separator ints-are-chars record-separator) output))) obj)
+       (mapconcat 'identity
+                  (nbutlast
+                   (loop for (k v) on output by 'cddr
+                         collect k
+                         collect separator
+                         collect v
+                         collect record-separator)
+                   (if (equal record-separator separator) 1 0))
+                  "")))
 
     ;; ordinary vector
     ((vectorp obj)
      (mapconcat #'(lambda (x)
-                    (string-utils-stringify-anything x separator ints-are-chars)) obj separator))
+                    (string-utils-stringify-anything x separator ints-are-chars record-separator)) obj separator))
 
     ;; fallback
     (t
@@ -731,6 +838,44 @@ a filename unless there is a dotted extension."
      ;; defensive driving - name should already be <= than MAXLEN
      (substring name 0 (min maxlen (length name))))))
 
+;;;###autoload
+(defun string-utils-squeeze-url (url maxlen &optional ellipsis)
+  "Intelligibly squeeze string URL to fit within MAXLEN.
+
+Fit URL within MAXLEN for presentation to a human reader.
+Follows rules similar to `string-utils-squeeze-filename'.
+
+ELLIPSIS is a string inserted wherever characters were removed.
+It defaults to the UCS character \"Horizontal Ellipsis\", or
+\"...\" if extended characters are not displayable."
+  (callf or ellipsis (if (char-displayable-p (decode-char 'ucs #x2026)) (string (decode-char 'ucs #x2026)) "..."))
+  (save-match-data
+    (let* ((parsed (url-generic-parse-url url))
+           (host (aref parsed 4))
+           (scheme (aref parsed 1))
+           (prefix "")
+           (rest-of-string url))
+      (cond
+        ((> (length host) 0)
+          (string-match (concat "\\`\\(.*?" (regexp-quote host) "[/?]*\\)") rest-of-string)
+          (setq prefix (match-string 1 rest-of-string))
+          (setq rest-of-string (replace-match "" t t rest-of-string 1)))
+        ((> (length scheme) 0)
+         (string-match (concat "\\`\\(" (regexp-quote scheme) "[/:]*\\)") rest-of-string)
+         (setq prefix (match-string 1 rest-of-string))
+         (setq rest-of-string (replace-match "" t t rest-of-string 1))))
+      (cond
+        ((or (> (length prefix) maxlen)
+             (and (= (length prefix) maxlen)
+                  (> (length rest-of-string) 0)))
+         ;; todo could drop leading "www" and attempt to preserve domain name
+         (callf substring url 0 (- maxlen (length ellipsis)))
+         (callf concat url ellipsis)
+         url)
+        (t
+         (concat prefix
+                 (string-utils-squeeze-filename rest-of-string (- maxlen (length prefix)) nil ellipsis)))))))
+
 (defun string-utils--repair-split-list (list-val separator)
   "Repair list LIST-VAL, split at string SEPARATOR, if SEPARATOR was escaped.
 
@@ -761,7 +906,7 @@ The escape character is backslash \(\\\)."
 
 STRING, SEPARATORS, and OMIT-NULLS are as documented at `split-string'.
 
-INCLUDE-SEPARATORS is currently unimplmented.
+INCLUDE-SEPARATORS is currently unimplemented.
 
 When RESPECT-ESCAPES is set, STRING is not split where the
 separator is escaped with backslash.  This currently has the
@@ -790,6 +935,7 @@ a regular expression."
 ;; LocalWords: StringUtils ARGS alist utils darkspace quotemeta bool
 ;; LocalWords: propertize fillin callf MULTI MAXLEN mapconcat progn
 ;; LocalWords: defstruct stringified Stringification INTS ascii subr
+;; LocalWords: devel eieio EIEIO subseq obarray
 ;;
 
 ;;; string-utils.el ends here
