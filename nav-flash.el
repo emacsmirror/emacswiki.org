@@ -5,8 +5,8 @@
 ;; Author: Roland Walker <walker@pobox.com>
 ;; Homepage: http://github.com/rolandwalker/nav-flash
 ;; URL: http://raw.github.com/rolandwalker/nav-flash/master/nav-flash.el
-;; Version: 1.0.4
-;; Last-Updated: 20 Oct 2012
+;; Version: 1.0.8
+;; Last-Updated: 25 Oct 2012
 ;; EmacsWiki: NavFlash
 ;; Keywords: extensions, navigation, interface
 ;;
@@ -23,7 +23,8 @@
 ;; Explanation
 ;;
 ;; Nav-flash temporarily highlights the line containing the point,
-;; which is sometimes useful after a navigation command.
+;; which is sometimes useful for orientation after a navigation
+;; command.
 ;;
 ;; To use nav-flash, place the nav-flash.el library somewhere Emacs
 ;; can find it, and add the following to your ~/.emacs file:
@@ -130,7 +131,7 @@
 ;;;###autoload
 (defgroup nav-flash nil
   "Briefly highlight the current line."
-  :version "1.0.4"
+  :version "1.0.8"
   :link '(emacs-commentary-link "nav-flash")
   :prefix "nav-flash-"
   :group 'navigation
@@ -185,9 +186,12 @@ this function a no-op."
   (callf or pos (point))
   (unless end-pos
     (save-excursion
-      (goto-char pos)
-      (setq pos (line-beginning-position))
-      (setq end-pos (1+ (line-end-position)))))
+      (let ((inhibit-point-motion-hooks t))
+        (goto-char pos)
+        (beginning-of-visual-line)
+        (setq pos (point))
+        (end-of-visual-line)
+        (setq end-pos (1+ (point))))))
   (when (eq pos end-pos)
     (incf end-pos))
   (callf or delay nav-flash-delay)
