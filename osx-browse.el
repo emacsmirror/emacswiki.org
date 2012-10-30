@@ -5,8 +5,8 @@
 ;; Author: Roland Walker <walker@pobox.com>
 ;; Homepage: http://github.com/rolandwalker/osx-browse
 ;; URL: http://raw.github.com/rolandwalker/osx-browse/master/osx-browse.el
-;; Version: 0.8.4
-;; Last-Updated: 17 Oct 2012
+;; Version: 0.8.6
+;; Last-Updated: 22 Oct 2012
 ;; EmacsWiki: OSXBrowse
 ;; Keywords: hypermedia, external
 ;; Package-Requires: ((browse-url-dwim "0.6.2"))
@@ -39,8 +39,14 @@
 ;; Explanation
 ;;
 ;; This package helps Emacs run Safari, Google Chrome, and Firefox
-;; on OS X.  It uses `browse-url', but is somewhat more friendly and
-;; configurable than the OS X functions provided there.
+;; on OS X.  It is similar to the built-in `browse-url', but is
+;; somewhat more friendly and configurable.
+;;
+;; The foreground/background behavior of the external browser can
+;; be controlled via customizable variables and prefix arguments.
+;; A positive prefix argument forces foreground; a negative prefix
+;; argument forces background.  With no prefix argument, the
+;; customizable variable setting is respected.
 ;;
 ;; Default values for URLs or search text are deduced from the region
 ;; or from context around the point, according to the heuristics in
@@ -168,14 +174,12 @@
 ;;; Code:
 ;;
 
-;;; requires
+;;; requirements
 
 ;; for callf, callf2
 (require 'cl)
 
 (require 'string-utils nil t)
-
-(autoload 'browse-url                         "browse-url"       "Ask a WWW browser to load a URL." t)
 
 (autoload 'browse-url-dwim-find-search-text   "browse-url-dwim"  "Find some text on which to conduct a search.")
 (autoload 'browse-url-dwim-coerce-to-web-url  "browse-url-dwim"  "Coerce URL to a string representing a valid web address.")
@@ -194,7 +198,7 @@
 ;;;###autoload
 (defgroup osx-browse nil
   "Web browsing helpers for OS X."
-  :version "0.8.4"
+  :version "0.8.6"
   :link '(emacs-commentary-link "osx-browse")
   :prefix "osx-browse-"
   :group 'external
@@ -395,11 +399,14 @@ is 'toggle."
    (t
     (setq browse-url-browser-function osx-browse-saved-browse-url-browser-function)
     (when osx-browse-install-aliases
-      (when (eq (symbol-function 'browse-url-chromium) 'osx-browse-url-chrome)
+      (when (and (fboundp 'browse-url-chromium)
+                 (eq (symbol-function 'browse-url-chromium) 'osx-browse-url-chrome))
         (fmakunbound 'browse-url-chromium))
-      (when (eq (symbol-function 'browse) 'osx-browse-url)
+      (when (and (fboundp 'browse)
+                 (eq (symbol-function 'browse) 'osx-browse-url))
         (fmakunbound 'browse))
-      (when (eq (symbol-function 'google) 'osx-browse-guess)
+      (when (and (fboundp 'google)
+                 (eq (symbol-function 'google) 'osx-browse-guess))
         (fmakunbound 'google)))
     (when (and (osx-browse-called-interactively-p 'interactive)
                (not osx-browse-less-feedback))
