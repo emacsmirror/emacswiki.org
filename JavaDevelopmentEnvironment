@@ -62,7 +62,7 @@ Others (not so graphical):
 
 Link to your success stories here!
 * [http://kldp.org/node/110967 emacs java(jdee) completion note (korean)]
-* [http://ivvprivate.blog.com/2012/06/22/6/ Emacs 23 on Linux, JDE, Maven and few additional pieces of software work together]
+* [http://ignatyev-dev.blogspot.com/2012/10/connection-manager-for-sqlplus-mode.html Java Development With Emacs] Using power of Emacs for developing Java  applications. Linux, JDEE, Maven, gtags, jdb and a little bit of ELisp together create excellent development environment.
 
 == Installation notes ==
 See http://forums.fedoraforum.org/showthread.php?t=280711 for notes on installing JDEE and CEDET with Emacs 24.
