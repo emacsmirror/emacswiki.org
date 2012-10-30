@@ -915,7 +915,6 @@ corresponding source file."
   (interactive "P")
   (htmlize-many-files (dired-get-marked-files nil arg) target-directory))
 
-(provide 'htmlize)
 (provide 'mkhtml-htmlize)
 
 ;;; mkhtml-htmlize.el ends here
