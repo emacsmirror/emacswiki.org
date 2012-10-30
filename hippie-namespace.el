@@ -5,8 +5,8 @@
 ;; Author: Roland Walker <walker@pobox.com>
 ;; Homepage: http://github.com/rolandwalker/hippie-namespace
 ;; URL: http://raw.github.com/rolandwalker/hippie-namespace/master/hippie-namespace.el
-;; Version: 0.5.4
-;; Last-Updated: 14 Sep 2012
+;; Version: 0.5.6
+;; Last-Updated: 25 Oct 2012
 ;; EmacsWiki: HippieNamespace
 ;; Keywords: convenience, lisp, tools, completion
 ;;
@@ -35,17 +35,19 @@
 ;; (deduced from buffer content) will be the first completions
 ;; considered.
 ;;
-;; Furthermore, namespace completions are treated specially: when
-;; `hippie-expand' proposes a namespace completion, it does not cycle.
-;; Instead, the completion is immediately accepted, and further
-;; invocations of `hippie-expand' build from the expanded text.
+;; Furthermore, hippie-namespace completions are treated specially:
+;; when `hippie-expand' proposes a namespace completion, it will not
+;; cycle.  Instead, the namespace completion is implicitly accepted,
+;; and further invocations of `hippie-expand' will build on the
+;; expansion.
 ;;
 ;; For example, the common prefix of all symbols in this library is
-;; "hippie-namespace-".  If the user types "hi [hippie-expand]" or
-;; even just "h [hippie-expand]", the full prefix is expanded.
+;; "hippie-namespace-".  If, while editing this library, the user
+;; types "hi [hippie-expand]" or even just "h [hippie-expand]",
+;; the full prefix is expanded.
 ;;
-;; "hi [hippie-expand] [hippie-expand]" will start cycling through the
-;; completions which match the prefix.
+;; "hi [hippie-expand] [hippie-expand] ..." will then cycle through
+;; all completions which match the prefix.
 ;;
 ;; To use this library, install the file somewhere that Emacs can find
 ;; it and add the following to your ~/.emacs file
@@ -88,7 +90,7 @@
 ;;     Integrates with `expand-region', adding an expansion which is
 ;;     aware of the namespace and non-namespace portions of a symbol.
 ;;
-;;     Mode-specific namespace plugins are easy to add.  Search for
+;;     Mode-specific namespace plugins are easy to write.  Search for
 ;;     "Howto" in the source.
 ;;
 ;; Compatibility and Requirements
@@ -98,7 +100,7 @@
 ;;     GNU Emacs version 23.3           : yes
 ;;     GNU Emacs version 22.3 and lower : no
 ;;
-;;     No external dependencies
+;;     Uses if present: expand-region.el
 ;;
 ;; Bugs
 ;;
@@ -157,9 +159,7 @@
 ;;; Code:
 ;;
 
-;;;
-;;; requires
-;;;
+;;; requirements
 
 ;; for setf, loop, callf, callf2, position, remove-if, remove-if-not
 (require 'cl)
@@ -167,18 +167,17 @@
 (require 'imenu)
 (require 'hippie-exp)
 
+;;; declarations
+
 (eval-when-compile
-  ;; declarations for byte compiler
   (defvar er/try-expand-list))
 
-;;;
 ;;; customizable variables
-;;;
 
 ;;;###autoload
 (defgroup hippie-namespace nil
   "Special treatment for namespace prefixes in `hippie-expand'."
-  :version "0.5.4"
+  :version "0.5.6"
   :link '(emacs-commentary-link "hippie-namespace")
   :prefix "hippie-namespace-"
   :group 'hippie-expand
@@ -501,8 +500,7 @@ not symbols may be included in the result."
 (defun hippie-namespace-all-imenu-definitions ()
   "Return a list strings representing all symbol definitions as determined by imenu."
   (ignore-errors
-    (with-no-warnings
-      (imenu--cleanup))
+    (imenu--cleanup)
     (setq imenu--index-alist nil)
     (imenu--make-index-alist))
   (remove-if-not 'stringp (hippie-namespace-list-flatten (mapcar #'(lambda (item)
@@ -801,7 +799,7 @@ Modifies `hippie-namespace-manual-list', and refreshes by running
 ;; End:
 ;;
 ;; LocalWords: HippieNamespace dabbrev setf callf imenu fulltext
-;; LocalWords: Howto hipn defgroup
+;; LocalWords: Howto hipn defgroup devel
 ;;
 
 ;;; hippie-namespace.el ends here
