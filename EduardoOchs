@@ -1,6 +1,8 @@
-Home page: http://angg.twu.net/
+Home page: http://angg.twu.net/#eev
 
-**Important news** (march 2012): people have been pointing out for ages that eev.el was too big and too weird, and that each of its well-documented ways of sending commands to external programs - see for example [http://angg.twu.net/eev-current/anim/channels.anim.html this animation] - required a non-trivial amount of set-up to work... well, no longer! Take a look at [http://angg.twu.net/eev-current/eepitch.el.html eepitch.el].
+**Recent news** (october 2012): a rewritten version of eev is essentially ready, and it is trivial to install and to test - see this: [http://angg.twu.net/eev-current/eev-readme.el.html eev-readme.el]. Its documentation is now made of several sandbox-ish tutorials - see [http://angg.twu.net/eev-intros/find-eev-intro.html this] for a starting point - and now the main way of controlling external interactive ("shell-like") programs is with [http://angg.twu.net/eev-intros/find-eepitch-intro.html eepitch], which comes with support for [http://angg.twu.net/eev-current/eepitch.el.html#eepitch-bash lots of languages] and works out of the box (with no need for temporary directories, patching rcfiles, installing an Expect script, etc... all these hassles of the "old ways" are now gone). There is even a [http://www.youtube.com/watch?v=1XtbM0D6leM video] (in Portuguese only at the moment).
+
+**Old news** (march 2012): people have been pointing out for ages that eev.el was too big and too weird, and that each of its well-documented ways of sending commands to external programs - see for example [http://angg.twu.net/eev-current/anim/channels.anim.html this animation] - required a non-trivial amount of set-up to work... well, no longer! Take a look at [http://angg.twu.net/eev-current/eepitch.el.html eepitch.el].
 
 Also, the recommended way to install [http://angg.twu.net/eev-article.html eev.el] is now through its [http://angg.twu.net/debian/README.html Debian package].
 
