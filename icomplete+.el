@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Oct 16 13:33:18 1995
 ;; Version: 21.0
-;; Last-Updated: Thu Aug 23 14:27:06 2012 (-0700)
+;; Last-Updated: Wed Oct 31 08:32:03 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1346
+;;     Update #: 1352
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icomplete+.el
 ;; Doc URL: http://emacswiki.org/emacs/IcompleteMode
 ;; Keywords: help, abbrev, internal, extensions, local
@@ -68,6 +68,15 @@
 ;;  This file should be loaded after loading the standard GNU file
 ;;  `icomplete.el'.  So, in your `~/.emacs' file, do this:
 ;;  (eval-after-load "icomplete" '(progn (require 'icomplete+)))
+;;
+;;  Usage note: 
+;;
+;;    Starting with Emacs 23, you can get icompletion of things like
+;;    file names also.  See option `icomplete-with-completion-tables'.
+;;    I customize it to the (undocumented) value `t', which means that
+;;    icompletion is available anytime the completion COLLECTION
+;;    parameter is a function.  (This feature is not particular to
+;;    Icomplete+ - it is true from vanilla Icomplete.)
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
