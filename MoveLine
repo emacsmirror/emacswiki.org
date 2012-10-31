@@ -34,6 +34,20 @@ See MoveRegion if you want to move the entire region.
 [new:DrewAdams:2010-04-23 17:03 UTC]
 See also standard command `transpose-lines', bound to `C-x C-t'. -- DrewAdams
 
+[new:ThomasKappler:2012-10-31 05:23 UTC]
+DrewAdams suggestion of `transpose-lines' works like a charm. It reduces the code required to implement M-up and M-down to ten lines. -- ThomasKappler
+{{{
+(defun move-line-up ()
+  (interactive)
+  (transpose-lines 1)
+  (forward-line -2))
+
+(defun move-line-down ()
+  (interactive)
+  (forward-line 1)
+  (transpose-lines 1)
+  (forward-line -1))
+}}}
 
 ----
 CategoryEditing
