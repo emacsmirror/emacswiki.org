@@ -43,4 +43,17 @@ I couldn't get the solution above to work on 64-bit Vista or Windows 7 so I deci
 The resulting project can be found on Github http://github.com/bkz/w32context
 
 ----
+I couldn't find the mentioned w32context.exe at github.com/bkz/w32context.
+I use !ShellContextMenu.exe from the Eclipse plugin [https://code.google.com/a/eclipselabs.org/p/navigatorext/ Navigator Extensions]: Its download [https://code.google.com/a/eclipselabs.org/p/navigatorext/downloads/detail?name=nax_1.1.2.201201311435.zip&can=2&q= nax_1.1.2.201201311435.zip] contains a nested Jar (Zip) file plugins/com.googlecode.eclipse.navigatorext_1.1.2.201201311435.jar with !ShellContextMenu.exe in it.
+
+However, !ShellContextMenu.exe does not understand the forward slashes returned by function buffer-file-name. So i put [http://cygwin.com/ cygwin]'s cygpath around it. Using a Stack Overflow answer [http://stackoverflow.com/questions/4697322/elisp-call-command-on-current-file#answer-4697863 how to call an external command], i ended up with this function:
+
+    (defun external-command-context-menu()
+      "runs external command ShellContextMenu on the current file"
+      (interactive)
+      (shell-command
+        (format "bash -c \"ShellContextMenu %s '$(cygpath -w -- %s)'\""
+          '0 (shell-quote-argument (buffer-file-name)))))
+
+----
 CategoryWThirtyTwo
