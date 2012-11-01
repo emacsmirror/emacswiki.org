@@ -289,7 +289,7 @@ available Buffer Selection Menu configuration.
 \\[bs-set-current-buffer-to-show-always] -- mark current line's buffer \
 to show always.
 \\[bs-visit-tags-table] -- call `visit-tags-table' on current line's buffer.
-\\[bs-ext-moccur-marked-buffers] -- run moccur on marked buffers
+\\[bs-ext-moccur-marked-buffers] -- run multi-occur/moccur on marked buffers
 \\[bs-help] -- display this help text.")
 
 ;; redefine 'bs-help so that it includes information about new keybindings
@@ -298,12 +298,16 @@ to show always.
   (interactive)
   (describe-variable 'bs-ext-help))
 
-(defun bs-ext-moccur-marked-buffers (regexp arg)
+(defun bs-ext-moccur-marked-buffers (regexp buffers)
   "Apply `moccur' on marked buffers."
-  (interactive (list (moccur-regexp-read-from-minibuf)
-                     current-prefix-arg))
-  (moccur-kill-buffer t)
-  (moccur-search regexp t bs--marked-buffers))
+  (interactive (list (read-regexp "List lines matching regexp") bs--marked-buffers))
+  (if (featurep 'color-moccur)
+      (progn
+        (moccur-kill-buffer t)
+        (moccur-search regexp t bs--marked-buffers))
+    (multi-occur buffers regexp)
+    (bs-kill)
+    (switch-to-buffer "*Occur*")))
 
 (provide 'bs-ext)
 
