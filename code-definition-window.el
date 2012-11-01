@@ -110,6 +110,7 @@
 		; tries to find a window thats' already on the right buffer,
 		; to try and show selection of useful buffers.
 		; if not available, just pick next round-robin
+		(point-to-register 'curpos)
 		(let*(	(tag		(thing-at-point 'symbol))
 				(cur-win	(selected-window))
 				(win1		(next-code-def-window-except cur-win))
@@ -133,6 +134,7 @@
 						(set-window-buffer win3 next-buf)							))
 			)
 		)
+		(register-to-point 'curpos)
 	)
 )
 
