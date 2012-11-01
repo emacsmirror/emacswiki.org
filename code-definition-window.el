@@ -2,14 +2,16 @@
 ;-------------------------------------------
 ; Code Definition Window
 ;
-; inspired by visual studio feature,
-; but extended to have any number of auto-navigating defintion panes
-; replacement algorithm tries to keep useful selection of files open
-; definition panes also revert to usual edit behaviour when you enter them
+; inspired by visual studio feature;
+; toggle windows to show definition of symbol under cursor (0.5s delay)
 ;
 ; binds default hotkey C-x w  - toggle a window as a code-def pane
 ;	(toggle-code-def-window) -  toggle current window as a code-def
 ;   code-def-windows		- variable, list of all active code-def windows 
+;
+; extended to have any number of code-def windows
+; replacement algorithm tries to keep useful selection of files open
+; definition panes also revert to usual edit behaviour when you enter them
 ;
 ; TODO: improve replacement algorithm, show declarations as well as definitions
 ;			option for new frames , visual indication
