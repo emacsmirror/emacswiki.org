@@ -2,11 +2,12 @@
 ;-------------------------------------------
 ; emacs Code Definition Window
 ;
-; inspired by visual studio feature;
-; automatic code navigation assistance -
-; toggle windows to show definition of symbol under cursor (0.5s delay)
-;
 ; binds default hotkey C-x w  - toggle a window as a code-def pane
+;
+; inspired by visual studio feature;
+; automatic code navigation assistance;code-def windows automatically display
+; the definition of the symbol under the cursor from the selected window
+;
 ;	(toggle-code-def-window) -  toggle current window as a code-def
 ;   code-def-windows		- variable, list of all active code-def windows 
 ;
