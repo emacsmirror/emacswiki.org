@@ -106,7 +106,6 @@
 					(eq (length code-def-windows) 1))
 				(null (thing-at-point 'symbol))
 			)
-		(point-to-register 'curpos)
 		; find window to replace.
 		; tries to find a window thats' already on the right buffer,
 		; to try and show selection of useful buffers.
@@ -134,7 +133,6 @@
 						(set-window-buffer win3 next-buf)							))
 			)
 		)
-		(register-to-point 'curpos)
 	)
 )
 
