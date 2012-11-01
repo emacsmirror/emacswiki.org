@@ -16,6 +16,7 @@
 ;
 ; TODO: improve replacement algorithm, show declarations as well as definitions
 ;			option for new frames , visual indication
+; TAGS: code definition window ; auto jump to tag ; auto navigation
 
 (message "loading code definition window")
 (setf code-def-windows nil)
