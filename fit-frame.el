@@ -7,13 +7,13 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Thu Dec  7 09:32:12 2000
 ;; Version: 22.0
-;; Last-Updated: Thu Aug 23 10:52:23 2012 (-0700)
+;; Last-Updated: Thu Nov  1 09:42:09 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1320
+;;     Update #: 1340
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/fit-frame.el
 ;; Doc URL: http://www.emacswiki.org/emacs/Shrink-Wrapping_Frames
 ;; Keywords: internal, extensions, convenience, local
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -129,6 +129,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/11/01 dadams
+;;     fit-frame-skip-header-lines-alist: Use 3 for Dired (1 for wildcards line).
 ;; 2011/03/04 dadams
 ;;     fit-frame-to-image: Fixed for Emacs 23, which doesn't yet have image-display-size.
 ;; 2011/01/04 dadams
@@ -354,12 +356,12 @@ Not used unless `fit-frame-max-height' is nil."
   :type 'integer :group 'fit-frame)
 
 ;;;###autoload
-(defcustom fit-frame-empty-width (or (cdr (assq 'width default-frame-alist)) 80)
+(defcustom fit-frame-empty-width (or (cdr (assq 'width default-frame-alist))  80)
   "*Width, in characters, that `fit-frame' gives to an empty frame."
   :type 'integer :group 'fit-frame)
 
 ;;;###autoload
-(defcustom fit-frame-empty-height (or (cdr (assq 'height default-frame-alist)) 35)
+(defcustom fit-frame-empty-height (or (cdr (assq 'height default-frame-alist))  35)
   "*Height, in lines, that `fit-frame' gives to an empty frame."
   :type 'integer :group 'fit-frame)
 
@@ -388,7 +390,7 @@ variable is buffer-local."
 
 ;;;###autoload
 (defcustom fit-frame-skip-header-lines-alist
-  '((Info-mode . 1) (dired-mode . 2) (compilation-mode . 2))
+  '((Info-mode . 1) (dired-mode . 3) (compilation-mode . 2))
   "*Alist of major-modes and header lines to ignore.
 When `fit-frame' calculates the width of the current buffer, it can
 first skip some lines at the buffer beginning, ignoring their
@@ -459,13 +461,13 @@ from such wrapping."
            ;; Negative prefix arg means use
            ;;   `fill-column' + `fit-frame-fill-column-margin'
            ;;   for WIDTH, and use current frame height for HEIGHT.
-           (and current-prefix-arg (atom current-prefix-arg)
+           (and current-prefix-arg  (atom current-prefix-arg)
                 (if (natnump option)
                     (floor (if (fboundp 'read-number)
                                (read-number "New width: ")
                              (string-to-number (read-string "New width: "))))
                   (+ fill-column fit-frame-fill-column-margin)))
-           (and current-prefix-arg (atom current-prefix-arg)
+           (and current-prefix-arg  (atom current-prefix-arg)
                 (if (natnump option)
                     (floor (if (fboundp 'read-number)
                                (read-number "New height: ")
@@ -473,12 +475,12 @@ from such wrapping."
                   (frame-height)))
            (atom current-prefix-arg))))
   (if (and (fboundp 'image-mode-fit-frame) ; Emacs 23+
-           (if (or (null frame) (eq frame (selected-frame)))
-               (or (eq major-mode 'image-mode) image-minor-mode)
+           (if (or (null frame)  (eq frame (selected-frame)))
+               (or (eq major-mode 'image-mode)  image-minor-mode)
              (save-window-excursion (select-frame frame)
-                                    (or (eq major-mode 'image-mode) image-minor-mode))))
+                                    (or (eq major-mode 'image-mode)  image-minor-mode))))
       (fit-frame-to-image (interactive-p) frame)
-    (setq frame  (or frame (selected-frame)))
+    (setq frame  (or frame  (selected-frame)))
     (unless fit-frame-inhibit-fitting-flag
       (let ((extra-lines  0)
             computed-max-frame-size empty-buf-p specbuf-p)
@@ -495,10 +497,10 @@ from such wrapping."
         ;; Perhaps we should also take into account a possible horizontal scroll
         ;; bar, but we don't do that.
         (let* ((fparams     (frame-parameters frame))
-               (menu-lines  (or (cdr (assq 'menu-bar-lines fparams)) 0)))
+               (menu-lines  (or (cdr (assq 'menu-bar-lines fparams))  0)))
           (when (> emacs-major-version 20)
-            (setq extra-lines  (or (cdr (assq 'tool-bar-lines fparams)) 0))
-            (when (and (not (eq system-type 'windows-nt)) (not (featurep 'x-toolkit)))
+            (setq extra-lines  (or (cdr (assq 'tool-bar-lines fparams))  0))
+            (when (and (not (eq system-type 'windows-nt))  (not (featurep 'x-toolkit)))
               (setq extra-lines  (1+ extra-lines))))
           ;; We can't really know whether menu-bar gets wrapped.  Assume it wraps once.
           (when (> menu-lines 0)
@@ -507,26 +509,26 @@ from such wrapping."
                      (save-window-excursion (select-frame frame) ; it's not standalone.
                                             (not (one-window-p nil 'selected-frame))))
             (setq extra-lines  (1+ extra-lines))))
-        (unless (or empty-buf-p (and width height))
+        (unless (or empty-buf-p  (and width  height))
           (setq computed-max-frame-size  (fit-frame-max-frame-size frame all-windows-p)))
         (set-frame-size
          ;; Frame
          frame
          ;; Columns
          (or width
-             (and empty-buf-p (if specbuf-p
-                                  fit-frame-empty-special-display-width
-                                fit-frame-empty-width))
+             (and empty-buf-p  (if specbuf-p
+                                   fit-frame-empty-special-display-width
+                                 fit-frame-empty-width))
              (max fit-frame-min-width window-min-width
-                  (min (or fit-frame-max-width (fit-frame-max-width frame))
+                  (min (or fit-frame-max-width  (fit-frame-max-width frame))
                        (1+ (car computed-max-frame-size)))))
          ;; Rows
          (or height
-             (and empty-buf-p (if specbuf-p
-                                  fit-frame-empty-special-display-height
-                                fit-frame-empty-height))
+             (and empty-buf-p  (if specbuf-p
+                                   fit-frame-empty-special-display-height
+                                 fit-frame-empty-height))
              (max fit-frame-min-height window-min-height
-                  (min (or fit-frame-max-height (fit-frame-max-height frame))
+                  (min (or fit-frame-max-height  (fit-frame-max-height frame))
                        (+ (cdr computed-max-frame-size) extra-lines)))))))))
 
 ;; Similar to `image-mode-fit-frame'.
@@ -548,20 +550,20 @@ This function assumes that FRAME has only one window."
   (unless (fboundp 'image-mode-fit-frame)
     (error "This command requires the image support of Emacs 23 or later"))
   (let* ((saved    (frame-parameter frame 'image-mode-saved-size))
-         (display  (if (or (null frame) (equal frame (selected-frame)))
+         (display  (if (or (null frame)  (equal frame (selected-frame)))
                        (image-get-display-property)
                      (save-selected-window (select-frame frame)
                                            (image-get-display-property))))
          (size     (if (fboundp 'image-display-size) ; Emacs 24+.
                        (image-display-size display nil frame)
                      (image-size display nil frame))))
-    (setq frame  (or frame (selected-frame)))
-    (if (and interactivep saved
+    (setq frame  (or frame  (selected-frame)))
+    (if (and interactivep  saved
              (eq (caar saved) (frame-width frame))
              (eq (cdar saved) (frame-height frame)))
         (progn                          ; Restore previous size, before it was fit.
           (set-frame-parameter frame 'image-mode-saved-size nil)
-          (setq size (cdr saved)))
+          (setq size  (cdr saved)))
       ;; Round up size, and save current size so we can toggle back to it.
       (setcar size (ceiling (car size)))
       (setcdr size (ceiling (cdr size)))
@@ -610,7 +612,7 @@ size, and depends on the value of `fit-frame-max-width-percent':
 
   (/ (* fit-frame-max-width-percent (x-display-pixel-width))
      (* 100 (frame-char-width FRAME)))"
-  (setq frame  (or frame (selected-frame)))
+  (setq frame  (or frame  (selected-frame)))
   (/ (* fit-frame-max-width-percent
         (if (fboundp 'winmgr-display-available-pixel-bounds) ; For MacIntosh.
  	    (nth 2 (winmgr-display-available-pixel-bounds))
@@ -626,7 +628,7 @@ size, and depends on the value of `fit-frame-max-height-percent':
 
   (/ (* fit-frame-max-height-percent (x-display-pixel-height))
      (* 100 (frame-char-height FRAME)))"
-  (setq frame  (or frame (selected-frame)))
+  (setq frame  (or frame  (selected-frame)))
   (/ (* fit-frame-max-height-percent
         (if (fboundp 'winmgr-display-available-pixel-bounds) ; For MacIntosh.
  	    (nth 3 (winmgr-display-available-pixel-bounds))
@@ -700,11 +702,11 @@ Otherwise, consider only the selected buffer."
 (defun fit-frame-fringe-width (&optional frame)
   "Width to allow for fringes on FRAME."
   ;; Ignore differences between frame parameter values and round-up actual widths.
-  (let ((fringe        (+ (abs (or (frame-parameter frame 'left-fringe) 0))
-                          (abs (or (frame-parameter frame 'right-fringe) 0))))
+  (let ((fringe        (+ (abs (or (frame-parameter frame 'left-fringe)   0))
+                          (abs (or (frame-parameter frame 'right-fringe)  0))))
         (char-width    (frame-char-width frame))
         (fringe-width  0))
-    (when (and (boundp 'fringe-mode) fringe (not (zerop fringe)))
+    (when (and (boundp 'fringe-mode)  fringe  (not (zerop fringe)))
       ;; Round the integer division using: 1 + (x-1)/y
       (setq fringe-width  (+ fringe-width 1 (/ (1- fringe) char-width))))
     fringe-width))
@@ -717,7 +719,7 @@ Windows that are in list EXCLUDE are excluded from the result."
   (let ((ref-bottom  (cadr (cddr (window-edges window))))
         (row-wins    ()))
     (dolist (win wins)
-      (when (and (not (memq win exclude)) (< (cadr (window-edges win)) ref-bottom))
+      (when (and (not (memq win exclude))  (< (cadr (window-edges win)) ref-bottom))
         (push win row-wins)))
     row-wins))
 
@@ -729,7 +731,7 @@ Windows that are in list EXCLUDE are excluded from the result."
   (let ((ref-right  (car (cddr (window-edges window))))
         (col-wins   ()))
     (dolist (win wins)
-      (when (and (not (memq win exclude)) (< (car (window-edges win)) ref-right))
+      (when (and (not (memq win exclude))  (< (car (window-edges win)) ref-right))
         (push win col-wins)))
     col-wins))
 
@@ -748,8 +750,10 @@ Returned as a cons: (MAX-WIDTH . MAX-HEIGHT), where:
     (save-excursion
       (set-buffer (window-buffer))
       (goto-char (point-min))
-      ;; Don't count header lines for width calculation.
-      (while (and hdr-lines (> hdr-lines 0))
+      ;; Do not count header lines for width calculation.
+      ;; FIXME. This does not work well if header lines have intangible text etc.
+      ;; E.g. Does not work for Emacs 20-22 in Dired with wildcard showing only 1 file.
+      (while (and hdr-lines  (> hdr-lines 0))
         (end-of-line)
         (setq hdr-widths  (cons (current-column) hdr-widths)
               hdr-lines   (1- hdr-lines))
@@ -765,7 +769,7 @@ Returned as a cons: (MAX-WIDTH . MAX-HEIGHT), where:
       (when fit-frame-crop-end-blank-flag
         (save-match-data
           (beginning-of-line)
-          (while (and (looking-at "^\\s-*$") (not (bobp)))
+          (while (and (looking-at "^\\s-*$")  (not (bobp)))
             (setq max-win-height  (1- max-win-height))
             (forward-line -1)))
         (setq max-win-height  (max 0 max-win-height))))
