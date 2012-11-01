@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Nov  1 10:23:54 2012 (-0700)
+;; Last-Updated: Thu Nov  1 14:47:45 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 25064
+;;     Update #: 25065
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -7570,9 +7570,13 @@ Used as the value of `minibuffer-completion-table'.."
                                                (add-to-list 'new-bufs--to-kill buf))
                                              found)))
                                     filnames))))
-      (if completion-mode
-          filnames                      ; `all-completions', `test-completion'
-        (try-completion file-pat (mapcar #'list filnames) (and pred  (lambda (ff) (funcall pred (car ff))))))))
+      (cond ((and (eq 'metadata completion-mode)  (> emacs-major-version 23))
+             '(metadata (category . file)))
+            (completion-mode
+             filnames)            ; `all-completions', `test-completion'
+            (t
+             (try-completion              ; `try-completion'
+              file-pat (mapcar #'list filnames) (and pred  (lambda (ff) (funcall pred (car ff)))))))))
 
   ;; This is based on code from Emacs 24 `read-file-name-default'.  It works only for Emacs 23+.
   (defun icicle-find-file-of-content-read-file-name (prompt &optional
