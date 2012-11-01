@@ -74,6 +74,10 @@ I also bind `set-input-method' as follows:
 
     (global-set-key (kbd "C-x C-m i") 'set-input-method)
 
+[new]
+C-\ can also set input method.   --XueFuqiao
+[new]
+
 If you always prefer UTF-8 to ISO-8859-1, you can use this:
 
     (prefer-coding-system 'utf-8)
