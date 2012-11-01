@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Oct 28 07:36:12 2012 (-0700)
+;; Last-Updated: Thu Nov  1 10:23:54 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 25059
+;;     Update #: 25064
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -6333,10 +6333,13 @@ Used as the value of `icicle-buffer-complete-fn' and hence as
                                   filnames))))
     ;; `icicle-buffer-easy-files' is FREE here - bound in `icicle-buffer(-other-window)'.
     (setq bufs  (append bufs (setq icicle-buffer-easy-files  filnames)))
-    (if completion-mode
-        bufs                            ; `all-completions', `test-completion'
-      (try-completion                   ; `try-completion'
-       strg (mapcar #'list bufs) (and pred  (lambda (ss) (funcall pred ss)))))))
+    (cond ((and (eq 'metadata completion-mode)  (> emacs-major-version 23))
+           '(metadata (category . buffer)))
+          (completion-mode
+           bufs) ; `all-completions', `test-completion'
+          (t
+           (try-completion              ; `try-completion'
+            strg (mapcar #'list bufs) (and pred  (lambda (ss) (funcall pred ss))))))))
 
 (defun icicle-cached-files-without-buffers (buffers)
   "Return absolute file-name list represented by `file-cache-alist'.
