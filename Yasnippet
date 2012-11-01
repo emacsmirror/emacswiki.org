@@ -125,9 +125,9 @@ Note: yasnippet from git (ver. 0.8) (new yas-* instead of yas/* functions and va
 
 == Replacing abbrev ==
 To easily replace abbrev expansion with yasnippet expansion you can redefine expand-abbrev as
-
+{{{
 (defun expand-abbrev () (interactive) (yas/expand))
-
+}}}
 Now yas/expand will be called whenever expand-abbrev used to be called (e.g. whenever a space is entered). This allows yasnippet to work nicely with autocomplete.el.
 
 == Discussion ==
