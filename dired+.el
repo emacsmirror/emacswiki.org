@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Sat Oct  6 09:00:42 2012 (-0700)
+;; Last-Updated: Thu Nov  1 09:46:23 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 6157
+;;     Update #: 6159
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Doc URL: http://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -428,6 +428,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/11/01 dadams
+;;     Do not require ediff.el.  It is required in diredp-ediff itself.
 ;; 2012/10/06 dadams
 ;;     Added: minibuffer-with-setup-hook for code byte-compiled using Emacs < 22.
 ;; 2012/09/28 dadams
@@ -915,7 +917,7 @@
 (require 'dired-aux) ;; dired-bunch-files, dired-do-chxxx, dired-do-create-files,
                      ;; dired-mark-read-string, dired-read-shell-command,
                      ;; dired-run-shell-command, dired-shell-stuff-it
-(require 'ediff-util) ;; ediff-read-file-name
+;; (require 'ediff-util) ;; ediff-read-file-name
 
 (require 'dired-x nil t) ;; (no error if not found) dired-do-relsymlink
 (require 'misc-fns nil t) ;; (no error if not found): undefine-killer-commands
