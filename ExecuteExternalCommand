@@ -130,6 +130,10 @@ Is it possible (desirable?) to automatically close buffer ##*Shell Command Outpu
 
 How can you use `shell-command' with programs that require input such as passords? Kind of annoying having to open a new buffer just to `scp' a file.
 
+Answer:
+;;Don't echo passwords when communicating with interactive programs:
+(add-hook 'comint-output-filter-functions 'comint-watch-for-password-prompt)
+
 == See Also ==
 
 * [[ex]] -- Function `ex-defun' defines an EmacsLisp function that does its job by invoking an external interpreted language
