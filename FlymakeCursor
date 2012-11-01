@@ -10,8 +10,10 @@ The original code apparently is available at paste.lisp.org: [http://paste.lisp.
 
 It has since been modified to show the flymake error message in the minibuffer only after a delay.  This prevents a distracting UI experience - messages quickly flashing up in the minibuffer and then disappearing - when a user cursors through a document that contains multiple flymake errors.
 
-
 A similar capability is now available in [NxhtmlMode nXhtml] in the file <b>util/flymakemsg.el</b>).
 
+The built-in package help-at-pt provides similar functionality, and also doesn't clobber the minibuffer text. Example configuration:
 
-
+    (custom-set-variables
+     '(help-at-pt-timer-delay 0.9)
+     '(help-at-pt-display-when-idle '(flymake-overlay)))
