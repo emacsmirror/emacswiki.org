@@ -46,6 +46,8 @@ Debugger entered--Lisp error: (wrong-type-argument characterp "gzip")
   dired-advertised-find-file()
   call-interactively(dired-advertised-find-file nil nil)
 
+It works well in Ubuntu 12.10 (GNU Emacs 24.2.50)
+
 ----
 CategoryModes 
 CategoryExternalUtilities
