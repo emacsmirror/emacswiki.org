@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Nov  1 14:47:45 2012 (-0700)
+;; Last-Updated: Thu Nov  1 14:54:15 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 25065
+;;     Update #: 25067
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -6275,9 +6275,9 @@ Used as the value of `icicle-buffer-complete-fn' and hence as
   (setq strg  icicle-current-input)
   (lexical-let* ((name-pat     (let ((icicle-list-use-nth-parts  '(1)))
                                  (icicle-transform-multi-completion strg)))
-                 (name-pat     (if (memq icicle-current-completion-mode '(nil apropos))
-                                   name-pat
-                                 (concat "^" name-pat)))
+;;;                  (name-pat     (if (memq icicle-current-completion-mode '(nil apropos))
+;;;                                    name-pat
+;;;                                  (concat "^" name-pat)))
                  (content-pat  (let ((icicle-list-use-nth-parts  '(2)))
                                  (icicle-transform-multi-completion strg)))
                  (bufs         (mapcar (lambda (buf) (buffer-name buf)) icicle-bufflist))
@@ -7538,9 +7538,9 @@ Used as the value of `minibuffer-completion-table'.."
     (setq strg  (icicle-minibuf-input-sans-dir))
     (lexical-let* ((file-pat     (let ((icicle-list-use-nth-parts  '(1)))
                                    (icicle-transform-multi-completion strg)))
-                   (file-pat     (if (memq icicle-current-completion-mode '(nil apropos))
-                                     file-pat
-                                   (concat "^" file-pat)))
+;;;                    (file-pat     (if (memq icicle-current-completion-mode '(nil apropos))
+;;;                                      file-pat
+;;;                                    (concat "^" file-pat)))
                    (content-pat  (let ((icicle-list-use-nth-parts  '(2)))
                                    (icicle-transform-multi-completion strg)))
                    (filnames     (all-completions
