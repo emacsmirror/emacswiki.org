@@ -39,9 +39,11 @@ Egg supports interactive rebase by marking directly on commits (to be picked, ed
 the DAG view. Egg also has extensive support for pickaxing (only showing the diffs with the search term,
 highlighting the search term, etc.) The default colours are terrible but can all be customized.
 
-* Homepage: http://github.com/byplayer/egg (stable), http://github.com/bogolisk/egg (bleeding-edge)
+* Homepage: http://bogolisk.github.com/egg/
+* Project Page: http://github.com/byplayer/egg (stable), http://github.com/bogolisk/egg (bleeding-edge)
 * Repository: ##git clone git://github.com/byplayer/egg.git ##
 * Documentation: 
+** http://bogolisk.github.com/egg/egg.html
 ** http://bogolisk.blogspot.com/ (older version, still useful and includes screenshots)
 
 
