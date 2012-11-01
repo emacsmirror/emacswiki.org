@@ -123,6 +123,13 @@ Note: yasnippet from git (ver. 0.8) (new yas-* instead of yas/* functions and va
 (setq yas-prompt-functions '(yas-popup-isearch-prompt yas-ido-prompt yas-no-prompt))
 }}}
 
+== Replacing abbrev ==
+To easily replace abbrev expansion with yasnippet expansion you can redefine expand-abbrev as
+
+(defun expand-abbrev () (interactive) (yas/expand))
+
+Now yas/expand will be called whenever expand-abbrev used to be called (e.g. whenever a space is entered). This allows yasnippet to work nicely with autocomplete.el.
+
 == Discussion ==
 
 [new]
@@ -138,6 +145,7 @@ I created a new method of importing TexMate templates entirely in emacs lisp.  P
 [new]
 
 I have changed the startup mechanism so it doesn't load every single snippet upon startup.  Only loaded on demand.  [[yas-jit.el]]
+
 
 ----
 CategoryTemplates
