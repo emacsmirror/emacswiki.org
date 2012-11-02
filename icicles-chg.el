@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Thu Nov  1 14:54:35 2012 (-0700)
+;; Last-Updated: Fri Nov  2 10:02:33 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 9200
+;;     Update #: 9203
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -86,6 +86,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2012/11/02 dadams
+;;     Wrap icicle-bbdb-complete-name in eval-when-compile to avoid byte-compile error for BBDB 3.02.
 ;; 2012/11/01 dadams
 ;;     icicle-(buffer|file-of-content)-multi-complete: Handle metadata COMPLETION-MODE arg.
 ;;                                                     Comment out prepending ^ for prefix mode.
@@ -6172,6 +6174,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2012/11/02 dadams
+;;     icicle-functions-to-redefine: Added bbdb-complete-mail.
 ;; 2012/10/27 dadams
 ;;     Added: icicle-show-annotations-flag.
 ;; 2012/10/26 dadams
