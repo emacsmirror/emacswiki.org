@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Oct 27 16:53:37 2012 (-0700)
+;; Last-Updated: Fri Nov  2 14:18:45 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 13610
+;;     Update #: 13612
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -168,8 +168,6 @@
 ;;    `icicle-read-shell-command-completing', `icicle-read-string',
 ;;    `icicle-read-string-completing',
 ;;    `icicle-recentf-make-menu-items', `icicle-recompute-candidates',
-;;    `icicle-redefine-standard-options',
-;;    `icicle-redefine-std-completion-fns',
 ;;    `icicle-remove-color-duplicates', `icicle-remove-dots',
 ;;    `icicle-remove-duplicates', `icicle-remove-dups-if-extras',
 ;;    `icicle-remove-if', `icicle-remove-if-not',
