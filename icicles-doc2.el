@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Oct 27 11:49:25 2012 (-0700)
+;; Last-Updated: Fri Nov  2 10:16:36 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 29055
+;;     Update #: 29060
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -4313,16 +4313,20 @@
 ;;(@* "BBDB Completion")
 ;;  ** BBDB Completion **
 ;;
-;;  Library `bbdb.el', available at http://bbdb.sourceforge.net/, is a
-;;  rolodex-like database program for GNU Emacs.
+;;  Library `bbdb.el' is a rolodex-like database program for GNU
+;;  Emacs.  You can obtain a recent version, such as 3.02, from
+;;  http://melpa.milkbox.net/, or you can pick up an older version,
+;;  such as 2.35, from http://bbdb.sourceforge.net/.
 ;;
 ;;  If user option `icicle-functions-to-redefine' contains an entry
-;;  for `bbdb-complete-name' (which it does by default) then Icicles
-;;  redefines command `bbdb-complete-name' so that it uses Icicles
-;;  completion when there are multiple completions.  You can use any
-;;  Icicles features, such as apropos completion and candidate
-;;  cycling.  For this feature to take effect, you must load BBDB
-;;  before you load Icicles.
+;;  for `bbdb-complete-mail' (for BBDB version 3.02) or
+;;  `bbdb-complete-name' (for BBDB version 2.35), then Icicles
+;;  redefines that command so that it uses Icicles completion when
+;;  there are multiple completions.  You can use any Icicles features,
+;;  such as apropos completion and candidate cycling.  For this
+;;  feature to take effect, you must load BBDB before you load
+;;  Icicles.  Option `icicle-functions-to-redefine' includes entries
+;;  for both `bbdb-complete-mail' and `bbdb-complete-name' by default.
 ;;
 ;;(@* "Thesaurus Lookup and Completion")
 ;;  ** Thesaurus Lookup and Completion **
@@ -7256,8 +7260,9 @@
 ;;  value of `icicle-functions-to-redefine' contains the following
 ;;  functions:
 ;;
-;;    `bbdb-complete-name' (from BBDB), `comint-completion-at-point'
-;;    (or `comint-dynamic-complete', prior to Emacs 24),
+;;    `bbdb-complete-mail' (from BBDB 3.02), `bbdb-complete-name'
+;;    (from BBDB 2.35), `comint-completion-at-point' (or
+;;    `comint-dynamic-complete', prior to Emacs 24),
 ;;    `comint-dynamic-complete-filename',
 ;;    `comint-replace-by-expanded-filename',
 ;;    `ess-complete-object-name' (from ESS),
