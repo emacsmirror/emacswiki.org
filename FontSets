@@ -60,6 +60,8 @@ it in the top left corner of your selected [[Frame]].
       (append x-fixed-font-alist
         (list (generate-fontset-menu)))))
 
+Emacs 24 has the command mouse-set-font that does the same thing.
+
 == .emacs ==
 
 You can create new fontsets in you .emacs file.  Usually this is not
