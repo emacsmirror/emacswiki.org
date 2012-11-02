@@ -1,13 +1,11 @@
 ;;; code-definition-window.el
 ;-------------------------------------------
-; emacs Code Definition Window
-;
-; binds default hotkey C-x w  - toggle a window as a code-def pane
+; Code Definition Window
 ;
 ; inspired by visual studio feature;
-; automatic code navigation assistance;code-def windows automatically display
-; the definition of the symbol under the cursor from the selected window
+; toggle windows to show definition of symbol under cursor (0.5s delay)
 ;
+; binds default hotkey C-x w  - toggle a window as a code-def pane
 ;	(toggle-code-def-window) -  toggle current window as a code-def
 ;   code-def-windows		- variable, list of all active code-def windows 
 ;
@@ -17,10 +15,12 @@
 ;
 ; TODO: improve replacement algorithm, show declarations as well as definitions
 ;			option for new frames , visual indication
+;
 ; TAGS: code definition window ; auto jump to tag ; auto navigation
 
 (message "loading code definition window")
 (setf code-def-windows nil)
+(defvar code-def-win-offset 4)
 (defun toggle-code-def-window()
 	(interactive)
 	(let ((win (selected-window)))
@@ -99,7 +99,7 @@
 		(setq code-def-windows
 			(remove-if (lambda(w)(not(window-live-p w))) code-def-windows))
 			(when (not(null code-def-windows))
-				(show-definition-sub ))))
+				(show-definition-sub))))
 
 (defun show-definition-sub()
 	(unless (or 
@@ -107,20 +107,23 @@
 				(and (in? (selected-window) code-def-windows)
 					(eq (length code-def-windows) 1))
 				(null (thing-at-point 'symbol))
+				(code-def-window? (selected-window))
 			)
 		; find window to replace.
 		; tries to find a window thats' already on the right buffer,
 		; to try and show selection of useful buffers.
 		; if not available, just pick next round-robin
+
+;		(find-tag-noselect tag) ;find first tag
 		(point-to-register 'curpos)
 		(let*(	(tag		(thing-at-point 'symbol))
 				(cur-win	(selected-window))
-				(win1		(next-code-def-window-except cur-win))
-				(next-buf	(ignore-errors (find-tag-noselect tag)))
-				(win2		(get-win-of-buf-except code-def-windows next-buf cur-win))
+				(win1		(next-code-def-window))
+				(def-buf	(ignore-errors (find-tag-noselect tag)))
+				(win2		(get-win-of-buf-except code-def-windows def-buf cur-win))
 				(win3		(if (null win2) win1 win2))
 			)
-			(when win3
+			(when (and win3 def-buf)
 			;put current window to back of replace list
 				(setq code-def-windows 
 					(append 
@@ -129,21 +132,42 @@
 							(lambda(x)(eq win3 x))
 							code-def-windows)
 					))
-				;Dont browse to definitions in the same source file, it messes mark 
-				; main purpose is to find other useful files
-				(if (not(eq (window-buffer cur-win) next-buf )) 
-					(ignore-errors
-						(set-window-buffer win3 next-buf)							))
+			;	(if (not(eq (window-buffer cur-win) next-buf )) ? dont browse from current, messes loc?
+				(ignore-errors
+					(select-window win3)
+					(find-tag tag)
+					;(set-window-buffer win3 def-buf) ?doesn't seem to always work, if refinding in same buf
+					(recenter (min code-def-win-offset (/(- (window-height win3) 2) 2)))
+					(select-window cur-win)
+				)
 			)
 		)
 		(register-to-point 'curpos)
+
+	)
+)
+
+(defun enable-code-def-window ()
+	(interactive)
+	(cond
+		(	(> (length (window-list)) 1)
+			(toggle-code-def-window)
+		)
+		(	t
+			(split-window-horizontally)
+			(other-window 1)
+			(toggle-code-def-window)
+			(other-window -1)
+		)
 	)
 )
 
 (add-hook 'post-command-hook  'show-definition)
-(global-set-key (kbd "C-x w") 'toggle-code-def-window)
+(global-set-key (kbd "C-x w") 'enable-code-def-window)
 
 (provide 'show-definition)
 (provide 'toggle-code-def-window)
+(provide 'enable-code-def-window)
 (provide 'code-def-windows)
+(provide 'code-def-win-offset)
 
