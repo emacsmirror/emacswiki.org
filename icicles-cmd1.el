@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Nov  1 14:54:15 2012 (-0700)
+;; Last-Updated: Fri Nov  2 07:56:26 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 25067
+;;     Update #: 25070
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -3705,8 +3705,8 @@ then customize option `icicle-top-level-key-bindings'." ; Doc string
                                               (with-current-buffer icicle-pre-minibuffer-buffer
                                                 (and (setq cand  (intern-soft cand))  (symbolp cand)
                                                      (let ((key  (where-is-internal cand nil t)))
-                                                       (and key  (format " (`%s')"
-                                                                         (icicle-key-description key))))))))
+                                                       (and key
+                                                            (format "  %s" (icicle-key-description key))))))))
    icicle-new-last-cmd)                 ; Set in `icicle-execute-extended-command-1'.
   nil  nil                              ; First code, undo code
   (setq this-command  icicle-new-last-cmd)) ; Last code: this will update `last-command'
@@ -3874,8 +3874,8 @@ You can use `\\[icicle-toggle-annotation]' to toggle showing key bindings as ann
                                               (with-current-buffer icicle-pre-minibuffer-buffer
                                                 (and (setq cand  (intern-soft cand))  (symbolp cand)
                                                      (let ((key  (where-is-internal cand nil t)))
-                                                       (and key  (format " (`%s')"
-                                                                         (icicle-key-description key)))))))))
+                                                       (and key
+                                                            (format "  %s" (icicle-key-description key)))))))))
   (when icicle-proxy-candidates (put-text-property 0 1 'icicle-fancy-candidates t prompt)) ; First code
   nil (setq icicle-proxy-candidates  ())) ; Undo code, last code
 
