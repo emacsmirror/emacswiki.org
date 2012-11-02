@@ -18,7 +18,7 @@
 ;
 ; TAGS: code definition window ; auto jump to tag ; auto navigation
 
-(message "loading code definition window")
+(message "Init code definition window")
 (setf code-def-windows nil)
 (defvar code-def-win-offset 4)
 (defun toggle-code-def-window()
