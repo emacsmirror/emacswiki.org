@@ -15,7 +15,7 @@ words and [[symbol]]s in other [[buffer]]s, besides the [[minibuffer]].
 # Word completion using the ''dynamic abbreviation'' of standard
 Emacs library `<code>dabbrev.el</code>', via `##C-M-/##'.
 
-# Mailing information completion for BBDB (Insidious Big Brother Database).
+# Mailing information completion for [[BbdbMode|BBDB]] (Insidious Big Brother Database).
 
 # Word completion using the words and phrases in a ''thesaurus'', via
 `##C-c /##' (requires library <tt>[[synonyms.el]]</tt> -- see [[Synonyms]]).
@@ -70,17 +70,24 @@ as apropos completion and candidate cycling.   In addition, you can even complet
 
 
 
+[:bbdb-complete-mail]
+[:bbdb-complete-name]
 [:BbdbCompletion]
 === BBDB Completion ===
 
-Library ##bbdb.el##, available at http://bbdb.sourceforge.net/, is a
-rolodex-like database program for GNU Emacs -- see BbdbMode.
+Library ##bbdb.el## is a rolodex-like database program for GNU Emacs -- see BbdbMode.  
+You can obtain a recent version, such as 3.02, from
+http://melpa.milkbox.net/, or you can pick up an older version,
+such as 2.35, from http://bbdb.sourceforge.net/.
 
-If user option '''`<tt>[[Icicles - Customization and General Tips#icicle-functions-to-redefine|icicle-functions-to-redefine]]</tt>'''' contains an entry for `bbdb-complete-name' (which it does by default) then '''Icicles''' redefines command
-`bbdb-complete-name' so that it uses '''Icicles''' completion when there
-are multiple completions.  You can use any '''Icicles''' features, such
+If user option '''`<tt>[[Icicles - Customization and General Tips#icicle-functions-to-redefine|icicle-functions-to-redefine]]</tt>'''' contains an entry for `bbdb-complete-mail' (for BBDB version 3.02) or `bbdb-complete-name' (for BBDB version 2.35),
+then '''Icicles''' redefines that command so that it uses '''Icicles''' completion when there
+are multiple completions.
+
+You can use any '''Icicles''' features, such
 as apropos completion and candidate cycling.  For this feature to
-take effect, you must load BBDB before you load '''Icicles'''.
+take effect, you must load BBDB before you load '''Icicles'''.    Option `icicle-functions-to-redefine' includes entries
+for both `bbdb-complete-mail' and `bbdb-complete-name' by default.
 
 
 
