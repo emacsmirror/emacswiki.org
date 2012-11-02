@@ -43,7 +43,7 @@ You can *publish to HTML* using `C-c C-e h', or you can use BhlMode for LaTeX or
 
 If you're using WindMove, CuaMode or MTorus (with default keybindings), you might want to disable the Org Mode keybindings for Shift+arrow keys:
 
-    (setq org-CUA-compatible t)
+    (setq org-replace-disputed-keys t)
 
 This will result in the following replacements:
 
