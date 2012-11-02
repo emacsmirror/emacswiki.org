@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Nov  2 09:49:41 2012 (-0700)
+;; Last-Updated: Fri Nov  2 14:54:42 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5348
+;;     Update #: 5352
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -4408,8 +4408,9 @@ Same as `widgetp' in Emacs 22+.  Defined for Emacs 20 and 21."
       (get widget 'widget-type)
     (and (consp widget)  (symbolp (car widget)) (get (car widget) 'widget-type))))
 
+;; To redefine widget `color' to `icicle-color', you need library `wid-edit+.el'.
 ;;;###autoload
-(defcustom icicle-widgets-to-redefine '(color file)
+(defcustom icicle-widgets-to-redefine (list 'file (and (require 'wid-edit+ nil t)  'color))
   "*List of widgets to be redefined to provide Icicles completion.
 When in Icicle mode, Icicles completion is available.  Otherwise,
 vanilla completion is available.  In other words, with Icicle mode
