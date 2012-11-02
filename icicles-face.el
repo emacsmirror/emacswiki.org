@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:19:43 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Oct 27 10:03:18 2012 (-0700)
+;; Last-Updated: Fri Nov  2 15:02:25 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 666
+;;     Update #: 668
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-face.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -378,8 +378,15 @@ Don't forget to mention your Emacs and Icicles library versions."))
 
 ;;;###autoload
 (defface icicle-annotation
-    '((((background dark)) (:foreground "gray49"))
-      (t (:foreground "gray28")))
+    ;; Same definition as for `shadow'.
+    '((((class color grayscale) (min-colors 88) (background light))
+       :foreground "grey50")
+      (((class color grayscale) (min-colors 88) (background dark))
+       :foreground "grey70")
+      (((class color) (min-colors 8) (background light))
+       :foreground "green")
+      (((class color) (min-colors 8) (background dark))
+       :foreground "yellow"))
   "*Face used to highlight a candidate annotation in `*Completions*'."
   :group 'Icicles-Completions-Display :group 'faces)
 
