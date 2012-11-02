@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Oct 27 10:26:03 2012 (-0700)
+;; Last-Updated: Fri Nov  2 09:49:41 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 5347
+;;     Update #: 5348
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1772,7 +1772,8 @@ to toggle the option."
 
 ;;;###autoload
 (defcustom icicle-functions-to-redefine
-  `(bbdb-complete-name
+  `(bbdb-complete-name                  ; For older BBDB versions such as 2.35
+    bbdb-complete-mail                  ; For BBDB versions such as 3.02
     ,@(if (> emacs-major-version 23) '(comint-completion-at-point) '(comint-dynamic-complete))
     comint-dynamic-complete-filename comint-replace-by-expanded-filename
     ;; Use these two if you want Icicles completion for shell commands.
