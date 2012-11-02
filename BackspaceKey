@@ -1,3 +1,4 @@
+[[de:Dutch]]
 Traditionally, Unix uses the ^H keystroke to send a backspace from or to a terminal. Emacs, not coming from a Unix background (see CategoryHistory), does not respect this tradition. If you are using Emacs on a terminal and are not getting the results you expect when you press Backspace, you may want to try mapping ^H to delete-backward-char:
 
   (global-set-key [(control h)] 'delete-backward-char)
