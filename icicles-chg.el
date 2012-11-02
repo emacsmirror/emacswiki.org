@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Nov  2 10:02:33 2012 (-0700)
+;; Last-Updated: Fri Nov  2 15:14:46 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 9203
+;;     Update #: 9205
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -6175,6 +6175,7 @@
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
 ;; 2012/11/02 dadams
+;;     icicle-widgets-to-redefine: Include color widget only if can load wid-edit+.el.
 ;;     icicle-functions-to-redefine: Added bbdb-complete-mail.
 ;; 2012/10/27 dadams
 ;;     Added: icicle-show-annotations-flag.
