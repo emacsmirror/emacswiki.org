@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Fri Oct 26 17:10:09 2012 (-0700)
+;; Last-Updated: Sat Nov  3 12:40:54 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 6036
+;;     Update #: 6046
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -165,7 +165,8 @@
 ;;    `icicle-cmd2-after-load-hexrgb',
 ;;    `icicle-cmd2-after-load-highlight',
 ;;    `icicle-cmd2-after-load-palette',
-;;    `icicle-cmd2-after-load-synonyms', `icicle-color-blue-lessp',
+;;    `icicle-cmd2-after-load-synonyms',
+;;    `icicle-cmd2-after-load-wid-edit+', `icicle-color-blue-lessp',
 ;;    `icicle-color-completion-setup',
 ;;    `icicle-color-distance-hsv-lessp',
 ;;    `icicle-color-distance-rgb-lessp', `icicle-color-green-lessp',
@@ -1624,38 +1625,42 @@ cycling, these keys with prefix `C-' act on the current face name:
 `C-!'     - Choose *all* matching face names"
       (interactive `(,@(hlt-region-or-buffer-limits)
                      ,(mapcar #'intern (icicle-choose-faces)))) ; An Icicles multi-command
-      (dolist (face faces) (hlt-hide-default-face start end face)))
+      (dolist (face faces) (hlt-hide-default-face start end face)))))
 
-    ;; Save vanilla `color' widget as `icicle-ORIG-color' widget, for restoring when you quit Icicle mode.
-    (unless (get 'icicle-ORIG-color 'widget-type)
-      (put 'icicle-ORIG-color 'widget-type (get 'color 'widget-type))
-      (put 'icicle-ORIG-color 'widget-documentation (get 'color 'widget-documentation)))
+  
+(defun icicle-cmd2-after-load-wid-edit+ ()
+  "Things to do for `icicles-cmd2.el' after loading `wid-edit+.el'."
+
+  ;; Save vanilla `color' widget as `icicle-ORIG-color' widget, for restoring when you quit Icicle mode.
+  (unless (get 'icicle-ORIG-color 'widget-type)
+    (put 'icicle-ORIG-color 'widget-type          (get 'color 'widget-type))
+    (put 'icicle-ORIG-color 'widget-documentation (get 'color 'widget-documentation)))
 
 ;;;###autoload
-    (define-widget 'icicle-color 'editable-field
-      "Icicles version of the `color' widget.
+  (define-widget 'icicle-color 'editable-field
+    "Icicles version of the `color' widget.
 `M-TAB' completes the color name using Icicles WYSIWYG completion.
 See `icicle-widget-color-complete'."
-      :format   "%{%t%}: %v (%{sample%})\n"
-      :size     (1+ (apply #'max (mapcar #'length (x-defined-colors))))
-      :tag      "Color"
-      :match    'widgetp-color-match
-      :validate 'widgetp-color-validate
-      :value    "black"
-      :complete 'icicle-widget-color-complete
-      :sample-face-get 'widget-color-sample-face-get
-      :notify   'widget-color-notify
-      :action   'widget-color-action)
+    :format   "%{%t%}: %v (%{sample%})\n"
+    :size     (1+ (apply #'max (mapcar #'length (x-defined-colors))))
+    :tag      "Color"
+    :match    'widgetp-color-match
+    :validate 'widgetp-color-validate
+    :value    "black"
+    :complete 'icicle-widget-color-complete
+    :sample-face-get 'widget-color-sample-face-get
+    :notify   'widget-color-notify
+    :action   'widget-color-action)
 
-    ;; Emacs < 24 defines `widget-color-complete'.  Save that as `icicle-ORIG-*'.  Do nothing for Emacs 24+.
-    (unless (or (> emacs-major-version 23)  (fboundp 'icicle-ORIG-widget-color-complete))
-      (require 'wid-edit)
-      (when (fboundp 'widget-color-complete)
-        (defalias 'icicle-ORIG-widget-color-complete (symbol-function 'widget-color-complete))))
+  ;; Emacs < 24 defines `widget-color-complete'.  Save that as `icicle-ORIG-*'.  Do nothing for Emacs 24+.
+  (unless (or (> emacs-major-version 23)  (fboundp 'icicle-ORIG-widget-color-complete))
+    (require 'wid-edit)
+    (when (fboundp 'widget-color-complete)
+      (defalias 'icicle-ORIG-widget-color-complete (symbol-function 'widget-color-complete))))
 
 ;;;###autoload (autoload 'icicle-lisp-complete-symbol "icicles")
-    (defun icicle-widget-color-complete (widget)
-      "Complete the color name in `color' widget WIDGET.
+  (defun icicle-widget-color-complete (widget)
+    "Complete the color name in `color' widget WIDGET.
 If you use Icicles, then you get Icicles completion (apropos,
 progressive, complementing...).
 
@@ -1694,57 +1699,57 @@ As always in Icicles, you can toggle the use of proxy candidates using
 `\\<minibuffer-local-completion-map>\\[icicle-toggle-proxy-candidates]' in the minibuffer.
 
 See `icicle-read-color-wysiwyg' for more information."
-      (let* ((prefix      (buffer-substring-no-properties
-                           (widget-field-start widget) (point)))
-             ;; Free variables here: `eyedrop-picked-foreground', `eyedrop-picked-background'.
-             ;; They are defined in library `palette.el' or library `eyedropper.el'.
-             (colors      (if (fboundp 'hexrgb-defined-colors-alist) ; Defined in `hexrgb.el'.
-                              (if (fboundp 'eyedrop-foreground-at-point)
-                                  (append (and eyedrop-picked-foreground  '(("*copied foreground*")))
-                                          (and eyedrop-picked-background  '(("*copied background*")))
-                                          '(("*mouse-2 foreground*") ("*mouse-2 background*")
-                                            ("*point foreground*") ("*point background*"))
-                                          (hexrgb-defined-colors-alist))
-                                (hexrgb-defined-colors-alist))
-                            (mapcar #'list (x-defined-colors))))
-             (completion  (try-completion prefix colors)))
-        (cond ((null completion)
-               (widgetp-remove-Completions)
-               (error "No completion for \"%s\"" prefix))
-              ((eq completion t)
-               (widgetp-remove-Completions)
-               (message "Sole completion"))
-              ((and (not (string-equal prefix completion))
-                    (or (not (boundp 'icicle-mode))  (not icicle-mode)))
-               (insert-and-inherit (substring completion (length prefix)))
-               (message "Making completion list...")
-               (widgetp-display-Completions prefix colors)
-               (message "Completed, but not unique"))
-              ((or (not (boundp 'icicle-mode))  (not icicle-mode))
-               (message "Making completion list...")
-               (widgetp-display-Completions prefix colors))
-              (t
-               (let* ((enable-recursive-minibuffers                (active-minibuffer-window))
-                      (icicle-top-level-when-sole-completion-flag  t)
-                      (icicle-show-Completions-initially-flag      t)
-                      (icicle-unpropertize-completion-result-flag  t)
-                      (completion-ignore-case                      t)
-                      (field                                       (widget-field-find (point)))
-                      (beg                                         (widget-field-start field))
-                      (end                                         (max (point)
-                                                                        (if (fboundp 'widget-field-text-end)
-                                                                            (widget-field-text-end field)
-                                                                          (widget-field-end field))))
+    (let* ((prefix      (buffer-substring-no-properties
+                         (widget-field-start widget) (point)))
+           ;; Free variables here: `eyedrop-picked-foreground', `eyedrop-picked-background'.
+           ;; They are defined in library `palette.el' or library `eyedropper.el'.
+           (colors      (if (fboundp 'hexrgb-defined-colors-alist) ; Defined in `hexrgb.el'.
+                            (if (fboundp 'eyedrop-foreground-at-point)
+                                (append (and eyedrop-picked-foreground  '(("*copied foreground*")))
+                                        (and eyedrop-picked-background  '(("*copied background*")))
+                                        '(("*mouse-2 foreground*") ("*mouse-2 background*")
+                                          ("*point foreground*") ("*point background*"))
+                                        (hexrgb-defined-colors-alist))
+                              (hexrgb-defined-colors-alist))
+                          (mapcar #'list (x-defined-colors))))
+           (completion  (try-completion prefix colors)))
+      (cond ((null completion)
+             (widgetp-remove-Completions)
+             (error "No completion for \"%s\"" prefix))
+            ((eq completion t)
+             (widgetp-remove-Completions)
+             (message "Sole completion"))
+            ((and (not (string-equal prefix completion))
+                  (or (not (boundp 'icicle-mode))  (not icicle-mode)))
+             (insert-and-inherit (substring completion (length prefix)))
+             (message "Making completion list...")
+             (widgetp-display-Completions prefix colors)
+             (message "Completed, but not unique"))
+            ((or (not (boundp 'icicle-mode))  (not icicle-mode))
+             (message "Making completion list...")
+             (widgetp-display-Completions prefix colors))
+            (t
+             (let* ((enable-recursive-minibuffers                (active-minibuffer-window))
+                    (icicle-top-level-when-sole-completion-flag  t)
+                    (icicle-show-Completions-initially-flag      t)
+                    (icicle-unpropertize-completion-result-flag  t)
+                    (completion-ignore-case                      t)
+                    (field                                       (widget-field-find (point)))
+                    (beg                                         (widget-field-start field))
+                    (end                                         (max (point)
+                                                                      (if (fboundp 'widget-field-text-end)
+                                                                          (widget-field-text-end field)
+                                                                        (widget-field-end field))))
 
-                      (color
-                       (if (and (fboundp 'icicle-read-color-wysiwyg)  icicle-WYSIWYG-Completions-flag)
-                           (icicle-read-color-wysiwyg (if current-prefix-arg 99 0)
-                                                      "Color (name or #R+G+B+): " prefix 'MSGP)
-                         (completing-read "Color: " colors nil nil prefix))))
-                 (delete-region beg end)
-                 (insert-and-inherit color)
-                 (message "Completed"))))))
-    ))
+                    (color
+                     (if (and (fboundp 'icicle-read-color-wysiwyg)  icicle-WYSIWYG-Completions-flag)
+                         (icicle-read-color-wysiwyg (if current-prefix-arg 99 0)
+                                                    "Color (name or #R+G+B+): " prefix 'MSGP)
+                       (completing-read "Color: " colors nil nil prefix))))
+               (delete-region beg end)
+               (insert-and-inherit color)
+               (message "Completed"))))))
+  )
 
 
 (defun icicle-cmd2-after-load-palette ()
@@ -1939,6 +1944,12 @@ build a cache file of synonyms that are used for completion.  See
 ;;;###autoload (autoload 'icicle-insert-thesaurus-entry   "icicles")
 ;;;###autoload (autoload 'icicle-complete-thesaurus-entry "icicles")
 (eval-after-load "synonyms" '(icicle-cmd2-after-load-synonyms))
+
+
+;;; Library `wid-edit+.el' - Icicles function and widget.
+;;;
+;;;###autoload (autoload 'icicle-widget-color-complete  "icicles")
+(eval-after-load "wid-edit+" '(icicle-cmd2-after-load-wid-edit+))
  
 ;;(@* "Icicles Top-Level Commands, Part 2")
 
