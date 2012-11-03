@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Nov  2 17:01:57 2012 (-0700)
+;; Last-Updated: Sat Nov  3 09:59:04 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 25080
+;;     Update #: 25082
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1557,7 +1557,7 @@ See your version of BBDB for more information."
 ;;
 ;; Avoid a byte-compile error if user has already loaded BBDB version 3+.
 ;; The error has to do with `bbdb-records' being a defsubst that takes no args.
-(unless (eval-when-compile (and (featurep 'bbdb)  (string>= bbdb-version "3")))
+(unless (eval-when-compile (and (featurep 'bbdb)  (not (string-lessp bbdb-version "3"))))
   (defun icicle-bbdb-complete-name (&optional start-pos)
     "Complete the user full-name or net-address before point.
 Completes only up to the preceding newline, colon, or comma, or the
