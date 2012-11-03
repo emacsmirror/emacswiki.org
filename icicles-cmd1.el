@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Nov  2 16:16:21 2012 (-0700)
+;; Last-Updated: Fri Nov  2 17:01:57 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 25078
+;;     Update #: 25080
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -6301,13 +6301,13 @@ Used as the value of `icicle-buffer-complete-fn' and hence as
                                      (t
                                       (icicle-remove-if-not
                                        (lambda (buf)
-                                         (with-current-buffer buf
-                                           (save-excursion (goto-char (point-min))
-                                                           (re-search-forward content-pat nil t)))
-                                         ;; Free vars here: EXISTING-BUFFERS, NEW-BUFS--TO-KILL
-                                         (when (and (boundp 'existing-bufs)  (boundp 'new-bufs--to-kill)
-                                                    (not (memq (setq buf  (get-buffer buf)) existing-bufs)))
-                                           (add-to-list 'new-bufs--to-kill buf)))
+                                         (prog1 (with-current-buffer buf
+                                                  (save-excursion (goto-char (point-min))
+                                                                  (re-search-forward content-pat nil t)))
+                                           ;; Free vars here: EXISTING-BUFFERS, NEW-BUFS--TO-KILL
+                                           (when (and (boundp 'existing-bufs)  (boundp 'new-bufs--to-kill)
+                                                      (not (memq (setq buf  (get-buffer buf)) existing-bufs)))
+                                             (add-to-list 'new-bufs--to-kill buf))))
                                        bufs))))
                  (filnames    (and (> icicle-buffer-include-recent-files-nflag 0)
                                    (require 'recentf nil t)
