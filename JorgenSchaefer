@@ -13,11 +13,8 @@ it easily.
 * A minor mode that allows point to move past the end of a line without modifying the buffer. Going to the next line should always keep the current column.
 * A `hl-column-mode' similar to `hl-line-mode'.
 
-[new:DrewAdams:2006-09-04 17:45 UTC]
-: You might try adapting code from Lisp:column-marker.el. I might do that myself, when I get some time. -- DrewAdams
-
 [new]
-You can also try Library Lisp:col-highlight.el . -- XueFuqiao
+: Try Library Lisp:col-highlight.el . -- XueFuqiao
 
 == Configuration ==
 These are some configuration files I use. It's not all of my
