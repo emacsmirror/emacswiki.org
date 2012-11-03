@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Nov  3 10:00:27 2012 (-0700)
+;; Last-Updated: Sat Nov  3 12:48:10 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 9209
+;;     Update #: 9214
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -756,6 +756,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2012/11/03 dadams
+;;     Added: icicle-cmd2-after-load-wid-edit+.  eval-after-load it for wid-edit+.el.
+;;       Use it for all of the widget stuff (take that out of icicle-cmd2-after-load-highlight).
 ;; 2012/10/26 dadams
 ;;     icicle-search: Use \\[...] in doc string instead of hard-coding some of the keys.
 ;; 2012/10/22 dadams
@@ -6178,6 +6181,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2012/11/03 dadams
+;;     icicle-widgets-to-redefine: Fix to not include nil.
 ;; 2012/11/02 dadams
 ;;     icicle-widgets-to-redefine: Include color widget only if can load wid-edit+.el.
 ;;     icicle-functions-to-redefine: Added bbdb-complete-mail.
