@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Nov  2 15:14:46 2012 (-0700)
+;; Last-Updated: Fri Nov  2 17:05:48 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 9205
+;;     Update #: 9208
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -87,7 +87,9 @@
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
 ;; 2012/11/02 dadams
+;;     icicle-buffer-multi-complete: Use prog1 around content search in *-remove-if-not.
 ;;     Wrap icicle-bbdb-complete-name in eval-when-compile to avoid byte-compile error for BBDB 3.02.
+;;     icicle-(buffer|file-of-content)-multi-complete: Put back prepending ^ for prefix mode.
 ;; 2012/11/01 dadams
 ;;     icicle-(buffer|file-of-content)-multi-complete: Handle metadata COMPLETION-MODE arg.
 ;;                                                     Comment out prepending ^ for prefix mode.
