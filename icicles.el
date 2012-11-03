@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Oct 27 17:01:38 2012 (-0700)
+;; Last-Updated: Sat Nov  3 12:36:01 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 23242
+;;     Update #: 23243
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Doc URL: http://emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -23,18 +23,16 @@
 ;;   `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
 ;;   `bookmark+-lit', `cl', `cus-edit', `cus-face', `cus-load',
 ;;   `cus-start', `dired', `dired+', `dired-aux', `dired-x',
-;;   `doremi', `easymenu', `ediff-diff', `ediff-help', `ediff-init',
-;;   `ediff-merg', `ediff-mult', `ediff-util', `ediff-wind',
-;;   `el-swank-fuzzy', `ffap', `ffap-', `fit-frame', `frame-cmds',
-;;   `frame-fns', `fuzzy', `fuzzy-match', `help+20', `hexrgb',
-;;   `icicles-cmd1', `icicles-cmd2', `icicles-face', `icicles-fn',
-;;   `icicles-mcmd', `icicles-mode', `icicles-opt', `icicles-var',
-;;   `image-dired', `info', `info+', `kmacro', `levenshtein',
-;;   `menu-bar', `menu-bar+', `misc-cmds', `misc-fns', `mouse3',
-;;   `mwheel', `naked', `pp', `pp+', `regexp-opt', `ring', `ring+',
-;;   `second-sel', `strings', `thingatpt', `thingatpt+', `unaccent',
-;;   `w32-browser', `w32browser-dlgopen', `wid-edit', `wid-edit+',
-;;   `widget'.
+;;   `doremi', `easymenu', `el-swank-fuzzy', `ffap', `ffap-',
+;;   `fit-frame', `frame-cmds', `frame-fns', `fuzzy', `fuzzy-match',
+;;   `help+20', `hexrgb', `icicles-cmd1', `icicles-cmd2',
+;;   `icicles-face', `icicles-fn', `icicles-mcmd', `icicles-mode',
+;;   `icicles-opt', `icicles-var', `image-dired', `info', `info+',
+;;   `kmacro', `levenshtein', `menu-bar', `menu-bar+', `misc-cmds',
+;;   `misc-fns', `mouse3', `mwheel', `naked', `pp', `pp+',
+;;   `regexp-opt', `ring', `ring+', `second-sel', `strings',
+;;   `thingatpt', `thingatpt+', `unaccent', `w32-browser',
+;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -902,7 +900,8 @@
 ;;    `icicle-cmd2-after-load-hexrgb',
 ;;    `icicle-cmd2-after-load-highlight',
 ;;    `icicle-cmd2-after-load-palette',
-;;    `icicle-cmd2-after-load-synonyms', `icicle-color-blue-lessp',
+;;    `icicle-cmd2-after-load-synonyms',
+;;    `icicle-cmd2-after-load-wid-edit+', `icicle-color-blue-lessp',
 ;;    `icicle-color-completion-setup',
 ;;    `icicle-color-distance-hsv-lessp',
 ;;    `icicle-color-distance-rgb-lessp', `icicle-color-green-lessp',
