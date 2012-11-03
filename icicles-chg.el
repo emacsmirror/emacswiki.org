@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Nov  2 17:05:48 2012 (-0700)
+;; Last-Updated: Sat Nov  3 10:00:27 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 9208
+;;     Update #: 9209
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -86,6 +86,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2012/11/03 dadams
+;;     Typo in eval-when-compile around icicle-bbdb-complete-name.
 ;; 2012/11/02 dadams
 ;;     icicle-buffer-multi-complete: Use prog1 around content search in *-remove-if-not.
 ;;     Wrap icicle-bbdb-complete-name in eval-when-compile to avoid byte-compile error for BBDB 3.02.
