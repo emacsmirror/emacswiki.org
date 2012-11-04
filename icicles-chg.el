@@ -7,11 +7,11 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Nov  3 12:48:10 2012 (-0700)
+;; Last-Updated: Sun Nov  4 15:15:59 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 9214
+;;     Update #: 9216
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
-;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
+;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -1392,6 +1392,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-face.el'")
 ;;
+;; 2012/11/04 dadams
+;;     icicle-annotation: Fix default value for older Emacs versions.
 ;; 2012/10/27 dadams
 ;;     Added icicle-annotation.
 ;; 2012/07/07 dadams
