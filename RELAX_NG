@@ -4,10 +4,26 @@ RELAX NG (REgular LAnguage for XML Next Generation) is a schema language for XML
 
 RELAX NG has both an XML syntax and a compact non-XML syntax.
 
-You can find Emacs related stuff into http://relaxng.org/ page.
+You can find Emacs related stuff on http://relaxng.org/ page.
 
 == RNC Emacs Mode ==
 
 [http://www.pantor.com/download.html home page]
 
 A small emacs mode for editing RELAX NG schemas in the compact syntax. XML syntax not supported. Written by David Rosenborg. Open source (BSD license).
+
+= Converting schemata to RNC format =
+
+{{{
+  $ man trang
+  trang [-I rng|rnc|dtd|xml] [-O rng|rnc|dtd|xsd] $input $output
+}}}
+
+Conversion from XSD schemata to RNC a bit more complicated:
+
+{{{
+  $ java -jar $libdir/rngconv.jar from.xsd >tmp.rng
+  $ trang tmp.rng to.rnc
+}}}
+
+To obtain rngconv.jar visit link: [http://java.net/downloads/msv/nightly/rngconv.20060319.zip rngconv.20060319.zip]. Read more about this at [http://www.shadegrowncode.com/2009/08/converting-xml-schema-to-relax-ng.html Converting XML Schema to Relax NG].
