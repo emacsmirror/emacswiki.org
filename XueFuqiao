@@ -1,23 +1,14 @@
-My name is Xue Fuqiao. I use GnuEmacs. I've used Emacs for many years now, but have never reached its maximum potential.
+Emacs is the one.
 
-== My GNU Emacs Invocation ==
+My name is Xue Fuqiao.  I have been a GNU/Linux user since 2008.  I've been an Emacsite since 2009 and began to write programs in
+EmacsLisp since 2011.  Started with XEmacs, switched to
+SXEmacs, back to XEmacs, and now I'm using [[GNU Emacs]] and Guile-based Emacs. I don't like using the Emacs
+Lisp package manager.  Instead, I like install additional Lisp
+packages by hand, which is flexible.  I prefer to learn new things
+from reference manuals, instead of tutorials.  My favorite font is
+[http://www.proggyfonts.com proggy_tiny]. Currently I use GNU Emacs on
+a laptop with a Colemak layout.
 
-* emacs -nw --color==auto
+I'm a software developer and software freedom activist.  And I’m currently a student of [http://www.ncut.edu.cn NCUT].  My major is Communication Engineering.
 
-And sometimes:
-
-* emacs -fn "Monospace-12" -rv -cr 'slate blue' -fs -nbi &
-
-== My Accounts ==
-
-* Stack Overflow:
-[http://stackoverflow.com/users/1767708/xfq xfq]
-
-* WikEmacs:
-[http://wikemacs.org/wiki/User:Xfq Xfq]
-
-* Savannah:
-[https://savannah.gnu.org/users/xfq xfq]
-
-----
-CategoryHomepage
+I'm a [http://www.fsf.org/free-software-supporter/ Free Software Supporter].
