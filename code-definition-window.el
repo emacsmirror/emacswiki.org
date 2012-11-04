@@ -1,20 +1,4 @@
 ;;; code-definition-window.el
-
-
-;    This program is free software: you can redistribute it and/or modify
-;    it under the terms of the GNU General Public License as published by
-;    the Free Software Foundation, either version 3 of the License, or
-;    (at your option) any later version.
-;
-;    This program is distributed in the hope that it will be useful,
-;    but WITHOUT ANY WARRANTY; without even the implied warranty of
-;    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-;    GNU General Public License for more details.
-;
-;    You should have received a copy of the GNU General Public License
-;    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-
 ;-------------------------------------------
 ; Code Definition Window
 ;
@@ -34,10 +18,11 @@
 ;
 ; TAGS: code definition window ; auto jump to tag ; auto navigation
 
-(message "Init code definition window")
+(message "loading code definition window")
 (setf code-def-windows nil)
 (defvar code-def-win-offset 4)
 (defun toggle-code-def-window()
+	"toggles the current window as a Code-Definition Window by adding or removing from cde-def-windows (active list)"
 	(interactive)
 	(let ((win (selected-window)))
 		(if (code-def-window? win)
@@ -103,6 +88,7 @@
 
 (setq show-def-async nil)
 (defun show-definition()
+	"main callback for the code-def window, triggers everything"
 	(interactive)
 	(if show-def-async
 		(cancel-timer show-def-async))
@@ -110,6 +96,7 @@
 		(run-with-idle-timer 0.25 nil 'show-def)))
 
 (defun show-def()
+	"code-def window outer function: remove windows that have been deleted"
 	;cleanup list: remove closed windows
 	(when (not(null code-def-windows))
 		(setq code-def-windows
@@ -118,6 +105,7 @@
 				(show-definition-sub))))
 
 (defun show-definition-sub()
+	"code def window main behaviour. Searches thee code-def window list to find the most suitable one to replace with the latest definition- tries to keep a selection of source files open by prefering to show definitions from the same file in the same window"
 	(unless (or 
 				(in-minibuffer?)
 				(and (in? (selected-window) code-def-windows)
@@ -164,6 +152,7 @@
 )
 
 (defun enable-code-def-window ()
+	"Creates a second window if only one pane is visible, and toggles the current pane as a code-definition window. Convinient 1-press key for a common useable setup"
 	(interactive)
 	(cond
 		(	(> (length (window-list)) 1)
