@@ -7,11 +7,11 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:19:43 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Nov  2 15:02:25 2012 (-0700)
+;; Last-Updated: Sun Nov  4 15:15:17 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 668
+;;     Update #: 673
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-face.el
-;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
+;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -377,16 +377,9 @@ Don't forget to mention your Emacs and Icicles library versions."))
 ;;; Faces, Organized Alphabetically ----------------------------------
 
 ;;;###autoload
-(defface icicle-annotation
-    ;; Same definition as for `shadow'.
-    '((((class color grayscale) (min-colors 88) (background light))
-       :foreground "grey50")
-      (((class color grayscale) (min-colors 88) (background dark))
-       :foreground "grey70")
-      (((class color) (min-colors 8) (background light))
-       :foreground "green")
-      (((class color) (min-colors 8) (background dark))
-       :foreground "yellow"))
+(defface icicle-annotation              ; Same grays as for `shadow'.
+    '((((background dark)) (:foreground "gray70"))
+      (t (:foreground "gray50")))
   "*Face used to highlight a candidate annotation in `*Completions*'."
   :group 'Icicles-Completions-Display :group 'faces)
 
