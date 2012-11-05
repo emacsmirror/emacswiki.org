@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Sat Nov  3 12:40:54 2012 (-0700)
+;; Last-Updated: Mon Nov  5 15:30:31 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 6046
+;;     Update #: 6068
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -3215,9 +3215,12 @@ Search and Replace
 ------------------
 
 You can replace the current search match by using any of the
-alternative action keys: `C-S-RET', `C-S-mouse-2' (in
-`*Completions*'), `C-S-down', `C-S-up', `C-S-next', `C-S-prior',
-`C-S-end', and `C-S-home'.  You can use `M-|' to replace all matches
+alternative action keys: `\\[icicle-candidate-alt-action]', `C-S-mouse-2' (in
+`*Completions*'), `\\[icicle-next-candidate-per-mode-alt-action]', \
+`\\[icicle-previous-candidate-per-mode-alt-action]', `\\[icicle-next-apropos-candidate-alt-action]', \
+`\\[icicle-help-on-previous-apropos-candidate]',
+`\\[icicle-next-prefix-candidate-alt-action]', and `\\[icicle-previous-prefix-candidate-alt-action]'.  \
+You can use `\\[icicle-all-candidates-list-alt-action]' to replace all matches
 at once.  (And remember that you can activate the region to limit the
 search-and-replace space.)
 
@@ -3257,8 +3260,10 @@ Remember this:
    available match.
 
 If `icicle-search-replace-whole-candidate-flag' is non-nil, then you
-can use the navigational alternative action keys, `C-S-down',
-`C-S-up', `C-S-next', `C-S-prior', `C-S-end', and `C-S-home',
+can use the navigational alternative action keys, `\\[icicle-next-candidate-per-mode-alt-action]',
+`\\[icicle-previous-candidate-per-mode-alt-action]', `\\[icicle-help-on-next-apropos-candidate]', \
+`\\[icicle-previous-apropos-candidate-alt-action]', `\\[icicle-next-prefix-candidate-alt-action]', and \
+`\\[icicle-previous-prefix-candidate-alt-action]',
 repeatedly to replace successive search contexts.  At the buffer
 limits, these commands wraps around to the other buffer limit (last
 search context to first, and vice versa).
@@ -3270,26 +3275,27 @@ search context (except for the first such match, if
 `icicle-search-replace-whole-candidate-flag' is nil).
 
 If your input matches multiple parts of a search context, and you want
-to replace these in order, then use `C-S-RET' repeatedly.  You can
+to replace these in order, then use `\\[icicle-candidate-alt-action]' repeatedly.  You can
 traverse all matches of your input in the order they appear in the
-buffer by repeating `C-S-RET' (provided the replacement text does not
-also match your input - see below).  At the buffer limits, repeating
-`C-S-RET' wraps around too.
+buffer by repeating `\\[icicle-candidate-alt-action]' (provided the replacement text does
+not also match your input - see below).  At the buffer limits,
+repeating `\\[icicle-candidate-alt-action]' wraps around too.
 
-`C-S-RET' always replaces the first input match in the current search
-context or, if there are no matches, then the first input match in the
-next context.  This behavior has these important consequences:
+`\\[icicle-candidate-alt-action]' always replaces the first input match in the current
+search context or, if there are no matches, then the first input match
+in the next context.  This behavior has these important consequences:
 
-* If you repeat `C-S-RET' and the previous replacement no longer
-  matches your input, then `C-S-RET' moves on to the next input match
-  (which is now the first one) and replaces that.  This is why you can
-  usually just repeat `C-S-RET' to successively replaces matches of
-  your input, including from one context to the next.
+* If you repeat `\\[icicle-candidate-alt-action]' and the previous replacement no longer
+  matches your input, then `\\[icicle-candidate-alt-action]' moves on to the next input
+  match (which is now the first one) and replaces that.  This is why
+  you can usually just repeat `\\[icicle-candidate-alt-action]' to successively replaces
+  matches of  your input, including from one context to the next.
 
 * If, on the other hand, after replacement the text still matches your
-  input, then repeating `C-S-RET' will just replace that match.
+  input, then repeating `\\[icicle-candidate-alt-action]' will just replace that match.
   For example, if you replace the input match `ab' by `abcd', then
-  repeating `C-S-RET' produces `abcd', then `abcdcd', then `abcdcd'...
+  repeating `\\[icicle-candidate-alt-action]' produces `abcd', then `abcdcd', then
+  `abcdcd'...
 
 * You cannot replace an input match, skip the next match, and then
   replace the following one, all in the same context.  You can,
@@ -3323,8 +3329,7 @@ replacement text.
 Using Regexps
 -------------
 
-At any time, you can use `\\<minibuffer-local-completion-map>\
-\\[icicle-insert-string-from-variable]' (command
+At any time, you can use `\\[icicle-insert-string-from-variable]' (command
 `icicle-insert-string-from-variable') to insert text (e.g. a regexp)
 from a variable into the minibuffer.  For example, you can search for
 ends of sentences by using `C-u \\[icicle-insert-string-from-variable]' and choosing variable
