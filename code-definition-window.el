@@ -18,6 +18,10 @@
 ;
 ; TAGS: code definition window ; auto jump to tag ; auto navigation
 
+; KNOWN BUG: Appears to lock up with an empty window, perhaps from 'thing-at-point ' returning some strange value for it to search? i have rectified this by creating new files with something useful like header guards
+;
+;
+
 (message "loading code definition window")
 (setf code-def-windows nil)
 (defvar code-def-win-offset 4)
