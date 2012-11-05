@@ -33,6 +33,7 @@ Yet another alternative: Lisp:ifind-mode.el
 
 And also simp
 Link: http://github.com/re5et/simp
+In addition to finding file in project, simp includes project specific rgrepping which takes project ignored directories into account.
 ----
 
 CategoryProgrammerUtils
