@@ -33,6 +33,10 @@
 		;else
 			(push win code-def-windows)
 			(message (concat "Enable code-def-window, num=" (int-to-string(length code-def-windows)))))))
+(defun set-code-def-window(win)
+	"set current win as a code-def window - add to the active list if not already there"
+	(if (not(code-def-window? win))
+		(push win code-def-windows)))
 
 (defun in-minibuffer?()
 	(minibufferp (window-buffer(selected-window))))
@@ -172,6 +176,7 @@
 
 (provide 'show-definition)
 (provide 'toggle-code-def-window)
+(provide 'set-code-def-window)
 (provide 'enable-code-def-window)
 (provide 'code-def-windows)
 (provide 'code-def-win-offset)
