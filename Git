@@ -44,7 +44,7 @@ highlighting the search term, etc.) The default colours are terrible but can all
 * Repository: ##git clone git://github.com/byplayer/egg.git ##
 * Documentation: 
 ** http://bogolisk.github.com/egg/egg.html
-** http://bogolisk.blogspot.com/ (older version, still useful and includes screenshots)
+** http://bogolisk.blogspot.com/ (includes screenshots)
 
 
 *egit* is an Emacs Git history interface intended to be similar to qgit or gitk. Requires git.el.
