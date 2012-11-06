@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sun Nov  4 15:15:59 2012 (-0800)
+;; Last-Updated: Mon Nov  5 16:00:26 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 9216
+;;     Update #: 9218
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -756,6 +756,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2012/11/05 dadams
+;;     Use \\[...] in doc strings instead of hard-coding, for some more keys.
 ;; 2012/11/03 dadams
 ;;     Added: icicle-cmd2-after-load-wid-edit+.  eval-after-load it for wid-edit+.el.
 ;;       Use it for all of the widget stuff (take that out of icicle-cmd2-after-load-highlight).
