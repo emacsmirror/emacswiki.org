@@ -7,7 +7,7 @@ Electric help mode does the following.
 # It will automatically switch to the help buffer when called, saving you from pressing `C-x o'.
 # Will shrink the window to fit the contents of the help buffer.
 # Displays key binding information about using the mode in the EchoArea.
-# Upon quit returns the window configuration to the way it was.  Regular HelpMode has the habit of changing the window configuration, even after quiting help.
+# Upon quit returns the window configuration to the way it was.  Regular HelpMode has the habit of changing the window configuration, even after quitting help.
 
 == Stuck in Electric help? ==
 
