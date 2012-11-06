@@ -5,8 +5,10 @@
 ; inspired by visual studio feature;
 ; toggle windows to show definition of symbol under cursor (0.5s delay)
 ;
-; binds default hotkey C-x w  - enable a window as a code-def pane(creates side pane if none present)
-;	(toggle-code-def-window) -  toggle current window as a code-def
+; binds:
+;	C-x w	- (enable-code-def-window)-create 2nd window &enable;
+;	C-x p	- (popup-code-def-window) - new frame with code-def window
+;			(toggle-code-def-window) -  toggle current win as a code-def
 ;   code-def-windows		- variable, list of all active code-def windows 
 ;
 ; extended to have any number of code-def windows
@@ -21,6 +23,8 @@
 (message "loading code definition window")
 (setf code-def-windows nil)
 (defvar code-def-win-offset 4)
+(defvar cdw-popup-width 50)
+(defvar cdw-popup-height 30)
 (defun toggle-code-def-window()
 	"toggles the current window as a Code-Definition Window by adding or removing from cde-def-windows (active list)"
 	(interactive)
@@ -153,6 +157,7 @@
 					(find-tag tag)
 					;(set-window-buffer win3 def-buf) ?doesn't seem to always work, if refinding in same buf
 					(recenter (min code-def-win-offset (/(- (window-height win3) 2) 2)))
+					(raise-frame (window-frame win3))
 					(select-window cur-win)
 				)
 			)
@@ -163,7 +168,7 @@
 )
 
 (defun enable-code-def-window ()
-	"Creates a second window if only one pane is visible, and toggles a pane as a code-definition window. Convinient 1-press key for a common useable setup"
+	"Creates a second window if only one pane is visible, and toggles the current pane as a code-definition window. Convinient 1-press key for a common useable setup"
 	(interactive)
 	(cond
 		(	(> (length (window-list)) 1)
@@ -177,9 +182,18 @@
 		)
 	)
 )
-
+(defun popup-code-def-window()
+	(interactive)
+	(let ((nf (new-frame)))
+		(other-frame 1)
+		(set-frame-size nf cdw-popup-width cdw-popup-height)
+		(toggle-code-def-window)
+		(other-frame -1)
+	)
+)
 (add-hook 'post-command-hook  'show-definition)
 (global-set-key (kbd "C-x w") 'enable-code-def-window)
+(global-set-key (kbd "C-x p") 'popup-code-def-window)
 
 (provide 'show-definition)
 (provide 'toggle-code-def-window)
