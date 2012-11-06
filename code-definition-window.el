@@ -5,7 +5,7 @@
 ; inspired by visual studio feature;
 ; toggle windows to show definition of symbol under cursor (0.5s delay)
 ;
-; binds default hotkey C-x w  - toggle a window as a code-def pane
+; binds default hotkey C-x w  - enable a window as a code-def pane(creates side pane if none present)
 ;	(toggle-code-def-window) -  toggle current window as a code-def
 ;   code-def-windows		- variable, list of all active code-def windows 
 ;
@@ -163,7 +163,7 @@
 )
 
 (defun enable-code-def-window ()
-	"Creates a second window if only one pane is visible, and toggles the current pane as a code-definition window. Convinient 1-press key for a common useable setup"
+	"Creates a second window if only one pane is visible, and toggles a pane as a code-definition window. Convinient 1-press key for a common useable setup"
 	(interactive)
 	(cond
 		(	(> (length (window-list)) 1)
