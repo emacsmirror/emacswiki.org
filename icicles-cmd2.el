@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Mon Nov  5 15:30:31 2012 (-0800)
+;; Last-Updated: Mon Nov  5 16:04:27 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 6068
+;;     Update #: 6092
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -446,14 +446,14 @@ When prompted for the file you can use `M-n' to pick up the file name
 at point, or if none then the visited file.
 The autofile bookmark created has the same name as the file.
 
-During file-name completion:
+During file-name completion\\<minibuffer-local-completion-map>:
  You can use `C-x a +' or `C-x a -' to add or remove tags from the
   current-candidate file.  You are prompted for the tags.
   (This action requires library `Bookmark+'.)
  You can use `C-c C-d' (a la `cd') to change the `default-directory'.
  You can use `C-c +' to create a new directory.
- You can use `M-|' to open Dired on currently matching file names.
- You can use `S-delete' to delete a candidate file or (empty) dir."
+ You can use `\\[icicle-all-candidates-list-alt-action]' to open Dired on currently matching file names.
+ You can use `\\[icicle-delete-candidate-object]' to delete a candidate file or (empty) dir."
     (lambda (file) (bmkp-bookmark-a-file file nil nil 'MSG))
     "File to bookmark (autofile): " nil nil nil nil nil ; `read-file-name' args
     (icicle-file-bindings               ; Bindings
@@ -557,15 +557,15 @@ something to match the file name before the `C-M-j'.  E.g., type:
  `2011 C-M-j red M-SPC blue'    to match all files tagged `red' and
                                 `blue' that have `2011' in their names
 
-During completion (`*': requires library `Bookmark+'):
+During completion (`*': requires library `Bookmark+')\\<minibuffer-local-completion-map>:
 
  *You can use `C-x a +' or `C-x a -' to add or remove tags from the
    current-candidate file.  You are prompted for the tags.
  *You can use `C-x m' to access file bookmarks (not just autofiles).
   You can use `C-c C-d' (a la `cd') to change the `default-directory'.
   You can use `C-c +' to create a new directory.
-  You can use `M-|' to open Dired on currently matching file names.
-  You can use `S-delete' to delete a candidate file or (empty) dir." ; Doc string
+  You can use `\\[icicle-all-candidates-list-alt-action]' to open Dired on currently matching file names.
+  You can use `\\[icicle-delete-candidate-object]' to delete a candidate file or (empty) dir." ; Doc string
     (lambda (f) (bmkp-find-file (icicle-transform-multi-completion f) 'WILDCARDS)) ; Action function
     prompt icicle-abs-file-candidates   ; `completing-read' args
     nil nil nil 'icicle-filetags-history nil nil
@@ -996,9 +996,9 @@ treated as \"aliceblue\".  Otherwise, candidates with different names
 but the same RGB values are not considered duplicates, so, for
 example, input can match either \"darkred\" or \"red4\", which both
 have RGB #8b8b00000000.  You can toggle duplicate removal at any time
-using `C-$'.
+using `\\[icicle-toggle-transforming]'.
 
-During completion, candidate help (e.g. `C-M-RET') shows you the RGB
+During completion, candidate help (e.g. `\\[icicle-help-on-candidate]') shows you the RGB
 and HSV (hue, saturation, value) color components.
 
 This command is intended only for use in Icicle mode (but it can be
@@ -1112,9 +1112,9 @@ treated as \"aliceblue\".  Otherwise, candidates with different names
 but the same RGB values are not considered duplicates, so, for
 example, input can match either \"darkred\" or \"red4\", which both
 have RGB #8b8b00000000.  You can toggle duplicate removal at any time
-using `C-$'.
+using \\<minibuffer-local-completion-map>`\\[icicle-toggle-transforming]'.
 
-During completion, candidate help (e.g. `C-M-RET') shows you the RGB
+During completion, candidate help (e.g. `\\[icicle-help-on-candidate]') shows you the RGB
 and HSV (hue, saturation, value) color components.
 
 This command is intended only for use in Icicle mode." ; Doc string
@@ -2717,7 +2717,7 @@ no sorting, then bind `icicle-sort-comparer' accordingly.
 
 During completion you can use multi-command keys.  Each displays the
 value of applying FN to an alist element whose key is a completion
-candidate.
+candidate.\\<minibuffer-local-completion-map>
 
 `C-RET'   - Act on current completion candidate only
 `C-down'  - Move to next completion candidate and act
@@ -2729,7 +2729,7 @@ candidate.
 `C-!'     - Act on *each* candidate (or each that is saved), in turn.
 `M-!'     - Act on the list of *all* candidates (or all saved).
 
-Note that `M-!' applies FN to the *list* of chosen alist elements,
+Note that \\<minibuffer-local-completion-map>`M-!' applies FN to the *list* of chosen alist elements,
 whereas `C-!' applies FN to each chosen element, in turn.  For
 example, if FN is `length' and your input is `\.el', then `M-!' displays
 the result of applying `length' to the list of chosen elements:
@@ -2742,7 +2742,7 @@ When candidate action and cycling are combined (e.g. `C-next'), option
 `icicle-act-before-cycle-flag' determines which occurs first.
 
 With prefix `C-M-' instead of `C-', the same keys (`C-M-mouse-2',
-`C-M-RET', `C-M-down', and so on) provide help about candidates.
+`\\[icicle-help-on-candidate]', `C-M-down', and so on) provide help about candidates.
 
 Use `mouse-2', `RET', or `S-RET' to finally choose a candidate, or
 `C-g' to quit.  This is an Icicles command - see command
@@ -2877,7 +2877,7 @@ By default, candidates are sorted in marker order, that is, with
 respect to their buffer positions.  Use `C-M-,' or `C-,' to change the
 sort order.
 
-During completion you can use these keys:
+During completion you can use these keys\\<minibuffer-local-completion-map>:
 
 `C-RET'   - Goto marker named by current completion candidate
 `C-down'  - Goto marker named by next completion candidate
@@ -2886,13 +2886,13 @@ During completion you can use these keys:
 `C-prior' - Goto marker named by previous apropos-completion candidate
 `C-end'   - Goto marker named by next prefix-completion candidate
 `C-home'  - Goto marker named by previous prefix-completion candidate
-`S-delete' - Delete marker named by current completion candidate
+`\\[icicle-delete-candidate-object]' - Delete marker named by current completion candidate
 
 When candidate action and cycling are combined (e.g. `C-next'), option
 `icicle-act-before-cycle-flag' determines which occurs first.
 
 With prefix `C-M-' instead of `C-', the same keys (`C-M-mouse-2',
-`C-M-RET', `C-M-down', and so on) provide help about candidates.
+`\\[icicle-help-on-candidate]', `C-M-down', and so on) provide help about candidates.
 
 Use `mouse-2', `RET', or `S-RET' to choose a candidate as the final
 destination, or `C-g' to quit.  This is an Icicles command - see
@@ -3156,7 +3156,7 @@ the current location visited (it is not off by one, as is usually the
 case in Icicles).
 
 As always, the `C-M-' keys provide help on individual candidates:
-`C-M-RET', `C-M-mouse-2', `C-M-down', `C-M-up', `C-M-next',
+`\\[icicle-help-on-candidate]', `C-M-mouse-2', `C-M-down', `C-M-up', `C-M-next',
 `C-M-prior', `C-M-end', and `C-M-home'.  For `icicle-search', they
 indicate the buffer and position of the search hit.
 
@@ -3254,9 +3254,9 @@ Remember this:
 
  - If `icicle-search-replace-whole-candidate-flag' is nil, then you
    can replace multiple input matches separately within a search
-   context (using `C-S-RET').  This behavior is unique to Icicles.
+   context (using `\\[icicle-candidate-alt-action]').  This behavior is unique to Icicles.
    You cannot, however skip over one input match and replace the next
-   one in the same context - `C-S-RET' always replaces the first
+   one in the same context - `\\[icicle-candidate-alt-action]' always replaces the first
    available match.
 
 If `icicle-search-replace-whole-candidate-flag' is non-nil, then you
@@ -6454,8 +6454,8 @@ object using `RET' or `mouse-2', the default action is applied to it.
 The default action is also applied to the current completion candidate
 when you use `C-RET', `C-mouse-2', and so on.
 
-You can apply a different action by using an alternative action key:
-`C-S-RET', `C-S-mouse-2', and so on.  This lets you choose the action
+You can apply a different action by using an alternative action key\\<minibuffer-local-completion-map>:
+`\\[icicle-candidate-alt-action]', `C-S-mouse-2', and so on.  This lets you choose the action
 to apply using completion. You can use `C-RET', `C-mouse-2', and so
 on, to perform multiple actions.
 
@@ -6473,7 +6473,7 @@ This command is intended for use only in Icicle mode."
   (defun file ()
     "Act on a file.  You are prompted for the file and the action.
 During file-name completion, you can delete the file named by the
-current candidate, using `S-delete'.
+current candidate, using \\<minibuffer-local-completion-map>`\\[icicle-delete-candidate-object]'.
 
 This is just `icicle-object-action' with type `file'."
     (interactive) (icicle-object-action 'file)))
@@ -6482,7 +6482,7 @@ This is just `icicle-object-action' with type `file'."
   (defun buffer ()
     "Act on a buffer.  You are prompted for the buffer and the action.
 During buffer-name completion, you can kill the buffer named by the
-current candidate, using `S-delete'.
+current candidate, using \\<minibuffer-local-completion-map>`\\[icicle-delete-candidate-object]'.
 
 This is just `icicle-object-action' with type `buffer'."
     (interactive) (icicle-object-action 'buffer)))
@@ -6511,13 +6511,13 @@ b. The `type' of an Anything source, or its `name' if it has no
 c. A type defining an entry in user option
    `icicle-type-actions-alist'.
 
-In the case of Anything types (only), this is a multi-command:
+In the case of Anything types (only), this is a multi-command\\<minibuffer-local-completion-map>:
 * `C-RET', `C-mouse-2', and so on perform the default action.
-* `C-S-RET', `C-S-mouse-2', and so on let you choose the action using
+* `\\[icicle-candidate-alt-action]', `C-S-mouse-2', and so on let you choose the action using
   completion.
 
 Though this is not a multi-command for non-Anything types, for types
-`buffer' and `file' you can use `S-delete' during completion to delete
+`buffer' and `file' you can use `\\[icicle-delete-candidate-object]' during completion to delete
 the object (buffer or file) named by the current completion candidate.
 
 Objects of types (b) and (c) are easily associated with names.  Their
@@ -7080,7 +7080,7 @@ displays the character itself after its name, though only the name is
 used for completion.  So it is WYSIWYG.  And you can of course use all
 Icicles completion features when matching the character name.
 
-While cycling, these keys describe candidates:
+While cycling, these keys describe candidates\\<minibuffer-local-completion-map>:
 
 `C-RET'   - Describe command of current completion candidate only
 `C-down'  - Move to next completion candidate and describe
@@ -7097,7 +7097,7 @@ When candidate action and cycling are combined (e.g. `C-next'), option
 `icicle-act-before-cycle-flag' determines which occurs first.
 
 With prefix `C-M-' instead of `C-', the same keys (`C-M-mouse-2',
-`C-M-RET', `C-M-down', and so on) provide help about candidates.
+`\\[icicle-help-on-candidate]', `C-M-down', and so on) provide help about candidates.
 
 Use `mouse-2', `RET', or `S-RET' to finally choose a candidate, or
 `C-g' to quit.  This is an Icicles command - see command
