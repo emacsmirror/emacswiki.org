@@ -18,10 +18,6 @@
 ;
 ; TAGS: code definition window ; auto jump to tag ; auto navigation
 
-; KNOWN BUG: Appears to lock up with an empty window, perhaps from 'thing-at-point ' returning some strange value for it to search? i have rectified this by creating new files with something useful like header guards
-;
-;
-
 (message "loading code definition window")
 (setf code-def-windows nil)
 (defvar code-def-win-offset 4)
@@ -30,13 +26,15 @@
 	(interactive)
 	(let ((win (selected-window)))
 		(if (code-def-window? win)
-			(setq code-def-windows
-				(remove-if (lambda(x)(eq win x)) code-def-windows)
-				(message (concat "Disabled code-def-window; remaining:" (int-to-string (length code-def-windows))))
-			)
-		;else
+			(progn
+				(setq code-def-windows
+					(remove-if (lambda(x)(eq win x)) code-def-windows))
+				(message "Disabled code-def-window, remaining=%d"
+										(length code-def-windows)))
+		:else
 			(push win code-def-windows)
 			(message (concat "Enable code-def-window, num=" (int-to-string(length code-def-windows)))))))
+
 (defun set-code-def-window(win)
 	"set current win as a code-def window - add to the active list if not already there"
 	(if (not(code-def-window? win))
@@ -114,7 +112,12 @@
 
 (defun show-definition-sub()
 	"code def window main behaviour. Searches thee code-def window list to find the most suitable one to replace with the latest definition- tries to keep a selection of source files open by prefering to show definitions from the same file in the same window"
-	(unless (or 
+;	(if (selected-window)
+;		(if (window-buffer (selected-window))
+;			(if (<= 0 (buffer-size (window-buffer(selected-window))))
+;				(return))))
+	(unless (or
+;				(<= 0 (buffer-size (window-buffer (selected-window)))) 
 				(in-minibuffer?)
 				(and (in? (selected-window) code-def-windows)
 					(eq (length code-def-windows) 1))
@@ -180,8 +183,6 @@
 
 (provide 'show-definition)
 (provide 'toggle-code-def-window)
-(provide 'set-code-def-window)
 (provide 'enable-code-def-window)
 (provide 'code-def-windows)
 (provide 'code-def-win-offset)
-
