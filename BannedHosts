@@ -39,6 +39,7 @@ broadband\.kyivstar\.net # for spamming ColemakKeyboard
 \.amazonaws\.com  # for spamming various pages in April and May 2012
 ^pool-173-74-59-171.dllstx.fios.verizon.net  # for spamming SiteMap in April 2012
 ^58.22.64.227  # for spamming TableOfContentsDiscussion in April 2012
+node1.heading-toll-host.org # for spamming Comments on LoopFindPackage
 node1.squiftw.org # for spamming IciclesDiscussion
 117.21.227.40 # for spamming IciclesDiscussion
 142.54.163.75 # for spamming IciclesDiscussion
