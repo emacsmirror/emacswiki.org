@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Mon Nov  5 16:00:26 2012 (-0800)
+;; Last-Updated: Wed Nov  7 11:37:26 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 9218
+;;     Update #: 9221
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -3505,6 +3505,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2012/11/07 dadams
+;;     icicle-successive-action, icicle-(prefix|apropos)-complete-1, icicle-switch-to-Completions-buf:
+;;       Protect calls to get with symbolp.
 ;; 2012/10/27 dadams
 ;;     Added: icicle-toggle-annotation.
 ;;     icicle-help-string-completion: Added icicle-toggle-annotation.
