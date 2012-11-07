@@ -195,6 +195,8 @@ However I found one deficiency:
 
 It may be a good idea to add this functionality to multi-term.el
 
+Ilya - you might watch to use select-window and selected-window rather than switching buffers when you restore state. ---MPH
+
 [new]
 Sorry Ilya, i have [http://www.emacswiki.org/emacs/AndyStewart#toc14 LeaveEmacs] , 
 haven't time write any elisp code even i really want help you.
