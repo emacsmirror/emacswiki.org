@@ -76,9 +76,13 @@ As of 09/2011 the entry system of rebox2 has been revamped to be quite similar t
 === Doxygen-like comments ===
 
 Hello and thanks for this useful package. I have made my own comment style for C++ like this:
+
 "/************//**"
+
 "    box123456    "
+
 "****************/"
+
 
 The problem I have found is that in order to move the box, say a bit to the right, I have to move each line individually. This does not happen with the other comment styles.
 Any ideas what is wrong? Thanks in advance!
