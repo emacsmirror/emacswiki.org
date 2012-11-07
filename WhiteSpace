@@ -26,9 +26,9 @@ the default setting.
 
 This package is a minor mode to visualize blanks (TAB, (HARD) SPACE and NEWLINE).
 
-WhiteSpace uses two ways to visualize blanks: [[Face]]s and display table.
+!WhiteSpace uses two ways to visualize blanks: [[Face]]s and display table.
 
-* [[Face]]s are used to highlight the background with a color. WhiteSpace uses
+* [[Face]]s are used to highlight the background with a color. !WhiteSpace uses
 font-lock to highlight blank characters, see FontLockMode.
 
 * Display table changes the way a character is displayed, that is,
@@ -39,15 +39,15 @@ at SPACEs (##?\xB7##) and at TABs (##?\xBB##).
 The `whitespace-style' variable selects which way blanks are
 visualized.
 
-Note that when WhiteSpace is turned on, WhiteSpace saves the font-lock
-state, that is, if font-lock is on or off.  And WhiteSpace restores the
-font-lock state when it is turned off.  So, if WhiteSpace is turned on and
-font-lock is off, WhiteSpace also turns on the font-lock to highlight
-blanks, but the font-lock will be turned off when WhiteSpace is turned off.
-Thus, turn on font-lock before WhiteSpace is on, if you want that font-lock
-continues on after WhiteSpace is turned off.
+Note that when !WhiteSpace is turned on, !WhiteSpace saves the font-lock
+state, that is, if font-lock is on or off.  And !WhiteSpace restores the
+font-lock state when it is turned off.  So, if !WhiteSpace is turned on and
+font-lock is off, !WhiteSpace also turns on the font-lock to highlight
+blanks, but the font-lock will be turned off when !WhiteSpace is turned off.
+Thus, turn on font-lock before !WhiteSpace is on, if you want that font-lock
+continues on after !WhiteSpace is turned off.
 
-When WhiteSpace is on, it takes care of highlighting some special
+When !WhiteSpace is on, it takes care of highlighting some special
 characters over the default mechanism of `nobreak-char-display'
 (which see) and `show-trailing-whitespace' (which see).
 
@@ -56,30 +56,30 @@ Also the spaces at beginning of buffer are not highlighted while point is at
 beginning of buffer; and the spaces at end of buffer are not highlighted
 while point is at end of buffer.
 
-There are two ways of using WhiteSpace: local and global.
+There are two ways of using !WhiteSpace: local and global.
 
-* Local WhiteSpace affects only the current buffer.
+* Local !WhiteSpace affects only the current buffer.
 
-* Global WhiteSpace affects all current and future buffers.  That
-is, if you turn on global WhiteSpace and then create a new
-buffer, the new buffer will also have WhiteSpace on.  The
+* Global !WhiteSpace affects all current and future buffers.  That
+is, if you turn on global !WhiteSpace and then create a new
+buffer, the new buffer will also have !WhiteSpace on.  The
 `whitespace-global-modes' variable controls which major-mode will be
 automagically turned on.
 
 You can mix the local and global usage without any conflict.  But
-local WhiteSpace has priority over global WhiteSpace.  WhiteSpace
+local !WhiteSpace has priority over global !WhiteSpace.  !WhiteSpace
 is active in a buffer if you have enabled it in that buffer or if
 you have enabled it globally.
 
-When global and local WhiteSpace are on:
+When global and local !WhiteSpace are on:
 
-* if local WhiteSpace is turned off, WhiteSpace is turned off
+* if local !WhiteSpace is turned off, !WhiteSpace is turned off
 for the current buffer only.
 
-* if global WhiteSpace is turned off, WhiteSpace continues on
-only in the buffers in which local WhiteSpace is on.
+* if global !WhiteSpace is turned off, !WhiteSpace continues on
+only in the buffers in which local !WhiteSpace is on.
 
-To use WhiteSpace, insert in your ##~/.emacs##:
+To use !WhiteSpace, insert in your ##~/.emacs##:
 
    (require 'whitespace)
 
@@ -90,7 +90,7 @@ Or autoload at least one of the commands`whitespace-mode',
    (autoload 'whitespace-mode           "whitespace" "Toggle whitespace visualization."        t)
    (autoload 'whitespace-toggle-options "whitespace" "Toggle local `whitespace-mode' options." t)
 
-WhiteSpace was inspired by:
+!WhiteSpace was inspired by:
 
 : ##whitespace.el## -- Rajesh Vaidheeswarran <_rv_@_gnu_._org_>
 :: Warn about and clean bogus whitespaces in the file
@@ -112,14 +112,14 @@ WhiteSpace was inspired by:
 :: (handle display table, his code was modified, but the main
 idea was kept)
 
-For good performance, be sure to byte-compile WhiteSpace, e.g.
+For good performance, be sure to byte-compile !WhiteSpace, e.g.
 
    M-x byte-compile-file <give the path to whitespace.el when prompted>
 
 This will generate whitespace.elc, which will be loaded instead of
 Lisp:whitespace.el.
 
-WhiteSpace was tested with GNU Emacs 22 and 23.
+!WhiteSpace was tested with GNU Emacs 22 and 23.
 
 
 == Using whitespace ==
@@ -127,37 +127,37 @@ WhiteSpace was tested with GNU Emacs 22 and 23.
 There is no problem if you mix local and global minor mode usage.
 
 <u>LOCAL WhiteSpace</u>:
-: To toggle WhiteSpace options locally, type:
+: To toggle !WhiteSpace options locally, type:
 :: ##M-x whitespace-toggle-options RET##
 
 [new]
-: To activate WhiteSpace locally, type:
+: To activate !WhiteSpace locally, type:
 :: ##C-u 1 M-x whitespace-mode RET##
 [new]
 
-: To deactivate WhiteSpace locally, type:
+: To deactivate !WhiteSpace locally, type:
 :: ##C-u 0 M-x whitespace-mode RET##
 
 [new]
-: To toggle WhiteSpace locally, type:
+: To toggle !WhiteSpace locally, type:
 :: ##M-x whitespace-mode RET##
 [new]
 
 
 <u>GLOBAL WhiteSpace</u>:
-: To toggle WhiteSpace options globally, type:
+: To toggle !WhiteSpace options globally, type:
 :: ##M-x global-whitespace-toggle-options RET##
 
 [new]
-: To activate WhiteSpace globally, type:
+: To activate !WhiteSpace globally, type:
 :: ##C-u 1 M-x global-whitespace-mode RET##
 [new]
 
-: To deactivate WhiteSpace globally, type:
+: To deactivate !WhiteSpace globally, type:
 :: ##C-u 0 M-x global-whitespace-mode RET##
 
 [new]
-: To toggle WhiteSpace globally, type:
+: To toggle !WhiteSpace globally, type:
 :: ##M-x global-whitespace-mode RET##
 [new]
 
@@ -229,18 +229,18 @@ is non-nil; otherwise, replace TABs by SPACEs.
 
 == Hooks ==
 
-WhiteSpace has the following hook variables:
+!WhiteSpace has the following hook variables:
 
-; `whitespace-mode-hook' : It is evaluated always when WhiteSpace is turned on.
+; `whitespace-mode-hook' : It is evaluated always when !WhiteSpace is turned on.
 
-; `global-whitespace-mode-hook' : It is evaluated always when WhiteSpace is turned on globally.
+; `global-whitespace-mode-hook' : It is evaluated always when !WhiteSpace is turned on globally.
 
-; `whitespace-load-hook' : It is evaluated after WhiteSpace package is loaded.
+; `whitespace-load-hook' : It is evaluated after !WhiteSpace package is loaded.
 
 
 == Options ==
 
-Below it's shown a brief description of WhiteSpace options, please, see the
+Below it's shown a brief description of !WhiteSpace options, please, see the
 options declaration in the code for a long documentation.
 
 ; `whitespace-style' : Specify which kind of blank is visualized.
@@ -287,7 +287,7 @@ options declaration in the code for a long documentation.
 
 ; `whitespace-display-mappings' : Specify an alist of mappings for displaying characters.
 
-; `whitespace-global-modes' : Modes for which global WhiteSpace is automagically turned on.
+; `whitespace-global-modes' : Modes for which global !WhiteSpace is automagically turned on.
 
 ; `whitespace-action' : Specify which action is taken when a buffer is visited or written.
 
@@ -317,7 +317,7 @@ In Emacs 21 or lower:
 # then click on ##Browse Customization Groups##,
 # expand ##Data## group,
 # expand ##Whitespace## group
-# and then customize WhiteSpace options.
+# and then customize !WhiteSpace options.
 
 In Emacs 22 or higher:
 # click on MenuBar ##Options## option,
@@ -325,7 +325,7 @@ In Emacs 22 or higher:
 # then click on ##Browse Customization Groups##,
 # expand ##Data## group,
 # expand ##Whitespace## group
-# and then customize WhiteSpace options.
+# and then customize !WhiteSpace options.
 
 Through this way, you may choose if the settings are kept or not when you leave out the current Emacs session.
 [new]
@@ -513,18 +513,18 @@ It's a list containing some or all of the following values:
 
 ; ##nil## : no action is taken.
 
-; ##cleanup## : clean up any bogus WhiteSpace always when local
-WhiteSpace is turned on.
+; ##cleanup## : clean up any bogus !WhiteSpace always when local
+!WhiteSpace is turned on.
 : See `whitespace-cleanup' and `whitespace-cleanup-region'.
 
-; ##report-on-bogus## : report if there is any bogus WhiteSpace always
-when local WhiteSpace is turned on.
+; ##report-on-bogus## : report if there is any bogus !WhiteSpace always
+when local !WhiteSpace is turned on.
 
-; ##auto-cleanup## : clean up any bogus WhiteSpace when buffer is
+; ##auto-cleanup## : clean up any bogus !WhiteSpace when buffer is
 written.
 : See `whitespace-cleanup' and `whitespace-cleanup-region'.
 
-; ##abort-on-bogus## : abort if there is any bogus WhiteSpace and the
+; ##abort-on-bogus## : abort if there is any bogus !WhiteSpace and the
 buffer is written.
 
 ; ##warn-read-only## : give a warning if `cleanup' or `auto-cleanup'
@@ -535,7 +535,7 @@ Any other value is treated as ##nil##.
 
 == TAB & Display Table ==
 
-When WhiteSpace is on and a TAB occupies exactly one column, it
+When !WhiteSpace is on and a TAB occupies exactly one column, it
 will display the character ##?\xBB## at that column followed by a TAB
 which goes to the next TAB column.  This is due the way the Emacs display
 engine works.
@@ -618,7 +618,7 @@ There are the following possibilities to deal with the situation above:
 : Thanks. -- ViniciusJoseLatorre
 
 :: ------------
-:: Also I modified the WhiteSpace source here in EmacsWiki to run in Emacs 21, 22
+:: Also I modified the !WhiteSpace source here in EmacsWiki to run in Emacs 21, 22
 and 23.
 :: -- ViniciusJoseLatorre
 
@@ -683,7 +683,7 @@ Any idea ? Thank you.
 
 [new]
 : Hi Thierry, as we could see by email, this was an Emacs problem instead of a
-WhiteSpace problem. Thanks for your report.
+!WhiteSpace problem. Thanks for your report.
 : -- ViniciusJoseLatorre
 
 ----
@@ -789,7 +789,7 @@ I don't think there is a solution to this on a local, per-buffer basis with `glo
 
 [new]
 : Hi,
-: Indeed, this problem is not addressed by WhiteSpace at moment. I'll try to fix it.
+: Indeed, this problem is not addressed by !WhiteSpace at moment. I'll try to fix it.
 : Thanks for reporting. -- ViniciusJoseLatorre
 
 :: ------------
@@ -834,7 +834,7 @@ I'm also using LineNumbers, and whitespace mode affects the spaces next to the n
 
 [new]
 : Hi,
-: It works fine when opening files which has major mode declared in ##whitespace-global-modes## variable. For example, if a C++ buffer is opened (##C-x C-f test.cpp RET##) the global WhiteSpace highlighting works. ''NOTE:'' the buffer ##test.cpp## in the previous example does not have a file associated.
+: It works fine when opening files which has major mode declared in ##whitespace-global-modes## variable. For example, if a C++ buffer is opened (##C-x C-f test.cpp RET##) the global !WhiteSpace highlighting works. ''NOTE:'' the buffer ##test.cpp## in the previous example does not have a file associated.
 : Well, I don't know LineNumbers packages but if the LineNumbers packages insert strings at beginning of each line, I see no trivial way to avoid the extra spaces highlighting. Now, if LineNumbers packages insert text properties at beginning of each line or create a parallel buffer then probably there is a good solution.
 : Could you, please, send me an email with the steps necessary to reproduce this problem starting with ##emacs -Q##?
 : Send me also which LineNumbers package and the environment setting for this package you are using.
@@ -845,7 +845,7 @@ I'm also using LineNumbers, and whitespace mode affects the spaces next to the n
 :: I've just seen LineNumbers page (##linum.el## file). One possible solution for the blank visualization next to the numbers could be to use one of the following settings:
 :: 1. right justified: ##(setq linum-format (format "%%05d%c" ?\x200B))##
 :: 2. left justified: ##(setq linum-format (format "%%d%c" ?\x200B))##
-:: The character ##?\x200B## is a zero width space which is not highlighted by WhiteSpace.
+:: The character ##?\x200B## is a zero width space which is not highlighted by !WhiteSpace.
 :: Another solution could be to change LineNumbers packages to not use spaces to separate the line number from the line, but use the width text property.
 :: -- ViniciusJoseLatorre
 
@@ -890,8 +890,8 @@ But I still don't see it. Normal spaces are displayed as intented by whitespace.
 [new]
 
 : Hi Flo,
-: Ok, it seems you modified the ##whitespace.el## source file. So, you should terminate the current Emacs session (##C-x C-c##), start a new Emacs session, open the modified ##whitespace.el## source file, evaluate the buffer (##M-x eval-buffer RET##), open the file which contains ##?\x200B## characters or insert these characters in a file, and, finally, turn on WhiteSpace (##M-x whitespace-mode RET##). The ##?\x200B## characters should be marked.
-: Now, if you are only testing, use ##setq## instead of ##defcustom##, reevaluate the region containing ##setq## (##M-x eval-region RET##), go to the file containing ##?\x200B## characters, turn off WhiteSpace (because it is using the old ##whitespace-display-mappings## value), and turn on WhiteSpace (now use the new ##whitespace-display-mappings## value).
+: Ok, it seems you modified the ##whitespace.el## source file. So, you should terminate the current Emacs session (##C-x C-c##), start a new Emacs session, open the modified ##whitespace.el## source file, evaluate the buffer (##M-x eval-buffer RET##), open the file which contains ##?\x200B## characters or insert these characters in a file, and, finally, turn on !WhiteSpace (##M-x whitespace-mode RET##). The ##?\x200B## characters should be marked.
+: Now, if you are only testing, use ##setq## instead of ##defcustom##, reevaluate the region containing ##setq## (##M-x eval-region RET##), go to the file containing ##?\x200B## characters, turn off !WhiteSpace (because it is using the old ##whitespace-display-mappings## value), and turn on !WhiteSpace (now use the new ##whitespace-display-mappings## value).
 : -- ViniciusJoseLatorre
 
 
