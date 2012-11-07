@@ -126,7 +126,7 @@ Lisp:whitespace.el.
 
 There is no problem if you mix local and global minor mode usage.
 
-<u>LOCAL WhiteSpace</u>:
+<u>LOCAL !WhiteSpace</u>:
 : To toggle !WhiteSpace options locally, type:
 :: ##M-x whitespace-toggle-options RET##
 
@@ -144,7 +144,7 @@ There is no problem if you mix local and global minor mode usage.
 [new]
 
 
-<u>GLOBAL WhiteSpace</u>:
+<u>GLOBAL !WhiteSpace</u>:
 : To toggle !WhiteSpace options globally, type:
 :: ##M-x global-whitespace-toggle-options RET##
 
