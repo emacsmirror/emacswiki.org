@@ -46,8 +46,11 @@ The merge may fail due to a change that conflicts with yours.  You'll need to fi
       bzr commit -m "Merge from upstream master."
 
 You will have to continue merging in this way until you code is merged.
-[ We very rarely merge code like that, so don't expect this workflow to work the way it's described.  --Stefan Monnier ]
 
+[new]
+We very rarely merge code like that, so don't expect this workflow to work the way it's described. -- Stefan Monnier, Emacs Maintainer
+
+[new]
 But really, if you find yourself making one code change to Emacs, you'll probably make more, so you should just take the time set to yourself up in the way described for [[BzrForEmacsDevs]].  Then you can follow the workflows described there (/i.e./, create a repository and mirror branch), and do:
 
       cd /$DEVHOME/emacs
