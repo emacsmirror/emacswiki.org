@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Nov  3 12:36:01 2012 (-0700)
+;; Last-Updated: Thu Nov  8 12:33:49 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 23243
+;;     Update #: 23244
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Doc URL: http://emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1000,9 +1000,9 @@
 ;;    `icicle-get-anything-input-delay',
 ;;    `icicle-get-anything-req-pat-chars',
 ;;    `icicle-get-anything-types',
-;;    `icicle-get-candidates-from-saved-set', `icicle-goto-marker-1',
-;;    `icicle-goto-marker-1-action', `icicle-group-regexp',
-;;    `icicle-dired-guess-shell-command',
+;;    `icicle-get-candidates-from-saved-set', `icicle-get-safe',
+;;    `icicle-goto-marker-1', `icicle-goto-marker-1-action',
+;;    `icicle-group-regexp', `icicle-dired-guess-shell-command',
 ;;    `icicle-help-on-candidate-symbol', `icicle-help-line-buffer',
 ;;    `icicle-help-line-file', `icicle-help-string-completion',
 ;;    `icicle-highlight-candidate-in-Completions',
