@@ -67,16 +67,26 @@ Here's a "superior" version of the above function. Works in any mode for any com
     (and (nth 8 syn)
          (not (nth 3 syn)))))
 
- (defun end-of-code-or-line+ ()
-  "Move to EOL. If already there, to EOL sans comments.
-    That is, the end of the code, ignoring any trailing comment
-    or whitespace."
-  (interactive)
-  (if (not (eolp))
-      (end-of-line)
-    (while (point-in-comment)
-      (backward-char))
-    (skip-chars-backward " \t")))
+ (defun end-of-code-or-line+ (arg)
+  "Move to the end of code. If already there, move to the end of line,
+  that is after the possible comment. If at the end of line, move to the
+  end of code.
+
+  Comments are recognized in any mode that sets syntax-ppss properly."
+  (interactive "P")
+  (let ((eoc (save-excursion
+               (move-end-of-line arg)
+               (while (point-in-comment)
+                 (backward-char))
+               (skip-chars-backward " \t")
+               (point))))
+    (cond ((= (point) eoc)
+           (move-end-of-line arg))
+          (t
+           (move-end-of-line arg)
+           (while (point-in-comment)
+             (backward-char))
+           (skip-chars-backward " \t")))))
 
 -- Fuco
 
