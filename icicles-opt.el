@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Nov  3 12:50:14 2012 (-0700)
+;; Last-Updated: Thu Nov  8 13:33:20 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 5356
+;;     Update #: 5359
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -20,7 +20,7 @@
 ;;
 ;;   `cl', `el-swank-fuzzy', `ffap', `ffap-', `fuzzy', `fuzzy-match',
 ;;   `hexrgb', `icicles-face', `kmacro', `levenshtein', `regexp-opt',
-;;   `thingatpt', `thingatpt+', `wid-edit', `widget'.
+;;   `thingatpt', `thingatpt+', `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -4412,6 +4412,7 @@ Same as `widgetp' in Emacs 22+.  Defined for Emacs 20 and 21."
 ;;;###autoload
 (defcustom icicle-widgets-to-redefine `(file ,@(and (require 'wid-edit+ nil t)  '(color)))
   "*List of widgets to be redefined to provide Icicles completion.
+Each widget must be a symbol with property `widget-type'.
 When in Icicle mode, Icicles completion is available.  Otherwise,
 vanilla completion is available.  In other words, with Icicle mode
 turned off, you should get the ordinary behavior.
@@ -4424,7 +4425,8 @@ Customize into your `user-init-file' or your `custom-file' is invoked
 before you enter Icicle mode.  (Alternatively, you can toggle Icicle
 mode twice.)"
   :type '(repeat (restricted-sexp :tag "Widget (a symbol)"
-                  :match-alternatives (icicle-widgetp) :value ignore))
+                  :match-alternatives (lambda (obj) (and (symbolp obj)  (icicle-widgetp obj)))
+                  :value ignore))
   :set (lambda (sym defs)
          (custom-set-default sym defs)
          (when (boundp 'icicle-mode-map) ; Avoid error on initialization.
