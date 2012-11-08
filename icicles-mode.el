@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Oct 27 17:03:12 2012 (-0700)
+;; Last-Updated: Thu Nov  8 13:28:02 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 9147
+;;     Update #: 9150
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -23,18 +23,16 @@
 ;;   `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
 ;;   `bookmark+-lit', `cl', `cus-edit', `cus-face', `cus-load',
 ;;   `cus-start', `dired', `dired+', `dired-aux', `dired-x',
-;;   `doremi', `easymenu', `ediff-diff', `ediff-help', `ediff-init',
-;;   `ediff-merg', `ediff-mult', `ediff-util', `ediff-wind',
-;;   `el-swank-fuzzy', `ffap', `ffap-', `fit-frame', `frame-cmds',
-;;   `frame-fns', `fuzzy', `fuzzy-match', `help+20', `hexrgb',
-;;   `icicles-cmd1', `icicles-cmd2', `icicles-face', `icicles-fn',
-;;   `icicles-mcmd', `icicles-opt', `icicles-var', `image-dired',
-;;   `info', `info+', `kmacro', `levenshtein', `menu-bar',
-;;   `menu-bar+', `misc-cmds', `misc-fns', `mouse3', `mwheel',
-;;   `naked', `pp', `pp+', `regexp-opt', `ring', `ring+',
-;;   `second-sel', `strings', `thingatpt', `thingatpt+', `unaccent',
-;;   `w32-browser', `w32browser-dlgopen', `wid-edit', `wid-edit+',
-;;   `widget'.
+;;   `doremi', `easymenu', `el-swank-fuzzy', `ffap', `ffap-',
+;;   `fit-frame', `frame-cmds', `frame-fns', `fuzzy', `fuzzy-match',
+;;   `help+20', `hexrgb', `icicles-cmd1', `icicles-cmd2',
+;;   `icicles-face', `icicles-fn', `icicles-mcmd', `icicles-opt',
+;;   `icicles-var', `image-dired', `info', `info+', `kmacro',
+;;   `levenshtein', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
+;;   `mouse3', `mwheel', `naked', `pp', `pp+', `regexp-opt', `ring',
+;;   `ring+', `second-sel', `strings', `thingatpt', `thingatpt+',
+;;   `unaccent', `w32-browser', `w32browser-dlgopen', `wid-edit',
+;;   `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -3699,7 +3697,7 @@ complete)"))
                                         ; `C-S-up', `C-S-down', `C-S-prior', `C-S-next',
   (define-key map (icicle-kbd "M-return")  'icicle-candidate-read-fn-invoke) ;`M-RET' as `M-return'
   (define-key map (icicle-kbd "C-M-m")     'icicle-candidate-read-fn-invoke) ;`M-RET' as `ESC RET'
-  (define-key map (icicle-kbd "C-S-return") 'icicle-candidate-alt-action) ; `C-S-return'
+  (define-key map (icicle-kbd "C-S-return") 'icicle-candidate-alt-action) ; `C-S-return' (`C-S-RET')
   (define-key map (icicle-kbd "delete")    'icicle-remove-candidate) ; `delete'
   (define-key map (icicle-kbd "S-delete")  'icicle-delete-candidate-object) ; `S-delete'
   (define-key map (icicle-kbd "C-w")       'icicle-kill-region) ; `C-w'
