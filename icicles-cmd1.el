@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Nov  3 09:59:04 2012 (-0700)
+;; Last-Updated: Wed Nov  7 22:14:18 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 25082
+;;     Update #: 25084
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -8361,7 +8361,7 @@ Unicode chars, then customize option `icicle-zap-to-char-candidates'."
     (with-no-warnings                   ; Avoid "obsolete" warning for `translation-table-for-input'.
         (when (char-table-p translation-table-for-input) ; Free var here.
           (setq char  (or (aref translation-table-for-input char)  char))))
-    (kill-region (point) (progn (search-forward (char-to-string char) nil nil arg)
+    (kill-region (point) (progn (search-forward (string char) nil nil arg)
                                 ;; (goto-char (if (> arg 0)
                                 ;;                (max (point-min) (1- (point)))
                                 ;;              (min (point-max) (1+ (point))))) ; (vanilla)
