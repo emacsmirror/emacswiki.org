@@ -58,6 +58,29 @@ To get the same same type of functionality at the end of the line, try this func
 
 Note the similarity with HtmlEndOfLine.
 [new]
+Here's a "superior" version of the above function. Works in any mode for any comment type, so long as the major mode defines what is a comment. It uses the parse info.
+
+ (defun point-in-comment ()
+  "Determine if the point is inside a comment"
+  (interactive)
+  (let ((syn (syntax-ppss)))
+    (and (nth 8 syn)
+         (not (nth 3 syn)))))
+
+ (defun end-of-code-or-line+ ()
+  "Move to EOL. If already there, to EOL sans comments.
+    That is, the end of the code, ignoring any trailing comment
+    or whitespace."
+  (interactive)
+  (if (not (eolp))
+      (end-of-line)
+    (while (point-in-comment)
+      (backward-char))
+    (skip-chars-backward " \t")))
+
+-- Fuco
+
+[new]
 Here comes a function which goes to the indention, begining of line or begining of buffer:
 
  (defun my-home () (interactive)
