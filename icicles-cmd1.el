@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Nov  7 22:14:18 2012 (-0800)
+;; Last-Updated: Thu Nov  8 13:17:48 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 25084
+;;     Update #: 25146
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1955,7 +1955,7 @@ Same as `icicle-customize-face' except it uses a different window."
 (defun icicle-customize-face (face &optional other-window)
   "Customize face FACE.  If OTHER-WINDOW is non-nil, use another window.
 Input-candidate completion and cycling are available.  While cycling,
-these keys with prefix `C-' are active:
+these keys with prefix `C-' are active\\<minibuffer-local-completion-map>:
 
 `C-mouse-2', `C-RET' - Act on current completion candidate only
 `C-down'  - Move to next completion candidate and act
@@ -1964,16 +1964,16 @@ these keys with prefix `C-' are active:
 `C-prior' - Move to previous apropos-completion candidate and act
 `C-end'   - Move to next prefix-completion candidate and act
 `C-home'  - Move to previous prefix-completion candidate and act
-`M-!'     - Act on *all* candidates (or all that are saved):
+`\\[icicle-all-candidates-list-action]'     - Act on *all* candidates (or all that are saved):
             Customize all in the same buffer.
-`C-!'     - Act on *all* candidates (or all that are saved):
+`\\[icicle-all-candidates-action]'     - Act on *all* candidates (or all that are saved):
             Customize each in a separate buffer.
 
 When candidate action and cycling are combined (e.g. `C-next'), option
 `icicle-act-before-cycle-flag' determines which occurs first.
 
 With prefix `C-M-' instead of `C-', the same keys (`C-M-mouse-2',
-`C-M-RET', `C-M-down', and so on) provide help about candidates.
+`C-M-return', `C-M-down', and so on) provide help about candidates.
 
 Use `mouse-2', `RET', or `S-RET' to finally choose a candidate,
 or `C-g' to quit.
@@ -2123,7 +2123,7 @@ separate the words (any strings, in fact, including regexps) using
 (unless (fboundp 'custom-variable-p)
   (defun custom-variable-p (variable)
     "Return non-nil if VARIABLE is a custom variable."
-    (or (get variable 'standard-value)  (get variable 'custom-autoload))))
+    (or (icicle-get-safe variable 'standard-value)  (icicle-get-safe variable 'custom-autoload))))
 
 ;; Icicles replacement for `customize-apropos-faces', defined in `cus-edit.el'.
 ;; 1. Uses `completing-read' to read the regexp.
@@ -3611,7 +3611,7 @@ Arguments:
 
 If there is only one candidate, then FINAL-ACTION-FN is called
 immediately.  The candidate is not available to act on (e.g. using
-``C-S-RET').
+\\<minibuffer-local-completion-map>`\\[icicle-candidate-alt-action]').
 
 Returns:
  The result of executing FINAL-ACTION-FN, if that arg is non-nil.
@@ -3752,9 +3752,9 @@ then customize option `icicle-top-level-key-bindings'." ; Doc string
     ;; But do not show the message if we are not at the `M-x' top level, i.e., if we are acting on a
     ;; candidate command using `C-RET' instead of `RET'.
     (when (and suggest-key-bindings  (not executing-kbd-macro)
-               (not (or (get this-command 'icicle-action-command)
+               (not (or (icicle-get-safe this-command 'icicle-action-command)
                         ;; This one is used for `*-per-mode-action', which sets `this-command' to the cycler.
-                        (get this-command 'icicle-cycling-command))))
+                        (icicle-get-safe this-command 'icicle-cycling-command))))
       (let* ((bindings   (if (> emacs-major-version 21)
                              (where-is-internal cmd overriding-local-map t 'NOINDIRECT)
                            (where-is-internal cmd overriding-local-map t)))
@@ -4097,7 +4097,8 @@ the entries to delete from it.  You can use multi-command completion
 for both inputs.  That is, you can act on multiple histories and
 delete multiple entries from each.
 
-For convenience, you can use `S-delete' the same way as `C-RET': Each
+For convenience, you can use \\<minibuffer-local-completion-map>\
+`\\[icicle-delete-candidate-object]' the same way as `C-RET': Each
 of them deletes the current entry candidate from the history.
 
 With a prefix argument, empty the chosen history completely
@@ -4248,7 +4249,7 @@ candidates, as follows:
 
 (defun icicle-binary-option-p (symbol)
   "Non-nil if SYMBOL is a user option that has custom-type `boolean'."
-  (eq (get symbol 'custom-type) 'boolean))
+  (eq (icicle-get-safe symbol 'custom-type) 'boolean))
 
 ;;;###autoload (autoload 'icicle-increment-option "icicles")
 (icicle-define-command icicle-increment-option ; Command name
@@ -4267,9 +4268,9 @@ This command needs library `doremi.el'." ; Doc string
   ((enable-recursive-minibuffers            t) ; Bindings
    (alt-fn                                  nil)
    (icicle-orig-must-pass-after-match-pred  icicle-must-pass-after-match-predicate)
-   (pred                                    (lambda (s)
-                                              (unless (symbolp s) (setq s  (intern s)))
-                                              (memq (get s 'custom-type) '(number integer float))))
+   (pred                                    (lambda (symb)
+                                              (unless (symbolp symb) (setq symb  (intern symb)))
+                                              (memq (get symb 'custom-type) '(number integer float))))
    (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
    (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))
    (icicle-candidate-alt-action-fn
@@ -4298,12 +4299,12 @@ This command needs library `doremi.el'." ; Doc string
    (alt-fn                                  nil)
    (icicle-orig-must-pass-after-match-pred  icicle-must-pass-after-match-predicate)
    (pred                                    (if prefix-arg
-                                                (lambda (s)
-                                                  (unless (symbolp s) (setq s  (intern s)))
-                                                  (memq (get s 'custom-type) '(number integer float)))
-                                              (lambda (s)
-                                                (unless (symbolp s) (setq s  (intern s)))
-                                                (boundp s))))
+                                                (lambda (symb)
+                                                  (unless (symbolp symb) (setq symb  (intern symb)))
+                                                  (memq (get symb 'custom-type) '(number integer float)))
+                                              (lambda (symb)
+                                                (unless (symbolp symb) (setq symb  (intern symb)))
+                                                (boundp symb))))
    (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
    (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))
    (icicle-candidate-alt-action-fn
@@ -4636,12 +4637,13 @@ In particular, if the option value is nil and you try to jump to a
 bookmark that is not up to date or does not exist, then try using a
 prefix arg to refresh the cache.
 
-During completion, you can use `S-delete' on a bookmark to delete it.
+During completion, you can use \\<minibuffer-local-completion-map>\
+`\\[icicle-delete-candidate-object]' on a bookmark to delete it.
 
 If you also use library `Bookmark+', then:
 
- * `C-M-RET' shows detailed info about the current bookmark candidate.
-   `C-u C-M-RET' shows the complete, internal info for the bookmark.
+ * `C-M-return' shows detailed info about the current bookmark candidate.
+   `C-u C-M-return' shows the complete, internal info for the bookmark.
    Likewise, for the other candidate help keys: `C-M-down' etc.
    (And the mode line always shows summary info about the bookmark.)
    
@@ -5998,7 +6000,7 @@ Otherwise:
 
  With a prefix argument, this is an Icicles multi-command - see
  command `icicle-mode'.  Input-candidate completion and cycling are
- available.  While cycling, these keys with prefix `C-' are active:
+ available.  While cycling, these keys with prefix `C-' are active\\<minibuffer-local-completion-map>:
 
  `C-RET'   - Act on current completion candidate only
  `C-down'  - Move to next completion candidate and act
@@ -6007,11 +6009,11 @@ Otherwise:
  `C-prior' - Move to previous apropos-completion candidate and act
  `C-end'   - Move to next prefix-completion candidate and act
  `C-home'  - Move to previous prefix-completion candidate and act
- `C-!'     - Act on *all* candidates (or all that are saved),
+ `\\[icicle-all-candidates-action]'     - Act on *all* candidates (or all that are saved),
              successively (careful!)
 
  With prefix `C-M-' instead of `C-', the same keys (`C-M-mouse-2',
- `C-M-RET', `C-M-down', and so on) provide help about candidates.
+ `C-M-return', `C-M-down', and so on) provide help about candidates.
 
  Use `mouse-2', `RET', or `S-RET' to finally choose a candidate,
  or `C-g' to quit.
@@ -6098,7 +6100,7 @@ The second part is matched as a regexp against buffer content.
 Candidates that do not match are filtered out.
 
 Your minibuffer input can match a buffer name or buffer content, or
-both.  Use `C-M-j' (equivalent here to `C-q C-g C-j') to input the
+both.  Use \\<minibuffer-local-completion-map>`C-M-j' (equivalent here to `C-q C-g C-j') to input the
 default separator.
 
 For example:
@@ -6141,7 +6143,7 @@ You can use these additional keys during completion:
 * `C-x M -'   Remove buffers in a given mode.  Repeatable.
 * `C-x C-m +' Keep only buffers in a mode derived from a given mode.
 * `C-x M +'   Keep only buffers in a given mode.
-* `S-delete'  Kill the buffer named by a completion candidate.
+* `\\[icicle-delete-candidate-object]'  Kill the buffer named by a completion candidate.
 
 These options, when non-nil, control candidate matching and filtering:
 
@@ -6601,7 +6603,8 @@ Save the updated option."               ; Doc string
 ;;;###autoload (autoload 'icicle-buffer-config "icicles")
 (icicle-define-command icicle-buffer-config ; Command name
   "Choose a configuration of user options for `icicle-buffer'.
-You can use `S-delete' on any configuration during completion to
+You can use \\<minibuffer-local-completion-map>\
+`\\[icicle-delete-candidate-object]' on any configuration during completion to
 remove it.  See user option `icicle-buffer-configs'.
 See also commands `icicle-add-buffer-config' and
 `icicle-remove-buffer-config'."         ; Doc string
@@ -6672,7 +6675,8 @@ Save the updated option."               ; Doc string
 ;;;###autoload (autoload 'icicle-color-theme "icicles")
 (icicle-define-command icicle-color-theme ; Command name
   "Change color theme.
-You can use `S-delete' during completion to remove the current
+You can use \\<minibuffer-local-completion-map>\
+`\\[icicle-delete-candidate-object]' during completion to remove the current
 candidate from the list of color themes.
 
 If you use `C-g' during this command, the previous color-theme
@@ -6963,12 +6967,13 @@ default separator."
 ;;;###autoload (autoload 'icicle-delete-file "icicles")
 (icicle-define-file-command icicle-delete-file ; Command name
   "Delete a file or directory.
-During completion (`*' means this requires library `Bookmark+'):
+During completion (`*' means this requires library `Bookmark+')\\<minibuffer-local-completion-map>:
  *You can use `C-x a +' or `C-x a -' to add or remove tags from the
    current-candidate file.  You are prompted for the tags.
  *You can use `C-x m' to access file bookmarks (not just autofiles).
   You can use `C-c +' to create a new directory.
-  You can use `M-|' to open Dired on currently matching file names." ; Doc string
+  You can use `\\[icicle-all-candidates-list-alt-action]' to open Dired \
+on currently matching file names." ; Doc string
   (lambda (file)                        ; Function to perform the action
     (icicle-delete-file-or-directory file)
     (icicle-remove-candidate-display-others 'ALL))
@@ -6990,13 +6995,13 @@ During completion (`*' means this requires library `Bookmark+'):
 ;;;###autoload (autoload 'icicle-dired "icicles")
 (icicle-define-file-command icicle-dired
   "Multi-command version of `dired'.
-During completion (`*' means this requires library `Bookmark+'):
+During completion (`*' means this requires library `Bookmark+')\\<minibuffer-local-completion-map>:
  *You can use `C-x a +' or `C-x a -' to add or remove tags from the
    current-candidate file.  You are prompted for the tags.
  *You can use `C-x m' to access file bookmarks (not just autofiles).
   You can use `C-c +' to create a new directory.
-  You can use `M-|' to open Dired on currently matching file names.
-  You can use `S-delete' to delete a candidate file or (empty) dir." ; Doc string
+  You can use `\\[icicle-all-candidates-list-alt-action]' to open Dired on currently matching file names.
+  You can use `\\[icicle-delete-candidate-object]' to delete a candidate file or (empty) dir." ; Doc string
   (lambda (dir) (dired dir switches))   ; FREE here: SWITCHES.
   "Dired (directory): " nil default-directory nil nil nil ; `read-file-name' args
   (icicle-file-bindings                 ; Bindings
@@ -7044,12 +7049,12 @@ ordinary strings.  It knows nothing of file names per se.  In
 particular, you cannot use remote file-name syntax if you use a prefix
 argument.
 
-During completion:
+During completion\\<minibuffer-local-completion-map>:
  You can use `C-x m' to access file bookmarks, if you use library
   `Bookmark+'.
  You can use `C-c +' to create a new directory.
- You can use `M-|' to open Dired on the currently matching file names.
- You can use `S-delete' to delete a candidate file or (empty)
+ You can use `\\[icicle-all-candidates-list-alt-action]' to open Dired on the currently matching file names.
+ You can use `\\[icicle-delete-candidate-object]' to delete a candidate file or (empty)
   directory.
 
 By default, Icicle mode remaps all key sequences that are normally bound
@@ -7094,7 +7099,7 @@ remote file-name syntax.
 
 Also, you cannot move up and down the file hierarchy the same way you
 can for ordinary (non-absolute) file-name completion.  To change to a
-different directory, with its files as candidates, use `C-c C-d' from
+different directory, with its files as candidates, use \\<minibuffer-local-completion-map>`C-c C-d' from
 the minibuffer - it prompts you for the new directory.
 
 Remember that you can use `C-x .' to hide the common match portion of
@@ -7111,8 +7116,8 @@ During completion (`*' means this requires library `Bookmark+'):
  *You can use `C-x m' to access file bookmarks (not just autofiles).
   You can use `C-c C-d' (a la `cd') to change the `default-directory'.
   You can use `C-c +' to create a new directory.
-  You can use `M-|' to open Dired on currently matching file names.
-  You can use `S-delete' to delete a candidate file or (empty) dir.
+  You can use `\\[icicle-all-candidates-list-alt-action]' to open Dired on currently matching file names.
+  You can use `\\[icicle-delete-candidate-object]' to delete a candidate file or (empty) dir.
 
 These options, when non-nil, control candidate matching and filtering:
 
@@ -7242,7 +7247,8 @@ visit a directory candidate that you choose.)
 
 If you use a prefix argument when you act on a completion candidate,
 then you visit the file or dir in read-only mode.  This includes when
-you act on all candidates using `C-!': precede the `C-!' with a prefix
+you act on all candidates using \\<minibuffer-local-completion-map>\
+`\\[icicle-all-candidates-action]': precede the `\\[icicle-all-candidates-action]' with a prefix
 arg.
 
 If you use a prefix arg for the command itself, this reverses the
@@ -7257,8 +7263,8 @@ During completion (`*' means this requires library `Bookmark+'):
    current-candidate file.  You are prompted for the tags.
  *You can use `C-x m' to access file bookmarks (not just autofiles).
   You can use `C-c +' to create a new directory.
-  You can use `M-|' to open Dired on currently matching file names.
-  You can use `S-delete' to delete a candidate file or (empty) dir.
+  You can use `\\[icicle-all-candidates-list-alt-action]' to open Dired on currently matching file names.
+  You can use `\\[icicle-delete-candidate-object]' to delete a candidate file or (empty) dir.
 
 These options, when non-nil, control candidate matching and filtering:
 
@@ -7345,14 +7351,14 @@ a prefix arg for the command, files are not visited in read-only mode
 by default and a prefix arg for an individual file visits it in
 read-only mode.
 
-During completion (`*' means this requires library `Bookmark+'):
+During completion (`*' means this requires library `Bookmark+')\\<minibuffer-local-completion-map>:
 
  *You can use `C-x a +' or `C-x a -' to add or remove tags from the
    current-candidate file.  You are prompted for the tags.
  *You can use `C-x m' to access file bookmarks (not just autofiles).
   You can use `C-c +' to create a new directory.
-  You can use `M-|' to open Dired on currently matching file names.
-  You can use `S-delete' to delete a candidate file or (empty) dir."
+  You can use `\\[icicle-all-candidates-list-alt-action]' to open Dired on currently matching file names.
+  You can use `\\[icicle-delete-candidate-object]' to delete a candidate file or (empty) dir."
   (interactive)
   (let ((current-prefix-arg  (not current-prefix-arg)))
     (icicle-find-file)))
@@ -7382,7 +7388,8 @@ visit a directory candidate that you choose.)
 
 If you use a prefix argument when you act on a completion candidate,
 then you visit the file or dir in read-only mode.  This includes when
-you act on all candidates using `C-!': precede the `C-!' with a prefix
+you act on all candidates using \\<minibuffer-local-completion-map>\
+`\\[icicle-all-candidates-action]': precede the `\\[icicle-all-candidates-action]' with a prefix
 arg.  (See below for the use of a prefix arg for the command itself.)
 
 Completion candidates are two-part multi-completions, with the second
@@ -7688,7 +7695,7 @@ Note that completion here matches candidates as ordinary strings.  It
 knows nothing of file names per se.  In particular, you cannot use
 remote file-name syntax.
 
-Remember that you can use `C-x .' to hide the common match portion of
+Remember that you can use \\<minibuffer-local-completion-map>`C-x .' to hide the common match portion of
 each candidate.  That can be particularly helpful for files that are
 in a common directory.
 
@@ -7698,10 +7705,10 @@ During completion (`*' means this requires library `Bookmark+'):
    current-candidate file.  You are prompted for the tags.
  *You can use `C-x m' to access file bookmarks (not just autofiles).
   You can use `C-c +' to create a new directory.
-  You can use `M-|' to open Dired on currently matching file names.
-  You can use `S-delete' to delete a candidate file or (empty) dir.
+  You can use `\\[icicle-all-candidates-list-alt-action]' to open Dired on currently matching file names.
+  You can use `\\[icicle-delete-candidate-object]' to delete a candidate file or (empty) dir.
 
-You can use any of the alternative-action keys, such as `C-S-RET', to
+You can use any of the alternative-action keys, such as `\\[icicle-candidate-alt-action]', to
 remove a candidate file from the recent files list, `recentf-list'.
 \(The file itself is not deleted.)
 
@@ -7889,7 +7896,7 @@ remote file-name syntax.
 
 You cannot move up and down the file hierarchy the same way you can
 for ordinary (non-absolute) file-name completion.  To change to a
-different directory, with its files as candidates, use `C-c C-d' from
+different directory, with its files as candidates, use \\<minibuffer-local-completion-map>`C-c C-d' from
 the minibuffer - it prompts you for the new directory.
 
 During completion (`*' means this requires library `Bookmark+'):
@@ -7899,8 +7906,8 @@ During completion (`*' means this requires library `Bookmark+'):
  *You can use `C-x m' to access file bookmarks (not just autofiles).
   You can use `C-c C-d' (a la `cd') to change the `default-directory'.
   You can use `C-c +' to create a new directory.
-  You can use `M-|' to open Dired on currently matching file names.
-  You can use `S-delete' to delete a candidate file or (empty) dir.
+  You can use `\\[icicle-all-candidates-list-alt-action]' to open Dired on currently matching file names.
+  You can use `\\[icicle-delete-candidate-object]' to delete a candidate file or (empty) dir.
 
 Directories in `icicle-ignored-directories' are ignored (skipped).  In
 addition, these options control candidate matching and filtering:
@@ -7970,7 +7977,7 @@ Icicles input pattern matching is available for completion.  This is
 absolute file-name completion, so your input can match any parts of
 the name, including directory components.
 
-Remember that you can use `C-x .' to hide the common match portion of
+Remember that you can use \\<minibuffer-local-completion-map>`C-x .' to hide the common match portion of
 each candidate.  That can be particularly helpful for files that are
 in a common directory.
 
@@ -7991,8 +7998,8 @@ During completion (`*' means this requires library `Bookmark+'):
    current-candidate file.  You are prompted for the tags.
  *You can use `C-x m' to access file bookmarks (not just autofiles).
   You can use `C-c +' to create a new directory.
-  You can use `M-|' to open Dired on currently matching file names.
-  You can use `S-delete' to delete a candidate file or (empty) dir.
+  You can use `\\[icicle-all-candidates-list-alt-action]' to open Dired on currently matching file names.
+  You can use `\\[icicle-delete-candidate-object]' to delete a candidate file or (empty) dir.
 
 These Icicles options control candidate matching and filtering:
 
@@ -8179,7 +8186,7 @@ directory components).
 `find-file' is called for the candidate(s) you choose, with the
 directory of the tags file as `default-directory'.
 
-Remember that you can use `C-x .' to hide the common match portion of
+Remember that you can use \\<minibuffer-local-completion-map>`C-x .' to hide the common match portion of
 each candidate.  That can be particularly helpful for files that are
 in a common directory.
 
@@ -8192,8 +8199,8 @@ During completion (`*' means this requires library `Bookmark+'):
    current-candidate file.  You are prompted for the tags.
  *You can use `C-x m' to access file bookmarks (not just autofiles).
   You can use `C-c +' to create a new directory.
-  You can use `M-|' to open Dired on currently matching file names.
-  You can use `S-delete' to delete a candidate file or (empty) dir.
+  You can use `\\[icicle-all-candidates-list-alt-action]' to open Dired on currently matching file names.
+  You can use `\\[icicle-delete-candidate-object]' to delete a candidate file or (empty) dir.
 
 These options, when non-nil, control candidate matching and filtering:
 
@@ -8457,10 +8464,10 @@ With a positive prefix arg, only buffers visiting files or directories
 With a negative prefix arg, only buffers associated with the selected
 frame are candidates.
 
-Use multi-command action keys (e.g. `C-RET', `C-mouse-2') to choose,
+Use multi-command action keys (e.g. \\<minibuffer-local-completion-map>`C-RET', `C-mouse-2') to choose,
 and a final-choice key (e.g. `RET', `mouse-2') to choose the last one.
 
-You can use `S-delete' during completion to kill a candidate buffer.
+You can use `\\[icicle-delete-candidate-object]' during completion to kill a candidate buffer.
 The list of names (strings) is returned.
 
 These options, when non-nil, control candidate matching and filtering:
@@ -8541,19 +8548,19 @@ candidates are multi-completions, with the first part being the
 bookmark name and the second part being the bookmark's file or buffer
 name.  Otherwise, the candidates are just the bookmark names.
 
-If you also use library Bookmark+ (`bookmark+.el') then:
+If you also use library Bookmark+ (`bookmark+.el') then\\<minibuffer-local-completion-map>:
 
  * Candidates displayed in `*Completions*' are color-coded by type.
  * You can sort the candidates (e.g. `C-,') in many more ways.
- * When you ask for help on a candidate (e.g. `C-M-RET'), detailed
+ * When you ask for help on a candidate (e.g. `C-M-return'), detailed
    information about the bookmark is shown in `*Help*'.  If you use a
-   prefix arg for this (e.g. `C-u C-M-RET') then the full, internal
+   prefix arg for this (e.g. `C-u C-M-return') then the full, internal
    form of the bookmark is shown.
 
 Use multi-command action keys (e.g. `C-RET', `C-mouse-2') to choose,
 and a final-choice key (e.g. `RET', `mouse-2') to choose the last one.
 
-You can use `S-delete' during completion to delete a candidate bookmark.
+You can use `\\[icicle-delete-candidate-object]' during completion to delete a candidate bookmark.
 The list of bookmark names (strings) is returned.
 
 Non-interactively:
@@ -8675,7 +8682,8 @@ Non-interactively:
 
 ;; $$$$$ (icicle-define-command icicle-file-list ; Command name
 ;;   "Choose a list of file names.
-;; You can use `S-delete' during completion to delete a candidate file.
+;; You can use \\<minibuffer-local-completion-map>\
+;;`\\[icicle-delete-candidate-object]' during completion to delete a candidate file.
 ;; The list of names (strings) is returned." ; Doc string
 ;;   (lambda (name) (push name file-names)) ; Function to perform the action
 ;;   "Choose file (`RET' when done): "     ; `completing-read' args
@@ -8691,15 +8699,15 @@ Non-interactively:
 ;;;###autoload (autoload 'icicle-file-list "icicles")
 (icicle-define-file-command icicle-file-list ; Command name
   "Choose a list of file and directory names (strings), and return it.
-Use multi-command action keys (e.g. `C-RET', `C-mouse-2') to choose,
+Use multi-command action keys (e.g. \\<minibuffer-local-completion-map>`C-RET', `C-mouse-2') to choose,
 and a final-choice key (e.g. `RET', `mouse-2') to choose the last one.
 
 You can navigate the directory tree, picking files and directories
 anywhere in the tree.
 
-Remember too that you can use `C-!' to gather all of the file names
+Remember too that you can use `\\[icicle-all-candidates-action]' to gather all of the file names
 matching your current input.  For example, apropos-completing with
-input `foo.*bar' and hitting `C-!' adds all file names matching that
+input `foo.*bar' and hitting `\\[icicle-all-candidates-action]' adds all file names matching that
 regexp.
 
 You can use either `RET' or `C-g' to finish adding file names to the
@@ -8711,8 +8719,8 @@ During completion (`*' means this requires library `Bookmark+'):
    current-candidate file.  You are prompted for the tags.
  *You can use `C-x m' to access file bookmarks (not just autofiles).
   You can use `C-c +' to create a new directory.
-  You can use `M-|' to open Dired on currently matching file names.
-  You can use `S-delete' to delete a candidate file or (empty) dir.
+  You can use `\\[icicle-all-candidates-list-alt-action]' to open Dired on currently matching file names.
+  You can use `\\[icicle-delete-candidate-object]' to delete a candidate file or (empty) dir.
 
 These options, when non-nil, control candidate matching and filtering:
 
@@ -8765,8 +8773,8 @@ If `icicle-add-proxy-candidates-flag' is non-nil, then certain Emacs
 variables whose values are lists of directories are available as proxy
 candidates.  This includes variables such as `load-path' and
 `exec-path'.  You can toggle `icicle-add-proxy-candidates-flag' using
-`\\<minibuffer-local-completion-map>\
-\\[icicle-toggle-proxy-candidates]'in the minibuffer.
+\\<minibuffer-local-completion-map>\
+`\\[icicle-toggle-proxy-candidates]'in the minibuffer.
 
 When you choose a proxy candidate all of its directories are added to
 the result list.  Non-directory elements in the variable value are
@@ -8776,7 +8784,7 @@ existing directory.
 
 Keep in mind that only those proxy candidates that match your current
 input are available.  In particular, if `insert-default-directory' is
-non-nil then you will want to use `M-k' to remove the default
+non-nil then you will want to use `\\[icicle-erase-minibuffer-or-history-element]' to remove the default
 directory from the minibuffer when you want to match proxy candidates.
 
 During completion (`*' means this requires library `Bookmark+'):
@@ -8785,8 +8793,8 @@ During completion (`*' means this requires library `Bookmark+'):
    current-candidate file.  You are prompted for the tags.
  *You can use `C-x m' to access file bookmarks (not just autofiles).
   You can use `C-c +' to create a new directory.
-  You can use `M-|' to open Dired on currently matching file names.
-  You can use `S-delete' to delete a candidate file or (empty) dir.
+  You can use `\\[icicle-all-candidates-list-alt-action]' to open Dired on currently matching file names.
+  You can use `\\[icicle-delete-candidate-object]' to delete a candidate file or (empty) dir.
 
 These options, when non-nil, control candidate matching and filtering:
 
