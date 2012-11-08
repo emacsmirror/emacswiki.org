@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Nov  7 11:27:09 2012 (-0800)
+;; Last-Updated: Thu Nov  8 13:12:23 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 18632
+;;     Update #: 18654
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -2333,7 +2333,7 @@ you do not want this remapping, then customize option
   (interactive "P")
   (let* ((char   (if (integerp last-command-event)
                      last-command-event
-                   (get last-command-event 'ascii-character)))
+                   (icicle-get-safe last-command-event 'ascii-character)))
          (digit  (- (logand char ?\177) ?0)))
     (cond ((integerp arg)
            (setq prefix-arg  (+ (* arg 10) (if (< arg 0) (- digit) digit))))
@@ -3423,10 +3423,10 @@ Set `icicle-current-completion-mode'.
 The order between NAV-FN and ACTION-FN respects the value of
 `icicle-act-before-cycle-flag'."
   ;; Set mode only if known.  Otherwise, leave it alone (e.g. for per-mode functions).
-  (cond ((and (symbolp nav-fn)  (get nav-fn 'icicle-apropos-cycling-command))
+  (cond ((icicle-get-safe nav-fn 'icicle-apropos-cycling-command)
          (setq icicle-current-completion-mode        'apropos
                icicle-next-prefix-complete-cycles-p  nil))
-        ((and (symbolp nav-fn)  (get nav-fn 'icicle-prefix-cycling-command))
+        ((icicle-get-safe nav-fn 'icicle-prefix-cycling-command)
          (setq icicle-current-completion-mode         'prefix
                icicle-next-apropos-complete-cycles-p  nil)))
 
@@ -3435,7 +3435,7 @@ The order between NAV-FN and ACTION-FN respects the value of
   ;; to ensure the correct candidate number for a series of replacements.
   ;; (Not currently used for the `icicle-act-before-cycle-flag' case, but we do it there also, anyway.)
   (cond (icicle-act-before-cycle-flag
-         (let ((icicle-acting-on-next/prev  (and (symbolp nav-fn)  (get nav-fn 'icicle-cycling-command))))
+         (let ((icicle-acting-on-next/prev  (icicle-get-safe nav-fn 'icicle-cycling-command)))
            (save-excursion (save-selected-window (funcall action-fn))))
          (funcall nav-fn nth))
         (t
@@ -3443,7 +3443,7 @@ The order between NAV-FN and ACTION-FN respects the value of
          ;; in `*Completions*', because help sits for `icicle-help-in-mode-line-delay' sec.
          ;; Display the help after we do the action.
          (let ((icicle-help-in-mode-line-delay  0)) (funcall nav-fn nth))
-         (let ((icicle-acting-on-next/prev  (and (symbolp nav-fn)  (get nav-fn 'icicle-cycling-command))))
+         (let ((icicle-acting-on-next/prev  (icicle-get-safe nav-fn 'icicle-cycling-command)))
            (save-excursion (save-selected-window (funcall action-fn))))
          (when (stringp icicle-last-completion-candidate)
            (icicle-show-help-in-mode-line icicle-last-completion-candidate)))))
@@ -3735,19 +3735,19 @@ Optional argument WORD-P non-nil means complete only a word at a time."
                (cond (;; Candidates visible.  If second prefix complete, cycle, else update candidates.
                       (get-buffer-window "*Completions*" 0)
                       (if (and (or ipc1-was-cycling-p  icicle-next-prefix-complete-cycles-p)
-                               (symbolp icicle-last-completion-command)
-                               (get icicle-last-completion-command 'icicle-prefix-completing-command)
+                               (icicle-get-safe icicle-last-completion-command
+                                                'icicle-prefix-completing-command)
                                (if word-p
                                    ;; Word completion cycles only if both of these are true:
                                    ;; * Input is not yet complete (null `return-value').
                                    ;; * Either last command was an edit and input does not end in `-',
                                    ;;          or the current input is from cycling.
-                                   ;; E.g. `M-x fo M-SPC r M-SPC' cycles among foreground-color etc.
+                                   ;; E.g. `M-x fo M-SPC r M-SPC' cycles among `foreground-color' etc.
                                    (and (not return-value)
-                                        (or (and (symbolp last-command)
-                                                 (not (or (get last-command
-                                                               'icicle-prefix-completing-command)
-                                                          (get last-command 'icicle-action-command)))
+                                        (or (and (not (or (icicle-get-safe
+                                                           last-command 'icicle-prefix-completing-command)
+                                                          (icicle-get-safe
+                                                           last-command 'icicle-action-command)))
                                                  (not (eq ?-  (aref icicle-current-input
                                                                     (1- (length icicle-current-input))))))
                                             (not (string= icicle-last-input word-complete-input))))
@@ -3767,8 +3767,8 @@ Optional argument WORD-P non-nil means complete only a word at a time."
                      (;; No candidates shown.  Could be first completion or could follow `C-M-(S-)TAB'.
                       icicle-TAB-shows-candidates-flag
                       (if (not (and (or ipc1-was-cycling-p  icicle-next-prefix-complete-cycles-p)
-                                    (symbolp icicle-last-completion-command)
-                                    (get icicle-last-completion-command 'icicle-prefix-completing-command)
+                                    (icicle-get-safe icicle-last-completion-command
+                                                     'icicle-prefix-completing-command)
                                     (symbolp last-command)
                                     (or (get last-command 'icicle-prefix-completing-command)
                                         (get last-command 'icicle-action-command))
@@ -3783,8 +3783,8 @@ Optional argument WORD-P non-nil means complete only a word at a time."
                      (;; No candidates shown.  Second prefix complete.
                       ;; If NO-DISPLAY-P and either not WORD-P or input is complete, then cycle down.
                       ;; Else, vanilla Emacs: second `TAB' shows candidates.
-                      (and (symbolp icicle-last-completion-command)
-                           (get icicle-last-completion-command 'icicle-prefix-completing-command)
+                      (and (icicle-get-safe icicle-last-completion-command
+                                            'icicle-prefix-completing-command)
                            (symbolp last-command)
                            (or (get last-command 'icicle-prefix-completing-command)
                                (get last-command 'icicle-action-command))
@@ -4120,8 +4120,8 @@ message either.  NO-DISPLAY-P is passed to
              (cond (;; Candidates visible.  If second `S-TAB', cycle, else update candidates.
                     (get-buffer-window "*Completions*" 0)
                     (if (and (or iac1-was-cycling-p  icicle-next-apropos-complete-cycles-p)
-                             (symbolp icicle-last-completion-command)
-                             (get icicle-last-completion-command 'icicle-apropos-completing-command)
+                             (icicle-get-safe icicle-last-completion-command
+                                              'icicle-apropos-completing-command)
                              (symbolp last-command)
                              (or (get last-command 'icicle-apropos-completing-command)
                                  (get last-command 'icicle-action-command)
@@ -4139,8 +4139,8 @@ message either.  NO-DISPLAY-P is passed to
                    (t
                     (if (not (and (or iac1-was-cycling-p  icicle-next-apropos-complete-cycles-p)
                                   (symbolp icicle-last-completion-command)
-                                  (get icicle-last-completion-command
-                                       'icicle-apropos-completing-command)
+                                  (icicle-get-safe icicle-last-completion-command
+                                                   'icicle-apropos-completing-command)
                                   (symbolp last-command)
                                   (or (get last-command 'icicle-apropos-completing-command)
                                       (get last-command 'icicle-action-command))))
@@ -4226,11 +4226,10 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
                (icicle-move-to-next-completion icicle-candidate-nb 'NO-MINIBUFFER-FOLLOW-P))
               (t
                (let ((inp  (icicle-minibuf-input-sans-dir icicle-current-input)))
-                 (when (and (symbolp icicle-last-completion-command)
-                            (get icicle-last-completion-command 'icicle-apropos-completing-command)
+                 (when (and (icicle-get-safe icicle-last-completion-command
+                                             'icicle-apropos-completing-command)
                             ;; $$ Previously allowed the -action's.
-                            (not (and (symbolp last-command)
-                                      (get last-command 'icicle-cycling-command))))
+                            (not (icicle-get-safe last-command 'icicle-cycling-command)))
                    (setq search-fn  're-search-forward)) ; Use regexp search: input is not yet complete.
                  (while (and (not (eobp))
                              (save-restriction
@@ -7046,7 +7045,7 @@ See also `\\[icicle-history]' (`icicle-history')."
                  (save-selected-window (icicle-remove-Completions-window))
                  (minibuffer-message "  [None of the completions have been used before]"))
                 (t
-                 (cond ((and (symbolp last-command)  (get last-command 'icicle-cycling-command))
+                 (cond ((icicle-get-safe last-command 'icicle-cycling-command)
                         (setq icicle-current-input  icicle-last-input)
                         (icicle-retrieve-last-input))
                        (t
@@ -7264,7 +7263,7 @@ See also `\\[icicle-keep-only-past-inputs]' (`icicle-keep-only-past-inputs')."
                                               (apropos    'icicle-apropos-complete)
                                               (otherwise  'icicle-prefix-complete))) ; Prefix, by default.
       (funcall icicle-last-completion-command)))
-  (cond (icicle-cycling-p;; $$$ (and (symbolp last-command) (get last-command 'icicle-cycling-command))
+  (cond (icicle-cycling-p;; $$$ (icicle-get-safe last-command 'icicle-cycling-command)
          (setq icicle-current-input  icicle-last-input)
          (icicle-retrieve-last-input))
         (t
@@ -8169,7 +8168,7 @@ candidates, instead of removing them."
                                                    'derived-mode-parent))
                              (while parent
                                (add-to-list 'modes (list (symbol-name parent)))
-                               (setq parent  (get parent 'derived-mode-parent))))
+                               (setq parent  (icicle-get-safe parent 'derived-mode-parent))))
                            modes)
                        buffer-modes)
                      nil t))))
