@@ -1,4 +1,4 @@
-Timestamp: Mon Jun 20 07:57:35 BST 2011
+Timestamp: Wed Nov  7 12:19:04 GMT 2012
 
 This page is based on the EmacsLispList by StephenEglen and updated automatically.
 
@@ -265,6 +265,8 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 [ftp://ftp.gnu.org/pub/gnu/calc/calc-2.02f.tar.gz calc.el] --- Calculator for GNU Emacs, part I (by Dave Gillespie)
 
 [http://www.barzilay.org/misc/calculator.el calculator.el] --- A simple desktop calculator. (by Eli Barzilay)
+
+[https://github.com/kiwanami/emacs-calfw calfw.el] --- Calendar view framework on Emacs (by SAKURAI Masashi)
 
 [http://www.hotdispatch.com/palm/view-ip-requester?ID=14317280 camelCase-mode.el] --- minor mode for editing with camelCase words (by C.R.Manning)
 
@@ -928,6 +930,8 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 
 [http://oconnor.cx/elisp/google.el google.el] --- Emacs interface to the Google API (by Edward O'Connor)
 
+[http://julien.danjou.info/software/google-contacts.el google-contacts.el] --- Support for Google Contacts in Emacs (by Julien Danjou)
+
 [http://xsteve.nit.at/prg/emacs/grabbox.el grabbox.el] --- Keep a bookmark file for often used files/text snippets (by Stefan Reichoer)
 
 [ftp://vh213601.truman.edu/pub/Grade/grade.el grade.el] --- Program for keeping track of grades (by Jay Belanger)
@@ -1368,7 +1372,7 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 
 [ftp://ftp.cis.ohio-state.edu/pub/emacs-lisp/old-archive/misc/maniac.el.Z maniac.el] --- fill paragraphs like a maniac. (by Per Abrahamsen)
 
-[http://www.archi.is.tohoku.ac.jp/~yamauchi/otherprojects/manued/index.shtml manued.el] --- MANUscripting EDitor; A proofreading assisting mode. (by YAMAUCHI Hitoshi)
+[https://github.com/emacsmirror/manued/blob/master/manued.el manued.el] --- MANUscripting EDitor; A proofreading assisting mode. (by YAMAUCHI Hitoshi)
 
 [ftp://ftp.splode.com/pub/users/friedman/emacs-lisp/map-win.el map-win.el] --- run expressions for various windows (by Noah Friedman)
 
@@ -1599,6 +1603,8 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 [ftp://ftp.splode.com/pub/users/friedman/emacs-lisp/ns-browse.el ns-browse.el] --- view html-enriched mail/news buffers using Netscape for you (by Noah Friedman)
 
 [http://hjem.get2net.dk/storm/emacs/nt-url.el nt-url.el] --- Glue between browse-url.el and WWW browser on Windows95 & NT. (by Kim Storm)
+
+[http://www.splode.com/~friedman/software/emacs-lisp/src/nuke-whitespace.el nuke-whitespace.el] --- strip trailing whitespace from buffers (by Noah Friedman)
 
 [http://groups.google.com/groups?selm=usnz8luy4.fsf%40pobox.com numbered-outline.el] --- Numbered Outline mode (by Gareth Rees)
 
@@ -2469,8 +2475,6 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 [ftp://ftp.splode.com/pub/users/friedman/emacs-lisp/what-domain.el what-domain.el] --- top-level internet domain name information (by Noah Friedman)
 
 [http://www.gnusoftware.com/Emacs/Lisp/which.el which.el] --- search program in paths of variable `exec-path' (by Christoph Conrad)
-
-[ftp://ftp.splode.com/pub/users/friedman/emacs-lisp/whitespace.el whitespace.el] --- strip trailing whitespace from buffers (by Noah Friedman)
 
 [http://www.dsmit.com/lisp/whitespace.el whitespace.el] --- Warn about and clean bogus whitespaces in the file. (by Rajesh Vaidheeswarran)
 
