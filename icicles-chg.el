@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Wed Nov  7 11:37:26 2012 (-0800)
+;; Last-Updated: Wed Nov  7 22:17:24 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 9221
+;;     Update #: 9226
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -86,6 +86,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2012/11/07 dadams
+;;     icicle-zap-to-char: char-to-string -> string.
 ;; 2012/11/03 dadams
 ;;     Typo in eval-when-compile around icicle-bbdb-complete-name.
 ;; 2012/11/02 dadams
@@ -1521,6 +1523,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2012/11/07 dadams
+;;     icicle-read-char-by-name, icicle-read-from-minibuffer: char-to-string -> string.
+;;     icicle-scatter: Non-backtracking version.
 ;; 2012/10/27 dadams
 ;;     Added: icicle-member-ignore-case.
 ;;     icicle-insert-candidates:
