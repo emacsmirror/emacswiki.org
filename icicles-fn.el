@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Nov  2 14:18:45 2012 (-0700)
+;; Last-Updated: Wed Nov  7 22:17:06 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 13612
+;;     Update #: 13621
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1384,7 +1384,7 @@ for POSITION."
     (when (and icicle-default-value  (not (eq icicle-default-value t))
                def-value  (stringp initial-contents)  (string= "" initial-contents))
       (setq initial-contents  (if (integerp def-value) ; Character
-                                  (char-to-string def-value)
+                                  (string def-value)
                                 def-value)))
 ;;; $$$$$$    (when (and def-value  (eq icicle-default-value t)) ; Add DEFAULT-VALUE to PROMPT.
 ;;;       (when (icicle-file-name-input-p) (setq def-value  (file-name-nondirectory def-value)))
@@ -1835,8 +1835,7 @@ such a return value: (CHAR-NAME . CHAR-CODE)."
       (unless (string= "" (car name.char))
         ;; Display char itself after the name, in `*Completions*'.
         (let* ((disp-string  (concat (car name.char) "\t"
-                                     (propertize (char-to-string (cdr name.char))
-                                                 'face 'icicle-extra-candidate)))
+                                     (propertize (string (cdr name.char)) 'face 'icicle-extra-candidate)))
                (symb         (intern (car name.char))))
           (put symb 'icicle-display-string disp-string)
           (icicle-candidate-short-help (format "Char: %-10cCode Point: %d" (cdr name.char) (cdr name.char))
@@ -4061,10 +4060,20 @@ characters.  For example, STRING = \"ure\" matches COMPLETION
   "Returns a regexp that matches a scattered version of STRING.
 The regexp will match any string that contains the characters in
 STRING, in the same order, but possibly with other characters as well.
-Returns, for example, \"a.*b.*c.*d\" for input string \"abcd\"."
-  (if (> emacs-major-version 21)
-      (mapconcat #'regexp-quote (split-string string "" t) ".*")
-    (mapconcat #'regexp-quote (split-string string "") ".*")))
+Returns, e.g., \"a[^b]*b[^c]*c[^d]*d\" for input string \"abcd\"."
+  ;; This backtracking version is a bit slower, esp. for Emacs 20:
+  ;; (if (> emacs-major-version 21)
+  ;;     (mapconcat #'regexp-quote (split-string string "" t) ".*")
+  ;;   (mapconcat #'regexp-quote (split-string string "") ".*"))
+  ;;
+  ;; This version is from Emacs bug #12796.
+  (let ((first  t))
+    (mapconcat (lambda (ch)
+                 (if (not first)
+                     (concat "[^" (string ch) "]*" (regexp-quote (string ch)))
+                   (setq first  nil)
+                   (regexp-quote (string ch))))
+               string "")))
 
 (defun icicle-levenshtein-strict-match (s1 s2)
   "String S1 is within `icicle-levenshtein-distance' of string S2.
