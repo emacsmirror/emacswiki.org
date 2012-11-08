@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Mon Nov  5 16:04:27 2012 (-0800)
+;; Last-Updated: Thu Nov  8 13:22:08 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 6092
+;;     Update #: 6103
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1541,14 +1541,14 @@ Non-nil `hlt-act-on-any-face-flag' means choose from among all
 faces.  Nil means choose only from among faces used to highlight.
 
 When choosing faces, completion and cycling are available. During
-cycling, these keys with prefix `C-' act on the current face name:
+cycling, these keys with prefix `C-' act on the current face name\\<minibuffer-local-completion-map>:
 
 `C-mouse-2', `C-RET' - Choose current face candidate only
 `C-down'  - Choose, then move to next prefix-completion candidate
 `C-up'    - Choose, then move to previous prefix-completion candidate
 `C-next'  - Choose, then move to next apropos-completion candidate
 `C-prior' - Choose, then move to previous apropos-completion candidate
-`C-!'     - Choose *all* matching face names"
+`\\[icicle-all-candidates-action]'     - Choose *all* matching face names"
       (interactive `(,@(hlt-region-or-buffer-limits)
                      ,(mapcar #'intern (icicle-choose-faces)))) ; An Icicles multi-command
       (dolist (face (if hlt-act-on-any-face-flag
@@ -1564,14 +1564,14 @@ Non-nil `hlt-act-on-any-face-flag' means choose from among all
 faces.  Nil means choose only from among faces used to highlight.
 
 When choosing faces, completion and cycling are available. During
-cycling, these keys with prefix `C-' act on the current face name:
+cycling, these keys with prefix `C-' act on the current face name\\<minibuffer-local-completion-map>:
 
 `C-mouse-2', `C-RET' - Choose current face candidate only
 `C-down'  - Choose, then move to next prefix-completion candidate
 `C-up'    - Choose, then move to previous prefix-completion candidate
 `C-next'  - Choose, then move to next apropos-completion candidate
 `C-prior' - Choose, then move to previous apropos-completion candidate
-`C-!'     - Choose *all* matching face names"
+`\\[icicle-all-candidates-action]'     - Choose *all* matching face names"
       (interactive `(,@(hlt-region-or-buffer-limits)
                      ,(mapcar #'intern (icicle-choose-faces)))) ; An Icicles multi-command
       (dolist (face (if hlt-act-on-any-face-flag
@@ -1588,14 +1588,14 @@ invisible faces.  Nil means choose only from among invisible  faces
 used to highlight.
 
 When choosing faces, completion and cycling are available. During
-cycling, these keys with prefix `C-' act on the current face name:
+cycling, these keys with prefix `C-' act on the current face name\\<minibuffer-local-completion-map>:
 
 `C-mouse-2', `C-RET' - Choose current face candidate only
 `C-down'  - Choose, then move to next prefix-completion candidate
 `C-up'    - Choose, then move to previous prefix-completion candidate
 `C-next'  - Choose, then move to next apropos-completion candidate
 `C-prior' - Choose, then move to previous apropos-completion candidate
-`C-!'     - Choose *all* matching face names"
+`\\[icicle-all-candidates-action]'     - Choose *all* matching face names"
       (interactive
        (list (let ((fs  (icicle-remove-if-not #'icicle-invisible-face-p
                                               (if hlt-act-on-any-face-flag
@@ -1615,14 +1615,14 @@ visible faces.  Nil means choose only from among visible faces used to
 highlight.
 
 When choosing faces, completion and cycling are available. During
-cycling, these keys with prefix `C-' act on the current face name:
+cycling, these keys with prefix `C-' act on the current face name\\<minibuffer-local-completion-map>:
 
 `C-mouse-2', `C-RET' - Choose current face candidate only
 `C-down'  - Choose, then move to next prefix-completion candidate
 `C-up'    - Choose, then move to previous prefix-completion candidate
 `C-next'  - Choose, then move to next apropos-completion candidate
 `C-prior' - Choose, then move to previous apropos-completion candidate
-`C-!'     - Choose *all* matching face names"
+`\\[icicle-all-candidates-action]'     - Choose *all* matching face names"
       (interactive `(,@(hlt-region-or-buffer-limits)
                      ,(mapcar #'intern (icicle-choose-faces)))) ; An Icicles multi-command
       (dolist (face faces) (hlt-hide-default-face start end face)))))
@@ -2726,12 +2726,12 @@ candidate.\\<minibuffer-local-completion-map>
 `C-prior' - Move to previous apropos-completion candidate and act
 `C-end'   - Move to next prefix-completion candidate and act
 `C-home'  - Move to previous prefix-completion candidate and act
-`C-!'     - Act on *each* candidate (or each that is saved), in turn.
-`M-!'     - Act on the list of *all* candidates (or all saved).
+`\\[icicle-all-candidates-action]'     - Act on *each* candidate (or each that is saved), in turn.
+`\\[icicle-all-candidates-list-action]'     - Act on the list of *all* candidates (or all saved).
 
-Note that \\<minibuffer-local-completion-map>`M-!' applies FN to the *list* of chosen alist elements,
-whereas `C-!' applies FN to each chosen element, in turn.  For
-example, if FN is `length' and your input is `\.el', then `M-!' displays
+Note that `\\[icicle-all-candidates-list-action]' applies FN to the *list* of chosen alist elements,
+whereas `\\[icicle-all-candidates-action]' applies FN to each chosen element, in turn.  For
+example, if FN is `length' and your input is `\.el', then `\\[icicle-all-candidates-list-action]' displays
 the result of applying `length' to the list of chosen elements:
 
  ((\"\\.el\\'\" . emacs-lisp-mode) (\"\\.elc'\" . emacs-lisp-mode))
@@ -4512,11 +4512,11 @@ list includes the names of the symbols that satisfy
 ;;; Same as `thgcmd-defined-thing-p' in `thing-cmds.el'.
 (defun icicle-defined-thing-p (thing)
   "Return non-nil if THING (type) is defined as a thing-at-point type."
-  (let ((forward-op    (or (get thing 'forward-op)  (intern-soft (format "forward-%s" thing))))
-        (beginning-op  (get thing 'beginning-op))
-        (end-op        (get thing 'end-op))
-        (bounds-fn     (get thing 'bounds-of-thing-at-point))
-        (thing-fn      (get thing 'thing-at-point)))
+  (let ((forward-op    (or (icicle-get-safe thing 'forward-op)  (intern-soft (format "forward-%s" thing))))
+        (beginning-op  (icicle-get-safe thing 'beginning-op))
+        (end-op        (icicle-get-safe thing 'end-op))
+        (bounds-fn     (icicle-get-safe thing 'bounds-of-thing-at-point))
+        (thing-fn      (icicle-get-safe thing 'thing-at-point)))
     (or (functionp forward-op)
         (and (functionp beginning-op)  (functionp end-op))
         (functionp bounds-fn)
@@ -7089,7 +7089,7 @@ While cycling, these keys describe candidates\\<minibuffer-local-completion-map>
 `C-prior' - Move to previous apropos-completion candidate and describe
 `C-end'   - Move to next prefix-completion candidate and describe
 `C-home'  - Move to previous prefix-completion candidate and describe
-`C-!'     - Describe *all* candidates (or all that are saved),
+`\\[icicle-all-candidates-action]'     - Describe *all* candidates (or all that are saved),
             successively - use the [back] button in buffer *Help* to
             visit the descriptions
 
