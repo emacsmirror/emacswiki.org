@@ -46,20 +46,5 @@ More information about eshell :
 A somewhat similar project -- [[oneliner]]:
 * http://sourceforge.net/projects/oneliner-elisp/ , http://oneliner-elisp.sourceforge.net/ : "Oneliner integrates UNIX shell with Emacs text editor. Oneliner provides various syntax for integration. (e.g. You can connect 'shell pipe' and 'Emacs buffer' directly with simple syntax.)"
 
-== Other Window ==
-
-Here's an implementation of `eshell-other-window', should you ever need it. Make sure you change `C-z' to a keybinding of your liking.
-
-{{{
-(global-set-key (kbd "C-z") 'eshell)
-(global-set-key (kbd "C-x 4 C-z") 'eshell-other-window)
-(defun eshell-other-window (&optional arg)
-  (interactive "P")
-  (if (one-window-p)
-      (split-window)
-    (other-window 1))
-  (eshell arg))
-}}}
-
 ----
 CategoryShell
