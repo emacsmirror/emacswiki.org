@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Nov  7 22:17:06 2012 (-0800)
+;; Last-Updated: Thu Nov  8 12:52:23 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 13621
+;;     Update #: 13658
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -102,7 +102,7 @@
 ;;    `icicle-fit-completions-window', `icicle-fix-default-directory',
 ;;    `icicle-flat-list', `icicle-frames-on',
 ;;    `icicle-fuzzy-candidates', `icicle-get-alist-candidate',
-;;    `icicle-get-candidates-from-saved-set',
+;;    `icicle-get-candidates-from-saved-set', `icicle-get-safe',
 ;;    `icicle-dired-guess-shell-command', `icicle-help-line-buffer',
 ;;    `icicle-help-line-file',
 ;;    `icicle-highlight-candidate-in-Completions',
@@ -571,9 +571,8 @@ so it is called after completion-list buffer text is written."
                                    (expand-file-name (substitute-in-file-name mbuf-contents))))))
         ;; If reading file name and either `icicle-comp-base-is-default-dir-p' is nil or this is a
         ;; completion command, then set `default-directory' so it will be copied into `*Completions*'.
-        (when (and dir-of-input
-                   (or (and (symbolp this-command)  (get this-command 'icicle-completing-command))
-                       (not icicle-comp-base-is-default-dir-p)))
+        (when (and dir-of-input  (or (icicle-get-safe this-command 'icicle-completing-command)
+                                     (not icicle-comp-base-is-default-dir-p)))
           (with-current-buffer mainbuf (setq default-directory  dir-of-input)))
         (with-current-buffer standard-output
           (completion-list-mode)
@@ -607,9 +606,8 @@ so it is called after completion-list buffer text is written."
              common-string-length)
         ;; If reading file name and either `icicle-comp-base-is-default-dir-p' is nil or this is a
         ;; completion command, then set `default-directory' so it will be copied into `*Completions*'.
-        (when (and dir-of-input
-                   (or (and (symbolp this-command)  (get this-command 'icicle-completing-command))
-                       (not icicle-comp-base-is-default-dir-p)))
+        (when (and dir-of-input  (or (icicle-get-safe this-command 'icicle-completing-command)
+                                     (not icicle-comp-base-is-default-dir-p)))
           (with-current-buffer mainbuf (setq default-directory  dir-of-input)))
         (with-current-buffer standard-output
           (completion-list-mode)
@@ -617,8 +615,7 @@ so it is called after completion-list buffer text is written."
           (setq completion-base-size
                 (cond ((and minibuffer-completing-file-name  icicle-comp-base-is-default-dir-p
                             (length default-directory)))
-                      ((and (symbolp minibuffer-completion-table)
-                            (get minibuffer-completion-table 'completion-base-size-function))
+                      ((icicle-get-safe minibuffer-completion-table 'completion-base-size-function)
                        ;; To compute base size, a function can use the global value of
                        ;; `completion-common-substring' or `minibuffer-completion-contents'.
                        (with-current-buffer mainbuf
@@ -667,9 +664,8 @@ so it is called after completion-list buffer text is written."
                                   (substitute-in-file-name (minibuffer-completion-contents)))))))
         ;; If reading file name and either `icicle-comp-base-is-default-dir-p' is nil or this is a
         ;; completion command, then set `default-directory' so it will be copied into `*Completions*'.
-        (when (and dir-of-input
-                   (or (and (symbolp this-command)  (get this-command 'icicle-completing-command))
-                       (not icicle-comp-base-is-default-dir-p)))
+        (when (and dir-of-input  (or (icicle-get-safe this-command 'icicle-completing-command)
+                                     (not icicle-comp-base-is-default-dir-p)))
           (with-current-buffer mainbuf (setq default-directory  dir-of-input)))
         (with-current-buffer standard-output
           (completion-list-mode)
@@ -1679,14 +1675,14 @@ impossible to know which concrete types a value must match."
                            (icicle-var-val-satisfies-type-p variable types)))
     (value             (icicle-var-val-satisfies-type-p variable types))
     (direct            (icicle-var-matches-type-p variable types))
-    (direct-or-value   (or (member (get variable 'custom-type) types)
+    (direct-or-value   (or (member (icicle-get-safe variable 'custom-type) types)
                            (icicle-var-val-satisfies-type-p variable types)))
     (otherwise         (icicle-var-inherits-type-p variable types))))
 
 (defun icicle-var-matches-type-p (variable types)
   "VARIABLE's type matches a member of TYPES."
   (catch 'icicle-type-matches
-    (let ((var-type  (get variable 'custom-type)))
+    (let ((var-type  (icicle-get-safe variable 'custom-type)))
       (dolist (type types)
         (when (if (stringp type)
                   (save-match-data (string-match type (format "%s" (format "%S" var-type))))
@@ -1697,7 +1693,7 @@ impossible to know which concrete types a value must match."
 (defun icicle-var-inherits-type-p (variable types)
   "VARIABLE's type matches or is a subtype of a member of list TYPES."
   (catch 'icicle-type-inherits
-    (let ((var-type  (get variable 'custom-type)))
+    (let ((var-type  (icicle-get-safe variable 'custom-type)))
       (dolist (type types)
         (while var-type
           (when (or (and (stringp type)
@@ -1709,15 +1705,15 @@ impossible to know which concrete types a value must match."
                          (save-match-data (string-match type (format "%s" (format "%S" var-type)))))
                     (equal type var-type))
             (throw 'icicle-type-inherits t))
-          (setq var-type  (car (get var-type 'widget-type))))
-        (setq var-type  (get variable 'custom-type))))
+          (setq var-type  (car (icicle-get-safe var-type 'widget-type))))
+        (setq var-type  (icicle-get-safe variable 'custom-type))))
     nil))
 
 (defun icicle-var-val-satisfies-type-p (variable types)
   "VARIABLE is bound, and its value satisfies a type in the list TYPES."
   (and (boundp variable)
        (let ((val  (symbol-value variable)))
-         (and (widget-convert (get variable 'custom-type))
+         (and (widget-convert (icicle-get-safe variable 'custom-type))
               (icicle-value-satisfies-type-p val types)))))
 
 (defun icicle-value-satisfies-type-p (value types)
@@ -1746,8 +1742,8 @@ Note: If the library that defines VARIABLE has not yet been loaded,
 then `icicle-custom-type' loads it.  Be sure you want to do that
 before you call this function."
   (and (custom-variable-p variable)
-       (or (get variable 'custom-type)
-           (progn (custom-load-symbol variable) (get variable 'custom-type)))))
+       (or (icicle-get-safe variable 'custom-type)
+           (progn (custom-load-symbol variable) (icicle-get-safe variable 'custom-type)))))
 
 (when (fboundp 'read-char-by-name)      ; Emacs 23+
   (defun icicle-read-char-maybe-completing (&optional prompt names inherit-input-method seconds)
@@ -2054,10 +2050,10 @@ choose proxy candidate `*point face name*' to use the face at point."
                   ;; We leave this branch as it is.  Icicles does nothing special with
                   ;; `completing-read-multiple'.
                   (require 'crm)
-                  (mapatoms (lambda (s) (when (custom-facep s) ; Build up the completion tables.
-                                          (if (get s 'face-alias)
-                                              (push (symbol-name s) aliasfaces)
-                                            (push (symbol-name s) nonaliasfaces)))))
+                  (mapatoms (lambda (symb) (when (custom-facep symb) ; Build up the completion tables.
+                                          (if (get symb 'face-alias)
+                                              (push (symbol-name symb) aliasfaces)
+                                            (push (symbol-name symb) nonaliasfaces)))))
                   (let* ((input   (completing-read-multiple ; Read the input.
                                    (if (or faces string-describing-default)
                                        (format "%s (default %s): "
@@ -3548,8 +3544,7 @@ available only for Emacs 23+.  (No scaling in any case if using
         (unless (< (window-width win) (frame-width)) ; Don't shrink if split horizontally.
           (fit-window-to-buffer
            win
-           (or (and (symbolp icicle-last-top-level-command)
-                    (get icicle-last-top-level-command 'icicle-Completions-window-max-height))
+           (or (icicle-get-safe icicle-last-top-level-command 'icicle-Completions-window-max-height)
                icicle-Completions-window-max-height))))))
   (unless (eq arg 'fit-only)
     (when (and (boundp 'icicle-Completions-text-scale-decrease) ; Emacs 23+
@@ -4170,8 +4165,8 @@ the current candidate is shown in the mode line."
                                     (abbreviate-file-name (icicle-input-from-minibuffer 'leave-envar))
                                   (icicle-input-from-minibuffer))
           icicle-cycling-p      t)
-    (unless (and (symbolp this-command)  (get this-command 'icicle-apropos-cycling-command)
-                 (or (and (symbolp last-command)  (get last-command 'icicle-apropos-cycling-command))
+    (unless (and (icicle-get-safe this-command 'icicle-apropos-cycling-command)
+                 (or (icicle-get-safe last-command 'icicle-apropos-cycling-command)
                      (memq last-command
                            '(icicle-candidate-action
                              icicle-remove-candidate icicle-mouse-remove-candidate
@@ -4206,17 +4201,13 @@ the current candidate is shown in the mode line."
              (when (get-buffer-window "*Completions*" 0)
 
                ;; Refresh `*Completions*', updating it to reflect the current candidates.
-               (unless (or (and (symbolp this-command)
-                                (get this-command 'icicle-apropos-cycling-command)
-                                (or (and (symbolp last-command)
-                                         (get last-command 'icicle-apropos-cycling-command))
+               (unless (or (and (icicle-get-safe this-command 'icicle-apropos-cycling-command)
+                                (or (icicle-get-safe last-command 'icicle-apropos-cycling-command)
                                     (memq last-command '(icicle-candidate-action
                                                          icicle-remove-candidate
                                                          icicle-mouse-remove-candidate))))
-                           (and (symbolp this-command)
-                                (get this-command 'icicle-prefix-cycling-command)
-                                (or (and (symbolp last-command)
-                                         (get last-command 'icicle-prefix-cycling-command))
+                           (and (icicle-get-safe this-command 'icicle-prefix-cycling-command)
+                                (or (icicle-get-safe last-command 'icicle-prefix-cycling-command)
                                     (memq last-command '(icicle-candidate-action
                                                          icicle-remove-candidate
                                                          icicle-mouse-remove-candidate)))))
@@ -4310,7 +4301,8 @@ the function to the candidate and use the result as the help."
                                                                               candidate)
                                                            (get-text-property 0 'help-echo candidate))))
                                             (if (functionp prop)  (funcall prop candidate)  prop))))
-                                    ((and cand  (symbolp cand) ; Symbol.
+                                    ((and cand
+                                          (symbolp cand) ; Symbol.
                                           (cond ((get cand 'icicle-mode-line-help)) ; Icicles help prop.
                                                 ((get cand 'help-echo)) ; General help prop.
                                                 ((fboundp cand) ; Function.
@@ -4399,29 +4391,32 @@ NTH < 0 means candidate order is reversed in `*Completions*'.
 Argument CANDIDATES-FN is a function that recomputes the candidates.
 SAVED-LAST-INPUT is the last input, as in `icicle-last-input'."
   (unless (and icicle-last-completion-command
-               (symbolp this-command)   ; Need symbol for `get', below.
                (string= icicle-current-input saved-last-input) ; No change in user input.
                ;; No change in completion type: apropos vs prefix.
-               (or (and (or (get icicle-last-completion-command 'icicle-apropos-completing-command)
+               (or (and (or (icicle-get-safe icicle-last-completion-command
+                                             'icicle-apropos-completing-command)
                             (memq icicle-last-completion-command
                                   '(icicle-candidate-set-complement icicle-mouse-remove-candidate
                                     icicle-keep-only-past-inputs)))
+                        (symbolp 'this-command)
                         (or (get this-command 'icicle-apropos-completing-command)
                             (get this-command 'icicle-apropos-cycling-command)))
-                   (and (or (get icicle-last-completion-command 'icicle-prefix-completing-command)
+                   (and (or (icicle-get-safe icicle-last-completion-command
+                                             'icicle-prefix-completing-command)
                             (memq icicle-last-completion-command
                                   '(icicle-candidate-set-complement icicle-mouse-remove-candidate
                                     icicle-keep-only-past-inputs)))
+                        (symbolp this-command)
                         (or (get this-command 'icicle-prefix-completing-command)
                             (get this-command 'icicle-prefix-cycling-command)))))
     (when (string= icicle-current-input saved-last-input) ; Changed completion type, not user input.
       ;; Set `icicle-last-completion-command', to record new completion type.
-      (cond ((and (symbolp this-command)  (get this-command 'icicle-prefix-cycling-command))
+      (cond ((icicle-get-safe this-command 'icicle-prefix-cycling-command)
              (setq icicle-last-completion-command
                    (if (eq icicle-last-completion-command 'icicle-apropos-complete-no-display)
                        'icicle-prefix-complete-no-display
                      'icicle-prefix-complete)))
-            ((and (symbolp this-command)  (get this-command 'icicle-apropos-cycling-command))
+            ((icicle-get-safe this-command 'icicle-apropos-cycling-command)
              (setq icicle-last-completion-command
                    (if (eq icicle-last-completion-command 'icicle-prefix-complete-no-display)
                        'icicle-apropos-complete-no-display
@@ -4477,11 +4472,13 @@ the code."
                  (and (eq icicle-current-completion-mode 'prefix)
                       (not (memq icicle-expand-input-to-common-match '(3 4))))
                  (not icicle-common-match-string)
-                 (and (symbolp last-command)  (get last-command 'icicle-cycling-command)
+                 (and (symbolp last-command)
+                      (get last-command 'icicle-cycling-command)
                       (not (get last-command 'icicle-completing-command))) ; Not `TAB' or `S-TAB'.
                  (and (equal icicle-last-input icicle-current-input)
                       (eq icicle-current-completion-mode
-                          (if (get icicle-last-completion-command 'icicle-prefix-completing-command)
+                          (if (icicle-get-safe icicle-last-completion-command
+                                               'icicle-prefix-completing-command)
                               'prefix
                             'apropos)))))
 
@@ -4510,8 +4507,7 @@ the code."
                                              icicle-retrieve-next-input))
                         (and icicle-cycling-p
                              (or icicle-candidate-nb ; Not the first cycling command.
-                                 (and (symbolp last-command)
-                                      (get last-command 'icicle-completing-command)))))
+                                 (icicle-get-safe last-command 'icicle-completing-command))))
               (setq icicle-current-raw-input  icicle-current-input)
               ;; Save it for `C-l', unless it is "".  Drop old entries when too big.
               (icicle-save-raw-input))
@@ -4531,9 +4527,10 @@ the code."
        ;;   or this command is the same as last command.
        ((not (or (memq this-command '(icicle-retrieve-previous-input icicle-retrieve-next-input))
                  icicle-cycling-p
-                 (and (symbolp last-command)  (get last-command 'icicle-cycling-command)
+                 (and (symbolp last-command)
+                      (get last-command 'icicle-cycling-command)
                       (not (get this-command 'icicle-completing-command)))
-                 ;;$$$ (and (symbolp last-command)  (get last-command 'icicle-completing-command))
+                 ;;$$$ (icicle-get-safe last-command 'icicle-completing-command)
                  (eq last-command this-command)))
         (setq icicle-current-raw-input  icicle-current-input)
         ;; Save it for `C-l', unless it is "".  Drop old entries when too big.
@@ -5483,7 +5480,7 @@ If no highlighting was attempted, return nil."
       ;;               there are more candidates than the threshold for highlighting.
       ((or (input-pending-p)
            (not icicle-highlight-input-completion-failure)
-           (and (not (get this-command 'icicle-completing-command))
+           (and (not (icicle-get-safe this-command 'icicle-completing-command))
                 (memq icicle-highlight-input-completion-failure
                       '(explicit explicit-strict explicit-remote)))
            (and (not icicle-incremental-completion)
@@ -7109,6 +7106,10 @@ This works around an Emacs 20 problem that occurs if STRING contains
 binary data (weird chars)."
   ;; E.g. Emacs 20 for plist of `dired-revert' put through (format "%s").
   (condition-case nil (upcase string) (error string)))
+
+(defun icicle-get-safe (object property)
+  "If OBJECT is a symbol, `get' its PROPERTY value.  Else return nil."
+  (and (symbolp object)  (get object property)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
