@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Wed Nov  7 22:17:24 2012 (-0800)
+;; Last-Updated: Thu Nov  8 13:48:47 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 9226
+;;     Update #: 9257
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -86,6 +86,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2012/11/08 dadams
+;;     custom-variable-p, icicle-execute-extended-command-1, icicle-binary-option-p:
+;;       Use icicle-get-safe.
+;;     Doc strings: Use \\[...] more.
 ;; 2012/11/07 dadams
 ;;     icicle-zap-to-char: char-to-string -> string.
 ;; 2012/11/03 dadams
@@ -758,6 +762,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2012/11/08 dadams
+;;     icicle-defined-thing-p: Use icicle-get-safe.
+;;     Doc strings: Use \\[...] more.
 ;; 2012/11/05 dadams
 ;;     Use \\[...] in doc strings instead of hard-coding, for some more keys.
 ;; 2012/11/03 dadams
@@ -1523,6 +1530,13 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2012/11/08 dadams
+;;     Added: icicle-get-safe.
+;;     icicle-completion-setup-function, icicle-var-(is-of|matches|inherits)-type-p,
+;;       icicle-var-val-satisfies-type-p, icicle-custom-type, icicle-fit-completions-window,
+;;       icicle-next-candidate, icicle-recompute-candidates, icicle-save-or-restore-input,
+;;       icicle-highlight-input-noncompletion:
+;;         Use icicle-get-safe.
 ;; 2012/11/07 dadams
 ;;     icicle-read-char-by-name, icicle-read-from-minibuffer: char-to-string -> string.
 ;;     icicle-scatter: Non-backtracking version.
@@ -3510,6 +3524,11 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2012/11/08 dadams
+;;     icicle-digit-argument, icicle-successive-action, icicle-(prefix|apropos)-complete-1,
+;;       icicle-switch-to-Completions-buf, icicle-keep-only-past-inputs,
+;;       icicle-remove-buffer-cands-for-mode:
+;;         Use icicle-get-safe.
 ;; 2012/11/07 dadams
 ;;     icicle-successive-action, icicle-(prefix|apropos)-complete-1, icicle-switch-to-Completions-buf:
 ;;       Protect calls to get with symbolp.
@@ -6193,6 +6212,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2012/11/08 dadams
+;;     icicle-widgets-to-redefine: Predicate makes sure it is also a symbol.
 ;; 2012/11/03 dadams
 ;;     icicle-widgets-to-redefine: Fix to not include nil.
 ;; 2012/11/02 dadams
