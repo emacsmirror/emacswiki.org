@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Oct  9 10:59:20 2012 (-0700)
+;; Last-Updated: Fri Nov  9 14:55:24 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 14615
+;;     Update #: 14634
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -1520,7 +1520,7 @@
 ;;(@* "Autofile Bookmarks")
 ;;  *** Autofile Bookmarks ***
 ;;
-;;  An autofile bookmark, or just autofile, is a bookmark that uses
+;;  An autofile bookmark, or just an autofile, is a bookmark that uses
 ;;  the non-directory part of its file name as its bookmark name.
 ;;
 ;;  You can look at an autofile bookmark as just a file wrapper: a way
@@ -1552,6 +1552,26 @@
 ;;  certain ways.  For example, `bmkp-autofile-some-tags-regexp-jump'
 ;;  (`C-x j t a % +') jumps to an autofile bookmark that has at least
 ;;  one tag matching a given regexp.  See (@> "Tagging Files").
+;;
+;;  You can create autofiles automatically whenever you use an Emacs
+;;  file-cache command, by customizing user option
+;;  `bmkp-autofile-filecache'.  See the Emacs manual, node `File Name
+;;  Cache'.
+;;
+;;  This optional bookmark creation can replace adding the file to the
+;;  cache, or it can be in addition to caching the file.  This is done
+;;  by advising command `file-cache-add-file', which means that it
+;;  affects also the other Emacs file-cache commands that use that
+;;  function, directly or indirectly:
+;;
+;;  * `file-cache-add-directory'
+;;  * `file-cache-add-directory-list'
+;;  * `file-cache-add-directory-recursively'
+;;  * `file-cache-add-directory-using-find'
+;;  * `file-cache-add-directory-using-locate'
+;;  * `file-cache-add-file-list'
+;;
+;;  See the Emacs manual, node `File Name Cache'.
 ;;
 ;;
 ;;(@* "A Type-Aware `find-file'")
