@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Tue Oct  9 11:01:57 2012 (-0700)
+;; Last-Updated: Fri Nov  9 11:41:49 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 5897
+;;     Update #: 5930
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -6515,9 +6515,13 @@ Non-interactively:
 The bookmarked position will be the beginning of the file."
   ;; $$$$$$ Maybe need a way to bypass default handler, at least for autofiles.
   ;;        Doesn't seem to make much sense to use a handler such as a shell cmd in this context. (?)
-  (let ((default-handler  (condition-case nil (bmkp-default-handler-for-file file) (error nil))))
+  (set-text-properties 0 (length file) () file)
+  (let ((default-handler  (condition-case nil (bmkp-default-handler-for-file file) (error nil)))
+        (common           `((filename     . ,file)
+                            (position     . 0)
+                            (created      . ,(current-time)))))
     (cond (default-handler              ; User default handler
-              `(lambda () '((filename . ,file) (position . 0) (file-handler . ,default-handler))))
+              `(lambda () ',(append common `((file-handler . ,default-handler)))))
           ;; Non-user defaults.
           ((and (require 'image nil t)  (require 'image-mode nil t) ; Image
                 (condition-case nil (image-type file) (error nil)))
@@ -6526,16 +6530,13 @@ The bookmarked position will be the beginning of the file."
            ;; `bookmark-make-record-default', which gets nil for `filename'.
 
            ;; NEED to keep this code sync'd with `diredp-bookmark'.
-           (lambda ()
-             `((filename   . ,file)
-               (position   . 0)
-               (image-type . ,(image-type file))
-               (handler    . image-bookmark-jump))))
+           `(lambda ()
+             ',(append common `((image-type . ,(image-type file)) (handler . image-bookmark-jump)))))
           ((let ((case-fold-search  t))  (string-match "\\([.]au$\\|[.]wav$\\)" file)) ; Sound
            ;; Obsolete: `(lambda () '((filename . ,file) (handler . bmkp-sound-jump))))
-           `(lambda () '((filename . ,file) (file-handler . play-sound-file))))
+           `(lambda () ',(append common '((file-handler . play-sound-file)))))
           (t
-           `(lambda () '((filename . ,file) (position . 0)))))))
+           `,common))))
 
 ;;;###autoload (autoload 'bmkp-bookmark-a-file "bookmark+")
 (defalias 'bmkp-bookmark-a-file 'bmkp-autofile-set)
