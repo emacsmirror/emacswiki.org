@@ -1637,7 +1637,7 @@ one tag matching a given regexp.  See [[#TaggingFiles|Tagging Files]].
 
 You can create autofiles automatically whenever you use an Emacs
 file-cache command, by customizing user option
-`bmkp-autofile-filecache'.
+'''`bmkp-autofile-filecache''''.
 
 This optional bookmark creation can replace adding the file to the
 cache, or it can be in addition to caching the file.  This is done
