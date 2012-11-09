@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Fri Nov  9 11:41:49 2012 (-0800)
+;; Last-Updated: Fri Nov  9 13:54:55 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 5930
+;;     Update #: 5966
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -277,6 +277,7 @@
 ;;
 ;;  User options defined here:
 ;;
+;;    `bmkp-autofile-filecache',
 ;;    `bmkp-auto-idle-bookmark-min-distance',
 ;;    `bmkp-auto-idle-bookmark-mode-delay',
 ;;    `bmkp-auto-idle-bookmark-mode-lighter',
@@ -672,6 +673,20 @@
  
 ;;(@* "User Options (Customizable)")
 ;;; User Options (Customizable) --------------------------------------
+
+;;;###autoload (autoload 'bmkp-prompt-for-tags-flag "bookmark+")
+(defcustom bmkp-autofile-filecache 'cache-only
+  "*Whether Emacs filecache commands create/set an autofile bookmark.
+The possible values:
+`autofile+cache' - Whenever a file is added to the file cache, also
+                   create/set an autofile bookmark for the file.
+`autofile-only'  - Create/set an autofile instead of caching the file.
+`cache-only'     - Add the file to the file cache.  No autofile."
+  :type '(choice
+          (const :tag "Create/set an autofile bookmark instead of adding to file cache"  autofile-only)
+          (const :tag "Create/set an autofile bookmark and add to file cache"            autofile+cache)
+          (const :tag "Add to file cache only - do not create/set an autofile bookmark"  cache-only))
+  :group 'bookmark-plus)
 
 ;;;###autoload (autoload 'bmkp-auto-idle-bookmark-min-distance "bookmark+")
 (defcustom bmkp-auto-idle-bookmark-min-distance 1000
@@ -1720,14 +1735,16 @@ provide it.  If that does not provide it then use
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
-;; 1. Update the bookmark name also, not just the data, for an existing bookmark.
-;; 2. Use `bmkp-get-bookmark-in-alist' to test whether the bookmark already exists.
-;; 3. Put full bookmark record on bookmark name (inside record) as property `bmkp-full-record'.
-;; 4. Use `bmkp-maybe-save-bookmarks'.
-;; 5. Add the bookmark to `bmkp-modified-bookmarks', and to `bmkp-auto-idle-bookmarks' if appropriate.
-;; 6. Return the bookmark.
+;; 1. Added optional args NO-UPDATE-P and NO-MSG-P.
+;; 2. Update the bookmark name also, not just the data, for an existing bookmark.
+;; 3. Use `bmkp-get-bookmark-in-alist' to test whether the bookmark already exists.
+;; 4. Put full bookmark record on bookmark name (inside record) as property `bmkp-full-record'.
+;; 5. Use `bmkp-maybe-save-bookmarks'.
+;; 6. Add the bookmark to `bmkp-modified-bookmarks', and to `bmkp-auto-idle-bookmarks' if appropriate.
+;; 7. Use `bmkp-refresh/rebuild-menu-list', not `bookmark-bmenu-surreptitiously-rebuild-list'.
+;; 8. Return the bookmark.
 ;;
-(defun bookmark-store (bookmark-name data no-overwrite &optional no-msg-p)
+(defun bookmark-store (bookmark-name data no-overwrite &optional no-update-p no-msg-p)
   "Store the bookmark named BOOKMARK-NAME, giving it DATA.
 Return the new bookmark.
 
@@ -1736,15 +1753,17 @@ DATA is the bookmark record without its name, i.e., what
 
 If NO-OVERWRITE is non-nil and bookmark BOOKMARK-NAME already exists
 in the current bookmark list (`bookmark-alist') then record the new
-bookmark but do not discard the old one.
+bookmark but do not discard the old one.  The check for existence uses
+`bmkp-get-bookmark-in-alist'.
 
-The check for existence uses `bmkp-get-bookmark-in-alist'.
+Non-nil optional arg NO-UPDATE-P means do not refresh/rebuild the
+bookmark-list display.
+
+Non-nil optional arg NO-MSG-P means do not show progress messages.
 
 Note: In spite of the function name, like all functions that define or
 change bookmarks, this function does not necessarily save your
-bookmark file.  Saving the file depends on `bookmark-save-flag'.
-
-Non-nil optional arg NO-MSG-P means do not show progress messages."
+bookmark file.  Saving the file depends on `bookmark-save-flag'."
   (bookmark-maybe-load-default-file)
   (let ((bname  (copy-sequence bookmark-name))
         bmk)
@@ -1767,7 +1786,7 @@ Non-nil optional arg NO-MSG-P means do not show progress messages."
                (not (memq bmk bmkp-auto-idle-bookmarks)))
       (setq bmkp-auto-idle-bookmarks  (cons bmk bmkp-auto-idle-bookmarks)))
     (setq bookmark-current-bookmark  bname)
-    (bmkp-refresh/rebuild-menu-list bmk no-msg-p)
+    (unless no-update-p (bmkp-refresh/rebuild-menu-list bmk no-msg-p))
     bmk))                               ; Return the bookmark.
 
 
@@ -2081,7 +2100,7 @@ bookmarks)."
                                      (and (or (not parg) (consp parg)) ; No numeric PARG: all bookmarks.
                                           (bmkp-specific-buffers-alist-only))
                                      nil 'bookmark-history)))
-           (bookmark-store bname (cdr record) (consp parg) (not interactivep))
+           (bookmark-store bname (cdr record) (consp parg) nil (not interactivep)) ; And refresh list. (?)
            (when (and interactivep  bmkp-prompt-for-tags-flag)
              (bmkp-add-tags bname (bmkp-read-tags-completing) 'NO-UPDATE-P)) ; Do not refresh tags. (?)
            (case (and (boundp 'bmkp-auto-light-when-set)  bmkp-auto-light-when-set)
@@ -2450,8 +2469,8 @@ Otherwise, call `bmkp-goto-position' to go to the recorded position."
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
-;; 1. Added bookmark default for interactive use.
-;; 2. Added optional arg NO-UPDATE-P.
+;; 1. Added optional arg NO-UPDATE-P.
+;; 2. Added bookmark default for interactive use.
 ;; 3. Added note about `S-delete' to doc string.
 ;; 4. Changed arg name: BOOKMARK -> BOOKMARK-NAME.
 ;; 5. Update Dired location too, for Dired bookmark.
@@ -2461,9 +2480,8 @@ Otherwise, call `bmkp-goto-position' to go to the recorded position."
 (defun bookmark-relocate (bookmark-name &optional no-update-p) ; Not bound
   "Relocate the bookmark named BOOKMARK-NAME to another file.
 You are prompted for the new file name.
-
-Non-nil NO-UPDATE-P means do not update `bmkp-tags-alist' and do not
-refresh/rebuild the bookmark-list display.
+Non-nil optional arg NO-UPDATE-P means do not refresh/rebuild the
+bookmark-list display.
 
 Changes the file associated with the bookmark.
 Useful when a file has been renamed after a bookmark was set in it.
@@ -3668,16 +3686,15 @@ Returns the new bookmark (internal record).
 
 Non-interactively, non-nil optional arg MSG-P means display a status
 message."
-  (interactive
-   (let ((icicle-unpropertize-completion-result-flag  t))
-     (list (read-string "Bookmark: ")
-           (completing-read "Function: " obarray 'functionp)
-           t)))
+  (interactive (let ((icicle-unpropertize-completion-result-flag  t))
+                 (list (read-string "Bookmark: ")
+                       (completing-read "Function: " obarray 'functionp)
+                       t)))
   (bookmark-store bookmark-name `((filename . ,bmkp-non-file-filename)
                                   (position . 0)
                                   (function . ,(read function))
                                   (handler  . bmkp-jump-function))
-                  nil (not msg-p))
+                  nil nil (not msg-p))
   (let ((new  (bmkp-bookmark-record-from-name bookmark-name 'NOERROR)))
     (unless (memq new bmkp-latest-bookmark-alist)
       (setq bmkp-latest-bookmark-alist  (cons new bmkp-latest-bookmark-alist)))
@@ -6406,7 +6423,7 @@ If TRUTH is nil, return nil."
 ;;  *** Indirect Bookmarking Functions ***
 
 ;;;###autoload (autoload 'bmkp-url-target-set "bookmark+")
-(defun bmkp-url-target-set (url &optional prefix-only-p name/prefix msg-p) ; `C-x p c u'
+(defun bmkp-url-target-set (url &optional prefix-only-p name/prefix no-update-p msg-p) ; `C-x p c u'
   "Set a bookmark for a URL.  Return the bookmark.
 Interactively you are prompted for the URL.  Completion is available.
 Use `M-n' to pick up the url at point as the default.
@@ -6423,6 +6440,8 @@ input.
 Non-interactively:
 * Non-nil PREFIX-ONLY-P means NAME/PREFIX is a bookmark-name prefix.
 * NAME/PREFIX is the bookmark name or its prefix (the suffix = URL).
+* Non-nil NO-UPDATE-P means do not refresh/rebuild the bookmark-list
+  display.
 * Non-nil MSG-P means display a status message."
   (interactive
    (list (if (require 'ffap nil t)
@@ -6445,7 +6464,7 @@ Non-interactively:
                  bmk failure)
     (condition-case err
         (setq bmk  (bookmark-store (if prefix-only-p (concat name/prefix url) name/prefix)
-                                   (cdr (bookmark-make-record)) nil (not msg-p)))
+                                   (cdr (bookmark-make-record)) nil no-update-p (not msg-p)))
       (error (setq failure  err)))
     (if (not failure)
         bmk                             ; Return the bookmark.
@@ -6475,8 +6494,8 @@ Non-interactively:
  - Optional arg NAME/PREFIX is the name or name prefix string.
  - Optional arg NO-OVERWRITE is passed to `bookmark-store': non-nil
    means do not overwrite an existing bookmark that has the same name.
- - Non-nil NO-UPDATE-P means do not update `bmkp-tags-alist' and
-   do not refresh/rebuild the bookmark-list display.
+ - Non-nil NO-UPDATE-P means do not refresh/rebuild the bookmark-list
+   display.
  - Non-nil optional arg MSG-P means show a warning message if file
    does not exist."
   (interactive
@@ -6501,6 +6520,7 @@ Non-interactively:
                                      name/prefix)
                                    (cdr (bookmark-make-record))
                                    no-overwrite
+                                   no-update-p
                                    (not msg-p)))
       (error (setq failure  (error-message-string err))))
     (if (not failure)
@@ -6536,7 +6556,15 @@ The bookmarked position will be the beginning of the file."
            ;; Obsolete: `(lambda () '((filename . ,file) (handler . bmkp-sound-jump))))
            `(lambda () ',(append common '((file-handler . play-sound-file)))))
           (t
-           `,common))))
+           `(lambda () ',common)))))
+
+(when (fboundp 'file-cache-add-file)
+  (defadvice file-cache-add-file (around bmkp-autofile-filecache activate)
+    "Respect option `bmkp-autofile-filecache'."
+    (case bmkp-autofile-filecache
+      (autofile-only     (bmkp-autofile-set (ad-get-arg 0) nil nil 'NO-UPDATE-P))
+      (autofile+cache    (progn ad-do-it  (bmkp-autofile-set (ad-get-arg 0) nil nil 'NO-UPDATE-P 'MSG-P)))
+      (cache-only        ad-do-it))))
 
 ;;;###autoload (autoload 'bmkp-bookmark-a-file "bookmark+")
 (defalias 'bmkp-bookmark-a-file 'bmkp-autofile-set)
@@ -6569,8 +6597,8 @@ relative file name (non-directory part), but with different absolute
 file names.
 
 Non-interactively:
- - Non-nil NO-UPDATE-P means do not update `bmkp-tags-alist' and
-   do not refresh/rebuild the bookmark-list display.
+ - Non-nil NO-UPDATE-P means do not refresh/rebuild the bookmark-list
+   display.
  - Non-nil optional arg MSG-P means display status messages."
   (interactive
    (list (let ((icicle-unpropertize-completion-result-flag  t))
