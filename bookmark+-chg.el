@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Oct  9 11:17:38 2012 (-0700)
+;; Last-Updated: Fri Nov  9 11:45:48 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 15109
+;;     Update #: 15117
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,10 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2012/11/09 dadams
+;;     bmkp-make-record-for-target-file:
+;;       Add CREATED property for all bookmark types.  Factor out the common stuff.
+;;       Remove any text properties from FILE arg before using it.
 ;; 2012/10/09 dadams
 ;;     Made all autoload cookies explicitly load bookmark+.el(c).  Should help ELPA (e.g. MELPA).
 ;; 2012/10/01 dadams
