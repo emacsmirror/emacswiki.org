@@ -135,6 +135,26 @@ There is a problem with the above version of `file-cache-read-cache-from-file' s
 
 
 
+
+
+== Automatically Create Bookmarks for Cached Files ==
+
+[[Bookmark+]] user [[option]] '''`bmkp-autofile-filecache'''' lets you automatically create autofile bookmarks whenever you add a file name to the file-name cache.  You can optionally create the bookmark instead of, or in addition to, caching the file name.  See [[BookmarkPlus#AutofileBookmarks|Autofile Bookmarks]].
+
+
+
+
+
+
+== Use During Buffer-Name Completion in Icicles ==
+
+In [[Icicles]], when you complete [[buffer]] names, you can use '''`C-x F'''' to include matching cached file names as [[completion]] candidates.  This does everything that `iswitchb-fc' does (see next), and more.  See [[Icicles - Buffer-Name Input]].
+
+
+
+
+
+
 == iswitchb-fc: Integrate file-cache with iswitchb ==
 
 http://tao.uab.es/cgi-bin/archzoom.cgi/jao@gnu.org--2004/unix--emacs--0--patch-23/other/iswitchb-fc.el?download
