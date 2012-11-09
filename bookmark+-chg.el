@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Nov  9 11:45:48 2012 (-0800)
+;; Last-Updated: Fri Nov  9 14:42:12 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 15117
+;;     Update #: 15126
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -147,6 +147,11 @@
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
 ;; 2012/11/09 dadams
+;;     Added: bmkp-autofile-filecache.
+;;     Added defadvice for file-cache-add-file.
+;;     bookmark-store, bmkp-url-target-set: Added optional arg NO-UPDATE-P.
+;;     bookmark-set, bmkp-make-function-bookmark, bmkp-url-target-set, bmkp-file-target-set:
+;;       Adjusted calls to bookmark-store to accommodate NO-UPDATE-P arg.
 ;;     bmkp-make-record-for-target-file:
 ;;       Add CREATED property for all bookmark types.  Factor out the common stuff.
 ;;       Remove any text properties from FILE arg before using it.
