@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Mar  5 17:21:28 1996
 ;; Version: 21.0
-;; Last-Updated: Mon Jun 18 09:39:52 2012 (-0700)
+;; Last-Updated: Sat Nov 10 14:19:40 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 592
+;;     Update #: 598
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/misc-fns.el
 ;; Keywords: internal, unix, lisp, extensions, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -44,18 +44,20 @@
 ;;
 ;;  Functions defined here:
 ;;
-;;    `another-buffer', `current-line', `display-in-mode-line',
-;;    `do-files', `flatten', `fontify-buffer', `force-time-redisplay',
-;;    `interesting-buffer-p', `live-buffer-name',
-;;    `make-transient-mark-mode-buffer-local', `mode-ancestors',
-;;    `mod-signed', `notify-user-of-mode', `region-or-buffer-limits',
-;;    `signum', `undefine-keys-bound-to', `undefine-killer-commands',
-;;    `unique-name'.
+;;    `another-buffer', `color-named-at', `current-line',
+;;    `display-in-mode-line', `do-files', `flatten', `fontify-buffer',
+;;    `force-time-redisplay', `interesting-buffer-p',
+;;    `live-buffer-name', `make-transient-mark-mode-buffer-local',
+;;    `mode-ancestors', `mod-signed', `notify-user-of-mode',
+;;    `region-or-buffer-limits', `signum', `undefine-keys-bound-to',
+;;    `undefine-killer-commands', `unique-name'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
 ;;
+;; 2012/11/10 dadams
+;;     Added: color-named-at.
 ;; 2012/06/18 dadams
 ;;     notify-user-of-mode: Use format-mode-line if available.
 ;; 2012/04/21 dadams
@@ -528,6 +530,19 @@ Also works for a consp whose cdr is non-nil."
                (setq item (car item)))
              (setq new (cons item new)))
            (reverse new)))))
+
+;; Same as `tap-color-at-point' in `thingatpt+.el', except that this accepts an arg.
+(when (fboundp 'color-defined-p)
+  (defun color-named-at (&optional position)
+    "Return the color named at POSITION (default: point), as a string.
+The name is anything recognized by `color-defined-p', which includes
+an RGB color code prefixed by `#'.
+Return nil if no color is named at point."
+    (unless position (setq position  (point)))
+    (let ((word  (with-syntax-table (copy-syntax-table (syntax-table))
+                   (modify-syntax-entry ?# "w") ; Make `#' a word constituent.
+                   (word-at-point))))
+      (and word  (color-defined-p word)  word))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; misc-fns.el ends here
