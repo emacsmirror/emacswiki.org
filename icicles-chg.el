@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Nov 10 07:38:53 2012 (-0800)
+;; Last-Updated: Sat Nov 10 12:09:09 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 9258
+;;     Update #: 9264
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -86,6 +86,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2012/11/10 dadams
+;;     custom-variable-p, icicle-binary-option-p: icicle-get-safe -> get.
+;;     icicle-increment-(option|variable): intern -> intern-soft.  Thx to Michael Heerdegen.
 ;; 2012/11/08 dadams
 ;;     custom-variable-p, icicle-execute-extended-command-1, icicle-binary-option-p:
 ;;       Use icicle-get-safe.
@@ -762,6 +765,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2012/11/10 dadams
+;;     icicle-defined-thing-p: icicle-get-safe -> get.
+;;     icicle-read-color-wysiwyg: Mention sorting in doc string.
 ;; 2012/11/08 dadams
 ;;     icicle-defined-thing-p: Use icicle-get-safe.
 ;;     Doc strings: Use \\[...] more.
@@ -1531,7 +1537,7 @@
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
 ;; 2012/11/10 dadams
-;;     icicle-fuzzy-candidates: Show all (not no) candidates for empty input.
+;;     icicle-fuzzy-candidates: Show all (not no) candidates for empty input, sorted alphabetically.
 ;; 2012/11/08 dadams
 ;;     Added: icicle-get-safe.
 ;;     icicle-completion-setup-function, icicle-var-(is-of|matches|inherits)-type-p,
