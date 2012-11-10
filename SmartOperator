@@ -72,6 +72,38 @@ fixed function name for 'smart-operator-insert'; BTW remember this all needs a p
 Nice extension but it is buggy with C/CC comments:
 
 * "/* hello */" -> "/* hello*/"
+
+Fixed with the patch listed below
+
+    --- a/smart-operator.el 2012-11-10 16:25:27.393138909 +0900
+    +++ b/smart-operator.el 2012-11-10 18:22:18.281490742 +0900
+    @@ -252,7 +253,8 @@
+     (defun smart-operator-* ()
+       "See `smart-operator-insert'."
+       (interactive)
+    -  (cond (c-buffer-is-cc-mode
+    +  (cond ((and c-buffer-is-cc-mode
+    +	      (not (smart-operator-document-line?)))
+              ;; ,----
+              ;; | a * b;
+              ;; | char *a;
+    @@ -360,6 +366,16 @@
+                     (move-beginning-of-line nil)
+                     (looking-at "#!")))
+              (insert "/"))
+    +	;; case /* hello */
+    +	;; insert SPC before */ instread of SPC between * and /
+    +	((and c-buffer-is-cc-mode
+    +	      (smart-operator-document-line?))
+    +	 (when (looking-back "[^\sc]+\\*")
+    +	   (save-excursion
+    +	     (backward-char 1)
+    +	     (insert " "))
+    +	   (smart-operator-insert "/" 'middle)
+    +	   (indent-according-to-mode)))
+             (t
+              (smart-operator-insert "/"))))
+
 * "//" works fine
 
 -- jcadam
@@ -110,5 +142,11 @@ Fixed the problem by
          ;; (define-key keymap "!" 'smart-operator-self-insert-command)
          (define-key keymap ":" 'smart-operator-:)
          (define-key keymap "?" 'smart-operator-?)
+    @@ -89,7 +90,7 @@
+       (smart-operator-insert (string last-command-event)))
+     
+     (defvar smart-operator-list
+    -  '("=" "<" ">" "%" "+" "-" "*" "/" "&" "|" "!" ":" "?" "," "."))
+    +  '("=" "<" ">" "%" "+" "-" "*" "/" "&" "|" "^" "!" ":" "?" "," "."))
 
 * "ioctl(fd, HPET_INFO, &info) -> "ioctl(fd, HPET_INFO, & info)
