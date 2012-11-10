@@ -17,7 +17,7 @@ The following categories are detailed below:
 * '''forms''' -- Forms are particular kinds of things. See [[#Forms]]. 
 * '''symbols''' -- Symbols are particular kinds of forms. See [[#Symbols]].
 * '''lists''' -- Lists.  See [[#Lists]].
-* other: '''symbol names''', '''words''', '''sentences''', '''sexp''', '''number'''. See [[#Other]].
+* other: '''symbol names''', '''words''', '''sentences''', '''sexp''', '''number''', '''color'''. See [[#Other]].
 
 '''See Also:''' ThingAtPointCommands, for commands to ''select'' different kinds of things at or near point.
 
@@ -78,11 +78,13 @@ See also: ThingAtPointCommands, for commands such as `mark-enclosing-sexp', to '
 
 
 [:Other]
-== Other: Words, Sentences, Sexps, Numbers ==
+== Other: Words, Sentences, Sexps, Numbers, Colors ==
 
-* `word-nearest-point', `sentence-nearest-point', `sexp-nearest-point', `number-nearest-point'
+* `word-nearest-point', `sentence-nearest-point', `sexp-nearest-point', `number-nearest-point', `color-nearest-point', `color-at-point'
 
-* `number-at-point-decimal', `number-at-point-hex' -- These return `nil', as you would expect, when point is not on a numeral.  
+* `number-at-point-decimal', `number-at-point-hex' -- These return `nil', as you would expect, when point is not on a numeral.
+
+Color means either a defined color name or an RGB hex color code prefixed by '''`<tt>#</tt>''''.
 
 '''Gotcha:''' Vanilla `number-at-point' returns the char value, not `nil', when point is on a char: when on ##?A## it returns 65; when on ##?\A-\^@## it returns 4194304.  See [http://debbugs.gnu.org/cgi/bugreport.cgi?bug=8634|Emacs bug 8634].
 
