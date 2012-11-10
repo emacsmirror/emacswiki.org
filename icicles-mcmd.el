@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Nov  8 13:12:23 2012 (-0800)
+;; Last-Updated: Sat Nov 10 13:05:41 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 18654
+;;     Update #: 18655
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -4138,7 +4138,6 @@ message either.  NO-DISPLAY-P is passed to
                       (icicle-display-candidates-in-Completions nil no-display-p)))
                    (t
                     (if (not (and (or iac1-was-cycling-p  icicle-next-apropos-complete-cycles-p)
-                                  (symbolp icicle-last-completion-command)
                                   (icicle-get-safe icicle-last-completion-command
                                                    'icicle-apropos-completing-command)
                                   (symbolp last-command)
