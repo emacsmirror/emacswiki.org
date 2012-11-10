@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Wed Aug  2 11:20:41 1995
 ;; Version: 21.1
-;; Last-Updated: Tue Aug 21 15:16:26 2012 (-0700)
+;; Last-Updated: Sat Nov 10 15:54:41 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 3027
+;;     Update #: 3060
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/misc-cmds.el
 ;; Keywords: internal, unix, extensions, maint, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -34,7 +34,8 @@
 ;;    `count-chars-in-region', `delete-lines', `end-of-line+',
 ;;    `forward-char-same-line', `forward-overlay',
 ;;    `goto-previous-mark', `indirect-buffer',
-;;    `kill-buffer-and-its-windows', `mark-buffer-after-point',
+;;    `kill-buffer-and-its-windows', `list-colors-nearest',
+;;    `list-colors-nearest-color-at', `mark-buffer-after-point',
 ;;    `mark-buffer-before-point', `old-rename-buffer',
 ;;    `recenter-top-bottom', `recenter-top-bottom-1',
 ;;    `recenter-top-bottom-2', `region-length', `region-to-buffer',
@@ -70,6 +71,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/11/10 dadams
+;;     Added: list-colors-nearest, list-colors-nearest-color-at.
 ;; 2012/08/21 dadams
 ;;     Call tap-put-thing-at-point-props after load thingatpt+.el.
 ;; 2012/08/18 dadams
@@ -271,7 +274,7 @@
 (eval-when-compile (require 'cl)) ;; case, plus for Emacs < 21: dolist, pop
 
 (require 'frame-fns nil t) ;; (no error if not found): flash-ding
-(require 'misc-fns nil t) ;; (no error if not found): another-buffer
+(require 'misc-fns nil t) ;; (no error if not found): another-buffer, color-named-at
 (require 'strings nil t) ;; (no error if not found): read-buffer
 
 ;;;;;;;;;;;;;;;;;;;;;;;
@@ -291,11 +294,6 @@
   "Interactively, (lax) completion is available for the buffer name."
   (interactive (list (read-buffer "Rename buffer (to new name): " (buffer-name))
                      current-prefix-arg)))
-
-;;;###autoload
-(defun view-X11-colors ()
-  "View file `/usr/lib/X11/rgb.txt', which lists available X11 colors."
-  (interactive) (view-file-other-window "/usr/lib/X11/rgb.txt")) ; In `view.el'.
 
 ;;;###autoload
 (defun forward-overlay (&optional arg)
@@ -1122,6 +1120,38 @@ With prefix arg, clear also the simple search history."
 (defun revert-buffer-no-confirm ()
   "Revert buffer without confirmation."
   (interactive) (revert-buffer t t))
+
+;;;###autoload
+(defun view-X11-colors ()
+  "View file `/usr/lib/X11/rgb.txt', which lists available X11 colors."
+  (interactive) (view-file-other-window "/usr/lib/X11/rgb.txt")) ; In `view.el'.
+
+;; Inspired from code at http://www.masteringemacs.org/.
+(when (> emacs-major-version 23)        ; Needs variable `list-colors-sort'.
+  (defun list-colors-nearest (color &optional use-hsv-p)
+    "List colors, in order of distance from COLOR.
+Use RGB distance by default.  Non-nil optional arg USE-HSV-P
+\(interactively, the prefix arg) means use HSV distance instead of RGB
+distance."
+    (interactive (list (if (fboundp 'icicle-read-color-wysiwyg)
+                           (icicle-read-color-wysiwyg 9999)
+                         (read-color))
+                       current-prefix-arg))
+    (let ((list-colors-sort  (if (or use-hsv-p  current-prefix-arg)
+                                 (cons 'hsv-dist color)
+                               (cons 'rgb-dist color))))
+      (if (color-defined-p color)
+          (list-colors-display)
+        (error "No such color: `%s'" color))))
+
+  (defun list-colors-nearest-color-at (&optional position use-hsv-p)
+    "List colors, in order of distance from color named at POSITION.
+POSITION defaults to point.
+Use RGB distance by default.  Non-nil optional arg USE-HSV-P
+\(interactively, the prefix arg) means use HSV distance instead of RGB
+distance."
+    (interactive "d")
+    (list-colors-nearest (color-named-at position) use-hsv-p))) ; In `misc-fns.el'
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; misc-cmds.el ends here
