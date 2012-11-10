@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Thu Nov  8 13:22:08 2012 (-0800)
+;; Last-Updated: Sat Nov 10 11:56:17 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 6103
+;;     Update #: 6106
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -986,6 +986,11 @@ In all other cases:
 
 - If you enter input without completing or cycling, the input is not
   checked: whatever is entered is returned as the string value.
+
+You can, as usual in Icicles, use \\<minibuffer-local-completion-map>`\\[icicle-change-sort-order]' \
+to cycle among various sort
+orders.  There is a rich variety of orders, including HSV and RGB
+distance from a color you specify.
 
 From Emacs Lisp, ARG controls what is returned.  If ARG is nil,
 `icicle-list-use-nth-parts' can also be used to control the behavior.
@@ -4512,11 +4517,11 @@ list includes the names of the symbols that satisfy
 ;;; Same as `thgcmd-defined-thing-p' in `thing-cmds.el'.
 (defun icicle-defined-thing-p (thing)
   "Return non-nil if THING (type) is defined as a thing-at-point type."
-  (let ((forward-op    (or (icicle-get-safe thing 'forward-op)  (intern-soft (format "forward-%s" thing))))
-        (beginning-op  (icicle-get-safe thing 'beginning-op))
-        (end-op        (icicle-get-safe thing 'end-op))
-        (bounds-fn     (icicle-get-safe thing 'bounds-of-thing-at-point))
-        (thing-fn      (icicle-get-safe thing 'thing-at-point)))
+  (let ((forward-op    (or (get thing 'forward-op)  (intern-soft (format "forward-%s" thing))))
+        (beginning-op  (get thing 'beginning-op))
+        (end-op        (get thing 'end-op))
+        (bounds-fn     (get thing 'bounds-of-thing-at-point))
+        (thing-fn      (get thing 'thing-at-point)))
     (or (functionp forward-op)
         (and (functionp beginning-op)  (functionp end-op))
         (functionp bounds-fn)
