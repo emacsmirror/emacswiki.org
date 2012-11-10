@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Nov 10 07:37:28 2012 (-0800)
+;; Last-Updated: Sat Nov 10 13:09:33 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 13659
+;;     Update #: 13663
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1742,8 +1742,8 @@ Note: If the library that defines VARIABLE has not yet been loaded,
 then `icicle-custom-type' loads it.  Be sure you want to do that
 before you call this function."
   (and (custom-variable-p variable)
-       (or (icicle-get-safe variable 'custom-type)
-           (progn (custom-load-symbol variable) (icicle-get-safe variable 'custom-type)))))
+       (or (get variable 'custom-type)
+           (progn (custom-load-symbol variable) (get variable 'custom-type)))))
 
 (when (fboundp 'read-char-by-name)      ; Emacs 23+
   (defun icicle-read-char-maybe-completing (&optional prompt names inherit-input-method seconds)
@@ -3617,8 +3617,9 @@ INPUT is a string.  Each candidate is a string."
                                           (push (symbol-name symb) candidates)))
                          minibuffer-completion-table)
                (setq candidates  (if (equal "" input)
-                                     (all-completions "" minibuffer-completion-table
-                                                      minibuffer-completion-predicate)
+                                     (sort (all-completions "" minibuffer-completion-table
+                                                            minibuffer-completion-predicate)
+                                           #'icicle-case-string-less-p)
                                    (FM-all-fuzzy-matches input candidates))))
               ((vectorp minibuffer-completion-table)
                (setq candidates  (mapcar #'car
@@ -3632,8 +3633,9 @@ INPUT is a string.  Each candidate is a string."
                            (funcall minibuffer-completion-predicate cand))
                    (push (car cand) candidates)))
                (setq candidates  (if (equal "" input)
-                                     (all-completions "" minibuffer-completion-table
-                                                      minibuffer-completion-predicate)
+                                     (sort (all-completions "" minibuffer-completion-table
+                                                            minibuffer-completion-predicate)
+                                           #'icicle-case-string-less-p)
                                    (FM-all-fuzzy-matches input candidates)))))
         (let ((icicle-extra-candidates
                (icicle-remove-if-not
