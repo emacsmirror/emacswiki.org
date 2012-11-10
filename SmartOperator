@@ -153,8 +153,8 @@ Fixed the problem by
 
 Fixed by the patch listed below
 
-    --- extensions/smart-operator.el	2012-11-10 16:25:27.393138909 +0900
-    +++ /home/adam/.emacs.d/site-lisp/extensions/smart-operator.el	2012-11-10 21:10:39.979202141 +0900
+    --- a/smart-operator.el	2012-11-10 16:25:27.393138909 +0900
+    +++ b/smart-operator.el	2012-11-10 21:10:39.979202141 +0900
     @@ -244,6 +244,8 @@
                      (smart-operator-insert "&" 'after))
                     ((looking-back "= *")
