@@ -70,15 +70,29 @@ fixed function name for 'smart-operator-insert'; BTW remember this all needs a p
 -- ch2048
 
 Nice extension but it is buggy with C/CC comments:
-* "/*" -> "/ *"
-* "*/" -> "*/ "
-* "//" works fine
-It also fails with --:
-* "i++" -> "i ++"
-* "i--" works fine
 
--- adam
+* "/* hello */" -> "/* hello*/"
+* "//" works fine
+
+-- jcadam
 
 more tests on this with all kinds of C/C++ operators:
+
 * "-1" or "-ENOMEM" -> "- 1" or "- ENOMEM"
+
+Fixed this issue by this patch
+
+    --- a/smart-operator.el 2012-11-10 16:25:27.393138909 +0900
+    +++ b/smart-operator.el 2012-11-10 18:22:18.281490742 +0900
+    @@ -307,6 +307,10 @@
+                  (delete-horizontal-space)))
+              (smart-operator-insert "-" 'middle)
+              (indent-according-to-mode))
+    +   ((and c-buffer-is-cc-mode (looking-back "[*/%+(><=&^|] *"))
+    +    (smart-operator-insert "-" 'before))
+    +   ((and c-buffer-is-cc-mode (looking-back "\\(return\\) *"))
+    +    (smart-operator-insert "-" 'before))
+             (t
+              (smart-operator-insert "-"))))
+
 * "ioctl(fd, HPET_INFO, &info) -> "ioctl(fd, HPET_INFO, & info)
