@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Nov  8 13:17:48 2012 (-0800)
+;; Last-Updated: Sat Nov 10 12:02:22 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 25146
+;;     Update #: 25150
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2123,7 +2123,7 @@ separate the words (any strings, in fact, including regexps) using
 (unless (fboundp 'custom-variable-p)
   (defun custom-variable-p (variable)
     "Return non-nil if VARIABLE is a custom variable."
-    (or (icicle-get-safe variable 'standard-value)  (icicle-get-safe variable 'custom-autoload))))
+    (or (get variable 'standard-value)  (get variable 'custom-autoload))))
 
 ;; Icicles replacement for `customize-apropos-faces', defined in `cus-edit.el'.
 ;; 1. Uses `completing-read' to read the regexp.
@@ -4249,7 +4249,7 @@ candidates, as follows:
 
 (defun icicle-binary-option-p (symbol)
   "Non-nil if SYMBOL is a user option that has custom-type `boolean'."
-  (eq (icicle-get-safe symbol 'custom-type) 'boolean))
+  (eq (get symbol 'custom-type) 'boolean))
 
 ;;;###autoload (autoload 'icicle-increment-option "icicles")
 (icicle-define-command icicle-increment-option ; Command name
@@ -4269,7 +4269,7 @@ This command needs library `doremi.el'." ; Doc string
    (alt-fn                                  nil)
    (icicle-orig-must-pass-after-match-pred  icicle-must-pass-after-match-predicate)
    (pred                                    (lambda (symb)
-                                              (unless (symbolp symb) (setq symb  (intern symb)))
+                                              (unless (symbolp symb) (setq symb  (intern-soft symb)))
                                               (memq (get symb 'custom-type) '(number integer float))))
    (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
    (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))
@@ -4300,7 +4300,7 @@ This command needs library `doremi.el'." ; Doc string
    (icicle-orig-must-pass-after-match-pred  icicle-must-pass-after-match-predicate)
    (pred                                    (if prefix-arg
                                                 (lambda (symb)
-                                                  (unless (symbolp symb) (setq symb  (intern symb)))
+                                                  (unless (symbolp symb) (setq symb  (intern-soft symb)))
                                                   (memq (get symb 'custom-type) '(number integer float)))
                                               (lambda (symb)
                                                 (unless (symbolp symb) (setq symb  (intern symb)))
