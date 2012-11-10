@@ -95,4 +95,20 @@ Fixed this issue by this patch
              (t
               (smart-operator-insert "-"))))
 
+* missing operator '^' which is bitwise XOR, used in C/C++ like 'a ^ b'
+
+Fixed the problem by
+
+    --- a/smart-operator.el 2012-11-10 16:25:27.393138909 +0900
+    +++ b/smart-operator.el 2012-11-10 18:22:18.281490742 +0900
+
+    @@ -57,6 +57,7 @@
+         (define-key keymap "/" 'smart-operator-/)
+         (define-key keymap "&" 'smart-operator-&)
+         (define-key keymap "|" 'smart-operator-self-insert-command)
+    +    (define-key keymap "^" 'smart-operator-self-insert-command)
+         ;; (define-key keymap "!" 'smart-operator-self-insert-command)
+         (define-key keymap ":" 'smart-operator-:)
+         (define-key keymap "?" 'smart-operator-?)
+
 * "ioctl(fd, HPET_INFO, &info) -> "ioctl(fd, HPET_INFO, & info)
