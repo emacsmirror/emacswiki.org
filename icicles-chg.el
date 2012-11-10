@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Nov 10 13:39:09 2012 (-0800)
+;; Last-Updated: Sat Nov 10 15:50:14 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 9265
+;;     Update #: 9266
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -767,7 +767,9 @@
 ;;
 ;; 2012/11/10 dadams
 ;;     icicle-defined-thing-p: icicle-get-safe -> get.
-;;     icicle-read-color-wysiwyg: Mention sorting in doc string.
+;;     icicle-read-color-wysiwyg:
+;;       Fix case where user inputs name or RGB without completing (transformed to "").
+;;       Mention sorting in doc string.
 ;; 2012/11/08 dadams
 ;;     icicle-defined-thing-p: Use icicle-get-safe.
 ;;     Doc strings: Use \\[...] more.
