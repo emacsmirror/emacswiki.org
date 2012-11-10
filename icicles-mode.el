@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Nov  8 13:28:02 2012 (-0800)
+;; Last-Updated: Sat Nov 10 13:23:37 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 9150
+;;     Update #: 9192
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -274,9 +274,9 @@ bindings in `*Completions*'.")
       ;; If command's input is not a parameterized (e.g. mouse) event, record it.
       (let* ((fn   (ad-get-arg 0))
              (int  (interactive-form fn)))
-        (when (and (symbolp fn) (consp int) (or (not (stringp (cadr int)))
-                                                (string= (cadr int) "")
-                                                (not (eq ?e (aref (cadr int) 0)))))
+        (when (and (symbolp fn)  (consp int)  (or (not (stringp (cadr int)))
+                                                  (string= (cadr int) "")
+                                                  (not (eq ?e (aref (cadr int) 0)))))
           (pushnew (symbol-name fn) icicle-interactive-history))))
     (when (boundp 'savehist-save-hook)  ; Do not save `icicle-interactive-history' (too large).
       (add-hook 'savehist-save-hook
@@ -641,7 +641,7 @@ there are also `-other-window' versions.
           :global t :group 'Icicles :lighter " Icy" :init-value nil
           (cond (icicle-mode
                  ;; (when (interactive-p)
-                 ;;   (unless (or window-system (and (fboundp 'daemonp) (daemonp)))
+                 ;;   (unless (or window-system  (and (fboundp 'daemonp)  (daemonp)))
                  ;;     (with-output-to-temp-buffer "*Attention*"
                  ;;       (princ "You are using Icicles in a text terminal (no window ")
                  ;;       (princ "system/manager).\n\nIcicles makes use of many keys that are ")
@@ -682,7 +682,7 @@ there are also `-other-window' versions.
                      (ad-enable-advice 'call-interactively 'after 'icicle-save-to-history))
                    (ad-activate 'call-interactively))
                  (dolist (fn  icicle-inhibit-advice-functions)
-                   (when (and (fboundp fn) (ad-is-active fn))
+                   (when (and (fboundp fn)  (ad-is-active fn))
                      (push (cons fn (ad-copy-advice-info fn)) icicle-advice-info-list)
                      (ad-deactivate fn))))
                 (t
@@ -721,7 +721,7 @@ there are also `-other-window' versions.
                    (ad-activate 'call-interactively))
                  (dolist (fn  icicle-inhibit-advice-functions)
                    (let ((info  (memq fn icicle-advice-info-list)))
-                     (when (and (fboundp fn) info)
+                     (when (and (fboundp fn)  info)
                        (ad-set-advice-info fn info)
                        (when (ad-is-active fn) (ad-activate fn)))))))
           (unless (eq icicle-guess-commands-in-path 'load)
@@ -1067,7 +1067,7 @@ there are also `-other-window' versions.
     (icicle-define-minibuffer-maps icicle-mode)
     (cond (icicle-mode
            ;; (when (interactive-p)
-           ;;   (unless (or window-system (and (fboundp 'daemonp) (daemonp)))
+           ;;   (unless (or window-system  (and (fboundp 'daemonp)  (daemonp)))
            ;;     (with-output-to-temp-buffer "*Attention*"
            ;;       (princ "You are using Icicles in a text terminal (no window ")
            ;;       (princ "system/manager).\n\nIcicles makes use of many keys that are ")
@@ -1100,7 +1100,7 @@ there are also `-other-window' versions.
                (add-hook 'pre-command-hook 'icicle-add-menu-item-to-cmd-history)
              (remove-hook 'pre-command-hook 'icicle-add-menu-item-to-cmd-history))
            (dolist (fn  icicle-inhibit-advice-functions)
-             (when (and (fboundp fn) (ad-is-active fn))
+             (when (and (fboundp fn)  (ad-is-active fn))
                (push (cons fn (ad-copy-advice-info fn)) icicle-advice-info-list)
                (ad-deactivate fn)))
            (run-hooks 'icicle-mode-hook)
@@ -1134,7 +1134,7 @@ there are also `-other-window' versions.
            (remove-hook 'pre-command-hook 'icicle-add-menu-item-to-cmd-history)
            (dolist (fn  icicle-inhibit-advice-functions)
              (let ((info  (memq fn icicle-advice-info-list)))
-               (when (and (fboundp fn) info)
+               (when (and (fboundp fn)  info)
                  (ad-set-advice-info fn info)
                  (when (ad-is-active fn) (ad-activate fn)))))
            (run-hooks 'icicle-mode-hook)
@@ -1150,7 +1150,7 @@ Used on `pre-command-hook'."
       (when (and (> (length (this-command-keys-vector)) 0)
                  (equal '(menu-bar) (elt (this-command-keys-vector) 0))
                  ;; Exclude uninterned symbols such as `menu-function-356'.
-                 (symbolp this-command) (or (< emacs-major-version 21) (intern-soft this-command)))
+                 (symbolp this-command) (or (< emacs-major-version 21)  (intern-soft this-command)))
         (pushnew (symbol-name this-command) extended-command-history))
     (error nil)))
 
@@ -1376,7 +1376,7 @@ Used on `pre-command-hook'."
     (when (fboundp 'icicle-kmacro)
       (define-key icicle-menu-map [icicle-kmacro]
         '(menu-item "+ Execute Nth Keyboard Macro..." icicle-kmacro
-          :enable (or (kmacro-ring-head) kmacro-ring)
+          :enable (or (kmacro-ring-head)  kmacro-ring)
           :help "Execute a keyboard macro according to its position in `kmacro-ring'")))
     (define-key icicle-menu-map [icicle-execute-named-keyboard-macro]
       '(menu-item "+ Execute Named Keyboard Macro..." icicle-execute-named-keyboard-macro
@@ -1421,8 +1421,7 @@ Used on `pre-command-hook'."
 
 
     ;; `Apropos' -----------------------------------------------------
-    (cond ((and (not icicle-touche-pas-aux-menus-flag)
-                (boundp 'menu-bar-apropos-menu))
+    (cond ((and (not icicle-touche-pas-aux-menus-flag)  (boundp 'menu-bar-apropos-menu))
            (defvar icicle-apropos-menu-map (make-sparse-keymap)
              "`Help' > `Apropos' > `Icicles' submenu.")
            (define-key menu-bar-apropos-menu [icicles]
@@ -1578,35 +1577,35 @@ Used on `pre-command-hook'."
 
     (define-key icicle-search-goto-imenu-menu-map [icicle-imenu-key-explicit-map]
       '(menu-item "+ Key in Map..." icicle-imenu-key-explicit-map
-        :enable (and imenu-generic-expression (eq major-mode 'emacs-lisp-mode))
+        :enable (and imenu-generic-expression  (eq major-mode 'emacs-lisp-mode))
         :help "Go to a key definition in some map, using `icicle-search'"))
     (define-key icicle-search-goto-imenu-menu-map [icicle-imenu-key-implicit-map]
       '(menu-item "+ Key..." icicle-imenu-key-implicit-map
-        :enable (and imenu-generic-expression (eq major-mode 'emacs-lisp-mode))
+        :enable (and imenu-generic-expression  (eq major-mode 'emacs-lisp-mode))
         :help "Go to a (global) key definition using `icicle-search'"))
     (define-key icicle-search-goto-imenu-menu-map [icicle-imenu-variable]
       '(menu-item "+ Variable..." icicle-imenu-variable
-        :enable (and imenu-generic-expression (eq major-mode 'emacs-lisp-mode))
+        :enable (and imenu-generic-expression  (eq major-mode 'emacs-lisp-mode))
         :help "Go to a variable definition using `icicle-search'"))
     (define-key icicle-search-goto-imenu-menu-map [icicle-imenu-user-option]
       '(menu-item "+ User Option..." icicle-imenu-user-option
-        :enable (and imenu-generic-expression (eq major-mode 'emacs-lisp-mode))
+        :enable (and imenu-generic-expression  (eq major-mode 'emacs-lisp-mode))
         :help "Go to an option definition using `icicle-search'"))
     (define-key icicle-search-goto-imenu-menu-map [icicle-imenu-face]
       '(menu-item "+ Face..." icicle-imenu-face
-        :enable (and imenu-generic-expression (eq major-mode 'emacs-lisp-mode))
+        :enable (and imenu-generic-expression  (eq major-mode 'emacs-lisp-mode))
         :help "Go to a face definition using `icicle-search'"))
     (define-key icicle-search-goto-imenu-menu-map [icicle-imenu-macro]
       '(menu-item "+ Macro..." icicle-imenu-macro
-        :enable (and imenu-generic-expression (eq major-mode 'emacs-lisp-mode))
+        :enable (and imenu-generic-expression  (eq major-mode 'emacs-lisp-mode))
         :help "Go to a Lisp macro definition using `icicle-search'"))
     (define-key icicle-search-goto-imenu-menu-map [icicle-imenu-non-interactive-function]
       '(menu-item "+ Non-Interactive Function..." icicle-imenu-non-interactive-function
-        :enable (and imenu-generic-expression (eq major-mode 'emacs-lisp-mode))
+        :enable (and imenu-generic-expression  (eq major-mode 'emacs-lisp-mode))
         :help "Go to a non-command function definition using `icicle-search'"))
     (define-key icicle-search-goto-imenu-menu-map [icicle-imenu-command]
       '(menu-item "+ Command..." icicle-imenu-command
-        :enable (and imenu-generic-expression (eq major-mode 'emacs-lisp-mode))
+        :enable (and imenu-generic-expression  (eq major-mode 'emacs-lisp-mode))
         :help "Go to a command definition using `icicle-search'"))
     (define-key icicle-search-goto-imenu-menu-map [icicle-imenu]
       '(menu-item "+ Any..." icicle-imenu
@@ -1635,7 +1634,8 @@ Used on `pre-command-hook'."
     ;; `Search' menu
     (define-key icicle-search-menu-map [icicle-search-highlight-cleanup]
       '(menu-item "Remove Icicle-Search Highlighting..." icicle-search-highlight-cleanup
-        :enable (or icicle-search-overlays (overlayp icicle-search-current-overlay)
+        :enable (or icicle-search-overlays
+                 (overlayp icicle-search-current-overlay)
                  (overlayp icicle-search-refined-overlays) icicle-search-refined-overlays)
         :help "Remove all highlighting from the last use of `icicle-search'"))
     (define-key icicle-search-menu-map [icicle-search-define-replacement]
@@ -1872,35 +1872,35 @@ Used on `pre-command-hook'."
 
     (define-key icicle-search-imenu-menu-map [icicle-imenu-key-explicit-map-full]
       '(menu-item "+ Key in Map..." icicle-imenu-key-explicit-map-full
-        :enable (and imenu-generic-expression (eq major-mode 'emacs-lisp-mode))
+        :enable (and imenu-generic-expression  (eq major-mode 'emacs-lisp-mode))
         :help "Search a key definition in some map, using `icicle-search'"))
     (define-key icicle-search-imenu-menu-map [icicle-imenu-key-implicit-map-full]
       '(menu-item "+ Key..." icicle-imenu-key-implicit-map-full
-        :enable (and imenu-generic-expression (eq major-mode 'emacs-lisp-mode))
+        :enable (and imenu-generic-expression  (eq major-mode 'emacs-lisp-mode))
         :help "Search a global key definition using `icicle-search'"))
     (define-key icicle-search-imenu-menu-map [icicle-imenu-variable-full]
       '(menu-item "+ Variable..." icicle-imenu-variable-full
-        :enable (and imenu-generic-expression (eq major-mode 'emacs-lisp-mode))
+        :enable (and imenu-generic-expression  (eq major-mode 'emacs-lisp-mode))
         :help "Search a variable definition using `icicle-search'"))
     (define-key icicle-search-imenu-menu-map [icicle-imenu-user-option-full]
       '(menu-item "+ User Option..." icicle-imenu-user-option-full
-        :enable (and imenu-generic-expression (eq major-mode 'emacs-lisp-mode))
+        :enable (and imenu-generic-expression  (eq major-mode 'emacs-lisp-mode))
         :help "Search an option definition using `icicle-search'"))
     (define-key icicle-search-imenu-menu-map [icicle-imenu-face-full]
       '(menu-item "+ Face..." icicle-imenu-face-full
-        :enable (and imenu-generic-expression (eq major-mode 'emacs-lisp-mode))
+        :enable (and imenu-generic-expression  (eq major-mode 'emacs-lisp-mode))
         :help "Search a face definition using `icicle-search'"))
     (define-key icicle-search-imenu-menu-map [icicle-imenu-macro-full]
       '(menu-item "+ Macro..." icicle-imenu-macro-full
-        :enable (and imenu-generic-expression (eq major-mode 'emacs-lisp-mode))
+        :enable (and imenu-generic-expression  (eq major-mode 'emacs-lisp-mode))
         :help "Search a Lisp macro definition using `icicle-search'"))
     (define-key icicle-search-imenu-menu-map [icicle-imenu-non-interactive-function-full]
       '(menu-item "+ Non-Interactive Function..." icicle-imenu-non-interactive-function-full
-        :enable (and imenu-generic-expression (eq major-mode 'emacs-lisp-mode))
+        :enable (and imenu-generic-expression  (eq major-mode 'emacs-lisp-mode))
         :help "Search a non-command function definition using `icicle-search'"))
     (define-key icicle-search-imenu-menu-map [icicle-imenu-command-full]
       '(menu-item "+ Command..." icicle-imenu-command-full
-        :enable (and imenu-generic-expression (eq major-mode 'emacs-lisp-mode))
+        :enable (and imenu-generic-expression  (eq major-mode 'emacs-lisp-mode))
         :help "Search a command definition using `icicle-search'"))
     (define-key icicle-search-imenu-menu-map [icicle-imenu-full]
       '(menu-item "+ Any..." icicle-imenu-full
@@ -2164,11 +2164,11 @@ Used on `pre-command-hook'."
     
     (define-key icicle-edit-menu-map [icicle-complete-thesaurus-entry]
       '(menu-item "Complete with Thesaurus..." icicle-complete-thesaurus-entry
-        :enable (and (not buffer-read-only) (boundp 'synonyms-obarray))
+        :enable (and (not buffer-read-only)  (boundp 'synonyms-obarray))
         :help "Complete a word to an entry from a thesaurus"))
     (define-key icicle-edit-menu-map [icicle-insert-thesaurus-entry]
       '(menu-item "+ Insert Thesaurus Entry..." icicle-insert-thesaurus-entry
-        :enable (and (not buffer-read-only) (boundp 'synonyms-obarray))
+        :enable (and (not buffer-read-only)  (boundp 'synonyms-obarray))
         :help "Insert an entry from a thesaurus"))
     (define-key icicle-edit-menu-map [icicle-completing-yank]
       '(menu-item "+ Paste Copied Text..." icicle-completing-yank
@@ -2484,30 +2484,30 @@ Used on `pre-command-hook'."
     (define-key comint-mode-map (icicle-kbd "C-c tab") 'icicle-comint-command)) ; `C-c TAB'
 
   ;; Bind keys in Shell mode.
-  (when (and (boundp 'shell-mode-map) (memq 'comint-dynamic-complete icicle-functions-to-redefine))
+  (when (and (boundp 'shell-mode-map)  (memq 'comint-dynamic-complete icicle-functions-to-redefine))
     (define-key shell-mode-map (icicle-kbd "C-i") 'icicle-comint-dynamic-complete))
 
   ;; Bind keys in Shell Script mode.
-  (when (and (boundp 'sh-mode-map) (memq 'comint-dynamic-complete icicle-functions-to-redefine))
+  (when (and (boundp 'sh-mode-map)  (memq 'comint-dynamic-complete icicle-functions-to-redefine))
     (icicle-remap 'comint-dynamic-complete 'icicle-comint-dynamic-complete sh-mode-map))
 
   ;; Bind keys in Ielm mode.
-  (when (and (boundp 'ielm-map) (memq 'comint-dynamic-complete icicle-functions-to-redefine))
+  (when (and (boundp 'ielm-map)  (memq 'comint-dynamic-complete icicle-functions-to-redefine))
     (define-key ielm-map (icicle-kbd "C-i") 'icicle-comint-dynamic-complete))
 
   ;; Bind keys in Tcl mode.
-  (when (and (boundp 'inferior-tcl-mode-map) (memq 'comint-dynamic-complete
-                                                   icicle-functions-to-redefine))
+  (when (and (boundp 'inferior-tcl-mode-map)  (memq 'comint-dynamic-complete
+                                                    icicle-functions-to-redefine))
     (define-key inferior-tcl-mode-map (icicle-kbd "C-i") 'icicle-comint-dynamic-complete))
 
   ;; Bind keys in GUD (Debugger) mode.
-  (when (and (boundp 'gud-minibuffer-local-map) (memq 'comint-dynamic-complete-filename
-                                                      icicle-functions-to-redefine))
+  (when (and (boundp 'gud-minibuffer-local-map)  (memq 'comint-dynamic-complete-filename
+                                                       icicle-functions-to-redefine))
     (define-key gud-minibuffer-local-map (icicle-kbd "C-i")
       'icicle-comint-dynamic-complete-filename))
 
   ;; Bind some keys in `bookmark-bmenu-mode' mode (*Bookmark List*) - requires Bookmark+.
-  (when (and (featurep 'bookmark+) (boundp 'bookmark-bmenu-mode-map))
+  (when (and (featurep 'bookmark+)  (boundp 'bookmark-bmenu-mode-map))
     (unless (lookup-key bookmark-bmenu-mode-map (icicle-kbd "C-M->")) ; *Bookmark List* `C-M->'
       (define-key bookmark-bmenu-mode-map (icicle-kbd "C-M->") 'icicle-bookmark-save-marked-files))
     (unless (lookup-key bookmark-bmenu-mode-map (icicle-kbd "C->")) ; *Bookmark List* `C->'
@@ -2548,7 +2548,7 @@ Used on `pre-command-hook'."
 
   ;; More Dired keys, but these require `dired+.el'.
   (when (boundp 'diredp-recursive-map)
-    (let* ((key  (apply 'vector           ; `M-s M-s m'
+    (let* ((key  (apply 'vector         ; `M-s M-s m'
                         (append (listify-key-sequence icicle-search-key-prefix)
                                 (listify-key-sequence (icicle-kbd "m")))))
            (def  (lookup-key dired-mode-map key)))
@@ -2636,10 +2636,10 @@ is bound in all keymaps accessible from keymap MAP."
     (let ((map  (cdr key+map)))
       ;; We could try to exclude menu maps, by testing (not (keymap-prompt map)).
       ;; But we want to include at least some menu maps - those, such as `facemenu-keymap',
-      ;; that are bound to keyboard keys. (when (and (keymapp map) (not (keymap-prompt map)))...)
+      ;; that are bound to keyboard keys. (when (and (keymapp map)  (not (keymap-prompt map)))...)
       (when (keymapp map)
         (dolist (key  (or keys  icicle-key-complete-keys))
-          (when (or icicle-complete-key-anyway-flag (not (lookup-key map key)))
+          (when (or icicle-complete-key-anyway-flag  (not (lookup-key map key)))
             (condition-case nil (define-key map key 'icicle-complete-keys) (error nil))))))))
 
 (defun icicle-restore-other-keymap-keys ()
@@ -2654,34 +2654,34 @@ is bound in all keymaps accessible from keymap MAP."
     (define-key comint-mode-map (icicle-kbd "C-c tab") nil))
 
   ;; Unbind keys in Shell mode.
-  (when (and (boundp 'shell-mode-map) (memq 'icicle-comint-dynamic-complete
-                                            icicle-functions-to-redefine))
+  (when (and (boundp 'shell-mode-map)  (memq 'icicle-comint-dynamic-complete
+                                             icicle-functions-to-redefine))
     (define-key shell-mode-map (icicle-kbd "C-i") (if (> emacs-major-version 23)
                                                         'completion-at-point
                                                       'comint-dynamic-complete)))
 
   ;; Unbind keys in Shell Script mode.
-  (when (and (boundp 'sh-mode-map) (memq 'icicle-comint-dynamic-complete
-                                         icicle-functions-to-redefine))
+  (when (and (boundp 'sh-mode-map)  (memq 'icicle-comint-dynamic-complete
+                                          icicle-functions-to-redefine))
     (icicle-unmap 'comint-dynamic-complete sh-mode-map 'icicle-comint-dynamic-complete))
 
   ;; Unbind keys in Ielm mode.
-  (when (and (boundp 'ielm-map) (memq 'icicle-comint-dynamic-complete
-                                      icicle-functions-to-redefine))
+  (when (and (boundp 'ielm-map)  (memq 'icicle-comint-dynamic-complete
+                                       icicle-functions-to-redefine))
     (define-key ielm-map (icicle-kbd "C-i") 'comint-dynamic-complete))
 
   ;; Unbind keys in Tcl mode.
-  (when (and (boundp 'inferior-tcl-mode-map) (memq 'icicle-comint-dynamic-complete
-                                                   icicle-functions-to-redefine))
+  (when (and (boundp 'inferior-tcl-mode-map)  (memq 'icicle-comint-dynamic-complete
+                                                    icicle-functions-to-redefine))
     (define-key inferior-tcl-mode-map (icicle-kbd "C-i") 'comint-dynamic-complete))
 
   ;; Bind keys in GUD (Debugger) mode.
-  (when (and (boundp 'gud-minibuffer-local-map) (memq 'icicle-comint-dynamic-complete-filename
-                                                      icicle-functions-to-redefine))
+  (when (and (boundp 'gud-minibuffer-local-map)  (memq 'icicle-comint-dynamic-complete-filename
+                                                       icicle-functions-to-redefine))
     (define-key gud-minibuffer-local-map (icicle-kbd "C-i") 'comint-dynamic-complete-filename))
 
   ;; Unbind keys in `bookmark-bmenu-mode' mode (*Bookmark List*) - requires Bookmark+.
-  (when (and (featurep 'bookmark+) (boundp 'bookmark-bmenu-mode-map))
+  (when (and (featurep 'bookmark+)  (boundp 'bookmark-bmenu-mode-map))
     (define-key bookmark-bmenu-mode-map (icicle-kbd "C-M->")   nil)
     (define-key bookmark-bmenu-mode-map (icicle-kbd "C->")     nil)
     (define-key bookmark-bmenu-mode-map (icicle-kbd "C-M-}")   nil)
@@ -2750,7 +2750,7 @@ Each key in `icicle-complete-keys' (or optional arg KEYS, if non-nil)
 is unbound in all keymaps accessible from keymap MAP."
   (dolist (key+map  (accessible-keymaps map))
     (let ((map  (cdr key+map)))
-      (while (and (symbolp map) (fboundp map)) (setq map  (symbol-function map))) ; Get a list.
+      (while (and (symbolp map)  (fboundp map)) (setq map  (symbol-function map))) ; Get a list.
       (when (and (keymapp map)
                  (not (eq 'autoload (car-safe map))) ; Skip autoload keymaps.
                  (not (stringp (car-safe (last map))))) ; Try to exclude menu maps.
@@ -3208,7 +3208,7 @@ is unbound in all keymaps accessible from keymap MAP."
        (define-key map (icicle-kbd "C-?")           nil) ; `C-?'
        (define-key map (icicle-kbd "M-?")           nil) ; `M-?'
        (define-key map (icicle-kbd "C-g")           (if (and (fboundp 'minibuffer-keyboard-quit)
-                                                               delete-selection-mode)
+                                                             delete-selection-mode)
                                                           'minibuffer-keyboard-quit
                                                         'abort-recursive-edit)) ; `C-g'
        (define-key map (icicle-kbd "M-S-backspace") nil) ; `M-S-DEL'
@@ -3262,7 +3262,7 @@ is unbound in all keymaps accessible from keymap MAP."
          (define-key map (icicle-kbd "C-?")           nil) ; `C-?'
          (define-key map (icicle-kbd "M-?")           nil) ; `M-?'
          (define-key map (icicle-kbd "C-g")           (if (and (fboundp 'minibuffer-keyboard-quit)
-                                                                 delete-selection-mode)
+                                                               delete-selection-mode)
                                                             'minibuffer-keyboard-quit
                                                           'abort-recursive-edit)) ; `C-g'
          (define-key map (icicle-kbd "M-S-backspace") nil) ; `M-S-DEL'
@@ -3316,7 +3316,7 @@ is unbound in all keymaps accessible from keymap MAP."
          (define-key map (icicle-kbd "C-?")           nil) ; `C-?'
          (define-key map (icicle-kbd "M-?")           nil) ; `M-?'
          (define-key map (icicle-kbd "C-g")           (if (and (fboundp 'minibuffer-keyboard-quit)
-                                                                 delete-selection-mode)
+                                                               delete-selection-mode)
                                                             'minibuffer-keyboard-quit
                                                           'abort-recursive-edit)) ; `C-g'
          (define-key map (icicle-kbd "M-S-backspace") nil) ; `M-S-DEL'
@@ -3345,8 +3345,7 @@ is unbound in all keymaps accessible from keymap MAP."
      (if (not (eq minibuffer-local-completion-map (keymap-parent minibuffer-local-must-match-map)))
          (icicle-restore-completion-keys minibuffer-local-must-match-map)
        (define-key minibuffer-local-must-match-map (icicle-kbd "C-g")
-         (if (and (fboundp 'minibuffer-keyboard-quit)
-                  delete-selection-mode)
+         (if (and (fboundp 'minibuffer-keyboard-quit)  delete-selection-mode)
              'minibuffer-keyboard-quit
            'abort-recursive-edit))  ; `C-g' - need it anyway, even if inherit completion map.
        (dolist (key  icicle-completing-read+insert-keys)
@@ -3399,7 +3398,7 @@ is unbound in all keymaps accessible from keymap MAP."
        ;; Do these last:
        (define-key map (icicle-kbd "right")            'next-completion)
        (define-key map (icicle-kbd "left")             'previous-completion))))
-  (when (and (interactive-p) turn-on-p)
+  (when (and (interactive-p)  turn-on-p)
     (message (substitute-command-keys
               "Use `\\<minibuffer-local-completion-map>\
 \\[icicle-minibuffer-help]' in minibuffer for help."))))
@@ -3547,7 +3546,7 @@ complete)"))
       :help "Define the set of current completion candidates by evaluating a sexp"))
   (define-key map [menu-bar minibuf icicle-keep-only-past-inputs]
     '(menu-item "Keep Only Previously Entered" icicle-keep-only-past-inputs
-      :enable (and icicle-completion-candidates (consp (symbol-value minibuffer-history-variable)))
+      :enable (and icicle-completion-candidates  (consp (symbol-value minibuffer-history-variable)))
       :help "Removed candidates that you have not previously chosen and entered"))
   (define-key map [menu-bar minibuf set-union]
     '(menu-item "Add (Union) Saved Candidate Set" icicle-candidate-set-union
@@ -4081,7 +4080,7 @@ MAP is `minibuffer-local-completion-map',
   (define-key map (icicle-kbd "?")         'minibuffer-completion-help)
   (define-key map (icicle-kbd "SPC")       'minibuffer-complete-word)
   (define-key map (icicle-kbd "C-g")       (if (and (fboundp 'minibuffer-keyboard-quit)
-                                                      delete-selection-mode)
+                                                    delete-selection-mode)
                                                  'minibuffer-keyboard-quit
                                                'abort-recursive-edit))
   ;; In Emacs 22+, local is parent of local-completion
@@ -4098,7 +4097,7 @@ MAP is `minibuffer-local-completion-map',
 (defun icicle-minibuffer-setup ()
   "Run in minibuffer on activation, to enable completion cycling.
 Usually run by inclusion in `minibuffer-setup-hook'."
-  (when (and icicle-mode (window-minibuffer-p (selected-window)) (not executing-kbd-macro))
+  (when (and icicle-mode  (window-minibuffer-p (selected-window))  (not executing-kbd-macro))
     ;; The pre- and post-command hooks are local to the
     ;; minibuffer, so they are added here, not in `icicle-mode'.
     ;; They are removed in `icicle-mode' when mode is exited.
@@ -4137,10 +4136,10 @@ Usually run by inclusion in `minibuffer-setup-hook'."
           ;; `other-buffer' doesn't work, because it looks for a buffer only from the same frame.
           icicle-pre-minibuffer-buffer           (cadr (buffer-list)) ; $$$$$$ (other-buffer nil t)
           )
-    (when (and (icicle-completing-p) (> emacs-major-version 20))
+    (when (and (icicle-completing-p)  (> emacs-major-version 20))
       (let ((prompt-prefix  (if icicle-candidate-action-fn "+ " ". ")))
         (put-text-property 0 1 'face
-                           (cond ((and icicle-candidate-action-fn (icicle-require-match-p))
+                           (cond ((and icicle-candidate-action-fn  (icicle-require-match-p))
                                   '(icicle-multi-command-completion icicle-mustmatch-completion))
                                  (icicle-candidate-action-fn 'icicle-multi-command-completion)
                                  ((icicle-require-match-p)
@@ -4270,7 +4269,7 @@ binding."
 
 ;; $$$ (defadvice next-history-element (after icicle-select-minibuffer-contents activate)
 ;;   "Select minibuffer contents and leave point at its beginning."
-;;   (when (and icicle-mode (memq icicle-default-value '(preselect-start preselect-end)))
+;;   (when (and icicle-mode  (memq icicle-default-value '(preselect-start preselect-end)))
 ;;     (icicle-select-minibuffer-contents)
 ;;     (setq deactivate-mark  nil)))
 
@@ -4278,7 +4277,7 @@ binding."
   "Cancel redirection of focus from *Help* buffer to minibuffer.
 Focus was redirected during `icicle-help-on-candidate'."
   (let* ((help-window  (get-buffer-window "*Help*" 0))
-         (help-frame   (and help-window (window-frame help-window))))
+         (help-frame   (and help-window  (window-frame help-window))))
     (when help-frame (redirect-frame-focus help-frame))))
 
 (defun icicle-run-icicle-pre-command-hook ()
@@ -4312,7 +4311,7 @@ Used in `completion-setup-hook'."
 (defun icicle-restore-region-face ()
   "Restore region face.  It was changed during minibuffer activity
 if `icicle-change-region-background-flag' is non-nil."
-  (when (and icicle-change-region-background-flag (= 1 (recursion-depth)))
+  (when (and icicle-change-region-background-flag  (= 1 (recursion-depth)))
     (set-face-background 'region icicle-saved-region-background)))
 
 (defun icicle-activate-mark ()
@@ -4359,7 +4358,7 @@ if `icicle-change-region-background-flag' is non-nil."
 ;;; In Emacs versions before 22:
 ;;; Save original `read-file-name'.  We redefine it as `icicle-read-file-name' (which calls it).
 ;;; Then we restore it when you quit Icicle mode.  (In Emacs 22+, no redefinition is needed.)
-(unless (or (boundp 'read-file-name-function) (fboundp 'icicle-ORIG-read-file-name))
+(unless (or (boundp 'read-file-name-function)  (fboundp 'icicle-ORIG-read-file-name))
   (defalias 'icicle-ORIG-read-file-name (symbol-function 'read-file-name)))
 
 (defun icicle-redefine-std-completion-fns ()
@@ -4481,7 +4480,7 @@ if `icicle-change-region-background-flag' is non-nil."
 
 ;;; `comint.el' - `comint-dynamic-complete', `comint-dynamic-complete-filename',
 ;;;               `comint-replace-by-expanded-filename', `comint-completion-at-point'.
-(let ((form  '(let ((icyp  (and (boundp 'icicle-mode) icicle-mode)))
+(let ((form  '(let ((icyp  (and (boundp 'icicle-mode)  icicle-mode)))
                (when icyp (icicle-mode -1))
                (when (and (fboundp 'comint-dynamic-complete)
                           (not (fboundp 'icicle-ORIG-comint-dynamic-complete)))
@@ -4503,7 +4502,7 @@ if `icicle-change-region-background-flag' is non-nil."
   (if (featurep 'comint) (eval-after-load "icicles-mode" form) (eval-after-load "comint" form)))
 
 ;;; `ess-site.el' - `ess-complete-object-name'.
-(let ((form  '(let ((icyp  (and (boundp 'icicle-mode) icicle-mode)))
+(let ((form  '(let ((icyp  (and (boundp 'icicle-mode)  icicle-mode)))
                (when icyp (icicle-mode -1))
                (when (and (fboundp 'ess-complete-object-name)
                           (not (fboundp 'icicle-ORIG-ess-complete-object-name)))
@@ -4513,7 +4512,7 @@ if `icicle-change-region-background-flag' is non-nil."
   (if (featurep 'ess-site) (eval-after-load "icicles-mode" form) (eval-after-load "ess-site" form)))
 
 ;;; `gud.el' - `gud-gdb-complete-command'.
-(let ((form  '(let ((icyp  (and (boundp 'icicle-mode) icicle-mode)))
+(let ((form  '(let ((icyp  (and (boundp 'icicle-mode)  icicle-mode)))
                (when icyp (icicle-mode -1))
                (when (and (fboundp 'gud-gdb-complete-command)
                           (not (fboundp 'icicle-ORIG-gud-gdb-complete-command)))
@@ -4523,9 +4522,9 @@ if `icicle-change-region-background-flag' is non-nil."
   (if (featurep 'gud) (eval-after-load "icicles-mode" form) (eval-after-load "gud" form)))
 
 ;;; `info.el' - `Info-goto-node', `Info-index', `Info-menu'.
-(let ((form  '(let ((icyp  (and (boundp 'icicle-mode) icicle-mode)))
+(let ((form  '(let ((icyp  (and (boundp 'icicle-mode)  icicle-mode)))
                (when icyp (icicle-mode -1))
-               (when (and (featurep 'info) (not (fboundp 'icicle-ORIG-Info-goto-node)))
+               (when (and (featurep 'info)  (not (fboundp 'icicle-ORIG-Info-goto-node)))
                  (defalias 'icicle-ORIG-Info-goto-node (symbol-function 'Info-goto-node))
                  (defalias 'icicle-ORIG-Info-index     (symbol-function 'Info-index))
                  (defalias 'icicle-ORIG-Info-menu      (symbol-function 'Info-menu)))
@@ -4550,12 +4549,12 @@ if `icicle-change-region-background-flag' is non-nil."
                           (not (fboundp 'icicle-ORIG-bbdb-complete-mail)))
                  (defalias 'icicle-ORIG-bbdb-complete-mail (symbol-function 'bbdb-complete-mail)))
                (when icyp (icicle-mode 1)))))
-  (if (and (featurep 'bbdb-com) (fboundp 'bbdb-complete-mail))
+  (if (and (featurep 'bbdb-com)  (fboundp 'bbdb-complete-mail))
       (eval-after-load "icicles-mode" form)
     (eval-after-load "bbdb-com" form)))
 
 ;;; `dired-aux.el' - `dired-read-shell-command'.
-(let ((form  '(let ((icyp  (and (boundp 'icicle-mode) icicle-mode)))
+(let ((form  '(let ((icyp  (and (boundp 'icicle-mode)  icicle-mode)))
                (when icyp (icicle-mode -1))
                (when (and (fboundp 'dired-read-shell-command)
                           (not (fboundp 'icicle-ORIG-dired-read-shell-command)))
@@ -4567,7 +4566,7 @@ if `icicle-change-region-background-flag' is non-nil."
     (eval-after-load "dired-aux" form)))
 
 ;;; `dired-x.el' - `dired-read-shell-command', `dired-smart-shell-command'.
-(let ((form  '(let ((icyp  (and (boundp 'icicle-mode) icicle-mode)))
+(let ((form  '(let ((icyp  (and (boundp 'icicle-mode)  icicle-mode)))
                (when icyp (icicle-mode -1))
                (when (and (fboundp 'dired-read-shell-command)
                           (not (fboundp 'icicle-ORIG-dired-read-shell-command)))
@@ -4584,14 +4583,14 @@ if `icicle-change-region-background-flag' is non-nil."
 ;;; `simple.el' - `read-shell-command' - Emacs 23+.
 (when (> emacs-major-version 22)
   ;; `simple.el' is preloaded for Emacs 23+, so just do it now.
-  (let ((icyp  (and (boundp 'icicle-mode) icicle-mode)))
+  (let ((icyp  (and (boundp 'icicle-mode)  icicle-mode)))
     (when icyp (icicle-mode -1))
-    (when (and (fboundp 'read-shell-command) (not (fboundp 'icicle-ORIG-read-shell-command)))
+    (when (and (fboundp 'read-shell-command)  (not (fboundp 'icicle-ORIG-read-shell-command)))
       (defalias 'icicle-ORIG-read-shell-command (symbol-function 'read-shell-command)))
     (when icyp (icicle-mode 1))))
 
 ;;; `recentf.el' - `recentf-make-menu-items'.
-(let ((form  '(let ((icyp  (and (boundp 'icicle-mode) icicle-mode)))
+(let ((form  '(let ((icyp  (and (boundp 'icicle-mode)  icicle-mode)))
                (when icyp (icicle-mode -1))
                (when (and (fboundp 'recentf-make-menu-items)
                           (not (fboundp 'icicle-ORIG-recentf-make-menu-items)))
