@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:24:28 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Oct  8 13:55:31 2012 (-0700)
+;; Last-Updated: Sat Nov 10 13:33:56 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 1047
+;;     Update #: 1071
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mac.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -211,13 +211,11 @@ ANGLES."
                (setq key  (vconcat (if (eq (key-binding [?\M-x])
                                            'execute-extended-command)
                                        [?\M-x]
-                                     (or (car (where-is-internal
-                                               'execute-extended-command))
-                                         [?\M-x]))
+                                     (or (car (where-is-internal 'execute-extended-command))  [?\M-x]))
                                    (substring word 2 -2) "\r")))
 
               ;; Must test this before [ACHMsS]- etc., to prevent match.
-              ((or (equal word "REM") (string-match "^;;" word))
+              ((or (equal word "REM")  (string-match "^;;" word))
                (setq pos  (string-match "$" string pos)))
 
               ;; Straight `edmacro-parse-keys' case - ensure same behavior.
@@ -235,11 +233,10 @@ ANGLES."
               ;; NaKeD handling of <...>.  Recognize it anyway, even without non-nil ANGLES.
               ;; But unlike `edmacro-parse-keys', include <TAB>, to handle it correctly.
               ((and (string-match "^\\(\\([ACHMsS]-\\)*\\)<\\(..+\\)>$" word)
-                    (progn
-                      (setq word  (concat (substring word (match-beginning 1) (match-end 1))
-                                          (substring word (match-beginning 3) (match-end 3))))
-                      (not (string-match "\\<\\(NUL\\|RET\\|LFD\\|ESC\\|SPC\\|DEL\\|TAB\\)$"
-                                         word))))
+                    (progn (setq word  (concat (substring word (match-beginning 1) (match-end 1))
+                                               (substring word (match-beginning 3) (match-end 3))))
+                           (not (string-match "\\<\\(NUL\\|RET\\|LFD\\|ESC\\|SPC\\|DEL\\|TAB\\)$"
+                                              word))))
                (setq key  (list (intern word))))
 
               ;; NaKeD handling of names without <...>.
@@ -247,13 +244,12 @@ ANGLES."
                     (string-match "^\\(\\([ACHMsS]-\\)*\\)\\([^ \t\f\n][^ \t\f\n]+\\)$" word)
                     ;; Do not count `C-' etc. when at end of string.
                     (save-match-data (not (string-match "\\([ACHMsS]-.\\)+$" word)))
-                    (progn
-                      (setq word  (concat (substring word (match-beginning 1) (match-end 1))
-                                          (substring word (match-beginning 3) (match-end 3))))
-                      (not (string-match "\\<\\(NUL\\|RET\\|LFD\\|ESC\\|SPC\\|DEL\\|TAB\\)$"
-                                         word))))
+                    (progn (setq word  (concat (substring word (match-beginning 1) (match-end 1))
+                                               (substring word (match-beginning 3) (match-end 3))))
+                           (not (string-match "\\<\\(NUL\\|RET\\|LFD\\|ESC\\|SPC\\|DEL\\|TAB\\)$"
+                                              word))))
                (setq key  (list (intern word))))
-              
+
               (t
                (let ((orig-word  word)
                      (prefix     0)
@@ -277,19 +273,19 @@ ANGLES."
                          for n = 0 then (+ (* n 8) ch -48)
                          finally do (setq word  (vector n))))
                  (cond ((= bits 0) (setq key  word))
-                       ((and (= bits ?\M-\^@) (stringp word)  (string-match "^-?[0-9]+$" word))
+                       ((and (= bits ?\M-\^@)  (stringp word)  (string-match "^-?[0-9]+$" word))
                         (setq key  (loop for x across word collect (+ x bits))))
                        ((/= (length word) 1)
                         (error "%s must prefix a single character, not %s"
                                (substring orig-word 0 prefix) word))
-                       ((and (/= (logand bits ?\C-\^@) 0) (stringp word)
+                       ((and (/= (logand bits ?\C-\^@) 0)  (stringp word)
                              ;; Used to accept `.' and `?' here, but `.' is simply wrong,
                              ;; and `C-?' is not used (so use `DEL' instead).
                              (string-match "[@-_a-z]" word))
                         (setq key  (list (+ bits (- ?\C-\^@) (logand (aref word 0) 31)))))
                        (t (setq key  (list (+ bits (aref word 0)))))))))
         (when key (loop repeat times do (callf vconcat res key)))))
-    (when (and (>= (length res) 4)  (eq (aref res 0) ?\C-x)  (eq (aref res 1) ?\()
+    (when (and (>= (length res) 4)  (eq (aref res 0) ?\C-x)  (eq (aref res 1) ?\( )
                (eq (aref res (- (length res) 2)) ?\C-x)  (eq (aref res (- (length res) 1)) ?\)))
       (setq res  (edmacro-subseq res 2 -2)))
     (if (and (not need-vector)
@@ -363,7 +359,7 @@ NOTE:
    `debug-on-error' is non-nil."
   (let ((bodysym  (make-symbol "body")))
     `(let ((,bodysym  (lambda () ,bodyform)))
-      (cond ((and debug-on-error debug-on-quit)
+      (cond ((and debug-on-error  debug-on-quit)
              (condition-case ,var
                  (funcall ,bodysym)
                ,@(icicle-remove-if
@@ -491,7 +487,7 @@ created after the others."
          (delete '("turned OFF") (copy-sequence icicle-sort-orders-alist))))
        ;; Put `icicle-buffer-sort' first.  If already in the list, move it, else add it, to beginning.
        (icicle-sort-orders-alist
-        (progn (when (and icicle-buffer-sort-first-time-p icicle-buffer-sort)
+        (progn (when (and icicle-buffer-sort-first-time-p  icicle-buffer-sort)
                  (setq icicle-sort-comparer             icicle-buffer-sort
                        icicle-buffer-sort-first-time-p  nil))
                (if icicle-buffer-sort
@@ -502,9 +498,9 @@ created after the others."
                        (cons `("by `icicle-buffer-sort'" . ,icicle-buffer-sort) icicle--temp-orders)))
                  icicle--temp-orders)))
        (icicle-candidate-alt-action-fn
-        (or icicle-candidate-alt-action-fn (icicle-alt-act-fn-for-type "buffer")))
+        (or icicle-candidate-alt-action-fn  (icicle-alt-act-fn-for-type "buffer")))
        (icicle-all-candidates-list-alt-action-fn
-        (or icicle-all-candidates-list-alt-action-fn (icicle-alt-act-fn-for-type "buffer")))
+        (or icicle-all-candidates-list-alt-action-fn  (icicle-alt-act-fn-for-type "buffer")))
        (icicle-bufflist
         (if current-prefix-arg
             (cond ((and (consp current-prefix-arg)  (fboundp 'derived-mode-p)) ; `C-u'
@@ -520,8 +516,8 @@ created after the others."
                    (cdr (assq 'buffer-list (frame-parameters))))
                   (t                    ; `C-1'
                    (icicle-remove-if-not (lambda (bf)
-                                           (or (buffer-file-name bf)
-                                               (with-current-buffer bf (eq major-mode 'dired-mode))))
+                                           (or (buffer-file-name bf)  (with-current-buffer bf
+                                                                        (eq major-mode 'dired-mode))))
                                          (buffer-list))))
           (buffer-list)))
        (icicle-bufflist
@@ -541,7 +537,7 @@ created after the others."
   `,(append
      pre-bindings
      `((completion-ignore-case
-        (or (and (boundp 'read-file-name-completion-ignore-case) read-file-name-completion-ignore-case)
+        (or (and (boundp 'read-file-name-completion-ignore-case)  read-file-name-completion-ignore-case)
          completion-ignore-case))
        (icicle-show-Completions-initially-flag      (or icicle-show-Completions-initially-flag
                                                      icicle-files-ido-like-flag))
@@ -562,7 +558,7 @@ created after the others."
        ;; Put `icicle-file-sort' first.  If already in the list, move it, else add it, to beginning.
        (icicle--temp-orders                         (copy-sequence icicle-sort-orders-alist))
        (icicle-sort-orders-alist
-        (progn (when (and icicle-file-sort-first-time-p icicle-file-sort)
+        (progn (when (and icicle-file-sort-first-time-p  icicle-file-sort)
                  (setq icicle-sort-comparer           icicle-file-sort
                        icicle-file-sort-first-time-p  nil))
                (if icicle-file-sort
@@ -575,9 +571,9 @@ created after the others."
        (icicle-candidate-help-fn                    (lambda (cand)
                                                       (icicle-describe-file cand current-prefix-arg t)))
        (icicle-candidate-alt-action-fn
-        (or icicle-candidate-alt-action-fn (icicle-alt-act-fn-for-type "file")))
+        (or icicle-candidate-alt-action-fn  (icicle-alt-act-fn-for-type "file")))
        (icicle-all-candidates-list-alt-action-fn
-        (or icicle-all-candidates-list-alt-action-fn (icicle-alt-act-fn-for-type "file")))
+        (or icicle-all-candidates-list-alt-action-fn  (icicle-alt-act-fn-for-type "file")))
        (icicle-delete-candidate-object              'icicle-delete-file-or-directory))
      post-bindings))
 
@@ -639,7 +635,7 @@ Note that the BINDINGS are of course not in effect within
 `icicle-candidate-action-fn'."
   `(defun ,command ()
     ,(concat doc-string "\n\nRead input, then "
-             (and (symbolp function) (concat "call `" (symbol-name function) "'\nto "))
+             (and (symbolp function)  (concat "call `" (symbol-name function) "'\nto "))
              "act on it.
 
 Input-candidate completion and cycling are available.  While cycling,
@@ -665,7 +661,7 @@ Use `mouse-2', `RET', or `S-RET' to finally choose a candidate, or
 `C-g' to quit.
 
 This is an Icicles command - see command `icicle-mode'.")
-    ,(and (not not-interactive-p) '(interactive))
+    ,(and (not not-interactive-p)  '(interactive))
     (let* ((icicle-orig-buff    (current-buffer))
            (icicle-orig-window  (selected-window))
            ,@(macroexpand bindings)
@@ -692,7 +688,7 @@ This is an Icicles command - see command `icicle-mode'.")
                 (icicle-condition-case-no-debug in-action-fn
                     ;; Treat 3 cases, because previous use of `icicle-candidate-action-fn'
                     ;; might have killed the buffer or deleted the window.
-                    (cond ((and (buffer-live-p icicle-orig-buff) (window-live-p icicle-orig-window))
+                    (cond ((and (buffer-live-p icicle-orig-buff)  (window-live-p icicle-orig-window))
                            (with-current-buffer icicle-orig-buff
                              (save-selected-window (select-window icicle-orig-window)
                                                    (funcall #',function candidate))))
@@ -783,7 +779,7 @@ Note that the BINDINGS are of course not in effect within
 `icicle-candidate-action-fn'."
   `(defun ,command ()
     ,(concat doc-string "\n\nRead input, then "
-             (and (symbolp function) (concat "call `" (symbol-name function) "'\nto "))
+             (and (symbolp function)  (concat "call `" (symbol-name function) "'\nto "))
              "act on it.
 
 Input-candidate completion and cycling are available.  While cycling,
@@ -809,7 +805,7 @@ Use `mouse-2', `RET', or `S-RET' to finally choose a candidate, or
 `C-g' to quit.
 
 This is an Icicles command - see command `icicle-mode'.")
-    ,(and (not not-interactive-p) '(interactive))
+    ,(and (not not-interactive-p)  '(interactive))
     (let* ((icicle-orig-buff    (current-buffer))
            (icicle-orig-window  (selected-window))
            ,@(macroexpand bindings)
@@ -838,7 +834,7 @@ This is an Icicles command - see command `icicle-mode'.")
                 (icicle-condition-case-no-debug in-action-fn
                     ;; Treat 3 cases, because previous use of `icicle-candidate-action-fn'
                     ;; might have deleted the file or the window.
-                    (cond ((and (buffer-live-p icicle-orig-buff) (window-live-p icicle-orig-window))
+                    (cond ((and (buffer-live-p icicle-orig-buff)  (window-live-p icicle-orig-window))
                            (with-current-buffer icicle-orig-buff
                              (save-selected-window (select-window icicle-orig-window)
                                                    (funcall #',function candidate))))
@@ -877,7 +873,7 @@ This is an Icicles command - see command `icicle-mode'.")
   "Delete from ALIST all elements whose car is `equal' to KEY.
 Return the modified alist.
 Elements of ALIST that are not conses are ignored."
-  (while (and (consp (car alist)) (equal (car (car alist)) key))
+  (while (and (consp (car alist))  (equal (car (car alist)) key))
     (setq alist  (cdr alist)))
   (let ((tail  alist)
         tail-cdr)
@@ -910,7 +906,7 @@ DOC-STRING is the doc string of the new command."
         (interactive)
         (setq icicle-sort-comparer  #',comparison-fn)
         (message "Sorting is now %s%s" ,(icicle-propertize
-                                         (concat sort-order (and icicle-reverse-sort-p ", REVERSED"))
+                                         (concat sort-order (and icicle-reverse-sort-p  ", REVERSED"))
                                                            'face 'icicle-msg-emphasis))
         (icicle-complete-again-update)))))
 
@@ -968,10 +964,9 @@ to update the list of tags available for completion." "")) ; Doc string
                                               (funcall ',(intern (format "bmkp-%s-alist-only" type))
                                                ,@args)))
      (completion-ignore-case                 bookmark-completion-ignore-case)
-     (prompt1                                ,(or prompt
-                                                  (format "%s%s bookmark: "
-                                                          (capitalize (substring type 0 1))
-                                                          (substring type 1 (length type)))))
+     (prompt1                                ,(or prompt  (format "%s%s bookmark: "
+                                                                  (capitalize (substring type 0 1))
+                                                                  (substring type 1 (length type)))))
      (icicle-list-use-nth-parts              '(1))
      (icicle-candidate-properties-alist      (if (not icicle-show-multi-completion-flag)
                                                  nil
@@ -1061,7 +1056,7 @@ command")))
      (IGNORED2                                 (bookmark-maybe-load-default-file)) ; `bookmark-alist'.
      (enable-recursive-minibuffers             t) ; In case we read input, e.g. File changed on...
      (completion-ignore-case                   bookmark-completion-ignore-case)
-     (prompt1                                  ,(or prompt (format "Search %s bookmark: " type)))
+     (prompt1                                  ,(or prompt  (format "Search %s bookmark: " type)))
      (icicle-list-use-nth-parts                '(1))
      (icicle-candidate-properties-alist        (if (not icicle-show-multi-completion-flag)
                                                    nil
