@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Nov  8 12:52:23 2012 (-0800)
+;; Last-Updated: Sat Nov 10 07:37:28 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 13658
+;;     Update #: 13659
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -3616,7 +3616,10 @@ INPUT is a string.  Each candidate is a string."
                                                   (funcall minibuffer-completion-predicate symb))
                                           (push (symbol-name symb) candidates)))
                          minibuffer-completion-table)
-               (setq candidates  (FM-all-fuzzy-matches input candidates)))
+               (setq candidates  (if (equal "" input)
+                                     (all-completions "" minibuffer-completion-table
+                                                      minibuffer-completion-predicate)
+                                   (FM-all-fuzzy-matches input candidates))))
               ((vectorp minibuffer-completion-table)
                (setq candidates  (mapcar #'car
                                          (car (el-swank-fuzzy-completions
@@ -3628,7 +3631,10 @@ INPUT is a string.  Each candidate is a string."
                  (when (or (null minibuffer-completion-predicate)
                            (funcall minibuffer-completion-predicate cand))
                    (push (car cand) candidates)))
-               (setq candidates  (FM-all-fuzzy-matches input candidates))))
+               (setq candidates  (if (equal "" input)
+                                     (all-completions "" minibuffer-completion-table
+                                                      minibuffer-completion-predicate)
+                                   (FM-all-fuzzy-matches input candidates)))))
         (let ((icicle-extra-candidates
                (icicle-remove-if-not
                 (lambda (cand) (save-match-data (string-match input cand))) icicle-extra-candidates))
