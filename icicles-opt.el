@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Nov  8 13:33:20 2012 (-0800)
+;; Last-Updated: Sat Nov 10 13:27:41 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 5359
+;;     Update #: 5380
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1335,19 +1335,19 @@ Example selectable menu-item element:
               'nil))
             (restricted-sexp
              :tag "Items from a keymap variable's value."
-             :match-alternatives ((lambda (x) (and (symbolp x) (keymapp (symbol-value x))))
+             :match-alternatives ((lambda (x) (and (symbolp x)  (keymapp (symbol-value x))))
                                   'nil))
             (restricted-sexp
              :tag "Selectable item (SYMBOL menu-item NAME COMMAND . KEYWORDS)"
-             :match-alternatives ((lambda (x) (and (consp x) (symbolp (car x))
+             :match-alternatives ((lambda (x) (and (consp x)  (symbolp (car x))
                                                    (eq 'menu-item (cadr x))
                                                    (stringp (car (cddr x)))
                                                    (commandp (car (cdr (cddr x))))))
                                   'nil))
             (restricted-sexp
              :tag "Non-selectable item (SYMBOL NAME) or (SYMBOL menu-item NAME nil . KEYWORDS)"
-             :match-alternatives ((lambda (x) (and (consp x) (symbolp (car x))
-                                                   (or (and (stringp (cadr x)) (null (caddr x)))
+             :match-alternatives ((lambda (x) (and (consp x)  (symbolp (car x))
+                                                   (or (and (stringp (cadr x))  (null (caddr x)))
                                                        (and (eq 'menu-item (cadr x))
                                                             (stringp (car (cddr x)))
                                                             (null (car (cdr (cddr x))))))))
@@ -2161,12 +2161,12 @@ that option from the minibuffer anytime using `C-pause'."
 (defcustom icicle-inhibit-advice-functions
   `(choose-completion  choose-completion-string  completing-read
     completion-setup-function
-    ,@(and (not (fboundp 'read-shell-command)) '(dired-smart-shell-command)) ; Emacs < 23
+    ,@(and (not (fboundp 'read-shell-command))  '(dired-smart-shell-command)) ; Emacs < 23
     display-completion-list  exit-minibuffer  face-valid-attribute-values
     minibuffer-complete-and-exit  mouse-choose-completion
     next-history-element  read-face-name  read-file-name
-    ,@(and (fboundp 'read-number) '(read-number)) ; Emacs 22+
-    ,@(and (not (fboundp 'read-shell-command)) '(shell-command shell-command-on-region)) ; Emacs < 23
+    ,@(and (fboundp 'read-number)  '(read-number)) ; Emacs 22+
+    ,@(and (not (fboundp 'read-shell-command))  '(shell-command shell-command-on-region)) ; Emacs < 23
     switch-to-completions  completing-read-multiple)
   "*Functions that Icicles redefines, and for which advice is deactivated.
 Icicle mode deactivates all advice for such functions.  The advice is
@@ -2815,7 +2815,7 @@ value incrementally."
                            (setq frame-bg  (if (eq (frame-parameter nil 'background-mode) 'dark)
                                                "Black"
                                              "White")))
-                         (and frame-bg (x-color-defined-p frame-bg) frame-bg))
+                         (and frame-bg  (x-color-defined-p frame-bg)  frame-bg))
                        (face-background 'region)))
              (sat  (condition-case nil (hexrgb-saturation bg) (error nil))))
         (if sat
@@ -2833,7 +2833,7 @@ If you do not define this explicitly, and if you have loaded library
 different from your frame background.  This still lets you notice the
 region, but it makes the region less conspicuous, so you can more
 easily read your minibuffer input."
-  :type (if (and (require 'wid-edit nil t) (get 'color 'widget-type)) 'color 'string)
+  :type (if (and (require 'wid-edit nil t)  (get 'color 'widget-type)) 'color 'string)
   :group 'Icicles-Minibuffer-Display)
 
 ;;;###autoload
@@ -3039,7 +3039,7 @@ The candidates are the executable files in your search path or, if
          (completions        ()))
     ;; Go through each dir in the search path, finding completions.
     (while path-dirs
-      (setq dir           (file-name-as-directory (comint-directory (or (car path-dirs) ".")))
+      (setq dir           (file-name-as-directory (comint-directory (or (car path-dirs)  ".")))
             comps-in-dir  (and (file-accessible-directory-p dir)
                                (file-name-all-completions filenondir dir)))
       ;; Go  see whether it should be used.
@@ -3047,9 +3047,9 @@ The candidates are the executable files in your search path or, if
         (setq file           (car comps-in-dir)
               abs-file-name  (concat dir file))
         (when (and (not (member file completions))
-                   (not (and ignored-extensions (string-match ignored-extensions file)))
-                   (or (string-equal dir cwd) (not (file-directory-p abs-file-name)))
-                   (or (null shell-completion-execonly) (file-executable-p abs-file-name)))
+                   (not (and ignored-extensions  (string-match ignored-extensions file)))
+                   (or (string-equal dir cwd)  (not (file-directory-p abs-file-name)))
+                   (or (null shell-completion-execonly)  (file-executable-p abs-file-name)))
           (setq completions  (cons file completions)))
         (setq comps-in-dir  (cdr comps-in-dir)))
       (setq path-dirs  (cdr path-dirs)))
@@ -3257,8 +3257,8 @@ completion and their order."
   (let ((b1  (if completion-ignore-case (downcase buf1) buf1))
         (b2  (if completion-ignore-case (downcase buf2) buf2)))
     (if (string-match "^\\*" b1)
-        (and (string-match "^\\*" b2) (string< b1 b2))
-      (or (string-match "^\\*" b2) (string< b1 b2)))))
+        (and (string-match "^\\*" b2)  (string< b1 b2))
+      (or (string-match "^\\*" b2)  (string< b1 b2)))))
 
 (when (> emacs-major-version 20)
   (defcustom icicle-sort-orders-alist ()
@@ -3601,9 +3601,8 @@ during Icicles search).  You can also use multi-command
 `icicle-toggle-option' anytime to toggle the option."
   :initialize (lambda (opt-name val) (set opt-name t))
   :set (lambda (opt-name val)
-         (or (not (require 'tramp nil t))
-             (prog1 (set opt-name (not val))
-               (icicle-toggle-remote-file-testing))))
+         (or (not (require 'tramp nil t))  (prog1 (set opt-name (not val))
+                                             (icicle-toggle-remote-file-testing))))
   :type 'boolean :group 'Icicles-Matching)
 
 (defun icicle-thing-at-point (thing &optional syntax-table)
@@ -3618,7 +3617,7 @@ If SYNTAX-TABLE is a syntax table, use it for the duration."
 
 ;;;###autoload
 (defcustom icicle-thing-at-point-functions
-  (progn (or (require 'ffap- nil t) (require 'ffap nil t)) ; Try `ffap-.el' first.
+  (progn (or (require 'ffap- nil t)  (require 'ffap nil t)) ; Try `ffap-.el' first.
          (cons
           `(,(if (fboundp 'non-nil-symbol-name-nearest-point)
                  'non-nil-symbol-name-nearest-point
@@ -3626,12 +3625,12 @@ If SYNTAX-TABLE is a syntax table, use it for the duration."
             ,(if (fboundp 'word-nearest-point)
                  'word-nearest-point
                  (lambda () (icicle-thing-at-point 'word)))
-            ,@(and (fboundp 'list-nearest-point-as-string) '(list-nearest-point-as-string))
+            ,@(and (fboundp 'list-nearest-point-as-string)  '(list-nearest-point-as-string))
             ,@(and (fboundp 'list-nearest-point-as-string)
                    '((lambda () (list-nearest-point-as-string 2))))
             ,@(and (fboundp 'list-nearest-point-as-string)
                    '((lambda () (list-nearest-point-as-string 3))))
-            ,@(and (fboundp 'ffap-guesser) '(ffap-guesser))
+            ,@(and (fboundp 'ffap-guesser)  '(ffap-guesser))
             thing-at-point-url-at-point)
           'forward-word))
   "*Functions that return a string at or near point, or else nil.
@@ -3702,7 +3701,7 @@ whatever OLD is bound to in MAP, or in OLDMAP, if provided."
 ;; Must be before `icicle-top-level-key-bindings'.
 (defun icicle-bind-top-level-commands (&optional defs)
   "Bind top-level commands for Icicle mode."
-  (let ((icicle-mode  (and (boundp 'icicle-mode) icicle-mode))
+  (let ((icicle-mode  (and (boundp 'icicle-mode)  icicle-mode))
         key command condition)
     (unless icicle-mode  (icy-mode 1))  ; Need `icicle-mode-map', which is unbound unless in Icicle mode.
     (unless defs  (setq defs  icicle-top-level-key-bindings))
@@ -4047,7 +4046,7 @@ See also option `icicle-functions-to-redefine'."
             (list
              (choice
               (restricted-sexp :tag "Key"
-               :match-alternatives ((lambda (x) (or (stringp x) (vectorp x))))
+               :match-alternatives ((lambda (x) (or (stringp x)  (vectorp x))))
                :value [ignore])
               (restricted-sexp :tag "Command to remap"
                ;; Use `symbolp' instead of `commandp', in case the library defining the
@@ -4406,7 +4405,7 @@ to toggle the option."
 Same as `widgetp' in Emacs 22+.  Defined for Emacs 20 and 21."
   (if (symbolp widget)
       (get widget 'widget-type)
-    (and (consp widget)  (symbolp (car widget)) (get (car widget) 'widget-type))))
+    (and (consp widget)  (symbolp (car widget))  (get (car widget) 'widget-type))))
 
 ;; To redefine widget `color' to `icicle-color', you need library `wid-edit+.el'.
 ;;;###autoload
