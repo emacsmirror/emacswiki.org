@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Sat Nov 10 11:56:17 2012 (-0800)
+;; Last-Updated: Sat Nov 10 15:43:38 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 6106
+;;     Update #: 6123
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1078,7 +1078,17 @@ used with `C-u', with Icicle mode turned off)."
                                 '(1 2)))) ; Both parts, by default.
                        (setq color  (icicle-transform-multi-completion
                                      (concat color ": " (hexrgb-color-name-to-hex color)))))
-                   (setq color  (icicle-transform-multi-completion color)))))))
+                   (setq color  (icicle-transform-multi-completion color)))))
+                   (when (string= "" color)
+                     (let ((col  (car-safe (symbol-value minibuffer-history-variable))))
+                       (if (or (equal "" col)  (not (stringp col)))
+                           (error "No such color: %S" color)
+                         ;; Cannot use `case', since that uses `eql', not `equal'.
+                         (setq color  (cond ((equal '(1) icicle-list-use-nth-parts)  col)
+                                            ((equal '(2) icicle-list-use-nth-parts)  (hexrgb-color-name-to-hex col))
+                                            (t  (let ((icicle-list-nth-parts-join-string  ": ")
+                                                      (icicle-list-join-string            ": "))
+                                                  (icicle-transform-multi-completion color))))))))))
       (when msgp (message "Color: `%s'" (icicle-propertize color 'face 'icicle-msg-emphasis)))
       color))
 
