@@ -120,7 +120,7 @@ Fixed this issue by this patch
                   (delete-horizontal-space)))
               (smart-operator-insert "-" 'middle)
               (indent-according-to-mode))
-    +   ((and c-buffer-is-cc-mode (looking-back "[*/%+(><=&^|] *"))
+    +   ((and c-buffer-is-cc-mode (looking-back "[*/%+(><=&^|,] *"))
     +    (smart-operator-insert "-" 'before))
     +   ((and c-buffer-is-cc-mode (looking-back "\\(return\\) *"))
     +    (smart-operator-insert "-" 'before))
@@ -149,4 +149,47 @@ Fixed the problem by
     -  '("=" "<" ">" "%" "+" "-" "*" "/" "&" "|" "!" ":" "?" "," "."))
     +  '("=" "<" ">" "%" "+" "-" "*" "/" "&" "|" "^" "!" ":" "?" "," "."))
 
-* "ioctl(fd, HPET_INFO, &info) -> "ioctl(fd, HPET_INFO, & info)
+* "ioctl(*fd, HPET_INFO, &info) -> "ioctl( * fd, HPET_INFO, & info)
+
+Fixed by the patch listed below
+
+    --- extensions/smart-operator.el	2012-11-10 16:25:27.393138909 +0900
+    +++ /home/adam/.emacs.d/site-lisp/extensions/smart-operator.el	2012-11-10 21:10:39.979202141 +0900
+    @@ -244,6 +244,8 @@
+                     (smart-operator-insert "&" 'after))
+                    ((looking-back "= *")
+                     (smart-operator-insert "&" 'before))
+    +	       ((looking-back ", *")
+    +		(smart-operator-insert "&" 'before))
+                    (t
+                     (smart-operator-insert "&"))))
+             (t
+    @@ -252,7 +254,8 @@
+     (defun smart-operator-* ()
+       "See `smart-operator-insert'."
+       (interactive)
+    -  (cond (c-buffer-is-cc-mode
+    +  (cond ((and c-buffer-is-cc-mode
+    +	      (not (smart-operator-document-line?)))
+              ;; ,----
+              ;; | a * b;
+              ;; | char *a;
+    @@ -265,9 +268,17 @@
+                     (smart-operator-insert "*" 'before))
+                    ((looking-back "\\* *")
+                     (smart-operator-insert "*" 'middle))
+    -               ((looking-back "^[ (]*")
+    +	       ;; case foo(
+    +	       ;;          *bar);
+    +               ((looking-back "^[\\sc]*")
+                     (smart-operator-insert "*" 'middle)
+                     (indent-according-to-mode))
+    +	       ;; case foo(*bar)
+    +               ((looking-back "(")
+    +                (smart-operator-insert "*" 'middle))
+    +	       ;; case foo(bar, *bar)
+    +               ((looking-back ", *")
+    +                (smart-operator-insert "*" 'before))
+                    ((looking-back "= *")
+                     (smart-operator-insert "*" 'before))
+                    (t
