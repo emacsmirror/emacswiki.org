@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Feb 13 16:47:45 1996
 ;; Version: 21.0
-;; Last-Updated: Fri Aug 24 13:41:02 2012 (-0700)
+;; Last-Updated: Sat Nov 10 11:03:28 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 2055
+;;     Update #: 2093
 ;; URL: http://www.emacswiki.org/emacs-en/thingatpt%2b.el
 ;; Doc URL: http://www.emacswiki.org/emacs/ThingAtPointPlus#ThingAtPoint%2b
 ;; Keywords: extensions, matching, mouse
@@ -38,7 +38,7 @@
 ;;
 ;;  Non-interactive functions defined here:
 ;;
-;;    `tap-bounds-of-form-at-point',
+;;    `tap-bounds-of-color-at-point', `tap-bounds-of-form-at-point',
 ;;    `tap-bounds-of-form-nearest-point',
 ;;    `tap-bounds-of-list-at-point',
 ;;    `tap-bounds-of-list-nearest-point',
@@ -50,7 +50,9 @@
 ;;    `tap-bounds-of-string-at-point',
 ;;    `tap-bounds-of-symbol-at-point',
 ;;    `tap-bounds-of-symbol-nearest-point',
-;;    `tap-bounds-of-thing-nearest-point',
+;;    `tap-bounds-of-thing-nearest-point', `tap-color-at-point',
+;;    `tap-color-nearest-point',
+;;    `tap-color-nearest-point-with-bounds',
 ;;    `tap-define-aliases-wo-prefix', `tap-form-at-point-with-bounds',
 ;;    `tap-form-nearest-point', `tap-form-nearest-point-with-bounds',
 ;;    `tap-list-at/nearest-point-with-bounds',
@@ -232,6 +234,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/11/10 dadams
+;;     Added: tap(-bounds-of)-color-at-point, tap-color-nearest-point(-with-bounds).
+;;     tap-word-nearest-point: Corrected doc string: returns nil if none found.
 ;; 2012/08/24 dadams
 ;;     Added: tap-string-match-p, tap-looking-at-p, tap-looking-back-p.
 ;;     tap-list-at/nearest-point-with-bounds: Handle point inside a string.
@@ -445,6 +450,7 @@ this setting temporarily."
 ;;; Utility Functions ------------------------------------------------
 
 
+;; Same as `icicle-string-match-p' in `icicles-fn.el'.
 (if (fboundp 'string-match-p)
     (defalias 'tap-string-match-p 'string-match-p) ; Emacs 23+
   (defun tap-string-match-p (regexp string &optional start)
@@ -1214,7 +1220,7 @@ See `tap-non-nil-symbol-name-nearest-point'."
     (tap-non-nil-symbol-name-nearest-point)))
 
 (defun tap-word-nearest-point (&optional syntax-table)
-  "Return the word (a string) nearest to point, if any, else \"\".
+  "Return the word (a string) nearest to point, if any, else nil.
 \"Nearest\" to point is determined as for `tap-thing-nearest-point'.
 Optional arg SYNTAX-TABLE is a syntax table to use."
   (tap-thing-nearest-point 'word syntax-table))
@@ -1237,6 +1243,42 @@ See `tap-word-nearest-point'."
            (not (eq (region-beginning) (region-end))))
       (buffer-substring-no-properties (region-beginning) (region-end))
     (current-word)))
+
+
+(when (fboundp 'color-defined-p)        ; Emacs 21+
+  (put 'color 'thing-at-point               'tap-color-at-point)
+  (put 'color 'tap-thing-at-point           'tap-color-at-point)
+  (put 'color 'bounds-of-thing-at-point     'tap-bounds-of-color-at-point)
+  (put 'color 'tap-bounds-of-thing-at-point 'tap-bounds-of-color-at-point)
+
+  (defun tap-color-at-point ()
+    "Return the color name or RGB code (with prefix `#') at point."
+    (let ((word  (with-syntax-table (copy-syntax-table (syntax-table))
+                   (modify-syntax-entry ?# "w") ; Make `#' a word constituent.
+                   (word-at-point))))
+      (and word  (color-defined-p word)  word)))
+
+  (defun tap-bounds-of-color-at-point ()
+    "Return the bounds of the color name at point.
+The color name can also be an RGB code (with prefix `#').
+Return nil if no color name is found."
+    (let ((word+bnds  (with-syntax-table (copy-syntax-table (syntax-table))
+                        (modify-syntax-entry ?# "w") ; Make `#' a word constituent.
+                        (thing-at-point-with-bounds 'word))))
+      (and word+bnds  (color-defined-p (car word+bnds))  (cdr word+bnds))))
+
+  (defun tap-color-nearest-point-with-bounds ()
+    "Return the color name nearest point, plus its bounds: (COLOR START . END).
+Return nil if no color name is found.
+COLOR is a color name or RGB code (with prefix `#').
+ See `tap-color-nearest-point'.
+START and END are the buffer positions of COLOR."
+    (tap-thing-nearest-point-with-bounds 'color))
+
+  (defun tap-color-nearest-point ()
+    "Return the color name or RGB code (with prefix `#') nearest point."
+    (let ((color+bds  (tap-color-nearest-point-with-bounds)))
+      (and color+bds  (car color+bds)))))
 
 (defun tap-sentence-nearest-point (&optional syntax-table)
   "Return the sentence (a string) nearest to point, if any, else \"\".
@@ -1269,7 +1311,7 @@ Optional arg SYNTAX-TABLE is a syntax table to use."
 (put 'number 'tap-bounds-of-thing-at-point 'tap-bounds-of-number-at-point)
 
 (defun tap-bounds-of-number-at-point ()
-  "Return the bounds of the number represented by the numeral point.
+  "Return the bounds of the number represented by the numeral at point.
 Return nil if none is found."
   (and (number-at-point)  (tap-bounds-of-thing-at-point 'sexp)))
 
@@ -1502,6 +1544,11 @@ The standard functions replaced are these:
   (defalias 'unquoted-list-nearest-point 'tap-unquoted-list-nearest-point)
   (defalias 'unquoted-list-nearest-point-as-string 'tap-unquoted-list-nearest-point-as-string)
   (defalias 'word-nearest-point 'tap-word-nearest-point)
+  (when (fboundp 'tap-color-at-point)
+    (defalias 'color-at-point                  'tap-color-at-point)
+    (defalias 'bounds-of-color-at-point        'tap-bounds-of-color-at-point)
+    (defalias 'color-nearest-point             'tap-color-nearest-point)
+    (defalias 'color-nearest-point-with-bounds 'tap-color-nearest-point-with-bounds))
 
   (when (fboundp 'defvaralias)          ; Emacs 22+
     (defvaralias 'near-point-x-distance 'tap-near-point-x-distance)
