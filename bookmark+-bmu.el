@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Tue Oct  9 10:57:27 2012 (-0700)
+;; Last-Updated: Sun Nov 11 10:36:56 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 2271
+;;     Update #: 2277
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -1901,7 +1901,9 @@ See `bookmark-jump' for info about the prefix arg."
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
 ;; 1. Added optional arg MARKEDP: handle bookmarks marked `>', not just those flagged `D'.
-;; 2. Use `bookmark-bmenu-surreptitiously-rebuild-list', instead of using
+;; 2. Inhibit saving until all are deleted, then save all.  This is because the Bookmark+ version of
+;;    `bookmark-save' refreshes the bookmark list display, and that removes `D' flags. 
+;; 3. Use `bookmark-bmenu-surreptitiously-rebuild-list', instead of using
 ;;    `bookmark-bmenu-list', updating the modification count, and saving.
 ;; 3. Update `bmkp-latest-bookmark-alist' to reflect the deletions.
 ;; 4. Pass full bookmark, not name, to `delete' (and do not use `assoc').
@@ -1926,10 +1928,13 @@ confirmation."
         (while (re-search-forward mark-type (point-max) t)
           (let* ((bmk-name  (bookmark-bmenu-bookmark))
                  (bmk       (bookmark-get-bookmark bmk-name)))
-            (bookmark-delete bmk-name 'BATCHP)
+            ;; Inhibit saving until all are deleted, then do in once.  Otherwise, some might not be
+            ;; deleted, because `bookmark-save' refreshes the list, which removes `D' flags.
+            (let ((bookmark-save-flag  nil))  (bookmark-delete bmk-name 'BATCHP))
             ;; Count is misleading if the bookmark is not really in `bookmark-alist'.
             (setq count                       (1+ count)
                   bmkp-latest-bookmark-alist  (delete bmk bmkp-latest-bookmark-alist))))
+        (bmkp-maybe-save-bookmarks)     ; Do it now.
         (if (<= count 0)
             (message (if markedp "No marked bookmarks" "No bookmarks flagged for deletion"))
           (bookmark-bmenu-surreptitiously-rebuild-list 'NO-MSG-P)
@@ -3730,6 +3735,7 @@ Autosave bookmarks:\t%s\nAutosave list display:\t%s\n\n\n"
                 (aa   "  a")
                 (XX   "  X")
                 (mod  "  *"))
+            (put-text-property 2 3 'face 'bmkp->-mark mm)
             (put-text-property 2 3 'face 'bmkp-D-mark DD)
             (put-text-property 2 3 'face 'bmkp-t-mark tt)
             (put-text-property 2 3 'face 'bmkp-a-mark aa)
