@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Nov 12 11:21:40 2012 (-0800)
+;; Last-Updated: Mon Nov 12 11:43:02 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 15148
+;;     Update #: 15162
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -850,6 +850,12 @@
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
 ;; 2012/11/12 dadams
+;;     bmkp-bmenu-isearch-marked-bookmarks(-regexp), bmkp-bmenu-search-marked-bookmarks-regexp,
+;;       bmkp-bmenu-query-replace-marked-bookmarks-regexp, bmkp-bmenu-set-tag-value-for-marked,
+;;       bmkp-bmenu-add-tags-to-marked, bmkp-bmenu-remove-tags-from-marked,
+;;       bmkp-bmenu-paste-(add|replace)-tags-(to|for)-marked, bmkp-bmenu-edit-marked,
+;;       bmkp-bmenu-describe-marked:
+;;         Make it work for current bookmark if none marked.
 ;;     Protect all calls to bmkp-bmenu-mode-line with fboundp, for Emacs 20.
 ;; 2012/11/11 dadams
 ;;     Added: bmkp-bmenu-mode-line, bmkp-bmenu-mode-line-string.
