@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Nov 11 20:17:48 2012 (-0800)
+;; Last-Updated: Mon Nov 12 11:21:40 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 15147
+;;     Update #: 15148
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -849,6 +849,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2012/11/12 dadams
+;;     Protect all calls to bmkp-bmenu-mode-line with fboundp, for Emacs 20.
 ;; 2012/11/11 dadams
 ;;     Added: bmkp-bmenu-mode-line, bmkp-bmenu-mode-line-string.
 ;;     Removed: bmkp-bmenu-nb-marked-in-mode-name (replaced by bmkp-bmenu-mode-line - shows more).
