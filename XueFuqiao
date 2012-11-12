@@ -1,1 +1,140 @@
-Emacs is the one.
+== About Me ==
+I use Emacs.
+
+My name is Xue Fuqiao.  I have been a GNU/Linux user since 2008.  I've been an [[Emacsite]] since 2009 and began to write programs in
+EmacsLisp since 2011.  Started with [[XEmacs]], switched to
+[[SXEmacs]], back to XEmacs, and now I'm using GnuEmacs and Guile-based Emacs. I don't like using the Emacs
+Lisp package manager.  Instead, I like install additional Lisp
+packages by hand, which is flexible.  I prefer to learn new things
+from reference manuals, instead of tutorials.  My favorite font is
+[http://www.proggyfonts.com proggy_tiny]. Currently I use GNU Emacs on
+a laptop with a ColemakKeyboard.
+
+I'm a software developer and software freedom activist.  And I’m currently a student of [http://www.ncut.edu.cn NCUT].  My major is Communication Engineering.
+
+I'm a [http://www.fsf.org/free-software-supporter/ Free Software Supporter].
+
+You can contact me using xfq [PERIOD] free [AT] gmail [PERIOD] com
+
+== My GNU Emacs Installation ==
+<pre>
+./configure --with-x-toolkit=no --without-toolkit-scroll-bars --with-wide-int
+make
+src/emacs -Q
+make install
+</pre>
+
+== My GNU Emacs Invocation ==
+
+emacsclient -c -a ""
+
+== My Accounts ==
+* Stack Overflow
+[http://stackoverflow.com/users/1767708/xfq xfq]
+
+* WikEmacs
+[http://wikemacs.org/wiki/User:Xfq Xfq]
+
+* Savannah
+[https://savannah.gnu.org/users/xfq xfq]
+
+* Twitter
+[https://twitter.com/fuqiao fuqiao]
+
+* irc.freenode.net
+[::xfq]
+
+* Wikipedia
+[http://en.wikipedia.org/wiki/User:Xfq Xfq]
+
+== RSI ==
+Started physiotherapy on June, 2012.
+
+== Motto ==
+* There is no system but GNU, and Linux is one of its kernel.
+
+* I've used Emacs for many years now, but have never reached its maximum potential.
+
+* It is a logical impossibility to make a language more powerful by omitting features, no matter how bad they may be.
+
+== My Init Files ==
+Coming soon.
+
+== My ~/.Xdefaults ==
+<pre>
+Emacs.bitmapIcon: off
+Emacs.font: ProggyTinyTT-12
+Emacs* menubar.margin: 0
+Emacs* toolBar: 0
+Emacs.useXIM: off
+</pre>
+
+== My ~/.sawfish/rc ==
+Coming soon.
+
+== I Use ==
+* savannah.el
+
+* [https://github.com/sigma/gh.el gh.el]
+
+* EasyPG
+
+* Yasnippet
+
+* [[Helm]]
+
+* xml-rpc
+
+* [[nXhtml]]
+
+* [[DVC]]
+
+* Org2blog/atom
+
+* printing.el
+
+* [[Ediff]]
+
+* [[W3]]
+
+* DeskTop
+
+* [[Twitel]]
+
+* [[ERC]]
+
+* AdvancedDeskCalculator
+
+* spell-number.el
+
+* OrgMode
+
+* AbbrevMode
+
+* TrampMode
+
+* IPA.el
+
+* EmacsSpeaksStatistics
+
+* AUCTeX
+
+* CDLaTeX
+
+* Eshell
+
+* [[Gnus]]
+
+* [[EMMS]]
+
+* [[BBDB]]
+
+* wuxch-bookmark.el
+
+* [[Icicles]]
+
+* ParEdit
+
+----
+CategoryHomepage
+
