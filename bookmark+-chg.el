@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Nov  9 14:42:12 2012 (-0800)
+;; Last-Updated: Sun Nov 11 20:17:48 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 15126
+;;     Update #: 15147
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,10 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2012/11/11 dadams
+;;     Added: bmkp-sorting-description (factored out from bmkp-msg-about-sort-order).
+;;     bmkp-msg-about-sort-order: Use bmkp-sorting-description.
+;;     bmkp-current-sort-order: Return nil if bmkp-sort-comparer is not in bmkp-sort-orders-alist.
 ;; 2012/11/09 dadams
 ;;     Added: bmkp-autofile-filecache.
 ;;     Added defadvice for file-cache-add-file.
@@ -845,6 +849,14 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2012/11/11 dadams
+;;     Added: bmkp-bmenu-mode-line, bmkp-bmenu-mode-line-string.
+;;     Removed: bmkp-bmenu-nb-marked-in-mode-name (replaced by bmkp-bmenu-mode-line - shows more).
+;;     Removed faces bmkp-mode-line-marked, bmkp-mode-line-flagged.
+;;     bookmark-bmenu-(delete|(un)mark), bmkp-bmenu-list-1: Call bmkp-bmenu-mode-line.
+;;     bookmark-bmenu-execute-deletions: Inhibit saving until all are deleted, then save.
+;;     bmkp-bmenu-mode-status-help: Show > and D using their faces, bmkp->-mark, bmkp-D-mark.
+;;                                  Use "" if bmkp-current-sort-order (new version) returns nil.
 ;; 2012/10/09 dadams
 ;;     Made all autoload cookies explicitly load bookmark+.el(c).  Should help ELPA (e.g. MELPA).
 ;; 2012/09/29 dadams
