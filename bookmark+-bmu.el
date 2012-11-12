@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Sun Nov 11 10:36:56 2012 (-0800)
+;; Last-Updated: Sun Nov 11 20:12:32 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 2277
+;;     Update #: 2306
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -232,6 +232,7 @@
 ;;    `bmkp-bmenu-list-1',
 ;;    `bmkp-bmenu-mark/unmark-bookmarks-tagged-all/none',
 ;;    `bmkp-bmenu-mark/unmark-bookmarks-tagged-some/not-all',
+;;    `bmkp-bmenu-mode-line', `bmkp-bmenu-mode-line-string',
 ;;    `bmkp-bmenu-propertize-item', `bmkp-bmenu-read-filter-input',
 ;;    `bmkp-face-prop', `bmkp-maybe-unpropertize-bookmark-names',
 ;;    `bmkp-maybe-unpropertize-string',
@@ -835,6 +836,7 @@ prompting with completion for the new path."
 ;; 5. If current sort is `s >' (marked first or last), and it was unmarked before, then re-sort.
 ;; 6. Added optional arg NO-RE-SORT-P to inhibit #5.
 ;; 7. Added optional arg MSG-P.
+;; 8. Call `bmkp-bmenu-mode-line'.
 ;;
 ;;;###autoload (autoload 'bookmark-bmenu-mark "bookmark+")
 (defun bookmark-bmenu-mark (&optional no-re-sort-p msg-p) ; Bound to `m' in bookmark list
@@ -871,7 +873,8 @@ Non-interactively:
         (let ((current-bmk  (bookmark-bmenu-bookmark)))
           (bookmark-bmenu-surreptitiously-rebuild-list (not msg-p))
           (when current-bmk (bmkp-bmenu-goto-bookmark-named current-bmk))))))
-  (forward-line 1))
+  (forward-line 1)
+  (bmkp-bmenu-mode-line))
 
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
@@ -884,6 +887,7 @@ Non-interactively:
 ;; 6. If current sort is `s >' (marked first or last), and it was marked before, then re-sort.
 ;; 7. Added optional arg NO-RE-SORT-P to inhibit #6.
 ;; 8. Added optional arg MSG-P.
+;; 9. Call `bmkp-bmenu-mode-line'.
 ;;
 ;;;###autoload (autoload 'bookmark-bmenu-unmark "bookmark+")
 (defun bookmark-bmenu-unmark (&optional backup no-re-sort-p msg-p) ; Bound to `u' in bookmark list
@@ -915,7 +919,8 @@ Non-interactively:
         (let ((current-bmk  (bookmark-bmenu-bookmark)))
           (bookmark-bmenu-surreptitiously-rebuild-list (not msg-p))
           (when current-bmk (bmkp-bmenu-goto-bookmark-named current-bmk))))))
-  (forward-line (if backup -1 1)))
+  (forward-line (if backup -1 1))
+  (bmkp-bmenu-mode-line))
 
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
@@ -926,6 +931,7 @@ Non-interactively:
 ;; 3. Use face `bmkp-D-mark' on the `D' flag.
 ;; 4. Raise error if not in buffer `*Bookmark List*'.
 ;; 5. Remove bookmark from `bmkp-bmenu-marked-bookmarks'.  Add it to `bmkp-flagged-bookmarks'.
+;; 6. Call `bmkp-bmenu-mode-line'.
 ;;
 ;;;###autoload (autoload 'bmkp-bmenu-flag-for-deletion "bookmark+")
 (defalias 'bmkp-bmenu-flag-for-deletion 'bookmark-bmenu-delete) ; A better name.
@@ -948,7 +954,8 @@ the deletions."
     (let ((bmk  (bmkp-bookmark-record-from-name (bookmark-bmenu-bookmark))))
       (unless (memq bmk bmkp-flagged-bookmarks)
         (setq bmkp-flagged-bookmarks  (cons bmk bmkp-flagged-bookmarks)))))
-  (forward-line 1))
+  (forward-line 1)
+  (bmkp-bmenu-mode-line))
 
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
@@ -1205,6 +1212,7 @@ Non-nil INTERACTIVEP means `bookmark-bmenu-list' was called
     (when (and (fboundp 'fit-frame-if-one-window)
                (eq (selected-window) (get-buffer-window (get-buffer-create "*Bookmark List*") 0)))
       (fit-frame-if-one-window)))
+  (bmkp-bmenu-mode-line)
   (when (and interactivep  bmkp-sort-comparer)
     (bmkp-msg-about-sort-order (bmkp-current-sort-order))))
 
@@ -3694,7 +3702,7 @@ Autosave bookmarks:\t%s\nAutosave list display:\t%s\n\n\n"
                    bmkp-current-bookmark-file
                    (if (not bmkp-sort-comparer)
                        "no"
-                     (format "%s%s" (bmkp-current-sort-order)
+                     (format "%s%s" (or (bmkp-current-sort-order)  "")
                              ;; Code essentially the same as found in `bmkp-msg-about-sort-order'.
                              (if (not (and (consp bmkp-sort-comparer) ; Ordinary single predicate
                                            (consp (car bmkp-sort-comparer))))
@@ -4333,57 +4341,62 @@ Starting with Emacs 22, the first element is `font-lock-face'."
   (list (if (> emacs-major-version 21) 'font-lock-face 'face) value))
 
 (when (> emacs-major-version 21)
-  (defun bmkp-bmenu-nb-marked-in-mode-name ()
-    "Add number of marked and flagged lines to mode name in the mode line.
-\(Flagged means flagged for deletion.)
-If the current line is marked/flagged and there are others
-marked/flagged after it then show `N/M', where N is the number
-marked/flagged through the current line and M is the total number
-marked/flagged."
-    (setq mode-name
-          `(,mode-name
-            (:eval (let* ((marked-regexp   "^>")
-                          (nb-marked       (count-matches marked-regexp
-                                                          (point-min) (point-max))))
-                     (if (not (> nb-marked 0))
-                         ""
-                       (propertize
-                        (format " %s%d>"
+  (defun bmkp-bmenu-mode-line-string ()
+    "Show, in mode line, information about the current bookmark-list display.
+The information includes the sort order and the number of marked,
+flagged (for deletion), tagged, temporary, annotated, and modified
+bookmarks currently shown.
+
+For each number indication:
+ If the current line has the indicator (e.g. mark, flag) and there are
+ others with the same indicator listed after it, then show `N/M',
+ where N is the number indicated through the current line and M is the
+ total number indicated."
+    (let* ((regexp->   "^>")
+           (regexp-D   "^D")
+           (regexp-t   "^.t")
+           (regexp-X   "^..X")
+           (regexp-a   "^..a")
+           (regexp-*   "^...\\*")
+           (nb->       (count-matches regexp-> (point-min) (point-max)))
+           (nb-D       (count-matches regexp-D (point-min) (point-max)))
+           (nb-t       (count-matches regexp-t (point-min) (point-max)))
+           (nb-X       (count-matches regexp-X (point-min) (point-max)))
+           (nb-a       (count-matches regexp-a (point-min) (point-max)))
+           (nb-*       (count-matches regexp-* (point-min) (point-max)))
+           (text-sort  (propertize
+                        (concat "sorting " (bmkp-sorting-description (bmkp-current-sort-order)))
+                        'face 'bmkp-heading)))
+      (let ((desc  "")
+            nb)
+        (dolist (mk  '(?> ?D ?t ?a ?X ?*))
+          (setq nb      (symbol-value (intern (format "nb-%c" mk)))
+                regexp  (symbol-value (intern (format "regexp-%c" mk)))
+                desc    (concat
+                         desc
+                         (and (> nb 0)
+                              (propertize
+                               (format
+                                "%s%d%c"
                                 (save-excursion
                                   (forward-line 0)
-                                  (if (looking-at (concat marked-regexp ".*"))
-                                      (format "%d/" (1+ (count-matches marked-regexp
-                                                                       (point-min) (point))))
+                                  (if (looking-at (concat regexp ".*"))
+                                      (format "%d/" (1+ (count-matches regexp (point-min) (point))))
                                     ""))
-                                nb-marked)
-                        'face 'bmkp-mode-line-marked))))
-            (:eval (let* ((flagged-regexp  "^D")
-                          (nb-flagged      (count-matches flagged-regexp
-                                                          (point-min) (point-max))))
-                     (if (not (> nb-flagged 0))
-                         ""
-                       (propertize
-                        (format " %s%dD"
-                                (save-excursion
-                                  (forward-line 0)
-                                  (if (looking-at (concat flagged-regexp ".*"))
-                                      (format "%d/" (1+ (count-matches flagged-regexp
-                                                                       (point-min) (point))))
-                                    ""))
-                                nb-flagged)
-                        'face 'bmkp-mode-line-flagged)))))))
+                                nb  mk)  'face (intern (format "bmkp-%c-mark" mk))))
+                         (and (> nb 0)  " "))))
+        (format "%s%s" desc text-sort))))
 
-  (defface bmkp-mode-line-marked
-      '((t (:inherit 'bmkp->-mark)))
-    "*Face for marked number in mode line `mode-name' for Dired buffers."
-    :group 'bookmark-plus :group 'font-lock-highlighting-faces)
-
-  (defface bmkp-mode-line-flagged
-      '((t (:foreground "Red")))
-    "*Face for flagged number in mode line `mode-name' for Dired buffers."
-    :group 'bookmark-plus :group 'font-lock-highlighting-faces)
-
-  (add-hook 'bookmark-bmenu-mode-hook 'bmkp-bmenu-nb-marked-in-mode-name))
+  (defun bmkp-bmenu-mode-line ()        ; This works, but it shows the line number also.
+    "Set the mode line for buffer `*Bookmark List*'."
+    ;; (put 'mode-line-format 'safe-local-variable (lambda (IGNORE) t)) ; $$$$$$ Needed?
+    ;; (put 'mode-line-format 'risky-local-variable t)                  ; $$$$$$ Needed?
+    (set (make-local-variable 'mode-name)         '(:eval (bmkp-bmenu-mode-line-string)))
+    ;; It seems that the line number must be present, and not invisible, for dynamic updating
+    ;; of the mode line when you move the cursor among lines.  Moving it way off to the right
+    ;; effectively gets rid of it (ugly hack).  See Emacs bug #12867.
+    (set (make-local-variable 'mode-line-position) '("%360l (line)")) ; Try to move it off the screen.
+    (set (make-local-variable 'mode-line-format)   '(("" mode-name mode-line-position)))))
 
 
 ;;(@* "Sorting - Commands")
