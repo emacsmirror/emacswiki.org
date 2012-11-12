@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Nov  9 14:55:24 2012 (-0800)
+;; Last-Updated: Sun Nov 11 20:32:43 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 14634
+;;     Update #: 14637
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -383,9 +383,18 @@
 ;;     - You can edit a bookmark: its name and file name/location, its
 ;;       tags, or its complete defining internal Lisp record.
 ;;
-;;     - The mode name in the mode line shows the number of bookmarks
-;;       that are marked (`>') and the number that are flagged for
-;;       deletion (`D').
+;;     - The mode line shows the number of bookmarks that are marked
+;;       (`>'), flagged for deletion (`D'), tagged (`t'), temporary
+;;       (`X'), annotated (`a'), and modified (unsaved) (`*').  It
+;;       also shows the current sort order.
+;;
+;;       For each of the number indicators (e.g., the number marked):
+;;
+;;       If the current line has the indicator (e.g. `>') and there
+;;       are other lines with the same indicator that are listed after
+;;       the current line, then the indicator shows `N/M', where N is
+;;       the number indicated through the current line and M is the
+;;       total number indicated.  Otherwise, it shows just `N'.
 ;;
 ;;  * Multiple bookmark files.
 ;;
@@ -2314,10 +2323,12 @@
 ;;  For a complex sort, which involves composing several sorting
 ;;  conditions, you can also use `s C-r' to reverse the order of
 ;;  bookmark sorting groups or the order within each group (depending
-;;  on whether `s r' is also used).  Be aware that this can be a bit
-;;  unintuitive.  If it does not do what you expect or want, or if it
-;;  confuses you, then don't use it ;-).  (`s C-r' has no noticeable
-;;  effect on simple sorting.)
+;;  on whether `s r' is also used).  Try it, for example, together
+;;  with sorting by bookmark kind (`s k').
+;;
+;;  Be aware that `s C-r' can be a bit unintuitive.  If it does not do
+;;  what you expect or want, or if it confuses you, then don't use it
+;;  ;-).  (`s C-r' has no noticeable effect on simple sorting.)
 ;;
 ;;  Remember that you can combine sorting with filtering different
 ;;  sets of bookmarks - bookmarks of different kinds (e.g. Info) or
