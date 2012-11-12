@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Mon Nov 12 08:47:56 2012 (-0800)
+;; Last-Updated: Mon Nov 12 11:20:22 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 2307
+;;     Update #: 2309
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -874,7 +874,7 @@ Non-interactively:
           (bookmark-bmenu-surreptitiously-rebuild-list (not msg-p))
           (when current-bmk (bmkp-bmenu-goto-bookmark-named current-bmk))))))
   (forward-line 1)
-  (bmkp-bmenu-mode-line))
+  (when (fboundp 'bmkp-bmenu-mode-line) (bmkp-bmenu-mode-line)))
 
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
@@ -920,7 +920,7 @@ Non-interactively:
           (bookmark-bmenu-surreptitiously-rebuild-list (not msg-p))
           (when current-bmk (bmkp-bmenu-goto-bookmark-named current-bmk))))))
   (forward-line (if backup -1 1))
-  (bmkp-bmenu-mode-line))
+  (when (fboundp 'bmkp-bmenu-mode-line) (bmkp-bmenu-mode-line)))
 
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
@@ -955,7 +955,7 @@ the deletions."
       (unless (memq bmk bmkp-flagged-bookmarks)
         (setq bmkp-flagged-bookmarks  (cons bmk bmkp-flagged-bookmarks)))))
   (forward-line 1)
-  (bmkp-bmenu-mode-line))
+  (when (fboundp 'bmkp-bmenu-mode-line) (bmkp-bmenu-mode-line)))
 
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
@@ -1212,7 +1212,7 @@ Non-nil INTERACTIVEP means `bookmark-bmenu-list' was called
     (when (and (fboundp 'fit-frame-if-one-window)
                (eq (selected-window) (get-buffer-window (get-buffer-create "*Bookmark List*") 0)))
       (fit-frame-if-one-window)))
-  (bmkp-bmenu-mode-line)
+  (when (fboundp 'bmkp-bmenu-mode-line) (bmkp-bmenu-mode-line))
   (when (and interactivep  bmkp-sort-comparer)
     (bmkp-msg-about-sort-order (bmkp-current-sort-order))))
 
