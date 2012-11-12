@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Mon Nov 12 11:20:22 2012 (-0800)
+;; Last-Updated: Mon Nov 12 11:33:48 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 2309
+;;     Update #: 2324
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -3094,16 +3094,24 @@ You can then mark some of them and use `bmkp-bmenu-unomit-marked' to
     "Isearch the marked bookmark locations, in their current order."
     (interactive)
     (bmkp-bmenu-barf-if-not-in-menu-list)
-    (let ((bookmarks        (mapcar #'car (bmkp-sort-omit (bmkp-marked-bookmarks-only))))
-          (bmkp-use-region  nil))  ; Suppress region handling.
+    (let ((bookmarks        (mapcar #'car (bmkp-sort-omit
+                                           (or (bmkp-marked-bookmarks-only)
+                                               (and (bookmark-bmenu-bookmark)
+                                                    (list (bookmark-get-bookmark
+                                                           (bookmark-bmenu-bookmark))))))))
+          (bmkp-use-region  nil))       ; Suppress region handling.
       (bmkp-isearch-bookmarks bookmarks))) ; Defined in `bookmark+-1.el'.
 
   (defun bmkp-bmenu-isearch-marked-bookmarks-regexp () ; Bound to `M-s a M-C-s' in bookmark list
     "Regexp Isearch the marked bookmark locations, in their current order."
     (interactive)
     (bmkp-bmenu-barf-if-not-in-menu-list)
-    (let ((bookmarks        (mapcar #'car (bmkp-sort-omit (bmkp-marked-bookmarks-only))))
-          (bmkp-use-region  nil))  ; Suppress region handling.
+    (let ((bookmarks        (mapcar #'car (bmkp-sort-omit
+                                           (or (bmkp-marked-bookmarks-only)
+                                               (and (bookmark-bmenu-bookmark)
+                                                    (list (bookmark-get-bookmark
+                                                           (bookmark-bmenu-bookmark))))))))
+          (bmkp-use-region  nil))       ; Suppress region handling.
       (bmkp-isearch-bookmarks-regexp bookmarks)))) ; Defined in `bookmark+-1.el'.
 
 ;;;###autoload (autoload 'bmkp-bmenu-search-marked-bookmarks-regexp "bookmark+")
@@ -3115,7 +3123,11 @@ Marked directory and non-file bookmarks are ignored."
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (tags-search regexp '(let ((files  ())
                              file)
-                        (dolist (bmk  (bmkp-sort-omit (bmkp-marked-bookmarks-only)))
+                        (dolist (bmk  (bmkp-sort-omit
+                                       (or (bmkp-marked-bookmarks-only)
+                                           (and (bookmark-bmenu-bookmark)
+                                                (list (bookmark-get-bookmark
+                                                       (bookmark-bmenu-bookmark)))))))
                           (setq file  (bookmark-get-filename bmk))
                           (when (and (not (equal bmkp-non-file-filename file))
                                      (not (file-directory-p file)))
@@ -3136,7 +3148,11 @@ you left off."
   (tags-query-replace from to delimited
 		      '(let ((files  ())
                              file)
-                        (dolist (bmk  (bmkp-sort-omit (bmkp-marked-bookmarks-only)))
+                        (dolist (bmk  (bmkp-sort-omit
+                                       (or (bmkp-marked-bookmarks-only)
+                                           (and (bookmark-bmenu-bookmark)
+                                                (list (bookmark-get-bookmark
+                                                       (bookmark-bmenu-bookmark)))))))
                           (setq file  (bookmark-get-filename bmk))
                           (let ((buffer  (get-file-buffer file)))
                             (when (and buffer  (with-current-buffer buffer buffer-read-only))
@@ -3210,7 +3226,9 @@ If any of the bookmarks has no tag named TAG, then add one with VALUE."
   (interactive (list (bmkp-read-tag-completing) (read (read-string "Value: ")) 'MSG))
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (when msg-p (message "Setting tag values..."))
-  (let ((marked  (bmkp-marked-bookmarks-only)))
+  (let ((marked  (or (bmkp-marked-bookmarks-only)
+                     (and (bookmark-bmenu-bookmark)
+                          (list (bookmark-get-bookmark (bookmark-bmenu-bookmark)))))))
     (unless marked (error "No marked bookmarks"))
     (when msg-p (message "Setting tag values..."))
     (bmkp-set-tag-value-for-bookmarks marked tag value))
@@ -3242,7 +3260,9 @@ You can use completion to enter each tag, but you are not limited to
 choosing existing tags."
   (interactive (list (bmkp-read-tags-completing) 'MSG))
   (bmkp-bmenu-barf-if-not-in-menu-list)
-  (let ((marked                (bmkp-marked-bookmarks-only))
+  (let ((marked                (or (bmkp-marked-bookmarks-only)
+                                   (and (bookmark-bmenu-bookmark)
+                                        (list (bookmark-get-bookmark (bookmark-bmenu-bookmark))))))
         (bmk                   (bookmark-bmenu-bookmark))
         (bookmark-save-flag    (and (not bmkp-count-multi-mods-as-one-flag)
                                     bookmark-save-flag)) ; Save at most once, after `dolist'.
@@ -3263,12 +3283,16 @@ choosing existing tags."
 Hit `RET' to enter each tag, then hit `RET' again after the last tag.
 You can use completion to enter each tag."
   (interactive (let ((cand-tags       ()))
-                 (dolist (bmk  (bmkp-marked-bookmarks-only))
+                 (dolist (bmk  (or (bmkp-marked-bookmarks-only)
+                                   (and (bookmark-bmenu-bookmark)
+                                        (list (bookmark-get-bookmark (bookmark-bmenu-bookmark))))))
                    (setq cand-tags  (bmkp-set-union cand-tags (bmkp-get-tags bmk))))
                  (unless cand-tags (error "No tags to remove"))
                  (list (bmkp-read-tags-completing cand-tags t) 'MSG)))
   (bmkp-bmenu-barf-if-not-in-menu-list)
-  (let ((marked                   (bmkp-marked-bookmarks-only))
+  (let ((marked                   (or (bmkp-marked-bookmarks-only)
+                                      (and (bookmark-bmenu-bookmark)
+                                           (list (bookmark-get-bookmark (bookmark-bmenu-bookmark))))))
         (bmk                      (bookmark-bmenu-bookmark))
         (bookmark-save-flag       (and (not bmkp-count-multi-mods-as-one-flag)
                                        bookmark-save-flag)) ; Save at most once, after `dolist'.
@@ -3569,7 +3593,9 @@ sort order is marked first or last (`s >'), then re-sort."
   "Add tags that were copied from another bookmark to the marked bookmarks."
   (interactive (list 'MSG))
   (bmkp-bmenu-barf-if-not-in-menu-list)
-  (let ((marked              (bmkp-marked-bookmarks-only))
+  (let ((marked              (or (bmkp-marked-bookmarks-only)
+                                 (and (bookmark-bmenu-bookmark)
+                                      (list (bookmark-get-bookmark (bookmark-bmenu-bookmark))))))
         (bmk                 (bookmark-bmenu-bookmark))
         (bookmark-save-flag  (and (not bmkp-count-multi-mods-as-one-flag)
                                   bookmark-save-flag))) ; Save at most once, after `dolist'.
@@ -3585,7 +3611,9 @@ sort order is marked first or last (`s >'), then re-sort."
   "Replace tags for the marked bookmarks with tags copied previously."
   (interactive (list 'MSG))
   (bmkp-bmenu-barf-if-not-in-menu-list)
-  (let ((marked              (bmkp-marked-bookmarks-only))
+  (let ((marked              (or (bmkp-marked-bookmarks-only)
+                                 (and (bookmark-bmenu-bookmark)
+                                      (list (bookmark-get-bookmark (bookmark-bmenu-bookmark))))))
         (bmk                 (bookmark-bmenu-bookmark))
         (bookmark-save-flag  (and (not bmkp-count-multi-mods-as-one-flag)
                                   bookmark-save-flag))) ; Save at most once, after `dolist'.
@@ -4169,7 +4197,9 @@ The current bookmark list is then updated to reflect your edits."
                                   ;; Strip properties from name.
                                   (set-text-properties 0 (length bname) nil bname))
                                 bmk)
-                              (bmkp-marked-bookmarks-only))))
+                              (or (bmkp-marked-bookmarks-only)
+                                  (and (bookmark-bmenu-bookmark)
+                                       (list (bookmark-get-bookmark (bookmark-bmenu-bookmark))))))))
     (unless copied-bmks (error "No marked bookmarks"))
     (setq bmkp-edit-bookmark-records-number  (length copied-bmks))
     (bmkp-with-output-to-plain-temp-buffer bufname
@@ -4707,7 +4737,9 @@ With a prefix argument, show the internal definitions."
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (help-setup-xref (list #'bmkp-describe-bookmark-marked) (interactive-p))
   (with-output-to-temp-buffer "*Help*"
-    (dolist (bmk  (bmkp-marked-bookmarks-only))
+    (dolist (bmk  (or (bmkp-marked-bookmarks-only)
+                      (and (bookmark-bmenu-bookmark)
+                           (list (bookmark-get-bookmark (bookmark-bmenu-bookmark))))))
       (if defn
           (let* ((bname      (bmkp-bookmark-name-from-record bmk))
                  (help-text  (format "%s\n%s\n\n%s" bname (make-string (length bname) ?-)
