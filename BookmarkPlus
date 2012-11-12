@@ -271,10 +271,15 @@ makes it easy to update a nearby bookmark (e.g. relocate it).  With a [[numeric 
 
 * You can ''edit'' a bookmark: its name and file name/location, its tags, or its complete defining internal Lisp record.
 
-* The mode name in the mode line shows the number of bookmarks that
-are marked (`##>##') and the number that are flagged for deletion (`##D##').
+* The mode line shows the number of bookmarks that are marked (`##>##'), flagged for deletion (`##D##'), tagged (`t'), temporary (`X'), annotated (`a'), and modified (unsaved) (`##*##').  It also shows the current sort order.
 
+:: For each of the number indicators (e.g., the number marked):
 
+:: If the current line has the indicator (e.g. `##>##') and there
+are other lines with the same indicator that are listed after
+the current line, then the indicator shows `N/M', where ''N'' is
+the number indicated through the current line and ''M'' is the
+total number indicated.  Otherwise, it shows just `N'.
 
 
 
@@ -2513,9 +2518,11 @@ using '''`##s r##''''.  Also, repeating any of the main sort-order commands
 unsorted.
 
 [For a complex sort, which involves composing several sorting
-conditions, you can also use `##s C-r##' to reverse the order of
+conditions, you can also use '''`##s C-r##'''' to reverse the order of
 bookmark sorting groups or the order within each group (depending
-on whether `##s r##' is also used).  Be aware that this can be a bit
+on whether `##s r##' is also used).  Try it, for example, together with sorting by bookmark kind (`##s k##').
+
+Be aware that `##s C-r##' can be a bit
 unintuitive.  If it does not do what you expect or want, or if it
 confuses you, then don't use it ;-).  (`##s C-r##' has no noticeable
 effect on simple sorting.)]
