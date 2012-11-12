@@ -42,6 +42,20 @@ needed some fiddling with on my end:
 
      (define-key notmuch-show-mode-map (kbd "C-c C-c") 'notmuch-goto-message-in-gnus)
      
+== Expunging Deleted Mail ==
 
+The standard way to expunge all the emails tagged with "deleted" is to run:
+
+     notmuch search --output=files tag:deleted | xargs -l rm
+
+However this fails if the path to any of the files contains spaces. In this case you need something like:
+
+     notmuch search --output=files tag:deleted | awk '{ print "\"" $0 "\"" }' | tr '\n' '\0' | xargs -0 -l rm
+
+This works on GNU/Linux but I can't see why it should not work elsewhere. I don't know if there is a simpler way to do it. The best thing to do seems to put the above line followed by:
+
+     notmuch new
+
+in a shell script.
 ----
 CategoryMail
