@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Sun Nov 11 20:12:32 2012 (-0800)
+;; Last-Updated: Mon Nov 12 08:47:56 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 2306
+;;     Update #: 2307
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -4389,8 +4389,6 @@ For each number indication:
 
   (defun bmkp-bmenu-mode-line ()        ; This works, but it shows the line number also.
     "Set the mode line for buffer `*Bookmark List*'."
-    ;; (put 'mode-line-format 'safe-local-variable (lambda (IGNORE) t)) ; $$$$$$ Needed?
-    ;; (put 'mode-line-format 'risky-local-variable t)                  ; $$$$$$ Needed?
     (set (make-local-variable 'mode-name)         '(:eval (bmkp-bmenu-mode-line-string)))
     ;; It seems that the line number must be present, and not invisible, for dynamic updating
     ;; of the mode line when you move the cursor among lines.  Moving it way off to the right
