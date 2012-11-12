@@ -88,5 +88,10 @@ I've used:
 which in most cases is bound to M-r C-l C-l
 
 (note, recenter-top-bottom seems only to exhibit the desired behavior when invoked using a key binding)
+
+== View.el == 
+This seems to be built-in. Maybe it wasn't in the past.
+I use View-scroll-half-page-backward and View-scroll-half-page-forward from view.el
+
 ----
 CategoryDisplay
