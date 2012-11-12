@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Fri Nov  9 13:54:55 2012 (-0800)
+;; Last-Updated: Sun Nov 11 20:03:02 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 5966
+;;     Update #: 5972
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -442,8 +442,8 @@
 ;;    `bmkp-select-buffer-other-window', `bmkp-sequence-bookmark-p',
 ;;    `bmkp-set-tag-value-for-bookmarks', `bmkp-set-union',
 ;;    `bmkp-some', `bmkp-some-marked-p', `bmkp-some-tags-alist-only',
-;;    `bmkp-some-tags-regexp-alist-only', `bmkp-some-unmarked-p'
-;;    `bmkp-sort-omit', `bmkp-sound-jump',
+;;    `bmkp-some-tags-regexp-alist-only', `bmkp-some-unmarked-p',
+;;    `bmkp-sorting-description', `bmkp-sort-omit', `bmkp-sound-jump',
 ;;    `bmkp-specific-buffers-alist-only',
 ;;    `bmkp-specific-files-alist-only',
 ;;    `bmkp-string-less-case-fold-p', `bmkp-string-match-p',
@@ -2735,7 +2735,7 @@ If called from Lisp:
   ;; If an error has already occurred somewhere, the count will not be set, which is what we want.
   (setq bookmark-alist-modification-count  0
         bmkp-modified-bookmarks            ())
-  (bmkp-refresh/rebuild-menu-list))
+  (bmkp-refresh/rebuild-menu-list))     ; $$$$$$ Should this be done only when interactive?
 
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
@@ -3224,8 +3224,6 @@ With a prefix arg, edit the complete bookmark record (the
                                                              (not (equal new-bmk-name bookmark-name))))
            (changed-filename-p                          (and (not (equal new-filename ""))
                                                              (not (equal new-filename bookmark-filename)))))
-
-           
       (when (or changed-bmk-name-p  changed-filename-p)
         (when changed-bmk-name-p (bookmark-rename bookmark-name new-bmk-name 'BATCHP))
         (when changed-filename-p (bookmark-set-filename new-bmk-name new-filename))
@@ -5793,43 +5791,44 @@ using multi-sorting predicates."
                            (not (funcall final-pred b1 b2))
                          (funcall final-pred b1 b2))))))
 
-;; The message is only approximate.  The effect of `bmkp-reverse-multi-sort-p' is not
+
+;; The description returned is only approximate.  The effect of `bmkp-reverse-multi-sort-p' is not
 ;; always intuitive, but it can often be useful.  What's not always intuitive is the placement
-;; (the order) of bookmarks that are not sorted by the PREDs.
+;; (the order) of bookmarks that are not sorted by the predicates.
 ;;
+(defun bmkp-sorting-description (order)
+  "Return a string describing sort ORDER."
+  (concat
+   (if bmkp-sort-comparer
+       order
+     (concat (and order  (format "(%s) " order)) "turned OFF"))
+   (cond ((not bmkp-sort-comparer) nil)
+         ((not (and (consp bmkp-sort-comparer)  (consp (car bmkp-sort-comparer)))) ; Ordinary single pred.
+          (if bmkp-reverse-sort-p " (REVERSED)" ""))
+         ((not (cadr (car bmkp-sort-comparer))) ; Single predicate.
+          (if (or (and bmkp-reverse-sort-p  (not bmkp-reverse-multi-sort-p))
+                  (and bmkp-reverse-multi-sort-p  (not bmkp-reverse-sort-p)))
+              " (REVERSED)"
+            "")
+          ;; If we wanted to distinguish the two:
+          ;; (if (and bmkp-reverse-sort-p  (not bmkp-reverse-multi-sort-p))
+          ;;     "; REVERSED"
+          ;;   (if (and bmkp-reverse-multi-sort-p  (not bmkp-reverse-sort-p))
+          ;;       "; REVERSED +"
+          ;;     ""))
+          )
+         ;; At least two predicates.
+         ((and bmkp-reverse-sort-p  (not bmkp-reverse-multi-sort-p)) " (REVERSED)")
+         ((and bmkp-reverse-multi-sort-p  (not bmkp-reverse-sort-p)) " (each pred group reversed)")
+         ((and bmkp-reverse-multi-sort-p  bmkp-reverse-sort-p)       " (order of pred groups reversed)")
+         (t ""))))
+
 (defun bmkp-msg-about-sort-order (order &optional prefix-msg suffix-msg)
-  "Display a message mentioning the current sort ORDER and direction.
+  "Display a message mentioning sort ORDER and direction.
 Optional arg PREFIX-MSG is prepended to the constructed message, and
 terminated with a period.
 Similarly, SUFFIX-MSG is appended, after appending \".  \"."
-  (let ((msg  (if (not bmkp-sort-comparer)
-                  "Bookmarks NOT sorted"
-                (format "%s%s" (concat "Sorted " order)
-                        (if (not (and (consp bmkp-sort-comparer) ; Ordinary single predicate.
-                                      (consp (car bmkp-sort-comparer))))
-                            (if bmkp-reverse-sort-p "; REVERSED" "")
-                          (if (not (cadr (car bmkp-sort-comparer)))
-                              ;; Single PRED.
-                              (if (or (and bmkp-reverse-sort-p  (not bmkp-reverse-multi-sort-p))
-                                      (and bmkp-reverse-multi-sort-p  (not bmkp-reverse-sort-p)))
-                                  "; REVERSED"
-                                "")
-
-                            ;; In case we want to distinguish:
-                            ;; (if (and bmkp-reverse-sort-p  (not bmkp-reverse-multi-sort-p))
-                            ;;     "; reversed"
-                            ;;   (if (and bmkp-reverse-multi-sort-p  (not bmkp-reverse-sort-p))
-                            ;;       "; reversed +"
-                            ;;     ""))
-
-                            ;; At least two PREDs.
-                            (cond ((and bmkp-reverse-sort-p  (not bmkp-reverse-multi-sort-p))
-                                   "; REVERSED")
-                                  ((and bmkp-reverse-multi-sort-p  (not bmkp-reverse-sort-p))
-                                   "; each predicate group reversed")
-                                  ((and bmkp-reverse-multi-sort-p  bmkp-reverse-sort-p)
-                                   "; order of predicate groups reversed")
-                                  (t ""))))))))
+  (let ((msg  (concat "Sorting " (bmkp-sorting-description order))))
     (when prefix-msg (setq msg  (concat prefix-msg ".  " msg)))
     (when suffix-msg (setq msg  (concat msg ".  " suffix-msg)))
     (message msg)))
@@ -5839,9 +5838,8 @@ Similarly, SUFFIX-MSG is appended, after appending \".  \"."
 ;;  *** Sorting - Commands ***
 
 (defun bmkp-current-sort-order ()
-  "Current sort order or sort function, as a string suitable in a message."
-  (or (car (rassoc bmkp-sort-comparer bmkp-sort-orders-alist))  (format "%s" bmkp-sort-comparer)))
-
+  "Current sort order or sort function, as a string, or nil if none."
+  (car (rassoc bmkp-sort-comparer bmkp-sort-orders-alist)))
 
 ;;(@* "Sorting - General Predicates")
 ;;  *** Sorting - General Predicates ***
