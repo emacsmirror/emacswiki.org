@@ -46,7 +46,7 @@ needed some fiddling with on my end:
 
 The standard way to expunge all the emails tagged with "deleted" is to run:
 
-     notmuch search --output=files tag:deleted | xargs -l rm
+     notmuch search --output=files tag:deleted | xargs -L 1 rm
 
 However this fails if the path to any of the files contains spaces. In this case you need something like:
 
