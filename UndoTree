@@ -45,8 +45,11 @@ Showing the undo-tree visualizer, with some undo states stored in registers, and
 
 == Discussion ==
 
-(Add any comments here)
+Hi Toby! Long time no see ;) This is a very interesting package, at least from the viewpoint of cool factor. As someone who is kind of used to the standard undo (or undo/redo as some would call it) I wonder what the main benefits would be for me. Is there any real-world use cases in particular where this shines?
 
+Thanks!
+
+-- MaDa
 
 ----
 CategoryUndo
