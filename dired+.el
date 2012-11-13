@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Thu Nov  1 09:46:23 2012 (-0700)
+;; Last-Updated: Tue Nov 13 10:16:40 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 6159
+;;     Update #: 6161
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Doc URL: http://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -19,10 +19,8 @@
 ;;
 ;;   `bookmark', `bookmark+', `bookmark+-1', `bookmark+-bmu',
 ;;   `bookmark+-key', `bookmark+-lit', `cl', `dired', `dired+',
-;;   `dired-aux', `dired-x', `ediff-diff', `ediff-help',
-;;   `ediff-init', `ediff-merg', `ediff-mult', `ediff-util',
-;;   `ediff-wind', `ffap', `misc-fns', `pp', `pp+', `thingatpt',
-;;   `thingatpt+', `w32-browser'.
+;;   `dired-aux', `dired-x', `ffap', `misc-fns', `pp', `pp+',
+;;   `thingatpt', `thingatpt+', `w32-browser'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -2689,7 +2687,7 @@ In particular, inode number, number of hard links, and file size."
             (set (make-local-variable 'font-lock-defaults)
                  ;; Two levels.  Use 3-element list, since it is standard to have one more
                  ;; than the number of levels.  This is necessary for it to work with
-                 ;; font-menus(-da).el.
+                 ;; `font(-lock)-menus.el'.
                  '((dired-font-lock-keywords
                     dired-font-lock-keywords
                     diredp-font-lock-keywords-1)
