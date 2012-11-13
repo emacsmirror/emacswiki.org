@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 21 08:54:53 2000
 ;; Version: 21.0
-;; Last-Updated: Thu Aug 23 16:54:33 2012 (-0700)
+;; Last-Updated: Tue Nov 13 14:22:48 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 720
+;;     Update #: 824
 ;; URL: http://www.emacswiki.org/emacs-en/show-wspace.el
 ;; Doc URL: http://emacswiki.org/emacs/ShowWhiteSpace
 ;; Keywords: highlight, whitespace, characters, Unicode
@@ -133,13 +133,14 @@
 ;; Using `show-wspace.el' to highlight hard space and hyphen chars
 ;; requires turning off their default highlighting provided by vanilla
 ;; Emacs, that is, setting `nobreak-char-display' to nil.  This is
-;; done automatically by the functions defined here.  Similarly, when
-;; you turn off their font-lock highlighting, the vanilla highlighting
-;; is automatically restored: `nobreak-char-display' is reset to its
-;; last saved non-nil value.
+;; done automatically by the functions defined here.  When you turn
+;; off this font-lock highlighting, the vanilla Emacs highlighting is
+;; automatically restored.
 ;;
-;; NOTE: Emacs bug #12054 currently defeats the highlighting of hard
-;; spaces in Emacs 23+.
+;; That is, the value of variable `nobreak-char-display' is reset to
+;; its original value when `show-wspace.el' was loaded (`t' is the
+;; default value, so if you didn't change it prior to loading
+;; `show-wspace.el' then t is restored).
 ;;
 ;; NOTE: If you byte-compile this file in an older version of Emacs
 ;; (prior to Emacs 23) then the code for highlighting hard hyphens
@@ -216,9 +217,8 @@
 ;;
 ;; Internal variables defined here:
 ;;
-;;    `ws-highlight-hard-hyphens-p' (Emacs 23+),
-;;    `ws-highlight-hard-spaces-p', `ws-highlight-tabs-p',
-;;    `ws-highlight-trailing-whitespace-p',
+;;    `ws-highlight-hard-hyphens-p', `ws-highlight-hard-spaces-p',
+;;    `ws-highlight-tabs-p', `ws-highlight-trailing-whitespace-p',
 ;;    `ws--saved-nobreak-char-display'.
 ;;
 ;;
@@ -233,6 +233,17 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/11/13 dadams
+;;     ws-highlight-hard-hyphens-p, ws--saved-nobreak-char-display:
+;;       Define for all versions, so can use in tests.
+;;     ws(-dont)-highlight-(hard-spaces|trailing-whitespace):
+;;       Handle \u00a0 and \240 separately for diff versions.
+;;     ws-highlight-(hard-(hyphens|spaces)|trailing-whitespace):
+;;       Set nobreak-char-display to nil always.
+;;     ws-dont-highlight-(hard-(hyphens|spaces)|trailing-whitespace):
+;;       Reset nobreak-char-display only if not needed to be nil otherwise.
+;;     ws(-dont)-highlight-other-chars: Do not set/reset nobreak-char-display.
+;;     Everywhere: mention \u00a0, not just \240.
 ;; 2012/07/29 dadams
 ;;     ws-other-chars-defcustom-spec, ws-highlight-chars, ws-other-chars-font-lock-spec,
 ;;       ws-toggle-highlight-other-chars:
@@ -340,7 +351,8 @@ This includes tab, space, and hard (non-breaking) space characters."
 
 ;;;###autoload
 (defface ws-hard-space '((t (:background "Aquamarine")))
-  "*Face for highlighting non-breaking spaces (`?\240')in Font-Lock mode."
+  "*Face for highlighting non-breaking spaces (`?\u00a0')in Font-Lock mode.
+\(This is also ?\240.)"
   :group 'Show-Whitespace :group 'faces)
 
 (when (> emacs-major-version 22)
@@ -410,7 +422,7 @@ chars that are special within a regexp character alternative (i.e.,
   :type (ws-other-chars-defcustom-spec) :group 'Show-Whitespace)
 
 (defcustom ws-other-chars-font-lock-override 'append
-  "*How to highlighting for other chars interacts with existing highlighting.
+  "*How highlighting for other chars interacts with existing highlighting.
 The values correspond to the values for an OVERRIDE spec in
 `font-lock-keywords'.  See (elisp) `Search-based Fontification'.
 
@@ -433,23 +445,18 @@ This affects commands `ws-toggle-highlight-other-chars' and
 This includes tab, space, and hard (non-breaking) space characters.")
 
 (defvar ws-highlight-hard-spaces-p nil
-  "Non-nil means font-lock mode highlights non-breaking spaces (`?\240').
-Note: Emacs bug #12054 currently defeats the highlighting of hard
-spaces in Emacs 23+.")
+  "Non-nil means font-lock mode highlights non-breaking spaces (`?\u00a0').
+\(This is also ?\240.)")
 
-(when (> emacs-major-version 22)
-  (defvar ws-highlight-hard-hyphens-p nil
-    "Non-nil means font-lock mode highlights non-breaking hyphens (`?\u2011')."))
+(defvar ws-highlight-hard-hyphens-p nil
+  "Non-nil means font-lock mode highlights non-breaking hyphens (`?\u2011').")
 
 (defvar ws-highlight-other-chars-p nil
   "Non-nil means font-lock mode highlights the chars in `ws-other-chars'.")
 
-(when (boundp 'nobreak-char-display)
-  (defvar ws--saved-nobreak-char-display nobreak-char-display
-    "Saved value of `nobreak-char-display', so that it can be restored.
-Whenever you turn on `show-wspace' highlighting of hard spaces or hard
-hyphens, if the value of `nobreak-char-display' is non-nil then this
-is set to that value and `nobreak-char-display' is set to nil."))
+(defvar ws--saved-nobreak-char-display (and (boundp 'nobreak-char-display)
+                                            nobreak-char-display)
+  "Saved value of `nobreak-char-display', so that it can be restored.")
 
 ;;;###autoload
 (defun ws-highlight-chars (chars face &optional offp msgp)
@@ -573,22 +580,14 @@ highlight.  For example, if you mean to type `[:digit:]' but type
 (defalias 'toggle-highlight-hard-spaces 'ws-toggle-highlight-hard-spaces)
 ;;;###autoload
 (defun ws-toggle-highlight-hard-spaces (&optional msgp)
-  "Toggle highlighting of non-breaking space characters (`?\240').
-Uses face `ws-hard-space'.
-Note: Emacs bug #12054 currently defeats the highlighting of hard
-spaces in Emacs 23+."
+  "Toggle highlighting of non-breaking space characters (`?\u00a0').
+\(This is also ?\240.)
+Uses face `ws-hard-space'."
   (interactive "p")
   (setq ws-highlight-hard-spaces-p  (not ws-highlight-hard-spaces-p))
   (cond (ws-highlight-hard-spaces-p
-         ;; Do this in `ws-highlight-hard-spaces', instead:
-         ;; (when (and (boundp 'nobreak-char-display)  nobreak-char-display)
-         ;;   (setq ws--saved-nobreak-char-display  nobreak-char-display
-         ;;         nobreak-char-display            nil))
          (add-hook 'font-lock-mode-hook 'ws-highlight-hard-spaces))
         (t
-         ;; Do this in `ws-dont-highlight-hard-spaces', instead:
-         ;; (when (and (boundp 'nobreak-char-display)  (not nobreak-char-display))
-         ;;   (setq nobreak-char-display  ws--saved-nobreak-char-display))
          (remove-hook 'font-lock-mode-hook 'ws-highlight-hard-spaces)
          (ws-dont-highlight-hard-spaces)))
   (font-lock-mode) (font-lock-mode)
@@ -603,15 +602,8 @@ Uses face `ws-hyphen-space'."
     (interactive "p")
     (setq ws-highlight-hard-hyphens-p  (not ws-highlight-hard-hyphens-p))
     (cond (ws-highlight-hard-hyphens-p
-           ;; Do this in `ws-highlight-hard-hyphens', instead:
-           ;; (when (and (boundp 'nobreak-char-display)  nobreak-char-display)
-           ;;   (setq ws--saved-nobreak-char-display  nobreak-char-display
-           ;;         nobreak-char-display            nil))
            (add-hook 'font-lock-mode-hook 'ws-highlight-hard-hyphens))
           (t
-           ;; Do this in `ws-dont-highlight-hard-hyphens', instead:
-           ;; (unless nobreak-char-display
-           ;;   (setq nobreak-char-display  ws--saved-nobreak-char-display))
            (remove-hook 'font-lock-mode-hook 'ws-highlight-hard-hyphens)
            (ws-dont-highlight-hard-hyphens)))
     (font-lock-mode) (font-lock-mode)
@@ -628,15 +620,8 @@ Uses face `ws-hyphen-space'."
     (error "No chars in `ws-other-chars' to highlight"))
   (setq ws-highlight-other-chars-p  (not ws-highlight-other-chars-p))
   (cond (ws-highlight-other-chars-p
-         ;; Do this in `ws-highlight-other-chars', instead:
-         ;; (when (and (boundp 'nobreak-char-display)  nobreak-char-display)
-         ;;   (setq ws--saved-nobreak-char-display  nobreak-char-display
-         ;;         nobreak-char-display            nil))
          (add-hook 'font-lock-mode-hook 'ws-highlight-other-chars))
         (t
-         ;; Do this in `ws-dont-highlight-other-chars', instead:
-         ;; (when (and (boundp 'nobreak-char-display)  (not nobreak-char-display))
-         ;;   (setq nobreak-char-display  ws--saved-nobreak-char-display))
          (remove-hook 'font-lock-mode-hook 'ws-highlight-other-chars)
          (ws-dont-highlight-other-chars)))
   (font-lock-mode) (font-lock-mode)
@@ -647,7 +632,7 @@ Uses face `ws-hyphen-space'."
                 (cond ((and (fboundp 'charsetp)  (charsetp chars))
                        (format "character set `%s'" chars))
                       ((and (consp chars)
-                        (if (fboundp 'characterp)
+                            (if (fboundp 'characterp)
                                 (characterp (car chars))
                               (integerp (car chars)))
                             (if (fboundp 'characterp)
@@ -685,34 +670,34 @@ Uses face `ws-trailing-whitespace'."
   (font-lock-add-keywords nil '(("[\t]+" (0 'ws-tab t))) 'APPEND))
 
 (defun ws-highlight-hard-spaces ()
-  "Highlight hard (non-breaking) space characters (`?\240').
+  "Highlight hard (non-breaking) space characters (`?\u00a0').
+\(This is also ?\240.)
 This also sets `nobreak-char-display' to nil, to turn off its
-low-level, vanilla highlighting.  It saves the previous value of
-`nobreak-char-display' in `ws--saved-nobreak-char-display'.
-
-Note: Emacs bug #12054 currently defeats the highlighting of hard
-spaces in Emacs 23+."
-  (when (and (boundp 'nobreak-char-display)  nobreak-char-display)
-    (setq ws--saved-nobreak-char-display  nobreak-char-display
-          nobreak-char-display            nil))
-  (font-lock-add-keywords nil '(("[\240]+" (0 'ws-hard-space t))) 'APPEND))
+low-level, vanilla highlighting."
+  (when (boundp 'nobreak-char-display) (setq nobreak-char-display  nil))
+  (if (> emacs-major-version 22)
+      (font-lock-add-keywords nil '(("[\u00a0]+" (0 'ws-hard-space t))) 'APPEND)
+    (font-lock-add-keywords nil '(("[\240]+" (0 'ws-hard-space t))) 'APPEND)))
 
 (when (> emacs-major-version 22)
   (defun ws-highlight-hard-hyphens ()
     "Highlight hard (non-breaking) hyphen characters (`?\u2011').
 This also sets `nobreak-char-display' to nil, to turn off its
-low-level, vanilla highlighting.  It saves the previous value of
-`nobreak-char-display' in `ws--saved-nobreak-char-display'."
-    (when (and (boundp 'nobreak-char-display)  nobreak-char-display)
-      (setq ws--saved-nobreak-char-display  nobreak-char-display
-            nobreak-char-display            nil))
+low-level, vanilla highlighting."
+    (when (boundp 'nobreak-char-display) (setq nobreak-char-display  nil))
     (font-lock-add-keywords nil '(("[\u2011]+" (0 'ws-hard-hyphen t))) 'APPEND)))
 
 (defun ws-highlight-trailing-whitespace ()
   "Highlight whitespace characters at line ends.
-This includes tab, space, and hard (non-breaking) space characters."
-  (font-lock-add-keywords
-   nil '(("[\240\040\t]+$" (0 'ws-trailing-whitespace t))) 'APPEND))
+This includes tab, space, and hard (non-breaking) space characters.
+This also sets `nobreak-char-display' to nil, to turn off the
+low-level, vanilla highlighting of hard spaces."
+  (when (boundp 'nobreak-char-display) (setq nobreak-char-display  nil))
+  (if (> emacs-major-version 22)
+      (font-lock-add-keywords
+       nil '(("[\u00a0\040\t]+$" (0 'ws-trailing-whitespace t))) 'APPEND)
+    (font-lock-add-keywords
+     nil '(("[\240\040\t]+$" (0 'ws-trailing-whitespace t))) 'APPEND)))
 
 ;; These are no-ops for Emacs 20, 21:
 ;; `font-lock-remove-keywords' is not defined, and we don't need to use it.
@@ -722,22 +707,25 @@ This includes tab, space, and hard (non-breaking) space characters."
     (font-lock-remove-keywords nil '(("[\t]+" (0 'ws-tab t))))))
 
 (defun ws-dont-highlight-hard-spaces ()
-  "Do not highlight hard (non-breaking) space characters (`?\240').
-This also resets `nobreak-char-display' to its saved value in
-`ws--saved-nobreak-char-display', in order to restore its low-level,
-vanilla highlighting."
-  (when (and (boundp 'nobreak-char-display)  (not nobreak-char-display))
+  "Do not highlight hard (non-breaking) space characters (`?\u00a0').
+\(This is also ?\240.)
+If no other `ws-*' highlighting of hard spaces or hard hyphens is in
+effect, this also restores `nobreak-char-display' to its original
+value."
+  (unless (or ws-highlight-trailing-whitespace-p  ws-highlight-hard-hyphens-p)
     (setq nobreak-char-display  ws--saved-nobreak-char-display))
   (when (fboundp 'font-lock-remove-keywords)
-    (font-lock-remove-keywords nil '(("[\240]+" (0 'ws-hard-space t))))))
+    (if (> emacs-major-version 22)
+        (font-lock-remove-keywords nil '(("[\u00a0]+" (0 'ws-hard-space t))))
+      (font-lock-remove-keywords nil '(("[\240]+" (0 'ws-hard-space t)))))))
 
 (when (> emacs-major-version 22)
   (defun ws-dont-highlight-hard-hyphens ()
-    "Do not highlight hard (non-breaking) hyphen characters (`?\u2011').
-This also resets `nobreak-char-display' to its saved value in
-`ws--saved-nobreak-char-display', in order to restore the low-level,
-vanilla highlighting."
-    (unless nobreak-char-display
+    "Stop highlighting hard (non-breaking) hyphen characters (`?\u2011').
+If no other `ws-*' highlighting of hard spaces or hard hyphens is in
+effect, this also restores `nobreak-char-display' to its original
+value."
+    (unless (or ws-highlight-trailing-whitespace-p  ws-highlight-hard-spaces-p)
       (setq nobreak-char-display  ws--saved-nobreak-char-display))
     (when (fboundp 'font-lock-remove-keywords)
       (font-lock-remove-keywords nil '(("[\u2011]+" (0 'ws-hard-hyphen t)))))))
@@ -746,25 +734,12 @@ vanilla highlighting."
   "Highlight CHARS using FACE.
 CHARS is a list of character specifications acceptable as a value of
 `ws-other-chars'.  It defaults to the value of `ws-other-chars'.
-FACE defaults to face `ws-other-char'.
-
-This also sets `nobreak-char-display' to nil, to turn off its
-low-level, vanilla highlighting.  It saves the previous value of
-`nobreak-char-display' in `ws--saved-nobreak-char-display'."
-  (when (and (boundp 'nobreak-char-display)  nobreak-char-display)
-    (setq ws--saved-nobreak-char-display  nobreak-char-display
-          nobreak-char-display            nil))
+FACE defaults to face `ws-other-char'."
   (font-lock-add-keywords nil (ws-other-chars-font-lock-spec chars face) 'APPEND))
 
 (defun ws-dont-highlight-other-chars (&optional chars face)
   "Do not highlight CHARS using FACE.  That is, unhighlight any such.
-CHARS and FACE are the same as for `ws-highlight-other-chars'.
-
-This also resets `nobreak-char-display' to its saved value in
-`ws--saved-nobreak-char-display', in order to restore its low-level,
-vanilla highlighting."
-  (when (and (boundp 'nobreak-char-display)  (not nobreak-char-display))
-    (setq nobreak-char-display  ws--saved-nobreak-char-display))
+CHARS and FACE are the same as for `ws-highlight-other-chars'."
   (when (fboundp 'font-lock-remove-keywords)
     (font-lock-remove-keywords nil (ws-other-chars-font-lock-spec chars face))))
 
@@ -822,10 +797,18 @@ CHARS and FACE are the same as for `ws-highlight-other-chars'."
 
 (defun ws-dont-highlight-trailing-whitespace ()
   "Do not highlight whitespace characters at line ends.
-See also `ws-highlight-trailing-whitespace'."
+See also `ws-highlight-trailing-whitespace'.
+If no other `ws-*' highlighting of hard spaces or hard hyphens is in
+effect, this also restores `nobreak-char-display' to its original
+value."
+  (unless (or ws-highlight-hard-spaces-p  ws-highlight-hard-hyphens-p)
+    (setq nobreak-char-display  ws--saved-nobreak-char-display))
   (when (fboundp 'font-lock-remove-keywords)
-    (font-lock-remove-keywords
-     nil '(("[\240\040\t]+$" (0 'ws-trailing-whitespace t))))))
+    (if (> emacs-major-version 22)
+        (font-lock-remove-keywords
+         nil '(("[\u00a0\040\t]+$" (0 'ws-trailing-whitespace t))))
+      (font-lock-remove-keywords
+       nil '(("[\240\040\t]+$" (0 'ws-trailing-whitespace t)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 
