@@ -40,6 +40,8 @@ With `C-z' content of file is displayed without quitting anything session.
 
 == Comparison of Approaches ==
 
+* [[http://marmalade-repo.org/packages/find-file-in-repository|FindFileInRepository]] is the only approach that takes direct advantage of version control systems such as git, mercurial and others.
+
 * [[Icicles]] is the only approach that does not require you to use an operating-system command such as `find' or `locate'.
 
 * [[Icicles]] is the only approach that lets you save a cache of file names persistently. In Icicles, you can have any number of cache files, and they can contain any strings to use as completion candidates -- you are not limited to file names.
