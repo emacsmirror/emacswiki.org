@@ -4,8 +4,16 @@ its presence in the function definition indicates that interactive calling is
 permitted.  Its argument controls the reading of the function arguments in an
 interactive call.
 
-See also UniversalArgument, InteractiveKeybinding, LambdaExpression.
+See also:
 
+* [[Manual:Using Interactive]]
+* UniversalArgument
+* InteractiveKeybinding
+* LambdaExpression.
+
+
+
+== Using `interactive' with a String Argument ==
 
 Here is a simple example defining a command that displays a message:
 
@@ -33,7 +41,42 @@ To use multiple arguments, separate their `interactive' entries with a newline:
       (dotimes (i num)
         (insert (format "Hello %s!\n" someone))))
 
-For an example of passing a Lisp form to `interactive' rather than a string, see the example command at TrabbPardoKnuth.
+
+
+== Using `interactive' with a Non-String Sexp Argument ==
+
+Instead of passing a literal string argument to `interactive', you can pass it an EmacsLisp [[sexp]] that is evaluated when the [[command]] is called, to produce a list of the actual arguments.
+
+This is useful when you need to do more than is offered by the predefined `interactive' string constructs.
+
+To get the effect of the string constructs `P' and `p', respectively, use [[variable]] `current-prefix-arg' and function `prefix-numeric-value' applied to that variable.
+
+To get the effect of `interactive' string codes that read user input, use Lisp functions that read input, such as `read-buffer', `read-string', and `completing-read'.
+
+The following pairs of `interactive' specs are equivalent:
+
+  (defun bar (arg)
+    (interactive "p")
+    ...)
+
+  (defun bar (arg)
+    (interactive
+      (list (prefix-numeric-value current-prefix-arg))
+    ...)
+
+  (defun foo (arg buf)
+    (interactive "P\nbBuffer: ")
+    ...)
+
+  (defun foo (arg buf)
+    (interactive
+      (list current-prefix-arg
+            (read-buffer "Buffer: " (current-buffer) t)))
+    ...)
+
+
+
+
 
 ----
 CategoryCode
