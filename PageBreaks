@@ -13,6 +13,7 @@ You can show page breaks other than as the text ##^L##.
 * PrettyControlL -- minor mode configurable to almost anything you want
 * OverlayControlL -- with an overlay and font-lock
 * [http://user42.tuxfamily.org/formfeed-hline/index.html formfeed-hline.el] -- minor mode for a line <code>^L------</code>
+* [https://github.com/purcell/page-break-lines] -- display page breaks as horizontal lines, using an approach like that below.
 
 === Display as a horizontal line, using a display table ===
 
