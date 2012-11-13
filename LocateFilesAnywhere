@@ -2,8 +2,6 @@ This page is about different ways to locate a file anywhere on your file system.
 
 Emacs command `find-file' (`C-x C-f') finds a file within a given directory -- you can change directory, but only one directory is searched at a time. ''What do you do if you don't know what directory to search?'' The answer is here.
 
-* [[http://marmalade-repo.org/packages/find-file-in-repository|FindFileInRepository]] autocompletes files inside of projects. It uses git/mercurial/etc to provide fast auto-completions, and automatically ignores files specified in .gitignore/.hgignore, etc. Currently supports git, mercurial, darcs, bazaar, monotone and svn.
-
 * Unix or GNU/Linux `find' command -- Use `find' from within Emacs -- commands `find-dired', `find-name-dired'. See node "Dired and `find'" in the EmacsManual.
 
 ** Library <tt>[[find-dired+.el]]</tt> adds a '''Run find Command''' submenu to the '''Dir''' menu of DiredPlus, with enhanced versions of the Emacs `find-*dired' commands.
@@ -18,29 +16,27 @@ Emacs command `find-file' (`C-x C-f') finds a file within a given directory -- y
 
 ** LocateMode -- library ##gse-locate.el##.
 
+* [[Everything]] -- Bridge to MS Windows desktop-search engine Everything: [http://www.voidtools.com/]
+
+* FileNameCache -- You load file names into a (non-persistent) cache, which you can subsequently use for finding files with `find-file'. See section "File Name Cache" in the EmacsManual
+
+* [[http://marmalade-repo.org/packages/find-file-in-repository|FindFileInRepository]] -- Autocomplete file names inside of projects. Uses ##git/mercurial/etc## to provide fast auto-completion. Automatically ignores files specified in ##.gitignore/.hgignore##, etc. Supports git, mercurial, darcs, bazaar, monotone, and svn.
+
+* [[gds]] -- Uses Google Desktop Search to find files to open. Current interfaces to the hits are `iswitchb' and `dired'.
+
+* <tt>[[glimpse.el]]</tt> -- Search for files with [[Glimpse]]
 
 * [[Icicles - File-Name Input]] -- Provides '''[[Icicles]]''' [[regexp]] [[completion]] for [[command]]s like `find-file'. You can match any part(s) of a file name, including parts of any of its ancestor directories. No need for another, OS program, such as `find' or `locate', but if you have `locate' then '''Icicles''' takes advantage of it. Match also against file mofication date. [[Icicles - Fuzzy Completion|Fuzzy completion]] too.
 
 * [[Icicles - Persistent Completions]] -- Save a set of completion candidates persistently. Create a persistent image of all of the files in your file system. Retrieve it quickly anytime, to find a file. 
 
-* [[Everything]] -- Bridge to MS Windows desktop-search engine [[http://www.voidtools.com/|Everything]] 
-
-* FileNameCache -- You load file names into a (non-persistent) cache, which you can subsequently use for finding files with `find-file'. See section "File Name Cache" in the EmacsManual
-
-* [[gds]] -- Uses Google Desktop Search to find files to open. Current interfaces to the hits are `iswitchb' and `dired'.
-
-* [[Glimpse]] -- Search for files with glimpse
-
-* [[Anything]] -- `M-x anything-locate', narrow the list by typing some patterns(multiple patterns are space-delimited string),
-select with up/down/pgup/pgdown/C-p/C-n/C-v/M-v, choose with enter,
-With `TAB' actions can be selected if the selected file has more than one possible action.
-With `C-z' content of file is displayed without quitting anything session.
-
 
 
 == Comparison of Approaches ==
 
-* [[http://marmalade-repo.org/packages/find-file-in-repository|FindFileInRepository]] is the only approach that takes direct advantage of version control systems such as git, mercurial and others.
+* All of the approaches let you glob file names (use shell wildcards).
+
+* [[http://marmalade-repo.org/packages/find-file-in-repository|FindFileInRepository]] is the only approach that takes advantage of version control systems such as git, mercurial and others.
 
 * [[Icicles]] is the only approach that does not require you to use an operating-system command such as `find' or `locate'.
 
@@ -50,7 +46,6 @@ With `C-z' content of file is displayed without quitting anything session.
 
 * [[Icicles]] is the only approach that lets you also find files by (regexp) matching last modification date. 
 
-* All of the approaches let you glob file names (use shell wildcards).
 
 
 ----
