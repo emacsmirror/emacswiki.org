@@ -7,25 +7,23 @@
 ;; Copyright (C) 1995-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Sep 12 15:54:33 1995
 ;; Version: 20.0
-;; Last-Updated: Sun Feb 26 11:17:48 2012 (-0800)
+;; Last-Updated: Tue Nov 13 10:38:38 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 2165
+;;     Update #: 2173
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/emacs-init.el
 ;; Keywords: init, .emacs, _emacs, dotemacs
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `advice', `advice-preload', `ange-ftp', `appt', `apropos',
-;;   `apropos+', `apropos-fn+var', `assoc', `autofit-frame', `avoid',
+;;   `advice', `advice-preload', `ange-ftp', `apropos', `apropos+',
+;;   `apropos-fn+var', `assoc', `autofit-frame', `avoid',
 ;;   `backquote', `bookmark', `bookmark+', `bookmark+-1',
 ;;   `bookmark+-bmu', `bookmark+-key', `bookmark+-lit',
-;;   `bookmark+-mac', `browse-kill-ring', `browse-kill-ring+',
-;;   `buff-menu+', `bytecomp', `cal-dst', `cal-julian', `cal-menu',
-;;   `cal-opts', `cal-persia', `calendar', `calendar+', `chistory',
-;;   `cl', `color-moccur', `comint', `compile', `compile+20',
-;;   `compile-20', `cus-edit', `cus-edit+', `cus-face', `cus-load',
-;;   `cus-start', `custom', `cygwin-mount', `diary-lib', `dired',
+;;   `browse-kill-ring', `browse-kill-ring+', `buff-menu+',
+;;   `chistory', `cl', `color-moccur', `comint', `compile',
+;;   `compile+20', `compile-20', `cus-edit', `cus-edit+', `cus-face',
+;;   `cus-load', `cus-start', `custom', `cygwin-mount', `dired',
 ;;   `dired+', `dired-aux', `dired-details', `dired-details+',
 ;;   `dired-sort-menu', `dired-sort-menu+', `dired-x', `doremi',
 ;;   `doremi-cmd', `doremi-frm', `easymenu', `ediff', `ediff+',
@@ -34,28 +32,27 @@
 ;;   `em-joc', `emacsbug', `eshell-auto', `eyedropper', `facemenu',
 ;;   `facemenu+', `faces', `faces+', `ffap', `ffap-', `files+',
 ;;   `find-dired', `find-dired+', `find-dired-', `finder', `finder+',
-;;   `finder-inf', `fit-frame', `font-lock', `font-menus', `frame',
-;;   `frame+', `frame-cmds', `frame-fns', `fuzzy', `fuzzy-match',
-;;   `header2', `help+20', `hexrgb', `hide-comnt', `highlight',
-;;   `icicles', `icicles-cmd1', `icicles-cmd2', `icicles-face',
-;;   `icicles-fn', `icicles-mcmd', `icicles-mode', `icicles-opt',
-;;   `icicles-var', `icomplete', `icomplete+', `image-dired',
-;;   `imenu', `imenu+', `info', `info+', `isearch+', `iso-transl',
-;;   `kmacro', `lacarte', `levenshtein', `lib-requires',
-;;   `lisp-float-type', `lisp-mnt', `loadhist', `local-lpr',
-;;   `local-ps-print', `lpr', `ls-lisp', `ls-lisp+',
+;;   `finder-inf', `fit-frame', `font-lock', `font-lock-menus',
+;;   `frame-cmds', `frame-fns', `fuzzy', `fuzzy-match', `header2',
+;;   `help+20', `hexrgb', `hide-comnt', `highlight', `icicles',
+;;   `icicles-cmd1', `icicles-cmd2', `icicles-face', `icicles-fn',
+;;   `icicles-mcmd', `icicles-mode', `icicles-opt', `icicles-var',
+;;   `icomplete', `icomplete+', `image-dired', `imenu', `imenu+',
+;;   `info', `info+', `isearch+', `iso-transl', `kmacro', `lacarte',
+;;   `levenshtein', `lib-requires', `lisp-mnt', `loadhist',
+;;   `local-lpr', `local-ps-print', `lpr', `ls-lisp', `ls-lisp+',
 ;;   `ls-lisp-verbosity', `menu-bar', `menu-bar+', `misc-cmds',
-;;   `misc-fns', `mkhtml', `mkhtml-htmlize', `moccur-edit', `mouse',
-;;   `mouse+', `mouse3', `mwheel', `naked', `occur-schroeder',
-;;   `oneonone', `paren', `pcmpl-auto', `pp', `pp+', `pp-c-l',
-;;   `printing', `ps-print', `regexp-opt', `replace+', `ring',
-;;   `ring+', `savehist-20+', `second-sel', `sendmail', `setup',
-;;   `setup-cygwin', `setup-keys', `simple+', `solar', `speedbar',
-;;   `start', `start-opt', `strings', `swiss-move', `synonyms',
-;;   `thing-cmds', `thingatpt', `thingatpt+', `thumb-frm', `timer',
-;;   `timer+', `unaccent', `vc', `vc+', `vc-', `vc-hooks',
-;;   `vc-hooks+', `w32-browser', `w32browser-dlgopen', `wid-edit',
-;;   `wid-edit+', `widget', `wimpy-del', `window+', `zoom-frm'.
+;;   `misc-fns', `moccur-edit', `mouse', `mouse+', `mouse3',
+;;   `mwheel', `naked', `occur-schroeder', `oneonone', `paren',
+;;   `pcmpl-auto', `pp', `pp+', `pp-c-l', `printing', `ps-print',
+;;   `regexp-opt', `replace+', `ring', `ring+', `savehist-20+',
+;;   `second-sel', `sendmail', `setup', `setup-cygwin', `setup-keys',
+;;   `simple+', `speedbar', `start', `start-opt', `strings',
+;;   `subr-21', `swiss-move', `synonyms', `thing-cmds', `thingatpt',
+;;   `thingatpt+', `thumb-frm', `timer', `timer+', `unaccent', `vc',
+;;   `vc+', `vc-', `vc-hooks', `vc-hooks+', `w32-browser',
+;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget',
+;;   `wimpy-del', `window+', `zoom-frm'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -438,9 +435,9 @@
 ;;;     "~/drews-lisp-20")                    ; non-Windows path
 
 
-;;; UNCOMMENT THIS TO DEBUG TROUBLE GETTING EMACS UP AND RUNNING.
-;;; (setq debug-on-error t)
-
+;;; COMMENT THESE OUT IF YOU DO NOT WANT TO DEBUG EMACS
+(setq debug-on-error t)
+(setq byte-compile-debug t)
 
 ;;; UNCOMMENT THIS & REPLACE "XXX" HERE BY YOUR USER (LOGIN) NAME.
 ;;; This inhibits the initial startup echo area message.
@@ -477,10 +474,12 @@
 (setq delete-selection-mode t)          ; Use delete-selection mode.
 (setq message-log-max 2000)
 
-(defvar mouse-1-click-follows-link)     ; Quite byte-compiler.
+(defvar mouse-1-click-follows-link)     ; Quiet the byte-compiler.
 (when (boundp 'mouse-1-click-follows-link) ; Do not use mouse-1 to follow links.
   (setq mouse-1-click-follows-link nil))   ; Others to consider: 100, `double'.  Default is bad.
 
+;;; Restore sane mouse behavior before Emacs 23.3 / Emacs 24 "improvement" to fit X Window.
+(global-set-key [mouse-2] 'mouse-yank-at-click)
 
 ;;; COMMENT THIS OUT IF YOU DO *NOT* WANT "SPECIAL" BUFFERS TO BE IN
 ;;; SEPARATE FRAMES ("Special" buffers are those, such as *grep*,
@@ -650,9 +649,10 @@
 (when (and (eq system-type 'windows-nt)  (require 'cygwin-mount nil t))
   (require 'setup-cygwin nil t))
 
-;;; COMMENT THIS OUT IF YOU WANT Windows, NOT Emacs, to use M-TAB.
-(when (fboundp 'w32-register-hot-key) (w32-register-hot-key [M-tab]))
-
+;;; COMMENT THIS OUT IF YOU WANT MS Windows, NOT Emacs, to use `M-TAB' or `M-S-TAB'.
+(when (fboundp 'w32-register-hot-key)
+  (w32-register-hot-key [M-tab])
+  (w32-register-hot-key [M-S-tab]))
 
 ;;; COMMENT THIS OUT IF YOU DO *NOT* WANT THE CUSTOMIZATIONS IN library `start-opt'.
 ;;; The following setup assignments are done in file `start-opt.elc'.
