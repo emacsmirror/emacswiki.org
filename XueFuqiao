@@ -1,18 +1,23 @@
 == About Me ==
 I use Emacs.
 
-My name is Xue Fuqiao.  I have been a GNU/Linux user since 2008.  I've been an [[Emacsite]] since 2009 and began to write programs in
-EmacsLisp since 2011.  Started with [[XEmacs]], switched to
-[[SXEmacs]], back to XEmacs, and now I'm using GnuEmacs and Guile-based Emacs. I don't like using the Emacs
-Lisp package manager.  Instead, I like install additional Lisp
-packages by hand, which is flexible.  I prefer to learn new things
-from reference manuals, instead of tutorials.  My favorite font is
-[http://www.proggyfonts.com proggy_tiny]. Currently I use GNU Emacs on
-a laptop with a ColemakKeyboard.
+My name is Xue Fuqiao.  I have been a GNU/Linux user since 2008.
+I've been an [[Emacsite]] since 2009 and began to write programs
+in EmacsLisp since 2011.  Started with [[XEmacs]], switched to
+[[SXEmacs]], back to XEmacs, and now I'm using GnuEmacs and
+GuileEmacs.  I don't like using the Emacs Lisp package manager.
+Instead, I like install additional Lisp packages by hand, which
+is flexible.  I prefer to learn new things from reference
+manuals, instead of tutorials.  My favorite font is
+[http://www.proggyfonts.com proggy_tiny]. Currently I use GNU
+Emacs on a laptop with a ColemakKeyboard.
 
-I'm a software developer and software freedom activist.  And I’m currently a student of [http://www.ncut.edu.cn NCUT].  My major is Communication Engineering.
+I'm a software developer and software freedom activist.  And I’m
+currently a student of [http://www.ncut.edu.cn NCUT].  My major
+is Communication Engineering.
 
-I'm a [http://www.fsf.org/free-software-supporter/ Free Software Supporter].
+I'm a [http://www.fsf.org/free-software-supporter/ Free Software
+Supporter].
 
 You can contact me using xfq [PERIOD] free [AT] gmail [DOT] com
 
@@ -85,8 +90,6 @@ Coming soon.
 
 * xml-rpc
 
-* [[nXhtml]]
-
 * [[DVC]]
 
 * Org2blog/atom
@@ -109,6 +112,8 @@ Coming soon.
 
 * OrgMode
 
+* nXhtml
+
 * AbbrevMode
 
 * TrampMode
@@ -130,6 +135,8 @@ Coming soon.
 * [[BBDB]]
 
 * wuxch-bookmark.el
+
+* OAuthLibrary
 
 * '''[[Icicles]]'''
 
@@ -154,6 +161,7 @@ Coming soon.
 * GPL/GFDL
 * Trackball
 * GNU Bazaar
+* GDB
 * Autoconf
 * Lisp
 * LaTeX
