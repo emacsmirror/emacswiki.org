@@ -2,6 +2,8 @@ This page is about different ways to locate a file anywhere on your file system.
 
 Emacs command `find-file' (`C-x C-f') finds a file within a given directory -- you can change directory, but only one directory is searched at a time. ''What do you do if you don't know what directory to search?'' The answer is here.
 
+* [[http://marmalade-repo.org/packages/find-file-in-repository|FindFileInRepository]] autocompletes files inside of projects. It uses git/mercurial/etc to provide fast auto-completions, and automatically ignores files specified in .gitignore/.hgignore, etc. Currently supports git, mercurial, darcs, bazaar, monotone and svn.
+
 * Unix or GNU/Linux `find' command -- Use `find' from within Emacs -- commands `find-dired', `find-name-dired'. See node "Dired and `find'" in the EmacsManual.
 
 ** Library <tt>[[find-dired+.el]]</tt> adds a '''Run find Command''' submenu to the '''Dir''' menu of DiredPlus, with enhanced versions of the Emacs `find-*dired' commands.
