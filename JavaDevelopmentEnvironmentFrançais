@@ -9,7 +9,7 @@ Le "Java Development Environment for Emacs" (Environnement de
 Développement Java pour Emacs) est un paquetage logiciel servant
 d'interface entre Emacs et les outils de développement Java en
 ligne de commande (par exemple le JDK de
-<nowiki>JavaSoft</nowiki>). Les fonctions de JDEE comprennent:
+<nowiki>JavaSoft</nowiki>). Les fonctions de JDEE comprennent:a
 
 * menu JDEE avec des commandes pour la compilation, le lancement
   d'applications, le débogage, la navigation, la gestion de projets,
