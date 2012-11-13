@@ -1,7 +1,7 @@
 also known as [::legumbre] on #emacs
  
-I use emacs. A lot. I use it for mail (gnus), IM (erc, bitlbee), gtd (org-mode) and pretty much everything else.
-I use it to write c, obj-c, elisp and vhdl. 
+I use emacs. A lot. I use it for mail (Gnus), IM (erc, bitlbee), gtd (org-mode) and pretty much everything else.
+I use it to write C, Objective-C, Emacs Lisp, lua and VHDL. 
 
 == Misc stuff I can't live without ==
 [:misc-stuff]
@@ -18,7 +18,7 @@ I use it to write c, obj-c, elisp and vhdl.
 == Objc coding tips and customizations ==
 [:objc-stuff]
 
-I've been coding obj-c lately, here are some customizations and tips that make life easier.
+I've been coding objc lately, here are some customizations and tips that make life easier.
 
    ;;; ----------------------------------------------------------------
    ;;; insert a pair of square brackets
