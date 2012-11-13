@@ -7,9 +7,9 @@
 ;; Copyright (C) 1995-2012, Drew Adams, all rights reserved.
 ;; Created: Wed Aug  2 11:12:24 1995
 ;; Version: 21.1
-;; Last-Updated: Tue Oct 23 14:51:18 2012 (-0700)
+;; Last-Updated: Tue Nov 13 10:22:28 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 2949
+;;     Update #: 2952
 ;; URL: http://www.emacswiki.org/emacs-en/start.el
 ;; Keywords: abbrev, internal, local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -82,6 +82,8 @@
 ;;
 ;; Change Log:
 ;;
+;; 2012/11/13 dadams
+;;     font-lock-menus.el replaces font-menus-da.el.
 ;; 2012/10/23 dadams
 ;;     Applied renaming: imenu-add-defs-to-menubar to imenup-add-defs-to-menubar.
 ;; 2012/08/26 dadams
@@ -606,9 +608,9 @@ See the Dired-X Info pages (type \\[info]) for information on this package.")
 (require 'local-ps-print nil t)         ; Local settings for PostScript printing.
 (require 'printing nil t)               ; Printing from menu bar etc.
 
-;; `font-menus': Additional font menus.  Load before `facemenu+'.
-(require 'font-menus-da nil t)          ; My version - works also for Emacs 24.
-(when (and (not (featurep 'font-menus-da))
+;; `font(-lock)-menus': Additional font menus.  Load before `facemenu+'.
+(require 'font-lock-menus nil t)        ; My version - works also for Emacs 24.
+(when (and (not (featurep 'font-lock-menus))
            (< emacs-major-version 24))  ; Uses `font-lock-defaults-alist', removed from Emacs 24.
   (require 'font-menus nil t))
 (require 'facemenu+ nil t)              ; New Text Properties menu items.
