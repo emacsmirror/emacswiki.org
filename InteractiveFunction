@@ -33,6 +33,7 @@ To use multiple arguments, separate their `interactive' entries with a newline:
       (dotimes (i num)
         (insert (format "Hello %s!\n" someone))))
 
+For an example of passing a Lisp form to `interactive' rather than a string, see the example command at TrabbPardoKnuth.
 
 ----
 CategoryCode
