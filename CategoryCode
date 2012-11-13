@@ -23,6 +23,7 @@ Ordered for pedagogy:
 * OnlineResources -- Some external sites have Emacs Lisp learning materials.
 * ElispCookbook -- A collection of various code snippets for getting things done.
 * EvaluatingExpressions -- basic stuff you need to check variables
+* EmacsLispMode -- The mode for writing Emacs Lisp
 * InteractiveFunction -- how to write a function that you can call via M-x or bind to keys
 ** UniversalArgument -- how to write a function that knows whether the C-u prefix was provided
 ** RegionArgument -- how to write a function that uses the region
@@ -109,6 +110,7 @@ Writing code that works on different versions of Emacs and XEmacs is Comparative
 * ElispDepend -- Generate depend information of elisp code.
 * EmacsLispObjects -- An implementation of Common Lisp Object System for Emacs
 * EmacsLispProfiler -- elp.el comes with Emacs.
+* EmacsLispBenchmark -- Programmatic profiling with benchmark.el
 * EmacsScripts -- Run scripts from the shell that use Emacs
 * HttpServer -- Emacs as a web-server
 * LibraryDependencies -- Keep track automatically of Emacs Lisp libraries `require'd by another library
