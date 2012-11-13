@@ -156,26 +156,14 @@ This only works in the simplest cases.  Unfortunately, this doesn't work for all
 
 == Killing text ==
 
-=== Killing the current line ===
-
-Kill the current N line(s)
-
- (defun kill-current-line (&optional N)
-   "Kill current N line(s)"
-   (interactive "p")
-
-   (move-beginning-of-line 1)
-   (let ((beg (point)))
-     (forward-line N)
-     `(kill-region beg (point))))
-
-
 As the ElispManual says, "Most of the kill commands are primarily for
 interactive use [...]  When you need to delete text for internal
 purposes within a Lisp function, you should normally use deletion
 functions, so as not to disturb the kill ring contents."
 
-The following mimic the `kill-' commands but without disturbing the kill ring.
+The following mimic the `kill-' commands but without disturbing the
+kill ring.  To make them kill, use `kill-region' instead of
+`delete-region'.
 
 === Delete region ===
 
@@ -196,6 +184,26 @@ store it in a Lisp variable.  For example: [...]"
    (forward-line 1)
    (delete-region beg (point)))
 
+Alternatively, replacing the `let' with `progn'.
+
+  (delete-region (point)
+                 (progn
+                   (forward-line 1)
+                   (point)))
+
+The following defines an interactive command that can take a
+PrefixArgument for the number of lines to delete, rather than just one.
+
+(defun delete-line (&optional n)
+  "Delete N lines forward."
+  (interactive "*p")
+  (delete-region (point)
+                 (progn
+                   (forward-line n)
+                   (point))))
+
+This means `C-u M-x delete-line' will delete the next 4 lines, `C-9 M-x delete-lines' for 9 lines and `M-- M-x delete-lines' will delete a line backwards.
+
 === Delete line ===
 
 The equivalent of `kill-line' (`C-k') but without kill ring side effects:
@@ -205,10 +213,10 @@ The equivalent of `kill-line' (`C-k') but without kill ring side effects:
    (forward-char -1)
    (delete-region beg (point)))
 
-Alternatively, replacing the `let' with `save-excursion'.
+Alternatively, replacing the `let' with `progn'.
 
   (delete-region (point)
-                 (save-excursion
+                 (progn
                    (forward-line 1)
                    (forward-char -1)
                    (point)))
@@ -227,9 +235,9 @@ The equivalent of killing the line backwards (`C-0 C-k') but without kill ring s
    (forward-line 0)
    (delete-region (point) beg))
 
-Alternatively, replacing the `let' with `save-excursion'.
+Alternatively, replacing the `let' with `progn'.
 
-  (delete-region (save-excursion
+  (delete-region (progn
                    (forward-line 0)
                    (point))
                  (point))
@@ -246,10 +254,10 @@ The equivalent of killing the line and the newline (`C-1 C-k') but without kill 
    (forward-line 1)
    (delete-region beg (point)))
 
-Alternatively, replacing the `let' with `save-excursion'.
+Alternatively, replacing the `let' with `progn'.
 
   (delete-region (point)
-                 (save-excursion
+                 (progn
                    (forward-line 1)
                    (point)))
 
@@ -262,12 +270,12 @@ The equivalent of `kill-whole-line' (`C-S-DEL') but without kill ring side effec
    (forward-line 1)
    (delete-region beg (point)))
 
-Alternatively, replacing the `let' with `save-excursion'.
+Alternatively, replacing the `let' with `progn'.
 
-  (delete-region (save-excursion
+  (delete-region (progn
                    (forward-line 0)
                    (point))
-                 (save-excursion
+                 (progn
                    (forward-line 1)
                    (point)))
 
@@ -283,10 +291,10 @@ The equivalent of `kill-word' (`M-d') but without kill ring side effects:
    (forward-word 1)
    (delete-region beg (point)))
 
-Alternatively, replacing the `let' with `save-excursion'.
+Alternatively, replacing the `let' with `progn'.
 
   (delete-region (point)
-                 (save-excursion
+                 (progn
                    (forward-word 1)
                    (point)))
 
@@ -298,7 +306,7 @@ The equivalent of `kill-sentence' (`M-k') but without kill ring side effects:
    (forward-sentence 1)
    (delete-region beg (point)))
 
-Alternatively, replacing the `let' with `save-excursion'.
+Alternatively, replacing the `let' with `progn'.
 
   (delete-region (point)
                  (save-excursion
@@ -507,18 +515,15 @@ Alternative without regular expressions: `search-forward'.
 Note that the functions working on buffers move point to the end of the occurrence found and return it.
 That's why the result is 10 instead of 6!
 
-=== Comments ===
+=== Verifying ===
 
-Move to the beginning of the current comment:
+Sometimes you just want to check whether you're at the right place:
 
-    (require 'newcomment)
-    (comment-beginning)
-
-Move to the text after a comment:
-
-    (comment-search-forward (line-end-position) t)
-
-See also EndOfLineNoComments.
+    (with-temp-buffer
+      (insert "Fight foo for food!")
+      (goto-char (point-min))
+      (looking-at "fight"))
+    ==> t
 
 === Search and replace ===
 
@@ -593,35 +598,38 @@ An example use might be:
          (when (file-exists-p filename)
            (load-file filename))))))
 
-=== Verifying ===
-
-Sometimes you just want to check whether you're at the right place:
-
-    (with-temp-buffer
-      (insert "Fight foo for food!")
-      (goto-char (point-min))
-      (looking-at "fight"))
-    ==> t
 
 === Finding all the strings that matched ===
 
 If you want to list all the matched strings, including the subexpressions:
 
-    (defun match-strings-all (&optional str)
-      "Return a list of all the strings that matched.
-
-    STR is optionally the string that was used to do the match."
-      (let ((m (if str (match-data str) (match-data))))
-        (loop for i
-           from 0 to (- (/ (length m) 2) 1)
-           collect (match-string i str))))
+  (defun match-strings-all (&optional string)
+    "Return the list of all expressions matched in last search.
+  
+  STRING is optionally what was given to `string-match'."
+    (let ((n-matches (1- (/ (length (match-data)) 2))))
+      (mapcar (lambda (i) (match-string i string))
+              (number-sequence 0 n-matches))))
 
 Here's an example:
 
     (let ((str "time help"))
       (string-match "time \\([A-Za-z]+\\)$" str)
       (match-strings-all str))
+    ==> ("time help" "help")
 
+== Comments ==
+
+Move to the beginning of the current comment:
+
+    (require 'newcomment)
+    (comment-beginning)
+
+Move to the text after a comment:
+
+    (comment-search-forward (line-end-position) t)
+
+See also EndOfLineNoComments.
 
 == Sequences ==
 
@@ -1170,7 +1178,7 @@ Perhaps EmacsEchoServer and EmacsDaytimeServer can be useful here.
 
 == Keyboard events ==
 
-* Call function bound to key
+Call function bound to key
 
   (funcall (key-binding (kbd "M-TAB")))
 
@@ -1178,251 +1186,13 @@ or
 
   (call-interactively (key-binding (kbd "M-TAB")))
 
-== Windows-specific things ==
+== Test code ==
 
-=== Multi-line message box ===
+Sometimes you might want to insert some demonstration code in a module. The code should not be run when the module is loaded via `require' or `load' but when you `eval-current-buffer'. All you need to do add is add a test condition of `eval-buffer-list':
 
-    (defun multiline-message-box (msg)
-      "display a multiline message box on Windows.
-
-        According to bug #11138, when passing a message with newlines to
-        `message-box' on Windows, the rendered message-box appears all on
-        one line.
-
-        This function can work around that problem.
-        "
-      (flet ((ok (&optional p1 &rest args) t))
-
-        (let ((parts (split-string msg "\n"))
-              (menu-1 (make-sparse-keymap "Attention"))
-              c)
-
-          (define-key menu-1 [menu-1-ok-event]
-            `(menu-item ,(purecopy "OK")
-                        ok
-                        :keys ""))
-          (define-key menu-1 [separator-1] menu-bar-separator)
-
-          ;; add lines in reverse order
-          (setq c (length parts))
-          (while (> c 0)
-            (setq c (1- c))
-            (define-key menu-1 (vector (intern (format "menu-1-fake-event-%d" c)))
-              `(menu-item ,(purecopy (nth c parts))
-                          nil
-                          :keys ""
-                          :enable t)))
-          (x-popup-menu t menu-1))))
-
-=== Messagebox via Powershell ===
-
-The built-in message-box fn on Windows is [http://thread.gmane.org/gmane.emacs.bugs/58385/focus=58393 sort of broken], and it's also 
-not particularly beautiful or functional either.  This fn allows you to 
-pop a message box using Powershell, which is builtin to all Windows. 
-
-    (defun msgbox-via-powershell (format-string &rest args)
-      "display a message box via powershell and Windows Forms.
-    "
-      (flet ((rris (a1 a2 s) (replace-regexp-in-string a1 a2 s)))
-        (let ((msg (format format-string args)))
-          (let ((powershell-exe  (concat
-                                  (getenv "windir")
-                                  "\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"))
-                (ps-cmd
-                 (concat "[void][System.Reflection.Assembly]::LoadWithPartialName('System.Windows.Forms');"
-                         "[Windows.Forms.MessageBox]::Show("
-                         (mapconcat '(lambda (elt)
-                                       (rris (char-to-string 34)
-                                             (char-to-string 39)
-                                             (pp-to-string
-                                              (rris (char-to-string 34)
-                                                    "'+[char]0x0022+'"
-                                                    (rris (char-to-string 39)
-                                                          "'+[char]0x0027+'"
-                                                          elt)
-                                                    ))))
-                                    (split-string msg "\n" nil)
-                                    "+[char]0x000D+")
-                         ",'Message from Emacs',"
-                         "[Windows.Forms.MessageBoxButtons]::OK,"
-                         "[Windows.Forms.MessageBoxIcon]::Information)"))
-
-                shell-command)
-
-            (setq shell-command
-                  (format "%s -Command %s"
-                          powershell-exe
-                          (concat "\"& {" ps-cmd "}\"")))
-
-            (shell-command-on-region (point) (point)
-                                     shell-command
-                                     nil nil nil)))))
-
-=== Read Windows Registry ===
-
-This fn reads a registry key - retrieves all the values and the names of all the subkeys. 
-
-    (defun w32reg-read-key (key)
-      "Read all values and subkeys for a key path in the Windows registry.
-    The return value is a list (KEYNAME VALUES SUBKEYS).  KEYNAME is
-    the name of the key. VALUES is a list of values, each one
-    following this form: (NAME TYPE VALUE) where each are strings,
-    and the TYPE is like \"REG_DWORD\" and so on.
-
-    SUBKEYS is a simple list of strings.
-
-    If the path does not exist, it returns nil.
-    "
-      (let ((reg.exe (concat (getenv "windir") "\\system32\\reg.exe"))
-            keyname values subkeys (state 0))
-
-        (with-temp-buffer
-          (insert (shell-command-to-string
-                   (concat reg.exe " query " "\"" key "\"")))
-
-          (while (not (= (point-min) (point-max)))
-            (goto-char (point-min))
-            (let ((start (point))
-                  (end (line-end-position))
-                  line this-value)
-              (setq line (buffer-substring-no-properties start end))
-              (delete-region start end)
-              (delete-char 1) ;; NL
-
-              (cond
-               ((string/starts-with line "ERROR:")
-                nil)
-
-               ((string= "" line)
-                (setq state (1+ state)))
-
-               ((not keyname)
-                (setq keyname line
-                      state 1))
-
-               ((eq state 1)
-                (let ((parts (split-string line nil t)))
-                  (setq this-value (mapconcat 'identity (cddr parts) " "))
-
-                  ;; convert to integer, maybe
-                  (if (string= (nth 1 parts) "REG_DWORD")
-                      (setq this-value
-                            (string-to-number (substring this-value 2))))
-
-                  (setq values (cons (list (nth 0 parts)
-                                         (nth 1 parts)
-                                         this-value) values))))
-               ((eq state 2)
-                (setq subkeys (cons
-                               (if (string/starts-with line keyname)
-                                   (substring line (1+ (length keyname)))
-                                 line)
-                               subkeys)))
-               (t nil)))))
-
-        (and keyname
-             (list keyname values subkeys))))
-
-=== Read one Registry Value ===
-
-This fn depends on the previous one, shown above. 
-
-    (defun w32reg-read-value (key value)
-      "Read a value from a key location in the registry. The result
-    is a list like (NAME TYPE VALUE), where the first two items are
-    strings.  TYPE is like \"REG_DWORD\", \"REG_SZ\", \"REG_BINARY\",
-    and so on.  If TYPE is \"REG_DWORD\", then the VALUE is a number.
-
-    If the key value does not exist, it returns nil.
-    "
-      (let ((all (w32reg-read-key key))
-            (c 0) L n r values)
-        (and all
-             (setq values (nth 1 all)
-                   L (length values))
-        (while (and (not r) (< c L))
-          (setq n (nth c values)
-                c (1+ c))
-          (if (string= value (car n))
-              (setq r n))))
-        r))
-
-=== Read IE Proxy Configuration ===
-
-This fn depends on the prior fn that allows reading a specific value from the Windows registry.
-
-    (defun w32reg-get-ie-proxy-config ()
-      "Return the Proxy Server settings configured for IE, if enabled.
-    The result is a list of cons cells; like this:
-
-      ((\"http\" . \"127.0.0.1:8888\")
-       (\"https\" .  \"127.0.0.1:8888\"))
-
-    ...which is suitable for use with (setq url-proxy-services ...)
-
-    "
-      (let* ((rpath "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings")
-             (enabled (w32reg-read-value rpath "ProxyEnable"))
-             r)
-        (if (and enabled
-                 (numberp (nth 2 enabled))
-                 (>  (nth 2 enabled) 0))
-            (let ((proxy (w32reg-read-value rpath "ProxyServer")))
-              (mapcar `(lambda (elt)
-                         (let ((x (split-string elt "=" t)))
-                           (cons (car x) (cadr x))))
-                      (split-string (nth 2 proxy) ";" t))))))
-
-=== HTTP GET via Powershell ===
-
-Some people report that the url.el exhibits problems when retrieving content from https: endpoints. 
-This fn performs a "wget" using Powershell.  Works only on Windows.
-
-    (defun wget-via-powershell (url &optional ext)
-      "get the contents of a URL into a file via powershell. The EXT
-            is the extension to use on the destination file. It should begin
-            with a dot.
-            "
-      (flet ((rris (a1 a2 s) (replace-regexp-in-string a1 a2 s)))
-        (let* ((ext (or ext ".txt"))
-               (url-tmpf (make-temp-file "emacs-wget-" nil ext))
-               (ps-cmd (concat
-                        "(new-object System.Net.WebClient).DownloadFile("
-                        (rris (char-to-string 34)
-                              (char-to-string 39)
-                              (pp-to-string url))
-                        ","
-                        (rris "/"
-                              "\\\\"
-                              (rris (char-to-string 34)
-                                    (char-to-string 39)
-                                    (pp-to-string url-tmpf)))
-                        ")"))
-               (shell-command
-                (format "%s -Command %s"
-                        bundlify-powershell-exe
-                        (concat "\"& {" ps-cmd "}\""))))
-
-          (shell-command-on-region (point) (point)
-                                   shell-command
-                                   nil nil nil)
-          ;;(message "downloaded to %s" url-tmpf)
-          url-tmpf)))
-
-== Demo Code for modules ==
-
-Sometimes you might want to insert some demo code that for a module you write. The demo code of course is not run when the module is loaded via `require' or `load' but when you `eval-current-buffer'. All you need to do add a test on:
-
-   (eq (car eval-buffer-list) (current-buffer))
-
-Here is a complete example:
-
-    (provide 'foo-foo)
-    (setq foo-foo 10)
-    ;; Demo code only executed when eval'ing current-buffer
-    (if (eq (car eval-buffer-list) (current-buffer))
-        (message "foo-foo is %d" foo-foo)
-    )
+  (dont-compile
+    (when (eq (car eval-buffer-list) (current-buffer))
+      ...))
 
 ----
 CategoryCode
