@@ -1,0 +1,87 @@
+Trabb Pardo Knuth algorithm (TPK) reads an array of 11 numbers, applies a function to each value, checks for overflow and writes the result in reverse order.  It is meant to show the variation in expression of different programming languages.
+
+Here's how to do it in Emacs Lisp with an interactive command `M-x tpk'.  Emacs Lisp has well-designed input and output facilities and can easily handle sequences.  Support for numerical operations is shallow.  Overflow needs to be manually checked.
+
+  (defun f (n)
+    "Check for overflow since Emacs Lisp won't."
+    ;; Expression: (+ (sqrt (abs n)) (* n n n))
+    ;; Registers:
+    (let (r0 ;; (abs n)
+          r1 ;; (sqrt r0)
+          r2 ;; (* n n)
+          r3 ;; (* r2 n)
+          r4) ;; (+ r1 r3)
+      (setq r0 (abs n))
+      (when (or (< r0 0) (> n r0))
+        (signal 'overflow-error (list (list 'abs n) r0)))
+      (setq r1 (sqrt r0))
+      (when (or (< r1 0) (< r0 r1)) ;!
+        (signal 'overflow-error (list (list 'sqrt r0) r1)))
+      (setq r2 (* n n))
+      (when (or (and (< n 0) (<= r2 0))
+                (and (< n -1) (<= r2 (- n)))
+                (and (> n 0) (<= r2 0)))
+        (signal 'overflow-error (list (list '* n n) r2)))
+      (setq r3 (* r2 n))
+      (when (or (and (< r2 0) (< n 0) (>= r3 0))
+                (and (< r2 -1) (< n -1) (<= r3 1))
+                (and (> r2 0) (> n 0) (<= r3 0)))
+        (signal 'overflow-error (list (list '* r2 n) r3)))
+      (setq r4 (+ r1 r3))
+      (when (or (and (< r1 0) (< r3 0) (> r4 0))
+                (and (> r1 0) (> r3 0) (< r4 0))
+                (and (> r1 0) (> r3 0) (or (< r4 r1) (< r4 r3)))
+                (and (< r1 0) (< r3 0) (or (> r4 r1) (> r4 r3))))
+        (signal 'overflow-error (list (list '+ r1 r3) r4)))
+      r4))
+  
+  (defun read-number-vector (n)
+    "Read N numbers from user."
+    (let ((S (make-vector n nil)))
+      (dotimes (i n S)
+        (aset S i (read-number (format "Number %d: " (1+ i)))))))
+  
+  (defun reverse-vector (vector)
+    "Reverse VECTOR."
+    (vconcat (nreverse (append vector nil))))
+  
+  (defun tpk (n S)
+    "From ``Early Development of Programming Languages'', 1977."
+    (interactive
+     (let ((n (truncate (read-number "How many numbers? " 11))))
+       ;; Ask for 11 numbers to be read into a sequence S
+       (list n (read-number-vector n))))
+    ;; Reverse S
+    (setq S (reverse-vector S))
+    ;; For each number in S
+    (dotimes (i n)
+      (let ((x (aref S i)))
+        (report-errors (format "Alert for %d is %%s" x)
+          (let ((result (funcall 'f x)))
+            ;; else
+            (message "Result for %d is %s" x result))))))
+
+Here's example output:
+
+  (tpk 11 [1152921504606846975 -1152921504606846976
+           536870911 -536870912
+           16777216 -16777216
+           65536 16384 7225 0 -1])
+  Result for -1 is 0.0
+  Result for 0 is 0.0
+  Result for 7225 is 266135486.0
+  Alert for 16384 is (overflow-error (* 268435456 16384) 0)
+  Alert for 65536 is (overflow-error (* 65536 65536) 0)
+  Alert for -16777216 is (overflow-error (* -16777216 -16777216) 0)
+  Alert for 16777216 is (overflow-error (* 16777216 16777216) 0)
+  Alert for -536870912 is (overflow-error (abs -536870912) -536870912)
+  Result for 536870911 is 536894081.4749843
+  Result for -1152921504606846976 is -1.532495540865889e+054
+  Result for 1152921504606846976 is 1.532495540865889e+054
+
+Knuth, Donald Ervin, and Luis Trabb Pardo. ''The early development of programming languages.'' In Encyclopedia of Computer Science and Technology, Marcel Dekker, New York, 1977, pages 419-96.
+
+* [[WikiPedia:Trabb Pardo-Knuth algorithm]]
+
+----
+CategoryCode
