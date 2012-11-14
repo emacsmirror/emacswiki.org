@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Mon Nov 12 15:12:37 2012 (-0800)
+;; Last-Updated: Wed Nov 14 09:58:14 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 2371
+;;     Update #: 2372
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -4418,7 +4418,8 @@ For each number indication:
     ;; of the mode line when you move the cursor among lines.  Moving it way off to the right
     ;; effectively gets rid of it (ugly hack).  See Emacs bug #12867.
     (set (make-local-variable 'mode-line-position) '("%360l (line)")) ; Try to move it off the screen.
-    (set (make-local-variable 'mode-line-format)   '(("" mode-name mode-line-position)))))
+    (set (make-local-variable 'mode-line-format)
+         '(("" mode-name "\t" mode-line-buffer-identification mode-line-position)))))
 
 
 ;;(@* "Sorting - Commands")
