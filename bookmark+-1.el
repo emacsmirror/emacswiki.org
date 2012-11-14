@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sun Nov 11 20:03:02 2012 (-0800)
+;; Last-Updated: Tue Nov 13 19:11:48 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 5972
+;;     Update #: 5974
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -324,8 +324,8 @@
 ;;    `bmkp-bookmark-creation-cp', `bmkp-bookmark-data-from-record',
 ;;    `bmkp-bookmark-description', `bmkp-bookmark-last-access-cp',
 ;;    `bmkp-bookmark-file-alist-only',
-;;    `bmkp-bookmark-list-alist-only',
 ;;    `bmkp-bookmark-file-bookmark-p',
+;;    `bmkp-bookmark-list-alist-only',
 ;;    `bmkp-bookmark-list-bookmark-p', `bmkp-bookmark-name-member',
 ;;    `bmkp-bookmark-record-from-name', `bmkp-bookmark-type',
 ;;    `bmkp-buffer-last-access-cp', `bmkp-buffer-names',
@@ -5799,7 +5799,7 @@ using multi-sorting predicates."
 (defun bmkp-sorting-description (order)
   "Return a string describing sort ORDER."
   (concat
-   (if bmkp-sort-comparer
+   (if (and order  bmkp-sort-comparer)
        order
      (concat (and order  (format "(%s) " order)) "turned OFF"))
    (cond ((not bmkp-sort-comparer) nil)
