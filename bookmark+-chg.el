@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Nov 12 15:17:13 2012 (-0800)
+;; Last-Updated: Tue Nov 13 19:16:32 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 15172
+;;     Update #: 15173
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2012/11/13 dadams
+;;     bmkp-sorting-description: Fixed 1st case: use ORDER only if bmkp-sort-comparer is also non-nil.
 ;; 2012/11/11 dadams
 ;;     Added: bmkp-sorting-description (factored out from bmkp-msg-about-sort-order).
 ;;     bmkp-msg-about-sort-order: Use bmkp-sorting-description.
