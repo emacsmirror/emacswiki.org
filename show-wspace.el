@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 21 08:54:53 2000
 ;; Version: 21.0
-;; Last-Updated: Tue Nov 13 14:22:48 2012 (-0800)
+;; Last-Updated: Wed Nov 14 14:05:27 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 824
+;;     Update #: 828
 ;; URL: http://www.emacswiki.org/emacs-en/show-wspace.el
 ;; Doc URL: http://emacswiki.org/emacs/ShowWhiteSpace
 ;; Keywords: highlight, whitespace, characters, Unicode
@@ -527,7 +527,7 @@ highlight.  For example, if you mean to type `[:digit:]' but type
     (ws-dont-highlight-other-chars chars face))
   (font-lock-mode) (font-lock-mode)
   (when msgp
-    (message "Highlighting of %s with face `%s' is now %s."
+    (message "Highlighting of %s with face `%s' is now %s"
              (mapconcat
               (lambda (chars)
                 (cond ((and (consp chars)
@@ -574,7 +574,7 @@ highlight.  For example, if you mean to type `[:digit:]' but type
     (ws-dont-highlight-tabs))
   (font-lock-mode) (font-lock-mode)
   (when msgp
-    (message "TAB highlighting is now %s." (if ws-highlight-tabs-p "ON" "OFF"))))
+    (message "TAB highlighting is now %s" (if ws-highlight-tabs-p "ON" "OFF"))))
 
 ;;;###autoload
 (defalias 'toggle-highlight-hard-spaces 'ws-toggle-highlight-hard-spaces)
@@ -591,7 +591,7 @@ Uses face `ws-hard-space'."
          (remove-hook 'font-lock-mode-hook 'ws-highlight-hard-spaces)
          (ws-dont-highlight-hard-spaces)))
   (font-lock-mode) (font-lock-mode)
-  (when msgp (message "Hard (non-breaking) space highlighting is now %s."
+  (when msgp (message "Hard (non-breaking) space highlighting is now %s"
                       (if ws-highlight-hard-spaces-p "ON" "OFF"))))
 
 (when (> emacs-major-version 22)
@@ -607,7 +607,7 @@ Uses face `ws-hyphen-space'."
            (remove-hook 'font-lock-mode-hook 'ws-highlight-hard-hyphens)
            (ws-dont-highlight-hard-hyphens)))
     (font-lock-mode) (font-lock-mode)
-    (when msgp (message "Hard (non-breaking) hyphen highlighting is now %s."
+    (when msgp (message "Hard (non-breaking) hyphen highlighting is now %s"
                         (if ws-highlight-hard-hyphens-p "ON" "OFF")))))
 
 ;;;###autoload
@@ -626,7 +626,7 @@ Uses face `ws-hyphen-space'."
          (ws-dont-highlight-other-chars)))
   (font-lock-mode) (font-lock-mode)
   (when msgp
-    (message "Highlighting of %s is now %s."
+    (message "Highlighting of %s is now %s"
              (mapconcat
               (lambda (chars)
                 (cond ((and (fboundp 'charsetp)  (charsetp chars))
@@ -662,7 +662,7 @@ Uses face `ws-trailing-whitespace'."
     (remove-hook 'font-lock-mode-hook 'ws-highlight-trailing-whitespace)
     (ws-dont-highlight-trailing-whitespace))
   (font-lock-mode) (font-lock-mode)
-  (when msgp (message "Trailing whitespace highlighting is now %s."
+  (when msgp (message "Trailing whitespace highlighting is now %s"
                       (if ws-highlight-trailing-whitespace-p "ON" "OFF"))))
 
 (defun ws-highlight-tabs ()
