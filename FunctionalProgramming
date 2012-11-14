@@ -9,9 +9,7 @@ Instead, Emacs Lisp is considered [[WikiPedia:Functional_programming|an early fu
 
 On the other hand, Emacs Lisp does not treat functions as first-class language constructs -- higher-order support for functions (even true functions) is limited and erroneous ([[WikiPedia:Funarg_problem|funarg]] problems, [[WikiPedia:Scope|dynamic scoping]] problems). Emacs Lisp can be written in a  [[WikiPedia:Declarative_programming|declarative]] style, minimizing [[WikiPedia:Side effect (computer science)|side effects]], but in practice this never happens. Most Emacs Lisp code will be written in an [[WikiPedia:Imperative_programming|imperative]], [[WikiPedia:Procedural_programming|procedural]] style. As a result, programs in purely functional languages enjoy the desirable property of [[WikiPedia:Referential transparency (computer science)|referential transparency]] where as programs written in Emacs Lisp do not.
 
-According to David Turner, writing in ''Mathematical Logic and
-Programming Languages'' (1985) (edited by C.A.R. Hoare,
-J. C. Shepherdson) about common dialects of Lisp:
+[[WikiPedia:David_Turner_(computer_scientist)|David Turner]], responsible for the first purely functional, fully lazy functional language implementations (SASL, KRC, Miranda) and inventor of graph-reduction implementation of functional languages, had this to say about Lisp:
 
 : It needs to be said very firmly that LISP, at least as represented
 by the dialects in common use, is not a functional language at
@@ -19,13 +17,21 @@ all. LISP does have a functional subset, but that is a rather
 inconvenient programming language and there exists no significant body
 of programs written in it. Almost all serious programming in LISP
 makes heavy use of side effects and other referentially opaque
-features.
+features. --- in ''Mathematical Logic and
+Programming Languages'' (1985) (edited by C.A.R. Hoare,
+J. C. Shepherdson)
 
-This would be the case for Emacs Lisp, but not for modern Lisps.
-During a discussion on Lisp (and Scheme) in 2003, Anton van Straaten
-summarizes that Lisp's "functional capabilities are complete - it's
+On the other hand, ''Scheme Editors Committee'' member [[WikiPedia:Special:Search/Anton_van_Straaten|Anton van Straaten]]
+said this about Lisp and Scheme in 2003:
+
+: "[Its] functional capabilities are complete --- it's
 not lacking anything that a functional language needs to be considered
 functional."[http://people.csail.mit.edu/gregs/ll1-discuss-archive-html/msg03242.html]
+
+They thus agree that Lisp has a functional subset that is complete.  The difference in perspective is with respect to the actual ''use'' of Lisp versus its functional subset.
+
+Those who see the Lisp functional glass half empty emphasize the fact that in practice Lisp/Scheme is typically ''not'' used as a functional language.  Those who see it half full emphasize the fact that you ''can'' restrict yourself to using "pure Lisp", that is, the functional subset.  Analogous opposing views can be found wrt [[WikiPedia:Prolog|Prolog]] in the [[WikiPedia:Logic_Programming|Logic Programming]] community.
+
 
 == Discussion ==
 
