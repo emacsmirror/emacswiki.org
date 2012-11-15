@@ -452,3 +452,4 @@ Argument LST Associative list of string and replacement-string."
 (provide 'hachette)
 
 ;;; hachette.el ends here
+
