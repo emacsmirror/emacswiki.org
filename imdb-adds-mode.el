@@ -364,7 +364,7 @@ Default: t")
 The character set you have to use is ASCII or ISO-8859-1 
 depending on the data you want to submit.
 
-If the data has accented characters such as &#931;\xF7\xB1&#945;&#920;...
+If the data has accented characters such as &#931;÷±&#945;&#920;...
 you must use the ISO-8859-1 character set for West 
 European languages.
 Data mailed in with it must be MIME compatible.
