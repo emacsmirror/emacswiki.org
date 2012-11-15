@@ -6,11 +6,11 @@ As an example, consider having to type the definition for the Fibonacci number i
 (defun fib (n)
   (if (< n 2)
       n
-    (+ (fib (- n 1)
-            (- n 2)))))
+    (+ (fib (- n 1))
+       (fib (- n 2)))))
 }}}
 
-This could be done with the commands ##M-(## and ##M-)## (and `C-j' see AutoIndentation).  They will insert the 81 characters properly indented in just 45 keys (67 finger presses when considering [[chord]]s).
+This could be done with the commands ##M-(## and ##M-)## (and `C-j' see AutoIndentation).  They will insert the 81 characters properly indented in just 50 keys (63 finger presses when considering [[chord]]s).
 
 Here are those keys pretty-printed (see EmacsKeyNotation):
 
@@ -18,8 +18,8 @@ Here are those keys pretty-printed (see EmacsKeyNotation):
 M-( defun SPC fib M-( n M-)
   M-( if M-( < SPC n SPC 2 M-)
     n C-j
-  M-( + M-( fib M-( - SPC n SPC 1 M-)
-                M-( - SPC n SPC 2 C-M-e
+  M-( + M-( fib M-( - SPC n SPC 1 M-) M-)
+        M-( fib M-( - SPC n SPC 2 C-M-e
 }}}
 
 Here they are as a listing (as seen in the ##*Edit Macro*## buffer of KeyboardMacros):
@@ -53,6 +53,9 @@ Here they are as a listing (as seen in the ##*Edit Macro*## buffer of KeyboardMa
 ||##SPC  ##||##self-insert-command         ##||
 ||##1    ##||##self-insert-command         ##||
 ||##M-)  ##||##move-past-close-and-reindent##||
+||##M-)  ##||##move-past-close-and-reindent##||
+||##M-(  ##||##insert-parentheses          ##||
+||##fib  ##||##self-insert-command * 3     ##||
 ||##M-(  ##||##insert-parentheses          ##||
 ||##-    ##||##self-insert-command         ##||
 ||##SPC  ##||##self-insert-command         ##||
