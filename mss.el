@@ -396,4 +396,5 @@ out of the way"
   (run-hooks 'mss-drag-n-drop-mode-hook))
 
 (provide 'mss)
+
 ;;; mss.el ends here
