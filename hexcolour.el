@@ -23,7 +23,7 @@
 ;;; Commentary:
 
 ;; This package provides a minor mode for highlighting of HTML-style
-;; colour specifications, a l\xE0 #324f3a. "Fine," you say, "what's so
+;; colour specifications, a là #324f3a. "Fine," you say, "what's so
 ;; special about this?" Well, when this mode is turned on, Emacs
 ;; highlights the colour spec _in the specified_ colour (as
 ;; background).
