@@ -1,7 +1,6 @@
 ;;; minibuffer-complete-cycle.el --- Cycle through the *Completions* buffer
-;;; -*-unibyte: t; coding: iso-8859-1;-*-
 
-;; Copyright � 1997,1998,2000,2003,2006 Kevin Rodgers
+;; Copyright © 1997,1998,2000,2003,2006 Kevin Rodgers
 
 ;; Author: Kevin Rodgers <ihs_4664@yahoo.com>
 ;; Created: 15 Oct 1997
