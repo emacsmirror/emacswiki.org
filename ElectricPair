@@ -1,4 +1,10 @@
-Complete the closing pair when you type a paired character like `(' or `"'.  [[Point]] is left between the pair so that you can type the contents.
+From the EmacsManual,
+
+: Electric Pair mode, a global minor mode, provides a way to easily
+insert matching delimiters.  Whenever you insert an opening delimiter,
+the matching closing delimiter is automatically inserted as well,
+leaving point between the two.  To toggle Electric Pair mode, type
+`M-x electric-pair-mode'.
 
 There is a [http://www.loveshack.ukfsn.org/emacs/pair-mode.el minor mode] that implements this with support for TransientMarkMode, or put the following simple version in your InitFile:
 
