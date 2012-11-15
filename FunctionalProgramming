@@ -9,7 +9,7 @@ Instead, Emacs Lisp is considered [[WikiPedia:Functional_programming|an early fu
 
 On the other hand, Emacs Lisp does not treat functions as first-class language constructs -- higher-order support for functions (even true functions) is limited and erroneous ([[WikiPedia:Funarg_problem|funarg]] problems, [[WikiPedia:Scope|dynamic scoping]] problems). Emacs Lisp can be written in a  [[WikiPedia:Declarative_programming|declarative]] style, minimizing [[WikiPedia:Side effect (computer science)|side effects]], but in practice this never happens. Most Emacs Lisp code will be written in an [[WikiPedia:Imperative_programming|imperative]], [[WikiPedia:Procedural_programming|procedural]] style. As a result, programs in purely functional languages enjoy the desirable property of [[WikiPedia:Referential transparency (computer science)|referential transparency]] where as programs written in Emacs Lisp do not.
 
-[[WikiPedia:David_Turner_(computer_scientist)|David Turner]], responsible for the first purely functional, fully lazy functional language implementations (SASL, KRC, Miranda) and inventor of graph-reduction implementation of functional languages, had this to say about Lisp in 1985:
+[[WikiPedia:David_Turner_(computer_scientist)|David Turner]], responsible for the first purely functional, fully lazy functional language implementations (SASL, KRC, Miranda), had this to say about Lisp in 1985:
 
 : It needs to be said very firmly that LISP, at least as represented
 by the dialects in common use, is not a functional language at
