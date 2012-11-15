@@ -76,7 +76,7 @@
 ;;                      with genre x to a given playlist.  This is cool!
 ;;                      
 ;;                     Stupid bug in 'mp3player-show-help' solved.
-;;                     D�but de francisation... 
+;;                     Début de francisation... 
 ;;                       set 'mp3player-interface-language'
 ;;
 ;; New to version 1.6: mp3player-export-playlist-to-b4s Convert a
