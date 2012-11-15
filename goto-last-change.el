@@ -1,4 +1,4 @@
-;;; goto-last-change.el --- Move point through buffer-undo-list positions -*-unibyte: t; coding: iso-8859-1;-*-
+;;; goto-last-change.el --- Move point through buffer-undo-list positions
 
 ;; Copyright © 2003 Kevin Rodgers
 
