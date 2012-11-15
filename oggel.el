@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 2003  Free Software Foundation, Inc.
 
-;; Author: Mario Domg\xF6rgen <kanaldrache@gmx.de>
+;; Author: Mario Domgörgen <kanaldrache@gmx.de>
 ;; Keywords: ripping, encoding, ogg-vorbis
 
 ;; This file is free software; you can redistribute it and/or modify
