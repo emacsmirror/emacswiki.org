@@ -117,7 +117,7 @@
 
 ;; Thanks to Arch Murphy for noting a problem with XEmacs, to Brett
 ;; for noting a problem with push, and Andreas Zielke for noting a
-;; indentation problem with "blocks within blocks".  Thanks to J\xE9rome
+;; indentation problem with "blocks within blocks".  Thanks to Jérome
 ;; Haguet for spotting another indentation bug and for suggesting
 ;; `plsql-indent-region'. Thanks to Alex Schroeder for compilation
 ;; suggestions and suggestions regarding SQL level indentation. Thanks
