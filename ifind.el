@@ -1,7 +1,6 @@
 ;;; ifind.el --- An interface to `find` based on igrep.el
-;;; -*-unibyte: t;-*-
 
-;; Copyright \xA9 2003, 2004 Kevin Rodgers
+;; Copyright © 2003, 2004 Kevin Rodgers
 
 ;; Author: Kevin Rodgers <ihs_4664@yahoo.com>
 ;; Created: 13 Nov 2003
