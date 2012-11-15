@@ -1584,7 +1584,6 @@ Special commands:
   (interactive)
   (message (mp3player-now-playing-string)))
 
-
 (provide 'mp3player)
 
 ;;; mp3player.el ends here
