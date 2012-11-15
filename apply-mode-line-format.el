@@ -1,7 +1,6 @@
 ;;; apply-mode-line-format.el --- Return `mode-line-format' as a string
-;;; -*-unibyte: t; coding: iso-8859-1;-*-
 
-;; Copyright \xA9 2002,2005 Kevin Rodgers
+;; Copyright © 2002,2005 Kevin Rodgers
 
 ;; Author: Kevin Rodgers <ihs_4664@yahoo.com>
 ;; Created: 19 Mar 2002
