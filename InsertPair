@@ -1,0 +1,92 @@
+Emacs comes with ##M-(## bound to `insert-parentheses' and ##M-)## runs the command `move-past-close-and-reindent'.  These commands are very useful in Emacs for writing Lisp.  Using them takes some getting used to.  The binding of ##M-(## also appears in other modes, including CcMode.
+
+As an example, consider having to type the definition for the Fibonacci number in Emacs Lisp.
+
+{{{
+(defun fib (n)
+  (if (< n 2)
+      n
+    (+ (fib (- n 1)
+            (- n 2)))))
+}}}
+
+This could be done with the commands ##M-(## and ##M-)## (and `C-j' see AutoIndentation).  They will insert the 81 characters properly indented in just 45 keys (67 finger presses when considering [[chord]]s).
+
+Here are those keys pretty-printed (see EmacsKeyNotation):
+
+{{{
+M-( defun SPC fib M-( n M-)
+  M-( if M-( < SPC n SPC 2 M-)
+    n C-j
+  M-( + M-( fib M-( - SPC n SPC 1 M-)
+                M-( - SPC n SPC 2 C-M-e
+}}}
+
+Here they are as a listing (as seen in the ##*Edit Macro*## buffer of KeyboardMacros):
+
+||##M-(  ##||##insert-parentheses          ##||
+||##defun##||##self-insert-command * 5     ##||
+||##SPC  ##||##self-insert-command         ##||
+||##fib  ##||##self-insert-command * 3     ##||
+||##M-(  ##||##insert-parentheses          ##||
+||##n    ##||##self-insert-command         ##||
+||##M-)  ##||##move-past-close-and-reindent##||
+||##M-(  ##||##insert-parentheses          ##||
+||##if   ##||##self-insert-command * 2     ##||
+||##M-(  ##||##insert-parentheses          ##||
+||##<    ##||##self-insert-command         ##||
+||##SPC  ##||##self-insert-command         ##||
+||##n    ##||##self-insert-command         ##||
+||##SPC  ##||##self-insert-command         ##||
+||##2    ##||##self-insert-command         ##||
+||##M-)  ##||##move-past-close-and-reindent##||
+||##n    ##||##self-insert-command         ##||
+||##C-j  ##||##newline-and-indent          ##||
+||##M-(  ##||##insert-parentheses          ##||
+||##+    ##||##self-insert-command         ##||
+||##M-(  ##||##insert-parentheses          ##||
+||##fib  ##||##self-insert-command * 3     ##||
+||##M-(  ##||##insert-parentheses          ##||
+||##-    ##||##self-insert-command         ##||
+||##SPC  ##||##self-insert-command         ##||
+||##n    ##||##self-insert-command         ##||
+||##SPC  ##||##self-insert-command         ##||
+||##1    ##||##self-insert-command         ##||
+||##M-)  ##||##move-past-close-and-reindent##||
+||##M-(  ##||##insert-parentheses          ##||
+||##-    ##||##self-insert-command         ##||
+||##SPC  ##||##self-insert-command         ##||
+||##n    ##||##self-insert-command         ##||
+||##SPC  ##||##self-insert-command         ##||
+||##2    ##||##self-insert-command         ##||
+||##M-C-e##||##end-of-defun                ##||
+
+To insert quotation marks, add the following to your InitFile our try by EvaluatingExpressions.
+
+{{{
+(global-set-key "\M-'" 'insert-quotations)
+(global-set-key "\M-\"" 'insert-quotes)
+(global-set-key (kbd "C-'") 'insert-backquote)
+
+(defun insert-quotations (&optional arg)
+  "Enclose following ARG sexps in quotation marks.
+Leave point after open-paren."
+  (interactive "*P")
+  (insert-pair arg ?\' ?\'))
+
+(defun insert-quotes (&optional arg)
+  "Enclose following ARG sexps in quotes.
+Leave point after open-quote."
+  (interactive "*P")
+  (insert-pair arg ?\" ?\"))
+
+(defun insert-backquote (&optional arg)
+  "Enclose following ARG sexps in quotations with backquote.
+Leave point after open-quotation."
+  (interactive "*P")
+  (insert-pair arg ?\` ?\'))
+}}}
+
+----
+CategoryKeys
+CategoryParentheses
