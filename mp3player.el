@@ -1280,7 +1280,7 @@ and replace a sub-expression, e.g.
 				   (buffer-substring 
 				    (+ (point) start) 
 				    (+ (point) end))
-				   (char-to-string 0))))))
+				   "\x0")))))
 	    (make-id3
 	     :song (retrieve-info 3 33)
 	     :artist (retrieve-info 33 63)
