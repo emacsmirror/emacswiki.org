@@ -489,7 +489,7 @@ it use the output of 'mp3player-program'."
   "Like message but check the value of 
 'mp3player-interface-language' to select the string 
 to send in the alist L"
-  ;; This use an alist like '((fr . "une chaine de caract�res")
+  ;; This use an alist like '((fr . "une chaine de caractères")
   ;;                          (en . "a string"))
   ;; the default value is en so it MUST be present.
   (message (mp3player-multilingual L)))
@@ -862,9 +862,9 @@ new one with the next song in the playlist.  Args are PROCESS and STRING."
   (mp3player-message
    (if mp3player-random-status
        '((en . "Random is on")
-	 (fr . "Ordre al�atoire activ�"))
+	 (fr . "Ordre aléatoire activé"))
      '((en . "Random is off")
-       (fr . "Ordre al�atoire d�sactiv�")))))
+       (fr . "Ordre aléatoire désactivé")))))
 
 (defun mp3player-stop ()
   "Stop the mpg123 subprocess, if any."
@@ -1105,18 +1105,18 @@ ACTION is a one key shortcut to a major functionality."
 		    "?   Help (this page)\n"
 		    ))
       (fr . ,(concat "MP3 Player -- Sommaire des commandes\n\n"
-		    "Vous �coutez pr�sentement: : " 
+		    "Vous écoutez présentement: : " 
 		    (if mp3player-now-playing-filename
 			 (file-name-nondirectory mp3player-now-playing-filename)
 		      "Rien du tout")
 		    "\n\n"
-		    "+/- Contr�le du volume.\n"
+		    "+/- Contrôle du volume.\n"
 		    "p   Selection d'une liste\n"
-		    "r   Ordre al�atoire (pr�sentement " 
-		    (if mp3player-random-status "activ�" "d�sactiv�") 
+		    "r   Ordre aléatoire (présentement " 
+		    (if mp3player-random-status "activé" "désactivé") 
 		    ")\n"
-		    "s   Information sur la s�lection courante\n"
-		    "e   �dition du tag de la s�lection courante\n"
+		    "s   Information sur la sélection courante\n"
+		    "e   Édition du tag de la sélection courante\n"
 		    ">   Prochaine chanson\n"
 		    "q   Quitter\n"
 		    "x   Terminer\n"
@@ -1177,7 +1177,7 @@ and Winamp."
 	       (funcall tag '((en . "Album name: ")
 			      (fr . "Album: ")) (id3-album info) 30)
 	       (funcall tag '((en . "Release year: ")
-			      (fr . "Ann�e: ")) (id3-year info) 4)
+			      (fr . "Année: ")) (id3-year info) 4)
 	       (funcall tag '((en . "Note: ")) (id3-note info) 30)
 	       (mp3player-pad-string
 		(char-to-string
