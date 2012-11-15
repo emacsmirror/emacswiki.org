@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 21 08:54:53 2000
 ;; Version: 21.0
-;; Last-Updated: Wed Nov 14 14:05:27 2012 (-0800)
+;; Last-Updated: Thu Nov 15 13:20:54 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 828
+;;     Update #: 832
 ;; URL: http://www.emacswiki.org/emacs-en/show-wspace.el
 ;; Doc URL: http://emacswiki.org/emacs/ShowWhiteSpace
 ;; Keywords: highlight, whitespace, characters, Unicode
@@ -233,6 +233,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/11/15 dadams
+;;    ws-other-chars-font-lock-spec: Removed +'s.
 ;; 2012/11/13 dadams
 ;;     ws-highlight-hard-hyphens-p, ws--saved-nobreak-char-display:
 ;;       Define for all versions, so can use in tests.
@@ -745,11 +747,11 @@ CHARS and FACE are the same as for `ws-highlight-other-chars'."
 
 (defun ws-other-chars-font-lock-spec (&optional characters face)
   "Font-lock spec used for highlighting CHARACTERS in FACE.
-CHARS and FACE are the same as for `ws-highlight-other-chars'."
+CHARACTERS and FACE are the same as for `ws-highlight-other-chars'."
   (setq face        (or face  'ws-other-char)
         characters  (or characters  ws-other-chars))
   (mapcar (lambda (chars)
-            (cond ((and (consp chars)
+            (cond ((and (consp chars)   ; Range: (ch1 . ch2)
                         (if (fboundp 'characterp)
                             (characterp (car chars))
                           (integerp (car chars)))
@@ -769,9 +771,9 @@ CHARS and FACE are the same as for `ws-highlight-other-chars'."
                          (while (<= chr last)
                            (setq class  (concat class (string chr))
                                  chr    (1+ chr)))
-                         (list (concat class "]+")
+                         (list (concat class "]")
                                (list 0 `',face ws-other-chars-font-lock-override))))))
-                  ((and (fboundp 'charsetp)  (charsetp chars))
+                  ((and (fboundp 'charsetp)  (charsetp chars)) ; Charset
                    (let ((chs    ()))
                      (map-charset-chars
                       (lambda (range ARG)
@@ -783,15 +785,15 @@ CHARS and FACE are the same as for `ws-highlight-other-chars'."
                       chars)
                      (list (regexp-opt-charset (nreverse chs))
                            (list 0 `',face ws-other-chars-font-lock-override))))
-                  ((vectorp chars)
-                   (list (concat "[" (format "%s" chars) "]+")
+                  ((vectorp chars)      ; Vector
+                   (list (concat "[" (format "%s" chars) "]")
                          (list 0 `',face ws-other-chars-font-lock-override)))
-                  ((stringp chars)
+                  ((stringp chars)      ; String
                    (if (> emacs-major-version 20)
                        (list (regexp-opt-charset (append chars ()))
                              (list 0 `',face ws-other-chars-font-lock-override))
                      ;; Emacs 20 `regexp-opt-charset' just does not work.  Fake it.
-                     (list (concat "[" chars "]+")
+                     (list (concat "[" chars "]")
                            (list 0 `',face ws-other-chars-font-lock-override))))))
           characters))
 
