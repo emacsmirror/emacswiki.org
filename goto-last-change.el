@@ -139,3 +139,4 @@ in a sequence of invocations."
 ;; (global-set-key "\C-x\C-\\" 'goto-last-change)
 
 ;;; goto-last-change.el ends here
+
