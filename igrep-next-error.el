@@ -1,7 +1,6 @@
 ;;; igrep-next-error.el --- Highlight text matched by `igrep'
-;;; -*-unibyte: t;-*-
 
-;; Copyright \xA9 2003, 2004 Kevin Rodgers
+;; Copyright © 2003, 2004 Kevin Rodgers
 
 ;; Author: Kevin Rodgers <ihs_4664@yahoo.com>
 ;; Created:  14 Aug 2003
