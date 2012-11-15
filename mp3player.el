@@ -1587,3 +1587,4 @@ Special commands:
 (provide 'mp3player)
 
 ;;; mp3player.el ends here
+
