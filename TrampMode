@@ -89,7 +89,7 @@ shown there.
 
 You could also ##(setq tramp-chunksize 500)## to see if that helps.
 
-''' Tramp hangs #3 '''
+=== Tramp hangs #3 ===
 
 If you use zsh and Tramp hangs every time you try to connect, try placing this in your .zshrc:
 
