@@ -312,3 +312,10 @@ To check whether ampc is connected to the daemon and/or suspended, call
                     (ampc nil nil t))
                   (ampc-mini)))
 </pre>
+
+----
+
+== comments ==
+
+[new]
+Ampc now includes a progress bar with click and mouse drag support by default. Please give it a try ([http://ch.ristopher.com/git/?p=ampc;a=blob_plain;f=ampc.el http://ch.ristopher.com/git/?p=ampc;a=blob_plain;f=ampc.el], GNU Emacs >= 24.2.50).
