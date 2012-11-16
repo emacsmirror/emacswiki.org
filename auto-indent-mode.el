@@ -5,7 +5,7 @@
 ;; Author: Matthew L. Fidler, Le Wang & Others
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Sat Nov  6 11:02:07 2010 (-0500)
-;; Version: 0.84
+;; Version: 0.85
 ;; Last-Updated: Tue Aug 21 13:08:42 2012 (-0500)
 ;;           By: Matthew L. Fidler
 ;;     Update #: 1467
@@ -1009,9 +1009,6 @@
 ;; *** auto-indent-fix-org-backspace
 ;; Fixes `org-backspace' to use `auto-indent-backward-delete-char-behavior' for `org-mode' buffers.
 ;; 
-;; *** auto-indent-fix-org-move-beginning-of-line
-;; Fixes `move-beginning-of-line' in `org-mode' when in source blocks to follow `auto-indent-mode'.
-;; 
 ;; *** auto-indent-fix-org-return
 ;; Allows newline and indent behavior in source code blocks in org-mode.
 ;; 
@@ -1323,6 +1320,9 @@
 ;; *** auto-indent-fix-org-backspace
 ;; Fixes `org-backspace' to use `auto-indent-backward-delete-char-behavior' for `org-mode' buffers.
 ;; 
+;; *** auto-indent-fix-org-move-beginning-of-line
+;; Fixes `move-beginning-of-line' in `org-mode' when in source blocks to follow `auto-indent-mode'.
+;; 
 ;; *** auto-indent-fix-org-return
 ;; Allows newline and indent behavior in source code blocks in org-mode.
 ;; 
@@ -1445,24 +1445,12 @@
 ;; 
 ;; It is useful when using this option to have some sort of autopairing on.
 ;; 
-;; *** auto-indent-next-pair-timer-interval
+;; *** auto-indent-next-pair-timer-geo-mean
 ;; Number of seconds before the observed parenthetical statement is indented.
 ;; The faster the value, the slower Emacs responsiveness but the
 ;; faster Emacs indents the region.  The slower the value, the
 ;; faster Emacs responds.  This should be changed dynamically by
-;; typing with `auto-indent-next-pair-timer-interval-addition'.  The
-;; maximum that a particular mode can delay the timer is given by
-;; `auto-indent-next-pair-timer-interval-max'.
-;; 
-;; *** auto-indent-next-pair-timer-interval-addition
-;; If the indent operation for a file takes longer than the specified idle timer, grow that timer by this number for a particular mode.
-;; 
-;; *** auto-indent-next-pair-timer-interval-max
-;; Maximum number seconds that auto-indent-mode will grow a parenthetical statement.
-;; If this is less than or equal to zero, these will be no limit.
-;; 
-;; *** auto-indent-next-pairt-timer-interval-do-not-grow
-;; If true, do not magically grow the mode-based indent time for a region.
+;; to the geometric mean of rate to indent a single line.
 ;; 
 ;; *** auto-indent-on-save-file
 ;;  - Auto Indent on visit file.
@@ -2564,6 +2552,7 @@
 (eval-when-compile
   (require 'cl))
 
+
 (defvar auto-indent-mode nil)
 
 (defgroup auto-indent nil
@@ -2661,7 +2650,7 @@ The test for presence of the car of ELT-CONS is done with `equal'."
 
 (defun auto-indent-par-region-interval-update (interval)
   "Updates `auto-indent-next-pair-timer-geo-mean'"
-  (let ((nlines (- (line-number-at-pos auto-indent-pairs-end) 
+  (let ((nlines (- (line-number-at-pos auto-indent-pairs-end)
                    (line-number-at-pos auto-indent-pairs-begin)))
         n i oi (iv interval))
     (setq i (assoc major-mode auto-indent-next-pair-timer-geo-mean))
@@ -4001,15 +3990,16 @@ Allows the kill ring save to delete the beginning white-space if desired."
 
 (defun auto-indent-par-region ()
   "Indent a parenthetical region (based on a timer)."
-  (let ((mark-active mark-active))
-    (when (not (minibufferp))
-      (let ((start-time (float-time)))
-        (indent-region auto-indent-pairs-begin auto-indent-pairs-end)
-        (auto-indent-par-region-interval-update (- (float-time) start-time)))
-      (when (or (> (point) auto-indent-pairs-end)
-                (< (point) auto-indent-pairs-begin))
-        (set (make-local-variable 'auto-indent-pairs-begin) nil)
-        (set (make-local-variable 'auto-indent-pairs-end) nil)))))
+  (when auto-indent-next-pair
+    (let ((mark-active mark-active))
+      (when (not (minibufferp))
+        (let ((start-time (float-time)))
+          (indent-region auto-indent-pairs-begin auto-indent-pairs-end)
+          (auto-indent-par-region-interval-update (- (float-time) start-time)))
+        (when (or (> (point) auto-indent-pairs-end)
+                  (< (point) auto-indent-pairs-begin))
+          (set (make-local-variable 'auto-indent-pairs-begin) nil)
+          (set (make-local-variable 'auto-indent-pairs-end) nil))))))
 
 (defun auto-indent-mode-post-command-hook-last ()
   "Last `post-command-hook' run.
@@ -4123,6 +4113,9 @@ around and the whitespace was deleted from the line."
             (when (and (looking-back "^[ \t]*") (looking-at "[ \t]*$"))
               (indent-according-to-mode))))))
     (error (message "[Auto-Indent-Mode]: Ignored indentation error in `auto-indent-mode-post-command-hook' %s" (error-message-string err)))))
+
+(defvar auto-indent-was-on nil)
+
 (provide 'auto-indent-mode)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; auto-indent-mode.el ends here
