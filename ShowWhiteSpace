@@ -1,19 +1,16 @@
-This page is about making particular whitespace more evident.
+This page is about making particular whitespace characters stand out better.
 
 == Vanilla GNU Emacs ==
 
-Starting with Emacs 21, you can set variable `show-trailing-whitespace' to
-highlight trailing whitespace in face `trailing-whitespace'. To disable showing trailing white space, set the variable to `nil' in your [[init file]]. For CPerl, you can also specify the face to use.  The default face is `underline'.  You can use face `default' for invisible whitespace:
+GnuEmacs 24 has internal variable `nobreak-char-display' (turned on by default), which highlights hard space and hard hyphen characters.  But the face is hardwired, and you cannot highlight only one of these chars. 
+
+GNU Emacs 22 or later has library ##whitespace.el##, which lets you highlight whitespace in several ways.  See WhiteSpace. 
+
+GNU Emacs 21 or later provides [[option]] `show-trailing-whitespace' to
+highlight trailing whitespace in face `trailing-whitespace'.  For CPerl, you can also specify the face to use.  The default face is `underline'.  You can use face `default' for invisible whitespace:
 
     (setq cperl-invalid-face 'default)
 
-Starting with Emacs 22, library <tt>[[whitespace.el]]</tt> is part of GnuEmacs. It provides various ways to visualize spaces, hard spaces, and TABs. See WhiteSpace. 
-
-[[blank-mode.el]] (BlankMode) was a precursor to [[whitespace.el]] (WhiteSpace) and has been replaced by it. When <code>blank-mode</code> is on, it looks like this:
-
-[[image:BlankModeOn]]
- 
-%%BlankMode%% saves and restores the font-lock state when it is turned on and off. So, if %%BlankMode%% is turned on and font-lock is off, %%BlankMode%% also turns on the font-lock to highlight blanks, but font-lock is turned off when %%BlankMode%% is turned off. So turn on font-lock before %%BlankMode%%, if you want font-lock to stay on after %%BlankMode%% is turned off.
 
 
 
@@ -21,26 +18,66 @@ Starting with Emacs 22, library <tt>[[whitespace.el]]</tt> is part of GnuEmacs. 
 
 
 [:ShowWspace]
-== show-wspace.el ==
+[:HighlightChars]
+== highlight-chars.el ==
 
-Library <tt>[[show-wspace.el]]</tt> lets you easily highlight any sets of characters that you choose.  There are toggle commands and functions to use on hooks.
+(Library <tt>[[highlight-chars.el]]</tt> replaces obsolete library <tt>[[show-wspace.el]]</tt>.)
 
-These highlight whitespace and confusing characters such as spaces, tabs, hard spaces, hard hyphens, and trailing whitespace.  But you can also highlight a customized set of characters.  You define that set using any number of entries of any of these kinds:
+Library <tt>[[highlight-chars.el]]</tt> lets you easily highlight any sets of characters that you choose, including whitespace characters.  There are commands and functions to use on hooks.
+
+You can highlight whitespace and other easily confused characters: spaces, tabs, hard spaces, and hard hyphens, as well as trailing whitespace.
+
+For example, command `hc-toggle-highlight-tabs' turns on/off highlighting of tab chars.  Or you can turn on tab highlighting by default by adding function `hc-highlight-tabs' to `font-lock-mode-hook' in your [[init file]]:
+
+   (add-hook 'font-lock-mode-hook 'hc-highlight-tabs)
+
+You can turn on/off the highlighting provided by library ##highlight-chars.el##:
+
+* in the current buffer only (i.e., locally),
+* globally whenever FontLockMode is turned on, or
+* automatically whenever a buffer is in a given [[major mode]]
+
+
+
+
+=== Not Just Whitespace - Highlight Any Set of Characters ===
+
+Unlike what is offered by libraries such as ##whitespace.el##, with library ##highlight-chars.el## you are not limited to whitespace highlighting.  You can highlight ''any set of characters''.  You can define the set using any number of entries of any of these kinds:
 
 * string of chars
 * range of successive chars (Emacs characters are integers)
 * character class (e.g. ##[:nonascii:]##, ##[:space:]##)
 * character set (e.g. `iso-8859-1' or `lao')
 
-For example, you can use command `ws-toggle-highlight-tabs' to turn on/off highlighting of tab chars.  Or you can turn on tab highlighting by default by adding function `ws-highlight-tabs' to `font-lock-mode-hook' in your [[init file]]:
+You can use any faces to do this.
 
-   (add-hook 'font-lock-mode-hook 'ws-highlight-tabs)
+In addition, you can ''exclude'' any set of characters from this highlighting.
 
-You can turn on/off the highlighting provided by library ##show-wspace.el## in the current buffer only (i.e., locally), globally whenever FontLockMode is turned on, or automatically whenever a buffer is in a given [[major mode]].
+You can thus, for example, highlight all characters in character
+set `greek-iso8859-7' ''except'' `##GREEK SMALL LETTER LAMBDA##'.  Or all
+characters in class ##[:space:]## (whitespace) ''except'' `tab'.  Or
+all Unicode characters in the range ##?\u2190## through ##?\u21ff##
+(mathematical arrows) ''except'' ##?\u21b6##, ##?\u21b7##, ##?\u21ba##, and
+##?\u21bb## (curved arrows).  You get the idea.
 
 
 
 
+
+
+
+
+
+
+
+
+== BlankMode ==
+
+[[blank-mode.el]] (BlankMode) was a precursor to standard library ##whitespace.el## (see WhiteSpace) and has been replaced by it. When <code>blank-mode</code> is on, it looks like this:
+
+[[image:BlankModeOn]]
+ 
+%%BlankMode%% saves and restores the font-lock state when it is turned on and off. So, if %%BlankMode%% is turned on and font-lock is off, %%BlankMode%% also turns on the font-lock to highlight blanks, but font-lock is turned off when %%BlankMode%% is turned off. So turn on font-lock before %%BlankMode%%, if you want font-lock to stay on after %%BlankMode%% is turned off.
 
 
 
