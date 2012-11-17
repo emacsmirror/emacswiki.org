@@ -1,10 +1,10 @@
 ;;; sunrise-commander.el --- two-pane file manager for Emacs based on Dired and inspired by MC  -*- lexical-binding: t -*-
 
-;; Copyright (C) 2007-2012 JosÃ© Alfredo Romero Latouche.
+;; Copyright (C) 2007-2012 José Alfredo Romero Latouche.
 
-;; Author: JosÃ© Alfredo Romero L. <escherdragon@gmail.com>
-;;	Å tÄpÃ¡n NÄmec <stepnem@gmail.com>
-;; Maintainer: JosÃ© Alfredo Romero L. <escherdragon@gmail.com>
+;; Author: José Alfredo Romero L. <escherdragon@gmail.com>
+;;	Štěpán Němec <stepnem@gmail.com>
+;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 6
 ;; RCS Version: $Rev: 442 $
@@ -136,7 +136,7 @@
 ;;    - "(C)opies" performs a regular recursive copy of all files and dirs,
 ;;    - "(H)ardlinks" makes every new file a (hard) link to the original one
 ;;    - "(S)ymlinks" creates absolute symbolic links for all files in the tree,
-;;    - "(R)elative symlinksâ creates relative symbolic links.
+;;    - "(R)elative symlinks” creates relative symbolic links.
 
 ;; * Passive navigation: the usual navigation keys (n, p, Return, U, ;) combined
 ;; with Meta allow to move across the passive pane without actually having to
@@ -155,10 +155,10 @@
 ;; There is no help window like in MC, but if you really miss it, just get and
 ;; install the sunrise-x-buttons extension.
 
-;; A lot of this code was once adapted from Kevin's mc.el, but it has evolved
-;; considerably since then. Another part (the code for file copying and
+;; A lot of this code was once adapted from Kevin Burton's mc.el, but it has
+;; evolved considerably since then. Another part (the code for file copying and
 ;; renaming) derives originally from the Dired extensions written by Kurt
-;; NÃ¸rmark for LAML (http://www.cs.aau.dk/~normark/scheme/distribution/laml/).
+;; Nørmark for LAML (http://www.cs.aau.dk/~normark/scheme/distribution/laml/).
 
 ;; It was written on GNU Emacs 24 on Linux and tested on GNU Emacs 22, 23 and 24
 ;; for Linux and on EmacsW32 (version 23) for Windows. I have also received
@@ -627,7 +627,7 @@ The following keybindings are available:
         { ............. shrinks the panes vertically by 1 row
         C-{ ........... shrinks the panes vertically as much as it can
         C-c { ......... shrinks the panes vertically as much as it can
-        \\ ............. restores the size of all windows back to Â«normalÂ»
+        \\ ............. restores the size of all windows back to «normal»
         C-c C-z ....... enable/disable synchronized navigation
 
         C-= ........... smart compare files (ediff)
@@ -698,7 +698,7 @@ functions (i.e. one of: C-c t, C-c T, C-c C-t, C-c M-t):
         C-c ; ......... follow the current directory in the active pane
         C-c { ......... shrink the panes vertically as much as possible
         C-c } ......... enlarge the panes vertically as much as possible
-        C-c \\ ......... restore the size of all windows back to Â«normalÂ»
+        C-c \\ ......... restore the size of all windows back to «normal»
         C-c C-j ....... put terminal in line mode
         C-c C-k ....... put terminal back in char mode
 
@@ -3610,7 +3610,7 @@ file)."
               (run-with-idle-timer 0.01 nil 'sr-sticky-isearch-prompt)))))))
 
 (defun sr-show-files-info (&optional deref-symlinks)
-  "Enhanced version of `dired-show-file-type' from diredâaux.
+  "Enhanced version of `dired-show-file-type' from dired‐aux.
 If at most one item is marked, print the filetype of the current
 item according to the \"file\" command, including its size in bytes.
 If more than one item is marked, print the total size in
