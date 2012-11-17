@@ -55,7 +55,7 @@ like:
 
 asvil updated IvanKorotkov's code to match the new [http://pastebin.com/api pastebin.com API].
 
-New pastebin.el version here: [./newpastebin.el pastebin.el]
+New pastebin.el version here: [[newpastebin.el]]
 
 ----
 CategoryInterface
