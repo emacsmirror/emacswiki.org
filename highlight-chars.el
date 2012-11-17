@@ -7,11 +7,11 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Nov 16 08:37:04 2012 (-0800)
 ;; Version: 2012
-;; Last-Updated: Fri Nov 16 18:52:05 2012 (-0800)
+;; Last-Updated: Fri Nov 16 19:23:08 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 159
-;; URL: http://www.emacswiki.org/emacs-en/highlight-chars.el
-;; Doc URL: http://emacswiki.org/emacs/ShowWhiteSpace
+;;     Update #: 161
+;; URL: http://www.emacswiki.org/highlight-chars.el
+;; Doc URL: http://www.emacswiki.org/ShowWhiteSpace#HighlightChars
 ;; Keywords: highlight, whitespace, characters, Unicode
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
 ;;
@@ -165,7 +165,7 @@
 ;;   http://www.emacswiki.org/cgi-bin/wiki/HighlightLibrary (doc)
 ;;
 ;; * Standard library `whitespace.el' for other ways to highlight
-;;   whitespace characters (starting with GNU Emacs 24).
+;;   whitespace characters.
 ;;
 ;;   This does some things similar to what `highlight-chars.el' does,
 ;;   plus other, unrelated things.  As its name suggests, its effects
@@ -355,11 +355,11 @@ highlight-chars.el bug: \
 &body=Describe bug here, starting with `emacs -q'.  \
 Don't forget to mention your Emacs and library versions."))
   :link '(url-link :tag "Other Libraries by Drew"
-          "http://www.emacswiki.org/cgi-bin/wiki/DrewsElispLibraries")
+          "http://www.emacswiki.org/DrewsElispLibraries")
   :link '(url-link :tag "Download"
-          "http://www.emacswiki.org/cgi-bin/wiki/highlight-chars.el")
+          "http://www.emacswiki.org/highlight-chars.el")
   :link '(url-link :tag "Description"
-          "http://www.emacswiki.org/cgi-bin/wiki/ShowWhiteSpace#HighlightChars")
+          "http://www.emacswiki.org/ShowWhiteSpace#HighlightChars")
   :link '(emacs-commentary-link :tag "Commentary" "highlight-chars")
   )
 
