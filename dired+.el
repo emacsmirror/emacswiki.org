@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Sat Nov 17 10:15:38 2012 (-0800)
+;; Last-Updated: Sat Nov 17 14:35:45 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 6164
+;;     Update #: 6259
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Doc URL: http://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -314,7 +314,8 @@
 ;;
 ;;  Non-interactive functions defined here:
 ;;
-;;    `diredp-all-files', `diredp-ancestor-dirs', `diredp-bookmark',
+;;    `derived-mode-p' (Emacs < 22), `diredp-all-files',
+;;    `diredp-ancestor-dirs', `diredp-bookmark',
 ;;    `diredp-create-files-non-directory-recursive',
 ;;    `diredp-directories-within',
 ;;    `diredp-dired-files-interactive-spec',
@@ -323,12 +324,12 @@
 ;;    `diredp-dired-plus-help-link', `diredp-dired-union-1',
 ;;    `diredp-dired-union-interactive-spec',
 ;;    `diredp-do-chxxx-recursive', `diredp-do-create-files-recursive',
-;;    `diredp-do-grep-1', `diredp-fewer-than-2-files-p',
-;;    `diredp-find-a-file-read-args', `diredp-files-within',
-;;    `diredp-files-within-1', `diredp-get-confirmation-recursive',
-;;    `diredp-get-files', `diredp-get-files-for-dir',
-;;    `diredp-internal-do-deletions', `diredp-list-files',
-;;    `diredp-make-find-file-keys-reuse-dirs',
+;;    `diredp-do-grep-1', `diredp-ensure-mode',
+;;    `diredp-fewer-than-2-files-p', `diredp-find-a-file-read-args',
+;;    `diredp-files-within', `diredp-files-within-1',
+;;    `diredp-get-confirmation-recursive', `diredp-get-files',
+;;    `diredp-get-files-for-dir', `diredp-internal-do-deletions',
+;;    `diredp-list-files', `diredp-make-find-file-keys-reuse-dirs',
 ;;    `diredp-make-find-file-keys-not-reuse-dirs', `diredp-maplist',
 ;;    `diredp-marked-here', `diredp-mark-files-tagged-all/none',
 ;;    `diredp-mark-files-tagged-some/not-all',
@@ -427,8 +428,8 @@
 ;;; Change Log:
 ;;
 ;; 2012/11/17 dadams
-;;     diredp-do-bookmark, diredp-read-bookmark-file-args:
-;;       Accept sr-mode also, so it works with Sunrise Commander.  Thx to Mike F.
+;;     Added: derived-mode-p (for Emacs < 22), diredp-ensure-mode.
+;;     Use diredp-ensure-mode everywhere for mode, so compatible with Sunrise Commander etc.
 ;; 2012/11/01 dadams
 ;;     Do not require ediff.el.  It is required in diredp-ediff itself.
 ;; 2012/10/06 dadams
@@ -974,7 +975,6 @@ rather than FUN itself, to `minibuffer-setup-hook'."
 (defvar image-dired-thumbnail-buffer)   ; In `image-dired.el'
 
 ;;;;;;;;;;;;;;;;;;;;;;;
-
  
 ;;; Variables
 
@@ -1021,7 +1021,6 @@ name and DESCRIPTION describes DRIVE."
 ;;;     "Regular expression to match up to the file name in a directory listing.
 ;;; The default value is designed to recognize dates and times
 ;;; regardless of the language."))
-
  
 ;;; Macros
 
@@ -1157,7 +1156,20 @@ If DISTINGUISH-ONE-MARKED is non-nil, then return (t FILENAME) instead
           (if found results (list ,body)))))
     ;; `save-excursion' loses, again
     (dired-move-to-filename)))
+ 
+;;; Utility functions
 
+(unless (fboundp 'derived-mode-p)       ; Emacs 20, 21.
+  (defun derived-mode-p (&rest modes)
+    "Non-nil if the current major mode is derived from one of MODES.
+Uses the `derived-mode-parent' property of the symbol to trace backwards."
+    (let ((parent  major-mode))
+      (while (and (not (memq parent modes))  (setq parent  (get parent 'derived-mode-parent))))
+      parent)))
+
+(defun diredp-ensure-mode ()
+  (unless (derived-mode-p 'dired-mode)
+    (error "You must be in Dired or a mode derived from it to use this command")))
  
 ;;; UNALTERED vanilla Emacs code to be reloaded, to use the new definition
 ;;; of `dired-map-over-marks'.  Unless otherwise noted, these are from the Emacs 23+ libraries.
@@ -1438,7 +1450,6 @@ If HDR is non-nil, insert a header line with the directory name."
          (overlay-put overlay 'thumb-file thumb-file)))
      nil)
     (add-hook 'dired-after-readin-hook 'image-dired-dired-after-readin-hook nil t)))
-
  
 ;;; Key Bindings.
 
@@ -2227,7 +2238,7 @@ If HDR is non-nil, insert a header line with the directory name."
   (define-key diredp-menu-bar-subdir-menu [wdired-mode]
     '(menu-item "Edit File Names (WDired)" wdired-change-to-wdired-mode
       :help "Put a dired buffer in a mode in which filenames are editable"
-      :keys "C-x C-q" :filter (lambda (x) (if (eq major-mode 'dired-mode) x)))))
+      :keys "C-x C-q" :filter (lambda (x) (and (derived-mode-p 'dired-mode)  x)))))
 (when (fboundp 'dired-compare-directories) ; Emacs 22+
   (define-key diredp-menu-bar-subdir-menu [compare-directories]
     '(menu-item "Compare Directories..." dired-compare-directories
@@ -2450,7 +2461,6 @@ Don't forget to mention your Emacs and library versions."))
   :link '(url-link :tag "Description"
           "http://www.emacswiki.org/cgi-bin/wiki/DiredPlus")
   :link '(emacs-commentary-link :tag "Commentary" "dired+"))
-
  
 ;;; Face Definitions
 
@@ -2950,8 +2960,7 @@ With a prefix arg:
  words, when in an inserted listing, a prefix arg tears off the
  inserted subdir to its own Dired buffer."
   (interactive "P\np")
-  (unless (eq major-mode 'dired-mode)
-    (error "You must be in a Dired buffer to use this command"))
+  (diredp-ensure-mode)
   (let* ((this-dir       default-directory)
          (this-subdir    (diredp-this-subdir))
          (on-dir-line-p  (atom this-subdir)))
@@ -2970,8 +2979,7 @@ With a prefix arg:
 With a prefix arg, create the Dired buffers but do not display them.
 Markings and current Dired switches are preserved."
   (interactive "P\np")
-  (unless (eq major-mode 'dired-mode)
-    (error "You must be in a Dired buffer to use this command"))
+  (diredp-ensure-mode)
   (let ((this-dir    default-directory)
         (this-buff   (current-buffer))
         (this-frame  (selected-frame))
@@ -3316,14 +3324,12 @@ Non-interactively:
  as the Dired buffer from which to pick up markings and switches.
  Otherwise, pick them up from a Dired buffer for CHILD, if there is
  exactly one such buffer."
-    (interactive
-     (progn (unless (eq major-mode 'dired-mode)
-              (error "You must be in a Dired buffer to use this command"))
-            (list default-directory
-                  (completing-read
-                   "Insert this dir into ancestor dir: "
-                   (mapcar #'list (diredp-ancestor-dirs default-directory)))
-                  t)))
+    (interactive (progn (diredp-ensure-mode)
+                        (list default-directory
+                              (completing-read
+                               "Insert this dir into ancestor dir: "
+                               (mapcar #'list (diredp-ancestor-dirs default-directory)))
+                              t)))
     (let ((child-dired-buf  (if in-dired-now-p
                                 (current-buffer)
                               (dired-buffers-for-dir (expand-file-name child))))
@@ -3359,8 +3365,7 @@ A simple, recursive version of the classic `maplist'."
   "Get confirmation from user to act on all files here and below.
 Raise an error if not confirmed.
 Raise an error first if not in Dired mode."
-  (unless (eq major-mode 'dired-mode)
-    (error "You must be in a Dired buffer to use this command"))
+  (diredp-ensure-mode)
   (unless (y-or-n-p "Act on ALL files (or all marked if any) in and UNDER this dir? ")
     (error "OK, canceled")))
 
@@ -3812,8 +3817,7 @@ marked subdir, then all files in the directory are included.
 Non-interactively, non-nil PREDICATE is a file-name predicate.  List
 only the files for which it returns non-nil."
   (interactive                          ; No need for `diredp-get-confirmation-recursive' here.
-   (progn (unless (eq major-mode 'dired-mode) (error "Use this command only in Dired mode"))
-          (list current-prefix-arg)))
+   (progn (diredp-ensure-mode) (list current-prefix-arg)))
   (let ((files  (diredp-get-files ignore-marks-p predicate)))
     (diredp-list-files files)))
 
@@ -3854,8 +3858,7 @@ The files included are those that are marked in the current Dired
 buffer, or all files in the directory if none are marked.  Marked
 subdirectories are handled recursively in the same way."
   (interactive                          ; No need for `diredp-get-confirmation-recursive' here.
-   (progn (unless (eq major-mode 'dired-mode) (error "Use this command only in Dired mode"))
-          (list current-prefix-arg)))
+   (progn (diredp-ensure-mode) (list current-prefix-arg)))
   (let* ((files   (mapcar (cond ((zerop (prefix-numeric-value arg)) #'identity)
                                 ((consp arg) (lambda (fn) (concat (dired-current-directory t)
                                                                   (file-name-nondirectory fn))))
@@ -4137,12 +4140,10 @@ Dired buffer and all subdirs, recursively."
   "Redisplay marked file lines, including those in marked subdirs.
 Like `dired-do-redisplay' with no args, but act recursively on
 subdirs."
-  (interactive
-   (progn (unless (eq major-mode 'dired-mode)
-            (error "You must be in a Dired buffer to use this command"))
-          (unless (y-or-n-p "Act on all marked file lines in and UNDER this dir? ")
-            (error "OK, canceled"))
-          (list t)))
+  (interactive (progn (diredp-ensure-mode)
+                      (unless (y-or-n-p "Act on all marked file lines in and UNDER this dir? ")
+                        (error "OK, canceled"))
+                      (list t)))
   (when msgp (message "Redisplaying..."))
   (dolist (dir  (cons default-directory
                       (diredp-get-files nil #'file-directory-p 'INCLUDE-SUBDIRS 'DONT-ASK)))
@@ -4179,7 +4180,7 @@ subdirectories, so the Dired buffer that is opened can contain files
 from multiple directories in the same tree."
   (interactive
    (progn
-     (unless (eq major-mode 'dired-mode) (error "Use this command only in Dired mode"))
+     (diredp-ensure-mode)
      (let ((num  (and current-prefix-arg (atom current-prefix-arg)
                       (not (zerop (prefix-numeric-value current-prefix-arg)))
                       (abs (prefix-numeric-value current-prefix-arg)))))
@@ -4199,7 +4200,7 @@ from multiple directories in the same tree."
   "Same as `diredp-marked', but uses a different window."
   (interactive
    (progn
-     (unless (eq major-mode 'dired-mode) (error "Use this command only in Dired mode"))
+     (diredp-ensure-mode)
      (let ((num  (and current-prefix-arg (atom current-prefix-arg)
                       (not (zerop (prefix-numeric-value current-prefix-arg)))
                       (abs (prefix-numeric-value current-prefix-arg)))))
@@ -4308,8 +4309,7 @@ You need library `bookmark+.el' to use this command."
          (and diredp-prompt-for-bookmark-prefix-flag
               (read-string "Prefix for autofile bookmark names: "))))
   (unless (require 'bookmark+ nil t) (error "This command requires library `bookmark+.el'"))
-  (unless (eq major-mode 'dired-mode)
-    (error "You must be in a Dired buffer to use this command"))
+  (diredp-ensure-mode)
   (diredp-mark-files-tagged-all/none tags none-p nil prefix))
 
 ;;;###autoload
@@ -4325,8 +4325,7 @@ You need library `bookmark+.el' to use this command."
          (and diredp-prompt-for-bookmark-prefix-flag
               (read-string "Prefix for autofile bookmark names: "))))
   (unless (require 'bookmark+ nil t) (error "This command requires library `bookmark+.el'"))
-  (unless (eq major-mode 'dired-mode)
-    (error "You must be in a Dired buffer to use this command"))
+  (diredp-ensure-mode)
   (diredp-mark-files-tagged-all/none tags (not allp) nil prefix))
 
 ;;;###autoload
@@ -4342,8 +4341,7 @@ You need library `bookmark+.el' to use this command."
          (and diredp-prompt-for-bookmark-prefix-flag
               (read-string "Prefix for autofile bookmark names: "))))
   (unless (require 'bookmark+ nil t) (error "This command requires library `bookmark+.el'"))
-  (unless (eq major-mode 'dired-mode)
-    (error "You must be in a Dired buffer to use this command"))
+  (diredp-ensure-mode)
   (diredp-mark-files-tagged-some/not-all tags somenotp nil prefix))
 
 ;;;###autoload
@@ -4359,8 +4357,7 @@ You need library `bookmark+.el' to use this command."
          (and diredp-prompt-for-bookmark-prefix-flag
               (read-string "Prefix for autofile bookmark names: "))))
   (unless (require 'bookmark+ nil t) (error "This command requires library `bookmark+.el'"))
-  (unless (eq major-mode 'dired-mode)
-    (error "You must be in a Dired buffer to use this command"))
+  (diredp-ensure-mode)
   (diredp-mark-files-tagged-some/not-all tags (not somep) nil prefix))
 
 ;;;###autoload
@@ -4374,8 +4371,7 @@ You need library `bookmark+.el' to use this command."
          (and diredp-prompt-for-bookmark-prefix-flag
               (read-string "Prefix for autofile bookmark names: "))))
   (unless (require 'bookmark+ nil t) (error "This command requires library `bookmark+.el'"))
-  (unless (eq major-mode 'dired-mode)
-    (error "You must be in a Dired buffer to use this command"))
+  (diredp-ensure-mode)
   (dired-mark-if (and (not (looking-at dired-re-dot))  (not (eolp))
                       (lexical-let* ((fname  (dired-get-filename nil t))
                                      (bmk    (and fname (bmkp-get-autofile-bookmark
@@ -4400,8 +4396,7 @@ You need library `bookmark+.el' to use this command."
          (and diredp-prompt-for-bookmark-prefix-flag
               (read-string "Prefix for autofile bookmark names: "))))
   (unless (require 'bookmark+ nil t) (error "This command requires library `bookmark+.el'"))
-  (unless (eq major-mode 'dired-mode)
-    (error "You must be in a Dired buffer to use this command"))
+  (diredp-ensure-mode)
   (let ((dired-marker-char  ?\040))
     (dired-mark-if (and (not (looking-at dired-re-dot))  (not (eolp))
                         (lexical-let* ((fname  (dired-get-filename nil t))
@@ -4429,8 +4424,7 @@ You need library `bookmark+.el' to use this command."
          (and diredp-prompt-for-bookmark-prefix-flag
               (read-string "Prefix for autofile bookmark names: "))))
   (unless (require 'bookmark+ nil t) (error "This command requires library `bookmark+.el'"))
-  (unless (eq major-mode 'dired-mode)
-    (error "You must be in a Dired buffer to use this command"))
+  (diredp-ensure-mode)
   (diredp-mark-files-tagged-all/none tags none-p 'UNMARK prefix))
 
 ;;;###autoload
@@ -4446,8 +4440,7 @@ You need library `bookmark+.el' to use this command."
          (and diredp-prompt-for-bookmark-prefix-flag
               (read-string "Prefix for autofile bookmark names: "))))
   (unless (require 'bookmark+ nil t) (error "This command requires library `bookmark+.el'"))
-  (unless (eq major-mode 'dired-mode)
-    (error "You must be in a Dired buffer to use this command"))
+  (diredp-ensure-mode)
   (diredp-mark-files-tagged-all/none tags (not allp) 'UNMARK prefix))
 
 ;;;###autoload
@@ -4463,8 +4456,7 @@ You need library `bookmark+.el' to use this command."
          (and diredp-prompt-for-bookmark-prefix-flag
               (read-string "Prefix for autofile bookmark names: "))))
   (unless (require 'bookmark+ nil t) (error "This command requires library `bookmark+.el'"))
-  (unless (eq major-mode 'dired-mode)
-    (error "You must be in a Dired buffer to use this command"))
+  (diredp-ensure-mode)
   (diredp-mark-files-tagged-some/not-all tags somenotp 'UNMARK prefix))
 
 ;;;###autoload
@@ -4480,8 +4472,7 @@ You need library `bookmark+.el' to use this command."
          (and diredp-prompt-for-bookmark-prefix-flag
               (read-string "Prefix for autofile bookmark names: "))))
   (unless (require 'bookmark+ nil t) (error "This command requires library `bookmark+.el'"))
-  (unless (eq major-mode 'dired-mode)
-    (error "You must be in a Dired buffer to use this command"))
+  (diredp-ensure-mode)
   (diredp-mark-files-tagged-some/not-all tags (not somep) 'UNMARK prefix))
 
 ;;;###autoload
@@ -4501,15 +4492,13 @@ A prefix argument ARG specifies files to use instead of those marked.
  `C-u C-u': Use all files in Dired, except directories.
  `C-u C-u C-u': Use all files and directories, except `.' and `..'.
  `C-u C-u C-u C-u': Use all files and all directories."
-  (interactive
-   (progn (unless (require 'bookmark+ nil t)
-            (error "This command requires library `bookmark+.el'"))
-          (unless (eq major-mode 'dired-mode)
-            (error "You must be in a Dired buffer to use this command"))
-          (list (bmkp-read-tags-completing)
-                (and diredp-prompt-for-bookmark-prefix-flag
-                     (read-string "Prefix for autofile bookmark name: "))
-                current-prefix-arg)))
+  (interactive (progn (unless (require 'bookmark+ nil t)
+                        (error "This command requires library `bookmark+.el'"))
+                      (diredp-ensure-mode)
+                      (list (bmkp-read-tags-completing)
+                            (and diredp-prompt-for-bookmark-prefix-flag
+                                 (read-string "Prefix for autofile bookmark name: "))
+                            current-prefix-arg)))
   (dired-map-over-marks-check (lexical-let ((pref  prefix)) #'(lambda () (diredp-tag tags pref)))
                               arg 'tag (diredp-fewer-than-2-files-p arg)))
 
@@ -4536,8 +4525,7 @@ Return nil for success, file name otherwise."
 You need library `bookmark+.el' to use this command."
   (interactive "e")
   (unless (require 'bookmark+ nil t) (error "This command requires library `bookmark+.el'"))
-  (unless (eq major-mode 'dired-mode)
-    (error "You must be in a Dired buffer to use this command"))
+  (diredp-ensure-mode)
   (lexical-let ((mouse-pos         (event-start event))
                 (dired-no-confirm  t)
                 (prefix            (and diredp-prompt-for-bookmark-prefix-flag
@@ -4565,15 +4553,13 @@ A prefix argument ARG specifies files to use instead of those marked.
  `C-u C-u': Use all files in Dired, except directories.
  `C-u C-u C-u': Use all files and directories, except `.' and `..'.
  `C-u C-u C-u C-u': Use all files and all directories."
-  (interactive
-   (progn
-     (unless (require 'bookmark+ nil t) (error "This command requires library `bookmark+.el'"))
-     (unless (eq major-mode 'dired-mode)
-       (error "You must be in a Dired buffer to use this command"))
-     (list (bmkp-read-tags-completing)
-           (and diredp-prompt-for-bookmark-prefix-flag
-                (read-string "Prefix for bookmark name: "))
-           current-prefix-arg)))
+  (interactive (progn (unless (require 'bookmark+ nil t)
+                        (error "This command requires library `bookmark+.el'"))
+                      (diredp-ensure-mode)
+                      (list (bmkp-read-tags-completing)
+                            (and diredp-prompt-for-bookmark-prefix-flag
+                                 (read-string "Prefix for bookmark name: "))
+                            current-prefix-arg)))
   (dired-map-over-marks-check (lexical-let ((pref  prefix))
                                 #'(lambda () (diredp-untag tags pref)))
                               arg 'untag (diredp-fewer-than-2-files-p arg)))
@@ -4601,8 +4587,7 @@ Return nil for success, file name otherwise."
 You need library `bookmark+.el' to use this command."
   (interactive "e")
   (unless (require 'bookmark+ nil t) (error "This command requires library `bookmark+.el'"))
-  (unless (eq major-mode 'dired-mode)
-    (error "You must be in a Dired buffer to use this command"))
+  (diredp-ensure-mode)
   (lexical-let ((mouse-pos         (event-start event))
                 (dired-no-confirm  t)
                 (prefix            (and diredp-prompt-for-bookmark-prefix-flag
@@ -4629,14 +4614,12 @@ A prefix argument ARG specifies files to use instead of those marked.
  `C-u C-u': Use all files in Dired, except directories.
  `C-u C-u C-u': Use all files and directories, except `.' and `..'.
  `C-u C-u C-u C-u': Use all files and all directories."
-  (interactive
-   (progn
-     (unless (require 'bookmark+ nil t) (error "This command requires library `bookmark+.el'"))
-     (unless (eq major-mode 'dired-mode)
-       (error "You must be in a Dired buffer to use this command"))
-     (list (and diredp-prompt-for-bookmark-prefix-flag
-                (read-string "Prefix for bookmark name: "))
-           current-prefix-arg)))
+  (interactive (progn (unless (require 'bookmark+ nil t)
+                        (error "This command requires library `bookmark+.el'"))
+                      (diredp-ensure-mode)
+                      (list (and diredp-prompt-for-bookmark-prefix-flag
+                                 (read-string "Prefix for bookmark name: "))
+                            current-prefix-arg)))
   (lexical-let ((pref  prefix))
     (dired-map-over-marks-check #'(lambda () (diredp-remove-all-tags pref)) arg 'remove-all-tags
                                 (diredp-fewer-than-2-files-p arg))))
@@ -4664,8 +4647,7 @@ Return nil for success, file name otherwise."
 You need library `bookmark+.el' to use this command."
   (interactive "e")
   (unless (require 'bookmark+ nil t) (error "This command requires library `bookmark+.el'"))
-  (unless (eq major-mode 'dired-mode)
-    (error "You must be in a Dired buffer to use this command"))
+  (diredp-ensure-mode)
   (lexical-let ((mouse-pos         (event-start event))
                 (dired-no-confirm  t)
                 (prefix            (and diredp-prompt-for-bookmark-prefix-flag
@@ -4688,14 +4670,12 @@ A prefix argument ARG specifies files to use instead of those marked.
  `C-u C-u': Use all files in Dired, except directories.
  `C-u C-u C-u': Use all files and directories, except `.' and `..'.
  `C-u C-u C-u C-u': Use all files and all directories."
-  (interactive
-   (progn
-     (unless (require 'bookmark+ nil t) (error "This command requires library `bookmark+.el'"))
-     (unless (eq major-mode 'dired-mode)
-       (error "You must be in a Dired buffer to use this command"))
-     (list (and diredp-prompt-for-bookmark-prefix-flag
-                (read-string "Prefix for autofile bookmark name: "))
-           current-prefix-arg)))
+  (interactive (progn (unless (require 'bookmark+ nil t)
+                        (error "This command requires library `bookmark+.el'"))
+                      (diredp-ensure-mode)
+                      (list (and diredp-prompt-for-bookmark-prefix-flag
+                                 (read-string "Prefix for autofile bookmark name: "))
+                            current-prefix-arg)))
   (dired-map-over-marks-check (lexical-let ((pref  prefix))
                                 #'(lambda () (diredp-paste-add-tags pref)))
                               arg 'paste-add-tags
@@ -4726,8 +4706,7 @@ The tags were previously copied from a file to `bmkp-copied-tags'.
 You need library `bookmark+.el' to use this command."
   (interactive "e")
   (unless (require 'bookmark+ nil t) (error "This command requires library `bookmark+.el'"))
-  (unless (eq major-mode 'dired-mode)
-    (error "You must be in a Dired buffer to use this command"))
+  (diredp-ensure-mode)
   (lexical-let ((mouse-pos         (event-start event))
                 (dired-no-confirm  t)
                 (prefix            (and diredp-prompt-for-bookmark-prefix-flag
@@ -4750,14 +4729,12 @@ A prefix argument ARG specifies files to use instead of those marked.
  `C-u C-u': Use all files in Dired, except directories.
  `C-u C-u C-u': Use all files and directories, except `.' and `..'.
  `C-u C-u C-u C-u': Use all files and all directories."
-  (interactive
-   (progn
-     (unless (require 'bookmark+ nil t) (error "This command requires library `bookmark+.el'"))
-     (unless (eq major-mode 'dired-mode)
-       (error "You must be in a Dired buffer to use this command"))
-     (list (and diredp-prompt-for-bookmark-prefix-flag
-                (read-string "Prefix for autofile bookmark name: "))
-           current-prefix-arg)))
+  (interactive (progn (unless (require 'bookmark+ nil t)
+                        (error "This command requires library `bookmark+.el'"))
+                      (diredp-ensure-mode)
+                      (list (and diredp-prompt-for-bookmark-prefix-flag
+                                 (read-string "Prefix for autofile bookmark name: "))
+                            current-prefix-arg)))
   (dired-map-over-marks-check (lexical-let ((pref  prefix))
                                 #'(lambda () (diredp-paste-replace-tags pref)))
                               arg 'paste-replace-tags (diredp-fewer-than-2-files-p arg)))
@@ -4788,8 +4765,7 @@ The tags were previously copied from a file to `bmkp-copied-tags'.
 You need library `bookmark+.el' to use this command."
   (interactive "e")
   (unless (require 'bookmark+ nil t) (error "This command requires library `bookmark+.el'"))
-  (unless (eq major-mode 'dired-mode)
-    (error "You must be in a Dired buffer to use this command"))
+  (diredp-ensure-mode)
   (lexical-let ((mouse-pos         (event-start event))
                 (dired-no-confirm  t)
                 (prefix            (and diredp-prompt-for-bookmark-prefix-flag
@@ -4814,16 +4790,14 @@ A prefix argument ARG specifies files to use instead of those marked.
  `C-u C-u': Use all files in Dired, except directories.
  `C-u C-u C-u': Use all files and directories, except `.' and `..'.
  `C-u C-u C-u C-u': Use all files and all directories."
-  (interactive
-   (progn
-     (unless (require 'bookmark+ nil t) (error "This command requires library `bookmark+.el'"))
-     (unless (eq major-mode 'dired-mode)
-       (error "You must be in a Dired buffer to use this command"))
-     (list (bmkp-read-tag-completing)
-           (read (read-string "Value: "))
-           (and diredp-prompt-for-bookmark-prefix-flag
-                (read-string "Prefix for bookmark name: "))
-           current-prefix-arg)))
+  (interactive (progn (unless (require 'bookmark+ nil t)
+                        (error "This command requires library `bookmark+.el'"))
+                      (diredp-ensure-mode)
+                      (list (bmkp-read-tag-completing)
+                            (read (read-string "Value: "))
+                            (and diredp-prompt-for-bookmark-prefix-flag
+                                 (read-string "Prefix for bookmark name: "))
+                            current-prefix-arg)))
   (dired-map-over-marks-check (lexical-let ((tg    tag)
                                             (val   value)
                                             (pref  prefix))
@@ -4855,8 +4829,7 @@ This does not change the tag name.
 You need library `bookmark+.el' to use this command."
   (interactive "e")
   (unless (require 'bookmark+ nil t) (error "This command requires library `bookmark+.el'"))
-  (unless (eq major-mode 'dired-mode)
-    (error "You must be in a Dired buffer to use this command"))
+  (diredp-ensure-mode)
   (lexical-let ((mouse-pos         (event-start event))
                 (dired-no-confirm  t)
                 (prefix            (and diredp-prompt-for-bookmark-prefix-flag
@@ -4885,12 +4858,10 @@ A prefix argument ARG specifies files to use instead of those marked.
  `C-u C-u': Use all files in Dired, except directories.
  `C-u C-u C-u': Use all files and directories, except `.' and `..'.
  `C-u C-u C-u C-u': Use all files and all directories."
-  (interactive
-   (progn (unless (memq major-mode '(dired-mode sr-mode)) 
-            (error "You must be in a Dired buffer to use this command"))
-          (list (and diredp-prompt-for-bookmark-prefix-flag
-                     (read-string "Prefix for bookmark name: "))
-                current-prefix-arg)))
+  (interactive (progn (diredp-ensure-mode)
+                      (list (and diredp-prompt-for-bookmark-prefix-flag
+                                 (read-string "Prefix for bookmark name: "))
+                            current-prefix-arg)))
   (dired-map-over-marks-check (lexical-let ((pref  prefix))
                                 #'(lambda () (diredp-bookmark pref nil 'NO-MSG-P)))
                               arg 'bookmark (diredp-fewer-than-2-files-p arg)))
@@ -5063,8 +5034,7 @@ Non-interactively:
 (defun diredp-read-bookmark-file-args ()
   "Read args for `diredp-do-bookmark-in-bookmark-file' and similar."
   (unless (require 'bookmark+ nil t) (error "This command requires library `bookmark+.el'"))
-  (unless (memq major-mode '(dired-mode sr-mode))
-    (error "You must be in a Dired buffer to use this command"))
+  (diredp-ensure-mode)
   (list (let* ((insert-default-directory  t)
                (bmk-file                  (expand-file-name
                                            (read-file-name
@@ -6251,8 +6221,7 @@ Makes the first char of the name uppercase and the others lowercase."
 (defun diredp-bookmark-this-file (&optional prefix) ; Bound to `C-B' (`C-S-b')
   "In Dired, bookmark the file on the cursor line.
 See `diredp-do-bookmark'."
-  (interactive (progn (unless (eq major-mode 'dired-mode)
-                        (error "You must be in a Dired buffer to use this command"))
+  (interactive (progn (diredp-ensure-mode)
                       (list (and diredp-prompt-for-bookmark-prefix-flag
                                  (read-string "Prefix for bookmark name: ")))))
   (diredp-do-bookmark prefix 1))
@@ -6263,8 +6232,7 @@ See `diredp-do-bookmark'."
 You need library `bookmark+.el' to use this command."
   (interactive (progn (unless (require 'bookmark+ nil t)
                         (error "This command requires library `bookmark+.el'"))
-                      (unless (eq major-mode 'dired-mode)
-                        (error "You must be in a Dired buffer to use this command"))
+                      (diredp-ensure-mode)
                       (list (bmkp-read-tags-completing)
                             (and diredp-prompt-for-bookmark-prefix-flag
                                  (read-string "Prefix for bookmark name: ")))))
@@ -6277,8 +6245,7 @@ With a prefix arg, remove all tags from the file.
 You need library `bookmark+.el' to use this command."
   (interactive (progn (unless (require 'bookmark+ nil t)
                         (error "This command requires library `bookmark+.el'"))
-                      (unless (eq major-mode 'dired-mode)
-                        (error "You must be in a Dired buffer to use this command"))
+                      (diredp-ensure-mode)
                       (let* ((pref  (and diredp-prompt-for-bookmark-prefix-flag
                                          (read-string "Prefix for bookmark name: ")))
                              (bmk   (bmkp-get-autofile-bookmark (dired-get-filename) nil pref))
@@ -6295,8 +6262,7 @@ You need library `bookmark+.el' to use this command."
 You need library `bookmark+.el' to use this command."
   (interactive (progn (unless (require 'bookmark+ nil t)
                         (error "This command requires library `bookmark+.el'"))
-                      (unless (eq major-mode 'dired-mode)
-                        (error "You must be in a Dired buffer to use this command"))
+                      (diredp-ensure-mode)
                       (list (and diredp-prompt-for-bookmark-prefix-flag
                                  (read-string "Prefix for bookmark name: "))
                             'MSG)))
@@ -6310,8 +6276,7 @@ See `diredp-paste-add-tags'.
 You need library `bookmark+.el' to use this command."
   (interactive (progn (unless (require 'bookmark+ nil t)
                         (error "This command requires library `bookmark+.el'"))
-                      (unless (eq major-mode 'dired-mode)
-                        (error "You must be in a Dired buffer to use this command"))
+                      (diredp-ensure-mode)
                       (list (and diredp-prompt-for-bookmark-prefix-flag
                                  (read-string "Prefix for bookmark name: "))
                             'MSG)))
@@ -6325,8 +6290,7 @@ See `diredp-paste-replace-tags'.
 You need library `bookmark+.el' to use this command."
   (interactive (progn (unless (require 'bookmark+ nil t)
                         (error "This command requires library `bookmark+.el'"))
-                      (unless (eq major-mode 'dired-mode)
-                        (error "You must be in a Dired buffer to use this command"))
+                      (diredp-ensure-mode)
                       (list (and diredp-prompt-for-bookmark-prefix-flag
                                  (read-string "Prefix for bookmark name: "))
                             'MSG)))
@@ -6340,8 +6304,7 @@ See `diredp-set-tag-value'.
 You need library `bookmark+.el' to use this command."
   (interactive (progn (unless (require 'bookmark+ nil t)
                         (error "This command requires library `bookmark+.el'"))
-                      (unless (eq major-mode 'dired-mode)
-                        (error "You must be in a Dired buffer to use this command"))
+                      (diredp-ensure-mode)
                       (list (bmkp-read-tag-completing)
                             (read (read-string "Value: "))
                             (and diredp-prompt-for-bookmark-prefix-flag
@@ -6357,8 +6320,7 @@ See `diredp-copy-tags'.
 You need library `bookmark+.el' to use this command."
   (interactive (progn (unless (require 'bookmark+ nil t)
                         (error "This command requires library `bookmark+.el'"))
-                      (unless (eq major-mode 'dired-mode)
-                        (error "You must be in a Dired buffer to use this command"))
+                      (diredp-ensure-mode)
                       (list (and diredp-prompt-for-bookmark-prefix-flag
                                  (read-string "Prefix for bookmark name: "))
                             'MSG)))
@@ -7209,7 +7171,7 @@ This calls chmod, so symbolic modes like `g+w' are allowed."
 This is `describe-mode' plus a description of Dired+ features.
 For just the latter, use \\<dired-mode-map>`\\[diredp-dired-plus-help]'."
   (interactive "@")
-  (unless (eq major-mode 'dired-mode)
+  (unless (derived-mode-p 'dired-mode)
     (error "Use `diredp-dired-plus-help' if you want information about Dired+"))
   (with-current-buffer (or buffer (current-buffer)) (describe-mode))
   (with-current-buffer (get-buffer-create "*Help*")
