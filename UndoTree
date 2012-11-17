@@ -61,7 +61,11 @@ Emacs' undo system is definitely not the standard impoverished undo/redo system 
 
 Undo-tree-mode instead treats undo history as what it is: a branching tree of changes. This preserves all the power of Emacs' undo system viz-a-viz not losing any undo history. But it makes it substantially easier and more intuitive to undo and redo the changes you want (for some people, at least). Note that this matches the undo system that Vim has had for some time now. The undo-tree visualizer in the screenshot above is just the icing on the cake. The bigger thing is the fundamental change to how the undo system works.
 
+Apparently quite a few people do find this useful. It's by far the most popular of my Emacs packages.
+
 Do read the Commentary for a more detailed discussion. It even has diagrams :)
+
+--TobyCubitt
 
 ----
 CategoryUndo
