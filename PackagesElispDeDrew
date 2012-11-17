@@ -137,7 +137,7 @@ A part ca, j'ai fait des modifs mineures a plusieurs packages recemment -- alors
 * Lisp:setup.el -- initialisation d'Emacs : affectations de variables, accroches (hooks) etc.
 * Lisp:setup-cygwin.el -- initialisation d'Emacs pour utilisation avec Cygwin
 * Lisp:setup-keys.el -- qq liaisons de cles
-* Lisp:show-wspace.el -- commandes a mettre en vedette les caracteres whitespaces: TABs etc.; voir aussi ShowWhiteSpace (en)
+* Lisp:highlight-chars.el -- commandes a mettre en vedette les caracteres whitespaces: TABs etc.; voir aussi ShowWhiteSpace (en)
 * Lisp:simple+.el -- des extensions au package standard `simple'
 * Lisp:start.el -- fichier d'initialisation principal pour Emacs : <code>require</code> et <code>autoload</code> d'autres packages
 * Lisp:start-opt.el -- qq customisations a faire a la fin de l'initialisation d'Emacs
