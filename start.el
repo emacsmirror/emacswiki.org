@@ -7,9 +7,9 @@
 ;; Copyright (C) 1995-2012, Drew Adams, all rights reserved.
 ;; Created: Wed Aug  2 11:12:24 1995
 ;; Version: 21.1
-;; Last-Updated: Wed Nov 14 10:40:38 2012 (-0800)
+;; Last-Updated: Fri Nov 16 19:37:43 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 2957
+;;     Update #: 2959
 ;; URL: http://www.emacswiki.org/emacs-en/start.el
 ;; Keywords: abbrev, internal, local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -82,6 +82,8 @@
 ;;
 ;; Change Log:
 ;;
+;; 2012/11/16 dadams
+;;     New library highlight-chars.el replaces obsolete show-wspace.el.
 ;; 2012/11/14 dadams
 ;;     More autoloads for show-wspace.el commands.
 ;; 2012/11/13 dadams
@@ -686,23 +688,23 @@ See the Dired-X Info pages (type \\[info]) for information on this package.")
   "Temporarily display line numbers in left margin of current buffer." t)
 (autoload 'setup-training-cc "training-cc" "Set up for code display with projector." t)
 
-(autoload 'toggle-highlight-hard-hyphens "show-wspace"
+(autoload 'toggle-highlight-hard-hyphens "highlight-chars"
   "Toggle highlighting of hard hyphen characters." t)
-(autoload 'ws-toggle-highlight-hard-hyphens "show-wspace"
+(autoload 'hc-toggle-highlight-hard-hyphens "highlight-chars"
   "Toggle highlighting of hard hyphen characters." t)
-(autoload 'toggle-highlight-hard-spaces "show-wspace"
+(autoload 'toggle-highlight-hard-spaces "highlight-chars"
   "Toggle highlighting of non-breaking space characters." t)
-(autoload 'ws-toggle-highlight-hard-spaces "show-wspace"
+(autoload 'hc-toggle-highlight-hard-spaces "highlight-chars"
   "Toggle highlighting of non-breaking space characters." t)
-(autoload 'toggle-highlight-other-chars "show-wspace"
-  "Toggle highlighting of chars in `ws-other-chars'." t)
-(autoload 'ws-toggle-highlight-other-chars "show-wspace"
-  "Toggle highlighting of chars in `ws-other-chars'." t)
-(autoload 'toggle-highlight-tabs    "show-wspace" "Toggle highlighting of TAB characters." t)
-(autoload 'ws-toggle-highlight-tabs "show-wspace" "Toggle highlighting of TAB characters." t)
-(autoload 'toggle-highlight-trailing-whitespace "show-wspace"
+(autoload 'toggle-highlight-other-chars "highlight-chars"
+  "Toggle highlighting of chars in `hc-other-chars'." t)
+(autoload 'hc-toggle-highlight-other-chars "highlight-chars"
+  "Toggle highlighting of chars in `hc-other-chars'." t)
+(autoload 'toggle-highlight-tabs    "highlight-chars" "Toggle highlighting of TAB characters." t)
+(autoload 'hc-toggle-highlight-tabs "highlight-chars" "Toggle highlighting of TAB characters." t)
+(autoload 'toggle-highlight-trailing-whitespace "highlight-chars"
   "Toggle highlighting of trailing whitespace." t)
-(autoload 'ws-toggle-highlight-trailing-whitespace "show-wspace"
+(autoload 'hc-toggle-highlight-trailing-whitespace "highlight-chars"
   "Toggle highlighting of trailing whitespace." t)
 
 (autoload 'joc-cursor-type-set-hook "cursors" "Make cursor reflect insert/overwrite mode." t)
