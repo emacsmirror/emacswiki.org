@@ -7,13 +7,13 @@
 ;; Copyright (C) 1995-2012, Drew Adams, all rights reserved.
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 21.0
-;; Last-Updated: Thu Aug 23 13:40:27 2012 (-0700)
+;; Last-Updated: Fri Nov 16 19:33:33 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 3156
+;;     Update #: 3162
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/highlight.el
 ;; Doc URL: http://www.emacswiki.org/emacs/HighlightLibrary
 ;; Keywords: faces, help, local
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -502,11 +502,11 @@
 ;;(@* "See Also")
 ;;  ** See Also **
 ;;
-;;  * `show-space.el' - This library provides ways to highlight
-;;    different sets of characters, including whitespace and Unicode
-;;    characters.  It is available here:
-;;    http://www.emacswiki.org/cgi-bin/wiki/show-wspace.el (code)
-;;    http://www.emacswiki.org/ShowWhiteSpace#ShowWspace   (doc)
+;;  * `highlight-chars.el' - Provides ways to highlight different sets
+;;    of characters, including whitespace and Unicode characters.  It
+;;    is available here:
+;;    http://www.emacswiki.org/highlight-chars.el              (code)
+;;    http://www.emacswiki.org/ShowWhiteSpace#HighlightChars   (doc)
 ;;
 ;;  * `hi-lock.el' - The features of `highlight.el' are complementary
 ;;    to those of vanilla Emacs library `hi-lock.el', so you can use
