@@ -414,15 +414,25 @@ You might also want to bind `hlt-choose-default-face', which you
 can use to change the current default highlighting face.
 
 
+
+
+
+
+
 == See Also ==
 
-* <tt>[[show-wspace.el]]</tt> -- This library provides ways to highlight
+* <tt>[[highlight-chars.el]]</tt> -- Provides ways to highlight
 different sets of characters, including whitespace and Unicode
-characters.  See [[ShowWhiteSpace#ShowWspace|ShowWhiteSpace]].
+characters.  See [[ShowWhiteSpace#HighlightChars|Highlight Characters]].
 
-* he features of library <tt>[[highlight.el]]</tt> are complementary to those of the
+* The features of library <tt>[[highlight.el]]</tt> are complementary to those of the
 vanilla Emacs library ##hi-lock.el##, so you can use the two
 libraries together.  See also HighlightTemporarily for comparison with other libraries.
+
+
+
+
+
 
 
 == Commands That Won't Work in Emacs 20 ==
