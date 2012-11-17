@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Tue Nov 13 10:16:40 2012 (-0800)
+;; Last-Updated: Sat Nov 17 10:15:38 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 6161
+;;     Update #: 6164
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Doc URL: http://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -426,6 +426,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/11/17 dadams
+;;     diredp-do-bookmark, diredp-read-bookmark-file-args:
+;;       Accept sr-mode also, so it works with Sunrise Commander.  Thx to Mike F.
 ;; 2012/11/01 dadams
 ;;     Do not require ediff.el.  It is required in diredp-ediff itself.
 ;; 2012/10/06 dadams
@@ -4883,7 +4886,7 @@ A prefix argument ARG specifies files to use instead of those marked.
  `C-u C-u C-u': Use all files and directories, except `.' and `..'.
  `C-u C-u C-u C-u': Use all files and all directories."
   (interactive
-   (progn (unless (eq major-mode 'dired-mode)
+   (progn (unless (memq major-mode '(dired-mode sr-mode)) 
             (error "You must be in a Dired buffer to use this command"))
           (list (and diredp-prompt-for-bookmark-prefix-flag
                      (read-string "Prefix for bookmark name: "))
@@ -5060,7 +5063,7 @@ Non-interactively:
 (defun diredp-read-bookmark-file-args ()
   "Read args for `diredp-do-bookmark-in-bookmark-file' and similar."
   (unless (require 'bookmark+ nil t) (error "This command requires library `bookmark+.el'"))
-  (unless (eq major-mode 'dired-mode)
+  (unless (memq major-mode '(dired-mode sr-mode))
     (error "You must be in a Dired buffer to use this command"))
   (list (let* ((insert-default-directory  t)
                (bmk-file                  (expand-file-name
