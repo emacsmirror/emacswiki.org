@@ -8,6 +8,9 @@ This page describes package Lisp:whitespace.el, by ViniciusJoseLatorre.
 : **Note 2:** //This package replaces// BlankMode.
 
 
+See also: ShowWhiteSpace.
+
+
 == Screenshot ==
 
 The screenshots below show when !WhiteSpace is turned on using
