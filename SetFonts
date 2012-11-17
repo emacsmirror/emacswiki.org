@@ -178,6 +178,8 @@ And so..
 I'd like to use <nowiki>TrueType</nowiki> Fonts in Emacs in various places, but Emacs handles them badly. Can someone tell me why TTF fonts are so much trouble in Emacs, and if there's some way I could get emacs to play nicely with them anyway? --ShaeErisson
 [new]
 For TTF support, see XftGnuEmacs --TimotheeBesset
+[new]
+As of 23.3.1 TTF support is still quite defective (on Debian at least): for example, DejaVu Sans Mono 11 is rendered at ~11.5pt, and 10pt is rendered at ~9.5pt. You'll need to set a font size of e.g. 102-108 tenths to actually get 10pt text.
 
 [new]
 : See DisplayEngineForArabic, perhaps the part about the bounding boxes for the ASCII characters being used helps? -- AlexSchroeder
