@@ -34,6 +34,8 @@ hidden subdirectories of the selected Dired listings.
 ** You can see immediately if a file has the wrong permissions (e.g. writable or executable when it shouldn't be).
 ** Less important files (defined by variable <code>dired-omit-extensions</code> or <code>completion-ignored-extensions</code>) are in a subdued [[face]]; other files stand out more. To hide less important files altogether, use `M-o' (it's a toggle) -- see DiredOmitMode.
 
+* '''Dired+''' recognizes [[Sunrise Commander]], so you can use them together.
+
 Here is a screenshot of '''Dired+''', showing highlighting and the `mouse-3' menu when a region is active.
 
 [[image:DrewsEmacsDired]]
