@@ -4,7 +4,7 @@ The old scala-mode works on emacs 23 and newer. It is available from https://git
 
 The new scala-mode2 requires emacs 24 (or newer). It is available from https://github.com/hvesalai/scala-mode2
 
-There is also a minor-mode for editing scala programs using the [WikiPedia:Scalatra] web application framework. The mode is available at https://github.com/hvesalai/scalatra-mode
+There is also a minor-mode for editing scala programs using the [WikiPedia:Scalatra Scalatra] web application framework. The mode is available at https://github.com/hvesalai/scalatra-mode
 
 ----
 CategoryModes
