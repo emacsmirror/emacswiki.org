@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Nov 16 08:37:04 2012 (-0800)
 ;; Version: 2012
-;; Last-Updated: Fri Nov 16 19:23:08 2012 (-0800)
+;; Last-Updated: Sat Nov 17 16:36:38 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 161
+;;     Update #: 164
 ;; URL: http://www.emacswiki.org/highlight-chars.el
 ;; Doc URL: http://www.emacswiki.org/ShowWhiteSpace#HighlightChars
 ;; Keywords: highlight, whitespace, characters, Unicode
@@ -242,6 +242,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/11/17 dadams
+;;     hc-other-chars-matcher: Corrected for empty chars-NOT, i.e. regexp-out = \\(\\).
 ;; 2012/11/16 dadams
 ;;     Renamed this library from show-wspace.el to highlight-chars.el.
 ;;     Added: hc-other-chars-NOT, hc-other-chars-description, hc-other-chars-matcher,
@@ -900,15 +902,16 @@ REGEXP-IN is a regexp for matching the CHARS arg, that is, for chars
 REGEXP-OUT is a regexp for matching the CHARS-NOT arg, that is, for
  chars to be excluded."
   `(lambda (bound)
-     (let ((in     nil)
-           (mdata  (or hc--other-chars-last-match-data  (match-data))))
-       (setq in  (re-search-forward ,regexp-in bound t))
-       (and in  (progn
-                  (if (save-excursion
-                        (save-match-data (backward-char 1) (looking-at ,regexp-out)))
-                      (set-match-data mdata)
-                    (setq hc--other-chars-last-match-data  (match-data)))
-                  (goto-char in))))))
+    (let ((in     nil)
+          (mdata  (or hc--other-chars-last-match-data  (match-data))))
+      (setq in  (re-search-forward ,regexp-in bound t))
+      (and in  (progn
+                 (if (and (not (string= "\\(\\)" ,regexp-out)) ; No chars to exclude.
+                          (save-excursion
+                            (save-match-data (backward-char 1) (looking-at ,regexp-out))))
+                     (set-match-data mdata)
+                   (setq hc--other-chars-last-match-data  (match-data)))
+                 (goto-char in))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 
