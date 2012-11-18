@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Nov 16 08:37:04 2012 (-0800)
 ;; Version: 2012
-;; Last-Updated: Sat Nov 17 16:36:38 2012 (-0800)
+;; Last-Updated: Sun Nov 18 11:15:21 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 164
+;;     Update #: 191
 ;; URL: http://www.emacswiki.org/highlight-chars.el
 ;; Doc URL: http://www.emacswiki.org/ShowWhiteSpace#HighlightChars
 ;; Keywords: highlight, whitespace, characters, Unicode
@@ -61,10 +61,11 @@
 ;;     highlight and the face to use.  With a prefix arg it
 ;;     unhighlights.
 ;;
-;;   - Command `hc-toggle-highlight-other-chars' toggles highlighting
-;;     of the characters specified in user option `hc-other-chars' and
-;;     `hc-other-chars-NOT', using face `hc-other-char'.  With a
-;;     prefix arg it prompts you for the face to use.
+;;   - Command `hc-toggle-highlight-other-chars' toggles highlighting,
+;;     using face `hc-other-char', of the characters specified by user
+;;     option `hc-other-chars', but excluding the characters specified
+;;     by option `hc-other-chars-NOT'.  With a prefix arg it prompts
+;;     you for the face to use.
 ;;
 ;;   For these particular commands and functions, option
 ;;   `hc-other-chars-font-lock-override' controls whether the current
@@ -242,6 +243,13 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/11/18 dadams
+;;     hc-other-chars(-NOT): Added :set to reset the match-data cache.
+;;     hc-other-chars-matcher: Allow nil values for options hc-other-chars(-NOT):
+;;       Use fake match-data if hc-chars-other is empty.  Set match-data from
+;;       hc-other-chars search if hc-other-chars-NOT is empty.  Reset match-data cache,
+;;       hc--other-chars-last-match-data, if hc-chars-other search fails.
+;;     Added autoload cookies for hc-other-chars(-NOT).  Removed cookie from a defvar.
 ;; 2012/11/17 dadams
 ;;     hc-other-chars-matcher: Corrected for empty chars-NOT, i.e. regexp-out = \\(\\).
 ;; 2012/11/16 dadams
@@ -429,7 +437,14 @@ This includes tab, space, and hard (non-breaking) space characters."
 ;;;###autoload
 (defcustom hc-other-chars ()
   "*Characters to highlight using face `hc-other-char'.
-A list of entries, each of which can be any of these:
+The characters are highlighted unless they are excluded by option
+`hc-other-chars-NOT'.
+
+A nil value means highlight *all* characters (except those excluded by
+`hc-other-chars-NOT').
+
+If non-nil, the value is a list of entries, each of which can be any
+of these:
  * a string of individual characters
  * a character range, represented as a cons (FROM . TO),
    where FROM and TO are both included
@@ -446,13 +461,21 @@ For Emacs 20, the first alternative is not well supported: Do not use
 chars that are special within a regexp character alternative (i.e.,
 \[...]).  In Emacs 20, the string you specify is simply wrapped with
 \[...], which is not correct for all chars."
+  :set (lambda (sym defs)
+         (custom-set-default sym defs)
+         (setq hc--saved-nobreak-char-display  nil)) ; Reset cached match-data.
   :type (hc-other-chars-defcustom-spec) :group 'Highlight-Characters)
 
+;;;###autoload
 (defcustom hc-other-chars-NOT ()
   "*Chars to exclude from highlighting with face `hc-other-char'.
 The possible option values are the same as for `hc-other-char'."
+  :set (lambda (sym defs)
+         (custom-set-default sym defs)
+         (setq hc--saved-nobreak-char-display  nil)) ; Reset cached match-data.
   :type (hc-other-chars-defcustom-spec) :group 'Highlight-Characters)
 
+;;;###autoload
 (defcustom hc-other-chars-font-lock-override 'append
   "*How highlighting for other chars interacts with existing highlighting.
 The values correspond to the values for an OVERRIDE spec in
@@ -468,7 +491,6 @@ This affects commands `hc-toggle-highlight-other-chars' and
           (const :tag "Replace (override) existing highlighting"       t))
   :group 'Highlight-Characters)
 
-;;;###autoload
 (defvar hc-highlight-tabs-p nil
   "Non-nil means font-lock mode highlights TAB characters (`C-i').")
 
@@ -904,13 +926,21 @@ REGEXP-OUT is a regexp for matching the CHARS-NOT arg, that is, for
   `(lambda (bound)
     (let ((in     nil)
           (mdata  (or hc--other-chars-last-match-data  (match-data))))
-      (setq in  (re-search-forward ,regexp-in bound t))
+      (setq in  (if (string= "\\(\\)" ,regexp-in) ; No CHARS, but maybe CHARS-NOT
+                    (progn (forward-char)
+                           (set-match-data ; Fake it - put match data around the char.
+                            (list (copy-marker (1- (point))) (copy-marker (point))
+                                  (copy-marker (1- (point))) (copy-marker (point))))
+                           (point))
+                  (re-search-forward ,regexp-in bound t)))
+      (unless in (setq hc--other-chars-last-match-data  nil)) ; Search failed, so reset.
       (and in  (progn
-                 (if (and (not (string= "\\(\\)" ,regexp-out)) ; No chars to exclude.
-                          (save-excursion
-                            (save-match-data (backward-char 1) (looking-at ,regexp-out))))
-                     (set-match-data mdata)
-                   (setq hc--other-chars-last-match-data  (match-data)))
+                 (if (string= "\\(\\)" ,regexp-out) ; No chars to exclude.
+                     (setq hc--other-chars-last-match-data  (match-data))
+                   (if (save-excursion
+                         (save-match-data (backward-char 1) (looking-at ,regexp-out)))
+                       (set-match-data mdata)
+                     (setq hc--other-chars-last-match-data  (match-data))))
                  (goto-char in))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;
