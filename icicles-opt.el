@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Nov 10 13:27:41 2012 (-0800)
+;; Last-Updated: Sun Nov 18 11:48:36 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 5380
+;;     Update #: 5390
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1487,27 +1487,43 @@ inserted."
 ;;;###autoload
 (defcustom icicle-default-value t
   "*How to treat the default value when reading minibuffer input.
-When the default value argument to functions such as
-`completing-read', `read-file-name', `read-from-minibuffer', and
-`read-string' is non-nil and the initial-input argument is nil or
-\"\", the default value can be added to the prompt as a hint or
-inserted into the minibuffer as the initial input.
+These are the possible option values:
 
-Adding it to the prompt is the default behavior (except for
-`read-file-name' and `read-from-minibuffer').  This corresponds to the
-more or less conventional behavior of vanilla Emacs.  But vanilla
-Emacs does not do this systematically via these input-reading
-functions themselves.  Instead, it hard-codes default values into
-prompts in the functions that call these functions.
+  nil               - Do not insert default value or add it to prompt.
+  t                 - Add default value to `completing-read' prompt.
+                      Do not insert it.
+  `insert-start'    - Insert default value and leave cursor at start.
+  `insert-end'      - Insert default value and leave cursor at end.
+  `preselect-start' - Insert and preselect default value;
+                      leave cursor at beginning.
+  `preselect-end'   - Insert and preselect default value;
+                      leave cursor at end.
 
-Note that Icicles commands never add the default value to the prompt.
-This includes Icicles versions of standard commands that might do so.
-Icicles instead tries to give you the choice, via
-`icicle-default-value'.
+This option controls how a non-nil default-value argument to functions
+such as `completing-read', `read-file-name', `read-from-minibuffer',
+and `read-string' is handled.
 
-Note the exception for `(icicle-)read-from-minibuffer' and
-`(icicle-)read-file-name'.  This is because these functions treat
-empty input (just `RET') specially - see their doc for details.
+When it is non-nil and the initial-input argument is nil or \"\", the
+default value can be inserted into the minibuffer as the initial
+input.  For `completing-read', if the option value is `t' then the
+default value is added the prompt as a hint.
+
+Adding the default value to the prompt corresponds to the more or less
+conventional behavior of vanilla Emacs.  But vanilla Emacs does not do
+this systematically for `completing-read' (or for any of the
+input-reading functions).  Instead, it hard-codes default values into
+prompts in the commands that call these functions.
+
+By design, Icicles commands never add the default value to the prompt
+themselves.  This includes Icicles versions of standard commands that
+might do so.  Icicles instead tries to give you the choice, using
+option `icicle-default-value'.
+
+Function `completing-read' is the only input-reading function for
+which Icicles adds the default value to the prompt (for option value
+`t').  Other such functions, like `(icicle-)read-from-minibuffer' and
+`(icicle-)read-file-name', treat empty input (just `RET') specially -
+see their doc for details.
 
 Inserting the default value in the minibuffer as the initial input has
 the advantage of not requiring you to use `M-n' to retrieve it.  It
@@ -1524,26 +1540,14 @@ this option also determines whether or not the inserted text is
 preselected, and where the cursor is left: at the beginning or end of
 the text.
 
-These are the possible option values:
-
-  nil               - Do not insert default value or add it to prompt.
-  t                 - Add default value to prompt (except for
-                      `read-file-name' and `read-from-minibuffer').
-                      Do not insert it.
-  `insert-start'    - Insert default value and leave cursor at start.
-  `insert-end'      - Insert default value and leave cursor at end.
-  `preselect-start' - Insert and preselect default value;
-                      leave cursor at beginning.
-  `preselect-end'   - Insert and preselect default value;
-                      leave cursor at end.
-
-My own preference is `insert-end'.
-
 Preselection can be useful in Delete Selection mode or PC Selection
 mode.  It makes it easy to replace the value by typing characters, or
 delete it by hitting `C-d' or `DEL' (backspace).  However, all of the
 initial input is lost if you type or hit `C-d' or `DEL'.  That is
-inconvenient if you want to keep most of it and edit it only slightly."
+inconvenient if you want to keep most of it and edit it only slightly.
+
+My own preference for the option value is `insert-end', but the
+default value is `t', which is closest to what vanilla Emacs does."
   :type '(choice
           (const :tag "Do not insert default value or add it to prompt"            nil)
           (const :tag "Add default value to prompt (do not insert in minibuffer)"  t)
