@@ -85,6 +85,7 @@ This is a subpage of CategoryModes.  It lists modes for programming languages or
 * R-Mode -- mode for R language, a part of EssMode
 * RubyMode
 * SawFishMode
+* ScalaMode
 * SchemeMode
 * [[Scheme48Mode]]
 * ShMode -- Unix shell scripts (including bash, csh, etc)
