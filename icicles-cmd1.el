@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Nov 17 19:15:20 2012 (-0800)
+;; Last-Updated: Sat Nov 17 21:49:54 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 25151
+;;     Update #: 25153
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -3764,11 +3764,14 @@ then customize option `icicle-top-level-key-bindings'." ; Doc string
              ;; $$$$$$              0))
              (wait-time  (or (and (numberp suggest-key-bindings)  suggest-key-bindings)  2)))
         (when (and bindings  (not (and (vectorp bindings)  (eq (aref bindings 0) 'mouse-movement))))
-          (when (and (sit-for wait-time)  (atom unread-command-events))
+          (when (atom unread-command-events)
             (let ((message-log-max  nil)) ; Don't log this message.
-              (message "You can invoke command `%s' using `%s'" (symbol-name cmd)
-                       (icicle-propertize (key-description bindings) 'face 'icicle-msg-emphasis)))
-            (when (and (sit-for wait-time)  curr-msg) (message "%s" curr-msg))))))
+              (unwind-protect
+                   (progn
+                     (message "You can invoke command `%s' using `%s'" (symbol-name cmd)
+                              (icicle-propertize (key-description bindings) 'face 'icicle-msg-emphasis))
+                     (sit-for wait-time))
+                (message "%s" curr-msg)))))))
     (cond ((arrayp fn)
            (let ((this-command  cmd)) (execute-kbd-macro fn count))
            (when (> count 1) (message "(%d times)" count)))
