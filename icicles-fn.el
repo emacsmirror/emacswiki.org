@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Nov 10 13:09:33 2012 (-0800)
+;; Last-Updated: Sat Nov 17 21:21:18 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 13663
+;;     Update #: 13674
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -890,8 +890,8 @@ REQUIRE-MATCH can take any of these values:
 * Anything else behaves like t, except that hitting `\\[exit-minibuffer]' does not
   exit if it performs non-null completion.
 
-Regardless of the value of REQUIRE-MATCH, if the user input is empty,
-then `completing-read' returns DEF or, if DEF is nil, an empty string.
+Regardless of the value of REQUIRE-MATCH, if the user input is empty
+then the function returns DEF or, if DEF is nil, an empty string.
 
 If option `icicle-require-match-flag' is non-nil, it overrides the
 value of REQUIRE-MATCH.
@@ -978,7 +978,12 @@ Completion ignores case when `completion-ignore-case' is non-nil."
       (let ((c+p  (icicle-mctize-all collection predicate)))
         (setq collection  (car c+p)     ; After banalizing for vanilla Emacs.
               predicate   (cadr c+p))))
-    ;; $$$$$$$$$$$$$ (setq minibuffer-completion-table  collection)
+    ;; $$$$$$$$$ (setq minibuffer-completion-table  collection)
+    (when (and def  (eq icicle-default-value t)) ; Add the (first) default value to PROMPT.
+      (let ((hint  def))
+        (when (consp hint) (setq hint  (car hint)))
+        (when (icicle-file-name-input-p) (setq hint  (file-name-nondirectory hint)))
+        (setq prompt  (replace-regexp-in-string ".*\\(: *\\)$" (format " (%s): " hint) prompt nil t 1))))
     (cond ((not icicle-mode)
            (setq result  (icicle-lisp-vanilla-completing-read
                           prompt collection predicate require-match initial-input
