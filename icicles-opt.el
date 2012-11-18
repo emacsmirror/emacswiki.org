@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Nov 18 11:48:36 2012 (-0800)
+;; Last-Updated: Sun Nov 18 12:04:56 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 5390
+;;     Update #: 5391
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1535,8 +1535,8 @@ If you often want to use or edit the default value, then set
 `icicle-default-value' to non-nil and non-t.  If you rarely do so,
 then set it to nil or t.
 
-If the default value is to be inserted in the minibuffer, the value of
-this option also determines whether or not the inserted text is
+If the default value is inserted in the minibuffer, the value of this
+option also determines whether or not the inserted text is
 preselected, and where the cursor is left: at the beginning or end of
 the text.
 
