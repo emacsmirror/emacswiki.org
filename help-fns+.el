@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 22.1
-;; Last-Updated: Sun Nov 18 14:01:34 2012 (-0800)
+;; Last-Updated: Sun Oct 28 18:51:09 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 1496
+;;     Update #: 1487
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/help-fns+.el
 ;; Doc URL: http://emacswiki.org/emacs/HelpPlus
 ;; Keywords: help, faces, characters, packages, description
@@ -17,7 +17,8 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   Symbol's value as variable is void: cl-builtin-gethash.
+;;   `button', `help-fns', `help-mode', `info', `naked', `view',
+;;   `wid-edit', `wid-edit+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -118,8 +119,6 @@
 ;;
 ;;; Change Log:
 ;;
-;; 2012/11/18 dadams
-;;     describe-(variable|function): Add completion-candidate annotation: (option|comand).
 ;; 2012/10/28 dadams
 ;;     help-fns--key-bindings: Fixed: forgot to mapconcat over keys.
 ;; 2012/10/26 dadams
@@ -890,8 +889,6 @@ Return the description that was displayed, as a string."
                                                  (symbol-nearest-point))
                                             (function-called-at-point)))
          (enable-recursive-minibuffers  t)
-         (completion-annotate-function  (lambda (fn)
-                                          (and (commandp (intern-soft fn))  "  (command)")))
          val)
      (setq val  (completing-read (if current-prefix-arg "Describe command: " "Describe function: ")
                                  obarray (if current-prefix-arg 'commandp 'fboundp) t nil nil
@@ -1430,8 +1427,6 @@ it is displayed along with the global value."
                                               (and (symbolp (variable-at-point))
                                                    (variable-at-point))))
            (enable-recursive-minibuffers  t)
-           (completion-annotate-function  (lambda (var)
-                                            (and (custom-variable-p (intern-soft var))  "  (option)")))
            val)
        (setq val  (completing-read "Describe variable: " obarray
                                    (if current-prefix-arg
@@ -1625,8 +1620,6 @@ it is displayed along with the global value."
                                               (and (symbolp (variable-at-point))
                                                    (variable-at-point))))
            (enable-recursive-minibuffers  t)
-           (completion-annotate-function  (lambda (var)
-                                            (and (custom-variable-p (intern-soft var))  "  (option)")))
            val)
        (setq val  (completing-read
                    "Describe variable: " obarray
@@ -1830,8 +1823,6 @@ it is displayed along with the global value."
                                               (and (symbolp (variable-at-point))
                                                    (variable-at-point))))
            (enable-recursive-minibuffers  t)
-           (completion-annotate-function  (lambda (var)
-                                            (and (custom-variable-p (intern-soft var))  "  (option)")))
            val)
        (setq val (completing-read
                   "Describe variable: " obarray (if current-prefix-arg
