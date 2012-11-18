@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Nov 10 12:02:22 2012 (-0800)
+;; Last-Updated: Sat Nov 17 19:15:20 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 25150
+;;     Update #: 25151
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1378,9 +1378,9 @@ If what has been typed is unique, insert an entry \"User Name
 If it is a valid completion but not unique, you can choose from the
 list of completions using Icicles completion.
 
-If your input is completed and `bbdb-mail-allow-cycling' is true
-\(`bbdb-complete-name-allow-cycling' for older BBDB versions), you can
-repeat to cycle through the nets for the matching record.
+If your input is completed and `bbdb-complete-mail-allow-cycling' is
+true (`bbdb-complete-name-allow-cycling' for older BBDB versions),
+you can repeat to cycle through the nets for the matching record.
 
 When called with a prefix arg, display a list of all mail messages
 available for cycling.
