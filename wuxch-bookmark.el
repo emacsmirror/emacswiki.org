@@ -3,7 +3,7 @@
 (require 'bookmark+)
 
 
-;; 设置bookmark，可以使用VC类似的命令，如Ctrl-F2,F2,Melt-F2
+;; 设置bookmark，可以使用VC类似的命令，如Ctrl-F2,F2,Meta-F2
 (setq bm-restore-repository-on-load t)
 (add-hook 'after-init-hook 'bm-repository-load)
 ;; Restoring bookmarks when on file find.
