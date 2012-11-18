@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Nov 10 15:50:14 2012 (-0800)
+;; Last-Updated: Sun Nov 18 11:50:49 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 9266
+;;     Update #: 9270
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -86,6 +86,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2012/11/17 dadams
+;;     icicle-execute-extended-command-1: Show key-reminder msg before sit-for.  Thx to M. Heerdegen.
 ;; 2012/11/10 dadams
 ;;     custom-variable-p, icicle-binary-option-p: icicle-get-safe -> get.
 ;;     icicle-increment-(option|variable): intern -> intern-soft.  Thx to Michael Heerdegen.
@@ -1538,6 +1540,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2012/11/17 dadams
+;;     icicle-completing-read:
+;;       When (eq icicle-default-value t) add DEF to PROMPT.  Thx to Michael Heerdegen.
 ;; 2012/11/10 dadams
 ;;     icicle-custom-type: icicle-get-safe -> get.
 ;;     icicle-fuzzy-candidates: Show all (not no) candidates for empty input, sorted alphabetically.
@@ -6223,6 +6228,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2012/11/18 dadams
+;;     icicle-default-value: Updated doc string to reflect adding def to prompt for value t.
 ;; 2012/11/08 dadams
 ;;     icicle-widgets-to-redefine: Predicate makes sure it is also a symbol.
 ;; 2012/11/03 dadams
