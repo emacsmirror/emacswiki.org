@@ -1,0 +1,9 @@
+There are two MajorModes for editing [WikiPedia:Scala_%28programming_language%29 Scala] programs.
+
+The old scala-mode works on emacs 23 and newer. It is available from https://github.com/scala/scala-dist/tree/master/tool-support/src/emacs
+
+The new scala-mode2 requires emacs 24 (or newer). It is available from https://github.com/hvesalai/scala-mode2
+
+----
+CategoryModes
+ProgrammingModes
