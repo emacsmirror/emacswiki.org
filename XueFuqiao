@@ -7,13 +7,9 @@ I use Emacs.
 My name is Xue Fuqiao.  I have been a GNU/Linux user since 2008.
 I've been an [[Emacsite]] since 2009 and began to write programs
 in EmacsLisp since 2011.  Started with [[XEmacs]], switched to
-[[SXEmacs]], back to XEmacs, and now I'm using GnuEmacs and
-GuileEmacs.  I don't like using the Emacs Lisp package manager.
-Instead, I like install additional Lisp packages by hand, which
-is flexible.  I prefer to learn new things from reference
-manuals, instead of tutorials.  My favorite font is
-[http://www.proggyfonts.com proggy_tiny]. Currently I use GNU
-Emacs on a laptop with a ColemakKeyboard.
+[[SXEmacs]], back to XEmacs, then to GuileEmacs, and now I'm using GnuEmacs.  I prefer to learn new things from reference
+manuals, instead of tutorials.  Currently I use GNU
+Emacs on a laptop with a DvorakKeyboard.  My favorite font is [http://www.proggyfonts.com proggy tiny].
 
 I'm a software developer and software freedom activist.  And I’m
 currently a student of [http://www.ncut.edu.cn NCUT].  My major
@@ -83,87 +79,9 @@ Coming soon.
 == My Emacs Screenshots ==
 Coming soon.
 
-== I Use ==
-* '''EmacsDevelopmentVersion'''
-
-* savannah.el
-
-* [https://github.com/sigma/gh.el gh.el]
-
-* EasyPG
-
-* Yasnippet
-
-* [[Helm]]
-
-* xml-rpc
-
-* [[DVC]]
-
-* Org2blog/atom
-
-* printing.el
-
-* EdiffMode
-
-* [[w3]]
-
-* JavaDevelopmentEnvironment
-
-* DeskTop
-
-* TwitteringMode
-
-* [[ERC]]
-
-* AdvancedDeskCalculator
-
-* spell-number.el
-
-* OrgMode
-
-* nXhtml
-
-* AbbrevMode
-
-* TrampMode
-
-* IPA.el
-
-* EmacsSpeaksStatistics
-
-* AUCTeX
-
-* CDLaTeX
-
-* Eshell
-
-* [[Gnus]]
-
-* [[EMMS]]
-
-* [[BBDB]]
-
-* wuxch-bookmark.el
-
-* doctor.el
-
-* BookmarkPlus
-
-* OAuthLibrary
-
-* '''[[Icicles]]'''
-
-* ParEdit
-
-* Lisp:teco.el
-
-* TypeBreakMode
-
-* FootSwitches
+== Recent Development ==
 
 == I Like ==
-* DuckDuckGo
 * Sawfish
 * English
 * AI
@@ -175,6 +93,7 @@ Coming soon.
 * GNU Bazaar
 * GDB
 * Autoconf
+* Automake
 * Lisp
 * LaTeX
 * Regexp
