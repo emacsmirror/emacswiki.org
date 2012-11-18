@@ -1,34 +1,25 @@
-Yes, you can use Emacs as the editor for Microsoft Outlook email. I haven't tried doing it myself, but these websites list some different solutions to this question. It basically lets you grab the text of an Outlook email reply/forward/etc., use Emacs to edit the reply or create a new message, and return the result to the Outlook editing window:
+Yes, you can use Emacs as the editor for Microsoft Outlook email. Basically you grab the text of an Outlook email/reply/forwarded message/etc., use Emacs to edit the reply or create a new message, and return the result to the Outlook editing window.
 
-* http://disgruntled-programmer.com/notes/emacs-with-outlook.html -- Requires Python to be installed to communicate with Outlook. ([http://web.archive.org/web/20040220113545/http://disgruntled-programmer.com/notes/emacs-with-outlook.html archive])
+You might be interested in doing the reverse : use Outlook as the "mail server" for Emacs : MessageOutlook
 
-* http://mini.net/tcl/EmacsOutlook -- Requires Tcl to be installed to communicate with Outlook.
+You need some glue to move the message between Emacs and Outlook.
 
-* https://github.com/dholm/outlookedit -- A git repository of outlookedit.el from http://wiki.tcl.tk/9198
+-- can I do the same with Mozilla Mail ? http://globs.org/articles.php?lng=en&pg=2
 
-:: <em>I just set this up under XP w/ Office XP and it worked beautifully.</em>&mdash;EphremChristopherWalborn[http://www.tuirgin.com]
-
--- can I do the same with Mozilla Mail ?
-
-I put together a small package based on the Python code mentioned above, but taking advantage of PyMacs for better integration. It provides two commands:
-
-* outlook-load -- to load the e-mail reply body (or Notes, or Calendar entry) to an Emacs buffer;
-
-* outlook-set -- to set it back. 
-
-The code can be downloaded from my Emacs page at http://home.nc.rr.com/nascifandelaine/emacs.html -- NascifAbousalh
+== Windows script glue ==
 
 If your machine has the windows script host installed which should be true for almost all
 versions currently in use (see
 http://msdn.microsoft.com/library/default.asp?url=/nhp/default.asp?contentid=28001169)
 then you can use the following script instead of python or tcl. It is merely a port from
-tcl to Windows script. The outlookedit.el from the first link mentioned above is still
-needed. Simply save the following code with extension .wsf somewhere on your path and
+tcl to Windows script.
+
+Drop a copy of outlookedit.el from http://wiki.tcl.tk/9198 or
+https://github.com/dholm/outlookedit into your load-path, add a (require 'outlookedit) to
+your init file.
+
+Save the following code with extension .wsf somewhere on your path and
 adjust the variables mno-get-outlook-body and mno-put-outlook-body -- MartinStemplinger
-
-outlookedit.el can also be downloaded from http://wiki.tcl.tk/9198 or
-https://github.com/dholm/outlookedit if you prefer to use Git.
-
 
 <pre>
 <?xml version="1.0" encoding="iso-8859-1"?>
@@ -79,24 +70,12 @@ In outlookedit.el (assuming you put the wsf script in ~/bin) --TimAnderson
 
 <pre>
  (defvar mno-get-outlook-body
-   "cscript //Job:getMessage ~/bin/outlook_emacs.wsf")
+   "cscript //B //Job:getMessage ~/bin/outlook_emacs.wsf")
  (defvar mno-put-outlook-body
-   "cscript //Job:putMessage ~/bin/outlook_emacs.wsf")
+   "cscript //B //Job:putMessage ~/bin/outlook_emacs.wsf")
 </pre>
 
-You can also add a macro to Outlook and place that macro on a customized button in the toolbar:
-
-<pre>
-Sub mnoEditInEmacs()
-  Shell ("<PATH_TO_EMACS>\bin\gnudoit.exe (mno-edit-outlook-message)")
-End Sub
-</pre>
-
-When you are replying to a mail, just press this button.
-
-(snatched code from http://wiki.tcl.tk/9198)
-
-It is worth adding ##//B## to above <tt>cscript</tt> call -- this ensures that no banner is being output.  Also, it maybe worth using ##//U## switch to force UNICODE communication, but this would require forcing that onto outlookedit mode as well...
+Now, in order to edit the currently opened mail in emacs, say `mno-edit-outlook-message' (bound to <code>C-c o e</code>). This opens an %%*Outlook Message*%% buffer with your mail. When you are done, say `mno-save-outlook-message' (bound to <code>C-c o s</code>). Attention, the text is sent back to the "current" mail ---if you switch back and forth between messages, you risk overwriting the bad message. 
 
 The message has to be opened for Reply for the above to work (M-r in Outlook ;-)). I added the snippet after the line beginning <i>var inspector...</i> to remind myself:
 
@@ -111,8 +90,76 @@ The message has to be opened for Reply for the above to work (M-r in Outlook ;-)
   }
 </pre>
 
+=== Toolbar button ===
 
-Another python solution is at http://barnson.org/node/295
+You can also add a macro to Outlook and place that macro on a customized button in the toolbar:
+
+<pre>
+Sub mnoEditInEmacs()
+  Shell ("<PATH_TO_EMACS>\bin\gnudoit.exe (mno-edit-outlook-message)")
+End Sub
+</pre>
+
+If you have a recent emacs and EmacsClient is setup, you may prefer to call <code>emacsclientw.exe --eval (mno-edit-outlook-message)</code>.
+
+When you are replying to a mail, just press this button.
+
+How to create a macro : in Outlook 2010, do a right-click on the Ribbon and select Customize Ribbon, then enable the Developer tab. In the Developer tab, there is a Macro menu that allow you to create a macro. To add the button, in the same Customize Ribbon, in the right column do Create a New Group. In the left column, select Choose Commands from: Macros, and you can add the button to the group you just added.
+
+=== Forcing plain text mode ===
+
+Attention, people have reported that some versions of Outlook don't react too well to scripts changing the format under their nose. It works for me with Outlook 2010. YMMV. Caveat emptor.
+
+In the getMessage part of the WSF script, add the following (mostly stolen from Ernie Longmire):
+
+<pre>...
+    var inspector = app.ActiveInspector;
+    var mailItem = inspector.CurrentItem;
+
+    /* HTML messages store the full text of the body with HTML
+     * markup in a separate string, MailItem.HTMLBody.  In these
+     * messages MailItem.Body contains a version of the message
+     * with HTML markup removed.
+
+     * When editing an HTML message, .Body is not synchronized with
+     * .HTMLBody until .Body is accessed directly in some way.
+     * In these cases, changing .BodyFormat to olFormatPlain puts
+     * the empty .Body string in the editing buffer, discarding the
+     * actual message content.  That's why we explicitly reference
+     * .Body below. */
+    var junk = mailItem.Body;
+    mailItem.BodyFormat = 1;
+
+    WScript.StdOut.Write(mailItem.Body);
+</pre>
+
+== Python or Tcl glue ==
+
+The original implementation of the idea was done in Python. Apparently, versions of Windows old enough will not have the necessary scripting infrastructure, and a glue in Tcl or Python is necessary.
+
+* http://disgruntled-programmer.com/notes/emacs-with-outlook.html -- Requires Python to be installed to communicate with Outlook. ([http://web.archive.org/web/20040220113545/http://disgruntled-programmer.com/notes/emacs-with-outlook.html archive])
+
+* http://wiki.tcl.tk/9198 -- Requires Tcl. 
+
+* http://mini.net/tcl/EmacsOutlook -- Requires Tcl to be installed to communicate with Outlook (link broken as of 2012-11-18).
+
+* https://github.com/dholm/outlookedit -- A git repository of outlookedit.el from http://wiki.tcl.tk/9198
+
+:: <em>I just set this up under XP w/ Office XP and it worked beautifully.</em>&mdash;EphremChristopherWalborn
+
+== Pymacs ==
+
+I put together a small package based on the Python code mentioned above, but taking advantage of PyMacs for better integration. It provides two commands:
+
+* outlook-load -- to load the e-mail reply body (or Notes, or Calendar entry) to an Emacs buffer;
+
+* outlook-set -- to set it back. 
+
+The code can be downloaded from my Emacs page at http://home.nc.rr.com/nascifandelaine/emacs.html -- NascifAbousalh
+
+(snatched code from http://wiki.tcl.tk/9198)
+
+Another python solution is at http://barnson.org/node/295 (but what's the point of going through some intermediate Tk application?)
 
 ----
 CategoryWThirtyTwo
