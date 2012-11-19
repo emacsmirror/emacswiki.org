@@ -431,6 +431,7 @@ When called interactively files will be prompted for and only functions in the c
         (if (y-or-n-p "Include other files?")
             (whilelast
              (setq dir (ido-read-directory-name "Dir containing files: "))
+             (list-directory dir)
              (setq regexp (read-regexp "Regexp matching filenames (RET to finish)"))
              (unless (string= regexp "")
                (mapc (lambda (name) (if (string-match regexp name)
