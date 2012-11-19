@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sun Nov 18 11:50:49 2012 (-0800)
+;; Last-Updated: Mon Nov 19 08:52:09 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 9270
+;;     Update #: 9271
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -86,6 +86,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2012/11/19 dadams
+;;     icicle-execute-extended-command-1: Show key-reminder after invoking CMD.  Thx to M. Heerdegen.
 ;; 2012/11/17 dadams
 ;;     icicle-execute-extended-command-1: Show key-reminder msg before sit-for.  Thx to M. Heerdegen.
 ;; 2012/11/10 dadams
