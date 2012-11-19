@@ -7,11 +7,11 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Nov 19 08:49:17 2012 (-0800)
+;; Last-Updated: Mon Nov 19 09:06:07 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 25163
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
-;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
+;;     Update #: 25166
+;; URL: http://www.emacswiki.org/icicles-cmd1.el
+;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -3779,7 +3779,8 @@ then customize option `icicle-top-level-key-bindings'." ; Doc string
                 (waited           (sit-for (if (current-message)  wait-time  0))))
             (when (and waited  (atom unread-command-events))
               (unwind-protect
-                   (progn (message "You can invoke command `%s' using `%s'" (symbol-name cmd)
+                   (progn (message "You can invoke command `%s' using `%s'"
+                                   (icicle-propertize (symbol-name cmd) 'face 'icicle-msg-emphasis)
                                    (icicle-propertize (key-description binding) 'face 'icicle-msg-emphasis))
                           (sit-for wait-time))
                 (message "%s" curr-msg)))))))
