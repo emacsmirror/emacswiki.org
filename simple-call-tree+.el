@@ -10,6 +10,7 @@
 ;; Last-Updated: 2012-11-01 21:28:07
 ;;           By: Joe Bloggs
 ;; URL: http://www.emacswiki.org/emacs/download/simple-call-tree+.el
+;;      https://github.com/vapniks/simple-call-tree-ext
 ;; Keywords: programming
 ;; Compatibility: GNU Emacs 24.2.1
 ;;
@@ -38,8 +39,31 @@
 
 ;;; Commentary: 
 ;; 
-;; Extensions to simple-call-tree.el for elisp libraries.
-;; 
+;; This library is based on simple-call-tree.el by Alex Schroeder.
+;; When the command `simple-call-tree-display-buffer' is executed
+;; a call tree for the functions in the current buffer will be created.
+;; The user is also prompted for other files containing functions to be
+;; included in the call tree.
+;; The call tree is displayed in a buffer called *Simple Call Tree*,
+;; which has a dedicated menu in the menu-bar showing various commands
+;; and their keybindings. Most of these commands are self explanatory
+;; so try them out.
+;; You can navigate the call tree either by moving through consecutive
+;; headers (n/p or N/P keys) or by jumping to main branches (j for branch
+;; corresponding to function at point, and J to prompt for a function).
+;; When you jump to a branch, it is added to `simple-call-tree-jump-ring',
+;; and you can navigate your jump history using the </> keys.
+;; You can also add the function under point to the jump-ring with the . key.
+;; If you use a negative prefix (e.g. C--) before pressing j then the branch
+;; jumped to will not be added to the jump-ring.
+;; If you have fm.el (available here: http://www.damtp.cam.ac.uk/user/sje30/emacs/fm.el)
+;; you can press f to toggle follow mode on/off.
+;; When follow mode is on, or when you press the v or C-o key the code line
+;; corresponding to the branch under point will be displayed. If it is a
+;; toplevel branch then that function will be displayed, if it is a lower-level
+;; branch then the corresponding function call will be displayed.
+;; You can invert the tree by pressing i, and change the depth by pressing d.
+;; You can also toggle narrowing to the current branch by pressing /.
 ;; 
 
 ;;; Installation:
@@ -54,10 +78,14 @@
 ;;
 ;; (require 'simple-call-tree+)
 
+
+
 ;;; Customize:
 ;;
-;; To automatically insert descriptions of customizable variables defined in this buffer
-;; place point at the beginning of the next line and do: M-x insert-customizable-variable-descriptions
+;; `simple-call-tree-default-recenter' : How to recenter the window after moving to another function in the "*Simple Call Tree*" 
+;;                                       buffer.
+;; `simple-call-tree-jump-ring-max' : Maximum number of elements in `simple-call-tree-jump-ring', before old elements are removed.
+
 
 ;;
 ;; All of the above can customized by:
@@ -72,11 +100,14 @@
 
 ;;; Acknowledgements:
 ;;
-;; 
+;; Alex Schroeder - the creator of the original simple-call-tree.el
+;;                  (available here: http://www.emacswiki.org/emacs/simple-call-tree.el)
 ;;
 
 ;;; TODO
 ;;
+;; I am going to work on a plugin for one-key.el which provides similar functionality.
+;; If anyone wants to implement the following ideas, please do:
 ;; More reliable code for building tree (handle duplicate function names properly).
 ;; Commands to do query-replace-regexp on functions, and maybe other refactorings.
 ;; Code for marking functions (like with files in dired mode) and then applying operations to the marked functions.
