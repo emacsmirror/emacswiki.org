@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Nov 17 21:49:54 2012 (-0800)
+;; Last-Updated: Mon Nov 19 08:49:17 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 25153
+;;     Update #: 25163
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -3747,31 +3747,6 @@ then customize option `icicle-top-level-key-bindings'." ; Doc string
                    (wrong-number-of-arguments (funcall #'icicle-help-on-candidate))) ; Punt - show help.
                  (select-window (minibuffer-window))
                  (select-frame-set-input-focus (selected-frame))))))
-    ;; Message showing what `cmd' is bound to.  This is pretty much a transcription of C code in
-    ;; `keyboard.c'.  Not sure it DTRT when there is already a msg in the echo area.
-    ;; But do not show the message if we are not at the `M-x' top level, i.e., if we are acting on a
-    ;; candidate command using `C-RET' instead of `RET'.
-    (when (and suggest-key-bindings  (not executing-kbd-macro)
-               (not (or (icicle-get-safe this-command 'icicle-action-command)
-                        ;; This one is used for `*-per-mode-action', which sets `this-command' to the cycler.
-                        (icicle-get-safe this-command 'icicle-cycling-command))))
-      (let* ((bindings   (if (> emacs-major-version 21)
-                             (where-is-internal cmd overriding-local-map t 'NOINDIRECT)
-                           (where-is-internal cmd overriding-local-map t)))
-             (curr-msg   (current-message))
-             ;; $$$$$$ (wait-time  (if curr-msg
-             ;; $$$$$$                 (or (and (numberp suggest-key-bindings)  suggest-key-bindings) 2)
-             ;; $$$$$$              0))
-             (wait-time  (or (and (numberp suggest-key-bindings)  suggest-key-bindings)  2)))
-        (when (and bindings  (not (and (vectorp bindings)  (eq (aref bindings 0) 'mouse-movement))))
-          (when (atom unread-command-events)
-            (let ((message-log-max  nil)) ; Don't log this message.
-              (unwind-protect
-                   (progn
-                     (message "You can invoke command `%s' using `%s'" (symbol-name cmd)
-                              (icicle-propertize (key-description bindings) 'face 'icicle-msg-emphasis))
-                     (sit-for wait-time))
-                (message "%s" curr-msg)))))))
     (cond ((arrayp fn)
            (let ((this-command  cmd)) (execute-kbd-macro fn count))
            (when (> count 1) (message "(%d times)" count)))
@@ -3786,6 +3761,28 @@ then customize option `icicle-top-level-key-bindings'." ; Doc string
                  ;; during the `next' part.
                  (this-command                            cmd))
              (call-interactively cmd 'record-it))))
+    ;; Message showing what CMD is bound to.  This is pretty much the same as in `execute-extended-command',
+    ;; but do not show the message if we are not at the `M-x' top level, i.e., if we are acting on a
+    ;; candidate command using `C-RET' instead of `RET'.
+    (when (and suggest-key-bindings  (not executing-kbd-macro)
+               (not (or (icicle-get-safe this-command 'icicle-action-command)
+                        ;; This one is used for `*-per-mode-action', which sets `this-command' to the cycler.
+                        (icicle-get-safe this-command 'icicle-cycling-command))))
+      (let* ((binding   (if (> emacs-major-version 21)
+                            (where-is-internal cmd overriding-local-map t 'NOINDIRECT)
+                          (where-is-internal cmd overriding-local-map t)))
+             (curr-msg   (current-message))
+             (wait-time  (or (and (numberp suggest-key-bindings)  suggest-key-bindings)  2)))
+        (when (and binding  (not (and (vectorp binding)  (eq (aref binding 0) 'mouse-movement))))
+          (let ((message-log-max  nil)  ; Do not log this message.
+                ;; If CMD showed a msg in echo area, wait a bit, before showing the key-reminder msg.
+                (waited           (sit-for (if (current-message)  wait-time  0))))
+            (when (and waited  (atom unread-command-events))
+              (unwind-protect
+                   (progn (message "You can invoke command `%s' using `%s'" (symbol-name cmd)
+                                   (icicle-propertize (key-description binding) 'face 'icicle-msg-emphasis))
+                          (sit-for wait-time))
+                (message "%s" curr-msg)))))))
     ;; After `M-x' `last-command' must be the command finally entered with `RET' or, if you end
     ;; with `C-g', the last command entered with `C-RET'.
     (setq icicle-new-last-cmd  cmd)))
