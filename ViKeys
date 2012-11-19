@@ -14,7 +14,7 @@ For the vi user:
 
 * If you miss "'''##cw##'''", use the strategies to ChangeWord in Emacs.
 
-* If you miss """##ci##""" and """##co##""", see https://github.com/rlister/mark-forward-sexp.
+* If you miss "'''##ci##'''" and "'''##co##'''", see https://github.com/rlister/mark-forward-sexp.
 
 * If you wish that ##C-o## worked more like "'''##o##'''" and also want "'''##O##'''" back in your life, look at OpenNextLine.
 
@@ -86,5 +86,4 @@ If you want to go the other way, ViMacs emulates Emacs inside Vim.
 ----
 CategoryKeys
 CategoryEmulation
-
 
