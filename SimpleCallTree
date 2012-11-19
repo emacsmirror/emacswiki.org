@@ -32,7 +32,7 @@ The output in ielm (see InferiorEmacsLispMode):
      ...
 </pre>
 
-Too see which functions are called at all:
+To see which functions are called at all:
 
 <pre>
     ELISP> (setq simple-call-tree-used (mapcar 'car (simple-call-tree-invert simple-call-tree-alist)))
