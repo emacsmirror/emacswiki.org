@@ -395,12 +395,9 @@ If optional arg BUF is supplied then use BUF instead of the *Simple Call Tree* b
     (if (and (equal buf "*Simple Call Tree*")
              (looking-at "[-|<>]* [^|<> -]"))
         (goto-char (next-single-property-change (point) 'face)))
-    (let* ((symb (if (functionp 'symbol-nearest-point)
+    (symbol-name (if (functionp 'symbol-nearest-point)
                      (symbol-nearest-point)
-                   (symbol-at-point)))
-           (fn (or (and (fboundp symb) symb)
-                   (function-called-at-point))))
-      (symbol-name fn))))
+                   (symbol-at-point)))))
 
 (defun simple-call-tree-next-func (posvar &optional test)
   "Find the next function in the current buffer after position POSVAR, and return its name.
