@@ -170,6 +170,16 @@ Then save the file as \"my-file.dot\" and run
           ";\n}"))
 </pre>
 
+==simple-call-tree+.el==
+
+The following library is based on simple-call-tree.el and provides a major mode for
+displaying and navigating the call tree. You can invert the tree, change the depth,
+narrow to a particular branch, and it also works with follow mode if you have that
+installed (http://www.damtp.cam.ac.uk/user/sje30/emacs/fm.el).
+
+* Lisp:simple-call-tree+.el
+
+-- JoeBloggs
 
 ----
 CategoryCode CategoryProgrammerUtils CategoryNavigation
