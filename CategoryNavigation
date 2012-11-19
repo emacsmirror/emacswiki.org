@@ -44,6 +44,7 @@ Navigating through the text of large buffers, or multiple buffers, especially co
 * IdUtils -- Database of code identifiers.
 * [[Icicles - Other Search Commands#IciclesImenu|Icicles Imenu]] -- Imenu with [[regexp]] [[completion]]. Like EmacsTags, works across multiple buffers, files, and saved regions.
 * SimpleCallTree -- A call-tree data structure that says which function calls which function. Highlights functions.
+* Lisp:simple-call-tree+.el -- major mode for displaying and navigating simple call tree
 * XreFactory -- Code completion, source browsing, and code refactoring.
 * SrSpeedbar -- Displays information about the current buffer, allowing you to better navigate your sources.
 * CScopeAndEmacs -- Look up where a symbol is defined, called, and so on.
