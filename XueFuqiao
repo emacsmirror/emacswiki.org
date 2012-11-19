@@ -62,7 +62,7 @@ Started physiotherapy on June, 2012.
 * It is a logical impossibility to make a language more powerful by omitting features, no matter how bad they may be.
 
 == My Init Files ==
-Coming soon.
+Lisp:dotemacs-xfq.el
 
 == My ~/.Xdefaults ==
 <pre>
