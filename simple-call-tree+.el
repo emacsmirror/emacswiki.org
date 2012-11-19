@@ -307,14 +307,9 @@ and the list of functions it calls in the cdr."
     (catch 'done
       (while (re-search-forward (simple-call-tree-symbol-as-regexp (car entry))
                                 end t)
-	(let ((faces (get-text-property (point) 'face)))
-	  (unless (listp faces)
-	    (setq faces (list faces)))
-	  (unless (or (memq 'font-lock-comment-face faces)
-		      (memq 'font-lock-string-face faces))
-	    (setcdr alist (cons (car entry)
-				(cdr alist)))
-	    (throw 'done t)))))))
+        (unless (not (simple-call-tree-valid-face-p))
+          (setcdr alist (cons (car entry) (cdr alist)))
+          (throw 'done t))))))
 
 (defun* simple-call-tree-analyze (&optional test (buffers (list (current-buffer))))
   "Analyze the current buffer, or the buffers in list BUFFERS.
@@ -368,10 +363,11 @@ By default it is set to a list containing the current buffer."
 (defun simple-call-tree-analyze-perl ()
   "Call `simple-call-tree-analyze-perl' for CPerl code."
   (interactive)
-  (simple-call-tree-analyze (lambda (pos)
-		       (goto-char pos)
-		       (beginning-of-line)
-		       (looking-at "sub"))))
+  (simple-call-tree-analyze
+   (lambda (pos)
+     (goto-char pos)
+     (beginning-of-line)
+     (looking-at "sub"))))
 
 (defun simple-call-tree-invert (alist)
   "Invert ALIST and return the result."
@@ -387,6 +383,14 @@ By default it is set to a list containing the current buffer."
     result))
 
 ;;; New functions (not in simple-call-tree.el)
+
+(defun simple-call-tree-valid-face-p nil
+  "Return t if face at point is a valid function name face, and nil otherwise."
+  (let ((faces (get-text-property (point) 'face)))
+    (unless (listp faces) (setq faces (list faces)))
+    (not (or (memq 'font-lock-comment-face faces)
+             (memq 'font-lock-string-face faces)
+             (memq 'font-lock-doc-face faces)))))
 
 (defun* simple-call-tree-get-function-at-point (&optional (buf "*Simple Call Tree*"))
   "Return the name of the function nearest point in the *Simple Call Tree* buffer.
@@ -609,11 +613,14 @@ If it is a called function then display the position in the calling function whe
     (display-buffer buf)
     (with-selected-window (get-buffer-window buf)
       (goto-char pos)
-      (if (> level 1) (re-search-forward
-                       (simple-call-tree-symbol-as-regexp
-                        (if simple-call-tree-inverted-bufferp
-                            parent
-                          thisfunc))))
+      (if (> level 1)
+          (whilenotlast
+           (re-search-forward
+            (simple-call-tree-symbol-as-regexp
+             (if simple-call-tree-inverted-bufferp
+                 parent
+               thisfunc)))
+           (simple-call-tree-valid-face-p)))
       (recenter 1))))
 
 (defun* simple-call-tree-visit-function nil
@@ -634,11 +641,14 @@ If it is a called function then visit the position in the calling function where
          (pos (marker-position funmark)))
     (pop-to-buffer buf)
     (goto-char pos)
-    (if (> level 1) (re-search-forward
-                     (simple-call-tree-symbol-as-regexp
-                      (if simple-call-tree-inverted-bufferp
-                          parent
-                        thisfunc))))
+    (if (> level 1)
+        (whilenotlast
+         (re-search-forward
+          (simple-call-tree-symbol-as-regexp
+           (if simple-call-tree-inverted-bufferp
+               parent
+             thisfunc)))
+         (simple-call-tree-valid-face-p)))
     (recenter 1)))
 
 (defun* simple-call-tree-jump-to-function (fnstr &optional skipring)
