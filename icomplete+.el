@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Oct 16 13:33:18 1995
 ;; Version: 21.0
-;; Last-Updated: Wed Oct 31 08:32:03 2012 (-0700)
+;; Last-Updated: Mon Nov 19 11:41:04 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 1352
+;;     Update #: 1369
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icomplete+.el
 ;; Doc URL: http://emacswiki.org/emacs/IcompleteMode
 ;; Keywords: help, abbrev, internal, extensions, local
@@ -82,6 +82,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/11/19 dadams
+;;     icomplete-completions:
+;;       Exclude file names with extensions in completion-ignored-extensions.
+;;       Use same MOST sexp as in Emacs <23 versions, since use try-completion.
 ;; 2012/08/06 dadams
 ;;     Removed old, commented code at end of file.
 ;; 2012/07/21 dadams
@@ -196,6 +200,7 @@
 
 ;; Quiet the byte-compiler.
 (defvar icomplete-eoinput)
+(defvar icomplete-with-completion-tables)
 (defvar icompletep-include-menu-items-flag)
 (defvar icompletep-prospects-length)
 (defvar icicle-nb-of-other-cycle-candidates)
@@ -623,7 +628,13 @@ following the rest of the icomplete info:
     (let* (;; Do not use `completion-all-sorted-completions' as in vanilla Emacs.
            ;; We need the number of comps, and we do not need that sort order.
            ;; (comps (completion-all-sorted-completions))
-           (comps            (all-completions name collection predicate))
+
+           ;; Exclude file names with extensions in `completion-ignored-extensions'.
+           (comps            (if (and minibuffer-completing-file-name
+                                      icomplete-with-completion-tables)
+                                 (completion-pcm--filename-try-filter
+                                  (all-completions name collection predicate))
+                               (all-completions name collection predicate)))
            (nb-candidates    (length comps))
            (nb-cands-string  (if (< nb-candidates 2) "" (format "%7d " nb-candidates)))
 ;;; We do not use `completion-all-sorted-completions', so we do not need `last' or `base-size'.
@@ -646,9 +657,9 @@ following the rest of the icomplete info:
 ;;;               ;; If the COMPS are 0-based, the result should be the same with COMPS.
 ;;;               (completion-try-completion name comps nil (length name))))
                 (try-completion name collection predicate))
-               (most           (if (consp most-try)
-                                   (car most-try)
-                                 (if most-try (car comps) "")))
+               ;; Since we use `try-completion', MOST-TRY will not be a cons.
+               ;; (most        (if (consp most-try) (car most-try) (if most-try (car comps) "")))
+               (most           (if (stringp most-try) most-try (car comps)))
                ;; Compare NAME and MOST, so we can determine if NAME is
                ;; a prefix of MOST, or something else.
                (compare        (compare-strings name nil nil most nil nil
@@ -755,10 +766,10 @@ following the rest of the icomplete info:
 ;; 4. Appends number of remaining cycle candidates (for Icicles).
 ;;
 (when (> emacs-major-version 23)        ; Emacs 24+.
-  (defun icomplete-completions (name collection predicate require-match)
+  (defun icomplete-completions (name candidates predicate require-match)
     "Identify prospective candidates for minibuffer completion.
 NAME is the name to complete.
-COLLECTION is the collection of candidates to match.  See
+CANDIDATES is the collection of candidates to match.  See
 `completing-read' for its possible values.
 PREDICATE filters matches: they succeed only if it returns non-nil.
 REQUIRE-MATCH non-nil means the input must match a candidate.
@@ -790,7 +801,7 @@ additional cycle candidates, besides the current one, is displayed
 following the rest of the icomplete info:
   M-x forward-line   [Matched]  (13 more)."
     ;; `all-completions' does not like empty `minibuffer-completion-table's (ie: (nil))
-    (when (and (listp collection)  (null (car collection)))  (setq collection  ()))
+    (when (and (listp candidates)  (null (car candidates)))  (setq candidates  ()))
     (let* ((non-essential    t)
 
            ;; Do not use MD.  It is used only for `completion-try-completion', and we don't use that.
@@ -799,8 +810,13 @@ following the rest of the icomplete info:
            ;; Do not use `completion-all-sorted-completions' as in vanilla Emacs.
            ;; We need the number of COMPS, and we do not need that sort order.
 ;;;        (comps (completion-all-sorted-completions))
-           (comps            (all-completions name collection predicate))
 
+           ;; Exclude file names with extensions in `completion-ignored-extensions'.
+           (comps            (if (and minibuffer-completing-file-name
+                                      icomplete-with-completion-tables)
+                                 (completion-pcm--filename-try-filter
+                                  (all-completions name candidates predicate))
+                               (all-completions name candidates predicate)))
            (nb-candidates    (length comps))
            (nb-cands-string  (if (< nb-candidates 2) "" (format "%7d " nb-candidates)))
 
@@ -822,12 +838,13 @@ following the rest of the icomplete info:
                 ;; We do not use BASE-SIZE, and the second `if' clause raises an error if CANDIDATES
                 ;; is a function.  So we just use `try-completion'.
 ;;;             (if (and base-size (> base-size 0))
-;;;                 (completion-try-completion name collection predicate (length name) md)
+;;;                 (completion-try-completion name candidates predicate (length name) md)
 ;;;               ;; If the COMPS are 0-based, the result should be the same with COMPS.
 ;;;               (completion-try-completion name comps nil (length name) md)))
-                (try-completion name collection predicate))
-
-               (most           (if (consp most-try) (car most-try) (if most-try (car comps) "")))
+                (try-completion name candidates predicate))
+               ;; Since we use `try-completion', MOST-TRY will not be a cons.
+               ;; (most        (if (consp most-try) (car most-try) (if most-try (car comps) "")))
+               (most           (if (stringp most-try) most-try (car comps)))
                ;; Compare NAME & MOST, to determine if NAME is a prefix of MOST, or something else.
                (compare        (compare-strings name nil nil most nil nil completion-ignore-case))
                (determ         (and (not (or (eq t compare)  (eq t most-try)
