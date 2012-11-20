@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue Nov 20 10:28:05 2012 (-0800)
+;; Last-Updated: Tue Nov 20 11:11:12 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 9275
+;;     Update #: 9277
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -5082,7 +5082,7 @@
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
 ;; 2012/11/20 dadams
-;;     icicle-bind-completion-keys: Fixed typo for C-M-; introduce via M-;.
+;;     icicle-bind-completion-keys: Fixed typos for M-; and C-M-; introduced by M-; or C-M-q, Emacs 20.
 ;; 2012/10/27 dadams
 ;;     Handle new BBDB version also.
 ;;     icicle-define-icicle-maps: Added icicle-toggle-annotation.
