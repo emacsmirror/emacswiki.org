@@ -114,6 +114,8 @@ Here's how to recover, when you seem to have fallen down a key-binding black hol
 * Use '''`M-x top-level'''' to get back to the top level of Emacs, after being submerged in a recursive edit session. Use this if you see '''##[...]##''' (or '''##[[...]]##''', and so on) in the ModeLine.
 * Use '''`C-h l'''' to see what the last 100 keys you typed were (this includes mouse and menu actions; in Emacs, "key" is pretty general). Use this to try to figure out how you got into the mess that you're in!
 
+[new:XueFuqiao:2012-11-20 13:19 UTC]In my Emacs(GNU Emacs 24.2), '''`C-h l'''' displays last 300 input keystrokes. -- XueFuqiao [new]
+
 '''''Hey!''''' ''What was that about lovable Emacs '''not''' forcing key bindings on me?''    Mea culpa. Some things are missing from Emacs menus, and these things are among them. I've added them to my own '''Help''' menu, under a '''Whoops!?''' submenu -- see HelpPlus.
 
 Anyway, let's say that you are now aware in general about Emacs key bindings, and you know how to tame them or get out of their way ;-). How do you start using them?  ''Here's the problem:'' How do you know ''which keys are available'' in any given situation, and ''what they do''? This is where '''Icicles''' can help.
