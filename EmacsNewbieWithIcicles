@@ -76,6 +76,10 @@ Both '''Icicles''' and vanilla Emacs let you know which inputs are possible at a
 
 * For '''Icicles''', the candidates shown are those that match your input as a prefix or as a ''substring''. You type `M-x region S-TAB' and it shows you all command names that ''include'' `region'. 
 
+[new:XueFuqiao:2012-11-20 12:56 UTC]
+Vanilla GNU Emacs also has a complete style named `substring'. -- XueFuqiao
+[new]
+
 In both vanilla Emacs and '''Icicles''', hitting the `TAB' key when input is expected shows the prefix completions. In '''Icicles''', holding the Shift key while hitting `TAB' (that is, `S-TAB') shows the substring completions (which include the prefix completions).
 
 Skip this paragraph if you are unfamiliar with regular expressions. Actually, `S-TAB' shows completion candidates that match your input as a RegularExpression, or [[regexp]]. Substring completion, mentioned above, is a special case of regexp completion.
