@@ -7,11 +7,11 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Nov 10 13:23:37 2012 (-0800)
+;; Last-Updated: Tue Nov 20 10:23:21 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 9192
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
-;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
+;;     Update #: 9194
+;; URL: http://www.emacswiki.org/icicles-mode.el
+;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -3766,7 +3766,7 @@ complete)"))
   (define-key map (icicle-kbd "C-:")       'icicle-candidate-set-define) ; `C-:'
   (define-key map (icicle-kbd "C-M-j")     'icicle-insert-list-join-string) ; `C-M-j'
   (define-key map (icicle-kbd "C-,")       'icicle-change-sort-order) ; `C-,'
-  (define-key map (icicle-kbd "C-M-     ;")     'icicle-toggle-ignoring-comments) ; `C-M-;'
+  (define-key map (icicle-kbd "C-M-;")     'icicle-toggle-ignoring-comments) ; `C-M-;'
   (define-key map (icicle-kbd "C-`")       'icicle-toggle-regexp-quote) ; `C-`'
   (define-key map (icicle-kbd "C-M-.")     'icicle-toggle-dot) ; `C-M-.'
   (define-key map (icicle-kbd "C-M-`")     'icicle-toggle-literal-replacement) ; `C-M-`'
