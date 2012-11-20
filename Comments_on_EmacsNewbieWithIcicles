@@ -1,0 +1,10 @@
+From [[XueFuqiao]]:2012-11-20 12:56 UTC:
+
+* Vanilla GNU Emacs [now] also has a complete style named `substring'.
+* `C-h l' displays last 300 input keystrokes [now].
+* [Help keys also for these:] keys (`C-h k'), variables (`C-h v'), language environments (`C-h L'), coding systems (`C-h C'), input methods (`C-h I') and packages (`C-h P'). 
+
+Reply (DrewAdams): Yes, thanks.  I've updated the text to try to clarify these things.  I didn't want to confuse newbies by entering into details about matching methods, but I agree that it's perhaps better to be more accurate here.
+
+-- DrewAdams 2012-11-20 15:29 UTC
+
