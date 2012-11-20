@@ -4,7 +4,9 @@
 == About Me ==
 I use Emacs.
 
-My name is Xue Fuqiao.  I have been a GNU/Linux user since 2008.
+Hi all,
+
+My name is Xue Fuqiao.  English is not my native language; please excuse typing errors.  I have been a GNU/Linux user since 2008.
 I've been an [[Emacsite]] since 2009 and began to write programs
 in EmacsLisp since 2011.  Started with [[XEmacs]], switched to
 [[SXEmacs]], back to XEmacs, then to GuileEmacs, and now I'm using GnuEmacs.  I prefer to learn new things from reference
@@ -89,9 +91,10 @@ Coming soon.
 
 == I Like ==
 * DuckDuckGo
-* Sawfish
+* Sawfish and Stumpwm
 * English
 * AI
+* dpkg
 * MIT
 * GNU Aspell
 * Happy Hacking Keyboard
