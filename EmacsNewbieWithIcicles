@@ -70,19 +70,29 @@ As to learning '''Icicles''' -- You can access most '''Icicles''' features from 
 [:PossibleInputs]
 == Which inputs are possible now? ==
 
-Both '''Icicles''' and vanilla Emacs let you know which inputs are possible at any given time. They do this by showing the possible [[completion]]s of what you have typed as input so far. The main difference is this: 
+Both '''Icicles''' and vanilla Emacs let you know which inputs are possible at any given time. They do this by showing the possible [[completion]]s of what you have typed as input so far.
 
-* For vanilla Emacs, the completion candidates shown are those that match your input as a ''prefix'' only. You type `M-x region TAB' and it shows you all [[command]] names that ''start'' with `region'.
+Which completions are possible depends on just how completion matching is done.  The rest of this section explores this topic a bit.  If you find it confusing at first then skip this section for now.
 
-* For '''Icicles''', the candidates shown are those that match your input as a prefix or as a ''substring''. You type `M-x region S-TAB' and it shows you all command names that ''include'' `region'. 
+For vanilla Emacs `basic' completion, the completion candidates shown are those that match your input as a ''prefix'' only. You type `M-x region TAB' and it shows you all [[command]] names that ''start'' with `region'.
 
-[new:XueFuqiao:2012-11-20 12:56 UTC]
-Vanilla GNU Emacs also has a complete style named `substring'. -- XueFuqiao
-[new]
+For vanilla Emacs prior to version 23, only this strict prefix completion is available.  For Emacs 23 and later, multiple kinds of completion matching are tried in sequence, without your knowing which was successful if one succeeds.  You can specify the kinds that are tried by customizing option `completion-styles'.  Different Emacs commands can override this choice, however.
 
-In both vanilla Emacs and '''Icicles''', hitting the `TAB' key when input is expected shows the prefix completions. In '''Icicles''', holding the Shift key while hitting `TAB' (that is, `S-TAB') shows the substring completions (which include the prefix completions).
+For '''Icicles''', you can change the completion method to use on the fly, that is, during completion, by hitting a key ('''`##C-(##'''' or '''`##M-(##'''').  Basic prefix completion is one of the choices, as is whatever is currently defined for vanilla `completion-styles'.  But in addition you can choose [[regexp]] matching (which includes substring matching) or one of several kinds of [[Icicles - Fuzzy Completion|fuzzy]] matching.
 
-Skip this paragraph if you are unfamiliar with regular expressions. Actually, `S-TAB' shows completion candidates that match your input as a RegularExpression, or [[regexp]]. Substring completion, mentioned above, is a special case of regexp completion.
+'''Icicles''' separates the available completion methods into two groups.  '''`TAB'''' completes using the current method of the first group, called loosely "'''prefix'''" completion, and '''`S-TAB'''' (that is, holding the Shift key while hitting `TAB')
+completes using the current method of the second group, called "'''apropos'''" completion.  "Fuzzy" completion methods are divided between the two groups depending on how "prefix" oriented they are.
+
+'''`##C-(##'''' cycles to the next prefix completion method (basic, vanilla, and 2 kinds of fuzzy).  '''`##M-(##'''' cycles to the next apropos completion method (regexp and 3 other kinds of fuzzy).
+
+Note that ''substring'' matching is a proper subset of regexp matching: Typing `M-x region S-TAB' shows you all command names that include `region'.  Typing `##M-x region$ S-TAB##' shows you all command names that end in `region' (`##$##' matches the end of the name).
+
+If you are unfamiliar with [[regexp]]s, don't worry about it -- just think in terms of substring matching.  The difference is the interpretation of certain characters, such as `##$##', as special, or "wildcards" for regexp matching.  And in fact, you can use key '''`##C-`##'''' in '''Icicles''' to toggle on/off this wildcard treatment; that is, you can toggle between wildcard (regexp) and literal (substring) matching anytime.
+
+
+
+
+
 
 
 
@@ -112,9 +122,7 @@ Here's how to recover, when you seem to have fallen down a key-binding black hol
 * Use '''`##C-_##'''' or '''`##C-/##'''' to [English:CategoryUndo undo] past actions. Repeat as needed, to undo more and more. To redo, just do something else, and then undo again (undo what you undid).
 * Use '''`##C-]##'''' to cancel any [[minibuffer]] input.
 * Use '''`M-x top-level'''' to get back to the top level of Emacs, after being submerged in a recursive edit session. Use this if you see '''##[...]##''' (or '''##[[...]]##''', and so on) in the ModeLine.
-* Use '''`C-h l'''' to see what the last 100 keys you typed were (this includes mouse and menu actions; in Emacs, "key" is pretty general). Use this to try to figure out how you got into the mess that you're in!
-
-[new:XueFuqiao:2012-11-20 13:19 UTC]In my Emacs(GNU Emacs 24.2), '''`C-h l'''' displays last 300 input keystrokes. -- XueFuqiao [new]
+* Use '''`C-h l'''' to see what the last 300 keys you typed were (this includes mouse and menu actions; in Emacs, "key" is pretty general).  Use this to try to figure out how you got into the mess that you're in!
 
 '''''Hey!''''' ''What was that about lovable Emacs '''not''' forcing key bindings on me?''    Mea culpa. Some things are missing from Emacs menus, and these things are among them. I've added them to my own '''Help''' menu, under a '''Whoops!?''' submenu -- see HelpPlus.
 
@@ -154,7 +162,7 @@ For more about this, including screenshots, see [[Icicles - Key Completion]]. [N
 
 Whenever you type input and hit `TAB' or `S-TAB', buffer `*Completions*' shows you the possible [[completion]]s of your input. The ''type'' of those completion candidates depends on what you're asked to input: if you're switching to another buffer, then the input is a [[buffer]] name; if you're opening a file, then the input is a file name; if you're executing a command, then the input is a [[command]] name, if you're setting a user option, then the input is an option (variable) name; and so on.
 
-Emacs has help keys for buffers (`C-h m'), functions (`C-h f'), keys (`C-h k'), variables (`C-h v'), language environments (`C-h L'), coding systems (`C-h C'), input methods (`C-h I') and packages (`C-h P'). '''Icicles''' provides help for all of these types of input and more, on the fly, by clicking '''`C-M-mouse-2'''' on the completion candidate in `*Completions*'. You get the right kind of help, depending on the type of input: buffer, file, function, variable, and so on. And even without clicking `C-M-mouse-2', '''Icicles''' shows candidate help in the [[mode line]] automatically, whenever you cycle among candidates. (With `C-M-mouse-2' you get the entire [[doc string]], not just one line of help.)
+Emacs has help keys for buffers (`C-h m'), functions (`C-h f'), keys (`C-h k'), variables (`C-h v'), language environments (`C-h L'), coding systems (`C-h C'), input methods (`C-h I') and packages (`C-h P').  '''Icicles''' provides help for all of these types of input and more, on the fly, by clicking '''`C-M-mouse-2'''' on the completion candidate in `*Completions*'. You get the right kind of help, depending on the type of input: buffer, file, function, variable, and so on. And even without clicking `C-M-mouse-2', '''Icicles''' shows candidate help in the [[mode line]] automatically, whenever you cycle among candidates. (With `C-M-mouse-2' you get the entire [[doc string]], not just one line of help.)
 
 Oh, and there's also a '''[[Icicles - Nutshell View#CompletionCandidateMenu|Completion Candidate]]''' contextual menu in buffer `*Completions*' -- just click `C-mouse-3' on a candidate there to see what you can do with it.
 
