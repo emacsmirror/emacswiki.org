@@ -154,3 +154,14 @@ Sounds good to me! :)
 
 -- AlexSchroeder 2012-11-21 12:52 UTC
 
+
+----
+
+Deleting all but the first sentence sounds good to me too.  Alternatively, keep the first two sentences.  And I agree that the appeals to authority here are silly.
+
+But if we keep just those one or two sentences, there is perhaps even less reason to keep the page at all.  I say we just delete the page and let folks google to find out about "functional programming" (and even "Emacs Lisp").  Just one opinion.  Let them explore and learn in their own directions and to the extent that they are interested.
+
+FWIW, both of the camps you mention, Tobi, refer to the purely functional languages as "purely functional."  In fact, that term is used more by the purely functional camp (you have it backwards) -- they are the ones who care most about the difference.  The term itself was first used by those who developed such languages, to emphasize what was different (and new at the time) about them compared with what it had already been the practice to call functional languages (e.g. Lisp).
+
+-- DrewAdams 2012-11-21 14:13 UTC
+
