@@ -69,3 +69,12 @@ Is there any way to match the sizes of the various fonts?
 
 -- [http://bernardhurley.posterous.com/ Bernard Hurley] 2012-11-18 03:00 UTC
 
+
+----
+
+I wanted to do the same thing. It seems like one should be able to append ":size=12" or similar to the font name, but it has no effect, for reasons I have not tracked down. 
+
+Github issues are a better way to get hold of me, btw.
+
+-- roland.walker 2012-11-21 21:14 UTC
+
