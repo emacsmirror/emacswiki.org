@@ -5,9 +5,7 @@ Git is available from http://git-scm.com/. Documentation can be found at http://
 
 == Emacs Standard Support ==
 
-Git is supported by ##vc-git## since 22.1, accessible via
-VersionControl and
-DistributedVersionControl.
+Git is supported by ##vc-git## since 22.1, accessible via VersionControl.
 
 ##vc-git## is reported to work well.
 NB You should probably upgrade Emacs to obtain standard vc-git support as vc-git is not being back-ported.
@@ -45,6 +43,9 @@ highlighting the search term, etc.) The default colours are terrible but can all
 * Documentation: 
 ** http://bogolisk.github.com/egg/egg.html
 ** http://bogolisk.blogspot.com/ (includes screenshots)
+
+
+*DVC* is a generic Emacs interface to DistributedVersionControl systems, including git.
 
 
 *egit* is an Emacs Git history interface intended to be similar to qgit or gitk. Requires git.el.
