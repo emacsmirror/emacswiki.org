@@ -225,7 +225,7 @@ Thanks --Jari
 
 * 2010-12 A rudimentary implementation of early concept of the software (picture).
 * 2011-12 `M-x' `epackage-manager' available, just the "bare bones".
-* 2012 The full buffer mode based UI (like in ELPA) is planned.
+* YYYY The full buffer mode based UI (like in ELPA) is planned.
 
 [[image:EpackagePictureUiCommandLine]]
 
