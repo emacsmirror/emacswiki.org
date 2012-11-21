@@ -13,14 +13,14 @@ ARGLIST [DOCSTRING] BODY...)##, where the optional argument for
 defining the string can be seen.  Thus in the example
 
     (defun hello-world nil
-      "Greets the world.
+      "Greet the world.
     This function implements the canonical example program."
       (interactive)
       (message "Hello world!"))
 
 the doc string is 
 
-      "Greets the world.
+      "Greet the world.
     This function implements the canonical example program.".
 
 Remember that doc strings and comments are different.  Comments are
