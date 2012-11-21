@@ -58,7 +58,7 @@ LatexEnc gets a coding system from <code>inputenc</code>, as an alternative to a
 == Discussion ==
 
 [new]
-Is there a way to use [http://www.pps.jussieu.fr/~beffara/soft/rubber/ Rubber] as default in AUCTex (e.g., "C-c C-c" -> Latex or PDF calls rubber with the appropriate options)??
+Is there a way to use [https://launchpad.net/rubber Rubber] as default in AUCTex (e.g., "C-c C-c" -> Latex or PDF calls rubber with the appropriate options)??
 
 [new]
 Yes.  In my configuration, F12 previews a LaTeX document, and Shift+F12 creates a PDF.  To avoid clutter, all intermediate files are kept in the /tmp folder, only the final PDF is created in the current folder.  Also, the right workflow is automatically selected depending on if the file is a beamer or a normal LaTeX file.
