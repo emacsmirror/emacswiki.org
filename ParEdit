@@ -1,6 +1,6 @@
 '''ParEdit''' (##paredit.el##) is a minor mode for performing structured editing of S-expression data. The typical example of this would be Lisp or Scheme source code.
 
-%%ParEdit%% helps __**keep parentheses balanced**__ and adds many keys for moving S-expressions and moving around in S-expressions.  Its behavior can be jarring for those who may want transient periods of unbalanced parentheses, such as when typing parentheses directly.
+%%ParEdit%% helps __**keep parentheses balanced**__ and adds many keys for moving S-expressions and moving around in S-expressions.  Its behavior can be jarring for those who may want transient periods of unbalanced parentheses, such as when typing parentheses directly or commenting out code line by line.
 
 Skeleton like matching paren insertion is a small part of ParEdit's functionality; its true genius won't be obvious until you code in some list oriented language.
 
