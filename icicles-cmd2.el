@@ -7,11 +7,11 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Sat Nov 10 15:43:38 2012 (-0800)
+;; Last-Updated: Tue Nov 20 19:18:22 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 6123
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
-;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
+;;     Update #: 6138
+;; URL: http://www.emacswiki.org/icicles-cmd2.el
+;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -3588,43 +3588,55 @@ Select original window."
 The arguments are the same as for `icicle-search'."
   (when (and icicle-regexp-quote-flag  (not icicle-search-whole-word-flag)  (stringp scan-fn-or-regexp))
     (setq scan-fn-or-regexp  (regexp-quote scan-fn-or-regexp)))
-  (cond ((and (consp where)  (bufferp (car where))) ; List of buffers - search buffers.
-         (dolist (buf  where)
-           (icicle-search-define-candidates-1 buf nil nil scan-fn-or-regexp args)))
-        ((and (consp where)  (stringp (car where)) ; List of files - search files.  (Check only the first.)
-              (or (icicle-file-remote-p (car where)) ; Don't let Tramp try to access it.
-                  (file-exists-p (car where))))
-         (dolist (file  where)
-           (icicle-search-define-candidates-1 (find-file-noselect file 'nowarn) nil nil
-                                              scan-fn-or-regexp args)))
-        ((and (consp where)  (consp (car where))) ; Search bookmarks - or just their regions if defined.
-         (unless (require 'bookmark+ nil t) (error "This requires library `Bookmark+'"))
-         (let ((non-existent-buffers  ())
-               buf+beg buf beg end)
-           (dolist (bmk  where)
-             (setq buf+beg  (bookmark-jump-noselect bmk)
-                   buf      (car buf+beg)
-                   beg      (cdr buf+beg)
-                   end      (bmkp-get-end-position bmk))
-             (when (and beg  end  (= beg end)) ; Search whole buffer if bookmarked region is empty.
-               (setq beg  nil
-                     end  nil))
-             (if (bufferp buf)
-                 (icicle-search-define-candidates-1 buf beg end scan-fn-or-regexp args)
-               (push buf non-existent-buffers)))
-           (when non-existent-buffers
-             (message "Skipping non-existent buffers: `%s'"
-                      (mapconcat #'identity (icicle-remove-duplicates non-existent-buffers)
-                                 "', `"))
-             (sit-for 3))))
-        (t                              ; Search this buffer only.
-         (icicle-search-define-candidates-1 nil beg end scan-fn-or-regexp args)))
+  (let ((message-log-max  nil)
+        (nb-contexts      0)
+        (nb-objects       (length where)))
+    (cond ((and (consp where)  (bufferp (car where))) ; List of buffers - search buffers.
+           (dolist (buf  where)
+             (incf nb-contexts)
+             (message "%d contexts; searching %d/%d: `%s'" (length icicle-candidates-alist) nb-contexts nb-objects
+                      buf)
+             (icicle-search-define-candidates-1 buf nil nil scan-fn-or-regexp args)))
+          ((and (consp where)  (stringp (car where)) ; List of files - search files.  (Check only the first.)
+                (or (icicle-file-remote-p (car where)) ; Don't let Tramp try to access it.
+                    (file-exists-p (car where))))
+           (dolist (file  where)
+             (incf nb-contexts)
+             (message "%d contexts; searching %d/%d: `%s'" (length icicle-candidates-alist) nb-contexts nb-objects
+                      (file-relative-name file default-directory))
+             (icicle-search-define-candidates-1 (find-file-noselect file 'nowarn) nil nil
+                                                scan-fn-or-regexp args)))
+          ((and (consp where)  (consp (car where))) ; Search bookmarks - or just their regions if defined.
+           (unless (require 'bookmark+ nil t) (error "This requires library `Bookmark+'"))
+           (let ((non-existent-buffers  ())
+                 buf+beg  buf  beg  end)
+             (dolist (bmk  where)
+               (incf nb-contexts)
+               (message "%d contexts; searching %d/%d: `%s'" (length icicle-candidates-alist) nb-contexts nb-objects
+                        bmk)
+               (setq buf+beg  (bookmark-jump-noselect bmk)
+                     buf      (car buf+beg)
+                     beg      (cdr buf+beg)
+                     end      (bmkp-get-end-position bmk))
+               (when (and beg  end  (= beg end)) ; Search whole buffer if bookmarked region is empty.
+                 (setq beg  nil
+                       end  nil))
+               (if (bufferp buf)
+                   (icicle-search-define-candidates-1 buf beg end scan-fn-or-regexp args)
+                 (push buf non-existent-buffers)))
+             (when non-existent-buffers
+               (message "Skipping non-existent buffers: `%s'"
+                        (mapconcat #'identity (icicle-remove-duplicates non-existent-buffers)
+                                   "', `"))
+               (sit-for 3))))
+          (t                            ; Search this buffer only.
+           (icicle-search-define-candidates-1 nil beg end scan-fn-or-regexp args))))
   (when (and icicle-candidates-alist  (null (cdr icicle-candidates-alist)))
-    (message "Moving to sole candidate") (sit-for 1.5))
+    (message "Moving to sole context") (sit-for 1.5))
   (unless icicle-candidates-alist  (if (functionp scan-fn-or-regexp)
-                                       (error "No %ssearch hits"
+                                       (error "No %ssearch contexts"
                                               (if icicle-search-complement-domain-p "COMPLEMENT " ""))
-                                     (error "No %ssearch hits for `%s'"
+                                     (error "No %ssearch contexts for `%s'"
                                             (if icicle-search-complement-domain-p "COMPLEMENT " "")
                                             scan-fn-or-regexp)))
   (setq mark-active  nil))              ; Remove any region highlighting, so we can see search hits.
