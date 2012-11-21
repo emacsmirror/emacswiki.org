@@ -174,3 +174,10 @@ I agree we could delete the whole page and not lose much at the moment. It seems
 
 -- TobyCubitt 2012-11-21 18:22 UTC
 
+
+----
+
+Useful content, sure. But should it be on Emacs Wiki? Perhaps the general discussion of what functional languages are and aren't should happen elsewhere. Emacs Wiki might be more appropriate when talking about "useful functions like apply, map, reduce, etc." or closures or the lack of tail recursion etc.
+
+-- AlexSchroeder 2012-11-21 19:08 UTC
+
