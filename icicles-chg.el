@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue Nov 20 19:29:18 2012 (-0800)
+;; Last-Updated: Tue Nov 20 20:02:52 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 9279
+;;     Update #: 9284
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -88,6 +88,8 @@
 ;;
 ;; 2012/11/19 dadams
 ;;     icicle-execute-extended-command-1: Show key-reminder after invoking CMD.  Thx to M. Heerdegen.
+;;     icicle-customize-apropos: lexical-let -> let.  Put PATTERN in progress msg.  Add comma for TYPE.
+;;     icicle-find-tag-define-candidates-1: Put regexp in progress msg.
 ;; 2012/11/17 dadams
 ;;     icicle-execute-extended-command-1: Show key-reminder msg before sit-for.  Thx to M. Heerdegen.
 ;; 2012/11/10 dadams
