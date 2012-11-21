@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Nov 16 08:37:04 2012 (-0800)
 ;; Version: 2012
-;; Last-Updated: Sun Nov 18 11:15:21 2012 (-0800)
+;; Last-Updated: Wed Nov 21 12:52:55 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 191
+;;     Update #: 206
 ;; URL: http://www.emacswiki.org/highlight-chars.el
 ;; Doc URL: http://www.emacswiki.org/ShowWhiteSpace#HighlightChars
 ;; Keywords: highlight, whitespace, characters, Unicode
@@ -123,6 +123,32 @@
 ;;                    (hc-dont-highlight-trailing-whitespace)))
 ;;                'APPEND)
 ;;
+;; Highlighting Different Sets of Characters in Different Buffers
+;; --------------------------------------------------------------
+;;
+;; Especially for highlighting non-whitespace characters (commands
+;; `hc-toggle-highlight-other-chars' and `hc-highlight-chars'), it can
+;; sometimes be useful to highlight different characters in different
+;; buffers.  For example, you might want to highlight all Chinese
+;; characters in a Gnus buffer and all hexadecimal digits in a CSS or
+;; HTML buffer.
+;;
+;; You can do this by setting the local value of option
+;; `hc-other-chars' (and perhaps option `hc-other-chars-NOT') in each
+;; of the buffers.  For example:
+;;
+;;      (with-current-buffer (current-buffer)
+;;        (set (make-local-variable 'hc-other-chars)
+;;             '(chinese-big5-1)))
+;;
+;; You can use Customize to find the Lisp value that corresponds to
+;; the highlighting you want: `M-x customize-option hc-other-chars',
+;; then use button `Value Menu' to choose a value, then button `State
+;; to `Set for Current Session'.
+;;
+;; Then use `C-h v hc-other-chars' to see what the Lisp value is (for
+;; example, `(chinese-big5-1)'), and plug that value into the
+;; `make-local-variable' expression.
 ;;
 ;; Vanilla Emacs Highlighting of Hard Spaces and Hyphens
 ;; -----------------------------------------------------
