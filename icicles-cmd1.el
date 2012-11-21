@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Nov 19 09:06:07 2012 (-0800)
+;; Last-Updated: Tue Nov 20 19:59:12 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 25166
+;;     Update #: 25176
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2086,27 +2086,27 @@ separate the words (any strings, in fact, including regexps) using
      (list (completing-read "Customize (pattern): " obarray (and icompletep  pred) nil nil 'regexp-history)
            pref-arg
            t)))
-  (lexical-let ((found  ()))
+  (let ((found  ()))
     (when (and (> emacs-major-version 21)  (require 'apropos nil t)
                (string= (regexp-quote pattern) pattern)
                (not (string= "" pattern)))
       (setq pattern  (split-string pattern "[ \t]+" 'OMIT-NULLS)))
     (when (fboundp 'apropos-parse-pattern) (apropos-parse-pattern pattern)) ; Emacs 22+
-    (when msgp (message "Gathering apropos data for customize..."))
-    (mapatoms `(lambda (symbol)         ; FREE here: APROPOS-REGEXP, FOUND.
+    (when msgp (message "Gathering apropos data for customize `%s'..." pattern))
+    (mapatoms `(lambda (symbol)         ; FREE here: APROPOS-REGEXP.
                 (when (string-match ,(if (> emacs-major-version 21) apropos-regexp pattern)
                                     (symbol-name symbol))
-                  (when (and (not (memq type '(faces options))) ; groups or t
+                  (when (and (not (memq ,type '(faces options))) ; groups or t
                              (get symbol 'custom-group))
                     (push (list symbol 'custom-group) found))
-                  (when (and (not (memq type '(options groups))) ; faces or t
+                  (when (and (not (memq ,type '(options groups))) ; faces or t
                              (custom-facep symbol))
                     (push (list symbol 'custom-face) found))
-                  (when (and (not (memq type '(groups faces))) ; options or t
+                  (when (and (not (memq ,type '(groups faces))) ; options or t
                              (boundp symbol)
                              (or (get symbol 'saved-value)
                                  (custom-variable-p symbol)
-                                 (if (memq type '(nil options))
+                                 (if (memq ,type '(nil options))
                                      (user-variable-p symbol)
                                    (get symbol 'variable-documentation))))
                     (push (list symbol 'custom-variable) found)))))
@@ -5719,7 +5719,7 @@ If TEXT is t, it means the tag refers to exactly LINE or POSITION,
 whichever is present, LINE having preference, no searching.
 Either LINE or POSITION can be nil.  POSITION is used if present."
   (icicle-highlight-lighter)
-  (message "Gathering tags...")
+  (message "Gathering tags for `%s'..." regexp)
   (goto-char (point-min))
   (let ((temp-list  ()))
     (while (re-search-forward (concat regexp ".*\177*") nil t) ; Look before the DEL character.
