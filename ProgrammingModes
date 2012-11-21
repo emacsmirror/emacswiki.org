@@ -51,7 +51,7 @@ This is a subpage of CategoryModes.  It lists modes for programming languages or
 * GimpMode -- Script-fu programming for the GIMP GNU Image Manipulation Program.
 * [[GLSL]] -- !OpenGL Shading Language
 * GnomeWizard -- Gwizard
-* Go(Lang)Mode -- Ken Thompson's Go language
+* GoLangMode -- Ken Thompson's Go language
 * GoLispMode -- navigate lisp files as hypertext
 * GroovyMode
 * HaskellMode 
