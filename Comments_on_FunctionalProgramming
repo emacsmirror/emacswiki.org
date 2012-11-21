@@ -128,3 +128,22 @@ Never heard of him.  The book looks like it's just self-published on Lulu.  I ha
 
 -- AaronHawley 2012-11-15 23:23 UTC
 
+
+----
+
+Seems to me you all basically agree what Elisp is like as a language and are arguing mainly about semantics, but the semantics of something that doesn't have a universally accepted and precise definition.
+
+In my experience, some people use "functional" loosely, to mean that a language has functions as first-class objects (which usually also implies it has useful functions like apply, map, reduce, etc.). Other people use "functional" more strictly, to mean that the language is side-effect free. The first camp often call the latter "pure functional".
+
+I've always thought of Lisp as a functional language, and also a procedural language, but not a pure functional language. So I guess I fall into the first camp. But I have no problem with people who prefer to reserve "functional" for languages like ML and Haskell, as long as it's clear what's meant.
+
+Doug Hoyte's argument is premised entirely on the assumption that "functional" means functions are side-effect free. That's fine in a book, where you can choose to define it that way explicitly. But a wiki like this should try to reflect common usage, not get bogged down in religious wars over definitions. The fact that there's no broad consensus about what "functional" means makes this harder. But a significant proportion of people use "functional" in a looser sense, to mean a language with first-class functions. (Otherwise Doug Hoyte wouldn't have needed to write his rant in the first place!) And those people might come looking for a discussion of functional-flavoured Elisp features on this wiki.
+
+The current FunctionalProgramming page is terrible. Most of it is pointless evangelizing about what "functional" should mean, based largely on appeals to authority. If the page is going to be a useful addition to this wiki, it needs to get the semantics out of the way in a sentence or two (acknowledging that different people mean different things by "functional"), and then go on to explain something useful. Like some of the functional-flavoured features of Elisp which people more used to C or Fortran might not be so familiar with. Bonus points if there are examples showing how to do the same thing in both a procedural and a more functional style.
+
+Personally, I'd delete everything except the first sentence (if necessary replacing it with links to Wikipedia and other more appropriate discussion forums for debating the definition of "functional"). Then we could put some useful content here.
+
+Just my 2c.
+
+-- TobyCubitt 2012-11-21 12:45 UTC
+
