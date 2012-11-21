@@ -45,7 +45,7 @@ PreviewLaTeX replaces the LaTeX code (more exactly headers, tables, figures, gra
 
 WhizzyTeX minor mode provides incremental viewing of LaTeX documents using on-the-fly compilation. It also shows the point where you are in LaTeX document source. It can use DVI previewer, or it can generate .ps file and use <nowiki>PostScript</nowiki> viewer. Similar features are provided by [http://www.ctan.org/tex-archive/help/Catalogue/entries/autoview.html CTAN:autoview], supposedly replaced by [http://gnufans.net/~deego/emacspub/lisp-mine/filewatch/ filewatch].
 
-LatexMk is a kind of specialized make for LaTeX, and it can be used in "preview continuously" mode to have the preview updated automatically automatically ''on file save''. [http://www.pps.jussieu.fr/~beffara/soft/rubber/ Rubber] is a more modular alternative to LatexMk.
+LatexMk is a kind of specialized make for LaTeX, and it can be used in "preview continuously" mode to have the preview updated automatically automatically ''on file save''. [https://launchpad.net/rubber Rubber] is a more modular alternative to LatexMk.
 
 InverseDviSearch explains how to set DVI previewer and Emacs to allow jumping from editor to related place in DVI file and vice versa.
 
