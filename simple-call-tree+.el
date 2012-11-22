@@ -133,6 +133,63 @@ This variable is used by the `simple-call-tree-jump-to-function' function when n
                  (const :tag "Middle" middle)
                  (const :tag "Bottom" bottom)))
 
+(defcustom simple-call-tree-default-valid-fonts '(font-lock-function-name-face
+                                                  font-lock-variable-name-face)
+  "List of fonts to use for finding objects to include in the call tree."
+  :group 'simple-call-tree
+  :type '(repeat face))
+
+(defcustom simple-call-tree-default-invalid-fonts '(font-lock-comment-face
+                                                    font-lock-string-face
+                                                    font-lock-doc-face)
+  "List of fonts that should not be in the text property of any valid token."
+  :group 'simple-call-tree
+  :type '(repeat face))
+
+(defcustom simple-call-tree-major-mode-alist
+  '((cperl-mode nil nil (lambda (pos)
+                          (goto-char pos)
+                          (beginning-of-line)
+                          (looking-at "sub")) nil)
+    (perl-mode nil nil (lambda (pos)
+                         (goto-char pos)
+                         (beginning-of-line)
+                         (looking-at "sub")) nil))
+  "Alist of major modes, and information to use for identifying objects for the simple call tree.
+Each element is a list in the form '(MAJOR-MODE VALID-FONTS INVALID-FONTS START-TEST END-TEST) where:
+
+MAJOR-MODE is the symbol for the major-mode that this items applies to.
+
+VALID-FONTS is either nil or a list of fonts for finding objects for the call tree (functions/variables/etc).
+If nil then `simple-call-tree-default-valid-fonts' will be used.
+
+INVALID-FONTS is either nil or a list of fonts that should not be present in the text properties of
+any objects to be added to the call tree. If nil then `simple-call-tree-default-invalid-fonts' will be used. 
+
+START-TEST indicates how to determing the start of the next object.
+If START-TEST is nil then objects are found by examining changes in font only. If START-TEST is a
+function then in addition to the font check, this function will be called at the beginning of a name
+and should return non-nil if that symbol is a valid object.
+
+END-TEST indicates how to find the end of the current object when parsing a buffer for the call tree.
+If END-TEST is nil then font changes will be used to determine the end of an object (by searching for the
+next part of text whose font is in FONTS). If END-TEST it is t then `end-of-defun' will be used, and if
+it is a function then that function will be used in the same way as `end-of-defun' (but needs no argument)."
+  :group 'simple-call-tree
+  :type '(repeat (list (symbol :tag "major-mode symbol")
+                       (repeat :tag "Faces"
+                               (face :help-echo "List of faces corresponding to items to include in the call tree."))
+                       (choice :tag "Start test"
+                               (const :tag "Font only" nil)
+                               (function
+                                :tag "Function:"
+                                :help-echo "Function that evaluates to true when point is at beginning of function name."))
+                       (choice :tag "End test"
+                               (const :tag "Font only" nil)
+                               (const :tag "end-of-defun function" t)
+                               (function :tag "Other function" :help-echo "Function for finding end of object"))))
+  :link '(variable-link simple-call-tree-default-valid-fonts))
+
 ;; Saves a little typing
 (defmacro whilelast (&rest forms)
   `(while (progn ,@forms)))
@@ -299,7 +356,7 @@ The minimum value is 0 which means show top level functions only.")
 ;;; Functions from simple-call-tree.el (some are rewritten)
 
 (defun simple-call-tree-add (start end alist)
-  "Add tokes between START and END to ALIST.
+  "Add tokens between START and END to ALIST.
 ALIST is a list with a string identifying the function in its car,
 and the list of functions it calls in the cdr."
   (dolist (entry simple-call-tree-alist)
@@ -311,63 +368,51 @@ and the list of functions it calls in the cdr."
           (setcdr alist (cons (car entry) (cdr alist)))
           (throw 'done t))))))
 
-(defun* simple-call-tree-analyze (&optional test (buffers (list (current-buffer))))
+(defun* simple-call-tree-analyze (&optional (buffers (list (current-buffer))))
   "Analyze the current buffer, or the buffers in list BUFFERS.
 The result is stored in `simple-call-tree-alist'.
-If optional function TEST is given, it must return non-nil when
-called with one parameter, the starting position of the function
-name.
 Optional arg BUFFERS is a list of buffers to analyze together.
 By default it is set to a list containing the current buffer."
   (interactive)
   (setq simple-call-tree-alist nil
         simple-call-tree-locations-alist nil)
   ;; First add all the functions defined in the buffers to simple-call-tree-alist.
-  (let ((pos (point-min))
-        oldpos count nextfunc max item olditem)
+  (let (pos oldpos count nextfunc max item endtest oldpos)
     (dolist (buf buffers)
       (with-current-buffer buf
         (font-lock-default-fontify-buffer)
         (setq pos (point-min)
               count 0)
         (save-excursion
-          (while (setq nextfunc (simple-call-tree-next-func 'pos test))
+          (while (setq nextfunc (simple-call-tree-next-func 'pos))
+            (add-to-list 'simple-call-tree-alist (list nextfunc))
             (goto-char pos)
-            (setq simple-call-tree-alist (cons (list nextfunc) simple-call-tree-alist)
-                  simple-call-tree-locations-alist (cons (cons nextfunc (point-marker)) simple-call-tree-locations-alist)
-                  count (1+ count))
-            (message "Identifying functions...%d" count)))))
+            (add-to-list 'simple-call-tree-locations-alist (cons nextfunc (point-marker)))
+            (setq count (1+ count))
+            (message "Identifying functions...%d:%s" count nextfunc)))))
     ;; Set variables in preparation for next part.
     (dolist (buf buffers)
       (with-current-buffer buf
         (setq pos (point-min)
               max count
               count 0
-              oldpos pos
-              olditem '("*Start*") ;; dummy value required for 1st iteration of following loop
-              item nextfunc)
+              endtest (fifth (assoc major-mode simple-call-tree-major-mode-alist)))
         (save-excursion
           ;; Loop through functions, adding called functions to associated items in simple-call-tree-alist.
-          (while (setq nextfunc (simple-call-tree-next-func 'pos test))
+          (while (setq nextfunc (simple-call-tree-next-func 'pos))
             (setq item (assoc nextfunc simple-call-tree-alist)
-                  count (1+ count))
+                  count (1+ count)
+                  oldpos pos)
             (message "Identifying functions called...%d/%d" count max)
-            (simple-call-tree-add oldpos (- pos (length nextfunc)) olditem)
-            (setq oldpos pos olditem item))
-          ;; Final function needs to be dealt with separately using a different method for finding its end.
-          (goto-char oldpos)
-          (end-of-defun)
-          (simple-call-tree-add oldpos (point) olditem)))))
+            (cond ((functionp endtest) (funcall endtest))
+                  (endtest (end-of-defun))
+                  ((simple-call-tree-next-func 'pos)
+                   (progn (goto-char pos)
+                          (previous-line)
+                          (end-of-line)))
+                  (t (goto-char (point-max))))
+            (simple-call-tree-add oldpos (point) item))))))
   (message "simple-call-tree done"))
-
-(defun simple-call-tree-analyze-perl ()
-  "Call `simple-call-tree-analyze-perl' for CPerl code."
-  (interactive)
-  (simple-call-tree-analyze
-   (lambda (pos)
-     (goto-char pos)
-     (beginning-of-line)
-     (looking-at "sub"))))
 
 (defun simple-call-tree-invert (alist)
   "Invert ALIST and return the result."
@@ -388,30 +433,35 @@ By default it is set to a list containing the current buffer."
   "Return t if face at point is a valid function name face, and nil otherwise."
   (let ((faces (get-text-property (point) 'face)))
     (unless (listp faces) (setq faces (list faces)))
-    (not (or (memq 'font-lock-comment-face faces)
-             (memq 'font-lock-string-face faces)
-             (memq 'font-lock-doc-face faces)))))
+    (not (intersection faces
+                       simple-call-tree-default-invalid-fonts))))
 
 (defun* simple-call-tree-get-function-at-point (&optional (buf "*Simple Call Tree*"))
   "Return the name of the function nearest point in the *Simple Call Tree* buffer.
 If optional arg BUF is supplied then use BUF instead of the *Simple Call Tree* buffer."
   (with-current-buffer buf
-    (if (and (equal buf "*Simple Call Tree*")
-             (looking-at "[-|<>]* [^|<> -]"))
-        (goto-char (next-single-property-change (point) 'face)))
-    (symbol-name (if (functionp 'symbol-nearest-point)
-                     (symbol-nearest-point)
-                   (symbol-at-point)))))
+    (if (equal buf "*Simple Call Tree*")
+        (let* ((start (next-single-property-change (line-beginning-position) 'face))
+               (end (next-single-property-change start 'face)))
+          (buffer-substring-no-properties start end))
+      (symbol-name (if (functionp 'symbol-nearest-point)
+                       (symbol-nearest-point)
+                     (symbol-at-point))))))
 
-(defun simple-call-tree-next-func (posvar &optional test)
+(defun simple-call-tree-next-func (posvar)
   "Find the next function in the current buffer after position POSVAR, and return its name.
 POSVAR should be a symbol which evaluates to a position in the current buffer. If a function is found
-its value will be changed to the position in the current buffer just after the function name.
-If optional function TEST is given, it must return non-nil when called with one parameter, the starting
-position of the function name."
-  (let ((start (eval posvar)) end)
-    (while (and (not (and (eq (get-text-property start 'face)
-                              'font-lock-function-name-face)
+its value will be changed to the position in the current buffer just after the function name."
+  (let* ((start (eval posvar))
+         (modevals (assoc major-mode simple-call-tree-major-mode-alist))
+         (validfonts (or (second modevals)
+                         simple-call-tree-default-valid-fonts))
+         (invalidfonts (or (third modevals)
+                           simple-call-tree-default-invalid-fonts))
+         (test (fourth modevals))
+         end)
+    (while (and (not (and (memq (get-text-property start 'face) validfonts)
+                          (not (memq (get-text-property start 'face) invalidfonts))
                           (or (not (functionp test))
                               (funcall test start))))
                 (setq start (next-single-property-change start 'face))))
@@ -443,7 +493,7 @@ When called interactively files will be prompted for and only functions in the c
                           collect (find-file file))))
     (if (or (not files) (called-interactively-p))
         (add-to-list 'buffers (current-buffer)))
-    (simple-call-tree-analyze nil buffers)
+    (simple-call-tree-analyze buffers)
     (simple-call-tree-list-callers-and-functions)
     (setq simple-call-tree-jump-ring (make-ring simple-call-tree-jump-ring-max)
           simple-call-tree-jump-ring-index 0)))
