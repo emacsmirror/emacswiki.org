@@ -1,3 +1,5 @@
+== Description ==
+
 Filladapt by KyleJones enhances Emacs' fill functions by guessing a fill prefix, such as a comment sequence in program code, and handling bullet points like "1." or "*".  Get it from the author at
 
 : http://www.wonderworks.com/
