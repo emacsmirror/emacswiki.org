@@ -10,7 +10,7 @@ Here are some libraries I wrote:
 * '''Lisp:bs-ext.el''' -- extensions to Buffer Selection mode
 * '''Lisp:simple-call-tree+.el''' -- programming aid for navigating call trees
 * '''Lisp:one-key.el''' -- see below
-* '''Lisp:one-key-dir.el''' -- fast directory navigation and file browser
+* '''Lisp:one-key-dir.el''' -- fast directory navigation and file browser using [[OneKey]]
 * '''Lisp:one-key-yas.el''' -- [[OneKey]] menu for [[Yasnippet]]
 * '''Lisp:one-key-bmkp.el''' -- [[OneKey]] menu for [[BookmarkPlus]]
 
