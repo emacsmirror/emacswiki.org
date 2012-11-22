@@ -70,7 +70,10 @@ turns into
 
 In order to prevent this, we need to tell Emacs that the bullet indicates the start of a new paragraph.  Here is how:
 
-    (setq paragraph-start "\\*\\|$" 
+    ;; The original value is ""\f\\|[      ]*$", add to it bullet (*) and (-).
+    ;; There is no need for "^" as the regexp is matched at the beginning of line.
+
+    (setq paragraph-start "\f\\|[ \t]*$\\|[-*] +.+$" 
           paragraph-separate "$")
 
 <i>Note: The handling of these two variables was broken in Emacs 20.7, so the above example might not work for you.  I applied the following patch to my Emacs 20.7, so it works now.</i>
