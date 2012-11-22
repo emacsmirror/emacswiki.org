@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue Nov 20 20:02:52 2012 (-0800)
+;; Last-Updated: Wed Nov 21 21:00:39 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 9284
+;;     Update #: 9290
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1547,6 +1547,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2012/11/21 dadams
+;;     icicle-completing-read: Commented out removing dir part of icicle-default-value in prompt.
 ;; 2012/11/17 dadams
 ;;     icicle-completing-read:
 ;;       When (eq icicle-default-value t) add DEF to PROMPT.  Thx to Michael Heerdegen.
@@ -6237,6 +6239,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2012/11/21 dadams
+;;     icicle-image-files-in-Completions:
+;;       Do not test, here, whether display is graphic (for Emacs daemon).  Thx to Christopher Schmidt.
 ;; 2012/11/18 dadams
 ;;     icicle-default-value: Updated doc string to reflect adding def to prompt for value t.
 ;; 2012/11/08 dadams
