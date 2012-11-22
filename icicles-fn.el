@@ -7,11 +7,11 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Nov 17 21:21:18 2012 (-0800)
+;; Last-Updated: Wed Nov 21 20:49:18 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 13674
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
-;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
+;;     Update #: 13676
+;; URL: http://www.emacswiki.org/icicles-fn.el
+;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -978,11 +978,11 @@ Completion ignores case when `completion-ignore-case' is non-nil."
       (let ((c+p  (icicle-mctize-all collection predicate)))
         (setq collection  (car c+p)     ; After banalizing for vanilla Emacs.
               predicate   (cadr c+p))))
-    ;; $$$$$$$$$ (setq minibuffer-completion-table  collection)
+    ;; $$$$$$ (setq minibuffer-completion-table  collection)
     (when (and def  (eq icicle-default-value t)) ; Add the (first) default value to PROMPT.
       (let ((hint  def))
         (when (consp hint) (setq hint  (car hint)))
-        (when (icicle-file-name-input-p) (setq hint  (file-name-nondirectory hint)))
+        ;; $$$$$$$$$ (when (icicle-file-name-input-p) (setq hint  (file-name-nondirectory hint)))
         (setq prompt  (replace-regexp-in-string ".*\\(: *\\)$" (format " (%s): " hint) prompt nil t 1))))
     (cond ((not icicle-mode)
            (setq result  (icicle-lisp-vanilla-completing-read
