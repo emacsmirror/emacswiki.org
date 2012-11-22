@@ -7,11 +7,11 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Nov 18 12:04:56 2012 (-0800)
+;; Last-Updated: Wed Nov 21 20:40:20 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 5391
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
-;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
+;;     Update #: 5395
+;; URL: http://www.emacswiki.org/icicles-opt.el
+;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -1781,7 +1781,7 @@ to toggle the option."
     ,@(if (> emacs-major-version 23) '(comint-completion-at-point) '(comint-dynamic-complete))
     comint-dynamic-complete-filename comint-replace-by-expanded-filename
     ;; Use these two if you want Icicles completion for shell commands.
-    ;; See http://www.emacswiki.org/emacs/Icicles_-_Shell-Command_Enhancements.
+    ;; See http://www.emacswiki.org/Icicles_-_Shell-Command_Enhancements.
     ;; dired-read-shell-command
     ;; read-shell-command
     ess-complete-object-name             gud-gdb-complete-command
@@ -2071,12 +2071,10 @@ toggle the option."
   "*Directories ignored by `icicle-locate-file'."
   :type '(repeat string) :group 'Icicles-Files)
 
+;; Do not check here whether (if (fboundp 'display-graphic-p) (display-graphic-p) window-system).
+;; Do that only at runtime, where we display the thumbnails.
 ;;;###autoload
-(defcustom icicle-image-files-in-Completions (and (fboundp 'image-file-name-regexp)
-                                                  (if (fboundp 'display-graphic-p)
-                                                      (display-graphic-p)
-                                                    window-system)
-                                                  t)
+(defcustom icicle-image-files-in-Completions (and (fboundp 'image-file-name-regexp)  t)
   "*Non-nil means show thumbnail images for image files in `*Completions*'.
 This has no effect if your Emacs version does not have image support.
 
