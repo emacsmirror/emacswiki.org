@@ -76,6 +76,9 @@ Here is a some EmacsLisp code that modifies `shell-command' to allow many comman
 
 Another way to run commands asynchronously, without Emacs stopping at all when the process is started, is using [http://www.gnu.org/software/emacs/elisp/html_node/Asynchronous-Processes.html Asynchronous Processes].
 
+
+There is a little library called [[Execute.el]] that redefines `##M-!##' key for executing /various/ external process. If you have problems when you want to execute two or more programs using `##M-!##' or `##M-&##', you may want to try this.
+
 == Discussion ==
 
 === Parent shell ===
