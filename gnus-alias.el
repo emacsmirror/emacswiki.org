@@ -1,4 +1,4 @@
-;;; @(#) gnus-alias.el -- an alternative to gnus-posting-styles
+;;; gnus-alias.el -- an alternative to gnus-posting-styles
 ;;; @(#) $Id: gnus-alias.el,v 1.4 2003/08/16 23:05:10 jcasa Exp $
 
 ;; This file is not part of Emacs
@@ -8,6 +8,7 @@
 ;; Maintainer:      Joe Casadonte (emacs@northbound-train.com)
 ;; Created:         September 08, 2001
 ;; Keywords:        personality, identity, news, mail, gnus
+;; Version:          1.4
 ;; Latest Version:  http://www.northbound-train.com/emacs.html
 
 ;; COPYRIGHT NOTICE
@@ -1426,5 +1427,3 @@ PREFIX is an optional prefeix to each header block."
 (run-hooks 'gnus-alias-load-hook)
 
 ;;; gnus-alias.el ends here
-;;; **************************************************************************
-;;;; *****  EOF  *****  EOF  *****  EOF  *****  EOF  *****  EOF  *************
