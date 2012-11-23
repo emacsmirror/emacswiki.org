@@ -1,4 +1,62 @@
-Zone mode 'zones' emacs out, choosing one of its random modes to obfuscate the current buffer, which can be used as a screensaver. With the following you can lock X11 with M-x lock-screen:
+Zone Mode 'zones' Emacs out, choosing one of its random modes to obfuscate the current buffer, which can be used as a screensaver.
+
+Try it with `M-x zone'.
+
+To enable Zone Mode for all buffers after Emacs is idle for 2 minutes, add the following Lisp code to you InitFile or try it out by EvaluatingExpressions.
+
+  (require 'zone)
+  (zone-when-idle 120)
+
+This will also enable Zone Mode after 2 minutes of idle.
+
+  (setq zone-timer (run-with-idle-timer 120 t 'zone))
+
+If you want to try out a particular Zone program, here is an interactive command, `M-x zone-choose',
+
+  (defun zone-choose (pgm)
+    "Choose a PGM to run for `zone'."
+    (interactive
+     (list
+      (completing-read
+       "Program: "
+       (mapcar 'symbol-name zone-programs))))
+    (let ((zone-programs (list (intern pgm))))
+      (zone)))
+
+To make your own program, add it to `zone-programs'.
+
+  (eval-after-load "zone"
+    '(unless (memq 'zone-pgm-md5 (append zone-programs nil))
+       (setq zone-programs
+             (vconcat zone-programs [zone-pgm-md5]))))
+
+Here's an example Zone program that outputs lines that are the result
+of iteratively finding the md5 checksum of checksums.  A program is
+typically just a function that performs various insertion and
+deletions within the buffer.  Zone Mode operates on a copy of a
+buffer, so there's no reason to operate on buffers or undo your
+changes.  The facilities in Zone do this for you.
+
+  (defun zone-pgm-md5 ()
+    "MD5 the buffer, then recursively checksum each hash."
+    (let ((prev-md5 (buffer-substring-no-properties ;; Initialize.
+                     (point-min) (point-max))))
+      ;; Whitespace-fill the window.
+      (zone-fill-out-screen (window-width) (window-height))
+      (random t)
+      (goto-char (point-min))
+      (while (not (input-pending-p))
+        (when (eobp)
+          (goto-char (point-min)))
+        (while (not (eobp))
+          (delete-region (point) (line-end-position))
+          (let ((next-md5 (md5 prev-md5)))
+            (insert next-md5)
+            (setq prev-md5 next-md5))
+          (forward-line 1)
+          (zone-park/sit-for (point-min) 0.1)))))
+
+With the following you can lock X11 with M-x lock-screen:
 
  (defun lock-screen ()
    "Lock screen using (zone) and xtrlock
@@ -13,3 +71,6 @@ Zone mode 'zones' emacs out, choosing one of its random modes to obfuscate the c
      (zone-when-idle 1)))
 
 NOTE: this depends on the program xtrlock (package 'xtrlock' in Debian GNU/Linux)
+
+----
+CategoryGames
