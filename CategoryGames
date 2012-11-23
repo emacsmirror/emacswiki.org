@@ -58,7 +58,7 @@ Builtin games/amusements:
 * <tt>studlify-region</tt> - convert text to stUdlY caps
 * TetrisMode - arrange falling blocks
 * <tt>yow</tt> - random Zippy quote
-* <tt>[ZoneMode zone]</tt> - crazy screen effects when idle
+* ZoneMode - crazy screen effects when idle
 
 Other modes for games related things:
 
