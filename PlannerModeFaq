@@ -88,6 +88,17 @@ You can use planner-diary.el for recurring appointments through the Emacs Diary.
 
 Can someone answer this question?  Preferably, it would be some special markup that turns off CamelCase interpretation on a specific page.
 
+This is a bit of an ugly hack but if you bind the following function to a convenient key:
+
+<pre>
+(defun insert-zero-width-space ()
+  "Insert a zero-with no break space to stop auto-Wiki links!"
+  (interactive)
+  (insert "\ufeff"))
+</pre>
+
+Then, assuming you have a font that includes this character (it's the Arabic Presentation Forms-B area), you can put a zero-width space between the two words giving the appearance of a single word in CamelCase. If you don't have this character then you can use the character \u200b in the General Punctuation area. This is a zero-width space; the disadvantage of using it is that the words might break apart at a line ending.
+
 === Planner can be used with non-ascii text (latin-1, utf-8)? ===
 
 Yes! I actually use planner with EUC-JP.
