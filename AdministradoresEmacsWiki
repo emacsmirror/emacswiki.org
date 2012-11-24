@@ -1,0 +1,48 @@
+= Administradores de EmacsWiki =
+
+¡Luchamos contra el WikiSpam día y noche! :)
+
+= Únete Al Equipo =
+Eres bienvenido a ayudarnos - sólo pregunta por uno de los administradores existentes por una [http://www.emacswiki.org/emacs?action=password clave de administración]. El único trabjo real es el de mantener el [http://www.emacswiki.org/emacs-es/BannedContent contenido prohibido] y los [http://www.emacswiki.org/emacs-es/BannedHosts hosts prohibidos].
+
+Administradores actuales:
+
+* AlexSchroeder
+* [[bkhl]]
+* StefanKamphausen
+* DavidHansen
+* StephenEglen
+* NascifAbousalhNeto
+* PierreGaston
+* YoniRabkinKatzenell
+* XavierMaillard
+* EmilioLopes
+* DavidAndel
+* DrewAdams
+* LennartBorgman
+* NeilSmithline (mientras que, una vez más, él se detenga de quejarse antes que él mismo sea el voluntario)
+* [irc://irc.freenode.net/jlf,isuser jlf]
+
+El poder de un administrador:
+
+# Bloquear y desbloquear el sitio entero en caso de un ataque.
+# Retroceder todos los cambios desde un punto del tiempo determinado(el resultado es una cantidad exorbitante de cambios que pueden ser revertidos como si fuesen cambios ordinarios).
+# Buscar y reemplazar sobre todo el sitio entero(el resultado es una cantidad exorbitante de cambios que pueden ser revertidos como si fuesen cambios ordinarios).
+# La prohibición y el bloqueo no tiene efecto sobre los administradores.
+# Mantener el listado de los [http://www.emacswiki.org/emacs-es/BannedHosts hosts prohibidos] y del [http://www.emacswiki.org/emacs-es/BannedContent contenido prohibido] para prohibir los nombres de hosts, números de IPs, o el contenido de páginas usando expresiones regulares.
+# Bloquear y desbloquear páginas.
+# Cambiar la lista de las abreviaciones URLs modificando la página denominada InterMap.
+# Cambiar la lista de sitios conectados por medio de NearLinks modificando la página denominada NearMap.
+# Ejecutar tareas de mantenimiento en cualquier momento.
+
+= Peticiones Intermap =
+
+Viejas discuciones acerca de InterMap se encuentra en InterMapDiscussion.
+
+= Rangos Prohibidos =
+"Whois" puede decirte si debes prohibir sólo una IP, o todo un rango. Yo uso http://network-tools.com/ cuando trabajo en un sistema que no provee whois.
+
+De esta forma, cuando notas la presencia de spammers, primero buscas su información con whois. Busca la parte que indica el rango y nombre de la compañia, luego prohibes el rango entero. Documéntalo aquí mismo, en esta página y agrega la fecha y la hora. Nosotros removeremos las prohibiciones luego de unos pocos días, esperando que los spammers se hayan ido.
+
+----
+CategoryEmacsWikiSite
