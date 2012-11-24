@@ -3,25 +3,30 @@ I have translated some pages and added these:
 
 * [[BBDBV3-Wl]] (In Spanish: [[BBDBV3-Wl-es]])
 * EmotionIconousMode 
+* [[Execute.el]]
 
-=External Links=
+== Emacs Related and Unrelated Projects/Collaborations==
 
-==Related and Unrelated Projects==
+* Here
+*** [[Execute.el]] For executing various asynchronous external programs.
 
 * [https://gna.org/users/cngimenez On GNA!]
-** Related projects:
-*** [https://gna.org/projects/bbdbv3-wl/ BBDBV3-Wl] | [http://home.gna.org/bbdbv3-wl/ Home Page]
-*** [https://gna.org/projects/emoicon-mode/ Emotion-Iconous-Mode] | [http://home.gna.org/emoicon-mode/ Home Page]
-** Other projects:
-*** [https://gna.org/projects/liliputworld/ LiliputWorld] | [http://home.gna.org/liliputworld/ Home Page]
+** Related Projects:
+*** [https://gna.org/projects/bbdbv3-wl/ BBDBV3-Wl] | [http://home.gna.org/bbdbv3-wl/ Home Page] : Interface for using the third version of BBDB with Wanderlust.
+*** [https://gna.org/projects/emoicon-mode/ Emotion-Iconous-Mode] | [http://home.gna.org/emoicon-mode/ Home Page] : Emoticon minor mode.
+** Unrelated Projects:
+*** [https://gna.org/projects/liliputworld/ LiliputWorld] | [http://home.gna.org/liliputworld/ Home Page] : A 3d engine written in Ruby. Latter in C++.
 
 * [http://savannah.gnu.org/users/cngimenez On Savannah]
-** Helping on projects:
-*** [http://savannah.gnu.org/projects/identica-mode/ Identica-Mode] | [http://blog.gabrielsaldana.org/identica-mode-for-emacs/ Home Page]
+** Unrelated Projects:
+*** [https://savannah.nongnu.org/projects/pillowcase/ Pillow-Case] A minimalistic HTTP web server written in [http://ciaohome.org/ Ciao Prolog]
+** Helping on Projects:
+*** [http://savannah.gnu.org/projects/identica-mode/ Identica-Mode] | [http://blog.gabrielsaldana.org/identica-mode-for-emacs/ Home Page] : A mode for reading [https://identi.ca/ Identica], a Statusnet microblogin service.
+
 
 * [https://github.com/cnngimenez On Github]
 ** Related projects and helping:
-*** diaspora.el
+*** diaspora.el : For reading [https://joindiaspora.com/ Diaspora], a free(as in freedom) social network, using Emacs
 *** [https://github.com/cnngimenez/diaspora.el My Fork] | [https://github.com/tchartersazevedo/diaspora.el Tiago Charters Azevedo's Fork]
 
 
