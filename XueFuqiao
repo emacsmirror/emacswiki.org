@@ -6,7 +6,7 @@ I've been an [[Emacsite]] since 2009 and began to write programs
 in EmacsLisp since 2011.  Started with [[XEmacs]], switched to
 [[SXEmacs]], back to XEmacs, then to GuileEmacs, and now I'm using GnuEmacs.  I prefer to learn new things from reference
 manuals, instead of tutorials.  Currently I use GNU
-Emacs on a laptop with a DvorakKeyboard.  My favorite font is [http://www.proggyfonts.com ProggyTiny]
+Emacs on a laptop with a DvorakKeyboard.
 
 I'm a software developer and software freedom activist.  And I’m
 currently a student of [http://www.ncut.edu.cn NCUT].  My major
@@ -69,7 +69,7 @@ https://github.com/xfq/xfq-emacs-init-files
 == My ~/.Xdefaults ==
 <pre>
 Emacs.bitmapIcon: off
-Emacs.font: ProggyTinyTT-12
+Emacs.font: ProggySmallTT-12
 Emacs* menubar.margin: 0
 Emacs* toolBar: 0
 Emacs.useXIM: off
