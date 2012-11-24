@@ -3,7 +3,7 @@
 ¡Luchamos contra el WikiSpam día y noche! :)
 
 = Únete Al Equipo =
-Eres bienvenido a ayudarnos - sólo pregunta por uno de los administradores existentes por una [http://www.emacswiki.org/emacs?action=password clave de administración]. El único trabjo real es el de mantener el [http://www.emacswiki.org/emacs-es/BannedContent contenido prohibido] y los [http://www.emacswiki.org/emacs-es/BannedHosts hosts prohibidos].
+Eres bienvenido a ayudarnos - sólo pregunta por uno de los administradores existentes por una [http://www.emacswiki.org/emacs?action=password clave de administración]. El único trabjo real es el de mantener el [BannedContent contenido prohibido] y los [BannedHosts hosts prohibidos].
 
 Administradores actuales:
 
@@ -29,7 +29,7 @@ El poder de un administrador:
 # Retroceder todos los cambios desde un punto del tiempo determinado(el resultado es una cantidad exorbitante de cambios que pueden ser revertidos como si fuesen cambios ordinarios).
 # Buscar y reemplazar sobre todo el sitio entero(el resultado es una cantidad exorbitante de cambios que pueden ser revertidos como si fuesen cambios ordinarios).
 # La prohibición y el bloqueo no tiene efecto sobre los administradores.
-# Mantener el listado de los [http://www.emacswiki.org/emacs-es/BannedHosts hosts prohibidos] y del [http://www.emacswiki.org/emacs-es/BannedContent contenido prohibido] para prohibir los nombres de hosts, números de IPs, o el contenido de páginas usando expresiones regulares.
+# Mantener el listado de los [BannedHosts hosts prohibidos] y del [BannedContent contenido prohibido] para prohibir los nombres de hosts, números de IPs, o el contenido de páginas usando expresiones regulares.
 # Bloquear y desbloquear páginas.
 # Cambiar la lista de las abreviaciones URLs modificando la página denominada InterMap.
 # Cambiar la lista de sitios conectados por medio de NearLinks modificando la página denominada NearMap.
