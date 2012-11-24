@@ -104,6 +104,42 @@ A small Perl program to convert Planner files into something suitable for OrgMod
 * SuSo I am translating the documentation into Spanish at http://gnu.manticore.es/manual-planner-emacs
 * [[Bernard Hurley]] I have just started using planner+remember. It is ideally suited to the way I work.
 
+== Bug in Planner 3.42 Registry Handling ==
+
+There is a bug in planner-registry.el in the latest version of planner mode. I'm surprised that no one has found it in the last 4 years as it makes the registry unusable. I have emailed the author, but for the time being a
+temporary fix is to put:
+
+<pre>
+(defun planner-registry-update-registry (from-file new-entries)
+  "Update the registry FROM-FILE with NEW-ENTRIES."
+  (with-temp-buffer
+    (find-file planner-registry-file)
+    (goto-char (point-min))
+    (while (re-search-forward
+	    (concat "^(\"" from-file) nil t)
+      (delete-region (planner-line-beginning-position)
+		     (planner-line-end-position)))
+    (goto-char (point-min))
+    (re-search-forward "^'(\n" nil t)
+    (dolist (elem new-entries)
+      (insert (with-output-to-string (prin1 elem)) "\n"))
+    (save-buffer)
+    (kill-buffer (current-buffer)))
+  (message (format "Planner registry updated for URLs in %s"
+		   (file-name-nondirectory
+		    (buffer-file-name)))))
+</pre>
+
+in your .emacs (or other init file) after:
+<pre>
+(require 'planner-registry)
+</pre>
+but before:
+<pre>
+
+(planner-registry-initialize)
+</pre>
+
 ----
 CategoryModes
 CategoryPersonalInformationManager
