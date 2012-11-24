@@ -19,7 +19,9 @@ The extension has a number of variables that allow various behaviours to be cust
 There are currently two hooks
 
 * edit-server-start-hook - called with current buffer ready to edit
-* edit-server-done-hook - called when the user has finished editing and exited the edit buffer
+* edit-server-done-hook - called when the user has finished editing and exited the edit buffer.  For example, use the following to preserve textarea contents in the case of navigating away from the textarea page:
+
+    (lambda () (kill-ring-save (point-min) (point-max)))
 
 === Controlling invocation ===
 
