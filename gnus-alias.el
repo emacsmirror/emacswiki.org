@@ -1,4 +1,4 @@
-;;; gnus-alias.el -- an alternative to gnus-posting-styles
+;;; gnus-alias.el --- an alternative to gnus-posting-styles
 ;;; @(#) $Id: gnus-alias.el,v 1.4 2003/08/16 23:05:10 jcasa Exp $
 
 ;; This file is not part of Emacs
