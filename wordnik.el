@@ -4,8 +4,8 @@
 ;; Created: Thu, 19 Jul 2012  18:03
 ;; Package-Requires: ()
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/wordnik.el
-;; X-URL: http://cheeso.members.winisp.net/srcview.aspx?dir=emacs&file=wordnik.el
-;; Version: 2012.07.18
+;; X-URL: https://raw.github.com/DinoChiesa/dpchiesa-elisp/master/wordnik.el
+;; Version: 2012.11.25
 ;; Keywords: dictionary lookup
 ;; License: New BSD
 
@@ -14,17 +14,29 @@
 ;; This module allows a user to look up for a word in a web-accessible
 ;; dictionary, WordNik, and then display the definition.
 
-;; To use this modike, you must first go to http://wordnik.com/ and register (no
+;; To use this module, you must first go to http://wordnik.com/ and register (no
 ;; cost) to get an API key.  Then, put wordnik.el in your emacs load
 ;; path and modify your .emacs to do this:
 
 ;;   (require 'wordnik)
 ;;   (setq wordnik-api-key "XXXXXXXXXXXX")  ;; from registration
-;;   ;; optional key binding (suggested)
+
+;;   -or-
+
+;;   (require 'wordnik)
+;;   (wordnik-set-api-key-from-file "~/wordnik.apikey.txt") ;; from registration
+
+;; Optionally, you can also set a key binding:
+
 ;;   (define-key global-map (kbd "C-c ?") 'wordnik-lookup-word)
 
 ;;
 ;;; Revisions:
+;;
+;; 2012.11.25  2012-November-25 Dino Chiesa
+;;    Updated to format message boxes with x-popup-menu on MacOS, to
+;;    avoid UI anomalies. Also added the `wordnik-set-api-key-from-file'
+;;    helper function.
 ;;
 ;; 2012.07.18  2012-July-17 Dino Chiesa
 ;;    First release.
@@ -32,7 +44,7 @@
 
 ;;; License
 ;;
-;; This code is distributed under the New BSD License.
+;; This code is distributed under a New (Revised) BSD-style License.
 ;;
 ;; Copyright (c) 2008-2012, Dino Chiesa
 ;; All rights reserved.
@@ -120,7 +132,7 @@ web service."
 
 (defun wordnik-want-msgbox-via-powershell ()
   "Determine if we want to display a message box
-using Windows powershell."
+using Windows powershell. Internal use only."
 
   (and wordnik-use-powershell-for-msgbox-on-windows
        (eq system-type 'windows-nt)
@@ -180,11 +192,101 @@ This can be used in place of `message-box' on Windows.
                                nil nil nil))))
 
 
+(defun wordnik--convert-defn-vector-to-string (defn)
+  "convert a vector of definitions to a simple string separated by
+newlines.
+"
+  (mapconcat '(lambda (elt)
+                (concat msg
+                        (cdr (assoc 'word elt))
+                        ": "
+                        (wordnik--justify
+                         (cdr (assoc 'text elt)))
+                        "\n"
+                        ))
+             defn "\n"))
+
+
 (defun wordnik-msgbox (msg)
   "Display a message in a dialog box."
   (if (wordnik-want-msgbox-via-powershell)
       (wordnik-msgbox-via-powershell msg)
     (message-box msg)))
+
+(defun wordnik--get-menu-position ()
+  "Get the position for the popup menu"
+  (if (fboundp 'posn-at-point)
+      (let ((x-y (posn-x-y (posn-at-point (point)))))
+        (list (list (+ (car x-y) 10)
+                    (+ (cdr x-y) 20))
+              (selected-window)))
+    t))
+
+(defun wordnik--generate-menu (defn)
+  "Generate a menu suitable for use in `x-popup-menu' from the
+DEFN, a vector of definitions. Each element in the vector of
+definitions is an alist, (('word \"foo\") ('text \"something\")
+...).
+
+The output is a list like this:
+
+  (\"Replace with...\"
+    (\"Ignored pane title\"
+      (\"thing 1 to display\" \"value to return if thing 1 is selected\")
+      (\"thing 2 to display\" \"value if thing 2 is selected\")))
+
+"
+  (let ((items (mapcar '(lambda (elt)
+                          (cons
+                           (concat
+                            (cdr (assoc 'word elt))
+                            ": "
+                            (wordnik--justify (cdr (assoc 'text elt)))
+                            "\n\n")
+                           ;;(assoc 'word elt)
+                           nil
+                           ))
+                           defn)))
+    (list "Definitions:" (cons "Ignored pane title" items))))
+
+
+
+(defun wordnik--show-defns-via-multiline-message-box (defn)
+  "Display a multiline message box containing the definitions in
+the DEFN vector. On MacOS, `message-box' does not format
+correctly. It is always 4 lines in height, regardless of the
+number of lines of input. Also, it cannot handle wide lines.
+
+This function can work around the display problems.
+From http://stackoverflow.com/a/9966422/48082
+"
+
+  (flet ((get-item-text (elt)
+                (concat ": "
+                        (wordnik--justify
+                         (cdr (assoc 'text elt)))
+                        "\n")))
+
+    (let ((word (cdr (assoc 'word (elt defn 0)))))
+      (let ((menu-1 (make-sparse-keymap (concat "Definitions: " word)))
+          (c (length defn)))
+
+      (define-key menu-1 [menu-1-ok-event]
+        `(menu-item ,(purecopy "OK")
+                    nil ;;ok
+                    :keys ""))
+      (define-key menu-1 [separator-1] menu-bar-separator)
+
+      ;; add lines to menu-1 in reverse order
+      (while (> c 0)
+        (setq c (1- c))
+        (define-key menu-1 (vector (intern (format "menu-1-fake-event-%d" c)))
+          `(menu-item ,(purecopy (get-item-text (elt defn c)))
+                      nil
+                      :keys ""
+                      :enable t)))
+
+      (x-popup-menu t menu-1)))))
 
 
 (defun wordnik-process-http-headers ()
@@ -232,6 +334,19 @@ headers and the beginning of the message content.
           (kill-buffer buf)
           defn))))
 
+(defun wordnik--justify (text &optional fill-column)
+  "Justify the given TEXT to the given FILL-COLUMN , default 72.
+The text is assumed to have no leading newlines, and to consist
+of only contiguous lines.
+"
+  (let ((real-fill-col (or fill-column 72)))
+    (with-temp-buffer
+      (insert text)
+      (setq fill-column real-fill-col)
+      (goto-char (point-min))
+      (fill-paragraph)
+      (buffer-substring-no-properties (point-min) (point-max)))))
+
 
 (defun wordnik-word-at-point ()
   "Uses `bounds-of-thing-at-point', to find and return the word at point.
@@ -243,6 +358,7 @@ headers and the beginning of the message content.
           (buffer-substring-no-properties (car bounds) (cdr bounds))))))
 
 
+
 ;;;###autoload
 (defun wordnik-show-definition (word)
   "A main interactive entry point into the `wordnik.el' capability.
@@ -252,24 +368,41 @@ definition for the word, from the remote service, and display a
 message box to the user with that information.
 
 "
-  (interactive (list (read-string "word: " (wordnik-word-at-point))))
+  (interactive (list (read-string "lookup definition for word: "
+                                  (wordnik-word-at-point))))
   (let ((defn (wordnik-get-definition word))
         (i 0)
         (msg ""))
-    (if defn ;; a vector
-        (progn
-          (while (< i (length defn))
-            (setq msg (concat msg
-                              (cdr (assoc 'word (elt defn i)))
-                              ": "
-                              (cdr (assoc 'text (elt defn i)))
-                              "\n\n"
-                              )
-                  i (1+ i)))
+    (if defn ;; non-nil vector means we have 1 or more definitions
+        (if (wordnik-want-msgbox-via-powershell)
+            (wordnik-msgbox-via-powershell
+             (wordnik--convert-defn-vector-to-string defn))
+          (wordnik--show-defns-via-multiline-message-box defn)))))
 
-          ;;(setq msg (concat "lookup word " word "\n"))
-          (wordnik-msgbox msg)))))
 
+          ;; (x-popup-menu (wordnik--get-menu-position)
+          ;;               (wordnik--generate-menu defn))))))
+
+
+(defun wordnik--trim-trailing-newlines (string)
+  (while (string-match "\\(.*\\)\\(\n\\|\r\\)$" string)
+    (setq string (substring string 0 -1))) ;; remove newline
+  string)
+
+
+;;;###autoload
+(defun wordnik-set-api-key-from-file (filename)
+  "A way to set the API key for Wordnik with the contents of
+a text file. That text file should contain the key obtained from
+Wordnik during registration.
+"
+  (interactive)
+  (setq wordnik-api-key
+        (and (file-exists-p filename)
+             (wordnik--trim-trailing-newlines
+              (with-temp-buffer
+                (insert-file-contents filename)
+                (buffer-substring-no-properties (point-min) (point-max)))))))
 
 (provide 'wordnik)
 
