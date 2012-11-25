@@ -4,8 +4,8 @@
 ;; Created: Thu, 29 Mar 2012  09:18
 ;; Package-Requires: ()
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/thesaurus.el
-;; X-URL: http://cheeso.members.winisp.net/srcview.aspx?dir=emacs&file=thesaurus.el
-;; Version: 2012.4.7
+;; X-URL: 
+;; Version: 2012.11.25
 ;; Keywords: thesaurus synonym
 ;; License: New BSD
 
@@ -26,25 +26,44 @@
 ;; services, and to even dynamically choose which service to access.
 
 ;; To use, first go to http://words.bighugelabs.com/ and register (no
-;; cost) to get an API key.  Then, put thesaurus.el in your emacs load
+;; cost) to get an API key. Then, put thesaurus.el in your emacs load
 ;; path and modify your .emacs to do this:
 
 ;;   (require 'thesaurus)
 ;;   (setq thesaurus-bhl-api-key "XXXXXXXXXXXX")  ;; from registration
-;;   ;; optional key binding
-;;   (define-key global-map (kbd "C-x t") 'thesaurus-choose-synonym-and-replace)
+
+;;    -or-
+
+;;   (require 'thesaurus)
+;;   (thesaurus-set-bhl-api-key-from-file "~/BigHugeLabs.apikey.txt")
+
+;; Optionally, set a key binding:
+;; (define-key global-map (kbd "C-x t") 'thesaurus-choose-synonym-and-replace)
 
 ;; This module currently relies on a BigHugeLabs thesaurus service. The
 ;; service is currently free, and has a limit of 10,000 lookups per
 ;; day. If the service changes, or becomes unavailable, or if anyone
 ;; exceeds the limit, it shouldn't be difficult to expand this module to
 ;; support other online thesaurus services. Wolfram Alpha is one
-;; possible option; there is a free API. Surely there are others.
+;; possible option; theirs is a free API. Wordnik has a free synonyms API.
 ;;
+;; eg:
+;; http://api.wordnik.com//v4/word.json/awry/relatedWords?relationshipTypes=synonym
+;;
+;; I think Bing has one. Probably there are others. This module would need
+;; to be modified to support one of those.
+;;
+;; If you want to proxy the URL calls, then use this:
+;;   (setq url-proxy-services (list (cons "http" "proxyHost:proxyPort")))
 
+;;
 ;;; Revisions:
 ;;
-;; 2012.4.7  2012-April-07 Dino Chiesa  PENDING
+;; 2012.11.25  2012-November-25 Dino Chiesa
+;;    Add the helper method `thesaurus-set-bhl-api-key-from-file'.
+;;    A few doc changes.
+;;
+;; 2012.4.7  2012-April-07 Dino Chiesa
 ;;    Fixup the customization group.
 ;;    Also serialize and de-serialize the cache as a list, not as a
 ;;    hash. To avoid the problem reported by Takafumi Arakaki. (Thanks!)
@@ -289,7 +308,7 @@ BigHugeLabs web service."
         (thesaurus-msgbox msg)
         (browse-url "http://words.bighugelabs.com/getkey.php")
         nil)
-  (url-retrieve-synchronously
+    (url-retrieve-synchronously
    (concat "http://words.bighugelabs.com/api/2/"
            thesaurus-bhl-api-key "/" word "/"))))
 
@@ -383,11 +402,18 @@ or, if there is no cache hit, then from the remote service.
 
 
 (defun thesaurus--generate-menu (candidates)
-  "Generate a menu suitable for use in `x-popup-dialog' from the
+  "Generate a menu suitable for use in `x-popup-menu' from the
 list of candidates. Each item in the list of candidates is a
 list, (FORM FLAVOR WORD), where FORM is one of {adjective, verb,
 noun, etc}, FLAVOR is {syn, sim, rel, ant, etc}, and WORD is the
 actual word.
+
+The output is a list like this:
+
+  (\"Replace with...\"
+    (\"Ignored pane title\"
+      (\"thing 1 to display\" \"value to return if thing 1 is selected\")
+      (\"thing 2 to display\" \"value if thing 2 is selected\")))
 
 "
   (let ((items (mapcar '(lambda (elt)
@@ -403,7 +429,7 @@ actual word.
 
 
 (defun thesaurus-prompt-user-with-choices (candidates)
-  "prompt the user with the available replacement choices.
+  "Prompt the user with the available replacement choices.
 In this context the list of choices is the list of synonyms.
 
 See `thesaurus-prompt-mechanism'.
@@ -467,6 +493,27 @@ inserted in its place.
           (delete-region (car thesaurus-bounds-of-looked-up-word)
                          (cdr thesaurus-bounds-of-looked-up-word))
           (insert chosen))))
+
+(defun thesaurus--trim-trailing-newlines (string)
+  (while (string-match "\\(.*\\)\\(\n\\|\r\\)$" string)
+    (setq string (substring string 0 -1))) ;; remove newline
+  string)
+
+
+;;;###autoload
+(defun thesaurus-set-bhl-api-key-from-file (filename)
+  "A way to set the API key for BigHugeLabs with the contents of
+a text file. That text file should contain the key obtained from
+BHL during registration.
+"
+  (interactive)
+  (setq thesaurus-bhl-api-key
+        (and (file-exists-p filename)
+             (thesaurus--trim-trailing-newlines
+              (with-temp-buffer
+                (insert-file-contents filename)
+                (buffer-substring-no-properties (point-min) (point-max)))))))
+
 
 
 (defun thesaurus-install ()
