@@ -4,7 +4,7 @@
 ;; Created: Thu, 29 Mar 2012  09:18
 ;; Package-Requires: ()
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/thesaurus.el
-;; X-URL: 
+;; X-URL: https://raw.github.com/DinoChiesa/dpchiesa-elisp/master/thesaurus.el
 ;; Version: 2012.11.25
 ;; Keywords: thesaurus synonym
 ;; License: New BSD
