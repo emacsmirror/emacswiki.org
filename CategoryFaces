@@ -31,25 +31,26 @@ Here are some of the pages in CategoryFaces.
 ** FontLockKeywords -- how to write complex font lock expressions
 ** FontLockSpeed
 
-* HighlightTemporarily -- how to highlight and unhighlight regexps, regions, and such
-** HighLight -- highlight regexps in the region or a buffer; highlight the region; highlight by dragging the mouse as a highlighter (marker pen); `face' and `mouse-face' highlighting; use any faces to highlight
-** HiLock -- Emacs built-in highlighting
-** MarkerPens -- Highlight bits of any buffer - just as you would with a highlighter pen
-** Icicles -- highlight regexps: `##C-.##' during [[Icicles - Search Commands, Overview|Icicles search]] toggles leaving [[Icicles - Customization and General Tips#icicle-search-cleanup-flag|search highlighting]] on. Highlight multiple-regexp matches in multiple buffers, files,...
-** MousePlus -- Highlight the yank position while you press `mouse-2', so you hit the right spot.
+* HighlightTemporarily -- How to highlight and unhighlight regexps, regions, characters...
+** HighLight -- Highlight [[regexp]] matches in the [[region]] or a [[buffer]]; highlight the region; highlight by dragging the mouse as a highlighter (marker pen); `face' and `mouse-face' highlighting; use any faces to highlight.
+** [[ShowWhiteSpace#HighlightChars|Highlight Characters]] -- Highlight any sets of characters (including different kinds of whitespace).
+** HiLock -- Highlight regexp matches or phrases.
+** MarkerPens -- Highlight as if using a highlighter pen.
+** Icicles -- Highlight regexp matches: `##C-.##' during [[Icicles - Search Commands, Overview|Icicles search]] toggles leaving [[Icicles - Customization and General Tips#icicle-search-cleanup-flag|search highlighting]] on. Highlight multiple-regexp matches in multiple buffers, files,...
+** MousePlus -- Highlight the yank position momentarily while you press `mouse-2', so you hit exactly the right spot.
 ** HighlightCurrentLine
 ** HighlightCurrentColumn
 ** HighlightSexp -- highlight the s-exp at point
 ** CrosshairHighlighting -- highlight the current line and column: track the TextCursor or highlight momentarily
 ** HighlightEndOfBuffer
-** HighlightSymbol – highlight the current symbol throughout the buffer
-** HighlightParentheses – highlight the parentheses surrounding point
-** PulseRegion - Fancy temporary pulsing of a region
+** HighlightSymbol – Highlight the current [[symbol]] throughout the buffer
+** HighlightParentheses – Highlight parentheses surrounding [[point]]
+** PulseRegion - Fancy temporary pulsing of the region
 * HowtoChangeFrameColors
 * [[Icicles - Other Search Commands#SearchingTextProperties|Icicles - Search for Properties]] -- Search for text that has certain [[overlay]] or [[text property|text properties]]; navigate among zones of text with faces.
-* ListColors
-* PointerShape -- changing the shape of the MousePointer (probably X Windows only)
-* SetFonts -- change font or font size; install fonts
+* ListColors -- Show colors having defined color names.
+* PointerShape -- Change the shape of the MousePointer (X Windows only).
+* SetFonts -- Change font or font size; install fonts.
 ** AntiAliasedFaces
 ** ChangeFontsPermanentlyOnWindows
 ** CycleFontSizes  
@@ -57,16 +58,16 @@ Here are some of the pages in CategoryFaces.
 ** `icicle-font' in [[Icicles]] to cycle fonts, with [[Completion]]
 ** MenuFont
 ** [[Win32Fonts]]
-* ShowWhiteSpace -- an example use of how to show trailing whitespace
+* ShowWhiteSpace -- Highlight various kinds of whitespace
 * StippleAttribute 
 * TemporaryFaces
-* TextProperties -- Emacs usually uses text properties to add faces to text
-* VisibleMark -- Make your mark visible
+* TextProperties -- Properties, including `face', that you can attach to text in a [[buffer]] or a string.
+* VisibleMark -- Make the [[mark]] visible
 * XfacesSupport for Emacs 20
-* XTermColors -- use 256 colors using xterm
-* SwitchColorThemeMatlabLatex -- switch easily between a dark theme designed for programming and a bright theme simulating the visual effect of the matlab programming environment.
+* XTermColors -- Use 256 colors with xterm.
+* SwitchColorThemeMatlabLatex -- Switch between a dark theme and a bright theme simulating the visual effect of the matlab programming environment.
 
-WikiTodo: If too many pages relate to display and [[Frame]]s, perhaps it would
+WikiTodo: If too many pages relate to display and [[frame]]s, perhaps it would
 be more appropriate to put them into a separate category, or a
 subcategory. See FrameModes for frame configurations, functions, and commands.
 
