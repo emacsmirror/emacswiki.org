@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Nov 20 19:59:12 2012 (-0800)
+;; Last-Updated: Mon Nov 26 09:10:40 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 25176
+;;     Update #: 25179
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -3697,6 +3697,7 @@ then customize option `icicle-top-level-key-bindings'." ; Doc string
                                                 (setq alt-fn  (icicle-alt-act-fn-for-type "command"))))
    (icicle-all-candidates-list-alt-action-fn ; M-|'
     (or icicle-all-candidates-list-alt-action-fn  alt-fn  (icicle-alt-act-fn-for-type "command")))
+   (last-toggle-transforming-msg            icicle-toggle-transforming-message)
    (icicle-toggle-transforming-message      "Filtering to commands bound to keys is now %s")
    (icicle-last-transform-function          (lambda (cands) ; Because we bind `icicle-transform-function'.
                                               (with-current-buffer icicle-pre-minibuffer-buffer
@@ -3728,6 +3729,7 @@ then customize option `icicle-top-level-key-bindings'." ; Doc string
   (let* ((cmd                                       (intern cmd-name))
          (fn                                        (symbol-function cmd))
          (count                                     (prefix-numeric-value current-prefix-arg))
+         (icicle-toggle-transforming-message        last-toggle-transforming-msg) ; Restore it.
          ;; Rebind alternative action functions to nil, so we don't override the command we call.
          (icicle-candidate-alt-action-fn            nil)
          (icicle-all-candidates-list-alt-action-fn  nil)
