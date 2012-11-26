@@ -4,7 +4,7 @@ This is for emacs version >= 22. Contribute your own.
 
   List all shortcuts               : C-h b or <f1> b
   List shortcuts with prefix C-x   : C-x C-h or C-x <f1>
-  List user-defined shortcuts      : C-c C-h
+  List user-defined shortcuts      : C-c C-h or C-c <f1>
   Undo                             : C-x u, C-/ or C-_
   Repeat last command              : C-x z
   Write in a read-only buffer      : C-x C-q
