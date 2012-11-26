@@ -87,7 +87,7 @@ Use something like this to load JDEE for .java files:
       (append '(("\\.java\\'" . jde-mode)) auto-mode-alist))
 </pre>
 
-This was confirmed to work in the 24.2.90 pretest release.
+JDEE 2.4.0.1 was confirmed to work in the 24.2.90 pretest release.
 
 See also: http://forums.fedoraforum.org/showthread.php?t=280711 .  Note that editing jde.el and deleting jde.elc is not necessary when setting jde-check-version-flag per above.
 
