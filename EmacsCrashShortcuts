@@ -2,8 +2,8 @@ Some arcane shortcuts that may be useful in some situations.
 Note that C-c /letter/ shortcuts are reserved for users.
 This is for emacs version >= 22. Contribute your own.
 
-  List all shortcuts               : C-h b
-  List shortcuts with prefix C-x   : C-x C-h
+  List all shortcuts               : C-h b or <f1> b
+  List shortcuts with prefix C-x   : C-x C-h or C-x <f1>
   List user-defined shortcuts      : C-c C-h
   Undo                             : C-x u, C-/ or C-_
   Repeat last command              : C-x z
@@ -24,7 +24,7 @@ This is for emacs version >= 22. Contribute your own.
   Mark whole buffer                : C-x h
   Hide indented text               : C-x $ 1
   Insert a comment delimiter       : M-;
-  Goto line by number              : M-g M-g
+  Goto line by number              : M-g M-g or M-g g
   Activate input method            : C-\
   Leave single space between words : M-SPC
   Highlight trailing whitespaces   : C-x w h RET SPC + $
