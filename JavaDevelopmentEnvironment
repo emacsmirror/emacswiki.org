@@ -65,8 +65,22 @@ Link to your success stories here!
 * [http://ignatyev-dev.blogspot.com/2012/10/java-development-with-emacs.html Java Development With Emacs]. Using power of Emacs for developing Java  applications. Linux, JDEE, Maven, gtags, jdb and a little bit of ELisp together create excellent development environment.
 
 == Installation notes ==
+===Emacs 24===
 See http://forums.fedoraforum.org/showthread.php?t=280711 for notes on installing JDEE and CEDET with Emacs 24.
 
+In addition, you may need these lines to prevent fatal errors:
+
+<pre>
+(define-obsolete-function-alias 'make-local-hook 'ignore "21.1")
+(unless (fboundp 'semantic-format-prototype-tag-java-mode)
+  (defalias 'semantic-format-prototype-tag-java-mode 'semantic-format-tag-prototype-java-mode))
+(require 'hippie-exp)
+(setq jde-check-version-flag nil)
+</pre>
+
+With those additions, JDEE was confirmed to work in the 24.2.90 pretest release.
+
+===Emacs 23===
 Install notes for Gnu Emacs 23. This will help you get (require 'jde) running. No guarantee on anything else.
 
 jde depends: cedet, elib. 
