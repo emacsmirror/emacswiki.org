@@ -68,17 +68,27 @@ Link to your success stories here!
 ===Emacs 24===
 See http://forums.fedoraforum.org/showthread.php?t=280711 for notes on installing JDEE and CEDET for Emacs 24.  Instead of editing jde.el and deleting jde.elc however, setting jde-check-version-flag per below will be less invasive and allow you to keep the byte compiled functions in jde.elc.
 
-In addition, you may need these lines to prevent fatal errors:
+You may need these elisp to prevent fatal errors:
 
 <pre>
+(setq jde-check-version-flag nil)
 (define-obsolete-function-alias 'make-local-hook 'ignore "21.1")
 (unless (fboundp 'semantic-format-prototype-tag-java-mode)
   (defalias 'semantic-format-prototype-tag-java-mode 'semantic-format-tag-prototype-java-mode))
 (require 'hippie-exp)
-(setq jde-check-version-flag nil)
 </pre>
 
-With those additions, JDEE was confirmed to work in the 24.2.90 pretest release.
+And then something like this to actually install it:
+
+<pre>
+(defvar my-jdee-path "~/.emacs.d/jdee-2.4.0.1" "Path to JDEE")
+(add-to-list 'load-path (format "%s/lisp" my-jdee-path))
+(autoload 'jde-mode "jde" "JDE mode." t)
+(setq auto-mode-alist
+      (append '(("\\.java\\'" . jde-mode)) auto-mode-alist))
+</pre>
+
+This was confirmed to work in the 24.2.90 pretest release.
 
 ===Emacs 23===
 Install notes for Gnu Emacs 23. This will help you get (require 'jde) running. No guarantee on anything else.
