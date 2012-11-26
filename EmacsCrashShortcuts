@@ -13,7 +13,7 @@ This is for emacs version >= 22. Contribute your own.
   Scroll all buffers               : M-x scroll-all-mode
   Read man in emacs                : M-x man
   Insert with octal code           : C-q octal-code
-  See last inputs                  : C-h l or F1 l
+  See last inputs                  : C-h l or <f1> l
   Put a ~ over a n                 : C-x 8 ~ n
   Sort lines                       : M-x sort-lines
   Sort numerically wrt last field  : C-u -1 M-x sort-numeric-fields
