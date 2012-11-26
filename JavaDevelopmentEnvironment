@@ -66,7 +66,7 @@ Link to your success stories here!
 
 == Installation notes ==
 ===Emacs 24===
-See http://forums.fedoraforum.org/showthread.php?t=280711 for notes on installing JDEE and CEDET for Emacs 24.  Instead of editing jde.el and deleting jde.elc however, setting jde-check-version-flag per below will be less invasive and allow you to keep the byte compiled functions in jde.elc.
+Download CEDET 1.1 and load it in Elisp.  Currently, neither CEDET 1.0 nor the CEDET integrated into Emacs are suitable.
 
 You may need these elisp to prevent fatal errors:
 
@@ -89,6 +89,8 @@ And then something like this to actually install it:
 </pre>
 
 This was confirmed to work in the 24.2.90 pretest release.
+
+See also: http://forums.fedoraforum.org/showthread.php?t=280711 .  Note that editing jde.el and deleting jde.elc is not necessary when setting jde-check-version-flag per above.
 
 ===Emacs 23===
 Install notes for Gnu Emacs 23. This will help you get (require 'jde) running. No guarantee on anything else.
