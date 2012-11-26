@@ -15,7 +15,7 @@ is Communication Engineering.  Feel free to ask anything about Emacs :)
 I'm a [http://www.fsf.org/free-software-supporter/ Free Software
 Supporter].
 
-You can contact me using xfq [PERIOD] free [AT] gmail [DOT] com
+You can contact me using (concat "xfq" "." "free" "@" "gmail" "." "com")
 
 == My GNU Emacs Installation ==
 <pre>
