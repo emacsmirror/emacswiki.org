@@ -68,7 +68,7 @@ Link to your success stories here!
 ===Emacs 24===
 Download CEDET 1.1 and load it in Elisp.  Currently, neither CEDET 1.0 nor the CEDET integrated into Emacs are suitable.
 
-You may need these elisp to prevent fatal errors:
+You could use latest JDEE from Subversion https://jdee.svn.sourceforge.net/svnroot/jdee/trunk and wrestle with the build, or download the latest release at http://sourceforge.net/projects/jdee/files/jdee/2.4.0.1/ .  When taking the latter option, you'll need some Elisp to prevent fatal errors:
 
 <pre>
 (setq jde-check-version-flag nil)
@@ -78,7 +78,7 @@ You may need these elisp to prevent fatal errors:
 (require 'hippie-exp)
 </pre>
 
-And then something like this to load it for .java files:
+Use something like this to load JDEE for .java files:
 
 <pre>
 (add-to-list 'load-path (format "%s/lisp" "~/.emacs.d/jdee-2.4.0.1" "Path to JDEE"))
