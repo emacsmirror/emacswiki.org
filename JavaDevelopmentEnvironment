@@ -78,11 +78,10 @@ You may need these elisp to prevent fatal errors:
 (require 'hippie-exp)
 </pre>
 
-And then something like this to actually install it:
+And then something like this to load it for .java files:
 
 <pre>
-(defvar my-jdee-path "~/.emacs.d/jdee-2.4.0.1" "Path to JDEE")
-(add-to-list 'load-path (format "%s/lisp" my-jdee-path))
+(add-to-list 'load-path (format "%s/lisp" "~/.emacs.d/jdee-2.4.0.1" "Path to JDEE"))
 (autoload 'jde-mode "jde" "JDE mode." t)
 (setq auto-mode-alist
       (append '(("\\.java\\'" . jde-mode)) auto-mode-alist))
