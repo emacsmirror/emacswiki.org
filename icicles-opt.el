@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Nov 26 21:32:09 2012 (-0800)
+;; Last-Updated: Tue Nov 27 10:38:46 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 5398
+;;     Update #: 5400
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -3751,24 +3751,25 @@ toggle Icicle mode off and then back on."
 
 ;;;###autoload
 (defcustom icicle-top-level-key-bindings
-  `(([pause]                     icicle-switch-to/from-minibuffer    t) ; `pause'
-    ("\C-c`"                     icicle-search-generic               t) ; `C-c `'
-    ("\C-c$"                     icicle-search-word                  t) ; `C-c $'
-    ("\C-c^"                     icicle-search-keywords              t) ; `C-c ^'
-    ("\C-c'"                     icicle-occur                        t) ; `C-c ''
-    ("\C-c="                     icicle-imenu                        t) ; `C-c ='
-    ("\C-c\""                    icicle-search-text-property         t) ; `C-c "'
-    ("\C-c/"                     icicle-complete-thesaurus-entry ; `C-c /'
+  `(([pause]                       icicle-switch-to/from-minibuffer    t) ; `pause'
+    ("\C-c`"                       icicle-search-generic               t) ; `C-c `'
+    ("\C-c$"                       icicle-search-word                  t) ; `C-c $'
+    ("\C-c^"                       icicle-search-keywords              t) ; `C-c ^'
+    ("\C-c'"                       icicle-occur                        t) ; `C-c ''
+    ("\C-c="                       icicle-imenu                        t) ; `C-c ='
+    ("\C-c\""                      icicle-search-text-property         t) ; `C-c "'
+    ("\C-c/"                       icicle-complete-thesaurus-entry ; `C-c /'
      (fboundp 'icicle-complete-thesaurus-entry))
-    ("\C-x\M-e"                  icicle-execute-named-keyboard-macro t) ; `C-x M-e'
-    ("\C-x "                     icicle-command-abbrev               t) ; `C-x SPC'
-    ("\C-x5o"                    icicle-select-frame                 t) ; `C-x 5 o'
-    ("\C-h\C-o"                  icicle-describe-option-of-type      t) ; `C-h C-o'
+    ("\C-x\M-e"                    icicle-execute-named-keyboard-macro t) ; `C-x M-e'
+    ("\C-x "                       icicle-command-abbrev               t) ; `C-x SPC'
+    ("\C-x5o"                      icicle-select-frame                 t) ; `C-x 5 o'
+    ("\C-h\C-o"                    icicle-describe-option-of-type      t) ; `C-h C-o'
     ,@(and (require 'kmacro nil t)      ; (Emacs 22+)
            '(([S-f4]               icicle-kmacro                       t))) ; `S-f4'
     (abort-recursive-edit          icicle-abort-recursive-edit         t) ; `C-]'
     (apropos                       icicle-apropos                      t)
     (apropos-command               icicle-apropos-command              t) ; `C-h a'
+    (apropos-value                 icicle-apropos-value                t)
     (apropos-variable              icicle-apropos-option
      (fboundp 'icicle-apropos-option))
     (apropos-variable              icicle-apropos-variable
