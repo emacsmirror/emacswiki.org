@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Mon Nov 26 21:33:00 2012 (-0800)
+;; Last-Updated: Mon Nov 26 23:28:04 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 23247
+;;     Update #: 23249
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -124,7 +124,8 @@
 ;;    `icicle-add/update-saved-completion-set', `icicle-anything',
 ;;    `icicle-apply' `icicle-apropos', `icicle-apropos-command',
 ;;    `icicle-apropos-function', `icicle-apropos-option',
-;;    `icicle-apropos-options-of-type', `icicle-apropos-variable',
+;;    `icicle-apropos-options-of-type', `icicle-apropos-value',
+;;    `icicle-apropos-variable',
 ;;    `icicle-apropos-vars-w-val-satisfying', `icicle-apropos-zippy',
 ;;    `icicle-bbdb-complete-mail', `icicle-bbdb-complete-name',
 ;;    `icicle-bookmark', `icicle-bookmark-a-file',
@@ -1210,6 +1211,7 @@
 ;;    `icicle-all-candidates-list-alt-action-fn',
 ;;    `icicle-allowed-sort-predicate', `icicle-anychar-regexp',
 ;;    `icicle-apply-nomsg', `icicle-apropos-complete-match-fn',
+;;    `icicle-apropos-value-last-initial-cand-set',
 ;;    `icicle-bookmark-history', `icicle-bookmark-list-names-only-p',
 ;;    `icicle-bookmark-menu-map', `icicle-bookmark-types',
 ;;    `icicle-buffer-config-history', `icicle-buffer-name-input-p',
