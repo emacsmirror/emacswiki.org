@@ -7,11 +7,11 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Oct 27 10:33:19 2012 (-0700)
+;; Last-Updated: Mon Nov 26 22:49:34 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 1663
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-var.el
-;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
+;;     Update #: 1668
+;; URL: http://www.emacswiki.org/icicles-var.el
+;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -21,7 +21,7 @@
 ;;   `apropos', `apropos-fn+var', `cl', `el-swank-fuzzy', `ffap',
 ;;   `ffap-', `fuzzy', `fuzzy-match', `hexrgb', `icicles-face',
 ;;   `icicles-opt', `kmacro', `levenshtein', `naked', `regexp-opt',
-;;   `thingatpt', `thingatpt+', `wid-edit', `widget'.
+;;   `thingatpt', `thingatpt+', `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -38,15 +38,16 @@
 ;;    `icicle-all-candidates-list-action-fn',
 ;;    `icicle-all-candidates-list-alt-action-fn',
 ;;    `icicle-allowed-sort-predicate', `icicle-apply-nomsg',
-;;    `icicle-apropos-complete-match-fn', `icicle-bookmark-history',
-;;    `icicle-bookmark-list-names-only-p', `icicle-bookmark-types',
-;;    `icicle-buffer-complete-fn', `icicle-buffer-config-history',
-;;    `icicle-buffer-name-input-p', `icicle-buffer-sort-first-time-p',
-;;    `icicle-bufflist', `icicle-candidate-action-fn',
-;;    `icicle-candidate-alt-action-fn', `icicle-candidate-entry-fn',
-;;    `icicle-candidate-help-fn', `icicle-candidate-nb',
-;;    `icicle-candidate-properties-alist', `icicle-candidates-alist',
-;;    `icicle-char-property-value-history',
+;;    `icicle-apropos-complete-match-fn',
+;;    `icicle-apropos-value-last-initial-cand-set',
+;;    `icicle-bookmark-history', `icicle-bookmark-list-names-only-p',
+;;    `icicle-bookmark-types', `icicle-buffer-complete-fn',
+;;    `icicle-buffer-config-history', `icicle-buffer-name-input-p',
+;;    `icicle-buffer-sort-first-time-p', `icicle-bufflist',
+;;    `icicle-candidate-action-fn', `icicle-candidate-alt-action-fn',
+;;    `icicle-candidate-entry-fn', `icicle-candidate-help-fn',
+;;    `icicle-candidate-nb', `icicle-candidate-properties-alist',
+;;    `icicle-candidates-alist', `icicle-char-property-value-history',
 ;;    `icicle-cmd-calling-for-completion', `icicle-cmd-reading-input',
 ;;    `icicle-color-history', `icicle-color-theme-history',
 ;;    `icicle-command-abbrev-history', `icicle-commands-for-abbrev',
@@ -261,6 +262,9 @@ returns non-nil if the string is considered to match the candidate.
 A value of nil instead of a function means completion candidates are
 not filtered by the input, except possibly by a function-valued
 `minibuffer-completion-table'.")
+
+(defvar icicle-apropos-value-last-initial-cand-set ()
+  "Cache for initial set of completion cands for `icicle-apropos-value'.")
 
 (defvar icicle-bookmark-history nil "History for bookmark names.")
 
@@ -1510,7 +1514,7 @@ multi-completion.")
 
 (defvar icicle-toggle-transforming-message "Completion-candidate transformation is now %s"
   "Message used by `icicle-toggle-transforming'.
-A format string which includes one `%s', to be replaced by `ON'/`OFF'.")
+A format string that includes one `%s', to be replaced by `ON'/`OFF'.")
 
 (defvar icicle-universal-argument-map
   (let ((map  (make-sparse-keymap)))
