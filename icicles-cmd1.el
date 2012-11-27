@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Nov 26 09:10:40 2012 (-0800)
+;; Last-Updated: Mon Nov 26 23:27:41 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 25179
+;;     Update #: 25181
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -59,7 +59,7 @@
 ;;    `icicle-add-entry-to-saved-completion-set', `icicle-apropos',
 ;;    `icicle-apropos-command', `icicle-apropos-function',
 ;;    `icicle-apropos-option', (+)`icicle-apropos-options-of-type',
-;;    `icicle-apropos-variable',
+;;    (+)`icicle-apropos-value', `icicle-apropos-variable',
 ;;    (+)`icicle-apropos-vars-w-val-satisfying',
 ;;    `icicle-apropos-zippy', `icicle-bbdb-complete-mail',
 ;;    `icicle-bbdb-complete-name', (+)`icicle-bookmark',
@@ -2597,6 +2597,128 @@ Return the list of matches."
           (setq matches  (cdr matches))
           (and matches  (princ "\n\n")))))
     matches))                           ; Return matching Zippyisms.
+
+;;;###autoload (autoload 'icicle-apropos-value "icicles")
+(icicle-define-command icicle-apropos-value
+  "Choose a variable, function, or other symbol description.
+This is similar to vanilla command `apropos-value', but you can match
+against the variable name and its printed value at the same time.
+
+By default, each completion candidate is multi-completion composed of
+a variable name plus its value.  They are separated by
+`icicle-list-join-string' \(\"^G^J\", by default). 
+
+With a prefix arg, candidates are different kinds of symbols:
+
+ < 0: functions and their defs (but byte-compiled defs are skipped)
+ > 0: symbols and their plists
+ = 0: variables and their values, functions and their definitions, and
+     other symbols and their plists
+
+plain (`C-u'): use the last-computed (cached) set of candidates
+
+You can use `C-$' during completion to toggle filtering the domain of
+initial candidates according to the prefix argument, as follows:
+
+none: only user options (+ values)
+ < 0: only commands (+ definitions)
+ > 0: only faces (+ plists)
+ = 0: only options (+ values), commands (+ defs), faces (+ plists)"
+  icicle-doc-action                     ; Action function
+  prompt                                ; `completing-read' args
+  (let ((cands  (and (consp pref-arg)  icicle-apropos-value-last-initial-cand-set))
+        cand)
+    (unless cands                       ; COLLECTION arg is an alist whose items are ((SYMB INFO)).
+      (mapatoms (lambda (symb)
+                  ;; Exclude the local vars bound by this command.  They are not what the user wants to see.
+                  (setq cand  (and (not (memq symb '(cands  pref-arg  num-arg  prompt
+                                                     icicle-toggle-transforming-message
+                                                     icicle-candidate-properties-alist
+                                                     icicle-multi-completing-p  icicle-list-use-nth-parts
+                                                     icicle-transform-before-sort-p  icicle-transform-function
+                                                     icicle-last-transform-function  print-fn  make-cand)))
+                                   (funcall make-cand symb)))
+                  (when cand (push cand cands))))
+      (setq icicle-apropos-value-last-initial-cand-set  cands))
+    cands)
+  nil nil nil nil nil nil
+  ((pref-arg                            current-prefix-arg)
+   (num-arg                             (prefix-numeric-value pref-arg))
+   (prompt                              (format "SYMBOL `C-M-j' %s: " (if pref-arg "INFO" "VALUE"))) ; Bindings
+   (icicle-toggle-transforming-message  (cond ((consp pref-arg)
+                                               icicle-toggle-transforming-message)
+                                              ((and pref-arg  (< num-arg 0))
+                                               "Filtering to commands (+ defs) is now %s")
+                                              ((and pref-arg  (= num-arg 0))
+                                               "Filtering to options, commands, & faces is now %s")
+                                              ((and pref-arg  (> num-arg 0))
+                                               "Filtering to faces (+ plists) is now %s")
+                                              (t "Filtering to user options (+ values) is now %s")))
+   (icicle-candidate-properties-alist   '((1 (face icicle-candidate-part))))
+   (icicle-multi-completing-p           t)
+   (icicle-list-use-nth-parts           '(1))
+   (icicle-transform-before-sort-p      t)
+   (icicle-transform-function           nil) ; No transformation: all symbols.
+   (icicle-last-transform-function      (lambda (cands) ; `C-$': only user options, commands, or faces.
+                                          (loop for cc in cands
+                                                with symb
+                                                do (setq symb  (intern (icicle-transform-multi-completion cc)))
+                                                if (cond ((< `,num-arg 0)        (commandp symb))
+                                                         ((= `,num-arg 0)        (or (user-variable-p symb)
+                                                                                     (commandp symb)
+                                                                                     (facep symb)))
+                                                         ((and `,pref-arg
+                                                               (> `,num-arg 0))  (facep symb))
+                                                         (t                      (user-variable-p symb)))
+                                                collect cc)))
+   (print-fn                            (lambda (obj)
+                                          (let ((print-circle  t))
+;;;                                         (condition-case nil
+;;;                                             (prin1-to-string obj)
+;;;                                           (error "`icicle-apropos-value' printing error")))))
+                                            (prin1-to-string obj))))
+   (make-cand                           (cond ((< num-arg 0) ; Function
+                                               (lambda (symb)
+                                                 (and (fboundp symb)
+                                                      `((,(symbol-name symb)
+                                                         ,(if (byte-code-function-p (symbol-function symb))
+                                                              ""
+                                                              (funcall print-fn (symbol-function symb))))))))
+                                              ((= num-arg 0) ; Do ALL
+                                               (lambda (symb) ; Favor the var, then the fn, then the plist.
+                                                 (cond ((boundp symb)
+                                                        `((,(symbol-name symb)
+                                                           ,(funcall print-fn (symbol-value symb)))))
+                                                       ((fboundp symb)
+                                                        `((,(symbol-name symb)
+                                                           ,(if (byte-code-function-p (symbol-function symb))
+                                                                ""
+                                                                (funcall print-fn (symbol-function symb))))))
+                                                       ((symbol-plist symb)
+                                                        `((,(symbol-name symb)
+                                                           ,(funcall print-fn (symbol-plist symb))))))))
+                                              ((and pref-arg  (> num-arg 0)) ; Plist
+                                               (lambda (symb)
+                                                 (and (symbol-plist symb)
+                                                      `((,(symbol-name symb)
+                                                         ,(funcall print-fn (symbol-plist symb)))))))
+                                              (t ; Variable
+                                               (lambda (symb)
+                                                 (and (boundp symb)
+                                                      `((,(symbol-name symb)
+                                                         ,(funcall print-fn (symbol-value symb))))))))))
+  (progn (put-text-property 0 1 'icicle-fancy-candidates t prompt) ; First code.
+         (icicle-highlight-lighter)
+         (message "Gathering %s%s..." (cond ((consp pref-arg) 'symbols)
+                                            ((and pref-arg  (< num-arg 0)) 'functions)
+                                            ((and pref-arg  (= num-arg 0)) "all symbols")
+                                            ((and pref-arg  (> num-arg 0)) 'symbols)
+                                            (t                             'variables))
+                  (cond ((consp pref-arg) " from last invocation (cached)")
+                        ((and pref-arg  (< num-arg 0)) " and their definitions")
+                        ((and pref-arg  (= num-arg 0)) " and their info")
+                        ((and pref-arg  (> num-arg 0)) " and their plists")
+                        (t " and their values")))))
 
 ;;;###autoload (autoload 'icicle-describe-option-of-type "icicles")
 (icicle-define-command icicle-describe-option-of-type ; Bound to `C-h C-o'.  Command name
