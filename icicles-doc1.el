@@ -7,11 +7,11 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun Oct 21 18:50:18 2012 (-0700)
+;; Last-Updated: Tue Nov 27 13:32:25 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 26898
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
-;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
+;;     Update #: 26909
+;; URL: http://www.emacswiki.org/icicles-doc1.el
+;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -4360,9 +4360,15 @@
 ;;
 ;;  By default (see option `icicle-top-level-key-bindings'), in Icicle
 ;;  mode the standard Emacs `apropos' commands are remapped to Icicles
-;;  versions.  The Icicles commands act similarly, but they also let
-;;  you see the list of regexp matches incrementally (as with all
-;;  Icicles commands), using `S-TAB'.  If you also use my library
+;;  versions.  This section describes most of these commands.
+;;  See (@> "Value-Aware Variable-Apropos Multi-Commands") for command
+;;  `icicle-apropos-value', which replaces standard command
+;;  `apropos-value'.
+;;
+;;  The other Icicles commands that replace standard apropos commands
+;;  act similarly to the standard commands, but they also let you see
+;;  the list of regexp matches incrementally (as with all Icicles
+;;  commands), using `S-TAB'.  If you also use my library
 ;;  `apropos-fn+var.el', then these Icicles commands take advantage of
 ;;  the apropos enhancements provided by that library.
 ;;
@@ -4440,10 +4446,13 @@
 ;;  *** Value-Aware Variable-Apropos Multi-Commands ***
 ;;
 ;;  The following apropos multi-commands for variables are
-;;  value-aware.  You are prompted first for a predicate that
-;;  restricts completion candidates to variables whose current value
-;;  satisfies it.  For example, if you enter `integerp' as the
-;;  predicate then candidates are variables whose value is an integer.
+;;  value-aware.
+;;
+;;  For the commands that follow, you are prompted first for a
+;;  predicate that restricts completion candidates to variables whose
+;;  current value satisfies it.  For example, if you enter `integerp'
+;;  as the predicate then candidates are variables whose value is an
+;;  integer.
 ;;
 ;;  * `icicle-apropos-vars-w-val-satisfying'
 ;;  * `icicle-customize-apropos-opts-w-val-satisfying'
@@ -4456,6 +4465,15 @@
 ;;  accept at least one argument (the value of a variable), it can be
 ;;  anything you like.  Individual candidate help (e.g., `C-M-RET')
 ;;  shows you the doc string and the current value.
+;;
+;;  Multi-command `icicle-apropos-value' is also value-aware.  It lets
+;;  you match variables by name and value at the same time: the
+;;  completion candidates are multi-completions: the variable name
+;;  plus its current value.
+;;
+;;  With a prefix argument you can use `icicle-apropos-value' to
+;;  examine other Emacs objects and their associated information:
+;;  symbols plus their plists, functions plus their definitions.
  
 ;;(@* "Multi-Commands")
 ;;
@@ -4672,10 +4690,10 @@
 ;;  Like `apropos-documentation', `icicle-doc' lets you match a regexp
 ;;  against the doc strings of symbols such as functions, variables,
 ;;  and faces.  You can of course use progressive completion to match
-;;  multiple regexps.  Here, for example, is a query that shows all doc
-;;  strings (functions, variables, faces - a lot! of doc strings)
-;;  that match both `mail' and `mode line', in either order,
-;;  as completion candidates:
+;;  multiple regexps.  Here, for example, is a query that shows all
+;;  doc strings (functions, variables, faces - a lot! of doc strings)
+;;  that match both `mail' and `mode line', in either order, as
+;;  completion candidates:
 ;;
 ;;    M-x icicle-doc RET mail S-SPC mode line
 ;;
