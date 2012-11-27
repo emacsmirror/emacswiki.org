@@ -40,6 +40,11 @@
 ;;; Commentary: 
 ;; 
 ;; This library is based on simple-call-tree.el by Alex Schroeder.
+;; It displays a buffer containing a call tree for functions in source
+;; code files. You can easily & quickly navigate the call tree, displaying
+;; the code in another window, and perform query-replace on the functions
+;; which may be useful for refactoring.
+
 ;; When the command `simple-call-tree-display-buffer' is executed
 ;; a call tree for the functions in the current buffer will be created.
 ;; The user is also prompted for other files containing functions to be
@@ -48,6 +53,7 @@
 ;; which has a dedicated menu in the menu-bar showing various commands
 ;; and their keybindings. Most of these commands are self explanatory
 ;; so try them out.
+
 ;; You can navigate the call tree either by moving through consecutive
 ;; headers (n/p or N/P keys) or by jumping to main branches (j for branch
 ;; corresponding to function at point, and J to prompt for a function).
@@ -63,8 +69,9 @@
 ;; toplevel branch then that function will be displayed, if it is a lower-level
 ;; branch then the corresponding function call will be displayed.
 ;; You can invert the tree by pressing i, and change the depth by pressing d.
-;; You can also toggle narrowing to the current branch by pressing /.
-;; 
+;; You can toggle narrowing to the current branch by pressing /.
+;; You can perform query-replace or query-replace-regexp on the function at
+;; point by pressing % or C-%
 
 ;;; Installation:
 ;;
@@ -281,9 +288,13 @@ end of the function, and if it is a function then that function will be used in 
      :key "v"]
     ["Visit Function At Point" simple-call-tree-visit-function
      :help "Visit the function at point"]
+    ["Replace String In Function At Point..." simple-call-tree-query-replace
+     :help "Perform query-replace on the function at point"]
+    ["Replace Regexp In Function At Point..." simple-call-tree-query-replace-regexp
+     :help "Perform query-replace-regexp on the function at point"]
     ["Jump To Branch At Point" simple-call-tree-jump-to-function
      :help "Goto the toplevel branch for the function at point"]
-    ["Jump To Branch" ,(lambda nil (interactive) (setq current-prefix-arg 1)
+    ["Jump To Branch..." ,(lambda nil (interactive) (setq current-prefix-arg 1)
                          (call-interactively 'simple-call-tree-jump-to-function))
      :help "Prompt for a toplevel branch to jump to"
      :keys "J"]
@@ -329,7 +340,7 @@ end of the function, and if it is a function then that function will be used in 
      :help "Invert the tree"
      :style toggle
      :selected simple-call-tree-inverted-bufferp]
-    ["Change Depth" simple-call-tree-change-maxdepth
+    ["Change Depth..." simple-call-tree-change-maxdepth
      :help "Change the depth of the tree"]
     ["Toggle Narrowing" simple-call-tree-toggle-narrowing
      :help "Toggle between narrowed/wide buffer"
@@ -659,7 +670,9 @@ If there is no parent, return nil."
   "Alter the maximum tree depth in the *Simple Call Tree* buffer."
   (interactive "P")
   (move-beginning-of-line nil)
-  (re-search-forward outline-regexp)
+  (or (re-search-forward outline-regexp nil t)
+      (progn (simple-call-tree-move-prev)
+             (re-search-forward outline-regexp nil t)))
   (let* ((level (simple-call-tree-outline-level))
          (depth (if current-prefix-arg (prefix-numeric-value current-prefix-arg)
                   (floor (abs (read-number "Maximum depth to display: " 2)))))
@@ -807,13 +820,15 @@ When called interactively the name of the function at point is used for FNSTR."
   "Move cursor to the parent of this function."
   (interactive)
   (outline-up-heading 1)
-  (goto-char (next-single-property-change (point) 'face)))
+  (let ((nextpos (next-single-property-change (point) 'face)))
+    (if nextpos (goto-char nextpos))))
 
 (defun simple-call-tree-move-next nil
   "Move cursor to the next function."
   (interactive)
   (outline-next-visible-heading 1)
-  (goto-char (next-single-property-change (point) 'face)))  
+  (let ((nextpos (next-single-property-change (point) 'face)))
+    (if nextpos (goto-char nextpos))))
 
 (defun simple-call-tree-move-prev nil
   "Move cursor to the previous function."
