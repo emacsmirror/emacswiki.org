@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Nov 20 11:07:11 2012 (-0800)
+;; Last-Updated: Tue Nov 27 13:42:27 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 9195
+;;     Update #: 9197
 ;; URL: http://www.emacswiki.org/icicles-mode.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1442,6 +1442,9 @@ Used on `pre-command-hook'."
            (define-key icicle-apropos-menu-map [icicle-apropos-vars-w-val-satisfying]
              '(menu-item "Variables with a Value Satisfying..." icicle-apropos-vars-w-val-satisfying
                :help "Show variables whose values satisfy a given predicate"))
+           (define-key icicle-apropos-menu-map [icicle-apropos-value]
+             '(menu-item "Variables with Values..." icicle-apropos-value
+               :help "Show variables that match by name and/or value"))
            (define-key icicle-apropos-menu-map [icicle-apropos-variable]
              '(menu-item "Variables..." icicle-apropos-variable
                :help "Show variables that match PATTERN"))
@@ -1461,6 +1464,9 @@ Used on `pre-command-hook'."
            (define-key icicle-apropos-menu-map [icicle-apropos-vars-w-val-satisfying]
              '(menu-item "Variables with a Value Satisfying..." icicle-apropos-vars-w-val-satisfying
                :help "Show variables whose values satisfy a given predicate"))
+           (define-key icicle-apropos-menu-map [icicle-apropos-value]
+             '(menu-item "Variables with Values..." icicle-apropos-value
+               :help "Show variables that match by name and/or value"))
            (define-key icicle-apropos-menu-map [icicle-apropos-variable]
              '(menu-item "Variables..." icicle-apropos-variable
                :help "Show variables that match PATTERN"))
