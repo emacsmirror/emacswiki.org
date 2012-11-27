@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Nov 21 20:40:20 2012 (-0800)
+;; Last-Updated: Mon Nov 26 21:32:09 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 5395
+;;     Update #: 5398
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -89,6 +89,7 @@
 ;;    `icicle-Completions-window-max-height',
 ;;    `icicle-customize-save-flag',
 ;;    `icicle-customize-save-variable-function',
+;;    `icicle-default-in-prompt-format-function',
 ;;    `icicle-default-cycling-mode', `icicle-default-thing-insertion',
 ;;    `icicle-default-value', `icicle-define-alias-commands-flag',
 ;;    `icicle-deletion-action-flag', `icicle-dot-show-regexp-flag',
@@ -1409,6 +1410,15 @@ options to be saved automatically, you can set this to the function
 \(symbol) `ignore'.  If you want to use your own function to somehow
 save the current value, you can set this to your function."
   :type 'function :group 'Icicles-Miscellaneous)
+
+;;;###autoload
+(defcustom icicle-default-in-prompt-format-function (lambda (default) (format " (%s): " default))
+  "Function that formats the default value to include in the prompt.
+The function must accept the default value (a string) as its (first)
+argument and return a string, which replaces the first occurrence of
+`: ' in the prompt.  This option has no effect unless
+`icicle-default-value' is t."
+  :group 'Icicles-Miscellaneous :type 'function)
 
 ;;;###autoload
 (defcustom icicle-default-cycling-mode 'prefix
