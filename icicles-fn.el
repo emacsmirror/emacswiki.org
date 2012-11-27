@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Nov 21 20:49:18 2012 (-0800)
+;; Last-Updated: Mon Nov 26 21:30:04 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 13676
+;;     Update #: 13679
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -920,7 +920,9 @@ DEF, if non-nil, is the default value or (Emacs 23+ only) the list of
 default values.  Option `icicle-default-value' controls the treatment
 of the default value (or the first default value, if DEF is a list):
 whether it is shown in the prompt, substituted for an empty
-INITIAL-INPUT, and so on.
+INITIAL-INPUT, and so on.  If `icicle-default-value' is t then option
+`icicle-default-in-prompt-format-function' is used to format DEF for
+its addition to PROMPT.
 
 If INHERIT-INPUT-METHOD is non-nil, the minibuffer inherits the
 current input method and the setting of `enable-multibyte-characters'.
@@ -983,7 +985,9 @@ Completion ignores case when `completion-ignore-case' is non-nil."
       (let ((hint  def))
         (when (consp hint) (setq hint  (car hint)))
         ;; $$$$$$$$$ (when (icicle-file-name-input-p) (setq hint  (file-name-nondirectory hint)))
-        (setq prompt  (replace-regexp-in-string ".*\\(: *\\)$" (format " (%s): " hint) prompt nil t 1))))
+        (setq prompt  (replace-regexp-in-string ".*\\(: *\\)$"
+                                                (funcall icicle-default-in-prompt-format-function hint)
+                                                prompt nil t 1))))
     (cond ((not icicle-mode)
            (setq result  (icicle-lisp-vanilla-completing-read
                           prompt collection predicate require-match initial-input
