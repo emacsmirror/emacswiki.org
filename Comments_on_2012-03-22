@@ -106,7 +106,7 @@ In fact, if the problem is that our current wiki syntax is too obscure, I'd say 
 
 *Export as XML*: The HTML we generate is XHTML. What exactly are you looking for?
 
-*Export as PDF*: Depending on your browser, printing to PDF comes free of charge. I'd hate to waste time working on it. At the time I looked for a solution, Prince XML [http://www.princexml.com/] was the only tool that seemed to work well -- and it's not free software. There are also the option of adding a button for Print Friendly. [http://www.printfriendly.com/button] Would you like that? As I said, I really think it's worth it.
+*Export as PDF*: Depending on your browser, printing to PDF comes free of charge. I'd hate to waste time working on it. At the time I looked for a solution, Prince XML [http://www.princexml.com/] was the only tool that seemed to work well -- and it's not free software. There are also the option of adding a button for Print Friendly. [http://www.printfriendly.com/button] Would you like that? As I said, I really don't think it's worth it.
 I'd be willing to put it up for a vote, however.
 
 *Popular pages*: I never use lists like those. What would you use it for? I guess you'd have to filter important pages like SiteMap and RecentChanges, filter bots, allow users to filter by language (if available)... It seems like a lot of work for little benefit. The naive implementation would be super simple, however. I'd be willing to put it up for a vote, once I'm convinced there is a reasonable Use Case for it.
