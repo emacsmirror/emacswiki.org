@@ -7,11 +7,11 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Thu Nov  8 12:33:49 2012 (-0800)
+;; Last-Updated: Mon Nov 26 21:33:00 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 23244
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
-;; Doc URL: http://emacswiki.org/emacs/Icicles
+;;     Update #: 23247
+;; URL: http://www.emacswiki.org/icicles.el
+;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -62,10 +62,10 @@
 ;;  Files `icicles-doc1.el' and `icicles-doc2.el' contain the doc for
 ;;  Icicles, including how to install and use Icicles.  You can also
 ;;  read the Icicles doc, in formatted form, on the Emacs-Wiki Web
-;;  site: http://www.emacswiki.org/cgi-bin/wiki/Icicles.  Emacs Wiki
-;;  also has a few addtional pages about Icicles.  In particular, if
-;;  you are new to Emacs, as well as Icicles, see this page:
-;;  http://www.emacswiki.org/cgi-bin/wiki/EmacsNewbieWithIcicles.
+;;  site: http://www.emacswiki.org/Icicles.  Emacs Wiki also has a few
+;;  addtional pages about Icicles.  In particular, if you are new to
+;;  Emacs, as well as Icicles, see this page:
+;;  http://www.emacswiki.org/EmacsNewbieWithIcicles.
 ;;
 ;;  See also: Library `lacarte.el', which lets you execute menu
 ;;  commands, cycling and completing them.  It is not part of Icicles,
@@ -740,8 +740,10 @@
 ;;    `icicle-Completions-window-max-height',
 ;;    `icicle-customize-save-flag',
 ;;    `icicle-customize-save-variable-function',
-;;    `icicle-default-cycling-mode', `icicle-default-thing-insertion',
-;;    `icicle-default-value', `icicle-define-alias-commands-flag',
+;;    `icicle-default-cycling-mode',
+;;    `icicle-default-in-prompt-format-function',
+;;    `icicle-default-thing-insertion', `icicle-default-value',
+;;    `icicle-define-alias-commands-flag',
 ;;    `icicle-deletion-action-flag', `icicle-dot-show-regexp-flag',
 ;;    `icicle-dot-string', `icicle-expand-input-to-common-match',
 ;;    `icicle-expand-input-to-common-match-alt', `icicle-file-extras',
