@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Nov 26 23:27:41 2012 (-0800)
+;; Last-Updated: Tue Nov 27 13:17:10 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 25181
+;;     Update #: 25199
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2552,11 +2552,13 @@ by default.  (`^G' here means the Control-g character, input using
 
 OPTION is a regexp that is matched against option names.
 
-See `icicle-describe-option-of-type', which handles input and
-completion similarly, for a full description of TYPE, matching, and
-the use of a prefix argument."          ; Doc string
-  icicle-apropos-opt-action             ; Action function
-  prompt                                ; `completing-read' args
+See also:
+* `icicle-describe-option-of-type', which handles input and completion
+  similarly, for a full description of TYPE, matching, and the use of
+  a prefix argument
+* `icicle-apropos-value', using `C-$' to filter to options only" ; Doc string
+  icicle-apropos-opt-action             ; Action
+  function prompt                       ; `completing-read' args
   'icicle-describe-opt-of-type-complete nil nil nil nil nil nil
   ((prompt                             "OPTION `C-M-j' TYPE: ") ; Bindings
    (icicle-multi-completing-p          t)
@@ -2623,7 +2625,18 @@ initial candidates according to the prefix argument, as follows:
 none: only user options (+ values)
  < 0: only commands (+ definitions)
  > 0: only faces (+ plists)
- = 0: only options (+ values), commands (+ defs), faces (+ plists)"
+ = 0: only options (+ values), commands (+ defs), faces (+ plists)
+
+Remember that you can use \\<minibuffer-local-completion-map>\
+`\\[icicle-cycle-incremental-completion]' to toggle incremental completion.
+
+See also:
+* `icicle-apropos-vars-w-val-satisfying',
+  `icicle-describe-vars-w-val-satisfying' - values satisfy a predicate
+* `icicle-plist' - similar to this command with positive prefix arg
+* `icicle-vardoc', `icicle-fundoc', `icicle-doc' - match name & doc
+* `icicle-apropos-options-of-type', `icicle-describe-option-of-type' -
+  match name & defcustom type"
   icicle-doc-action                     ; Action function
   prompt                                ; `completing-read' args
   (let ((cands  (and (consp pref-arg)  icicle-apropos-value-last-initial-cand-set))
@@ -2804,7 +2817,11 @@ character.  The second `^' is part of `^G', the printed representation
 of a Control-g character.)
 
 Remember that you can use `\\<minibuffer-local-completion-map>\
-\\[icicle-cycle-incremental-completion] to toggle incremental completion." ; Doc string
+\\[icicle-cycle-incremental-completion] to toggle incremental completion.
+
+See also:
+* `icicle-apropos-options-of-type', to show options of a given type
+* `icicle-apropos-value', using `C-$' to filter to options only" ; Doc string
   icicle-describe-opt-action            ; Action function
   prompt                                ; `completing-read' args
   'icicle-describe-opt-of-type-complete nil nil nil nil nil nil
@@ -2910,7 +2927,9 @@ the value of the variable as its (first) argument.
 
 Typically the predicate is a type predicate, such as `integerp', but
 it could be anything.  Instead of just `integerp', for example, it
-could be `(lambda (val) (and (integerp val)  (> val 5) (< val 15)))'."
+could be `(lambda (val) (and (integerp val)  (> val 5) (< val 15)))'.
+
+See also: `icicle-apropos-value', which matches names and values."
   (interactive (icicle-read-args-w-val-satisfying "Describe variable" current-prefix-arg nil))
   (describe-variable variable optionp))
 
@@ -2930,7 +2949,9 @@ Typically the predicate is a type predicate, such as `integerp', but
 it could be anything.  Instead of just `integerp', for example, it
 could be `(lambda (val) (and (integerp val)  (> val 5) (< val 15)))'.
 
-With a prefix argument, candidates are limited to user options."
+With a prefix argument, candidates are limited to user options.
+
+See also: `icicle-apropos-value', which matches names and values."
   (interactive (icicle-read-args-w-val-satisfying "Apropos var (hit `S-TAB' or `TAB'): "
                                                   current-prefix-arg t))
   (if optionp
