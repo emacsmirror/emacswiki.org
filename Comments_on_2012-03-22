@@ -78,7 +78,7 @@ And I didn't find any mailing lists or bug trackers for Oddmuse.
 
 Interesting list. Are these features ranked? I have some follow-up questions:
 
-*Database support*: What would be the benefit for Emacs Wiki?
+*Database support*: What would be the benefit for Emacs Wiki? Easy sharing and working with the raw data? (Compared to WikiDownload?)
 
 *External links*: I already use ##rel="nofollow"## for internal links that I feel a spider should not be following.
 I doubt that spammers check whether the wiki adds ##nofollow##.
