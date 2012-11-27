@@ -73,3 +73,49 @@ And I didn't find any mailing lists or bug trackers for Oddmuse.
 
 -- [http://emacswiki.org/emacs/XueFuqiao XueFuqiao] 2012-11-27 08:57 UTC
 
+
+----
+
+Interesting list. Are these features ranked? I have some follow-up questions:
+
+*Database support*: What would be the benefit for Emacs Wiki?
+
+*External links*: I already use ##rel="nofollow"## for internal links that I feel a spider should not be following.
+I doubt that spammers check whether the wiki adds ##nofollow##.
+Is there any evidence available showing that ##nofollow## reduces spam?
+
+*Editing page sections*: Such an extension already exists [http://www.oddmuse.org/cgi-bin/oddmuse/EditSection_Module].
+I hesitate to install it, however. Wouldn't it be better to break those pages up into smaller ones?
+I'd be willing to put it up for a vote, however.
+
+*Page templates*: Two related extensions exist. One of them offers you to pick a template when creating a new page.
+[http://www.oddmuse.org/cgi-bin/oddmuse/Template_Extension]
+The other extension allows you to specify templates with the replacement of named variables.
+[http://www.oddmuse.org/cgi-bin/oddmuse/Live_Template_Extension]
+I think the latter extension is more or less what Mediawiki does.
+[http://www.mediawiki.org/wiki/Help:Templates]
+The Oddmuse extension does not support positional parameters, etc.
+Again, I hesitate to install it. What would be the use?
+Something like WikEmacs' templates? [http://wikemacs.org/wiki/WikEmacs:Guidelines#Templates]
+I'd be willing to put it up for a vote, however.
+
+*Textile*: I don't think so. Why Textile and not Markdown? Or Mediawiki?
+I think we'd be better off relying on Creole [http://www.oddmuse.org/cgi-bin/oddmuse/Creole_Markup_Extension] -- at least that's a sort of wiki markup standard.
+I can think of only one site that uses Textile. From my perspective, it's way to obscure.
+In fact, if the problem is that our current wiki syntax is too obscure, I'd say we might be better off supporting bbCode! [http://www.oddmuse.org/cgi-bin/oddmuse/bbCode_Extension] This would allow us to reach people unfamiliar with wikis but familiar with forums. Either way, I'd say we need to add something that doesn't conflict with existing markup because I don't think anybody wants to convert the old wiki texts (nor write and test and use automated conversion).
+
+*Export as XML*: The HTML we generate is XHTML. What exactly are you looking for?
+
+*Export as PDF*: Depending on your browser, printing to PDF comes free of charge. I'd hate to waste time working on it. At the time I looked for a solution, Prince XML [http://www.princexml.com/] was the only tool that seemed to work well -- and it's not free software. There are also the option of adding a button for Print Friendly. [http://www.printfriendly.com/button] Would you like that? As I said, I really think it's worth it.
+I'd be willing to put it up for a vote, however.
+
+*Popular pages*: I never use lists like those. What would you use it for? I guess you'd have to filter important pages like SiteMap and RecentChanges, filter bots, allow users to filter by language (if available)... It seems like a lot of work for little benefit. The naive implementation would be super simple, however. I'd be willing to put it up for a vote, once I'm convinced there is a reasonable Use Case for it.
+
+*Embed video*: Really? An extension exists to do it. [http://www.oddmuse.org/cgi-bin/oddmuse/Flashbox_Extension] I just have never felt the need to embed Emacs related videos. Are there that many? Perhaps there are more now than when we started... I'd be willing to put it up for a vote.
+
+*Editing SVG*: There's an WYSIWYG SVG editor extension. [http://www.oddmuse.org/cgi-bin/oddmuse/SVG_Editor_Extension] It uses svg-edit. [http://code.google.com/p/svg-edit/] I'd say if people wanted to add a lot of diagrams to the wiki, they would have drawn them using Inkscape and uploaded the bitmaps. Since nobody did that, I'm assuming the need for SVG support is rather limited. Even then, I think I'd prefer Oddmuse to support SVG as an image format, and allow the upload of SVG files. No inline editing. People can download the SVG, edit it locally, and upload it again. Currently the MIME type ##image/svg+xml## is not allowed, but that is easily changed. What do you think? I've been doing that on other sites and feel comfortable with it even though I still think that not many people will be drawing SVG diagrams.
+
+As for mailing lists and bug trackers: You can send mailto:kensanata@gmail.com.
+
+-- AlexSchroeder 2012-11-27 13:47 UTC
+
