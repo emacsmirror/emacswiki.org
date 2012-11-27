@@ -113,11 +113,9 @@
 
 ;;; TODO
 ;;
-;; Use font-lock fonts for displaying objects instead of outline-mode fonts.
 ;; I am going to work on a plugin for one-key.el which provides similar functionality.
 ;; If anyone wants to implement the following ideas, please do:
 ;; More reliable code for building tree (handle duplicate function names properly).
-;; Commands to do query-replace-regexp on functions, and maybe other refactorings.
 ;; Code for marking functions (like with files in dired mode) and then applying operations to the marked functions.
 ;; Code for rearranging functions.
 
