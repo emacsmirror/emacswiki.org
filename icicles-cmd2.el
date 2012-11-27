@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Tue Nov 20 19:18:22 2012 (-0800)
+;; Last-Updated: Tue Nov 27 13:21:26 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 6138
+;;     Update #: 6146
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1085,7 +1085,8 @@ used with `C-u', with Icicle mode turned off)."
                            (error "No such color: %S" color)
                          ;; Cannot use `case', since that uses `eql', not `equal'.
                          (setq color  (cond ((equal '(1) icicle-list-use-nth-parts)  col)
-                                            ((equal '(2) icicle-list-use-nth-parts)  (hexrgb-color-name-to-hex col))
+                                            ((equal '(2) icicle-list-use-nth-parts)
+                                             (hexrgb-color-name-to-hex col))
                                             (t  (let ((icicle-list-nth-parts-join-string  ": ")
                                                       (icicle-list-join-string            ": "))
                                                   (icicle-transform-multi-completion color))))))))))
@@ -2432,7 +2433,9 @@ With a non-positive prefix arg, use only user variables (options) as
 candidates.
 
 Remember that you can use `\\<minibuffer-local-completion-map>\
-\\[icicle-cycle-incremental-completion] to toggle incremental completion." ; Doc string
+\\[icicle-cycle-incremental-completion] to toggle incremental completion.
+
+See also: `icicle-apropos-value'." ; Doc string
   icicle-doc-action                     ; Action function
   prompt                                ; `completing-read' args
   (let* ((num-arg         (prefix-numeric-value pref-arg))
@@ -2492,7 +2495,9 @@ the last time `icicle-fundoc' was called.  Use a prefix arg to save
 the time that would be needed to gather the documentation.
 
 Remember that you can use `\\<minibuffer-local-completion-map>\
-\\[icicle-cycle-incremental-completion] to toggle incremental completion." ; Doc string
+\\[icicle-cycle-incremental-completion] to toggle incremental completion.
+
+See also: `icicle-apropos-value', using a negative prefix arg." ; Doc string
   icicle-doc-action                     ; Action function
   prompt                                ; `completing-read' args
   (let ((result  (and pref-arg  icicle-fundoc-last-initial-cand-set)))
@@ -2543,7 +2548,7 @@ With a negative prefix arg, do not pretty-print each property list, in
 buffers `*Help* and `*Completions*'.  Generation of the complete set
 of candidates is about twice as fast when not pretty-printed, but the
 time to match your input and display candidates is the same, and the
-match-and-display time for empty input,is much longer than the
+match-and-display time for empty input is much longer than the
 generation time.
 
 The time to repeat (positive prefix arg) is the same, whether or not
@@ -2553,7 +2558,9 @@ Note: Plists are never pretty-printed for Emacs 20, because that seems
 to cause an Emacs crash.
 
 Remember that you can use `\\<minibuffer-local-completion-map>\
-\\[icicle-cycle-incremental-completion] to toggle incremental completion." ; Doc string
+\\[icicle-cycle-incremental-completion] to toggle incremental completion.
+
+See also: `icicle-apropos-value', using a positive prefix arg." ; Doc string
   icicle-doc-action                     ; Action function
   prompt                                ; `completing-read' args
   (let ((result  (and pref-arg  (wholenump (prefix-numeric-value pref-arg))
@@ -2603,7 +2610,9 @@ the last time `icicle-doc' was called.  Use a prefix arg to save the
 time that would be needed to gather the documentation.
 
 Remember that you can use \\<minibuffer-local-completion-map>\
-`\\[icicle-cycle-incremental-completion]' to toggle incremental completion." ; Doc string
+`\\[icicle-cycle-incremental-completion]' to toggle incremental completion.
+
+See also: `icicle-apropos-value'." ; Doc string
   icicle-doc-action                     ; Action function: display the doc.
   prompt                                ; `completing-read' args
   (let ((result  (and pref-arg  icicle-doc-last-initial-cand-set))
@@ -3594,7 +3603,8 @@ The arguments are the same as for `icicle-search'."
     (cond ((and (consp where)  (bufferp (car where))) ; List of buffers - search buffers.
            (dolist (buf  where)
              (incf nb-contexts)
-             (message "%d contexts; searching %d/%d: `%s'" (length icicle-candidates-alist) nb-contexts nb-objects
+             (message "%d contexts; searching %d/%d: `%s'"
+                      (length icicle-candidates-alist) nb-contexts nb-objects
                       buf)
              (icicle-search-define-candidates-1 buf nil nil scan-fn-or-regexp args)))
           ((and (consp where)  (stringp (car where)) ; List of files - search files.  (Check only the first.)
@@ -3602,7 +3612,8 @@ The arguments are the same as for `icicle-search'."
                     (file-exists-p (car where))))
            (dolist (file  where)
              (incf nb-contexts)
-             (message "%d contexts; searching %d/%d: `%s'" (length icicle-candidates-alist) nb-contexts nb-objects
+             (message "%d contexts; searching %d/%d: `%s'"
+                      (length icicle-candidates-alist) nb-contexts nb-objects
                       (file-relative-name file default-directory))
              (icicle-search-define-candidates-1 (find-file-noselect file 'nowarn) nil nil
                                                 scan-fn-or-regexp args)))
@@ -3612,7 +3623,8 @@ The arguments are the same as for `icicle-search'."
                  buf+beg  buf  beg  end)
              (dolist (bmk  where)
                (incf nb-contexts)
-               (message "%d contexts; searching %d/%d: `%s'" (length icicle-candidates-alist) nb-contexts nb-objects
+               (message "%d contexts; searching %d/%d: `%s'"
+                        (length icicle-candidates-alist) nb-contexts nb-objects
                         bmk)
                (setq buf+beg  (bookmark-jump-noselect bmk)
                      buf      (car buf+beg)
