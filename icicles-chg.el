@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue Nov 27 13:15:03 2012 (-0800)
+;; Last-Updated: Tue Nov 27 13:44:07 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 9298
+;;     Update #: 9302
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -5093,6 +5093,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2012/11/27 dadams
+;;     icicle-define-icicle-maps: Added icicle-apropos-value to icicle-apropos-menu-map.
 ;; 2012/11/20 dadams
 ;;     icicle-bind-completion-keys: Fixed typos for M-; and C-M-; introduced by M-; or C-M-q, Emacs 20.
 ;; 2012/10/27 dadams
