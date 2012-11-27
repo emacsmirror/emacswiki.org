@@ -177,6 +177,8 @@ displaying and navigating the call tree. You can invert the tree, change the dep
 narrow to a particular branch, perform query replacements on functions (useful for refactoring),
 and it also works with follow mode if you have that installed (http://www.damtp.cam.ac.uk/user/sje30/emacs/fm.el).
 
+Feel free to help develop it further, here is the github page: https://github.com/vapniks/simple-call-tree-ext
+
 * Lisp:simple-call-tree+.el
 
 -- JoeBloggs
