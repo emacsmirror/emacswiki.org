@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Mon Nov 26 21:26:13 2012 (-0800)
+;; Last-Updated: Mon Nov 26 23:36:43 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 9293
+;;     Update #: 9297
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -87,6 +87,7 @@
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
 ;; 2012/11/26 dadams
+;;     Added: icicle-apropos-value.  Thx to Michael Heerdegen.
 ;;     icicle-execute-extended-command(-1): Save and restore icicle-toggle-transforming-message.
 ;; 2012/11/19 dadams
 ;;     icicle-execute-extended-command-1: Show key-reminder after invoking CMD.  Thx to M. Heerdegen.
@@ -7002,6 +7003,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2012/11/26 dadams
+;;     Added: icicle-apropos-value-last-initial-cand-set.
 ;; 2012/10/27 dadams
 ;;     Added: icicle-toggle-transforming-message.  Updated icicle-general-help-string.
 ;; 2012/10/22 dadams
