@@ -48,15 +48,25 @@ I am so grateful to AlexSchroeder and all EmacsWiki's contributors. Thanks!
 ----
 
 Maybe Oddmuse should add some features, for example:
+
 1. Add database support.
+
 2. External links marked with rel="nofollow" to discourage spamming.
+
 3. Edit a certain part of a page only.  This is useful for editing very long pages.
+
 4. Page templates to prefill new pages
+
 5. Textile support
+
 6. Exported pages as XML or PDF
+
 7. Popular pages, like this: http://wikemacs.org/wiki/Special:PopularPages
+
 8. Embedded Video support
+
 9. Edit SVG graphics through the Wiki interface
+
 ...
 
 And I didn't find any mailing lists or bug trackers for Oddmuse.
