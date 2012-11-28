@@ -57,3 +57,16 @@ let: Wrong type argument: buffer-or-string-p, ((("name" . "Client - Search List 
 my emacs: GNU Emacs 23.1.1 (i486-pc-linux-gnu, GTK+ Version 2.20.1) of 2011-03-05 on palmer, modified by Debian
 }}}
 
+# Hi! I just ran into the same (or similar?) problem. I was able to get it working by changing the following lines in jira.el (around line 502):
+
+     ;;; Original broken code
+     ;; (let ((s (jira-get-type-name (cdr (assoc "type" issue)))))
+     ;;   (put-text-property 0 (length s) 'face 'jira-issue-info-face s)
+     ;;   (insert s "\n"))
+
+     ;; rml new version, Wed Nov 28 16:06:59 EST 2012
+     (let ((s (cdr (assoc "type" issue))))
+       (put-text-property 0 (length s) 'face 'jira-issue-info-face s)
+       (insert s "\n"))
+
+This allows me to call up issues without an error.
