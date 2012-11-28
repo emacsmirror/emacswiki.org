@@ -110,7 +110,7 @@
                            (interactive "sReplace string: \nsReplace string %s with: ")
                            ...)
 }}}
-======\r		将使Emacs将位置(point)和标记(mark)的值传给函数, 例如======
+======r		将使Emacs将位置(point)和标记(mark)的值传给函数, 例如======
 {{{
                     	 (defun name-of-function (buffer start end)
                     		 "documentation..."
