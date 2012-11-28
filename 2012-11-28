@@ -1,17 +1,17 @@
 Some questions regarding new features for EmacsWiki based on [[Comments on 2012-03-22]]. *Just edit this page and add a link to your Username in the appropriate section.* Feel free to leave [[Comments on 2012-11-28]].
 
-[http://www.oddmuse.org/cgi-bin/oddmuse/EditSection_Module Editing page sections]: There is an extension to edit sections of a page. I haven't been using it on any other site, so I fear some bit rot. Nevertheless it might be useful for very long pages that we don't want to break up into smaller sections.
+[[Oddmuse:EditSection_Module|Editing page sections]]: There is an extension to edit sections of a page. I haven't been using it on any other site, so I fear some bit rot. Nevertheless it might be useful for very long pages that we don't want to break up into smaller sections.
 
 ; Yes: 
 ; No: AlexSchroeder
 XueFuqiao
 
-[http://www.oddmuse.org/cgi-bin/oddmuse/Template_Extension Templates for new pages]: We can have new pages start with content from a template page. I haven't been using it on any other site, so I fear some bit rot. It might be useful if we have a lot of pages that always have the same structure. We could have a template each for major modes, user pages, etc.
+[[Oddmuse:Template_Extension|Templates for new pages]]: We can have new pages start with content from a template page. I haven't been using it on any other site, so I fear some bit rot. It might be useful if we have a lot of pages that always have the same structure. We could have a template each for major modes, user pages, etc.
 
 ; Yes: XueFuqiao
 ; No: AlexSchroeder
 
-[http://www.oddmuse.org/cgi-bin/oddmuse/Live_Template_Extension Templates for page sections]: We can have a special text formatting rule that pulls in content from a template page, replaces some named parameters and includes the resulting wiki text in our current text. I haven't been using it on any other site, so I fear some bit rot. It might be useful if we have a lot of pages that always have a section that they share. We could have a template each for major modes, for example. We could also have a template for packages that belong to a major group such as Icicles, rcirc, ERC, and so on. In order to produce nice sidebars this would also require some additions to the CSS.
+[[Oddmuse:Live_Template_Extension|Templates for page sections]]: We can have a special text formatting rule that pulls in content from a template page, replaces some named parameters and includes the resulting wiki text in our current text. I haven't been using it on any other site, so I fear some bit rot. It might be useful if we have a lot of pages that always have a section that they share. We could have a template each for major modes, for example. We could also have a template for packages that belong to a major group such as Icicles, rcirc, ERC, and so on. In order to produce nice sidebars this would also require some additions to the CSS.
 
 ; Yes: 
 ; No: AlexSchroeder
@@ -28,7 +28,7 @@ XueFuqiao
 ; Yes: XueFuqiao
 ; No: AlexSchroeder
 
-[http://www.oddmuse.org/cgi-bin/oddmuse/Flashbox_Extension Embed video]: There are not many videos that seem on topic, but perhaps this would be a boost for a new category? EmacsScreencasts would not link to the videos directly but to pages where the screen cast is described in more detail, and this detail page would then embed the video directly, maybe?
+[[Oddmuse:Flashbox_Extension|Embed video]]: There are not many videos that seem on topic, but perhaps this would be a boost for a new category? EmacsScreencasts would not link to the videos directly but to pages where the screen cast is described in more detail, and this detail page would then embed the video directly, maybe?
 
 ; Yes: 
 ; No: AlexSchroeder
