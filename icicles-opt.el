@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Nov 27 20:27:48 2012 (-0800)
+;; Last-Updated: Wed Nov 28 08:44:58 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 5402
+;;     Update #: 5403
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -184,8 +184,7 @@
 ;;    `icicle-top-level-key-bindings',
 ;;    `icicle-top-level-when-sole-completion-delay',
 ;;    `icicle-top-level-when-sole-completion-flag',
-;;    `icicle-touche-pas-aux-menus-flag', `icicle-transform-function',
-;;    `icicle-type-actions-alist',
+;;    `icicle-touche-pas-aux-menus-flag', `icicle-type-actions-alist',
 ;;    `icicle-unpropertize-completion-result-flag',
 ;;    `icicle-update-input-hook', `icicle-use-~-for-home-dir-flag',
 ;;    `icicle-use-C-for-actions-flag',
@@ -4125,30 +4124,6 @@ before you enter Icicle mode.
 Remember that you can use multi-command `icicle-toggle-option' anytime
 to toggle the option."
   :type 'boolean :group 'Icicles-Key-Bindings)
-
-;;;###autoload
-(defcustom icicle-transform-function nil ; Toggle with `C-$,'.
-  "*Function used to transform the list of completion candidates.
-This is applied to the list of initial candidates.
-If this is nil, then no transformation takes place.
-
-You can toggle this option at any time from the minibuffer using
-`C-$,'.
-
-NOTE: Although this is a user option, you probably do *NOT* want to
-customize it.  Icicles commands already \"do the right thing\" when it
-comes to candidate transformation.  The value of this option may be
-changed by program locally, for use in particular contexts.  For
-example, when you use `C-c C-`' (\ `icicle-search-generic') in a
-*shell* buffer, Icicles uses this variable with a value of
-`icicle-remove-duplicates', to remove duplicate shell commands from
-your input history list.
-
-Emacs-Lisp programmers can use this variable to transform the list of
-candidates in any way they like.  A typical use is to remove
-duplicates, by binding it to `icicle-remove-duplicates' or
-`icicle-remove-dups-if-extras'."
-  :type '(choice (const :tag "None" nil) function) :group 'Icicles-Completions-Display)
 
 ;;;###autoload
 (defcustom icicle-type-actions-alist
