@@ -119,3 +119,48 @@ As for mailing lists and bug trackers: You can send mailto:kensanata@gmail.com.
 
 -- AlexSchroeder 2012-11-27 13:47 UTC
 
+
+----
+
+Answers:
+
+*Database support*: Many web hosts do not allow file writing operations.
+And of course EmacsWiki don't have this Problem.
+
+*External links*: I'm not sure whether ##nofollow## reduces spam, but I
+think it discourages spam.
+
+*Editing page sections*: Sorry for not noticing this extension.  I
+personally don't use this feature because I prefer using Emacs to edit
+page so I can use ##narrow-to-region##.  But many people who doesn't
+use Emacs like it very much.  Putting it up for a vote is a good
+choice.
+
+*Page templates*: Putting it up for a vote is also a good choice.
+
+*Textile*: You're right.  Converting the old wiki texts isn't a good
+idea.
+
+*Export as XML*: Maybe DocBook.  There are a number of existing tools --
+free or proprietary -- for converting DocBook XML to other formats,
+such as rtf, Postscript, and PDF.
+
+*Export as PDF*: It's not an important feature.  Putting it up for a
+vote or using services like Print Friendly is OK.
+
+*Popular pages*: I use it to see what is popular in the Wiki these
+days(or overall), and I personally like this feature.  You can put it
+up for a vote.
+
+*Embed video*: Maybe EmacsScreencasts are not so many, but [[Oddmuse]] isn't
+just for EmacsWiki.  Put it up for a vote.
+
+*Editing SVG*: It's also not an important feature.  But some people
+spend most of their computer time on the Web.  They use products like
+Google Cloud Print and Microsoft Office Live.
+
+Thanks for your attention and your contribution to EmacsWiki, [[Oddmuse]]
+and free software.
+
+-- [http://emacswiki.org/emacs/XueFuqiao XueFuqiao] 2012-11-28 09:27 UTC
+
