@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue Nov 27 13:44:07 2012 (-0800)
+;; Last-Updated: Wed Nov 28 09:24:12 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 9302
+;;     Update #: 9320
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -774,6 +774,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2012/11/28 dadams
+;;     icicle-(fundoc|vardoc|plist): Use C-$ to toggle command/fn, option/var, faces/all.
+;;     icicle-vardoc: Do not use non-neg prefix arg for options.
+;;     icicle-doc: Correction: separate setq in and, in case icicle-fn-doc-minus-sig returns nil.
 ;; 2012/11/20 dadams
 ;;     icicle-search-define-candidates:
 ;;       Added progress message for context gathering.  Thx to Michael Heerdegen.
@@ -1550,6 +1554,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2012/11/27 dadams
+;;     icicle-completing-read:
+;;       For icicle-default-value = t: Append ": " to icicle-default-in-prompt-format-function result.
 ;; 2012/11/26 dadams
 ;;     icicle-completing-read: Use new option icicle-default-in-prompt-format-function.
 ;; 2012/11/21 dadams
@@ -6246,7 +6253,11 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2012/11/28 dadams
+;;     Removed: icicle-transform-function - moved to icicles-var.el.
 ;; 2012/11/27 dadams
+;;     icicle-default-in-prompt-format-function:
+;;       Removed ": " from default value.  Prepend instead of replace, now.
 ;;     icicle-top-level-key-bindings: Added icicle-apropos-value.
 ;; 2012/11/26 dadams
 ;;     Added: icicle-default-in-prompt-format-function.
@@ -7007,6 +7018,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2012/11/28 dadams
+;;     Added: icicle-transform-function - moved here from icicles-opt.el.
+;;     Removed: icicle-vardoc-last-initial-option-cand-set.
 ;; 2012/11/26 dadams
 ;;     Added: icicle-apropos-value-last-initial-cand-set.
 ;; 2012/10/27 dadams
