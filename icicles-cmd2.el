@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Tue Nov 27 13:21:26 2012 (-0800)
+;; Last-Updated: Tue Nov 27 22:51:15 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 6146
+;;     Update #: 6176
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -364,8 +364,7 @@
   ;; icicle-search-in-context-fn, icicle-searching-p, icicle-search-level-overlays, icicle-search-modes,
   ;; icicle-search-overlays, icicle-search-refined-overlays, icicle-search-replacement,
   ;; icicle-transform-before-sort-p, icicle-vardoc-last-initial-cand-set,
-  ;; icicle-vardoc-last-initial-option-cand-set, icicle-variable-name-history,
-  ;; icicle-whole-candidate-as-text-prop-p
+  ;; icicle-variable-name-history, icicle-whole-candidate-as-text-prop-p
 (require 'icicles-fn)                   ; (This is required anyway by `icicles-mcmd.el'.)
   ;; icicle-candidate-short-help, icicle-completing-read-history,
   ;; icicle-highlight-lighter, icicle-insert-cand-in-minibuffer, icicle-kill-a-buffer, icicle-some
@@ -2424,40 +2423,41 @@ whose documentation contains \"list\".  Here, `[^^G]' matches any
 character except ^G, which includes newline.  If you use `.*' here,
 instead, then only the first lines of doc strings are searched.
 
-With a non-negative prefix argument, use the same documentation that
-was gathered the last time `icicle-vardoc' was called.  Use a
-non-negative prefix arg to save the time that would be needed to
-gather the documentation.
+With a prefix argument, use the same documentation that was gathered
+the last time `icicle-vardoc' was called.  Use a prefix arg to save
+the time that would be needed to gather the documentation.
 
-With a non-positive prefix arg, use only user variables (options) as
-candidates.
+You can use `C-$' during completion to toggle limiting the domain of
+initial candidates to functions that are commands (interactive).
 
 Remember that you can use `\\<minibuffer-local-completion-map>\
 \\[icicle-cycle-incremental-completion] to toggle incremental completion.
 
-See also: `icicle-apropos-value'." ; Doc string
+See also: `icicle-apropos-value'."      ; Doc string
   icicle-doc-action                     ; Action function
   prompt                                ; `completing-read' args
-  (let* ((num-arg         (prefix-numeric-value pref-arg))
-         (options-only-p  (<= num-arg 0))
-         (result          (and pref-arg  (>= num-arg 0)
-                               (if options-only-p
-                                   icicle-vardoc-last-initial-option-cand-set
-                                 icicle-vardoc-last-initial-cand-set))))
+  (let ((result  (and pref-arg  icicle-vardoc-last-initial-cand-set)))
     (unless result                      ; COLLECTION arg is an alist whose items are ((SYMB DOC)).
-      (mapatoms (lambda (symb)        ; Each completion candidate is a list of strings.
+      (mapatoms (lambda (symb)          ; Each completion candidate is a list of strings.
                   (when (and (boundp symb)
                              (or (wholenump (prefix-numeric-value pref-arg))
                                  (user-variable-p symb)))
                     (let ((doc  (documentation-property symb 'variable-documentation)))
                       (when (icicle-non-whitespace-string-p doc)
                         (push (list (list (symbol-name symb) doc)) result))))))
-      (if options-only-p
-          (setq icicle-vardoc-last-initial-option-cand-set  result)
-        (setq icicle-vardoc-last-initial-cand-set  result)))
+      (setq icicle-vardoc-last-initial-cand-set  result))
     result)
   nil nil nil 'icicle-doc-history nil nil
   ((prompt                             "VAR `C-M-j' DOC: ") ; Bindings
+   (icicle-toggle-transforming-message "Filtering to user options is now %s")
+   (icicle-transform-function           nil) ; No transformation: all symbols.
+   (icicle-last-transform-function      (lambda (cands) ; `C-$': only options.
+                                          (loop
+                                           for cc in cands
+                                           with symb
+                                           do (setq symb  (intern (icicle-transform-multi-completion cc)))
+                                           if (user-variable-p symb)
+                                           collect cc)))
    (icicle-candidate-properties-alist  '((1 (face icicle-candidate-part))))
    (icicle-multi-completing-p          t)
    (icicle-list-use-nth-parts          '(1))
@@ -2494,6 +2494,9 @@ With a prefix argument, use the same documentation that was gathered
 the last time `icicle-fundoc' was called.  Use a prefix arg to save
 the time that would be needed to gather the documentation.
 
+You can use `C-$' during completion to toggle limiting the domain of
+initial candidates to functions that are commands (interactive).
+
 Remember that you can use `\\<minibuffer-local-completion-map>\
 \\[icicle-cycle-incremental-completion] to toggle incremental completion.
 
@@ -2503,7 +2506,7 @@ See also: `icicle-apropos-value', using a negative prefix arg." ; Doc string
   (let ((result  (and pref-arg  icicle-fundoc-last-initial-cand-set)))
     (unless result                      ; COLLECTION arg is an alist whose items are ((symb doc)).
       (mapatoms
-       (lambda (symb)                 ; Each completion candidate is a list of strings.
+       (lambda (symb)                   ; Each completion candidate is a list of strings.
          (when (fboundp symb)
            ;; Ignore symbols that produce errors.  Example: In Emacs 20, `any', which is defalias'd
            ;; to `icicle-anything', raises this error: "Symbol's function definition is void: any".
@@ -2516,6 +2519,15 @@ See also: `icicle-apropos-value', using a negative prefix arg." ; Doc string
     result)
   nil nil nil 'icicle-doc-history nil nil
   ((prompt                             "FUNC `C-M-j' DOC: ") ; Bindings
+   (icicle-toggle-transforming-message "Filtering to commands is now %s")
+   (icicle-transform-function           nil) ; No transformation: all symbols.
+   (icicle-last-transform-function      (lambda (cands) ; `C-$': only commands.
+                                          (loop
+                                           for cc in cands
+                                           with symb
+                                           do (setq symb  (intern (icicle-transform-multi-completion cc)))
+                                           if (commandp symb)
+                                           collect cc)))
    (icicle-candidate-properties-alist  '((1 (face icicle-candidate-part))))
    (icicle-multi-completing-p          t)
    (icicle-list-use-nth-parts          '(1))
@@ -2557,6 +2569,9 @@ candidates were pretty-printed the first time.
 Note: Plists are never pretty-printed for Emacs 20, because that seems
 to cause an Emacs crash.
 
+You can use `C-$' during completion to toggle limiting the domain of
+initial candidates to functions that are commands (interactive).
+
 Remember that you can use `\\<minibuffer-local-completion-map>\
 \\[icicle-cycle-incremental-completion] to toggle incremental completion.
 
@@ -2582,6 +2597,15 @@ See also: `icicle-apropos-value', using a positive prefix arg." ; Doc string
     result)
   nil nil nil nil nil nil
   ((prompt                             "SYMB `C-M-j' PLIST: ") ; Bindings
+   (icicle-toggle-transforming-message "Filtering to faces is now %s")
+   (icicle-transform-function           nil) ; No transformation: all symbols.
+   (icicle-last-transform-function
+    (lambda (cands)                     ; `C-$': only faces.
+      (loop for cc in cands
+            with symb
+            do (setq symb  (intern (icicle-transform-multi-completion cc)))
+            if (facep symb)
+            collect cc)))
    (icicle-candidate-properties-alist  '((1 (face icicle-candidate-part))))
    (icicle-multi-completing-p          t)
    (icicle-list-use-nth-parts          '(1))
@@ -2612,7 +2636,7 @@ time that would be needed to gather the documentation.
 Remember that you can use \\<minibuffer-local-completion-map>\
 `\\[icicle-cycle-incremental-completion]' to toggle incremental completion.
 
-See also: `icicle-apropos-value'." ; Doc string
+See also: `icicle-apropos-value'."      ; Doc string
   icicle-doc-action                     ; Action function: display the doc.
   prompt                                ; `completing-read' args
   (let ((result  (and pref-arg  icicle-doc-last-initial-cand-set))
@@ -2623,8 +2647,8 @@ See also: `icicle-apropos-value'." ; Doc string
          (progn
            (when (and (functionp symb)  ; Function's doc.
                       ;; Ignore symbols that produce errors.  See comment for `icicle-fundoc'.
-                      (setq doc  (condition-case nil (documentation symb) (error nil))
-                            doc  (icicle-fn-doc-minus-sig doc))
+                      (setq doc  (condition-case nil (documentation symb) (error nil)))
+                      (setq doc  (icicle-fn-doc-minus-sig doc)) ; Need separate `setq', for `and'.
                       (icicle-non-whitespace-string-p doc)
                       (setq doc  (concat doc "\n\n")))
              (push (cons (list (concat (symbol-name symb) icicle-list-join-string "FUNCTION") doc)
