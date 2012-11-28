@@ -276,6 +276,20 @@ replace that value by typing characters, or delete it by hitting
 initial input is ''lost'' if you type or hit `C-d' or `DEL', which
 is inconvenient if you want to edit it only slightly. See [[Icicles - Inserting Text from Cursor]].
 
+
+----
+[:icicle-default-in-prompt-format-function]
+==== Option icicle-default-in-prompt-format-function ====
+
+If you use `t' as the value of `icicle-default-value' then you
+can use option '''`icicle-default-in-prompt-format-function'''' to
+format the text that shows the (first) default value in the
+prompt.  The option value is a function that accepts the
+default value (a string) and returns a string that is prepended
+to the first occurrence of "##: ##" in the prompt.  This option has
+no effect unless `icicle-default-value' is `t'.
+
+
 ----
 [:icicle-thing-at-point-functions]
 [:icicle-default-thing-insertion]
