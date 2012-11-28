@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Nov 26 22:49:34 2012 (-0800)
+;; Last-Updated: Wed Nov 28 08:44:31 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 1668
+;;     Update #: 1676
 ;; URL: http://www.emacswiki.org/icicles-var.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -144,12 +144,11 @@
 ;;    `icicle-successive-grab-count',
 ;;    `icicle-text-property-value-history',
 ;;    `icicle-thing-at-pt-fns-pointer',
-;;    `icicle-transform-before-sort-p',
+;;    `icicle-transform-before-sort-p', `icicle-transform-function',
 ;;    `icicle-toggle-transforming-message',
 ;;    `icicle-universal-argument-map',
 ;;    `icicle-use-candidates-only-once-alt-p',
 ;;    `icicle-vardoc-last-initial-cand-set',
-;;    `icicle-vardoc-last-initial-option-cand-set',
 ;;    `icicle-variable-name-history',
 ;;    `icicle-whole-candidate-as-text-prop-p',
 ;;    `lacarte-menu-items-alist'.
@@ -1507,14 +1506,32 @@ a single overlay (or nil).  Otherwise, this is a list of overlays.")
   "Current index into the car of `icicle-thing-at-point-functions'.
 This points to the current function in the list.")
 
+(defvar icicle-toggle-transforming-message "Completion-candidate transformation is now %s"
+  "Message used by `icicle-toggle-transforming'.
+A format string that includes one `%s', to be replaced by `ON'/`OFF'.")
+
 (defvar icicle-transform-before-sort-p nil
   "Non-nil means transform each multi-completion candidate before sorting.
 Bind this to non-nil if you do not want sorting to use the whole
 multi-completion.")
 
-(defvar icicle-toggle-transforming-message "Completion-candidate transformation is now %s"
-  "Message used by `icicle-toggle-transforming'.
-A format string that includes one `%s', to be replaced by `ON'/`OFF'.")
+(defvar icicle-transform-function nil ; Toggle with `C-$,'.
+  "Function used to transform the list of completion candidates.
+This is applied to the list of initial candidates.
+If this is nil, then no transformation takes place.
+
+You can toggle this at any time from the minibuffer using `C-$,'.
+
+The value is changed by program locally, for use in particular
+contexts.  E.g., when you use `C-c C-`' (`icicle-search-generic') in a
+`*shell*' buffer, Icicles uses this variable with a value of
+`icicle-remove-duplicates', to remove duplicate shell commands from
+your input history list.
+
+You can use this variable in your Lisp code to transform the list of
+candidates any way you like.  A typical use is to remove duplicates,
+by binding it to `icicle-remove-duplicates' or
+`icicle-remove-dups-if-extras'.")
 
 (defvar icicle-universal-argument-map
   (let ((map  (make-sparse-keymap)))
@@ -1554,9 +1571,6 @@ used only for alternative actions (e.g. `C-S-RET').")
 
 (defvar icicle-vardoc-last-initial-cand-set ()
   "Cache for initial set of completion candidates for `icicle-vardoc'.")
-
-(defvar icicle-vardoc-last-initial-option-cand-set ()
-  "Cache for initial option completion candidates for `icicle-vardoc'.")
 
 (defvar icicle-whole-candidate-as-text-prop-p nil
   "Non-nil means string candidate has candidate data as text property.
