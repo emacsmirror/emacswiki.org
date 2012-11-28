@@ -150,7 +150,7 @@
 }}}
 ====save-excursion====
 =====这个特殊表的主要目的是保存并恢复当前位置(point)和标记(mark)的值. 使用户避免位置(point)和标记(mark)的不必要移动.=====
-====save-restrictin====
+====save-restriction====
 =====变窄=====
 {{{
                 变窄可以是缓冲的其余部分不可见, widen命令撤销变窄开启.
