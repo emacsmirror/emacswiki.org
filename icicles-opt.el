@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Nov 27 10:38:46 2012 (-0800)
+;; Last-Updated: Tue Nov 27 20:27:48 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 5400
+;;     Update #: 5402
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1412,11 +1412,11 @@ save the current value, you can set this to your function."
   :type 'function :group 'Icicles-Miscellaneous)
 
 ;;;###autoload
-(defcustom icicle-default-in-prompt-format-function (lambda (default) (format " (%s): " default))
+(defcustom icicle-default-in-prompt-format-function (lambda (default) (format " (%s)" default))
   "Function that formats the default value to include in the prompt.
 The function must accept the default value (a string) as its (first)
-argument and return a string, which replaces the first occurrence of
-`: ' in the prompt.  This option has no effect unless
+argument and return a string, which is prepended to the first
+occurrence of `: ' in the prompt.  This option has no effect unless
 `icicle-default-value' is t."
   :group 'Icicles-Miscellaneous :type 'function)
 
