@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Nov 28 08:44:31 2012 (-0800)
+;; Last-Updated: Wed Nov 28 15:42:46 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 1676
+;;     Update #: 1677
 ;; URL: http://www.emacswiki.org/icicles-var.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1009,10 +1009,6 @@ RING-ITEM is an item in `kmacro-ring' or `(kmacro-ring-head)'.")
 
 (defvar icicle-last-top-level-command nil "Last top-level command used.")
 
-(defvar icicle-last-transform-function (or icicle-transform-function
-                                           'icicle-remove-duplicates)
-  "Local copy of `icicle-transform-function', so we can restore it.")
-
 (defvar icicle-lighter-truncation "..."
   "String appended to Icy lighter to show candidates-list truncation.")
 
@@ -1532,6 +1528,10 @@ You can use this variable in your Lisp code to transform the list of
 candidates any way you like.  A typical use is to remove duplicates,
 by binding it to `icicle-remove-duplicates' or
 `icicle-remove-dups-if-extras'.")
+
+(defvar icicle-last-transform-function (or icicle-transform-function
+                                           'icicle-remove-duplicates)
+  "Local copy of `icicle-transform-function', so we can restore it.")
 
 (defvar icicle-universal-argument-map
   (let ((map  (make-sparse-keymap)))
