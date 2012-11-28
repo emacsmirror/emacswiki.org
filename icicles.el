@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Mon Nov 26 23:28:04 2012 (-0800)
+;; Last-Updated: Wed Nov 28 08:45:34 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 23249
+;;     Update #: 23252
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -838,8 +838,7 @@
 ;;    `icicle-top-level-key-bindings',
 ;;    `icicle-top-level-when-sole-completion-delay',
 ;;    `icicle-top-level-when-sole-completion-flag',
-;;    `icicle-touche-pas-aux-menus-flag', `icicle-transform-function',
-;;    `icicle-type-actions-alist',
+;;    `icicle-touche-pas-aux-menus-flag', `icicle-type-actions-alist',
 ;;    `icicle-unpropertize-completion-result-flag',
 ;;    `icicle-update-input-hook', `icicle-use-~-for-home-dir-flag',
 ;;    `icicle-use-C-for-actions-flag',
@@ -1340,11 +1339,10 @@
 ;;    `icicle-successive-grab-count',
 ;;    `icicle-text-property-value-history',
 ;;    `icicle-thing-at-pt-fns-pointer', `icicle-this-cmd-keys',
-;;    `icicle-transform-before-sort-p',
+;;    `icicle-transform-before-sort-p', `icicle-transform-function',
 ;;    `icicle-toggle-transforming-message',
 ;;    `icicle-universal-argument-map',
 ;;    `icicle-vardoc-last-initial-cand-set',
-;;    `icicle-vardoc-last-initial-option-cand-set',
 ;;    `icicle-variable-name-history',
 ;;    `icicle-whole-candidate-as-text-prop-p',
 ;;    `lacarte-menu-items-alist'.
