@@ -7,11 +7,11 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun Nov 18 12:13:24 2012 (-0800)
+;; Last-Updated: Tue Nov 27 21:05:56 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 29070
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
-;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
+;;     Update #: 29073
+;; URL: http://www.emacswiki.org/icicles-doc2.el
+;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -4608,6 +4608,14 @@
 ;;    (Backspace) or `C-d' (Delete).  However, all of the initial
 ;;    input is lost if you type or hit `C-d' or `DEL', which is
 ;;    inconvenient if you want to edit it only slightly.
+;;
+;;  * If you use `t' as the value of `icicle-default-value' then you
+;;    can use option `icicle-default-in-prompt-format-function' to
+;;    format the text that shows the (first) default value in the
+;;    prompt.  The option value is a function that accepts the
+;;    default value (a string) and returns a string that is prepended
+;;    to the first occurrence of ": " in the prompt.  This option has
+;;    no effect unless `icicle-default-value' is `t'.
 ;;
 ;;  * User options `icicle-thing-at-point-functions' and
 ;;    `icicle-default-thing-insertion' control the behavior of `M-.'
