@@ -7,11 +7,11 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Nov 10 13:05:41 2012 (-0800)
+;; Last-Updated: Wed Nov 28 08:35:35 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 18655
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
-;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/Icicles
+;;     Update #: 18659
+;; URL: http://www.emacswiki.org/icicles-mcmd.el
+;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -1501,11 +1501,10 @@ Bound to `C-x t' in the minibuffer."
     (interactive)
     (if (not (require 'image-dired nil t))
         (message "No-op: this command requires library `image-dired.el'")
-      (setq icicle-image-files-in-Completions
-            (case icicle-image-files-in-Completions
-              ((nil)       'image-only)
-              (image-only  t)
-              (t           nil)))
+      (setq icicle-image-files-in-Completions  (case icicle-image-files-in-Completions
+                                                 ((nil)       'image-only)
+                                                 (image-only  t)
+                                                 (t           nil)))
       (icicle-complete-again-update)
       (icicle-msg-maybe-in-minibuffer
        (case icicle-image-files-in-Completions
@@ -7516,12 +7515,8 @@ to take effect.  (This is for performance reasons.)"
 (defun icicle-toggle-transforming ()    ; Bound to `C-$' in minibuffer.
   "Toggle transforming of minibuffer completion candidates.
 When transforming is active, it is done by `icicle-transform-function'.
-
-By default, transformation, if active, simply removes duplicate
-candidates.  Icicles commands already \"do the right thing\" when it
-comes to duplicate removal, so you might never need this command.
-
-Bound to `C-$' in the minibuffer."
+Bound to `C-$' in the minibuffer.  See the doc for individual
+commands, for how `C-$' might affect them."
   (interactive)
   (if icicle-transform-function
       (setq icicle-last-transform-function  icicle-transform-function ; Save it, for restoring.
