@@ -46,5 +46,6 @@ For instance, imagine an outline with a few URLs in it, which reveals itself as 
 
 * OrgMode also has some of these features, in particular the URL linking mentioned in the final paragraph above.
 
+* [http://github.com/rlister/org-present OrgPresentMode] extremely minimalist presentation tool for org-mode
 ---- 
 CategoryWishList
