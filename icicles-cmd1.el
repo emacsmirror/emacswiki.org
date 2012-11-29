@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Nov 28 20:52:47 2012 (-0800)
+;; Last-Updated: Wed Nov 28 21:39:11 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 25202
+;;     Update #: 25220
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2658,15 +2658,13 @@ See also:
   ((pref-arg                            current-prefix-arg)
    (num-arg                             (prefix-numeric-value pref-arg))
    (prompt                              (format "SYMBOL `C-M-j' %s: " (if pref-arg "INFO" "VALUE"))) ; Bindings
-   (icicle-toggle-transforming-message  (cond ((consp pref-arg)
-                                               icicle-toggle-transforming-message)
-                                              ((and pref-arg  (< num-arg 0))
-                                               "Filtering to commands (+ defs) is now %s")
-                                              ((and pref-arg  (= num-arg 0))
-                                               "Filtering to options, commands, & faces is now %s")
+   (icicle-toggle-transforming-message  (cond ((or (consp pref-arg)  (= num-arg 0))
+                                               "Filtering to OPTIONS, COMMANDS, & FACES is now %s")
                                               ((and pref-arg  (> num-arg 0))
-                                               "Filtering to faces (+ plists) is now %s")
-                                              (t "Filtering to user options (+ values) is now %s")))
+                                               "Filtering to FACES (+ plists) is now %s")
+                                              ((< num-arg 0)
+                                               "Filtering to COMMANDS (+ defs) is now %s")
+                                              (t "Filtering to user OPTIONS (+ values) is now %s")))
    (icicle-candidate-properties-alist   '((1 (face icicle-candidate-part))))
    (icicle-multi-completing-p           t)
    (icicle-list-use-nth-parts           '(1))
@@ -2676,17 +2674,20 @@ See also:
                                           (loop for cc in cands
                                                 with symb
                                                 do (setq symb  (intern (icicle-transform-multi-completion cc)))
-                                                if (cond ((< `,num-arg 0)        (commandp symb))
-                                                         ((= `,num-arg 0)        (or (user-variable-p symb)
-                                                                                     (commandp symb)
-                                                                                     (facep symb)))
-                                                         ((and `,pref-arg
-                                                               (> `,num-arg 0))  (facep symb))
-                                                         (t                      (user-variable-p symb)))
+                                                if (cond ((or (consp `,pref-arg)  (= `,num-arg 0))
+                                                          (or (user-variable-p symb)
+                                                              (commandp symb)
+                                                              (facep symb)))
+                                                         ((and `,pref-arg  (> `,num-arg 0))
+                                                          (facep symb))
+                                                         ((< `,num-arg 0)
+                                                          (commandp symb))
+                                                         (t
+                                                          (user-variable-p symb)))
                                                 collect cc)))
    (print-fn                            (lambda (obj)
                                           (let ((print-circle  t))
-;;;                                         (condition-case nil
+;;; $$$$$$                                  (condition-case nil
 ;;;                                             (prin1-to-string obj)
 ;;;                                           (error "`icicle-apropos-value' printing error")))))
                                             (prin1-to-string obj))))
@@ -2722,11 +2723,11 @@ See also:
                                                          ,(funcall print-fn (symbol-value symb))))))))))
   (progn (put-text-property 0 1 'icicle-fancy-candidates t prompt) ; First code.
          (icicle-highlight-lighter)
-         (message "Gathering %s%s..." (cond ((consp pref-arg) 'symbols)
-                                            ((and pref-arg  (< num-arg 0)) 'functions)
-                                            ((and pref-arg  (= num-arg 0)) "all symbols")
-                                            ((and pref-arg  (> num-arg 0)) 'symbols)
-                                            (t                             'variables))
+         (message "Gathering %s%s..." (cond ((consp pref-arg)              'SYMBOLS)
+                                            ((and pref-arg  (< num-arg 0)) 'FUNCTIONS)
+                                            ((and pref-arg  (= num-arg 0)) "all SYMBOLS")
+                                            ((and pref-arg  (> num-arg 0)) 'SYMBOLS)
+                                            (t                             'VARIABLES))
                   (cond ((consp pref-arg) " from last invocation (cached)")
                         ((and pref-arg  (< num-arg 0)) " and their definitions")
                         ((and pref-arg  (= num-arg 0)) " and their info")
