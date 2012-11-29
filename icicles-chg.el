@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Wed Nov 28 22:26:14 2012 (-0800)
+;; Last-Updated: Thu Nov 29 10:05:41 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 9329
+;;     Update #: 9330
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -86,6 +86,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2012/11/29 dadams
+;;     icicle-find-file-of-content: Typo: removed -other-window.
 ;; 2012/11/28 dadams
 ;;     icicle-apropos-value: Minor corrections.  And treat C-u case like C-0 for C-$.
 ;;     icicle-completing-yank:
