@@ -37,6 +37,9 @@ For instance, imagine an outline with a few URLs in it, which reveals itself as 
 
 
 
+* [http://github.com/pjones/bufshow Bufshow] -- a simple Emacs package
+  for giving presentations by switching and narrowing buffers.
+
 * [[Elpoint]] -- a presentation tool for emacsen.
 
 * AllOut mode looks close, but the cycling needs some function like 'outline-depth-first-next' and 'outline-depth-first-previous' with a 'outline-hide-others'
