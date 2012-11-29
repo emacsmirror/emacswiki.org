@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Tue Nov 27 22:51:15 2012 (-0800)
+;; Last-Updated: Wed Nov 28 22:22:56 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 6176
+;;     Update #: 6186
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2633,6 +2633,10 @@ With a prefix argument, use the same documentation that was gathered
 the last time `icicle-doc' was called.  Use a prefix arg to save the
 time that would be needed to gather the documentation.
 
+You can use `C-$' during completion to toggle filtering the domain of
+initial candidates between all functions, variables, and faces and
+only commands, user options and faces.
+
 Remember that you can use \\<minibuffer-local-completion-map>\
 `\\[icicle-cycle-incremental-completion]' to toggle incremental completion.
 
@@ -2677,10 +2681,18 @@ See also: `icicle-apropos-value'."      ; Doc string
     result)
   nil nil nil 'icicle-doc-history nil nil
   ((prompt                             "Find doc using regexp: ") ; Bindings
+   ;; $$$$$$ (icicle-transform-function          'icicle-remove-duplicates) ; Duplicates are due to `fset's.
+   (icicle-toggle-transforming-message  "Filtering to OPTIONS, COMMANDS, & FACES is now %s")
+   (icicle-transform-function           nil) ; No transformation: all symbols.
+   (icicle-last-transform-function      (lambda (cands) ; `C-$': only user options, commands, or faces.
+                                          (loop for cc in cands
+                                                with symb
+                                                do (setq symb (intern (icicle-transform-multi-completion cc)))
+                                                if (or (user-variable-p symb)  (commandp symb)  (facep symb))
+                                                collect cc)))
    (icicle-candidate-properties-alist  '((1 (face icicle-candidate-part))))
    (icicle-multi-completing-p          t)
    (icicle-list-use-nth-parts          '(1))
-   (icicle-transform-function          'icicle-remove-duplicates) ; Duplicates are due to `fset's.
    (icicle-candidate-help-fn           'icicle-doc-action)
    (pref-arg                           current-prefix-arg))
   (progn
