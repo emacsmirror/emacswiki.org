@@ -133,6 +133,17 @@ Here's the Elisp for your init file, to implement the ch and cx Key Translations
 
 You may use make-conditional-key-translation for single letter Key Translations.  And if another keymap defines a binding for "ch", you can access it with \ch , because my-translate-keys-p returns false in the Emacs state, resulting in a Key Translation of "ch" to itself.
 
+To continue the pattern of translating "c<char>" to "C-<char>":
+
+(when (fboundp 'cl-loop)
+      ;; cl-loop iterates from ASCII '!' to ASCII '~'.
+      (cl-loop for ascii-code-i from 33 to 126 by 1 do
+               (make-conditional-key-translation (kbd (format "%s%c" "c" ascii-code-i))
+                                                 (kbd (format "%s%c" "C-" ascii-code-i))
+                                                 'my-translate-keys-p)))
+
+cl-loop is defined on the development trunk and in the 24.2.90 pretest release.
+
 == Defining your own escape ==
 
 You can define any key sequence you like for escaping from Evil insert state back to normal state.  C-c is one of the options available in Vim by default, but Evil cannot define C-c this way because Emacs coding standards require packages to reserve C-c for the user.
