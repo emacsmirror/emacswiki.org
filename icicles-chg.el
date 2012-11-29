@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Wed Nov 28 09:24:12 2012 (-0800)
+;; Last-Updated: Wed Nov 28 22:26:14 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 9320
+;;     Update #: 9329
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -86,6 +86,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2012/11/28 dadams
+;;     icicle-apropos-value: Minor corrections.  And treat C-u case like C-0 for C-$.
+;;     icicle-completing-yank:
+;;       Do not icicle-delete-dups when constructing cands.  Let icicle-transform-function do it.
 ;; 2012/11/26 dadams
 ;;     Added: icicle-apropos-value.  Thx to Michael Heerdegen.
 ;;     icicle-execute-extended-command(-1): Save and restore icicle-toggle-transforming-message.
@@ -777,7 +781,8 @@
 ;; 2012/11/28 dadams
 ;;     icicle-(fundoc|vardoc|plist): Use C-$ to toggle command/fn, option/var, faces/all.
 ;;     icicle-vardoc: Do not use non-neg prefix arg for options.
-;;     icicle-doc: Correction: separate setq in and, in case icicle-fn-doc-minus-sig returns nil.
+;;     icicle-doc: Be able to use C-$ to limit to commands, options, and faces.
+;;                 Correction: separate setq in and, in case icicle-fn-doc-minus-sig returns nil.
 ;; 2012/11/20 dadams
 ;;     icicle-search-define-candidates:
 ;;       Added progress message for context gathering.  Thx to Michael Heerdegen.
@@ -3561,6 +3566,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2012/11/28 dadams
+;;     icicle-toggle-transforming: Rewrote to be more useful when both are useful functions.
 ;; 2012/11/08 dadams
 ;;     icicle-digit-argument, icicle-successive-action, icicle-(prefix|apropos)-complete-1,
 ;;       icicle-switch-to-Completions-buf, icicle-keep-only-past-inputs,
