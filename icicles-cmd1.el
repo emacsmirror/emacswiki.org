@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Nov 28 21:39:11 2012 (-0800)
+;; Last-Updated: Thu Nov 29 09:57:28 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 25220
+;;     Update #: 25221
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -7587,7 +7587,7 @@ flips the behavior specified by that option." ; Doc string
       (let* ((r-o  (and (memq this-command '(icicle-candidate-action icicle-mouse-candidate-action
                                              icicle-all-candidates-action))
                         current-prefix-arg))
-             (fn   (if r-o 'find-file-read-only-other-window 'find-file-other-window)))
+             (fn   (if r-o 'find-file-read-only 'find-file)))
         (setq file  (icicle-transform-multi-completion file))
         (funcall fn file 'WILDCARDS)
         ;; Add the visited buffer to those we will keep (not kill).
