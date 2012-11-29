@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Nov 27 13:17:10 2012 (-0800)
+;; Last-Updated: Wed Nov 28 20:52:47 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 25199
+;;     Update #: 25202
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2557,8 +2557,8 @@ See also:
   similarly, for a full description of TYPE, matching, and the use of
   a prefix argument
 * `icicle-apropos-value', using `C-$' to filter to options only" ; Doc string
-  icicle-apropos-opt-action             ; Action
-  function prompt                       ; `completing-read' args
+  icicle-apropos-opt-action             ; Action function
+  prompt                       ; `completing-read' args
   'icicle-describe-opt-of-type-complete nil nil nil nil nil nil
   ((prompt                             "OPTION `C-M-j' TYPE: ") ; Bindings
    (icicle-multi-completing-p          t)
@@ -4610,7 +4610,7 @@ instead of those for the current buffer."
                                                              '((2 (face file-name-shadow))
                                                                (3 (face bookmark-menu-heading)))
                                                            '((3 (face bookmark-menu-heading))))))
-               (icicle-transform-function              (and (not (interactive-p))  icicle-transform-function))
+               (icicle-transform-function              (if (interactive-p) nil icicle-transform-function))
                (icicle-whole-candidate-as-text-prop-p  t)
                (icicle-transform-before-sort-p         t)
                (icicle-candidates-alist
@@ -6990,10 +6990,9 @@ candidates to yank in different ways (repeat)
                                              "No other selection ring"
                                            (format "Copied to `%s'" other-ring))))))
    (icicle-delete-candidate-object  selection-ring)
-   (kills-in-order                  (icicle-delete-dups
-                                     (if (eq selection-ring 'kill-ring)
-                                         (append kill-ring-yank-pointer kill-ring ())
-                                       (copy-sequence (symbol-value selection-ring)))))))
+   (kills-in-order                  (if (eq selection-ring 'kill-ring)
+                                        (append kill-ring-yank-pointer kill-ring ())
+                                      (copy-sequence (symbol-value selection-ring))))))
 
 (defun icicle-insert-for-yank (string)
   "`insert-for-yank', if defined; else, `insert' with `read-only' removed.
