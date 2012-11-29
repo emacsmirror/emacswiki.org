@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Nov 28 21:10:50 2012 (-0800)
+;; Last-Updated: Wed Nov 28 21:54:30 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 18673
+;;     Update #: 18678
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -7519,10 +7519,10 @@ Bound to `C-$' in the minibuffer.  See the doc for individual
 commands, for how `C-$' might affect them."
   (interactive)
   (let ((dups-fns  '(icicle-remove-duplicates icicle-remove-dups-if-extras)))
-    ;; 1. If either is one of DUPS-FNS, set the other to it and it to nil.
-    ;; 2. Else if both are other functions, swap them, so you can toggle between them.
-    ;; 3. Else if either is a function, set the other to it and it to nil.
-    ;; 4. Else (both are nil), set last to remove-dups and this to nil.
+    ;; 1. If either is one of the DUPS-FNS, set the other to it and set it to nil.
+    ;; 2. Else if both are other functions (and different), swap them, so you can toggle between them.
+    ;; 3. Else if either is a function, set the other to it and set it to nil.
+    ;; 4. Else (both are nil), set last to remove-dups and set this to nil.
     ;;
     ;; #1 is needed because we do not want to just swap them (#2) in that case.
     ;;
@@ -7532,7 +7532,8 @@ commands, for how `C-$' might affect them."
           ((memq icicle-last-transform-function dups-fns) ; Swap with nil
            (setq icicle-transform-function  icicle-last-transform-function
                  icicle-last-transform-function       nil))
-          ((and icicle-transform-function  icicle-last-transform-function) ; Swap them
+          ((and icicle-transform-function  icicle-last-transform-function
+                (not (eq icicle-transform-function  icicle-last-transform-function))) ; Swap them
            (setq icicle-transform-function
                  (prog1 icicle-last-transform-function
                    (setq icicle-last-transform-function  icicle-transform-function))))
