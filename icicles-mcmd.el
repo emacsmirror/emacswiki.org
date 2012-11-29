@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Nov 28 08:35:35 2012 (-0800)
+;; Last-Updated: Wed Nov 28 21:10:50 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 18659
+;;     Update #: 18673
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1996,9 +1996,9 @@ These are the main Icicles actions and their minibuffer key bindings:
              (if icicle-highlight-historical-candidates-flag 'yes 'no)
              (if icicle-highlight-saved-candidates-flag 'yes 'no)
              (cond ((not icicle-transform-function) "no")
-                   ((or (eq 'icicle-remove-duplicates          icicle-transform-function)
+                   ((or (eq icicle-transform-function 'icicle-remove-duplicates)
                         (and icicle-extra-candidates
-                             (eq 'icicle-remove-dups-if-extras icicle-transform-function)))
+                             (eq icicle-transform-function 'icicle-remove-dups-if-extras)))
                     "yes")
                    ((eq 'icicle-remove-dups-if-extras icicle-transform-function)
                     "yes in general, but not now")
@@ -5057,8 +5057,8 @@ If any of these conditions is true, remove all occurrences of CAND:
    and `icicle-extra-candidates' is non-nil"
   (setq allp  (or allp
                   (eq icicle-transform-function 'icicle-remove-duplicates)
-                  (and (eq icicle-transform-function 'icicle-remove-dups-if-extras)
-                       icicle-extra-candidates)))
+                  (and icicle-extra-candidates
+                       (eq icicle-transform-function 'icicle-remove-dups-if-extras))))
   (when icicle-candidates-alist
     (setq icicle-candidates-alist
           (if allp
@@ -7518,14 +7518,37 @@ When transforming is active, it is done by `icicle-transform-function'.
 Bound to `C-$' in the minibuffer.  See the doc for individual
 commands, for how `C-$' might affect them."
   (interactive)
-  (if icicle-transform-function
-      (setq icicle-last-transform-function  icicle-transform-function ; Save it, for restoring.
-            icicle-transform-function       nil)
-    (setq icicle-transform-function  icicle-last-transform-function)) ; Restore it.
-  (icicle-complete-again-update)
-  (icicle-msg-maybe-in-minibuffer icicle-toggle-transforming-message
-                                  (icicle-propertize (if icicle-transform-function "ON" "OFF")
-                                                     'face 'icicle-msg-emphasis)))
+  (let ((dups-fns  '(icicle-remove-duplicates icicle-remove-dups-if-extras)))
+    ;; 1. If either is one of DUPS-FNS, set the other to it and it to nil.
+    ;; 2. Else if both are other functions, swap them, so you can toggle between them.
+    ;; 3. Else if either is a function, set the other to it and it to nil.
+    ;; 4. Else (both are nil), set last to remove-dups and this to nil.
+    ;;
+    ;; #1 is needed because we do not want to just swap them (#2) in that case.
+    ;;
+    (cond ((memq icicle-transform-function dups-fns) ; Swap with nil
+           (setq icicle-last-transform-function  icicle-transform-function
+                 icicle-transform-function       nil))
+          ((memq icicle-last-transform-function dups-fns) ; Swap with nil
+           (setq icicle-transform-function  icicle-last-transform-function
+                 icicle-last-transform-function       nil))
+          ((and icicle-transform-function  icicle-last-transform-function) ; Swap them
+           (setq icicle-transform-function
+                 (prog1 icicle-last-transform-function
+                   (setq icicle-last-transform-function  icicle-transform-function))))
+          (icicle-transform-function    ; Swap with nil
+           (setq icicle-last-transform-function  icicle-transform-function
+                 icicle-transform-function       nil))
+          (icicle-last-transform-function ; Swap with nil
+           (setq icicle-transform-function  icicle-last-transform-function
+                 icicle-last-transform-function       nil))
+          (t                            ; Default: last removes dups, this does nothing.
+           (setq icicle-last-transform-function  'icicle-remove-duplicates
+                 icicle-transform-function       nil)))
+    (icicle-complete-again-update)
+    (icicle-msg-maybe-in-minibuffer icicle-toggle-transforming-message
+                                    (icicle-propertize (if icicle-transform-function "ON" "OFF")
+                                                       'face 'icicle-msg-emphasis))))
 
 ;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;
@@ -7594,7 +7617,6 @@ Bound to \\<minibuffer-local-completion-map>\
   (setq icicle-expand-input-to-common-match
         (prog1 icicle-expand-input-to-common-match-alt
           (setq icicle-expand-input-to-common-match-alt  icicle-expand-input-to-common-match)))
-
   (icicle-msg-maybe-in-minibuffer
    "Expanding input to common match is now %s"
    (icicle-propertize (case icicle-expand-input-to-common-match
@@ -7860,7 +7882,7 @@ Bound to `M-_' in the minibuffer, except during Icicles searching."
 ;;;###autoload (autoload 'toggle-icicle-include-cached-files "icicles")
 (defalias 'toggle-icicle-include-cached-files 'icicle-toggle-include-cached-files)
 ;;;###autoload (autoload 'icicle-toggle-include-cached-files "icicles")
-(defun icicle-toggle-include-cached-files (&optional newval)
+(defun icicle-toggle-include-cached-files (&optional newval) ; Bound to `C-x F' in minibuffer for buffers.
   "Toggle the sign of option `icicle-buffer-include-cached-files-nflag'.
 A prefix arg sets the option value to the numeric prefix value.
 Bound to `C-x F' in the minibuffer during buffer-name completion."
@@ -7885,7 +7907,7 @@ Bound to `C-x F' in the minibuffer during buffer-name completion."
 ;;;###autoload (autoload 'toggle-icicle-include-recent-files "icicles")
 (defalias 'toggle-icicle-include-recent-files 'icicle-toggle-include-recent-files)
 ;;;###autoload (autoload 'icicle-toggle-include-recent-files "icicles")
-(defun icicle-toggle-include-recent-files (&optional newval)
+(defun icicle-toggle-include-recent-files (&optional newval) ; Bound to `C-x R' in minibuffer for buffers.
   "Toggle the sign of option `icicle-buffer-include-recent-files-nflag'.
 A prefix arg sets the option value to the numeric prefix value.
 Bound to `C-x R' in the minibuffer during buffer-name completion."
