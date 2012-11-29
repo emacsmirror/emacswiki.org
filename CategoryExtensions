@@ -92,6 +92,7 @@ Extensions (using the category name from `finder-by-keyword'), are utility libra
 * NaKeD -- Provide for naked key descriptions: no angle brackets.
 * DoReMi -- Incremental change using arrow keys or mouse wheel.
 * UseCustomizeForKeyBindings -- Widget and `defcustom' code to let users use Customize for key bindings.
+* [[http://github.com/tarsius/keymap-utils keymap-utils]] -- keymap utilities
 
 == Menus ==
 
