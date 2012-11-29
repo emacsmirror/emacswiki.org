@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Nov 29 09:57:28 2012 (-0800)
+;; Last-Updated: Thu Nov 29 10:51:24 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 25221
+;;     Update #: 25223
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -7736,7 +7736,9 @@ Used as the value of `minibuffer-completion-table'.."
              (try-completion              ; `try-completion'
               file-pat (mapcar #'list filnames) (and pred  (lambda (ff) (funcall pred (car ff)))))))))
 
-  ;; This is based on code from Emacs 24 `read-file-name-default'.  It works only for Emacs 23+.
+  ;; This is based on code from Emacs 24 `read-file-name-default'.  It works only for Emacs 23+ (23 or later).
+  ;; Further, if you byte-compile this file, then for it to work you must byte-compile it with Emacs 23+.
+  ;; This is because this code uses an Emacs 23+ macro, `minibuffer-with-setup-hook'.
   (defun icicle-find-file-of-content-read-file-name (prompt &optional
                                                      dir default-filename mustmatch initial predicate)
     "Function to read file name for `icicle-find-file-of-content'.
