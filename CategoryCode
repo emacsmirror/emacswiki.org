@@ -188,3 +188,7 @@ Writing code that works on different versions of Emacs and XEmacs is Comparative
 This list is mostly for pages that are no longer relevant because Emacs comes with features making them obsolete.
 
 * FakeClosures -- How to fake a closure in Emacs Lisp (Emacs introduced LexicalBinding with version 24)
+
+== See Also ==
+
+* CategoryCode
