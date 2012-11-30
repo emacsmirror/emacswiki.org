@@ -248,8 +248,12 @@ or a function of no args which moves point to the end of the current function in
 (defmacro whilenotlast (&rest forms)
   `(while (not (progn ,@forms))))
 
+;; This is still not exactly right: it will match both abc & abc' on abc'
+;; where ' could be any char in the expression prefix syntax class.
+;; This happens in haskell mode for example when you have defined two functions
+;; named func and func' for example.
 (defun simple-call-tree-symbol-as-regexp (symbolname)
-  (concat "\\_<" (regexp-opt (list symbolname)) "\\_>"))
+  (concat "\\_<" (regexp-opt (list symbolname)) "\\(\\|\\s-\\|\\.\\|\\(\\|\\)\\)"))
 
 ;; Major-mode for simple call tree
 (define-derived-mode simple-call-tree-mode outline-mode "Simple Call Tree"
