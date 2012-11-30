@@ -64,7 +64,7 @@ Thus if there are the following changes to the page "foo":
 # minor change: addition of D
 # minor change: addition of E
 
-Now what will you see on RecentChagnes by default?  You'll see "addition of C" because only major changes are shown.
+Now what will you see on RecentChanges by default?  You'll see "addition of C" because only major changes are shown.
 
 What will you expect when you click on the diff link?  The diff link will contain "diff=1" in the URL.
 Previously, clicking on that URL would have shown the addition of D and E (the diff to the last major edit).
