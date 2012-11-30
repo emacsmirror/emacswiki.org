@@ -138,8 +138,8 @@ To continue the pattern of translating "c<char>" to "C-<char>":
   (when (fboundp 'cl-loop)
         ;; cl-loop iterates from ASCII '!' to ASCII '~'.
         (cl-loop for ascii-code-i from 33 to 126 by 1 do
-                 (make-conditional-key-translation (kbd (format "%s%c" "c" ascii-code-i))
-                                                   (kbd (format "%s%c" "C-" ascii-code-i))
+                 (make-conditional-key-translation (kbd (format "c%c" ascii-code-i))
+                                                   (kbd (format "C-%c" ascii-code-i))
                                                    'my-translate-keys-p)))
 
 cl-loop is defined on the development trunk and in the 24.2.90 pretest release.
