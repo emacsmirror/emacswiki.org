@@ -6,7 +6,7 @@
 ;; Maintainer: Joe Bloggs <vapniks@yahoo.com>
 ;; Copyleft (Ↄ) 2012, Joe Bloggs, all rites reversed.
 ;; Created: 2012-11-01 21:28:07
-;; Version: 0.1
+;; Version: 1.0.0
 ;; Last-Updated: 2012-11-01 21:28:07
 ;;           By: Joe Bloggs
 ;; URL: http://www.emacswiki.org/emacs/download/simple-call-tree+.el
@@ -116,8 +116,10 @@
 ;; I am going to work on a plugin for one-key.el which provides similar functionality.
 ;; If anyone wants to implement the following ideas, please do:
 ;; More reliable code for building tree (handle duplicate function names properly).
+;; Fix code so that we can have several calls to the same function in the same tree.
 ;; Code for marking functions (like with files in dired mode) and then applying operations to the marked functions.
 ;; Code for rearranging functions.
+;; Code for renaming functions.
 
 ;;; Require
 (require 'thingatpt)
@@ -147,7 +149,10 @@ This variable is used by the `simple-call-tree-jump-to-function' function when n
 
 (defcustom simple-call-tree-default-invalid-fonts '(font-lock-comment-face
                                                     font-lock-string-face
-                                                    font-lock-doc-face)
+                                                    font-lock-doc-face
+                                                    font-lock-keyword-face
+                                                    font-lock-warning-face
+                                                    font-lock-preprocessor-face)
   "List of fonts that should not be in the text property of any valid token."
   :group 'simple-call-tree
   :type '(repeat face))
@@ -155,15 +160,31 @@ This variable is used by the `simple-call-tree-jump-to-function' function when n
 (defcustom simple-call-tree-major-mode-alist
   '((emacs-lisp-mode (font-lock-function-name-face
                       font-lock-variable-name-face)
-                     nil nil t)
+                     nil nil nil end-of-defun)
     (cperl-mode nil nil (lambda (pos)
                           (goto-char pos)
                           (beginning-of-line)
-                          (looking-at "sub")) nil)
+                          (looking-at "sub")) nil nil)
+    (haskell-mode nil (font-lock-function-name-face
+                       font-lock-comment-face
+                       font-lock-string-face
+                       font-lock-doc-face
+                       font-lock-keyword-face
+                       font-lock-warning-face
+                       font-lock-preprocessor-face)
+                  (lambda (pos)
+                    (goto-char pos)
+                    (beginning-of-line)
+                    (let ((thistoken (symbol-at-point)))
+                      (previous-line)
+                      (not (string= (symbol-at-point) thistoken))))
+                  haskell-ds-forward-decl
+                  haskell-ds-forward-decl)
     (perl-mode nil nil (lambda (pos)
                          (goto-char pos)
                          (beginning-of-line)
-                         (looking-at "sub")) nil)
+                         (looking-at "sub"))
+               nil nil)
     (python-mode (font-lock-function-name-face
                   font-lock-variable-name-face
                   font-lock-type-face)
@@ -174,6 +195,7 @@ This variable is used by the `simple-call-tree-jump-to-function' function when n
                        (or (looking-at "def\\|class")
                            (eq (get-text-property (point) 'face)
                                font-lock-variable-name-face)))
+                 nil
                  (lambda nil
                    (backward-char)
                    (if (eq (get-text-property (point) 'face)
@@ -189,18 +211,21 @@ VALID-FONTS is either nil or a list of fonts for finding objects for the call tr
 If nil then `simple-call-tree-default-valid-fonts' will be used.
 
 INVALID-FONTS is either nil or a list of fonts that should not be present in the text properties of
-any objects to be added to the call tree. If nil then `simple-call-tree-default-invalid-fonts' will be used. 
+any objects to be added to the call tree. If nil then `simple-call-tree-default-invalid-fonts' will be used.
+The invalid fonts will also be checked when finding function calls.
 
 START-TEST indicates how to determing the start of the next object. Potential objects are found by checking
 the fonts of tokens in the buffer (against VALID-FONTS). If START-TEST is a function then it will be used as
 an additional check for potential objects. It will be passed the buffer position of the beginning of the
 current token to check, and should return non-nil if it represents a valid object.
 
-END-TEST indicates how to find the end of the current object when parsing a buffer for the call tree.
-If END-TEST is nil then font changes will be used to determine the end of an object (by searching for the
-next part of text whose font is in FONTS). If END-TEST it is t then `end-of-defun' will be used to move to the
-end of the function, and if it is a function then that function will be used in the same way as `end-of-defun'
- (but needs no argument)."
+NEXT-FUNC is an alternative way of determining the locations of functions.
+It is either nil, meaning the function locations will be determined by fonts and maybe START-TEST,
+or a function of no args which moves point to the start of the next function in the buffer.
+
+END-FUNC indicates how to find the end of the current object when parsing a buffer for the call tree.
+It is either nil, meaning that font changes will be used to determine the end of an object,
+or a function of no args which moves point to the end of the current function in the buffer."
   :group 'simple-call-tree
   :type '(repeat (list (symbol :tag "major-mode symbol")
                        (repeat :tag "Faces"
@@ -241,7 +266,7 @@ end of the function, and if it is a function then that function will be used in 
       (define-key simple-call-tree-mode-map (kbd "<tab>") 'outline-cycle)
     (define-key simple-call-tree-mode-map (kbd "<tab>") 'outline-toggle-children))
   (define-key simple-call-tree-mode-map (kbd "a") 'show-all)
-  (define-key simple-call-tree-mode-map (kbd "1") 'delete-other-windows)
+  (define-key simple-call-tree-mode-map (kbd "1") 'simple-call-tree-delete-other-windows)
   (define-key simple-call-tree-mode-map (kbd "h") 'hide-sublevels)
   (define-key simple-call-tree-mode-map (kbd "SPC") 'simple-call-tree-view-function)
   (define-key simple-call-tree-mode-map (kbd "C-o") 'simple-call-tree-view-function)
@@ -331,8 +356,8 @@ end of the function, and if it is a function then that function will be used in 
      :visible (featurep 'fm)
      :style toggle
      :selected fm-working]
-    ["Delete Other Windows" delete-other-windows
-     :help "Make this window fill the whole frame (toggle mode must be off)"
+    ["Delete Other Windows" simple-call-tree-delete-other-windows
+     :help "Make this window fill the whole frame"
      :key "1"]
     ["Invert Tree" simple-call-tree-invert-buffer
      :help "Invert the tree"
@@ -358,12 +383,16 @@ end of the function, and if it is a function then that function will be used in 
                                 mode-line-format))))))
 
 (defvar simple-call-tree-alist nil
-  "Alist of functions and the functions they call.")
+  "Alist of functions and the functions they call, and markers for their locations.
+Each element is a list of lists. The first list in each element is in the form
+ (FUNC START END) where FUNC is the function name and START & END are markers for the
+positions of the start and end of the function. The other lists contain information
+for functions called by FUNC, and are in the form (FUNC2 POS) where FUNC2 is the name
+of the called function and POS is the position of the call.")
 
-(defvar simple-call-tree-locations-alist nil
-  "Alist of functions and their locations within their respective buffers.
-The car of each element is a function name, and the cdr is a marker indicating the position
-of the functions definition.")
+(defvar simple-call-tree-inverted-alist nil
+  "Alist of functions and the functions that call them, and markers for their locations.
+This is an inverted version of `simple-call-tree-alist'.")
 
 (defvar simple-call-tree-inverted-bufferp nil
   "Indicates if the *Simple Call Tree* buffer is currently inverted or not.
@@ -389,15 +418,17 @@ The minimum value is 0 which means show top level functions only.")
 
 (defun simple-call-tree-add (start end alist)
   "Add tokens between START and END to ALIST.
-ALIST is a list with a string identifying the function in its car,
-and the list of functions it calls in the cdr."
-  (dolist (entry simple-call-tree-alist)
+ALIST is an item of simple-call-tree-alist."
+  (dolist (item simple-call-tree-alist)
     (goto-char start)
     (catch 'done
-      (while (re-search-forward (simple-call-tree-symbol-as-regexp (car entry))
+      (while (re-search-forward (simple-call-tree-symbol-as-regexp (caar item))
                                 end t)
-        (unless (not (simple-call-tree-valid-face-p))
-          (setcdr alist (cons (car entry) (cdr alist)))
+        ;; need to go back a char so that the text properties are read correctly
+        (backward-char)
+        (if (not (simple-call-tree-valid-face-p))
+            (forward-char)
+          (setcdr alist (cons (list (caar item) (point-marker)) (cdr alist)))
           (throw 'done t))))))
 
 (defun* simple-call-tree-analyze (&optional (buffers (list (current-buffer))))
@@ -406,8 +437,7 @@ The result is stored in `simple-call-tree-alist'.
 Optional arg BUFFERS is a list of buffers to analyze together.
 By default it is set to a list containing the current buffer."
   (interactive)
-  (setq simple-call-tree-alist nil
-        simple-call-tree-locations-alist nil)
+  (setq simple-call-tree-alist nil)
   ;; First add all the functions defined in the buffers to simple-call-tree-alist.
   (let (pos oldpos count1 pair nextfunc item endtest oldpos startmark endmark)
     (dolist (buf buffers)
@@ -415,12 +445,11 @@ By default it is set to a list containing the current buffer."
         (font-lock-default-fontify-buffer)
         (setq pos (point-min)
               count1 0
-              endtest (fifth (assoc major-mode simple-call-tree-major-mode-alist)))
+              endtest (sixth (assoc major-mode simple-call-tree-major-mode-alist)))
         (save-excursion
           (while (setq pair (simple-call-tree-next-func pos)
                        pos (car pair)
                        nextfunc (cdr pair))
-            (add-to-list 'simple-call-tree-alist (list nextfunc))
             (goto-char pos)
             (setq startmark (point-marker))
             (cond ((functionp endtest) (funcall endtest))
@@ -429,43 +458,54 @@ By default it is set to a list containing the current buffer."
                    (goto-char (- (car pair) (length (cdr pair)))))
                   (t (goto-char (point-max))))
             (setq endmark (point-marker))
-            (add-to-list 'simple-call-tree-locations-alist (list nextfunc startmark endmark))
+            (add-to-list 'simple-call-tree-alist (list (list nextfunc startmark endmark)))
             (setq count1 (1+ count1))
             (message "Identifying functions...%d:%s" count1 nextfunc)))))
     ;; Now find functions called
-    (loop for (func startmark endmark) in simple-call-tree-locations-alist
+    (loop for item in simple-call-tree-alist
           for count2 from 1
-          for buf = (marker-buffer startmark)
-          for start = (marker-position startmark)
-          for end = (marker-position endmark)
-          for item = (assoc func simple-call-tree-alist)
+          for buf = (marker-buffer (second (car item)))
+          for start = (marker-position (second (car item)))
+          for end = (marker-position (third (car item)))
           do (with-current-buffer buf
                (save-excursion
                  (message "Identifying functions called...%d/%d" count2 count1)
                  (simple-call-tree-add start end item))))
+    (message "Creating inverted list...")
+    (setq simple-call-tree-inverted-alist
+          (simple-call-tree-invert))
     (message "simple-call-tree done")))
 
-(defun simple-call-tree-invert (alist)
-  "Invert ALIST and return the result."
+(defun simple-call-tree-invert nil
+  "Invert `simple-call-tree-alist' and return the result."
   (let (result)
     (dolist (item simple-call-tree-alist)
-      (let ((caller (car item))
-            (callees (cdr item)))
+      (let* ((caller (first item))
+             (callername (first caller))
+             (callees (cdr item)))
         (dolist (callee callees)
-          (let ((elem (assoc callee result)))
+          (let* ((calleename (first callee))
+                 (callerpos (second callee))
+                 (calleeitem (car (assoc-if (lambda (x) (string= (car x) calleename))
+                                            simple-call-tree-alist)))
+                 (elem (assoc-if (lambda (x) (string= (car x) calleename)) result)))
             (if elem
-                (setcdr elem (cons caller (cdr elem)))
-              (setq result (cons (list callee caller) result)))))))
+                (setcdr elem (cons (list callername callerpos) (cdr elem)))
+              (setq result (cons (list (list calleename (second calleeitem)
+                                             (third calleeitem))
+                                       (list callername callerpos))
+                                 result)))))))
     result))
 
 ;;; New functions (not in simple-call-tree.el)
 
 (defun simple-call-tree-valid-face-p nil
   "Return t if face at point is a valid function name face, and nil otherwise."
-  (let ((faces (get-text-property (point) 'face)))
+  (let ((faces (get-text-property (point) 'face))
+        (invalidfonts (or (third (assoc major-mode simple-call-tree-major-mode-alist))
+                          simple-call-tree-default-invalid-fonts)))
     (unless (listp faces) (setq faces (list faces)))
-    (not (intersection faces
-                       simple-call-tree-default-invalid-fonts))))
+    (not (intersection faces invalidfonts))))
 
 (defun* simple-call-tree-get-function-at-point (&optional (buf "*Simple Call Tree*"))
   "Return the name of the function nearest point in the *Simple Call Tree* buffer.
@@ -490,12 +530,18 @@ nil."
          (invalidfonts (or (third modevals)
                            simple-call-tree-default-invalid-fonts))
          (starttest (fourth modevals))
+         (nextfunc (fifth modevals))
          end)
-    (while (and (not (and (memq (get-text-property start 'face) validfonts)
-                          (not (memq (get-text-property start 'face) invalidfonts))
-                          (or (not (functionp starttest))
-                              (funcall starttest start))))
-                (setq start (next-single-property-change start 'face))))
+    (if nextfunc
+        (save-excursion
+          (goto-char start)
+          (funcall nextfunc)
+          (setq start (point)))
+      (while (and (not (and (memq (get-text-property start 'face) validfonts)
+                            (not (memq (get-text-property start 'face) invalidfonts))
+                            (or (not starttest)
+                                (save-excursion (funcall starttest start)))))
+                  (setq start (next-single-property-change start 'face)))))
     (unless (not start)
       (setq end (next-single-property-change start 'face))
       (unless (not end)
@@ -524,6 +570,7 @@ When called interactively files will be prompted for and only functions in the c
     (if (or (not files) (called-interactively-p))
         (add-to-list 'buffers (current-buffer)))
     (simple-call-tree-analyze buffers)
+    (setq simple-call-tree-inverted-bufferp nil)
     (simple-call-tree-list-callers-and-functions)
     (setq simple-call-tree-jump-ring (make-ring simple-call-tree-jump-ring-max)
           simple-call-tree-jump-ring-index 0)))
@@ -543,7 +590,7 @@ otherwise it will be narrowed around FUNC."
   (interactive (list (if current-prefix-arg
                          (which-function)
                        (simple-call-tree-get-function-at-point (current-buffer)))))
-  (if (assoc func simple-call-tree-alist)
+  (if (assoc-if (lambda (x) (string= (car x) func)) simple-call-tree-alist)
       (if (get-buffer "*Simple Call Tree*")
           (switch-to-buffer "*Simple Call Tree*")
         (simple-call-tree-list-callers-and-functions))
@@ -560,30 +607,34 @@ By default FUNCLIST is set to `simple-call-tree-alist'."
   (if (not (equal major-mode 'simple-call-tree-mode)) (simple-call-tree-mode))
   (setq buffer-read-only nil)
   (erase-buffer)
-  (let ((inverted (not (equal funclist simple-call-tree-alist)))
-        (maxdepth (max maxdepth 1)))
+  (let ((maxdepth (max maxdepth 1)))
     (dolist (item funclist)
-      (simple-call-tree-list-callees-recursively (car item) maxdepth 1 funclist inverted))
+      (simple-call-tree-list-callees-recursively
+       (car item)
+       maxdepth 1 funclist
+       simple-call-tree-inverted-bufferp))
     (setq simple-call-tree-current-maxdepth (max maxdepth 1)
-          simple-call-tree-inverted-bufferp inverted
           buffer-read-only t)))
 
-(defun* simple-call-tree-list-callees-recursively (fname &optional (maxdepth 2)
-                                                         (curdepth 1)
-                                                         (funclist simple-call-tree-alist)
-                                                         (inverted (not (equal funclist simple-call-tree-alist))))
+(defun* simple-call-tree-list-callees-recursively (item &optional (maxdepth 2)
+                                                        (curdepth 1)
+                                                        (funclist simple-call-tree-alist)
+                                                        (inverted (not (equal funclist simple-call-tree-alist))))
   "Insert a call tree for the function named FNAME, to depth MAXDEPTH.
 FNAME must be the car of one of the elements of FUNCLIST which is set to `simple-call-tree-alist' by default.
 The optional arguments MAXDEPTH and CURDEPTH specify the maximum and current depth of the tree respectively.
 This is a recursive function, and you should not need to set CURDEPTH."
-  (let* ((callees (cdr (assoc fname funclist)))
+  (let* ((fname (first item))
+         (pos (second item))
+         (callees (cdr (assoc-if (lambda (x) (string= (car x) fname)) funclist)))
          (arrowtail (make-string (* 2 (1- curdepth)) 45))
          (arrow (if inverted (concat (if (> curdepth 1) "<") arrowtail " ")
                   (concat arrowtail (if (> curdepth 1) "> " " "))))
          (face (get-text-property 0 'face fname)))
     (insert "|" arrow (propertize fname
                                   'font-lock-face (list :inherit face :underline t)
-                                  'mouse-face 'highlight)
+                                  'mouse-face 'highlight
+                                  'location pos)
             "\n")
     (if (< curdepth maxdepth)
         (dolist (callee callees)
@@ -624,16 +675,20 @@ If there is no parent, return nil."
               (error nil))
             (simple-call-tree-get-function-at-point))))))
 
-(defun simple-call-tree-narrow-to-function (func)
-  "Narrow the source buffer containing FUNC to that function."
-  (let* ((trio (assoc func simple-call-tree-locations-alist))
+(defun simple-call-tree-narrow-to-function (func &optional pos)
+  "Narrow the source buffer containing FUNC to that function.
+If optional arg POS is supplied then move point to POS after
+narrowing."
+  (let* ((trio (car (assoc-if (lambda (x) (string= (car x) func))
+                              simple-call-tree-alist)))
          (buf (marker-buffer (second trio)))
          (start (marker-position (second trio)))
          (end (marker-position (third trio))))
     (with-current-buffer buf
       (goto-char start)
       (beginning-of-line)
-      (narrow-to-region (point) end))))
+      (narrow-to-region (point) end)
+      (if pos (goto-char pos)))))
 
 ;;; Major-mode commands bound to keys
 
@@ -656,13 +711,14 @@ If there is no parent, return nil."
                  simple-call-tree-current-maxdepth))
         (funclist (if simple-call-tree-inverted-bufferp
                       simple-call-tree-alist
-                    (simple-call-tree-invert simple-call-tree-alist)))
+                    simple-call-tree-inverted-alist))
         (narrowedp (simple-call-tree-buffer-narrowed-p))
         (thisfunc (simple-call-tree-get-function-at-point)))
     (simple-call-tree-list-callers-and-functions depth funclist)
     (simple-call-tree-jump-to-function thisfunc)
     (if narrowedp (simple-call-tree-toggle-narrowing -1))
-    (setq simple-call-tree-current-maxdepth (max depth 1))))
+    (setq simple-call-tree-current-maxdepth (max depth 1)
+          simple-call-tree-inverted-bufferp (not simple-call-tree-inverted-bufferp))))
 
 (defun simple-call-tree-change-maxdepth (maxdepth)
   "Alter the maximum tree depth in the *Simple Call Tree* buffer."
@@ -675,7 +731,7 @@ If there is no parent, return nil."
          (depth (if current-prefix-arg (prefix-numeric-value current-prefix-arg)
                   (floor (abs (read-number "Maximum depth to display: " 2)))))
          (funclist (if simple-call-tree-inverted-bufferp
-                       (simple-call-tree-invert simple-call-tree-alist)
+                       simple-call-tree-inverted-alist
                      simple-call-tree-alist))
          (narrowedp (simple-call-tree-buffer-narrowed-p))
          (thisfunc (simple-call-tree-get-function-at-point))
@@ -695,26 +751,12 @@ If it is a called function then display the position in the calling function whe
   (interactive)
   (move-beginning-of-line nil)
   (re-search-forward outline-regexp)
-  (let* ((level (simple-call-tree-outline-level))
-         (thisfunc (simple-call-tree-get-function-at-point))
-         (parent (simple-call-tree-get-parent))
-         (funmark (second (assoc (if simple-call-tree-inverted-bufferp
-                                     thisfunc
-                                   (or parent thisfunc))
-                                 simple-call-tree-locations-alist)))
+  (let* ((funmark (get-text-property (point) 'location))
          (buf (marker-buffer funmark))
          (pos (marker-position funmark)))
     (display-buffer buf)
     (with-selected-window (get-buffer-window buf)
       (goto-char pos)
-      (if (> level 1)
-          (whilenotlast
-           (re-search-forward
-            (simple-call-tree-symbol-as-regexp
-             (if simple-call-tree-inverted-bufferp
-                 parent
-               thisfunc)))
-           (simple-call-tree-valid-face-p)))
       (recenter 1))))
 
 (defun* simple-call-tree-visit-function (&optional arg)
@@ -727,25 +769,17 @@ the source buffer to the function."
   (move-beginning-of-line nil)
   (re-search-forward outline-regexp)
   (let* ((level (simple-call-tree-outline-level))
+         (funmark (get-text-property (point) 'location))
+         (buf (marker-buffer funmark))
+         (pos (marker-position funmark))
          (thisfunc (simple-call-tree-get-function-at-point))
          (parent (simple-call-tree-get-parent))
          (visitfunc (if simple-call-tree-inverted-bufferp
                         thisfunc
-                      (or parent thisfunc)))
-         (funmark (second (assoc visitfunc simple-call-tree-locations-alist)))
-         (buf (marker-buffer funmark))
-         (pos (marker-position funmark)))
+                      (or parent thisfunc))))
     (pop-to-buffer buf)
     (goto-char pos)
-    (if (> level 1)
-        (whilenotlast
-         (re-search-forward
-          (simple-call-tree-symbol-as-regexp
-           (if simple-call-tree-inverted-bufferp
-               parent
-             thisfunc)))
-         (simple-call-tree-valid-face-p)))
-    (if arg (simple-call-tree-narrow-to-function visitfunc))
+    (if arg (simple-call-tree-narrow-to-function visitfunc pos))
     (recenter 1)))
 
 (defun* simple-call-tree-jump-to-function (fnstr &optional skipring)
@@ -756,7 +790,7 @@ Unless optional arg SKIPRING is non-nil (which will be true if called with a neg
 prefix arg) then the function name will be added to `simple-call-tree-jump-ring'"
   (interactive (list (if current-prefix-arg
                          (ido-completing-read "Jump to function: "
-                                              (mapcar 'car simple-call-tree-alist))
+                                              (mapcar 'caar simple-call-tree-alist))
                        (simple-call-tree-get-function-at-point))
                      (< (prefix-numeric-value current-prefix-arg) 0)))
   (let* ((narrowedp (simple-call-tree-buffer-narrowed-p)))
@@ -880,7 +914,8 @@ buffer will be used.
 If ARG is non-nil perform query-replace-regexp instead."
   (interactive (list (simple-call-tree-get-function-at-point)))
   (let ((buf (marker-buffer
-              (second (assoc func simple-call-tree-locations-alist)))))
+              (second (car (assoc-if (lambda (x) (string= (car x) func))
+                                     simple-call-tree-alist))))))
     (switch-to-buffer-other-window buf)
     (simple-call-tree-narrow-to-function func)
     (if arg
@@ -894,6 +929,12 @@ If ARG is non-nil perform query-replace-regexp instead."
   (interactive (list (simple-call-tree-get-function-at-point)))
   (simple-call-tree-query-replace func t))
 
+(defun simple-call-tree-delete-other-windows nil
+  "Make the *Simple Call Tree* buffer fill the frame."
+  (interactive)
+  (setq fm-working nil)
+  (delete-other-windows))
+
 (unless (not (featurep 'fm))
   (add-to-list 'fm-modes '(simple-call-tree-mode simple-call-tree-visit-function))
   (add-hook 'simple-call-tree-mode-hook 'fm-start))
@@ -901,3 +942,6 @@ If ARG is non-nil perform query-replace-regexp instead."
 (provide 'simple-call-tree+)
 
 ;;; simple-call-tree+.el ends here
+
+;; (progn (magit-push) (yaoddmuse-post "EmacsWiki" "simple-call-tree+.el" (buffer-name) (buffer-string) "update"))
+
