@@ -145,8 +145,9 @@ The downside of doing a lot of customization is having to ''redo'' it when a new
 
 And Emacs has improved greatly over the years. I still use Emacs 20, as well as later versions through the latest development builds.  When feasible and not too much trouble, I try to make my EmacsLisp code compatible across versions.
 
-
-
+[new:XueFuqiao:2012-11-30 14:08 UTC]
+Why do you still use Emacs 20?  Emacs releases are very stable, I think running the latest release is the best choice. -- XueFuqiao
+[new]
 
 
 
