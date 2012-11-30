@@ -111,5 +111,26 @@ Coming soon.
 * html tidy
 * top
 
+== Wish List==
+* Implement a version control system in EmacsLisp.
+* Implement an OCR system in EmacsLisp.
+* Implement a search engine in EmacsLisp.
+* Make a keyboard layout for Emacs.  I have used ColemakKeyboard and DvorakKeyboard but I'm not satisfied with both of them.
+* Implement a mailing list manager in EmacsLisp.
+* Port XWEM and XLIB to GnuEmacs.
+* Implement a DHCP client in EmacsLisp.
+* Implement a FTP server in EmacsLisp.
+* Implement a spell checker in EmacsLisp.
+* Add a command line argument named ##--slim##, it can invoke GnuEmacs with only the bare-minimum EmacsLisp libraries needed for quick editing.
+* FFI support in GnuEmacs.
+* Make all Unix and Unix-like systems come with Emacs built-in.
+* Make EmacsLisp simpler and cleaner.
+* Implement a URL Shortener in EmacsLisp.
+* Make Emacs/W3 ba able to deal with HTML5.
+* Implement a DOM binding for EmacsLisp.
+* Make Emacs/W3 parse XSL.
+* Support more image formats.
+* Implementing multithreaded features in Emacs.
+
 ----
 CategoryHomepage
