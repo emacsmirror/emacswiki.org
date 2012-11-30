@@ -84,6 +84,12 @@
 ;; Add the following to your ~/.emacs startup file.
 ;;
 ;; (require 'simple-call-tree+)
+;;
+;; You might also want to define a key for creating the call tree, 
+;; e.g. like this:
+;;
+;; (global-set-key (kbd "C-c S") 'simple-call-tree-display-buffer)
+
 
 
 
