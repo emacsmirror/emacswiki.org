@@ -145,11 +145,6 @@ The downside of doing a lot of customization is having to ''redo'' it when a new
 
 And Emacs has improved greatly over the years. I still use Emacs 20, as well as later versions through the latest development builds.  When feasible and not too much trouble, I try to make my EmacsLisp code compatible across versions.
 
-[new:XueFuqiao:2012-11-30 14:08 UTC]
-Why do you still use Emacs 20?  Emacs releases are very stable, I think running the latest release is the best choice. -- XueFuqiao
-[new]
-
-
 
 
 
@@ -535,7 +530,25 @@ Hi Drew! I did not know, if you are watching the bug reports. It is working. Tha
 
 ----
 
+[new:XueFuqiao:2012-11-30 14:08 UTC]
+Why do you still use Emacs 20?  Emacs releases are very stable, I think running the latest release is the best choice. -- XueFuqiao
 
+[new:DrewAdams:2012-11-30 17:38 UTC]
+Hi Fuqiao.  For the reason I gave: I try to make my code compatible across Emacs versions.  Why that?  Because there are users of older Emacs versions.  In some cases users have no easy way to install Emacs themselves, and the version available at their organization (e.g. company) is old.
+
+So I use Emacs 20 often when developing and testing my code.  If something works in 20 then it likely works in later versions.  For features that are not present in 20, that's one way to discover that and conditionalize the code.  But I have to use multiple versions to get the conditionalization right, of course.
+
+In addition to that, Emacs 20, though more limited, is actually a good version, on MS Windows at least.  Far better than Emacs 21, IMHO (I have never been able to stand using 21 -- no font anti-aliasing, for one thing).  Each Emacs release has brought important new features and other improvements, obviously.
+
+FWIW, I find Emacs 24 quite unstable, whether 24.1, 24.2, 24.3 (soon to be), or development versions (24.4).  It crashes a lot, at least in my context.  That is not true of Emacs 23.
+
+The great leap forward of Emacs 23 was the introduction of Unicode support.  That outweighs all other changes I've seen in 22 or 24, by far.  Of course, I am not a user of bidi editing, so I cannot really appreciate the value of that (Emacs 24). -- DrewAdams
+
+
+
+
+
+----
 
 
 
