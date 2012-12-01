@@ -27,7 +27,14 @@ make install
 
 == My GNU Emacs Invocation ==
 
+<pre>
 emacsclient -c -a ""
+</pre>
+
+or sometimes:
+<pre>
+emacs -nw
+</pre>
 
 == My Accounts ==
 * GitHub
