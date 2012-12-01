@@ -185,7 +185,9 @@ This variable is used by the `simple-call-tree-jump-to-function' function when n
                       (previous-line)
                       (not (string= (symbol-at-point) thistoken))))
                   haskell-ds-forward-decl
-                  haskell-ds-forward-decl)
+                  haskell-ds-forward-decl
+                  "\\(:\\|\\_<\\)"
+                  "\\s-")
     (perl-mode nil nil (lambda (pos)
                          (goto-char pos)
                          (beginning-of-line)
@@ -231,7 +233,12 @@ or a function of no args which moves point to the start of the next function in 
 
 END-FUNC indicates how to find the end of the current object when parsing a buffer for the call tree.
 It is either nil, meaning that font changes will be used to determine the end of an object,
-or a function of no args which moves point to the end of the current function in the buffer."
+or a function of no args which moves point to the end of the current function in the buffer.
+
+START-REGEXP a regular expression to match the beginning of a token, you can probably leave this blank.
+By default it is \"\\_<\".
+
+END-REGEXP a regular expression to match the end of a token, by default this is \"\\_>\"."
   :group 'simple-call-tree
   :type '(repeat (list (symbol :tag "major-mode symbol")
                        (repeat :tag "Faces"
@@ -259,7 +266,12 @@ or a function of no args which moves point to the end of the current function in
 ;; This happens in haskell mode for example when you have defined two functions
 ;; named func and func' for example.
 (defun simple-call-tree-symbol-as-regexp (symbolname)
-  (concat "\\_<" (regexp-opt (list symbolname)) "\\(\\|\\s-\\|\\.\\|\\(\\|\\)\\)"))
+  (let* ((modevals (assoc major-mode simple-call-tree-major-mode-alist))
+         (start (seventh modevals))
+         (end (eighth modevals)))
+    (concat (or start "\\_<")
+            (regexp-opt (list symbolname))
+            (or end "\\_>"))))
 
 ;; Major-mode for simple call tree
 (define-derived-mode simple-call-tree-mode outline-mode "Simple Call Tree"
@@ -434,10 +446,10 @@ ALIST is an item of simple-call-tree-alist."
     (catch 'done
       (while (re-search-forward (simple-call-tree-symbol-as-regexp (caar item))
                                 end t)
-        ;; need to go back a char so that the text properties are read correctly
-        (backward-char)
+        ;; need to go back so that the text properties are read correctly
+        (left-word 1)
         (if (not (simple-call-tree-valid-face-p))
-            (forward-char)
+            (right-word 1)
           (setcdr alist (cons (list (caar item) (point-marker)) (cdr alist)))
           (throw 'done t))))))
 
@@ -621,15 +633,14 @@ By default FUNCLIST is set to `simple-call-tree-alist'."
     (dolist (item funclist)
       (simple-call-tree-list-callees-recursively
        (car item)
-       maxdepth 1 funclist
-       simple-call-tree-inverted-bufferp))
+       maxdepth 1 funclist))
     (setq simple-call-tree-current-maxdepth (max maxdepth 1)
           buffer-read-only t)))
 
 (defun* simple-call-tree-list-callees-recursively (item &optional (maxdepth 2)
                                                         (curdepth 1)
                                                         (funclist simple-call-tree-alist)
-                                                        (inverted (not (equal funclist simple-call-tree-alist))))
+                                                        (inverted simple-call-tree-inverted-bufferp))
   "Insert a call tree for the function named FNAME, to depth MAXDEPTH.
 FNAME must be the car of one of the elements of FUNCLIST which is set to `simple-call-tree-alist' by default.
 The optional arguments MAXDEPTH and CURDEPTH specify the maximum and current depth of the tree respectively.
@@ -648,7 +659,7 @@ This is a recursive function, and you should not need to set CURDEPTH."
             "\n")
     (if (< curdepth maxdepth)
         (dolist (callee callees)
-          (simple-call-tree-list-callees-recursively callee maxdepth (1+ curdepth) funclist inverted)))))
+          (simple-call-tree-list-callees-recursively callee maxdepth (1+ curdepth) funclist)))))
 
 (defun simple-call-tree-outline-level nil
   "Return the outline level of the function at point.
@@ -724,11 +735,12 @@ narrowing."
                     simple-call-tree-inverted-alist))
         (narrowedp (simple-call-tree-buffer-narrowed-p))
         (thisfunc (simple-call-tree-get-function-at-point)))
+    (setq simple-call-tree-inverted-bufferp
+          (not simple-call-tree-inverted-bufferp))
     (simple-call-tree-list-callers-and-functions depth funclist)
     (simple-call-tree-jump-to-function thisfunc)
     (if narrowedp (simple-call-tree-toggle-narrowing -1))
-    (setq simple-call-tree-current-maxdepth (max depth 1)
-          simple-call-tree-inverted-bufferp (not simple-call-tree-inverted-bufferp))))
+    (setq simple-call-tree-current-maxdepth (max depth 1))))
 
 (defun simple-call-tree-change-maxdepth (maxdepth)
   "Alter the maximum tree depth in the *Simple Call Tree* buffer."
