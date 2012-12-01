@@ -357,6 +357,7 @@ The source: http://www.cs.umb.edu/~wimiller/stuff/caps2ctrl.ahk
 
 Notice that it also maps right control to caps lock, maybe someone cap upload one that does not do that.
 
+[:Using space bar as both space and control]
 == Using space bar as both space and control ==
 
 An alternative to moving the control key, to avoid Emacs pinky, is to use the space bar as /both/ space and control.
@@ -369,7 +370,7 @@ This is not limited to ctrl -- shift, alt, or any other keys can be pressed with
 
 History: This trick was invented by K. Kimura in 2001, and has been known as "!SandS", standing for "Space and Shift" (the original idea was to use the space as shift) to some users in Japan. See the [http://gitorious.org/at-home-modifier/at-home-modifier/blobs/raw/master/README README] of at-home-modifier for the full history.
 
-
+[:Japanese keyboard]
 == Japanese keyboard ==
 
 Yet another alternative to moving the control key, to avoid Emacs pinky, is to use Japanese keyboard.
