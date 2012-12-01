@@ -185,7 +185,9 @@ user will most probably need them.
 (defun notmuch-show-stash-planner-link ()
   "Planner-formatted link to notmuch-show email message to kill ring."
   (interactive)
-  (notmuch-common-do-stash (notmuch-show-get-planner-link))) 
+  (notmuch-common-do-stash (notmuch-show-get-planner-link)))
+
+(define-key notmuch-show-stash-map "k" 'notmuch-show-stash-planner-link)
 
 </pre>
 
