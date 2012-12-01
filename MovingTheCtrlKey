@@ -1,15 +1,13 @@
 This page explains how to move the Control key. Some users find that this can help to avoid "Emacs pinky" (RepeatedStrainInjury).
 
+First several sections are devoted for Linux solutions. Note that the keyboard mappings are separate for X (graphical) and for virtual consoles. (Sidenote: This problem may be alleviated soon as Debian's <code>/etc/default/keyboard</code> file appears designed to work for both virtual consoles and X.)
 
 == Introduction ==
-For some, remapping Control and CapsLock is one of the most important customizations for computer use in general and especially for Emacs.  The CapsLock function is virtually useless, yet has prime real estate on modern keyboards, while the left Ctrl key is awkwardly situated out of easy reach for those of us without giant fingers.    When I was new to Linux and first tried emacs, I quickly gave up and went back to pico, thinking, "Who would want to use an editor that uses one of the hardest-to-reach keys for nearly everything?"
+For some, swapping Control and CapsLock is very important; the virtually useless CapsLock is far easier to press Control, crucial to Emacs yet really awkwardly located.
 
-Old Unix keyboards had these keys' positions inverted, and Sun keyboards always have.  It seems the current layout became standard about the same time cheap x86 hardware became ubiquitous, although why is beyond me.  [Note that the original IBM PC keyboards also had the Control key in the right place; it was only with the 101-key "enhanced" keyboards that it was moved to its currently useless position.]
+Some history: Old Unix keyboards had these keys' positions inverted, and Sun keyboards always have.  It seems the current layout became standard about the same time cheap x86 hardware became ubiquitous, although why is beyond me.  [Note that the original IBM PC keyboards also had the Control key in the right place; it was only with the 101-key "enhanced" keyboards that it was moved to its currently useless position.]
 
 It is possible to embrace this "new" keyboard layout, however, and go a step further than just swapping Control and CapsLock keys - and SwapControlAltAndCapsLock for an old Unix or Sun keyboard-like experience.  It's a mindblowing change for the first few days, but it makes keyboard usage much simpler and easier.
-
-There are many, many different ways to make CapsLock work as an additional control key.  You only need to pick one of the following from the list, usually whichever one seems easiest to you.  Do note, however, that the keyboard mappings are separate for X (graphical) applications and for Linux virtual consoles.  (Sidenote: This problem may be alleviated soon as Debian's <code>/etc/default/keyboard</code> file appears designed to work for both virtual consoles and X.)
-
 
 == Gnome Desktop Environment ==
 
@@ -270,6 +268,8 @@ In Emacs 22 (Carbon Port, CVS version) you can use the variable `mac-control-mod
 === AutoHotkey ===
 On Windows you can use the [http://www.autohotkey.com/ AutoHotkey] program which uses "scripts" to remap the keyboard.
 
+This section describes ho to swap Control and CapsLock, but with !AutoHotKey it is also possible to use Space both as Space and Control. See [[#Using space bar as both space and control]] below.
+
 This method has a couple benefits.  One is scripts can be compiled to a stand alone <tt>.exe</tt> file which can be executed on a machine that doesn't have !AutoHotkey.  Another is, the key re-mapping can be set to only apply in emacs; the caps lock key will behave normaly in every other program. (If that's what you want.)
 
 To remap the Caps Lock key to Ctrl save the following to a file named <tt><i>script</i>.ahk</tt>.  Then execute the script with AutoHotKey by double clicking it.  See the [http://autohotkey.free.fr/docs/Scripts.htm#ahk2exe  AHK2EXE] documentation to learn how to make scripts into stand alone executables.
@@ -363,9 +363,9 @@ An alternative to moving the control key, to avoid Emacs pinky, is to use the sp
 
 If you press the space bar alone, it inserts a space. If you press it together with another key, it acts as a control key.
 
-You can achieve this by using [https://gitorious.org/at-home-modifier/pages/Home at-home-modifier] in X (Linux only). And for MS Windows, AutoHotKey with [https://github.com/benhansenslc/BigCtrl BigCtrl] script. And for Mac, [http://pqrs.org/macosx/keyremap4macbook/index.html keyremap4macbook].
+You can achieve this by using [https://gitorious.org/at-home-modifier/pages/Home at-home-modifier] in X (Linux only). And for MS Windows, !AutoHotKey with [https://github.com/benhansenslc/BigCtrl BigCtrl] script. And for Mac, [http://pqrs.org/macosx/keyremap4macbook/index.html keyremap4macbook].
 
-This is not limited to ctrl -- shift, alt, or any other keys can be pressed with thumbs.
+This is not limited to ctrl -- shift, alt, or any other keys can be pressed with thumbs. See also the following [[#Japanese keyboard]] section.
 
 History: This trick was invented by K. Kimura in 2001, and has been known as "!SandS", standing for "Space and Shift" (the original idea was to use the space as shift) to some users in Japan. See the [http://gitorious.org/at-home-modifier/at-home-modifier/blobs/raw/master/README README] of at-home-modifier for the full history.
 
@@ -374,7 +374,7 @@ History: This trick was invented by K. Kimura in 2001, and has been known as "!S
 
 Yet another alternative to moving the control key, to avoid Emacs pinky, is to use Japanese keyboard.
 
-Japanese keyboard ([https://en.wikipedia.org/wiki/Keyboard_layout#Japanese Wikipedia article]) has many keys that you can press with thumbs, to which you can bind modifiers. For example, the bottom row of Japanese keyboard can work as <nowiki>[alt][shift][ctrl][shift][alt]</nowiki> *and* <nowiki>[Esc][Bs][Space][Enter][Tab]</nowiki>, /all/ pressed by thumbs.
+Japanese keyboard ([https://en.wikipedia.org/wiki/Keyboard_layout#Japanese Wikipedia article]) has many keys that you can press with thumbs, to which you can bind modifiers. For example, the bottom row of Japanese keyboard can work as <nowiki>[alt][shift][ctrl][shift][alt]</nowiki> *and* <nowiki>[Esc][Bs][Space][Enter][Tab]</nowiki>, /all/ pressed by thumbs, by using "at-home-modifier" or !AutoHotKey mentioned in the previous section.
 
 For experiences with Emacs and particular keyboards, see GoodKeyboards and Wiki:ErgonomicKeyboard (keyboards, pedals, etc.)
 
@@ -388,8 +388,8 @@ All the remap solutions above assume that the user has Admin privileges under Wi
 
 Question: Where can I find a keyboard where CAPS LOCK can be programmed to be a CONTROL key "directly on the keyboard"?
 
-My configuration: 
-company-issued Laptop with Windows 7 
+My configuration:
+company-issued Laptop with Windows 7
 no administration privileges (cannot change Windows Registry)
 normal QWERTY laptop with annoying CAPS LOCK key instead of the useful CONTROL key
 
