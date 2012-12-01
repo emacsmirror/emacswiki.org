@@ -52,6 +52,21 @@ Tested only on GNU Emacs version 24.1
 
 No external dependencies
 
+==Bug in ButtonLockMode ==
+
+There is a bug in ButtonLockMode. There is a defface for button-lock-button-face but the name used in the rest of the code is button-lock-face. A temporary solution is to put:
+
+<pre>
+(defface button-lock-face
+    '((t nil))
+    "Face used to show active button-lock buttons.
+
+The default is for buttons to inherit whatever properties are
+already provided by font-lock."
+    :group 'button-lock)
+</pre>
+
+in your startup file. You can then customize the correct face and as a bonus it stops all those annoying messages about an invalid face. Does anyone know how I can contact the author?
 ----
 CategoryModes
 CategoryHypermedia
