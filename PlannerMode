@@ -143,7 +143,7 @@ but before:
 
 ==Using Planner with NotMuch==
 
-The following code will allow you to type "c k" while point is in an email in a NotMuch show buffer and then a link to the email message, that can be understood by planner, will then be stored in the kill ring. The link displays the subject of the message, suitably edited so as not to contain characters that would break the link code. The text of the Date: and From: field are also copied the kill ring as the user will probably want these too.
+The following code will allow you to type "c k" while point is in an email in a NotMuch show buffer and then a link to the email message, that can be understood by planner, will then be stored in the kill ring. The link displays the subject of the message, suitably edited so as not to contain characters that would break the link code. The text of the Date: and From: field are also copied to the kill ring as the user will probably want these too.
 
 <pre>
 ;; Code for using notmuch with planner
