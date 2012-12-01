@@ -167,8 +167,8 @@ user will most probably need them.
 	title link-code link)
     ;; Replace awkward characters in subject
     (setq title (replace-regexp-in-string "\"" "'" subject))
-    (setq title (replace-regexp-in-string "[" "{" subject))
-    (setq title (replace-regexp-in-string "]" "}" subject))
+    (setq title (replace-regexp-in-string "\\[" "{" subject))
+    (setq title (replace-regexp-in-string "\\]" "}" subject))
     ;; Construct the title of the show buffer
     (setq title (concat "*"
 			(truncate-string-to-width subject 30 nil nil t)
