@@ -142,5 +142,8 @@ Coming soon.
 * Implement multithreaded features in Emacs.
 * Implement a EmacsLisp library that generates XPMs dynamically.
 
+= Comment on Wish List =
+It looks like you have a lot of work to do! It may be worth looking at the clx package for Common Lisp to see if it could be ported to Elisp. It would be cool to be able to display an X-window in an Emacs window. One problem with doing this sort of thing properly is that, unlike most versions of Common Lisp, Elisp isn't (yet?) multi-threaded. I have a feeling that it would take a lot of work to convert it. One thing that might be possible is to build a clone of Elisp on top of Common Lisp I don't know how efficient that would be. But it would require that all Elisp code works in a lexical-binding environment. If it could be done you would get multi-threading for free and such things as the clx library for manipulating X.
+
 ----
 CategoryHomepage
