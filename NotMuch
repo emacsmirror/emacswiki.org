@@ -57,5 +57,9 @@ This works on GNU/Linux but I can't see why it should not work elsewhere. I don'
      notmuch new
 
 in a shell script.
+
+== NotMuch and Planner Mode ==
+
+I have posted code for integration of Notmuch with Planner Mode on the PlannerMode page.
 ----
 CategoryMail
