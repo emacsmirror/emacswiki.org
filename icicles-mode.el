@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Nov 27 13:42:27 2012 (-0800)
+;; Last-Updated: Sat Dec  1 10:04:47 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 9197
+;;     Update #: 9198
 ;; URL: http://www.emacswiki.org/icicles-mode.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -3772,7 +3772,7 @@ complete)"))
   (define-key map (icicle-kbd "C-:")       'icicle-candidate-set-define) ; `C-:'
   (define-key map (icicle-kbd "C-M-j")     'icicle-insert-list-join-string) ; `C-M-j'
   (define-key map (icicle-kbd "C-,")       'icicle-change-sort-order) ; `C-,'
-  (define-key map (icicle-kbd "C-M-;")     'icicle-toggle-ignoring-comments) ; `C-M-;'
+  (define-key map (icicle-kbd "C-M-\;")     'icicle-toggle-ignoring-comments) ; `C-M-;'
   (define-key map (icicle-kbd "C-`")       'icicle-toggle-regexp-quote) ; `C-`'
   (define-key map (icicle-kbd "C-M-.")     'icicle-toggle-dot) ; `C-M-.'
   (define-key map (icicle-kbd "C-M-`")     'icicle-toggle-literal-replacement) ; `C-M-`'
@@ -3788,7 +3788,7 @@ complete)"))
   (define-key map (icicle-kbd "C-#")       'icicle-cycle-incremental-completion) ; `C-#'
   (define-key map (icicle-kbd "C-\"")      'icicle-toggle-expand-to-common-match) ; `C-"'
   (define-key map (icicle-kbd "C-M-\"")    'icicle-cycle-expand-to-common-match) ; `C-M-"'
-  (define-key map (icicle-kbd "M-;")       'icicle-toggle-search-replace-common-match) ; `M-;'
+  (define-key map (icicle-kbd "M-\;")       'icicle-toggle-search-replace-common-match) ; `M-;'
   (define-key map (icicle-kbd "C-^")       'icicle-dispatch-C-^) ; `C-^'
   (define-key map (icicle-kbd "C-M-^")     'icicle-toggle-completions-format) ; `C-M-^'
   (define-key map (icicle-kbd "C-S-a")     'icicle-toggle-case-sensitivity) ; `C-S-a' (`C-A')
@@ -4029,7 +4029,7 @@ MAP is `minibuffer-local-completion-map',
   (define-key map (icicle-kbd "C-:")       nil)
   (define-key map (icicle-kbd "C-M-j")     nil)
   (define-key map (icicle-kbd "C-,")       nil)
-  (define-key map (icicle-kbd "C-M-;")     nil)
+  (define-key map (icicle-kbd "C-M-\;")     nil)
   (define-key map (icicle-kbd "C-`")       nil)
   (define-key map (icicle-kbd "C-M-.")     nil)
   (define-key map (icicle-kbd "C-M-`")     nil)
@@ -4044,8 +4044,8 @@ MAP is `minibuffer-local-completion-map',
   (define-key map (icicle-kbd "C-.")       nil)
   (define-key map (icicle-kbd "C-#")       nil)
   (define-key map (icicle-kbd "C-%")       nil)
-  (define-key map (icicle-kbd "C-;")       nil)
-  (define-key map (icicle-kbd "M-;")       nil)
+  (define-key map (icicle-kbd "C-\;")       nil)
+  (define-key map (icicle-kbd "M-\;")       nil)
   (define-key map (icicle-kbd "C-^")       nil)
   (define-key map (icicle-kbd "C-M-^")     nil)
   (define-key map (icicle-kbd "C-S-a")     nil)
