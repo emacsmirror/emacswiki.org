@@ -141,6 +141,56 @@ but before:
 (planner-registry-initialize)
 </pre>
 
+==Using Planner with NotMuch==
+
+The following code will allow you to type "c k" while point is in an email in a NotMuch show buffer and then a link to the email message, that can be understood by planner, will then be stored in the kill ring. The link displays the subject of the message, suitably edited so as not to contain characters that would break the link code. The text of the Date: and From: field are also copied the kill ring as the user will probably want these too.
+
+<pre>
+;; Code for using notmuch with planner
+(defun notmuch-show-get-planner-link ()
+  "Get a planner-formatted link to a notmuch-show email message.
+The format of the link is:
+
+   [[<subject>]], <date>, <from>.
+
+The subject field is suitably edited to remove any characters
+that would break the coding of the link. The text of the Date:
+and From: fields are also also copied to the kill ring as the
+user will most probably need them.
+"
+  ;; Make sure planner understands lisp coded links
+  (require 'planner-lisp)
+  (let ((id (concat "id:" (notmuch-show-get-message-id t)))
+	(subject (notmuch-show-get-subject))
+	(date (notmuch-show-get-date))
+	(from (notmuch-show-get-from))
+	title link-code link)
+    ;; Replace awkward characters in subject
+    (setq title (replace-regexp-in-string "\"" "'" subject))
+    (setq title (replace-regexp-in-string "[" "{" subject))
+    (setq title (replace-regexp-in-string "]" "}" subject))
+    ;; Construct the title of the show buffer
+    (setq title (concat "*"
+			(truncate-string-to-width subject 30 nil nil t)
+			"*"))
+    ;; Construct link code
+    (setq link-code
+	  (format "lisp:/(notmuch-show \"%s\" (current-buffer) nil \"%s\")"
+		  id
+		  title))
+    ;; Construct link
+    (setq link
+	  (format "[[%s][%s]], %s, %s." link-code subject date from))))
+
+(defun notmuch-show-stash-planner-link ()
+  "Planner-formatted link to notmuch-show email message to kill ring."
+  (interactive)
+  (notmuch-common-do-stash (notmuch-show-get-planner-link))) 
+
+</pre>
+
+I, [[Bernard Hurley]], would be interested if there is a less messy way to replace unwanted characters in the Subject: field (I have used Common Lisp and Scheme for years but am relatively new to Elisp.) I think I have covered all the  characters that could cause problems but if you find more please post them here.
+ 
 ----
 CategoryModes
 CategoryPersonalInformationManager
