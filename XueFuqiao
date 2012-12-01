@@ -122,6 +122,7 @@ Coming soon.
 == Wish List==
 * Implement a version control system in EmacsLisp.
 * Implement an OCR system in EmacsLisp.
+* Make emacsclient work across most network connections.
 * Implement a search engine in EmacsLisp.
 * Make a keyboard layout for Emacs.  I have used ColemakKeyboard and DvorakKeyboard but I'm not satisfied with both of them.
 * Implement a mailing list manager in EmacsLisp.
