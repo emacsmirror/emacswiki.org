@@ -34,8 +34,15 @@ The main user option for customizing key bindings is
 any of the top-level bindings in ''Icicle'' mode.
 
 There are some other user options that make it easy to customize 
-'''Icicles''' key bindings.  Most of these are [[minibuffer]] key
+'''Icicles''' key bindings.  Most of these are [[minibuffer]] 
 bindings.
+
+The most general option for customizing minibuffer bindings is
+'''`<tt>[[Icicles - Customization and General Tips#icicle-completion-key-bindings|icicle-completion-key-bindings]]</tt>''''.  It covers everything that is
+not covered by the other minibuffer key options listed below, which are concerned with completion, cycling, and help.  Option
+`icicle-completion-key-bindings' has the same form as option
+`icicle-top-level-key-bindings'.
+
 
 
 [:icicle-modal-cycle-down-keys]
@@ -163,8 +170,8 @@ Apropos-complete your input.
 [:icicle-kbd]
 Whenever you customize an '''Icicles''' key binding, whether via a user
 option value or using `define-key' or `global-set-key', you can
-use macro '''`icicle-kbd'''' to express the key sequence in a
-user-friendly way.  It is the same as the vanilla Emacs macro `kbd', except that (by
+use function '''`icicle-kbd'''' to express the key sequence in a
+user-friendly way.  It is the same as vanilla Emacs `kbd', except that (by
 default) it does not require you to use angle brackets ('''`##<##'''', '''`##>##'''')
 around function keys (and it does not expect you to).
 
@@ -172,17 +179,6 @@ So you can write, e.g., '''##(icicle-kbd "C-delete")##''' instead of one of
 these: ##(kbd "C-<delete>")##, ##[C-delete]##, or ##[(control delete)]##.
 There are plenty of examples of the use of `icicle-kbd' in the
 '''Icicles''' source files.
-
-`icicle-kbd' is a macro, defined in library <tt>[[icicles-mac.el]]</tt>.  Be
-sure you load that library before you try to make use of the macro.  For
-example, if you define a key binding in your file ##foo.el## then
-put the following in ##foo.el## before the place where `icicle-kbd'
-is used:
-
-    (eval-when-compile (require 'icicles-mac))
-
-See the Emacs Lisp manual, nodes [[Manual:Compiling Macros|Compiling Macros]] and [[Manual:Eval During Compile|Eval During Compile]].
-
 
 
 
