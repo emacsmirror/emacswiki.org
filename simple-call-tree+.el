@@ -163,6 +163,13 @@ This variable is used by the `simple-call-tree-jump-to-function' function when n
   :group 'simple-call-tree
   :type '(repeat face))
 
+(defcustom simple-call-tree-default-sort-method 'position
+  "The default sort method to use when a call tree is newly created.
+The the children of each header will be sorted separately."
+  :group 'simple-call-tree
+  :type '(choice (const :tag "Sort by position" position)
+                 (const :tag "Sort alphabetically" alphabet)))
+
 (defcustom simple-call-tree-major-mode-alist
   '((emacs-lisp-mode (font-lock-function-name-face
                       font-lock-variable-name-face)
@@ -284,6 +291,10 @@ END-REGEXP a regular expression to match the end of a token, by default this is 
         outline-level 'simple-call-tree-outline-level)
   ;; Set keymap
   (define-key simple-call-tree-mode-map (kbd "q") 'simple-call-tree-quit)
+  (define-prefix-command 'simple-call-tree-sort-map)
+  (define-key simple-call-tree-mode-map (kbd "s") 'simple-call-tree-sort-map)
+  (define-key simple-call-tree-mode-map (kbd "s a") 'simple-call-tree-sort-alphabetically)
+  (define-key simple-call-tree-mode-map (kbd "s p") 'simple-call-tree-sort-positionally)
   (if (featurep 'outline-magic)
       (define-key simple-call-tree-mode-map (kbd "<tab>") 'outline-cycle)
     (define-key simple-call-tree-mode-map (kbd "<tab>") 'outline-toggle-children))
@@ -325,80 +336,88 @@ END-REGEXP a regular expression to match the end of a token, by default this is 
   (define-key simple-call-tree-mode-map (kbd "w") 'widen)
   (use-local-map simple-call-tree-mode-map)
   (easy-menu-define nil simple-call-tree-mode-map "test"
-  `("Simple Call Tree"
-    ["Quit" simple-call-tree-quit
-     :help "Quit and bury this buffer"]
-    ["View Function At Point" simple-call-tree-view-function
-     :help "View the function at point"
-     :key "v"]
-    ["Visit Function At Point" simple-call-tree-visit-function
-     :help "Visit the function at point"]
-    ["Replace String In Function At Point..." simple-call-tree-query-replace
-     :help "Perform query-replace on the function at point"]
-    ["Replace Regexp In Function At Point..." simple-call-tree-query-replace-regexp
-     :help "Perform query-replace-regexp on the function at point"]
-    ["Jump To Branch At Point" simple-call-tree-jump-to-function
-     :help "Goto the toplevel branch for the function at point"]
-    ["Jump To Branch..." ,(lambda nil (interactive) (setq current-prefix-arg 1)
-                         (call-interactively 'simple-call-tree-jump-to-function))
-     :help "Prompt for a toplevel branch to jump to"
-     :keys "J"]
-    ["Add To Jump Ring" simple-call-tree-jump-ring-add
-     :help "Add the function at point to the jump ring"]
-    ["Previous Jump" simple-call-tree-jump-prev
-     :help "Goto previous function in jump ring"]
-    ["Next Jump" simple-call-tree-jump-next
-     :help "Goto next function in jump ring"]
-    ["Parent Branch" simple-call-tree-move-up
-     :help "Goto the parent branch of this branch"]
-    ["Next Branch" simple-call-tree-move-next
-     :help "Goto the next branch"]
-    ["Previous Branch" simple-call-tree-move-prev
-     :help "Goto the previous branch"]
-    ["Next Branch Same Level" simple-call-tree-move-next-samelevel
-     :help "Goto the next branch at the same level as this one"
-     :key "N"]
-    ["Previous Branch Same Level" simple-call-tree-move-prev-samelevel
-     :help "Goto the previous branch at the same level as this one"
-     :key "P"]
-    ["Cycle Tree Visibility" outline-cycle
-     :visible (featurep 'outline-magic)
-     :keys "<tab>"]
-    ["Toggle Children Visibility" outline-toggle-children
-     :visible (not (featurep 'outline-magic))
-     :keys "<tab>"]
-    ["Show All" show-all
-     :help "Show All Branches"
-     :key-sequence "a"]
-    ["Hide Sublevels" hide-sublevels
-     :help "Hide Lower Level Branches"
-     :key-sequence "h"]
-    ["Toggle Follow mode" fm-toggle
-     :help "Toggle Follow Mode - auto display of function at point"
-     :visible (featurep 'fm)
-     :style toggle
-     :selected fm-working]
-    ["Delete Other Windows" simple-call-tree-delete-other-windows
-     :help "Make this window fill the whole frame"
-     :key "1"]
-    ["Invert Tree" simple-call-tree-invert-buffer
-     :help "Invert the tree"
-     :style toggle
-     :selected simple-call-tree-inverted-bufferp]
-    ["Change Depth..." simple-call-tree-change-maxdepth
-     :help "Change the depth of the tree"]
-    ["Toggle Narrowing" simple-call-tree-toggle-narrowing
-     :help "Toggle between narrowed/wide buffer"
-     :style toggle
-     :selected (simple-call-tree-buffer-narrowed-p)]))
+    `("Simple Call Tree"
+      ["Quit" simple-call-tree-quit
+       :help "Quit and bury this buffer"]
+      ["View Function At Point" simple-call-tree-view-function
+       :help "View the function at point"
+       :key "v"]
+      ["Visit Function At Point" simple-call-tree-visit-function
+       :help "Visit the function at point"]
+      ["Replace String In Function At Point..." simple-call-tree-query-replace
+       :help "Perform query-replace on the function at point"]
+      ["Replace Regexp In Function At Point..." simple-call-tree-query-replace-regexp
+       :help "Perform query-replace-regexp on the function at point"]
+      ["Jump To Branch At Point" simple-call-tree-jump-to-function
+       :help "Goto the toplevel branch for the function at point"]
+      ["Jump To Branch..." ,(lambda nil (interactive) (setq current-prefix-arg 1)
+                              (call-interactively 'simple-call-tree-jump-to-function))
+       :help "Prompt for a toplevel branch to jump to"
+       :keys "J"]
+      ["Add To Jump Ring" simple-call-tree-jump-ring-add
+       :help "Add the function at point to the jump ring"]
+      ["Previous Jump" simple-call-tree-jump-prev
+       :help "Goto previous function in jump ring"]
+      ["Next Jump" simple-call-tree-jump-next
+       :help "Goto next function in jump ring"]
+      ["Parent Branch" simple-call-tree-move-up
+       :help "Goto the parent branch of this branch"]
+      ["Next Branch" simple-call-tree-move-next
+       :help "Goto the next branch"]
+      ["Previous Branch" simple-call-tree-move-prev
+       :help "Goto the previous branch"]
+      ["Next Branch Same Level" simple-call-tree-move-next-samelevel
+       :help "Goto the next branch at the same level as this one"
+       :key "N"]
+      ["Previous Branch Same Level" simple-call-tree-move-prev-samelevel
+       :help "Goto the previous branch at the same level as this one"
+       :key "P"]
+      ["Cycle Tree Visibility" outline-cycle
+       :help "Cycle through different tree visibility states"
+       :visible (featurep 'outline-magic)
+       :keys "<tab>"]
+      ["Toggle Children Visibility" outline-toggle-children
+       :help "Toggle the visibility of the children of this header"
+       :visible (not (featurep 'outline-magic))
+       :keys "<tab>"]
+      ["Show All" show-all
+       :help "Show All Branches"
+       :key-sequence "a"]
+      ["Hide Sublevels" hide-sublevels
+       :help "Hide Lower Level Branches"
+       :key-sequence "h"]
+      ["Toggle Follow mode" fm-toggle
+       :help "Toggle Follow Mode - auto display of function at point"
+       :visible (featurep 'fm)
+       :style toggle
+       :selected fm-working]
+      ["Delete Other Windows" simple-call-tree-delete-other-windows
+       :help "Make this window fill the whole frame"
+       :key "1"]
+      ["Invert Tree" simple-call-tree-invert-buffer
+       :help "Invert the tree"
+       :style toggle
+       :selected simple-call-tree-inverted-bufferp]
+      ["Sort Tree..." (keymap
+                       "Sort"
+                       (alpha menu-item "Alphabetically" simple-call-tree-sort-alphabetically)
+                       (position menu-item "Positionally" simple-call-tree-sort-positionally))]
+      ["Change Depth..." simple-call-tree-change-maxdepth
+       :help "Change the depth of the tree"]
+      ["Toggle Narrowing" simple-call-tree-toggle-narrowing
+       :help "Toggle between narrowed/wide buffer"
+       :style toggle
+       :selected (simple-call-tree-buffer-narrowed-p)]))
   (setq mode-line-format
         (append
          (subseq mode-line-format 0
                  (1+ (position 'mode-line-buffer-identification
                                mode-line-format)))
-         (list '(:eval (format (if simple-call-tree-inverted-bufferp
-                                   " Inverted, maxdepth=%d "
-                                 " maxdepth=%d ")
+         (list '(:eval (format (concat " Maxdepth=%d "
+                                       "Sorted "
+                                       (case simple-call-tree-current-sort-order
+                                         (position "by position ")
+                                         (alphabet "alphabetically ")))
                                simple-call-tree-current-maxdepth)))
          (subseq mode-line-format
                  (+ 2 (position 'mode-line-buffer-identification
@@ -436,6 +455,10 @@ The minimum value is 0 which means show top level functions only.")
 (defvar simple-call-tree-jump-ring-index 0
   "The current position in the jump ring.")
 
+(defvar simple-call-tree-current-sort-order simple-call-tree-default-sort-method
+  "The current sort order of the call tree.
+See `simple-call-tree-default-sort-method' for possible values.")
+
 ;;; Functions from simple-call-tree.el (some are rewritten)
 
 (defun simple-call-tree-add (start end alist)
@@ -443,15 +466,13 @@ The minimum value is 0 which means show top level functions only.")
 ALIST is an item of simple-call-tree-alist."
   (dolist (item simple-call-tree-alist)
     (goto-char start)
-    (catch 'done
-      (while (re-search-forward (simple-call-tree-symbol-as-regexp (caar item))
-                                end t)
-        ;; need to go back so that the text properties are read correctly
-        (left-word 1)
-        (if (not (simple-call-tree-valid-face-p))
-            (right-word 1)
-          (setcdr alist (cons (list (caar item) (point-marker)) (cdr alist)))
-          (throw 'done t))))))
+    (while (re-search-forward (simple-call-tree-symbol-as-regexp (caar item))
+                              end t)
+      ;; need to go back so that the text properties are read correctly
+      (left-word 1)
+      (if (simple-call-tree-valid-face-p)
+          (setcdr alist (cons (list (caar item) (point-marker)) (cdr alist))))
+      (right-word 1))))
 
 (defun* simple-call-tree-analyze (&optional (buffers (list (current-buffer))))
   "Analyze the current buffer, or the buffers in list BUFFERS.
@@ -592,6 +613,9 @@ When called interactively files will be prompted for and only functions in the c
     (if (or (not files) (called-interactively-p))
         (add-to-list 'buffers (current-buffer)))
     (simple-call-tree-analyze buffers)
+    (case simple-call-tree-default-sort-method
+      (alphabet (simple-call-tree-sort-alphabetically))
+      (position (simple-call-tree-sort-positionally)))
     (setq simple-call-tree-inverted-bufferp nil)
     (simple-call-tree-list-callers-and-functions)
     (setq simple-call-tree-jump-ring (make-ring simple-call-tree-jump-ring-max)
@@ -711,6 +735,38 @@ narrowing."
       (narrow-to-region (point) end)
       (if pos (goto-char pos)))))
 
+(defun simple-call-tree-sort (predicate)
+  "Sort the branches and sub-branches of `simple-call-tree-alist' and `simple-call-tree-inverted-alist' by predicate."
+  (dolist (branch simple-call-tree-alist)
+    (setcdr branch (sort (cdr branch) predicate)))
+  (setq simple-call-tree-alist
+        (sort simple-call-tree-alist
+              (lambda (a b)
+                (funcall predicate (car a) (car b)))))
+  (dolist (branch simple-call-tree-inverted-alist)
+    (setcdr branch (sort (cdr branch) predicate)))
+  (setq simple-call-tree-inverted-alist
+        (sort simple-call-tree-inverted-alist
+              (lambda (a b)
+                (funcall predicate (car a) (car b))))))
+
+(defun simple-call-tree-sort-alphabetically nil
+  "Sort the functions in the *Simple Call Tree* buffer alphabetically.
+The toplevel functions will be sorted, and the functions in each branch will be sorted separately."
+  (interactive)
+  (simple-call-tree-sort (lambda (a b) (string< (car a) (car b))))
+  (simple-call-tree-list-callers-and-functions)
+  (setq simple-call-tree-current-sort-order 'alphabet))
+
+(defun simple-call-tree-sort-positionally nil
+  "Sort the functions in the *Simple Call Tree* buffer by position.
+The toplevel functions will be sorted, and the functions in each branch will be sorted separately."
+  (interactive)
+  (simple-call-tree-sort (lambda (a b) (< (marker-position (second a))
+                                          (marker-position (second b)))))
+  (simple-call-tree-list-callers-and-functions)
+  (setq simple-call-tree-current-sort-order 'position))
+
 ;;; Major-mode commands bound to keys
 
 (defun simple-call-tree-quit nil
@@ -765,6 +821,7 @@ narrowing."
     (if (> level 1) (search-forward
                      thisfunc
                      (save-excursion (outline-end-of-subtree) (point)) t))))
+
 
 (defun simple-call-tree-view-function nil
   "Display the source code corresponding to current header.
@@ -965,5 +1022,5 @@ If ARG is non-nil perform query-replace-regexp instead."
 
 ;;; simple-call-tree+.el ends here
 
-;; (progn (magit-push) (yaoddmuse-post "EmacsWiki" "simple-call-tree+.el" (buffer-name) (buffer-string) "update"))
+;; (progn (magit-push) (yaoddmuse-post "EmacsWiki" "simple-call-tree+.el" (buffer-name) (buffer-string) "added sorting commands"))
 
