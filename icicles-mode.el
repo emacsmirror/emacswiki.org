@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Dec  1 17:30:23 2012 (-0800)
+;; Last-Updated: Sat Dec  1 19:54:45 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 9218
+;;     Update #: 9221
 ;; URL: http://www.emacswiki.org/icicles-mode.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -3850,6 +3850,19 @@ MAP is `minibuffer-local-completion-map',
   (dolist (key  icicle-apropos-cycle-previous-help-keys)       (define-key map key nil))
   (dolist (key  icicle-apropos-cycle-next-help-keys)           (define-key map key nil))
   (icicle-restore-custom-completion-keys map)
+
+  ;; Do these last. -----------------
+  (define-key map (icicle-kbd "C-i")       'minibuffer-complete)
+  (define-key map (icicle-kbd "tab")       'minibuffer-complete)
+  (define-key map (icicle-kbd "?")         'minibuffer-completion-help)
+  (define-key map (icicle-kbd "SPC")       'minibuffer-complete-word)
+  (define-key map (icicle-kbd "C-g")       (if (and (fboundp 'minibuffer-keyboard-quit)
+                                                    delete-selection-mode)
+                                               'minibuffer-keyboard-quit
+                                             'abort-recursive-edit))
+  ;; In Emacs 22+, local is parent of local-completion
+  (unless (eq minibuffer-local-map (keymap-parent minibuffer-local-completion-map))
+    (define-key map (icicle-kbd "C-j")     'exit-minibuffer))
   (define-key map (icicle-kbd "M-p")       'previous-history-element)
   (define-key map (icicle-kbd "M-n")       'next-history-element)
   (define-key map (icicle-kbd "up")        'previous-history-element)
