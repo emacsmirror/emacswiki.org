@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Nov 28 08:44:58 2012 (-0800)
+;; Last-Updated: Sat Dec  1 17:24:08 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 5403
+;;     Update #: 5419
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -42,6 +42,10 @@
 ;;    `icicle-Completions-sorting-submenu',
 ;;    `icicle-Completions-this-candidate-submenu',
 ;;    `icicle-Completions-toggle-submenu', `icicle-doremi-submenu'.
+;;
+;;  Commands defined here:
+;;
+;;    `icicle-read-kbd-macro'.
 ;;
 ;;  User options defined here (in Custom group `Icicles'):
 ;;
@@ -82,6 +86,7 @@
 ;;    `icicle-complete-keys-self-insert-ranges',
 ;;    `icicle-completing-read+insert-keys',
 ;;    `icicle-completion-history-max-length',
+;;    `icicle-completion-key-bindings',
 ;;    `icicle-Completions-display-min-input-chars',
 ;;    `icicle-completions-format', `icicle-Completions-max-columns',
 ;;    `icicle-Completions-mouse-3-menu-entries',
@@ -198,7 +203,8 @@
 ;;
 ;;    `icicle-bind-top-level-commands',
 ;;    `icicle-buffer-sort-*...*-last',
-;;    `icicle-compute-shell-command-candidates', `icicle-remap',
+;;    `icicle-compute-shell-command-candidates',
+;;    `icicle-edmacro-parse-keys', `icicle-kbd', `icicle-remap',
 ;;    `icicle-thing-at-point', `icicle-widgetp'.
 ;;
 ;;  For descriptions of changes to this file, see `icicles-chg.el'.
@@ -1193,6 +1199,343 @@ If you use Do Re Mi (library `doremi.el') then you can use
 multi-command `icicle-increment-option' anytime to change the option
 value incrementally."
   :type 'integer :group 'Icicles-Miscellaneous)
+
+;; Same as `naked-edmacro-parse-keys' in `naked.el'.
+;; Based on `edmacro-parse-keys' in standard library `edmacro.el'
+;; Differences are:
+;;
+;; 1. Addition of optional arg ANGLES.
+;; 2. Ensure same behavior as `edmacro-parse-keys', if ANGLES is non-nil.
+;; 2. Handle angle brackets, whether ANGLES is nil or non-nil.
+;; 3. Handle `TAB' correctly, if ANGLES is nil.
+;; 4. Handle names without angle brackets, if ANGLES is nil.
+;; 5. Works for all Emacs versions.
+;;
+(defun icicle-edmacro-parse-keys (string &optional need-vector angles)
+  "Like `edmacro-parse-keys', but does not use angle brackets, by default.
+Non-nil optional arg ANGLES means to use angle brackets, exactly like
+`edmacro-parse-keys'.  See `icicle-read-kbd-macro' for more about
+ANGLES."
+  (let ((case-fold-search  nil)
+	(len               (length string)) ; We won't alter string in the loop below.
+        (pos               0)
+        (res               []))
+    (while (and (< pos len)  (string-match "[^ \t\n\f]+" string pos))
+      (let* ((word-beg  (match-beginning 0))
+	     (word-end  (match-end 0))
+	     (word      (substring string word-beg len))
+	     (times     1)
+             (key       nil))
+	;; Try to catch events of the form "<as df>".
+        (if (string-match "\\`<[^ <>\t\n\f][^>\t\n\f]*>" word)
+            (setq word  (match-string 0 word)
+                  pos   (+ word-beg (match-end 0)))
+          (setq word  (substring string word-beg word-end)
+                pos   word-end))
+        (when (string-match "\\([0-9]+\\)\\*." word)
+          (setq times  (string-to-number (substring word 0 (match-end 1)))
+                word   (substring word (1+ (match-end 1)))))
+        (cond ((string-match "^<<.+>>$" word)
+               (setq key  (vconcat (if (eq (key-binding [?\M-x])
+                                           'execute-extended-command)
+                                       [?\M-x]
+                                     (or (car (where-is-internal 'execute-extended-command))  [?\M-x]))
+                                   (substring word 2 -2) "\r")))
+
+              ;; Must test this before [ACHMsS]- etc., to prevent match.
+              ((or (equal word "REM")  (string-match "^;;" word))
+               (setq pos  (string-match "$" string pos)))
+
+              ;; Straight `edmacro-parse-keys' case - ensure same behavior.
+              ;; Includes same bugged handling of `TAB'.  That is Emacs bug #12535.
+              ;; The bug fix is to add `TAB' to the list in this clause.
+	      ((and angles  (string-match "^\\(\\([ACHMsS]-\\)*\\)<\\(.+\\)>$" word)
+		    (progn
+		      (setq word  (concat (substring word (match-beginning 1)
+                                                     (match-end 1))
+                                          (substring word (match-beginning 3)
+                                                     (match-end 3))))
+		      (not (string-match "\\<\\(NUL\\|RET\\|LFD\\|ESC\\|SPC\\|DEL\\)$" word))))
+	       (setq key  (list (intern word))))
+
+              ;; NaKeD handling of <...>.  Recognize it anyway, even without non-nil ANGLES.
+              ;; But unlike `edmacro-parse-keys', include <TAB>, to handle it correctly.
+              ((and (string-match "^\\(\\([ACHMsS]-\\)*\\)<\\(..+\\)>$" word)
+                    (progn (setq word  (concat (substring word (match-beginning 1) (match-end 1))
+                                               (substring word (match-beginning 3) (match-end 3))))
+                           (not (string-match "\\<\\(NUL\\|RET\\|LFD\\|ESC\\|SPC\\|DEL\\|TAB\\)$"
+                                              word))))
+               (setq key  (list (intern word))))
+
+              ;; NaKeD handling of names without <...>.
+              ((and (not angles)
+                    (string-match "^\\(\\([ACHMsS]-\\)*\\)\\([^ \t\f\n][^ \t\f\n]+\\)$" word)
+                    ;; Do not count `C-' etc. when at end of string.
+                    (save-match-data (not (string-match "\\([ACHMsS]-.\\)+$" word)))
+                    (progn (setq word  (concat (substring word (match-beginning 1) (match-end 1))
+                                               (substring word (match-beginning 3) (match-end 3))))
+                           (not (string-match "\\<\\(NUL\\|RET\\|LFD\\|ESC\\|SPC\\|DEL\\|TAB\\)$"
+                                              word))))
+               (setq key  (list (intern word))))
+
+              (t
+               (let ((orig-word  word)
+                     (prefix     0)
+                     (bits       0))
+                 (while (string-match "^[ACHMsS]-." word)
+                   (incf bits (cdr (assq (aref word 0) '((?A . ?\A-\^@) (?C . ?\C-\^@)
+                                                         (?H . ?\H-\^@) (?M . ?\M-\^@)
+                                                         (?s . ?\s-\^@) (?S . ?\S-\^@)))))
+                   (incf prefix 2)
+                   (callf substring word 2))
+                 (when (string-match "^\\^.$" word)
+                   (incf bits ?\C-\^@)
+                   (incf prefix)
+                   (callf substring word 1))
+                 (let ((found  (assoc word '(("NUL" . "\0") ("RET" . "\r") ("LFD" . "\n")
+                                             ("ESC" . "\e") ("SPC" . " ") ("DEL" . "\177")
+                                             ("TAB" . "\t")))))
+                   (when found (setq word  (cdr found))))
+                 (when (string-match "^\\\\[0-7]+$" word)
+                   (loop for ch across word
+                         for n = 0 then (+ (* n 8) ch -48)
+                         finally do (setq word  (vector n))))
+                 (cond ((= bits 0) (setq key  word))
+                       ((and (= bits ?\M-\^@)  (stringp word)  (string-match "^-?[0-9]+$" word))
+                        (setq key  (loop for x across word collect (+ x bits))))
+                       ((/= (length word) 1)
+                        (error "%s must prefix a single character, not %s"
+                               (substring orig-word 0 prefix) word))
+                       ((and (/= (logand bits ?\C-\^@) 0)  (stringp word)
+                             ;; Used to accept `.' and `?' here, but `.' is simply wrong,
+                             ;; and `C-?' is not used (so use `DEL' instead).
+                             (string-match "[@-_a-z]" word))
+                        (setq key  (list (+ bits (- ?\C-\^@) (logand (aref word 0) 31)))))
+                       (t (setq key  (list (+ bits (aref word 0)))))))))
+        (when key (loop repeat times do (callf vconcat res key)))))
+    (when (and (>= (length res) 4)  (eq (aref res 0) ?\C-x)  (eq (aref res 1) ?\( )
+               (eq (aref res (- (length res) 2)) ?\C-x)  (eq (aref res (- (length res) 1)) ?\)))
+      (setq res  (edmacro-subseq res 2 -2)))
+    (if (and (not need-vector)
+	     (loop for ch across res
+		   always (and (if (fboundp 'characterp)  (characterp ch)  (char-valid-p ch))
+			       (let ((ch2  (logand ch (lognot ?\M-\^@))))
+				 (and (>= ch2 0)  (<= ch2 127))))))
+	(concat (loop for ch across res collect (if (= (logand ch ?\M-\^@) 0)  ch  (+ ch 128))))
+      res)))
+
+;; Same as `naked-read-kbd-macro' in `naked.el'.
+(defun icicle-read-kbd-macro (start &optional end angles)
+  "Read the region as a keyboard macro definition.
+Like `read-kbd-macro', but does not use angle brackets, by default.
+
+With a prefix arg use angle brackets, exactly like `read-kbd-macro'.
+That is, with non-nil arg ANGLES, expect key descriptions to use angle
+brackets (<...>).  Otherwise, expect key descriptions not to use angle
+brackets.  For example:
+
+ (icicle-read-kbd-macro  \"mode-line\"  t) returns [mode-line]
+ (icicle-read-kbd-macro \"<mode-line>\" t t)   returns [mode-line]"
+  (interactive "r\P")
+  (if (stringp start)
+      (icicle-edmacro-parse-keys start end angles)
+    (setq last-kbd-macro  (icicle-edmacro-parse-keys (buffer-substring start end) nil angles))))
+
+;; Same as `naked' in `naked.el'.
+(defun icicle-kbd (keys &optional angles)
+  "Like `kbd', but does not use angle brackets, by default.
+With non-nil optional arg ANGLES, expect key descriptions to use angle
+brackets (<...>), exactly like `kbd'.  Otherwise, expect key
+descriptions not to use angle brackets.  For example:
+
+ (icicle-kbd \"mode-line\")     returns [mode-line]
+ (icicle-kbd \"<mode-line>\" t) returns [mode-line]
+
+The default behavior lets you use, e.g., \"C-x delete\" and \"C-delete\"
+instead of \"C-x <delete>\" and \"C-<delete>\"."
+  (icicle-read-kbd-macro keys nil angles))
+
+;;;###autoload
+(defcustom icicle-completion-key-bindings
+  `((,(icicle-kbd "M-return")  icicle-candidate-read-fn-invoke t) ;`M-RET' as `M-return'
+    (,(icicle-kbd "C-M-m")     icicle-candidate-read-fn-invoke t) ;`M-RET' as `ESC RET'
+    (,(icicle-kbd "C-S-return") icicle-candidate-alt-action t) ; `C-S-return' (`C-S-RET')
+    (,(icicle-kbd "delete")    icicle-remove-candidate t) ; `delete'
+    (,(icicle-kbd "S-delete")  icicle-delete-candidate-object t) ; `S-delete'
+    (,(icicle-kbd "C-w")       icicle-kill-region t) ; `C-w'
+    (,(icicle-kbd "C-!")       icicle-all-candidates-action t) ; `C-!'
+    (,(icicle-kbd "C-|")       icicle-all-candidates-alt-action t) ; `C-|'
+    (,(icicle-kbd "M-!")       icicle-all-candidates-list-action t) ; `M-!'
+    (,(icicle-kbd "M-|")       icicle-all-candidates-list-alt-action t) ; `M-|'
+    (,(icicle-kbd "C-M-/")     icicle-prefix-complete t) ; `C-M-/', for `dabbrev.el'.
+    (,(icicle-kbd "M-h")       icicle-history t) ; `M-h'
+    (,(icicle-kbd "M-pause")   icicle-keep-only-past-inputs t) ; `M-pause'
+    (,(icicle-kbd "C-pause")   icicle-toggle-highlight-historical-candidates t) ;`C-pause'
+    (,(icicle-kbd "S-pause")   icicle-toggle-highlight-saved-candidates t) ; `S-pause'
+    ;;$$$$$$  (,(icicle-kbd "C-M-pause") 'icicle-other-history) ; `C-M-pause'
+    (,(icicle-kbd "C-insert")  icicle-switch-to-Completions-buf t) ; `C-insert'
+    (,(icicle-kbd "insert")    icicle-save/unsave-candidate t) ; `insert'
+
+    ;; In Emacs 22+, local is parent of local-completion
+    ;; Note: `setup-keys.el' binds `C-o' to `1on1-fit-minibuffer-frame' if defined.
+    (,(icicle-kbd "C-a")     icicle-beginning-of-line+
+     (not (eq minibuffer-local-map (keymap-parent minibuffer-local-completion-map)))) ; `C-a'
+    (,(icicle-kbd "C-e")     icicle-end-of-line+
+     (not (eq minibuffer-local-map (keymap-parent minibuffer-local-completion-map)))) ; `C-e'
+    (,(icicle-kbd "C-M-v")   icicle-scroll-forward
+     (not (eq minibuffer-local-map (keymap-parent minibuffer-local-completion-map)))) ; `C-M-v'
+    (,(icicle-kbd "C-M-S-v") icicle-scroll-backward
+     (not (eq minibuffer-local-map (keymap-parent minibuffer-local-completion-map)))) ; `C-M-S-v' (aka `C-M-V')
+    (,(icicle-kbd "C-=")     icicle-insert-string-from-variable
+     (not (eq minibuffer-local-map (keymap-parent minibuffer-local-completion-map)))) ; `C-='
+    ;; Replaces `tab-to-tab-stop':
+    (,(icicle-kbd "M-i")     icicle-clear-current-history
+     (not (eq minibuffer-local-map (keymap-parent minibuffer-local-completion-map)))) ; `M-i'
+    ;; Replaces `kill-sentence':
+    (,(icicle-kbd "M-k")     icicle-erase-minibuffer-or-history-element
+     (not (eq minibuffer-local-map (keymap-parent minibuffer-local-completion-map)))) ; `M-k'
+    (,(icicle-kbd "M-o")     icicle-insert-history-element
+     (not (eq minibuffer-local-map (keymap-parent minibuffer-local-completion-map)))) ; `M-o'
+    (,(icicle-kbd "M-.")     icicle-insert-string-at-point
+     (not (eq minibuffer-local-map (keymap-parent minibuffer-local-completion-map)))) ; `M-.'
+    (,(icicle-kbd "C-x C-f") icicle-resolve-file-name
+     (not (eq minibuffer-local-map (keymap-parent minibuffer-local-completion-map)))) ; `C-x C-f'
+    (,(icicle-kbd "M-:")     icicle-pp-eval-expression-in-minibuffer
+     (not (eq minibuffer-local-map (keymap-parent minibuffer-local-completion-map)))) ; `M-:'
+    (,(icicle-kbd "C-M-y") icicle-yank-secondary
+     (and (not (eq minibuffer-local-map (keymap-parent minibuffer-local-completion-map)))
+      (fboundp 'icicle-yank-secondary))) ; `C-M-y'
+    (,(icicle-kbd "C-M-pause")  icicle-other-history
+     (not (eq minibuffer-local-map (keymap-parent minibuffer-local-completion-map)))) ; `C-M-pause'
+    (,(icicle-kbd "M-S-backspace") icicle-erase-minibuffer
+     (not (eq minibuffer-local-map (keymap-parent minibuffer-local-completion-map)))) ; `M-S-backspace'
+    (,(icicle-kbd "M-S-delete") icicle-erase-minibuffer
+     (not (eq minibuffer-local-map (keymap-parent minibuffer-local-completion-map)))) ; `M-S-delete'
+
+    ;; Need `C-g', even if `minibuffer-local-completion-map' inherits from `minibuffer-local-map'.
+    (,(icicle-kbd "C-g")       icicle-abort-recursive-edit t) ; `C-g'
+    (,(icicle-kbd "M-q")       icicle-dispatch-M-q t) ; `M-q'
+    (,(icicle-kbd "C-l")       icicle-retrieve-previous-input t) ; `C-l'
+    (,(icicle-kbd "C-S-l")     icicle-retrieve-next-input t) ; `C-L' (`C-S-l')
+    (,(icicle-kbd "M-$")       icicle-candidate-set-truncate t) ; `M-$'
+    (,(icicle-kbd "C-~")       icicle-candidate-set-complement t) ; `C-~'
+    (,(icicle-kbd "C--")       icicle-candidate-set-difference t) ; `C--'
+    (,(icicle-kbd "C-+")       icicle-candidate-set-union t) ; `C-+'
+    (,(icicle-kbd "C-*")       icicle-candidate-set-intersection t) ; `C-*'
+    (,(icicle-kbd "C->")       icicle-candidate-set-save-more t) ; `C->'
+    (,(icicle-kbd "C-M->")     icicle-candidate-set-save t) ; `C-M->'
+    (,(icicle-kbd "C-(")       icicle-next-TAB-completion-method t) ; `C-('
+    (,(icicle-kbd "M-(")       icicle-next-S-TAB-completion-method t) ; `M-('
+    (,(icicle-kbd "C-)")       icicle-candidate-set-save-more-selected t) ; `C-)'
+    (,(icicle-kbd "C-M-)")     icicle-candidate-set-save-selected t) ; `C-M-)'
+    (,(icicle-kbd "C-M-<")     icicle-candidate-set-retrieve t) ; `C-M-<'
+    (,(icicle-kbd "C-M-}")     icicle-candidate-set-save-to-variable t) ; `C-M-}'
+    (,(icicle-kbd "C-M-{")     icicle-candidate-set-retrieve-from-variable t) ; `C-M-{'
+    (,(icicle-kbd "C-}")       icicle-candidate-set-save-persistently t) ; `C-}'
+    (,(icicle-kbd "C-{")       icicle-candidate-set-retrieve-persistent t) ; `C-{'
+    (,(icicle-kbd "C-%")       icicle-candidate-set-swap t) ; `C-%'
+    (,(icicle-kbd "M-%")       icicle-regexp-quote-input t) ; `M-%'
+    (,(icicle-kbd "C-:")       icicle-candidate-set-define t) ; `C-:'
+    (,(icicle-kbd "C-M-j")     icicle-insert-list-join-string t) ; `C-M-j'
+    (,(icicle-kbd "C-,")       icicle-change-sort-order t) ; `C-,'
+    (,(icicle-kbd "C-M-\;")     icicle-toggle-ignoring-comments t) ; `C-M-;'
+    (,(icicle-kbd "C-`")       icicle-toggle-regexp-quote t) ; `C-`'
+    (,(icicle-kbd "C-M-.")     icicle-toggle-dot t) ; `C-M-.'
+    (,(icicle-kbd "C-M-`")     icicle-toggle-literal-replacement t) ; `C-M-`'
+    (,(icicle-kbd "C-<")       icicle-candidate-set-retrieve-more t) ; `C-<'
+    (,(icicle-kbd "C-M-_")     icicle-toggle-proxy-candidates t) ; `C-M-_'
+    (,(icicle-kbd "C-$")       icicle-toggle-transforming t) ; `C-$'
+    ;; In Emacs 22+, local is parent of local-completion
+    ;; $$$$$$ Keep `C-?' also for a while, undocumented, for backward compatibility only.
+    (,(icicle-kbd "C-?")     icicle-minibuffer-help
+     (not (eq minibuffer-local-map (keymap-parent minibuffer-local-completion-map)))) ; `C-?'
+    (,(icicle-kbd "M-?")     icicle-minibuffer-help
+     (not (eq minibuffer-local-map (keymap-parent minibuffer-local-completion-map)))) ; `M-?'
+    (,(icicle-kbd "C-.")       icicle-dispatch-C-. t) ; `C-.'
+    (,(icicle-kbd "C-#")       icicle-cycle-incremental-completion t) ; `C-#'
+    (,(icicle-kbd "C-\"")      icicle-toggle-expand-to-common-match t) ; `C-"'
+    (,(icicle-kbd "C-M-\"")    icicle-cycle-expand-to-common-match t) ; `C-M-"'
+    (,(icicle-kbd "M-\;")      icicle-toggle-search-replace-common-match t) ; `M-;'
+    (,(icicle-kbd "C-^")       icicle-dispatch-C-^ t) ; `C-^'
+    (,(icicle-kbd "C-M-^")     icicle-toggle-completions-format t) ; `C-M-^'
+    (,(icicle-kbd "C-S-a")     icicle-toggle-case-sensitivity t) ; `C-S-a' (`C-A')
+    (,(icicle-kbd "M-~")       icicle-toggle-~-for-home-dir t) ; `M-~'
+    (,(icicle-kbd "C-M-~")     icicle-toggle-search-complementing-domain t) ; `C-M-~'
+    (,(icicle-kbd "M-g")       icicle-toggle-C-for-actions t) ; `M-g'
+    (,(icicle-kbd "M-,")       icicle-dispatch-M-comma t) ; `M-,'
+    (,(icicle-kbd "C-M-,")     icicle-toggle-alternative-sorting t) ; `C-M-,'
+    (,(icicle-kbd "C-M-+")     icicle-plus-saved-sort t) ; `C-M-+'
+    (,(icicle-kbd "M-+")       icicle-widen-candidates t) ; `M-+'
+    (,(icicle-kbd "M-*")       icicle-narrow-candidates t) ; `M-*'
+    (,(icicle-kbd "M-&")       icicle-narrow-candidates-with-predicate t) ; `M-&'
+    (,(icicle-kbd "M-_")       icicle-dispatch-M-_ t) ; `M-_'
+    (,(icicle-kbd "C-M-&")     icicle-save-predicate-to-variable t) ; `C-M-&'
+    (,(icicle-kbd "S-SPC")     icicle-apropos-complete-and-narrow t) ; `S-SPC'
+    (,(icicle-kbd "S-return")  icicle-apropos-complete-and-exit t) ; `S-return'
+    (,(icicle-kbd "S-backspace") icicle-apropos-complete-and-widen t) ; `S-backspace'
+    (,(icicle-kbd "C-v")       icicle-scroll-Completions-forward t) ; `C-v'
+    (,(icicle-kbd "M-v")       icicle-scroll-Completions-backward t) ; `M-v'
+    (,(icicle-kbd ".")         icicle-insert-dot-command t) ; `.'
+    (,(icicle-kbd "M-m")       icicle-toggle-show-multi-completion t) ; `M-m'
+    (,(icicle-kbd "C-x .")     icicle-dispatch-C-x. t) ; `C-x .'
+    (,(icicle-kbd "C-x :")     icicle-toggle-network-drives-as-remote t) ; `C-x :'
+    (,(icicle-kbd "C-x C-a")   icicle-toggle-annotation t) ; `C-x C-a'
+    (,(icicle-kbd "C-x t")   icicle-cycle-image-file-thumbnail
+     (fboundp 'icicle-cycle-image-file-thumbnail)) ; `C-x t'
+    (,(icicle-kbd "C-x w")   icicle-doremi-candidate-width-factor+
+     (fboundp 'doremi))                 ; `C-x w'
+    (,(icicle-kbd "C-x |")   icicle-doremi-inter-candidates-min-spaces+
+     (fboundp 'doremi))                 ; `C-x |'
+    (,(icicle-kbd "C-x #")   icicle-doremi-increment-max-candidates+
+     (fboundp 'doremi))                 ; `C-x #'
+    (,(icicle-kbd "C-x -") icicle-doremi-zoom-Completions+
+     (and (fboundp 'doremi)  (fboundp 'text-scale-increase))) ; `C-x -'
+    (,(icicle-kbd "C-x 1") icicle-doremi-increment-swank-timeout+
+     (and (fboundp 'doremi)  (eq (icicle-current-TAB-method) 'swank)))
+    ;; NO - NEED TO DO THE SWANK PART AT RUNTIME, in icicles-mode.el
+    (,(icicle-kbd "C-x 2") icicle-doremi-increment-swank-prefix-length+
+     (and (fboundp 'doremi)  (eq (icicle-current-TAB-method) 'swank)))
+    ;; `minibuffer-completion-help' got wiped out by remap for self-insert.
+    (,(icicle-kbd "?")         icicle-self-insert t) ; `?
+    (,(icicle-kbd "SPC")       icicle-self-insert t) ; " "
+    ;; In Emacs 22+, local is parent of local-completion
+    (,(icicle-kbd "C-j")     icicle-insert-newline-in-minibuffer
+     (not (eq minibuffer-local-map (keymap-parent minibuffer-local-completion-map)))) ; `C-j
+    )
+  "*List of minibuffer commands to bind for completion in Icicle mode.
+
+The option value has the same form as that of option
+`icicle-top-level-key-bindings' (which see).
+Each list element is of custom type `icicle-key-definition' and has
+the form (KEY COMMAND CONDITION).
+
+If you customize this option then you must exit and re-enter Icicle
+mode to ensure that the change takes effect.  This is really necessary
+only if your changes would undefine a key.
+
+For this option to have an effect upon startup, it must be set before
+you enter Icicle mode.  This means that you must ensure that the code
+that sets it is invoked before you enter Icicle mode.  If you use
+Customize to change this option, then ensure that the code inserted by
+Customize into your `user-init-file' or your `custom-file' is invoked
+before you enter Icicle mode."
+  :type (if (> emacs-major-version 20)
+            '(repeat icicle-key-definition)
+          '(repeat
+            (list
+             (choice
+              (restricted-sexp :tag "Key"
+               :match-alternatives ((lambda (x) (or (stringp x)  (vectorp x))))
+               :value [ignore])
+              (restricted-sexp :tag "Command to remap"
+               ;; Use `symbolp' instead of `commandp', in case the library defining the
+               ;; command is not loaded.
+               :match-alternatives (symbolp) :value ignore))
+             ;; Use `symbolp' instead of `commandp'...
+             (restricted-sexp :tag "Command"
+              :match-alternatives (symbolp) :value ignore)
+             (sexp :tag "Condition"))))
+  :group 'Icicles-Key-Bindings)
 
 ;;;###autoload
 (defcustom icicle-Completions-display-min-input-chars 0
@@ -4040,7 +4383,7 @@ For convenience, you can use insert each key in the key description by
 hitting `C-q' then the key.  For example, to enter the key description
 `C-c M-k' you can use `C-q C-c C-q M-k'.
 
-If you customize this option, then you must exit and re-enter Icicle
+If you customize this option then you must exit and re-enter Icicle
 mode to ensure that the change takes effect.  This is really necessary
 only if your changes would undefine a key.
 
