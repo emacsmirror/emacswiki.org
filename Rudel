@@ -189,6 +189,22 @@ I am interested in automating rudel configuration, e.g. as an el-get recipe. The
 
 Eventually, it would be nice to have an easier method, e.g. a rudel-initialize function designed to be called from emacs init, tasked with creating or creating rudel-loadefs as needed.
 
+[new]
+When I try to join with "rudel-join-session", I get "Joining (joining)" with a spinning pipe and then my emacs 24.2.50 hangs. Just before that,  I get these messages:
+
+{{{
+Discovering Sessions ... [2 times]
+Using backend `obby'
+Quit
+Discovering Sessions ... [2 times]
+Using backend `obby'
+Use encryption? (y or n)  n
+`flet' is an obsolete macro (as of 24.3); use either `cl-flet' or `cl-letf'.
+Received Obby welcome message (version 8)
+error in process filter: format: Wrong type argument: integerp, nil
+error in process filter: Wrong type argument: integerp, nil
+}}}
+
 == Contributed Code ==
 
 === Send Chat Messages (obby Protocol only) ===
