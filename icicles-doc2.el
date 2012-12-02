@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue Nov 27 21:05:56 2012 (-0800)
+;; Last-Updated: Sat Dec  1 21:46:28 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 29073
+;;     Update #: 29107
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -4895,6 +4895,13 @@
 ;;    `icicle-apropos-cycle-previous-keys',
 ;;    `icicle-modal-cycle-down-keys', `icicle-modal-cycle-up-keys'.)
 ;;
+;;  * User option `icicle-completion-key-bindings' specifies keys to
+;;    bind to various Icicles minibuffer commands that are used during
+;;    completion.  These are generally not commands that complete your
+;;    minibuffer input, but commands that you use to edit that input
+;;    or act on it in different ways.  This option value has the same
+;;    form as for option `icicle-top-level-key-bindings'.
+;;
 ;;  * Non-`nil' user option
 ;;    `icicle-top-level-when-sole-completion-flag' means that whenever
 ;;    there is only one completion candidate that matches your input,
@@ -6249,13 +6256,13 @@
 ;;(@* "Icicle-Mode Bindings")
 ;;  ** Icicle-Mode Bindings **
 ;;
-;;  Most Icicle-mode bindings are in the Icicles menu-bar menu.  In
-;;  addition, option `icicle-top-level-key-bindings' causes Icicles to
-;;  bind some keyboard keys to some top-level Icicles commands.  Some
-;;  of these take the place of similar, global bindings whenever you
-;;  are in Icicle mode.  Typically, these top-level commands are
-;;  Icicles multi-command versions of the vanilla Emacs commands.
-;;  See (@file :file-name "icicles-doc1.el" :to "Multi-Commands").
+;;  Most top-level Icicle-mode bindings are in the Icicles menu-bar
+;;  menu.  In addition, option `icicle-top-level-key-bindings' causes
+;;  Icicles to bind some keyboard keys to some top-level Icicles
+;;  commands.  Some of these take the place of similar, global
+;;  bindings whenever you are in Icicle mode.  Typically, these
+;;  top-level commands are Icicles multi-command versions of vanilla
+;;  Emacs commands.  See (@file :file-name "icicles-doc1.el" :to "Multi-Commands").
 ;;
 ;;  You can customize option `icicle-top-level-key-bindings' to
 ;;  specify the top-level commands that you want to bind in Icicle
@@ -6281,6 +6288,7 @@
 ;;  * `C-x M-e'        - `icicle-execute-named-keyboard-macro'
 ;;  * `S-f4'           - `icicle-kmacro'
 ;;  * `pause'          - `icicle-switch-to/from-minibuffer'
+;;  * `C-x 5 o'        - `icicle-select-frame'
 ;;
 ;;  `S-TAB' is bound, in effect, to `icicle-complete-keys', which
 ;;  completes a key sequence.  Prefix keys followed by `S-TAB' are
@@ -6511,11 +6519,11 @@
 ;;(@* "Minibuffer Bindings")
 ;;  ** Minibuffer Bindings **
 ;;
-;;  There are many key bindings available while input is read in the
-;;  minibuffer.  Most of these keys are bound in the minibuffer
-;;  completion keymaps, but some are bound in the `*Completions*'
-;;  buffer keymap and some are bound when reading input without
-;;  completion.
+;;  There are many key bindings available while your input is read in
+;;  the minibuffer, for example, while you are editing it.  Most of
+;;  these keys are bound in the minibuffer completion keymaps, but
+;;  some are bound in the `*Completions*' buffer keymap and some are
+;;  bound when reading input without completion.
 ;;
 ;;  In addition, clicking `C-mouse-3' on a completion candidate in
 ;;  buffer `*Completions*' pops up a menu of available commands.  Some
@@ -6524,6 +6532,12 @@
 ;;  set of completion candidates.  The associated key bindings are
 ;;  indicated in the menu items, so this can be a good way to learn
 ;;  minibuffer and `*Completions*' bindings.
+;;
+;;  You can easily customize all of the Icicles minibuffer key
+;;  bindings.  There are several user options available for this.
+;;  This section describes the keys that are bound by default.
+;;  Section (@> "Customizing Key Bindings") describes the options
+;;  available for customizing them.
 ;;
 ;;  The following key is helpful during any minibuffer input.  It pops
 ;;  up the `*Help*' buffer with information about using the minibuffer
@@ -6537,6 +6551,10 @@
 ;;  keymaps.  They are in effect whenever you are using the minibuffer
 ;;  for input with completion (e.g. `completing-read',
 ;;  `read-file-name', `M-x').
+;;
+;;  The keys mentioned are those that are bound by default and used in
+;;  the documentation, but you can customize any or all of them using
+;;  option `icicle-completion-key-bindings'.
 ;;
 ;;    `down', `wheel-down' - `icicle-next-candidate-per-mode' (modal)
 ;;    `up', `wheel-up' - `icicle-previous-candidate-per-mode' (modal)
@@ -6564,7 +6582,7 @@
 ;;      `icicle-apropos-cycle-next-keys',
 ;;      `icicle-apropos-cycle-previous-keys',
 ;;      `icicle-prefix-cycle-next-keys', and
-;;      icicle-prefix-cycle-previous-keys'.)
+;;      `icicle-prefix-cycle-previous-keys'.)
 ;;
 ;;    Keys bound globally to commands that perform simple text
 ;;    insertion, deletion, and transposition operations - commands
@@ -6894,7 +6912,7 @@
 ;;    `C-M-end'    - `icicle-help-on-next-prefix-candidate'
 ;;    `C-M-home'   - `icicle-help-on-previous-prefix-candidate'
 ;;
-;;  (These are only default key bindings.
+;;  (Again, these are only default key bindings.
 ;;  See (@> "Customizing Key Bindings").)
 ;;
 ;;  The following minibuffer bindings provide an alternative action
@@ -7096,6 +7114,13 @@
 ;;  There are some other user options that make it easy to customize
 ;;  Icicles key bindings.  Most of these are minibuffer bindings.
 ;;
+;;  The most general option for customizing minibuffer bindings is
+;;  `icicle-completion-key-bindings'.  It covers everything that is
+;;  not covered by the other minibuffer key options listed below,
+;;  which are concerned with completion, cycling, and help.  Option
+;;  `icicle-completion-key-bindings' has the same form as option
+;;  `icicle-top-level-key-bindings'.
+;;
 ;;  * `icicle-modal-cycle-down-keys'            (`down', `wheel-down')
 ;;    Cycle to the next candidate (modal).
 ;;  * `icicle-modal-cycle-up-keys'                  (`up', `wheel-up')
@@ -7177,28 +7202,17 @@
 ;;
 ;;  Whenever you customize an Icicles key binding, whether via a user
 ;;  option value or using `define-key' or `global-set-key', you can
-;;  use macro `icicle-kbd' to express the key sequence in a
+;;  use function `icicle-kbd' to express the key sequence in a
 ;;  user-friendly way.
 ;;
-;;  It is the same as the vanilla Emacs macro `kbd', except that (by
-;;  default) it does not require you to use angle brackets (`<', `>')
-;;  around function keys (and it does not expect you to).
+;;  It is the same as vanilla Emacs `kbd', except that (by default) it
+;;  does not require you to use angle brackets (`<', `>') around
+;;  function keys (and it does not expect you to).
 ;;
 ;;  So you can write, e.g., (icicle-kbd "C-delete") instead of one of
 ;;  these: (kbd "C-<delete>"), [C-delete], or [(control delete)].
 ;;  There are plenty of examples of the use of `icicle-kbd' in the
 ;;  Icicles source files.
-;;
-;;  `icicle-kbd' is a macro, defined in library `icicles-mac.el'.  Be
-;;  sure you load that library before you try to make use of the
-;;  macro.  For example, if you define a key binding in your file
-;;  `foo.el' then put the following in `foo.el' before the place where
-;;  `icicle-kbd' is used:
-;;
-;;    (eval-when-compile (require 'icicles-mac))
-;;
-;;  See the Emacs Lisp manual, nodes `Compiling Macros' and `Eval
-;;  During Compile'.
 ;;
 ;;(@* "Customizing Global Bindings")
 ;;  ** Customizing Global Bindings **
