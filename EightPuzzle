@@ -7,6 +7,6 @@ You can get the source code here:
 
 * Lisp:eight-puzzle.el
 
-I had some [http://learn.tsinghua.edu.cn:8080/2005211356/emacs/8puzzle.zip images]
+I had some [http://learn.tsinghua.edu.cn:8080/2005211356/emacs/8puzzle.zip images](dead link)
  in my homepage, and a simple perl script to split a image to nine pieces(require 
 Image::Magick). Enjoy it!
