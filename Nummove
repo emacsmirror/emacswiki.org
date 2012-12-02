@@ -6,3 +6,6 @@ http://users.student.lth.se/f03kr/shot.png
 
 == Comments ==
 Please change the definition of nummove-path-to-images from "setq" to "defvar", so that the image path can be overridden by the user.
+
+== See Also ==
+EightPuzzle
