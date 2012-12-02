@@ -746,6 +746,20 @@ keys swapped are those defined by these user options:
 * `<tt>[[#icicle-modal-cycle-down-keys]]</tt>'
 * `<tt>[[#icicle-modal-cycle-up-keys]]</tt>'
 
+
+----
+[:icicle-completion-key-bindings]
+==== Option icicle-completion-key-bindings ====
+
+User option '''`icicle-completion-key-bindings'''' specifies keys to
+bind to various '''Icicles''' minibuffer commands that are used during
+completion.  These are generally not commands that complete your
+minibuffer input, but commands that you use to edit that input
+or act on it in different ways.  This option value has the same
+form as for option '''`<tt>[[#icicle-top-level-key-bindings|icicle-top-level-key-bindings]]</tt>''''.
+
+
+
 ----
 [:icicle-top-level-when-sole-completion-delay]
 [:icicle-top-level-when-sole-completion-flag]
