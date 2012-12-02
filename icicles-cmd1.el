@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Nov 29 10:51:24 2012 (-0800)
+;; Last-Updated: Sat Dec  1 16:56:42 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 25223
+;;     Update #: 25236
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -450,9 +450,9 @@
          (load-library "icicles-mac")   ; Use load-library to ensure latest .elc.
        (error nil))
      (require 'icicles-mac)))           ; Require, so can load separately if not on `load-path'.
-  ;; icicle-assoc-delete-all, icicle-bind-file-candidate-keys, icicle-(buffer|file)-bindings,
-  ;; icicle-condition-case-no-debug, icicle-define-bookmark(-other-window)-command, icicle-kbd, 
-  ;; icicle-define(-file)-command, icicle-define-add-to-alist-command, icicle-unbind-file-candidate-keys
+  ;; icicle-assoc-delete-all, icicle-(buffer|file)-bindings, icicle-condition-case-no-debug,
+  ;; icicle-define-bookmark(-other-window)-command, icicle-define(-file)-command,
+  ;; icicle-define-add-to-alist-command
 (require 'icicles-mcmd)
   ;; icicle-bind-buffer-candidate-keys, icicle-bind-file-candidate-keys, icicle-unbind-buffer-candidate-keys,
   ;; icicle-unbind-file-candidate-keys, icicle-yank
@@ -460,7 +460,7 @@
   ;; icicle-add-proxy-candidates-flag, icicle-buffer-configs, icicle-buffer-extras,
   ;; icicle-buffer-ignore-space-prefix-flag, icicle-buffer-match-regexp,
   ;; icicle-buffer-no-match-regexp, icicle-buffer-predicate, icicle-buffer-require-match-flag,
-  ;; icicle-buffer-sort, icicle-color-themes, icicle-saved-completion-sets,
+  ;; icicle-buffer-sort, icicle-color-themes, icicle-kbd, icicle-saved-completion-sets,
   ;; icicle-sort-comparer, icicle-transform-function
 (require 'icicles-var)                  ; (This is required anyway by `icicles-fn.el'.)
   ;; icicle-abs-file-candidates, icicle-all-candidates-list-action-fn,
@@ -545,6 +545,7 @@
 (defvar goto-tag-location-function)     ; In `etags.el'
 (defvar icicle-buffer-easy-files)       ; Here
 (defvar icicle-clear-history-hist)      ; In `icicle-clear-history-1',`icicle-clear-current-history'
+(defvar icicle-last-toggle-transforming-msg) ; Here
 (defvar icicle-window-alist)            ; In `icicle-select-window'
 (defvar locate-make-command-line)       ; In `locate.el'
 (defvar proced-signal-list)             ; In `proced.el' (Emacs 23+)
@@ -3841,7 +3842,7 @@ then customize option `icicle-top-level-key-bindings'." ; Doc string
                                                 (setq alt-fn  (icicle-alt-act-fn-for-type "command"))))
    (icicle-all-candidates-list-alt-action-fn ; M-|'
     (or icicle-all-candidates-list-alt-action-fn  alt-fn  (icicle-alt-act-fn-for-type "command")))
-   (last-toggle-transforming-msg            icicle-toggle-transforming-message)
+   (icicle--last-toggle-transforming-msg    icicle-toggle-transforming-message)
    (icicle-toggle-transforming-message      "Filtering to commands bound to keys is now %s")
    (icicle-last-transform-function          (lambda (cands) ; Because we bind `icicle-transform-function'.
                                               (with-current-buffer icicle-pre-minibuffer-buffer
@@ -3873,7 +3874,7 @@ then customize option `icicle-top-level-key-bindings'." ; Doc string
   (let* ((cmd                                       (intern cmd-name))
          (fn                                        (symbol-function cmd))
          (count                                     (prefix-numeric-value current-prefix-arg))
-         (icicle-toggle-transforming-message        last-toggle-transforming-msg) ; Restore it.
+         (icicle-toggle-transforming-message        icicle--last-toggle-transforming-msg) ; Restore - FREE HERE
          ;; Rebind alternative action functions to nil, so we don't override the command we call.
          (icicle-candidate-alt-action-fn            nil)
          (icicle-all-candidates-list-alt-action-fn  nil)
@@ -7703,9 +7704,11 @@ Used as the value of `minibuffer-completion-table'.."
                                    (icicle-transform-multi-completion strg)))
                    (filnames     (all-completions
                                   ""
-                                  ;; This is just `read-file-name-internal'.
-                                  (completion-table-in-turn #'completion--embedded-envvar-table
-                                                            #'completion--file-name-table)
+;;; $$$$$$                        ;; This is just `read-file-name-internal'.
+;;;                               (completion-table-in-turn #'completion--embedded-envvar-table
+;;;                                                         #'completion--file-name-table)
+                                  (completion-table-in-turn #'icicle-completion--embedded-envvar-table
+                                                            #'completion-file-name-table)
                                   pred))
                    (filnames     (icicle-remove-if-not (lambda (file) (icicle-string-match-p file-pat file))
                                                        filnames))
@@ -7731,9 +7734,9 @@ Used as the value of `minibuffer-completion-table'.."
       (cond ((and (eq 'metadata completion-mode)  (> emacs-major-version 23))
              '(metadata (category . file)))
             (completion-mode
-             filnames)            ; `all-completions', `test-completion'
+             filnames)                  ; `all-completions', `test-completion'
             (t
-             (try-completion              ; `try-completion'
+             (try-completion            ; `try-completion'
               file-pat (mapcar #'list filnames) (and pred  (lambda (ff) (funcall pred (car ff)))))))))
 
   ;; This is based on code from Emacs 24 `read-file-name-default'.  It works only for Emacs 23+ (23 or later).
