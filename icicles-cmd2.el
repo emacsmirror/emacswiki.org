@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Wed Nov 28 22:22:56 2012 (-0800)
+;; Last-Updated: Sat Dec  1 16:40:43 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 6186
+;;     Update #: 6187
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -332,9 +332,9 @@
   ;; icicle-buffer-match-regexp, icicle-buffer-no-match-regexp, icicle-buffer-predicate,
   ;; icicle-buffer-require-match-flag, icicle-buffer-sort, icicle-complete-keys-self-insert-ranges,
   ;; icicle-key-descriptions-use-<>-flag, icicle-recenter, icicle-require-match-flag,
-  ;; icicle-saved-completion-sets, icicle-search-cleanup-flag, icicle-search-highlight-all-current-flag,
-  ;; icicle-search-highlight-threshold, icicle-search-hook, icicle-sort-comparer,
-  ;; icicle-transform-function
+  ;; icicle-saved-completion-sets, icicle-search-cleanup-flag, icicle-kbd,
+  ;; icicle-search-highlight-all-current-flag, icicle-search-highlight-threshold, icicle-search-hook,
+  ;; icicle-sort-comparer, icicle-transform-function
 (require 'icicles-var)                  ; (This is required anyway by `icicles-fn.el'.)
   ;; icicle-abs-file-candidates, icicle-acting-on-next/prev, icicle-all-candidates-action,
   ;; icicle-all-candidates-list-action-fn, icicle-all-candidates-list-alt-action-fn,
