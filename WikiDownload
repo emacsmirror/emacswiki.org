@@ -4,8 +4,6 @@ Here is how to download the wiki:
 
 * [[SVN repository]] of the raw EmacsWiki pages. Great for grepping.
 
-* [[CVS repository]] of the elisp files uploaded to this wiki. Great for source files only.
-
 * [[Rsync repository]] -- help making decentralized backups of the entire setup. Great for mirrors, forks, and the like.
 
 * DownloadPartOfWiki -- download a small part of Emacs Wiki, using `wget'. Tricky.
