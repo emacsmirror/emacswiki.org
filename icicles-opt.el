@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Dec  1 17:24:08 2012 (-0800)
+;; Last-Updated: Sun Dec  2 10:28:26 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 5419
+;;     Update #: 5420
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1355,7 +1355,6 @@ The default behavior lets you use, e.g., \"C-x delete\" and \"C-delete\"
 instead of \"C-x <delete>\" and \"C-<delete>\"."
   (icicle-read-kbd-macro keys nil angles))
 
-;;;###autoload
 (defcustom icicle-completion-key-bindings
   `((,(icicle-kbd "M-return")  icicle-candidate-read-fn-invoke t) ;`M-RET' as `M-return'
     (,(icicle-kbd "C-M-m")     icicle-candidate-read-fn-invoke t) ;`M-RET' as `ESC RET'

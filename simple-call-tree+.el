@@ -170,6 +170,11 @@ The the children of each header will be sorted separately."
   :type '(choice (const :tag "Sort by position" position)
                  (const :tag "Sort alphabetically" alphabet)))
 
+(defcustom simple-call-tree-default-maxdepth 2
+  "The depth at which new call trees should be displayed."
+  :group 'simple-call-tree
+  :type 'integer)
+
 (defcustom simple-call-tree-major-mode-alist
   '((emacs-lisp-mode (font-lock-function-name-face
                       font-lock-variable-name-face)
@@ -397,7 +402,7 @@ END-REGEXP a regular expression to match the end of a token, by default this is 
       ["Invert Tree" simple-call-tree-invert-buffer
        :help "Invert the tree"
        :style toggle
-       :selected simple-call-tree-inverted-bufferp]
+       :selected simple-call-tree-inverted]
       ["Sort Tree..." (keymap
                        "Sort"
                        (alpha menu-item "Alphabetically" simple-call-tree-sort-alphabetically)
@@ -413,11 +418,11 @@ END-REGEXP a regular expression to match the end of a token, by default this is 
          (subseq mode-line-format 0
                  (1+ (position 'mode-line-buffer-identification
                                mode-line-format)))
-         (list '(:eval (format (concat " Maxdepth=%d "
+         (list '(:eval (format (concat "|Maxdepth=%d|"
                                        "Sorted "
                                        (case simple-call-tree-current-sort-order
-                                         (position "by position ")
-                                         (alphabet "alphabetically ")))
+                                         (position "by position|")
+                                         (alphabet "alphabetically|")))
                                simple-call-tree-current-maxdepth)))
          (subseq mode-line-format
                  (+ 2 (position 'mode-line-buffer-identification
@@ -435,7 +440,7 @@ of the called function and POS is the position of the call.")
   "Alist of functions and the functions that call them, and markers for their locations.
 This is an inverted version of `simple-call-tree-alist'.")
 
-(defvar simple-call-tree-inverted-bufferp nil
+(defvar simple-call-tree-inverted nil
   "Indicates if the *Simple Call Tree* buffer is currently inverted or not.
 If non-nil then children correspond to callers of parents in the outline tree.
 Otherwise it's the other way around.")
@@ -552,11 +557,15 @@ By default it is set to a list containing the current buffer."
 
 (defun* simple-call-tree-get-function-at-point (&optional (buf "*Simple Call Tree*"))
   "Return the name of the function nearest point in the *Simple Call Tree* buffer.
-If optional arg BUF is supplied then use BUF instead of the *Simple Call Tree* buffer."
+If optional arg BUF is supplied then use BUF instead of the *Simple Call Tree* buffer.
+If there is no function on this line of the *Simple Call Tree* buffer, return nil."
   (with-current-buffer buf
     (if (equal buf "*Simple Call Tree*")
-        (let* ((start (next-single-property-change (line-beginning-position) 'face))
-               (end (next-single-property-change start 'face)))
+        (let* ((start (or (next-single-property-change (line-beginning-position) 'face)
+                          (progn (previous-line)
+                                 (next-single-property-change (line-beginning-position) 'face))))
+               (end (or (next-single-property-change start 'face)
+                        (line-end-position))))
           (buffer-substring-no-properties start end))
       (symbol-name (if (functionp 'symbol-nearest-point)
                        (symbol-nearest-point)
@@ -616,7 +625,7 @@ When called interactively files will be prompted for and only functions in the c
     (case simple-call-tree-default-sort-method
       (alphabet (simple-call-tree-sort-alphabetically))
       (position (simple-call-tree-sort-positionally)))
-    (setq simple-call-tree-inverted-bufferp nil)
+    (setq simple-call-tree-inverted nil)
     (simple-call-tree-list-callers-and-functions)
     (setq simple-call-tree-jump-ring (make-ring simple-call-tree-jump-ring-max)
           simple-call-tree-jump-ring-index 0)))
@@ -645,7 +654,7 @@ otherwise it will be narrowed around FUNC."
   (if wide (simple-call-tree-toggle-narrowing 1)
     (simple-call-tree-toggle-narrowing -1)))
 
-(defun* simple-call-tree-list-callers-and-functions (&optional (maxdepth 2)
+(defun* simple-call-tree-list-callers-and-functions (&optional (maxdepth simple-call-tree-default-maxdepth)
                                                                (funclist simple-call-tree-alist))
   "List callers and functions in FUNCLIST to depth MAXDEPTH.
 By default FUNCLIST is set to `simple-call-tree-alist'."
@@ -664,7 +673,7 @@ By default FUNCLIST is set to `simple-call-tree-alist'."
 (defun* simple-call-tree-list-callees-recursively (item &optional (maxdepth 2)
                                                         (curdepth 1)
                                                         (funclist simple-call-tree-alist)
-                                                        (inverted simple-call-tree-inverted-bufferp))
+                                                        (inverted simple-call-tree-inverted))
   "Insert a call tree for the function named FNAME, to depth MAXDEPTH.
 FNAME must be the car of one of the elements of FUNCLIST which is set to `simple-call-tree-alist' by default.
 The optional arguments MAXDEPTH and CURDEPTH specify the maximum and current depth of the tree respectively.
@@ -755,7 +764,7 @@ narrowing."
 The toplevel functions will be sorted, and the functions in each branch will be sorted separately."
   (interactive)
   (simple-call-tree-sort (lambda (a b) (string< (car a) (car b))))
-  (simple-call-tree-list-callers-and-functions)
+  (simple-call-tree-restore-state (simple-call-tree-store-state))
   (setq simple-call-tree-current-sort-order 'alphabet))
 
 (defun simple-call-tree-sort-positionally nil
@@ -764,8 +773,40 @@ The toplevel functions will be sorted, and the functions in each branch will be 
   (interactive)
   (simple-call-tree-sort (lambda (a b) (< (marker-position (second a))
                                           (marker-position (second b)))))
-  (simple-call-tree-list-callers-and-functions)
-  (setq simple-call-tree-current-sort-order 'position))
+  (simple-call-tree-restore-state (simple-call-tree-store-state))
+  (setq simple-call-tree-current-sort-order 'position)))
+
+(defun simple-call-tree-store-state nil
+  "Store the current state of the displayed call tree, and return as an alist."
+  (move-beginning-of-line nil)
+  (or (re-search-forward outline-regexp nil t)
+      (progn (simple-call-tree-move-prev)
+             (re-search-forward outline-regexp nil t)))
+  (list 'narrowed (if (get-buffer "*Simple Call Tree*")
+                      (simple-call-tree-buffer-narrowed-p))
+        'depth simple-call-tree-current-maxdepth
+        'level (if (get-buffer "*Simple Call Tree*")
+                   (simple-call-tree-outline-level))
+        'tree (if simple-call-tree-inverted
+                  simple-call-tree-inverted-alist
+                simple-call-tree-alist)
+        'thisfunc (if (get-buffer "*Simple Call Tree*")
+                      (simple-call-tree-get-function-at-point))
+        'topfunc (if (get-buffer "*Simple Call Tree*")
+                     (simple-call-tree-get-toplevel))))
+
+(defun simple-call-tree-restore-state (state)
+  "Restore the *Simple Call Tree* buffer to the state in STATE."
+  (simple-call-tree-list-callers-and-functions (plist-get state 'depth)
+                                               (plist-get state 'tree))
+  (simple-call-tree-jump-to-function (or (plist-get state 'topfunc)
+                                         (plist-get state 'thisfunc)))
+  (if (plist-get state 'narrowed) (simple-call-tree-toggle-narrowing -1))
+  (setq simple-call-tree-current-maxdepth (plist-get state 'depth))
+  (if (> (plist-get state 'level) 1)
+      (search-forward
+       (plist-get state 'thisfunc)
+       (save-excursion (outline-end-of-subtree) (point)) t)))
 
 ;;; Major-mode commands bound to keys
 
@@ -779,49 +820,20 @@ The toplevel functions will be sorted, and the functions in each branch will be 
                   (delete-window)
                 (bury-buffer))))))
 
-(defun simple-call-tree-invert-buffer (&optional maxdepth)
+(defun simple-call-tree-invert-buffer nil
   "Invert the tree in *Simple Call Tree* buffer."
-  (interactive "P")
-  (move-beginning-of-line nil)
-  (re-search-forward outline-regexp)
-  (let ((depth (if current-prefix-arg (prefix-numeric-value maxdepth)
-                 simple-call-tree-current-maxdepth))
-        (funclist (if simple-call-tree-inverted-bufferp
-                      simple-call-tree-alist
-                    simple-call-tree-inverted-alist))
-        (narrowedp (simple-call-tree-buffer-narrowed-p))
-        (thisfunc (simple-call-tree-get-function-at-point)))
-    (setq simple-call-tree-inverted-bufferp
-          (not simple-call-tree-inverted-bufferp))
-    (simple-call-tree-list-callers-and-functions depth funclist)
-    (simple-call-tree-jump-to-function thisfunc)
-    (if narrowedp (simple-call-tree-toggle-narrowing -1))
-    (setq simple-call-tree-current-maxdepth (max depth 1))))
+  (interactive)
+  (setq simple-call-tree-inverted
+        (not simple-call-tree-inverted))
+  (simple-call-tree-restore-state (simple-call-tree-store-state)))
 
 (defun simple-call-tree-change-maxdepth (maxdepth)
   "Alter the maximum tree depth in the *Simple Call Tree* buffer."
   (interactive "P")
-  (move-beginning-of-line nil)
-  (or (re-search-forward outline-regexp nil t)
-      (progn (simple-call-tree-move-prev)
-             (re-search-forward outline-regexp nil t)))
-  (let* ((level (simple-call-tree-outline-level))
-         (depth (if current-prefix-arg (prefix-numeric-value current-prefix-arg)
-                  (floor (abs (read-number "Maximum depth to display: " 2)))))
-         (funclist (if simple-call-tree-inverted-bufferp
-                       simple-call-tree-inverted-alist
-                     simple-call-tree-alist))
-         (narrowedp (simple-call-tree-buffer-narrowed-p))
-         (thisfunc (simple-call-tree-get-function-at-point))
-         (thistree (simple-call-tree-get-toplevel)))
-    (simple-call-tree-list-callers-and-functions depth funclist)
-    (setq simple-call-tree-current-maxdepth (max depth 1))
-    (simple-call-tree-jump-to-function (or thistree thisfunc))
-    (if narrowedp (simple-call-tree-toggle-narrowing -1))
-    (if (> level 1) (search-forward
-                     thisfunc
-                     (save-excursion (outline-end-of-subtree) (point)) t))))
-
+  (setq simple-call-tree-current-maxdepth
+        (if current-prefix-arg (prefix-numeric-value current-prefix-arg)
+          (floor (abs (read-number "Maximum depth to display: " 2)))))
+  (simple-call-tree-restore-state (simple-call-tree-store-state)))
 
 (defun simple-call-tree-view-function nil
   "Display the source code corresponding to current header.
@@ -853,7 +865,7 @@ the source buffer to the function."
          (pos (marker-position funmark))
          (thisfunc (simple-call-tree-get-function-at-point))
          (parent (simple-call-tree-get-parent))
-         (visitfunc (if simple-call-tree-inverted-bufferp
+         (visitfunc (if simple-call-tree-inverted
                         thisfunc
                       (or parent thisfunc))))
     (pop-to-buffer buf)
@@ -930,9 +942,15 @@ When called interactively the name of the function at point is used for FNSTR."
 (defun simple-call-tree-move-up nil
   "Move cursor to the parent of this function."
   (interactive)
-  (outline-up-heading 1)
-  (let ((nextpos (next-single-property-change (point) 'face)))
-    (if nextpos (goto-char nextpos))))
+  (with-current-buffer "*Simple Call Tree*"
+    (move-beginning-of-line nil)
+    (or (re-search-forward outline-regexp nil t)
+        (progn (simple-call-tree-move-prev)
+               (re-search-forward outline-regexp nil t)))
+    (unless (= (simple-call-tree-outline-level) 1)
+      (outline-up-heading 1)
+      (let ((nextpos (next-single-property-change (point) 'face)))
+        (if nextpos (goto-char nextpos))))))
 
 (defun simple-call-tree-move-next nil
   "Move cursor to the next function."
@@ -1011,7 +1029,10 @@ If ARG is non-nil perform query-replace-regexp instead."
 (defun simple-call-tree-delete-other-windows nil
   "Make the *Simple Call Tree* buffer fill the frame."
   (interactive)
-  (setq fm-working nil)
+  (unless (not (featurep 'fm))
+    (fm-unhighlight 0)
+    (fm-unhighlight 1)
+    (setq fm-working nil))
   (delete-other-windows))
 
 (unless (not (featurep 'fm))
@@ -1022,5 +1043,6 @@ If ARG is non-nil perform query-replace-regexp instead."
 
 ;;; simple-call-tree+.el ends here
 
-;; (progn (magit-push) (yaoddmuse-post "EmacsWiki" "simple-call-tree+.el" (buffer-name) (buffer-string) "added sorting commands"))
+;; (magit-push)
+;; (yaoddmuse-post "EmacsWiki" "simple-call-tree+.el" (buffer-name) (buffer-string) "update")
 
