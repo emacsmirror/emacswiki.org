@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Thu Nov 29 10:05:41 2012 (-0800)
+;; Last-Updated: Sat Dec  1 17:42:18 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 9330
+;;     Update #: 9354
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -86,6 +86,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2012/12/01 dadams
+;;     icicle-find-file-of-content-multi-complete:
+;;       Use icicle-completion--embedded-envvar-table & completion-file-name-table, not internal Emacs.
 ;; 2012/11/29 dadams
 ;;     icicle-find-file-of-content: Typo: removed -other-window.
 ;; 2012/11/28 dadams
@@ -3360,6 +3363,8 @@
 ;;       macros needs to be byte-compiled anew after loading the updated macros.
 ;; ****************************************************************************************************
 ;;
+;; 2012/12/01 dadams
+;;     Moved to icicles-opt.el: icicle-kbd, icicle-edmacro-parse-keys, icicle-read-kbd-macro.
 ;; 2012/10/08 dadams
 ;;     icicle-define-sort-command: alphabetically -> alphabetical in doc string.
 ;; 2012/10/06 dadams
@@ -5109,6 +5114,11 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2012/12/01 dadams
+;;     Added: icicle-bind-custom-completion-keys, icicle-restore-custom-completion-keys (factored out).
+;;     Removed load of icicles-mac.el (icicle-kbd is now a function in icicles-opt.el).
+;;     icicle-(bind|restore)-completion-keys: Use icicle-(bind|restore)-custom-completion-keys.
+;;     Escape semicolon (;) in icicle-kbd string args (just for Emacs 20 M-; in Lisp code).
 ;; 2012/11/27 dadams
 ;;     icicle-define-icicle-maps: Added icicle-apropos-value to icicle-apropos-menu-map.
 ;; 2012/11/20 dadams
@@ -6262,6 +6272,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2012/12/01 dadams
+;;     Added: icicle-completion-key-bindings.
+;;     Moved here from icicles-mac.el: icicle-kbd, icicle-edmacro-parse-keys, icicle-read-kbd-macro.
+;;     icicle-kbd: Now a function, not a macro.
 ;; 2012/11/28 dadams
 ;;     Removed: icicle-transform-function - moved to icicles-var.el.
 ;; 2012/11/27 dadams
@@ -7027,6 +7041,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2012/12/01 dadams
+;;     Removed load of icicles-mac.el (icicle-kbd is now a function in icicles-opt.el).
 ;; 2012/11/28 dadams
 ;;     Added: icicle-transform-function - moved here from icicles-opt.el.
 ;;     Removed: icicle-vardoc-last-initial-option-cand-set.
