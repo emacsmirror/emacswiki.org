@@ -7,13 +7,13 @@
 ;; Copyright (C) 2011-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Oct  7 13:12:52 2011 (-0700)
 ;; Version: 21.0
-;; Last-Updated: Fri Sep 28 14:44:31 2012 (-0700)
+;; Last-Updated: Sat Dec  1 17:06:36 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 158
+;;     Update #: 164
 ;; URL: http://www.emacswiki.org/emacs-en/naked.el
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/NaKeD
 ;; Keywords: lisp, key, print, format, help
-;; Compatibility: GNU Emacs 20.x, 21.x, 22.x, 23.x
+;; Compatibility: GNU Emacs 20.x, 21.x, 22.x, 23.x, 24.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -64,7 +64,8 @@
 ;;    "S-<insert>").  (Internally, this sequence of events is the
 ;;    vector [S-insert].)
 ;;
-;;  * Use macro `naked' instead of macro `kbd'.
+;;  * Use function `naked' instead of `kbd' (which is a function
+;;    startin with Emacs 24.3 and a macro before then).
 ;;
 ;;    The former allows its argument key-sequence description to use
 ;;    naked keys, not clothed in angle brackets.  E.g., (naked
@@ -82,7 +83,7 @@
 ;;  function keys to be fully clothed in angle brackets.  E.g.: (naked
 ;;  "C-M-<delete>" t).
 ;;
-;;  In addition, even without an non-nil ANGLES argument, macro
+;;  In addition, even without an non-nil ANGLES argument, function
 ;;  `naked' does the right thing for keys expressed using angle
 ;;  brackets.  IOW, (naked "M-<foobar>") returns the same thing that
 ;;  (naked "M-foobar") does: [M-foobar].
@@ -93,6 +94,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/12/01 dadams
+;;     Change naked from a macro to a function (like Emacs 24.3).
 ;; 2012/09/28 dadams
 ;;     naked-edmacro-parse-keys:
 ;;       Better fix for M-TAB.  Do not assume that function keys are lowercase.
@@ -279,8 +282,8 @@ brackets.  For example:
       (naked-edmacro-parse-keys start end angles)
     (setq last-kbd-macro  (naked-edmacro-parse-keys (buffer-substring start end) nil angles))))
 
-;; Same as `icicle-kbd' in `icicles-mac.el'.
-(defmacro naked (keys &optional angles)
+;; Same as `icicle-kbd' in `icicles-opt.el'.
+(defun naked (keys &optional angles)
   "Like `kbd', but does not use angle brackets, by default.
 With non-nil optional arg ANGLES, expect key descriptions to use angle
 brackets (<...>), exactly like `kbd'.  Otherwise, expect key
