@@ -52,12 +52,12 @@ You can [[Customize]] it, using option '''`<tt>[[Icicles - Customization and Gen
 [:IcicleModeBindings]
 == Icicle-Mode Bindings ==
 
-Most ''Icicle''-mode bindings are in the '''Icicles''' menu-bar menu.  In
+Most top-level ''Icicle''-mode bindings are in the '''Icicles''' menu-bar menu.  In
 addition, option '''`<tt>[[Icicles - Customization and General Tips#icicle-top-level-key-bindings|icicle-top-level-key-bindings]]</tt>'''' causes
 '''Icicles''' to bind some keyboard keys to some top-level '''Icicles'''
 commands.  Some of these take the place of similar,
 global bindings whenever you are in ''Icicle'' mode.  Typically, these
-top-level commands are '''Icicles''' [[multi-command]] versions of the vanilla Emacs commands.
+top-level commands are '''Icicles''' [[multi-command]] versions of vanilla Emacs commands.
 
 You can customize option `icicle-top-level-key-bindings' to
 specify the top-level '''Icicles''' commands that you want to bind, and
@@ -91,6 +91,7 @@ With the default value of `icicle-top-level-key-bindings',
 [:icicle-execute-named-keyboard-macro]
 [:icicle-kmacro]
 [:icicle-switch-to-from-minibuffer]
+[:icicle-select-frame]
 * '''`##C-c '##'''' -- [[Icicles - Search Commands, Overview#icicle-occur|`icicle-occur']]
 * '''`##C-c =##'''' -- [[Icicles - Other Search Commands#IciclesImenu|`icicle-imenu']]
 * '''`##C-c ^##''''  -- [[Icicles - Search Commands, Overview#icicle-search-keywords|`icicle-search-keywords']]
@@ -109,6 +110,7 @@ With the default value of `icicle-top-level-key-bindings',
 * '''`C-x M-e'''' -- `icicle-execute-named-keyboard-macro'
 * '''`S-f4'''' -- `icicle-kmacro'
 * '''`pause'''' -- [[Icicles - Moving Between the Minibuffer and Other Buffers|`icicle-switch-to/from-minibuffer']]
+* '''`C-x 5 o'''' -- `icicle-select-frame'
 
 [:icicle-complete-keys]
 '''`S-TAB'''' is bound, in effect, to [[Icicles - Key Completion|`icicle-complete-keys']], which
@@ -460,11 +462,19 @@ to keys in ''Icicle'' mode -- they are ''not'' bound by '''Icicles''' (except to
 
 
 
+
+
+
+
+
+
+
+
 [:MinibufferBindings]
 == Minibuffer Bindings ==
 
-There are many key bindings available while input is read in the
-[[minibuffer]].  Most of
+There are many key bindings available while your input is read in the
+[[minibuffer]], for example, while you are editing it.  Most of
 these keys are bound in the minibuffer [[completion]]
 keymaps, but some are bound in the `*Completions*' buffer keymap and some are bound when reading input without [[completion]].
 
@@ -476,6 +486,11 @@ complete set of completion candidates.  The associated key
 bindings are indicated in the menu items, so this can be a good
 way to learn minibuffer and `*Completions*' bindings.
 
+You can easily customize all of the '''Icicles''' minibuffer key
+bindings.  There are several user options available for this.
+This section describes the keys that are bound by default.
+Section [[Icicles - Customizing Key Bindings]] describes the options
+available for customizing them.
 
 The following key is helpful during any minibuffer input.  It pops
 up the `*Help*' buffer with information about using the minibuffer
@@ -490,6 +505,12 @@ The following key bindings are made for the minibuffer completion
 keymaps.  They are in effect whenever you are using the minibuffer
 for input with completion (e.g. `completing-read',
 `read-file-name', `M-x').
+
+The keys mentioned are those that are bound by default and used in
+the documentation, but you can customize any or all of them using
+[[option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-completion-key-bindings|icicle-completion-key-bindings]]</tt>''''.
+
+
 
 [:icicle-next-candidate-per-mode]
 [:icicle-previous-candidate-per-mode]
@@ -884,7 +905,7 @@ completions.  For explanation, see [[Icicles - Help on Candidates]] and [[Icicle
 * '''`C-M-home'''' -- `icicle-help-on-previous-prefix-candidate'
 
 
-(These are only default key bindings.
+(Again, these are only default key bindings.
 See [[Icicles - Customizing Key Bindings]].)
 
 
