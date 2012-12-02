@@ -19,7 +19,8 @@ Here's what you need.  It won't completely purge Emacs from insulting you with t
 
 * Use function `naked-key-description' instead of `key-description'.  The former outputs naked key descriptions: no angle brackets around function keys.  E.g., if ##KEY## is the sequence of events produced by holding the ##Shift## key while hitting the ##Insert## key, then ##(naked-key-description KEY)## returns ##"S-insert"## (and not ##"S-<insert>"##).  (Internally, this sequence of events is the vector ##[S-insert]##.)
 
-* Use [[macro]] `naked' instead of macro `kbd'.  The former accepts its argument key-sequence description whether it uses angle bracket or naked key notation.  E.g., ##(naked "C-M-delete")## has the same effect as ##(naked "C-M-<delete>")##, which is the same as the effect of ##(kbd "C-M-<delete>")##.
+* Use function `naked' instead of `kbd' (which is a function
+starting with Emacs 24.3 and a macro before then).  The former accepts its argument key-sequence description whether it uses angle bracket or naked key notation.  E.g., ##(naked "C-M-delete")## has the same effect as ##(naked "C-M-<delete>")##, which is the same as the effect of ##(kbd "C-M-<delete>")##.
 
 * Use [[command]] `naked-read-kbd-macro' instead of `read-kbd-macro'.
 
@@ -36,7 +37,7 @@ I will contact you by mail once I have looked into this a bit more. -- JonasBern
 
 
 [new:DrewAdams:2012-09-27 22:04 UTC]
-Please try the latest.  I uploaded a fix for the `M-TAB' case, which was indeed a bug.  The code was not handling `M-TAB' differently from `M-tab'.  This is fixed in <tt>[[naked.el]]</tt>, and I submitted vanilla Emacs bug [[http://debbugs.gnu.org/cgi/bugreport.cgi?bug=12535|#12535]] about this, with a patch.  I also made macro `naked' handle angle-bracketed key descriptions even without non-`nil' arg ##ANGLES##.  In that case, #12535 is fixed, but I left it unfixed for the non-`nil' ##ANGLES## case, to be consistent with vanilla Emacs.
+Please try the latest.  I uploaded a fix for the `M-TAB' case, which was indeed a bug.  The code was not handling `M-TAB' differently from `M-tab'.  This is fixed in <tt>[[naked.el]]</tt>, and I submitted vanilla Emacs bug [[http://debbugs.gnu.org/cgi/bugreport.cgi?bug=12535|#12535]] about this, with a patch.  I also made `naked' handle angle-bracketed key descriptions even without non-`nil' arg ##ANGLES##.  In that case, #12535 is fixed, but I left it unfixed for the non-`nil' ##ANGLES## case, to be consistent with vanilla Emacs.
 
 Thx.  Feel free to follow up with anything else (e.g., your functions). -- DrewAdams
 
