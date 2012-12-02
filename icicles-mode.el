@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Dec  1 10:04:47 2012 (-0800)
+;; Last-Updated: Sat Dec  1 17:30:23 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 9198
+;;     Update #: 9218
 ;; URL: http://www.emacswiki.org/icicles-mode.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -59,7 +59,9 @@
 ;;  Non-interactive functions defined here:
 ;;
 ;;    `icicle-activate-mark', `icicle-add-menu-item-to-cmd-history',
-;;    `icicle-bind-completion-keys', `icicle-bind-isearch-keys',
+;;    `icicle-bind-completion-keys',
+;;    `icicle-bind-custom-completion-keys',
+;;    `icicle-bind-isearch-keys',
 ;;    `icicle-bind-key-completion-keys-for-map-var',
 ;;    `icicle-bind-key-completion-keys-in-keymaps-from',
 ;;    `icicle-bind-other-keymap-keys',
@@ -70,6 +72,7 @@
 ;;    `icicle-redefine-standard-options',
 ;;    `icicle-redefine-std-completion-fns',
 ;;    `icicle-restore-completion-keys',
+;;    `icicle-restore-custom-completion-keys',
 ;;    `icicle-restore-other-keymap-keys',
 ;;    `icicle-restore-region-face',
 ;;    `icicle-restore-standard-functions',
@@ -146,15 +149,9 @@
   ;; ad-activate, ad-copy-advice-info, ad-deactivate, ad-disable-advice, ad-enable-advice,
   ;; ad-find-some-advice, ad-get-arg, ad-is-active, ad-set-advice-info
 
-(eval-when-compile
- (or (condition-case nil
-         (load-library "icicles-mac")   ; Use load-library to ensure latest .elc.
-       (error nil))
-     (require 'icicles-mac)))           ; Require, so can load separately if not on `load-path'.
-  ;;  icicle-kbd
 (require 'icicles-opt)                  ; (This is required anyway by `icicles-var.el'.)
   ;; icicle-buffer-configs, icicle-buffer-extras, icicle-change-region-background-flag,
-  ;; icicle-default-cycling-mode, icicle-incremental-completion, icicle-default-value,
+  ;; icicle-default-cycling-mode, icicle-incremental-completion, icicle-default-value, icicle-kbd,
   ;; icicle-kmacro-ring-max, icicle-minibuffer-setup-hook, icicle-modal-cycle-down-keys,
   ;; icicle-modal-cycle-up-keys, icicle-functions-to-redefine, icicle-regexp-search-ring-max,
   ;; icicle-region-background, icicle-search-ring-max, icicle-show-Completions-initially-flag,
@@ -3700,136 +3697,23 @@ complete)"))
                                         ;   `C-up',   `C-down',   `C-prior',   `C-next',
                                         ; `C-M-up', `C-M-down', `C-M-prior', `C-M-next',
                                         ; `C-S-up', `C-S-down', `C-S-prior', `C-S-next',
-  (define-key map (icicle-kbd "M-return")  'icicle-candidate-read-fn-invoke) ;`M-RET' as `M-return'
-  (define-key map (icicle-kbd "C-M-m")     'icicle-candidate-read-fn-invoke) ;`M-RET' as `ESC RET'
-  (define-key map (icicle-kbd "C-S-return") 'icicle-candidate-alt-action) ; `C-S-return' (`C-S-RET')
-  (define-key map (icicle-kbd "delete")    'icicle-remove-candidate) ; `delete'
-  (define-key map (icicle-kbd "S-delete")  'icicle-delete-candidate-object) ; `S-delete'
-  (define-key map (icicle-kbd "C-w")       'icicle-kill-region) ; `C-w'
-  (define-key map (icicle-kbd "C-!")       'icicle-all-candidates-action) ; `C-!'
-  (define-key map (icicle-kbd "C-|")       'icicle-all-candidates-alt-action) ; `C-|'
-  (define-key map (icicle-kbd "M-!")       'icicle-all-candidates-list-action) ; `M-!'
-  (define-key map (icicle-kbd "M-|")       'icicle-all-candidates-list-alt-action) ; `M-|'
-  (define-key map (icicle-kbd "C-M-/")     'icicle-prefix-complete) ; `C-M-/', for `dabbrev.el'.
-  (define-key map (icicle-kbd "M-h")       'icicle-history) ; `M-h'
-  (define-key map (icicle-kbd "M-pause")   'icicle-keep-only-past-inputs) ; `M-pause'
-  (define-key map (icicle-kbd "C-pause") 'icicle-toggle-highlight-historical-candidates) ;`C-pause'
-  (define-key map (icicle-kbd "S-pause")   'icicle-toggle-highlight-saved-candidates) ; `S-pause'
-  ;;$$$$$$  (define-key map (icicle-kbd "C-M-pause") 'icicle-other-history) ; `C-M-pause'
-  (define-key map (icicle-kbd "C-insert")  'icicle-switch-to-Completions-buf) ; `C-insert'
-  (define-key map (icicle-kbd "insert")    'icicle-save/unsave-candidate) ; `insert'
+  (icicle-bind-custom-completion-keys map))
 
-  ;; In Emacs 22+, local is parent of local-completion
-  (unless (eq minibuffer-local-map (keymap-parent minibuffer-local-completion-map))
-    ;; Note: `setup-keys.el' binds `C-o' to `1on1-fit-minibuffer-frame' if defined.
-    (define-key map (icicle-kbd "C-a")     'icicle-beginning-of-line+) ; `C-a'
-    (define-key map (icicle-kbd "C-e")     'icicle-end-of-line+) ; `C-e'
-    (define-key map (icicle-kbd "C-M-v")   'icicle-scroll-forward) ; `C-M-v'
-    (define-key map (icicle-kbd "C-M-S-v") 'icicle-scroll-backward) ; `C-M-S-v' (aka `C-M-V')
-    (define-key map (icicle-kbd "C-=")     'icicle-insert-string-from-variable) ; `C-='
-    ;; Replaces `tab-to-tab-stop':
-    (define-key map (icicle-kbd "M-i")     'icicle-clear-current-history) ; `M-i'
-    ;; Replaces `kill-sentence':
-    (define-key map (icicle-kbd "M-k")     'icicle-erase-minibuffer-or-history-element) ; `M-k'
-    (define-key map (icicle-kbd "M-o")     'icicle-insert-history-element) ; `M-o'
-    (define-key map (icicle-kbd "M-.")     'icicle-insert-string-at-point) ; `M-.'
-    (define-key map (icicle-kbd "C-x C-f") 'icicle-resolve-file-name) ; `C-x C-f'
-    (define-key map (icicle-kbd "M-:")     'icicle-pp-eval-expression-in-minibuffer) ; `M-:'
-    (when (fboundp 'icicle-yank-secondary)
-      (define-key map (icicle-kbd "C-M-y") 'icicle-yank-secondary)) ; `C-M-y'
-    (define-key map (icicle-kbd "C-M-pause")  'icicle-other-history) ; `C-M-pause'
-    (define-key map (icicle-kbd "M-S-backspace") 'icicle-erase-minibuffer) ; `M-S-backspace'
-    (define-key map (icicle-kbd "M-S-delete") 'icicle-erase-minibuffer) ; `M-S-delete'
-    (dolist (key  icicle-completing-read+insert-keys)
-      (define-key map key 'icicle-completing-read+insert)) ; `C-M-S-c'
-    (dolist (key  icicle-read+insert-file-name-keys)
-      (define-key map key 'icicle-read+insert-file-name)) ; `C-M-S-f'
-    )
-
-  ;; Need `C-g', even if `minibuffer-local-completion-map' inherits from `minibuffer-local-map'.
-  (define-key map (icicle-kbd "C-g")       'icicle-abort-recursive-edit) ; `C-g'
-  (define-key map (icicle-kbd "M-q")       'icicle-dispatch-M-q) ; `M-q'
-  (define-key map (icicle-kbd "C-l")       'icicle-retrieve-previous-input) ; `C-l'
-  (define-key map (icicle-kbd "C-S-l")     'icicle-retrieve-next-input) ; `C-L' (`C-S-l')
-  (define-key map (icicle-kbd "M-$")       'icicle-candidate-set-truncate) ; `M-$'
-  (define-key map (icicle-kbd "C-~")       'icicle-candidate-set-complement) ; `C-~'
-  (define-key map (icicle-kbd "C--")       'icicle-candidate-set-difference) ; `C--'
-  (define-key map (icicle-kbd "C-+")       'icicle-candidate-set-union) ; `C-+'
-  (define-key map (icicle-kbd "C-*")       'icicle-candidate-set-intersection) ; `C-*'
-  (define-key map (icicle-kbd "C->")       'icicle-candidate-set-save-more) ; `C->'
-  (define-key map (icicle-kbd "C-M->")     'icicle-candidate-set-save) ; `C-M->'
-  (define-key map (icicle-kbd "C-(")       'icicle-next-TAB-completion-method) ; `C-('
-  (define-key map (icicle-kbd "M-(")       'icicle-next-S-TAB-completion-method) ; `M-('
-  (define-key map (icicle-kbd "C-)")       'icicle-candidate-set-save-more-selected) ; `C-)'
-  (define-key map (icicle-kbd "C-M-)")     'icicle-candidate-set-save-selected) ; `C-M-)'
-  (define-key map (icicle-kbd "C-M-<")     'icicle-candidate-set-retrieve) ; `C-M-<'
-  (define-key map (icicle-kbd "C-M-}")     'icicle-candidate-set-save-to-variable) ; `C-M-}'
-  (define-key map (icicle-kbd "C-M-{")     'icicle-candidate-set-retrieve-from-variable) ; `C-M-{'
-  (define-key map (icicle-kbd "C-}")       'icicle-candidate-set-save-persistently) ; `C-}'
-  (define-key map (icicle-kbd "C-{")       'icicle-candidate-set-retrieve-persistent) ; `C-{'
-  (define-key map (icicle-kbd "C-%")       'icicle-candidate-set-swap) ; `C-%'
-  (define-key map (icicle-kbd "M-%")       'icicle-regexp-quote-input) ; `M-%'
-  (define-key map (icicle-kbd "C-:")       'icicle-candidate-set-define) ; `C-:'
-  (define-key map (icicle-kbd "C-M-j")     'icicle-insert-list-join-string) ; `C-M-j'
-  (define-key map (icicle-kbd "C-,")       'icicle-change-sort-order) ; `C-,'
-  (define-key map (icicle-kbd "C-M-\;")     'icicle-toggle-ignoring-comments) ; `C-M-;'
-  (define-key map (icicle-kbd "C-`")       'icicle-toggle-regexp-quote) ; `C-`'
-  (define-key map (icicle-kbd "C-M-.")     'icicle-toggle-dot) ; `C-M-.'
-  (define-key map (icicle-kbd "C-M-`")     'icicle-toggle-literal-replacement) ; `C-M-`'
-  (define-key map (icicle-kbd "C-<")       'icicle-candidate-set-retrieve-more) ; `C-<'
-  (define-key map (icicle-kbd "C-M-_")     'icicle-toggle-proxy-candidates) ; `C-M-_'
-  (define-key map (icicle-kbd "C-$")       'icicle-toggle-transforming) ; `C-$'
-  ;; In Emacs 22+, local is parent of local-completion
-  (unless (eq minibuffer-local-map (keymap-parent minibuffer-local-completion-map))
-    ;; $$$$$$ Keep `C-?' also for a while, undocumented, for backward compatibility only.
-    (define-key map (icicle-kbd "C-?")     'icicle-minibuffer-help) ; `C-?'
-    (define-key map (icicle-kbd "M-?")     'icicle-minibuffer-help)) ; `M-?'
-  (define-key map (icicle-kbd "C-.")       'icicle-dispatch-C-.) ; `C-.'
-  (define-key map (icicle-kbd "C-#")       'icicle-cycle-incremental-completion) ; `C-#'
-  (define-key map (icicle-kbd "C-\"")      'icicle-toggle-expand-to-common-match) ; `C-"'
-  (define-key map (icicle-kbd "C-M-\"")    'icicle-cycle-expand-to-common-match) ; `C-M-"'
-  (define-key map (icicle-kbd "M-\;")       'icicle-toggle-search-replace-common-match) ; `M-;'
-  (define-key map (icicle-kbd "C-^")       'icicle-dispatch-C-^) ; `C-^'
-  (define-key map (icicle-kbd "C-M-^")     'icicle-toggle-completions-format) ; `C-M-^'
-  (define-key map (icicle-kbd "C-S-a")     'icicle-toggle-case-sensitivity) ; `C-S-a' (`C-A')
-  (define-key map (icicle-kbd "M-~")       'icicle-toggle-~-for-home-dir) ; `M-~'
-  (define-key map (icicle-kbd "C-M-~")     'icicle-toggle-search-complementing-domain) ; `C-M-~'
-  (define-key map (icicle-kbd "M-g")       'icicle-toggle-C-for-actions) ; `M-g'
-  (define-key map (icicle-kbd "M-,")       'icicle-dispatch-M-comma) ; `M-,'
-  (define-key map (icicle-kbd "C-M-,")     'icicle-toggle-alternative-sorting) ; `C-M-,'
-  (define-key map (icicle-kbd "C-M-+")     'icicle-plus-saved-sort) ; `C-M-+'
-  (define-key map (icicle-kbd "M-+")       'icicle-widen-candidates) ; `M-+'
-  (define-key map (icicle-kbd "M-*")       'icicle-narrow-candidates) ; `M-*'
-  (define-key map (icicle-kbd "M-&")       'icicle-narrow-candidates-with-predicate) ; `M-&'
-  (define-key map (icicle-kbd "M-_")       'icicle-dispatch-M-_) ; `M-_'
-  (define-key map (icicle-kbd "C-M-&")     'icicle-save-predicate-to-variable) ; `C-M-&'
-  (define-key map (icicle-kbd "S-SPC")     'icicle-apropos-complete-and-narrow) ; `S-SPC'
-  (define-key map (icicle-kbd "S-return")  'icicle-apropos-complete-and-exit) ; `S-return'
-  (define-key map (icicle-kbd "S-backspace") 'icicle-apropos-complete-and-widen) ; `S-backspace'
-  (define-key map (icicle-kbd "C-v")       'icicle-scroll-Completions-forward) ; `C-v'
-  (define-key map (icicle-kbd "M-v")       'icicle-scroll-Completions-backward) ; `M-v'
-  (define-key map (icicle-kbd ".")         'icicle-insert-dot-command) ; `.'
-  (define-key map (icicle-kbd "M-m")       'icicle-toggle-show-multi-completion) ; `M-m'
-  (define-key map (icicle-kbd "C-x .")     'icicle-dispatch-C-x.) ; `C-x .'
-  (define-key map (icicle-kbd "C-x :")     'icicle-toggle-network-drives-as-remote) ; `C-x :'
-  (define-key map (icicle-kbd "C-x C-a")   'icicle-toggle-annotation) ; `C-x C-a'
-  (when (fboundp 'icicle-cycle-image-file-thumbnail) ; Emacs 23+
-    (define-key map (icicle-kbd "C-x t")   'icicle-cycle-image-file-thumbnail)) ; `C-x t'
-  (when (fboundp 'doremi)
-    (define-key map (icicle-kbd "C-x w")   'icicle-doremi-candidate-width-factor+) ; `C-x w'
-    (define-key map (icicle-kbd "C-x |")   'icicle-doremi-inter-candidates-min-spaces+) ; `C-x |'
-    (define-key map (icicle-kbd "C-x #")   'icicle-doremi-increment-max-candidates+) ; `C-x #'
-    (when (fboundp 'text-scale-increase) ; Emacs 23+.
-      (define-key map (icicle-kbd "C-x -") 'icicle-doremi-zoom-Completions+)) ; `C-x -'
-    (when (eq (icicle-current-TAB-method) 'swank)
-      (define-key map (icicle-kbd "C-x 1") 'icicle-doremi-increment-swank-timeout+)
-      (define-key map (icicle-kbd "C-x 2") 'icicle-doremi-increment-swank-prefix-length+)))
-  ;; `minibuffer-completion-help' got wiped out by remap for self-insert.
-  (define-key map (icicle-kbd "?")         'icicle-self-insert) ; `?'
-  (define-key map (icicle-kbd "SPC")       'icicle-self-insert) ; " "
-  ;; In Emacs 22+, local is parent of local-completion
-  (unless (eq minibuffer-local-map (keymap-parent minibuffer-local-completion-map))
-    (define-key map (icicle-kbd "C-j")     'icicle-insert-newline-in-minibuffer))) ; `C-j'
+(defun icicle-bind-custom-completion-keys (map &optional defs)
+  "Bind customizable keys for minibuffer completion map MAP.
+These are the keys defined by option `icicle-completion-key-bindings'.
+MAP is `minibuffer-local-completion-map' or
+`minibuffer-local-must-match-map'."
+  (let (key command condition)
+    (unless defs  (setq defs  icicle-completion-key-bindings))
+    (dolist (key-def  defs)
+      (setq key        (car key-def)
+            command    (cadr key-def)
+            condition  (car (cddr key-def)))
+      (when (eval condition)
+        (if (symbolp key)
+            (icicle-remap key command map)
+          (define-key map key command))))))
 
 (defun icicle-restore-completion-keys (map)
   "Restore standard keys for minibuffer completion map MAP.
@@ -3965,133 +3849,7 @@ MAP is `minibuffer-local-completion-map',
   (dolist (key  icicle-prefix-cycle-next-help-keys)            (define-key map key nil))
   (dolist (key  icicle-apropos-cycle-previous-help-keys)       (define-key map key nil))
   (dolist (key  icicle-apropos-cycle-next-help-keys)           (define-key map key nil))
-
-  (define-key map (icicle-kbd "M-return")  nil)
-  (define-key map (icicle-kbd "C-M-m")     nil)
-  (define-key map (icicle-kbd "C-S-return") nil)
-  (define-key map (icicle-kbd "delete")    nil)
-  (define-key map (icicle-kbd "S-delete")  nil)
-  (define-key map (icicle-kbd "C-w")       nil)
-  (define-key map (icicle-kbd "C-!")       nil)
-  (define-key map (icicle-kbd "C-|")       nil)
-  (define-key map (icicle-kbd "M-!")       nil)
-  (define-key map (icicle-kbd "M-|")       nil)
-  (define-key map (icicle-kbd "C-M-/")     nil)
-  (define-key map (icicle-kbd "M-h")       nil)
-  (define-key map (icicle-kbd "M-pause")   nil)
-  (define-key map (icicle-kbd "C-pause")   nil)
-  (define-key map (icicle-kbd "S-pause")   nil)
-  ;; $$$$$$ (define-key map (icicle-kbd "C-M-pause") nil)
-  (define-key map (icicle-kbd "C-insert")  nil)
-  (define-key map (icicle-kbd "insert")    nil)
-
-  ;; In Emacs 22+, local is parent of local-completion
-  (unless (eq minibuffer-local-map (keymap-parent minibuffer-local-completion-map))
-    (define-key map (icicle-kbd "C-a")     nil)
-    (define-key map (icicle-kbd "C-e")     nil)
-    (define-key map (icicle-kbd "C-=")     nil)
-    (define-key map (icicle-kbd "M-i")     nil)
-    (define-key map (icicle-kbd "M-k")     nil)
-    (define-key map (icicle-kbd "M-o")     nil)
-    (define-key map (icicle-kbd "M-.")     nil)
-    (define-key map (icicle-kbd "C-x C-f") nil)
-    (define-key map (icicle-kbd "M-:")     nil)
-    (define-key map (icicle-kbd "C-M-y")   nil)
-    (define-key map (icicle-kbd "C-M-pause") nil)
-    (define-key map (icicle-kbd "M-S-backspace") nil)
-    (define-key map (icicle-kbd "M-S-delete") nil)
-    (dolist (key  icicle-completing-read+insert-keys)
-      (define-key minibuffer-local-must-match-map key nil))
-    (dolist (key  icicle-read+insert-file-name-keys)
-      (define-key minibuffer-local-must-match-map key nil))
-    )
-
-  (define-key map (icicle-kbd "M-q")       nil)
-  (define-key map (icicle-kbd "C-l")       nil)
-  (define-key map (icicle-kbd "C-S-l")     nil)
-  (define-key map (icicle-kbd "M-$")       nil)
-  (define-key map (icicle-kbd "C-~")       nil)
-  (define-key map (icicle-kbd "C--")       nil)
-  (define-key map (icicle-kbd "C-+")       nil)
-  (define-key map (icicle-kbd "C-*")       nil)
-  (define-key map (icicle-kbd "C->")       nil)
-  (define-key map (icicle-kbd "C-M->")     nil)
-  (define-key map (icicle-kbd "C-(")       nil)
-  (define-key map (icicle-kbd "M-(")       nil)
-  (define-key map (icicle-kbd "C-)")       nil)
-  (define-key map (icicle-kbd "C-M-)")     nil)
-  (define-key map (icicle-kbd "C-M-<")     nil)
-  (define-key map (icicle-kbd "C-M-}")     nil)
-  (define-key map (icicle-kbd "C-M-{")     nil)
-  (define-key map (icicle-kbd "C-}")       nil)
-  (define-key map (icicle-kbd "C-{")       nil)
-  (define-key map (icicle-kbd "M-%")       nil)
-  (define-key map (icicle-kbd "C-:")       nil)
-  (define-key map (icicle-kbd "C-M-j")     nil)
-  (define-key map (icicle-kbd "C-,")       nil)
-  (define-key map (icicle-kbd "C-M-\;")     nil)
-  (define-key map (icicle-kbd "C-`")       nil)
-  (define-key map (icicle-kbd "C-M-.")     nil)
-  (define-key map (icicle-kbd "C-M-`")     nil)
-  (define-key map (icicle-kbd "C-<")       nil)
-  (define-key map (icicle-kbd "C-M-_")     nil)
-  (define-key map (icicle-kbd "C-$")       nil)
-  ;; In Emacs 22+, local is parent of local-completion
-  (unless (eq minibuffer-local-map (keymap-parent minibuffer-local-completion-map))
-    ;; $$$$$$ Keep `C-?' also for a while, undocumented, for backward compatibility only.
-    (define-key map (icicle-kbd "C-?")     nil)
-    (define-key map (icicle-kbd "M-?")     nil))
-  (define-key map (icicle-kbd "C-.")       nil)
-  (define-key map (icicle-kbd "C-#")       nil)
-  (define-key map (icicle-kbd "C-%")       nil)
-  (define-key map (icicle-kbd "C-\;")       nil)
-  (define-key map (icicle-kbd "M-\;")       nil)
-  (define-key map (icicle-kbd "C-^")       nil)
-  (define-key map (icicle-kbd "C-M-^")     nil)
-  (define-key map (icicle-kbd "C-S-a")     nil)
-  (define-key map (icicle-kbd "M-~")       nil)
-  (define-key map (icicle-kbd "C-M-~")     nil)
-  (define-key map (icicle-kbd "M-g")       nil)
-  (define-key map (icicle-kbd "M-,")       nil)
-  (define-key map (icicle-kbd "C-M-,")     nil)
-  (define-key map (icicle-kbd "C-M-+")     nil)
-  (define-key map (icicle-kbd "M-+")       nil)
-  (define-key map (icicle-kbd "M-*")       nil)
-  (define-key map (icicle-kbd "M-&")       nil)
-  (define-key map (icicle-kbd "M-_")       nil)
-  (define-key map (icicle-kbd "C-M-&")     nil)
-  (define-key map (icicle-kbd "S-SPC")     nil)
-  (define-key map (icicle-kbd "S-return")  nil)
-  (define-key map (icicle-kbd "S-backspace") nil)
-  (define-key map (icicle-kbd "C-v")       nil)
-  (define-key map (icicle-kbd "M-v")       nil)
-  (define-key map (icicle-kbd ".")         nil)
-  (define-key map (icicle-kbd "M-m")       nil)
-  (define-key map (icicle-kbd "C-x .")     nil)
-  (define-key map (icicle-kbd "C-x :")     nil)
-  (define-key map (icicle-kbd "C-x C-a")   nil)
-  (when (fboundp 'icicle-cycle-image-file-thumbnail) ; Emacs 23+
-    (define-key map (icicle-kbd "C-x t")   nil))
-  (when (fboundp 'doremi)
-    (define-key map (icicle-kbd "C-x w")   nil)
-    (define-key map (icicle-kbd "C-x |")   nil)
-    (define-key map (icicle-kbd "C-x #")   nil)
-    (when (fboundp 'text-scale-increase)
-      (define-key map (icicle-kbd "C-x -") nil))
-    (define-key map (icicle-kbd "C-x 1")   nil)
-    (define-key map (icicle-kbd "C-x 2")   nil))
-  ;; Do these last. -----------------
-  (define-key map (icicle-kbd "C-i")       'minibuffer-complete)
-  (define-key map (icicle-kbd "tab")       'minibuffer-complete)
-  (define-key map (icicle-kbd "?")         'minibuffer-completion-help)
-  (define-key map (icicle-kbd "SPC")       'minibuffer-complete-word)
-  (define-key map (icicle-kbd "C-g")       (if (and (fboundp 'minibuffer-keyboard-quit)
-                                                    delete-selection-mode)
-                                                 'minibuffer-keyboard-quit
-                                               'abort-recursive-edit))
-  ;; In Emacs 22+, local is parent of local-completion
-  (unless (eq minibuffer-local-map (keymap-parent minibuffer-local-completion-map))
-    (define-key map (icicle-kbd "C-j")     'exit-minibuffer))
+  (icicle-restore-custom-completion-keys map)
   (define-key map (icicle-kbd "M-p")       'previous-history-element)
   (define-key map (icicle-kbd "M-n")       'next-history-element)
   (define-key map (icicle-kbd "up")        'previous-history-element)
@@ -4099,6 +3857,21 @@ MAP is `minibuffer-local-completion-map',
   (define-key map (icicle-kbd "M-v")       'switch-to-completions)
   (define-key map (icicle-kbd "prior")     'switch-to-completions)
   (define-key map (icicle-kbd "next")      'next-history-element))
+
+(defun icicle-restore-custom-completion-keys (map)
+  "Restore customizable keys for minibuffer completion map MAP.
+These are the keys defined by option `icicle-completion-key-bindings'.
+MAP is `minibuffer-local-completion-map',
+`minibuffer-local-filename-completion-map', or
+`minibuffer-local-must-match-map'."
+  (let (key condition)
+    (dolist (key-def  icicle-completion-key-bindings)
+      (setq key        (car key-def)
+            condition  (car (cddr key-def)))
+      (when (eval condition)
+        (if (symbolp key)
+            (icicle-remap key nil map)
+          (define-key map key nil))))))
 
 (defun icicle-minibuffer-setup ()
   "Run in minibuffer on activation, to enable completion cycling.
