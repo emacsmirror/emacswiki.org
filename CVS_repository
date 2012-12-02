@@ -1,5 +1,9 @@
+This repository was discontinued in favor of the [[Git repository]].
+
+== Old Information ==
+
 Tennis Smith created a project on Source Forge for all the elisp files uploaded to the wiki.
-A cron job updates the repository every 24h.
+A cron job updated the repository every 24h.
 This repository is read-only. You need to upload new releases to the wiki.
 
 * http://sourceforge.net/projects/emacswikicode
