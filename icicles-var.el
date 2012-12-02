@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Nov 28 15:42:46 2012 (-0800)
+;; Last-Updated: Sat Dec  1 16:54:10 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 1677
+;;     Update #: 1680
 ;; URL: http://www.emacswiki.org/icicles-var.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -189,14 +189,8 @@
 
 (require 'apropos-fn+var nil t) ;; (no error if not found): apropos-command,
                                 ;; apropos-function, apropos-option, apropos-variable
-(eval-when-compile
- (or (condition-case nil
-         (load-library "icicles-mac")   ; Use load-library to ensure latest .elc.
-       (error nil))
-     (require 'icicles-mac)))           ; Require, so can load separately if not on `load-path'.
-  ;;  icicle-kbd
 
-(require 'icicles-opt) ;; icicle-sort-comparer
+(require 'icicles-opt) ;; icicle-kbd, icicle-sort-comparer
 
 ;;; Defvars to quiet byte-compiler:
 (defvar kmacro-ring-max)                ; Defined in `kmacro.el' in Emacs 22+.
