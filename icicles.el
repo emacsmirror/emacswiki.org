@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Wed Nov 28 08:45:34 2012 (-0800)
+;; Last-Updated: Sat Dec  1 16:45:00 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 23252
+;;     Update #: 23256
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -103,9 +103,8 @@
 ;;    `icicle-define-command', `icicle-define-file-command',
 ;;    `icicle-define-search-bookmark-command',
 ;;    `icicle-define-sort-command', `icicle-file-bindings',
-;;    `icicle-kbd', `icicle-maybe-cached-action',
-;;    `icicle-search-modes', `icicle-with-comments-hidden',
-;;    `icicle-with-selected-window'.
+;;    `icicle-maybe-cached-action', `icicle-search-modes',
+;;    `icicle-with-comments-hidden', `icicle-with-selected-window'.
 ;;
 ;;  Commands defined in Icicles -
 ;;
@@ -733,6 +732,7 @@
 ;;    `icicle-complete-keys-self-insert-ranges',
 ;;    `icicle-completing-read+insert-keys',
 ;;    `icicle-completion-history-max-length',
+;;    `icicle-completion-key-bindings',
 ;;    `icicle-Completions-display-min-input-chars',
 ;;    `icicle-completions-format',
 ;;    `icicle-Completions-mouse-3-menu-entries',
@@ -870,6 +870,7 @@
 ;;    `icicle-barf-if-outside-minibuffer', `icicle-binary-option-p',
 ;;    `icicle-bind-completion-keys',
 ;;    `icicle-bind-buffer-candidate-keys',
+;;    `icicle-bind-custom-completion-keys',
 ;;    `icicle-bind-file-candidate-keys', `icicle-bind-isearch-keys',
 ;;    `icicle-bind-key-completion-keys-for-map-var',
 ;;    `icicle-bind-key-completion-keys-in-keymaps-from',
@@ -1031,8 +1032,8 @@
 ;;    `icicle-insert-thesaurus-entry-cand-fn', `icicle-insert-thing',
 ;;    `icicle-invisible-face-p', `icicle-invisible-p',
 ;;    `icicle-isearch-complete-past-string', `icicle-join-nth-parts',
-;;    `icicle-key-description', `icicle-keys+cmds-w-prefix',
-;;    `icicle-kill-a-buffer',
+;;    `icicle-kbd', `icicle-key-description',
+;;    `icicle-keys+cmds-w-prefix', `icicle-kill-a-buffer',
 ;;    `icicle-kill-a-buffer-and-update-completions',
 ;;    `icicle-kmacro-action', `icicle-last-accessed-first-p',
 ;;    `icicle-last-modified-first-p', `icicle-levenshtein-match',
@@ -1126,6 +1127,7 @@
 ;;    `icicle-remove-saved-set-action',
 ;;    `icicle-replace-input-w-parent-dir', `icicle-require-match-p',
 ;;    `icicle-restore-completion-keys',
+;;    `icicle-restore-custom-completion-keys',
 ;;    `icicle-restore-other-keymap-keys',
 ;;    `icicle-restore-region-face',
 ;;    `icicle-restore-standard-commands',
