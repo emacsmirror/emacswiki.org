@@ -774,7 +774,7 @@ The toplevel functions will be sorted, and the functions in each branch will be 
   (simple-call-tree-sort (lambda (a b) (< (marker-position (second a))
                                           (marker-position (second b)))))
   (simple-call-tree-restore-state (simple-call-tree-store-state))
-  (setq simple-call-tree-current-sort-order 'position)))
+  (setq simple-call-tree-current-sort-order 'position))
 
 (defun simple-call-tree-store-state nil
   "Store the current state of the displayed call tree, and return as an alist."
@@ -797,16 +797,22 @@ The toplevel functions will be sorted, and the functions in each branch will be 
 
 (defun simple-call-tree-restore-state (state)
   "Restore the *Simple Call Tree* buffer to the state in STATE."
-  (simple-call-tree-list-callers-and-functions (plist-get state 'depth)
-                                               (plist-get state 'tree))
-  (simple-call-tree-jump-to-function (or (plist-get state 'topfunc)
-                                         (plist-get state 'thisfunc)))
-  (if (plist-get state 'narrowed) (simple-call-tree-toggle-narrowing -1))
-  (setq simple-call-tree-current-maxdepth (plist-get state 'depth))
-  (if (> (plist-get state 'level) 1)
-      (search-forward
-       (plist-get state 'thisfunc)
-       (save-excursion (outline-end-of-subtree) (point)) t)))
+  (let ((depth (or (plist-get state 'depth)
+                   simple-call-tree-default-maxdepth))
+        (tree (plist-get state 'tree))
+        (topfunc (plist-get state 'topfunc))
+        (thisfunc (plist-get state 'thisfunc))
+        (level (plist-get state 'level))
+        (narrowed (plist-get state 'narrowed)))
+    (simple-call-tree-list-callers-and-functions depth tree)
+    (if (or topfunc thisfunc)
+        (simple-call-tree-jump-to-function (or topfunc thisfunc)))
+    (if narrowed (simple-call-tree-toggle-narrowing -1))
+    (setq simple-call-tree-current-maxdepth depth)
+    (if (and level (> level 1) thisfunc)
+        (search-forward
+         thisfunc
+         (save-excursion (outline-end-of-subtree) (point)) t))))
 
 ;;; Major-mode commands bound to keys
 
