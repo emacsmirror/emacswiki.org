@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Dec  1 16:54:10 2012 (-0800)
+;; Last-Updated: Sun Dec  2 17:05:44 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 1680
+;;     Update #: 1684
 ;; URL: http://www.emacswiki.org/icicles-var.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -119,6 +119,7 @@
 ;;    `icicle-progressive-completing-p', `icicle-prompt',
 ;;    `icicle-proxy-candidate-regexp', `icicle-proxy-candidates',
 ;;    `icicle-read-char-history', `icicle-read-expression-map',
+;;    `icicle-read-file-name-internal-fn' (Emacs 24+),
 ;;    `icicle-remove-icicles-props-p', `icicle-re-no-dot',
 ;;    `icicle-require-match-p', `icicle-reverse-multi-sort-p',
 ;;    `icicle-reverse-sort-p', `icicle-saved-candidate-overlays',
@@ -1225,6 +1226,14 @@ Several Emacs-Lisp mode key bindings are used.")
     ;;(define-key map (icicle-kbd "DEL") 'backward-delete-char-untabify)
     (set-keymap-parent map minibuffer-local-map)
     (setq icicle-read-expression-map  map)))
+
+(when (fboundp 'read-file-name-default) ; Emacs 24+
+  (defvar icicle-read-file-name-internal-fn 'read-file-name-internal
+    "Function replacing `read-file-name-internal' in `read-file-name-default'.
+Function `icicle-read-file-name-default' is the same as
+`read-file-name-default', except that instead of hard-coding the use
+of `read-file-name-internal' it uses the value of this variable.
+Lisp code can thus bind this var to replace `read-file-name-internal'."))
 
 (defvar icicle-remove-icicles-props-p t
   "Non-nil means to remove Icicles text properties from completion result.
