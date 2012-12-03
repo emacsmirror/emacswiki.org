@@ -73,8 +73,8 @@ Wow, I didn't know Spanish and French had such similarities. The terms `si' and 
 [new]
 I just noticed that the data at the top of this page hasn't been updated in quite a while.
 Do you still think that we should replace (是|但|這|这|你|了|啊|沒) with (的|一|是|不|了) ?
-I don't remember where I got the old regular expression from. I just realized that you list corresponds to the top entries of [http://www.zein.se/patrick/3000char.html The most common Chinese characters in order of frequency] by Patrick Hassel Zein.
-This sounds like a good change. -- AlexSchroeder
+I don't remember where I got the old regular expression from. I just realized that your list corresponds to the top entries of [http://www.zein.se/patrick/3000char.html The most common Chinese characters in order of frequency] by Patrick Hassel Zein.
+This sounds like a good change. I'll do it. :) -- AlexSchroeder
 
 [new]
 Contributors: LucasBonnet, AlexSchroeder, JoseEMarchesi, XueFuqiao
