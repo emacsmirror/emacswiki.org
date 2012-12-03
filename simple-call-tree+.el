@@ -394,9 +394,12 @@ END-REGEXP a regular expression to match the end of a token, by default this is 
        :key-sequence "h"]
       ["Toggle duplicates" simple-call-tree-toggle-duplicates
        :help "Toggle display of duplicate sub-branches"
-       :key-sequence "D"]
+       :key-sequence "D"
+       :style toggle
+       :selected (not simple-call-tree-nodups)]
       ["Toggle Follow mode" fm-toggle
        :help "Toggle Follow Mode - auto display of function at point"
+       :key-sequence "f"
        :visible (featurep 'fm)
        :style toggle
        :selected fm-working]
@@ -786,8 +789,11 @@ The toplevel functions will be sorted, and the functions in each branch will be 
   "Sort the functions in the *Simple Call Tree* buffer by position.
 The toplevel functions will be sorted, and the functions in each branch will be sorted separately."
   (interactive)
-  (simple-call-tree-sort (lambda (a b) (< (marker-position (second a))
-                                          (marker-position (second b)))))
+  (simple-call-tree-sort (lambda (a b)
+                           (or (string< (buffer-name (marker-buffer (second a)))
+                                        (buffer-name (marker-buffer (second b))))
+                               (< (marker-position (second a))
+                                  (marker-position (second b))))))
   (simple-call-tree-restore-state (simple-call-tree-store-state))
   (setq simple-call-tree-current-sort-order 'position))
 
@@ -823,7 +829,7 @@ The toplevel functions will be sorted, and the functions in each branch will be 
         (nodups (plist-get state 'nodups)))
     (simple-call-tree-list-callers-and-functions depth tree)
     (if (or topfunc thisfunc)
-        (simple-call-tree-jump-to-function (or topfunc thisfunc)))
+        (simple-call-tree-jump-to-function (or topfunc thisfunc) t))
     (if narrowed (simple-call-tree-toggle-narrowing -1))
     (setq simple-call-tree-current-maxdepth depth
           simple-call-tree-nodups nodups)
@@ -1075,5 +1081,5 @@ If ARG is non-nil perform query-replace-regexp instead."
 ;;; simple-call-tree+.el ends here
 
 ;; (magit-push)
-;; (yaoddmuse-post "EmacsWiki" "simple-call-tree+.el" (buffer-name) (buffer-string) "new command to toggle duplicate branches")
+;; (yaoddmuse-post "EmacsWiki" "simple-call-tree+.el" (buffer-name) (buffer-string) "update")
 
