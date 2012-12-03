@@ -128,6 +128,7 @@ Keys are sorted by their complexity; `key-complexity' determines it."
                     (res)
                     (t (push (cons total comp) unbound-keys))))))))))
 
+;;;###autoload
 (defun describe-unbound-keys (max)
   "Display a list of unbound keystrokes of complexity no greater than MAX.
 Keys are sorted by their complexity; `key-complexity' determines it."
