@@ -331,6 +331,7 @@ END-REGEXP a regular expression to match the end of a token, by default this is 
   (define-key simple-call-tree-mode-map (kbd "P") 'simple-call-tree-move-prev-samelevel)
   (define-key simple-call-tree-mode-map (kbd "i") 'simple-call-tree-invert-buffer)
   (define-key simple-call-tree-mode-map (kbd "d") 'simple-call-tree-change-maxdepth)
+  (define-key simple-call-tree-mode-map (kbd "D") 'simple-call-tree-toggle-duplicates)
   (define-key simple-call-tree-mode-map (kbd "/") 'simple-call-tree-toggle-narrowing)
   (define-key simple-call-tree-mode-map (kbd "<") 'simple-call-tree-jump-prev)
   (define-key simple-call-tree-mode-map (kbd ">") 'simple-call-tree-jump-next)
@@ -391,6 +392,9 @@ END-REGEXP a regular expression to match the end of a token, by default this is 
       ["Hide Sublevels" hide-sublevels
        :help "Hide Lower Level Branches"
        :key-sequence "h"]
+      ["Toggle duplicates" simple-call-tree-toggle-duplicates
+       :help "Toggle display of duplicate sub-branches"
+       :key-sequence "D"]
       ["Toggle Follow mode" fm-toggle
        :help "Toggle Follow Mode - auto display of function at point"
        :visible (featurep 'fm)
@@ -464,6 +468,10 @@ The minimum value is 0 which means show top level functions only.")
   "The current sort order of the call tree.
 See `simple-call-tree-default-sort-method' for possible values.")
 
+(defvar simple-call-tree-nodups nil
+  "If non-nil then duplicate sub-branches will not be included in the tree.
+I.e. if a function makes multiple calls to the same function then only one of these calls will
+be shown in the tree.")
 ;;; Functions from simple-call-tree.el (some are rewritten)
 
 (defun simple-call-tree-add (start end alist)
@@ -531,6 +539,9 @@ By default it is set to a list containing the current buffer."
       (let* ((caller (first item))
              (callername (first caller))
              (callees (cdr item)))
+        (unless (assoc-if (lambda (x) (string= (car x) callername)) result)
+          (setq result (cons (list (list callername (second caller) (third caller)))
+                             result)))
         (dolist (callee callees)
           (let* ((calleename (first callee))
                  (callerpos (second callee))
@@ -539,7 +550,8 @@ By default it is set to a list containing the current buffer."
                  (elem (assoc-if (lambda (x) (string= (car x) calleename)) result)))
             (if elem
                 (setcdr elem (cons (list callername callerpos) (cdr elem)))
-              (setq result (cons (list (list calleename (second calleeitem)
+              (setq result (cons (list (list calleename
+                                             (second calleeitem)
                                              (third calleeitem))
                                        (list callername callerpos))
                                  result)))))))
@@ -684,7 +696,8 @@ This is a recursive function, and you should not need to set CURDEPTH."
          (arrowtail (make-string (* 2 (1- curdepth)) 45))
          (arrow (if inverted (concat (if (> curdepth 1) "<") arrowtail " ")
                   (concat arrowtail (if (> curdepth 1) "> " " "))))
-         (face (get-text-property 0 'face fname)))
+         (face (get-text-property 0 'face fname))
+         done)
     (insert "|" arrow (propertize fname
                                   'font-lock-face (list :inherit face :underline t)
                                   'mouse-face 'highlight
@@ -692,7 +705,9 @@ This is a recursive function, and you should not need to set CURDEPTH."
             "\n")
     (if (< curdepth maxdepth)
         (dolist (callee callees)
-          (simple-call-tree-list-callees-recursively callee maxdepth (1+ curdepth) funclist)))))
+          (unless (and simple-call-tree-nodups (member (car callee) done))
+            (simple-call-tree-list-callees-recursively callee maxdepth (1+ curdepth) funclist))
+          (add-to-list 'done (car callee))))))
 
 (defun simple-call-tree-outline-level nil
   "Return the outline level of the function at point.
@@ -793,7 +808,8 @@ The toplevel functions will be sorted, and the functions in each branch will be 
         'thisfunc (if (get-buffer "*Simple Call Tree*")
                       (simple-call-tree-get-function-at-point))
         'topfunc (if (get-buffer "*Simple Call Tree*")
-                     (simple-call-tree-get-toplevel))))
+                     (simple-call-tree-get-toplevel))
+        'nodups simple-call-tree-nodups))
 
 (defun simple-call-tree-restore-state (state)
   "Restore the *Simple Call Tree* buffer to the state in STATE."
@@ -803,12 +819,14 @@ The toplevel functions will be sorted, and the functions in each branch will be 
         (topfunc (plist-get state 'topfunc))
         (thisfunc (plist-get state 'thisfunc))
         (level (plist-get state 'level))
-        (narrowed (plist-get state 'narrowed)))
+        (narrowed (plist-get state 'narrowed))
+        (nodups (plist-get state 'nodups)))
     (simple-call-tree-list-callers-and-functions depth tree)
     (if (or topfunc thisfunc)
         (simple-call-tree-jump-to-function (or topfunc thisfunc)))
     (if narrowed (simple-call-tree-toggle-narrowing -1))
-    (setq simple-call-tree-current-maxdepth depth)
+    (setq simple-call-tree-current-maxdepth depth
+          simple-call-tree-nodups nodups)
     (if (and level (> level 1) thisfunc)
         (search-forward
          thisfunc
@@ -1010,6 +1028,13 @@ When narrowed, the buffer will be narrowed to the subtree at point."
         (let (select-active-regions) (deactivate-mark)))
       (goto-char pos))))
 
+(defun simple-call-tree-toggle-duplicates nil
+  "Toggle the inclusion of duplicate sub-branches in the call tree."
+  (interactive)
+  (setq simple-call-tree-nodups (not simple-call-tree-nodups))
+  (with-current-buffer "*Simple Call Tree*"
+    (simple-call-tree-restore-state (simple-call-tree-store-state))))
+
 (defun simple-call-tree-query-replace (func &optional arg)
   "Perform query-replace on function FUNC.
 If called interactively the function at point in the *Simple Call Tree*
@@ -1050,5 +1075,5 @@ If ARG is non-nil perform query-replace-regexp instead."
 ;;; simple-call-tree+.el ends here
 
 ;; (magit-push)
-;; (yaoddmuse-post "EmacsWiki" "simple-call-tree+.el" (buffer-name) (buffer-string) "update")
+;; (yaoddmuse-post "EmacsWiki" "simple-call-tree+.el" (buffer-name) (buffer-string) "new command to toggle duplicate branches")
 
