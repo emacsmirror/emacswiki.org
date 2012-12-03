@@ -106,5 +106,9 @@ Currently supported backends are git, svn, bzr, hg, darcs and emacswiki. The col
 
 Melpa uses a recipe system similar to [[el-get]].  Recipes are stored on a git-hub repository which tells the updated package.el how to download each package.  The source of the package might be from git, svn, darcs or this wiki.
 
+== Other ==
+
+AndrewHyatt has written an [http://code.google.com/p/elpa-on-appengine/ implementation of ELPA for AppEngine], written in Go.  It is not yet running publicly yet.
+
 ----
 CategoryCode CategoryPackaging
