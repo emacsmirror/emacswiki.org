@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Dec  1 17:42:18 2012 (-0800)
+;; Last-Updated: Sun Dec  2 17:48:00 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 9354
+;;     Update #: 9367
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -86,6 +86,11 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2012/12/02 dadams
+;;     Removed: icicle-find-file-of-content-read-file-name (use icicle-read-file-name-default instead).
+;;     icicle-find-file-of-content(-other-window):
+;;       Bind icicle-read-file-name-internal-fn, not read-file-name-function.
+;;       No longer bind icicle-apropos-complete-match-fn to nil.
 ;; 2012/12/01 dadams
 ;;     icicle-find-file-of-content-multi-complete:
 ;;       Use icicle-completion--embedded-envvar-table & completion-file-name-table, not internal Emacs.
@@ -1564,6 +1569,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2012/12/02 dadams
+;;     Added: icicle-read-file-name-default, icicle-ORIG-read-file-name-default.
 ;; 2012/11/27 dadams
 ;;     icicle-completing-read:
 ;;       For icicle-default-value = t: Append ": " to icicle-default-in-prompt-format-function result.
@@ -5114,6 +5121,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2012/12/02 dadams
+;;     icicle-(redefine|restore)-std-completion-fns: Added icicle(-ORIG)-read-file-name-default.
 ;; 2012/12/01 dadams
 ;;     Added: icicle-bind-custom-completion-keys, icicle-restore-custom-completion-keys (factored out).
 ;;     Removed load of icicles-mac.el (icicle-kbd is now a function in icicles-opt.el).
@@ -6272,6 +6281,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2012/12/02 dadams
+;;     Removed autoload cookie from icicle-completion-key-bindings.
 ;; 2012/12/01 dadams
 ;;     Added: icicle-completion-key-bindings.
 ;;     Moved here from icicles-mac.el: icicle-kbd, icicle-edmacro-parse-keys, icicle-read-kbd-macro.
@@ -7041,6 +7052,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2012/12/02 dadams
+;;     Added: icicle-read-file-name-internal-fn.
 ;; 2012/12/01 dadams
 ;;     Removed load of icicles-mac.el (icicle-kbd is now a function in icicles-opt.el).
 ;; 2012/11/28 dadams
