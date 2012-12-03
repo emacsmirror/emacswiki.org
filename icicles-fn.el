@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Nov 27 21:09:53 2012 (-0800)
+;; Last-Updated: Sun Dec  2 17:40:47 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 13681
+;;     Update #: 13740
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -146,6 +146,7 @@
 ;;    `icicle-ORIG-minibuffer-default-add-completions',
 ;;    `icicle-ORIG-read-buffer', `icicle-ORIG-read-char-by-name',
 ;;    `icicle-ORIG-read-face-name',
+;;    `icicle-ORIG-read-file-name-default',
 ;;    `icicle-ORIG-read-from-minibuffer', `icicle-ORIG-read-number',
 ;;    `icicle-ORIG-read-string', `icicle-ORIG-shell-command',
 ;;    `icicle-ORIG-shell-command-on-region',
@@ -162,7 +163,8 @@
 ;;    `icicle-readable-to-markers', `icicle-read-buffer',
 ;;    `icicle-read-char-by-name', `icicle-read-char-exclusive',
 ;;    `icicle-read-char-maybe-completing', `icicle-read-face-name',
-;;    `icicle-read-file-name', `icicle-read-from-minibuffer',
+;;    `icicle-read-file-name', `icicle-read-file-name-default',
+;;    `icicle-read-from-minibuffer',
 ;;    `icicle-read-from-minibuf-nil-default', `icicle-read-number',
 ;;    `icicle-read-shell-command',
 ;;    `icicle-read-shell-command-completing', `icicle-read-string',
@@ -290,7 +292,7 @@
          (load-library "icicles-mac")   ; Use load-library to ensure latest .elc.
        (error nil))
      (require 'icicles-mac)))           ; Require, so can load separately if not on `load-path'.
-  ;; icicle-with-selected-window
+  ;; icicle-with-selected-window, minibuffer-with-setup-hook
 
 (require 'icicles-opt)                  ; (This is required anyway by `icicles-var.el'.)
   ;; icicle-buffer-ignore-space-prefix-flag, icicle-Completions-display-min-input-chars,
@@ -357,13 +359,16 @@
 (defvar font-width-table)               ; In C code.
 (defvar font-weight-table)              ; In C code.
 (defvar font-slant-table)               ; In C code.
+(defvar history-delete-duplicates)      ; In C code for Emacs 22+.
 (defvar icicle-file-name-completion-table) ; In `icicles-fn.el'
 (defvar icicle-Info-hist-list)          ; In `icicles-fn.el'
 (defvar icicle-Info-index-nodes)        ; In `icicles-fn.el'
 (defvar icicle-Info-manual)             ; In `icicles-fn.el'
 (defvar icicle-read-char-history)       ; In `icicles-var.el' for Emacs 23+.
+(defvar icicle-read-file-name-internal-fn) ; In `icicles-var.el' for Emacs 24+.
 (defvar list-colors-sort)               ; In `facemenu.el'
 (defvar 1on1-*Completions*-frame-flag)  ; In `oneonone.el'
+(defvar minibuffer-local-filename-syntax) ; In `minibuffer.el' for Emacs 24+.
 (defvar read-buffer-completion-ignore-case) ; Emacs 23+.
 (defvar recentf-list)                   ; In `recentf.el'
 (defvar recentf-menu-filter-commands)
@@ -1275,6 +1280,119 @@ and `read-file-name-function'."
     ;; does not disappear.
     (when require-match (icicle-remove-Completions-window))
     result))
+
+(when (fboundp 'read-file-name-default) ; Emacs 24+
+  (unless (fboundp 'icicle-ORIG-read-file-name-default)
+    (defalias 'icicle-ORIG-read-file-name-default (symbol-function 'read-file-name-default)))
+
+  ;; This is the Emacs 24.3 version of `read-file-name-default', with `icicle-read-file-name-internal-fn'
+  ;; substituted for `read-file-name-internal'.
+  (defun icicle-read-file-name-default (prompt &optional dir default-filename mustmatch initial predicate)
+    "Icicles version of `read-file-name-default'.
+The only difference is that, instead of hard-coding the use of
+`read-file-name-internal', this uses the value of variable
+`icicle-read-file-name-internal-fn'.
+See `read-file-name' for the meaning of the arguments here."
+    (unless dir (setq dir  default-directory))
+    (unless (file-name-absolute-p dir) (setq dir  (expand-file-name dir)))
+    (unless default-filename
+      (setq default-filename  (if initial (expand-file-name initial dir) buffer-file-name)))
+    (setq dir  (abbreviate-file-name dir)) ; If DIR starts with user's homedir, change that to ~.
+    (when default-filename              ; Likewise for default-filename.
+      (setq default-filename  (if (consp default-filename)
+                                  (mapcar 'abbreviate-file-name default-filename)
+                                (abbreviate-file-name default-filename))))
+    (let ((insdef  (cond ((and insert-default-directory  (stringp dir))
+                          (if initial
+                              (cons (minibuffer--double-dollars (concat dir initial))
+                                    (length (minibuffer--double-dollars dir)))
+                            (minibuffer--double-dollars dir)))
+                         (initial
+                          (cons (minibuffer--double-dollars initial) 0)))))
+      (let ((completion-ignore-case           read-file-name-completion-ignore-case)
+            (minibuffer-completing-file-name  t)
+            (pred                             (or predicate 'file-exists-p))
+            (add-to-history                   nil))
+        (let* ((val                 (if (or (not (next-read-file-uses-dialog-p))
+                                            ;; File dialog boxes cannot handle remote files (Emacs bug#99).
+                                            (file-remote-p dir))
+                                        ;; Emacs used to pass DIR to `read-file-name-internal' by abusing
+                                        ;; PREDICATE.  It is better to use `default-directory', but in order
+                                        ;; to avoid changing `default-directory' in the current buffer,
+                                        ;; we do not let-bind it.
+                                        (let ((dir  (file-name-as-directory (expand-file-name dir))))
+                                          (minibuffer-with-setup-hook
+                                           (lambda ()
+                                             (setq default-directory  dir)
+                                             ;; When the first default in `minibuffer-default' duplicates the
+                                             ;; initial input `insdef', remove it from `minibuffer-default'.
+                                             (when (equal (or (car-safe insdef)  insdef)
+                                                          (or (car-safe minibuffer-default)
+                                                              minibuffer-default))
+                                               (setq minibuffer-default  (cdr-safe minibuffer-default)))
+                                             ;; On first `M-n', fill `minibuffer-default' with a list of
+                                             ;; defaults for reading file names.
+                                             (set (make-local-variable 'minibuffer-default-add-function)
+                                                  (lambda ()
+                                                    (with-current-buffer
+                                                        (window-buffer (minibuffer-selected-window))
+                                                      (read-file-name--defaults dir initial))))
+                                             (set-syntax-table minibuffer-local-filename-syntax))
+                                           ;; ICICLES: use `icicle-read-file-name-internal-fn'.
+                                           (completing-read prompt icicle-read-file-name-internal-fn
+                                                            pred mustmatch insdef
+                                                            'file-name-history default-filename)))
+                                      ;; If no DEFAULT-FILENAME and DIR contains a file name, split it.
+                                      (let ((file              (file-name-nondirectory dir))
+                                            ;; When using a dialog box, revert to nil and non-nil
+                                            ;; interpretation of mustmatch.  Confirmation options need to be
+                                            ;; interpreted as nil, otherwise it is impossible to create new
+                                            ;; files using dialog boxes with the default settings.
+                                            (dialog-mustmatch  (not (memq mustmatch
+                                                                          '(nil confirm
+                                                                            confirm-after-completion)))))
+                                        (when (and (not default-filename)  (not (zerop (length file))))
+                                          (setq default-filename  file
+                                                dir               (file-name-directory dir)))
+                                        (when default-filename
+                                          (setq default-filename  (expand-file-name
+                                                                   (if (consp default-filename)
+                                                                       (car default-filename)
+                                                                     default-filename)
+                                                                   dir)))
+                                        (setq add-to-history  t)
+                                        (x-file-dialog prompt dir default-filename dialog-mustmatch
+                                                       (eq predicate 'file-directory-p)))))
+               (replace-in-history  (eq (car-safe file-name-history) val)))
+          ;; If `completing-read' returned the inserted default string itself (rather than a new string with
+          ;; the same contents) then the user typed RET with the minibuffer empty.  In that case, return ""
+          ;; so that commands such as `set-visited-file-name' can distinguish.
+          (when (consp default-filename) (setq default-filename  (car default-filename)))
+          (when (eq val default-filename) ; `completing-read' did not add to the history.  Do that.
+            (unless replace-in-history (setq add-to-history  t))
+            (setq val  ""))
+          (unless val (error "No file name specified"))
+          (when (and default-filename  (string-equal val (if (consp insdef) (car insdef) insdef)))
+            (setq val  default-filename))
+          (setq val  (substitute-in-file-name val))
+          (if replace-in-history
+              ;; Replace what `Fcompleting_read' added to the history with what we will actually return.
+              ;; As an exception, if that is the same as the second item in `file-name-history', it is a
+              ;; duplicate (Emacs bug #4657).
+              (let ((val1  (minibuffer--double-dollars val)))
+                (when history-delete-duplicates
+                  (setcdr file-name-history (delete val1 (cdr file-name-history))))
+                (if (string= val1 (cadr file-name-history))
+                    (pop file-name-history)
+                  (setcar file-name-history val1)))
+            (when add-to-history
+              ;; Add the value to the history, unless it matches the last value already there.
+              (let ((val1  (minibuffer--double-dollars val)))
+                (unless (and (consp file-name-history)  (equal (car file-name-history) val1))
+                  (setq file-name-history  (cons val1 (if history-delete-duplicates
+                                                          (delete val1 file-name-history)
+                                                        file-name-history)))))))
+          val)))))
 
 (defun icicle-fix-default-directory ()
   "Convert backslashes in `default-directory' to slashes."
