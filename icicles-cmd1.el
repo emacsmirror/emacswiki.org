@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Dec  1 16:56:42 2012 (-0800)
+;; Last-Updated: Sun Dec  2 17:34:11 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 25236
+;;     Update #: 25241
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -287,7 +287,6 @@
 ;;    `icicle-describe-opt-of-type-complete',
 ;;    `icicle-execute-extended-command-1', `icicle-explore',
 ;;    `icicle-find-file-of-content-multi-complete',
-;;    `icicle-find-file-of-content-read-file-name',
 ;;    `icicle-find-first-tag-action',
 ;;    `icicle-find-first-tag-other-window-action',
 ;;    `icicle-find-tag-action', `icicle-find-tag-define-candidates',
@@ -7609,15 +7608,11 @@ flips the behavior specified by that option." ; Doc string
     (icicle-file-bindings               ; Bindings
      ((init-pref-arg                      current-prefix-arg)
       (prompt                             "File or directory: ")
-      (read-file-name-function            'icicle-find-file-of-content-read-file-name)
+      (icicle-read-file-name-internal-fn  'icicle-find-file-of-content-multi-complete)
       (icicle-show-multi-completion-flag  t) ; Override user setting.
       (icicle-multi-completing-p          t)
       (icicle-list-use-nth-parts          '(1))
       (icicle-transform-before-sort-p     t)
-      ;; Bind `icicle-apropos-complete-match-fn' to nil to prevent automatic input matching in
-      ;; `icicle-unsorted-file-name-apropos-candidates' etc., because
-      ;; `icicle-find-file-of-content-read-file-name' does everything.
-      (icicle-apropos-complete-match-fn   nil)
       (existing-bufs                      (buffer-list))
       (new-bufs--to-kill                  ())
       (new-bufs--to-keep                  ())
@@ -7666,15 +7661,11 @@ Same as `icicle-find-file-of-content' except it uses a different window." ; Doc 
     (icicle-file-bindings               ; Bindings
      ((init-pref-arg                      current-prefix-arg)
       (prompt                             "File or directory: ")
-      (read-file-name-function            'icicle-find-file-of-content-read-file-name)
+      (icicle-read-file-name-internal-fn  'icicle-find-file-of-content-multi-complete)
       (icicle-show-multi-completion-flag  t) ; Override user setting.
       (icicle-multi-completing-p          t)
       (icicle-list-use-nth-parts          '(1))
       (icicle-transform-before-sort-p     t)
-      ;; Bind `icicle-apropos-complete-match-fn' to nil to prevent automatic input matching in
-      ;; `icicle-unsorted-file-name-apropos-candidates' etc., because
-      ;; `icicle-find-file-of-content-read-file-name' does everything.
-      (icicle-apropos-complete-match-fn   nil)
       (existing-bufs                      (buffer-list))
       (new-bufs--to-kill                  ())
       (new-bufs--to-keep                  ())
@@ -7738,99 +7729,6 @@ Used as the value of `minibuffer-completion-table'.."
             (t
              (try-completion            ; `try-completion'
               file-pat (mapcar #'list filnames) (and pred  (lambda (ff) (funcall pred (car ff)))))))))
-
-  ;; This is based on code from Emacs 24 `read-file-name-default'.  It works only for Emacs 23+ (23 or later).
-  ;; Further, if you byte-compile this file, then for it to work you must byte-compile it with Emacs 23+.
-  ;; This is because this code uses an Emacs 23+ macro, `minibuffer-with-setup-hook'.
-  (defun icicle-find-file-of-content-read-file-name (prompt &optional
-                                                     dir default-filename mustmatch initial predicate)
-    "Function to read file name for `icicle-find-file-of-content'.
-Used as the value of `read-file-name-function'."
-    (unless dir (setq dir  default-directory))
-    (unless (file-name-absolute-p dir) (setq dir  (expand-file-name dir)))
-    (unless default-filename
-      (setq default-filename  (if initial (expand-file-name initial dir) buffer-file-name)))
-    (setq dir  (abbreviate-file-name dir))
-    (when default-filename
-      (setq default-filename  (if (consp default-filename)
-                                  (mapcar 'abbreviate-file-name default-filename)
-                                (abbreviate-file-name default-filename))))
-    (let ((insdef                           (cond ((and insert-default-directory  (stringp dir))
-                                                   (if initial
-                                                       (cons (minibuffer--double-dollars (concat dir initial))
-                                                             (length (minibuffer--double-dollars dir)))
-                                                     (minibuffer--double-dollars dir)))
-                                                  (initial (cons (minibuffer--double-dollars initial) 0))))
-          (completion-ignore-case           read-file-name-completion-ignore-case)
-          (minibuffer-completing-file-name  t)
-          (pred                             (or predicate  'file-exists-p))
-          (add-to-history                   nil))
-      (let* ((val
-              (if (or (not (next-read-file-uses-dialog-p)) ; File dialogs cannot handle remote (Emacs bug#99).
-                      (file-remote-p dir))
-                  (let ((dir  (file-name-as-directory (expand-file-name dir))))
-                    (minibuffer-with-setup-hook
-                     (lambda ()
-                       (setq default-directory  dir)
-                       ;; If first default in `minibuffer-default' duplicates initial input INSDEF, reset.
-                       (when (equal (or (car-safe insdef) insdef)
-                                    (or (car-safe minibuffer-default)  minibuffer-default))
-                         (setq minibuffer-default  (cdr-safe minibuffer-default)))
-                       ;; On first `M-n': fill `minibuffer-default' with a list of defaults.
-                       (set (make-local-variable 'minibuffer-default-add-function)
-                            (lambda () (with-current-buffer (window-buffer (minibuffer-selected-window))
-                                         (read-file-name--defaults dir initial))))
-                       (when (boundp 'minibuffer-local-filename-syntax)
-                         (set-syntax-table minibuffer-local-filename-syntax)))
-                     (completing-read prompt #'icicle-find-file-of-content-multi-complete pred mustmatch
-                                      insdef 'file-name-history default-filename)))
-                ;; If DEFAULT-FILENAME not supplied, and DIR contains a file name, split it.
-                (let ((file              (file-name-nondirectory dir))
-                      ;; When using a dialog, revert to nil and non-nil interpretation of MUSTMATCH.
-                      ;; Confirm options need to be interpreted as nil, otherwise it is impossible to create
-                      ;; new files using dialogs with the default settings.
-                      (dialog-mustmatch  (not (memq mustmatch '(nil confirm confirm-after-completion)))))
-                  (when (and (not default-filename)  (not (zerop (length file))))
-                    (setq default-filename  file
-                          dir               (file-name-directory dir)))
-                  (when default-filename
-                    (setq default-filename  (expand-file-name (if (consp default-filename)
-                                                                  (car default-filename)
-                                                                default-filename)
-                                                              dir)))
-                  (setq add-to-history  t)
-                  (x-file-dialog prompt dir default-filename dialog-mustmatch (eq predicate
-                                                                                  'file-directory-p)))))
-             (replace-in-history  (eq (car-safe file-name-history) val)))
-
-        ;; If `completing-read' returned the inserted default string itself (rather than a new string with
-        ;; the same contents), it means that the user typed RET with an empty minibuffer.  In that case,
-        ;; return "" so that commands such as `set-visited-file-name' can distinguish.
-        (when (consp default-filename) (setq default-filename  (car default-filename)))
-        (when (eq val default-filename)
-          ;; `completing-read' has not added an element to the history.  Maybe we should.
-          (unless replace-in-history (setq add-to-history  t))
-          (setq val  ""))
-        (unless val (error "No file name specified"))
-        (when (and default-filename  (string-equal val (if (consp insdef) (car insdef) insdef)))
-          (setq val  default-filename))
-        (setq val  (substitute-in-file-name val))
-        (if replace-in-history
-            ;; Replace what `Fcompleting_read' added to the history with what we will actually return.
-            ;; As an exception, if that's the same as the second item in `file-name-history', it is really
-            ;; a repeat (Bug#4657).
-            (let ((val1  (minibuffer--double-dollars val)))
-              (when history-delete-duplicates (setcdr file-name-history (delete val1 (cdr file-name-history))))
-              (if (string= val1 (cadr file-name-history))
-                  (pop file-name-history)
-                (setcar file-name-history val1)))
-          (when add-to-history          ; Add value to history, but not if it matches last value already there.
-            (let ((val1  (minibuffer--double-dollars val)))
-              (unless (and (consp file-name-history)  (equal (car file-name-history) val1))
-                (setq file-name-history  (cons val1 (if history-delete-duplicates
-                                                        (delete val1 file-name-history)
-                                                      file-name-history)))))))
-        val)))
   )
 
 
