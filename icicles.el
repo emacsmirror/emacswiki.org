@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Dec  1 16:45:00 2012 (-0800)
+;; Last-Updated: Sun Dec  2 17:51:10 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 23256
+;;     Update #: 23260
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -982,7 +982,6 @@
 ;;    `icicle-files-within', `icicle-files-within-1',
 ;;    `icicle-filter-alist', `icicle-filter-wo-input',
 ;;    `icicle-find-file-of-content-multi-complete',
-;;    `icicle-find-file-of-content-read-file-name',
 ;;    `icicle-find-first-tag-action',
 ;;    `icicle-find-first-tag-other-window-action',
 ;;    `icicle-find-tag-action', `icicle-find-tag-define-candidates',
@@ -1082,6 +1081,7 @@
 ;;    `icicle-ORIG-minibuffer-default-add-completions',
 ;;    `icicle-ORIG-read-char-by-name', `icicle-ORIG-read-color',
 ;;    `icicle-ORIG-read-face-name',
+;;    `icicle-ORIG-read-file-name-default',
 ;;    `icicle-ORIG-read-from-minibuffer', `icicle-ORIG-read-number',
 ;;    `icicle-ORIG-read-string', `icicle-ORIG-shell-command',
 ;;    `icicle-ORIG-shell-command-on-region',
@@ -1103,7 +1103,8 @@
 ;;    `icicle-read-args-for-set-completion-methods',
 ;;    `icicle-read-char-exclusive',
 ;;    `icicle-read-char-maybe-completing', `icicle-read-face-name',
-;;    `icicle-read-file-name', `icicle-read-from-minibuffer',
+;;    `icicle-read-file-name', `icicle-read-file-name-default',
+;;    `icicle-read-from-minibuffer',
 ;;    `icicle-read-from-minibuf-nil-default', `icicle-read-number',
 ;;    `icicle-read-shell-command',
 ;;    `icicle-read-shell-command-completing', `icicle-read-string',
@@ -1315,6 +1316,7 @@
 ;;    `icicle-progressive-completing-p', `icicle-prompt',
 ;;    `icicle-proxy-candidate-regexp', `icicle-proxy-candidates',
 ;;    `icicle-read-expression-map', `icicle-read-char-history',
+;;    `icicle-read-file-name-internal-fn' (Emacs 24+),
 ;;    `icicle-remove-icicles-props-p', `icicle-re-no-dot',
 ;;    `icicle-require-match-p', `icicle-reverse-multi-sort-p',
 ;;    `icicle-reverse-sort-p', `icicle-saved-candidate-overlays',
