@@ -105,7 +105,7 @@ C-x is a common Prefix Key and it is extremely convenient to bind to a single le
    (defun make-conditional-key-translation (key-from key-to translate-keys-p)
      "Make a Key Translation such that if the translate-keys-p function returns true,
    key-from translates to key-to, else key-from translates to itself.  translate-keys-p
-   takes no args. "
+   takes key-from as an argument. "
      (define-key key-translation-map key-from
        (lambda (prompt)
          (if (funcall translate-keys-p key-from) key-to key-from))))
