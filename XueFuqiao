@@ -58,7 +58,7 @@ emacs -nw
 == RSI ==
 Started physiotherapy on June, 2012.
 
-== Motto ==
+== Mottos ==
 * There is no system but GNU, and Linux is one of its kernel.
 
 * I've used Emacs for many years now, but have never reached its maximum potential.
@@ -66,6 +66,10 @@ Started physiotherapy on June, 2012.
 * It is a logical impossibility to make a language more powerful by omitting features, no matter how bad they may be.
 
 * While any text editor can save your files, only Emacs can save your soul.
+
+* Microsoft is not the answer.  Microsoft is the question.  NO is the answer.
+
+* My other car is a cdr. 
 
 == My Init Files ==
 https://github.com/xfq/xfq-emacs-init-files
