@@ -123,7 +123,9 @@ If another keymap defines a binding for "ch", you can access it with \ch , becau
 This code is written to only translate the key when it is the first of a Key Sequence, so as a binding like "sg" won't translate into "s C-x".  You can now type "g3" to split-window-right, "go" to move to the other window, etc.
 
 If there are Evil g commands you miss, just redefine them:
+
    (define-key evil-motion-state-map "\C-x\C-]" 'find-tag)
+
 See evil-maps.el to find all of the Evil g commands.
 
 To continue the pattern of translating "c<char>" to "C-<char>":
