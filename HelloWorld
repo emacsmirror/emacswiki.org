@@ -1,5 +1,3 @@
-http://www.dd.chalmers.se/~bojohan/emacs/img/hello_world.png
-
     ;;;;;;;; (sit-for 0.2)
     10 (princ "Hello world " t)
     20 (goto-char 10)
