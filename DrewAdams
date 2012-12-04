@@ -107,6 +107,16 @@ An analogy is then drawn with the "no <code>GOTO</code>!" arguments in favor of 
 
 I heartily recommend this 20-year old paper. I guarantee that it is an eye-opener, no matter how familiar you are with functional programming and programming-language design.
 
+Here, BTW, is what John himself says about this paper:
+
+[new:DrewAdams:2012-12-04 15:28 UTC]
+This paper shows how two key features of functional languages---higher-order functions (which take other functions as arguments) and lazy evaluation (which defers computations until their results are really needed)---combine to let programmers break algorithms into small, flexible, reusable parts. It argues that functional languages support the development of reusable software much better than conventional languages, in other words.
+
+At the time I wrote it, researchers were more likely to emphasize mathematical reasoning and the absence of side-effects---but it's difficult to sell a programming paradigm on the things it lacks! The perspective in my paper has influenced many researchers since, and can perhaps be said to lie partly behind a focus in recent years on "domain specific embedded languages". These are flexible libraries of functions that permit programmers to solve problems of a certain class just by combining library functions, in effect working in a special purpose programming language for that particular kind of task.
+
+I wrote the paper in 1984 as a post-doc, but misjudged its significance completely. I thought it would be unpublishable, because it contained no difficult research results, just a manifesto and some nice programming examples. So I circulated it privately to friends, who passed it on to others, and soon I found it turning up in the most unexpected places. Finally, after five years, I was invited to submit it to the Computer Journal. ---http://www.cse.chalmers.se/~rjmh/citations/my_most_influential_papers.htm
+[new]
+
 Coming back to free/open software development -- By analogy, what is the "glue" that makes this kind of development work? What makes it possible to glue many small, individually useful software changes together and still get something worthwhile accomplished? How does this work, even in the absence (some might argue ''especially'' in the absence) of a predefined design? That's a question for reflection. Some may hark back to Adam Smith for an answer; others, to Mikhail Bakunin; still others, to Karl Marx. I'd say that the question is open, but these are at least part of the "glue" answer:
 
 * open source code (your output is my input)
