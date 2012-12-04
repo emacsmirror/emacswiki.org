@@ -1,9 +1,9 @@
 Aumix is a useful mixer / volume adjuster. Using emms you can need to adjust the volume,
 so here it is aumix.el that allows you to do it from emacs using aumix.
-You can download aumix.el from [http://www.salug.it/~fabioviola/aumix.el here].
+You can download aumix.el from [http://www.salug.it/~fabioviola/aumix.el here](dead link at 2012-12-4).
 
 If you already use osd.el you may want to download aumix-osd.el to get the volume printed
-on screen ;) Download it from  [http://www.salug.it/~fabioviola/aumix-osd.el here].
+on screen ;) Download it from  [http://www.salug.it/~fabioviola/aumix-osd.el here](dead link at 2012-12-4).
 
 To install it just put the following in your .emacs:
 <code>(load "~/.emacs.d/aumix.el")</code>
