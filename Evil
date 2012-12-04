@@ -93,7 +93,7 @@ Note that this won't interfere with insert state because c is bound to self-inse
 
 === Key Translations (better) ===
 
-This simple approach to Key Translations has a couple of disadvantages: it won't allow single letter Key Translations, and if a mode offers its own binding for ch or cx, it is unavailable to you (not even via \).  To resolve these issues, you'll need to use the Emacs pretest 24.2.90 release which will become Emacs 24.3 .
+The approach above to Key Translations has a couple of disadvantages: it won't allow single letter Key Translations, and if a mode offers its own binding for ch or cx, it is unavailable to you (not even via \).  To resolve these issues, you'll need to use the Emacs pretest 24.2.90 release which will become Emacs 24.3 .
 
 In addition to updating your Emacs version, you'll have to enable lexical binding.  Doing so might render other Elisp in your init file inoperable if it relies on dynamic binding.  Put this on the very first line of your init file:
 
