@@ -1,9 +1,10 @@
 nxml-mode is a major mode for editing XML.
 It works well with Emacs 21+ and will be included in Emacs 23; unfortunately it
-won't run on Emacs 20 or XEmacs as it currently requires some specific features of the recent GNU Emacsen (however
-this is being worked on, see for instance.
+won't run on Emacs 20 or XEmacs [http://www.thaiopensource.com/nxml-mode/] as
+it currently requires some specific features of the recent GNU Emacsen (however
+this is being worked on, see for instance [http://permalink.gmane.org/gmane.emacs.devel/97623]).
 
-As of 2009-09-18, the next release of Emacs will make nXML the default mode for XML files instead of XmlMode.
+As of 2009-09-18, the next release of Emacs will make nXML the default mode for XML files instead of XmlMode.[http://lists.gnu.org/archive/html/emacs-devel/2009-09/msg00533.html]
 
 Please send bug reports to the Emacs maintainers
 (possibly first discussing the problem on the emacs-nxml-mode mailing lists
@@ -17,15 +18,14 @@ This is not a problem if you are using Emacs 22 where mule-ucs is not necessary.
 * NxhtmlMode is a mode derived from nxml-mode,
 specialized for editing XHTML and template languages like php, genshi etc.
 
-Source :
-* [http://www.jakarta.intercontinental.com Jakarta Hotel]
-* [http://www.rumahparfum.com Parfum]
-* [http://saranasukses.com/outsourcing-indonesia.html Outsourcing Indonesia]
-
+External links:
+* [http://www.thaiopensource.com/nxml-mode/ nxml-mode home page]
+* [http://www.thaiopensource.com/download/ download]
+* [http://www.dpawson.co.uk/relaxng/nxml/index.html FAQ]
 
 Comments:
 
-: "It's a milestone in that it's the first open-source editing application to enable context-sensitive validated editing against Relax NG schemas. It also provides a clever mechanism for real-time, automatic visual identification of validity errors, along with flexible syntax-highlighting capabilities -- and many other features planned for future releases." -- Michael Smith 
+: "It's a milestone in that it's the first open-source editing application to enable context-sensitive validated editing against Relax NG schemas. It also provides a clever mechanism for real-time, automatic visual identification of validity errors, along with flexible syntax-highlighting capabilities -- and many other features planned for future releases." -- Michael Smith [http://www.xmlhack.com/read.php?item=2061]
 
 ''''Note'''' the colorization (font-lock) won't work if you change the emacs colors.
 
