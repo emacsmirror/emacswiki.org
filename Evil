@@ -122,7 +122,7 @@ C-x is a common Prefix Key and it is extremely convenient to bind to a single le
 
 If another keymap defines a binding for "ch", you can access it with \ch , because my-translate-keys-p returns false in the Emacs state, resulting in a Key Translation of "ch" to itself.
 
-This code is written to only translate the key when it is the first of a Key Sequence, so as a binding like "sg" won't translate into "s C-x".  You can now type "g3" to split-window-right, "go" to move to the other window, etc.
+This code is written to only translate the key when it is the first of a Key Sequence, so as a binding like "sg" won't translate into "s C-x".  In non insert state, you can now type "g3" to split-window-right, "go" to move to the other window, etc.
 
 If there are Evil g commands you miss, just redefine them for C-x:
 
