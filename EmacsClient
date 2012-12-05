@@ -391,6 +391,8 @@ And there's another possible method here: http://robert-adesam.blogspot.com/2011
 
 ===== With Firefox Add-on "It's All Text" + an Elisp file + =====
 
+To execute emacsclient From Firefox to call Windows Native Emacs to edit web pages, see [[Mozilla]] page and comments about add-on /It's all text/.
+
 There is a tool in [[NxhtmlMode][nXhtml]] that allows you to do this.
 You can find it in the nXhtml menus under "nXhtml / Tools / External Editor Setup".
 
