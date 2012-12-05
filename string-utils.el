@@ -5,8 +5,8 @@
 ;; Author: Roland Walker <walker@pobox.com>
 ;; Homepage: http://github.com/rolandwalker/string-utils
 ;; URL: http://raw.github.com/rolandwalker/string-utils/master/string-utils.el
-;; Version: 0.2.6
-;; Last-Updated: 30 Oct 2012
+;; Version: 0.2.8
+;; Last-Updated: 8 Nov 2012
 ;; Package-Requires: ((list-utils "0.1.2"))
 ;; EmacsWiki: StringUtils
 ;; Keywords: extensions
@@ -54,6 +54,7 @@
 ;;     `string-utils-squeeze-filename'
 ;;     `string-utils-squeeze-url'
 ;;     `string-utils-split'
+;;     `string-utils-truncate-to'
 ;;
 ;; To use string-utils, place the string-utils.el library somewhere
 ;; Emacs can find it, and add the following to your ~/.emacs file:
@@ -865,6 +866,8 @@ It defaults to the UCS character \"Horizontal Ellipsis\", or
          (setq prefix (match-string 1 rest-of-string))
          (setq rest-of-string (replace-match "" t t rest-of-string 1))))
       (cond
+        ((>= (length ellipsis) maxlen)
+         (substring ellipsis 0 maxlen))
         ((or (> (length prefix) maxlen)
              (and (= (length prefix) maxlen)
                   (> (length rest-of-string) 0)))
@@ -918,6 +921,26 @@ a regular expression."
      (string-utils--repair-split-list (split-string string separators omit-nulls) separators))
     (t
      (split-string string separators omit-nulls))))
+
+;;;###autoload
+(defun string-utils-truncate-to (str-val maxlen &optional ellipsis)
+  "Truncate STRING to MAXLEN.
+
+The returned value is of length MAXLEN or less, including
+ELLIPSIS.
+
+ELLIPSIS is a string inserted wherever characters were removed.
+It defaults to the UCS character \"Horizontal Ellipsis\", or
+\"...\" if extended characters are not displayable."
+  ;; character x2026 = Horizontal Ellipsis
+  (callf or ellipsis (if (char-displayable-p (decode-char 'ucs #x2026)) (string (decode-char 'ucs #x2026)) "..."))
+  (when (> (length str-val) maxlen)
+    (if (>= (length ellipsis) maxlen)
+        (setq str-val ellipsis)
+      (callf substring str-val 0 (- maxlen (length ellipsis)))
+      (callf concat str-val ellipsis))
+    (callf substring str-val 0 maxlen))
+  str-val)
 
 (provide 'string-utils)
 
