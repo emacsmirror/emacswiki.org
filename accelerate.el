@@ -52,10 +52,10 @@
 ;;  (accelerate speedbar-prev 2)
 ;;  (accelerate speedbar-next 2)
 ;;
-;; (If the command being accelerated is defined yet or not does not matter.
+;; (Whether the command being accelerated is defined yet or not does not matter.
 ;;  E.g. when accelerating dired-next-line, (require 'dired) is not needed.)
 ;;
-;; todo: Problem accelerating backward-char and forward-char; defadvice does not
+;; TODO: Problem accelerating backward-char and forward-char; defadvice does not
 ;;       take effect. (Is it because they are subs, and not functions?)
 
 (require 'advice)
