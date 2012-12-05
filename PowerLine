@@ -27,6 +27,15 @@ I got tired of seeing blank olive-drab mode-lines and fixed it up a little to wa
 Code:
 
 {{{
+;; powerline.el --- fancy statusline
+;; Name: Emacs Powerline
+;; Author: Nicolas Rougier
+;; Version: 1.0
+;; Keywords: statusline
+;;
+;; Commentary:
+;; This package simply provides a minor mode for fancifying the status line.
+
 (defun arrow-right-xpm (color1 color2)
   "Return an XPM right arrow string representing."
   (format "/* XPM */
