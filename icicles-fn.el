@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Dec  2 17:40:47 2012 (-0800)
+;; Last-Updated: Wed Dec  5 15:29:11 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 13740
+;;     Update #: 13748
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -368,6 +368,7 @@
 (defvar icicle-read-file-name-internal-fn) ; In `icicles-var.el' for Emacs 24+.
 (defvar list-colors-sort)               ; In `facemenu.el'
 (defvar 1on1-*Completions*-frame-flag)  ; In `oneonone.el'
+(defvar minibuffer-default--in-prompt-regexps) ; In `minibuf-eldef.el'.
 (defvar minibuffer-local-filename-syntax) ; In `minibuffer.el' for Emacs 24+.
 (defvar read-buffer-completion-ignore-case) ; Emacs 23+.
 (defvar recentf-list)                   ; In `recentf.el'
@@ -989,6 +990,11 @@ Completion ignores case when `completion-ignore-case' is non-nil."
     (when (and def  (eq icicle-default-value t)) ; Add the (first) default value to PROMPT.
       (let ((hint  def))
         (when (consp hint) (setq hint  (car hint)))
+        (dolist (rgx  (if (boundp 'minibuffer-default--in-prompt-regexps) ; Get rid of HINT if already there.
+                          minibuffer-default--in-prompt-regexps
+                        '(("\\( (default\\(?: is\\)? \\(.*\\))\\):? \\'"  1)
+                          ("\\( \\[.*\\]\\):? *\\'"                       1))))
+          (setq prompt  (replace-regexp-in-string  (car rgx) "" prompt nil nil (cadr rgx))))
         ;; $$$$$$$$$ (when (icicle-file-name-input-p) (setq hint  (file-name-nondirectory hint)))
         (setq prompt  (replace-regexp-in-string ".*\\(\\): *\\'"
                                                 (funcall icicle-default-in-prompt-format-function
