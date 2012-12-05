@@ -177,8 +177,15 @@ The the children of each header will be sorted separately."
 
 (defcustom simple-call-tree-major-mode-alist
   '((emacs-lisp-mode (font-lock-function-name-face
-                      font-lock-variable-name-face)
-                     nil nil nil end-of-defun)
+                      font-lock-variable-name-face
+                      font-lock-type-face)
+                     nil
+                     (lambda (pos)
+                       (goto-char pos)
+                       (backward-word)
+                       (eq (get-text-property (point) 'face)
+                           'font-lock-keyword-face))
+                     nil end-of-defun)
     (cperl-mode nil nil (lambda (pos)
                           (goto-char pos)
                           (beginning-of-line)
