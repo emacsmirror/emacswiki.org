@@ -35,3 +35,6 @@ I use the following bindings to start this minor mode. Mouse-3 is the right mous
 Tested on Emacs 23.2 on Windows.
 
 P.S. In practice I bind the unshifted keys in the keymap to actual functions like <code>previous-line</code> and <code>next-line</code> so that [[Accelerate]] can pick them up.
+
+----
+CategoryKeys
