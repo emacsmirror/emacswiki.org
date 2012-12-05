@@ -28,16 +28,16 @@
 ;;
 ;;; Commentary:
 ;;
-;; When moving the cursor (with e.g the arrow keys or C-n, C-p, etc) and the
+;; When moving the cursor (with e.g. the arrow keys or C-n, C-p, etc) and the
 ;; key is held down and auto-repeated, then start moving cursor in increasingly
 ;; larger steps.
 ;;
-;; Any command that takes a numeric argument as it s first arg (specified
+;; Any command that takes a numeric argument as its first arg (specified
 ;; by e.g. (interactive "p")) can be accelerated. But it is mostly only useful
-;; to accelerate cursor movement commands that normally moves cursor a short
+;; to accelerate cursor movement commands that normally move cursor a short
 ;; distance.
 ;;
-;; The feature is disabeled when recording (and executing) keyboard macros,
+;; The feature is disabled when recording (and executing) keyboard macros,
 ;; because timing information is not stored in macros.
 ;;
 ;; Example
@@ -62,7 +62,7 @@
 
 (defvar acc-auto-repeat-time 100000
   "Interval in microseconds to detect keyboard auto-repeat.
-\nIf an interactiv command is repeated within this time, and invoked with
+\nIf an interactive command is repeated within this time, and invoked with
 the same keyboard key, it is considered to be auto-repeated.")
 
 (defvar acc--last-time (current-time))
@@ -100,17 +100,17 @@ See `current-time' for time format."
 
 (defun acc-save-mult (multiplier symb)
   ;; Normalize MULTIPLIER, store it in a property of SYMB, and return it.
-  ;; If MULTIPLIER is a number, normalize it by puting it in a list, otherwise
+  ;; If MULTIPLIER is a number, normalize it by putting it in a list, otherwise
   ;; return it as it is. `nil' is returned as it is too.
   (if (numberp multiplier) (setq multiplier (list multiplier)))
   (put symb 'accelerate multiplier)
   multiplier)
 
 (defun acc-pump-arg (arg0 symb)
-  ;; Given an argument value ARG0 assumed to be the first arg of an adviced
+  ;; Given an argument value ARG0 assumed to be the first arg of an advised
   ;; command, compute and return a replacement value for that arg.
-  ;; If it is concluded that this is not an auto-repeaded invocation of
-  ;; the adviced command, ARG0 is returned unchanged.
+  ;; If it is concluded that this is not an auto-repeated invocation of
+  ;; the advised command, ARG0 is returned unchanged.
   ;; SYMB is the command symbol, which is used to get the multiplier list
   ;; stored in a property on that symbol.
   ;; Variables `acc--last-command-char', `acc--last-time' and/or
@@ -134,7 +134,7 @@ See `current-time' for time format."
 
 ;;;###autoload
 (defmacro accelerate (command multiplier)
-  "Advice COMMAND so its numeric argument is increased when repeated quickly.
+  "Advise COMMAND so its numeric argument is increased when repeated quickly.
 \nCOMMAND should be a symbol name of an interactive command where the first arg
 is 1 by default. Normally that is a function declared with \(interactive \"p\").
 COMMAND should not be quoted since this is a macro.
