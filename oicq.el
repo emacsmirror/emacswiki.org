@@ -116,12 +116,12 @@
   :group 'oicq)
 
 (defcustom oicq-default-passwd ""
-  "The pass word of QQ."
+  "The password of QQ."
   :type 'string
   :group 'oicq)
 
 (defun oicq (qq passwd)
-  "Longing oicq.
+  "Login oicq.
 Argument QQ account of QQ.
 Argument PASSWD password of QQ."
   (interactive "sQQ: \nsPassword: ")
@@ -137,7 +137,7 @@ Argument PASSWD password of QQ."
     ))
 
 (defun oicq-auto-entry ()
-  "Longing oicq automatically."
+  "Login oicq automatically."
   (interactive)
   (oicq oicq-default-user oicq-default-passwd))
 
