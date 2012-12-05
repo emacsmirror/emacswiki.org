@@ -5,8 +5,8 @@
 ;; Author: Roland Walker <walker@pobox.com>
 ;; Homepage: http://github.com/rolandwalker/fixmee
 ;; URL: http://raw.github.com/rolandwalker/fixmee/master/fixmee.el
-;; Version: 0.8.0
-;; Last-Updated: 17 Oct 2012
+;; Version: 0.8.2
+;; Last-Updated: 16 Nov 2012
 ;; EmacsWiki: FixmeeMode
 ;; Keywords: navigation, convenience
 ;; Package-Requires: ((button-lock "0.9.8") (nav-flash "1.0.0") (back-button "0.6.0") (smartrep "0.0.3") (string-utils "0.0.6") (tabulated-list "0"))
@@ -31,9 +31,14 @@
 ;; Fixmee-mode tracks "fixme" notices in code comments, highlights
 ;; them, ranks them by urgency, and lets you navigate to them quickly.
 ;;
-;; Urgency of "fixme" notices is indicated by repeating the final
+;; A distinguishing feature of this library is that it tracks the
+;; urgency of each notice, allowing the user to jump directly to
+;; the most important problems.
+;;
+;; Urgency of "fixme" notices is indicated by repetitions of the final
 ;; character.  For example, one might write "FIXMEEEEEEEEE" for an
-;; important issue.
+;; important issue.  The `fixmee-goto-nextmost-urgent' command will
+;; navigate to the longest notice first.
 ;;
 ;; To use fixmee-mode, add the following to your ~/.emacs
 ;;
@@ -69,7 +74,7 @@
 ;;     C-c F   `fixmee-goto-prevmost-urgent'
 ;;     C-c v   `fixmee-view-listing'
 ;;     M-n     `fixmee-goto-next-by-position'      ; only when the point is
-;;     M-p     `fixmee-goto-previous-by-position'  ; inside a fixme notice
+;;     M-p     `fixmee-goto-previous-by-position'  ; inside a "fixme" notice
 ;;
 ;; To constrain the nextmost/prevmost-urgent commands to the current
 ;; buffer only, use a universal prefix argument, eg
@@ -110,15 +115,25 @@
 ;;
 ;;     GNU Emacs version 24.3-devel     : yes, at the time of writing
 ;;     GNU Emacs version 24.1 & 24.2    : yes
-;;     GNU Emacs version 23.3           : unknown
+;;     GNU Emacs version 23.3           : yes
 ;;     GNU Emacs version 22.3 and lower : no
 ;;
-;;     Requires: button-lock.el, tabulated-list.el
+;;     Requires: button-lock.el
+;;               tabulated-list.el (included with Emacs 24.x)
 ;;
 ;;     Uses if present: smartrep.el, nav-flash.el, back-button.el,
 ;;                      string-utils.el
 ;;
 ;; Bugs
+;;
+;;     fixmee--listview-mode-map (the major-mode menu) does not work
+;;     well as a context menu.
+;;         - menu from major mode of selected window appears even when
+;;           right-clicking in this window
+;;         - mouse-event wrappers keep keyboard shortcuts from appearing
+;;           in menu-bar
+;;         - better to have a separate context menu attached to the
+;;           entries, using a keymap text property
 ;;
 ;;     When comment-start is defined, only the first notice on a line
 ;;     is lit up by button-lock, though fixmee-mode is aware of multiple
@@ -145,8 +160,6 @@
 ;;
 ;;     There is no need for fixmee--listview-mode to be an interactive
 ;;     command.
-;;
-;;     Context menu on lighter for listview mode.
 ;;
 ;;     Consider allowing all navigation commands to update the listview
 ;;     buffer (currently only next-error commands do so)
@@ -218,7 +231,7 @@
 ;;; Code:
 ;;
 
-;;; requires
+;;; requirements
 
 ;; for caddr, cadddr, incf, decf, callf, callf2, remove-if-not, position
 (require 'cl)
@@ -260,13 +273,15 @@
 ;;;###autoload
 (defgroup fixmee nil
   "Navigate to \"fixme\" notices in code."
-  :version "0.8.0"
-  :link '(emacs-commentary-link "fixmee")
+  :version "0.8.2"
+  :link '(emacs-commentary-link :tag "Commentary" "fixmee")
+  :link '(url-link :tag "Github" "http://github.com/rolandwalker/fixmee")
+  :link '(url-link :tag "EmacsWiki" "http://emacswiki.org/emacs/FixmeeMode")
   :prefix "fixmee-"
   :group 'navigation
   :group 'convenience)
 
-(defcustom fixmee-notice-regexp "\\(@@@+\\|\\_<\\(?:[Tt][Oo][Dd][Oo]+\\|[Ff][Ii][Xx][Mm][Ee]+\\|XXX+\\)\\_>\\)"
+(defcustom fixmee-notice-regexp "\\(@@@+\\|\\_<\\(?:[Tt][Oo][Dd][Oo]+\\|[Ff][Ii][Xx][Mm][Ee]+\\|XXX+\\)\\)\\(?:[/:?!. \t\r\n\f\v]+\\|-+\\(?:\\s-\\|[\r\n\f\v]\\)\\|\\_>\\)"
   "Pattern for matching \"fixme\" notices.
 
 There must be one parenthesized grouping which captures the
@@ -310,7 +325,7 @@ a series of `fixmee-mode' navigation commands."
 
 (defface fixmee-notice-face
    '((t (:inherit font-lock-warning-face)))
-  "Face to show fixmee notices"
+  "Face to show \"fixme\" notices"
   :group 'fixmee)
 
 ;;;###autoload
@@ -565,13 +580,13 @@ Expressed as an element of `fixmee-notice-list'.")
 (defvar fixmee-lighter-keymap-property 'keymap
   "Which property sets the lighter keymap.")
 
-;; fixmee--listview-mode variables
+;; fixmee--listview variables
 
 (defvar fixmee--listview-mode nil "Mode variable for `fixmee--listview-mode'.")
 (make-variable-buffer-local 'fixmee--listview-mode)
 
 (defvar fixmee--listview-buffer-name "*fixmee notices*"
-  "The name of the buffer used to show a listview of all fixmee notices.")
+  "The name of the buffer used to show a listview of all \"fixme\" notices.")
 
 (defvar fixmee--listview-arrow-id nil
   "The `tabulated-list-mode' id associated with the overlay arrow.")
@@ -614,6 +629,9 @@ Expressed as an element of `fixmee-notice-list'.")
 (let ((smart-keys nil))
   (dolist (cmd fixmee-keyboard-navigation-commands)
     (dolist (k (symbol-value (intern (concat (symbol-name cmd) "-keystrokes"))))
+      (when (and (not (string-match-p "mouse\\|wheel\\|button" k))
+                 (not (get cmd :advertised-binding)))
+        (put cmd :advertised-binding (read-kbd-macro k)))
       (if (and (featurep 'smartrep)
                (stringp fixmee-smartrep-prefix)
                (> (length fixmee-smartrep-prefix) 0)
@@ -631,11 +649,15 @@ Expressed as an element of `fixmee-notice-list'.")
 
 (dolist (cmd fixmee-global-commands)
   (dolist (k (symbol-value (intern (concat (symbol-name cmd) "-keystrokes"))))
+      (when (and (not (string-match-p "mouse\\|wheel\\|button" k))
+                 (not (get cmd :advertised-binding)))
+        (put cmd :advertised-binding (read-kbd-macro k)))
     (define-key fixmee-mode-map        (read-kbd-macro k) cmd)
     (define-key fixmee-mode-global-map (read-kbd-macro k) cmd)))
 
 (defvar fixmee--listview-mode-map
-  (let ((map (make-sparse-keymap)))
+  (let ((map (make-sparse-keymap))
+        (menu-map (make-sparse-keymap "Fixmee Listview")))
     (define-key map (kbd "<mouse-2>") 'fixmee-listview-mouse-goto-notice)
     (define-key map (kbd "C-c C-c"  ) 'fixmee-listview-goto-notice)
     (define-key map (kbd "<return>" ) 'fixmee-listview-goto-notice)
@@ -655,6 +677,40 @@ Expressed as an element of `fixmee-notice-list'.")
     (define-key map (kbd "}"        ) 'fixmee-listview-next-buffer)
     (define-key map (kbd "M-{"      ) 'fixmee-listview-previous-buffer)
     (define-key map (kbd "M-}"      ) 'fixmee-listview-next-buffer)
+    (define-key menu-map [customize]          '(menu-item "Customize"      (lambda (e) (interactive "e") (customize-group 'fixmee))))
+    (define-key menu-map [quit-listview]      '(menu-item "Quit Listview"  fixmee-listview-quit))
+    (define-key menu-map [separator-1]        '(menu-item "--"))
+    (define-key menu-map [follow-mode]        '(menu-item "Follow Mode"        next-error-follow-minor-mode
+                                                          :button (:toggle .   next-error-follow-minor-mode)))
+    (define-key menu-map [toggle-local-only]  '(menu-item "Local Notices Only" fixmee-listview-toggle-local-only
+                                                          :button (:toggle .   fixmee--listview-local-only)))
+    (define-key menu-map [separator-2]        '(menu-item "--"))
+    (define-key menu-map [previous-buffer]    '(menu-item "Previous Buffer"  (lambda (e)
+                                                                               (interactive "e")
+                                                                               (ignore-errors (posn-set-point (event-end last-nonmenu-event)))
+                                                                               (fixmee-listview-previous-buffer))))
+    (define-key menu-map [next-buffer]        '(menu-item "Next Buffer"      (lambda (e)
+                                                                               (interactive "e")
+                                                                               (ignore-errors (posn-set-point (event-end last-nonmenu-event)))
+                                                                               (fixmee-listview-next-buffer))))
+    (define-key menu-map [previous-notice]    '(menu-item "Previous Notice"  (lambda (e)
+                                                                               (interactive "e")
+                                                                               (ignore-errors (posn-set-point (event-end last-nonmenu-event)))
+                                                                               (previous-error-no-select))))
+    (define-key menu-map [next-notice]        '(menu-item "Next Notice"      (lambda (e)
+                                                                               (interactive "e")
+                                                                               (ignore-errors (posn-set-point (event-end last-nonmenu-event)))
+                                                                               (next-error-no-select))))
+    (define-key menu-map [separator-3]        '(menu-item "--"))
+    (define-key menu-map [goto-notice]        '(menu-item "Goto Notice"      (lambda (e)
+                                                                               (interactive "e")
+                                                                               (ignore-errors (posn-set-point (event-end last-nonmenu-event)))
+                                                                               (fixmee-listview-goto-notice))))
+    (define-key menu-map [view-notice]        '(menu-item "View Notice"      (lambda (e)
+                                                                               (interactive "e")
+                                                                               (ignore-errors (posn-set-point (event-end last-nonmenu-event)))
+                                                                               (fixmee-listview-view-notice))))
+    (define-key map [menu-bar fixmee-listview] (cons "Fixmee Listview" menu-map))
     map)
   "Keymap for `fixmee--listview-mode' buffers.")
 (put 'fixmee-listview-goto-notice :advertised-binding (kbd "<return>"))
@@ -669,10 +725,27 @@ Expressed as an element of `fixmee-notice-list'.")
                               (define-key menu-map [separator-2]                       '(menu-item "--"))
                               (define-key menu-map [fixmee-view-listing]               '(menu-item "View Listing of Notices" fixmee-view-listing))
                               (define-key menu-map [separator-1]                       '(menu-item "--"))
-                              (define-key menu-map [fixmee-goto-previous-by-position]  '(menu-item "Previous Fixme By Position" fixmee-goto-previous-by-position))
-                              (define-key menu-map [fixmee-goto-next-by-position]      '(menu-item "Next Fixme By Position" fixmee-goto-next-by-position))
-                              (define-key menu-map [fixmee-goto-prevmost-urgent]       '(menu-item "Previous Fixme By Urgency"  fixmee-goto-prevmost-urgent))
-                              (define-key menu-map [fixmee-goto-nextmost-urgent]       '(menu-item "Next Fixme By Urgency"  fixmee-goto-nextmost-urgent))
+                              (define-key menu-map [fixmee-goto-previous-by-position]  (append '(menu-item "Previous Fixme By Position" fixmee-goto-previous-by-position)
+                                                                                               ;; force :keys because of smartrep
+                                                                                               (when (get 'fixmee-goto-previous-by-position :advertised-binding)
+                                                                                                 (list :keys
+                                                                                                       (format-kbd-macro
+                                                                                                        (get 'fixmee-goto-previous-by-position :advertised-binding))))))
+                              (define-key menu-map [fixmee-goto-next-by-position]      (append '(menu-item "Next Fixme By Position" fixmee-goto-next-by-position)
+                                                                                               (when (get 'fixmee-goto-next-by-position :advertised-binding)
+                                                                                                 (list :keys
+                                                                                                        (format-kbd-macro
+                                                                                                         (get 'fixmee-goto-next-by-position :advertised-binding))))))
+                              (define-key menu-map [fixmee-goto-prevmost-urgent]       (append '(menu-item "Previous Fixme By Urgency"  fixmee-goto-prevmost-urgent)
+                                                                                               (when (get 'fixmee-goto-prevmost-urgent :advertised-binding)
+                                                                                                 (list :keys
+                                                                                                       (format-kbd-macro
+                                                                                                        (get 'fixmee-goto-prevmost-urgent :advertised-binding))))))
+                              (define-key menu-map [fixmee-goto-nextmost-urgent]       (append '(menu-item "Next Fixme By Urgency" fixmee-goto-nextmost-urgent)
+                                                                                               (when (get 'fixmee-goto-nextmost-urgent :advertised-binding)
+                                                                                                 (list :keys
+                                                                                                       (format-kbd-macro
+                                                                                                        (get 'fixmee-goto-nextmost-urgent :advertised-binding))))))
                               (define-key map (kbd "<mode-line> <wheel-up>"     )      'fixmee-goto-prevmost-urgent)
                               (define-key map (kbd "<mode-line> <wheel-down>"   )      'fixmee-goto-nextmost-urgent)
                               (define-key map (kbd "<mode-line> <M-wheel-up>"   )      'fixmee-goto-previous-by-position)
@@ -702,9 +775,15 @@ Expressed as an element of `fixmee-notice-list'.")
 
 Optional KIND is as documented at `called-interactively-p'
 in GNU Emacs 24.1 or higher."
-  (if (eq 0 (cdr (subr-arity (symbol-function 'called-interactively-p))))
-      '(called-interactively-p)
-    `(called-interactively-p ,kind)))
+  (cond
+    ((not (fboundp 'called-interactively-p))
+     '(interactive-p))
+    ((condition-case nil
+         (progn (called-interactively-p 'any) t)
+       (error nil))
+     `(called-interactively-p ,kind))
+    (t
+     '(called-interactively-p))))
 
 ;;; compatibility functions
 
@@ -771,7 +850,8 @@ invalidating the cache when the regexp is changed."
   (when (timerp fixmee-cache-refresh-timer)
     (cancel-timer fixmee-cache-refresh-timer)
     (setq fixmee-cache-refresh-timer nil))
-  (unless (< arg 0)
+  (unless (and (numberp arg)
+               (< arg 0))
     (when fixmee-cache-refresh-interval
       (let ((secs (truncate (* 60 fixmee-cache-refresh-interval))))
         (when (> secs 0)
@@ -792,11 +872,8 @@ invalidating the cache when the regexp is changed."
          #'(lambda (a b) (string< (buffer-name a) (buffer-name b))))
         fixmee-pristine-buffer-list))
 
-(defun fixmee-this-buffer-not-pristine-hook (&optional beg end len)
-  "Add BUFFER to the list modified since the last search for \"fixme\" notices.
-
-Arguments BEG, END, and LEN are as passed to an `after-change-functions'
-hook, and are ignored."
+(defun fixmee-this-buffer-not-pristine-hook (&rest _ignored)
+  "Add BUFFER to the list modified since the last search for \"fixme\" notices."
   (remove-hook 'after-change-functions 'fixmee-this-buffer-not-pristine-hook t)
   (setq fixmee-last-locate-state nil)
   (callf2 delq (current-buffer) fixmee-pristine-buffer-list))
@@ -885,7 +962,8 @@ characters of STR-VAL are always ignored."
                           (let ((raw-match (match-string-no-properties 1)))
                             (when (and (>= (length raw-match) 3)
                                        (or (not comment-start)                         ; mode has no comment syntax
-                                           (save-match-data (nth 4 (syntax-ppss)))))   ; point is within a comment
+                                           (save-match-data
+                                             (nth 4 (syntax-ppss (match-beginning 1)))))) ; point is within a comment
                               (push (list
                                      (fixmee-measure-urgency raw-match)
                                      (current-buffer)
@@ -1150,12 +1228,12 @@ NOTICE-LIST is a list in the format of `fixmee-notice-list'."
       tablist)))
 
 (defun fixmee--listview-find-current-notice ()
-  "Get the id for the fixmee notice at the current line in `fixmee--listview-mode'."
+  "Get the id for the \"fixme\" notice at the current line in `fixmee--listview-mode'."
   (assert (eq major-mode 'fixmee--listview-mode)
           nil "Not in a fixmee--listview-mode buffer")
   (let ((id (tabulated-list-get-id)))
-    (assert id nil "No notice on this line")
-    (assert (buffer-live-p (car id)) nil "Buffer for this notice no longer active")
+    (assert id nil "No \"fixme\" notice on this line")
+    (assert (buffer-live-p (car id)) nil "Buffer for this \"fixme\" notice no longer active")
     id))
 
 (defun fixmee--listview-print-entry-function (id cols)
@@ -1169,7 +1247,7 @@ ID and COLS are as documented at `tabulated-list-print-entry'."
       (when (equal fixmee--listview-arrow-id (tabulated-list-get-id))
         (setq overlay-arrow-position (copy-marker (line-beginning-position)))))))
 
-(defun fixmee--listview-revert-function (&optional _ignore1 _ignore2)
+(defun fixmee--listview-revert-function (&rest _ignored)
   "Handle revert in `fixmee--listview-mode' buffers."
   (when (eq major-mode 'fixmee--listview-mode)
     (fixmee-locate-all-notices)
@@ -1444,7 +1522,7 @@ EVENT should be the mouse event which invoked the command."
 ;; listview next-error support
 
 (defun fixmee-listview-goto-notice ()
-  "Go to the fixmee notice on the current line."
+  "Go to the \"fixme\" notice on the current line."
   (interactive)
   (let ((buf (get-buffer fixmee--listview-buffer-name)))
     (assert buf nil "No current fixmee--listview-mode buffer.")
@@ -1476,6 +1554,7 @@ ARG defaults to 1.
 When RESET is non-nil, move to the first match in the error
 buffer."
   (interactive "p")
+  (callf or arg 1)
   (with-current-buffer
       (if (next-error-buffer-p (current-buffer))
           (current-buffer)
@@ -1502,7 +1581,7 @@ buffer."
 ;; listview interactive commands
 
 (defun fixmee-listview-view-notice ()
-  "View the fixmee notice on the current line.
+  "View the \"fixme\" notice on the current line.
 
 This command does not change the current window."
   (interactive)
@@ -1510,13 +1589,19 @@ This command does not change the current window."
 
 ;;;###autoload
 (defun fixmee-view-listing (&optional arg)
-  "View fixmee notices in a `fixmee--listview-mode' buffer.
+  "View \"fixme\" notices in a `fixmee--listview-mode' buffer.
 
 If the listview buffer currently exists, pop to it; otherwise
 create it.
 
-With universal prefix ARG, always reset the listview buffer to
-defaults and regenerate."
+The listview buffer represents a snapshot of the current state
+and does not update dynamically as you edit other
+buffers.  (Other fixmee navigation commands such as
+`fixmee-goto-nextmost-urgent' update and act according to
+your latest edits.)
+
+To regenerate the listview, issue this command with universal
+prefix ARG."
   (interactive "P")
   (let ((buf (get-buffer fixmee--listview-buffer-name)))
     (when (and (buffer-live-p buf)
@@ -1532,7 +1617,7 @@ defaults and regenerate."
     (fixmee--listview-revert-function)))
 
 (defun fixmee-listview-toggle-local-only ()
-  "Toggle whether to view notices only from a single buffer."
+  "Toggle whether to view \"fixme\" notices only from a single buffer."
   (interactive)
   (let ((buf (get-buffer fixmee--listview-buffer-name)))
     (assert buf nil "No current fixmee--listview-mode buffer.")
@@ -1545,6 +1630,7 @@ defaults and regenerate."
 
 ARG defaults to 1."
   (interactive "p")
+  (callf or arg 1)
   (fixmee--listview-next-error-function (- arg)))
 
 (defun fixmee-listview-next-buffer (&optional arg)
@@ -1555,6 +1641,7 @@ ARG defaults to 1.
 If the listview is not sorted per-buffer, considers each block of
 contiguous identical buffers separately."
   (interactive "p")
+  (callf or arg 1)
   (with-current-buffer
       (if (next-error-buffer-p (current-buffer))
           (current-buffer)
@@ -1599,10 +1686,11 @@ ARG defaults to 1.
 If the listview is not sorted per-buffer, considers each block of
 contiguous identical buffers separately."
   (interactive "p")
+  (callf or arg 1)
   (fixmee-listview-next-buffer (- arg)))
 
 (defun fixmee-listview-mouse-goto-notice (event)
-  "Go to the fixmee notice on the current line using the mouse.
+  "Go to the \"fixme\" notice on the current line using the mouse.
 
 EVENT is the current mouse event."
   (interactive "e")
@@ -1610,7 +1698,9 @@ EVENT is the current mouse event."
   (fixmee-listview-goto-notice))
 
 (defun fixmee-listview-quit (&optional buf)
-  "Delete window associated with buffer BUF and kill BUF."
+  "Quit the buffer created by `fixmee-view-listing'.
+
+Delete window associated with buffer BUF and kill BUF."
   (interactive)
   (callf or buf (get-buffer fixmee--listview-buffer-name))
   (when (buffer-live-p buf)
@@ -1633,7 +1723,7 @@ EVENT is the current mouse event."
 ;; LocalWords: fixme fixmee ARGs FixmeeMode smartrep fsets Smartrep
 ;; LocalWords: incf callf CONSECUTIVES NOMSG caddr cadddr ppss Fixmee
 ;; LocalWords: nextmost Prevmost Fixme prev smex fixm listview utils
-;; LocalWords: devel ARGth
+;; LocalWords: devel ARGth MULTI prevmost Multi Listview
 ;;
 
 ;;; fixmee.el ends here
