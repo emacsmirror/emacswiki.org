@@ -4,9 +4,8 @@ I use Emacs.
 Welcome to my homepage.  My name is Xue Fuqiao.  English is not my native language; please excuse typing errors.  I have been a GNU/Linux user since 2008.
 I've been an [[Emacsite]] since 2009 and began to write programs
 in EmacsLisp since 2011.  Started with [[XEmacs]], switched to
-[[SXEmacs]], back to XEmacs, then to GuileEmacs, and now I'm using GnuEmacs.  I prefer to learn new things from reference
-manuals, instead of tutorials.  Currently I use GNU
-Emacs on a laptop with a DvorakKeyboard.
+[[SXEmacs]], back to XEmacs, then to GuileEmacs, and now I'm using Emacs.  I prefer to learn new things from reference
+manuals, instead of tutorials.  Currently I use Emacs on a laptop with a DvorakKeyboard.
 
 I'm a software developer and software freedom activist.  And I’m
 currently a student of [http://www.ncut.edu.cn NCUT].  My major
@@ -17,7 +16,7 @@ Supporter].
 
 You can contact me using (concat "xfq" "." "free" "@" "gmail" "." "com")
 
-== My GNU Emacs Installation ==
+== My Emacs Installation ==
 <pre>
 ./configure --with-x-toolkit=no --without-toolkit-scroll-bars --with-wide-int
 make
@@ -25,7 +24,7 @@ src/emacs -Q
 make install
 </pre>
 
-== My GNU Emacs Invocation ==
+== My Emacs Invocation ==
 
 <pre>
 emacsclient -c -a ""
@@ -133,19 +132,19 @@ Coming soon.
 * Implement a search engine in EmacsLisp.
 * Make a keyboard layout for Emacs.  I have used ColemakKeyboard and DvorakKeyboard but I'm not satisfied with both of them.
 * Implement a mailing list manager in EmacsLisp.
-* Port XWEM and XLIB to GnuEmacs.
+* Port XWEM and XLIB to Emacs.
 * Implement a DHCP client in EmacsLisp.
 * Implement a FTP server in EmacsLisp.
 * Implement a spell checker in EmacsLisp.
-* Add a command line argument named ##--slim##, it can invoke GnuEmacs with only the bare-minimum EmacsLisp libraries needed for quick editing.
-* FFI support in GnuEmacs.
+* Add a command line argument named ##--slim##, it can invoke Emacs with only the bare-minimum EmacsLisp libraries needed for quick editing.
+* FFI support in Emacs.
 * Make all Unix and Unix-like systems come with Emacs built-in.
 * Make EmacsLisp simpler and cleaner.
 * Implement a URL Shortener in EmacsLisp.
 * Make Emacs/W3 ba able to deal with HTML5.
 * Implement a DOM binding for EmacsLisp.
 * Make Emacs/W3 parse XSL.
-* Make GnuEmacs support more image formats.
+* Make Emacs support more image formats.
 * Implement multithreaded features in Emacs.
 * Implement a EmacsLisp library that generates XPMs dynamically.
 
