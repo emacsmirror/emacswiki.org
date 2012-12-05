@@ -5,8 +5,8 @@
 ;; Author: Roland Walker <walker@pobox.com>
 ;; Homepage: http://github.com/rolandwalker/truthy
 ;; URL: http://raw.github.com/rolandwalker/truthy/master/truthy.el
-;; Version: 0.2.2
-;; Last-Updated: 30 Oct 2012
+;; Version: 0.2.6
+;; Last-Updated:  6 Nov 2012
 ;; Package-Requires: ((list-utils "0.1.2"))
 ;; EmacsWiki: Truthy
 ;; Keywords: extensions
@@ -24,25 +24,41 @@
 ;;     (truthy 0)                    ; nil
 ;;     (truthy (lambda ()))          ; nil
 ;;     (truthy (make-sparse-keymap)) ; nil
-;;     (truthy 1)                    ; t
-;;     (truthy '(a b c))             ; t
+;;     (truthy 1)                    ; 1
+;;     (truthy '(a b c))             ; '(a b c)
 ;;     (truthy '(nil nil nil))       ; nil
+;;     (truthy '([] "" 0))           ; nil
+;;
+;;     (truthy-s '([] "" 0))         ; '([] "" 0)         ; shallow test
+;;
+;;     (truthy-l '(nil nil nil))     ; '(nil nil nil)     ; lengthwise test
 ;;
 ;; Explanation
 ;;
 ;; This library has no user-level interface; it is only useful
-;; for programming in Emacs Lisp.  Two functions are provided:
+;; for programming in Emacs Lisp.  Three functions are provided:
 ;;
 ;;     `truthy'
 ;;     `truthy-s'
+;;     `truthy-l'
 ;;
 ;; Truthy provides an alternative measure of the "truthiness" of a
 ;; value.  Whereas Lisp considers any non-nil value to be "true" when
 ;; evaluating a Boolean condition, `truthy' considers a value to be
-;; "true" if it has *content*.  If the value is a string or buffer, it
-;; must have non-zero length.  If a number, it must be non-zero.  If a
-;; hash, it must have keys.  If a window, it must be live.  See the
-;; docstring to `truthy' for more details.
+;; "truthy" if it has *content*.  If the value is a string or buffer,
+;; it must have non-zero length.  If a number, it must be non-zero.
+;; If a hash, it must have keys.  If a window, it must be live.  See
+;; the docstring to `truthy' for more details.
+;;
+;; `truthy' always returns its argument on success.
+;;
+;; `truthy-s' is the shallow version of `truthy'.  It does not recurse
+;; into sequences, but returns success if any element of a sequence is
+;; non-nil.
+;;
+;; `truthy-l' is the "lengthwise" version of `truthy'.  It does not
+;; recurse into sequences, but returns success if the argument has
+;; length, considering only the variable portion of a data type.
 ;;
 ;; To use truthy, place the truthy.el library somewhere Emacs can find
 ;; it, and add the following to your ~/.emacs file:
@@ -62,11 +78,9 @@
 ;;
 ;; Bugs
 ;;
+;;     truthy-l is fairly meaningless on structs
+;;
 ;; TODO
-;;
-;;     obarray per string-utils
-;;
-;;     Tests for truthy-s.
 ;;
 ;;; License
 ;;
@@ -136,12 +150,15 @@ A process is considered alive if its status is `run', `open',
 ;;; external interface
 
 ;;;###autoload
-(defun truthy (obj &optional shallow)
+(defun truthy (obj &optional shallow length)
   "Return non-nil if OBJ has \"truthiness\".
 
 Whereas Lisp considers any non-nil value to be \"true\" when
 evaluating a Boolean condition, `truthy' considers a value to be
-\"true\" if it has *content*.
+\"truthy\" if it has *content*.
+
+When OBJ has \"truthiness\", `truthy' returns OBJ, otherwise
+nil.
 
 If OBJ is a constant or symbol other than nil, it is always truthy.
 
@@ -192,10 +209,33 @@ returns nil, because no truthy element is found in the list.  But
 
     (truthy '(0 0 0 0) 'shallow)
 
-returns non-nil, because the list holds non-nil elements.
+returns OBJ, because the list holds non-nil elements.
 
 The function `truthy-s' is provided as shorthand for
-\(truthy OBJ 'shallow\)."
+\(truthy OBJ 'shallow\).
+
+When optional LENGTH is non-nil, OBJ is always truthy if the
+concept of length can be applied to it and OBJ has non-zero
+length, considering only the portion of the data type which may
+vary in length.  If the concept of length cannot be applied to
+OBJ, the usual rules apply.  So
+
+    (truthy '(nil nil) nil 'length)
+
+has length and returns OBJ.  And eg
+
+    (truthy (lambda (args)))
+
+has no length (because the lambda has no body) and returns nil.
+
+For a ring or object, the \"lengthwise\" test can check whether
+any slots have been filled.  For a struct it is not possible to
+distinguish between unfilled slots and slots filled with nil, so
+the lengthwise test succeeds if there is a non-zero number of
+slots.
+
+The function `truthy-l' is provided as shorthand for
+\(truthy OBJ nil 'length\)."
 
   (cond
 
@@ -208,28 +248,35 @@ The function `truthy-s' is provided as shorthand for
           (= 0 (length obj)))
      nil)
 
+    ;; symbol
+    ((symbolp obj)
+     obj)
+
     ;; defstruct
     ((and (vectorp obj)
           (symbolp (aref obj 0))
           (string-match-p "\\`cl-" (symbol-name (aref obj 0))))
      (catch 'truthy
        (dolist (elt (append (subseq obj 1 (length obj)) nil))
-         (when (or (and shallow elt)
+         (when (or length
+                   (and shallow elt)
                    (truthy elt))
-           (throw 'truthy t)))
+           (throw 'truthy obj)))
        nil))
 
     ;; compiled byte-code
     ((byte-code-function-p obj)
-     (aref obj 1))
+     (when (aref obj 1)
+       obj))
 
     ;; ring
     ((ring-p obj)
      (catch 'truthy
        (dolist (elt (ring-elements obj))
-         (when (or (and shallow elt)
+         (when (or length
+                   (and shallow elt)
                    (truthy elt))
-           (throw 'truthy t)))
+           (throw 'truthy obj)))
        nil))
 
     ;; macro
@@ -238,73 +285,93 @@ The function `truthy-s' is provided as shorthand for
           (functionp (cdr obj)))
      (catch 'truthy
        (dolist (elt (cdddr obj))
-         (when (or (and shallow elt)
+         (when (or length
+                   (and shallow elt)
                    (truthy elt))
-           (throw 'truthy t)))
+           (throw 'truthy obj)))
        nil))
 
     ;; function
     ((functionp obj)
      (catch 'truthy
        (dolist (elt (cddr obj))
-         (when (or (and shallow elt)
+         (when (or length
+                   (and shallow elt)
                    (truthy elt))
-           (throw 'truthy t)))
+           (throw 'truthy obj)))
        nil))
 
     ;; frame-configuration
     ((frame-configuration-p obj)
      (catch 'truthy
        (dolist (elt (cdr obj))
-         (when (or (and shallow elt)
+         (when (or length
+                   (and shallow elt)
                    (truthy elt))
-           (throw 'truthy t)))
+           (throw 'truthy obj)))
        nil))
 
     ;; keymap
     ((keymapp obj)
-     (not (equal obj (make-sparse-keymap))))
+     (catch 'truthy
+       (dolist (elt (cdr obj))
+         (when (or length
+                   (and shallow elt)
+                   (truthy elt))
+           (throw 'truthy obj)))
+       nil))
 
     ;; number
     ((numberp obj)
-     (/= 0 obj))
+     (when (/= 0 obj)
+       obj))
 
     ;; buffer
     ((bufferp obj)
-     (and (buffer-live-p obj)
-          (> (with-current-buffer obj (point-max)) 1)))
+     (when (and (buffer-live-p obj)
+                (> (with-current-buffer obj (point-max)) 1))
+       obj))
 
     ;; frame
     ((framep obj)
-     (frame-live-p obj))
+     (when (frame-live-p obj)
+       obj))
 
     ;; window
     ((windowp obj)
-     (window-live-p obj))
+     (when (window-live-p obj)
+       obj))
 
     ;; marker
     ((markerp obj)
-     (and (marker-buffer obj)
-          (marker-position obj)))
+     (when (and (marker-buffer obj)
+                (marker-position obj))
+       obj))
 
     ;; overlay
     ((overlayp obj)
-     (and (overlay-buffer obj)
-          (overlay-start obj)
-          (overlay-end obj)))
+     (when (and (overlay-buffer obj)
+                (overlay-start obj)
+                (overlay-end obj)
+                (or (not length)
+                    (/= (overlay-start obj)
+                        (overlay-end obj))))
+       obj))
 
     ;; process
     ((processp obj)
-     (process-live-p obj))
+     (when (process-live-p obj)
+       obj))
 
     ;; EIEIO object
     ((and (fboundp 'object-p)
           (object-p obj))
      (catch 'truthy
        (dolist (elt (remq eieio-unbound (append (subseq obj 3 (length obj)) nil)))
-         (when (or (and shallow elt)
+         (when (or length
+                   (and shallow elt)
                    (truthy elt))
-           (throw 'truthy t)))
+           (throw 'truthy obj)))
        nil))
 
     ;; font object
@@ -312,7 +379,7 @@ The function `truthy-s' is provided as shorthand for
      (catch 'truthy
        (dolist (k '(:family :weight :slant :width :foundry :adstyle :registry :size :name :script :otf))
          (when (font-get obj k)
-           (throw 'truthy t)))
+           (throw 'truthy obj)))
        nil))
 
     ;; abbrev-table
@@ -320,14 +387,14 @@ The function `truthy-s' is provided as shorthand for
      (catch 'truthy
        (mapatoms #'(lambda (sym)
                      (when (> (length (symbol-name sym)) 0)
-                       (throw 'truthy t))) obj)
+                       (throw 'truthy obj))) obj)
        nil))
 
     ;; hash-table
     ((hash-table-p obj)
      (catch 'truthy
        (maphash #'(lambda (k v)
-                    (throw 'truthy t))
+                    (throw 'truthy obj))
                 obj)
        nil))
 
@@ -335,13 +402,14 @@ The function `truthy-s' is provided as shorthand for
     ((char-table-p obj)
      (catch 'truthy
        (map-char-table #'(lambda (k v)
-                           (throw 'truthy t))
+                           (throw 'truthy obj))
                        obj)
        nil))
 
     ;; string
     ((stringp obj)
-     (> (length obj) 0))
+     (when (> (length obj) 0)
+       obj))
 
     ;; list
     ((listp obj)
@@ -351,25 +419,30 @@ The function `truthy-s' is provided as shorthand for
          ((and (consp obj)
                (> len 0)
                (not (listp (nthcdr len obj))))
-          ;; cons or improper list would choke mapcar
-          (and (truthy (subseq obj 0 len))
-               (truthy (nthcdr len obj))))
+          ;; cons or improper list would choke dolist
+          (when (or length
+                    shallow     ; already known to have a non-nil element
+                    (or (truthy (subseq obj 0 len))
+                        (truthy (nthcdr len obj))))
+            obj))
          (t
           (catch 'truthy
             ;; subseq is to break circular lists
             (dolist (elt (subseq obj 0 (funcall measurer obj)))
-              (when (or (and shallow elt)
+              (when (or length
+                        (and shallow elt)
                         (truthy elt))
-                (throw 'truthy t)))
+                (throw 'truthy obj)))
             nil)))))
 
     ;; non-list sequence
     ((sequencep obj)
      (catch 'truthy
        (dolist (elt (mapcar 'identity (append obj nil)))
-         (when (or (and shallow elt)
+         (when (or length
+                   (and shallow elt)
                    (truthy elt))
-           (throw 'truthy t)))
+           (throw 'truthy obj)))
        nil))
 
     ;; fallback
@@ -380,9 +453,17 @@ The function `truthy-s' is provided as shorthand for
 (defun truthy-s (obj)
   "Return non-nil if OBJ has shallow \"truthiness\".
 
-This is equivalent to calling `truthy' with the SHALLOW parameter
-set."
+This is equivalent to calling `truthy' with the SHALLOW argument
+non-nil."
   (truthy obj 'shallow))
+
+;;;###autoload
+(defun truthy-l (obj)
+  "Return non-nil if OBJ has lengthwise \"truthiness\".
+
+This is equivalent to calling `truthy' with the LENGTH argument
+non-nil."
+  (truthy obj nil 'length))
 
 (provide 'truthy)
 
@@ -398,7 +479,7 @@ set."
 ;; End:
 ;;
 ;; LocalWords: Truthy truthiness ARGS alist devel truthy mapcar EIEIO
-;; LocalWords: defstruct subseq utils eieio subr
+;; LocalWords: defstruct subseq utils eieio subr structs struct
 ;;
 
 ;;; truthy.el ends here
