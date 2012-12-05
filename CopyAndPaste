@@ -455,6 +455,9 @@ Emacs 23.1 joined the killring and the system pasteboard. I prefer the old behav
 (global-set-key (kbd "s-x") 'cut-to-pasteboard)
 </pre>
 
+[new::roland.walker]
+[[Simpleclip]] is a more general library for separating the kill ring and the system clipboard. -- [[roland.walker]]
+
 == Visual feedback of Yank and Yank-Pop operations ==
 
 [http://www.emacswiki.org/emacs/volatile-highlights.el VolatileHighlightsMode] brings visual
