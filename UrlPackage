@@ -1,4 +1,3 @@
-[[de:we_are_so_lucky.]]
 The URL package contains code to parse and handle URLs.  It was originally
 part of [[w3]], the web browser written entirely in EmacsLisp.  Now it is a
 separate library available in Emacs 22.
