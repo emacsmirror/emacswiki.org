@@ -32,6 +32,7 @@ Cf. [[BbdbExporters#VcardExport]] for the export functionality of [http://github
 The only fine version of bbdb-vcard.el is at [https://github.com/tohojo/bbdb-vcard]. Fixed `bbdb-join` missing bug. Since trebb's version has not been maintained for three years and tohojo's version is updated 4 month ago. I suggest use tohojo's version as major version. Today is 6th, Dec 2012.
 
 BTW, after importing, you should call `bbdb-save` to save data into physical file.
+
 --Chen Bin
 
 === With bbdb-vcard-snarf-buffer: ===
