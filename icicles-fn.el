@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Dec  5 15:29:11 2012 (-0800)
+;; Last-Updated: Thu Dec  6 09:35:13 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 13748
+;;     Update #: 13759
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -34,7 +34,7 @@
 ;;
 ;;  Macros defined here:
 ;;
-;;    `icicle-maybe-cached-action'.
+;;    `icicle-maybe-cached-action', `minibuffer-with-setup-hook'.
 ;;
 ;;  Commands defined here:
 ;;
@@ -252,6 +252,7 @@
 ;;  headings throughout this file.  You can get `linkd.el' here:
 ;;  http://dto.freeshell.org/notebook/Linkd.html.
 ;;
+;;  (@> "Macros")
 ;;  (@> "Redefined standard functions")
 ;;  (@> "Icicles functions - completion display (not cycling)")
 ;;  (@> "Icicles functions - TAB completion cycling")
@@ -292,7 +293,7 @@
          (load-library "icicles-mac")   ; Use load-library to ensure latest .elc.
        (error nil))
      (require 'icicles-mac)))           ; Require, so can load separately if not on `load-path'.
-  ;; icicle-with-selected-window, minibuffer-with-setup-hook
+  ;; icicle-with-selected-window
 
 (require 'icicles-opt)                  ; (This is required anyway by `icicles-var.el'.)
   ;; icicle-buffer-ignore-space-prefix-flag, icicle-Completions-display-min-input-chars,
@@ -392,6 +393,45 @@
   (defvaralias 'minibuffer-local-must-match-filename-map 'minibuffer-local-filename-must-match-map))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+
+ 
+;;(@* "Macros")
+
+;;; Macros -----------------------------------------------------------
+
+(defmacro icicle-maybe-cached-action (action)
+  "Evaluate and return ACTION or `icicle-all-candidates-action'.
+If `icicle-all-candidates-action' is nil, use ACTION.
+If it is t, then set it to the value of ACTION, so the next call
+ returns the same value."
+  `(if icicle-all-candidates-action
+    (if (eq icicle-all-candidates-action t)
+        (setq icicle-all-candidates-action  ,action)
+      icicle-all-candidates-action)
+    ,action))
+
+;; Same as vanilla definition.  Needed for byte-compiling.
+(defmacro minibuffer-with-setup-hook (fun &rest body)
+  "Temporarily add FUN to `minibuffer-setup-hook' while executing BODY.
+BODY should use the minibuffer at most once.
+Recursive uses of the minibuffer are unaffected (FUN is not
+called additional times).
+
+This macro actually adds an auxiliary function that calls FUN,
+rather than FUN itself, to `minibuffer-setup-hook'."
+  ;; (declare (indent 1) (debug t))
+  (let ((hook  (make-symbol "setup-hook")))
+    `(let (,hook)
+      (setq ,hook  (lambda ()
+                     ;; Clear out this hook so it does not interfere
+                     ;; with any recursive minibuffer usage.
+                     (remove-hook 'minibuffer-setup-hook ,hook)
+                     (funcall ,fun)))
+      (unwind-protect
+           (progn (add-hook 'minibuffer-setup-hook ,hook) ,@body)
+        (remove-hook 'minibuffer-setup-hook ,hook)))))
  
 ;;(@* "Redefined standard functions")
 
@@ -2600,15 +2640,12 @@ For completion, pass args to `icicle-read-shell-command-completing'."
       (if (fboundp 'icicle-ORIG-read-shell-command) ; Emacs < 23
           (icicle-ORIG-read-shell-command prompt initial-contents hist default-value inherit-input-method)
         (error "`icicle-read-shell-command': YOU SHOULD NOT SEE THIS; Use `M-x icicle-send-bug-report'"))
-    (if (fboundp 'minibuffer-with-setup-hook) ; Emacs 23+
-        (minibuffer-with-setup-hook
-         (lambda ()
-           (set (make-local-variable 'minibuffer-default-add-function)
-                'minibuffer-default-add-shell-commands))
-         (icicle-read-shell-command-completing prompt initial-contents (or hist 'shell-command-history)
-                                               default-value inherit-input-method))
-      (icicle-read-shell-command-completing prompt initial-contents (or hist 'shell-command-history)
-                                            default-value inherit-input-method))))
+    (minibuffer-with-setup-hook
+     (lambda ()
+       (set (make-local-variable 'minibuffer-default-add-function)
+            'minibuffer-default-add-shell-commands))
+     (icicle-read-shell-command-completing prompt initial-contents (or hist 'shell-command-history)
+                                           default-value inherit-input-method))))
 
 
 ;; REPLACE ORIGINAL `shell-command' defined in `simple.el',
@@ -2800,15 +2837,12 @@ Uses Icicles completion - see `icicle-read-shell-command-completing'.
 ARG is passed to `dired-mark-prompt' as its first arg, for the prompt.
 FILES are the files for which the shell command should be appropriate."
   (let ((icicle-files  files))
-    (if (fboundp 'minibuffer-with-setup-hook)
-        (minibuffer-with-setup-hook
-         (lambda ()
-           (set (make-local-variable 'minibuffer-default-add-function)
-                'icicle-minibuffer-default-add-dired-shell-commands))
-         (dired-mark-pop-up  nil 'shell files 'icicle-dired-guess-shell-command
-                             (format prompt (dired-mark-prompt arg files)) files))
-      (dired-mark-pop-up  nil 'shell files 'icicle-dired-guess-shell-command
-                          (format prompt (dired-mark-prompt arg files)) files))))
+    (minibuffer-with-setup-hook
+     (lambda ()
+       (set (make-local-variable 'minibuffer-default-add-function)
+            'icicle-minibuffer-default-add-dired-shell-commands))
+     (dired-mark-pop-up  nil 'shell files 'icicle-dired-guess-shell-command
+                         (format prompt (dired-mark-prompt arg files)) files))))
 
 (defun icicle-dired-guess-shell-command (prompt files)
   "Read a shell command for FILES using file-name completion.
@@ -6667,17 +6701,6 @@ abstracting from whitespace and letter case."
                          (unless (member this new) (push this new)))
                        (pop tail)))
     (nreverse new)))
-
-(defmacro icicle-maybe-cached-action (action)
-  "Evaluate and return ACTION or `icicle-all-candidates-action'.
-If `icicle-all-candidates-action' is nil, use ACTION.
-If it is t, then set it to the value of ACTION, so the next call
- returns the same value."
-  `(if icicle-all-candidates-action
-    (if (eq icicle-all-candidates-action t)
-        (setq icicle-all-candidates-action  ,action)
-      icicle-all-candidates-action)
-    ,action))
 
 (defun icicle-alt-act-fn-for-type (type)
   "Returns an action function chosen by user for type TYPE (a string).
