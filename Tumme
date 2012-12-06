@@ -61,7 +61,16 @@ Btw, if my server is up (you can see the URL in the screenshots, I won't place a
 
 == EXIF rotation ==
 
-By default, image-dired does not respect the EXIF rotation field when displaying thumbnails or images.  However, it's easy to add.  Customize the variables image-dired-cmd-create-temp-image-options and image-dired-cmd-create-thumbnail-options and add -auto-orient to the command lines for convert.
+By default, image-dired does not respect the EXIF rotation field when displaying thumbnails or images.  However, it's easy to add.  Customize the variables image-dired-cmd-create-temp-image-options and image-dired-cmd-create-thumbnail-options and add -auto-orient to the command lines for convert. For example, you can write the following to add this option to the two variables without knowing too much about their content:
+
+{{{
+(eval-after-load "image-dired"
+  '(progn
+     (setq image-dired-cmd-create-thumbnail-options
+           (replace-regexp-in-string "-strip" "-auto-orient -strip" image-dired-cmd-create-thumbnail-options)
+           image-dired-cmd-create-temp-image-options
+           (replace-regexp-in-string "-strip" "-auto-orient -strip" image-dired-cmd-create-temp-image-options))))
+}}}
 
 ----
 
