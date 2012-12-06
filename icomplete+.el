@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Oct 16 13:33:18 1995
 ;; Version: 21.0
-;; Last-Updated: Mon Nov 19 11:41:04 2012 (-0800)
+;; Last-Updated: Wed Dec  5 15:53:09 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 1369
+;;     Update #: 1406
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icomplete+.el
 ;; Doc URL: http://emacswiki.org/emacs/IcompleteMode
 ;; Keywords: help, abbrev, internal, extensions, local
@@ -82,6 +82,12 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/12/05 dadams
+;;     Updated wrt Emacs 24:
+;;      Added: icomplete-show-key-bindings (removed from vanilla Emacs), icomplete-separator,
+;;             icompletep-exact-separator.
+;;      icomplete-exhibit: Added completion-all-sorted-completions as delay inhibition.
+;;      icomplete-completions (all versions): Use icomplete-separator, icompletep-exact-separator.
 ;; 2012/11/19 dadams
 ;;     icomplete-completions:
 ;;       Exclude file names with extensions in completion-ignored-extensions.
@@ -199,6 +205,7 @@
 (require 'icomplete)
 
 ;; Quiet the byte-compiler.
+(defvar completion-all-sorted-completions)
 (defvar icomplete-eoinput)
 (defvar icomplete-with-completion-tables)
 (defvar icompletep-include-menu-items-flag)
@@ -223,8 +230,22 @@ Don't forget to mention your Emacs and library versions."))
           "http://www.emacswiki.org/cgi-bin/wiki/icomplete+.el")
   :link '(url-link :tag "Description"
           "http://www.emacswiki.org/cgi-bin/wiki/IcompleteMode#IcompleteModePlus")
-  :link '(emacs-commentary-link :tag "Commentary" "icomplete+")
-  )
+  :link '(emacs-commentary-link :tag "Commentary" "icomplete+"))
+
+;;;###autoload
+(defcustom icompletep-exact-separator ", "
+    "String used by to separate exact match from other alternatives."
+    :type 'string :group 'Icomplete-Plus)
+
+(unless (boundp 'icomplete-show-key-bindings) ; Emacs 24.3+
+  (defcustom icomplete-show-key-bindings t
+    "Non-nil means show key bindings as well as completion for sole match."
+    :type 'boolean :group 'icomplete))
+
+(when (boundp 'icomplete-show-key-bindings) ; Emacs 20-24.2
+  (defcustom icomplete-separator "  "
+    "String used to separate completion alternatives."
+    :type 'string :group 'icomplete :version "24.4"))
 
 ;;;###autoload
 (defface icompletep-choices
@@ -415,7 +436,7 @@ menu-bar bindings in the l of keys (Emacs 23+ only)."
 ;; Save match-data.
 ;; Don't insert if input begins with `(' (e.g. `repeat-complex-command').
 ;;
-(when (> emacs-major-version 22)        ; Emacs 23+
+(when (> emacs-major-version 22)   ; Emacs 23+
   (defun icomplete-exhibit ()
     "Insert icomplete completions display.
 Should be run via minibuffer `post-command-hook'.  See `icomplete-mode'
@@ -434,6 +455,8 @@ and `minibuffer-setup-hook'."
                    (or
                     ;; Do not bother with delay after certain number of chars:
                     (> (- (point) (field-beginning)) icomplete-max-delay-chars)
+                    ;; Do not delay if completions are known.
+                    completion-all-sorted-completions
                     ;; Do not delay if alternatives number is small enough:
                     (and (sequencep minibuffer-completion-table)
                          (< (length minibuffer-completion-table)
@@ -456,7 +479,6 @@ and `minibuffer-setup-hook'."
               ;; before or after the string, so let's spoon-feed it the pos.
               (put-text-property 0 1 'cursor t text)
               (overlay-put icomplete-overlay 'after-string text))))))))
-
 
 
 ;; REPLACES ORIGINAL defined in `icomplete.el':
@@ -540,14 +562,15 @@ following the rest of the icomplete info:
           (setq prompt-rest
                 (if prospects
                     (concat open-bracket-prospects
-                            (and most-is-exact  ", ")
-                            (mapconcat 'identity (sort prospects (function string-lessp)) "  ")
+                            (and most-is-exact  icompletep-exact-separator)
+                            (mapconcat 'identity (sort prospects (function string-lessp))
+                                       icomplete-separator)
                             (and comps  "...")
                             close-bracket-prospects)
                   (setq keys  (and icomplete-show-key-bindings
                                    (commandp (intern-soft most))
                                    (icomplete-get-keys most (eq t most-try))))
-                  (if (eq keys 'TOO-LONG)       ; No room even for ` [ ... ]'.
+                  (if (eq keys 'TOO-LONG) ; No room even for ` [ ... ]'.
                       ""
                     (concat " [ " (and (not keys)  "Matched") keys " ]"))))
           (unless (string= "" prompt-rest)
@@ -719,8 +742,9 @@ following the rest of the icomplete info:
 ;;;          (when last (setcdr last base-size))
           (setq prompt-rest
                 (if prospects
-                    (concat "{ " (and most-is-exact  ", ")
-                            (mapconcat 'identity (sort prospects (function string-lessp)) "  ")
+                    (concat "{ " (and most-is-exact  icompletep-exact-separator)
+                            (mapconcat 'identity (sort prospects (function string-lessp))
+                                       icomplete-separator)
                             (and limit  "...")
                             " }")
                   (setq keys  (and icomplete-show-key-bindings
@@ -901,8 +925,9 @@ following the rest of the icomplete info:
 ;;;       (if last (setcdr last base-size))
           (setq prompt-rest
                 (if prospects
-                    (concat "{ " (and most-is-exact  ", ")
-                            (mapconcat 'identity (sort prospects (function string-lessp)) "  ")
+                    (concat "{ " (and most-is-exact  icompletep-exact-separator)
+                            (mapconcat 'identity (sort prospects (function string-lessp))
+                                       icomplete-separator)
                             (and limit  "...")
                             " }")
                   (setq keys  (and icomplete-show-key-bindings
