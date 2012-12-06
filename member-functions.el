@@ -20,7 +20,7 @@
 ;; Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 ;; The following code is known to work with at least one recent
-;; version of xemacs, and at least one recent version of emacs.  If
+;; version of XEmacs, and at least one recent version of emacs.  If
 ;; you find that you are able to make it work on another emacs
 ;; variant or version, where it doesn't already work, please let me
 ;; know.  I am especially interested in any modifications that might
@@ -105,7 +105,7 @@
 ;; Thu Sep 28 10:06:09 2000 Released under GPL.
 
 ;; Fri Sep 29 09:23:10 2000 Tested on emacs 20.4.1.  Added a hack
-;; after discoveing that expand-member-functions didn't work there.
+;; after discovering that expand-member-functions didn't work there.
 
 ;; Tue Jan 23 12:55:12 2001 Fixed typo on line 839.  Thanks to Barney Dalton
 ;; Barnaby.Dalton@radioscape.com 
