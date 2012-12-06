@@ -21,19 +21,21 @@ DaleSmith wrote this xsl file to convert from Sylpheed xml address format to bbd
 
 === With bbdb-vcard.el: === 
 
-[http://github.com/trebb/bbdb-vcard bbdb-vcard.el] imports vCards version 3.0 of (almost) arbitrary content into BBDB.
+This importer imports vCards version 3.0 of (almost) arbitrary content into BBDB.
 
 On a file, a buffer or a region containing one or more vCards, use
 `bbdb-vcard-import-file', `bbdb-vcard-import-buffer', or
 `bbdb-vcard-import-region' respectively to import them into BBDB.
 
+Remember to call `bbdb-save' after importing to save your data.
+
+There are two known versions:
+
+* [https://github.com/tohojo/bbdb-vcard] by Toke Høiland-Jørgensen, last updated in 2012
+* [http://github.com/trebb/bbdb-vcard bbdb-vcard.el] by Bert Burgemeister, last updated in 2010 (apparently suffering from some sort of bug?)
+
+
 Cf. [[BbdbExporters#VcardExport]] for the export functionality of [http://github.com/trebb/bbdb-vcard bbdb-vcard.el].
-
-The only fine version of bbdb-vcard.el is at [https://github.com/tohojo/bbdb-vcard]. Fixed `bbdb-join` missing bug. Since trebb's version has not been maintained for three years and tohojo's version is updated 4 month ago. I suggest use tohojo's version as major version. Today is 6th, Dec 2012.
-
-BTW, after importing, you should call `bbdb-save` to save data into physical file.
-
---Chen Bin
 
 === With bbdb-vcard-snarf-buffer: ===
 
@@ -216,4 +218,3 @@ i was switching from mutt/abook to wanderlust/bbdb, so i came up with this code.
 == Importing from OS X system Address Book ==
 
 I use Gnus as my mailer, but I live on a Macintosh.  To get the system AddressBook data into the BBDB, I've written a [http://www.homonculus.net/blog/by_name/bbdb_os_x_hackery.html short python script] that uses the PyObjC bridge to pull the relevant data directly.    Share and enjoy!
-
