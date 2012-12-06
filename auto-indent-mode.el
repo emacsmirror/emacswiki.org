@@ -5,7 +5,7 @@
 ;; Author: Matthew L. Fidler, Le Wang & Others
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Sat Nov  6 11:02:07 2010 (-0500)
-;; Version: 0.87
+;; Version: 0.88
 ;; Last-Updated: Tue Aug 21 13:08:42 2012 (-0500)
 ;;           By: Matthew L. Fidler
 ;;     Update #: 1467
@@ -381,6 +381,9 @@
 ;; *** auto-indent-fix-org-backspace
 ;; Fixes `org-backspace' to use `auto-indent-backward-delete-char-behavior' for `org-mode' buffers.
 ;; 
+;; *** auto-indent-fix-org-move-beginning-of-line
+;; Fixes `move-beginning-of-line' in `org-mode' when in source blocks to follow `auto-indent-mode'.
+;; 
 ;; *** auto-indent-fix-org-return
 ;; Allows newline and indent behavior in source code blocks in org-mode.
 ;; 
@@ -503,24 +506,12 @@
 ;; 
 ;; It is useful when using this option to have some sort of autopairing on.
 ;; 
-;; *** auto-indent-next-pair-timer-interval
+;; *** auto-indent-next-pair-timer-geo-mean
 ;; Number of seconds before the observed parenthetical statement is indented.
 ;; The faster the value, the slower Emacs responsiveness but the
 ;; faster Emacs indents the region.  The slower the value, the
 ;; faster Emacs responds.  This should be changed dynamically by
-;; typing with `auto-indent-next-pair-timer-interval-addition'.  The
-;; maximum that a particular mode can delay the timer is given by
-;; `auto-indent-next-pair-timer-interval-max'.
-;; 
-;; *** auto-indent-next-pair-timer-interval-addition
-;; If the indent operation for a file takes longer than the specified idle timer, grow that timer by this number for a particular mode.
-;; 
-;; *** auto-indent-next-pair-timer-interval-max
-;; Maximum number seconds that auto-indent-mode will grow a parenthetical statement.
-;; If this is less than or equal to zero, these will be no limit.
-;; 
-;; *** auto-indent-next-pairt-timer-interval-do-not-grow
-;; If true, do not magically grow the mode-based indent time for a region.
+;; to the geometric mean of rate to indent a single line.
 ;; 
 ;; *** auto-indent-on-save-file
 ;;  - Auto Indent on visit file.
@@ -2080,6 +2071,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 05-Dec-2012    Matthew L. Fidler  
+;;    Last-Updated: Tue Aug 21 13:08:42 2012 (-0500) #1467 (Matthew L. Fidler)
+;;    Added support for new ergoemacs-mode.  Also provided updated bug-fix for indent-region
 ;; 19-Nov-2012      
 ;;    Last-Updated: Tue Aug 21 13:08:42 2012 (-0500) #1467 (Matthew L. Fidler)
 ;;    Bug fix for aligning parenthetical region when a yasnippet is active
@@ -3507,7 +3501,8 @@ buffer."
                'delete-backward-char
                'backward-delete-char
                (key-binding (kbd "DEL"))
-               ergoemacs-delete-backward-char-key
+               (and (boundp 'ergoemacs-delete-backward-char-key)
+                    ergoemacs-delete-backward-char-key)
                (key-binding (kbd "<backspace>")))))
    (memq (or command this-command)
          (list
@@ -3576,7 +3571,7 @@ This is based on standards for Viper, ErgoEmacs and standard Emacs"
               (list
                'delete-char
                (key-binding (kbd "<delete>"))
-               ergoemacs-delete-char-key
+               (and (boundp 'ergoemacs-delete-char-key) ergoemacs-delete-char-key)
                (key-binding (kbd "<deletechar>")))))
    (memq (or command this-command)
          (list
@@ -3982,7 +3977,8 @@ Allows the kill ring save to delete the beginning white-space if desired."
     (when auto-indent-next-pair
       (let ((mark-active mark-active))
         (when (and (not (minibufferp))
-                   (not (looking-back "^[ \t]*")))
+                   (not (looking-at "[^ \t]"))
+                   (not (looking-back "^[ \t]+")))
           (let ((start-time (float-time)))
             (indent-region auto-indent-pairs-begin auto-indent-pairs-end)
             (auto-indent-par-region-interval-update (- (float-time) start-time)))
