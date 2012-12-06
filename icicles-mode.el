@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Dec  2 17:22:35 2012 (-0800)
+;; Last-Updated: Thu Dec  6 10:41:44 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 9224
+;;     Update #: 9225
 ;; URL: http://www.emacswiki.org/icicles-mode.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -4222,8 +4222,8 @@ if `icicle-change-region-background-flag' is non-nil."
                                                      'icicle-read-file-name))
                                             icicle-orig-read-file-name-fn))
       (defalias 'read-file-name             'icicle-ORIG-read-file-name)) ; Emacs 20, 21
-    (when (fboundp 'read-file-name-default) ; Emacs 24+
-      (defalias 'read-file-name-default     'icicle-ORIG-read-file-name-default))
+    (when (fboundp 'icicle-ORIG-read-file-name-default) ; Emacs 24+
+      (defalias 'read-file-name-default       'icicle-ORIG-read-file-name-default))
     (when (fboundp 'icicle-ORIG-read-number)
       (defalias 'read-number                'icicle-ORIG-read-number))
     (when (fboundp 'icicle-ORIG-shell-command) ; Emacs < 23
