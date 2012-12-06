@@ -31,7 +31,7 @@ Remember to call `bbdb-save' after importing to save your data.
 
 There are two known versions:
 
-* [https://github.com/tohojo/bbdb-vcard] by Toke Høiland-Jørgensen, last updated in 2012
+* [https://github.com/tohojo/bbdb-vcard bbdb-vcard.el] by Toke Høiland-Jørgensen, last updated in 2012
 * [http://github.com/trebb/bbdb-vcard bbdb-vcard.el] by Bert Burgemeister, last updated in 2010 (apparently suffering from some sort of bug?)
 
 
