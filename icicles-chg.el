@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Wed Dec  5 15:26:30 2012 (-0800)
+;; Last-Updated: Thu Dec  6 09:34:41 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 9368
+;;     Update #: 9374
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1569,6 +1569,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2012/12/06 dadams
+;;     Moved minibuffer-with-setup-hook here from icicles-mac.el (and removed eval-when-compile).
+;;     icicle-read-shell-command, icicle-dired-read-shell-command:
+;;       Use minibuffer-with-setup-hook unconditionally, since provided here unconditionally.
 ;; 2012/12/05 dadams
 ;;     icicle-completing-read: Remove HINT before adding it our way.  Thx to Christopher Schmidt.
 ;; 2012/12/02 dadams
@@ -3372,6 +3376,8 @@
 ;;       macros needs to be byte-compiled anew after loading the updated macros.
 ;; ****************************************************************************************************
 ;;
+;; 2012/12/06 dadams
+;;     Removed minibuffer-with-setup-hook - moved to icicles-fn.el (and removed eval-when-compile).
 ;; 2012/12/01 dadams
 ;;     Moved to icicles-opt.el: icicle-kbd, icicle-edmacro-parse-keys, icicle-read-kbd-macro.
 ;; 2012/10/08 dadams
