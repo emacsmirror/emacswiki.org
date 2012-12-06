@@ -34,7 +34,7 @@ emacsclient -c -a ""
 
 or sometimes:
 <pre>
-emacs -nw
+emacs -nw -f gnus
 </pre>
 
 == My Accounts ==
