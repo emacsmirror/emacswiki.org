@@ -84,12 +84,6 @@ Emacs* toolBar: 0
 Emacs.useXIM: off
 </pre>
 
-== My ~/.xsessionrc ==
-<pre>
-xset +fp /usr/local/share/emacs/fonts
-xset fp rehash
-</pre>
-
 == My ~/.sawfish/rc ==
 Coming soon.
 
