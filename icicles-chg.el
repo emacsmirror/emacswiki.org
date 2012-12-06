@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sun Dec  2 17:48:00 2012 (-0800)
+;; Last-Updated: Wed Dec  5 15:26:30 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 9367
+;;     Update #: 9368
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1569,6 +1569,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2012/12/05 dadams
+;;     icicle-completing-read: Remove HINT before adding it our way.  Thx to Christopher Schmidt.
 ;; 2012/12/02 dadams
 ;;     Added: icicle-read-file-name-default, icicle-ORIG-read-file-name-default.
 ;; 2012/11/27 dadams
