@@ -1,14 +1,14 @@
 ;;; tabbar-ruler.el --- Setup tabbar to look pretty...
 ;;
-;; Filename: tabbar-setup.el
+;; Filename: tabbar-ruler.el
 ;; Description: Changes tabbar setup to be similar to Aquaemacs.
 ;; Author: Matthew Fidler, Nathaniel Cunningham
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Mon Oct 18 17:06:07 2010 (-0500)
-;; Version: 0.5
-;; Last-Updated: Thu Mar  1 08:26:44 2012 (-0600)
+;; Version: 0.6
+;; Last-Updated: Thu Mar  1 09:02:56 2012 (-0600)
 ;;           By: Matthew L. Fidler
-;;     Update #: 656
+;;     Update #: 659
 ;; URL: http://github.com/mlf176f2/tabbar-ruler.el
 ;; Keywords: Tabbar, Ruler Mode, Menu, Tool Bar.
 ;; Compatibility: Windows Emacs 23.x
@@ -17,28 +17,50 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Commentary:
-;;
+;; 
+;; * Introduction
+;; Tabbar ruler is an emacs package that allows both the tabbar and the
+;; ruler to be used together.  In addition it allows auto-hiding of the
+;; menu-bar and tool-bar.
+;; 
+;; 
 ;; Tabbar appearance based on reverse engineering Aquaemacs code and
 ;; changing to my preferences, and Emacs Wiki.
-;;
+;; 
 ;; Tabbar/Ruler integration is new. Tabbar should be active on mouse
 ;; move.  Ruler should be active on self-insert commands.
-;;
+;; 
 ;; Also allows auto-hiding of toolbar and menu.
-;;
+;; 
 ;; To use this, put the library in your load path and use
-;;
-;;
-;; (setq tabbar-ruler-global-tabbar 't) ; If you want tabbar
-;; (setq tabbar-ruler-global-ruler 't) ; if you want a global ruler
-;; (setq tabbar-ruler-popup-menu 't) ; If you want a popup menu.
-;; (setq tabbar-ruler-popup-toolbar 't) ; If you want a popup toolbar
-;;
-;; (require 'tabbar-ruler)
-;;
+;; 
+;; 
+;;   (setq tabbar-ruler-global-tabbar 't) ; If you want tabbar
+;;   (setq tabbar-ruler-global-ruler 't) ; if you want a global ruler
+;;   (setq tabbar-ruler-popup-menu 't) ; If you want a popup menu.
+;;   (setq tabbar-ruler-popup-toolbar 't) ; If you want a popup toolbar
+;;   
+;;   (require 'tabbar-ruler)
+;;   
+;; 
+;; 
+;; 
+;; * Known issues
+;; the left arrow is text instead of an image.
+;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 06-Dec-2012    Matthew L. Fidler  
+;;    Last-Updated: Thu Mar  1 09:02:56 2012 (-0600) #659 (Matthew L. Fidler)
+;;    Now colors are based on loaded theme (from minibar).  Also added
+;;    bug-fix for setting tabbar colors every time a frame opens.  Also
+;;    added a bug fix for right-clicking a frame that is not associated with
+;;    a buffer.
+;; 1-Mar-2012    Matthew L. Fidler  
+;;    Last-Updated: Thu Mar  1 08:38:09 2012 (-0600) #656 (Matthew L. Fidler)
+;;    Will not change tool-bar-mode in Mac.  It causes some funny
+;;    things to happen.
 ;; 9-Feb-2012    Matthew L. Fidler  
 ;;    Last-Updated: Thu Feb  9 19:18:21 2012 (-0600) #651 (Matthew L. Fidler)
 ;;    Will not change the menu bar in a Mac.  Its always there.
@@ -130,33 +152,36 @@
     ["Save As" tabbar-popup-save-as]
     "--"
     ["Rename File" tabbar-popup-rename
-     :active (and (buffer-file-name (tabbar-tab-value tabbar-last-tab)) (file-exists-p (buffer-file-name (tabbar-tab-value tabbar-last-tab))))]
+     :active (and (buffer-file-name (tabbar-tab-value tabbar-last-tab))
+                  (file-exists-p (buffer-file-name (tabbar-tab-value tabbar-last-tab))))]
     ["Delete File" tabbar-popup-delete
-     :active (and (buffer-file-name (tabbar-tab-value tabbar-last-tab)) (file-exists-p (buffer-file-name (tabbar-tab-value tabbar-last-tab))))]
+     :active (and (buffer-file-name (tabbar-tab-value tabbar-last-tab))
+                  (file-exists-p (buffer-file-name (tabbar-tab-value tabbar-last-tab))))]
     "--"
     ["Gzip File" tabbar-popup-gz
-     :active (and (executable-find "gzip") (buffer-file-name (tabbar-tab-value tabbar-last-tab))
+     :active (and (executable-find "gzip")
+                  (buffer-file-name (tabbar-tab-value tabbar-last-tab))
                   (file-exists-p (buffer-file-name (tabbar-tab-value tabbar-last-tab)))
                   (not (string-match "\\.gz\\(?:~\\|\\.~[0-9]+~\\)?\\'" (buffer-file-name (tabbar-tab-value tabbar-last-tab)))))]
     ["Bzip File" tabbar-popup-bz2
-     :active (and (executable-find "bzip2") (buffer-file-name (tabbar-tab-value tabbar-last-tab))
+     :active (and (executable-find "bzip2")
+                  (buffer-file-name (tabbar-tab-value tabbar-last-tab))
                   (file-exists-p (buffer-file-name (tabbar-tab-value tabbar-last-tab)))
                   (not (string-match "\\.bz2\\(?:~\\|\\.~[0-9]+~\\)?\\'" (buffer-file-name (tabbar-tab-value tabbar-last-tab)))))]
     ["Decompress File" tabbar-popup-decompress
      :active (and
+              (buffer-file-name (tabbar-tab-value tabbar-last-tab))
               (file-exists-p (buffer-file-name (tabbar-tab-value tabbar-last-tab)))
               (string-match "\\(?:\\.\\(?:Z\\|gz\\|bz2\\|tbz2?\\|tgz\\|svgz\\|sifz\\|xz\\|dz\\)\\)\\(\\(?:~\\|\\.~[0-9]+~\\)?\\)\\'"
                             (buffer-file-name (tabbar-tab-value tabbar-last-tab))))
      ]
     ;;    "--"
     ;;    ["Print" tabbar-popup-print]
-    )
-  )
+    ))
 
 (defun tabbar-popup-print ()
   "Print Buffer"
   (interactive))
-
 
 (defun tabbar-popup-close ()
   "Tab-bar pop up close"
@@ -243,66 +268,55 @@
   (popup-menu (tabbar-popup-menu)))
 
 
-(set-face-attribute 'tabbar-default nil
-                    :inherit nil
-                    :weight 'normal
-                    :width 'normal
-                    :slant 'normal
-                    :underline nil
-                    :strike-through nil
-                    ;; inherit from frame                   :inverse-video
-                    :stipple nil
-                    :background "gray80"
-                    :foreground "black"
-                    ;;              :box '(:line-width 2 :color "white" :style nil)
-                    :box nil
-                    :family "Lucida Grande"
-                    )
+(defun tabbar-hex-color (color)
+  "Gets the hexadecimal value of a color"
+  (let ((ret color))
+    (cond
+     ((string= "#" (substring color 0 1))
+      (setq ret (upcase ret)))
+     ((color-defined-p color)
+      (setq ret (concat "#"
+                        (mapconcat
+                         (lambda(val)
+                           (format "%02X" (* (/ val 65535) 255)))
+                         (color-values color) ""))))
+     (t (setq ret nil)))
+    (symbol-value 'ret)))
 
-(set-face-attribute 'tabbar-selected nil
-                    :background "gray95"
-                    :foreground "gray20"
-                    :inherit 'tabbar-default 
-                    :box '(:line-width 3 :color "grey95" :style nil))
-;;                  :box '(:line-width 2 :color "white" :style released-button))
+(defun tabbar-install-faces (&optional frame)
+  "Installs faces for a frame."
+  (copy-face 'mode-line 'tabbar-default frame)
+  (copy-face 'mode-line-buffer-id 'tabbar-selected frame)
+  (copy-face 'mode-line-inactive 'tabbar-unselected frame)
+  
+  (copy-face 'mode-line-buffer-id 'tabbar-selected-highlight frame)
+  (copy-face 'mode-line-inactive 'tabbar-unselected-highlight frame)
+  
+  
+  (copy-face 'vertical-border 'tabbar-separator frame)
+  
+  (set-face-attribute 'tabbar-button frame
+                      :inherit 'tabbar-default
+                      :box nil))
 
-(set-face-attribute 'tabbar-unselected nil
-                    :inherit 'tabbar-default
-                    :background "gray80"
-                    :box '(:line-width 3 :color "grey80" :style nil))
+(add-hook 'after-make-frame-functions 'tabbar-install-faces)
 
-(defface tabbar-selected-highlight '((t
-                                      :foreground "black"
-                                      :background "gray95"))
-  "Face for selected, highlighted tabs."
-  :group 'tabbar)
+(tabbar-install-faces)
 
-(defface tabbar-unselected-highlight '((t
-                                        :foreground "black"
-                                        :background "grey75"
-                                        :box (:line-width 3 :color "grey75" :style nil)))
-  "Face for unselected, highlighted tabs."
-  :group 'tabbar)
-
-(set-face-attribute 'tabbar-button nil
-                    :inherit 'tabbar-default
-                    :box nil)
-
-(set-face-attribute 'tabbar-separator nil
-                    :background "grey50"
-                    :foreground "grey50"
-                    :height 1.0)
 
 (defun* tabbar-ruler-image (&key type disabled color)
   "Returns the scroll-images"
-  (let ((clr (or color (if disabled "#B4B4B4" "#979797"))))
+  (let ((clr2 (if disabled (tabbar-hex-color (face-attribute 'mode-line-inactive :background))
+                (tabbar-hex-color (face-attribute 'mode-line :background))))
+        (clr (or color (if disabled (tabbar-hex-color (face-attribute 'mode-line-inactive :foreground))
+                         (tabbar-hex-color (face-attribute 'mode-line :foreground))))))
     (if (eq type 'close)
         (format "/* XPM */
         static char * close_tab_xpm[] = {
         \"14 11 3 1\",
         \"       c None\",
         \".      c %s\",
-        \"+      c #D2D4D1\",
+        \"+      c %s\",
         \"     .....    \",
         \"    .......   \",
         \"   .........  \",
@@ -313,7 +327,7 @@
         \"  ... ... ... \",
         \"   .........  \",
         \"    .......   \",
-        \"     .....    \"};" clr)
+        \"     .....    \"};" clr clr2)
       
       (format
        "/* XPM */
@@ -438,7 +452,9 @@ argument is the MODE for the new buffer.")
       (kill-buffer buffer))))
 
 (setq tabbar-close-tab-function 'tabbar-buffer-close-tab)
+
 (defvar tabbar-last-tab nil)
+
 (defsubst tabbar-click-on-tab (tab &optional type action)
   "Handle a mouse click event on tab TAB.
 Call `tabbar-select-tab-function' with the received, or simulated
@@ -482,12 +498,10 @@ Call `tabbar-tab-label-function' to obtain a label for TAB."
           (face (if selected-p
                     (if modified-p
                         'tabbar-selected-modified
-                      'tabbar-selected
-                      )
+                      'tabbar-selected)
                   (if modified-p
                       'tabbar-unselected-modified
-                    'tabbar-unselected
-                    ))))
+                    'tabbar-unselected))))
     (concat
      (propertize "[x]"
                  'display (tabbar-normalize-image close-button-image 0)
@@ -495,15 +509,13 @@ Call `tabbar-tab-label-function' to obtain a label for TAB."
                  'pointer 'hand
                  'tabbar-tab tab
                  'local-map (tabbar-make-tab-keymap tab)
-                 'tabbar-action 'close-tab
-                 )
+                 'tabbar-action 'close-tab)
      (propertize " " 'face face
                  'tabbar-tab tab
                  'local-map (tabbar-make-tab-keymap tab)
                  'help-echo 'tabbar-help-on-tab
                  'face face
-                 'pointer 'hand
-                 )
+                 'pointer 'hand)
      (propertize 
       (if tabbar-tab-label-function
           (funcall tabbar-tab-label-function tab)
@@ -514,7 +526,12 @@ Call `tabbar-tab-label-function' to obtain a label for TAB."
       'mouse-face 'tabbar-highlight
       'face face
       'pointer 'hand)
-     (propertize (if modified-p (with-temp-buffer (ucs-insert "207A") (insert " ") (buffer-substring (point-min) (point-max))) " ") 'face face
+     (propertize (if modified-p
+                     (with-temp-buffer
+                       (ucs-insert "207A")
+                       (insert " ")
+                       (buffer-substring (point-min) (point-max))) " ")
+                 'face face
                  'tabbar-tab tab
                  'local-map (tabbar-make-tab-keymap tab)
                  'help-echo 'tabbar-help-on-tab
@@ -568,6 +585,7 @@ Call `tabbar-tab-label-function' to obtain a label for TAB."
 (defun tabbar-ruler-modification-state-change ()
   (tabbar-set-template tabbar-current-tabset nil)
   (tabbar-display-update))
+
 ;; first-change-hook is called BEFORE the change is made
 (defun tabbar-ruler-on-buffer-modification ()
   (set-buffer-modified-p t)
@@ -577,55 +595,44 @@ Call `tabbar-tab-label-function' to obtain a label for TAB."
 (defcustom tabbar-ruler-global-tabbar 't
   "* Should tabbar-ruler have a global tabbar?"
   :type 'boolean
-  :group 'tabbar-ruler
-  )
+  :group 'tabbar-ruler)
 (defcustom tabbar-ruler-global-ruler nil
   "* Should tabbar-ruler have a global ruler?"
   :type 'boolean
-  :group 'tabbar-ruler
-  )
+  :group 'tabbar-ruler)
 (defcustom tabbar-ruler-popup-menu nil
   "* Should tabbar-ruler have a popup menu.  As mouse moves toward top of window, the menu pops up."
   :type 'boolean
-  :group 'tabbar-ruler
-  )
+  :group 'tabbar-ruler)
 (defcustom tabbar-ruler-popup-toolbar nil
   "* Should tabbar-ruler have a popup toolbar.  As mouse moves toward top of window, the toolbar pops up."
   :type 'boolean
-  :group 'tabbar-ruler
-  )
+  :group 'tabbar-ruler)
 (defcustom tabbar-ruler-popup-menu-min-y 5 ;
   "* Minimum number of pixels from the top before a menu/toolbar pops up."
   :type 'integer
-  :group 'tabbar-ruler
-  )
+  :group 'tabbar-ruler)
 (defcustom tabbar-ruler-popup-menu-min-y-leave 50
   "* Minimum number of pixels form the top before a menu/toolbar disappears."
   :type 'integer
-  :group 'tabbar-ruler
-  )
+  :group 'tabbar-ruler)
 (defcustom tabbar-ruler-do-not-switch-on-ruler-when-tabbar-is-on-y 75
   "* Minimum number of pixels to switch on ruler when tabbar is on."
-  :type 'integer
-  :group 'tabbar-ruler
-  )
+  :type 'integer          
+  :group 'tabbar-ruler)
 
 (defcustom tabbar-ruler-excluded-buffers '("*Messages*" "*Completions*" "*ESS*")
   "* Excluded buffers in tabbar."
   :type '(repeat (string :tag "Buffer Name"))
   :group 'tabbar-ruler)
 
-(defvar tabbar-ruler-tabbar-off 't
-  )
-(defvar tabbar-ruler-ruler-off 't
-  )
+(defvar tabbar-ruler-tabbar-off 't)
+(defvar tabbar-ruler-ruler-off 't)
 (set (make-variable-buffer-local 'tabbar-ruler-toolbar-off) nil)
 (set (make-variable-buffer-local 'tabbar-ruler-ruler-off) nil)
 
-(defvar tabbar-ruler-toolbar-off nil
-  )
-(defvar tabbar-ruler-menu-off nil
-  )
+(defvar tabbar-ruler-toolbar-off nil)
+(defvar tabbar-ruler-menu-off nil)
 (add-hook 'find-file-hook (lambda() (interactive) (tabbar-ruler-tabbar-ruler-fight 't)))
 (defcustom tabbar-ruler-ruler-display-commands '(ac-trigger-commands
                                                  esn-upcase-char-self-insert
@@ -649,8 +656,7 @@ Call `tabbar-tab-label-function' to obtain a label for TAB."
                                                  self-insert-command)
   "* Ruler display commands."
   :group 'tabbar-ruler
-  :type '(repeat symbol)
-  )
+  :type '(repeat symbol))
 (defun tabbar-ruler-tabbar-ruler-fight (&optional initialize)
   "* Defines the fighting behavior of the tabbar-ruler ruler and tabbar."
   (condition-case error
@@ -700,47 +706,32 @@ Call `tabbar-tab-label-function' to obtain a label for TAB."
          ( tabbar-ruler-global-tabbar
            (when tabbar-ruler-tabbar-off
              (tabbar-mode 1)
-             (setq tabbar-ruler-tabbar-off nil)
-             )
-           )
-         ))
+             (setq tabbar-ruler-tabbar-off nil)))))
     (error
      (message "Error in post-command-hook for Ruler/Tabbar: %s" (error-message-string error)))))
 
 (add-hook 'post-command-hook 'tabbar-ruler-tabbar-ruler-fight)
-(defvar tabbar-ruler-movement-timer nil
-  )
-(defvar tabbar-ruler-movement-x nil
-  )
-(defvar tabbar-ruler-movement-y nil
-  )
+(defvar tabbar-ruler-movement-timer nil)
+(defvar tabbar-ruler-movement-x nil)
+(defvar tabbar-ruler-movement-y nil)
 
 (defun tabbar-ruler-mouse-movement ()
   "* Mouse Movement function"
   (interactive)
   (when tabbar-ruler-movement-timer
-    (cancel-timer tabbar-ruler-movement-timer)
-    )
-  (let* (
-         (y-pos (cddr (mouse-pixel-position)))
-         (x-pos (cadr (mouse-pixel-position)))
-         )
+    (cancel-timer tabbar-ruler-movement-timer))
+  (let* ((y-pos (cddr (mouse-pixel-position)))
+         (x-pos (cadr (mouse-pixel-position))))
     (unless y-pos
-      (setq y-pos tabbar-ruler-movement-y)
-      )
+      (setq y-pos tabbar-ruler-movement-y))
     (unless x-pos
-      (setq x-pos tabbar-ruler-movement-x)
-      )
+      (setq x-pos tabbar-ruler-movement-x))
     (when (or (not tabbar-ruler-movement-x) (not tabbar-ruler-movement-y)
               (and tabbar-ruler-movement-x tabbar-ruler-movement-y
                    (not
                     (and
                      (= tabbar-ruler-movement-x x-pos)
-                     (= tabbar-ruler-movement-y y-pos)
-                     )
-                    )
-                   )
-              )
+                     (= tabbar-ruler-movement-y y-pos)))))
       (when (and x-pos y-pos)
         (setq tabbar-ruler-movement-x x-pos)
         (setq tabbar-ruler-movement-y y-pos)
@@ -776,8 +767,8 @@ Call `tabbar-tab-label-function' to obtain a label for TAB."
                 (setq tabbar-ruler-toolbar-off 't)))))))
     (setq tabbar-ruler-movement-timer (run-with-timer
                                        0.01
-                             nil
-                             'tabbar-ruler-mouse-movement))))
+                                       nil
+                                       'tabbar-ruler-mouse-movement))))
 (tabbar-ruler-mouse-movement)
 
 
