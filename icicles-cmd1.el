@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Dec  2 17:34:11 2012 (-0800)
+;; Last-Updated: Thu Dec  6 09:37:50 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 25241
+;;     Update #: 25242
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -544,7 +544,7 @@
 (defvar goto-tag-location-function)     ; In `etags.el'
 (defvar icicle-buffer-easy-files)       ; Here
 (defvar icicle-clear-history-hist)      ; In `icicle-clear-history-1',`icicle-clear-current-history'
-(defvar icicle-last-toggle-transforming-msg) ; Here
+(defvar icicle--last-toggle-transforming-msg) ; Here
 (defvar icicle-window-alist)            ; In `icicle-select-window'
 (defvar locate-make-command-line)       ; In `locate.el'
 (defvar proced-signal-list)             ; In `proced.el' (Emacs 23+)
