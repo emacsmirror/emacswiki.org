@@ -4,7 +4,7 @@ pdfTex is an implementation of TeX that outputs PDF documents.
 
 ==Using pdfTeX in Emacs `tex-mode'==
 
-To use pdfTeX in TexMode (`tex-mode'), set the `tex-command' variable by putting the following in your <tt>.emacs</tt> file
+To use pdfTeX in TeXMode (`tex-mode'), set the `tex-command' variable by putting the following in your <tt>.emacs</tt> file
 
   (setq tex-command "pdftex")
 
