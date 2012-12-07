@@ -2,6 +2,7 @@
 ;; Copyright 2007 Ye Wenbin
 ;;
 ;; Author: wenbinye@163.com
+;; Package-Version: 1.1.1.1
 ;; Version: $Id: tree-mode.el,v 1.1.1.1 2007-03-13 13:16:10 ywb Exp $
 ;; Keywords: help, convenience, widget
 ;; 
