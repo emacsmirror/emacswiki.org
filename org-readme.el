@@ -79,6 +79,9 @@
 ;;; Change Log:
 ;; 07-Dec-2012    Matthew L. Fidler  
 ;;    Last-Updated: Wed Aug 22 13:11:26 2012 (-0500) #794 (Matthew L. Fidler)
+;;    Bug fix for info generation.
+;; 07-Dec-2012    Matthew L. Fidler  
+;;    Last-Updated: Wed Aug 22 13:11:26 2012 (-0500) #794 (Matthew L. Fidler)
 ;;    Added mecahism to build info files and dir files for elpa package.
 ;; 07-Dec-2012    Matthew L. Fidler  
 ;;    Last-Updated: Wed Aug 22 13:11:26 2012 (-0500) #794 (Matthew L. Fidler)
@@ -1080,7 +1083,7 @@ Returns file name if created."
         (delete-file "Readme.md")
         (shell-command
          (concat "git rm Readme.md")))
-      (if (and readme-drop-texi-after-build-info
+      (if (and org-readme-drop-texi-after-build-info
                (file-exists-p (concat
                                (file-name-sans-extension
                                 (file-name-nondirectory (buffer-file-name)))
