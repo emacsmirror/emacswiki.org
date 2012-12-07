@@ -79,6 +79,9 @@
 ;;; Change Log:
 ;; 07-Dec-2012    Matthew L. Fidler  
 ;;    Last-Updated: Wed Aug 22 13:11:26 2012 (-0500) #794 (Matthew L. Fidler)
+;;    No longer deletes ilg files.
+;; 07-Dec-2012    Matthew L. Fidler  
+;;    Last-Updated: Wed Aug 22 13:11:26 2012 (-0500) #794 (Matthew L. Fidler)
 ;;    Bug fix for info generation.
 ;; 07-Dec-2012    Matthew L. Fidler  
 ;;    Last-Updated: Wed Aug 22 13:11:26 2012 (-0500) #794 (Matthew L. Fidler)
@@ -1093,15 +1096,6 @@ Returns file name if created."
                           (file-name-sans-extension
                            (file-name-nondirectory (buffer-file-name)))
                           ".texi"))
-
-            (delete-file (concat
-                          (file-name-sans-extension
-                           (file-name-nondirectory (buffer-file-name)))
-                          ".ind"))
-            (delete-file (concat
-                          (file-name-sans-extension
-                           (file-name-nondirectory (buffer-file-name)))
-                          ".ilg"))
             (shell-command
              (concat "git add "
                      (concat
