@@ -127,6 +127,7 @@ Extensions (using the category name from `finder-by-keyword'), are utility libra
 * CorbaImplementation -- CORBA Dynamic Invocation interface using the IIOP protocol
 * SoapClient -- access to SOAP web-services from Emacs
 * UrlPackage -- parse and handle URLs
+* [http://github.com/leathekd/grapnel grapnel] -- HTTP request lib built on curl with flexible callback dispatch
 
 == Web APIs ==
 
