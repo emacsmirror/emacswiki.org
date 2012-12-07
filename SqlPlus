@@ -212,5 +212,7 @@ Advice. Use EasyPG package to keep your connections table in secret.
 [new]
 sqlplus mode seems really nice. But after lot of efforts I can't get it to work with our setup. Problem is our DB installation uses kerberos authentications and we don't have user/pass@SID to connect to DB. All we got is a kerberos ticket and SID e.g we login using sqlplus /@mydb. somehow I can't get it to work with sqlplus mode. Please help! Part of the reason could be I can't read/debug LISP code. -- Arvind Deshpande
 
+To use kerberos, just enter "/" as user and leave password blank.  hth... don
+
 ----
 CategorySql
