@@ -5,7 +5,7 @@
 ;; Author: Matthew L. Fidler
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Fri Aug  3 22:33:41 2012 (-0500)
-;; Version: 20121207.1606
+;; Version: 20121207.1607
 ;; Package-Requires: ((http-post-simple "1.0") (yaoddmuse "0.1.1")(header2 "21.0") (lib-requires "21.0"))
 ;; Last-Updated: Wed Aug 22 13:11:26 2012 (-0500)
 ;;           By: Matthew L. Fidler
@@ -79,6 +79,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 07-Dec-2012    Matthew L. Fidler  
+;;    Last-Updated: Wed Aug 22 13:11:26 2012 (-0500) #794 (Matthew L. Fidler)
+;;    Bug fix -- Tar package contents to include trailing /, otherwise emacs
+;;    complains :(
 ;; 07-Dec-2012    Matthew L. Fidler  
 ;;    Last-Updated: Wed Aug 22 13:11:26 2012 (-0500) #794 (Matthew L. Fidler)
 ;;    Bug fix for MELPA versions.
@@ -1324,7 +1328,7 @@ When COMMENT-ADDED is non-nil, the comment has been added and the syncing should
                       (delete-file (concat base ".tar")))
                     (shell-command (concat
                                     (if (executable-find "bsdtar") "bsd" "")
-                                    "tar -cvf " base ".tar " base "-" ver))
+                                    "tar -cvf " base ".tar " base "-" ver "/"))
                     (delete-file (concat base "-" ver "/" base ".el"))
                     (delete-file (concat base "-" ver "/" base "-pkg.el"))
                     (delete-file (concat base "-" ver "/" base ".info"))
