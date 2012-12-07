@@ -5,7 +5,7 @@
 ;; Author: Matthew L. Fidler
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Fri Aug  3 22:33:41 2012 (-0500)
-;; Version: 0.36
+;; Version: 20121207.1606
 ;; Package-Requires: ((http-post-simple "1.0") (yaoddmuse "0.1.1")(header2 "21.0") (lib-requires "21.0"))
 ;; Last-Updated: Wed Aug 22 13:11:26 2012 (-0500)
 ;;           By: Matthew L. Fidler
@@ -79,6 +79,14 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 07-Dec-2012    Matthew L. Fidler  
+;;    Last-Updated: Wed Aug 22 13:11:26 2012 (-0500) #794 (Matthew L. Fidler)
+;;    Bug fix for MELPA versions.
+;; 07-Dec-2012    Matthew L. Fidler  
+;;    Last-Updated: Wed Aug 22 13:11:26 2012 (-0500) #794 (Matthew L. Fidler)
+;;    Updated org-readme to use MELPA versions.  Therefore when you upload
+;;    to marmalade-repo and MELPA doesn't pick up your revision, you can
+;;    download the latest version yourself and try it out.
 ;; 07-Dec-2012    Matthew L. Fidler  
 ;;    Last-Updated: Wed Aug 22 13:11:26 2012 (-0500) #794 (Matthew L. Fidler)
 ;;    Added info to melpa recipie.
@@ -371,6 +379,11 @@
 
 (defgroup org-readme nil
   "Org-readme is a way to create Readme.org files based on an elisp file.")
+
+(defcustom org-readme-use-melpa-versions t
+  "Use Melpa-type versions YYYYMMDD.HHMM instead of 0.0.0 versions"
+  :type 'boolean
+  :group 'org-readme)
 
 (defcustom org-readme-marmalade-server "http://marmalade-repo.org" 
   "Marmalade server website.  This should start with http: and should notend with a trailing forward slash, just like the default value of http://marmalade-repo.org"
@@ -1217,10 +1230,15 @@ When COMMENT-ADDED is non-nil, the comment has been added and the syncing should
           (goto-char (point-min))
           (let ((case-fold-search t))
             (when (re-search-forward "^[ \t]*;+[ \t]*Version:" nil t)
-              (end-of-line)
-              (when (looking-back "\\([ .]\\)\\([0-9]+\\)[ \t]*")
-                (replace-match (format "\\1%s"
-                                       (+ 1 (string-to-number (match-string 2))))))))))
+              (if org-readme-use-melpa-versions
+                  (progn
+                    (delete-region (point) (point-at-eol))
+                    (insert (concat " " (format-time-string "%Y%m%d." (current-time))
+                                    (format "%d" (or (string-to-number (format-time-string "%H%M" (current-time))) 0)))))
+                (end-of-line)
+                (when (looking-back "\\([ .]\\)\\([0-9]+\\)[ \t]*")
+                  (replace-match (format "\\1%s"
+                                         (+ 1 (string-to-number (match-string 2)))))))))))
       
       (message "Adding Readme to Header Commentary")
       (org-readme-to-commentary)
