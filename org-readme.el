@@ -79,7 +79,7 @@
 ;;; Change Log:
 ;; 07-Dec-2012    Matthew L. Fidler  
 ;;    Last-Updated: Wed Aug 22 13:11:26 2012 (-0500) #794 (Matthew L. Fidler)
-;;    magic.
+;;    Test directory entry
 ;; 07-Dec-2012    Matthew L. Fidler
 ;;    Last-Updated: Wed Aug 22 13:11:26 2012 (-0500) #794 (Matthew L. Fidler)
 ;;    Added directory entry to texinfo file.
@@ -541,7 +541,7 @@ Returns file name if created."
       (with-temp-buffer
         (insert-file-contents git-cfg)
         (goto-char (point-min))
-        (when (re-search-forward "git@github.com:\\(.*?\\)[.]git")
+        (when (re-search-forward "git@github.com:\\(.*?\\)[.]git" nil t)
           (setq github (match-string 1))))
       (setq rcp
             (format "(:name %s\n :description \"%s\"%s\n :website \"%s\"\n :type git\n :url \"%s\")"
