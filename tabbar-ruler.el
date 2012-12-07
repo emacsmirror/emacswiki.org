@@ -5,7 +5,7 @@
 ;; Author: Matthew Fidler, Nathaniel Cunningham
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Mon Oct 18 17:06:07 2010 (-0500)
-;; Version: 0.6
+;; Version: 0.7
 ;; Last-Updated: Thu Mar  1 09:02:56 2012 (-0600)
 ;;           By: Matthew L. Fidler
 ;;     Update #: 659
@@ -51,6 +51,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 07-Dec-2012    Matthew L. Fidler  
+;;    Last-Updated: Thu Mar  1 09:02:56 2012 (-0600) #659 (Matthew L. Fidler)
+;;    Now works with Helm.  Should fix issue #1
 ;; 06-Dec-2012    Matthew L. Fidler  
 ;;    Last-Updated: Thu Mar  1 09:02:56 2012 (-0600) #659 (Matthew L. Fidler)
 ;;    Now colors are based on loaded theme (from minibar).  Also added
@@ -666,6 +669,10 @@ Call `tabbar-tab-label-function' to obtain a label for TAB."
            (tabbar-ruler-mouse-movement))
          ( (and tabbar-ruler-global-ruler tabbar-ruler-global-tabbar)
            (cond
+            ( (minibufferp)
+              nil)
+            ( (eq major-mode 'helm-mode)
+              nil)
             ( (memq last-command tabbar-ruler-ruler-display-commands)
               (when tabbar-ruler-ruler-off
                 (ruler-mode 1)
