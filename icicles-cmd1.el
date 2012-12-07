@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Dec  6 09:37:50 2012 (-0800)
+;; Last-Updated: Fri Dec  7 10:29:53 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 25242
+;;     Update #: 25246
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -7608,6 +7608,10 @@ flips the behavior specified by that option." ; Doc string
     (icicle-file-bindings               ; Bindings
      ((init-pref-arg                      current-prefix-arg)
       (prompt                             "File or directory: ")
+      ;; Bind `icicle-apropos-complete-match-fn' to nil to prevent automatic input matching
+      ;; in `icicle-unsorted-apropos-candidates' etc., because `icicle-find-file-of-content-multi-complete'
+      ;; does everything.
+      (icicle-apropos-complete-match-fn   nil)
       (icicle-read-file-name-internal-fn  'icicle-find-file-of-content-multi-complete)
       (icicle-show-multi-completion-flag  t) ; Override user setting.
       (icicle-multi-completing-p          t)
@@ -7661,6 +7665,10 @@ Same as `icicle-find-file-of-content' except it uses a different window." ; Doc 
     (icicle-file-bindings               ; Bindings
      ((init-pref-arg                      current-prefix-arg)
       (prompt                             "File or directory: ")
+      ;; Bind `icicle-apropos-complete-match-fn' to nil to prevent automatic input matching
+      ;; in `icicle-unsorted-apropos-candidates' etc., because `icicle-find-file-of-content-multi-complete'
+      ;; does everything.
+      (icicle-apropos-complete-match-fn   nil)
       (icicle-read-file-name-internal-fn  'icicle-find-file-of-content-multi-complete)
       (icicle-show-multi-completion-flag  t) ; Override user setting.
       (icicle-multi-completing-p          t)
