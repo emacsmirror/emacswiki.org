@@ -79,6 +79,9 @@
 ;;; Change Log:
 ;; 07-Dec-2012    Matthew L. Fidler  
 ;;    Last-Updated: Wed Aug 22 13:11:26 2012 (-0500) #794 (Matthew L. Fidler)
+;;    Attempting to update description.
+;; 07-Dec-2012    Matthew L. Fidler  
+;;    Last-Updated: Wed Aug 22 13:11:26 2012 (-0500) #794 (Matthew L. Fidler)
 ;;    Test directory entry
 ;; 07-Dec-2012    Matthew L. Fidler
 ;;    Last-Updated: Wed Aug 22 13:11:26 2012 (-0500) #794 (Matthew L. Fidler)
@@ -1173,12 +1176,12 @@ When COMMENT-ADDED is non-nil, the comment has been added and the syncing should
               (setq cnt (with-temp-buffer
                           (insert-file-contents file)
                           (buffer-string)))
-              (with-temp-buffer
-                (insert-file-contents (concat base ".el"))
-                (goto-char (point-min))
-                (setq desc (if (re-search-forward "^[ \t]*;;;[ \t]*%s[.]el[ \t]*--+[ \t]*\\(.*?\\)[ \t]*$" nil t)
+              (setq desc (with-temp-buffer
+                           (insert-file-contents (concat base ".el"))
+                           (goto-char (point-min))
+                           (if (re-search-forward "^[ \t]*;;;[ \t]*%s[.]el[ \t]*--+[ \t]*\\(.*?\\)[ \t]*$" nil t)
                                (match-string 1)
-                             nil)))
+                             base)))
               (with-temp-file file
                 (insert cnt)
                 (goto-char (point-min))
