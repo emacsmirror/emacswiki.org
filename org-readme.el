@@ -79,6 +79,9 @@
 ;;; Change Log:
 ;; 07-Dec-2012    Matthew L. Fidler  
 ;;    Last-Updated: Wed Aug 22 13:11:26 2012 (-0500) #794 (Matthew L. Fidler)
+;;    The description should now be picked up.
+;; 07-Dec-2012    Matthew L. Fidler  
+;;    Last-Updated: Wed Aug 22 13:11:26 2012 (-0500) #794 (Matthew L. Fidler)
 ;;    Attempting to update description.
 ;; 07-Dec-2012    Matthew L. Fidler  
 ;;    Last-Updated: Wed Aug 22 13:11:26 2012 (-0500) #794 (Matthew L. Fidler)
@@ -1164,6 +1167,9 @@ When COMMENT-ADDED is non-nil, the comment has been added and the syncing should
         (when org-readme-build-texi
           (when (executable-find "pandoc")
             (let ((default-directory (file-name-directory (buffer-file-name)))
+                  (el-file (concat (file-name-sans-extension
+                                    (file-name-nondirectory (buffer-file-name)))
+                                   ".el"))
                   (base (file-name-sans-extension
                          (file-name-nondirectory (buffer-file-name))))
                   (file (concat (file-name-sans-extension
@@ -1177,7 +1183,7 @@ When COMMENT-ADDED is non-nil, the comment has been added and the syncing should
                           (insert-file-contents file)
                           (buffer-string)))
               (setq desc (with-temp-buffer
-                           (insert-file-contents (concat base ".el"))
+                           (insert-file-contents el-file)
                            (goto-char (point-min))
                            (if (re-search-forward "^[ \t]*;;;[ \t]*%s[.]el[ \t]*--+[ \t]*\\(.*?\\)[ \t]*$" nil t)
                                (match-string 1)
