@@ -79,17 +79,8 @@
 ;;; Change Log:
 ;; 07-Dec-2012    Matthew L. Fidler  
 ;;    Last-Updated: Wed Aug 22 13:11:26 2012 (-0500) #794 (Matthew L. Fidler)
-;;    b
-;; 07-Dec-2012    Matthew L. Fidler  
-;;    Last-Updated: Wed Aug 22 13:11:26 2012 (-0500) #794 (Matthew L. Fidler)
-;;    a
-;; 07-Dec-2012    Matthew L. Fidler  
-;;    Last-Updated: Wed Aug 22 13:11:26 2012 (-0500) #794 (Matthew L. Fidler)
-;;    Test direnty
-;; 07-Dec-2012    Matthew L. Fidler  
-;;    Last-Updated: Wed Aug 22 13:11:26 2012 (-0500) #794 (Matthew L. Fidler)
-;;    Testing directory entry
-;; 07-Dec-2012    Matthew L. Fidler  
+;;    magic.
+;; 07-Dec-2012    Matthew L. Fidler
 ;;    Last-Updated: Wed Aug 22 13:11:26 2012 (-0500) #794 (Matthew L. Fidler)
 ;;    Added directory entry to texinfo file.
 ;; 18-Sep-2012
