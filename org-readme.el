@@ -5,7 +5,7 @@
 ;; Author: Matthew L. Fidler
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Fri Aug  3 22:33:41 2012 (-0500)
-;; Version: 20121207.1607
+;; Version: 20121207.1640
 ;; Package-Requires: ((http-post-simple "1.0") (yaoddmuse "0.1.1")(header2 "21.0") (lib-requires "21.0"))
 ;; Last-Updated: Wed Aug 22 13:11:26 2012 (-0500)
 ;;           By: Matthew L. Fidler
@@ -79,6 +79,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 07-Dec-2012    Matthew L. Fidler  
+;;    Last-Updated: Wed Aug 22 13:11:26 2012 (-0500) #794 (Matthew L. Fidler)
+;;    Trying to post the tar package again.
 ;; 07-Dec-2012    Matthew L. Fidler  
 ;;    Last-Updated: Wed Aug 22 13:11:26 2012 (-0500) #794 (Matthew L. Fidler)
 ;;    Bug fix -- Tar package contents to include trailing /, otherwise emacs
