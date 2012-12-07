@@ -8,7 +8,7 @@
 * <b>Author </b> --  Matthew L. Fidler
 * <b>Maintainer </b> --  Matthew L. Fidler
 * <b>Created </b> --  Fri Aug  3 22:33:41 2012 (-0500)
-* <b>Version </b> --  0.36
+* <b>Version </b> --  20121207.1606
 * <b>Package-Requires </b> --  ((http-post-simple "1.0") (yaoddmuse "0.1.1")(header2 "21.0") (lib-requires "21.0"))
 * <b>Last-Updated </b> --  Wed Aug 22 13:11:26 2012 (-0500)
 * <b>By </b> --  Matthew L. Fidler
@@ -267,6 +267,9 @@ Posts library to git
 ==== org-readme-sync-marmalade ====
 Posts library to marmalade-repo.org
 
+==== org-readme-use-melpa-versions ====
+Use Melpa-type versions YYYYMMDD.HHMM instead of 0.0.0 versions
+
 ==== org-readme-use-pandoc-markdown ====
 Uses pandoc's grid tables instead of transferring the tables to html.
 
@@ -288,6 +291,8 @@ keymap
 
 == History ==
 
+* <b>07-Dec-2012 </b> --   Bug fix for MELPA versions. (Matthew L. Fidler)
+* <b>07-Dec-2012 </b> --   Updated org-readme to use MELPA versions. Therefore when you upload to marmalade-repo and MELPA doesn't pick up your revision, you can download the latest version yourself and try it out. (Matthew L. Fidler)
 * <b>07-Dec-2012 </b> --   Added info to melpa recipie. (Matthew L. Fidler)
 * <b>07-Dec-2012 </b> --   Attempted to add Readme in info format in the elpa package. (Matthew L. Fidler)
 * <b>07-Dec-2012 </b> --   Bug fix for deleting directory. (Matthew L. Fidler)
