@@ -5,7 +5,7 @@
 ;; Author: Matthew Fidler, Nathaniel Cunningham
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Mon Oct 18 17:06:07 2010 (-0500)
-;; Version: 0.8
+;; Version: 0.9
 ;; Last-Updated: Thu Mar  1 09:02:56 2012 (-0600)
 ;;           By: Matthew L. Fidler
 ;;     Update #: 659
@@ -51,6 +51,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 07-Dec-2012    Matthew L. Fidler  
+;;    Last-Updated: Thu Mar  1 09:02:56 2012 (-0600) #659 (Matthew L. Fidler)
+;;    Will no longer take over editing of org source blocks or info blocks.
 ;; 07-Dec-2012    Matthew L. Fidler  
 ;;    Last-Updated: Thu Mar  1 09:02:56 2012 (-0600) #659 (Matthew L. Fidler)
 ;;    Changed the order of checking so that helm will work when you move a mouse.
@@ -663,13 +666,18 @@ Call `tabbar-tab-label-function' to obtain a label for TAB."
   "* Ruler display commands."
   :group 'tabbar-ruler
   :type '(repeat symbol))
+
 (defun tabbar-ruler-tabbar-ruler-fight (&optional initialize)
   "* Defines the fighting behavior of the tabbar-ruler ruler and tabbar."
   (condition-case error
       (progn
         (cond
-         ( (minibufferp)
+         ((minibufferp)
            nil)
+         ((and (save-match-data (string-match "^[*]Org Src " (buffer-name))))
+          nil)
+         ((and (eq major-mode 'info-mode))
+          nil)
          ( (eq major-mode 'helm-mode)
            nil)
          ( (eq last-command 'mouse-drag-region)
@@ -694,7 +702,7 @@ Call `tabbar-tab-label-function' to obtain a label for TAB."
                   (unless tabbar-ruler-toolbar-off
                     (tool-bar-mode -1)
                     (setq tabbar-ruler-toolbar-off 't)))))
-            ( (string-match "\\(mouse\\|ignore\\|window\\|frame\\)" (format "%s" last-command))
+            ( (save-match-data (string-match "\\(mouse\\|ignore\\|window\\|frame\\)" (format "%s" last-command)))
               (when nil ;; Took this out;  Afterward it works much better...
                 (unless tabbar-ruler-ruler-off
                   (ruler-mode -1)
