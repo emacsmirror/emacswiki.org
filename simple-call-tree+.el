@@ -141,7 +141,8 @@
 (defcustom simple-call-tree-default-recenter 'middle
   "How to recenter the window after moving to another function in the \"*Simple Call Tree*\" buffer.
 Can be one of the following symbols: 'top 'middle 'bottom.
-This variable is used by the `simple-call-tree-jump-to-function' function when no prefix arg is given."
+This variable is used by the `simple-call-tree-jump-to-function' function when no prefix arg is given,
+and by `simple-call-tree-visit-function' and `simple-call-tree-view-function'."
   :group 'simple-call-tree
   :type '(choice (const :tag "Top" top)
                  (const :tag "Middle" middle)
@@ -852,7 +853,10 @@ The toplevel functions will be sorted, and the functions in each branch will be 
   (interactive)
   (let ((win (get-buffer-window "*Simple Call Tree*")))
     (if win (with-selected-window win
-              (if fm-working (fm-toggle))
+              (unless (not (featurep 'fm))
+                (if fm-working (fm-toggle))
+                (fm-unhighlight 0)
+                (fm-unhighlight 1))
               (if (> (length (window-list)) 1)
                   (delete-window)
                 (bury-buffer))))))
@@ -879,13 +883,20 @@ If it is a called function then display the position in the calling function whe
   (interactive)
   (move-beginning-of-line nil)
   (re-search-forward outline-regexp)
-  (let* ((funmark (get-text-property (point) 'location))
+  (let* ((level (simple-call-tree-outline-level))
+         (funmark (get-text-property (point) 'location))
          (buf (marker-buffer funmark))
          (pos (marker-position funmark)))
     (display-buffer buf)
     (with-selected-window (get-buffer-window buf)
       (goto-char pos)
-      (recenter 1))))
+      (if (featurep 'fm) (fm-highlight 1 (line-beginning-position) (line-end-position)))
+      (if (eq level 1)
+          (recenter 1)
+        (case simple-call-tree-default-recenter
+          (top (recenter 0))
+          (middle (recenter))
+          (bottom (recenter -1)))))))
 
 (defun* simple-call-tree-visit-function (&optional arg)
   "Visit the source code corresponding to the current header.
@@ -907,8 +918,16 @@ the source buffer to the function."
                       (or parent thisfunc))))
     (pop-to-buffer buf)
     (goto-char pos)
+    (unless (not (featurep 'fm))
+      (fm-unhighlight 0)
+      (fm-unhighlight 1))
     (if arg (simple-call-tree-narrow-to-function visitfunc pos))
-    (recenter 1)))
+    (if (eq level 1)
+        (recenter 1)
+      (case simple-call-tree-default-recenter
+        (top (recenter 0))
+        (middle (recenter))
+        (bottom (recenter -1))))))
 
 (defun* simple-call-tree-jump-to-function (fnstr &optional skipring)
   "Move cursor to the line corresponding to the function with name FNSTR.
