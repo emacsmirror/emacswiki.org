@@ -280,6 +280,7 @@ keymap
 
 == History ==
 
+* <b>07-Dec-2012 </b> --   The description should now be picked up. (Matthew L. Fidler)
 * <b>07-Dec-2012 </b> --   Attempting to update description. (Matthew L. Fidler)
 * <b>07-Dec-2012 </b> --   Test directory entry (Matthew L. Fidler)
 * <b>07-Dec-2012 </b> --   Added directory entry to texinfo file. (Matthew L. Fidler)
