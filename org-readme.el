@@ -79,6 +79,12 @@
 ;;; Change Log:
 ;; 07-Dec-2012    Matthew L. Fidler  
 ;;    Last-Updated: Wed Aug 22 13:11:26 2012 (-0500) #794 (Matthew L. Fidler)
+;;    Bug fix for deleting directory.
+;; 07-Dec-2012    Matthew L. Fidler  
+;;    Last-Updated: Wed Aug 22 13:11:26 2012 (-0500) #794 (Matthew L. Fidler)
+;;    Remove the directory that was created to make the package tarball 
+;; 07-Dec-2012    Matthew L. Fidler  
+;;    Last-Updated: Wed Aug 22 13:11:26 2012 (-0500) #794 (Matthew L. Fidler)
 ;;    Attempted to fix the package information file.
 ;; 07-Dec-2012    Matthew L. Fidler  
 ;;    Last-Updated: Wed Aug 22 13:11:26 2012 (-0500) #794 (Matthew L. Fidler)
@@ -1282,7 +1288,12 @@ When COMMENT-ADDED is non-nil, the comment has been added and the syncing should
                       (insert ")"))
                     (shell-command (concat
                                     (if (executable-find "bsdtar") "bsd" "")
-                                    "tar -cvf " base ".tar " base "-" ver)))))))))
+                                    "tar -cvf " base ".tar " base "-" ver))
+                    (delete-file (concat base "-" ver "/" base ".el"))
+                    (delete-file (concat base "-" ver "/" base "-pkg.el"))
+                    (delete-file (concat base "-" ver "/" base ".info"))
+                    (delete-file (concat base "-" ver "/dir"))
+                    (delete-directory (concat base "-" ver)))))))))
       
       (when (and (featurep 'http-post-simple)
                  org-readme-sync-marmalade)
