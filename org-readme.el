@@ -5,7 +5,7 @@
 ;; Author: Matthew L. Fidler
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Fri Aug  3 22:33:41 2012 (-0500)
-;; Version: 0.35
+;; Version: 0.36
 ;; Package-Requires: ((http-post-simple "1.0") (yaoddmuse "0.1.1")(header2 "21.0") (lib-requires "21.0"))
 ;; Last-Updated: Wed Aug 22 13:11:26 2012 (-0500)
 ;;           By: Matthew L. Fidler
@@ -45,6 +45,8 @@
 ;; - Asks if this is a minor revision
 ;;   - If it is a minor revision, bumps the revision up so the new
 ;;     library will be posted to marmalade-repo.org
+;;   - The package will attempt to add the readme to the info
+;;     documentation system within emacs.
 ;; - Syncs the Readme.org with the lisp file as described above.
 ;; - Updates emacswiki with the library description and the library
 ;;   itself (requires yaoddmuse).
@@ -77,6 +79,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 07-Dec-2012    Matthew L. Fidler  
+;;    Last-Updated: Wed Aug 22 13:11:26 2012 (-0500) #794 (Matthew L. Fidler)
+;;    Added info to melpa recipie.
 ;; 07-Dec-2012    Matthew L. Fidler  
 ;;    Last-Updated: Wed Aug 22 13:11:26 2012 (-0500) #794 (Matthew L. Fidler)
 ;;    Attempted to add Readme in info format in the elpa package.
@@ -652,10 +657,10 @@ Returns file name if created."
         (goto-char (point-min))
         (when (re-search-forward "git@github.com:\\(.*?\\)[.]git")
           (setq rcp
-                (format "(%s\n :repo \"%s\"\n :fetcher github\n :files (\"%s.el\"))"
+                (format "(%s\n :repo \"%s\"\n :fetcher github\n :files (\"%s.el\" \"dir\" \"%s.info\"))"
                         lib-name
                         (match-string 1)
-                        lib-name))))
+                        lib-name lib-name))))
       (when rcp
         (with-temp-file melpa
           (insert rcp))))
@@ -703,6 +708,8 @@ Returns file name if created."
                             (insert-file-contents (concat package ".tar"))
                             (buffer-string))
                         (buffer-string))))))
+      (when (file-exists-p (concat package ".tar"))
+        (delete-file (concat package ".tar")))
       (message "%s" resp))))
 
 (defun org-readme-marmalade-version (package)
