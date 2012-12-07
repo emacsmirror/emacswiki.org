@@ -79,6 +79,9 @@
 ;;; Change Log:
 ;; 07-Dec-2012    Matthew L. Fidler  
 ;;    Last-Updated: Wed Aug 22 13:11:26 2012 (-0500) #794 (Matthew L. Fidler)
+;;    Added tar package that includes the info file
+;; 07-Dec-2012    Matthew L. Fidler  
+;;    Last-Updated: Wed Aug 22 13:11:26 2012 (-0500) #794 (Matthew L. Fidler)
 ;;    No longer deletes ilg files.
 ;; 07-Dec-2012    Matthew L. Fidler  
 ;;    Last-Updated: Wed Aug 22 13:11:26 2012 (-0500) #794 (Matthew L. Fidler)
@@ -1219,6 +1222,8 @@ When COMMENT-ADDED is non-nil, the comment has been added and the syncing should
                   (file (concat (file-name-sans-extension
                                  (file-name-nondirectory (buffer-file-name)))
                                 ".texi"))
+                  pkg
+                  ver
                   desc
                   cnt)
               (shell-command (concat "pandoc Readme.md -s -o " file))
@@ -1229,6 +1234,14 @@ When COMMENT-ADDED is non-nil, the comment has been added and the syncing should
                           (if (not (search-forward "@strong{Description} -- " nil t))
                               (setq desc base)
                             (setq desc (buffer-substring (point) (point-at-eol))))
+                          (goto-char (point-min))
+                          (if (not (search-forward "@strong{Package-Requires} -- " nil t))
+                              (setq pkg (buffer-substring (point) (point-at-eol)))
+                            (setq pkg "()"))
+                          (goto-char (point-min))
+                          (if (not (search-forward "@strong{Version} -- " nil t))
+                              (setq ver (buffer-substring (point) (point-at-eol)))
+                            (setq ver "0.0"))
                           (buffer-string)))
               (with-temp-file file
                 (insert cnt)
@@ -1246,7 +1259,27 @@ When COMMENT-ADDED is non-nil, the comment has been added and the syncing should
                          (executable-find "makeinfo"))
                 (shell-command (concat "makeinfo " base ".texi"))
                 (when (executable-find "install-info")
-                  (shell-command (concat "install-info --dir-file=dir " base ".info"))))))))
+                  (shell-command (concat "install-info --dir-file=dir " base ".info"))
+                  ;; Now Make a marmalade package
+                  (when (or (executable-find "tar")
+                            (executable-find "bsdtar"))
+                    (make-directory (concat base "-" ver))
+                    (copy-file (concat base ".el") (concat base "-" ver "/" base ".el"))
+                    (copy-file (concat base ".info") (concat base "-" ver "/" base ".info"))
+                    (copy-file "dir" (concat base "-" ver "/dir"))
+                    (with-temp-file (concat base "-" ver "/" base "-pkg.el")
+                      (insert "(define-package \"")
+                      (insert base)
+                      (insert "\" \"")
+                      (insert ver)
+                      (insert "\" \"")
+                      (insert desc)
+                      (insert "\" '")
+                      (insert pkg)
+                      (insert ")"))
+                    (shell-command (concat
+                                    (if (executable-find "bsdtar")
+                                        "bsd" "") "tar -cvf " base ".tar " base "-ver")))))))))
       
       (when (and (featurep 'http-post-simple)
                  org-readme-sync-marmalade)
