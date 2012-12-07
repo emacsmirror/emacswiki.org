@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Thu Dec  6 09:34:41 2012 (-0800)
+;; Last-Updated: Fri Dec  7 10:34:01 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 9374
+;;     Update #: 9376
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -86,6 +86,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2012/12/07 dadams
+;;     icicle-find-file-of-content(-other-window):
+;;       Restored binding of icicle-apropos-complete-match-fn to nil.
 ;; 2012/12/02 dadams
 ;;     Removed: icicle-find-file-of-content-read-file-name (use icicle-read-file-name-default instead).
 ;;     icicle-find-file-of-content(-other-window):
