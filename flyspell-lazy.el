@@ -5,8 +5,8 @@
 ;; Author: Roland Walker <walker@pobox.com>
 ;; Homepage: http://github.com/rolandwalker/flyspell-lazy
 ;; URL: http://raw.github.com/rolandwalker/flyspell-lazy/master/flyspell-lazy.el
-;; Version: 0.6.3
-;; Last-Updated: 28 Sep 2012
+;; Version: 0.6.4
+;; Last-Updated:  7 Dec 2012
 ;; EmacsWiki: FlyspellLazy
 ;; Keywords: spelling
 ;;
@@ -24,17 +24,19 @@
 ;;
 ;; Explanation
 ;;
-;; `flyspell-mode' has performance issues on some platforms.
-;; Specifically, keyboard responsiveness may be significantly
-;; degraded on OS X.
+;; Emacs' built-in `flyspell-mode' has performance issues on some
+;; platforms.  Specifically, keyboard responsiveness may be
+;; significantly degraded on OS X.  See this bug:
+;;
+;;     http://debbugs.gnu.org/cgi/bugreport.cgi?bug=2056
 ;;
 ;; This package reduces the amount of work done by flyspell.  Instead
 ;; of checking *instantly* as you type, spelling will be checked when
-;; the current buffer has been idle for a short time.  (Vanilla
-;; `flyspell-mode' does not use idle timers but a subtle combination
-;; of hooks and `sit-for'.)
+;; Emacs has been idle for a short time.  (Vanilla `flyspell-mode'
+;; does not use idle timers but a subtle combination of hooks and
+;; `sit-for'.)
 ;;
-;; This package also turns off `flyspell-mode' completely for certain
+;; This package also forces `flyspell-mode' off completely for certain
 ;; buffers.
 ;;
 ;; To use this library, add the following to your ~/.emacs
@@ -68,7 +70,7 @@
 ;;     ~/.emacs
 ;;
 ;;         (defadvice flyspell-small-region (around flyspell-small-region-no-sit-for activate)
-;;           (flet ((sit-for (&rest args) t))
+;;           (flet ((sit-for (&rest _ignored) t))
 ;;             ad-do-it))
 ;;
 ;; Compatibility and Requirements
@@ -177,17 +179,17 @@
 ;;; Code:
 ;;
 
-;;;
-;;; requires
-;;;
+;;; requirements
 
 (eval-and-compile
-  ;; for flet/cl-flet, callf, callf2, setf
+  ;; for flet/cl-flet*, callf, callf2, setf
   (require 'cl)
-  (unless (fboundp 'cl-flet)
-    (defalias 'cl-flet 'flet)
-    (put 'cl-flet 'lisp-indent-function 1)
-    (put 'cl-flet 'edebug-form-spec '((&rest (defun*)) cl-declarations body))))
+  (unless (fboundp 'cl-flet*)
+    (defalias 'cl-flet* 'flet)
+    (put 'cl-flet* 'lisp-indent-function 1)
+    (put 'cl-flet* 'edebug-form-spec '((&rest (defun*)) cl-declarations body))))
+
+;;; declarations
 
 (declare-function flyspell-overlay-p             "flyspell.el")
 (declare-function flyspell-minibuffer-p          "flyspell.el")
@@ -195,20 +197,19 @@
 (declare-function ispell-set-spellchecker-params "ispell.el"  )
 
 (eval-when-compile
-  ;; declarations for byte compiler
   (defvar flyspell-changes)
   (defvar flyspell-large-region)
   (defvar ispell-process))
 
-;;;
 ;;; customizable variables
-;;;
 
 ;;;###autoload
 (defgroup flyspell-lazy nil
   "Improve flyspell responsiveness using idle timers."
-  :version "0.6.3"
-  :link '(emacs-commentary-link "flyspell-lazy")
+  :version "0.6.4"
+  :link '(emacs-commentary-link :tag "Commentary" "flyspell-lazy")
+  :link '(url-link :tag "Github" "http://github.com/rolandwalker/flyspell-lazy")
+  :link '(url-link :tag "EmacsWiki" "http://emacswiki.org/emacs/FlyspellLazy")
   :prefix "flyspell-lazy-"
   :group 'flyspell
   :group 'wp)
@@ -310,9 +311,15 @@ Spellchecking is also disabled in the minibuffer."
 
 Optional KIND is as documented at `called-interactively-p'
 in GNU Emacs 24.1 or higher."
-  (if (eq 0 (cdr (subr-arity (symbol-function 'called-interactively-p))))
-      '(called-interactively-p)
-    `(called-interactively-p ,kind)))
+  (cond
+    ((not (fboundp 'called-interactively-p))
+     '(interactive-p))
+    ((condition-case nil
+         (progn (called-interactively-p 'any) t)
+       (error nil))
+     `(called-interactively-p ,kind))
+    (t
+     '(called-interactively-p))))
 
 ;;; utility functions
 
@@ -509,6 +516,14 @@ If SECONDS is t, hurry by 1 second."
        (setq flyspell-lazy-hurry-flag t)
        (timer-set-idle-time flyspell-lazy-timer seconds t)))))
 
+(defsubst flyspell-lazy-has-overlay (pos)
+  "If POS has a flyspell overlay, return the overlay."
+  (catch 'saw
+    (dolist (ov (overlays-at pos))
+      (when (flyspell-overlay-p ov)
+        (throw 'saw ov)))
+    nil))
+
 ;; These may be called from inside hooks on interactive commands
 
 (defsubst flyspell-lazy-user-just-completed-word ()
@@ -518,18 +533,22 @@ If SECONDS is t, hurry by 1 second."
        ;; For other cases, the regular idle timer will catch up with the typist.
        (memq (aref (this-command-keys-vector) 0) '(?\n ?\r ?\f ?\t ?\s ?, ?: ?! ?. ?? ?\" ?\( ?\) ?/))
        (not (minibufferp (current-buffer)))
-       (not (ignore-errors (looking-back "[ \n\t\r\f,:!.?\"()/]\\{2\\}" 5)))))
+       (not (ignore-errors (looking-back "[ \n\t\r\f,:!.?\"()/]\\{2\\}\\=")))))
 
-(defsubst flyspell-lazy-prev-word-contains-error ()
-  "Whether the previous word contains an error."
-  (or (flyspell-overlay-p (car (overlays-at (point))))
+(defsubst flyspell-lazy-prev-or-current-word-contains-error ()
+  "Whether the previous or current word contains an error.
+
+This function only looks backward, so it does not detect an
+error marked in the current word if that overlay starts
+after the point."
+  (or (flyspell-lazy-has-overlay (point))
+      (flyspell-lazy-has-overlay (1- (point)))
       (and (> (previous-overlay-change (point))
               (save-excursion
-                (unless (looking-at-p "[^ \n\t\r\f]")
-                  (search-backward-regexp "[^ \n\t\r\f]" (- (point) 50) t))
-                (or
-                 (search-backward-regexp "[ \n\t\r\f]" (- (point) 50) t) 1)))
-           (flyspell-overlay-p (car (overlays-at (1- (previous-overlay-change (point)))))))))
+                (if (memq (char-before) '(?\n ?\r ?\f ?\t ?\s ?, ?: ?! ?. ?? ?\" ?\( ?\) ?/))
+                    (or (search-backward-regexp "[^ \n\t\r\f,:!.?\"()/]" (- (point) 50) t) (point))
+                  (point))))
+           (flyspell-lazy-has-overlay (1- (previous-overlay-change (point)))))))
 
 ;; buffer functions
 
@@ -557,21 +576,22 @@ recent word.  See `flyspell-lazy-use-flyspell-word'.
 
 START, STOP, and LEN are as passed to a hook on
 `after-change-functions'."
-  ;; hurry spellcheck timer based on number or size of recent edits
-  (when (and (not flyspell-lazy-hurry-flag)
-             (or (> (length flyspell-changes) flyspell-lazy-changes-threshold)
-                 (> (abs (- stop start)) flyspell-lazy-size-threshold)))
-    (flyspell-lazy-hurry .5))
-  ;; hurry spellcheck timer if the user might have just corrected a word marked with error
-  (when (and (not flyspell-lazy-extra-lazy)
-             (or flyspell-lazy-use-flyspell-word (not flyspell-lazy-hurry-flag))
-             (flyspell-lazy-user-just-completed-word)
-             (flyspell-lazy-prev-word-contains-error))
-    (flyspell-lazy-debug-progn
-      (message "last completed word needs checking"))
-    (if flyspell-lazy-use-flyspell-word
-        (flyspell-word)
-      (flyspell-lazy-hurry .3))))
+  (save-match-data
+    ;; hurry spellcheck timer based on number or size of recent edits
+    (when (and (not flyspell-lazy-hurry-flag)
+               (or (> (length flyspell-changes) flyspell-lazy-changes-threshold)
+                   (> (abs (- stop start)) flyspell-lazy-size-threshold)))
+      (flyspell-lazy-hurry .5))
+    ;; hurry spellcheck timer if the user might have just corrected a word marked with error
+    (when (and (not flyspell-lazy-extra-lazy)
+               (or flyspell-lazy-use-flyspell-word (not flyspell-lazy-hurry-flag))
+               (flyspell-lazy-user-just-completed-word)
+               (flyspell-lazy-prev-or-current-word-contains-error))
+      (flyspell-lazy-debug-progn
+        (message "last completed word needs checking"))
+      (if flyspell-lazy-use-flyspell-word
+          (flyspell-word)
+        (flyspell-lazy-hurry .3)))))
 
 ;; todo disable flyspell-lazy for just the current buffer,
 ;; keeping flyspell-mode as-is, without inflooping in hooks.
@@ -707,8 +727,8 @@ This is the primary driver for `flyspell-lazy'."
                       (put 'flyspell-lazy-last-text 'stripped nil)
                       (with-timeout (1 (message "Spellcheck interrupted"))
                         (if flyspell-lazy-single-ispell
-                            (cl-flet ((ispell-set-spellchecker-params (&rest args) t)
-                                   (flyspell-accept-buffer-local-defs (&rest args) t))
+                            (cl-flet* ((ispell-set-spellchecker-params (&rest _ignored) t)
+                                       (flyspell-accept-buffer-local-defs (&rest _ignored) t))
                               (flyspell-region start end))
                           (flyspell-region start end)))))
                   (pop flyspell-changes))
@@ -753,8 +773,8 @@ This is the primary driver for `flyspell-lazy'."
                             (point))))
               (with-timeout (1 (message "Spellcheck interrupted"))
                 (if flyspell-lazy-single-ispell
-                    (cl-flet ((ispell-set-spellchecker-params (&rest args) t)
-                           (flyspell-accept-buffer-local-defs (&rest args) t))
+                    (cl-flet* ((ispell-set-spellchecker-params (&rest _ignored) t)
+                               (flyspell-accept-buffer-local-defs (&rest _ignored) t))
                       (flyspell-region start end))
                   (flyspell-region start end))))))))))
 
@@ -823,8 +843,8 @@ would usually be skipped."
           (let ((font-lock-fontify-buffer-function 'font-lock-default-fontify-buffer))
             (font-lock-fontify-buffer)))
         (if flyspell-lazy-single-ispell
-            (cl-flet ((ispell-set-spellchecker-params (&rest args) t)
-                   (flyspell-accept-buffer-local-defs (&rest args) t))
+            (cl-flet* ((ispell-set-spellchecker-params (&rest _ignored) t)
+                       (flyspell-accept-buffer-local-defs (&rest _ignored) t))
               (flyspell-buffer))
           ;; else
           (flyspell-buffer))))))
@@ -844,7 +864,7 @@ would usually be skipped."
 ;;
 ;; LocalWords: FlyspellLazy aspell setq args prog flyspell's flet
 ;; LocalWords: callf setf flylz nils defsubsts defsubst checkable
-;; LocalWords: inflooping punct cl-flet
+;; LocalWords: inflooping punct flet devel
 ;;
 
 ;;; flyspell-lazy.el ends here
