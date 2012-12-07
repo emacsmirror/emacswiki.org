@@ -79,6 +79,9 @@
 ;;; Change Log:
 ;; 07-Dec-2012    Matthew L. Fidler  
 ;;    Last-Updated: Wed Aug 22 13:11:26 2012 (-0500) #794 (Matthew L. Fidler)
+;;    Attempted to fix the package information file.
+;; 07-Dec-2012    Matthew L. Fidler  
+;;    Last-Updated: Wed Aug 22 13:11:26 2012 (-0500) #794 (Matthew L. Fidler)
 ;;    Added tar package that includes the info file
 ;; 07-Dec-2012    Matthew L. Fidler  
 ;;    Last-Updated: Wed Aug 22 13:11:26 2012 (-0500) #794 (Matthew L. Fidler)
@@ -1236,12 +1239,12 @@ When COMMENT-ADDED is non-nil, the comment has been added and the syncing should
                             (setq desc (buffer-substring (point) (point-at-eol))))
                           (goto-char (point-min))
                           (if (not (search-forward "@strong{Package-Requires} -- " nil t))
-                              (setq pkg (buffer-substring (point) (point-at-eol)))
-                            (setq pkg "()"))
+                              (setq pkg "()")
+                            (setq pkg (buffer-substring (point) (point-at-eol))))
                           (goto-char (point-min))
                           (if (not (search-forward "@strong{Version} -- " nil t))
-                              (setq ver (buffer-substring (point) (point-at-eol)))
-                            (setq ver "0.0"))
+                              (setq ver "0.0")
+                            (setq ver (buffer-substring (point) (point-at-eol))))
                           (buffer-string)))
               (with-temp-file file
                 (insert cnt)
@@ -1278,8 +1281,8 @@ When COMMENT-ADDED is non-nil, the comment has been added and the syncing should
                       (insert pkg)
                       (insert ")"))
                     (shell-command (concat
-                                    (if (executable-find "bsdtar")
-                                        "bsd" "") "tar -cvf " base ".tar " base "-ver")))))))))
+                                    (if (executable-find "bsdtar") "bsd" "")
+                                    "tar -cvf " base ".tar " base "-" ver)))))))))
       
       (when (and (featurep 'http-post-simple)
                  org-readme-sync-marmalade)
