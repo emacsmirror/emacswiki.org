@@ -101,15 +101,11 @@ Related links:
 
 == xslt.el ==
 
-XSLT and XPATH together make an XSL engine.  I'm planning to write an
-XSLT implementation for elisp based on the DOM implementation.  --
-AlexSchroeder
-
-: Alex, are you aware of http://cvs.xemacs.org/viewcvs.cgi/XEmacs/packages/xemacs-packages/xslide/ and http://cvs.xemacs.org/viewcvs.cgi/XEmacs/packages/xemacs-packages/xslt-process/, which may be relevant in this context -- AdrianAichner
+XSLT and XPATH together make an XSL engine. XEmacs comes with [http://cvs.xemacs.org/viewcvs.cgi/XEmacs/packages/xemacs-packages/xslide/ xslide] and [http://cvs.xemacs.org/viewcvs.cgi/XEmacs/packages/xemacs-packages/xslt-process/ xslt-process].
 
 Related links:
 
-* http://www.w3.org/TR/xslt -- the standard
+* [http://www.w3.org/TR/xslt W3 XSLT standard]
 
 ----
 CategoryCode
