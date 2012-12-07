@@ -5,7 +5,7 @@
 ;; Author: Matthew L. Fidler
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Fri Aug  3 22:33:41 2012 (-0500)
-;; Version: 0.34
+;; Version: 0.35
 ;; Package-Requires: ((http-post-simple "1.0") (yaoddmuse "0.1.1")(header2 "21.0") (lib-requires "21.0"))
 ;; Last-Updated: Wed Aug 22 13:11:26 2012 (-0500)
 ;;           By: Matthew L. Fidler
@@ -77,6 +77,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 07-Dec-2012    Matthew L. Fidler  
+;;    Last-Updated: Wed Aug 22 13:11:26 2012 (-0500) #794 (Matthew L. Fidler)
+;;    Attempted to add Readme in info format in the elpa package.
 ;; 07-Dec-2012    Matthew L. Fidler  
 ;;    Last-Updated: Wed Aug 22 13:11:26 2012 (-0500) #794 (Matthew L. Fidler)
 ;;    Bug fix for deleting directory.
@@ -691,9 +694,15 @@ Returns file name if created."
                           org-readme-marmalade-server)
                   `((name . ,org-readme-marmalade-user-name)
                     (token . ,token))
-                  `(("package" ,(buffer-file-name)
+                  `(("package" ,(if (file-exists-p (concat package ".tar"))
+                                    (concat (file-name-sans-extension (buffer-file-name)) ".tar")
+                                  (buffer-file-name))
                      "text/x-script.elisp"
-                     ,(buffer-string)))))
+                     ,(if (file-exists-p (concat package ".tar"))
+                          (with-temp-buffer
+                            (insert-file-contents (concat package ".tar"))
+                            (buffer-string))
+                        (buffer-string))))))
       (message "%s" resp))))
 
 (defun org-readme-marmalade-version (package)
@@ -1286,6 +1295,8 @@ When COMMENT-ADDED is non-nil, the comment has been added and the syncing should
                       (insert "\" '")
                       (insert pkg)
                       (insert ")"))
+                    (when (file-exists-p (concat base ".tar"))
+                      (delete-file (concat base ".tar")))
                     (shell-command (concat
                                     (if (executable-find "bsdtar") "bsd" "")
                                     "tar -cvf " base ".tar " base "-" ver))
