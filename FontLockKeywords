@@ -19,8 +19,8 @@ Every Element has one of the following forms:
 ; (REGEXP N FACE): Highlight group N in REGEXP with FACE
 ; (REGEXP (N1 FACE1) (N2 FACE2) (N3 FACE3) ...): Highlight group Ni in REGEXP with FACEi
 
-Here is an example for elisp. Assume you want to hilight expression
-that explicitly loop over a list.  If you never want to break out of
+Here is an example for elisp. Assume you want to highlight the expression
+that explicitly loops over a list.  If you never want to break out of
 the loop, or if you are using the CommonLisp package, you might use
 dolist.  If not, however, it might look something like this:
 <pre>
@@ -29,7 +29,7 @@ dolist.  If not, however, it might look something like this:
             lst (cdr lst))
       ...
 </pre>
-We now want to highlight item, and the three following lst instances
+We now want to highlight "item", and the three following lst instances
 within the setq.  The following uses a long and complex regexp built
 using the ReBuilder.
 
