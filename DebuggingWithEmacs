@@ -98,13 +98,6 @@ behaviour as used in Emacs 21 and is called "text command mode" in the manual.  
 arrow and GUD commands can get confused if you use two different debuggers, e.g., gdb and perldb. --NickRoberts
 
 [new]
-Also when run gdb (via M-x gdb) and the I/O window comes up, I can type in it e.g. run, but when I hit enter (comint-send-input) the command turns bold, but nothing else happens.  I have looked online in vain, mostly because I don't know what to search for.  Is there some sort of environment variable that might screw up the emacs/gdb interface?  I realize this probably isn't the correct place to get answers, but what should I do to trouble shoot this? (gdb 6.4-debian and EmacsFromCVS)-- IvanAndrus
-
-Perhaps your program is still running.  Did you set a breakpoint.  You can stop execution by typing C-c C-c in the GUD buffer.
-The best place to ask questions like these is on help-gnu-emacs@gnu.org.  --NickRoberts
-[new]
-Turns out it was a keybinding in my .inputrc that caused the problem.
-[new]
 I have a large emacs window and I can't find the GDB marker, =>.  How can I make it blink or appear in red?
 
 [new]
