@@ -8,7 +8,7 @@
 * <b>Author </b> --  Matthew L. Fidler
 * <b>Maintainer </b> --  Matthew L. Fidler
 * <b>Created </b> --  Fri Aug  3 22:33:41 2012 (-0500)
-* <b>Version </b> --  0.32
+* <b>Version </b> --  0.34
 * <b>Package-Requires </b> --  ((http-post-simple "1.0") (yaoddmuse "0.1.1")(header2 "21.0") (lib-requires "21.0"))
 * <b>Last-Updated </b> --  Wed Aug 22 13:11:26 2012 (-0500)
 * <b>By </b> --  Matthew L. Fidler
@@ -280,6 +280,8 @@ keymap
 
 == History ==
 
+* <b>07-Dec-2012 </b> --   Test directory entry (Matthew L. Fidler)
+* <b>07-Dec-2012 </b> --   Added directory entry to texinfo file. (Matthew L. Fidler)
 * <b>18-Sep-2012 </b> --   Bug fix to allow changes that read (Matthew L. Fidler)
 * <b>12-Sep-2012 </b> --   Handle errors with the package gracefully. to include the author name who updated the file.  (Matthew L. Fidler)
 * <b>12-Sep-2012 </b> --   Handle errors with the package gracefully. (Matthew L. Fidler)
