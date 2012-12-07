@@ -79,6 +79,9 @@
 ;;; Change Log:
 ;; 07-Dec-2012    Matthew L. Fidler  
 ;;    Last-Updated: Wed Aug 22 13:11:26 2012 (-0500) #794 (Matthew L. Fidler)
+;;    Added mecahism to build info files and dir files for elpa package.
+;; 07-Dec-2012    Matthew L. Fidler  
+;;    Last-Updated: Wed Aug 22 13:11:26 2012 (-0500) #794 (Matthew L. Fidler)
 ;;    Get description from info file.
 ;; 07-Dec-2012    Matthew L. Fidler  
 ;;    Last-Updated: Wed Aug 22 13:11:26 2012 (-0500) #794 (Matthew L. Fidler)
@@ -400,6 +403,16 @@
 
 (defcustom org-readme-drop-markdown-after-build-texi t
   "Removes Readme.md after texinfo is generated"
+  :type 'boolean
+  :group 'org-readme)
+
+(defcustom org-readme-build-info t
+  "Builds library-name.info from Reade.org using texi.  Requires `org-readme-build-texi' to be non-nil, pandoc and makeinfo to be found. This will also create the directory entry using install-info, if it is found."
+  :type 'boolean
+  :group 'org-readme)
+
+(defcustom org-readme-drop-texi-after-build-info t
+  "Removes the texi information after building info files."
   :type 'boolean
   :group 'org-readme)
 
@@ -1067,12 +1080,46 @@ Returns file name if created."
         (delete-file "Readme.md")
         (shell-command
          (concat "git rm Readme.md")))
-      (shell-command
-       (concat "git add "
-               (concat
-                (file-name-sans-extension
-                 (file-name-nondirectory (buffer-file-name)))
-                ".texi"))))
+      (if (and readme-drop-texi-after-build-info
+               (file-exists-p (concat
+                               (file-name-sans-extension
+                                (file-name-nondirectory (buffer-file-name)))
+                               ".info")))
+          (progn
+            (delete-file (concat
+                          (file-name-sans-extension
+                           (file-name-nondirectory (buffer-file-name)))
+                          ".texi"))
+
+            (delete-file (concat
+                          (file-name-sans-extension
+                           (file-name-nondirectory (buffer-file-name)))
+                          ".ind"))
+            (delete-file (concat
+                          (file-name-sans-extension
+                           (file-name-nondirectory (buffer-file-name)))
+                          ".ilg"))
+            (shell-command
+             (concat "git add "
+                     (concat
+                      (file-name-sans-extension
+                       (file-name-nondirectory (buffer-file-name)))
+                      ".info")))
+            (if (file-exists-p (expand-file-name "dir"
+                                                 (file-name-directory (buffer-file-name))))
+                (shell-command
+                 (concat "git add dir")))
+            (shell-command
+             (concat "git rm "
+                     (file-name-sans-extension
+                      (file-name-nondirectory (buffer-file-name)))
+                     ".texi")))
+          (shell-command
+           (concat "git add "
+                   (concat
+                    (file-name-sans-extension
+                     (file-name-nondirectory (buffer-file-name)))
+                    ".texi")))))
     
     (when (file-exists-p "Readme.md")
       (shell-command
@@ -1197,7 +1244,12 @@ When COMMENT-ADDED is non-nil, the comment has been added and the syncing should
                   (insert base)
                   (insert ").     ")
                   (insert desc)
-                  (insert "\n@end direntry\n")))))))
+                  (insert "\n@end direntry\n")))
+              (when (and org-readme-build-info
+                         (executable-find "makeinfo"))
+                (shell-command (concat "makeinfo " base ".texi"))
+                (when (executable-find "install-info")
+                  (shell-command (concat "install-info --dir-file=dir " base ".info"))))))))
       
       (when (and (featurep 'http-post-simple)
                  org-readme-sync-marmalade)
