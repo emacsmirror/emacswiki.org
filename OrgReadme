@@ -8,7 +8,7 @@
 * <b>Author </b> --  Matthew L. Fidler
 * <b>Maintainer </b> --  Matthew L. Fidler
 * <b>Created </b> --  Fri Aug  3 22:33:41 2012 (-0500)
-* <b>Version </b> --  0.34
+* <b>Version </b> --  0.35
 * <b>Package-Requires </b> --  ((http-post-simple "1.0") (yaoddmuse "0.1.1")(header2 "21.0") (lib-requires "21.0"))
 * <b>Last-Updated </b> --  Wed Aug 22 13:11:26 2012 (-0500)
 * <b>By </b> --  Matthew L. Fidler
@@ -286,6 +286,7 @@ keymap
 
 == History ==
 
+* <b>07-Dec-2012 </b> --   Attempted to add Readme in info format in the elpa package. (Matthew L. Fidler)
 * <b>07-Dec-2012 </b> --   Bug fix for deleting directory. (Matthew L. Fidler)
 * <b>07-Dec-2012 </b> --   Remove the directory that was created to make the package tarball  (Matthew L. Fidler)
 * <b>07-Dec-2012 </b> --   Attempted to fix the package information file. (Matthew L. Fidler)
