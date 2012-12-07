@@ -29,7 +29,7 @@ dolist.  If not, however, it might look something like this:
             lst (cdr lst))
       ...
 </pre>
-We now want to hilight item, and the three following lst instances
+We now want to highlight item, and the three following lst instances
 within the setq.  The following uses a long and complex regexp built
 using the ReBuilder.
 
