@@ -220,6 +220,9 @@ Add a Variables section to Readme.org
 ==== org-readme-build-el-get-recipe ====
 Builds a el-get recipe based on github information
 
+==== org-readme-build-info ====
+Builds library-name.info from Reade.org using texi.  Requires <tt>org-readme-build-texi</tt> to be non-nil, pandoc and makeinfo to be found. This will also create the directory entry using install-info, if it is found.
+
 ==== org-readme-build-markdown ====
 Builds Readme.md from Readme.org
 
@@ -234,6 +237,9 @@ Default template for blank Readme.org Files. LIB-NAME is replaced with the libra
 
 ==== org-readme-drop-markdown-after-build-texi ====
 Removes Readme.md after texinfo is generated
+
+==== org-readme-drop-texi-after-build-info ====
+Removes the texi information after building info files.
 
 ==== org-readme-marmalade-server ====
 Marmalade server website.  This should start with http: and should notend with a trailing forward slash, just like the default value of http://marmalade-repo.org
@@ -280,6 +286,9 @@ keymap
 
 == History ==
 
+* <b>07-Dec-2012 </b> --   No longer deletes ilg files. (Matthew L. Fidler)
+* <b>07-Dec-2012 </b> --   Bug fix for info generation. (Matthew L. Fidler)
+* <b>07-Dec-2012 </b> --   Added mecahism to build info files and dir files for elpa package. (Matthew L. Fidler)
 * <b>07-Dec-2012 </b> --   Get description from info file. (Matthew L. Fidler)
 * <b>07-Dec-2012 </b> --   The description should now be picked up. (Matthew L. Fidler)
 * <b>07-Dec-2012 </b> --   Attempting to update description. (Matthew L. Fidler)
