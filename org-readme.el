@@ -5,7 +5,7 @@
 ;; Author: Matthew L. Fidler
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Fri Aug  3 22:33:41 2012 (-0500)
-;; Version: 0.32
+;; Version: 0.34
 ;; Package-Requires: ((http-post-simple "1.0") (yaoddmuse "0.1.1")(header2 "21.0") (lib-requires "21.0"))
 ;; Last-Updated: Wed Aug 22 13:11:26 2012 (-0500)
 ;;           By: Matthew L. Fidler
@@ -77,7 +77,22 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
-;; 18-Sep-2012      
+;; 07-Dec-2012    Matthew L. Fidler  
+;;    Last-Updated: Wed Aug 22 13:11:26 2012 (-0500) #794 (Matthew L. Fidler)
+;;    b
+;; 07-Dec-2012    Matthew L. Fidler  
+;;    Last-Updated: Wed Aug 22 13:11:26 2012 (-0500) #794 (Matthew L. Fidler)
+;;    a
+;; 07-Dec-2012    Matthew L. Fidler  
+;;    Last-Updated: Wed Aug 22 13:11:26 2012 (-0500) #794 (Matthew L. Fidler)
+;;    Test direnty
+;; 07-Dec-2012    Matthew L. Fidler  
+;;    Last-Updated: Wed Aug 22 13:11:26 2012 (-0500) #794 (Matthew L. Fidler)
+;;    Testing directory entry
+;; 07-Dec-2012    Matthew L. Fidler  
+;;    Last-Updated: Wed Aug 22 13:11:26 2012 (-0500) #794 (Matthew L. Fidler)
+;;    Added directory entry to texinfo file.
+;; 18-Sep-2012
 ;;    Last-Updated: Wed Aug 22 13:11:26 2012 (-0500) #794 (Matthew L. Fidler)
 ;;    Bug fix to allow changes that read
 ;;    12-Sep-2012      
@@ -1154,11 +1169,40 @@ When COMMENT-ADDED is non-nil, the comment has been added and the syncing should
         (org-readme-convert-to-markdown)
         (when org-readme-build-texi
           (when (executable-find "pandoc")
-            (let ((default-directory (file-name-directory (buffer-file-name))))
-              (shell-command (concat "pandoc Readme.md -s -o "
-                                     (file-name-sans-extension
-                                      (file-name-nondirectory (buffer-file-name)))
-                                     ".texi"))))))
+            (let ((default-directory (file-name-directory (buffer-file-name)))
+                  (base (file-name-sans-extension
+                         (file-name-nondirectory (buffer-file-name))))
+                  (file (concat (file-name-sans-extension
+                                 (file-name-nondirectory (buffer-file-name)))
+                                ".texi"))
+                  desc
+                  cnt)
+              (shell-command (concat "pandoc Readme.md -s -o " file))
+              ;; Now add direntry.
+              (setq cnt (with-temp-buffer
+                          (insert-file-contents file)
+                          (buffer-string)))
+              (with-temp-buffer
+                (insert-file-contents (concat base ".el"))
+                (goto-char (point-min))
+                (setq desc (if (re-search-forward "^[ \t]*;;;[ \t]*%s[.]el[ \t]*--+[ \t]*\\(.*?\\)[ \t]*$" nil t)
+                               (match-string 1)
+                             nil)))
+              (with-temp-file file
+                (insert cnt)
+                (goto-char (point-min))
+                (when (re-search-forward "@documentencoding")
+                  (goto-char (point-at-eol))
+                  (insert "\n@dircategory Emacs lisp libraries\n@direntry\n* ")
+                  (insert base)
+                  (insert ": (")
+                  (insert base)
+                  (insert ").     ")
+                  
+                  (if desc
+                      (insert desc)
+                    (insert base))
+                  (insert "\n@end direntry\n")))))))
       
       (when (and (featurep 'http-post-simple)
                  org-readme-sync-marmalade)
@@ -1197,7 +1241,7 @@ When COMMENT-ADDED is non-nil, the comment has been added and the syncing should
       
       (goto-char (point-min))
       (while (re-search-forward "=\\<\\(.*?\\)\\>=" nil t)
-        (replace-match (format "`%s'" (match-string 1))))
+        (replace-match (format "`%s'" (match-string 1)) t t))
       
       (goto-char (point-min))
       (while (re-search-forward "#.*" nil t)
@@ -1250,7 +1294,7 @@ When COMMENT-ADDED is non-nil, the comment has been added and the syncing should
           (insert wiki)
           (goto-char (point-min))
           (when (looking-at ".")
-            (replace-match (upcase (match-string 0))))
+            (replace-match (upcase (match-string 0)) t t))
           (while (re-search-forward "[-._]\\(.\\)" nil t)
             (replace-match  (upcase (match-string 1))) t t)
           (setq wiki (buffer-substring (point-min) (point-max))))
@@ -1261,7 +1305,7 @@ When COMMENT-ADDED is non-nil, the comment has been added and the syncing should
         (insert (downcase name))
         (goto-char (point-min))
         (when (looking-at ".")
-          (replace-match (upcase (match-string 0))))
+          (replace-match (upcase (match-string 0)) t t))
         (while (re-search-forward "-\\(.\\)" nil t)
           (replace-match  (upcase (match-string 1))) t t)
         (setq name (concat dir (buffer-substring (point-min) (point-max)))))
@@ -1369,7 +1413,7 @@ When AT-BEGINNING is non-nil, if the section is not found, insert it at the begi
       
       (goto-char (point-min))
       (when (re-search-forward "^[ \t]*Features that might be required by this library:[ \t]*$" nil t)
-        (replace-match "* Possible Dependencies"))
+        (replace-match "* Possible Dependencies" t t))
       (setq top-header (buffer-substring (point-min) (point-max))))
     (with-temp-buffer
       (insert-file-contents readme)
