@@ -8,7 +8,7 @@
 * <b>Author </b> --  Matthew Fidler, Nathaniel Cunningham
 * <b>Maintainer </b> --  Matthew L. Fidler
 * <b>Created </b> --  Mon Oct 18 17:06:07 2010 (-0500)
-* <b>Version </b> --  0.8
+* <b>Version </b> --  0.9
 * <b>Last-Updated </b> --  Thu Mar  1 09:02:56 2012 (-0600)
 * <b>By </b> --  Matthew L. Fidler
 * <b>Update # </b> --  659
@@ -196,6 +196,7 @@ Function to call to create a new buffer in tabbar-mode.  Optional single
 argument is the MODE for the new buffer.
 == History ==
 
+* <b>07-Dec-2012 </b> --   Will no longer take over editing of org source blocks or info blocks. (Matthew L. Fidler)
 * <b>07-Dec-2012 </b> --   Changed the order of checking so that helm will work when you move a mouse. (Matthew L. Fidler)
 * <b>07-Dec-2012 </b> --   Now works with Helm. Should fix issue #1 (Matthew L. Fidler)
 * <b>06-Dec-2012 </b> --   Now colors are based on loaded theme (from minibar). Also added bug-fix for setting tabbar colors every time a frame opens. Also added a bug fix for right-clicking a frame that is not associated with a buffer. 1-Mar-2012 Matthew L. Fidler Last-Updated: Thu Mar 1 08:38:09 2012 (-0600) #656 (Matthew L. Fidler) Will not change tool-bar-mode in Mac. It causes some funny things to happen. 9-Feb-2012 Matthew L. Fidler Last-Updated: Thu Feb 9 19:18:21 2012 (-0600) #651 (Matthew L. Fidler) Will not change the menu bar in a Mac. Its always there. (Matthew L. Fidler)
