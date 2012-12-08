@@ -33,5 +33,8 @@ Is it because of the Emacs version?
 For syntax highlighting to work there must be a major mode for it.
 There are major modes for both .css (CssMode) and .js (JavaScriptMode)
 
+[new]
+Also check the `font-lock-maximum-size' variable
+
 ----
 CategoryFaces ComparativeEmacsology
