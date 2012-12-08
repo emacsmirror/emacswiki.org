@@ -38,9 +38,11 @@ This requires Ghostscript, but no extra Emacs library.  You can print as usual w
 
 === Printing with ps-print on MS Windows: Using Cygwin and PDFCreator ===
 
-First Install PDFCreator. This is a version of ghostscript & ghostview  that acts like a windows printer driver. It allows you to create PDF's from any windows application that will let you print. 
-http://sourceforge.net/projects/pdfcreator/
+Unfortunately, you should read the section [http://en.wikipedia.org/wiki/PDFCreator#Adware_toolbar_controversy Adware toolbar controversy] on the Wikipedia page before installing it. :sucks:
 
+If you decide to install it anyway, [http://sourceforge.net/projects/pdfcreator/ PDFCreator] is a version of ghostscript & ghostview that acts like a windows printer driver. It allows you to create PDF's from any windows application that will let you print.
+
+[new]
 You can tune the PDFCreator to do all sorts of things, I have it set to autosave the PDF and open it in Acrobat. Most Windows Emacsians have cygwin installed, this uses the cygwin version of lpr. To set Emacs up to use it add the following to your InitFile:
 
     (setenv "PRINTER" "PDFCreator")
@@ -50,9 +52,9 @@ You can tune the PDFCreator to do all sorts of things, I have it set to autosave
        (setq ps-lpr-command "/bin/lpr"))) ; if you're using the Emacs in Cygwin
       ;(setq ps-lpr-command "c:/cygwin/bin/lpr.exe"))) ; if you're using the native Windows build of Emacs
 
-To test use ps-print-buffer.  TimOCallaghan
+To test use ps-print-buffer. -- TimOCallaghan
 
-
+[new]
 '''See also:''' PrintingPackage and PsPrintPackage.
 
 === Emacs does not allow quotes in the printer command or switches. ===
