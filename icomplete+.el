@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Oct 16 13:33:18 1995
 ;; Version: 21.0
-;; Last-Updated: Wed Dec  5 15:53:09 2012 (-0800)
+;; Last-Updated: Sat Dec  8 13:56:11 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 1406
+;;     Update #: 1410
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icomplete+.el
 ;; Doc URL: http://emacswiki.org/emacs/IcompleteMode
 ;; Keywords: help, abbrev, internal, extensions, local
@@ -82,6 +82,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/12/08 dadams
+;;     icompletep-exact-separator: Different default value - Unicode star for Emacs 23+, * otherwise.
 ;; 2012/12/05 dadams
 ;;     Updated wrt Emacs 24:
 ;;      Added: icomplete-show-key-bindings (removed from vanilla Emacs), icomplete-separator,
@@ -233,9 +235,14 @@ Don't forget to mention your Emacs and library versions."))
   :link '(emacs-commentary-link :tag "Commentary" "icomplete+"))
 
 ;;;###autoload
-(defcustom icompletep-exact-separator ", "
-    "String used by to separate exact match from other alternatives."
-    :type 'string :group 'Icomplete-Plus)
+(defcustom icompletep-exact-separator (if (> emacs-major-version 22)
+                                          (string ?\u2605 ?\  ) ; star
+                                        ;; (string ?\u2714 ?\  ) ; check mark
+                                        ;; (string ?\u29eb ?\  ) ; diamond
+                                        ;; (string ?\u2205 ?\  ) ; empty set
+                                        "* ")
+  "String used by to separate exact match from other alternatives."
+  :type 'string :group 'Icomplete-Plus)
 
 (unless (boundp 'icomplete-show-key-bindings) ; Emacs 24.3+
   (defcustom icomplete-show-key-bindings t
