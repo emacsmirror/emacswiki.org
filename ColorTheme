@@ -510,6 +510,8 @@ After the generated X resource settings have been written out to your .Xresource
 
 [new:MathieuBasille:2010-03-16 14:50 UTC] Using GNU Emacs 23.1.1 (i486-pc-linux-gnu, GTK+ Version 2.18.2) of 2009-11-01 on raven, modified by Debian, I'm not able to use properly that package. It loads fine, but when I'm invoking one of the example commands, I get the following error message: 'assoc: Wrong type argument: listp, color-theme-classic', and the buffer *color-theme-xresources* is practically empty. Am I doing something wrong? -- MathieuBasille
 
+I've forked and updated color-theme-x.el.  It's available in [http://marmalade-repo.org/packages/color-theme-x Marmalade] and on [https://github.com/ajsquared/color-theme-x GitHub] -- AndrewJohnson
+
 
 == Saving a Color Theme in the Windows Registry ==
 
