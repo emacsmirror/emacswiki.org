@@ -1,0 +1,19 @@
+[new]
+On IRC, user *quazimodo* suggested that we should indicate "outdated" pages:
+
+13:02 <quazimodo> oh my god the emacs wiki is a piece of shit
+13:09 <quazimodo> yeah it has no in build maintenance
+13:09 <quazimodo> anything over a year old ought to be flagged
+      as potentially out dated
+
+I installed [[Oddmuse:Age Indication Extension|an extension]] that adds a class to the body element based on its age. Right now pages that have not been edited for more than a year, get a "linen" background color.
+
+I'm not sure I like it. What do you think?
+
+# great
+# meh
+# keep the note and loose the background color change
+# other?
+
+Known problems: old pages that include new content such as RecentChanges and [[News]] are also marked as "old."
+-- AlexSchroeder
