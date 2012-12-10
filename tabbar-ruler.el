@@ -53,6 +53,9 @@
 ;;; Change Log:
 ;; 10-Dec-2012    Matthew L. Fidler  
 ;;    Last-Updated: Thu Mar  1 09:02:56 2012 (-0600) #659 (Matthew L. Fidler)
+;;    Took out a statement that may fix the left-scrolling bug?
+;; 10-Dec-2012    Matthew L. Fidler  
+;;    Last-Updated: Thu Mar  1 09:02:56 2012 (-0600) #659 (Matthew L. Fidler)
 ;;    Added package-menu-mode to the excluded tabbar-ruler fight modes.
 ;; 07-Dec-2012    Matthew L. Fidler  
 ;;    Last-Updated: Thu Mar  1 09:02:56 2012 (-0600) #659 (Matthew L. Fidler)
@@ -419,8 +422,6 @@ clr
 (setq tabbar-scroll-left-button
       (cons (cons " <" tabbar-scroll-left-button-enabled-image)
             (cons " =" tabbar-scroll-left-button-disabled-image)))
-
-(setq tabbar-scroll-left-button-value nil)
 
 (setq tabbar-scroll-right-button-enabled-image
       `((:type xpm :data ,(tabbar-ruler-image :type 'right))))
