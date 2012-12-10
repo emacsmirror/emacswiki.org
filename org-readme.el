@@ -5,7 +5,7 @@
 ;; Author: Matthew L. Fidler
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Fri Aug  3 22:33:41 2012 (-0500)
-;; Version: 20121207.1640
+;; Version: 20121210.1148
 ;; Package-Requires: ((http-post-simple "1.0") (yaoddmuse "0.1.1")(header2 "21.0") (lib-requires "21.0"))
 ;; Last-Updated: Wed Aug 22 13:11:26 2012 (-0500)
 ;;           By: Matthew L. Fidler
@@ -79,6 +79,23 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 10-Dec-2012    Matthew L. Fidler  
+;;    Last-Updated: Wed Aug 22 13:11:26 2012 (-0500) #794 (Matthew L. Fidler)
+;;    Changed melpa versions to be nil.  However if a melpa version is
+;;    detected, continue using it.
+;; 07-Dec-2012    Matthew L. Fidler  
+;;    Last-Updated: Wed Aug 22 13:11:26 2012 (-0500) #794 (Matthew L. Fidler)
+;;    Post to marmalade
+;; 07-Dec-2012    Matthew L. Fidler  
+;;    Last-Updated: Wed Aug 22 13:11:26 2012 (-0500) #794 (Matthew L. Fidler)
+;;    Remove tar support because it is broken without gnu tar.  Gnu tar in
+;;    windows is broken in opening elpa tarballs.
+;; 07-Dec-2012    Matthew L. Fidler  
+;;    Last-Updated: Wed Aug 22 13:11:26 2012 (-0500) #794 (Matthew L. Fidler)
+;;    Use 7zip to create tar.  May create a readable tar for package.el
+;; 07-Dec-2012    Matthew L. Fidler  
+;;    Last-Updated: Wed Aug 22 13:11:26 2012 (-0500) #794 (Matthew L. Fidler)
+;;    Trying to test the org-readme tar balls
 ;; 07-Dec-2012    Matthew L. Fidler  
 ;;    Last-Updated: Wed Aug 22 13:11:26 2012 (-0500) #794 (Matthew L. Fidler)
 ;;    Trying to post the tar package again.
@@ -387,8 +404,13 @@
 (defgroup org-readme nil
   "Org-readme is a way to create Readme.org files based on an elisp file.")
 
-(defcustom org-readme-use-melpa-versions t
+(defcustom org-readme-use-melpa-versions nil
   "Use Melpa-type versions YYYYMMDD.HHMM instead of 0.0.0 versions"
+  :type 'boolean
+  :group 'org-readme)
+
+(defcustom org-readme-create-tar-package nil
+  "Creates a tar package for use in ELPA"
   :type 'boolean
   :group 'org-readme)
 
@@ -728,8 +750,6 @@ Returns file name if created."
                             (insert-file-contents (concat package ".tar"))
                             (buffer-string))
                         (buffer-string))))))
-      (when (file-exists-p (concat package ".tar"))
-        (delete-file (concat package ".tar")))
       (message "%s" resp))))
 
 (defun org-readme-marmalade-version (package)
@@ -1237,7 +1257,8 @@ When COMMENT-ADDED is non-nil, the comment has been added and the syncing should
           (goto-char (point-min))
           (let ((case-fold-search t))
             (when (re-search-forward "^[ \t]*;+[ \t]*Version:" nil t)
-              (if org-readme-use-melpa-versions
+              (if (or org-readme-use-melpa-versions
+                      (save-match-data (looking-at "[ \t]*[0-9]\\{8\\}[.][0-9]\\{4\\}[ \t]*$")))
                   (progn
                     (delete-region (point) (point-at-eol))
                     (insert (concat " " (format-time-string "%Y%m%d." (current-time))
@@ -1311,8 +1332,12 @@ When COMMENT-ADDED is non-nil, the comment has been added and the syncing should
                 (when (executable-find "install-info")
                   (shell-command (concat "install-info --dir-file=dir " base ".info"))
                   ;; Now Make a marmalade package
-                  (when (or (executable-find "tar")
-                            (executable-find "bsdtar"))
+                  (when (file-exists-p (concat base ".tar"))
+                    (delete-file (concat base ".tar")))
+                  (when (and org-readme-create-tar-package
+                             (or (executable-find "tar")
+                                 (executable-find "7z")
+                                 (executable-find "7za")))
                     (make-directory (concat base "-" ver))
                     (copy-file (concat base ".el") (concat base "-" ver "/" base ".el"))
                     (copy-file (concat base ".info") (concat base "-" ver "/" base ".info"))
@@ -1327,11 +1352,11 @@ When COMMENT-ADDED is non-nil, the comment has been added and the syncing should
                       (insert "\" '")
                       (insert pkg)
                       (insert ")"))
-                    (when (file-exists-p (concat base ".tar"))
-                      (delete-file (concat base ".tar")))
-                    (shell-command (concat
-                                    (if (executable-find "bsdtar") "bsd" "")
-                                    "tar -cvf " base ".tar " base "-" ver "/"))
+                    (if (executable-find "tar")
+                        (shell-command (concat "tar -cvf " base ".tar " base "-" ver "/"))
+                      (shell-commad (concat "7z" (if (executable-find "7za") "a" "")
+                                            " -ttar -so " base ".tar " base "-" ver "/*.*")))
+                    
                     (delete-file (concat base "-" ver "/" base ".el"))
                     (delete-file (concat base "-" ver "/" base "-pkg.el"))
                     (delete-file (concat base "-" ver "/" base ".info"))
