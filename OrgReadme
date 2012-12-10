@@ -8,7 +8,7 @@
 * <b>Author </b> --  Matthew L. Fidler
 * <b>Maintainer </b> --  Matthew L. Fidler
 * <b>Created </b> --  Fri Aug  3 22:33:41 2012 (-0500)
-* <b>Version </b> --  20121207.1640
+* <b>Version </b> --  20121210.1148
 * <b>Package-Requires </b> --  ((http-post-simple "1.0") (yaoddmuse "0.1.1")(header2 "21.0") (lib-requires "21.0"))
 * <b>Last-Updated </b> --  Wed Aug 22 13:11:26 2012 (-0500)
 * <b>By </b> --  Matthew L. Fidler
@@ -234,6 +234,9 @@ Builds a melpa recipe based on github information
 ==== org-readme-build-texi ====
 Builds library-name.texi from Readme.org, using Readme.md and pandoc.  Requires <tt>org-readme-build-markdown</tt> to be non-nil as pandoc to be found.
 
+==== org-readme-create-tar-package ====
+Creates a tar package for use in ELPA
+
 ==== org-readme-default-template ====
 Default template for blank Readme.org Files. LIB-NAME is replaced with the library.
 
@@ -291,6 +294,11 @@ keymap
 
 == History ==
 
+* <b>10-Dec-2012 </b> --   Changed melpa versions to be nil. However if a melpa version is detected, continue using it. (Matthew L. Fidler)
+* <b>07-Dec-2012 </b> --   Post to marmalade (Matthew L. Fidler)
+* <b>07-Dec-2012 </b> --   Remove tar support because it is broken without gnu tar. Gnu tar in windows is broken in opening elpa tarballs. (Matthew L. Fidler)
+* <b>07-Dec-2012 </b> --   Use 7zip to create tar. May create a readable tar for package.el (Matthew L. Fidler)
+* <b>07-Dec-2012 </b> --   Trying to test the org-readme tar balls (Matthew L. Fidler)
 * <b>07-Dec-2012 </b> --   Trying to post the tar package again. (Matthew L. Fidler)
 * <b>07-Dec-2012 </b> --   Bug fix -- Tar package contents to include trailing /, otherwise emacs complains :( (Matthew L. Fidler)
 * <b>07-Dec-2012 </b> --   Bug fix for MELPA versions. (Matthew L. Fidler)
