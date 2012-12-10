@@ -1,0 +1,3 @@
+Any page on the wiki which has not been updated for a year gets a colored background with a message saying "This content may be out of date."
+
+This is done to make things clear to new users that the content they are viewing might require some changes before being useful to their shiny just-recompiled new emacs.  Obviously this will not appear on pages containing *some* (possibly) outdated content. 
