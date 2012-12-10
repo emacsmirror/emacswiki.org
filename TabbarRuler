@@ -8,7 +8,7 @@
 * <b>Author </b> --  Matthew Fidler, Nathaniel Cunningham
 * <b>Maintainer </b> --  Matthew L. Fidler
 * <b>Created </b> --  Mon Oct 18 17:06:07 2010 (-0500)
-* <b>Version </b> --  0.9
+* <b>Version </b> --  0.10
 * <b>Last-Updated </b> --  Thu Mar  1 09:02:56 2012 (-0600)
 * <b>By </b> --  Matthew L. Fidler
 * <b>Update # </b> --  659
@@ -164,6 +164,9 @@ visiting a file.  The current buffer is always included.
 ==== tabbar-ruler-excluded-buffers ====
 * Excluded buffers in tabbar.
 
+==== tabbar-ruler-fight-igore-modes ====
+Exclude these mode when changing between tabbar and ruler.
+
 ==== tabbar-ruler-global-ruler ====
 * Should tabbar-ruler have a global ruler?
 
@@ -196,6 +199,7 @@ Function to call to create a new buffer in tabbar-mode.  Optional single
 argument is the MODE for the new buffer.
 == History ==
 
+* <b>10-Dec-2012 </b> --   Added package-menu-mode to the excluded tabbar-ruler fight modes. (Matthew L. Fidler)
 * <b>07-Dec-2012 </b> --   Will no longer take over editing of org source blocks or info blocks. (Matthew L. Fidler)
 * <b>07-Dec-2012 </b> --   Changed the order of checking so that helm will work when you move a mouse. (Matthew L. Fidler)
 * <b>07-Dec-2012 </b> --   Now works with Helm. Should fix issue #1 (Matthew L. Fidler)
