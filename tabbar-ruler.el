@@ -5,7 +5,7 @@
 ;; Author: Matthew Fidler, Nathaniel Cunningham
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Mon Oct 18 17:06:07 2010 (-0500)
-;; Version: 0.9
+;; Version: 0.10
 ;; Last-Updated: Thu Mar  1 09:02:56 2012 (-0600)
 ;;           By: Matthew L. Fidler
 ;;     Update #: 659
@@ -51,6 +51,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 10-Dec-2012    Matthew L. Fidler  
+;;    Last-Updated: Thu Mar  1 09:02:56 2012 (-0600) #659 (Matthew L. Fidler)
+;;    Added package-menu-mode to the excluded tabbar-ruler fight modes.
 ;; 07-Dec-2012    Matthew L. Fidler  
 ;;    Last-Updated: Thu Mar  1 09:02:56 2012 (-0600) #659 (Matthew L. Fidler)
 ;;    Will no longer take over editing of org source blocks or info blocks.
@@ -635,6 +638,10 @@ Call `tabbar-tab-label-function' to obtain a label for TAB."
   :type '(repeat (string :tag "Buffer Name"))
   :group 'tabbar-ruler)
 
+(defcustom tabbar-ruler-fight-igore-modes '(info-mode helm-mode package-menu-mode)
+  "Exclude these mode when changing between tabbar and ruler."
+  :type '(repeat (symbol :tag "Major Mode")))
+
 (defvar tabbar-ruler-tabbar-off 't)
 (defvar tabbar-ruler-ruler-off 't)
 (set (make-variable-buffer-local 'tabbar-ruler-toolbar-off) nil)
@@ -676,7 +683,7 @@ Call `tabbar-tab-label-function' to obtain a label for TAB."
            nil)
          ((and (save-match-data (string-match "^[*]Org Src " (buffer-name))))
           nil)
-         ((and (eq major-mode 'info-mode))
+         ((member major-mode tabbar-ruler-fight-igore-modes)
           nil)
          ( (eq major-mode 'helm-mode)
            nil)
