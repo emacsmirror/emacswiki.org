@@ -13,6 +13,8 @@ It is possible to embrace this "new" keyboard layout, however, and go a step fur
 
 Recent versions of the Gnome desktop have a Keyboard Preferences dialog that allows you to configure the Ctrl key position.  On Ubuntu this is found under System -> Preferences -> Keyboard.  Under the "Layout Options" tab choose "Ctrl key position" and it gives you a number of choices.
 
+Under Gnome Shell, the same settings can be found under System Settings -> Keyboard Layout.  Choose the Layouts tab, then click on "Options...".  Expand the "Ctrl key position" section and you'll see a similar list of of options.
+
 [[image:GnomeKeyboardPreferences.png|Gnome Keyboard Preferences]]
 [[image:GnomeKeyboardLayoutOptions.png|Gnome Keyboard Layout Options]]
 
@@ -248,7 +250,7 @@ wsconsctl -w map+="keysym Caps_Lock = Control_L"
 
 == OS X ==
 
-Open System Preferences → Keyboard and choose Modifier Keys:
+Open System Preferences â Keyboard and choose Modifier Keys:
 
 [[image:MacKeyboardPreferences.png|Mac Keyboard Preferences]]
 
