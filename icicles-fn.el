@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Dec  6 09:35:13 2012 (-0800)
+;; Last-Updated: Mon Dec 10 14:22:52 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 13759
+;;     Update #: 13760
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1383,7 +1383,8 @@ See `read-file-name' for the meaning of the arguments here."
                                                     (with-current-buffer
                                                         (window-buffer (minibuffer-selected-window))
                                                       (read-file-name--defaults dir initial))))
-                                             (set-syntax-table minibuffer-local-filename-syntax))
+                                             (when (boundp 'minibuffer-local-filename-syntax)
+                                               (set-syntax-table minibuffer-local-filename-syntax)))
                                            ;; ICICLES: use `icicle-read-file-name-internal-fn'.
                                            (completing-read prompt icicle-read-file-name-internal-fn
                                                             pred mustmatch insdef
