@@ -1,11 +1,11 @@
 [[es:ModoOrg]]
 [[es:ModoOrg]]
-[[zh:Org-Mode (中文)]]
+[[zh:Org-Mode (ä¸­æ)]]
 == Overview ==
 
 Org-mode is an Emacs mode for note keeping, project planning, TODO lists and authoring. It is included from Emacs 22.1 onward as default.
 
-Org-mode's [http://orgmode.org/manual/index.html manual], [http://orgmode.org/guide/ compact guide], the community maintained [http://orgmode.org/worg Worg]  (which includes tutorial, ideas, code snippets, etc.,) and can be accessed at [http://orgmode.org its homepage]. [http://www.network-theory.co.uk/org/manual/ Paperback manual] is also available. [http://gnu.manticore.es/manual-org-emacs El Manual de Org], traduccioón al español para 23.1.
+Org-mode's [http://orgmode.org/manual/index.html manual], [http://orgmode.org/guide/ compact guide], the community maintained [http://orgmode.org/worg Worg]  (which includes tutorial, ideas, code snippets, etc.,) and can be accessed at [http://orgmode.org its homepage]. [http://www.network-theory.co.uk/org/manual/ Paperback manual] is also available. [http://gnu.manticore.es/manual-org-emacs El Manual de Org], traduccioÃ³n al espaÃ±ol para 23.1.
 
 === Features ===
 
@@ -155,6 +155,23 @@ To follow links with RET, rather than a 2 key combo:
     (setq org-return-follows-link t)
 
 You can also make TAB follow links in a similar way.
+
+=== Opening pdf at specific page ===
+To open links of type [~/test.pdf::3] i.e. open file at page 3:
+<pre>
+    (delete '("\\.pdf\\'" . default) org-file-apps)
+    (add-to-list 'org-file-apps '("\\.pdf::\\([0-9]+\\)\\'" . "evince \"%s\" -p %1"))
+</pre>
+
+=== Opening pdf with alternative application ===
+To open a link with a program other than the default(e.g. modify a pdf rather than read it):
+<pre>
+(defun my-org-open-at-point()
+  (interactive)
+  (let ((org-file-apps '(("\\.pdf\\'" . "xournal %s"))))
+    (org-open-at-point)
+    ))
+</pre>
 
 === Editing Wikipedia ===
 
