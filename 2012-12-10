@@ -6,7 +6,7 @@ On IRC, user *quazimodo* suggested that we should indicate "outdated" pages:
 13:09 <quazimodo> anything over a year old ought to be flagged
       as potentially out dated
 
-I installed [[Oddmuse:Age Indication Extension|an extension]] that adds a class to the body element based on its age. Right now pages that have not been edited for more than a year, get a "linen" background color.
+I installed [[Oddmuse:Age Indication Extension|an extension]] that adds a class to the body element based on its age. Right now pages that have not been edited for more than a year, get a "linen" background color. -> OutOfDate
 
 I'm not sure I like it. What do you think?
 
