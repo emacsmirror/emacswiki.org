@@ -1,0 +1,3 @@
+ ttcn-el is a package by W. Martin Borgert for editing TTCN files.
+
+Both Tree and Tabular Combined Notation (TTCN-2) as well as Testing and Test Control Notation (TTCN-3) are supported. The original implementation can be found on Martin's page, http://people.debian.org/~debacle/ttcn-free/. An updated version which is compatible with cc-mode 5.32 (bundled with Emacs 23) is available at https://github.com/dholm/ttcn-el/.
