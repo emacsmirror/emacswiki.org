@@ -15,5 +15,9 @@ I'm not sure I like it. What do you think?
 # keep the note and loose the background color change
 # other?
 
-Known problems: old pages that include new content such as RecentChanges and [[News]] are also marked as "old."
+Known *problems*: 
+
+# old pages that include new content such as RecentChanges and [[News]] are also marked as "old"
+# the note is added by the CSS and does not depend on your language settings
+
 -- AlexSchroeder
