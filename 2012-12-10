@@ -44,4 +44,4 @@ Imagine applying your suggestion to the Web: automatically flagging all web page
 Just one opinion -- DrewAdams
 
 [new]
-I agree with Drew. It might be useful to flag advice that is only valid for older Emacsen, though. Maybe having a tag like [legacy "Only required for Emacs <= 22.2] that adds a little flag might be useful. Not sure if it's worth the effort, though. --shjk
+I agree with Drew. It might be useful to flag advice that is only valid for older Emacsen, though. Maybe having a tag like [legacy "Emacs <= 22.2"] that adds a little flag might be useful. Not sure if it's worth the effort, though. Just adding a comment pointing out this might be enough. --shjk
