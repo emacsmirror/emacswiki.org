@@ -45,3 +45,19 @@ Just one opinion -- DrewAdams
 
 [new]
 I agree with Drew. It might be useful to flag advice that is only valid for older Emacsen, though. Maybe having a tag like [legacy "Emacs <= 22.2"] that adds a little flag might be useful. Not sure if it's worth the effort, though. Just adding a comment pointing out this might be enough. --shjk
+
+[new]
+Pretty humorous.  People are framing the problem(s) with this Wiki in the wrong way.  The problem isn't that nobody knows there are problems -- errors, omissions, bugs!  The problem is finding people to fix them.  Tagging pages or paragraphs as "obsolete" is wasted effort.
+
+To get things done in a community project, roles and responsibilities need to be doled out to people.  We don't have a staff budget, but people are willing to volunteer if they are given a task.  If there's one problem with Wiki and fork-culture (Git and so on) is the misconception that "everyone's doing the work so nobody has to do the work".  If you actually study the Linux kernel or WikiPedia you find that there is an layer of people working as an organization and taking responsibility for tasks and getting them done.  There's also some pride that comes with volunteering for these projects.  We won't be able to replicate these projects, but we need to find appropriately sized corollaries.
+
+I'd suggest trying to define the maintenance needs and make people responsible for them so that important parts of the Wiki are updated.  People used to say on their UserPage what they had authored or hoped to edit.  I don't think we want page "ownership", but we do want some sort of system by which people cooperate to improve the Wiki.
+
+As an example, there is rather humdrum work of maintaining the release and download availability of popular ports of Emacs:
+
+* CategoryWThirtyTwo
+* EmacsForMacOS
+
+There's probably other pages or categories that could be maintained by a collective.
+
+Changing the color of pages, doesn't seem like an incentive to edit.  It seems like a disincentive. -- AaronHawley
