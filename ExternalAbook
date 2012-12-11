@@ -48,3 +48,8 @@ This turns out not to work if the external query command prints more than two fi
   goobook "$@" | cut -f 1,2
 
 -- DanPoirier
+
+Dan's solution works well, but smtp from mu4e-compose sometimes fails if the name part is not quoted and contains commas (Lastname, Firstname). Also, goobok outputs an extra blank line. Replacing cut with (g)awk solves both problems:
+goobook "$@" | gawk -F'\t' '/.+/ {print $1 "\t" "\""$2 "\""}'
+
+--KaiArzheimer
