@@ -42,3 +42,6 @@ If you find ''particular'' pages with ''particular'' info that is out of date, t
 Imagine applying your suggestion to the Web: automatically flagging all web pages/sites that have not been updated within, say, 2 years as possibly out-of-date.  Think about it.  There is a reason that we don't do this kind of thing.  Makes no sense.
 
 Just one opinion -- DrewAdams
+
+[new]
+I agree with Drew. It might be useful to flag advice that is only valid for older Emacsen, though. Maybe having a tag like [legacy "Only required for Emacs <= 22.2] that adds a little flag might be useful. Not sure if it's worth the effort, though. --shjk
