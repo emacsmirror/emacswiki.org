@@ -5,7 +5,7 @@ Welcome to my homepage.  My name is Xue Fuqiao.  English is not my native langua
 I've been an [[Emacsite]] since 2009 and began to write programs
 in EmacsLisp since 2011.  Started with [[XEmacs]], switched to
 [[SXEmacs]], back to XEmacs, then to GuileEmacs, and now I'm using Emacs.  I prefer to learn new things from reference
-manuals, instead of tutorials.  Currently I use Emacs on a laptop with a DvorakKeyboard.
+manuals, instead of tutorials.  Currently I use Emacs on a laptop with a ColemakKeyboard.
 
 Many thanks to the people who contributed or are contributing to Emacs, [[XEmacs]] and EmacsWiki.  My daily life and work becomes very interesting.
 
@@ -78,7 +78,7 @@ https://github.com/xfq/xfq-emacs-init-files
 == My ~/.Xdefaults ==
 <pre>
 Emacs.bitmapIcon: off
-Emacs.font: ProggySmallTT-12
+Emacs.font: ProggyTinyTT-12
 Emacs* menubar.margin: 0
 Emacs* toolBar: 0
 Emacs.useXIM: off
@@ -136,6 +136,7 @@ Coming soon.
 * Implement a mailing list manager in EmacsLisp.
 * Port XWEM and XLIB to Emacs.
 * Implement a DHCP client in EmacsLisp.
+* Make GNU Emacs support both Guile and EmacsLisp.
 * Implement a FTP server in EmacsLisp.
 * Implement a spell checker in EmacsLisp.
 * Add a command line argument named ##--slim##, it can invoke Emacs with only the bare-minimum EmacsLisp libraries needed for quick editing.
