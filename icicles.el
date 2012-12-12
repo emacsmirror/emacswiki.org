@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun Dec  2 17:51:10 2012 (-0800)
+;; Last-Updated: Tue Dec 11 21:42:29 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 23260
+;;     Update #: 23263
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -881,6 +881,7 @@
 ;;    `icicle-bookmark-delete-action', `icicle-bookmark-help-string',
 ;;    `icicle-bookmark-jump-1', `icicle-bounds-of-thing-at-point',
 ;;    `icicle-buffer-file/process-name-less-p',
+;;    `icicle-buffer-apropos-complete-match',
 ;;    `icicle-buffer-multi-complete', `icicle-buffer-name-prompt',
 ;;    `icicle-buffer-smaller-p', `icicle-buffer-sort-*...*-last',
 ;;    `icicle-cached-files-without-buffers',
@@ -976,11 +977,13 @@
 ;;    `icicle-file-name-directory',
 ;;    `icicle-file-name-directory-w-default',
 ;;    `icicle-file-name-input-p', `icicle-file-name-nondirectory',
-;;    `icicle-file-name-prefix-candidates', `icicle-file-readable-p',
-;;    `icicle-file-remote-p', `icicle-file-type-less-p',
-;;    `icicle-file-writable-p', `icicle-filesets-files-under',
-;;    `icicle-files-within', `icicle-files-within-1',
-;;    `icicle-filter-alist', `icicle-filter-wo-input',
+;;    `icicle-file-name-prefix-candidates',
+;;    `icicle-file-of-content-apropos-complete-match',
+;;    `icicle-file-readable-p', `icicle-file-remote-p',
+;;    `icicle-file-type-less-p', `icicle-file-writable-p',
+;;    `icicle-filesets-files-under', `icicle-files-within',
+;;    `icicle-files-within-1', `icicle-filter-alist',
+;;    `icicle-filter-wo-input',
 ;;    `icicle-find-file-of-content-multi-complete',
 ;;    `icicle-find-first-tag-action',
 ;;    `icicle-find-first-tag-other-window-action',
