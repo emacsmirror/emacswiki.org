@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Dec 10 14:22:52 2012 (-0800)
+;; Last-Updated: Wed Dec 12 12:50:42 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 13760
+;;     Update #: 13762
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -3604,7 +3604,9 @@ The optional second arg is ignored."
                            (and (boundp 'completion-annotate-function)  completion-annotate-function))))
       (when annotation-fn               ; Emacs 23+ uses a list (CAND ANNOTATION) for the candidate.
         (setq candidates  (mapcar (lambda (cand)
-                                    (let ((ann  (funcall annotation-fn cand)))
+                                    (let ((ann  (condition-case nil
+                                                    (funcall annotation-fn cand)
+                                                  (error nil))))
                                       (if ann (list cand ann) cand)))
                                   candidates))))
     (let* ((multilinep       (lambda (cand)
@@ -4160,18 +4162,23 @@ Completion', for details."
   ;; of INPUT with the first candidate.  What it returns is the longest match that is common to
   ;; all CANDIDATES and also contains the first match in the first candidate.
   (let ((case-fold-search
-         ;; Don't bother with buffer completion and `read-buffer-completion-ignore-case'.
+         ;; Do not bother with buffer completion and `read-buffer-completion-ignore-case'.
          (if (and (or (icicle-file-name-input-p)  icicle-abs-file-candidates)
                   (boundp 'read-file-name-completion-ignore-case))
              read-file-name-completion-ignore-case
            completion-ignore-case))
         (first  (car candidates)))
+    ;; Apart from this condition, use `string-match' in this function, not `icicle-apropos-complete-match-fn'.
+    ;; `string-match' should always be the right thing, and `icicle-apropos-complete-match-fn' is sometimes
+    ;; inappropriate - e.g., when it is `icicle-apropos-complete-match-fn'.
     (and icicle-apropos-complete-match-fn ; Return nil if no match function.
          (save-match-data
            ;; Assume no common match in case of error - e.g. due to `string-match' with binary data
-           ;; in Emacs 20.  Do this throughout, whenever we call `icicle-apropos-complete-match-fn'.
+           ;; in Emacs 20.  Do this throughout, whenever we call `string-match' or
+           ;; `icicle-apropos-complete-match-fn'.
            (unless (condition-case nil
-                       (funcall icicle-apropos-complete-match-fn input first)
+                       ;; Use `string-match' here, not `icicle-apropos-complete-match-fn'.
+                       (string-match input first)
                      (error (throw 'ecm-error nil)))
              (error (throw 'ecm-error nil))) ; If input doesn't match candidate, return nil.
            (let* ((len-first       (length first))
@@ -4187,34 +4194,37 @@ Completion', for details."
                ;; Compare with the rest of the candidates, reducing as needed.
                (while (and rest  ecm)
                  (condition-case nil
-                     (funcall icicle-apropos-complete-match-fn input (car rest))
+                     ;; Use `string-match' here, not `icicle-apropos-complete-match-fn'.
+                     (string-match input (car rest))
                    (error (throw 'ecm-error nil))) ; If input doesn't match candidate, return nil.
                  (setq beg-next  (match-beginning 0))
                  ;; Remove any prefix that doesn't match some other candidate.
                  (while (and (< beg orig-match-beg)
                              (not (condition-case nil
-                                      (funcall icicle-apropos-complete-match-fn
-                                               (regexp-quote (substring ecm 0 (- orig-match-end beg)))
-                                               (car rest))
+                                      ;; Use `string-match' here, not `icicle-apropos-complete-match-fn'.
+                                      (string-match (regexp-quote (substring ecm 0 (- orig-match-end beg)))
+                                                    (car rest))
                                     (error (throw 'ecm-error nil))))
                              (progn (setq beg-ecm  (match-beginning 0))  (>= beg-ecm beg-next)))
                    ;; Take a character off of the left.
                    (setq ecm  (substring ecm 1)
                          beg  (1+ beg)))
                  ;; Remove any suffix that doesn't match some other candidate.
-                 (while (and (> end 0)  (not (condition-case nil
-                                                 (funcall icicle-apropos-complete-match-fn
-                                                          (regexp-quote ecm) (car rest))
-                                               (error (throw 'ecm-error nil)))))
+                 (while (and (> end 0)
+                             (not (condition-case nil
+                                      ;; Use `string-match' here, not `icicle-apropos-complete-match-fn'.
+                                      (string-match (regexp-quote ecm) (car rest))
+                                    (error (throw 'ecm-error nil)))))
                    ;; Take a character off of the right.
                    (setq ecm  (substring ecm 0 (1- (length ecm)))
                          end  (1- end)))
                  (unless (and (condition-case nil
-                                  (funcall icicle-apropos-complete-match-fn
-                                           (regexp-quote ecm) (car rest))
+                                  ;; Use `string-match' here, not `icicle-apropos-complete-match-fn'.
+                                  (string-match (regexp-quote ecm) (car rest))
                                 (error (throw 'ecm-error nil)))
                               (condition-case nil ; Input must match the substring that is common.
-                                  (funcall icicle-apropos-complete-match-fn input ecm)
+                                  ;; Use `string-match' here, not `icicle-apropos-complete-match-fn'.
+                                  (string-match input ecm)
                                 (error (throw 'ecm-error nil))))
                    (setq ecm  nil))     ; No possible expansion
                  (pop rest))
