@@ -29,5 +29,8 @@ There is an existing CommonLisp `iterate' macro: http://common-lisp.net/project/
 [new:wvxvw:2012-12-12 22:41 UTC]
 I'm working on more conscious documentation, and, of course, that is the library I mentioned in the description. I wasn't sure whether to link it here, because I'm not working on that other library, just a regular user. I have already some documentation, for what is functional, it's either in the Googlecode Wiki, or comes with the project as info and html files, but there are still things to be done. http://code.google.com/p/i-iterate/wiki/Iterate here's what I have so far. -- wvxvw
 
+[new:DrewAdams:2012-12-12 22:54 UTC]
+I, for one, am very glad you're working on this.  Good luck!  This would be a great addition to Emacs itself.  Have you already signed papers for contributing to GnuEmacs, or if not would you consider doing so?  -- DrewAdams
+
 ----
 CategoryExtensions
