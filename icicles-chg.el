@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Dec  7 10:34:01 2012 (-0800)
+;; Last-Updated: Wed Dec 12 13:59:00 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 9376
+;;     Update #: 9411
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -86,6 +86,19 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2012/12/12 dadams
+;;     Added: icicle-buffer-apropos-complete-match, icicle-file-of-content-apropos-complete-match.
+;;     icicle-buffer(-other-window):
+;;       Bind icicle-last-apropos-complete-match-fn  to icicle-buffer-apropos-complete-match.
+;;       Move binding of icicle-apropos-complete-match-fn to post-bindings.
+;;     icicle-find-file-of-content(-other-window):
+;;       Bind icicle-last-apropos-complete-match-fn to icicle-file-of-content-apropos-complete-match.
+;;       Reverted the 12/07 change.  Binding *-apropos-complete-match-fn to nil broke apropos compl.
+;;     icicle-find-file-of-content-multi-complete:
+;;       Rewrote.  Do not use all-completions.  Use completion-table-in-turn for everything, passing
+;;       content-matching predicate.  
+;;     icicle-execute-extended-command-1, icicle-command-abbrev-action:
+;;       Bind completion-annotate-function to nil, to cancel top-level binding.
 ;; 2012/12/07 dadams
 ;;     icicle-find-file-of-content(-other-window):
 ;;       Restored binding of icicle-apropos-complete-match-fn to nil.
@@ -1572,6 +1585,12 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2012/12/12 dadams
+;;     icicle-expanded-common-match-1:
+;;       Use string-match, not icicle-apropos-complete-match-fn, except for first condition (and).
+;;     icicle-insert-candidates: Wrap funcall of annotation fn with condition-case, just in case.
+;; 2012/12/10 dadams
+;;     icicle-read-file-name-default: Protect minibuffer-local-filename-syntax with boundp.
 ;; 2012/12/06 dadams
 ;;     Moved minibuffer-with-setup-hook here from icicles-mac.el (and removed eval-when-compile).
 ;;     icicle-read-shell-command, icicle-dired-read-shell-command:
@@ -3591,6 +3610,11 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2012/12/12 dadams
+;;     icicle-narrow-candidates:
+;;       Use icicle-must-pass-predicate, not icicle-must-pass-after-match-predicate.
+;;       Added a cond clause for function-valued minibuffer-completion-table other than file input.
+;;     icicle-apropos-complete-and-widen: Updated when condition wrt *-apropos-complete-and-narrow.
 ;; 2012/11/28 dadams
 ;;     icicle-toggle-transforming: Rewrote to be more useful when both are useful functions.
 ;; 2012/11/08 dadams
