@@ -5,7 +5,7 @@
 ;; Author: Matthew L. Fidler
 ;; Maintainer:
 ;; Created: Mon May 10 09:44:59 2010 (-0500)
-;; Version: 0.7
+;; Version: 0.8
 ;; Last-Updated: Tue May 29 22:21:06 2012 (-0500)
 ;;           By: Matthew L. Fidler
 ;;     Update #: 166
@@ -93,6 +93,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change log:
+;; 12-Dec-2012    Matthew L. Fidler  
+;;    Last-Updated: Tue May 29 22:21:06 2012 (-0500) #166 (Matthew L. Fidler)
+;;    Updated Visual Basic Script to be more robust, and have more options.
 ;; 07-Dec-2012    Matthew L. Fidler  
 ;;    Last-Updated: Tue May 29 22:21:06 2012 (-0500) #166 (Matthew L. Fidler)
 ;;    Should fix Issue #1.  Also added org-outlook-create-vbs to create the
@@ -188,7 +191,11 @@
 (defun org-outlook-create-vbs ()
   "Creates Visual Basic Code for Org-protocol"
   (interactive)
-  (let ((script (concat 
+  (let* ((move-to-folder (yes-or-no-p "Would you like to move the emails to another PST mailbox?"))
+         (move-to-subfolder (if (not move-to-folder)
+                                (yes-or-no-p "Would you like to move the emails to a subfolder?")
+                              nil))
+         (script (concat 
                  "'**************************************
 ' Name: URLEncode Function
 ' Description:Encodes a string to create legally formatted
@@ -241,36 +248,77 @@ Catch:
     Resume Finally
 End Function
 
+' From http://www.freevbcode.com/ShowCode.asp?ID=3476
+Public Function OutlookFolderNames(objFolder As Outlook.MAPIFolder, strFolderName As String) As Object
+'*********************************************************
+    On Error GoTo ErrorHandler
+    Dim objOneSubFolder As Outlook.MAPIFolder
+    If Not objFolder Is Nothing Then
+        If LCase(strFolderName) = LCase(objFolder.Name) Then
+            Set OutlookFolderNames = objFolder
+        Else
+            ' Check if folders collection is not empty
+            If objFolder.Folders.Count > 0 And _
+                   Not objFolder.Folders Is Nothing Then
+                For Each oFolder In objFolder.Folders
+                    Set objOneSubFolder = oFolder
+                    ' only check mail item folder
+                    If objOneSubFolder.DefaultItemType _
+                         = olMailItem Then
+                        If LCase(strFolderName) = _
+                          LCase(objOneSubFolder.Name) Then
+                            Set OutlookFolderNames = _
+                                   objOneSubFolder
+                            Exit For
+                        Else
+                            If objOneSubFolder.Folders.Count _
+                                > 0 Then
+                                Set OutlookFolderNames = _
+                                  OutlookFolderNames _
+                                (objOneSubFolder, strFolderName)
+                            End If
+                        End If
+                    End If
+                Next
+            End If
+        End If
+    End If
+
+    Exit Function
+
+ErrorHandler:
+    Set OutlookFolderNames = Nothing
+End Function
+
 
 Sub CreateTaskFromItem()
     Dim T As Variant
+    Dim SndName As String
+    Dim SndEmailAddress As String
     Dim Outlook As New Outlook.Application
-    Dim ie As Object
-    Set ie = CreateObject(\"InternetExplorer.Application\")
-
-    
-    Dim orgfile As Variant
-    Dim Pos As Integer
-    Dim taskf As Object
+    Dim allPersonalFolders As Outlook.MAPIFolder
+    " (if (not (or move-to-folder move-to-subfolder)) ""
+        (concat "Dim taskf As Object
     
     Set myNamespace = Outlook.GetNamespace(\"MAPI\")
+"
+        (if move-to-folder
+            (concat "
     Set myPersonalFolder = myNamespace.Folders.Item(\""
                  (read-from-minibuffer "Personal Folder Name: ")
   "\")
-    Set allPersonalFolders = myPersonalFolder.Folders
+    Set allPersonalFolders = myPersonalFolder")
+          "Set allPersonalFolders = myNamespace.GetDefaultFolder(olFolderInbox)")
+  "
     
-    T = ""
-    For Each Folder In allPersonalFolders
-        If Folder.Name = \"" (read-from-minibuffer "Subfolder to put tasks in: " "@ActionTasks") "\" Then
-            Set taskf = Folder
-            Exit For
-        End If
-    Next
+    T = \"\"
+    Set taskf = OutlookFolderNames(allPersonalFolders,\""
+  (read-from-minibuffer "Subfolder to put tasks in: " "@ActionTasks") "\")\n")) "
     
     ' Send selected text to clipboard.
-    SendKeys (\"%E\")
-    SendKeys (\"C\")
-    DoEvents
+    ' SendKeys (\"%E\")
+    ' SendKeys (\"C\")
+    ' DoEvents
     
     
     Set objWeb = CreateObject(\"InternetExplorer.Application\")
@@ -278,22 +326,38 @@ Sub CreateTaskFromItem()
         
     If Outlook.Application.ActiveExplorer.Selection.Count > 0 Then
         For i = 1 To Outlook.Application.ActiveExplorer.Selection.Count
-                Set objMail = Outlook.ActiveExplorer.Selection.Item(i)
-                Set objMail = objMail.Move(taskf)
-                objMail.Save 'Maybe this will update EntryID
-                T = \"org-protocol:/outlook:/o/\" + URLEncode(objMail.EntryID) _
+            Set objMail = Outlook.ActiveExplorer.Selection.Item(i)
+            On Error GoTo BlockedSnd
+            SndName = ObjMail.SenderName
+            SndEmailAddress = ObjMail.SenderEmailAddress
+            GoTo SndDone
+BlockedSnd:
+            SndName = \"Blocked\"
+            SndEmailAddress = \"Blocked@Microsoft.com\"
+SndDone:
+            " (if (or move-to-folder move-to-subfolder) "On Error GoTo CantMove
+            Set objMail = objMail.Move(taskf)
+            GoTo CanMove
+CantMove:
+            MsgBox \"Can't Move to the folder.
+CanMove:
+"
+                "") "
+            On Error GoTo 0
+            objMail.Save 'Maybe this will update EntryID
+            T = \"org-protocol:/outlook:/o/\" + URLEncode(objMail.EntryID) _
                     + \"/\" + URLEncode(objMail.Subject) _
-                    + \"/\" + URLEncode(objMail.SenderName) _
-                    + \"/\" + URLEncode(objMail.SenderEmailAddress)
+                    + \"/\" + URLEncode(SndName) _
+                    + \"/\" + URLEncode(SndEmailAddress) _
                     '+ \"/\" + URLEncode(objMail.Body)
-        objWeb.Navigate T
-        objWeb.Visible = True
+            objWeb.Navigate T
+            objWeb.Visible = True
         Next
     End If
 End Sub")))
     (with-temp-file (expand-file-name "org-protocol.vbs" org-outlook-dir)
       (insert script))))
-                
+
 ;;;###autoload
 (eval-after-load "org" '(org-add-link-type "outlook" 'org-outlook-open))
 
@@ -346,108 +410,6 @@ Placeholders Replacement
 - (optional) Make the macro CreateTaskFromItem accessable
   anywhere from outlook by adding it to the quick access toolbar
   and/or the standard toolbar.
-
-Public Declare Function ShellExecute Lib \"shell32.dll\" Alias \"ShellExecuteA\" ( _
-    ByVal hWnd As Long, _
-    ByVal lpOperation As String, _
-    ByVal lpFile As String, _
-    ByVal lpParameters As String, _
-    ByVal lpDirectory As String, _
-    ByVal nShowCmd As Long) As Long
-
-
-'Slightly Modified http://www.freevbcode.com/ShowCode.Asp?ID=5137
-Function URLEncode(EncodeStr As String) As String
-    Dim i As Integer
-    Dim erg As String
-    
-    erg = EncodeStr
-
-    ' *** First replace '%' chr
-    erg = Replace(erg, \"%\", Chr(1))
-
-    ' *** then '+' chr
-    erg = Replace(erg, \"+\", Chr(2))
-    
-    For i = 0 To 255
-        Select Case i
-            ' *** Allowed 'regular' characters
-            Case 37, 43, 48 To 57, 65 To 90, 97 To 122
-            
-            Case 1  ' *** Replace original %
-                erg = Replace(erg, Chr(i), \"%25\")
-        
-            Case 2  ' *** Replace original +
-                erg = Replace(erg, Chr(i), \"%2B\")
-                
-            Case 32
-                erg = Replace(erg, Chr(i), \"%20\") 'org-protocol likes %20 instead of +
-        
-            Case 3 To 15
-                erg = Replace(erg, Chr(i), \"%0\" & Hex(i))
-        
-            Case Else
-                erg = Replace(erg, Chr(i), \"%\" & Hex(i))
-                
-        End Select
-    Next
-    
-    URLEncode = erg
-    
-End Function
-
-
-Sub CreateTaskFromItem()
-    Dim T As Variant
-    Dim Outlook As New Outlook.Application
-    Dim ie As Object
-    Set ie = CreateObject(\"InternetExplorer.Application\")
-
-    
-    Dim orgfile As Variant
-    Dim Pos As Integer
-    Dim taskf As Object
-    
-    Set myNamespace = Outlook.GetNamespace(\"MAPI\")
-
-    ' Change this to be your personal folder item.  If it remains
-    ' on the server it keeps the Outlook ID originally given.  If
-    ' you move it to another folder, it will assign it to another
-    ' ID, but keep that ID as long as you don't move it back to the
-    ' server. (*sigh*  I wish it kept the same ID.)
-
-    ' Technically this is unnecessary, but with my limited exchange
-    ' account size,  I move my emails to \"Personal Folders\\@ActionTasks\" and
-    ' then (possibly) refile from there. 
-
-    Set myPersonalFolder = myNamespace.Folders.item(\"Personal Folders\")
-    Set allPersonalFolders = myPersonalFolder.Folders
-    
-    T = \"\"
-    For Each Folder In allPersonalFolders
-        If Folder.Name = \"@ActionTasks\" Then
-            Set taskf = Folder
-            Exit For
-        End If
-    Next
-
-    ' End moving message.
-    
-    If Outlook.Application.ActiveExplorer.Selection.Count > 0 Then
-        For i = 1 To Outlook.Application.ActiveExplorer.Selection.Count
-                Set objMail = Outlook.ActiveExplorer.Selection.item(i)
-                Set objMail = objMail.Move(taskf)
-                objMail.Save 'Maybe this will update EntryID
-                ' Note that o is the Outlook capture template.
-                T = \"org-protocol:/outlook:/o/\" + URLEncode(objMail.EntryID) _
-                    + \"/\" + URLEncode(objMail.Subject) _
-                    + \"/\" + URLEncode(objMail.SenderName) _
-                    + \"/\" + URLEncode(objMail.SenderEmailAddress)
-                ShellExecute 0, \"open\", T, vbNullString, vbNullString, vbNormalFocus
-        Next
-    End If
-End Sub
-
 "
   (if (and (boundp 'org-stored-links)
            (or (fboundp org-outlook-capture))
@@ -501,7 +463,7 @@ CAPTURE-FUNC is either the symbol `org-remember' or `org-capture'."
     (add-to-list 'org-protocol-protocol-alist
                  '("outlook" :protocol "outlook"
                    :function org-protocol-outlook :kill-client t))))
-  
+
 (provide 'org-outlook)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; org-outlook.el ends here
