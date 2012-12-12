@@ -136,7 +136,7 @@ Coming soon.
 * Implement a mailing list manager in EmacsLisp.
 * Port XWEM and XLIB to Emacs.
 * Implement a DHCP client in EmacsLisp.
-* Make GNU Emacs support both Guile and EmacsLisp.
+* Make GNU Emacs support both [[Guile]] and EmacsLisp.
 * Implement a FTP server in EmacsLisp.
 * Implement a spell checker in EmacsLisp.
 * Add a command line argument named ##--slim##, it can invoke Emacs with only the bare-minimum EmacsLisp libraries needed for quick editing.
