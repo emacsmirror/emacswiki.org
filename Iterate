@@ -21,5 +21,11 @@ Here are some examples:
 (++ (for i across [1 2 3 4]) (message "i: %d" i))
 }}}
 
+
+[new:DrewAdams:2012-12-12 15:56 UTC]
+There is an existing CommonLisp `iterate' macro: http://common-lisp.net/project/iterate/doc/Don_0027t-Loop-Iterate.html.   It would be helpful if you would describe its relation to your code (differences etc.).  It would be great to have something similar for Emacs.  Thx -- DrewAdams
+
+
+
 ----
 CategoryExtensions
