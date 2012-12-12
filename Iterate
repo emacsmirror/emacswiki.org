@@ -1,0 +1,25 @@
+Iterate is a macro for, well, iterating over different things in different ways. It is similar in spirit to Common Lisp iterate library, however, it tries to be better suited for Emacs context. I.e. it extends to do some tasks common for Emacs Lisp programs. For example, it can iterate over words in buffer.
+
+The project's homepage (the code repository): http://code.google.com/p/i-iterate/ It has more extensive documentation which comes in form of GNU/info or HTML files.
+
+The project is being currently worked on, however, many parts should be usable already. I would be happy if someone took interest in it, and that would allow me to do both better testing and, perhaps, get a better idea of the features one may desire in this kind of library.
+
+Here are some examples:
+
+''(note that the macro is aliased as ++, but if you don't like that, the full name is i-iterate)''
+
+{{{
+;; Prints "Hello, world!" 100 times
+(++ (repeat 100) (message "Hello, world!"))
+
+;; Binds a and b to the first and second element of the list in
+;; the car of the cons cell of the list being iterated
+(++ (for (a b) in '((1 2) (3 4)))
+   (message "a: %s, b: %s" a b))
+
+;; Iterates over an array and prints its elements
+(++ (for i across [1 2 3 4]) (message "i: %d" i))
+}}}
+
+----
+CategoryExtensions
