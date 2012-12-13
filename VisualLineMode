@@ -94,6 +94,15 @@ A solution, or rather workaround, is to enable `visual-line-mode' for text-modes
 
 I find this superior to enabling `visual-line-mode' globally, because I prefer the old behavior when editing code or configuration files.
 
+[new]
+
+
+The only thing that's bothering me about VisualLineMode is that I can't visually discern whether there is an actual newline at the end of a displayed line or not. I have to either disable VisualLineMode temporarily or glance at the line number while navigating through the file. This is especially cumbersome if some paragraphs are filled and some not.
+
+I think a neat solution would be if VisualLineMode also used the fringe to mark wrapped lines. Is there a way to achieve that?
+
+-- [[Anonymous]]
+
 ----
 CategoryEditing
 CategoryFilling
