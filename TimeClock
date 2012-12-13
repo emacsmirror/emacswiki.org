@@ -24,6 +24,12 @@ With timeclock-x (as with timeclock) when you clock-in you will be asked for the
 Oddly enough neither timeclock nor timeclock-x have (at present) any features to sum up the number of hours you spent on different projects.  I wrote up some code of my own (in perl, with elisp wrappers) to generate a simple summary report: 
 http://obsidianrook.com/codelife/timetrack.html
 
+Another solution for generating reports is https://metacpan.org/module/timeclock.pl - another perl script, which can be installed using:
+
+    $ cpan App::TimeClock
+
+Source is also available: https://github.com/soren/App-TimeClock
+
 Note, there are some gotchas with running timeclock-x.el: you may have problems if you haven't created the file: ~/.timeclock/default.log, and you may find that you're better off if you don't try to turn on the modeline features until there are some time periods clocked into that file.  That is to say, don't use this at first:
 ::  (timeclock-modeline-display 1) 
 
