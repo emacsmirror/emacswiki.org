@@ -5,7 +5,7 @@ Welcome to my homepage.  My name is Xue Fuqiao.  English is not my native langua
 I've been an [[Emacsite]] since 2009 and began to write programs
 in EmacsLisp since 2011.  Started with [[XEmacs]], switched to
 [[SXEmacs]], back to XEmacs, then to GuileEmacs, and now I'm using Emacs.  I prefer to learn new things from reference
-manuals, instead of tutorials.  Currently I use Emacs on a laptop with a ColemakKeyboard.
+manuals, instead of tutorials.  Currently I use Emacs on an old laptop with a ColemakKeyboard.  My favorite font is [http://www.proggyfonts.com ProggyTiny].
 
 Many thanks to the people who contributed or are contributing to Emacs, [[XEmacs]] and EmacsWiki.  My daily life and work becomes very interesting.
 
@@ -150,7 +150,7 @@ Coming soon.
 * Implement multithreaded features in Emacs.
 * Implement a EmacsLisp library that generates XPMs dynamically.
 
-= Comment on Wish List =
+= Comments =
 It looks like you have a lot of work to do! It may be worth looking at the clx package for Common Lisp to see if it could be ported to Elisp. It would be cool to be able to display an X-window in an Emacs window. One problem with doing this sort of thing properly is that, unlike most versions of Common Lisp, Elisp isn't (yet?) multi-threaded. I have a feeling that it would take a lot of work to convert it. One thing that might be possible is to build a clone of Elisp on top of Common Lisp I don't know how efficient that would be. But it would require that all Elisp code works in a lexical-binding environment. If it could be done you would get multi-threading for free and such things as the clx library for manipulating X.
 
 ----
