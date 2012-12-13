@@ -1,0 +1,106 @@
+
+
+== Library Information ==
+/extend-dnd.el/ --- R drag and Drop
+
+* <b>Filename </b> --  [[extend-dnd.el]]
+* <b>Description </b> --  R Drag and Drop
+* <b>Author </b> --  Matthew L. Fidler
+* <b>Maintainer </b> --  Matthew L. Fidler
+* <b>Created </b> --  Thu Feb  9 09:37:32 2012 (-0600)
+* <b>Version </b> --  0.2
+* <b>Last-Updated </b> --  Fri Feb 10 20:59:30 2012 (-0600)
+* <b>By </b> --  Matthew L. Fidler
+* <b>Update # </b> --  52
+* <B>URL </B> --  https://github.com/mlf176f2/extend-dnd
+* <b>Keywords </b> --  EXTEND, Drag and Drop
+* <b>Compatibility </b> --  Tested with Emacs 24.
+
+== Possible Dependencies ==
+
+`assoc', `backquote', `button', `bytecomp', `cconv', `cl',
+`dropdown-list', `easymenu', `help-fns', `help-mode',
+`macroexp', `view', `warnings', `yasnippet', `yasnippet-bundle'.
+
+== Introduction ==
+I would like to drag files onto a ESS buffer and write the appropriate
+code.  Enter Extend drag and drop.
+== Installation ==
+To install, put the <tt>extend-dnd.el</tt> somewhere in your load path, and add
+the following lines to your startup file, usually <tt>~/.emacs</tt>
+
+{{{
+(require 'extend-dnd)
+(extend-dnd-activate)
+}}}
+== Status and Future ==
+Currently it only supports a few modes and extensions, but it is extendable.
+== Working with Yasnippets ==
+If you want extend-dnd to expand yasnippets based on the file name,
+make sure that <tt>yas/wrap-around-region</tt> is set to be <tt>'t</tt> or <tt>'cua</tt>.
+
+After you define a snippet in the major mode you are working with, and put
+the file name as `yas/selected-text'.  For example with R csv files
+you could define
+
+<pre>
+# -*- mode: snippet -*-
+# name: Load CSV
+# key: csv
+# --
+${1:$(concat "dat." (replace-regexp-in-string "^[.]" "" (replace-regexp-in-string "[.]$" "" (replace-regexp-in-string "[^A-Za-z.0-9]+" "." (file-name-sans-extension (file-name-nondirectory yas/text)) t t))))} <- read.csv("${1:`yas/selected-text`}");
+
+</pre>
+
+Then once this has been defined press <tt>C-cC-d</tt> to add the extension to
+the drag and drop list. 
+
+The extension will be expanded based on the <tt>key</tt> value.  Therefore,
+if you want more than one possible action for a particular file, give
+it the same key.
+
+For example, if you want the possibility to write to the csv you
+dragged in, you may wish to have the snippet:
+
+<pre>
+# -*- mode: snippet -*-
+# name: Write csv
+# key: csv
+# --
+write.csv(d,"${1:`yas/selected-text`}");
+
+</pre>
+
+== Wish List/TODO ==
+=== TODO Support dired mode ===
+=== TODO Support inferior processes. ===
+=== TODO Allow generic Yasnippet expansion by key name (like dnd_csv will automatically do drag and drop for csv files) ===
+== Functions ==
+=== Interactive Functions ===
+
+=== Internal Functions ===
+== Variables ==
+=== Customizable Variables ===
+
+==== extend-dnd-dirs ====
+Drag and Drop Support for Directories.  Will process each file in the directory.
+
+==== extend-dnd-ess-supported-files ====
+Extend Drag and Drop supported files in Emacs Speaks Statistics
+
+==== extend-dnd-relative ====
+Use a relative directory.
+
+==== extend-dnd-supported-files ====
+Extend Drag and Drop supported files in generic modes, other than <tt>ess-mode</tt>
+
+=== Internal Variables ===
+
+==== extend-dnd-active ====
+Determines if EXTEND drag and drop is active.
+== History ==
+
+* <b>13-Dec-2012 </b> --   Use org-readme to publish  (Matthew L. Fidler)
+
+
+This was generated with OrgReadme.  On updating the library, this page is likely to be replaced with updated content.
