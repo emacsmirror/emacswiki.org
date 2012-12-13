@@ -94,7 +94,17 @@ etc. to search for it.  This is controlled by [[user option]] '''`isearchp-mouse
 
 * '''[[SecondarySelection#secondary-sel.el|Secondary Selection enhancements]]'''
 
+== Searching for unicode characters with IsearchPlus when IdoUbiquitous is enabled. ==
 
+In Emacs 24.2.1, and maybe other versions, if you use IsearchPlus with Ido Ubiquitous (see: InteractivelyDoThings) enabled, you find that you can't search for unicode charaters and if you try an error is generated.  In Emacs 24.2.1 the solution is to disable Ido's advice around 'completing-read' when 'isearchp-read-unicode-char' is called.  This can be done by putting:
+
+<code>
+     (ido-ubiquitous-disable-in isearchp-read-unicode-char)
+</code>
+
+in your .emacs file.  When I first did this, I evaluated the form interactively and it didn't seem to fix the problem - I don't know why - but it worked next time I started up Emacs.
+
+--- [[Bernard Hurley]]
 
 ----
 CategorySearchAndReplace 
