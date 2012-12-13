@@ -5,7 +5,7 @@
 ;; Author: Matthew Fidler, Nathaniel Cunningham
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Mon Oct 18 17:06:07 2010 (-0500)
-;; Version: 0.10
+;; Version: 0.11
 ;; Last-Updated: Thu Mar  1 09:02:56 2012 (-0600)
 ;;           By: Matthew L. Fidler
 ;;     Update #: 659
@@ -51,6 +51,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 13-Dec-2012    Matthew L. Fidler  
+;;    Last-Updated: Thu Mar  1 09:02:56 2012 (-0600) #659 (Matthew L. Fidler)
+;;    Added Bug fix for coloring.  Made the selected tab match the default
+;;    color in the buffer.  Everything else is grayed out.
 ;; 10-Dec-2012    Matthew L. Fidler  
 ;;    Last-Updated: Thu Mar  1 09:02:56 2012 (-0600) #659 (Matthew L. Fidler)
 ;;    Took out a statement that may fix the left-scrolling bug?
@@ -72,7 +76,7 @@
 ;;    bug-fix for setting tabbar colors every time a frame opens.  Also
 ;;    added a bug fix for right-clicking a frame that is not associated with
 ;;    a buffer.
-;; 1-Mar-2012    Matthew L. Fidler  
+;; 1-Mar-2012    Matthew L. Fidler
 ;;    Last-Updated: Thu Mar  1 08:38:09 2012 (-0600) #656 (Matthew L. Fidler)
 ;;    Will not change tool-bar-mode in Mac.  It causes some funny
 ;;    things to happen.
@@ -293,16 +297,17 @@
       (setq ret (concat "#"
                         (mapconcat
                          (lambda(val)
-                           (format "%02X" (* (/ val 65535) 255)))
-                         (color-values color) ""))))
+                           (format "%02X" (* val 255)))
+                         (color-name-to-rgb color) ""))))
      (t (setq ret nil)))
     (symbol-value 'ret)))
 
 (defun tabbar-install-faces (&optional frame)
   "Installs faces for a frame."
+  (interactive)
   (copy-face 'mode-line 'tabbar-default frame)
-  (copy-face 'mode-line-buffer-id 'tabbar-selected frame)
-  (copy-face 'mode-line-inactive 'tabbar-unselected frame)
+  (copy-face 'default 'tabbar-selected frame)
+  (copy-face 'shadow 'tabbar-unselected frame)
   
   (copy-face 'mode-line-buffer-id 'tabbar-selected-highlight frame)
   (copy-face 'mode-line-inactive 'tabbar-unselected-highlight frame)
