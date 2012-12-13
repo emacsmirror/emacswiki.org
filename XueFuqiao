@@ -9,8 +9,7 @@ manuals, instead of tutorials.  Currently I use Emacs on a laptop with a Colemak
 
 Many thanks to the people who contributed or are contributing to Emacs, [[XEmacs]] and EmacsWiki.  My daily life and work becomes very interesting.
 
-I'm a software developer and software freedom activist.  And I’m
-currently a student of [http://www.ncut.edu.cn NCUT].  My major
+I’m currently a student of [http://www.ncut.edu.cn NCUT].  My major
 is Communication Engineering.  Feel free to ask anything about Emacs :)
 
 I'm a [http://www.fsf.org/free-software-supporter/ Free Software
@@ -72,7 +71,7 @@ Started physiotherapy on June, 2012.
 
 * My other car is a cdr. 
 
-== My Init Files ==
+== My Init Files (It's a mess currently) ==
 https://github.com/xfq/xfq-emacs-init-files
 
 == My ~/.Xdefaults ==
