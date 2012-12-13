@@ -8,8 +8,8 @@ A first version of a native port was released August 2012.  See https://github.c
 This is known to work, but you need to get root access to your tablet and remove Android.
 See below for some experiences with particular tablets.
 
-===Keep Android, root your tablet, install Linux and Emacs in a chroot jail, run Emacs from an Android shell client===
-For a Linux and Emacs environment in a chrooted loopback filesystem, see [http://www.carcosa.net/jason/blog/2012/Jul/19 Running Emacs on an Android tablet]. Android apps such as Hacker's Keyboard (with Ctrl, etc. keys) can be used with Emacs in this way.
+===Keep Android, install Linux and Emacs in a chroot jail, run Emacs from an Android shell client===
+For a Linux and Emacs environment in a chrooted loopback filesystem on a rooted tablet, see [http://www.carcosa.net/jason/blog/2012/Jul/19 Running Emacs on an Android tablet]. Android apps such as Hacker's Keyboard (with Ctrl, etc. keys) can be used with Emacs in this way.
 
 ===Don't run Emacs, just use a SSH client to connect to a server which runs Emacs===
 This is by far the easiest and fastest way. It does not require uninstalling Android, and Emacs will run at normal speed.
