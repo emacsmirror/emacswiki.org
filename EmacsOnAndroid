@@ -2,20 +2,22 @@ This is about installing Emacs into an Android device. See GoogleAndroid for tip
 
 == Introduction: ways to run Emacs on Android devices ==
 Some of them are hypothetical.
+
 ===Native port (installable Android application)===
-A first version of a native port was released August 2012.  See https://github.com/zielmicha/emacs-android for the github repository, and https://play.google.com/store/apps/details?id=com.zielm.emacs for the playstore link.
-===Remove Android, install another GNU/Linux, install Emacs there===
-This is known to work, but you need to get root access to your tablet and remove Android.
-See below for some experiences with particular tablets.
+A first version of a native port was released August 2012. Quickly installable like any other Android app, with no need to root the mobile device. See [http://play.google.com/store/apps/details?id=com.zielm.emacs Google Play: Emacs], and [http://github.com/zielmicha/emacs-android GitHub: zielmicha/emacs-android].
 
 ===Keep Android, install Linux and Emacs in a chroot jail, run Emacs from an Android shell client===
 For a Linux and Emacs environment in a chrooted loopback filesystem on a rooted tablet, see [http://www.carcosa.net/jason/blog/2012/Jul/19 Running Emacs on an Android tablet]. Android apps such as ConnectBot shell client and Hacker's Keyboard (including Ctrl, etc. keys) can be used with Emacs in this way.
+
+===Remove Android, install another GNU/Linux, install Emacs there===
+This is known to work, but you need to get root access to your tablet and remove Android.
+See below for some experiences with particular tablets.
 
 ===Don't run Emacs, just use a SSH client to connect to a server which runs Emacs===
 This is by far the easiest and fastest way. It does not require uninstalling Android, and Emacs will run at normal speed.
 
 You could also use VNC if you need graphics.
-===Or even… use other programmer editor, and simulate Emacs behaviour there===
+===Or evenâ¦ use other programmer editor, and simulate Emacs behaviour there===
 There are libre editors which can be extended to use Emacs key bindings, for instance:
 * Terminal IDE: https://play.google.com/store/apps/details?id=com.spartacusrex.spartacuside&hl=en
 
