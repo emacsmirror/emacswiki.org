@@ -32,5 +32,8 @@ I'm working on more conscious documentation, and, of course, that is the library
 [new:DrewAdams:2012-12-12 22:54 UTC]
 I, for one, am very glad you're working on this.  Good luck!  This would be a great addition to Emacs itself.  Have you already signed papers for contributing to GnuEmacs, or if not would you consider doing so?  -- DrewAdams
 
+[new:wvxvw:2012-12-13 10:59 UTC]
+I've written to MELPA maintainers and will try to get the code installable through their repository. I've not talked to FSF because... well, I think it's a bit too early :) it would be good to see the uses of the package and to roll it for at least one major version update before submitting it, methinks. OK, I actually need to get to finishing some stuff about it, so, back to work! :) -- wvxvw
+
 ----
 CategoryExtensions
