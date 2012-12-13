@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 21.0
-;; Last-Updated: Sun Dec  9 20:57:37 2012 (-0800)
+;; Last-Updated: Wed Dec 12 22:41:26 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 1408
+;;     Update #: 1409
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/emacs/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -273,6 +273,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2012/12/12 dadams
+;;     Bind C-x and C-x 8 to nil in isearch-mode-map, for Emacs 23.
 ;; 2012/12/09 dadams
 ;;     Added: Macro isearchp-use-new-search-string (Emacs 22+) - factored from isearch-edit-string.
 ;;            isearchp-read-unicode-char (Emacs 23+).
@@ -652,6 +654,8 @@ outside of Isearch."
            (not (lookup-key isearch-mode-map [C-M-tab])))
   (define-key isearch-mode-map [C-M-tab]       'isearch-complete))
 (when (> emacs-major-version 22)
+  (define-key isearch-mode-map "\C-x"          nil)
+  (define-key isearch-mode-map "\C-x8"         nil)
   (define-key isearch-mode-map "\C-x8\r"       'isearchp-read-unicode-char))
 
 (when (and (eq system-type 'windows-nt) ; Windows uses M-TAB for something else.
