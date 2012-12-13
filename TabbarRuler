@@ -8,7 +8,7 @@
 * <b>Author </b> --  Matthew Fidler, Nathaniel Cunningham
 * <b>Maintainer </b> --  Matthew L. Fidler
 * <b>Created </b> --  Mon Oct 18 17:06:07 2010 (-0500)
-* <b>Version </b> --  0.10
+* <b>Version </b> --  0.11
 * <b>Last-Updated </b> --  Thu Mar  1 09:02:56 2012 (-0600)
 * <b>By </b> --  Matthew L. Fidler
 * <b>Update # </b> --  659
@@ -53,6 +53,11 @@ the left arrow is text instead of an image.
 <tt>(tabbar-context-menu)</tt>
 
 Pop up a context menu.
+
+==== tabbar-install-faces ====
+<tt>(tabbar-install-faces &optional FRAME)</tt>
+
+Installs faces for a frame.
 
 ==== tabbar-popup-bz2 ====
 <tt>(tabbar-popup-bz2)</tt>
@@ -116,11 +121,6 @@ Pass mouse click events on a tab to <tt>tabbar-click-on-tab</tt>.
 <tt>(tabbar-hex-color COLOR)</tt>
 
 Gets the hexadecimal value of a color
-
-==== tabbar-install-faces ====
-<tt>(tabbar-install-faces &optional FRAME)</tt>
-
-Installs faces for a frame.
 
 ==== tabbar-popup-menu ====
 <tt>(tabbar-popup-menu)</tt>
@@ -199,6 +199,7 @@ Function to call to create a new buffer in tabbar-mode.  Optional single
 argument is the MODE for the new buffer.
 == History ==
 
+* <b>13-Dec-2012 </b> --   Added Bug fix for coloring. Made the selected tab match the default color in the buffer. Everything else is grayed out. (Matthew L. Fidler)
 * <b>10-Dec-2012 </b> --   Took out a statement that may fix the left-scrolling bug? (Matthew L. Fidler)
 * <b>10-Dec-2012 </b> --   Added package-menu-mode to the excluded tabbar-ruler fight modes. (Matthew L. Fidler)
 * <b>07-Dec-2012 </b> --   Will no longer take over editing of org source blocks or info blocks. (Matthew L. Fidler)
