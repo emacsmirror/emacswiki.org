@@ -60,13 +60,14 @@
   63.819    20.309    "ams"        # ams
   48.14     11.65     "anaran"     # AdrianAichner
   12.96644  77.64893  "aniline"    # AnilNarayanan
+  64.144930 -21.952788 "avar"      # avar
   59.75     17.49     "bkhl"       # bkhl
   34.06878 -118.35516 "blais"      # MartinBlais
   42.7523   71.5826   "bobd"       # BobDiGrazia
   32.312   -106.778   "bpalmer"    # BrianPalmer
   35.28    -78.63     "bpt"        # BtTempleton
   51.30    -0.7       "bz_g"       # BastienGuerry
-  42.9086 -78.8213     "quotemstr"  # DanielColascione
+  45.41202  11.89375  "carlesso"   # carlesso
   49.2465  -123.1771  "cgray"      # ChrisGray
   30.605   -96.310    "chaosii"    # YixinCao 壞人
   52.23    04.54      "credmp"     # ArjenWiersma
@@ -116,12 +117,12 @@
   52.50     13.35     "mulligan"   # DavidHansen
   41.6161  -86.1361   "mwolson"    # MichaelOlson
   64.1353   -21.8952  "myrkraverk" # MyrkraVerk
-  64.144930 -21.952788 "avar"      # avar
   43.3      -8.38     "nebris"     # nebris
   47.323204 5.04122   "nebu"       # DanielDehennin
  -25.4      49.2      "njsf"       # NelsonFerreira
   40.9      73.8      "njsf"       # NelsonFerreira
   47.66   -122.34     "offby1"     # EricHanchrow
+  41.4300   75.6438   "om"         # OtherMichael
   50.49     12.55     "perdix"     # MartinKuehl
   38.0010   23.4355   "pgas"       # PierreGaston
   38.9     -77.0      "phf"        # [[phf]]
@@ -129,6 +130,7 @@
   25.001714 121.473652 "plasma"    # WeiHonChen
   56.68    -122.47    "pstickne"   # PaulStickney
   30.3516  -97.7324   "qbert"      # Charlie
+  42.9086 -78.8213     "quotemstr"  # DanielColascione
   28.4      77.2      "rakesh"     # RakeshPandit
   22.56972  88.36972  "rishi"      # DebarshiRay
   64.104751 -21.883779 "rkjaran"    # RóbertKjaran
@@ -151,13 +153,12 @@
   40.027  -105.267    "tromey"     # TomTromey
   50.3641    7.6056   "tsdh"       # TassiloHorn
   50.07      8.41     "utis"       # OliverScholz
-  41.4300   75.6438   "om"         # OtherMichael
   43.43     10.23     "vds"        # vds
   37.4183  -122.0709  "xahlee"     # XahLee 李杀
+  39.9293  116.2065   "xfq"        # XueFuqiao
   45.28    -73.45     "yesod"      # JeanPhilippeTheberge
   32.49     34.59     "yrk"        # yrk
   49.13      4.1      "zeDek"      # XavierMaillard
   55.016667 82.933333 "zeliboba"   # zeliboba
  -33.517   -70.767    "zeus"       # zeus
   45.08333 -64.36667  "zsd"        # zsd
-  45.41202  11.89375  "carlesso"   # carlesso
