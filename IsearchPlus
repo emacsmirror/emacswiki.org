@@ -102,9 +102,7 @@ In Emacs 24.2.1, and maybe other versions, if you use IsearchPlus with Ido Ubiqu
      (ido-ubiquitous-disable-in isearchp-read-unicode-char)
 </code>
 
-in your .emacs file.  When I first did this, I evaluated the form interactively and it didn't seem to fix the problem - I don't know why - but it worked next time I started up Emacs.
-
---- [[Bernard Hurley]]
+in your .emacs file.  When I first did this, I evaluated the form interactively and it didn't seem to fix the problem - I don't know why - but it worked next time I started up Emacs. --- [[Bernard Hurley]]
 
 ----
 CategorySearchAndReplace 
