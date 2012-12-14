@@ -5,7 +5,7 @@
 ;; Author: Matthew Fidler, Nathaniel Cunningham
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Mon Oct 18 17:06:07 2010 (-0500)
-;; Version: 0.12
+;; Version: 0.13
 ;; Last-Updated: Thu Mar  1 09:02:56 2012 (-0600)
 ;;           By: Matthew L. Fidler
 ;;     Update #: 659
@@ -51,6 +51,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 14-Dec-2012    Matthew L. Fidler  
+;;    Last-Updated: Thu Mar  1 09:02:56 2012 (-0600) #659 (Matthew L. Fidler)
+;;    Memoized the tabbar images to speed things up
 ;; 14-Dec-2012    Matthew L. Fidler  
 ;;    Last-Updated: Thu Mar  1 09:02:56 2012 (-0600) #659 (Matthew L. Fidler)
 ;;    Upload to Marmalade 
@@ -335,6 +338,48 @@
 
 (tabbar-install-faces)
 
+
+;; Taken from powerline
+
+(defun tabbar-create-or-get-powerline-cache ()
+  "Return a frame-local hash table that acts as a memoization
+cache for powerline. Create one if the frame doesn't have one
+yet."
+  (or (frame-parameter nil 'powerline-cache)
+      (let ((table (make-hash-table :test 'equal)))
+        ;; Store it as a frame-local variable
+        (modify-frame-parameters nil `((powerline-cache . ,table)))
+        table)))
+
+;; from memoize.el @ http://nullprogram.com/blog/2010/07/26/
+(defun tabbar-memoize (func)
+  "Memoize FUNC.
+If argument is a symbol then install the tabbar-memoized function over
+the original function.  Use frame-local memoization."
+  (typecase func
+    (symbol (fset func (tabbar-memoize-wrap-frame-local (symbol-function func))) func)
+    (function (tabbar-memoize-wrap-frame-local func))))
+
+(defun tabbar-memoize-wrap-frame-local (func)
+  "Return the tabbar-memoized version of FUNC.  The memoization cache is
+frame-local."
+  (let ((cache-sym (gensym))
+        (val-sym (gensym))
+        (args-sym (gensym)))
+    `(lambda (&rest ,args-sym)
+       ,(concat (documentation func) "\n(tabbar-memoized function)")
+       (let* ((,cache-sym (tabbar-create-or-get-powerline-cache))
+              (,val-sym (gethash ,args-sym ,cache-sym)))
+         (if ,val-sym
+             ,val-sym
+           (puthash ,args-sym (apply ,func ,args-sym) ,cache-sym))))))
+
+(defun tabbar-reset ()
+  "Reset memoized functions."
+  (interactive)
+  (tabbar-memoize 'tabbar-ruler-tab-separator-image)
+  (tabbar-memoize 'tabbar-ruler-image))
+(tabbar-reset)
 
 (defun tabbar-ruler-tab-separator-image (face1 face2 &optional face3 next-on-top slope height)
   "Creates a Tabbar Ruler Separator Image.
