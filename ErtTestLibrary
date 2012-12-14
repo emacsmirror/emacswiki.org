@@ -1,10 +1,7 @@
 '''ERT''' is an '''E'''macs Lisp library for '''r'''egression/unit '''t'''esting. It is now included in Emacs [BzrForEmacsCasualDevs trunk], but can still be retrieved from its [http://github.com/ohler/ert old repository].
 
-For examples of how to write tests with ERT, take a look at its [http://github.com/ohler/ert/tree/bc51e3e8121d51dc88618847f0958e7ec832c7d2/doc/misc Texinfo documentation], or the online manual [http://www.gnu.org/software/emacs/manual/ert.html here], or at ERT's own tests in ##ert-tests.el## at the above URL.
-
-== Discussion ==
-
-LennartBorgman has written ##ert2.el## ("additions to ##ert.el##"), which contains functions for emulating the command loop and setting up a file/buffer to play with. It was distributed with [[NxhtmlMode|nXhtml]], but has since been integrated into ERT.
+For examples of how to write tests with ERT, take a look at the manual in [[Info]], ##C-h
+i m ert RET##, or [http://www.gnu.org/software/emacs/manual/ert.html read the manual online], or look at [http://repo.or.cz/w/emacs.git/blob/HEAD:/test/automated/ert-tests.el ERT's own tests].
 
 [new]
 Lisp:ert-expectations.el translates EmacsLispExpectations syntax into ERT. You can use simple EmacsLispExpectations code in ERT environment.  -- [[rubikitch]]
