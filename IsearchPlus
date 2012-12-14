@@ -107,6 +107,23 @@ etc. to search for it.  This is controlled by [[user option]] '''`isearchp-mouse
 
 * '''[[SecondarySelection#secondary-sel.el|Secondary Selection enhancements]]'''
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 == Searching for unicode characters with IsearchPlus when IdoUbiquitous is enabled. ==
 
 In Emacs 24.2.1, and maybe other versions, if you use IsearchPlus with Ido Ubiquitous (see: InteractivelyDoThings) enabled, you find that you can't search for unicode charaters and if you try an error is generated.  In Emacs 24.2.1 the solution is to disable Ido's advice around `completing-read' when `isearchp-read-unicode-char' is called.  This can be done by putting:
@@ -125,7 +142,13 @@ Ido seems to work by advising `completing-read' and advising various functions t
 
 
 [new:DrewAdams:2012-12-14 01:31 UTC]
-Thanks for the update. -- DrewAdams
+Thanks for the update.  FYI, I renamed `isearchp-read-unicode-char' to `isearchp-insert-char-by-name' in keeping with an updated definition and an expectation that Emacs 24.4 might include this (as `isearch-insert-char-by-name').
+
+I still have the same question as above:
+
+: [W]ould this be something that should be done automatically in '''Isearch+'''?  Or do you think some users would not want it done (in which case perhaps it should be an [[option]] or an Isearch toggle)?
+
+Please let me know, when you can.  It would be good to take care of this problem automatically, if that is appropriate.  Thx -- DrewAdams
 
 ----
 CategorySearchAndReplace 
