@@ -5,7 +5,7 @@
 ;; Author: Matthew Fidler, Nathaniel Cunningham
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Mon Oct 18 17:06:07 2010 (-0500)
-;; Version: 0.13
+;; Version: 0.14
 ;; Last-Updated: Thu Mar  1 09:02:56 2012 (-0600)
 ;;           By: Matthew L. Fidler
 ;;     Update #: 659
@@ -51,6 +51,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 14-Dec-2012    Matthew L. Fidler  
+;;    Last-Updated: Thu Mar  1 09:02:56 2012 (-0600) #659 (Matthew L. Fidler)
+;;    Fixed tabbar ruler so that it loads cold.
 ;; 14-Dec-2012    Matthew L. Fidler  
 ;;    Last-Updated: Thu Mar  1 09:02:56 2012 (-0600) #659 (Matthew L. Fidler)
 ;;    Memoized the tabbar images to speed things up
@@ -341,14 +344,14 @@
 
 ;; Taken from powerline
 
-(defun tabbar-create-or-get-powerline-cache ()
+(defun tabbar-create-or-get-tabbar-cache ()
   "Return a frame-local hash table that acts as a memoization
-cache for powerline. Create one if the frame doesn't have one
+cache for tabbar. Create one if the frame doesn't have one
 yet."
-  (or (frame-parameter nil 'powerline-cache)
+  (or (frame-parameter nil 'tabbar-cache)
       (let ((table (make-hash-table :test 'equal)))
         ;; Store it as a frame-local variable
-        (modify-frame-parameters nil `((powerline-cache . ,table)))
+        (modify-frame-parameters nil `((tabbar-cache . ,table)))
         table)))
 
 ;; from memoize.el @ http://nullprogram.com/blog/2010/07/26/
@@ -368,18 +371,11 @@ frame-local."
         (args-sym (gensym)))
     `(lambda (&rest ,args-sym)
        ,(concat (documentation func) "\n(tabbar-memoized function)")
-       (let* ((,cache-sym (tabbar-create-or-get-powerline-cache))
+       (let* ((,cache-sym (tabbar-create-or-get-tabbar-cache))
               (,val-sym (gethash ,args-sym ,cache-sym)))
          (if ,val-sym
              ,val-sym
            (puthash ,args-sym (apply ,func ,args-sym) ,cache-sym))))))
-
-(defun tabbar-reset ()
-  "Reset memoized functions."
-  (interactive)
-  (tabbar-memoize 'tabbar-ruler-tab-separator-image)
-  (tabbar-memoize 'tabbar-ruler-image))
-(tabbar-reset)
 
 (defun tabbar-ruler-tab-separator-image (face1 face2 &optional face3 next-on-top slope height)
   "Creates a Tabbar Ruler Separator Image.
@@ -641,6 +637,14 @@ Optional argument TYPE is a mouse click event type (see the function
           (funcall tabbar-select-tab-function
                    (tabbar-make-mouse-event type) tab)
           (tabbar-display-update))))))
+
+(defun tabbar-reset ()
+  "Reset memoized functions."
+  (interactive)
+  (tabbar-memoize 'tabbar-ruler-tab-separator-image)
+  (tabbar-memoize 'tabbar-ruler-image))
+(tabbar-reset)
+
 
 (defun tabbar-select-tab-callback (event)
   "Handle a mouse EVENT on a tab.
