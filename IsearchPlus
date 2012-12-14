@@ -111,5 +111,8 @@ Good to know, for Ido users.  If you investigate a bit more and figure out why i
 Ido seems to work by advising `completing-read' and advising various functions that call it.  Ido code doesn't look very clear to me, but I think that's what it does.  It also turns off this advice for functions that the Ido developers know about but haven't got round to advising. This is obviously going to cause problems if you write a function that calls `completing-read', as yours does, and are returned an unexpected value.  I can't imagine any users not wanting this fixed automatically.  My own thoughts are that since Ido makes this quite radical change to a core Emacs function, it's better if it's done automatically in that package.  I have emailed the developers to gently suggest this.  However I will look farther into it in case they don't want to do so.  -- [[Bernard Hurley]]
 
 
+[new:DrewAdams:2012-12-14 01:31 UTC]
+Thanks for the update. -- DrewAdams
+
 ----
 CategorySearchAndReplace 
