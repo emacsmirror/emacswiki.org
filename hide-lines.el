@@ -1,7 +1,9 @@
 ;;; hide-lines.el --- Commands for hiding lines based on a regexp
 ;; 
 ;;; Author: Mark Hulme-Jones <ture at plig cucumber dot net>
-;; 
+;;
+;;; Version: 20121214
+;;
 ;;; History
 ;; 
 ;; 24/03/2004 - Incorporate fix for infinite loop bug from David
@@ -33,6 +35,7 @@
 
 (add-to-invisibility-spec 'hl)
 
+;;;###autoload
 (defun hide-lines (&optional arg)
   "Hide lines matching the specified regexp.
 With prefix arg: Hide lines that do not match the specified regexp"
@@ -48,6 +51,7 @@ overlay onto the invisible-areas-list list"
     (setq invisible-areas-list (cons overlay invisible-areas-list))
     (overlay-put overlay 'invisible 'hl)))
 
+;;;###autoload
 (defun hide-non-matching-lines (search-text)
   "Hide lines that don't match the specified regexp."
   (interactive "MHide lines not matched by regexp: ")
@@ -67,6 +71,7 @@ overlay onto the invisible-areas-list list"
           (setq pos (re-search-forward search-text nil t))))
       (add-invisible-overlay start-position (point-max)))))
 
+;;;###autoload
 (defun hide-matching-lines  (search-text)
   "Hide lines matching the specified regexp."
   (interactive "MHide lines matching regexp: ")
@@ -86,6 +91,7 @@ overlay onto the invisible-areas-list list"
             (setq pos nil)
           (setq pos (re-search-forward search-text nil t)))))))
 
+;;;###autoload
 (defun show-all-invisible ()
   "Show all areas hidden by the filter-buffer command"
   (interactive)
@@ -94,3 +100,5 @@ overlay onto the invisible-areas-list list"
   (setq invisible-areas-list ()))
 
 (provide 'hide-lines)
+
+;;; hide-lines.el ends here
