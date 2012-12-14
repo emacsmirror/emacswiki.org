@@ -1,4 +1,4 @@
-'''ERT''' is an '''E'''macs Lisp library for '''r'''egression/unit '''t'''esting. It is now included in Emacs [BzrForEmacsCasualDevs trunk], but can still be retrieved from its [http://github.com/ohler/ert old repository].
+'''ERT''' is an '''E'''macs Lisp library for '''r'''egression/unit '''t'''esting. It is now included in Emacs, but can still be retrieved from its [http://github.com/ohler/ert old repository].
 
 For examples of how to write tests with ERT, take a look at the manual in [[Info]], ##C-h
 i m ert RET##, or [http://www.gnu.org/software/emacs/manual/ert.html read the manual online], or look at [http://repo.or.cz/w/emacs.git/blob/HEAD:/test/automated/ert-tests.el ERT's own tests].
