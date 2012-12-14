@@ -138,6 +138,26 @@ Removes compression extension, and possibly adds a new extension
 
 Returns the scroll-images
 
+==== tabbar-ruler-tab-separator-image ====
+=(tabbar-ruler-tab-separator-image FACE1 FACE2 &optional FACE3
+NEXT-ON-TOP SLOPE HEIGHT)=
+
+Creates a Tabbar Ruler Separator Image.
+FACE1 is the face to the left
+FACE2 is the face to the right
+FACE3 is the background face (optional)
+
+When FACE1 is nil and FACE2 is present this function creates the
+first tab image.
+
+When FACE2 is nil and FACE1 is present this function creates the
+last tab image.
+
+When FACE1 = FACE2, this creates a non-selected separator
+
+When FACE1 does not equal FACE2, this creates a selected separator
+
+
 ==== tabbar-ruler-tabbar-buffer-groups ====
 <tt>(tabbar-ruler-tabbar-buffer-groups)</tt>
 
@@ -199,6 +219,7 @@ Function to call to create a new buffer in tabbar-mode.  Optional single
 argument is the MODE for the new buffer.
 == History ==
 
+* <b>14-Dec-2012 </b> --   Fancy tabs (Matthew L. Fidler)
 * <b>13-Dec-2012 </b> --   Added Bug fix for coloring. Made the selected tab match the default color in the buffer. Everything else is grayed out. (Matthew L. Fidler)
 * <b>10-Dec-2012 </b> --   Took out a statement that may fix the left-scrolling bug? (Matthew L. Fidler)
 * <b>10-Dec-2012 </b> --   Added package-menu-mode to the excluded tabbar-ruler fight modes. (Matthew L. Fidler)
