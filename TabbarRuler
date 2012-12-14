@@ -8,7 +8,7 @@
 * <b>Author </b> --  Matthew Fidler, Nathaniel Cunningham
 * <b>Maintainer </b> --  Matthew L. Fidler
 * <b>Created </b> --  Mon Oct 18 17:06:07 2010 (-0500)
-* <b>Version </b> --  0.12
+* <b>Version </b> --  0.13
 * <b>Last-Updated </b> --  Thu Mar  1 09:02:56 2012 (-0600)
 * <b>By </b> --  Matthew L. Fidler
 * <b>Update # </b> --  659
@@ -104,6 +104,11 @@ Tab-bar rename
 
 Tab-bar save as
 
+==== tabbar-reset ====
+<tt>(tabbar-reset)</tt>
+
+Reset memoized functions.
+
 ==== tabbar-ruler-mouse-movement ====
 <tt>(tabbar-ruler-mouse-movement)</tt>
 
@@ -117,10 +122,30 @@ Pass mouse click events on a tab to <tt>tabbar-click-on-tab</tt>.
 
 === Internal Functions ===
 
+==== tabbar-create-or-get-powerline-cache ====
+<tt>(tabbar-create-or-get-powerline-cache)</tt>
+
+Return a frame-local hash table that acts as a memoization
+cache for powerline. Create one if the frame doesn't have one
+yet.
+
 ==== tabbar-hex-color ====
 <tt>(tabbar-hex-color COLOR)</tt>
 
 Gets the hexadecimal value of a color
+
+==== tabbar-memoize ====
+<tt>(tabbar-memoize FUNC)</tt>
+
+Memoize FUNC.
+If argument is a symbol then install the tabbar-memoized function over
+the original function.  Use frame-local memoization.
+
+==== tabbar-memoize-wrap-frame-local ====
+<tt>(tabbar-memoize-wrap-frame-local FUNC)</tt>
+
+Return the tabbar-memoized version of FUNC.  The memoization cache is
+frame-local.
 
 ==== tabbar-popup-menu ====
 <tt>(tabbar-popup-menu)</tt>
@@ -219,6 +244,7 @@ Function to call to create a new buffer in tabbar-mode.  Optional single
 argument is the MODE for the new buffer.
 == History ==
 
+* <b>14-Dec-2012 </b> --   Memoized the tabbar images to speed things up (Matthew L. Fidler)
 * <b>14-Dec-2012 </b> --   Upload to Marmalade  (Matthew L. Fidler)
 * <b>14-Dec-2012 </b> --   Fancy tabs (Matthew L. Fidler)
 * <b>13-Dec-2012 </b> --   Added Bug fix for coloring. Made the selected tab match the default color in the buffer. Everything else is grayed out. (Matthew L. Fidler)
