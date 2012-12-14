@@ -56,6 +56,10 @@ Extensions (using the category name from `finder-by-keyword'), are utility libra
 * [[Anaphora]] -- anaphoric macros providing implicit temp variables
 * [http://github.com/funkenblatt/combinators.el combinators.el]
 
+== Looping ==
+
+* [[Iterate]] -- an attempt at translating "iterate" Common Lisp library into Emacs Lisp
+
 == Concurrency ==
 
 * LaterDo -- Calling functions later, thus do some sort of fake threading
