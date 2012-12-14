@@ -51,6 +51,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 14-Dec-2012    Matthew L. Fidler  
+;;    Last-Updated: Thu Mar  1 09:02:56 2012 (-0600) #659 (Matthew L. Fidler)
+;;    Fancy tabs
 ;; 13-Dec-2012    Matthew L. Fidler  
 ;;    Last-Updated: Thu Mar  1 09:02:56 2012 (-0600) #659 (Matthew L. Fidler)
 ;;    Added Bug fix for coloring.  Made the selected tab match the default
@@ -64,7 +67,7 @@
 ;; 07-Dec-2012    Matthew L. Fidler  
 ;;    Last-Updated: Thu Mar  1 09:02:56 2012 (-0600) #659 (Matthew L. Fidler)
 ;;    Will no longer take over editing of org source blocks or info blocks.
-;; 07-Dec-2012    Matthew L. Fidler  
+;; 07-Dec-2012    Matthew L. Fidler
 ;;    Last-Updated: Thu Mar  1 09:02:56 2012 (-0600) #659 (Matthew L. Fidler)
 ;;    Changed the order of checking so that helm will work when you move a mouse.
 ;; 07-Dec-2012    Matthew L. Fidler  
@@ -309,11 +312,17 @@
   (copy-face 'default 'tabbar-selected frame)
   (copy-face 'shadow 'tabbar-unselected frame)
   
+  (set-face-attribute 'tabbar-unselected frame
+                      :background "gray50"
+                      :foreground "gray10")
+  
+  
   (copy-face 'mode-line-buffer-id 'tabbar-selected-highlight frame)
   (copy-face 'mode-line-inactive 'tabbar-unselected-highlight frame)
   
-  
-  (copy-face 'vertical-border 'tabbar-separator frame)
+  (set-face-attribute 'tabbar-separator frame
+                      :inherit 'tabbar-default
+                      :box nil)
   
   (set-face-attribute 'tabbar-button frame
                       :inherit 'tabbar-default
@@ -322,6 +331,98 @@
 (add-hook 'after-make-frame-functions 'tabbar-install-faces)
 
 (tabbar-install-faces)
+
+
+(defun tabbar-ruler-tab-separator-image (face1 face2 &optional face3 next-on-top slope height)
+  "Creates a Tabbar Ruler Separator Image.
+FACE1 is the face to the left
+FACE2 is the face to the right
+FACE3 is the background face (optional)
+
+When FACE1 is nil and FACE2 is present this function creates the
+first tab image.
+
+When FACE2 is nil and FACE1 is present this function creates the
+last tab image.
+
+When FACE1 = FACE2, this creates a non-selected separator
+
+When FACE1 does not equal FACE2, this creates a selected separator
+"
+  (let* ((h (or height (frame-char-height)))
+         (m (or slope 1.7))
+         (w (/ h m))
+         (i h)
+         x1 x2 e1 e2 e3 e4
+         (color1 (if face1 (tabbar-hex-color (face-attribute face1 :background)) "None"))
+         (color1-border (if face1 (tabbar-hex-color (face-attribute face1 :foreground)) "None"))
+         (color2 (if face2 (tabbar-hex-color (face-attribute face2 :background)) "None"))
+         (color2-border (if face2 (tabbar-hex-color (face-attribute face2 :foreground)) "None"))
+         (color-background (if face3 (tabbar-hex-color (face-attribute face3 :background)) "None"))
+         (ret "/* XPM */\nstatic char * "))
+    (cond
+     ((string= color1 color2)
+      (setq ret (concat ret "tabbar_ruler_default_separator")))
+     ((not face2)
+      (setq ret (concat ret "tabbar_ruler_separator_end")))
+     (t
+      (setq ret (concat ret "tabbar_ruler_separator_end_sel"))))
+    (setq ret (concat ret "[] = {\n"))
+    (setq ret (format "%s\"%s %s 5 1\",\n" ret (round w) (- h 1)))
+    ;; Now do colors
+    (setq ret (format "%s\"  c %s\",\n" ret color-background))
+    (setq ret (format "%s\". c  %s\",\n" ret color1))
+    (setq ret (format "%s\"> c %s\",\n" ret color1-border))
+    (setq ret (format "%s\"= c %s\",\n" ret color2))
+    (setq ret (format "%s\"+ c %s\"" ret color2-border))
+    (while (>= i 1)
+      (setq x1 (round (+ 1 (/ (- i 1) m))))
+      (setq x2 (round (/ (- (+ h m) i) m)))
+      (cond
+       ((and face2 (>= x1 x2))
+        (if (= x2 1)
+            (setq e1 "")
+          (setq e1 (make-string (- x2 1) (if (not face1)?  ?.))))
+        (if (= x1 x2)
+            (progn
+              (if (or next-on-top (not face1))
+                  (setq e2 "+")
+                (setq e2 ">"))
+              (setq e3 "")
+              (setq e4 ""))
+          (if face1
+              (setq e2 ">")
+            (setq e2 ""))
+          (setq e3 (make-string (- x1 x2) ? ))
+          (setq e4 "+"))
+        (if (= x1 w)
+            (setq e5 "")
+          (setq e5 (make-string (- (round w) x1) ?=))))
+       ((or (and face1 (not face2))
+            (and (< x1 x2) (not (or next-on-top (not face1)))))
+        (if (= x2 1)
+            (setq e1 "")
+          (setq e1 (make-string (- x2 1) ?.)))
+        (setq e2 ">")
+        (setq e3 "")
+        (setq e4 "")
+        (if (= x2 w)
+            (setq e5 "")
+          (setq e5 (make-string (- (round w) x2) (if (not face2) ?  ?=)))))
+       ((and (< x1 x2) (or next-on-top (not face1)))
+        (if (= x1 1)
+            (setq e1 "")
+          (setq e1 (make-string (- x1 1) (if (not face1) ?  ?.))))
+        (setq e2 "+")
+        (setq e3 "")
+        (setq e4 "")
+        (if (= x1 w)
+            (setq e5 "")
+          (setq e5 (make-string (- (round w) x1) ?=)))))
+      (setq ret (format "%s,\n\"%s%s%s%s%s\"" ret e1 e2 e3 e4 e5))
+      (setq i (- i 1)))
+    (setq ret (format "%s};" ret))
+    (symbol-value 'ret)))
 
 
 (defun* tabbar-ruler-image (&key type disabled color)
@@ -419,10 +520,10 @@ clr
             (cons "[-]" tabbar-home-button-disabled-image)))
 
 (setq tabbar-scroll-left-button-enabled-image
-      `((:type xpm :file ,(tabbar-ruler-image :type 'left))))
+      `((:type xpm :data ,(tabbar-ruler-image :type 'left))))
 
 (setq tabbar-scroll-left-button-disabled-image
-      `((:type xpm :file ,(tabbar-ruler-image :type 'left :disabled t))))
+      `((:type xpm :data ,(tabbar-ruler-image :type 'left :disabled t))))
 
 (setq tabbar-scroll-left-button
       (cons (cons " <" tabbar-scroll-left-button-enabled-image)
@@ -504,7 +605,79 @@ Pass mouse click events on a tab to `tabbar-click-on-tab'."
        event
        (get-text-property (cdr target) 'tabbar-action (car target))))))
 
-(defsubst tabbar-line-tab (tab)
+(defsubst tabbar-line-format (tabset)
+  "Return the `header-line-format' value to display TABSET."
+  (let* ((sel (tabbar-selected-tab tabset))
+         (tabs (tabbar-view tabset))
+         (padcolor (tabbar-background-color))
+         atsel elts
+         (separator-image (tabbar-find-image
+                           `((:type xpm :data
+                                    ,(tabbar-ruler-tab-separator-image
+                                      nil
+                                      (if (eq (car tabs) sel)
+                                          'tabbar-selected
+                                        'tabbar-unselected)))))))
+    ;; Initialize buttons and separator values.
+    (or tabbar-separator-value
+        (tabbar-line-separator))
+    (or tabbar-home-button-value
+        (tabbar-line-button 'home))
+    (or tabbar-scroll-left-button-value
+        (tabbar-line-button 'scroll-left))
+    (or tabbar-scroll-right-button-value
+        (tabbar-line-button 'scroll-right))
+    ;; Track the selected tab to ensure it is always visible.
+    (when tabbar--track-selected
+      (while (not (memq sel tabs))
+        (tabbar-scroll tabset -1)
+        (setq tabs (tabbar-view tabset)))
+      (while (and tabs (not atsel))
+        (setq elts  (cons (tabbar-line-tab (car tabs) (cdr tabs) sel) elts)
+              atsel (eq (car tabs) sel)
+              tabs  (cdr tabs)))
+      (setq elts (nreverse elts))
+      ;; At this point the selected tab is the last elt in ELTS.
+      ;; Scroll TABSET and ELTS until the selected tab becomes
+      ;; visible.
+      (with-temp-buffer
+        (let ((truncate-partial-width-windows nil)
+              (inhibit-modification-hooks t)
+              deactivate-mark ;; Prevent deactivation of the mark!
+              start)
+          (setq truncate-lines nil
+                buffer-undo-list t)
+          (apply 'insert (tabbar-line-buttons tabset))
+          (setq start (point))
+          (while (and (cdr elts) ;; Always show the selected tab!
+                      (progn
+                        (delete-region start (point-max))
+                        (goto-char (point-max))
+                        (apply 'insert elts)
+                        (goto-char (point-min))
+                        (> (vertical-motion 1) 0)))
+            (tabbar-scroll tabset 1)
+            (setq elts (cdr elts)))))
+      (setq elts (nreverse elts))
+      (setq tabbar--track-selected nil))
+    ;; Format remaining tabs.
+    (while tabs
+      (setq elts (cons (tabbar-line-tab (car tabs) (cdr tabs) sel) elts)
+            tabs (cdr tabs)))
+    ;; Cache and return the new tab bar.
+    (tabbar-set-template
+     tabset
+     (list (tabbar-line-buttons tabset)
+           (propertize "|"
+                       'display (tabbar-normalize-image separator-image))
+           (nreverse elts)
+           (propertize "%-"
+                       'face (list :background padcolor
+                                   :foreground padcolor)
+                       'pointer 'arrow)))
+    ))
+
+(defsubst tabbar-line-tab (tab &optional not-last sel)
   "Return the display representation of tab TAB.
 That is, a propertized string used as an `header-line-format' template
 element.
@@ -512,7 +685,24 @@ Call `tabbar-tab-label-function' to obtain a label for TAB."
   (let* ( (selected-p (tabbar-selected-p tab (tabbar-current-tabset)))
           (modified-p (buffer-modified-p (tabbar-tab-value tab)))
           (close-button-image (tabbar-find-image 
-                               `((:type xpm :data ,(tabbar-ruler-image :type 'close :disabled (not modified-p))))))
+                               `((:type xpm :data ,(tabbar-ruler-image :type 'close :disabled (not modified-p)
+                                                                       :color (if (eq tab sel)
+                                                                                  (face-attribute 'default :foreground)
+                                                                                "gray10"))))))
+          (separator-image (tabbar-find-image
+                            `((:type xpm :data
+                                     ,(tabbar-ruler-tab-separator-image
+                                       (if (eq tab sel)
+                                           'tabbar-selected
+                                         'tabbar-unselected)
+                                       (if not-last
+                                           (if (eq (car not-last) sel)
+                                               'tabbar-selected
+                                             'tabbar-unselected) nil)
+                                       nil
+                                       (if (and not-last
+                                                (eq (car not-last) sel))
+                                           t nil))))))
           (face (if selected-p
                     (if modified-p
                         'tabbar-selected-modified
@@ -521,13 +711,6 @@ Call `tabbar-tab-label-function' to obtain a label for TAB."
                       'tabbar-unselected-modified
                     'tabbar-unselected))))
     (concat
-     (propertize "[x]"
-                 'display (tabbar-normalize-image close-button-image 0)
-                 'face face
-                 'pointer 'hand
-                 'tabbar-tab tab
-                 'local-map (tabbar-make-tab-keymap tab)
-                 'tabbar-action 'close-tab)
      (propertize " " 'face face
                  'tabbar-tab tab
                  'local-map (tabbar-make-tab-keymap tab)
@@ -555,7 +738,16 @@ Call `tabbar-tab-label-function' to obtain a label for TAB."
                  'help-echo 'tabbar-help-on-tab
                  'face face
                  'pointer 'hand)
-     tabbar-separator-value)))
+     (propertize "[x]"
+                 'display (tabbar-normalize-image close-button-image 0)
+                 'face face
+                 'pointer 'hand
+                 'tabbar-tab tab
+                 'local-map (tabbar-make-tab-keymap tab)
+                 'tabbar-action 'close-tab)
+     (propertize "|"
+                 'display (tabbar-normalize-image separator-image))
+     )))
 
 (defface tabbar-selected-modified
   '((t
@@ -576,7 +768,7 @@ Call `tabbar-tab-label-function' to obtain a label for TAB."
   "Face for unselected, highlighted tabs."
   :group 'tabbar)
 
-(setq tabbar-separator '(0.25))
+
 
 (defface tabbar-selected-modified
   '((t
