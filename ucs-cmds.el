@@ -7,13 +7,13 @@
 ;; Copyright (C) 2011-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Oct  4 07:32:20 2011 (-0700)
 ;; Version: 23.0
-;; Last-Updated: Sat Oct  6 13:53:39 2012 (-0700)
+;; Last-Updated: Sat Dec 15 08:41:50 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 166
-;; URL: http://www.emacswiki.org/emacs-en/ucs-cmds.el
-;; Doc URL: http://emacswiki.org/emacs/UnicodeEncoding
+;;     Update #: 172
+;; URL: http://www.emacswiki.org/ucs-cmds.el
+;; Doc URL: http://emacswiki.org/UnicodeEncoding
 ;; Keywords: unicode, characters, encoding, commands, ucs-names
-;; Compatibility: GNU Emacs 23.x
+;; Compatibility: GNU Emacs: 23.x, 24.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -127,6 +127,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/12/15 dadams
+;;     ucsc-insert: Raise error if CHARACTER is not characterp.
 ;; 2012/10/06 dadams
 ;;     ucsc-insert: Provided missing CHARACTER arg to insert-char.
 ;; 2012/06/01 dadams
@@ -194,6 +196,8 @@ hyphens (`-'), and the command names are lowercase."
 ;;
 ;; 3) Optional arg MSGP is added, and a confirmation message is shown.
 ;;
+;; 4) Better error message if input CHARACTER is not a Unicode character.
+;;
 (defun ucsc-insert (character &optional count inherit msgp)
   "Insert COUNT copies of CHARACTER of the given Unicode code point.
 Interactively, prompts for a Unicode character name or a hex number
@@ -232,6 +236,8 @@ command creation."
 	 (prefix-numeric-value current-prefix-arg)
 	 t
          t))
+  (unless (characterp character)        ; Protect `insert-char' from low-level err.
+    (error "No such Unicode character: `%s'" character))
   (let ((create-cmd-p  (< count 0)))
     (setq count  (abs count))
     (if (commandp 'insert-char)         ; Deal with the renaming this way.
