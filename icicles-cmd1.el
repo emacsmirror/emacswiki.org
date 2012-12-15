@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Dec 14 16:37:07 2012 (-0800)
+;; Last-Updated: Fri Dec 14 21:47:06 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 25285
+;;     Update #: 25293
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -286,7 +286,6 @@
 ;;    `icicle-default-buffer-names',
 ;;    `icicle-delete-file-or-directory', `icicle-describe-opt-action',
 ;;    `icicle-describe-opt-of-type-complete',
-;;    `icicle-descr-opt-of-type-apropos-complete-match',
 ;;    `icicle-execute-extended-command-1', `icicle-explore',
 ;;    `icicle-file-of-content-apropos-complete-match',
 ;;    `icicle-find-file-of-content-multi-complete',
@@ -487,7 +486,8 @@
   ;; icicle-transform-before-sort-p, icicle-use-candidates-only-once-alt-p,
   ;; icicle-whole-candidate-as-text-prop-p, icicle-variable-name-history
 (require 'icicles-fn)                   ; (This is required anyway by `icicles-mcmd.el'.)
-  ;; icicle-delete-dups, icicle-highlight-lighter, icicle-read-from-minibuf-nil-default
+  ;; icicle-delete-dups, icicle-highlight-lighter, icicle-multi-comp-apropos-complete-match,
+  ;; icicle-read-from-minibuf-nil-default
 
 
 ;; Byte-compiling this file, you will likely get some byte-compiler warning messages.
@@ -2747,11 +2747,15 @@ by default.  (`^G' here means the Control-g character, input using
 
 Remember that you can insert `icicle-list-join-string' using `C-M-j'.
 
-For this command, if you try to match TYPE using a regexp you will
-likely want to use `C-M-.' (at least once) to ensure that `.' in your
-input matches any character *including* a newline char.  This is
-particularly important for progressive completion, where your input
-definitely matches as a regexp (apropos completion).
+This command binds option `icicle-dot-string' to the value of
+`icicle-anychar-regexp' for the duration, which means that `.' in your
+input to this command matches any character, including a newline char.
+
+This is for convenience because `defcustom' type sexps are often
+multiline.  This is particularly important for progressive completion,
+where your input definitely matches as a regexp (apropos completion).
+If you do not want `.' to match newlines, use `C-M-.' during the
+command.
 
 Example use of progressive completion:
 
@@ -2844,11 +2848,12 @@ See also:
   ((prompt                                 "OPTION `C-M-j' TYPE: ") ; Bindings
    (icicle-multi-completing-p              t)
    (icicle-candidate-properties-alist      '((1 (face icicle-candidate-part))))
+   (icicle-dot-string                      icicle-anychar-regexp)
    ;; Bind `icicle-apropos-complete-match-fn' to nil to prevent automatic input matching
    ;; in `icicle-unsorted-apropos-candidates' etc., because `icicle-describe-opt-of-type-complete'
    ;; does everything.
    (icicle-apropos-complete-match-fn       nil)
-   (icicle-last-apropos-complete-match-fn  'icicle-descr-opt-of-type-apropos-complete-match)
+   (icicle-last-apropos-complete-match-fn  'icicle-multi-comp-apropos-complete-match)
    (icicle-candidate-help-fn               'icicle-describe-opt-action)
    ;; $$$ (icicle-highlight-input-completion-failure nil)
    (icicle-pref-arg                        current-prefix-arg))
@@ -2931,40 +2936,6 @@ This is used as the value of `minibuffer-completion-table'."
         result                          ; `all-completions', `test-completion'
       (try-completion                   ; `try-completion'
        strg (mapcar #'list result) (and pred  (lambda (ss) (funcall pred ss)))))))
-
-(defun icicle-descr-opt-of-type-apropos-complete-match (input option)
-  "Match function for progressive completion with `icicle-describe-option-of-type'.
-Return non-nil if the current multi-completion INPUT matches OPTION.
-OPTION is a multi-completion candidate, with first part name and
-second part type"
-  (let* ((name+type  (save-match-data (split-string input (regexp-quote icicle-list-join-string))))
-         (name       (or (car name+type)   ""))
-         (type       (or (cadr name+type)  ""))
-         (any        (concat icicle-dot-string "*"))
-         (len-any    (length any)))
-    (unless (and (>= (length name) len-any)  (string= any (substring name (- len-any))))
-      (setq name  (concat name any)))
-    (unless (or (string= "" type)  (and (>= (length type) len-any)  (string= any (substring type 0 len-any))))
-      (setq type  (concat any type)))
-    (string-match (concat name icicle-list-join-string type) option)))
-
-;;;###autoload (autoload 'icicle-describe-var-w-val-satisfying "icicles")
-(defun icicle-describe-var-w-val-satisfying (predicate variable &optional optionp)
-  "Describe a variable that satisfies a given predicate.
-Read a predicate sexp, then read the name of a variable whose value
-satisfies it.  Describe the variable using `describe-variable'.
-Completion is available for both reads.
-
-The predicate read must be a function symbol or lambda form that accepts
-the value of the variable as its (first) argument.
-
-Typically the predicate is a type predicate, such as `integerp', but
-it could be anything.  Instead of just `integerp', for example, it
-could be `(lambda (val) (and (integerp val)  (> val 5) (< val 15)))'.
-
-See also: `icicle-apropos-value', which matches names and values."
-  (interactive (icicle-read-args-w-val-satisfying "Describe variable" current-prefix-arg nil))
-  (describe-variable variable optionp))
 
 ;;;###autoload (autoload 'icicle-apropos-vars-w-val-satisfying "icicles")
 (defun icicle-apropos-vars-w-val-satisfying (predicate pattern &optional optionp)
