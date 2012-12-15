@@ -61,13 +61,24 @@ anything you like (including search for something different).
 Using '''`C-M-c'''' closes the recursive editing session and resumes
 the search (from the current position when you hit `C-M-c').
 
-* Highlighting of the mismatched portion of your search string. This is the portion that is removed if you do `C-g', or removed automatically if you use `M-k' (see next).  I added this feature to vanilla Emacs in release 23.1.
+* Highlighting of the mismatched portion of your search string. This is the portion that is removed if you do `C-g', or removed/replaced automatically if you use `M-k' (see next).  I added this feature to vanilla Emacs in release 23.1.
 
-[:isearchp-toggle-mismatch-removal]
-[:isearchp-mismatch-removal-flag]
-* Command and binding to toggle automatic removal of input portion
-that does not match, bound to `M-k'.  If you type characters that do
-not match, they are not added to the search string.
+[:isearchp-cycle-mismatch-removal]
+[:isearchp-drop-mismatch]
+* Command and binding to cycle automatic removal or replacement of the input portion
+that does not match, bound to '''`M-k''''.  Behavior
+is controlled by the value of option '''`isearchp-drop-mismatch'''':
+
+** `replace-last' -- Your current input ''replaces'' the last mismatched text.  You can always see your last input, even if it is a mismatch.  And it is available for editing using `M-e'.
+
+** `nil'  -- Your current input is ''appended'', even if the
+previous input has a mismatched portion.
+
+** anything else -- Your current input is ''ignored'' (removed) if it causes a mismatch.  The search string always has
+successful matches.
+
+
+
 
 [:isearch-toggle-word]
 * Command and binding to toggle (incremental) word search (from JuriLinkov): `isearch-toggle-word', bound to '''`M-w''''.
