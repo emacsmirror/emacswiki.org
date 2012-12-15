@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 21.0
-;; Last-Updated: Fri Dec 14 10:08:42 2012 (-0800)
+;; Last-Updated: Sat Dec 15 12:25:08 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 1659
+;;     Update #: 1688
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/emacs/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -58,21 +58,21 @@
 ;;    `isearchp-char-prop-backward-regexp',
 ;;    `isearchp-char-prop-forward',
 ;;    `isearchp-char-prop-forward-regexp',
+;;    `isearchp-cycle-mismatch-removal',
 ;;    `isearchp-fontify-buffer-now', `isearchp-init-edit',
 ;;    `isearchp-insert-char-by-name', `isearchp-open-recursive-edit'
 ;;    (Emacs 22+), `isearchp-put-prop-on-region',
 ;;    `isearchp-retrieve-last-quit-search',
 ;;    `isearchp-set-region-around-search-target',
-;;    `isearchp-sexp-symbol-or-char',
-;;    `isearchp-toggle-mismatch-removal', `isearchp-toggle-invisible',
+;;    `isearchp-sexp-symbol-or-char', `isearchp-toggle-invisible',
 ;;    `isearchp-toggle-regexp-quote-yank',
 ;;    `isearchp-toggle-set-region', `isearch-toggle-word',
 ;;    `isearchp-yank-sexp-symbol-or-char'.
 ;;
 ;;  User options defined here:
 ;;
-;;    `isearchp-initiate-edit-commands' (Emacs 22+),
-;;    `isearchp-mismatch-removal-flag', `isearchp-mouse-2-flag',
+;;    `isearchp-drop-mismatch', `isearchp-initiate-edit-commands'
+;;    (Emacs 22+), `isearchp-mouse-2-flag',
 ;;    `isearchp-regexp-quote-yank-flag', `isearchp-set-region-flag'.
 ;;
 ;;  Faces defined here:
@@ -112,6 +112,7 @@
 ;;  `isearch-message-prefix' - Highlight prompt keywords:
 ;;                             wrapped, regexp, word, multi
 ;;  `isearch-mouse-2'     - Respect `isearchp-mouse-2-flag'(Emacs 21+)
+;;  `isearch-printing-char' - Respect option `isearchp-drop-mismatch'
 ;;  `isearch-toggle-case-fold' - Show case sensitivity in mode-line.
 ;;                               Message.
 ;;  `isearch-toggle-word' - Message, and turn off regexp search.
@@ -135,7 +136,7 @@
 ;;    `C-x 8 RET'  `isearchp-insert-char-by-name' (Emacs 23+)
 ;;    `M-e'        `isearch-edit-string'
 ;;    `M-g'        `isearchp-retrieve-last-quit-search'
-;;    `M-k'        `isearchp-toggle-mismatch-removal'
+;;    `M-k'        `isearchp-cycle-mismatch-removal'
 ;;    `M-r'        `isearch-toggle-regexp'
 ;;    `M-w'        `isearch-toggle-word'
 ;;    `C-M-t'      `isearchp-char-prop-forward-regexp' (Emacs 23+)
@@ -239,12 +240,22 @@
 ;;
 ;;  * Highlighting of the mismatched portion of your search string in
 ;;    the minibuffer.  This is the portion that is removed if you do
-;;    `C-g', or removed automatically if you use `M-k' (see next).  I
-;;    added this feature to vanilla Emacs in release 23.1.
+;;    `C-g', or removed/replaced automatically if you use `M-k' (see
+;;    next).  I added this feature to vanilla Emacs in release 23.1.
 ;;
-;;  * Command and binding to toggle automatic removal of input portion
-;;    that does not match, bound to `M-k'.  If you type characters
-;;    that do not match, they are not added to the search string.
+;;  * Command and binding to cycle automatic removal or replacement of
+;;    input the portion that does not match, bound to `M-k'.  Behavior
+;;    is controlled by the value of option `isearchp-drop-mismatch':
+;;
+;;    `replace-last' - Your current input replaces the last mismatched
+;;                     text.  You can always see your last input, even
+;;                     if it is a mismatch.  And it is available for
+;;                     editing using `M-e'.
+;;    nil            - Your current input is appended, even if the
+;;                     previous input has a mismatched portion.
+;;    anything else  - Your current input is ignored if it causes a
+;;                     mismatch.  The search string always has
+;;                     successful matches.
 ;;
 ;;  * Command and binding to toggle (incremental) word search:
 ;;    `isearch-toggle-word', bound to `M-w'.
@@ -257,7 +268,7 @@
 ;;
 ;;    - `next', `prior' repeat the last Isearch forward and backward
 ;;      (easier than using the chords `C-s', `C-r'.
-;;    - `C-h' provides help on Isearch while isearching.  This library
+;;    - `C-h' provides help on Isearch while isearsching.  This library
 ;;      also redefines `isearch-mode-help' so that it lists all
 ;;      Isearch bindings and ends Isearch properly
 ;;    - `C-c' lets you toggle case-sensitivity while isearching.
@@ -295,6 +306,11 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2012/12/15 dadams
+;;     Added redefinition of isearch-printing-char.
+;;     Renamed/replaced: isearchp-toggle-mismatch-removal with isearchp-cycle-mismatch-removal,
+;;                       isearchp-mismatch-removal-flag   with isearchp-drop-mismatch.
+;;     isearchp-cycle-mismatch-removal, isearchp-drop-mismatch: Handle replace-last case.
 ;; 2012/12/13 dadams
 ;;     Advise: isearch-update (Emacs 20-23). 
 ;;     Added: isearchp-toggle-mismatch-removal, isearchp-mismatch-removal-flag,
@@ -600,11 +616,31 @@ and act on the buffer text."
     :group 'isearch-plus))
 
 ;;;###autoload
-(defcustom isearchp-mismatch-removal-flag nil
-  "*Non-nil means Remove the mismatched portion of the search string.
-You can toggle this with `isearchp-toggle-mismatch-removal', bound to
-`M-k' during isearch."
-  :type 'boolean :group 'isearch-plus)
+(defcustom isearchp-drop-mismatch nil
+  "*Non-nil means remove or replace a search-string mismatch.
+There are three possible values:
+
+`replace-last' - Replace the last mismatch in the search string with
+                 the latest input (e.g., replace the last typed char
+                 or last yanked text).
+nil            - Never remove mismatched text from the search string.
+anything else  - Always remove mismatched text from the search string.
+
+* Vanilla Isearch has the behavior of a nil value.
+
+* Non-nil, non-`replace-last' means the search string never contains
+  mismatched characters.
+
+* `replace-last' means you see only the latest mismatched input, and
+  it is available for editing, using \\<isearch-mode-map>`\\[isearch-edit-string]'.
+
+You can cycle among the three possible values using \
+`\\[isearchp-cycle-mismatch-removal]'."
+  :type '(choice
+          (const :tag "Replace last mismatch"  'replace-last)
+          (const :tag "Never remove mismatch"  nil)
+          (other :tag "Always remove mismatch" t))
+  :group 'isearch-plus)
 
 ;;;###autoload
 (defcustom isearchp-mouse-2-flag t
@@ -681,7 +717,7 @@ You can toggle this with `isearchp-toggle-set-region', bound to
 ;; This one is needed only for Emacs 20.  It is automatic after release 20.
 (define-key isearch-mode-map "\M-e"            'isearch-edit-string)
 (define-key isearch-mode-map "\M-g"            'isearchp-retrieve-last-quit-search)
-(define-key isearch-mode-map "\M-k"            'isearchp-toggle-mismatch-removal)
+(define-key isearch-mode-map "\M-k"            'isearchp-cycle-mismatch-removal)
 ;; This one is needed only for Emacs 20.  It is automatic after release 20.
 (define-key isearch-mode-map "\M-r"            'isearch-toggle-regexp)
 (define-key isearch-mode-map "\M-w"            'isearch-toggle-word)
@@ -749,16 +785,20 @@ This is used only for Transient Mark mode."
 ;;; Commands ---------------------------------------------------------
 
 ;;;###autoload
-(defun isearchp-toggle-mismatch-removal () ; Bound to `M-k' in `isearch-mode-map'.
-  "Toggle `isearchp-mismatch-removal-flag'."
+(defun isearchp-cycle-mismatch-removal () ; Bound to `M-k' in `isearch-mode-map'.
+  "Cycle option `isearchp-drop-mismatch'."
   (interactive)
-  (setq isearchp-mismatch-removal-flag  (not isearchp-mismatch-removal-flag))
-  (if isearchp-mismatch-removal-flag
+  (setq isearchp-drop-mismatch  (case isearchp-drop-mismatch
+                                  (replace-last  nil)
+                                  ((nil)         t)
+                                  (otherwise     'replace-last)))
+  (if (and isearchp-drop-mismatch  (not (eq 'replace-last isearchp-drop-mismatch)))
       (add-hook 'isearch-update-post-hook 'isearchp-remove-mismatch)
     (remove-hook 'isearch-update-post-hook 'isearchp-remove-mismatch))
-  (if isearchp-mismatch-removal-flag
-      (message "Automatic removal of mismatch input is now ON")
-    (message "Automatic removal of mismatch input is now OFF"))
+  (case isearchp-drop-mismatch
+    (replace-last  (message "Automatic REPLACEMENT of last mismatched input is now ON"))
+    ((nil)         (message "Automatic removal of mismatched input is now OFF"))
+    (otherwise     (message "Automatic removal of ALL mismatched input is now ON")))
   (sit-for 1)
   (isearch-update))
 
@@ -905,7 +945,7 @@ Bindings in Isearch minor mode:
 
   (defmacro isearchp-with-search-suspended (&rest body)
     "Exit Isearch mode, run BODY, and reinvoke the pending search.
-BODY can involve use of the minibuffer, including recursive minibuffers. @@@@@@@@@@ ??????
+BODY can involve use of the minibuffer, including recursive minibuffers.
 You can update the global isearch variables by setting new values to
 `isearch-new-string', `isearch-new-message', `isearch-new-forward',
 `isearch-new-word', `isearch-new-case-fold'."
@@ -1286,8 +1326,9 @@ Use `isearch-exit' to quit without signaling."
                (isearch-clean-overlays)
                (signal 'quit nil)))
     ;; If search is failing, or has an incomplete regexp, rub out until it is once more successful.
-    (while (or (not isearch-success)
-               (if (boundp 'isearch-error) isearch-error isearch-invalid-regexp))
+    (while (or (not isearch-success)  (if (boundp 'isearch-error)
+                                          isearch-error
+                                        isearch-invalid-regexp))
       (isearch-pop-state))
     (isearch-update)))
 
@@ -1349,6 +1390,26 @@ outside of Isearch."
   (isearch-yank-x-selection))
 
 
+;; REPLACE ORIGINAL in `isearch.el'.
+;;
+;; If `isearchp-drop-mismatch' is `replace-last' then remove the last mismatched input.
+;;
+(defun isearch-printing-char ()
+  "Add this ordinary printing character to the search string and search."
+  (interactive)
+  (when (eq isearchp-drop-mismatch 'replace-last)
+    (while (or (not isearch-success)  (if (boundp 'isearch-error)
+                                        isearch-error
+                                      isearch-invalid-regexp))
+      (isearch-pop-state)))
+  (let ((char last-command-event))
+    (if (= char ?\S-\ )
+	(setq char ?\  ))
+    (if current-input-method
+	(isearch-process-search-multibyte-characters char)
+      (isearch-process-search-char char))))
+
+
 ;; $$$$$$
 ;; (when (> emacs-major-version 21)        ; Emacs 22+
 ;;   (defun isearch-message (&optional c-q-hack ellipsis)
@@ -1372,6 +1433,7 @@ outside of Isearch."
 ;;         (put-text-property (match-beginning 0) (length m) 'face 'trailing-whitespace m))
 ;;       (setq m  (concat m (isearchp-message-suffix c-q-hack ellipsis)))
 ;;       (if c-q-hack m (let ((message-log-max nil)) (message "%s" m))))))
+
 
 
 ;; REPLACE ORIGINAL in `isearch.el'.
