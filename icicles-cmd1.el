@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Dec 12 13:50:41 2012 (-0800)
+;; Last-Updated: Fri Dec 14 16:37:07 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 25275
+;;     Update #: 25285
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -286,6 +286,7 @@
 ;;    `icicle-default-buffer-names',
 ;;    `icicle-delete-file-or-directory', `icicle-describe-opt-action',
 ;;    `icicle-describe-opt-of-type-complete',
+;;    `icicle-descr-opt-of-type-apropos-complete-match',
 ;;    `icicle-execute-extended-command-1', `icicle-explore',
 ;;    `icicle-file-of-content-apropos-complete-match',
 ;;    `icicle-find-file-of-content-multi-complete',
@@ -2744,6 +2745,27 @@ minibuffer, separated by `icicle-list-join-string', which is \"^G^J\",
 by default.  (`^G' here means the Control-g character, input using
 `C-h C-g'.  Likewise, for `^J'.)
 
+Remember that you can insert `icicle-list-join-string' using `C-M-j'.
+
+For this command, if you try to match TYPE using a regexp you will
+likely want to use `C-M-.' (at least once) to ensure that `.' in your
+input matches any character *including* a newline char.  This is
+particularly important for progressive completion, where your input
+definitely matches as a regexp (apropos completion).
+
+Example use of progressive completion:
+
+1. C-h C-o ici C-M-j choic S-TAB
+
+   That shows all options whose names are apropos-matched by `ici' and
+   whose types are matched by `choic'.
+
+2. S-SPC om C-M-j sexp
+
+   That limits the matches to options whose names also match `om' and
+   whose types also match `sexp'.'
+
+
 OPTION is a regexp that is matched against option names.
 
 Depending on the prefix arg, TYPE is interpreted as either of these:
@@ -2803,21 +2825,12 @@ input the default separator.
 For example, to match all Icicles options whose type matches `string'
 \(according to the prefix arg), use `S-TAB' with this input:
 
-icicle.*^G
-string$
+ icicle C-M-j string$
 
 If you instead want all Icicles options whose type definition contains
 `string', as in (repeat string), then use this:
 
-icicle.*^G
-\[^^G]*string
-
-Here, `[^^G]' matches any character except ^G, which includes newline.
-If you use `.'  here instead of `[^^G]', then only the first lines of
-type definitions are searched for `string', because `.' matches any
-character except a newline.  (The first `^' in `[^^G]' is a circumflex
-character.  The second `^' is part of `^G', the printed representation
-of a Control-g character.)
+ icicle C-M-j string
 
 Remember that you can use `\\<minibuffer-local-completion-map>\
 \\[icicle-cycle-incremental-completion] to toggle incremental completion.
@@ -2828,16 +2841,17 @@ See also:
   icicle-describe-opt-action            ; Action function
   prompt                                ; `completing-read' args
   'icicle-describe-opt-of-type-complete nil nil nil nil nil nil
-  ((prompt                             "OPTION `C-M-j' TYPE: ") ; Bindings
-   (icicle-multi-completing-p          t)
-   (icicle-candidate-properties-alist  '((1 (face icicle-candidate-part))))
+  ((prompt                                 "OPTION `C-M-j' TYPE: ") ; Bindings
+   (icicle-multi-completing-p              t)
+   (icicle-candidate-properties-alist      '((1 (face icicle-candidate-part))))
    ;; Bind `icicle-apropos-complete-match-fn' to nil to prevent automatic input matching
    ;; in `icicle-unsorted-apropos-candidates' etc., because `icicle-describe-opt-of-type-complete'
    ;; does everything.
-   (icicle-apropos-complete-match-fn   nil)
-   (icicle-candidate-help-fn           'icicle-describe-opt-action)
+   (icicle-apropos-complete-match-fn       nil)
+   (icicle-last-apropos-complete-match-fn  'icicle-descr-opt-of-type-apropos-complete-match)
+   (icicle-candidate-help-fn               'icicle-describe-opt-action)
    ;; $$$ (icicle-highlight-input-completion-failure nil)
-   (icicle-pref-arg                    current-prefix-arg))
+   (icicle-pref-arg                        current-prefix-arg))
   (progn (put-text-property 0 1 'icicle-fancy-candidates t prompt) ; First code
          (icicle-highlight-lighter)
          (message "Gathering user options and their types...")))
@@ -2917,6 +2931,22 @@ This is used as the value of `minibuffer-completion-table'."
         result                          ; `all-completions', `test-completion'
       (try-completion                   ; `try-completion'
        strg (mapcar #'list result) (and pred  (lambda (ss) (funcall pred ss)))))))
+
+(defun icicle-descr-opt-of-type-apropos-complete-match (input option)
+  "Match function for progressive completion with `icicle-describe-option-of-type'.
+Return non-nil if the current multi-completion INPUT matches OPTION.
+OPTION is a multi-completion candidate, with first part name and
+second part type"
+  (let* ((name+type  (save-match-data (split-string input (regexp-quote icicle-list-join-string))))
+         (name       (or (car name+type)   ""))
+         (type       (or (cadr name+type)  ""))
+         (any        (concat icicle-dot-string "*"))
+         (len-any    (length any)))
+    (unless (and (>= (length name) len-any)  (string= any (substring name (- len-any))))
+      (setq name  (concat name any)))
+    (unless (or (string= "" type)  (and (>= (length type) len-any)  (string= any (substring type 0 len-any))))
+      (setq type  (concat any type)))
+    (string-match (concat name icicle-list-join-string type) option)))
 
 ;;;###autoload (autoload 'icicle-describe-var-w-val-satisfying "icicles")
 (defun icicle-describe-var-w-val-satisfying (predicate variable &optional optionp)
@@ -3115,7 +3145,7 @@ TYPE is the type of entry to add: `Fileset' or `Candidate'."
       typ)))
   (let ((file-name  (cdr (assoc set-name icicle-saved-completion-sets))))
     (unless (icicle-file-readable-p file-name) (error "Cannot read cache file `%s'" file-name))
-    (let ((list-buf  (find-file-noselect file-name 'nowarn 'raw))
+    (let ((list-buf  (find-file-noselect file-name 'NOWARN 'RAW))
           candidates newcands entry-type)
       (unwind-protect
            (condition-case icicle-add-entry-to-saved-completion-set
