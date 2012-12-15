@@ -160,7 +160,7 @@ Coming soon.
 * Make all Unix and Unix-like systems come with Emacs built-in.
 * Make EmacsLisp simpler and cleaner.
 * Implement a URL Shortener in EmacsLisp.
-* Make Emacs/W3 ba able to deal with HTML5.
+* Make Emacs/W3 be able to deal with HTML5.
 * Implement a DOM binding for EmacsLisp.
 * Make Emacs/W3 parse XSL.
 * Make Emacs support more image formats.
