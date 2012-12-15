@@ -5,7 +5,7 @@
 ;; Author: Matthew Fidler, Nathaniel Cunningham
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Mon Oct 18 17:06:07 2010 (-0500)
-;; Version: 0.15
+;; Version: 0.16
 ;; Last-Updated: Sat Dec 15 15:44:34 2012 (+0800)
 ;;           By: Matthew L. Fidler
 ;;     Update #: 663
@@ -51,6 +51,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 15-Dec-2012    Matthew L. Fidler  
+;;    Last-Updated: Sat Dec 15 15:44:34 2012 (+0800) #663 (Matthew L. Fidler)
+;;    Made sure that the tabbr-ruler-separator-image is at least 17 pixels high
 ;; 15-Dec-2012    Matthew L. Fidler  
 ;;    Last-Updated: Sat Dec 15 15:44:34 2012 (+0800) #663 (Matthew L. Fidler)
 ;;    Attempt to fix another bug on load
@@ -272,7 +275,7 @@ When FACE1 = FACE2, this creates a non-selected separator
 
 When FACE1 does not equal FACE2, this creates a selected separator
 "
-  (let* ((h (or height (frame-char-height)))
+  (let* ((h (or height (max 17 (frame-char-height))))
          (m (or slope 1.7))
          (w (/ h m))
          (i h)
