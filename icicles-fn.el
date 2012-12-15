@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Dec 12 12:50:42 2012 (-0800)
+;; Last-Updated: Fri Dec 14 21:35:40 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 13762
+;;     Update #: 13765
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -134,7 +134,8 @@
 ;;    `icicle-minibuf-input', `icicle-minibuf-input-sans-dir',
 ;;    `icicle-minibuffer-prompt-end', `icicle-mode-line-name-less-p',
 ;;    `icicle-most-recent-first-p', `icicle-msg-maybe-in-minibuffer',
-;;    `icicle-ms-windows-NET-USE', `icicle-multi-sort',
+;;    `icicle-ms-windows-NET-USE',
+;;    `icicle-multi-comp-apropos-complete-match', `icicle-multi-sort',
 ;;    `icicle-next-candidate', `icicle-not-basic-prefix-completion-p',
 ;;    `icicle-ORIG-choose-completion-string',
 ;;    `icicle-ORIG-completing-read',
@@ -4229,6 +4230,29 @@ Completion', for details."
                    (setq ecm  nil))     ; No possible expansion
                  (pop rest))
                ecm))))))
+
+(defun icicle-multi-comp-apropos-complete-match (input candidate)
+  "Match function for progressive completion with multi-completions.
+Return non-nil if current multi-completion INPUT matches CANDIDATE.
+INPUT is split by `icicle-list-join-string' and rejoined, adding the
+equivalent of `.*' to the join strings, where `.' matches newline too.
+The resulting regexp is matched against CANDIDATE."
+  (let* ((any      (concat icicle-dot-string "*"))
+         (len-any  (length any))
+         (fields   (save-match-data (split-string input (regexp-quote icicle-list-join-string))))
+         (first    (car fields))
+         (regexps  ())) 
+    (unless (and (>= (length first) len-any)  (string= any (substring first (- len-any))))
+      (setq first  (concat first any)))
+    (setq fields  (cdr fields))
+    (dolist (field  fields)
+      (unless (or (string= "" field)
+                  (and (>= (length field) len-any)  (string= any (substring field 0 len-any))))
+        (setq field  (concat any field)))
+      (push field regexps))
+    (string-match (concat first icicle-list-join-string (mapconcat #'identity (nreverse regexps)
+                                                                   icicle-list-join-string))
+                  candidate)))
 
 (defun icicle-scatter-match (string completion)
   "Returns non-nil if STRING scatter-matches COMPLETION.
