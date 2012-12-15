@@ -5,10 +5,10 @@
 ;; Author: Matthew Fidler, Nathaniel Cunningham
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Mon Oct 18 17:06:07 2010 (-0500)
-;; Version: 0.14
-;; Last-Updated: Thu Mar  1 09:02:56 2012 (-0600)
+;; Version: 0.15
+;; Last-Updated: Sat Dec 15 15:44:34 2012 (+0800)
 ;;           By: Matthew L. Fidler
-;;     Update #: 659
+;;     Update #: 663
 ;; URL: http://github.com/mlf176f2/tabbar-ruler.el
 ;; Keywords: Tabbar, Ruler Mode, Menu, Tool Bar.
 ;; Compatibility: Windows Emacs 23.x
@@ -51,6 +51,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 15-Dec-2012    Matthew L. Fidler  
+;;    Last-Updated: Sat Dec 15 15:44:34 2012 (+0800) #663 (Matthew L. Fidler)
+;;    Attempt to fix another bug on load
 ;; 14-Dec-2012    Matthew L. Fidler  
 ;;    Last-Updated: Thu Mar  1 09:02:56 2012 (-0600) #659 (Matthew L. Fidler)
 ;;    Fixed tabbar ruler so that it loads cold.
@@ -58,7 +61,7 @@
 ;;    Last-Updated: Thu Mar  1 09:02:56 2012 (-0600) #659 (Matthew L. Fidler)
 ;;    Memoized the tabbar images to speed things up
 ;; 14-Dec-2012    Matthew L. Fidler  
-;;    Last-Updated: Thu Mar  1 09:02:56 2012 (-0600) #659 (Matthew L. Fidler)
+;;    Last-Updated: Thu Mar  1 09:02:56 2012 (-0600) #659 (Mat`'thew L. Fidler)
 ;;    Upload to Marmalade 
 ;; 14-Dec-2012    Matthew L. Fidler  
 ;;    Last-Updated: Thu Mar  1 09:02:56 2012 (-0600) #659 (Matthew L. Fidler)
@@ -173,130 +176,6 @@
 (require 'tabbar)
 (require 'easymenu)
 
-(defun tabbar-popup-menu ()
-  "Keymap for pop-up menu.  Emacs only."
-  `(,(format "%s" (nth 0 tabbar-last-tab))
-    ["Close" tabbar-popup-close]
-    ["Close all BUT this" tabbar-popup-close-but]
-    "--"
-    ["Save" tabbar-popup-save]
-    ["Save As" tabbar-popup-save-as]
-    "--"
-    ["Rename File" tabbar-popup-rename
-     :active (and (buffer-file-name (tabbar-tab-value tabbar-last-tab))
-                  (file-exists-p (buffer-file-name (tabbar-tab-value tabbar-last-tab))))]
-    ["Delete File" tabbar-popup-delete
-     :active (and (buffer-file-name (tabbar-tab-value tabbar-last-tab))
-                  (file-exists-p (buffer-file-name (tabbar-tab-value tabbar-last-tab))))]
-    "--"
-    ["Gzip File" tabbar-popup-gz
-     :active (and (executable-find "gzip")
-                  (buffer-file-name (tabbar-tab-value tabbar-last-tab))
-                  (file-exists-p (buffer-file-name (tabbar-tab-value tabbar-last-tab)))
-                  (not (string-match "\\.gz\\(?:~\\|\\.~[0-9]+~\\)?\\'" (buffer-file-name (tabbar-tab-value tabbar-last-tab)))))]
-    ["Bzip File" tabbar-popup-bz2
-     :active (and (executable-find "bzip2")
-                  (buffer-file-name (tabbar-tab-value tabbar-last-tab))
-                  (file-exists-p (buffer-file-name (tabbar-tab-value tabbar-last-tab)))
-                  (not (string-match "\\.bz2\\(?:~\\|\\.~[0-9]+~\\)?\\'" (buffer-file-name (tabbar-tab-value tabbar-last-tab)))))]
-    ["Decompress File" tabbar-popup-decompress
-     :active (and
-              (buffer-file-name (tabbar-tab-value tabbar-last-tab))
-              (file-exists-p (buffer-file-name (tabbar-tab-value tabbar-last-tab)))
-              (string-match "\\(?:\\.\\(?:Z\\|gz\\|bz2\\|tbz2?\\|tgz\\|svgz\\|sifz\\|xz\\|dz\\)\\)\\(\\(?:~\\|\\.~[0-9]+~\\)?\\)\\'"
-                            (buffer-file-name (tabbar-tab-value tabbar-last-tab))))
-     ]
-    ;;    "--"
-    ;;    ["Print" tabbar-popup-print]
-    ))
-
-(defun tabbar-popup-print ()
-  "Print Buffer"
-  (interactive))
-
-(defun tabbar-popup-close ()
-  "Tab-bar pop up close"
-  (interactive)
-  (funcall tabbar-close-tab-function tabbar-last-tab))
-
-(defun tabbar-popup-close-but ()
-  "Tab-bar close all BUT this buffer"
-  (interactive)
-  (let ((cur (symbol-value (funcall tabbar-current-tabset-function))))
-    (mapc (lambda(tab)
-            (unless (eq tab tabbar-last-tab)
-              (funcall tabbar-close-tab-function tab)))
-          cur)))
-
-(defun tabbar-popup-save-as ()
-  "Tab-bar save as"
-  (interactive)
-  (let* ((buf (tabbar-tab-value tabbar-last-tab)))
-    (save-excursion
-      (set-buffer buf)
-      (call-interactively 'write-file))))
-
-(defun tabbar-popup-rename ()
-  "Tab-bar rename"
-  (interactive)
-  (let* ((buf (tabbar-tab-value tabbar-last-tab))
-         (fn (buffer-file-name buf)))
-    (save-excursion
-      (set-buffer buf)
-      (when (call-interactively 'write-file)
-        (if (string= fn (buffer-file-name (current-buffer)))
-            (error "Buffer has same name.  Just saved instead.")
-          (delete-file fn))))))
-
-(defun tabbar-popup-delete ()
-  "Tab-bar delete file"
-  (interactive)
-  (let* ((buf (tabbar-tab-value tabbar-last-tab))
-         (fn (buffer-file-name buf)))
-    (when (yes-or-no-p (format "Are you sure you want to delete %s?" buf))
-      (save-excursion
-        (set-buffer buf)
-        (set-buffer-modified-p nil)
-        (kill-buffer (current-buffer))
-        (delete-file fn)))))
-
-(defun tabbar-popup-remove-compression-ext (file-name &optional new-compression)
-  "Removes compression extension, and possibly adds a new extension"
-  (let ((ret file-name))
-    (when (string-match "\\(\\(?:\\.\\(?:Z\\|gz\\|bz2\\|tbz2?\\|tgz\\|svgz\\|sifz\\|xz\\|dz\\)\\)?\\)\\(\\(?:~\\|\\.~[0-9]+~\\)?\\)\\'" ret)
-      (setq ret (replace-match (concat (or new-compression "") (match-string 2 ret)) t t ret)))
-    (symbol-value 'ret)))
-
-(defun tabbar-popup-gz (&optional ext err)
-  "Gzips the file"
-  (interactive)
-  (let* ((buf (tabbar-tab-value tabbar-last-tab))
-         (fn (buffer-file-name buf))
-         (nfn (tabbar-popup-remove-compression-ext fn (or ext ".gz"))))
-    (if (string= fn nfn)
-        (error "Already has that compression!")
-      (save-excursion
-        (set-buffer buf)
-        (write-file nfn)
-        (if (not (file-exists-p nfn))
-            (error "%s" (or err "Could not gzip file!"))
-          (when (file-exists-p fn)
-            (delete-file fn)))))))
-
-(defun tabbar-popup-bz2 ()
-  "Bzip file"
-  (interactive)
-  (tabbar-popup-gz ".bz2" "Could not bzip the file!"))
-
-(defun tabbar-popup-decompress ()
-  "Decompress file"
-  (interactive)
-  (tabbar-popup-gz "" "Could not decompress the file!"))
-
-(defun tabbar-context-menu ()
-  "Pop up a context menu."
-  (interactive)
-  (popup-menu (tabbar-popup-menu)))
 
 
 (defun tabbar-hex-color (color)
@@ -548,15 +427,18 @@ clr
 \"       ..        \",
 \"        .        \","))))))
 
-(setq tabbar-home-button-enabled-image
-      `((:type xpm :data ,(tabbar-ruler-image :type 'down))))
 
-(setq tabbar-home-button-disabled-image
-      `((:type xpm :data ,(tabbar-ruler-image :type 'up))))
+(defconst tabbar-home-button-enabled-image
+  `((:type xpm :data ,(tabbar-ruler-image :type 'down)))
+  "Default image for the enabled home button.")
+
+(defconst tabbar-home-button-disabled-image
+  `((:type xpm :data ,(tabbar-ruler-image :type 'up)))
+  "Default image for the disabled home button")
 
 
-(setq tabbar-home-button
-      (cons (cons "[o]" tabbar-home-button-enabled-image)
+(defconst tabbar-home-button
+  (cons (cons "[o]" tabbar-home-button-enabled-image)
             (cons "[x]" tabbar-home-button-disabled-image)))
 
 (setq tabbar-buffer-home-button
@@ -657,6 +539,77 @@ Pass mouse click events on a tab to `tabbar-click-on-tab'."
        event
        (get-text-property (cdr target) 'tabbar-action (car target))))))
 
+(defsubst tabbar-line-tab (tab &optional not-last sel)
+  "Return the display representation of tab TAB.
+That is, a propertized string used as an `header-line-format' template
+element.
+Call `tabbar-tab-label-function' to obtain a label for TAB."
+  (let* ( (selected-p (tabbar-selected-p tab (tabbar-current-tabset)))
+          (modified-p (buffer-modified-p (tabbar-tab-value tab)))
+          (close-button-image (tabbar-find-image 
+                               `((:type xpm :data ,(tabbar-ruler-image :type 'close :disabled (not modified-p)
+                                                                       :color (if (eq tab sel)
+                                                                                  (face-attribute 'default :foreground)
+                                                                                "gray10"))))))
+          (separator-image (tabbar-find-image
+                            `((:type xpm :data
+                                     ,(tabbar-ruler-tab-separator-image
+                                       (if (eq tab sel)
+                                           'tabbar-selected
+                                         'tabbar-unselected)
+                                       (if not-last
+                                           (if (eq (car not-last) sel)
+                                               'tabbar-selected
+                                             'tabbar-unselected) nil)
+                                       nil
+                                       (if (and not-last
+                                                (eq (car not-last) sel))
+                                           t nil))))))
+          (face (if selected-p
+                    (if modified-p
+                        'tabbar-selected-modified
+                      'tabbar-selected)
+                  (if modified-p
+                      'tabbar-unselected-modified
+                    'tabbar-unselected))))
+    (concat
+     (propertize " " 'face face
+                 'tabbar-tab tab
+                 'local-map (tabbar-make-tab-keymap tab)
+                 'help-echo 'tabbar-help-on-tab
+                 'face face
+                 'pointer 'hand)
+     (propertize 
+      (if tabbar-tab-label-function
+          (funcall tabbar-tab-label-function tab)
+        tab)
+      'tabbar-tab tab
+      'local-map (tabbar-make-tab-keymap tab)
+      'help-echo 'tabbar-help-on-tab
+      'mouse-face 'tabbar-highlight
+      'face face
+      'pointer 'hand)
+     (propertize (if modified-p
+                     (with-temp-buffer
+                       (ucs-insert "207A")
+                       (insert " ")
+                       (buffer-substring (point-min) (point-max))) " ")
+                 'face face
+                 'tabbar-tab tab
+                 'local-map (tabbar-make-tab-keymap tab)
+                 'help-echo 'tabbar-help-on-tab
+                 'face face
+                 'pointer 'hand)
+     (propertize "[x]"
+                 'display (tabbar-normalize-image close-button-image 0)
+                 'face face
+                 'pointer 'hand
+                 'tabbar-tab tab
+                 'local-map (tabbar-make-tab-keymap tab)
+                 'tabbar-action 'close-tab)
+     (propertize "|"
+                 'display (tabbar-normalize-image separator-image)))))
+
 (defsubst tabbar-line-format (tabset)
   "Return the `header-line-format' value to display TABSET."
   (let* ((sel (tabbar-selected-tab tabset))
@@ -728,78 +681,6 @@ Pass mouse click events on a tab to `tabbar-click-on-tab'."
                                    :foreground padcolor)
                        'pointer 'arrow)))
     ))
-
-(defsubst tabbar-line-tab (tab &optional not-last sel)
-  "Return the display representation of tab TAB.
-That is, a propertized string used as an `header-line-format' template
-element.
-Call `tabbar-tab-label-function' to obtain a label for TAB."
-  (let* ( (selected-p (tabbar-selected-p tab (tabbar-current-tabset)))
-          (modified-p (buffer-modified-p (tabbar-tab-value tab)))
-          (close-button-image (tabbar-find-image 
-                               `((:type xpm :data ,(tabbar-ruler-image :type 'close :disabled (not modified-p)
-                                                                       :color (if (eq tab sel)
-                                                                                  (face-attribute 'default :foreground)
-                                                                                "gray10"))))))
-          (separator-image (tabbar-find-image
-                            `((:type xpm :data
-                                     ,(tabbar-ruler-tab-separator-image
-                                       (if (eq tab sel)
-                                           'tabbar-selected
-                                         'tabbar-unselected)
-                                       (if not-last
-                                           (if (eq (car not-last) sel)
-                                               'tabbar-selected
-                                             'tabbar-unselected) nil)
-                                       nil
-                                       (if (and not-last
-                                                (eq (car not-last) sel))
-                                           t nil))))))
-          (face (if selected-p
-                    (if modified-p
-                        'tabbar-selected-modified
-                      'tabbar-selected)
-                  (if modified-p
-                      'tabbar-unselected-modified
-                    'tabbar-unselected))))
-    (concat
-     (propertize " " 'face face
-                 'tabbar-tab tab
-                 'local-map (tabbar-make-tab-keymap tab)
-                 'help-echo 'tabbar-help-on-tab
-                 'face face
-                 'pointer 'hand)
-     (propertize 
-      (if tabbar-tab-label-function
-          (funcall tabbar-tab-label-function tab)
-        tab)
-      'tabbar-tab tab
-      'local-map (tabbar-make-tab-keymap tab)
-      'help-echo 'tabbar-help-on-tab
-      'mouse-face 'tabbar-highlight
-      'face face
-      'pointer 'hand)
-     (propertize (if modified-p
-                     (with-temp-buffer
-                       (ucs-insert "207A")
-                       (insert " ")
-                       (buffer-substring (point-min) (point-max))) " ")
-                 'face face
-                 'tabbar-tab tab
-                 'local-map (tabbar-make-tab-keymap tab)
-                 'help-echo 'tabbar-help-on-tab
-                 'face face
-                 'pointer 'hand)
-     (propertize "[x]"
-                 'display (tabbar-normalize-image close-button-image 0)
-                 'face face
-                 'pointer 'hand
-                 'tabbar-tab tab
-                 'local-map (tabbar-make-tab-keymap tab)
-                 'tabbar-action 'close-tab)
-     (propertize "|"
-                 'display (tabbar-normalize-image separator-image))
-     )))
 
 (defface tabbar-selected-modified
   '((t
