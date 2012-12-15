@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Dec 14 16:42:36 2012 (-0800)
+;; Last-Updated: Fri Dec 14 21:39:47 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 23265
+;;     Update #: 23267
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -956,9 +956,8 @@
 ;;    `icicle-delete-dups', `icicle-delete-file-or-directory',
 ;;    `icicle-delete-whitespace-from-string',
 ;;    `icicle-describe-opt-action',
-;;    `icicle-describe-opt-of-type-complete',
-;;    `icicle-descr-opt-of-type-apropos-complete-match',
-;;    `icicle-ding', `icicle-dired-read-shell-command',
+;;    `icicle-describe-opt-of-type-complete', `icicle-ding',
+;;    `icicle-dired-read-shell-command',
 ;;    `icicle-dir-prefix-wo-wildcards', `icicle-dirs-first-p',
 ;;    `icicle-dirs-last-p', `icicle-displayable-cand-from-saved-set',
 ;;    `icicle-display-cand-from-full-cand',
@@ -1066,7 +1065,8 @@
 ;;    `icicle-mode-line-name-less-p', `icicle-most-recent-first-p',
 ;;    `icicle-mouse-candidate-action-1',
 ;;    `icicle-msg-maybe-in-minibuffer', `icicle-ms-windows-NET-USE',
-;;    `icicle-multi-sort', `icicle-nb-Completions-cols',
+;;    `icicle-multi-comp-apropos-complete-match', `icicle-multi-sort',
+;;    `icicle-nb-Completions-cols',
 ;;    `icicle-nb-of-cand-at-Completions-pos',
 ;;    `icicle-nb-of-cand-in-Completions-horiz',
 ;;    `icicle-next-candidate',
