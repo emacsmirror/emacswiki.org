@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Dec  2 17:05:44 2012 (-0800)
+;; Last-Updated: Sat Dec 15 15:49:53 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 1684
+;;     Update #: 1693
 ;; URL: http://www.emacswiki.org/icicles-var.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -47,7 +47,8 @@
 ;;    `icicle-candidate-action-fn', `icicle-candidate-alt-action-fn',
 ;;    `icicle-candidate-entry-fn', `icicle-candidate-help-fn',
 ;;    `icicle-candidate-nb', `icicle-candidate-properties-alist',
-;;    `icicle-candidates-alist', `icicle-char-property-value-history',
+;;    `icicle-candidates-alist', `icicle-cands-to-narrow',
+;;    `icicle-char-property-value-history',
 ;;    `icicle-cmd-calling-for-completion', `icicle-cmd-reading-input',
 ;;    `icicle-color-history', `icicle-color-theme-history',
 ;;    `icicle-command-abbrev-history', `icicle-commands-for-abbrev',
@@ -58,7 +59,9 @@
 ;;    `icicle-completing-read+insert-candidates',
 ;;    `icicle-completion-candidates',
 ;;    `icicle-completion-prompt-overlay',
-;;    `icicle-completion-set-history', `icicle-confirm-exit-commands',
+;;    `icicle-completion-set-history',
+;;    `icicle-compute-narrowing-regexp-p',
+;;    `icicle-confirm-exit-commands',
 ;;    `icicle-current-completion-candidate-overlay',
 ;;    `icicle-current-completion-mode', `icicle-current-input',
 ;;    `icicle-current-raw-input', `icicle-current-TAB-method',
@@ -101,7 +104,7 @@
 ;;    `icicle-ms-windows-drive-hash', `icicle-multi-completing-p',
 ;;    `icicle-must-match-regexp', `icicle-must-not-match-regexp',
 ;;    `icicle-must-pass-after-match-predicate',
-;;    `icicle-must-pass-predicate',
+;;    `icicle-must-pass-predicate', `icicle-narrow-regexp',
 ;;    `icicle-nb-candidates-before-truncation',
 ;;    `icicle-nb-of-other-cycle-candidates', `icicle-new-last-cmd',
 ;;    `icicle-next-apropos-complete-cycles-p',
@@ -347,6 +350,9 @@ This is reset to nil at the beginning of each top-level command.
 This is used typically by commands that allow different cdrs for the
 same car.  Icicles search is one such example.")
 
+(defvar icicle-cands-to-narrow ()
+  "Saved `icicle-completion-candidates' for reference during narrowing.")
+
 (defvar icicle-char-property-value-history nil "History for character property values.")
 
 (defvar icicle-cmd-calling-for-completion 'ignore
@@ -399,6 +405,9 @@ Used only for Emacs 22 and later.")
   "`completing-read' COLLECTION arg to use for `icicle-completing-read+insert'.")
 
 (defvar icicle-completion-set-history nil "History for completion-set names.")
+
+(defvar icicle-compute-narrowing-regexp-p nil
+  "Non-nil means that narrowing computes `icicle-narrow-regexp'.")
 
 (defvar icicle-confirm-exit-commands
   (and (boundp 'minibuffer-confirm-exit-commands)
@@ -1086,6 +1095,11 @@ entries or obarray symbols.  `icicle-must-pass-predicate' applies
 instead to a string, the display form of a completion candidate.
 
 See also `icicle-must-pass-after-match-predicate'.")
+
+(defvar icicle-narrow-regexp nil
+  "Regexp matching each member of `icicle-completion-candidates'.
+This is nil except during narrowing, and then only if
+`icicle-compute-narrowing-regexp-p' is non-nil.")
 
 (defvar icicle-nb-candidates-before-truncation 0
   "Number of candidates, before truncation per `icicle-max-candidates'.")
