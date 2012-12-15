@@ -8,7 +8,7 @@
 * <b>Author </b> --  Matthew Fidler, Nathaniel Cunningham
 * <b>Maintainer </b> --  Matthew L. Fidler
 * <b>Created </b> --  Mon Oct 18 17:06:07 2010 (-0500)
-* <b>Version </b> --  0.15
+* <b>Version </b> --  0.16
 * <b>Last-Updated </b> --  Sat Dec 15 15:44:34 2012 (+0800)
 * <b>By </b> --  Matthew L. Fidler
 * <b>Update # </b> --  663
@@ -98,7 +98,7 @@ Return the tabbar-memoized version of FUNC.  The memoization cache is
 frame-local.
 
 ==== tabbar-ruler-image ====
-<tt>(tabbar-ruler-image &rest G5120)</tt>
+<tt>(tabbar-ruler-image &rest G97614)</tt>
 
 Returns the scroll-images
 
@@ -106,7 +106,7 @@ Returns the scroll-images
 (tabbar-memoized function)
 
 ==== tabbar-ruler-tab-separator-image ====
-<tt>(tabbar-ruler-tab-separator-image &rest G5117)</tt>
+<tt>(tabbar-ruler-tab-separator-image &rest G97611)</tt>
 
 Creates a Tabbar Ruler Separator Image.
 FACE1 is the face to the left
@@ -186,6 +186,7 @@ Function to call to create a new buffer in tabbar-mode.  Optional single
 argument is the MODE for the new buffer.
 == History ==
 
+* <b>15-Dec-2012 </b> --   Made sure that the tabbr-ruler-separator-image is at least 17 pixels high (Matthew L. Fidler)
 * <b>15-Dec-2012 </b> --   Attempt to fix another bug on load (Matthew L. Fidler)
 * <b>14-Dec-2012 </b> --   Fixed tabbar ruler so that it loads cold. (Matthew L. Fidler)
 * <b>14-Dec-2012 </b> --   Memoized the tabbar images to speed things up (Matthew L. Fidler)
