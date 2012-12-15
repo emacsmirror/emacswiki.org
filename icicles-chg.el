@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Dec 14 16:39:40 2012 (-0800)
+;; Last-Updated: Fri Dec 14 21:57:02 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 9416
+;;     Update #: 9423
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -87,10 +87,10 @@
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
 ;; 2012/12/14 dadams
-;;     Added: icicle-descr-opt-of-type-apropos-complete-match.
 ;;     icicle-describe-option-of-type:
-;;       Bind icicle-last-apropos-complete-match-fn to icicle-descr-opt-of-type-apropos-complete-match
-;;       for progressive completion.  Updated doc to reflect improved behavior.
+;;       Bind icicle-last-apropos-complete-match-fn to icicle-multi-comp-apropos-complete-match,
+;;       for progressive completion.  Bind icicle-dot-string to icicle-anychar-regexp.
+;;       Updated doc to reflect improved behavior.
 ;; 2012/12/12 dadams
 ;;     Added: icicle-buffer-apropos-complete-match, icicle-file-of-content-apropos-complete-match.
 ;;     icicle-buffer(-other-window):
@@ -1590,6 +1590,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2012/12/14 dadams
+;;     Added: icicle-multi-comp-apropos-complete-match.
 ;; 2012/12/12 dadams
 ;;     icicle-expanded-common-match-1:
 ;;       Use string-match, not icicle-apropos-complete-match-fn, except for first condition (and).
