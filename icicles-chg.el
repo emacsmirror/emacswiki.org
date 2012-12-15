@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Wed Dec 12 13:59:00 2012 (-0800)
+;; Last-Updated: Fri Dec 14 16:39:40 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 9411
+;;     Update #: 9416
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -86,6 +86,11 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2012/12/14 dadams
+;;     Added: icicle-descr-opt-of-type-apropos-complete-match.
+;;     icicle-describe-option-of-type:
+;;       Bind icicle-last-apropos-complete-match-fn to icicle-descr-opt-of-type-apropos-complete-match
+;;       for progressive completion.  Updated doc to reflect improved behavior.
 ;; 2012/12/12 dadams
 ;;     Added: icicle-buffer-apropos-complete-match, icicle-file-of-content-apropos-complete-match.
 ;;     icicle-buffer(-other-window):
