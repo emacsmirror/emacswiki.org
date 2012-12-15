@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 21.0
-;; Last-Updated: Sat Dec 15 12:25:08 2012 (-0800)
+;; Last-Updated: Sat Dec 15 12:49:03 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 1688
+;;     Update #: 1690
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/emacs/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -244,7 +244,7 @@
 ;;    next).  I added this feature to vanilla Emacs in release 23.1.
 ;;
 ;;  * Command and binding to cycle automatic removal or replacement of
-;;    input the portion that does not match, bound to `M-k'.  Behavior
+;;    the input portion that does not match, bound to `M-k'.  Behavior
 ;;    is controlled by the value of option `isearchp-drop-mismatch':
 ;;
 ;;    `replace-last' - Your current input replaces the last mismatched
@@ -253,9 +253,9 @@
 ;;                     editing using `M-e'.
 ;;    nil            - Your current input is appended, even if the
 ;;                     previous input has a mismatched portion.
-;;    anything else  - Your current input is ignored if it causes a
-;;                     mismatch.  The search string always has
-;;                     successful matches.
+;;    anything else  - Your current input is ignored (removed) if it
+;;                     causes a mismatch.  The search string always
+;;                     has successful matches.
 ;;
 ;;  * Command and binding to toggle (incremental) word search:
 ;;    `isearch-toggle-word', bound to `M-w'.
