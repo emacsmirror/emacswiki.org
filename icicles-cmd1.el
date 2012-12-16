@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Dec 14 21:47:06 2012 (-0800)
+;; Last-Updated: Sat Dec 15 15:43:21 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 25293
+;;     Update #: 25325
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -7632,10 +7632,8 @@ flips the behavior specified by that option." ; Doc string
     (icicle-file-bindings               ; Bindings
      ((init-pref-arg                          current-prefix-arg)
       (prompt                             "File or directory: ")
-      ;; Bind `icicle-apropos-complete-match-fn' to nil to prevent automatic input matching
-      ;; in `icicle-unsorted-apropos-candidates' etc., because `icicle-find-file-of-content-multi-complete'
-      ;; does everything.
-      (icicle-apropos-complete-match-fn       nil)
+      (icicle-compute-narrowing-regexp-p      t) ; For progressive completion.
+      (icicle-apropos-complete-match-fn       'icicle-file-of-content-apropos-complete-match)
       (icicle-last-apropos-complete-match-fn  'icicle-file-of-content-apropos-complete-match)
       (icicle-read-file-name-internal-fn      'icicle-find-file-of-content-multi-complete)
       (icicle-show-multi-completion-flag      t) ; Override user setting.
@@ -7656,7 +7654,10 @@ flips the behavior specified by that option." ; Doc string
            (when (or (and init-pref-arg        (not icicle-kill-visited-buffers-flag))
                      (and (not init-pref-arg)  icicle-kill-visited-buffers-flag))
              (dolist (buf  new-bufs--to-kill)
-               (unless (memq buf new-bufs--to-keep) (kill-buffer buf))))))
+               (unless (memq buf new-bufs--to-keep)
+                 (with-current-buffer buf
+                   (restore-buffer-modified-p nil) ; Just visiting can sometimes modify the buffer
+                   (kill-buffer buf)))))))
 
 
   (put 'icicle-find-file-of-content-other-window 'icicle-Completions-window-max-height 200)
@@ -7690,10 +7691,8 @@ Same as `icicle-find-file-of-content' except it uses a different window." ; Doc 
     (icicle-file-bindings               ; Bindings
      ((init-pref-arg                          current-prefix-arg)
       (prompt                                 "File or directory: ")
-      ;; Bind `icicle-apropos-complete-match-fn' to nil to prevent automatic input matching
-      ;; in `icicle-unsorted-apropos-candidates' etc., because `icicle-find-file-of-content-multi-complete'
-      ;; does everything.
-      (icicle-apropos-complete-match-fn       nil)
+      (icicle-compute-narrowing-regexp-p      t) ; For progressive completion.
+      (icicle-apropos-complete-match-fn       'icicle-file-of-content-apropos-complete-match)
       (icicle-last-apropos-complete-match-fn  'icicle-file-of-content-apropos-complete-match)
       (icicle-read-file-name-internal-fn      'icicle-find-file-of-content-multi-complete)
       (icicle-show-multi-completion-flag      t) ; Override user setting.
@@ -7714,7 +7713,10 @@ Same as `icicle-find-file-of-content' except it uses a different window." ; Doc 
            (when (or (and init-pref-arg        (not icicle-kill-visited-buffers-flag))
                      (and (not init-pref-arg)  icicle-kill-visited-buffers-flag))
              (dolist (buf  new-bufs--to-kill)
-               (unless (memq buf new-bufs--to-keep) (kill-buffer buf))))))
+               (unless (memq buf new-bufs--to-keep)
+                 (with-current-buffer buf
+                   (restore-buffer-modified-p nil) ; Just visiting can sometimes modify the buffer
+                   (kill-buffer buf)))))))
 
   (defun icicle-find-file-of-content-multi-complete (strg predicate completion-mode)
     "Completion function for `icicle-find-file-of-content'.
@@ -7753,13 +7755,15 @@ Return non-nil if the current multi-completion INPUT matches FILE-NAME."
                    (content-pat  (let ((icicle-list-use-nth-parts  '(2)))
                                    (icicle-transform-multi-completion input))))
       (and (icicle-string-match-p name-pat file-name)
+           ;; `icicle-narrow-regexp' is FREE here.  It is bound in `icicle-narrow-candidates'.
+           ;; Do this to ensure we visit only the `icicle-completion-candidates' already determined so far.
+           (or (not icicle-narrow-regexp)  (icicle-string-match-p icicle-narrow-regexp file-name))
            (or find-file-run-dired  (not (file-directory-p file-name)))
            (or (equal "" content-pat)
                (let ((buf    (find-file-noselect file-name)))
                  (with-current-buffer buf
                    (message "Matching buffer contents...")
-                   (save-excursion (goto-char (point-min))
-                                   (re-search-forward content-pat nil t))))))))
+                   (save-excursion (goto-char (point-min)) (re-search-forward content-pat nil t))))))))
   )
 
 
