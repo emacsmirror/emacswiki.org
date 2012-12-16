@@ -12,11 +12,14 @@ Note that an after-init-hook didn't work for me.
 [new:TimRetout:2010-07-09 16:50 UTC]
 There is also the --fullscreen command line option. -- TimRetout
 
+From the Emacs Linux [http://linuxmanpages.net/manpages/fedora14/man1/emacs.1.html man page] (command line "man emacs"), for maximized frame, and for complete full screen:
 
+|| ##-mm, --maximized## || Maximize the first frame, like "-fw -fh" (since Emacs 23.2) ||
+|| ##-fs, --fullscreen## || Make the first frame fullscreen ||
 
+For example:
 
-
-
+##emacs -mm [files]##
 
 == Maximize/Restore Using Library frame-cmds.el ==
 
