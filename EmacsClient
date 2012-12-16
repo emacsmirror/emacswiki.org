@@ -1062,5 +1062,8 @@ emacsclient -s todo -c ~/docs/todo/work.org &
 </pre>
 
 Also see: http://www.gnu.org/s/libtool/manual/emacs/emacsclient-Options.html#emacsclient-Options
+
+= KDE =
+In KDE, you can set File Associations to open in emacsclient instead of KWrite.
 ----
 CategoryExternalUtilities
