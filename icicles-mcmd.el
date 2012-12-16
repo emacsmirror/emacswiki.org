@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Dec 12 13:15:04 2012 (-0800)
+;; Last-Updated: Sat Dec 15 16:10:38 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 18684
+;;     Update #: 18689
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -5751,13 +5751,17 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
                          icicle-current-input)
                (error (message "%s" (error-message-string i-narrow-candidates))))))
           (t
-           (let* ((minibuffer-setup-hook  (cons ; Make sure new minibuffer is completion reference buf.
-                                           (lambda ()
-                                             (with-current-buffer (get-buffer-create "*Completions*")
-                                               (set (make-local-variable 'completion-reference-buffer)
-                                                    (window-buffer (active-minibuffer-window)))))
-                                           minibuffer-setup-hook))
-                  (current-candidates     icicle-completion-candidates)
+           (let* ((minibuffer-setup-hook   (cons ; Make sure new minibuffer is completion reference buf.
+                                            (lambda ()
+                                              (with-current-buffer (get-buffer-create "*Completions*")
+                                                (set (make-local-variable 'completion-reference-buffer)
+                                                     (window-buffer (active-minibuffer-window)))))
+                                            minibuffer-setup-hook))
+                  (icicle-cands-to-narrow  icicle-completion-candidates)
+                  (icicle-narrow-regexp    (and icicle-compute-narrowing-regexp-p
+                                                ;; (regexp-opt ()) returns nil in older Emacs versions.
+                                                icicle-cands-to-narrow
+                                                (regexp-opt icicle-cands-to-narrow)))
                   ;; Handle all Emacs versions the same way for file-name completion.  We can do that
                   ;; because we use `icicle-must-pass-predicate', so we do not depend on `read-file-name'
                   ;; needing a PREDICATE arg.
@@ -5766,33 +5770,33 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
                   ;; `icicle-must-pass-after-match-predicate' could be per-command, by binding a variable.
                   ;; Without such a conditional choice, the former is better, because matching can be
                   ;; complex (costly).
-                  (result                 (cond ((icicle-file-name-input-p)
-                                                 (let ((icicle-must-pass-predicate
-                                                        `(lambda (c) (member c ',current-candidates))))
-                                                   (read-file-name "Match also (regexp): "
-                                                                   (icicle-file-name-directory-w-default
-                                                                    icicle-current-input)
-                                                                   nil icicle-require-match-p)))
-                                                ((functionp minibuffer-completion-table)
-                                                 (let ((icicle-must-pass-predicate
-                                                        `(lambda (c) (member c ',current-candidates))))
-                                                   (completing-read "Match also (regexp): "
-                                                                    minibuffer-completion-table
-                                                                    nil icicle-require-match-p nil
-                                                                    minibuffer-history-variable)))
-                                                (t ; cons, obarray, etc.
-                                                 (completing-read
-                                                  "Match also (regexp): "
-                                                  (if icicle-whole-candidate-as-text-prop-p
-                                                      (mapcar (lambda (cand)
-                                                                (funcall icicle-get-alist-candidate-function
-                                                                         (car cand)))
-                                                              (icicle-filter-alist
-                                                               minibuffer-completion-table
-                                                               icicle-completion-candidates))
-                                                    (mapcar #'list icicle-completion-candidates))
-                                                  nil icicle-require-match-p nil
-                                                  minibuffer-history-variable)))))
+                  (result                  (cond ((icicle-file-name-input-p)
+                                                  (let ((icicle-must-pass-predicate
+                                                         `(lambda (c) (member c ',icicle-cands-to-narrow))))
+                                                    (read-file-name "Match also (regexp): "
+                                                                    (icicle-file-name-directory-w-default
+                                                                     icicle-current-input)
+                                                                    nil icicle-require-match-p)))
+                                                 ((functionp minibuffer-completion-table)
+                                                  (let ((icicle-must-pass-predicate
+                                                         `(lambda (c) (member c ',icicle-cands-to-narrow))))
+                                                    (completing-read "Match also (regexp): "
+                                                                     minibuffer-completion-table
+                                                                     nil icicle-require-match-p nil
+                                                                     minibuffer-history-variable)))
+                                                 (t ; cons, obarray, etc.
+                                                  (completing-read
+                                                   "Match also (regexp): "
+                                                   (if icicle-whole-candidate-as-text-prop-p
+                                                       (mapcar
+                                                        (lambda (cand)
+                                                          (funcall icicle-get-alist-candidate-function
+                                                                   (car cand)))
+                                                        (icicle-filter-alist minibuffer-completion-table
+                                                                             icicle-completion-candidates))
+                                                     (mapcar #'list icicle-completion-candidates))
+                                                   nil icicle-require-match-p nil
+                                                   minibuffer-history-variable)))))
              ;; Normally, `icicle-narrow-candidates' is called from the minibuffer.
              ;; If not, just return the result read.
              (if (> (minibuffer-depth) 0)
