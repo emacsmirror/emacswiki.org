@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Dec 14 21:39:47 2012 (-0800)
+;; Last-Updated: Sat Dec 15 15:50:19 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 23267
+;;     Update #: 23270
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1225,7 +1225,8 @@
 ;;    `icicle-candidate-action-fn', `icicle-candidate-alt-action-fn',
 ;;    `icicle-candidate-entry-fn', `icicle-candidate-help-fn',
 ;;    `icicle-candidate-nb', `icicle-candidate-properties-alist',
-;;    `icicle-candidates-alist', `icicle-char-property-value-history',
+;;    `icicle-candidates-alist', `icicle-cands-to-narrow',
+;;    `icicle-char-property-value-history',
 ;;    `icicle-cmd-calling-for-completion', `icicle-cmd-reading-input',
 ;;    `icicle-color-history', `icicle-color-theme-history',
 ;;    `icicle-command-abbrev-history', `icicle-commands-for-abbrev',
@@ -1242,7 +1243,8 @@
 ;;    `icicle-Completions-sets-submenu',
 ;;    `icicle-Completions-sorting-submenu',
 ;;    `icicle-Completions-this-candidate-submenu',
-;;    `icicle-Completions-toggle-submenu'
+;;    `icicle-Completions-toggle-submenu',
+;;    `icicle-compute-narrowing-regexp-p',
 ;;    `icicle-confirm-exit-commands',
 ;;    `icicle-crm-local-completion-map',
 ;;    `icicle-crm-local-must-match-map',
@@ -1297,6 +1299,7 @@
 ;;    `icicle-must-not-match-regexp',
 ;;    `icicle-must-pass-after-match-predicate',
 ;;    `icicle-must-pass-predicate', `icicle-named-colors',
+;;    `icicle-narrow-regexp',
 ;;    `icicle-nb-candidates-before-truncation',
 ;;    `icicle-nb-of-other-cycle-candidates', `icicle-new-last-cmd',
 ;;    `icicle-next-apropos-complete-cycles-p',
