@@ -161,5 +161,12 @@ I still have the same question as above:
 
 Please let me know, when you can.  It would be good to take care of this problem automatically, if that is appropriate.  Thx -- DrewAdams
 
-----
-CategorySearchAndReplace 
+[new:[[Bernard Hurley]]:2012-12-16 11:27 UTC]
+
+Since searching for unicode characters in isearch+ is virtually impossible
+without the fix, I think it should be done automatically.  Ido users might be a
+bit surprised not to get an Ido search at this point but Ido isn't guaranteed to
+work everywhere, so I can't see why anyone shouldn't want the fix.  -- [[Bernard Hurley]]
+
+
+---- CategorySearchAndReplace 
