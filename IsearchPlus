@@ -163,10 +163,14 @@ Please let me know, when you can.  It would be good to take care of this problem
 
 [new:[[Bernard Hurley]]:2012-12-16 11:27 UTC]
 
-Since searching for unicode characters in isearch+ is virtually impossible
-without the fix, I think it should be done automatically.  Ido users might be a
-bit surprised not to get an Ido search at this point but Ido isn't guaranteed to
-work everywhere, so I can't see why anyone shouldn't want the fix.  -- [[Bernard Hurley]]
-
+Since searching for unicode characters in '''Isearch+''' is virtually impossible
+without the fix, '''I''' think it should be done automatically.  '''Ido''' users
+might be a bit surprised not to get an '''Ido''' search at this point but
+'''Ido''' isn't guaranteed to work everywhere, so I can't see why anyone
+shouldn't want the fix. I still think the fix should eventually come from the
+'''Ido''' developers because, for instance, if you use recursive minibuffers then
+'''Ido''' completion is turned off for the whole time a search is active, but
+nothing can be done about this without patching the '''Ido''' code. -- [[Bernard
+Hurley]]
 
 ---- CategorySearchAndReplace 
