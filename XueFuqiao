@@ -9,7 +9,7 @@ programs in EmacsLisp since 2011.  Started with [[XEmacs]], switched to
 I prefer to learn new things from reference manuals, instead of
 tutorials.  Currently I use Emacs on an old laptop with a
 ColemakKeyboard.  My favorite font is [http://www.proggyfonts.com
-ProggyTiny].
+ProggyTiny].  And I'm also a fan of science fiction.
 
 Many thanks to the people who contributed or are contributing to
 Emacs, [[XEmacs]] and EmacsWiki.  My daily life and work becomes very
@@ -19,7 +19,7 @@ I’m currently a student of [http://www.ncut.edu.cn NCUT].  My major is
 Communication Engineering.  Feel free to ask anything about Emacs :)
 
 I'm a [http://www.fsf.org/free-software-supporter/ Free Software
-Supporter].
+Supporter] and a [http://www.gp.org Green Party] supporter.
 
 You can contact me using (concat (list 120 102 113) [46] "free" "@" "gmail" "." "com")
 
@@ -69,8 +69,6 @@ Started physiotherapy on June, 2012.
 
 == Mottos ==
 * There is no system but GNU, and Linux is one of its kernels.
-
-* I've used Emacs for many years now, but have never reached its maximum potential.
 
 * It is a logical impossibility to make a language more powerful by omitting features, no matter how bad they may be.  -- [[WikiPedia:John_Hughes_(computer_scientist)|John Hughes]]
 
