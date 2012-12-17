@@ -96,7 +96,7 @@ SemanticBovinator (CVS only, at the end of 2001).
 : Uh, oh! I modified the s-expr grammar in xpath-parser.el without being aware of this ... :-/  -- OliverScholz
 
 
-Related links:http://www.emacswiki.org/emacs/?action=edit;id=XmlParser
+Related links:
 * [http://www.w3.org/TR/xpath W3 XPATH standard]
 
 == xslt.el ==
@@ -106,7 +106,7 @@ XSLT and XPATH together make an XSL engine. XEmacs comes with [http://cvs.xemacs
 Related links:
 
 * [http://www.w3.org/TR/xslt W3 XSLT standard]
-* [http://www.doxapest.co.id/index.php/pest-control-dan-anti-rayap Anti Rayap]
+
 ----
 CategoryCode
 CategoryXML
