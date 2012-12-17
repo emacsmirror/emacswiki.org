@@ -57,7 +57,7 @@
 
  
 
-;;; Customize
+;;; Customize:
 
 (defcustom sql-into-clause-at-the-end nil
   "*If t, add INTO clause at the end of a SELECT statement.
