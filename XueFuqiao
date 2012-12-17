@@ -35,7 +35,7 @@ make install
 == My Emacs Invocation ==
 
 <pre>
-emacsclient -c -a ""
+emacs -fs -nbi -fn "ProggyTiny-12" -cr coral &
 </pre>
 
 or sometimes:
@@ -87,7 +87,7 @@ https://github.com/xfq/xfq-emacs-init-files
 == My ~/.Xdefaults ==
 <pre>
 Emacs.bitmapIcon: off
-Emacs.font: ProggyTinyTT-12
+Emacs.font: ProggyTiny-12
 Emacs* menubar.margin: 0
 Emacs* toolBar: 0
 Emacs.useXIM: off
