@@ -31,6 +31,7 @@ See also CategoryVersionControl.
 * CompileInsideScratchbox - Run Emacs outside scratchbox, but compile inside scratchbox.
 * CreatingYourOwnCompileErrorRegexp
 * FlyMake -- Run `make' on the fly, highlighting errors/warnings in source buffer.
+* FlyNote -- run script, highlighting errors/warnings in source buffer.
 
 == Interpreted files ==
 * MakingScriptsExecutableOnSave
