@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Dec 15 15:43:21 2012 (-0800)
+;; Last-Updated: Sun Dec 16 17:49:32 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 25325
+;;     Update #: 25327
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -6648,7 +6648,7 @@ flips the behavior specified by that option." ; Doc string
          (icicle-bind-buffer-candidate-keys)
          (put-text-property 0 1 'icicle-fancy-candidates t prompt) ; First code
          (icicle-highlight-lighter)
-         (message "Matching buffer contents..."))
+         (message "Matching file contents..."))
   nil                                   ; Undo code
   (progn (icicle-unbind-buffer-candidate-keys) ; Last code
          (when (or (and init-pref-arg        (not icicle-kill-visited-buffers-flag))
@@ -6699,7 +6699,7 @@ different window.  You must be in Dired to use this command." ; Doc string
          (icicle-bind-buffer-candidate-keys)
          (put-text-property 0 1 'icicle-fancy-candidates t prompt) ; First code
          (icicle-highlight-lighter)
-         (message "Matching buffer contents..."))
+         (message "Matching file contents..."))
   nil                                   ; Undo code
   (progn (icicle-unbind-buffer-candidate-keys) ; Last code
          (when (or (and init-pref-arg        (not icicle-kill-visited-buffers-flag))
@@ -7734,7 +7734,7 @@ Used as the value of `minibuffer-completion-table'."
                                            (or find-file-run-dired  (not (file-directory-p filname)))
                                            (let* ((buf    (find-file-noselect filname))
                                                   (found  (with-current-buffer buf
-                                                            (message "Matching buffer contents...")
+                                                            (message "Matching file contents...")
                                                             (save-excursion
                                                               (goto-char (point-min))
                                                               (re-search-forward content-pat nil t)))))
