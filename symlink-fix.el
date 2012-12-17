@@ -118,6 +118,7 @@
 ;;   (setq ange-ftp-load-hook
 ;; 	(cons symlink-ange-ftp-hook-function ange-ftp-load-hook)))
 
+;;; Code:
  
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
