@@ -5,7 +5,7 @@
 ;; Author: Matthew L. Fidler
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Thu Feb  9 09:37:32 2012 (-0600)
-;; Version: 0.2
+;; Version: 0.4
 ;; Last-Updated: Fri Feb 10 20:59:30 2012 (-0600)
 ;;           By: Matthew L. Fidler
 ;;     Update #: 52
@@ -80,7 +80,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
-;; 13-Dec-2012    Matthew L. Fidler  
+;; 18-Dec-2012    Matthew L. Fidler  
+;;    Last-Updated: Fri Feb 10 20:59:30 2012 (-0600) #52 (Matthew L. Fidler)
+;;    Fixed yasnippet 0.8 problems
+;; 13-Dec-2012    Matthew L. Fidler
 ;;    Last-Updated: Fri Feb 10 20:59:30 2012 (-0600) #52 (Matthew L. Fidler)
 ;;    Use org-readme to publish
 ;; 
@@ -201,17 +204,25 @@
       (when (and fn (functionp fn))
 	(funcall fn f)))
      ((eq type 'yasnippet)
-      (when (fboundp 'yas/expand-snippet)
+      (when (or (fboundp 'yas-expand-snippet) (fboundp 'yas/expand-snippet))
 	(let (templates)
           (setq templates
                 (mapcan #'(lambda (table)
-                            (yas/fetch table text))
-                        (yas/get-snippet-tables)))
+                            (if (fboundp 'yas--fetch)
+                                (yas--fetch table text)
+                              (if (fboundp 'yas/fetch)
+                                  (yas/fetch table text))))
+                        (if (fboundp 'yas--get-snippet-tables)
+                            (yas--get-snippet-tables)
+                          (yas/get-snippet-tables))))
 	  (when templates
 	    (set-mark (point))
 	    (let ((deactivate-mark nil))
 	      (insert f))
-            (yas/expand-or-prompt-for-template templates))))))))
+            (if (fboundp 'yas--expand-or-prompt-for-template)
+                (yas--expand-or-prompt-for-template templates)
+              (if (fbountp 'yas/expand-or-prompt-for-template)
+                  (yas/expand-or-prompt-for-template templates))))))))))
 
 (defun extend-dnd-dir (dir list)
   "Extended DND on a directory"
@@ -222,8 +233,10 @@
 	    (message "%s,%s" f list)
 	    (setq exts (assoc (file-name-extension f) list))
 	    (when exts
-	      (when (fboundp 'yas/exit-all-snippets)
-		(yas/exit-all-snippets))
+	      (if (fboundp 'yas-exit-all-snippets)
+                  (yas-exit-all-snippets)
+                (when (fboundp 'yas/exit-all-snippets)
+                  (yas/exit-all-snippets)))
 	      (extend-dnd-file f (nth 1 exts) (nth 2 exts))
 	      (setq ret 't)))
 	  files)
