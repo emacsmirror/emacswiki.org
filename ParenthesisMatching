@@ -51,6 +51,16 @@ with <code>\s(</code>. For closing delimiters, use <code>\s)</code>
 
 See NavigatingParentheses for motion commands available for these expressions.
 
+== Smartparens ==
+
+[new]
+
+Unfortunately, syntax-table matching has a limitation of only allowing pairs of one character. This is inconvenient in modes like LaTeX mode where many pairs are two or more characters, for example: \{ \}, \[ \], \big( \big), but also C mode where you can have a comment pair /* */ and many more.
+
+[https://github.com/Fuco1/smartparens Smartparens] handle these cases and enable you to navigate and highlight arbitrarily complex (see note 1) user-defined pairs. It mirrors most of the built-in navigation/manipulation functions in emacs and adds more. For a complete up-to-date list refer to the readme section on github homepage.
+
+Note 1: currently up to length of 10, but that is only for optimization purposes, the limit can be raised
+
 ----
 CategoryParentheses
 
