@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Tue Dec 18 08:38:06 2012 (-0800)
+;; Last-Updated: Tue Dec 18 15:47:24 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 6281
+;;     Update #: 6283
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -5271,7 +5271,7 @@ Try to guess a useful default value for FILE2, as follows:
                    (cond
                      (file-at-mark)
                      ((auto-save-file-name-p file-sans-dir)
-                      (expand-file-name (substring (substring file-sans-dir 1) 0 -1) file-dir))
+                      (expand-file-name (substring file-sans-dir 1 -1) file-dir))
                      ((backup-file-name-p file-sans-dir)
                       (expand-file-name (file-name-sans-versions file-sans-dir) file-dir))
                      (last-backup)
