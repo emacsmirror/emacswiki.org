@@ -7,11 +7,11 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Sat Nov 17 14:35:45 2012 (-0800)
+;; Last-Updated: Tue Dec 18 08:38:06 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 6259
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
-;; Doc URL: http://www.emacswiki.org/emacs/DiredPlus
+;;     Update #: 6281
+;; URL: http://www.emacswiki.org/dired+.el
+;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
 ;;
@@ -427,6 +427,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/12/18 dadams
+;;     diredp-ediff: Better default for FILE2.  Thx to Michael Heerdegen.
+;;     Require subr-21.el for Emacs 20.
 ;; 2012/11/17 dadams
 ;;     Added: derived-mode-p (for Emacs < 22), diredp-ensure-mode.
 ;;     Use diredp-ensure-mode everywhere for mode, so compatible with Sunrise Commander etc.
@@ -932,6 +935,8 @@
 
 ;; Don't require Icicles, else get recursive requires.
 ;; (require 'icicles nil t) ;; (no error if not found): icicle-read-string-completing
+
+(when (< emacs-major-version 21) (require 'subr-21)) ;; replace-regexp-in-string
 
 ;; Provide macro for code byte-compiled using Emacs < 22.
 (eval-when-compile
@@ -5241,15 +5246,37 @@ your ~/.emacs, where VALUE is 1 to reuse or -1 to not reuse:
 FILE2 defaults to the file at the cursor as well.  If you enter just a
 directory name for FILE2, then the file at the cursor is compared with
 a file of the same name in that directory.  FILE2 is the second file
-given to `ediff'; the file at the cursor is the first."
-  (interactive
-   (progn
-     (require 'ediff)
-     (list (ediff-read-file-name        ; In `ediff.el'.
-            (format "Compare %s with" (dired-get-filename t))
-            (dired-current-directory) (dired-get-filename)))))
-  (ediff-files (dired-get-filename) file2)) ; In `ediff.el'.
+given to `ediff'; the file at the cursor is the first.
 
+Try to guess a useful default value for FILE2, as follows:
+
+* If the mark is active, use the file at mark.
+* Else if the file at cursor is a autosave file or a backup file, use
+  the corresponding base file.
+* Else if there is any backup file for the file at point, use the
+  newest backup file for it.
+* Else use the file at point."
+  (interactive
+   (progn (require 'ediff)
+          (list (ediff-read-file-name   ; In `ediff.el'.
+                 (format "Compare %s with" (dired-get-filename t))
+                 (dired-current-directory)
+                 (let* ((file           (dired-get-filename))
+                        (file-sans-dir  (file-name-nondirectory file))
+                        (file-dir       (file-name-directory file))
+                        (file-at-mark   (and (and transient-mark-mode  mark-active)
+                                             (save-excursion (goto-char (mark t))
+                                                             (dired-get-filename t t))))
+                        (last-backup    (file-newest-backup file)))
+                   (cond
+                     (file-at-mark)
+                     ((auto-save-file-name-p file-sans-dir)
+                      (expand-file-name (substring (substring file-sans-dir 1) 0 -1) file-dir))
+                     ((backup-file-name-p file-sans-dir)
+                      (expand-file-name (file-name-sans-versions file-sans-dir) file-dir))
+                     (last-backup)
+                     (t file)))))))
+  (ediff-files (dired-get-filename) file2)) ; In `ediff.el'.
 
 (defun diredp-fewer-than-2-files-p (arg)
   "Return non-nil iff fewer than two files are to be treated by dired.
