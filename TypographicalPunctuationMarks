@@ -138,8 +138,8 @@ There exists a "quadriple prime" at Unicode position U+2057. I haven't found a f
 
 Used in Russian/Ukrainian typesetting:
 
-* '##C-x 8 <##' gives a « (french open quote)
-* '##C-x 8 >##' gives a » (french close quote).
+* '##C-x 8 <##' gives « (french open quote)
+* '##C-x 8 >##' gives » (french close quote).
 
 == Polish quotation marks ==
 
