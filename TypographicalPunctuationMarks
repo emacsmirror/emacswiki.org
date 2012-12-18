@@ -134,6 +134,13 @@ To insert a single prime, type '##^'##'. To insert a double prime, type '##^''##
 There exists a "quadriple prime" at Unicode position U+2057. I haven't found a font that contains it, but adding it to the above code is trivial.
 
 [:OtherStyles]
+== French quoting style ==
+
+Used in Russian/Ukrainian typesetting:
+
+* '##C-x 8 <##' gives a « (french open quote)
+* '##C-x 8 >##' gives a » (french close quote).
+
 == Polish quotation marks ==
 
 To use Polish-style quotation marks, use the following code:
