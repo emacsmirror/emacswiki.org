@@ -370,6 +370,22 @@ may be seen as a limitation.
    
    (setq forward-sexp-function 'forward-pexp)
 
+=== Smartparens ===
+
+[new]
+
+[https://github.com/Fuco1/smartparens Smartparens] package provides additional functions for navigating and manipulating strictly balanced expressions. Here's a short list of some mentioned on this page, all of them (and the rest) are described in the readme file on github page.
+
+* sp-forward-sexp (&optional arg)         ;; C-M-f
+* sp-backward-sexp (&optional arg)        ;; C-M-b
+* sp-down-sexp (&optional arg)            ;; C-M-d
+* sp-backward-down-sexp (&optional arg)   ;; C-M-a
+* sp-up-sexp (&optional arg)              ;; C-M-e
+* sp-backward-up-sexp (&optional arg)     ;; C-M-u
+* sp-next-sexp (&optional arg)            ;; C-M-n
+* sp-previous-sexp (&optional arg)        ;; C-M-p
+
+Besides working on strictly balanced expressions, they also work on arbitrarily complex user-defined pairs. They also never signal the "scan error" as the built-in functions but instead perform a "natural" operation like jumping out of the list one level up (with sp-forward-sexp) etc.
 
 == How to find next delimiter ==
 
@@ -470,7 +486,6 @@ Answer: In some environments, C-[ is equivalent to Esc, just like C-i is equival
 Also look here: http://stackoverflow.com/questions/1792326/how-do-i-bind-a-command-to-c-i-without-changing-tab
 
 -- RaffaeleRicciardi
-
 
 ----
 CategoryParentheses 
