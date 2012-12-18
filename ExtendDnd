@@ -8,7 +8,7 @@
 * <b>Author </b> --  Matthew L. Fidler
 * <b>Maintainer </b> --  Matthew L. Fidler
 * <b>Created </b> --  Thu Feb  9 09:37:32 2012 (-0600)
-* <b>Version </b> --  0.2
+* <b>Version </b> --  0.4
 * <b>Last-Updated </b> --  Fri Feb 10 20:59:30 2012 (-0600)
 * <b>By </b> --  Matthew L. Fidler
 * <b>Update # </b> --  52
@@ -78,7 +78,41 @@ write.csv(d,"${1:`yas/selected-text`}");
 == Functions ==
 === Interactive Functions ===
 
+==== extend-dnd-activate ====
+<tt>(extend-dnd-activate)</tt>
+
+Activates extend-dnd
+
+==== extend-dnd-yas-add ====
+<tt>(extend-dnd-yas-add)</tt>
+
+Adds currently opened buffer to DND snippet list
+
 === Internal Functions ===
+
+==== extend-add-to-alist ====
+<tt>(extend-add-to-alist ALIST-VAR ELT-CONS &optional NO-REPLACE)</tt>
+
+Add to the value of ALIST-VAR an element ELT-CONS if it isn't there yet.
+If an element with the same car as the car of ELT-CONS is already present,
+replace it with ELT-CONS unless NO-REPLACE is non-nil; if a matching
+element is not already present, add ELT-CONS to the front of the alist.
+The test for presence of the car of ELT-CONS is done with <tt>equal</tt>.
+
+==== extend-dnd ====
+<tt>(extend-dnd URI)</tt>
+
+Extended Drag and drop support
+
+==== extend-dnd-dir ====
+<tt>(extend-dnd-dir DIR LIST)</tt>
+
+Extended DND on a directory
+
+==== extend-dnd-file ====
+<tt>(extend-dnd-file FILE TEXT TYPE)</tt>
+
+Handle Drag and Drop for FILE of TYPE with TEXT
 == Variables ==
 === Customizable Variables ===
 
@@ -100,6 +134,7 @@ Extend Drag and Drop supported files in generic modes, other than <tt>ess-mode</
 Determines if EXTEND drag and drop is active.
 == History ==
 
+* <b>18-Dec-2012 </b> --   Fixed yasnippet 0.8 problems (Matthew L. Fidler)
 * <b>13-Dec-2012 </b> --   Use org-readme to publish  (Matthew L. Fidler)
 
 
