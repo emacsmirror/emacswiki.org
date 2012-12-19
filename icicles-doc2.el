@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Dec  1 21:46:28 2012 (-0800)
+;; Last-Updated: Wed Dec 19 20:00:20 2012 (-0100)
 ;;           By: dradams
-;;     Update #: 29107
+;;     Update #: 29111
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -745,7 +745,7 @@
 ;;  reading this doc in file `icicles-doc2.el', then just use
 ;;  `icicle-occur' with progressive completion:
 ;;
-;;    C-c ' which M-SPC you M-SPC how
+;;    C-c ' which S-SPC you S-SPC how
 ;;
 ;;  That narrows things down to four lines that you can then navigate
 ;;  among.  Progressive completion gives Icicles search a power boost.
@@ -1801,7 +1801,7 @@
 ;;  E.g., type:
 ;;
 ;;   `red S-TAB'                    to match files with the tag `red'
-;;   `red M-SPC green M-SPC blue'   to match files with tags `red',
+;;   `red S-SPC green S-SPC blue'   to match files with tags `red',
 ;;                                  `green', and `blue' (in any order)
 ;;
 ;;  That assumes that these tags do not also match any file names.
@@ -1815,7 +1815,7 @@
 ;;  tags, type something to match the file name before the `C-M-j'.
 ;;  E.g., type:
 ;;
-;;   `2011 C-M-j red M-SPC blue'    to match files tagged `red' and
+;;   `2011 C-M-j red S-SPC blue'    to match files tagged `red' and
 ;;                                  `blue' that have `2011' in their
 ;;                                  names
 ;;
@@ -4270,7 +4270,7 @@
 ;;  Whenever multiple completion candidates are available, you can use
 ;;  Icicles completion, with all of its features: cycling of
 ;;  candidates (`TAB', `down', or `next'), apropos (regexp) completion
-;;  (`S-TAB'), progressive completion (`M-SPC'), help on individual
+;;  (`S-TAB'), progressive completion (`S-SPC'), help on individual
 ;;  candidates (`C-M-RET'), and so on.
 ;;
 ;;(@* "Dynamic Abbreviation")
@@ -9073,7 +9073,7 @@
 ;;  as the PREDICATE and use `icicle-must-pass-after-match-predicate'
 ;;  instead.
 ;;
-;;  Here's something to keep in mind wrt
+;;  Here is something to keep in mind about
 ;;  `icicle-must-pass-after-match-predicate':
 ;;
 ;;  It is often a good idea to use this predicate rather than pass a
