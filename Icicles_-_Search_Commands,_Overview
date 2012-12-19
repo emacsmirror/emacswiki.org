@@ -459,7 +459,7 @@ the words `which', `you', and `how', in any order?  If you are
 reading this doc in file <tt>[[icicles-doc2.el]]</tt>, then just use
 `icicle-occur' with progressive completion:
 
-  C-c ' which M-SPC you M-SPC how
+  C-c ' which S-SPC you S-SPC how
 
 That narrows things down to four lines that you can then navigate
 among.  Progressive completion gives '''Icicles''' search a power boost.
