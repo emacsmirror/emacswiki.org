@@ -8,9 +8,11 @@ You can find Emacs related stuff on http://relaxng.org/ page.
 
 == RNC Emacs Mode ==
 
-[http://www.pantor.com/download.html home page]
+[http://www.pantor.com/download.html original home page], currently defunct.
 
-A small emacs mode for editing RELAX NG schemas in the compact syntax. XML syntax not supported. Written by David Rosenborg. Open source (BSD license).
+Available on the MELPA package archive, and on [https://github.com/TreeRex/rnc-mode GitHub].
+
+A small Emacs mode for editing RELAX NG schemas in the compact syntax. XML syntax not supported. Written by David Rosenborg. Open source (BSD license).
 
 = Converting schemata to RNC format =
 
