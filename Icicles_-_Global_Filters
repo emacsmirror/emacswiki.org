@@ -73,7 +73,7 @@ candidate) then it can sometimes be more efficient to pass `nil' as
 the ##PREDICATE## and use `icicle-must-pass-after-match-predicate'
 instead.
 
-Here's something to keep in mind wrt
+Here is something to keep in mind about
 `icicle-must-pass-after-match-predicate':
 
 It is often a good idea to use this predicate rather than pass a
