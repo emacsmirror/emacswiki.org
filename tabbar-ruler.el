@@ -5,7 +5,7 @@
 ;; Author: Matthew Fidler, Nathaniel Cunningham
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Mon Oct 18 17:06:07 2010 (-0500)
-;; Version: 0.16
+;; Version: 0.18
 ;; Last-Updated: Sat Dec 15 15:44:34 2012 (+0800)
 ;;           By: Matthew L. Fidler
 ;;     Update #: 663
@@ -51,6 +51,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 19-Dec-2012    Matthew L. Fidler  
+;;    Last-Updated: Sat Dec 15 15:44:34 2012 (+0800) #663 (Matthew L. Fidler)
+;;    Changed slope.  Made the background color the default background color
+;;    if unspecified.  Made tabbar-hex-color return "None" if not defined
 ;; 15-Dec-2012    Matthew L. Fidler  
 ;;    Last-Updated: Sat Dec 15 15:44:34 2012 (+0800) #663 (Matthew L. Fidler)
 ;;    Made sure that the tabbr-ruler-separator-image is at least 17 pixels high
@@ -193,19 +197,21 @@
                          (lambda(val)
                            (format "%02X" (* val 255)))
                          (color-name-to-rgb color) ""))))
-     (t (setq ret nil)))
+     (t (setq ret "None")))
     (symbol-value 'ret)))
 
 (defun tabbar-install-faces (&optional frame)
   "Installs faces for a frame."
   (interactive)
+  
   (copy-face 'mode-line 'tabbar-default frame)
   (copy-face 'default 'tabbar-selected frame)
   (copy-face 'shadow 'tabbar-unselected frame)
   
   (set-face-attribute 'tabbar-unselected frame
-                      :background "gray50"
-                      :foreground "gray10")
+                      :inherit 'mode-line-buffer-id
+                      :background (face-attribute 'mode-line-inactive :background)
+                      :box nil)
   
   
   (copy-face 'mode-line-buffer-id 'tabbar-selected-highlight frame)
@@ -275,8 +281,8 @@ When FACE1 = FACE2, this creates a non-selected separator
 
 When FACE1 does not equal FACE2, this creates a selected separator
 "
-  (let* ((h (or height (max 17 (frame-char-height))))
-         (m (or slope 1.7))
+  (let* ((h (or height (max 20 (frame-char-height))))
+         (m (or slope 2.5))
          (w (/ h m))
          (i h)
          x1 x2 e1 e2 e3 e4
@@ -284,7 +290,7 @@ When FACE1 does not equal FACE2, this creates a selected separator
          (color1-border (if face1 (tabbar-hex-color (face-attribute face1 :foreground)) "None"))
          (color2 (if face2 (tabbar-hex-color (face-attribute face2 :background)) "None"))
          (color2-border (if face2 (tabbar-hex-color (face-attribute face2 :foreground)) "None"))
-         (color-background (if face3 (tabbar-hex-color (face-attribute face3 :background)) "None"))
+         (color-background (if face3 (tabbar-hex-color (face-attribute face3 :background)) (tabbar-hex-color (face-attribute 'default :background))))
          (ret "/* XPM */\nstatic char * "))
     (cond
      ((string= color1 color2)
