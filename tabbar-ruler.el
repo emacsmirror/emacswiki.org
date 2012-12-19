@@ -5,7 +5,7 @@
 ;; Author: Matthew Fidler, Nathaniel Cunningham
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Mon Oct 18 17:06:07 2010 (-0500)
-;; Version: 0.19
+;; Version: 0.21
 ;; Last-Updated: Sat Dec 15 15:44:34 2012 (+0800)
 ;;           By: Matthew L. Fidler
 ;;     Update #: 663
@@ -52,6 +52,9 @@
 ;;
 ;;; Change Log:
 ;; 19-Dec-2012    Matthew L. Fidler  
+;;    Last-Updated: Sat Dec 15 15:44:34 2012 (+0800) #663 (Matthew L. Fidler)
+;;    Added back popup-menu
+;; 19-Dec-2012    Matthew L. Fidler
 ;;    Last-Updated: Sat Dec 15 15:44:34 2012 (+0800) #663 (Matthew L. Fidler)
 ;;    Upload to marmalade
 ;; 19-Dec-2012    Matthew L. Fidler  
@@ -186,6 +189,131 @@
 (require 'tabbar)
 (require 'easymenu)
 
+
+(defun tabbar-popup-menu ()
+  "Keymap for pop-up menu.  Emacs only."
+  `(,(format "%s" (nth 0 tabbar-last-tab))
+    ["Close" tabbar-popup-close]
+    ["Close all BUT this" tabbar-popup-close-but]
+    "--"
+    ["Save" tabbar-popup-save]
+    ["Save As" tabbar-popup-save-as]
+    "--"
+    ["Rename File" tabbar-popup-rename
+     :active (and (buffer-file-name (tabbar-tab-value tabbar-last-tab))
+                  (file-exists-p (buffer-file-name (tabbar-tab-value tabbar-last-tab))))]
+    ["Delete File" tabbar-popup-delete
+     :active (and (buffer-file-name (tabbar-tab-value tabbar-last-tab))
+                  (file-exists-p (buffer-file-name (tabbar-tab-value tabbar-last-tab))))]
+    "--"
+    ["Gzip File" tabbar-popup-gz
+     :active (and (executable-find "gzip")
+                  (buffer-file-name (tabbar-tab-value tabbar-last-tab))
+                  (file-exists-p (buffer-file-name (tabbar-tab-value tabbar-last-tab)))
+                  (not (string-match "\\.gz\\(?:~\\|\\.~[0-9]+~\\)?\\'" (buffer-file-name (tabbar-tab-value tabbar-last-tab)))))]
+    ["Bzip File" tabbar-popup-bz2
+     :active (and (executable-find "bzip2")
+                  (buffer-file-name (tabbar-tab-value tabbar-last-tab))
+                  (file-exists-p (buffer-file-name (tabbar-tab-value tabbar-last-tab)))
+                  (not (string-match "\\.bz2\\(?:~\\|\\.~[0-9]+~\\)?\\'" (buffer-file-name (tabbar-tab-value tabbar-last-tab)))))]
+    ["Decompress File" tabbar-popup-decompress
+     :active (and
+              (buffer-file-name (tabbar-tab-value tabbar-last-tab))
+              (file-exists-p (buffer-file-name (tabbar-tab-value tabbar-last-tab)))
+              (string-match "\\(?:\\.\\(?:Z\\|gz\\|bz2\\|tbz2?\\|tgz\\|svgz\\|sifz\\|xz\\|dz\\)\\)\\(\\(?:~\\|\\.~[0-9]+~\\)?\\)\\'"
+                            (buffer-file-name (tabbar-tab-value tabbar-last-tab))))
+     ]
+    ;;    "--"
+    ;;    ["Print" tabbar-popup-print]
+    ))
+
+(defun tabbar-popup-print ()
+  "Print Buffer"
+  (interactive))
+
+(defun tabbar-popup-close ()
+  "Tab-bar pop up close"
+  (interactive)
+  (funcall tabbar-close-tab-function tabbar-last-tab))
+
+(defun tabbar-popup-close-but ()
+  "Tab-bar close all BUT this buffer"
+  (interactive)
+  (let ((cur (symbol-value (funcall tabbar-current-tabset-function))))
+    (mapc (lambda(tab)
+            (unless (eq tab tabbar-last-tab)
+              (funcall tabbar-close-tab-function tab)))
+          cur)))
+
+(defun tabbar-popup-save-as ()
+  "Tab-bar save as"
+  (interactive)
+  (let* ((buf (tabbar-tab-value tabbar-last-tab)))
+    (save-excursion
+      (set-buffer buf)
+      (call-interactively 'write-file))))
+
+(defun tabbar-popup-rename ()
+  "Tab-bar rename"
+  (interactive)
+  (let* ((buf (tabbar-tab-value tabbar-last-tab))
+         (fn (buffer-file-name buf)))
+    (save-excursion
+      (set-buffer buf)
+      (when (call-interactively 'write-file)
+        (if (string= fn (buffer-file-name (current-buffer)))
+            (error "Buffer has same name.  Just saved instead.")
+          (delete-file fn))))))
+
+(defun tabbar-popup-delete ()
+  "Tab-bar delete file"
+  (interactive)
+  (let* ((buf (tabbar-tab-value tabbar-last-tab))
+         (fn (buffer-file-name buf)))
+    (when (yes-or-no-p (format "Are you sure you want to delete %s?" buf))
+      (save-excursion
+        (set-buffer buf)
+        (set-buffer-modified-p nil)
+        (kill-buffer (current-buffer))
+        (delete-file fn)))))
+
+(defun tabbar-popup-remove-compression-ext (file-name &optional new-compression)
+  "Removes compression extension, and possibly adds a new extension"
+  (let ((ret file-name))
+    (when (string-match "\\(\\(?:\\.\\(?:Z\\|gz\\|bz2\\|tbz2?\\|tgz\\|svgz\\|sifz\\|xz\\|dz\\)\\)?\\)\\(\\(?:~\\|\\.~[0-9]+~\\)?\\)\\'" ret)
+      (setq ret (replace-match (concat (or new-compression "") (match-string 2 ret)) t t ret)))
+    (symbol-value 'ret)))
+
+(defun tabbar-popup-gz (&optional ext err)
+  "Gzips the file"
+  (interactive)
+  (let* ((buf (tabbar-tab-value tabbar-last-tab))
+         (fn (buffer-file-name buf))
+         (nfn (tabbar-popup-remove-compression-ext fn (or ext ".gz"))))
+    (if (string= fn nfn)
+        (error "Already has that compression!")
+      (save-excursion
+        (set-buffer buf)
+        (write-file nfn)
+        (if (not (file-exists-p nfn))
+            (error "%s" (or err "Could not gzip file!"))
+          (when (file-exists-p fn)
+            (delete-file fn)))))))
+
+(defun tabbar-popup-bz2 ()
+  "Bzip file"
+  (interactive)
+  (tabbar-popup-gz ".bz2" "Could not bzip the file!"))
+
+(defun tabbar-popup-decompress ()
+  "Decompress file"
+  (interactive)
+  (tabbar-popup-gz "" "Could not decompress the file!"))
+
+(defun tabbar-context-menu ()
+  "Pop up a context menu."
+  (interactive)
+  (popup-menu (tabbar-popup-menu)))
 
 
 (defun tabbar-hex-color (color)
