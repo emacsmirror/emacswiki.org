@@ -99,7 +99,7 @@ You can match your input against the file name or tags or both.
 E.g., type:
 
 * `##red S-TAB##'                    to match files with the tag `red'
-* `##red M-SPC green M-SPC blue##'   to match files with tags `red',
+* `##red S-SPC green S-SPC blue##'   to match files with tags `red',
                                 `green', and `blue' (in any order)
 
 That assumes that these tags do not also match any file names.
@@ -113,7 +113,7 @@ to get past the file-name field.  To match both file name and
 tags, type something to match the file name before the `C-M-j'.
 E.g., type:
 
-: `##2011 C-M-j red M-SPC blue##'    to match files tagged `red' and
+: `##2011 C-M-j red S-SPC blue##'    to match files tagged `red' and
 `blue' that have `2011' in their names
 
 
