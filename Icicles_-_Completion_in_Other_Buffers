@@ -28,7 +28,7 @@ Emacs library `<code>dabbrev.el</code>', via `##C-M-/##'.
 
 Whenever multiple completion candidates are available, you can use '''Icicles'''
 completion, with all of its features: [[Icicles - Cycling Completions|cycling]] of candidates (`TAB', `down', or `next'), [[apropos completion|apropos]]
-([[regexp]]) completion (`S-TAB'), [[progressive completion]] (`M-SPC'), help on individual candidates (`C-M-RET'), and so on.
+([[regexp]]) completion (`S-TAB'), [[progressive completion]] (`S-SPC'), help on individual candidates (`C-M-RET'), and so on.
 
 
 
