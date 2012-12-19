@@ -7,12 +7,12 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Oct 16 13:33:18 1995
 ;; Version: 21.0
-;; Last-Updated: Sat Dec  8 13:56:11 2012 (-0800)
+;; Last-Updated: Wed Dec 19 09:13:09 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 1410
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/icomplete+.el
-;; Doc URL: http://emacswiki.org/emacs/IcompleteMode
-;; Keywords: help, abbrev, internal, extensions, local
+;;     Update #: 1464
+;; URL: http://www.emacswiki.org/icomplete+.el
+;; Doc URL: http://emacswiki.org/IcompleteMode
+;; Keywords: help, abbrev, internal, extensions, local, completion, matching
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;;
 ;; Features that might be required by this library:
@@ -82,6 +82,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/12/19 dadams
+;;     icomplete-completions: Use width of icomplete-separator, not 1 or 2.  Use string-width more.
+;;     icomplete-separator: Use same default value as vanilla Emacs.
 ;; 2012/12/08 dadams
 ;;     icompletep-exact-separator: Different default value - Unicode star for Emacs 23+, * otherwise.
 ;; 2012/12/05 dadams
@@ -250,7 +253,7 @@ Don't forget to mention your Emacs and library versions."))
     :type 'boolean :group 'icomplete))
 
 (when (boundp 'icomplete-show-key-bindings) ; Emacs 20-24.2
-  (defcustom icomplete-separator "  "
+  (defcustom icomplete-separator " | "
     "String used to separate completion alternatives."
     :type 'string :group 'icomplete :version "24.4"))
 
@@ -562,10 +565,12 @@ following the rest of the icomplete info:
             (while (and comps  (< prospects-len icompletep-prospects-length))
               (setq comp   (substring (car comps) most-len)
                     comps  (cdr comps))
-              (cond ((string-equal comp "") (setq most-is-exact  t))
+              (cond ((string= comp "") (setq most-is-exact  t))
                     ((member comp prospects))
                     (t (setq prospects      (cons comp prospects)
-                             prospects-len  (+ (length comp) 1 prospects-len))))))
+                             prospects-len  (+ prospects-len
+                                               (string-width comp)
+                                               (string-width icomplete-separator)))))))
           (setq prompt-rest
                 (if prospects
                     (concat open-bracket-prospects
@@ -581,8 +586,7 @@ following the rest of the icomplete info:
                       ""
                     (concat " [ " (and (not keys)  "Matched") keys " ]"))))
           (unless (string= "" prompt-rest)
-            (put-text-property 0 (length prompt-rest)
-                               'face 'icompletep-choices prompt-rest))
+            (put-text-property 0 (length prompt-rest) 'face 'icompletep-choices prompt-rest))
           (cond ((< nb-candidates 2)
                  (setq prompt  (concat "      " determ prompt-rest)) ; 6 spaces.
                  (when (eq last-command this-command)
@@ -594,8 +598,9 @@ following the rest of the icomplete info:
                                     'face 'icompletep-nb-candidates nb-candidates-string)
                  (setq prompt  (concat nb-candidates-string determ prompt-rest))))
           ;; Highlight keys.
-          (when (stringp keys) (put-text-property (+ 9 (length determ)) (1- (length prompt))
-                                                  'face 'icompletep-keys prompt))
+          (when (stringp keys)
+            (put-text-property (+ 9 (length determ)) (1- (length prompt))
+                               'face 'icompletep-keys prompt))
           ;; Append mention of number of other cycle candidates (from `icicles.el').
           (when (and (boundp 'icicle-last-completion-candidate)
                      (> icicle-nb-of-other-cycle-candidates 0)
@@ -706,7 +711,7 @@ following the rest of the icomplete info:
 				      2	; for `icicle-completion-prompt-overlay'
 				    0)
                                   (string-width (buffer-string)) ; for prompt
-				  (length nb-cands-string)
+				  (string-width nb-cands-string)
 				  (length determ) ; for determined part
 				  2     ; for "{ "
 				  -2    ; for missing last "  " after last candidate
@@ -728,7 +733,7 @@ following the rest of the icomplete info:
                 ;;     (length most)
                 ;; Else, use try-completion.
                 (let ((comps-prefix  (try-completion "" comps)))
-                  (and (stringp comps-prefix)  (length comps-prefix))))
+                  (and (stringp comps-prefix)  (string-width comps-prefix))))
                prompt prompt-rest prospects most-is-exact comp limit)
           (when determ
             (put-text-property 0 (length determ) 'face 'icompletep-determined determ))
@@ -737,10 +742,10 @@ following the rest of the icomplete info:
             (while (and comps  (not limit))
               (setq comp   (if prefix-len (substring (car comps) prefix-len) (car comps))
                     comps  (cdr comps))
-              (cond ((string-equal comp "") (setq most-is-exact  t))
+              (cond ((string= comp "") (setq most-is-exact  t))
                     ((member comp prospects))
                     (t (setq prospects-len  (+ (string-width comp)
-                                               2 ; for "  "
+                                               (string-width icomplete-separator)
                                                prospects-len))
                        (if (< prospects-len prospects-max)
                            (push comp prospects)
@@ -772,8 +777,9 @@ following the rest of the icomplete info:
                                     'face 'icompletep-nb-candidates nb-cands-string)
                  (setq prompt  (concat nb-cands-string determ prompt-rest))))
           ;; Highlight keys.
-          (when (stringp keys) (put-text-property (+ 9 (length determ)) (1- (length prompt))
-                                                  'face 'icompletep-keys prompt))
+          (when (stringp keys)
+            (put-text-property (+ 9 (length determ)) (1- (length prompt))
+                               'face 'icompletep-keys prompt))
           ;; Append mention of number of other cycle candidates (from `icicles.el').
           (when (and (boundp 'icicle-last-completion-candidate)
                      (> icicle-nb-of-other-cycle-candidates 0)
@@ -890,7 +896,7 @@ following the rest of the icomplete info:
 				      2	; for `icicle-completion-prompt-overlay'
 				    0)
                                   (string-width (buffer-string)) ; for prompt
-				  (length nb-cands-string)
+				  (string-width nb-cands-string)
 				  (length determ) ; for determined part
 				  2     ; for "{ "
 				  -2    ; for missing last "  " after last candidate
@@ -911,7 +917,7 @@ following the rest of the icomplete info:
                 ;;     (length most) ; Common case.
                 ;; Else, use try-completion.
                 (let ((comps-prefix  (try-completion "" comps)))
-                  (and (stringp comps-prefix)  (length comps-prefix))))
+                  (and (stringp comps-prefix)  (string-width comps-prefix))))
                prompt prompt-rest prospects most-is-exact comp limit)
           (when determ
             (put-text-property 0 (length determ) 'face 'icompletep-determined determ))
@@ -920,10 +926,10 @@ following the rest of the icomplete info:
             (while (and comps  (not limit))
               (setq comp   (if prefix-len (substring (car comps) prefix-len) (car comps))
                     comps  (cdr comps))
-              (cond ((string-equal comp "") (setq most-is-exact  t))
+              (cond ((string= comp "") (setq most-is-exact  t))
                     ((member comp prospects))
                     (t (setq prospects-len  (+ (string-width comp)
-                                               2 ; for "  "
+                                               (string-width icomplete-separator)
                                                prospects-len))
                        (if (< prospects-len prospects-max)
                            (push comp prospects)
@@ -955,8 +961,9 @@ following the rest of the icomplete info:
                                     'face 'icompletep-nb-candidates nb-cands-string)
                  (setq prompt  (concat nb-cands-string determ prompt-rest))))
           ;; Highlight keys.
-          (when (stringp keys) (put-text-property (+ 9 (length determ)) (1- (length prompt))
-                                                  'face 'icompletep-keys prompt))
+          (when (stringp keys)
+            (put-text-property (+ 9 (length determ)) (1- (length prompt))
+                               'face 'icompletep-keys prompt))
           ;; Append mention of number of other cycle candidates (from `icicles.el').
           (when (and (boundp 'icicle-last-completion-candidate)
                      (> icicle-nb-of-other-cycle-candidates 0)
