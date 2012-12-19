@@ -5,7 +5,7 @@
 ;; Author: Matthew Fidler, Nathaniel Cunningham
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Mon Oct 18 17:06:07 2010 (-0500)
-;; Version: 0.18
+;; Version: 0.19
 ;; Last-Updated: Sat Dec 15 15:44:34 2012 (+0800)
 ;;           By: Matthew L. Fidler
 ;;     Update #: 663
@@ -51,6 +51,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 19-Dec-2012    Matthew L. Fidler  
+;;    Last-Updated: Sat Dec 15 15:44:34 2012 (+0800) #663 (Matthew L. Fidler)
+;;    Upload to marmalade
 ;; 19-Dec-2012    Matthew L. Fidler  
 ;;    Last-Updated: Sat Dec 15 15:44:34 2012 (+0800) #663 (Matthew L. Fidler)
 ;;    Changed slope.  Made the background color the default background color
@@ -282,7 +285,7 @@ When FACE1 = FACE2, this creates a non-selected separator
 When FACE1 does not equal FACE2, this creates a selected separator
 "
   (let* ((h (or height (max 20 (frame-char-height))))
-         (m (or slope 2.5))
+         (m (or slope 2))
          (w (/ h m))
          (i h)
          x1 x2 e1 e2 e3 e4
