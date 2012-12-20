@@ -11,3 +11,10 @@ Claudio
 
 -- Anonymous 2012-11-12 13:34 UTC
 
+
+----
+
+Thanks a lot. It does not work in 23.3.1 either. Your solution has solved that problem.
+
+-- Steven Tuxfield 2012-12-20 03:55 UTC
+
