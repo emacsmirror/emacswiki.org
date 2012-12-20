@@ -14,8 +14,6 @@ You can occasionally find me on irc.freenode.net in #fsf or #fsf-members as [::y
 
 == Emacs Hacking ==
 
-I contribute to the [[EMMS]] project, I wrote parts of it and use it daily. I also (re)wrote most of the Emms manual and designed the logo.
-
 === wireless.el ===
 I wrote, and use [http://gitorious.org/wireless wireless.el] for wireless status information. Essentially it pretty-prints /proc/net/wireless into your mode line, and is based on Ralph Schleicher's battery.el.
 
