@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Dec 16 17:49:32 2012 (-0800)
+;; Last-Updated: Thu Dec 20 15:35:31 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 25327
+;;     Update #: 25338
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -7614,6 +7614,7 @@ flips the behavior specified by that option." ; Doc string
              (fn   (if r-o 'find-file-read-only 'find-file)))
         (setq file  (icicle-transform-multi-completion file))
         (funcall fn file 'WILDCARDS)
+        (when (and (file-readable-p file)  (buffer-file-name)) (revert-buffer nil t)) ; Else in fundamental mode.
         ;; Add the visited buffer to those we will keep (not kill).
         ;; If FILE uses wildcards then there will be multiple such buffers.
         ;; For a directory, get the Dired buffer instead of using `get-file-buffer'.
@@ -7635,7 +7636,6 @@ flips the behavior specified by that option." ; Doc string
       (icicle-compute-narrowing-regexp-p      t) ; For progressive completion.
       (icicle-apropos-complete-match-fn       'icicle-file-of-content-apropos-complete-match)
       (icicle-last-apropos-complete-match-fn  'icicle-file-of-content-apropos-complete-match)
-      (icicle-read-file-name-internal-fn      'icicle-find-file-of-content-multi-complete)
       (icicle-show-multi-completion-flag      t) ; Override user setting.
       (icicle-multi-completing-p              t)
       (icicle-list-use-nth-parts              '(1))
@@ -7673,6 +7673,8 @@ Same as `icicle-find-file-of-content' except it uses a different window." ; Doc 
              (fn   (if r-o 'find-file-read-only-other-window 'find-file-other-window)))
         (setq file  (icicle-transform-multi-completion file))
         (funcall fn file 'WILDCARDS)
+        (when (and (file-readable-p file)  (buffer-file-name)) (revert-buffer nil t)) ; Else in fundamental mode.
+
         ;; Add the visited buffer to those we will keep (not kill).
         ;; If FILE uses wildcards then there will be multiple such buffers.
         ;; For a directory, get the Dired buffer instead of using `get-file-buffer'.
@@ -7694,7 +7696,6 @@ Same as `icicle-find-file-of-content' except it uses a different window." ; Doc 
       (icicle-compute-narrowing-regexp-p      t) ; For progressive completion.
       (icicle-apropos-complete-match-fn       'icicle-file-of-content-apropos-complete-match)
       (icicle-last-apropos-complete-match-fn  'icicle-file-of-content-apropos-complete-match)
-      (icicle-read-file-name-internal-fn      'icicle-find-file-of-content-multi-complete)
       (icicle-show-multi-completion-flag      t) ; Override user setting.
       (icicle-multi-completing-p              t)
       (icicle-list-use-nth-parts              '(1))
@@ -7718,34 +7719,34 @@ Same as `icicle-find-file-of-content' except it uses a different window." ; Doc 
                    (restore-buffer-modified-p nil) ; Just visiting can sometimes modify the buffer
                    (kill-buffer buf)))))))
 
-  (defun icicle-find-file-of-content-multi-complete (strg predicate completion-mode)
-    "Completion function for `icicle-find-file-of-content'.
-Used as the value of `minibuffer-completion-table'."
-    (lexical-let* ((file-pat      (let ((icicle-list-use-nth-parts  '(1)))
-                                    (icicle-transform-multi-completion strg)))
-                   (content-pat   (let ((icicle-list-use-nth-parts  '(2)))
-                                    (icicle-transform-multi-completion strg)))
-                   (content-pred  (if (equal "" content-pat)
-                                      predicate
-                                    (lambda (filname)
-                                      ;; Avoid the error raised by calling `find-file-noselect' on a directory
-                                      ;; when `find-file-run-dired' is nil.
-                                      (and (funcall `,predicate filname)
-                                           (or find-file-run-dired  (not (file-directory-p filname)))
-                                           (let* ((buf    (find-file-noselect filname))
-                                                  (found  (with-current-buffer buf
-                                                            (message "Matching file contents...")
-                                                            (save-excursion
-                                                              (goto-char (point-min))
-                                                              (re-search-forward content-pat nil t)))))
-                                             ;; Free vars here: EXISTING-BUFFERS, NEW-BUFS--TO-KILL
-                                             (when (and (boundp 'existing-bufs)  (boundp 'new-bufs--to-kill)
-                                                        (not (memq buf existing-bufs)))
-                                               (add-to-list 'new-bufs--to-kill buf))
-                                             found))))))
-      (funcall (completion-table-in-turn #'icicle-completion--embedded-envvar-table
-                                         #'completion-file-name-table)
-               file-pat content-pred completion-mode)))
+;;;   (defun icicle-find-file-of-content-multi-complete (strg predicate completion-mode)
+;;;     "Completion function for `icicle-find-file-of-content'.
+;;; Used as the value of `minibuffer-completion-table'."
+;;;     (lexical-let* ((file-pat      (let ((icicle-list-use-nth-parts  '(1)))
+;;;                                     (icicle-transform-multi-completion strg)))
+;;;                    (content-pat   (let ((icicle-list-use-nth-parts  '(2)))
+;;;                                     (icicle-transform-multi-completion strg)))
+;;;                    (content-pred  (if (equal "" content-pat)
+;;;                                       predicate
+;;;                                     (lambda (filname)
+;;;                                       ;; Avoid the error raised by calling `find-file-noselect' on a directory
+;;;                                       ;; when `find-file-run-dired' is nil.
+;;;                                       (and (funcall `,predicate filname)
+;;;                                            (or find-file-run-dired  (not (file-directory-p filname)))
+;;;                                            (let* ((buf    (find-file-noselect filname))
+;;;                                                   (found  (with-current-buffer buf
+;;;                                                             (message "Matching file contents...")
+;;;                                                             (save-excursion
+;;;                                                               (goto-char (point-min))
+;;;                                                               (re-search-forward content-pat nil t)))))
+;;;                                              ;; Free vars here: EXISTING-BUFFERS, NEW-BUFS--TO-KILL
+;;;                                              (when (and (boundp 'existing-bufs)  (boundp 'new-bufs--to-kill)
+;;;                                                         (not (memq buf existing-bufs)))
+;;;                                                (add-to-list 'new-bufs--to-kill buf))
+;;;                                              found))))))
+;;;       (funcall (completion-table-in-turn #'icicle-completion--embedded-envvar-table
+;;;                                          #'completion-file-name-table)
+;;;                file-pat content-pred completion-mode)))
 
   (defun icicle-file-of-content-apropos-complete-match (input file-name)
     "Match function for progressive completion with `icicle-find-file-of-content'.
@@ -7754,16 +7755,35 @@ Return non-nil if the current multi-completion INPUT matches FILE-NAME."
                                    (icicle-transform-multi-completion input)))
                    (content-pat  (let ((icicle-list-use-nth-parts  '(2)))
                                    (icicle-transform-multi-completion input))))
+      ;; $$$$$$$$ Should we do this?  `find-file-noselect' does it.
+      ;; (setq file-name  (abbreviate-file-name (expand-file-name file-name)))
       (and (icicle-string-match-p name-pat file-name)
            ;; `icicle-narrow-regexp' is FREE here.  It is bound in `icicle-narrow-candidates'.
            ;; Do this to ensure we visit only the `icicle-completion-candidates' already determined so far.
            (or (not icicle-narrow-regexp)  (icicle-string-match-p icicle-narrow-regexp file-name))
            (or find-file-run-dired  (not (file-directory-p file-name)))
            (or (equal "" content-pat)
-               (let ((buf    (find-file-noselect file-name)))
-                 (with-current-buffer buf
-                   (message "Matching buffer contents...")
-                   (save-excursion (goto-char (point-min)) (re-search-forward content-pat nil t))))))))
+               (let* ((dir-p   (file-directory-p file-name))
+                      (exists  nil)
+                      (buf     (if dir-p
+                                   (find-file-noselect file-name)
+                                 ;; Avoid letting `create-file-buffer' create multiple buffers for the same file,
+                                 ;; e.g., when using progressive completion: foo.el, foo.el<2>, foo.el<3>,...
+                                 (or (setq exists  (find-buffer-visiting file-name))
+                                     (create-file-buffer file-name))))
+                      (found   (with-current-buffer buf
+                                 (message "Matching file contents...")
+                                 (unless (or dir-p  exists) ; EXISTS prevents inserting it more than once.
+                                   ;; `mm-insert-file-contents' works too, but apparently is not needed.
+                                   ;; $$$$$$ (require 'mm-util) (mm-insert-file-contents file-name 'VISIT))
+                                   (insert-file-contents file-name 'VISIT))
+                                 (save-excursion (goto-char (point-min))
+                                                 (re-search-forward content-pat nil t)))))
+                 ;; Free vars here: EXISTING-BUFFERS, NEW-BUFS--TO-KILL.
+                 (when (and (boundp 'existing-bufs)  (boundp 'new-bufs--to-kill)
+                            (not (memq buf existing-bufs)))
+                   (add-to-list 'new-bufs--to-kill buf))
+                 found)))))
   )
 
 
