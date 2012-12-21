@@ -96,6 +96,27 @@ For this reason, the '''Icicles''' predefined functions that use
 the same in your code.  Just look at the '''Icicles''' code for 
 examples.
 
+An example of this is `M-x', which by default in ''Icicle'' mode is
+`icicle-execute-extended-command'.  If IcompleteMode is turned on
+then the predicate `commandp' first filters all of the available
+[[symbol]]s, before you type any input to be matched.  If Icomplete mode is off, then this predicate is used as
+`icicle-must-pass-after-match-predicate':
+
+  (lambda (c)
+    (unless (symbolp c) (setq c  (intern-soft c)))
+    (commandp c))
+
+That does about the same thing as `commandp', but its argument is
+a completion candidate as displayed, that is, a string, not a symbol in the `[[obarray]]'.
+
+Now suppose you type `M-x forw TAB'.  If Icomplete mode is on then
+your input is expanded to the common match `forward-'.  If off it
+is expanded to only `forward'.  Why?  Because when it is off your
+input is matched against all symbol names, before checking those
+that match to see if they name commands.  The common match among
+all symbol names is `forward', not `forward-'.  See
+[[Icicles - Expanded-Common-Match Completion]]
+
 And here's a gotcha to keep in mind if you use either
 '''`icicle-must-pass-predicate'''' or
 '''`icicle-must-pass-after-match-predicate'''' with (non-absolute)
