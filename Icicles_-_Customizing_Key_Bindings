@@ -39,7 +39,7 @@ bindings.
 
 The most general option for customizing minibuffer bindings is
 '''`<tt>[[Icicles - Customization and General Tips#icicle-completion-key-bindings|icicle-completion-key-bindings]]</tt>''''.  It covers everything that is
-not covered by the other minibuffer key options listed below, which are concerned with completion, cycling, and help.  Option
+not covered by the other minibuffer key options listed below, which are concerned with [[completion]], [[Icicles - Cycling Completions|cycling]], and help.  Option
 `icicle-completion-key-bindings' has the same form as option
 `icicle-top-level-key-bindings'.
 
@@ -182,6 +182,13 @@ There are plenty of examples of the use of `icicle-kbd' in the
 
 
 
+[:icicle-TAB-S-TAB-only-completes-flag]
+
+In addition to the options listed above, whose values are keys or lists of keys, option '''`icicle-TAB/S-TAB-only-completes-flag'''' controls whether repeating `TAB' or `S-TAB' causes (modal) candidate [[Icicles - Cycling Completions|cycling]].  The default value of `nil' means that it does.
+If you prefer that these keys (actually the keys that are the
+values of options `[[#icicle-prefix-complete-keys]]' and
+`[[#icicle-apropos-complete-keys]]') perform only [[completion]] and you
+use other keys for cycling, then set the value to non-`nil'.
 
 
 
