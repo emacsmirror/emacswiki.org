@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Wed Dec 19 20:00:20 2012 (-0100)
+;; Last-Updated: Thu Dec 20 19:29:30 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 29111
+;;     Update #: 29119
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -4895,6 +4895,11 @@
 ;;    `icicle-apropos-cycle-previous-keys',
 ;;    `icicle-modal-cycle-down-keys', `icicle-modal-cycle-up-keys'.)
 ;;
+;;  * Non-`nil' option `icicle-TAB/S-TAB-only-completes-flag' inhibits
+;;    `TAB' and `S-TAB' (actually the keys that are the values of
+;;    options `icicle-prefix-complete-keys' and
+;;    `icicle-apropos-complete-keys') from also cycling candidates.
+;;
 ;;  * User option `icicle-completion-key-bindings' specifies keys to
 ;;    bind to various Icicles minibuffer commands that are used during
 ;;    completion.  These are generally not commands that complete your
@@ -6569,9 +6574,9 @@
 ;;
 ;;      Whether a modal cycling key is used for prefix or apropos
 ;;      completion at a given time depends on the current completion
-;;      mode, which is determined by which of `TAB' and `S-TAB' was used
-;;      last, or by option `icicle-default-cycling-mode' if neither was
-;;      used.
+;;      mode, which is determined by which of `TAB' and `S-TAB' was
+;;      used last, or by option `icicle-default-cycling-mode' if
+;;      neither was used.
 ;;
 ;;      (The mouse wheel bindings are only for Emacs 22 and later.
 ;;      The documentation refers to the keys that cycle completion
@@ -6696,6 +6701,10 @@
 ;;               customize the keys to use, using options
 ;;               `icicle-read+insert-file-name-keys' and
 ;;               `icicle-completing-read+insert-keys'.)
+;;
+;;  By default, `TAB' and `S-TAB' also perform modal candidate cycling
+;;  when you repeat them.  You can inhibit this feature by customizing
+;;  option `icicle-TAB/S-TAB-only-completes-flag'.
 ;;
 ;;  In Icicles, multi-line completion candidates are not uncommon.
 ;;  You can move up and down minibuffer lines with `C-p' and `C-n',
@@ -7213,6 +7222,15 @@
 ;;  these: (kbd "C-<delete>"), [C-delete], or [(control delete)].
 ;;  There are plenty of examples of the use of `icicle-kbd' in the
 ;;  Icicles source files.
+;;
+;;  In addition to the options listed above, whose values are keys or
+;;  lists of keys, option `icicle-TAB/S-TAB-only-completes-flag'
+;;  controls whether repeating `TAB' or `S-TAB' causes (modal)
+;;  candidate cycling.  The default value of `nil' means that it does.
+;;  If you prefer that these keys (actually the keys that are the
+;;  values of options `icicle-prefix-complete-keys' and
+;;  `icicle-apropos-complete-keys') perform only completion and you
+;;  use other keys for cycling, then set the value to non-`nil'.
 ;;
 ;;(@* "Customizing Global Bindings")
 ;;  ** Customizing Global Bindings **
