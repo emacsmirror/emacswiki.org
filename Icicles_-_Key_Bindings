@@ -658,6 +658,9 @@ the keys that invoke completion on demand.  You can
 customize the keys to use, using options
 '''`<tt>[[Icicles - Customization and General Tips#icicle-read+insert-file-name-keys|icicle-read+insert-file-name-keys]]</tt>'''' and '''`<tt>[[Icicles - Customization and General Tips#icicle-completing-read+insert-keys|icicle-completing-read+insert-keys]]</tt>''''.)
 
+By default, `TAB' and `S-TAB' also perform modal candidate cycling
+when you repeat them.  You can inhibit this feature by customizing
+option '''`<tt>[[Icicles - Customizing Key Bindings#icicle-TAB-S-TAB-only-completes-flag|icicle-TAB/S-TAB-only-completes-flag]]</tt>''''.
 
 In '''Icicles''', multi-line completion candidates are not uncommon.
 You can move up and down minibuffer lines with `C-p' and `C-n',
