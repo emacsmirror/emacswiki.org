@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Dec 15 15:50:19 2012 (-0800)
+;; Last-Updated: Thu Dec 20 10:23:15 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 23270
+;;     Update #: 23271
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -31,7 +31,7 @@
 ;;   `kmacro', `levenshtein', `menu-bar', `menu-bar+', `misc-cmds',
 ;;   `misc-fns', `mouse3', `mwheel', `naked', `pp', `pp+',
 ;;   `regexp-opt', `ring', `ring+', `second-sel', `strings',
-;;   `thingatpt', `thingatpt+', `unaccent', `w32-browser',
+;;   `subr-21', `thingatpt', `thingatpt+', `unaccent', `w32-browser',
 ;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -833,6 +833,7 @@
 ;;    `icicle-TAB-completion-methods',
 ;;    `icicle-TAB-completion-methods-per-command',
 ;;    `icicle-TAB-shows-candidates-flag',
+;;    `icicle-TAB/S-TAB-only-completes-flag',
 ;;    `icicle-test-for-remote-files-flag',
 ;;    `icicle-thing-at-point-functions',
 ;;    `icicle-top-level-key-bindings',
