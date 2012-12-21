@@ -220,7 +220,14 @@ number of times you've used each abbreviation.  The latter
 information is used to sort your abbreviations for completion, so
 that those used most frequently are available first.
 
-'''See Also:''' [[Icicles - Fuzzy Completion]], which is in some ways similar, but is not limited to inputting commands.
+'''See Also:'''
+
+* [[Icicles - Global Filters#icicle-execute-extended-command|Extended Common Match for `M-x']] for
+information about the kind of matching that `M-x'
+(`icicle-execute-extended-command') does.
+
+* [[Icicles - Fuzzy Completion]] for
+information about fuzzy completion, which is somewhat similar to completing abbreviations , but is not limited to inputting commands.
 
 ----
 
