@@ -195,7 +195,7 @@ coincide (at any of the possible positions).
 
 These screenshots show two of the sixteen possible position combinations of `icicle-point-position-in-candidate' and `icicle-mark-position-in-candidate'.  The first shows the default behavior: 
 
-* Point at the end of the root, in this case `nibuf'. The '''root''' is your input before completion, but possibly expanded, if `<tt>[[#icicle-expand-input-to-common-match-flag]]</tt>' is non-`nil'
+* Point at the end of the root, in this case `nibuf'. The '''root''' is your input before completion, but possibly expanded, if `<tt>[[#icicle-expand-input-to-common-match]]</tt>' is non-`nil'
 * Mark at the end of the input (completion candidate). 
 
 The second shows point at the start of the input and mark at the end of the input. The position of point is indicated by the bar cursor; the position of mark is the other end of the cyan-colored region.
