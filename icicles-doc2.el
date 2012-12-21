@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Thu Dec 20 19:29:30 2012 (-0800)
+;; Last-Updated: Fri Dec 21 14:40:51 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 29119
+;;     Update #: 29126
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -9113,6 +9113,29 @@
 ;;  might want to do the same in your code.  Just look at the Icicles
 ;;  code for examples.
 ;;
+;;  An example of this is `M-x', which by default in Icicle mode is
+;;  `icicle-execute-extended-command'.  If Icomplete mode is turned on
+;;  then the predicate `commandp' first filters all of the available
+;;  symbols, before you type any input to be matched.  If Icomplete
+;;  mode is off, then this predicate is used as
+;;  `icicle-must-pass-after-match-predicate':
+;;
+;;   (lambda (c)
+;;     (unless (symbolp c) (setq c  (intern-soft c)))
+;;     (commandp c))
+;;
+;;  That does about the same thing as `commandp', but its argument is
+;;  a completion candidate as displayed, that is, a string, not a
+;;  symbol in the `obarray'.
+;;
+;;  Now suppose you type `M-x forw TAB'.  If Icomplete mode is on then
+;;  your input is expanded to the common match `forward-'.  If off it
+;;  is expanded to only `forward'.  Why?  Because when it is off your
+;;  input is matched against all symbol names, before checking those
+;;  that match to see if they name commands.  The common match among
+;;  all symbol names is `forward', not `forward-'.  See
+;;  (@file :file-name "icicles-doc1.el" :to "Expanded-Common-Match Completion")
+;;
 ;;  And here's a gotcha to keep in mind if you use either
 ;;  `icicle-must-pass-predicate' or
 ;;  `icicle-must-pass-after-match-predicate' with (non-absolute)
@@ -9121,9 +9144,9 @@
 ;;  expanded relative to the directory shown in the minibuffer.  One
 ;;  way to do this is as follows:
 ;;
-;;  (setq file  (expand-file-name file
-;;               (icicle-file-name-directory-w-default
-;;                 (icicle-input-from-minibuffer))))
+;;   (setq file  (expand-file-name file
+;;                (icicle-file-name-directory-w-default
+;;                  (icicle-input-from-minibuffer))))
 ;;
 ;;  This gotcha is nothing new - the same applies for standard Emacs
 ;;  function `read-file-name', but it is still worth pointing out.
