@@ -67,10 +67,12 @@ standard library `##icomplete.el##'.)
 
 Buffer `*Completions*' shows you the current set of candidates for
 either prefix or apropos completion.  Together, [[user option]]s
-`icicle-incremental-completion,
-`icicle-incremental-completion-delay', and
-`icicle-incremental-completion-threshold' control incremental
-updating of `*Completions*'.  And together with option
+'''`<tt>[[Icicles - Customization and General Tips#icicle-incremental-completion|icicle-incremental-completion]]</tt>'''', 
+'''`<tt>[[Icicles - Customization and General Tips#icicle-incremental-completion-delay|icicle-incremental-completion-delay]]</tt>'''', and
+'''`<tt>[[Icicles - Customization and General Tips#icicle-incremental-completion-threshold|icicle-incremental-completion-threshold]]</tt>'''' control incremental
+updating of `*Completions*'.
+
+And together with option
 '''`<tt>[[Icicles - Customization and General Tips#icicle-expand-input-to-common-match|icicle-expand-input-to-common-match]]</tt>'''' they control incremental expansion (completion) of your input in the minibuffer.
 
 
