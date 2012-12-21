@@ -96,6 +96,7 @@ For this reason, the '''Icicles''' predefined functions that use
 the same in your code.  Just look at the '''Icicles''' code for 
 examples.
 
+[:icicle-execute-extended-command]
 An example of this is `M-x', which by default in ''Icicle'' mode is
 `icicle-execute-extended-command'.  If IcompleteMode is turned on
 then the predicate `commandp' first filters all of the available
