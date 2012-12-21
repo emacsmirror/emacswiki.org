@@ -418,7 +418,7 @@ These are the '''Icicles''' commands that are intended to be used mainly at the 
 
 * `icicle-toggle-C-for-actions' -- [[Icicles - More About Multi-Commands#icicle-use-C-for-actions-flag|More about Multi-Commands]], [[Icicles - Customization and General Tips#icicle-use-C-for-actions-flag|icicle-use-C-for-actions-flag]]
 
-* `icicle-toggle-expand-to-common-match' -- [[Icicles - Expanded-Common-Match Completion]], [[Icicles - Search Commands, Overview]], [[Icicles - Customization and General Tips#icicle-expand-input-to-common-match-flag|icicle-expand-input-to-common-match-flag]], ''[[Icicles - Key Bindings#icicle-toggle-expand-to-common-match|key binding]]''
+* `icicle-toggle-expand-to-common-match' -- [[Icicles - Expanded-Common-Match Completion]], [[Icicles - Search Commands, Overview]], [[Icicles - Customization and General Tips#icicle-expand-input-to-common-match|icicle-expand-input-to-common-match]], ''[[Icicles - Key Bindings#icicle-toggle-expand-to-common-match|key binding]]''
 
 * `icicle-toggle-fuzzy-completion' -- [[Icicles - Fuzzy Completion]], ''[[Icicles - Key Bindings#icicle-toggle-fuzzy-completion|key binding]]''
 
@@ -864,7 +864,7 @@ These are the '''Icicles''' commands intended to be run mainly from the minibuff
 
 * `icicle-toggle-C-for-actions' (`M-g') -- [[Icicles - More About Multi-Commands#icicle-use-C-for-actions-flag|More about Multi-Commands]], [[Icicles - Customization and General Tips#icicle-use-C-for-actions-flag|icicle-use-C-for-actions-flag]]
 
-* `icicle-toggle-expand-to-common-match' (`##C-|##') -- [[Icicles - Expanded-Common-Match Completion]], [[Icicles - Search Commands, Overview]], [[Icicles - Customization and General Tips#icicle-expand-input-to-common-match-flag|icicle-expand-input-to-common-match-flag]], ''[[Icicles - Key Bindings#icicle-toggle-expand-to-common-match|key binding]]''
+* `icicle-toggle-expand-to-common-match' (`##C-|##') -- [[Icicles - Expanded-Common-Match Completion]], [[Icicles - Search Commands, Overview]], [[Icicles - Customization and General Tips#icicle-expand-input-to-common-match|icicle-expand-input-to-common-match]], ''[[Icicles - Key Bindings#icicle-toggle-expand-to-common-match|key binding]]''
 
 * `icicle-toggle-fuzzy-completion' (`##C-(##') -- [[Icicles - Fuzzy Completion]], ''[[Icicles - Key Bindings#icicle-toggle-fuzzy-completion|key binding]]''
 
