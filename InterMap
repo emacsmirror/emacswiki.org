@@ -26,15 +26,22 @@ Emacs:
  GIT http://repo.or.cz/w/emacs.git/blob/HEAD:/lisp/
  Manual /cgi-bin/info-ref?find=
 
-Debian:
+GNU/Linux:
 
  DebianPackage http://packages.debian.org/
+ ArchPackage https://www.archlinux.org/packages/
+ UbuntuPackage http://packages.ubuntu.com/
+ FedoraPackage https://admin.fedoraproject.org/pkgdb
+ GentooPackage http://packages.gentoo.org/
+ SlackwarePackage http://packages.slackware.com/
+ openSUSEPackage http://en.opensuse.org/Package_list
 
 Search, reference:
 
  Google http://www.google.com/search?q=
  Define http://www.google.com/search?q=define:%20
  Groups http://groups.google.com/groups?as_ugroup=*emacs*&as_q=
+ DuckDuckGo https://duckduckgo.com/?q=
  WikiPedia http://en.wikipedia.org/wiki/
  WikiSource http://www.wikisource.org/wiki/
 
