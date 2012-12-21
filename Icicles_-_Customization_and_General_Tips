@@ -747,6 +747,19 @@ keys swapped are those defined by these user options:
 * `<tt>[[#icicle-modal-cycle-up-keys]]</tt>'
 
 
+
+----
+[:icicle-TAB-S-TAB-only-completes-flag]
+==== Option icicle-TAB/S-TAB-only-completes-flag ====
+
+Non-`nil' option '''`icicle-TAB/S-TAB-only-completes-flag'''' inhibits
+`TAB' and `S-TAB' (actually the keys that are the values of
+options `icicle-prefix-complete-keys' and
+`icicle-apropos-complete-keys') from also ''[[Icicles - Cycling Completions|cycling]]'' candidates.
+
+
+
+
 ----
 [:icicle-completion-key-bindings]
 ==== Option icicle-completion-key-bindings ====
