@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Dec  2 10:28:26 2012 (-0800)
+;; Last-Updated: Thu Dec 20 10:22:31 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 5420
+;;     Update #: 5422
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -183,7 +183,8 @@
 ;;    `icicle-swank-prefix-length', `icicle-swank-timeout',
 ;;    `icicle-TAB-completion-methods',
 ;;    `icicle-TAB-completion-methods-per-command',
-;;    `icicle-TAB-shows-candidates-flag', `icicle-recenter',
+;;    `icicle-TAB-shows-candidates-flag',
+;;    `icicle-TAB/S-TAB-only-completes-flag', `icicle-recenter',
 ;;    `icicle-test-for-remote-files-flag',
 ;;    `icicle-thing-at-point-functions',
 ;;    `icicle-top-level-key-bindings',
@@ -3910,6 +3911,12 @@ Actually, the concerned keys are those defined by option
 
 Remember that you can use multi-command `icicle-toggle-option' anytime
 to toggle the option."
+  :type 'boolean :group 'Icicles-Key-Bindings)
+
+;;;###autoload
+(defcustom icicle-TAB/S-TAB-only-completes-flag nil
+  "Non-nil means keys bound to completion commands do not also cycle.
+That is, `TAB' and `S-TAB' perform only completion, not cycling."
   :type 'boolean :group 'Icicles-Key-Bindings)
 
 ;;;###autoload
