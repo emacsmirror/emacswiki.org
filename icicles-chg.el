@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Dec 14 21:57:02 2012 (-0800)
+;; Last-Updated: Thu Dec 20 15:41:31 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 9423
+;;     Update #: 9451
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -86,6 +86,23 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2012/12/20 dadams
+;;     Removed:  icicle-find-file-of-content-multi-complete.  Use only *-apropos-complete-match.
+;;     icicle-file-of-content-apropos-complete-match:
+;;       Do not use find-file-noselect, except for a dir.
+;;       Use find-buffer-visiting or create-file-buffer, and with-current-buffer, insert-file-contents.
+;;       Add buffer to new-bufs--to-kill.
+;;     icicle-find-file-of-content(-other-window):
+;;       Do not bind icicle-read-file-name-internal-fn to icicle-find-file-of-content-multi-complete.
+;;       revert-buffer, so use correct mode.
+;; 2012/12/15 dadams
+;;     icicle-find-file-of-content*:
+;;       Bind icicle-apropos-complete-match-fn to icicle-file-of-content-apropos-complete-match, to fix
+;;         apropos completion
+;;       Bind icicle-compute-narrowing-regexp-p to t, for narrowing optimization.
+;;       Set buffer-modified-p to nil before calling kill-buffer.
+;;     icicle-file-of-content-apropos-complete-match:
+;;       Require that each file name is matched by icicle-narrow-regexp (optimization for narrowing).
 ;; 2012/12/14 dadams
 ;;     icicle-describe-option-of-type:
 ;;       Bind icicle-last-apropos-complete-match-fn to icicle-multi-comp-apropos-complete-match,
@@ -3617,6 +3634,12 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2012/12/20 dadams
+;;     icicle-(prefix|apropos)-complete-1: Handle new option icicle-TAB/S-TAB-only-completes-flag.
+;; 2012/12/15 dadams
+;;     icicle-narrow-candidates:
+;;       Rename current-candidates to icicle-cands-to-narrow (now a global var, but bound only here).
+;;       Bind icicle-narrow-regexp if icicle-compute-narrowing-regexp-p.
 ;; 2012/12/12 dadams
 ;;     icicle-narrow-candidates:
 ;;       Use icicle-must-pass-predicate, not icicle-must-pass-after-match-predicate.
@@ -6323,6 +6346,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2012/12/20 dadams
+;;     Added: icicle-TAB/S-TAB-only-completes-flag.
 ;; 2012/12/02 dadams
 ;;     Removed autoload cookie from icicle-completion-key-bindings.
 ;; 2012/12/01 dadams
@@ -7094,6 +7119,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2012/12/15 dadams
+;;     Added: icicle-cands-to-narrow, icicle-compute-narrowing-regexp-p, icicle-narrow-regexp.
 ;; 2012/12/02 dadams
 ;;     Added: icicle-read-file-name-internal-fn.
 ;; 2012/12/01 dadams
