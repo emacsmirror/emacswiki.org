@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Thu Dec 20 15:41:31 2012 (-0800)
+;; Last-Updated: Fri Dec 21 09:51:35 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 9451
+;;     Update #: 9465
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1607,6 +1607,11 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2012/12/21 dadams
+;;     icicle-unsorted(-file-name)-(prefix|apropos)-candidates:
+;;       Compute common match in all cases except i-e-i-t-c-m = 0, and set *-common-match-string to it.
+;;     icicle-save-or-restore-input:
+;;       Removed test for icicle-expand-input-to-common-match level: expand for all levels.
 ;; 2012/12/14 dadams
 ;;     Added: icicle-multi-comp-apropos-complete-match.
 ;; 2012/12/12 dadams
