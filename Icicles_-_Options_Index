@@ -196,7 +196,7 @@ columns of candidates are displayed in `*Completions*' -- [[Icicles - Completion
 * '''`icicle-deletion-action-flag'''' -- Whether `S-delete' is enabled during completion -- ''[[Icicles - Customization and General Tips#icicle-deletion-action-flag|main]]''
 
 
-* '''`icicle-expand-input-to-common-match-flag'''' -- Whether `S-TAB' expands minibuffer input to the expanded common match among all completion candidates. Toggle with `##C-|##'. -- [[Icicles - Expanded-Common-Match Completion]], ''[[Icicles - Customization and General Tips#icicle-expand-input-to-common-match-flag|main]]''
+* '''`icicle-expand-input-to-common-match'''' -- Whether `S-TAB' expands minibuffer input to the expanded common match among all completion candidates, and how eager it is in doing so.  Cycle using `##C-|##'. -- [[Icicles - Expanded-Common-Match Completion]], ''[[Icicles - Customization and General Tips#icicle-expand-input-to-common-match|main]]''
 
 * '''`icicle-filesets-as-saved-completion-sets-flag'''' -- Whether you can use emacs [[fileset]]s to save candidates persistently -- [[Icicles - Persistent Completions#Filesets|Save Candidates in a Fileset]], ''[[Icicles - Customization and General Tips#icicle-filesets-as-saved-completion-sets-flag|main]]''
 
