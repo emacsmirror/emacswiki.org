@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue Nov 27 13:32:25 2012 (-0800)
+;; Last-Updated: Fri Dec 21 14:50:49 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 26909
+;;     Update #: 26916
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -3504,9 +3504,11 @@
 ;;  `icicle-incremental-completion',
 ;;  `icicle-incremental-completion-delay', and
 ;;  `icicle-incremental-completion-threshold' control incremental
-;;  updating of `*Completions*'.  And together with option
-;;  `icicle-expand-input-to-common-match' they control incremental
-;;  expansion (completion) of your input in the minibuffer.
+;;  updating of `*Completions*'.
+;;
+;;  And together with option `icicle-expand-input-to-common-match'
+;;  they control incremental expansion (completion) of your input in
+;;  the minibuffer.
 ;;
 ;;  If option `icicle-incremental-completion' is non-`nil', then
 ;;  `*Completions*' is automatically updated whenever you change your
@@ -6353,6 +6355,17 @@
 ;;  number of times you've used each abbreviation.  The latter
 ;;  information is used to sort your abbreviations for completion, so
 ;;  that those used most frequently are available first.
+;;
+;;  See Also:
+;;
+;;  * (@file :file-name "icicles-doc2.el" :to "Global Filters") for
+;;    information about the kind of matching that `M-x'
+;;    (`icicle-execute-extended-command') does.
+;;
+;;  * (@file :file-name "icicles-doc2.el" :to "Fuzzy Completion") for
+;;    information about fuzzy completion, which is somewhat similar to
+;;    completing abbreviations but is not limited to inputting
+;;    commands.
  
 ;;(@* "Choose All Completion Candidates")
 ;;
