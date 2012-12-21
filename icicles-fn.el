@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Dec 14 21:35:40 2012 (-0800)
+;; Last-Updated: Fri Dec 21 09:51:16 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 13765
+;;     Update #: 13771
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -3833,9 +3833,9 @@ INPUT is a string.  Each candidate is a string."
 
 (defun icicle-unsorted-prefix-candidates (input)
   "Unsorted list of prefix completions for the current partial INPUT.
-When `icicle-expand-input-to-common-match' = 3 or 4, which implies
-prefix auto-expansion, this also sets `icicle-common-match-string' to
-the expanded common match of the input over all candidates."
+Unless `icicle-expand-input-to-common-match' = 0 this also sets
+`icicle-common-match-string' to the expanded common match of the input
+over all candidates."
   (condition-case nil
       (let* ((m-c-table
               ;; Prevent Emacs 23.2+ from using `internal-complete-buffer' if not ignoring space prefixes.
@@ -3874,7 +3874,7 @@ the expanded common match of the input over all candidates."
                                  (or (not icicle-must-pass-after-match-predicate)
                                      (funcall icicle-must-pass-after-match-predicate cand)))))
                         candidates)))))
-        (when (and (memq icicle-expand-input-to-common-match '(3 4))  (consp filtered-candidates))
+        (when (and (not (eq icicle-expand-input-to-common-match 0))  (consp filtered-candidates))
           (let ((common-prefix
                  (if (icicle-not-basic-prefix-completion-p)
                      (icicle-completion-try-completion input m-c-table minibuffer-completion-predicate
@@ -3901,9 +3901,9 @@ Candidates can be directories.  Each candidate is a string."
 
 (defun icicle-unsorted-file-name-prefix-candidates (input)
   "Unsorted list of prefix completions for the current file-name INPUT.
-When `icicle-expand-input-to-common-match' = 3 or 4, which implies
-prefix auto-expansion, this also sets `icicle-common-match-string' to
-the expanded common match of the input over all candidates."
+Unless `icicle-expand-input-to-common-match' = 0 this also sets
+`icicle-common-match-string' to the expanded common match of the input
+over all candidates."
   (setq input  (substitute-in-file-name input))
   (let ((minibuffer-completion-table  (if (> emacs-major-version 23)
                                           icicle-file-name-completion-table
@@ -3947,7 +3947,7 @@ the expanded common match of the input over all candidates."
                                  (or (not icicle-must-pass-after-match-predicate)
                                      (funcall icicle-must-pass-after-match-predicate cand))))))
                           candidates)))))
-          (when (and (memq icicle-expand-input-to-common-match '(3 4))  (consp filtered-candidates))
+          (when (and (not (eq icicle-expand-input-to-common-match 0))  (consp filtered-candidates))
             (let ((common-prefix
                    (if (icicle-not-basic-prefix-completion-p)
                        (icicle-completion-try-completion input minibuffer-completion-table
@@ -4022,9 +4022,9 @@ INPUT is a string.  Each candidate is a string."
 
 (defun icicle-unsorted-apropos-candidates (input)
   "Unsorted list of apropos completions for the current partial INPUT.
-When `icicle-expand-input-to-common-match' = 4, which implies apropos
-auto-expansion, this also sets `icicle-common-match-string' to the
-expanded common match of the input over all candidates."
+Unless `icicle-expand-input-to-common-match' = 0 this also sets
+`icicle-common-match-string' to the expanded common match of the input
+over all candidates."
   (condition-case nil
       (progn
         (when icicle-regexp-quote-flag  (setq input  (regexp-quote input)))
@@ -4067,7 +4067,7 @@ expanded common match of the input over all candidates."
                                    (or (not icicle-must-pass-after-match-predicate)
                                        (funcall icicle-must-pass-after-match-predicate cand)))))
                           candidates)))))
-          (when (and (eq icicle-expand-input-to-common-match 4)  (consp filtered-candidates))
+          (when (and (not (eq icicle-expand-input-to-common-match 0))  (consp filtered-candidates))
             (setq icicle-common-match-string  (icicle-expanded-common-match input filtered-candidates)))
           (unless filtered-candidates  (setq icicle-common-match-string  nil))
           filtered-candidates))         ; Return candidates.
@@ -4084,9 +4084,9 @@ Candidates can be directories.  Each candidate is a string."
 
 (defun icicle-unsorted-file-name-apropos-candidates (input)
   "Unsorted list of apropos completions for the partial file-name INPUT.
-When `icicle-expand-input-to-common-match' = 4, which implies apropos
-auto-expansion, this also sets `icicle-common-match-string' to the
-expanded common match of the input over all candidates."
+Unless `icicle-expand-input-to-common-match' = 0 this also sets
+`icicle-common-match-string' to the expanded common match of the input
+over all candidates."
   (condition-case nil
       (progn
         (when icicle-regexp-quote-flag (setq input  (regexp-quote input)))
@@ -4129,10 +4129,9 @@ expanded common match of the input over all candidates."
                                      (or (not icicle-must-pass-after-match-predicate)
                                          (funcall icicle-must-pass-after-match-predicate cand))))))
                           candidates)))))
-          (when (eq icicle-expand-input-to-common-match 4)
+          (unless (eq icicle-expand-input-to-common-match 0)
             (setq icicle-common-match-string (if (consp filtered-candidates)
-                                                 (icicle-expanded-common-match
-                                                  input filtered-candidates)
+                                                 (icicle-expanded-common-match input filtered-candidates)
                                                nil)))
           (unless filtered-candidates  (setq icicle-common-match-string  nil))
           filtered-candidates))         ; Return candidates.
@@ -4673,25 +4672,27 @@ the code."
      (cond
        ;; Save the current input for `C-l', then update it to the expanded common match.
        ;; Do *NOT* do this if:
-       ;;      the user does not want automatic expansion to the common match for this completion mode
        ;;   or there is no common match string
        ;;   or the last command was a cycling command
        ;;   or the input and the completion mode have not changed
        ;;      (so saved regexp will not be overwritten).
-       ((not (or (and (eq icicle-current-completion-mode 'apropos)
-                      (not (eq icicle-expand-input-to-common-match 4)))
-                 (and (eq icicle-current-completion-mode 'prefix)
-                      (not (memq icicle-expand-input-to-common-match '(3 4))))
-                 (not icicle-common-match-string)
-                 (and (symbolp last-command)
-                      (get last-command 'icicle-cycling-command)
-                      (not (get last-command 'icicle-completing-command))) ; Not `TAB' or `S-TAB'.
-                 (and (equal icicle-last-input icicle-current-input)
-                      (eq icicle-current-completion-mode
-                          (if (icicle-get-safe icicle-last-completion-command
-                                               'icicle-prefix-completing-command)
-                              'prefix
-                            'apropos)))))
+       ((not (or
+
+;;;       ;;      the user does not want automatic expansion to the common match for this completion mode
+;;; $$$$$$        (and (eq icicle-current-completion-mode 'apropos)
+;;;                    (not (eq icicle-expand-input-to-common-match 4)))
+;;;               (and (eq icicle-current-completion-mode 'prefix)
+;;;                    (not (memq icicle-expand-input-to-common-match '(3 4))))
+              (not icicle-common-match-string)
+              (and (symbolp last-command)
+                   (get last-command 'icicle-cycling-command)
+                   (not (get last-command 'icicle-completing-command))) ; Not `TAB' or `S-TAB'.
+              (and (equal icicle-last-input icicle-current-input)
+                   (eq icicle-current-completion-mode
+                       (if (icicle-get-safe icicle-last-completion-command
+                                            'icicle-prefix-completing-command)
+                           'prefix
+                         'apropos)))))
 
         ;; Expand current input to expanded common match, after saving it for `C-l'.
         (let ((common  (if (icicle-file-name-input-p)
