@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Dec 21 09:51:35 2012 (-0800)
+;; Last-Updated: Fri Dec 21 21:24:05 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 9465
+;;     Update #: 9471
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -86,6 +86,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2012/12/21 dadams
+;;     icicle-buffer-multi-complete, icicle-file-of-content-apropos-complete-match:
+;;       Added filtering by icicle-(buffer|find-file-of-content)-skip-hook.  Thx to C. Schmidt.
 ;; 2012/12/20 dadams
 ;;     Removed:  icicle-find-file-of-content-multi-complete.  Use only *-apropos-complete-match.
 ;;     icicle-file-of-content-apropos-complete-match:
@@ -6351,6 +6354,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2012/12/21 dadams
+;;     Added: icicle-buffer-skip-hook, icicle-find-file-of-content-skip-hook.  Thx to C. Schmidt.
 ;; 2012/12/20 dadams
 ;;     Added: icicle-TAB/S-TAB-only-completes-flag.
 ;; 2012/12/02 dadams
