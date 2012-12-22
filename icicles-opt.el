@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Dec 20 10:22:31 2012 (-0800)
+;; Last-Updated: Fri Dec 21 21:15:33 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 5422
+;;     Update #: 5430
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -71,10 +71,10 @@
 ;;    `icicle-buffer-include-cached-files-nflag',
 ;;    `icicle-buffer-include-recent-files-nflag',
 ;;    `icicle-buffer-match-regexp', `icicle-buffer-no-match-regexp',
-;;    `icicle-buffer-predicate', `icicle-buffer-require-match-flag'
-;;    `icicle-buffer-sort', `icicle-buffers-ido-like-flag',
-;;    `icicle-candidate-action-keys', `icicle-candidate-help-keys',
-;;    `icicle-candidate-width-factor',
+;;    `icicle-buffer-predicate', `icicle-buffer-require-match-flag',
+;;    `icicle-buffer-skip-hook', `icicle-buffer-sort',
+;;    `icicle-buffers-ido-like-flag', `icicle-candidate-action-keys',
+;;    `icicle-candidate-help-keys', `icicle-candidate-width-factor',
 ;;    `icicle-change-region-background-flag',
 ;;    `icicle-change-sort-order-completion-flag',
 ;;    `icicle-C-l-uses-completion-flag', `icicle-color-themes',
@@ -100,6 +100,7 @@
 ;;    `icicle-deletion-action-flag', `icicle-dot-show-regexp-flag',
 ;;    `icicle-dot-string', `icicle-expand-input-to-common-match',
 ;;    `icicle-expand-input-to-common-match-alt', `icicle-file-extras',
+;;    `icicle-find-file-of-content-skip-hook',
 ;;    `icicle-file-match-regexp', `icicle-file-no-match-regexp',
 ;;    `icicle-file-predicate', `icicle-file-require-match-flag',
 ;;    `icicle-file-sort', `icicle-files-ido-like-flag',
@@ -887,6 +888,17 @@ You probably do not want to set this globally, but you can."
           (const :tag "Require a partial match, with RET"  partial-match-ok)
           (const :tag "Require a full match"               full-match-required))
   :group 'Icicles-Buffers :group 'Icicles-Matching)
+
+;;;###autoload
+(defcustom icicle-buffer-skip-hook nil
+  "*Hook run by `icicle-buffer' on each matching buffer name.
+If a function returns non-nil then the buffer content is not searched.
+Use this to skip visiting and trying to search non-text buffers, such
+as PDFs and images, or buffers that might be time-consuming to access.
+
+See also the `icicle-buffer' doc for other ways to filter the set of
+candidate buffers."
+  :type 'hook :group 'Icicles-Buffers :group 'Icicles-Matching)
 
 ;;;###autoload
 (defcustom icicle-buffer-sort 'icicle-buffer-sort-*...*-last
@@ -2031,6 +2043,18 @@ are the same.  You can use \\<minibuffer-local-completion-map>\
   "*List of additional file-name candidates added to the normal list.
 List elements are strings."
   :type '(repeat string) :group 'Icicles-Files :group 'Icicles-Matching)
+
+;;;###autoload
+(defcustom icicle-find-file-of-content-skip-hook nil
+  "*Hook run by `icicle-find-file-of-content' on each matching file name.
+Also run by `icicle-buffer' on the names of files that are included
+from the set of recent files or from the Emacs file cache.
+
+If any function returns non-nil then the file content is not searched.
+Use this to skip visiting and trying to search non-text files, such as
+PDFs and images, or files that might be time-consuming to access, such
+as compressed files."
+  :type 'hook :group 'Icicles-Files :group 'Icicles-Matching)
 
 ;;;###autoload
 (defcustom icicle-file-match-regexp nil
