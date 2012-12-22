@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Dec 21 14:40:51 2012 (-0800)
+;; Last-Updated: Fri Dec 21 21:54:14 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 29126
+;;     Update #: 29135
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -5574,6 +5574,19 @@
 ;;
 ;;    A prefix argument to `C-x F' or `C-x R' sets the option value to
 ;;    the numeric prefix argument value.
+;;
+;;  * Options `icicle-buffer-skip-hook' and
+;;    `icicle-find-file-of-content-skip-hook' are lists of hook
+;;    functions.  They are used by commands `icicle-buffer' and
+;;    `icicle-find-file-of-content' to test a candidate buffer name or
+;;    file name, respectively.  You can use them to skip visiting and
+;;    trying to search certain buffers or files.
+;;
+;;    The functions are passed to `run-hook-with-args-until-success',
+;;    so they are called in order until one returns non-`nil'.  If any
+;;    function returns non-`nil' then the buffer or file content is
+;;    not searched.  This is relevant only when your multi-completion
+;;    input has a second, content-matching part.
 ;;
 ;;  * Option `icicle-ignored-directories' is a list of directories
 ;;    that are ignored by various Icicles commands, including
