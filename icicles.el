@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Thu Dec 20 10:23:15 2012 (-0800)
+;; Last-Updated: Fri Dec 21 21:06:42 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 23271
+;;     Update #: 23273
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -718,9 +718,9 @@
 ;;    `icicle-buffer-include-recent-files-nflag',
 ;;    `icicle-buffer-match-regexp', `icicle-buffer-no-match-regexp',
 ;;    `icicle-buffer-predicate', `icicle-buffer-require-match-flag'
-;;    `icicle-buffer-sort', `icicle-buffers-ido-like-flag',
-;;    `icicle-candidate-action-keys', `icicle-candidate-help-keys',
-;;    `icicle-candidate-width-factor',
+;;    `icicle-buffer-skip-hook', `icicle-buffer-sort',
+;;    `icicle-buffers-ido-like-flag', `icicle-candidate-action-keys',
+;;    `icicle-candidate-help-keys', `icicle-candidate-width-factor',
 ;;    `icicle-change-region-background-flag',
 ;;    `icicle-change-sort-order-completion-flag',
 ;;    `icicle-C-l-uses-completion-flag', `icicle-color-themes',
@@ -748,6 +748,7 @@
 ;;    `icicle-deletion-action-flag', `icicle-dot-show-regexp-flag',
 ;;    `icicle-dot-string', `icicle-expand-input-to-common-match',
 ;;    `icicle-expand-input-to-common-match-alt', `icicle-file-extras',
+;;    `icicle-find-file-of-content-skip-hook',
 ;;    `icicle-file-match-regexp', `icicle-file-no-match-regexp',
 ;;    `icicle-file-predicate', `icicle-file-require-match-flag',
 ;;    `icicle-file-sort', `icicle-files-ido-like-flag',
