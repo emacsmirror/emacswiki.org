@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Sat Dec  1 16:40:43 2012 (-0800)
+;; Last-Updated: Sat Dec 22 19:13:22 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 6187
+;;     Update #: 6192
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -215,7 +215,8 @@
 ;;    `icicle-search-char-prop-matches-p',
 ;;    `icicle-search-choose-buffers', `icicle-search-cleanup',
 ;;    `icicle-search-define-candidates',
-;;    `icicle-search-define-candidates-1', `icicle-search-final-act',
+;;    `icicle-search-define-candidates-1',
+;;    `icicle-search-file-found-p', `icicle-search-final-act',
 ;;    `icicle-search-help',
 ;;    `icicle-search-highlight-all-input-matches',
 ;;    `icicle-search-highlight-and-maybe-replace',
@@ -3492,7 +3493,7 @@ This command is intended for use only in Icicle mode."
                                                  (delete-overlay icicle-search-current-overlay))))
     (setq icicle-search-final-choice
           (icicle-explore (lambda () (icicle-search-define-candidates beg end scan-fn-or-regexp
-                                                                        require-match where args))
+                                                                      require-match where args))
                           #'icicle-search-final-act #'icicle-search-quit-or-error
                           #'icicle-search-quit-or-error #'icicle-search-cleanup
                           "Choose an occurrence: " nil require-match nil 'icicle-search-history))))
@@ -3651,8 +3652,10 @@ The arguments are the same as for `icicle-search'."
              (message "%d contexts; searching %d/%d: `%s'"
                       (length icicle-candidates-alist) nb-contexts nb-objects
                       (file-relative-name file default-directory))
-             (icicle-search-define-candidates-1 (find-file-noselect file 'nowarn) nil nil
-                                                scan-fn-or-regexp args)))
+             (when (or (functionp scan-fn-or-regexp) ; Punt - just assume that a function finds a match.
+                       (icicle-search-file-found-p file scan-fn-or-regexp))
+               (icicle-search-define-candidates-1 (find-file-noselect file 'nowarn) nil nil
+                                                  scan-fn-or-regexp args))))
           ((and (consp where)  (consp (car where))) ; Search bookmarks - or just their regions if defined.
            (unless (require 'bookmark+ nil t) (error "This requires library `Bookmark+'"))
            (let ((non-existent-buffers  ())
@@ -3688,6 +3691,19 @@ The arguments are the same as for `icicle-search'."
                                             (if icicle-search-complement-domain-p "COMPLEMENT " "")
                                             scan-fn-or-regexp)))
   (setq mark-active  nil))              ; Remove any region highlighting, so we can see search hits.
+
+(defun icicle-search-file-found-p (file regexp)
+  "Return non-nil if find a match in FILE for REGEXP."
+  (let* ((already-existed-p  nil)
+         (buffer             (or (setq already-existed-p  (find-buffer-visiting file))
+                                 (create-file-buffer file)))
+         (found              nil))
+    (unwind-protect
+         (with-current-buffer buffer
+           (unless already-existed-p (insert-file-contents file 'VISIT))
+           (save-excursion (goto-char (point-min)) (setq found  (re-search-forward regexp (point-max) t))))
+      (unless already-existed-p (kill-buffer buffer)))
+    found))
 
 (defun icicle-search-define-candidates-1 (buffer beg end scan-fn-or-regexp args)
   "Helper function for `icicle-search-define-candidates'.
@@ -3741,10 +3757,7 @@ Highlight the matches in face `icicle-search-main-regexp-others'."
                                             (match-beginning icicle-search-context-level)
                                           (point-max))
                                       (match-end icicle-search-context-level)))
-                       (IGNORE      (when action
-                                      (save-excursion
-                                        (funcall action)
-                                        (setq hit-end  (point)))))
+                       (IGNORE      (when action (save-excursion (funcall action) (setq hit-end  (point)))))
                        (hit-string  (buffer-substring-no-properties hit-beg hit-end))
                        end-marker)
                   (when (and (not (string= "" hit-string)) ; Do nothing if empty hit.
