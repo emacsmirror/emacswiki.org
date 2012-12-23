@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Dec 22 19:14:14 2012 (-0800)
+;; Last-Updated: Sun Dec 23 12:38:58 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 23274
+;;     Update #: 23275
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -854,7 +854,8 @@
 ;;
 ;;    `custom-variable-p', `icicle-2nd-part-string-less-p',
 ;;    `icicle-abbreviate-or-expand-file-name', `icicle-activate-mark',
-;;    `icicle-add-key+cmd', `icicle-add-menu-item-to-cmd-history',
+;;    `icicle-add-default-to-prompt', `icicle-add-key+cmd',
+;;    `icicle-add-menu-item-to-cmd-history',
 ;;    `icicle-all-candidates-action-1', `icicle-all-completions',
 ;;    `icicle-all-exif-data', `icicle-alpha-p',
 ;;    `icicle-alt-act-fn-for-type', `icicle-any-candidates-p',
