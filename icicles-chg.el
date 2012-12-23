@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Dec 21 21:24:05 2012 (-0800)
+;; Last-Updated: Sat Dec 22 19:14:34 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 9471
+;;     Update #: 9475
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -829,6 +829,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2012/12/22 dadams
+;;     Added: icicle-search-file-found-p.
+;;     icicle-search-define-candidates:
+;;       Search only files that have at least one regexp match: use icicle-search-file-found-p to test.
 ;; 2012/11/28 dadams
 ;;     icicle-(fundoc|vardoc|plist): Use C-$ to toggle command/fn, option/var, faces/all.
 ;;     icicle-vardoc: Do not use non-neg prefix arg for options.
