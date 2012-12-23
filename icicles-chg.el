@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Dec 22 19:14:34 2012 (-0800)
+;; Last-Updated: Sun Dec 23 12:37:18 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 9475
+;;     Update #: 9477
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1614,6 +1614,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2012/12/22 dadams
+;;     Added: icicle-add-default-to-prompt.
+;;     icicle-completing-read, icicle-read-string: Use icicle-add-default-to-prompt.
 ;; 2012/12/21 dadams
 ;;     icicle-unsorted(-file-name)-(prefix|apropos)-candidates:
 ;;       Compute common match in all cases except i-e-i-t-c-m = 0, and set *-common-match-string to it.
