@@ -97,9 +97,6 @@ Additional:
 * grep-x similar to GlobRep. http://groups.google.com/groups?q=author:shouman%40goofy.cc.utexas.edu&hl=en&safe=off&rnum=2&selm=SHOUMAN.95Apr26224953%40goofy.cc.utexas.edu Usenet Article 1995/04/27 
 * Icicles [[Icicles - Search-And-Replace|search-and-replace]] 
 -- see [[#IciclesSearchAndReplace|above]]. Use Icicles [[Icicles - Other Search Commands|compilation search-and-replace]] to visit source-file hits in a ##*grep*## buffer and replace text within them.
-
--- I couldn't get this to work and will file a bug. The instructions were also scattered and unclear.
-
 * MultiReplace
 * http://groups.google.com/groups?q=replace+group:gnu.emacs.sources
 * TinyReplace replace over multiple files (run M-x grep to and hit % in compile buffer) RCS support.
