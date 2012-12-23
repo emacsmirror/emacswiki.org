@@ -91,11 +91,14 @@ Additional:
 * [[Anything]] -- `M-x anything-grep' in Lisp:anything-grep.el: narrow the list by multiple patterns.
 * FindrPackage -- Breadth-first search for files.  Search for regexp within found files.
 * GlobRep Search across multiple files, edit these lines, and save back.
-* GrepEd Edit 'grep' results and write them back
-* Lisp:grep-edit.el http://www.bookshelf.jp/elc/grep-edit.el
+* GrepEd Edit 'grep' results and write them back. Does not support M-%, which limits its usefulness.
+* Lisp:grep-edit.el http://www.bookshelf.jp/elc/grep-edit.el -- Supports M-%
 * grep-x similar to GlobRep. http://groups.google.com/groups?q=author:shouman%40goofy.cc.utexas.edu&hl=en&safe=off&rnum=2&selm=SHOUMAN.95Apr26224953%40goofy.cc.utexas.edu Usenet Article 1995/04/27 
 * Icicles [[Icicles - Search-And-Replace|search-and-replace]] 
 -- see [[#IciclesSearchAndReplace|above]]. Use Icicles [[Icicles - Other Search Commands|compilation search-and-replace]] to visit source-file hits in a ##*grep*## buffer and replace text within them.
+
+-- I couldn't get this to work. The instructions were scattered and unclear, and I either got "this command can only be used in a minibuffer or completion buffer", or, when I tried to use it in the minibuffer or completion buffer, "command attempted to use minibuffer while in a minibuffer"!
+
 * MultiReplace
 * http://groups.google.com/groups?q=replace+group:gnu.emacs.sources
 * TinyReplace replace over multiple files (run M-x grep to and hit % in compile buffer) RCS support.
