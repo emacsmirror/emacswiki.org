@@ -92,19 +92,19 @@ Additional:
 * FindrPackage -- Breadth-first search for files.  Search for regexp within found files.
 * GlobRep Search across multiple files, edit these lines, and save back.
 * GrepEd Edit 'grep' results and write them back. Does not support M-%, which limits its usefulness.
-* Lisp:grep-edit.el http://www.bookshelf.jp/elc/grep-edit.el -- Supports M-%
+* Lisp:wgrep.el Writable grep results
+** wgrep.el is based on Lisp:grep-edit.el http://www.bookshelf.jp/elc/grep-edit.el -- Supports M-%
 * grep-x similar to GlobRep. http://groups.google.com/groups?q=author:shouman%40goofy.cc.utexas.edu&hl=en&safe=off&rnum=2&selm=SHOUMAN.95Apr26224953%40goofy.cc.utexas.edu Usenet Article 1995/04/27 
 * Icicles [[Icicles - Search-And-Replace|search-and-replace]] 
 -- see [[#IciclesSearchAndReplace|above]]. Use Icicles [[Icicles - Other Search Commands|compilation search-and-replace]] to visit source-file hits in a ##*grep*## buffer and replace text within them.
 
--- I couldn't get this to work. The instructions were scattered and unclear, and I either got "this command can only be used in a minibuffer or completion buffer", or, when I tried to use it in the minibuffer or completion buffer, "command attempted to use minibuffer while in a minibuffer"!
+-- I couldn't get this to work and will file a bug. The instructions were also scattered and unclear.
 
 * MultiReplace
 * http://groups.google.com/groups?q=replace+group:gnu.emacs.sources
 * TinyReplace replace over multiple files (run M-x grep to and hit % in compile buffer) RCS support.
 * TraverseDirectory search a word or regexp in all files in dir and subdir (recursive search).
 * VersionControlSearchAndReplace -- Search and replace VC files, using Dired `Q'.
-* Lisp:wgrep.el Writable grep results
 
 * (Links are broken or faulty - http://www.peerfear.org/el/replace-recursive.el (successor of http://www.peerfear.org/el/igrep-find-query-replace.el))
 
