@@ -1542,6 +1542,7 @@ automatically.")
 ;; minibuffer-local-filename-must-match-map.
 (defvar minibuffer-local-filename-must-match-map (make-sparse-keymap)) ;; Emacs 23.1.+
 (defvar minibuffer-local-must-match-filename-map (make-sparse-keymap)) ;; Older Emacsen
+(defvar minibuffer-inactive-mode-map (make-sparse-keymap))
 (dolist (map (list minibuffer-local-filename-completion-map
                    minibuffer-local-completion-map
                    minibuffer-local-must-match-filename-map
@@ -1549,7 +1550,9 @@ automatically.")
                    minibuffer-local-map
                    minibuffer-local-isearch-map
                    minibuffer-local-must-match-map
-                   minibuffer-local-ns-map))
+                   minibuffer-local-ns-map
+                   minibuffer-inactive-mode-map
+                   minibuffer-local-shell-command-map))
   (define-key map "\C-r" 'anything-minibuffer-history))
 
 
