@@ -216,6 +216,97 @@ provide.  See [[Icicles - Libraries#Optional|Recommended Libraries]].
 
 ----
 
+[:FlashyDemo]
+== Flashy Demo to Peak Your Curiosity ==
+
+You are used to `C-x C-f' (`find-file') and `C-x 4 f'
+(`find-file-other-window'), which visit files whose names you
+provide.  In ''Icicle'' mode, these keys act the same way, but they
+can also give you a little more magic.
+
+Example -- suppose you do this:
+
+: '''##C-x 4 f##'''##   i c i   ##'''##C-M-j##'''##   t a g s   ##'''##S-SPC##'''
+
+The completion candidates, shown in `*Completions*', are the files
+(a) whose name contains `icicles' (completed from `ici') and (b)
+whose content includes `tags' --- that is, the files themselves
+contain the text `tags'.
+
+The file content is in fact part of the two-part completion
+candidate, but of course it is not shown.  It is used only for
+filtering.  Only the file names are shown in `*Completions*'.
+
+Then you do this, with the previous candidates still current:
+
+: ##c m   ##'''##C-M-j##'''##   i n e - f##
+
+As you type, the candidates shown in `*Completions*' are updated.
+When you finish typing, the set of candidates is reduced to just
+`##icicles-cmd1.el##' and `##icicles-cmd2.el##', the files whose name
+contains also `cm' and whose content contains also `ine-f' (as in
+`icicle-define-file-command').
+
+Then you hit '''`##M-!##'''' to visit both of those files.
+
+(Yes, it's a toy example to show you some features.  Clearly you
+could just as well have used only `icicles-cm' as your input, or
+even `##ici.*cm##', or `s-cm', or perhaps only `cm', depending on the
+files in your directory.)
+
+You have just used the following '''Icicles''' features:
+
+* ''incremental completion'' -- candidate set updated as you type
+
+* ''apropos completion'' -- matching not just a completion-candidate
+  prefix but a substring (or even a regexp)
+
+* ''multi-completion'' matching -- matching in parallel two different
+  things at once (in this case, file name and file content),
+  separating the patterns with '''`C-M-j''''
+
+* ''progressive completion'' -- matching sequentially two different
+  inputs (each a multi-completion in this case), separated by
+  '''`S-SPC''''
+
+* ''multi-command'' action -- acting on more than one matching
+  candidate, in this case all (both) of them: '''`##M-!##''''
+
+(The same behavior is available for buffer switching.  By default,
+`C-x b' is bound to `icicle-buffer', which acts as described above
+but with buffer-name candidates.  In fact, most of the behavior
+described above is available for most '''Icicles''' commands.)
+
+Using `C-M-j' followed by a content-matching pattern in your input
+is optional.  If you do not provide it then no content searching
+is done.
+
+The file-name pattern is also optional: you can search content
+without having any idea about the file names --- just start with
+`C-M-j'.  Obviously, content searching is much slower than
+file-name matching.  If you can match names, that reduces the
+number of files whose content needs to be searched.
+
+OK, a caveat: By default, `C-x 4 f' today does not do the
+multi-completion, content-searching part.  That is only because I
+have not yet promoted the recently added command that adds this
+feature, `icicle-find-file-of-content', to that key binding by
+default.  I will soon do so no doubt, but I would like it to be
+tested more.  Today, `C-x C-f' and `C-x 4 f' are bound to '''Icicles'''
+multi-commands that do the same thing, except for the
+multi-completion part.
+
+
+
+
+
+
+
+
+
+
+
+
 
 [:Menus]
 == Menus ==
