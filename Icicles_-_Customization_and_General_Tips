@@ -1663,13 +1663,12 @@ Options `icicle-buffer-skip-hook' and
 '''`icicle-find-file-of-content-skip-hook'''' are lists of hook
 functions.  They are used by commands `icicle-buffer' and
 `icicle-find-file-of-content' to test a candidate buffer name or file
-name, respectively.  You can use them to skip visiting and trying
-to search certain buffers or files.
+name, respectively.  You can use them to skip content-searching of certain buffers and files when completing buffer and file names using [[multi-completion]]
 
 The functions are passed to `run-hook-with-args-until-success',
 so they are called in order until one returns non-`nil'.  If any
 function returns non-`nil' then the buffer or file content is
-not searched.  This is relevant only when your [[multi-completion]]
+not searched.  This is relevant only when your multi-completion
 input has a second, content-matching part.
 
 
