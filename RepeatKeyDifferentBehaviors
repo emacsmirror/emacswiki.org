@@ -6,7 +6,11 @@ The code for this is in standard library GIT:window.el.  It is based on `recente
 
 The following are additional ways to make a command or key act differently when it is repeated.
 
-* `##beginning-of-line+##' and `##end-of-line+##' in <tt>[[misc-cmds.el]]</tt>. Use `C-a' and `C-e' repeatedly to zip up and down the beginnings or ends of lines.  First time: bol/eol, subsequently: next/previous line's bol/eol.
+* Use `C-a' and `C-e' repeatedly to zip up and down the beginnings and ends of lines.  First time: bol/eol, subsequently: next/previous line's bol/eol.  See commands `##beginning-of-line+##' and `##end-of-line+##' in <tt>[[misc-cmds.el]]</tt>.  The keys are bound in <tt>[[setup-keys.el]]</tt>.
+
+* Same thing in `visual-line-mode', use `C-a' and `C-e' repeatedly to zip up and down the beginnings and ends of visual lines.  And use `home' and `end' to move repeatedly across full, logical lines.  See commands `##beginning-of-visual-line+##' and `##end-of-visual-line+##' in <tt>[[misc-cmds.el]]</tt>.  The keys are bound in <tt>[[setup-keys.el]]</tt>.
+
+
 
 * DoReMi -- Use the arrow keys and the mouse wheel to execute a sequence of commands in sequence or to repeat commands.
 
