@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Wed Aug  2 11:20:41 1995
 ;; Version: 21.1
-;; Last-Updated: Sat Nov 10 15:54:41 2012 (-0800)
+;; Last-Updated: Mon Dec 24 13:21:26 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 3060
+;;     Update #: 3073
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/misc-cmds.el
 ;; Keywords: internal, unix, extensions, maint, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -27,11 +27,12 @@
 ;;
 ;;  Commands defined here:
 ;;
-;;    `beginning-of-line+', `beginning-or-indentation', `chgrp',
-;;    `chmod', `chown', `clear-regexp-search-history',
-;;    `clear-regexp-search-ring' `clear-search-history',
-;;    `clear-search-ring', `clear-search-histories',
-;;    `count-chars-in-region', `delete-lines', `end-of-line+',
+;;    `beginning-of-line+', `beginning-of-visual-line+',
+;;    `beginning-or-indentation', `chgrp', `chmod', `chown',
+;;    `clear-regexp-search-history', `clear-regexp-search-ring'
+;;    `clear-search-history', `clear-search-ring',
+;;    `clear-search-histories', `count-chars-in-region',
+;;    `delete-lines', `end-of-line+', `end-of-visual-line+.',
 ;;    `forward-char-same-line', `forward-overlay',
 ;;    `goto-previous-mark', `indirect-buffer',
 ;;    `kill-buffer-and-its-windows', `list-colors-nearest',
@@ -54,23 +55,33 @@
 ;;
 ;;  Suggested key bindings:
 ;;
-;;   (define-key ctl-x-map [home] 'mark-buffer-before-point)
-;;   (define-key ctl-x-map [end]  'mark-buffer-after-point)
-;;   (define-key ctl-x-map "\M-f" 'region-to-file)
-;;   (global-set-key [C-S-f1]     'region-to-buffer)
-;;   (global-set-key [C-S-backspace] 'region-to-file)
-;;   (global-set-key [home]       'backward-line-text)
-;;   (global-set-key [f5]         'revert-buffer-no-confirm) ; A la MS Windows
-;;   (substitute-key-definition   'kill-buffer
-;;                                'kill-buffer-and-its-windows global-map)
-;;   (substitute-key-definition   'beginning-of-line 'beginning-of-line+ global-map)
-;;   (substitute-key-definition   'end-of-line 'end-of-line+ global-map)
-;;   (substitute-key-definition   'recenter 'recenter-top-bottom global-map)
+;;   (define-key ctl-x-map [home]     'mark-buffer-before-point)
+;;   (define-key ctl-x-map [end]      'mark-buffer-after-point)
+;;   (define-key ctl-x-map "\M-f"     'region-to-file)
+;;   (global-set-key [C-S-f1]         'region-to-buffer)
+;;   (global-set-key [C-S-backspace]  'region-to-file)
+;;   (global-set-key [home]           'backward-line-text)
+;;   (global-set-key [f5]             'revert-buffer-no-confirm) ; A la MS Windows
+;;   (substitute-key-definition       'kill-buffer
+;;                                    'kill-buffer-and-its-windows global-map)
+;;   (substitute-key-definition       'recenter 'recenter-top-bottom global-map)
+;;   (substitute-key-definition       'beginning-of-line 'beginning-of-line+ global-map)
+;;   (substitute-key-definition       'end-of-line 'end-of-line+ global-map)
+;;
+;;   The first two of these are needed to remove the default remappings.
+;;   (define-key visual-line-mode-map [remap move-beginning-of-line] nil)
+;;   (define-key visual-line-mode-map [remap move-end-of-line] nil)
+;;   (define-key visual-line-mode-map [home] 'beginning-of-line+)
+;;   (define-key visual-line-mode-map [end]  'end-of-line+)
+;;   (define-key visual-line-mode-map "\C-a" 'beginning-of-visual-line+)
+;;   (define-key visual-line-mode-map "\C-e" 'end-of-visual-line+)
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
 ;;
+;; 2012/12/24 dadams
+;;     Added: beginning-of-visual-line+, end-of-visual-line+.
 ;; 2012/11/10 dadams
 ;;     Added: list-colors-nearest, list-colors-nearest-color-at.
 ;; 2012/08/21 dadams
@@ -356,6 +367,60 @@ This is the similar to `beginning-of-line', but:
   (if (and (eq this-command last-command) (not current-prefix-arg))
       (forward-line -1)
     (forward-line (- n))))
+
+;;;###autoload (autoload 'end-of-visual-line+ "misc-cmds")
+;;;###autoload (autoload 'beginning-of-visual-line+ "misc-cmds")
+(when (fboundp 'visual-line-mode)       ; Emacs 23+
+  (defun end-of-visual-line+ (&optional n)
+    "Move cursor to end of current visual line, or end of next if repeated.
+If point reaches the beginning or end of buffer, it stops there.
+To ignore intangibility, bind `inhibit-point-motion-hooks' to t.
+
+This is similar to `end-of-visual-line', but:
+  If called interactively with no prefix arg:
+     If the previous command was also `end-of-visual-line+', then move
+     to the end of the next visual line.  Else, end of current one.
+  Otherwise, move to the end of the Nth next visual line (Nth previous
+     one if N<0).  Command `end-of-visual-line', by contrast, moves to
+     the end of the (N-1)th next line."
+    (interactive
+     (list (if current-prefix-arg (prefix-numeric-value current-prefix-arg) 0)))
+    (unless n (setq n 0))               ; non-interactive with no arg 
+    (let ((line-move-visual  t))
+      (if (and (eq this-command last-command)  (not current-prefix-arg))
+          (line-move 1 t)
+        (line-move n t)))
+    ;; Unlike `move-beginning-of-line', `move-end-of-line' doesn't
+    ;; constrain to field boundaries, so we don't either.
+    (vertical-motion (cons (window-width) 0)))
+
+  (defun beginning-of-visual-line+ (&optional n)
+    "Move cursor to beginning of current visual line or next if repeated.
+If point reaches the beginning or end of buffer, it stops there.
+To ignore intangibility, bind `inhibit-point-motion-hooks' to t.
+
+This is the similar to `beginning-of-visual-line', but:
+1. With arg N, the direction is the opposite: this command moves
+   backward, not forward, N visual lines.
+2. If called interactively with no prefix arg:
+      If the previous command was also `beginning-of-visual-line+',
+      then move to the beginning of the previous visual line.  Else,
+      move to the beginning of the current visual line.
+   Otherwise, move to the beginning of the Nth previous visual line
+      (Nth next one if N<0).  Command `beginning-of-visual-line', by
+      contrast, moves to the beginning of the (N-1)th next visual
+      line."
+    (interactive
+     (list (if current-prefix-arg (prefix-numeric-value current-prefix-arg) 0)))
+    (unless n (setq n 0))               ; non-interactive with no arg
+    (let ((opoint  (point)))
+      (let ((line-move-visual  t))
+        (if (and (eq this-command last-command)  (not current-prefix-arg))
+            (line-move -1 t)
+          (line-move n t)))
+      (vertical-motion 0)
+      ;; Constrain to field boundaries, like `move-beginning-of-line'.
+      (goto-char (constrain-to-field (point) opoint (/= n 1))))))
 
 ;;;###autoload
 (defun beginning-or-indentation (&optional n)
