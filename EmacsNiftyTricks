@@ -88,6 +88,8 @@ For those of us using earlier versions, use the PictureModeTrailingWhitespaceTri
 * Keep tilde files from showing up everywhere: set `backup-directory-alist'. Try `M-x customize-group backup', turn on `full-path' and `prepend-file-name'. -- DanielLundin 
 * TinyTools. `tiny-buffer' is the best buffer switching. `tinyeat' is great as well -- AaronBrady
 * Open files using `ffap' (FindFileAtPoint).  Use `ffap-alist' to tell Emacs where to find them. -- PiotrMieszkowski
+* Use two side-by-side windows with follow-mode for easier working with wide-screen monitors (google search "emacs multiple columns one buffer")  ---BrandonSchendel
+
 
 === Auto modes ===
 * AutoCompressionMode - allows use of compressed files as if they were normal files; put (auto-compression-mode 1) in your emacs to activate.
