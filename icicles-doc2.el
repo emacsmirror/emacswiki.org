@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Dec 21 21:54:14 2012 (-0800)
+;; Last-Updated: Sun Dec 23 17:07:32 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 29135
+;;     Update #: 29137
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -5579,8 +5579,9 @@
 ;;    `icicle-find-file-of-content-skip-hook' are lists of hook
 ;;    functions.  They are used by commands `icicle-buffer' and
 ;;    `icicle-find-file-of-content' to test a candidate buffer name or
-;;    file name, respectively.  You can use them to skip visiting and
-;;    trying to search certain buffers or files.
+;;    file name, respectively.  You can use them to skip
+;;    content-searching of certain buffers and files when completing
+;;    buffer and file names using multi-completion.
 ;;
 ;;    The functions are passed to `run-hook-with-args-until-success',
 ;;    so they are called in order until one returns non-`nil'.  If any
