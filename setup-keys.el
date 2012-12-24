@@ -7,10 +7,10 @@
 ;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 21.1
-;; Last-Updated: Tue Oct  2 22:42:10 2012 (-0700)
+;; Last-Updated: Mon Dec 24 14:48:50 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 1148
-;; URL: http://www.emacswiki.org/emacs-en/setup-keys.el
+;;     Update #: 1153
+;; URL: http://www.emacswiki.org/setup-keys.el
 ;; Keywords: mouse, keyboard, menus, menu-bar
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;;
@@ -67,6 +67,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/12/24 dadams
+;;     Added bindings for visual-line-mode line movements.
 ;; 2012/08/27 dadams
 ;;     Treat Emacs 24+ insert-char the same as ucs-insert (old name).
 ;; 2012/07/08 dadams
@@ -821,7 +823,14 @@ This has no effect unless you use library `frame-cmds.el'.")
              (substitute-key-definition 'move-end-of-line 'end-of-line+ global-map))
             (t
              (substitute-key-definition 'beginning-of-line 'beginning-of-line+ global-map)
-             (substitute-key-definition 'end-of-line 'end-of-line+ global-map))))
+             (substitute-key-definition 'end-of-line 'end-of-line+ global-map)))
+      (when (boundp 'visual-line-mode-map)
+        (define-key visual-line-mode-map [remap move-beginning-of-line] nil)
+        (define-key visual-line-mode-map [remap move-end-of-line]       nil)
+        (define-key visual-line-mode-map [home] 'beginning-of-line+)
+        (define-key visual-line-mode-map [end]  'end-of-line+)
+        (define-key visual-line-mode-map "\C-a" 'beginning-of-visual-line+)
+        (define-key visual-line-mode-map "\C-e" 'end-of-visual-line+)))
     (when sub-recenter-top-bottom
       (substitute-key-definition 'recenter 'recenter-top-bottom global-map))))
 
