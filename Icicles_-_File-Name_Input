@@ -303,13 +303,17 @@ the number of files to search, the better.
 
 To search file contents, the candidate files are visited, that is,
 buffers are created for them and searched.  By default, after the
-command is finished these buffers are killed, except for those of
-the file(s) you actually chose as completion candidate(s), and
-except for any others that existed prior to invoking the command.
+command is finished these buffers are killed, except for those you actually chose as completion candidate(s) and
+any that existed prior to invoking the command.
 
 This automatic extra-buffers cleanup is controlled by option
 '''`<tt>[[Icicles - Customization and General Tips#icicle-kill-visited-buffers-flag|icicle-kill-visited-buffers-flag]]</tt>''''.  But providing a [[prefix argument]] to the command flips the behavior specified by that
 option for the command duration.
+
+
+You can use option '''`<tt>[[Icicles - Customization and General Tips#icicle-find-file-of-content-skip-hook|icicle-find-file-of-content-skip-hook]]</tt>'''' to specify patterns for file names to exclude from content searching
+when you provide a content-matching pattern to
+`icicle-find-file-of-content'.
 
 In [[Dired]] there is a related content-matching multi-command,
 `icicle-visit-marked-file-of-content' (bound to `C-S-f', aka
@@ -373,7 +377,7 @@ similarly.
 Since it does not use an index, `icicle-locate-file' looks throughout a given directory,
 including throughout all of its subdirectories.  Command '''`icicle-locate-file-no-symlinks'''' is the same, except that
 it does not follow symbolic links.  Both of these commands
-respect [[option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-ignored-directoriesflag|icicle-ignored-directories]]</tt>'''', which is a list of
+respect [[option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-ignored-directories|icicle-ignored-directories]]</tt>'''', which is a list of
 directories to ignore -- by default, version-control directories.
 
 By default, the target directory for `icicle-locate-file' is the
@@ -514,6 +518,12 @@ original `default-directory' is restored.
 * [[Icicles - Support for Projects#TagsFileProject|Icicles - Tags File Projects]] for more about `icicle-find-file-in-tags-table'
 
 * [[Icicles - Completion On Demand]] for information about on-demand insertion of file names, using completion, from any minibuffer
+
+* [[Icicles - Nutshell View#MultiCompletion|Match Multiple Things Together]] about content searching
+
+* [[Icicles - Buffer-Name Input]] about visiting recently used files or
+files whose names have been cached, and about content-searching
+them
 
 
 
