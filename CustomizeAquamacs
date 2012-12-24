@@ -559,7 +559,7 @@ To make sure the case is preserved in a completion, you probably have to [http:/
 
 == Upgrading org-mode or other major-modes in Aquamacs ==
 
-Edit the Makefile to set variables as follows, before "make" and "make install":
+Edit the local.mk Makefile to set variables as follows, before "make" and "make install":
 
 
     # Name of your emacs binary
