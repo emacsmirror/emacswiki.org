@@ -118,6 +118,7 @@ Coming soon.
 * DuckDuckGo
 * Dvips
 * English
+* FilesystemHierarchyStandard
 * GDB
 * GnuAspell
 * GnuBazaar
@@ -132,11 +133,12 @@ Coming soon.
 * LambdaExpression
 * LibreJS
 * libxml
-* Linux-libre and GNU Hurd
+* Linux-libre and GNU Mach
 * LispLanguage
 * MIPS
 * MIT
 * MLDonkey
+* POSIX
 * RegularExpression
 * SELinux
 * Sawfish and StumpWM
