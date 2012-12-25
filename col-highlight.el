@@ -14,6 +14,7 @@
 ;; Doc URL: http://emacswiki.org/emacs/HighlightCurrentColumn
 ;; Keywords: faces, frames, emulation, highlight, cursor, accessibility
 ;; Compatibility: GNU Emacs: 22.x, 23.x
+;; Package-Requires: ((vline "1.10"))
 ;; 
 ;; Features that might be required by this library:
 ;;
