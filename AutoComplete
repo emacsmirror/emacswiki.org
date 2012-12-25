@@ -117,6 +117,12 @@ For the second part of the question here is what i currently use to bypass ac-mo
 : But overlay have align render bug with multi-byte language (such as CJK), and tooltip haven't this problem.
 : About different between AutoComplete and CompanyMode, in fact they're very similar, but CompanyMode have more bug. -- AndyStewart
 
+[new:dgutov:2012-12-25 19:41 UTC]
+: CompanyMode is more feature-rich, actually. For example, as long as the source supports that, it can show a documentation or a definition buffer without quitting the completion interface.
+: Try hitting `f1' or `C-w' when completing something in an EmacsLisp buffer.
+: And it has a separate notion of metadata, which it shows in the echo area, that can be used to quickly show the function's argument list, for example.
+: AutoComplete can display a candidate's documentation, but it uses third-party libraries for that. They can make it look cooler, but they impose certain limitations, like you can't add highlighting to the documentation text. -- DmitryGutov
+
 [new]
 Thanks for the explanation! CompletionUI includes many other user-interfaces besides the tooltip, implements an auto-completion-mode, and includes many other features besides. My aim was to make a swiss-army knife of completion user-interface code, so no one else would have to go through the same tedium! Would you be interested in adding your overlay display code to CompletionUI? --TobyCubitt
 ----
