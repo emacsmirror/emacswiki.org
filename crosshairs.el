@@ -14,6 +14,7 @@
 ;; Doc URL: http://www.emacswiki.org/emacs/CrosshairHighlighting
 ;; Keywords: faces, frames, emulation, highlight, cursor, accessibility
 ;; Compatibility: GNU Emacs: 22.x, 23.x
+;; Package-Requires: ((col-highlight "22.0") (hl-line+ "20120823") (vline "1.10"))
 ;; 
 ;; Features that might be required by this library:
 ;;
