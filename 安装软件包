@@ -1,0 +1,51 @@
+== 安装一个新的文件 ==
+
+确保有一个存放elisp文件的本地目录。例如，我使用~/elisp。
+
+确保该目录在`load-path'变量中。我在我的~/.emacs使用以下语句：
+
+    (add-to-list 'load-path "~/elisp")
+
+XEmacs文档（21.4 （patch 14））有关load-path的描述：“注意，该列表的元素不能以‘~’开头，因此在把路径加到该列表之前，你必须使用<code>expand-file-name</code>。”所以，对于[[XEmacs]]，上面的语句应该是：
+
+    (add-to-list 'load-path (expand-file-name "~/elisp"))
+
+有关'load-path'，你可以阅读LoadPath获得更多信息。根据你的喜好，你也可以在环境变量<code>EMACSLOADPATH</code>加入需要的路径。
+
+== Installing Modes ==
+
+If the code in the elisp file is supposed to be a mode for files whose names match a pattern, see AutoModeAlist.
+If the code in the elisp file is supposed to be a mode for files who are run by certain interpreters, see InterpreterModeAlist.
+
+== Installing bigger packages ==
+
+For bigger packages such as [[Gnus]] or [[BBDB]], you usually install them somewhere, run ''./configure; make; make install'' and then figure out where the package got installed.
+Then add that directory to your ''load-path''.
+
+Some packages can be run uncompiled.  In that case, just unpack them, and add the corresponding directory to your ''load-path''.
+
+Example:
+
+    (add-to-list 'load-path "/home/alex/src/erc")
+    (require 'erc-auto)
+    (autoload 'erc "erc")
+
+This requires some knowledge about the package, of course.  In the above case, for example, I
+knew that erc-auto defines lots of autoloads, but does not autoload ''erc'' itself (use ''erc-select''
+to connect to network)...
+
+== Installing packages from Internet ==
+
+There exist hundreds of Emacs Lisp libraries but GNU Emacs does not contain a package manager allowing users to easily install those libraries and keep them up-to-date.
+
+There is a list of package managers on CategoryCode that have been created to fill this gap.
+
+Some packages exist whose only purpose is to update another single package.
+
+* Lisp:icicles-install.el -- Download and optionally byte-compile Icicles
+
+See WishList for discussion of adding package management to Emacs.
+
+----
+CategoryDotEmacs.
+
