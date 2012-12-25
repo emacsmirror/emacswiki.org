@@ -25,6 +25,7 @@
 23.19.195.34.rdns.ubiquity.io # for spamming
 147.255.183.235.rdns.ubiquity.io # for spamming CategoryProject
 rdns.ubiquity.io # for spamming
+^112\.101\.64\.113 # for spamming EmacsForums
 118\.99\.68\.104 # spamming XmlParser, including with action=edit;id=XmlParser
 125.51.150.178.triolan.net # for spamming
 142.4.117.113 # for spamming
