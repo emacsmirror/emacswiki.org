@@ -1,3 +1,4 @@
+[[zh:安装软件包]]
 == Installing a new file ==
 
 Make sure you have a local directory where you put elisp files.  I use ~/elisp, for example.
