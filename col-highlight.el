@@ -4,12 +4,12 @@
 ;; Description: Highlight the current column.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2006-2012, Drew Adams, all rights reserved.
+;; Copyright (C) 2006-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 08 11:06:35 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Aug 23 09:47:21 2012 (-0700)
+;; Last-Updated: Tue Dec 25 21:31:23 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 370
+;;     Update #: 373
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/col-highlight.el
 ;; Doc URL: http://emacswiki.org/emacs/HighlightCurrentColumn
 ;; Keywords: faces, frames, emulation, highlight, cursor, accessibility
@@ -125,6 +125,8 @@
 ;; 
 ;;; Change Log:
 ;;
+;; 2012/12/25 dadams
+;;     Added Package-Requires.
 ;; 2012/05/18 dadams
 ;;     Added: col-highlight-overlay-priority, defadvice of vline-show.
 ;; 2011/01/03 dadams
