@@ -1,0 +1,22 @@
+On the page it says:
+
+[new]
+<b>Note:</b> <code>clone/pull</code> operations on Bazaar repo seems have same time, network efficient as Git when used <code>bzr://</code> or <code>nosmart+bzr://</code> protocols. <code>http://</code> protocols for Bazaar and for Git both are not efficient!
+
+[new]
+I just did a test quick test:
+
+|| Method                                                 || Time   || Index ||
+||||||                                                                       ||
+|| <code>bzr branch bzr://...</code>                      || 15m43s || 100   ||
+|| <code>git clone git://git.savannah.gnu.org/...</code>  || 10m00s ||  64   ||
+|| <code>git clone git://repo.or.cz/...</code>            || 7m53s  ||  50   ||
+||||||                                                                       ||
+|| <code>bzr branch http://...</code>                     || 27m21s || 100   ||
+|| <code>git clone http://git.savannah.gnu.org/...</code> || 14m01s ||  51   ||
+|| <code>git clone http://repo.or.cz/...</code>           || 9m18s  ||  34   ||
+
+So <code>git://</code> is around 35-50% faster; also the git http protocol has improved in recent years, being slightly faster than <code>bzr://</code> and 49-66% faster than bzr over http.
+
+-- [http://asjo.koldfront.dk/ asjo] 2012-12-26 15:44 UTC
+
