@@ -7,9 +7,9 @@
 ;; Copyright (C) 2006-2012, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 08 13:09:19 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Aug 23 09:56:38 2012 (-0700)
+;; Last-Updated: Tue Dec 25 21:27:02 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 467
+;;     Update #: 471
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/crosshairs.el
 ;; Doc URL: http://www.emacswiki.org/emacs/CrosshairHighlighting
 ;; Keywords: faces, frames, emulation, highlight, cursor, accessibility
@@ -91,6 +91,8 @@
 ;; 
 ;;; Change Log:
 ;;
+;; 2012/12/25 dadams
+;;     Added Package-Requires.
 ;; 2012/05/18 dadams
 ;;     Removed: crosshairs-overlay-priority.  Instead, use vline-overlay-priority
 ;;              and col-highlight-overlay-priority.
