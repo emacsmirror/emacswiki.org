@@ -43,6 +43,7 @@ Others are available as 3rd party plugins: http://developer.pidgin.im/wiki/Third
 
 * Replace libpurple with telepathy (pretty please?). ;)
 ** Investigating adding telepathy support. ETA not-very-soon, busy with many things.
+** Just curious, why? --mgalgs
 * Make an ELPA package for it. (An ELPA package doesn't really make sense since ELIM is a C program. Distributing the elisp portion by itself is not that helpful. --technomancy)
 * Notify the user when a new message is received.
 ** '''DONE'''
