@@ -4,14 +4,14 @@
 ;; Description: Extensions to `replace.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Jan 30 15:01:06 1996
 ;; Version: 21.0
-;; Last-Updated: Fri Aug 31 15:33:44 2012 (-0700)
+;; Last-Updated: Fri Dec 28 10:19:49 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 1427
-;; URL: http://www.emacswiki.org/emacs-en/replace%2b.el
-;; Doc URL: http://www.emacswiki.org/emacs/ReplacePlus
+;;     Update #: 1428
+;; URL: http://www.emacswiki.org/replace%2b.el
+;; Doc URL: http://www.emacswiki.org/ReplacePlus
 ;; Keywords: matching, help, internal, tools, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
 ;;
