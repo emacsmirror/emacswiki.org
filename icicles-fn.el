@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Dec 28 10:00:23 2012 (-0800)
+;; Last-Updated: Fri Dec 28 13:48:57 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 13776
+;;     Update #: 13777
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1055,18 +1055,20 @@ Completion ignores case when `completion-ignore-case' is non-nil."
 
 (defun icicle-add-default-to-prompt (prompt default)
   "Return PROMPT, but with DEFAULT added to it if appropriate."
-  (let ((hint  default))
-    (when (consp hint) (setq hint  (car hint)))
+  (if (not default)
+      prompt
+    (when (consp default) (setq default  (car default)))
     (dolist (rgx  (if (boundp 'minibuffer-default--in-prompt-regexps) ; Get rid of HINT if already there.
                       minibuffer-default--in-prompt-regexps
                     '(("\\( (default\\(?: is\\)? \\(.*\\))\\):? \\'"  1)
                       ("\\( \\[.*\\]\\):? *\\'"                       1))))
       (setq prompt  (replace-regexp-in-string  (car rgx) "" prompt nil nil (cadr rgx))))
-    ;; $$$$$$$$$ (when (icicle-file-name-input-p) (setq hint  (file-name-nondirectory hint)))
-    (setq prompt  (replace-regexp-in-string ".*\\(\\): *\\'"
-                                            (funcall icicle-default-in-prompt-format-function
-                                                     hint)
-                                            prompt nil t 1))))
+    ;; $$$$$$$$$ (when (icicle-file-name-input-p) (setq default  (file-name-nondirectory default)))
+    (replace-regexp-in-string ".*\\(\\): *\\'"
+                              (funcall icicle-default-in-prompt-format-function
+                                       default)
+                              prompt nil t 1)))
+
 
 (defun icicle-mctize-all (coll pred)
   "Transform collection COLL and predicate PRED for vanilla completion.
