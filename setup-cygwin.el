@@ -4,15 +4,16 @@
 ;; Description:
 ;; Author: Markus Hoenika
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2004-2012, Drew Adams, all rights reserved.
+;; Copyright (C) 2004-2013, Drew Adams, all rights reserved.
 ;; Created: Thu Jan 15 11:13:38 2004
 ;; Version: 21.0
-;; Last-Updated: Wed Jun 27 10:09:18 2012 (-0700)
+;; Last-Updated: Fri Dec 28 10:22:45 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 108
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/setup-cygwin.el
+;;     Update #: 110
+;; URL: http://www.emacswiki.org/setup-cygwin.el
+;; Doc URL: http://www.emacswiki.org/NTEmacsWithCygwin
 ;; Keywords: os, unix, cygwin
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
 ;;
 ;; Features that might be required by this library:
 ;;
