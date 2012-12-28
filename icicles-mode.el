@@ -4,12 +4,12 @@
 ;; Description: Icicle Mode definition for Icicles
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Dec  6 10:41:44 2012 (-0800)
+;; Last-Updated: Fri Dec 28 10:01:17 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 9225
+;;     Update #: 9226
 ;; URL: http://www.emacswiki.org/icicles-mode.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -30,9 +30,9 @@
 ;;   `icicles-var', `image-dired', `info', `info+', `kmacro',
 ;;   `levenshtein', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
 ;;   `mouse3', `mwheel', `naked', `pp', `pp+', `regexp-opt', `ring',
-;;   `ring+', `second-sel', `strings', `thingatpt', `thingatpt+',
-;;   `unaccent', `w32-browser', `w32browser-dlgopen', `wid-edit',
-;;   `wid-edit+', `widget'.
+;;   `ring+', `second-sel', `strings', `subr-21', `thingatpt',
+;;   `thingatpt+', `unaccent', `w32-browser', `w32browser-dlgopen',
+;;   `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
