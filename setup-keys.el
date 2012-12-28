@@ -4,15 +4,15 @@
 ;; Description: Some key bindings.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
+;; Copyright (C) 1999-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 21.1
-;; Last-Updated: Mon Dec 24 14:48:50 2012 (-0800)
+;; Last-Updated: Fri Dec 28 10:23:30 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 1153
+;;     Update #: 1154
 ;; URL: http://www.emacswiki.org/setup-keys.el
 ;; Keywords: mouse, keyboard, menus, menu-bar
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
 ;;
 ;; Features that might be required by this library:
 ;;
