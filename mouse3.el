@@ -4,16 +4,16 @@
 ;; Description: Customizable behavior for `mouse-3'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2010-2012, Drew Adams, all rights reserved.
+;; Copyright (C) 2010-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 30 15:22:56 2010 (-0800)
 ;; Version: 
-;; Last-Updated: Thu Aug 23 16:22:22 2012 (-0700)
+;; Last-Updated: Fri Dec 28 10:15:24 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 1453
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/mouse3.el
-;; Doc URL: http://www.emacswiki.org/emacs/Mouse3
+;;     Update #: 1454
+;; URL: http://www.emacswiki.org/mouse3.el
+;; Doc URL: http://www.emacswiki.org/Mouse3
 ;; Keywords: mouse menu keymap kill rectangle region
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
 ;; 
 ;; Features that might be required by this library:
 ;;
