@@ -4,13 +4,13 @@
 ;; Description: Extensions to `vc-hooks.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
+;; Copyright (C) 1999-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Jun 19 10:51:38 2000
 ;; Version: 20.0
-;; Last-Updated: Sun Jan  1 14:05:07 2012 (-0800)
+;; Last-Updated: Fri Dec 28 10:32:27 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 89
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/vc-hooks+.el
+;;     Update #: 90
+;; URL: http://www.emacswiki.org/vc-hooks+.el
 ;; Keywords: version control
 ;; Compatibility: GNU Emacs 20.x
 ;;
