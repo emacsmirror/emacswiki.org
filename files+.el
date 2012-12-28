@@ -4,15 +4,15 @@
 ;; Description: Enhancements of standard library `files.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Aug 11 14:24:13 1995
 ;; Version: 21.0
-;; Last-Updated: Tue May  1 10:08:18 2012 (-0700)
+;; Last-Updated: Fri Dec 28 09:42:31 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 612
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/files+.el
+;;     Update #: 620
+;; URL: http://www.emacswiki.org/files+.el
 ;; Keywords: internal, extensions, local
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
 ;;
 ;; Features that might be required by this library:
 ;;
