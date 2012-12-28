@@ -4,13 +4,13 @@
 ;; Description: Extensions to `outline.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Jun 21 08:56:04 1996
 ;; Version: 20.0
-;; Last-Updated: Sun Jan  1 14:05:13 2012 (-0800)
+;; Last-Updated: Fri Dec 28 10:17:09 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 333
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/outline+.el
+;;     Update #: 334
+;; URL: http://www.emacswiki.org/outline+.el
 ;; Keywords: abbrev, matching, local
 ;; Compatibility: GNU Emacs 20.x
 ;;
