@@ -4,13 +4,13 @@
 ;; Description: Functions to manipulate colors, including RGB hex strings.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2004-2012, Drew Adams, all rights reserved.
+;; Copyright (C) 2004-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Sep 20 22:58:45 2004
 ;; Version: 21.0
-;; Last-Updated: Sun Dec 16 20:06:59 2012 (-0800)
+;; Last-Updated: Fri Dec 28 09:54:18 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 935
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/hexrgb.el
+;;     Update #: 936
+;; URL: http://www.emacswiki.org/hexrgb.el
 ;; Doc URL: http://www.emacswiki.org/SetColor
 ;; Doc URL: http://emacswiki.org/ColorPalette
 ;; Keywords: number, hex, rgb, color, background, frames, display
