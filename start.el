@@ -4,13 +4,13 @@
 ;; Description: Main Emacs startup file: require/autoload other files.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1995-2012, Drew Adams, all rights reserved.
+;; Copyright (C) 1995-2013, Drew Adams, all rights reserved.
 ;; Created: Wed Aug  2 11:12:24 1995
 ;; Version: 21.1
-;; Last-Updated: Fri Nov 16 19:37:43 2012 (-0800)
+;; Last-Updated: Fri Dec 28 10:26:53 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 2959
-;; URL: http://www.emacswiki.org/emacs-en/start.el
+;;     Update #: 2961
+;; URL: http://www.emacswiki.org/start.el
 ;; Keywords: abbrev, internal, local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
 ;;
