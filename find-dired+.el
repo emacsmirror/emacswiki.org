@@ -6,14 +6,14 @@
 ;;      Sebastian Kremer <sk@thp.uni-koeln.de>,
 ;;      Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Wed Jan 10 14:31:50 1996
 ;; Version: 20.0
-;; Last-Updated: Thu Aug 23 10:45:49 2012 (-0700)
+;; Last-Updated: Fri Dec 28 09:43:05 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 615
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/find-dired+.el
-;; Doc URL: http://emacswiki.org/emacs/LocateFilesAnywhere
+;;     Update #: 617
+;; URL: http://www.emacswiki.org/find-dired+.el
+;; Doc URL: http://emacswiki.org/LocateFilesAnywhere
 ;; Keywords: internal, unix, tools, matching, local
 ;; Compatibility: GNU Emacs 20.x
 ;;
@@ -21,10 +21,9 @@
 ;;
 ;;   `bookmark', `bookmark+', `bookmark+-1', `bookmark+-bmu',
 ;;   `bookmark+-key', `bookmark+-lit', `cl', `dired', `dired+',
-;;   `dired-aux', `dired-x', `ediff-diff', `ediff-help',
-;;   `ediff-init', `ediff-merg', `ediff-mult', `ediff-util',
-;;   `ediff-wind', `ffap', `find-dired', `find-dired-', `misc-fns',
-;;   `pp', `pp+', `thingatpt', `thingatpt+', `w32-browser'.
+;;   `dired-aux', `dired-x', `ffap', `find-dired', `find-dired-',
+;;   `misc-fns', `pp', `pp+', `subr-21', `thingatpt', `thingatpt+',
+;;   `w32-browser'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
