@@ -4,15 +4,15 @@
 ;; Description: Apropos for functions and variables
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Nov 28 15:41:09 2005
 ;; Version: 
-;; Last-Updated: Fri May 11 16:27:59 2012 (-0700)
+;; Last-Updated: Fri Dec 28 09:24:00 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 177
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/apropos-fn+var.el
+;;     Update #: 179
+;; URL: http://www.emacswiki.org/apropos-fn+var.el
 ;; Keywords: apropos
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
 ;; 
 ;; Features that might be required by this library:
 ;;
