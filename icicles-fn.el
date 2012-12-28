@@ -4,12 +4,12 @@
 ;; Description: Non-interactive functions for Icicles
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Dec 23 12:35:31 2012 (-0800)
+;; Last-Updated: Fri Dec 28 10:00:23 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 13775
+;;     Update #: 13776
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
