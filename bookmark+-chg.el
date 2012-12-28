@@ -4,13 +4,13 @@
 ;; Description: Change logs for Bookmark+ libraries.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Nov 13 19:16:32 2012 (-0800)
+;; Last-Updated: Fri Dec 28 09:29:43 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 15173
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
-;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus
+;;     Update #: 15176
+;; URL: http://www.emacswiki.org/bookmark+-chg.el
+;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
 ;;
@@ -851,6 +851,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2012/11/14 dadams
+;;     bmkp-bmenu-mode-line: Added mode-line-buffer-identification.
 ;; 2012/11/12 dadams
 ;;     Added: bmkp-bmenu-marked-or-this-or-all.
 ;;     bmkp-bmenu-isearch-marked-bookmarks(-regexp), bmkp-bmenu-search-marked-bookmarks-regexp,
