@@ -4,15 +4,15 @@
 ;; Description: Change cursor dynamically, depending on the context.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2006-2012, Drew Adams, all rights reserved.
+;; Copyright (C) 2006-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug 29 11:23:06 2006
 ;; Version: 20.1
-;; Last-Updated: Sun Jan  1 14:27:44 2012 (-0800)
+;; Last-Updated: Fri Dec 28 09:33:41 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 200
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/cursor-chg.el
+;;     Update #: 203
+;; URL: http://www.emacswiki.org/cursor-chg.el
 ;; Keywords: cursor, accessibility
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
 ;; 
 ;; Features that might be required by this library:
 ;;
