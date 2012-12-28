@@ -4,15 +4,15 @@
 ;; Description: Miscellaneous non-interactive functions.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Mar  5 17:21:28 1996
 ;; Version: 21.0
-;; Last-Updated: Sat Nov 10 14:19:40 2012 (-0800)
+;; Last-Updated: Fri Dec 28 10:13:34 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 598
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/misc-fns.el
+;;     Update #: 599
+;; URL: http://www.emacswiki.org/misc-fns.el
 ;; Keywords: internal, unix, lisp, extensions, local
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
 ;;
 ;; Features that might be required by this library:
 ;;
