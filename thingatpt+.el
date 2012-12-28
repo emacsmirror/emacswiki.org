@@ -4,14 +4,14 @@
 ;; Description: Extensions to `thingatpt.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Feb 13 16:47:45 1996
 ;; Version: 21.0
-;; Last-Updated: Sat Nov 10 11:03:28 2012 (-0800)
+;; Last-Updated: Fri Dec 28 10:28:22 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 2093
-;; URL: http://www.emacswiki.org/emacs-en/thingatpt%2b.el
-;; Doc URL: http://www.emacswiki.org/emacs/ThingAtPointPlus#ThingAtPoint%2b
+;;     Update #: 2094
+;; URL: http://www.emacswiki.org/thingatpt%2b.el
+;; Doc URL: http://www.emacswiki.org/ThingAtPointPlus#ThingAtPoint%2b
 ;; Keywords: extensions, matching, mouse
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
 ;;
