@@ -4,16 +4,16 @@
 ;; Description: Display Control-l characters in a buffer in a pretty way
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
+;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Thu Feb 08 20:28:09 2007
 ;; Version: 1.0
-;; Last-Updated: Thu Aug 23 16:35:38 2012 (-0700)
+;; Last-Updated: Fri Dec 28 10:18:41 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 204
-;; URL: http://www.emacswiki.org/emacs-en/pp-c-l.el
-;; Doc URL: http://emacswiki.org/emacs/PrettyControlL
+;;     Update #: 206
+;; URL: http://www.emacswiki.org/pp-c-l.el
+;; Doc URL: http://emacswiki.org/PrettyControlL
 ;; Keywords: display, convenience, faces
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
 ;; 
 ;; Features that might be required by this library:
 ;;
@@ -224,12 +224,12 @@ Don't forget to mention your Emacs and library versions."))
                 (add-hook 'window-configuration-change-hook 'refresh-pretty-control-l)
               (remove-hook 'window-configuration-change-hook 'refresh-pretty-control-l))
             (walk-windows 
- 	     (lambda (window)
- 	       (let ((display-table  (or (window-display-table window)
+             (lambda (window)
+               (let ((display-table  (or (window-display-table window)
                                          (make-display-table))))
- 		 (aset display-table ?\014 (and pretty-control-l-mode
+                 (aset display-table ?\014 (and pretty-control-l-mode
                                                 (pp^L-^L-display-table-entry window)))
- 		 (set-window-display-table window display-table)))
+                 (set-window-display-table window display-table)))
              'no-minibuf
              'visible)))
 
