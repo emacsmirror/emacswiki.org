@@ -4,16 +4,16 @@
 ;; Description: Run Windows application associated with a file.
 ;; Author: Emacs Wiki, Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2004-2012, Drew Adams, all rights reserved.
+;; Copyright (C) 2004-2013, Drew Adams, all rights reserved.
 ;; Created: Thu Mar 11 13:40:52 2004
 ;; Version: 21.0
-;; Last-Updated: Thu Aug 23 20:17:57 2012 (-0700)
+;; Last-Updated: Fri Dec 28 10:32:41 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 220
-;; URL: http://www.emacswiki.org/emacs-en/w32-browser.el
-;; Doc URL: http://emacswiki.org/emacs/MsShellExecute
+;;     Update #: 231
+;; URL: http://www.emacswiki.org/w32-browser.el
+;; Doc URL: http://emacswiki.org/MsShellExecute
 ;; Keywords: mouse, dired, w32, explorer
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -25,13 +25,13 @@
 ;;
 ;;    Run Windows application associated with a file.
 ;;
-;; `w32-browser' & `dired-w32-browser' are taken from the Emacs Wiki
-;; (author unknown).
+;; Functions `w32-browser' & `dired-w32-browser' were originally from
+;; code posted on EmacsWiki (author unknown).
 ;;
-;; I modified `w32-browser' to `find-file' if it cannot
-;; `w32-shell-execute'.  I modified `dired-multiple-w32-browser' to
-;; use `w32-browser-wait-time'.  I wrote `dired-mouse-w32-browser',
-;; `w32explore', `dired-w32explore', and dired-mouse-w32explore.
+;; Modified `w32-browser' to invoke `find-file' if it cannot use
+;; `w32-shell-execute'.  Modified `dired-multiple-w32-browser' to use
+;; `w32-browser-wait-time'.  Wrote `dired-mouse-w32-browser',
+;; `w32explore', `dired-w32explore', and `dired-mouse-w32explore'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -55,7 +55,7 @@
 ;; 2006/01/02 dadams
 ;;     Added: w32-browser-wait-time, soft require of dired+.el.
 ;;     Uncommented and updated dired-multiple-w32-browser and its binding.
-;;     Thanks to Mathias Dahl [brakjoller@gmail.com] for recognizing this actually works.
+;;     Thanks to Mathias Dahl for recognizing this actually works.
 ;;     Conditionalized dired+ vs standard dired in bindings.
 ;; 2005/11/05 dadams
 ;;     Renamed menu-bar-dired-immediate-menu to diredp-menu-bar-immediate-menu.
