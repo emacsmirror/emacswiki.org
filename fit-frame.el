@@ -4,14 +4,15 @@
 ;; Description: Resize a frame.  In particular, fit a frame to its buffers.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Created: Thu Dec  7 09:32:12 2000
 ;; Version: 22.0
-;; Last-Updated: Thu Nov  1 09:42:09 2012 (-0700)
+;; Last-Updated: Fri Dec 28 09:45:33 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 1340
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/fit-frame.el
-;; Doc URL: http://www.emacswiki.org/emacs/Shrink-Wrapping_Frames
+;;     Update #: 1343
+;; URL: http://www.emacswiki.org/fit-frame.el
+;; Doc URL: http://www.emacswiki.org/Shrink-Wrapping_Frames
+;; Doc URL: http://www.emacswiki.org/OneOnOneEmacs
 ;; Keywords: internal, extensions, convenience, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
 ;;
