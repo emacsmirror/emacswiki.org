@@ -4,13 +4,13 @@
 ;; Description: Extensions to `timer.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Jul 15 08:45:19 1996
 ;; Version: 20.0
-;; Last-Updated: Thu Aug 23 17:11:15 2012 (-0700)
+;; Last-Updated: Fri Dec 28 10:29:11 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 87
-;; URL: http://www.emacswiki.org/emacs-en/timer%2b.el
+;;     Update #: 88
+;; URL: http://www.emacswiki.org/timer%2b.el
 ;; Keywords: processes, calendar
 ;; Compatibility: GNU Emacs 20.x
 ;;
