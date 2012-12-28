@@ -5,18 +5,18 @@
 ;; Author: Lynn Slater
 ;;         Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Copyright (C) 1989 Free Software Foundation, Inc.
 ;; Copyright (C) 1988 Lynn Randolph Slater, Jr.
 ;; Created: Tue Aug  4 17:06:46 1987
 ;; Version: 21.0
-;; Last-Updated: Thu Aug 23 12:56:11 2012 (-0700)
+;; Last-Updated: Fri Dec 28 09:16:48 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 1825
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/header2.el
-;; Doc URL: http://emacswiki.org/emacs/AutomaticFileHeaders
+;;     Update #: 1827
+;; URL: http://www.emacswiki.org/header2.el
+;; Doc URL: http://emacswiki.org/AutomaticFileHeaders
 ;; Keywords: tools, docs, maint, abbrev, local
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
