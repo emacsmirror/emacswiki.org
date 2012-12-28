@@ -4,17 +4,17 @@
 ;; Description: fuzzy matching
 ;; Author: Simon Marshall <s i m o n  AT  g n u . o r g>
 ;; Maintainer: Drew Adams <d r e w . a d a m s  AT  o r a c l e . c o m>
-;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
+;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Copyright (C) 1993, 1994 Simon Marshall, all rights reserved.
 ;; Created: 1993, by Simon Marshall
 ;; Version: 1.04
-;; Last-Updated: Thu Aug 23 12:46:15 2012 (-0700)
+;; Last-Updated: Fri Dec 28 09:17:04 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 177
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/fuzzy-match.el
-;; Doc URL: http://emacswiki.org/emacs/Icicles_-_Fuzzy_Completion
+;;     Update #: 179
+;; URL: http://www.emacswiki.org/fuzzy-match.el
+;; Doc URL: http://emacswiki.org/Icicles_-_Fuzzy_Completion
 ;; Keywords: matching completion string
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
 ;; 
 ;; Features that might be required by this library:
 ;;
