@@ -4,13 +4,14 @@
 ;; Description: Pick foreground and background colors at cursor or pointer.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2006-2012, Drew Adams, all rights reserved.
+;; Copyright (C) 2006-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Jun 23 08:07:15 2006
 ;; Version: 20
-;; Last-Updated: Sun Aug 12 14:47:46 2012 (-0700)
+;; Last-Updated: Fri Dec 28 09:39:34 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 173
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/eyedropper.el
+;;     Update #: 176
+;; URL: http://www.emacswiki.org/eyedropper.el
+;; Doc URL: http://www.emacswiki.org/CustomizingFaces
 ;; Keywords: color, rgb, hsv, hexadecimal, face, frame
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
 ;; 
