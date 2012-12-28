@@ -4,18 +4,18 @@
 ;; Description: Frame and window commands (interactive functions).
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Mar  5 16:30:45 1996
 ;; Version: 21.0
-;; Last-Updated: Thu Aug 23 11:42:21 2012 (-0700)
+;; Last-Updated: Fri Dec 28 09:17:46 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 2670
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/frame-cmds.el
-;; Doc URL: http://emacswiki.org/emacs/FrameModes
-;; Doc URL: http://www.emacswiki.org/emacs/OneOnOneEmacs
-;; Doc URL: http://emacswiki.org/emacs/Frame_Tiling_Commands
+;;     Update #: 2674
+;; URL: http://www.emacswiki.org/frame-cmds.el
+;; Doc URL: http://emacswiki.org/FrameModes
+;; Doc URL: http://www.emacswiki.org/OneOnOneEmacs
+;; Doc URL: http://www.emacswiki.org/Frame_Tiling_Commands
 ;; Keywords: internal, extensions, mouse, frames, windows, convenience
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
 ;;
 ;; Features that might be required by this library:
 ;;
