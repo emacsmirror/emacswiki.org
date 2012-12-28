@@ -5,13 +5,13 @@
 ;; Author: Francis J. Wright, Simon Marshal, Drew Adams
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2000 Francis J. Wright
-;; Copyright (C) 2012, Drew Adams, all rights reserved.
+;; Copyright (C) 2012-2013, Drew Adams, all rights reserved.
 ;; Created: Sun Aug 26 07:06:14 2012 (-0700)
 ;; Version: 24
-;; Last-Updated: Tue Nov 13 10:29:14 2012 (-0800)
+;; Last-Updated: Fri Dec 28 09:46:31 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 200
-;; URL: http://www.emacswiki.org/emacs-en/font-lock-menus.el
+;;     Update #: 202
+;; URL: http://www.emacswiki.org/font-lock-menus.el
 ;; Doc URL: 
 ;; Keywords: font, highlighting, syntax, decoration
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
