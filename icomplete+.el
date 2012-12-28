@@ -4,16 +4,16 @@
 ;; Description: Extensions to `icomplete.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Oct 16 13:33:18 1995
 ;; Version: 21.0
-;; Last-Updated: Wed Dec 19 09:13:09 2012 (-0800)
+;; Last-Updated: Fri Dec 28 10:03:44 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 1464
+;;     Update #: 1465
 ;; URL: http://www.emacswiki.org/icomplete+.el
 ;; Doc URL: http://emacswiki.org/IcompleteMode
 ;; Keywords: help, abbrev, internal, extensions, local, completion, matching
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
 ;;
 ;; Features that might be required by this library:
 ;;
