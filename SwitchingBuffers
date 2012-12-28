@@ -18,7 +18,7 @@ I recommend `icicle-buffer' -- see '''[[Icicles - Buffer-Name Input]]'''.  You c
 * cycle among candidate buffers using arrow keys
 * [[regexp]]-match to narrow the set of candidates  
 * filter candidates based on their content, mode, whether visiting files
-* include recently visited files, whether or not currently visited in a buffer
+* include [[RecentFiles]] as candidates, whether or not they are currently visited in a buffer
 * include files from the FileNameCache, whether or not...
 * visit a bookmarked buffer, whether or not... (requires '''[[Bookmark+]]''')
 * kill candidate buffers on the fly
@@ -35,6 +35,24 @@ Nothing is simpler or quicker. You are not limited to cycling: you can also use 
 * ERC channels
 * buffer running processes
 * etc...
+
+
+
+
+
+
+
+
+
+== Content-based switching  ==
+
+These libraries let you switch among buffers and files based on matching their content, not just their names:
+
+* [[Lisp:contentswitch.el]]
+* [[Icicles]] -- see [[Icicles - Buffer-Name Input]] and [[Icicles - File-Name Input#MatchFileContent|Match File Content]]
+
+
+
 
 
 
@@ -133,16 +151,7 @@ See also [http://www.emacswiki.org/cgi-bin/wiki/buffer-move.el buffer-move.el] w
 : -- e1f via retroj who suggests that 'C-x 4 t' is a logical binding for the function
 
 
-== Content-based switching  ==
 
-[[Lisp:contentswitch.el]] lets you select buffers (and files) by their content.
-
-= See Also =
-
-* InteractivelyDoThings -- switching buffers, finding files using the
-  ido package
-* KillingBuffers -- functions that get rid of buffers
-* RecentFiles -- saving a list of recently opened files, finding these files
 
 
 == Switching between windows ==
