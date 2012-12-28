@@ -4,14 +4,14 @@
 ;; Description: Bookmark+ key and menu bindings.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2010-2012, Drew Adams, all rights reserved.
+;; Copyright (C) 2010-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  1 15:34:50 2011 (-0700)
 ;; Version:
-;; Last-Updated: Fri Aug 31 14:07:20 2012 (-0700)
+;; Last-Updated: Fri Dec 28 09:30:14 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 572
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-key.el
-;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus
+;;     Update #: 574
+;; URL: http://www.emacswiki.org/bookmark+-key.el
+;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
 ;;
