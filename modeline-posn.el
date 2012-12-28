@@ -4,15 +4,15 @@
 ;; Description: Set up `mode-line-position'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2006-2012, Drew Adams, all rights reserved.
+;; Copyright (C) 2006-2013, Drew Adams, all rights reserved.
 ;; Created: Thu Sep 14 08:15:39 2006
 ;; Version: 22.0
-;; Last-Updated: Fri May 25 20:06:05 2012 (-0700)
+;; Last-Updated: Fri Dec 28 10:14:35 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 121
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/modeline-posn.el
+;;     Update #: 122
+;; URL: http://www.emacswiki.org/modeline-posn.el
 ;; Keywords: mode-line, region, column
-;; Compatibility: GNU Emacs: 22.x, 23.x
+;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x
 ;; 
 ;; Features that might be required by this library:
 ;;
