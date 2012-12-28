@@ -4,13 +4,13 @@
 ;; Description: Functions dealing with accented characters.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
+;; Copyright (C) 1999-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Sep  3 11:02:14 1999
 ;; Version: 20.0
-;; Last-Updated: Thu Aug 23 17:17:19 2012 (-0700)
+;; Last-Updated: Fri Dec 28 10:31:37 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 57
-;; URL: http://www.emacswiki.org/emacs-en/unaccent.el
+;;     Update #: 58
+;; URL: http://www.emacswiki.org/unaccent.el
 ;; Keywords: i18n, language, accents
 ;; Compatibility: GNU Emacs 20.x
 ;;
