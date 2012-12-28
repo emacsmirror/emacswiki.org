@@ -4,16 +4,16 @@
 ;; Description: Extensions to `ring.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Thu Apr 11 16:46:04 1996
 ;; Version: 21.0
-;; Last-Updated: Thu Aug 23 16:41:27 2012 (-0700)
+;; Last-Updated: Fri Dec 28 10:20:14 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 214
-;; URL: http://www.emacswiki.org/emacs-en/ring%2b.el
-;; Doc URL: http://emacswiki.org/emacs/RingPlus
+;;     Update #: 215
+;; URL: http://www.emacswiki.org/ring%2b.el
+;; Doc URL: http://emacswiki.org/RingPlus
 ;; Keywords: extensions, lisp, emacs-lisp
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
 ;;
 ;; Features that might be required by this library:
 ;;
