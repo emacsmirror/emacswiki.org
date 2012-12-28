@@ -6,38 +6,36 @@
 ;;      Drew Adams
 ;; Maintainer: Drew Adams 
 ;; Copyright (C) 1989, 1990, 1994, 1998 Free Software Foundation, Inc.
-;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Thu Aug  3 18:14:22 1995
 ;; Version: 20.1
-;; Last-Updated: Sun Jan  1 14:29:49 2012 (-0800)
+;; Last-Updated: Fri Dec 28 12:50:18 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 683
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/synonyms.el
+;;     Update #: 685
+;; URL: http://www.emacswiki.org/appt.el
 ;; Keywords: calendar, local
 ;; Compatibility: GNU Emacs 20.x
 ;;
 ;; Features that might be required by this library:
 ;;
 ;;   `advice', `advice-preload', `apropos', `apropos+',
-;;   `apropos-fn+var', `avoid', `backquote', `bookmark', `bookmark+',
+;;   `apropos-fn+var', `avoid', `bookmark', `bookmark+',
 ;;   `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
-;;   `bookmark+-lit', `bookmark+-mac', `bytecomp', `cal-dst',
-;;   `cal-julian', `cal-menu', `cal-persia', `calendar', `calendar+',
-;;   `cl', `cus-edit', `cus-face', `cus-load', `cus-start', `custom',
-;;   `diary-lib', `dired', `dired+', `dired-aux', `dired-x',
-;;   `doremi', `easymenu', `ediff-diff', `ediff-help', `ediff-init',
-;;   `ediff-merg', `ediff-mult', `ediff-util', `ediff-wind',
+;;   `bookmark+-lit', `cal-dst', `cal-julian', `cal-menu',
+;;   `cal-persia', `calendar', `calendar+', `cl', `cus-edit',
+;;   `cus-face', `cus-load', `cus-start', `diary-lib', `dired',
+;;   `dired+', `dired-aux', `dired-x', `doremi', `easymenu',
 ;;   `el-swank-fuzzy', `faces', `ffap', `ffap-', `fit-frame',
 ;;   `frame-cmds', `frame-fns', `fuzzy', `fuzzy-match', `help+20',
 ;;   `hexrgb', `icicles', `icicles-cmd1', `icicles-cmd2',
 ;;   `icicles-face', `icicles-fn', `icicles-mcmd', `icicles-mode',
 ;;   `icicles-opt', `icicles-var', `image-dired', `info', `info+',
 ;;   `kmacro', `levenshtein', `lisp-float-type', `menu-bar',
-;;   `menu-bar+', `misc-cmds', `misc-fns', `mkhtml',
-;;   `mkhtml-htmlize', `mouse3', `mwheel', `naked', `pp', `pp+',
-;;   `regexp-opt', `ring', `ring+', `second-sel', `solar', `strings',
-;;   `thingatpt', `thingatpt+', `unaccent', `w32-browser',
-;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget'.
+;;   `menu-bar+', `misc-cmds', `misc-fns', `mouse3', `mwheel',
+;;   `naked', `pp', `pp+', `regexp-opt', `ring', `ring+',
+;;   `second-sel', `solar', `strings', `subr-21', `thingatpt',
+;;   `thingatpt+', `unaccent', `w32-browser', `w32browser-dlgopen',
+;;   `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
