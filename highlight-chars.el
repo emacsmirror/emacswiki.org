@@ -4,12 +4,12 @@
 ;; Description: Highlight specified sets of characters, including whitespace.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Nov 16 08:37:04 2012 (-0800)
 ;; Version: 2012
-;; Last-Updated: Wed Nov 21 12:52:55 2012 (-0800)
+;; Last-Updated: Fri Dec 28 09:55:34 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 206
+;;     Update #: 207
 ;; URL: http://www.emacswiki.org/highlight-chars.el
 ;; Doc URL: http://www.emacswiki.org/ShowWhiteSpace#HighlightChars
 ;; Keywords: highlight, whitespace, characters, Unicode
