@@ -4,16 +4,16 @@
 ;; Description: Enhancements to standard library `bindings.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
+;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Thu Oct 04 10:54:38 2007
 ;; Version: 22.0
-;; Last-Updated: Thu Aug 23 09:17:33 2012 (-0700)
+;; Last-Updated: Fri Dec 28 09:26:10 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 160
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/bindings+.el
-;; Doc URL: http://emacswiki.org/emacs/ModeLineMinorModeMenu
+;;     Update #: 165
+;; URL: http://www.emacswiki.org/bindings+.el
+;; Doc URL: http://emacswiki.org/ModeLineMinorModeMenu
 ;; Keywords: 
-;; Compatibility: GNU Emacs 22.x, GNU Emacs 23.x
+;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x
 ;; 
 ;; Features that might be required by this library:
 ;;
