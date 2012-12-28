@@ -4,16 +4,16 @@
 ;; Description: Automatically resize one-window frames to fit.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Created: Thu Dec  7 10:06:18 2000
 ;; Version: 21.0
-;; Last-Updated: Thu Aug 23 08:43:33 2012 (-0700)
+;; Last-Updated: Fri Dec 28 09:24:24 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 688
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/autofit-frame.el
+;;     Update #: 691
+;; URL: http://www.emacswiki.org/autofit-frame.el
 ;; Doc URL: http://www.emacswiki.org/emacs/Shrink-Wrapping_Frames
 ;; Keywords: internal, extensions, convenience, local
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
 ;;
 ;; Features that might be required by this library:
 ;;
