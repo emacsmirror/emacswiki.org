@@ -4,14 +4,14 @@
 ;; Description: Enhancements to library `dired-details+.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2005-2012, Drew Adams, all rights reserved.
+;; Copyright (C) 2005-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Dec 20 13:33:01 2005
 ;; Version: 
-;; Last-Updated: Thu Aug 23 10:15:47 2012 (-0700)
+;; Last-Updated: Fri Dec 28 09:35:42 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 195
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired-details+.el
-;; Doc URL: http://www.emacswiki.org/emacs/DiredDetails
+;;     Update #: 197
+;; URL: http://www.emacswiki.org/dired-details+.el
+;; Doc URL: http://www.emacswiki.org/DiredDetails
 ;; Keywords: dired, frames
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
 ;; 
