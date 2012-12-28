@@ -4,15 +4,15 @@
 ;; Description: Extensions to `find-func.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2008-2012, Drew Adams, all rights reserved.
+;; Copyright (C) 2008-2013, Drew Adams, all rights reserved.
 ;; Created: Sun Sep  7 14:17:06 2008 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Mon Jul  2 08:16:57 2012 (-0700)
+;; Last-Updated: Fri Dec 28 09:27:16 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 30
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/find-func+.el
+;;     Update #: 32
+;; URL: http://www.emacswiki.org/find-func+.el
 ;; Keywords: emacs-lisp, functions, variables
-;; Compatibility: GNU Emacs: 22.x, 23.x
+;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x
 ;; 
 ;; Features that might be required by this library:
 ;;
