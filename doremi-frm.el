@@ -4,16 +4,16 @@
 ;; Description: Incrementally adjust face attributes and frame parameters.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2004-2012, Drew Adams, all rights reserved.
+;; Copyright (C) 2004-2013, Drew Adams, all rights reserved.
 ;; Created: Sat Sep 11 10:40:32 2004
 ;; Version: 22.0
-;; Last-Updated: Thu Aug 23 10:23:41 2012 (-0700)
+;; Last-Updated: Fri Dec 28 09:36:47 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 2987
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/doremi-frm.el
-;; Doc URL: http://www.emacswiki.org/emacs/DoReMi
+;;     Update #: 2989
+;; URL: http://www.emacswiki.org/doremi-frm.el
+;; Doc URL: http://www.emacswiki.org/DoReMi
 ;; Keywords: frames, extensions, convenience, keys, repeat, cycle
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
 ;;
 ;; Features that might be required by this library:
 ;;
