@@ -4,17 +4,17 @@
 ;; Description: Extensions to hl-line.el.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2006-2012, Drew Adams, all rights reserved.
+;; Copyright (C) 2006-2013, Drew Adams, all rights reserved.
 ;; Created: Sat Aug 26 18:17:18 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Aug 23 13:50:31 2012 (-0700)
+;; Last-Updated: Fri Dec 28 09:56:31 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 467
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/hl-line+.el
-;; Doc URL: http://www.emacswiki.org/emacs/HighlightCurrentLine
-;; Doc URL: http://www.emacswiki.org/emacs/CrosshairHighlighting
+;;     Update #: 468
+;; URL: http://www.emacswiki.org/hl-line+.el
+;; Doc URL: http://www.emacswiki.org/HighlightCurrentLine
+;; Doc URL: http://www.emacswiki.org/CrosshairHighlighting
 ;; Keywords: highlight, cursor, accessibility
-;; Compatibility: GNU Emacs: 22.x, 23.x
+;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x
 ;; 
 ;; Features that might be required by this library:
 ;;
