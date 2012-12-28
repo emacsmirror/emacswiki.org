@@ -4,16 +4,16 @@
 ;; Description: Extensions to `imenu.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
+;; Copyright (C) 1999-2013, Drew Adams, all rights reserved.
 ;; Created: Thu Aug 26 16:05:01 1999
 ;; Version: 21.0
-;; Last-Updated: Wed Oct 24 20:58:17 2012 (-0700)
+;; Last-Updated: Fri Dec 28 10:04:26 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 885
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/imenu+.el
-;; Doc URL: http://emacswiki.org/emacs/ImenuMode
+;;     Update #: 886
+;; URL: http://www.emacswiki.org/imenu+.el
+;; Doc URL: http://emacswiki.org/ImenuMode
 ;; Keywords: tools, menus
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
 ;;
 ;; Features that might be required by this library:
 ;;
