@@ -4,16 +4,16 @@
 ;; Description: Secondary selection commands
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2008-2012, Drew Adams, all rights reserved.
+;; Copyright (C) 2008-2013, Drew Adams, all rights reserved.
 ;; Created: Fri May 23 09:58:41 2008 ()
 ;; Version: 22.0
-;; Last-Updated: Thu Aug 23 16:44:03 2012 (-0700)
+;; Last-Updated: Fri Dec 28 10:20:58 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 285
-;; URL: http://www.emacswiki.org/emacs-en/second-sel.el
-;; Doc URL: http://emacswiki.org/emacs/SecondarySelection
+;;     Update #: 286
+;; URL: http://www.emacswiki.org/second-sel.el
+;; Doc URL: http://emacswiki.org/SecondarySelection
 ;; Keywords: region, selection, yank, paste, edit
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
 ;;
 ;; Features that might be required by this library:
 ;;
