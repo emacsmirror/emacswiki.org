@@ -4,16 +4,16 @@
 ;; Description: Cycle among buffer restrictions
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2010-2012, Drew Adams, all rights reserved.
+;; Copyright (C) 2010-2013, Drew Adams, all rights reserved.
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 20.0
-;; Last-Updated: Thu Aug 23 20:24:53 2012 (-0700)
+;; Last-Updated: Fri Dec 28 13:27:07 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 342
-;; URL: http://www.emacswiki.org/emacs-en/wide-n.el
-;; Doc URL: http://www.emacswiki.org/emacs/MultipleNarrowings
+;;     Update #: 344
+;; URL: http://www.emacswiki.org/wide-n.el
+;; Doc URL: http://www.emacswiki.org/MultipleNarrowings
 ;; Keywords: narrow restriction widen
-;; Compatibility: Emacs 21.x, 22.x, 23.x
+;; Compatibility: GNU Emacs: 21.x, 22.x, 23.x, 24.x
 ;; 
 ;; Features that might be required by this library:
 ;;
