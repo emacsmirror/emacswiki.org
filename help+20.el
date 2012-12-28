@@ -4,14 +4,14 @@
 ;; Description: Extensions to `help.el' for Emacs 20.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
+;; Copyright (C) 1999-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Mar 16 14:18:11 1999
 ;; Version: 20.0
-;; Last-Updated: Mon Sep 24 15:58:57 2012 (-0700)
+;; Last-Updated: Fri Dec 28 09:51:40 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 2199
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/help+20.el
-;; Doc URL: http://emacswiki.org/emacs/HelpPlus
+;;     Update #: 2200
+;; URL: http://www.emacswiki.org/help+20.el
+;; Doc URL: http://emacswiki.org/HelpPlus
 ;; Keywords: help
 ;; Compatibility: GNU Emacs 20.x
 ;;
