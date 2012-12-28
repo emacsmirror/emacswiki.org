@@ -4,15 +4,16 @@
 ;; Description: Enhancements of standard library `ls-lisp.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2008-2012, Drew Adams, all rights reserved.
+;; Copyright (C) 2008-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Feb 29 10:54:37 2008 (Pacific Standard Time)
 ;; Version: 20.0
-;; Last-Updated: Sun Jan  1 14:48:21 2012 (-0800)
+;; Last-Updated: Fri Dec 28 10:06:53 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 186
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/ls-lisp+.el
+;;     Update #: 190
+;; URL: http://www.emacswiki.org/ls-lisp+.el
+;; Doc URL: http://emacswiki.org/LsLisp
 ;; Keywords: internal, extensions, local, files, dired
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
 ;; 
 ;; Features that might be required by this library:
 ;;
@@ -48,7 +49,7 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;; Change log:
+;;; Change Log:
 ;;
 ;; 2010/11/23 dadams
 ;;     ls-lisp-insert-directory: Finish last fix - second call to ls-lisp-format.
