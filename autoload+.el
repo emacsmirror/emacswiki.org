@@ -4,15 +4,15 @@
 ;; Description: Extensions to `autoload.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Wed Mar 19 15:45:38 1997
 ;; Version: 21.0
-;; Last-Updated: Sun Jan  1 14:29:26 2012 (-0800)
+;; Last-Updated: Fri Dec 28 09:24:48 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 50
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/autoload+.el
+;;     Update #: 52
+;; URL: http://www.emacswiki.org/autoload+.el
 ;; Keywords: maint
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
 ;;
 ;; Features that might be required by this library:
 ;;
