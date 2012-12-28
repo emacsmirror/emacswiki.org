@@ -4,12 +4,12 @@
 ;; Description: Macro to create commands that insert Unicode chars.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2011-2012, Drew Adams, all rights reserved.
+;; Copyright (C) 2011-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Oct  4 07:32:20 2011 (-0700)
 ;; Version: 23.0
-;; Last-Updated: Sat Dec 15 08:41:50 2012 (-0800)
+;; Last-Updated: Fri Dec 28 10:31:07 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 172
+;;     Update #: 173
 ;; URL: http://www.emacswiki.org/ucs-cmds.el
 ;; Doc URL: http://emacswiki.org/UnicodeEncoding
 ;; Keywords: unicode, characters, encoding, commands, ucs-names
