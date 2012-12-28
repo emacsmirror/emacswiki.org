@@ -4,16 +4,16 @@
 ;; Description: Miscellaneous Do Re Mi commands
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2004-2012, Drew Adams, all rights reserved.
+;; Copyright (C) 2004-2013, Drew Adams, all rights reserved.
 ;; Created: Sun Sep 12 17:13:58 2004
 ;; Version: 21.0
-;; Last-Updated: Thu Aug 23 10:22:34 2012 (-0700)
+;; Last-Updated: Fri Dec 28 09:36:32 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 334
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/doremi-cmd.el
-;; Doc URL: http://www.emacswiki.org/emacs/DoReMi
+;;     Update #: 336
+;; URL: http://www.emacswiki.org/doremi-cmd.el
+;; Doc URL: http://www.emacswiki.org/DoReMi
 ;; Keywords: keys, cycle, repeat
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
 ;;
 ;; Features that might be required by this library:
 ;;
