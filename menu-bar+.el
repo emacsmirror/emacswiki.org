@@ -4,16 +4,16 @@
 ;; Description: Extensions to `menu-bar.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Thu Aug 17 10:05:46 1995
 ;; Version: 21.1
-;; Last-Updated: Thu Aug 23 16:11:21 2012 (-0700)
+;; Last-Updated: Fri Dec 28 10:12:50 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 3552
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/menu-bar+.el
-;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/MenuBarPlus
+;;     Update #: 3554
+;; URL: http://www.emacswiki.org/menu-bar+.el
+;; Doc URL: http://www.emacswiki.org/MenuBarPlus
 ;; Keywords: internal, local, convenience
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -422,7 +422,7 @@
   (with-output-to-temp-buffer "*Help*"
     (princ (substitute-command-keys
             "To the right of the menu bar divider (\"||\") are the general menus
-that always appear in every buffer.  To the left of this symbol, there
+that usually appear in every buffer.  To the left of this symbol, there
 may also be additional menus that are specific to the buffer's mode
 \(use `\\[describe-mode]' for information on a buffer's mode).
 
