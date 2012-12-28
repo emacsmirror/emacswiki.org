@@ -4,12 +4,12 @@
 ;; Description: Provide for naked key descriptions: no angle brackets.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2011-2012, Drew Adams, all rights reserved.
+;; Copyright (C) 2011-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Oct  7 13:12:52 2011 (-0700)
 ;; Version: 21.0
-;; Last-Updated: Sat Dec  1 17:17:12 2012 (-0800)
+;; Last-Updated: Fri Dec 28 10:15:50 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 165
+;;     Update #: 167
 ;; URL: http://www.emacswiki.org/naked.el
 ;; Doc URL: http://www.emacswiki.org/NaKeD
 ;; Keywords: lisp, key, print, format, help
@@ -65,7 +65,7 @@
 ;;    vector [S-insert].)
 ;;
 ;;  * Use function `naked' instead of `kbd' (which is a function
-;;    startin with Emacs 24.3 and a macro before then).
+;;    starting with Emacs 24.3 and a macro before then).
 ;;
 ;;    The former allows its argument key-sequence description to use
 ;;    naked keys, not clothed in angle brackets.  E.g., (naked
