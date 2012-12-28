@@ -4,12 +4,12 @@
 ;; Description: Extensions to Dired.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
+;; Copyright (C) 1999-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Tue Dec 18 15:47:24 2012 (-0800)
+;; Last-Updated: Fri Dec 28 09:05:49 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 6283
+;;     Update #: 6284
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -20,7 +20,7 @@
 ;;   `bookmark', `bookmark+', `bookmark+-1', `bookmark+-bmu',
 ;;   `bookmark+-key', `bookmark+-lit', `cl', `dired', `dired+',
 ;;   `dired-aux', `dired-x', `ffap', `misc-fns', `pp', `pp+',
-;;   `thingatpt', `thingatpt+', `w32-browser'.
+;;   `subr-21', `thingatpt', `thingatpt+', `w32-browser'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
