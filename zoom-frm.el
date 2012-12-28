@@ -4,16 +4,16 @@
 ;; Description: Commands to zoom frame font size.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2005-2012, Drew Adams, all rights reserved.
+;; Copyright (C) 2005-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Jan 07 10:24:35 2005
 ;; Version: 20
-;; Last-Updated: Thu Aug 23 20:36:08 2012 (-0700)
+;; Last-Updated: Fri Dec 28 10:41:18 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 246
-;; URL: http://www.emacswiki.org/emacs-en/zoom-frm.el
-;; Doc URL: http://emacswiki.org/emacs/SetFonts
+;;     Update #: 247
+;; URL: http://www.emacswiki.org/zoom-frm.el
+;; Doc URL: http://emacswiki.org/SetFonts
 ;; Keywords: frames, extensions, convenience
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
 ;;
 ;; Features that might be required by this library:
 ;;
