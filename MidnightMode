@@ -27,7 +27,7 @@ To add other actions to be run at midnight, add to the hook `midnight-hook'.
 
 You can disable midnight mode with `cancel-timer'.
 
-    (cancel-timer 'midnight-timer)
+    (cancel-timer midnight-timer)
 
 If you want to have "midnight" occur multiple times a day, you can change the `midnight-period' from 24 hours to something else.
 
