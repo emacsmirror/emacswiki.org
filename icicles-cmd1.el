@@ -4,12 +4,12 @@
 ;; Description: Top-level commands for Icicles
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Dec 21 21:31:01 2012 (-0800)
+;; Last-Updated: Fri Dec 28 09:57:42 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 25359
+;;     Update #: 25364
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -6261,7 +6261,7 @@ To match `foo' against buffer names, use input `foo'.
 To match `bar' against buffer contents, use input `C-M-j bar'.
 To match both, use input `foo C-M-j bar'.
 
-Only the matching buffer names are shown in *Completions*, and only
+Only the matching buffer names are shown in `*Completions*', and only
 the chosen buffer name is returned.  The actual content matches are
 unimportant anyway: content matching is used only to filter
 candidates.
@@ -6307,6 +6307,8 @@ These options, when non-nil, control candidate matching and filtering:
  `icicle-buffer-no-match-regexp'    - Regexp buffers must not match
  `icicle-buffer-predicate'          - Predicate buffer names satisfy
  `icicle-buffer-sort'               - Sort function for candidates
+ `icicle-buffer-skip-hook'          - Exclude from content searching
+ `icicle-find-file-of-content-skip-hook' - Same, cached/recent files
 
 For example, to change the default behavior to show only buffers that
 are associated with files, set `icicle-buffer-predicate' to this:
