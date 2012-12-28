@@ -4,13 +4,13 @@
 ;; Description: Extensions to `vc.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2000-2012, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Created: Thu Sep 14 09:47:26 2000
 ;; Version: 20.0
-;; Last-Updated: Sun Jan  1 14:05:07 2012 (-0800)
+;; Last-Updated: Fri Dec 28 10:32:10 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 30
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/vc-.el
+;;     Update #: 31
+;; URL: http://www.emacswiki.org/vc-.el
 ;; Keywords: internal, tools, unix, local
 ;; Compatibility: GNU Emacs 20.x
 ;;
