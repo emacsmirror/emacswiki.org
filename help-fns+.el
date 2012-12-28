@@ -4,16 +4,16 @@
 ;; Description: Extensions to `help-fns.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2007-2012, Drew Adams, all rights reserved.
+;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 22.1
-;; Last-Updated: Sun Nov 18 14:05:07 2012 (-0800)
+;; Last-Updated: Fri Dec 28 09:52:24 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 1498
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/help-fns+.el
-;; Doc URL: http://emacswiki.org/emacs/HelpPlus
+;;     Update #: 1499
+;; URL: http://www.emacswiki.org/help-fns+.el
+;; Doc URL: http://emacswiki.org/HelpPlus
 ;; Keywords: help, faces, characters, packages, description
-;; Compatibility: GNU Emacs: 22.x, 23.x
+;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x
 ;;
 ;; Features that might be required by this library:
 ;;
