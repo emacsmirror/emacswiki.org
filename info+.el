@@ -4,14 +4,14 @@
 ;; Description: Extensions to `info.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 21.1
-;; Last-Updated: Mon Sep 24 13:42:20 2012 (-0700)
+;; Last-Updated: Fri Dec 28 11:46:09 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 4682
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/info+.el
-;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/InfoPlus
+;;     Update #: 4685
+;; URL: http://www.emacswiki.org/info+.el
+;; Doc URL: http://www.emacswiki.org/InfoPlus
 ;; Keywords: help, docs, internal
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
 ;;
@@ -600,9 +600,9 @@ info+.el bug: \
 &body=Describe bug here, starting with `emacs -q'.  \
 Don't forget to mention your Emacs and library versions."))
   :link '(url-link :tag "Other Libraries by Drew"
-          "http://www.emacswiki.org/cgi-bin/wiki/DrewsElispLibraries")
-  :link '(url-link :tag "Download" "http://www.emacswiki.org/cgi-bin/wiki/info+.el")
-  :link '(url-link :tag "Description" "http://www.emacswiki.org/cgi-bin/wiki/InfoPlus")
+          "http://www.emacswiki.org/DrewsElispLibraries")
+  :link '(url-link :tag "Download" "http://www.emacswiki.org/info+.el")
+  :link '(url-link :tag "Description" "http://www.emacswiki.org/InfoPlus")
   :link '(emacs-commentary-link :tag "Commentary" "info+")
   )
 
