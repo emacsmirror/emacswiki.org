@@ -4,15 +4,15 @@
 ;; Description: Emacs init file for use with libraries from Drew Adams
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1995-2012, Drew Adams, all rights reserved.
+;; Copyright (C) 1995-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Sep 12 15:54:33 1995
 ;; Version: 20.0
-;; Last-Updated: Tue Nov 13 10:38:38 2012 (-0800)
+;; Last-Updated: Fri Dec 28 09:38:07 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 2173
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/emacs-init.el
+;;     Update #: 2175
+;; URL: http://www.emacswiki.org/emacs-init.el
 ;; Keywords: init, .emacs, _emacs, dotemacs
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
 ;;
 ;; Features that might be required by this library:
 ;;
