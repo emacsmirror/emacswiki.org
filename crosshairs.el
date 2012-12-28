@@ -4,16 +4,16 @@
 ;; Description: Highlight the current line and column.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2006-2012, Drew Adams, all rights reserved.
+;; Copyright (C) 2006-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 08 13:09:19 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Dec 25 21:27:02 2012 (-0800)
+;; Last-Updated: Fri Dec 28 09:26:47 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 471
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/crosshairs.el
-;; Doc URL: http://www.emacswiki.org/emacs/CrosshairHighlighting
+;;     Update #: 474
+;; URL: http://www.emacswiki.org/crosshairs.el
+;; Doc URL: http://www.emacswiki.org/CrosshairHighlighting
 ;; Keywords: faces, frames, emulation, highlight, cursor, accessibility
-;; Compatibility: GNU Emacs: 22.x, 23.x
+;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x
 ;; Package-Requires: ((col-highlight "22.0") (hl-line+ "20120823") (vline "1.10"))
 ;; 
 ;; Features that might be required by this library:
