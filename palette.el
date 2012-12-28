@@ -4,16 +4,16 @@
 ;; Description: Color palette useful with RGB, HSV, and color names
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2006-2012, Drew Adams, all rights reserved.
+;; Copyright (C) 2006-2013, Drew Adams, all rights reserved.
 ;; Created: Sat May 20 07:56:06 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Aug 23 16:30:18 2012 (-0700)
+;; Last-Updated: Fri Dec 28 10:17:48 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 729 4
-;; URL: http://www.emacswiki.org/emacs-en/palette.el
-;; Doc URL: http://emacswiki.org/emacs/ColorPalette
+;;     Update #: 730 4
+;; URL: http://www.emacswiki.org/palette.el
+;; Doc URL: http://emacswiki.org/ColorPalette
 ;; Keywords: color, rgb, hsv, hexadecimal, face, frame
-;; Compatibility: GNU Emacs: 22.x, 23.x
+;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x
 ;;
 ;; Features that might be required by this library:
 ;;
