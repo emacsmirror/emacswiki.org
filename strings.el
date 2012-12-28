@@ -4,15 +4,15 @@
 ;; Description: Miscellaneous string functions.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Mar  5 17:09:08 1996
 ;; Version: 21.0
-;; Last-Updated: Thu Aug 23 17:01:25 2012 (-0700)
+;; Last-Updated: Fri Dec 28 10:27:18 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 545
-;; URL: http://www.emacswiki.org/emacs-en/strings.el
+;;     Update #: 548
+;; URL: http://www.emacswiki.org/strings.el
 ;; Keywords: internal, strings, text
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -64,6 +64,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2012/09/07 dadams
+;;     read-buffer: Use nil for INHERIT-INPUT-METHOD arg to completing-read.
 ;; 2012/08/21 dadams
 ;;     Call tap-put-thing-at-point-props after load thingatpt+.el.
 ;; 2012/08/18 dadams
@@ -492,13 +494,14 @@ NOTE: For versions of Emacs that do not have faces, a list of
   "Read the name of a buffer and return it as a string.
 Prompt with first arg, PROMPT (a string).
 
-If the user input is empty (just `RET') the the default value is
-returned, which is:
+If user input is empty (just `RET') then return the default value,
+which is:
 
  - optional second arg DEFAULT, if non-nil
  - `another-buffer' or `other-buffer', otherwise.
 
-If `another-buffer' is undefined, then `other-buffer' is used.
+If `another-buffer' is undefined, then use `other-buffer'.
+
 Starting with Emacs 23, DEFAULT can be a list of names (strings), in
 which case the first name in the list is returned on empty input.
 
@@ -524,7 +527,7 @@ Case sensitivity is determined by
                   'internal-complete-buffer ; Emacs 22+
                 (mapcar (lambda (b) (and (buffer-live-p b) (list (buffer-name b))))
                         (buffer-list)))
-       nil require-match nil 'buffer-name-history default t))))
+       nil require-match nil 'buffer-name-history default nil))))
 
 (defun buffer-alist (&optional nospacep)
   "Alist of (BUF-NAME . BUF) items, where BUF-NAME (a string) names BUF,
