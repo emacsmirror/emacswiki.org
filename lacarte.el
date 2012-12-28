@@ -4,21 +4,21 @@
 ;; Description: Execute menu items as commands, with completion.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2005-2012, Drew Adams, all rights reserved.
+;; Copyright (C) 2005-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Aug 12 17:18:02 2005
 ;; Version: 22.0
-;; Last-Updated: Sun Oct 28 12:05:46 2012 (-0700)
+;; Last-Updated: Fri Dec 28 10:05:27 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 791
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/lacarte.el
-;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/LaCarte
+;;     Update #: 792
+;; URL: http://www.emacswiki.org/lacarte.el
+;; Doc URL: http://www.emacswiki.org/LaCarte
 ;; Keywords: menu-bar, menu, command, help, abbrev, minibuffer, keys,
 ;;           completion, matching, local, internal, extensions,
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `subr-21'.
+;;   None
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
