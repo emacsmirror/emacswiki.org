@@ -4,16 +4,16 @@
 ;; Description: Extensions to `pp.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
+;; Copyright (C) 1999-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Sep  3 13:45:40 1999
 ;; Version: 21.0
-;; Last-Updated: Thu Aug 23 16:32:27 2012 (-0700)
+;; Last-Updated: Fri Dec 28 10:18:16 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 208
-;; URL: http://www.emacswiki.org/emacs-en/pp%2b.el
-;; Doc URL: http://emacswiki.org/emacs/EvaluatingExpressions
+;;     Update #: 209
+;; URL: http://www.emacswiki.org/pp%2b.el
+;; Doc URL: http://emacswiki.org/EvaluatingExpressions
 ;; Keywords: lisp
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
 ;;
 ;; Features that might be required by this library:
 ;;
