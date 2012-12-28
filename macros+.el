@@ -4,15 +4,15 @@
 ;; Description: Extensions to `macros.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Apr 22 08:42:10 1996
 ;; Version: 21.0
-;; Last-Updated: Tue Aug 21 15:14:27 2012 (-0700)
+;; Last-Updated: Fri Dec 28 10:11:43 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 185
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/macros+.el
+;;     Update #: 186
+;; URL: http://www.emacswiki.org/macros+.el
 ;; Keywords: abbrev, local
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
 ;;
 ;; Features that might be required by this library:
 ;;
