@@ -4,15 +4,15 @@
 ;; Description: Extensions to `facemenu.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2005-2012, Drew Adams, all rights reserved.
+;; Copyright (C) 2005-2013, Drew Adams, all rights reserved.
 ;; Created: Sat Jun 25 14:42:07 2005
 ;; Version:
-;; Last-Updated: Tue Nov 13 10:46:28 2012 (-0800)
+;; Last-Updated: Fri Dec 28 12:19:59 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 1787
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/facemenu+.el
-;; Doc URL: http://www.emacswiki.org/emacs/CustomizingFaces
-;; Doc URL: http://www.emacswiki.org/emacs/HighlightLibrary
+;;     Update #: 1789
+;; URL: http://www.emacswiki.org/facemenu+.el
+;; Doc URL: http://www.emacswiki.org/CustomizingFaces
+;; Doc URL: http://www.emacswiki.org/HighlightLibrary
 ;; Keywords: faces, extensions, convenience, menus, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;;
