@@ -4,16 +4,16 @@
 ;; Description: Indicate minibuffer-depth in prompt
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2006-2012, Drew Adams, all rights reserved.
+;; Copyright (C) 2006-2013, Drew Adams, all rights reserved.
 ;; Created: Sat Nov 18 16:37:53 2006
 ;; Version: 
-;; Last-Updated: Thu Aug 23 16:08:57 2012 (-0700)
+;; Last-Updated: Fri Dec 28 10:12:25 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 74
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/mb-depth+.el
-;; Doc URL: http://emacswiki.org/emacs/MinibufferDepthIndicator
+;;     Update #: 75
+;; URL: http://www.emacswiki.org/mb-depth+.el
+;; Doc URL: http://emacswiki.org/MinibufferDepthIndicator
 ;; Keywords: convenience
-;; Compatibility: GNU Emacs: 22.x, 23.x
+;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x
 ;; 
 ;; Features that might be required by this library:
 ;;
