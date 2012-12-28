@@ -4,15 +4,15 @@
 ;; Description: Startup assignments: hooks etc.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Thu Dec 28 09:15:00 1995
 ;; Version: 21.0
-;; Last-Updated: Thu Aug 23 16:51:12 2012 (-0700)
+;; Last-Updated: Fri Dec 28 10:25:05 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 768
-;; URL: http://www.emacswiki.org/emacs-en/setup.el
+;;     Update #: 769
+;; URL: http://www.emacswiki.org/setup.el
 ;; Keywords: internal, local
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
 ;;
 ;; Features that might be required by this library:
 ;;
