@@ -4,16 +4,16 @@
 ;; Description: Extensions to `isearch.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 21.0
-;; Last-Updated: Sat Dec 15 12:49:03 2012 (-0800)
+;; Last-Updated: Fri Dec 28 10:05:07 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 1690
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/isearch+.el
-;; Doc URL: http://www.emacswiki.org/emacs/IsearchPlus
+;;     Update #: 1694
+;; URL: http://www.emacswiki.org/isearch+.el
+;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
 ;;
 ;; Features that might be required by this library:
 ;;
