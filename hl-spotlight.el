@@ -4,16 +4,16 @@
 ;; Description: Extension of hl-line.el to spotlight current few lines.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2009-2012, Drew Adams, all rights reserved.
+;; Copyright (C) 2009-2013, Drew Adams, all rights reserved.
 ;; Created: Sat Aug 26 18:17:18 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Aug 23 13:57:36 2012 (-0700)
+;; Last-Updated: Fri Dec 28 09:57:12 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 466
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/hl-spotlight.el
-;; Doc URL: http://www.emacswiki.org/emacs/HighlightCurrentLine
+;;     Update #: 467
+;; URL: http://www.emacswiki.org/hl-spotlight.el
+;; Doc URL: http://www.emacswiki.org/HighlightCurrentLine
 ;; Keywords: highlight, cursor, accessibility
-;; Compatibility: GNU Emacs: 22.x, 23.x
+;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x
 ;; 
 ;; Features that might be required by this library:
 ;;
