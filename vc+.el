@@ -4,27 +4,26 @@
 ;; Description: Extensions for `vc.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1999-2012, Drew Adams, all rights reserved.
+;; Copyright (C) 1999-2013, Drew Adams, all rights reserved.
 ;; Created: Thu Mar 11 16:45:20 1999
 ;; Version: 20.0
-;; Last-Updated: Sun Jan  1 14:05:07 2012 (-0800)
+;; Last-Updated: Fri Dec 28 10:31:55 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 1486
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/vc+.el
+;;     Update #: 1487
+;; URL: http://www.emacswiki.org/vc+.el
 ;; Keywords: internal, tools, unix
 ;; Compatibility: GNU Emacs 20.x
 ;;
 ;; Features that might be required by this library:
 ;;
 ;;   `avoid', `bookmark', `bookmark+', `bookmark+-1',
-;;   `bookmark+-bmu', `bookmark+-key', `bookmark+-lit',
-;;   `bookmark+-mac', `cl', `custom', `dired', `dired+', `dired-aux',
-;;   `dired-x', `easymenu', `ediff', `ediff-diff', `ediff-help',
-;;   `ediff-init', `ediff-merg', `ediff-mult', `ediff-util',
-;;   `ediff-wind', `ffap', `fit-frame', `frame-cmds', `frame-fns',
-;;   `info', `info+', `misc-fns', `mkhtml', `mkhtml-htmlize', `pp',
-;;   `pp+', `ring', `ring+', `strings', `thingatpt', `thingatpt+',
-;;   `vc', `vc+', `vc-', `vc-hooks', `w32-browser', `widget'.
+;;   `bookmark+-bmu', `bookmark+-key', `bookmark+-lit', `cl',
+;;   `dired', `dired+', `dired-aux', `dired-x', `ediff',
+;;   `ediff-diff', `ediff-help', `ediff-init', `ediff-merg',
+;;   `ediff-mult', `ediff-util', `ediff-wind', `ffap', `fit-frame',
+;;   `frame-cmds', `frame-fns', `misc-fns', `pp', `pp+', `ring',
+;;   `ring+', `strings', `subr-21', `thingatpt', `thingatpt+', `vc',
+;;   `vc+', `vc-', `vc-hooks', `w32-browser'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
