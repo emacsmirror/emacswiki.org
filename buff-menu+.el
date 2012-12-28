@@ -4,16 +4,16 @@
 ;; Description: Extensions to `buff-menu.el'
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Sep 11 10:29:56 1995
 ;; Version: 21.0
-;; Last-Updated: Tue Aug 28 07:54:50 2012 (-0700)
+;; Last-Updated: Fri Dec 28 09:31:45 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 2791
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/buff-menu+.el
-;; Doc URL: http://www.emacswiki.org/emacs/BufferMenuPlus
+;;     Update #: 2820
+;; URL: http://www.emacswiki.org/buff-menu+.el
+;; Doc URL: http://www.emacswiki.org/BufferMenuPlus
 ;; Keywords: mouse, local, convenience
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -142,11 +142,29 @@
 ;;     some keys, such as `q', will not be defined in the buffer list.
 ;;     (So byte-compile it using Emacs 23 or later.)
 ;;
+;;  3. Starting with Emacs 24.3, Emacs development changed
+;;     `buff-menu.el' so that it is based on `tabulated-list' mode.
+;;     Unfortunately, that breaks the `buff-menu+.el' enhancements.  I
+;;     have not had the time to update `buff-menu+.el' for
+;;     compatibility with Emacs 24.3 and later.  If you want to use
+;;     `buff-menu+.el' with Emacs 24.3 or later, you can download the
+;;     Emacs 23 version of `buff-menu.el' and put that in your
+;;     `load-path'.  You will lose no features if you do that: Emacs
+;;     24.3 and later add no enhancements to `buff-menu.el' - they
+;;     just base it on `tabulated-list.el'.  You can download Emacs 23
+;;     `buff-menu.el' here: http://ftp.gnu.org/gnu/emacs/ or here:
+;;     http://www.gnu.org/prep/ftp.html.  That version will work fine
+;;     with Emacs 24.3 and later and with `buff-menu+.el'.  I might
+;;     eventually get around to updating `buff-menu+.el' to
+;;     accommodate the `buff-menu.el' change, but it is not my first
+;;     priority.  Sorry for this annoyance.
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
 ;;
 ;; 2012/08/28 dadams
+;;     Buffer-menu-select: Updated for Emacs 24.3+ (but I don't yet support > 24.2).
 ;;     Handle Emacs 23 capitalization of buffer-menu-mode-hook.
 ;; 2012/06/21 dadams
 ;;     Added: buffer-menu-nb-marked-in-mode-name.
@@ -1259,49 +1277,81 @@ Buffers can be so marked using commands `\\<Buffer-menu-mode-map>\
 ;;
 ;; When Buffer Menu is `window-dedicated-p', uses `pop-to-buffer' to display.
 ;;
-;;;###autoload
-(defun Buffer-menu-select ()
-  "Select this line's buffer; also display buffers marked with `>'.
+(when (or (> emacs-major-version 24)    ; Emacs 24.3+.
+          (and (= emacs-major-version 24)  (> emacs-minor-version 2)))
+  (defun Buffer-menu-select ()
+    "Select this line's buffer; also display buffers marked with `>'.
 You can mark buffers with command `\\<Buffer-menu-mode-map>\\[Buffer-menu-mark]'.
-If the window is `window-dedicated-p', then another window is used;
-else, all windows previously in the frame are replaced by this one."
-  (interactive)
-  (let ((buff    (Buffer-menu-buffer t))
-        (menu    (current-buffer))
-        (others  ())
-        tem)
-    (Buffer-menu-beginning)
-    (while (re-search-forward "^>" nil t)
-      (setq tem  (Buffer-menu-buffer t))
-      (let ((buffer-read-only  nil)) (delete-char -1) (insert ?\ ))
-      (or (eq tem buff) (memq tem others) (setq others  (cons tem others))))
-    (setq others  (nreverse others))
-    (cond ((window-dedicated-p (selected-window)) ; Can't split dedicated win.
-           (pop-to-buffer buff)
-           (unless (eq menu buff) (bury-buffer menu))
-           (while others
-             (pop-to-buffer (car others))
-             (pop others)))
-          (t
-           (setq tem  (/ (1- (frame-height)) (1+ (length others))))
-           (delete-other-windows)
-           (switch-to-buffer buff)
-           (unless (eq menu buff) (bury-buffer menu))
-           (if (equal (length others) 0)
-               (progn
+Delete and replace any previously existing windows in the selected
+frame.  But if the Buffer Menu window is dedicated, do not delete it."
+    (interactive)
+    (let* ((line-buffer  (Buffer-menu-buffer t))
+           (menu-buffer  (current-buffer))
+           (others       (delq line-buffer (Buffer-menu-marked-buffers t))))
+      (cond ((window-dedicated-p (selected-window)) ; Keep Buffer Menu if dedicated window.
+             (pop-to-buffer line-buffer)
+             (unless (eq menu-buffer line-buffer) (bury-buffer menu-buffer))
+             (dolist (buf others) (pop-to-buffer buf)))
+            (t
+             (delete-other-windows)
+             (switch-to-buffer line-buffer)
+             (unless (eq menu-buffer line-buffer) (bury-buffer menu-buffer))
+             (let ((height       (/ (1- (frame-height)) (1+ (length others)))))
+               (dolist (buf others)
+                 (split-window nil height)
+                 (other-window 1)
+                 (switch-to-buffer buf)))
+             (other-window 1))))))      ; Back to beginning.
+
+
+;; REPLACE ORIGINAL in `buff-menu.el'.
+;;
+;; When Buffer Menu is `window-dedicated-p', uses `pop-to-buffer' to display.
+;;
+(unless (or (> emacs-major-version 24)  ; Emacs 20-23.
+            (and (= emacs-major-version 24)  (> emacs-minor-version 2)))
+  (defun Buffer-menu-select ()
+    "Select this line's buffer; also display buffers marked with `>'.
+You can mark buffers with command `\\<Buffer-menu-mode-map>\\[Buffer-menu-mark]'.
+Delete and replace any previously existing windows in the selected
+frame.  But if the Buffer Menu window is dedicated, do not delete it."
+    (interactive)
+    (let ((buff    (Buffer-menu-buffer t))
+          (menu    (current-buffer))
+          (others  ())
+          tem)
+      (Buffer-menu-beginning)
+      (while (re-search-forward "^>" nil t)
+        (setq tem  (Buffer-menu-buffer t))
+        (let ((buffer-read-only  nil)) (delete-char -1) (insert ?\ ))
+        (or (eq tem buff) (memq tem others) (setq others  (cons tem others))))
+      (setq others  (nreverse others))
+      (cond ((window-dedicated-p (selected-window)) ; Can't split dedicated win.
+             (pop-to-buffer buff)
+             (unless (eq menu buff) (bury-buffer menu))
+             (while others
+               (pop-to-buffer (car others))
+               (pop others)))
+            (t
+             (setq tem  (/ (1- (frame-height)) (1+ (length others))))
+             (delete-other-windows)
+             (switch-to-buffer buff)
+             (unless (eq menu buff) (bury-buffer menu))
+             (if (equal (length others) 0)
+                 (progn
 ;;;              ;; Restore previous window configuration before displaying
 ;;;              ;; selected buffers.
 ;;;              (if Buffer-menu-window-config
 ;;;                  (progn (set-window-configuration
 ;;;                            Buffer-menu-window-config)
 ;;;                         (setq Buffer-menu-window-config  nil)))
-                 (switch-to-buffer buff))
-             (while others
-               (split-window nil tem)
-               (other-window 1)
-               (switch-to-buffer (car others))
-               (setq others  (cdr others)))
-             (other-window 1))))))      ;back to the beginning!      ; Back to the beginning.
+                   (switch-to-buffer buff))
+               (while others
+                 (split-window nil tem)
+                 (other-window 1)
+                 (switch-to-buffer (car others))
+                 (setq others  (cdr others)))
+               (other-window 1)))))))   ; Back to the beginning.
 
 
 ;; REPLACE ORIGINAL in `buff-menu.el'.
