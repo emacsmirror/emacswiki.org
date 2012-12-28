@@ -2,7 +2,7 @@
 
 The Java Development Environment for Emacs ([::JDEE]) is an integrated development environment for Emacs. It interfaces Emacs to command-line Java development tools, for instance Sun's JDK.
 
-As of late December 2012, posts submitted to the jdee-users mailing list are not moderator approved, let alone answered.  Development is by all appearances dead.  Fortunately, there are signs of Java development in CEDET itself.
+As of late December 2012, posts submitted to the jdee-users mailing list are not moderator approved, let alone answered.  Development is by all appearances dead.  Fortunately, there are signs of development for Java in [[CEDET]].
 
 Project site: http://jdee.sourceforge.net/
 
