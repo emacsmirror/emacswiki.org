@@ -7,9 +7,9 @@
 ;; Copyright (C) 2005-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Dec 20 14:39:26 2005
 ;; Version: 1.0
-;; Last-Updated: Fri Dec 28 10:27:40 2012 (-0800)
+;; Last-Updated: Sat Dec 29 15:02:30 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 2506
+;;     Update #: 2511
 ;; URL: http://www.emacswiki.org/synonyms.el
 ;; Doc URL: http://www.emacswiki.org/ThesauriAndSynonyms
 ;; Keywords: text, dictionary, thesaurus, spelling, apropos, help
@@ -88,7 +88,7 @@
 ;;  -----------------------
 ;;
 ;;  The default input value for command `synonyms' is the word under
-;;  the cursor. Alternatively, if a region is active and you are in
+;;  the cursor.  Alternatively, if a region is active and you are in
 ;;  Transient Mark mode (recommended), then it is the text in the
 ;;  region (selection).
 ;;
@@ -195,10 +195,10 @@
 ;;
 ;;  You can complete words and phrases in the minibuffer, as input to
 ;;  command `synonyms'.  You can use library Synonyms together with
-;;  library Icicles to complete a partial word in a text buffer into a
+;;  library `Icicles to complete a partial word in a text buffer into a
 ;;  word or phrase in the thesaurus.  If you use both libraries then
 ;;  load Icicles after Synonyms.  For more information on Icicles, see
-;;  `http://www.emacswiki.org/cgi-bin/wiki/icicles.el'.
+;;  `http://www.emacswiki.org/Icicles'.
 ;;
 ;;  ** Minibuffer Input Completion **
 ;;
@@ -214,12 +214,12 @@
 ;;   - Use `S-TAB' during completion to see the list of all synonyms
 ;;     (thesaurus terms) that match your minibuffer input so far.
 ;;
-;;   - Use `[next]', and `[prior]' (usually keys `Page Down' and `Page
-;;     Up') during completion to cycle through the completion
-;;     candidates (synonyms) that match your input.
+;;   - Use `next' (or repeated `S-TAB'), and `prior' (usually keys
+;;     `Page Down' and `Page Up') during completion to cycle through
+;;     the completion candidates (synonyms) that match your input.
 ;;
-;;   - Use `C-o', `C-[next]', and `[C-prior]' during completion to
-;;     display the synonyms of the current completion candidate.
+;;   - Use `C-next' and `C-prior' during completion to display the
+;;     synonyms of the current completion candidate.
 ;;
 ;;  ** Completing Buffer Text Using the Thesaurus **
 ;;
