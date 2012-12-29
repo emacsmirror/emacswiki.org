@@ -34,6 +34,10 @@ Yet another alternative: Lisp:ifind-mode.el
 And also simp
 Link: http://github.com/re5et/simp
 In addition to finding file in project, simp includes project specific rgrepping which takes project ignored directories into account.
+
+IDO mode also features something similar. See  ido-auto-merge-delay-time. [http://emacswiki.org/emacs/InteractivelyDoThings IDO Mode]
+
+
 ----
 
 CategoryProgrammerUtils
