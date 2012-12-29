@@ -70,6 +70,10 @@ C-mouse-3]</code>) is the mouse equivalent of
 
 '''See Libraries:''' <tt>[[frame-cmds.el]]</tt>, <tt>[[setup-keys.el]]</tt>
 
+[new:XueFuqiao:2012-12-29 06:51 UTC]
+The `special-display-regexps' and`special-display-buffer-names' are obsolete since GNU Emacs 24.3, as they can be replaced by
+appropriate entries in the `display-buffer-alist' function. -- XueFuqiao
+
 ----
 OneOnOneEmacs CategoryFrames FrameModes CategoryDisplay
 CategoryGlossary
