@@ -18,3 +18,10 @@ Thanks a lot. It does not work in 23.3.1 either. Your solution has solved that p
 
 -- Steven Tuxfield 2012-12-20 03:55 UTC
 
+
+----
+
+Thanks!  This fixed it for me in xemacs as well.
+
+-- Joseph Chiu 2012-12-29 02:32 UTC
+
