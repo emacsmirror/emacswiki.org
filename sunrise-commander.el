@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 6
-;; RCS Version: $Rev: 442 $
+;; RCS Version: $Rev: 443 $
 ;; Keywords: files, dired, midnight commander, norton, orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -1268,7 +1268,7 @@ viewer window."
                 (eq (window-frame sr-left-window) (selected-frame))))
       (sr-dired (or (buffer-file-name) (sr-choose-cd-target)))
     (sr-quit t)
-    (message "Hast thou a charm to stay the morning-star in his deep course?")))
+    (message "Hast thou a charm to stay the morning-star in his steep course?")))
 
 (defun sr-this (&optional type)
   "Return object of type TYPE corresponding to the active side of the manager.
@@ -4030,19 +4030,23 @@ file in the file system."
 (defun sr-desktop-save-buffer (desktop-dir)
   "Return the additional data for saving a Sunrise buffer to a desktop file."
   (unless (sr-pure-virtual-p)
-    (apply
-     'append
-     (delq nil
-           (list
-            (if (eq major-mode 'sr-virtual-mode)
-                (list 'dirs buffer-file-truename)
-              (cons 'dirs (dired-desktop-buffer-misc-data desktop-dir)))
-            (if (eq (current-buffer) sr-left-buffer) (cons 'left t))
-            (if (eq (current-buffer) sr-right-buffer) (cons 'right t))
-            (if (eq major-mode 'sr-virtual-mode) (cons 'virtual t))))
-     (mapcar (lambda (fun)
-               (funcall fun desktop-dir))
-             sr-desktop-save-handlers))))
+    (let* ((side (if (eq (current-buffer) sr-left-buffer) 'left 'right))
+           (sorting-order (get side 'sorting-order))
+           (sorting-reverse (get side 'sorting-reverse)))
+      (apply
+       'append
+       (delq nil
+             (list
+              (if (eq major-mode 'sr-virtual-mode)
+                  (list 'dirs buffer-file-truename)
+                (cons 'dirs (dired-desktop-buffer-misc-data desktop-dir)))
+              (cons side t)
+              (if sorting-order (cons 'sorting-order sorting-order))
+              (if sorting-reverse (cons 'sorting-reverse sorting-reverse))
+              (if (eq major-mode 'sr-virtual-mode) (cons 'virtual t))))
+       (mapcar (lambda (fun)
+                 (funcall fun desktop-dir))
+               sr-desktop-save-handlers)))))
 
 (defun sr-desktop-restore-buffer (desktop-buffer-file-name
                                   desktop-buffer-name
@@ -4067,7 +4071,8 @@ file in the file system."
       (mapc (lambda (side)
               (when (cdr (assq side desktop-buffer-misc))
                 (set (sr-symbol side 'buffer) buffer)
-                (set (sr-symbol side 'directory) default-directory)))
+                (set (sr-symbol side 'directory) default-directory)
+                (sr-desktop-sort buffer side desktop-buffer-misc)))
             '(left right))
       (mapc (lambda (fun)
               (funcall fun
@@ -4076,6 +4081,20 @@ file in the file system."
                        desktop-buffer-misc))
             sr-desktop-restore-handlers))
     buffer))
+
+(defun sr-desktop-sort (buffer side desktop-buffer-misc)
+  "Restore the sorting order in BUFFER to be displayed in SIDE.
+Use the data in DESKTOP-BUFFER-MISC to obtain all pertinent
+details."
+  (with-current-buffer buffer
+    (let ((sr-selected-window side)
+          (sorting-order (cdr (assoc 'sorting-order desktop-buffer-misc)))
+          (sorting-reverse (cdr (assoc 'sorting-reverse desktop-buffer-misc))))
+      (when sorting-order
+        (condition-case nil
+            (funcall (intern (format "sr-sort-by-%s" (downcase sorting-order))))
+          (error (ignore))))
+      (when sorting-reverse (sr-reverse-pane)))))
 
 (defun sr-reset-state ()
   "Reset some environment variables that control the Sunrise behavior.
