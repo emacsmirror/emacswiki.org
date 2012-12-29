@@ -9,6 +9,7 @@ The following pages provide thesaurus or synonym features:
 * Library <tt>[[mthesaur.el]]</tt> -- Search for synonyms.
 * Library <tt>[http://williamxu.net9.org/ref/wordnet.el wordnet.el]</tt> -- Browse the Word-Net dictionary (''currently broken'')
 * [[ShawnBoyette|Wroget]] -- Digital version of ''Roget's Thesaurus''
+* [[https://github.com/rootzlevel/synosaurus|Synosaurus]] -- An extensible thesaurus with openthesaurus and wordnet backends. Supports lookup and substitution.
 * Library <tt>[[thesaurus.el]]</tt>  -- Look up synonyms on [[http://BigHugeLabs.com|BigHugeLabs.com]], and maybe replace word-at-point.  Animation example:
 
 :: http://i.imgur.com/grvGD.gif
