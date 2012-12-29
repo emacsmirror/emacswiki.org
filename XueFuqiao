@@ -26,7 +26,7 @@ You can contact me using (concat (list 120 102 113) [46] "free" "@" "gmail" "." 
 
 == My Emacs Installation ==
 <pre>
-./configure --with-x-toolkit=no --without-toolkit-scroll-bars --with-wide-int
+./configure --with-x-toolkit=no --without-toolkit-scroll-bars --with-wide-int --enable-link-time-optimization
 make
 src/emacs -Q
 make install
