@@ -22,7 +22,7 @@ You can have closures in Emacs -- no need for FakeClosures!
 
 the <code>defun</code> special form doesn't work properly in lexically bound
 contexts (i.e. when <code>lexical-bindint</code> has value <code>t</code>) as of
-Emacs 24.2.1.  For example:
+Emacs 24.2.1.  For example: 
 
 <pre>
 (let ((counter 0))
@@ -50,16 +50,10 @@ Like normal `defun', except that it works correctly in lexically
 bound contexts.
 
 \(fn NAME ARGLIST [DOCSTRING] BODY...)"
-  (let ((bound-as-var (boundp  `,name)))
-    (when (fboundp `,name)
-      (message "Redefining function/macro: %s" `,name))
-    (append
-     `(progn
-        (defvar ,name nil)
-        (fset (quote ,name) (lambda (,@args) ,@body)))
-     (if bound-as-var
-         'nil
-         `((makunbound `,name))))))
+  (when (fboundp `,name)
+    (message "Redefining function/macro: %s" `,name))
+  `(eval-and-compile
+     (fset (quote ,name) (lambda (,@arglist) ,@body))))
 </pre>
 
 If you define <code>counter</code> as follows:
@@ -73,19 +67,18 @@ If you define <code>counter</code> as follows:
 it will work as expected and update the lexically bound variable
 <code>count</code> every time it is invoked, while returning the new value.
 
-**CAVEAT:** The macro will not work properly if you try to <code>defun**</code> a
-  function with the same name as one of the lexically bound variables. I.e if you
-  do something like:
+**NOTE:** The macro *always* makes a globally visible function
+  even if you try binding the function to a lexical variable.
+  For instance, if you do the following:
 
 <pre>
-(let ((dont-do-this 10))
-  (defun** dont-do-this ()
+(let ((something 10))
+  (defun** something ()
     .........
     .........))
 </pre>
 
-I can't imagine anyone actually doing that partly because all the lexically bound
-variables can be seen.
+you get two symbols with the same name: <code>something</code>.  One is lexically bound to number 10 and one is bound to a non-lexically bound function.  If you want lexically bound functions you can use the <code>lables</code> macro from the **cl** package.
 
 Note: I have named the macro <code>defun**</code> so that it doesn't clash with
 the macro <code>defun*</code> in the **cl** package, however it doesn't depend on
