@@ -21,8 +21,8 @@ You can have closures in Emacs -- no need for FakeClosures!
 ==Using defun in lexically bound contexts.==
 
 the <code>defun</code> special form doesn't work properly in lexically bound
-contexts (i.e. when <code>lexical-bindint</code> has value <code>t</code>.)
-For example:
+contexts (i.e. when <code>lexical-bindint</code> has value <code>t</code>) as of
+Emacs 24.2.1.  For example:
 
 <pre>
 (let ((counter 0))
