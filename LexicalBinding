@@ -18,5 +18,64 @@ You can have closures in Emacs -- no need for FakeClosures!
 => "bar"                                ; would have printed "something-else" with dynamic binding
 }}}
 
-----
-CategoryCode
+==Using defun in lexically bound contexts.==
+
+the <code>defun</code> special form doesn't work properly in lexically bound
+contexts (i.e. when <code>lexical-bindint</code> has value <code>t</code>.)
+For example:
+
+<pre>
+(let ((counter 0))
+  (defun counting ()
+    (setq counter (1+ counter))))
+</pre>
+
+will not work as expected because the symbol <code>counter</code> in the
+<code>defun</code> will be bound to the global variable of that name, if there is
+one and not the lexical variable define in the <code>let</code>.  When the
+function <code>counting</code> is called, if the variable doesn't, exist then it
+will obviously fail.  Hoever if there is such a global variable it be updated,
+which is probably not what was intended and could be a hard to trace bug since
+the function might appear to be working properly.
+
+The byte compiler does give a warning if you use <code>defun</code> in this way
+and presumably the issue will be addressed in some future version of Emacs, but
+until then the following macro can be used:
+
+<pre>
+(defmacro defun** (name args &rest body)
+  "Define NAME as a function in a lexically bound context.
+
+Like normal `defun', except that it works correctly in lexically
+bound contexts.
+
+\(fn NAME ARGLIST [DOCSTRING] BODY...)"
+  (let ((bound-as-var (boundp  `,name)))
+    (when (fboundp `,name)
+      (message "Redefining function/macro: %s" `,name))
+    (append
+     `(progn
+        (defvar ,name nil)
+        (fset (quote ,name) (lambda (,@args) ,@body)))
+     (if bound-as-var
+         'nil
+         `((makunbound `,name))))))
+</pre>
+
+If you define <code>counter</code> as follows:
+
+<pre>
+(let ((counter 0))
+  (defun** counting ()
+    (setq counter (1+ counter))))
+</pre>
+
+it will work as expected and update the lexically bound variable
+<code>count</code> every time it is invoked, while returning the new value.
+
+Note: I have named the macro <code>defun**</code> so that it doesn't clash with
+the macro <code>defun*</code> in the **cl** package, however it doesn't depend on
+that package. --- [[Bernard Hurley]]
+
+
+---- CategoryCode
