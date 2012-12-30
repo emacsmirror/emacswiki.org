@@ -73,6 +73,20 @@ If you define <code>counter</code> as follows:
 it will work as expected and update the lexically bound variable
 <code>count</code> every time it is invoked, while returning the new value.
 
+**CAVEAT:** The macro will not work properly if you try to <code>defun**</code> a
+  function with the same name as one of the lexically bound variables. I.e if you
+  do something like:
+
+<pre>
+(let ((dont-do-this 10))
+  (defun** dont-do-this ()
+    .........
+    .........))
+</pre>
+
+I can't imagine anyone actually doing that partly because all the lexically bound
+variables can be seen.
+
 Note: I have named the macro <code>defun**</code> so that it doesn't clash with
 the macro <code>defun*</code> in the **cl** package, however it doesn't depend on
 that package. --- [[Bernard Hurley]]
