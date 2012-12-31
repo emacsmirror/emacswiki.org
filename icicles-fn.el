@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Dec 28 13:48:57 2012 (-0800)
+;; Last-Updated: Mon Dec 31 15:20:21 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 13777
+;;     Update #: 13778
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -3690,7 +3690,7 @@ The optional second arg is ignored."
         (put-text-property (point) (progn (insert string) (point)) 'mouse-face 'highlight) ; Insert cand.
         ;; Insert annotation, if `icicle-show-annotations-flag'.
         (when (and icicle-show-annotations-flag  (consp cand)  (cadr cand))
-          (set-text-properties (point) (progn (insert (cadr cand)) (point)) '(face 'icicle-annotation)))
+          (set-text-properties (point) (progn (insert (cadr cand)) (point)) '(face icicle-annotation)))
         (if (not (eq icicle-completions-format 'vertical))
             (setq column-nb  (mod (1+ column-nb) columns))
           (if (> column-nb 0) (forward-line) (insert "\n")) ; Vertical layout.
