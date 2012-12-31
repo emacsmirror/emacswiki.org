@@ -135,6 +135,22 @@ With this hook, both `C-g' and `RET' exit the search at the begining of the sear
 Since I submitted that bug, I've heard back that it will be corrected in the next GNU Emacs release. -- DrewAdams
 [new]
 
+Another way to get the functionality of jumping to the beginning of the search-term is simply adding a little wrapper function and binding it to a different key. I find C-v a good candidate, you don't usually want to jump to next page when searching:
+
+    (define-key isearch-mode-map (kbd "C-v") 'my-isearch-forward-to-beginning)
+    (defun my-isearch-forward-to-beginning ()
+      "Do a forward search and jump to the beginning of the search-term."
+      (interactive)
+      (isearch-repeat 'forward)
+      (goto-char isearch-other-end))
+
+Now you can use C-s to search normally (point at end) and C-v to make point jump to beginning. Alternatively, you can swap these two keys if you prefer the new behaviour more often.
+
+(define-key isearch-mode-map (kbd "C-s") 'my-isearch-forward-to-beginning)
+(define-key isearch-mode-map (kbd "C-v") 'isearch-repeat-forward)
+
+-- Fuco
+
 See also: IsearchOtherEnd.
 
 = Minibuffer Feedback During Isearch =
