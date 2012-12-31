@@ -1,5 +1,5 @@
 ;;; viewer.el --- View-mode extension
-;; $Id: viewer.el,v 1.7 2012/01/16 14:46:49 rubikitch Exp $
+;; $Id: viewer.el,v 1.12 2012/12/31 11:38:16 rubikitch Exp $
 
 ;; Copyright (C) 2009  rubikitch
 
@@ -124,6 +124,21 @@
 ;;; History:
 
 ;; $Log: viewer.el,v $
+;; Revision 1.12  2012/12/31 11:38:16  rubikitch
+;; viewer-change-modeline-color: fix advice of select-window
+;;
+;; Revision 1.11  2012/06/25 10:19:18  rubikitch
+;; Bugfix: error when edebug.el is not loaded.
+;;
+;; Revision 1.10  2012/06/19 15:27:53  rubikitch
+;; You can exit view-mode if `edebug-active' is non-nil.
+;;
+;; Revision 1.9  2012/06/12 01:05:53  rubikitch
+;; erase warning
+;;
+;; Revision 1.8  2012/06/12 01:03:40  rubikitch
+;; set viewer-stay-in-unless-writable advice for `view-mode'
+;;
 ;; Revision 1.7  2012/01/16 14:46:49  rubikitch
 ;; viewer-change-modeline-color-setup: Use window-configuration-change-hook
 ;;
@@ -151,7 +166,8 @@
 
 ;;; Code:
 
-(defvar viewer-version "$Id: viewer.el,v 1.7 2012/01/16 14:46:49 rubikitch Exp $")
+(defvar viewer-version "$Id: viewer.el,v 1.12 2012/12/31 11:38:16 rubikitch Exp $")
+(require 'view)
 (eval-when-compile (require 'cl))
 
 ;;;; (@* "Overriding view-mode keymap")
@@ -258,21 +274,22 @@ When ARG is nil, uninstall it."
 (defvar view-mode-force-exit nil)
 (defmacro viewer-stay-in-unless-writable-advice (f)
   `(defadvice ,f (around viewer-stay-in-unless-writable activate)
-     (if (and (buffer-file-name)
-              (not view-mode-force-exit)
-              (not (file-writable-p (buffer-file-name))))
-         (message "File is unwritable, so stay in view-mode.")
-       ad-do-it)))
-
+     (if (or view-mode-force-exit
+             (and (boundp 'edebug-active) edebug-active)
+             (not (and view-mode
+                       (buffer-file-name)
+                       (not (file-writable-p (buffer-file-name))))))
+         ad-do-it
+       (message "File is unwritable, so stay in view-mode."))))
 
 (defun view-mode-force-exit ()
   (interactive)
   (let ((view-mode-force-exit t)) (view-mode-exit)))
-(add-hook 'edebug-setup-hook 'view-mode-force-exit)
 
 (defun viewer-stay-in-setup ()
   "Setup stay-in view-mode.
 Stay in `view-mode' when the file is unwritable."
+  (viewer-stay-in-unless-writable-advice view-mode)
   (viewer-stay-in-unless-writable-advice view-mode-exit)
   (viewer-stay-in-unless-writable-advice view-mode-disable))
 
@@ -318,7 +335,7 @@ See also `viewer-modeline-color-unwritable' and `viewer-modeline-color-view'."
     (let ((curwin (selected-window))
           (destwin (ad-get-arg 0)))
       ad-do-it
-      (unless (or (called-interactively-p) (eq curwin destwin))
+      (unless (or (called-interactively-p 'any) (eq curwin destwin))
         (viewer-change-modeline-color))))
   (viewer-change-modeline-color-advice select-frame)
   nil)
