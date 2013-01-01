@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Oct 16 13:33:18 1995
 ;; Version: 21.0
-;; Last-Updated: Tue Jan  1 14:44:57 2013 (-0800)
+;; Last-Updated: Tue Jan  1 15:13:47 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 1542
+;;     Update #: 1543
 ;; URL: http://www.emacswiki.org/icomplete+.el
 ;; Doc URL: http://emacswiki.org/IcompleteMode
 ;; Keywords: help, abbrev, internal, extensions, local, completion, matching
@@ -64,11 +64,12 @@
 ;;       3. If string of keys would be too long then shorten it.
 ;;
 ;;    `icomplete-completions' -
-;;       1. Prepend total number of candidates.
-;;       2. With Icicles, sort candidates using `icicle-reversible-sort' and show number of
+;;       1. Prepend the total number of candidates.
+;;       2. For file-name completion, respect `completion-ignored-extensions'.
+;;       3. With Icicles, sort candidates using `icicle-reversible-sort' and show number of
 ;;          remaining cycle candidates.  You can cycle the sort order using `C-,'.
-;;       3. Show candidates in a different face.
-;;       4. Optionally show and highlight key bindings, truncating if too long.
+;;       4. Show candidates in a different face.
+;;       5. Optionally show and highlight key bindings, truncating if too long.
 ;;
 ;;    `icomplete-exhibit' -
 ;;       1. Save match-data.
