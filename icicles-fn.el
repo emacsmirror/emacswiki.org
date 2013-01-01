@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Dec 31 15:20:21 2012 (-0800)
+;; Last-Updated: Mon Dec 31 17:57:32 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 13778
+;;     Update #: 13781
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -4433,7 +4433,7 @@ the current candidate is shown in the mode line."
                  (select-window (get-buffer-window "*Completions*" 'visible))
                  (if (fboundp 'thumfr-only-raise-frame) (thumfr-only-raise-frame) (raise-frame)))
                (icicle-highlight-candidate-in-Completions))
-             (icicle-show-help-in-mode-line icicle-last-completion-candidate))))))
+             (setq icicle-mode-line-help  icicle-last-completion-candidate))))))
 
 (defun icicle-insert-cand-in-minibuffer (candidate regexp-p)
   "Insert CANDIDATE in minibuffer.  Highlight root and initial whitespace.
@@ -4453,8 +4453,12 @@ REGEXP-P non-nil means use regexp matching to highlight root."
     (unless (and regexp-p  (not icicle-regexp-quote-flag)) (setq inp  (regexp-quote inp)))
     (save-match-data
       (setq indx  (string-match inp icicle-last-completion-candidate))
-      (when indx (put-text-property indx (match-end 0) 'face 'icicle-match-highlight-minibuffer
-                                    icicle-last-completion-candidate))))
+      (when indx
+        ;; Should not need to ignore errors, but `*-last-completion-candidate' has been a read-only object (?)
+        (condition-case nil
+            (put-text-property indx (match-end 0) 'face 'icicle-match-highlight-minibuffer
+                               icicle-last-completion-candidate)
+          (error nil)))))
 
   (goto-char (icicle-minibuffer-prompt-end)) ; Need for Emacs 22+, or can get `Text read-only' error.
   ;; Insert candidate in minibuffer, and place cursor.
