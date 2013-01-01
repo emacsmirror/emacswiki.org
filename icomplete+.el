@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Oct 16 13:33:18 1995
 ;; Version: 21.0
-;; Last-Updated: Tue Jan  1 15:13:47 2013 (-0800)
+;; Last-Updated: Tue Jan  1 15:51:02 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 1543
+;;     Update #: 1545
 ;; URL: http://www.emacswiki.org/icomplete+.el
 ;; Doc URL: http://emacswiki.org/IcompleteMode
 ;; Keywords: help, abbrev, internal, extensions, local, completion, matching
@@ -81,7 +81,7 @@
 ;;  `icomplete.el'.  So, in your `~/.emacs' file, do this:
 ;;  (eval-after-load "icomplete" '(progn (require 'icomplete+)))
 ;;
-;;  Usage notes: 
+;;  Usage notes:
 ;;
 ;;  * Starting with Emacs 23 you can get icompletion of things like
 ;;    file names also.  See variable (non-option)
@@ -93,6 +93,11 @@
 ;;  * Starting with Emacs 24 you can specify the kinds of completion
 ;;    you want by customizing option `completion-category-overrides'
 ;;    for file names, buffer names, bookmark names, and so on.
+;;
+;;  * If you use incremental search (`C-s' `C-r') or symbol completion
+;;    (`M-TAB') in the minibuffer, then consider changing the default
+;;    key bindings for `icomplete-minibuffer-map', since they co-opt
+;;    those keys for Icomplete cycling and selection.
 ;;
 ;;  (These features are not particular to Icomplete+ - they are
 ;;  available also for vanilla Icomplete.)
