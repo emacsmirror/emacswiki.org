@@ -1,9 +1,9 @@
 == About Me ==
-Hi,
+(message "Welcome to my homepage!")
 
 I use Emacs.
 
-Welcome to my homepage.  My name is Xue Fuqiao.  English is not my
+My name is Xue Fuqiao.  English is not my
 native language; please excuse typing errors.  I have been a GNU/Linux
 user since 2008.  I've been an [[Emacsite]] since 2009 and I began to write
 programs in EmacsLisp since 2011.  I started with [[XEmacs]], switched to
