@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Fri Dec 28 09:58:09 2012 (-0800)
+;; Last-Updated: Mon Dec 31 18:16:59 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 6193
+;;     Update #: 6195
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -4005,7 +4005,7 @@ display string as in `icicle-search-action'."
             (icicle-clear-minibuffer)
             (setq icicle-nb-of-other-cycle-candidates  (length icicle-completion-candidates))
             (icicle-insert-cand-in-minibuffer icicle-last-completion-candidate t)
-            (icicle-show-help-in-mode-line icicle-last-completion-candidate))))))
+            (setq icicle-mode-line-help  icicle-last-completion-candidate))))))
   (let ((icicle-candidate-nb               icicle-candidate-nb)
         (icicle-last-completion-candidate  icicle-last-completion-candidate)
         (icicle-completion-candidates      icicle-completion-candidates))
