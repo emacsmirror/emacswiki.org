@@ -1,6 +1,7 @@
 == About Me ==
+<pre>
 (message "Welcome to my homepage!")
-
+</pre>
 I use Emacs.
 
 My name is Xue Fuqiao.  English is not my
@@ -22,8 +23,10 @@ Communication Engineering.  Feel free to ask anything about Emacs :)
 
 I'm a [http://www.fsf.org/free-software-supporter/ FreeSoftwareSupporter] and a [http://www.gp.org Green Party] supporter.
 
-You can contact me using (concat (list 120 102 113) [46] (mapconcat (function (lambda (x) (format "%c" (1- x)))) "gsff" "") "@" "gmail" "." "com")
-
+You can contact me using:
+<pre>
+(concat (list 120 102 113) [46] (mapconcat (function (lambda (x) (format "%c" (1- x)))) "gsff" "") "@" "gmail" "." "com")
+</pre>
 == My Emacs Installation ==
 <pre>
 ./configure --with-x-toolkit=no --without-toolkit-scroll-bars --with-wide-int --enable-link-time-optimization
