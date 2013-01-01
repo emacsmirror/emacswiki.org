@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Mon Dec 31 15:23:35 2012 (-0800)
+;; Last-Updated: Mon Dec 31 18:17:56 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 9481
+;;     Update #: 9504
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -829,6 +829,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2012/12/31 dadams
+;;     icicle-search-in-context-default-fn:
+;;       Set icicle-mode-line-help instead of using icicle-show-help-in-mode-line.
 ;; 2012/12/22 dadams
 ;;     Added: icicle-search-file-found-p.
 ;;     icicle-search-define-candidates:
@@ -1615,6 +1618,9 @@
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
 ;; 2012/12/31 dadams
+;;     icicle-next-candidate: Set icicle-mode-line-help.  Do not call icicle-show-help-in-mode-line.
+;;     icicle-insert-cand-in-minibuffer:
+;;       Ignore errors in put-text-property.  If retrieve singleton cand set, it is read-only (why?).
 ;;     icicle-insert-candidates: Corrected '(face 'icicle-annotation) to '(face icicle-annotation).
 ;; 2012/12/28 dadams
 ;;     icicle-add-default-to-prompt: Handle nil DEFAULT.  Thx to Michael Heerdegen.
@@ -3653,6 +3659,15 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2012/12/31 dadams
+;;     icicle-successive-action, icicle-insert-completion, icicle-candidate-set-retrieve-1,
+;;       icicle-keep-only-past-inputs:
+;;         Set icicle-mode-line-help instead of using icicle-show-help-in-mode-line.
+;;     icicle-insert-completion: Use icicle-current-completion-in-Completions and
+;;                               icicle-nb-of-cand-at-Completions-pos only if in *Completions*.
+;;     icicle-(prefix|apropos)-complete-1:
+;;       Replace local var mode-line-help with icicle-mode-line-help.
+;;       Do not call icicle-show-help-in-mode-line (using icicle-post-command-hook now).
 ;; 2012/12/20 dadams
 ;;     icicle-(prefix|apropos)-complete-1: Handle new option icicle-TAB/S-TAB-only-completes-flag.
 ;; 2012/12/15 dadams
@@ -5205,6 +5220,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2012/12/31 dadams
+;;     Added: icicle-show-current-help-in-mode-line.
+;;     icicle-mode: Add/remove icicle-show-current-help-in-mode-line to/from icicle-post-command-hook.
+;;     icicle-minibuffer-setup: Initialize icicle-mode-line-help to nil.
 ;; 2012/12/02 dadams
 ;;     icicle-(redefine|restore)-std-completion-fns: Added icicle(-ORIG)-read-file-name-default.
 ;; 2012/12/01 dadams
@@ -7140,6 +7159,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2012/12/31 dadams
+;;     Added: icicle-mode-line-help.
 ;; 2012/12/15 dadams
 ;;     Added: icicle-cands-to-narrow, icicle-compute-narrowing-regexp-p, icicle-narrow-regexp.
 ;; 2012/12/02 dadams
