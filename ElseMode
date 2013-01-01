@@ -8,13 +8,7 @@ have to understand EmacsLisp to get it working. You don't have to read the code
 either.
 
 You can get it from here:
-
-* http://home.exetel.com.au/peterm/
-
-[new]
-That page is down. You can use this github repo:
 * https://github.com/stefanhusmann/emacs-else.git
-[new]
 
 Douglas Harter has made some additional templates here:
 
