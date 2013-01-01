@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Dec 31 18:14:53 2012 (-0800)
+;; Last-Updated: Tue Jan  1 09:31:29 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 18722
+;;     Update #: 18724
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1739,7 +1739,9 @@ order instead, updating `icicle-alternative-sort-comparer'."
          (if alternativep "Alternative s" "S")
          (icicle-propertize (concat next-order (and icicle-reverse-sort-p  ", REVERSED"))
                             'face 'icicle-msg-emphasis)
-         (if following-order (format ".  Next: %s" following-order) ""))))))
+         (if following-order (format ".  Next: %s" following-order) "")))
+      (when (fboundp 'completion--flush-all-sorted-completions) ; E.g., so Icomplete+ recomputes order.
+        (completion--flush-all-sorted-completions)))))
 
 (defun icicle-current-sort-functions ()
   "Subset of `icicle-sort-orders-alist' that is currently appropriate.
