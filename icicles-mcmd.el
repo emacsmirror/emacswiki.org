@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Dec 28 10:01:02 2012 (-0800)
+;; Last-Updated: Mon Dec 31 18:14:53 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 18700
+;;     Update #: 18722
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -3445,7 +3445,7 @@ The order between NAV-FN and ACTION-FN respects the value of
          (let ((icicle-acting-on-next/prev  (icicle-get-safe nav-fn 'icicle-cycling-command)))
            (save-excursion (save-selected-window (funcall action-fn))))
          (when (stringp icicle-last-completion-candidate)
-           (icicle-show-help-in-mode-line icicle-last-completion-candidate)))))
+           (setq icicle-mode-line-help  icicle-last-completion-candidate)))))
 
 
 ;; Bound in minibuffer to keys in `icicle-prefix-complete-keys' (`TAB').
@@ -3527,8 +3527,8 @@ Optional argument WORD-P non-nil means complete only a word at a time."
     (icicle-msg-maybe-in-minibuffer
      (substitute-command-keys
       "Use APROPOS completion (`S-TAB') to match multi-completions past first part")))
-  (let ((ipc1-was-cycling-p  icicle-cycling-p)
-        (mode-line-help      nil))
+  (let ((ipc1-was-cycling-p  icicle-cycling-p))
+    (setq icicle-mode-line-help  nil)
     (setq icicle-current-input                   (if (and icicle-last-input
                                                           icicle-cycling-p
                                                           (not icicle-TAB/S-TAB-only-completes-flag)
@@ -3699,19 +3699,19 @@ Optional argument WORD-P non-nil means complete only a word at a time."
                                  (swank        "  [One swank (fuzzy symbol) completion: %s]")
                                  (t            "  [One prefix completion: %s]"))
                                icicle-current-input))
-                      (setq mode-line-help  icicle-current-input))
+                      (setq icicle-mode-line-help  icicle-current-input))
                      ((not (eq no-display-p 'no-msg))
                       (minibuffer-message (case (icicle-current-TAB-method)
                                             (fuzzy        "  [Sole fuzzy completion]")
                                             (vanilla      "  [Sole vanilla completion]")
                                             (swank        "  [Sole swank (fuzzy symbol) completion]")
                                             (t            "  [Sole prefix completion]")))
-                      (setq mode-line-help  icicle-current-input)))))
+                      (setq icicle-mode-line-help  icicle-current-input)))))
 
             ;; Multiple candidates.
 
             (;; Do not expand input in minibuffer - just show `*Completions*'.
-             (and (not no-display-p) ; Always expand for NO-DISPLAY-P.
+             (and (not no-display-p)    ; Always expand for NO-DISPLAY-P.
                   (or (eq 0 icicle-expand-input-to-common-match) ; `never'
                       (and icicle-edit-update-p ; No autoexpansion for `explicit', `sole-match'
                            (memq icicle-expand-input-to-common-match '(1 2)))))
@@ -3729,9 +3729,9 @@ Optional argument WORD-P non-nil means complete only a word at a time."
                      (icicle-display-candidates-in-Completions nil no-display-p)
                    (icicle-display-candidates-in-Completions nil no-display-p)
                    (when (icicle-prefix-complete-2 word-p)
-                     (setq mode-line-help  (icicle-minibuf-input-sans-dir icicle-current-input))))
+                     (setq icicle-mode-line-help  (icicle-minibuf-input-sans-dir icicle-current-input))))
                (when (icicle-prefix-complete-2 word-p)
-                 (setq mode-line-help  (icicle-minibuf-input-sans-dir icicle-current-input)))
+                 (setq icicle-mode-line-help  (icicle-minibuf-input-sans-dir icicle-current-input)))
                (cond (;; Candidates visible.  If second prefix complete, cycle, else update candidates.
                       (get-buffer-window "*Completions*" 0)
                       (if (and (or ipc1-was-cycling-p  icicle-next-prefix-complete-cycles-p)
@@ -3815,7 +3815,6 @@ Optional argument WORD-P non-nil means complete only a word at a time."
                                                            (equal input-before-completion
                                                                   (icicle-input-from-minibuffer
                                                                    'leave-envvars)))))
-      (when mode-line-help (icicle-show-help-in-mode-line mode-line-help))
       return-value)))
 
 (defun icicle-prefix-complete-2 (word-p)
@@ -3950,12 +3949,12 @@ Optional argument NO-DISPLAY-P non-nil means do not display buffer
 message either.  NO-DISPLAY-P is passed to
 `icicle-display-candidates-in-Completions' as its second arg."
   (let ((iac1-was-cycling-p  icicle-cycling-p)
-        (mode-line-help      nil)
         input-before-completion)
+    (setq icicle-mode-line-help  nil)
     (setq icicle-current-input                  (if (and icicle-last-input
                                                          icicle-cycling-p
                                                          (not icicle-edit-update-p)
-                                                         (not icicle-TAB/S-TAB-only-completes-flag) ; @@@
+                                                         (not icicle-TAB/S-TAB-only-completes-flag)
                                                          (eq icicle-current-completion-mode 'apropos)
                                                          (symbolp last-command)
                                                          (or (get last-command 'icicle-cycling-command)
@@ -4096,10 +4095,10 @@ message either.  NO-DISPLAY-P is passed to
                    ((and icicle-edit-update-p  (not (eq no-display-p 'no-msg)))
                     (minibuffer-message (format "  [One apropos completion: %s]"
                                                 (car icicle-completion-candidates)))
-                    (setq mode-line-help  (car icicle-completion-candidates)))
+                    (setq icicle-mode-line-help  (car icicle-completion-candidates)))
                    ((not (eq no-display-p 'no-msg))
                     (minibuffer-message "  [Sole apropos completion]")
-                    (setq mode-line-help  (car icicle-completion-candidates))))))
+                    (setq icicle-mode-line-help  (car icicle-completion-candidates))))))
 
           ;; Multiple candidates.
 
@@ -4122,9 +4121,9 @@ message either.  NO-DISPLAY-P is passed to
                    (icicle-display-candidates-in-Completions nil no-display-p)
                  (icicle-display-candidates-in-Completions nil no-display-p)
                  (let ((complete-input-sans-dir  (icicle-apropos-complete-2)))
-                   (when complete-input-sans-dir  (setq mode-line-help  complete-input-sans-dir))))
+                   (when complete-input-sans-dir  (setq icicle-mode-line-help  complete-input-sans-dir))))
              (let ((complete-input-sans-dir  (icicle-apropos-complete-2)))
-               (when complete-input-sans-dir  (setq mode-line-help  complete-input-sans-dir)))
+               (when complete-input-sans-dir  (setq icicle-mode-line-help  complete-input-sans-dir)))
              (cond (;; Candidates visible.  If second `S-TAB', cycle, else update candidates.
                     (get-buffer-window "*Completions*" 0)
                     (if (and (or iac1-was-cycling-p  icicle-next-apropos-complete-cycles-p)
@@ -4169,7 +4168,6 @@ message either.  NO-DISPLAY-P is passed to
           ;; icicle-next-apropos-complete-cycles-p  (equal input-before-completion
           ;;                                               (icicle-input-from-minibuffer)))
           icicle-next-apropos-complete-cycles-p  (not icicle-TAB/S-TAB-only-completes-flag))
-    (when mode-line-help (icicle-show-help-in-mode-line mode-line-help))
     icicle-completion-candidates))
 
 (defun icicle-apropos-complete-2 ()
@@ -4275,11 +4273,15 @@ Non-interactively, optional arg COMPLETION is the completion to insert."
   (when (interactive-p) (icicle-barf-if-outside-Completions))
   (when (active-minibuffer-window)
     (unwind-protect                     ; If no current completion, return to minibuffer anyway.
-         (progn
+         ;; It is possible for COMPLETION to come from `icicle-candidate-set-retrieve' with a singleton set.
+         ;; In that case, `*Completions*' has been removed.  So do not assume we are in `*Completions*'.
+         (let ((in-Completions  (eq (current-buffer) (get-buffer "*Completions*"))))
            (setq completion                        (or completion
-                                                       (icicle-current-completion-in-Completions))
+                                                       (and in-Completions
+                                                            (icicle-current-completion-in-Completions)))
                  icicle-last-completion-candidate  completion
-                 icicle-candidate-nb               (icicle-nb-of-cand-at-Completions-pos (point)))
+                 icicle-candidate-nb               (and in-Completions
+                                                        (icicle-nb-of-cand-at-Completions-pos (point))))
            (select-window (active-minibuffer-window))
            (with-current-buffer (window-buffer) ; Needed if `*Completions*' is redirected to minibuffer.
              (goto-char (icicle-minibuffer-prompt-end))
@@ -4288,7 +4290,7 @@ Non-interactively, optional arg COMPLETION is the completion to insert."
                                                (not (eq icicle-current-completion-mode 'prefix)))
              (setq icicle-last-input  icicle-current-input
                    icicle-cycling-p   t)
-             (icicle-show-help-in-mode-line icicle-last-completion-candidate)))
+             (setq icicle-mode-line-help  icicle-last-completion-candidate)))
       (select-window (active-minibuffer-window)))))
 
 (defun icicle-current-completion-in-Completions ()
@@ -6435,7 +6437,7 @@ MOREP non-nil means add the saved candidates, don't replace existing."
                   (minibuffer-message "  [Sole candidate restored]")
                   (save-selected-window (select-window (minibuffer-window))
                                         (icicle-highlight-complete-input))
-                  (icicle-show-help-in-mode-line (car icicle-completion-candidates)))
+                  (setq icicle-mode-line-help  (car icicle-completion-candidates)))
                  ((consp icicle-completion-candidates)
                   (deactivate-mark)
                   (icicle-display-candidates-in-Completions)
@@ -7100,12 +7102,12 @@ See also `\\[icicle-history]' (`icicle-history')."
                           (insert inserted))
                         (save-selected-window (icicle-remove-Completions-window))
                         (icicle-highlight-complete-input)
-                        (icicle-show-help-in-mode-line icicle-last-completion-candidate)
+                        (setq icicle-mode-line-help  icicle-last-completion-candidate)
                         (minibuffer-message (format "  [One matching history element]")))
                        (t
                         (when (member icicle-current-input icicle-completion-candidates)
                           (icicle-highlight-complete-input)
-                          (icicle-show-help-in-mode-line icicle-current-input))
+                          (setq icicle-mode-line-help  icicle-current-input))
                         (icicle-display-candidates-in-Completions)
                         (save-window-excursion
                           (select-window (active-minibuffer-window))
