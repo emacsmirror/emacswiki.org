@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Dec 28 10:01:17 2012 (-0800)
+;; Last-Updated: Mon Dec 31 18:04:01 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 9226
+;;     Update #: 9240
 ;; URL: http://www.emacswiki.org/icicles-mode.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -81,6 +81,7 @@
 ;;    `icicle-run-icicle-post-command-hook',
 ;;    `icicle-run-icicle-pre-command-hook',
 ;;    `icicle-select-minibuffer-contents', `icicle-set-calling-cmd',
+;;    `icicle-show-current-help-in-mode-line',
 ;;    `icicle-S-iso-lefttab-to-S-TAB', `icicle-top-level-prep',
 ;;    `icicle-unbind-isearch-keys',
 ;;    `icicle-unbind-key-completion-keys-for-map-var',
@@ -654,6 +655,7 @@ there are also `-other-window' versions.
                  (add-hook 'minibuffer-exit-hook        'icicle-restore-region-face)
                  (add-hook 'minibuffer-exit-hook        'icicle-unhighlight-lighter)
                  (add-hook 'icicle-post-command-hook    'icicle-activate-mark 'append)
+                 (add-hook 'icicle-post-command-hook    'icicle-show-current-help-in-mode-line 'append)
                  (add-hook 'completion-setup-hook       'icicle-set-calling-cmd 'append)
                  (when icicle-customize-save-flag
                    (add-hook 'kill-emacs-hook           'icicle-command-abbrev-save))
@@ -689,6 +691,7 @@ there are also `-other-window' versions.
                  (remove-hook 'minibuffer-exit-hook     'icicle-cancel-Help-redirection)
                  (remove-hook 'minibuffer-exit-hook     'icicle-restore-region-face)
                  (remove-hook 'icicle-post-command-hook 'icicle-activate-mark)
+                 (remove-hook 'icicle-post-command-hook 'icicle-show-current-help-in-mode-line)
                  ;; The pre- and post-command hooks are local to the minibuffer,
                  ;; So they are added in `icicle-minibuffer-setup', not here.
                  ;; Nevertheless, they are removed here when Icicle mode is exited.
@@ -1081,6 +1084,7 @@ there are also `-other-window' versions.
            (add-hook 'minibuffer-exit-hook        'icicle-restore-region-face)
            (add-hook 'minibuffer-exit-hook        'icicle-unhighlight-lighter)
            (add-hook 'icicle-post-command-hook    'icicle-activate-mark 'append)
+           (add-hook 'icicle-post-command-hook    'icicle-show-current-help-in-mode-line 'append)
            (add-hook 'completion-setup-hook       'icicle-set-calling-cmd 'append)
            (when icicle-customize-save-flag
              (add-hook 'kill-emacs-hook           'icicle-command-abbrev-save))
@@ -1109,6 +1113,7 @@ there are also `-other-window' versions.
            (remove-hook 'minibuffer-exit-hook     'icicle-cancel-Help-redirection)
            (remove-hook 'minibuffer-exit-hook     'icicle-restore-region-face)
            (remove-hook 'icicle-post-command-hook 'icicle-activate-mark)
+           (remove-hook 'icicle-post-command-hook 'icicle-show-current-help-in-mode-line)
            ;; The pre- and post-command hooks are local to the minibuffer,
            ;; So they are added in `icicle-minibuffer-setup', not here.
            ;; Nevertheless, they are removed here when Icicle mode is exited.
@@ -3915,6 +3920,7 @@ Usually run by inclusion in `minibuffer-setup-hook'."
                                                         (apropos    'apropos)
                                                         (prefix     'prefix)
                                                         (otherwise  nil)))
+          icicle-mode-line-help                  nil
           icicle-next-apropos-complete-cycles-p  nil
           icicle-next-prefix-complete-cycles-p   nil
           icicle-incremental-completion-p        icicle-incremental-completion
@@ -4107,11 +4113,15 @@ if `icicle-change-region-background-flag' is non-nil."
     (set-face-background 'region icicle-saved-region-background)))
 
 (defun icicle-activate-mark ()
-  "Prevent region from being deactivated.  Use in `icicle-post-command-hook'."
+  "Prevent region from being deactivated.  Used in `icicle-post-command-hook'."
   (when (and (window-minibuffer-p (selected-window))
              icicle-completing-p
              (not executing-kbd-macro))
     (setq deactivate-mark  nil)))
+
+(defun icicle-show-current-help-in-mode-line ()
+  "Show `icicle-mode-line-help'.  Used in `icicle-post-command-hook'."
+  (when icicle-mode-line-help (icicle-show-help-in-mode-line icicle-mode-line-help)))
 
 (defun icicle-redefine-standard-functions ()
   "Alias the functions in `icicle-functions-to-redefine' to Icicles versions."
