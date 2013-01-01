@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Dec 28 10:01:46 2012 (-0800)
+;; Last-Updated: Mon Dec 31 16:31:35 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 1694
+;;     Update #: 1695
 ;; URL: http://www.emacswiki.org/icicles-var.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -101,8 +101,9 @@
 ;;    `icicle-last-transform-function', `icicle-lighter-truncation',
 ;;    `icicle-list-use-nth-parts', `icicle-menu-map',
 ;;    `icicle-minibuffer-message-ok-p', `icicle-minor-mode-map-entry',
-;;    `icicle-ms-windows-drive-hash', `icicle-multi-completing-p',
-;;    `icicle-must-match-regexp', `icicle-must-not-match-regexp',
+;;    `icicle-mode-line-help', `icicle-ms-windows-drive-hash',
+;;    `icicle-multi-completing-p', `icicle-must-match-regexp',
+;;    `icicle-must-not-match-regexp',
 ;;    `icicle-must-pass-after-match-predicate',
 ;;    `icicle-must-pass-predicate', `icicle-narrow-regexp',
 ;;    `icicle-nb-candidates-before-truncation',
@@ -1044,6 +1045,8 @@ given part any number of times.")
 This affects only `icicle-msg-maybe-in-minibuffer'.")
 
 (defvar icicle-minor-mode-map-entry nil "Icicles mode entry in `minor-mode-map-alist'.")
+
+(defvar icicle-mode-line-help nil "Current mode line help (a string), or nil if none.")
 
 (defvar icicle-ms-windows-drive-hash (and (fboundp 'make-hash-table)
                                           (make-hash-table :test 'equal))
