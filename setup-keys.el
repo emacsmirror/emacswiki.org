@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 21.1
-;; Last-Updated: Fri Dec 28 10:23:30 2012 (-0800)
+;; Last-Updated: Wed Jan  2 14:01:02 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 1154
+;;     Update #: 1168
 ;; URL: http://www.emacswiki.org/setup-keys.el
 ;; Keywords: mouse, keyboard, menus, menu-bar
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -67,6 +67,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/01/02 dadams
+;;     Bound C-o also in minibuffer-(inactive-mode|local-(isearch|shell-command))-map.
 ;; 2012/12/24 dadams
 ;;     Added bindings for visual-line-mode line movements.
 ;; 2012/08/27 dadams
@@ -382,9 +384,9 @@
 (eval-after-load "foldout"
   '(setq foldout-mouse-modifiers '(meta shift)))
 
-(eval-after-load "oneonone"
+(eval-after-load "oneonone"                                                      ; `C-o'
   '(when (framep 1on1-minibuffer-frame) ; Standalone minibuffer frame.
-    (define-key minibuffer-local-map "\C-o" '1on1-fit-minibuffer-frame)          ; `C-o'
+    (define-key minibuffer-local-map "\C-o" '1on1-fit-minibuffer-frame)
     (unless (eq minibuffer-local-map (keymap-parent minibuffer-local-completion-map))
       (define-key minibuffer-local-must-match-map "\C-o" '1on1-fit-minibuffer-frame)
       (define-key minibuffer-local-completion-map "\C-o" '1on1-fit-minibuffer-frame))
@@ -396,7 +398,15 @@
         '1on1-fit-minibuffer-frame))
     (when (boundp 'minibuffer-local-filename-must-match-map) ; Emacs 23+
       (define-key minibuffer-local-filename-must-match-map "\C-o"
-        '1on1-fit-minibuffer-frame))))
+        '1on1-fit-minibuffer-frame))
+    (when (boundp 'minibuffer-local-isearch-map)
+      (unless (eq minibuffer-local-map (keymap-parent minibuffer-local-isearch-map))
+        (define-key minibuffer-local-isearch-map "\C-o" '1on1-fit-minibuffer-frame)))
+    (when (boundp 'minibuffer-local-shell-command-map)
+      (unless (eq minibuffer-local-map (keymap-parent minibuffer-local-shell-command-map))
+        (define-key minibuffer-local-shell-command-map "\C-o" '1on1-fit-minibuffer-frame)))
+    (when (boundp 'minibuffer-inactive-mode-map)
+      (define-key minibuffer-inactive-mode-map "\C-o" '1on1-fit-minibuffer-frame))))
 
 (eval-after-load "frame-cmds"
   '(progn
