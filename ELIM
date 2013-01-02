@@ -35,6 +35,8 @@ libpurple (v2.4.3) supports the following protocols officially:
 
 Others are available as 3rd party plugins: http://developer.pidgin.im/wiki/ThirdPartyPlugins#AdditionalProtocols
 
+'''Question''': Is anyone successfully using this with sipe? http://sipe.sourceforge.net/ --mgalgs
+
 == Screen Shots ==
 
 [[image:garak-screenshot-00]]
