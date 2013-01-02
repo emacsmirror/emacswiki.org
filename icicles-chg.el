@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue Jan  1 09:33:55 2013 (-0800)
+;; Last-Updated: Wed Jan  2 13:17:09 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 9507
+;;     Update #: 9509
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -86,6 +86,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2013/01/02 dadams
+;;     icicle-other-window-or-frame: Use 1on1-other-frame.
 ;; 2012/12/21 dadams
 ;;     icicle-buffer-multi-complete, icicle-file-of-content-apropos-complete-match:
 ;;       Added filtering by icicle-(buffer|find-file-of-content)-skip-hook.  Thx to C. Schmidt.
