@@ -217,6 +217,28 @@ With the following snippet (e.g., in .emacs) you can keep the old preview:
       )))
 </pre>
 
+== auctex-preview: Scale preview images with respect to the buffer-local face size==
+One can change the buffer local face size with the help of text-scale-increase and text-scale-decrease from text-scale-mode (key strokes C-x C-+ and C-x C--).
+The following advice synchronizes the size of the preview images with the buffer local face size.
+Usage:
+Install the package by pasting the following advice into your .emacs file.
+In an auctex-buffer with previews first adjust the font size with C-x C-+ or C-x C-- and then regenerate the previews with C-c C-p C-d.
+<pre>
+(defadvice preview-inherited-face-attribute (after preview-inherit-local-face nil activate)
+  "Scale preview images with respect to buffer-local face"
+  (when (eq attribute :height)
+    (message "advice preview-inherit-face-attribute")
+    (let ((scale-amount text-scale-mode-amount)
+	  (scale-factor text-scale-mode-step))
+      (when (< scale-amount 0)
+	(setq scale-amount (- scale-amount))
+	(setq scale-factor (/ 1.0 scale-factor)))
+      (while (> scale-amount 0)
+	(setq ad-return-value (* scale-factor ad-return-value))
+	(setq scale-amount (1- scale-amount)))
+      )))
+</pre>
+
 == Using xpdf as viewer with forward and inverse search ==
 xpdf exists in cygwin and in linux and can be configured for forward and inverse search using synctex.
 
