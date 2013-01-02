@@ -43,7 +43,7 @@ and presumably the issue will be addressed in some future version of Emacs, but
 until then the following macro can be used:
 
 <pre>
-(defmacro defun** (name args &rest body)
+(defmacro defun** (name arglist &rest body)
   "Define NAME as a function in a lexically bound context.
 
 Like normal `defun', except that it works correctly in lexically
