@@ -51,7 +51,7 @@ If you have a VOIP account you can use [http://yrk.nfshost.com/repos/diamondsms/
 
 === auto-revert ===
 
-Do the following to stop auto-revert tail mode from spamming you everytime a file changes:
+Do the following to stop auto-revert tail mode from spamming you every time a file changes:
 <code>(setq auto-revert-verbose nil)</code>
 
 ----
