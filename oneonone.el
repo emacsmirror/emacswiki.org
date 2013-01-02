@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 21.1
-;; Last-Updated: Fri Dec 28 10:16:35 2012 (-0800)
+;; Last-Updated: Wed Jan  2 13:14:16 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 2681
+;;     Update #: 2716
 ;; URL: http://www.emacswiki.org/oneonone.el
 ;; Doc URL: http://emacswiki.org/OneOnOneEmacs
 ;; Keywords: local, frames
@@ -176,25 +176,13 @@
 ;;  then fiddle with the other until they more or less cancel.
 ;;
 ;;
-;;  New functions and macros defined here:
+;;  Commands defined here:
 ;;
-;;    `1on1-box-cursor-when-idle',
-;;    `1on1-change-cursor-on-input-method',
-;;    `1on1-change-cursor-on-overwrite/read-only',
-;;    `1on1-color-minibuffer-frame-on-exit',
-;;    `1on1-color-minibuffer-frame-on-setup',
-;;    `1on1-color-isearch-minibuffer-frame',
-;;    `1on1-display-*Completions*-frame', `1on1-display-*Help*-frame',
 ;;    `1on1-emacs', `1on1-fit-minibuffer-frame',
-;;    `1on1-flash-ding-minibuffer-frame', `1on1-increment-color-hue',
-;;    `1on1-minibuffer-prompt-end', `1on1-ORIG-abort-recursive-edit',
-;;    `1on1-ORIG-top-level', `1on1-ORIG-y-or-n-p', `1on1-remove-if',
-;;    `1on1-reset-minibuffer-frame',
+;;    `1on1-ORIG-abort-recursive-edit', `1on1-ORIG-top-level',
+;;    `1on1-ORIG-y-or-n-p', `1on1-other-frame',
 ;;    `1on1-set-box-cursor-when-idle-interval',
-;;    `1on1-set-cursor-type', `1on1-set-minibuffer-frame-top/bottom',
-;;    `1on1-set-minibuffer-frame-width',
-;;    `1on1-setup-minibuffer-frame-coloring', `1on1-setup-mode-line',
-;;    `1on1-toggle-box-cursor-when-idle'.
+;;    `1on1-set-cursor-type', `1on1-toggle-box-cursor-when-idle'.
 ;;
 ;;  Customizable user options defined here:
 ;;
@@ -225,6 +213,7 @@
 ;;    `1on1-minibuffer-frame-top/bottom',
 ;;    `1on1-minibuffer-frame-width',
 ;;    `1on1-minibuffer-frame-width-percent',
+;;    `1on1-remap-other-frame-command-flag',
 ;;    `1on1-special-display-frame-alist'.
 ;;
 ;;  Non-customizable user options defined here:
@@ -249,7 +238,22 @@
 ;;    `1on1-minibuffer-frame-height',
 ;;    `1on1-minibuffer-frame-mouse-color'.
 ;;
-;;  Other new variables defined here:
+;;  Non-interactive functions defined here:
+;;
+;;    `1on1-box-cursor-when-idle',
+;;    `1on1-change-cursor-on-input-method',
+;;    `1on1-change-cursor-on-overwrite/read-only',
+;;    `1on1-color-minibuffer-frame-on-exit',
+;;    `1on1-color-minibuffer-frame-on-setup',
+;;    `1on1-color-isearch-minibuffer-frame',
+;;    `1on1-display-*Completions*-frame', `1on1-display-*Help*-frame',
+;;    `1on1-flash-ding-minibuffer-frame', `1on1-increment-color-hue',
+;;    `1on1-minibuffer-prompt-end', `1on1-reset-minibuffer-frame',
+;;    `1on1-remove-if', `1on1-set-minibuffer-frame-top/bottom',
+;;    `1on1-set-minibuffer-frame-width',
+;;    `1on1-setup-minibuffer-frame-coloring', `1on1-setup-mode-line',
+;;
+;;  Non-option variables defined here:
 ;;
 ;;    `1on1-box-cursor-when-idle-p',
 ;;    `1on1-box-cursor-when-idle-interval',
@@ -276,6 +280,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/01/02 dadams
+;;     Added: 1on1-remap-other-frame-command-flag, 1on1-other-frame.
 ;; 2012/10/02 dadams
 ;;     Handle obsolescence of face modeline.
 ;; 2012/08/14 dadams
@@ -633,6 +639,15 @@ to generally use a separate frame.
 
 If you change this variable, you will need to restart Emacs for it to
 take effect."
+  :type 'boolean :group 'One-On-One)
+
+;;;###autoload
+(defcustom 1on1-remap-other-frame-command-flag (> emacs-major-version 23)
+  "*Non-nil means rebind keys for `other-frame' to `1on1-other-frame'.
+This has no effect unless `1on1-minibuffer-frame' is a frame, which
+means that `1on1-minibuffer-frame-flag' is non-nil.
+A non-nil value can be useful for Emacs starting with version 24,
+because an inactive minibuffer has its own keymap."
   :type 'boolean :group 'One-On-One)
 
 (defvar 1on1-minibuffer-frame-foreground "Red"
@@ -1372,7 +1387,9 @@ show/hide: hold CTRL + click in window"))
     (add-hook 'minibuffer-setup-hook '1on1-color-minibuffer-frame-on-setup)
     (add-hook 'minibuffer-exit-hook '1on1-color-minibuffer-frame-on-exit)
     ;; Redefine built-in fns so they color minibuffer frame.
-    (1on1-setup-minibuffer-frame-coloring))
+    (1on1-setup-minibuffer-frame-coloring)
+    (when 1on1-remap-other-frame-command-flag
+      (substitute-key-definition 'other-frame '1on1-other-frame global-map)))
 
   ;; Hooks.
   (if (and 1on1-fit-minibuffer-frame-flag (require 'fit-frame nil t))
@@ -1481,6 +1498,36 @@ use `\\[toggle-box-cursor-when-idle]."
   (timer-set-idle-time 1on1-box-cursor-when-idle-timer
                        (setq 1on1-box-cursor-when-idle-interval secs)
                        t))
+
+;;;###autoload
+(defun 1on1-other-frame (arg)
+  "Same as `other-frame', except include frame `1on1-minibuffer-frame'.
+If `1on1-minibuffer-frame' is non-nil then it is a standalone
+minibuffer frame.  In this case, include it as well as all other
+visible or iconified frames as candidates.
+
+Select the ARGth different visible frame on current display, and raise it.
+Select the frame ARG steps away in the sequence of frames.
+A negative ARG moves in the opposite direction.
+
+To make this command work properly, you must tell Emacs
+how the system (or the window manager) generally handles
+focus-switching between windows.  If moving the mouse onto a window
+selects it (gives it focus), set `focus-follows-mouse' to t.
+Otherwise, that variable should be nil."
+  (interactive "p")
+  (let ((frame  (selected-frame)))
+    (while (> arg 0)
+      (setq frame  (next-frame frame 0))
+      (while (not (eq t (frame-visible-p frame)))
+	(setq frame  (next-frame frame 0)))
+      (setq arg  (1- arg)))
+    (while (< arg 0)
+      (setq frame  (previous-frame frame 0))
+      (while (not (eq t (frame-visible-p frame)))
+	(setq frame  (previous-frame frame 0)))
+      (setq arg  (1+ arg)))
+    (select-frame-set-input-focus frame)))
 
 (defun 1on1-display-*Help*-frame (buf &optional args)
   "Display *Help* buffer in its own frame.
