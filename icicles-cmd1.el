@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Dec 28 09:57:42 2012 (-0800)
+;; Last-Updated: Wed Jan  2 11:33:09 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 25364
+;;     Update #: 25365
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -5978,6 +5978,10 @@ together with Icicles multi-commands `icicle-select-window', and
   `icicle-select-window' with windows from all visible frames as
   candidates.  Otherwise, this is `icicle-select-frame'.
 
+If you use library `oneonone.el' with a standalone minibuffer frame,
+and if option `1on1-remap-other-frame-command-flag' is non-nil, then
+frame selection can include the standalone minibuffer frame.
+
 By default, Icicle mode remaps all key sequences that are normally
 bound to `other-window' to `icicle-other-window-or-frame'.  If you do
 not want this remapping, then customize option
@@ -5991,7 +5995,13 @@ not want this remapping, then customize option
                (icicle-select-frame)
              (let ((current-prefix-arg  nil)) (icicle-select-window))))
           (t
-           (if (one-window-p) (other-frame numarg) (other-window numarg))))))
+           (if (one-window-p)
+               (if (and (fboundp '1on1-other-frame)
+                        1on1-minibuffer-frame
+                        1on1-remap-other-frame-command-flag)
+                   (1on1-other-frame numarg)
+                 (other-frame numarg))
+             (other-window numarg))))))
 
 ;;;###autoload (autoload 'icicle-select-frame "icicles")
 (icicle-define-command icicle-select-frame ; Bound to `C-x 5 o' in Icicle mode.
