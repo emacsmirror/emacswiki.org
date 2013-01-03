@@ -35,7 +35,7 @@ libpurple (v2.4.3) supports the following protocols officially:
 
 Others are available as 3rd party plugins: http://developer.pidgin.im/wiki/ThirdPartyPlugins#AdditionalProtocols
 
-'''Question''': Is anyone successfully using this with sipe? http://sipe.sourceforge.net/ --mgalgs
+'''Question''': Is anyone successfully using this with sipe? I have it working with pidgin but can't get it to work with elim... http://sipe.sourceforge.net/ --mgalgs
 
 == Screen Shots ==
 
