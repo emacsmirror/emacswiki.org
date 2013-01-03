@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 20 Aug 2008
 ;; Version: 3
-;; RCS Version: $Rev: 423 $
+;; RCS Version: $Rev: 444 $
 ;; Keywords: sunrise commander, windows, accessibility, viewer
 ;; URL: http://www.emacswiki.org/emacs/sunrise-x-popviewer.el
 ;; Compatibility: GNU Emacs 22+
@@ -65,7 +65,7 @@
 (require 'sunrise-commander)
 (eval-when-compile (require 'cl))
 
-(defcustom sr-popviewer-enabled t
+(defcustom sr-popviewer-enabled nil
   "Whether the popviewer extension should be active at startup."
   :group 'sunrise
   :type 'boolean)
