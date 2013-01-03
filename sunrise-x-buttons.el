@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 11 Jun 2008
 ;; Version: 1
-;; RCS Version: $Rev: 440 $
+;; RCS Version: $Rev: 444 $
 ;; Keywords: sunrise commander, shortcut buttons
 ;; URL: http://www.emacswiki.org/emacs/sunrise-x-buttons.el
 ;; Compatibility: GNU Emacs 22+
@@ -166,7 +166,8 @@
 
 (add-hook 'sr-start-hook 'sr-buttons-display)
 (add-hook 'sr-quit-hook (defun sr-buttons-sr-quit-function ()
-                          (bury-buffer (get-buffer sr-buttons-buffer-name))))
+                          (let ((buttons (get-buffer sr-buttons-buffer-name)))
+                            (if buttons (bury-buffer buttons)))))
 (add-hook 'kill-buffer-hook
           (defun sr-buttons-kill-buffer-function ()
             (if (and sr-running
