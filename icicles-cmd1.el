@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Jan  2 11:33:09 2013 (-0800)
+;; Last-Updated: Fri Jan  4 15:31:29 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 25365
+;;     Update #: 25368
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -5257,7 +5257,7 @@ Remove crosshairs highlighting and unbind filtering keys."
   "Narrow the bookmark candidates to autofile bookmarks."
   (interactive)
   (icicle-narrow-candidates-with-predicate
-   (lambda (x) (bmkp-autofile-bookmark-p (icicle-mctized-display-candidate (car x))))))
+   (lambda (x) (bmkp-autofile-bookmark-p (icicle-transform-multi-completion (car x))))))
 
 ;;;###autoload (autoload 'icicle-bookmark-autonamed-narrow "icicles")
 (defun icicle-bookmark-autonamed-narrow () ; Bound to `C-x j #' in minibuffer for completion.
@@ -5265,7 +5265,7 @@ Remove crosshairs highlighting and unbind filtering keys."
   (interactive)
   (icicle-narrow-candidates-with-predicate
    (lambda (x)
-     (bmkp-autonamed-bookmark-p (icicle-mctized-display-candidate (car x))))))
+     (bmkp-autonamed-bookmark-p (icicle-transform-multi-completion (car x))))))
 
 ;;;###autoload (autoload 'icicle-bookmark-autonamed-this-buffer-narrow "icicles")
 (defun icicle-bookmark-autonamed-this-buffer-narrow ()
