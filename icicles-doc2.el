@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Dec 28 09:58:39 2012 (-0800)
+;; Last-Updated: Thu Jan  3 10:18:51 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 29138
+;;     Update #: 29142
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -6696,8 +6696,10 @@
 ;;               representation of a key sequence, during key
 ;;               completion.
 ;;
-;;    `M-o'    - `icicle-insert-history-element': Invoke completion to
+;;    `M-o' -    `icicle-insert-history-element': Invoke completion to
 ;;               insert a previously entered input in the minibuffer.
+;;               (Use this instead of the `M-s' and `M-r' of vanilla
+;;               Emacs, which are not available in Icicle mode.)
 ;;
 ;;    `M-%'    - Regexp quote current input or its active region, then
 ;;               apropos-complete.  Use this to literally match all or
@@ -6866,11 +6868,14 @@
 ;;  and `C-L'; if non-`nil', then, instead of cycling inputs, these
 ;;  commands let you access previous inputs using completion.
 ;;
-;;  You of course have the standard access to the minibuffer history,
-;;  via `M-p', `M-n', `M-r', and `M-s'.  In addition to these, the
-;;  following minibuffer bindings let you use apropos completion on
-;;  the current minibuffer history list.  For explanation, see
-;;  (@file :file-name "icicles-doc1.el" :to "History Enhancements").
+;;  You can insert minibuffer history items using the cycle keys `M-p'
+;;  and `M-n', as usual.  But in Icicle mode `M-s' and `M-r' are not
+;;  available.  Instead, use `M-o' to insert any history item using
+;;  completion (including regexp completion, of course).
+;;
+;;  The following minibuffer bindings also let you use apropos
+;;  completion on the current minibuffer history list.  For
+;;  explanation, see (@file :file-name "icicles-doc1.el" :to "History Enhancements").
 ;;
 ;;    `M-h'     - `icicle-history'
 ;;    `M-pause' - `icicle-keep-only-past-inputs'
