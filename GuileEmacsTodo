@@ -11,3 +11,4 @@
 * Installation instructions
 * Debugging instructions
 * Eliminate forwarded variables (either use normal variables or implement symbol macros)
+* Remove unnecessary signal handlers (notably SIGXCPU, SIGPWR which bdw-gc uses)
