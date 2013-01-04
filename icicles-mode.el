@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Dec 31 18:04:01 2012 (-0800)
+;; Last-Updated: Fri Jan  4 09:42:10 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 9240
+;;     Update #: 9268
 ;; URL: http://www.emacswiki.org/icicles-mode.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -2880,6 +2880,8 @@ is unbound in all keymaps accessible from keymap MAP."
        (define-key map (icicle-kbd "M-i")           'icicle-clear-current-history) ; `M-i'
        (define-key map (icicle-kbd "M-k")          'icicle-erase-minibuffer-or-history-element) ; `M-k'
        (define-key map (icicle-kbd "M-o")           'icicle-insert-history-element) ; `M-o'
+       (define-key map (icicle-kbd "M-r")           'undefined) ; `M-r'
+       (define-key map (icicle-kbd "M-s")           'undefined) ; `M-s' (has no real effect, however)
        (define-key map (icicle-kbd "M-:")           'icicle-pp-eval-expression-in-minibuffer) ; `M-:'
        (define-key map (icicle-kbd "C-a")           'icicle-beginning-of-line+) ; `C-a'
        (define-key map (icicle-kbd "C-e")           'icicle-end-of-line+) ; `C-e'
@@ -2984,13 +2986,15 @@ is unbound in all keymaps accessible from keymap MAP."
          (define-key map (icicle-kbd "C-x C-f")       'icicle-resolve-file-name) ; `C-x C-f'
          (define-key map (icicle-kbd "C-=")           'icicle-insert-string-from-variable) ; `C-='
          (define-key map (icicle-kbd "M-i")           'icicle-clear-current-history) ; `M-i'
-         (define-key map (icicle-kbd "M-k")    'icicle-erase-minibuffer-or-history-element) ; `M-k'
+         (define-key map (icicle-kbd "M-k")        'icicle-erase-minibuffer-or-history-element) ; `M-k'
          (define-key map (icicle-kbd "M-o")           'icicle-insert-history-element) ; `M-o'
-         (define-key map (icicle-kbd "M-:")       'icicle-pp-eval-expression-in-minibuffer) ; `M-:'
+         (define-key map (icicle-kbd "M-r")           'undefined) ; `M-r'
+         (define-key map (icicle-kbd "M-s")           'undefined) ; `M-s' (has no real effect, however)
+         (define-key map (icicle-kbd "M-:")           'icicle-pp-eval-expression-in-minibuffer) ; `M-:'
          (define-key map (icicle-kbd "C-a")           'icicle-beginning-of-line+) ; `C-a'
          (define-key map (icicle-kbd "C-e")           'icicle-end-of-line+) ; `C-e'
          (define-key map (icicle-kbd "C-M-v")         'icicle-scroll-forward) ; `C-M-v'
-         (define-key map (icicle-kbd "C-M-S-v")  'icicle-scroll-backward) ; `C-M-S-v' (aka `C-M-V')
+         (define-key map (icicle-kbd "C-M-S-v")      'icicle-scroll-backward) ; `C-M-S-v' (aka `C-M-V')
          (define-key map (icicle-kbd "C-M-pause")     'icicle-other-history) ; `C-M-pause'
          (dolist (key  icicle-completing-read+insert-keys)
            (define-key map key 'icicle-completing-read+insert)) ; `C-M-S-c'
@@ -3090,13 +3094,15 @@ is unbound in all keymaps accessible from keymap MAP."
          (define-key map (icicle-kbd "C-x C-f")       'icicle-resolve-file-name) ; `C-x C-f'
          (define-key map (icicle-kbd "C-=")           'icicle-insert-string-from-variable) ; `C-='
          (define-key map (icicle-kbd "M-i")           'icicle-clear-current-history) ; `M-i'
+         (define-key map (icicle-kbd "M-k")        'icicle-erase-minibuffer-or-history-element) ; `M-k'
          (define-key map (icicle-kbd "M-o")           'icicle-insert-history-element) ; `M-o'
-         (define-key map (icicle-kbd "M-k")    'icicle-erase-minibuffer-or-history-element) ; `M-k'
-         (define-key map (icicle-kbd "M-:")       'icicle-pp-eval-expression-in-minibuffer) ; `M-:'
+         (define-key map (icicle-kbd "M-r")           'undefined) ; `M-r'
+         (define-key map (icicle-kbd "M-s")           'undefined) ; `M-s' (has no real effect, however)
+         (define-key map (icicle-kbd "M-:")           'icicle-pp-eval-expression-in-minibuffer) ; `M-:'
          (define-key map (icicle-kbd "C-a")           'icicle-beginning-of-line+) ; `C-a'
          (define-key map (icicle-kbd "C-e")           'icicle-end-of-line+) ; `C-e'
          (define-key map (icicle-kbd "C-M-v")         'icicle-scroll-forward) ; `C-M-v'
-         (define-key map (icicle-kbd "C-M-S-v")  'icicle-scroll-backward) ; `C-M-S-v' (aka `C-M-V')
+         (define-key map (icicle-kbd "C-M-S-v")      'icicle-scroll-backward) ; `C-M-S-v' (aka `C-M-V')
          (define-key map (icicle-kbd "C-M-pause")     'icicle-other-history) ; `C-M-pause'
          (dolist (key  icicle-completing-read+insert-keys)
            (define-key map key 'icicle-completing-read+insert)) ; `C-M-S-c'
@@ -3227,6 +3233,8 @@ is unbound in all keymaps accessible from keymap MAP."
        (define-key map (icicle-kbd "M-i")           nil) ; `M-i'
        (define-key map (icicle-kbd "M-k")           nil) ; `M-k'
        (define-key map (icicle-kbd "M-o")           nil) ; `M-o'
+       (define-key map (icicle-kbd "M-r")           'previous-matching-history-element) ; `M-r'
+       (define-key map (icicle-kbd "M-s")           'next-matching-history-element) ; `M-s'
        (define-key map (icicle-kbd "M-:")           nil) ; `M-:'
        (define-key map (icicle-kbd "C-a")           nil) ; `C-a'
        (define-key map (icicle-kbd "C-e")           nil) ; `C-e'
@@ -3281,6 +3289,8 @@ is unbound in all keymaps accessible from keymap MAP."
          (define-key map (icicle-kbd "M-i")           nil) ; `M-i'
          (define-key map (icicle-kbd "M-k")           nil) ; `M-k'
          (define-key map (icicle-kbd "M-o")           nil) ; `M-o'
+         (define-key map (icicle-kbd "M-r")           'previous-matching-history-element) ; `M-r'
+         (define-key map (icicle-kbd "M-s")           'next-matching-history-element) ; `M-s'
          (define-key map (icicle-kbd "M-:")           nil) ; `M-:'
          (define-key map (icicle-kbd "C-a")           nil) ; `C-a'
          (define-key map (icicle-kbd "C-e")           nil) ; `C-e'
@@ -3335,6 +3345,8 @@ is unbound in all keymaps accessible from keymap MAP."
          (define-key map (icicle-kbd "M-i")           nil) ; `M-i'
          (define-key map (icicle-kbd "M-k")           nil) ; `M-k'
          (define-key map (icicle-kbd "M-o")           nil) ; `M-o'
+         (define-key map (icicle-kbd "M-r")           'previous-matching-history-element) ; `M-r'
+         (define-key map (icicle-kbd "M-s")           'next-matching-history-element) ; `M-s'
          (define-key map (icicle-kbd "M-:")           nil) ; `M-:'
          (define-key map (icicle-kbd "C-a")           nil) ; `C-a'
          (define-key map (icicle-kbd "C-e")           nil) ; `C-e'
