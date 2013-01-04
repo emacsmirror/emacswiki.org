@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Wed Jan  2 13:17:09 2013 (-0800)
+;; Last-Updated: Fri Jan  4 09:36:19 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 9509
+;;     Update #: 9514
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -5224,6 +5224,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2013/01/04 dadams
+;;     icicle-define-minibuffer-maps: Undefine/restore M-s, M-r for minibuffer-local(-ns|-isearch)-map.
 ;; 2012/12/31 dadams
 ;;     Added: icicle-show-current-help-in-mode-line.
 ;;     icicle-mode: Add/remove icicle-show-current-help-in-mode-line to/from icicle-post-command-hook.
