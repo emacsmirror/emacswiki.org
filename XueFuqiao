@@ -195,6 +195,7 @@ Coming soon.
 * Make Emacs support more image formats.
 * Implement multithreaded features in Emacs.
 * Make the face code to be simpler, clearer and faster.
+* Make an OpenPGP implementation in EmacsLisp.
 * Implement a EmacsLisp library that generates XPMs dynamically.
 
 = Comments =
