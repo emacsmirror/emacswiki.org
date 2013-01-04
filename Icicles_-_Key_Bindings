@@ -638,7 +638,7 @@ predicate used for completion to a variable.
 representation of a key sequence, during [[Icicles - Key Completion|key completion]].
 
 [:icicle-insert-history-element]
-* '''`M-o'''' -- `icicle-insert-history-element': Invoke completion to insert a previously entered input in the minibuffer.
+* '''`M-o'''' -- `icicle-insert-history-element': Invoke [[completion]] to insert a previously entered input in the minibuffer.  (Use this instead of the `M-s' and `M-r' of vanilla Emacs, which are not available in ''Icicle'' mode.)
 
 [:icicle-regexp-quote-input]
 * '''`##M-%##''''  -- Regexp quote current input or its active [[region]], then
@@ -820,9 +820,10 @@ commands let you access previous inputs using completion.
 
 
 
-You of course have the standard access to the minibuffer history,
-via `M-p', `M-n', `M-r', and `M-s'.  In addition to these, the
-following minibuffer bindings let you use ''apropos completion'' on
+You can insert minibuffer history items using the cycle keys `M-p' and `M-n', as usual.  But in ''Icicle'' mode `M-s' and `M-r' are not available.  Instead, use '''`M-o'''' to insert any history item using [[completion]] (including [[regexp]] completion, of course).
+
+The
+following minibuffer bindings also let you use ''apropos completion'' on
 the current minibuffer history list.  For explanation, see [[Icicles - History Enhancements]].
 
 [:icicle-history]
