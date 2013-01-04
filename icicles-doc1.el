@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Dec 28 09:58:28 2012 (-0800)
+;; Last-Updated: Fri Jan  4 09:56:07 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 27001
+;;     Update #: 27009
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -8052,12 +8052,15 @@
 ;;
 ;;  Some of these enhancements are described below in more detail.
 ;;  Each of 1-7 lets you see the complete list of previous inputs that
-;;  match your current input.  In vanilla Emacs, the history lists are
-;;  never shown as such; you can access previous inputs only one at a
-;;  time, in order (with `M-p').  In vanilla Emacs, you can use a
-;;  regexp to search the history list (via `M-r'), but the regexp
-;;  matching is not dynamic, and the first match found is the (only)
-;;  one you get.
+;;  match your current input.
+;;
+;;  In vanilla Emacs, the history lists are never shown as such; you
+;;  can access previous inputs only one at a time, in order (with
+;;  `M-p').  In vanilla Emacs, you can use a regexp to search the
+;;  history list (via `M-r' and `M-s'), but the regexp matching is not
+;;  dynamic, and the first match found is the only one you get.  In
+;;  Icicle mode the vanilla keys `M-r' and `M-s' for matching a
+;;  history item are not available - use `M-o' instead (see next).
 ;;
 ;;  Displaying previous inputs that match the current input sounds
 ;;  like a minor advantage, but it is actually quite helpful in
@@ -8079,7 +8082,8 @@
 ;;  This has the advantage over cycling with `M-n' or `M-p' and
 ;;  searching with `M-s' or `M-r', that you can use Icicles completion
 ;;  and cycling to quickly access a previous input, no matter how long
-;;  ago you entered it.
+;;  ago you entered it.  (`M-s' and `M-r' are not available in Icicle
+;;  mode.)
 ;;
 ;;  When completion is available for reading input, if you use `M-o'
 ;;  to choose a previously entered input, this just inserts that input
