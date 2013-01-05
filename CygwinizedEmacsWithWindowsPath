@@ -1,5 +1,5 @@
 Sometimes Emacs within Cygwin needs to handle Windows style path. 
-For example, drag a file into Emacs.
+For example, drag a file into Emacs, use right click menu to open file in Emacs server. 
 
 Another scenario is using distel within Cygwin Emacs.  Distel needs to communicate with Windows native erlang node.  Windows style path names are returns from Eralng node.
 
