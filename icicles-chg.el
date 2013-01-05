@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Jan  4 09:36:19 2013 (-0800)
+;; Last-Updated: Sat Jan  5 15:17:49 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 9514
+;;     Update #: 9555
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -86,6 +86,14 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2013/01/05 dadams
+;;     icicle-bookmark-*-narrow: No-op unless (featurep 'bookmark+).
+;;     icicle-(delete-file|dired|find-file(-absolute|-of-content|-in-tags-table)|recent-file|
+;;             locate(-file)|(file|directory)-list):
+;;         Updated doc string for new C-x C-t bindings.
+;; 2013/01/04 dadams
+;;     icicle-bookmark-(autofile|autonamed)-narrow:
+;;       Use icicle-transform-multi-completion, not icicle-mctized-display-candidate, like others.
 ;; 2013/01/02 dadams
 ;;     icicle-other-window-or-frame: Use 1on1-other-frame.
 ;; 2012/12/21 dadams
@@ -831,6 +839,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2013/01/05 dadams
+;;     icicle-find-file-(all|some)-tags*: protect free vars in lambdas using backquote quote comma.
+;;     icicle-(bookmark-a-file|find-file-tagged|): Updated doc string for new C-x C-t bindings.
 ;; 2012/12/31 dadams
 ;;     icicle-search-in-context-default-fn:
 ;;       Set icicle-mode-line-help instead of using icicle-show-help-in-mode-line.
@@ -3661,6 +3672,13 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2013/01/05 dadams
+;;     Added: icicle-file-all-tags-narrow, icicle-file-all-tags-regexp-narrow,
+;;            icicle-file-some-tags-narrow, icicle-file-some-tags-regexp-narrow,
+;;     icicle-(un)bind-(buffer|file)-candidate-keys: Factored.
+;;     icicle-(un)bind-file-candidate-keys: Added: *-file-(all|some)-tags(-regexp)-narrow.
+;;     icicle-remove-cand-from-lists, icicle-narrow-candidates-with-predicate:
+;;       Handle Emacs > 23.1 correctly: it no longer uses read-file-name-predicate.
 ;; 2013/01/01 dadams
 ;;     icicle-change-sort-order: completion--flush-all-sorted-completions, so Icomplete+ updates order.
 ;; 2012/12/31 dadams
