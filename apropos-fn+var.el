@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Nov 28 15:41:09 2005
 ;; Version: 
-;; Last-Updated: Fri Dec 28 09:24:00 2012 (-0800)
+;; Last-Updated: Sat Jan  5 08:40:46 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 179
+;;     Update #: 180
 ;; URL: http://www.emacswiki.org/apropos-fn+var.el
 ;; Keywords: apropos
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -538,7 +538,7 @@ If non-nil TEXT is a string that will be printed as a heading."
 
   (define-button-type 'apropos-option
       'apropos-label "Option"
-      'apropos-short-label "v"          ; Same as variable
+      'apropos-short-label "o"
       'face '(apropos-option button)
       'help-echo "mouse-2, RET: Display more help on this user option (variable)"
       'follow-link t
