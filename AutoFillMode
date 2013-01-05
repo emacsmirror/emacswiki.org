@@ -36,6 +36,15 @@ To automatically fill comments but not code in ProgrammingModes, something like 
                                 'font-lock-comment-face))))))
 
 ----
+
+The variable {{{fill-no-break-predicate}}} holds a list of functions that can be used 
+to compute when a particular point is line-breaked on.  This can be used to write modes 
+that have unusual breaking behaviour, such as Wiki types modes.
+
+[[https://github.com/nicferrier/creole-mode/blob/e3a2b15b228c9c1df7560ec390424040d69b8bb7/creole-mode.el#L70|Here's an example]]
+from a WikiCreole mode where auto-fill is useful but shouldn't affect text inside links. 
+
+----
 CategoryComments
 CategoryFilling 
 CategoryModes 
