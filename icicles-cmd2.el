@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Mon Dec 31 18:16:59 2012 (-0800)
+;; Last-Updated: Sat Jan  5 14:47:28 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 6195
+;;     Update #: 6211
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -446,14 +446,19 @@ When prompted for the file you can use `M-n' to pick up the file name
 at point, or if none then the visited file.
 The autofile bookmark created has the same name as the file.
 
-During file-name completion\\<minibuffer-local-completion-map>:
- You can use `C-x a +' or `C-x a -' to add or remove tags from the
-  current-candidate file.  You are prompted for the tags.
-  (This action requires library `Bookmark+'.)
- You can use `C-c C-d' (a la `cd') to change the `default-directory'.
- You can use `C-c +' to create a new directory.
- You can use `\\[icicle-all-candidates-list-alt-action]' to open Dired on currently matching file names.
- You can use `\\[icicle-delete-candidate-object]' to delete a candidate file or (empty) dir."
+During completion (`*' means this requires library `Bookmark+')\\<minibuffer-local-completion-map>, you
+can use the following keys:
+   C-c C-d      - change the `default-directory' (a la `cd')
+   C-c +        - create a new directory
+   \\[icicle-all-candidates-list-alt-action]          - open Dired on the currently matching file names
+   \\[icicle-delete-candidate-object]     - delete candidate file or (empty) dir
+ * C-x C-t *    - narrow to files with all of the tags you specify
+ * C-x C-t *    - narrow to files with some of the tags you specify
+ * C-x C-t % *  - narrow to files with all tags matching a regexp
+ * C-x C-t % *  - narrow to files with some tags  matching a regexp
+ * C-x a +      - add tags to current candidate
+ * C-x a -      - remove tags from current candidate
+ * C-x m        - access file bookmarks (not just autofiles)"
     (lambda (file) (bmkp-bookmark-a-file file nil nil 'MSG))
     "File to bookmark (autofile): " nil nil nil nil nil ; `read-file-name' args
     (icicle-file-bindings               ; Bindings
@@ -557,15 +562,19 @@ something to match the file name before the `C-M-j'.  E.g., type:
  `2011 C-M-j red M-SPC blue'    to match all files tagged `red' and
                                 `blue' that have `2011' in their names
 
-During completion (`*': requires library `Bookmark+')\\<minibuffer-local-completion-map>:
-
- *You can use `C-x a +' or `C-x a -' to add or remove tags from the
-   current-candidate file.  You are prompted for the tags.
- *You can use `C-x m' to access file bookmarks (not just autofiles).
-  You can use `C-c C-d' (a la `cd') to change the `default-directory'.
-  You can use `C-c +' to create a new directory.
-  You can use `\\[icicle-all-candidates-list-alt-action]' to open Dired on currently matching file names.
-  You can use `\\[icicle-delete-candidate-object]' to delete a candidate file or (empty) dir." ; Doc string
+During completion (`*' means this requires library `Bookmark+')\\<minibuffer-local-completion-map>, you
+can use the following keys:
+   C-c C-d      - change the `default-directory' (a la `cd')
+   C-c +        - create a new directory
+   \\[icicle-all-candidates-list-alt-action]          - open Dired on the currently matching file names
+   \\[icicle-delete-candidate-object]     - delete candidate file or (empty) dir
+ * C-x C-t *    - narrow to files with all of the tags you specify
+ * C-x C-t *    - narrow to files with some of the tags you specify
+ * C-x C-t % *  - narrow to files with all tags matching a regexp
+ * C-x C-t % *  - narrow to files with some tags  matching a regexp
+ * C-x a +      - add tags to current candidate
+ * C-x a -      - remove tags from current candidate
+ * C-x m        - access file bookmarks (not just autofiles)" ; Doc string
     (lambda (f) (bmkp-find-file (icicle-transform-multi-completion f) 'WILDCARDS)) ; Action function
     prompt icicle-abs-file-candidates   ; `completing-read' args
     nil nil nil 'icicle-filetags-history nil nil
@@ -693,12 +702,12 @@ at point, or if none then the visited file."
       (icicle-all-candidates-list-alt-action-fn ; `M-|'
        (lambda (files) (let ((enable-recursive-minibuffers  t))
                          (dired-other-window (cons (read-string "Dired buffer name: ") files))))))
-     ((pred                                    (lambda (ff) ; Post bindings
+     ((pred                                    `(lambda (ff) ; Post bindings
                                                  (let* ((bmk   (bmkp-get-autofile-bookmark ff))
                                                         (btgs  (and bmk  (bmkp-get-tags bmk))))
-                                                   (and btgs  (bmkp-every (lambda (tag)
-                                                                            (bmkp-has-tag-p bmk tag))
-                                                                          tags)))))
+                                                   (and btgs  (bmkp-every `(lambda (tag)
+                                                                            (bmkp-has-tag-p ',bmk tag))
+                                                                          ',tags)))))
       (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
       (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))))
     (icicle-bind-file-candidate-keys)   ; First code.
@@ -715,12 +724,12 @@ at point, or if none then the visited file."
       (icicle-all-candidates-list-alt-action-fn ; `M-|'
        (lambda (files) (let ((enable-recursive-minibuffers  t))
                          (dired-other-window (cons (read-string "Dired buffer name: ") files))))))
-     ((pred                                    (lambda (ff) ; Post bindings
+     ((pred                                    `(lambda (ff) ; Post bindings
                                                  (let* ((bmk   (bmkp-get-autofile-bookmark ff))
                                                         (btgs  (and bmk  (bmkp-get-tags bmk))))
-                                                   (and btgs  (bmkp-every (lambda (tag)
-                                                                            (bmkp-has-tag-p bmk tag))
-                                                                          tags)))))
+                                                   (and btgs  (bmkp-every `(lambda (tag)
+                                                                            (bmkp-has-tag-p ',bmk tag))
+                                                                          ',tags)))))
       (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
       (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))))
     (icicle-bind-file-candidate-keys)   ; First code.
@@ -741,9 +750,9 @@ at point, or if none then the visited file."
      ((pred                                    (lambda (ff) ; Post bindings
                                                  (let* ((bmk   (bmkp-get-autofile-bookmark ff))
                                                         (btgs  (and bmk  (bmkp-get-tags bmk))))
-                                                   (and btgs  (bmkp-every (lambda (tag)
+                                                   (and btgs  (bmkp-every `(lambda (tag)
                                                                             (string-match
-                                                                             regexp (bmkp-tag-name tag)))
+                                                                             ',regexp (bmkp-tag-name tag)))
                                                                           btgs)))))
       (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
       (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))))
@@ -763,9 +772,9 @@ at point, or if none then the visited file."
      ((pred                                    (lambda (ff) ; Post bindings
                                                  (let* ((bmk   (bmkp-get-autofile-bookmark ff))
                                                         (btgs  (and bmk  (bmkp-get-tags bmk))))
-                                                   (and btgs  (bmkp-every (lambda (tag)
+                                                   (and btgs  (bmkp-every `(lambda (tag)
                                                                             (string-match
-                                                                             regexp (bmkp-tag-name tag)))
+                                                                             ',regexp (bmkp-tag-name tag)))
                                                                           btgs)))))
       (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
       (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))))
@@ -790,12 +799,12 @@ at point, or if none then the visited file."
       (icicle-all-candidates-list-alt-action-fn ; `M-|'
        (lambda (files) (let ((enable-recursive-minibuffers  t))
                          (dired-other-window (cons (read-string "Dired buffer name: ") files))))))
-     ((pred                                    (lambda (ff) ; Post bindings
+     ((pred                                    `(lambda (ff) ; Post bindings
                                                  (let* ((bmk   (bmkp-get-autofile-bookmark ff))
                                                         (btgs  (and bmk  (bmkp-get-tags bmk))))
-                                                   (and btgs  (bmkp-some (lambda (tag)
-                                                                           (bmkp-has-tag-p bmk tag))
-                                                                         tags)))))
+                                                   (and btgs  (bmkp-some `(lambda (tag)
+                                                                           (bmkp-has-tag-p ',bmk tag))
+                                                                         ',tags)))))
       (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
       (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))))
     (icicle-bind-file-candidate-keys)   ; First code.
@@ -812,12 +821,12 @@ at point, or if none then the visited file."
       (icicle-all-candidates-list-alt-action-fn ; `M-|'
        (lambda (files) (let ((enable-recursive-minibuffers  t))
                          (dired-other-window (cons (read-string "Dired buffer name: ") files))))))
-     ((pred                                    (lambda (ff) ; Post bindings
+     ((pred                                    `(lambda (ff) ; Post bindings
                                                  (let* ((bmk   (bmkp-get-autofile-bookmark ff))
                                                         (btgs  (and bmk  (bmkp-get-tags bmk))))
-                                                   (and btgs  (bmkp-some (lambda (tag)
-                                                                           (bmkp-has-tag-p bmk tag))
-                                                                         tags)))))
+                                                   (and btgs  (bmkp-some `(lambda (tag)
+                                                                           (bmkp-has-tag-p ',bmk tag))
+                                                                         ',tags)))))
       (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
       (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))))
     (icicle-bind-file-candidate-keys)   ; First code.
@@ -838,10 +847,10 @@ at point, or if none then the visited file."
      ((pred                                    (lambda (ff) ; Post bindings
                                                  (let* ((bmk   (bmkp-get-autofile-bookmark ff))
                                                         (btgs  (and bmk  (bmkp-get-tags bmk))))
-                                                   (and btgs  (bmkp-some (lambda (tag)
-                                                                           (string-match
-                                                                            regexp (bmkp-tag-name tag)))
-                                                                         btgs)))))
+                                                   (and btgs  (bmkp-some
+                                                               `(lambda (tag)
+                                                                 (string-match ',regexp (bmkp-tag-name tag)))
+                                                               btgs)))))
       (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
       (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))))
     (icicle-bind-file-candidate-keys)   ; First code.
@@ -860,10 +869,10 @@ at point, or if none then the visited file."
      ((pred                                    (lambda (ff) ; Post bindings
                                                  (let* ((bmk   (bmkp-get-autofile-bookmark ff))
                                                         (btgs  (and bmk  (bmkp-get-tags bmk))))
-                                                   (and btgs  (bmkp-some (lambda (tag)
-                                                                           (string-match
-                                                                            regexp (bmkp-tag-name tag)))
-                                                                         btgs)))))
+                                                   (and btgs  (bmkp-some
+                                                               `(lambda (tag)
+                                                                 (string-match ',regexp (bmkp-tag-name tag)))
+                                                               btgs)))))
       (icompletep                              (and (boundp 'icomplete-mode)  icomplete-mode))
       (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred))))
     (icicle-bind-file-candidate-keys)   ; First code.
