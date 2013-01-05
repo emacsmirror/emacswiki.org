@@ -130,7 +130,6 @@ Coming soon.
 * ArtificialIntelligence
 * Autoconf
 * Automake
-* Befunge-93
 * Coreboot
 * Dragora GNU/Linux
 * DuckDuckGo
@@ -144,11 +143,13 @@ Coming soon.
 * GnuTLS
 * GnuOctave
 * GPL/GFDL
+* gzip
 * GnuGo
 * Grav-mass
-* Happy Hacking Keyboard
+* HappyHackingKeyboard
 * LaTeX
 * LambdaExpression
+* Lempel-Ziv coding (LZ77)
 * LibreJS
 * libxml
 * Linux-libre and GNU Mach
