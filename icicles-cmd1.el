@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Jan  5 14:43:23 2013 (-0800)
+;; Last-Updated: Sat Jan  5 15:25:54 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 25420
+;;     Update #: 25425
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -5491,200 +5491,198 @@ You are prompted for the FILES."
 ;;  `icicle-bookmark-url',                       `icicle-bookmark-url-other-window'
 ;;  `icicle-bookmark-w3m',                       `icicle-bookmark-w3m-other-window'
 
-(when (featurep 'bookmark+)
 ;;;###autoload (autoload 'icicle-bookmark-this-buffer "icicles")
-  (icicle-define-bookmark-command              "this-buffer") ; `C-x j , ,'
+(icicle-define-bookmark-command              "this-buffer")                               ; `C-x j , ,'
 ;;;###autoload (autoload 'icicle-bookmark-this-buffer-other-window "icicles")
-  (icicle-define-bookmark-other-window-command "this-buffer") ; `C-x 4 j , ,'
+(icicle-define-bookmark-other-window-command "this-buffer")                               ; `C-x 4 j , ,'
 ;;;###autoload (autoload 'icicle-bookmark-specific-buffers "icicles")
-  (icicle-define-bookmark-command              "specific-buffers" nil ; `C-x j = b'
-                                               (icicle-bookmarked-buffer-list))
+(icicle-define-bookmark-command              "specific-buffers" nil                       ; `C-x j = b'
+                                             (icicle-bookmarked-buffer-list))
 ;;;###autoload (autoload 'icicle-bookmark-specific-buffers-other-window "icicles")
-  (icicle-define-bookmark-other-window-command "specific-buffers" nil ; `C-x 4 j = b'
-                                               (icicle-bookmarked-buffer-list))
+(icicle-define-bookmark-other-window-command "specific-buffers" nil                       ; `C-x 4 j = b'
+                                             (icicle-bookmarked-buffer-list))
 ;;;###autoload (autoload 'icicle-bookmark-specific-files "icicles")
-  (icicle-define-bookmark-command              "specific-files" nil ; `C-x j = f'
-                                               (icicle-bookmarked-file-list))
+(icicle-define-bookmark-command              "specific-files" nil                         ; `C-x j = f'
+                                             (icicle-bookmarked-file-list))
 ;;;###autoload (autoload 'icicle-bookmark-specific-files-other-window "icicles")
-  (icicle-define-bookmark-other-window-command "specific-files" nil ; `C-x 4 j = f'
-                                               (icicle-bookmarked-file-list))
+(icicle-define-bookmark-other-window-command "specific-files" nil                         ; `C-x 4 j = f'
+                                             (icicle-bookmarked-file-list))
 ;;;###autoload (autoload 'icicle-bookmark-autofile "icicles")
-  (icicle-define-bookmark-command              "autofile") ; `C-x j a'
+(icicle-define-bookmark-command              "autofile")                                  ; `C-x j a'
 ;;;###autoload (autoload 'icicle-bookmark-autofile-other-window "icicles")
-  (icicle-define-bookmark-other-window-command "autofile") ; `C-x 4 j a'
+(icicle-define-bookmark-other-window-command "autofile")                                  ; `C-x 4 j a'
 ;;;###autoload (autoload 'icicle-bookmark-autofile-all-tags "icicles")
-  (icicle-define-bookmark-command              "autofile-all-tags" nil ; `C-x j t a *'
-                                               (bmkp-read-tags-completing nil nil current-prefix-arg))
+(icicle-define-bookmark-command              "autofile-all-tags" nil                      ; `C-x j t a *'
+                                             (bmkp-read-tags-completing nil nil current-prefix-arg))
 ;;;###autoload (autoload 'icicle-bookmark-autofile-all-tags-other-window "icicles")
-  (icicle-define-bookmark-other-window-command "autofile-all-tags" nil ; `C-x 4 j t a *'
-                                               (bmkp-read-tags-completing nil nil current-prefix-arg))
+(icicle-define-bookmark-other-window-command "autofile-all-tags" nil                      ; `C-x 4 j t a *'
+                                             (bmkp-read-tags-completing nil nil current-prefix-arg))
 ;;;###autoload (autoload 'icicle-bookmark-autofile-all-tags-regexp "icicles")
-  (icicle-define-bookmark-command              "autofile-all-tags-regexp" nil ; `C-x j t a % *'
-                                               (bmkp-read-tags-completing nil nil current-prefix-arg))
+(icicle-define-bookmark-command              "autofile-all-tags-regexp" nil               ; `C-x j t a % *'
+                                             (bmkp-read-tags-completing nil nil current-prefix-arg))
 ;;;###autoload (autoload 'icicle-bookmark-autofile-all-tags-regexp-other-window "icicles")
-  (icicle-define-bookmark-other-window-command "autofile-all-tags-regexp" nil ; `C-x 4 j t a % *'
-                                               (bmkp-read-tags-completing nil nil current-prefix-arg))
+(icicle-define-bookmark-other-window-command "autofile-all-tags-regexp" nil               ; `C-x 4 j t a % *'
+                                             (bmkp-read-tags-completing nil nil current-prefix-arg))
 ;;;###autoload (autoload 'icicle-bookmark-autofile-some-tags "icicles")
-  (icicle-define-bookmark-command              "autofile-some-tags" nil ; `C-x j t a +'
-                                               (bmkp-read-tags-completing nil nil current-prefix-arg))
+(icicle-define-bookmark-command              "autofile-some-tags" nil                     ; `C-x j t a +'
+                                             (bmkp-read-tags-completing nil nil current-prefix-arg))
 ;;;###autoload (autoload 'icicle-bookmark-autofile-some-tags-other-window "icicles")
-  (icicle-define-bookmark-other-window-command "autofile-some-tags" nil ; `C-x 4 j t a +'
-                                               (bmkp-read-tags-completing nil nil current-prefix-arg))
+(icicle-define-bookmark-other-window-command "autofile-some-tags" nil                     ; `C-x 4 j t a +'
+                                             (bmkp-read-tags-completing nil nil current-prefix-arg))
 ;;;###autoload (autoload 'icicle-bookmark-autofile-some-tags-regexp "icicles")
-  (icicle-define-bookmark-command              "autofile-some-tags-regexp" nil ; `C-x j t a % +'
-                                               (bmkp-read-tags-completing nil nil current-prefix-arg))
+(icicle-define-bookmark-command              "autofile-some-tags-regexp" nil              ; `C-x j t a % +'
+                                             (bmkp-read-tags-completing nil nil current-prefix-arg))
 ;;;###autoload (autoload 'icicle-bookmark-autofile-some-tags-regexp-other-window "icicles")
-  (icicle-define-bookmark-other-window-command "autofile-some-tags-regexp" nil ; `C-x 4 j t a % +'
-                                               (bmkp-read-tags-completing nil nil current-prefix-arg))
+(icicle-define-bookmark-other-window-command "autofile-some-tags-regexp" nil              ; `C-x 4 j t a % +'
+                                             (bmkp-read-tags-completing nil nil current-prefix-arg))
 ;;;###autoload (autoload 'icicle-bookmark-autonamed "icicles")
-  (icicle-define-bookmark-command              "autonamed") ; `C-x j #'
+(icicle-define-bookmark-command              "autonamed")                                 ; `C-x j #'
 ;;;###autoload (autoload 'icicle-bookmark-autonamed-other-window "icicles")
-  (icicle-define-bookmark-other-window-command "autonamed") ; `C-x 4 j # #'
+(icicle-define-bookmark-other-window-command "autonamed")                                 ; `C-x 4 j # #'
 ;;;###autoload (autoload 'icicle-bookmark-autonamed-this-buffer "icicles")
-  (icicle-define-bookmark-command              "autonamed-this-buffer") ; `C-x j , #'
+(icicle-define-bookmark-command              "autonamed-this-buffer")                     ; `C-x j , #'
 ;;;###autoload (autoload 'icicle-bookmark-autonamed-this-buffer-other-window "icicles")
-  (icicle-define-bookmark-other-window-command "autonamed-this-buffer") ; `C-x 4 j # .'
+(icicle-define-bookmark-other-window-command "autonamed-this-buffer")                     ; `C-x 4 j # .'
 ;;;###autoload (autoload 'icicle-bookmark-non-file "icicles")
-  (icicle-define-bookmark-command              "non-file") ; `C-x j b'
+(icicle-define-bookmark-command              "non-file")                                  ; `C-x j b'
 ;;;###autoload (autoload 'icicle-bookmark-non-file-other-window "icicles")
-  (icicle-define-bookmark-other-window-command "non-file") ; `C-x 4 j b'
+(icicle-define-bookmark-other-window-command "non-file")                                  ; `C-x 4 j b'
 
-  ;; Other-window means nothing for a bookmark list.
+;; Other-window means nothing for a bookmark list.
 ;;;###autoload (autoload 'icicle-bookmark-bookmark-list "icicles")
-  (icicle-define-bookmark-command              "bookmark-list") ; `C-x j B'
+(icicle-define-bookmark-command              "bookmark-list")                             ; `C-x j B'
 ;;;###autoload (autoload 'icicle-bookmark-dired "icicles")
-  (icicle-define-bookmark-command              "dired") ; `C-x j d'
+(icicle-define-bookmark-command              "dired")                                     ; `C-x j d'
 ;;;###autoload (autoload 'icicle-bookmark-dired-other-window "icicles")
-  (icicle-define-bookmark-other-window-command "dired") ; `C-x 4 j d'
+(icicle-define-bookmark-other-window-command "dired")                                     ; `C-x 4 j d'
 ;;;###autoload (autoload 'icicle-bookmark-file "icicles")
-  (icicle-define-bookmark-command              "file") ; `C-x j f'
+(icicle-define-bookmark-command              "file")                                      ; `C-x j f'
 ;;;###autoload (autoload 'icicle-bookmark-file-other-window "icicles")
-  (icicle-define-bookmark-other-window-command "file") ; `C-x 4 j f'
+(icicle-define-bookmark-other-window-command "file")                                      ; `C-x 4 j f'
 ;;;###autoload (autoload 'icicle-bookmark-file-this-dir "icicles")
-  (icicle-define-bookmark-command              "file-this-dir") ; `C-x j . f'
+(icicle-define-bookmark-command              "file-this-dir")                             ; `C-x j . f'
 ;;;###autoload (autoload 'icicle-bookmark-file-this-dir-other-window "icicles")
-  (icicle-define-bookmark-other-window-command "file-this-dir") ; `C-x 4 j . f'
+(icicle-define-bookmark-other-window-command "file-this-dir")                             ; `C-x 4 j . f'
 ;;;###autoload (autoload 'icicle-bookmark-gnus "icicles")
-  (icicle-define-bookmark-command              "gnus") ; `C-x j g'
+(icicle-define-bookmark-command              "gnus")                                      ; `C-x j g'
 ;;;###autoload (autoload 'icicle-bookmark-gnus-other-window "icicles")
-  (icicle-define-bookmark-other-window-command "gnus") ; `C-x 4 j g'
+(icicle-define-bookmark-other-window-command "gnus")                                      ; `C-x 4 j g'
 ;;;###autoload (autoload 'icicle-bookmark-image "icicles")
-  (icicle-define-bookmark-command              "image") ; `C-x j M-i'
+(icicle-define-bookmark-command              "image")                                     ; `C-x j M-i'
 ;;;###autoload (autoload 'icicle-bookmark-image-other-window "icicles")
-  (icicle-define-bookmark-other-window-command "image") ; `C-x 4 j M-i'
+(icicle-define-bookmark-other-window-command "image")                                     ; `C-x 4 j M-i'
 ;;;###autoload (autoload 'icicle-bookmark-info "icicles")
-  (icicle-define-bookmark-command              "info") ; `C-x j i'
+(icicle-define-bookmark-command              "info")                                      ; `C-x j i'
 ;;;###autoload (autoload 'icicle-bookmark-info-other-window "icicles")
-  (icicle-define-bookmark-other-window-command "info") ; `C-x 4 j i'
+(icicle-define-bookmark-other-window-command "info")                                      ; `C-x 4 j i'
 
-  ;; Other-window means nothing for a desktop.
+;; Other-window means nothing for a desktop.
 ;;;###autoload (autoload 'icicle-bookmark-desktop "icicles")
-  (icicle-define-bookmark-command              "desktop") ; `C-x j K'
+(icicle-define-bookmark-command              "desktop")                                   ; `C-x j K'
 ;;;###autoload (autoload 'icicle-bookmark-local-file "icicles")
-  (icicle-define-bookmark-command              "local-file") ; `C-x j l'
+(icicle-define-bookmark-command              "local-file")                                ; `C-x j l'
 ;;;###autoload (autoload 'icicle-bookmark-local-file-other-window "icicles")
-  (icicle-define-bookmark-other-window-command "local-file") ; `C-x 4 j l'
+(icicle-define-bookmark-other-window-command "local-file")                                ; `C-x 4 j l'
 ;;;###autoload (autoload 'icicle-bookmark-man "icicles")
-  (icicle-define-bookmark-command              "man") ; `C-x j m'
+(icicle-define-bookmark-command              "man") ; `C-x j m'
 ;;;###autoload (autoload 'icicle-bookmark-man-other-window "icicles")
-  (icicle-define-bookmark-other-window-command "man") ; `C-x 4 j m'
+(icicle-define-bookmark-other-window-command "man")                                       ; `C-x 4 j m'
 ;;;###autoload (autoload 'icicle-bookmark-remote-file "icicles")
-  (icicle-define-bookmark-command              "remote-file") ; `C-x j n'
+(icicle-define-bookmark-command              "remote-file")                               ; `C-x j n'
 ;;;###autoload (autoload 'icicle-bookmark-remote-file-other-window "icicles")
-  (icicle-define-bookmark-other-window-command "remote-file") ; `C-x 4 j n'
+(icicle-define-bookmark-other-window-command "remote-file")                               ; `C-x 4 j n'
 ;;;###autoload (autoload 'icicle-bookmark-region "icicles")
-  (icicle-define-bookmark-command              "region" "Select region: ") ; `C-x j r'
+(icicle-define-bookmark-command              "region" "Select region: ")                  ; `C-x j r'
 ;;;###autoload (autoload 'icicle-bookmark-region-other-window "icicles")
-  (icicle-define-bookmark-other-window-command "region" "Select region: ") ; `C-x 4 j r'
+(icicle-define-bookmark-other-window-command "region" "Select region: ")                  ; `C-x 4 j r'
 ;;;###autoload (autoload 'icicle-bookmark-all-tags "icicles")
-  (icicle-define-bookmark-command              "all-tags" nil ; `C-x j t *'
-                                               (bmkp-read-tags-completing nil nil current-prefix-arg))
+(icicle-define-bookmark-command              "all-tags" nil                               ; `C-x j t *'
+                                             (bmkp-read-tags-completing nil nil current-prefix-arg))
 ;;;###autoload (autoload 'icicle-bookmark-all-tags-other-window "icicles")
-  (icicle-define-bookmark-other-window-command "all-tags" nil ; `C-x 4 j t *'
-                                               (bmkp-read-tags-completing nil nil current-prefix-arg))
+(icicle-define-bookmark-other-window-command "all-tags" nil                               ; `C-x 4 j t *'
+                                             (bmkp-read-tags-completing nil nil current-prefix-arg))
 ;;;###autoload (autoload 'icicle-bookmark-some-tags "icicles")
-  (icicle-define-bookmark-command              "some-tags" nil ; `C-x j t +'
-                                               (bmkp-read-tags-completing nil nil current-prefix-arg))
+(icicle-define-bookmark-command              "some-tags" nil                              ; `C-x j t +'
+                                             (bmkp-read-tags-completing nil nil current-prefix-arg))
 ;;;###autoload (autoload 'icicle-bookmark-some-tags-other-window "icicles")
-  (icicle-define-bookmark-other-window-command "some-tags" nil ; `C-x 4 j t +'
-                                               (bmkp-read-tags-completing nil nil current-prefix-arg))
+(icicle-define-bookmark-other-window-command "some-tags" nil                              ; `C-x 4 j t +'
+                                             (bmkp-read-tags-completing nil nil current-prefix-arg))
 ;;;###autoload (autoload 'icicle-bookmark-all-tags-regexp "icicles")
-  (icicle-define-bookmark-command              "all-tags-regexp" nil ; `C-x j t % *'
-                                               (read-string "Regexp for tags: "))
+(icicle-define-bookmark-command              "all-tags-regexp" nil                        ; `C-x j t % *'
+                                             (read-string "Regexp for tags: "))
 ;;;###autoload (autoload 'icicle-bookmark-all-tags-regexp-other-window "icicles")
-  (icicle-define-bookmark-other-window-command "all-tags-regexp" nil ; `C-x 4 j t % *'
-                                               (read-string "Regexp for tags: "))
+(icicle-define-bookmark-other-window-command "all-tags-regexp" nil                        ; `C-x 4 j t % *'
+                                             (read-string "Regexp for tags: "))
 ;;;###autoload (autoload 'icicle-bookmark-some-tags-regexp "icicles")
-  (icicle-define-bookmark-command              "some-tags-regexp" nil ; `C-x j t % +'
-                                               (read-string "Regexp for tags: "))
+(icicle-define-bookmark-command              "some-tags-regexp" nil                       ; `C-x j t % +'
+                                             (read-string "Regexp for tags: "))
 ;;;###autoload (autoload 'icicle-bookmark-some-tags-regexp-other-window "icicles")
-  (icicle-define-bookmark-other-window-command "some-tags-regexp" nil ; `C-x 4 j t % +'
-                                               (read-string "Regexp for tags: "))
+(icicle-define-bookmark-other-window-command "some-tags-regexp" nil                       ; `C-x 4 j t % +'
+                                             (read-string "Regexp for tags: "))
 ;;;###autoload (autoload 'icicle-bookmark-file-all-tags "icicles")
-  (icicle-define-bookmark-command              "file-all-tags" nil ; `C-x j t f *'
-                                               (bmkp-read-tags-completing nil nil current-prefix-arg))
+(icicle-define-bookmark-command              "file-all-tags" nil                          ; `C-x j t f *'
+                                             (bmkp-read-tags-completing nil nil current-prefix-arg))
 ;;;###autoload (autoload 'icicle-bookmark-file-all-tags-other-window "icicles")
-  (icicle-define-bookmark-other-window-command "file-all-tags" nil ; `C-x 4 j t f *'
-                                               (bmkp-read-tags-completing nil nil current-prefix-arg))
+(icicle-define-bookmark-other-window-command "file-all-tags" nil                          ; `C-x 4 j t f *'
+                                             (bmkp-read-tags-completing nil nil current-prefix-arg))
 ;;;###autoload (autoload 'icicle-bookmark-file-some-tags "icicles")
-  (icicle-define-bookmark-command              "file-some-tags" nil ; `C-x j t f +'
-                                               (bmkp-read-tags-completing nil nil current-prefix-arg))
+(icicle-define-bookmark-command              "file-some-tags" nil                         ; `C-x j t f +'
+                                             (bmkp-read-tags-completing nil nil current-prefix-arg))
 ;;;###autoload (autoload 'icicle-bookmark-file-some-tags-other-window "icicles")
-  (icicle-define-bookmark-other-window-command "file-some-tags" nil ; `C-x 4 j t f +'
-                                               (bmkp-read-tags-completing nil nil current-prefix-arg))
+(icicle-define-bookmark-other-window-command "file-some-tags" nil                         ; `C-x 4 j t f +'
+                                             (bmkp-read-tags-completing nil nil current-prefix-arg))
 ;;;###autoload (autoload 'icicle-bookmark-file-all-tags-regexp "icicles")
-  (icicle-define-bookmark-command              "file-all-tags-regexp" nil ; `C-x j t f % *'
-                                               (read-string "Regexp for tags: "))
+(icicle-define-bookmark-command              "file-all-tags-regexp" nil                   ; `C-x j t f % *'
+                                             (read-string "Regexp for tags: "))
 ;;;###autoload (autoload 'icicle-bookmark-file-all-tags-regexp-other-window "icicles")
-  (icicle-define-bookmark-other-window-command "file-all-tags-regexp" nil ; `C-x 4 j t f % *'
-                                               (read-string "Regexp for tags: "))
+(icicle-define-bookmark-other-window-command "file-all-tags-regexp" nil                   ; `C-x 4 j t f % *'
+                                             (read-string "Regexp for tags: "))
 ;;;###autoload (autoload 'icicle-bookmark-file-some-tags-regexp "icicles")
-  (icicle-define-bookmark-command              "file-some-tags-regexp" nil ; `C-x j t f % +'
-                                               (read-string "Regexp for tags: "))
+(icicle-define-bookmark-command              "file-some-tags-regexp" nil                  ; `C-x j t f % +'
+                                             (read-string "Regexp for tags: "))
 ;;;###autoload (autoload 'icicle-bookmark-file-some-tags-regexp-other-window "icicles")
-  (icicle-define-bookmark-other-window-command "file-some-tags-regexp" nil ; `C-x 4 j t f % +'
-                                               (read-string "Regexp for tags: "))
+(icicle-define-bookmark-other-window-command "file-some-tags-regexp" nil                  ; `C-x 4 j t f % +'
+                                             (read-string "Regexp for tags: "))
 ;;;###autoload (autoload 'icicle-bookmark-file-this-dir-all-tags "icicles")
-  (icicle-define-bookmark-command              "file-this-dir-all-tags" nil ; `C-x j t . f *'
-                                               (bmkp-read-tags-completing nil nil current-prefix-arg))
+(icicle-define-bookmark-command              "file-this-dir-all-tags" nil                 ; `C-x j t . f *'
+                                             (bmkp-read-tags-completing nil nil current-prefix-arg))
 ;;;###autoload (autoload 'icicle-bookmark-file-this-dir-all-tags-other-window "icicles")
-  (icicle-define-bookmark-other-window-command "file-this-dir-all-tags" nil ; `C-x 4 j t . f *'
-                                               (bmkp-read-tags-completing nil nil current-prefix-arg))
+(icicle-define-bookmark-other-window-command "file-this-dir-all-tags" nil                 ; `C-x 4 j t . f *'
+                                             (bmkp-read-tags-completing nil nil current-prefix-arg))
 ;;;###autoload (autoload 'icicle-bookmark-file-this-dir-some-tags "icicles")
-  (icicle-define-bookmark-command              "file-this-dir-some-tags" nil ; `C-x j t . f +'
-                                               (bmkp-read-tags-completing nil nil current-prefix-arg))
+(icicle-define-bookmark-command              "file-this-dir-some-tags" nil                ; `C-x j t . f +'
+                                             (bmkp-read-tags-completing nil nil current-prefix-arg))
 ;;;###autoload (autoload 'icicle-bookmark-file-this-dir-some-tags-other-window "icicles")
-  (icicle-define-bookmark-other-window-command "file-this-dir-some-tags" nil ; `C-x 4 j t . f +'
-                                               (bmkp-read-tags-completing nil nil current-prefix-arg))
+(icicle-define-bookmark-other-window-command "file-this-dir-some-tags" nil                ; `C-x 4 j t . f +'
+                                             (bmkp-read-tags-completing nil nil current-prefix-arg))
 ;;;###autoload (autoload 'icicle-bookmark-file-this-dir-all-tags-regexp "icicles")
-  (icicle-define-bookmark-command              "file-this-dir-all-tags-regexp" nil ; `C-x j t . f % *'
-                                               (read-string "Regexp for tags: "))
+(icicle-define-bookmark-command              "file-this-dir-all-tags-regexp" nil          ; `C-x j t . f % *'
+                                             (read-string "Regexp for tags: "))
 ;;;###autoload (autoload 'icicle-bookmark-file-this-dir-all-tags-regexp-other-window "icicles")
-  (icicle-define-bookmark-other-window-command "file-this-dir-all-tags-regexp" nil ; `C-x 4 j t . f % *'
-                                               (read-string "Regexp for tags: "))
+(icicle-define-bookmark-other-window-command "file-this-dir-all-tags-regexp" nil          ; `C-x 4 j t . f % *'
+                                             (read-string "Regexp for tags: "))
 ;;;###autoload (autoload 'icicle-bookmark-file-this-dir-some-tags-regexp "icicles")
-  (icicle-define-bookmark-command              "file-this-dir-some-tags-regexp" nil ; `C-x j t . f % +'
-                                               (read-string "Regexp for tags: "))
+(icicle-define-bookmark-command              "file-this-dir-some-tags-regexp" nil         ; `C-x j t . f % +'
+                                             (read-string "Regexp for tags: "))
 ;;;###autoload (autoload 'icicle-bookmark-file-this-dir-some-tags-regexp-other-window "icicles")
-  (icicle-define-bookmark-other-window-command "file-this-dir-some-tags-regexp" nil ; `C-x 4 j t . f % +'
-                                               (read-string "Regexp for tags: "))
+(icicle-define-bookmark-other-window-command "file-this-dir-some-tags-regexp" nil         ; `C-x 4 j t . f % +'
+                                             (read-string "Regexp for tags: "))
 ;;;###autoload (autoload 'icicle-bookmark-url "icicles")
-  (icicle-define-bookmark-command              "url") ; `C-x j u'
+(icicle-define-bookmark-command              "url")                                       ; `C-x j u'
 ;;;###autoload (autoload 'icicle-bookmark-url-other-window "icicles")
-  (icicle-define-bookmark-other-window-command "url") ; `C-x 4 j u'
+(icicle-define-bookmark-other-window-command "url")                                       ; `C-x 4 j u'
 ;;;###autoload (autoload 'icicle-bookmark-w3m "icicles")
-  (icicle-define-bookmark-command              "w3m") ; `C-x j w'
+(icicle-define-bookmark-command              "w3m")                                       ; `C-x j w'
 ;;;###autoload (autoload 'icicle-bookmark-w3m-other-window "icicles")
-  (icicle-define-bookmark-other-window-command "w3m") ; `C-x 4 j w'
+(icicle-define-bookmark-other-window-command "w3m")                                       ; `C-x 4 j w'
 ;;;###autoload (autoload 'icicle-bookmark-temporary "icicles")
-  (icicle-define-bookmark-command              "temporary") ; `C-x j x'
+(icicle-define-bookmark-command              "temporary")                                 ; `C-x j x'
 ;;;###autoload (autoload 'icicle-bookmark-temporary-other-window "icicles")
-  (icicle-define-bookmark-other-window-command "temporary") ; `C-x 4 j x'
+(icicle-define-bookmark-other-window-command "temporary")                                 ; `C-x 4 j x'
 
-  ;; Other-window means nothing for a bookmark file.
+;; Other-window means nothing for a bookmark file.
 ;;;###autoload (autoload 'icicle-bookmark-bookmark-file "icicles")
-  (icicle-define-bookmark-command              "bookmark-file") ; `C-x j y'
-  )
+(icicle-define-bookmark-command              "bookmark-file")                             ; `C-x j y'
 
 ;;;###autoload (autoload 'icicle-select-bookmarked-region "icicles")
 (defalias 'icicle-select-bookmarked-region 'icicle-bookmark-region-other-window)
