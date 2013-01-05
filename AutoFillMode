@@ -37,7 +37,7 @@ To automatically fill comments but not code in ProgrammingModes, something like 
 
 ----
 
-The variable {{{fill-no-break-predicate}}} holds a list of functions that can be used 
+The variable ##fill-no-break-predicate## holds a list of functions that can be used 
 to compute when a particular point is line-breaked on.  This can be used to write modes 
 that have unusual breaking behaviour, such as Wiki types modes.
 
