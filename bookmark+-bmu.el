@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Fri Dec 28 09:29:23 2012 (-0800)
+;; Last-Updated: Fri Jan  4 16:09:48 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 2374
+;;     Update #: 2379
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -3163,7 +3163,7 @@ you left off."
   "Display (only) the bookmarks that have tags."
   (interactive)
   (bmkp-bmenu-barf-if-not-in-menu-list)
-  (setq bmkp-bmenu-filter-function  'bmkp-some-tags-alist-only
+  (setq bmkp-bmenu-filter-function (lambda () (bmkp-remove-if-not #'bmkp-get-tags bookmark-alist))
         bmkp-bmenu-title            "Tagged Bookmarks")
   (let ((bookmark-alist  (funcall bmkp-bmenu-filter-function)))
     (setq bmkp-latest-bookmark-alist  bookmark-alist)
