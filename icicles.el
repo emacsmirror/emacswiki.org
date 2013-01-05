@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Mon Dec 31 18:21:10 2012 (-0800)
+;; Last-Updated: Sat Jan  5 14:00:56 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 23278
+;;     Update #: 23279
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -512,8 +512,12 @@
 ;;    `icicle-doremi-zoom-Completions+', `icicle-end-of-line+',
 ;;    `icicle-erase-minibuffer',
 ;;    `icicle-erase-minibuffer-or-history-element',
-;;    `icicle-exit-minibuffer', `icicle-forward-char-magic',
-;;    `icicle-goto/kill-failed-input', `icicle-help-on-candidate',
+;;    `icicle-exit-minibuffer', `icicle-file-all-tags-narrow',
+;;    `icicle-file-all-tags-regexp-narrow',
+;;    `icicle-file-some-tags-narrow',
+;;    `icicle-file-some-tags-regexp-narrow',
+;;    `icicle-forward-char-magic', `icicle-goto/kill-failed-input',
+;;    `icicle-help-on-candidate',
 ;;    `icicle-help-on-next-apropos-candidate',
 ;;    `icicle-help-on-next-prefix-candidate',
 ;;    `icicle-help-on-previous-apropos-candidate',
