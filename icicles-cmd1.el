@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Jan  4 15:31:29 2013 (-0800)
+;; Last-Updated: Sat Jan  5 14:43:23 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 25368
+;;     Update #: 25420
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -4919,12 +4919,10 @@ position is highlighted."               ; Doc string
     ;;            ICICLE-SHOW-MULTI-COMPLETION-FLAG.
     (lambda (cand)
       (when (and (featurep 'bookmark+)  icicle-show-multi-completion-flag)
-        (setq cand  (funcall icicle-get-alist-candidate-function cand))
-        (setq cand  (cons (caar cand) (cdr cand))))
+        (setq cand  (funcall icicle-get-alist-candidate-function cand)
+              cand  (cons (caar cand) (cdr cand))))
       (if (featurep 'bookmark+)
-          (if current-prefix-arg
-              (bmkp-describe-bookmark-internals cand)
-            (bmkp-describe-bookmark cand))
+          (if current-prefix-arg (bmkp-describe-bookmark-internals cand) (bmkp-describe-bookmark cand))
         (icicle-msg-maybe-in-minibuffer (icicle-bookmark-help-string cand)))))
    (icicle-candidates-alist
     (if (not (featurep 'bookmark+))
@@ -5256,124 +5254,141 @@ Remove crosshairs highlighting and unbind filtering keys."
 (defun icicle-bookmark-autofile-narrow () ; Bound to `C-x j a' in minibuffer for completion.
   "Narrow the bookmark candidates to autofile bookmarks."
   (interactive)
-  (icicle-narrow-candidates-with-predicate
-   (lambda (x) (bmkp-autofile-bookmark-p (icicle-transform-multi-completion (car x))))))
+  (when (featurep 'bookmark+)
+    (icicle-narrow-candidates-with-predicate
+     (lambda (x) (bmkp-autofile-bookmark-p (icicle-transform-multi-completion (car x)))))))
 
 ;;;###autoload (autoload 'icicle-bookmark-autonamed-narrow "icicles")
 (defun icicle-bookmark-autonamed-narrow () ; Bound to `C-x j #' in minibuffer for completion.
   "Narrow the bookmark candidates to autonamed bookmarks."
   (interactive)
-  (icicle-narrow-candidates-with-predicate
-   (lambda (x)
-     (bmkp-autonamed-bookmark-p (icicle-transform-multi-completion (car x))))))
+  (when (featurep 'bookmark+)
+    (icicle-narrow-candidates-with-predicate
+     (lambda (x)
+       (bmkp-autonamed-bookmark-p (icicle-transform-multi-completion (car x)))))))
 
 ;;;###autoload (autoload 'icicle-bookmark-autonamed-this-buffer-narrow "icicles")
 (defun icicle-bookmark-autonamed-this-buffer-narrow ()
                                         ; Bound to `C-x j , #' in minibuffer for completion.
   "Narrow bookmark candidates to autonamed bookmarks in current buffer."
   (interactive)
-  (icicle-narrow-candidates-with-predicate
-   (lambda (x)                          ; FREE here: ICICLE-ORIG-BUFF.
-     (with-current-buffer icicle-orig-buff
-       (bmkp-autonamed-this-buffer-bookmark-p (icicle-transform-multi-completion (car x)))))))
+  (when (featurep 'bookmark+)
+    (icicle-narrow-candidates-with-predicate
+     (lambda (x)                          ; FREE here: ICICLE-ORIG-BUFF.
+       (with-current-buffer icicle-orig-buff
+         (bmkp-autonamed-this-buffer-bookmark-p (icicle-transform-multi-completion (car x))))))))
 
 ;;;###autoload (autoload 'icicle-bookmark-bookmark-file-narrow "icicles")
 (defun icicle-bookmark-bookmark-file-narrow () ; Bound to `C-x j y' in minibuffer for completion.
   "Narrow the bookmark candidates to bookmark-file bookmarks."
   (interactive)
-  (icicle-narrow-candidates-with-predicate
-   (lambda (x) (bmkp-bookmark-file-bookmark-p (icicle-transform-multi-completion (car x))))))
+  (when (featurep 'bookmark+)
+    (icicle-narrow-candidates-with-predicate
+     (lambda (x) (bmkp-bookmark-file-bookmark-p (icicle-transform-multi-completion (car x)))))))
 
 ;;;###autoload (autoload 'icicle-bookmark-bookmark-list-narrow "icicles")
 (defun icicle-bookmark-bookmark-list-narrow () ; Bound to `C-x j B' in minibuffer for completion.
   "Narrow the bookmark candidates to bookmark-list bookmarks."
   (interactive)
-  (icicle-narrow-candidates-with-predicate
-   (lambda (x) (bmkp-bookmark-list-bookmark-p (icicle-transform-multi-completion (car x))))))
+  (when (featurep 'bookmark+)
+    (icicle-narrow-candidates-with-predicate
+     (lambda (x) (bmkp-bookmark-list-bookmark-p (icicle-transform-multi-completion (car x)))))))
 
 ;;;###autoload (autoload 'icicle-bookmark-desktop-narrow "icicles")
 (defun icicle-bookmark-desktop-narrow ()   ; Bound to `C-x j K' in minibuffer for bookmark completion.
   "Narrow the bookmark candidates to desktop bookmarks."
   (interactive)
-  (icicle-narrow-candidates-with-predicate
-   (lambda (x) (bmkp-desktop-bookmark-p (icicle-transform-multi-completion (car x))))))
+  (when (featurep 'bookmark+)
+    (icicle-narrow-candidates-with-predicate
+     (lambda (x) (bmkp-desktop-bookmark-p (icicle-transform-multi-completion (car x)))))))
 
 ;;;###autoload (autoload 'icicle-bookmark-dired-narrow "icicles")
 (defun icicle-bookmark-dired-narrow ()   ; Bound to `C-x j d' in minibuffer for bookmark completion.
   "Narrow the bookmark candidates to Dired bookmarks."
   (interactive)
-  (icicle-narrow-candidates-with-predicate
-   (lambda (x) (bmkp-dired-bookmark-p (icicle-transform-multi-completion (car x))))))
+  (when (featurep 'bookmark+)
+    (icicle-narrow-candidates-with-predicate
+     (lambda (x) (bmkp-dired-bookmark-p (icicle-transform-multi-completion (car x)))))))
 
 ;;;###autoload (autoload 'icicle-bookmark-file-narrow "icicles")
 (defun icicle-bookmark-file-narrow ()   ; Bound to `C-x j f' in minibuffer for bookmark completion.
   "Narrow the bookmark candidates to file bookmarks."
   (interactive)
-  (icicle-narrow-candidates-with-predicate
-   (lambda (x) (bmkp-file-bookmark-p (icicle-transform-multi-completion (car x))))))
+  (when (featurep 'bookmark+)
+    (icicle-narrow-candidates-with-predicate
+     (lambda (x) (bmkp-file-bookmark-p (icicle-transform-multi-completion (car x)))))))
 
 ;;;###autoload (autoload 'icicle-bookmark-file-this-dir-narrow "icicles")
 (defun icicle-bookmark-file-this-dir-narrow () ; Bound to `C-x j . f' in minibuffer for completion.
   "Narrow the bookmark candidates to bookmarked files in `default-directory'."
   (interactive)
-  (icicle-narrow-candidates-with-predicate
-   (lambda (x) (bmkp-file-this-dir-bookmark-p (icicle-transform-multi-completion (car x))))))
+  (when (featurep 'bookmark+)
+    (icicle-narrow-candidates-with-predicate
+     (lambda (x) (bmkp-file-this-dir-bookmark-p (icicle-transform-multi-completion (car x)))))))
 
 ;;;###autoload (autoload 'icicle-bookmark-gnus-narrow "icicles")
 (defun icicle-bookmark-gnus-narrow ()   ; Bound to `C-x j g' in minibuffer for bookmark completion.
   "Narrow the bookmark candidates to Gnus bookmarks."
   (interactive)
-  (icicle-narrow-candidates-with-predicate
-   (lambda (x) (bmkp-gnus-bookmark-p (icicle-transform-multi-completion (car x))))))
+  (when (featurep 'bookmark+)
+    (icicle-narrow-candidates-with-predicate
+     (lambda (x) (bmkp-gnus-bookmark-p (icicle-transform-multi-completion (car x)))))))
 
 ;;;###autoload (autoload 'icicle-bookmark-image-narrow "icicles")
 (defun icicle-bookmark-image-narrow ()   ; Bound to `C-x j M-i' in minibuffer for bookmark completion.
   "Narrow the bookmark candidates to image bookmarks."
   (interactive)
-  (icicle-narrow-candidates-with-predicate
-   (lambda (x) (bmkp-image-bookmark-p (icicle-transform-multi-completion (car x))))))
+  (when (featurep 'bookmark+)
+    (icicle-narrow-candidates-with-predicate
+     (lambda (x) (bmkp-image-bookmark-p (icicle-transform-multi-completion (car x)))))))
 
 ;;;###autoload (autoload 'icicle-bookmark-info-narrow "icicles")
 (defun icicle-bookmark-info-narrow ()   ; Bound to `C-x j i' in minibuffer for bookmark completion.
   "Narrow the bookmark candidates to Info bookmarks."
   (interactive)
-  (icicle-narrow-candidates-with-predicate
-   (lambda (x) (bmkp-info-bookmark-p (icicle-transform-multi-completion (car x))))))
+  (when (featurep 'bookmark+)
+    (icicle-narrow-candidates-with-predicate
+     (lambda (x) (bmkp-info-bookmark-p (icicle-transform-multi-completion (car x)))))))
 
 ;;;###autoload (autoload 'icicle-bookmark-local-file-narrow "icicles")
 (defun icicle-bookmark-local-file-narrow () ; Bound to `C-x j l' for bookmark completion.
   "Narrow the bookmark candidates to local-file bookmarks."
   (interactive)
-  (icicle-narrow-candidates-with-predicate
-   (lambda (x) (bmkp-local-file-bookmark-p (icicle-transform-multi-completion (car x))))))
+  (when (featurep 'bookmark+)
+    (icicle-narrow-candidates-with-predicate
+     (lambda (x) (bmkp-local-file-bookmark-p (icicle-transform-multi-completion (car x)))))))
 
 ;;;###autoload (autoload 'icicle-bookmark-man-narrow "icicles")
 (defun icicle-bookmark-man-narrow () ; Bound to `C-x j m' in minibuffer for bookmark completion.
   "Narrow the bookmark candidates to `man'-page bookmarks."
   (interactive)
-  (icicle-narrow-candidates-with-predicate
-   (lambda (x) (bmkp-man-bookmark-p (icicle-transform-multi-completion (car x))))))
+  (when (featurep 'bookmark+)
+    (icicle-narrow-candidates-with-predicate
+     (lambda (x) (bmkp-man-bookmark-p (icicle-transform-multi-completion (car x)))))))
 
 ;;;###autoload (autoload 'icicle-bookmark-non-file-narrow "icicles")
 (defun icicle-bookmark-non-file-narrow () ; Bound to `C-x j b' in minibuffer for bookmark completion.
   "Narrow the bookmark candidates to non-file (buffer-only) bookmarks."
   (interactive)
-  (icicle-narrow-candidates-with-predicate
-   (lambda (x) (bmkp-non-file-bookmark-p (icicle-transform-multi-completion (car x))))))
+  (when (featurep 'bookmark+)
+    (icicle-narrow-candidates-with-predicate
+     (lambda (x) (bmkp-non-file-bookmark-p (icicle-transform-multi-completion (car x)))))))
 
 ;;;###autoload (autoload 'icicle-bookmark-region-narrow "icicles")
 (defun icicle-bookmark-region-narrow () ; Bound to `C-x j r' in minibuffer for bookmark completion.
   "Narrow the bookmark candidates to bookmarks with regions."
   (interactive)
-  (icicle-narrow-candidates-with-predicate
-   (lambda (x) (bmkp-region-bookmark-p (icicle-transform-multi-completion (car x))))))
+  (when (featurep 'bookmark+)
+    (icicle-narrow-candidates-with-predicate
+     (lambda (x) (bmkp-region-bookmark-p (icicle-transform-multi-completion (car x)))))))
 
 ;;;###autoload (autoload 'icicle-bookmark-remote-file-narrow "icicles")
 (defun icicle-bookmark-remote-file-narrow () ; Bound to `C-x j n' in minibuf for bookmark completion.
   "Narrow the bookmark candidates to remote-file bookmarks."
   (interactive)
-  (icicle-narrow-candidates-with-predicate
-   (lambda (x) (bmkp-remote-file-bookmark-p (icicle-transform-multi-completion (car x))))))
+  (when (featurep 'bookmark+)
+    (icicle-narrow-candidates-with-predicate
+     (lambda (x) (bmkp-remote-file-bookmark-p (icicle-transform-multi-completion (car x)))))))
 
 ;;;###autoload (autoload 'icicle-bookmark-specific-buffers-narrow "icicles")
 (defun icicle-bookmark-specific-buffers-narrow (buffers) ; `C-x j = b' for bookmark completion.
@@ -5381,48 +5396,54 @@ Remove crosshairs highlighting and unbind filtering keys."
 You are prompted for the BUFFERS."
   (interactive (let ((icicle-completion-candidates  icicle-completion-candidates))
                  (list (icicle-bookmarked-buffer-list))))
-  (icicle-narrow-candidates-with-predicate
-   `(lambda (x)
-     (member (bmkp-get-buffer-name (icicle-transform-multi-completion (car x))) ',buffers))))
+  (when (featurep 'bookmark+)
+    (icicle-narrow-candidates-with-predicate
+     `(lambda (x)
+       (member (bmkp-get-buffer-name (icicle-transform-multi-completion (car x))) ',buffers)))))
 
 ;;;###autoload (autoload 'icicle-bookmark-specific-files-narrow "icicles")
 (defun icicle-bookmark-specific-files-narrow (files) ; `C-x j = f' in minibuf for bookmark completion.
   "Narrow the bookmark candidates to bookmarks for specific FILES.
 You are prompted for the FILES."
   (interactive (list (icicle-bookmarked-file-list)))
-  (icicle-narrow-candidates-with-predicate
-   `(lambda (x)
-     (member (bookmark-get-filename (icicle-transform-multi-completion (car x))) ',files))))
+  (when (featurep 'bookmark+)
+    (icicle-narrow-candidates-with-predicate
+     `(lambda (x)
+       (member (bookmark-get-filename (icicle-transform-multi-completion (car x))) ',files)))))
 
 ;;;###autoload (autoload 'icicle-bookmark-temporary-narrow "icicles")
 (defun icicle-bookmark-temporary-narrow () ; Bound to `C-x j x' in minibuffer for completion.
   "Narrow the bookmark candidates to temporary bookmarks."
   (interactive)
-  (icicle-narrow-candidates-with-predicate
-   (lambda (x) (bmkp-temporary-bookmark-p (icicle-transform-multi-completion (car x))))))
+  (when (featurep 'bookmark+)
+    (icicle-narrow-candidates-with-predicate
+     (lambda (x) (bmkp-temporary-bookmark-p (icicle-transform-multi-completion (car x)))))))
 
 ;;;###autoload (autoload 'icicle-bookmark-this-buffer-narrow "icicles")
 (defun icicle-bookmark-this-buffer-narrow () ; `C-x j , ,' in minibuffer for bookmark completion.
   "Narrow the bookmark candidates to bookmarks for the current buffer."
   (interactive)
-  (icicle-narrow-candidates-with-predicate
-   (lambda (x)                          ; FREE here: ICICLE-ORIG-BUFF.
-     (with-current-buffer icicle-orig-buff
-       (bmkp-this-buffer-p (icicle-transform-multi-completion (car x)))))))
+  (when (featurep 'bookmark+)
+    (icicle-narrow-candidates-with-predicate
+     (lambda (x)                          ; FREE here: ICICLE-ORIG-BUFF.
+       (with-current-buffer icicle-orig-buff
+         (bmkp-this-buffer-p (icicle-transform-multi-completion (car x))))))))
 
 ;;;###autoload (autoload 'icicle-bookmark-url-narrow "icicles")
 (defun icicle-bookmark-url-narrow ()    ; Bound to `C-x j u' in minibuffer for bookmark completion.
   "Narrow the bookmark candidates to URL bookmarks."
   (interactive)
-  (icicle-narrow-candidates-with-predicate
-   (lambda (x) (bmkp-url-bookmark-p (icicle-transform-multi-completion (car x))))))
+  (when (featurep 'bookmark+)
+    (icicle-narrow-candidates-with-predicate
+     (lambda (x) (bmkp-url-bookmark-p (icicle-transform-multi-completion (car x)))))))
 
 ;;;###autoload (autoload 'icicle-bookmark-w3m-narrow "icicles")
 (defun icicle-bookmark-w3m-narrow ()    ; Bound to `C-x j w' in minibuffer for bookmark completion.
   "Narrow the bookmark candidates to W3M (URL) bookmarks."
   (interactive)
-  (icicle-narrow-candidates-with-predicate
-   (lambda (x) (bmkp-w3m-bookmark-p (icicle-transform-multi-completion (car x))))))
+  (when (featurep 'bookmark+)
+    (icicle-narrow-candidates-with-predicate
+     (lambda (x) (bmkp-w3m-bookmark-p (icicle-transform-multi-completion (car x)))))))
 
 
 ;; The following sexps macro-expand to define these commands:
@@ -5470,198 +5491,200 @@ You are prompted for the FILES."
 ;;  `icicle-bookmark-url',                       `icicle-bookmark-url-other-window'
 ;;  `icicle-bookmark-w3m',                       `icicle-bookmark-w3m-other-window'
 
+(when (featurep 'bookmark+)
 ;;;###autoload (autoload 'icicle-bookmark-this-buffer "icicles")
-(icicle-define-bookmark-command              "this-buffer")                   ; `C-x j , ,'
+  (icicle-define-bookmark-command              "this-buffer") ; `C-x j , ,'
 ;;;###autoload (autoload 'icicle-bookmark-this-buffer-other-window "icicles")
-(icicle-define-bookmark-other-window-command "this-buffer")                   ; `C-x 4 j , ,'
+  (icicle-define-bookmark-other-window-command "this-buffer") ; `C-x 4 j , ,'
 ;;;###autoload (autoload 'icicle-bookmark-specific-buffers "icicles")
-(icicle-define-bookmark-command              "specific-buffers" nil           ; `C-x j = b'
-                                             (icicle-bookmarked-buffer-list))
+  (icicle-define-bookmark-command              "specific-buffers" nil ; `C-x j = b'
+                                               (icicle-bookmarked-buffer-list))
 ;;;###autoload (autoload 'icicle-bookmark-specific-buffers-other-window "icicles")
-(icicle-define-bookmark-other-window-command "specific-buffers" nil           ; `C-x 4 j = b'
-                                             (icicle-bookmarked-buffer-list))
+  (icicle-define-bookmark-other-window-command "specific-buffers" nil ; `C-x 4 j = b'
+                                               (icicle-bookmarked-buffer-list))
 ;;;###autoload (autoload 'icicle-bookmark-specific-files "icicles")
-(icicle-define-bookmark-command              "specific-files" nil             ; `C-x j = f'
-                                             (icicle-bookmarked-file-list))
+  (icicle-define-bookmark-command              "specific-files" nil ; `C-x j = f'
+                                               (icicle-bookmarked-file-list))
 ;;;###autoload (autoload 'icicle-bookmark-specific-files-other-window "icicles")
-(icicle-define-bookmark-other-window-command "specific-files" nil             ; `C-x 4 j = f'
-                                             (icicle-bookmarked-file-list))
+  (icicle-define-bookmark-other-window-command "specific-files" nil ; `C-x 4 j = f'
+                                               (icicle-bookmarked-file-list))
 ;;;###autoload (autoload 'icicle-bookmark-autofile "icicles")
-(icicle-define-bookmark-command              "autofile")                      ; `C-x j a'
+  (icicle-define-bookmark-command              "autofile") ; `C-x j a'
 ;;;###autoload (autoload 'icicle-bookmark-autofile-other-window "icicles")
-(icicle-define-bookmark-other-window-command "autofile")                      ; `C-x 4 j a'
+  (icicle-define-bookmark-other-window-command "autofile") ; `C-x 4 j a'
 ;;;###autoload (autoload 'icicle-bookmark-autofile-all-tags "icicles")
-(icicle-define-bookmark-command              "autofile-all-tags" nil          ; `C-x j t a *'
-                                             (bmkp-read-tags-completing nil nil current-prefix-arg))
+  (icicle-define-bookmark-command              "autofile-all-tags" nil ; `C-x j t a *'
+                                               (bmkp-read-tags-completing nil nil current-prefix-arg))
 ;;;###autoload (autoload 'icicle-bookmark-autofile-all-tags-other-window "icicles")
-(icicle-define-bookmark-other-window-command "autofile-all-tags" nil          ; `C-x 4 j t a *'
-                                             (bmkp-read-tags-completing nil nil current-prefix-arg))
+  (icicle-define-bookmark-other-window-command "autofile-all-tags" nil ; `C-x 4 j t a *'
+                                               (bmkp-read-tags-completing nil nil current-prefix-arg))
 ;;;###autoload (autoload 'icicle-bookmark-autofile-all-tags-regexp "icicles")
-(icicle-define-bookmark-command              "autofile-all-tags-regexp" nil   ; `C-x j t a % *'
-                                             (bmkp-read-tags-completing nil nil current-prefix-arg))
+  (icicle-define-bookmark-command              "autofile-all-tags-regexp" nil ; `C-x j t a % *'
+                                               (bmkp-read-tags-completing nil nil current-prefix-arg))
 ;;;###autoload (autoload 'icicle-bookmark-autofile-all-tags-regexp-other-window "icicles")
-(icicle-define-bookmark-other-window-command "autofile-all-tags-regexp" nil   ; `C-x 4 j t a % *'
-                                             (bmkp-read-tags-completing nil nil current-prefix-arg))
+  (icicle-define-bookmark-other-window-command "autofile-all-tags-regexp" nil ; `C-x 4 j t a % *'
+                                               (bmkp-read-tags-completing nil nil current-prefix-arg))
 ;;;###autoload (autoload 'icicle-bookmark-autofile-some-tags "icicles")
-(icicle-define-bookmark-command              "autofile-some-tags" nil         ; `C-x j t a +'
-                                             (bmkp-read-tags-completing nil nil current-prefix-arg))
+  (icicle-define-bookmark-command              "autofile-some-tags" nil ; `C-x j t a +'
+                                               (bmkp-read-tags-completing nil nil current-prefix-arg))
 ;;;###autoload (autoload 'icicle-bookmark-autofile-some-tags-other-window "icicles")
-(icicle-define-bookmark-other-window-command "autofile-some-tags" nil         ; `C-x 4 j t a +'
-                                             (bmkp-read-tags-completing nil nil current-prefix-arg))
+  (icicle-define-bookmark-other-window-command "autofile-some-tags" nil ; `C-x 4 j t a +'
+                                               (bmkp-read-tags-completing nil nil current-prefix-arg))
 ;;;###autoload (autoload 'icicle-bookmark-autofile-some-tags-regexp "icicles")
-(icicle-define-bookmark-command              "autofile-some-tags-regexp" nil  ; `C-x j t a % +'
-                                             (bmkp-read-tags-completing nil nil current-prefix-arg))
+  (icicle-define-bookmark-command              "autofile-some-tags-regexp" nil ; `C-x j t a % +'
+                                               (bmkp-read-tags-completing nil nil current-prefix-arg))
 ;;;###autoload (autoload 'icicle-bookmark-autofile-some-tags-regexp-other-window "icicles")
-(icicle-define-bookmark-other-window-command "autofile-some-tags-regexp" nil  ; `C-x 4 j t a % +'
-                                             (bmkp-read-tags-completing nil nil current-prefix-arg))
+  (icicle-define-bookmark-other-window-command "autofile-some-tags-regexp" nil ; `C-x 4 j t a % +'
+                                               (bmkp-read-tags-completing nil nil current-prefix-arg))
 ;;;###autoload (autoload 'icicle-bookmark-autonamed "icicles")
-(icicle-define-bookmark-command              "autonamed") ; `C-x j #'
+  (icicle-define-bookmark-command              "autonamed") ; `C-x j #'
 ;;;###autoload (autoload 'icicle-bookmark-autonamed-other-window "icicles")
-(icicle-define-bookmark-other-window-command "autonamed") ; `C-x 4 j # #'
+  (icicle-define-bookmark-other-window-command "autonamed") ; `C-x 4 j # #'
 ;;;###autoload (autoload 'icicle-bookmark-autonamed-this-buffer "icicles")
-(icicle-define-bookmark-command              "autonamed-this-buffer") ; `C-x j , #'
+  (icicle-define-bookmark-command              "autonamed-this-buffer") ; `C-x j , #'
 ;;;###autoload (autoload 'icicle-bookmark-autonamed-this-buffer-other-window "icicles")
-(icicle-define-bookmark-other-window-command "autonamed-this-buffer") ; `C-x 4 j # .'
+  (icicle-define-bookmark-other-window-command "autonamed-this-buffer") ; `C-x 4 j # .'
 ;;;###autoload (autoload 'icicle-bookmark-non-file "icicles")
-(icicle-define-bookmark-command              "non-file")                      ; `C-x j b'
+  (icicle-define-bookmark-command              "non-file") ; `C-x j b'
 ;;;###autoload (autoload 'icicle-bookmark-non-file-other-window "icicles")
-(icicle-define-bookmark-other-window-command "non-file")                      ; `C-x 4 j b'
+  (icicle-define-bookmark-other-window-command "non-file") ; `C-x 4 j b'
 
-;; Other-window means nothing for a bookmark list.
+  ;; Other-window means nothing for a bookmark list.
 ;;;###autoload (autoload 'icicle-bookmark-bookmark-list "icicles")
-(icicle-define-bookmark-command              "bookmark-list")                 ; `C-x j B'
+  (icicle-define-bookmark-command              "bookmark-list") ; `C-x j B'
 ;;;###autoload (autoload 'icicle-bookmark-dired "icicles")
-(icicle-define-bookmark-command              "dired")                         ; `C-x j d'
+  (icicle-define-bookmark-command              "dired") ; `C-x j d'
 ;;;###autoload (autoload 'icicle-bookmark-dired-other-window "icicles")
-(icicle-define-bookmark-other-window-command "dired")                         ; `C-x 4 j d'
+  (icicle-define-bookmark-other-window-command "dired") ; `C-x 4 j d'
 ;;;###autoload (autoload 'icicle-bookmark-file "icicles")
-(icicle-define-bookmark-command              "file")                          ; `C-x j f'
+  (icicle-define-bookmark-command              "file") ; `C-x j f'
 ;;;###autoload (autoload 'icicle-bookmark-file-other-window "icicles")
-(icicle-define-bookmark-other-window-command "file")                          ; `C-x 4 j f'
+  (icicle-define-bookmark-other-window-command "file") ; `C-x 4 j f'
 ;;;###autoload (autoload 'icicle-bookmark-file-this-dir "icicles")
-(icicle-define-bookmark-command              "file-this-dir")                 ; `C-x j . f'
+  (icicle-define-bookmark-command              "file-this-dir") ; `C-x j . f'
 ;;;###autoload (autoload 'icicle-bookmark-file-this-dir-other-window "icicles")
-(icicle-define-bookmark-other-window-command "file-this-dir")                 ; `C-x 4 j . f'
+  (icicle-define-bookmark-other-window-command "file-this-dir") ; `C-x 4 j . f'
 ;;;###autoload (autoload 'icicle-bookmark-gnus "icicles")
-(icicle-define-bookmark-command              "gnus")                          ; `C-x j g'
+  (icicle-define-bookmark-command              "gnus") ; `C-x j g'
 ;;;###autoload (autoload 'icicle-bookmark-gnus-other-window "icicles")
-(icicle-define-bookmark-other-window-command "gnus")                          ; `C-x 4 j g'
+  (icicle-define-bookmark-other-window-command "gnus") ; `C-x 4 j g'
 ;;;###autoload (autoload 'icicle-bookmark-image "icicles")
-(icicle-define-bookmark-command              "image")                         ; `C-x j M-i'
+  (icicle-define-bookmark-command              "image") ; `C-x j M-i'
 ;;;###autoload (autoload 'icicle-bookmark-image-other-window "icicles")
-(icicle-define-bookmark-other-window-command "image")                         ; `C-x 4 j M-i'
+  (icicle-define-bookmark-other-window-command "image") ; `C-x 4 j M-i'
 ;;;###autoload (autoload 'icicle-bookmark-info "icicles")
-(icicle-define-bookmark-command              "info")                          ; `C-x j i'
+  (icicle-define-bookmark-command              "info") ; `C-x j i'
 ;;;###autoload (autoload 'icicle-bookmark-info-other-window "icicles")
-(icicle-define-bookmark-other-window-command "info")                          ; `C-x 4 j i'
+  (icicle-define-bookmark-other-window-command "info") ; `C-x 4 j i'
 
-;; Other-window means nothing for a desktop.
+  ;; Other-window means nothing for a desktop.
 ;;;###autoload (autoload 'icicle-bookmark-desktop "icicles")
-(icicle-define-bookmark-command              "desktop")                       ; `C-x j K'
+  (icicle-define-bookmark-command              "desktop") ; `C-x j K'
 ;;;###autoload (autoload 'icicle-bookmark-local-file "icicles")
-(icicle-define-bookmark-command              "local-file")                    ; `C-x j l'
+  (icicle-define-bookmark-command              "local-file") ; `C-x j l'
 ;;;###autoload (autoload 'icicle-bookmark-local-file-other-window "icicles")
-(icicle-define-bookmark-other-window-command "local-file")                    ; `C-x 4 j l'
+  (icicle-define-bookmark-other-window-command "local-file") ; `C-x 4 j l'
 ;;;###autoload (autoload 'icicle-bookmark-man "icicles")
-(icicle-define-bookmark-command              "man")                           ; `C-x j m'
+  (icicle-define-bookmark-command              "man") ; `C-x j m'
 ;;;###autoload (autoload 'icicle-bookmark-man-other-window "icicles")
-(icicle-define-bookmark-other-window-command "man")                           ; `C-x 4 j m'
+  (icicle-define-bookmark-other-window-command "man") ; `C-x 4 j m'
 ;;;###autoload (autoload 'icicle-bookmark-remote-file "icicles")
-(icicle-define-bookmark-command              "remote-file")                   ; `C-x j n'
+  (icicle-define-bookmark-command              "remote-file") ; `C-x j n'
 ;;;###autoload (autoload 'icicle-bookmark-remote-file-other-window "icicles")
-(icicle-define-bookmark-other-window-command "remote-file")                   ; `C-x 4 j n'
+  (icicle-define-bookmark-other-window-command "remote-file") ; `C-x 4 j n'
 ;;;###autoload (autoload 'icicle-bookmark-region "icicles")
-(icicle-define-bookmark-command              "region" "Select region: ")      ; `C-x j r'
+  (icicle-define-bookmark-command              "region" "Select region: ") ; `C-x j r'
 ;;;###autoload (autoload 'icicle-bookmark-region-other-window "icicles")
-(icicle-define-bookmark-other-window-command "region" "Select region: ")      ; `C-x 4 j r'
+  (icicle-define-bookmark-other-window-command "region" "Select region: ") ; `C-x 4 j r'
 ;;;###autoload (autoload 'icicle-bookmark-all-tags "icicles")
-(icicle-define-bookmark-command              "all-tags" nil                   ; `C-x j t *'
-                                             (bmkp-read-tags-completing nil nil current-prefix-arg))
+  (icicle-define-bookmark-command              "all-tags" nil ; `C-x j t *'
+                                               (bmkp-read-tags-completing nil nil current-prefix-arg))
 ;;;###autoload (autoload 'icicle-bookmark-all-tags-other-window "icicles")
-(icicle-define-bookmark-other-window-command "all-tags" nil                   ; `C-x 4 j t *'
-                                             (bmkp-read-tags-completing nil nil current-prefix-arg))
+  (icicle-define-bookmark-other-window-command "all-tags" nil ; `C-x 4 j t *'
+                                               (bmkp-read-tags-completing nil nil current-prefix-arg))
 ;;;###autoload (autoload 'icicle-bookmark-some-tags "icicles")
-(icicle-define-bookmark-command              "some-tags" nil                  ; `C-x j t +'
-                                             (bmkp-read-tags-completing nil nil current-prefix-arg))
+  (icicle-define-bookmark-command              "some-tags" nil ; `C-x j t +'
+                                               (bmkp-read-tags-completing nil nil current-prefix-arg))
 ;;;###autoload (autoload 'icicle-bookmark-some-tags-other-window "icicles")
-(icicle-define-bookmark-other-window-command "some-tags" nil                  ; `C-x 4 j t +'
-                                             (bmkp-read-tags-completing nil nil current-prefix-arg))
+  (icicle-define-bookmark-other-window-command "some-tags" nil ; `C-x 4 j t +'
+                                               (bmkp-read-tags-completing nil nil current-prefix-arg))
 ;;;###autoload (autoload 'icicle-bookmark-all-tags-regexp "icicles")
-(icicle-define-bookmark-command              "all-tags-regexp" nil            ; `C-x j t % *'
-                                             (read-string "Regexp for tags: "))
+  (icicle-define-bookmark-command              "all-tags-regexp" nil ; `C-x j t % *'
+                                               (read-string "Regexp for tags: "))
 ;;;###autoload (autoload 'icicle-bookmark-all-tags-regexp-other-window "icicles")
-(icicle-define-bookmark-other-window-command "all-tags-regexp" nil            ; `C-x 4 j t % *'
-                                             (read-string "Regexp for tags: "))
+  (icicle-define-bookmark-other-window-command "all-tags-regexp" nil ; `C-x 4 j t % *'
+                                               (read-string "Regexp for tags: "))
 ;;;###autoload (autoload 'icicle-bookmark-some-tags-regexp "icicles")
-(icicle-define-bookmark-command              "some-tags-regexp" nil           ; `C-x j t % +'
-                                             (read-string "Regexp for tags: "))
+  (icicle-define-bookmark-command              "some-tags-regexp" nil ; `C-x j t % +'
+                                               (read-string "Regexp for tags: "))
 ;;;###autoload (autoload 'icicle-bookmark-some-tags-regexp-other-window "icicles")
-(icicle-define-bookmark-other-window-command "some-tags-regexp" nil           ; `C-x 4 j t % +'
-                                             (read-string "Regexp for tags: "))
+  (icicle-define-bookmark-other-window-command "some-tags-regexp" nil ; `C-x 4 j t % +'
+                                               (read-string "Regexp for tags: "))
 ;;;###autoload (autoload 'icicle-bookmark-file-all-tags "icicles")
-(icicle-define-bookmark-command              "file-all-tags" nil              ; `C-x j t f *'
-                                             (bmkp-read-tags-completing nil nil current-prefix-arg))
+  (icicle-define-bookmark-command              "file-all-tags" nil ; `C-x j t f *'
+                                               (bmkp-read-tags-completing nil nil current-prefix-arg))
 ;;;###autoload (autoload 'icicle-bookmark-file-all-tags-other-window "icicles")
-(icicle-define-bookmark-other-window-command "file-all-tags" nil              ; `C-x 4 j t f *'
-                                             (bmkp-read-tags-completing nil nil current-prefix-arg))
+  (icicle-define-bookmark-other-window-command "file-all-tags" nil ; `C-x 4 j t f *'
+                                               (bmkp-read-tags-completing nil nil current-prefix-arg))
 ;;;###autoload (autoload 'icicle-bookmark-file-some-tags "icicles")
-(icicle-define-bookmark-command              "file-some-tags" nil             ; `C-x j t f +'
-                                             (bmkp-read-tags-completing nil nil current-prefix-arg))
+  (icicle-define-bookmark-command              "file-some-tags" nil ; `C-x j t f +'
+                                               (bmkp-read-tags-completing nil nil current-prefix-arg))
 ;;;###autoload (autoload 'icicle-bookmark-file-some-tags-other-window "icicles")
-(icicle-define-bookmark-other-window-command "file-some-tags" nil             ; `C-x 4 j t f +'
-                                             (bmkp-read-tags-completing nil nil current-prefix-arg))
+  (icicle-define-bookmark-other-window-command "file-some-tags" nil ; `C-x 4 j t f +'
+                                               (bmkp-read-tags-completing nil nil current-prefix-arg))
 ;;;###autoload (autoload 'icicle-bookmark-file-all-tags-regexp "icicles")
-(icicle-define-bookmark-command              "file-all-tags-regexp" nil       ; `C-x j t f % *'
-                                             (read-string "Regexp for tags: "))
+  (icicle-define-bookmark-command              "file-all-tags-regexp" nil ; `C-x j t f % *'
+                                               (read-string "Regexp for tags: "))
 ;;;###autoload (autoload 'icicle-bookmark-file-all-tags-regexp-other-window "icicles")
-(icicle-define-bookmark-other-window-command "file-all-tags-regexp" nil       ; `C-x 4 j t f % *'
-                                             (read-string "Regexp for tags: "))
+  (icicle-define-bookmark-other-window-command "file-all-tags-regexp" nil ; `C-x 4 j t f % *'
+                                               (read-string "Regexp for tags: "))
 ;;;###autoload (autoload 'icicle-bookmark-file-some-tags-regexp "icicles")
-(icicle-define-bookmark-command              "file-some-tags-regexp" nil      ; `C-x j t f % +'
-                                             (read-string "Regexp for tags: "))
+  (icicle-define-bookmark-command              "file-some-tags-regexp" nil ; `C-x j t f % +'
+                                               (read-string "Regexp for tags: "))
 ;;;###autoload (autoload 'icicle-bookmark-file-some-tags-regexp-other-window "icicles")
-(icicle-define-bookmark-other-window-command "file-some-tags-regexp" nil      ; `C-x 4 j t f % +'
-                                             (read-string "Regexp for tags: "))
+  (icicle-define-bookmark-other-window-command "file-some-tags-regexp" nil ; `C-x 4 j t f % +'
+                                               (read-string "Regexp for tags: "))
 ;;;###autoload (autoload 'icicle-bookmark-file-this-dir-all-tags "icicles")
-(icicle-define-bookmark-command              "file-this-dir-all-tags" nil ; `C-x j t . f *'
-                                             (bmkp-read-tags-completing nil nil current-prefix-arg))
+  (icicle-define-bookmark-command              "file-this-dir-all-tags" nil ; `C-x j t . f *'
+                                               (bmkp-read-tags-completing nil nil current-prefix-arg))
 ;;;###autoload (autoload 'icicle-bookmark-file-this-dir-all-tags-other-window "icicles")
-(icicle-define-bookmark-other-window-command "file-this-dir-all-tags" nil ; `C-x 4 j t . f *'
-                                             (bmkp-read-tags-completing nil nil current-prefix-arg))
+  (icicle-define-bookmark-other-window-command "file-this-dir-all-tags" nil ; `C-x 4 j t . f *'
+                                               (bmkp-read-tags-completing nil nil current-prefix-arg))
 ;;;###autoload (autoload 'icicle-bookmark-file-this-dir-some-tags "icicles")
-(icicle-define-bookmark-command              "file-this-dir-some-tags" nil ; `C-x j t . f +'
-                                             (bmkp-read-tags-completing nil nil current-prefix-arg))
+  (icicle-define-bookmark-command              "file-this-dir-some-tags" nil ; `C-x j t . f +'
+                                               (bmkp-read-tags-completing nil nil current-prefix-arg))
 ;;;###autoload (autoload 'icicle-bookmark-file-this-dir-some-tags-other-window "icicles")
-(icicle-define-bookmark-other-window-command "file-this-dir-some-tags" nil ; `C-x 4 j t . f +'
-                                             (bmkp-read-tags-completing nil nil current-prefix-arg))
+  (icicle-define-bookmark-other-window-command "file-this-dir-some-tags" nil ; `C-x 4 j t . f +'
+                                               (bmkp-read-tags-completing nil nil current-prefix-arg))
 ;;;###autoload (autoload 'icicle-bookmark-file-this-dir-all-tags-regexp "icicles")
-(icicle-define-bookmark-command              "file-this-dir-all-tags-regexp" nil ; `C-x j t . f % *'
-                                             (read-string "Regexp for tags: "))
+  (icicle-define-bookmark-command              "file-this-dir-all-tags-regexp" nil ; `C-x j t . f % *'
+                                               (read-string "Regexp for tags: "))
 ;;;###autoload (autoload 'icicle-bookmark-file-this-dir-all-tags-regexp-other-window "icicles")
-(icicle-define-bookmark-other-window-command "file-this-dir-all-tags-regexp" nil ; `C-x 4 j t . f % *'
-                                             (read-string "Regexp for tags: "))
+  (icicle-define-bookmark-other-window-command "file-this-dir-all-tags-regexp" nil ; `C-x 4 j t . f % *'
+                                               (read-string "Regexp for tags: "))
 ;;;###autoload (autoload 'icicle-bookmark-file-this-dir-some-tags-regexp "icicles")
-(icicle-define-bookmark-command              "file-this-dir-some-tags-regexp" nil ; `C-x j t . f % +'
-                                             (read-string "Regexp for tags: "))
+  (icicle-define-bookmark-command              "file-this-dir-some-tags-regexp" nil ; `C-x j t . f % +'
+                                               (read-string "Regexp for tags: "))
 ;;;###autoload (autoload 'icicle-bookmark-file-this-dir-some-tags-regexp-other-window "icicles")
-(icicle-define-bookmark-other-window-command "file-this-dir-some-tags-regexp" nil ; `C-x 4 j t . f % +'
-                                             (read-string "Regexp for tags: "))
+  (icicle-define-bookmark-other-window-command "file-this-dir-some-tags-regexp" nil ; `C-x 4 j t . f % +'
+                                               (read-string "Regexp for tags: "))
 ;;;###autoload (autoload 'icicle-bookmark-url "icicles")
-(icicle-define-bookmark-command              "url")                           ; `C-x j u'
+  (icicle-define-bookmark-command              "url") ; `C-x j u'
 ;;;###autoload (autoload 'icicle-bookmark-url-other-window "icicles")
-(icicle-define-bookmark-other-window-command "url")                           ; `C-x 4 j u'
+  (icicle-define-bookmark-other-window-command "url") ; `C-x 4 j u'
 ;;;###autoload (autoload 'icicle-bookmark-w3m "icicles")
-(icicle-define-bookmark-command              "w3m")                           ; `C-x j w'
+  (icicle-define-bookmark-command              "w3m") ; `C-x j w'
 ;;;###autoload (autoload 'icicle-bookmark-w3m-other-window "icicles")
-(icicle-define-bookmark-other-window-command "w3m")                           ; `C-x 4 j w'
+  (icicle-define-bookmark-other-window-command "w3m") ; `C-x 4 j w'
 ;;;###autoload (autoload 'icicle-bookmark-temporary "icicles")
-(icicle-define-bookmark-command              "temporary")                     ; `C-x j x'
+  (icicle-define-bookmark-command              "temporary") ; `C-x j x'
 ;;;###autoload (autoload 'icicle-bookmark-temporary-other-window "icicles")
-(icicle-define-bookmark-other-window-command "temporary")                     ; `C-x 4 j x'
+  (icicle-define-bookmark-other-window-command "temporary") ; `C-x 4 j x'
 
-;; Other-window means nothing for a bookmark file.
+  ;; Other-window means nothing for a bookmark file.
 ;;;###autoload (autoload 'icicle-bookmark-bookmark-file "icicles")
-(icicle-define-bookmark-command              "bookmark-file")                 ; `C-x j y'
+  (icicle-define-bookmark-command              "bookmark-file") ; `C-x j y'
+  )
 
 ;;;###autoload (autoload 'icicle-select-bookmarked-region "icicles")
 (defalias 'icicle-select-bookmarked-region 'icicle-bookmark-region-other-window)
@@ -7155,13 +7178,17 @@ default separator."
 ;;;###autoload (autoload 'icicle-delete-file "icicles")
 (icicle-define-file-command icicle-delete-file ; Command name
   "Delete a file or directory.
-During completion (`*' means this requires library `Bookmark+')\\<minibuffer-local-completion-map>:
- *You can use `C-x a +' or `C-x a -' to add or remove tags from the
-   current-candidate file.  You are prompted for the tags.
- *You can use `C-x m' to access file bookmarks (not just autofiles).
-  You can use `C-c +' to create a new directory.
-  You can use `\\[icicle-all-candidates-list-alt-action]' to open Dired \
-on currently matching file names." ; Doc string
+During completion (`*' means this requires library `Bookmark+')\\<minibuffer-local-completion-map>, you
+can use the following keys:
+   C-c +        - create a new directory
+   \\[icicle-all-candidates-list-alt-action]          - open Dired on the currently matching file names
+ * C-x C-t *    - narrow to files with all of the tags you specify
+ * C-x C-t *    - narrow to files with some of the tags you specify
+ * C-x C-t % *  - narrow to files with all tags matching a regexp
+ * C-x C-t % *  - narrow to files with some tags  matching a regexp
+ * C-x a +      - add tags to current candidate
+ * C-x a -      - remove tags from current candidate
+ * C-x m        - access file bookmarks (not just autofiles)" ; Doc string
   (lambda (file)                        ; Function to perform the action
     (icicle-delete-file-or-directory file)
     (icicle-remove-candidate-display-others 'ALL))
@@ -7183,13 +7210,18 @@ on currently matching file names." ; Doc string
 ;;;###autoload (autoload 'icicle-dired "icicles")
 (icicle-define-file-command icicle-dired
   "Multi-command version of `dired'.
-During completion (`*' means this requires library `Bookmark+')\\<minibuffer-local-completion-map>:
- *You can use `C-x a +' or `C-x a -' to add or remove tags from the
-   current-candidate file.  You are prompted for the tags.
- *You can use `C-x m' to access file bookmarks (not just autofiles).
-  You can use `C-c +' to create a new directory.
-  You can use `\\[icicle-all-candidates-list-alt-action]' to open Dired on currently matching file names.
-  You can use `\\[icicle-delete-candidate-object]' to delete a candidate file or (empty) dir." ; Doc string
+During completion (`*' means this requires library `Bookmark+')\\<minibuffer-local-completion-map>, you
+can use the following keys:
+   C-c +        - create a new directory
+   \\[icicle-all-candidates-list-alt-action]          - open Dired on the currently matching file names
+   \\[icicle-delete-candidate-object]     - delete candidate file or (empty) dir
+ * C-x C-t *    - narrow to files with all of the tags you specify
+ * C-x C-t *    - narrow to files with some of the tags you specify
+ * C-x C-t % *  - narrow to files with all tags matching a regexp
+ * C-x C-t % *  - narrow to files with some tags  matching a regexp
+ * C-x a +      - add tags to current candidate
+ * C-x a -      - remove tags from current candidate
+ * C-x m        - access file bookmarks (not just autofiles)" ; Doc string
   (lambda (dir) (dired dir switches))   ; FREE here: SWITCHES.
   "Dired (directory): " nil default-directory nil nil nil ; `read-file-name' args
   (icicle-file-bindings                 ; Bindings
@@ -7237,13 +7269,18 @@ ordinary strings.  It knows nothing of file names per se.  In
 particular, you cannot use remote file-name syntax if you use a prefix
 argument.
 
-During completion\\<minibuffer-local-completion-map>:
- You can use `C-x m' to access file bookmarks, if you use library
-  `Bookmark+'.
- You can use `C-c +' to create a new directory.
- You can use `\\[icicle-all-candidates-list-alt-action]' to open Dired on the currently matching file names.
- You can use `\\[icicle-delete-candidate-object]' to delete a candidate file or (empty)
-  directory.
+During completion (`*' means this requires library `Bookmark+')\\<minibuffer-local-completion-map>, you
+can use the following keys:
+   C-c +        - create a new directory
+   \\[icicle-all-candidates-list-alt-action]          - open Dired on the currently matching file names
+   \\[icicle-delete-candidate-object]     - delete candidate file or (empty) dir
+ * C-x C-t *    - narrow to files with all of the tags you specify
+ * C-x C-t *    - narrow to files with some of the tags you specify
+ * C-x C-t % *  - narrow to files with all tags matching a regexp
+ * C-x C-t % *  - narrow to files with some tags  matching a regexp
+ * C-x a +      - add tags to current candidate
+ * C-x a -      - remove tags from current candidate
+ * C-x m        - access file bookmarks (not just autofiles)
 
 By default, Icicle mode remaps all key sequences that are normally bound
 to `find-file' to `icicle-file'.  If you do not want this remapping,
@@ -7297,15 +7334,19 @@ in a common directory.
 With a prefix argument, you can choose also by date: Completion
 candidates include the last modification date.
 
-During completion (`*' means this requires library `Bookmark+'):
-
- *You can use `C-x a +' or `C-x a -' to add or remove tags from the
-   current-candidate file.  You are prompted for the tags.
- *You can use `C-x m' to access file bookmarks (not just autofiles).
-  You can use `C-c C-d' (a la `cd') to change the `default-directory'.
-  You can use `C-c +' to create a new directory.
-  You can use `\\[icicle-all-candidates-list-alt-action]' to open Dired on currently matching file names.
-  You can use `\\[icicle-delete-candidate-object]' to delete a candidate file or (empty) dir.
+During completion (`*' means this requires library `Bookmark+')\\<minibuffer-local-completion-map>, you
+can use the following keys:
+   C-c C-d      - change the `default-directory' (a la `cd')
+   C-c +        - create a new directory
+   \\[icicle-all-candidates-list-alt-action]          - open Dired on the currently matching file names
+   \\[icicle-delete-candidate-object]     - delete candidate file or (empty) dir
+ * C-x C-t *    - narrow to files with all of the tags you specify
+ * C-x C-t *    - narrow to files with some of the tags you specify
+ * C-x C-t % *  - narrow to files with all tags matching a regexp
+ * C-x C-t % *  - narrow to files with some tags  matching a regexp
+ * C-x a +      - add tags to current candidate
+ * C-x a -      - remove tags from current candidate
+ * C-x m        - access file bookmarks (not just autofiles)
 
 These options, when non-nil, control candidate matching and filtering:
 
@@ -7445,14 +7486,18 @@ a prefix arg for the command, files are visited in read-only mode by
 default and a prefix arg for an individual file visits it without
 read-only mode.
 
-During completion (`*' means this requires library `Bookmark+'):
-
- *You can use `C-x a +' or `C-x a -' to add or remove tags from the
-   current-candidate file.  You are prompted for the tags.
- *You can use `C-x m' to access file bookmarks (not just autofiles).
-  You can use `C-c +' to create a new directory.
-  You can use `\\[icicle-all-candidates-list-alt-action]' to open Dired on currently matching file names.
-  You can use `\\[icicle-delete-candidate-object]' to delete a candidate file or (empty) dir.
+During completion (`*' means this requires library `Bookmark+')\\<minibuffer-local-completion-map>, you
+can use the following keys:
+   C-c +        - create a new directory
+   \\[icicle-all-candidates-list-alt-action]          - open Dired on the currently matching file names
+   \\[icicle-delete-candidate-object]     - delete candidate file or (empty) dir
+ * C-x C-t *    - narrow to files with all of the tags you specify
+ * C-x C-t *    - narrow to files with some of the tags you specify
+ * C-x C-t % *  - narrow to files with all tags matching a regexp
+ * C-x C-t % *  - narrow to files with some tags  matching a regexp
+ * C-x a +      - add tags to current candidate
+ * C-x a -      - remove tags from current candidate
+ * C-x m        - access file bookmarks (not just autofiles)
 
 These options, when non-nil, control candidate matching and filtering:
 
@@ -7623,7 +7668,20 @@ of files that must be visited to search their contents.
 When this command is finished, any unused buffers that were created
 for content matching are killed, if option
 `icicle-kill-visited-buffers-flag' is non-nil.  But a prefix argument
-flips the behavior specified by that option." ; Doc string
+flips the behavior specified by that option.
+
+During completion (`*' means this requires library `Bookmark+')\\<minibuffer-local-completion-map>, you
+can use the following keys:
+   C-c +        - create a new directory
+   \\[icicle-all-candidates-list-alt-action]          - open Dired on the currently matching file names
+   \\[icicle-delete-candidate-object]     - delete candidate file or (empty) dir
+ * C-x C-t *    - narrow to files with all of the tags you specify
+ * C-x C-t *    - narrow to files with some of the tags you specify
+ * C-x C-t % *  - narrow to files with all tags matching a regexp
+ * C-x C-t % *  - narrow to files with some tags  matching a regexp
+ * C-x a +      - add tags to current candidate
+ * C-x a -      - remove tags from current candidate
+ * C-x m        - access file bookmarks (not just autofiles)" ; Doc string
     (lambda (file)                      ; Action function
       ;; Free vars here: CURRENT-PREFIX-ARG, INIT-PREF-ARG, THIS-COMMAND, NEW-BUFS--TO-KEEP.
       (let* ((r-o  (and (memq this-command '(icicle-candidate-action icicle-mouse-candidate-action
@@ -7825,14 +7883,18 @@ Remember that you can use \\<minibuffer-local-completion-map>`C-x .' to hide the
 each candidate.  That can be particularly helpful for files that are
 in a common directory.
 
-During completion (`*' means this requires library `Bookmark+'):
-
- *You can use `C-x a +' or `C-x a -' to add or remove tags from the
-   current-candidate file.  You are prompted for the tags.
- *You can use `C-x m' to access file bookmarks (not just autofiles).
-  You can use `C-c +' to create a new directory.
-  You can use `\\[icicle-all-candidates-list-alt-action]' to open Dired on currently matching file names.
-  You can use `\\[icicle-delete-candidate-object]' to delete a candidate file or (empty) dir.
+During completion (`*' means this requires library `Bookmark+')\\<minibuffer-local-completion-map>, you
+can use the following keys:
+   C-c +        - create a new directory
+   \\[icicle-all-candidates-list-alt-action]          - open Dired on the currently matching file names
+   \\[icicle-delete-candidate-object]     - delete candidate file or (empty) dir
+ * C-x C-t *    - narrow to files with all of the tags you specify
+ * C-x C-t *    - narrow to files with some of the tags you specify
+ * C-x C-t % *  - narrow to files with all tags matching a regexp
+ * C-x C-t % *  - narrow to files with some tags  matching a regexp
+ * C-x a +      - add tags to current candidate
+ * C-x a -      - remove tags from current candidate
+ * C-x m        - access file bookmarks (not just autofiles)
 
 You can use any of the alternative-action keys, such as `\\[icicle-candidate-alt-action]', to
 remove a candidate file from the recent files list, `recentf-list'.
@@ -8025,15 +8087,19 @@ for ordinary (non-absolute) file-name completion.  To change to a
 different directory, with its files as candidates, use \\<minibuffer-local-completion-map>`C-c C-d' from
 the minibuffer - it prompts you for the new directory.
 
-During completion (`*' means this requires library `Bookmark+'):
-
- *You can use `C-x a +' or `C-x a -' to add or remove tags from the
-   current-candidate file.  You are prompted for the tags.
- *You can use `C-x m' to access file bookmarks (not just autofiles).
-  You can use `C-c C-d' (a la `cd') to change the `default-directory'.
-  You can use `C-c +' to create a new directory.
-  You can use `\\[icicle-all-candidates-list-alt-action]' to open Dired on currently matching file names.
-  You can use `\\[icicle-delete-candidate-object]' to delete a candidate file or (empty) dir.
+During completion (`*' means this requires library `Bookmark+')\\<minibuffer-local-completion-map>, you
+can use the following keys:
+   C-c C-d      - change the `default-directory' (a la `cd')
+   C-c +        - create a new directory
+   \\[icicle-all-candidates-list-alt-action]          - open Dired on the currently matching file names
+   \\[icicle-delete-candidate-object]     - delete candidate file or (empty) dir
+ * C-x C-t *    - narrow to files with all of the tags you specify
+ * C-x C-t *    - narrow to files with some of the tags you specify
+ * C-x C-t % *  - narrow to files with all tags matching a regexp
+ * C-x C-t % *  - narrow to files with some tags  matching a regexp
+ * C-x a +      - add tags to current candidate
+ * C-x a -      - remove tags from current candidate
+ * C-x m        - access file bookmarks (not just autofiles)
 
 Directories in `icicle-ignored-directories' are ignored (skipped).  In
 addition, these options control candidate matching and filtering:
@@ -8118,14 +8184,18 @@ Note that completion here matches candidates as ordinary strings.  It
 knows nothing of file names per se.  In particular, you cannot use
 remote file-name syntax.
 
-During completion (`*' means this requires library `Bookmark+'):
-
- *You can use `C-x a +' or `C-x a -' to add or remove tags from the
-   current-candidate file.  You are prompted for the tags.
- *You can use `C-x m' to access file bookmarks (not just autofiles).
-  You can use `C-c +' to create a new directory.
-  You can use `\\[icicle-all-candidates-list-alt-action]' to open Dired on currently matching file names.
-  You can use `\\[icicle-delete-candidate-object]' to delete a candidate file or (empty) dir.
+During completion (`*' means this requires library `Bookmark+')\\<minibuffer-local-completion-map>, you
+can use the following keys:
+   C-c +        - create a new directory
+   \\[icicle-all-candidates-list-alt-action]          - open Dired on the currently matching file names
+   \\[icicle-delete-candidate-object]     - delete candidate file or (empty) dir
+ * C-x C-t *    - narrow to files with all of the tags you specify
+ * C-x C-t *    - narrow to files with some of the tags you specify
+ * C-x C-t % *  - narrow to files with all tags matching a regexp
+ * C-x C-t % *  - narrow to files with some tags  matching a regexp
+ * C-x a +      - add tags to current candidate
+ * C-x a -      - remove tags from current candidate
+ * C-x m        - access file bookmarks (not just autofiles)
 
 These Icicles options control candidate matching and filtering:
 
@@ -8319,14 +8389,18 @@ in a common directory.
 With a prefix argument, you can choose also by date: Completion
 candidates include the last modification date.
 
-During completion (`*' means this requires library `Bookmark+'):
-
- *You can use `C-x a +' or `C-x a -' to add or remove tags from the
-   current-candidate file.  You are prompted for the tags.
- *You can use `C-x m' to access file bookmarks (not just autofiles).
-  You can use `C-c +' to create a new directory.
-  You can use `\\[icicle-all-candidates-list-alt-action]' to open Dired on currently matching file names.
-  You can use `\\[icicle-delete-candidate-object]' to delete a candidate file or (empty) dir.
+During completion (`*' means this requires library `Bookmark+')\\<minibuffer-local-completion-map>, you
+can use the following keys:
+   C-c +        - create a new directory
+   \\[icicle-all-candidates-list-alt-action]          - open Dired on the currently matching file names
+   \\[icicle-delete-candidate-object]     - delete candidate file or (empty) dir
+ * C-x C-t *    - narrow to files with all of the tags you specify
+ * C-x C-t *    - narrow to files with some of the tags you specify
+ * C-x C-t % *  - narrow to files with all tags matching a regexp
+ * C-x C-t % *  - narrow to files with some tags  matching a regexp
+ * C-x a +      - add tags to current candidate
+ * C-x a -      - remove tags from current candidate
+ * C-x m        - access file bookmarks (not just autofiles)
 
 These options, when non-nil, control candidate matching and filtering:
 
@@ -8839,14 +8913,18 @@ regexp.
 You can use either `RET' or `C-g' to finish adding file names to the
 list.
 
-During completion (`*' means this requires library `Bookmark+'):
-
- *You can use `C-x a +' or `C-x a -' to add or remove tags from the
-   current-candidate file.  You are prompted for the tags.
- *You can use `C-x m' to access file bookmarks (not just autofiles).
-  You can use `C-c +' to create a new directory.
-  You can use `\\[icicle-all-candidates-list-alt-action]' to open Dired on currently matching file names.
-  You can use `\\[icicle-delete-candidate-object]' to delete a candidate file or (empty) dir.
+During completion (`*' means this requires library `Bookmark+')\\<minibuffer-local-completion-map>, you
+can use the following keys:
+   C-c +        - create a new directory
+   \\[icicle-all-candidates-list-alt-action]          - open Dired on the currently matching file names
+   \\[icicle-delete-candidate-object]     - delete candidate file or (empty) dir
+ * C-x C-t *    - narrow to files with all of the tags you specify
+ * C-x C-t *    - narrow to files with some of the tags you specify
+ * C-x C-t % *  - narrow to files with all tags matching a regexp
+ * C-x C-t % *  - narrow to files with some tags  matching a regexp
+ * C-x a +      - add tags to current candidate
+ * C-x a -      - remove tags from current candidate
+ * C-x m        - access file bookmarks (not just autofiles)
 
 These options, when non-nil, control candidate matching and filtering:
 
@@ -8913,14 +8991,18 @@ input are available.  In particular, if `insert-default-directory' is
 non-nil then you will want to use `\\[icicle-erase-minibuffer-or-history-element]' to remove the default
 directory from the minibuffer when you want to match proxy candidates.
 
-During completion (`*' means this requires library `Bookmark+'):
-
- *You can use `C-x a +' or `C-x a -' to add or remove tags from the
-   current-candidate file.  You are prompted for the tags.
- *You can use `C-x m' to access file bookmarks (not just autofiles).
-  You can use `C-c +' to create a new directory.
-  You can use `\\[icicle-all-candidates-list-alt-action]' to open Dired on currently matching file names.
-  You can use `\\[icicle-delete-candidate-object]' to delete a candidate file or (empty) dir.
+During completion (`*' means this requires library `Bookmark+')\\<minibuffer-local-completion-map>, you
+can use the following keys:
+   C-c +        - create a new directory
+   \\[icicle-all-candidates-list-alt-action]          - open Dired on the currently matching file names
+   \\[icicle-delete-candidate-object]     - delete candidate file or (empty) dir
+ * C-x C-t *    - narrow to files with all of the tags you specify
+ * C-x C-t *    - narrow to files with some of the tags you specify
+ * C-x C-t % *  - narrow to files with all tags matching a regexp
+ * C-x C-t % *  - narrow to files with some tags  matching a regexp
+ * C-x a +      - add tags to current candidate
+ * C-x a -      - remove tags from current candidate
+ * C-x m        - access file bookmarks (not just autofiles)
 
 These options, when non-nil, control candidate matching and filtering:
 
