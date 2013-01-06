@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Oct 2009
 ;; Version: 1
-;; RCS Version: $Rev: 440 $
+;; RCS Version: $Rev: 445 $
 ;; Keywords: sunrise commander, tabs
 ;; URL: http://www.emacswiki.org/emacs/sunrise-x-tabs.el
 ;; Compatibility: GNU Emacs 22+
@@ -229,7 +229,9 @@ The direction depends on the value of BACK."
 
 (defun sr-tabs-switch-to-buffer (to-buffer)
   "Change context of the active Sunrise pane when switching buffers."
-  (let ((from-buffer (current-buffer)))
+  (let ((from-buffer (current-buffer))
+        (sr-current-path-faces
+         (with-current-buffer to-buffer sr-current-path-faces)))
     (unless (eq from-buffer to-buffer)
       (sr-save-aspect (switch-to-buffer to-buffer))
       (setq sr-this-directory default-directory)
@@ -485,6 +487,7 @@ by Sunrise when moving to another directory (called from
   (add-hook 'sr-quit-hook 'sr-tabs-bury-all)
   (add-hook 'kill-buffer-query-functions 'sr-tabs-protect-buffer)
   (ad-activate 'sr-transpose-panes)
+  (ad-activate 'sr-editable-pane)
   (sr-tabs-refresh))
 
 (defun sr-tabs-disengage ()
@@ -494,6 +497,7 @@ by Sunrise when moving to another directory (called from
   (remove-hook 'sr-quit-hook 'sr-tabs-bury-all)
   (remove-hook 'kill-buffer-query-functions 'sr-tabs-protect-buffer)
   (ad-deactivate 'sr-transpose-panes)
+  (ad-deactivate 'sr-editable-pane)
   (setq header-line-format (default-value 'header-line-format))
   (sr-in-other (setq header-line-format (default-value 'header-line-format))))
 
@@ -548,7 +552,20 @@ This minor mode provides the following keybindings:
       (sr-tabs-engage)
     (sr-tabs-disengage)))
 
+(defvar sr-tabs-editable-dired-map
+  (let ((map (make-sparse-keymap)))
+    (set-keymap-parent map sr-tabs-mode-map)
+    (define-key map "\C-n"  'dired-next-line)
+    (define-key map "\C-p"  'dired-previous-line)
+    (define-key map "\C-tn" 'sr-tabs-next)
+    (define-key map "\C-tp" 'sr-tabs-prev)
+    map)
+  "Keymap for managing tabs inside Editable Dired mode panes.")
 
+(defadvice sr-editable-pane (after sr-tabs-advice-sr-editable-pane ())
+  "Install `sr-tabs-editable-dired-map' when in Editable Dired mode."
+  (add-to-list 'minor-mode-overriding-map-alist
+               `(sr-tabs-mode . ,sr-tabs-editable-dired-map)))
 
 ;;; ============================================================================
 ;;; Bootstrap:
