@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Jan  5 15:17:49 2013 (-0800)
+;; Last-Updated: Sun Jan  6 15:36:07 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 9555
+;;     Update #: 9558
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -86,6 +86,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2013/01/06 dadams
+;;     icicle-execute-extended-command-1:
+;;       Extra safeguards: Ensure CMD is fboundp before calling symbol-function.
+;;                         Ensure it is commandp before calling it interactively.  Error if not.
 ;; 2013/01/05 dadams
 ;;     icicle-bookmark-*-narrow: No-op unless (featurep 'bookmark+).
 ;;     icicle-(delete-file|dired|find-file(-absolute|-of-content|-in-tags-table)|recent-file|
