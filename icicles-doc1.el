@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Jan  4 09:56:07 2013 (-0800)
+;; Last-Updated: Sat Jan  5 19:22:39 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 27009
+;;     Update #: 27012
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -7266,6 +7266,19 @@
 ;;    bookmark.  This is the same as `C-x a +' and `C-x a -', except
 ;;    that it does not prompt you for tags to add or remove.  You need
 ;;    library `Bookmark+' for this feature.
+;;
+;;  * `C-x C-t *' to narrow the current file-name completion
+;;    candidates to those that are tagged with all of the tags you
+;;    specify.  You are prompted for the tags.
+;;
+;;  * `C-x C-t +' - same as `C-x C-t *', except it narrows to the
+;;    files tagged with any of the specified tags.
+;;
+;;  * `C-x C-t % *' to narrow the candidates to those whose tags all
+;;    match a specified regexp.  You are prompted for the regexp.
+;;
+;;  * `C-x C-t % +' - same as `C-x C-t % *', except it narrows to the
+;;    files that have any matching tag.
 ;;
 ;;  In many cases for Icicles multi-commands that read a file name,
 ;;  you can use `M-n' to pick up the file name at point, or if none
