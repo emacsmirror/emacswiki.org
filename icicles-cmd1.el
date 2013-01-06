@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Jan  5 19:08:56 2013 (-0800)
+;; Last-Updated: Sun Jan  6 15:20:35 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 25426
+;;     Update #: 25432
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -3874,7 +3874,7 @@ then customize option `icicle-top-level-key-bindings'." ; Doc string
   (when (string= "" cmd-name) (error "No command name"))
 
   (let* ((cmd                                       (intern cmd-name))
-         (fn                                        (symbol-function cmd))
+         (fn                                        (and (fboundp cmd)  (symbol-function cmd)))
          (count                                     (prefix-numeric-value current-prefix-arg))
          (completion-annotate-function              nil) ; Cancel value from `icicle-execute-extended-command'.
          (icicle-toggle-transforming-message        icicle--last-toggle-transforming-msg) ; Restore - FREE HERE
@@ -3897,10 +3897,11 @@ then customize option `icicle-top-level-key-bindings'." ; Doc string
                    (wrong-number-of-arguments (funcall #'icicle-help-on-candidate))) ; Punt - show help.
                  (select-window (minibuffer-window))
                  (select-frame-set-input-focus (selected-frame))))))
+
     (cond ((arrayp fn)
            (let ((this-command  cmd)) (execute-kbd-macro fn count))
            (when (> count 1) (message "(%d times)" count)))
-          (t
+          ((commandp cmd)
            (run-hooks 'post-command-hook)
            (run-hooks 'pre-command-hook)
            (let ((enable-recursive-minibuffers            t)
@@ -3910,7 +3911,10 @@ then customize option `icicle-top-level-key-bindings'." ; Doc string
                  ;; to be `cmd' during the `C-RET' part, but `last-command' must not be `cmd'
                  ;; during the `next' part.
                  (this-command                            cmd))
-             (call-interactively cmd 'record-it))))
+             (call-interactively cmd 'record-it)))
+          ;; Should not happen, since `icicle-e*-e*-command' calls `completing-read' with non-nil REQUIRE arg.
+          (t (error "Not a command: `%s'" cmd-name)))
+
     ;; Message showing what CMD is bound to.  This is pretty much the same as in `execute-extended-command',
     ;; but do not show the message if we are not at the `M-x' top level, i.e., if we are acting on a
     ;; candidate command using `C-RET' instead of `RET'.
