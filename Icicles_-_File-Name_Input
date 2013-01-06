@@ -116,6 +116,21 @@ bookmark.  This is the same as `##C-x a +##' and `C-x a -', except
 that it does not prompt you for tags to add or remove.  You need
 library '''[[Bookmark+]]''' for this feature.
 
+* '''`##C-x C-t *##'''' to narrow the current file-name completion
+candidates to those that are tagged with ''all'' of the tags you
+specify.  You are prompted for the tags.
+
+* '''`##C-x C-t +##'''' -- same as `##C-x C-t *##', except it narrows to the
+files tagged with ''any'' of the specified tags.
+
+* '''`##C-x C-t % *##'''' to narrow the candidates to those whose tags ''all''
+match a specified regexp.  You are prompted for the regexp.
+
+* '''`##C-x C-t % +##'''' -- same as `##C-x C-t % *##', except it narrows to the
+files that have ''any'' matching tag.
+
+
+
 In many cases for '''Icicles''' multi-commands that read a file name,
 you can use '''`M-n'''' to pick up the file name at [[point]], or if none
 then the name of the file you are currently visiting.
