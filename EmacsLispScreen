@@ -27,7 +27,10 @@ Latest release is 1.4.6. Download it at:
 * http://www.morishima.net/~naoto/elscreen-en/?lang=en
 
 There are also add-ons for popular GNU Emacs modes such as EmacsDired,
-w3m, 
+w3m. To use this version you also need to find and install APEL.
+
+There is a fork of ElScreen/package.el updated for Emacs 24 and without external dependencies:
+* https://github.com/shosti/elscreen
 
 == Features ==
 
