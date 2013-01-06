@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Sat Jan  5 14:47:28 2013 (-0800)
+;; Last-Updated: Sat Jan  5 19:09:20 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 6211
+;;     Update #: 6212
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -453,9 +453,9 @@ can use the following keys:
    \\[icicle-all-candidates-list-alt-action]          - open Dired on the currently matching file names
    \\[icicle-delete-candidate-object]     - delete candidate file or (empty) dir
  * C-x C-t *    - narrow to files with all of the tags you specify
- * C-x C-t *    - narrow to files with some of the tags you specify
+ * C-x C-t +    - narrow to files with some of the tags you specify
  * C-x C-t % *  - narrow to files with all tags matching a regexp
- * C-x C-t % *  - narrow to files with some tags  matching a regexp
+ * C-x C-t % +  - narrow to files with some tags  matching a regexp
  * C-x a +      - add tags to current candidate
  * C-x a -      - remove tags from current candidate
  * C-x m        - access file bookmarks (not just autofiles)"
@@ -569,9 +569,9 @@ can use the following keys:
    \\[icicle-all-candidates-list-alt-action]          - open Dired on the currently matching file names
    \\[icicle-delete-candidate-object]     - delete candidate file or (empty) dir
  * C-x C-t *    - narrow to files with all of the tags you specify
- * C-x C-t *    - narrow to files with some of the tags you specify
+ * C-x C-t +    - narrow to files with some of the tags you specify
  * C-x C-t % *  - narrow to files with all tags matching a regexp
- * C-x C-t % *  - narrow to files with some tags  matching a regexp
+ * C-x C-t % +  - narrow to files with some tags  matching a regexp
  * C-x a +      - add tags to current candidate
  * C-x a -      - remove tags from current candidate
  * C-x m        - access file bookmarks (not just autofiles)" ; Doc string
