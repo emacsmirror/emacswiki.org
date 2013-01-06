@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Jan  5 15:10:36 2013 (-0800)
+;; Last-Updated: Sat Jan  5 23:45:47 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 18763
+;;     Update #: 18811
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1101,13 +1101,15 @@ You can add and remove tags for a file during completion, using
  `C-x a +' and `C-x a -', respectively.
 See also top-level command `icicle-find-file-tagged'."
   (interactive)
+  (unless icicle-completion-candidates (error "No completion candidates.  Did you use `TAB' or `S-TAB'?"))
+  (unless (require 'bookmark+ nil t) (error "You need library `Bookmark+' for this command"))
   (let* ((candidates                    icicle-completion-candidates)
          (enable-recursive-minibuffers  t)
          (tags                          (bmkp-read-tags-completing nil nil current-prefix-arg))
          (pred                          `(lambda (ff)
                                           (let* ((bmk   (bmkp-get-autofile-bookmark ff))
                                                  (btgs  (and bmk  (bmkp-get-tags bmk))))
-                                            (and btgs  (bmkp-every `(lambda (tag) (bmkp-has-tag-p ',bmk tag))
+                                            (and btgs  (bmkp-every (lambda (tag) (bmkp-has-tag-p bmk tag))
                                                                    ',tags))))))
     (setq icicle-completion-candidates  candidates)
     (icicle-narrow-candidates-with-predicate pred)))
@@ -1120,6 +1122,9 @@ You can add and remove tags for a file during completion, using
  `C-x a +' and `C-x a -', respectively.
 See also top-level command `icicle-find-file-all-tags-regexp'."
   (interactive)
+  (unless icicle-completion-candidates (error "No completion candidates.  Did you use `TAB' or `S-TAB'?"))
+  (unless (require 'bookmark+ nil t) (error "You need library `Bookmark+' for this command"))
+  (bookmark-maybe-load-default-file)
   (let* ((candidates                    icicle-completion-candidates)
          (enable-recursive-minibuffers  t)
          (regexp                        (read-string "Regexp for tags: "))
@@ -1127,7 +1132,7 @@ See also top-level command `icicle-find-file-all-tags-regexp'."
                                           (let* ((bmk   (bmkp-get-autofile-bookmark ff))
                                                  (btgs  (and bmk  (bmkp-get-tags bmk))))
                                             (and btgs  (bmkp-every
-                                                        `(lambda (tag)
+                                                        (lambda (tag)
                                                           (string-match ',regexp (bmkp-tag-name tag)))
                                                         btgs))))))
     (setq icicle-completion-candidates  candidates)
@@ -1141,13 +1146,15 @@ You can add and remove tags for a file during completion, using
  `C-x a +' and `C-x a -', respectively.
 See also top-level command `icicle-find-file-tagged'."
   (interactive)
+  (unless icicle-completion-candidates (error "No completion candidates.  Did you use `TAB' or `S-TAB'?"))
+  (unless (require 'bookmark+ nil t) (error "You need library `Bookmark+' for this command"))
   (let* ((candidates                    icicle-completion-candidates)
          (enable-recursive-minibuffers  t)
          (tags                          (bmkp-read-tags-completing nil nil current-prefix-arg))
          (pred                          `(lambda (ff)
                                           (let* ((bmk   (bmkp-get-autofile-bookmark ff))
                                                  (btgs  (and bmk  (bmkp-get-tags bmk))))
-                                            (and btgs  (bmkp-some `(lambda (tag) (bmkp-has-tag-p ',bmk tag))
+                                            (and btgs  (bmkp-some (lambda (tag) (bmkp-has-tag-p bmk tag))
                                                                   ',tags))))))
     (setq icicle-completion-candidates  candidates)
     (icicle-narrow-candidates-with-predicate pred)))
@@ -1160,6 +1167,9 @@ You can add and remove tags for a file during completion, using
  `C-x a +' and `C-x a -', respectively.
 See also top-level command `icicle-find-file-some-tags-regexp'."
   (interactive)
+  (unless icicle-completion-candidates (error "No completion candidates.  Did you use `TAB' or `S-TAB'?"))
+  (unless (require 'bookmark+ nil t) (error "You need library `Bookmark+' for this command"))
+  (bookmark-maybe-load-default-file)
   (let* ((candidates                    icicle-completion-candidates)
          (enable-recursive-minibuffers  t)
          (regexp                        (read-string "Regexp for tags: "))
@@ -1167,7 +1177,7 @@ See also top-level command `icicle-find-file-some-tags-regexp'."
                                           (let* ((bmk   (bmkp-get-autofile-bookmark ff))
                                                  (btgs  (and bmk  (bmkp-get-tags bmk))))
                                             (and btgs  (bmkp-some
-                                                        `(lambda (tag)
+                                                        (lambda (tag)
                                                           (string-match ',regexp (bmkp-tag-name tag)))
                                                         btgs))))))
     (setq icicle-completion-candidates  candidates)
@@ -5178,7 +5188,7 @@ If any of these conditions is true, remove all occurrences of CAND:
          ;; else update `minibuffer-completion-predicate'.
          (and (icicle-file-name-input-p)  (> emacs-major-version 21))
          (let ((var  (if (or (> emacs-major-version 23)
-                             (and (> emacs-major-version 23)  (> emacs-minor-version 1)))
+                             (and (= emacs-major-version 23)  (> emacs-minor-version 1)))
                          'minibuffer-completion-predicate
                        'read-file-name-predicate)))
            (set var (if (symbol-value var)
@@ -6016,7 +6026,7 @@ When called from Lisp with non-nil arg PREDICATE, use that to narrow."
                     ;; Else update `minibuffer-completion-predicate'.
                     (and (icicle-file-name-input-p)  (> emacs-major-version 21))
                     (let ((var  (if (or (> emacs-major-version 23)
-                                        (and (> emacs-major-version 23)  (> emacs-minor-version 1)))
+                                        (and (= emacs-major-version 23)  (> emacs-minor-version 1)))
                                     'minibuffer-completion-predicate
                                   'read-file-name-predicate)))
                       (set var (if (symbol-value var)
@@ -6122,7 +6132,7 @@ Return the string that was inserted."
 ;;;###autoload (autoload 'icicle-bind-buffer-candidate-keys "icicles")
 (defun icicle-bind-buffer-candidate-keys () ; Use in first code of buffer-candidate commands.
   "Bind specific keys for acting on the current buffer-name candidate."
-  (dolist (map  '(minibuffer-local-completion-map minibuffer-local-must-match-map))
+  (dolist (map  (list minibuffer-local-completion-map minibuffer-local-must-match-map))
     (when (require 'bookmark+ nil t)
       (define-key map (icicle-kbd "C-x m") 'icicle-bookmark-non-file-other-window))              ; `C-x m'
     (define-key map (icicle-kbd "C-x M -") 'icicle-remove-buffer-cands-for-mode)                 ; `C-x M -'
@@ -6138,7 +6148,7 @@ Return the string that was inserted."
 ;;;###autoload (autoload 'icicle-unbind-buffer-candidate-keys "icicles")
 (defun icicle-unbind-buffer-candidate-keys () ; Use in last code of buffer-candidate commands.
   "Unbind specific keys for acting on the current buffer-name candidate."
-  (dolist (map  '(minibuffer-local-completion-map minibuffer-local-must-match-map))
+  (dolist (map  (list minibuffer-local-completion-map minibuffer-local-must-match-map))
     (define-key map (icicle-kbd "C-x m")      nil)
     (define-key map (icicle-kbd "C-x M -")    nil)
     (define-key map (icicle-kbd "C-x M +")    nil)
@@ -6155,25 +6165,34 @@ Return the string that was inserted."
 ;; `minibuffer-local-must-match-map', respectively.  For Emacs 23.1,
 ;; `minibuffer-local-must-match-filename-map' is an alias for
 ;; `minibuffer-local-filename-must-match-map'.  But for Emacs 23.2, there is no such alias!
-;; And for Emacs 24+, there is no longer a `minibuffer-local-filename-must-match-map'.
+;; And for Emacs 24+, there is no longer a `minibuffer-local-filename-must-match-map', and file-name maps
+;; are merged with either `minibuffer-local-completion-map' or `minibuffer-local-must-match-map'.
+;;
+;; We add the bindings for absolute file-name completion also.  It uses only
+;; `minibuffer-local-completion-map' or `minibuffer-local-must-match-map'.
 ;;
 ;;;###autoload (autoload 'icicle-bind-file-candidate-keys "icicles")
 (defun icicle-bind-file-candidate-keys ()
   "Bind specific keys for acting on the current file-name candidate."
-  (let ((maps  (if (icicle-file-name-input-p)
-                   (list (if (boundp 'minibuffer-local-filename-completion-map) ; Lax
-                             'minibuffer-local-filename-completion-map
-                           'minibuffer-local-completion-map)
-                         (cond ((boundp 'minibuffer-local-filename-must-match-map) ; Strict
-                                'minibuffer-local-filename-must-match-map)
-                               ((boundp 'minibuffer-local-must-match-filename-map)
-                                'minibuffer-local-must-match-filename-map)
-                               (t 'minibuffer-local-must-match-map)))
-                 ;; For `completing-read', not `read-file-name', e.g., when using absolute file names.
-                 '(minibuffer-local-completion-map minibuffer-local-must-match-map))))
+  (let ((maps  (delq nil (list minibuffer-local-completion-map minibuffer-local-must-match-map
+                               (and (< emacs-major-version 24)
+                                    (boundp 'minibuffer-local-filename-completion-map)
+                                    (not (eq minibuffer-local-completion-map
+                                             (keymap-parent minibuffer-local-filename-completion-map)))
+                                    minibuffer-local-filename-completion-map)
+                               (and (< emacs-major-version 24)
+                                    (boundp 'minibuffer-local-filename-must-match-map)
+                                    (not (eq minibuffer-local-must-match-map
+                                             (keymap-parent minibuffer-local-filename-must-match-map)))
+                                    minibuffer-local-filename-must-match-map)
+                               (and (< emacs-major-version 24)
+                                    (boundp 'minibuffer-local-must-match-filename-map)
+                                    (not (eq minibuffer-local-must-match-map
+                                             (keymap-parent minibuffer-local-must-match-filename-map)))
+                                    minibuffer-local-must-match-filename-map)))))
     (dolist (map  maps)
-      (define-key map (icicle-kbd "C-backspace")  'icicle-up-directory)                      ; `C-backspace'
-      (define-key map (icicle-kbd "C-c +")        'icicle-make-directory)                    ; `C-c +'
+      (define-key map (icicle-kbd "C-backspace")  'icicle-up-directory) ; `C-backspace'
+      (define-key map (icicle-kbd "C-c +")        'icicle-make-directory) ; `C-c +'
       (when (require 'bookmark+ nil t)
         (define-key map (icicle-kbd "C-x m")       'icicle-bookmark-file-other-window)       ; `C-x m'
         (define-key map (icicle-kbd "C-x a +")     (icicle-autofile-action 'add))            ; `C-x a +'
@@ -6182,29 +6201,39 @@ Return the string that was inserted."
         (define-key map (icicle-kbd "C-x C-t *")   'icicle-file-all-tags-narrow)             ; `C-x C-t *'
         (define-key map (icicle-kbd "C-x C-t +")   'icicle-file-some-tags-narrow)            ; `C-x C-t +'
         (define-key map (icicle-kbd "C-x C-t % *") 'icicle-file-all-tags-regexp-narrow)      ; `C-x C-t % *'
-        (define-key map (icicle-kbd "C-x C-t % +") 'icicle-file-some-tags-regexp-narrow)))))
+        (define-key map (icicle-kbd "C-x C-t % +") 'icicle-file-some-tags-regexp-narrow))))) ; `C-x C-t % +'
 
 ;;;###autoload (autoload 'icicle-unbind-file-candidate-keys "icicles")
 (defun icicle-unbind-file-candidate-keys ()
   "Unbind specific keys for acting on the current file-name candidate."
-  (let ((maps  (delq nil (list (and (boundp 'minibuffer-local-filename-completion-map)
-                                    'minibuffer-local-filename-completion-map)
-                               (and (boundp 'minibuffer-local-filename-must-match-map)
-                                    'minibuffer-local-filename-must-match-map)
-                               (and (boundp 'minibuffer-local-must-match-filename-map)
-                                    'minibuffer-local-must-match-filename-map)
-                               'minibuffer-local-completion-map
-                               'minibuffer-local-must-match-map))))
+  (let ((maps  (delq nil (list minibuffer-local-completion-map minibuffer-local-must-match-map
+                               (and (< emacs-major-version 24)
+                                    (boundp 'minibuffer-local-filename-completion-map)
+                                    (not (eq minibuffer-local-completion-map
+                                             (keymap-parent minibuffer-local-filename-completion-map)))
+                                    minibuffer-local-filename-completion-map)
+                               (and (< emacs-major-version 24)
+                                    (boundp 'minibuffer-local-filename-must-match-map)
+                                    (not (eq minibuffer-local-must-match-map
+                                             (keymap-parent minibuffer-local-filename-must-match-map)))
+                                    minibuffer-local-filename-must-match-map)
+                               (and (< emacs-major-version 24)
+                                    (boundp 'minibuffer-local-must-match-filename-map)
+                                    (not (eq minibuffer-local-must-match-map
+                                             (keymap-parent minibuffer-local-must-match-filename-map)))
+                                    minibuffer-local-must-match-filename-map)))))
     (dolist (map  maps)
       (define-key map (icicle-kbd "C-backspace")  nil)
       (define-key map (icicle-kbd "C-c +")        nil)
       (define-key map (icicle-kbd "C-x m")        nil)
+      (define-key map (icicle-kbd "C-x a")        nil) ; Prefix
       (define-key map (icicle-kbd "C-x a +")      nil)
       (define-key map (icicle-kbd "C-x a -")      nil)
       (define-key map (icicle-kbd "C-x a a")      nil)
-      (define-key map (icicle-kbd "C-x a")        nil)
+      (define-key map (icicle-kbd "C-x C-t")      nil) ; Prefix
       (define-key map (icicle-kbd "C-x C-t *")    nil)
       (define-key map (icicle-kbd "C-x C-t +")    nil)
+      (define-key map (icicle-kbd "C-x C-t %")    nil) ; Prefix
       (define-key map (icicle-kbd "C-x C-t % *")  nil)
       (define-key map (icicle-kbd "C-x C-t % +")  nil))))
 
