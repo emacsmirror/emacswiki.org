@@ -68,6 +68,22 @@ How about:
 Which has the advantage of looking like the original for loop and still being fairly lisp-ish.
 
 -- Shaleh
+
+[new]
+Using modifiers:
+
+   for f in *.xpm(:r) {convert $f.xpm $f.png}
+
+the (:r) removes the extension
+
+This can be done with some other modifiers too, e.g:
+
+   for f in *.xpm *.jpg {convert $f $f(:s/\..*$/.png/)}
+
+I could not get this to work though
+
+   for f in *.xpm *.jpg {convert $f $f(:r).png}
+
 [new]
 Tried this little example out and it seems that it works if you do not use the dollar-sign. I don't know why it works, I solved it by trial and error :) Maybe someone else can explain and clean up my mess below:
 
