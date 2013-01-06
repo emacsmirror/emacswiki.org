@@ -38,5 +38,10 @@ filtering rules:
 ; *.c('file-writable-p) : Lispy way of doing *.c(w)
 ; *.c(|upcase) : Lispy way of doing *.c(<nowiki>:</nowiki>U)
 
+See also:
+
+* <code> M-x eshell-display-predicate-help </code>
+* <code> M-x eshell-display-modifier-help </code>
+
 ----
 CategoryEshell
