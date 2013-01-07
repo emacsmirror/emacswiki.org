@@ -39,25 +39,25 @@ I can imagine how defining your function keys is nothing but personal
 preference; like choosing your favorite color. So, without further
 ado, here's mine:
 
-  (global-set-key [f1] '(lambda () (interactive) (find-file "~/.xemacs/fkeys.el")))
-  (global-set-key [(control f1)] '(lambda () (interactive) (load-file "~/.xemacs/fkeys.el")))
-  (global-set-key [(shift f1)] '(lambda () (interactive) (find-file "~/.xemacs/init.el")))
-  #+ignore(global-set-key [(shift f1)] '(lambda () (interactive) (dired "~/.xemacs/")))
+  (global-set-key [f1] (lambda () (interactive) (find-file "~/.xemacs/fkeys.el")))
+  (global-set-key [(control f1)] (lambda () (interactive) (load-file "~/.xemacs/fkeys.el")))
+  (global-set-key [(shift f1)] (lambda () (interactive) (find-file "~/.xemacs/init.el")))
+  #+ignore(global-set-key [(shift f1)] (lambda () (interactive) (dired "~/.xemacs/")))
   (global-set-key [f2] 'eshell)
-  (global-set-key [(control f2)] '(lambda () (interactive) (eshell 1)))
+  (global-set-key [(control f2)] (lambda () (interactive) (eshell 1)))
   (global-set-key [f3] 'w3m)
   (global-set-key [(control f3)] 'w3m-goto-url-new-session)
   (global-set-key [(shift f3)] 'dka-w3m-goto-wiki)
   (global-set-key [f4] 'dka-switch-to-erc)
   (global-set-key [f5] 'gnus)
   (global-set-key [(control f5)]
-    '(lambda ()
+    (lambda ()
        (interactive)
        (gnus-group-get-new-news)
        (nnmail-split-history)
        (setq nnmail-split-history nil)))
   (global-set-key [(control shift f5)]
-    '(lambda ()
+    (lambda ()
        (interactive)
        (let ((buffer (get-buffer "*nnmail split history*")))
          (delete-windows-on buffer)
