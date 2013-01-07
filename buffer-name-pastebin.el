@@ -3,6 +3,7 @@
 ;;; Copyright (C) 2008 by Nic Ferrier <nic@ferrier.me.uk>
 ;;; Copyright (C) 2010 by Ivan Korotkov <twee@tweedle-dee.org>
 ;;; Copyright (C) 2012 by Filonenko Michael <filonenko.mikhail@gmail.com>
+;;; Copyright (C) 2012 by Daniel Hilst <danielhilst@gmail.com>
 
 ;;; This program is free software; you can redistribute it and/or modify
 ;;; it under the terms of the GNU General Public License as published by
@@ -214,7 +215,7 @@ If domain is used pastebin prompts for a domain defaulting to
 different domain.
 "
   (interactive 
-   (if (mark)
+   (if (region-active-p)
        (list (region-beginning) (region-end) nil)
      (list (point-min) (point-max) nil)))
   ;; Main function
