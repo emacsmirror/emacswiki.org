@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Sat Jan  5 19:09:20 2013 (-0800)
+;; Last-Updated: Sun Jan  6 20:15:45 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 6212
+;;     Update #: 6215
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -459,7 +459,7 @@ can use the following keys:
  * C-x a +      - add tags to current candidate
  * C-x a -      - remove tags from current candidate
  * C-x m        - access file bookmarks (not just autofiles)"
-    (lambda (file) (bmkp-bookmark-a-file file nil nil 'MSG))
+    (lambda (file) (bmkp-bookmark-a-file file nil nil nil 'MSG))
     "File to bookmark (autofile): " nil nil nil nil nil ; `read-file-name' args
     (icicle-file-bindings               ; Bindings
      ((icicle-use-candidates-only-once-flag  t)
@@ -486,7 +486,7 @@ The tags are added to an autofile bookmark for the same file name and
 directory.  If the bookmark does not yet exist it is created.
 Candidate help shows information about the file's autofile bookmark if
 it already exists, or the file itself if not."
-    (lambda (file) (bmkp-autofile-add-tags file tags nil nil 'MSG))
+    (lambda (file) (bmkp-autofile-add-tags file tags nil nil nil 'MSG))
     "File to tag: " nil nil nil nil nil ; `read-file-name' args
     (icicle-file-bindings               ; Bindings
      ((tags                                  (bmkp-read-tags-completing))
@@ -505,7 +505,7 @@ at point, or if none then the visited file.
 The tags are removed from an autofile bookmark for the same file name
 and directory.  During file-name completion, only files tagged with
 all of the given input tags are completion candidates."
-    (lambda (file) (bmkp-autofile-remove-tags file tags nil nil 'MSG))
+    (lambda (file) (bmkp-autofile-remove-tags file tags nil nil nil 'MSG))
     "File to untag: " nil nil t nil (and icompletep  pred) ; `read-file-name' args
     (icicle-file-bindings               ; Bindings
      ((tags                                    (bmkp-read-tags-completing)) ; Pre bindings
