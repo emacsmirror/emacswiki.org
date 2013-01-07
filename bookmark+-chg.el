@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Jan  4 16:11:33 2013 (-0800)
+;; Last-Updated: Mon Jan  7 14:43:59 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 15177
+;;     Update #: 15192
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,10 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2013/01/07 dadams
+;;     bmkp-remove-all-tags, bmkp(-autofile)-(add|remove)-tags, bmkp-set-tag-value,
+;;       bmkp-paste-(add|replace)-tags, bmkp-(url|file)-target-set, bmkp-autofile-set:
+;;         Added missing NO-UPDATE-P arg for interactive spec.
 ;; 2012/11/13 dadams
 ;;     bmkp-sorting-description: Fixed 1st case: use ORDER only if bmkp-sort-comparer is also non-nil.
 ;; 2012/11/11 dadams
