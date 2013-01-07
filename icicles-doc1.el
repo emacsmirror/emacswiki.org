@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Jan  5 19:22:39 2013 (-0800)
+;; Last-Updated: Sun Jan  6 17:10:31 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 27012
+;;     Update #: 27013
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -7561,7 +7561,8 @@
 ;;  * (@> "Buffer-Name Input") about visiting recently used files or
 ;;    files whose names have been cached, and about content-searching
 ;;    them
-
+;;  * (@file :file-name "icicles-doc2.el" :to "Tagging Files and Jumping to Them")
+;;    for more information about tagging files
  
 ;;(@* "Persistent Sets of Completion Candidates")
 ;;
