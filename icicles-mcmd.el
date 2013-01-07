@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Jan  5 23:45:47 2013 (-0800)
+;; Last-Updated: Sun Jan  6 20:16:07 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 18811
+;;     Update #: 18813
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -5288,8 +5288,8 @@ The candidate is updated as follows:
                               (bmkp-read-tags-completing)))))
         (if (memq ',action '(add remove))
             (funcall ',(if (eq 'add action) 'bmkp-autofile-add-tags 'bmkp-autofile-remove-tags)
-                     cand tags nil nil 'MSG)
-          (bmkp-bookmark-a-file cand nil nil 'MSG))
+                     cand tags nil nil nil 'MSG)
+          (bmkp-bookmark-a-file cand nil nil nil 'MSG))
         (when (and icicle-full-cand-fn  (not (icicle-file-name-input-p)))
           (icicle-replace-mct-cand-in-mct mct-cand (icicle-mctized-full-candidate
                                                     (funcall icicle-full-cand-fn cand)))
