@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Thu Jan  3 10:18:51 2013 (-0800)
+;; Last-Updated: Sun Jan  6 18:54:33 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 29142
+;;     Update #: 29144
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1782,6 +1782,10 @@
 ;;  and `bmkp-jump-other-window-map': prefixes `C-x j a' and `C-x 4 j
 ;;  a' (`a' for autofile).  The latter is for the `-other-window'
 ;;  version of each command.
+;;
+;;  See Also:
+;;
+;;  * (@file :file-name "icicles-doc1.el" :to "Action Keys Bound Dynamically During File-Name Input")
 ;;
 ;;(@* "`icicle-find-file-tagged'")
 ;;  *** `icicle-find-file-tagged' ***
