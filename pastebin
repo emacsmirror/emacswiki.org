@@ -59,7 +59,8 @@ New pastebin.el version here: [[newpastebin.el]]
 
 ----
 
-I've change newpastebin.el, if no name provided to pastebin function, buffer-name is used.
+I've change newpastebin.el, if no name is provided to pastebin function, buffer-name is used. Also
+fix the check for region. 
 Here is [[buffer-name-pastebin.el]]
 
 
