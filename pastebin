@@ -58,4 +58,9 @@ asvil updated IvanKorotkov's code to match the new [http://pastebin.com/api past
 New pastebin.el version here: [[newpastebin.el]]
 
 ----
-CategoryInterface
+
+I've change newpastebin.el, if no name provided to pastebin function, buffer-name is used.
+Here is [[buffer-name-pastebin.el]]
+
+
+-- DanielHilst
