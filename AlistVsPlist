@@ -28,7 +28,7 @@ In a plist each key will be distinct, since the routines `put' and `plist-put' s
     ==> (a 2)
 
 
-Usually alists are used as very simple and data structures.  They are easy to use but inefficient.  If you are running into performance issues, use hash tables instead.
+Usually alists are employed as simple data structures.  They are easy to use but inefficient.  If you are running into performance issues, use hash tables instead.
 
 Plists are used when attaching information to symbols.  The doc strings of variables and functions, for example, are just a key-value association in the property list of the symbol in question.
 
