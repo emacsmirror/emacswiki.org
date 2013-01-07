@@ -10,7 +10,7 @@ It's also possible to [[DedicatedKeys|assign key bindings]] such as ##shift f1##
 (global-set-key [(shift f1)]
   '(lambda ()
     (interactive)
-    (dired "/home/[username]/[directoryname]/")))
+    (dired "~/[directoryname]/")))
 }}}
 
 Dired key bindings for directories can be complemented with similar find-file key bindings to directly open most used files:
@@ -19,7 +19,7 @@ Dired key bindings for directories can be complemented with similar find-file ke
 (global-set-key [(control f1)]
   '(lambda ()
     (interactive)
-    (find-file "/home/[username]/[directoryname]/[filename]"))) 
+    (find-file "~/[directoryname]/[filename]"))) 
 }}}
 
 You can read more about Dired mode by reading the help displayed using `C-h m' in a Dired buffer. Even more information is available in the EmacsManual: `C-h i', choose Emacs, then choose Dired under Advanced Features. (Or read [[Manual:Dired]] online.)
