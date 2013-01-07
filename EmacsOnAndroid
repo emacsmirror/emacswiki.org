@@ -4,7 +4,7 @@ This is about installing Emacs into an Android device. See GoogleAndroid for tip
 Some of them are hypothetical.
 
 ===Native port (installable Android application)===
-A first version of a native port was released August 2012. Quickly installable like any other Android app, with no need to root the mobile device. See [http://play.google.com/store/apps/details?id=com.zielm.emacs Google Play: Emacs], and [http://github.com/zielmicha/emacs-android GitHub: zielmicha/emacs-android] (Emacs port [http://github.com/zielmicha/emacs-android/issues issues], etc.).
+A first version of a native port was released August 2012. Quickly installable like any other Android app, with no need to root the mobile device. Key bindings, etc., work with physical keyboards -e.g. mini bluetooth keyboard- and External Keyboard Helper Pro app, or with on-screen Hacker's Keyboard app. Init file: ##/sdcard/emacs/.emacs## (optional). See [http://play.google.com/store/apps/details?id=com.zielm.emacs Google Play: Emacs], and [http://github.com/zielmicha/emacs-android GitHub: zielmicha/emacs-android] (Emacs port [http://github.com/zielmicha/emacs-android/issues issues], etc.).
 
 ===Keep Android, install Linux and Emacs in a chroot jail, run Emacs from an Android shell client===
 For a Linux and Emacs environment in a chrooted loopback filesystem on a rooted tablet, see [http://www.carcosa.net/jason/blog/2012/Jul/19 Running Emacs on an Android tablet]. Android apps such as ConnectBot shell client and Hacker's Keyboard (including Ctrl, etc. keys) can be used with Emacs in this way.
