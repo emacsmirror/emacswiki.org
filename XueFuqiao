@@ -1,6 +1,6 @@
 == About Me ==
 <pre>
-(message "Welcome to my homepage! ;-)")
+(minibuffer-message "Welcome to my homepage! ;-)")
 </pre>
 I use Emacs.
 
