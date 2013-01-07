@@ -350,6 +350,8 @@ Alternatively, replacing the `let' with `progn'.
 
 === String to number ===
 
+The following example is for instruction.  Normally the standard <code>string-to-number</code> function would be used.
+
   (defun decimal-number (string)
     (let ((n (string-to-number string)))
       (save-match-data
