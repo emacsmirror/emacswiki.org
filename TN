@@ -224,6 +224,7 @@ Usage:
 Install the package by pasting the following advice into your .emacs file.
 In an auctex-buffer with previews first adjust the font size with C-x C-+ or C-x C-- and then regenerate the previews with C-c C-p C-d.
 <pre>
+(require 'face-remap)
 (defadvice preview-inherited-face-attribute (after preview-inherit-local-face nil activate)
   "Scale preview images with respect to buffer-local face"
   (when (eq attribute :height)
