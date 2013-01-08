@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Jan  7 19:57:09 2013 (-0800)
+;; Last-Updated: Mon Jan  7 20:39:38 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 15195
+;;     Update #: 15199
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -857,6 +857,10 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2013/01/07 dadams
+;;     bookmark-bmenu-mode:
+;;       Added: bmkp-bmenu-set-tag-value-for-marked, bmkp-bmenu-paste-(add|replace)-tags-for-marked.
+;;       Mention C-u = all, for marked.
 ;; 2013/01/04 dadams
 ;;     bmkp-bmenu-show-only-tagged: Corrected filter function.
 ;; 2012/11/14 dadams
