@@ -92,6 +92,7 @@ Other pages (could this please be split in major and minor modes?):
 * MuttMode -- use emacs as editor for mutt
 * MuttRc -- generic mode for mutt configuration files
 * MTraceMode -- keep track of hidden buffer changes
+* ObjMode -- Edit 3D Wavefront Obj format files
 * OrgMode -- Keep notes, maintain TODO lists, do project planning, and author with plain-text system.
 * OccurMode -- Create a hyperlinked index for the lines in a buffer that match a regexp
 * OutlineMode -- hide blocks of text beneath a heirarchy of headings (see also CategoryTodo)
