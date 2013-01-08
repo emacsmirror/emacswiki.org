@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Mon Jan  7 11:21:22 2013 (-0800)
+;; Last-Updated: Mon Jan  7 19:56:33 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 6004
+;;     Update #: 6034
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -3384,9 +3384,7 @@ Non-interactively, optional arg MSG-P means display progress messages."
                     bookmark-alist-modification-count  (1+ bookmark-alist-modification-count)))
             nil)))
     (if (stringp read-error-msg)
-        (if msg-p
-            (message "%s  --> edit and try again" read-error-msg)
-          (error read-error-msg))
+        (if msg-p (message "%s  --> edit and try again" read-error-msg) (error read-error-msg))
       (when (get-buffer editbuf) (kill-buffer editbuf))
       (bmkp-refresh/rebuild-menu-list bmk-name (not msg-p))))
   (setq bmkp-edit-bookmark-orig-record  nil)) ; Reset it.
@@ -4112,8 +4110,7 @@ message."
     (bookmark-bmenu-surreptitiously-rebuild-list (not msg-p))
     (when msg-p (message "UN-omitted %d bookmarks" count)))
   (when (equal (buffer-name (current-buffer)) "*Bookmark List*") (bmkp-bmenu-show-all))
-  (when (and (fboundp 'fit-frame-if-one-window)
-             (equal (buffer-name (current-buffer)) "*Bookmark List*"))
+  (when (and (fboundp 'fit-frame-if-one-window)  (equal (buffer-name (current-buffer)) "*Bookmark List*"))
     (fit-frame-if-one-window)))
 
 (defun bmkp-omitted-alist-only ()
@@ -4369,9 +4366,10 @@ Non-interactively:
     (bookmark-prop-set bookmark 'tags ())
     (unless no-update-p (bmkp-tags-list)) ; Update the tags cache.
     (bmkp-maybe-save-bookmarks)
-    (when (and msg-p  nb-removed)  (message "%d tags removed" nb-removed)))
-  (unless no-update-p
-    (bmkp-refresh/rebuild-menu-list bookmark (not msg-p)))) ; So remove `t' marker and add `*' for BOOKMARK.
+    (unless no-update-p
+      (bmkp-refresh/rebuild-menu-list bookmark (not msg-p))) ; So remove `t' marker and add `*' marker.
+    (when (and msg-p  nb-removed)  (message "%d tags removed" nb-removed)))) ; Do after msg from refreshing.
+
 
 ;;;###autoload (autoload 'bmkp-add-tags "bookmark+")
 (defun bmkp-add-tags (bookmark tags &optional no-update-p msg-p)
@@ -4408,10 +4406,8 @@ is negative."
       (bmkp-refresh/rebuild-menu-list bookmark (not msg-p))) ; So display `t' and `*' markers for BOOKMARK.
     (let ((nb-added  (- (length newtags) olen)))
       (when msg-p (message "%d tags added. Now: %S" nb-added ; Echo just the tag names.
-                           (let ((tgs  (mapcar #'bmkp-tag-name newtags)))
-                             (setq tgs (sort tgs #'string<)))))
-      (when (and (zerop olen)  (> (length newtags) 0))
-        (setq nb-added  (- nb-added)))
+                           (let ((tgs  (mapcar #'bmkp-tag-name newtags))) (setq tgs (sort tgs #'string<)))))
+      (when (and (zerop olen)  (> (length newtags) 0)) (setq nb-added  (- nb-added)))
       nb-added)))
 
 ;; $$$$$$ Not yet used
@@ -4492,8 +4488,7 @@ is negative."
         (when msg-p (message "%d tags removed. Now: %S" nb-removed ; Echo just the tag names.
                              (let ((tgs  (mapcar #'bmkp-tag-name remtags)))
                                (setq tgs (sort tgs #'string<)))))
-        (when (and (zerop (length remtags))  (> olen 0))
-          (setq nb-removed  (- nb-removed)))
+        (when (and (zerop (length remtags))  (> olen 0)) (setq nb-removed  (- nb-removed)))
         nb-removed))))
 
 ;;;###autoload (autoload 'bmkp-remove-tags-from-all "bookmark+")
@@ -4540,9 +4535,8 @@ deletion."
             (when (or assoc-tag member-tag)
               (setq tag-exists-p  t)
               (bookmark-prop-set bmk 'tags newtags))))))
-    (if tag-exists-p
-        (bmkp-tags-list)                ; Update the tags cache now, after iterate.
-      (error "No such tag: `%s'" tag))
+    (unless tag-exists-p (error "No such tag: `%s'" tag))
+    (bmkp-tags-list)                    ; Update the tags cache now, after iterate.
     (when msg-p (message "Renamed"))))
 
 ;;;###autoload (autoload 'bmkp-copy-tags "bookmark+")
@@ -4570,8 +4564,7 @@ Non-interactively:
   do not refresh/rebuild the bookmark-list display.
 * Non-nil MSG-P means display a message about the addition."
   (interactive (list (bookmark-completing-read "Bookmark" (bmkp-default-bookmark-name)) nil 'MSG))
-  (unless (listp bmkp-copied-tags)
-    (error "`bmkp-paste-add-tags': `bmkp-copied-tags' is not a list"))
+  (unless (listp bmkp-copied-tags) (error "`bmkp-paste-add-tags': `bmkp-copied-tags' is not a list"))
   (bmkp-add-tags bookmark bmkp-copied-tags no-update-p msg-p))
 
 ;;;###autoload (autoload 'bmkp-paste-replace-tags "bookmark+")
@@ -4591,7 +4584,7 @@ Non-interactively:
     (when (and msg-p  has-tags-p
                (not (y-or-n-p "Existing tags will be LOST - really replace them? ")))
       (error "OK - paste-replace tags canceled"))
-    (when has-tags-p (bmkp-remove-all-tags bookmark no-update-p msg-p)))
+    (when has-tags-p (bmkp-remove-all-tags bookmark no-update-p msg-p) (sleep-for 0.5)))
   (bmkp-add-tags bookmark bmkp-copied-tags no-update-p msg-p))
 
 
@@ -6465,11 +6458,10 @@ Non-interactively:
                  bmk failure)
     (condition-case err
         (setq bmk  (bookmark-store (if prefix-only-p (concat name/prefix url) name/prefix)
-                                   (cdr (bookmark-make-record)) nil no-update-p (not msg-p)))
+                                   (cdr (bookmark-make-record))  nil  no-update-p  (not msg-p)))
       (error (setq failure  err)))
-    (if (not failure)
-        bmk                             ; Return the bookmark.
-      (error "Failed to create bookmark for `%s':\n%s\n" url failure))))
+    (when failure (error "Failed to create bookmark for `%s':\n%s\n" url failure))
+    bmk))                               ; Return the bookmark.
 
 ;;;###autoload (autoload 'bmkp-file-target-set "bookmark+")
 (defun bmkp-file-target-set (file &optional prefix-only-p name/prefix no-overwrite no-update-p msg-p)
@@ -6516,22 +6508,18 @@ Non-interactively:
          'MSG))
   (unless name/prefix (setq name/prefix  ""))
   (let ((bookmark-make-record-function  (bmkp-make-record-for-target-file file))
-        bmk failure)
+        bmk  failure)
     (condition-case err
         (setq bmk  (bookmark-store (if prefix-only-p
                                        (concat name/prefix (file-name-nondirectory file))
                                      name/prefix)
-                                   (cdr (bookmark-make-record))
-                                   no-overwrite
-                                   no-update-p
-                                   (not msg-p)))
+                                   (cdr (bookmark-make-record))  no-overwrite  no-update-p  (not msg-p)))
       (error (setq failure  (error-message-string err))))
-    (if (not failure)
-        (prog1 bmk                      ; Return the bookmark.
-          (unless no-update-p (bmkp-refresh/rebuild-menu-list bmk (not msg-p)))
-          (when (and msg-p  (not (file-exists-p file)))
-            (message "File name is now bookmarked, but no such file yet: `%s'" (expand-file-name file))))
-      (error "Failed to create bookmark for `%s':\n%s\n" file failure))))
+    (when failure (error "Failed to create bookmark for `%s':\n%s\n" file failure))
+    (unless no-update-p (bmkp-refresh/rebuild-menu-list bmk (not msg-p)))
+    (when (and msg-p  (not (file-exists-p file)))
+      (message "File name is now bookmarked, but no such file yet: `%s'" (expand-file-name file)))
+    bmk))                               ; Return the bookmark.
 
 (defun bmkp-make-record-for-target-file (file)
   "Return a function that creates a bookmark record for FILE.
@@ -6773,7 +6761,7 @@ Non-interactively:
   (bmkp-remove-tags (bmkp-autofile-set file dir prefix no-update-p) tags no-update-p msg-p))
 
 ;;;###autoload (autoload 'bmkp-purge-notags-autofiles "bookmark+")
-(defun bmkp-purge-notags-autofiles (&optional prefix msg-p) ; Not bound
+(defun bmkp-purge-notags-autofiles (&optional prefix msg-p) ; Not bound to a key by default
   "Delete all autofile bookmarks that have no tags.
 With a prefix arg, you are prompted for a PREFIX for the bookmark name.
 Non-interactively, non-nil MSG-P means display a status message."
@@ -9141,15 +9129,12 @@ Non-interactively:
          (bmk                                         (bmkp-get-autofile-bookmark fil)))
     (if bmk
         (bookmark-jump bmk)
-      (if must-exist-p
-          (error "File `%s' is not an autofile (no bookmark)" fil)
-        (when create-autofile-p         ; Create a new bookmark.
-          (bmkp-file-target-set (expand-file-name fil dir-to-use) t nil 'NO-OVERWRITE msg-p)
-          (when msg-p (message "Autofile bookmark set for `%s'" fil)))
-        (let ((default-handler  (condition-case nil (bmkp-default-handler-for-file fil) (error nil))))
-          (if default-handler
-              (funcall default-handler fil)
-            (find-file fil 'WILDCARDS)))))))
+      (when must-exist-p (error "File `%s' is not an autofile (no bookmark)" fil))
+      (when create-autofile-p           ; Create a new bookmark.
+        (bmkp-file-target-set (expand-file-name fil dir-to-use) t nil 'NO-OVERWRITE msg-p)
+        (when msg-p (message "Autofile bookmark set for `%s'" fil)))
+      (let ((default-handler  (condition-case nil (bmkp-default-handler-for-file fil) (error nil))))
+        (if default-handler  (funcall default-handler fil)  (find-file fil 'WILDCARDS))))))
 
 (defun bmkp-find-file-other-window (&optional file create-autofile-p must-exist-p msg-p) ; `C-x 4 j C-f'
   "`bmkp-find-file', but in another window."
@@ -9163,15 +9148,12 @@ Non-interactively:
          (bmk                                         (bmkp-get-autofile-bookmark fil dir-to-use)))
     (if bmk
         (bookmark-jump-other-window bmk)
-      (if must-exist-p
-          (error "File `%s' is not an autofile (no bookmark)" fil)
-        (when create-autofile-p         ; Create a new bookmark.
-          (bmkp-file-target-set (expand-file-name fil dir-to-use) t nil 'NO-OVERWRITE msg-p)
-          (when msg-p (message "Autofile bookmark created for `%s'" fil)))
-        (let ((default-handler  (condition-case nil (bmkp-default-handler-for-file fil) (error nil))))
-          (if default-handler
-              (funcall default-handler fil)
-            (find-file-other-window fil 'WILDCARDS)))))))
+      (when must-exist-p (error "File `%s' is not an autofile (no bookmark)" fil))
+      (when create-autofile-p           ; Create a new bookmark.
+        (bmkp-file-target-set (expand-file-name fil dir-to-use) t nil 'NO-OVERWRITE msg-p)
+        (when msg-p (message "Autofile bookmark created for `%s'" fil)))
+      (let ((default-handler  (condition-case nil (bmkp-default-handler-for-file fil) (error nil))))
+        (if default-handler  (funcall default-handler fil)  (find-file-other-window fil 'WILDCARDS))))))
 
 
 ;;; We could allow these even for Emacs 20 for Icicles users,
@@ -10023,8 +10005,7 @@ buffer part names the current buffer."
     (if (null bmks-to-delete)
         (when msg-p (message "No autonamed bookmarks for buffer `%s'" (buffer-name)))
       (when (or (not msg-p)
-                (y-or-n-p (format "Delete ALL autonamed bookmarks for buffer `%s'? "
-                                  (buffer-name))))
+                (y-or-n-p (format "Delete ALL autonamed bookmarks for buffer `%s'? " (buffer-name))))
         (let ((bookmark-save-flag   (and (not bmkp-count-multi-mods-as-one-flag)
                                          bookmark-save-flag))) ; Save at most once, after `dolist'.
           (dolist (bmk  bmks-to-delete)  (bookmark-delete bmk 'BATCHP))) ; No refresh yet.
@@ -10425,8 +10406,7 @@ Non-interactively:
                     (when (or (not msg-p)  (y-or-n-p (format "Delete bookmark `%s'? " bname)))
                       (bookmark-delete bname 'BATCHP) ; No refresh yet.
                       ;; This is the same as `add-to-list' with `EQ' (not available for Emacs 20-21).
-                      (unless (memq bname bmks-deleted)
-                        (setq bmks-deleted  (cons bname bmks-deleted)))))
+                      (unless (memq bname bmks-deleted) (setq bmks-deleted  (cons bname bmks-deleted)))))
                   (bmkp-refresh/rebuild-menu-list nil (not msg-p)) ; Now refresh.    
                   (when msg-p
                     (message (if bmks-deleted
