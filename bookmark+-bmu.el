@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Fri Jan  4 16:09:48 2013 (-0800)
+;; Last-Updated: Mon Jan  7 20:34:21 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 2379
+;;     Update #: 2414
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -1404,10 +1404,10 @@ C-u \\[bmkp-toggle-autonamed-bookmark-set/delete]\t- Delete all autonamed bookma
 Cycle Bookmarks (anywhere)
 ---------------
 
-C-x p n n ...\t- Next bookmark in buffer  (C-x p C-n, C-x p down)
-C-x p p p ...\t- Prev bookmark in buffer  (C-x p C-p, C-x p up)
-C-x p f f ...\t- Next bookmark in navlist (C-x p C-f, C-x p right)
-C-x p b b ...\t- Prev bookmark in navlist (C-x p C-b, C-x p left)
+C-x p n n ...\t- Next bookmark in buffer     (C-x p C-n, C-x p down)
+C-x p p p ...\t- Prev bookmark in buffer     (C-x p C-p, C-x p up)
+C-x p f f ...\t- Next bookmark in navlist    (C-x p C-f, C-x p right)
+C-x p b b ...\t- Prev bookmark in navlist    (C-x p C-b, C-x p left)
 C-x p next  ...\t- MS Windows `Open' next     bookmark in navlist
 C-x p prior ...\t- MS Windows `Open' previous bookmark in navlist
 C-x C-down  ...\t- Next highlighted bookmark in buffer
@@ -1417,9 +1417,9 @@ C-x C-up    ...\t- Prev highlighted bookmark in buffer
 Search-and-Replace in Bookmark Targets (here, in sort order)
 --------------------------------------
 
-M-s a C-s\t- Isearch the marked bookmarks (Emacs 23+)
-M-s a C-M-s\t- Regexp-isearch the marked bookmarks (Emacs 23+)
-\\[bmkp-bmenu-search-marked-bookmarks-regexp]\t- Regexp-search the marked file bookmarks
+M-s a C-s\t- Isearch the marked bookmarks            (`C-u': all)
+M-s a C-M-s\t- Regexp-isearch the marked bookmarks     (`C-u': all)
+\\[bmkp-bmenu-search-marked-bookmarks-regexp]\t- Regexp-search the marked file bookmarks (`C-u': all)
 \\[bmkp-bmenu-query-replace-marked-bookmarks-regexp]\t\t- Query-replace the marked file \
 bookmarks
 
@@ -1470,8 +1470,8 @@ Modify, Delete Bookmarks
 \\[bmkp-bmenu-edit-bookmark-name-and-file]\t- Rename or relocate bookmark
 \\[bmkp-bmenu-edit-tags]\t- Edit bookmark's tags
 C-u \\[bmkp-bmenu-show-or-edit-annotation]\t- Edit bookmark's annotation
-\\[bmkp-bmenu-edit-bookmark-record]\t- Edit internal record for bookmark (Lisp)
-\\[bmkp-bmenu-edit-marked]\t- Edit internal records of marked bookmarks (Lisp)
+\\[bmkp-bmenu-edit-bookmark-record]\t- Edit internal Lisp record for bookmark
+\\[bmkp-bmenu-edit-marked]\t- Edit internal Lisp records of marked bookmarks  (`C-u': all)
 \\[bmkp-bmenu-toggle-temporary]\t- Toggle temporary/savable status of bookmark
 \\[bmkp-bmenu-toggle-marked-temporary/savable]\t- Toggle temporary/savable status of marked bookmarks
 \\[bmkp-delete-all-temporary-bookmarks]\t- Delete all temp bookmarks
@@ -1483,7 +1483,7 @@ Bookmark Tags
 -------------
 
 \\[bmkp-add-tags]\t- Add some tags to a bookmark
-\\[bmkp-remove-tags]\t- Remove some tags from a bookmark
+\\[bmkp-remove-tags]\t- Remove some tags from a bookmark (`C-u': from all bookmarks)
 \\[bmkp-remove-all-tags]\t- Remove all tags from a bookmark
 \\[bmkp-remove-tags-from-all]\t- Remove some tags from all bookmarks
 \\[bmkp-rename-tag]\t- Rename a tag in all bookmarks
@@ -1491,8 +1491,12 @@ Bookmark Tags
 \\[bmkp-bmenu-edit-tags]\t- Edit bookmark's tags
 \\[bmkp-bmenu-set-tag-value]\t- Set the value of a tag (as attribute)
 
-\\[bmkp-bmenu-add-tags-to-marked]\t- Add some tags to the marked bookmarks
-\\[bmkp-bmenu-remove-tags-from-marked]\t- Remove some tags from the marked bookmarks
+\\[bmkp-bmenu-set-tag-value-for-marked]\t- Set value of a tag, for each marked bookmark    (`C-u': all)
+\\[bmkp-bmenu-paste-add-tags-to-marked]\t- Add tags copied from a bookmark to those marked (`C-u': all)
+\\[bmkp-bmenu-paste-replace-tags-for-marked]\t- Replace tags of marked with copied tags \
+        (`C-u': all)
+\\[bmkp-bmenu-add-tags-to-marked]\t- Add some tags to the marked bookmarks           (`C-u': all)
+\\[bmkp-bmenu-remove-tags-from-marked]\t- Remove some tags from the marked bookmarks      (`C-u': all)
 
 \\[bmkp-bmenu-mark-bookmarks-tagged-regexp]\t- Mark bookmarks having at least one \
 tag that matches a regexp
