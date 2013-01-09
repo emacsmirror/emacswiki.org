@@ -21,7 +21,9 @@ Check out this image: Geocities:gchen275/xemacs/line-numbers-mode.gif.
 LinumPlus
 
 
+== NLinum ==
 
+The ##nlinum.el## library, available from GNU ELPA (http://elpa.gnu.org/packages/nlinum.html) is meant as a replacement for linum.el, using the jit-lock infrastructure to fix various corner case bugs in linum.el.  It should usually be about as fast or faster than linum.el.
 
 
 
@@ -43,23 +45,6 @@ Also is there a way to turn on linum mode automatically for any opened file? - T
 : Try ##M-x customize-face RET linum##. Also try ##M-x global-linum-mode##, or append ##(add-hook 'find-file-hook (lambda () (linum-mode 1)))## to your ##.emacs##.
 
 : Append ##(global-linum-mode 1)## to your ##.emacs##.
-
-[new:Guillermo:2008-12-18]
-With org-mode, it make crash all emacs with a "Fatal error (10)Bus error" when you try to collapse a tree (S-tab)
-
-A similar problem was recently fixed in the Emacs core. Please try the most recent CVS version, and if the problem persists, please report it with M-x report-emacs-bug.
-
-[new:Andrzej:2011-05-12]
-##linum-mode## is incompatible with ##visual-line-mode##. If the top line of the buffer is a visual line (that is, not a physical one) the line number next to it blinks on any user action (like typing a text or dragging a scrollbar). Also, the line itself is being constantly refilled (which causes text to move around).
-
-: It looks like ##visual-line-mode## doesn't like spaces in the margin (a bug?). A simple workaround is to set ##linum-format## to ##"%d"##. This has a side effect of aligning all line numbers to the left.
-
-[new:kodekata: 2011-08-29]
-There is a problem with the rendering of the line numbers in (all?) recent GNU Emacs versions (i.e. at least 23.? through current bzr trunk) on OS X. The problem is demonstrated here:
-http://lists.gnu.org/archive/html/help-gnu-emacs/2011-03/msg00322.html
-E.g. it is present on 24.0.50.1 (i386-apple-darwin10.7.1, NS apple-appkit-1038.35), built with homebrew.
-I have found that the bug seems to create the vertical white line artifact through what are the margin characters second from the left.
-A temporary fix is to do something like: <code>(setq linum-format "    %d ")</code>; while creating a larger margin, this seems to alleviate the problem on my system.
 
 [new:MichaelHoffman:2011-12-20]
 Another workaround that keeps the appearance of the dynamic linum-format is to use this function which replaces the spaces on the left with zeroes that have the same foreground and background color.
