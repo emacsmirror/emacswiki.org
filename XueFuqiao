@@ -136,13 +136,15 @@ Coming soon.
 * Dvips
 * English
 * FilesystemHierarchyStandard
-* GDB
+* GnuCompilerCollection
+* GnuDebugger
 * GnuAspell
 * GnuBazaar
 * GnuTar
 * GnuTLS
 * GnuOctave
-* GPL/GFDL
+* GnuGeneralPublicLicense
+* GnuFreeDocumentationLicense
 * gzip
 * GnuGo
 * Grav-mass
