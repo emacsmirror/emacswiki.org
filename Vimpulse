@@ -1,6 +1,6 @@
-'''Vimpulse''' augments [ViperMode Viper] with Vim features like Visual mode and text objects.
+Vimpulse was a mode which augmented [ViperMode Viper] with Vim features like Visual mode and text objects.
 
-[[Evil]] supersedes Vimpulse.[https://lists.ourproject.org/pipermail/implementations-list/2011-April/000756.html]
+'''[[Evil]] supersedes Vimpulse.[https://lists.ourproject.org/pipermail/implementations-list/2011-April/000756.html]'''
 
 == Download ==
 
