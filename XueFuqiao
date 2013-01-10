@@ -23,7 +23,7 @@ Communication Engineering.  Feel free to ask anything about Emacs :)
 
 I'm a [http://www.fsf.org/free-software-supporter/ FreeSoftwareSupporter] and a [http://www.gp.org Green Party] supporter.
 
-You can contact me using(Please send plain text mail, thanks):
+You can contact me using (please send plain text mail, thanks):
 <pre>
 (concat (list 120 102 113) [46] (mapconcat (function (lambda (x) (format "%c" (1- x)))) "gsff" "") "@" "gmail" "." "com")
 </pre>
