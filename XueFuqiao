@@ -131,6 +131,7 @@ Coming soon.
 * Autoconf
 * Automake
 * Coreboot
+* cpio
 * Dragora GNU/Linux
 * DuckDuckGo
 * Dvips
@@ -140,7 +141,6 @@ Coming soon.
 * GnuDebugger
 * GnuAspell
 * GnuBazaar
-* GnuTar
 * GnuTLS
 * GnuOctave
 * GnuGeneralPublicLicense and GnuFreeDocumentationLicense
