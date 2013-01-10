@@ -29,7 +29,7 @@ You can contact me using:
 </pre>
 == My Emacs Installation ==
 <pre>
-./configure --with-x-toolkit=no --without-toolkit-scroll-bars --with-wide-int --enable-link-time-optimization
+./configure --with-x-toolkit=no --without-toolkit-scroll-bars --with-wide-int --enable-link-time-optimization --enable-gcc-warnings
 make
 src/emacs -Q
 make install
