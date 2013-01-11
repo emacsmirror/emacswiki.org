@@ -70,12 +70,20 @@ Conclusion, in your ~/.emacs file:
 I'd be interested if others are using this method, how I might package
 it into a mode and some general feedback.
 
+[new]
+I found this page because I am looking for a method to accomplish exactly what the title says.  The comment regarding versioned backups and diff made me laugh and cringe at the same time.  Folks, we're experiencing a minor clash of cultures here... :)  My advice: when you find yourself wondering why seemingly intelligent people are so passionate about vc, consider how so many people have failed to understand your passion about emacs over the years.  Modern version control systems are strong magic.  They are esoteric, abstract filesystems that give users great power.  I consider every file that isn't under version control to be a temporary file.  From a usability point of view: I currently have a terminal open where I handle git commands, because egg doesn't meet my needs.
+[new]
+
 ----
 
 Unless you're using a distributed VC system, this would only work when
 you're on a network with interactive latency/bandwidth.  For some, the
 discipline of having to check in whole files is important.  For
 others, no distributed VC system yet scales well enough.
+
+[new]
+Isn't bandwidth my problem?  And, people seem happy with tramp.
+[new]
 
 I don't disagree with the fundamental urge to limit the proliferation
 of "versioned backup" mechanisms.  We have, in no particular order:
