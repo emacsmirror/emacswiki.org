@@ -1,9 +1,8 @@
-The humble home of [http://vmlinux.org/jocke/ Joachim Nilsson].  Emacs is my favorite toolbox and I like to explore its universe and expand my understanding of it on a daily basis.  I currently employed by [http://www.westermo.se Westermo R&D] where I work on industrial Ethernet switches based on GNU/Linux.
-
-From time to time [http://vmlinux.org/jocke/ I blog] about Emacs, those ramblings can be seen here http://vmlinux.org/jocke/blog/emacs/
+The humble home of [https://github.com/troglobit Joachim Nilsson].  Emacs is my favourite toolbox and I like to explore its universe and expand my understanding of it on a daily basis.  I currently employed by [http://www.westermo.se Westermo R&D] where I work on industrial Ethernet switches based on GNU/Linux.
 
 In Emacs I am interested in:
 
+* MagitCherryPick -- How to use Magit to cherry pick parts of a GIT commit 
 * EnterpriseEmacs, my own tacky/twisted idea of what the defaults should be.
 * The RedoMode, we *need* redo for Emacs
 * The CapsKey should be Ctrl! Who designed today's keyboards?
