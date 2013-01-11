@@ -1,0 +1,30 @@
+== Using Magit to Cherry Pick Parts of a GIT Commit ==
+
+I work a lot with GIT, both professionally and privately.  Much of the work
+goes into maintaining different branches of code.  When you want to port bug
+fixes you can use the cherry-pick mechanism to pick commits from, e.g., your
+master branch to an older branch.
+
+However, developers do not always leave commits neatly portable and sometimes
+also mixes in other minor fixes and changes.  So simply cherry-picking the
+complete commit is sometimes not possible.
+
+Usually developers sigh and simply manually port patches by using an editor
+or diff/patch tools.  This page exists to ease this task.
+
+Take a look at these two web pages:
+
+* http://stackoverflow.com/questions/1526044/partly-cherry-picking-a-commit-with-git
+* http://psung.blogspot.no/2008/12/magit.html
+
+From a terminal
+
+    git cherry-pick -n <commit>   # get your patch, but don't commit (-n = --no-commit)
+    git reset                     # unstage the changes from the cherry-picked commit
+    git add -p                    # make all your choices (add the changes you do want)
+    git commit                    # make the commit!
+
+In Emacs you can do this magically with 'M-x magit-status' using the following
+commands:
+
+* ... TODO
