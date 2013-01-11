@@ -34,3 +34,9 @@ If you rebind ##C-f## to some new command then Ergo mode's ##M-l## will execute 
 
 [new]
 It might be a good idea long termwise to use something reminding of the corresponding bindings in viper/vi instead of the above bindings.
+
+== See Also ==
+[[esdf-mode]]
+
+----
+CategoryKeys
