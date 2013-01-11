@@ -151,5 +151,12 @@ Meta-F8 calls ispell for the FlySpell highlighted word after the cursor's positi
 
 How can I position the flyspell suggestions in a window that is below the current window? Currently, on Aquamacs, running leuven color theme, when the suggestions come up, the tabs do not disappear (they did when i wasn't using the color theme). The theme is really nice (in conjunction with org-mode) so I do not wish to get rid of that. How can i force the suggestion window to appear just above the modeline?
 
+== Run flyspell-buffer after change to dictionary ==
+[new]
+
+If I add a word during a flyspell session, it's still marked up as misspelled.  And flyspell-correct-previous-word tells me that it's spelling is correct.  How do I run flyspell-buffer on the buffer every time the dictionary is modified?
+
+-kd
+
 ----
 CategoryModes | CategorySpelling
