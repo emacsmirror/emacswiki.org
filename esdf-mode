@@ -36,5 +36,8 @@ Tested on Emacs 23.2 on Windows.
 
 P.S. In practice I bind the unshifted keys in the keymap to actual functions like <code>previous-line</code> and <code>next-line</code> so that [[Accelerate]] can pick them up.
 
+[new:XueFuqiao:2013-01-11 13:31 UTC]
+If it supports other keyboard layouts like DvorakKeyboard (maybe ##.oeu##), it will be better.
+
 ----
 CategoryKeys
