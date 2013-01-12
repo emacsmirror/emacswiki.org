@@ -34,10 +34,11 @@ If you rebind ##C-f## to some new command then Ergo mode's ##M-l## will execute 
 
 [new]
 You might try something like
+{{{
   (let ((ergo-mode nil))
      (call-interactively
        (key-binding "\M-f")))
-
+}}}
 to get to the original key binding.
 
 [new]
