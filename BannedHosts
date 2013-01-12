@@ -19,30 +19,30 @@
 ^60\.190\.240\.(6[456789]|[78][0-9]|9[0-5]) # for spamming our category pages
 ^60\.10\.12\.117 # for spamming Comments on CategoryData
 ^89\.163\.39\.37 # for spamming us with links to hacked boards and the like
-46-105-54-85.kimsufi.com # for spamming, creating new pages with links
+^46-105-54-85\.kimsufi\.com # for spamming, creating new pages with links
 ^46\.183\.162\.80 # for spamming [[Icicles - Key Binding Discussion]]
-23.19.79.210.rdns.ubiquity.io # for spamming
-23.19.195.34.rdns.ubiquity.io # for spamming
-147.255.183.235.rdns.ubiquity.io # for spamming CategoryProject
-rdns.ubiquity.io # for spamming
+^23\.19\.79\.210\.rdns\.ubiquity\.io # for spamming
+^23\.19\.195\.34\.rdns\.ubiquity\.io # for spamming
+^147\.255\.183\.235\.rdns\.ubiquity\.io # for spamming CategoryProject
+^rdns\.ubiquity\.io # for spamming
 ^112\.101\.64\.113 # for spamming EmacsForums
-118\.99\.68\.104 # spamming XmlParser, including with action=edit;id=XmlParser
-125.51.150.178.triolan.net # for spamming
+^118\.99\.68\.104 # spamming XmlParser, including with action=edit;id=XmlParser
+^125\.51\.150\.178\.triolan\.net # for spamming
 ^124\.240\.187\.81 # for spamming Comments pages
-142.4.117.113 # for spamming
-173.57.65.119 # for spamming SiteMap
-175.44.9.248 # for spamming
-178.187.166.55 # for spamming
-188.143.232.43 # for spamming
-199.15.234.80 # for spamming KeyBindingDiscussion
-220.161.133.195 # for spamming
-ip-194-187-151-104\.ava\.net\.ua # for spamming TextFormattingDiscussion
-bh2.windowsnodes.com # for spamming IciclesDiscussion
-ns3001356.ovh.net # for spamming IciclesDiscussion
-ns224288.ovh.net # for spamming IciclesDiscussion
-194\.25\.100\.94\.king-servers\.com # for spamming TextFormattingDiscussion
-fullternmail\.com # for spamming KinesisKeyboard
-broadband\.kyivstar\.net # for spamming ColemakKeyboard
+^142\.4\.117\.113 # for spamming
+^173\.57\.65\.119 # for spamming SiteMap
+^175\.44\.9\.248 # for spamming
+^178\.187\.166\.55 # for spamming
+^188\.143\.232\.43 # for spamming
+^199\.15\.234\.80 # for spamming KeyBindingDiscussion
+^220\.161\.133\.195 # for spamming
+^ip-194-187-151-104\.ava\.net\.ua # for spamming TextFormattingDiscussion
+^bh2\.windowsnodes\.com # for spamming IciclesDiscussion
+^ns3001356\.ovh\.net # for spamming IciclesDiscussion
+^ns224288\.ovh\.net # for spamming IciclesDiscussion
+^194\.25\.100\.94\.king-servers\.com # for spamming TextFormattingDiscussion
+^fullternmail\.com # for spamming KinesisKeyboard
+^broadband\.kyivstar\.net # for spamming ColemakKeyboard
 ^117\.27\.138\.176 # for spamming KeyBoard
 ^94\.142\.135\.48  # for spamming ColemakKeyboard
 229-152-92-178.pool.ukrtel.net for spamming ColemakKeyboard
@@ -51,25 +51,26 @@ broadband\.kyivstar\.net # for spamming ColemakKeyboard
 ^pool-173-74-59-171.dllstx.fios.verizon.net  # for spamming SiteMap in April 2012
 ^37\.59\.173\.129 # for spamming IciclesDiscusssion
 ^58.22.64.227  # for spamming TableOfContentsDiscussion in April 2012
-node1.heading-toll-host.org # for spamming Comments on LoopFindPackage
-node1.amountofcarforpurchase.net # for spamming multiple "Comments on" pages
-node1.squiftw.org # for spamming IciclesDiscussion
-server1.crosssoldshoes.com # for spamming Comments on LoopFindPackage
-117.27.138.86 # for spamming Comments on roland.walker
-91.237.249.79 # for spamming multiple "Comments on" pages
-ns224288.ovh.net # for spamming IciclesDiscussion
-97.4.207.91.unknown.SteepHost.Net # for spamming IciclesDiscussion
-105.4.207.91.unknown.SteepHost.Net # for spamming IciclesDiscussion
+^node1\.heading-toll-host\.org # for spamming Comments on LoopFindPackage
+^node1\.amountofcarforpurchase\.net # for spamming multiple "Comments on" pages
+^node1\.squiftw\.org # for spamming IciclesDiscussion
+^server1\.crosssoldshoes\.com # for spamming Comments on LoopFindPackage
+^117\.27\.138\.86 # for spamming Comments on roland.walker
+^91\.237\.249\.79 # for spamming multiple "Comments on" pages
+^ns224288\.ovh\.net # for spamming IciclesDiscussion
+^97\.4\.207\.91\.unknown\.SteepHost\.Net # for spamming IciclesDiscussion
+^105\.4\.207\.91\.unknown\.SteepHost\.Net # for spamming IciclesDiscussion
 unknown.SteepHost.Net # for spamming IciclesDiscussion
 ^112\.111\.173\.194 # for spamming IciclesDiscussion
-117.21.227.40 # for spamming IciclesDiscussion
-142.54.163.75 # for spamming IciclesDiscussion
-142.4.117.129 # for spamming Comments on LoopFindPackage
-142.4.117.169 # for spamming KeyBindingDiscussion
-199.15.234.74 # for spamming IciclesDiscussion
-199.15.234.226 # for spamming multiple Comments on pages
-208.177.72.206.ptr.us.xo.net # creating spam pages & spamming
-wnode1.lettheaffiliatedo.com # for spamming Comments on CategoryProject
+^117\.21\.227\.40 # for spamming IciclesDiscussion
+^142\.54\.163\.75 # for spamming IciclesDiscussion
+^142\.4\.117\.129 # for spamming Comments on LoopFindPackage
+^142\.4\.117\.169 # for spamming KeyBindingDiscussion
+^175\.44\.55\.251 # for spamming IciclesDiscussion
+^199\.15\.234\.74 # for spamming IciclesDiscussion
+^199\.15\.234\.226 # for spamming multiple Comments on pages
+^208\.177\.72\.206\.ptr\.us\.xo\.net # creating spam pages & spamming
+^wnode1\.lettheaffiliatedo\.com # for spamming Comments on CategoryProject
 ^61\.157\.217\.247 #  for spamming Comments on CategoryCode 
 ^91\.237\.249\. # for spamming Comments on CategoryCode and others
 ^178\.48\.155\.27\.broad\.fz\.fj\.dynamic\.163data\.com\.cn # spamming EmacsForums
