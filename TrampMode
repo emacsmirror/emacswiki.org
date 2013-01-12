@@ -119,7 +119,7 @@ fi
 }}}
 
 [new:EzeBirman:2013-01-12 07:40 UTC]
-None of the above worked for me so I decided to just change the =SHELL= environment variable. There is no added benefit from running zsh inside tramp anyway.
+None of the above worked for me so I decided to just change the SHELL environment variable. There is no added benefit from running zsh inside tramp anyway.
 {{{
   (eval-after-load 'tramp '(setenv "SHELL" "/bin/bash"))
 }}}
