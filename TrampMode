@@ -123,6 +123,7 @@ None of the above worked for me so I decided to just change the =SHELL= environm
 {{{
   (eval-after-load 'tramp '(setenv "SHELL" "/bin/bash"))
 }}}
+-- [[EzeBirman]]
 
 === Tramp hangs #4: UTF8 LANG ===
 
