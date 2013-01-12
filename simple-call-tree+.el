@@ -343,6 +343,7 @@ END-REGEXP a regular expression to match the end of a token, by default this is 
   (define-key simple-call-tree-mode-map (kbd "/") 'simple-call-tree-toggle-narrowing)
   (define-key simple-call-tree-mode-map (kbd "<") 'simple-call-tree-jump-prev)
   (define-key simple-call-tree-mode-map (kbd ">") 'simple-call-tree-jump-next)
+  (define-key simple-call-tree-mode-map (kbd "m") 'simple-call-tree-bookmark)
   (define-key simple-call-tree-mode-map (kbd "%") 'simple-call-tree-query-replace)
   (define-key simple-call-tree-mode-map (kbd "C-%") 'simple-call-tree-query-replace-regexp)
   (define-key simple-call-tree-mode-map (kbd "M-p") 'simple-call-tree-jump-prev)
@@ -362,6 +363,8 @@ END-REGEXP a regular expression to match the end of a token, by default this is 
        :help "Perform query-replace on the function at point"]
       ["Replace Regexp In Function At Point..." simple-call-tree-query-replace-regexp
        :help "Perform query-replace-regexp on the function at point"]
+      ["Bookmark Current Position..." simple-call-tree-bookmark
+       :help "Create a bookmark for the position corresponding to the branch at point"]
       ["Jump To Branch At Point" simple-call-tree-jump-to-function
        :help "Goto the toplevel branch for the function at point"]
       ["Jump To Branch..." ,(lambda nil (interactive) (setq current-prefix-arg 1)
@@ -1088,6 +1091,17 @@ If ARG is non-nil perform query-replace-regexp instead."
   "Perform query-replace-regexp on function FUNC."
   (interactive (list (simple-call-tree-get-function-at-point)))
   (simple-call-tree-query-replace func t))
+
+(defun simple-call-tree-bookmark nil
+  "Set a bookmark at the position corresponding to the branch at point."
+  (interactive)
+  (let* ((funmark (get-text-property (point) 'location))
+         (buf (and funmark (marker-buffer funmark)))
+         (pos (and funmark (marker-position funmark))))
+    (if funmark
+        (with-current-buffer buf
+          (goto-char pos)
+          (call-interactively 'bookmark-set)))))
 
 (defun simple-call-tree-delete-other-windows nil
   "Make the *Simple Call Tree* buffer fill the frame."
