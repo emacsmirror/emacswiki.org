@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun Jan  6 18:54:33 2013 (-0800)
+;; Last-Updated: Sun Jan 13 09:30:01 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 29144
+;;     Update #: 29156
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -55,6 +55,7 @@
 ;;
 ;;  (@file :file-name "icicles-doc1.el" :to "Nutshell View of Icicles")
 ;;    (@file :file-name "icicles-doc1.el" :to "README for Non-Readers")
+;;    (@file :file-name "icicles-doc1.el" :to "Flashy Demo to Peak Your Curiosity")
 ;;    (@file :file-name "icicles-doc1.el" :to "Toggle Options on the Fly")
 ;;    (@file :file-name "icicles-doc1.el" :to "Cycle Completion Candidates")
 ;;    (@file :file-name "icicles-doc1.el" :to "Display Completion Candidates")
@@ -229,7 +230,7 @@
 ;;    (@> "Define Your Own Icicles Search Commands")
 ;;
 ;;  (@> "Icicles Bookmark Enhancements")
-;;    (@> "Tagging Files and Jumping to Them")
+;;    (@> "Using Tagged Files")
 ;;      (@> "`icicle-find-file-tagged'")
 ;;      (@> "Jumping to Tagged Files (Other)")
 ;;    (@> "Saving Regions and Selecting Them")
@@ -1757,8 +1758,8 @@
 ;;  Each is described in a little more detail below.  More generally,
 ;;  however, the `Bookmark+' doc is your friend.
 ;;
-;;(@* "Tagging Files and Jumping to Them")
-;;  ** Tagging Files and Jumping to Them **
+;;(@* "Using Tagged Files")
+;;  ** Using Tagged Files **
 ;;
 ;;  `Bookmark+' lets you easily tag files with delicious-style tags of
 ;;  your choice.  You need not visit the files to do this.  Icicles
@@ -1770,22 +1771,47 @@
 ;;
 ;;  In Icicle mode, the `Bookmark+' keys for tagging and untagging
 ;;  files are bound to multi-commands `icicle-tag-a-file' and
-;;  `icicle-untag-a-file'.  In addition, all Icicles file commands
-;;  (and autofile bookmark commands) let you tag or untag files on the
-;;  fly, during file-name completion, using the keys `C-x a +' and
-;;  `C-x a -' respectively (`a' for autofile).  Similarly, you can use
-;;  `C-x a a' during file-name completion to create an autofile
-;;  bookmark for a file without tagging it.
+;;  `icicle-untag-a-file'.
 ;;
-;;  There are several Icicles multi-commands for jumping to tagged
-;;  files.  They are all on the `Bookmark+' keymaps `bmkp-jump-map'
-;;  and `bmkp-jump-other-window-map': prefixes `C-x j a' and `C-x 4 j
-;;  a' (`a' for autofile).  The latter is for the `-other-window'
-;;  version of each command.
+;;  In addition, all Icicles file commands (and autofile bookmark
+;;  commands) let you tag or untag files on the fly, during file-name
+;;  completion, using the keys `C-x a +' and `C-x a -' respectively
+;;  (`a' for autofile).  Similarly, you can use `C-x a a' during
+;;  file-name completion to create an autofile bookmark for a file
+;;  without tagging it.
+;;
+;;  All Icicles file commands also let you narrow the set of matching
+;;  completions to those files that are tagged in certain ways, by
+;;  using these keys on the fly:
+;;
+;;  * C-x C-t *    - files having all of the tags you specify
+;;  * C-x C-t +    - files having some of the tags you specify
+;;  * C-x C-t % *  - files having all of their tags matching a regexp
+;;  * C-x C-t % +  - files having some of their tags matching a regexp
+;;
+;;  For example:
+;;
+;;    C-x 4 f foo TAB C-x C-t + red RET blue RET RET
+;;
+;;  `TAB' narrows the file-name candidates here to those starting with
+;;  "foo".  `C-x C-t +' prompts for one or more tags ("red" and
+;;  "blue"), then it narrows the candidates to the names of files that
+;;  are tagged either "red" or "blue" (or both).
+;;
+;;  You can of course use progressive completion, repeating `C-x C-t
+;;  +' to also require tag "yellow" or "purple", for instance.
+;;
+;;  There are also several Icicles multi-commands for jumping to
+;;  tagged files.  They are all on the `Bookmark+' keymaps
+;;  `bmkp-jump-map' and `bmkp-jump-other-window-map': prefixes `C-x j
+;;  a' and `C-x 4 j a' (`a' for autofile).  The latter is for the
+;;  `-other-window' version of each command.
 ;;
 ;;  See Also:
 ;;
 ;;  * (@file :file-name "icicles-doc1.el" :to "Action Keys Bound Dynamically During File-Name Input")
+;;  * (@> "`icicle-find-file-tagged'"), next, for an alternative way
+;;    to narrow file-name candidates based on tags
 ;;
 ;;(@* "`icicle-find-file-tagged'")
 ;;  *** `icicle-find-file-tagged' ***
