@@ -20,3 +20,12 @@ Those are the official GNU releases, which are not the subject of this page.
 
 -- [http://www.xradiograph.com OtherMichael] 2013-01-13 18:35 UTC
 
+
+----
+
+''Clarification:'' Those are ''not'' official GNU releases.  The former are official GNU ''development'' snapshots.  The latter are ''unofficial'' GNU Emacs development snapshots.  
+
+But you are correct that neither is the same as what page [[EmacsW32]] is about, which is LennartBorgman's version of Emacs for Windows, which is distributed at http://ourcomments.org/Emacs/EmacsW32.html.
+
+-- DrewAdams 2013-01-13 19:11 UTC
+
