@@ -137,4 +137,18 @@ Sometimes one wishes to kill a rectangle without actually deleting it.  It's cer
  (global-set-key (kbd "C-x r M-w") 'my-copy-rectangle)
 
 ----
-CategoryRegion
+
+== Replace/yank rectangle ==
+
+Sometimes one wishes to replace a rectangle with another one. Currently this involves copying the source rectangle, deleting the destination rectangle, popping the mark and yanking. I need this often enough to create a dedicated command for this:
+
+ (defun yank-replace-rectangle (start end)
+   "Similar like yank-rectangle, but deletes selected rectangle first."
+   (interactive "r")
+   (delete-rectangle start end)
+   (pop-to-mark-command)
+   (yank-rectangle))
+ 
+ (global-set-key (kbd "C-x r C-y") 'yank-replace-rectangle)
+
+----CategoryRegion
