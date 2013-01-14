@@ -1,7 +1,6 @@
-
 My name is Raphaël Cauderlier, I'm a french Emacs user quite new to Emacs Lisp.
 
-I wrote [[wicd-mode|https://github.com/rafoo/wicd-mode.el]], a major mode running a Wicd client inside emacs using the D-Bus binding. 
+I wrote wicd-mode (https://github.com/rafoo/wicd-mode.el), a major mode running a Wicd client inside emacs using the D-Bus binding. 
 
 I use Emacs.
 
