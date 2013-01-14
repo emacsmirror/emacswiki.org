@@ -3,7 +3,7 @@
 ;; Copyright (C) 2012 tama.sh
 
 ;; Author: tama.sh <tama.csh@gmail.com>
-;; Version: 1.0.2
+;; Version: 1.1.0
 ;; Keywords: TeX
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -44,6 +44,10 @@
 ;;
 ;; `texlabel-change-default-prefix'
 ;;    Change default prefix
+;;
+;; `texlabel-copy'
+;;    Copy text without labels
+
 
 ;;; Customize
 ;;
@@ -58,6 +62,12 @@
 ;;     Correct the regexp for searching environments
 ;; * 2012/05/25
 ;;     Fix the bug when inserting labels in lines with comments
+;; * 2012/12/27
+;;     Fix the bug that the separator "\\" in a paren is also recognized.
+;; * 2012/12/28
+;;     Fix the bug that the program recognizes the label in a comment line.
+;; * 2012/01/07
+;;     Add `texlabel-copy' function
 
 ;;; Code:
 
@@ -144,6 +154,13 @@
        (progn (forward-char -1) (point)) ))
 
 ;; parser:
+
+(defun texlabel-in-paren-p (point &optional start)
+  "Check whether the POINT is in a paren."
+  (save-excursion
+    (let ((parse-rst (parse-partial-sexp (or start (line-beginning-position)) point)))
+      (if (nth 0 parse-rst)
+	(nth 1 parse-rst) ))))
 
 (defun texlabel-in-comment-p (point)
   "Check whether the POINT is in a comment, and return the beginning of the comment."
@@ -268,7 +285,8 @@ This function igonres separaters in inner environments and in comment lines."
     (save-excursion
       (goto-char begin-region)
       (while (texlabel-re-search-forward-cmd sep-regexp end-region t)
-	(if (and (not (texlabel-in-comment-p (point)))
+	(if (and (not (texlabel-in-paren-p (point) begin-region))
+	         (not (texlabel-in-comment-p (point)))
 		 (not (texlabel-in-region-list-p (point) inner-region-list)))
 	    (progn
 	      (setq end-sub-region (point))
@@ -361,7 +379,8 @@ from the beginning and end of the region."
 	      (label-cmd-regexp (texlabel-make-tex-cmd-regexp "label" '(".*?")))
 	      label point)
 	  (goto-char begin-region)
-	  (if (re-search-forward label-cmd-regexp end-region t)
+	  (if (and (re-search-forward label-cmd-regexp end-region t)
+		   (not (texlabel-in-comment-p (point))))
 	      (progn
 		(setq label (match-string-no-properties 1))
 		(setq point (match-beginning 0)) )
@@ -580,6 +599,19 @@ This function rename all labels to regular expressions."
   (interactive (list (read-string "Input new prefix: ")))
   (setq new-prefix (texlabel-trim-whitespace new-prefix))
   (setq texlabel-prefix new-prefix))
+
+
+;; modifying copy
+
+(defun texlabel-copy (beg end)
+  "Copy the text and delete the labels in it."
+  (interactive "r")
+  (kill-ring-save beg end)
+  (setcar kill-ring
+   (replace-regexp-in-string "[ \t\n]*\\\\label{.*?}[ \t]*"
+			    ""
+			    (car kill-ring))))
+
 
 (provide 'texlabel)
 
