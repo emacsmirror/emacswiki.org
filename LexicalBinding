@@ -84,5 +84,8 @@ Note: I have named the macro <code>defun**</code> so that it doesn't clash with
 the macro <code>defun*</code> in the **cl** package, however it doesn't depend on
 that package. --- [[Bernard Hurley]]
 
+As of Emacs 24.3.50, defun appears to work correctly in lexically bound contexts
+so this hack is no longer needed. --- [[Bernard Hurley]]
+
 
 ---- CategoryCode
