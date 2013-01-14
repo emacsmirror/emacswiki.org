@@ -48,7 +48,7 @@ Related Links:
 * http://interaction.in-progress.com/developer/dom/ -- Common Lisp bindings for DOM, including an example page
 * http://www.cl-xml.org/ -- Common Lisp bindings for an XML parser as well as XPATH, DOM and XQuery implementations
 * http://www-106.ibm.com/developerworks/xml/library/x-domjava/?loc=dwmain -- DOM can lead to awkward and brittle code
-*[http://www.innograph.com/building-signage Building Signage]
+
 
 == xpath.el ==
 
