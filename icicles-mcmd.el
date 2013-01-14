@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Jan  6 20:16:07 2013 (-0800)
+;; Last-Updated: Sun Jan 13 16:54:28 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 18813
+;;     Update #: 18815
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -2211,8 +2211,6 @@ These are the main Icicles actions and their minibuffer key bindings:
      List history items first in Completions \\[icicle-toggle-alternative-sorting]
      Cycle among minibuffer history items    \\[next-history-element], \
 \\[previous-history-element]
-     Search among minibuffer history items   \
-\\[next-matching-history-element], \\[previous-matching-history-element]
 
  * Delete history entries
      Delete current entry (cycling)          \\[icicle-erase-minibuffer-or-history-element]
@@ -2342,8 +2340,6 @@ not available:
      Complete to insert a previous input     \\[icicle-insert-history-element]
      Cycle among minibuffer history items    \\[next-history-element], \
 \\[previous-history-element]
-     Search among minibuffer history items   \
-\\[next-matching-history-element], \\[previous-matching-history-element]
 
  * Delete history entries
      Delete current entry (cycling)          \\[icicle-erase-minibuffer-or-history-element]
