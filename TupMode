@@ -1,6 +1,6 @@
 == Overview ==
 
-Tup Mode is a major mode for editing Tupfiles, i.e. files for the [http://gittup.org Tup build system].  It provides syntax highlighting and keyboard commands for performing common Tup tasks, such as building your project.
+Tup Mode is a major mode for editing Tupfiles, i.e. files for the [http://gittup.org/ Tup build system].  It provides syntax highlighting and keyboard commands for performing common Tup tasks, such as building your project.
 
 == Downloads ==
 
