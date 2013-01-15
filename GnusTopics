@@ -1,2 +1,20 @@
 You can organize your groups into different topics in the ##*Group*## buffer.
 First make sure ##gnus-topic-mode## is added to the ##gnus-group-mode-hook##, then use the options in the *Topics* menu to organize your groups into topics.
+
+You can use ##gnus-topic-goto-previous-topic## and ##gnus-topic-goto-next-topic## (bound to **T M-p** and **T M-n** by default) to jump to the next/previous topic but I find these command awkward as they do not move up/down levels of indentation.
+I prefer to use the following commands instead:
+
+    (defun gnus-topic-goto-previous-topic-line nil
+      "Goto the previous visible topic line.
+    A replacement for `gnus-topic-goto-previous-topic'."
+      (interactive)
+      (goto-char (previous-single-property-change
+                  (line-beginning-position) 'gnus-topic nil (point-min))))
+    
+    (defun gnus-topic-goto-next-topic-line nil
+      "Goto the next visible topic line.
+    A replacement for `gnus-topic-goto-next-topic'."
+      (interactive)
+      (goto-char (next-single-property-change
+                  (line-end-position) 'gnus-topic nil (point-max))))
+
