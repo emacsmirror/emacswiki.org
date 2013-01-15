@@ -41,6 +41,7 @@ Suggestions:
 ** BlacklistSpammers -- Get rid of noise
 ** GnusMailreaver -- Train mailreaver.crm (CRM114 script) from within Gnus
 * GnusHardSort -- Permanently resorting a group
+* GnusTopics -- Organize your groups into topics
 
 == Indexing and searching for special mails ==
 
