@@ -151,4 +151,8 @@ Sometimes one wishes to replace a rectangle with another one. Currently this inv
  
  (global-set-key (kbd "C-x r C-y") 'yank-replace-rectangle)
 
-----CategoryRegion
+[new]
+Yeah, you have to set point to the beginning of the rectangle when you delete, so that you are positioned to yank.  That avoids the `pop-to-mark-command'.  Your command only works when you mark the rectangle to delete with point at the end. -- AaronHawley
+
+----
+CategoryRegion
