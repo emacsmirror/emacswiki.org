@@ -18,3 +18,17 @@ I prefer to use the following commands instead:
       (goto-char (next-single-property-change
                   (line-end-position) 'gnus-topic nil (point-max))))
 
+
+Another annoyance for me is that by default the **<tab>** key is bound to ##gnus-topic-indent##, and I often found myself
+pressing it by mistake when I meant to fold a topic.
+By default topics can only be folded when the cursor is on a topic line. The following command fixes that:
+
+    (defun gnus-topic-fold-this-topic nil
+      "Toggle folding of current topic."
+      (interactive)
+      (gnus-topic-goto-topic (gnus-current-topic))
+      (gnus-topic-fold))
+
+I bind this command to **<tab>** to avoid the previously mentioned annoyance.
+
+
