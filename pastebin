@@ -63,5 +63,8 @@ I've change newpastebin.el, if no name is provided to pastebin function, buffer-
 fix the check for region. 
 Here is [[buffer-name-pastebin.el]]
 
+Editing: I create a new version of pastebin.el, supporting fetch and deletion, here is:
+[https://github.com/gkos/emacs-pastebin gkos/emacs-pastebin]
+
 
 -- DanielHilst
