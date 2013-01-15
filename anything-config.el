@@ -11073,7 +11073,7 @@ other candidate transformers."
     (anything-transform-mapcar
      (lambda (file)
        (if (and (stringp file) (string-match home file))
-           (cons (replace-match "~" nil nil file) file)
+           (replace-match "~" nil nil file)
          file))
      files)))
 
