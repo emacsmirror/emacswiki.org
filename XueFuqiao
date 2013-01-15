@@ -128,8 +128,6 @@ Coming soon.
 
 == I Like ==
 * ArtificialIntelligence
-* Autoconf
-* Automake
 * Coreboot
 * cpio and shar
 * Dragora GNU/Linux
@@ -143,6 +141,7 @@ Coming soon.
 * GnuBazaar
 * GnuTLS
 * GnuOctave
+* GnuAutotools
 * GnuGeneralPublicLicense and GnuFreeDocumentationLicense
 * gzip
 * GnuGo
