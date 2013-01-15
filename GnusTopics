@@ -1,1 +1,2 @@
 You can organize your groups into different topics in the ##*Group*## buffer.
+First make sure {{{gnus-topic-mode}}} is added to the {{{gnus-group-mode-hook}}}, then use the option in the *Topics* menu in the menu bar to organize your groups into topics.
