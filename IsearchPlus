@@ -63,6 +63,9 @@ the search (from the current position when you hit `C-M-c').
 
 * Highlighting of the mismatched portion of your search string. This is the portion that is removed if you do `C-g', or removed/replaced automatically if you use `M-k' (see next).  I added this feature to vanilla Emacs in release 23.1.
 
+* `C-g' after successfully finding matches restores not only the original position but also its relative position in the window.  IOW, you get back to what you saw before searching.  Fixes GnuEmacs [[http://debbugs.gnu.org/cgi/bugreport.cgi?bug=12253|bug #12253]] for Isearch.
+
+
 [:isearchp-cycle-mismatch-removal]
 [:isearchp-drop-mismatch]
 * Command and binding to cycle automatic removal or replacement of the input portion
