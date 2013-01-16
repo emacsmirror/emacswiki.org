@@ -15,6 +15,11 @@ It would be very cool to embed Emacs into [[http://www.srware.net/en/software_sr
 [new]
 I created a small [[http://bitbucket.org/ArneBab/kembed-emacs/src/tip/qxembed-emacs.py proof-of-concept PyQt4]] program which just opens a window and embeds emacs in it. 
 
+[new]
+You can now embed emacs in KMail: https://bugs.kde.org/show_bug.cgi?id=255008
+emacs --parent-id %w %f 
+I still have some issues with it, though: the emacs frame starts tiny instead of filling the textarea.
+
 
 == embedding apps in emacs windows ==
 
