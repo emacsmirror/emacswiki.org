@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 21.0
-;; Last-Updated: Fri Dec 28 10:05:07 2012 (-0800)
+;; Last-Updated: Wed Jan 16 08:58:55 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 1694
+;;     Update #: 1787
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -98,14 +98,17 @@
 ;;    `isearchp-char-prop-prop', `isearchp-char-prop-type',
 ;;    `isearchp-char-prop-values', `isearchp-filter-predicate-orig',
 ;;    `isearchp-last-non-nil-invisible',
-;;    `isearchp-last-quit-regexp-search', `isearchp-last-quit-search'.
+;;    `isearchp-last-quit-regexp-search', `isearchp-last-quit-search',
+;;    `isearchp-win-pt-line'.
 ;;
 ;;
 ;;  ***** NOTE: The following functions defined in `isearch.el' have
 ;;              been REDEFINED OR ADVISED HERE:
 ;;
 ;;  `isearch-abort'       - Save search string when `C-g'.
+;;  `isearch-cancel'      - Restore cursor position relative to window.
 ;;  `isearch-edit-string' - Put point at mismatch position.
+;;  `isearch-mode'        - Save cursor position relative to window.
 ;;  `isearch-mode-help'   - End isearch.  List bindings.
 ;;  `isearch-message'     - Highlight failed part of search string in
 ;;                          echo area, in face `isearch-fail'.
@@ -178,7 +181,7 @@
 ;;    search: regexp, word, multiple-buffer, and whether searching has
 ;;    wrapped around the buffer (Emacs 22+ only).
 ;;
-;;  * Ability to search ''within character-property zones''.  Example:
+;;  * Ability to search within character-property zones.  Example:
 ;;    search within zones having a `face' text property with a value
 ;;    of `font-lock-comment-face' or `font-lock-string-face'.  Search
 ;;    overlays or text properties.  From within Isearch: `C-t' (or
@@ -243,6 +246,11 @@
 ;;    `C-g', or removed/replaced automatically if you use `M-k' (see
 ;;    next).  I added this feature to vanilla Emacs in release 23.1.
 ;;
+;;  * `C-g' after successfully finding matches restores not only the
+;;    original position but also its relative position in the window.
+;;    IOW, you get back to what you saw before searching.  Fixes Emacs
+;;    bug #12253.
+;;
 ;;  * Command and binding to cycle automatic removal or replacement of
 ;;    the input portion that does not match, bound to `M-k'.  Behavior
 ;;    is controlled by the value of option `isearchp-drop-mismatch':
@@ -306,6 +314,9 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2013/01/16 dadams
+;;     New feature: C-g restores window position of start.  Fixes Emacs bug #12253.
+;;       Added redefinitions of isearch-cancel, isearch-mode.  Added: isearchp-win-pt-line.
 ;; 2012/12/15 dadams
 ;;     Added redefinition of isearch-printing-char.
 ;;     Renamed/replaced: isearchp-toggle-mismatch-removal with isearchp-cycle-mismatch-removal,
@@ -496,11 +507,15 @@
 (defvar isearch-error)                  ; In `isearch.el'.
 (defvar isearch-filter-predicate)       ; In `isearch.el'.
 (defvar isearch-invalid-regexp)         ; In `isearch.el' (Emacs 20-21).
+(defvar isearch-last-case-fold-search)  ; In `isearch.el'.
 (defvar isearch-message-prefix-add)     ; In `isearch.el'.
 (defvar isearch-new-message)            ; In `isearchp-with-search-suspended' (here).
 (defvar isearch-new-string)             ; In `isearchp-with-search-suspended' (here).
 (defvar isearch-original-minibuffer-message-timeout) ; In `isearch.el'.
+(defvar isearch-push-state-function)    ; In `isearch.el'.
+(defvar isearch-start-hscroll)          ; In `isearch.el'.
 (defvar isearch-wrap-function)          ; In `isearch.el'.
+(defvar minibuffer-message-timeout)     ; In Emacs C code.
 (defvar multi-isearch-next-buffer-current-function) ; In `isearch.el'.
 (defvar subword-mode)
 
@@ -677,6 +692,9 @@ You can toggle this with `isearchp-toggle-set-region', bound to
 
 (defvar isearchp-last-quit-regexp-search nil
   "Last successful search regexp when you hit `C-g' to quit regexp Isearch.")
+
+(defvar isearchp-win-pt-line nil
+  "Line number of point before searching, relative to `window-start'.")
 
 ;; An alternative to binding `isearch-edit-string' (but less flexible):
 ;; (setq search-exit-option  'edit) ; M- = edit search string, not exit.
@@ -1298,6 +1316,134 @@ not necessarily fontify the whole buffer."
 ;;(@* "Non-Interactive Functions")
 
 ;;; Non-Interactive Functions
+
+
+
+;; REPLACE ORIGINAL in `isearch.el'.
+;;
+;; Save `isearchp-win-pt-line'.
+;;
+(defun isearch-mode (forward &optional regexp op-fun recursive-edit word)
+  "Start Isearch minor mode.
+It is called by the function `isearch-forward' and other related functions."
+
+  ;; Initialize global vars.
+  (setq isearch-forward forward
+        isearch-regexp regexp
+        isearch-word word
+        isearch-op-fun op-fun
+        isearch-last-case-fold-search isearch-case-fold-search
+        isearch-case-fold-search case-fold-search
+        isearch-string ""
+        isearch-message ""
+        isearch-cmds nil
+        isearch-success t
+        isearch-wrapped nil
+        isearch-barrier (point)
+        isearch-adjusted nil
+        isearch-yank-flag nil
+        isearch-invalid-regexp nil      ; Only for Emacs < 22.
+        isearch-within-brackets nil     ; Only for Emacs < 22.
+        isearch-error nil
+        isearch-slow-terminal-mode (and (<= baud-rate search-slow-speed)
+                                        (> (window-height)
+                                           (* 4
+                                              (abs search-slow-window-lines))))
+        isearch-other-end nil
+        isearch-small-window nil
+        isearch-just-started t
+        isearch-start-hscroll (window-hscroll)
+
+        isearch-opoint (point)
+        isearchp-win-pt-line (- (line-number-at-pos)
+                                (line-number-at-pos (window-start)))
+        search-ring-yank-pointer nil
+        isearch-opened-overlays nil
+        isearch-input-method-function input-method-function
+        isearch-input-method-local-p (local-variable-p 'input-method-function)
+        regexp-search-ring-yank-pointer nil
+
+        ;; Save the original value of `minibuffer-message-timeout', and
+        ;; set it to nil so that isearch's messages don't get timed out.
+        isearch-original-minibuffer-message-timeout (and (boundp 'minibuffer-message-timeout)
+                                                         minibuffer-message-timeout)
+        minibuffer-message-timeout nil)
+
+  ;; Bypass input method while reading key.  When a user types a printable char, appropriate
+  ;; input method is turned on in minibuffer to read multibyte characters.
+  (unless isearch-input-method-local-p  (make-local-variable 'input-method-function))
+  (setq input-method-function  nil)
+  (looking-at "")
+  (setq isearch-window-configuration
+        (if isearch-slow-terminal-mode (current-window-configuration) nil))
+
+  ;; Maybe make minibuffer frame visible and/or raise it.
+  (let ((frame (window-frame (minibuffer-window))))
+    (unless (memq (frame-live-p frame) '(nil t))
+      (unless (frame-visible-p frame)
+        (make-frame-visible frame))
+      (if minibuffer-auto-raise
+          (raise-frame frame))))
+
+  (setq	isearch-mode " Isearch");; forward? regexp?
+  (force-mode-line-update)
+
+  (setq overriding-terminal-local-map isearch-mode-map)
+  (run-hooks 'isearch-mode-hook)
+
+  ;; Pushing the initial state used to be before running isearch-mode-hook,
+  ;; but a hook might set `isearch-push-state-function' used in
+  ;; `isearch-push-state' to save mode-specific initial state.  (Bug#4994)
+  (isearch-push-state)
+
+  (isearch-update)
+
+  (add-hook 'mouse-leave-buffer-hook 'isearch-done)
+  (add-hook 'kbd-macro-termination-hook 'isearch-done)
+
+  ;; isearch-mode can be made modal (in the sense of not returning to
+  ;; the calling function until searching is completed) by entering
+  ;; a recursive-edit and exiting it when done isearching.
+  (if recursive-edit
+      (let ((isearch-recursive-edit t))
+        (recursive-edit)))
+  isearch-success)
+
+
+;; REPLACE ORIGINAL in `isearch.el'.
+;;
+;; Restore cursor position relative to window (`isearchp-win-pt-line').  Fixes Emacs bug #12253.
+;;
+(cond ((or (> emacs-major-version 23)   ; Emacs 23.2+
+           (and (= emacs-major-version 23)  (> emacs-minor-version 1)))
+       (defun isearch-cancel ()
+         "Terminate the search and go back to the starting point."
+         (interactive)
+         (if (and isearch-push-state-function  isearch-cmds)
+             ;; For defined push-state function, restore the first state.
+             ;; This calls pop-state function and restores original point.
+             (let ((isearch-cmds  (last isearch-cmds)))
+               (if (fboundp 'isearch--set-state)
+                   (isearch--set-state (car isearch-cmds)) ; Emacs 24.3+.
+                 (isearch-top-state))   ; Emacs 23.2 to 24.2.
+               (when isearchp-win-pt-line (recenter isearchp-win-pt-line)))
+           (goto-char isearch-opoint)
+           (when isearchp-win-pt-line (recenter isearchp-win-pt-line)))
+         (isearch-done t)
+         (isearch-clean-overlays)
+         (signal 'quit nil)))
+      (t                                ; Emacs 20 to 23.1.
+       (defun isearch-cancel ()
+         "Terminate the search and go back to the starting point."
+         (interactive)
+         (when (and (fboundp 'isearch-pop-fun-state) ; Emacs 22+.
+                    (functionp (isearch-pop-fun-state (car (last isearch-cmds)))))
+           (funcall (isearch-pop-fun-state (car (last isearch-cmds))) (car (last isearch-cmds))))
+         (goto-char isearch-opoint)
+         (when isearchp-win-pt-line (recenter isearchp-win-pt-line))
+         (isearch-done t)
+         (isearch-clean-overlays)
+         (signal 'quit nil))))
 
 
 ;; REPLACE ORIGINAL in `isearch.el'.
