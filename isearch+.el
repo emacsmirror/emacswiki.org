@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 21.0
-;; Last-Updated: Wed Jan 16 08:58:55 2013 (-0800)
+;; Last-Updated: Wed Jan 16 09:05:07 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 1787
+;;     Update #: 1788
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -249,7 +249,7 @@
 ;;  * `C-g' after successfully finding matches restores not only the
 ;;    original position but also its relative position in the window.
 ;;    IOW, you get back to what you saw before searching.  Fixes Emacs
-;;    bug #12253.
+;;    bug #12253 for Isearch.
 ;;
 ;;  * Command and binding to cycle automatic removal or replacement of
 ;;    the input portion that does not match, bound to `M-k'.  Behavior
