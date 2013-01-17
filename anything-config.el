@@ -11547,6 +11547,9 @@ with original attribute value.
    (anything-c-arrange-type-attribute 'file
       '((action (\"Play sound\" . play-sound-file)
          REST ;; Rest of actions (find-file, find-file-other-window, etc...)."
+  (setq anything-additional-type-attributes
+        (delete (assq type anything-additional-type-attributes)
+                anything-additional-type-attributes))
   (add-to-list 'anything-additional-type-attributes
                (cons type
                      (loop with typeattr = (assoc-default
