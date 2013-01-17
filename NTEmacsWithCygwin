@@ -25,7 +25,7 @@ It was suggested somewhere that one could remove the test for the terminal using
 To avoid this, using '''`fakecygpty''''[https://github.com/Shougo/fakecygpty/blob/master/fakecygpty.c] for '''`shell'''' command, and remove "-i" option from '''`shell-command-switchs'''' for '''`shell-command'''' command.
 
 
-I'd like to mention that Cygwin included a native emacs (emacs-w32) now, looks pretty good. - [[qun]]
+(I'd like to mention that Cygwin included a native emacs (emacs-w32) now, looks pretty good. - [[qun]])
 
 ==Why use NTEmacs with Cygwin?==
 
