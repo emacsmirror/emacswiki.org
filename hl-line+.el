@@ -7,9 +7,9 @@
 ;; Copyright (C) 2006-2013, Drew Adams, all rights reserved.
 ;; Created: Sat Aug 26 18:17:18 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Dec 28 09:56:31 2012 (-0800)
+;; Last-Updated: Thu Jan 17 08:10:22 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 468
+;;     Update #: 474
 ;; URL: http://www.emacswiki.org/hl-line+.el
 ;; Doc URL: http://www.emacswiki.org/HighlightCurrentLine
 ;; Doc URL: http://www.emacswiki.org/CrosshairHighlighting
@@ -114,6 +114,8 @@
 ;; 
 ;;; Change Log:
 ;;
+;; 2013/01/17 dadams
+;;     toggle-hl-line-when-idle: Added optional MSGP arg.
 ;; 2012/05/18 dadams
 ;;     Added: hl-line-overlay-priority, defadvice for (global-)hl-line-highlight.
 ;; 2011/01/04 dadams
@@ -232,19 +234,22 @@ Do NOT change this yourself; instead, use `\\[toggle-hl-line-when-idle]'.")
 ;;;###autoload
 (defalias 'toggle-hl-line-when-idle 'hl-line-toggle-when-idle)
 ;;;###autoload
-(defun hl-line-toggle-when-idle (&optional arg)
+(defun hl-line-toggle-when-idle (&optional arg msgp)
   "Turn on or off using `global-hl-line-mode' when Emacs is idle.
 When on, use `global-hl-line-mode' whenever Emacs is idle.
-With prefix argument, turn on if ARG > 0; else turn off."
-  (interactive "P")
+With prefix argument, turn on if ARG > 0; else turn off.
+
+In Lisp code, non-nil optional second arg MSGP means display a message
+showing the new value."
+  (interactive "P\np")
   (setq hl-line-when-idle-p
         (if arg (> (prefix-numeric-value arg) 0) (not hl-line-when-idle-p)))
   (cond (hl-line-when-idle-p
          (timer-activate-when-idle hl-line-idle-timer)
-         (message "Turned ON using `global-hl-line-mode' when Emacs is idle."))
+         (when msgp (message "Turned ON using `global-hl-line-mode' when Emacs is idle.")))
         (t
          (cancel-timer hl-line-idle-timer)
-         (message "Turned OFF using `global-hl-line-mode' when Emacs is idle."))))
+         (when msgp (message "Turned OFF using `global-hl-line-mode' when Emacs is idle.")))))
 
 ;;;###autoload
 (defun hl-line-when-idle-interval (secs)
