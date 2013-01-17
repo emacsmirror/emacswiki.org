@@ -11802,8 +11802,9 @@ It is drop-in replacement of `yank-pop'.
 You may bind this command to M-y.
 First call open the kill-ring browser, next calls move to next line."
   (interactive)
-  (anything :sources 'anything-c-source-kill-ring
-            :buffer "*anything kill-ring*"))
+  (let ((enable-recursive-minibuffers t))
+    (anything :sources 'anything-c-source-kill-ring
+              :buffer "*anything kill-ring*")))
 
 ;;;###autoload
 (defun anything-minibuffer-history ()
