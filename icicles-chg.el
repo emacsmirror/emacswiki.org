@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sun Jan  6 15:36:07 2013 (-0800)
+;; Last-Updated: Fri Jan 18 09:24:29 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 9558
+;;     Update #: 9580
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -843,6 +843,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2013/01/06 dadams
+;;     icicle-(bookmark|(un)tag)-a-file: Updated calls to bmkp-*, to add nil NO-UPDATE-P argument.
 ;; 2013/01/05 dadams
 ;;     icicle-find-file-(all|some)-tags*: protect free vars in lambdas using backquote quote comma.
 ;;     icicle-(bookmark-a-file|find-file-tagged|): Updated doc string for new C-x C-t bindings.
@@ -1507,6 +1509,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-face.el'")
 ;;
+;; 2013/01/18 dadams
+;;     Removed: icicle-increment-color-(hue|saturation|value) - moved to hexrgb.el and modified.
+;;     icicle-search-context-level-*: Use hexrgb-increment-*, with past increment divided by 100.
 ;; 2012/11/04 dadams
 ;;     icicle-annotation: Fix default value for older Emacs versions.
 ;; 2012/10/27 dadams
@@ -3676,6 +3681,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2013/01/11 dadams
+;;     icicle-help-string(-non)-completion: Removed M-s, M-r.
+;; 2013/01/06 dadams
+;;     icicle-autofile-action: Updated calls to bmkp-*, to add nil NO-UPDATE-P argument.
 ;; 2013/01/05 dadams
 ;;     Added: icicle-file-all-tags-narrow, icicle-file-all-tags-regexp-narrow,
 ;;            icicle-file-some-tags-narrow, icicle-file-some-tags-regexp-narrow,
@@ -6412,6 +6421,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2013/01/18 dadams
+;;     No longer require icicles-face.el, since now need only hexrgb.el (see next).
+;;     icicle-region-background: Use hexrgb-increment*, not icicle-increment-*.
 ;; 2012/12/21 dadams
 ;;     Added: icicle-buffer-skip-hook, icicle-find-file-of-content-skip-hook.  Thx to C. Schmidt.
 ;; 2012/12/20 dadams
