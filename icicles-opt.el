@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Dec 28 10:01:30 2012 (-0800)
+;; Last-Updated: Fri Jan 18 09:23:14 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 5431
+;;     Update #: 5438
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -264,9 +264,8 @@
   (tap-put-thing-at-point-props))
  ;; list-nearest-point-as-string, non-nil-symbol-name-nearest-point, word-nearest-point
 
-(require 'hexrgb nil t) ;; (no error if not found): hexrgb-approx-equal, hexrgb-saturation
-(when (featurep 'hexrgb) (require 'icicles-face))
-  ;; icicle-increment-color-hue, icicle-increment-color-value
+(require 'hexrgb nil t) ;; (no error if not found):
+ ;; hexrgb-approx-equal, hexrgb-increment-hue, hexrgb-increment-value, hexrgb-saturation
 
 ;; Quiet the byte-compiler.
 (defvar shell-completion-execonly)      ; In `shell.el'.
@@ -3180,8 +3179,8 @@ multi-command `icicle-increment-option' anytime to change the option
 value incrementally."
   :type 'integer :group 'Icicles-Searching)
 
-;; You can use `icicle-increment-color-value' in place of `icicle-increment-color-hue', if you
-;; prefer highlighting background to be slightly darker instead of a slightly different hue.
+;; You can use `hexrgb-increment-value' in place of `hexrgb-increment-hue', if you prefer highlighting
+;; background to be slightly darker instead of a slightly different hue.
 ;;
 ;;;###autoload
 (defcustom icicle-region-background
@@ -3198,10 +3197,9 @@ value incrementally."
              (sat  (condition-case nil (hexrgb-saturation bg) (error nil))))
         (if sat
             (if (hexrgb-approx-equal sat 0.0)
-                (icicle-increment-color-value
-                 bg                     ; Grayscale - change bg value slightly.
-                 (if (eq (frame-parameter nil 'background-mode) 'dark) 20 -10))
-              (icicle-increment-color-hue bg 24)) ; Color - change bg hue slightly.
+                (hexrgb-increment-value bg                     ; Grayscale - change bg value slightly.
+                                        (if (eq (frame-parameter nil 'background-mode) 'dark) 0.20 -0.10))
+              (hexrgb-increment-hue bg 0.24)) ; Color - change bg hue slightly.
           (face-background 'region)))
     (face-background 'region))          ; Use normal region background.
   "*Background color to use for the region during minibuffer cycling.
