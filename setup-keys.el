@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 21.1
-;; Last-Updated: Wed Jan  2 14:01:02 2013 (-0800)
+;; Last-Updated: Fri Jan 18 00:27:23 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 1168
+;;     Update #: 1172
 ;; URL: http://www.emacswiki.org/setup-keys.el
 ;; Keywords: mouse, keyboard, menus, menu-bar
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -67,6 +67,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/01/17 dadams
+;;     Added bindings for move-frame-to-screen-(top|bottom|left|right).
 ;; 2013/01/02 dadams
 ;;     Bound C-o also in minibuffer-(inactive-mode|local-(isearch|shell-command))-map.
 ;; 2012/12/24 dadams
@@ -410,14 +412,18 @@
 
 (eval-after-load "frame-cmds"
   '(progn
-    (global-set-key [(meta up)]    'move-frame-up)                               ; `M-up'
-    (global-set-key [(meta down)]  'move-frame-down)                             ; `M-down'
-    (global-set-key [(meta left)]  'move-frame-left)                             ; `M-left'
-    (global-set-key [(meta right)] 'move-frame-right)                            ; `M-right'
-    (global-set-key [(control meta up)]    'shrink-frame)                        ; `C-M-up'
-    (global-set-key [(control meta down)]  'enlarge-frame)                       ; `C-M-down'
-    (global-set-key [(control meta left)]  'shrink-frame-horizontally)           ; `C-M-left'
-    (global-set-key [(control meta right)] 'enlarge-frame-horizontally)          ; `C-M-right'
+    (global-set-key [(meta up)]             'move-frame-up)                      ; `M-up'
+    (global-set-key [(meta down)]           'move-frame-down)                    ; `M-down'
+    (global-set-key [(meta left)]           'move-frame-left)                    ; `M-left'
+    (global-set-key [(meta right)]          'move-frame-right)                   ; `M-right'
+    (global-set-key [(meta shift ?v)]       'move-frame-to-screen-top)           ; `M-S-v'
+    (global-set-key [(control shift ?v)]    'move-frame-to-screen-bottom)        ; `C-S-v'
+    (global-set-key [(control shift prior)] 'move-frame-to-screen-left)          ; `C-S-prior'
+    (global-set-key [(control shift next)]  'move-frame-to-screen-right)         ; `C-S-next'
+    (global-set-key [(control meta up)]     'shrink-frame)                       ; `C-M-up'
+    (global-set-key [(control meta down)]   'enlarge-frame)                      ; `C-M-down'
+    (global-set-key [(control meta left)]   'shrink-frame-horizontally)          ; `C-M-left'
+    (global-set-key [(control meta right)]  'enlarge-frame-horizontally)         ; `C-M-right'
     ;; Replaces`iconify-or-deiconify-frame'.
     (global-set-key [(control ?z)] 'iconify/map-frame)                           ; `C-z' 
     ;; $$$$ (global-set-key [(control ?x) (control ?z)] 'iconify-everything)
