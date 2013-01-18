@@ -27,11 +27,29 @@ This page is about library '''<tt>[[hide-comnt.el]]</tt>''' and related features
 
 == Comments ==
 
-* Added an ELPA package of this library for download here: http://www.wisdomandwonder.com/link/6390/hide-or-ignore-comments-elpa-package
+[new]
+Added an ELPA package of this library for download here: http://www.wisdomandwonder.com/link/6390/hide-or-ignore-comments-elpa-package -- GrantRettke
 
-* Noticed that it does not quite work for Ruby files, attaching a screenshot that illustrates the problem. Any idea?
+----
+[new]
+Noticed that it does not quite work for Ruby files, attaching a screenshot that illustrates the problem. Any idea? -- [[gnufied]]
 
 https://www.evernote.com/shard/s13/sh/ecabe782-7d9c-4c91-82bb-d0e188bce2ae/612c3c34f97effefa5b02f267f0ad56d
+
+[new:DrewAdams:2013-01-18 07:02 UTC]
+That screenshot does not show up, for me anyway.  Please post the screenshot to %%EmacsWiki%%, e.g., here (click the `##?##' link, then upload your image to that page):
+
+: [[image:RubyHideCommentsProblem]]
+
+But I doubt that an image will be enough to help me understand the problem (and I know little about Ruby).  You will likely need to investigate a bit further what happens, perhaps using the Lisp debugger. IOW, for me, at least, to be able to help you, you will need to provide more info.  -- DrewAdams
+
+[new]
+
+
+
+
+
+
 
 
 
