@@ -7,9 +7,9 @@
 ;; Copyright (C) 2004-2013, Drew Adams, all rights reserved.
 ;; Created: Sat Sep 11 10:40:32 2004
 ;; Version: 22.0
-;; Last-Updated: Fri Dec 28 09:36:47 2012 (-0800)
+;; Last-Updated: Fri Jan 18 08:58:22 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 2989
+;;     Update #: 2990
 ;; URL: http://www.emacswiki.org/doremi-frm.el
 ;; Doc URL: http://www.emacswiki.org/DoReMi
 ;; Keywords: frames, extensions, convenience, keys, repeat, cycle
@@ -2105,6 +2105,7 @@ INCREMENT is scaled here, for RGB, by `doremi-RGB-increment-factor'."
       (doremi-face-color-component frame-parameter face next-component
                                    doremi-current-increment))))
 
+;; See also `hexrgb-increment-(hue|saturation|value)', for similar logic.
 (defun doremi-increment-color (component increment color set-fn
                                &optional frame &rest args)
   "Increment COLOR by INCREMENT of COMPONENT and use for FRAME.
