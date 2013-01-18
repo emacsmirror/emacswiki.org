@@ -27,9 +27,11 @@ This page is about library '''<tt>[[hide-comnt.el]]</tt>''' and related features
 
 == Comments ==
 
-Added an ELPA package of this library for download here: http://www.wisdomandwonder.com/link/6390/hide-or-ignore-comments-elpa-package
+* Added an ELPA package of this library for download here: http://www.wisdomandwonder.com/link/6390/hide-or-ignore-comments-elpa-package
 
+* Noticed that it does not quite work for Ruby files, attaching a screenshot that illustrates the problem. Any idea?
 
+https://www.evernote.com/shard/s13/sh/ecabe782-7d9c-4c91-82bb-d0e188bce2ae/612c3c34f97effefa5b02f267f0ad56d
 
 
 
