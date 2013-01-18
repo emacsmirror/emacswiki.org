@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Mar  5 16:30:45 1996
 ;; Version: 21.0
-;; Last-Updated: Fri Dec 28 09:17:46 2012 (-0800)
+;; Last-Updated: Fri Jan 18 00:33:33 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 2674
+;;     Update #: 2702
 ;; URL: http://www.emacswiki.org/frame-cmds.el
 ;; Doc URL: http://emacswiki.org/FrameModes
 ;; Doc URL: http://www.emacswiki.org/OneOnOneEmacs
@@ -33,8 +33,9 @@
 ;;
 ;;    Load this library from your init file (~/.emacs or _emacs).
 ;;    Add the suggested key bindings (below) to  your init file.
-;;    Use `M-up|down|left|right' to move frames around.
-;;    Use `C-M-up|down|left|right' to resize frames.
+;;    Use `M-up|down|left|right' to move frames around incrementally.
+;;    Use `C-S-v', `M-S-v', `C-S-next', `C-S-prior' to move frames to screen edges.
+;;    Use `C-M-up|down|left|right' to resize frames incrementally.
 ;;    Use `C-M-z' or `C-x C-z' to iconify/hide all frames.
 ;;    Use `C-M-z' in a lone frame to restore all frames.
 ;;    Use `C-mouse-1' in the minibuffer to restore all frames.
@@ -106,9 +107,12 @@
 ;;    `maximize-frame-horizontally', `maximize-frame-vertically',
 ;;    `mouse-iconify/map-frame', `mouse-remove-window',
 ;;    `mouse-show-hide-mark-unmark', `move-frame-down',
-;;    `move-frame-left', `move-frame-right', `move-frame-up',
-;;    `other-window-or-frame', `remove-window', `remove-windows-on',
-;;    `rename-frame', `rename-non-minibuffer-frame', `restore-frame',
+;;    `move-frame-left', `move-frame-right',
+;;    `move-frame-to-screen-bottom', `move-frame-to-screen-left',
+;;    `move-frame-to-screen-right', `move-frame-to-screen-top',
+;;    `move-frame-up', `other-window-or-frame', `remove-window',
+;;    `remove-windows-on', `rename-frame',
+;;    `rename-non-minibuffer-frame', `restore-frame',
 ;;    `restore-frame-horizontally', `restore-frame-vertically',
 ;;    `save-frame-config',
 ;;    `set-all-frame-alist-parameters-from-frame',
@@ -145,29 +149,33 @@
 ;;
 ;;  Suggested key bindings:
 ;;
-;;   (global-set-key [(meta up)] 'move-frame-up)
-;;   (global-set-key [(meta down)] 'move-frame-down)
-;;   (global-set-key [(meta left)] 'move-frame-left)
-;;   (global-set-key [(meta right)] 'move-frame-right)
-;;   (global-set-key [(control meta down)] 'enlarge-frame)
-;;   (global-set-key [(control meta right)] 'enlarge-frame-horizontally)
-;;   (global-set-key [(control meta up)] 'shrink-frame)
-;;   (global-set-key [(control meta left)] 'shrink-frame-horizontally)
-;;   (global-set-key [(control ?x) (control ?z)] 'iconify-everything)
+;;   (global-set-key [(meta up)]                    'move-frame-up)
+;;   (global-set-key [(meta down)]                  'move-frame-down)
+;;   (global-set-key [(meta left)]                  'move-frame-left)
+;;   (global-set-key [(meta right)]                 'move-frame-right)
+;;   (global-set-key [(meta shift ?v)]              'move-frame-to-screen-top)      ; like `M-v'
+;;   (global-set-key [(control shift ?v)]           'move-frame-to-screen-bottom)   ; like `C-v'
+;;   (global-set-key [(control shift prior)]        'move-frame-to-screen-left)     ; like `C-prior'
+;;   (global-set-key [(control shift next)]         'move-frame-to-screen-right)    ; like `C-next'
+;;   (global-set-key [(control meta down)]          'enlarge-frame)
+;;   (global-set-key [(control meta right)]         'enlarge-frame-horizontally)
+;;   (global-set-key [(control meta up)]            'shrink-frame)
+;;   (global-set-key [(control meta left)]          'shrink-frame-horizontally)
+;;   (global-set-key [(control ?x) (control ?z)]    'iconify-everything)
 ;;   (global-set-key [vertical-line S-down-mouse-1] 'iconify-everything)
-;;   (global-set-key [(control ?z)] 'iconify/map-frame)
-;;   (global-set-key [mode-line mouse-3] 'mouse-iconify/map-frame)
-;;   (global-set-key [mode-line C-mouse-3] 'mouse-remove-window)
-;;   (global-set-key [(control meta ?z)] 'show-hide)
+;;   (global-set-key [(control ?z)]                 'iconify/map-frame)
+;;   (global-set-key [mode-line mouse-3]            'mouse-iconify/map-frame)
+;;   (global-set-key [mode-line C-mouse-3]          'mouse-remove-window)
+;;   (global-set-key [(control meta ?z)]            'show-hide)
 ;;   (global-set-key [vertical-line C-down-mouse-1] 'show-hide)
-;;   (global-set-key [C-down-mouse-1] 'mouse-show-hide-mark-unmark)
-;;   (substitute-key-definition 'delete-window 'remove-window global-map)
-;;   (define-key ctl-x-map "o" 'other-window-or-frame)
-;;   (define-key ctl-x-4-map "1" 'delete-other-frames)
-;;   (define-key ctl-x-5-map "h" 'show-*Help*-buffer)
-;;   (substitute-key-definition 'delete-window 'delete-windows-for global-map)
-;;   (define-key global-map "\C-xt." 'save-frame-config)
-;;   (define-key ctl-x-map "o" 'other-window-or-frame)
+;;   (global-set-key [C-down-mouse-1]               'mouse-show-hide-mark-unmark)
+;;   (substitute-key-definition 'delete-window      'remove-window global-map)
+;;   (define-key ctl-x-map "o"                      'other-window-or-frame)
+;;   (define-key ctl-x-4-map "1"                    'delete-other-frames)
+;;   (define-key ctl-x-5-map "h"                    'show-*Help*-buffer)
+;;   (substitute-key-definition 'delete-window      'delete-windows-for global-map)
+;;   (define-key global-map "\C-xt."                'save-frame-config)
+;;   (define-key ctl-x-map "o"                      'other-window-or-frame)
 ;;
 ;;   (defalias 'doremi-prefix (make-sparse-keymap))
 ;;   (defvar doremi-map (symbol-function 'doremi-prefix) "Keymap for Do Re Mi commands.")
@@ -249,6 +257,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/01/17 dadams
+;;     Added: move-frame-to-screen-(top|bottom|left|right).
+;;     move-frame-(up|down|left|right): Redefined so prefix arg moves increments of char size.
 ;; 2012/02/29 dadams
 ;;     Added, for Emacs 20 only: nbutlast, butlast.  To avoid runtime load of cl.el.
 ;;     Added frame-cmds-set-difference, to avoid runtime load of cl.el.
@@ -1296,7 +1307,7 @@ space occupied by a standalone minibuffer, if any."
 
 ;; Inspired by `sk-grow-frame' from Sarir Khamsi [sarir.khamsi@raytheon.com]
 ;;;###autoload
-(defun enlarge-frame (&optional increment frame)
+(defun enlarge-frame (&optional increment frame) ; Suggested binding: `C-M-down'.
   "Increase the height of FRAME (default: selected-frame) by INCREMENT.
 INCREMENT is in lines (characters).
 Interactively, it is given by the prefix argument."
@@ -1304,7 +1315,7 @@ Interactively, it is given by the prefix argument."
   (set-frame-height frame (+ (frame-height frame) increment)))
 
 ;;;###autoload
-(defun enlarge-frame-horizontally (&optional increment frame)
+(defun enlarge-frame-horizontally (&optional increment frame) ; Suggested binding: `C-M-right'.
   "Increase the width of FRAME (default: selected-frame) by INCREMENT.
 INCREMENT is in columns (characters).
 Interactively, it is given by the prefix argument."
@@ -1312,7 +1323,7 @@ Interactively, it is given by the prefix argument."
   (set-frame-width frame (+ (frame-width frame) increment)))
 
 ;;;###autoload
-(defun shrink-frame (&optional increment frame)
+(defun shrink-frame (&optional increment frame) ; Suggested binding: `C-M-up'.
   "Decrease the height of FRAME (default: selected-frame) by INCREMENT.
 INCREMENT is in lines (characters).
 Interactively, it is given by the prefix argument."
@@ -1320,7 +1331,7 @@ Interactively, it is given by the prefix argument."
   (set-frame-height frame (- (frame-height frame) increment)))
 
 ;;;###autoload
-(defun shrink-frame-horizontally (&optional increment frame)
+(defun shrink-frame-horizontally (&optional increment frame) ; Suggested binding: `C-M-left'.
   "Decrease the width of FRAME (default: selected-frame) by INCREMENT.
 INCREMENT is in columns (characters).
 Interactively, it is given by the prefix argument."
@@ -1328,42 +1339,36 @@ Interactively, it is given by the prefix argument."
   (set-frame-width frame (- (frame-width frame) increment)))
 
 ;;;###autoload
-(defun move-frame-down (&optional increment frame)
-  "Move FRAME (default: selected-frame) down by INCREMENT.
-INCREMENT is in units of ten pixels.
-Interactively, it is given by the prefix argument."
-  (interactive "P")
-  (setq increment (if increment (prefix-numeric-value increment) 10)) ; 1 is too small
-  (modify-frame-parameters frame
-                           (list (list 'top '+ (new-frame-position frame 'top increment)))))
+(defun move-frame-down (&optional n frame) ; Suggested binding: `M-down'.
+  "Move selected frame down.
+Move it N times `frame-char-height', where N is the prefix arg.
+In Lisp code, FRAME is the frame to move."
+  (interactive "p")
+  (setq n  (* n (frame-char-height frame)))
+  (modify-frame-parameters frame (list (list 'top '+ (new-frame-position frame 'top n)))))
 
 ;;;###autoload
-(defun move-frame-up (&optional increment frame)
-  "Move FRAME (default: selected-frame) up by INCREMENT.
-INCREMENT is in units of ten pixels.
-Interactively, it is given by the prefix argument."
-  (interactive "P")
-  (setq increment (if increment (prefix-numeric-value increment) 10)) ; 1 is too small
-  (move-frame-down (- increment)))
+(defun move-frame-up (&optional n frame) ; Suggested binding: `M-up'.
+  "Move selected frame up.
+Same as `move-frame-down', except movement is up."
+  (interactive "p")
+  (move-frame-down (- n)))
 
 ;;;###autoload
-(defun move-frame-right (&optional increment frame)
-  "Move FRAME (default: selected-frame) toward the right by INCREMENT.
-INCREMENT is in units of ten pixels.
-Interactively, it is given by the prefix argument."
-  (interactive "P")
-  (setq increment (if increment (prefix-numeric-value increment) 10)) ; 1 is too small
-  (modify-frame-parameters frame
-                           (list (list 'left '+ (new-frame-position frame 'left increment)))))
+(defun move-frame-right (&optional n frame) ; Suggested binding: `M-right'.
+  "Move frame to the right.
+Move it N times `frame-char-width', where N is the prefix arg.
+In Lisp code, FRAME is the frame to move."
+  (interactive "p")
+  (setq n  (* n (frame-char-width frame)))
+  (modify-frame-parameters frame (list (list 'left '+ (new-frame-position frame 'left n)))))
 
 ;;;###autoload
-(defun move-frame-left (&optional increment frame)
-  "Move FRAME (default: selected-frame) toward the left by INCREMENT.
-INCREMENT is in units of ten pixels.
-Interactively, it is given by the prefix argument."
-  (interactive "P")
-  (setq increment (if increment (prefix-numeric-value increment) 10)) ; 1 is too small
-  (move-frame-right (- increment)))
+(defun move-frame-left (&optional n frame) ; Suggested binding: `M-left'.
+  "Move frame to the left.
+Same as `move-frame-right', except movement is to the left."
+  (interactive "p")
+  (move-frame-right (- n)))
 
 ;; Helper function.
 (defun new-frame-position (frame type incr)
@@ -1383,6 +1388,57 @@ INCR is the increment to use when changing the position."
       (when (< new-pos (- frame-dimension)) (setq new-pos display-dimension))
       (when (> new-pos display-dimension) (setq new-pos (- frame-dimension)))
       new-pos)))
+
+;;;###autoload
+(defun move-frame-to-screen-top (arg &optional frame) ; Suggested binding: `M-S-v'.
+  "Move FRAME (default: selected-frame) to the top of the screen.
+With a prefix arg, offset it that many char heights from the top."
+  (interactive (list (if current-prefix-arg
+                         (* (frame-char-height) (prefix-numeric-value current-prefix-arg))
+                       0)))
+  (modify-frame-parameters frame `((top . ,arg))))
+
+;;;###autoload
+(defun move-frame-to-screen-bottom (arg &optional frame) ; Suggested binding: `C-S-v'.
+  "Move FRAME (default: selected-frame) to the bottom of the screen.
+With a prefix arg, offset it that many char heights from the bottom."
+  (interactive (list (if current-prefix-arg
+                         (* (frame-char-height) (prefix-numeric-value current-prefix-arg))
+                       0)))
+  (let* ((borders       (* 2 (cdr (assq 'border-width (frame-parameters frame)))))
+         (avail-height  (- (/ (- (available-screen-pixel-height) borders
+                                 (frame-extra-pixels-height frame)
+                                 window-mgr-title-bar-pixel-height
+                                 (smart-tool-bar-pixel-height))
+                              (frame-char-height frame))
+                           ;; Subtract menu bar unless on Carbon Emacs (menu bar not in the frame).
+                           (if (eq window-system 'mac)
+                               0
+                             (cdr (assq 'menu-bar-lines (frame-parameters frame)))))))
+    (modify-frame-parameters frame `((top . ,(- (+ avail-height arg)))))))
+
+;;;###autoload
+(defun move-frame-to-screen-left (arg &optional frame) ; Suggested binding: `C-S-prior'.
+  "Move FRAME (default: selected-frame) to the left side of the screen.
+With a prefix arg, offset it that many char widths from the left."
+  (interactive (list (if current-prefix-arg
+                         (* (frame-char-width) (prefix-numeric-value current-prefix-arg))
+                       0)))
+  (modify-frame-parameters frame `((left . ,arg))))
+
+;;;###autoload
+(defun move-frame-to-screen-right (arg &optional frame) ; Suggested binding: `C-S-next'.
+  "Move FRAME (default: selected-frame) to the right side of the screen.
+With a prefix arg, offset it that many char widths from the right."
+  (interactive (list (if current-prefix-arg
+                         (* (frame-char-width) (prefix-numeric-value current-prefix-arg))
+                       0)))
+  (modify-frame-parameters
+   frame                  ; Hard-code 7 here - what does it depend on?
+   `((left . ,(- (x-display-pixel-width) (+ (frame-pixel-width) 7 arg))))))
+
+
+
 
 ;;; This was a workaround hack for an Emacs 23 bug (#119, aka #1562).
 ;;; This works OK, but it is not as refined as the version I use, and it does not work for
