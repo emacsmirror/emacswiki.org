@@ -7,9 +7,9 @@
 ;; Copyright (C) 2004-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Sep 20 22:58:45 2004
 ;; Version: 21.0
-;; Last-Updated: Fri Dec 28 09:54:18 2012 (-0800)
+;; Last-Updated: Fri Jan 18 09:01:51 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 936
+;;     Update #: 953
 ;; URL: http://www.emacswiki.org/hexrgb.el
 ;; Doc URL: http://www.emacswiki.org/SetColor
 ;; Doc URL: http://emacswiki.org/ColorPalette
@@ -69,8 +69,10 @@
 ;;    `hexrgb-hex-to-int', `hexrgb-hsv-to-rgb',
 ;;    `hexrgb-increment-blue', `hexrgb-increment-equal-rgb',
 ;;    `hexrgb-increment-green', `hexrgb-increment-hex',
-;;    `hexrgb-increment-red', `hexrgb-int-to-hex', `hexrgb-blue-hex',
-;;    `hexrgb-green-hex', `hexrgb-red-hex', `hexrgb-rgb-hex-string-p',
+;;    `hexrgb-increment-hue', `hexrgb-increment-red',
+;;    `hexrgb-increment-saturation', `hexrgb-increment-value',
+;;    `hexrgb-int-to-hex', `hexrgb-blue-hex', `hexrgb-green-hex',
+;;    `hexrgb-red-hex', `hexrgb-rgb-hex-string-p',
 ;;    `hexrgb-rgb-hex-to-rgb-hex', `hexrgb-rgb-to-hex',
 ;;    `hexrgb-rgb-to-hsv'.
 ;;
@@ -87,7 +89,10 @@
 ;;; Change Log:
 ;;
 ;;
-;; 2012/12/16 adams
+;; 2013/01/18 dadams
+;;     Added: hexrgb-increment-(hue|saturation|value): Moved them here and renamed from
+;;       icicle-increment-color-*.  Changed range to 0-1 and added optional arg NB-DIGITS.
+;; 2012/12/16 dadams
 ;;     hexrgb-(hsv|rgb|color-name|color-values)-to-hex: Added optional arg NB-DIGITS.
 ;; 2012/03/17 dadams
 ;;     Added: hexrgb-(red|green|blue-hex, hexrgb-rgb-hex-to-rgb-hex, hexrgb-hex-to-hex.
@@ -636,6 +641,67 @@ The output list is as for `x-color-values'."
           blue   (hexrgb-hex-to-int (substring color (* 2 ndigits) (* 3 ndigits))))
     (list red green blue)))
     
+;; Like `doremi-increment-color-component', but for hue only, and with 0-1 range and NB-DIGITS.
+(defun hexrgb-increment-hue (color increment &optional nb-digits)
+  "Increase hue component of COLOR by INCREMENT.
+INCREMENT ranges from -100 to 100."
+  (unless (string-match "#" color)      ; Convert color name to #hhh...
+    (setq color  (hexrgb-color-values-to-hex (x-color-values color))))
+  ;; Convert RGB to HSV
+  (let* ((rgb         (x-color-values color))
+         (red         (/ (float (nth 0 rgb)) 65535.0)) ; Convert from 0-65535 to 0.0-1.0
+         (green       (/ (float (nth 1 rgb)) 65535.0))
+         (blue        (/ (float (nth 2 rgb)) 65535.0))
+         (hsv         (hexrgb-rgb-to-hsv red green blue))
+         (hue         (nth 0 hsv))
+         (saturation  (nth 1 hsv))
+         (value       (nth 2 hsv)))
+    (setq hue  (+ hue increment))
+    (when (> hue 1.0) (setq hue  (1- hue)))
+    (hexrgb-color-values-to-hex (mapcar (lambda (x) (floor (* x 65535.0)))
+                                        (hexrgb-hsv-to-rgb hue saturation value))
+                                nb-digits)))
+
+;; Like `doremi-increment-color-component', but for saturation only, 0-1 range, and NB-DIGITS.
+(defun hexrgb-increment-saturation (color increment &optional nb-digits)
+  "Increase saturation component of COLOR by INCREMENT."
+  (unless (string-match "#" color)      ; Convert color name to #hhh...
+    (setq color  (hexrgb-color-values-to-hex (x-color-values color))))
+  ;; Convert RGB to HSV
+  (let* ((rgb         (x-color-values color))
+         (red         (/ (float (nth 0 rgb)) 65535.0)) ; Convert from 0-65535 to 0.0-1.0
+         (green       (/ (float (nth 1 rgb)) 65535.0))
+         (blue        (/ (float (nth 2 rgb)) 65535.0))
+         (hsv         (hexrgb-rgb-to-hsv red green blue))
+         (hue         (nth 0 hsv))
+         (saturation  (nth 1 hsv))
+         (value       (nth 2 hsv)))
+    (setq saturation  (+ saturation increment))
+    (when (> saturation 1.0) (setq saturation  (1- saturation)))
+    (hexrgb-color-values-to-hex (mapcar (lambda (x) (floor (* x 65535.0)))
+                                        (hexrgb-hsv-to-rgb hue saturation value))
+                                nb-digits)))
+
+;; Like `doremi-increment-color-component', but for value only, 0-1 range, and NB-DIGITS.
+(defun hexrgb-increment-value (color increment &optional nb-digits)
+  "Increase value component (brightness) of COLOR by INCREMENT."
+  (unless (string-match "#" color)      ; Convert color name to #hhh...
+    (setq color  (hexrgb-color-values-to-hex (x-color-values color))))
+  ;; Convert RGB to HSV
+  (let* ((rgb         (x-color-values color))
+         (red         (/ (float (nth 0 rgb)) 65535.0)) ; Convert from 0-65535 to 0.0-1.0
+         (green       (/ (float (nth 1 rgb)) 65535.0))
+         (blue        (/ (float (nth 2 rgb)) 65535.0))
+         (hsv         (hexrgb-rgb-to-hsv red green blue))
+         (hue         (nth 0 hsv))
+         (saturation  (nth 1 hsv))
+         (value       (nth 2 hsv)))
+    (setq value  (+ value increment))
+    (when (> value 1.0) (setq value  (1- value)))
+    (hexrgb-color-values-to-hex (mapcar (lambda (x) (floor (* x 65535.0)))
+                                        (hexrgb-hsv-to-rgb hue saturation value))
+                                nb-digits)))
+
 (defun hexrgb-increment-red (hex nb-digits increment &optional wrap-p)
   "Increment red component of rgb string HEX by INCREMENT.
 String HEX starts with \"#\".  Each color is NB-DIGITS hex digits long.
