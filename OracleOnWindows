@@ -47,13 +47,13 @@ but I haven't tried it.  I don't know why the emacs info docs for
 p-s-r say one thing and the C comments say another, so maybe this was
 tried and it didn't work?
 
-When I get a large sql buffer, I send the buffer use C-c C-r seperatly.
+When I get a large sql buffer, I send the buffer use C-c C-r separately.
 Hope somebody have the time to fix this bug --[[maddog]]
 
 I have noticed the same problem when using SQL*Plus directly -- you cannot
 paste too much text at once.  As part of my job I often write SQL
 statements of 150 lines and more.  I have not found a way arround that.
-So I just keep it in a seperate test.sql file, and start M-x sql-oracle
+So I just keep it in a separate test.sql file, and start M-x sql-oracle
 in the same directory, and run @test to run the file.  Works for me.  :)
 -- AlexSchroeder
 
