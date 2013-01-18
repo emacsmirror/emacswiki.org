@@ -7,6 +7,6 @@ This page is about displaying sequences of characters as fancy characters or sym
 ** http://paste.lisp.org/display/42335/raw
 ** http://paste.lisp.org/display/42335,2/raw
 * Lisp:pretty-mode.el
-** I packages this up with my mappings as an ELPA package here http://www.wisdomandwonder.com/article/6399/emacs-pretty-mode-plus-elpa-package
+** I packages this up with my mappings as an ELPA package here http://www.wisdomandwonder.com/article/6399/emacs-pretty-mode-plus-elpa-package -- GrantRettke
 * PrettySymbolsForLanguages -- Language-specific display of char sequences as fancy characters or symbols.
 * UnParenMode -- Hide display of parens.
