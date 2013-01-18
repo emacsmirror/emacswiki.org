@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 21.1
-;; Last-Updated: Wed Jan  2 13:14:16 2013 (-0800)
+;; Last-Updated: Fri Jan 18 09:11:36 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 2716
+;;     Update #: 2729
 ;; URL: http://www.emacswiki.org/oneonone.el
 ;; Doc URL: http://emacswiki.org/OneOnOneEmacs
 ;; Keywords: local, frames
@@ -247,7 +247,7 @@
 ;;    `1on1-color-minibuffer-frame-on-setup',
 ;;    `1on1-color-isearch-minibuffer-frame',
 ;;    `1on1-display-*Completions*-frame', `1on1-display-*Help*-frame',
-;;    `1on1-flash-ding-minibuffer-frame', `1on1-increment-color-hue',
+;;    `1on1-flash-ding-minibuffer-frame',
 ;;    `1on1-minibuffer-prompt-end', `1on1-reset-minibuffer-frame',
 ;;    `1on1-remove-if', `1on1-set-minibuffer-frame-top/bottom',
 ;;    `1on1-set-minibuffer-frame-width',
@@ -280,6 +280,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/01/18 dadams
+;;     Removed: 1on1-increment-color-hue - use hexrgb-increment-hue.
+;;     1on1-color-minibuffer-frame-on-(setup|exit)-increment: Divided increment by 100.
+;;     1on1-color-minibuffer-frame-on-(setup|exit): use hexrgb-increment-hue.
 ;; 2013/01/02 dadams
 ;;     Added: 1on1-remap-other-frame-command-flag, 1on1-other-frame.
 ;; 2012/10/02 dadams
@@ -701,14 +705,14 @@ take effect."
   :type 'boolean :group 'One-On-One)
 
 ;;;###autoload
-(defcustom 1on1-color-minibuffer-frame-on-exit-increment 5
+(defcustom 1on1-color-minibuffer-frame-on-exit-increment 0.05
   "*Increment to change minibuffer-frame hue when minibuffer is exited.
 This should be opposite in sign to
 `1on1-color-minibuffer-frame-on-setup-increment.'"
   :type 'integer :group 'One-On-One)
 
 ;;;###autoload
-(defcustom 1on1-color-minibuffer-frame-on-setup-increment -10
+(defcustom 1on1-color-minibuffer-frame-on-setup-increment -0.10
   "*Increment to change minibuffer-frame hue when minibuffer is entered.
 This should be opposite in sign to
 `1on1-color-minibuffer-frame-on-exit-increment.'"
@@ -1598,7 +1602,7 @@ Use this when increasing the minibuffer recursion depth."
       (set-background-color 1on1-active-minibuffer-frame-background)
       (let ((count (minibuffer-depth)))
         (while (> count 1)
-          (set-background-color (1on1-increment-color-hue ; Change bg hue slightly.
+          (set-background-color (hexrgb-increment-hue ; Change bg hue slightly.
                                  (frame-parameter nil 'background-color)
                                  1on1-color-minibuffer-frame-on-setup-increment))
           (setq count (1- count)))))))
@@ -1611,28 +1615,9 @@ Use this when reducing the minibuffer recursion depth."
       (select-frame 1on1-minibuffer-frame)
       (if (< (minibuffer-depth) 2)
           (set-background-color 1on1-inactive-minibuffer-frame-background)
-        (set-background-color (1on1-increment-color-hue ; Change bg hue slightly.
+        (set-background-color (hexrgb-increment-hue ; Change bg hue slightly.
                                (frame-parameter nil 'background-color)
                                1on1-color-minibuffer-frame-on-exit-increment))))))
-
-;; This is essentially a version of `doremi-increment-color-component' for hue only.
-(defun 1on1-increment-color-hue (color increment)
-  "Increase hue component of COLOR by INCREMENT."
-  (unless (string-match "#" color)      ; Convert color name to #hhh...
-    (setq color (hexrgb-color-values-to-hex (x-color-values color))))
-  ;; Convert RGB to HSV
-  (let* ((rgb (x-color-values color))
-         (red   (/ (float (nth 0 rgb)) 65535.0)) ; Convert from 0-65535 to 0.0-1.0
-         (green (/ (float (nth 1 rgb)) 65535.0))
-         (blue  (/ (float (nth 2 rgb)) 65535.0))
-         (hsv (hexrgb-rgb-to-hsv red green blue))
-         (hue        (nth 0 hsv))
-         (saturation (nth 1 hsv))
-         (value      (nth 2 hsv)))
-    (setq hue (+ hue (/ increment 100.0)))
-    (when (> hue 1.0) (setq hue (1- hue)))
-    (hexrgb-color-values-to-hex (mapcar (lambda (x) (floor (* x 65535.0)))
-                                        (hexrgb-hsv-to-rgb hue saturation value)))))
 
 (defun 1on1-color-isearch-minibuffer-frame ()
   "Use `1on1-isearch-minibuffer-frame-background' for minibuffer."
