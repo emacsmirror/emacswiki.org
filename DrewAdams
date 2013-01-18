@@ -618,6 +618,14 @@ Wrt your commands that return a list with a range of ten hex color codes, I thin
 
 Regards -- DrewAdams
 
+[new:JasonMilkins:2013-01-18 23:07:40 UTC]
+Hi Drew, thanks for the reply
+
+I'll have a look at the latest <tt>[[hexrgb.el]]</tt> and see what I can do, ideally I'd like to create `##hexrgb+.el##' (or similar.) to add a lot of format related functions, which is what I'd intended to do in the first place (a year ago I think.) - At that time nb-digits needed to be hacked in, so I ended up making this copy of hexrgb.el.
+
+I'll post again when I get something useful going.
+
+Regards, JasonMilkins
 
 
 
