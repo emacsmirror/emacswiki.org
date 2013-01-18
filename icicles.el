@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Jan  5 14:00:56 2013 (-0800)
+;; Last-Updated: Fri Jan 18 08:21:26 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 23279
+;;     Update #: 23280
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1026,7 +1026,6 @@
 ;;    `icicle-imenu-command-p', `icicle-imenu-in-buffer-p',
 ;;    `icicle-imenu-non-interactive-function-p',
 ;;    `icicle-increment-cand-nb+signal-end',
-;;    `icicle-increment-color-hue', `icicle-increment-color-value',
 ;;    `icicle-Info-book-order-p',
 ;;    `icicle-Info-build-node-completions',
 ;;    `icicle-Info-build-node-completions-1',
