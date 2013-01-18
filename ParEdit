@@ -42,6 +42,8 @@ Whenever the listed commands are used, !ElDoc will automatically refresh the min
 
 [new:PhilHudson:2013-01-18 12:07 UTC]
 No such function as ##paredit-close-round## exists in paredit.el (emacs 24.3)
+[new]
+After you load paredit, `paredit-close-round' is defined. -- AaronHawley
 
 
 == ParEdit and SLIME REPL == 
