@@ -607,8 +607,30 @@ Which use the defcustom - hexrgb-color-group-format ( defaults as  "%s, " )
 
 You can find a post at http://emacsfodder.github.com/blog/hexrgb-some-convenient-functions/ with a link to the source.
 
-All the best,
-Jason
+All the best, [[JasonMilkins]]
+
+[new:DrewAdams:2013-01-18 17:52 UTC]
+Hi Jason.  Thanks for your interest.  I really appreciate your efforts and offer.
+
+Actually, I have had code that does what your `##hexrgb-hex-set-(hue|saturation|brightness)##' functions do for quite a while, but I have kept it in other libraries ('''[[Icicles]]''', '''OneOnOneEmacs''', '''DoReMi''').  I've been thinking for some time about moving that code to <tt>[[hexrgb.el]]</tt>, and I've finally done that now -- see `##hexrgb-increment-(hue|saturation|value)##'.
+
+Wrt your commands that return a list with a range of ten hex color codes, I think that that kind of thing is better put in a separate library, perhaps something more directly aimed at CSS coders.  I try to keep <tt>[[hexrgb.el]]</tt> to just basic color manipulation functions and a few core commands.  Please consider posting those commands separately.
+
+Regards -- DrewAdams
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ----
 
