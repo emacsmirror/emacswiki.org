@@ -27,13 +27,6 @@ You can contact me using (please send plain text mail, not HTML):
 <pre>
 (concat (list 120 102 113) [46] (mapconcat (function (lambda (x) (format "%c" (1- x)))) "gsff" "") "@" "gmail" "." "com")
 </pre>
-== My Emacs Installation ==
-<pre>
-./configure --with-x-toolkit=no --without-toolkit-scroll-bars --with-wide-int --enable-link-time-optimization --enable-gcc-warnings
-make
-src/emacs -Q
-make install
-</pre>
 
 == My Emacs Invocation ==
 
