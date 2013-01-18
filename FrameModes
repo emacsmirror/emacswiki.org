@@ -51,6 +51,7 @@ Library <tt>[[frame-cmds.el]]</tt> is a library of frame commands. Using the sug
 
 * Use `C-M-' with the arrow keys (up, down, left, right) to resize a frame incrementally.
 * Use `M-' with the arrow keys to move a frame incrementally.
+* Use '''Shift''' plus the usual keys for scrolling to move a frame to the screen edges: `C-S-v' (bottom), `M-S-v' (top), `C-S-next' (right), `C-S-prior' (left).
 * Use `M-x tile-frames-horizontally' and `M-x tile-frames-vertically' to tile all visible frames.
 * Use `M-x maximize-frame-horizontally', `M-x maximize-frame-vertically', and `M-x max-frame' to maximize the current frame.
 * Use `C-M-z' or `C-x C-z' to iconify/hide all frames -- see `show-hide', below. 
@@ -66,7 +67,8 @@ These are the commands in <tt>[[frame-cmds.el]]</tt>:
 ** With prefix argument, you are prompted for names of two frames to tile.
 ** Otherwise, all visible frames are tiled (except a standalone
 minibuffer frame, if any).
-* `move-frame-up', `move-frame-down', `move-frame-left', and `move-frame-right', -- Move a frame incrementally.
+* `move-frame-up', `move-frame-down', `move-frame-left', and `move-frame-right' -- Move a frame incrementally.
+* `move-frame-to-screen-top', `move-frame-to-screen-bottom', `move-frame-to-screen-left', `move-frame-to-screen-right' -- Move a frame to a screen edge.
 * `enlarge-font' -- Incrementally change the size of a frame's font. See also these frame-zooming commands in library <tt>[[zoom-frm.el]]</tt>: `zoom-frm-in', `zoom-frm-out', `zoom-frm-unzoom', `toggle-zoom-frame'. 
 * `set-frame-alist-parameter-from-frame' and `set-all-frame-alist-parameters-from-frame' -- Update a frame-parameter alist, such as `default-frame-alist', using the parameters of the current frame.
 * `tell-customize-var-has-changed' -- Tell customize to consider that a given variable has been set (changed).
