@@ -587,7 +587,28 @@ Regards, DrewAdams
 
 ----
 
+[new:hexrgb:2013-01-18 10:44 UTC]
 
+Hi Drew, I've added some features to hexrgb.el and wanted to pass them onto you, so they carry forward. here's a short list of them:
+
+* hexrgb-hex-set-brightness
+* hexrgb-hex-set-saturation
+* hexrgb-hex-set-hue
+
+Which I hope are self explanatory.
+
+Also these, color sampling functions:
+
+* hexrgb-hex-hue-group - insert a group of colors with hue adjustment from 90% to 10% steps into the current buffer
+* hexrgb-hex-sat-group - as above but step saturation 
+* hexrgb-hex-val-group - as above but step val / brightness
+
+Which use the defcustom - hexrgb-color-group-format ( defaults as  "%s, " )
+
+You can find a post at http://emacsfodder.github.com/blog/hexrgb-some-convenient-functions/ with a link to the source.
+
+All the best,
+Jason
 
 ----
 
