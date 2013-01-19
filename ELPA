@@ -71,7 +71,7 @@ You can do that by putting this in your init file:
 (add-hook 'after-init-hook #'(lambda () (load "<real init file>")))
 }}}
 
-and moving all your normal init to the {{{<<real init file>>}}}. 
+and moving all your normal init to the ##<<real init file>>##. 
 
 You can also move the customizations into their own init file, though that shouldn't matter, they could stay in your standard init file with the single {{{after-init-hook}}}. 
 
