@@ -138,7 +138,7 @@ and even AucTeX!
 
 === Homebrew ===
 
-[http://mxcl.github.com/homebrew/ Homebrew] has Emacs 24.1 (as of 2011-08-14). A Cocoa-specific Emacs.app can be build using the --cocoa switch. The following is copied from the Homebrew info
+[http://mxcl.github.com/homebrew/ Homebrew] has Emacs 24.2 (as of 2012-08-28). A Cocoa-specific Emacs.app can be build using the --cocoa switch. The following is copied from the Homebrew info
 
 <pre>
 $ brew info emacs
