@@ -68,17 +68,17 @@ So packages are initialized //AFTER// the init.el is loaded.  This means you sho
     (add-hook 'after-init-hook 'cycbuf-init)
 }}}
 
-Using //after-init-hook// seems like a last resort because you will cause packages to be loaded, perhaps unnecessarily.  That slows down your Emacs loading time.
+Some people think that using //after-init-hook// seems like a last resort because it may force the load of the package you're referring to (thus slowing down Emacs). Others point out that moving your whole initialization to after ELPA is loaded makes things easier to use. 
 
-=== Using after-init-hook is OK! ===
-
-I, [[Bernard Hurley]], have to take issue with the statement that using //after-init-hook// is a last resort.  There seems to be no reason why it should cause packages to be loaded unnecessarily.  After all, all you are doing is delaying the execution of some code. What packages that code causes to load is up to the code itself.  As I see it, the problem with ELPA is that it sets up the paths to packages after your .emacs or .init file has run.  The result is that any autoloads or requires you do are done with the wrong //load-path// Well there is a simple solution to this, delay your initialisation untill *after* ELPA has done it's work.  At present my .emacs file looks like this:
+You can do that by putting this in your init file:
 
 {{{
-    (add-hook 'after-init-hook #'(lambda () (load "<real init file>")))
+(add-hook 'after-init-hook #'(lambda () (load "<real init file>")))
 }}}
 
-To keep things sane, it's probably best to have a dedicated customisation file set up so that Emacs doesn't put customisations in your .emacs or .init file.  It seems to me that resrting to tricks to get things working is a big no-no.  Much as I like ELPA, I think there is a lot about it that hasn't been properly thought out.  --- [[Bernard Hurley]]
+and moving all your normal init to the {{{<<real init file>>}}}. 
+
+You can also move the customizations into their own init file, though that shouldn't matter, they could stay in your standard init file with the single {{{after-init-hook}}}. 
 
 === Adjusting load-path after updating packages ===
 
