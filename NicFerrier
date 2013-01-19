@@ -53,7 +53,7 @@ I am writing and maintaining an EmacsLisp version of a WikiCreole parser and HTM
 
 I am doing this mainly so Elnode can have a decent Wiki implementation.
 
-::new the wiki is being worked on! [http://github.com/aidalgol/elwiki|here]
+An Elnode wiki to host EmacsWiki is being worked on [http://github.com/aidalgol/elwiki|here!]
 
 
 == Useful links ==
