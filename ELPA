@@ -28,11 +28,11 @@ You can also customize these variables.
 
 [[http://www.gnu.org/software/emacs/manual/html_node/elisp/Packaging-Basics.html#Packaging-Basics|The Elisp Manual describes how the package system is initialized]]:
 
- Whenever Emacs starts up, it automatically calls the function
- package-initialize to load installed packages. This is done after
- loading the init file and abbrev file (if any) and before running
- after-init-hook (see Startup Summary). Automatic package loading is
- disabled if the user option package-enable-at-startup is nil.
+:: Whenever Emacs starts up, it automatically calls the function `package-initialize' to load installed packages. 
+:: This is done after loading the init file and abbrev file (if any) and before running `after-init-hook' (see Startup Summary). 
+:: Automatic package loading is disabled if the user option package-enable-at-startup is nil.
+
+
 
 So packages are initialized //AFTER// the init.el is loaded.  This means you should //NOT// put package specific initialization into your init.el except in a few ways:
 
