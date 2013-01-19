@@ -16,6 +16,8 @@ I am the author and maintainer of [[Elnode]], the Emacs Async Webserver; more in
 
 == Recent Emacs related blog posts ==
 
+* [http://nic.ferrier.me.uk/blog/2013_01/year-in-emacs|The next year's Emacs work]
+
 * [http://nic.ferrier.me.uk/blog/2012_07/tips-and-tricks-for-emacslisp|EmacsLisp tips and tricks]
 
 * [http://nic.ferrier.me.uk/blog/2012_07/emacs-packages-for-programmers|tips and tricks for EmacsLisp developers on using packages]  
@@ -51,6 +53,13 @@ I am writing and maintaining an EmacsLisp version of a WikiCreole parser and HTM
 
 I am doing this mainly so Elnode can have a decent Wiki implementation.
 
+::new the wiki is being worked on! [http://github.com/aidalgol/elwiki|here]
+
+
+== Useful links ==
+
+[[CycleFontSizes|changing font size]] - the most useful thing is //C-0// to reset a window.
+
 
 == Emacs under Mercurial ==
 
@@ -63,54 +72,9 @@ and [https://bitbucket.org/nic/emacs-update/changeset/14a32e93c535 here is the u
 
 I've never liked gnus. But I do like Emacs as a mail platform so I've always maintained my own mail code.
 
-Back in the last 90s I wrote an [[imapua|Emacs IMAP user agent based on the GNUs IMAP library]].
-It worked pretty well but IMAP didn't really scale for me once my
-inbox got really really big (20k messages plus). The IMAP protocol is
-actually quite difficult to deal with asynchrnously so I got more and
-more stuck with email.
+Back in the last 90s I wrote an [[imapua|Emacs IMAP user agent based on the GNUs IMAP library]]. It worked ok but IMAP doesn't scale to big inboxes.
 
-Eventually I decided to bite the bullet and write my own low level
-email handling. [https://github.com/nicferrier/md the md command] is
-the result. [https://github.com/nicferrier/md md] is a command for
-reading mail stored in a Maildir. It is ''just'' a unix command
-tool. It is completely stateless (apart from the Maildir).
-
-My primary usage of the [https://github.com/nicferrier/md md] tool is
-via an
-[https://github.com/nicferrier/md/blob/master/useragents/emacs/mdmua.el Emacs user agent]. 
-This is currently very simple but already most powerful enough for
-everyday use.
-
-The user agent doesn't need to do complex tasks because I can script
-those with regular unix pipelines. Here's an example BASH script which
-uses [https://github.com/nicferrier/md md] to move all the messages
-with a particular month pattern to a different folder:
-
-{{{
-#!/bin/bash
-# A script to pull all the email for a particular month pattern out of
-# the INBOX and into a separate dir.
-DATEPAT=$1
-echo $DATEPAT | grep -E '[0-9]{4}-[0-9]{2}' > /dev/null
-if [ $? -ne 0 ]
-then
-    echo "incorrect date pattern - eg: mdmonthmove 2011-09"
-    exit 1
-fi
-# Date pattern must be ok
-DATEDIR=$(echo $DATEPAT | sed -rne 's/([0-9]{4})-([0-9]{2})/\1\2/p')
-md ls \
-    | awk -v DATEPAT=$DATEPAT '$2 ~ DATEPAT {print $1}' \
-    | sed -rne 's/^INBOX#(.*)/\1/p' \
-    | while read message
-do 
-    echo $message >> $MAILDIR/$DATEPAT--move.log
-    mv $MAILDIR/cur/$message* $MAILDIR/.$DATEDIR/cur/
-done
-}}}
-
-I am continuing to develop this despite the fact that no one but me
-seems interested. It's actually quite cheap to maintain and improve.
+I've worked on a succession of different email clients since then, the current incarnation being [http://github.com/nferrier/emacs-maildir|Emacs Maildir]. It's fast, it's simple, it's easy.
 
 == Emacs Daemon RC ==
 
