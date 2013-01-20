@@ -20,4 +20,4 @@ Particular highlights are:
 ** including an s-expression representation stage so Creole pages can be turned into JSON
 
 ----
-Category: hypermedia
+CategoryHypermedia
