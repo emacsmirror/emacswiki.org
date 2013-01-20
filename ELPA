@@ -75,7 +75,7 @@ and moving all your normal init to the ##<<real init file>>##.
 
 You can also move the customizations into their own init file, though that shouldn't matter, they could stay in your standard init file with the single ##after-init-hook##. 
 
-[NicFerrier#PackagesForConfig|See also PackagesForConfig]
+[[NicFerrier#PackagesForConfig|See also PackagesForConfig]]
 
 
 === Adjusting load-path after updating packages ===
