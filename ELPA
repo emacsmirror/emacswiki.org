@@ -103,7 +103,7 @@ To my mind one of the faults of ELPA is that the load path is not updated when n
           package-alist)))
 }}}
 
-[:new] Would this be better as some advice? Perhaps even a package that installed the advice?
+[::new] Would this be better as some advice? Perhaps even a package that installed the advice?
 
 === ELPA policy ===
 
