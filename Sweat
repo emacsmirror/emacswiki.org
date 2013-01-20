@@ -1,5 +1,7 @@
 Sweat is a simple template system. But it's not designed to be useful anywhere outside of EmacsLISP.
 
+Sweat is now unmaintained by NicFerrier.
+
 == Download ==
 
 [[sweat.el|sweat from the Emacs WIKI]]
