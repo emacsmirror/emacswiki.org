@@ -151,12 +151,12 @@ Another interest of mine is achieving portable Emacs config.  My plan is to achi
 
 == List of various other ELisp bits and pieces ==
 
-I've done a few other packages for Emacs:
+I've done quite a few other packages for Emacs, most are on github but check these out:
 
 * [[WikiDoc]] -- a program to make wiki documentation from Elisp functions, [[http://marmalade-repo.org/packages/wikidoc|marmalade repo here]], [[http://github.com/nicferrier/elwikidoc|github here]]
 * fakir -- a library to make faking Emacs Lisp functions easier [[http://marmalade-repo.org/packages/fakir|marmalade repo here]], [[http://github.com/nicferrier/emacs-fakir|github here]]
  
-And some other stuff I haven't packaged yet:
+And some other stuff I haven't packaged and probably never will:
 
 * [[pastebin]] -- a simple interface to the [http://www.pastebin.com pastebin.com] webservice
 * [[rcircPresence]] -- for syncing rcirc with some other presence thing (eg: skype)
