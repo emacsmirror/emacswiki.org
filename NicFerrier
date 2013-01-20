@@ -144,10 +144,20 @@ This toggles bold on the dark ones, which I think is all the vim thing is doing.
 
 == Small Init Files ==
 
-Another interest of mine is achieving portable Emacs config.  My plan is to achieve this through use of packages.
+[:PackagesForConfig]Another interest of mine is achieving portable Emacs config.  My plan is to achieve this through use of packages.
 
-[[https://gist.github.com/3159186|This gist]] shows my self installing Emacs config except for the customizations.  The customizations are insecure because they contain passwords and such.  Solving portable customizations seems like a doable problem however.
+The idea is to:
 
+* put your config in a package and make it depend on the packages you are using
+* whenever you install something re-check the depends in your config package and make a new package if necessary
+* have a command to uninstall something, or to garbage collect no longer used dependancies
+* installing your emacs elsewhere is just installing the config package
+* encrypted packages would be useful for config
+* separate config for machine specific things, this can be done with CustomizeThemes
+
+[[https://gist.github.com/3159186|This gist]] shows my self installing Emacs config except for the customizations.  The customizations are insecure because they contain passwords and such, hence the need for encrypted packages.
+
+Solving the problem of what is machine specific and what is not is hard.
 
 == List of various other ELisp bits and pieces ==
 
