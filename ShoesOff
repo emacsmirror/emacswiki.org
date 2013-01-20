@@ -1,0 +1,5 @@
+ShoesOff is an IRC bouncer written in EmacsLisp.
+
+An IRC bouncer is like a proxy for IRC. It's used by people to maintain a permanent connection to IRC when they move around with their laptop or something.
+
+ShoesOff is written with [rcirc] but it works with any IRC clients connecting to it.
