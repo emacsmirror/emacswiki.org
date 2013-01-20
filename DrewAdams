@@ -630,14 +630,17 @@ Regards, JasonMilkins
 [new:DrewAdams:2013-01-18 23:46 UTC]
 Hi Jason.  Sounds good.  And don't hesitate if you do prefer to contribute something to ##hexrgb.el##.  I'll let you know what I think is best, like I did this time.  IOW, I'm still open to suggestions etc.  Thx -- DrewAdams
 
+[new:JasonMilkins:2013-01-20 22:03 UTC]
+Good stuff, I'll have a go at it nearer next weekend and keep you updated, I can see a few convenience/format related use cases, that don't require much in the way of difficult code, just good naming and grouping, 
 
+I think you were right first time, hexrgb shouldn't have too much of this interactive insert stuff going on, and where possible these things should be grouped into useful sets of features/functions and made to require 'hexrgb.
 
+The only function candidates I think should be included (which I'll need to port from SASS or LESS or whatever.) are things like mixing, lighten by percent, etc. 
 
+Anyway, thanks for the interest, 
 
-
-
-
-
+All the best,
+Jason
 
 
 ----
