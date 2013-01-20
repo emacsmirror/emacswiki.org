@@ -18,3 +18,6 @@ Particular highlights are:
 ** which can have formulas attached which Creole will re-calculate
 * a transform API with many stages
 ** including an s-expression representation stage so Creole pages can be turned into JSON
+
+----
+Category: hypermedia
