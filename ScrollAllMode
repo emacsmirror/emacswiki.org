@@ -8,21 +8,25 @@ It doesn't work with the mouse wheel or scroll-bar (tested on both GNU Emacs 21.
 [new]
 Possible workaround for the mouse wheel issue:
 {{{
-(defadvice scroll-all-check-to-scroll (after mwheel-scroll-all () activate)
-  (when (eq this-command 'mwheel-scroll)
-    (let ((original-window (selected-window)))
-      (walk-windows 
-       (lambda (win) 
-         (let ((ignore-window (if mouse-wheel-follow-mouse
-                                  (mwheel-event-window last-input-event)
-                                original-window)))
-           (if (not (eq win ignore-window))
-               (let* ((event last-input-event)
-                      (mouse-wheel-follow-mouse t)
-                      (e `(,(car event) (,win) ,@(cddr event))))
-                 (condition-case nil
-                     (mwheel-scroll e)
-                   (error nil))))))))))
+(defun mwheel-scroll-all-function-all (func arg)
+  (if scroll-all-mode
+      (save-selected-window
+        (walk-windows 
+         (lambda (win)
+           (select-window win)
+           (condition-case nil
+               (funcall func arg)
+             (error nil)))))
+    (funcall func arg)))
+
+(defun mwheel-scroll-all-scroll-up-all (arg)
+  (mwheel-scroll-all-function-all 'scroll-up arg))
+
+(defun mwheel-scroll-all-scroll-down-all (arg)
+  (mwheel-scroll-all-function-all 'scroll-down arg))
+
+(setq mwheel-scroll-up-function 'mwheel-scroll-all-scroll-up-all)
+(setq mwheel-scroll-down-function 'mwheel-scroll-all-scroll-down-all)
 }}}
 (tested with Emacs 24.2.1)
 [new]
