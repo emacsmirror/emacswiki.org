@@ -40,7 +40,7 @@ As of now Elnode is functional. I am starting to write things with it:
 
 * a pastebin style collabarative editor
 * [[http://teamchat.net|TeamChat.net]] a ChatOps engine mashing up IRC, webapps and ChatBots.
-* [[https://github.com/nicferrier/seville|a marmlade port]] (ELPA inside your Emacs)
+* [[https://github.com/nicferrier/seville|the new version of Marmalade]] which would also be a reusable ELPA archive
 * [[Elwiki]] an EmacsWiki engine
 
 Other stuff I am considering:
