@@ -95,11 +95,7 @@ The original IRC client in elisp was by David Lawrence at RPI in 1989, named [[i
 
 A bouncer is like an IRC proxy server. It connects to IRC and you connect to it. The idea is that you can put your bouncer on a permanent Internet host and then connect to it from your laptop (or multiple locations, or whatever) that is less permanently connected.
 
-Several different bouncers are available but NicFerrier has written one in EmacsLisp (utilizing Rcirc as the upstream IRC client). You can of course, connect to the bouncer with any IRC client.
-
-[[http://github.com/nicferrier/shoes-off/|Shoes-Off]] is the bouncer in question. You can download it from marmalade, or just install it.
-
-It is very much a work in progress.
+Several different bouncers are available but NicFerrier has written ShoesOff in EmacsLisp.
 
 ----
 CategoryChatClient CategoryHelp
