@@ -38,36 +38,30 @@ Elnode is in the [http://marmalade-repo.org/packages/elnode marmalade repository
 
 As of now Elnode is functional. I am starting to write things with it:
 
-* a collabarative editor
+* a pastebin style collabarative editor
+* [[http://teamchat.net|TeamChat.net]] a ChatOps engine mashing up IRC, webapps and ChatBots.
 * [[https://github.com/nicferrier/seville|a marmlade port]] (ELPA inside your Emacs)
-* dynamic org agenda export
+* [[Elwiki]] an EmacsWiki engine
 
-I am also improving and extending the [[https://github.com/nicferrier/elnode/blob/master/elnode_tutorial.creole|tutorial]] quite often.
+Other stuff I am considering:
 
-It's pretty good. I hope people pick it up because it's an interesting way to leverage Emacs.
+* dynamic OrgAgenda export
+* browser integration tools, for example an Emacs password store
 
 
-== WikiCreole ==
+== Creole ==
 
-WikiCreole is a Wiki markup language very like the one used here on EmacsWiki. 
+[[Creole]] is a Wiki markup language very like the one used here on [[Oddmuse|EmacsWiki]]. 
 
-I am writing and maintaining an EmacsLisp version of a WikiCreole parser and HTML exporter.
+I develop and maintain the EmacsLisp version of a [[Creole]] [[http://github.com/nicferrier/elwikicreole|parser and HTML exporter]].
 
-I am doing this mainly so Elnode can have a decent Wiki implementation.
-
-An Elnode wiki to host EmacsWiki is being worked on [http://github.com/aidalgol/elwiki|here!]
+We are using [[Creole]] to develop [[Elwiki]], an EmacsWiki engine in EmacsLisp run with [[Elnode]].
 
 
 == Useful links ==
 
-[[CycleFontSizes|changing font size]] - the most useful thing is //C-0// to reset a window.
+[[CycleFontSizes|changing font size]] - the most useful thing is //C-0// to reset font size in a window.
 
-
-== Emacs under Mercurial ==
-
-I host a mercurial copy of the emacs bzr repo at [https://bitbucket.org/nic/emacs bitbucket].
-
-and [https://bitbucket.org/nic/emacs-update/changeset/14a32e93c535 here is the update script I use].
 
 
 == Email under Emacs ==
@@ -169,6 +163,14 @@ And some other stuff I haven't packaged yet:
 * [[imapua]] -- a purely IMAP based email client for Emacs
 * [[trac_editor]] -- a very simple interface to trac.py
 * [[tzhelp]] -- a small set of tools for dealing with timezones
+
+== Emacs under Mercurial ==
+
+I used to maintain a mercurial copy of the emacs bzr repo at [https://bitbucket.org/nic/emacs bitbucket].
+
+[https://bitbucket.org/nic/emacs-update/changeset/14a32e93c535 here is the update script I used].
+
+I no longer maintain that, people weren't interested.
 
 
 ---- 
