@@ -1,9 +1,31 @@
 Use M-x scroll-all-mode to scroll multiple buffers together.
 
-Very useful for visually comparing two files which are hard to diff becase of lots of trivial changes amongst the changes you are looking for.
+Very useful for visually comparing two files which are hard to diff because of lots of trivial changes amongst the changes you are looking for.
 
 ==Limitations==
 It doesn't work with the mouse wheel or scroll-bar (tested on both GNU Emacs 21.3 and 24.2.1).
+
+[new]
+Possible workaround for the mouse wheel issue:
+{{{
+(defadvice scroll-all-check-to-scroll (after mwheel-scroll-all () activate)
+  (when (eq this-command 'mwheel-scroll)
+    (let ((original-window (selected-window)))
+      (walk-windows 
+       (lambda (win) 
+         (let ((ignore-window (if mouse-wheel-follow-mouse
+                                  (mwheel-event-window last-input-event)
+                                original-window)))
+           (if (not (eq win ignore-window))
+               (let* ((event last-input-event)
+                      (mouse-wheel-follow-mouse t)
+                      (e `(,(car event) (,win) ,@(cddr event))))
+                 (condition-case nil
+                     (mwheel-scroll e)
+                   (error nil))))))))))
+}}}
+(tested with Emacs 24.2.1)
+[new]
 
 In emacs before 2002, scrolling by full pages was buggy.
 
@@ -16,4 +38,3 @@ In emacs before 2002, scrolling by full pages was buggy.
 ----
 CategoryDisplay
 CategoryModes
-
