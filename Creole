@@ -1,0 +1,20 @@
+A markup language agreed by committee.
+
+Also a [[http://github.com/nicferrier/elwikicreole|tranformer]], written in Elisp, for converting Creole text to HTML and intermediary forms.
+
+Creole markup is very close to the OddMuse markup language. Because of this Aidalgol and NicFerrier selected it for use as the base of [[Elwiki]], the new EmacsWiki Wiki engine, written in EmacsLisp.
+
+NicFerrier's Creole program is being altered so that it can do OddMuse specific rendering. We plan to add a compliance table here of all OddMuse syntax that Creole can, or cannot do.
+
+== Other things ==
+
+See the [[http://github.com/nicferrier/elwikicreole|Creole project]] README for details on what Creole can do.
+
+Particular highlights are:
+
+* embedded Lisp in Creole pages 
+** for example so you can add directory listings to creole pages
+* OrgMode tables
+** which can have formulas attached which Creole will re-calculate
+* a transform API with many stages
+** including an s-expression representation stage so Creole pages can be turned into JSON
