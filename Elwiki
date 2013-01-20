@@ -1,4 +1,4 @@
-[[http://github.com/aidalgol/elwiki|The Elwiki project]] is an attempt by Aidalgol (of #emacs fame) to write a wiki engine that can run the EmacsWiki in EmacsLisp.
+[[http://github.com/aidalgol/elwiki|The Elwiki project]] is an attempt by [[aidalgol]] (of #emacs fame) to write a wiki engine that can run the EmacsWiki in EmacsLisp.
 
 It uses [[Elnode]] as a webserver and [[Creole]] for converting pages to HTML.
 
