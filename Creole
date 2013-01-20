@@ -1,4 +1,4 @@
-A markup language agreed by committee.
+A markup language agreed by [[http://www.wikicreole.org/|committee]].
 
 Also a [[http://github.com/nicferrier/elwikicreole|tranformer]], written in Elisp, for converting Creole text to HTML and intermediary forms.
 
