@@ -2,9 +2,9 @@ Emacs has lots of different database code.
 
 == SQL Databases ==
 
-See [[SQL]] as well as:
+See [[SQL]] for information on how to use SQL databases from Emacs, as well as:
 
-* [[PosrgreSQL]] - EmacsLisp interface to the PostgreSQL database server
+* [[PostGreSQL]] - EmacsLisp interface to the PostGreSQL database server
 * [[MySql]] - EmacsLisp interface to MySQL server
 
 
