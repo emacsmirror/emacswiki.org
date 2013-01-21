@@ -1,0 +1,7 @@
+An EmacsLisp blog engine built on [[Elnode]].
+
+Skinny is in development. You can see the source in it's [[http://github.com/nicferrier/Skinny|Github]].
+
+Skinny uses Creole marked-up files for entries.
+
+Skinny can be configured using customize variables.
