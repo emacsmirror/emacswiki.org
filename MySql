@@ -1503,3 +1503,4 @@ void syms_of_mysql () {
 ----
 CategorySql
 CategoryPorts
+CategoryDatabase
