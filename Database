@@ -10,6 +10,6 @@ See [[SQL]] for information on how to use SQL databases from Emacs, as well as:
 
 == NoSQL Databases ==
 
-* MongoDB - EmacsLisp [[https://github.com/m2ym/mongo-el|interface to MongoDb]]
+* !MongoDB - EmacsLisp [[https://github.com/m2ym/mongo-el|interface to MongoDb]]
 * [[BBDB]] - Big Brother Database
 * EmacsDb - the Emacs Database interface
