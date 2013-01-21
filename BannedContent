@@ -1,30 +1,36 @@
 # These regular expressions are tested against all URLs in a page before saving it.
+# The format is simple: # comments to the end of the line. Empty lines are ignored.
+# Everything else is a regular expression. If the regular expression is followed by
+# a comment, this is used as the explanation when a user is denied editing. If the
+# comment starts with a date, this date is not included in the explanation.
+# In other words:
+# ^\s*([^#]+?)\s*(#\s*(\d\d\d\d-\d\d-\d\d\s*)?(.*))?$
 
- (best|real|custom|rush|superior)(essay|termpaper|writing|paper)s?\.com
- dissertation\.com
- essay(writingservices|help|lib|ontime)
- mightystudents\.com
- cheappoolproducts\.com
- koncept\.com
- thoughtmesh\.net
- resumesplanet\.com
- zolpo\.com
- college-paper\.org
- (profischnell|uebersetzung)
- securedatarecovery
- mmesquire
- onlinecasino
- cheap.*software
- diamondlink
- rullymisar
- muzzles
- url\.vn
- vietnam
- girisergos
- cheapboots-online
- cozy(boot|northface)
- kamagra
- (viagra|cialis)
- (loans|payday)
- wholesalemaccosmetics
- monclerjacketsold
+(best|real|custom|rush|superior)(essay|termpaper|writing|paper)s?\.com
+dissertation\.com
+essay(writingservices|help|lib|ontime)
+mightystudents\.com
+cheappoolproducts\.com
+koncept\.com
+thoughtmesh\.net
+resumesplanet\.com
+zolpo\.com
+college-paper\.org
+(profischnell|uebersetzung)
+securedatarecovery
+mmesquire
+onlinecasino
+cheap.*software
+diamondlink
+rullymisar
+muzzles
+url\.vn
+vietnam
+girisergos
+cheapboots-online
+cozy(boot|northface)
+kamagra
+(viagra|cialis)
+(loans|payday)
+wholesalemaccosmetics
+monclerjacketsold
