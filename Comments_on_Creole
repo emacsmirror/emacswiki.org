@@ -18,3 +18,16 @@ Also note that it is possible to [WikiDownload download] all the pages, process 
 ([[Oddmuse:Automatic Posting and Uploading]]).
 
 -- AlexSchroeder 2013-01-21 11:47 UTC
+
+----
+
+I was just going to have a pre-parser for tables. I wanted to be able to run a piece of text through it to convert || tables to | tables. I could then put that before the creole conversion (so we could just present what people were putting in) //or// before the save (thus converting what people were inputting).
+
+Eventually we'd run the pre-parser across all the data converting everything that remained.
+
+That was my plan for tables.
+
+I think any switch to creole would require the same kind of processing?
+
+-- [http://nic.ferrier.me.uk NicFerrier] 2013-01-21 17:34 UTC
+
