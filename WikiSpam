@@ -30,7 +30,7 @@ Here's a quick sketch of how the spam filtering works:
 # before a page is saved, a question is asked unless the cookie shows that user has answered a question before
 # the IP number and hostname of the person saving a page is checked against the list on the BannedHosts page, if it exists
 # all the URLs on the page are checked against the list on the BannedContent page, if it exists
-# the entire text of the page is checked against the list on the StrangeBannedContent page, if it exists
+# the entire text of the page is checked against the list on the BannedRegexps page, if it exists
 
 The syntax used on these pages is simple. Each line can contain a single pattern for rejecting changes to the Wiki.  Empty lines are ignored, # starts a comment until the end of the line, tabs and spaces at the beginning and end of all remaining lines are stripped.
 
@@ -42,10 +42,7 @@ There are two additional defenses we use on this site.  [[Oddmuse:Page Locking]]
 
 == Discussion ==
 
-[new]
-I wonder how many revisions does this wiki save.
-
-A malicious spammer may rewrite pages MANY TIMES. -- [[rubikitch]]
+How many revisions does this wiki save?
 
 [new]
 The details are on [[Oddmuse:Kept Pages]]. But basically, when a page is saved…
@@ -56,22 +53,5 @@ The details are on [[Oddmuse:Kept Pages]]. But basically, when a page is saved�
 
 Thus, you can always go back at least two weeks. -- AlexSchroeder
 
-[new]
-KeyboardMacrosTricks page has been permanently spammed for sime time now by the same spammer. Is it possible to ban him, somehow? 
-
-[new]
-The [http://www.emacswiki.org/emacs-en?action=history;id=KeyboardMacrosTricks history page] for KeyboardMacrosTricks shows this page keeps getting spammed. I can't understand why a spammer would keep attacking that one page but no other. Maybe, if that URL is on some spam list somewhere, it'd be best for admins to lock the page and we can move the discussion elsewhere (we could just call it “keyboard macros tips” instead). -- AmitPatel
-
-[new]
-I locked the page for the moment. Anybody with the _editor password_ can still edit the page. If you don't have the editor password, contact me via mail and I can provide you with the password. As for banning – about half the recent spam edits seem to come from altushost, but the others are random IP numbers from !DonEko Service (Russia?), tw telecom (USA), ertelecom.ru, Budko Dmutro (Ukraine)… Boring! Maybe I should write some code that will always force a CAPTCHA for this page… -- AlexSchroeder
-
-[new]
-The CAPTCHA should involve writing some elisp… -- AmitPatel
-
-[new]
-Now the target of the same spammer seems to be KeyboardMacros page. -- SewerynKokot
-
-[new]
-And now (2012-02-08) ColemakKeyboard.  -- ChrisLeyon
 ----
 WikiMaintenance
