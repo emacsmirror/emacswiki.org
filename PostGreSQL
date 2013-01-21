@@ -2,7 +2,7 @@
 
 Code by EricMarsden for a socket-level elisp interface to PostGreSQL.
 
-* Look for pg.el at http://www.chez.com/emarsden/downloads/
+* Look for pg.el [[http://www.chez.com/emarsden/downloads/|here]]
 
 * For newer versions look at http://www.online-marketwatch.com/pgel/pg.html
 
@@ -20,7 +20,7 @@ when you have docbook2X and toolchains for SGML, XML, and Texinfo
 installed.
 
 Here's how the result looks like with the 8.3.3 docs:
-* http://gate450.dyndns.org/~andreas/postgres.info.gz
+* [[http://gate450.dyndns.org/~andreas/postgres.info.gz|PostgreSQL info]]
 
 == Using outline-minor-mode with SQL Dumps ==
 
@@ -45,3 +45,4 @@ automatically set it up when visiting pg_dump output.
  
 ----
 CategorySql
+CategoryDatabase
