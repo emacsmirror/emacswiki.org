@@ -7,5 +7,5 @@
 # ^\s*([^#]+?)\s*(#\s*(\d\d\d\d-\d\d-\d\d\s*)?(.*))?$
 
 порно # Russian porn reference
-<a\s+href=["']?http # HTML anchor tags usually mean spam
+\<a\s+href=["']?http # HTML anchor tags usually mean spam
 \[url= # bbCode links usually mean spam
