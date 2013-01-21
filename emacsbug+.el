@@ -7,9 +7,9 @@
 ;; Copyright (C) 2013, Drew Adams, all rights reserved.
 ;; Created: Sat Jan 19 15:24:48 2013 (-0800)
 ;; Version:
-;; Last-Updated: Sun Jan 20 19:41:03 2013 (-0800)
+;; Last-Updated: Sun Jan 20 20:10:51 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 349
+;;     Update #: 361
 ;; URL: http://www.emacswiki.org/emacsbug%2b.el
 ;; Keywords: report bug
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -492,12 +492,16 @@ preferred mail program.\n")))
 	(terpri)
 	(princ (substitute-command-keys
                 (format
-                 "  Type \\[%s] to visit in Info the Emacs Manual section
-    about when and how to write a bug report, and what
-    information you should include to help fix the bug."
+                 "  Type \\[%s] to visit, in Info, the Emacs Manual section about when
+    and how to write a bug report, and what information you should
+    include to help fix the bug."
                  (if (fboundp 'info-emacs-bug)
                      'info-emacs-bug
-                   'report-emacs-bug-info)))))
+                   'report-emacs-bug-info))))
+        (unless (and (keymapp ebp-insert-option-map)  (not ins-all))
+          (princ (substitute-command-keys
+                  "\n\nYou can customize option `ebp-report-emacs-bug-included-fields' to
+choose the types of information included automatically in your report."))))
       (shrink-window-if-larger-than-buffer (get-buffer-window "*Bug Help*")))
     ;; Make it less likely people will send empty messages.
     (if (boundp 'report-emacs-bug-send-hook)
