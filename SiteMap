@@ -103,6 +103,7 @@ External Programs and Remote Services:
 ** [[CategoryShell|Shell]] -- interact with a shell inside Emacs
 ** [[CategoryEshell|Eshell]] -- a shell implemented in EmacsLisp
 ** [[CategoryVersionControl|VersionControl]] -- using configuration-control (source-control) systems in Emacs (CVS, RCS, SCCS,...)
+* [[CategoryDatabase|Databases]] -- databases in Emacs
 * [[CategoryGames|Games]] -- play in Emacs
 * [[CategoryInterface|Interface]] -- accessing online utilities
 ** [[CategoryChatClient|ChatClient]] -- using Emacs for chatting
