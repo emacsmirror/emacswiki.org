@@ -1,4 +1,4 @@
-An abstract DataBase interface.
+An abstract Database interface.
 
 EmacsDb is available from [[Marmalade]].  It comes with an implementation that uses persistent hash-tables.  Other interfaces are available using PostGreSQL and MongoDb.
 
