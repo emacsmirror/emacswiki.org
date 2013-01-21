@@ -124,6 +124,24 @@ Here's the result:
           +-------+---+   +-------+---+   +------+---+   +-------+-----+
 }}}
 
+
+== remove duplicates ==
+
+Duplicates elements can be easily removed from a list, but you may need to supply the correct comparison test.  The following example indicates how:
+
+ ELISP> (setq a '("one" "one" "two"))
+ ("one" "one" "two")
+
+ ELISP> (remove-duplicates a :test 'string=)
+ ("one" "two")
+
+In the case of strings, if you neglect the comparison test, you get an incorrect result:
+
+ ELISP> (remove-duplicates a)
+ ("one" "one" "two")
+
+Numbers would work as expected here, because the default test is 'eq'.
+
 == cons ==
 
 A cons is a pair of pointers; they are called the car and the cdr of
