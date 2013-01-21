@@ -1,0 +1,11 @@
+# This page lists regular expressions that prevent the saving of a page.
+# The format is simple: # comments to the end of the line. Empty lines are ignored.
+# Everything else is a regular expression. If the regular expression is followed by
+# a comment, this is used as the explanation when a user is denied editing. If the
+# comment starts with a date, this date is not included in the explanation.
+# In other words:
+# ^\s*([^#]+?)\s*(#\s*(\d\d\d\d-\d\d-\d\d\s*)?(.*))?$
+
+порно # Russian porn reference
+&lt;a\s+href=["']?http # HTML anchor tags usually mean spam
+\[url= # bbCode links usually mean spam
