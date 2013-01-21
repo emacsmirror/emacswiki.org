@@ -6,7 +6,7 @@ We fight WikiSpam day and night!  :)
 
 You're welcome to come help us out -- just ask
 one of the existing administrators for an [Self:action=password admin password].
-The only real job we have is maintaining BannedContent and BannedHosts.
+The only real job we have is maintaining BannedContent, BannedRegexps and BannedHosts.
 
 Current administrators:
 
