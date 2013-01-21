@@ -12,4 +12,9 @@ vs.
 | foo | bar |
 }}}
 
+The problem is, of course, to figure out which occurrences of ##||## are actually part of table markup and which are not.
+
+Also note that it is possible to [WikiDownloads download] all the pages, process them offline, and upload them again using scripts
+([[Oddmuse:Automatic Posting and Uploading]]).
+
 -- AlexSchroeder 2013-01-21 11:47 UTC
