@@ -4,7 +4,7 @@ Emacs has 2 major Javascript modes:
 * ECMAScriptMode -- another javascript mode, but it's last update was 2005.  You're likely better off using js-mode
 
 There are also a number of ways to integrate with javascript subprocesses:
-* SwankJs, a full-blown SlimeMode backend for node.js and can connect to a running web browser process through the socket.io package.  https://github.com/swank-js/swank-js
+* SwankJs, a full-blown SlimeMode backend for [[NodeJs|node.js]] and can connect to a running web browser process through the socket.io package.  https://github.com/swank-js/swank-js
 * [http://js-comint-el.sourceforge.net/ js-comint.el] is a lightweight comint integration package, that also seems to integrate with org-mode nicely. 
 * JavascriptShell A REPL for Windows Scripting Host, and a [[Lisp:jsshell-bundle.el]]. It does simple completion on JS objects.
 * WshRepl A decrepit console into the Windows Scripting Host from within Emacs.  It does have a project on github, and is looking for a maintainer
