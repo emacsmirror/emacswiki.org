@@ -4,7 +4,7 @@ This is about making wiki documentation from Elisp.
 
 WikiDoc is an Elisp file that you can load into Emacs and will let you make a buffer of Wiki output from function documentation. 
 
-It is very much a work in progress but it does make [[http://wikicreole.org|Wiki Creole]] pages from Elisp function documentation.
+It is very much a work in progress but it does make [[Creole]] pages from Elisp function documentation.
 
 == Why? ==
 
