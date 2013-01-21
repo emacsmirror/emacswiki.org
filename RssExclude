@@ -1,5 +1,10 @@
 Add pages to be excluded from the RSS feed.  These are regular expressions.
 Put one space at the beginning of the line.
+In other words:
+
+<pre>
+^ ([^ ]+)[ \t]*$
+</pre>
 
  SandBox
  BannedContent
