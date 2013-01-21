@@ -65,14 +65,10 @@
 ^unassigned\.psychz.net # for spamming IciclesDiscussion
 ^unknown\.SteepHost\.Net # for spamming IciclesDiscussion
 ^36\.248\.169\.184 # for spamming WThirtyTwoFontifiedRegionToClipboard
-^112\.111\.161\.27 # for spamming WThirtyTwoFontifiedRegionToClipboard
-^112\.111\.160\.216 # for spamming WThirtyTwoFontifiedRegionToClipboard
-^112\.111\.173\.194 # for spamming IciclesDiscussion
 ^117\.21\.227\.40 # for spamming IciclesDiscussion
 ^142\.54\.163\.75 # for spamming IciclesDiscussion
 ^142\.4\.117\.129 # for spamming Comments on LoopFindPackage
 ^142\.4\.117\.169 # for spamming KeyBindingDiscussion
-^112\.111\.188\.9 # for spamming WThirtyTwoFontifiedRegionToClipboard
 ^199\.15\.234\.74 # for spamming IciclesDiscussion
 ^199\.15\.234\.226 # for spamming multiple Comments on pages
 ^120\.43\.29\.213 # for spamming Comments on 2012-03-22
@@ -82,4 +78,4 @@
 ^91\.237\.249\. # for spamming Comments on CategoryCode and others
 ^178\.48\.155\.27\.broad\.fz\.fj\.dynamic\.163data\.com\.cn # spamming EmacsForums
 ^192\.74\.229\.1 # for spamming WThirtyTwoFontifiedRegionToClipboard
-
+^112\.111\.1(6[0-9]|7[0-5])\. # 112.111.160.0 - 112.111.175.255
