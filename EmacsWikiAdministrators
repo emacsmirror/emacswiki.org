@@ -33,7 +33,7 @@ The powers of an administrator:
 # Rollback all changes from a certain point in time (the result are a gazillion changes which can be reverted like ordinary changes).
 # Search and replace over the entire site (the result are a gazillion changes which can be reverted like ordinary changes).
 # Bans and locks have no effect on administrators.
-# Maintain BannedHosts and BannedContent to ban hostnames, IP numbers, or page content using regular expression.
+# Maintain BannedHosts, BannedContent and BannedRegexps to ban hostnames, IP numbers, or page content using regular expression.
 # Lock and unlock pages.
 # Change the list of URL abbreviations by modifying the InterMap page.
 # Change the list of sites connected via NearLinks by modifying the NearMap page
