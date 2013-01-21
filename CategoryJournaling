@@ -17,17 +17,17 @@ or a similar website that gets updated frequently.
 * OrgBlogging -- blogging with OrgMode
 ** OrgBlog -- create and publish a blog with OrgMode
 ** [[Blorg]] -- export a blog from an org file
-* dme:blog.el: http://www.hollytree-house.co.uk/dme/emacs/dme:blog.el [BROKEN LINK]
 * Lisp:tjic-website.el -- a few small functions for managing local files
   that later need to get scp-ed or ftp-ed to a website
 * Lisp:tjic-blog.el -- an add-on to tjic-website which supports a blog
   (weblog)
 * [[lisplog]] -- Create and manage a blog with Emacs. It supports rss too
+* [[Skinny]] -- an Elnode webapp for presenting a directory structure of [[Creole]] files as a blog
 
 Other packages that can be used with Emacs effortlessly, eg. because they
 depend on plain text.
 
-* http://www.blosxom.com is a web cgi that allows you to journal with normal flat files.  Each journal entry is a unique file.
+* [[http://www.blosxom.com|Bloxsom]] is a web cgi that allows you to journal with normal flat files.  Each journal entry is a unique file. 
 
 == Using an API ==
 
@@ -35,18 +35,18 @@ depend on plain text.
 * wpmail.el <http://github.com/thomas11/wpmail/tree/master> -- for posting to Wordpress via e-mail. Currently only tested with wordpress.com.
 * [[Tumblr]] -- implementation (currently only) for posting to Tumblr.
 * BloggerMode -- for the Blogger API
-* gblogger: http://code.google.com/p/emacspeak/ Full-featured and up-to-date tools for the Google API. Part of the emacspeak suite, but available separately.
+* gblogger: [[http://code.google.com/p/emacspeak/|Full-featured and up-to-date tools for the Google API]]. Part of the emacspeak suite, but available separately.
 * <nowiki>LiveJournal</nowiki> clients (see MeatBall:LiveJournal)
 ** LjUpdate
-** jwz-lj.el: http://www.jwz.org/hacks/jwz-lj.el
-* advogato.el: http://www.zerobeat.in/files/advogato.el
-* EmacsAtomApi -- an interface to weblog services which present the Atom API (http://atomenabled.org).
-* mt.el: http://www.marginalia.org/code/mt.el - Moveable Type (This package works well enough, but it only gives access to ''title'', ''description'' i.e. Body, and the categories. It would be nice to have: ''mt_allow_comments'', ''mt_allow_pings'', ''mt_text_more'', ''mt_excerpt'', ''mt_keywords'', ''mt_tb_ping_urls''. Looking over mt.el, it would seem that it's relatively easy to add these, but I'm not a Lisp programmer.)
+** [[http://www.jwz.org/hacks/jwz-lj.el|jwz-lj.el]] 
+* [[http://www.zerobeat.in/files/advogato.el|advogato.el]] 
+* EmacsAtomApi -- an interface to weblog services which present the [[http://atomenabled.org|Atom API]].
+* [[http://www.marginalia.org/code/mt.el|mt.el]] - Moveable Type (This package works well enough, but it only gives access to ''title'', ''description'' i.e. Body, and the categories. It would be nice to have: ''mt_allow_comments'', ''mt_allow_pings'', ''mt_text_more'', ''mt_excerpt'', ''mt_keywords'', ''mt_tb_ping_urls''. Looking over mt.el, it would seem that it's relatively easy to add these, but I'm not a Lisp programmer.)
 * [[Identica-mode]] -- post to any laconi.ca server (similar to [[Twitter]] but free)
 * [[Twitter]] -- post to twitter.com using various modes
 * [[Eblog]] - provides an MUA-like interface for posting to Blogger using the new GData API.
 * [[Tumbl]] -- Make posts to Tumblr from Emacs.
-* Post to posterous.com from Emacs http://github.com/snim2/posterous.el
+* [[http://github.com/snim2/posterous.el|Post to posterous.com from Emacs]] 
 
 == RSS readers ==
 
@@ -54,8 +54,8 @@ depend on plain text.
 * GnusRss -- read RSS feeds in Gnus
 * WThreeMShimbun -- read various web articles in Gnus, Wanderlust, or Mew.
 * You can also use [[emacs-w3m]] to access the mobile versions of online RSS
-aggregators, such as Google Reader. In the latter case, just go to
-http://www.google.com/reader/m/view/, and log in as usual. If anyone has had
+aggregators, such as Google Reader. In the latter case, just go 
+[[http://www.google.com/reader/m/view/|here]], and log in as usual. If anyone has had
 success accessing other similar online services this way, maybe we should make a
 list here with the relevant URLs. ([[KamenNedev]])
 * HOWTOReadFeedsInEmacsViaEmail
