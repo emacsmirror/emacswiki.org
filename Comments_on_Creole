@@ -1,0 +1,4 @@
+As an intermediate step, we could replace our current main markup extension [[Oddmuse:Usemod Markup Extension]]) with a Creole implementation ([[Oddmuse:Creole Markup Extension]]). This would allow us to convert existing pages. If you are an EmacsWikiAdministrator there is a way to run search & replace operations on the entire wiki using Perl regular expressions. If you wanted to get involved, I could set up a /copy/ of the site to experiment on.
+
+-- AlexSchroeder 2013-01-21 11:47 UTC
+
