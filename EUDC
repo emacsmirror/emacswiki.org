@@ -47,5 +47,7 @@ Adapt and add the following to your .emacs file:
 ----
 eudc-inline-query doesn't seem to work for me.  With multiple results I always get the message "Multiple matches found; choose one: " and possible completions are "  <>" (an empty result string).  Any ideas?  I don't see any error messages.  Queries with single results work fine.
 ----
+Is there a way to perform multiple queries on the *same* server? --Mitch
+----
 CategoryMailAddons
 
