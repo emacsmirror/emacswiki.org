@@ -9,4 +9,4 @@
 порно # Russian porn reference
 <a\s+href=["']?http # HTML anchor tags usually mean spam
 \[url= # bbCode links usually mean spam
-\s+https?:\S+[ .]* # ending with a link usually means spam
+\s+https?:\S+[ .\r\n]* # ending with a link usually means spam
