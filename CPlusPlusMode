@@ -4,7 +4,7 @@
 
 To switch a buffer to C++ mode, just use <code>M-x c++-mode</code>. The regular emacs mode detection applies, and most common file extensions (eg `cpp', `cxx', etc) will be opened in c++ mode.
 
-By default files ending in .h are treated as c files rather then c++ files. To change this add the following to your .emacs:
+By default files ending in .h are treated as c files rather than c++ files. To change this add the following to your .emacs:
 
 <pre>
 (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
