@@ -1,13 +1,13 @@
 ;;; dos.el --- major mode for editing Dos scripts (batch files)
 
-;; Copyright (C) 2003, 2008, 2009, 2010, 2011, 2012 Arni Magnusson
+;; Copyright (C) 2003, 2008, 2009, 2010, 2011, 2012, 2013 Arni Magnusson
 
 ;; Author:   Arni Magnusson
-;; Version:  2.17
+;; Version:  2.18
 ;; Keywords: languages
 ;; URL:      http://emacswiki.org/emacs/dos.el
 
-(defconst dos-mode-version "2.17" "Dos Mode version number.")
+(defconst dos-mode-version "2.18" "Dos Mode version number.")
 
 ;;; Commentary:
 ;;
@@ -48,6 +48,7 @@
 
 ;;; History:
 ;;
+;; 22 Jan 2013  2.18 Moved keywords "mkdir" and "rmdir" from `font-lock-warning-face' to `font-lock-builtin-face'.
 ;; 30 Mar 2012  2.17 Improved documentation.
 ;; 14 Feb 2011  2.16 Improved highlighting of variable names.
 ;; 20 Sep 2010  2.15 Changed :LABEL highlighting to new `dos-label-face'. Improved highlighting of variable names.
@@ -108,14 +109,14 @@ that:\n
   (eval-when-compile
     (let ((COMMANDS
            '("at"       "attrib"   "cd"       "cls"      "color"    "copy"     "date"     "defined"  "del"      "dir"
-             "doskey"   "echo"     "endlocal" "erase"    "exist"    "fc"       "find"     "md"       "more"     "move"
-             "path"     "pause"    "popd"     "prompt"   "pushd"    "ren"      "rd"       "set"      "setlocal" "shift"
-             "sort"     "time"     "title"    "type"     "xcopy"))
+             "doskey"   "echo"     "endlocal" "erase"    "exist"    "fc"       "find"     "md"       "mkdir"    "more"
+             "move"     "path"     "pause"    "popd"     "prompt"   "pushd"    "ren"      "rd"       "rmdir"    "set"
+             "setlocal" "shift"    "sort"     "time"     "title"    "type"     "xcopy"))
           (CONTROLFLOW
            '("call"     "cmd"      "do"       "else"     "equ"      "exit"     "for"      "geq"      "goto"     "gtr"
              "if"       "in"       "leq"      "lss"      "neq"      "not"      "start"))
           (LINUX
-           '("cat"      "cp"       "ls"       "mkdir"    "mv"       "rm"       "rmdir")))
+           '("cat"      "cp"       "ls"       "mv"       "rm")))
       (list
        '("\\<\\(call\\|goto\\)\\>[ \t]+%?\\([A-Za-z0-9-_\\:.]+\\)%?" (2 font-lock-constant-face t))
        '("^[ \t]*\\(@?rem\\>\\|::\\).*"              (0 font-lock-comment-face t))
