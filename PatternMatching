@@ -273,7 +273,6 @@ A recursive function for describing numbers in English.
       (`17 '("seventeen"))
       (`18 '("eighteen"))
       (`19 '("nineteen"))
-      ;; Less than 20
       (`20 '("twenty"))
       (`30 '("thirty"))
       (`40 '("forty"))
@@ -313,19 +312,11 @@ A recursive function for describing numbers in English.
                            (`63 '("vigintillion"))
                            (_ (signal 'domain-error (list n)))))
       ;; Greater than a base ten
-      ((pred (and (< base10 n) (< (/ n base10) 20)))
-       (cons (mapconcat 'identity
-                        (append (int-to-words (floor (/ n base10)))
-                                (int-to-words base10)) "-")
-             (if (zerop (mod n base10))
-                 nil
-               (int-to-words (if (< n most-positive-fixnum)
-                                 (% (floor n) (floor base10))
-                               (mod n base10))))))
       ((pred (< base10))
        (cons (mapconcat 'identity
                         (append (int-to-words (floor (/ n base10)))
-                                (int-to-words base10)) " ")
+                                (int-to-words base10))
+                        (if (< (/ n base10) 20) "-" " "))
              (if (zerop (mod n base10))
                  nil
                (int-to-words (if (< n most-positive-fixnum)
