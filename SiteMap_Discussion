@@ -33,13 +33,6 @@ Seems like there should be some discussion, or at least opportunity for discussi
 
 
 
-=== Bookmarking ===
-
-I propose that we create CategoryBookmark and add a `Bookmarking' entry under `General Use'.  This is at least as important as some of the others (e.g. `HideStuff'), and it does not appear anywhere. -- DrewAdams
-
-[new]
-If you think there are enough pages in this category, then by all means create one. -- Alex
-
 === CategoryBatchMode ===
 
 Let's just rename this to BatchMode, and make it a sub-page of CategoryCode. -- AaronHawley
