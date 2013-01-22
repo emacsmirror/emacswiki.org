@@ -78,7 +78,6 @@
       you'll be around in a few years, so I'd really have to
       get to know the code as well... 
 10:33 <nicferrier> right, I understand the problem.
-10:33 *** kusut JOIN
 10:33 <nicferrier> 1st thing - I've been around for 15 years,
       I've known of you all that time even if you haven't
       known of me, I;ve been there.
@@ -155,7 +154,6 @@
 10:41 <nicferrier> it's just taken me a year to persuade
       someone to write the wiki.
 10:41 <nicferrier> kensanata: github issues
-10:41 *** Sigma JOIN
 10:41 <nicferrier> it's really disorganized atm because we
       were just getting to the state where "it works"
 10:41 <kensanata> Ok.
@@ -218,7 +216,6 @@
       push the train out of the station, get the ball rolling,
       take some moss off a rolling stone...
 10:47 <nicferrier> whatever.
-10:48 *** pessoa QUIT Quit: Started wasting time elsewhere
 10:48 <kusut> nicferrier: yeah. static wiki would be editable
       via pull-request on repo
 10:48 <nicferrier> kensanata: my approach to supporting
@@ -302,7 +299,6 @@
       transformations of git history logs.
 11:20 <nicferrier> perhaps Sigma can help us with that
 11:20 [nicferrier waves at Sigma]
-11:21 *** NAMES kensanata kusut nicferrier Sigma
 11:21 <kensanata> :)
 11:21 <kensanata> It'll be an interesting year. :)
 11:22 <nicferrier> hopefully.
@@ -314,17 +310,14 @@
       while we talked?
 11:26 <kensanata> Yeah.
 11:26 <kensanata> It was trivial to do.
-11:26 <kensanata>   } elsif ($bol &&
-      m/\G(\&lt;include\s+gist\s+"(https:\/\/gist\.github\.com\/[0-9]+)"\&gt;[
-      \t]*\n?)/cgi) {
-11:26 <kensanata>     # <include gist "...">
-11:26 <kensanata>     return "<script
-      src=\"$2.js\"></script>";
+
+{{{
+    } elsif ($bol && m/\G(\&lt;include\s+gist\s+"(https:\/\/gist\.github\.com\/[0-9]+)"\&gt;[ \t]*\n?)/cgi) {
+      # <include gist "...">
+      return "<script src=\"$2.js\"></script>";
+}}}
+
 11:27 <nicferrier> got you.
 11:28 <nicferrier> can I capture this conversation somewhere?
 11:30 <kensanata> Should I repost it on Emacs Wiki?
 11:30 <nicferrier> yeah, I think so.
-11:30 <kensanata> (There should be markup rules that render
-      IRC buffers... haha)
-11:31 <nicferrier> well, you have IRC markup already
-11:31 <nicferrier> just cut and paste?
