@@ -1,0 +1,12 @@
+You can transclude a gist by writing ##<include gist "...">## and putting the URL where the ellipsis is.
+
+Example for [https://gist.github.com/1236665 this random gist]:
+
+{{{
+<include gist "https://gist.github.com/1236665">
+}}}
+
+Results in:
+
+<include gist "https://gist.github.com/1236665">
+
