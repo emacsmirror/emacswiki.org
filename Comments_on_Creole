@@ -52,3 +52,11 @@ It would have to be Perl and it would obviously depend on the kind of code you'd
 
 -- AlexSchroeder 2013-01-22 05:59 UTC
 
+
+----
+
+Well, I mean I could give you this table converter code and you could add it to the existing perl workflow, running it before the page transfrom.
+ I guess that might be really slow?
+
+-- [http://nic.ferrier.me.uk NicFerrier] 2013-01-22 08:26 UTC
+
