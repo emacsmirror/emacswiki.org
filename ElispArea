@@ -69,6 +69,8 @@ put them on the wiki pages directly, or add them to the ElispCookbook.
 If you do, make sure you use the <nowiki><pre> and </pre></nowiki> or the
 <nowiki>{{{ and }}}</nowiki> tags to protect the code from formatting.
 
+Or use [[Gists]]: snippets of code hosted on github.
+
 == Conventions ==
 
 The wiki is for free software only.  Please make sure your files contain an appropriate blurb
@@ -122,7 +124,7 @@ Additional tips can be found on [[Comments on ElispArea]].
 
 If you put a percent sign (%), then "Id:" (the colon is necessary), then another %, in a page of elisp code, it will end up being expanded into a revision number and look like this:
 
-%Id: 286%
+%Id: 287%
 
 So you can have lisp files on the wiki be version-numbered automatically instead of manually.
 
