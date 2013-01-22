@@ -1,8 +1,23 @@
 My name is Matthew Snyder. I write about Lisp and Emacs at http://msnyder.info.
 
+Some notable entries include:
+
+* [http://msnyder.info/posts/2012/05/icloud-reminders-orgmode/ Syncing iCloud Reminders and Org-mode].
+* [http://msnyder.info/posts/2011/11/introducing-gopher.el/ Introducing gopher.el].
+* [http://msnyder.info/posts/2011/07/introducing-narcissus/ Narcissus, a blogging platform built on Org-mode].
+
 == Current Inbox ==
 
 * Yaoddmuse doesn't allow creating pages.
-* Starting a comment with [<nowiki>new::</nowiki>] doesn't add the user's name and the timestamp to the visible HTML output.
-* Something about being able to actually track bugs with ElispArea code.
-* Should discussions on pages be moved to their respective <nowiki>Comments_on_ pages</nowiki>? I really wish that prefix was `Talk:` or something. It'd be so much cleaner.
+
+* Starting a comment with [<nowiki>new::</nowiki>] doesn't add the
+  user's name and the timestamp to the visible HTML output.
+
+* Something about being able to actually track bugs with ElispArea
+  code.
+
+* Should discussions on pages be moved to their respective
+  <nowiki>Comments_on_ pages</nowiki>? I really wish that prefix was
+  `Talk:` or something. It'd be so much cleaner.
+
+* Yaoddmuse font-faces do not respect color theme.
