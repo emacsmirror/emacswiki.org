@@ -2,22 +2,23 @@ Emacs comes with the library GIT:emacs-lisp/pcase.el that gives "ML-style
 pattern-matching macro for Elisp".  The macros are [[AutoLoad]]ed, so
 a `require' expression is not necessary.
 
-The traditional Lisp version for finding the reciprocal number.
+A simple function for finding the reciprocal of a number, using `if'.
 
 {{{
 (defun recip (n)
   (if (zerop n)
       (error "Can't divide by zero")
-    (n (/ 1.0 n))))
+    (/ 1.0 n)))
 }}}
 
-Here is the pattern matching version using `pcase'.
+Here is a pattern matching version using `pcase'.
 
 {{{
 (defun recip (n)
   (pcase n
     (`0 (error "Can't divide by zero"))
     (n (/ 1.0 n))))
+
 (recip 0)
 ==> (error "Can't divide by zero")
 (recip 2)
