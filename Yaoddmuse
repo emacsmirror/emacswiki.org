@@ -495,6 +495,10 @@ testing. Comments welcome (best via e-mail or IRC).
 Please, the code should contain a way for detect if the user is at a
 text console, like I usually do.  --SuSo
 
+[new:MatthewSnyder:2013-01-22 16:15 UTC]
+
+Is there a way to tell Yaoddmuse to create a page upon follow if it doesn't exist?
+
 ----
 CategoryHypermedia
 
