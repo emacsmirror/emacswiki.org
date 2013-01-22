@@ -96,5 +96,20 @@ Knuth, Donald Ervin, and Luis Trabb Pardo. ''The early development of programmin
 * [[WikiPedia:Trabb Pardo-Knuth algorithm]]
 * Wiki:TpkAlgorithm
 
+
+[new:DrewAdams:2013-01-22 03:49 UTC]
+Well, the examples for other languages shown at [[WikiPedia:Trabb Pardo-Knuth algorithm]] are not comparable to what you've written for EmacsLisp above.  This much simpler code is comparable.  Compare, for example, the Scheme code shown on that Wikipedia page. 
+
+  (defun read-nums (n)
+    (and (not (zerop n))  (cons (read-number "Number: ") (read-nums (1- n)))))
+
+  (defun f (x)  (+ (sqrt (abs x)) (* 5 x x x)))
+
+  (dolist (z  (reverse (read-nums 11)))
+    (let ((res  (funcall #'f z)))
+      (message "Result for %3s is %s" z (if (> res 400) "TOO LARGE" res))))
+
+It all depends on what you are trying to show (which is not clear).  If the purpose is "''to show the variation in expression of different programming languages''" then this simple example can be compared to those cited for other languages.  -- DrewAdams
+
 ----
 CategoryCode
