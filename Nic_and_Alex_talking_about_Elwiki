@@ -82,7 +82,7 @@
       I've known of you all that time even if you haven't
       known of me, I;ve been there.
 10:33 <kensanata> I saw a similar thing happen at
-      http://meatballwiki.org/wiki/ -- a dude rewrote the code
+      [http://meatballwiki.org/wiki/ Meatball Wiki] -- a dude rewrote the code
       base to improve it, then left after a while, now it
       sucks.
 10:33 <nicferrier> so I'm 42 and I might die I guess.
@@ -179,7 +179,7 @@
 10:43 <nicferrier> so people like this latest clown can see we
       are doing something
 10:43 <kensanata> If you guys need a first glimpse, I guess
-      http://www.emacswiki.org/emacs/?action=version would
+      [http://www.emacswiki.org/emacs/?action=version Version] would
       provide pointers...
 10:43 <nicferrier> latest clown -> http://wrttn.in/3afc42
 10:44 <nicferrier> be warned - full of sweary ranting
@@ -277,14 +277,13 @@
 11:16 <nicferrier> right. elnode would find it easier to cache
       that.
 11:16 <kensanata> I'm also not sure how many people actually
-      use some of the more advanced features...
-      http://www.emacswiki.org/emacs/WikiRss
+      use [http://www.emacswiki.org/emacs/WikiRss some of the more advanced features]...
 11:16 <nicferrier> my approach would probably be to use nginx
       and have it upstream cache based on date
 11:17 <nicferrier> and the elnode would check the mod time
       somehow as a fast operation.
 11:17 <kensanata> That rant you linked to made me add this,
-      btw: http://www.emacswiki.org/emacs/Gists
+      btw: [[Gists]]
 11:17 <nicferrier> or having elnode cache in memory would be
       another option.
 11:17 <nicferrier> yeah, gists are good. supporting lots of
