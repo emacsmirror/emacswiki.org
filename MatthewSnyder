@@ -2,9 +2,19 @@ My name is Matthew Snyder. I write about Lisp and Emacs at http://msnyder.info.
 
 Some notable entries include:
 
-* [http://msnyder.info/posts/2012/05/icloud-reminders-orgmode/ Syncing iCloud Reminders and Org-mode].
-* [http://msnyder.info/posts/2011/11/introducing-gopher.el/ Introducing gopher.el].
-* [http://msnyder.info/posts/2011/07/introducing-narcissus/ Narcissus, a blogging platform built on Org-mode].
+* [http://msnyder.info/posts/2012/05/icloud-reminders-orgmode/ Syncing
+  iCloud Reminders and Org-mode]. This essay introduces the ElStar
+  project, whose goal is to provide synchronization support between
+  Emacs and various OS X data stores: Contacts, Calendars, Reminders,
+  iTunes, and the like.
+
+* [http://msnyder.info/posts/2011/11/introducing-gopher.el/
+  Introducing gopher.el]. This essay introduces GopherEl, whose goal
+  is to provide a typographically pleasing Gopher extension to Emacs.
+
+* [http://msnyder.info/posts/2011/07/introducing-narcissus/ Narcissus,
+  a blogging platform built on Org-mode]. This essay describes a goal
+  to use OrgMode for static blog generation in an intelligent manner.
 
 == Current Inbox ==
 
@@ -32,7 +42,9 @@ Some notable entries include:
 [new:DrewAdams:2013-01-22 18:29 UTC]
 Welcome to the wiki. -- DrewAdams
 
+[new:MatthewSnyder:2013-01-22 18:55 UTC]
 
+Thanks! I'm looking forward to contributing.
 
 
 
