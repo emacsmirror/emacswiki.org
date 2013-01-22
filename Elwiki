@@ -4,5 +4,17 @@ It uses [[Elnode]] as a webserver and [[Creole]] for converting pages to HTML.
 
 NicFerrier wrote about [[Elwiki]] in his [[http://nic.ferrier.me.uk/blog/2013_01/year-in-emacs|2013 plan]].
 
+== Conversation with Kensanata about EmacsWiki features ==
+
+NicFerrier and Kensanata had a conversation on #emacswiki about //the plan//.
+
+Kensanata gave a bunch of useful links:
+
+* WikiRss - is a list of RSS feeds the current Wiki spits out, these will all need to be duplicated
+** Elwiki does history via Git logs so we need to write transforms from Git to all of these
+
+* [[Gists]] - shows how to embed gists within the EmacsWiki - needs to be replicated by [[Creole]] or [[ElWiki]]
+* [[http://www.emacswiki.org/emacs/?action=version|action=version]] - shows the current wiki conversion code
+
 ----
 CategoryHypermedia
