@@ -38,7 +38,7 @@
 ;;  -rw-r--r--   1 rgiardin svrtech     4141 Aug 23 17:07 my-really-really-long-I-mean-really-long-filename.el
 ;;  -rw-r--r--   1 rgiardin svrtech       56 Aug 23 17:07 linked-file.el -> /var/tmp/checkouts/linked-file.el
 ;;
-;; look like this:
+;; Look like this:
 ;;
 ;;  /private/rgiardin/lispHome/emacs.config:
 ;;  used 1264 available files
@@ -77,7 +77,7 @@
 ;; * 1.2.1: respect current hidden state (not initial state) when inserting subdirs
 ;;
 ;; TODO:
-;; * add a hook for dired-add-file to hide new entries as necessary
+;; * Add a hook for dired-add-file to hide new entries as necessary
 ;;
 
 ;;; customizable vars
