@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Dec 31 17:57:32 2012 (-0800)
+;; Last-Updated: Tue Jan 22 15:30:26 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 13781
+;;     Update #: 13789
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -19,10 +19,9 @@
 ;; Features that might be required by this library:
 ;;
 ;;   `apropos', `apropos-fn+var', `cl', `el-swank-fuzzy', `ffap',
-;;   `ffap-', `fuzzy', `fuzzy-match', `hexrgb', `icicles-face',
-;;   `icicles-opt', `icicles-var', `kmacro', `levenshtein', `naked',
-;;   `regexp-opt', `thingatpt', `thingatpt+', `wid-edit',
-;;   `wid-edit+', `widget'.
+;;   `ffap-', `fuzzy', `fuzzy-match', `hexrgb', `icicles-opt',
+;;   `icicles-var', `kmacro', `levenshtein', `naked', `regexp-opt',
+;;   `thingatpt', `thingatpt+', `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -2565,6 +2564,8 @@ If `hexrgb.el' is not loaded, then just return COLOR-NAME."
     (defun icicle-completing-read-multiple (prompt collection &optional predicate require-match
                                             initial-input hist def inherit-input-method)
       "Read multiple strings in the minibuffer, with completion.
+Return the strings read, as a list.
+
 By using this functionality, you can specify multiple strings at a
 single prompt, optionally using completion.
 
@@ -2573,13 +2574,12 @@ here performs `crm' completion it does not also cycle among completion
 candidates.  You can, as always, use `down' to do that.
 
 You specify multiple strings by separating the strings with a
-prespecified separator character.  For example, if the separator
-character is a comma then you specify the strings 'alice', 'bob', and
-'eve' as 'alice,bob,eve'.
+prespecified separator regexp (separator character, prior to Emacs
+24.3).  For example, if the separator regexp is \",\" then you specify
+the strings 'alice', 'bob', and 'eve' as 'alice,bob,eve'.
 
-The separator character is the value of variable `crm-separator',
-whose default value is the value of `crm-default-separator', which is
-a comma.
+The separator regexp is the value of variable `crm-separator', whose
+default value is the value of `crm-default-separator', which is \",\".
 
 Contiguous strings of non-separator-characters are referred to as
 \"elements\".  In the above example, the elements are 'alice', 'bob',
@@ -2587,11 +2587,9 @@ and 'eve'.
 
 Completion is available on a per-element basis.  For example, if your
 input in the minibuffer is 'alice,bob,eve' and point is between the
-'l' and the 'i', pressing TAB operates on element 'alice'.
+'l' and the 'i', pressing `TAB' operates on element 'alice'.
 
-See `completing-read' for details about the arguments.
-
-Returns the strings read, as a list."
+See `completing-read' for details about the arguments."
       (let ((icicle-highlight-input-completion-failure  nil))
         (icicle-ORIG-completing-read-multiple prompt collection predicate require-match
                                       initial-input hist def inherit-input-method)))
