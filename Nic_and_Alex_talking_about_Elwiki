@@ -1,0 +1,338 @@
+10:22 *** kensanata JOIN
+10:23 *** nicferrier JOIN
+10:23 <nicferrier> here!
+10:23 *** pessoa JOIN
+10:23 <kensanata> Welcome. :)
+10:24 <kensanata> Ok, so looking at
+      http://www.emacswiki.org/emacs/Comments_on_Creole
+10:24 <nicferrier> yes.
+10:24 <kensanata> Do you have some code that will translate
+      tables from the old markup to Creole markup?
+10:24 <nicferrier> I don't have a piece of code to do that
+      table munging yet, in elisp or anything else. I think it
+      will be relatively easy in elisp.
+10:25 <nicferrier> I think it's just a regex replace.
+10:25 <kensanata> Yeah, we could try that.
+10:25 <nicferrier> tables have to begin on column 0. any | on
+      column 0 is a table.
+10:25 <nicferrier> I presume that emacswiki is ALL || - is
+      that right?
+10:25 <kensanata> Yeah.
+10:25 <kensanata> There will be mistakes, of course. <nowiki>,
+      <pre>, {{{...}}} -- all this markup prevents
+      interpretation of markup.
+10:26 <nicferrier> yay. coz it wouldn't work otherwise.
+10:26 <nicferrier> hmmm.
+10:26 <nicferrier> yes.
+10:26 <nicferrier> my creole parser can handle that
+      probably.... but a simple converter could not.
+10:27 <nicferrier> creole.el works things out into blocks and
+      inline... so it would be able to do the conversion
+      inside it ok.
+10:27 <nicferrier> hmmm.
+10:27 <nicferrier> what about oddmuse.pl? is there a way to do
+      it if we work out the transform?
+10:27 <nicferrier> I guess it's hard.
+10:27 <kensanata> Maybe.
+10:28 <kensanata> Another option would be for you to check out
+      a copy of the pages (using the git repo, for example),
+      run whatever scripts you have, examine the output,
+      fiddle with it until you're happy, and then post all
+      pages that have actually changed back to the wiki.
+10:28 <nicferrier> so let me tell you what aidalgol and I had
+      as an over all plan... that might be relevant.
+10:28 <nicferrier> I have the git repo. I run elwiki (what we
+      call it) on top of the git repo.
+10:28 <kensanata> We could either prevent all edits in that
+      timewindow, or, given a list of pages you want to change
+      and a timewindow, we could then fix/merge any edit
+      conflicts.
+10:28 <nicferrier> it mostly works rendering wise except for
+      things like this.
+10:29 <nicferrier> we were going to get it live on
+      elwiki.elnode.org
+10:29 <nicferrier> and run in read only parallel mode until
+      the rendering was good
+10:29 <kensanata> Excellent idea.
+10:29 <nicferrier> and we were hoping you'd help us do the
+      sign off, get involved in the parallel run etc...
+10:29 <nicferrier> we were hoping to get all the admins
+      involved.
+10:30 <nicferrier> I can't see anyway to do this but very
+      iteratively.
+10:30 <pessoa> is the emacs wiki based on org mode?
+10:30 <nicferrier> no.
+10:31 <kensanata> Given that I'm happy with the status quo, I
+      don't think I'll be doing much work, but I'm going to
+      help wherever I can offer advice or change stuff to make
+      it easier for you, that kind of stuff.
+10:31 <nicferrier> so while creolizing oddmuse could be a step
+      I don't see it as necessary... and if it's more work for
+      you kensanata - I'd rather leave it.
+10:31 <kensanata> Works for me. :)
+10:31 <nicferrier> yeah, the thing is I really don't want to
+      take over emacswiki. I think you have done an amazing
+      job with it.
+10:31 <nicferrier> I do want the community to be able to hack
+      on it easier though.
+10:32 <nicferrier> so I'd be happy owning the code.... if you
+      still owned the wiki.
+10:32 <nicferrier> I am not a community leader.
+10:32 <nicferrier> whereas you have done a fantastic job at
+      that.
+10:32 <nicferrier> I don't think I understand the emacs
+      community nearly as well as you.
+10:32 <kensanata> Hm. I hesitate to do that. I can't be sure
+      you'll be around in a few years, so I'd really have to
+      get to know the code as well... 
+10:33 <nicferrier> right, I understand the problem.
+10:33 *** kusut JOIN
+10:33 <nicferrier> 1st thing - I've been around for 15 years,
+      I've known of you all that time even if you haven't
+      known of me, I;ve been there.
+10:33 <kensanata> I saw a similar thing happen at
+      http://meatballwiki.org/wiki/ -- a dude rewrote the code
+      base to improve it, then left after a while, now it
+      sucks.
+10:33 <nicferrier> so I'm 42 and I might die I guess.
+10:33 <kensanata> Hehe.
+10:34 <nicferrier> wekk, I guess anyone could die.
+10:34 <kensanata> Sure. I'll turn 40 in a few months...
+10:34 <nicferrier> but I'm not going anywhere.
+10:34 <kensanata> *sniff*
+10:34 <nicferrier> DUDE I ALREADY HAVE
+10:34 <nicferrier> if there's any sympathy it ought to be
+      coming my way :-D
+10:34 <kensanata> Everyone for himself!
+10:34 <nicferrier> he he
+10:34 <nicferrier> anyway
+10:34 <nicferrier> that was point 1
+10:35 <nicferrier> point 2 is that I'm trying to do this
+      differently
+10:35 <nicferrier> I deliberately did not write the wiki code.
+10:35 <nicferrier> aidalgol did.
+10:35 <nicferrier> and there are a bunch of elnode hackers on
+      #emacs
+10:35 <nicferrier> so if you weren't interested in running the
+      code there would be people around who were, if I died.
+10:35 <nicferrier> or got so grumpy I left
+10:36 <nicferrier> whatever
+10:36 <nicferrier> of course - and let me stress this point -
+      it would be IDEAL if you learned elnode and elwiki and
+      were able to maintain it
+10:36 <nicferrier> but you'd be first among equals
+10:36 <nicferrier> because there would be others
+10:36 <nicferrier> and point 3 is I am trying (and it's kind
+      of now so necessary to me I have to succeed) to start an
+      emacs company.
+10:37 <nicferrier> so we'll actually have a company behind
+      elnode, if not elwiki.
+10:37 <nicferrier> so there. that is my mitigation for the
+      problem you raise.
+10:37 <kensanata> Having more people be involved is a good
+      move.
+10:37 <kensanata> I'll have to get serious about moving my
+      personal stuff away from the server.
+10:37 <nicferrier> right. I can get a small group of hackers
+      involved, I can do that. I can't do what you do and get
+      a large group to contribute to the wiki.
+10:38 <nicferrier> I can provide servers for the new one.
+10:38 <nicferrier> and give access to whoever.
+10:38 <kensanata> That'd be excellent.
+10:38 <nicferrier> and if I can't I'm happy to do a
+      kickstarter so that the community pays
+10:38 <nicferrier> I'll sort it out anyway
+10:39 <nicferrier> we'll just sync with git until you switch
+      the DNS.
+10:39 <nicferrier> it's going to be up to you in the end I
+      think.
+10:39 <nicferrier> I think it should be.
+10:39 <kensanata> No worries about that.
+10:40 <kensanata> I resent people telling me what I should do,
+      I don't resent people picking up the slack and doing
+      stuff themselves. :)
+10:40 <nicferrier> right. me too. which is why I don't want to
+      tell you what to do.
+10:40 <nicferrier> the whole wikemacs thing. what a debacle.
+10:41 <nicferrier> and I was saying what I'm saying now back
+      them.
+10:41 <nicferrier> then
+10:41 <kensanata> I wonder about smaller features. Does
+      aidalgol or whoever writes the wiki code maintain a
+      feature list and cross off stuff?
+10:41 <nicferrier> it's just taken me a year to persuade
+      someone to write the wiki.
+10:41 <nicferrier> kensanata: github issues
+10:41 *** Sigma JOIN
+10:41 <nicferrier> it's really disorganized atm because we
+      were just getting to the state where "it works"
+10:41 <kensanata> Ok.
+10:41 <nicferrier> but of course there is a ton of stuff
+      missing.
+10:42 <nicferrier> we'll have to organize that.
+10:42 <kensanata> I was wondering about stuff like <include
+      ...> or <rss ...>
+10:42 <kensanata> We'd have to figure out whether it's even
+      worth keeping those around.
+10:42 <nicferrier> but I don't think it's important right
+      now... because we can do nearer the point where we have
+      something credible.
+10:42 <nicferrier> this is going to take all year.
+10:42 <nicferrier> as to those, creole.el can be easily
+      adapted to include whatever.
+10:42 <nicferrier> creole.el can even include lisp
+10:43 <nicferrier> and I was gonna jail the lisp in the manner
+      of erbot.
+10:43 <kensanata> Ok, that's correct.
+10:43 <nicferrier> I do want to get emacswiki.elnode.org going
+      this month
+10:43 <nicferrier> so people like this latest clown can see we
+      are doing something
+10:43 <kensanata> If you guys need a first glimpse, I guess
+      http://www.emacswiki.org/emacs/?action=version would
+      provide pointers...
+10:43 <nicferrier> latest clown -> http://wrttn.in/3afc42
+10:44 [kensanata is looking]
+10:44 <nicferrier> be warned - full of sweary ranting
+10:44 <nicferrier> this person's heart is in the right place
+      at least.
+10:44 <nicferrier> I think Batsov's was too, he just couldn't
+      see the wood for the trees. It's inexperience probably.
+10:44 <kensanata> Wow, it gets off to a good ranting start!
+10:45 <nicferrier> yeah. HE'S ANGRY
+10:45 <kusut> newbie question: is the new wiki gonna be a
+      dynamic site (user account, through-the-web editing) or
+      static site builder?
+10:45 <nicferrier> he's also wrong
+10:45 <nicferrier> we don't have 2 places to put emacs
+      content.
+10:45 <nicferrier> we have 1.
+10:45 <nicferrier> and also the place where batsov puts
+      content.
+10:45 <nicferrier> kusut: it's dynamic right now, it'll be
+      dynamic in the future
+10:46 <nicferrier> kusut: you can't actually have a "static"
+      wiki.
+10:46 <nicferrier> wiki means you update it.
+10:46 <kensanata> Haha, he writes as if he were my dark alter
+      ego. :)
+10:46 <nicferrier> the 300 guy (that's a good epiphet for him
+      - "give us your wiki!" "COME AND TAKE IT!!!") mentions
+      security which is amusing
+10:47 <nicferrier> he thinks it's bad that "ANYONE CAN ALTER
+      IT"
+10:47 <nicferrier> this is a decade of confluence talking
+10:47 <nicferrier> anyway, the point is to move the envelope,
+      push the train out of the station, get the ball rolling,
+      take some moss off a rolling stone...
+10:47 <nicferrier> whatever.
+10:48 *** pessoa QUIT Quit: Started wasting time elsewhere
+10:48 <kusut> nicferrier: yeah. static wiki would be editable
+      via pull-request on repo
+10:48 <nicferrier> kensanata: my approach to supporting
+      functionality is to check in the emacswiki content with
+      grep to see if things are being used.
+10:49 <nicferrier> kusut: that's NOT a wiki.
+10:49 <nicferrier> that's just some pages.
+10:49 <kensanata> kusut: I think Stephan Monnier said he liked
+      the current wiki because you don't need an account --
+      just edit page and do it. That is a feature I really
+      like.
+10:49 <nicferrier> anyway. that's just semantics.
+10:50 <nicferrier> kensanata: if we find an exotic feature
+      with grep, then we look at the last touched time and see
+      whether it's old
+10:51 <kensanata> Hehe.
+10:51 <nicferrier> if it's really really old we might convert
+      it (and not support ongoing conversion) or we might add
+      support.
+10:51 <nicferrier> I also have this plan for adding dynamic
+      extensions. wanna hear it?
+11:01 <kensanata> Sure.
+11:03 <nicferrier> so, I'm going to put the erbot lisp jail
+      into creole
+11:03 <nicferrier> so you can just run lisp
+11:04 <nicferrier> but I also thought that maybe we could have
+      some sort of pattern that would cause a function
+      definition to be looked up in the wiki
+11:04 <nicferrier> so you could store pages like Lisp_MyFunc
+11:04 <nicferrier> and when you did that the wiki would expect
+      to find a my-func in lisp defined in the page
+11:04 <nicferrier> which it would eval in the jail
+11:05 <nicferrier> and then a pattern something like <my-func
+      ...> would cause that function to be run
+11:05 <nicferrier> so it would be totally dynamic.
+11:06 <kensanata> It has hack value. I'm not sure what people
+      will build with it, though. It'll be an interesting
+      experiment.
+11:08 <nicferrier> well, I was wondering whether things like
+      rss could be supported that way.
+11:08 <nicferrier> it would be very emacsy.
+11:08 <nicferrier> it's also a bit like Trac.
+11:08 <nicferrier> but better.
+11:09 <nicferrier> so anyway, that's the plan.
+11:10 <nicferrier> up by the end of this month, or early next
+      month on emacswiki.elnode.org
+11:10 <nicferrier> long slow process of supporting all the
+      stuff you have on emacswiki until you're happy and all
+      the other admins are happy
+11:10 <nicferrier> and you can just switch over.
+11:13 <nicferrier> can we publish this discussion on the
+      elwiki page on emacswiki?
+11:13 <nicferrier> anyone object?
+11:14 <kensanata> Sure.
+11:15 <kensanata> As for RSS: I found that there are quite a
+      number of hits for the RSS feed. As these are expensive
+      to produce using my code, I've resorted to rewriting
+      HTTP requests for the standard formats such that they
+      fetch a static file produced by a cron job.
+11:16 <nicferrier> right. elnode would find it easier to cache
+      that.
+11:16 <kensanata> I'm also not sure how many people actually
+      use some of the more advanced features...
+      http://www.emacswiki.org/emacs/WikiRss
+11:16 <nicferrier> my approach would probably be to use nginx
+      and have it upstream cache based on date
+11:17 <nicferrier> and the elnode would check the mod time
+      somehow as a fast operation.
+11:17 <kensanata> That rant you linked to made me add this,
+      btw: http://www.emacswiki.org/emacs/Gists
+11:17 <nicferrier> or having elnode cache in memory would be
+      another option.
+11:17 <nicferrier> yeah, gists are good. supporting lots of
+      pastebins would be good.
+11:19 <nicferrier> we don't have any rss yet... but our
+      approach to history is to just use the git log
+11:19 <nicferrier> there's a markup specification in elwiki
+      for the summary so that we can pull out what is a minor
+      commit.
+11:20 <nicferrier> so I think we can make all these with elisp
+      transformations of git history logs.
+11:20 <nicferrier> perhaps Sigma can help us with that
+11:20 [nicferrier waves at Sigma]
+11:21 *** NAMES kensanata kusut nicferrier Sigma
+11:21 <kensanata> :)
+11:21 <kensanata> It'll be an interesting year. :)
+11:22 <nicferrier> hopefully.
+11:22 <nicferrier> I really want to get to the point where we
+      can federate it. now that would be a step change.
+11:22 <nicferrier> that's the real reason for having it in
+      elisp.
+11:26 <nicferrier> kensanata: did you add that gist feature
+      while we talked?
+11:26 <kensanata> Yeah.
+11:26 <kensanata> It was trivial to do.
+11:26 <kensanata>   } elsif ($bol &&
+      m/\G(\&lt;include\s+gist\s+"(https:\/\/gist\.github\.com\/[0-9]+)"\&gt;[
+      \t]*\n?)/cgi) {
+11:26 <kensanata>     # <include gist "...">
+11:26 <kensanata>     return "<script
+      src=\"$2.js\"></script>";
+11:27 <nicferrier> got you.
+11:28 <nicferrier> can I capture this conversation somewhere?
+11:30 <kensanata> Should I repost it on Emacs Wiki?
+11:30 <nicferrier> yeah, I think so.
+11:30 <kensanata> (There should be markup rules that render
+      IRC buffers... haha)
+11:31 <nicferrier> well, you have IRC markup already
+11:31 <nicferrier> just cut and paste?
