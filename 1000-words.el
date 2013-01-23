@@ -313,14 +313,16 @@ based on `2000-most-frequent-words'.")
 (define-derived-mode 2000-words-mode text-mode "2000"
   "Major mode for writing text limited to the most common words.
 The words used are in `2000-most-frequent-words'."
-  (font-lock-add-keywords nil (list 1000-words-regexp
-				    2000-words-regexp))
+  (font-lock-add-keywords nil `((,1000-words-regexp . 'default)
+				(,2000-words-regexp . 'default)
+				("\\w+" . 'error)))
   (setq font-lock-keywords-case-fold-search t))
 
 (define-derived-mode 1000-words-mode text-mode "1000"
   "Major mode for writing text limited to the most common words.
 The words used are in `1000-most-frequent-words'."
-  (font-lock-add-keywords nil (list 1000-words-regexp))
+  (font-lock-add-keywords nil `((,1000-words-regexp . 'default)
+				("\\w+" . 'error)))
   (setq font-lock-keywords-case-fold-search t))
 
 (provide '1000-words)
