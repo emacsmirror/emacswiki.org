@@ -1,4 +1,4 @@
-This is the place for guidelines and existing coding practices for EmacsLisp files on EmacsWiki pages.
+This is the place for guidelines and existing coding practices for EmacsLisp files on EmacsWiki pages (the ElispArea).
 
 Guidelines that say "'''should'''" are paraphrased from the EmacsLispReference. Text in angle brackets (<code><</code>, <code>></code>) is exemplary only -- replace it with your text. Note, in particular, the difference between lines that start with <code>;;;</code> and lines that start with <code>;;</code>. Three semi-colons indicate ''major'' file sections.
 
