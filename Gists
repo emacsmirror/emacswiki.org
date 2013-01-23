@@ -1,3 +1,5 @@
+"[https://gist.github.com/Gist Gist] is a simple way to share snippets and pastes with others. All gists are git repositories, so they are automatically versioned, forkable and usable as a git repository."
+
 You can transclude a gist by writing ##<include gist "...">## and putting the URL where the ellipsis is.
 
 Example for [https://gist.github.com/1236665 this random gist]:
