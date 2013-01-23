@@ -4,7 +4,7 @@ easy. Type in the box to try it out." -- [http://splasho.com/upgoer5/ The Up-Goe
 
 Back when I learned English, I was told that I'd be able to understand 80% of all English using the most common 2000 words only. I have no idea whether it's true or not.
 
-This package provides two modes derived from TextMode: `1000-words-mode' and `2000-words-mode'.
+This package provides two modes derived from Text Mode: `1000-words-mode' and `2000-words-mode'.
 
 * Lisp:1000-words.el
 
