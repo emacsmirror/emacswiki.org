@@ -1,42 +1,54 @@
+= Globbing in eshell =
+
 With zsh or eshell you can use ##**/*.[ch]## to expand into a list of all
 files matching ##*.[ch]##.
 
-And so much more.  First, there is *normal globbing*:
+And so much more.  
+
+== Normal globbing ==
 
 ; ##*.c## : all files ending in ##.c##
 ; ##?.c## : any single character followed by ##.c##
 ; ##[a-f]*.c## : any file beginning ##a-f## followed by ##.c##
 
-There is *extended globbing*:
+== Extended globbing ==
 
 ; ##a#.c## : a C file named by at least one '##a##' character
 ; <code>a##.c</code> : a C file named by one or more ##a## characters
 
-There is *recursive globbing*:
+== Recursive globbing ==
 
 ; ##*/*.c## : all C files in all subdirectories
 ; <code>*/CVS/Root</code> : all CVS/Root files
 
-There is *predicated globbing*:
+== Predicated globbing ==
 
 ; ##e*(*)## : all executable files beginning with ##e##
 ; ##*/*(@)## : all symbolic links (searched recursively)
 ; ##*/*(a+30)## : all files not accessed in the last 30 days
 
-There is *filtered globbing*:
+== Filtered globbing ==
 
 ; ##*.c(:U)## : all C filenames in uppercase
+
+----
 
 All of these features are supported by both zsh[http://sunsite.dk/zsh/Doc/]
 and Eshell.  In fact,
 Eshell was implemented in terms of the zsh 4.0 InfoMode manual, so I
 recommend reading there. -- JohnWiegley
 
-Further, Eshell allows for *Lisp ties* in to the predication and
+----
+
+== Lisp ties ==
+
+Further, Eshell allows for Lisp ties in to the predication and
 filtering rules:
 
 ; ##*.c('file-writable-p)## : Lispy way of doing ##*.c(w)##
 ; ##*.c(|upcase)## : Lispy way of doing ##*.c(:U)##
+
+----
 
 See also:
 
