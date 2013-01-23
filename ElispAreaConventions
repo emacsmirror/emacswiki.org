@@ -42,8 +42,6 @@ FWIW, the EmacsLispReference suggests for files contributed to GNU (Info node `E
 
 Relying on case in filenames is not a very good idea, either. Sure, it works on UNIX:ish systems, but not in Windows.
 
-Due to the repeated requests of certain individuals ;) the ElispArea currently accepts files containing the characters a-z, A-Z, and 0-9.
-
 *See also:* AutomaticFileHeaders for automatic insertion of appropriate file headers.
 
 *See also:* CheckDoc for help in following self-documentation practices for EmacsLisp code
