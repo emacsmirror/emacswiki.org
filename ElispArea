@@ -78,12 +78,12 @@ Or use [[Gists]]: snippets of code hosted on github.
 Or use [http://paste.lisp.org/ Lisppaste]. You need to use the link to the "Raw Source":
 
 {{{
-<include text "http://paste.lisp.org/display/134833/raw">
+<include text "http://paste.lisp.org/display/1236665/raw">
 }}}
 
 Results in:
 
-<include text "http://paste.lisp.org/display/134833/raw">
+<include text "http://paste.lisp.org/display/1236665/raw">
 
 I don't think there's a nice way to include the colored version, unfortunately.
 
@@ -140,7 +140,7 @@ Additional tips can be found on [[Comments on ElispArea]].
 
 If you put a percent sign (%), then "Id:" (the colon is necessary), then another %, in a page of elisp code, it will end up being expanded into a revision number and look like this:
 
-%Id: 290%
+%Id: 291%
 
 So you can have lisp files on the wiki be version-numbered automatically instead of manually.
 
