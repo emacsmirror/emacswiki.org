@@ -3,33 +3,33 @@
 With zsh or eshell you can use ##**/*.[ch]## to expand into a list of all
 files matching ##*.[ch]##.
 
-And so much more.  
+And so much more.
 
 == Normal globbing ==
 
-; ##*.c## : all files ending in ##.c##
-; ##?.c## : any single character followed by ##.c##
-; ##[a-f]*.c## : any file beginning ##a-f## followed by ##.c##
+; ##*.c## : All files ending in ##.c##
+; ##?.c## : Any single character followed by ##.c##
+; ##[a-f]*.c## : Any file beginning ##a-f## followed by ##.c##
 
 == Extended globbing ==
 
-; ##a#.c## : a C file named by at least one '##a##' character
-; <code>a##.c</code> : a C file named by one or more ##a## characters
+; ##a#.c## : A C file named by at least one '##a##' character
+; <code>a##.c</code> : A C file named by one or more ##a## characters
 
 == Recursive globbing ==
 
-; ##*/*.c## : all C files in all subdirectories
-; <code>*/CVS/Root</code> : all CVS/Root files
+; ##*/*.c## : All C files in all subdirectories
+; <code>*/CVS/Root</code> : All CVS/Root files
 
 == Predicated globbing ==
 
-; ##e*(*)## : all executable files beginning with ##e##
-; ##*/*(@)## : all symbolic links (searched recursively)
-; ##*/*(a+30)## : all files not accessed in the last 30 days
+; ##e*(*)## : All executable files beginning with ##e##
+; ##*/*(@)## : All symbolic links (searched recursively)
+; ##*/*(a+30)## : All files not accessed in the last 30 days
 
 == Filtered globbing ==
 
-; ##*.c(:U)## : all C filenames in uppercase
+; ##*.c(:U)## : All C filenames in uppercase
 
 ----
 
