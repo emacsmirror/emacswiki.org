@@ -6,10 +6,6 @@ A typical use of Imenu shows a menu-bar menu that is an index or table of conten
 
 You can use Imenu with any [[major mode]] and any programming language or document type.  If there is no Imenu support for your context, you can add it using EmacsLisp and the constructs provided in library ##imenu.el##.
 
-Example:
-
-http://3mb.us/images/359_csharp_imenu.gif
-
 There are two ways to generate an Imenu menu (index):
 
 * Provide [[regexp]]s that match the locations to index.  See variable '''`imenu-generic-expression''''.
