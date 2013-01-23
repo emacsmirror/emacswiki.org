@@ -58,9 +58,13 @@ Result:
 Gzip files and upload them.  Create a page to hold your file.  Use the filename as pagename, eg. color-theme.el.gz.  Edit the page, and click on the link below the save button that says to
 replace the text with a file.
 
-== Uploading Non-Elisp packages and tarballs ==
+== Version Control ==
 
-You can store free software on [http://savannah.gnu.org/ Savannah].
+: "Instead of hosting their projects in version control (say GitHub) they develop stuff locally, upload them to the wiki and say that this is the canonical way to obtain their software. Needless to say - this is a horrible, horrible practice." -- [http://batsov.com/articles/2012/03/20/die-emacswiki/ Die EmacsWiki, Die!], by BozhidarBatsov
+
+Use [http://savannah.gnu.org/ Savannah], "the software forge for people committed to free software."
+
+Use [[Gists]]: "Gist is a simple way to share snippets and pastes with others. All gists are git repositories, so they are automatically *versioned*, *forkable* and usable as a *git repository*."
 
 == Code snippets ==
 
@@ -136,7 +140,7 @@ Additional tips can be found on [[Comments on ElispArea]].
 
 If you put a percent sign (%), then "Id:" (the colon is necessary), then another %, in a page of elisp code, it will end up being expanded into a revision number and look like this:
 
-%Id: 289%
+%Id: 290%
 
 So you can have lisp files on the wiki be version-numbered automatically instead of manually.
 
