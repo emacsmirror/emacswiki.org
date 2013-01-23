@@ -18,5 +18,7 @@ Results in:
 
 Note that /you will not see anything at all/ unless you permit javascript from /both/ github.com and emacswiki.org to execute in your browser.
 
+(It would be good if at least a plain link to the gist URL would be provided as well to account for the non-javascript case, as you /can/ view the code at https://gist.github.com/1236665 without any javascript enabled.)
+
 ----
 ElispArea
