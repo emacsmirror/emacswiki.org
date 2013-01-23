@@ -1,3 +1,8 @@
+DeletedPage
+
+Encoding is borked!
+
+<pre>
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; -*- coding: compound-text -*-
 ;;;; Convert chinese characters to pinyin, using TONEPY and PY-b5
@@ -2662,3 +2667,4 @@
       (goto-char begin)
       (kill-region begin end)
       (insert (ayr-pinyin-of-chinese string)))))
+</pre>
