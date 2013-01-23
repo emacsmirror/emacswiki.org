@@ -13,7 +13,7 @@ For complete information on the contents of mode lines, see [[Manual:mode line]]
 : In the screenshot, buffers ##*Help*## and ##drews-lisp-20## are read-only (unmodified); buffer ##shrink-fit.el## is writable and unmodified.
 * Buffer name -- for example, a file name.
 * The name of one or more [[MajorMode]]s or [[MinorMode]]s of the buffer , surrounded by parentheses. In the screenshot, buffer ##shrink-fit.el## is in major mode ##Emacs-Lisp## (and in no minor mode). In Emacs 22, you can click the major-mode and minor-mode names for additional behavior.
-: '''Note:''' If the modes are surrounded by square brackets (as in ##[(Emacs-Lisp)]##), then you are in a ''recursive'' edit. You may want to do `##C-]##' (command `abort-recursive-edit') to get out of it.
+: '''Note:''' If the modes are surrounded by square brackets -- like this: ##[(Emacs-Lisp)]## -- then you are in a ''recursive'' edit. You may want to do `##C-]##' (command `abort-recursive-edit') to get out of it.
 * Line number of the TextCursor (and [[Point]]), and perhaps the column number. In the screenshot, the cursor is in column 0 (`C0') of line 234 (`L234') of buffer ##shrink-fit.el##.
 * Position in buffer:
 ** `Top' -- the ''beginning'' of the buffer is shown in the window
