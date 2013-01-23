@@ -1,6 +1,4 @@
-DeletedPage
-
-Encoding is borked!
+The encoding is borked! If you fix it, make sure to note that on AyrChinaUtil.
 
 <pre>
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
