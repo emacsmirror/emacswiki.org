@@ -24,7 +24,7 @@ Until then, this globalized version will be just fine for me !
     (setq-default text-scale-mode-amount (+ text-scale-mode-amount inc))
     (global-text-scale-mode 1)
   )
-  
+
   (global-set-key (kbd "M-0")
                   '(lambda () (interactive)
                      (global-text-scale-adjust (- text-scale-mode-amount))
@@ -33,4 +33,21 @@ Until then, this globalized version will be just fine for me !
                   '(lambda () (interactive) (global-text-scale-adjust 1)))
   (global-set-key (kbd "M--")
                   '(lambda () (interactive) (global-text-scale-adjust -1)))
+  
+
+---A better way to get the same effect.---
+
+A far better way to get the same effect add to your init file something like:
+{{{
+(add-to-list 'face-remapping-alist '(default (:height 1.15) default))
+}}}
+
+This makes the size of the default font larger;  I assume that's what you want
+since you talk of zooming each buffer separately.  Firstly your code confuses
+some major modes, Notmuch Show mode being an example.  Secondly you can tune the
+resizing to exactly what you want.  Thirdly you won't normally have to bother
+about zooming at all because Emacs will start up with the font size you want.
+And, of course, you won't get the strange effects you talk about.
+
+I hope you find this helpful. --- [[Bernard Hurley]]
   
