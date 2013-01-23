@@ -1,8 +1,5 @@
-== GitHub ==
+[https://github.com/ GitHub] offers "powerful collaboration, review, and code management for open source and private development projects."
 
-* http://libreplanet.org/
+See [[Gists]] to transclude code to the wiki.
 
-
-== Git ==
-
-* http://git-scm.com/
+See [[Git]] for more about Emacs support for git.
