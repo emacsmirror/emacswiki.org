@@ -105,7 +105,7 @@ Here are some other places to download and distribute elisp code:
 called /epackages/, can be installed using the reference
 implementation ##epackage.el## package manager. This a modern implementation of ELPA: from centralized package repository to individually maintained distributed [[Git]] repositories with Debian style of packaging.
 
-* [[Emacsmirror]] -- a huge collection of packages which are distributed in   form of [[Git]] repositories.  No support for package.el yet.
+* [[Emacsmirror]] -- a huge collection of packages which are distributed in form of [[Git]] repositories.  Includes mirroring most of the packages found here: at %%EmacsWiki%%'s %%ElispArea%%.  No support for ##package.el## yet.
 
 * WikifiedEmacsLispList -- pointers to various files on authors' own sites. Unfortunatly many links are dead (those that were not are also included in the Emacsmirror).
 
@@ -137,7 +137,7 @@ Additional tips can be found on [[Comments on ElispArea]].
 
 If you put a percent sign (%), then "Id:" (the colon is necessary), then another %, in a page of elisp code, it will end up being expanded into a revision number and look like this:
 
-%Id: 295%
+%Id: 296%
 
 So you can have lisp files on the wiki be version-numbered automatically instead of manually.
 
