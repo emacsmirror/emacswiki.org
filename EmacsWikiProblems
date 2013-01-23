@@ -7,7 +7,9 @@ This page is ''not'' for questions or problems about Emacs -- see OpenQuestions 
 Note that this page is not about EmacsWikiMode.
 
 '''Add your problem descriptions below this line'''
+== Search finds nothing when browser is Chrome ==
 
+Using Chrome Version 24.0.1312.52 m and Windows 7 Pro Version 6.1 (Build 7601: Service Pack 1)
 ----
 
 == Site search misses stuff ==
@@ -230,12 +232,12 @@ Why doesn't the quoted markup of `RET C-i' work?  `RET' works. -- AaronHawley
 [new]
 At the very end of the [http://emacswiki.org/emacs/config config file] you can see the rule I'm using:
 
-         /\G(\`|‘)([CM][- ][- A-Za-z0-9<>;:#]+)(\'|’)/cg
-      or /\G(\`|‘)([-A-Za-z0-9\/\*]+[=]?)(\'|’)/cg
+         /\G(\`|â)([CM][- ][- A-Za-z0-9<>;:#]+)(\'|â)/cg
+      or /\G(\`|â)([-A-Za-z0-9\/\*]+[=]?)(\'|â)/cg
 
 I think the first regexp matches keys and the second matches symbols. Thus `RET' works because it looks like a symbol. The tricky part is coming up with something that doesn't cause false positives... Untested suggestion...
 
-         /\G(\`|‘)(([CM][- ][- A-Za-z0-9<>;:#]+|RET|TAB|DEL|<(tab|f[0-9]+)>) ?)+(\'|’)/cg
+         /\G(\`|â)(([CM][- ][- A-Za-z0-9<>;:#]+|RET|TAB|DEL|<(tab|f[0-9]+)>) ?)+(\'|â)/cg
 
 -- AlexSchroeder
 
