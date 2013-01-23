@@ -253,6 +253,9 @@ At minimum, a link to the gist URL (which /will/ work with no javascript) needs 
 
 (And as the gist visibility depends upon github.com javascript, using emacswiki.org javascript to hide the link isn't an option, unless you could verify that the github scripts are not blocked.)
 
+[new]
+I think the current noscript alternative solves the problem, agreed? -- AlexSchroeder
+
 == Server Issues ==
 
 === Site is very slow now ===
