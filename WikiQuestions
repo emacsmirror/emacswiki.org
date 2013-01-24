@@ -113,7 +113,24 @@ gist snippet (preferably with the same javascript).
 [new]
 Note that allowing someone to add a <script> on a publicly editable wiki is a security hole. The script inherits all the capabilities of the hosting page (such as cookies, logins, etc.) and can send them to a third party site. For example someone can edit a page to include a <script> that captures the admin login, and then that person has admin access to the entire site. There are projects like Caja that aim to allow limited scripts but this wiki software doesn't include support for it.
 [new]
-True, but enabling RawHtml surely isn't neccesary? Couldn't an exception be made for certain scripts, such as the one from github, and wiki-syntax that resolves to this script be programmed in?
+True, but enabling RawHtml surely isn't neccesary? Couldn't an
+exception be made for certain scripts, such as the one from github,
+and wiki-syntax that resolves to this script be programmed in?
+
+
+----
+
+== List of Volunteer Tasks? ==
+
+Is there somewhere that contributors can read a list of all the tasks
+needed to spruce up the wiki? For example, I'd like to start moving
+discussions to their Talk pages, but I don't see an explicit sanction
+to do or not do that either way. Is the rule to just make the edit and
+see if other people accept it? -- MatthewSnyder
+
+(I tried posting this question to EmacsWikiSuggestions but it
+complained about 'naked links'.
+
 
 ----
 
