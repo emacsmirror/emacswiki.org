@@ -47,5 +47,12 @@ For instance, imagine an outline with a few URLs in it, which reveals itself as 
 * OrgMode also has some of these features, in particular the URL linking mentioned in the final paragraph above.
 
 * [http://github.com/rlister/org-present OrgPresentMode] extremely minimalist presentation tool for org-mode
+
+* I wanted to do a presentation in a similar style so I wrote [[https://github.com/nicferrier/org-presie|org-presie]]
+
+
+== Experience giving a presentation with org-presie ==
+I gave a presentation to !ThoughtWorks about Emacs, Lisp and Elnode. It worked quite well. The main problem was the fixing of font size. That needs to be made easier.
+ 
 ---- 
 CategoryWishList
