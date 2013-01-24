@@ -9,6 +9,10 @@
 # ^\s*([^#]+?)\s*(#\s*(\d\d\d\d-\d\d-\d\d\s*)?(.*))?$
 # Group 1 is the regular expression to use.
 # Group 4 is the explanation to use.
+#
+# When you made an addition to this page and you aren't sure how many existing
+# pages this will affect, take a look at this link (it's very slow):
+# http://www.emacswiki.org/emacs/?action=list-banned-content
 
 порно # 2012-12-31 Russian porn
 <a\s+href=["']?http # 2012-12-31 HTML anchor tags usually mean spam
