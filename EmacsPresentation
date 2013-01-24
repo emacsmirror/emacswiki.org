@@ -35,7 +35,7 @@ For instance, imagine an outline with a few URLs in it, which reveals itself as 
 
 === Solutions: ===
 
-
+* [http://shebang.ws/emacs-outline-presentation-mode.html outline-presentation-mode] -- a minor mode for outline-mode to make presentations from within Emacs.
 
 * [http://github.com/pjones/bufshow Bufshow] -- a simple Emacs package
   for giving presentations by switching and narrowing buffers.
