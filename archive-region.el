@@ -1,7 +1,7 @@
 ;;;; archive-region.el --- Move region to archive file instead of killing
-;; Time-stamp: <2010-05-09 10:59:40 rubikitch>
+;; Time-stamp: <2013-01-25 06:52:04 rubikitch>
 
-;; Copyright (C) 2010  rubikitch
+;; Copyright (C) 2010,2013  rubikitch
 
 ;; Author: rubikitch <rubikitch@ruby-lang.org>
 ;; Keywords: languages
@@ -177,7 +177,9 @@ C-u C-w: `archive-region' (move text to archive file) / also in kill-ring
 C-u C-u C-w: `archive-region-open-archive-file-other-window' (open archive file)"
   (interactive "p\nr")
   (case arg
-    (1  (kill-region s e))
+    (1  (if (and (boundp 'cua--rectangle) cua--rectangle)
+            (cua-cut-rectangle nil)
+          (kill-region s e)))
     (4  (kill-new (buffer-substring s e)) (archive-region s e))
     (16 (archive-region-open-archive-file-other-window))))
 (substitute-key-definition 'kill-region 'kill-region-or-archive-region global-map)
