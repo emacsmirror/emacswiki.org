@@ -258,6 +258,9 @@ At minimum, a link to the gist URL (which /will/ work with no javascript) needs 
 [new]
 I think the current noscript alternative solves the problem, agreed? -- AlexSchroeder
 
+[new]
+Thanks Alex, that seems to work nicely for all combinations. Cheers for the quick fix, and feel free to delete this suggestion.
+
 == Server Issues ==
 
 === Site is very slow now ===
