@@ -211,14 +211,6 @@ Manual:Circular%20Objects is the right form. In a wiki URL, space is represented
 The link text retains its crude ASCII formatting. -- VegardOye
 
 
-=== Markup of `RET C-i' ===
-
-Why doesn't the quoted markup of `RET C-i' work?  `RET' works. -- AaronHawley
-
-[new]
-I'll relax the regular expression used. We'll see whether that causes any unintended side-effects. :)
--- Alex
-
 == Server Issues ==
 
 === Site is very slow now ===
