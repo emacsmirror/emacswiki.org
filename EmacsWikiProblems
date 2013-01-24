@@ -211,20 +211,6 @@ Manual:Circular%20Objects is the right form. In a wiki URL, space is represented
 The link text retains its crude ASCII formatting. -- VegardOye
 
 
-=== TOC heading in wrong language ===
-
-At TreeMode (http://www.emacswiki.org/cgi-bin/wiki/TreeMode), the page is in English, but the TOC title is in Chinese. -- DrewAdams.
-
-[new]
-This is also happening on [[CSS]]. I tried faking an edit, but it doesn't seem to have done any good. -- SamuelBronson.
-
-[new]
-Yeah, it's saving the TOC title in the language of the user saving it and not re-generating it for the current user. Samuel's attempt at faking an edit probably failed because you have to actually change a byte of the page text -- appending an extra newline at the end usually works for me. As to the general issue: Would getting rid of the TOC title work for you? It seems a bit superfluous. -- Alex
-
-[new]
-More info on this at [[2006-01-12]]. -- AaronHawley
-
-
 === Markup of `RET C-i' ===
 
 Why doesn't the quoted markup of `RET C-i' work?  `RET' works. -- AaronHawley
