@@ -128,62 +128,121 @@ Coming soon.
 == My Emacs Screenshot ==
 [[image:XFQScreenShotPage]]
 
-== I Like ==
+== Inside Emacs, I Like: ==
+* '''[[Icicles]]'''
+* '''BookmarkPlus'''
+* '''LaCarte'''
+* AlignCommands
+* AngeFtp
+* AUCTeX
+* AutoCompletePlus
+* AutoSave
+* BefungeMode
+* CsvMode
+* DeskTop
+* DiaryMode
+* DiredPlus
+* DistributedVersionControl and VersionControl
+* EasyPG
+* EdiffMode
+* EmacsLispScreen
+* EmacSpeak
+* EmacsSpeaksStatistics
+* EmacsVersor
+* GoMode
+* GrepPlus
+* HideShow
+* KeyboardMacros
+* KeyWiz
+* LookUp
+* MediaWikiMode
+* MultipleNarrowings
+* NxhtmlMode
+* OrgMode
+* ParEdit
+* RefillMode
+* ReplacePlus
+* SlimeMode
+* SokobanMode
+* SqlMode
+* TrampMode
+* TypingOfEmacs
+* UndoTree
+* WcheckMode
+* ZoneMode
+* [[ElDoc]]
+* [[ERC]]
+* [[Eshell]]
+* [[Gnus]]
+* [[Htmlize]]
+* [[N3Mode]]
+* [[Synonyms]]
+* [[w3]]
+* [[Yasnippet]]
+
+== Outside Emacs, I Like ==
 * ArtificialIntelligence
+* [[Bash]]
+* CommonLisp
+* ConTeXt
 * Coreboot
 * cpio and shar
-* Dragora GNU/Linux
+* Dragora GNU/Linux and DragonFlyBSD
 * DuckDuckGo
 * Dvips
 * English
-* FootSwitches
 * FilesystemHierarchyStandard
 * Fontconfig
+* FootSwitches
+* GnuAspell
+* GnuAutotools
+* GnuBazaar
 * GnuCompilerCollection
 * GnuDebugger
-* GnuAspell
-* GnuBazaar
-* GnuTLS
-* GnuPlot
-* GnuOctave
-* GnuAutotools
 * GnuGeneralPublicLicense and GnuFreeDocumentationLicense
-* gzip
 * GnuGo
+* GnuOctave
+* GnuPlot
+* GnuTLS
 * Grav-mass
+* gzip
 * HappyHackingKeyboard
-* LaTeX
+* html tidy
 * LambdaExpression
+* LaTeX
 * Lempel-Ziv coding (LZ77)
+* libacl
 * LibreJS
 * libxml
-* libacl
 * Linux-libre and GNU Mach
-* LispLanguage
 * MassiveMultiauthorCollaborationSite
 * mbox
 * MIPS
 * MIT
 * MLDonkey
 * NNTP
+* Ogg
 * POSIX
 * RegularExpression
 * RSA
 * Savane
-* SecureShell
-* STARTTLS
-* SELinux
 * Sawfish and StumpWM
-* TeXLive
-* Ogg
-* Trackball
-* XULRunner
-* UnicodeEncoding
-* [[TECO]]
-* html tidy
 * scp
-* zlib
+* SecureShell
+* SELinux
+* SQLite
+* STARTTLS
+* StickyModifiers
+* TeXLive
 * top
+* Trackball
+* UnicodeEncoding
+* VoiceRecognition
+* XModMap
+* XULRunner
+* zlib
+* [[TECO]]
+* [[Texinfo]]
 
 == Wish List==
 * Implement a version control system in EmacsLisp.
