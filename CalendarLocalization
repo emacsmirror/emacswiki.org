@@ -125,33 +125,31 @@ Week starts with Monday, use also spanish weekday and month names. Editor specia
                                      "Octubre" "Noviembre" "Diciembre"])
 
 === Swedish ===
-See http://bigwalter.net/daniel/elisp/sv-kalender.el
+See [http://bigwalter.net/daniel/elisp/sv-kalender.el sv-kalender.el]
 
 === Norwegian ===
-See https://github.com/unhammer/calendar-norway.el
+See [https://github.com/unhammer/calendar-norway.el calendar-norway.el]
 
 == Localized National Holidays ==
 
 === Chinese ===
 
 Localized, national holidays, lunar/solar term based holidays, highlight holidays based on priority, show horoscope/zodiac info, etc.
+See [http://xwl.appspot.com/ref/cal-china-x.el cal-china-x.el].
 
-http://xwl.appspot.com/ref/cal-china-x.el
-
-Modified version of the above using traditional Chinese characters (plus some nit picks):
-
-http://github.com/stepnem/emacs-libraries/blob/master/cal-china-x.el
+Modified version of the above using traditional Chinese characters (plus some nit picks): [http://github.com/stepnem/emacs-libraries/blob/master/cal-china-x.el cal-china-x.el]
 
 === Korean ===
 
-There is a package, cal-korea-x that support Korean lunar calendar, and display names for months.  See http://github.com/cinsk/cal-korea-x/
+There is a package, cal-korea-x that support Korean lunar calendar, and display names for months.  See [http://github.com/cinsk/cal-korea-x/ cal-korea-x].
 
 === Danish ===
 
-See http://soren.github.com/elisp/index.html
+See Soren's page [http://soren.github.com/elisp/index.html on Github]
 
 === Finnish ===
-https://github.com/tlikonen/suomalainen-kalenteri
+
+See [https://github.com/tlikonen/suomalainen-kalenteri suomalainen-kalenteri].
 
 === French ===
 Lisp:french-holidays.el
@@ -202,7 +200,8 @@ To add a few key Irish public holidays:
 </pre>
 
 === Japanese ===
-http://www.meadowy.org/meadow/netinstall/export/799/branches/3.00/pkginfo/japanese-holidays/japanese-holidays.el
+
+See [http://www.meadowy.org/meadow/netinstall/export/799/branches/3.00/pkginfo/japanese-holidays/japanese-holidays.el japanese-holidays.el].
 
 Here is my calendar configuration. -- [[rubikitch]]
 
