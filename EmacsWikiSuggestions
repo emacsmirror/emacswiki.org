@@ -16,7 +16,7 @@ Discussion about the TextFormattingRules used in contributing to pages  is at Te
 
 == Provide alternate stylesheets ==
 
-I would like to choose the stylesheet for EmacsWiki easily.  If Emacswiki could provide alternate stylesheets - see  http://orgmode.org/worg/ - then I will be able to choose the theme using View->Page Style->etc menu in Firefox. -- [[115.241.16.57]]
+I would like to choose the stylesheet for EmacsWiki easily.  If Emacswiki could provide alternate stylesheets---see  [http://orgmode.org/worg/ Worg]---then I will be able to choose the theme using View->Page Style->etc menu in Firefox. -- [[115.241.16.57]]
 
 [new:DrewAdams:2012-08-05 16:41 UTC]
 Does [[CSS]] correspond to your request?  I don't use alternative stylesheets myself, but last time I tried this (years ago) it seemed to do what you are suggesting. 
@@ -25,7 +25,7 @@ Does [[CSS]] correspond to your request?  I don't use alternative stylesheets my
 
 [new]
 
-This is how the directives on http://Orgmode.org/worg looks like
+This is how the directives on [http://Orgmode.org/worg Worg] looks like:
 
     <link rel="stylesheet" title="Standard" href="/worg/style/worg.css" type="text/css" />
     <link rel="alternate stylesheet" title="Zenburn" href="/worg/style/worg-zenburn.css" type="text/css" />
@@ -66,8 +66,8 @@ The history for a page should show several revisions. Currently, past revisions 
 
 [new]
 I've never had a need for this. I'll leave the suggestion standing. Perhaps more people want to support this? On the other hand,
-I could add a link to the [[SVN repository]]. What do you think of that? Eg. the history for AlexSchroeder would also contain a link to
-http://svn.savannah.gnu.org/viewvc/emacswikipages/AlexSchroeder?root=emacswiki -- AlexSchroeder
+I could add a link to the [[Git repository]] somewhere?
+-- AlexSchroeder
 
 
 == Layout ==
