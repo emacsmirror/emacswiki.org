@@ -216,19 +216,8 @@ The link text retains its crude ASCII formatting. -- VegardOye
 Why doesn't the quoted markup of `RET C-i' work?  `RET' works. -- AaronHawley
 
 [new]
-At the very end of the [http://emacswiki.org/emacs/config config file] you can see the rule I'm using:
-
-         /\G(\`|â)([CM][- ][- A-Za-z0-9<>;:#]+)(\'|â)/cg
-      or /\G(\`|â)([-A-Za-z0-9\/\*]+[=]?)(\'|â)/cg
-
-I think the first regexp matches keys and the second matches symbols. Thus `RET' works because it looks like a symbol. The tricky part is coming up with something that doesn't cause false positives... Untested suggestion...
-
-         /\G(\`|â)(([CM][- ][- A-Za-z0-9<>;:#]+|RET|TAB|DEL|<(tab|f[0-9]+)>) ?)+(\'|â)/cg
-
--- AlexSchroeder
-
-[new]
-Alright, I'll just use `C-m C-i'.  I'll have to try and find time to investigate the consequences of changing that regexp, though. -- AaronHawley
+I'll relax the regular expression used. We'll see whether that causes any unintended side-effects. :)
+-- Alex
 
 == Server Issues ==
 
