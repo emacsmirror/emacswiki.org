@@ -37,17 +37,25 @@ Until then, this globalized version will be just fine for me !
 
 ---A better way to get the same effect.---
 
-A far better way to get the same effect add to your init file something like:
-{{{
-(add-to-list 'face-remapping-alist '(default (:height 1.15) default))
-}}}
+A far better way to get the same effect is to cutomize the size of the default
+face to make the size of the default font larger.  I assume that's what you want
+since you talk of zooming each buffer separately.  Note that you *must* use a
+whole number for the size; this specifies the absolute size of the face.  If you
+don't use a whole number, then that means a relative size, but since the default
+font doesn't inherit from anything, there's nothing for it to be relative to!
 
-This makes the size of the default font larger;  I assume that's what you want
-since you talk of zooming each buffer separately.  Firstly your code confuses
-some major modes, Notmuch Hello mode being an example.  Secondly you can tune the
-resizing to exactly what you want.  Thirdly you won't normally have to bother
-about zooming at all because Emacs will start up with the font size you want.
-And, of course, you won't get the strange effects you talk about.
+But there are problems with your code.  Firstly it confuses some major modes,
+Notmuch Hello mode being an example.  Secondly you can tune the resizing to
+exactly what you want.  Thirdly you won't normally have to bother about zooming
+at all because Emacs will start up with the font size you want.  And, of course,
+you won't get the strange effects you talk about.
+
+That having been said, I think your code ought to work, without casing strange
+effects, but that you are running into bug #1785 in the font remapping routines.
+
+If you read my original post you will see that I suggested doing this in your init
+file.  I always think of that first because I'm not much into using
+customization.  However I found that bug #1785 scuppers that too!
 
 I hope you find this helpful. --- [[Bernard Hurley]]
   
