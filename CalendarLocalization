@@ -240,3 +240,47 @@ Here is my calendar configuration. -- [[rubikitch]]
 
 === Ukrainian ===
 Lisp:ukrainian-holidays.el
+
+=== Dutch ===
+
+<pre>
+;; Dutch holidays (Nederlandse feestdagen)
+;; Because there are dupicates with holiday-general-holidays and lists,
+;; I disable almost all other holiday lists.
+(setq holiday-other-holidays
+      '((holiday-fixed 1 1 "Nieuwjaarsdag")
+        (holiday-fixed 1 6 "Driekoningen")
+        (holiday-fixed 2 14 "Valentijnsdag")
+        ;; (holiday-fixed 4 1 "Één April")
+        (holiday-fixed 4 30 "Koninginnedag")
+        (holiday-fixed 5 1 "Dag van de Arbeid")
+        (holiday-fixed 5 4 "Dodenherdenking")
+        (holiday-fixed 5 5 "Bevrijdingsdag")
+        (holiday-fixed 10 4 "Dierendag")
+        (holiday-fixed 10 31 "Halloween")
+        (holiday-fixed 11 11 "Sint Maarten")
+        (holiday-fixed 12 5 "Sinterklaas")
+        (holiday-fixed 12 25 "Eerste kerstdag")
+        (holiday-fixed 12 26 "Tweede kerstdag")
+        (holiday-fixed 12 31 "Oudejaarsdag")
+        ;; Feestdagen gerelateerd aan Pasen
+        (holiday-easter-etc -49 "Carnaval")
+        (holiday-easter-etc -48 "Carnaval")
+        (holiday-easter-etc -47 "Carnaval")
+        (holiday-easter-etc -2 "Goede Vrijdag")
+        (holiday-easter-etc 0 "Eerste Paasdag")
+        (holiday-easter-etc +1 "Tweede Paasdag")
+        (holiday-easter-etc +39 "Hemelvaart")
+        (holiday-easter-etc +49 "Eerste Pinksterdag")
+        (holiday-easter-etc +50 "Tweede Pinksterdag")
+        ;; Overige feestdagen met een variabele datum
+        (holiday-float 5 0 2 "Moederdag")
+        (holiday-float 6 0 3 "Vaderdag")
+        (holiday-float 9 2 3 "Prinsjesdag")))
+(setq holiday-general-holidays nil)
+(setq holiday-christian-holidays nil)
+(setq holiday-hebrew-holidays nil)
+(setq holiday-islamic-holidays nil)
+(setq holiday-bahai-holidays nil)
+(setq holiday-oriental-holidays nil)
+</pre>
