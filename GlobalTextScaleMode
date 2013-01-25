@@ -34,8 +34,7 @@ Until then, this globalized version will be just fine for me !
   (global-set-key (kbd "M--")
                   '(lambda () (interactive) (global-text-scale-adjust -1)))
   
-
----A better way to get the same effect.---
+= A better way to get the same effect =
 
 A far better way to get the same effect is to cutomize the size of the default
 face to make the size of the default font larger.  I assume that's what you want
