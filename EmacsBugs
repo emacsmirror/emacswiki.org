@@ -10,5 +10,25 @@ You can find bugs that were known at the time of distribution for your version o
 * Those who are going to fix the problems are not going to look here!
 * Please do not add reports of random bugs and work-arounds to this page.
 
+
+== Library `emacsbug+.el' ==
+
+Library <tt>[[emacsbug+.el]]</tt> extends standard library ##emacsbug.el##, which defines command `report-emacs-bug'.  
+
+It provides [[user option]] `ebp-report-emacs-bug-included-fields', which you can use to specify the types of information that `report-emacs-bug' includes by default.
+
+And it provides individual commands to insert such info, if you choose not to include some of it by default.
+
+[[image:emacsbug-plus-help]]
+
+
+
+
+
+
+
+
+
+
 ----
-CategoryWishList
+CategoryWishList CategoryDebug CategoryHelp
