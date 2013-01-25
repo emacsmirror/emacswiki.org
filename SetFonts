@@ -172,6 +172,13 @@ And so..
   ;; Emacs23 style font setting.
   (set-face-attribute 'default nil :font (font-candidate '("Consolas-10:weight=normal" "DejaVu Sans Mono-10:weight=normal")))
 
+Version using [[https://github.com/magnars/dash.el dash.el]] (call it the same way as above):
+
+  (require 'dash)
+  (defun font-candidate (&rest fonts)
+    "Return the first available font."
+    (--first (find-font (font-spec :name it)) fonts))
+
 == True type fonts? ==
 
 [new]
