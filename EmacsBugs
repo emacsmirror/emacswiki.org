@@ -11,6 +11,9 @@ You can find bugs that were known at the time of distribution for your version o
 * Please do not add reports of random bugs and work-arounds to this page.
 
 
+
+
+[:emacsbugplus]
 == Library `emacsbug+.el' ==
 
 Library <tt>[[emacsbug+.el]]</tt> extends standard library ##emacsbug.el##, which defines command `report-emacs-bug'.  
