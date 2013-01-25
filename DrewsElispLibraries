@@ -38,7 +38,7 @@ I use several Emacs versions, including (yes) Emacs 20. If a particular feature 
 
 Also, check the source code for conditional tests like these:
 
-   (< emacs-major-version 23)
+   (< emacs-major-version 24)
    (>= emacs-major-version 21)
 
 You can try to juggle the branches of such tests yourself -- that is, try different branches to see what works in your Emacs version. Let me know what works and what doesn't. -- Thanks.
@@ -66,6 +66,7 @@ The newest of my libraries are these (in alphabetical order):
 * <tt>[[dired-details+.el]]</tt> -- extensions to library Lisp:dired-details.el -- see '''DiredDetails'''
 * <tt>[[doremi-frm.el]]</tt> -- incrementally adjust [[frame]] properties using arrow keys and/or mouse wheel -- see also '''DoReMi'''
 * <tt>[[ediff+.el]]</tt> -- extensions to standard library `ediff': toggle case sensitivity (not needed for GNU Emacs 22 or later)
+* <tt>[[emacsbug+.el]]</tt> -- extensions to standard library `emacsbug' -- see [[EmacsBugs#emacsbugplus|EmacsBugs]]
 * <tt>[[eyedropper.el]]</tt> -- pick up foreground or background colors (see also <tt>[[palette.el]]</tt>)
 * <tt>[[facemenu+.el]]</tt> -- extensions to standard library `facemenu' -- see '''FaceMenuPlus'''
 * <tt>[[ffap-.el]]</tt> -- extensions to standard library `ffap' (see FindFileAtPoint)
@@ -109,7 +110,7 @@ I make minor changes to some libraries often, so check for the latest versions.
 
 
 
-=== Emacs 23 (and 22 (and 21 (and 20 (and ...)))) ===
+=== Emacs 24 (and 23 (and 22 (and 21 (and 20 (and ...))))) ===
 
 * <tt>[[apropos+.el]]</tt> -- extensions to standard library `apropos'
 * <tt>[[autofit-frame.el]]</tt> -- automatically fit each one-window frame to its buffer; see also '''[[Shrink-Wrapping Frames]]'''
@@ -120,7 +121,7 @@ I make minor changes to some libraries often, so check for the latest versions.
 ** <tt>[[bookmark+-lit.el]]</tt> -- (optional) bookmark highlighting
 ** <tt>[[bookmark+-doc.el]]</tt> -- doc
 * <tt>[[browse-kill-ring+.el]]</tt> -- extensions to library `browse-kill-ring'
-* <tt>[[buff-menu+.el]]</tt> -- extensions to standard BufferMenu -- see '''BufferMenuPlus'''
+* <tt>[[buff-menu+.el]]</tt> -- extensions to standard BufferMenu -- see '''BufferMenuPlus''' (not yet updated for Emacs 24 -- you can use it in 24 with the Emacs 23 ##buff-menu.el##, from here: http://ftp.gnu.org/gnu/emacs/)
 * <tt>[[cursor-chg.el]]</tt> -- automatically change the [[cursor]], depending on the context -- see ChangingCursorDynamically
 * <tt>[[cus-edit+.el]]</tt> -- extensions to standard library `cus-edit' to make Customize play better with the rest of Emacs -- see CustomizingAndSaving
 * <tt>[[def-face-const.el]]</tt> -- macro for defining [[face]]s & their variables; see also '''DefineFaceConstant''' (this library is now obsolete; just use `defface')
@@ -952,7 +953,7 @@ Thx -- DrewAdams
 [:AllLibraries]
 All libraries referenced here: 
 
-Lisp:apropos+.el, Lisp:apropos-fn+var.el, Lisp:autofit-frame.el, Lisp:autoload+.el, Lisp:bindings+.el, Lisp:bookmark+.el, Lisp:browse-kill-ring+.el, Lisp:buff-menu+.el, Lisp:col-highlight.el, Lisp:compile-.el, Lisp:compile-20.el, Lisp:compile+.el, Lisp:compile+20.el, Lisp:crosshairs.el, Lisp:cursor-chg.el, Lisp:cus-edit+.el, Lisp:def-face-const.el, Lisp:delsel.el, Lisp:diff+.el, Lisp:diff+20.el, Lisp:diff-mode-.el, Lisp:dired+.el, Lisp:dired-details+.el, Lisp:dired-sort-menu+.el, Lisp:doremi.el, Lisp:doremi-cmd.el, Lisp:doremi-frm.el, Lisp:doremi-mac.el, Lisp:ediff+.el, Lisp:emacs-init.el, Lisp:eyedropper.el, Lisp:facemenu+.el, Lisp:faces+.el, Lisp:ffap-.el, Lisp:files+.el, Lisp:find-dired-.el, Lisp:find-dired+.el, Lisp:finder+.el, Lisp:find-func+.el, Lisp:fit-frame.el, Lisp:font-lock+.el, Lisp:frame-cmds.el, Lisp:frame-fns.el, Lisp:frame+.el, Lisp:grep+.el, Lisp:header2.el, Lisp:help+.el, Lisp:help-fns+.el, Lisp:help-macro+.el, Lisp:help-mode+.el, Lisp:hexrgb.el, Lisp:highlight.el, Lisp:hl-line+.el, Lisp:hl-spotlight.el, Lisp:icicles.el, Lisp:icomplete+.el, Lisp:imenu+.el, Lisp:info+.el, Lisp:isearch+.el, Lisp:lib-requires.el, Lisp:line-num.el, Lisp:ls-lisp+.el, Lisp:macros+.el, Lisp:menu-bar+.el, Lisp:misc-cmds.el, Lisp:misc-fns.el, Lisp:mkhtml.el, Lisp:modeline-posn.el, Lisp:mouse+.el, Lisp:novice+.el, Lisp:oneonone.el, Lisp:options+.el, Lisp:outline+.el, Lisp:pp+.el, Lisp:pp-c-l.el, Lisp:replace+.el, Lisp:ring+.el, Lisp:savehist-20+.el, Lisp:second-sel.el, Lisp:setnu+.el, Lisp:setup.el, Lisp:setup-cygwin.el, Lisp:setup-info.el, Lisp:setup-keys.el, Lisp:highlight-chars.el, Lisp:simple+.el, Lisp:sort+.el, Lisp:start.el, Lisp:start-opt.el, Lisp:strings.el, Lisp:synonyms.el, Lisp:thingatpt+.el, Lisp:thumb-frm.el, Lisp:timer+.el, Lisp:tool-bar+.el, Lisp:ucs-cmds.el, Lisp:unaccent.el, Lisp:vc-.el, Lisp:vc-hooks+.el, Lisp:vc+.el, Lisp:w32-browser.el, Lisp:w32browser-dlgopen.el, Lisp:wimpy-del.el, Lisp:window+.el, Lisp:zoom-frm.el
+Lisp:apropos+.el, Lisp:apropos-fn+var.el, Lisp:autofit-frame.el, Lisp:autoload+.el, Lisp:bindings+.el, Lisp:bookmark+.el, Lisp:browse-kill-ring+.el, Lisp:buff-menu+.el, Lisp:col-highlight.el, Lisp:compile-.el, Lisp:compile-20.el, Lisp:compile+.el, Lisp:compile+20.el, Lisp:crosshairs.el, Lisp:cursor-chg.el, Lisp:cus-edit+.el, Lisp:def-face-const.el, Lisp:delsel.el, Lisp:diff+.el, Lisp:diff+20.el, Lisp:diff-mode-.el, Lisp:dired+.el, Lisp:dired-details+.el, Lisp:dired-sort-menu+.el, Lisp:doremi.el, Lisp:doremi-cmd.el, Lisp:doremi-frm.el, Lisp:doremi-mac.el, Lisp:ediff+.el, Lisp:emacsbug+.el, Lisp:emacs-init.el, Lisp:eyedropper.el, Lisp:facemenu+.el, Lisp:faces+.el, Lisp:ffap-.el, Lisp:files+.el, Lisp:find-dired-.el, Lisp:find-dired+.el, Lisp:finder+.el, Lisp:find-func+.el, Lisp:fit-frame.el, Lisp:font-lock+.el, Lisp:frame-cmds.el, Lisp:frame-fns.el, Lisp:frame+.el, Lisp:grep+.el, Lisp:header2.el, Lisp:help+.el, Lisp:help-fns+.el, Lisp:help-macro+.el, Lisp:help-mode+.el, Lisp:hexrgb.el, Lisp:highlight.el, Lisp:hl-line+.el, Lisp:hl-spotlight.el, Lisp:icicles.el, Lisp:icomplete+.el, Lisp:imenu+.el, Lisp:info+.el, Lisp:isearch+.el, Lisp:lib-requires.el, Lisp:line-num.el, Lisp:ls-lisp+.el, Lisp:macros+.el, Lisp:menu-bar+.el, Lisp:misc-cmds.el, Lisp:misc-fns.el, Lisp:mkhtml.el, Lisp:modeline-posn.el, Lisp:mouse+.el, Lisp:novice+.el, Lisp:oneonone.el, Lisp:options+.el, Lisp:outline+.el, Lisp:pp+.el, Lisp:pp-c-l.el, Lisp:replace+.el, Lisp:ring+.el, Lisp:savehist-20+.el, Lisp:second-sel.el, Lisp:setnu+.el, Lisp:setup.el, Lisp:setup-cygwin.el, Lisp:setup-info.el, Lisp:setup-keys.el, Lisp:highlight-chars.el, Lisp:simple+.el, Lisp:sort+.el, Lisp:start.el, Lisp:start-opt.el, Lisp:strings.el, Lisp:synonyms.el, Lisp:thingatpt+.el, Lisp:thumb-frm.el, Lisp:timer+.el, Lisp:tool-bar+.el, Lisp:ucs-cmds.el, Lisp:unaccent.el, Lisp:vc-.el, Lisp:vc-hooks+.el, Lisp:vc+.el, Lisp:w32-browser.el, Lisp:w32browser-dlgopen.el, Lisp:wimpy-del.el, Lisp:window+.el, Lisp:zoom-frm.el
 
 
 
