@@ -43,11 +43,11 @@ Given the selection we have on the [[CSS]] page, which are the themes you'd like
 
 == Content Fixes ==
 
-The emacs wiki content could use some refactoring and updating, especially if some snarky blog entries and reddit postings/comments are to be believed.  I can see 2 main ways to handle this: a top down approach (like Wikipedias "wiki projects") and a bottom up approach where wikizens can pick an individual page from a hit-list and work from there. To try and get this ball rolling, I have started up an EmacsWikiContent page. --JonathanArkell
+The emacs wiki content could use some refactoring and updating, especially if some snarky blog entries and reddit postings/comments are to be believed.  I can see 2 main ways to handle this: a top down approach (like Wikipedias "wiki projects") and a bottom up approach where wikizens can pick an individual page from a hit-list and work from there. To try and get this ball rolling, I have started up an EmacsWikiContent page. -- JonathanArkell
 
 == Includes == 
 
-One of the things about media wiki that is decent, is the ability to set up a different wiki page as a sub-page for includes.  This is especially helpful for marking certain pages as out-of-date, requiring refactoring, candidates for deletion, or wiki projects.  I don't think it has to be very complicated to start, just some simple way to include the text from one wikipage in another, and a way to list any pages that have that include.  (This is particularly handy for getting a list of pages that have out-of-date content).  Things like a separate namespace for templates, template variables, etc can come later. --JoanthanArkell
+One of the things about media wiki that is decent, is the ability to set up a different wiki page as a sub-page for includes.  This is especially helpful for marking certain pages as out-of-date, requiring refactoring, candidates for deletion, or wiki projects.  I don't think it has to be very complicated to start, just some simple way to include the text from one wikipage in another, and a way to list any pages that have that include.  (This is particularly handy for getting a list of pages that have out-of-date content).  Things like a separate namespace for templates, template variables, etc can come later. -- JonathanArkell
 
 [new]
 The mechanism to include pages is this:
