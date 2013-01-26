@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Jan  4 09:42:10 2013 (-0800)
+;; Last-Updated: Sat Jan 26 12:16:28 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 9268
+;;     Update #: 9277
 ;; URL: http://www.emacswiki.org/icicles-mode.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -26,13 +26,13 @@
 ;;   `doremi', `easymenu', `el-swank-fuzzy', `ffap', `ffap-',
 ;;   `fit-frame', `frame-cmds', `frame-fns', `fuzzy', `fuzzy-match',
 ;;   `help+20', `hexrgb', `icicles-cmd1', `icicles-cmd2',
-;;   `icicles-face', `icicles-fn', `icicles-mcmd', `icicles-opt',
-;;   `icicles-var', `image-dired', `info', `info+', `kmacro',
-;;   `levenshtein', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
-;;   `mouse3', `mwheel', `naked', `pp', `pp+', `regexp-opt', `ring',
-;;   `ring+', `second-sel', `strings', `subr-21', `thingatpt',
-;;   `thingatpt+', `unaccent', `w32-browser', `w32browser-dlgopen',
-;;   `wid-edit', `wid-edit+', `widget'.
+;;   `icicles-fn', `icicles-mcmd', `icicles-opt', `icicles-var',
+;;   `image-dired', `info', `info+', `kmacro', `levenshtein',
+;;   `menu-bar', `menu-bar+', `misc-cmds', `misc-fns', `mouse3',
+;;   `mwheel', `naked', `pp', `pp+', `regexp-opt', `ring', `ring+',
+;;   `second-sel', `strings', `subr-21', `thingatpt', `thingatpt+',
+;;   `unaccent', `w32-browser', `w32browser-dlgopen', `wid-edit',
+;;   `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -2813,6 +2813,12 @@ is unbound in all keymaps accessible from keymap MAP."
          '(menu-item "Toggle All-Current Icicle-Search Highlighting"
            icicle-toggle-highlight-all-current :enable icicle-searching-p
            :help "Toggle `icicle-search-highlight-all-current-flag'" :keys "C-^"))
+       (define-key map [menu-bar minibuf icicle-multi-inputs-save]
+         '(menu-item "Save Multiple Inputs for Completion" icicle-multi-inputs-save
+           :help "Add inputs in minibuffer to saved candidates set for completion"))
+       (define-key map [menu-bar minibuf icicle-multi-inputs-act]
+         '(menu-item "Act on multiple inputs in the minibuffer" icicle-multi-inputs-act
+           :help "Parse minibuffer input into a list of candidates, then act on each"))
        (define-key map [menu-bar minibuf icicle-regexp-quote-input]
          '(menu-item "Regexp-Quote Input" icicle-regexp-quote-input
            :enable (with-current-buffer (window-buffer (minibuffer-window))
@@ -2845,8 +2851,12 @@ is unbound in all keymaps accessible from keymap MAP."
          '(menu-item "Insert Key Description" icicle-insert-key-description
            :visible (not icicle-searching-p) :keys "M-q"
            :help "Read key and insert its description - e.g., reading ^F inserts `C-f'"))
+       (define-key map [menu-bar minibuf icicle-roundup]
+         '(menu-item "Insert Completion Candidate(s)" icicle-roundup
+           :enable icicle-completion-candidates
+           :help "Insert one or more completion candidates in the minibuffer"))
        (define-key map [menu-bar minibuf icicle-insert-history-element]
-         '(menu-item "Insert Past Input using Completion" icicle-insert-history-element
+         '(menu-item "Insert Past Input(s) using Completion" icicle-insert-history-element
            :enable (consp (symbol-value minibuffer-history-variable))
            :help "Use completion to insert a previous input into the minibuffer"))
        (define-key map [menu-bar minibuf icicle-insert-string-from-a-var]
@@ -2880,7 +2890,10 @@ is unbound in all keymaps accessible from keymap MAP."
        (define-key map (icicle-kbd "M-i")           'icicle-clear-current-history) ; `M-i'
        (define-key map (icicle-kbd "M-k")          'icicle-erase-minibuffer-or-history-element) ; `M-k'
        (define-key map (icicle-kbd "M-o")           'icicle-insert-history-element) ; `M-o'
-       (define-key map (icicle-kbd "M-r")           'undefined) ; `M-r'
+       (define-key map (icicle-kbd "M-R")           'icicle-multi-inputs-act) ; `M-R'
+       (define-key map (icicle-kbd "M-S")           'icicle-multi-inputs-save) ; `M-S'
+;;;$$$$ NO LONGER (define-key map (icicle-kbd "M-r")           'undefined) ; `M-r'
+       (define-key map (icicle-kbd "M-r")           'undefined) ; `M-r' (has no real effect, however)
        (define-key map (icicle-kbd "M-s")           'undefined) ; `M-s' (has no real effect, however)
        (define-key map (icicle-kbd "M-:")           'icicle-pp-eval-expression-in-minibuffer) ; `M-:'
        (define-key map (icicle-kbd "C-a")           'icicle-beginning-of-line+) ; `C-a'
@@ -2921,6 +2934,12 @@ is unbound in all keymaps accessible from keymap MAP."
            '(menu-item "Toggle All-Current Icicle-Search Highlighting"
              icicle-toggle-highlight-all-current :enable icicle-searching-p
              :help "Toggle `icicle-search-highlight-all-current-flag'" :keys "C-^"))
+         (define-key map [menu-bar minibuf icicle-multi-inputs-save]
+           '(menu-item "Save Multiple Inputs for Completion" icicle-multi-inputs-save
+             :help "Add inputs in minibuffer to saved candidates set for completion"))
+         (define-key map [menu-bar minibuf icicle-multi-inputs-act]
+           '(menu-item "Act on multiple inputs in the minibuffer" icicle-multi-inputs-act
+             :help "Parse minibuffer input into a list of candidates, then act on each"))
          (define-key map [menu-bar minibuf icicle-regexp-quote-input]
            '(menu-item "Regexp-Quote Input" icicle-regexp-quote-input
              :enable (with-current-buffer (window-buffer (minibuffer-window))
@@ -2953,8 +2972,12 @@ is unbound in all keymaps accessible from keymap MAP."
            '(menu-item "Insert Key Description" icicle-insert-key-description
              :visible (not icicle-searching-p) :keys "M-q"
              :help "Read key and insert its description - e.g., reading ^F inserts `C-f'"))
+         (define-key map [menu-bar minibuf icicle-roundup]
+           '(menu-item "Insert Completion Candidate(s)" icicle-roundup
+             :enable icicle-completion-candidates
+             :help "Insert one or more completion candidates in the minibuffer"))
          (define-key map [menu-bar minibuf icicle-insert-history-element]
-           '(menu-item "Insert Past Input using Completion" icicle-insert-history-element
+           '(menu-item "Insert Past Input(s) using Completion" icicle-insert-history-element
              :enable (consp (symbol-value minibuffer-history-variable))
              :help "Use completion to insert a previous input into the minibuffer"))
          (define-key map [menu-bar minibuf icicle-insert-string-from-a-var]
@@ -2988,7 +3011,10 @@ is unbound in all keymaps accessible from keymap MAP."
          (define-key map (icicle-kbd "M-i")           'icicle-clear-current-history) ; `M-i'
          (define-key map (icicle-kbd "M-k")        'icicle-erase-minibuffer-or-history-element) ; `M-k'
          (define-key map (icicle-kbd "M-o")           'icicle-insert-history-element) ; `M-o'
-         (define-key map (icicle-kbd "M-r")           'undefined) ; `M-r'
+         (define-key map (icicle-kbd "M-R")           'icicle-multi-inputs-act) ; `M-R'
+         (define-key map (icicle-kbd "M-S")           'icicle-multi-inputs-save) ; `M-S'
+;;;$$$$ NO LONGER(define-key map (icicle-kbd "M-r")           'undefined) ; `M-r'
+         (define-key map (icicle-kbd "M-r")           'undefined) ; `M-r' (has no real effect, however)
          (define-key map (icicle-kbd "M-s")           'undefined) ; `M-s' (has no real effect, however)
          (define-key map (icicle-kbd "M-:")           'icicle-pp-eval-expression-in-minibuffer) ; `M-:'
          (define-key map (icicle-kbd "C-a")           'icicle-beginning-of-line+) ; `C-a'
@@ -3029,6 +3055,12 @@ is unbound in all keymaps accessible from keymap MAP."
            '(menu-item "Toggle All-Current Icicle-Search Highlighting"
              icicle-toggle-highlight-all-current :enable icicle-searching-p
              :help "Toggle `icicle-search-highlight-all-current-flag'" :keys "C-^"))
+         (define-key map [menu-bar minibuf icicle-multi-inputs-save]
+           '(menu-item "Save Multiple Inputs for Completion" icicle-multi-inputs-save
+             :help "Add inputs in minibuffer to saved candidates set for completion"))
+         (define-key map [menu-bar minibuf icicle-multi-inputs-act]
+           '(menu-item "Act on multiple inputs in the minibuffer" icicle-multi-inputs-act
+             :help "Parse minibuffer input into a list of candidates, then act on each"))
          (define-key map [menu-bar minibuf icicle-regexp-quote-input]
            '(menu-item "Regexp-Quote Input" icicle-regexp-quote-input
              :enable (with-current-buffer (window-buffer (minibuffer-window))
@@ -3061,8 +3093,12 @@ is unbound in all keymaps accessible from keymap MAP."
            '(menu-item "Insert Key Description" icicle-insert-key-description
              :visible (not icicle-searching-p) :keys "M-q"
              :help "Read key and insert its description - e.g., reading ^F inserts `C-f'"))
+         (define-key map [menu-bar minibuf icicle-roundup]
+           '(menu-item "Insert Completion Candidate(s)" icicle-roundup
+             :enable icicle-completion-candidates
+             :help "Insert one or more completion candidates in the minibuffer"))
          (define-key map [menu-bar minibuf icicle-insert-history-element]
-           '(menu-item "Insert Past Input using Completion" icicle-insert-history-element
+           '(menu-item "Insert Past Input(s) using Completion" icicle-insert-history-element
              :enable (consp (symbol-value minibuffer-history-variable))
              :help "Use completion to insert a previous input into the minibuffer"))
          (define-key map [menu-bar minibuf icicle-insert-string-from-a-var]
@@ -3096,7 +3132,10 @@ is unbound in all keymaps accessible from keymap MAP."
          (define-key map (icicle-kbd "M-i")           'icicle-clear-current-history) ; `M-i'
          (define-key map (icicle-kbd "M-k")        'icicle-erase-minibuffer-or-history-element) ; `M-k'
          (define-key map (icicle-kbd "M-o")           'icicle-insert-history-element) ; `M-o'
-         (define-key map (icicle-kbd "M-r")           'undefined) ; `M-r'
+         (define-key map (icicle-kbd "M-R")           'icicle-multi-inputs-act) ; `M-R'
+         (define-key map (icicle-kbd "M-S")           'icicle-multi-inputs-save) ; `M-S'
+;;;$$$$ NO LONGER(define-key map (icicle-kbd "M-r")           'undefined) ; `M-r'
+         (define-key map (icicle-kbd "M-r")           'undefined) ; `M-r' (has no real effect, however)
          (define-key map (icicle-kbd "M-s")           'undefined) ; `M-s' (has no real effect, however)
          (define-key map (icicle-kbd "M-:")           'icicle-pp-eval-expression-in-minibuffer) ; `M-:'
          (define-key map (icicle-kbd "C-a")           'icicle-beginning-of-line+) ; `C-a'
@@ -3223,8 +3262,8 @@ is unbound in all keymaps accessible from keymap MAP."
        (define-key map (icicle-kbd "M-?")           nil) ; `M-?'
        (define-key map (icicle-kbd "C-g")           (if (and (fboundp 'minibuffer-keyboard-quit)
                                                              delete-selection-mode)
-                                                          'minibuffer-keyboard-quit
-                                                        'abort-recursive-edit)) ; `C-g'
+                                                        'minibuffer-keyboard-quit
+                                                      'abort-recursive-edit)) ; `C-g'
        (define-key map (icicle-kbd "M-S-backspace") nil) ; `M-S-DEL'
        (define-key map (icicle-kbd "M-S-delete")    nil) ; `M-S-delete'
        (define-key map (icicle-kbd "M-.")           nil) ; `M-.'
@@ -3279,8 +3318,8 @@ is unbound in all keymaps accessible from keymap MAP."
          (define-key map (icicle-kbd "M-?")           nil) ; `M-?'
          (define-key map (icicle-kbd "C-g")           (if (and (fboundp 'minibuffer-keyboard-quit)
                                                                delete-selection-mode)
-                                                            'minibuffer-keyboard-quit
-                                                          'abort-recursive-edit)) ; `C-g'
+                                                          'minibuffer-keyboard-quit
+                                                        'abort-recursive-edit)) ; `C-g'
          (define-key map (icicle-kbd "M-S-backspace") nil) ; `M-S-DEL'
          (define-key map (icicle-kbd "M-S-delete")    nil) ; `M-S-delete'
          (define-key map (icicle-kbd "M-.")           nil) ; `M-.'
@@ -3335,8 +3374,8 @@ is unbound in all keymaps accessible from keymap MAP."
          (define-key map (icicle-kbd "M-?")           nil) ; `M-?'
          (define-key map (icicle-kbd "C-g")           (if (and (fboundp 'minibuffer-keyboard-quit)
                                                                delete-selection-mode)
-                                                            'minibuffer-keyboard-quit
-                                                          'abort-recursive-edit)) ; `C-g'
+                                                          'minibuffer-keyboard-quit
+                                                        'abort-recursive-edit)) ; `C-g'
          (define-key map (icicle-kbd "M-S-backspace") nil) ; `M-S-DEL'
          (define-key map (icicle-kbd "M-S-delete")    nil) ; `M-S-delete'
          (define-key map (icicle-kbd "M-.")           nil) ; `M-.'
@@ -3367,7 +3406,7 @@ is unbound in all keymaps accessible from keymap MAP."
        (define-key minibuffer-local-must-match-map (icicle-kbd "C-g")
          (if (and (fboundp 'minibuffer-keyboard-quit)  delete-selection-mode)
              'minibuffer-keyboard-quit
-           'abort-recursive-edit))  ; `C-g' - need it anyway, even if inherit completion map.
+           'abort-recursive-edit))      ; `C-g' - need it anyway, even if inherit completion map.
        (dolist (key  icicle-completing-read+insert-keys)
          (define-key minibuffer-local-must-match-map key nil))
        (dolist (key  icicle-read+insert-file-name-keys)
@@ -3466,6 +3505,12 @@ MAP is `minibuffer-local-completion-map' or
       '(menu-item "Toggle All-Current Icicle-Search Highlighting"
         icicle-toggle-highlight-all-current :enable icicle-searching-p
         :help "Toggle `icicle-search-highlight-all-current-flag'" :keys "C-^"))
+    (define-key map [menu-bar minibuf icicle-multi-inputs-save]
+      '(menu-item "Save Multiple Inputs for Completion" icicle-multi-inputs-save
+        :help "Add inputs in minibuffer to saved candidates set for completion"))
+    (define-key map [menu-bar minibuf icicle-multi-inputs-act]
+      '(menu-item "Act on multiple inputs in the minibuffer" icicle-multi-inputs-act
+        :help "Parse minibuffer input into a list of candidates, then act on each"))
     (define-key map [menu-bar minibuf icicle-regexp-quote-input]
       '(menu-item "Regexp-Quote Input" icicle-regexp-quote-input
         :enable (with-current-buffer (window-buffer (minibuffer-window)) (not (zerop (buffer-size))))
@@ -3497,8 +3542,12 @@ MAP is `minibuffer-local-completion-map' or
       '(menu-item "Insert Key Description" icicle-insert-key-description
         :visible (not icicle-searching-p) :keys "M-q"
         :help "Read key and insert its description - e.g., reading ^F inserts `C-f'"))
+    (define-key map [menu-bar minibuf icicle-roundup]
+      '(menu-item "Insert Completion Candidate(s)" icicle-roundup
+        :enable icicle-completion-candidates
+        :help "Insert one or more completion candidates in the minibuffer"))
     (define-key map [menu-bar minibuf icicle-insert-history-element]
-      '(menu-item "Insert Past Input using Completion" icicle-insert-history-element
+      '(menu-item "Insert Past Input(s) using Completion" icicle-insert-history-element
         :help "Use completion to insert a previous input into the minibuffer"))
     (define-key map [menu-bar minibuf icicle-insert-string-from-a-var]
       '(menu-item "Insert String from a Variable..." icicle-insert-string-from-variable
