@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:24:28 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Dec 28 10:00:41 2012 (-0800)
+;; Last-Updated: Sat Jan 26 10:39:55 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 1084
+;;     Update #: 1085
 ;; URL: http://www.emacswiki.org/icicles-mac.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -642,8 +642,10 @@ This is an Icicles command - see command `icicle-mode'.")
                                                            minibuffer-prompt-properties))
                     (minibuffer-setup-hook            minibuffer-setup-hook)
                     (minibuffer-text-before-history   minibuffer-text-before-history))
-                (setq candidate  (expand-file-name candidate (icicle-file-name-directory
-                                                              (directory-file-name icicle-last-input))))
+                (setq candidate  (expand-file-name candidate
+                                                   (and icicle-last-input
+                                                        (icicle-file-name-directory
+                                                         (directory-file-name icicle-last-input)))))
                 (icicle-condition-case-no-debug in-action-fn
                     ;; Treat 3 cases, because previous use of `icicle-candidate-action-fn'
                     ;; might have deleted the file or the window.
