@@ -69,6 +69,14 @@ It would be good to be able to somehow specify the manual: `(elisp)'. E.g. ##[[M
 [new]
 I'm not sure how old this suggestion is. Right now I see that Manual:macros will link to a page that provides both links. Problem solved? -- Alex
 
+[new:DrewAdams:2013-01-26 16:34 UTC]
+Not really.  That just means the reader has to guess which  was meant (or whether both were meant).  The idea is to let the writer direct the reader to the appropriate place(s), so the reader only has to click, not check more than one manual.  This request is only a nice-to-have, not something important.  -- DrewAdams
+
+
+
+
+
+
 == User Names on RecentChanges Page ==
 
 It would be good if user names were treated normally at RecentChanges, that is, to show a non-existant page like a non-existant page is usually shown. People might be encouraged to follow it and create a home page.
