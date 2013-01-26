@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Jan 18 08:21:26 2013 (-0800)
+;; Last-Updated: Sat Jan 26 11:59:01 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 23280
+;;     Update #: 23289
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -548,8 +548,8 @@
 ;;    `icicle-mouse-save/unsave-candidate',
 ;;    `icicle-mouse-save-then-kill', `icicle-mouse-yank-secondary',
 ;;    `icicle-move-to-next-completion',
-;;    `icicle-move-to-previous-completion',
-;;    `icicle-narrow-candidates',
+;;    `icicle-move-to-previous-completion', `icicle-multi-inputs-act',
+;;    `icicle-multi-inputs-save', `icicle-narrow-candidates',
 ;;    `icicle-narrow-candidates-with-predicate',
 ;;    `icicle-negative-argument', `icicle-next-apropos-candidate',
 ;;    `icicle-next-apropos-candidate-action',
@@ -587,7 +587,7 @@
 ;;    `icicle-remove-candidate', `icicle-remove-Completions-window',
 ;;    `icicle-resolve-file-name', `icicle-retrieve-last-input',
 ;;    `icicle-retrieve-next-input', `icicle-retrieve-previous-input',
-;;    `icicle-reverse-sort-order',
+;;    `icicle-reverse-sort-order', `icicle-roundup',
 ;;    `icicle-save-predicate-to-variable',
 ;;    `icicle-save/unsave-candidate',
 ;;    `icicle-scroll-Completions-backward',
@@ -1034,6 +1034,7 @@
 ;;    `icicle-Info-node-is-indexed-by-topic',
 ;;    `icicle-Info-read-node-name', `icicle-input-from-minibuffer',
 ;;    `icicle-input-is-a-completion-p', `icicle-insert-candidates',
+;;    `icicle-insert-candidate-action',
 ;;    `icicle-insert-cand-in-minibuffer',
 ;;    `icicle-insert-Completions-help-string', `icicle-insert-dot',
 ;;    `icicle-insert-for-yank', `icicle-insert-input',
@@ -1184,7 +1185,7 @@
 ;;    `icicle-show-help-in-mode-line', `icicle-show-in-mode-line',
 ;;    `icicle-signum', `icicle-S-iso-lefttab-to-S-TAB',
 ;;    `icicle-sit-for', `icicle-some',
-;;    `icicle-special-candidates-first-p',
+;;    `icicle-special-candidates-first-p', `icicle-split-input',
 ;;    `icicle-start-of-candidates-in-Completions',
 ;;    `icicle-string-match-p', `icicle-strip-ignored-files-and-sort',
 ;;    `icicle-subst-envvar-in-file-name',
@@ -1304,7 +1305,8 @@
 ;;    `icicle-minibuffer-message-ok-p', `icicle-minor-mode-map-entry',
 ;;    `icicle-mode-line-help', `icicle-mode-map',
 ;;    `icicle-ms-windows-drive-hash', `icicle-multi-completing-p',
-;;    `icicle-must-match-regexp', `icicle-must-not-match-regexp',
+;;    `icicle-multi-inputs-action-fn', `icicle-must-match-regexp',
+;;    `icicle-must-not-match-regexp',
 ;;    `icicle-must-pass-after-match-predicate',
 ;;    `icicle-must-pass-predicate', `icicle-named-colors',
 ;;    `icicle-narrow-regexp',
