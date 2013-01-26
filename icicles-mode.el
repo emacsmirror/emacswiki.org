@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Jan 26 12:16:28 2013 (-0800)
+;; Last-Updated: Sat Jan 26 13:49:57 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 9277
+;;     Update #: 9278
 ;; URL: http://www.emacswiki.org/icicles-mode.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -2853,7 +2853,7 @@ is unbound in all keymaps accessible from keymap MAP."
            :help "Read key and insert its description - e.g., reading ^F inserts `C-f'"))
        (define-key map [menu-bar minibuf icicle-roundup]
          '(menu-item "Insert Completion Candidate(s)" icicle-roundup
-           :enable icicle-completion-candidates
+           :enable (and (icicle-completing-p) icicle-completion-candidates)
            :help "Insert one or more completion candidates in the minibuffer"))
        (define-key map [menu-bar minibuf icicle-insert-history-element]
          '(menu-item "Insert Past Input(s) using Completion" icicle-insert-history-element
@@ -2974,7 +2974,7 @@ is unbound in all keymaps accessible from keymap MAP."
              :help "Read key and insert its description - e.g., reading ^F inserts `C-f'"))
          (define-key map [menu-bar minibuf icicle-roundup]
            '(menu-item "Insert Completion Candidate(s)" icicle-roundup
-             :enable icicle-completion-candidates
+             :enable (and (icicle-completing-p) icicle-completion-candidates)
              :help "Insert one or more completion candidates in the minibuffer"))
          (define-key map [menu-bar minibuf icicle-insert-history-element]
            '(menu-item "Insert Past Input(s) using Completion" icicle-insert-history-element
@@ -3095,7 +3095,7 @@ is unbound in all keymaps accessible from keymap MAP."
              :help "Read key and insert its description - e.g., reading ^F inserts `C-f'"))
          (define-key map [menu-bar minibuf icicle-roundup]
            '(menu-item "Insert Completion Candidate(s)" icicle-roundup
-             :enable icicle-completion-candidates
+             :enable (and (icicle-completing-p) icicle-completion-candidates)
              :help "Insert one or more completion candidates in the minibuffer"))
          (define-key map [menu-bar minibuf icicle-insert-history-element]
            '(menu-item "Insert Past Input(s) using Completion" icicle-insert-history-element
@@ -3544,7 +3544,7 @@ MAP is `minibuffer-local-completion-map' or
         :help "Read key and insert its description - e.g., reading ^F inserts `C-f'"))
     (define-key map [menu-bar minibuf icicle-roundup]
       '(menu-item "Insert Completion Candidate(s)" icicle-roundup
-        :enable icicle-completion-candidates
+        :enable (and (icicle-completing-p) icicle-completion-candidates)
         :help "Insert one or more completion candidates in the minibuffer"))
     (define-key map [menu-bar minibuf icicle-insert-history-element]
       '(menu-item "Insert Past Input(s) using Completion" icicle-insert-history-element
