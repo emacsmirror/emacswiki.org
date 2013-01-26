@@ -1,17 +1,20 @@
-AWK it! sends selected region to awk and uses yasnippet as interactive UI.
+AWK it! allows you to see AWK output as you are typing the script; it sends selected region to awk and uses yasnippet as interactive UI.
 
 You can get the latest version here: Lisp:awk-it.el
 
-AWK it! supports both simplified(default) and raw AWK syntax and has support for multiple lines.
+Suggestions, questions & bugs: isikacek@gmail.com (Igor Sikaček)
 
-Simplest usage is selecting mark and point and running M-x awk-it. Default
-field separator is space. AWK it! matches every non empty row in region ($0 !~ /^$/).
+There are 3 modes of AWK code: simplified syntax(default, see below), single line AWK syntax (regular AWK syntax but only inside the default match) and raw  
+AWK syntax(full AWK code). AWK it! can transfrom code from one mode to another(not perfect, but it will make an effort) and there is also support for multiple lines. Data is expanded with selected yasnippet expand keybinding.
+
+Simplest usage is selecting region and running M-x awk-it.
+Default field separator is space. AWK it! matches every non empty row in region ($0 !~ /^$/).
 
 After invoking command buffer will change to show the following interface:
 
 <pre>
     Data: <First line with most fields>
-    AWK pattern: <AWK code; see below; may be multiple lines without extra formatting>
+    AWK pattern: <AWK code; may be multiple lines without extra formatting>
     <AWK output>
 </pre>
 
@@ -25,13 +28,13 @@ From:
     Scott 26 Sydney
 </pre>
 
-to ('_' is text cursor, ignoring the extra field in example pattern):
+to (ignoring the extra field in example pattern):
 
 <pre>
     Data: Mark 27 Seattle 50
     AWK pattern: <person name="$1" age="$2">
         <location>$3</location>
-    </person>_
+    </person>
     <person name="John" age="26">
         <location>London</location>
     </person>
@@ -57,30 +60,72 @@ and after expansion:
     </person>
 </pre>
 
+The expanded lines are automaticaly indented. Buffer undo goes back to
+before awk-it invocation (both options can be changed).
+
+During completion the folowing options are available:
+* C-c s - change field separator
+* C-c t - toggle space and tab trimming around custom field separator
+* C-c <up> - next AWK it! mode (simple -> single -> raw -> simple -> ...)
+* C-c <down> - previous AWK it! mode (raw -> single -> simple -> raw ...)
+
+After completion you can run:
+* M-x awk-it-to-kill-ring - copies last AWK code to kill ring
+* M-x awk-it-to-file - copies last AWK code(raw or converted to raw) to file
+
 Simplified AWK code differs from regular in that it:
 * prints code(print "<code>")
 * escapes double and single quotes (latter for shell interaction)
 * escapes newline
 * concatenates fields with rest of the text
 
-The previous example written in raw AWK code would be:
+The single mode is regular AWK code run for each default match. The previous
+example written in single AWK code would be:
 
 <pre>
-    print "<person name=\"" $1 "\" age=\"" $2 "\">\n"\
-    "    <location>" $3 "</location>\n"\
-    "</person>"
+    print "<person name=\"" $1 "\" age=\"" $2 "\">\n\
+        <location>" $3 "</location>\n\
+    </person>"
 </pre>
 
-AWK it can also be invoked with custom separator: awk-it-with-separator. Combining
-everything the following functions are available:
-* awk-it
-* awk-it-raw
-* awk-it-with-separator
-* awk-it-raw-with-separator
+The raw mode is raw, or full, AWK code needed for data processing. The previous
+example would be:
+
+<pre>
+    $0 !~ /^$/ {
+        print "<person name=\"" $1 "\" age=\"" $2 "\">\n\
+        <location>" $3 "</location>\n\
+    </person>";
+    }
+    
+    /^$/ { print }
+</pre>
+
+AWK it! can also be invoked with every mode as starting mode, with custom
+separator, with contents of file inserted in interactive UI code field(in
+raw mode), or automatically process region with contents of file(as raw AWK).
+
+Combining everything the following functions are available:
+* awk-it                             - basic AWK it! - starts in simple mode
+* awk-it-with-separator              - simple mode with custom field separator
+* awk-it-single                      - single mode AWK it!
+* awk-it-single-with-separator       - single mode with custom field separator
+* awk-it-raw                         - AWK it! using raw(full) AWK syntax
+* awk-it-file                        - automatically transform with AWK file
+* awk-it-with-file                   - raw mode with code from AWK file
+* awk-it-to-kill-ring                - place last AWK code in kill ring
+* awk-it-to-file                     - output last raw AWK code to file
 
 Also AWK it! can be customized in External -> Awk it:
 * awk-it-load-hook; Hook that gets run after the AWK it! has been loaded
-* awk-it-default-separator; Default AWK field separator - if nil AWK default is used
-* awk-it-default-row-filter; Default AWK row filter - if nil '$0 !~ /^$/' is used
-
-Bugs & questions: isikacek@gmail.com (Igor Sikaček)
+* awk-it-default-separator           - default AWK field separator - ' '
+* awk-it-default-row-filter          - default AWK row filter - '$0 !~ /^$/'
+* awk-it-file-first-line             - first line inserted in AWK file
+* awk-it-default-mode                - default starting mode for awk-it
+* awk-it-undo                        - toggles if undo ignores AWK it! edits
+* awk-it-indent                      - toggles is expanded text will be indented
+* awk-it-extra-awk-code              - extra AWK code that is inserted in raw AWK
+* awk-it-toggle-trim-keybinding      - keybinding for toggling trimming
+* awk-it-field-separator-keybinding  - keybinding for change field separator
+* awk-it-next-mode-keybinding        - keybinding for next mode
+* awk-it-previous-mode-keybinding    - keybinding for previousmode
