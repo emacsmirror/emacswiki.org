@@ -23,11 +23,9 @@ I've also written a package for this:  [[GuessStyle]] -- [[nschum]]
 
 == Next Generation ==
 
-I am working on a successor to `guess-offset.el' which - among other improvements - is now a minor mode, supports additional languages, provides detection of `indent-tab-mode', and has better heuristics. The working title is `dtrt-indent.el'. More information can be found in the commentary.
+There is a successor to `guess-offset.el' called `dtrt-indent.el' which - among other improvements - is now a minor mode, supports additional languages, provides detection of `indent-tab-mode', and has better heuristics.  Visit the [https://github.com/jscheid/dtrt-indent project page] or follow this [https://raw.github.com/jscheid/dtrt-indent/master/dtrt-indent.el direct link to HEAD].
 
-Visit the [https://savannah.nongnu.org/projects/dtrt-indent/ project page] or follow this [http://git.savannah.nongnu.org/gitweb/?p=dtrt-indent.git;a=blob_plain;f=dtrt-indent.el;hb=HEAD direct link to HEAD].
-
-Again, suggestions are welcome. Please use Savannah's bug tracker as I won't drop by this page very often.   -- JulianScheid
+Again, suggestions are welcome. Please use Github's bug tracker as I won't drop by this page very often.   -- JulianScheid
 
 ----
 CategoryIndentation
