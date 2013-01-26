@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Dec 31 16:31:35 2012 (-0800)
+;; Last-Updated: Thu Jan 24 13:19:40 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 1695
+;;     Update #: 1697
 ;; URL: http://www.emacswiki.org/icicles-var.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -19,9 +19,9 @@
 ;; Features that might be required by this library:
 ;;
 ;;   `apropos', `apropos-fn+var', `cl', `el-swank-fuzzy', `ffap',
-;;   `ffap-', `fuzzy', `fuzzy-match', `hexrgb', `icicles-face',
-;;   `icicles-opt', `kmacro', `levenshtein', `naked', `regexp-opt',
-;;   `thingatpt', `thingatpt+', `wid-edit', `wid-edit+', `widget'.
+;;   `ffap-', `fuzzy', `fuzzy-match', `hexrgb', `icicles-opt',
+;;   `kmacro', `levenshtein', `naked', `regexp-opt', `thingatpt',
+;;   `thingatpt+', `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -102,8 +102,8 @@
 ;;    `icicle-list-use-nth-parts', `icicle-menu-map',
 ;;    `icicle-minibuffer-message-ok-p', `icicle-minor-mode-map-entry',
 ;;    `icicle-mode-line-help', `icicle-ms-windows-drive-hash',
-;;    `icicle-multi-completing-p', `icicle-must-match-regexp',
-;;    `icicle-must-not-match-regexp',
+;;    `icicle-multi-completing-p', `icicle-multi-inputs-action-fn',
+;;    `icicle-must-match-regexp', `icicle-must-not-match-regexp',
 ;;    `icicle-must-pass-after-match-predicate',
 ;;    `icicle-must-pass-predicate', `icicle-narrow-regexp',
 ;;    `icicle-nb-candidates-before-truncation',
@@ -1056,6 +1056,12 @@ at runtime.")
 
 (defvar icicle-multi-completing-p nil
   "Non-nil means we are currently completing with multi-completions.")
+
+(defvar icicle-multi-inputs-action-fn nil
+  "Function to apply to candidates that result from splitting input.
+The current minibuffer input is interpreted as a list of candidates.
+This function is applied to each candidate in turn, in list order.
+If nil then act using function `icicle-candidate-action-fn'.")
 
 (defvar icicle-must-match-regexp nil
   "A regexp that completion candidates must match, or nil.
