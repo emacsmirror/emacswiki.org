@@ -72,7 +72,7 @@ I've never liked gnus. But I do like Emacs as a mail platform so I've always mai
 
 Back in the last 90s I wrote an [[imapua|Emacs IMAP user agent based on the GNUs IMAP library]]. It worked ok but IMAP doesn't scale to big inboxes.
 
-I've worked on a succession of different email clients since then, the current incarnation being [http://github.com/nferrier/emacs-maildir|Emacs Maildir]. It's fast, it's simple, it's easy.
+I've worked on a succession of different email clients since then, the current incarnation being [http://github.com/nicferrier/emacs-maildir|Emacs Maildir]. It's fast, it's simple, it's easy.
 
 == Emacs Daemon RC ==
 
