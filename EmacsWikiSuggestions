@@ -129,28 +129,6 @@ As for time stamps: Aren't we aiming for "timeless" information? At least as far
 
 When it comes to page content, I guess you're right. We're somewhere between the FAQ (but there aren't many frequently asked questions), and an extension of the ElispManual. We're certainly not the manual itself.
 
-== Drew Adams' Libraries == 
-
-Drew I respect your work and all that you've done with Emac and on EmacsWiki. However, PLEASE can a emacswiki pages be required by sanction to be limited to only 1 (One!) reference to instances of Drew's libraries, and then *ONLY* after other relevant examples, code, etc. pertinent to the a pages context. This site is *SERIOUSLY* limited by Drew's spam and suffers because of it to the extent that it is becoming unusable because of the superfluous `Icicles.*' references strewn about.  There is a point at which the entire Emacs community suffers because of Drew's insistence on xrefs to anything remotely related to his libraries. -- mon_key
-
-[new]
-The wiki encourages people to post their own code, and to cross-references pages, and by extension, people will cross reference their own code wherever it seems appropriate. If nobody else is as prolific, then that's hardly Drew's fault. On the contrary, *I wish other people would add more crossreferences.*
-
-There's also a philosophical point, here. How is Drew's code different from other people's code? The only thing I see is that his code is not part of Emacs. But the wiki was created to enable just that: *Hosting code and documentation that is not part of Emacs.* There will always be forces that move the wiki in some direction, and it's ok to support particular goals. In fact it's ok to not like Drew's contributions. But the correct response is to make something better. Add crossreferences to even better pages. Make the crossreferences themselves better by commenting them and saying what the referenced library does and whether it does it well. Be constructive. Help build a better wiki by integrating other people's work instead of preventing them from contributing just because you don't agree with their point of view.
-
-I have trouble understanding how this site is "bold-caps-seriously" limited by Drew's contributions, and how his contributions can in all honesty be called "spam". The tone of the complaint makes it hard for me to take it seriously, even though I tried to give as straight an answer as I could.
-
-Also, you might consider not complaining anonymously.
-
--- AlexSchroeder
-
-[new]
-I've added a sig, now its not anonymous. I _hope_ I do my best to try and contribute constructively and to make judicious commenting on libraries and xrefs. That said, I tend to put them in my source which seems like a reasonable way to voice support for particular authors, goals, pkgs etc. You are correct, and I agree, the matter is a bit of a philosophical point. If everyone xrefd with Drew's zeal as a philosophical matter I personally think the site would suffer, obv. YMMV. As I say, I truly do respect what Drew has done w/ Icicles; this doesn't make it OK to splatter it about at the vaguest possible connection. FWIW there is a search bar, it is quite useful and I'm surprised sometimes by how readily it will point _me_ to what _I_ am looking for.  -- mon_key
-
-[new]
-Maybe the problem is that Drew's libraries can be monolithic, [[Icicles]] in particular; There is some great stuff in [[Icicles]] but I don't want it all.
-That said, I don't find his cross-referencing excessive. --CH
-
 == CSS (headers, printing) ==
 
 [new]
