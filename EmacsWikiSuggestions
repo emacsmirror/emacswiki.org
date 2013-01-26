@@ -112,23 +112,6 @@ Any suggestions for improvement? It would obviously be easy to style these occur
 But how?
 -- AlexSchroeder
 
-== Please write a summary ==
-
-2007-08-12
-
-* Without any comment at the summary the feed is absolute useless. Please consider writing a short but informative summary for your changes.
-
-* I think it is quite helpful to know when an information was written. Every comment should have a date in front of.
-
-* Most informations are useless for emacs beginners because the article is starting with a high assumption. Therefore there should be a standard layout for emacs modes like 1. what is it good for? 2. what i need to run it? 3. how could it get started? 4. which should be the minimum configuration? 5. everything else a geek have to know.
-
-[new:AlexSchroeder:2007-08-12 08:19 UTC]
-The situation is just the same on RecentChanges. I find that in terms of peer review, the author is usually more important than the summary; unknown authors have a higher chance of being checked by me. Unfortunately most feed readers do not support the RSS 2.0 WikiModule. Perhaps many people subscribe to the full feed including diff. That would be a good way to check out what has changed regardless of summary. If you're really desperate, you could try the [http://www.emacswiki.org/cgi-bin/emacs?action=rss;full=1;page=0;diff=1 RSS feed with diff but without page content]...
-
-As for time stamps: Aren't we aiming for "timeless" information? At least as far as Emacs releases go. We will have people running Emacs 22 for a decade now, for all I know. Old information is not necessarily useless, so putting dates on ordinary pages can be misleading as well. The only time a time stamp makes sense is when you're putting personal thoughts on a page -- like this conversation, for example. But a wiki can be something between a FAQ and a manual, and neither has time stamps.
-
-When it comes to page content, I guess you're right. We're somewhere between the FAQ (but there aren't many frequently asked questions), and an extension of the ElispManual. We're certainly not the manual itself.
-
 == Click the heading to search for pages in this category / that link here ==
 
 This bothers me similarly to the above since it just adds clutter for anyone who knows what clicking on a header does.  I would like to remove this too but this would probably not be well received.  I would suggest that this information is somehow shown on all pages but in an less intrusive way.
