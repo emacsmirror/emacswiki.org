@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Jan 18 09:23:14 2013 (-0800)
+;; Last-Updated: Sat Jan 26 11:20:29 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 5438
+;;     Update #: 5452
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -19,8 +19,8 @@
 ;; Features that might be required by this library:
 ;;
 ;;   `cl', `el-swank-fuzzy', `ffap', `ffap-', `fuzzy', `fuzzy-match',
-;;   `hexrgb', `icicles-face', `kmacro', `levenshtein', `regexp-opt',
-;;   `thingatpt', `thingatpt+', `wid-edit', `wid-edit+', `widget'.
+;;   `hexrgb', `kmacro', `levenshtein', `regexp-opt', `thingatpt',
+;;   `thingatpt+', `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -1368,24 +1368,27 @@ instead of \"C-x <delete>\" and \"C-<delete>\"."
   (icicle-read-kbd-macro keys nil angles))
 
 (defcustom icicle-completion-key-bindings
-  `((,(icicle-kbd "M-return")  icicle-candidate-read-fn-invoke t) ;`M-RET' as `M-return'
-    (,(icicle-kbd "C-M-m")     icicle-candidate-read-fn-invoke t) ;`M-RET' as `ESC RET'
-    (,(icicle-kbd "C-S-return") icicle-candidate-alt-action t) ; `C-S-return' (`C-S-RET')
-    (,(icicle-kbd "delete")    icicle-remove-candidate t) ; `delete'
-    (,(icicle-kbd "S-delete")  icicle-delete-candidate-object t) ; `S-delete'
-    (,(icicle-kbd "C-w")       icicle-kill-region t) ; `C-w'
-    (,(icicle-kbd "C-!")       icicle-all-candidates-action t) ; `C-!'
-    (,(icicle-kbd "C-|")       icicle-all-candidates-alt-action t) ; `C-|'
-    (,(icicle-kbd "M-!")       icicle-all-candidates-list-action t) ; `M-!'
-    (,(icicle-kbd "M-|")       icicle-all-candidates-list-alt-action t) ; `M-|'
-    (,(icicle-kbd "C-M-/")     icicle-prefix-complete t) ; `C-M-/', for `dabbrev.el'.
-    (,(icicle-kbd "M-h")       icicle-history t) ; `M-h'
+  `((,(icicle-kbd "M-return")  icicle-candidate-read-fn-invoke t)                     ;`M-RET'
+                                                                                      ; (`M-return')
+    (,(icicle-kbd "C-M-m")     icicle-candidate-read-fn-invoke t)                     ;`M-RET'
+                                                                                      ; (`ESC RET')
+    (,(icicle-kbd "C-S-return") icicle-candidate-alt-action t)                        ; `C-S-RET'
+                                                                                      ; (`C-S-return')
+    (,(icicle-kbd "delete")    icicle-remove-candidate t)                             ; `delete'
+    (,(icicle-kbd "S-delete")  icicle-delete-candidate-object t)                      ; `S-delete'
+    (,(icicle-kbd "C-w")       icicle-kill-region t)                                  ; `C-w'
+    (,(icicle-kbd "C-!")       icicle-all-candidates-action t)                        ; `C-!'
+    (,(icicle-kbd "C-|")       icicle-all-candidates-alt-action t)                    ; `C-|'
+    (,(icicle-kbd "M-!")       icicle-all-candidates-list-action t)                   ; `M-!'
+    (,(icicle-kbd "M-|")       icicle-all-candidates-list-alt-action t)               ; `M-|'
+    (,(icicle-kbd "C-M-/")     icicle-prefix-complete t)          ; (for `dabbrev.el')  `C-M-/'
+    (,(icicle-kbd "M-h")       icicle-history t)                                      ; `M-h'
     (,(icicle-kbd "M-pause")   icicle-keep-only-past-inputs t) ; `M-pause'
-    (,(icicle-kbd "C-pause")   icicle-toggle-highlight-historical-candidates t) ;`C-pause'
-    (,(icicle-kbd "S-pause")   icicle-toggle-highlight-saved-candidates t) ; `S-pause'
+    (,(icicle-kbd "C-pause")   icicle-toggle-highlight-historical-candidates t)       ;`C-pause'
+    (,(icicle-kbd "S-pause")   icicle-toggle-highlight-saved-candidates t)            ; `S-pause'
     ;;$$$$$$  (,(icicle-kbd "C-M-pause") 'icicle-other-history) ; `C-M-pause'
-    (,(icicle-kbd "C-insert")  icicle-switch-to-Completions-buf t) ; `C-insert'
-    (,(icicle-kbd "insert")    icicle-save/unsave-candidate t) ; `insert'
+    (,(icicle-kbd "C-insert")  icicle-switch-to-Completions-buf t)                    ; `C-insert'
+    (,(icicle-kbd "insert")    icicle-save/unsave-candidate t)                        ; `insert'
 
     ;; In Emacs 22+, local is parent of local-completion
     ;; Note: `setup-keys.el' binds `C-o' to `1on1-fit-minibuffer-frame' if defined.
@@ -1396,7 +1399,8 @@ instead of \"C-x <delete>\" and \"C-<delete>\"."
     (,(icicle-kbd "C-M-v")   icicle-scroll-forward
      (not (eq minibuffer-local-map (keymap-parent minibuffer-local-completion-map)))) ; `C-M-v'
     (,(icicle-kbd "C-M-S-v") icicle-scroll-backward
-     (not (eq minibuffer-local-map (keymap-parent minibuffer-local-completion-map)))) ; `C-M-S-v' (aka `C-M-V')
+     (not (eq minibuffer-local-map (keymap-parent minibuffer-local-completion-map)))) ; `C-M-V'
+                                                                                      ; (`C-M-S-v')
     (,(icicle-kbd "C-=")     icicle-insert-string-from-variable
      (not (eq minibuffer-local-map (keymap-parent minibuffer-local-completion-map)))) ; `C-='
     ;; Replaces `tab-to-tab-stop':
@@ -1415,7 +1419,7 @@ instead of \"C-x <delete>\" and \"C-<delete>\"."
      (not (eq minibuffer-local-map (keymap-parent minibuffer-local-completion-map)))) ; `M-:'
     (,(icicle-kbd "C-M-y") icicle-yank-secondary
      (and (not (eq minibuffer-local-map (keymap-parent minibuffer-local-completion-map)))
-      (fboundp 'icicle-yank-secondary))) ; `C-M-y'
+      (fboundp 'icicle-yank-secondary)))                                              ; `C-M-y'
     (,(icicle-kbd "C-M-pause")  icicle-other-history
      (not (eq minibuffer-local-map (keymap-parent minibuffer-local-completion-map)))) ; `C-M-pause'
     (,(icicle-kbd "M-S-backspace") icicle-erase-minibuffer
@@ -1424,91 +1428,92 @@ instead of \"C-x <delete>\" and \"C-<delete>\"."
      (not (eq minibuffer-local-map (keymap-parent minibuffer-local-completion-map)))) ; `M-S-delete'
 
     ;; Need `C-g', even if `minibuffer-local-completion-map' inherits from `minibuffer-local-map'.
-    (,(icicle-kbd "C-g")       icicle-abort-recursive-edit t) ; `C-g'
-    (,(icicle-kbd "M-q")       icicle-dispatch-M-q t) ; `M-q'
-    (,(icicle-kbd "C-l")       icicle-retrieve-previous-input t) ; `C-l'
-    (,(icicle-kbd "C-S-l")     icicle-retrieve-next-input t) ; `C-L' (`C-S-l')
-    (,(icicle-kbd "M-$")       icicle-candidate-set-truncate t) ; `M-$'
-    (,(icicle-kbd "C-~")       icicle-candidate-set-complement t) ; `C-~'
-    (,(icicle-kbd "C--")       icicle-candidate-set-difference t) ; `C--'
-    (,(icicle-kbd "C-+")       icicle-candidate-set-union t) ; `C-+'
-    (,(icicle-kbd "C-*")       icicle-candidate-set-intersection t) ; `C-*'
-    (,(icicle-kbd "C->")       icicle-candidate-set-save-more t) ; `C->'
-    (,(icicle-kbd "C-M->")     icicle-candidate-set-save t) ; `C-M->'
-    (,(icicle-kbd "C-(")       icicle-next-TAB-completion-method t) ; `C-('
-    (,(icicle-kbd "M-(")       icicle-next-S-TAB-completion-method t) ; `M-('
-    (,(icicle-kbd "C-)")       icicle-candidate-set-save-more-selected t) ; `C-)'
-    (,(icicle-kbd "C-M-)")     icicle-candidate-set-save-selected t) ; `C-M-)'
-    (,(icicle-kbd "C-M-<")     icicle-candidate-set-retrieve t) ; `C-M-<'
-    (,(icicle-kbd "C-M-}")     icicle-candidate-set-save-to-variable t) ; `C-M-}'
-    (,(icicle-kbd "C-M-{")     icicle-candidate-set-retrieve-from-variable t) ; `C-M-{'
-    (,(icicle-kbd "C-}")       icicle-candidate-set-save-persistently t) ; `C-}'
-    (,(icicle-kbd "C-{")       icicle-candidate-set-retrieve-persistent t) ; `C-{'
-    (,(icicle-kbd "C-%")       icicle-candidate-set-swap t) ; `C-%'
-    (,(icicle-kbd "M-%")       icicle-regexp-quote-input t) ; `M-%'
-    (,(icicle-kbd "C-:")       icicle-candidate-set-define t) ; `C-:'
-    (,(icicle-kbd "C-M-j")     icicle-insert-list-join-string t) ; `C-M-j'
-    (,(icicle-kbd "C-,")       icicle-change-sort-order t) ; `C-,'
-    (,(icicle-kbd "C-M-\;")     icicle-toggle-ignoring-comments t) ; `C-M-;'
-    (,(icicle-kbd "C-`")       icicle-toggle-regexp-quote t) ; `C-`'
-    (,(icicle-kbd "C-M-.")     icicle-toggle-dot t) ; `C-M-.'
-    (,(icicle-kbd "C-M-`")     icicle-toggle-literal-replacement t) ; `C-M-`'
-    (,(icicle-kbd "C-<")       icicle-candidate-set-retrieve-more t) ; `C-<'
-    (,(icicle-kbd "C-M-_")     icicle-toggle-proxy-candidates t) ; `C-M-_'
-    (,(icicle-kbd "C-$")       icicle-toggle-transforming t) ; `C-$'
+    (,(icicle-kbd "C-g")       icicle-abort-recursive-edit t)                         ; `C-g'
+    (,(icicle-kbd "M-q")       icicle-dispatch-M-q t)                                 ; `M-q'
+    (,(icicle-kbd "C-l")       icicle-retrieve-previous-input t)                      ; `C-l'
+    (,(icicle-kbd "C-S-l")     icicle-retrieve-next-input t)                          ; `C-L' (`C-S-l')
+    (,(icicle-kbd "M-$")       icicle-candidate-set-truncate t)                       ; `M-$'
+    (,(icicle-kbd "C-~")       icicle-candidate-set-complement t)                     ; `C-~'
+    (,(icicle-kbd "C--")       icicle-candidate-set-difference t)                     ; `C--'
+    (,(icicle-kbd "C-+")       icicle-candidate-set-union t)                          ; `C-+'
+    (,(icicle-kbd "C-*")       icicle-candidate-set-intersection t)                   ; `C-*'
+    (,(icicle-kbd "C->")       icicle-candidate-set-save-more t)                      ; `C->'
+    (,(icicle-kbd "C-M->")     icicle-candidate-set-save t)                           ; `C-M->'
+    (,(icicle-kbd "C-(")       icicle-next-TAB-completion-method t)                   ; `C-('
+    (,(icicle-kbd "M-(")       icicle-next-S-TAB-completion-method t)                 ; `M-('
+    (,(icicle-kbd "C-)")       icicle-candidate-set-save-more-selected t)             ; `C-)'
+    (,(icicle-kbd "C-M-)")     icicle-candidate-set-save-selected t)                  ; `C-M-)'
+    (,(icicle-kbd "C-M-<")     icicle-candidate-set-retrieve t)                       ; `C-M-<'
+    (,(icicle-kbd "C-M-}")     icicle-candidate-set-save-to-variable t)               ; `C-M-}'
+    (,(icicle-kbd "C-M-{")     icicle-candidate-set-retrieve-from-variable t)         ; `C-M-{'
+    (,(icicle-kbd "C-}")       icicle-candidate-set-save-persistently t)              ; `C-}'
+    (,(icicle-kbd "C-{")       icicle-candidate-set-retrieve-persistent t)            ; `C-{'
+    (,(icicle-kbd "C-%")       icicle-candidate-set-swap t)                           ; `C-%'
+    (,(icicle-kbd "M-%")       icicle-regexp-quote-input t)                           ; `M-%'
+    (,(icicle-kbd "C-:")       icicle-candidate-set-define t)                         ; `C-:'
+    (,(icicle-kbd "C-M-j")     icicle-insert-list-join-string t)                      ; `C-M-j'
+    (,(icicle-kbd "C-,")       icicle-change-sort-order t)                            ; `C-,'
+    (,(icicle-kbd "C-M-\;")     icicle-toggle-ignoring-comments t)                    ; `C-M-;'
+    (,(icicle-kbd "C-`")       icicle-toggle-regexp-quote t)                          ; `C-`'
+    (,(icicle-kbd "C-M-.")     icicle-toggle-dot t)                                   ; `C-M-.'
+    (,(icicle-kbd "C-M-`")     icicle-toggle-literal-replacement t)                   ; `C-M-`'
+    (,(icicle-kbd "C-<")       icicle-candidate-set-retrieve-more t)                  ; `C-<'
+    (,(icicle-kbd "C-M-_")     icicle-toggle-proxy-candidates t)                      ; `C-M-_'
+    (,(icicle-kbd "C-$")       icicle-toggle-transforming t)                          ; `C-$'
     ;; In Emacs 22+, local is parent of local-completion
     ;; $$$$$$ Keep `C-?' also for a while, undocumented, for backward compatibility only.
     (,(icicle-kbd "C-?")     icicle-minibuffer-help
      (not (eq minibuffer-local-map (keymap-parent minibuffer-local-completion-map)))) ; `C-?'
     (,(icicle-kbd "M-?")     icicle-minibuffer-help
      (not (eq minibuffer-local-map (keymap-parent minibuffer-local-completion-map)))) ; `M-?'
-    (,(icicle-kbd "C-.")       icicle-dispatch-C-. t) ; `C-.'
-    (,(icicle-kbd "C-#")       icicle-cycle-incremental-completion t) ; `C-#'
-    (,(icicle-kbd "C-\"")      icicle-toggle-expand-to-common-match t) ; `C-"'
-    (,(icicle-kbd "C-M-\"")    icicle-cycle-expand-to-common-match t) ; `C-M-"'
-    (,(icicle-kbd "M-\;")      icicle-toggle-search-replace-common-match t) ; `M-;'
-    (,(icicle-kbd "C-^")       icicle-dispatch-C-^ t) ; `C-^'
-    (,(icicle-kbd "C-M-^")     icicle-toggle-completions-format t) ; `C-M-^'
-    (,(icicle-kbd "C-S-a")     icicle-toggle-case-sensitivity t) ; `C-S-a' (`C-A')
-    (,(icicle-kbd "M-~")       icicle-toggle-~-for-home-dir t) ; `M-~'
-    (,(icicle-kbd "C-M-~")     icicle-toggle-search-complementing-domain t) ; `C-M-~'
-    (,(icicle-kbd "M-g")       icicle-toggle-C-for-actions t) ; `M-g'
-    (,(icicle-kbd "M-,")       icicle-dispatch-M-comma t) ; `M-,'
-    (,(icicle-kbd "C-M-,")     icicle-toggle-alternative-sorting t) ; `C-M-,'
-    (,(icicle-kbd "C-M-+")     icicle-plus-saved-sort t) ; `C-M-+'
-    (,(icicle-kbd "M-+")       icicle-widen-candidates t) ; `M-+'
-    (,(icicle-kbd "M-*")       icicle-narrow-candidates t) ; `M-*'
-    (,(icicle-kbd "M-&")       icicle-narrow-candidates-with-predicate t) ; `M-&'
-    (,(icicle-kbd "M-_")       icicle-dispatch-M-_ t) ; `M-_'
-    (,(icicle-kbd "C-M-&")     icicle-save-predicate-to-variable t) ; `C-M-&'
-    (,(icicle-kbd "S-SPC")     icicle-apropos-complete-and-narrow t) ; `S-SPC'
-    (,(icicle-kbd "S-return")  icicle-apropos-complete-and-exit t) ; `S-return'
-    (,(icicle-kbd "S-backspace") icicle-apropos-complete-and-widen t) ; `S-backspace'
-    (,(icicle-kbd "C-v")       icicle-scroll-Completions-forward t) ; `C-v'
-    (,(icicle-kbd "M-v")       icicle-scroll-Completions-backward t) ; `M-v'
-    (,(icicle-kbd ".")         icicle-insert-dot-command t) ; `.'
-    (,(icicle-kbd "M-m")       icicle-toggle-show-multi-completion t) ; `M-m'
-    (,(icicle-kbd "C-x .")     icicle-dispatch-C-x. t) ; `C-x .'
-    (,(icicle-kbd "C-x :")     icicle-toggle-network-drives-as-remote t) ; `C-x :'
-    (,(icicle-kbd "C-x C-a")   icicle-toggle-annotation t) ; `C-x C-a'
+    (,(icicle-kbd "C-.")       icicle-dispatch-C-. t)                                 ; `C-.'
+    (,(icicle-kbd "C-#")       icicle-cycle-incremental-completion t)                 ; `C-#'
+    (,(icicle-kbd "C-\"")      icicle-toggle-expand-to-common-match t)                ; `C-"'
+    (,(icicle-kbd "C-M-\"")    icicle-cycle-expand-to-common-match t)                 ; `C-M-"'
+    (,(icicle-kbd "M-\;")      icicle-toggle-search-replace-common-match t)           ; `M-;'
+    (,(icicle-kbd "C-^")       icicle-dispatch-C-^ t)                                 ; `C-^'
+    (,(icicle-kbd "C-M-^")     icicle-toggle-completions-format t)                    ; `C-M-^'
+    (,(icicle-kbd "C-S-a")     icicle-toggle-case-sensitivity t)                      ; `C-A' (`C-S-a')
+    (,(icicle-kbd "M-~")       icicle-toggle-~-for-home-dir t)                        ; `M-~'
+    (,(icicle-kbd "C-M-~")     icicle-toggle-search-complementing-domain t)           ; `C-M-~'
+    (,(icicle-kbd "M-g")       icicle-toggle-C-for-actions t)                         ; `M-g'
+    (,(icicle-kbd "M-,")       icicle-dispatch-M-comma t)                             ; `M-,'
+    (,(icicle-kbd "C-M-,")     icicle-toggle-alternative-sorting t)                   ; `C-M-,'
+    (,(icicle-kbd "C-M-+")     icicle-plus-saved-sort t)                              ; `C-M-+'
+    (,(icicle-kbd "M-+")       icicle-widen-candidates t)                             ; `M-+'
+    (,(icicle-kbd "M-*")       icicle-narrow-candidates t)                            ; `M-*'
+    (,(icicle-kbd "M-&")       icicle-narrow-candidates-with-predicate t)             ; `M-&'
+    (,(icicle-kbd "M-_")       icicle-dispatch-M-_ t)                                 ; `M-_'
+    (,(icicle-kbd "C-M-&")     icicle-save-predicate-to-variable t)                   ; `C-M-&'
+    (,(icicle-kbd "S-SPC")     icicle-apropos-complete-and-narrow t)                  ; `S-SPC'
+    (,(icicle-kbd "S-return")  icicle-apropos-complete-and-exit t)                    ; `S-return'
+    (,(icicle-kbd "S-backspace") icicle-apropos-complete-and-widen t)                 ; `S-backspace'
+    (,(icicle-kbd "C-v")       icicle-scroll-Completions-forward t)                   ; `C-v'
+    (,(icicle-kbd "M-v")       icicle-scroll-Completions-backward t)                  ; `M-v'
+    (,(icicle-kbd ".")         icicle-insert-dot-command t)                           ; `.'
+    (,(icicle-kbd "M-m")       icicle-toggle-show-multi-completion t)                 ; `M-m'
+    (,(icicle-kbd "M-r")       icicle-roundup t)                                      ; `M-r'
+    (,(icicle-kbd "C-x .")     icicle-dispatch-C-x. t)                                ; `C-x .'
+    (,(icicle-kbd "C-x :")     icicle-toggle-network-drives-as-remote t)              ; `C-x :'
+    (,(icicle-kbd "C-x C-a")   icicle-toggle-annotation t)                            ; `C-x C-a'
     (,(icicle-kbd "C-x t")   icicle-cycle-image-file-thumbnail
-     (fboundp 'icicle-cycle-image-file-thumbnail)) ; `C-x t'
+     (fboundp 'icicle-cycle-image-file-thumbnail))                                    ; `C-x t'
     (,(icicle-kbd "C-x w")   icicle-doremi-candidate-width-factor+
-     (fboundp 'doremi))                 ; `C-x w'
+     (fboundp 'doremi))                                                               ; `C-x w'
     (,(icicle-kbd "C-x |")   icicle-doremi-inter-candidates-min-spaces+
-     (fboundp 'doremi))                 ; `C-x |'
+     (fboundp 'doremi))                                                               ; `C-x |'
     (,(icicle-kbd "C-x #")   icicle-doremi-increment-max-candidates+
-     (fboundp 'doremi))                 ; `C-x #'
+     (fboundp 'doremi))                                                               ; `C-x #'
     (,(icicle-kbd "C-x -") icicle-doremi-zoom-Completions+
-     (and (fboundp 'doremi)  (fboundp 'text-scale-increase))) ; `C-x -'
+     (and (fboundp 'doremi)  (fboundp 'text-scale-increase)))                         ; `C-x -'
     (,(icicle-kbd "C-x 1") icicle-doremi-increment-swank-timeout+
      (and (fboundp 'doremi)  (eq (icicle-current-TAB-method) 'swank)))
     ;; NO - NEED TO DO THE SWANK PART AT RUNTIME, in icicles-mode.el
     (,(icicle-kbd "C-x 2") icicle-doremi-increment-swank-prefix-length+
      (and (fboundp 'doremi)  (eq (icicle-current-TAB-method) 'swank)))
     ;; `minibuffer-completion-help' got wiped out by remap for self-insert.
-    (,(icicle-kbd "?")         icicle-self-insert t) ; `?
-    (,(icicle-kbd "SPC")       icicle-self-insert t) ; " "
+    (,(icicle-kbd "?")         icicle-self-insert t)                                  ; `?
+    (,(icicle-kbd "SPC")       icicle-self-insert t)                                  ; " "
     ;; In Emacs 22+, local is parent of local-completion
     (,(icicle-kbd "C-j")     icicle-insert-newline-in-minibuffer
      (not (eq minibuffer-local-map (keymap-parent minibuffer-local-completion-map)))) ; `C-j
@@ -3197,8 +3202,10 @@ value incrementally."
              (sat  (condition-case nil (hexrgb-saturation bg) (error nil))))
         (if sat
             (if (hexrgb-approx-equal sat 0.0)
-                (hexrgb-increment-value bg                     ; Grayscale - change bg value slightly.
-                                        (if (eq (frame-parameter nil 'background-mode) 'dark) 0.20 -0.10))
+                ;; Grayscale - change bg value slightly.
+                (hexrgb-increment-value bg (if (eq (frame-parameter nil 'background-mode) 'dark)
+                                               0.20
+                                             -0.10))
               (hexrgb-increment-hue bg 0.24)) ; Color - change bg hue slightly.
           (face-background 'region)))
     (face-background 'region))          ; Use normal region background.
