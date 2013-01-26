@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Jan 18 09:24:29 2013 (-0800)
+;; Last-Updated: Sat Jan 26 12:19:53 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 9580
+;;     Update #: 9615
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -3469,6 +3469,8 @@
 ;;       macros needs to be byte-compiled anew after loading the updated macros.
 ;; ****************************************************************************************************
 ;;
+;; 2013/01/26 dadams
+;;     icicle-define-file-command: Ensure non-nil icicle-last-input before apply directory-file-name.
 ;; 2012/12/06 dadams
 ;;     Removed minibuffer-with-setup-hook - moved to icicles-fn.el (and removed eval-when-compile).
 ;; 2012/12/01 dadams
@@ -3681,6 +3683,13 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2013/01/26 dadams
+;;     Added: icicle-multi-inputs-save (to be bound to M-S), icicle-roundup (to be bound to M-r),
+;;            icicle-multi-inputs-act (to be bound to M-R), icicle-insert-candidate-action,
+;;            icicle-split-input.
+;;     icicle-insert-history-element: Define as a multi-command.
+;;     icicle-insert-candidate-action: Do nothing if CAND is nil or "".
+;;     icicle-help-string-(non-)completion: Updated for new commands/keys.
 ;; 2013/01/11 dadams
 ;;     icicle-help-string(-non)-completion: Removed M-s, M-r.
 ;; 2013/01/06 dadams
@@ -5255,6 +5264,12 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2013/01/26 dadams
+;;     icicle-define-minibuffer-maps:
+;;       Bind icicle-multi-inputs-act (M-R), icicle-multi-inputs-save (M-S).
+;;       Add to menus: icicle-multi-inputs-act, icicle-multi-inputs-save, icicle-roundup.
+;;     icicle-bind-completion-keys:
+;;       Add to menus: icicle-multi-inputs-act, icicle-multi-inputs-save, icicle-roundup.
 ;; 2013/01/04 dadams
 ;;     icicle-define-minibuffer-maps: Undefine/restore M-s, M-r for minibuffer-local(-ns|-isearch)-map.
 ;; 2012/12/31 dadams
@@ -6421,6 +6436,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2013/01/26 dadams
+;;     icicle-completion-key-bindings: Added M-r binding for icicle-roundup.
 ;; 2013/01/18 dadams
 ;;     No longer require icicles-face.el, since now need only hexrgb.el (see next).
 ;;     icicle-region-background: Use hexrgb-increment*, not icicle-increment-*.
@@ -7199,6 +7216,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2013/01/26 dadams
+;;     Added: icicle-multi-inputs-action-fn.
 ;; 2012/12/31 dadams
 ;;     Added: icicle-mode-line-help.
 ;; 2012/12/15 dadams
