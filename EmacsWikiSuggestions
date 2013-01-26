@@ -38,6 +38,8 @@ This is how it looks like on EmacsWiki pages
 
 Note the absence of "alternate stylesheet" attributes.  I am wondering whether such directives could be added to the site.
 
+[new]
+Given the selection we have on the [[CSS]] page, which are the themes you'd like to hard-code as alternatives? -- Alex
 
 == Content Fixes ==
 
