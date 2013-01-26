@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Jan 13 16:54:28 2013 (-0800)
+;; Last-Updated: Sat Jan 26 11:51:10 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 18815
+;;     Update #: 18848
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -19,11 +19,11 @@
 ;; Features that might be required by this library:
 ;;
 ;;   `apropos', `apropos-fn+var', `cl', `doremi', `el-swank-fuzzy',
-;;   `ffap', `ffap-', `fuzzy', `fuzzy-match', `hexrgb',
-;;   `icicles-face', `icicles-fn', `icicles-opt', `icicles-var',
-;;   `image-dired', `kmacro', `levenshtein', `mouse3', `mwheel',
-;;   `naked', `regexp-opt', `ring', `ring+', `thingatpt',
-;;   `thingatpt+', `wid-edit', `wid-edit+', `widget'.
+;;   `ffap', `ffap-', `fuzzy', `fuzzy-match', `hexrgb', `icicles-fn',
+;;   `icicles-opt', `icicles-var', `image-dired', `kmacro',
+;;   `levenshtein', `mouse3', `mwheel', `naked', `regexp-opt',
+;;   `ring', `ring+', `thingatpt', `thingatpt+', `wid-edit',
+;;   `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -36,7 +36,7 @@
 ;;  `icicles-cmd2.el'.  For Icicles documentation, see
 ;;  `icicles-doc1.el' and `icicles-doc2.el'.
 ;;
-;;  Commands defined here:
+;;  Commands defined here - (+) means a multi-command:
 ;;
 ;;    `cycle-icicle-expand-to-common-match',
 ;;    `cycle-icicle-image-file-thumbnail',
@@ -110,7 +110,7 @@
 ;;    `icicle-help-string-completion',
 ;;    `icicle-help-string-non-completion', `icicle-history',
 ;;    `icicle-insert-completion', `icicle-insert-dot-command',
-;;    `icicle-insert-history-element',
+;;    (+)`icicle-insert-history-element',
 ;;    `icicle-insert-key-description',
 ;;    `icicle-insert-list-join-string',
 ;;    `icicle-insert-newline-in-minibuffer',
@@ -132,8 +132,8 @@
 ;;    `icicle-mouse-save/unsave-candidate',
 ;;    `icicle-mouse-save-then-kill', `icicle-mouse-yank-secondary',
 ;;    `icicle-move-to-next-completion',
-;;    `icicle-move-to-previous-completion',
-;;    `icicle-narrow-candidates',
+;;    `icicle-move-to-previous-completion', `icicle-multi-inputs-act',
+;;    `icicle-multi-inputs-save', `icicle-narrow-candidates',
 ;;    `icicle-narrow-candidates-with-predicate',
 ;;    `icicle-negative-argument', `icicle-next-apropos-candidate',
 ;;    `icicle-next-apropos-candidate-action',
@@ -169,7 +169,7 @@
 ;;    `icicle-remove-candidate', `icicle-remove-Completions-window',
 ;;    `icicle-resolve-file-name', `icicle-retrieve-last-input',
 ;;    `icicle-retrieve-next-input', `icicle-retrieve-previous-input',
-;;    `icicle-reverse-sort-order',
+;;    `icicle-reverse-sort-order', (+)`icicle-roundup',
 ;;    `icicle-save-predicate-to-variable',
 ;;    `icicle-save/unsave-candidate',
 ;;    `icicle-scroll-Completions-backward',
@@ -291,8 +291,8 @@
 ;;    `icicle-replace-input-w-parent-dir',
 ;;    `icicle-retrieve-candidates-from-set',
 ;;    `icicle-row-wise-cand-nb', `icicle-signum',
-;;    `icicle-substitute-keymap-vars', `icicle-successive-action',
-;;    `icicle-transform-sole-candidate',
+;;    `icicle-split-input', `icicle-substitute-keymap-vars',
+;;    `icicle-successive-action', `icicle-transform-sole-candidate',
 ;;    `icicle-transpose-chars-magic',
 ;;    `icicle-unbind-buffer-candidate-keys',
 ;;    `icicle-unbind-file-candidate-keys',
@@ -429,6 +429,7 @@
   (defvar read-buffer-completion-ignore-case)
   (defvar mouse-drag-copy-region))
 
+(defvar count)                          ; Here.
 (defvar doremi-boost-down-keys)         ; In `doremi.el'
 (defvar doremi-boost-up-keys)           ; In `doremi.el'
 (defvar doremi-down-keys)               ; In `doremi.el'
@@ -441,6 +442,7 @@
 (defvar minibuffer-local-filename-must-match-map) ; In Emacs 23.2 (but not Emacs 24+).
 (defvar minibuffer-local-must-match-filename-map) ; In Emacs 22+.
 (defvar recentf-list)                   ; In `recentf.el' (Emacs 21+).
+(defvar to-insert)                      ; Here.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
  
@@ -2158,7 +2160,8 @@ These are the main Icicles actions and their minibuffer key bindings:
      Yank text at cursor into minibuffer     \\[icicle-insert-string-at-point]
      Insert text (string) from a variable    \\[icicle-insert-string-from-variable]
      Insert `icicle-list-join-string'        \\[icicle-insert-list-join-string]
-     Insert previously entered input         \\[icicle-insert-history-element]
+     Insert previously entered input(s)      \\[icicle-insert-history-element]
+     Insert completion candidates(s)         \\[icicle-roundup]
      Insert key description (key completion) \\[icicle-dispatch-M-q]
 
  * Complete your current input in the minibuffer.
@@ -2231,6 +2234,8 @@ These are the main Icicles actions and their minibuffer key bindings:
      Save candidate (add to those saved)     insert, M-S-mouse-2
      Object-action: apply a fn to candidate  M-RET
 
+ * Act on multiple minibuffer inputs         \\[icicle-multi-inputs-act]
+
  * Search and replace (e.g. `C-c `').  See also `icicle-search'.
      Use action keys (prefix `C-') to navigate.
      Use alternative action keys (prefix `C-S-') to replace matches.
@@ -2261,6 +2266,7 @@ These are the main Icicles actions and their minibuffer key bindings:
      Save more candidates to current set     \\[icicle-candidate-set-save-more]
      Save, save more selected candidates     \\[icicle-candidate-set-save-selected], \
 \\[icicle-candidate-set-save-more-selected]  with region
+     Save multiple minibuffer inputs         \\[icicle-multi-inputs-save]
      Clear all saved candidates              \\[icicle-candidate-set-save-selected] \
 with empty region
      Add new or update existing saved set
@@ -2334,7 +2340,12 @@ not available:
      Erase your input (clear minibuffer)     \\[icicle-erase-minibuffer-or-history-element]
      Yank text at cursor into minibuffer     \\[icicle-insert-string-at-point]
      Insert text (string) from a variable    \\[icicle-insert-string-from-variable]
-     Insert previously entered input         \\[icicle-insert-history-element]
+     Insert previously entered input(s)      \\[icicle-insert-history-element]
+     Insert completion candidates(s)         \\[icicle-roundup]
+
+ * Act on multiple minibuffer inputs         \\[icicle-multi-inputs-act]
+
+ * Save multiple inputs for later completion \\[icicle-multi-inputs-save]
 
  * Choose a previous input from the minibuffer history.
      Complete to insert a previous input     \\[icicle-insert-history-element]
@@ -2699,17 +2710,89 @@ minibuffer."
             input)))
 
 ;;;###autoload (autoload 'icicle-insert-history-element "icicles")
-(defun icicle-insert-history-element () ; Bound to `M-o' in minibuffer.
-  "Use completion to insert a previously entered input in the minibuffer.
-Always available for any minibuffer input, not just during completion."
-  (interactive)
-  (when (interactive-p) (icicle-barf-if-outside-minibuffer))
-  (when (and (boundp minibuffer-history-variable)  (consp (symbol-value minibuffer-history-variable)))
-    (let ((enable-recursive-minibuffers  t))
-      (insert (icicle-completing-read-history "Choose input: " minibuffer-history-variable))))
-  (when (and icicle-mode  (memq icicle-default-value '(preselect-start preselect-end)))
-    (icicle-select-minibuffer-contents)
-    (setq deactivate-mark  nil)))
+(icicle-define-command icicle-insert-history-element ; Bound to `M-o' in minibuffer.
+  "Use completion to insert previously entered inputs in the minibuffer.
+Insert a space character after each (but see below, to prevent this).
+Always available for any minibuffer input, not just during completion.
+With a non-negative prefix arg, wrap candidate to insert with \"...\".
+With a non-positive prefix arg, do not append a space char.
+
+If you use a prefix argument also for an individual candidate
+insertion action then that overrides any prefix argument or lack
+thereof that you used for this command.  For example, with no prefix
+argument, \\<minibuffer-local-map>`\\[icicle-insert-history-element]' \
+does not wrap candidates with \"...\", but if you use,
+e.g., `C-u C-RET' then that candidate is so wrapped."
+  icicle-insert-candidate-action        ; Action function
+  "Choose past input (`C-g' to end): "  ; `completing-read' args
+  (mapcar #'list hist-val) nil nil nil nil nil nil
+  ((enable-recursive-minibuffers  t)    ; Bindings
+   (hist-val                      (and (boundp minibuffer-history-variable)
+                                       (consp (symbol-value minibuffer-history-variable))
+                                       (symbol-value minibuffer-history-variable)))
+   (hist-val                      (and hist-val  (icicle-remove-duplicates hist-val)))
+   (icicle-pref-arg               (and current-prefix-arg  (prefix-numeric-value current-prefix-arg)))
+   (count                         0)
+   (to-insert                     ()))
+  (progn                                ; First code
+    (when (interactive-p) (icicle-barf-if-outside-minibuffer))
+    (when (and (consp hist-val)  (not (stringp (car hist-val)))) ; Convert, e.g. `comand-history'.
+      (setq hist-val  (mapcar #'prin1-to-string hist-val)))
+    (icicle-clear-minibuffer))
+  nil                                   ; Undo code
+  (progn                                ; Last code
+    (apply #'insert (nreverse to-insert))
+    (when (and icicle-mode  (memq icicle-default-value '(preselect-start preselect-end)))
+      (icicle-select-minibuffer-contents)
+      (setq deactivate-mark  nil))))
+
+;;;###autoload (autoload 'icicle-roundup "icicles")
+(icicle-define-command icicle-roundup   ; Bound to `M-r' in minibuffer.
+  "Insert one or more completion candidates in the minibuffer.
+Insert a space character after each (but see below, to prevent this).
+With a non-negative prefix arg, wrap candidate to insert with \"...\".
+With a non-positive prefix arg, do not append a space char.
+
+If you use a prefix argument also for an individual candidate
+insertion action then that overrides any prefix argument or lack
+thereof that you used for this command.  For example, with no prefix
+argument, \\<minibuffer-local-map>`\\[icicle-roundup]' \
+does not wrap candidates with \"...\", but if you use,
+e.g., `C-u C-RET' then that candidate is so wrapped."
+  icicle-insert-candidate-action        ; Action function
+  "Roundup - choose (`C-g' to end): "   ; `completing-read' args
+  (and icicle-completion-candidates  (mapcar #'list icicle-completion-candidates))
+  nil nil nil nil nil nil
+  ((enable-recursive-minibuffers  t)    ; Bindings
+   (icicle-pref-arg               (and current-prefix-arg  (prefix-numeric-value current-prefix-arg)))
+   (count                         0)
+   (to-insert                     ()))
+  (progn                                ; First code
+    (when (interactive-p) (icicle-barf-if-outside-minibuffer))
+    (unless icicle-completion-candidates
+      (error "No completion candidates - did you hit `TAB' or `S-TAB'?"))
+    (icicle-clear-minibuffer))
+  nil                                   ; Undo code
+  (progn                                ; Last code
+    (apply #'insert (nreverse to-insert))
+    (when (and icicle-mode  (memq icicle-default-value '(preselect-start preselect-end)))
+      (icicle-select-minibuffer-contents)
+      (setq deactivate-mark  nil))))
+
+(defun icicle-insert-candidate-action (cand)
+  "Action function for `icicle-insert-history-element' and `icicle-roundup'."
+  ;; FREE here: TO-INSERT, COUNT.
+  (when (and cand  (not (equal cand "")))
+    (let ((prefix-arg  (if current-prefix-arg  (prefix-numeric-value current-prefix-arg)  icicle-pref-arg)))
+      (push (if (and prefix-arg  (natnump prefix-arg))  (format "\"%s\"" cand)  cand) to-insert)
+      (unless (and prefix-arg  (<= prefix-arg 0)) (push " " to-insert))
+      (message "Inserted: %s%s"
+               (icicle-propertize (format "%d" (setq count  (1+ count))) 'face 'icicle-msg-emphasis)
+               (if (not prefix-arg)
+                   ""
+                 (format "  [%s]" (concat (and (natnump prefix-arg) "\"...\"-wrapped")
+                                          (and (zerop prefix-arg)   " and ")
+                                          (and (<= prefix-arg 0)    "NOT `SPC'-separated"))))))))
 
 ;;;###autoload (autoload 'icicle-insert-string-at-point "icicles")
 (defun icicle-insert-string-at-point (&optional arg) ; Bound to `M-.' in minibuffer.
@@ -4972,6 +5055,85 @@ performed: display help on the candidate - see
                             icicle-last-completion-candidate)))
           (icicle-remove-candidate-display-others 'all))
         (icicle-raise-Completions-frame posn-col posn-row)))))
+
+
+(put 'icicle-multi-inputs-act 'icicle-action-command t)
+
+;;;###autoload (autoload 'icicle-multi-inputs-act "icicles")
+(defun icicle-multi-inputs-act (&optional arg) ; Bound to `M-R' in minibuffer.
+  "Act on multiple candidates in the minibuffer.
+Parse minibuffer input into a list of candidates, then act on each
+candidate, in order.
+
+The action applied is that defined by `icicle-multi-inputs-action-fn',
+if non-nil, or by `icicle-candidate-action-fn', if nil.
+
+The minibuffer input is split into string candidates using
+`icicle-split-input', passing the raw prefix arg as its ARG.
+
+You can use this command only from the minibuffer (`\\<minibuffer-local-completion-map>\
+\\[icicle-multi-inputs-act]')."
+  (interactive "P")
+  (when (interactive-p) (icicle-barf-if-outside-minibuffer))
+  (let ((candidates  (icicle-split-input arg)))
+    (dolist (cand  candidates)
+      (funcall (or icicle-multi-inputs-action-fn  icicle-candidate-action-fn) cand))))
+  
+;;;###autoload (autoload 'icicle-multi-inputs-save "icicles")
+(defun icicle-multi-inputs-save (&optional arg) ; Bound to `M-S' in minibuffer.
+  "Add candidates in the minibuffer to the current saved candidates set.
+Parse minibuffer input into a list of candidates, then add them to
+those already saved in `icicle-saved-completion-candidates'.
+
+\(To empty `icicle-saved-completion-candidates' first, use
+`\\[icicle-candidate-set-save-selected]'.)
+
+The minibuffer input is split into string candidates using
+`icicle-split-input', passing the raw prefix arg as its ARG.
+
+You can use this command only from the minibuffer (`\\<minibuffer-local-completion-map>\
+\\[icicle-multi-inputs-save]')."
+  (interactive "P")
+  (when (interactive-p) (icicle-barf-if-outside-minibuffer))
+  (let ((candidates  (icicle-split-input arg)))
+    (icicle-candidate-set-save-1 candidates nil t)))
+
+(defun icicle-split-input (arg)
+  "Split minibuffer input into multiple candidates.
+For file-name input, expand candidates using `expand-file-name'.
+Return the list of candidates.
+
+If ARG is nil then candidates are assumed to be separated by
+whitespace.
+
+If ARG is non-nil then candidates are read from the input as Lisp
+sexps using `read'.  Any non-string sexp read is converted to a string
+using `format' with format string \"%s\".
+
+Typically, a non-nil ARG is used with candidates that are wrapped by
+\"...\".  Examples:
+
+* With nil ARG and input `aaa bbbb cc ddd eeee', the candidates are
+  `aaa', `bbbb', `cc', `ddd', and `eeee'.
+
+* With non-nil ARG and input `\"aaa bbbb\" \"cc\"\"ddd\"eeee', the
+  candidates are `aaa bbbb', `cc', and `ddd' and `eeee'."
+  (let ((input  (icicle-input-from-minibuffer))
+        (cands  ()))
+    (if arg
+        (condition-case nil
+            (save-excursion
+              (goto-char (icicle-minibuffer-prompt-end))
+              (let (cand)
+                (while (not (eobp))
+                  (setq cand  (read (current-buffer)))
+                  (unless (stringp cand) (setq cand  (format "%s" cand)))
+                  (when (icicle-file-name-input-p) (setq cand  (expand-file-name cand)))
+                  (push cand cands))
+                (setq cands  (nreverse cands))))
+          (error nil))
+      (setq cands  (split-string input)))
+    cands))
 
 
 ;; $$$$$ ??? (put 'icicle-remove-candidate 'icicle-action-command t)
