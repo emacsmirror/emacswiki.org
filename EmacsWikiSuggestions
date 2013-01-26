@@ -76,16 +76,6 @@ It would be good if user names were treated normally at RecentChanges, that is, 
 [new]
 I haven't thought about this in a long time. Maybe you're right. -- AlexSchroeder
 
-== Keep more revisions of each page ==
-
-The history for a page should show several revisions. Currently, past revisions are removed eventually. In the worst case, this leaves exactly one revision. Even if the _diff_ at the bottom of a page continues to show the diff between the no longer extant last revision and the current revision, some more information would be helpful.
-
-[new]
-I've never had a need for this. I'll leave the suggestion standing. Perhaps more people want to support this? On the other hand,
-I could add a link to the [[Git repository]] somewhere?
--- AlexSchroeder
-
-
 == Layout ==
 
 === Edit Page ==
