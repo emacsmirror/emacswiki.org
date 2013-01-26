@@ -129,29 +129,6 @@ As for time stamps: Aren't we aiming for "timeless" information? At least as far
 
 When it comes to page content, I guess you're right. We're somewhere between the FAQ (but there aren't many frequently asked questions), and an extension of the ElispManual. We're certainly not the manual itself.
 
-== CSS (headers, printing) ==
-
-[new]
-For some ideas on print style sheets, see [http://alistapart.com/articles/goingtoprint/ Eric Meyer's article on A List Apart]. One particularly nice idea shows how to display the URL with hyperlinked text, which would be handy here.
---AmyYoung
-
-[new]
-What exactly should we do? -- AlexSchroeder
-
-[new]
-Could we go back to the situation where in default CSS the rendering of different headers level differ only in the font size (but do differ) down until last HTML header level? -- JakubNarebski
-
-[new]
-Not unless more people support this since I don't like it. -- AlexSchroeder
-
-[new]
-In graphical browsers second-level headers currently are the same size as regular text, just italic.  This does not standout at all, making them bold would be much better in my eyes.  For example I just added a page with a long list of code snippets at the end. I reorganized them thematically and then added second-level headers. Boy that was less readable as before! So I had to add the horizontal lines back that I previously removed.  Ps: why do we skip = and use == instead? -- JonasBernoulli
-
-[new]
-Take a look at the [[CSS]] page. That will allow you to use your own CSS instead of relying on the default. If you write a CSS file that makes a significant improvement and convince some other long-time users of the site, I'll be happy to use it instead of what we have right now.
-
-As to the /why/ of the current CSS: I'm happy with the look of H2 and H3 headers. I believe HTML pages should have but one H1 element -- the one at the top of the page, and I believe any page on this wiki should be written with just H2 and H3 sections and subsections. I find the need for H4 subsubsections to be a sign that the text ought to be reorganized instead. I also find horizonzal lines unnecessary except when creating the pseudo-footers separating categories and related pages from the rest of the page. It's how I interpret the suggestions given by Robert Bringhurst in his _The Elements of Typographical Style_, p. 61ff. Typographically, poise is mad of white space. Don't permit the titles to oppress the text. Use as many levels of headings as you need: no more and no fewer. There were people who didn't like the amount of whitespace I prefer, which is why I'm using the theme "with more whitespace around headers and small-caps". -- AlexSchroeder
-
 == Click the heading to search for pages in this category / that link here ==
 
 This bothers me similarly to the above since it just adds clutter for anyone who knows what clicking on a header does.  I would like to remove this too but this would probably not be well received.  I would suggest that this information is somehow shown on all pages but in an less intrusive way.
