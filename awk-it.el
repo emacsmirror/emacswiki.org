@@ -27,8 +27,8 @@
 
 ;;; Commentary:
 
-;; AWK it! sends selected region to awk and uses yasnippet as
-;; interactive UI.
+;; AWK it! allows you to see AWK output as you are typing the script;
+;; it sends selected region to awk and uses yasnippet as interactive UI.
 
 ;; There are 3 modes of AWK code: simplified syntax(default, see below),
 ;; single line AWK syntax (regular AWK syntax but only inside the default
@@ -402,7 +402,7 @@ specifying custom field separator."
 
     (setq awk-it-data (buffer-substring beg end)
           awk-it-point beg)
-    (add-hook 'yas/after-exit-snippet-hook 'awk-it-yas-completed)
+    (add-hook 'yas/after-exit-snippet-hook 'awk-it-yas-completed nil t)
     (yas/expand-snippet (concat
       "Data: " (awk-it-get-line-with-max-separators beg end) "
 AWK pattern: ${1:"(if file (replace-regexp-in-string "\\(\\$\\|`\\)" "\\\\\\1" awk-it-code) "pattern") "}
@@ -441,7 +441,7 @@ from hook."
   (local-set-key (awk-it-macro-expand-value kbd awk-it-field-separator-keybinding) awk-it-old-fs-keybinding)
   (local-set-key (awk-it-macro-expand-value kbd awk-it-next-mode-keybinding) awk-it-old-next-mode-keybinding)
   (local-set-key (awk-it-macro-expand-value kbd awk-it-previous-mode-keybinding) awk-it-old-previous-mode-keybinding)
-  (remove-hook 'yas/after-exit-snippet-hook 'awk-it-yas-completed)
+  (remove-hook 'yas/after-exit-snippet-hook 'awk-it-yas-completed t)
   (when awk-it-indent
     (indent-region awk-it-beginning (+ awk-it-beginning awk-it-count)))
   (when awk-it-undo
