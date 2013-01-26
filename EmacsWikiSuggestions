@@ -49,6 +49,17 @@ The emacs wiki content could use some refactoring and updating, especially if so
 
 One of the things about media wiki that is decent, is the ability to set up a different wiki page as a sub-page for includes.  This is especially helpful for marking certain pages as out-of-date, requiring refactoring, candidates for deletion, or wiki projects.  I don't think it has to be very complicated to start, just some simple way to include the text from one wikipage in another, and a way to list any pages that have that include.  (This is particularly handy for getting a list of pages that have out-of-date content).  Things like a separate namespace for templates, template variables, etc can come later. --JoanthanArkell
 
+[new]
+The mechanism to include pages is this:
+
+{{{
+<include "ExamplePage">
+}}}
+
+There is more to it, however. See Oddmuse:Transclusion.
+
+The resulting HTML doesn't tell you that !ExamplePage has been transcluded, but if you're on !ExamplePage, clicking on the header will search for it. It's up to the users to use a decent prefix to identify pages that are to be transcluded and to mention the page name this piece of text is from. -- Alex
+
 == Be Able To Specify Which Manual, for `Manual:' Links ==
 
 I recently added a glossary entry for `macro'.  I added this link: Manual:macros.  Unfortunately, there is also a `macros' page in the CC mode manual, so this link sends you to a page where you need to pick from the two manuals.  The choice will not be obvious to a newbie.
