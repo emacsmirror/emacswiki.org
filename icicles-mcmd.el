@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Jan 26 11:51:10 2013 (-0800)
+;; Last-Updated: Sat Jan 26 11:58:10 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 18848
+;;     Update #: 18849
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -276,7 +276,8 @@
 ;;    `icicle-delete-current-candidate-object',
 ;;    `icicle-ensure-overriding-map-is-bound',
 ;;    `icicle-help-on-candidate-symbol',
-;;    `icicle-input-is-a-completion-p', `icicle-insert-dot',
+;;    `icicle-input-is-a-completion-p',
+;;    `icicle-insert-candidate-action', `icicle-insert-dot',
 ;;    `icicle-insert-input', `icicle-insert-thing',
 ;;    `icicle-looking-at-p', `icicle-looking-back-at-p',
 ;;    `icicle-markers-to-readable',
