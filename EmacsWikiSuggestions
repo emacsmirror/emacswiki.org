@@ -66,6 +66,9 @@ I recently added a glossary entry for `macro'.  I added this link: Manual:macros
 
 It would be good to be able to somehow specify the manual: `(elisp)'. E.g. ##[[Manual (elisp):macros]]## or some such.  Being able to specify more than one manual would be a nice-to-have (without it one would just create multiple links). -- DrewAdams
 
+[new]
+I'm not sure how old this suggestion is. Right now I see that Manual:macros will link to a page that provides both links. Problem solved? -- Alex
+
 == User Names on RecentChanges Page ==
 
 It would be good if user names were treated normally at RecentChanges, that is, to show a non-existant page like a non-existant page is usually shown. People might be encouraged to follow it and create a home page.
