@@ -1,19 +1,1 @@
-In the section 'One-Key Macros', the functions should read:
 
-<pre>
-    (defun toggle-kbd-macro-recording-on ()
-      "One-key keyboard macros: turn recording on."
-      (interactive)
-      (define-key global-map (this-command-keys)
-        'toggle-kbd-macro-recording-off)
-      (start-kbd-macro nil))
-
-    (defun toggle-kbd-macro-recording-off ()
-      "One-key keyboard macros: turn recording off."
-      (interactive)
-      (define-key global-map (this-command-keys)
-        'toggle-kbd-macro-recording-on)
-      (end-kbd-macro))
-</pre>
-
-`events-to-keys' doesn't seem to be a real function.
