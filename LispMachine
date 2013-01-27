@@ -10,4 +10,4 @@ Emacs as an OperatingSystem is, in fact, a common joke //Emacs is a great operat
 
 == References ==
 
-* [[martinfowler.com/bliki/InternalReprogrammability.html|Martin Fowler commented]] on the reprogramability of Emacs, a key feature of the LispMachine
+* [[http://martinfowler.com/bliki/InternalReprogrammability.html|Martin Fowler commented]] on the reprogramability of Emacs, a key feature of the LispMachine
