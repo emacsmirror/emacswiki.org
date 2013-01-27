@@ -4,7 +4,24 @@ Since that summer I re-installed Emacs because I wanted to learn Lisp and Clojur
 
 I am still struggling a little bit with Emacs. I find hard to learn. The learning curve is steep from my point of view. My goal is to be able to master Emacs for my day to day use. I really think it can make me more productive than ever. Also, If I prove myself successful, I would be glad to share my knowledge with others.
 
-Question: Why do we need to add a link back to the categoryhomepage? Is that for easing browsing of every homepages?
+
+
+
+
+
+
+[new:DrewAdams:2013-01-27 15:25 UTC]
+Welcome to the wiki.  I agree about the importance of Lisp to Emacs, and their synergy: Emacs '''''is''''' EmacsLisp.  Users who haven't gotten that are missing out. 
+
+Wrt learning Emacs, this might help: http://www.emacswiki.org/emacs/EmacsNewbieWithIcicles
+-- DrewAdams
+
+
+
+
+
+
+
 
 ----
 CategoryHomepage
