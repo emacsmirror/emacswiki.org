@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Jan 22 15:30:26 2013 (-0800)
+;; Last-Updated: Sun Jan 27 15:48:30 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 13789
+;;     Update #: 13791
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -878,8 +878,7 @@ Apropos cycling of candidate completions via `\\[icicle-previous-apropos-candida
 
 Cycling of past minibuffer inputs via `\\[previous-history-element]' and \
 `\\[next-history-element]'.
-Searching through input history via `\\[previous-matching-history-element]' \
-and `\\[next-matching-history-element]'.
+Completing past minibuffer inputs via `\\[icicle-insert-history-element]'.
 
 Case is ignored if `completion-ignore-case' is non-nil.
 Position of the cursor (point) and the mark during completion cycling
