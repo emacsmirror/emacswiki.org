@@ -1,0 +1,13 @@
+A computer built totally on Lisp. Even it's processor ran a form of Lisp.
+
+This concept is also known as //Lisp all the way down// meaning there is Lisp at every level of the system.
+
+== Emacs as a LispMachine ==
+
+[[NicFerrier|Some]] people have started to refer to Emacs as a LispMachine. It is not strictly a LispMachine because, clearly, it is a software program and not a physical computer, but as that line starts to blur it seems like a useful epithet for Emacs because these days Emacs look more and more like an operating system.
+
+Emacs as an OperatingSystem is, in fact, a common joke //Emacs is a great operating system, it just doesn't have a good editor//.
+
+== References ==
+
+* [[martinfowler.com/bliki/InternalReprogrammability.html|Martin Fowler commented]] on the reprogramability of Emacs, a key feature of the LispMachine
