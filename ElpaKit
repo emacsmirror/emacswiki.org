@@ -1,0 +1,22 @@
+A tool to help with ELPA-like packages.
+
+ElpaKit can do 2 useful things:
+
+* it can make packages (mostly this is difficult for tar packages) from source files
+* it can make local package archives full of packages from source files
+
+This last feature is particularly useful if you want to use a LocalElpaArchive.
+
+== Other things ElpaKit can do ==
+
+* run tests in clean emacsen on packages built from source files
+* run clean daemon servers with packages built from source files
+* eval all the code you declare in packages
+
+== Get it ==
+ElpaKit is available from marmalade.
+
+The source is on [[http://github.com/nicferrier/elpakit|github, here]].
+
+A very comprehensive [[https://github.com/nicferrier/elpakit/blob/master/README.creole|README]] is included on GitHub.
+
