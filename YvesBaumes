@@ -3,3 +3,8 @@ Hi, I use Emacs. v24.2.1. I know Emacs since 2000 approximatively. I learned the
 Since that summer I re-installed Emacs because I wanted to learn Lisp and Clojure. I began to install LispBox and then converted to a stock Emacs. I began to realize very lately the technological choice at the core of Emacs: An ELisp virtual machine which provides also primitive text handling functions. And the rest of the system written in ELisp. I found the idea awesome, and actually I've even intuited it myself before, during my software engineer life. Without realizing that it was already existing: Emacs. 
 
 I am still struggling a little bit with Emacs. I find hard to learn. The learning curve is steep from my point of view. My goal is to be able to master Emacs for my day to day use. I really think it can make me more productive than ever. Also, If I prove myself successful, I would be glad to share my knowledge with others.
+
+Question: Why do we need to add a link back to the categoryhomepage? Is that for easing browsing of every homepages?
+
+----
+CategoryHomepage
