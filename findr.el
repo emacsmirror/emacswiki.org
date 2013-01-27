@@ -1,11 +1,10 @@
-;;; findr.el -- Breadth-first file-finding facility for (X)Emacs
-;;  Sep 27, 2008
+;;; findr.el --- Breadth-first file-finding facility for (X)Emacs
 
 ;; Copyright (C) 1999 Free Software Foundation, Inc.
 
 ;; Author: David Bakhash <cadet@bu.edu>
 ;; Maintainer: David Bakhash <cadet@bu.edu>
-;; Version: 0.7
+;; Version: 0.9.11
 ;; Created: Tue Jul 27 12:49:22 EST 1999
 ;; Keywords: files
 
@@ -109,6 +108,7 @@
 ;; 0.9.8: Fix 'symbol-calue' typo in non-exposed code path by Michael Heerdegen
 ;; 0.9.9: Call message less frequent by attila.lendvai@gmail.com
 ;; 0.9.10: match findr-skip-directory-regexp agaisnt the whole path by attila.lendvai@gmail.com
+;; 0.9.11: Fix header line to use ELPA-compliant triple dash by Steve Purcell
 
 (require 'cl)
 
