@@ -21,7 +21,9 @@ or for Melpa:
 
   (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
 
-You can also customize these variables.
+Package archives may also be [[LocalElpaArchive|local to your machine]].
+
+You can also use customize to control these variables.
 
 
 == How Packages work in Emacs 24 ==
