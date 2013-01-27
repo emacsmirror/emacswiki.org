@@ -2,3 +2,10 @@ Maybe we can have some manual mechanism similar to the one for deleting a page? 
 
 -- [http://batsov.com BozhidarBatsov] 2013-01-27 13:35 UTC
 
+
+----
+
+Theoretically, searching for EmacsWikiContent should do it, I guess?
+
+-- AlexSchroeder 2013-01-27 20:41 UTC
+
