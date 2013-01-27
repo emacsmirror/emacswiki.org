@@ -1,0 +1,46 @@
+You can make ELPA compatible archives locally and then add them to your package-archives so you can install locally developed packages.
+
+Your package-archives might look like this:
+
+{{{
+(("local-dir" "/home/nic/my-emacs-packages/")
+ ("gnu" . "http://elpa.gnu.org/packages/")
+ ("marmalade" . "http://marmalade-repo.org/packages/"))
+}}}
+
+== Why do this? ==
+
+It's really useful if you are developing packages, it makes your code more portable. You can spin up another emacs instance very quickly to test it.
+
+== Building local archives ==
+
+It's quite difficult to build local archives. 
+
+NicFerrier wrote the [[ElpaKit]] tool to make it easy.
+
+
+== Temporarily declaring the local archive ==
+
+You might want only some code to affect the local archive. Here is ##package-let## which let's you do that:
+
+{{{
+(defun package-let (package archive)
+  "Install a package using the specified archive."
+  (let ((package-archives
+         (cons (cons "archive" archive)
+               package-archives)))
+    (package-refresh-contents)
+    (package-install
+     (if (stringp package)
+         (intern package)
+       package)))
+  (package-refresh-contents))
+}}}
+
+An example of it's use:
+
+{{{
+(package-let 'kv "~/teamchat.net/shoesoff-elpa")
+}}}
+
+this will install the package ##kv## from the archive to be found at ##~/teamchat.net/shoesoff-elpa##. Any inter package dependancies pulling from the same archive will work... but as soon as the //transaction// is finished the archives revert to the user specified ones.
