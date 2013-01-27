@@ -30,24 +30,24 @@ The empty string (zero-length string, null string, ...):
     (zerop (length "")) ;; O(1)
     ==> t
 
-    (eq "" "") ;; O(1)
-    ==> t
-
-As a space and performance optimization, Emacs keeps an intern-ed copy
+As a (very minor) space and performance optimization, starting with Emacs 23, Emacs keeps an interned copy
 of the empty string as a single object
 
+    (eq "" "") ;; O(1)
+    ==> t ; nil prior to Emacs 23
+
     (eq "" (purecopy ""))
-    ==> t
+    ==> t ; nil prior to Emacs 23
 
     (eq "" (propertize "" 'face 'italic))
-    ==> t
+    ==> t ; nil prior to Emacs 23
 
-=== Strings vs buffer content ===
+
+=== Strings vs buffer text ===
 
 While it is quite common in other programming languages to work on
-strings contained in variables in Emacs it is even more idiomatic to
-work on strings in buffers. That's why the following contains examples
-of both.
+strings contained in variables, in Emacs it is also common to
+work on text in buffers.
 
 === Substrings ===
 
@@ -63,9 +63,7 @@ The TO argument is optional:
 
 Buffers:
 
-    (with-temp-buffer
-      (insert "abcdefg")
-      (buffer-substring 2 4))
+    (with-temp-buffer (insert "abcdefg") (buffer-substring 2 4))
     ==> "bc"
 
 === starts-with and ends-with predicates ===
@@ -89,18 +87,17 @@ Reversing a string:
     ==> (102 111 111)
     (reverse (string-to-list "foo"))
     ==> (111 111 102)
-    (apply 'string (reverse (string-to-list "foo")))
+    (apply #'string (reverse (string-to-list "foo")))
     ==> "oof"
 
-See CharacterProcessing and StringModification. See [[tr]] for an example of you sometimes need to mix strings and characters.
+See CharacterProcessing and StringModification. See [[tr]] for an example mixing strings and characters.
 
-Looking at characters in buffers:
+Looking at characters in a temporary buffer:
 
     (with-temp-buffer
       (insert "abcdefg")
       (goto-char (point-min))
-      (while (not (= (char-after) ?b))
-        (forward-char))
+      (while (not (= (char-after) ?b)) (forward-char))
       (point))
     ==> 2
 
@@ -127,7 +124,7 @@ See SplitString.
 
 === Joining strings ===
 
-Use `mapconcat' to join a list into a string using a separator ("glue") between elements in the string.
+Use `mapconcat' to join a list of strings using a separator string between them.
 
 Example:
 
@@ -136,7 +133,7 @@ Example:
 
 === Serialization ===
 
-The basic idea is to convert forms to strings with `prin1-to-string' and convert it back from a string with `read'.
+Convert forms to strings using `prin1-to-string', then convert back from a string using `read'.
 
   (length (read (prin1-to-string (make-list 1000000 '(x)))))
     ==> 1000000
@@ -144,7 +141,7 @@ The basic idea is to convert forms to strings with `prin1-to-string' and convert
   (read (prin1-to-string "Hello World!"))
     ==> "Hello World!"
 
-This only works in the simplest cases.  Unfortunately, this doesn't work for all Emacs data types for programming or the editor.
+This works only in the simplest cases.  Unfortunately, it doesn't work for all EmacsLisp data types.
 
   (read (prin1-to-string (make-hash-table))) ;; Error before Emacs 23.
     ==> #s(hash-table size 65 test eql rehash-size 1.5 [...] data ())
@@ -169,8 +166,7 @@ kill ring.  To make them kill, use `kill-region' instead of
 
 The Lisp equivalent of `kill-region' (`C-w') but without kill ring side effects::
 
-  (delete-region (region-beginning)
-                 (region-end))
+  (delete-region (region-beginning) (region-end))
 
 According to the ElispManual, "Few programs need to use the
 `region-beginning' and `region-end' functions."  This is because
@@ -180,29 +176,6 @@ command.  (And, in that case, this effect should be documented.)
 To remember a location for internal use in the Lisp program,
 store it in a Lisp variable.  For example: [...]"
 
- (let ((beg (point)))
-   (forward-line 1)
-   (delete-region beg (point)))
-
-Alternatively, replacing the `let' with `progn'.
-
-  (delete-region (point)
-                 (progn
-                   (forward-line 1)
-                   (point)))
-
-The following defines an interactive command that can take a
-PrefixArgument for the number of lines to delete, rather than just one.
-
-(defun delete-line (&optional n)
-  "Delete N lines forward."
-  (interactive "*p")
-  (delete-region (point)
-                 (progn
-                   (forward-line n)
-                   (point))))
-
-This means `C-u M-x delete-line' will delete the next 4 lines, `C-9 M-x delete-lines' for 9 lines and `M-- M-x delete-lines' will delete a line backwards.
 
 === Delete line ===
 
@@ -215,21 +188,17 @@ The equivalent of `kill-line' (`C-k') but without kill ring side effects:
 
 Alternatively, replacing the `let' with `progn'.
 
-  (delete-region (point)
-                 (progn
-                   (forward-line 1)
-                   (forward-char -1)
-                   (point)))
+  (delete-region (point) (progn (forward-line 1)
+                                (forward-char -1)
+                                (point)))
 
-Or simplest of all,
+Or just: ##(delete-region (point) (line-end-position))##
 
-   (delete-region (point) (line-end-position))
-
-The examples with `forward-line' are shown because the paradigm is used later, see below.
+The examples with `forward-line' are shown for comparison with other examples, below.
 
 === Delete line backwards ===
 
-The equivalent of killing the line backwards (`C-0 C-k') but without kill ring side effects:
+The equivalent of killing the line backwards (`C-0 C-k') but without kill-ring side effects:
 
  (let ((beg (point)))
    (forward-line 0)
@@ -237,14 +206,10 @@ The equivalent of killing the line backwards (`C-0 C-k') but without kill ring s
 
 Alternatively, replacing the `let' with `progn'.
 
-  (delete-region (progn
-                   (forward-line 0)
-                   (point))
+  (delete-region (progn (forward-line 0) (point))
                  (point))
 
-Or simplest of all,
-
-   (delete-region (line-beginning-position) (point))
+Or just: ##(delete-region (line-beginning-position) (point))##
 
 === Delete line to next line  ===
 
@@ -256,10 +221,7 @@ The equivalent of killing the line and the newline (`C-1 C-k') but without kill 
 
 Alternatively, replacing the `let' with `progn'.
 
-  (delete-region (point)
-                 (progn
-                   (forward-line 1)
-                   (point)))
+  (delete-region (point) (progn (forward-line 1) (point)))
 
 === Delete whole line ===
 
@@ -272,16 +234,13 @@ The equivalent of `kill-whole-line' (`C-S-DEL') but without kill ring side effec
 
 Alternatively, replacing the `let' with `progn'.
 
-  (delete-region (progn
-                   (forward-line 0)
-                   (point))
-                 (progn
-                   (forward-line 1)
-                   (point)))
+  (delete-region (progn (forward-line 0) (point))
+                 (progn (forward-line 1) (point)))
 
-Or simplest of all,
+Or just:
 
-   (delete-region (line-beginning-position) (line-end-position))
+  (delete-region (line-beginning-position)
+                 (line-end-position))
 
 === Delete word ===
 
@@ -293,10 +252,7 @@ The equivalent of `kill-word' (`M-d') but without kill ring side effects:
 
 Alternatively, replacing the `let' with `progn'.
 
-  (delete-region (point)
-                 (progn
-                   (forward-word 1)
-                   (point)))
+  (delete-region (point) (progn (forward-word 1) (point)))
 
 === Delete sentence ===
 
@@ -308,14 +264,13 @@ The equivalent of `kill-sentence' (`M-k') but without kill ring side effects:
 
 Alternatively, replacing the `let' with `progn'.
 
-  (delete-region (point)
-                 (save-excursion
-                   (forward-sentence 1)
-                   (point)))
+  (delete-region (point) (save-excursion
+                           (forward-sentence 1)
+                           (point)))
 
 == Numbers ==
 
-=== String a number? ===
+=== Test whether a string represents a number ===
 
  (defun string-integer-p (string)
    (if (string-match "\\`[-+]?[0-9]+\\'" string)
@@ -350,7 +305,7 @@ Alternatively, replacing the `let' with `progn'.
 
 === String to number ===
 
-The following example is for instruction.  Normally the standard <code>string-to-number</code> function would be used.
+The following example is for instruction.  Normally standard function `string-to-number' would be used.
 
   (defun decimal-number (string)
     (let ((n (string-to-number string)))
@@ -409,13 +364,13 @@ The following example is for instruction.  Normally the standard <code>string-to
   (group-number "149597870691" 4 " ")
   ==> "1495 9787 0691"
 
-=== Incrementing numbers ===
+=== Increment numbers ===
 
 See IncrementNumber.
 
-== Dates and times ==
+=== Dates and times ===
 
-=== Today's date ===
+==== Today's date ====
 
   (defun today-is ()
     "Display current time."
@@ -424,7 +379,7 @@ See IncrementNumber.
 
 See InsertingTodaysDate.
 
-=== Formatting dates ===
+==== Formatting dates ====
 
 Use the function `format-time-string' which is a build in function in both Emacsen and works like `strftime':
 
@@ -433,7 +388,7 @@ Use the function `format-time-string' which is a build in function in both Emacs
     ;; Hour:Minutes:Seconds
     (insert (format-time-string "%H-%M-%S"))
 
-=== Conversions ===
+==== Conversions ====
 
 Read a date from a string.
 
@@ -488,10 +443,6 @@ Build a date based on the day of the year.
                       (encode-time 0 0 0 44 1 2012))
   ==> "044"
 
-=== Timers ===
-
-See IdleTimers
-
 == Pattern matching ==
 
 "Patterns" refers to RegularExpression""s.
@@ -514,8 +465,8 @@ Buffers:
 
 Alternative without regular expressions: `search-forward'.
 
-Note that the functions working on buffers move point to the end of the occurrence found and return it.
-That's why the result is 10 instead of 6!
+The functions working on buffers move [[point]] to the end of the occurrence found and return it.
+That's why the result is 10 instead of 6.
 
 === Verifying ===
 
@@ -558,7 +509,7 @@ This finds numbers and increments them by one.  It depends on `decimal-number' t
        (number-to-string (1+ (string-to-number (match-string 0)))))
       (goto-char (match-end 0))))
 
-This loads Emacs Lisp files listed one per line in a text file.
+This loads EmacsLisp files listed one per line in a text file.
 
   (with-current-buffer (find-file-noselect "~/load-files.txt")
     (while (re-search-forward "^.*\\.el\\(\\.gz\\)?$" nil t)
@@ -568,7 +519,7 @@ This loads Emacs Lisp files listed one per line in a text file.
 
 === Mapping with a regex ===
 
-This function proposes a mapping function using regexs:
+This invokes a function at every match of a [[regexp]]:
 
    (defun map-regex (buffer regex fn)
      "Map the REGEX over the BUFFER executing FN.
@@ -601,9 +552,9 @@ An example use might be:
            (load-file filename))))))
 
 
-=== Finding all the strings that matched ===
+=== Finding all the strings that match ===
 
-If you want to list all the matched strings, including the subexpressions:
+If you want to list all the matching strings, including subexpressions:
 
   (defun match-strings-all (&optional string)
     "Return the list of all expressions matched in last search.
@@ -620,7 +571,7 @@ Here's an example:
       (match-strings-all str))
     ==> ("time help" "help")
 
-== Comments ==
+== Code Comments ==
 
 Move to the beginning of the current comment:
 
@@ -656,7 +607,7 @@ Datatypes used to represent sequences of things:
 
 === Lists ===
 
-List basics are explained on ListStructure.
+List basics are explained at ListStructure.
 Lists can shrink and grow, but access to elements towards the end of the list is slow if the list is long.
 
 Use `cons' to append a new element to the front of a list.
@@ -672,23 +623,21 @@ See ListModification for more ways of changing a list.
 
 Iteration:
 
-    (let ((result))
-      (dolist (word '("fight" "foo" "for" "food!"))
-        (when (string-match "o" word)
-          (setq result (cons word result))))
+    (let ((result  ()))
+      (dolist (word  '("fight" "foo" "for" "food!"))
+        (when (string-match "o" word) (push word result)))
       (nreverse result))
     ==> ("foo" "for" "food!")
 
-Note how `cons' adds an element to the front of the list,
+Note how `push' adds an element to the front of the list,
 so that usually the list has to be reversed after the loop.
 `nreverse' is particularly efficient because it does this
-destructively by swiveling pointers around. See
+destructively. See
 DestructiveOperations for more about this.
 
 Copying:
 
-Use `copy-sequence' to make a copy of a list that won't change the
-elements of the original.
+Use `copy-sequence' to make a copy of a list without changing the original.
 
     (let* ((orig '((1 2) (3 4)))
            (copy (copy-sequence orig)))
@@ -696,7 +645,7 @@ elements of the original.
       (list orig copy))
     ==> (((1 2) (3 4)) ((1 2) (5 6)))
 
-However, the elements in the copy are still from the original.
+However, the elements in the copy are still in the original.  They are in fact the same elements (i.e., `eq'), not copies.
 
     (let* ((orig '((1 2) (3 4)))
            (copy (copy-sequence orig)))
@@ -704,7 +653,7 @@ However, the elements in the copy are still from the original.
       (list orig copy))
     ==> (((1 2) (3 0)) ((1 2) (3 0)))
 
-The function `copy-tree' is the recursive version of `copy-sequence'.
+`copy-tree' is the recursive version of `copy-sequence'.
 
     (let* ((orig '((1 2) (3 4)))
            (copy (copy-tree orig)))
@@ -714,7 +663,7 @@ The function `copy-tree' is the recursive version of `copy-sequence'.
 
 Filtering:
 
-Emacs Lisp doesn't come with a `filter' function to keep elements that satisfy a conditional and excise the elements that do not satisfy it.  One can use `mapcar' to iterate over a list with a conditional, and then use `delq' to remove the `nil' values.
+EmacsLisp doesn't come with a `filter' function to keep elements that satisfy a conditional and excise the elements that do not satisfy it.  You can use `mapcar' to iterate over a list with a conditional, and then use `delq' to remove the `nil' values.
 
   (defun my-filter (condp lst)
     (delq nil
@@ -734,7 +683,7 @@ For example:
     (my-filter 'numberp num-list))
   ==> (1 2 3 4)
 
-Actually the package cl-seq contains the functions `remove-if' and `remove-if-not'.  The latter can be used instead of `my-filter'.
+Package `cl-seq' has functions `remove-if' and `remove-if-not'.  The latter can be used instead of `my-filter'.
 
   (let ((num-list '(1 'a 2 "nil" 3 nil 4)))
     (remove-if-not 'numberp num-list))
@@ -744,7 +693,7 @@ Actually the package cl-seq contains the functions `remove-if' and `remove-if-no
     (remove-if 'numberp num-list))
   ==> ((quote a) "nil" nil)
 
-As an example here is the quick sort algorithm:
+Here is a version of quicksort:
 
   (defun quicksort (lst)
     "Implement the quicksort algorithm."
@@ -771,7 +720,7 @@ Convert multiple lists into a list
   '(1 2 3) '(a b c) '(A B C))
   ==> ((1 a A) (2 b B) (3 c C))
 
-A more concise version is possible with the the higher-arity version of mapcar available with the `cl' library.
+A more concise version is possible with the the higher-arity version of `mapcar' available from library `cl'.
 
   ((lambda (&rest args)
      (apply (function mapcar*) (function list) args))
@@ -825,7 +774,7 @@ Matches with a test function other than `equal':
     (assoc-default "c" alist (lambda (x y) (string-match y x))))
   ==> 2
 
-The association list functions are incidentally useful for finding the first instance of a value in any list, not just association lists, and even when there's duplicates.
+The association-list functions are useful for finding the first instance of a value in any list, not just association lists, and even when there are duplicates.
 
 The following uses `mapcar' to associate the `major-mode' to each buffer returned by `buffer-list', then `assq' to find the first buffer where the major mode is `fundamental-mode'.
 
@@ -852,7 +801,7 @@ This is really just making a list for each number -- a "list of lists" -- which 
 
 === Vectors ===
 
-Vectors are fixed in size but elements can be accessed in constant time.
+Vectors are fixed in size, and their elements can be accessed in constant time (neither of which is the case for lists).
 
     (let ((words ["fight" "foo" "for" "food!"]))
       (when (string= "foo" (aref words 1))
@@ -860,17 +809,17 @@ Vectors are fixed in size but elements can be accessed in constant time.
       words)
     ==> ["fight" "bar" "for" "food!"]
 
-== Hashes ==
+== Hash tables ==
 
-Hashes map keys to values. In a way they are similar to alists, except
-they are more efficient for a large number of keys.
+Hash tables map keys to values. They are similar to alists, but
+they are typically more efficient for a large number of keys.
 
-More info is available on the HashMap page.
+See HashMap.
 
 === Storing and retrieving keys and values ===
 
 By default, hash tables use `eql' to compare keys. This is not appropriate
-for strings: ##(eql "alex" "alex")## ==> nil. Thus, use `equal' in these cases:
+for strings: ##(eql "alex" "alex")## ==> nil.  Use `equal' in such cases:
 
     (let ((nick-table (make-hash-table :test 'equal)))
       (puthash "kensanata" "Alex Schroeder" nick-table)
