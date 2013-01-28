@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Fri Dec 28 09:05:49 2012 (-0800)
+;; Last-Updated: Mon Jan 28 15:39:53 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 6284
+;;     Update #: 6288
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -411,6 +411,7 @@
 ;;
 ;;  `dired-do-find-marked-files' -
 ;;     Doc string reflects new `dired-simultaneous-find-file'.
+;;  `dired-do-run-mail' - Require confirmation.
 ;;  `dired-mark-sexp' - 1. Variable `s' -> `blks'.
 ;;                      2. Fixes to `uid' and `gid'.
 ;;  `dired-mark-unmarked-files' (Emacs < 24 only) - Emacs 24+ version.
@@ -427,6 +428,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/01/28 dadams
+;;     Added redefinition of dired-do-run-mail.  Fixes Emacs bug #13561.
 ;; 2012/12/18 dadams
 ;;     diredp-ediff: Better default for FILE2.  Thx to Michael Heerdegen.
 ;;     Require subr-21.el for Emacs 20.
@@ -3311,7 +3314,7 @@ satisfy PREDICATE are included in the result."
   (defun diredp-insert-as-subdir (child ancestor &optional in-dired-now-p)
     "Insert the current Dired dir into a Dired listing of an ancestor dir.
 Ancestor means parent, grandparent, etc. at any level.
-You are prompted for the ancestor directory.  
+You are prompted for the ancestor directory.
 The ancestor Dired buffer is selected.
 
 Markings and switches in the current Dired buffer are preserved for
@@ -5729,6 +5732,21 @@ the variable `window-min-height'."
 ;;;;                (setq found  (cdr (car blist)))
 ;;;;                (setq blist  nil)))))
 ;;;;        found))))
+
+
+;; REPLACE ORIGINAL in `dired-x.el'.
+;;
+;; Require confirmation.  Fixes Emacs bug #13561.
+;;
+(defun dired-do-run-mail ()
+  "If `dired-bind-vm' is non-nil, call `dired-vm', else call `dired-rmail'."
+  (interactive)
+  (unless (y-or-n-p "Read all marked mail folders? ") (error "OK, canceled"))
+  (if dired-bind-vm
+      ;; Read mail folder using vm.
+      (dired-vm)
+    ;; Read mail folder using rmail.
+    (dired-rmail)))
 
 
 ;; REPLACE ORIGINAL in `dired.el'.
