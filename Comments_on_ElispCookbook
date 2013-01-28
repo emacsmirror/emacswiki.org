@@ -16,3 +16,14 @@ Whoa. If you do that you need an index. this is so useful in it's current form.
 
 -- [http://nic.ferrier.me.uk NicFerrier] 2013-01-27 21:48 UTC
 
+
+----
+
+There already is an index: the TOC.  This page would become essentially the intro plus a list of links to what are currently the main sections, each become a separate page.  Some tiny sections could alternatively be left here.
+
+But perhaps also some stuff here could be removed altogether, or replaced by something better, during cleanup.  One criterion should be whether material truly "demonstate[s] basic elisp programming operations in the spirit of the o'reilly cookbook series".
+
+Anyway, I'm probably not going to be the one who cleans this up anymore or reorganizes it.  Just giving my 2 cents.  If I were a novice (or not so novice) looking for an Elisp cookbook, this would ''not'' be it (so far).  I pulled out a bit of stuff that was inappropriate, but it still needs some cleanup, IMHO. -- Drew
+
+-- DrewAdams 2013-01-28 00:16 UTC
+
