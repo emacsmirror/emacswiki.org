@@ -47,3 +47,29 @@ I don't doubt that you have a use case, but I don't really see it yet.  There is
 
 -- DrewAdams 2013-01-28 06:05 UTC
 
+
+----
+
+Actually, you could split the content up into multiple pages A, B and C and use transclusion.
+
+Each page would follow this pattern:
+
+{{{
+== A ==
+([Self:action=edit;id=A Edit Section A])
+
+A!
+}}}
+
+We then replace the main page with the following:
+
+{{{
+<include "A">
+<include "B">
+<include "C">
+}}}
+
+The table of contents may or may not work with the included elements, I haven't tried.
+
+-- AlexSchroeder 2013-01-28 07:32 UTC
+
