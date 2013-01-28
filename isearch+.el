@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 21.0
-;; Last-Updated: Wed Jan 16 09:05:07 2013 (-0800)
+;; Last-Updated: Mon Jan 28 15:18:47 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 1788
+;;     Update #: 1822
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -64,7 +64,7 @@
 ;;    (Emacs 22+), `isearchp-put-prop-on-region',
 ;;    `isearchp-retrieve-last-quit-search',
 ;;    `isearchp-set-region-around-search-target',
-;;    `isearchp-sexp-symbol-or-char', `isearchp-toggle-invisible',
+;;    `isearchp-toggle-invisible',
 ;;    `isearchp-toggle-regexp-quote-yank',
 ;;    `isearchp-toggle-set-region', `isearch-toggle-word',
 ;;    `isearchp-yank-sexp-symbol-or-char'.
@@ -314,6 +314,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2013/01/28 dadams
+;;     Advise isearch-forward to add Isearch+ doc.
 ;; 2013/01/16 dadams
 ;;     New feature: C-g restores window position of start.  Fixes Emacs bug #12253.
 ;;       Added redefinitions of isearch-cancel, isearch-mode.  Added: isearchp-win-pt-line.
@@ -323,7 +325,7 @@
 ;;                       isearchp-mismatch-removal-flag   with isearchp-drop-mismatch.
 ;;     isearchp-cycle-mismatch-removal, isearchp-drop-mismatch: Handle replace-last case.
 ;; 2012/12/13 dadams
-;;     Advise: isearch-update (Emacs 20-23). 
+;;     Advise: isearch-update (Emacs 20-23).
 ;;     Added: isearchp-toggle-mismatch-removal, isearchp-mismatch-removal-flag,
 ;;            isearchp-remove-mismatch, isearchp-open-recursive-edit.
 ;;     Bind isearchp-toggle-mismatch-removal to M-k, isearchp-open-recursive-edit to C-x o.
@@ -606,7 +608,7 @@ Don't forget to mention your Emacs and library versions."))
       ;; delete-backward-char
       ;; kill-backward-up-list               ; Not bound by default
       ;; beginning-of-buffer                 ; `M-<', `C-home'
-      ;; beginning-of-defun                  ; `C-M-a', `C-M-home', 
+      ;; beginning-of-defun                  ; `C-M-a', `C-M-home',
       ;; beginning-of-line                   ; `C-a', `home'
       ;; beginning-of-line+                  ; `C-a', `home'
       ;; beginning-of-line-text              ; Not bound by default
@@ -903,7 +905,7 @@ This is used only for Transient Mark mode."
                (not (string-match "^[0-9]+\\.[0-9]+\\.[0-9]+" emacs-version))))
       (isearch-message-prefix arg1 arg2 arg3) ; Emacs 20 through 24.2.
     (isearch-message-prefix arg1 arg2))) ; Emacs 24.1.N and 24.3+
-    
+
 (defun isearchp-message-suffix (&optional arg1 arg2)
   "Version of `isearch-message-suffix' that works for all Emacs releases."
   (if (or (< emacs-major-version 24)
@@ -2087,6 +2089,37 @@ you specify none (empty input immediately) then *all* faces are
     (add-text-properties beg end (list property value)))
 
   )
+
+ 
+
+(defadvice isearch-forward (before isearch+-doc activate)
+  "
+Isearch Plus
+============
+
+Commands
+--------
+Type \\<isearch-mode-map>\\[isearchp-char-prop-forward] to search for a character (overlay or text) property
+Type \\[isearchp-char-prop-forward-regexp] to regexp-search for a character (overlay or text) property
+Type \\[isearchp-cycle-mismatch-removal] to cycle option `isearchp-drop-mismatch'
+Type \\[isearchp-insert-char-by-name] to add a Unicode char to search string by Unicode name
+Type \\[isearchp-open-recursive-edit] to invoke Emacs command loop recursively
+Type \\[isearchp-retrieve-last-quit-search] to insert successful search string from when you hit `C-g'
+Type \\[isearchp-toggle-set-region] to toggle setting region around search target
+Type \\[isearchp-toggle-invisible] to toggle invisible-text sensitivity (`search-invisible')
+Type \\[isearchp-toggle-regexp-quote-yank] to toggle quoting (escaping) of regexp special characters
+Type \\[isearchp-yank-symbol-or-char] to yank a symbol or char from buffer onto search string
+Type \\[isearchp-yank-sexp-symbol-or-char] to yank sexp, symbol, or char from buffer onto search string
+Type \\[isearchp-put-prop-on-region] to add a text property to region
+Type \\[isearchp-set-region-around-search-target] to select search hit
+
+Options
+-------
+`isearchp-drop-mismatch' - how to handle input after a search mismatch
+`isearchp-initiate-edit-commands' - keys that edit instead of exiting
+`isearchp-mouse-2-flag' - `mouse-2' anywhere yanks the selection?
+`isearchp-regexp-quote-yank-flag' - regexp-quote yanked text?
+`isearchp-set-region-flag' - select last search target?")
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 
