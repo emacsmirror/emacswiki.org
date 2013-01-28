@@ -30,6 +30,14 @@ Note - if you want to use a major-mode other than text-mode for your deft notes,
 
 ----
 
+== Discussion ==
+
+[new]
 I see some blocking behaviour with defts autosave feature after having emacs open for awhile with deft running, any suggestions on what this might be (only happens with the autosave in deft)? - anon
+
+[new:JasonBlevins:2013-01-28 16:52 UTC]
+Thanks for pointing this out.  I believe this is fixed now, by [http://jblevins.org/git/deft.git/commit/?id=d45bfd76c95e0439175dc17dc22fe6864c39c769
+ this commit].  It will be in the next release, but it's a one-line patch if you'd like to apply it yourself.
+
 ----
 CategoryWriting
