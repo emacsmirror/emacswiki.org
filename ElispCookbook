@@ -1,5 +1,5 @@
-This page contains snippets of code that demonstrate basic elisp
-programming operations in the spirit of the o'reilly cookbook
+This page contains snippets of code that demonstrate basic EmacsLisp
+programming operations in the spirit of the O'Reilly cookbook
 series of books. For every task addressed, a worked-out solution
 is presented as a short, focused, directly usable piece of code.
 
@@ -46,8 +46,8 @@ of the empty string as a single object
 === Strings vs buffer text ===
 
 While it is quite common in other programming languages to work on
-strings contained in variables, in Emacs it is also common to
-work on text in buffers.
+strings contained in [[variable]]s, in Emacs it is also common to
+work on text in [[buffer]]s.
 
 === Substrings ===
 
@@ -159,12 +159,12 @@ purposes within a Lisp function, you should normally use deletion
 functions, so as not to disturb the kill ring contents."
 
 The following mimic the `kill-' commands but without disturbing the
-kill ring.  To make them kill, use `kill-region' instead of
+[[kill ring]].  To make them kill, use `kill-region' instead of
 `delete-region'.
 
 === Delete region ===
 
-The Lisp equivalent of `kill-region' (`C-w') but without kill ring side effects::
+The Lisp equivalent of `kill-region' (`C-w') but without kill-ring side effects::
 
   (delete-region (region-beginning) (region-end))
 
@@ -179,7 +179,7 @@ store it in a Lisp variable.  For example: [...]"
 
 === Delete line ===
 
-The equivalent of `kill-line' (`C-k') but without kill ring side effects:
+The equivalent of `kill-line' (`C-k') but without kill-ring side effects:
 
  (let ((beg (point)))
    (forward-line 1)
@@ -213,7 +213,7 @@ Or just: ##(delete-region (line-beginning-position) (point))##
 
 === Delete line to next line  ===
 
-The equivalent of killing the line and the newline (`C-1 C-k') but without kill ring side effects:
+The equivalent of killing the line and the newline (`C-1 C-k') but without kill-ring side effects:
 
  (let ((beg (point)))
    (forward-line 1)
@@ -225,7 +225,7 @@ Alternatively, replacing the `let' with `progn'.
 
 === Delete whole line ===
 
-The equivalent of `kill-whole-line' (`C-S-DEL') but without kill ring side effects:
+The equivalent of `kill-whole-line' (`C-S-DEL') but without kill-ring side effects:
 
  (let ((beg (progn (forward-line 0)
                    (point))))
@@ -244,7 +244,7 @@ Or just:
 
 === Delete word ===
 
-The equivalent of `kill-word' (`M-d') but without kill ring side effects:
+The equivalent of `kill-word' (`M-d') but without kill-ring side effects:
 
  (let ((beg (point)))
    (forward-word 1)
@@ -256,7 +256,7 @@ Alternatively, replacing the `let' with `progn'.
 
 === Delete sentence ===
 
-The equivalent of `kill-sentence' (`M-k') but without kill ring side effects:
+The equivalent of `kill-sentence' (`M-k') but without kill-ring side effects:
 
  (let ((beg (point)))
    (forward-sentence 1)
@@ -610,8 +610,8 @@ Datatypes used to represent sequences of things:
 List basics are explained at ListStructure.
 Lists can shrink and grow, but access to elements towards the end of the list is slow if the list is long.
 
-Use `cons' to append a new element to the front of a list.
-Use `nth' to access an element of the list.
+Use `cons', `push', or `add-to-list' to prepend a new element to a list.
+Use `nth' to access an element of a list.
 
     (let ((words '("fight" "foo" "for" "food!")))
       (when (string= "foo" (nth 1 words))
@@ -637,7 +637,7 @@ DestructiveOperations for more about this.
 
 Copying:
 
-Use `copy-sequence' to make a copy of a list without changing the original.
+Use `copy-sequence' to make a shallow copy of a list without changing the original.
 
     (let* ((orig '((1 2) (3 4)))
            (copy (copy-sequence orig)))
@@ -645,7 +645,7 @@ Use `copy-sequence' to make a copy of a list without changing the original.
       (list orig copy))
     ==> (((1 2) (3 4)) ((1 2) (5 6)))
 
-However, the elements in the copy are still in the original.  They are in fact the same elements (i.e., `eq'), not copies.
+The elements in the copy remain in the original.  More importantly, they are in fact the same elements (i.e., `eq'), not copies.  The list is copied, but its elements are shared with the original list.
 
     (let* ((orig '((1 2) (3 4)))
            (copy (copy-sequence orig)))
@@ -663,7 +663,7 @@ However, the elements in the copy are still in the original.  They are in fact t
 
 Filtering:
 
-EmacsLisp doesn't come with a `filter' function to keep elements that satisfy a conditional and excise the elements that do not satisfy it.  You can use `mapcar' to iterate over a list with a conditional, and then use `delq' to remove the `nil' values.
+EmacsLisp doesn't come with a `filter' function to keep elements that satisfy a conditional and remove elements that do not satisfy it.  You can use `dolist' or `mapcar' to iterate over a list with a conditional, and then use `delq' to remove the `nil' values.
 
   (defun my-filter (condp lst)
     (delq nil
@@ -711,7 +711,7 @@ Here is a version of quicksort:
 
 Tranposing:
 
-Convert multiple lists into a list 
+Create a list from multiple lists:
 
  ((lambda (&rest args)
     (mapcar (lambda (n)
@@ -729,14 +729,14 @@ A more concise version is possible with the the higher-arity version of `mapcar'
 
 Searching:
 
-Simply checking for existence of a value in a list can be done with
+You can check for presence of a value in a list using
 `member' or `memq'.
 
-  (let ((words '("fight" "foo" "for" "food!")))
+  (let ((words  '("fight" "foo" "for" "food!")))
     (car (member "for" words)))
   ==> "for"
 
-  (let ((re "\\wo\\b")
+  (let ((re    "\\wo\\b")
         (words '("fight" "foo" "for" "food!")))
     (consp (memq t
              (mapcar (lambda (s) (numberp (string-match re s))) words))))
@@ -747,7 +747,7 @@ In the latter, a more efficient algorithm would use a loop (a non-local exit).
 === Association lists ===
 
 The ElispManual has examples of finding and deleting values in an
-association list.  Here are cases when the car values are strings.
+[[alist|association list]], or alist.  Here are cases when the car values are strings.
 
   (assoc "2" '(("2" . 2) ("1" . 1) ("2") ("3" . 3)))
   ==> ("2" . 2)
@@ -774,7 +774,7 @@ Matches with a test function other than `equal':
     (assoc-default "c" alist (lambda (x y) (string-match y x))))
   ==> 2
 
-The association-list functions are useful for finding the first instance of a value in any list, not just association lists, and even when there are duplicates.
+The alist functions are useful for finding the first instance of a value in any list, not just association lists, and even when there are duplicates.
 
 The following uses `mapcar' to associate the `major-mode' to each buffer returned by `buffer-list', then `assq' to find the first buffer where the major mode is `fundamental-mode'.
 
