@@ -91,3 +91,10 @@ Sounds interesting. I'll leave it to someone else to decide and to make the chan
 
 -- DrewAdams 2013-01-28 14:01 UTC
 
+
+----
+
+A while back, I started working on splitting up this page -- '''!ElispStrings''', '''!ElispKillRegion''', '''!ElispKillLine''', '''!ElispNumbers''', '''!ElispLists''', '''!ElispVectors''', '''!ElispHashes''', '''!ElispFileOps''', '''!ElispDatesAndTimes''', '''!ElispRegularExpression''' -- but didn't finish.  I was going to keep ElispCookbook but make it an index linking to those pages.
+
+-- AaronHawley 2013-01-28 14:44 UTC
+
