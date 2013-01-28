@@ -72,10 +72,34 @@ I'm not sure how old this suggestion is. Right now I see that Manual:macros will
 [new:DrewAdams:2013-01-26 16:34 UTC]
 Not really.  That just means the reader has to guess which  was meant (or whether both were meant).  The idea is to let the writer direct the reader to the appropriate place(s), so the reader only has to click, not check more than one manual.  This request is only a nice-to-have, not something important.  -- DrewAdams
 
+[new]
+How about the following changes:
 
+{{{
+# Manual:macros
+# Manual:macros (emacs)
+# [Manual:macros Macros]
+# [Manual:macros Macros] (emacs)
+# [[Manual:macros Macros]]
+# [[Manual:macros Macros]] (emacs)
+}}}
 
+Results in:
 
+# Manual:macros
+# Manual:macros (emacs)
+# [Manual:macros Macros]
+# [Manual:macros Macros] (emacs)
+# [[Manual:macros Macros]]
+# [[Manual:macros Macros]] (emacs)
 
+The context provided in parenthesis after the manual link is in fact a regular expression matching the label of the link in the index. Thus, if you link to "macros" and see the following:
+
+: *macros*
+: CC Mode Manual, Command and Function Index
+: GNU Emacs Lisp reference manual, Index
+
+All you need to do is provide a regular expression that matches the second entry and not the fist, eg. "Emacs". I felt that this was less tricky than relying on some transformation of the manual URL to extract the exact info manual basename or whatever it's called.
 
 == User Names on RecentChanges Page ==
 
