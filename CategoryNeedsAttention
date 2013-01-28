@@ -4,7 +4,7 @@ If you flag a with CategoryNeedsAttention, that means some !WikiGnome can get in
 
 === Examples === 
 
-Say you find some elisp code that sucks, and doesn't work with Emacs 23/24 (or a recent version of foo library x). Here's what you do:
+Say you find some elisp code that sucks, and doesn't work with a current Emacs. Here's what you do:
 
 # click the _Administration_ link at the bottom
 # find the item where it says that this page "needs attention" and provide a reason
