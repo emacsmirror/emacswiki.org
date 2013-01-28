@@ -10,7 +10,7 @@ See "Cocoa Emacs" under EmacsForMacOS.
 === PATH and exec-path===
 See [http://www.gnu.org/software/emacs/manual/html_node/elisp/Subprocess-Creation.html www.gnu.org/software/emacs/manual/html_node/elisp/Subprocess-Creation.html], in particular "Generally, you should not modify exec-path directly. Instead, ensure that your PATH environment variable is set appropriately before starting Emacs. "
 
-By default ##exec-path## in Emacs.app appears to be initialized to a list derived from PATH, plus ##exec-directory##, which is set to "/Applications/Emacs.app/Contents/MacOS/bin/".
+By default ##exec-path## in Emacs.app appears to be initialized to a list derived from PATH, plus ##exec-directory##, e.g. "/Applications/Emacs.app/Contents/MacOS/bin/".
 
 ===PATH set from Terminal===
 
