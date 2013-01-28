@@ -5,17 +5,31 @@ For the different variants of Emacs on Mac OSX, see EmacsForMacOS.
 
 See "Cocoa Emacs" under EmacsForMacOS.
 
-== Path ==
+== PATH and exec-path==
+See , in particular "Generally, you should not modify exec-path directly. Instead, ensure that your PATH environment variable is set appropriately before starting Emacs. "
 
-Emacs.app on Mac OS X does not inherit the same value of PATH environment variable as on another OS, or as in the shell running in either Terminal or Emacs. Apple describes this behaviour a bit here: http://developer.apple.com/qa/qa2001/qa1067.html. The file ~/.MacOSX/environment.plist can also be used as central place to save key:value pairs for all shells. The defaults programme allows to read and write, for example:
+By default exec-path in Emacs.app appears to be initialized to a list derived from PATH, plus exec-directory, which is set to "/Applications/Emacs.app/Contents/MacOS/bin/".
+
+== PATH ==
+
+===Launched from Terminal===
+
+If you launch Emacs.app from the terminal, e.g.
+   /Applications/Emacs.app/Contents/MacOS/Emacs
+then the Emacs PATH will be the Terminal PATH
+
+===~/.MacOSX/environment.plist===
+
+ ~/.MacOSX/environment.plist can also be used as a central place to save environment variables for all processes launched by a user, including from Spotlight according to the Apple documentation at:
+
+The defaults programme can be used to read and write to  ~/.MacOSX/environment.plist , for example:
 
 	export PATH=$(defaults read "${HOME}/.MacOSX/environment" PATH)         # bash
 	set path=(`defaults read ~/.MacOSX/environment PATH | tr ':' ' '`)           # tcsh
 
-NOTE: Remember when you make a change to environment.plist, you need to restart your computer before it takes effect.
+NOTE: when you make a change to environment.plist, you need to log off and log in again before it takes effect.
 
 For those that like their PATHs from .bashrc and would like the environment.plist to update itself at every start up, put the following in your /etc/profile file:
-
     #/etc/profile begin
     if [ -x /usr/libexec/path_helper ]; then
         eval `/usr/libexec/path_helper -s`
@@ -23,14 +37,9 @@ For those that like their PATHs from .bashrc and would like the environment.plis
     fi
     #/etc/profile end
 
-CREDIT GOES TO: http://www.nabble.com/unicode-character-in-aquamacs-td24259615.html
+Other information.  Note that there are reports that environment.plist does not work in Lion/Mountain Lion.  Definitive Apple developer documentation on this would be welcome.
 
-You may also have to add /usr/bin to emac's exec-path so it can find various unix utils like diff. This is particularly true for ediff:
-    
-    (add-to-list 'exec-path "/usr/bin")
-
-
-== Alternative Path Solution ==
+==== Alternative Solution ====
 
 I found the above to be not quite right on my Mac OS 10.6 laptop.  The ##defaults## command generated gibberish in my ##environment.plist## file so I took the approach of creating a startup script (##~/bin/macosx-startup##) and added it to my User account login items list.  ##macosx-startup## is a bash one-liner:
 
@@ -64,36 +73,10 @@ where ##environment-support.el## is:
 
 Note: You must create a dummy ##environment.plist## file to seed the process.
 
-== A Quick & Ugly Alternative Path Solution == 
+=== launchd.conf ===
 
- In your init file, e.g. ~/.emacs, add
-
-   ;;; A quick & ugly PATH solution to Emacs on Mac OSX
-   (if (string-equal "darwin" (symbol-name system-type))
-      (setenv "PATH" (concat "/opt/local/bin:/opt/local/sbin:" (getenv "PATH"))))
-
-== Yet another PATH solution ==
-
-I had some trouble with the above suggestions on Mac OS X Lion. I use bash as the default shell and adding the following lines to emacs init file did the trick.
-
-   ;; read in PATH from .bashrc
-   (if (not (getenv "TERM_PROGRAM"))
-       (setenv "PATH"
-               (shell-command-to-string "source $HOME/.bashrc && printf $PATH")))
-
-Assuming all you want to do is let Emacs have the same $PATH as your login shell, the following will work for several different default shells. Some modes look for subprocess executables in exec-path rather than $PATH, so set that as well.
-
-  (if (not (getenv "TERM_PROGRAM"))
-      (let ((path (shell-command-to-string
-              "$SHELL -cl \"printf %s \\\"\\\$PATH\\\"\"")))
-        (setenv "PATH" path)
-        (setq exec-path (split-string path ":"))))
-
-== Launching from Spotlight ==
-
-Because Spotlight's parent process is launchd, Emacs won't pick up any environment variables you have set in your ##.bashrc## or similar. To set environment variables for launchd, put them in in ##/etc/launchd.conf## or ##$HOME/.launchd.conf##. The syntax is tcsh.
+Because Spotlight's parent process is launchd, one can set environment variables for applications (including Emacs.app) launched from Spotlight by putting them in in ##/etc/launchd.conf## or ##$HOME/.launchd.conf##. The syntax is tcsh.
 For example:
-
     % cat /etc/launchd.conf 
     # include macports in global path - basically so Emacs.app can see git
     setenv PATH /opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin
@@ -101,6 +84,27 @@ For example:
 You will have to reboot for launchd to reload ##launchd.conf##. If you don't want to do that, you can use ##launchctl setenv## to set environment variables for launchd like so:
 
     % launchctl setenv PATH /opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin
+
+===getenv/setenv variants===
+
+Note that using any of these, PATH and exec-path will not be kept in sync automatically so you will may want set exec-path as well, e.g.:
+          (setq exec-path (split-string (getenv "PATH") ":")
+For that reason GNU recommend against this approach (see above).  However it has the advantage of being specific to emacs and the user concerned, and entirely within your init file.
+
+==== Direct use of getenv / setenv ====
+ In your init file, e.g. ~/.emacs, add
+   (if (string-equal "darwin" (symbol-name system-type))
+      (setenv "PATH" (concat "/opt/local/bin:/opt/local/sbin:" (getenv "PATH"))))
+
+==== use the same PATH as .bashrc sets====
+   (if (not (getenv "TERM_PROGRAM"))
+       (setenv "PATH"
+               (shell-command-to-string "source $HOME/.bashrc && printf $PATH")))
+====use the default login path from SHELL====
+  (if (not (getenv "TERM_PROGRAM"))
+      (let ((path (shell-command-to-string
+              "$SHELL -cl \"printf %s \\\"\\\$PATH\\\"\"")))
+        (setenv "PATH" path)))
 
 == Keyboard Handling and European Characters ==
 
