@@ -4,12 +4,14 @@ If you flag a with CategoryNeedsAttention, that means some !WikiGnome can get in
 
 === Examples === 
 
-Say you find some elisp code that sucks, and doesn't work with Emacs 23/24 (or a recent version of foo library x).  At the bottom of it, you might put:
+Say you find some elisp code that sucks, and doesn't work with Emacs 23/24 (or a recent version of foo library x). Here's what you do:
 
-    CategoryNeedsAttention -- outdated lisp
+# click the _Administration_ link at the bottom
+# find the item where it says that this page "needs attention" and provide a reason
+# click the Submit button
 
-Or perhaps you found a page that is chock full of information, from 4 years ago, and you're not sure it is applicable, you might put
+If you provided "outdated lisp" as the reason, this add the following to the bottom of the page:
 
-    CategoryNeedsAttention -- still applicable?
+    CategoryNeedsAttention (outdated lisp)
 
-!WikiGnomes: use backlinks to find pages that need your help!
+People interested in fixing pages that need attention can click on the header of this page and find all the pages that mention it.
