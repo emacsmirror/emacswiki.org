@@ -98,3 +98,10 @@ A while back, I started working on splitting up this page -- '''!ElispStrings'''
 
 -- AaronHawley 2013-01-28 14:44 UTC
 
+
+----
+
+Drew, ##([Self:action=edit;id=A Edit Section A])## isn't documented anywhere. It's standard wiki markup I'd add such that readers get the impression that they can edit the various sections of the page. Otherwise they won't know what to edit. (The "Self:" prefix is from InterMap.)
+
+-- AlexSchroeder 2013-01-28 15:20 UTC
+
