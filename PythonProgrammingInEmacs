@@ -1,28 +1,27 @@
+emacs.el
+
 == Overview ==
 
 This page collects information for creating a usable Python programming environment in Emacs.
 
-There are three implementations of a Python mode for Emacs: python.el and python-mode.el.
+There are three major implementations of a Python mode for Emacs: two called python.el and one called python-mode.el.
 
-# ProgrammingWithPythonDotEl -- python.el comes with GNU Emacs.
+# ProgrammingWithPythonDotEl -- python.el, as came with GNU Emacs 24.1 and before.
+
+# ProgrammingWithPythonDotElGallina -- [https://github.com/fgallina/python.el Fabián Ezequiel Gallina's python.el],  included as the [http://bzr.savannah.gnu.org/lh/emacs/trunk/annotate/head:/lisp/progmodes/python.el Emacs trunk python.el] as of [http://bzr.savannah.gnu.org/lh/emacs/trunk/revision/108614 revno 108614]).  Gallina discusses his motivation [http://lists.gnu.org/archive/html/emacs-devel/2012-04/msg00583.html here].
 
 # ProgrammingWithPythonModeDotEl -- [https://launchpad.net/python-mode python-mode.el] comes from Python.
 
-# ProgrammingWithPythonDotElGallina -- []https://github.com/fgallina/python.el Fabián Ezequiel Gallina's new implementation of python.el (part of Emacs trunk as of [http://bzr.savannah.gnu.org/lh/emacs/trunk/revision/108614 revno 108614])
-
-(Gallina's mode tries to merge the functionality of the first two modes.)
-
-
-
 You may also find these pages useful:
+
+* [http://gabrielelanaro.github.com/emacs-for-python/ Gabriele Lanaro's python setup].  Includes and sets up several common python packages, including Gallina's python.el.  Highly recommended for quickly setting up a Python programming environment, e.g. "If you google python+emacs, you’ll find a lot of packages and recipes how to glue it all together, but if you are Emacs Lisp newbie like me, having all that stuff in one easy-to-install, tested package
+would be priceless." [http://maddemcode.com/python/emacs-and-python-the-definitive-answer/]
 
 * [http://www.enigmacurry.com/2008/05/09/emacs-as-a-powerful-python-ide/ Emacs as a powerful Python IDE]
 
 * [http://www.enigmacurry.com/2009/01/21/autocompleteel-python-code-completion-in-emacs/ AutoComplete.el : Python Code Completion in Emacs]
 
 * see [http://www.enigmacurry.com/2009/01/19/my-emacs-config-on-github/ My Emacs config on Github] for dotfiles
-
-* [http://gabrielelanaro.github.com/emacs-for-python/ Gabriele Lanaro's python setup]
 
 * [http://pedrokroger.net/2010/07/configuring-emacs-as-a-python-ide-2/ Pedro Kroger's python setup]
 
@@ -50,9 +49,9 @@ You can also use "rectangles" with comment/uncomment region (among other things 
 
 Search the python online/offline documentations with convenience in Emacs
 
-Github : http://github.com/tsgates/pylookup
+Github : [http://github.com/tsgates/pylookup github.com/tsgates/pylookup]
 
-Pylookup Mode : http://taesoo.org/Opensource/Pylookup
+Pylookup Mode : [http://taesoo.org/Opensource/Pylookup taesoo.org/Opensource/Pylookup ]
 
 == Browse the Python Documentation using Info ==
 
@@ -168,7 +167,7 @@ be just a subtle coloured underline.
 
 = Using flymake with pyflakes =
 
-Found a desciption on how to use this pair at http://www.plope.com/Members/chrism/flymake-mode
+Found a desciption on how to use this pair at [http://www.plope.com/Members/chrism/flymake-mode www.plope.com/Members/chrism/flymake-mode]
 I did a copy 'n paste for simplicity.
 
 {{{
@@ -255,10 +254,12 @@ RichardRiley
 
 I found this which got me up and running with iPython integrated nicely into emacs 23.
 
-http://lists.ipython.scipy.org/pipermail/ipython-user/2008-September/005791.html
-
-The important file, ipython.el, can be found here : http://ipython.scipy.org/dist/ipython.el
-
+[http://lists.ipython.scipy.org/pipermail/ipython-user/2008-September/005791.html
+ lists.ipython.scipy.org/pipermail/ipython-user/2008-September/005791.html
+]
+The important file, ipython.el, can be found here : [http://ipython.scipy.org/dist/ipython.el
+ ipython.scipy.org/dist/ipython.el
+]
 If you load it, ipython becomes the default python shell assuming the ipython executable is available.
 
 my python integration is now like this:
@@ -302,20 +303,25 @@ my python integration is now like this:
 (provide 'python-programming)
 </pre>
 
-More iPython info here: http://ipython.scipy.org/moin/FrontPage
-
-My own python files are here : http://richardriley.net/projects/emacs/dotprogramming#sec-1.4
-
+More iPython info here: [http://ipython.scipy.org/moin/FrontPage
+ ipython.scipy.org/moin/FrontPage
+]
+My own python files are here : [http://richardriley.net/projects/emacs/dotprogramming#sec-1.4
+ richardriley.net/projects/emacs/dotprogramming#sec-1.4
+]
 Having got iPython working in emacs, I found the following "howto tutorial" videos to be superb for the beginner (me!) :
 
-http://showmedo.com/videos/video?name=1000010&fromSeriesID=100
+[http://showmedo.com/videos/video?name=1000010&fromSeriesID=100
+ showmedo.com/videos/video?name=1000010&fromSeriesID=100
+]
 
 == Ipython completion ==
 
 Ipython provide good completion support without extra dependencies.
 
-However, to make it working in emacs, you will have to add this line to your .emacs, the full patch for ipython.el is at https://github.com/ipython/ipython/issues/issue/204
-
+However, to make it working in emacs, you will have to add this line to your .emacs, the full patch for ipython.el is at [https://github.com/ipython/ipython/issues/issue/204
+ github.com/ipython/ipython/issues/issue/204
+]
 <pre>
 (setq ipython-completion-command-string "print(';'.join(get_ipython().Completer.complete('%s')[1])) #PYTHON-MODE SILENT\n")
 </pre>
@@ -338,7 +344,9 @@ To have ido completion, simply comment and insert the following lines in ipython
 
 To have an even better completion, you should install also rlcompleter2.
 
-http://codespeak.net/rlcompleter2/
+[http://codespeak.net/rlcompleter2/
+ codespeak.net/rlcompleter2/
+]
 
 Lisp:anything-ipython.el provide an anything interface for ipython completion in your python buffer.
 
@@ -346,14 +354,20 @@ You will find all instructions to install Lisp:anything-ipython.el in the header
 
 You will need of course a complete Anything install, look how to install Anything at
 
-http://www.emacswiki.org/cgi-bin/emacs/Anything
+[http://www.emacswiki.org/cgi-bin/emacs/Anything
+ www.emacswiki.org/cgi-bin/emacs/Anything
+]
 
 Screenshot of anything-ipython in action:
 
-http://farm4.static.flickr.com/3459/3760695525_887356961c.jpg
+[http://farm4.static.flickr.com/3459/3760695525_887356961c.jpg
+ farm4.static.flickr.com/3459/3760695525_887356961c.jpg]
 
 == auto-complete.el support in ipython shell buffers ==
-https://github.com/tavisrudd/emacs.d/blob/master/dss-completion.el
+
+[https://github.com/tavisrudd/emacs.d/blob/master/dss-completion.el
+ github.com/tavisrudd/emacs.d/blob/master/dss-completion.el
+]
 
 == Ipython debugging/pdbtrack ==
 
