@@ -3,7 +3,7 @@
 ;; Copyright (c) 2011-2012 Alp Aker
 
 ;; Author: Alp Aker <alp.tekin.aker@gmail.com>
-;; Version: 1.83
+;; Version: 1.84
 ;; Keywords: convenience
 
 ;; This program is free software; you can redistribute it and/or
@@ -507,7 +507,7 @@ on troubleshooting.)"
 ;; relevant buffer position.
 (defun fci-rule-display (blank rule-img rule-str for-pre-string)
   "Generate a display specification for a fill-column rule overlay string."
-  (let* ((cursor-prop (if (and (not for-pre-string) (not fci-newline)) 1))
+  (let* ((cursor-prop (if (and (not for-pre-string) (not fci-newline)) t))
          (propertized-rule-str (propertize rule-str 'cursor cursor-prop))
          (display-prop (if rule-img
                            `((when (not (or (display-images-p)
@@ -692,8 +692,8 @@ rough heuristic.)"
          (eol-str (char-to-string fci-eol-char))
          (end-cap (propertize blank-str 'display '(space :width 0)))
          (pre-or-post-eol (propertize eol-str
-                                      'cursor 1
-                                      'display (propertize eol-str 'cursor 1)))
+                                      'cursor t
+                                      'display (propertize eol-str 'cursor t)))
          (pre-padding (propertize blank-str 'display fci-padding-display))
          (pre-rule (fci-rule-display blank-str img str t))
          (at-rule (fci-rule-display blank-str img str fci-newline))
