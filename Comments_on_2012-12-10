@@ -9,3 +9,12 @@ Theoretically, searching for CategoryNeedsAttention should do it, I guess? (Base
 Nobody has used it, however. Having a button to quickly add this tag and an explanation might be something worth experimenting with. 
 
 -- AlexSchroeder 2013-01-27 20:41 UTC
+
+----
+
+If you now click on _Administration_, you should see a link saying "<name of the current page> needs attention." If you click it, CategoryNeedsAttention will be added to the page in question. When browsing a page, the code now checks for a match and if a match is found, a warning is displayed. In the default theme, that's a little paragraph at the top with pink background saying "This page needs attention."
+
+What do you think?
+
+-- AlexSchroeder 2013-01-28 08:48 UTC
+
