@@ -2,9 +2,9 @@ markdown-mode is a major mode for GNU Emacs which provides syntax highlighting a
 
 http://jblevins.org/projects/markdown-mode/
 
-markdown-mode version 1.8.1 was released on August 15, 2011.  Release notes can be found here:
+markdown-mode version 1.9 was released on January 25, 2013.  Release notes can be found here:
 
-http://jblevins.org/projects/markdown-mode/rev-1-8-1
+http://jblevins.org/projects/markdown-mode/rev-1-9
 
 == Customization ==
 
