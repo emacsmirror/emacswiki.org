@@ -1,0 +1,8 @@
+"There exist hundreds of Emacs Lisp libraries but GNU Emacs does not contain a package manager allowing users to easily install those libraries and keep them up-to-date.
+
+There is a list of package managers on CategoryCode that have been created to fill this gap."
+
+This isn't true anymore is it? I'm not really knowledgeable on these yet but there's Marmalade (http://marmalade-repo.org/) and package.el (https://github.com/technomancy/package.el) which comes with Emacs 24 out of the box.
+
+-- [http://branvs@gmail.com brvs] 2013-01-28 17:33 UTC
+
