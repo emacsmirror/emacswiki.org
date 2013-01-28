@@ -95,12 +95,11 @@ links to other wiki pages.  This works for all characters except punctuation cha
 click on the question-mark link that appears after the page name.
 See CreateNewPages.
 * Just type a URL to link to it. A URL ending in .png or .jpg links to an image that is displayed on the same page.  See UploadingImages.
-* Put a URL in square brackets to make it a reference
-** %%[http://www.gnu.org/software/emacs/]%% -> [http://www.gnu.org/software/emacs/]
-* For longer URLs, give the URL link text by following the URL with whitespace and the link text in square brackets
-** %%[http://www.emacswiki.org/ Emacs Wiki]%% -> [http://www.emacswiki.org/ Emacs Wiki]
-* If you do have lots of explicit links that end up pointing to emacswiki.org (perhaps causing the "You linked more than 10 times to the same domain." error), just prefix the the action with "!EmacsWiki:" or your language (see InterMap)
-**  EmacsWiki:action=history;id=SiteMap
+* To link a piece of text, use the URL with whitespace and the link text in square brackets.
+** %%[http://www.vim.org/ Vim]%% -> [http://www.vim.org/ Vim]
+* The InterMap lists some prefixes you might want to use occasionally.
+** WikiPedia:Emacs
+** EmacsWiki:action=history;id=SiteMap
 * To give an EmacsWiki action link text, follow the action with whitespace and link text in square brackets (mysteriously, just like a URL)
 ** %%[EmacsWiki:action=edit;id=SandBox Play in the Sandbox]%% -> [EmacsWiki:action=edit;id=SandBox Play in the Sandbox]
 * To link to an index entry in the Emacs manual, use prefix `Manual' -- see EmacsManual.
@@ -277,4 +276,3 @@ See also HowToEdit.
 
 ----
 CategoryEmacsWikiSite
-
