@@ -78,7 +78,7 @@ where ##environment-support.el## is:
 
 Note: You must create a dummy ##environment.plist## file to seed the process.
 
-=== launchd.conf ===
+=== PATH set from launchd.conf ===
 
 Because Spotlight's parent process is launchd, one can set environment variables for applications (including Emacs.app) launched from Spotlight by putting them in in ##/etc/launchd.conf## or ##$HOME/.launchd.conf##. The syntax is tcsh.
 For example:
