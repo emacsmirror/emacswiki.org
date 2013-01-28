@@ -25,6 +25,7 @@ then the Emacs PATH will be the Terminal PATH.
 ##~/.MacOSX/environment.plist## can also be used as a central place to save environment variables for all processes launched by a user, including from Spotlight according to the Apple documentation at:
 * [http://developer.apple.com/library/mac/#documentation/MacOSX/Conceptual/BPRuntimeConfig/Articles/EnvironmentVars.html  developer.apple.com/library/mac/#documentation/MacOSX/Conceptual/BPRuntimeConfig/Articles/EnvironmentVars.html]
 * [http://developer.apple.com/qa/qa2001/qa1067.html  developer.apple.com/qa/qa2001/qa1067.html]
+Note that there are reports that ##environment.plist## does not work in Lion/Mountain Lion.  Definitive Apple developer documentation on this would be welcome.
 
 The ##defaults## program can be used to read and write to  ##~/.MacOSX/environment.plist##, for example:
 
@@ -42,7 +43,7 @@ For those that like their PATHs from ##.bashrc## and would like the ##environmen
     fi
     #/etc/profile end
 
-Other information.  Note that there are reports that ##environment.plist## does not work in Lion/Mountain Lion.  Definitive Apple developer documentation on this would be welcome.
+Other information.  
 * [http://www.nabble.com/unicode-character-in-aquamacs-td24259615.html  www.nabble.com/unicode-character-in-aquamacs-td24259615.html]
 * [http://superuser.com/questions/476752/setting-environment-variables-in-os-x-for-gui-applications  superuser.com/questions/476752/setting-environment-variables-in-os-x-for-gui-applications]
 * [http://apple.stackexchange.com/questions/57385/where-are-system-environment-variables-set-in-mountain-lion apple.stackexchange.com/questions/57385/where-are-system-environment-variables-set-in-mountain-lion]
