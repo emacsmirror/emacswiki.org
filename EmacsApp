@@ -10,7 +10,7 @@ See "Cocoa Emacs" under EmacsForMacOS.
 === PATH and exec-path===
 See [http://www.gnu.org/software/emacs/manual/html_node/elisp/Subprocess-Creation.html www.gnu.org/software/emacs/manual/html_node/elisp/Subprocess-Creation.html], in particular "Generally, you should not modify exec-path directly. Instead, ensure that your PATH environment variable is set appropriately before starting Emacs. "
 
-By default exec-path in Emacs.app appears to be initialized to a list derived from PATH, plus exec-directory, which is set to "/Applications/Emacs.app/Contents/MacOS/bin/".
+By default ##exec-path## in Emacs.app appears to be initialized to a list derived from PATH, plus ##exec-directory##, which is set to "/Applications/Emacs.app/Contents/MacOS/bin/".
 
 ===PATH set from Terminal===
 
@@ -20,18 +20,19 @@ then the Emacs PATH will be the Terminal PATH
 
 ===PATH set from ~/.MacOSX/environment.plist===
 
- ~/.MacOSX/environment.plist can also be used as a central place to save environment variables for all processes launched by a user, including from Spotlight according to the Apple documentation at:
+##~/.MacOSX/environment.plist## can also be used as a central place to save environment variables for all processes launched by a user, including from Spotlight according to the Apple documentation at:
 * [http://developer.apple.com/library/mac/#documentation/MacOSX/Conceptual/BPRuntimeConfig/Articles/EnvironmentVars.html  developer.apple.com/library/mac/#documentation/MacOSX/Conceptual/BPRuntimeConfig/Articles/EnvironmentVars.html]
 * [http://developer.apple.com/qa/qa2001/qa1067.html  developer.apple.com/qa/qa2001/qa1067.html]
 
-The defaults programme can be used to read and write to  ~/.MacOSX/environment.plist , for example:
+The ##defaults## program can be used to read and write to  ##~/.MacOSX/environment.plist##, for example:
 
 	export PATH=$(defaults read "${HOME}/.MacOSX/environment" PATH)         # bash
 	set path=(`defaults read ~/.MacOSX/environment PATH | tr ':' ' '`)           # tcsh
 
-NOTE: when you make a change to environment.plist, you need to log off and log in again before it takes effect.
+NOTE: when you make a change to ##environment.plist##, you need to log off and log in again before it takes effect.
 
-For those that like their PATHs from .bashrc and would like the environment.plist to update itself at every start up, put the following in your /etc/profile file:
+For those that like their PATHs from ##.bashrc## and would like the ##environment.plist## to update itself at every start up, put the following in your ##/etc/profile## file:
+
     #/etc/profile begin
     if [ -x /usr/libexec/path_helper ]; then
         eval `/usr/libexec/path_helper -s`
@@ -39,7 +40,7 @@ For those that like their PATHs from .bashrc and would like the environment.plis
     fi
     #/etc/profile end
 
-Other information.  Note that there are reports that environment.plist does not work in Lion/Mountain Lion.  Definitive Apple developer documentation on this would be welcome.
+Other information.  Note that there are reports that ##environment.plist## does not work in Lion/Mountain Lion.  Definitive Apple developer documentation on this would be welcome.
 * [http://www.nabble.com/unicode-character-in-aquamacs-td24259615.html  www.nabble.com/unicode-character-in-aquamacs-td24259615.html]
 * [http://superuser.com/questions/476752/setting-environment-variables-in-os-x-for-gui-applications  superuser.com/questions/476752/setting-environment-variables-in-os-x-for-gui-applications]
 * [http://apple.stackexchange.com/questions/57385/where-are-system-environment-variables-set-in-mountain-lion apple.stackexchange.com/questions/57385/where-are-system-environment-variables-set-in-mountain-lion]
@@ -82,6 +83,7 @@ Note: You must create a dummy ##environment.plist## file to seed the process.
 
 Because Spotlight's parent process is launchd, one can set environment variables for applications (including Emacs.app) launched from Spotlight by putting them in in ##/etc/launchd.conf## or ##$HOME/.launchd.conf##. The syntax is tcsh.
 For example:
+
     % cat /etc/launchd.conf 
     # include macports in global path - basically so Emacs.app can see git
     setenv PATH /opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin
@@ -93,20 +95,25 @@ You will have to reboot for launchd to reload ##launchd.conf##. If you don't wan
 ===getenv/setenv variants===
 
 Note that using any of these, PATH and exec-path will not be kept in sync automatically so you will may want set exec-path as well, e.g.:
+
           (setq exec-path (split-string (getenv "PATH") ":")
+
 For that reason GNU recommend against this approach (see above).  However it has the advantage of being specific to emacs and the user concerned, and entirely within your init file.
 
 You can use getenv / setenv directly:
  In your init file, e.g. ~/.emacs, add
+
    (if (string-equal "darwin" (symbol-name system-type))
       (setenv "PATH" (concat "/opt/local/bin:/opt/local/sbin:" (getenv "PATH"))))
 
 You can use them to have the same PATH as .bashrc sets
+
    (if (not (getenv "TERM_PROGRAM"))
        (setenv "PATH"
                (shell-command-to-string "source $HOME/.bashrc && printf $PATH")))
 
 You can use them to have the PATH from the default SHELL
+
   (if (not (getenv "TERM_PROGRAM"))
       (let ((path (shell-command-to-string
               "$SHELL -cl \"printf %s \\\"\\\$PATH\\\"\"")))
