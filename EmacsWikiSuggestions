@@ -101,6 +101,10 @@ The context provided in parenthesis after the manual link is in fact a regular e
 
 All you need to do is provide a regular expression that matches the second entry and not the fist, eg. "Emacs". I felt that this was less tricky than relying on some transformation of the manual URL to extract the exact info manual basename or whatever it's called.
 
+
+[new:DrewAdams:2013-01-28 14:04 UTC]
+Sounds good to me -- thanks.  --DrewAdams
+
 == User Names on RecentChanges Page ==
 
 It would be good if user names were treated normally at RecentChanges, that is, to show a non-existant page like a non-existant page is usually shown. People might be encouraged to follow it and create a home page.
