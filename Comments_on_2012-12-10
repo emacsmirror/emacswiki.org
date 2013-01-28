@@ -12,7 +12,7 @@ Nobody has used it, however. Having a button to quickly add this tag and an expl
 
 ----
 
-If you now click on _Administration_, you should see a link saying "<name of the current page> needs attention." If you click it, CategoryNeedsAttention will be added to the page in question. When browsing a page, the code now checks for a match and if a match is found, a warning is displayed. In the default theme, that's a little paragraph at the top with pink background saying "This page needs attention."
+If you now click on _Administration_, you should see a link saying "<name of the current page> needs attention." If you submit a reason, CategoryNeedsAttention will be added to the page in question. When browsing a page, the code now checks for a match and if a match is found, a warning is displayed. In the default theme, that's a little paragraph at the top with pink background saying "This page needs attention."
 
 What do you think? (Aside from the lack of [WikiPedia:Use%E2%80%93mention_distinction use-mention distinction].)
 
