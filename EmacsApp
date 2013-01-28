@@ -15,8 +15,10 @@ By default ##exec-path## in Emacs.app appears to be initialized to a list derive
 ===PATH set from Terminal===
 
 If you launch Emacs.app from the terminal, e.g.
+
    /Applications/Emacs.app/Contents/MacOS/Emacs
-then the Emacs PATH will be the Terminal PATH
+
+then the Emacs PATH will be the Terminal PATH.
 
 ===PATH set from ~/.MacOSX/environment.plist===
 
