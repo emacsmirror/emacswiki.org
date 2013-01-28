@@ -40,6 +40,9 @@ For those that like their PATHs from .bashrc and would like the environment.plis
     #/etc/profile end
 
 Other information.  Note that there are reports that environment.plist does not work in Lion/Mountain Lion.  Definitive Apple developer documentation on this would be welcome.
+* [http://www.nabble.com/unicode-character-in-aquamacs-td24259615.html  www.nabble.com/unicode-character-in-aquamacs-td24259615.html]
+* [http://superuser.com/questions/476752/setting-environment-variables-in-os-x-for-gui-applications  superuser.com/questions/476752/setting-environment-variables-in-os-x-for-gui-applications]
+* [http://apple.stackexchange.com/questions/57385/where-are-system-environment-variables-set-in-mountain-lion apple.stackexchange.com/questions/57385/where-are-system-environment-variables-set-in-mountain-lion]
 
 ==== Alternative Solution ====
 
