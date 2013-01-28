@@ -5,20 +5,20 @@ For the different variants of Emacs on Mac OSX, see EmacsForMacOS.
 
 See "Cocoa Emacs" under EmacsForMacOS.
 
-== PATH and exec-path==
+
+== PATH ==
+=== PATH and exec-path===
 See [http://www.gnu.org/software/emacs/manual/html_node/elisp/Subprocess-Creation.html www.gnu.org/software/emacs/manual/html_node/elisp/Subprocess-Creation.html], in particular "Generally, you should not modify exec-path directly. Instead, ensure that your PATH environment variable is set appropriately before starting Emacs. "
 
 By default exec-path in Emacs.app appears to be initialized to a list derived from PATH, plus exec-directory, which is set to "/Applications/Emacs.app/Contents/MacOS/bin/".
 
-== PATH ==
-
-===Launched from Terminal===
+===PATH set from Terminal===
 
 If you launch Emacs.app from the terminal, e.g.
    /Applications/Emacs.app/Contents/MacOS/Emacs
 then the Emacs PATH will be the Terminal PATH
 
-===~/.MacOSX/environment.plist===
+===PATH set from ~/.MacOSX/environment.plist===
 
  ~/.MacOSX/environment.plist can also be used as a central place to save environment variables for all processes launched by a user, including from Spotlight according to the Apple documentation at:
 * [http://developer.apple.com/library/mac/#documentation/MacOSX/Conceptual/BPRuntimeConfig/Articles/EnvironmentVars.html  developer.apple.com/library/mac/#documentation/MacOSX/Conceptual/BPRuntimeConfig/Articles/EnvironmentVars.html]
@@ -44,7 +44,7 @@ Other information.  Note that there are reports that environment.plist does not 
 * [http://superuser.com/questions/476752/setting-environment-variables-in-os-x-for-gui-applications  superuser.com/questions/476752/setting-environment-variables-in-os-x-for-gui-applications]
 * [http://apple.stackexchange.com/questions/57385/where-are-system-environment-variables-set-in-mountain-lion apple.stackexchange.com/questions/57385/where-are-system-environment-variables-set-in-mountain-lion]
 
-==== Alternative Solution ====
+=== Alternative solution for ~/.MacOSX/environment.plist===
 
 I found the above to be not quite right on my Mac OS 10.6 laptop.  The ##defaults## command generated gibberish in my ##environment.plist## file so I took the approach of creating a startup script (##~/bin/macosx-startup##) and added it to my User account login items list.  ##macosx-startup## is a bash one-liner:
 
@@ -96,16 +96,17 @@ Note that using any of these, PATH and exec-path will not be kept in sync automa
           (setq exec-path (split-string (getenv "PATH") ":")
 For that reason GNU recommend against this approach (see above).  However it has the advantage of being specific to emacs and the user concerned, and entirely within your init file.
 
-==== Direct use of getenv / setenv ====
+You can use getenv / setenv directly:
  In your init file, e.g. ~/.emacs, add
    (if (string-equal "darwin" (symbol-name system-type))
       (setenv "PATH" (concat "/opt/local/bin:/opt/local/sbin:" (getenv "PATH"))))
 
-==== use the same PATH as .bashrc sets====
+You can use them to have the same PATH as .bashrc sets
    (if (not (getenv "TERM_PROGRAM"))
        (setenv "PATH"
                (shell-command-to-string "source $HOME/.bashrc && printf $PATH")))
-====use the default login path from SHELL====
+
+You can use them to have the PATH from the default SHELL
   (if (not (getenv "TERM_PROGRAM"))
       (let ((path (shell-command-to-string
               "$SHELL -cl \"printf %s \\\"\\\$PATH\\\"\"")))
