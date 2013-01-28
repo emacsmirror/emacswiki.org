@@ -27,8 +27,8 @@ You can also provide some *context*. If we're linking to Manual:macros, for exam
 
 (To learn more about this feature, see the
 [http://www.emacswiki.org/cgi-bin/info-ref direct interface],
-[http://www.emacswiki.org/scripts/info-ref source] (which is where you can see the URLs it parses, and
-[http://www.emacswiki.org/emacs/info-ref.dat database].
+the [http://www.emacswiki.org/scripts/info-ref source] (which is where you can see the URLs it parses), and
+the [http://www.emacswiki.org/emacs/info-ref.dat database] used.
 
 The XEmacs manuals are also available online from here:
 
