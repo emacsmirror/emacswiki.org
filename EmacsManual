@@ -23,7 +23,7 @@ need to put them in double square brackets:
 You can also provide some *context*. If we're linking to Manual:macros, for example, we are shown to alternatives. If we know that we want the Emacs List Preference link instead of the CC Mode link, we can provide some context: 
 
 * ##Manual:macros (emacs)## -> Manual:macros (emacs)
-* ##[[Manual:point]] (elisp)## -> [[Manual:point]] (elisp)
+* ##[[Manual:point]] (lisp)## -> [[Manual:point]] (lisp)
 
 The XEmacs manuals are also available online from here:
 
