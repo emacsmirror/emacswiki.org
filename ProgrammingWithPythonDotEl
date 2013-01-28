@@ -1,8 +1,6 @@
-Consider [http://www.loveshack.ukfsn.org/emacs/python.el 'loveshack' python.el] from [http://www.loveshack.ukfsn.org/emacs/ Emacs bits];
-
-If you wish to continue using the decent python.el as included in emacs 24.1 and before, you might be interested to know it is now maintained at https://github.com/leoliu/python-el; feature requests and bug reports are welcome. I'll try my best to fix them. - Leo
-
-And [https://github.com/fgallina/python.el 'gallina' python.el] which is being contributed in parts to the official python.el.
+Confusingly, there are at least two major variants of ##python.el##
+* [http://www.loveshack.ukfsn.org/emacs/python.el 'loveshack' python.el] was used in Emacs 24.1 and before.  This is now maintained at https://github.com/leoliu/python-el; "feature requests and bug reports are welcome. I'll try my best to fix them. - Leo"
+* [https://github.com/fgallina/python.el 'gallina' python.el] is now the basis for [http://bzr.savannah.gnu.org/lh/emacs/trunk/annotate/head:/lisp/progmodes/python.el the official python.el].
 
 Also see ProgrammingWithPythonModeDotEl for the python-mode distributed with python.
 
