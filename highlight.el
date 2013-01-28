@@ -7,9 +7,9 @@
 ;; Copyright (C) 1995-2013, Drew Adams, all rights reserved.
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 21.0
-;; Last-Updated: Fri Dec 28 09:55:54 2012 (-0800)
+;; Last-Updated: Mon Jan 28 06:47:14 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 3163
+;;     Update #: 3174
 ;; URL: http://www.emacswiki.org/highlight.el
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
 ;; Keywords: faces, help, local
@@ -751,9 +751,9 @@
                                                           ;; read-face-name
 (require 'menu-bar+ nil t) ;; (no error if not found): menu-bar-edit-region-menu
 ;; (require 'icicles nil t)   ;; (no error if not found): icicle-define-command,
-                              ;; icicle-face-name-history, icicle-make-face-candidate, 
+                              ;; icicle-face-name-history, icicle-make-face-candidate,
                               ;; icicle-read-string-completing, icicle-remove-if,
-                              ;; icicle-remove-if-not. 
+                              ;; icicle-remove-if-not.
 
 ;; Quiet the byte-compiler for Emacs 20
 (defvar hi-lock-mode)
@@ -805,7 +805,6 @@
                     ["Paste Text Properties" hlt-yank-props
                                              (and mark-active (not buffer-read-only))] 'dp)
 (easy-menu-add-item facemenu-menu () ["Copy Text Properties" hlt-copy-props t] 'dp)
-
  
 ;;(@* "Variables and Faces")
 
@@ -1104,7 +1103,7 @@ Optional 7th arg NTH determines which regexp subgroup is highlighted.
   regexp subgroup (\"\\\\(...\\\\)\" expression) is highlighted.
   (NTH is not available interactively.)"
   (interactive
-   `(,@(hlt-region-or-buffer-limits) 
+   `(,@(hlt-region-or-buffer-limits)
      ,(if (fboundp 'icicle-read-string-completing)
           (icicle-read-string-completing "Regexp to highlight: "
                                          hlt-last-regexp
@@ -1410,7 +1409,7 @@ Optional arg MSG-P non-nil means display a progress message."
       (save-restriction
         (narrow-to-region start end)
         (goto-char (point-min))
-        (while (not (eobp))          
+        (while (not (eobp))
           (cond (hlt-use-overlays-flag
                  (setq overlay
                        (make-overlay (point) (setq start  (progn (end-of-line) (point)))))
@@ -1738,7 +1737,7 @@ that can be added."
 
   (defun hlt-add-listifying (orig-val val-to-add)
     "Add VAL-TO-ADD to list ORIG-VAL, listifying ORIG-VAL first if needed."
-    (unless (listp orig-val) (setq orig-val  (list orig-val)))    
+    (unless (listp orig-val) (setq orig-val  (list orig-val)))
     (add-to-list 'orig-val val-to-add)
     orig-val)
 
@@ -1957,7 +1956,7 @@ Optional 8th arg MOUSE-P non-nil means use the `mouse-face' property,
 
   (defun hlt-mouse-toggle-link-highlighting ()
     "Alternately highlight and unhighlight links on a mouse click.
-Do nothing if the click is at a different location from the last one. 
+Do nothing if the click is at a different location from the last one.
 This calls `hlt-toggle-link-highlighting' to do the toggling.
 Links in the entire buffer are affected, even if the region is active.
 This is intended to be used on `post-command-hook'."
@@ -1986,7 +1985,7 @@ Calls `hlt-toggle-property-highlighting', passing the args."
 
   (defun hlt-mouse-toggle-property-highlighting (prop &optional face msg-p mouse-p)
     "Alternately highlight and unhighlight text on a mouse click.
-Do nothing if the click is at a different location from the last one. 
+Do nothing if the click is at a different location from the last one.
 Call `hlt-toggle-link-highlighting', passing the args.
 Propertized text in the entire buffer is (un)highlighted, even if the
 region is active.
@@ -2018,7 +2017,7 @@ Optional arg POS is a buffer position.  If it is the same as the
 Other args are the same as for `hlt-highlight-property-with-value'."
     (interactive
      `(,(intern (read-string "Property to highlight: " nil 'highlight-property-history))
-       ,@(hlt-region-or-buffer-limits) 
+       ,@(hlt-region-or-buffer-limits)
        nil  t  ,current-prefix-arg))
     (when (or (not pos) (equal pos (cdr hlt-prop-highlighting-state)))
       (cond ((car hlt-prop-highlighting-state)
