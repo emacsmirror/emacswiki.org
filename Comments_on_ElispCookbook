@@ -69,7 +69,18 @@ We then replace the main page with the following:
 <include "C">
 }}}
 
+The result would be:
+
+: *A*
+: (_Edit section A_)
+: A!
+: *B*
+: (_Edit section A_)
+: B!
+: *C*
+: (_Edit section A_)
+: C!
+
 The table of contents may or may not work with the included elements, I haven't tried.
 
 -- AlexSchroeder 2013-01-28 07:32 UTC
-
