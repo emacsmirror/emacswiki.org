@@ -58,7 +58,7 @@ Each page would follow this pattern:
 == A ==
 ([Self:action=edit;id=A Edit Section A])
 
-A!
+... A!
 }}}
 
 We then replace the main page with the following:
@@ -73,13 +73,13 @@ The result would be:
 
 : *A*
 : (_Edit section A_)
-: A!
+: ... A!
 : *B*
-: (_Edit section A_)
-: B!
+: (_Edit section B_)
+: ... B!
 : *C*
-: (_Edit section A_)
-: C!
+: (_Edit section C_)
+: ... C!
 
 The table of contents may or may not work with the included elements, I haven't tried.
 
