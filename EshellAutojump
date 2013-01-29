@@ -1,0 +1,9 @@
+This is an [[Eshell]] extension.
+
+Lisp:eshell-autojump.el
+
+Use `j' to list your favorite directories (as determined by your usage of `cd').
+Use `j regexp' to jump to your most favorite directory matching the regular expression.
+
+----
+CategoryEshell
