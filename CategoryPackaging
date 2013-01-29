@@ -13,8 +13,13 @@ This category is about packaging Emacs extension, or about utilities that can au
 
 Emacs 24 comes with a *built-in package manager* using [[ELPA]]: `M-x package-install'
 
+Users on the EmacsChannel report the following alternatives still being used:
+
+* [[el-get]] -- one regularly sees packages that claim to be available via el-get, but not via any ELPA-compatible repository
+
+These seem to be earlier efforts that have basically been obsoleted by the inclusion of [[ELPA]] into Emacs:
+
 * AutoInstall
-* [[el-get]]
 * [http://repo.or.cz/w/elinstall.git elinstall]
 * [[Epackage]]
 * [http://www.iro.umontreal.ca/~monnier/elisp/install.el install]
