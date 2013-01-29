@@ -13,8 +13,8 @@ This category is about packaging Emacs extension, or about utilities that can au
 
 === Package Managers ===
 
-* [http://www.emacswiki.org/emacs/AutoInstall auto-install]
-* [http://www.emacswiki.org/emacs/el-get.el el-get]
+* AutoInstall
+* [[el-get]]
 * [http://repo.or.cz/w/elinstall.git elinstall]
 * [[Epackage]]
 * [http://www.iro.umontreal.ca/~monnier/elisp/install.el install]
