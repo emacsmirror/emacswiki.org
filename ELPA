@@ -13,11 +13,11 @@ The Emacs version of ##package.el## will support multiple repositories.  You can
 
 Any combination of repositories is fine.  You should probably always include GNU's core repository but it's not required.
 
-You can add just one like this:
+Adding [[Marmalade]]:
 
   (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
 
-or for Melpa:
+Adding [[MELPA]]:
 
   (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
 
@@ -124,26 +124,7 @@ You can make packages work in Emacs 23, you need to add something like this to y
 (package-initialize)
 }}}
 
-
-== Marmalade ==
-
-[http://marmalade-repo.org/ Marmalade], a package.el friendly community package source that allows users to upload their own packages.  Package maintainers don't have to be the same as the maintainers of the original code.  
-
-Some packages (for instance, slime) are out of date however.
-
-NicFerrier maintains this repository.  He asks that you report issues or suggest features through the [[https://github.com/nicferrier/marmalade/issues|Github issues system]].
-
-== Melpa ==
-
-[http://melpa.milkbox.net/ MELPA] is a further package repository which hosts snapshot packages of many hundreds of libraries. Packages are built on the MELPA server directly from upstream source code according to small recipe files; in this sense MELPA is akin to a server-side version of el-get which eliminates the need for a user to have multiple version-control tools on his local machine.
-
-Library authors do not need to upload new versions of their packages to MELPA, since they are built automatically. The MELPA maintainers plan to add support for automatic builds of stable version packages triggered by upstream version tags.
-
-Currently supported backends are git, svn, bzr, hg, darcs and emacswiki. The collaboration model for MELPA is like that of the Homebrew package manager on OS X -- to add new recipes, simply file a pull request [https://github.com/milkypostman/melpa on Github].
-
-Melpa uses a recipe system similar to [[el-get]].  Recipes are stored on a git-hub repository which tells the updated package.el how to download each package.  The source of the package might be from git, svn, darcs or this wiki.
-
-== Other ==
+== Other Repositories ==
 
 AndrewHyatt has written an [http://code.google.com/p/elpa-on-appengine/ implementation of ELPA for AppEngine], written in Go.  It is not yet running publicly yet.
 
