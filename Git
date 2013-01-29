@@ -14,9 +14,9 @@ There are two front end wrapper packages that can be used with ##vc-git##:
 <tt>[http://www.kernel.org/git/?p=git/git.git;a=tree;hb=HEAD;f=contrib/emacs contrib/emacs]</tt>
 directory (already installed in Debian as part of ##git-core##, or more recently in the separate ##git-el## package). The README file supplied in ##contrib/emacs## explains how to install them. Some introductory tutorial material located at [http://parijatmishra.wordpress.com/2008/09/06/up-and-running-with-emacs-and-git/ Up and Running with Emacs and Git]
 
-In emacs 23 the command showing the repository status C-x v d has been rewritten, it supports checking in multiple files/directories at a time, and has fancy display.  It can be extended with git specific functions.
-vc-git-grep can be used and a UI for git grep.
-vc-git.el also includes support for git blame, in the vc-annotate command (C-x v g).
+The command showing the repository status `C-x v d' supports checking in multiple files/directories at a time, and it has fancy display.  It can be extended with git specific functions.
+vc-git-grep can be used as a UI for git grep.
+vc-git.el also includes support for git blame, in the vc-annotate command `C-x v g'.
 
 [[Magit]] is *the most popular interface to git*. If you are new to git and do not need support for other vcs this is likely the package you should try first.
 
