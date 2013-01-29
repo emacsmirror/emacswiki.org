@@ -140,3 +140,6 @@ If you want to try it without installing it it's very easy to do so.  Just clone
 {{{
 $ /Applications/Emacs.app/Contents/MacOS/Emacs -Q -l init.el 
 }}}
+
+----
+CategoryPackaging
