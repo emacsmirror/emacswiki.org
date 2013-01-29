@@ -12,6 +12,7 @@ More information about eshell :
 
 * EshellAlias
 * EshellAndAngeFtp -- using eshell on remote hosts
+* EshellAutojump -- use `j' to jump to your favorite directories
 * EshellBackticks -- commands in `backticks` are executed and their output replaces the commands in backticks
 * EshellBmk -- integration between Eshell and [[bookmark]]s
 * EshellColor -- faces, escape sequences, etc.
