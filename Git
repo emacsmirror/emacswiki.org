@@ -6,7 +6,6 @@ and DaRcs.  It was written for the linux kernel hackers but it is now used by ot
 Git is supported by ##vc-git## since 22.1, accessible via VersionControl.
 
 ##vc-git## is reported to work well.
-NB You should probably upgrade Emacs to obtain standard vc-git support as vc-git is not being back-ported.
 There are two front end wrapper packages that can be used with ##vc-git##:
 
 # [http://github.com/tsgates/git-emacs/tree/master git-emacs], which provides status bar icons for git status
