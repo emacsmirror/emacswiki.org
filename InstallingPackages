@@ -38,17 +38,11 @@ to connect to network)...
 
 == Installing packages from Internet ==
 
-There exist hundreds of Emacs Lisp libraries but GNU Emacs does not contain a package manager allowing users to easily install those libraries and keep them up-to-date.
+There exist hundreds of Emacs Lisp libraries. Many of these can be installed using a *package manager* such as [[ELPA]] or [[Marmelade]].
 
-There is a list of package managers on CategoryCode that have been created to fill this gap.
-
-Some packages exist whose only purpose is to update another single package.
+Some packages exist whose only purpose is to update another single package:
 
 * Lisp:icicles-install.el -- Download and optionally byte-compile Icicles
 
-See WishList for discussion of adding package management to Emacs.
-
 ----
 CategoryDotEmacs.
-
-
