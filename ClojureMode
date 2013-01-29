@@ -1,6 +1,6 @@
 ClojureMode is a major mode that provides font-lock, indentation, and functions for communication with subprocesses for [http://clojure.org Clojure].
 
-It's more useful if used together with swank-clojure (update: swank-clojure has been deprecated in place of nrepl.el and nrepl) to interact with subprocesses. See http://dev.clojure.org/display/doc/Getting+Started+with+Emacs for a tutorial (older tutorial at: http://technomancy.us/126)
+It's more useful if used together with [[nREPL.el]] to interact with subprocesses. See [http://clojure-doc.org/articles/tutorials/emacs.html this guide] for details on setting up Emacs for Clojure development.
 
 Download it here: http://github.com/technomancy/clojure-mode
 
