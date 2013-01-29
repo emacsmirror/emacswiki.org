@@ -6,7 +6,7 @@ This category is about packaging Emacs extension, or about utilities that can au
 ** [[MELPA]] -- an ELPA-compatible repository, built automatically on their server from upstream sources using recipes
 ** [[Marmalade]] -- an ELPA-compatible repository, where users upload their own packages
 * [[DELPS]] -- Distributed Emacs Lisp Package System used by [[Epackage]].  Install [[Git]] packaged repositories.
-* [[Emacsmirror]] -- Collects packages and distributes them as [[Git]] repositories.  List packages using [[Epkg]].
+* [[Emacsmirror]] -- Collects packages and distributes them as [[Git]] repositories.
 
 There seem to be earlier efforts that have basically been obsoleted by the inclusion of [[ELPA]] into Emacs:
 
