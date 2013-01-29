@@ -1,7 +1,13 @@
-An [[ELPA]] compatible package repository.
+[http://marmalade-repo.org/ Marmalade] is an [[ELPA]] compatible package repository that allows users to upload their own packages.  Package maintainers don't have to be the same as the maintainers of the original code.  
+
+Some packages (for instance, slime) are out of date however.
 
 Marmalade is for packages that cannot be uploaded to GNU's official ELPA repository.
 
 Marmalade is a NodeJs project maintained by NicFerrier in [[http://github.com/nicferrier/marmalade|github]].
+He asks that you report issues or suggest features through the [[https://github.com/nicferrier/marmalade/issues|Github issues system]].
 
 NicFerrier is currently rewriting Marmalade in EmacsLisp using [[Elnode]].
+
+----
+CategoryPackage
