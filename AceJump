@@ -2,7 +2,9 @@ AceJump-mode is a minor mode for Emacs, enabling fast/direct cursor movement in 
 
 [:WantDemo]
 = Is there a demo? =
-Yes, refer to [http://dl.dropbox.com/u/3254819/AceJumpModeDemo/AceJumpDemo.htm here]
+Yes, refer to [http://dl.dropbox.com/u/3254819/AceJumpModeDemo/AceJumpDemo.htm here].
+
+There is also an Emacs Rocks [http://emacsrocks.com/e10.html screencast for AceJump]. 
 
 [:WhereItComesFrom]
 = Where does this minor mode come from? =
