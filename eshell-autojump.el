@@ -95,25 +95,26 @@ Return list of keys sorted by value, descending, from `eshell-autojump-map'."
 (defun eshell/j (&rest args)           ; all but first ignored
   "Jump to a directory you often cd to.
 This compares the argument with the list of directories you usually jump to.
-Without an argument, list the ten most common arguments.
-This ends up calling `eshell/cd'."
+Without an argument, list the ten most common directories.
+With a positive integer argument, list the n most common directories.
+Otherwise, call `eshell/cd' with the result."
   (setq args (eshell-flatten-list args))
   (let ((path (car args))
 	(candidates (eshell-autojump-candidates))
 	(case-fold-search (eshell-under-windows-p))
 	result)
-    (if path
+    (when (not path)
+      (setq path 10))
+    (if (and (integerp path) (> path 0))
 	(progn
-	  (if (numberp path)
-	      (setq path (number-to-string path)))
-	  (while (and candidates (not result))
-	    (if (string-match path (car candidates))
-		(setq result (car candidates))
-	      (setq candidates (cdr candidates))))
-	  (eshell/cd result))
-      (let ((tenth (nthcdr 9 candidates)))
-	(when tenth
-	  (setcdr tenth nil)))
-      (eshell-lisp-command (mapconcat 'identity candidates "\n")))))
-
+	  (let ((n (nthcdr (1- path) candidates)))
+	    (when n
+	      (setcdr n nil)))
+	  (eshell-lisp-command (mapconcat 'identity candidates "\n")))
+      (while (and candidates (not result))
+	(if (string-match path (car candidates))
+	    (setq result (car candidates))
+	  (setq candidates (cdr candidates))))
+      (eshell/cd result))))
+    
 ;;; eshell-autojump.el ends here
