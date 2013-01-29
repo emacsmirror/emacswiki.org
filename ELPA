@@ -3,7 +3,7 @@ ELPA is the *Emacs Lisp Package Archive*, originally by TomTromey, now included 
 == ELPA  ==
 "Our goal is to make it simple to install, use, and upgrade Emacs Lisp packages. We supply ##package.el##, a simple package manager for Emacs, and a repository of pre-packed Emacs Lisp code."
 
-##package.el## (from ELPA) has been added to vanilla GnuEmacs, version 24.  As of 2010-06-18, ##package.el## has been merged with the development version of Emacs, and an ELPA repository has been set up at http://elpa.gnu.org/.
+##package.el## (from ELPA) has been added to GnuEmacs, version 24.  An [http://elpa.gnu.org/ ELPA repository] has been set up.
 
 The Emacs version of ##package.el## will support multiple repositories.  You can use the GNU ELPA plus other repositories like this:
 
