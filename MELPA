@@ -1,6 +1,6 @@
-MELPA (Milkypostman's ELPA or Milkypostman's Experimental Lisp Package Archive) - MELPA is a growing collection of package.el-compatible Emacs Lisp packages built automatically on our server from the upstream source code using simple recipes. (Think of it as a server-side version of el-get, or even homebrew.)
+MELPA (Milkypostman's [[ELPA]] or Milkypostman's Experimental Lisp Package Archive) - MELPA is a growing collection of package.el-compatible Emacs Lisp packages built automatically on our server from the upstream source code using simple recipes. (Think of it as a server-side version of el-get, or even homebrew.)
 
 It is a version control based package repository for Emacs 24, that is, if you have your package in a version control system, just create a simple recipe for MELPA, and it will automatically fetch the package from your published VCS. As of 2012-09-19 it has 441 packages.
 
-- Github page: https://github.com/milkypostman/melpa
-- Official page: http://melpa.milkbox.net/
+* Github page: https://github.com/milkypostman/melpa
+* Official page: http://melpa.milkbox.net/
