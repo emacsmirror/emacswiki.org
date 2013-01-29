@@ -5,5 +5,7 @@ This is an eshell extension to facilitate directory switching.
 Use `j' to list your favorite directories (as determined by your usage of `cd').
 Use `j regexp' to jump to your most favorite directory matching the regular expression.
 
+Your favorite directories are saved in `~/.eshell/autojump'.
+
 ----
 CategoryEshell
