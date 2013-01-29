@@ -1,7 +1,7 @@
 DistributedVersionControl (DVC) is a generic Emacs interface to version control systems. Currently, it supports bzr, hg, git, monotone, tla.
 
 
-Screenshot: http://farm4.static.flickr.com/3483/3829774816_f90e3c0be4.jpg
+http://farm4.static.flickr.com/3483/3829774816_f90e3c0be4.jpg
 
 
 * [http://download.gna.org/dvc/ DVC: Distributed Version Control for Emacs]
