@@ -10,5 +10,14 @@ Your favorite directories are saved in `~/.eshell/autojump'.
 Instead of measuring how much time you spend in a particular directory, I just measure how often you switch /to/ a particular directory.
 The code hooks into `eshell-directory-change-hook'.
 
+Note that the eshell comes with a very similar mechanism: it maintains a ring the last 32 directories seen.
+
+: To view the ring: `cd ='
+: Changing to an index within the ring: `cd -4'
+: Note that `cd -' is the same as `cd -0'
+: Use a regular expression: `cd =regexp'
+
+The ring is saved in `~/.eshell/lastdir'.
+
 ----
 CategoryEshell
