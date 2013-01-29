@@ -1,0 +1,51 @@
+----
+[new:AndyStewart:2009-02-03 00:42 UTC]
+I think MultiTerm is more better. -- AndyStewart
+----
+[new]
+I have added some set up and customization hints in AnsiTermHints. --CraigMcDaniel
+----
+[new]
+After upgrading to Emacs22 from 21.4 I notice that my setting of term-default-fg-color has no effect.  What would be the proper way to customize default foreground and background colors in ansi-term included in Emacs22? --PeterPovinec
+----
+[new]
+Color programs such as mutt work, but any colors in my prompt are lost. Any ideas? --DavidMcCabe
+[new]
+Works fine for me. Perhaps you are not using the correct escape sequences in your prompt. See   http://www.eterm.org/docs/view.php?doc=ref#escape for eterm escape codes --PeterPovinec
+[new:ChrisForno:2006-12-01 00:00 UTC]
+In Gentoo, you need to add <code>eterm-color</code> to the list of terminals in <code>/etc/DIR_COLORS</code>. Other distributions may have similar sanity checks.
+----
+[new]
+.. does anyone know if ansi-term works with XEmacs, though?  It doesn't seem to be distributed with it.  (-- ChrisBall.)
+[new]
+.. I really want ansi-term for XEmacs too :-( -- ChristopherArmstrong
+[new]
+ChrisBall:  It seems incredible that XEmacs doesn't have a terminal emulator capable of running something like mutt.  Do other XEmacs users just get by without full ANSI support somehow?  I've switched to CategoryGnus and EmacsIRCClient, and want to migrate the last of the tty/ANSI apps so that they get run inside XEmacs too.  :)
+[new]
+Well after years of puzzling I finally found why in XEmacs <code>M-x term</code> won't run any ''visual'' commands (like top or less): [[XEmacsMuleAndTerminalEmulation]].  Now it works almost fine, except for the things displayed in reverse in xterm (attribute STANDOUT AFAIK) which are not displayed at all. -- StefanKamphausen
+
+[new]
+Has anybody succeded to run ansi-term (or term, or terminal-emulator for that matter) under Win32? I have Windows XP and trying any of these commands results in "Spawning child process: invalid argument" error. The default argument is cmdproxy in Emacs' bin directory; I have also tried cygwin's bash, well, any command, but to no avail. Every time I get that error. M-x shell and other child processes work fine.
+
+: Try just using Cygwin's Emacs.  It supports up to Emacs-23 which seems to run "ansi-term" and "term" quite well.  The errors you're describing kind of reminds me of trying to run telnet on Windows in Emacs.  You need a lot of special configuration (GIYF), and it's just a lot easier to run Emacs within Cygwin to begin with.  Everything's already properly configured.
+
+----
+[new]
+Q: Is it possible to change the color palette for LS_COLORS? Inside a Gnome terminal, I like to switch to the "Tango" palette and since I use color-theme-tango it would be nice to have the same colors inside Emacs especially because the standard terminal colors don't go well with Tango's background color.
+----
+I would also like to know, if there is a possibility that the colors (e.g. of directories) in term or ansi-term could make use of the Tango palette, as directory names are hardly readable.
+----
+[new]
+The command "dircolors" can help you to change "LS_COLORS". For example, you can copy "/etc/DIR_COLORS" to "~/.eterm_dircolors" as a template, and invoke "eval `dircolors ~/.eterm_dircolors`". Note: the TERM variable is set to "eterm-color" by default.
+
+For the unreadable blue directory color on tango theme, I changed the "*ansi-term-color-vector*" (FIXME), e.g.
+
+(setq ansi-term-color-vector
+  [unspecified "black" "red3" "lime green" "yellow3" "DeepSkyBlue3"
+   "magenta3" "cyan3" "white"])
+
+--- sssslang
+----
+
+-- BozhidarBatsov 2013-01-29 21:53 UTC
+
