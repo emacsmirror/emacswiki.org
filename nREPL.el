@@ -2,4 +2,4 @@
 
 nrepl.el is available for installation from both [[Marmalade]] and [[MELPA]].
 
-It's source code can be found at [[https://github.com/kingtim/nrepl.el GitHub]].
+Its source code can be found on [[https://github.com/kingtim/nrepl.el GitHub]].
