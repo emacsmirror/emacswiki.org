@@ -1,4 +1,4 @@
-This is an [[Eshell]] extension.
+This is an eshell extension to facilitate directory switching.
 
 Lisp:eshell-autojump.el
 
