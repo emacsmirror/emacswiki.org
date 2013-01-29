@@ -60,51 +60,6 @@ There is more to it, however. See Oddmuse:Transclusion.
 
 The resulting HTML doesn't tell you that !ExamplePage has been transcluded, but if you're on !ExamplePage, clicking on the header will search for it. It's up to the users to use a decent prefix to identify pages that are to be transcluded and to mention the page name this piece of text is from. -- Alex
 
-== Be Able To Specify Which Manual, for `Manual:' Links ==
-
-I recently added a glossary entry for `macro'.  I added this link: Manual:macros.  Unfortunately, there is also a `macros' page in the CC mode manual, so this link sends you to a page where you need to pick from the two manuals.  The choice will not be obvious to a newbie.
-
-It would be good to be able to somehow specify the manual: `(elisp)'. E.g. ##[[Manual (elisp):macros]]## or some such.  Being able to specify more than one manual would be a nice-to-have (without it one would just create multiple links). -- DrewAdams
-
-[new]
-I'm not sure how old this suggestion is. Right now I see that Manual:macros will link to a page that provides both links. Problem solved? -- Alex
-
-[new:DrewAdams:2013-01-26 16:34 UTC]
-Not really.  That just means the reader has to guess which  was meant (or whether both were meant).  The idea is to let the writer direct the reader to the appropriate place(s), so the reader only has to click, not check more than one manual.  This request is only a nice-to-have, not something important.  -- DrewAdams
-
-[new]
-How about the following changes:
-
-{{{
-# Manual:macros
-# Manual:macros (emacs)
-# [Manual:macros Macros]
-# [Manual:macros Macros] (emacs)
-# [[Manual:macros Macros]]
-# [[Manual:macros Macros]] (emacs)
-}}}
-
-Results in:
-
-# Manual:macros
-# Manual:macros (emacs)
-# [Manual:macros Macros]
-# [Manual:macros Macros] (emacs)
-# [[Manual:macros Macros]]
-# [[Manual:macros Macros]] (emacs)
-
-The context provided in parenthesis after the manual link is in fact a regular expression matching the label of the link in the index. Thus, if you link to "macros" and see the following:
-
-: *macros*
-: CC Mode Manual, Command and Function Index
-: GNU Emacs Lisp reference manual, Index
-
-All you need to do is provide a regular expression that matches the second entry and not the fist, eg. "Emacs". I felt that this was less tricky than relying on some transformation of the manual URL to extract the exact info manual basename or whatever it's called.
-
-
-[new:DrewAdams:2013-01-28 14:04 UTC]
-Sounds good to me -- thanks.  --DrewAdams
-
 == User Names on RecentChanges Page ==
 
 It would be good if user names were treated normally at RecentChanges, that is, to show a non-existant page like a non-existant page is usually shown. People might be encouraged to follow it and create a home page.
