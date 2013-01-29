@@ -4,14 +4,16 @@ This category is about packaging Emacs extension, or about utilities that can au
 
 === Repositories ===
 
-* [[ELPA]] -- Emacs Lisp Package Archive.  Package repository used by [[Package]].  Install archives.
-** [[MELPA]] -- built automatically on their server from upstream sources using recipes
-** [[Marmalade]] -- users upload their own packages
+* [[ELPA]] -- Emacs Lisp Package Archive. This is the GNU the standard repository.
+** [[MELPA]] -- an ELPA-compatible repository, built automatically on their server from upstream sources using recipes
+** [[Marmalade]] -- an ELPA-compatible repository, where users upload their own packages
 * [[DELPS]] -- Distributed Emacs Lisp Package System used by [[Epackage]].  Install [[Git]] packaged repositories.
 * EmacsLispList -- A long list of packages with summaries and links.  List packages using [http://www.damtp.cam.ac.uk/user/sje30/emacs/ell.el ell.el]
 * [[Emacsmirror]] -- Collects packages and distributes them as [[Git]] repositories.  List packages using [[Epkg]].
 
 === Package Managers ===
+
+Emacs 24 comes with a built-in package manager using [[ELPA]].
 
 * AutoInstall
 * [[el-get]]
@@ -28,7 +30,7 @@ This category is about packaging Emacs extension, or about utilities that can au
 
 === Related Tools ===
 
-* [http://www.emacswiki.org/emacs/EmacsLispList ell.el] -- Browse and download files from [http://www.emacswiki.org/emacs/WikifiedEmacsLispList Emacs Lips List].
+* EmacsLispList -- Browse and download files from the WikifiedEmacsLispList.
 
 == Discussions ==
 
