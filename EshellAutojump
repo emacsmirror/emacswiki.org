@@ -7,5 +7,8 @@ Use `j regexp' to jump to your most favorite directory matching the regular expr
 
 Your favorite directories are saved in `~/.eshell/autojump'.
 
+Instead of measuring how much time you spend in a particular directory, I just measure how often you switch /to/ a particular directory.
+The code hooks into `eshell-directory-change-hook'.
+
 ----
 CategoryEshell
