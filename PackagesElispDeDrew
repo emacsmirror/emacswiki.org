@@ -47,7 +47,7 @@ On peut essayer de jongler avec les branches de ces tests -- c.a.d. d'essayer le
 Les derniers packages que j'ai ecrit sont les suivants :
 
 * <tt>[[cursor-chg.el]]</tt> -- changer le curseur automatiquement, suivant le contexte -- voir ChangingCursorDynamically (en)
-* Lisp:cus-edit+.el -- des extensions au package standard `cus-edit' pour rendre Customize plus sage -- voir 'ustomizingAndSaving (en)
+* Lisp:cus-edit+.el -- des extensions au package standard `cus-edit' pour rendre Customize plus sage -- voir CustomizingAndSaving (en)
 * Lisp:diff-mode-.el -- des extensions au package standard `diff-mode' -- voir DiffEnhancements (en)
 * <tt>[[dired-details+.el]]</tt> -- extensions au package Lisp:dired-details.el -- voir [[DiredMode#DiredEnhancements]] (en)
 * Lisp:doremi-frm.el -- ajuster des proprietes de [[Frame]]s de facon incrementale avec les cles fleches ou la roue de la souris -- voir DoReMi (en)
