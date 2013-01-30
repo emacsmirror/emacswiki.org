@@ -2,3 +2,14 @@ Could someone with admin rights please remove all provided features except the c
 
 -- JonasBernoulli 2013-01-30 18:31 UTC
 
+
+----
+
+Done -- I commented out all of the `provide's except the first.  What that what you intended?
+
+You should ask Alex for admin rights, I would think.
+
+(I can't answer the question about the 3+ consecutive blank lines.)
+
+-- DrewAdams 2013-01-30 19:43 UTC
+
