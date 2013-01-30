@@ -13,3 +13,10 @@ You should ask Alex for admin rights, I would think.
 
 -- DrewAdams 2013-01-30 19:43 UTC
 
+
+----
+
+Yeah, I'll comment the "three links" spam rule.
+
+-- AlexSchroeder 2013-01-30 21:51 UTC
+
