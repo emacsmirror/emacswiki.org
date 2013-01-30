@@ -1,5 +1,6 @@
-;;;; recentf-ext.el --- Recentf extensions
-;; $Id: recentf-ext.el,v 1.3 2010/05/04 09:06:55 rubikitch Exp $
+;;; recentf-ext.el --- Recentf extensions
+
+;; $Id: recentf-ext.el,v 1.4 2013/01/30 21:47:11 rubikitch Exp $
 
 ;; Copyright (C) 2009  rubikitch
 
@@ -83,6 +84,9 @@
 ;;; History:
 
 ;; $Log: recentf-ext.el,v $
+;; Revision 1.4  2013/01/30 21:47:11  rubikitch
+;; fix header
+;;
 ;; Revision 1.3  2010/05/04 09:06:55  rubikitch
 ;; Added bug report command
 ;;
@@ -95,7 +99,7 @@
 
 ;;; Code:
 
-(defvar recentf-ext-version "$Id: recentf-ext.el,v 1.3 2010/05/04 09:06:55 rubikitch Exp $")
+(defvar recentf-ext-version "$Id: recentf-ext.el,v 1.4 2013/01/30 21:47:11 rubikitch Exp $")
 (eval-when-compile (require 'cl))
 (defgroup recentf-ext nil
   "recentf-ext"
