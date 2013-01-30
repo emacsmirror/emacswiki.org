@@ -18,4 +18,4 @@
 <a\s+href=["']?http # 2012-12-31 HTML anchor tags usually mean spam
 \[url= # 2012-12-31 bbCode links usually mean spam
 \s+https?:\S+[ .\r\n]*$ # 2012-12-31 ending with a link usually means spam
-(?s)\s+https?:\S+.*\s+https?:\S+.*\s+https?:\S+.* # 2012-12-31 three naked links usually mean spam
+# (?s)\s+https?:\S+.*\s+https?:\S+.*\s+https?:\S+.* # 2012-12-31 three naked links usually mean spam
