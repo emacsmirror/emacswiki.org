@@ -1,5 +1,6 @@
-;;;; archive-region.el --- Move region to archive file instead of killing
-;; Time-stamp: <2013-01-25 06:52:04 rubikitch>
+;;; archive-region.el --- Move region to archive file instead of killing
+
+;; Time-stamp: <2013-01-31 06:46:04 rubikitch>
 
 ;; Copyright (C) 2010,2013  rubikitch
 
