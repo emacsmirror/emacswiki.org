@@ -2546,10 +2546,10 @@ html-script-narrow-to-javascript)))
 ;;{{{ Epilogue
 
 (provide 'cfml-helper-mode)
-(provide 'php-cfml-helper-mode)
-(provide 'asp-cfml-helper-mode)
-(provide 'jsp-cfml-helper-mode)
-(provide 'html-mode)   ;for 14 character filename
+;;; (provide 'php-cfml-helper-mode)
+;;; (provide 'asp-cfml-helper-mode)
+;;; (provide 'jsp-cfml-helper-mode)
+;;; (provide 'html-mode)   ;for 14 character filename
 (cond ((boundp 'kill-buffer-hook)
        (add-hook 'kill-buffer-hook 'cfml-helper-remove-buffer))
       (t (set 'kill-buffer-hook 'cfml-helper-remove-buffer)))
