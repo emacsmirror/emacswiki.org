@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Jan 26 11:58:10 2013 (-0800)
+;; Last-Updated: Wed Jan 30 08:06:48 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 18849
+;;     Update #: 18855
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -389,7 +389,7 @@
   ;; icicle-transform-function
 (eval-and-compile (require 'icicles-var)) ; (This is required anyway by `icicles-fn.el'.)
   ;; lacarte-menu-items-alist, icicle-buffer-name-input-p, icicle-candidate-action-fn,
-  ;; icicle-candidate-nb, icicle-complete-keys-alist, icicle-completion-candidates, 
+  ;; icicle-candidate-nb, icicle-complete-keys-alist, icicle-completion-candidates,
   ;; icicle-current-completion-candidate-overlay, icicle-current-completion-mode,
   ;; icicle-current-input, icicle-current-raw-input, icicle-default-thing-insertion-flipped-p,
   ;; icicle-edit-update-p, icicle-general-help-string, icicle-get-alist-candidate-function,
@@ -2051,7 +2051,7 @@ If ALTERNATIVEP is non-nil, the alternative sort order is returned."
         #'help-commands-to-key-buttons
       #'substitute-command-keys)
     (concat
-     (format "\\<minibuffer-local-completion-map> 
+     (format "\\<minibuffer-local-completion-map>
 
                     Icicles Minibuffer Completion
                     -----------------------------
@@ -2309,11 +2309,11 @@ editing."
              (if icicle-use-~-for-home-dir-flag 'yes 'no)
              (if icicle-search-highlight-all-current-flag 'yes 'no)
              (if icicle-search-whole-word-flag 'yes 'no)
-             (if icicle-search-cleanup-flag 'yes 'no)                
+             (if icicle-search-cleanup-flag 'yes 'no)
              (if icicle-search-replace-whole-candidate-flag 'yes 'no)
              (if icicle-search-replace-common-match-flag 'yes 'no))
      icicle-general-help-string
-     " 
+     "
 
 These are all of the minibuffer bindings during completion:
 
@@ -2363,7 +2363,7 @@ Remember: You can always input any character that is bound to a
           command by preceding it with \\<global-map>\\[quoted-insert]."
             icicle-general-help-string
 
-            " 
+            "
 These are the minibuffer bindings when not completing input:
 
 \\{minibuffer-local-map}"))))
@@ -2622,7 +2622,7 @@ minibuffer (`\\<minibuffer-local-completion-map>\
                            ;; You can use this one instead, if you want to include common-match
                            ;; expansions and save the typed input even when you don't complete.
                            ;; (or icicle-last-input  icicle-current-raw-input)
-                           
+
                            (let ((next  (member icicle-current-raw-input prev-inputs)))
                              (unless next (setq next  prev-inputs))
                              (if reversep
@@ -2739,7 +2739,8 @@ e.g., `C-u C-RET' then that candidate is so wrapped."
     (when (interactive-p) (icicle-barf-if-outside-minibuffer))
     (when (and (consp hist-val)  (not (stringp (car hist-val)))) ; Convert, e.g. `comand-history'.
       (setq hist-val  (mapcar #'prin1-to-string hist-val)))
-    (icicle-clear-minibuffer))
+    ;; $$$$$$ (icicle-clear-minibuffer)
+    )
   nil                                   ; Undo code
   (progn                                ; Last code
     (apply #'insert (nreverse to-insert))
@@ -4541,7 +4542,7 @@ You can use this command only from buffer `*Completions*' (`\\<completion-list-m
       (setq n  (icicle-row-wise-cand-nb n nb-cands rows cols))))
   (let ((beg  (icicle-start-of-candidates-in-Completions))
         (end  (point-max)))
- 
+
     ;; Forward: n > 0.
     (while (and (> n 0)  (not (eobp)))
       (when (get-text-property (point) 'mouse-face) ; If in a candidate, move to its end.
@@ -4905,7 +4906,7 @@ Icicles uses `foo' as the alternative action, regardless of the value
 of `icicle-candidate-alt-action'.
 
 If no alternative action is available in the current context, help on
-the candidate is shown - see `icicle-help-on-candidate'.  
+the candidate is shown - see `icicle-help-on-candidate'.
 
 You can use this command only from the minibuffer (`\\<minibuffer-local-completion-map>\
 \\[icicle-candidate-alt-action]')."
@@ -5079,7 +5080,7 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
   (let ((candidates  (icicle-split-input arg)))
     (dolist (cand  candidates)
       (funcall (or icicle-multi-inputs-action-fn  icicle-candidate-action-fn) cand))))
-  
+
 ;;;###autoload (autoload 'icicle-multi-inputs-save "icicles")
 (defun icicle-multi-inputs-save (&optional arg) ; Bound to `M-S' in minibuffer.
   "Add candidates in the minibuffer to the current saved candidates set.
@@ -6657,7 +6658,7 @@ SET-NAME names an Icicles saved completion set or, if
  `icicle-filesets-as-saved-completion-sets-flag' is non-nil, an Emacs
  fileset.  If that option is non-nil and SET-NAME names a saved
  completion set that contains Emacs filesets, then the files specified
- for the filesets are also retrieved. 
+ for the filesets are also retrieved.
 The candidates are retrieved to `icicle-saved-completion-candidates',
 and `icicle-candidates-alist' is updated."
   (setq icicle-saved-completion-candidates  (icicle-get-candidates-from-saved-set set-name))
@@ -7535,7 +7536,7 @@ Use `up', `down', or the mouse wheel to adjust
                      icicle-candidate-width-factor
                      (- increment)))    ; Reverse, so arrows correspond.
            (when (member (car unread-command-events)
-                         (append doremi-up-keys   doremi-boost-up-keys 
+                         (append doremi-up-keys   doremi-boost-up-keys
                                  doremi-down-keys doremi-boost-down-keys))
              (icicle-doremi-inter-candidates-min-spaces+ increment))
            (setq unread-command-events  ()))
@@ -8413,7 +8414,7 @@ Non-nil DERIVEDP (prefix arg) means keep only buffers with or derived
 from the mode."
   (interactive "P")
   (icicle-remove-buffer-cands-for-mode derivedp 'KEEP-P))
-  
+
 ;;;###autoload (autoload 'icicle-keep-only-buffer-cands-for-derived-mode "icicles")
 (defun icicle-keep-only-buffer-cands-for-derived-mode ()
   "Prompt for a major mode.  Keep only buffer candidates derived from it."
