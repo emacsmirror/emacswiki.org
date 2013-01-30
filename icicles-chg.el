@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Jan 26 12:19:53 2013 (-0800)
+;; Last-Updated: Mon Jan 28 06:49:57 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 9615
+;;     Update #: 9616
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -135,7 +135,7 @@
 ;;       Reverted the 12/07 change.  Binding *-apropos-complete-match-fn to nil broke apropos compl.
 ;;     icicle-find-file-of-content-multi-complete:
 ;;       Rewrote.  Do not use all-completions.  Use completion-table-in-turn for everything, passing
-;;       content-matching predicate.  
+;;       content-matching predicate.
 ;;     icicle-execute-extended-command-1, icicle-command-abbrev-action:
 ;;       Bind completion-annotate-function to nil, to cancel top-level binding.
 ;; 2012/12/07 dadams
@@ -1719,7 +1719,7 @@
 ;;     icicle-(highlight|clear)-lighter: Use || to indicate multi-completion.
 ;; 2012/10/10 dadams
 ;;     icicle-display-candidates-in-Completions:
-;;       Add lighter and completion mode to *Completions* mode line. 
+;;       Add lighter and completion mode to *Completions* mode line.
 ;;     icicle-(prefix|apropos)-candidates:
 ;;       Call *-maybe-sort-maybe-truncate even if *-sort-comparer is nil.  Needed for truncation.
 ;;     icicle-maybe-sort-maybe-truncate:
@@ -3683,6 +3683,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2013/01/30 dadams
+;;     icicle-insert-history-element: Do not clear minibuffer.
 ;; 2013/01/26 dadams
 ;;     Added: icicle-multi-inputs-save (to be bound to M-S), icicle-roundup (to be bound to M-r),
 ;;            icicle-multi-inputs-act (to be bound to M-R), icicle-insert-candidate-action,
