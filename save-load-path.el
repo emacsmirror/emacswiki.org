@@ -1,5 +1,6 @@
-;;;; save-load-path.el --- save load-path and reuse it to test
-;; Time-stamp: <2010-05-21 07:53:52 rubikitch>
+;;; save-load-path.el --- save load-path and reuse it to test
+
+;; Time-stamp: <2013-01-31 06:47:26 rubikitch>
 
 ;; Copyright (C) 2010  rubikitch
 
