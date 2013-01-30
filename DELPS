@@ -16,9 +16,9 @@ The reference package manager `epackage.el' is available
 from "main project hub" which points to a Git repository. See
 installation instructions at the end of this page.
 
-* Project hub (never moves, bookmark this; you can subscribe project announcement):
-  http://freecode.com/projects/emacs-epackage
-* List of [https://github.com/jaalto/project--emacs-epackage-sources-list/blob/master/epackage.lst available packages for install]
+* [http://freecode.com/projects/emacs-epackage Project hub] at Freecode.
+  Never moves, bookmark this; you can subscribe project announcement
+* List of [http://github.com/jaalto/project--emacs-epackage-sources-list/blob/master/epackage.lst available packages for install]
 
 === For Package Developers ===
 
@@ -31,25 +31,23 @@ see `*.shellrc' that provides functions which help in doing the packaging work.
 You must be familiar with Git, somewhat in Emacs Lisp. In Windows, you need
 <http://cygwin.com> and its command line Bash shell.
 
-* Manual: http://www.nongnu.org/emacs-epackage/manual
-* Template files:
-  https://github.com/jaalto/project--emacs-epackage-template
-* Sources List (yellow pages):
-  https://github.com/jaalto/project--emacs-epackage-sources-list
+* [http://www.nongnu.org/emacs-epackage/manual Manual]
+* [https://github.com/jaalto/project--emacs-epackage-template Template files]
+* [https://github.com/jaalto/project--emacs-epackage-sources-list Sources List (yellow pages)]
 * Bookmark this for all related links (always up-to-date):
   http://pinboard.in/u:jariaalto/t:emacs/t:epackage
 
 == History ==
 
 Emacs has been around for decades now. Many new version have come and
-gone. And yet there are wealth of useful extensions available e.g. et
+gone. And yet there are wealth of useful extensions available e.g. at
 <http://emacswiki.org> that add new features not yet available in
 standard Emacs. The typical procedure to add a new extension to Emacs
 has been:
 
 *   Find an extension at places like
-    http://dir.gmane.org/gmane.emacs.sources or
-    http://www.emacswiki.org
+    [http://dir.gmane.org/gmane.emacs.sources gmane.emacs.sources] or
+    [http://www.emacswiki.org www.emacswiki.org] 
 *   Download and save the *.el file(s) along `load-path'
 *   Read the installation information. Usually embedded in comments
     at the beginning of *.el file(s).
@@ -59,13 +57,11 @@ has been:
 That's quite a bit of work for each extension; reaching
 thousands out there. Many Linux distributions offer package
 managers to download and install programs. E.g. Debian has
-command *apt-get*/*aptitude* [1], Redhat uses *rpm* [2], Suse
-uses *yast* [3]. So why not make one for Emacs as well.
-
-* [1] http://en.wikipedia.org/wiki/Advanced_Packaging_Tool
-* [2] http://en.wikipedia.org/wiki/RPM_Package_Manager
-* [3] http://en.wikipedia.org/wiki/YaST See also
-  http://en.wikipedia.org/wiki/Yellowdog_Updater,_Modified
+command [http://en.wikipedia.org/wiki/Advanced_Packaging_Tool apt-get/aptitude]
+Redhat uses [http://en.wikipedia.org/wiki/RPM_Package_Manager rpm]
+and Suse uses [http://en.wikipedia.org/wiki/RPM_Package_Manager yast]. See also
+[http://en.wikipedia.org/wiki/RPM_Package_Manager YUM].
+So why not make one for Emacs as well.
 
 == Concepts ==
 
@@ -90,7 +86,7 @@ the traditional archive distribution approach:
 *   Contains history of package in one place. No more scattered
     pieces around Internet.
 *   Encourages social collaboration; more easier interacting
-    with the upstream e.g. through http://github.com
+    with the upstream e.g. through [http://github.com Github]
     push/pull.
 *   Does not depend on specific API protocols like JSON that is used
     in communicating with [[ELPA]], [http://melpa.milkbox.net/ MELPA]
@@ -122,10 +118,10 @@ user can download packages. Once an /epackage/ has been
 downloaded, subsequent downloads are very efficient because
 only deltas are transferred.
 
-* [1] DVCS = Distributed Version Control System
-      http://en.wikipedia.org/wiki/Distributed_revision_control
-* [2] http://git-scm.org
-* [3] http://www.debian.org/doc/developers-reference/best-pkging-practices.html#bpp-debian-control
+* [1] [http://en.wikipedia.org/wiki/Distributed_revision_control DVCS]
+  = Distributed Version Control System
+* [2] [http://git-scm.org Git homepage]
+* [3] [http://www.debian.org/doc/developers-reference/best-pkging-practices.html#bpp-debian-control Debian packaging manual, Chapter 6. Best Packaging Practices]
 
 == Download and Install ==
 
@@ -197,8 +193,12 @@ both the concept (distributed) and the use of tools (version control).
 * Users receive updates directly from your Git repository.
   No need to send announcements or notifications. No more outdated
   versions in archive sites.
-* Low maintenance. Just concentrate on doing what you do best:
-  improving your Emacs Lisp utility. No distribution hassles.
+* Low maintenance. No more release prcess overhead which includes
+  making .tar.gz, ensuring README and NEWS to be
+  up to date, packaging wrong release etc. 
+  Just concentrate on doing what you do best:
+  improving your Emacs Lisp utility. No distribution hassles (ssh or
+  logging to a remote site, web page etc.)
 
 /Downsides/
 
@@ -216,8 +216,7 @@ or to the bug tracker. Please do not send questions to this page as this
 page is not monitored.
 Thanks --Jari
 
-* Bug Tracker
-  https://github.com/jaalto/project--emacs-epackage/issues
+* [https://github.com/jaalto/project--emacs-epackage/issues Bug Tracker]
 * Email: jari dot aalto A cante net. Help me to notice your mail by starting
   subject with "Emacs epackage:"
 
