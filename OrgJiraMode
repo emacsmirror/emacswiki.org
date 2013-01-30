@@ -110,6 +110,6 @@ The jiralib-url should be set to your jira server home page without the "/secure
 ----
 [new]
 Actually, there is another, fourth, way to use Jira without the browser, this is [https://bobswift.atlassian.net/wiki/display/ACLI/2012/02/26/Atlassian+CLI+Release+2.5.0 Atlassian command line interface]. It doesn't seem to be influenced by the limitations of xml-rpc or REST interfaces. Actually, I think the right Jira mode for Emacs should be built around this set of utilites. Being written in Java, the tools are a bit awkward and slow, but you can do anything with them, even some things not normally possible through web interface. - DmitriMinaev
-
+----
 [new]
-Heads up - I noticed there is a problem if the description of the Jira item contains  a "* Something" in it. This is used to create itemized list in Jira but org mode makes them headings, which get separated from the rest of the Jira item.
+THIS IS FIXED as of 1/28/2013 - I noticed there is a problem if the description of the Jira item contains  a "* Something" in it. This is used to create itemized list in Jira but org mode makes them headings, which get separated from the rest of the Jira item.
