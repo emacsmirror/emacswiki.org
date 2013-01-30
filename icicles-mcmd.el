@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Jan 30 08:06:48 2013 (-0800)
+;; Last-Updated: Wed Jan 30 08:31:32 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 18855
+;;     Update #: 18856
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -5077,9 +5077,10 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
 \\[icicle-multi-inputs-act]')."
   (interactive "P")
   (when (interactive-p) (icicle-barf-if-outside-minibuffer))
-  (let ((candidates  (icicle-split-input arg)))
-    (dolist (cand  candidates)
-      (funcall (or icicle-multi-inputs-action-fn  icicle-candidate-action-fn) cand))))
+  (let ((candidates  (icicle-split-input arg))
+        (act-fn      (or icicle-multi-inputs-action-fn  icicle-candidate-action-fn)))
+    (unless act-fn (error "No multi-inputs action defined"))
+    (dolist (cand  candidates) (funcall act-fn cand))))
 
 ;;;###autoload (autoload 'icicle-multi-inputs-save "icicles")
 (defun icicle-multi-inputs-save (&optional arg) ; Bound to `M-S' in minibuffer.
