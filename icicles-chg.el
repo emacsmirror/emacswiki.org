@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Mon Jan 28 06:49:57 2013 (-0800)
+;; Last-Updated: Wed Jan 30 08:36:10 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 9616
+;;     Update #: 9618
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -3685,6 +3685,7 @@
 ;;
 ;; 2013/01/30 dadams
 ;;     icicle-insert-history-element: Do not clear minibuffer.
+;;     icicle-multi-inputs-act: Raise error if no action function defined.
 ;; 2013/01/26 dadams
 ;;     Added: icicle-multi-inputs-save (to be bound to M-S), icicle-roundup (to be bound to M-r),
 ;;            icicle-multi-inputs-act (to be bound to M-R), icicle-insert-candidate-action,
