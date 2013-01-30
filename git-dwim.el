@@ -1,5 +1,6 @@
-;;;; git-dwim.el --- Context-aware git commands such as branch handling
-;; Time-stamp: <2010-07-17 15:14:12 rubikitch>
+;;; git-dwim.el --- Context-aware git commands such as branch handling
+
+;; Time-stamp: <2013-01-31 06:46:38 rubikitch>
 
 ;; Copyright (C) 2010  rubikitch
 
@@ -96,7 +97,7 @@
     (buffer-disable-undo)
     (insert output "\n===========================================================\n")
     (display-buffer (current-buffer))))
-(defun gd-menu-select (menu-alist)
+(defun gd-menu-select (menu-alist &optional caption)
   "Menu selection. MENU-ALIST is a list of (KEY DISPLAY FUNCTION).
 KEY is a character such as ?a.
 DISPLAY is display string.
@@ -107,11 +108,19 @@ Example:
                    (?b \"B\" (lambda () (error \"err\")))))
 "
   (condition-case err
-      (funcall (caddr (assq (read-event (mapconcat 'identity (mapcar 'cadr menu-alist) " "))
-                            menu-alist)))
+      (funcall
+       (caddr
+        (assq (read-event
+               (concat (if caption (concat caption " ") "")
+                       (mapconcat 'identity (mapcar 'cadr menu-alist) " ")))
+              menu-alist)))
     (void-function (error "invalid key"))))
 
 ;; (gd-menu-select '((?a "A" (lambda () (message "[a]")))(?b "B" (lambda () (error "err")))))
+
+(defun gd-menu-select-with-current-branch (menu-alist)
+  (gd-menu-select menu-alist (propertize (git-current-branch) 'face 'highlight)))
+
 (defun git-branch-next-action ()
   "Do appropriate action for branch.
 
@@ -121,13 +130,16 @@ Example:
 "
   (interactive)
   (cond ((equal (git-current-branch) "master")
-         (gd-menu-select '((?s "[s]witch-to-other-branch" git-switch-to-other-branch)
-                           (?c "[c]reate-new-branch"      git-create-new-branch))))
+         (gd-menu-select-with-current-branch
+          '((?s "[s]witch-to-other-branch" git-switch-to-other-branch)
+            (?c "[c]reate-new-branch"      git-create-new-branch))))
         ((git-unmerged-p)
          (git-merge-to "master" t))
         (t
-         (gd-menu-select '((?s "[s]witch-to-other-branch" git-switch-to-other-branch)
-                           (?m "[m]erge-to-master"        git-merge-to))))))
+         (gd-menu-select-with-current-branch
+          '((?s "[s]witch-to-other-branch" git-switch-to-other-branch)
+            (?m "[m]erge-to-master"        git-merge-to)
+            (?f "merge-[f]rom-master"      git-merge-from-master))))))
 
 (defun git-create-new-branch (&optional branch)
   "Create new BRANCH and switch to it."
@@ -154,6 +166,8 @@ Example:
         (ignore-errors (kill-buffer "*git rebase conflict*"))
         (gd-shell-command (format "git checkout %s; git merge %s; git branch -d %s"
                                branch cur cur))))))
+(defun git-merge-from-master ()
+  (gd-shell-command "git rebase " ))
 (provide 'git-dwim)
 
 ;; How to save (DO NOT REMOVE!!)
