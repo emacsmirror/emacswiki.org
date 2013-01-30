@@ -1,1 +1,1 @@
-DeletePage
+DeletedPage
