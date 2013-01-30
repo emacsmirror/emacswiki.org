@@ -1,5 +1,6 @@
-;;;; sudo-ext.el --- sudo support
-;; Time-stamp: <2011-01-17 15:52:34 rubikitch>
+;;; sudo-ext.el --- sudo support
+
+;; Time-stamp: <2013-01-31 06:47:59 rubikitch>
 
 ;; Copyright (C) 2010  rubikitch
 
