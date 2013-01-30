@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Jan 30 15:01:06 1996
 ;; Version: 21.0
-;; Last-Updated: Fri Dec 28 10:19:49 2012 (-0800)
+;; Last-Updated: Tue Jan 29 19:25:23 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 1428
+;;     Update #: 1429
 ;; URL: http://www.emacswiki.org/replace%2b.el
 ;; Doc URL: http://www.emacswiki.org/ReplacePlus
 ;; Keywords: matching, help, internal, tools, local
@@ -124,6 +124,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/01/29 dadams
+;;     search/replace-2nd-sel-as-default-flag: Changed default value to nil.
 ;; 2012/08/31 dadams
 ;;     Added: search/replace-2nd-sel-as-default-flag, search/replace-default, redefinition of read-regexp.
 ;;     query-replace-read-(from|to|read-args), (keep|flush)-lines, how-many, occur(-read-primary-args):
@@ -346,7 +348,7 @@ This toggles the value of option `replace-w-completion-flag'."
         (setq replace-w-completion-flag  nil))
     (setq replace-w-completion-flag  (not replace-w-completion-flag)))) ; Toggle.
 
-(defcustom search/replace-2nd-sel-as-default-flag t
+(defcustom search/replace-2nd-sel-as-default-flag nil
   "*Non-nil means use secondary selection as default for search/replace.
 That is, if there is currently a nonempty secondary selection, use it
 as the default input.  All text properties are removed from the text."
