@@ -17,20 +17,26 @@ All these variables may be overridden on a per-directory basis in
 your .dir-locals.el.  See (info "(Emacs) Directory Variables") for
 details.
 
-It's available via [http://marmalade-repo.org/packages/find-file-in-project Marmalade Repo]
+Available at [http://marmalade-repo.org/packages/find-file-in-project Marmalade Repo]
 
 == Alternatives ==
 
-[[Projectile]] is one very comprehensive alternative.
+* [http://github.com/justinweiss/fuzzy-find-in-project fuzzy-find-in-project]
 
-Similar functionality can be found in [http://github.com/justinweiss/fuzzy-find-in-project fuzzy-find-in-project].
+* [[Gpicker]]
 
-Another alternative is [[Gpicker]].
+* <tt>[[ifind-mode.el]]</tt>
 
-Yet another alternative: Lisp:ifind-mode.el
+* [[Projectile]]
 
-And also [http://github.com/re5et/simp simp].
-In addition to finding file in project, simp includes project specific rgrepping which takes project ignored directories into account.
+* [http://github.com/technomancy/rinari/tree/master rinari-find-file-in-project]
+
+* [http://github.com/re5et/simp simp] --  Includes also project-specific `rgrepp'ing, which takes project ignored directories into account.
+
+
+
+
+
 ----
 
 CategoryProgrammerUtils
