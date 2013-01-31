@@ -1,0 +1,24 @@
+Emacs isn't displayed correctly in kde4 when maximized. I found a solution here:
+
+http://lists.gnu.org/archive/html/help-gnu-emacs/2011-02/msg00173.html
+
+"Hey,
+
+I just found the solution to something that's been bothering me for a LONG time and want to share it with you:
+
+How to display emacs as a maximized window on KDE4 without emacs resizing itself.
+I guess most people who use emacs in KDE now about the problem:
+Once you try to maximize the window, emacs resizes itself to a slightly smaller portion of the screen.
+This is because emacs rejects the geometry given to it by KWin, because it's not an integral multiple of the width/height of one character.
+This _might_ be related my font selection but I don't think so.
+
+The workaround I found works as follows:
+Right-click the emacs title bar, select "Advanced", select "Special Window Settings". Go to the "Workarounds" tab.
+Select the checkbox "Strictly obey geometry" and select "Force" from the pulldown menu next to it.
+Make sure the last checkbox on the right is UNCHECKED!
+
+That should do it.
+Hope I was able to help people with this.
+
+Cheers
+Bastian"
