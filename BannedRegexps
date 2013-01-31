@@ -5,6 +5,8 @@
 # a comment, this is used as the explanation when a user is denied editing. If the
 # comment starts with a date, this date is not included in the explanation.
 # The date could help us decide which regular expressions to delete in the future.
+# If the regular expression contains a group, the first group will be add to the
+# explanation.
 # In other words:
 # ^\s*([^#]+?)\s*(#\s*(\d\d\d\d-\d\d-\d\d\s*)?(.*))?$
 # Group 1 is the regular expression to use.
