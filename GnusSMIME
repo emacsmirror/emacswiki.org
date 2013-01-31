@@ -229,6 +229,48 @@ I strongly suggest you **make a backup of your .bbdb file** before using this fu
 
 ==Retrieving certificates via LDAP==
 ExtendSMIME redefines some Gnus functions and adds new ones to include proper support for multiple recipients, retrieval and caching of certificates from LDAP servers, and (via DefaultEncrypt) automatic insertion of MML tags into messages if certificates for all recipients are available.
+==Update: epg and gpgsm ==
+
+Using ''smime '' is significantly easier, when using ''epg'' (the EasyPG Library) and ''gpgsm'' (I have tested this combination with Xemacs 21.5.32 (mule) and "Ma Gnus v0.6" under Kubuntu 10.04; gpgsm should run for all Linux distributions, for MacOS I am not sure, nor for MS Windows.)
+
+I recommend the following minimal configuration (from my ''gpgsm.conf'' file 
+<pre>
+disable-crl-checks
+</pre>
+
+And in ''gpg.conf'' I have 
+<pre>
+use-agent
+</pre>
+
+The easiest solution now is to reboot the machine so that the agent starts up correctly.
+
+It remains to set up ''gnus'':
+
+<pre>
+
+(require 'epa-file)
+(epa-file-enable)
+(setq epg-debug t)
+
+(setq mm-decrypt-option 'always)
+(setq mm-verify-option 'always)
+(setq gnus-buttonized-mime-types '("multipart/encrypted" "multipart/signed"))
+(setq mml-smime-use 'epg)
+</pre>
+
+Now the commands you should use are:
+
+<pre>
+(mml-secure-message-encrypt-smime nil)
+(mml-secure-message-encrypt-smime 1)
+(mml-secure-message-sign-smime)         
+</pre>
+
+----
+
+----
+CategoryGnus GnusPGG SigningMail EncryptingMail
 
 ----
 CategoryGnus GnusPGG SigningMail EncryptingMail
