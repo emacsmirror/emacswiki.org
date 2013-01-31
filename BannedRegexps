@@ -19,4 +19,4 @@
 \[url= # 2012-12-31 bbCode links usually mean spam
 \s+https?:\S+[ .\r\n]*$ # 2012-12-31 ending with a link usually means spam
 # (?s)\s+https?:\S+.*\s+https?:\S+.*\s+https?:\S+.* # 2012-12-31 three naked links usually mean spam
-\shttps?:\S+\s+https?:\S+ # 2013-01-30 two consecutive bare links (http:... http://...) usually mean spam
+\s(https?:\S+\s+https?:\S+) # 2013-01-30 two consecutive bare links (http:... http://...) usually mean spam
