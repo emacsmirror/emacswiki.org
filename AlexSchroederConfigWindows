@@ -10,10 +10,8 @@
 (require 'cl)
 
 (add-to-list 'load-path (expand-file-name "elisp" (getenv "HOME")))
-(add-to-list 'exec-path "C:/cygwin/bin")
 (add-to-list 'exec-path "C:/Programme/cygwin/bin")
 (add-to-list 'exec-path "C:/Programme/GnuWin32/bin")
-(add-to-list 'exec-path "~/Eigene Dateien/Eigene Software")
 (add-to-list 'exec-path "C:/Programme/Growl for Windows")
 (setenv "RSH" "SSH")
 
@@ -306,9 +304,7 @@ Indent by DEPTH, if required"
 
 (global-set-key (kbd "C-c q") 'sql-oracle)
 
-(setq sql-user "pista"
-      sql-password "pista"
-      sql-database "pista_11")
+(setq sql-user "ci" sql-password "cipw" sql-database "BSICRM.VD_5164")
 ;; (setenv "NLS_LANG" "AMERICAN_AMERICA.UTF8")
 ;; (add-to-list 'process-coding-system-alist '("SQL" . utf-8));; no effect?
 
@@ -649,6 +645,8 @@ Each line consists of a lastname, a tab, and a firstname."
 	    (local-set-key (kbd "<down>") 'next-line)))
 (defalias 'eshell/emacs 'find-file)
 (defun eshell/dired () (dired (eshell/pwd)))
+(eval-after-load 'eshell
+  '(require 'eshell-autojump nil t))
 
 ;;; perl
 (setq cperl-hairy t
@@ -675,7 +673,7 @@ Each line consists of a lastname, a tab, and a firstname."
       rcirc-server-alist
       '(("irc.freenode.net" :channels ("#rcirc" "#wiki" "#oddmuse" "#epfarms"
 	 "#emacs" "#sql" "#eclipse-de" "#osgi" "#eclipse-scout"
-	 "#eclipse-hudson"))
+	 "#eclipse-hudson" "#emacswiki"))
 	;; ("irc.sorcery.net" :channels ("#StargazersWorld"))
 	;; ("irc.magicstar.net" :channels ("#rpgnet"))
 	("irc.perl.org" :channels ("#perlde" "#oddmuse")))
@@ -687,7 +685,7 @@ Each line consists of a lastname, a tab, and a firstname."
       ;; "#emacs-fu" "#haskell" "#openfire" "##jabber" "#tentacle"
       ;; "#openbsd" "#hcoop" "#scrum" "#eclipse"
       rcirc-decode-coding-system 'undecided
-      rcirc-ignore-list '("consolers" "jordanb" "dustpuppy" "rudybot")
+      rcirc-ignore-list '("consolers" "jordanb" "dustpuppy" "rudybot" "AL-76")
       rcirc-activity-string ""
       frame-title-format '("%b " rcirc-activity-string)
       rcirc-authinfo (let ((file "~/.rcirc-authinfo"))
