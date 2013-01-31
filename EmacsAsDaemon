@@ -436,6 +436,7 @@ ExecStart=/usr/bin/emacs --daemon
 ExecStop=/usr/bin/emacsclient --eval "(progn (setq kill-emacs-hook 'nil) (kill-emacs))"
 Restart=always
 User=%i
+WorkingDirectory=%h
 
 [Install]
 WantedBy=multi-user.target
