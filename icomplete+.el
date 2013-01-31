@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Oct 16 13:33:18 1995
 ;; Version: 21.0
-;; Last-Updated: Thu Jan 31 14:46:48 2013 (-0800)
+;; Last-Updated: Thu Jan 31 14:49:35 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 1597
+;;     Update #: 1598
 ;; URL: http://www.emacswiki.org/icomplete+.el
 ;; Doc URL: http://emacswiki.org/IcompleteMode
 ;; Keywords: help, abbrev, internal, extensions, local, completion, matching
@@ -26,8 +26,8 @@
 ;;  Extensions to `icomplete.el'.
 ;;
 ;;  * Better display of candidates, including highlighting them and showing how many there are.
-;;  * Show key bindings for command candidates, optionally including menu bindings.
-;;  * Do not bind keys for cycling in `icomplete-mode'.  Define a separate mode for that, so you
+;;  * Shows key bindings for command candidates, optionally including menu bindings.
+;;  * Does not bind keys for cycling in `icomplete-mode'.  Defines a separate mode for that, so you
 ;;    can use Icomplete with or without those key bindings.  (Emacs 24.4+)
 ;;  * Support for Icicles:
 ;;    . Respect current Icicles sort order, which you can cycle using `C-,'.
