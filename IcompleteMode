@@ -28,6 +28,8 @@ the suffixes display, giving you an idea of the size of the completion set:
 
         M-x forw    14 (ard-) { char line list...}
 
+* Does not bind keys for cycling in `icomplete-mode'.  Defines a separate mode for that, `icomplete-cycling-mode', so you can use Icomplete with or without those key bindings.  (Emacs 24.4+)
+
 * If you also use '''[[Icicles]]''' then, whenever you change direction when cycling completion candidates, Icomplete displays the number of other candidates in the current cycle. For example:
 
         M-x forward-line   [Matched]  (13 more)
