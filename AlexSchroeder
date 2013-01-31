@@ -42,11 +42,8 @@ Later, I also used it on ICQ. And now I'm using it on IRC.
 * AlexSchroederConfigOrientalibombus -- the new iBook using Xubuntu
 * AlexSchroederConfigPyrobombus -- the Mac Mini @ home running Mac OS X
 * AlexSchroederConfigWindows -- the workstation @ work running Windows; get grep and friends from [http://gnuwin32.sourceforge.net/packages.html GnuWin32]
-** EmacsSession
-** [[rcircColoredNicks]]
-** [[rcircColors]]
-** [[rcircGroupMode]]
-** [[rcircPounce]]
+** EmacsSession EshellAutojump
+   [[rcircColoredNicks]] [[rcircColors]] [[rcircGroupMode]] [[rcircPounce]]
 * AlexSchroederConfigConfusibombus -- no longer used for an old Ubuntu installation
 * AlexSchroederConfigAlpinobombus -- no longer used as I switched the iBook from Mac OS 10.3 to Ubuntu
 * AlexSchroederErcConfig -- no longer used as I switched to [[rcirc]]
