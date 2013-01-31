@@ -6,7 +6,7 @@ It turns out that there are a lot of existing pages on this wiki with bare URLs!
 Since this lead to some complaints, I commented the rule (it's still on BannedRegexps).
 The following night, we were hit by a lot of spammers again.
 Right now I'm experimenting with a different regular epression: I want to ban two consecutive URLs on a page or in a comment.
-Let me know if any of the various banning mechanisms cause you trouble.
+Let me know if any of the various banning mechanisms cause you trouble (the misnamed BannedContent, BannedHosts and BannedRegexs)
 -- AlexSchroeder
 
 [new]
