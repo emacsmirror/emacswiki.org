@@ -1,0 +1,22 @@
+*Projectile* is a project interaction library for Emacs. Its goal is to provide a nice set of features operating on a project level without introducing external dependencies. For instance - finding project files is done in pure Emacs Lisp without the use of GNU find.
+
+Projectile also tries to be practical - if some external tools could speed up some task substantially and the tools are available, Projectile will leverage them.
+
+This library provides easy project management and navigation. The concept of a project is pretty basic - just a folder containing special file. Currently git, mercurial and bazaar repos are considered projects by default. If you want to mark a folder manually as a project just create an empty .projectile file in it. Some of projectile's features:
+
+* jump to a file in project
+* jump to a project buffer
+* kill all project buffers
+* replace in project
+* multi-occur in project buffers
+* grep in project
+* regenerate project etags
+* visit project in dired
+* run make in a project with a single key chord
+
+More information and installation instructions are available on [https://github.com/bbatsov/projectile GitHub].
+
+---
+
+CategoryProgrammerUtils
+CategoryProject
