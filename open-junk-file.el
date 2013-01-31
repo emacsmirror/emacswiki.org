@@ -1,4 +1,4 @@
-;;;; open-junk-file.el --- Open a junk (memo) file to try-and-error
+;;; open-junk-file.el --- Open a junk (memo) file to try-and-error
 
 ;; $Id: open-junk-file.el,v 1.3 2010/06/18 20:07:49 rubikitch Exp rubikitch $
 
