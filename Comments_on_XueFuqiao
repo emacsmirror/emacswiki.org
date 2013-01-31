@@ -2,3 +2,12 @@
 
 -- DrewAdams 2013-01-05 00:35 UTC
 
+
+----
+
+FYI -- You don't need to wrap a `lambda' form in either `function' or `cl-function'.  Just the `lambda' form is enough, and is every bit as efficient (in EmacsLisp).
+
+But if you need to use `lambda' with a Common-Lisp parameter list (not so, in the case I saw), then `cl-function' is needed (unless you load cl at runtime).  HTH.
+
+-- DrewAdams 2013-01-31 14:41 UTC
+
