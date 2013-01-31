@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Jan 26 13:49:57 2013 (-0800)
+;; Last-Updated: Thu Jan 31 09:31:34 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 9278
+;;     Update #: 9331
 ;; URL: http://www.emacswiki.org/icicles-mode.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -156,29 +156,44 @@
   ;; icicle-kmacro-ring-max, icicle-minibuffer-setup-hook, icicle-modal-cycle-down-keys,
   ;; icicle-modal-cycle-up-keys, icicle-functions-to-redefine, icicle-regexp-search-ring-max,
   ;; icicle-region-background, icicle-search-ring-max, icicle-show-Completions-initially-flag,
-  ;; icicle-top-level-key-bindings, icicle-touche-pas-aux-menus-flag,
-  ;; icicle-word-completion-keys, icicle-yank-function
+  ;; icicle-top-level-key-bindings, icicle-touche-pas-aux-menus-flag, icicle-word-completion-keys
 (require 'icicles-fn)                   ; (This is required anyway by `icicles-cmd1.el'.)
-  ;; assq-delete-all, icicle-completing-p, icicle-isearch-complete-past-string,
-  ;; icicle-toggle-icicle-mode-twice, icicle-unhighlight-lighter
+  ;; icicle-completing-p, icicle-toggle-icicle-mode-twice, icicle-unhighlight-lighter
 (require 'icicles-var)                  ; (This is required anyway by `icicles-fn.el'.)
   ;; icicle-candidate-action-fn, icicle-candidate-nb, icicle-cmd-calling-for-completion,
-  ;; icicle-completing-p, icicle-completion-candidates,
-  ;; icicle-current-completion-mode, icicle-ignored-extensions, icicle-ignored-extensions-regexp,
-  ;; icicle-incremental-completion-p, icicle-initial-value, icicle-last-completion-candidate,
-  ;; icicle-last-completion-command, icicle-last-input, icicle-menu-map, icicle-pre-minibuffer-buffer,
-  ;; icicle-minor-mode-map-entry, icicle-saved-completion-candidates, icicle-saved-kmacro-ring-max,
-  ;; icicle-saved-regexp-search-ring-max, icicle-saved-region-background,
-  ;; icicle-saved-search-ring-max, icicle-search-current-overlay, icicle-search-overlays,
-  ;; icicle-search-refined-overlays
+  ;; icicle-completing-p, icicle-completion-candidates, icicle-current-completion-mode,
+  ;; icicle-ignored-extensions, icicle-ignored-extensions-regexp, icicle-incremental-completion-p,
+  ;; icicle-initial-value, icicle-last-completion-candidate, icicle-last-completion-command,
+  ;; icicle-last-input, icicle-menu-map, icicle-pre-minibuffer-buffer, icicle-minor-mode-map-entry,
+  ;; icicle-saved-completion-candidates, icicle-saved-kmacro-ring-max,
+  ;; icicle-saved-regexp-search-ring-max, icicle-saved-region-background, icicle-saved-search-ring-max,
+  ;; icicle-search-current-overlay, icicle-search-overlays, icicle-search-refined-overlays
 (require 'icicles-cmd1)                 ; (This is required anyway by `icicles-cmd2.el'.)
-  ;; icicle-add-buffer-candidate, icicle-add-buffer-config, icicle-bbdb-complete-mail,
-  ;; icicle-bbdb-complete-name, icicle-customize-face, icicle-customize-face-other-window,
-  ;; icicle-dabbrev-completion, icicle-select-bookmarked-region
+  ;; icicle-add-buffer-candidate, icicle-add-buffer-config, icicle-customize-face-other-window,
+  ;; icicle-select-bookmarked-region
 (require 'icicles-cmd2)
-  ;; icicle-imenu, icicle-occur, icicle-search, icicle-search-bookmark,
-  ;; icicle-search-bookmarks-together, icicle-search-buffer, icicle-search-file,
-  ;; icicle-search-w-isearch-string
+  ;; icicle-imenu, icicle-imenu-command, icicle-imenu-command-full, icicle-imenu-face,
+  ;; icicle-imenu-face-full, icicle-imenu-full, icicle-imenu-key-explicit-map,
+  ;; icicle-imenu-key-explicit-map-full, icicle-imenu-key-implicit-map,
+  ;; icicle-imenu-key-implicit-map-full, icicle-imenu-macro, icicle-imenu-macro-full,
+  ;; icicle-imenu-non-interactive-function, icicle-imenu-non-interactive-function-full,
+  ;; icicle-imenu-user-option, icicle-imenu-user-option-full, icicle-imenu-variable,
+  ;; icicle-imenu-variable-full, icicle-occur, icicle-search, icicle-search-all-tags-bookmark,
+  ;; icicle-search-all-tags-regexp-bookmark, icicle-search-autofile-bookmark,
+  ;; icicle-search-autonamed-bookmark, icicle-search-bookmark, icicle-search-bookmark-list-bookmark,
+  ;; icicle-search-bookmark-list-marked, icicle-search-bookmarks-together, icicle-search-buffer,
+  ;; icicle-search-buff-menu-marked, icicle-search-char-property, icicle-search-dired-bookmark,
+  ;; icicle-search-dired-marked-recursive, icicle-search-file, icicle-search-file-bookmark,
+  ;; icicle-search-gnus-bookmark, icicle-search-highlight-cleanup, icicle-search-ibuffer-marked,
+  ;; icicle-search-info-bookmark, icicle-search-keywords, icicle-search-local-file-bookmark,
+  ;; icicle-search-man-bookmark, icicle-search-non-file-bookmark, icicle-search-overlay-property,
+  ;; icicle-search-pages, icicle-search-paragraphs, icicle-search-region-bookmark,
+  ;; icicle-search-remote-file-bookmark, icicle-search-sentences, icicle-search-some-tags-bookmark,
+  ;; icicle-search-some-tags-regexp-bookmark, icicle-search-specific-buffers-bookmark,
+  ;; icicle-search-specific-files-bookmark, icicle-search-temporary-bookmark,
+  ;; icicle-search-text-property, icicle-search-thing, icicle-search-this-buffer-bookmark,
+  ;; icicle-search-url-bookmark, icicle-search-w3m-bookmark, icicle-search-w-isearch-string,
+  ;; icicle-search-word, icicle-search-xml-element, icicle-search-xml-element-text-node
 
 ;; Use `condition-case' because if `mb-depth.el' can't be found, `mb-depth+.el' is not provided.
 (when (>= emacs-major-version 22) (condition-case nil (require 'mb-depth+ nil t) (error nil)))
@@ -189,8 +204,8 @@
                         ;; diredp-menu-bar-subdir-menu
 (require 'dired) ;; dired-mode-map
 (require 'menu-bar+ nil t) ;; (no error if not found):
-  ;; menu-bar-apropos-menu, menu-bar-describe-menu, menu-bar-edit-menu,
-  ;; menu-bar-file-menu, menu-bar-frames-menu, menu-bar-options-menu, menu-bar-search-tags-menu
+  ;; menu-bar-apropos-menu, menu-bar-describe-menu, menu-bar-edit-menu, menu-bar-file-menu,
+  ;; menu-bar-frames-menu, menu-bar-options-menu, menu-bar-search-tags-menu
 
 ;; `icicle-apropos-complete' is used here.  It is defined in `icicles-mcmd.el'.
 ;; `icicle-file-name-input-p' is used here.  It is defined in `icicles-fn.el'.
@@ -532,7 +547,7 @@ there are also `-other-window' versions.
 `icicle-resolve-file-name'             - Resolve file name at point
 `icicle-save-string-to-variable'       - Save text for use with `C-='
 `icicle-search'                        - Search with regexps & cycling
-`icicle-search-all-tags-bookmark'      - Search tagged bookmarks 
+`icicle-search-all-tags-bookmark'      - Search tagged bookmarks
 `icicle-search-all-tags-regexp-bookmark'
 `icicle-search-autofile-bookmark'      - Search autofile bookmark text
 `icicle-search-autonamed-bookmark'     - Search autonamed bookmarks
@@ -562,7 +577,7 @@ there are also `-other-window' versions.
 `icicle-search-region-bookmark'        - Search bookmarked regions
 `icicle-search-remote-file-bookmark'   - Search remote bookmarks
 `icicle-search-sentences'              - Search sentences as contexts
-`icicle-search-some-tags-bookmark'     - Search tagged bookmarks 
+`icicle-search-some-tags-bookmark'     - Search tagged bookmarks
 `icicle-search-some-tags-regexp-bookmark'
 `icicle-search-specific-buffers-bookmark' - Search bookmarked buffers
 `icicle-search-specific-files-bookmark' - Search bookmarked files
@@ -962,7 +977,7 @@ there are also `-other-window' versions.
 `icicle-resolve-file-name'             - Resolve file name at point
 `icicle-save-string-to-variable'       - Save text for use with `C-='
 `icicle-search'                        - Search with regexps & cycling
-`icicle-search-all-tags-bookmark'      - Search tagged bookmarks 
+`icicle-search-all-tags-bookmark'      - Search tagged bookmarks
 `icicle-search-all-tags-regexp-bookmark'
 `icicle-search-autofile-bookmark'      - Search autofile bookmark text
 `icicle-search-autonamed-bookmark'     - Search autonamed bookmarks
@@ -992,7 +1007,7 @@ there are also `-other-window' versions.
 `icicle-search-region-bookmark'        - Search bookmarked regions
 `icicle-search-remote-file-bookmark'   - Search remote bookmarks
 `icicle-search-sentences'              - Search sentences as contexts
-`icicle-search-some-tags-bookmark'     - Search tagged bookmarks 
+`icicle-search-some-tags-bookmark'     - Search tagged bookmarks
 `icicle-search-some-tags-regexp-bookmark'
 `icicle-search-specific-buffers-bookmark' - Search bookmarked buffers
 `icicle-search-specific-files-bookmark' - Search bookmarked files
@@ -2169,7 +2184,7 @@ Used on `pre-command-hook'."
              "`Icicles' > `Edit' submenu.")
            (define-key icicle-menu-map [Edit]
              (list 'menu-item "Edit" icicle-edit-menu-map))))
-    
+
     (define-key icicle-edit-menu-map [icicle-complete-thesaurus-entry]
       '(menu-item "Complete with Thesaurus..." icicle-complete-thesaurus-entry
         :enable (and (not buffer-read-only)  (boundp 'synonyms-obarray))
@@ -2420,7 +2435,7 @@ Used on `pre-command-hook'."
              "`Icicles' > `Info' submenu, in Info mode.")
            (define-key icicle-menu-map [info]
              (list 'menu-item "Info Mode" icicle-info-menu-map :visible '(eq major-mode 'Info-mode)))))
-           
+
     (when (fboundp 'icicle-Info-virtual-book)
       (define-key icicle-info-menu-map [icicle-Info-virtual-book]
         '(menu-item "Virtual Book" icicle-Info-virtual-book
@@ -2531,7 +2546,7 @@ Used on `pre-command-hook'."
                                         (listify-key-sequence (icicle-kbd "m"))))) ; `M-s M-s m'
            (def  (lookup-key bookmark-bmenu-mode-map key)))
       (unless (and def  (not (integerp def)))
-        (define-key bookmark-bmenu-mode-map key 'icicle-search-bookmark-list-marked))))    
+        (define-key bookmark-bmenu-mode-map key 'icicle-search-bookmark-list-marked))))
 
   ;; Bind some keys in Dired mode.
   (when (boundp 'dired-mode-map)
@@ -2853,7 +2868,7 @@ is unbound in all keymaps accessible from keymap MAP."
            :help "Read key and insert its description - e.g., reading ^F inserts `C-f'"))
        (define-key map [menu-bar minibuf icicle-roundup]
          '(menu-item "Insert Completion Candidate(s)" icicle-roundup
-           :enable (and (icicle-completing-p) icicle-completion-candidates)
+           :enable (and (icicle-completing-p)  icicle-completion-candidates)
            :help "Insert one or more completion candidates in the minibuffer"))
        (define-key map [menu-bar minibuf icicle-insert-history-element]
          '(menu-item "Insert Past Input(s) using Completion" icicle-insert-history-element
@@ -4466,7 +4481,7 @@ if `icicle-change-region-background-flag' is non-nil."
                (when icyp (icicle-mode 1)))))
   (if (featurep 'recentf) (eval-after-load "icicles-mode" form) (eval-after-load "recentf" form)))
 
-      
+
 ;; Do this last.
 ;;
 ;; When these libraries are first loaded, toggle Icicle mode to pick up the definitions
