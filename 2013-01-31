@@ -9,7 +9,7 @@ Right now I'm experimenting with a different regular epression: I want to ban tw
 
 Let me know if any of the various banning mechanisms cause you trouble (the misnamed BannedContent, BannedHosts and BannedRegexps).
 
-And, as always, you can see the result for yourself in the [http://emacswiki.org/emacs/spammer.log spammer log file].
+And, as always, you can see the result for yourself in the spammer log file: ##http://emacswiki.org/emacs/spammer.log##
 -- AlexSchroeder
 
 [new]
