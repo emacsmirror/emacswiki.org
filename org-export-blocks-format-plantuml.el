@@ -1,5 +1,7 @@
 ;;; org-export-blocks-format-plantuml.el Export UML using plantuml
 ;;
+;; OBSOLETED, use ob-plantuml.el bundled in org instead.
+;;
 ;; Copy from org-export-blocks-format-ditaa
 ;;
 ;; E.g.
