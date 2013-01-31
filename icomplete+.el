@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Oct 16 13:33:18 1995
 ;; Version: 21.0
-;; Last-Updated: Tue Jan  1 15:51:02 2013 (-0800)
+;; Last-Updated: Thu Jan 31 14:46:48 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 1545
+;;     Update #: 1597
 ;; URL: http://www.emacswiki.org/icomplete+.el
 ;; Doc URL: http://emacswiki.org/IcompleteMode
 ;; Keywords: help, abbrev, internal, extensions, local, completion, matching
@@ -27,10 +27,20 @@
 ;;
 ;;  * Better display of candidates, including highlighting them and showing how many there are.
 ;;  * Show key bindings for command candidates, optionally including menu bindings.
+;;  * Do not bind keys for cycling in `icomplete-mode'.  Define a separate mode for that, so you
+;;    can use Icomplete with or without those key bindings.  (Emacs 24.4+)
 ;;  * Support for Icicles:
 ;;    . Respect current Icicles sort order, which you can cycle using `C-,'.
 ;;    . When you change direction cycling candidates, show the number of other cycle candidates.
 ;;
+;;
+;;  Macros defined here (but identical to those in Emacs 23):
+;;
+;;    `with-local-quit', `with-no-input'.
+;;
+;;  Commands define here:
+;;
+;;    `icompletep-cycling-mode'.
 ;;
 ;;  Faces defined here:
 ;;
@@ -43,10 +53,6 @@
 ;;    `icompletep-include-menu-items-flag' (Emacs 23+),
 ;;    `icompletep-prospects-length' (Emacs < 23),
 ;;    `icomplete-show-key-bindings'.
-;;
-;;  Macros defined here (but identical to those in Emacs 23):
-;;
-;;    `with-local-quit', `with-no-input'.
 ;;
 ;;  Non-interactive functions defined here:
 ;;
@@ -94,18 +100,30 @@
 ;;    you want by customizing option `completion-category-overrides'
 ;;    for file names, buffer names, bookmark names, and so on.
 ;;
-;;  * If you use incremental search (`C-s' `C-r') or symbol completion
-;;    (`M-TAB') in the minibuffer, then consider changing the default
-;;    key bindings for `icomplete-minibuffer-map', since they co-opt
-;;    those keys for Icomplete cycling and selection.
+;;  * Starting with Emacs 24.4, Icomplete mode automatically binds
+;;    keys that are otherwise useful in the minibuffer (for Isearch,
+;;    symbol completion, etc.) to its own keys for cycling among
+;;    icompletion candidates.  This is a BAD idea - see Emacs bug
+;;    #13602.  Icomplete+ fixes this by having a separate mode that
+;;    binds Icomplete keys, making that optional.  This is analogous
+;;    to the difference between `cua-selection-mode' and `cua-mode'.
 ;;
-;;  (These features are not particular to Icomplete+ - they are
-;;  available also for vanilla Icomplete.)
+;;    So with Icomplete+, just turning on Icomplete mode does not
+;;    co-opt those keys taking them away from you for use in the
+;;    minibuffer.  If you really want to do that then turn on
+;;    `icomplete-cycling-mode' in addition to `icomplete-mode'.  And
+;;    in that case, consider also choosing different keys to bind in
+;;    `icomplete-minibuffer-map' from those that are bound by default.
+;;
+;;  (The first two features above are not particular to Icomplete+ -
+;;  they are available also for vanilla Icomplete.)
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
 ;;
+;; 2013/01/31 dadams
+;;     Added: icompletep-cycling-mode.  Turn it off by default.
 ;; 2013/01/01 dadams
 ;;     Added: icompletep-completion-all-sorted-completions.
 ;;     icomplete-completions (Emacs 24 version):
@@ -245,9 +263,12 @@
 ;; Quiet the byte-compiler.
 (defvar completion-all-sorted-completions)
 (defvar icomplete-eoinput)
+(defvar icomplete-minibuffer-map)
 (defvar icomplete-with-completion-tables)
 (defvar icompletep-include-menu-items-flag)
+(defvar icompletep-ORIG-icomplete-minibuffer-map)
 (defvar icompletep-prospects-length)
+
 (defvar icicle-nb-of-other-cycle-candidates)
 
 ;;;;;;;;;;;;;;;;;;;
@@ -1031,6 +1052,21 @@ If SORT-FUNCTION is nil, sort per `completion-all-sorted-completions':
             ;; Cache result.  Not just for speed, but also so repeated calls to
             ;; `minibuffer-force-complete' can cycle through all possibilities.
             (completion--cache-all-sorted-completions (nconc all base-size)))))))
+
+(defvar icompletep-cycling-mode nil)
+(when (boundp 'icomplete-minibuffer-map) ; Emacs 24.4+
+
+  (setq icompletep-ORIG-icomplete-minibuffer-map  icomplete-minibuffer-map ; Save it and wipe it out.
+        icomplete-minibuffer-map                  nil)
+
+  ;; Eval this so that even if the library is byte-compiled with Emacs 20,
+  ;; loading it into Emacs 21+ will define variable `icompletep-cycling-mode'.
+  (eval '(define-minor-mode icompletep-cycling-mode
+          "Icomplete mode, but with its cycling keys enabled."
+          nil nil nil
+          (setq icomplete-minibuffer-map  (and icompletep-cycling-mode
+                                           icompletep-ORIG-icomplete-minibuffer-map))))
+  (icompletep-cycling-mode -99))        ; Turn it off by default.
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 
