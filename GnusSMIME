@@ -233,12 +233,12 @@ ExtendSMIME redefines some Gnus functions and adds new ones to include proper su
 
 Using ''smime '' is significantly easier, when using ''epg'' (the EasyPG Library) and ''gpgsm'' (I have tested this combination with Xemacs 21.5.32 (mule) and "Ma Gnus v0.6" under Kubuntu 10.04; gpgsm should run for all Linux distributions, for MacOS I am not sure, nor for MS Windows.)
 
-I recommend the following minimal configuration (from my ''gpgsm.conf'' file 
+I recommend the following minimal configuration (from my ''gpgsm.conf'' file):
 <pre>
 disable-crl-checks
 </pre>
 
-And in ''gpg.conf'' I have 
+And in ''gpg.conf'' I have: 
 <pre>
 use-agent
 </pre>
@@ -267,7 +267,7 @@ Now the commands you should use are:
 (mml-secure-message-sign-smime)         
 </pre>
 
-----
+--Uwe Brauer
 
 ----
 CategoryGnus GnusPGG SigningMail EncryptingMail
