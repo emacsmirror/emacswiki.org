@@ -23,20 +23,14 @@ It's available via [http://marmalade-repo.org/packages/find-file-in-project Marm
 
 [[Projectile]] is one very comprehensive alternative.
 
-Similar functionality can be found in fuzzy-find-in-project.
-Link: https://github.com/justinweiss/fuzzy-find-in-project
+Similar functionality can be found in [http://github.com/justinweiss/fuzzy-find-in-project fuzzy-find-in-project].
 
 Another alternative is [[Gpicker]].
 
 Yet another alternative: Lisp:ifind-mode.el
 
-And also simp
-Link: http://github.com/re5et/simp
+And also [http://github.com/re5et/simp simp].
 In addition to finding file in project, simp includes project specific rgrepping which takes project ignored directories into account.
-
-IDO mode also features something similar. See  ido-auto-merge-delay-time. [http://emacswiki.org/emacs/InteractivelyDoThings IDO Mode]
-
-
 ----
 
 CategoryProgrammerUtils
