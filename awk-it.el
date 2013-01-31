@@ -4,8 +4,8 @@
 
 ;; Author: Igor Sikaček <isikacek@gmail.com>
 ;; Maintainer: Igor Sikaček <isikacek@gmail.com>
-;; Created: 26 Jan 2013
-;; Version: 0.75
+;; Created: 31 Jan 2013
+;; Version: 0.76
 ;; Keywords: awk
 
 ;; This file is not part of Emacs
@@ -169,6 +169,9 @@
 ;;     - save code to kill-ring and file(raw)
 ;;     - undo before awk-it
 ;;     - extra functions variable
+;; 2013.01.31. - 0.76
+;;   fix:
+;;     - minor dependency fix
 
 ;;; Code:
 
@@ -610,10 +613,13 @@ code (if any) from AWK code in STRING."
       (destructuring-bind (a b) x
         (when (string-match " *BEGIN *" a)
           (when (string-match (concat "FS *=[^;\"]*" AWK-IT-M-STRING-REPLACEMENT-PREFIX "\\([1234567890]+\\)") b)
-            (setq fs (nth (string-to-number (string-msub b 1)) strings))))
+            (setq fs (nth (string-to-number
+                           (and (match-beginning 1)
+                                (substring b (match-beginning 1) (match-end 1)))) strings))))
         (when (string-match (concat " *" awk-it-default-row-filter " *") a)
           (setq code (substring b 1 (- (length b) 1)))))) matches)
     (list fs (awk-it-return-strings code strings))))
+
 
 
 ; ---[ Utility ]------------------------------------------------------------------------------------------------------------
