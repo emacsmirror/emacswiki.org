@@ -1,0 +1,12 @@
+[new:AlexSchroeder:2013-01-31 06:28 UTC]
+If you have trouble editing the wiki because of an overly eager spam protection, let me know.
+I'm using BannedRegexps to experiment with various regular expressions that are supposed to stop spammers.
+One regular expression I recently tried prevented people from having three or more bare URLs on a page or in a comment.
+It turns out that there are a lot of existing pages on this wiki with bare URLs!
+Since this lead to some complaints, I commented the rule (it's still on BannedRegexps).
+The following night, we were hit by a lot of spammers again.
+Right now I'm experimenting with a different regular epression: I want to ban two consecutive URLs on a page or in a comment.
+Let me know if any of the various banning mechanisms cause you trouble.
+-- AlexSchroeder
+
+[new]
