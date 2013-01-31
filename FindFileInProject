@@ -23,9 +23,6 @@ It's available via [http://marmalade-repo.org/packages/find-file-in-project Marm
 
 [[Projectile]] is one very comprehensive alternative.
 
-There is also rinari-find-file-in-project. 
-Link: http://github.com/technomancy/rinari/tree/master
-
 Similar functionality can be found in fuzzy-find-in-project.
 Link: https://github.com/justinweiss/fuzzy-find-in-project
 
