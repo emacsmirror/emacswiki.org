@@ -25,6 +25,8 @@ These packages also let you configure Emacs to ''automatically'' fit ''all'' fra
 
 Use the ##-mm## command line option: ##emacs -mm##, or add ##Emacs.fullscreen: maximized## to ~/.Xdefaults (on linux) to ensure window is maximized to fit screen on startup (useful if like me you try to run emacs on your new tiny notebook with your old config files, only to find you can't see the minibuffer).
 
+KDE users see KdeMaximized.
+
 == Set Frame Size Programmatically ==
 
 Elisp commands to set the frame size and position: ##set-frame-height##, ##set-frame-width##, ##set-frame-size##, ##set-frame-position##. This lets you do something like this:
