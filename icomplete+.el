@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Oct 16 13:33:18 1995
 ;; Version: 21.0
-;; Last-Updated: Thu Jan 31 14:49:35 2013 (-0800)
+;; Last-Updated: Thu Jan 31 21:50:56 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 1598
+;;     Update #: 1608
 ;; URL: http://www.emacswiki.org/icomplete+.el
 ;; Doc URL: http://emacswiki.org/IcompleteMode
 ;; Keywords: help, abbrev, internal, extensions, local, completion, matching
@@ -1062,8 +1062,22 @@ If SORT-FUNCTION is nil, sort per `completion-all-sorted-completions':
   ;; Eval this so that even if the library is byte-compiled with Emacs 20,
   ;; loading it into Emacs 21+ will define variable `icompletep-cycling-mode'.
   (eval '(define-minor-mode icompletep-cycling-mode
-          "Icomplete mode, but with its cycling keys enabled."
+          "Icomplete mode, with its cycling keys enabled if on, disabled if off.
+If off then the cycling keys of Icomplete mode are free for their
+normal minibuffer uses.  The default Icomplete-mode cycling keys are:
+
+M-TAB\t- complete to exact match, repeat to cycle
+C-j\t- complete to first match and exit minibuffer
+C-s\t- cycle first entry to end
+C-r\t- cycle last entry to start
+
+If you want Icomplete cycling behavior but do not want to use these
+keys for it, customize the bindings in `icomplete-minibuffer-map'.
+
+Turning this mode on also turns on Icomplete mode.
+Turning it off does not turn Icomplete mode on or off."
           nil nil nil
+          (when icompletep-cycling-mode (icomplete-mode 99)) ; Turn on Icomplete if cycling is on.
           (setq icomplete-minibuffer-map  (and icompletep-cycling-mode
                                            icompletep-ORIG-icomplete-minibuffer-map))))
   (icompletep-cycling-mode -99))        ; Turn it off by default.
