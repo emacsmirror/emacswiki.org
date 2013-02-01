@@ -1,5 +1,5 @@
 ;;; modeline-posn.el --- Set up `mode-line-position'.
-;; 
+;;
 ;; Filename: modeline-posn.el
 ;; Description: Set up `mode-line-position'.
 ;; Author: Drew Adams
@@ -7,21 +7,21 @@
 ;; Copyright (C) 2006-2013, Drew Adams, all rights reserved.
 ;; Created: Thu Sep 14 08:15:39 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Dec 28 10:14:35 2012 (-0800)
+;; Last-Updated: Fri Feb  1 10:31:17 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 122
+;;     Update #: 126
 ;; URL: http://www.emacswiki.org/modeline-posn.el
 ;; Keywords: mode-line, region, column
 ;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x
-;; 
+;;
 ;; Features that might be required by this library:
 ;;
 ;;   None
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
-;;; Commentary: 
-;; 
+;;
+;;; Commentary:
+;;
 ;;  Change variable `mode-line-position' so that the following changes
 ;;  are made to the mode line:
 ;;
@@ -69,11 +69,13 @@
 ;;
 ;;  You can customize `modelinepos-column-limit' or bind it to
 ;;  different values for different modes.
-;; 
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;;; Change Log:
 ;;
+;; 2013/02/01 dadams
+;;     Do not show size of active region in mode line if it is empty.
 ;; 2012/05/25 dadams
 ;;     Added face modelinepos-region and option modelinepos-style.
 ;;     Updated mode-line-position accordingly.  Thx to Jonathan Kotta for the suggestion.
@@ -85,26 +87,26 @@
 ;;     Added modelinepos-column-warning.  Thx to AmitPatel for the suggestion.
 ;; 2006/09/14 dadams
 ;;     Created.
-;; 
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
 ;; published by the Free Software Foundation; either version 2, or
 ;; (at your option) any later version.
-;; 
+;;
 ;; This program is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 ;; General Public License for more details.
-;; 
+;;
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program; see the file COPYING.  If not, write to
 ;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
 ;; Floor, Boston, MA 02110-1301, USA.
-;; 
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;;; Code:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -174,10 +176,13 @@ delete others, mouse-3: delete this"))
                     `((-3 ,(propertize "%p" 'help-echo help-echo))
                       (size-indication-mode
                        (8 ,(propertize
-                            (if (and transient-mark-mode  mark-active)
+                            (if (and transient-mark-mode  mark-active
+                                     (/= (region-beginning) (region-end)))
                                 (apply #'format (mapcar #'eval modelinepos-style))
                               " of %I")
-                            'face (and transient-mark-mode  mark-active  'modelinepos-region)
+                            'face (and transient-mark-mode  mark-active
+                                       (/= (region-beginning) (region-end))
+                                       'modelinepos-region)
                             'help-echo help-echo)))
                       (line-number-mode
                        ((column-number-mode
@@ -211,10 +216,13 @@ delete others, mouse-3: delete this"))
                                      'help-echo "Buffer position, mouse-1: Line/col menu"))
                       (size-indication-mode
                        (8 ,(propertize
-                            (if (and transient-mark-mode  mark-active)
+                            (if (and transient-mark-mode  mark-active
+                                     (/= (region-beginning) (region-end)))
                                 (apply #'format (mapcar #'eval modelinepos-style))
                               " of %I")
-                            'face (and transient-mark-mode  mark-active  'modelinepos-region)
+                            'face (and transient-mark-mode  mark-active
+                                       (/= (region-beginning) (region-end))
+                                       'modelinepos-region)
                             'local-map mode-line-column-line-number-mode-map
                             'mouse-face 'mode-line-highlight
                             'help-echo "Buffer position, mouse-1: Line/col menu")))
