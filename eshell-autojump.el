@@ -52,7 +52,7 @@ Ignore non-directories."
 The file format is a simple alist.
 Reduce values by 1% such that eventually unused items fall off the list
 after not being used in a hundred sessions."
-  (when eshell-autojump-file
+  (when (and eshell-autojump-file eshell-autojump-map)
     (with-temp-buffer
       (let ((standard-output (current-buffer)))
 	(insert "(")
