@@ -244,7 +244,11 @@ use-agent
 </pre>
 
 The easiest solution now is to reboot the machine so that the agent starts up correctly.
-
+Suppose you have obtained  a personal  certificate in p12 format, containing your private key,
+say from www.comodo.com, you import the certificate  into gpgsm by 
+<pre>
+gpgsm --import 
+</pre>
 It remains to set up ''gnus'':
 
 <pre>
@@ -258,8 +262,11 @@ It remains to set up ''gnus'':
 (setq gnus-buttonized-mime-types '("multipart/encrypted" "multipart/signed"))
 (setq mml-smime-use 'epg)
 </pre>
+With this setting ''gpgsm'' will take care of extracting public keys from signed messages and storing them 
+appropiately.
 
-Now the commands you should use are:
+
+Now in gnus the commands you should use are:
 
 <pre>
 (mml-secure-message-encrypt-smime nil)
@@ -269,8 +276,6 @@ Now the commands you should use are:
 
 --Uwe Brauer
 
-----
-CategoryGnus GnusPGG SigningMail EncryptingMail
 
 ----
 CategoryGnus GnusPGG SigningMail EncryptingMail
