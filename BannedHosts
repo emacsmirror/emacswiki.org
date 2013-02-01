@@ -31,7 +31,7 @@
 ^124\.240\.187\.81 # for spamming Comments pages
 ^142\.4\.117\.113 # for spamming
 ^173\.57\.65\.119 # for spamming SiteMap
-^175\.44\. # for spamming
+^175\.4(0-9)\. # for spamming
 ^178\.187\.166\.55 # for spamming
 ^188\.143\.232\.43 # for spamming
 ^199\.15\.234\.80 # for spamming KeyBindingDiscussion
