@@ -68,5 +68,13 @@ These settings look ok-ish with Emacs 24 and the tango-dark theme:
 
 -- AnselmHelbig
 
+Or you can simply override magit-highlight-section with an empty implementation:
+
+  (eval-after-load "magit"
+    ;; no highlight
+    (defun magit-highlight-section ())
+
+-- Li Feng
+
 ----
 CategoryVersionControl
