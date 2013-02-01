@@ -104,7 +104,9 @@ C-r     Enter recursive edit; ask again when you exit from that.
 
 == Prompting During Keyboard Macro Execution ==
 
-You can use the following piece of code to prompt for input using the
+Using `C-u C-x q' while recording a macro will, at macro execution, drop in to a recursive editing mode allowing you to intervene with custom editing on each macro iteration.
+
+You can also use the following piece of code to prompt for input using the
 MiniBuffer each time the macro executes.
 
 Pressing `C-x Q' during macro definition will present you with a
