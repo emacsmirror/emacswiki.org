@@ -129,6 +129,12 @@ Coming soon.
 * '''[[Icicles]]'''
 * '''BookmarkPlus'''
 * '''LaCarte'''
+* '''DiredPlus'''
+* '''EmacsLockPlus'''
+* '''FilesPlus'''
+* '''GrepPlus'''
+* '''ReplacePlus'''
+* '''[[Synonyms]]'''
 * AlignCommands
 * AngeFtp
 * AUCTeX
@@ -136,7 +142,6 @@ Coming soon.
 * CsvMode
 * DeskTop
 * DiaryMode
-* DiredPlus
 * DistributedVersionControl and VersionControl
 * EasyPG
 * EdiffMode
@@ -145,7 +150,6 @@ Coming soon.
 * EmacsSpeaksStatistics
 * EmacsVersor
 * GoMode
-* GrepPlus
 * HideShow
 * KeyboardMacros
 * KeyWiz
@@ -156,7 +160,6 @@ Coming soon.
 * OrgMode
 * ParEdit
 * RefillMode
-* ReplacePlus
 * SlimeMode
 * SokobanMode
 * SqlMode
@@ -171,7 +174,6 @@ Coming soon.
 * [[Gnus]]
 * [[Htmlize]]
 * [[N3Mode]]
-* [[Synonyms]]
 * [[w3]]
 * [[Yasnippet]]
 
@@ -243,9 +245,9 @@ Coming soon.
 * Implement a version control system in EmacsLisp.
 * Extended text-properties (to make overlays obsolete) in Emacs.
 * Implement an OCR system in EmacsLisp.
-* Make emacsclient work across most network connections.
+* Make emacsclient work across all network connections.
 * Implement a search engine in EmacsLisp.
-* Make a keyboard layout for Emacs.  I have used ColemakKeyboard and DvorakKeyboard but I'm not satisfied with both of them.
+* Make a keyboard layout for Emacs.
 * Implement a mailing list manager in EmacsLisp.
 * Port XWEM and XLIB to Emacs.
 * Implement a DHCP client in EmacsLisp.
@@ -260,7 +262,7 @@ Coming soon.
 * Implement a URL Shortener in EmacsLisp.
 * Make Emacs/W3 be able to deal with HTML5.
 * Implement a DOM binding for EmacsLisp.
-* Make Emacs/W3 parse XSL.
+* Make Emacs/W3 be able to parse XSL.
 * Make Emacs support more image formats.
 * Implement multithreaded features in Emacs.
 * Make the face code to be simpler, clearer and faster.
