@@ -27,10 +27,3 @@ Thanks
 
 -- JonasBernoulli 2013-02-01 15:47 UTC
 
-
-----
-
-Add your comment here.
-
--- JonasBernoulli 2013-02-01 15:47 UTC
-
