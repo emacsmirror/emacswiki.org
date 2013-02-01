@@ -5,7 +5,7 @@
 ;; Author: rubikitch <rubikitch@ruby-lang.org>
 ;; Maintainer: rubikitch <rubikitch@ruby-lang.org>
 ;; Copyright (C) 2013, rubikitch, all rights reserved.
-;; Time-stamp: <2013-02-01 07:17:07 rubikitch>
+;; Time-stamp: <2013-02-01 21:19:47 rubikitch>
 ;; Created: 2013-01-31 16:05:17
 ;; Version: 0.1
 ;; URL: http://www.emacswiki.org/emacs/download/all-ext.el
@@ -68,6 +68,7 @@
 ;;; Code:
 
 (require 'all)
+(eval-when-compile (require 'cl))
 
 ;;;; Line number overlay
 (defun all-make-lineno-overlay (lineno)
