@@ -4,18 +4,17 @@
 
 ===Install===
 First you should have installed
- AutoComplete and  [http://code.google.com/p/yasnippet/ Yasnippet]
+ AutoComplete and  [https://github.com/capitaomorte/yasnippet Yasnippet]
    Then install this one for java completion.
 
  Please Do not forget to read 
-[https://github.com/jixiuf/ajc-java-complete/raw/0.2.8/ajc-java-complete.el ajc-java-complete.el] 
-[https://github.com/jixiuf/ajc-java-complete/raw/0.2.8/Install Install] 
-[https://github.com/jixiuf/ajc-java-complete/raw/0.2.8/README.txt README.txt] 
-[https://github.com/jixiuf/ajc-java-complete/raw/0.2.8/ChangeLog ChangeLog] 
+[https://github.com/emacs-java/auto-java-complete/raw/0.2.8/Install Install] 
+[https://github.com/emacs-java/auto-java-complete/raw/0.2.8/README.txt README.txt] 
+[https://github.com/emacs-java/auto-java-complete/raw/0.2.8/ChangeLog ChangeLog] 
 
 
 
-Run the following to generate the tag file  [https://github.com/jixiuf/ajc-java-complete/raw/0.2.8/java_base.tag.bz2 ~/.java_base.tag]
+Run the following to generate the tag file  [https://github.com/emacs-java/auto-java-complete/raw/0.2.8/java_base.tag.bz2 ~/.java_base.tag]
 and restart your Emacs:
 
       javac Tags.java 
@@ -29,26 +28,26 @@ Enjoy!
 
 ==Source==
 
-* https://github.com/jixiuf/ajc-java-complete/raw/0.2.8/ajc-java-complete.el
-* https://github.com/jixiuf/ajc-java-complete/raw/0.2.8/ajc-java-complete-config.el
-* https://github.com/jixiuf/ajc-java-complete/raw/0.2.8/popup.el
-* https://github.com/jixiuf/ajc-java-complete/raw/0.2.8/popup-patch.diff
+* https://github.com/emacs-java/auto-java-complete/raw/0.2.8/ajc-java-complete.el
+* https://github.com/emacs-java/auto-java-complete/raw/0.2.8/ajc-java-complete-config.el
+* https://github.com/emacs-java/auto-java-complete/raw/0.2.8/popup.el
+* https://github.com/emacs-java/auto-java-complete/raw/0.2.8/popup-patch.diff
 
-* https://github.com/jixiuf/ajc-java-complete/raw/0.2.8/Tags.java
+* https://github.com/emacs-java/auto-java-complete/raw/0.2.8/Tags.java
 
   if 
-[https://github.com/jixiuf/ajc-java-complete/raw/0.2.8/Tags.java Tags.java]
+[https://github.com/emacs-java/auto-java-complete/raw/0.2.8/Tags.java Tags.java]
 can not work on your PC. you can use my tag file: 
-  just bunzip and rename it to [https://github.com/jixiuf/ajc-java-complete/raw/0.2.8/java_base.tag.bz2 ~/.java_base.tag]
+  just bunzip and rename it to [https://github.com/emacs-java/auto-java-complete/raw/0.2.8/java_base.tag.bz2 ~/.java_base.tag]
 
 
 You can find source code on github:
-[https://github.com/jixiuf/ajc-java-complete  auto-java-complete].
+[https://github.com/emacs-java/auto-java-complete  auto-java-complete].
 
 
 You can clone it using
 
-      git clone git://github.com/jixiuf/ajc-java-complete.git
+      git clone git://github.com/emacs-java/auto-java-complete.git
       git checkout 0.2.8 (tag0.2.8,last version)
 
 ==Video Demo==
@@ -109,7 +108,7 @@ Here are two suggested keybindings(included in ajc-java-complete-config.el):
      (local-set-key (kbd "C-c i") (quote ajc-import-all-unimported-class))
      (local-set-key (kbd "C-c m") (quote ajc-import-class-under-point))
 
-You even can edit a jsp file using AutoJavaComplete ,try it.(read  [https://github.com/jixiuf/ajc-java-complete/raw/0.2.8/ajc-java-complete.el ajc-java-complete.el] )
+You even can edit a jsp file using AutoJavaComplete ,try it.(read  [https://github.com/emacs-java/auto-java-complete/raw/0.2.8/ajc-java-complete.el ajc-java-complete.el] )
 
 
 == Screenshots  ==
