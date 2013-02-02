@@ -112,3 +112,10 @@ What Aaron describes is what I had in mind.  Alex: thx for the info.
 
 -- DrewAdams 2013-01-28 16:11 UTC
 
+
+----
+
+I think my approach would be to write a plugin that could index a namespace, eg: ElispCookbook-* could be indexed, so if you had ElispCookbook-Strings and ElispCookbook-Lists it would index those.
+
+-- [http://nic.ferrier.me.uk NicFerrier] 2013-02-02 16:35 UTC
+
