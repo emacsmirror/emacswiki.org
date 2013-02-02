@@ -6,10 +6,10 @@
 ;; Maintainer: Christopher R. Genovese <genovese@cmu.edu>
 ;; URL: http://www.stat.cmu.edu/~genovese/emacs/win-switch/
 
-;; Version: 1.0.6
-;; Update#: 17
+;; Version: 1.0.8
+;; Update#: 19
 ;; Created:      Wed 28 Jul 2011 at 00:27 EDT
-;; Last-Updated: Sat 04 Aug 2012 at 14:58 EDT
+;; Last-Updated: Sat 02 Feb 2013 at 10:02 EDT
 ;; By: Christopher R. Genovese
 
 ;; Keywords: window, switch, key bindings, ergonomic, efficient
@@ -78,7 +78,7 @@
 ;;    + SPACE cycles among existing frames.
 ;;    + u (and RETURN) exit window switching mode.
 ;;    + I and K vertically enlarge and shrink the current window, respectively.
-;;    + J and L horizontally enlarge and shrink the current window, respectively.
+;;    + L and J horizontally enlarge and shrink the current window, respectively.
 ;;    + h and ; split the current window, horizontally and vertically, respectively.
 ;;    + ESCAPE acts as an "emergency" exit
 ;;
@@ -201,6 +201,13 @@
 
 ;;; Change Log:
 ;;
+;;  * 02 Feb 2013 -- Fixed customization type for win-switch-window-threshold
+;;                   Fixed comment describing L and J keys' functionality
+;;
+;;  * 02 Nov 2012 -- Changed the last stray 'first to 'car
+;;
+;;  * 04 Aug 2012 -- Changed a few stray first/rest's to car/cdr's.
+;;  
 ;;  * 17 Mar 2012 -- Fixed *two* silly typos in fset and in a string constant.
 ;;                   in win-switch-setup-keys-arrows. The former was causing
 ;;                   load failure from package.el.
@@ -326,7 +333,7 @@ default).
 Besides its effect on window switching behavior, this option also
 affects how `win-switch-dispatch' interprets its prefix argument.
 See the documentation for `win-switch-dispatch' for details."
-  :type 'boolean
+  :type 'integer
   :group 'win-switch)
 
 ;;;###autoload
@@ -1007,7 +1014,7 @@ updates, additions, and deletions. KEY-LIST should be a list of
 keybindings. The predefined keylists are the customizable
 variables listed as the keys in `win-switch-commands'. No keymap
 changes are made by this function."
-  (let ((keyvars (mapcar 'first win-switch-commands)))
+  (let ((keyvars (mapcar 'car win-switch-commands)))
     (dolist (keyvar keyvars)
       (let ((keys (symbol-value keyvar)))
         (dolist (key key-list)
