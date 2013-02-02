@@ -1,3 +1,4 @@
+[[de:albania]]
 The following are Emacs interfaces to computer algebra systems.  Some of these are proprietary or have parts that are non-free.  Alternative packages that are free software are listed in [http://directory.fsf.org/math/ the Mathematics category of the Free Software Directory].
 
 * [http://maxima.sourceforge.net Maxima] -- the Emacs interface is part of the distro.
