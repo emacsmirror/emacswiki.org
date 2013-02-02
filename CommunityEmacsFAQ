@@ -341,6 +341,10 @@ The variable <code>window-system</code> stores the name of the windowing system 
 
 Its value is, for instance, <code>x</code> for X11, or <code>nil</code> for a text-only terminal.
 
+=== How do I connect to a remote Emacs server without X forwading? ===
+
+You can't.  When emacsclient creates a new X frame, it just tells the Emacs server to create a new X frame, so if the server is on a remote host, and you're not using SSH X forwarding, you're not going to get a frame on your display.  If you do not want to or can not use X forwarding, then you will have to use emacsclient in a terminal.
+
 == ELisp ==
 
 === What is ELisp? ===
