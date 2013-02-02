@@ -7,6 +7,8 @@ Start it using `M-x ielm'.
 
 It's real little [WikiPedia:Read-eval-print_loop read-eval-print loop] (REPL).
 
+IELM is a ComintMode.
+
 == Icicles Enhancements to IELM ==
 
 You can use [[Icicles]] [[completion]] in IELM. Whenever there are multiple completion candidates, Icicles completion is used (if Icicle minor mode is on). This means you can [[Icicles - Cycling Completions|cycle]] to choose a candidate, complete using one or more substrings or [[regexp]]s ([[progressive completion]]), and so on. See [[Icicles - Completion in Other Buffers#ShellCommandCompletion|Icicles - Completion in Comint Modes]]. 
