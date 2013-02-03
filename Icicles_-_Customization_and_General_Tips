@@ -467,6 +467,91 @@ with no name without completing.  See function
 
 
 
+
+----
+[:icicle-top-level-when-sole-completion-delay]
+[:icicle-top-level-when-sole-completion-flag]
+==== Options icicle-top-level-when-sole-completion-delay, icicle-top-level-when-sole-completion-flag ====
+
+Non-`nil' user option '''`icicle-top-level-when-sole-completion-flag'''' means that
+whenever there is only one completion candidate that matches
+your input, that candidate is used immediately, without
+requiring you to hit `RET' or `S-RET'.
+
+When `icicle-top-level-when-sole-completion-flag' is `nil', option
+'''`icicle-top-level-when-sole-completion-delay'''' is the number of
+seconds '''Icicles''' waits, before returning to top level with the
+sole completion.  (It has no effect if the flag is `nil'.)  The
+delay gives you a chance to forestall acceptance of the sole
+completion: editing the completion (typing or deleting a
+character) before the delay expires prevents its automatic
+acceptance.  The default value is 0 seconds (no delay).
+
+
+
+
+
+----
+[:icicle-top-level-key-bindings]
+==== Option icicle-top-level-key-bindings ====
+
+User option '''`icicle-top-level-key-bindings'''' specifies
+top-level commands and their bindings for ''Icicle'' mode.
+By default, this rebinds several standard Emacs [[key]]s (in ''Icicle''
+mode only).  For example, it substitutes `icicle-kill-buffer'
+for `kill-buffer' (binding it to whatever `kill-buffer' is bound
+to globally).  Top-level commands are commands that are not used
+only in the minibuffer.  To change these bindings, customize
+`icicle-top-level-key-bindings'.  If you do that, then
+you must exit and re-enter ''Icicle'' mode to ensure that the change takes
+effect.  This is really necessary only if your changes would
+''un''define a key.
+
+
+
+
+
+----
+[:icicle-minibuffer-key-bindings]
+==== Option icicle-minibuffer-key-bindings ====
+
+User option '''`icicle-minibuffer-key-bindings'''' specifies bindings
+for keys available during minibuffer input in ''Icicle'' mode.
+These bindings are in effect whether or not [[completion]] is
+available.  This does not include keys concerned with
+completion, cycling, and help, which are covered by other user
+options.  The value has the same form as for option
+'''`<tt>[[#icicle-top-level-key-bindings|icicle-top-level-key-bindings]]</tt>''''.
+
+
+
+
+----
+[:icicle-completion-key-bindings]
+==== Option icicle-completion-key-bindings ====
+
+User option '''`icicle-completion-key-bindings'''' specifies keys to
+bind to various '''Icicles''' minibuffer commands that are used during
+completion.  These are generally not commands that complete your
+minibuffer input, but commands that you use to edit that input
+or act on it in different ways.  This option value has the same
+form as for option '''`<tt>[[#icicle-top-level-key-bindings|icicle-top-level-key-bindings]]</tt>''''.
+
+
+
+
+
+----
+[:icicle-completion-list-key-bindings]
+==== Option icicle-completion-list-key-bindings ====
+
+User option '''`icicle-completion-list-key-bindings'''' specifies key
+bindings for buffer `*Completions*'.  The value has the same
+form as for option '''`<tt>[[#icicle-top-level-key-bindings|icicle-top-level-key-bindings]]</tt>''''.
+
+
+
+
 ----
 [:icicle-candidate-help-keys]
 ==== Option icicle-candidate-help-keys ====
@@ -664,18 +749,6 @@ cannot also be used for key completion in the minibuffer.
 
 
 
-----
-[:icicle-previous-candidate-keys]
-==== Option icicle-previous-candidate-keys ====
-
-Option `icicle-previous-candidate-keys' is the list of keys to
-bind to `icicle-move-to-previous-completion', for moving among
-candidates in buffer `*Completions*'.  By default, these
-keys are `S-tab' and `S-iso-lefttab', which together implement
-`S-TAB'.  (In Emacs 22 and later, `backtab' is the canonical key
-that represents both `S-tab' and `S-iso-lefttab', so that is
-used in the default value.)
-
 
 ----
 [:icicle-isearch-complete-keys]
@@ -683,7 +756,20 @@ used in the default value.)
 
 Option '''`icicle-isearch-complete-keys'''' is the list of keys for
 `icicle-isearch-complete'.  By default, these keys are `M-TAB',
-`##ESC TAB##', `C-M-TAB', and `M-o'.
+`##ESC TAB##' and `C-M-TAB'.
+
+
+
+
+----
+[:icicle-isearch-history-insert-keys]
+==== icicle-isearch-history-insert-keys ====
+
+Option '''`icicle-isearch-history-insert-keys'''' is the list of keys
+for `icicle-isearch-history'.  By default, the list contains
+only '''`M-o''''.
+
+
 
 
 ----
@@ -759,38 +845,6 @@ options `icicle-prefix-complete-keys' and
 
 
 
-
-----
-[:icicle-completion-key-bindings]
-==== Option icicle-completion-key-bindings ====
-
-User option '''`icicle-completion-key-bindings'''' specifies keys to
-bind to various '''Icicles''' minibuffer commands that are used during
-completion.  These are generally not commands that complete your
-minibuffer input, but commands that you use to edit that input
-or act on it in different ways.  This option value has the same
-form as for option '''`<tt>[[#icicle-top-level-key-bindings|icicle-top-level-key-bindings]]</tt>''''.
-
-
-
-----
-[:icicle-top-level-when-sole-completion-delay]
-[:icicle-top-level-when-sole-completion-flag]
-==== Options icicle-top-level-when-sole-completion-delay, icicle-top-level-when-sole-completion-flag ====
-
-Non-`nil' user option '''`icicle-top-level-when-sole-completion-flag'''' means that
-whenever there is only one completion candidate that matches
-your input, that candidate is used immediately, without
-requiring you to hit `RET' or `S-RET'.
-
-When `icicle-top-level-when-sole-completion-flag' is `nil', option
-'''`icicle-top-level-when-sole-completion-delay'''' is the number of
-seconds '''Icicles''' waits, before returning to top level with the
-sole completion.  (It has no effect if the flag is `nil'.)  The
-delay gives you a chance to forestall acceptance of the sole
-completion: editing the completion (typing or deleting a
-character) before the delay expires prevents its automatic
-acceptance.  The default value is 0 seconds (no delay).
 
 ----
 [:icicle-TAB-shows-candidates-flag]
@@ -1938,23 +1992,6 @@ The part of your current input that does not complete can be
 highlighted automatically, and you can then remove that part
 using `C-M-l'.  This highlighting is controlled by options `<tt>[[#icicle-incremental-completion]]</tt>', `<tt>[[#icicle-test-for-remote-files-flag]]</tt>', '''`icicle-highlight-input-completion-failure'''', '''`icicle-highlight-input-completion-failure-delay'''', and '''`icicle-highlight-input-completion-failure-threshold''''.  The highlighting uses face '''`icicle-input-completion-fail'''' (for strict completion) or `icicle-input-completion-fail-lax' (for [[lax]] completion) to highlight the part
 of your current input that does not complete.  Possible values control when highlighting can occur.  For details, see the option doc strings and [[Icicles - Icompletion#HighlightNonmatch|Highlight Nonmatch]].
-
-
-----
-[:icicle-top-level-key-bindings]
-==== Option icicle-top-level-key-bindings ====
-
-User option '''`icicle-top-level-key-bindings'''' specifies
-top-level commands and their bindings for ''Icicle'' mode.
-By default, this rebinds several standard Emacs [[key]]s (in ''Icicle''
-mode only).  For example, it substitutes `icicle-kill-buffer'
-for `kill-buffer' (binding it to whatever `kill-buffer' is bound
-to globally).  Top-level commands are commands that are not used
-only in the minibuffer.  To change these bindings, customize
-`icicle-top-level-key-bindings'.  If you do that, then
-you must exit and re-enter ''Icicle'' mode to ensure that the change takes
-effect.  This is really necessary only if your changes would
-''un''define a key.
 
 
 ----
