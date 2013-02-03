@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Jan 26 11:59:01 2013 (-0800)
+;; Last-Updated: Sun Feb  3 11:06:41 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 23289
+;;     Update #: 23297
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -530,6 +530,8 @@
 ;;    `icicle-insert-newline-in-minibuffer',
 ;;    `icicle-insert-string-at-point',
 ;;    `icicle-insert-string-from-variable', `icicle-isearch-complete',
+;;    `icicle-isearch-history-complete',
+;;    `icicle-isearch-history-insert',
 ;;    `icicle-keep-only-buffer-cands-for-derived-mode',
 ;;    `icicle-keep-only-buffer-cands-for-mode',
 ;;    `icicle-keep-only-past-inputs', `icicle-kill-line',
@@ -737,6 +739,7 @@
 ;;    `icicle-completing-read+insert-keys',
 ;;    `icicle-completion-history-max-length',
 ;;    `icicle-completion-key-bindings',
+;;    `icicle-completion-list-key-bindings',
 ;;    `icicle-Completions-display-min-input-chars',
 ;;    `icicle-completions-format',
 ;;    `icicle-Completions-mouse-3-menu-entries',
@@ -776,7 +779,9 @@
 ;;    `icicle-Info-visited-max-candidates',
 ;;    `icicle-inhibit-advice-functions', `icicle-inhibit-ding-flag',
 ;;    `icicle-input-string', `icicle-inter-candidates-min-spaces',
-;;    `icicle-isearch-complete-keys', `icicle-key-complete-keys',
+;;    `icicle-isearch-complete-keys',
+;;    `icicle-isearch-history-insert-keys',
+;;    `icicle-key-complete-keys',
 ;;    `icicle-key-complete-keys-for-minibuffer',
 ;;    `icicle-key-descriptions-use-<>-flag',
 ;;    `icicle-key-descriptions-use-angle-brackets-flag',
@@ -786,6 +791,7 @@
 ;;    `icicle-list-nth-parts-join-string',
 ;;    `icicle-mark-position-in-candidate', `icicle-max-candidates',
 ;;    `icicle-menu-items-to-history-flag',
+;;    `icicle-minibuffer-key-bindings',
 ;;    `icicle-minibuffer-setup-hook', `icicle-modal-cycle-down-keys',
 ;;    `icicle-modal-cycle-down-action-keys',
 ;;    `icicle-modal-cycle-down-alt-action-keys',
@@ -811,7 +817,6 @@
 ;;    `icicle-prefix-cycle-previous-action-keys',
 ;;    `icicle-prefix-cycle-previous-alt-action-keys',
 ;;    `icicle-prefix-cycle-previous-help-keys',
-;;    `icicle-previous-candidate-keys',
 ;;    `icicle-quote-shell-file-name-flag',
 ;;    `icicle-read+insert-file-name-keys', `icicle-recenter',
 ;;    `icicle-regexp-quote-flag', `icicle-regexp-search-ring-max',
@@ -877,7 +882,7 @@
 ;;    `icicle-barf-if-outside-minibuffer', `icicle-binary-option-p',
 ;;    `icicle-bind-completion-keys',
 ;;    `icicle-bind-buffer-candidate-keys',
-;;    `icicle-bind-custom-completion-keys',
+;;    `icicle-bind-custom-minibuffer-keys',
 ;;    `icicle-bind-file-candidate-keys', `icicle-bind-isearch-keys',
 ;;    `icicle-bind-key-completion-keys-for-map-var',
 ;;    `icicle-bind-key-completion-keys-in-keymaps-from',
@@ -1139,7 +1144,7 @@
 ;;    `icicle-remove-saved-set-action',
 ;;    `icicle-replace-input-w-parent-dir', `icicle-require-match-p',
 ;;    `icicle-restore-completion-keys',
-;;    `icicle-restore-custom-completion-keys',
+;;    `icicle-restore-custom-minibuffer-keys',
 ;;    `icicle-restore-other-keymap-keys',
 ;;    `icicle-restore-region-face',
 ;;    `icicle-restore-standard-commands',
