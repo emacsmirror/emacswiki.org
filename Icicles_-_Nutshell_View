@@ -32,7 +32,7 @@ If you want to know more about '''Icicles''' by reading instead of just trying, 
 This README gives you an idea what '''Icicles''' is for, what it does.  For
 information about how to obtain and install '''Icicles''' see [[Icicles - Libraries]].  For information about how to use '''Icicles''' read the other sections on this page and the following pages.  For
 quick help during completion, you can use '''`##M-?##'''' in the minibuffer and
-`C-mouse-3' on a candidate in buffer `*Completions*'.
+`C-mouse-3' on a candidate in buffer `##*Completions*##'.
 
 '''Icicles''' enhances [[minibuffer]] [[completion]].  It does so generally,
 throughout Emacs.  It does this by improving the basic Emacs functions
@@ -84,7 +84,7 @@ completion:''
 : '''v5.''' When you hit `TAB' to complete, your current input in the
     minibuffer (the contents) filters the domain, narrowing it down to
     the set of matching candidates, which is shown in buffer
-    `*Completions*'.
+    `##*Completions*##'.
 
 : (See also [[Icicles - Background on Input Completion]].)
 [new]
@@ -134,7 +134,7 @@ that work together.
 : '''i1. Incremental completion.'''  By default, each change you make to your
     minibuffer input automatically rematches and recompletes it ('''[[#v5]]''').
     IOW, the set of current candidates is updated dynamically,
-    incrementally.  You can always see (in the `*Completions*' window)
+    incrementally.  You can always see (in the `##*Completions*##' window)
     what your current input (the minibuffer content) matches.  This is
     a help and exploration feature.
 
@@ -157,7 +157,7 @@ that work together.
 : '''i4. Multi-commands and multi-inputs.'''  A [[multi-command]] is one that lets you act on a completion candidate
 without exiting the minibuffer, so that you can thus act on several
 candidates.  Not every command is a
-multi-command. In addition to acting on multiple candidates that you choose (perhaps all of them), you can act on multiple inputs in the same minibuffer (called [[multi-inputs]]), all at once.
+multi-command. In addition to acting on multiple candidates that you choose (perhaps all of them), you can act on multiple inputs in the same minibuffer (called [[multi-input]]s), all at once.
 
 
 
@@ -268,20 +268,20 @@ Suppose that you do this:
 
 : '''##C-x 4 f##'''##   i c i   ##'''##C-M-j##'''##   t a g s   ##'''##S-SPC##'''
 
-The completion candidates, shown in `*Completions*', are the files
+The completion candidates, shown in `##*Completions*##', are the files
 (a) whose name contains `icicles' (completed from `ici') and (b)
 whose content includes `tags' --- that is, the files themselves
 contain the text `tags'.
 
 The file content is in fact part of the two-part completion
 candidate, but of course it is not shown.  It is used only for
-filtering.  Only the file names are shown in `*Completions*'.
+filtering.  Only the file names are shown in `##*Completions*##'.
 
 Then you do this, with the previous candidates still current:
 
 : ##c m   ##'''##C-M-j##'''##   i n e - f##
 
-As you type, the candidates shown in `*Completions*' are updated.
+As you type, the candidates shown in `##*Completions*##' are updated.
 When you finish typing, the set of candidates is reduced to just
 `##icicles-cmd1.el##' and `##icicles-cmd2.el##', the files whose name
 contains also `cm' and whose content contains also `ine-f' (as in
@@ -368,14 +368,14 @@ One way to start with '''Icicles''' is to explore menus '''Icicles''' and '''Min
 
 During minibuffer input
 [[completion]], you can also press Control and right-click
-(`C-mouse-3') on a completion candidate in [[buffer]] `*Completions*',
+(`C-mouse-3') on a completion candidate in [[buffer]] `##*Completions*##',
 and choose from a contextual popup menu, '''Completion'''.
 
 You can [[Customize|customize]] this menu.  By default, submenu '''This Candidate'''
 has menu items that apply to the candidate you clicked to pop up
 the menu.  The other submenus have items that apply to all
 candidates, candidates you have selected (the region in
-`*Completions*'), or candidates you have saved (marked).
+`##*Completions*##'), or candidates you have saved (marked).
 
 Altogether there are many menu items in the popup menu.  Think of
 the menu as a learning device and a way to remind you of possible
@@ -482,7 +482,7 @@ You can use a ''regular expression'' ([[regexp]]) to narrow the field of matchin
 : ##M-x isearch-other-control-char  next## ...
 
 Note that when you cycle, a one-line description of the current
-candidate is shown in the mode line (of buffer `*Completions*' if
+candidate is shown in the mode line (of buffer `##*Completions*##' if
 visible; otherwise of the current buffer).  You can get more
 detailed info about individual candidates by holding the '''Control'''
 and '''Meta''' keys (e.g. `C-M-next') while you cycle -- see
@@ -506,15 +506,15 @@ See [[Icicles - Cycling Completions]] for more about cycling completion candidat
 [:DisplayCandidates]
 == Display Completion Candidates ==
 
-You can display all of the matches for the current minibuffer input, in the `*Completions*' [[buffer]], using `S-TAB' (Shift TAB). So, for instance, `S-TAB' with <code>M-x ise.+char</code> in the minibuffer displays all commands whose names contain `ise' followed (somewhere) by `char'.
+You can display all of the matches for the current minibuffer input, in the `##*Completions*##' [[buffer]], using `S-TAB' (Shift TAB). So, for instance, `S-TAB' with <code>M-x ise.+char</code> in the minibuffer displays all commands whose names contain `ise' followed (somewhere) by `char'.
 
 [[image:IciclesRegexpCompletions]]
 
-When you cycle among matching candidates as described above, if buffer `*Completions*' is displayed, then the current candidate is highlighted there. In this screenshot taken while cycling, the current candidate is `insert-in-minibuffer'. (The other screenshot annotations shown here are covered in [[Icicles - Apropos Completions]].)
+When you cycle among matching candidates as described above, if buffer `##*Completions*##' is displayed, then the current candidate is highlighted there. In this screenshot taken while cycling, the current candidate is `insert-in-minibuffer'. (The other screenshot annotations shown here are covered in [[Icicles - Apropos Completions]].)
 
 [[image:iciclesscreenshot]]
 
-See [[Icicles - Completions Display]] for more about using the `*Completions*' window.
+See [[Icicles - Completions Display]] for more about using the `##*Completions*##' window.
 
 
 
@@ -552,20 +552,20 @@ completions.  The modal cycling keys just cycle according to the
 current completion mode, whether it is apropos or prefix.
 
 To cycle using the mouse wheel, the mouse must not be over the
-`*Completions*' window; if it is, then the wheel scrolls that
+`##*Completions*##' window; if it is, then the wheel scrolls that
 window instead of cycling candidates -- see [[Icicles - Completions Display]].
 
 As an alternative to using `end' or `next', you can cycle candidates downward (forward) by just
 repeating the same completion key: `TAB' or `S-TAB'.  For example:
 
-: ##M-x tool  ##'''##TAB##''' -> Display candidates with prefix `tool' in `*Completions*'
+: ##M-x tool  ##'''##TAB##''' -> Display candidates with prefix `tool' in `##*Completions*##'
 : ##M-x ##'''''##tool##'''''##-bar-mode  ##'''##TAB##''' -> 
 : ##M-x ##'''''##tool##'''''##tip-mode  ##'''##TAB##''' -> 
 : ##M-x ##'''''##tool##'''''##-bar-mode##  -- Back to the beginning
 
 Or:
 
-: ##M-x tool  ##'''##S-TAB##''' -> Display matching candidates in `*Completions*'
+: ##M-x tool  ##'''##S-TAB##''' -> Display matching candidates in `##*Completions*##'
 : ##M-x ediff-toggle-use##'''''##tool##'''''##bar  ##'''##S-TAB##''' -> 
 : ##M-x scroll-bar-##'''''##tool##'''''##kit-scroll  ##'''##S-TAB##''' -> 
 : ##M-x ##'''''##tool##'''''##-bar-mode  ##'''##S-TAB##''' -> 
@@ -577,9 +577,9 @@ versa) always switches completion type and completes, but you can
 then repeat that new completion key to cycle among the candidates.
 
 '''Note:''' In vanilla Emacs, repeating `TAB' scrolls the
-`*Completions*' window.  In '''Icicles''', you can use `C-v' to scroll `*Completions*'
+`##*Completions*##' window.  In '''Icicles''', you can use `C-v' to scroll `*##Completions*##'
 down and `M-v' to scroll up.  You can also use the mouse wheel to
-scroll `*Completions*'.
+scroll `##*Completions*##'.
 
 See [[Icicles - Apropos Completions]] for more about apropos and prefix completion.
 
@@ -602,7 +602,7 @@ To see which functions contain `char', `delete', and `back' in their names, ''in
 
 : ##M-* ##<u>'''##b a c k##'''</u> -- Narrow the set of matching names further, to those that ''also'' contain `back' (somewhere).
 
-This displays a list of functions like this in buffer `*Completions*' (your list might be somewhat different):
+This displays a list of functions like this in buffer `##*Completions*##' (your list might be somewhat different):
 
 [new]
 
@@ -735,8 +735,8 @@ that is, act on each, in turn.  You do that with '''`##C-!##''''.
 Of course, if you can use a [[regexp]] to match exactly the candidates
 you want to act on, then you need not bother to save and retrieve
 them, before acting on them: you can see them all alone in buffer
-`*Completions*'.  Here's an exercise in choosing candidates to save
-with the mouse in `*Completions*':
+`##*Completions*##'.  Here's an exercise in choosing candidates to save
+with the mouse in `##*Completions*##':
 
 : ##C-x C-f ##<u>'''##i c i##'''</u> ##TAB## -- Match all file names that begin with ##ici##.
 : Click `mouse-1' inside (or to the left of) `##icicles-face.el##'. [*]
@@ -754,7 +754,7 @@ problem.  (Personally, I use `nil'.)]
 The candidates that you selected -- those between `##icicles-face.el##'
 and `##icicles-mode.el##', inclusive, plus `##icicles.el##' and
 `##icicles-cmd1.el##', are highlighted specially in buffer
-`*Completions*', and feedback in the [[minibuffer]] tells you that they
+`##*Completions*##', and feedback in the [[minibuffer]] tells you that they
 were "'''saved'''", which you can also think of as "'''marked'''".
 
 Next, use '''`##C-M-<##''''.  This retrieves the set of saved candidates;
@@ -799,7 +799,7 @@ See [[#PrefixAndAproposCompletion|Prefix Completion and Apropos Completion]].
 
 This gives you a very useful on-the-fly apropos feature -- use it while you're completing a command, to check the difference between several possible commands. Or just use it to browse doc strings, to learn more about Emacs.
 
-The `C-M-' keys give you complete help on a candidate, but you get a one-line help summary without doing anything, when you cycle or complete a candidate (entirely). This help is shown in the [[mode line]] of buffer `*Completions*' (or of the current buffer, when `*Completions*' is not displayed). It is typically the first line of a [[doc string]].  This screenshot shows mode-line help (##Replace nonprinting characters...##) for the current candidate (highlighted):
+The `C-M-' keys give you complete help on a candidate, but you get a one-line help summary without doing anything, when you cycle or complete a candidate (entirely). This help is shown in the [[mode line]] of buffer `##*Completions*##' (or of the current buffer, when `##*Completions*##' is not displayed). It is typically the first line of a [[doc string]].  This screenshot shows mode-line help (##Replace nonprinting characters...##) for the current candidate (highlighted):
 
 [[image:lacarte-w-icicles]]
 
@@ -876,7 +876,7 @@ For instance, with a non-positive [[prefix argument]] (or with `C-u C-u'), comma
 directory (or under each of a set of directories you choose) by matching the file name or the last-modification date,
 or both.  The first part of the multi-completion is the file name;
 the second part is the date.  The two-part candidates are shown in
-`*Completions*' like this:
+`##*Completions*##' like this:
 
   c:/foo/bar.el
   2012 09 24 16:20:14
@@ -915,7 +915,7 @@ The second multi-completion part is buffer content.  Matching
 searches the available buffers (whose names match the first part
 of your input, if present), and only those whose contents match
 the second part of your input remain candidates.  You see the
-buffer-name matches in `*Completions*', but not the content
+buffer-name matches in `##*Completions*##', but not the content
 matches.
 
 For example:
@@ -1034,7 +1034,7 @@ candidates are [[multi-completion]]s, and the lighter is boxed for strict
 completion.  When minibuffer input is read without completion, the
 lighter is not highlighted in any way.
 
-If the list of candidates shown in `*Completions*' is truncated
+If the list of candidates shown in `##*Completions*##' is truncated
 (because of option '''`<tt>[[Icicles - Customization and General Tips#icicle-max-candidates|icicle-max-candidates]]</tt>'''')
 then the lighter text is suffixed by `##...##'.  So if you see `##...##' then you know that
 if you increase `icicle-max-candidates' (e.g. by using '''`<tt>[[Icicles - Customization and General Tips#icicle-max-candidates|C-x #]]</tt>'''' during completion) then more candidates will be available.  
@@ -1109,7 +1109,7 @@ See [[Icicles - Multi-Commands]] for more information about '''Icicles''' multi-
 : '''##C-c `##''' -> ##Search within contexts (regexp): ## <u>'''##. * r e c u r s i v e . *##'''</u>## RET##
 :: Search within contexts defined by the regexp `##.*recursive.*##'. 
 : ##Choose an occurrence: S-TAB##
-:: Show the search hits, in buffer `*Completions*' (optional).
+:: Show the search hits, in buffer `##*Completions*##' (optional).
 : ##C-next## ...
 :: Cycle among the search hits, navigating to them in turn.
 : ##S-TAB next## ...
@@ -1154,11 +1154,11 @@ Now try the same thing (without a region), but use a negative [[prefix argument]
 : '''##C-- C-c `##''' -> ##Search within contexts (regexp): ## <u>'''##. * r e c u r s i v e . *##'''</u> ##RET##
 :: Search within contexts defined by the regexp `##.*recursive.*##'.
 : ##Choose file (`RET' when done):## <u>'''##i c i##'''</u> ##TAB##
-:: Choose among candidates that begin with ##ici## (shown in `*Completions*').
+:: Choose among candidates that begin with ##ici## (shown in `##*Completions*##').
 : '''##C-!##'''
 :: Choose ''all'' matching file names: ##icicles-cmd1.el##, ##icicles-cmd2.el##, ##icicles-doc1.el##, ##icicles-doc2.el##, ##icicles-face.el##, ##icicles-fn.el##, ##icicles-mac.el##, ##icicles-mcmd.el##, ##icicles-opt.el##, ##icicles-var.el##, and ##icicles.el##.
 : ##Choose an occurrence: S-TAB##
-:: Show the hits in buffer `*Completions*' (optional).
+:: Show the hits in buffer `##*Completions*##' (optional).
 : ##C-next## ...
 :: Cycle among the search hits in all chosen files...
 
@@ -1205,7 +1205,7 @@ current one.  This is similar to `M-o' in the minibuffer
 (`icicle-insert-history-element'), except that a [[prefix argument]] has no effect here: no candidate is wrapped with
 ##"..."##, and no space character is appended.
 
-: (The actual keys for this are those defined by [[user option]]s '''<tt>[[Icicles - Customization and General Tips#icicle-isearch-complete-keys|icicle-isearch-complete-keys]]</tt>''' and '''<tt>[[Icicles - Customization and General Tips#icicle-isearch-history-insert-keys|icicle-isearch-history-insert-keys]]</tt>''', respectively.)
+: (The actual keys for this are those defined by [[user option]]s '''`<tt>[[Icicles - Customization and General Tips#icicle-isearch-complete-keys|icicle-isearch-complete-keys]]</tt>'''' and '''`<tt>[[Icicles - Customization and General Tips#icicle-isearch-history-insert-keys|icicle-isearch-history-insert-keys]]</tt>'''', respectively.)
 
 * You can start '''Icicles''' search from Isearch.  The current Isearch
   search string becomes the starting point for the '''Icicles''' search
