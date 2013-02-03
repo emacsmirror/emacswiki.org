@@ -33,9 +33,7 @@ EDITING FIELD MARKED "THIS CHANGE IS A MINOR EDIT."
 ...
 
 Test '''`<tt>[[The Wiki Page#AnAnchor|the text]]</tt>''''
-
 `test'
-
 ‘test’
-
 `apropos*'
+'''`icicle-save/unsave-candidate''''
