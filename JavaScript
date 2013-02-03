@@ -8,6 +8,7 @@ There are also a number of ways to integrate with javascript subprocesses:
 * [http://js-comint-el.sourceforge.net/ js-comint.el] is a lightweight comint integration package, that also seems to integrate with org-mode nicely. 
 * JavascriptShell A REPL for Windows Scripting Host, and a [[Lisp:jsshell-bundle.el]]. It does simple completion on JS objects.
 * WshRepl A decrepit console into the Windows Scripting Host from within Emacs.  It does have a project on github, and is looking for a maintainer
+* ElnodeIJS, NicFerrier having a go at writing an Emacs to JavaScript shell. It uses comet for communication. Currently [[https://gist.github.com/4700573|here]] and in the [[Elnode]] source tree.
 
 There are a number of helpful modes and elisp packages to working with javascript as well:
 * FlymakeJavaScript
