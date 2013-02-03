@@ -22,7 +22,8 @@ define a custom set that you want to use often (for example, a
 [[list]] of project files), save it persistently, and then retrieve it
 later to use for completion.
 
-
+Another way of acting on a set of candidates is to insert them
+into the minibuffer and then use '''`M-R'''' -- see [[Icicles - Multi-Inputs]].
 
 
 
@@ -143,6 +144,18 @@ given candidate, saving or unsaving it.  In this sense each is its
 own opposite.  In another sense, the opposite operation of saving
 is simply removing a candidate from the current set of candidates.
 You do that using the `delete' key or `S-mouse-2'.
+
+Another way to add to the list of saved candidates is to use
+'''`M-S'''' ('''`icicle-multi-inputs-save'''').  This is available for any minibuffer inupt, not just
+during [[completion]].  It adds all of the [[multi-input]]s currently in
+in the minibuffer to the set of saved candidates.
+So you can, for
+instance, use `M-S' on a minibuffer containing the following input, to add
+its three file names to the current saved set of candidates in
+variable `icicle-saved-completion-candidates'.
+
+    iciicles-mac.el "my file.txt" bookmark+.el
+
 
 Matching, saving, and retrieving candidates is a powerful way to
 interact with completion.  One important use is to prepare a [[list]]
