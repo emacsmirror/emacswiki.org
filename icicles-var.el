@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Jan 24 13:19:40 2013 (-0800)
+;; Last-Updated: Sat Feb  2 20:34:29 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 1697
+;;     Update #: 1702
 ;; URL: http://www.emacswiki.org/icicles-var.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -587,6 +587,8 @@ noted in parentheses.
 * `icicle-complete-keys-self-insert-ranges'- `S-TAB' for self-insert?
 * `icicle-completing-read+insert-keys'   - Keys for complete-on-demand
 * `icicle-completion-history-max-length' - Completion history length
+* `icicle-completion-key-bindings'       - minibuffer completion keys
+* `icicle-completion-list-key-bindings'  - `*Completions*' bindings
 * `icicle-Completions-display-min-input-chars'- Remove `*Completions*'
                                            if fewer chars input
 * `icicle-completions-format'            - `*Completions*' layout
@@ -633,6 +635,7 @@ noted in parentheses.
 * `icicle-list-nth-parts-join-string'    - Join split-candidate parts
 * `icicle-mark-position-in-candidate'    - Mark position in cycling
 * `icicle-menu-items-to-history-flag'    - Add menus to history?
+* `icicle-minibuffer-key-bindings'       - general minibuffer keys
 * `icicle-minibuffer-setup-hook'         - Functions run after setup
 * `icicle-modal-cycle-*-keys'            - Keys for modal cycling
 * `icicle-option-type-prefix-arg-list'   - Prefix-args for `C-h C-o'
@@ -641,7 +644,6 @@ noted in parentheses.
 * `icicle-pp-eval-expression-print-*'    - Print control for `pp-*'
 * `icicle-prefix-complete-keys*'         - Keys to prefix-complete
 * `icicle-prefix-cycle-*-keys'           - Keys to prefix-cycle
-* `icicle-previous-candidate-keys'       - Back keys, `*Completions*'
 * `icicle-quote-shell-file-name-flag'    - Quote file name in shell?
 * `icicle-read+insert-file-name-keys'    - Keys for on-demand file
 * `icicle-regexp-quote-flag'             - Escape chars? (`C-`')
@@ -987,7 +989,7 @@ Nil means no match failure is known.")
   "History of commands called using `call-interactively'.")
 
 (defvar icicle-key-prefix-description ""
-  "Description of a prefix key at some point during key completion.") 
+  "Description of a prefix key at some point during key completion.")
 
 (defvar icicle-kill-history nil "History of kill-ring entries.")
 
