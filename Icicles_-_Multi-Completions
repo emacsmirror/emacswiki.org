@@ -41,7 +41,7 @@ and [[face]]s.  You can of course use [[progressive completion]] to match multip
 
  M-x icicle-doc RET mail S-SPC mode line
 
-You cannot do that with vanilla Emacs `apropos-documentation' or with any other vanilla Emacs `apropos*' command.
+You cannot do that with vanilla Emacs `apropos-documentation' or with any other vanilla Emacs `##apropos*##' command.
 
 Commands `icicle-vardoc', `icicle-fundoc', and `icicle-plist' are
 similar to `icicle-doc' in the kind of functionality they provide.
@@ -233,6 +233,11 @@ control characters can be used in regexps that also use `^' as a special charact
 
 
 
+
+
+
+
+
 [:MatchingThingsInParallel]
 == Multi-Completions Let You Match Multiple Things in Parallel ==
 
@@ -268,13 +273,15 @@ as well.
 
 
 
+
+
 [:MultiCompletionsVsCRM]
 == Multi-Completions vs completing-read-multiple ==
 
 Note that there is (only) a superficial similarity between '''Icicles'''
 multi-completion and the functionality provided by function
 `completing-read-multiple' of standard Emacs library `##crm.el##'.  The
-latter lets you complete multiple strings in the [[minibuffer]], one at a time.  It involves ordinary Emacs [[prefix completion]], and it uses the same set of completion candidates for
+latter lets you complete multiple strings in the [[minibuffer]], one at a time.  It involves only vanilla Emacs completion, and it uses the same set of completion candidates for
 each of the strings in the input.
 
 By contrast, '''Icicles''' multi-completion completes each part of your
