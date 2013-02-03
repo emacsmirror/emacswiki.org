@@ -4,9 +4,10 @@
 
 ----
 
+[:multi-inputs]
 == Multi-Inputs ==
 
-[[multi-command|Multi-commands]], [[multi-completion]]s, and '''[::multi-inputs]''' too.
+[[multi-command|Multi-commands]], [[multi-completion]]s, and '''[::multi-input]s''' too.
 
 In '''Icicles''', if you hit `RET' in the [[minibuffer]] then the entire
 minibuffer content is entered: sent to Emacs for processing by the
