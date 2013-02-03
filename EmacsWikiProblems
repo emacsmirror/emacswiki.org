@@ -7,6 +7,14 @@ This page is ''not'' for questions or problems about Emacs -- see OpenQuestions 
 Note that this page is not about EmacsWikiMode.
 
 '''Add your problem descriptions below this line'''
+
+--------
+
+== Double TOC in ElispArea now ==
+
+There are two tables of contents now, for some reason. -- DrewAdams
+
+
 == Search finds nothing when browser is Chrome ==
 
 Using Chrome Version 24.0.1312.52 m and Windows 7 Pro Version 6.1 (Build 7601: Service Pack 1)
