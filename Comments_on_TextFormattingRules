@@ -1,0 +1,10 @@
+I wonder whether something simple as this might be useful when listing pages with a particular prefix. The major drawback I see is that the resulting list is _not annotated_.
+
+{{{
+<include list "^AlexSchroeder">
+}}}
+
+<include list "^AlexSchroeder">
+
+-- AlexSchroeder 2013-02-03 00:07 UTC
+
