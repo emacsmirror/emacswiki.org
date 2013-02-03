@@ -2,11 +2,7 @@
 
 The official Emacs IRC channel is '''#emacs''' on freenode, since [https://www.gnu.org/press/2002-08-26-freenode.html the GNU Project made freenode it's official IRC network in 2002].
 
-== Web Access ==
-
-Some browsers have an integrated [[IRC]] client (or have one available as an add-on):
-
-: irc://irc.freenode.net/%23emacs
+If you just want the channel rules, skip to the [[#Conduct]] and [[#LawAndOrder|Law and Order]] sections.
 
 == About #emacs and related channels ==
 
@@ -26,6 +22,7 @@ EmacsChannelLogging -- To log or not to log.
 
 * LangPollResults -- preliminary results of the language poll on the #emacs channel
 
+[:Conduct]
 == Conduct ==
 
 In addition to [http://freenode.net/policy.shtml freenode's network-wide policies], we have some of our own (somewhat redundant) rules:
@@ -35,6 +32,7 @@ In addition to [http://freenode.net/policy.shtml freenode's network-wide policie
 * Be friendly to newbies
 * And, please, for the love of GNU, don't use 1337-5p34k
 
+[:LawAndOrder]
 == Law and Order =
 
 If you need the help of a friendly *operator* (usually for kicking and banning obnoxious fellow channel members), you can get a list of these from fsbot. Just say:
