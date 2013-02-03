@@ -42,29 +42,26 @@ in Emacs is typically the same ase `M-TAB'.  For this reason,
 '''Icicles''' users are in the habit of using '''`<tt>[[Icicles - History Enhancements#M-o|M-o]]</tt>'''' to complete the
 current minibuffer input against previously entered inputs.
 Because of the similarity, you can likewise use `M-o' during
-Isearch to complete the current search string: '''`M-o'''' is equivalent
-to `M-TAB'.
+Isearch to append previous isearch strings to the current string.  During Isearch, '''`M-o'''' is bound to minibuffer [[multi-command]] '''`icicle-isearch-history-insert''''.
 
 The keys bound by default to `icicle-isearch-complete' in
-`isearch-mode-map' are thus `M-TAB', `##ESC TAB##', `C-M-TAB', and `M-o'.  But you can change the keys to use for this by
-[[Customize|customizing]] [[option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-isearch-complete-keys|icicle-isearch-complete-keys]]</tt>''''.
+`isearch-mode-map' are thus `M-TAB', `##ESC TAB##', and `C-M-TAB', and the only key bound by default to `icicle-isearch-history-insert' is `M-o'.  But you can change the keys to use for these commands by [[Customize|customizing]] [[option]]s '''`<tt>[[Icicles - Customization and General Tips#icicle-isearch-complete-keys|icicle-isearch-complete-keys]]</tt>'''' and  '''`<tt>[[Icicles - Customization and General Tips#icicle-isearch-history-insert-keys|icicle-isearch-history-insert-keys]]</tt>'''', respectively.
 
 When you use `M-o' (or `M-TAB') while searching, Isearch exits momentarily,
-giving way to '''Icicles''' completion in the [[minibuffer]] (Isearch
-actually uses the [[echo area]], not the minibuffer).  You can then
+giving way to '''Icicles''' completion in the [[minibuffer]].  You can then
 use either `S-TAB' or `TAB' to complete your search string.  After
-you finish completing (e.g. by hitting `RET'), Isearch resumes
-with the new, completed search string.  It's pretty seamless, and
+you finish completing (e.g. by hitting `C-g' or `RET'), Isearch resumes
+with the new, modified search string.  It's pretty seamless, and
 easier to try than to describe.
 
 ''Reminder:'' Using `S-TAB' vs `TAB' for [[regexp]] vs
 non-regexp ''completion'' against
 previous search strings has nothing to do with regexp vs
-non-regexp ''searching''.  You can of course use either kind of
+non-regexp incremental ''searching''.  You can of course use either kind of
 searching before or after having used either kind of completion.
-Isearch uses different [[search ring]]s for regexp and non-regexp
+Isearch uses different search histories ([[search ring|rings]]) for regexp and non-regexp
 searching.  The kind of search in progress (regexp or not) at the
-moment you ask Isearch for completion determines which search ring
+moment you use `M-TAB' or `M-o' determines which search ring
 provides the candidates for completion.
 
 
