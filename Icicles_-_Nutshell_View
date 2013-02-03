@@ -155,15 +155,16 @@ that work together.
 
 [:i4]
 : '''i4. Multi-commands and multi-inputs.'''  A [[multi-command]] is one that lets you act on a completion candidate
-    without exiting the minibuffer, so that you can thus act on several
-    candidates.  Not every command is a
-    multi-command.  In addition to acting on multiple candidates that you choose (perhaps all of them), you can act on multiple inputs in the same minibuffer (called [[multi-inputs]]), all at once.
+without exiting the minibuffer, so that you can thus act on several
+candidates.  Not every command is a
+multi-command. In addition to acting on multiple candidates that you choose (perhaps all of them), you can act on multiple inputs in the same minibuffer (called [[multi-inputs]]), all at once.
+
+
 
 [:i5]
-: '''i5. Multi-completions.''' Use completion to match two different things at once, in parallel.  The completion candidates are multi-part, so your input can also be multi-part or can match only particular parts.  An example of [[multi-completion]] is matching both file name and file content.
+: '''i5. Multi-completions.''' Use completion to match two different things at once, in parallel. The completion candidates are multi-part, so your input can also be multi-part or can match only particular parts. An example of [[multi-completion]] is matching both file name and file content.
 
 
- 
 
 [:i6]
 : '''i6. Set operations.'''  You can hit a key to act not on any particular
@@ -186,6 +187,8 @@ that work together.
     a dynamic filter is very important in '''Icicles'''.  In line with this,
     you can employ different matching methods.  The most powerful is
     [[regexp]] matching (which includes substring matching).
+
+
 [:i9]
 : '''i9. Candidate sorting.'''  You can sort the current candidates on the fly
     in different ways, so that you can cycle them in different orders.
@@ -230,7 +233,38 @@ You are used to `C-x C-f' (`find-file') and `C-x 4 f'
 provide.  In ''Icicle'' mode, these keys act the same way, but they
 can also give you a little more magic.
 
-Example -- suppose you do this:
+=== First Example: Multi-Inputs ===
+
+In vanilla Emacs you can do this to visit all files whose names
+match the glob pattern `ici*.el':
+
+: '''##C-x 4 f##'''##  i c i * . e l  ##'''##RET##'''
+
+In ''Icicle'' mode you can also do the following, to visit all
+`ici*.el' files, file `my file.txt', and file `bookmark+.el', just as if you had used `C-x 4 f' three separate times [[#footnote1|[*]]]:
+
+: '''##C-x 4 f##'''##  ici*.el  "my file.txt"  bookmark+.el  ##'''##M-R  C-g##'''
+
+Your [[multi-input]] here is split into separate file-name patterns,
+which are then acted on individually.  You wrap the second pattern
+with ##"..."## because the file name contains a space character, which
+is otherwise used to separate patterns.
+
+The `C-g' at the end just ends the command.  Without it you can
+continue to enter the names of more files to visit.  This is
+because `C-x 4 f' is bound to a [[multi-command]]
+(`icicle-file-other-window').
+
+[:footnote1]
+[*] (For brevity, spaces were not used here to separate each
+printable character typed: `ici*.el' instead of `i c i * . e l'.)
+
+
+
+
+=== Second Example: Multi-Completion ===
+
+Suppose that you do this:
 
 : '''##C-x 4 f##'''##   i c i   ##'''##C-M-j##'''##   t a g s   ##'''##S-SPC##'''
 
@@ -1160,10 +1194,18 @@ In addition to '''Icicles''' search (which is also incremental), '''Icicles'''
 offers some enhancements to the standard Emacs incremental search,
 [[Isearch]]:
 
-* You can reuse a previous Isearch search string, choosing it
-  using '''Icicles''' completion.  Hit `M-o' during Isearch, type some
-  input to complete against the search history, and hit `RET' or
-  click `mouse-2' to choose a string and continue Isearch with it.
+* You can reuse previous Isearch search strings using '''Icicles'''
+completion.  There are two ways you can do this:
+
+** '''`M-TAB'''' or '''`C-M-TAB'''': Complete the current search string,
+choosing a previous one to replace it.
+
+** '''`M-o'''': Append one or more previous search strings to the
+current one.  This is similar to `M-o' in the minibuffer
+(`icicle-insert-history-element'), except that a [[prefix argument]] has no effect here: no candidate is wrapped with
+##"..."##, and no space character is appended.
+
+: (The actual keys for this are those defined by [[user option]]s '''<tt>[[Icicles - Customization and General Tips#icicle-isearch-complete-keys|icicle-isearch-complete-keys]]</tt>''' and '''<tt>[[Icicles - Customization and General Tips#icicle-isearch-history-insert-keys|icicle-isearch-history-insert-keys]]</tt>''', respectively.)
 
 * You can start '''Icicles''' search from Isearch.  The current Isearch
   search string becomes the starting point for the '''Icicles''' search
