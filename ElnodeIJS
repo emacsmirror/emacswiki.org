@@ -1,0 +1,14 @@
+This is a simple Elnode based Javascript shell.
+
+== The code ==
+
+<include gist "https://gist.github.com/4700573">
+
+Can also be found in the [[Elnode]] repository on [[http://github.com/nicferrier/elnode|GitHub]].
+
+== Status ==
+
+In development but NicFerrier says there are a few good use cases:
+
+* add the handler to your existing [[Elnode]] site for automatic js debugging
+* use an [[Elnode]] proxy to jack anything into any site
