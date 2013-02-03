@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Jan 27 15:48:30 2013 (-0800)
+;; Last-Updated: Fri Feb  1 09:07:25 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 13791
+;;     Update #: 13793
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -115,11 +115,10 @@
 ;;    `icicle-input-from-minibuffer', `icicle-insert-candidates',
 ;;    `icicle-insert-cand-in-minibuffer',
 ;;    `icicle-insert-Completions-help-string',
-;;    `icicle-isearch-complete-past-string', `icicle-join-nth-parts',
-;;    `icicle-key-description', `icicle-kill-a-buffer',
-;;    `icicle-last-accessed-first-p', `icicle-last-modified-first-p',
-;;    `icicle-levenshtein-match', `icicle-levenshtein-one-match',
-;;    `icicle-levenshtein-one-regexp',
+;;    `icicle-join-nth-parts', `icicle-key-description',
+;;    `icicle-kill-a-buffer', `icicle-last-accessed-first-p',
+;;    `icicle-last-modified-first-p', `icicle-levenshtein-match',
+;;    `icicle-levenshtein-one-match', `icicle-levenshtein-one-regexp',
 ;;    `icicle-levenshtein-strict-match',
 ;;    `icicle-lisp-vanilla-completing-read',
 ;;    `icicle-local-keys-first-p', `icicle-make-plain-predicate',
@@ -4244,7 +4243,7 @@ The resulting regexp is matched against CANDIDATE."
          (len-any  (length any))
          (fields   (save-match-data (split-string input (regexp-quote icicle-list-join-string))))
          (first    (car fields))
-         (regexps  ())) 
+         (regexps  ()))
     (unless (and (>= (length first) len-any)  (string= any (substring first (- len-any))))
       (setq first  (concat first any)))
     (setq fields  (cdr fields))
@@ -6644,20 +6643,6 @@ Otherwise remove only Icicles internal text properties:
         (dolist (entry  icicle-candidate-properties-alist)
           (put-text-property 0 len (car (cadr entry)) nil string)))))
   string)
-
-(defun icicle-isearch-complete-past-string ()
-  "Set `isearch-string' to a past search string chosen by completion."
-  (isearch-done 'nopush)
-  (let ((icicle-whole-candidate-as-text-prop-p  nil)
-        (completion-ignore-case                 case-fold-search)
-        (enable-recursive-minibuffers           t))
-    (setq isearch-string
-          (completing-read
-           "Search string (completing): "
-           (mapcar #'list (icicle-remove-duplicates (symbol-value (if isearch-regexp
-                                                                      'regexp-search-ring
-                                                                    'search-ring))))
-           nil nil isearch-string (if isearch-regexp 'regexp-search-ring 'search-ring)))))
 
 ;; $$$$$$ Filed Emacs BUG #8795.  They added a non-optional arg, METADATA (with no doc).
 ;;
