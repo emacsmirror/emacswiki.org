@@ -96,9 +96,9 @@ such menu items to your ''completion'' history, which you access
 using `C-l' (see [[#Which|What Input, What History?]]). 
 
 
-'''2.''' Command '''`icicle-insert-history-element'''' (bound to '''`M-o'''' in the
-minibuffer) lets you use ([[lax]]) completion to insert a history
-element in the minibuffer.
+'''2.''' Minibuffer [[multi-command]] '''`icicle-insert-history-element'''' ('''`M-o'''' in the
+minibuffer) lets you use completion to insert any number of history
+elements in the minibuffer.
 
 [:HistoryFace]
 '''3.''' Candidates displayed in `*Completions*' are highlighted using
@@ -150,8 +150,8 @@ inputs only one at a time, in order (with `M-p').  In vanilla
 Emacs, you can use a [[regexp]] to search the history list (via
 `M-r' and `M-s'), but the regexp matching is not dynamic, and the first
 match found is the only one you get.
-In ''Icicle'' mode the vanilla keys `M-r' and `M-s' for matching a
-history item are not available --- use `M-o' instead (see [[#InsertPreviousInputs|next]]).
+In ''Icicle'' mode, `M-r' and `M-s' are not available for matching a
+history item --- use `M-o' instead (see [[#InsertPreviousInputs|next]]).
 
 Displaying previous inputs that match the current input sounds
 like a minor advantage, but it is actually quite helpful in
@@ -173,25 +173,75 @@ practice.  Among other things, it means that you can work with
 
 Unlike the other minibuffer history enhancements, described below,
 which are available only during minibuffer completion, you can use
-'''`M-o'''' (`icicle-insert-history-element') anytime you are asked for minibuffer input.  It provides a
-recursive minibuffer in which you can match a previous input using
-completion.  After you hit `RET' to accept your choice, it is
-inserted in the minibuffer just as if you had typed it.  This is a form of on-demand completion (see [[Icicles - Completion On Demand]]), and as such is always available.
+'''`M-o'''' (`icicle-insert-history-element') anytime you are asked for minibuffer input.  It is thus a form of on-demand completion (see [[Icicles - Completion On Demand]].  
+It provides a
+recursive minibuffer in which you can match previous inputs using
+[[completion]].  
 
-This has
-the advantage over cycling with `M-n' or `M-p' and searching with
-`M-s' or `M-r', that you can use '''Icicles''' completion and cycling to
+
+This is a [[multi-command]]: you use `C-RET' etc. to choose matching
+previous inputs as candidates using a recursive minibuffer.  Yes, you can even use `##C-!##' to choose ''all'' matching candidates, inserting them in the current sort order.
+
+When you are finished choosing candidates, use `C-g' (or `RET') to
+exit to the previous minibuffer level.  All of the previous inputs
+you chose are inserted into the upper-level minibuffer, in order.
+
+
+This is better than cycling with `M-n' or `M-p', or searching with
+`M-s' or `M-r' in vanilla Emacs: You can use '''Icicles''' completion and cycling to
 quickly access a previous input, no matter how long ago you
-entered it.  (`M-s' and `M-r' are not available in ''Icicle''
-mode.)
+entered it.
 
 When completion is available for reading input, if you use `M-o'
-to choose a previously entered input, this just inserts that input
-in the minibuffer.  What is in the minibuffer after you use `M-o'
-is not automatically chosen for the main completion -- you can edit
-the minibuffer contents before entering it with `RET'.  You can
-also use `C-g' during the `M-o' completion to cancel it and return
-to the main completion.
+to choose previously entered inputs, this just inserts that text 
+into the minibuffer.  What is in the minibuffer after you use `M-o'
+is not used automatically and immediately for the main completion -- you can edit
+it before entering it using `RET'.
+
+
+
+
+
+
+
+
+
+==== Multi-Input Insertion with a Prefix Arg ====
+
+This section describes the use of a [[prefix argument]] with '''`M-o'''' (`icicle-insert-history-element').  It also applies to `M-r' (`icicle-roundup').
+
+Because `M-o' lets you insert more than one previous input, there
+are different ways to separate these insertions, depending on the
+prefix argument.
+
+* With ''no'' prefix arg, each inserted candidate you choose is
+''followed by a space'' character.
+
+* With a ''non-positive'' prefix arg, ''no'' such space char is appended.
+
+* With a ''non-negative'' prefix arg, each chosen candidate is ''wrapped'' with ##"..."## before being inserted.
+
+These possibilities provide for different uses of such insertion:
+
+* Space separation is useful if you are preparing minibuffer input
+for a command that interprets the input as multiple
+arguments.  It is also useful for '''Icicles''' keys (`M-R', `M-S') that interpret the input as [[multi-input]]s -- see 
+[[Icicles - Multi-Inputs]].
+
+* Wrapping with ##"..."## is useful in combination with space
+separation when a candidate contains whitespace.  For example,
+multiple file name, some of which contain whitespace.
+
+A prefix argument to `M-o' applies to ''each'' of the candidates you
+choose, by default.  If you use a prefix arg then you will
+typically want to exit using `C-g' (not `RET'), so the prefix arg
+applies also to the last candidate chosen.
+
+You can override the prefix arg for `M-o' or lack thereof, by
+using a prefix arg for an ''individual'' candidate action
+(e.g. `C-u C-RET').
+
+
 
 
 
