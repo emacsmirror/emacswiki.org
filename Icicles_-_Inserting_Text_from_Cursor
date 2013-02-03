@@ -231,6 +231,7 @@ minibuffer input (e.g. shell command arguments).
 * [[Icicles - Moving Between the Minibuffer and Other Buffers]] for
 another way to insert [[buffer]] text in the [[minibuffer]].
 
+* [[Icicles - Multi-Inputs]]  for ways to act on multiple minibuffer insertions all at once.
 
 
 
