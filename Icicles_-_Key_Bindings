@@ -4,17 +4,24 @@
 
 ----
 
-You can customize any of the key bindings that '''Icicles''' uses -- see
+You can easily customize any of the key bindings that '''Icicles''' uses -- see
 [[Icicles - Customizing Key Bindings]].  I recommend that you first try
 using the default bindings, however.  There are many '''Icicles''' key bindings (in particular in the [[minibuffer]]), but they are grouped
-into a few natural sets, to help you remember them.
+into a few natural sets, to help you remember them.  And there are [[user options]] available for easy key customization.
+
+
+
+
+
+
+
 
 
 [:GlobalBindings]
 == Global Bindings ==
 
 '''Icicles''' ''does not change your global [[key binding]]s''. It changes some
-[[minibuffer]] bindings, and it adds some bindings for ''Icicle'' mode,
+[[minibuffer]] bindings, and it adds some [[minor mode|minor-mode]] bindings for ''Icicle'' mode,
 but it does not change your global bindings.
 
 There are two exceptions:
@@ -41,6 +48,13 @@ more information about this use of `S-TAB'.
 (The documentation always refers to the key that performs key
 completion as `S-TAB'.  Actually, it is `S-TAB' only by default.
 You can [[Customize]] it, using option '''`<tt>[[Icicles - Customization and General Tips#icicle-key-complete-keys|icicle-key-complete-keys]]</tt>''''.)
+
+
+
+
+
+
+
 
 
 
@@ -476,7 +490,7 @@ to keys in ''Icicle'' mode -- they are ''not'' bound by '''Icicles''' (except to
 There are many key bindings available while your input is read in the
 [[minibuffer]], for example, while you are editing it.  Most of
 these keys are bound in the minibuffer [[completion]]
-keymaps, but some are bound in the `*Completions*' buffer keymap and some are bound when reading input without [[completion]].
+keymaps, but some are bound in the `*Completions*' buffer keymap and some are bound in the minibuffer when reading input without [[completion]].
 
 In addition, clicking '''`C-mouse-3'''' on a completion candidate in buffer
 `*Completions*' pops up a menu of available commands.
@@ -486,11 +500,12 @@ complete set of completion candidates.  The associated key
 bindings are indicated in the menu items, so this can be a good
 way to learn minibuffer and `*Completions*' bindings.
 
-You can easily customize all of the '''Icicles''' minibuffer key
+You can easily customize the '''Icicles''' minibuffer and `*Completions*' buffer key
 bindings.  There are several user options available for this.
 This section describes the keys that are bound by default.
 Section [[Icicles - Customizing Key Bindings]] describes the options
-available for customizing them.
+available for customizing them.  The keys
+described in this section are those bound by default.
 
 The following key is helpful during any minibuffer input.  It pops
 up the `*Help*' buffer with information about using the minibuffer
@@ -605,16 +620,21 @@ default.  You can customize it, using option
 
 [:icicle-apropos-complete]
 [:icicle-previous-candidate-keys]
-* '''`S-TAB'''' -- In the minibuffer: `icicle-apropos-complete' -- like `TAB', but use [[apropos completion]].   In buffer `*Completions*': `icicle-move-to-previous-completion' -- move backwards among candidates. (The documentation always refers to the keys that do these things as `S-TAB'.  Actually, they are only `S-TAB' by
-default.  You can customize the keys, using options
-'''`<tt>[[Icicles - Customization and General Tips#icicle-apropos-complete-keys|icicle-apropos-complete-keys]]</tt>'''' and '''`<tt>[[Icicles - Customization and General Tips#icicle-previous-candidate-keys|icicle-previous-candidate-keys]]</tt>''''.)
+* '''`S-TAB'''' -- In the minibuffer: `icicle-apropos-complete' -- like `TAB', but use [[apropos completion]].   In buffer `*Completions*': `icicle-move-to-previous-completion' -- move backwards among candidates. At top level:
+`icicle-complete-keys' -- complete a [[key sequence]].  (The documentation always refers to the keys that do these things as `S-TAB'.  Actually, they are only `S-TAB' by
+default.  You can customize the keys using options
+'''`<tt>[[Icicles - Customization and General Tips#icicle-apropos-complete-keys|icicle-apropos-complete-keys]]</tt>'''',
+'''`<tt>[[Icicles - Customization and General Tips#icicle-completion-list-key-bindings|icicle-completion-list-key-bindings]]</tt>'''', and '''`<tt>[[Icicles - Customization and General Tips#icicle-key-complete-keys|icicle-key-complete-keys]]</tt>''''.)
 
 [:icicle-prefix-complete-no-display]
 * '''`C-M-TAB'''' -- `icicle-prefix-complete-no-display': Like `TAB', but
 does not display candidates in `*Completions*'.  (The documentation always refers to the key that does
 this as `C-M-TAB'.  Actually, it is only `C-M-TAB' by
 default.  You can customize it, using option
-'''`<tt>[[Icicles - Customization and General Tips#icicle-prefix-complete-no-display-keys|icicle-prefix-complete-no-display-keys]]</tt>''''.)
+'''`<tt>[[Icicles - Customization and General Tips#icicle-prefix-complete-no-display-keys|icicle-prefix-complete-no-display-keys]]</tt>''''.)  During Isearch, `C-M-TAB' and `M-TAB' complete the
+search string against past search strings.  (These
+are the keys by default.  You can customize this
+using option '''`<tt>[[Icicles - Customization and General Tips#icicle-isearch-complete-keys|icicle-isearch-complete-keys]]</tt>''''.)
 
 [:icicle-apropos-complete-no-display]
 * '''`C-M-S-TAB'''' -- `icicle-apropos-complete-no-display': Like
@@ -633,12 +653,37 @@ predicate used for completion to a variable.
 [:icicle-mouse-remove-candidate]
 * '''`S-mouse-2'''' -- `icicle-mouse-remove-candidate': Same as `delete' key.
 
+[:icicle-insert-history-element]
+* '''`M-o'''' -- '''`icicle-insert-history-element'''': Invoke completion to
+insert a previously entered input into the minibuffer.
+Use this instead of the `M-s' and `M-r' of vanilla
+Emacs, which are not available in Icicle mode.
+(`M-o' is the key by default.  You can customize this
+using option '''`<tt>[[Icicles - Customization and General Tips#icicle-minibuffer-key-bindings|icicle-minibuffer-key-bindings]]</tt>''''.)  During Isearch, `M-o' completes against the current
+[[search ring]], and appends the past search string you
+choose to the current one.  (`M-o' is the key by
+default.  You can customize this using option
+'''`<tt>[[Icicles - Customization and General Tips#icicle-isearch-history-insert-keys|icicle-isearch-history-insert-keys]]</tt>''''.)
+
+
 [:icicle-insert-key-description]
 * '''`M-q'''' -- `icicle-insert-key-description': Insert the textual
 representation of a key sequence, during [[Icicles - Key Completion|key completion]].
 
-[:icicle-insert-history-element]
-* '''`M-o'''' -- `icicle-insert-history-element': Invoke [[completion]] to insert a previously entered input in the minibuffer.  (Use this instead of the `M-s' and `M-r' of vanilla Emacs, which are not available in ''Icicle'' mode.)
+
+[:icicle-roundup]
+* '''`M-r'''' -- `icicle-roundup': Insert one or more completion candidates in the minibuffer.
+
+[:icicle-multi-inputs-act]
+* '''`M-R'''' -- `icicle-multi-inputs-act': Act on [[multi-input]]s.
+Parse minibuffer input into a list of candidates,
+then act on each candidate, in order.
+
+[:icicle-multi-inputs-save]
+* '''`M-S'''' -- `icicle-multi-inputs-save': Add [[multi-input]]s to the
+current saved candidates set.  Parse minibuffer
+contents into a list of candidates, then add them to
+those in `icicle-saved-completion-candidates'.
 
 [:icicle-regexp-quote-input]
 * '''`##M-%##''''  -- Regexp quote current input or its active [[region]], then
@@ -820,7 +865,7 @@ commands let you access previous inputs using completion.
 
 
 
-You can insert minibuffer history items using the cycle keys `M-p' and `M-n', as usual.  But in ''Icicle'' mode `M-s' and `M-r' are not available.  Instead, use '''`M-o'''' to insert any history item using [[completion]] (including [[regexp]] completion, of course).
+You can insert minibuffer history items using the cycle keys `M-p' and `M-n', as usual.  But in ''Icicle'' mode, `M-s' and `M-r' are not available.  Instead, use '''`M-o'''' to insert any history item using [[completion]] (including [[regexp]] completion, of course).
 
 The
 following minibuffer bindings also let you use ''apropos completion'' on
