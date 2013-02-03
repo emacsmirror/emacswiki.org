@@ -135,9 +135,9 @@ again in the same place, acts the same as `##C-)##'.  That is, click
 save all candidates between the `mouse-1' and `mouse-3'
 positions. [[#MouseNote|*]]
 
-* The '''`insert'''' [[key]] ('''`icicle-save/unsave-candidate'''') adds just
+* The '''`insert'''' [[key]] ('''`##icicle-save/unsave-candidate##'''') adds just
   the current completion candidate (e.g. during [[Icicles - Cycling Completions|cycling]]).  Clicking a candidate in buffer `*Completions*'
-  with '''`M-S-mouse-2'''' ('''`icicle-mouse-save/unsave-candidate'''') does the same thing.  If you do this to a candidate that has already been saved, then it is '''''un'''''saved (no longer saved).
+  with '''`M-S-mouse-2'''' ('''`##icicle-mouse-save/unsave-candidate##'''') does the same thing.  If you do this to a candidate that has already been saved, then it is '''''un'''''saved (no longer saved).
 
 Note that the `insert' key and `M-S-mouse-2' are toggles for a
 given candidate, saving or unsaving it.  In this sense each is its
