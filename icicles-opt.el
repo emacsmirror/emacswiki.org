@@ -1,15 +1,15 @@
-;;; icicles-opt.el --- User options (variables) for Icicles
+;;; icicles-opt.el --- User options (customizable variables) for Icicles
 ;;
 ;; Filename: icicles-opt.el
-;; Description: User options (variables) for Icicles
+;; Description: User options (customizable variables) for Icicles
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Jan 26 11:20:29 2013 (-0800)
+;; Last-Updated: Sat Feb  2 20:43:01 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 5452
+;;     Update #: 5583
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -87,6 +87,7 @@
 ;;    `icicle-completing-read+insert-keys',
 ;;    `icicle-completion-history-max-length',
 ;;    `icicle-completion-key-bindings',
+;;    `icicle-completion-list-key-bindings',
 ;;    `icicle-Completions-display-min-input-chars',
 ;;    `icicle-completions-format', `icicle-Completions-max-columns',
 ;;    `icicle-Completions-mouse-3-menu-entries',
@@ -124,7 +125,9 @@
 ;;    `icicle-Info-visited-max-candidates',
 ;;    `icicle-inhibit-advice-functions', `icicle-inhibit-ding-flag',
 ;;    `icicle-input-string', `icicle-inter-candidates-min-spaces',
-;;    `icicle-isearch-complete-keys', `icicle-key-complete-keys',
+;;    `icicle-isearch-complete-keys',
+;;    `icicle-isearch-history-insert-keys',
+;;    `icicle-key-complete-keys',
 ;;    `icicle-key-complete-keys-for-minibuffer',
 ;;    `icicle-key-descriptions-use-<>-flag',
 ;;    `icicle-key-descriptions-use-angle-brackets-flag',
@@ -134,6 +137,7 @@
 ;;    `icicle-list-nth-parts-join-string',
 ;;    `icicle-mark-position-in-candidate', `icicle-max-candidates',
 ;;    `icicle-menu-items-to-history-flag',
+;;    `icicle-minibuffer-key-bindings',
 ;;    `icicle-minibuffer-setup-hook', `icicle-modal-cycle-down-keys',
 ;;    `icicle-modal-cycle-down-action-keys',
 ;;    `icicle-modal-cycle-down-alt-action-keys',
@@ -159,7 +163,6 @@
 ;;    `icicle-prefix-cycle-previous-action-keys',
 ;;    `icicle-prefix-cycle-previous-alt-action-keys',
 ;;    `icicle-prefix-cycle-previous-help-keys',
-;;    `icicle-previous-candidate-keys',
 ;;    `icicle-quote-shell-file-name-flag',
 ;;    `icicle-read+insert-file-name-keys', `icicle-regexp-quote-flag',
 ;;    `icicle-regexp-search-ring-max', `icicle-region-background',
@@ -637,7 +640,9 @@ to toggle the option."
   :type 'boolean :group 'Icicles-Completions-Display :group 'Icicles-Matching)
 
 ;;;###autoload
-(defcustom icicle-apropos-complete-keys '([S-tab] [S-iso-lefttab]) ; `S-TAB'
+(defcustom icicle-apropos-complete-keys (if (> emacs-major-version 23) ; `S-TAB'
+                                            '([backtab])
+                                          '([S-tab] [S-iso-lefttab]))
   ;; In Emacs 22 and later, `backtab' is the canonical key that represents both `S-tab' and
   ;; `S-iso-lefttab', so in principle that could be used in the default value for Emacs 22+.
   ;;
@@ -1099,7 +1104,11 @@ For example, this list element says to replace completion function
 `foo' by completion function `my-foo': (foo 'my-foo).  And this one
 says to try completing with function `mine' before `foo' or `bar':
 \((foo bar) 'mine)."
-  :type '(repeat (list symbol sexp)) :group 'Icicles-Miscellaneous)
+  :type '(repeat (list (choice
+                        (symbol :tag "OLD to replace")
+                        (repeat :tag "OLD to insert before" sexp))
+                  (sexp :tag "NEW (must eval to completion function)")))
+  :group 'Icicles-Miscellaneous)
 
 ;;;###autoload
 (defcustom icicle-command-abbrev-alist ()
@@ -1367,6 +1376,32 @@ The default behavior lets you use, e.g., \"C-x delete\" and \"C-delete\"
 instead of \"C-x <delete>\" and \"C-<delete>\"."
   (icicle-read-kbd-macro keys nil angles))
 
+;; Must be before first use, which is in `icicle-completion-key-bindings'.
+;;;###autoload
+(define-widget 'icicle-key-definition 'lazy
+  "Key definition type for Icicle mode keys.
+A list of three components: KEY, COMMAND, CONDITION, that represents
+an `icicle-mode-map' binding of COMMAND according to KEY, if CONDITION
+evaluates to non-nil.
+
+KEY is either a key sequence (string or vector) or a command.
+COMMAND is a command.
+CONDITION is a sexp.
+
+If KEY is a command, then the binding represented is its remapping to
+COMMAND."
+  :indent 1 :offset 0 :tag ""           ; $$$$$ "Icicle Mode Key Definition"
+  :type
+  '(list
+    (choice
+     (key-sequence :tag "Key" :value [ignore])
+     ;; Use `symbolp' instead of `commandp', in case the library defining the
+     ;; command is not loaded.
+     (restricted-sexp :tag "Command to remap" :match-alternatives (symbolp) :value ignore))
+     ;; Use `symbolp' instead of `commandp'...
+    (restricted-sexp :tag "Command" :match-alternatives (symbolp) :value ignore)
+    (sexp :tag "Condition")))
+
 (defcustom icicle-completion-key-bindings
   `((,(icicle-kbd "M-return")  icicle-candidate-read-fn-invoke t)                     ;`M-RET'
                                                                                       ; (`M-return')
@@ -1518,8 +1553,7 @@ instead of \"C-x <delete>\" and \"C-<delete>\"."
     (,(icicle-kbd "C-j")     icicle-insert-newline-in-minibuffer
      (not (eq minibuffer-local-map (keymap-parent minibuffer-local-completion-map)))) ; `C-j
     )
-  "*List of minibuffer commands to bind for completion in Icicle mode.
-
+  "*List of minibuffer key bindings during completion in Icicle mode.
 The option value has the same form as that of option
 `icicle-top-level-key-bindings' (which see).
 Each list element is of custom type `icicle-key-definition' and has
@@ -1535,7 +1569,90 @@ that sets it is invoked before you enter Icicle mode.  If you use
 Customize to change this option, then ensure that the code inserted by
 Customize into your `user-init-file' or your `custom-file' is invoked
 before you enter Icicle mode."
-  :type (if (> emacs-major-version 20)
+  :type (if (> emacs-major-version 21)
+            '(repeat icicle-key-definition)
+          '(repeat
+            (list
+             (choice
+              (restricted-sexp :tag "Key"
+               :match-alternatives ((lambda (x) (or (stringp x)  (vectorp x))))
+               :value [ignore])
+              (restricted-sexp :tag "Command to remap"
+               ;; Use `symbolp' instead of `commandp', in case the library defining the
+               ;; command is not loaded.
+               :match-alternatives (symbolp) :value ignore))
+             ;; Use `symbolp' instead of `commandp'...
+             (restricted-sexp :tag "Command"
+              :match-alternatives (symbolp) :value ignore)
+             (sexp :tag "Condition"))))
+  :group 'Icicles-Key-Bindings)
+
+;;;###autoload
+(defcustom icicle-completion-list-key-bindings
+  `((,(icicle-kbd "C-?")                icicle-minibuffer-help t)                         ; `C-?'
+    (,(icicle-kbd "M-?")                icicle-minibuffer-help t)                         ; `M-?'
+    (,(icicle-kbd "q")                  icicle-abort-recursive-edit t)                    ; `q'
+    (,(icicle-kbd "C-insert")           icicle-insert-completion t)                       ; `C-insert'
+    (,(icicle-kbd "down")               icicle-next-line t)                               ; `down'
+    (,(icicle-kbd "up")                 icicle-previous-line t)                           ; `up'
+    (,(icicle-kbd "left")               icicle-move-to-previous-completion t)             ; `left'
+    (,(icicle-kbd "backtab")            icicle-move-to-previous-completion                ; `S-TAB'
+     (> emacs-major-version 23))
+    (,(icicle-kbd "S-tab")              icicle-move-to-previous-completion                ; `S-TAB'
+     (< emacs-major-version 24))
+    (,(icicle-kbd "S-iso-lefttab")      icicle-move-to-previous-completion                ; `S-TAB'
+     (< emacs-major-version 24))
+    (,(icicle-kbd "right")              icicle-move-to-next-completion t)                 ; `right'
+    (,(icicle-kbd "C-i")                icicle-move-to-next-completion t)                 ; `TAB'
+    (,(icicle-kbd "tab")                icicle-move-to-next-completion t)                 ; `TAB'
+    ,@(and (boundp 'mouse-wheel-down-event) ;  Emacs 22+
+           `((,(vector mouse-wheel-down-event)   icicle-scroll-Completions-backward t)    ; `wheel-down'
+             (,(vector mouse-wheel-up-event)   icicle-scroll-Completions-forward t)))     ; `wheel-up'
+    (,(icicle-kbd "S-down-mouse-2")     icicle-mouse-remove-candidate t)                  ; `S-mouse-2'
+    (,(icicle-kbd "S-mouse-2")          ignore t)
+    (,(icicle-kbd "C-S-down-mouse-2")   icicle-mouse-candidate-alt-action t)              ; `C-S-mouse-2'
+    (,(icicle-kbd "C-S-mouse-2")        ignore t)
+    (,(icicle-kbd "C-down-mouse-2")     icicle-mouse-candidate-action t)                  ; `C-mouse-2'
+    (,(icicle-kbd "C-mouse-2")          ignore t)
+    (,(icicle-kbd "C-M-down-mouse-2")   icicle-mouse-help-on-candidate t)                 ; `C-M-mouse-2'
+    (,(icicle-kbd "C-M-mouse-2")        ignore t)
+    (,(icicle-kbd "M-S-down-mouse-2")   icicle-mouse-save/unsave-candidate t)             ; `M-S-mouse-2'
+    (,(icicle-kbd "M-S-mouse-2")        ignore t)
+    (,(icicle-kbd "M-down-mouse-2")     icicle-mouse-candidate-read-fn-invoke t)          ; `M-mouse-2'
+    (,(icicle-kbd "M-mouse-2")          ignore t)
+    (,(icicle-kbd "C-down-mouse-3")     icicle-Completions-mouse-3-menu t)                ; `C-mouse-3'
+    (,(icicle-kbd "C-mouse-3")          ignore t)
+    (,(icicle-kbd "M-down-mouse-3")     icicle-mouse-candidate-set-save-more t)           ; `M-mouse-3'
+    (,(icicle-kbd "M-mouse-3")          ignore t)
+    (,(icicle-kbd "M-S-down-mouse-3")   icicle-mouse-candidate-set-save t)                ; `M-S-mouse-3'
+    (,(icicle-kbd "M-S-mouse-3")        ignore t)
+    (,(icicle-kbd "mouse-3")            icicle-mouse-save-then-kill t)                    ; `mouse-3'
+    (,(icicle-kbd "C->")                icicle-candidate-set-save-more t)                 ; `C->'
+    (,(icicle-kbd "C-M->")              icicle-candidate-set-save t)                      ; `C-M->'
+    (,(icicle-kbd "C-)")                icicle-candidate-set-save-more-selected t)        ; `C-)'
+    (,(icicle-kbd "C-M-)")              icicle-candidate-set-save-selected t)             ; `C-M-)'
+    (,(icicle-kbd "C-M-<")              icicle-candidate-set-retrieve t)                  ; `C-M-<'
+    (,(icicle-kbd "C-l")                icicle-retrieve-previous-input t)                 ; `C-l'
+    (,(icicle-kbd "C-a")                icicle-beginning-of-line+ t)                      ; `C-a'
+    (,(icicle-kbd "C-e")                icicle-end-of-line+ t)                            ; `C-e'
+    )
+  "*List of key bindings in `*Completions*' for use in Icicle mode.
+The option value has the same form as that of option
+`icicle-top-level-key-bindings' (which see).
+Each list element is of custom type `icicle-key-definition' and has
+the form (KEY COMMAND CONDITION).
+
+If you customize this option then you must exit and re-enter Icicle
+mode to ensure that the change takes effect.  This is really necessary
+only if your changes would undefine a key.
+
+For this option to have an effect upon startup, it must be set before
+you enter Icicle mode.  This means that you must ensure that the code
+that sets it is invoked before you enter Icicle mode.  If you use
+Customize to change this option, then ensure that the code inserted by
+Customize into your `user-init-file' or your `custom-file' is invoked
+before you enter Icicle mode."
+  :type (if (> emacs-major-version 21)
             '(repeat icicle-key-definition)
           '(repeat
             (list
@@ -2017,7 +2134,7 @@ replaced by the expanded common match.
 
 If you want to just toggle between the current value of this option
 and one of the other values, then see also option
-`icicle-expand-input-to-common-match-alt'.  You can toggle between the 
+`icicle-expand-input-to-common-match-alt'.  You can toggle between the
 values of these two options using \\<minibuffer-local-completion-map>\
 `\\[icicle-toggle-expand-to-common-match]' in the minibuffer."
   :type '(choice
@@ -2596,10 +2713,9 @@ Emacs 23) option `icicle-Completions-text-scale-decrease'."
 
 ;;;###autoload
 (defcustom icicle-isearch-complete-keys '([C-M-tab] ; `M-TAB', `C-M-TAB'
-                                          [M-tab] ; Replace vanilla.
                                           [(control meta ?i)]
-                                          [escape tab]
-                                          [(meta ?o)]) ; Like Icicles minibuffer `M-o'
+                                          [M-tab] ; Replace vanilla.
+                                          [escape tab])
   "*Key sequences to use for `icicle-isearch-complete'.
 A list of values that each has the same form as a key-sequence
 argument to `define-key'.
@@ -2610,10 +2726,14 @@ of `isearch-complete'.
 It also includes `ESC TAB' and `C-M-TAB', because some operating
 systems intercept `M-TAB' for their own use.  (Note: For MS Windows,
 you can use (w32-register-hot-key [M-tab]) to allow Emacs to use
-`M-TAB'.)
+`M-TAB'.)"
+  :type '(repeat sexp) :group 'Icicles-Key-Bindings)
 
-It also includes `M-o', in keeping with the Icicles use of `M-o'
-during minibuffer completion."
+;;;###autoload
+(defcustom icicle-isearch-history-insert-keys '([(meta ?o)]) ; `M-o', like Icicles minibuffer
+  "*Key sequences to use for `icicle-isearch-history-insert'.
+A list of values that each has the same form as a key-sequence
+argument to `define-key'."
   :type '(repeat sexp) :group 'Icicles-Key-Bindings)
 
 ;;;###autoload
@@ -2625,7 +2745,7 @@ during minibuffer completion."
   ;; translated to `S-tab' and `S-iso-lefttab' on your platform, you might want to customize the value
   ;; to ([S-tab] [S-iso-lefttab]).  And if your Emacs version is 22 or later, please file an Emacs bug
   ;; about the lack of translation.
-  
+
   ;; The reason that the default value here is not just ([backtab]) for Emacs < 24 is that some Emacs
   ;; libraries, such as `info.el', explicitly bind both `backtab' and `S-tab'.  I filed Emacs bug #1281,
   ;; which took care of this for Emacs 24+.
@@ -2824,6 +2944,69 @@ to toggle the option."
 (defcustom icicle-minibuffer-setup-hook nil
   "*Functions run at the end of minibuffer setup for Icicle mode."
   :type 'hook :group 'Icicles-Miscellaneous)
+
+;;;###autoload
+(defcustom icicle-minibuffer-key-bindings
+  `((,(icicle-kbd "C-?")           icicle-minibuffer-help t)                          ; `C-?'
+    (,(icicle-kbd "M-?")           icicle-minibuffer-help t)                          ; `M-?'
+    (,(icicle-kbd "M-S-backspace") icicle-erase-minibuffer t)                         ; `M-S-backspace'
+    (,(icicle-kbd "M-S-delete")    icicle-erase-minibuffer t)                         ; `M-S-delete'
+    (,(icicle-kbd "M-.")           icicle-insert-string-at-point t)                   ; `M-.'
+    (,(icicle-kbd "C-x C-f")       icicle-resolve-file-name t)                        ; `C-x C-f'
+    (,(icicle-kbd "C-=")           icicle-insert-string-from-variable t)              ; `C-='
+    (,(icicle-kbd "M-i")           icicle-clear-current-history t)                    ; `M-i'
+    (,(icicle-kbd "M-k")           icicle-erase-minibuffer-or-history-element t)      ; `M-k'
+    (,(icicle-kbd "M-o")           icicle-insert-history-element t)                   ; `M-o'
+    (,(icicle-kbd "M-R")           icicle-multi-inputs-act t)                         ; `M-R'
+    (,(icicle-kbd "M-S")           icicle-multi-inputs-save t)                        ; `M-S'
+    (,(icicle-kbd "M-:")           icicle-pp-eval-expression-in-minibuffer t)         ; `M-:'
+    (,(icicle-kbd "C-a")           icicle-beginning-of-line+ t)                       ; `C-a'
+    (,(icicle-kbd "C-e")           icicle-end-of-line+ t)                             ; `C-e'
+    (,(icicle-kbd "C-g")           icicle-abort-recursive-edit t)                     ; `C-g'
+    (,(icicle-kbd "C-M-v")         icicle-scroll-forward t)                           ; `C-M-v'
+    (,(icicle-kbd "C-M-S-v")       icicle-scroll-backward t)                          ; `C-M-S-v'
+                                                                                      ; ( `C-M-V')
+    (,(icicle-kbd "C-M-pause")     icicle-other-history t)                            ; `C-M-pause'
+    (,(icicle-kbd "C-j")           icicle-insert-newline-in-minibuffer t)             ; `C-j'
+    (,(icicle-kbd "C-M-y")         icicle-yank-secondary (fboundp 'icicle-yank-secondary)) ; `C-M-y'
+    )
+  "*List of minibuffer commands to bind for use in Icicle mode.
+These bindings are available in the minibuffer regardless of whether
+completion is available.  See `icicle-completion-key-bindings' for
+bindings available only during completion.
+
+The option value has the same form as that of option
+`icicle-top-level-key-bindings' (which see).
+Each list element is of custom type `icicle-key-definition' and has
+the form (KEY COMMAND CONDITION).
+
+If you customize this option then you must exit and re-enter Icicle
+mode to ensure that the change takes effect.  This is really necessary
+only if your changes would undefine a key.
+
+For this option to have an effect upon startup, it must be set before
+you enter Icicle mode.  This means that you must ensure that the code
+that sets it is invoked before you enter Icicle mode.  If you use
+Customize to change this option, then ensure that the code inserted by
+Customize into your `user-init-file' or your `custom-file' is invoked
+before you enter Icicle mode."
+  :type (if (> emacs-major-version 21)
+            '(repeat icicle-key-definition)
+          '(repeat
+            (list
+             (choice
+              (restricted-sexp :tag "Key"
+               :match-alternatives ((lambda (x) (or (stringp x)  (vectorp x))))
+               :value [ignore])
+              (restricted-sexp :tag "Command to remap"
+               ;; Use `symbolp' instead of `commandp', in case the library defining the
+               ;; command is not loaded.
+               :match-alternatives (symbolp) :value ignore))
+             ;; Use `symbolp' instead of `commandp'...
+             (restricted-sexp :tag "Command"
+              :match-alternatives (symbolp) :value ignore)
+             (sexp :tag "Condition"))))
+  :group 'Icicles-Key-Bindings)
 
 ;;;###autoload
 (defcustom icicle-modal-cycle-down-keys ; `down', `wheel-down'
@@ -3111,28 +3294,6 @@ different keyboards."
   :type '(repeat sexp) :group 'Icicles-Key-Bindings)
 
 ;;;###autoload
-(defcustom icicle-previous-candidate-keys '([S-tab] [S-iso-lefttab]) ; `S-TAB'
-  ;; $$$$$ The following should be sufficient, but some Emacs 22+ libraries, such as `info.el',
-  ;; are brain-dead and explicitly bind both `backtab' and `S-tab'.  I filed Emacs bug #1281.
-  ;;   (if (> emacs-major-version 21)
-  ;;       '([backtab])
-  ;;     '([S-tab] [S-iso-lefttab]))
-  "*Key sequences to use for `icicle-move-to-previous-completion'.
-In buffer `*Completions*', this moves backward among candidates.
-
-A list of values that each has the same form as a key-sequence
-argument to `define-key'.  It is a list mainly in order to accommodate
-different keyboards - for example, `S-tab' and `S-iso-lefttab'."
-  ;; In Emacs 22 and later, `backtab' is the canonical key that represents
-  ;; both `S-tab' and `S-iso-lefttab', so that is used in the default
-  ;; value.  If, for some reason, `backtab' is not being translated to
-  ;; `S-tab' and `S-iso-lefttab' on your platform, you might want to
-  ;; customize the value to ([S-tab] [S-iso-lefttab]).  And if your Emacs
-  ;; version is 22 or later, please file an Emacs bug about the lack of
-  ;; translation.
-  :type '(repeat sexp) :group 'Icicles-Key-Bindings)
-
-;;;###autoload
 (defcustom icicle-quote-shell-file-name-flag t
   "*Non-nil means to double-quote the file name that starts a shell command.
 This is used by `icicle-read-shell-command-completing'.
@@ -3264,7 +3425,10 @@ You can toggle this option from the minibuffer during Icicles search
   :type 'boolean :group 'Icicles-Searching)
 
 ;;;###autoload
-(defcustom icicle-search-from-isearch-keys '([S-tab] [S-iso-lefttab]) ; `S-TAB'
+(defcustom icicle-search-from-isearch-keys (if (> emacs-major-version 23) ; `S-TAB'
+                                               '([backtab])
+                                             '([S-tab] [S-iso-lefttab]))
+
   ;; $$$$$ The following should be sufficient, but some Emacs 22+ libraries, such as `info.el',
   ;; are brain-dead and explicitly bind both `backtab' and `S-tab'.  I filed Emacs bug #1281.
   ;;   (if (> emacs-major-version 21)
@@ -4053,32 +4217,6 @@ reverses the meaning of `icicle-default-thing-insertion'."
   :group 'Icicles-Miscellaneous)
 
 ;; Must be before `icicle-top-level-key-bindings'.
-;;;###autoload
-(define-widget 'icicle-key-definition 'lazy
-  "Key definition type for Icicle mode keys.
-A list of three components: KEY, COMMAND, CONDITION, that represents
-an `icicle-mode-map' binding of COMMAND according to KEY, if CONDITION
-evaluates to non-nil.
-
-KEY is either a key sequence (string or vector) or a command.
-COMMAND is a command.
-CONDITION is a sexp.
-
-If KEY is a command, then the binding represented is its remapping to
-COMMAND."
-  :indent 1 :offset 0 :tag ""           ; $$$$$ "Icicle Mode Key Definition"
-  :type
-  '(list
-    (choice
-     (key-sequence :tag "Key" :value [ignore])
-     ;; Use `symbolp' instead of `commandp', in case the library defining the
-     ;; command is not loaded.
-     (restricted-sexp :tag "Command to remap" :match-alternatives (symbolp) :value ignore))
-     ;; Use `symbolp' instead of `commandp'...
-    (restricted-sexp :tag "Command" :match-alternatives (symbolp) :value ignore)
-    (sexp :tag "Condition")))
-
-;; Must be before `icicle-top-level-key-bindings'.
 (defun icicle-remap (old new map &optional oldmap)
   "Bind command NEW in MAP to all keys currently bound to OLD.
 If command remapping is available, use that.  Otherwise, bind NEW to
@@ -4403,7 +4541,7 @@ toggle Icicle mode off and then back on."
     ([f10]                         lacarte-execute-menu-command ; `f10' - replaces `menu-bar-open'.
      (fboundp 'lacarte-execute-menu-command))
     )
-  "*List of top-level commands to bind in Icicle mode.
+  "*List of top-level key bindings in Icicle mode.
 Each list element is of custom type `icicle-key-definition' and has
 the form (KEY COMMAND CONDITION).
 
@@ -4430,7 +4568,7 @@ Customize into your `user-init-file' or your `custom-file' is invoked
 before you enter Icicle mode.
 
 See also option `icicle-functions-to-redefine'."
-  :type (if (> emacs-major-version 20)
+  :type (if (> emacs-major-version 21)
             '(repeat icicle-key-definition)
           '(repeat
             (list
