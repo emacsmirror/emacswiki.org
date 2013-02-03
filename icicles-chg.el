@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Wed Jan 30 08:36:10 2013 (-0800)
+;; Last-Updated: Sun Feb  3 11:18:52 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 9618
+;;     Update #: 9668
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1639,6 +1639,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2013/02/03 dadams
+;;     Moved to icicles-mcmd.el: icicle-isearch-complete-past-string.
 ;; 2012/12/31 dadams
 ;;     icicle-next-candidate: Set icicle-mode-line-help.  Do not call icicle-show-help-in-mode-line.
 ;;     icicle-insert-cand-in-minibuffer:
@@ -3683,6 +3685,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2013/02/03 dadams
+;;     Added: icicle-isearch-history-complete, icicle-isearch-history-insert.
+;;     Moved here from icicles-fn.el: icicle-isearch-complete-past-string.
 ;; 2013/01/30 dadams
 ;;     icicle-insert-history-element: Do not clear minibuffer.
 ;;     icicle-multi-inputs-act: Raise error if no action function defined.
@@ -5267,6 +5272,13 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2013/02/03 dadams
+;;     Renamed: *-(bind|restore)-custom-completion-keys to *-(bind|restore)-custom-minibuffer-keys.
+;;     icicle-(un)bind-isearch-keys: (Un)Bind keys of new option icicle-isearch-history-insert-keys.
+;;     icicle-define-minibuffer-maps:
+;;       Use icicle-(bind|restore)-custom-minibuffer-keys instead of individual define-keys.
+;;     icicle-(bind|restore)-custom-minibuffer-keys:
+;;       Added parameter OPTION, instead of just hard-coding icicle-completion-key-bindings.
 ;; 2013/01/26 dadams
 ;;     icicle-define-minibuffer-maps:
 ;;       Bind icicle-multi-inputs-act (M-R), icicle-multi-inputs-save (M-S).
@@ -6439,6 +6451,15 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2013/02/03 dadams
+;;     Added: icicle-completion-list-key-bindings, icicle-isearch-history-insert-keys,
+;;            icicle-minibuffer-key-bindings.
+;;     Removed: icicle-previous-candidate-keys.
+;;     icicle-apropos-complete-keys, icicle-search-from-isearch-keys: use backtab for Emacs 24+.
+;;     icicle-comint-dynamic-complete-replacements: Fixed :type - the first need not be a symbol.
+;;     Moved icicle-key-definition before first use, which is now icicle-completion-key-bindings.
+;;     icicle-(top-level|completion)-key-bindings: Fixed :type to be > Emacs 21, not > Emacs 20.
+;;     icicle-isearch-complete-keys: Removed M-o from the default value and adapted doc string.
 ;; 2013/01/26 dadams
 ;;     icicle-completion-key-bindings: Added M-r binding for icicle-roundup.
 ;; 2013/01/18 dadams
@@ -7219,6 +7240,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2013/02/03 dadams
+;;     icicle-general-help-string:
+;;       Updated for *-(minibuffer|completion(-list))-key-* (add), *-previous-candidate-keys (remove).
 ;; 2013/01/26 dadams
 ;;     Added: icicle-multi-inputs-action-fn.
 ;; 2012/12/31 dadams
