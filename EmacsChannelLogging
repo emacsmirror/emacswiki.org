@@ -1,55 +1,43 @@
-A hot (inflammable, to be honest) topic on the EmacsChannel is whether or not we should have google-indexed web-logs of the channel available.
+[new:aidalgol:2013-02-03 02:03 UTC]
+I rewrote this page to read as an archive to the closed discussion, because it had not been touched since 2008, and still read with a tone that implied the discussion was still open.
+-- [[aidalgol]]
 
-Much concern has been expressed with regards to clog and its activities. The current status is that it is not logging the channel, and the logs have been removed - They are however still in Google's cache.
+----
 
-Current consensus seems to be:
+As the '''[[EmacsChannel|#emacs]]''' topic reads, "No public logging! What happens in #emacs".  Going by the history of this page, the debate over whether to allow public logs reached this consensus in mid-2008 (at the latest).  As of January 2013, this is still a channel rule, and has become so entrenched that it will not be changing anytime soon or with any ease.  IRC client screenshots showing '''#emacs''' seem to be acceptable, but only when showing off an Emacs IRC client.  If you any questions about publishing something said in the channel, feel free to ask there.
 
-: '''Anonymous logs or none.'''
+= Introduction to the problem, Statements by channel members =
 
-If you disagree with this consensus, now is your time to speak up.
-Here's what to do:
+The main points have been summed up here by various people.
 
-# Replace "Current consensus" with "One popular position"
-# Start a new discussion section right below this list (and before the introduction to the problem)
-
-== Introduction to the problem, Statements by channel members ==
-
-The discussion is not suitable for IRC, so it got moved here for the following reasons:
-
-* It's a very important problem, that we need all EmacsChannelPeople to speak their mind about.
-* Due to the real-time effect, when debating on IRC people say stupid things before thinking. Hopefully everyone will think twice about the way they speak their mind here, remember, it's a sensitive topic.
-* It's something we need to come to an agreement about, and that just isn't going to happen on IRC. Every once in a while the topic is brought up, and whoever is there gets to speak their mind. Noone will however act on it, since a very small fraction of the EmacsChannel has been heard. The arguing keeps going over the same tracks because the same things have to be mentioned to new people all the time.
-
-That said, let's get down to business. I've tried to sum up the points below, please contribute your thoughts and add what I've missed. 
-
-=== First: What is a log? ===
+== First: What is a log? ==
 
 Can we define what a "log" is? If the main concern is search engine indexing, then clearly a log would have to be accessible to search engines before anybody would be concerned about it. But if displaying #emacs conversations "publicly" is a concern, then having a session with #emacs on in front of your class in order to demonstrate something (as recently happened) might be problematic. There are also many cases of ERC screenshots running around. So, it might help make this policy clearer to define what's meant by a log. -- JohnSullivan
 
 Clearly search engines are the most critical issues. But that alone is not enough: Some search engines might decide not to honor robots.txt and friends. Thus any kind of permanent public artifact is a potential problem. Usually screenshots and short quotes don't offer much context (time, date, real names, IP numbers), and all the screenshots and quotes were unproblematic. So I don't mind too much. As for using #emacs in a classroom or conference situation: I think I'd feel like I'm being exposed in a zoo. In this case, a different kind of privacy is being taken away from me. It's not a serious problem for me, but it's impolite, if done without appropriate announcement ahead of time, giving people the chance to opt out or discuss the issue. I wouldn't want to see this too often, however. People should join as equal channel members. -- AlexSchroeder
 
-=== The aye-sayers ==
+== The aye-sayers ==
 
 * Easily accessable logs are a useful tool.
 * People shouldn't say something on IRC they don't want to stand by. IRC *is* being logged, no matter what you try to do about it.
 
-: A problem here is that we would actually be making it extremely easy. Yes, if the FBI wants to find out if you snort ten lines of coke a day, and you've said so on the EmacsChannel,they would still be able to. But do we really want it so easy that any coworker, parent, friend, etc, is capable of figuring it out?
+: A problem here is that we would actually be making it extremely easy. Yes, if the FBI wants to find out if you snort ten lines of coke a day, and you've said so on the EmacsChannel, they would still be able to. But do we really want it so easy that any coworker, parent, friend, etc, is capable of figuring it out?
 
-=== The nay-sayers ==
+== The nay-sayers ==
 
 * Web-logging makes information so easily accessible that it has a direct influence on your real life.
 
 * It's not really =that= useful a tool.
 
-=Important points=
+= Important points =
 
 The problem is not with logging. The problem is that even a pointy haired marketing-trained boss could find your nick through your company/personal/school website, google for it, and find all sorts of information about you that you really didn't want him or her to know.
 
-Shouldn't this just mean that you shouldn't say stuff you don't want your boss to know? Ofcourse. But that would have a very bad effect on the community that the EmacsChannel is.
+Shouldn't this just mean that you shouldn't say stuff you don't want your boss to know? Of course. But that would have a very bad effect on the community that the EmacsChannel is.
 
 Why should we actively make it THAT easy? Are the pros worth the cons?
 
-=Comments=
+= Comments =
 
 Speak your mind, we need to hear everyone who have anything to say on the topic before making a decision, that no matter what it'll be, will annoy someone gravely.
 
@@ -115,9 +103,3 @@ anonymous logs are solution. --jtra
 Another occasional visitor:
 
 : It shouldn't be that hard to have an opt in system where people who say '/msg botname logme' get logged.  I'm sure a number of people would like to be able to have themselves logged, and this would allow for that. --mocker
-
-== Recent logging incident ==
-
-Someone noticed #emacs being logged at http://ircarc.com/freenode-emacs/ today (2007-10-17). We found the bot responsible, kmarquez (n=kmarquez@62.141.48.57), kicked it, and banned its IP address. I've used the feedback form on their website to request that they also take the channel logs down. -- EdwardOConnor
-
-Also, irseek.com is now publically logging #emacs.  However, there's not an obvious bot yet.
