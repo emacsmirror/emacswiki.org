@@ -22,7 +22,7 @@ Features(svn version):
 
 * Toggle Switch between Action/View and other file (tests, helpers) automatically or with menu
 
-* Switching to file from current line f.e. from redirect_to :controller => “foo”, :action => “bar”, switches to this controller/action
+* Switching to file from current line f.e. from redirect_to :controller => âfooâ, :action => âbarâ, switches to this controller/action
 
 * TextMate?-like snippets (snippets.el)
 
@@ -168,10 +168,10 @@ Many in the Ruby community use [http://pastie.org Pastie] for sharing code snipp
 [http://pastie.org/paste/133456 pastie.el] or here Lisp:pastie.el
 
 == Rails2/Rails3 TDD: espectator + enotify ==
-Espectator, together with enotify, provide a continuous testing solution for emacs, without the annoying growl-like popups. The notifications are delivered via the emacs modeline.
+spectator-emacs, together with enotify and the enotify-spectator-emacs plugin, provide a continuous testing solution for emacs, without the annoying growl-like popups. The notifications are delivered via the emacs modeline.
 
-See [[Enotify]] and checkout the rspec-rails-watchr-emacs (espectator) gem.
-You can also grab espectator from its [https://github.com/laynor/espectator git repository].
+See [[Enotify]] and checkout the spectator-emacs gem.
+You can also grab spectator-emacs from its [https://github.com/laynor/spectator-emacs git repository].
 It provides notifications on the modeline and optional [https://github.com/jwiegley/alert alert.el] alerts.
 
 If used together with the rspec_org_formatter gem, it provides org formatted rspec output directly in an emacs buffer - just click the notification "icon" in the modeline :-)
