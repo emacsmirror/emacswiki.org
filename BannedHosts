@@ -49,6 +49,7 @@
 ^yi-in-f[0-9][0-9]\.1e100.net  # for spamming CategoryGlossary and others in April 2012
 \.amazonaws\.com  # for spamming various pages in April and May 2012
 ^pool-173-74-59-171.dllstx.fios.verizon.net  # for spamming SiteMap in April 2012
+^36\.248\.21\.84 # for spamming IciclesDiscusssion
 ^37\.59\.173\.129 # for spamming IciclesDiscusssion
 ^58.22.64.227  # for spamming TableOfContentsDiscussion in April 2012
 ^node1\.heading-toll-host\.org # for spamming Comments on LoopFindPackage
