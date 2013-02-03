@@ -7,7 +7,7 @@ I am still struggling a little bit with Emacs. I find hard to learn. The learnin
 
 
 
-
+=== Discussions ===
 
 
 [new:DrewAdams:2013-01-27 15:25 UTC]
@@ -22,6 +22,21 @@ Welcome from me too!  This idea of Emacs as a LispMachine is what a few of us ar
 
 PS Feel free to delete these from your page... it's just our way of saying //Hello!//
 -- NicFerrier
+
+[new:Yves Baumes:2013-02-03 18:27 UTC]
+Thank you everyone. Nextstep is checking out icycle, orgmode. I already am
+editing this post with [[OddmuseMode]]. By the way I am connecting to
+the [[EmacsChannel]], and my nickname is //keugaerg//.
+
+I've relaunched Emacs this summer in
+order to learn a little bit of Lisp, then I stopped for Clojure.
+I need to learn the whole stuff seriously now. Cause I installed the
+LispBox then a stock EmacsForMac with ESK. And I feel more confident
+now with the tool to have a look into the Emacs Lisp code, etc.
+And yes Nic You are right, later I'll clean up the page. Probably I
+will try to descbribe my newbie journey. I'll start with reformatting
+this discussion in something readable for other newbies. :-)
+-- YvesBAUMES
 
 ----
 CategoryHomepage
