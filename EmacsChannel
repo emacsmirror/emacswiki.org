@@ -4,7 +4,7 @@ The official Emacs IRC channel is '''#emacs''' on freenode, since [https://www.g
 
 If you just want the channel rules, skip to the [[#Conduct]] and [[#LawAndOrder|Law and Order]] sections.
 
-== About #emacs and related channels ==
+= About #emacs and related channels =
 
 The freenode [[IRC]] channel '''#emacs''' is a place for a merry get-together of all the Emacsfolks out there.  People from all the corners of the world do populate the channel, largely from the "West", though (see EmacsChannelDemographics).
 
@@ -18,12 +18,12 @@ It would be naive to think only strictly Emacs-related issues were discussed on 
 
 EmacsChannelLogging -- To log or not to log.
 
-== Polls =
+= Polls =
 
 * LangPollResults -- preliminary results of the language poll on the #emacs channel
 
 [:Conduct]
-== Conduct ==
+= Conduct =
 
 In addition to [http://freenode.net/policy.shtml freenode's network-wide policies], we have some of our own (somewhat redundant) rules:
 
@@ -33,7 +33,7 @@ In addition to [http://freenode.net/policy.shtml freenode's network-wide policie
 * And, please, for the love of GNU, don't use 1337-5p34k
 
 [:LawAndOrder]
-== Law and Order =
+= Law and Order =
 
 If you need the help of a friendly *operator* (usually for kicking and banning obnoxious fellow channel members), you can get a list of these from fsbot. Just say:
 
@@ -58,7 +58,7 @@ If you're in trouble:
 * To appeal decisions made by an operator, find another operator.
 * If nothing else works, you'll have to contact Freenode staff on #freenode.
 
-== Bots =
+= Bots =
 
 The channel is probably logged by a gazillion bots (and human users).  Some of the bots one might encounter are described below.
 
