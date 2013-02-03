@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun Jan 13 09:30:01 2013 (-0800)
+;; Last-Updated: Sun Feb  3 15:06:25 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 29156
+;;     Update #: 29234
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -132,6 +132,8 @@
 ;;    (@file :file-name "icicles-doc1.el" :to "Option `icicle-use-C-for-actions-flag'")
 ;;    (@file :file-name "icicles-doc1.el" :to "Accessing Saved Locations (Bookmarks) on the Fly")
 ;;
+;;  (@file :file-name "icicles-doc1.el" :to "Multi-Inputs")
+;;
 ;;  (@file :file-name "icicles-doc1.el" :to "Icicles Tripping")
 ;;    (@file :file-name "icicles-doc1.el" :to "Highlighting the Destination")
 ;;
@@ -159,6 +161,7 @@
 ;;  (@file :file-name "icicles-doc1.el" :to "Choose All Completion Candidates")
 ;;  (@file :file-name "icicles-doc1.el" :to "Sets of Completion Candidates")
 ;;    (@file :file-name "icicles-doc1.el" :to "Saving and Retrieving Completion Candidates")
+;;    (@file :file-name "icicles-doc1.el" :to "Saving or Retrieving Additional Candidates")
 ;;    (@file :file-name "icicles-doc1.el" :to "Different Places for Saving and Retrieving Candidates")
 ;;    (@file :file-name "icicles-doc1.el" :to "Set Operations")
 ;;
@@ -4762,6 +4765,52 @@
 ;;    with no name without completing.  See function
 ;;    `icicle-widget-color-complete' for more information.
 ;;
+;;  * Non-`nil' user option
+;;    `icicle-top-level-when-sole-completion-flag' means that whenever
+;;    there is only one completion candidate that matches your input,
+;;    that candidate is used immediately, without requiring you to hit
+;;    `RET' or `S-RET'.
+;;
+;;  * When `icicle-top-level-when-sole-completion-flag' is `nil',
+;;    option `icicle-top-level-when-sole-completion-delay' is the
+;;    number of seconds Icicles waits, before returning to top level
+;;    with the sole completion.  (It has no effect if the flag is
+;;    `nil'.)  The delay gives you a chance to forestall acceptance of
+;;    the sole completion: editing the completion (typing or deleting
+;;    a character) before the delay expires prevents its automatic
+;;    acceptance.  The default value is 0 seconds (no delay).
+;;
+;;  * User option `icicle-top-level-key-bindings' specifies top-level
+;;    commands and their bindings for Icicle mode.  By default, this
+;;    rebinds several standard Emacs keys (in Icicle mode only).  For
+;;    example, it substitutes `icicle-kill-buffer' for `kill-buffer'
+;;    (binding it to whatever `kill-buffer' is bound to globally).
+;;    Top-level commands are commands that are not used only in the
+;;    minibuffer.  To change these bindings, customize
+;;    `icicle-top-level-key-bindings'.  If you do that, then you must
+;;    exit and re-enter Icicle mode to ensure that the change takes
+;;    effect.  This is really necessary only if your changes would
+;;    undefine a key.
+;;
+;;  * User option `icicle-minibuffer-key-bindings' specifies bindings
+;;    for keys available during minibuffer input in Icicle mode.
+;;    These bindings are in effect whether or not completion is
+;;    available.  This does not include keys concerned with
+;;    completion, cycling, and help, which are covered by other user
+;;    options.  The value has the same form as for option
+;;    `icicle-top-level-key-bindings'.
+;;
+;;  * User option `icicle-completion-key-bindings' specifies bindings
+;;    for keys available during minibuffer input with completion.
+;;    These are generally not commands that complete your minibuffer
+;;    input, but commands that you use to edit that input or act on it
+;;    in different ways.  The value has the same form as for option
+;;    `icicle-top-level-key-bindings'.
+;;
+;;  * User option `icicle-completion-list-key-bindings' specifies key
+;;    bindings for buffer `*Completions*'.  The value has the same
+;;    form as for option `icicle-top-level-key-bindings'.
+;;
 ;;  * User option `icicle-candidate-help-keys' specifies the keys that
 ;;    display help about the current completion candidate.  The
 ;;    default values are `C-M-RET' (`C-M-return'), `C-M-help',
@@ -4868,17 +4917,13 @@
 ;;    default) for apropos completion of your minibuffer input, so it
 ;;    cannot also be used for key completion in the minibuffer.
 ;;
-;;  * Option `icicle-previous-candidate-keys' is the list of keys to
-;;    bind to `icicle-move-to-previous-completion', for moving among
-;;    candidates in buffer `*Completions*'.  By default, these keys
-;;    are `S-tab' and `S-iso-lefttab', which together implement
-;;    `S-TAB'.  (In Emacs 22 and later, `backtab' is the canonical key
-;;    that represents both `S-tab' and `S-iso-lefttab', so that is
-;;    used in the default value.)
-;;
 ;;  * Option `icicle-isearch-complete-keys' is the list of keys for
 ;;    `icicle-isearch-complete'.  By default, these keys are `M-TAB',
-;;    `ESC TAB', `C-M-TAB', and `M-o'.
+;;    `ESC TAB', and `C-M-TAB'.
+;;
+;;  * Option `icicle-isearch-history-insert-keys' is the list of keys
+;;    for `icicle-isearch-history'.  By default, the list contains
+;;    only `M-o'.
 ;;
 ;;  * Option `icicle-read+insert-file-name-keys' is the list of keys
 ;;    for invoking file-name completion on demand.  By default,
@@ -4929,28 +4974,6 @@
 ;;    `TAB' and `S-TAB' (actually the keys that are the values of
 ;;    options `icicle-prefix-complete-keys' and
 ;;    `icicle-apropos-complete-keys') from also cycling candidates.
-;;
-;;  * User option `icicle-completion-key-bindings' specifies keys to
-;;    bind to various Icicles minibuffer commands that are used during
-;;    completion.  These are generally not commands that complete your
-;;    minibuffer input, but commands that you use to edit that input
-;;    or act on it in different ways.  This option value has the same
-;;    form as for option `icicle-top-level-key-bindings'.
-;;
-;;  * Non-`nil' user option
-;;    `icicle-top-level-when-sole-completion-flag' means that whenever
-;;    there is only one completion candidate that matches your input,
-;;    that candidate is used immediately, without requiring you to hit
-;;    `RET' or `S-RET'.
-;;
-;;  * When `icicle-top-level-when-sole-completion-flag' is `nil',
-;;    option `icicle-top-level-when-sole-completion-delay' is the
-;;    number of seconds Icicles waits, before returning to top level
-;;    with the sole completion.  (It has no effect if the flag is
-;;    `nil'.)  The delay gives you a chance to forestall acceptance of
-;;    the sole completion: editing the completion (typing or deleting
-;;    a character) before the delay expires prevents its automatic
-;;    acceptance.  The default value is 0 seconds (no delay).
 ;;
 ;;  * Non-`nil' user option `icicle-TAB-shows-candidates-flag' means
 ;;    that hitting `TAB' for prefix completion immediately shows the
@@ -5819,18 +5842,6 @@
 ;;    lax completion).  For details, see the option doc strings and
 ;;    (@file :file-name "icicles-doc1.el" :to "Icicles Highlights the Input that Won't Complete").
 ;;
-;;  * User option `icicle-top-level-key-bindings' specifies top-level
-;;    commands and their bindings for Icicle mode.  By default, this
-;;    rebinds several standard Emacs keys (in Icicle mode only).  For
-;;    example, it substitutes `icicle-kill-buffer' for `kill-buffer'
-;;    (binding it to whatever `kill-buffer' is bound to globally).
-;;    Top-level commands are commands that are not used only in the
-;;    minibuffer.  To change these bindings, customize
-;;    `icicle-top-level-key-bindings'.  If you do that, then you must
-;;    exit and re-enter Icicle mode to ensure that the change takes
-;;    effect.  This is really necessary only if your changes would
-;;    undefine a key.
-;;
 ;;  * Non-`nil' option `icicle-define-alias-commands-flag' defines a
 ;;    few top-level Icicles commands whose names do not begin with
 ;;    `icicle-', for convenience when using `M-x'.  For example,
@@ -6262,18 +6273,19 @@
 ;;  Key Bindings
 ;;  ------------
 ;;
-;;  You can customize any of the key bindings that Icicles uses - see
-;;  (@> "Customizing Key Bindings").  I recommend that you first try
-;;  using the default bindings, however.  There are many Icicles key
-;;  bindings (in particular in the minibuffer), but they are grouped
-;;  into a few natural sets, to help you remember them.
+;;  You can easily customize any of the key bindings that Icicles uses
+;;  - see (@> "Customizing Key Bindings").  I recommend that you first
+;;  try using the default bindings, however.  There are many Icicles
+;;  key bindings (in particular in the minibuffer), but they are
+;;  grouped into a few natural sets, to help you remember them.  And
+;;  there are user options available for easy key customization.
 ;;
 ;;(@* "Global Bindings")
 ;;  ** Global Bindings **
 ;;
 ;;  Icicles does not change your global key bindings.  It changes some
-;;  minibuffer bindings, and it adds some bindings for Icicle mode,
-;;  but it does not change your global bindings.
+;;  minibuffer bindings, and it adds minor-mode bindings for Icicle
+;;  mode, but it does not change your global bindings.
 ;;
 ;;  There are two exceptions:
 ;;
@@ -6572,7 +6584,7 @@
 ;;  the minibuffer, for example, while you are editing it.  Most of
 ;;  these keys are bound in the minibuffer completion keymaps, but
 ;;  some are bound in the `*Completions*' buffer keymap and some are
-;;  bound when reading input without completion.
+;;  bound in the minibuffer when reading input without completion.
 ;;
 ;;  In addition, clicking `C-mouse-3' on a completion candidate in
 ;;  buffer `*Completions*' pops up a menu of available commands.  Some
@@ -6582,11 +6594,12 @@
 ;;  indicated in the menu items, so this can be a good way to learn
 ;;  minibuffer and `*Completions*' bindings.
 ;;
-;;  You can easily customize all of the Icicles minibuffer key
-;;  bindings.  There are several user options available for this.
-;;  This section describes the keys that are bound by default.
-;;  Section (@> "Customizing Key Bindings") describes the options
-;;  available for customizing them.
+;;  You can easily customize the Icicles minibuffer and
+;;  `*Completions*' buffer key bindings.  There are several user
+;;  options available for this.  This section describes the keys that
+;;  are bound by default.  Section (@> "Customizing Key Bindings")
+;;  describes the options available for customizing them.  The keys
+;;  described in this section are those bound by default.
 ;;
 ;;  The following key is helpful during any minibuffer input.  It pops
 ;;  up the `*Help*' buffer with information about using the minibuffer
@@ -6687,16 +6700,18 @@
 ;;               default.  You can customize it, using option
 ;;               `icicle-prefix-complete-keys'.)
 ;;
-;;    `S-TAB'  - In the minibuffer: `icicle-apropos-complete' - like
+;;    `S-TAB' -  In the minibuffer: `icicle-apropos-complete' - like
 ;;               `TAB', but use apropos completion.  In buffer
 ;;               `*Completions*': `icicle-move-to-previous-completion'
-;;               - move backwards among candidates.
+;;               - move backwards among candidates.  At top level:
+;;               `icicle-complete-keys' - complete a key sequence.
 ;;
 ;;               (The documentation always refers to the keys that do
 ;;               these things as `S-TAB'.  Actually, they are only
-;;               `S-TAB' by default.  You can customize the keys,
-;;               using options `icicle-apropos-complete-keys' and
-;;               `icicle-previous-candidate-keys'.)
+;;               `S-TAB' by default.  You can customize the keys using
+;;               options `icicle-apropos-complete-keys',
+;;               `icicle-completion-list-key-bindings', and
+;;               `icicle-key-complete-keys'.)
 ;;
 ;;    `C-M-TAB' - `icicle-prefix-complete-no-display': Like `TAB', but
 ;;               does not display candidates in `*Completions*'.
@@ -6705,6 +6720,11 @@
 ;;               this as `C-M-TAB'.  Actually, it is only `C-M-TAB' by
 ;;               default.  You can customize it, using option
 ;;               `icicle-prefix-complete-no-display-keys'.)
+;;
+;;               During Isearch, `C-M-TAB' and `M-TAB' complete the
+;;               search string against past search strings.  (These
+;;               are the keys by default.  You can customize this
+;;               using option `icicle-isearch-complete-keys'.)
 ;;
 ;;    `C-M-S-TAB' - `icicle-apropos-complete-no-display': Like
 ;;               `S-TAB', but does not display candidates.
@@ -6722,14 +6742,35 @@
 ;;
 ;;    `S-mouse-2' - `icicle-mouse-remove-candidate': Same as `delete'.
 ;;
+;;    `M-o'    - `icicle-insert-history-element': Invoke completion to
+;;               insert a previously entered input into the
+;;               minibuffer.  Use this instead of the `M-s' and `M-r'
+;;               of vanilla Emacs, which are not available in Icicle
+;;               mode.  (`M-o' is the key by default.  You can
+;;               customize this using option
+;;               `icicle-minibuffer-key-bindings'.)
+;;
+;;               During Isearch, `M-o' completes against the current
+;;               search ring, and appends the past search string you
+;;               choose to the current one.  (`M-o' is the key by
+;;               default.  You can customize this using option
+;;               `icicle-isearch-history-insert-keys'.)
+;;
 ;;    `M-q'    - `icicle-insert-key-description': Insert the textual
 ;;               representation of a key sequence, during key
 ;;               completion.
 ;;
-;;    `M-o' -    `icicle-insert-history-element': Invoke completion to
-;;               insert a previously entered input in the minibuffer.
-;;               (Use this instead of the `M-s' and `M-r' of vanilla
-;;               Emacs, which are not available in Icicle mode.)
+;;    `M-r'    - `icicle-roundup': Insert one or more completion
+;;               candidates in the minibuffer.
+;;
+;;    `M-R'    - `icicle-multi-inputs-act': Act on multi-inputs.
+;;               Parse minibuffer input into a list of candidates,
+;;               then act on each candidate, in order.
+;;
+;;    `M-S'    - `icicle-multi-inputs-save': Add multi-inputs to the
+;;               current saved candidates set.  Parse minibuffer
+;;               contents into a list of candidates, then add them to
+;;               those in `icicle-saved-completion-candidates'.
 ;;
 ;;    `M-%'    - Regexp quote current input or its active region, then
 ;;               apropos-complete.  Use this to literally match all or
@@ -6899,7 +6940,7 @@
 ;;  commands let you access previous inputs using completion.
 ;;
 ;;  You can insert minibuffer history items using the cycle keys `M-p'
-;;  and `M-n', as usual.  But in Icicle mode `M-s' and `M-r' are not
+;;  and `M-n', as usual.  But in Icicle mode, `M-s' and `M-r' are not
 ;;  available.  Instead, use `M-o' to insert any history item using
 ;;  completion (including regexp completion, of course).
 ;;
@@ -7140,10 +7181,13 @@
 ;;  Customizing Key Bindings
 ;;  ------------------------
 ;;
-;;  See (@> "Key Bindings") for a description of the key bindings
-;;  defined by Icicles.  The options mentioned here are also presented
-;;  there, in context.  You can customize all of the key-binding user
-;;  options with `M-x customize-group RET Icicles-Key-Bindings'.
+;;  See (@> "Key Bindings") for a description of the default key
+;;  bindings defined by Icicles.  The options mentioned here are also
+;;  presented there, in context.  You can customize all of the
+;;  key-binding user options (there are over 50 of them!) using this
+;;  command:
+;;
+;;    M-x customize-group RET Icicles-Key-Bindings
 ;;
 ;;  Key bindings are very personal choices, and reflect preferences
 ;;  and habits, as well as keyboard and other configurations.  You
@@ -7164,20 +7208,38 @@
 ;;    . Key completion keys (`S-TAB' by default)
 ;;  * Icicle mode bindings
 ;;  * Minibuffer bindings
+;;  * `*Completions*' buffer bindings
 ;;
-;;  The main user option for customizing key bindings is
-;;  `icicle-top-level-key-bindings'.  You use it to change or remove
-;;  any of the top-level bindings in Icicle mode.
+;;  The Icicles user options for binding keys take two forms.  In most
+;;  cases, the option name ends with `-keys', and the option value is
+;;  simply a list of keys that act the same.
 ;;
-;;  There are some other user options that make it easy to customize
-;;  Icicles key bindings.  Most of these are minibuffer bindings.
+;;  In the following cases, however, the option name ends with
+;;  `-key-bindings' and the option value is a list of possibly
+;;  conditional key bindings.
 ;;
-;;  The most general option for customizing minibuffer bindings is
-;;  `icicle-completion-key-bindings'.  It covers everything that is
-;;  not covered by the other minibuffer key options listed below,
-;;  which are concerned with completion, cycling, and help.  Option
-;;  `icicle-completion-key-bindings' has the same form as option
-;;  `icicle-top-level-key-bindings'.
+;;  * `icicle-top-level-key-bindings' - top-level key bindings.
+;;
+;;  * `icicle-minibuffer-key-bindings' - minibuffer key bindings
+;;    defined regardless of whether completion is available.  This
+;;    does not include keys concerned with completion, cycling, and
+;;    help, which are covered by other options (below).
+;;
+;;  * `icicle-completion-key-bindings' - minibuffer key bindings
+;;    available during completion.
+;;
+;;  * `icicle-completion-list-key-bindings' - key bindings for buffer
+;;    `*Completions*'.
+;;
+;;  Each of these `*-key-bindings' options has the same form, a list
+;;  of elements which each have the form (KEY COMMAND CONDITION).  KEY
+;;  is either a key sequence (string or vector) to bind COMMAND to or
+;;  a command to remap to COMMAND.  COMMAND is bound according to the
+;;  value of KEY, unless the result of evaluating CONDITION is `nil'.
+;;
+;;  The following options, with names ending in `-keys', cover keys
+;;  available during completion and which provide completion, cycling,
+;;  or help.
 ;;
 ;;  * `icicle-modal-cycle-down-keys'            (`down', `wheel-down')
 ;;    Cycle to the next candidate (modal).
@@ -7245,18 +7307,22 @@
 ;;    Apropos-complete without showing `*Completions*'.
 ;;  * `icicle-word-completion-keys'                          (`M-SPC')
 ;;    Prefix-complete your input a word at a time.
+;;
+;;  The following options, with names ending in `-keys', cover
+;;  miscellaneous actions that make use of the minibuffer in some way.
+;;
 ;;  * `icicle-key-complete-keys'                             (`S-TAB')
 ;;    Complete key sequences.
-;;  * `icicle-previous-candidate-keys'                       (`S-TAB')
-;;    Move to the previous candidate in `*Completions*'.
 ;;  * `icicle-completing-read+insert-keys'                 (`C-M-S-c')
 ;;    Completion on demand.
 ;;  * `icicle-read+insert-file-name-keys'                  (`C-M-S-f')
 ;;    Completion on demand for file names.
 ;;  * `icicle-search-from-isearch-keys'                      (`S-TAB')
 ;;    Start `icicle-search' from Isearch.
-;;  * `icicle-isearch-complete-keys'       (`M-TAB', `C-M-TAB', `M-o')
-;;    Complete incremental search string using search ring.
+;;  * `icicle-isearch-complete-keys'              (`M-TAB', `C-M-TAB')
+;;    Complete Isearch string using search ring.
+;;  * `icicle-isearch-history-insert-keys'                     (`M-o')
+;;    Append past Isearch strings, using completion with search ring.
 ;;
 ;;  Whenever you customize an Icicles key binding, whether via a user
 ;;  option value or using `define-key' or `global-set-key', you can
