@@ -18,7 +18,7 @@ can link to your nickname from this page using
 
 == Country of residence and Birthyear ==
 
-* Australia: [[resolve]], [[twb]], baird, [[cyflea]]
+* Australia: [[resolve]], [[twb]], baird, [[cyflea]], [[spacebat]]
 * Austria: [[delYsid]], [[antifuchs]], [[oxymor00n]]
 * Bieylorussia (Belarus): mrdeath
 * Brasil: [[rw]] (1981), munky, [[edrx]] (1971), [[dump]] (1979)
@@ -128,6 +128,7 @@ What topics are you confident answering questions in? What things interest you? 
 ; shanksn: occasional lurker on #emacs, work on mainframes & unix boxes. learning CLISP. boring guy. ummm..also use gnus
 ; [[Sigma]]: !PhD student in computer science, work on formal methods for embedded devices, use Emacs under GNU/Linux, play piano and listen classical, programming languages: C/C++/Lisp/Shell/(La)TeX
 ; [[smitty1e]] (ChristopherSmith): contractor in Washington, DC area.  Former squid.  Fairly agnostic about languages and tools.  Play highland bagpipe, and follow the carpenter.
+; [[spacebat]]: Programmer in Adelaide University web team. Debian, Perl and Lisp are preferred. Interested in where elnode could take us.
 ; Stoerte: trained as clerk, cs student, likes *nix in general, knows some shellscripting, Java (was forced to), plays with ruby; wants to learn Elisp and C someday, speaks English and German. Has (also) no clue about, but is interested in philosophy.
 ; [[sunwukong]]: !PhD student in CS, loves oriental and programming languages (Japanese/Chinese/C++/ELisp/etc.) and above all Emacs. Also has some musical background (cello & piano).
 ; [http://technomancy.us technomancy] aka PhilHagelberg: Clojure hacker, Ubuntu user, [http://technomancy.us/137 Emacs all the way]. I created the [http://github.com/technomancy/emacs-starter-kit Emacs Starter Kit] as a way for users to get started with better defaults and more bundled modes. I maintain ClojureMode and am working to integrate [ELPA] and package.el into Emacs 24.
