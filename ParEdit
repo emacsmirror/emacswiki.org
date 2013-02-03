@@ -5,7 +5,7 @@
 Skeleton like matching paren insertion is a small part of ParEdit's functionality; its true genius won't be obvious until you code in some list oriented language.
 
 
-'''The latest stable version is available at <tt>[http://mumble.net/~campbell/emacs/paredit.el paredit.el]</tt>.''' See also the [http://mumble.net/~campbell/emacs/paredit.html Reference Table], the [http://mumble.net/~campbell/emacs/paredit.release Release Notes] and the PareditCheatsheet.
+'''The latest stable version is available at <tt>[http://mumble.net/~campbell/emacs/paredit.el paredit.el]</tt>.''' See also the [http://mumble.net/~campbell/emacs/paredit.html Reference Table], the [http://mumble.net/~campbell/emacs/paredit.release Release Notes] and the PareditCheatsheet.  There is also a [http://pub.gajendra.net/src/paredit-refcard.pdf Paredit reference card] modeled on the cheat sheet.
 
 The latest ''development'' version is available at <tt>[http://mumble.net/~campbell/emacs/paredit-beta.el paredit-beta.el]</tt> ([http://mumble.net/~campbell/emacs/paredit-beta.html Reference Table]).
 
