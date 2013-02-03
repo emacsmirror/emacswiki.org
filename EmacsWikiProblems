@@ -10,6 +10,26 @@ Note that this page is not about EmacsWikiMode.
 
 --------
 
+
+== Formatting Broken Badly ==
+
+You used to be able to combine fixed-font with bold emphasis and with a link, this way:
+
+  '''`<tt>[[The Wiki Page#AnAnchor|the text]]</tt>''''
+
+Now such formatting is completely broken.  I have ''zillions'' of such links throughout the wiki.
+
+They don't all show as broken yet, but as soon as I update the page in any way and save or preview it, they become broken.
+
+The text appears like this:
+
+'''`<tt>[[Icicles - Customization and General Tips#icicle-isearch-complete-keys|icicle-isearch-complete-keys]]</tt>''''
+
+instead of as a bold, fixed-font link, like this (faking it here): '''<tt>[[Icicles|icicle-isearch-complete-keys]]</tt>''', but wrapped with ##`...'##.
+
+-- DrewAdams
+
+
 == Double TOC in ElispArea now ==
 
 There are two tables of contents now, for some reason. -- DrewAdams
