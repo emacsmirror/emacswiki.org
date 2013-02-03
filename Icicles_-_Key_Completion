@@ -274,7 +274,7 @@ See [[Icicles - Nutshell View#CompletionStatusIndicators|Completion Status Indic
 indicated when you are prompted for input, it means that `S-TAB' is available, not for input completion, but for key completion.  Another clue can be found in the prompt text.  For key completion, it says "##Complete keys: ##".
 
 If you nevertheless find the overloaded use of `S-TAB' confusing, you can change the bindings of the key `S-TAB' in these different
-contexts.  To do that, you can customize options '''`<tt>[[Icicles - Customization and General Tips#icicle-apropos-complete-keys|icicle-apropos-complete-keys]]</tt>'''', '''`<tt>[[Icicles - Customization and General Tips#icicle-key-complete-keys|icicle-key-complete-keys]]</tt>'''', and '''`<tt>[[Icicles - Customization and General Tips#icicle-previous-candidate-keys|icicle-previous-candidate-keys]]</tt>''''. 
+contexts.  To do that, you can customize options '''`<tt>[[Icicles - Customization and General Tips#icicle-apropos-complete-keys|icicle-apropos-complete-keys]]</tt>'''', '''`<tt>[[Icicles - Customization and General Tips#icicle-key-complete-keys|icicle-key-complete-keys]]</tt>'''', and '''`<tt>[[Icicles - Customization and General Tips#icicle-completion-list-key-bindings|icicle-completion-list-key-bindings]]</tt>''''. 
 
 
 
