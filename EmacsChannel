@@ -1,6 +1,6 @@
 [[fr:SalleEmacs]]
-The official Emacs IRC channel is '''#emacs''' on freenode, since
-[https://www.gnu.org/press/2002-08-26-freenode.html the GNU Project made freenode it's official IRC network in 2002].
+
+The official Emacs IRC channel is '''#emacs''' on freenode, since [https://www.gnu.org/press/2002-08-26-freenode.html the GNU Project made freenode it's official IRC network in 2002].
 
 == Web Access ==
 
@@ -10,42 +10,15 @@ Some browsers have an integrated [[IRC]] client (or have one available as an add
 
 == About #emacs and related channels ==
 
-The freenode [[IRC]] channel '''#emacs''' is a place for a
-merry get-together of all the Emacsfolks out there.  People from all
-the corners of the world do populate the channel, largely from the
-"West", though (see EmacsChannelDemographics).
+The freenode [[IRC]] channel '''#emacs''' is a place for a merry get-together of all the Emacsfolks out there.  People from all the corners of the world do populate the channel, largely from the "West", though (see EmacsChannelDemographics).
 
-The chatter is in English and EmacsLisp, but other flavours of Lisp
-and French, Finnish, German, Hindi, Portuguese, Swedish, Icelandic,
-Tagalog, Persian, and who knows what else are heard from time to time.
-Pour les francophones, allez voir aussi SalleEmacsFr. Para la gente
-hispanoparlante, también vea CanalEmacsEs.
+The chatter is in English and EmacsLisp, but other flavours of Lisp and French, Finnish, German, Hindi, Portuguese, Swedish, Icelandic, Tagalog, Persian, and who knows what else are heard from time to time.  Pour les francophones, allez voir aussi SalleEmacsFr. Para la gente hispanoparlante, también vea CanalEmacsEs.
 
-After spending some time on the channel, one's mind might start
-suspecting the EmacsChannelPeople are mere slackers, doing little else
-than idling on their beloved channel.  The EmacsChannelDemographics
-certainly proves such accusations downright rubbish.  These "slackers"
-come from all aspects of life and are involved a vast range of most
-Useful Things indeed.  Besides they're so busy doing their Useful
-Things, they have only time to idle on the channel, and not chit-chat
-all day long.  Many have even automated the joining process
-(f.ex. ErcEmacsChannel), to minimize the distraction.  If the channel
-does seem rather quiet at times, a gentle stir usually attracts
-audience.
+After spending some time on the channel, one's mind might start suspecting the EmacsChannelPeople are mere slackers, doing little else than idling on their beloved channel.  The EmacsChannelDemographics certainly proves such accusations downright rubbish.  These "slackers" come from all aspects of life and are involved a vast range of most Useful Things indeed.  Besides they're so busy doing their Useful Things, they have only time to idle on the channel, and not chit-chat all day long.  Many have even automated the joining process (f.ex. ErcEmacsChannel), to minimize the distraction.  If the channel does seem rather quiet at times, a gentle stir usually attracts audience.
 
-Though a separate XEmacsChannel does exist, it's not to separate
-Emacs-people from one another.  There's also '''#gnus''' for, well,
-[[Gnus]].  EmacsChannel is a generic channel, not just for GnuEmacs.
-We're all one jolly family, forget you not!
+Though a separate XEmacsChannel does exist, it's not to separate Emacs-people from one another.  There's also '''#gnus''' for, well, [[Gnus]].  EmacsChannel is a generic channel, not just for GnuEmacs.  We're all one jolly family, forget you not!
 
-It would be naive to think only strictly Emacs-related issues were
-discussed on the channel, especially on a channel where 'strict'
-itself is such an unpopular idea.  At times discussions, especially
-about politics, can get rather carried away as we all so well know.
-It might be best to take it to the IdeologiesChannel when that
-happens.  All in all, the Emacsfolks being such a well-behaved lots,
-there isn't much to EmacsChannelMaintenance beyond fighting
-EmacsChannelHarassment.
+It would be naive to think only strictly Emacs-related issues were discussed on the channel, especially on a channel where 'strict' itself is such an unpopular idea.  At times discussions, especially about politics, can get rather carried away as we all so well know.  It might be best to take it to the IdeologiesChannel when that happens.  All in all, the Emacsfolks being such a well-behaved lots, there isn't much to EmacsChannelMaintenance beyond fighting EmacsChannelHarassment.
 
 EmacsChannelLogging -- To log or not to log.
 
@@ -68,22 +41,18 @@ If you need the help of a friendly *operator* (usually for kicking and banning o
 
 : ops?
 
-fsbot should reply with a list of nicks that have operator status. Usually this
-wakes up some of the operators.
+fsbot should reply with a list of nicks that have operator status. Usually this wakes up some of the operators.
 
-In the background the Freenode server maitains an *access list* for the channel.
-Try it for yourself:
+In the background the Freenode server maitains an *access list* for the channel.  Try it for yourself:
 
     /msg chanserv access #emacs list
 
-!ChanServ will reply with a list of people who have some sort of power on the
-channel. These are the important flags:
+!ChanServ will reply with a list of people who have some sort of power on the channel. These are the important flags:
 
 * Anybody with the +t flag may change the *topic* (although topic lock is almsot always off)
 * Anybody with the +o flag is a potential *operator*
 
-The most powerful flag is the *founder* flag (+F).
-Currently only [[delYsid]] has it.
+The most powerful flag is the *founder* flag (+F).  Currently only [[delYsid]] has it.
 
 If you're in trouble:
 
@@ -93,24 +62,15 @@ If you're in trouble:
 
 == Bots =
 
-The channel is probably logged by a gazillion bots (and human users).
-Some of the bots one might encounter are described below.
+The channel is probably logged by a gazillion bots (and human users).  Some of the bots one might encounter are described below.
 
-In addition to addressing the bots like any other person, by prefixing
-the message with the recipients nickname and a colon, the bots
-understand a variety of special syntax among the traffic.  For example
-BirnyTheBot considers a question mark preceding a phrase as a request
-to search its database and return results to the channel.  In a
-similar fashion fsbot parses strings surrounded by pairs of double
-commas.
+In addition to addressing the bots like any other person, by prefixing the message with the recipients nickname and a colon, the bots understand a variety of special syntax among the traffic.  For example BirnyTheBot considers a question mark preceding a phrase as a request to search its database and return results to the channel.  In a similar fashion fsbot parses strings surrounded by pairs of double commas.
 
-The bots generally provide help if you ask them for it.  Better do
-that in private though, to keep it off the channel.
+The bots generally provide help if you ask them for it.  Better do that in private though, to keep it off the channel.
 
 '''[::birny]'''
 
-Commands to BirnyTheBot begin with an initial period.  Birny searches
-its knowledge database for things following a question mark.
+Commands to BirnyTheBot begin with an initial period.  Birny searches its knowledge database for things following a question mark.
 
     <kensanata> .seen rms
     <birny> I've never seen rms before.
@@ -119,10 +79,7 @@ One of the most beloved commands of birny is '''.quote'''.
 
 '''[::fsbot]'''
 
-Fsbot, an instance of ErBot is the simplest to use.  It has pointers
-to nearly all the pages on this wiki, among massive amounts of other
-usefulness.  Fsbot commands start with an initial comma.  It's cunning
-enough to respond to other syntaxes too.
+Fsbot, an instance of ErBot is the simplest to use.  It has pointers to nearly all the pages on this wiki, among massive amounts of other usefulness.  Fsbot commands start with an initial comma.  It's cunning enough to respond to other syntaxes too.
 
     <kensanata> ,setfonts
     <fsbot> me thinks SetFonts is at
@@ -130,14 +87,7 @@ enough to respond to other syntaxes too.
 
 '''[::lisppaste]'''
 
-Lisppaste is the channel's PasteBot.  Pastebots help reduce clutter on
-channels, because listings of code need not be flooded onto the
-channel.  A pastebot informs the channel when a paste has been added,
-and if it's being annotated.  To create a new paste, go to
-http://paste.lisp.org/new but of course there also an Emacs-mode to
-help you in that, written by LawrenceMitchell.  It's called
-<code>lisppaste.el</code> and is available from
-http://purl.org/NET/wence/lisppaste.el.
+Lisppaste is the channel's PasteBot.  Pastebots help reduce clutter on channels, because listings of code need not be flooded onto the channel.  A pastebot informs the channel when a paste has been added, and if it's being annotated.  To create a new paste, go to http://paste.lisp.org/new but of course there also an Emacs-mode to help you in that, written by LawrenceMitchell.  It's called <code>lisppaste.el</code> and is available from http://purl.org/NET/wence/lisppaste.el.
 
 
 '''[::rudybot]'''
