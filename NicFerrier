@@ -166,6 +166,17 @@ The idea is to:
 
 Solving the problem of what is machine specific and what is not is hard.
 
+== Gravatar from Emacs ==
+
+The image above is my [[http://gravatar.com|Gravatar]]. It's a useful service that ties an email address to an image, so if someone gives you an email you can maybe find a picture of them.
+
+You need to hash the email to generate the url though, here's how in EmacsLisp:
+
+{{{
+(print (md5 (downcase "nic@example.com")) (current-buffer))
+}}}
+
+
 == List of various other ELisp bits and pieces ==
 
 I've done quite a few other packages for Emacs, most are on github but check these out:
