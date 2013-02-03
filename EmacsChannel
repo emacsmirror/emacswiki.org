@@ -83,11 +83,6 @@ Fsbot, an instance of ErBot is the simplest to use.  It has pointers to nearly a
     <fsbot> me thinks SetFonts is at
         http://www.emacswiki.org/cgi-bin/wiki.pl?SetFonts
 
-'''[::lisppaste]'''
-
-Lisppaste is the channel's PasteBot.  Pastebots help reduce clutter on channels, because listings of code need not be flooded onto the channel.  A pastebot informs the channel when a paste has been added, and if it's being annotated.  To create a new paste, go to http://paste.lisp.org/new but of course there also an Emacs-mode to help you in that, written by LawrenceMitchell.  It's called <code>lisppaste.el</code> and is available from http://purl.org/NET/wence/lisppaste.el.
-
-
 '''[::rudybot]'''
 
 [[offby1]] runs this bot in the channel. Its sole useful feature is using http://tinyurl.com to convert long URLs to short ones.  Other features, only arguably useful, include entertaining its author; spewing random quotes on demand; a "seen" feature similar to birny's; and a Scheme evaluator (handy for confusing Lisp novices who are unclear about the difference between Emacs Lisp and Scheme).  Its source lives at https://github.com/offby1/rudybot.
