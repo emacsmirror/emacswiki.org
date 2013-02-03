@@ -57,7 +57,16 @@ search.  Use `M-e' after `C-M-s', to edit the search string (which
 puts you in a minibuffer), then use `##C-u C-=##' or `C-x r i' to insert a saved
 regexp.
 
-'''See Also:''' [[Icicles - Inserting Text from Cursor]]
+'''See Also:'''
+
+* [[Icicles - Inserting Text from Cursor]]
+* [[Icicles - Multi-Inputs]] for ways to act on multiple minibuffer insertions all at once.
+
+
+
+
+
+
 
 
 ----
