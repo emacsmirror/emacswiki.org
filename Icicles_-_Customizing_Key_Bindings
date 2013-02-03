@@ -6,9 +6,11 @@
 
 == Customizing Key Bindings ==
 
-See [[Icicles - Key Bindings]] for a description of the [[key binding]]s
+See [[Icicles - Key Bindings]] for a description of the default [[key binding]]s
 defined by '''Icicles'''.  The [[user option]]s mentioned here are also presented
-there, in context.  You can [[Customize|customize]] all of the key-binding user options with `M-x customize-group RET Icicles-Key-Bindings'.
+there, in context.  You can [[Customize|customize]] all of the key-binding user options (there are over 50 of them!) using this command:
+
+  M-x customize-group RET Icicles-Key-Bindings
 
 Key bindings are very personal choices, and reflect preferences
 and habits, as well as keyboard and other configurations.  You
@@ -28,20 +30,38 @@ These are the main kinds of '''Icicles''' key bindings.  They are described in t
 ** Key completion keys (`S-TAB' by default)
 * ''Icicle'' mode bindings
 * Minibuffer bindings
+* `*Completions*' buffer bindings
 
-The main user option for customizing key bindings is
-'''`<tt>[[Icicles - Customization and General Tips#icicle-top-level-key-bindings|icicle-top-level-key-bindings]]</tt>''''.  You use it to change or remove
-any of the top-level bindings in ''Icicle'' mode.
+The '''Icicles''' [[user option]]s for binding keys take two forms.  In most
+cases, the option name ends with `-keys', and the option value is
+simply a list of keys that act the same.
 
-There are some other user options that make it easy to customize 
-'''Icicles''' key bindings.  Most of these are [[minibuffer]] 
-bindings.
+In the following cases, however, the option name ends with
+'''`-key-bindings'''' and the option value is a list of possibly
+conditional key bindings.
 
-The most general option for customizing minibuffer bindings is
-'''`<tt>[[Icicles - Customization and General Tips#icicle-completion-key-bindings|icicle-completion-key-bindings]]</tt>''''.  It covers everything that is
-not covered by the other minibuffer key options listed below, which are concerned with [[completion]], [[Icicles - Cycling Completions|cycling]], and help.  Option
-`icicle-completion-key-bindings' has the same form as option
-`icicle-top-level-key-bindings'.
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-top-level-key-bindings|icicle-top-level-key-bindings]]</tt>'''' -- ''top-level'' key bindings.
+
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-minibuffer-key-bindings|icicle-minibuffer-key-bindings]]</tt>'''' -- [[minibuffer]] key bindings
+defined regardless of whether completion is available.  This
+does not include keys concerned with completion, cycling, and
+help, which are covered by other options (below).
+
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-completion-key-bindings|icicle-completion-key-bindings]]</tt>'''' -- minibuffer key bindings
+available during [[completion]].
+
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-completion-list-key-bindings|icicle-completion-list-key-bindings]]</tt>'''' -- key bindings for buffer `*Completions*'.
+
+Each of these `*-key-bindings' options has the same form, a list
+of elements which each have the form ##(KEY COMMAND CONDITION)##.  ##KEY##
+is either a key sequence (string or vector) to bind ##COMMAND## to or
+a command to remap to ##COMMAND##.  ##COMMAND## is bound according to the
+value of ##KEY##, unless the result of evaluating ##CONDITION## is `nil'.
+
+The following options, with names ending in '''`-keys'''', cover keys
+available during completion and which provide [[completion]], [[Icicles - Cycling Completions|cycling]],
+or help.
+
 
 
 
@@ -80,12 +100,6 @@ not covered by the other minibuffer key options listed below, which are concerne
 [:icicle-prefix-complete-no-display-keys]
 [:icicle-apropos-complete-no-display-keys]
 [:icicle-word-completion-keys]
-[:icicle-key-complete-keys]
-[:icicle-previous-candidate-keys]
-[:icicle-completing-read+insert-keys]
-[:icicle-read+insert-file-name-keys]
-[:icicle-search-from-isearch-keys]
-[:icicle-isearch-complete-keys]
 * '''`<tt>[[Icicles - Customization and General Tips#icicle-modal-cycle-down-keys|icicle-modal-cycle-down-keys]]</tt>'''' ('''`down'''', `wheel-down').
  [[Icicles - Cycling Completions|Cycle]] to the next candidate (modal).
 * '''`<tt>[[Icicles - Customization and General Tips#icicle-modal-cycle-up-keys|icicle-modal-cycle-up-keys]]</tt>'''' ('''`up'''', `wheel-up').
@@ -153,17 +167,28 @@ Apropos-complete your input.
  Apropos-complete without showing `*Completions*'.
 * '''`<tt>[[Icicles - Customization and General Tips#icicle-word-completion-keys|icicle-word-completion-keys]]</tt>'''' ('''`M-SPC'''')
  Prefix-complete your input a word at a time.
-* '''`<tt>[[Icicles - Customization and General Tips#icicle-key-complete-keys|icicle-key-complete-keys]]</tt>'''' ('''`S-TAB'''') [[Icicles - Key Completion|Complete key sequences]].
-* '''`<tt>[[Icicles - Customization and General Tips#icicle-previous-candidate-keys|icicle-previous-candidate-keys]]</tt>'''' ('''`S-TAB'''') Move to the previous candidate in `*Completions*'.
 
+
+
+
+[:icicle-key-complete-keys]
+[:icicle-completing-read+insert-keys]
+[:icicle-read+insert-file-name-keys]
+[:icicle-search-from-isearch-keys]
+[:icicle-isearch-complete-keys]
+The following options, with names ending in '''`-keys'''', cover
+miscellaneous actions that make use of the minibuffer in some way.
+
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-key-complete-keys|icicle-key-complete-keys]]</tt>'''' ('''`S-TAB'''') [[Icicles - Key Completion|Complete key sequences]].
 * '''`<tt>[[Icicles - Customization and General Tips#icicle-completing-read-insert-keys|icicle-completing-read+insert-keys]]</tt>'''' ('''`C-M-S-c'''')  Completion on demand.
 * '''`<tt>[[Icicles - Customization and General Tips#icicle-read-insert-file-name-keys|icicle-read+insert-file-name-keys]]</tt>'''' ('''`C-M-S-f'''')  Completion on demand for file names.
 
 * '''`<tt>[[Icicles - Customization and General Tips#icicle-search-from-isearch-keys|icicle-search-from-isearch-keys]]</tt>'''' ('''`S-TAB'''')
  Start `icicle-search' from [[Isearch]].
-* '''`<tt>[[Icicles - Customization and General Tips#icicle-isearch-complete-keys|icicle-isearch-complete-keys]]</tt>'''' ('''`M-TAB'''', '''`C-M-TAB'''', '''`M-o'''')
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-isearch-complete-keys|icicle-isearch-complete-keys]]</tt>'''' ('''`M-TAB'''', '''`C-M-TAB'''')
  Complete Isearch string using [[search ring]].
-
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-isearch-history-insert-keys|icicle-isearch-history-insert-keys]]</tt>'''' ('''`M-o'''')
+Append past Isearch strings, using completion with the search ring.
 
 
 
