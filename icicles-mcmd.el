@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Jan 30 08:31:32 2013 (-0800)
+;; Last-Updated: Fri Feb  1 09:58:19 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 18856
+;;     Update #: 18871
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -116,6 +116,8 @@
 ;;    `icicle-insert-newline-in-minibuffer',
 ;;    `icicle-insert-string-at-point',
 ;;    `icicle-insert-string-from-variable', `icicle-isearch-complete',
+;;    (+)`icicle-isearch-history-complete',
+;;    (+)`icicle-isearch-history-insert',
 ;;    `icicle-keep-only-past-inputs', `icicle-kill-line',
 ;;    `icicle-kill-paragraph', `icicle-kill-region',
 ;;    `icicle-kill-region-wimpy', `icicle-kill-sentence',
@@ -267,7 +269,9 @@
 ;;    `icicle-candidate-set-retrieve-1',
 ;;    `icicle-candidate-set-save-1',
 ;;    `icicle-candidate-set-save-selected-1',
-;;    `icicle-column-wise-cand-nb', `icicle-Completions-popup-choice',
+;;    `icicle-column-wise-cand-nb',
+;;    `icicle-isearch-complete-past-string',
+;;    `icicle-Completions-popup-choice',
 ;;    `icicle-Completions-popup-choice-1', `icicle-convert-dots',
 ;;    `icicle-current-completion-in-Completions',
 ;;    `icicle-current-sort-functions', `icicle-current-sort-order',
@@ -401,8 +405,7 @@
   ;; icicle-saved-ignored-extensions, icicle-successive-grab-count, icicle-thing-at-pt-fns-pointer,
   ;; icicle-universal-argument-map, icicle-variable-name-history
 (require 'icicles-fn)
-  ;; icicle-isearch-complete-past-string, icicle-minibuf-input-sans-dir,
-  ;; icicle-toggle-icicle-mode-twice
+  ;; icicle-minibuf-input-sans-dir, icicle-toggle-icicle-mode-twice
 
 (require 'doremi nil t) ;; (no error if not found):
                         ;; doremi, doremi(-boost)-(up|down)-keys, doremi-limit, doremi-wrap
@@ -5064,7 +5067,7 @@ performed: display help on the candidate - see
 ;;;###autoload (autoload 'icicle-multi-inputs-act "icicles")
 (defun icicle-multi-inputs-act (&optional arg) ; Bound to `M-R' in minibuffer.
   "Act on multiple candidates in the minibuffer.
-Parse minibuffer input into a list of candidates, then act on each
+Parse minibuffer contents into a list of candidates, then act on each
 candidate, in order.
 
 The action applied is that defined by `icicle-multi-inputs-action-fn',
@@ -5085,7 +5088,7 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
 ;;;###autoload (autoload 'icicle-multi-inputs-save "icicles")
 (defun icicle-multi-inputs-save (&optional arg) ; Bound to `M-S' in minibuffer.
   "Add candidates in the minibuffer to the current saved candidates set.
-Parse minibuffer input into a list of candidates, then add them to
+Parse minibuffer contents into a list of candidates, then add them to
 those already saved in `icicle-saved-completion-candidates'.
 
 \(To empty `icicle-saved-completion-candidates' first, use
@@ -7467,11 +7470,10 @@ See also `\\[icicle-keep-only-past-inputs]' (`icicle-keep-only-past-inputs')."
                )
          (funcall icicle-last-completion-command))))
 
-;; Not actually a minibuffer command, since `isearch' technically uses the echo area.  This is not
-;; shadowed by any `icicle-mode-map' binding, since `isearch-mode-map' is also a minor mode map.
+;; This is not shadowed by any `icicle-mode-map' binding, since `isearch-mode-map' is also a minor mode map.
 ;;
 ;;;###autoload (autoload 'icicle-isearch-complete "icicles")
-(defun icicle-isearch-complete ()       ; Bound to `M-TAB' and `M-o' in `isearch-mode-map'.
+(defun icicle-isearch-complete ()       ; Bound to `M-TAB', `C-M-TAB' in `isearch-mode-map'.
   "Complete the search string using candidates from the search ring."
   (interactive)
   (cond ((icicle-completing-p)          ; Cannot use the var here, since not sure to be in minibuf.
@@ -7483,6 +7485,63 @@ See also `\\[icicle-keep-only-past-inputs]' (`icicle-keep-only-past-inputs')."
          (icicle-isearch-complete-past-string)
          (setq isearch-message  (mapconcat 'isearch-text-char-description isearch-string ""))
          (isearch-edit-string))))
+
+(defun icicle-isearch-complete-past-string ()
+  "Set `isearch-string' to a past search string chosen by completion."
+  (isearch-done 'nopush)
+  (let ((icicle-whole-candidate-as-text-prop-p  nil)
+        (completion-ignore-case                 case-fold-search)
+        (enable-recursive-minibuffers           t))
+    (setq isearch-string
+          (completing-read
+           "Search string (completing): "
+           (mapcar #'list (icicle-remove-duplicates (symbol-value (if isearch-regexp
+                                                                      'regexp-search-ring
+                                                                    'search-ring))))
+           nil nil isearch-string (if isearch-regexp 'regexp-search-ring 'search-ring)))))
+
+;;;###autoload (autoload 'icicle-isearch-history-insert "icicles")
+(defun icicle-isearch-history-insert () ; Bound to `M-o' in `isearch-mode-map'.
+  "Append previous isearch strings, using completion to choose them.
+This is similar to `icicle-insert-history-element' (\\<minibuffer-local-map>\
+\\[icicle-insert-history-element] in the
+minibuffer), except that a prefix argument has no effect here:
+no candidate is wrapped with \"...\", and no space char is appended."
+  (interactive)
+  (cond ((icicle-completing-p)          ; Cannot use the var here, since not sure to be in minibuf.
+         (setq isearch-string  (if (fboundp 'field-string) (field-string) (buffer-string)))
+         (when (icicle-isearch-history-complete)
+           (if (fboundp 'delete-field) (delete-field) (erase-buffer))
+           (insert isearch-string)))
+        (t
+         (icicle-isearch-history-complete)
+         (setq isearch-message  (mapconcat 'isearch-text-char-description isearch-string ""))
+         (isearch-edit-string))))
+
+;;;###autoload (autoload 'icicle-isearch-history-complete "icicles")
+(icicle-define-command icicle-isearch-history-complete ; Not bound - used during Isearch `M-o'.
+  "Use completion to append previous search string(s) to the current.
+This is similar to \\<minibuffer-local-map>`\\[icicle-insert-history-element]', but it ignores \
+a prefix argument."
+  icicle-insert-candidate-action        ; Action function
+  "Append past search strings (`C-g' to end): " ; `completing-read' args
+  cands nil nil nil (if isearch-regexp 'regexp-search-ring 'search-ring) nil nil
+  ((icicle-whole-candidate-as-text-prop-p  nil) ; Bindings
+   (enable-recursive-minibuffers           t)
+   (current-prefix-arg                     -1) ; Do not append a space char.
+   (completion-ignore-case                 case-fold-search)
+   (cands                                  (mapcar #'list (icicle-remove-duplicates
+                                                           (symbol-value (if isearch-regexp
+                                                                             'regexp-search-ring
+                                                                           'search-ring)))))
+   (icicle-pref-arg                        (and current-prefix-arg
+                                                (prefix-numeric-value current-prefix-arg)))
+   (count                                  0)
+   (to-insert                              ()))
+  (isearch-done 'nopush)                ; First code
+  nil                                   ; Undo code
+  (setq isearch-string  (format "%s%s" isearch-string ; Last code
+                                (apply #'concat (nreverse to-insert)))))
 
 (when (fboundp 'text-scale-increase)    ; Bound to `C-x -' in the minibuffer (Emacs 23+).
   (defun icicle-doremi-zoom-Completions+ (&optional increment)
