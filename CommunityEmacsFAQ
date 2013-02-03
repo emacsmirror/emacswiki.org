@@ -345,6 +345,10 @@ Its value is, for instance, <code>x</code> for X11, or <code>nil</code> for a te
 
 You can't.  When emacsclient creates a new X frame, it just tells the Emacs server to create a new X frame, so if the server is on a remote host, and you're not using SSH X forwarding, you're not going to get a frame on your display.  If you can not or do not want to use X forwarding, then you will have to use emacsclient in a terminal.
 
+=== Why are some of my keybindings not working in the terminal? ===
+
+Most likely because they can not be entered in a terminal.  For example, <code>C-M-S-f</code> is equivalent to <code>C-M-f</code> in a terminal, because shift can not be used as a modifier for control characters.  Why?  Because 'f' and 'F' are separate characters, but there is only one control-F character, <code>^F</code>; control characters are case-less.
+
 == ELisp ==
 
 === What is ELisp? ===
