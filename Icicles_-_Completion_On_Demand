@@ -44,11 +44,9 @@ The actual keys used for on-demand completion are customizable,
 using [[option]]s '''`<tt>[[Icicles - Customization and General Tips#icicle-read+insert-file-name-keys|icicle-read+insert-file-name-keys]]</tt>'''' and '''`<tt>[[Icicles - Customization and General Tips#icicle-completing-read+insert-keys|icicle-completing-read+insert-keys]]</tt>''''.  The default values are `C-M-S-f' and `C-M-S-c'.
 
 [:icicle-insert-history-element]
-Another kind of on-demand completion is provided by '''`M-o''''
-('''`icicle-insert-history-element'''').  Again, this is always
+Another kind of on-demand completion is provided by minibuffer [[multi-command]] `icicle-insert-history-element' ('''`M-o'''').  This is always
 available in the minibuffer, regardless of whether input is being
-read with completion.  This invokes completion against the entries
-in the current minibuffer history.  See [[Icicles - History Enhancements#InsertPreviousInputs|Using Completion to Insert Previous Inputs: `M-o']].
+read with [[completion]].  It lets you use completion to insert any number of entries from the current minibuffer history into the minibuffer at [[point]].  See [[Icicles - History Enhancements#InsertPreviousInputs|Using Completion to Insert Previous Inputs: `M-o']].
 
 
 
