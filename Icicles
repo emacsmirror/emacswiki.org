@@ -29,6 +29,7 @@ completion is to typing things manually every time."'' [http://article.gmane.org
 * ''browse [[ImenuMode | Imenu]]'' or ''[[tags]]'' entries that match your partial or regexp input  [[Icicles - Search Commands, Overview|*]], [[Icicles - Other Search Commands|+]]
 * create and use ''multiple-choice menus''; that is, menus where you can choose multiple entries any number of times  [[Icicles - Multiple-Choice Menus|*]]
 * create and use ''[[multi-command]]s'' -- [[command]]s that you can use to perform an action on any number of candidate inputs any number of times  [[Icicles - Multi-Commands|*]]
+* act on multiple inputs in the minibuffer all at once [[Icicles - Multi-Inputs|*]]
 * perform ''set operations'' (intersection, union,...) on the fly, using sets of completion candidates or other strings  [[Icicles - Candidate Sets|*]]
 * persistently ''save'' and later ''reuse sets'' of completion candidates (e.g. project file names)  [[Icicles - Persistent Completions|*]]
 * complete input ''piecewise'', against ''multiple'' completion candidates, in parallel  [[Icicles - Multi-Completions|*]]
@@ -122,6 +123,7 @@ The most important links are '''bold''' here.
 * '''[[Icicles - Multi-Completions]]''' -- matching a list of regexps in parallel -- e.g., matching against names and their doc strings
 * [[Icicles - Dot, Dot, Dot]] -- a multi-line `##.##', for matching any character, including newline, in [[regexp]]s
 * '''[[Icicles - More About Multi-Commands]]''' -- more about multi-commands
+* [[Icicles - Multi-Inputs]] -- multiple inputs in the same minibuffer
 * [[Icicles - Tripping]] -- multi-commands for navigating and exploring
 * '''[[Icicles - Key Completion]]''' -- completing [[key sequence]]s, instead of commands
 * [[Icicles - Multi M-x]] -- '''Icicles''' version of `M-x' makes every command a multi-command
