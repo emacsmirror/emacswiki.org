@@ -55,6 +55,7 @@
 ^node1\.heading-toll-host\.org # for spamming Comments on LoopFindPackage
 ^node1\.amountofcarforpurchase\.net # for spamming multiple "Comments on" pages
 ^node1\.squiftw\.org # for spamming IciclesDiscussion
+^static\..*\.clients\.your-server\.de # for spamming IciclesDiscussion
 ^server1\.crosssoldshoes\.com # for spamming Comments on LoopFindPackage
 ^113\.212\.69\.50 # for spamming multiple "Comments on" pages
 ^117\.27\.138\.86 # for spamming Comments on roland.walker
