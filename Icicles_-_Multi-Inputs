@@ -1,0 +1,116 @@
+: [[image:iciclesimage]]
+
+|| *Previous:*  [[Icicles - Dot, Dot, Dot]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Tripping]] ||
+
+----
+
+== Multi-Inputs ==
+
+[[multi-command|Multi-commands]], [[multi-completion]]s, and '''[::multi-inputs]''' too.
+
+In '''Icicles''', if you hit `RET' in the [[minibuffer]] then the entire
+minibuffer content is entered: sent to Emacs for processing by the
+current command.  In some cases you can also act individually on
+multiple inputs that together make up the minibuffer contents.
+
+Such multi-inputs are read using EmacsLisp function `read' and then
+acted on individually in order, left to right.  That `read' is
+used means that you must separate multi-inputs the same way that
+Lisp sexps are separated.  Typically this means either putting
+whitespace between them or wrapping them in ##"..."##.
+
+It is the value ''after reading'' a multi-input that is acted on.  You
+can act on all multi-inputs at once, but each individually, using
+'''`M-R'''' (command '''`icicle-multi-inputs-act'''').  (You can also use
+'''`M-S'''' to save them as a set of retrievable completion candidates -- see [[Icicles - Candidate Sets#SaveOrRetrieveMore|Saving and Retrieving Additional Candidates]].)
+
+For example, here are some multi-inputs in a minibuffer:
+
+  ici*.el "my file.txt" bookmark+.el
+
+After reading, these are the multi-inputs that can be acted on:
+
+  ici*.el
+  my file.txt
+  bookmark+.el
+
+With `C-x C-f' (`icicle-file'), `M-R' opens each of those input
+patterns, just as if you had used `C-x C-f' separately on each
+one: it visits all '''Icicles''' files, file `##my file.txt##', and file
+`##bookmark+.el##'.
+
+With this feature you can, for instance, select an existing list
+of file names, yank it into the minibuffer of a file-processing
+command such as `C-x C-f', and act on each of the files.
+
+`M-R' can be used with any minibuffer, not just one that is used
+for [[completion]].  But the command that reads from the minibuffer
+needs to provide an action that can be applied to such
+multi-inputs.
+
+This is the case for all [[multi-command]]s: the candidate action
+function --- the same function that you apply to individual
+completion candidates using `C-RET' --- is also the action function
+for individual multi-inputs.  For commands other than
+multi-commands, the command definition just needs to bind the
+multi-input action function to variable
+'''`icicle-multi-inputs-action-fn''''.
+
+For example, if you had your own command `my-string' that calls
+`read-string' and shows the string length, then you would do the
+following --- it is the `let' binding that gives `M-R' its action
+function:
+
+  (defun my-string ()
+    "Read a string and show its length."
+    (interactive)
+    (let ((icicle-multi-inputs-action-fn  'my-string-action))
+      (my-string-action (read-string "String: "))))
+
+  (defun my-string-action (string)
+    "Show length of STRING."
+    (message "`%s' has %d characters" string (length string))
+    (sleep-for 1))
+
+  M-x my-string a bb ccc dddd M-R RET
+
+The `M-R' displays the lengths of the multi-inputs `a', `bb',
+`ccc', and `dddd', in turn.  The `RET' then displays the length of
+the complete input, `a bb ccc dddd'.  You can of course end using
+`C-g' instead of `RET' if you are interested only in the effect of
+`M-R'.
+
+How do you populate the minibuffer with multi-inputs?  One way is
+simply to type them or [[yank]] text, as indicated above.  But there
+are also two minibuffer keys that help in this regard.  '''`M-o''''
+('''`icicle-insert-history-element'''') lets you choose multiple
+previous inputs, inserting them into the minibuffer.  '''`M-r''''
+('''`icicle-roundup'''') lets you choose current completion candidates,
+inserting them.  These are both multi-commands that you use from
+the minibuffer.
+
+Both `M-o' and `M-r' accept a [[prefix argument]] that controls
+candidate insertion: whether the candidate is automatically
+followed by a space char or wrapped with ##"..."##.  See
+[[Icicles - History Enhancements#MultiInputInsertionWithPrefix Arg|Multi-Input Insertion with a Prefix Arg]] for an explanation.
+
+'''See Also:'''
+
+* [[Icicles - History Enhancements]] for information about populating the minibuffer with multiple previous inputs using `M-o'.
+
+* [[Icicles - History Enhancements#MultiInputInsertionWithPrefix Arg|Multi-Input Insertion with a Prefix Arg]]  information about using a prefix arg with `M-o' or `M-r'.
+
+* [[Icicles - Candidate Sets#SaveOrRetrieveMore|Saving and Retrieving Additional Candidates]] for information about using `M-S' to save multi-inputs as a set of completion candidates for later reuse.
+
+
+
+
+
+
+
+
+
+----
+
+|| *Previous:*  [[Icicles - Dot, Dot, Dot]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Tripping]] ||
+
