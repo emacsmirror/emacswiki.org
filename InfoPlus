@@ -2,8 +2,11 @@ Library <tt>[[info+.el]]</tt> extends the standard Emacs library ##info.el## in 
 
 * Additional, finer-grained highlighting.  This makes a '''''big''''' difference in readability.
 ** Quoted names, like this: `name-stands-out', and strings, like this: "<code>string-stands-out</code>" are highlighted if '''`Info-fontify-quotations-flag'''' is non-`nil'.
+** Angle-bracketed names, like this: `TAB', are highlighted if '''`Info-fontify-angle-bracketed-flag'''' and `Info-fontify-quotations-flag' are non-`nil'.
 ** Isolated single quotes, like this: ##'foobar##, are highlighted if '''`Info-fontify-single-quote-flag'''' and `Info-fontify-quotations-flag' are non-`nil'.
 ** In the Emacs Lisp manual, reference items are highlighted, so they stand out.  This means: constants, [[command]]s, functions, [[macro]]s, special forms, syntax classes, [[user option]]s, and other [[variable]]s.
+
+:: You can toggle each of the `Info-fontify-*-flag' options from the `Info' menu or by command.
 
 :: Here is a screenshot of the <code>*Info*</code> buffer, showing some of the highlighting:
 
