@@ -12,9 +12,6 @@ However, you will run into certain immovable walls the further you go:
 * Emacs Lisp is fairly slow, and there's not much to be done about it. Converting key algorithms to C is an arduous process which requires rebuilding Emacs.
 * Memory consumption gets out-of-hand REAL FAST if you don't pay attention.  If you're writing a new library, be sure to turn on garbage collection messages by setting `garbage-collection-messages' to t.  If you see the collection messages every few seconds, you can be sure that your library is eating up and spitting out cons cells and strings at a furious rate.
 * Emacs cannot disown a process it has invoked.  The only way is to invoke your process through "/bin/nohup" on UNIX systems. See PersistentProcesses.
-* Closures not supported.
-* Lexical scoping not supported.  (People are working on this, though [http://lists.gnu.org/archive/html/emacs-devel/2001-12/msg00385.html]
-Groups:lexical+scoping.)  See DynamicScoping.
 * Emacs Lisp is not Scheme.  See SchemeAndLisp.
 
 There is (currently) no facility for using functions from dynamic libraries at run time in GnuEmacs.  You are stuck with whatever native functions were built into your Emacs.  Everything else is Lisp, or byte-compiled Lisp.
