@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 21.1
-;; Last-Updated: Fri Dec 28 11:46:09 2012 (-0800)
+;; Last-Updated: Sun Feb  3 19:15:19 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 4685
+;;     Update #: 4779
 ;; URL: http://www.emacswiki.org/info+.el
 ;; Doc URL: http://www.emacswiki.org/InfoPlus
 ;; Keywords: help, docs, internal
@@ -40,6 +40,7 @@
 ;;
 ;;    `Info-breadcrumbs-in-header-flag' (Emacs 23+),
 ;;    `Info-display-node-header-fn', `Info-fit-frame-flag',
+;;    `Info-fontify-angle-bracketed-flag',
 ;;    `Info-fontify-quotations-flag',
 ;;    `Info-fontify-reference-items-flag',
 ;;    `Info-fontify-single-quote-flag', `Info-saved-nodes',
@@ -52,7 +53,10 @@
 ;;    `Info-merge-subnodes',
 ;;    `Info-mouse-follow-nearest-node-new-window',
 ;;    `Info-save-current-node', `Info-set-breadcrumbs-depth' (Emacs
-;;    23+), `Info-toggle-breadcrumbs-in-header-line' (Emacs 23+),
+;;    23+), `Info-toggle-fontify-angle-bracketed',
+;;    `Info-toggle-fontify-quotations',
+;;    `Info-toggle-fontify-single-quote',
+;;    `Info-toggle-breadcrumbs-in-header-line' (Emacs 23+),
 ;;    `Info-virtual-book', `menu-bar-read-lispref',
 ;;    `menu-bar-read-lispintro',
 ;;
@@ -66,7 +70,8 @@
 ;;  Internal variables defined here:
 ;;
 ;;    `Info-breadcrumbs-depth-internal' (Emacs 23+),
-;;    `Info-merged-map', `Info-mode-syntax-table'.
+;;    `Info-merged-map', `Info-mode-syntax-table',
+;;    `info-quoted+<>-regexp'.
 ;;
 ;;
 ;;  ***** NOTE: The following standard faces defined in `info.el'
@@ -93,7 +98,10 @@
 ;;     6. Notes in face `info-xref'.
 ;;     7. If `Info-fontify-quotations-flag', then fontify `...' in
 ;;        face `info-quoted-name' and "..." in face `info-string'.
-;;     8. If `Info-fontify-single-quote-flag' and
+;;     8. If `Info-fontify-angle-bracketed-flag' and
+;;        `Info-fontify-quotations-flag' then fontify <...> in face
+;;        `info-quoted-name'.
+;;     9. If `Info-fontify-single-quote-flag' and
 ;;        `Info-fontify-quotations-flag', then fontify ' in face
 ;;        `info-single-quote'.
 ;;  `Info-goto-emacs-command-node' -
@@ -185,6 +193,13 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/02/03 dadams
+;;     Added: Info-fontify-angle-bracketed-flag, Info-toggle-fontify-angle-bracketed,
+;;            Info-toggle-fontify-quotations, Info-toggle-fontify-single-quote, info-quoted+<>-regexp.
+;;     info-fontify-quotations:
+;;       Fixed case for Info-toggle-fontify-single-quote = nil.
+;;       Handle also Info-fontify-angle-bracketed-flag.
+;;     Added  Info-fontify-*-flag to Info menu (so menu bar and C-mouse-3).
 ;; 2012/09/24 dadams
 ;;     Info-search. Info-mode: Applied latest Emacs 24 updates by Juri (from 2012-09-12).
 ;; 2012/08/25 dadams
@@ -783,6 +798,20 @@ useful."
   :type 'boolean :group 'Info-Plus)
 
 ;;;###autoload
+(defcustom Info-fontify-angle-bracketed-flag t
+  "*Non-nil means `info' fontifies text within `<...>.
+A non-nil value has no effect unless `Info-fontify-quotations-flag' is
+also non-nil.
+
+Note: This fontification can never be 100% reliable.  It aims to be
+useful in most Info texts, but it can occasionally result in
+fontification that you might not expect.  This is not a bug; it is
+part of the design to be able to appropriately fontify a great variety
+of texts.  Set this flag to nil if you do not find this fontification
+useful."
+  :type 'boolean :group 'Info-Plus)
+
+;;;###autoload
 (defcustom Info-fontify-single-quote-flag t
   "*Non-nil means `info' fontifies ' when not preceded by `....
 A non-nil value has no effect unless `Info-fontify-quotations-flag' is
@@ -863,7 +892,7 @@ For example, type `^Q^L^Q^J* ' to set this to \"\\f\\n* \"."
 (if (>= emacs-major-version 22)
     (easy-menu-define
      Info-mode-menu Info-mode-map
-     "Menu for info files."
+     "Menu for Info files."
      '("Info"
        ["Table of Contents" Info-toc :help "Go to table of contents"]
        ["Virtual Book" Info-virtual-book
@@ -952,16 +981,35 @@ For example, type `^Q^L^Q^J* ' to set this to \"\\f\\n* \"."
 
 (when (> emacs-major-version 22)
   (easy-menu-add-item
-   Info-mode-menu nil 
+   Info-mode-menu nil
+   ["Toggle Highlighting `...', \"...\"" Info-toggle-fontify-quotations
+                                         :help "Toggle option `Info-fontify-quotations-flag'"]
+   "Quit Info")
+
+  (easy-menu-add-item
+   Info-mode-menu nil
+   ["Toggle Highlighting <...>" Info-toggle-fontify-angle-bracketed
+                                :help "Toggle option `Info-fontify-angle-bracketed-flag'"]
+   "Quit Info")
+
+  (easy-menu-add-item
+   Info-mode-menu nil
+   ["Toggle Highlighting Single '" Info-toggle-fontify-single-quote
+                                   :help "Toggle option `Info-fontify-single-quote-flag'"]
+   "Quit Info")
+
+  (easy-menu-add-item
+   Info-mode-menu nil
    ["Toggle Breadcrumbs in Mode Line" Info-breadcrumbs-in-mode-line-mode
                                       :help "Toggle showing breadcrumbs in the mode line"]
    "Quit Info")
   (easy-menu-add-item
-   Info-mode-menu nil 
-   ["Toggle Breadcrumbs in Header Line" Info-toggle-breadcrumbs-in-header-line    
+   Info-mode-menu nil
+   ["Toggle Breadcrumbs in Header Line" Info-toggle-breadcrumbs-in-header-line
                                         :help "Toggle showing breadcrumbs in the header line"]
    "Quit Info"))
 
+;;;###autoload (autoload 'Info-toggle-breadcrumbs-in-header-line "info+")
 (when (> emacs-major-version 22)
   (defun Info-toggle-breadcrumbs-in-header-line (&optional msgp)
     "Toggle showing breadcrumbs in a header line."
@@ -969,6 +1017,46 @@ For example, type `^Q^L^Q^J* ' to set this to \"\\f\\n* \"."
     (setq Info-breadcrumbs-in-header-flag  (not Info-breadcrumbs-in-header-flag))
     (when msgp (message "Breadcrumbs in header line is now %s"
                         (if Info-breadcrumbs-in-header-flag "ON" "OFF")))))
+
+;;;###autoload (autoload 'Info-toggle-fontify-quotations "info+")
+;;;###autoload (autoload 'Info-toggle-fontify-single-quote "info+")
+;;;###autoload (autoload 'Info-toggle-fontify-angle-bracketed "info+")
+(when (fboundp 'font-lock-defontify)    ; Emacs 22+
+  (defun Info-toggle-fontify-quotations (&optional msgp)
+    "Toggle option `Info-fontify-quotations-flag'."
+    (interactive "p")
+    (setq Info-fontify-quotations-flag  (not Info-fontify-quotations-flag))
+    (when (eq major-mode 'Info-mode)
+      (font-lock-defontify)
+      (let ((modp               (buffer-modified-p))
+            (inhibit-read-only  t))
+        (Info-fontify-node))
+      (when msgp (message "`Info-fontify-quotations-flag' is now %s"
+                          (if Info-fontify-quotations-flag 'ON 'OFF)))))
+
+  (defun Info-toggle-fontify-single-quote (&optional msgp)
+    "Toggle option `Info-fontify-single-quote-flag'."
+    (interactive "p")
+    (setq Info-fontify-single-quote-flag  (not Info-fontify-single-quote-flag))
+    (when (eq major-mode 'Info-mode)
+      (font-lock-defontify)
+      (let ((modp               (buffer-modified-p))
+            (inhibit-read-only  t))
+        (Info-fontify-node))
+      (when msgp (message "`Info-fontify-single-quote-flag' is now %s"
+                          (if Info-fontify-single-quote-flag 'ON 'OFF)))))
+
+  (defun Info-toggle-fontify-angle-bracketed (&optional msgp)
+    "Toggle option `Info-fontify-angle-bracketed-flag'."
+    (interactive "p")
+    (setq Info-fontify-angle-bracketed-flag  (not Info-fontify-angle-bracketed-flag))
+    (when (eq major-mode 'Info-mode)
+      (font-lock-defontify)
+      (let ((modp               (buffer-modified-p))
+            (inhibit-read-only  t))
+        (Info-fontify-node))
+      (when msgp (message "`Info-fontify-angle-bracketed-flag' is now %s"
+                          (if Info-fontify-angle-bracketed-flag 'ON 'OFF))))))
 
 (easy-menu-define
  Info-merged-menu
@@ -1007,7 +1095,7 @@ For example, type `^Q^L^Q^J* ' to set this to \"\\f\\n* \"."
 
 
 ;; REPLACE ORIGINAL in `info.el':
-;; 
+;;
 ;; Added final clause to `cond', to handle virtual books.  (Emacs 23.2+)
 ;;
 (when (or (> emacs-major-version 23) (and (= emacs-major-version 23) (> emacs-minor-version 1)))
@@ -1194,7 +1282,7 @@ just return nil (no error)."
                        (save-excursion
                          (goto-char m)
                          (beginning-of-line) ; so re-search will work.
-                         
+
                          ;; Search tag table
                          (catch 'foo
                            (while (re-search-forward regexp nil t)
@@ -1457,7 +1545,7 @@ it says do not attempt further (recursive) error recovery."
                    (t (info-insert-file-contents filename nil)
                       (setq default-directory  (file-name-directory filename))))
                  (set-buffer-modified-p nil)
-              
+
                  ;; Check makeinfo version for index cookie support
                  (let ((found  nil))
                    (goto-char (point-min))
@@ -1469,7 +1557,7 @@ it says do not attempt further (recursive) error recovery."
                            (setq found  t))
                      (error nil))
                    (set (make-local-variable 'Info-file-supports-index-cookies) found))
-              
+
                  ;; See whether file has a tag table.  Record the location if yes.
                  (goto-char (point-max))
                  (forward-line -8)
@@ -1644,7 +1732,7 @@ it says do not attempt further (recursive) error recovery."
                     (set-buffer-modified-p nil)
                     (set (make-local-variable 'Info-file-supports-index-cookies)
                          (Info-file-supports-index-cookies filename))
-                    
+
                     ;; See whether file has a tag table.  Record the location if yes.
                     (goto-char (point-max))
                     (forward-line -8)
@@ -2413,8 +2501,12 @@ to search again for `%s'.")
 ;; 3. Menu items in face `info-menu'.
 ;; 4. Only 5th and 9th menu items have their `*' colored.
 ;; 5. Notes in face `info-xref'.
-;; 6. If `Info-fontify-quotations-flag', fontify `...' in face `info-quoted-name',
-;;    "..." in face `info-string', and ' in face `info-single-quote'.
+;; 6. If `Info-fontify-quotations-flag', fontify `...' in face `info-quoted-name'
+;;    and "..." in face `info-string'.
+;; 7. If `Info-fontify-quotations-flag' and `Info-fontify-single-quote-flag' then
+;;    fontify ' in face `info-single-quote'.
+;; 8. If `Info-fontify-quotations-flag' and `Info-fontify-angle-bracketed-flag' then
+;;    fontify <...> in face `info-quoted-name'.
 ;;
 (unless (> emacs-major-version 21)
   (defun Info-fontify-node ()
@@ -2472,7 +2564,7 @@ to search again for `%s'.")
 
         ;; Fontify `...' and "..."
         (goto-char (point-min))
-        (when Info-fontify-quotations-flag (info-fontify-quotations)) ; Fontify `...' and "..."
+        (when Info-fontify-quotations-flag (info-fontify-quotations))
         ;;  Fontify reference items: `-- Function:', `-- Variable:', etc.
         (goto-char (point-min))
         (when Info-fontify-reference-items-flag (info-fontify-reference-items))
@@ -2485,8 +2577,12 @@ to search again for `%s'.")
 
 ;; REPLACES ORIGINAL in `info.el':
 ;; 1. File name in face `info-file'.
-;; 2. If `Info-fontify-quotations-flag', fontify `...' in face `info-quoted-name',
-;;    "..." in face `info-string', and ' in face `info-single-quote'.
+;; 2. If `Info-fontify-quotations-flag', fontify `...' in face `info-quoted-name'
+;;    and "..." in face `info-string'.
+;; 3. If `Info-fontify-quotations-flag' and `Info-fontify-single-quote-flag' then
+;;    fontify ' in face `info-single-quote'.
+;; 4. If `Info-fontify-quotations-flag' and `Info-fontify-angle-bracketed-flag' then
+;;    fontify <...> in face `info-quoted-name'.
 ;;
 (when (= emacs-major-version 22)
   (defun Info-fontify-node ()
@@ -2560,7 +2656,7 @@ to search again for `%s'.")
                 (Info-goto-node onode))
               (forward-line 1)
               (insert (concat crumbs "\n\n"))))
-          
+
           ;; Treat header line
           (when Info-use-header-line
             (goto-char (point-min))
@@ -2894,8 +2990,12 @@ to search again for `%s'.")
 
 ;; REPLACES ORIGINAL in `info.el':
 ;; 1. File name in face `info-file'.
-;; 2. If `Info-fontify-quotations-flag', fontify `...' in face `info-quoted-name',
-;;    "..." in face `info-string', and ' in face `info-single-quote'.
+;; 2. If `Info-fontify-quotations-flag', fontify `...' in face `info-quoted-name'
+;;    and "..." in face `info-string'.
+;; 3. If `Info-fontify-quotations-flag' and `Info-fontify-single-quote-flag' then
+;;    fontify ' in face `info-single-quote'.
+;; 4. If `Info-fontify-quotations-flag' and `Info-fontify-angle-bracketed-flag' then
+;;    fontify <...> in face `info-quoted-name'.
 ;;
 (when (and (> emacs-major-version 22)  (not (fboundp 'Info-breadcrumbs))) ; Emacs 23.1, not 23.2+
   (defun Info-fontify-node ()
@@ -2944,7 +3044,7 @@ to search again for `%s'.")
                                      ((string-equal (downcase tag) "up"  ) Info-up-link-keymap))))))
           (when (and Info-breadcrumbs-in-header-flag (> Info-breadcrumbs-depth 0))
             (Info-insert-breadcrumbs))
-          
+
           ;; Treat header line.
           (when Info-use-header-line
             (goto-char (point-min))
@@ -3266,8 +3366,12 @@ to search again for `%s'.")
 
 ;; REPLACES ORIGINAL in `info.el':
 ;; 1. File name in face `info-file'.
-;; 2. If `Info-fontify-quotations-flag', fontify `...' in face `info-quoted-name',
-;;    "..." in face `info-string', and ' in face `info-single-quote'.
+;; 2. If `Info-fontify-quotations-flag', fontify `...' in face `info-quoted-name'
+;;    and "..." in face `info-string'.
+;; 3. If `Info-fontify-quotations-flag' and `Info-fontify-single-quote-flag' then
+;;    fontify ' in face `info-single-quote'.
+;; 4. If `Info-fontify-quotations-flag' and `Info-fontify-angle-bracketed-flag' then
+;;    fontify <...> in face `info-quoted-name'.
 ;;
 (when (and (> emacs-major-version 22)  (fboundp 'Info-breadcrumbs) ; Emacs 23.2 through 24.1
            (or (= emacs-major-version 23)
@@ -3317,7 +3421,7 @@ to search again for `%s'.")
                                      ((string-equal (downcase tag) "prev") Info-prev-link-keymap)
                                      ((string-equal (downcase tag) "next") Info-next-link-keymap)
                                      ((string-equal (downcase tag) "up"  ) Info-up-link-keymap))))))
-          
+
           ;; Treat header line.
           (when Info-use-header-line
             (goto-char (point-min))
@@ -3641,8 +3745,12 @@ to search again for `%s'.")
 
 ;; REPLACES ORIGINAL in `info.el':
 ;; 1. File name in face `info-file'.
-;; 2. If `Info-fontify-quotations-flag', fontify `...' in face `info-quoted-name',
-;;    "..." in face `info-string', and ' in face `info-single-quote'.
+;; 2. If `Info-fontify-quotations-flag', fontify `...' in face `info-quoted-name'
+;;    and "..." in face `info-string'.
+;; 3. If `Info-fontify-quotations-flag' and `Info-fontify-single-quote-flag' then
+;;    fontify ' in face `info-single-quote'.
+;; 4. If `Info-fontify-quotations-flag' and `Info-fontify-angle-bracketed-flag' then
+;;    fontify <...> in face `info-quoted-name'.
 ;;
 (when (and (> emacs-major-version 23)   ; Emacs 24.1.N and 24.2+
            (or (> emacs-major-version 24)  (string-match "^[0-9]+\\.[0-9]+\\.[0-9]+" emacs-version)))
@@ -4056,7 +4164,7 @@ You are prompted for the depth value."
 ;;   - any character except " or ', respectively
 ;;   - \ followed by any character
 ;;
-;; The `... in `...' is optional, so the regexp can also match just '. 
+;; The `... in `...' is optional, so the regexp can also match just '.
 ;;
 ;; The regexp matches also `...' and "..." where at least one of the `, ', or "
 ;; is escaped by a backslash.  So we check those cases explicitly and don't highlight them.
@@ -4066,16 +4174,29 @@ You are prompted for the depth value."
               "\\(`[^']*\\|\\\\\\(.\\|[\n]\\)\\)*'") ; `...'
     (concat "\"\\(?:[^\"]\\|\\\\\\(?:.\\|[\n]\\)\\)*\"\\|" ; "..."
             "\\(`[^']*\\|\\\\\\(.\\|[\n]\\)\\)*'")) ; `...'
-
   "Regexp to match `...', \"...\", or just '.
 If ... contains \" or ' then that character must be backslashed.")
 
+
+(defvar info-quoted+<>-regexp
+  (if (< emacs-major-version 21)
+      (concat "\"\\([^\"]\\|\\\\\\(.\\|[\n]\\)\\)*\"\\|" ; "..."
+              "\\(`[^']*\\|\\\\\\(.\\|[\n]\\)\\)*'\\|" ; `...'
+              "\\(<[^>]*\\|\\\\\\(.\\|[\n]\\)\\)*>") ; <...>
+    (concat "\"\\(?:[^\"]\\|\\\\\\(?:.\\|[\n]\\)\\)*\"\\|" ; "..."
+            "\\(`[^']*\\|\\\\\\(.\\|[\n]\\)\\)*'\\|"
+            "\\(<[^>]*\\|\\\\\\(.\\|[\n]\\)\\)*>")) ; <...>
+  "Same as `info-quotation-regexp', but matches also <...>.
+If ... contains > then that character must be backslashed.")
+
 (defun info-fontify-quotations ()
-  "Fontify `...', \"...\", and if `Info-fontify-single-quote-flag', just '.
- `...'\t- use face `info-quoted-name'
+  "Fontify `...', \"...\" and possibly <...> and single '.
+If `Info-fontify-angle-bracketed-flag', fontify <...>.
+If `Info-fontify-single-quote-flag', fontify single '.
+ `...' and <...>\t- use face `info-quoted-name'
  \"...\"\t- use face `info-string'
  '\t- use face `info-single-quote'"
-  (let ((regexp    info-quotation-regexp)
+  (let ((regexp    (if Info-fontify-angle-bracketed-flag info-quoted+<>-regexp info-quotation-regexp))
         (property  (if (> emacs-major-version 21) 'font-lock-face 'face)))
     (while (condition-case nil (re-search-forward regexp nil t) (error nil))
       (cond ((and (eq ?` (aref (match-string 0) 0)) ; Single-quoted backslashes: `\', `\\', `\\\', etc.
@@ -4087,7 +4208,16 @@ If ... contains \" or ' then that character must be backslashed.")
                   (goto-char (match-beginning 0))
                   (< (save-excursion (skip-chars-backward "\\\\")) 0))
              (goto-char (1+ (match-beginning 0))))
+            ((and Info-fontify-angle-bracketed-flag
+                  (eq ?< (aref (match-string 0) 0)) ; <...>: If < is preceded by \, then skip it
+                  (goto-char (match-beginning 0))
+                  (< (save-excursion (skip-chars-backward "\\\\")) 0))
+             (goto-char (1+ (match-beginning 0))))
             ((eq ?` (aref (match-string 0) 0)) ; `...'
+             (put-text-property (1+ (match-beginning 0)) (1- (match-end 0)) property 'info-quoted-name)
+             (goto-char (match-end 0)) (forward-char 1))
+            ((and Info-fontify-angle-bracketed-flag
+                  (eq ?< (aref (match-string 0) 0))) ; <...>
              (put-text-property (1+ (match-beginning 0)) (1- (match-end 0)) property 'info-quoted-name)
              (goto-char (match-end 0)) (forward-char 1))
             ((and (goto-char (match-beginning 0)) ; "...": If " preceded by \, then skip it
@@ -4098,9 +4228,11 @@ If ... contains \" or ' then that character must be backslashed.")
              (put-text-property (match-beginning 0) (match-end 0)
                                 property 'info-single-quote)
              (goto-char (match-end 0)) (forward-char 1))
-            (t                          ; "..."
+            ((not (string= "'" (buffer-substring (match-beginning 0) (match-end 0)))) ; "..."
              (put-text-property (match-beginning 0) (match-end 0)
                                 property 'info-string)
+             (goto-char (match-end 0)) (forward-char 1))
+            (t
              (goto-char (match-end 0)) (forward-char 1))))))
 
 (defun info-fontify-reference-items ()
@@ -4678,7 +4810,13 @@ in its Menu.
 User options you can customize
 ------------------------------
 `Info-fontify-quotations-flag' -
-  Fontify quoted names (`...') and strings (\"...\")
+  Fontify quoted names (`...') and strings (\"...\").
+  Toggle with \\[Info-toggle-fontify-quotations].
+`Info-fontify-angle-bracketed-flag' -
+  Fontify angle-bracketd names (<...>).
+  Toggle with \\[Info-toggle-fontify-angle-bracketed].
+`Info-fontify-single-quote-flag' - Fontify single quotes (').
+  Toggle with \\[Info-toggle-fontify-single-quote].
 `Info-subtree-separator' - See `Info-merge-subnodes'.
 
 Faces you can customize
@@ -4817,6 +4955,12 @@ User options you can customize
 ------------------------------
 `Info-fontify-quotations-flag' -
   Fontify quoted names (`...') and strings (\"...\").
+  Toggle with \\[Info-toggle-fontify-quotations].
+`Info-fontify-angle-bracketed-flag' -
+  Fontify angle-bracketd names (<...>).
+  Toggle with \\[Info-toggle-fontify-angle-bracketed].
+`Info-fontify-single-quote-flag' - Fontify single quotes (').
+  Toggle with \\[Info-toggle-fontify-single-quote].
 `Info-subtree-separator' - See `Info-merge-subnodes'.
 
 Faces you can customize
@@ -4952,6 +5096,12 @@ User options you can customize
 ------------------------------
 `Info-fontify-quotations-flag' -
   Fontify quoted names (`...') and strings (\"...\").
+  Toggle with \\[Info-toggle-fontify-quotations].
+`Info-fontify-angle-bracketed-flag' -
+  Fontify angle-bracketd names (<...>).
+  Toggle with \\[Info-toggle-fontify-angle-bracketed].
+`Info-fontify-single-quote-flag' - Fontify single quotes (').
+  Toggle with \\[Info-toggle-fontify-single-quote].
 `Info-saved-nodes' - Node names you can visit using `\\[Info-virtual-book]'.
 `Info-subtree-separator' - See `Info-merge-subnodes'.
 
@@ -5107,6 +5257,12 @@ User options you can customize
 ------------------------------
 `Info-fontify-quotations-flag' -
   Fontify quoted names (`...') and strings (\"...\").
+  Toggle with \\[Info-toggle-fontify-quotations].
+`Info-fontify-angle-bracketed-flag' -
+  Fontify angle-bracketd names (<...>).
+  Toggle with \\[Info-toggle-fontify-angle-bracketed].
+`Info-fontify-single-quote-flag' - Fontify single quotes (').
+  Toggle with \\[Info-toggle-fontify-single-quote].
 `Info-saved-nodes' - Node names you can visit using `\\[Info-virtual-book]'.
 `Info-subtree-separator' - See `Info-merge-subnodes'.
 
@@ -5170,7 +5326,7 @@ These are all of the current Info Mode bindings:
 
 ;; REPLACES ORIGINAL in `info.el':
 ;;
-;; Use completion for inputting the manual name. 
+;; Use completion for inputting the manual name.
 ;;
 (when (> emacs-major-version 22)
   (defun info-display-manual (manual)
@@ -5419,11 +5575,11 @@ subnodes (outside Info)? ")
                                     strg)))) ; Insert main node's contents.
 
       (unless  (string-match "\\s-*Index$" node-name) ; Don't recurse down Index menus.
-        
+
         ;; Insert menu items and possibly their subnodes.
         (save-excursion
           (while more
-          
+
             ;; Info buffer: Get menu item token.
             (set-buffer buf)
             (end-of-line)
@@ -5456,7 +5612,7 @@ subnodes (outside Info)? ")
 
               ;; Go back to parent node and get menu-item line.
               (if (>= emacs-major-version 22) (Info-history-back) (Info-last))
-              (let ((inhibit-read-only  t)) ; Get untabified menu-item line, so can count 
+              (let ((inhibit-read-only  t)) ; Get untabified menu-item line, so can count
                 (buffer-enable-undo) (undo-start) ; chars to underline.
                 (untabify (point) (save-excursion (forward-line 1) (point)))
                 (setq menu-item-line  (buffer-substring-no-properties
@@ -5483,7 +5639,7 @@ subnodes (outside Info)? ")
               ;; Again, though, don't recurse down Index menus.
               (when (and recursive-display-p (not (string-match "\\s-*Index$" token)))
                 (save-excursion
-                
+
                   ;; Info buffer: Go back to subnode.
                   ;; If it has a menu, then treat its subnodes, recursively.
                   (set-buffer buf)
@@ -5497,13 +5653,13 @@ subnodes (outside Info)? ")
                                     (point) "\\* "
                                     "\\* [^:]*:[ \t]+\\([^\t,.\n]+\\)[\t,.\n]")))
                       (Info-merge-subnodes recursive-display-p node-name)))
-                
+
                   ;; Info buffer: Go back to parent node.
                   (set-buffer buf)
                   (if (>= emacs-major-version 22)
                       (Info-history-back)
                     (Info-last))))
-            
+
               ;; Info buffer
               (set-buffer buf))))))
 
