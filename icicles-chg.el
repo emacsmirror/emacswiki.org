@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sun Feb  3 11:18:52 2013 (-0800)
+;; Last-Updated: Mon Feb  4 07:02:46 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 9668
+;;     Update #: 9670
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -6451,6 +6451,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2013/02/04 dadams
+;;     Removed autoload cookies for icicle-(minibuffer|completion(-list))-key-bindings
 ;; 2013/02/03 dadams
 ;;     Added: icicle-completion-list-key-bindings, icicle-isearch-history-insert-keys,
 ;;            icicle-minibuffer-key-bindings.
