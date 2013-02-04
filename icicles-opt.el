@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Feb  2 20:43:01 2013 (-0800)
+;; Last-Updated: Mon Feb  4 07:00:14 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 5583
+;;     Update #: 5585
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1402,6 +1402,7 @@ COMMAND."
     (restricted-sexp :tag "Command" :match-alternatives (symbolp) :value ignore)
     (sexp :tag "Condition")))
 
+;; Do not autoload, since we use `icicle-kbd' here.
 (defcustom icicle-completion-key-bindings
   `((,(icicle-kbd "M-return")  icicle-candidate-read-fn-invoke t)                     ;`M-RET'
                                                                                       ; (`M-return')
@@ -1587,7 +1588,7 @@ before you enter Icicle mode."
              (sexp :tag "Condition"))))
   :group 'Icicles-Key-Bindings)
 
-;;;###autoload
+;; Do not autoload, since we use `icicle-kbd' here.
 (defcustom icicle-completion-list-key-bindings
   `((,(icicle-kbd "C-?")                icicle-minibuffer-help t)                         ; `C-?'
     (,(icicle-kbd "M-?")                icicle-minibuffer-help t)                         ; `M-?'
@@ -2945,7 +2946,7 @@ to toggle the option."
   "*Functions run at the end of minibuffer setup for Icicle mode."
   :type 'hook :group 'Icicles-Miscellaneous)
 
-;;;###autoload
+;; Do not autoload, since we use `icicle-kbd' here.
 (defcustom icicle-minibuffer-key-bindings
   `((,(icicle-kbd "C-?")           icicle-minibuffer-help t)                          ; `C-?'
     (,(icicle-kbd "M-?")           icicle-minibuffer-help t)                          ; `M-?'
