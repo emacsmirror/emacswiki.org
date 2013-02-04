@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Feb  1 09:07:25 2013 (-0800)
+;; Last-Updated: Mon Feb  4 14:04:13 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 13793
+;;     Update #: 13794
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -2859,7 +2859,6 @@ Call `icicle-read-shell-command-completing', passing PROMPT and FILES."
 ;;
 ;; Free var here: `icicle-files' is bound in `icicle-dired-read-shell-command'.
 ;;
-;;;###autoload (autoload 'icicle-minibuffer-default-add-dired-shell-commands "icicles")
 (defun icicle-minibuffer-default-add-dired-shell-commands ()
   "Return a list of all commands associated with current dired files.
 The commands are from `minibuffer-default-add-dired-shell-commands',
