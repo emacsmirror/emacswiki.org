@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Sun Jan  6 20:15:45 2013 (-0800)
+;; Last-Updated: Mon Feb  4 14:00:59 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 6215
+;;     Update #: 6223
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -21,12 +21,11 @@
 ;;   `apropos', `apropos-fn+var', `avoid', `cl', `cus-edit',
 ;;   `cus-face', `cus-load', `cus-start', `doremi', `easymenu',
 ;;   `el-swank-fuzzy', `ffap', `ffap-', `frame-cmds', `frame-fns',
-;;   `fuzzy', `fuzzy-match', `hexrgb', `icicles-cmd1',
-;;   `icicles-face', `icicles-fn', `icicles-mcmd', `icicles-opt',
-;;   `icicles-var', `image-dired', `kmacro', `levenshtein',
-;;   `misc-fns', `mouse3', `mwheel', `naked', `regexp-opt', `ring',
-;;   `ring+', `second-sel', `strings', `thingatpt', `thingatpt+',
-;;   `wid-edit', `wid-edit+', `widget'.
+;;   `fuzzy', `fuzzy-match', `hexrgb', `icicles-cmd1', `icicles-fn',
+;;   `icicles-mcmd', `icicles-opt', `icicles-var', `image-dired',
+;;   `kmacro', `levenshtein', `misc-fns', `mouse3', `mwheel',
+;;   `naked', `regexp-opt', `ring', `ring+', `second-sel', `strings',
+;;   `thingatpt', `thingatpt+', `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -357,7 +356,7 @@
   ;; icicle-must-match-regexp, icicle-must-not-match-regexp, icicle-must-pass-after-match-predicate,
   ;; icicle-nb-of-other-cycle-candidates, icicle-orig-buff, icicle-orig-pt-explore, icicle-orig-window,
   ;; icicle-orig-win-explore, icicle-other-window, icicle-plist-last-initial-cand-set,
-  ;; icicle-predicate-types-alist, icicle-pref-arg, icicle-prompt, icicle-proxy-candidate-regexp,
+  ;; icicle-predicate-types-alist, icicle-prompt, icicle-proxy-candidate-regexp,
   ;; icicle-proxy-candidates, icicle-require-match-p, icicle-saved-completion-candidate,
   ;; icicle-saved-completion-candidates, icicle-scan-fn-or-regexp, icicle-search-command,
   ;; icicle-search-complement-domain-p, icicle-search-context-level, icicle-search-context-regexp,
@@ -367,12 +366,11 @@
   ;; icicle-transform-before-sort-p, icicle-vardoc-last-initial-cand-set,
   ;; icicle-variable-name-history, icicle-whole-candidate-as-text-prop-p
 (require 'icicles-fn)                   ; (This is required anyway by `icicles-mcmd.el'.)
-  ;; icicle-candidate-short-help, icicle-completing-read-history,
-  ;; icicle-highlight-lighter, icicle-insert-cand-in-minibuffer, icicle-kill-a-buffer, icicle-some
+  ;; icicle-candidate-short-help, icicle-completing-read-history, icicle-highlight-lighter,
+  ;; icicle-insert-cand-in-minibuffer, icicle-some
 (require 'icicles-cmd1)
-  ;; custom-variable-p, icicle-bookmark-cleanup,
-  ;; icicle-bookmark-cleanup-on-quit, icicle-bookmark-cmd, icicle-bookmark-help-string,
-  ;; icicle-bookmark-propertize-candidate, icicle-buffer-list,
+  ;; icicle-bookmark-cleanup, icicle-bookmark-cleanup-on-quit, icicle-bookmark-cmd,
+  ;; icicle-bookmark-help-string, icicle-bookmark-propertize-candidate, icicle-buffer-list,
   ;; icicle-explore, icicle-face-list, icicle-file-list, icicle-keyword-list, icicle-make-bookmark-candidate,
   ;; icicle-make-frame-alist, icicle-select-bookmarked-region
 
@@ -618,7 +616,7 @@ can use the following keys:
       (icicle-abs-file-candidates       ; An alist whose items are ((FILE TAG...)).
        (let ((result  ()))
          (dolist (autofile  (bmkp-autofile-alist-only))
-           (let ((tags  (bmkp-get-tags autofile)))                  
+           (let ((tags  (bmkp-get-tags autofile)))
              (when (or tags  current-prefix-arg)
                (push (list (cons (bookmark-get-filename autofile) tags)) result))))
          result))
@@ -1298,7 +1296,7 @@ If only a color name, then just say \"No help\"."
           (terpri) (terpri)
           (princ "HSV:")
           (mapcar (lambda (component) (princ (format "  %.18f" component))) hsv)))))
-          
+
   (defun icicle-make-color-candidate (color-name &optional hex-rgb)
     "Return multi-completion candidate of COLOR-NAME and its hex RGB string.
 If `icicle-WYSIWYG-Completions-flag' is non-nil, then the hex RGB
@@ -1559,7 +1557,7 @@ returned."
       nil                               ; Undo code.
       (prog1 (setq face-names  (delete "" face-names)) ; Return the list of faces.
         (when (interactive-p) (message "Faces: %S" face-names))))
-  
+
     (defun icicle-show-only-faces (&optional start end faces)
       "Show only the faces you choose, hiding all others.
 Non-nil `hlt-act-on-any-face-flag' means choose from among all
@@ -1582,7 +1580,7 @@ cycling, these keys with prefix `C-' act on the current face name\\<minibuffer-l
         (if (memq face faces)
             (hlt-show-default-face face)
           (hlt-hide-default-face start end face))))
-  
+
     (defun icicle-hide-only-faces (&optional start end faces)
       "Hide only the faces you choose, showing all others.
 Non-nil `hlt-act-on-any-face-flag' means choose from among all
@@ -1632,7 +1630,7 @@ cycling, these keys with prefix `C-' act on the current face name\\<minibuffer-l
                  (error "No%s faces are invisible"
                         (if hlt-act-on-any-face-flag "" " highlight"))))))
       (dolist (face faces) (hlt-show-default-face face)))
-  
+
     (defun icicle-hide-faces (&optional start end faces)
       "Hide visible faces that you choose.  Do nothing to other faces.
 Non-nil `hlt-act-on-any-face-flag' means choose from among all
@@ -1652,7 +1650,7 @@ cycling, these keys with prefix `C-' act on the current face name\\<minibuffer-l
                      ,(mapcar #'intern (icicle-choose-faces)))) ; An Icicles multi-command
       (dolist (face faces) (hlt-hide-default-face start end face)))))
 
-  
+
 (defun icicle-cmd2-after-load-wid-edit+ ()
   "Things to do for `icicles-cmd2.el' after loading `wid-edit+.el'."
 
@@ -1661,7 +1659,6 @@ cycling, these keys with prefix `C-' act on the current face name\\<minibuffer-l
     (put 'icicle-ORIG-color 'widget-type          (get 'color 'widget-type))
     (put 'icicle-ORIG-color 'widget-documentation (get 'color 'widget-documentation)))
 
-;;;###autoload
   (define-widget 'icicle-color 'editable-field
     "Icicles version of the `color' widget.
 `M-TAB' completes the color name using Icicles WYSIWYG completion.
@@ -1683,7 +1680,6 @@ See `icicle-widget-color-complete'."
     (when (fboundp 'widget-color-complete)
       (defalias 'icicle-ORIG-widget-color-complete (symbol-function 'widget-color-complete))))
 
-;;;###autoload (autoload 'icicle-lisp-complete-symbol "icicles")
   (defun icicle-widget-color-complete (widget)
     "Complete the color name in `color' widget WIDGET.
 If you use Icicles, then you get Icicles completion (apropos,
@@ -1920,60 +1916,31 @@ build a cache file of synonyms that are used for completion.  See
 
 ;;; Library `Bookmark+' - Icicles multi-commands.
 ;;;
-;;;###autoload (autoload 'icicle-tag-a-file                              "icicles")
-;;;###autoload (autoload 'icicle-untag-a-file                            "icicles")
-;;;###autoload (autoload 'icicle-find-file-handle-bookmark               "icicles")
-;;;###autoload (autoload 'icicle-find-file-handle-bookmark-other-window  "icicles")
-;;;###autoload (autoload 'icicle-find-file-tagged                        "icicles")
-;;;###autoload (autoload 'icicle-find-file-tagged-other-window           "icicles")
-;;;###autoload (autoload 'icicle-find-file-all-tags                      "icicles")
-;;;###autoload (autoload 'icicle-find-file-all-tags-other-window         "icicles")
-;;;###autoload (autoload 'icicle-find-file-all-tags-regexp               "icicles")
-;;;###autoload (autoload 'icicle-find-file-all-tag-regexp-other-windows  "icicles")
-;;;###autoload (autoload 'icicle-find-file-some-tags                     "icicles")
-;;;###autoload (autoload 'icicle-find-file-some-tags-other-window        "icicles")
-;;;###autoload (autoload 'icicle-find-file-some-tags-regexp              "icicles")
-;;;###autoload (autoload 'icicle-find-file-some-tags-regexp-other-window "icicles")
 (eval-after-load "bookmark+" '(icicle-cmd2-after-load-bookmark+))
 
 
 ;;; Library `hexrgb.el' - Icicles multi-commands.
 ;;;
-;;;###autoload (autoload 'icicle-frame-bg "icicles")
-;;;###autoload (autoload 'icicle-frame-fg "icicles")
 (eval-after-load "hexrgb" '(icicle-cmd2-after-load-hexrgb))
 
 
 ;;; Library `highlight.el' - Icicles multi-commands.  Emacs 21+.
 ;;;
-;;;###autoload (autoload 'icicle-choose-faces           "icicles")
-;;;###autoload (autoload 'icicle-choose-invisible-faces "icicles")
-;;;###autoload (autoload 'icicle-choose-visible-faces   "icicles")
-;;;###autoload (autoload 'icicle-hide-faces             "icicles")
-;;;###autoload (autoload 'icicle-hide-only-faces        "icicles")
-;;;###autoload (autoload 'icicle-show-faces             "icicles")
-;;;###autoload (autoload 'icicle-show-only-faces        "icicles")
 (eval-after-load "highlight" '(icicle-cmd2-after-load-highlight))
 
 
 ;;; Library `palette.el' - Icicles multi-commands.
 ;;;
-;;;###autoload (autoload 'icicle-pick-color-by-name "icicles")
 (eval-after-load "palette" '(icicle-cmd2-after-load-palette))
 
 
 ;;; Library `synonyms.el' - Icicles multi-commands.
 ;;;
-;;;###autoload (autoload 'synonyms                        "icicles")
-;;;###autoload (autoload 'icicle-synonyms                 "icicles")
-;;;###autoload (autoload 'icicle-insert-thesaurus-entry   "icicles")
-;;;###autoload (autoload 'icicle-complete-thesaurus-entry "icicles")
 (eval-after-load "synonyms" '(icicle-cmd2-after-load-synonyms))
 
 
 ;;; Library `wid-edit+.el' - Icicles function and widget.
 ;;;
-;;;###autoload (autoload 'icicle-widget-color-complete  "icicles")
 (eval-after-load "wid-edit+" '(icicle-cmd2-after-load-wid-edit+))
  
 ;;(@* "Icicles Top-Level Commands, Part 2")
@@ -1996,7 +1963,6 @@ build a cache file of synonyms that are used for completion.  See
 (defvar icicle-orig-pointsize nil
   "Size of font of selected frame in points, before command.")
 
-;;;###autoload (autoload 'icicle-font "icicles")
 (icicle-define-command icicle-font      ; Command name
   "Change font of current frame."       ; Doc string
   (lambda (font) (modify-frame-parameters icicle-orig-frame (list (cons 'font font)))) ; Action fn
@@ -2052,7 +2018,6 @@ Return nil if `x-decompose-font-name' returns nil for FONT.
 (defvar icicle-info-window nil
   "Info window before command was invoked.")
 
-;;;###autoload (autoload 'icicle-Info-index "icicles")
 (defun icicle-Info-index (&optional topic)
   "Like vanilla `Info-index', but you can use multi-command keys `C-RET', `C-up' etc.
 Also, for Emacs 22 and later, completion candidates (index topics) for
@@ -2086,7 +2051,6 @@ candidates than `icicle-Info-visited-max-candidates'"
 
 ;; Thx to Tamas Patrovics for this Emacs 20 version.
 ;;
-;;;###autoload (autoload 'icicle-Info-index-20 "icicles")
 (defun icicle-Info-index-20 ()
   "Like `Info-index', but you can use completion for the index topic."
   (interactive)
@@ -2150,7 +2114,6 @@ See `icicle-ORIG-Info-menu'."
                                                    (reverse (all-completions "" 'Info-complete-menu-item))))
    menu-eol))
 
-;;;###autoload (autoload 'icicle-Info-goto-node "icicles")
 (defun icicle-Info-goto-node (nodename &optional arg)
   "Go to Info node named NODENAME.
 NODENAME has the form NODE or (FILE)NODE-IN-FILE, where:
@@ -2361,7 +2324,6 @@ Non-interactively, argument NODESET is a list of Info node names."
       (unless (stringp nodeset) (setq nodeset "Virtual Book")) ; Non-interactive - NODESET is a list.
       (Info-virtual-book nodeset nodes))))
 
-;;;###autoload (autoload 'icicle-where-is "icicles")
 (icicle-define-command icicle-where-is  ; Command name
   "Show keyboard/menu/mouse sequences that invoke specified command.
 This is a multi-command version of `where-is'.
@@ -2414,7 +2376,6 @@ remapping, then customize option `icicle-top-level-key-bindings'." ; Doc string
    (icicle-all-candidates-list-alt-action-fn
     (or icicle-all-candidates-list-alt-action-fn  (icicle-alt-act-fn-for-type "command")))))
 
-;;;###autoload (autoload 'icicle-vardoc "icicles")
 (icicle-define-command icicle-vardoc    ; Command name
   "Choose a variable description.
 Each candidate for completion is a variable name plus its
@@ -2481,7 +2442,6 @@ See also: `icicle-apropos-value'."      ; Doc string
 ;;;   "Action function for `icicle-vardoc', `icicle-fundoc', `icicle-plist'."
 ;;;   (with-output-to-temp-buffer "*Help*" (princ entry)))
 
-;;;###autoload (autoload 'icicle-fundoc "icicles")
 (icicle-define-command icicle-fundoc    ; Command name
   "Choose a function description.
 Each candidate for completion is a function name plus its
@@ -2552,7 +2512,6 @@ See also: `icicle-apropos-value', using a negative prefix arg." ; Doc string
   (let ((sig-p  (string-match "\n\n(fn\\(\\( .*\\)?)\\)\\'" docstring)))
     (if sig-p (substring docstring 0 (match-beginning 0)) docstring)))
 
-;;;###autoload (autoload 'icicle-plist "icicles")
 (icicle-define-command icicle-plist     ; Command name
   "Choose a symbol and its property list.
 Each candidate for completion is a symbol name plus its property list
@@ -2625,7 +2584,6 @@ See also: `icicle-apropos-value', using a positive prefix arg." ; Doc string
     (icicle-highlight-lighter)
     (message "Gathering property lists...")))
 
-;;;###autoload (autoload 'icicle-doc "icicles")
 (icicle-define-command icicle-doc       ; Command name
   "Choose documentation for a symbol.
 Each candidate for completion is the description of a function,
@@ -2721,7 +2679,6 @@ See also: `icicle-apropos-value'."      ; Doc string
           ((facep symb)                 (describe-face symb)))
     symb))
 
-;;;###autoload (autoload 'icicle-non-whitespace-string-p "icicles")
 (defun icicle-non-whitespace-string-p (string)
   "Return non-nil if STRING is a string and contains a non-whitespace char.
 The `standard-syntax-table' definition of whitespace is used."
@@ -2733,9 +2690,7 @@ The `standard-syntax-table' definition of whitespace is used."
          (and (stringp string)  (> (length string) 0)  (string-match "\\S-" string)))
       (set-syntax-table orig-syntable))))
 
-;;;###autoload (autoload 'icicle-map "icicles")
 (defalias 'icicle-map 'icicle-apply)
-;;;###autoload (autoload 'icicle-apply "icicles")
 (defun icicle-apply (alist fn &optional nomsg predicate initial-input hist def inherit-input-method)
   "Selectively apply a function to elements in an alist.
 Argument ALIST is an alist such as can be used as the COLLECTION
@@ -2912,7 +2867,6 @@ matched."
     (select-window (minibuffer-window))
     (select-frame-set-input-focus (selected-frame))))
 
-;;;###autoload (autoload 'icicle-goto-marker-or-set-mark-command "icicles")
 (defun icicle-goto-marker-or-set-mark-command (arg) ; Bound to `C-@', `C-SPC'.
   "With prefix arg < 0, `icicle-goto-marker'; else `set-mark-command'.
 By default, Icicle mode remaps all key sequences that are normally
@@ -2925,7 +2879,6 @@ remapping, then customize option `icicle-top-level-key-bindings'."
     (setq this-command 'set-mark-command) ; Let `C-SPC C-SPC' activate if not `transient-mark-mode'.
     (set-mark-command arg)))
 
-;;;###autoload (autoload 'icicle-goto-global-marker-or-pop-global-mark "icicles")
 (defun icicle-goto-global-marker-or-pop-global-mark (arg) ; Bound to `C-x C-@', `C-x C-SPC'.
   "With prefix arg < 0, `icicle-goto-global-marker'; else `pop-global-mark'.
 By default, Icicle mode remaps all key sequences that are normally
@@ -2938,7 +2891,6 @@ this remapping, then customize option
       (pop-global-mark)
     (icicle-goto-global-marker)))
 
-;;;###autoload (autoload 'icicle-goto-marker "icicles")
 (defun icicle-goto-marker ()            ; Bound to `C-- C-@', `C-- C-SPC'.
   "Go to a marker in this buffer, choosing it by the line that includes it.
 If `crosshairs.el' is loaded, then the target position is highlighted.
@@ -2972,7 +2924,6 @@ command `icicle-mode'."
         (icicle-sort-comparer      'icicle-cdr-lessp))
     (icicle-goto-marker-1 mark-ring)))
 
-;;;###autoload (autoload 'icicle-goto-global-marker "icicles")
 (defun icicle-goto-global-marker ()     ; Bound to `C-- C-x C-@', `C-- C-x C-SPC'.
   "Like `icicle-goto-marker', but visits global, not local, markers.
 If user option `icicle-show-multi-completion-flag' is non-nil, then
@@ -3063,7 +3014,6 @@ prefixed by MARKER's buffer name."
         (push mkr markers)))
     markers))
 
-;;;###autoload (autoload 'icicle-exchange-point-and-mark "icicles")
 (defun icicle-exchange-point-and-mark (&optional arg) ; Bound to `C-x C-x'.
   "`exchange-point-and-mark' or save a region or select a saved region.
 With no prefix arg, invoke `exchange-point-and-mark'.
@@ -3104,7 +3054,6 @@ then customize option `icicle-top-level-key-bindings'."
          (unless (consp (bmkp-region-alist-only)) (error "No bookmarked regions"))
          (call-interactively #'icicle-select-bookmarked-region))))
 
-;;;###autoload (autoload 'icicle-search-generic "icicles")
 (defun icicle-search-generic ()         ; Bound to `C-c `'.
   "Run `icicle-search-command'.  By default, this is `icicle-search'.
 In Compilation and Grep modes, this is `icicle-compilation-search'.
@@ -3113,7 +3062,6 @@ In Comint, Shell, GUD, and Inferior Lisp modes, this is
   (interactive)
   (call-interactively icicle-search-command))
 
-;;;###autoload (autoload 'icicle-search "icicles")
 (defun icicle-search (beg end scan-fn-or-regexp require-match ; Bound to `M-s M-s M-s', `C-c `'.
                       &optional where &rest args)
   "Search for matches, with completion, cycling, and hit replacement.
@@ -4264,7 +4212,6 @@ Use this only with a `minibuffer-completion-table' derived from an alist."
      (concat "Buffer: `" (buffer-name (marker-buffer marker))
              (format "', Position: %d" (marker-position marker))))))
 
-;;;###autoload (autoload 'icicle-search-keywords "icicles")
 (defun icicle-search-keywords (beg end keywords require-match ; Bound to `M-s M-s k', `C-c ^'.
                                &optional where &rest args)
   "Search with one or more keywords, which can each be a regexp.
@@ -4301,7 +4248,6 @@ documentation."
   "Wrap REGEXP between regexp parens, as a regexp group."
   (concat "\\(" regexp "\\)"))
 
-;;;###autoload (autoload 'icicle-search-bookmark "icicles")
 (icicle-define-command icicle-search-bookmark ; Bound to `M-s M-s j'.
   "Search bookmarked text.
 See also `icicle-search-bookmarks-together', which searches bookmarks
@@ -4504,7 +4450,6 @@ future search commands, not the current one.)" ; Doc string
 (defvar icicle-last-thing-type (if (boundp 'thgcmd-last-thing-type) thgcmd-last-thing-type 'sexp)
   "Type of thing last used by `icicle-next-visible-thing' (or previous).")
 
-;;;###autoload (autoload 'icicle-search-thing "icicles")
 (defun icicle-search-thing (thing &optional beg end require-match where ; Bound to `M-s M-s t'.
                             predicate transform-fn)
   "`icicle-search' with THINGs as search contexts.
@@ -4621,7 +4566,6 @@ list includes the names of the symbols that satisfy
 
 ;; Same as `hide/show-comments' in `hide-comnt.el'.
 ;;
-;;;###autoload (autoload 'icicle-hide/show-comments "icicles")
 (defun icicle-hide/show-comments (&optional hide/show start end)
   "Hide or show comments from START to END.
 Interactively, hide comments, or show them if you use a prefix arg.
@@ -4766,7 +4710,7 @@ This function respects both `icicle-search-complement-domain-p' and
 
                          (when (and icicle-ignore-comments-flag  icicle-search-complement-domain-p)
                            (put-text-property 0 (length hit-string) 'invisible nil hit-string))
-                         
+
                          (icicle-candidate-short-help
                           (concat (and add-bufname-p  (format "Buffer: `%s', "
                                                               (buffer-name (marker-buffer end-marker))))
@@ -4841,7 +4785,6 @@ command again."
 
 ;; Simple version of `previous-visible-thing' from `thing-cmds.el'.
 ;;
-;;;###autoload (autoload 'icicle-previous-visible-thing "icicles")
 (defun icicle-previous-visible-thing (thing start &optional end)
   "Same as `icicle-next-visible-thing', except it moves backward."
   (interactive
@@ -4857,7 +4800,6 @@ command again."
 
 ;; Simple version of `next-visible-thing' from `thing-cmds.el'.
 ;;
-;;;###autoload (autoload 'icicle-next-visible-thing "icicles")
 (defun icicle-next-visible-thing (thing &optional start end backward)
   "Go to the next visible THING.
 Start at START.  If END is non-nil then look no farther than END.
@@ -4948,7 +4890,6 @@ the bounds of THING.  Return nil if no such THING is found."
                  (setq start  (if backward (1- start) (1+ start))))
                nil))))))
 
-;;;###autoload (autoload 'icicle-search-xml-element "icicles")
 (defun icicle-search-xml-element (beg end require-match where element)
   "`icicle-search' with XML ELEMENTs as search contexts.
 ELEMENT is a regexp that is matched against actual element names.
@@ -4979,7 +4920,6 @@ vanilla Emacs, starting with Emacs 23.  And you will need to load
      `(lambda (thg+bds)
        (and thg+bds  (icicle-string-match-p ,(format "\\`\\s-*<\\s-*%s\\s-*>" element) (car thg+bds)))))))
 
-;;;###autoload (autoload 'icicle-search-xml-element-text-node "icicles")
 (defun icicle-search-xml-element-text-node (beg end require-match where element)
   "`icicle-search', with text() nodes of XML ELEMENTs as search contexts.
 ELEMENT is a regexp that is matched against actual XML element names.
@@ -5025,7 +4965,6 @@ vanilla Emacs, starting with Emacs 23.  And you will need to load
                                      "\\s-*>")))
            (and child  (not (icicle-string-match-p tag-regexp (car child)))  child)))))))
 
-;;;###autoload (autoload 'icicle-search-char-property "icicles")
 (defun icicle-search-char-property (beg end require-match ; Bound to `M-s M-s c'.
                                     &optional where prop values predicate match-fn)
   "Search for text that has a character property with a certain value.
@@ -5069,7 +5008,6 @@ search multiple regions, buffers, or files, see the doc for command
   (icicle-search beg end 'icicle-search-char-property-scan require-match where prop values nil
                  predicate match-fn))
 
-;;;###autoload (autoload 'icicle-search-overlay-property "icicles")
 (defun icicle-search-overlay-property (beg end require-match where ; Bound to `M-s M-s O'
                                        prop values predicate match-fn)
   "Same as `icicle-search-char-property', except only overlay property.
@@ -5078,7 +5016,6 @@ That is, do not also search a text property."
   (icicle-search beg end 'icicle-search-char-property-scan require-match where prop values 'overlay
                  predicate match-fn))
 
-;;;###autoload (autoload 'icicle-search-text-property "icicles")
 (defun icicle-search-text-property (beg end require-match ; Bound to `M-s M-s T', `C-c "'.
                                     where prop values predicate match-fn)
   "Same as `icicle-search-char-property', except only text property.
@@ -5346,7 +5283,6 @@ valid buffer position."
                           (next-single-property-change (point) prop nil end)))))
       (point))))
 
-;;;###autoload (autoload 'icicle-search-highlight-cleanup "icicles")
 (defun icicle-search-highlight-cleanup ()
   "Remove all highlighting from the last use of `icicle-search'."
   (interactive)
@@ -5368,7 +5304,6 @@ valid buffer position."
       (setq icicle-search-refined-overlays  (cdr icicle-search-refined-overlays)))
     (message "Removing search highlighting...done")))
 
-;;;###autoload (autoload 'icicle-search-word "icicles")
 (defun icicle-search-word (beg end word-regexp require-match ; Bound to `M-s M-s w', `C-c $'.
                            &optional where &rest args)
   "Search for a whole word.
@@ -5402,7 +5337,6 @@ search multiple regions, buffers, or files, see the doc for command
                  ,(icicle-search-where-arg)))
   (icicle-search beg end word-regexp (not icicle-show-multi-completion-flag) where))
 
-;;;###autoload (autoload 'icicle-search-bookmarks-together "icicles")
 (defun icicle-search-bookmarks-together (scan-fn-or-regexp require-match ; Bound to `M-s M-s J'.
                                          &rest args)
   "Search bookmarks, together.
@@ -5435,7 +5369,6 @@ searches the bookmarked regions/buffers you choose one at a time."
            (let ((current-prefix-arg  '(4))) (icicle-search-where-arg))
            args)))
 
-;;;###autoload (autoload 'icicle-search-buffer "icicles")
 (defun icicle-search-buffer (scan-fn-or-regexp require-match &rest args) ; Bound to `M-s M-s b'.
   "Search multiple buffers completely.
 Same as using a non-negative numeric prefix arg, such as `C-9', with
@@ -5463,7 +5396,6 @@ affects only future search commands, not the current one.)"
                        (icicle-buffer-list))))
            args)))
 
-;;;###autoload (autoload 'icicle-search-file "icicles")
 (defun icicle-search-file (scan-fn-or-regexp require-match &rest args) ; Bound to `M-s M-s f'.
   "Search multiple files completely.
 Same as using a negative numeric prefix arg, such as `C--', with
@@ -5488,11 +5420,10 @@ future search commands, not the current one.)"
              (icicle-file-list))
            args)))
 
-;;;###autoload (autoload 'icicle-search-bookmark-list-marked "icicles")
 (defun icicle-search-bookmark-list-marked (scan-fn-or-regexp require-match ; Bound to `M-s M-s m'.
                                            &rest args) ; Bound also to `C-0 M-s M-s M-s', `C-0 C-`'.
   "Search the files of the marked bookmarks in `*Bookmark List*'.
-Same as using `C-0' with `icicle-search' in `*Bookmark List*'. 
+Same as using `C-0' with `icicle-search' in `*Bookmark List*'.
 Arguments are the same as for `icicle-search', but without arguments
 BEG, END, and WHERE."
   (interactive `(,(if icicle-search-whole-word-flag
@@ -5505,7 +5436,6 @@ BEG, END, and WHERE."
   (let ((icicle-multi-completing-p  icicle-show-multi-completion-flag))
     (apply #'icicle-search nil nil scan-fn-or-regexp require-match (bmkp-bmenu-get-marked-files) args)))
 
-;;;###autoload (autoload 'icicle-search-dired-marked-recursive "icicles")
 (defun icicle-search-dired-marked-recursive (ignore-marks-p scan-fn-or-regexp require-match &rest args)
                                         ; Bound to `M-s M-s m' in Dired with Dired+.
                                         ; Bound also to `C-0 M-s M-s M-s', `C-0 C-c `' in Dired.
@@ -5553,7 +5483,6 @@ WHERE."
   (unless (eq major-mode 'dired-mode) (error "This command must be called from a Dired buffer"))
   (apply #'icicle-search nil nil scan-fn-or-regexp require-match (diredp-get-files ignore-marks-p) args))
 
-;;;###autoload (autoload 'icicle-search-ibuffer-marked "icicles")
 (defun icicle-search-ibuffer-marked (scan-fn-or-regexp require-match ; Bound to `M-s M-s m' in Ibuffer.
                                      &rest args) ; Bound also to `C-0 M-s M-s M-s', `C-0 C-`' in Ibuffer.
   "Search the marked buffers in Ibuffer, in order.
@@ -5570,11 +5499,10 @@ BEG, END, and WHERE."
     (unless marked-bufs (setq marked-bufs  (list (ibuffer-current-buffer t))))
     (apply #'icicle-search nil nil scan-fn-or-regexp require-match marked-bufs args)))
 
-;;;###autoload (autoload 'icicle-search-buff-menu-marked "icicles")
 (defun icicle-search-buff-menu-marked (scan-fn-or-regexp require-match ; Bound to `M-s M-s m' in buff menu
                                        &rest args) ; Bound also to `C-0 M-s M-s M-s', `C-0 C-`' there.
   "Search the marked buffers in Buffer Menu, in order.
-Same as using `C-0' with `icicle-search' in `*Buffer List*'. 
+Same as using `C-0' with `icicle-search' in `*Buffer List*'.
 Arguments are the same as for `icicle-search', but without arguments
 BEG, END, and WHERE."
   (interactive `(,(if icicle-search-whole-word-flag
@@ -5591,9 +5519,7 @@ BEG, END, and WHERE."
     (unless marked-bufs (setq marked-bufs  (list (Buffer-menu-buffer t))))
     (apply #'icicle-search nil nil scan-fn-or-regexp require-match marked-bufs args)))
 
-;;;###autoload (autoload 'icicle-search-lines "icicles")
 (defalias 'icicle-search-lines 'icicle-occur) ; Bound to `M-s M-s l'.
-;;;###autoload (autoload 'icicle-occur "icicles")
 (defun icicle-occur (beg end &optional where) ; Bound to `M-s M-s o', `C-c ''.
   "`icicle-search' with a regexp of \".*\".  An `occur' with icompletion.
 Type a regexp to match within each line of one or more buffers, files,
@@ -5625,7 +5551,6 @@ using `icicle-search'.  For more information, see the doc for command
       (set-face-foreground 'icicle-search-main-regexp-others fg)
       (set-face-background 'icicle-search-main-regexp-others bg))))
 
-;;;###autoload (autoload 'icicle-search-sentences "icicles")
 (defun icicle-search-sentences (beg end &optional where) ; Bound to `M-s M-s s'.
   "`icicle-search' with sentences as contexts.
 Type a regexp to match within each sentence of one or more buffers,
@@ -5668,7 +5593,6 @@ using `icicle-search'.  For more information, see the doc for command
       (set-face-foreground 'icicle-search-main-regexp-others fg)
       (set-face-background 'icicle-search-main-regexp-others bg))))
 
-;;;###autoload (autoload 'icicle-search-paragraphs "icicles")
 (defun icicle-search-paragraphs (beg end &optional where) ; Bound to `M-s M-s p'.
   "`icicle-search' with paragraphs as contexts.
 Type a regexp to match within each paragraph of one or more buffers,
@@ -5704,7 +5628,6 @@ using `icicle-search'.  For more information, see the doc for command
       (set-face-foreground 'icicle-search-main-regexp-others fg)
       (set-face-background 'icicle-search-main-regexp-others bg))))
 
-;;;###autoload (autoload 'icicle-search-pages "icicles")
 (defun icicle-search-pages (beg end &optional where) ; Bound to `M-s M-s C-l'.
   "`icicle-search' with pages as contexts.
 Type a regexp to match within each page of one or more buffers, files,
@@ -5740,7 +5663,6 @@ using `icicle-search'.  For more information, see the doc for command
       (set-face-foreground 'icicle-search-main-regexp-others fg)
       (set-face-background 'icicle-search-main-regexp-others bg))))
 
-;;;###autoload (autoload 'icicle-comint-search "icicles")
 (defun icicle-comint-search (beg end)   ; Bound to `M-s M-s M-s', `C-c `' in `comint-mode'.
   "Use `icicle-search' to pick up a previous input for reuse.
 Use this in a `comint-mode' buffer, such as *shell* or
@@ -5821,7 +5743,6 @@ information about the arguments, see the doc for command
         (substring icicle-explore-final-choice input-start)
       icicle-explore-final-choice)))
 
-;;;###autoload (autoload 'icicle-comint-command "icicles")
 (icicle-define-command icicle-comint-command ; Bound to `C-c TAB' in `comint-mode'.
   "Retrieve a previously used command.
 Use this in a `comint-mode' buffer such as `*shell*' or
@@ -5843,7 +5764,6 @@ See also \\<comint-mode-map>\\[icicle-comint-search] for another way to reuse co
   "Hook to set up Comint mode for Icicles."
   (set (make-local-variable 'icicle-search-command) 'icicle-comint-search))
 
-;;;###autoload (autoload 'icicle-compilation-search "icicles")
 (defun icicle-compilation-search (beg end) ; Bound to `M-s M-s M-s, `C-c `' in `compilation(-minor)-mode'.
   "Like `icicle-search', but show the matching compilation-buffer hit.
 Use this in a compilation buffer, such as `*grep*', searching for a
@@ -5913,7 +5833,6 @@ If `crosshairs.el' is loaded, then the target position is highlighted."
 Used on `compilation-mode-hook' and `compilation-minor-mode-hook'."
   (set (make-local-variable 'icicle-search-command) 'icicle-compilation-search))
 
-;;;###autoload (autoload 'icicle-search-w-isearch-string "icicles")
 (defun icicle-search-w-isearch-string (&optional use-context-p) ; Bound to `S-TAB' in Isearch.
   "Icicles-search the buffer using an Isearch string chosen by completion.
 The Isearch string you choose is used as the Icicles search context.
@@ -5936,9 +5855,7 @@ then a prefix argument changes the behavior, as follows:
       (kill-new (icicle-isearch-complete-past-string))
       (icicle-search (point-min) (point-max) regexp t))))
 
-;;;###autoload (autoload 'icicle-search-defs "icicles")
 (defalias 'icicle-search-defs 'icicle-imenu) ; Bound to `M-s M-s d'.
-;;;###autoload (autoload 'icicle-imenu "icicles")
 (defun icicle-imenu (beg end require-match &optional where) ; Bound to `M-s M-s i', `C-c ='.
   "Search/go to an Imenu entry using `icicle-search'.
 Recommended: Use library `imenu+.el' also.
@@ -5999,9 +5916,7 @@ procedure name."
                  ,(icicle-search-where-arg)))
   (icicle-imenu-1 nil beg end require-match where))
 
-;;;###autoload (autoload 'icicle-search-defs-full "icicles")
 (defalias 'icicle-search-defs-full 'icicle-imenu-full) ; Bound to `M-s M-s D'.
-;;;###autoload (autoload 'icicle-imenu-full "icicles")
 (defun icicle-imenu-full (beg end require-match &optional where) ; Bound to `M-s M-s I'.
   "Search/go to an Imenu entry using `icicle-search'.
 Same as `icicle-imenu', except candidates are full definitions.
@@ -6019,7 +5934,6 @@ anytime during completion using `C-u C-x .'"
                  ,(icicle-search-where-arg)))
   (icicle-imenu-1 'FULL beg end require-match where))
 
-;;;###autoload (autoload 'icicle-imenu-command "icicles")
 (defun icicle-imenu-command (beg end require-match &optional where)
   "Search/go to an Emacs command definition using `icicle-search'.
 This uses `commandp', so it finds only currently defined commands.
@@ -6042,7 +5956,6 @@ search multiple regions, buffers, or files, see the doc for command
                         (car (assoc "Other" menus))
                         (error "No command definitions in buffer")))))
 
-;;;###autoload (autoload 'icicle-imenu-command-full "icicles")
 (defun icicle-imenu-command-full (beg end require-match &optional where)
   "Search/go to an Emacs command definition using `icicle-search'.
 Same as `icicle-imenu-command', except candidates are complete command
@@ -6074,7 +5987,6 @@ Both arguments are ignored here."
     (commandp (intern-soft
                (buffer-substring-no-properties (match-beginning indx) (match-end indx))))))
 
-;;;###autoload (autoload 'icicle-imenu-non-interactive-function "icicles")
 (defun icicle-imenu-non-interactive-function (beg end require-match &optional where)
   "Search/go to an Emacs non-command function definition with `icicle-search'.
 This uses `commandp' to distinguish currently defined commands from
@@ -6098,7 +6010,6 @@ search multiple regions, buffers, or files, see the doc for command
                         (car (assoc "Other" menus))
                         (error "No non-command function definitions in buffer")))))
 
-;;;###autoload (autoload 'icicle-imenu-non-interactive-function-full "icicles")
 (defun icicle-imenu-non-interactive-function-full (beg end require-match &optional where)
   "Search/go to an Emacs non-command function definition with `icicle-search'.
 Same as `icicle-imenu-non-interactive-function', except candidates are
@@ -6130,7 +6041,6 @@ Predicate for `icicle-search'.  Both arguments are ignored."
                  (buffer-substring-no-properties (match-beginning indx) (match-end indx)))))
     (and (fboundp fn)  (not (commandp fn)))))
 
-;;;###autoload (autoload 'icicle-imenu-macro "icicles")
 (defun icicle-imenu-macro (beg end require-match &optional where)
   "Search/go to an Emacs macro definition using `icicle-search'.
 This command is intended only for use in Icicle mode.  It is defined
@@ -6149,7 +6059,6 @@ search multiple regions, buffers, or files, see the doc for command
                         (car (assoc "Other" menus))
                         (error "No macro definitions in buffer")))))
 
-;;;###autoload (autoload 'icicle-imenu-macro-full "icicles")
 (defun icicle-imenu-macro-full (beg end require-match &optional where)
   "Search/go to an Emacs macro definition using `icicle-search'.
 Same as `icicle-imenu-non-interactive-function', except candidates are
@@ -6173,7 +6082,6 @@ anytime during completion using `C-u C-x .'"
                         (car (assoc "Other" menus))
                         (error "No macro definitions in buffer")))))
 
-;;;###autoload (autoload 'icicle-imenu-variable "icicles")
 (defun icicle-imenu-variable (beg end require-match &optional where)
   "Search/go to an Emacs non-option variable definition using `icicle-search'.
 This command is intended only for use in Icicle mode.  It is defined
@@ -6192,7 +6100,6 @@ search multiple regions, buffers, or files, see the doc for command
                         (car (assoc "Other" menus))
                         (error "No non-option variable definitions in buffer")))))
 
-;;;###autoload (autoload 'icicle-imenu-variable-full "icicles")
 (defun icicle-imenu-variable-full (beg end require-match &optional where)
   "Search/go to an Emacs non-option variable definition using `icicle-search'.
 Same as `icicle-imenu-variable', except candidates are complete
@@ -6215,7 +6122,6 @@ anytime during completion using `C-u C-x .'"
                         (car (assoc "Other" menus))
                         (error "No non-option variable definitions in buffer")))))
 
-;;;###autoload (autoload 'icicle-imenu-user-option "icicles")
 (defun icicle-imenu-user-option (beg end require-match &optional where)
   "Search/go to an Emacs user option definition using `icicle-search'.
 This command is intended only for use in Icicle mode.  It is defined
@@ -6234,7 +6140,6 @@ search multiple regions, buffers, or files, see the doc for command
                         (car (assoc "Other" menus))
                         (error "No user option definitions in buffer")))))
 
-;;;###autoload (autoload 'icicle-imenu-user-option-full "icicles")
 (defun icicle-imenu-user-option-full (beg end require-match &optional where)
   "Search/go to an Emacs user option definition using `icicle-search'.
 Same as `icicle-imenu-user-option', except candidates are complete
@@ -6257,7 +6162,6 @@ anytime during completion using `C-u C-x .'"
                         (car (assoc "Other" menus))
                         (error "No user option definitions in buffer")))))
 
-;;;###autoload (autoload 'icicle-imenu-key-implicit-map "icicles")
 (defun icicle-imenu-key-implicit-map (beg end require-match &optional where)
   "Search/go to a global/local Emacs key definition using `icicle-search'.
 This means a definition where no key map is specified explicitly -
@@ -6279,7 +6183,6 @@ search multiple regions, buffers, or files, see the doc for command
                         (car (assoc "Other" menus))
                         (error "No implicit-map key definitions in buffer")))))
 
-;;;###autoload (autoload 'icicle-imenu-key-implicit-map-full "icicles")
 (defun icicle-imenu-key-implicit-map-full (beg end require-match &optional where)
   "Search/go to a global/local Emacs key definition using `icicle-search'.
 Same as `icicle-imenu-key-implicit-map', except candidates are complete key
@@ -6297,7 +6200,6 @@ definitions."
                         (car (assoc "Other" menus))
                         (error "No implicit-map key definitions in buffer")))))
 
-;;;###autoload (autoload 'icicle-imenu-key-explicit-map "icicles")
 (defun icicle-imenu-key-explicit-map (beg end require-match &optional where)
   "Search/go to an Emacs key definition for a named map using `icicle-search'.
 This command is intended only for use in Icicle mode.  It is defined
@@ -6316,7 +6218,6 @@ search multiple regions, buffers, or files, see the doc for command
                         (car (assoc "Other" menus))
                         (error "No explicit-map key definitions in buffer")))))
 
-;;;###autoload (autoload 'icicle-imenu-key-explicit-map-full "icicles")
 (defun icicle-imenu-key-explicit-map-full (beg end require-match &optional where)
   "Search/go to an Emacs key definition for a named map using `icicle-search'.
 Same as `icicle-imenu-key-explicit-map', except candidates are
@@ -6334,7 +6235,6 @@ complete key definitions."
                         (car (assoc "Other" menus))
                         (error "No explicit-map key definitions in buffer")))))
 
-;;;###autoload (autoload 'icicle-imenu-face "icicles")
 (defun icicle-imenu-face (beg end require-match &optional where)
   "Search/go to an Emacs face definition using `icicle-search'.
 This command is intended only for use in Icicle mode.  It is defined
@@ -6353,7 +6253,6 @@ search multiple regions, buffers, or files, see the doc for command
                         (car (assoc "Other" menus))
                         (error "No face definitions in buffer")))))
 
-;;;###autoload (autoload 'icicle-imenu-face-full "icicles")
 (defun icicle-imenu-face-full (beg end require-match &optional where)
   "Search/go to an Emacs face definition using `icicle-search'.
 Same as `icicle-imenu-face', except candidates are complete face
@@ -6437,7 +6336,6 @@ The other args are as for `icicle-search'."
   "Return non-nil if the regexp in MENU has a match in the buffer."
   (save-excursion (goto-char (point-min)) (re-search-forward (cadr menu) nil t)))
 
-;;;###autoload (autoload 'icicle-tags-search "icicles")
 (defun icicle-tags-search (regexp &optional arg) ; Bound to `M-s M-s ,'
   "Search all source files listed in tags tables for matches for REGEXP.
 You are prompted for the REGEXP to match.  Enter REGEXP with `RET'.
@@ -6496,7 +6394,6 @@ future search commands, not the current one.)"
     (select-frame-set-input-focus (selected-frame))
     (icicle-search nil nil regexp nil files)))
 
-;;;###autoload (autoload 'icicle-save-string-to-variable "icicles")
 (defun icicle-save-string-to-variable (askp)
   "Save a string (text) to a variable.
 You are prompted for the string to save.  Typically, you store a
@@ -6588,7 +6485,6 @@ This is just `icicle-object-action' with type `buffer'."
   (defalias 'a 'icicle-object-action))
 (when (and icicle-define-alias-commands-flag  (not (fboundp 'what-which-how)))
   (defalias 'what-which-how 'icicle-object-action))
-;;;###autoload (autoload 'icicle-object-action "icicles")
 (defun icicle-object-action (&optional type)
   "Act on an object of type TYPE (a symbol).
 You are prompted for the type (\"What\"), then for an object of that
@@ -7089,7 +6985,7 @@ This command requires library `expand-region.el'."
   ((icicle-sort-comparer nil))          ; Bindings
   (unless (require 'expand-region nil t) ; First code
     (error "This command requires library `expand-region.el'")))
-  
+
 (defvar icicle-key-prefix nil
   "A prefix key.")
 
