@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Mon Feb  4 07:02:46 2013 (-0800)
+;; Last-Updated: Mon Feb  4 15:47:47 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 9670
+;;     Update #: 9675
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -86,6 +86,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2013/02/04 dadams
+;;     Removed all autoload cookies.
 ;; 2013/01/06 dadams
 ;;     icicle-execute-extended-command-1:
 ;;       Extra safeguards: Ensure CMD is fboundp before calling symbol-function.
@@ -843,6 +845,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2013/02/04 dadams
+;;     Removed all autoload cookies.
 ;; 2013/01/06 dadams
 ;;     icicle-(bookmark|(un)tag)-a-file: Updated calls to bmkp-*, to add nil NO-UPDATE-P argument.
 ;; 2013/01/05 dadams
@@ -1509,6 +1513,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-face.el'")
 ;;
+;; 2013/02/04 dadams
+;;     Removed all autoload cookies.
 ;; 2013/01/18 dadams
 ;;     Removed: icicle-increment-color-(hue|saturation|value) - moved to hexrgb.el and modified.
 ;;     icicle-search-context-level-*: Use hexrgb-increment-*, with past increment divided by 100.
@@ -1639,6 +1645,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2013/02/04 dadams
+;;     Removed all autoload cookies.
 ;; 2013/02/03 dadams
 ;;     Moved to icicles-mcmd.el: icicle-isearch-complete-past-string.
 ;; 2012/12/31 dadams
@@ -3685,6 +3693,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2013/02/04 dadams
+;;     Removed all autoload cookies.
 ;; 2013/02/03 dadams
 ;;     Added: icicle-isearch-history-complete, icicle-isearch-history-insert.
 ;;     Moved here from icicles-fn.el: icicle-isearch-complete-past-string.
@@ -5272,6 +5282,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2013/02/04 dadams
+;;     Removed all autoload cookies, except for icicle-mode, icy-mode.
 ;; 2013/02/03 dadams
 ;;     Renamed: *-(bind|restore)-custom-completion-keys to *-(bind|restore)-custom-minibuffer-keys.
 ;;     icicle-(un)bind-isearch-keys: (Un)Bind keys of new option icicle-isearch-history-insert-keys.
@@ -6451,6 +6463,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2013/02/04 dadams
+;;     Removed all autoload cookies.
 ;; 2013/02/04 dadams
 ;;     Removed autoload cookies for icicle-(minibuffer|completion(-list))-key-bindings
 ;; 2013/02/03 dadams
