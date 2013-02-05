@@ -57,5 +57,14 @@ In Lisp programs, be sure to set the case-fold-search variable to nil with regul
 [new]
 The term "case-fold" might appear strange to an emacs newbie. Is there any reason, "historical" or other, for it? -- PhilHudson
 
+[new:Yves Baumes:2013-02-05 21:31 UTC]
+I've got the same question as [PhilHudson]. More precisely I've
+trapped when trying to find capitalize word in a text with regular
+expression. The regexp-builder as well as the re-search-forward was
+actually returning every single word, capitalized or not. Until I dive
+into the source and understood. Once known it's ok, but IMHO it must
+not be the default behavior? Well ... hard to change the behavior once
+it has been the case so much time. Too much code out there expect it
+to be ... a feature now.
 ----
 CategoryRegexp
