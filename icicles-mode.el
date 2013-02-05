@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Feb  2 20:28:54 2013 (-0800)
+;; Last-Updated: Mon Feb  4 14:06:36 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 9463
+;;     Update #: 9464
 ;; URL: http://www.emacswiki.org/icicles-mode.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -259,7 +259,6 @@ use either \\[customize] or command `icy-mode' (aka `icicle-mode')."
     :initialize 'custom-initialize-default
     :type 'boolean :group 'Icicles-Miscellaneous :require 'icicles))
 
-;;;###autoload
 (defcustom icicle-mode-hook nil
   "*Functions run after entering and exiting Icicle mode."
   :type 'hook :group 'Icicles-Miscellaneous)
@@ -278,7 +277,6 @@ bindings in `*Completions*'.")
 ;;; Icicle mode command ----------------------------------------------
 
 ;; Main command.  Inspired from `icomplete-mode'.
-;;;###autoload (autoload 'icy-mode "icicles")
 (defalias 'icy-mode 'icicle-mode)
 (when (fboundp 'define-minor-mode)      ; Emacs 21+ ------------
   (when (> emacs-major-version 22)
@@ -2788,13 +2786,11 @@ is unbound in all keymaps accessible from keymap MAP."
 
 ;;; Other Icicles functions that define Icicle mode ------------------
 
-;;;###autoload (autoload 'icicle-skip-this-command "icicles")
 (defun icicle-skip-this-command ()
   "Prevent `handle-switch-frame' from being added to `this-command'."
   (interactive)
   (setq this-command  last-command))
 
-;;;###autoload (autoload 'icicle-handle-switch-frame "icicles")
 (defun icicle-handle-switch-frame (event)
   "Call `handle-switch-frame', but don't add it to `this-command'."
   (interactive "e")
