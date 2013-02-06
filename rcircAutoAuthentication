@@ -20,7 +20,7 @@ Note that if you have BitlBee running locally, you need an entry using "localhos
 
 auto-authentication can be disabled by setting `rcirc-auto-authenticate-flag' to nil.
 
-Following code snippet advices rcirc to read authinfo from `auth-sources' with port set to "irc-nickserv".
+Following code snippet advices rcirc to read authinfo from `auth-sources' with port set to "nickserv", "bitlbee", or "quakenet". The only missing auth method is chanserv.
 
 {{{
 (defadvice rcirc (before rcirc-read-from-authinfo activate)
