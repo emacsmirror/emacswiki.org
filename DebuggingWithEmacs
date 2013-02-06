@@ -8,7 +8,9 @@ http://www.cbrunzema.de/software.html#ll-debug
 
 It has functions to insert output statements that display unique strings and skeletons to construct code to print out values of variables. There are some routines to comment lines or regions of code in an uniform way, too. Among the supported languages are Lisp, C, C++, Perl etc.
 
-Elisp newbie needs to debug an init.el problem. Can someone point me to a howto to "just print stuff" (e.g., value of a variable) to ##*Messages*## and the minibuffer? Oldschool debugging printf wanted, though I'm definitely open to better ways. --tlroche
+Elisp newbies needing to "just print stuff" (e.g., value of a variable) to ##*Messages*## and the minibuffer? Use ‘message’:
+
+    (message "logging %S" foo)
 
 == Debugging with GUD ==
 
