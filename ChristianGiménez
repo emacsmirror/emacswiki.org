@@ -138,9 +138,10 @@ I think either way is fine. The wiki exists somewhere between informal like IRC 
 
 ----
 
-= Diáspora Public Posts =
+= Identica Public Posts =
+I have just connected my [https://identi.ca/cnngimenez Identi.ca account] with my [https://joindiaspora.com/u/cnngimenez Diáspora].
 
-<rss https://joindiaspora.com/public/cnngimenez.atom>
+<rss https://identi.ca/api/statuses/user_timeline/518740.rss>
 
 
 ----
