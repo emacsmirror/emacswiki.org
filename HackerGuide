@@ -1,0 +1,149 @@
+= Source tree =
+
+Let's see how things are organized in the Bazaar repository, trunk branch.
+
+== Build configuration ==
+
+This is not very interesting. It's a lot of stuff that makes Emacs
+compile and run on many platforms and architectures.
+
+Emacs --like a lot of GNU projects-- use the GNU autotools.
+
+
+* *autogen.sh* ---  Little script that checks you have the right version
+                 of autotools to build the configure script.
+
+* *autogen/* ---  Some pre-built generated files for autoconf. See
+               README inside.
+
+* *config.bat* ---  Configuration script for MSDOS. All I can say is
+                 scripting on MSDOS doesn't seem very fun.
+
+* *configure.ac, m4/* ---  Source file used by autoconf to generate the
+      configure script. Pretty hairy.
+
+* *GNUmakefile* ---  From the file headers: This GNUmakefile is for GNU
+                  Make.  It is for convenience, so that one can run
+                  'make' in an unconfigured source tree.  In such a
+                  tree, this file causes GNU Make to first create a
+                  standard configuration with the default options, and
+                  then reinvokes itself on the newly-built Makefile.
+                  If the source tree is already configured, this file
+                  defers to the existing Makefile.
+
+* *make-dist* ---  Script to make a release tarball.
+
+* *Makefile.in* ---  The makefile not yet processed by autotools.
+
+I recommand reading the INSTALL.BZR if you want to build the bazaar
+trunk. Basically, if you have all dependancies to build the default
+Emacs, run:
+
+<pre>
+$ ./autogen.sh
+$ ./configure
+$ make bootstrap
+$ make
+$ ./src/emacs -Q # run it!
+</pre>
+
+I recommend using <code>-jPROC</code> flag for make where <CODE>PROC</CODE> is the number of CPU
+core you have in order to speed up the compilation.
+
+== Emacs core ==
+
+The core of Emacs is written in C.
+
+* *lib* ---  Source of some libraries used by Emacs
+* *lib-src* ---  Source of external utilities (etags, hexl, ...)
+* *src* ---  Source of the Emacs executable
+
+=== Lisp objects ===
+
+Let's look at <code>src/lisp.h</code> for fundamental definitions.
+
+A Lisp object (<code>Lisp_Object</code>) is basically a number. This number is
+split in 2 parts :
+* a value
+* a tag
+
+The value is either a memory address or an integer i.e. the <code>fixnum</code>
+Lisp type. The tag indicates the type of the value.
+
+On my 64bit build of Emacs, a Lisp object is stored on a 64bits
+signed integer which is called (typedef'ed to) <CODE>EMACS_INT</CODE>.
+
+Everytime an object is allocated its address is aligned to 8
+bytes. That way the 3 least significant bits are always 0 and thus
+can be used for the tag. The allocation code is in <code>src/alloca.c</code>.
+
+The tag is 3 bit long and thus can have 8 different values. The value
+uses the remaining bits. Integers use another 1 bit of the 3 tag bits.
+
+This technique makes integer handling fast but has the downside of
+limiting the available range of integers. This is problematic on
+32bit systems where the point in a buffer can't go past a 2^28
+(256MB).
+
+=== Lisp types ===
+
+See <code>enum Lisp_Type</code> in <code>lisp.h:243</code>. It's the value of each tag.
+
+* Integer
+* Symbol
+* Misc. (see <code>enum Lisp_Misc_Type</code>)
+* String
+* Vector-like
+* Cons
+* Float
+
+Two objects are equal (with <code>EQ(a, b)</code>) if both their <code>Lisp_Object</code>
+values are equal.
+
+There are several macros defined to extract the relevant data from a
+<code>Lisp_Object</code>.
+
+* <code>XTYPE(x)</code> returns the tag (<code>enum Lisp_Type</code>)
+* <code>XINT(x)</code> returns the <CODE>EMACS_INT</CODE> value
+* <code>XUINT(x)</code> returns the <CODE>EMACS_UINT</CODE> value
+* <code>XCONS(x)</code> returns a <code>struct Lisp_Cons*</code>
+* <code>XVECTOR(x)</code> returns a <code>struct Lisp_Vector*</code>
+* <code>XSTRING(x)</code> returns a <code>struct Lisp_String*</code>
+* <code>XSYMBOL(x)</code> returns a <code>struct Lisp_Symbol*</code>
+* <code>XFLOAT(x)</code> returns a <code>struct Lisp_Float*</code>
+* <code>XMISC(x)</code> returns a <code>union Lisp_Misc*</code>
+* <code>XMARKER(x)</code> returns a <code>struct Lisp_Marker*</code>
+* <code>XOVERLAY(x)</code> returns a <code>struct Lisp_Overlay*</code>
+* <code>XSAVE_VALUE(x)</code> returns a <code>struct Lisp_Save_Value*</code>
+* <code>XPROCESS(x)</code> returns a <code>struct Lisp_Process*</code>
+* <code>XWINDOW(x)</code> returns a <code>struct window*</code>
+* <code>XTERMINAL(x)</code> returns a <code>struct terminal*</code>
+* <code>XSUBR(x)</code> returns a <code>struct Lisp_Subr*</code>
+* <code>XBUFFER(x)</code> returns a <code>struct buffer*</code>
+* <code>XCHAR_TABLE(x)</code> returns a <code>struct Lisp_Char_Table*</code>
+* <code>XSUB_CHAR_TABLE(x)</code> returns a <code>struct Lisp_Sub_Char_Table*</code>
+* <code>XBOOL_VECTOR(x)</code> returns a <code>struct Lisp_Bool_Vector*</code>
+
+There's a bunch of type predicates macros:
+
+* <code>INTEGERP(x)</code> checks for float or int
+* <code>NILP(x)</code>
+* <code>SYMBOLP(x)</code>
+* <code>STRINGP(x)</code>
+* <code>CONSP(x)</code>
+* <code>FLOATP(x)</code>
+* <code>VECTORP(x)</code>
+
+* <code>PROCESSP(x)</code>
+* <code>WINDOWP(x)</code>
+* <code>TERMINALP(x)</code>
+* <code>SUBRP(x)</code>
+* <code>BUFFERP(x)</code>
+* <code>FRAMEP(x)</code>
+
+* <code>MISCP(x)</code>
+* <code>VECTORLIKEP(x)</code>
+* <code>OVERLAYP(x)</code>
+* <code>MARKERP(x)</code>
+* <code>SAVE_VALUEP(x)</code>
+* <code>IMAGEP(x)</code>
