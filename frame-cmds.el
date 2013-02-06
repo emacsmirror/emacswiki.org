@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Mar  5 16:30:45 1996
 ;; Version: 21.0
-;; Last-Updated: Fri Jan 18 00:33:33 2013 (-0800)
+;; Last-Updated: Wed Feb  6 14:40:30 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 2702
+;;     Update #: 2705
 ;; URL: http://www.emacswiki.org/frame-cmds.el
 ;; Doc URL: http://emacswiki.org/FrameModes
 ;; Doc URL: http://www.emacswiki.org/OneOnOneEmacs
@@ -257,6 +257,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/02/06 dadams
+;;     move-frame-(up|down|left|right): Set N to 1 if nil.
 ;; 2013/01/17 dadams
 ;;     Added: move-frame-to-screen-(top|bottom|left|right).
 ;;     move-frame-(up|down|left|right): Redefined so prefix arg moves increments of char size.
@@ -1344,6 +1346,7 @@ Interactively, it is given by the prefix argument."
 Move it N times `frame-char-height', where N is the prefix arg.
 In Lisp code, FRAME is the frame to move."
   (interactive "p")
+  (unless n (setq n  1))
   (setq n  (* n (frame-char-height frame)))
   (modify-frame-parameters frame (list (list 'top '+ (new-frame-position frame 'top n)))))
 
@@ -1352,6 +1355,7 @@ In Lisp code, FRAME is the frame to move."
   "Move selected frame up.
 Same as `move-frame-down', except movement is up."
   (interactive "p")
+  (unless n (setq n  1))
   (move-frame-down (- n)))
 
 ;;;###autoload
@@ -1360,6 +1364,7 @@ Same as `move-frame-down', except movement is up."
 Move it N times `frame-char-width', where N is the prefix arg.
 In Lisp code, FRAME is the frame to move."
   (interactive "p")
+  (unless n (setq n  1))
   (setq n  (* n (frame-char-width frame)))
   (modify-frame-parameters frame (list (list 'left '+ (new-frame-position frame 'left n)))))
 
@@ -1368,6 +1373,7 @@ In Lisp code, FRAME is the frame to move."
   "Move frame to the left.
 Same as `move-frame-right', except movement is to the left."
   (interactive "p")
+  (unless n (setq n  1))
   (move-frame-right (- n)))
 
 ;; Helper function.
