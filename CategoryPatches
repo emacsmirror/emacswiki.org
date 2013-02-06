@@ -5,6 +5,7 @@ Such patches are necessary when extensions are added on the C level.
 * SecurEmacs -- extend Emacs with GNU TLS
 * DynamicallyExtendingEmacs -- let Emacs load shared libraries (so/dll)
 * PixelDrawing -- draw pixels from Lisp
+* HackerGuide -- introduction to Emacs core
 * Native Interfaces to Databases:
 ** MySql
 ** PostGreSQL
