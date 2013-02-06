@@ -8,19 +8,19 @@ compile and run on many platforms and architectures.
 Emacs --like a lot of GNU projects-- use the GNU autotools.
 
 
-* *autogen.sh* ---  Little script that checks you have the right version
+* <b>autogen.sh</b> --- Little script that checks you have the right version
                  of autotools to build the configure script.
 
-* <b>autogen/</b> ---  Some pre-built generated files for autoconf. See
+* <b>autogen/</b> --- Some pre-built generated files for autoconf. See
                README inside.
 
-* *config.bat* ---  Configuration script for MSDOS. All I can say is
+* <b>config.bat</b> --- Configuration script for MSDOS. All I can say is
                  scripting on MSDOS doesn't seem very fun.
 
-* <b>configure.ac, m4/</b> ---  Source file used by autoconf to generate the
+* <b>configure.ac, m4/</b> --- Source file used by autoconf to generate the
       configure script. Pretty hairy.
 
-* *GNUmakefile* ---  From the file headers: This GNUmakefile is for GNU
+* <b>GNUmakefile</b> --- From the file headers: This GNUmakefile is for GNU
                   Make.  It is for convenience, so that one can run
                   'make' in an unconfigured source tree.  In such a
                   tree, this file causes GNU Make to first create a
@@ -29,9 +29,9 @@ Emacs --like a lot of GNU projects-- use the GNU autotools.
                   If the source tree is already configured, this file
                   defers to the existing Makefile.
 
-* *make-dist* ---  Script to make a release tarball.
+* <b>make-dist</b> --- Script to make a release tarball.
 
-* *Makefile.in* ---  The makefile not yet processed by autotools.
+* <b>Makefile.in</b> --- The makefile not yet processed by autotools.
 
 I recommand reading the INSTALL.BZR if you want to build the bazaar
 trunk. Basically, if you have all dependancies to build the default
@@ -45,16 +45,16 @@ $ make
 $ ./src/emacs -Q # run it!
 </pre>
 
-I recommend using <code>-jPROC</code> flag for make where <CODE>PROC</CODE> is the number of CPU
+I recommend using <code>-jPROC</code> flag for make where <code>PROC</code> is the number of CPU
 core you have in order to speed up the compilation.
 
 == Emacs core ==
 
 The core of Emacs is written in C.
 
-* *lib* ---  Source of some libraries used by Emacs
-* *lib-src* ---  Source of external utilities (etags, hexl, ...)
-* *src* ---  Source of the Emacs executable
+* <b>lib</b> --- Source of some libraries used by Emacs
+* <b>lib-src</b> --- Source of external utilities (etags, hexl, ...)
+* <b>src</b> --- Source of the Emacs executable
 
 === Lisp objects ===
 
@@ -69,7 +69,7 @@ The value is either a memory address or an integer i.e. the <code>fixnum</code>
 Lisp type. The tag indicates the type of the value.
 
 On my 64bit build of Emacs, a Lisp object is stored on a 64bits
-signed integer which is called (typedef'ed to) <CODE>EMACS_INT</CODE>.
+signed integer which is called (typedef'ed to) <code>EMACS_INT</code>.
 
 Everytime an object is allocated its address is aligned to 8
 bytes. That way the 3 least significant bits are always 0 and thus
@@ -102,8 +102,8 @@ There are several macros defined to extract the relevant data from a
 <code>Lisp_Object</code>.
 
 * <code>XTYPE(x)</code> returns the tag (<code>enum Lisp_Type</code>)
-* <code>XINT(x)</code> returns the <CODE>EMACS_INT</CODE> value
-* <code>XUINT(x)</code> returns the <CODE>EMACS_UINT</CODE> value
+* <code>XINT(x)</code> returns the <code>EMACS_INT</code> value
+* <code>XUINT(x)</code> returns the <code>EMACS_UINT</code> value
 * <code>XCONS(x)</code> returns a <code>struct Lisp_Cons*</code>
 * <code>XVECTOR(x)</code> returns a <code>struct Lisp_Vector*</code>
 * <code>XSTRING(x)</code> returns a <code>struct Lisp_String*</code>
@@ -145,3 +145,21 @@ There's a bunch of type predicates macros:
 * <code>MARKERP(x)</code>
 * <code>SAVE_VALUEP(x)</code>
 * <code>IMAGEP(x)</code>
+
+=== Defining functions ===
+
+There is a <code>DEFUN</code> macro in <code>lisp.h:1987</code>. Have a look at the manual,
+it's pretty well written. [[Writing Emacs Primitives]]
+
+=== Idioms ===
+
+Iterating on a list:
+
+<pre>
+Lisp_Object tail;
+ 
+for (tail = list; CONSP (tail); tail = XCDR (tail))
+  {
+    /* ... */
+  }
+</pre>
