@@ -240,6 +240,162 @@ In an auctex-buffer with previews first adjust the font size with C-x C-+ or C-x
       )))
 </pre>
 
+== Pasting images from ms-windows clipboard into cygwin-emacs ==
+Images cannot directly be pasted from the clipboard in cygwin (only text is supported). Therefore, one needs some windows program to grab the image from the clipboard and save it to a file. This is done via wpython2.7 and the python imaging library (PIL).
+
+Short cut for pasting is C-S-y.
+Interfaces for org and auctex are defined.
+<pre>
+(defvar pythonw-interpreter "/c/Python27/python.exe"
+  "Python interpreter for retrieving images from the windows console.")
+
+(defun new-file-name (prefix suffix)
+  "Get name of non-existing file by inserting numbers between PREFIX and SUFFIX if necessary.
+SUFFIX may not include directory components."
+  (let ((first-try (concat prefix suffix))
+	(prefix-dir (or (file-name-directory prefix) "./"))
+	(prefix-file (file-name-nondirectory prefix)))
+    (if (file-exists-p first-try)
+	(concat
+	 prefix
+	 (number-to-string
+	  (1+
+	   (apply
+	    'max
+	    (append '(-1)
+	    (mapcar #'(lambda (name)
+		       (string-to-number (substring name (length prefix-file) (- (length suffix)))))
+		    (directory-files prefix-dir nil (concat prefix-file "[0-9]+" suffix) 'NOSORT))))))
+	 suffix)
+      first-try)))
+
+(require 'image)
+(defvar paste-image-hook nil "Run after pasting images from clipboard.")
+(make-variable-buffer-local 'paste-image-hook)
+
+(defvar paste-image-prefix "" "Prefix to be inserted before the pasted image.")
+(make-variable-buffer-local 'paste-image-prefix)
+
+(defvar paste-image-postfix "" "Postfix to be inserted after the pasted image.")
+(make-variable-buffer-local 'paste-image-postfix)
+
+(defvar paste-image-type "png" "Default image type and extension of pasted images.")
+(make-variable-buffer-local 'paste-image-type)
+
+(unless (assoc "\\.eps" image-type-file-name-regexps)
+  (add-to-list 'image-type-file-name-regexps '("\\.eps" . postscript)))
+
+(defvar paste-image-types
+  '(
+    ("png")
+    ("eps" "png" "convert %< -compress lzw ps3:%>")
+    )
+  "Each type specifier is a list. nth 0 is the target image format. nth 1 is the source image format and nth 2 is the converter from target to source %< stands for the source and %> stands for the output."
+  )
+
+(defun paste-image-type-from-file-name (name)
+  "Return image type for paste-image"
+  (car (assoc (downcase (file-name-extension name)) paste-image-types)))
+
+(defun paste-image-paste (dir-name target-name img-type)
+  (let*
+      ((img-type-list (assoc img-type paste-image-types))
+       (grab-type (or (nth 1 img-type-list) (car img-type-list)))
+       (converter (nth 2 img-type-list))
+       (src-name target-name)
+       )
+    (unless grab-type
+      (error "Unsupported image grab type %s. (See paste-image-types.)" img-type))
+    (when converter
+      (setq src-name (concat target-name "." grab-type))
+      )
+    (with-temp-buffer
+      (setq default-directory dir-name)
+      (insert "
+from PIL import Image, ImageGrab
+print \"--- Grab Image From Clipboard ---\"
+im=ImageGrab.grabclipboard()
+if isinstance(im,Image.Image):
+ im.save(\"" src-name "\",\"" (upcase grab-type) "\")
+else:
+ print \"paste-image-paste:No image in clipboard.\"
+")
+      (call-process-region (point-min) (point-max) org-pythonw-interpreter t t nil)
+      (goto-char (point-min))
+      (if (search-forward "paste-image-paste:No image in clipboard." nil 'noError)
+	  (error "No image in clipboard."))
+      (message "%s" (buffer-substring-no-properties (point-min) (point-max)))
+      (when converter
+	(setq converter (string-replace-matches converter "%<" src-name))
+	(setq converter (string-replace-matches converter "%>" target-name))
+	(shell-command converter)
+	))
+    ))
+
+(defun paste-image (&optional file-name img-type)
+  "Paste image from windows clipboard into buffer.
+That means put the image into the directory with the basename of the buffer file.
+The image gets a name 'imgXXX.png' where XXX stands for some unique number."
+  (interactive)
+  (unless img-type
+    (setq img-type paste-image-type))
+  (unless file-name
+    (let* ((dir-name (file-name-sans-extension (buffer-file-name)))
+	   (file-path (new-file-name (concat dir-name "/img") (concat "." img-type))))
+      (setq dir-name (file-name-directory file-path))
+      (setq file-name (file-name-nondirectory file-path))
+      (while
+	  (progn
+	    (setq file-path (read-file-name "Image file name:" dir-name nil nil file-name))
+	    (let ((dir (file-name-directory file-path)))
+	      (or (and
+		   dir
+		   (file-exists-p dir)
+		   (null (file-directory-p dir)))
+		  (null (and (file-name-extension file-path)
+			     (setq img-type (paste-image-type-from-file-name file-path))))))))
+      (setq file-name file-path)))
+  (let* ((cur-dir default-directory)
+	 (dir-name (or (file-name-directory file-name) "./"))
+	 (dir-name-noslash (directory-file-name dir-name))
+	 (fname (concat (file-name-nondirectory file-name)
+			(if img-type
+			    (if (string-match (concat "\\." paste-image-type "$") file-name)
+				""
+			      (concat "." paste-image-type))
+			  (progn (setq img-type "png") ".png")))))
+    (if (file-exists-p dir-name-noslash)
+	(unless (file-directory-p dir-name-noslash)
+	  (error "%s is not a directory" dir-name))
+      (make-directory dir-name-noslash))
+    (if img-type
+	(if (symbolp img-type)
+	    (setq img-type (symbol-name img-type)))
+      (error "Image type not set."))
+    (paste-image-paste dir-name fname img-type)
+    (insert paste-image-prefix (file-relative-name dir-name cur-dir) fname paste-image-postfix)
+    (run-hooks paste-image-hook)))
+
+(global-set-key (kbd "C-S-y") 'paste-image)
+
+
+(add-hook 'org-mode-hook '(lambda ()
+			    (setq paste-image-prefix "[[file:")
+			    (setq paste-image-postfix"]]")
+			    (setq paste-image-hook 'org-display-inline-images)
+			    ))
+
+
+(add-hook 'LaTeX-mode-hook (lambda ()
+			     (setq paste-image-prefix "\\includegraphics{")
+			     (setq paste-image-postfix "}")
+			     (setq paste-image-type "eps")
+			     (add-hook 'paste-image-hook 'preview-at-point)
+			     ))
+
+</pre>
+
+
 == Using xpdf as viewer with forward and inverse search ==
 xpdf exists in cygwin and in linux and can be configured for forward and inverse search using synctex.
 
