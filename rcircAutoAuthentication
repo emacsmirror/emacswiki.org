@@ -22,21 +22,23 @@ auto-authentication can be disabled by setting `rcirc-auto-authenticate-flag' to
 
 Following code snippet advices rcirc to read authinfo from `auth-sources' with port set to "irc-nickserv".
 
-    (defadvice rcirc (around rcirc-read-from-authinfo activate)
-      "Allow rcirc to read authinfo from ~/.authinfo.gpg via the auth-source API."
-      (let ((rcirc-authinfo rcirc-authinfo)
-            (credentials (auth-source-search :port '("irc-nickserv")
-                                             :require '(:user :secret))))
-        (dolist (p credentials)
-          (let ((host (plist-get p :host))
-                (user (plist-get p :user))
-                (secret (plist-get p :secret)))
-            (add-to-list 'rcirc-authinfo
-                         (list host 'nickserv user
-                               (if (functionp secret)
-                                   (funcall secret)
-                                 secret)))))
-        ad-do-it))
+{{{
+(defadvice rcirc (before rcirc-read-from-authinfo activate)
+  "Allow rcirc to read authinfo from ~/.authinfo.gpg via the auth-source API.
+This doesn't support the chanserv auth method"
+  (unless arg
+    (dolist (p (auth-source-search :port '("nickserv" "bitlbee" "quakenet")
+                                   :require '(:port :user :secret)))
+      (let ((secret (plist-get p :secret))
+            (method (intern (plist-get p :port))))
+        (add-to-list 'rcirc-authinfo
+                     (list (plist-get p :host)
+                           method
+                           (plist-get p :user)
+                           (if (functionp secret)
+                               (funcall secret)
+                             secret)))))))
+}}}
 
 ----
 CategoryChatClient [[rcirc]]
