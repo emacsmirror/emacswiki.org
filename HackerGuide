@@ -13,13 +13,13 @@ Emacs --like a lot of GNU projects-- use the GNU autotools.
 * *autogen.sh* ---  Little script that checks you have the right version
                  of autotools to build the configure script.
 
-* *autogen/* ---  Some pre-built generated files for autoconf. See
+* <b>autogen/</b> ---  Some pre-built generated files for autoconf. See
                README inside.
 
 * *config.bat* ---  Configuration script for MSDOS. All I can say is
                  scripting on MSDOS doesn't seem very fun.
 
-* *configure.ac, m4/* ---  Source file used by autoconf to generate the
+* <b>configure.ac, m4/</b> ---  Source file used by autoconf to generate the
       configure script. Pretty hairy.
 
 * *GNUmakefile* ---  From the file headers: This GNUmakefile is for GNU
