@@ -1,3 +1,55 @@
+
+= Emacs Related and Unrelated Projects/Collaborations=
+
+== Submitted Here ==
+
+[[Execute.el]] For executing various asynchronous external programs.
+
+
+== On GNA! ==
+[https://gna.org/users/cngimenez My user page]
+
+
+Related Projects:
+
+* [https://gna.org/projects/bbdbv3-wl/ BBDBV3-Wl] | [http://home.gna.org/bbdbv3-wl/ Home Page] :  Interface for using the third version of BBDB with Wanderlust.
+* [https://gna.org/projects/emoicon-mode/ Emotion-Iconous-Mode] : [http://home.gna.org/emoicon-mode/ Home Page] : Emoticon minor mode for replacing emoticons texts into images in buffers.
+
+
+Unrelated Projects:
+
+* [https://gna.org/projects/liliputworld/ LiliputWorld] | [http://home.gna.org/liliputworld/ Home Page] : A 3d engine written in Ruby. Latter in C++.
+
+
+== On Savannah == 
+
+[http://savannah.gnu.org/users/cngimenez My user page]
+
+
+Unrelated Projects:
+
+* [https://savannah.nongnu.org/projects/pillowcase/ Pillow-Case] A minimalistic HTTP web server written in [http://ciaohome.org/ Ciao Prolog]
+
+Collaborating on  Projects:
+
+* [http://savannah.gnu.org/projects/identica-mode/ Identica-Mode] | [http://blog.gabrielsaldana.org/identica-mode-for-emacs/ Home Page] : A mode for reading [https://identi.ca/ Identica], a Statusnet microblogin service.
+
+
+== On Github ==
+[https://github.com/cnngimenez My user page]
+
+
+Related projects and helping:
+
+* [https://github.com/cnngimenez/diaspora.el A fork of diaspora.el] : For reading [https://joindiaspora.com/ Diaspora], a free(as in freedom) social network, using Emacs
+** [https://github.com/tchartersazevedo/diaspora.el Tiago Charters Azevedo's Fork]
+
+
+Unrelated Projects:
+
+* [https://github.com/cnngimenez/minetest_game A fork of minetest_game] : A fork of the [https://github.com/celeron55/minetest_game celeron55's minetest_game] and lot of other people(see [https://github.com/cnngimenez/minetest_game/wiki/added_index the wiki]. Lua scripts for the game Minetest, a sandbox type game. 
+
+
 =Pages I Collaborate=
 I have translated some pages and added these:
 
@@ -5,30 +57,11 @@ I have translated some pages and added these:
 * EmotionIconousMode 
 * [[Execute.el]]
 
-== Emacs Related and Unrelated Projects/Collaborations==
-
-* Here
-*** [[Execute.el]] For executing various asynchronous external programs.
-
-* [https://gna.org/users/cngimenez On GNA!]
-** Related Projects:
-*** [https://gna.org/projects/bbdbv3-wl/ BBDBV3-Wl] | [http://home.gna.org/bbdbv3-wl/ Home Page] : Interface for using the third version of BBDB with Wanderlust.
-*** [https://gna.org/projects/emoicon-mode/ Emotion-Iconous-Mode] | [http://home.gna.org/emoicon-mode/ Home Page] : Emoticon minor mode.
-** Unrelated Projects:
-*** [https://gna.org/projects/liliputworld/ LiliputWorld] | [http://home.gna.org/liliputworld/ Home Page] : A 3d engine written in Ruby. Latter in C++.
-
-* [http://savannah.gnu.org/users/cngimenez On Savannah]
-** Unrelated Projects:
-*** [https://savannah.nongnu.org/projects/pillowcase/ Pillow-Case] A minimalistic HTTP web server written in [http://ciaohome.org/ Ciao Prolog]
-** Helping on Projects:
-*** [http://savannah.gnu.org/projects/identica-mode/ Identica-Mode] | [http://blog.gabrielsaldana.org/identica-mode-for-emacs/ Home Page] : A mode for reading [https://identi.ca/ Identica], a Statusnet microblogin service.
 
 
-* [https://github.com/cnngimenez On Github]
-** Related projects and helping:
-*** diaspora.el : For reading [https://joindiaspora.com/ Diaspora], a free(as in freedom) social network, using Emacs
-*** [https://github.com/cnngimenez/diaspora.el My Fork] | [https://github.com/tchartersazevedo/diaspora.el Tiago Charters Azevedo's Fork]
+----
 
+[http://www.emacswiki.org/ Página Principal]
 
 ----
 
