@@ -140,36 +140,23 @@ and even AucTeX!
 
 [http://mxcl.github.com/homebrew/ Homebrew] has Emacs 24.2 (as of 2013-02-06). 
 
-* A Cocoa-specific Emacs.app can be built using the --cocoa switch.
-* A version supporting X11 can be built using the --with-x switch. Note that this version will not have all of the features of the Cocoa version; use only if necessary.
-The following is copied from the Homebrew info:
+* A Cocoa-specific Emacs.app can be built using the <tt>--cocoa</tt> switch.
+* A version supporting X11 can be built using the <tt>--with-x</tt> switch. Note that this version will not have all of the features of the Cocoa version; use only if necessary.
+
+Other options include:
+* <tt>--keep-ctags</tt>
+	Don't remove the ctags executable that emacs provides. **Use of this flag is not recommended** Instead, use <tt>brew install ctags</tt> after installation. 
+* <tt>--srgb</tt>
+	This option will enable sRGB colors when using Cocoa.
+
+To install using the <tt>--cocoa</tt> switch, one simply uses:
 <pre>
-$ brew info emacs
-emacs: stable 24.1, HEAD
-http://www.gnu.org/software/emacs/
-/usr/local/Cellar/emacs/24.1 (3880 files, 102M) *
-https://github.com/mxcl/homebrew/commits/master/Library/Formula/emacs.rb
-==> Options
---srgb
-	Enable sRGB colors in the Cocoa version of emacs
---with-x
-	Include X11 support
---use-git-head
-	Use Savannah git mirror for HEAD builds
---cocoa
-	Build a Cocoa version of emacs
-==> Caveats
-Because the official bazaar repository might be slow, we include an option for
-pulling HEAD from an unofficial Git mirror:
-
-  brew install emacs --HEAD --use-git-head
-
-There is inevitably some lag between checkins made to the official Emacs bazaar
-repository and their appearance on the Savannah mirror. See
-http://git.savannah.gnu.org/cgit/emacs.git for the mirror's status. The Emacs
-devs do not provide support for the git mirror, and they might reject bug
-reports filed with git version information. Use it at your own risk.
+brew install --cocoa emacs
+ln -s /usr/local/Cellar/emacs/24.2/Emacs.app /Applications/Emacs.app
 </pre>
+
+After installation, using the <tt>emacs</tt> command in the terminal or shell will run the <tt>-nw</tt> version of Emacs. If you want
+to run the Cocoa version using this command, you simply add a line to your <tt>.bash_profile</tt>.
 
 === MacPorts ===
 
