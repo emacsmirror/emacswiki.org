@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Mon Jan 28 15:39:53 2013 (-0800)
+;; Last-Updated: Wed Feb  6 07:45:32 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 6288
+;;     Update #: 6303
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -428,6 +428,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/02/06 dadams
+;;     dired-mark-pop-up: goto point-min, so show start of file list.  Thx to Michael Heerdegen.
 ;; 2013/01/28 dadams
 ;;     Added redefinition of dired-do-run-mail.  Fixes Emacs bug #13561.
 ;; 2012/12/18 dadams
@@ -5752,7 +5754,7 @@ the variable `window-min-height'."
 ;; REPLACE ORIGINAL in `dired.el'.
 ;;
 ;; 1. Put `mouse-face' on whole line, not just file name.
-;; 2. Add text property `dired-filename' to the file name (only).
+;; 2. Add text property `dired-filename' to only the file name.
 ;;
 (defun dired-insert-set-properties (beg end)
   "Highlight entire dired line upon mouseover.
@@ -6132,7 +6134,8 @@ just the current file."
                                                        special-display-frame-alist))
                    (default-frame-alist          (cons '(menu-bar-lines . 0)
                                                        default-frame-alist)))
-               (dired-pop-to-buffer bufname))
+               (dired-pop-to-buffer bufname)
+               (goto-char (point-min)))
              (setq result  (apply function args)))
         (save-excursion
           (condition-case nil           ; Ignore error if user already deleted window.
