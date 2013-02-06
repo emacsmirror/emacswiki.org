@@ -320,7 +320,7 @@ if isinstance(im,Image.Image):
 else:
  print \"paste-image-paste:No image in clipboard.\"
 ")
-      (call-process-region (point-min) (point-max) org-pythonw-interpreter t t nil)
+      (call-process-region (point-min) (point-max) pythonw-interpreter t t nil)
       (goto-char (point-min))
       (if (search-forward "paste-image-paste:No image in clipboard." nil 'noError)
 	  (error "No image in clipboard."))
