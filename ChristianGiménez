@@ -1,12 +1,13 @@
 
-= Emacs Related and Unrelated Projects/Collaborations=
+== Emacs Related and Unrelated Projects/Collaborations ==
 
 == Submitted Here ==
 
-[[Execute.el]] For executing various asynchronous external programs.
+* [[Execute.el]] : For executing various asynchronous external programs.
 
 
 == On GNA! ==
+https://gna.org/images/Water.theme/gnalogo.png
 [https://gna.org/users/cngimenez My user page]
 
 
@@ -22,7 +23,7 @@ Unrelated Projects:
 
 
 == On Savannah == 
-
+https://savannah.nongnu.org/images/Savannah.theme/icon.png
 [http://savannah.gnu.org/users/cngimenez My user page]
 
 
@@ -36,6 +37,7 @@ Collaborating on  Projects:
 
 
 == On Github ==
+https://github.com/favicon.ico
 [https://github.com/cnngimenez My user page]
 
 
@@ -50,7 +52,7 @@ Unrelated Projects:
 * [https://github.com/cnngimenez/minetest_game A fork of minetest_game] : A fork of the [https://github.com/celeron55/minetest_game celeron55's minetest_game] and lot of other people(see [https://github.com/cnngimenez/minetest_game/wiki/added_index the wiki]. Lua scripts for the game Minetest, a sandbox type game. 
 
 
-=Pages I Collaborate=
+== Pages I Collaborate ==
 I have translated some pages and added these:
 
 * [[BBDBV3-Wl]] (In Spanish: [[BBDBV3-Wl-es]])
