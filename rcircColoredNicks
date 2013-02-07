@@ -129,7 +129,7 @@ An alternative for systems where color-gray-p doesn't work in Emacs CVS (bug rep
 == Problems ==
 I always get the error: 
 
-  004013  !!! ":tie 001 entropie :Welcome to the BitlBee gateway, entropie" (wrong-number-of-arguments (lambda (process sender response channel-buffer) (let ((target (with-current-buffer channel-buffer (or rcirc-target )))) (with-syntax-table rcirc-nick-syntax-table (while (re-search-forward \w+ nil t) (let ((face (gethash (match-string-no-properties 0) rcirc-color-mapping))) (when face (rcirc-add-face (match-beginning 0) (match-end 0) face))))))) 2)
+##004013  !!! ":tie 001 entropie :Welcome to the BitlBee gateway, entropie" (wrong-number-of-arguments (lambda (process sender response channel-buffer) (let ((target (with-current-buffer channel-buffer (or rcirc-target )))) (with-syntax-table rcirc-nick-syntax-table (while (re-search-forward \w+ nil t) (let ((face (gethash (match-string-no-properties 0) rcirc-color-mapping))) (when face (rcirc-add-face (match-beginning 0) (match-end 0) face))))))) 2)##
 
 Any ideas?
 
