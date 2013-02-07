@@ -2,13 +2,10 @@ Original Mode From Xavier Decoret is here:
 
 http://artis.inrialpes.fr/~Xavier.Decoret/resources/glsl-mode
 
-With modifications for up to GLSL 4.2:
+With modifications for up to GLSL 4.3:
 
 https://raw.github.com/jimhourihan/glsl-mode/master/glsl-mode.el
 
 repo with modifications is here: https://github.com/jimhourihan/glsl-mode
-
-It would be great to have a hippie expand function for built-in types/funcs and a way to look up docs. 
-
 ----
 CategoryModes
