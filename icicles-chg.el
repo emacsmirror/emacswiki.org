@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Mon Feb  4 15:47:47 2013 (-0800)
+;; Last-Updated: Wed Feb  6 21:29:41 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 9675
+;;     Update #: 9678
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1645,6 +1645,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2013/02/06 dadams
+;;     icicle-unpropertize-completion: Added rear-nonsticky.  Thx to Christopher Schmidt.
 ;; 2013/02/04 dadams
 ;;     Removed all autoload cookies.
 ;; 2013/02/03 dadams
