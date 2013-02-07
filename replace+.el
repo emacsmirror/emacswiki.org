@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Jan 30 15:01:06 1996
 ;; Version: 21.0
-;; Last-Updated: Tue Jan 29 19:25:23 2013 (-0800)
+;; Last-Updated: Thu Feb  7 14:24:54 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 1429
+;;     Update #: 1502
 ;; URL: http://www.emacswiki.org/replace%2b.el
 ;; Doc URL: http://www.emacswiki.org/ReplacePlus
 ;; Keywords: matching, help, internal, tools, local
@@ -33,7 +33,8 @@
 ;;  Commands defined here:
 ;;
 ;;    `occur-unhighlight-visited-hits', `query-replace-w-options',
-;;    `toggle-replace-w-completion'.
+;;    `toggle-replace-w-completion',
+;;    `toggle-search/replace-region-as-default'.
 ;;
 ;;  Faces defined here:
 ;;
@@ -42,12 +43,13 @@
 ;;  User options defined here:
 ;;
 ;;    `replace-w-completion-flag',
+;;    `search/replace-region-as-default-flag',
 ;;    `search/replace-2nd-sel-as-default-flag',
 ;;    `search/replace-default-fn'.
 ;;
 ;;  Non-interactive functions defined here:
 ;;
-;     `search/replace-default'.
+;     `search/replace-default', `usable-region'.
 ;;
 ;;  Internal variable defined here:
 ;;
@@ -61,17 +63,20 @@
 ;;                    1. The prompt mentions that only lines after
 ;;                       point are affected.
 ;;                    2. The default input is provided by
+;;                       `search/replace-region-as-default-flag' or
 ;;                       `search/replace-2nd-sel-as-default-flag' or
-;;                       `search/replace-default-fn'.
+;;                       `search/replace-default-fn', in that order.
 ;;                    3. An in-progress message has been added.
 ;;    `how-many' - (Not needed for Emacs 21)
 ;;                 1. Prompt mentions tlines after point are affected.
 ;;                 2. The default input is provided by
+;;                    `search/replace-region-as-default-flag' or
 ;;                    `search/replace-2nd-sel-as-default-flag' or
-;;                    `search/replace-default-fn'.
+;;                    `search/replace-default-fn', in that order.
 ;;                 3. An in-progress message has been added.
 ;;    `keep-lines' - Same as `flush-lines'. (Not needed for Emacs 21)
-;;    `occur' - Default from `search/replace-2nd-sel-as-default-flag'
+;;    `occur' - Default from `search/replace-region-as-default-flag'
+;;              or `search/replace-2nd-sel-as-default-flag'
 ;;              or `search/replace-default-fn' (Emacs 20 only)
 ;;    `occur', `multi-occur', `multi-occur-in-matching-buffers' -
 ;;              Regexp is saved as `occur-regexp' for use by
@@ -83,13 +88,13 @@
 ;;    `occur-mode-mouse-goto' - Highlight regexp in source buffer
 ;;                              and visited linenum in occur buffer.
 ;;    `occur-read-primary-args' - (Emacs 21 only) Default regexps via
-;;                                `search/replace-default-fn'.
+;;                                `search/replace-default'.
 ;;    `query-replace-read-args',  - (Not needed for Emacs 21+)
 ;;                                1. Uses `completing-read' if
 ;;                                   `replace-w-completion-flag' is
 ;;                                   non-nil.
 ;;                                2. Default regexps are obtained via
-;;                                   `search/replace-default-fn'.
+;;                                   `search/replace-default'.
 ;;    `query-replace-read-(from|to)' - Like `query-replace-read-args',
 ;;                                     but for Emacs 21+.
 ;;    `read-regexp' (Emacs 23+) -
@@ -124,6 +129,11 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/02/07 dadams
+;;     Added: search/replace-region-as-default-flag, toggle-search/replace-region-as-default'
+;;            usable-region.
+;;     search/replace-default: Respect search/replace-region-as-default-flag.
+;;     Updated doc strings throughout to mention search/replace-region-as-default-flag..
 ;; 2013/01/29 dadams
 ;;     search/replace-2nd-sel-as-default-flag: Changed default value to nil.
 ;; 2012/08/31 dadams
@@ -351,8 +361,40 @@ This toggles the value of option `replace-w-completion-flag'."
 (defcustom search/replace-2nd-sel-as-default-flag nil
   "*Non-nil means use secondary selection as default for search/replace.
 That is, if there is currently a nonempty secondary selection, use it
-as the default input.  All text properties are removed from the text."
+as the default input.  All text properties are removed from the text.
+
+This is used only if `search/replace-region-as-default-flag' is nil or
+the region is not active."
   :type 'boolean :group 'matching)
+
+(defcustom search/replace-region-as-default-flag nil
+  "*Non-nil means use the active region text as default for search/replace.
+That is, if the region is currently active then use its text as the
+default input.  All text properties are removed from the text.
+
+Note that in this case the active region is not used as to limit the
+search/replacement scope.  But in that case you can of course just
+narrow the buffer temporarily to restrict the operation scope.
+
+A non-nil value of this option takes precedence over the use of option
+`search/replace-2nd-sel-as-default-flag'.  To give that option
+precedence over useing the active region, you can set this option to
+nil and use `region-or-non-nil-symbol-name-nearest-point' as the value
+of option `search/replace-default-fn'."
+  :type 'boolean :group 'matching)
+
+;;;###autoload
+(defun toggle-search/replace-region-as-default (msgp)
+  "Toggle whether to use the active region text as default.
+This toggles the value of option
+`search/replace-region-as-default-flag', which affects search and
+replace commands."
+  (interactive "p")
+  (setq search/replace-region-as-default-flag  (not search/replace-region-as-default-flag))
+  (when msgp (message "Using active region text as default is now %s"
+                      (if search/replace-region-as-default-flag "ON" "OFF"))))
+
+
 
 (defcustom search/replace-default-fn (if (fboundp 'non-nil-symbol-name-nearest-point)
                                          'non-nil-symbol-name-nearest-point
@@ -366,29 +408,40 @@ Reminder: Emacs 23 and later can use multiple default values.  The
 function you use here can return a single string default value or a
 list of such strings.
 
-Some reasonable choices are defined in `thingatpt+.el':
+Some reasonable choices are defined in library `thingatpt+.el':
 `word-nearest-point', `non-nil-symbol-name-nearest-point',
 `region-or-non-nil-symbol-name-nearest-point', `sexp-nearest-point'.
 
 If you use `region-or-non-nil-symbol-name-nearest-point' for this then
-you cannot also take advantage of the use of the region to bound the
-scope of query-replace operations.  But in that case you can of course
-just narrow the buffer temporarily to restrict the operation scope.
+you cannot also take advantage of the use of the active region to
+bound the scope of query-replace operations.  But in that case you can
+of course just narrow the buffer temporarily to restrict the operation
+scope.
 
-Instead of using the region text for the default input, if option
-`search/replace-2nd-sel-as-default-flag' is non-nil (true by default)
-then the secondary selection text is used as default.  (And remember
-that you can always yank the region text using `C-y'.)"
+See also options `search/replace-region-as-default-flag' and
+`search/replace-2nd-sel-as-default-flag'."
   :type '(choice
           (const :tag "No default input search/replacement functions" nil)
           (function :tag "Function of 0 args to provide default for search/replace"))
   :group 'matching)
 
+(defun usable-region (&optional remove-props)
+  "Return the region text if the region is active and nonempty.
+Non-nil optional arg REMOVE-PROPS means strip the text of all
+properties."
+  (and transient-mark-mode  mark-active  (/= (region-end) (region-beginning))
+       (if remove-props
+           (buffer-substring-no-properties (region-beginning) (region-end))
+         (buffer-substring (region-beginning) (region-end)))))
+
 (defun search/replace-default (history)
-  "Return a default value or list of such for search and replace functions.
+  "Return a default value or list of such for search & replace functions.
 A list of default input strings is computed and returned for Emacs 23
-or later.  For Emacs 20-22, only the first such thing is returned.
+or later.  For Emacs 20-22, only the first such string is returned.
 The possible strings are, in order:
+
+* The active region, if option
+  `search/replace-region-as-default-flag' is non-nil.
 
 * The secondary selection, if option
   `search/replace-2nd-sel-as-default-flag' is non-nil.
@@ -397,13 +450,18 @@ The possible strings are, in order:
   `search/replace-default-fn', if non-nil.
 
 * The first entry in the history list HISTORY."
-  (let ((second-sel  (and search/replace-2nd-sel-as-default-flag  (x-get-selection 'SECONDARY))))
+  (let ((selection   (usable-region t))
+        (second-sel  (and  (or (not search/replace-region-as-default-flag)  (not (usable-region t)))
+                           search/replace-2nd-sel-as-default-flag
+                           (x-get-selection 'SECONDARY))))
     (when second-sel (set-text-properties 0 (length second-sel) () second-sel))
     (if (> emacs-major-version 22)
-        (delq nil (list second-sel
+        (delq nil (list selection
+                        second-sel
                         (and (functionp search/replace-default-fn) (funcall search/replace-default-fn))
                         (car (symbol-value query-replace-from-history-variable))))
-      (or second-sel
+      (or selection
+          second-sel
           (and (functionp search/replace-default-fn) (funcall search/replace-default-fn))
           (car history)))))
 
@@ -411,9 +469,10 @@ The possible strings are, in order:
 
 ;; REPLACE ORIGINAL in `replace.el'.
 ;;
-;; 1. Use secondary selection as default input if `search/replace-2nd-sel-as-default-flag' is non-nil.
-;; 2. Otherwise, provide default input using `search/replace-default-fn'.
-;; 3. Use `completing-read' if `replace-w-completion-flag' is non-nil.
+;; 1. Use nonempty active region as default if `search/replace-region-as-default-flag' is non-nil.
+;; 2. Else use secondary selection as default input if `search/replace-2nd-sel-as-default-flag' is non-nil.
+;; 3. Else provide default input using `search/replace-default-fn'.
+;; 4. Use `completing-read' if `replace-w-completion-flag' is non-nil.
 ;;
 ;; As with vanilla query-replace, you can also use the history lists,
 ;; and you can enter nothing to repeat the previous query replacement
@@ -425,9 +484,12 @@ The possible strings are, in order:
 The return value can also be a pair (FROM . TO) indicating that the user
 wants to replace FROM with TO.
 
-See options `search/replace-2nd-sel-as-default-flag' and
-`search/replace-default-fn' regarding the default value.  If option
-`replace-w-completion-flag' is non-nil then you can use completion."
+See options `search/replace-region-as-default-flag',
+`search/replace-2nd-sel-as-default-flag', and
+`search/replace-default-fn' regarding the default value.
+
+If option `replace-w-completion-flag' is non-nil then you can use
+completion."
     (if query-replace-interactive
         (car (if regexp-flag regexp-search-ring search-ring))
       (let* ((default   (search/replace-default (symbol-value query-replace-from-history-variable)))
@@ -460,10 +522,10 @@ See options `search/replace-2nd-sel-as-default-flag' and
                (string-match "\\(\\`\\|[^\\]\\)\\(\\\\\\\\\\)*\\(\\\\[nt]\\)" from)
                (let ((match  (match-string 3 from)))
                  (cond
-                  ((string= match "\\n")
-                   (message "Note: `\\n' here doesn't match a newline; to do that, type C-q C-j instead"))
-                  ((string= match "\\t")
-                   (message "Note: `\\t' here doesn't match a tab; to do that, just type TAB")))
+                   ((string= match "\\n")
+                    (message "Note: `\\n' here doesn't match a newline; to do that, type C-q C-j instead"))
+                   ((string= match "\\t")
+                    (message "Note: `\\t' here doesn't match a tab; to do that, just type TAB")))
                  (sit-for 2)))
           from)))))
 
@@ -471,8 +533,9 @@ See options `search/replace-2nd-sel-as-default-flag' and
 
 ;; REPLACE ORIGINAL in `replace.el'.
 ;;
-;; 1. Use secondary selection as default input if `search/replace-2nd-sel-as-default-flag' is non-nil.
-;; 2. Otherwise, provide default input using `search/replace-default-fn'.
+;; 1. Use nonempty active region as default if `search/replace-region-as-default-flag' is non-nil.
+;; 2. Else use secondary selection as default input if `search/replace-2nd-sel-as-default-flag' is non-nil.
+;; 3. Else provide default input using `search/replace-default-fn'.
 ;; 3. Use `completing-read' if `replace-w-completion-flag' is non-nil.
 ;;
 ;; As with vanilla query-replace, you can also use the history lists,
@@ -481,7 +544,8 @@ See options `search/replace-2nd-sel-as-default-flag' and
 ;;
 (when (> emacs-major-version 21)
   (defun query-replace-read-to (from string regexp-flag)
-    "Query and return the `to' argument of a query-replace operation."
+    "Query and return the `to' argument of a query-replace operation.
+See `query-replace-read-from'."
     (let* ((default    (search/replace-default (symbol-value query-replace-to-history-variable)))
            (to-prompt  (format "%s.  NEW (replacing %s): " string (query-replace-descr from)))
            ;; The save-excursion here is in case the user marks and copies
@@ -542,18 +606,18 @@ See options `search/replace-2nd-sel-as-default-flag' and
 ;; `query-replace-read-from' defined here:
 ;;
 ;;    1. Uses `completing-read' if `replace-w-completion-flag' is non-nil.
-;;    2. Default values are provided by `search/replace-default-fn'.
+;;    2. Default values are provided by `search/replace-default'.
 ;;
 ;;    You can still use the history lists, and you can still enter
 ;;    nothing to repeat the previous query replacement operation.
 ;;    However, in addition, this provides an initial value by
-;;    `search/replace-default-fn'.
+;;    `search/replace-default'.
 ;;
 ;; In Emacs 20, this has the same behavior as the version of `query-replace-read-args'
 ;; defined here:
 ;;
 ;;    1. It uses `completing-read' if `replace-w-completion-flag' is non-nil.
-;;    2. The default regexps are provided by `search/replace-default-fn'.
+;;    2. The default regexps are provided by `search/replace-default'.
 ;;
 ;;;###autoload
 (defun query-replace-w-options (old new &optional prefix start end)
@@ -566,6 +630,11 @@ of a prefix argument.
 No PREFIX argument (nil) means replace literal string matches.
 Non-negative PREFIX argument means replace word matches.
 Negative PREFIX argument means replace regexp matches.
+
+See options `search/replace-region-as-default-flag',
+`search/replace-2nd-sel-as-default-flag', and
+`search/replace-default-fn' regarding the default values of OLD and
+NEW.
 
 Option `replace-w-completion-flag', if non-nil, provides for
 minibuffer completion while you type OLD and NEW.  In that case, to
@@ -605,11 +674,15 @@ replacement."
 ;; REPLACE ORIGINAL in `replace.el'.
 ;;
 ;; 1. Use `completing-read' if `replace-w-completion-flag' is non-nil.
-;; 2. Provide default regexps using `search/replace-default-fn'.
+;; 2. Provide default regexps using `search/replace-default'.
 ;;
 (unless (> emacs-major-version 21)
   (defun query-replace-read-args (string regexp-flag &optional noerror)
     "Read arguments for replacement functions such as `\\[query-replace]'.
+See options `search/replace-region-as-default-flag',
+`search/replace-2nd-sel-as-default-flag', and
+`search/replace-default-fn' regarding the default values.
+
 Option `replace-w-completion-flag', if non-nil, provides for
 minibuffer completion while you type the arguments.  In that case, to
 insert a `SPC' or `TAB' character, you will need to preceed it by \
@@ -678,7 +751,7 @@ the last replacement regexp."
 ;; REPLACE ORIGINAL in `replace.el':
 ;;
 ;; 1. Prompt mentions that lines after point are affected.
-;; 2. Provide default regexp using `search/replace-default-fn'.
+;; 2. Provide default regexp using `search/replace-default'.
 ;; 3. Add an in-progress message.
 ;;
 (when (< emacs-major-version 21)
@@ -688,7 +761,11 @@ A match split across lines preserves all the lines it lies in.
 Note that the lines are deleted, not killed to the kill-ring.
 
 If REGEXP contains upper case characters (excluding those preceded by `\\'),
-the matching is case-sensitive."
+the matching is case-sensitive.
+
+See options `search/replace-region-as-default-flag',
+`search/replace-2nd-sel-as-default-flag', and
+`search/replace-default-fn' regarding the default REGEXP value."
     (interactive
      (list (read-from-minibuffer "Keep lines after cursor that contain a match for REGEXP: "
                                  (search/replace-default regexp-history) nil nil 'regexp-history nil t)))
@@ -715,7 +792,7 @@ the matching is case-sensitive."
 ;; REPLACE ORIGINAL in `replace.el':
 ;;
 ;; 1. Prompt mentions that lines after point are affected.
-;; 2. Provide default regexp using `search/replace-default-fn'.
+;; 2. Provide default regexp using `search/replace-default'.
 ;; 3. Add an in-progress message.
 ;;
 (when (< emacs-major-version 21)
@@ -725,7 +802,11 @@ If a match is split across lines, all the lines it lies in are deleted.
 Note that the lines are deleted, not killed to the kill-ring.
 
 If REGEXP contains upper case characters (excluding those preceded by `\\'),
-the matching is case-sensitive."
+the matching is case-sensitive.
+
+See options `search/replace-region-as-default-flag',
+`search/replace-2nd-sel-as-default-flag', and
+`search/replace-default-fn' regarding the default REGEXP value."
     (interactive
      (list (read-from-minibuffer "Delete lines after cursor that contain a match for REGEXP: "
                                  (search/replace-default regexp-history) nil nil 'regexp-history nil t)))
@@ -742,15 +823,18 @@ the matching is case-sensitive."
 ;; REPLACE ORIGINAL in `replace.el':
 ;;
 ;; 1. Prompt mentions that lines after point are affected.
-;; 2. Provide default regexp using `search/replace-default-fn'.
+;; 2. Provide default regexp using `search/replace-default'.
 ;; 3. Add an in-progress message.
 ;;
 (when (< emacs-major-version 21)
   (defun how-many (regexp)
     "Print number of matches for REGEXP following point.
-
 If REGEXP contains upper case characters (excluding those preceded by `\\'),
-the matching is case-sensitive."
+the matching is case-sensitive.
+
+See options `search/replace-region-as-default-flag',
+`search/replace-2nd-sel-as-default-flag', and
+`search/replace-default-fn' regarding the default REGEXP value."
     (interactive (list (read-from-minibuffer "Count matches after point for REGEXP: "
                                              (search/replace-default regexp-history)
                                              nil nil 'regexp-history nil t)))
@@ -775,13 +859,12 @@ the matching is case-sensitive."
 
 ;; REPLACE ORIGINAL in `replace.el':
 ;;
-;; 1. Provide default regexp using `search/replace-default-fn'.
+;; 1. Provide default regexp using `search/replace-default'.
 ;; 2. Save regexp as `occur-regexp' for use by `occur-mode-mouse-goto' and `occur-mode-goto-occurrence'.
 ;;
 (when (< emacs-major-version 21)
   (defun occur (regexp &optional nlines)
     "Show all lines in the current buffer containing a match for REGEXP.
-
 If a match spreads across multiple lines, all those lines are shown.
 
 Each line is displayed with NLINES lines before and after,
@@ -794,7 +877,11 @@ menu to find any of the occurrences in the current buffer.
 \\<occur-mode-map>\\[describe-mode] in the `*Occur*' buffer will explain how.
 
 If REGEXP contains upper case characters (excluding those preceded by `\\'),
-the matching is case-sensitive."
+the matching is case-sensitive.
+
+See options `search/replace-region-as-default-flag',
+`search/replace-2nd-sel-as-default-flag', and
+`search/replace-default-fn' regarding the default REGEXP value."
     (interactive
      (list (let ((default  (search/replace-default regexp-history)))
              (read-from-minibuffer "List lines matching regexp: "  nil nil nil 'regexp-history default t))
@@ -1021,10 +1108,14 @@ the matching is case-sensitive."
 
 ;; REPLACE ORIGINAL in `replace.el':
 ;;
-;; Provide default input using `search/replace-default-fn'.
+;; Provide default input using `search/replace-default'.
 ;;
 (when (> emacs-major-version 20)
   (defun occur-read-primary-args ()
+    "Read arguments for `occur'.
+See options `search/replace-region-as-default-flag',
+`search/replace-2nd-sel-as-default-flag', and
+`search/replace-default-fn' regarding the default regexp value."
     (let* ((perform-collect  (and (> emacs-major-version 23)  (consp current-prefix-arg)))
            (default          (search/replace-default regexp-history))
            (regexp           (if (fboundp 'read-regexp) ; Emacs 23+
