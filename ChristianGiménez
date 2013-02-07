@@ -1,12 +1,12 @@
 
 == Emacs Related and Unrelated Projects/Collaborations ==
 
-== Submitted Here ==
+=== Submitted Here ===
 
 * [[Execute.el]] : For executing various asynchronous external programs.
 
 
-== On GNA! ==
+=== On GNA! ===
 https://gna.org/images/Water.theme/gnalogo.png
 [https://gna.org/users/cngimenez My user page]
 
@@ -22,7 +22,7 @@ Unrelated Projects:
 * [https://gna.org/projects/liliputworld/ LiliputWorld] | [http://home.gna.org/liliputworld/ Home Page] : A 3d engine written in Ruby. Latter in C++.
 
 
-== On Savannah == 
+=== On Savannah ===
 https://savannah.nongnu.org/images/Savannah.theme/icon.png
 [http://savannah.gnu.org/users/cngimenez My user page]
 
@@ -36,7 +36,7 @@ Collaborating on  Projects:
 * [http://savannah.gnu.org/projects/identica-mode/ Identica-Mode] | [http://blog.gabrielsaldana.org/identica-mode-for-emacs/ Home Page] : A mode for reading [https://identi.ca/ Identica], a Statusnet microblogin service.
 
 
-== On Github ==
+=== On Github ===
 https://github.com/favicon.ico
 [https://github.com/cnngimenez My user page]
 
@@ -52,22 +52,38 @@ Unrelated Projects:
 * [https://github.com/cnngimenez/minetest_game A fork of minetest_game] : A fork of the [https://github.com/celeron55/minetest_game celeron55's minetest_game] and lot of other people(see [https://github.com/cnngimenez/minetest_game/wiki/added_index the wiki]. Lua scripts for the game Minetest, a sandbox type game. 
 
 
-== Pages I Collaborate ==
+=== Pages I Collaborate ===
 I have translated some pages and added these:
 
-* [[BBDBV3-Wl]] (In Spanish: [[BBDBV3-Wl-es]])
+* [[BBDBV3-Wl]] (in spanish: [[BBDBV3-Wl-es]])
 * EmotionIconousMode 
 * [[Execute.el]]
+* AdministradoresEmacsWiki (spanish translation of EmacsWikiAdministrators)
 
+
+== Activities ==
+=== Current ===
+
+"Current" means: //February 2013://
+
+* I'm investigating [http://www.ogre3d.org Ogre], a FreeSoftware Library for creating 3D environments. As consequence, I'm investigating the following features:
+** OIS Library, for event management.
+** The use of Blender for designing basic models.
+* Studying Databases, theory and design.
+
+=== Future Activities ===
+
+* I want to investigate [https://mariadb.org/ MariaDB] and its differences with the !MySQl Database. 
+** If it can be used with Ruby on Rails and what is needed.
 
 
 ----
 
-[http://www.emacswiki.org/ Página Principal]
+[http://www.emacswiki.org/ Página Principal] CategoryHomepage
 
 ----
 
-=Conversations=
+== Conversations ==
 
 [new:AlexSchroeder:2011-06-30 12:14 UTC]
 Thank you for the Spanish translation!
