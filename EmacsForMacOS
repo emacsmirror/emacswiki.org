@@ -324,21 +324,6 @@ You can also use Right Zoom ( http://www.macupdate.com/app/mac/30591/right-zoom 
 
 -dwd
 
-=== Command to Maximize Emacs 23.1 (vanilla) ===
-
-Fullscreen mode doesn't work in Vanilla Emacs 23.1.  This at least maximizes your session to take up as much room as possible.
-
-<pre>
-(defun maximize-frame () 
-  (interactive)
-  (set-frame-position (selected-frame) 0 0)
-  (set-frame-size (selected-frame) 1000 1000))
-
-(global-set-key (kbd "<s-S-return>") 'maximize-frame)
-</pre>
-
--- [[timcharper]]
-
 == Hacking on the Sources ==
 
 The section is meant to collect useful hacks to the C sources (or to Lisp sources that are executed before any init files are read, such as ##startup.el##).
