@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Feb  4 14:04:13 2013 (-0800)
+;; Last-Updated: Tue Feb  5 09:02:04 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 13794
+;;     Update #: 13795
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -6632,6 +6632,7 @@ Otherwise remove only Icicles internal text properties:
         (remove-text-properties
          0 len '(display                  nil
                  help-echo                nil
+                 rear-nonsticky           nil
                  icicle-fancy-candidates  nil
                  icicle-mode-line-help    nil
                  icicle-special-candidate nil
