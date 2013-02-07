@@ -1,7 +1,7 @@
 ;;;; minor-mode-hack.el --- Hack of minor-modes
-;; $Id: minor-mode-hack.el,v 1.2 2010/01/07 22:25:49 rubikitch Exp $
+;; $Id: minor-mode-hack.el,v 1.3 2013/02/07 00:16:30 rubikitch Exp $
 
-;; Copyright (C) 2010  rubikitch
+;; Copyright (C) 2010,2013  rubikitch
 
 ;; Author: rubikitch <rubikitch@ruby-lang.org>
 ;; Keywords: lisp
@@ -27,8 +27,12 @@
 ;; A hack of minor-modes.
 ;;
 ;; `raise-minor-mode-map-alist' / `lower-minor-mode-map-alist' - resolve `minor-mode-map-alist' conflict
-
-;;; Commands:
+;;
+;; Example: 
+;; (raise-minor-mode-map-alist 'view-mode)
+;; raises priority of `view-mode-map'.
+;;
+;;; Commands
 ;;
 ;; Below are complete command list:
 ;;
@@ -39,7 +43,7 @@
 ;;
 ;; Below are customizable option list:
 ;;
-
+;;
 ;;; Installation:
 ;;
 ;; Put minor-mode-hack.el to your load-path.
@@ -53,17 +57,13 @@
 ;;
 ;; No need more.
 
-;;; Customize:
-;;
-;;
-;; All of the above can customize by:
-;;      M-x customize-group RET minor-mode-hack RET
-;;
-
 
 ;;; History:
 
 ;; $Log: minor-mode-hack.el,v $
+;; Revision 1.3  2013/02/07 00:16:30  rubikitch
+;; autoload, copyright, more commentary
+;;
 ;; Revision 1.2  2010/01/07 22:25:49  rubikitch
 ;; New command: `show-minor-mode-map-priority'
 ;;
@@ -73,22 +73,25 @@
 
 ;;; Code:
 
-(defvar minor-mode-hack-version "$Id: minor-mode-hack.el,v 1.2 2010/01/07 22:25:49 rubikitch Exp $")
+(defvar minor-mode-hack-version "$Id: minor-mode-hack.el,v 1.3 2013/02/07 00:16:30 rubikitch Exp $")
 
 (defgroup minor-mode-hack nil
   "minor-mode-hack"
   :group 'emacs)
 
+;;;###autoload
 (defun raise-minor-mode-map-alist (mode-symbol)
   "Raise `minor-mode-map-alist' priority of MODE-SYMBOL."
   (let ((x (assq mode-symbol minor-mode-map-alist)))
     (and x (setq minor-mode-map-alist (cons x (delq x minor-mode-map-alist))))))
 
+;;;###autoload
 (defun lower-minor-mode-map-alist (mode-symbol)
   "Lower `minor-mode-map-alist' priority of MODE-SYMBOL."
   (let ((rel (assq mode-symbol minor-mode-map-alist)))
     (setq minor-mode-map-alist (append (delete rel minor-mode-map-alist) (list rel)))))
 
+;;;###autoload
 (defun show-minor-mode-map-priority ()
   "Show priority of `minor-mode-map-alist'."
   (interactive)
