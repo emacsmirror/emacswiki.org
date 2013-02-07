@@ -149,5 +149,9 @@ the beginning of the rcirc-color.el file. And it works now. But I am
 not sure it is the best solution. I am wondering, maybe removing the
 eval-after-load line?
 
+[new]
+I have no idea where this auto load comes from. -- Alex
+
+
 ---- CategoryChatClient
 [[rcirc]]
