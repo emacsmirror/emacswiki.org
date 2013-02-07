@@ -18,33 +18,40 @@ Library <tt>[[replace+.el]]</tt> provides the following extensions to Emacs' sta
 
 * If option '''`isearchp-set-region-flag'''' is non-`nil', then `query-replace-w-options' ''selects the last target'' occurrence; that is, it sets the region around it. You can also select the last target manually, using command `set-region-around-search-target'. This option and command `set-region-around-search-target' are defined in library Lisp:isearch+.el.
 
-* If option '''`replace-w-completion-flag'''' is non-`nil', then you can use ''[[Completion]]'' when reading the new and old text. (If you use completion, you can enter a space or tab character using `C-q'.) This option is defined in <tt>[[replace+.el]]</tt>.
+* If option '''`replace-w-completion-flag'''' is non-`nil', then you can use ''[[Completion]]'' when reading the new and old text. (If you use completion, you can enter a space or tab character using `C-q'.) This option is defined in <tt>[[replace+.el]]</tt>.  Command '''`toggle-replace-w-completion'''' toggles option `replace-w-completion-flag'.
 
-* Command '''`toggle-replace-w-completion'''' toggles option `replace-w-completion-flag'.
 
-* Non-`nil' option '''`search/replace-2nd-sel-as-default-flag'''' means that if the SecondarySelection is nonempty then it is used as the default input value.
+* Non-`nil' option '''`search/replace-region-as-default-flag'''' means that if the [[active region]] is not empty then its text is used as the default input value.  Note that in this case the active region is not used as to limit the search/replacement scope.  But you can of course just narrow the buffer temporarily to restrict the operation scope.  Command '''`toggle-search/replace-region-as-default'''' toggles the option value.  
 
-* If there is no nonempty SecondarySelection, or if option `search/replace-2nd-sel-as-default-flag' is `nil', then option '''`search/replace-default-fn'''' determines the default value for the new (replacement) and old (original) arguments. 
+
+
+* Non-`nil' option '''`search/replace-2nd-sel-as-default-flag'''' means that if the SecondarySelection is nonempty, ''and'' `search/replace-region-as-default-flag' is `nil' or the [[region]] is not active and nonempty, then the secondary-selection text is used as the default input value.
+
+* If there neither the active region nor the SecondarySelection is used, then option '''`search/replace-default-fn'''' determines the default value for the new (replacement) and old (original) query-replace arguments. 
 By default, this option has value `non-nil-symbol-name-nearest-point', if that function is defined (it is defined in library <tt>[[thingatpt+.el]]</tt>), or `word-at-point', otherwise. This means that the symbol or word near or at the [[cursor]] is the default value.  And with Emacs 23 or later, you can use `M-n' to cycle among several default values, when they are available.
 (You can of course also use the history lists, or you can use `C-y' to yank the [[region]] text, or you can enter nothing, to repeat the previous query-replacement operation.)
 
 '''See Also: IsearchPlus''' for more information on option `isearchp-set-region-flag' and command 
 `set-region-around-search-target'.
 
+
+
+
+
+
+
 [:OccurExtensions]
 == Occur Extensions ==
 
 Library <tt>[[replace+.el]]</tt> provides the following extensions to Emacs' standard `occur' command:
+
+* The same default text is used as for query-replace (see [[#QueryReplaceExtensions]]).
 
 * When you visit an occurrence, the line number is highlighted in buffer `*Occur*', using face `occur-highlight-linenum'.  This is similar to highlighting links that you have already visited in Info or in a Web browser: it lets you know where you've been.
 
 * Occurrences matching the search pattern (regular expression) you supply to `occur' are highlighted in the `*Occur*' buffer, using face `list-matching-lines-face'. The effect is similar to that of highlighting with the Google toolbar. (This is available also for vanilla Emacs, starting with Emacs 22.)
 
 * The text matching the search pattern is highlighted in the source buffer also.
-
-* Non-`nil' option '''`search/replace-2nd-sel-as-default-flag'''' means that if the SecondarySelection is nonempty then it is used as the default input value.
-
-* If there is no nonempty SecondarySelection, or if option `search/replace-2nd-sel-as-default-flag' is `nil', then option '''`search/replace-default-fn'''' determines the default value for the regexp argument. See [[#QueryReplaceExtensions]], above, for more information.
 
 * (Emacs 20 only) In buffer <code>*Occur*</code>, you can click anywhere on a found line: the entire line is mouse-face active. 
 
@@ -57,9 +64,7 @@ Library <tt>[[replace+.el]]</tt> provides the following extensions to Emacs' sta
 
 Library <tt>[[replace+.el]]</tt> provides the following extensions to commands `flush-lines', `keep-lines', and `how-many'. They are not needed for users of Emacs 21 or greater.
 
-* Non-`nil' option '''`search/replace-2nd-sel-as-default-flag'''' means that if the SecondarySelection is nonempty then it is used as the default input value.
-
-* If there is no nonempty SecondarySelection, or if option `search/replace-2nd-sel-as-default-flag' is `nil', then option '''`search/replace-default-fn'''' determines the default value for the regexp argument. See [[#QueryReplaceExtensions]], above, for more information.
+* The same default text is used as for query-replace (see [[#QueryReplaceExtensions]]).
 
 * The prompt lets you know that only lines after point are affected.
 
