@@ -1,11 +1,13 @@
-;;;; minor-mode-hack.el --- Hack of minor-modes
-;; $Id: minor-mode-hack.el,v 1.3 2013/02/07 00:16:30 rubikitch Exp $
+;;; minor-mode-hack.el --- Hack of minor-modes
+
+;; $Id: minor-mode-hack.el,v 1.5 2013/02/07 02:54:39 rubikitch Exp $
 
 ;; Copyright (C) 2010,2013  rubikitch
 
 ;; Author: rubikitch <rubikitch@ruby-lang.org>
 ;; Keywords: lisp
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/download/minor-mode-hack.el
+;; Version: 1.5
 
 ;; This file is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -61,6 +63,12 @@
 ;;; History:
 
 ;; $Log: minor-mode-hack.el,v $
+;; Revision 1.5  2013/02/07 02:54:39  rubikitch
+;; Fix header
+;;
+;; Revision 1.4  2013/02/07 02:52:57  rubikitch
+;; *** empty log message ***
+;;
 ;; Revision 1.3  2013/02/07 00:16:30  rubikitch
 ;; autoload, copyright, more commentary
 ;;
@@ -73,7 +81,7 @@
 
 ;;; Code:
 
-(defvar minor-mode-hack-version "$Id: minor-mode-hack.el,v 1.3 2013/02/07 00:16:30 rubikitch Exp $")
+(defvar minor-mode-hack-version "$Id: minor-mode-hack.el,v 1.5 2013/02/07 02:54:39 rubikitch Exp $")
 
 (defgroup minor-mode-hack nil
   "minor-mode-hack"
