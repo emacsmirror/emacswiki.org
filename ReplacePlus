@@ -1,35 +1,58 @@
-This page is about library '''[::Replace+]''', <tt>[[replace+.el]]</tt>. It extends functionalities in the standard Emacs library ##replace.el##, including commands `occur' and `query-replace'.
+This page is about library '''[::Replace+]''', <tt>[[replace+.el]]</tt>. It extends functionalities in the standard Emacs library ##replace.el##, enhancing commands `query-replace' and `occur'.  (For Emacs 20 it also enhances `keep-lines', `flush-lines', and `how-many'.)
+
+
+
+
+
+[:DefaultValue]
+== Default Value for the Text Acted On ==
+
+Common to the enhancements for commands `query-replace' and  `occur' (and `keep-lines', `flush-lines', and `how-many' for Emacs 20) is the handling of a default value when reading input.  For `query-replace' this applies to the text to be replaced and the replacement text.  For `occur' it applies to the [[regexp]] used to match buffer lines.
+
+The defaulting is very flexible, so it might sound a bit complex.  Defaulting is determined in the following order:  
+
+1. For `query-replace' only, just as in vanilla Emacs, empty input means to repeat query-replacing using the same old and new text as the last time.  This is not a change in behavior.
+
+2. If the [[region]] is [[active region|active]] and option '''`search/replace-region-as-default-flag'''' is non-`nil', then the region text is a default.
+
+3. Else, if option '''`search/replace-2nd-sel-as-default-flag'''' is non-`nil' and the SecondarySelection is defined, then the secondary-selection text is a default.
+
+4. Else, if option '''`search/replace-default-fn'''' is non-`nil' then it is a function of zero arguments that is called to return a default.
+
+5. Else the first entry in the minibuffer history is a default.
+
+(For Emacs 23 and later, all defaults that can be defined as listed are available, in this order.  For Emacs prior to 23, only the first default that can be defined is available.)
+
+Note that `query-replace', unlike the other commands enhanced here, normally uses the region not as default text but to restrict the scope of the command action.  When option `search/replace-region-as-default-flag' is non-`nil' you lose this feature and gain using the region for defaulting.  In this case you can just narrow the region (`C-x n n') to restrict the scope of the command.
+
+Because both uses of the region can be useful, you can easily toggles the value of option `search/replace-region-as-default-flag' using command '''`toggle-search/replace-region-as-default''''.
+
+Wrt #4 above, consider using library <tt>[[thingatpt+.el]]</tt>, which provides plenty of functions that are useful for grabbing text at point to use as a default value.  Among these is the default value of `search/replace-default-fn' (if defined), '''`non-nil-symbol-name-nearest-point''''.  It finds the nearest symbol to the cursor and returns its name.
+
 
 
 
 
 
 [:QueryReplaceExtensions]
-== Query-Replace Extensions ==
+== Query-Replace ==
 
-Library <tt>[[replace+.el]]</tt> provides the following extensions to Emacs' standard `query-replace' command:
+Library <tt>[[replace+.el]]</tt> does not redefine either of the standard query-replace commands, `query-replace' or `query-replace-regexp'.  Instead, it defines a new command that combines them.
 
-* Command '''`query-replace-w-options'''' rolls both `query-replace' and `query-replace-regexp' into one command. The prefix arg governs the behavior:
-** None -- replace ''literal'' string matches
-** Non-negative -- replace ''word'' matches
-** Negative -- replace ''regexp'' matches
+* Command '''`query-replace-w-options'''' rolls both `query-replace' and `query-replace-regexp' into one. The prefix arg governs the behavior:
+** None -- replace ''literal'' string matches (like `query-replace' with no prefix arg)
+** Non-negative -- replace ''word'' matches (like `query-replace' with a prefix arg)
+** Negative -- replace ''regexp'' matches (like `query-replace-regexp')
 
-:: In other words, this gives you `query-replace-regexp' if you use a negative argument; otherwise, it is the same as `query-replace' (but see next). I suggest binding this to '''`##M-%##'''', in place of `query-replace'.
+:: In other words, this gives you `query-replace-regexp' if you use a negative argument; otherwise, it is like `query-replace' (but see next).  I bind this to '''`##M-%##'''', in place of `query-replace'.
 
-* If option '''`isearchp-set-region-flag'''' is non-`nil', then `query-replace-w-options' ''selects the last target'' occurrence; that is, it sets the region around it. You can also select the last target manually, using command `set-region-around-search-target'. This option and command `set-region-around-search-target' are defined in library Lisp:isearch+.el.
+* If option '''`isearchp-set-region-flag'''' is non-`nil', then `query-replace-w-options' ''selects the last target'' occurrence; that is, it sets the region around it. You can also select the last target manually, using command `set-region-around-search-target'. This option and command `set-region-around-search-target' are defined in library <tt>[[isearch+.el]]</tt>.
 
-* If option '''`replace-w-completion-flag'''' is non-`nil', then you can use ''[[Completion]]'' when reading the new and old text. (If you use completion, you can enter a space or tab character using `C-q'.) This option is defined in <tt>[[replace+.el]]</tt>.  Command '''`toggle-replace-w-completion'''' toggles option `replace-w-completion-flag'.
-
-
-* Non-`nil' option '''`search/replace-region-as-default-flag'''' means that if the [[active region]] is not empty then its text is used as the default input value.  Note that in this case the active region is not used as to limit the search/replacement scope.  But you can of course just narrow the buffer temporarily to restrict the operation scope.  Command '''`toggle-search/replace-region-as-default'''' toggles the option value.  
+* If option '''`replace-w-completion-flag'''' is non-`nil', then you can use [[completion]] when reading the new and old text. (If you use completion, you can enter a space or tab character using `C-q'.) This option is defined in <tt>[[replace+.el]]</tt>.  Command '''`toggle-replace-w-completion'''' toggles option `replace-w-completion-flag'.
 
 
+* Defaulting is as described [[#DefaultValue|above]].
 
-* Non-`nil' option '''`search/replace-2nd-sel-as-default-flag'''' means that if the SecondarySelection is nonempty, ''and'' `search/replace-region-as-default-flag' is `nil' or the [[region]] is not active and nonempty, then the secondary-selection text is used as the default input value.
-
-* If there neither the active region nor the SecondarySelection is used, then option '''`search/replace-default-fn'''' determines the default value for the new (replacement) and old (original) query-replace arguments. 
-By default, this option has value `non-nil-symbol-name-nearest-point', if that function is defined (it is defined in library <tt>[[thingatpt+.el]]</tt>), or `word-at-point', otherwise. This means that the symbol or word near or at the [[cursor]] is the default value.  And with Emacs 23 or later, you can use `M-n' to cycle among several default values, when they are available.
-(You can of course also use the history lists, or you can use `C-y' to yank the [[region]] text, or you can enter nothing, to repeat the previous query-replacement operation.)
 
 '''See Also: IsearchPlus''' for more information on option `isearchp-set-region-flag' and command 
 `set-region-around-search-target'.
@@ -45,7 +68,7 @@ By default, this option has value `non-nil-symbol-name-nearest-point', if that f
 
 Library <tt>[[replace+.el]]</tt> provides the following extensions to Emacs' standard `occur' command:
 
-* The same default text is used as for query-replace (see [[#QueryReplaceExtensions]]).
+* Defaulting is as described [[#DefaultValue|above]].
 
 * When you visit an occurrence, the line number is highlighted in buffer `*Occur*', using face `occur-highlight-linenum'.  This is similar to highlighting links that you have already visited in Info or in a Web browser: it lets you know where you've been.
 
@@ -64,7 +87,7 @@ Library <tt>[[replace+.el]]</tt> provides the following extensions to Emacs' sta
 
 Library <tt>[[replace+.el]]</tt> provides the following extensions to commands `flush-lines', `keep-lines', and `how-many'. They are not needed for users of Emacs 21 or greater.
 
-* The same default text is used as for query-replace (see [[#QueryReplaceExtensions]]).
+* Defaulting is as described [[#DefaultValue|above]].
 
 * The prompt lets you know that only lines after point are affected.
 
