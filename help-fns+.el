@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 22.1
-;; Last-Updated: Fri Dec 28 09:52:24 2012 (-0800)
+;; Last-Updated: Fri Feb  8 11:55:52 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 1499
+;;     Update #: 1558
 ;; URL: http://www.emacswiki.org/help-fns+.el
 ;; Doc URL: http://emacswiki.org/HelpPlus
 ;; Keywords: help, faces, characters, packages, description
@@ -97,7 +97,7 @@
 ;;              have been REDEFINED HERE:
 ;;
 ;;  `describe-function', `describe-function-1', `describe-variable',
-;;  `help-fns--key-bindings', `help-fns--signature', 
+;;  `help-fns--key-bindings', `help-fns--signature',
 ;;
 ;;
 ;;  ***** NOTE: The following command defined in `package.el'
@@ -119,12 +119,14 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/02/08 dadams
+;;     describe-variable: Updated wrt Emacs 24 build of 2013-01-30.
 ;; 2012/11/18 dadams
 ;;     describe-(variable|function): Add completion-candidate annotation: (option|comand).
 ;; 2012/10/28 dadams
 ;;     help-fns--key-bindings: Fixed: forgot to mapconcat over keys.
 ;; 2012/10/26 dadams
-;;     Added: help-fns--key-bindings, help-fns--signature, 
+;;     Added: help-fns--key-bindings, help-fns--signature,
 ;;     Added Emacs 24.3+ version of describe-function-1.  Updated version for 23.2-24.2.
 ;;     help-substitute-command-keys: Fix for \= when no match for \[, \<, \{ past it.
 ;; 2012/09/24 dadams
@@ -353,7 +355,7 @@ Non-nil optional arg ADD-HELP-BUTTONS does that, adding buttons to key
 descriptions, which link to the key's command help."
     (let ((raw-doc  (documentation function 'RAW)))
       (if raw  raw-doc  (help-substitute-command-keys raw-doc add-help-buttons))))
-    
+
   (defun help-documentation-property (symbol prop &optional raw add-help-buttons)
     "Same as `documentation-property', but optionally adds buttons for help.
 Non-nil optional arg ADD-HELP-BUTTONS does that, adding buttons to key
@@ -612,7 +614,7 @@ Optional arg NOMSG non-nil means do not display a progress message."
               Info-indexed-nodes)
         (Info-find-node Info-indexed-file nodename))))
 
-  ;; Similar to `Info-apropos-matches', but using exact matches (ignoring case). 
+  ;; Similar to `Info-apropos-matches', but using exact matches (ignoring case).
   (defun Info-index-occurrences (index-entry &optional index-nodes manuals nomsg)
     "Collect occurrences of INDEX-ENTRY in INDEX-NODES of MANUALS.
 Return a list of the form ((FILE INDEX-ENTRY NODE LINE) ...), where:
@@ -1831,15 +1833,13 @@ it is displayed along with the global value."
                                               (and (symbolp (variable-at-point))
                                                    (variable-at-point))))
            (enable-recursive-minibuffers  t)
-           (completion-annotate-function  (lambda (var)
-                                            (and (custom-variable-p (intern-soft var))  "  (option)")))
+           (completion-annotate-function  (lambda (vv) (and (custom-variable-p (intern-soft vv))  "  (option)")))
            val)
        (setq val (completing-read
                   "Describe variable: " obarray (if current-prefix-arg
                                                     (lambda (vv) (user-variable-p vv))
-                                                  (lambda (vv)
-                                                    (or (get vv 'variable-documentation)
-                                                        (and (boundp vv)  (not (keywordp vv))))))
+                                                  (lambda (vv) (or (get vv 'variable-documentation)
+                                                              (and (boundp vv)  (not (keywordp vv))))))
                   t nil nil (and (symbolp symb)  (symbol-name symb))))
        (list (if (equal val "") symb (intern val))
              nil
@@ -1854,10 +1854,10 @@ it is displayed along with the global value."
           (error "Not a defined Emacs user option: `%s'" variable))
         ;;$$ (unless (boundp variable) (error "Not a defined Emacs variable: `%s'" variable))
         (save-excursion
-          (let ((valvoid  (not (with-current-buffer buffer (boundp variable))))
-                val val-start-pos locus)
-            ;; Extract the value before setting up the output buffer, in case BUFFER *is* the
-            ;; output buffer.
+          (let ((valvoid           (not (with-current-buffer buffer (boundp variable))))
+                (permanent-local   (get variable 'permanent-local))
+                val val-start-pos  locus)
+            ;; Extract the value before setting up the output buffer, in case BUFFER *is* the output buffer.
             (unless valvoid
               (with-selected-frame frame
                 (with-current-buffer buffer
@@ -1871,13 +1871,13 @@ it is displayed along with the global value."
                 (setq file-name  (find-lisp-object-file-name variable 'defvar))
                 (if file-name
                     (progn (princ " is a variable defined in `")
-                           (princ (if (eq file-name 'C-source) "C source code"
+                           (princ (if (eq file-name 'C-source)
+                                      "C source code"
                                     (file-name-nondirectory file-name)))
                            (princ "'.\n")
                            (with-current-buffer standard-output
-                             (save-excursion
-                               (re-search-backward "`\\([^`']+\\)'" nil t)
-                               (help-xref-button 1 'help-variable-def variable file-name)))
+                             (save-excursion (re-search-backward "`\\([^`']+\\)'" nil t)
+                                             (help-xref-button 1 'help-variable-def variable file-name)))
                            (if valvoid (princ "It is void as a variable.") (princ "Its ")))
                   (if valvoid (princ " is void as a variable.") (princ "'s "))))
               (unless valvoid
@@ -1903,24 +1903,30 @@ it is displayed along with the global value."
                         (when (< (point) (+ from 20)) (delete-region (1- from) from)))))))
               (terpri)
               (when locus
-                (if (bufferp locus)
-                    (princ (format "%socal in buffer %s; "
-                                   (if (get variable 'permanent-local) "Permanently l"  "L")
-                                   (buffer-name)))
-                  (princ (format "It is a frame-local variable; ")))
+                (cond ((bufferp locus)
+                       (princ (format "%socal in buffer `%s'; "
+                                      (if (get variable 'permanent-local)  "Permanently l"  "L")
+                                      (buffer-name buffer))))
+                      ((framep locus)
+                       (princ (format "It is a frame-local variable; ")))
+                      ((terminal-live-p locus)
+                       (princ (format "It is a terminal-local variable; ")))
+                      (t (princ (format "It is local to %S" locus))))
                 (if (not (default-boundp variable))
                     (princ "globally void")
-                  (let ((val  (default-value variable)))
+                  (let ((global-val  (default-value variable)))
                     (with-current-buffer standard-output
-                      (princ "global value is ") (terpri)
-                      ;; Fixme: `pp' can take an age if you happen to ask for a very large expression.
-                      ;; We should probably print it raw once and check it's a sensible size before
-                      ;; prettyprinting.  -- fx
-                      (let ((from  (point)))
-                        (pp val)
-                        ;; See previous comment for this function.
-                        ;; (help-xref-on-pp from (point))
-                        (when (< (point) (+ from 20))  (delete-region (1- from) from))))))
+                      (princ "global value is ")
+                      (if (eq val global-val)
+                          (princ "the same.")
+                        (terpri)
+                        ;; Fixme: `pp' can take an age if you happen to ask for a very large expression.
+                        ;; We should probably print it raw once and check whether it is a sensible size,
+                        ;; before prettyprinting.  -- fx
+                        (let ((from  (point)))
+                          (pp global-val)
+                          ;; See previous comment for this function.  (help-xref-on-pp from (point))
+                          (when (< (point) (+ from 20)) (delete-region (1- from) from)))))))
                 (terpri))
               (with-current-buffer standard-output ; If the value is large, move it to the end.
                 (when (> (count-lines (point-min) (point-max)) 10)
@@ -1928,11 +1934,10 @@ it is displayed along with the global value."
                   ;; `'s' at the end of a symbol.
                   (set-syntax-table emacs-lisp-mode-syntax-table)
                   (goto-char val-start-pos)
-                  ;; The line below previously read as
-                  ;; (delete-region (point) (progn (end-of-line) (point)))
+                  ;; The line below previously read as (delete-region (point) (progn (end-of-line) (point))),
                   ;; which suppressed display of the buffer local value for large values.
                   (when (looking-at "value is") (replace-match ""))
-                  (save-excursion (insert "\n\nValue:") (terpri)
+                  (save-excursion (insert "\n\nValue:") (terpri) ; Vanilla Emacs has no `terpri' here.
                                   (set (make-local-variable 'help-button-cache) (point-marker)))
                   (insert "value is shown ")
                   (insert-button "below" 'action help-button-cache 'follow-link t
@@ -1950,64 +1955,66 @@ it is displayed along with the global value."
                      (extra-line  nil))
                 (when (and (> (length doc) 1)  (eq ?* (elt doc 0)))
                   (setq doc  (substring doc 1))) ; Remove any user-variable prefix `*'.
-                ;; Add a note for variables that have been `make-var-buffer-local'.
-                (when (and (local-variable-if-set-p variable)
-                           (or (not (local-variable-p variable))
-                               (with-temp-buffer (local-variable-if-set-p variable))))
-                  (setq extra-line  t)
-                  (princ "  Automatically becomes buffer-local when set in any fashion.\n"))
-                (unless (eq alias variable) ; Mention if it's an alias
+                (cond ((and (local-variable-if-set-p variable) ; Mention if it's a local variable.
+                            (or (not (local-variable-p variable))
+                                (with-temp-buffer (local-variable-if-set-p variable))))
+                       (setq extra-line  t)
+                       (princ "  Automatically becomes ")
+                       (when permanent-local (princ "permanently "))
+                       (princ "buffer-local when set.\n"))
+                      ((not permanent-local))
+                      ((bufferp locus)  (princ "  This variable's buffer-local value is permanent.\n"))
+                      (t (princ "  This variable's value is permanent when it is given a local binding.\n")))
+                (unless (eq alias variable) ; Mention if it's an alias.
                   (setq extra-line  t)
                   (princ (format "  This variable is an alias for `%s'.\n" alias)))
                 (when obsolete
-                  (setq extra-line  t)
+                  (setq extra-line t)
                   (princ "  This variable is obsolete")
                   (when (nth 2 obsolete) (princ (format " since %s" (nth 2 obsolete))))
-                  (princ (cond ((stringp use)  (concat ";\n  " use))
-                               (use  (format ";\n  use `%s' instead." (car obsolete)))
-                               (t  ".")))
+                  (princ (cond ((stringp use) (concat ";\n  " use))
+                               (use           (format ";\n  use `%s' instead." (car obsolete)))
+                               (t             ".")))
                   (terpri))
                 (when (member (cons variable val) file-local-variables-alist)
                   (setq extra-line  t)
                   (if (member (cons variable val) dir-local-variables-alist)
-                      (let ((file  (and (buffer-file-name)
-                                        (not (file-remote-p (buffer-file-name)))
-                                        (dir-locals-find-file (buffer-file-name))))
-                            (type  "file"))
-                        (princ "  This variable is a directory local variable")
-                        (when file
-                          (when (consp file) ; result from cache
-                            ;; If the cache element has an `mtime', we assume it came from a file.
-                            (if (nth 2 file)
+                      (let ((file      (and (buffer-file-name)
+                                            (not (file-remote-p (buffer-file-name)))
+                                            (dir-locals-find-file (buffer-file-name))))
+                            (dir-file  t))
+                        (princ "  This variable's value is directory-local")
+                        (if (null file)
+                            (princ ".\n")
+                          (princ ", set ")
+                          (when (consp file) ; When result is from cache...
+                            (if (nth 2 file) ; If cache element has an mtime, assume it came from a file.
                                 (setq file  (expand-file-name dir-locals-file (car file)))
-                              ;; Otherwise, assume it was set directly.
-                              (setq type  "directory")))
-                          (princ (format "\n  from the %s \"%s\"" type file)))
-                        (princ ".\n"))
-                    (princ "  This variable is a file local variable.\n")))
+                              (setq dir-file  nil))) ; Otherwise, assume it was set directly.
+                          (princ (if dir-file "by the file\n  `" "for the directory\n  `"))
+                          (with-current-buffer standard-output
+                            (insert-text-button file 'type 'help-dir-local-var-def
+                                                'help-args (list variable file)))
+                          (princ "'.\n")))
+                    (princ "  This variable's value is file-local.\n")))
                 (when (memq variable ignored-local-variables)
                   (setq extra-line  t)
-                  (princ "  This variable is ignored when used as a file local \
-variable.\n"))
-                ;; Can be both risky and safe, eg `auto-fill-function'.
-                (when (risky-local-variable-p variable)
+                  (princ "  This variable is ignored when used as a file-local variable.\n"))
+                (when (risky-local-variable-p variable) ; Can be both risky & safe, eg `auto-fill-function'.
                   (setq extra-line  t)
-                  (princ "  This variable is potentially risky when used as a \
-file local variable.\n")
+                  (princ "  This variable can be risky when used as a file-local variable.\n")
                   (when (assq variable safe-local-variable-values)
-                    (princ "  However, you have added it to \
-`safe-local-variable-values'.\n")))
+                    (princ "  However, it has been added to `safe-local-variable-values'.\n")))
                 (when safe-var
                   (setq extra-line  t)
                   (princ "  This variable is safe as a file local variable ")
                   (princ "if its value\n  satisfies the predicate ")
                   (princ (if (byte-code-function-p safe-var)
-                             "which is byte-compiled expression.\n"
+                             "which is a byte-compiled expression.\n"
                            (format "`%s'.\n" safe-var))))
                 (when extra-line (terpri))
                 (princ "Documentation:\n")
-                (with-current-buffer standard-output
-                  (insert (or doc  "Not documented as a variable."))))
+                (with-current-buffer standard-output (insert (or doc  "Not documented as a variable."))))
               ;; Make a link to customize if this variable can be customized.
               (when (custom-variable-p variable)
                 (let ((customize-label  "customize"))
