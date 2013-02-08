@@ -25,12 +25,13 @@ EmacsChannelLogging -- To log or not to log.
 [:Conduct]
 = Conduct =
 
-In addition to [http://freenode.net/policy.shtml freenode's network-wide policies], we have some of our own (somewhat redundant) rules:
+In addition to [http://freenode.net/policy.shtml freenode's network-wide policies], we have some of our own rules (some of which are redundant):
 
 * Don't be a jerk
 * Don't start or participate in flame wars
 * Be friendly to newbies
 * And, please, for the love of GNU, don't use 1337-5p34k
+* If an off-topic discussion gets heated or starts to drown out on-topic discussion, please take it elsewhere.
 
 [:LawAndOrder]
 = Law and Order =
