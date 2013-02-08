@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Jan 30 15:01:06 1996
 ;; Version: 21.0
-;; Last-Updated: Thu Feb  7 14:24:54 2013 (-0800)
+;; Last-Updated: Thu Feb  7 19:11:11 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 1502
+;;     Update #: 1515
 ;; URL: http://www.emacswiki.org/replace%2b.el
 ;; Doc URL: http://www.emacswiki.org/ReplacePlus
 ;; Keywords: matching, help, internal, tools, local
@@ -335,22 +335,21 @@ setting the variable and displaying a status message (not MESSAGE)."
   "Source buffers searched by `occur' and `multi-occur'.")
 
 (defcustom replace-w-completion-flag nil
-  "*Non-nil means use minibuffer completion for replacement commands
-such as `query-replace'.  With completion, to insert a SPC or TAB
-char, you will need to preceed it by `\\[quoted-insert]'.  If this is
-inconvenient, set this variable to nil."
+  "*Non-nil means use completion for `query-replace'.
+You can complete to any symbol name.  During completion, you can
+insert a SPC or TAB char by preceding it with `\\[quoted-insert]'.  If this is
+inconvenient, set this option to nil."
   :type 'boolean :group 'matching)
 
 ;;;###autoload
 (defun toggle-replace-w-completion (force-p)
-  "Toggle whether to use minibuffer completion for replacement commands
-such as `query-replace'.
-Non-nil prefix arg FORCE-P => Use completion iff FORCE-P >= 0.
+  "Toggle whether to use minibuffer completion for `query-replace'.
+This toggles the value of option `replace-w-completion-flag'.
+During completion, you can insert a SPC or TAB char by preceding it
+with `\\[quoted-insert]'.
 
-Note that with completion, to insert a SPC or TAB character you will
-need to preceed it by `\\[quoted-insert]'.
-
-This toggles the value of option `replace-w-completion-flag'."
+A non-negative prefix arg means set `replace-w-completion-flag' to t.
+A negative prefix arg means set it to nil."
   (interactive "P")
   (if force-p                           ; Force.
       (if (natnump (prefix-numeric-value force-p))
@@ -488,8 +487,8 @@ See options `search/replace-region-as-default-flag',
 `search/replace-2nd-sel-as-default-flag', and
 `search/replace-default-fn' regarding the default value.
 
-If option `replace-w-completion-flag' is non-nil then you can use
-completion."
+If option `replace-w-completion-flag' is non-nil then you can complete
+to a symbol name."
     (if query-replace-interactive
         (car (if regexp-flag regexp-search-ring search-ring))
       (let* ((default   (search/replace-default (symbol-value query-replace-from-history-variable)))
