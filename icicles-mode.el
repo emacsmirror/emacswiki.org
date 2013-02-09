@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Feb  4 14:06:36 2013 (-0800)
+;; Last-Updated: Sat Feb  9 09:37:14 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 9464
+;;     Update #: 9472
 ;; URL: http://www.emacswiki.org/icicles-mode.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -139,9 +139,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Code:
-
-;;;###autoload (autoload 'icicle-mode "icicles" "Toggle Icicle mode." t nil)
-;;;###autoload (autoload 'icy-mode    "icicles" "Toggle Icicle mode." t nil)
 
 (eval-when-compile (require 'cl)) ;; pushnew, case
                                   ;; plus, for Emacs < 21: push, dolist
