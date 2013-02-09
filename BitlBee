@@ -147,7 +147,25 @@ Ever wondered what this 938748324 person is that sends messages to you. AFAIK bi
              (nick (cdr (assoc 'nick result))))
         (erc-display-message nil 'notice (current-buffer) (format "%s (%s %s)" nick fname lname))))
 
-###This function would be really nice, but where's the implementation of `myerc-query-icq-user'?###
+	(defun myerc-query-icq-user (&optional uin)
+	  "Queries UIN `uin' on people.icq.com, returns result table."
+	  (with-timeout (3 (ignore))
+	    (and uin
+	         (with-current-buffer 
+	             (url-retrieve-synchronously (format "http://people.icq.com/whitepages/about_me/1,,,00.html?to=%%25U&Uin=%s" uin))
+	           (let* (;; some cleansing
+	                  (result (buffer-string))
+	                  (result (replace-regexp-in-string (format "&nbsp\\|\n\\|%c" 13) " " result))
+	                  (result (replace-regexp-in-string "<.+?>\\|%c" "" result))
+	                  (result (replace-regexp-in-string "\\s-+" " " result))
+	                  (result (replace-regexp-in-string ".+;Personal Details" "" result))
+	                  ;; now the parsing
+	                  (fname (and (string-match "first ?name: ;\\(\\S-+\\)" result) (match-string 1 result)))
+	                  (lname (and (string-match "last ?name: ;\\(\\S-+\\)" result) (match-string 1 result)))
+	                  (nick (and (string-match "nickname: ;\\(\\S-+\\)" result) (match-string 1 result))))
+	             `((fname . ,fname)
+	               (lname . ,lname)
+	               (nick . ,nick)))))))
 
 === Jabber conference room backlog ===
 
