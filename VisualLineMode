@@ -103,6 +103,11 @@ I think a neat solution would be if VisualLineMode also used the fringe to mark 
 
 -- [[Anonymous]]
 
+[new]
+You can use `visual-line-fringe-indicators' variable for that, for example:
+
+    (setq visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))
+
 ----
 CategoryEditing
 CategoryFilling
