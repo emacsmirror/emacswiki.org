@@ -6,10 +6,10 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Version: 2013.02.05
-;; Last-Updated: Tue Feb  5 08:08:57 2013 (-0800)
+;; Version: 2013.02.09
+;; Last-Updated: Sat Feb  9 09:47:22 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 23298
+;;     Update #: 23313
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1532,6 +1532,356 @@
 ;; (add-hook 'emacs-lisp-mode-hook       'lisp-indentation-hack)
 ;; (add-hook 'lisp-mode-hook             'lisp-indentation-hack)
 ;; (add-hook 'lisp-interaction-mode-hook 'lisp-indentation-hack)
+
+
+
+;;; Icicles autoloads - provide information as doc string for `icicle-mode.
+;;;
+;;;###autoload (autoload 'icy-mode    "icicles" "Toggle Icicle mode - see `icicle-mode'." t nil)
+
+;;;###autoload (autoload 'icicle-mode "icicles" 
+;;;###autoload "Icicle mode: Toggle minibuffer input completion and cycling.
+;;;###autoload Non-nil prefix ARG turns mode on if ARG > 0, else turns it off.
+;;;###autoload Icicle mode is a global minor mode.  It binds keys in the minibuffer.
+;;;###autoload \ 
+;;;###autoload For more information, use `\\<minibuffer-local-completion-map>\\[icicle-minibuffer-help]' \
+;;;###autoload when the minibuffer is active.
+;;;###autoload \ 
+;;;###autoload Depending on your platform, if you use Icicles in a text terminal
+;;;###autoload \(that is, without a window system/manager), you might need to change
+;;;###autoload some of the key bindings if some of the default bindings are not
+;;;###autoload available to you.
+;;;###autoload 
+;;;###autoload Icicle mode defines the following top-level commands.  In many cases
+;;;###autoload there are also `-other-window' versions.
+;;;###autoload \ 
+;;;###autoload `clear-option' (alias)                 - Set binary option(s) to nil
+;;;###autoload `icicle-add-buffer-candidate'          - Add always-candidate buffer
+;;;###autoload `icicle-add-buffer-config'             - To `icicle-buffer-configs'
+;;;###autoload `icicle-add-entry-to-saved-completion-set' - Add completion to a set
+;;;###autoload `icicle-add-file-to-fileset'           - Add a file to a fileset
+;;;###autoload `icicle-add/update-saved-completion-set' - To
+;;;###autoload                                         `icicle-saved-completion-sets'
+;;;###autoload `icicle-apply'                         - Apply function to alist items
+;;;###autoload `icicle-apropos'                       - `apropos', but shows matches
+;;;###autoload `icicle-apropos-command'               - Enhanced `apropos-command'
+;;;###autoload `icicle-apropos-options-of-type'       - Show options of a given type
+;;;###autoload `icicle-apropos-variable'              - Enhanced `apropos-variable'
+;;;###autoload `icicle-apropos-vars-w-val-satisfying' - Show vars of given values
+;;;###autoload `icicle-bbdb-complete-mail'            - Complete a user name/address
+;;;###autoload `icicle-bbdb-complete-name'            - Complete a user name/address
+;;;###autoload `icicle-bookmark'                      - Jump to a bookmark
+;;;###autoload `icicle-bookmark-a-file'               - Create an autofile bookmark
+;;;###autoload `icicle-bookmark-all-tags'             - Jump to tagged bookmark
+;;;###autoload `icicle-bookmark-all-tags-regexp'      - Jump to tagged bookmark
+;;;###autoload `icicle-bookmark-autofile'             - Jump to an autofile bookmark
+;;;###autoload `icicle-bookmark-autofile-all-tags'    - Jump to a tagged autofile
+;;;###autoload `icicle-bookmark-autofile-all-tags-regexp'
+;;;###autoload `icicle-bookmark-autofile-some-tags'
+;;;###autoload `icicle-bookmark-autofile-some-tags-regexp'
+;;;###autoload `icicle-bookmark-autonamed'            - Jump to an autonamed bookmark
+;;;###autoload `icicle-bookmark-autonamed-this-buffer'
+;;;###autoload `icicle-bookmark-bookmark-file'        - Load a bookmark file bookmark
+;;;###autoload `icicle-bookmark-bookmark-list'        - Jump to a bookmark list
+;;;###autoload `icicle-bookmark-cmd'                  - Set or jump to a bookmark
+;;;###autoload `icicle-bookmark-desktop'              - Jump to a desktop bookmark
+;;;###autoload `icicle-bookmark-dired'                - Jump to a Dired bookmark
+;;;###autoload `icicle-bookmarked-buffer-list'        - Choose bookmarked buffers
+;;;###autoload `icicle-bookmarked-file-list'          - Choose bookmarked files
+;;;###autoload `icicle-bookmark-file'                 - Jump to a file bookmark
+;;;###autoload `icicle-bookmark-file-all-tags'        - Jump to tagged file bookmark
+;;;###autoload `icicle-bookmark-file-all-tags-regexp'
+;;;###autoload `icicle-bookmark-file-some-tags'
+;;;###autoload `icicle-bookmark-file-some-tags-regexp'
+;;;###autoload `icicle-bookmark-file-this-dir'        - Jump to file in directory
+;;;###autoload `icicle-bookmark-file-this-dir-all-tags'
+;;;###autoload `icicle-bookmark-file-this-dir-all-tags-regexp'
+;;;###autoload `icicle-bookmark-file-this-dir-some-tags'
+;;;###autoload `icicle-bookmark-file-this-dir-some-tags-regexp'
+;;;###autoload `icicle-bookmark-gnus'                 - Jump to a Gnus bookmark
+;;;###autoload `icicle-bookmark-image'                - Jump to an image bookmark
+;;;###autoload `icicle-bookmark-info'                 - Jump to an Info bookmark
+;;;###autoload `icicle-bookmark-jump'                 - Jump to any bookmark
+;;;###autoload `icicle-bookmark-list'                 - Choose a list of bookmarks
+;;;###autoload `icicle-bookmark-local-file'           - Jump to local-file bookmark
+;;;###autoload `icicle-bookmark-man'                  - Jump to a `man'-page bookmark
+;;;###autoload `icicle-bookmark-non-file'             - Jump to a buffer bookmark
+;;;###autoload `icicle-bookmark-region'               - Jump to a region bookmark
+;;;###autoload `icicle-bookmark-remote-file'          - Jump to a remote file
+;;;###autoload `icicle-bookmark-save-marked-files'    - Save file names as candidates
+;;;###autoload `icicle-bookmark-save-marked-files-persistently'
+;;;###autoload `icicle-bookmark-save-marked-files-to-variable'
+;;;###autoload `icicle-bookmark-set'                  - Set a bookmark
+;;;###autoload `icicle-bookmark-some-tags'            - Jump to tagged bookmark
+;;;###autoload `icicle-bookmark-some-tags-regexp'     - Jump to tagged bookmark
+;;;###autoload `icicle-bookmark-specific-buffers'     - Jump to a bookmarked buffer
+;;;###autoload `icicle-bookmark-specific-files'       - Jump to a bookmarked file
+;;;###autoload `icicle-bookmark-temporary'            - Jump to a temporary bookmark
+;;;###autoload `icicle-bookmark-this-buffer'          - Jump to bookmark for this buf
+;;;###autoload `icicle-bookmark-url'                  - Jump to a URL bookmark
+;;;###autoload `icicle-bookmark-w3m'                  - Jump to a W3M (URL) bookmark
+;;;###autoload `icicle-buffer'                        - Switch to buffer
+;;;###autoload `icicle-buffer-config'                 - Pick `icicle-buffer' options
+;;;###autoload `icicle-buffer-list'                   - Choose a list of buffer names
+;;;###autoload `icicle-change-alternative-sort-order' - Choose an alternative sort
+;;;###autoload `icicle-change-sort-order'             - Choose a sort order
+;;;###autoload `icicle-choose-faces'                  - Choose a list of face names
+;;;###autoload `icicle-choose-invisible-faces'        - Choose faces now invisible
+;;;###autoload `icicle-choose-visible-faces'          - Choose faces now visible
+;;;###autoload `icicle-clear-history'                 - Clear entries from a history
+;;;###autoload `icicle-color-theme'                   - Change color theme
+;;;###autoload `icicle-comint-command'                - Reuse shell etc. command
+;;;###autoload `icicle-comint-dynamic-complete'       - Text completion in shell
+;;;###autoload `icicle-comint-dynamic-complete-filename'
+;;;###autoload `icicle-comint-replace-by-expanded-filename'
+;;;###autoload `icicle-comint-search'                 - Reuse shell etc. command
+;;;###autoload `icicle-command-abbrev'                - Multi-command `M-x' + abbrevs
+;;;###autoload `icicle-compilation-search'            - `icicle-search' and show hits
+;;;###autoload `icicle-complete-keys'                 - Complete keys
+;;;###autoload `icicle-complete-thesaurus-entry'      - Complete word using thesaurus
+;;;###autoload `icicle-completing-yank'               - `yank' using completion
+;;;###autoload `icicle-customize-apropos'             - Enhanced `customize-apropos'
+;;;###autoload `icicle-customize-apropos-faces',
+;;;###autoload `icicle-customize-apropos-groups'
+;;;###autoload `icicle-customize-apropos-options'
+;;;###autoload `icicle-customize-apropos-options-of-type'
+;;;###autoload `icicle-customize-apropos-opts-w-val-satisfying'
+;;;###autoload `icicle-customize-face'                - Multi-`customize-face'
+;;;###autoload `icicle-customize-icicles-group'       - Customize options and faces
+;;;###autoload `icicle-cycle-expand-to-common-match'  - Cycle input ECM expansion
+;;;###autoload `icicle-cycle-image-file-thumbnail'    - Toggle images in Completions
+;;;###autoload `icicle-cycle-incremental-completion'  - Cycle incremental completion
+;;;###autoload `icicle-dabbrev-completion'            - Enhanced `dabbrev-completion'
+;;;###autoload `icicle-delete-file'                   - Delete file/directory
+;;;###autoload `icicle-delete-window'                 - Delete window (`C-u': buffer)
+;;;###autoload `icicle-delete-windows'                - Delete all windows for buffer
+;;;###autoload `icicle-describe-file'                 - Describe a file
+;;;###autoload `icicle-describe-option-of-type'       - Describe option of given type
+;;;###autoload `icicle-describe-process'              - Describe a computer process
+;;;###autoload `icicle-describe-var-w-val-satisfying' - Describe var satisfying pred
+;;;###autoload `icicle-directory-list'                - Choose a list of directories
+;;;###autoload `icicle-dired'                         - Multi-command Dired
+;;;###autoload `icicle-dired-chosen-files'            - Dired a set of files & dirs
+;;;###autoload `icicle-dired-project'                 - Dired a saved project
+;;;###autoload `icicle-dired-saved-file-candidates'   - Dired set of saved file names
+;;;###autoload `icicle-dired-save-marked'             - Save marked file names
+;;;###autoload `icicle-dired-save-marked-more'
+;;;###autoload `icicle-dired-save-marked-more-recursive'
+;;;###autoload `icicle-dired-save-marked-recursive'
+;;;###autoload `icicle-dired-save-marked-persistently'  ... to cache file or fileset
+;;;###autoload `icicle-dired-save-marked-to-cache-file-recursive' ... to cache-file
+;;;###autoload `icicle-dired-save-marked-to-variable'   ... to variable
+;;;###autoload `icicle-dired-save-marked-to-variable-recursive'
+;;;###autoload `icicle-dired-smart-shell-command'     - Enhanced version of vanilla
+;;;###autoload `icicle-doc'                           - Show doc for fn, var, or face
+;;;###autoload `icicle-doremi-candidate-width-factor+' - +/- candidate column width
+;;;###autoload `icicle-doremi-increment-max-candidates+' - +/- max number candidates
+;;;###autoload `icicle-doremi-increment-swank-prefix-length+' - +/- swank prefix
+;;;###autoload `icicle-doremi-increment-swank-timeout+' - +/- swank completion msec
+;;;###autoload `icicle-doremi-increment-variable+'    - Increment var using Do Re Mi
+;;;###autoload `icicle-doremi-inter-candidates-min-spaces+' - +/- candidate spacing
+;;;###autoload `icicle-doremi-zoom-Completions+'      - +/- `*Completions*' text size
+;;;###autoload `icicle-ess-complete-object-name'      - Complete an ESS object
+;;;###autoload `icicle-ess-R-complete-object-name'    - Complete an ESS object in R
+;;;###autoload `icicle-exchange-point-and-mark'       - Flip, save, or select region
+;;;###autoload `icicle-execute-extended-command'      - Multi-command `M-x'
+;;;###autoload `icicle-execute-named-keyboard-macro'  - Execute named keyboard macro
+;;;###autoload `icicle-face-list'                     - Choose a list of face names
+;;;###autoload `icicle-file-list'                     - Choose a list of file names
+;;;###autoload `icicle-file'                          - Visit file/directory
+;;;###autoload `icicle-find-file'                     -       same: relative only
+;;;###autoload `icicle-find-file-absolute'            -       same: absolute only
+;;;###autoload `icicle-find-file-read-only'           -       same: read-only
+;;;###autoload `icicle-find-file-all-tags'            - Visit Emacs-tagged file
+;;;###autoload `icicle-find-file-all-tags-regexp'
+;;;###autoload `icicle-find-file-some-tags'
+;;;###autoload `icicle-find-file-some-tags-regexp'
+;;;###autoload `icicle-find-file-handle-bookmark'     - Find file handling bookmark
+;;;###autoload `icicle-find-file-in-tags-table'       - File in Emacs tags table
+;;;###autoload `icicle-find-file-tagged'              - Visit tagged file
+;;;###autoload `icicle-find-first-tag'                - Visit definition with tag
+;;;###autoload `icicle-find-tag'                      - Visit definition with tag
+;;;###autoload `icicle-font'                          - Change font of frame
+;;;###autoload `icicle-frame-bg'                      - Change background of frame
+;;;###autoload `icicle-frame-fg'                      - Change foreground of frame
+;;;###autoload `icicle-fundoc'                        - Show function description
+;;;###autoload `icicle-goto-global-marker'            - Go to a global marker
+;;;###autoload `icicle-goto-global-marker-or-pop-global-mark'
+;;;###autoload `icicle-goto-marker'                   - Go to a marker in this buffer
+;;;###autoload `icicle-grep-saved-file-candidates'    - Grep saved file candidates
+;;;###autoload `icicle-gud-gdb-complete-command'      - Enhanced version of vanilla
+;;;###autoload `icicle-hide-faces'                    - Hide chosen visible faces
+;;;###autoload `icicle-hide-only-faces'               - Show all but chosen faces
+;;;###autoload `icicle-hide/show-comments'            - Hide or show comments
+;;;###autoload `icicle-ido-like-mode'                 - Ido-like mode for Icicles
+;;;###autoload `icicle-imenu*'                        - Navigate among Imenu entries
+;;;###autoload `icicle-imenu-full'                            same: full definitions
+;;;###autoload `icicle-imenu-command'                 - Navigate among command defs
+;;;###autoload `icicle-imenu-command-full'                    same: full definitions
+;;;###autoload `icicle-imenu-face'                    - Navigate among face defs
+;;;###autoload `icicle-imenu-face-full'                       same: full definitions
+;;;###autoload `icicle-imenu-key-explicit-map'        - Navigate among key defs
+;;;###autoload `icicle-imenu-key-explicit-map-full'           same: full definitions
+;;;###autoload `icicle-imenu-key-implicit-map'                same: no explicit map
+;;;###autoload `icicle-imenu-key-implicit-map-full'           same: full definitions
+;;;###autoload `icicle-imenu-macro'                   - Navigate among macro defs
+;;;###autoload `icicle-imenu-macro-full'                      same: full definitions
+;;;###autoload `icicle-imenu-non-interactive-function' - Navigate among function defs
+;;;###autoload `icicle-imenu-non-interactive-function-full'   same: full definitions
+;;;###autoload `icicle-imenu-user-option'             - Navigate among option defs
+;;;###autoload `icicle-imenu-user-option-full'                same: full definitions
+;;;###autoload `icicle-imenu-variable'                - Navigate among variable defs
+;;;###autoload `icicle-imenu-variable-full'                   same: full definitions
+;;;###autoload `icicle-increment-option'              - Increment numeric option
+;;;###autoload `icicle-increment-variable'            - Increment numeric variable
+;;;###autoload `icicle-Info-goto-node'                - Multi-cmd `Info-goto-node'
+;;;###autoload `icicle-Info-index'                    - Multi-command `Info-index'
+;;;###autoload `icicle-Info-menu'                     - Multi-command `Info-menu'
+;;;###autoload `icicle-Info-virtual-book'             - Open a virtual Info book
+;;;###autoload `icicle-insert-buffer'                 - Multi-command `insert-buffer'
+;;;###autoload `icicle-insert-thesaurus-entry'        - Insert thesaurus entry(s)
+;;;###autoload `icicle-keyword-list'                  - Choose a list of keywords
+;;;###autoload `icicle-kill-buffer'                   - Kill buffer
+;;;###autoload `icicle-kmacro'                        - Execute a keyboard macro
+;;;###autoload `icicle-lisp-complete-symbol'          - Enhanced version of vanilla
+;;;###autoload `icicle-locate'                        - Run `locate' then visit files
+;;;###autoload `icicle-locate-file'                   - Visit file(s) in a directory
+;;;###autoload `icicle-locate-file-no-symlinks'               same, but do not follow
+;;;###autoload `icicle-minibuffer-default-add-dired-shell-commands' - Enhanced
+;;;###autoload `icicle-minibuffer-help'               - Show Icicles minibuffer help
+;;;###autoload `icicle-mode' or `icy-mode'            - Toggle Icicle mode
+;;;###autoload `icicle-next-S-TAB-completion-method'  - Next S-TAB completion method
+;;;###autoload `icicle-next-TAB-completion-method'    - Next TAB completion method
+;;;###autoload `icicle-next-visible-thing'            - Go to the next visible THING
+;;;###autoload `icicle-object-action'                 - Act on an object of some type
+;;;###autoload `icicle-occur'                         - Incremental `occur'
+;;;###autoload `icicle-other-window-or-frame'         - Other window/frame or select
+;;;###autoload `icicle-pick-color-by-name'            - Set palette color by name
+;;;###autoload `icicle-plist'                         - Show symbols, property lists
+;;;###autoload `icicle-pp-eval-expression'            - Enhanced version of vanilla
+;;;###autoload `icicle-previous-visible-thing'        - Go to previous visible THING
+;;;###autoload `icicle-read-color'                    - Read a color name or hex RGB
+;;;###autoload `icicle-read-color-wysiwyg'
+;;;###autoload `icicle-read-kbd-macro'                - Like vanilla but no <>
+;;;###autoload `icicle-recent-file'                   - Open recently used file(s)
+;;;###autoload `icicle-recompute-shell-command-candidates' - Update from search path
+;;;###autoload `icicle-regexp-list'                   - Choose a list of regexps
+;;;###autoload `icicle-remove-buffer-candidate'       - Remove always-candidate buf
+;;;###autoload `icicle-remove-buffer-config'          - From `icicle-buffer-configs'
+;;;###autoload `icicle-remove-entry-from-saved-completion-set' - From a saved set
+;;;###autoload `icicle-remove-file-from-recentf-list' - Remove from recent files list
+;;;###autoload `icicle-remove-saved-completion-set'   - From
+;;;###autoload                                         `icicle-saved-completion-sets'
+;;;###autoload `icicle-repeat-complex-command'        - Enhanced version of vanilla
+;;;###autoload `icicle-reset-option-to-nil'           - Set binary option(s) to nil
+;;;###autoload `icicle-resolve-file-name'             - Resolve file name at point
+;;;###autoload `icicle-save-string-to-variable'       - Save text for use with `C-='
+;;;###autoload `icicle-search'                        - Search with regexps & cycling
+;;;###autoload `icicle-search-all-tags-bookmark'      - Search tagged bookmarks
+;;;###autoload `icicle-search-all-tags-regexp-bookmark'
+;;;###autoload `icicle-search-autofile-bookmark'      - Search autofile bookmark text
+;;;###autoload `icicle-search-autonamed-bookmark'     - Search autonamed bookmarks
+;;;###autoload `icicle-search-bookmark'               - Search bookmarks separately
+;;;###autoload `icicle-search-bookmark-list-bookmark' - Search bookmark list bookmark
+;;;###autoload `icicle-search-bookmark-list-marked'   - Search marked bookmarks
+;;;###autoload `icicle-search-bookmarks-together'     - Search bookmarks together
+;;;###autoload `icicle-search-buffer'                 - Search buffers
+;;;###autoload `icicle-search-buff-menu-marked'       - Search marked buffers
+;;;###autoload `icicle-search-char-property'          - Search for overlay/text props
+;;;###autoload `icicle-search-dired-bookmark'         - Search Dired bookmarks
+;;;###autoload `icicle-search-dired-marked-recursive' - Search marked files in Dired
+;;;###autoload `icicle-search-file'                   - Search multiple files
+;;;###autoload `icicle-search-file-bookmark'          - Search bookmarked files
+;;;###autoload `icicle-search-gnus-bookmark'          - Search bookmarked Gnus msgs
+;;;###autoload `icicle-search-highlight-cleanup'      - Remove search highlighting
+;;;###autoload `icicle-search-ibuffer-marked'         - Search marked bufs in Ibuffer
+;;;###autoload `icicle-search-info-bookmark'          - Search bookmarked Info nodes
+;;;###autoload `icicle-search-keywords'               - Search with regexp keywords
+;;;###autoload `icicle-search-lines'                  - Same as `icicle-occur'
+;;;###autoload `icicle-search-local-file-bookmark'    - Search bookmarked local files
+;;;###autoload `icicle-search-man-bookmark'           - Search bookmarked `man' pages
+;;;###autoload `icicle-search-non-file-bookmark'      - Search bookmarked buffers
+;;;###autoload `icicle-search-overlay-property'       - Search for overlay properties
+;;;###autoload `icicle-search-pages'                  - Search Emacs pages
+;;;###autoload `icicle-search-paragraphs'             - Search Emacs paragraphs
+;;;###autoload `icicle-search-region-bookmark'        - Search bookmarked regions
+;;;###autoload `icicle-search-remote-file-bookmark'   - Search remote bookmarks
+;;;###autoload `icicle-search-sentences'              - Search sentences as contexts
+;;;###autoload `icicle-search-some-tags-bookmark'     - Search tagged bookmarks
+;;;###autoload `icicle-search-some-tags-regexp-bookmark'
+;;;###autoload `icicle-search-specific-buffers-bookmark' - Search bookmarked buffers
+;;;###autoload `icicle-search-specific-files-bookmark' - Search bookmarked files
+;;;###autoload `icicle-search-temporary-bookmark'     - Search temporary bookmarks
+;;;###autoload `icicle-search-text-property'          - Search for faces etc.
+;;;###autoload `icicle-search-thing'                  - Searh with THINGs as contexts
+;;;###autoload `icicle-search-this-buffer-bookmark'   - Search bookmarks for buffer
+;;;###autoload `icicle-search-url-bookmark'           - Search bookmarked URLs
+;;;###autoload `icicle-search-w3m-bookmark'           - Search w3m bookmark text
+;;;###autoload `icicle-search-w-isearch-string'       - Search using Isearch string
+;;;###autoload `icicle-search-word'                   - Whole-word search
+;;;###autoload `icicle-search-xml-element'            - Search XML element contexts
+;;;###autoload `icicle-search-xml-element-text-node'  - Search XML text() nodes
+;;;###autoload `icicle-select-bookmarked-region'      - Select bookmarked regions
+;;;###autoload `icicle-select-frame'                  - Select a frame by name
+;;;###autoload `icicle-select-window'                 - Select window by buffer name
+;;;###autoload `icicle-send-bug-report'               - Send Icicles bug report
+;;;###autoload `icicle-set-option-to-t'               - Set binary option(s) to t
+;;;###autoload `icicle-send-signal-to-process'        - Send signals to processes
+;;;###autoload `icicle-set-S-TAB-methods-for-command' - Set `S-TAB' methods for a cmd
+;;;###autoload `icicle-set-TAB-methods-for-command'   - Set `TAB' methods for a cmd
+;;;###autoload `icicle-sexp-list'                     - Choose a list of sexps
+;;;###autoload `icicle-shell-command'                 - Enhanced vanilla version
+;;;###autoload `icicle-shell-command-on-region'
+;;;###autoload `icicle-shell-dynamic-complete-command'
+;;;###autoload `icicle-shell-dynamic-complete-environment-variable'
+;;;###autoload `icicle-shell-dynamic-complete-filename'
+;;;###autoload `icicle-show-faces'                    - Show chosen visible faces
+;;;###autoload `icicle-show-only-faces'               - Hide all but chosen faces
+;;;###autoload `icicle-string-list'                   - Choose a list of strings
+;;;###autoload `icicle-synonyms'                      - Show synonyms matching regexp
+;;;###autoload `icicle-tag-a-file'                    - Tag a file a la delicious
+;;;###autoload `icicle-tags-search'                   - Search files in tags tables
+;;;###autoload `icicle-toggle-~-for-home-dir'         - Toggle using `~' for $HOME
+;;;###autoload `icicle-toggle-alternative-sorting'    - Swap alternative sort
+;;;###autoload `icicle-toggle-angle-brackets'         - Toggle using angle brackets
+;;;###autoload `icicle-toggle-annotation'             - Toggle candidate annotations
+;;;###autoload `icicle-toggle-case-sensitivity'       - Toggle case sensitivity
+;;;###autoload `icicle-toggle-C-for-actions'          - Toggle using `C-' for actions
+;;;###autoload `icicle-toggle-completions-format'     - Toggle horizontal/vertical
+;;;###autoload `icicle-toggle-dot'                    - Toggle `.' matching newlines
+;;;###autoload `icicle-toggle-expand-to-common-match' - Toggle input ECM expansion
+;;;###autoload `icicle-toggle-hiding-common-match'    - Toggle match, `*Completions*'
+;;;###autoload `icicle-toggle-hiding-non-matching-lines'- Toggle no-match lines
+;;;###autoload `icicle-toggle-highlight-all-current'  - Toggle max search highlight
+;;;###autoload `icicle-toggle-highlight-historical-candidates'
+;;;###autoload                                        - Toggle past-input highlight
+;;;###autoload `icicle-toggle-highlight-saved-candidates'
+;;;###autoload                                        - Toggle highlighting saved
+;;;###autoload `icicle-toggle-ignored-extensions'     - Toggle ignored files
+;;;###autoload `icicle-toggle-ignored-space-prefix'   - Toggle ignoring space prefix
+;;;###autoload `icicle-toggle-ignoring-comments'      - Toggle ignoring comments
+;;;###autoload `icicle-toggle-literal-replacement'    - Toggle escaping regexp chars
+;;;###autoload `icicle-toggle-option'                 - Toggle binary user option
+;;;###autoload `icicle-toggle-proxy-candidates'       - Toggle proxy candidates
+;;;###autoload `icicle-toggle-regexp-quote'           - Toggle regexp escaping
+;;;###autoload `icicle-toggle-remote-file-testing'    - Toggle testing whether remote
+;;;###autoload `icicle-toggle-search-cleanup'         - Toggle search highlighting
+;;;###autoload `icicle-toggle-search-complementing-domain' - Toggle complement search
+;;;###autoload `icicle-toggle-search-replace-common-match' - Toggle ECM replacement
+;;;###autoload `icicle-toggle-search-replace-whole'   - Toggle replacing whole hit
+;;;###autoload `icicle-toggle-search-whole-word'      - Toggle whole-word searching
+;;;###autoload `icicle-toggle-show-multi-completion'  - Toggle multi-completions
+;;;###autoload `icicle-toggle-sorting'                - Toggle sorting of completions
+;;;###autoload `icicle-toggle-transforming'           - Toggle duplicate removal
+;;;###autoload `icicle-toggle-WYSIWYG-Completions'   - Toggle WYSIWYG `*Completions*'
+;;;###autoload `icicle-untag-a-file'                  - Remove some tags from a file
+;;;###autoload `icicle-vardoc'                        - Show variable description
+;;;###autoload `icicle-where-is'                      - `where-is' multi-command
+;;;###autoload `icicle-yank-maybe-completing'         - `yank' maybe using completion
+;;;###autoload `icicle-yank-pop-commands'             - Yank DWIM, per context
+;;;###autoload `icicle-zap-to-char'                   - Kill through N CHARs by name
+;;;###autoload `toggle' (alias)                       - Toggle binary user option"
+;;;###autoload  t nil)
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 
