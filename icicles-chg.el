@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Wed Feb  6 21:29:41 2013 (-0800)
+;; Last-Updated: Sat Feb  9 09:56:31 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 9678
+;;     Update #: 9681
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -5284,6 +5284,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2013/02/09 dadams
+;;     Moved autoload cookies for icicle-mode, icy-mode to icicles.el (with full doc string).
 ;; 2013/02/04 dadams
 ;;     Removed all autoload cookies, except for icicle-mode, icy-mode.
 ;; 2013/02/03 dadams
@@ -7673,6 +7675,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles.el'")
 ;;
+;; 2013/02/09 dadams
+;;     Added autoload cookies for icy-mode, icicle-mode, to provide full doc string for info.
 ;; 2012/08/06 dadams
 ;;     Renamed old-* to icicle-ORIG-*:
 ;;       icicle-ORIG-bbdb-complete-name, icicle-ORIG-choose-completion,
