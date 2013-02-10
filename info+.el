@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 21.1
-;; Last-Updated: Sun Feb  3 19:15:19 2013 (-0800)
+;; Last-Updated: Sat Feb  9 17:10:08 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 4779
+;;     Update #: 4784
 ;; URL: http://www.emacswiki.org/info+.el
 ;; Doc URL: http://www.emacswiki.org/InfoPlus
 ;; Keywords: help, docs, internal
@@ -193,6 +193,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/02/09 dadams
+;;     Info-read-node-name-1: Removed Emacs 23+ redefinition.
 ;; 2013/02/03 dadams
 ;;     Added: Info-fontify-angle-bracketed-flag, Info-toggle-fontify-angle-bracketed,
 ;;            Info-toggle-fontify-quotations, Info-toggle-fontify-single-quote, info-quoted+<>-regexp.
@@ -2126,42 +2128,44 @@ If `Info-breadcrumbs-in-mode-line-mode' is non-nil, insert breadcrumbs."
 
 
 
-;; REPLACE ORIGINAL in `info.el':
-;; BUG FIX (bug reported 2008-10-04).
-;; 1. Match closing paren, if present.
-;; 2. If only opening paren and CODE = t, then wrap each file name in ().
-;;
-(when (> emacs-major-version 22)
-  (defun Info-read-node-name-1 (string predicate code)
-    (cond ((string-match "\\`(\\([^)]*\\))\\'" string) ; e.g. (emacs) or (emacs-mime)
-           (cond ((eq code nil) string)
-                 ((eq code t) (list string))
-                 (t t)))
-          ((string-match "\\`(\\([^)]*\\)\\'" string) ; e.g. (emacs
-           (let ((ctwc  (completion-table-with-context
-                         "("
-                         (apply-partially
-                          'completion-table-with-terminator ")"
-                          (apply-partially 'Info-read-node-name-2
-                                           Info-directory-list
-                                           (mapcar 'car Info-suffix-list)))
-                         (match-string 1 string)
-                         predicate
-                         code)))
-             (cond ((eq code nil) ctwc)
-                   ((eq code t) (mapcar (lambda (file) (concat "(" file ")")) ctwc))
-                   (t t))))
-          ((string-match "\\`(" string) ; e.g. (emacs)Mac OS or (jlkj - just punt.
-           (cond ((eq code nil) string)
-                 ((eq code t) nil)
-                 (t t)))
-          ;; Otherwise use Info-read-node-completion-table - e.g. Mac OS
-          (t (complete-with-action code Info-read-node-completion-table string predicate)))))
+;;; ;; REPLACE ORIGINAL in `info.el':
+;;; ;; BUG FIX (bug #1085, reported 2008-10-04).
+;;; ;; 1. Match closing paren, if present.
+;;; ;; 2. If only opening paren and CODE = t, then wrap each file name in ().
+;;; ;;
+;;; (when (> emacs-major-version 22)
+;;;   (defun Info-read-node-name-1 (string predicate code)
+;;;   "Internal function used by `Info-read-node-name'.
+;;; See `completing-read' for a description of arguments and usage."
+;;;     (cond ((string-match "\\`(\\([^)]*\\))\\'" string) ; e.g. (emacs) or (emacs-mime)
+;;;            (cond ((eq code nil) string)
+;;;                  ((eq code t) (list string))
+;;;                  (t t)))
+;;;           ((string-match "\\`(\\([^)]*\\)\\'" string) ; e.g. (emacs
+;;;            (let ((ctwc  (completion-table-with-context
+;;;                          "("
+;;;                          (apply-partially
+;;;                           'completion-table-with-terminator ")"
+;;;                           (apply-partially 'Info-read-node-name-2
+;;;                                            Info-directory-list
+;;;                                            (mapcar 'car Info-suffix-list)))
+;;;                          (match-string 1 string)
+;;;                          predicate
+;;;                          code)))
+;;;              (cond ((eq code nil) ctwc)
+;;;                    ((eq code t) (mapcar (lambda (file) (concat "(" file ")")) ctwc))
+;;;                    (t t))))
+;;;           ((string-match "\\`(" string) ; e.g. (emacs)Mac OS or (jlkj - just punt.
+;;;            (cond ((eq code nil) string)
+;;;                  ((eq code t) nil)
+;;;                  (t t)))
+;;;           ;; Otherwise use Info-read-node-completion-table - e.g. Mac OS
+;;;           (t (complete-with-action code Info-read-node-completion-table string predicate)))))
 
 
 
 ;; REPLACE ORIGINAL in `info.el':
-;; BUG FIX (bug reported 2008-10-04).
+;; BUG FIX (bug #1085, reported 2008-10-04).
 ;; 1. Match closing paren, if present.
 ;; 2. If only opening paren and CODE = t, then wrap each file name in ().
 ;;
@@ -2201,6 +2205,7 @@ If `Info-breadcrumbs-in-mode-line-mode' is non-nil, insert breadcrumbs."
 (when (< emacs-major-version 22)
 
   ;; REPLACE ORIGINAL in `info.el':
+  ;; BUG FIX (bug #1085, reported 2008-10-04).
   ;; 1. Match closing paren, if present.
   ;; 2. If only opening paren and CODE = t, then wrap each file name in ().
   ;;
