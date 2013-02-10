@@ -1,0 +1,5 @@
+= rbenv.el =
+
+Website: http://github.com/senny/rbenv.el
+
+Integrates Emacs with rbenv to manage ruby versions.
