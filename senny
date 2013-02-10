@@ -2,6 +2,7 @@ I recently discovered my passion for emacs and lisp programming. I began using e
 
 == Projects ==
 * [[cabbage]] -- https://github.com/senny/cabbage
+* [RbenvEl | rbenv.el] -- https://github.com/senny/rbenv.el
 * [RvmEl rvm.el] -- http://github.com/senny/rvm.el
 * [ThemeRollerEl theme-roller.el] -- http://github.com/senny/theme-roller.el
 * EmacsEclim -- http://github.com/senny/emacs-eclim
