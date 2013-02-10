@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Feb  4 13:58:46 2013 (-0800)
+;; Last-Updated: Sun Feb 10 14:33:57 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 25437
+;;     Update #: 25438
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -288,7 +288,6 @@
 ;;    `icicle-describe-opt-of-type-complete',
 ;;    `icicle-execute-extended-command-1', `icicle-explore',
 ;;    `icicle-file-of-content-apropos-complete-match',
-;;    `icicle-find-file-of-content-multi-complete',
 ;;    `icicle-find-first-tag-action',
 ;;    `icicle-find-first-tag-other-window-action',
 ;;    `icicle-find-tag-action', `icicle-find-tag-define-candidates',
@@ -7573,6 +7572,7 @@ Same as `icicle-find-file-of-content' except it uses a different window." ; Doc 
                    (restore-buffer-modified-p nil) ; Just visiting can sometimes modify the buffer
                    (kill-buffer buf)))))))
 
+;;; $$$$$$ Not used.
 ;;;   (defun icicle-find-file-of-content-multi-complete (strg predicate completion-mode)
 ;;;     "Completion function for `icicle-find-file-of-content'.
 ;;; Used as the value of `minibuffer-completion-table'."
