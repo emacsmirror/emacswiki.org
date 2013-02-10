@@ -13,6 +13,9 @@ The Emacs version of ##package.el## will support multiple repositories.  You can
 
 Any combination of repositories is fine.  You should probably always include GNU's core repository but it's not required.
 
+=== Adding transactionally ===
+You can also do it transactionally.
+
 Adding [[Marmalade]]:
 
   (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
