@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 2013.02.09
-;; Last-Updated: Sat Feb  9 09:47:22 2013 (-0800)
+;; Last-Updated: Sat Feb  9 16:17:31 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 23313
+;;     Update #: 23329
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1540,7 +1540,7 @@
 ;;;###autoload (autoload 'icy-mode    "icicles" "Toggle Icicle mode - see `icicle-mode'." t nil)
 
 ;;;###autoload (autoload 'icicle-mode "icicles" 
-;;;###autoload "Icicle mode: Toggle minibuffer input completion and cycling.
+;;;###autoload"Icicle mode: Toggle minibuffer input completion and cycling.
 ;;;###autoload Non-nil prefix ARG turns mode on if ARG > 0, else turns it off.
 ;;;###autoload Icicle mode is a global minor mode.  It binds keys in the minibuffer.
 ;;;###autoload \ 
@@ -1551,7 +1551,7 @@
 ;;;###autoload \(that is, without a window system/manager), you might need to change
 ;;;###autoload some of the key bindings if some of the default bindings are not
 ;;;###autoload available to you.
-;;;###autoload 
+;;;###autoload \ 
 ;;;###autoload Icicle mode defines the following top-level commands.  In many cases
 ;;;###autoload there are also `-other-window' versions.
 ;;;###autoload \ 
@@ -1881,7 +1881,7 @@
 ;;;###autoload `icicle-yank-pop-commands'             - Yank DWIM, per context
 ;;;###autoload `icicle-zap-to-char'                   - Kill through N CHARs by name
 ;;;###autoload `toggle' (alias)                       - Toggle binary user option"
-;;;###autoload  t nil)
+;;;###autoload t nil)
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 
