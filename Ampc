@@ -1,3 +1,9 @@
+DeletedPage
+
+ampc is not supported any more. There will be a replacement soon. Please keep the delete cookie.
+
+----
+
 ampc (Asynchronous Music Player Controller) is an emacs application providing an interface to MPD ([http://mpd.wikia.com/ http://mpd.wikia.com/]).  The code of ampc can be found here: 
 
 * [http://ch.ristopher.com/git/?p=ampc;a=snapshot;h=v0.2;sf=tgz http://ch.ristopher.com/git/?p=ampc;a=snapshot;h=v0.2;sf=tgz] (stable snapshot)
