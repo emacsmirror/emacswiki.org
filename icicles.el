@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 2013.02.09
-;; Last-Updated: Sat Feb  9 16:17:31 2013 (-0800)
+;; Last-Updated: Sun Feb 10 14:34:07 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 23329
+;;     Update #: 23330
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -996,7 +996,6 @@
 ;;    `icicle-filesets-files-under', `icicle-files-within',
 ;;    `icicle-files-within-1', `icicle-filter-alist',
 ;;    `icicle-filter-wo-input',
-;;    `icicle-find-file-of-content-multi-complete',
 ;;    `icicle-find-first-tag-action',
 ;;    `icicle-find-first-tag-other-window-action',
 ;;    `icicle-find-tag-action', `icicle-find-tag-define-candidates',
