@@ -1,3 +1,4 @@
+[[es:Gnus-es]]
 The official home for Gnus is http://www.gnus.org.
 
 That's the place where you can get the latest copy of Gnus.  You can find pointers to all sorts of Gnus information in other languages there as well.
