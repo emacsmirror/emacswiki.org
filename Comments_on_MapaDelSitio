@@ -1,0 +1,9 @@
+¡Hola a todos!
+
+Quisiera incluir aquí el listado de las categorías disponibles, como un índice de temas o "tabla de contenido", tal cual tiene la versión inglesa de esta misma página.
+Sin embargo, me gustaría hacerlo modular, es decir, crear una página separada que sea el listado de categorías, y luego incluirlo aquí usando el "tag" <code><include...></code>.
+
+¿Qué opinan?
+
+-- ChristianGiménez 2013-02-11 19:01 UTC
+
