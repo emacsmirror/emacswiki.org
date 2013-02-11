@@ -1,305 +1,411 @@
-#FILE text/x-emacs-lisp 
-Ozs7IHRleC1zbWFydC11bWxhdXRzLmVsIC0tLSBTbWFydCB1bWxhdXQgY29udmVyc2lvbiBmb3Ig
-VGVYLgoKOzs7IEF1dGhvcjogRnJhbmsgRmlzY2hlciA8ZnJhbmsuZmlzY2hlciBhdCBtYXRoZW1h
-dGlrLnR1LWNoZW1uaXR6LmRlPgo7OzsgS2V5d29yZHM6IHRleCwgd3AKOzs7IFZlcnNpb246IDEu
-MC4wCjs7OyBVUkw6IGh0dHA6Ly9odWIuZGFyY3MubmV0L2x5cm8vdGV4LXNtYXJ0LXVtbGF1dHMK
-Cjs7IFRoaXMgZmlsZSBpcyBOT1QgcGFydCBvZiBHTlUgRW1hY3MuCgo7OzsgTGljZW5zZToKCjs7
-IFRoaXMgcHJvZ3JhbSBpcyBmcmVlIHNvZnR3YXJlOiB5b3UgY2FuIHJlZGlzdHJpYnV0ZSBpdCBh
-bmQvb3IKOzsgbW9kaWZ5IGl0IHVuZGVyIHRoZSB0ZXJtcyBvZiB0aGUgR05VIEdlbmVyYWwgUHVi
-bGljIExpY2Vuc2UgYXMKOzsgcHVibGlzaGVkIGJ5IHRoZSBGcmVlIFNvZnR3YXJlIEZvdW5kYXRp
-b24sIGVpdGhlciB2ZXJzaW9uIDMgb2YgdGhlCjs7IExpY2Vuc2UsIG9yIChhdCB5b3VyIG9wdGlv
-bikgYW55IGxhdGVyIHZlcnNpb24uCjs7Cjs7IFRoaXMgcHJvZ3JhbSBpcyBkaXN0cmlidXRlZCBp
-biB0aGUgaG9wZSB0aGF0IGl0IHdpbGwgYmUgdXNlZnVsLCBidXQKOzsgV0lUSE9VVCBBTlkgV0FS
-UkFOVFk7IHdpdGhvdXQgZXZlbiB0aGUgaW1wbGllZCB3YXJyYW50eSBvZgo7OyBNRVJDSEFOVEFC
-SUxJVFkgb3IgRklUTkVTUyBGT1IgQSBQQVJUSUNVTEFSIFBVUlBPU0UuIFNlZSB0aGUgR05VCjs7
-IEdlbmVyYWwgUHVibGljIExpY2Vuc2UgZm9yIG1vcmUgZGV0YWlscy4KOzsKOzsgWW91IHNob3Vs
-ZCBoYXZlIHJlY2VpdmVkIGEgY29weSBvZiB0aGUgR05VIEdlbmVyYWwgUHVibGljIExpY2Vuc2UK
-OzsgYWxvbmcgd2l0aCB0aGlzIHByb2dyYW0uIElmIG5vdCwgc2VlCjs7IDxodHRwOi8vd3d3Lmdu
-dS5vcmcvbGljZW5zZXMvPi4KCjs7OyBDb21tZW50YXJ5Ogo7Owo7OyBUcmFuc2Zvcm0gTGFUZVgg
-ZW5jb2RlZCBub24tQVNDSUkgY2hhcmFjdGVycyB0byBhbmQgZnJvbSB0aGVpcgo7OyB2aXNpYmxl
-ICh1dGYtOCkgcmVwcmVzZW50YXRpb25zIHdoZW4gdmlzaXRpbmcgYSBmaWxlIGFuZCBwcmVzZXJ2
-ZQo7OyB0aGVpciBvcmlnaW5hbCBlbmNvZGluZyB3aGVuIHNhdmluZyB0aGUgYnVmZmVyLgo7Owo7
-OyBUZVgvTGFUZVggZG9jdW1lbnRzIG9mdGVuIGNvbnRhaW4gc3BlY2lhbCBjaGFyYWN0ZXJzIHRo
-YXQgYXJlIG5vdAo7OyBhdmFpbGFibGUgaW4gQVNDSUkgY29kZSBpbiBhIHNwZWNpYWwgY29tbWFu
-ZCBmb3JtLiBGb3IgZXhhbXBsZSwgdGhlCjs7IEdlcm1hbiB1bWxhdXQgw6QgY2FuIGJlIHdyaXR0
-ZW4gaW4gTGFUZVggYXMge1wiYX0sIFwie2F9LCBcImEgb3IKOzsgZXZlbiAiYS4gT2YgY291cnNl
-LCBub3dhZGF5cyBvbmUgc2hvdWxkIGFuIGVjb2RpbmcgbGlrZSB1dGYtOCB0aGF0Cjs7IGNvbnRh
-aW4gYSBuYXR1cmFsIHJlcHJlc2VudGF0aW9uIG9mIHRoZXNlIGNoYXJhY3RlcnMuCjs7IFVuZm9y
-dHVuYXRlbHksIG9sZCBkb2N1bWVudHMgbWF5IHN0aWxsIHVzZSB0aGUgb2xkIGVuY29kaW5ncyBv
-cgo7OyBub24tQVNDSUkgZW5jb2RpbmdzIGFyZSBub3QgYWxsb3dlZCBmb3Igb3RoZXIgcmVhc29u
-cy4gRW1hY3MgY2FuCjs7IGFscmVhZHkgYXV0b21hdGljYWxseSBlbmNvZGUgYW5kIGRlY29kZSBz
-dWNoIGNoYXJhY3RlcnMgZnJvbSBhbmQgdG8KOzsgdGhlaXIgTGFUZVggcmVwcmVzZW50YXRpb24g
-dXNpbmcgdGhlIGBpc28tY3Z0JyBwYWNrYWdlOiBkdXJpbmcKOzsgZWRpdGluZyB0aGUgY2hhcmFj
-dGVycyBhcmUgdXRmLTggZW5jb2RlZCBidXQgd2hlbiBzYXZlZCB0byBkaXNrIHRoZQo7OyBjaGFy
-YWN0ZXJzIGFyZSB0cmFuc2Zvcm1lZCB0byBhIExhVGVYIHJlcHJlc2VudGF0aW9uLgo7Owo7OyBV
-bmZvcnR1bmF0ZWx5LCB0aGlzIGFuIGFsbC1vci1ub3RoaW5nIGFwcHJvYWNoOiBlaXRoZXIgYWxs
-Cjs7IGNoYXJhY3RlcnMgYXJlIHRyYW5zZm9ybWVkIG9yIG5vbmUuIEJ1dCB3aGVuIHdvcmtpbmcg
-b24gYSBkb2N1bWVudAo7OyB3aXRoIHNldmVyYWwgYXV0aG9yIHRoaXMgbWF5IGJlIHByb2JsZW1h
-dGljLiBUaGlzIG1heSBwYXJ0aWN1bGFybHkKOzsgdHJ1ZSBpZiB0aGUgZG9jdW1lbnQgaXMgc3Rv
-cmVkIGluIGEgcmV2aXNpb24gY29udHJvbCBzeXN0ZW0uIEluCjs7IHRoZXNlIGNhc2VzIGVhY2gg
-YXV0aG9yIG1heSB1c2UgaXRzIG93biBlZGl0b3IsIGVhY2ggZWRpdG9yIG1heQo7OyBoYXZlIGl0
-cyBvd24gc2V0dGluZyBhbmQgZW5jb2RlcyB1bWxhdXRzIGluIGEgc3BlY2lhbCBwcmVmZXJyZWQK
-Ozsgd2F5LiBFYWNoIHRpbWUgb25lIGF1dGhvciBkb2VzIGEgc21hbGwgY2hhbmdlLCAqYWxsKiB1
-bWxhdXRzIGluIHRoZQo7OyB3aG9sZSBkb2N1bWVudCBtYXkgZ2V0IHRyYW5zZm9ybWVkLiBUaGlz
-IG1heSBhbHNvIGxlYWQgdG8gaHVnZQo7OyBkaWZmcyB0aGF0IGNvbnRhaW4gb2YgbWFueSBodW5r
-cyB0aGF0IG9ubHkgY2hhbmdlIHRoZSBlbmNvZGluZyBvZgo7OyBzb21lIGNoYXJhY3RlcnMuCjs7
-Cjs7IFRoZSBwdXJwb3NlIG9mIGB0ZXgtc21hcnQtdW1sYXV0cycgaXMgdG8gYXV0b21hdGljYWxs
-eSBlbmNvZGUgYW5kCjs7IGRlY29kZSB1bWxhdXRzIGZyb20gYW5kIHRvIHRoZWlyIHRleCByZXBy
-ZXNlbnRhdGlvbiwgd2hpbGUKOzsgKnByZXNlcnZpbmcqIHRoZSBvcmlnaW5hbCBlbmNvZGluZy4g
-SW4gb3RoZXIgd29yZHMsIHdoZW4gYSBMYVRlWAo7OyBmaWxlIGlzIHZpc2l0ZWQsIHRoZSBvcmln
-aW5hbCBlbmNvZGluZyBvZiBlYWNoIGNoYXJhY3RlciBpcyBzYXZlZAo7OyBhbmQgdGhlIGNoYXJh
-Y3RlciBpcyB0cmFuc2Zvcm1lZCB0byBpdHMgdmlzaWJsZSAodXRmLTgpCjs7IHJlcHJlc2VudGF0
-aW9uLiBXaGVuIHRoZSBkb2N1bWVudCBpcyBzYXZlZCBhZ2FpbiwgZWFjaCBjaGFyYWN0ZXIKOzsg
-dGhhdCBoYXMgYmVlbiBwcmVzZW50IHdoZW4gdGhlIGRvY3VtZW50IGhhcyBiZWVuIGxvYWRlZCBp
-cyBzYXZlZCBpbgo7OyBpdHMgKm9yaWdpbmFsKiBlbmNvZGluZy4gT25seSBuZXdseSBpbnNlcnRl
-ZCBub24tQVNDSUkgY2hhcmFjdGVycwo7OyBnZXQgYSBuZXcgZW5jb2RpbmcgdGhhdCBkZXBlbmRz
-IG9uIHRoZSB1c2VyLW9wdGlvbnMgb2YKOzsgYHRleC1zbWFydC11bWxhdXRzJy4gVGhpcyB3YXks
-IGEgc21hbGwgY2hhbmdlIGluIGEgZG9jdW1lbnQgd2lsbAo7OyBub3QgcmVlbmNvZGUgYWxsIG5v
-bi1BU0NJSSBjaGFyYWN0ZXMgYXMgYGlzby1jdnQnIHdvdWxkIGRvIGFuZCBvbmx5Cjs7IHRoZSBt
-b2RpZmllZCBwYXJ0cyBvZiB0aGUgZG9jdW1lbnQgd2lsbCByZWFsbHkgYmUgbW9kaWZpZWQgb24g
-ZGlzay4KOzsKOzs7IFVzYWdlOgo7Owo7OyBTaW1wbHkgYWRkCjs7Cjs7IChhZGQtaG9vayAnTGFU
-ZVgtbW9kZS1ob29rICMndGV4LXNtYXJ0LXVtbGF1dHMtZGVjb2RlKQo7Owo7OyB0byB5b3VyIC5l
-bWFjcyBmaWxlLiBUaGlzIHdpbGwgY29udmVydCBhbGwgTGFUZVgtZW5jb2RlZCBjaGFyYWN0ZXJz
-Cjs7IHRvIHRoZWlyIHJlc3AuIHZpc2libGUgZW5jb2RpbmcgYW5kIHN0b3JlIHRoZWlyIG9yaWdp
-bmFsIGVuY29kaW5ncy4KOzsgVGhpcyB3aWxsIGFsc28gYXV0b21hdGljYWxseSByZWdpc3RlciB0
-aGUgZW5jb2Rpbmcgc28gdGhhdCB0aGUKOzsgb3JpZ2luYWwgZW5jb2RpbmdzIGFyZSByZXN0b3Jl
-ZCB3aGVuIHRoZSBidWZmZXIgaXMgc2F2ZWQuCjs7Cjs7OyBDb2RlOgoKKHJlcXVpcmUgJ2lzby1j
-dnQpCgooZGVmZ3JvdXAgdGV4LXNtYXJ0LXVtbGF1dHMgbmlsCiAgIkludGVsbGlnZW50IGF1dG9t
-YXRpYyBjb252ZXJzaW9uIG9mIFRlWCB1bWxhdXQgZW5jb2RpbmdzLiIKICA6Z3JvdXAgJ3RleAog
-IDpwcmVmaXggJ3RleC1zbWFydC11bWxhdXRzLSkKCihkZWZjdXN0b20gdGV4LXNtYXJ0LXVtbGF1
-dHMtZW5jb2RlICdhdXRvCiAgIkVuY29kaW5nIG9mIG5ldyB1bWxhdXRzLgpUaGlzIG9wdGlvbiBo
-YXMgdGhyZWUgcG9zc2libGUgdmFsdWVzLiBcIk5ldmVyXCIgbWVhbnMgdGhhdCBuZXdseQppbnNl
-cnRlZCBjaGFyYWN0ZXJzIGFyZSBuZXZlciBlbmNvZGVkLCBpLmUuIHRoZXkgYXJlIHdyaXR0ZW4K
-dW5tb2RpZmllZCB0byB0aGUgZmlsZS4gXCJBbHdheXNcIiBtZWFucyBlYWNoIG5ldyBjaGFyYWN0
-ZXIgaXMKZW5jb2RlZCBhY2NvcmRpbmcgdG8gYHRleC1zbWFydC11bWxhdXRzLWVuY29kaW5ncycu
-IFwiQXV0b21hdGljXCIKbWVhbnMgY29udmVyc2lvbiBoYXBwZW5zIGlmIGFuZCBvbmx5IGlmIHRo
-ZXJlIGlzIGF0IGxlYXN0IG9uZQpkZWNvZGVkIGNoYXJhY3RlciBpbiB0aGUgYnVmZmVyIChpLmUu
-IHNvbWUgY2hhcmFjdGVyIHRoYXQgaGFzCmJlZW4gZGVjb2RlZCBpbiB0aGUgZmlsZSB3aGVuIGl0
-IGhhcyBiZWVuIGxvYWRlZCkuIgogIDp0eXBlICcocmFkaW8gKGNvbnN0IDp0YWcgIk5ldmVyIiA6
-dmFsdWUgbmlsKQogICAgICAgICAgICAgICAgKGNvbnN0IDp0YWcgIkF1dG9tYXRpYy4iIDp2YWx1
-ZSBhdXRvKQogICAgICAgICAgICAgICAgKGNvbnN0IDp0YWcgIkFsd2F5cy4iIDp2YWx1ZSB0KSkK
-ICA6Z3JvdXAgJ3RleC1zbWFydC11bWxhdXRzKQoKKGRlZmN1c3RvbSB0ZXgtc21hcnQtdW1sYXV0
-cy1lbmNvZGluZ3MKICAnKAogICAgIl5cXFxcW15bOndvcmQ6XVs6c3BhY2U6XV1bWzp3b3JkOl1d
-IgogICAgIl5cXFxcW15bOndvcmQ6XVs6c3BhY2U6XV17W1s6d29yZDpdXX0iCiAgICAiXntcXFxc
-Lip9JCIKICAgICkKICAiQSBsaXN0IG9mIHJlZ3VsYXIgZXhwcmVzc2lvbnMgdGhhdCBtYXRjaCB5
-b3VyIHByZWZlcmVkIGVuY29kaW5ncyBpbiBvcmRlci4KV2hlbiB0aGUgZW5jb2RpbmcgZm9yIHNv
-bWUgY2hhcmFjdGVyIGlzIGRldGVybWluZWQsIHRoZXNlIHJlZ3VsYXIKZXhwcmVzc2lvbnMgYXJl
-IG1hdGNoZWQgYWdhaW5zdCBhbGwgcG9zc2libGUgZW5jb2RpbmdzIG9mIHRoYXQKY2hhcmFjdGVy
-LiBUaGUgZmlyc3QgbWF0Y2hpbmcgZW5jb2RpbmcgKHRoYXQgbWF0Y2hlcyB0aGUgZmlyc3QKcmVn
-dWxhciBleHByZXNzaW9uKSB3aWxsIGJlIHVzZWQuIElmIG5vIHJlZ3VsYXIgZXhwcmVzc2lvbgpt
-YXRjaGVzLCBzb21lIGFyYml0cmFyeSBlbmNvZGluZyB3aWxsIGJlIHVzZWQuIgogIDp0eXBlICco
-cmVwZWF0IHJlZ2V4cCkKICA6Z3JvdXAgJ3RleC1zbWFydC11bWxhdXRzKQoKKGRlZmN1c3RvbSB0
-ZXgtc21hcnQtdW1sYXV0cy1nZXJtYW4tc2hvcnRjdXRzIG5pbAogICJJZiBub24tbmlsLCBhbHNv
-IHRyYW5zbGF0ZSBHZXJtYW4gc2hvcnRjdXRzIGxpa2UgXCJhLCBcIm8sIFwicy4KTm90ZSB0aGF0
-IHRoaXMgaXMgb2Z0ZW4gdmlhYmxlIGZvciB0ZXgtZmlsZXMsIGJ1dCBpbmFwcHJvcHJpYXRlCmZv
-ciBvdGhlciBmaWxlcyBsaWtlIEJpYlRlWCBmaWxlcywgYmVjYXVzZSB0aGUgbGF0dGVyIG1heSBj
-b250YWluCnN0cmluZ3MgZW5jbG9zZWQgaW4gZG91YmxlLXF1b3Rlcy4iCiAgOnR5cGUgJ2Jvb2xl
-YW4KICA6Z3JvdXAgJ3RleC1zbWFydC11bWxhdXRzKQoKKGRlZmZhY2UgdGV4LXNtYXJ0LXVtbGF1
-dHMtbWFya3MgJygodCA6Zm9yZWdyb3VuZCAid2hpdGUiIDpiYWNrZ3JvdW5kICJyZWQiKSkKICAi
-RmFjZSBmb3IgZGlzcGxheWluZyB1bWxhdXQgY29udmVyc2lvbnMuIgogIDpncm91cCAndGV4LXNt
-YXJ0LXVtbGF1dHMpCgooZGVmdmFyIHRleC1zbWFydC11bWxhdXRzLS1kZWNvZGUtdGFibGUgbmls
-CiAgIkNvbnZlcnNpb24gdGFibGUgZm9yIHRleCBkZWNvZGluZy4KRWFjaCBlbGVtZW50IG9mIHRo
-ZSBsaXN0IGlzIHR3by1lbGVtZW50IGxpc3Qgb2Ygc3RyaW5ncyAodGV4CmlzbykuIFRoZSBmaXJz
-dCBlbGVtZW50IGlzIHRoZSB0ZXgtZW5jb2Rpbmcgb2YgYSBjaGFyYWN0ZXIsIHRoZQpzZWNvbmQg
-ZWxlbWVudCBpcyB0aGUgZW5jb2RlZCBjaGFyYWN0ZXIgaXRzZWxmLiIpCgooZGVmdmFyIHRleC1z
-bWFydC11bWxhdXRzLS1lbmNvZGUtdGFibGUgbmlsCiAgIkNvbnZlcnNpb24gdGFibGUgZm9yIHRl
-eCBlbmNvZGluZ3MuClNhbWUgc3RydWN0dXJlIGFzIGB0ZXgtc21hcnQtdW1sYXV0cy0tZGVjb2Rl
-LXRhYmxlJywgYnV0IHVzZWQgZm9yCm5ld2x5IGluc2VydGVkIGNoYXJhY3RlcnMuIikKCihkZWZ2
-YXIgdGV4LXNtYXJ0LXVtbGF1dHMtLW1hcmstb3ZlcmxheXMgbmlsCiAgIkxpc3Qgb2YgYWN0aXZl
-IG92ZXJsYXlzIGZvciBzaG93aW5nIHN0b3JlZCBjb252ZXJzaW9ucy4iKQoobWFrZS12YXJpYWJs
-ZS1idWZmZXItbG9jYWwgJ3RleC1zbWFydC11bWxhdXRzLS1tYXJrLW92ZXJsYXlzKQoKKGFkZC10
-by1saXN0ICdmb3JtYXQtYWxpc3QKICAgICAgICAgICAgICcodGV4LXNtYXJ0LXVtbGF1dHMgIlBl
-cnNpc3RlbnQgVGVYIChlbmNvZGluZykiIG5pbAogICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICB0ZXgtc21hcnQtdW1sYXV0cy1kZWNvZGUKICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgdGV4LXNtYXJ0LXVtbGF1dHMtZW5jb2RlLWZvcm1hdCB0IG5pbCkpCgooZGVmdW4gdGV4
-LXNtYXJ0LXVtbGF1dHMtLXVwZGF0ZS10YWJsZXMgKCkKICAiVXBkYXRlIGludGVybmFsIGVuY29k
-aW5nIGFuZCBkZWNvZGluZyB0YWJsZXMuClRoaXMgZnVuY3Rpb24gdXBkYXRlcyB0aGUgaW50ZXJu
-YWwgZW5jb2RpbmcgYW5kIGRlY29kaW5nIHRhYmxlcwpmcm9tIHRoZSB0YWJsZXMgZGVmaW5lZCBp
-biBgaXNvLWN2dCcuIgogICh0ZXgtc21hcnQtdW1sYXV0cy0tdXBkYXRlLWRlY29kZS10YWJsZSkK
-ICAodGV4LXNtYXJ0LXVtbGF1dHMtLXVwZGF0ZS1lbmNvZGUtdGFibGUpKQoKKGRlZnVuIHRleC1z
-bWFydC11bWxhdXRzLS11cGRhdGUtZGVjb2RlLXRhYmxlICgpCiAgIlVwZGF0ZSBpbnRlcm5hbCBk
-ZWNvZGluZyB0YWJsZS4KVGhpcyBmdW5jdGlvbiB1cGRhdGVzIHRoZSBpbnRlcm5hbCBkZWNvZGlu
-ZyB0YWJsZSBmcm9tIHRoZSB0YWJsZQpkZWZpbmVkIGluIGBpc28tY3Z0Jy4gSWYgYHRleC1zbWFy
-dC11bWxhdXRzLWdlcm1hbi1zaG9ydGN1dHMnIGlzCm5vbi1uaWwsIGFkZGl0aW9uYWwgZW5jb2Rp
-bmdzIGxpa2UgXCJhIGFyZSBpbmNsdWRlZC4iCiAgKGxldCAoKHRhYiBpc28tdGV4Mmlzby10cmFu
-cy10YWIpKQogICAgKHdoZW4gdGV4LXNtYXJ0LXVtbGF1dHMtZ2VybWFuLXNob3J0Y3V0cwogICAg
-ICAoc2V0cSB0YWIgKGFwcGVuZCB0YWIgJygoIlwiYSIgIsOkIikKICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgKCJcIm8iICLDtiIpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICgi
-XCJ1IiAiw7wiKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoIlwiQSIgIsOEIikKICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgKCJcIk8iICLDliIpCiAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICgiXCJVIiAiw5wiKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAo
-IlwicyIgIsOfIikpKSkpCiAgICAoc2V0cSB0YWIgKGFwcGVuZCB0YWIgJygoIlxcXFxzcyAiICLD
-nyIpKSkpCiAgICAoc2V0cSB0ZXgtc21hcnQtdW1sYXV0cy0tZGVjb2RlLXRhYmxlCiAgICAgICAg
-ICAoYXBwZW5kCiAgICAgICAgICAgKG1hcGNhcgogICAgICAgICAgICAjJyhsYW1iZGEgKHBhaXIp
-CiAgICAgICAgICAgICAgICAobGV0ICgodGV4IChjYXIgcGFpcikpCiAgICAgICAgICAgICAgICAg
-ICAgICAoaXNvIChjYWRyIHBhaXIpKSkKICAgICAgICAgICAgICAgICAgKGxpc3QgdGV4IChwcm9w
-ZXJ0aXplIGlzbyAndGV4LXNtYXJ0LXVtbGF1dHMKICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICh0ZXgtc21hcnQtdW1sYXV0cy0tcmVnZXhwLXVucXVvdGUgdGV4KSkpKSkK
-ICAgICAgICAgICAgdGFiKQogICAgICAgICAgIChtYXBjYXIKICAgICAgICAgICAgIycobGFtYmRh
-IChjaGFyKQogICAgICAgICAgICAgICAgKGxpc3QgKHJlZ2V4cC1xdW90ZSBjaGFyKQogICAgICAg
-ICAgICAgICAgICAgICAgKHByb3BlcnRpemUgY2hhciAndGV4LXNtYXJ0LXVtbGF1dHMgdCkpKQog
-ICAgICAgICAgICAoZGVsZXRlLWR1cHMgKG1hcGNhciAjJ2NhZHIgdGFiKSkpKSkpKQoKKGRlZnVu
-IHRleC1zbWFydC11bWxhdXRzLS1yZWdleHAtdW5xdW90ZSAocmVnZXhwKQogICJSZW1vdmUgcXVv
-dGVkIGNoYXJhY3RlcnMgZnJvbSByZWd1bGFyIGV4cHJlc3Npb24gUkVHRVhQLgpUaGlzIGlzIHRo
-ZSBpbnZlcnNlIG9mIGByZWdleHAtcXVvdGUnLCBidXQgbm90ZSB0aGF0IGl0IG9ubHkKd29ya3Mg
-d2l0aCBzaW1wbGUgcmVndWxhciBleHByZXNzaW9uLiBUaGUgZWZmZWN0IGlzIHRvIHJlcGxhY2UK
-ZG91YmxlIGJhY2tzbGFzaGVzIGJ5IGEgc2luZ2xlIGJhY2tzbGFzaC4iCiAgKHJlcGxhY2UtcmVn
-ZXhwLWluLXN0cmluZyAiXFxcXFxcXFwiICJcXCIgcmVnZXhwIHQgdCkpCgooZGVmdW4gdGV4LXNt
-YXJ0LXVtbGF1dHMtLXVwZGF0ZS1lbmNvZGUtdGFibGUgKCkKICAiVXBkYXRlIGludGVybmFsIGVu
-Y29kaW5nIHRhYmxlLgpUaGUgaW50ZXJuYWwgZW5jb2RpbmcgdGFibGUgaXMgY3JlYXRlZCBieSBz
-d2l0Y2hpbmcga2V5IGFuZAp2YWx1ZXMgb2YgdGhlIGRlY29kaW5nIHRhYmxlIGB0ZXgtc21hcnQt
-dW1sYXV0cy0tZGVjb2RlLXRhYmxlJy4gSWYKYSBjaGFyYWN0ZXIgYXMgc2V2ZXJhbCBwb3NzaWJs
-ZSBlbmNvZGluZ3MsIG9uZSBpcyBzZWxlY3RlZAphY2NvcmRpbmcgdG8gYHRleC1zbWFydC11bWxh
-dXRzLWVuY29kaW5ncycuIgogIChsZXQgKCh0YmwgKG1ha2UtaGFzaC10YWJsZSA6dGVzdCAnZXF1
-YWwpKQogICAgICAgIGVuY29kZS1hbGlzdCkKICAgIDs7IGNvbGxlY3QgYWxsIGVuY29kaW5ncyBm
-b3IgYSBjaGFyYWN0ZXIgaW4gYSBsaXN0CiAgICAoZG9saXN0IChwYWlyIHRleC1zbWFydC11bWxh
-dXRzLS1kZWNvZGUtdGFibGUpCiAgICAgIChsZXQgKChrZXkgKGNvbmNhdCAoY2FkciBwYWlyKSkp
-CiAgICAgICAgICAgIChlbmNvZGluZyAoY2FyIHBhaXIpKSkKICAgICAgICAodW5sZXNzIChzdHJp
-bmc9IGtleSAoY2FyIHBhaXIpKQogICAgICAgICAgKHNldC10ZXh0LXByb3BlcnRpZXMgMCAobGVu
-Z3RoIGtleSkgbmlsIGtleSkKICAgICAgICAgIChzZXRxIGVuY29kaW5nICh0ZXgtc21hcnQtdW1s
-YXV0cy0tcmVnZXhwLXVucXVvdGUgZW5jb2RpbmcpKQogICAgICAgICAgKHB1dGhhc2gga2V5IChj
-b25zIGVuY29kaW5nIChnZXRoYXNoIGtleSB0YmwpKSB0YmwpKSkpCiAgICAoc2V0cSB0ZXgtc21h
-cnQtdW1sYXV0cy0tZW5jb2RlLXRhYmxlIG5pbCkKICAgIDs7IHNlbGVjdCB0aGUgZmlyc3QgbWF0
-Y2hpbmcgZW5jb2RpbmcgZm9yIGVhY2ggY2hhcmFjdGVyCiAgICAobWFwaGFzaAogICAgICMnKGxh
-bWJkYSAoY2hhciBlbmNvZGluZ3MpCiAgICAgICAgIChwdXNoIChjb25zIGNoYXIKICAgICAgICAg
-ICAgICAgICAgICAgKGNhdGNoICdkb25lCiAgICAgICAgICAgICAgICAgICAgICAgKGRvbGlzdCAo
-cmUtZW5jb2RpbmcgdGV4LXNtYXJ0LXVtbGF1dHMtZW5jb2RpbmdzKQogICAgICAgICAgICAgICAg
-ICAgICAgICAgKGRvbGlzdCAoZW5jb2RpbmcgZW5jb2RpbmdzKQogICAgICAgICAgICAgICAgICAg
-ICAgICAgICAod2hlbiAoc3RyaW5nLW1hdGNoIHJlLWVuY29kaW5nIGVuY29kaW5nKQogICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICh0aHJvdyAnZG9uZSBlbmNvZGluZykpKSkKICAgICAgICAg
-ICAgICAgICAgICAgICAoY2FyIGVuY29kaW5ncykpKQogICAgICAgICAgICAgICBlbmNvZGUtYWxp
-c3QpKQogICAgIHRibCkKICAgIChzZXRxIHRleC1zbWFydC11bWxhdXRzLS1lbmNvZGUtdGFibGUK
-ICAgICAgICAgIChtYXBjYXIKICAgICAgICAgICAjJyhsYW1iZGEgKHBhaXIpCiAgICAgICAgICAg
-ICAgIChsZXQgKCh0ZXggKGNhciBwYWlyKSkKICAgICAgICAgICAgICAgICAgICAgKGlzbyAoY2Fk
-ciBwYWlyKSkpCiAgICAgICAgICAgICAgICAgKGxpc3QgdGV4CiAgICAgICAgICAgICAgICAgICAg
-ICAgKHByb3BlcnRpemUgaXNvCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgJ3Rl
-eC1zbWFydC11bWxhdXRzCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKGNkci1z
-YWZlIChhc3NvYyBpc28gZW5jb2RlLWFsaXN0KSkpKSkpCiAgICAgICAgICAgdGV4LXNtYXJ0LXVt
-bGF1dHMtLWRlY29kZS10YWJsZSkpKSkKCjs7OyMjI2F1dG9sb2FkCihkZWZ1biB0ZXgtc21hcnQt
-dW1sYXV0cy1kZWNvZGUgKCZvcHRpb25hbCBmcm9tIHRvKQogICJNYXJrIGFuZCBkZWNvZGUgYWxs
-IHRleCBlbmNvZGVkIGNoYXJhY3RlcnMgaW4gcmVnaW9uLgpPbmx5IGNoYXJhY3RlcnMgYmV0d2Vl
-biB0aGUgYnVmZmVyIHBvc2l0aW9ucyBGUk9NIGFuZCBUTyBhcmUKZGVjb2RlZC4gSWYgRlJPTSBh
-bmQgVE8gYXJlIG5pbCB0aGUgd2hvbGUgYnVmZmVyIGlzIGRlY29kZWQuIFRoaXMKZnVuY3Rpb24g
-cmVnaXN0ZXJzICd0ZXgtc21hcnQtdW1sYXV0cycgaGFzIGJ1ZmZlciBmaWxlIGZvcm1hdCwgc28K
-ZGVjb2RlZCBjaGFyYWN0ZXJzIGFyZSBlbmNvZGVkIGFnYWluIHdoZW4gdGhlIGJ1ZmZlciBpcyBz
-YXZlZC4iCiAgKGludGVyYWN0aXZlICIqIikKICAoaWYgKHJlZ2lvbi1hY3RpdmUtcCkKICAgICAg
-KHNldHEgZnJvbSAocmVnaW9uLWJlZ2lubmluZykKICAgICAgICAgICAgdG8gKHJlZ2lvbi1lbmQp
-KQogICAgKHNldHEgZnJvbSAob3IgZnJvbSAocG9pbnQtbWluKSkKICAgICAgICAgIHRvIChvciB0
-byAocG9pbnQtbWF4KSkpKQogIChsZXQgKChtb2RpZmllZCAoYnVmZmVyLW1vZGlmaWVkLXApKSkK
-ICAgICh0ZXgtc21hcnQtdW1sYXV0cy0tdHJhbnNsYXRlIGZyb20gdG8gdGV4LXNtYXJ0LXVtbGF1
-dHMtLWRlY29kZS10YWJsZSkKICAgIChzZXQtYnVmZmVyLW1vZGlmaWVkLXAgbW9kaWZpZWQpCiAg
-ICAoYWRkLXRvLWxpc3QgJ2J1ZmZlci1maWxlLWZvcm1hdCAndGV4LXNtYXJ0LXVtbGF1dHMpCiAg
-ICAoYWRkLWhvb2sgJ2FmdGVyLXJldmVydC1ob29rICMndGV4LXNtYXJ0LXVtbGF1dHMtZGVjb2Rl
-IG5pbCB0KSkpCgo7OzsjIyNhdXRvbG9hZAooZGVmdW4gdGV4LXNtYXJ0LXVtbGF1dHMtZW5jb2Rl
-ICgmb3B0aW9uYWwgZnJvbSB0bykKICAiTWFyayBhbmQgZW5jb2RlIGFsbCBjaGFyYWN0ZXJzIGlu
-IHJlZ2lvbi4KT25seSBjaGFyYWN0ZXJzIGJldHdlZW4gdGhlIGJ1ZmZlciBwb3NpdGlvbnMgRlJP
-TSBhbmQgVE8gYXJlCmRlY29kZWQuIElmIEZST00gYW5kIFRPIGFyZSBuaWwgdGhlIHdob2xlIGJ1
-ZmZlciBpcyBlbmNvZGVkLgpDaGFyYWN0ZXJzLCB0aGF0IGhhdmUgZXhpc3RlZCB3aGVuIHRoZSBi
-dWZmZXIgaGFzIGJlZW4gbG9hZGVkCndpbGwgYmUgZW5jb2RlZCBpbiB0aGVpciBvcmlnaW5hbCBl
-bmNvZGluZy4gTmV3bHkgaW5zZXJ0ZWQKY2hhcmFjdGVycyB3aWxsIGJlIGVuY29kZWQgYWNjb3Jk
-aW5nIHRoZSBydWxlcyBvZgpgdGV4LXNtYXJ0LXVtbGF1dHMtZW5jb2RpbmdzJyBhbmQgYHRleC1z
-bWFydC11bWxhdXRzLWVuY29kZScuClRoaXMgZnVuY3Rpb24gc2hvdWxkIG5ldmVyIGJlIGNhbGxl
-ZCBkaXJlY3RseSBidXQgaXMgY2FsbGVkIGp1c3QKYmVmb3JlIHRoZSBidWZmZXIgaXMgc2F2ZWQg
-aWYgdGhlIGJ1ZmZlciBoYXMgYmVlbiBkZWNvZGVkIHdpdGgKYHRleC1zbWFydC11bWxhdXRzLWRl
-Y29kZScuIgogIChpbnRlcmFjdGl2ZSAiKiIpCiAgKGlmIChyZWdpb24tYWN0aXZlLXApCiAgICAg
-IChzZXRxIGZyb20gKHJlZ2lvbi1iZWdpbm5pbmcpCiAgICAgICAgICAgIHRvIChyZWdpb24tZW5k
-KSkKICAgIChzZXRxIGZyb20gKG9yIGZyb20gKHBvaW50LW1pbikpCiAgICAgICAgICB0byAob3Ig
-dG8gKHBvaW50LW1heCkpKSkKICAod2hlbiAodGV4LXNtYXJ0LXVtbGF1dHMtLXNob3VsZC1lbmNv
-ZGUgZnJvbSB0bykKICAgIChsZXQgKChtb2RpZmllZCAoYnVmZmVyLW1vZGlmaWVkLXApKQogICAg
-ICAgICAgKGJlZyAobW92ZS1tYXJrZXIgKG1ha2UtbWFya2VyKSBmcm9tKSkKICAgICAgICAgIChl
-bmQgKG1vdmUtbWFya2VyIChtYWtlLW1hcmtlcikgdG8pKSkKICAgICAgKHRleC1zbWFydC11bWxh
-dXRzLS10cmFuc2xhdGUgZnJvbSB0byB0ZXgtc21hcnQtdW1sYXV0cy0tZW5jb2RlLXRhYmxlKQog
-ICAgICAoc2V0LWJ1ZmZlci1tb2RpZmllZC1wIG1vZGlmaWVkKQogICAgICAoc2V0cSBmcm9tICht
-YXJrZXItcG9zaXRpb24gYmVnKQogICAgICAgICAgICB0byAobWFya2VyLXBvc2l0aW9uIGVuZCkp
-CiAgICAgIChtb3ZlLW1hcmtlciBiZWcgbmlsKQogICAgICAobW92ZS1tYXJrZXIgZW5kIG5pbCkp
-KQogICh0ZXgtc21hcnQtdW1sYXV0cy0tZWFjaC1jaGFyCiAgIGZyb20gdG8KICAgIycobGFtYmRh
-IChwb3MpCiAgICAgICAobGV0ICgoZW5jb2RlZCAoZ2V0LXRleHQtcHJvcGVydHkgcG9zICd0ZXgt
-c21hcnQtdW1sYXV0cykpKQogICAgICAgICAod2hlbiAoZXEgZW5jb2RlZCB0KQogICAgICAgICAg
-IChzZXRxIGVuY29kZWQgKGJ1ZmZlci1zdWJzdHJpbmctbm8tcHJvcGVydGllcyBwb3MgKDErIHBv
-cykpKSkKICAgICAgICAgKHdoZW4gKGVxIGVuY29kZWQgbmlsKSAoZGVidWcpKQogICAgICAgICAo
-aW5zZXJ0IGVuY29kZWQpCiAgICAgICAgIChkZWxldGUtY2hhciAxKSkpKSkKCihkZWZ1biB0ZXgt
-c21hcnQtdW1sYXV0cy1lbmNvZGUtYWxsICgmb3B0aW9uYWwgZnJvbSB0bykKICAiUmVlbmNvZGUg
-YWxsIGNoYXJhY3RlcyBpbiByZWdpb24uCk9ubHkgY2hhcmFjdGVycyBiZXR3ZWVuIHRoZSBidWZm
-ZXIgcG9zaXRpb25zIEZST00gYW5kIFRPIGFyZQpkZWNvZGVkLiBJZiBGUk9NIGFuZCBUTyBhcmUg
-bmlsIHRoZSB3aG9sZSBidWZmZXIgaXMgZW5jb2RlZC4gVGhlCm9yaWdpbmFsIGVuY29kaW5ncyBv
-ZiBhbGwgY2hhcmFjdGVycyBpbiB0aGUgcmVnaW9uIGlzIGRyb3BwZWQgYW5kCnJlcGxhY2VkIGJ5
-IGEgbmV3IGVuY29kaW5nIGFjY29yZGluZyB0byB0aGUgcnVsZXMgb2YKYHRleC1zbWFydC11bWxh
-dXRzLWVuY29kaW5ncycgYW5kIGB0ZXgtc21hcnQtdW1sYXV0cy1lbmNvZGUnLiIKICAoaW50ZXJh
-Y3RpdmUgIioiKQogIChsZXQgKCh0ZXgtc21hcnQtdW1sYXV0cy1lbmNvZGUgdCkpCiAgICAodGV4
-LXNtYXJ0LXVtbGF1dHMtdW5tYXJrIGZyb20gdG8pCiAgICAodGV4LXNtYXJ0LXVtbGF1dHMtZW5j
-b2RlIGZyb20gdG8pKSkKCihkZWZ1biB0ZXgtc21hcnQtdW1sYXV0cy0tc2hvdWxkLWVuY29kZSAo
-ZnJvbSB0bykKICAiUmV0dXJuIGlmIGNoYXJhY3RlcnMgc2hvdWxkIGJlIGVuY29kZWQuClRoaXMg
-ZnVuY3Rpb24gcmV0dXJucyBub24tbmlsIGlmIGVpdGhlcgpgdGV4LXNtYXJ0LXVtbGF1dHMtZW5j
-b2RlJyBpcyB0IG9yIGlmIGl0IGlzICdhdXRvJyBhbmQgYXQgbGVhc3QKb25lIGNoYXJhY3RlciBp
-biB0aGUgcmVnaW9uIEZST00gdG8gVE8gaGFzIGJlZW4gZGVjb2RlZCB3aGVuIHRoZQpidWZmZXIg
-aGFzIGJlZW4gbG9hZGVkLiIKICAob3IgKGVxIHRleC1zbWFydC11bWxhdXRzLWVuY29kZSB0KQog
-ICAgICAoYW5kIChlcSB0ZXgtc21hcnQtdW1sYXV0cy1lbmNvZGUgJ2F1dG8pCiAgICAgICAgICAg
-KGNhdGNoICdmb3VuZAogICAgICAgICAgICAgKHRleC1zbWFydC11bWxhdXRzLS1lYWNoLWNoYXIK
-ICAgICAgICAgICAgICBmcm9tIHRvCiAgICAgICAgICAgICAgIycobGFtYmRhIChwb3MpCiAgICAg
-ICAgICAgICAgICAgICh1bmxlc3MgKGVxIChnZXQtdGV4dC1wcm9wZXJ0eSBwb3MgJ3RleC1zbWFy
-dC11bWxhdXRzKSB0KQogICAgICAgICAgICAgICAgICAgICh0aHJvdyAnZm91bmQgdCkpKSkKICAg
-ICAgICAgICAgIG5pbCkpKSkKCihkZWZ1biB0ZXgtc21hcnQtdW1sYXV0cy1lbmNvZGUtZm9ybWF0
-IChmcm9tIHRvIGJ1ZmZlcikKICAiRm9ybWF0IGZ1bmN0aW9uIHRvIGJlIHVzZWQgaW4gYGZvcm1h
-dC1hbGlzdCcuClRoZSByZWdpb24gYmV0d2VlbiBGUk9NIGFuZCBUTyBzaG91bGQgYmUgZW5jb2Rl
-ZC4gVGhlIGFyZ3VtZW50CkJVRkZFUiBpcyBpZ25vcmVkLiIKICAodGV4LXNtYXJ0LXVtbGF1dHMt
-ZW5jb2RlIGZyb20gdG8pKQoKOzs7IyMjYXV0b2xvYWQKKGRlZnVuIHRleC1zbWFydC11bWxhdXRz
-LXVubWFyayAoJm9wdGlvbmFsIGZyb20gdG8pCiAgIlJlbW92ZSBlbmNvZGluZyBtYXJrcyBmcm9t
-IGFsbCBjb252ZXJ0ZWQgY2hhcmFjdGVycyBpbiByZWdpb24uClRoaXMgbWFrZXMgdGV4LXNtYXJ0
-LXVtbGF1dHMgY29uc2lkZXIgYWxsIGNoYXJhY3RlcnMgYXMgaWYgdGhleQp3ZXJlIG1vZGlmaWVk
-LCBpLmUuIHRoZWlyIG9yaWdpbmFsIGVuY29kaW5nIHdpbGwgbm90IGJlIHJlc3RvcmVkCndoZW4g
-dGhlIGJ1ZmZlciBpcyBzdG9yZWQuIEZST00gYW5kIFRPIGFyZSB0aGUgcmVnaW9uIGluIHdoaWNo
-CnNob3VsZCBiZSBzY2FubmVkLiBJZiBGUk9NIGFuZCBUTyBhcmUgbmlsIHRoZSB3aG9sZSBidWZm
-ZXIgaXMKdXNlZC4iCiAgKGludGVyYWN0aXZlICIqIikKICAoaWYgKHJlZ2lvbi1hY3RpdmUtcCkK
-ICAgICAgKHNldHEgZnJvbSAocmVnaW9uLWJlZ2lubmluZykKICAgICAgICAgICAgdG8gKHJlZ2lv
-bi1lbmQpKQogICAgKHNldHEgZnJvbSAob3IgZnJvbSAocG9pbnQtbWluKSkKICAgICAgICAgIHRv
-IChvciB0byAocG9pbnQtbWF4KSkpKQogIChyZW1vdmUtdGV4dC1wcm9wZXJ0aWVzIGZyb20gdG8g
-Jyh0ZXgtc21hcnQtdW1sYXV0cykpKQoKOzs7IyMjYXV0b2xvYWQKKGRlZnVuIHRleC1zbWFydC11
-bWxhdXRzLXNob3ctZW5jb2RpbmdzICgpCiAgIlNob3cgZW5jb2RpbmdzIG9mIGFsbCB1bWxhdXRz
-IGluIGJ1ZmZlci4iCiAgKGludGVyYWN0aXZlKQogICh0ZXgtc21hcnQtdW1sYXV0cy1oaWRlLWVu
-Y29kaW5ncykKICAodGV4LXNtYXJ0LXVtbGF1dHMtLWVhY2gtY2hhcgogICAocG9pbnQtbWluKSAo
-cG9pbnQtbWF4KQogICAjJyhsYW1iZGEgKHBvcykKICAgICAgIChsZXQgKChvdiAobWFrZS1vdmVy
-bGF5IHBvcyAoMSsgcG9zKSkpCiAgICAgICAgICAgICAob3JpZy10eHQgKGdldC10ZXh0LXByb3Bl
-cnR5IHBvcyAndGV4LXNtYXJ0LXVtbGF1dHMpKSkKICAgICAgICAgKHB1c2ggb3YgdGV4LXNtYXJ0
-LXVtbGF1dHMtLW1hcmstb3ZlcmxheXMpCiAgICAgICAgIChvdmVybGF5LXB1dCBvdgogICAgICAg
-ICAgICAgICAgICAgICAgJ2FmdGVyLXN0cmluZwogICAgICAgICAgICAgICAgICAgICAgKHByb3Bl
-cnRpemUgKGlmIChlcSBvcmlnLXR4dCB0KQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgIChidWZmZXItc3Vic3RyaW5nLW5vLXByb3BlcnRpZXMgcG9zICgxKyBwb3MpKQogICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBvcmlnLXR4dCkKICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICdmYWNlICd0ZXgtc21hcnQtdW1sYXV0cy1tYXJrcykpKSkpKQoK
-Ozs7IyMjYXV0b2xvYWQKKGRlZnVuIHRleC1zbWFydC11bWxhdXRzLWhpZGUtZW5jb2RpbmdzICgp
-CiAgIkhpZGUgZW5jb2RpbmdzIG9mIGFsbCB1bWxhdXRzIGluIGJ1ZmZlci4iCiAgKGludGVyYWN0
-aXZlKQogIChkb2xpc3QgKG92IHRleC1zbWFydC11bWxhdXRzLS1tYXJrLW92ZXJsYXlzKQogICAg
-KGRlbGV0ZS1vdmVybGF5IG92KSkKICAoc2V0cSB0ZXgtc21hcnQtdW1sYXV0cy0tbWFyay1vdmVy
-bGF5cyBuaWwpKQoKKGRlZnVuIHRleC1zbWFydC11bWxhdXRzLS1lYWNoLWNoYXIgKGZyb20gdG8g
-ZnVuY3Rpb24pCiAgIkl0ZXJhdGVzIG92ZXIgYWxsIGVuY29kZWQgY2hhcmFjdGVycyBpbiByZWdp
-b24uClRoZSByZWdpb24gYmV0d2VlbiBGUk9NIGFuZCBUTyBpcyBzY2FubmVkIGZvciBjaGFyYWN0
-ZXJzIHRoYXQKaGF2ZSBhbiBhc3NvY2lhdGVkIGVuY29kaW5nLiBUaGUgZnVuY3Rpb24gRlVOQ1RJ
-T04gaXMgY2FsbGVkIG9uY2UKZm9yIGVhY2ggY2hhcmFjdGVyIHdpdGggb25lIHBhcmFtZXRlciwg
-dGhlIGJ1ZmZlciBwb3NpdGlvbiBvZgp0aGlzIGNoYXJhY3Rlci4iCiAgKHNhdmUtZXhjdXJzaW9u
-CiAgICAoc2F2ZS1yZXN0cmljdGlvbgogICAgICAobmFycm93LXRvLXJlZ2lvbiBmcm9tIHRvKQog
-ICAgICAobGV0ICgobWFya2VyIChtYWtlLW1hcmtlcikpCiAgICAgICAgICAgIChiZWcgKGlmIChn
-ZXQtdGV4dC1wcm9wZXJ0eSAocG9pbnQtbWluKSAndGV4LXNtYXJ0LXVtbGF1dHMpCiAgICAgICAg
-ICAgICAgICAgICAgIChwb2ludC1taW4pCiAgICAgICAgICAgICAgICAgICAobmV4dC1zaW5nbGUt
-cHJvcGVydHktY2hhbmdlIChwb2ludC1taW4pICd0ZXgtc21hcnQtdW1sYXV0cykpKSkKICAgICAg
-ICAod2hpbGUgYmVnCiAgICAgICAgICAobGV0KiAoKGVuZCAobmV4dC1zaW5nbGUtcHJvcGVydHkt
-Y2hhbmdlIGJlZyAndGV4LXNtYXJ0LXVtbGF1dHMpKSkKICAgICAgICAgICAgKGdvdG8tY2hhciBi
-ZWcpCiAgICAgICAgICAgIChtb3ZlLW1hcmtlciBtYXJrZXIgYmVnKQogICAgICAgICAgICAoZG90
-aW1lcyAoaSAoLSBlbmQgYmVnKSkKICAgICAgICAgICAgICAobGV0ICgocG9zIChtYXJrZXItcG9z
-aXRpb24gbWFya2VyKSkpCiAgICAgICAgICAgICAgICAobW92ZS1tYXJrZXIgbWFya2VyICgxKyBw
-b3MpKQogICAgICAgICAgICAgICAgKGZ1bmNhbGwgZnVuY3Rpb24gcG9zKSkpCiAgICAgICAgICAg
-IChzZXRxIGJlZyAobWFya2VyLXBvc2l0aW9uIG1hcmtlcikpCiAgICAgICAgICAgICh1bmxlc3Mg
-KGdldC10ZXh0LXByb3BlcnR5IGJlZyAndGV4LXNtYXJ0LXVtbGF1dHMpCiAgICAgICAgICAgICAg
-KHNldHEgYmVnIChuZXh0LXNpbmdsZS1wcm9wZXJ0eS1jaGFuZ2UgYmVnICd0ZXgtc21hcnQtdW1s
-YXV0cykpKSkpCiAgICAgICAgKG1vdmUtbWFya2VyIG1hcmtlciBuaWwpKSkpKQoKKGRlZnVuIHRl
-eC1zbWFydC11bWxhdXRzLS10cmFuc2xhdGUgKGZyb20gdG8gdHJhbnMtdGFiKQogICJUcmFuc2xh
-dGUgYmV0d2VlbiBGUk9NIGFuZCBUTyB1c2luZyB0aGUgdHJhbnNsYXRpb24gdGFibGUgVFJBTlMt
-VEFCLiIKICAoc2F2ZS1leGN1cnNpb24KICAgIChzYXZlLXJlc3RyaWN0aW9uCiAgICAgIChuYXJy
-b3ctdG8tcmVnaW9uIGZyb20gdG8pCiAgICAgIChnb3RvLWNoYXIgZnJvbSkKICAgICAgKGxldCAo
-KGJ1ZmZlci1yZWFkLW9ubHkgbmlsKQogICAgICAgICAgICAoY2FzZS1mb2xkLXNlYXJjaCBuaWwp
-KQogICAgICAgIChkb2xpc3QgKHRyYW5zLXRoaXMgdHJhbnMtdGFiKQogICAgICAgICAgKHNhdmUt
-ZXhjdXJzaW9uCiAgICAgICAgICAgICh3aGlsZSAocmUtc2VhcmNoLWZvcndhcmQgKGNhciB0cmFu
-cy10aGlzKSBuaWwgdCkKICAgICAgICAgICAgICAodW5sZXNzIChnZXQtdGV4dC1wcm9wZXJ0eSAo
-bWF0Y2gtYmVnaW5uaW5nIDApICd0ZXgtc21hcnQtdW1sYXV0cykKICAgICAgICAgICAgICAgIChy
-ZXBsYWNlLW1hdGNoIChjYWRyIHRyYW5zLXRoaXMpIHQgdCkpKSkpKQogICAgICAocG9pbnQtbWF4
-KSkpKQoKKHRleC1zbWFydC11bWxhdXRzLS11cGRhdGUtdGFibGVzKQoKKHByb3ZpZGUgJ3RleC1z
-bWFydC11bWxhdXRzKQoKOzs7IHRleC1zbWFydC11bWxhdXRzLmVsIGVuZHMgaGVyZQo=
+;;; tex-smart-umlauts.el --- Smart umlaut conversion for TeX.
+
+;;; Author: Frank Fischer <frank.fischer at mathematik.tu-chemnitz.de>
+;;; Keywords: tex, wp
+;;; Version: 1.0.0
+;;; URL: http://hub.darcs.net/lyro/tex-smart-umlauts
+
+;; This file is NOT part of GNU Emacs.
+
+;;; License:
+
+;; This program is free software: you can redistribute it and/or
+;; modify it under the terms of the GNU General Public License as
+;; published by the Free Software Foundation, either version 3 of the
+;; License, or (at your option) any later version.
+;;
+;; This program is distributed in the hope that it will be useful, but
+;; WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+;; General Public License for more details.
+;;
+;; You should have received a copy of the GNU General Public License
+;; along with this program. If not, see
+;; <http://www.gnu.org/licenses/>.
+
+;;; Commentary:
+;;
+;; Transform LaTeX encoded non-ASCII characters to and from their
+;; visible (utf-8) representations when visiting a file and preserve
+;; their original encoding when saving the buffer.
+;;
+;; TeX/LaTeX documents often contain special characters that are not
+;; available in ASCII code in a special command form. For example, the
+;; German umlaut ä can be written in LaTeX as {\"a}, \"{a}, \"a or
+;; even "a. Of course, nowadays one should an ecoding like utf-8 that
+;; contain a natural representation of these characters.
+;; Unfortunately, old documents may still use the old encodings or
+;; non-ASCII encodings are not allowed for other reasons. Emacs can
+;; already automatically encode and decode such characters from and to
+;; their LaTeX representation using the `iso-cvt' package: during
+;; editing the characters are utf-8 encoded but when saved to disk the
+;; characters are transformed to a LaTeX representation.
+;;
+;; Unfortunately, this an all-or-nothing approach: either all
+;; characters are transformed or none. But when working on a document
+;; with several author this may be problematic. This may particularly
+;; true if the document is stored in a revision control system. In
+;; these cases each author may use its own editor, each editor may
+;; have its own setting and encodes umlauts in a special preferred
+;; way. Each time one author does a small change, *all* umlauts in the
+;; whole document may get transformed. This may also lead to huge
+;; diffs that contain of many hunks that only change the encoding of
+;; some characters.
+;;
+;; The purpose of `tex-smart-umlauts' is to automatically encode and
+;; decode umlauts from and to their tex representation, while
+;; *preserving* the original encoding. In other words, when a LaTeX
+;; file is visited, the original encoding of each character is saved
+;; and the character is transformed to its visible (utf-8)
+;; representation. When the document is saved again, each character
+;; that has been present when the document has been loaded is saved in
+;; its *original* encoding. Only newly inserted non-ASCII characters
+;; get a new encoding that depends on the user-options of
+;; `tex-smart-umlauts'. This way, a small change in a document will
+;; not reencode all non-ASCII charactes as `iso-cvt' would do and only
+;; the modified parts of the document will really be modified on disk.
+;;
+;;; Usage:
+;;
+;; Simply add
+;;
+;; (add-hook 'LaTeX-mode-hook #'tex-smart-umlauts-decode)
+;;
+;; to your .emacs file. This will convert all LaTeX-encoded characters
+;; to their resp. visible encoding and store their original encodings.
+;; This will also automatically register the encoding so that the
+;; original encodings are restored when the buffer is saved.
+;;
+;;; Code:
+
+(require 'iso-cvt)
+
+(defgroup tex-smart-umlauts nil
+  "Intelligent automatic conversion of TeX umlaut encodings."
+  :group 'tex
+  :prefix 'tex-smart-umlauts-)
+
+(defcustom tex-smart-umlauts-encode 'auto
+  "Encoding of new umlauts.
+This option has three possible values. \"Never\" means that newly
+inserted characters are never encoded, i.e. they are written
+unmodified to the file. \"Always\" means each new character is
+encoded according to `tex-smart-umlauts-encodings'. \"Automatic\"
+means conversion happens if and only if there is at least one
+decoded character in the buffer (i.e. some character that has
+been decoded in the file when it has been loaded)."
+  :type '(radio (const :tag "Never" :value nil)
+                (const :tag "Automatic." :value auto)
+                (const :tag "Always." :value t))
+  :group 'tex-smart-umlauts)
+
+(defcustom tex-smart-umlauts-encodings
+  '(
+    "^\\\\[^[:word:][:space:]][[:word:]]"
+    "^\\\\[^[:word:][:space:]]{[[:word:]]}"
+    "^{\\\\.*}$"
+    )
+  "A list of regular expressions that match your prefered encodings in order.
+When the encoding for some character is determined, these regular
+expressions are matched against all possible encodings of that
+character. The first matching encoding (that matches the first
+regular expression) will be used. If no regular expression
+matches, some arbitrary encoding will be used."
+  :type '(repeat regexp)
+  :group 'tex-smart-umlauts)
+
+(defcustom tex-smart-umlauts-german-shortcuts nil
+  "If non-nil, also translate German shortcuts like \"a, \"o, \"s.
+Note that this is often viable for tex-files, but inappropriate
+for other files like BibTeX files, because the latter may contain
+strings enclosed in double-quotes."
+  :type 'boolean
+  :group 'tex-smart-umlauts)
+
+(defface tex-smart-umlauts-marks '((t :foreground "white" :background "red"))
+  "Face for displaying umlaut conversions."
+  :group 'tex-smart-umlauts)
+
+(defvar tex-smart-umlauts--decode-table nil
+  "Conversion table for tex decoding.
+Each element of the list is two-element list of strings (tex
+iso). The first element is the tex-encoding of a character, the
+second element is the encoded character itself.")
+
+(defvar tex-smart-umlauts--encode-table nil
+  "Conversion table for tex encodings.
+Same structure as `tex-smart-umlauts--decode-table', but used for
+newly inserted characters.")
+
+(defvar tex-smart-umlauts--mark-overlays nil
+  "List of active overlays for showing stored conversions.")
+(make-variable-buffer-local 'tex-smart-umlauts--mark-overlays)
+
+(add-to-list 'format-alist
+             '(tex-smart-umlauts "Persistent TeX (encoding)" nil
+                                 tex-smart-umlauts-decode
+                                 tex-smart-umlauts-encode-format t nil))
+
+(defun tex-smart-umlauts--update-tables ()
+  "Update internal encoding and decoding tables.
+This function updates the internal encoding and decoding tables
+from the tables defined in `iso-cvt'."
+  (tex-smart-umlauts--update-decode-table)
+  (tex-smart-umlauts--update-encode-table))
+
+(defun tex-smart-umlauts--update-decode-table ()
+  "Update internal decoding table.
+This function updates the internal decoding table from the table
+defined in `iso-cvt'. If `tex-smart-umlauts-german-shortcuts' is
+non-nil, additional encodings like \"a are included."
+  (let ((tab iso-tex2iso-trans-tab))
+    (when tex-smart-umlauts-german-shortcuts
+      (setq tab (append tab '(("\"a" "ä")
+                              ("\"o" "ö")
+                              ("\"u" "ü")
+                              ("\"A" "Ä")
+                              ("\"O" "Ö")
+                              ("\"U" "Ü")
+                              ("\"s" "ß")))))
+    (setq tab (append tab '(("\\\\ss " "ß"))))
+    (setq tex-smart-umlauts--decode-table
+          (append
+           (mapcar
+            #'(lambda (pair)
+                (let ((tex (car pair))
+                      (iso (cadr pair)))
+                  (list tex (propertize iso 'tex-smart-umlauts
+                                        (tex-smart-umlauts--regexp-unquote tex)))))
+            tab)
+           (mapcar
+            #'(lambda (char)
+                (list (regexp-quote char)
+                      (propertize char 'tex-smart-umlauts t)))
+            (delete-dups (mapcar #'cadr tab)))))))
+
+(defun tex-smart-umlauts--regexp-unquote (regexp)
+  "Remove quoted characters from regular expression REGEXP.
+This is the inverse of `regexp-quote', but note that it only
+works with simple regular expression. The effect is to replace
+double backslashes by a single backslash."
+  (replace-regexp-in-string "\\\\\\\\" "\\" regexp t t))
+
+(defun tex-smart-umlauts--update-encode-table ()
+  "Update internal encoding table.
+The internal encoding table is created by switching key and
+values of the decoding table `tex-smart-umlauts--decode-table'. If
+a character as several possible encodings, one is selected
+according to `tex-smart-umlauts-encodings'."
+  (let ((tbl (make-hash-table :test 'equal))
+        encode-alist)
+    ;; collect all encodings for a character in a list
+    (dolist (pair tex-smart-umlauts--decode-table)
+      (let ((key (concat (cadr pair)))
+            (encoding (car pair)))
+        (unless (string= key (car pair))
+          (set-text-properties 0 (length key) nil key)
+          (setq encoding (tex-smart-umlauts--regexp-unquote encoding))
+          (puthash key (cons encoding (gethash key tbl)) tbl))))
+    (setq tex-smart-umlauts--encode-table nil)
+    ;; select the first matching encoding for each character
+    (maphash
+     #'(lambda (char encodings)
+         (push (cons char
+                     (catch 'done
+                       (dolist (re-encoding tex-smart-umlauts-encodings)
+                         (dolist (encoding encodings)
+                           (when (string-match re-encoding encoding)
+                             (throw 'done encoding))))
+                       (car encodings)))
+               encode-alist))
+     tbl)
+    (setq tex-smart-umlauts--encode-table
+          (mapcar
+           #'(lambda (pair)
+               (let ((tex (car pair))
+                     (iso (cadr pair)))
+                 (list tex
+                       (propertize iso
+                                   'tex-smart-umlauts
+                                   (cdr-safe (assoc iso encode-alist))))))
+           tex-smart-umlauts--decode-table))))
+
+;;;###autoload
+(defun tex-smart-umlauts-decode (&optional from to)
+  "Mark and decode all tex encoded characters in region.
+Only characters between the buffer positions FROM and TO are
+decoded. If FROM and TO are nil the whole buffer is decoded. This
+function registers 'tex-smart-umlauts' has buffer file format, so
+decoded characters are encoded again when the buffer is saved."
+  (interactive "*")
+  (if (region-active-p)
+      (setq from (region-beginning)
+            to (region-end))
+    (setq from (or from (point-min))
+          to (or to (point-max))))
+  (let ((modified (buffer-modified-p)))
+    (tex-smart-umlauts--translate from to tex-smart-umlauts--decode-table)
+    (set-buffer-modified-p modified)
+    (add-to-list 'buffer-file-format 'tex-smart-umlauts)
+    (add-hook 'after-revert-hook #'tex-smart-umlauts-decode nil t)))
+
+;;;###autoload
+(defun tex-smart-umlauts-encode (&optional from to)
+  "Mark and encode all characters in region.
+Only characters between the buffer positions FROM and TO are
+decoded. If FROM and TO are nil the whole buffer is encoded.
+Characters, that have existed when the buffer has been loaded
+will be encoded in their original encoding. Newly inserted
+characters will be encoded according the rules of
+`tex-smart-umlauts-encodings' and `tex-smart-umlauts-encode'.
+This function should never be called directly but is called just
+before the buffer is saved if the buffer has been decoded with
+`tex-smart-umlauts-decode'."
+  (interactive "*")
+  (if (region-active-p)
+      (setq from (region-beginning)
+            to (region-end))
+    (setq from (or from (point-min))
+          to (or to (point-max))))
+  (when (tex-smart-umlauts--should-encode from to)
+    (let ((modified (buffer-modified-p))
+          (beg (move-marker (make-marker) from))
+          (end (move-marker (make-marker) to)))
+      (tex-smart-umlauts--translate from to tex-smart-umlauts--encode-table)
+      (set-buffer-modified-p modified)
+      (setq from (marker-position beg)
+            to (marker-position end))
+      (move-marker beg nil)
+      (move-marker end nil)))
+  (tex-smart-umlauts--each-char
+   from to
+   #'(lambda (pos)
+       (let ((encoded (get-text-property pos 'tex-smart-umlauts)))
+         (when (eq encoded t)
+           (setq encoded (buffer-substring-no-properties pos (1+ pos))))
+         (when (eq encoded nil) (debug))
+         (insert encoded)
+         (delete-char 1)))))
+
+(defun tex-smart-umlauts-encode-all (&optional from to)
+  "Reencode all charactes in region.
+Only characters between the buffer positions FROM and TO are
+decoded. If FROM and TO are nil the whole buffer is encoded. The
+original encodings of all characters in the region is dropped and
+replaced by a new encoding according to the rules of
+`tex-smart-umlauts-encodings' and `tex-smart-umlauts-encode'."
+  (interactive "*")
+  (let ((tex-smart-umlauts-encode t))
+    (tex-smart-umlauts-unmark from to)
+    (tex-smart-umlauts-encode from to)))
+
+(defun tex-smart-umlauts--should-encode (from to)
+  "Return if characters should be encoded.
+This function returns non-nil if either
+`tex-smart-umlauts-encode' is t or if it is 'auto' and at least
+one character in the region FROM to TO has been decoded when the
+buffer has been loaded."
+  (or (eq tex-smart-umlauts-encode t)
+      (and (eq tex-smart-umlauts-encode 'auto)
+           (catch 'found
+             (tex-smart-umlauts--each-char
+              from to
+              #'(lambda (pos)
+                  (unless (eq (get-text-property pos 'tex-smart-umlauts) t)
+                    (throw 'found t))))
+             nil))))
+
+(defun tex-smart-umlauts-encode-format (from to buffer)
+  "Format function to be used in `format-alist'.
+The region between FROM and TO should be encoded. The argument
+BUFFER is ignored."
+  (tex-smart-umlauts-encode from to))
+
+;;;###autoload
+(defun tex-smart-umlauts-unmark (&optional from to)
+  "Remove encoding marks from all converted characters in region.
+This makes tex-smart-umlauts consider all characters as if they
+were modified, i.e. their original encoding will not be restored
+when the buffer is stored. FROM and TO are the region in which
+should be scanned. If FROM and TO are nil the whole buffer is
+used."
+  (interactive "*")
+  (if (region-active-p)
+      (setq from (region-beginning)
+            to (region-end))
+    (setq from (or from (point-min))
+          to (or to (point-max))))
+  (remove-text-properties from to '(tex-smart-umlauts)))
+
+;;;###autoload
+(defun tex-smart-umlauts-show-encodings ()
+  "Show encodings of all umlauts in buffer."
+  (interactive)
+  (tex-smart-umlauts-hide-encodings)
+  (tex-smart-umlauts--each-char
+   (point-min) (point-max)
+   #'(lambda (pos)
+       (let ((ov (make-overlay pos (1+ pos)))
+             (orig-txt (get-text-property pos 'tex-smart-umlauts)))
+         (push ov tex-smart-umlauts--mark-overlays)
+         (overlay-put ov
+                      'after-string
+                      (propertize (if (eq orig-txt t)
+                                      (buffer-substring-no-properties pos (1+ pos))
+                                    orig-txt)
+                                  'face 'tex-smart-umlauts-marks))))))
+
+;;;###autoload
+(defun tex-smart-umlauts-hide-encodings ()
+  "Hide encodings of all umlauts in buffer."
+  (interactive)
+  (dolist (ov tex-smart-umlauts--mark-overlays)
+    (delete-overlay ov))
+  (setq tex-smart-umlauts--mark-overlays nil))
+
+(defun tex-smart-umlauts--each-char (from to function)
+  "Iterates over all encoded characters in region.
+The region between FROM and TO is scanned for characters that
+have an associated encoding. The function FUNCTION is called once
+for each character with one parameter, the buffer position of
+this character."
+  (save-excursion
+    (save-restriction
+      (narrow-to-region from to)
+      (let ((marker (make-marker))
+            (beg (if (get-text-property (point-min) 'tex-smart-umlauts)
+                     (point-min)
+                   (next-single-property-change (point-min) 'tex-smart-umlauts))))
+        (while beg
+          (let* ((end (next-single-property-change beg 'tex-smart-umlauts)))
+            (goto-char beg)
+            (move-marker marker beg)
+            (dotimes (i (- end beg))
+              (let ((pos (marker-position marker)))
+                (move-marker marker (1+ pos))
+                (funcall function pos)))
+            (setq beg (marker-position marker))
+            (unless (get-text-property beg 'tex-smart-umlauts)
+              (setq beg (next-single-property-change beg 'tex-smart-umlauts)))))
+        (move-marker marker nil)))))
+
+(defun tex-smart-umlauts--translate (from to trans-tab)
+  "Translate between FROM and TO using the translation table TRANS-TAB."
+  (save-excursion
+    (save-restriction
+      (narrow-to-region from to)
+      (goto-char from)
+      (let ((buffer-read-only nil)
+            (case-fold-search nil))
+        (dolist (trans-this trans-tab)
+          (save-excursion
+            (while (re-search-forward (car trans-this) nil t)
+              (unless (get-text-property (match-beginning 0) 'tex-smart-umlauts)
+                (replace-match (cadr trans-this) t t))))))
+      (point-max))))
+
+(tex-smart-umlauts--update-tables)
+
+(provide 'tex-smart-umlauts)
+
+;;; tex-smart-umlauts.el ends here
