@@ -16,5 +16,5 @@ Put Lisp:tex-smart-umlauts.el in your `load-path' and add the following line to 
 
     (add-hook 'LaTeX-mode-hook #'tex-smart-umlauts-decode)
 
----
+----
 CategoryTex
