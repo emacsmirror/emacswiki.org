@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Feb  9 09:56:31 2013 (-0800)
+;; Last-Updated: Sun Feb 10 23:27:34 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 9681
+;;     Update #: 9682
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1645,6 +1645,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2013/02/10 dadams
+;;     icicle-bounds-of-thing-at-point: Use SYNTAX-TABLE arg only if it is a syntax table.
 ;; 2013/02/06 dadams
 ;;     icicle-unpropertize-completion: Added rear-nonsticky.  Thx to Christopher Schmidt.
 ;; 2013/02/04 dadams
