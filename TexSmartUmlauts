@@ -1,0 +1,20 @@
+== Introduction ==
+
+##tex-smart-umlauts.el## provides automatic conversion to and from LaTeX encoded non-ASCII characters like German umlauts ##\"{a}## or French accents ##\'{e}## to their respective visible representations ##ä## and ##é##.  The characters are transformed when the file is visited and their //original// encoding is restored when the buffer is saved again.
+
+== Download ==
+
+1. Release Lisp:tex-smart-umlauts.el
+
+2. The [http://hub.darcs.net/lyro/tex-smart-umlauts Darcs repository]. To get the latest development version, clone the repository
+
+    darcs get http://hub.darcs.net/lyro/tex-smart-umlauts
+
+== Installation ==
+
+Put Lisp:tex-smart-umlauts.el in your `load-path' and add the following line to your initialization file (##~/.emacs##)
+
+    (add-hook 'LaTeX-mode-hook #'tex-smart-umlauts-decode)
+
+---
+CategoryTex
