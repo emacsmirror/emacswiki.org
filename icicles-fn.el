@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Feb  5 09:02:04 2013 (-0800)
+;; Last-Updated: Sun Feb 10 23:28:05 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 13795
+;;     Update #: 13799
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -6838,9 +6838,9 @@ argument, so we drop that arg in that case."
 if non-nil, set SYNTAX-TABLE for the duration."
   (if (fboundp 'tap-bounds-of-thing-at-point)
       (tap-bounds-of-thing-at-point thing syntax-table)
-    (if (fboundp 'with-syntax-table)    ; Emacs 21+.
+    (if (and (fboundp 'with-syntax-table)  (syntax-table-p syntax-table)) ; Emacs 21+.
         (with-syntax-table syntax-table (bounds-of-thing-at-point thing syntax-table))
-      (bounds-of-thing-at-point thing syntax-table))))
+      (bounds-of-thing-at-point thing)))) ; Punt - ignore any SYNTAX-TABLE arg.
  
 ;;(@* "Icicles functions - sort functions")
 
