@@ -55,6 +55,8 @@ PredictiveMode includes extensive support for context-sensitive, predictive comp
 
 LatexEnc gets a coding system from <code>inputenc</code>, as an alternative to an Emacs coding cookie in your document.
 
+TexSmartUmlauts translates LaTeX encoded non-ASCII characters to their "visible" representation while restoring their original encoding when the buffer is saved.
+
 == Discussion ==
 
 [new]
