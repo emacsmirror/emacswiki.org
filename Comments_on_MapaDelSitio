@@ -21,3 +21,26 @@ My only question would be: if it is modular, where else would you include it? If
 
 -- AlexSchroeder 2013-02-12 00:40 UTC
 
+
+----
+
+Se tornaría larga, no sé si difícil de editar. 
+
+Lo que dice AlexSchroeder es cierto, de qué serviría separar la página de categorías si sólo se usa una vez. 
+Si en un futuro se considera que sería útil agregarla en otro lugar también, se puede separar y usar <code><include...></code> en la medida que sea necesario. Total, cortar y pegar no cuesta nada... :P
+
+Intentaré en un par de días(¡denme tiempo!¡estoy muy ocupado!) pasar el índice de la versión inglesa. Si encuentro páginas en su versión en español, les escribo links, sino tienen traducción, les escribo la versión inglesa, así no se pierde completitud.
+
+¡Saludos!
+
+----
+It will be large, but don't know if turns difficult to edit.
+
+What AlexSchroeder says is true, what use it will have if the category page is used just once. If in the future it becomes useful to include it in other place, it can be separated and we can use <code><include...></code> where necessary. After all... cut and paste is easy.
+
+I'll try, after a couple of days(give me some time! I'm very busy!), to write the spanish version of the table of contents at the MapaDelSitio page. If I find pages in its spanish version I write the link, if some pages has no spanish translation, I'll write the link for the english one in order to keep the spanish EmacsWiki complete.
+
+Cheers!
+
+-- ChristianGiménez 2013-02-12 23:44 UTC
+
