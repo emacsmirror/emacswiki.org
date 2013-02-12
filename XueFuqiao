@@ -285,5 +285,8 @@ lexical-binding environment. If it could be done you would get
 multi-threading for free and such things as the clx library for
 manipulating X.
 
+[new:NicFerrier:2013-02-12 09:44 UTC]
+this is actually already possible with an Emacs branch, see EmacsXWidgets
+
 ----
 CategoryHomepage
