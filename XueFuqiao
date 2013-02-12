@@ -258,6 +258,7 @@ Coming soon.
 * Add a command line argument named ##--slim##, it can invoke Emacs with only the bare-minimum EmacsLisp libraries needed for quick editing.
 * FFI support in Emacs.
 * Make all Unix and Unix-like systems come with Emacs built-in.
+* Implement a multi-protocol download utility in Emacs Lisp.
 * Make EmacsLisp simpler and cleaner.
 * Implement a URL Shortener in EmacsLisp.
 * Make Emacs/W3 be able to deal with HTML5.
