@@ -99,10 +99,10 @@ After inserting a new subregion in a buffer you'll need to let mmm-mode reparse 
 Unfortunately I'm not using this mode myself at the moment, so I cannot really help if it doesn't work for you. :-( You may want to ask on the mmm-mode mailing list for assistance, maybe there's someone who can help you further. -- Gunter
 
 Here you can get mmm-mode:
-http://sourceforge.net/projects/mmm-mode/
+https://github.com/purcell/mmm-mode
 
 php-mode:
-http://sourceforge.net/projects/php-mode/
+https://github.com/ejmr/php-mode
 
 HTML Tidy (contains installing instructions for emacs):
 http://tidy.sourceforge.net/
