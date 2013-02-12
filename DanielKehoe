@@ -6,17 +6,14 @@ My website is at http://danielkehoe.com/.
 
 I've written some useful articles for the Rails community:
 
-* Recommended [http://railsapps.github.com/best-recommended-learning-rails-books-resources.html Rails] Resources
-* Installing [http://railsapps.github.com/installing-rails.html Rails 3.2]
-* Deploying with Rails on [http://railsapps.github.com/rails-heroku-tutorial.html Heroku]
-* [http://railsapps.github.com/rails-html5-boilerplate.html HTML5 Boilerplate] for Rails Developers
-* [http://railsapps.github.com/rails-3-2-example-gemfile.html Gemfile] Examples for Rails Developers
+* Recommendations for a [https://tutorials.railsapps.org/rails-tutorial Rails Tutorial]
+* [http://railsapps.github.com/installing-rails.html Installing Rails]
+* Deploying with [http://railsapps.github.com/rails-heroku-tutorial.html Rails on Heroku]
 
 I also have some open source projects on GitHub:
 
-* [http://railsapps.github.com/ Rails Examples]
-* [https://github.com/RailsApps Rails Tutorials]
-* An example Rails 3.2 app for a [https://github.com/RailsApps/rails-prelaunch-signup startup prelaunch signup] page
+* [http://railsapps.github.com/ Rails Open Source Examples]
+
 
 
 
