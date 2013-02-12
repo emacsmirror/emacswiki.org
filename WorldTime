@@ -13,3 +13,7 @@ Gives you something like:
 It's in [[http://marmalade-repo.org/packages/world-time-mode|Marmalade]]
 
 or the GitHub is [[https://github.com/nicferrier/emacs-world-time-mode|here]]
+
+== Interesting things ==
+
+This is an example of TabulatedListMode which is a very useful mode for presenting tabular data.
