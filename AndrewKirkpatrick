@@ -1,6 +1,13 @@
-I've been an Emacs user since the late '90s, firstly using XEmacs for its multi-terminal capability then I switched to GNU Emacs around 2005. I see emacs as a wonderful, composable tool that is the perfect excuse for believing in the lost wisdom of ancient cultures. Indeed, it has been my gateway to learning Lisp.
+I'm frequently present as [::spacebat] on [[EmacsChannel|#emacs]] and aim to take my use of Emacs and other Lisp environments to a higher level.
+
+== About ==
+I work for the [[http://www.adelaide.edu.au|University of Adelaide]] in South Australia, in the past I've worked with Object Pascal, C, C++, Java and Python but for some years Perl, Javascript and to some degree Lisp have been my primary languages.
+
+== Relationship with Emacs ==
+An Emacs user since the late '90s, firstly using XEmacs for its multi-terminal capability then I switched to GNU Emacs around 2005. I see Emacs as a wonderful, composable tool that is the perfect excuse for believing in the lost wisdom of ancient cultures. Indeed, it has been my gateway to learning Lisp.
 
 I've written a bunch of utility functions in emacs lisp to help with Perl development and editing HTML, CSS and Javascript. Elnode and Websockets interest me very much.
 
 
+----
 CategoryHomepage
