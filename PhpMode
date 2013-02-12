@@ -61,7 +61,7 @@ I am including a very slightly modified version of Aaron's php-mode version in [
 
 == Multiple modes using mmm-mode.el ==
 
-http://sourceforge.net/projects/mmm-mode
+https://github.com/purcell/mmm-mode
 
 The PHP mode by FredYankowski explains how to do this in the commentary. For those of you using other PHP modes, add the following to your ~/.emacs:
 
