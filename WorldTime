@@ -1,5 +1,3 @@
-= World Time Mode =
-
 World Time is great but I wanted a day display. So I made one:
 
 {{{
@@ -9,3 +7,9 @@ M-x world-time-list
 Gives you something like:
 
 [[image:WorldTimeScreenshot]]
+
+== Where to get it ==
+
+It's in [[http://marmalade-repo.org/packages/world-time-mode|Marmalade]]
+
+or the GitHub is [[https://github.com/nicferrier/emacs-world-time-mode|here]]
