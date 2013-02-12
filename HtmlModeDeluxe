@@ -143,6 +143,9 @@ Can some one create a example for the erb/eRuby mode using mmm-mode I just cant 
  
 -- Warren Brian Noronha (warren@gnu.org.in)
 
+[new:dgutov:2013-02-12 20:03 UTC]
+: Check out this package: https://github.com/purcell/mmm-mode/blob/master/mmm-erb.el
+
 [new]
 Q: How do you turn off (or change) the background color for php subregion?
 
