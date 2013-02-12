@@ -192,6 +192,7 @@ And some other stuff I haven't packaged and probably never will:
 * [[rcircPresence]] -- for syncing rcirc with some other presence thing (eg: skype)
 * [[imapua]] -- a purely IMAP based email client for Emacs
 * [[trac_editor]] -- a very simple interface to trac.py
+* WorldTime -- showing a whole day of times
 * [[tzhelp]] -- a small set of tools for dealing with timezones
 
 == Emacs under Mercurial ==
