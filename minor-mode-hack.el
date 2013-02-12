@@ -1,13 +1,13 @@
-;;; minor-mode-hack.el --- Hack of minor-modes
+;;; minor-mode-hack.el --- Change priority of minor-mode keymaps
 
-;; $Id: minor-mode-hack.el,v 1.5 2013/02/07 02:54:39 rubikitch Exp $
+;; $Id: minor-mode-hack.el,v 1.6 2013/02/12 12:28:05 rubikitch Exp $
 
 ;; Copyright (C) 2010,2013  rubikitch
 
 ;; Author: rubikitch <rubikitch@ruby-lang.org>
 ;; Keywords: lisp
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/download/minor-mode-hack.el
-;; Version: 1.5
+;; Version: 1.6
 
 ;; This file is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -63,6 +63,9 @@
 ;;; History:
 
 ;; $Log: minor-mode-hack.el,v $
+;; Revision 1.6  2013/02/12 12:28:05  rubikitch
+;; Change short description (no code change)
+;;
 ;; Revision 1.5  2013/02/07 02:54:39  rubikitch
 ;; Fix header
 ;;
@@ -81,7 +84,7 @@
 
 ;;; Code:
 
-(defvar minor-mode-hack-version "$Id: minor-mode-hack.el,v 1.5 2013/02/07 02:54:39 rubikitch Exp $")
+(defvar minor-mode-hack-version "$Id: minor-mode-hack.el,v 1.6 2013/02/12 12:28:05 rubikitch Exp $")
 
 (defgroup minor-mode-hack nil
   "minor-mode-hack"
