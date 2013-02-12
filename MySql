@@ -1,3 +1,4 @@
+[[es:MySql-es]]
 Lisp:mysql.el works in conjunction with the mysql cli client. You can run queries from elisp against a mysql database.
 
 = How to use it =
