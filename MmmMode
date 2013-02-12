@@ -1,18 +1,24 @@
 == Overview ==
 
-Multiple Major Modes by MichaelAbrahamShulman. This one is used on the OracleProC page. It was once method of choice for combining major modes, development stalled from 2004-2011, and restarted mid-2012. You can find description of using it, together with psgml-mode, php-mode, javascript-mode and css-mode to edit HTML files at HtmlModeDeluxe.
+Multiple Major Modes by MichaelAbrahamShulman. This one is used on the OracleProC page.
+
+It was once the method of choice for combining major modes, development stalled from 2004-2011, and restarted mid-2012.
+
+You can find description of using it, together with psgml-mode, php-mode, javascript-mode and css-mode to edit HTML files at HtmlModeDeluxe.
 
 == Download ==
 
-* http://mmm-mode.sourceforge.net/
+* https://github.com/purcell/mmm-mode
 
 == Notes ==
 
 There has been some attempts to get it working with NxmlMode for XHTML, see NxmlModeForXHTML.
 
-== Getting mmm-mode For Emacs 24 & Beyond ==
+== MMM Mode for Emacs 24 & Beyond ==
 
-A git clone containing bug fixes for Emacs >= 23 is here: https://github.com/purcell/mmm-mode . It is the home for future mmm-mode development; the [[http://mmm-mode.sourceforge.net/ old SourceForge page]] for mmm-mode now references it. All contributions are welcome.
+The development has moved from SourceForge to GitHub, and the issue tracker with it: https://github.com/purcell/mmm-mode/issues
+
+All contributions are welcome.
 ----
 CategoryModes
 MultipleModes
