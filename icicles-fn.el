@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Feb 10 23:28:05 2013 (-0800)
+;; Last-Updated: Tue Feb 12 09:15:53 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 13799
+;;     Update #: 13800
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -368,7 +368,7 @@
 (defvar icicle-read-file-name-internal-fn) ; In `icicles-var.el' for Emacs 24+.
 (defvar list-colors-sort)               ; In `facemenu.el'
 (defvar 1on1-*Completions*-frame-flag)  ; In `oneonone.el'
-(defvar minibuffer-default--in-prompt-regexps) ; In `minibuf-eldef.el'.
+(defvar minibuffer-default-in-prompt-regexps) ; In `minibuf-eldef.el'.
 (defvar minibuffer-local-filename-syntax) ; In `minibuffer.el' for Emacs 24+.
 (defvar read-buffer-completion-ignore-case) ; Emacs 23+.
 (defvar recentf-list)                   ; In `recentf.el'
@@ -1055,8 +1055,8 @@ Completion ignores case when `completion-ignore-case' is non-nil."
   (if (not default)
       prompt
     (when (consp default) (setq default  (car default)))
-    (dolist (rgx  (if (boundp 'minibuffer-default--in-prompt-regexps) ; Get rid of HINT if already there.
-                      minibuffer-default--in-prompt-regexps
+    (dolist (rgx  (if (boundp 'minibuffer-default-in-prompt-regexps) ; Get rid of HINT if already there.
+                      minibuffer-default-in-prompt-regexps
                     '(("\\( (default\\(?: is\\)? \\(.*\\))\\):? \\'"  1)
                       ("\\( \\[.*\\]\\):? *\\'"                       1))))
       (setq prompt  (replace-regexp-in-string  (car rgx) "" prompt nil nil (cadr rgx))))
