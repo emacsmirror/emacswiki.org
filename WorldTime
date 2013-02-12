@@ -1,0 +1,11 @@
+= World Time Mode =
+
+World Time is great but I wanted a day display. So I made one:
+
+{{{
+M-x world-time-list
+}}}
+
+Gives you something like:
+
+[http://pasteboard.co/bG9Ytm2.png]
