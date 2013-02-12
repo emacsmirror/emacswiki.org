@@ -2,9 +2,17 @@
 
 '''Evil''' is an '''e'''xtensible '''vi''' '''l'''ayer for Emacs. It provides Vim features like Visual selection and text objects, and is the successor to [[Vimpulse]] and [VimMode vim-mode].
 
+Current stable version: **1.0.0**
+
 == Quick install ==
 
-Using [[el-get]], Evil can be downloaded and installed with: ##M-x el-get-install RET evil RET##.
+1. [[ELPA]]: The latest stable version is available from the [[Marmalade]] repository, the current development version from [[MELPA]]. Both can be installed by 
+
+    M-x package-install RET evil RET
+
+2. [[el-get]]: Evil can be downloaded and installed with: 
+   
+    M-x el-get-install RET evil RET
 
 == Download ==
 
@@ -18,7 +26,7 @@ If you don't have Git, just head over to [https://gitorious.org/evil/evil/commit
 
 Move Evil to ##~/.emacs.d/evil## (or somewhere else in your ##load-path##). Then add the following lines to ##~/.emacs##:
 
-    (add-to-list 'load-path "~/.emacs.d/evil")
+    (add-to-list 'load-path "~/.emacs.d/evil") ; only without ELPA/el-get
     (require 'evil)
     (evil-mode 1)
 
