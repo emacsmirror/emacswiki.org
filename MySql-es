@@ -1,44 +1,17 @@
-A traducir:
+Lisp:mysql.el trabaja en conjunción con el cliente de !MySQL para poder ejecutar consultas desde [[Elisp]] en una base de datos.
 
-Lisp:mysql.el works in conjunction with the mysql cli client. You can run queries from elisp against a mysql database.
 
-    How to use it
-    Some functions and macros
-    Programming Example
-    C patch
+== How to use it ==
 
-How to use it
+# Crear una conección usando: <code> (setq mi-mysql (mysql-connect)) </code>
+# Luego, hacer la consulta SQL: <code> (mysql-query sql mi-mysql) </code>
 
-    First of all, create a connection. In fact, it creates a process. 
 
-    (setq my-mysql (mysql-connect))
+En caso de que necesites hacer sólo una consulta, deberías usar <code>mysql-shell-query</code>. Éste no crea un proceso como <code>mysql-connect</code>, por lo que no necesitás hacer ningún tipo de "limpieza".
 
-    Then use mysql-query function to query a sql statment: 
+La sintaxis es: <code>(mysql-shell-query sql &optional db)</code>
 
-    (mysql-query sql my-mysql)
 
-If you just query once, use mysql-shell-query instead. It does not create a process, so you needn’t to do some clear up.
+Si la consulta puede tomar mucho tiempo, puede ser que prefieras hacerlo en segundo plano. Para ello puedes usar <code>mysql-query-background</code>.
 
-    (mysql-shell-query sql &optional db)
-
-If you are sure the query may take some time, you may want the query perform in background. mysql-query-background is just for it.
-
-    (mysql-query-background sql connection &optional func)
-
-The optional parament FUNC is a function to run after query. Two variable may be important for this function: mysql-intrival and mysql-timeout. The former is the delay for mysql-timer to check whether query finished. When query last longer than mysql-timeout, the query will be stopped. So if you want a long timeout, set mysql-timeout before query, and restore it original value in the parament FUNC.
-Some functions and macros
-
-    (mysql-table-header table) Extract header from query result TABLE and add column index in it.
-    (mysql-col-number field) Get the column index of the field in result. The Global variable mysql-header is used.
-    (mysql-col table field) Get the field of the result TABLE. FIELD can be a integer or the column name.
-    (mysql-cell row field) Get the content of the row in field FIELD. FIELD can be a integer or the column name.
-    (with-mysql-table table &rest body) This macro is for execute code BODY without change the global variable mysql-header.
-
-Programming Example
-
-I use this elisp to write a reference manager Bibus.
-C patch
-
-This is unrelated to the above elisp package. Also it likely does not apply anymore and probably should be removed.
-
-This patch gives you access to MySQL from within Emacs. If this patch is available online, please remove the source.
+La sintaxis es: <code> (mysql-query-background sql conexi
