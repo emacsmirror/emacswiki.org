@@ -13,3 +13,4 @@
 * Eliminate forwarded variables (either use normal variables or implement symbol macros)
 * Remove unnecessary signal handlers (notably SIGXCPU, SIGPWR which bdw-gc uses)
 * Fix i386 segfault (some format strings are broken but happen to work on amd64)
+* Find beta testers for non-GNU platforms
