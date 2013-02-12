@@ -1,3 +1,5 @@
+[[en :MySql]]
+
 Lisp:mysql.el trabaja en conjunción con el cliente de !MySQL para poder ejecutar consultas desde [[Elisp]] en una base de datos.
 
 
@@ -46,20 +48,16 @@ Un ejemplo de aplicación es [[Bibus]], un manejador de referencias realizado po
 Para probar en el buffer borrador(scratch) o para usar en tu propio proyecto:
 
 
-
-
     (let ((mysql-user "Mi Usuario")
           (mysql-password "Mi Clave"))
       (mysql-shell-query "Mi Consulta de Base de Datos;" "Mi Base de Datos")
       )
 
 
-
-
 == Problemas ==
 
 Existen problemas al querer conectar con otro host, ésta librería no provee en su API ninguna variable o facilidad para conectar con una base de datos remota. 
-Para definir el host deberás cambiar la variable `mysql-options' la cual deberá contener el parámetro <code>-s<code>: <code> (setq mysql-options "-s -h mi.host.com")</code>.
+Para definir el host deberás cambiar la variable `mysql-options' la cual deberá contener el parámetro {{{-s}}} : <code> (setq mysql-options "-s -h mi.host.com")</code>.
 
 
 == C patch ==
