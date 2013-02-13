@@ -249,7 +249,7 @@ Coming soon.
 * Implement a search engine in EmacsLisp.
 * Make a keyboard layout for Emacs.
 * Implement a mailing list manager in EmacsLisp.
-* Port XWEM and XLIB to Emacs.
+* Port XWEM to Emacs.
 * Implement a DHCP client in EmacsLisp.
 * Make GNU Emacs support both [[Guile]] and EmacsLisp.
 * Implement a FTP server in EmacsLisp.
