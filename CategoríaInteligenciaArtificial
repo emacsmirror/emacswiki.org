@@ -1,21 +1,24 @@
+[[en:CategoryArtificialIntelligence]]
 Traduciendo: 
 
-This category is for collecting Artificial Intelligence (AI) and Expert System tools and applications based on Emacs and EmacsLisp.
+Esta categoría está para recolectar herramientas y aplicaciones de Inteligencia Artificial(IA) y Sistemas Expertos que estén basadas en Emacs y EmacsLisp.
 
-Artificial intelligence applications:
+Aplicaciones de Inteligencia Artificial:
 
-    See CategoryGames
+* Ver CategoryGames
 
-Expert systems:
+Sistemas Expertos:
 
-    NClosEmacs
+* NClosEmacs
 
-The MIT Artificial Intelligence Laboratory memos and technical reports contain a wealth of Lisp related material much of it closely related to the history and development of Emacs:
+El Laboratorio de Inteligencia Artificial del MIT posee memos y reportes técnicos que contienen abundante material referido a Lisp, mucho del cual está muy relacionado con la historia y el desarrollo de Emacs:
 
-    MitAiMemos
+* MitAiMemos
 
-Major modes:
+Modos Mayores:
 
-    PDDLMode
+* [[PDDLMode]]
 
-See also CategoryProgramming
+
+Véase también CategoryProgramming
+
