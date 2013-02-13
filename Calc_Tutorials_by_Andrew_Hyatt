@@ -1,0 +1,14 @@
+Emacs comes with "an advanced desk calculator and mathematical tool" called `calc'.
+Try it! `M-x calc'.
+
+AndrewHyatt wrote a number of tutorials on Google+:
+
+* [https://plus.google.com/101505495157778834572/posts/RYiWfs9NMTS Display] -- show square roots and superscripts using ASCII art
+* [https://plus.google.com/101505495157778834572/posts/bNw8CqAKpBR Fractions]
+* [https://plus.google.com/101505495157778834572/posts/VzAQ8QLyCXj Strings and Binary]
+* [https://plus.google.com/101505495157778834572/posts/ggiQGdLyX41 Pi and Precision]
+* [https://plus.google.com/101505495157778834572/posts/LNi5SJxXXxC Units]
+* [https://plus.google.com/101505495157778834572/posts/QuN7vdJpSZN Random Numbers]
+* [https://plus.google.com/101505495157778834572/posts/YFKHGksdeWy Time] -- seconds since the Epoch
+* [https://plus.google.com/101505495157778834572/posts/TWdjoj1zirv Digit Grouping] -- 1,910,255,938.01 and the like
+* [https://plus.google.com/101505495157778834572/posts/goYiW8VfamS Hex Numbers]
