@@ -16,6 +16,8 @@ El Laboratorio de Inteligencia Artificial del MIT posee memos y reportes técnic
 Modos Mayores:
 
 * [[PDDLMode]]
+* PrologMode es el modo mayor para Prolog, el cual es un lenguaje de paradigma lógico muy usado en IA.
+* [http://ciao-lang.org/ Ciao-Prolog] tiene un modo mayor para programar en Prolog. Más potente que PrologMode (por lo menos usándolo con Ciao-Prolog).
 
 
 Véase también CategoryProgramming
