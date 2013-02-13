@@ -270,8 +270,9 @@ rewrites. Calc has selections. But the language interface is hard-coded not gene
 
 == Other resources ==
 * A nice article in the linux journal
-* [http://www.linuxjournal.com/article/5873 Math-Intensive Reports with GNU Emacs and Calc, Part 1]
-* [http://www.linuxjournal.com/article/6306 Math-Intensive Reports with GNU Emacs and Calc, Part 2]
+** [http://www.linuxjournal.com/article/5873 Math-Intensive Reports with GNU Emacs and Calc, Part 1]
+** [http://www.linuxjournal.com/article/6306 Math-Intensive Reports with GNU Emacs and Calc, Part 2]
+* [[Calc Tutorials by Andrew Hyatt]]
 
 == Open Questions ==
 
