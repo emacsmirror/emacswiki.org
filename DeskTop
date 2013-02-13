@@ -59,6 +59,8 @@ I'm starting to work on a new package called [[DesktopRecover|desktop-recover.el
         (desktop-save desktop-dirname)))
   (add-hook 'auto-save-hook 'my-desktop-save)
 
+The above doesn't seem to work when emacs is run in daemon mode (--daemon)
+
 == Automatically Overriding Stale Locks ==
 
 If you are using desktop-mode and your emacs crashes (or more likely,
