@@ -40,7 +40,7 @@ The arrow shows you which sexp will be evaluated next:
 
 To quit the debugger, type `q'. 
 
-Edebug can enter any defun whose source ban be found with FindFunc by hitting `i' which steps into the next function to be evaluated.  This instruments the function and will be debugged every time it is run.
+Edebug can enter any defun whose source can be found with FindFunc by hitting `i' which steps into the next function to be evaluated.  This instruments the function and will be debugged every time it is run.
 
 You can disable edebug on a function by evaluating the function again using `C-M-x' without a PrefixArgument.
 
