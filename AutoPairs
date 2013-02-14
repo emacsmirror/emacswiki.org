@@ -136,19 +136,15 @@ About backtick-and-quote, I already used it, it's good. Small suggestion, I thin
 
 === smartparens.el ===
 
-Modern minor mode for Emacs that deals with parens pairs and tries to be smart about it. This package combines functionality of packages like [https://github.com/capitaomorte/autopair autopair], [http://code.google.com/p/emacs-textmate/ textmate], [https://github.com/rejeep/wrap-region wrap-region], partially [http://emacswiki.org/emacs/ParEdit paredit] and others. It adds support for many more features, some including:
+Smartparens is minor mode for Emacs that deals with parens pairs and tries to be smart about it. It is a unification and enhancement effort to combine funcitonality of several existing packages in a single, common and straightforward way (and most of all compatible). These packages include [https://github.com/capitaomorte/autopair autopair], [http://code.google.com/p/emacs-textmate/ textmate], [https://github.com/rejeep/wrap-region wrap-region], [http://emacswiki.org/emacs/ParEdit paredit] and others with similar philosophies. It also adds support for many more features. Here's a highlight of some features, for a complete list and detailed documentation look at the project [https://github.com/Fuco1/smartparens/wiki wiki].
 
-* support for pairs of any length (currently up to 10 characters), for example `"\\\\(" "\\\\)"` for automatic insertion of quoted parens in elisp regexp. These are fully user definable and customizable. Pairs can be same or different for opening and closing part.
-* inteligent handling of closing pair. If user types `(`, `(|)` is inserted. If he then types `word)` the result is `(word)|` not `(word)|)`. This behaviour is cancelled if user moves backwards during editing or move point outside of the pair.
-* automatic deletion of whole pairs. With pair `("\{" "\}")` (LaTeX literal brackets), `\{|\}` and backspace will remove both of the pairs. `\{\}|` and backspace will remove the whole closing pair. `\{|` and backspace will remove the whole opening pair.
-* when followed by the same opening pair or word, do not insert the whole pair. That is: `|()` followed by `(` will produce `(|()` instead of `(|)()`. Similarly, `|word` followed by `(` will produce `(|word`.
-* wraps region in defined pairs or defined tag pairs for "tag-modes" (xml/html...).
-  * Different tags are supported, for example, languages that would use `{tag}` instead of `<tag>` or different opening pair and closing pair syntax, for example opening with `(tag` and closing with `)` (a.k.a. s-expression) or LaTeX `\begin{} \end{}` pair.
-* automatically escape strings if wrapped with another string. `this "string"` turns to `"this \"string\""` automaticaly.
-* automatically escape typed quotes inside a string
-* Jumping around the pairs (extending forward-sexp to custom user pairs)
-
-The readme and detailed explanations of all the features are to be found on project's [https://github.com/Fuco1/smartparens#readme github page]
+* support for pairs of any length, for example "\{" "\}" pair used in LaTeX to typeset literal braces in math mode. These are fully user definable and customizable. Pairs can have same or different strings for opening and closing part.
+* inteligent handling of closing pair. If user types ##(##, ##(|)## is inserted. If he then types ##word)## the result is ##(word)|## not ##(word)|)##.
+automatic deletion of complete pairs. With pair ##("\{" "\}")##, ##\{|\}## and backspace will remove both delimiters. ##\{\}|## and backspace will remove the closing pair, and result in ##\{|##. Hitting backspace again will remove the opening pair.
+* wraps active region in defined pairs or special structured tag pairs for "tag-modes" (xml/html...). Different tags are supported, for example, languages that would use ##{tag}## instead of ##<tag>## or LaTeX's ##\begin{}## ##\end{}## pair. Everything is user definable as usual.
+* automatically escape strings if wrapped with another string. ##this "string"## turns to ##"this \"string\""## automaticaly.
+* jumping around the pairs (extending forward-sexp and similar functions to custom user pairs)
+* functions to manipulate s-expressions, delete, wrap and unwrap, extend and contract (barf/slurp) and much more.
 
  -- Fuco
 
