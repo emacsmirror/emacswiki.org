@@ -16,6 +16,9 @@ It and a demo form using Emacs widgets can be found on
 [http://www.jasonfruit.com/page/emacs_sqlite_and_widgets this page of my website].
 
 
+As a temporary solution, on february of 2013 appeared a new fork of [[JasonFruit]]'s script, [[SQLite-el]]. This is because the link http://www.jasonfruit.com is broken. 
+The script doesn't have all the features, but you can use it for connecting and querying. You can download it from Lisp:sqlite.el 
+
 == Discussion ==
 
 [new:ChristianGiménez:2013-02-13 04:00 UTC]
