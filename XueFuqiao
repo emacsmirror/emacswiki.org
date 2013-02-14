@@ -104,7 +104,7 @@ Started physiotherapy on June, 2011.
 
 * Those who have been respectful to Emacs will be allowed to live, and shall become its slaves; as for those who slight Emacs...
 
-== My Init Files (It's a mess currently) ==
+== My Init Files for Emacs (It's a mess currently) ==
 https://github.com/xfq/xfq-emacs-init-files
 
 == My ~/.Xdefaults ==
@@ -125,7 +125,7 @@ Coming soon.
 == My Emacs Screenshot ==
 [[image:XFQScreenShotPage]]
 
-== Inside Emacs, I Like: ==
+== Inside Emacsen, I Like: ==
 * '''[[Icicles]]'''
 * '''BookmarkPlus'''
 * '''LaCarte'''
@@ -167,6 +167,7 @@ Coming soon.
 * TypingOfEmacs
 * UndoTree
 * WcheckMode
+* XWindowEmacsManager
 * ZoneMode
 * [[ElDoc]]
 * [[ERC]]
@@ -178,7 +179,7 @@ Coming soon.
 * [[Yasnippet]]
 * indent-tabs-mode
 
-== Outside Emacs, I Like: ==
+== Outside Emacsen, I Like: ==
 * ArtificialIntelligence
 * [[Bash]]
 * CProgrammingLanguage
@@ -249,7 +250,7 @@ Coming soon.
 * Implement a search engine in EmacsLisp.
 * Make a keyboard layout for Emacs.
 * Implement a mailing list manager in EmacsLisp.
-* Port XWEM to Emacs.
+* Port XWindowEmacsManager to Emacs.
 * Implement a DHCP client in EmacsLisp.
 * Make GNU Emacs support both [[Guile]] and EmacsLisp.
 * Implement a FTP server in EmacsLisp.
