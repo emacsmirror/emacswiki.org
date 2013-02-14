@@ -1,0 +1,9 @@
+I use emacs.
+
+= Init =
+I use [https://github.com/eschulte/emacs24-starter-kit https://github.com/eschulte/emacs24-starter-kit], only lightly modified.  I also use [https://github.com/bbatsov/zenburn-emacs https://github.com/bbatsov/zenburn-emacs].
+
+I use Debian's emacs24, and I always prefer to get everything from one of the ELPA sites.
+
+----
+CategoryHomepage
