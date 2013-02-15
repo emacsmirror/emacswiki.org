@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun Feb  3 15:06:25 2013 (-0800)
+;; Last-Updated: Fri Feb 15 13:05:20 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 29234
+;;     Update #: 29238
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -56,6 +56,9 @@
 ;;  (@file :file-name "icicles-doc1.el" :to "Nutshell View of Icicles")
 ;;    (@file :file-name "icicles-doc1.el" :to "README for Non-Readers")
 ;;    (@file :file-name "icicles-doc1.el" :to "Flashy Demo to Peak Your Curiosity")
+;;      (@file :file-name "icicles-doc1.el" :to "First Example: Multi-Inputs")
+;;      (@file :file-name "icicles-doc1.el" :to "Second Example: Multi-Completion")
+;;      (@file :file-name "icicles-doc1.el" :to "Third Example: Tagged Files")
 ;;    (@file :file-name "icicles-doc1.el" :to "Toggle Options on the Fly")
 ;;    (@file :file-name "icicles-doc1.el" :to "Cycle Completion Candidates")
 ;;    (@file :file-name "icicles-doc1.el" :to "Display Completion Candidates")
@@ -1776,6 +1779,13 @@
 ;;  files are bound to multi-commands `icicle-tag-a-file' and
 ;;  `icicle-untag-a-file'.
 ;;
+;;  By default, these are on `C-x p t + a' and `C-x p t - a',
+;;  respectively.  The commands are actually bound to `+ a' and `- a'
+;;  in keymap `bmkp-tags-map', and you can of course bind that keymap
+;;  to any key besides the default `C-x p t'.  If you bind the keymap
+;;  to `f2', for instance, then `f2 + a' and `f2 - a' are all you
+;;  need.
+;;
 ;;  In addition, all Icicles file commands (and autofile bookmark
 ;;  commands) let you tag or untag files on the fly, during file-name
 ;;  completion, using the keys `C-x a +' and `C-x a -' respectively
@@ -1812,6 +1822,7 @@
 ;;
 ;;  See Also:
 ;;
+;;  * (@file :file-name "icicles-doc1.el" :to "Third Example: Tagged Files")
 ;;  * (@file :file-name "icicles-doc1.el" :to "Action Keys Bound Dynamically During File-Name Input")
 ;;  * (@> "`icicle-find-file-tagged'"), next, for an alternative way
 ;;    to narrow file-name candidates based on tags
