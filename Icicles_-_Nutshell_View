@@ -351,61 +351,33 @@ multi-completion part.
 [:Menus]
 == Menus ==
 
-One way to start with '''Icicles''' is to explore menus '''Icicles''' and '''Minibuf'''; you can access most '''Icicles''' features using these menus, without at the same time struggling to learn new [[key binding]]s.  The '''Icicles''' menu is available all of the time (that is, whenever you are in ''Icicle'' mode), and the '''Minibuf''' menu is available whenever the [[minibuffer]] is active.  
-
-
-
+One way to start with '''Icicles''' is to explore [[menu bar|menu-bar]] menus 
+'''[[Icicles - Icicles Menu|Icicles]]''' and '''[[Icicles - Minibuf Menu|Minibuf]]'''.  You can access most '''Icicles''' features using these menus, without at the same time struggling to learn new [[key binding]]s.
 
 [:IciclesMenuBarMenu]
-=== Icicles Menu-Bar Menu ===
-: [[image:drew-emacs-Icicles-menu-20]]
-
-
-
 [:MinibufMenuBarMenu]
-=== Minibuf Menu-Bar Menu ===
-: [[image:drew-emacs-Minibuf-menu]]
+The '''Icicles''' menu is available all of the time (that is, whenever you are in ''Icicle'' mode). The '''Minibuf''' menu is available whenever the [[minibuffer]] is active.  It is enhanced for ''Icicle'' mode.
 
+[:CompletionPopupMenu]
 During minibuffer input
 [[completion]], you can also press Control and right-click
 (`C-mouse-3') on a completion candidate in [[buffer]] `##*Completions*##',
-and choose from a contextual popup menu, '''Completion'''.
+and choose from a contextual popup menu, '''[[Icicles - Completion Menu|Completion]]'''.
 
-You can [[Customize|customize]] this menu.  By default, submenu '''This Candidate'''
+You can [[Customize|customize]] this menu.  By default, its submenu '''This Candidate'''
 has menu items that apply to the candidate you clicked to pop up
 the menu.  The other submenus have items that apply to all
 candidates, candidates you have selected (the region in
 `##*Completions*##'), or candidates you have saved (marked).
 
 Altogether there are many menu items in the popup menu.  Think of
-the menu as a learning device and a way to remind you of possible
+this menu as a learning device and a way to remind you of possible
 operations on completion candidates and the keys they are bound
 to.  In this it is similar to the help you get when you use '''`##M-?##''''
 in the minibuffer, but with the menu you can also act, not just be
 reminded.
 
 See Also: [[Icicles - Completions Display]].
-
-
-
-[:CompletionPopupMenu]
-=== Completion Popup Menu (`C-mouse-3') ===
-
-: [[image:drew-emacs-icicle-mouse-3-menu]]
-: '''This Candidate''' submenu:
-::: [[image:drew-emacs-icicle-mouse-3-This-Candidate]]
-: '''Sorting''' submenu:
-::: [[image:drew-emacs-icicle-mouse-3-Sorting]]
-: '''Do Re Mi''' submenu:
-::: [[image:drew-emacs-icicle-mouse-3-DoReMi]]
-: '''Save/Retrieve''' submenu:
-::: [[image:drew-emacs-icicle-mouse-3-Save-Retrieve]]
-: '''Sets''' submenu:
-::: [[image:drew-emacs-icicle-mouse-3-Sets]]
-: '''Toggle/Cycle/Change''' submenu:
-::: [[image:drew-emacs-icicle-mouse-3-Toggle]]
-: '''Miscellaneous''' submenu:
-::: [[image:drew-emacs-icicle-mouse-3-Misc]]
 
 
 
