@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun Feb  3 13:58:03 2013 (-0800)
+;; Last-Updated: Fri Feb 15 14:08:54 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 27191
+;;     Update #: 27257
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -179,6 +179,7 @@
 ;;    (@> "Flashy Demo to Peak Your Curiosity")
 ;;      (@> "First Example: Multi-Inputs")
 ;;      (@> "Second Example: Multi-Completion")
+;;      (@> "Third Example: Tagged Files")
 ;;
 ;;    (@> "Toggle Options on the Fly")
 ;;    (@> "Cycle Completion Candidates")
@@ -730,12 +731,12 @@
 ;;
 ;;  Suppose that you do this:
 ;;
-;;    C-x 4 f   i c i   C-M-j   t a g s   S-SPC
+;;    C-x 4 f   i c i   C-M-j   c o l o r   S-SPC
 ;;
 ;;  The completion candidates, shown in `*Completions*', are the files
 ;;  (a) whose name contains `icicles' (completed from `ici') and (b)
-;;  whose content includes `tags' - that is, the files themselves
-;;  contain the text `tags'.
+;;  whose content includes `color' - that is, the files themselves
+;;  contain the text `color'.
 ;;
 ;;  The file content is in fact part of the two-part completion
 ;;  candidate, but of course it is not shown.  It is used only for
@@ -751,7 +752,7 @@
 ;;  contains also `cm' and whose content contains also `ine-f' (as in
 ;;  `icicle-define-file-command').
 ;;
-;;  Then you hit `M-!' to visit both of those files.
+;;  Then you hit `C-!' to visit each of those files.
 ;;
 ;;  (Yes, it's a toy example to show you some features.  Clearly you
 ;;  could just as well have used only `icicles-cm' as your input, or
@@ -774,7 +775,7 @@
 ;;    `S-SPC'
 ;;
 ;;  * multi-command action - acting on more than one matching
-;;    candidate, in this case all (both) of them: `M-!'
+;;    candidate, in this case all (both) of them: `C-!'
 ;;
 ;;  (The same behavior is available for buffer switching.  By default,
 ;;  `C-x b' is bound to `icicle-buffer', which acts as described above
@@ -799,6 +800,63 @@
 ;;  tested more.  Today, `C-x C-f' and `C-x 4 f' are bound to Icicles
 ;;  multi-commands that do the same thing, except for the
 ;;  multi-completion part.
+;;
+;;(@* "Third Example: Tagged Files")
+;;  *** Third Example: Tagged Files ***
+;;
+;;  This feature works only if you also use library Bookmark+, which
+;;  lets you tag files with arbitrary labels (delicious-style tags)
+;;  that you come up with.
+;;
+;;  Suppose you have previously tagged some files, and now you want to
+;;  visit one or more of the files that have both of the tags `2013'
+;;  and `mountains'.  If you also have some idea of the file names or
+;;  file contents, then you can match those too, as explained above -
+;;  see (@> "Second Example: Multi-Completion").  But let's suppose
+;;  you do not and you just want to match tags.
+;;
+;;    C-x 4 f TAB C-x C-t *  2013  RET  mountains  RET RET
+;;
+;;  During file-name completion, `C-x C-t *' narrows the current
+;;  candidates to those naming files have been tagged with each of the
+;;  tags you enter.  You type each tag to be matched, followed by
+;;  `RET', then you add a second `RET' after the last tag.
+;;
+;;  In this case, the current candidates before using `C-x t *'
+;;  included all files in the current directory (you hit `TAB'
+;;  immediately, without typing anything to match file names or file
+;;  contents).
+;;
+;;  Besides narrowing candidates during ordinary file-visiting
+;;  commands (e.g., `C-x C-f'), you can use multi-command
+;;  `icicle-find-file-tagged' (`C-x j t C-f C-f') to directly visit a
+;;  file that has tags matching the second part of your input, the
+;;  part after `C-M-j'.  For example:
+;;
+;;    C-x j t C-f C-f C-M-j  2013  S-SPC  mountains  C-! C-g C-g C-g
+;;
+;;  (The `C-M-j' is not needed if neither tag matches a file name.)
+;;
+;;  Tagging the files in the first place is also easy.  Here is how to
+;;  tag the files whose names match both `ici' and `doc' with the tags
+;;  `Icicles' and `help' (this should really be shown on a single
+;;  line):
+;;
+;;    C-x p t + a  Icicles  RET  help  RET RET
+;;                 ici  S-SPC  doc  C-! C-g C-g
+;;
+;;  During file-name completion, `C-x p t + a' runs multi-command
+;;  `icicle-tag-a-file', which adds the tags you type (ending the last
+;;  with `RET RET' instead of `RET') to the files whose candidate
+;;  names you act on.  In this case, you hit `C-!', which acts on all
+;;  candidates, which in this case are the file names matching both
+;;  `ici' and `doc'.
+;;
+;;  You can also tag files on the fly during file-name completion.  To
+;;  tag the current candidate, hit `C-x a +', then enter the tags to
+;;  add.
+;;
+;;  See (@file :file-name "icicles-doc2.el" :to "Using Tagged Files").
 ;;
 ;;(@* "Toggle Options on the Fly")
 ;;  ** Toggle Options on the Fly **
@@ -5329,10 +5387,11 @@
 ;;  Keys `C-|' and `M-|' apply the alternative action defined for a
 ;;  given multi-command to *all* matching candidates at once, in the
 ;;  same way that `C-!' and `M-!' apply the main action defined for it
-;;  to all candidates.  For example, in Icicles search (e.g. `C-c `'),
-;;  the alternative action (e.g. `C-S-RET') replaces all or part of
-;;  the current search hit, and `M-|' does the same for all search
-;;  hits.
+;;  to all candidates.  See (@> "Choose All Completion Candidates").
+;;
+;;  For example, in Icicles search (e.g. `C-c `'), the alternative
+;;  action (e.g. `C-S-RET') replaces all or part of the current search
+;;  hit, and `M-|' does the same for all search hits.
 ;;
 ;;  It is the particular command that defines its alternative action.
 ;;  Some commands define no such action.  Some commands, as their
