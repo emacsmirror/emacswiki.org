@@ -32,6 +32,10 @@ about defining a custom candidate-help action for a command.
 
 
 
+
+
+
+
 [:AlternativeActions]
 === Alternative Actions ===
 
@@ -46,7 +50,11 @@ the name of a file to be visited.
 
 Keys '''`##C-|##'''' and '''`##M-|##'''' apply the ''alternative'' action defined for a
 given multi-command to '''''all''''' matching candidates at once, in the same way that
-'''`##C-!##'''' and '''`##M-!##'''' apply the main action defined for it to all candidates.  For example, in '''Icicles''' search (e.g. `##C-c `##'),
+'''`##C-!##'''' and '''`##M-!##'''' apply the main action defined for it to all candidates.  See [[Icicles - Choose All Candidates]].
+
+
+
+For example, in '''Icicles''' search (e.g. `##C-c `##'),
 the alternative action (e.g. `C-S-RET') replaces all or part of
 the current search hit, and `##M-|##' does the same for all search
 hits.
