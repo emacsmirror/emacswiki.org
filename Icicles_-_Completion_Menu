@@ -1,0 +1,47 @@
+: [[image:iciclesimage]]
+
+
+|| *Previous:* [[Icicles - Screenshots]] || '''[[Icicles]]'''  || IciclesIndex || *Next:* [[Icicles - Nutshell View]] ||
+
+
+During [[minibuffer]] input [[completion]], you can press Control and right-click
+(`C-mouse-3') on a completion candidate in [[buffer]] `*Completions*',
+and choose from the contextual popup menu, '''Completion'''.
+
+Popup menu '''Completion''' has several submenus.
+
+
+: [[image:drew-emacs-icicle-mouse-3-menu]]
+: '''This Candidate''' submenu:
+::: [[image:drew-emacs-icicle-mouse-3-This-Candidate]]
+: '''Sorting''' submenu:
+::: [[image:drew-emacs-icicle-mouse-3-Sorting]]
+: '''Do Re Mi''' submenu:
+::: [[image:drew-emacs-icicle-mouse-3-DoReMi]]
+: '''Save/Retrieve''' submenu:
+::: [[image:drew-emacs-icicle-mouse-3-Save-Retrieve]]
+: '''Sets''' submenu:
+::: [[image:drew-emacs-icicle-mouse-3-Sets]]
+: '''Toggle/Cycle/Change''' submenu:
+::: [[image:drew-emacs-icicle-mouse-3-Toggle]]
+: '''Miscellaneous''' submenu:
+::: [[image:drew-emacs-icicle-mouse-3-Misc]]
+
+
+
+
+
+
+----
+
+
+|| *Previous:* [[Icicles - Screenshots]] || '''[[Icicles]]'''  || IciclesIndex || *Next:* [[Icicles - Nutshell View]] ||
+
+DrewsElispLibraries referenced here: Lisp:icicles.el
+
+
+CategoryCommands 
+CategoryCompletion
+CategoryRegexp
+
+
