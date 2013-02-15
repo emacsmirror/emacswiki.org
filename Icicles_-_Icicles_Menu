@@ -1,0 +1,26 @@
+: [[image:iciclesimage]]
+
+
+|| *Previous:* [[Icicles - Screenshots]] || '''[[Icicles]]'''  || IciclesIndex || *Next:* [[Icicles - Nutshell View]] ||
+
+
+
+The '''Icicles''' menu is available on the [[menu bar]] whenever you are in ''Icicle'' mode:
+
+: [[image:drew-emacs-Icicles-menu-20]]
+
+
+----
+
+
+|| *Previous:* [[Icicles - Screenshots]] || '''[[Icicles]]'''  || IciclesIndex || *Next:* [[Icicles - Nutshell View]] ||
+
+DrewsElispLibraries referenced here: Lisp:icicles.el
+
+
+CategoryCommands 
+CategoryCompletion
+CategoryRegexp
+
+
+
