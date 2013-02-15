@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Mon Feb  4 14:00:59 2013 (-0800)
+;; Last-Updated: Fri Feb 15 10:14:13 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 6223
+;;     Update #: 6224
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -544,7 +544,7 @@ You can match your input against the file name or tags or both.
 E.g., type:
 
  `red S-TAB'                    to match all files with the tag `red'
- `red M-SPC green M-SPC blue'   to match all files with tags `red',
+ `red S-SPC green S-SPC blue'   to match all files with tags `red',
                                 `green', and `blue' (in any order)
 
 That assumes that these tags do not also match any file names.
@@ -557,7 +557,7 @@ E.g., to match only tags and not the filename, start with `C-M-j' to
 get past the file-name field.  To match both file name and tags, type
 something to match the file name before the `C-M-j'.  E.g., type:
 
- `2011 C-M-j red M-SPC blue'    to match all files tagged `red' and
+ `2011 C-M-j red S-SPC blue'    to match all files tagged `red' and
                                 `blue' that have `2011' in their names
 
 During completion (`*' means this requires library `Bookmark+')\\<minibuffer-local-completion-map>, you
