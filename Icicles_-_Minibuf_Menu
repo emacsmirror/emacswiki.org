@@ -1,0 +1,24 @@
+: [[image:iciclesimage]]
+
+
+|| *Previous:* [[Icicles - Screenshots]] || '''[[Icicles]]'''  || IciclesIndex || *Next:* [[Icicles - Nutshell View]] ||
+
+The '''Minibuf''' menu is available whenever the [[minibuffer]] is active.  In ''Icicle'' mode it is greatly enhanced.
+
+
+: [[image:drew-emacs-Minibuf-menu]]
+
+
+----
+
+
+|| *Previous:* [[Icicles - Screenshots]] || '''[[Icicles]]'''  || IciclesIndex || *Next:* [[Icicles - Nutshell View]] ||
+
+DrewsElispLibraries referenced here: Lisp:icicles.el
+
+
+CategoryCommands 
+CategoryCompletion
+CategoryRegexp
+
+
