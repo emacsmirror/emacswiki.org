@@ -233,6 +233,10 @@ You are used to `C-x C-f' (`find-file') and `C-x 4 f'
 provide.  In ''Icicle'' mode, these keys act the same way, but they
 can also give you a little more magic.
 
+
+
+
+[:FirstExampleMultiInputs]
 === First Example: Multi-Inputs ===
 
 In vanilla Emacs you can do this to visit all files whose names
@@ -261,17 +265,17 @@ printable character typed: `ici*.el' instead of `i c i * . e l'.)
 
 
 
-
+[:SecondExampleMultiCompletion]
 === Second Example: Multi-Completion ===
 
 Suppose that you do this:
 
-: '''##C-x 4 f##'''##   i c i   ##'''##C-M-j##'''##   t a g s   ##'''##S-SPC##'''
+: '''##C-x 4 f##'''##   i c i   ##'''##C-M-j##'''##   c o l o r   ##'''##S-SPC##'''
 
 The completion candidates, shown in `##*Completions*##', are the files
 (a) whose name contains `icicles' (completed from `ici') and (b)
-whose content includes `tags' --- that is, the files themselves
-contain the text `tags'.
+whose content includes `color' --- that is, the files themselves
+contain the text `color'.
 
 The file content is in fact part of the two-part completion
 candidate, but of course it is not shown.  It is used only for
@@ -287,7 +291,7 @@ When you finish typing, the set of candidates is reduced to just
 contains also `cm' and whose content contains also `ine-f' (as in
 `icicle-define-file-command').
 
-Then you hit '''`##M-!##'''' to visit both of those files.
+Then you hit '''`##C-!##'''' to visit each of those files.
 
 (Yes, it's a toy example to show you some features.  Clearly you
 could just as well have used only `icicles-cm' as your input, or
@@ -310,7 +314,7 @@ You have just used the following '''Icicles''' features:
   '''`S-SPC''''
 
 * ''multi-command'' action -- acting on more than one matching
-  candidate, in this case all (both) of them: '''`##M-!##''''
+  candidate, in this case all (both) of them: '''`##C-!##''''
 
 (The same behavior is available for buffer switching.  By default,
 `C-x b' is bound to `icicle-buffer', which acts as described above
@@ -337,6 +341,68 @@ multi-commands that do the same thing, except for the
 multi-completion part.
 
 
+
+
+
+
+
+
+[:ThirdExampleTaggedFiles]
+=== Third Example: Tagged Files ===
+
+This feature works only if you also use library '''[[Bookmark+]]''', which
+lets you tag files with arbitrary labels ([[http://delicious.com|delicious]]-style tags)
+that you come up with.
+
+Suppose you have previously tagged some files, and now you want to
+visit one or more of the files that have both of the tags `2013'
+and `mountains'.  If you also have some idea of the file names or
+file contents, then you can match those too, as explained above --
+see [[#SecondExampleMultiCompletion|Second Example: Multi-Completion]].  But let's suppose
+you do not and you just want to match tags.
+
+: ##C-x 4 f TAB ##'''##C-x C-t *##'''##  2013  RET  mountains  RET RET##
+
+
+During file-name completion, '''`C-x C-t *'''' narrows the current
+candidates to those naming files have been tagged with each of the
+tags you enter.  You type each tag to be matched, followed by
+`RET', then you add a second `RET' after the last tag.
+
+In this case, the current candidates before using `C-x t *'
+included all files in the current directory (you hit `TAB'
+immediately, without typing anything to match file names or file
+contents).
+
+Besides narrowing candidates during ordinary file-visiting
+commands (e.g., `C-x C-f'), you can use [[multi-command]]
+'''`icicle-find-file-tagged'''' ('''`C-x j t C-f C-f'''') to directly visit a
+file that has tags matching the second part of your input, the
+part after `C-M-j'.  For example:
+
+: '''##C-x j t C-f C-f##'''## C-M-j  2013  S-SPC  mountains  C-! C-g C-g C-g##
+
+(The `C-M-j' is not needed if neither tag matches a file name.)
+
+Tagging the files in the first place is also easy.  Here is how to
+tag the files whose names match both `ici' and `doc' with the tags
+`Icicles' and `help':
+
+: '''##C-x p t + a##'''##  Icicles  RET  help  RET RET
+               ici  S-SPC  doc  ##'''##C-!##'''## C-g C-g##
+
+During file-name completion, '''`##C-x p t + a##'''' runs [[multi-command]]
+'''`icicle-tag-a-file'''', which adds the tags you type (ending the last
+with `RET RET' instead of `RET') to the files whose candidate
+names you act on.  In this case, you hit `##C-!##', which acts on all
+candidates, which in this case are the file names matching both
+`ici' and `doc'.
+
+You can also tag files on the fly during file-name completion.  To
+tag the current candidate, hit '''`##C-x a +##'''', then enter the tags to
+add.
+
+See [[Icicles - Bookmark Enhancements#UsingTaggedFiles|Using Tagged Files]].
 
 
 
@@ -702,7 +768,8 @@ You do this by building up a saved set of candidates, and then
 retrieving these saved candidates later.  You can use the
 retrieved candidates just as you would any current set of
 candidates.  One of the things you can do is act on all of them,
-that is, act on each, in turn.  You do that with '''`##C-!##''''.
+that is, act on each, in turn.  You do that
+with '''`##C-!##''''.
 
 Of course, if you can use a [[regexp]] to match exactly the candidates
 you want to act on, then you need not bother to save and retrieve
