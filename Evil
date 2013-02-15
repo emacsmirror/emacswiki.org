@@ -185,6 +185,10 @@ Another way is to use keychords.el as a basis for an escape key sequence. For ex
    (key-chord-define evil-insert-state-map ",," 'evil-normal-state)
    (key-chord-define evil-replace-state-map ",," 'evil-normal-state)
 
+== AceJump Integration ==
+
+<include gist "https://gist.github.com/cofi/4963125">
+
 == Discussion ==
 
 : ''(Evil is also discussed at the [http://lists.ourproject.org/cgi-bin/mailman/listinfo/implementations-list gmane.emacs.vim-emulation] mailing list and in our IRC channel #evil-mode on irc.freenode.net.)''
