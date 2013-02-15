@@ -66,6 +66,13 @@ bookmark.
 In ''Icicle'' mode, the '''Bookmark+''' keys for tagging and untagging files
 are bound to [[multi-command]]s '''`icicle-tag-a-file'''' and '''`icicle-untag-a-file''''.  
 
+By default, these are on '''`##C-x p t + a##'''' and '''`C-x p t - a'''',
+respectively.  The commands are actually bound to '''`##+ a##'''' and '''`- a''''
+in keymap '''`bmkp-tags-map'''', and you can of course bind that keymap
+to any key besides the default `C-x p t'.  If you bind the keymap
+to `f2', for instance, then `##f2 + a##' and `f2 - a' are all you
+need.
+
 
 In addition, all '''Icicles''' [[Icicles - File-Name Input|file commands]]  (and [[BookmarkPlus#AutofileBookmarks|autofile bookmark]] commands) let you tag or untag files on
 the fly, during file-name completion, using the keys '''`##C-x a +##'''' and
@@ -101,6 +108,9 @@ files.  They are all on the '''Bookmark+''' keymaps `bmkp-jump-map' and
 latter is for the `-other-window' version of each command.
 
 '''See Also:'''
+
+
+* [[Icicles - Nutshell View#ThirdExampleTaggedFiles|Nutshell View - Tagged Files]]
 
 * [[Icicles - File-Name Input#KeysBoundDynamicallyForFileNameInput|Action Keys Bound Dynamically During File-Name Input]]
 * [[#icicle-find-file-tagged|icicle-find-file-tagged]], next, for an alternative way to narrow file-name candidates based on tags
