@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Feb 15 14:08:54 2013 (-0800)
+;; Last-Updated: Fri Feb 15 14:30:53 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 27257
+;;     Update #: 27258
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -830,8 +830,8 @@
 ;;  Besides narrowing candidates during ordinary file-visiting
 ;;  commands (e.g., `C-x C-f'), you can use multi-command
 ;;  `icicle-find-file-tagged' (`C-x j t C-f C-f') to directly visit a
-;;  file that has tags matching the second part of your input, the
-;;  part after `C-M-j'.  For example:
+;;  file that has tags matching the second part of your
+;;  multi-completion input, the part after `C-M-j'.  For example:
 ;;
 ;;    C-x j t C-f C-f C-M-j  2013  S-SPC  mountains  C-! C-g C-g C-g
 ;;
