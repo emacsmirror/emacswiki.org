@@ -302,18 +302,18 @@ You have just used the following '''Icicles''' features:
 
 * ''incremental completion'' -- candidate set updated as you type
 
-* ''apropos completion'' -- matching not just a completion-candidate
+* '']]apropos completion]]'' -- matching not just a completion-candidate
   prefix but a substring (or even a regexp)
 
-* ''multi-completion'' matching -- matching in parallel two different
+* ''[[multi-completion]]'' matching -- matching in parallel two different
   things at once (in this case, file name and file content),
   separating the patterns with '''`C-M-j''''
 
-* ''progressive completion'' -- matching sequentially two different
+* '']]progressive completion]]'' -- matching sequentially two different
   inputs (each a multi-completion in this case), separated by
   '''`S-SPC''''
 
-* ''multi-command'' action -- acting on more than one matching
+* '']]multi-command]]'' action -- acting on more than one matching
   candidate, in this case all (both) of them: '''`##C-!##''''
 
 (The same behavior is available for buffer switching.  By default,
@@ -377,7 +377,7 @@ contents).
 Besides narrowing candidates during ordinary file-visiting
 commands (e.g., `C-x C-f'), you can use [[multi-command]]
 '''`icicle-find-file-tagged'''' ('''`C-x j t C-f C-f'''') to directly visit a
-file that has tags matching the second part of your input, the
+file that has tags matching the second part of your [[multi-completion]] input, the
 part after `C-M-j'.  For example:
 
 : '''##C-x j t C-f C-f##'''## C-M-j  2013  S-SPC  mountains  C-! C-g C-g C-g##
