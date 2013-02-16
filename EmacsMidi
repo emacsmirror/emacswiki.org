@@ -6,6 +6,11 @@ It would also be interesting to be able to use emacs as a soundtracker-like envi
 That is, edit midi-data in the form of a text based piano roll, and also play it with a real-time updated cursor
 that highlight all notes currenly being played.
 
+It is perhaps noteworthy that Emacs can open Midi devices directly using
+
+    (make-serial-process :speed nil ...)
+
+and operate on them using the normal I/O operators also available for terminal processes.
 
 === some links ===
 
@@ -17,5 +22,8 @@ midi.el in emacs.sources
 
 http://utopia.knoware.nl/~hlub/rlwrap/README.midi-input.txt
 
+Discussion
+
 http://ccrma-mail.stanford.edu/pipermail/cmdist/2005-August/002556.html
 
+end of page
