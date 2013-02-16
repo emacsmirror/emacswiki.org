@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Feb 15 16:10:00 2013 (-0800)
+;; Last-Updated: Sat Feb 16 15:15:25 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 25439
+;;     Update #: 25540
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -217,6 +217,8 @@
 ;;    (+)`icicle-find-file-of-content',
 ;;    (+)`icicle-find-file-of-content-other-window',
 ;;    (+)`icicle-find-file-other-window',
+;;    (+)`icicle-find-file-no-search',
+;;    (+)`icicle-find-file-no-search-other-window',
 ;;    (+)`icicle-find-file-read-only',
 ;;    (+)`icicle-find-file-read-only-other-window',
 ;;    (+)`icicle-find-first-tag',
@@ -3531,6 +3533,7 @@ Use \\<minibuffer-local-completion-map>`\\[icicle-candidate-set-save]' to save c
                                            (icicle-file-list)))))
     (dired (cons (generate-new-buffer-name "Icy File Set") (nreverse file-names)))))
 
+(put 'icicle-dired-saved-file-candidates-other-window 'icicle-Completions-window-max-height 200)
 (defalias 'icicle-dired-chosen-files-other-window 'icicle-dired-saved-file-candidates-other-window)
 (defun icicle-dired-saved-file-candidates-other-window (prompt-for-dir-p) ; Bound `C-M-<' in Dired.
   "Open Dired in other window on set of files & directories of your choice.
@@ -3603,6 +3606,7 @@ you use library `Bookmark+'."
                                           file-names))))))
     (define-key minibuffer-local-completion-map (icicle-kbd "C-x m") nil)))
 
+(put 'icicle-dired-project-other-window 'icicle-Completions-window-max-height 200)
 (defun icicle-dired-project-other-window (prompt-for-dir-p) ; Bound to `C-{' in Dired.
   "Open Dired on a saved project in another window.
 A project is either a persistent completion set or an Emacs fileset.
@@ -6076,7 +6080,6 @@ ACTION is the command action, a string.  It starts the prompt."
 
 
 (put 'icicle-buffer 'icicle-Completions-window-max-height 200)
-
 (icicle-define-command icicle-buffer    ; Bound to `C-x b' in Icicle mode.
   "Switch to a different buffer, whose content contains a regexp match.
 By default, Icicle mode remaps all key sequences that are normally
@@ -6234,7 +6237,6 @@ the prefix argument in Icicles buffer commands:
 
 
 (put 'icicle-buffer-other-window 'icicle-Completions-window-max-height 200)
-
 (icicle-define-command icicle-buffer-other-window ; Bound to `C-x 4 b' in Icicle mode.
   "Switch to a buffer whose content matches a regexp, in another window.
 Same as `icicle-buffer' except it uses a different window." ; Doc string
@@ -6405,7 +6407,6 @@ a list of buffer names.  Return only the first
 
 
 (put 'icicle-buffer-no-search 'icicle-Completions-window-max-height 200)
-
 (icicle-define-command icicle-buffer-no-search ; Not bound by default
   "Switch to a different buffer.
 This is like command `icicle-buffer', but without the possibility of
@@ -6426,7 +6427,6 @@ part."                                  ; Doc string
 
 
 (put 'icicle-buffer-no-search-other-window 'icicle-Completions-window-max-height 200)
-
 (icicle-define-command icicle-buffer-no-search-other-window ; Not bound by default
   "Switch to a different buffer in another window.
 Same as `icicle-buffer' except it uses a different window." ; Doc string
@@ -7042,20 +7042,30 @@ can use the following keys:
 
 
 (put 'icicle-file 'icicle-Completions-window-max-height 200)
-
 (defun icicle-file (arg)                ; Bound to `C-x C-f' in Icicle mode.
   "Visit a file or directory.
 With no prefix argument, use relative file names
  (`icicle-find-file').
 With a prefix argument, use absolute file names
  (`icicle-find-file-absolute').
-With a negative prefix argument, you can choose also by date:
- Completion candidates include the last modification date.
+ With a negative prefix arg, you can choose also by date:
+  Completion candidates include the last modification date.
 
 Note that when you use a prefix arg, completion matches candidates as
 ordinary strings.  It knows nothing of file names per se.  In
 particular, you cannot use remote file-name syntax if you use a prefix
 argument.
+
+If you use a prefix arg when you act on a completion candidate, then
+you visit the file or dir in read-only mode.  This includes when you
+act on all candidates using \\<minibuffer-local-completion-map>\
+`\\[icicle-all-candidates-action]': precede the `\\[icicle-all-candidates-action]' with a prefix
+arg.  This does not apply to the final candidate chosen (using `RET'
+or `mouse-2') - a prefix arg has no effect for that.
+
+See `icicle-find-file' and `icicle-find-file-absolute' for more
+information.  Note that for Emacs 23 and later, `icicle-find-file'
+lets you search file content, as well as file names.
 
 During completion (`*' means this requires library `Bookmark+')\\<minibuffer-local-completion-map>, you
 can use the following keys:
@@ -7075,30 +7085,31 @@ to `find-file' to `icicle-file'.  If you do not want this remapping,
 then customize option `icicle-top-level-key-bindings'."
   (interactive "P")
   (if arg
-      (if (wholenump (prefix-numeric-value arg))
-          (let ((current-prefix-arg  nil)) (icicle-find-file-absolute))
+      (let ((current-prefix-arg  (not (wholenump (prefix-numeric-value arg)))))
         (icicle-find-file-absolute))
     (icicle-find-file)))
 
 
 (put 'icicle-file-other-window 'icicle-Completions-window-max-height 200)
-
 (defun icicle-file-other-window (arg)   ; Bound to `C-x 4 f' in Icicle mode.
   "Same as `icicle-file', except uses another window."
   (interactive "P")
   (if arg
-      (if (wholenump (prefix-numeric-value arg))
-          (let ((current-prefix-arg  nil)) (icicle-find-file-absolute-other-window))
+      (let ((current-prefix-arg  (not (wholenump (prefix-numeric-value arg)))))
         (icicle-find-file-absolute-other-window))
     (icicle-find-file-other-window)))
 
 
 (put 'icicle-find-file-absolute 'icicle-Completions-window-max-height 200)
-
 (icicle-define-command icicle-find-file-absolute ; Bound to `C-u C-x f' in Icicle mode.
   "Visit a file or directory, given its absolute name.
 Unlike `icicle-find-file', the completion candidates are absolute, not
 relative, file names.
+
+Also, this is like `icicle-find-file-no-search', and not like
+`icicle-find-file', in that there is no file-content search:
+candidates are only file names, not multi-completions with content
+patterns after `C-M-j'.
 
 By default, the completion candidates are files in the current
 directory, but you can substitute other candidates by retrieving a
@@ -7119,6 +7130,13 @@ in a common directory.
 
 With a prefix argument, you can choose also by date: Completion
 candidates include the last modification date.
+
+If you use a prefix argument when you act on a completion candidate,
+then you visit the file or dir in read-only mode.  This includes when
+you act on all candidates using \\<minibuffer-local-completion-map>\
+`\\[icicle-all-candidates-action]': precede the `\\[icicle-all-candidates-action]' with a prefix
+arg.  This does not apply to the final candidate chosen (using `RET'
+or `mouse-2') - a prefix arg has no effect for that.
 
 During completion (`*' means this requires library `Bookmark+')\\<minibuffer-local-completion-map>, you
 can use the following keys:
@@ -7153,7 +7171,14 @@ option `icicle-require-match-flag'.
 
 Option `icicle-files-ido-like' non-nil gives this command a more
 Ido-like behavior."                     ; Doc string
-  (lambda (f) (find-file (icicle-transform-multi-completion f) 'WILDCARDS)) ; Action function
+  (lambda (file)                        ; FREE here: CURRENT-PREFIX-ARG, THIS-COMMAND.
+    (let ((r-o  (and (memq this-command '(icicle-candidate-action icicle-mouse-candidate-action
+                                          icicle-all-candidates-action))
+                     current-prefix-arg))
+          (fil  (icicle-transform-multi-completion file)))
+      (if r-o
+          (find-file-read-only fil 'WILDCARDS)
+        (find-file fil 'WILDCARDS))))
   prompt icicle-abs-file-candidates nil ; `completing-read' args
   (and (fboundp 'confirm-nonexistent-file-or-buffer)  (confirm-nonexistent-file-or-buffer)) ;Emacs 23.
   nil 'file-name-history default-directory nil
@@ -7176,7 +7201,9 @@ Ido-like behavior."                     ; Doc string
     (icicle-multi-completing-p          current-prefix-arg)
     (icicle-list-use-nth-parts          (and current-prefix-arg  '(1)))))
   (progn                                ; First code
-    (when current-prefix-arg (put-text-property 0 1 'icicle-fancy-candidates t prompt))
+    (when current-prefix-arg
+      (put-text-property 0 1 'icicle-fancy-candidates t prompt)
+      (setq current-prefix-arg  nil))   ; Reset so can use it in action function.
     (icicle-highlight-lighter)
     (message "Gathering files...")
     (icicle-bind-file-candidate-keys)
@@ -7189,10 +7216,16 @@ Ido-like behavior."                     ; Doc string
 
 
 (put 'icicle-find-file-absolute-other-window 'icicle-Completions-window-max-height 200)
-
 (icicle-define-command icicle-find-file-absolute-other-window ; Bound to `C-u C-x 4 f'
   "Same as `icicle-find-file-absolute' except uses another window." ; Doc string
-  (lambda (f) (find-file-other-window (icicle-transform-multi-completion f) 'WILDCARDS)) ; Action
+  (lambda (file)                        ; FREE here: CURRENT-PREFIX-ARG, THIS-COMMAND.
+    (let ((r-o  (and (memq this-command '(icicle-candidate-action icicle-mouse-candidate-action
+                                          icicle-all-candidates-action))
+                     current-prefix-arg))
+          (fil  (icicle-transform-multi-completion file)))
+      (if r-o
+          (find-file-read-only-other-window fil 'WILDCARDS)
+        (find-file-other-window fil 'WILDCARDS))))
   prompt icicle-abs-file-candidates nil ; `completing-read' args
   (and (fboundp 'confirm-nonexistent-file-or-buffer)  (confirm-nonexistent-file-or-buffer)) ;Emacs 23.
   nil 'file-name-history default-directory nil
@@ -7215,7 +7248,9 @@ Ido-like behavior."                     ; Doc string
     (icicle-multi-completing-p          current-prefix-arg)
     (icicle-list-use-nth-parts          (and current-prefix-arg  '(1)))))
   (progn                                ; First code
-    (when current-prefix-arg (put-text-property 0 1 'icicle-fancy-candidates t prompt))
+    (when current-prefix-arg
+      (put-text-property 0 1 'icicle-fancy-candidates t prompt)
+      (setq current-prefix-arg  nil))   ; Reset so can use it in action function.
     (icicle-highlight-lighter)
     (message "Gathering files...")
     (icicle-bind-file-candidate-keys)
@@ -7250,18 +7285,25 @@ Ido-like behavior."                     ; Doc string
           (car (icicle-mctize-all icicle-abs-file-candidates minibuffer-completion-predicate)))))
 
 
-(put 'icicle-find-file 'icicle-Completions-window-max-height 200)
-
-(icicle-define-file-command icicle-find-file
+(put 'icicle-find-file-no-search 'icicle-Completions-window-max-height 200)
+(icicle-define-file-command icicle-find-file-no-search
   "Visit a file or directory.
 \(Option `find-file-run-dired' determines whether you can actually
 visit a directory candidate that you choose.)
 
-If you use a prefix argument when you act on a completion candidate,
-then you visit the file or dir in read-only mode.  This includes when
-you act on all candidates using \\<minibuffer-local-completion-map>\
+For Emacs 23 and later, this is like command
+`icicle-find-file-of-content', but without the possibility of
+searching file contents.  That is, completion candidates are just file
+names, not multi-completions - they contain no file-content part
+following `C-M-j'.
+
+If you use a prefix argument when you act on a completion candidate
+\(see below for the use of a prefix arg for the command itself.), then
+you visit the file or dir in read-only mode.  This includes when you
+act on all candidates using \\<minibuffer-local-completion-map>\
 `\\[icicle-all-candidates-action]': precede the `\\[icicle-all-candidates-action]' with a prefix
-arg.
+arg.  This does not apply to the final candidate chosen (using `RET'
+or `mouse-2') - a prefix arg has no effect for that.
 
 If you use a prefix arg for the command itself, this reverses the
 effect of using a prefix arg on individual candidates.  That is, with
@@ -7302,7 +7344,8 @@ option `icicle-require-match-flag'.
 Option `icicle-files-ido-like' non-nil gives this command a more
 Ido-like behavior."                     ; Doc string
   (lambda (file)                        ; FREE here: CURRENT-PREFIX-ARG, INIT-PREF-ARG, THIS-COMMAND.
-    (let* ((r-o  (if (memq this-command '(icicle-candidate-action icicle-all-candidates-action))
+    (let* ((r-o  (if (memq this-command '(icicle-candidate-action icicle-mouse-candidate-action
+                                          icicle-all-candidates-action))
                      (or (and init-pref-arg        (not current-prefix-arg))
                          (and (not init-pref-arg)  current-prefix-arg))
                    init-pref-arg))
@@ -7325,10 +7368,13 @@ Ido-like behavior."                     ; Doc string
   nil                                   ; Undo code
   (icicle-unbind-file-candidate-keys))  ; Last code
 
-(icicle-define-file-command icicle-find-file-other-window
-  "Same as `icicle-find-file', except uses another window." ; Doc string
+
+(put 'icicle-find-file-no-search-other-window 'icicle-Completions-window-max-height 200)
+(icicle-define-file-command icicle-find-file-no-search-other-window
+  "Same as `icicle-find-file-no-search', except uses another window." ; Doc string
   (lambda (file)                        ; FREE here: CURRENT-PREFIX-ARG, INIT-PREF-ARG, THIS-COMMAND.
-    (let* ((r-o  (if (memq this-command '(icicle-candidate-action icicle-all-candidates-action))
+    (let* ((r-o  (if (memq this-command '(icicle-candidate-action icicle-mouse-candidate-action
+                                          icicle-all-candidates-action))
                      (or (and init-pref-arg        (not current-prefix-arg))
                          (and (not init-pref-arg)  current-prefix-arg))
                    init-pref-arg))
@@ -7353,11 +7399,12 @@ Ido-like behavior."                     ; Doc string
 
 
 (put 'icicle-find-file-read-only 'icicle-Completions-window-max-height 200)
-
 (defun icicle-find-file-read-only ()    ; Bound to `C-x C-r' in Icicle mode.
   "Visit a file or directory in read-only mode.
-If you use a prefix argument when you act on a candidate file name,
-then visit the file without read-only mode.
+This is `icicle-find-file-no-search' with prefix-arg behavior flipped.
+
+If you use a prefix arg when you act on a candidate file name then
+visit the file without read-only mode.
 
 If you use a prefix arg for the command itself, this reverses the
 effect of using a prefix arg on individual candidates.  That is, with
@@ -7375,19 +7422,19 @@ During completion (`*' means this requires library `Bookmark+')\\<minibuffer-loc
   You can use `\\[icicle-delete-candidate-object]' to delete a candidate file or (empty) dir."
   (interactive)
   (let ((current-prefix-arg  (not current-prefix-arg)))
-    (icicle-find-file)))
+    (icicle-find-file-no-search)))
 
+
+(put 'icicle-find-file-read-only-other-window 'icicle-Completions-window-max-height 200)
 (defun icicle-find-file-read-only-other-window () ; Bound to `C-x 4 r' in Icicle mode.
   "Same as `icicle-find-file-read-only' except uses another window."
   (interactive)
   (let ((current-prefix-arg  (not current-prefix-arg)))
-    (icicle-find-file-other-window)))
-
+    (icicle-find-file-no-search-other-window)))
 
 (when (> emacs-major-version 22)
 
   (put 'icicle-find-file-of-content 'icicle-Completions-window-max-height 200)
-
   (icicle-define-file-command icicle-find-file-of-content ; Not bound by default.
     "Visit a file or dir whose name and/or content matches.
 Candidate files and directories for completion are examined, and those
@@ -7397,11 +7444,13 @@ available to visit.
 \(Option `find-file-run-dired' determines whether you can actually
 visit a directory candidate that you choose.)
 
-If you use a prefix argument when you act on a completion candidate,
-then you visit the file or dir in read-only mode.  This includes when
-you act on all candidates using \\<minibuffer-local-completion-map>\
+If you use a prefix argument when you act on a completion candidate
+\(see below for the use of a prefix arg for the command itself.), then
+you visit the file or dir in read-only mode.  This includes when you
+act on all candidates using \\<minibuffer-local-completion-map>\
 `\\[icicle-all-candidates-action]': precede the `\\[icicle-all-candidates-action]' with a prefix
-arg.  (See below for the use of a prefix arg for the command itself.)
+arg.  This does not apply to the final candidate chosen (using `RET'
+or `mouse-2') - a prefix arg has no effect for that.
 
 Completion candidates are two-part multi-completions, with the second
 part optional.  If both parts are present they are separated by
@@ -7427,8 +7476,8 @@ content matches are unimportant anyway: content matching is used only
 to filter the candidates.
 
 If your input does not include a content-matching part then this
-command acts similar to `icicle-find-file' (but with a different use
-of the prefix argument).
+command acts similar to `icicle-find-file-no-search' (but with a
+different use of the prefix argument).
 
 If your input includes a content-matching part then all files and
 directories matching the name part of your input (or all, if no name
@@ -7468,7 +7517,11 @@ can use the following keys:
              (fn   (if r-o 'find-file-read-only 'find-file)))
         (setq file  (icicle-transform-multi-completion file))
         (funcall fn file 'WILDCARDS)
-        (when (and (file-readable-p file)  (buffer-file-name)) (revert-buffer nil t)) ; Else in fund. mode.
+        (when (and (file-readable-p file)  (buffer-file-name))
+          (let ((b-r-o  (if buffer-read-only 1 -1)))
+            (revert-buffer nil t) ; Else in fundamental mode.
+            ;; Reverting imposed the file's read-only status.  Restore the right status.
+            (if (fboundp 'read-only-mode) (read-only-mode b-r-o) (toggle-read-only b-r-o))))
         ;; Add the visited buffer to those we will keep (not kill).
         ;; If FILE uses wildcards then there will be multiple such buffers.
         ;; For a directory, get the Dired buffer instead of using `get-file-buffer'.
@@ -7515,7 +7568,6 @@ can use the following keys:
 
 
   (put 'icicle-find-file-of-content-other-window 'icicle-Completions-window-max-height 200)
-
   (icicle-define-file-command icicle-find-file-of-content-other-window ; Not bound by default.
     "Visit a file or dir whose name and/or content matches, in another window.
 Same as `icicle-find-file-of-content' except it uses a different window." ; Doc string
@@ -7527,8 +7579,11 @@ Same as `icicle-find-file-of-content' except it uses a different window." ; Doc 
              (fn   (if r-o 'find-file-read-only-other-window 'find-file-other-window)))
         (setq file  (icicle-transform-multi-completion file))
         (funcall fn file 'WILDCARDS)
-        (when (and (file-readable-p file)  (buffer-file-name)) (revert-buffer nil t)) ; Else in fund. mode.
-
+        (when (and (file-readable-p file)  (buffer-file-name))
+          (let ((b-r-o  (if buffer-read-only 1 -1)))
+            (revert-buffer nil t) ; Else in fundamental mode.
+            ;; Reverting imposed the file's read-only status.  Restore the right status.
+            (if (fboundp 'read-only-mode) (read-only-mode b-r-o) (toggle-read-only b-r-o))))
         ;; Add the visited buffer to those we will keep (not kill).
         ;; If FILE uses wildcards then there will be multiple such buffers.
         ;; For a directory, get the Dired buffer instead of using `get-file-buffer'.
@@ -7642,12 +7697,18 @@ Return non-nil if the current multi-completion INPUT matches FILE-NAME."
                       (when (and (boundp 'existing-bufs)  (boundp 'new-bufs--to-kill)
                                  (not (memq buf existing-bufs)))
                         (add-to-list 'new-bufs--to-kill buf))
-                      found))))))
-  )
+                      found)))))))
+
+(defalias 'icicle-find-file (if (fboundp 'icicle-find-file-of-content) ; Emacs 23+
+                                'icicle-find-file-of-content
+                              'icicle-find-file-no-search))
+
+(defalias 'icicle-find-file-other-window (if (fboundp 'icicle-find-file-of-content) ; Emacs 23+
+                                             'icicle-find-file-of-content-other-window
+                                           'icicle-find-file-no-search-other-window))
 
 
 (put 'icicle-recent-file 'icicle-Completions-window-max-height 200)
-
 (icicle-define-command icicle-recent-file ; Command name
   "Open a recently used file.
 With a prefix argument, you can choose also by date: Completion
@@ -7737,6 +7798,8 @@ Ido-like behavior."                     ; Doc string
   nil                                   ; Undo code
   (icicle-unbind-file-candidate-keys))  ; Last code
 
+
+(put 'icicle-recent-file-other-window 'icicle-Completions-window-max-height 200)
 (icicle-define-command icicle-recent-file-other-window ; Command name
   "Same as `icicle-recent-file' except uses another window." ; Doc string
   (lambda (f) (find-file-other-window (icicle-transform-multi-completion f) 'WILDCARDS)) ; Action
@@ -7810,7 +7873,6 @@ Non-nil means `icicle-locate-file-1' uses external command `locate'.")
 
 
 (put 'icicle-locate-file 'icicle-Completions-window-max-height 200)
-
 (defun icicle-locate-file ()
   "Visit a file within one or more directories or their subdirectories.
 A prefix argument determines the behavior, as follows:
@@ -7896,6 +7958,8 @@ For example, to show only names of files larger than 5000 bytes, set
         (icicle-locate-file-no-symlinks-p  nil))
     (icicle-locate-file-1)))
 
+
+(put 'icicle-locate-file-other-window 'icicle-Completions-window-max-height 200)
 (defun icicle-locate-file-other-window ()
   "Same as `icicle-locate-file' except uses another window.
 See also command `icicle-locate-file-no-symlinks-other-window', which
@@ -7907,7 +7971,6 @@ does not follow symbolic links."
 
 
 (put 'icicle-locate 'icicle-Completions-window-max-height 200)
-
 (defun icicle-locate ()
   "Run the external program `locate', then visit files.
 Unlike `icicle-locate-file' this is a wrapper for the external program
@@ -7989,6 +8052,8 @@ could temporarily set `icicle-file-predicate' to:
         (icicle-locate-file-use-locate-p  t))
     (icicle-locate-file-1)))
 
+
+(put 'icicle-locate-other-window 'icicle-Completions-window-max-height 200)
 (defun icicle-locate-other-window ()
   "Same as `icicle-locate' except uses another window."
   (interactive)
@@ -7998,7 +8063,6 @@ could temporarily set `icicle-file-predicate' to:
 
 
 (put 'icicle-locate-file-no-symlinks 'icicle-Completions-window-max-height 200)
-
 (defun icicle-locate-file-no-symlinks ()
   "Same as `icicle-locate-file', except do not follow symlinks."
   (interactive)
@@ -8006,6 +8070,8 @@ could temporarily set `icicle-file-predicate' to:
         (icicle-locate-file-no-symlinks-p  t))
     (icicle-locate-file-1)))
 
+
+(put 'icicle-locate-file-no-symlinks-other-window 'icicle-Completions-window-max-height 200)
 (defun icicle-locate-file-no-symlinks-other-window ()
   "Same as `icicle-locate-file-no-symlinks', except uses another window."
   (interactive)
@@ -8131,7 +8197,6 @@ Optional arg NO-SYMLINKS-P non-nil means do not follow symbolic links."
 
 
 (put 'icicle-find-file-in-tags-table 'icicle-Completions-window-max-height 200)
-
 (icicle-define-command icicle-find-file-in-tags-table ; Command name
   "Visit a file listed in a tags table.
 By default, the completion candidates are the file names listed in the
@@ -8223,7 +8288,6 @@ Ido-like behavior."                     ; Doc string
 
 
 (put 'icicle-find-file-in-tags-table-other-window 'icicle-Completions-window-max-height 200)
-
 (icicle-define-command icicle-find-file-in-tags-table-other-window ; Command name
   "Same as `icicle-find-file-in-tags-table', but uses another window." ; Doc string
   (lambda (ff)
