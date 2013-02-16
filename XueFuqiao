@@ -194,9 +194,13 @@ Coming soon.
 * FilesystemHierarchyStandard
 * Fontconfig
 * FootSwitches
+* GnuFindutils
+* GnuCoreutils
+* GnuReadlineLibrary
 * GnuAspell
 * GnuAutotools
 * GnuBazaar
+* GnuGrub
 * GnuCompilerCollection
 * GnuDebugger
 * GnuGeneralPublicLicense and GnuFreeDocumentationLicense
@@ -206,6 +210,7 @@ Coming soon.
 * GnuTLS
 * Grav-mass
 * gzip
+* grep
 * HappyHackingKeyboard
 * html tidy
 * LambdaExpression
