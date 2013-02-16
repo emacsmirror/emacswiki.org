@@ -24,5 +24,7 @@ See also:
 
 * EdiffMode - `diff' comparison that you can explore incrementally, with highlighting.
 * UniDiffMode -- Nearly duplicates DiffMode.
+* [https://github.com/mgalgs/diffview-mode diffview-mode] - Side-by-side diff viewer
+
 ----
 CategoryExternalUtilities CategoryModes
