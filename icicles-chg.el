@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue Feb 12 09:21:33 2013 (-0800)
+;; Last-Updated: Fri Feb 15 16:11:34 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 9683
+;;     Update #: 9684
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -86,6 +86,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2013/02/15 dadams
+;;     icicle-pp-eval-expression: Bind deactivate-mark to nil, like fix for Emacs bug #13724.
 ;; 2013/02/04 dadams
 ;;     Removed all autoload cookies.
 ;; 2013/01/06 dadams
