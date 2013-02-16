@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Sep  3 13:45:40 1999
 ;; Version: 21.0
-;; Last-Updated: Fri Dec 28 10:18:16 2012 (-0800)
+;; Last-Updated: Fri Feb 15 16:12:48 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 209
+;;     Update #: 211
 ;; URL: http://www.emacswiki.org/pp%2b.el
 ;; Doc URL: http://emacswiki.org/EvaluatingExpressions
 ;; Keywords: lisp
@@ -49,6 +49,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/02/15 dadams
+;;     pp-eval-expression:
+;;       Bind deactivate-mark to nil, like fix for Emacs bug #13724.
 ;; 2012/07/22 dadams
 ;;     pp-display-expression:
 ;;       Do not try to select old-window if it is no longer live.
@@ -179,8 +182,9 @@ Emacs-Lisp mode completion and indentation bindings are in effect."
       ;; propagate that change to the global binding.
       (unless (eq old-value new-value)
 	(setq debug-on-error  new-value))))
-  (let ((print-length  pp-eval-expression-print-length)
-	(print-level   pp-eval-expression-print-level))
+  (let ((print-length     pp-eval-expression-print-length)
+	(print-level      pp-eval-expression-print-level)
+        (deactivate-mark  nil))
     (cond (insert-value
            (message "Evaluating...done. Value inserted.")
            (setq insert-value  (prefix-numeric-value insert-value))
