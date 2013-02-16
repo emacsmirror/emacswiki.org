@@ -1,0 +1,4 @@
+When I see "rfringe" I think "right fringe".  What's important is apparently that this is ''buffer''-specific, i.e., that it is relative to a buffer, not just that it is "relative".  Consider changing the "r" to "b" for buffer.  Just a suggestion.
+
+-- DrewAdams 2013-02-16 23:42 UTC
+
