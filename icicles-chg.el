@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Feb 15 16:11:34 2013 (-0800)
+;; Last-Updated: Sat Feb 16 15:18:32 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 9684
+;;     Update #: 9725
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -86,6 +86,17 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2013/02/16 dadams
+;;     Renamed: icicle-find-file(-other-window) to icicle-find-file-no-search(-other-window).
+;;     Added defaliases for (new) icicle-find-file(-other-window), depending on Emacs version.
+;;     icicle-file(-other-window): Corrected current-prefix-arg binding.
+;;     icicle-find-file-absolute(-other-window): Prefix arg on candidate means open it read-only.
+;;     icicle-find-file-no-search(-other-window0: Include icicle-mouse-candidate-action in memq test.
+;;     icicle-find-file-read-only*: Use icicle-find-file-no-search*, not icicle-find-file*.
+;;     icicle-find-file-of-content(-other-window): Restore correct read-only status after reverting.
+;;     *-dired-(saved-file-candidates|project)-other-window, *-find-file-no-search(-other-window)
+;;      *-find-file-read-only-other-window, *-((recent|locate)-file(-no-symlinks)|locate)-other-window:
+;;         Put property icicle-Completions-window-max-height (forgot).
 ;; 2013/02/15 dadams
 ;;     icicle-pp-eval-expression: Bind deactivate-mark to nil, like fix for Emacs bug #13724.
 ;; 2013/02/04 dadams
