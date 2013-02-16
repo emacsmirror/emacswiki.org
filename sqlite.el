@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: mié feb 13 11:12:31 2013 (-0300)
 ;; Version: 
-;; Last-Updated: sáb feb 16 18:36:11 2013 (-0300)
+;; Last-Updated: sáb feb 16 18:48:21 2013 (-0300)
 ;;           By: Christian
-;;     Update #: 84
+;;     Update #: 88
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -26,6 +26,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 16-Feb-2013    Christian  
+;;    Last-Updated: sáb feb 16 18:39:10 2013 (-0300) #84 (Christian)
+;;    `sqlite-init' has filename expansion. You don't need to write the absolute path of the file.
 ;; 16-Feb-2013    Christian  
 ;;    Last-Updated: sáb feb 16 18:27:16 2013 (-0300) #78 (Christian)
 ;;    `sqlite-query' adds  ";" at the end of the query for you.
@@ -110,7 +113,7 @@ Example:
 
 (defun sqlite-unregister-descriptor (descriptor)
   "Remove the descriptor from the list of process buffers `sqlite-process-alist'."
-  (assq-delete-all descriptor sqlite-process-alist)
+  (setq sqlite-process-alist (assq-delete-all descriptor sqlite-process-alist))
   )
 
 					; ----------------------------------------
@@ -121,8 +124,9 @@ Example:
 This start the process given by `sqlite-program' and prepare it for queries.
 
 Returns the sqlite process descriptor, a unique id that you can use to retrieve the process or send a query. "
-  (let ((process-buffer (concat "sqlite-process" (number-to-string sqlite-descriptor-counter))) ; name of the process buffer 
+  (let ((process-buffer (concat "sqlite-process" (number-to-string sqlite-descriptor-counter))) ; name of the process buffer 	
 	)    
+    (setq db-file (expand-file-name db-file))
 
     (apply 'make-comint 
 	   process-buffer
@@ -160,6 +164,7 @@ If NOERROR is t, then will not signal an error when the DESCRIPTOR is not regist
 	  t
 	  )
       (progn
+	(sqlite-unregister-descriptor descriptor) ;; We unregister the descriptor nevertheless
 	(unless noerror
 	  (error "Process buffer doesn't exists for that descriptor")
 	  )
