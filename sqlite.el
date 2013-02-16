@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: mié feb 13 11:12:31 2013 (-0300)
 ;; Version: 
-;; Last-Updated: sáb feb 16 18:48:21 2013 (-0300)
+;; Last-Updated: sáb feb 16 19:23:35 2013 (-0300)
 ;;           By: Christian
-;;     Update #: 88
+;;     Update #: 95
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -26,6 +26,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 16-Feb-2013    Christian  
+;;    Last-Updated: sáb feb 16 19:22:25 2013 (-0300) #93 (Christian)
+;;    Some problems with the first query are now solved!
 ;; 16-Feb-2013    Christian  
 ;;    Last-Updated: sáb feb 16 18:39:10 2013 (-0300) #84 (Christian)
 ;;    `sqlite-init' has filename expansion. You don't need to write the absolute path of the file.
@@ -137,12 +140,16 @@ Returns the sqlite process descriptor, a unique id that you can use to retrieve 
     (sqlite-register-descriptor sqlite-descriptor-counter process-buffer db-file)
     (setq sqlite-descriptor-counter (+ sqlite-descriptor-counter 1))
 
+    (accept-process-output (get-buffer-process process-buffer)) ;; Wait for the results and for first echo
     ;; We use CSV for parsing results.
     (comint-redirect-send-command-to-process ".mode csv" sqlite-output-buffer (get-buffer-process process-buffer) nil t)
     ;; We remove prompt.
     (comint-redirect-send-command-to-process ".prompt \"\"" sqlite-output-buffer (get-buffer-process process-buffer) nil t)
+    (accept-process-output (get-buffer-process process-buffer) 1) ;; Wait for the results and for first echo
     ;; Add headers.
     (comint-redirect-send-command-to-process ".headers on" sqlite-output-buffer (get-buffer-process process-buffer) nil t)
+    (accept-process-output (get-buffer-process process-buffer) 1) ;; Wait for the results and for first echo
+
     (get-buffer-create sqlite-output-buffer)
     )
   
