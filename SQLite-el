@@ -9,32 +9,40 @@ You can download it from [[Lisp:sqlite.el]] page.
 
 This interface has the following features:
 
-* Can connect to only one database. Maybe in near future can let you have more than one connection.
+* Can connect to various database files. 
 * No output buffer shown. The output buffer is hidden when using the interface.
+* SQLite errors match.
+* Files doesn't need to be in absolute path. Is expanded using <code>expand-file-name</code> command.
 
 == Problems ==
-The library has some problems that it will be corrected in a near future: 
+The library ''had'' some problems that it ''has been'' corrected: 
 
-# The first query gives you the sqlite welcome and version. This is the first text that sqlite program prompts when you connect. 
-# There is only one connection, you can't mannage more!
+# *Corrected!* The first query gives you the sqlite welcome and version. This is the first text that sqlite program prompts when you connect. 
+# *Corrected!* There is only one connection, you can't mannage more!
 # The output buffer has not been erased, just hidden.
-# Error manipulation is still under development.
+# Process buffers is created for each time you call <code>sqlite-init</code>.
+# *Corrected!* Error manipulation is still under development.
 
 ''The first problem is the most important one'', beacuse whe you use this library you'll have to consider it!
 
 == API Elements ==
 
+The API works with three basic commands. We use a number called "descriptor" for uniquely referencing each connection. The commands <code>mysql-init</code> give you a unique descriptor.
+
+
 You can find the following elements:
 
 Variables:
 
-* `sqlite-db' The complete path of the database file. 
+You may find this variable important, but for working is unnecessary.
+
+* `sqlite-process-alist' : This is an alist in which the key is the descriptor number, and the value is a list with two elements: the process buffer and the filename opened.
 
 Functions:
 
-* <code>sqlite-init</code> For starting the program. It use `sqlite-db' for opening the database file.
-* <code>sqlite-query</code> For sending a query or a sqlite ".something" command.
-* <code>sqlite-bye</code>. For closing the sqlite program sending a <code>.quit</code> command.
+* <code>(sqlite-init file-path)</code> : For starting the sqlite program with its file. It returns a new unique descriptor. `file-path' can be a relative or absolute path of the sqlite database file.
+* <code>(sqlite-query descriptor query-string)</code> : For sending a query or a sqlite ".something" command. 
+* <code>(sqlite-bye desriptor)</code> : For closing the sqlite program sending a <code>.quit</code> command.
 
 == Usage ==
 
@@ -44,17 +52,16 @@ An example of usage:
 
     (require 'sqlite)
     
-    (let ((sqlite-db "/path/to/db/file.sqlite"))
-      (sqlite-init)) ;; Starting the sqlite program 
-
-    (sqlite-query "") ;; For correcting the first problem... this will be unnecessary in near future.
-    (setq results (sqlite-query "SELECT * FROM Persona;"))
-
-    (sqlite-bye) ;; Closing the sqlite program
-
-Take a look at the first query, this is because of the first problem explained before: it gives the first sqlite program prompt. We don't want that so we just call <code>sqlite-query</code> with nothing for ignoring it. In near future it will be unnecessary.
+    (let ((descriptor (sqlite-init "~/mydb.sqlite")))
+        (setq res (sqlite-query descriptor "SELECT * FROM persona"))
+        (sqlite-bye descriptor)
+        res
+     )
 
 
+This example will try to open mydb.sqlite in your home directory and send the SQL query. You can also send <code>(sqlite-query descriptor ".tables")</code> for listing the tables.
+
+You can replace the `descriptor' temporal variable with the number when you are trying this in the scratch buffer.
 
 ----
 [[SQLite]] CategorySql
