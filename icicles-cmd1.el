@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Feb 10 14:33:57 2013 (-0800)
+;; Last-Updated: Fri Feb 15 16:10:00 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 25438
+;;     Update #: 25439
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -616,8 +616,9 @@ customize option `icicle-top-level-key-bindings'."
       ;; propagate that change to the global binding.
       (unless (eq old-value new-value)
         (setq debug-on-error  new-value))))
-  (let ((print-length  icicle-pp-eval-expression-print-length)
-        (print-level   icicle-pp-eval-expression-print-level))
+  (let ((print-length     icicle-pp-eval-expression-print-length)
+        (print-level      icicle-pp-eval-expression-print-level)
+        (deactivate-mark  nil))
     (cond (insert-value
            (message "Evaluating...done.  Value inserted.")
            (setq insert-value  (prefix-numeric-value insert-value))
