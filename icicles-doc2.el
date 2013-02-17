@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Feb 16 15:59:05 2013 (-0800)
+;; Last-Updated: Sat Feb 16 20:19:31 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 29248
+;;     Update #: 29259
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -6459,134 +6459,11 @@
 ;;  option `icicle-functions-to-redefine' are typically bound in
 ;;  keymaps other than the global map.
 ;;
-;;  Here are some other Icicles commands that you might want to bind
-;;  to keys in Icicle mode - they are not bound by Icicles (except to
-;;  menu items):
-;;
-;;  `clear-option' (alias) - Set value of binary option to `nil'
-;;  `icicle-add-buffer-candidate' -
-;;                          Add buffer to those always shown
-;;  `icicle-add-buffer-config' - Add to `icicle-buffer-configs'
-;;  `icicle-add-entry-to-saved-completion-set' -
-;;                          Add a completion candidate to a saved set
-;;  `icicle-add/update-saved-completion-set' - Add a set to
-;;                          `icicle-saved-completion-sets'
-;;  `icicle-apply'        - Selectively apply function to alist items
-;;  `icicle-apropos'      - Enhanced `apropos' - shows matches etc.
-;;  `icicle-apropos-command' - Enhanced `apropos-command'
-;;  `icicle-apropos-function' - All functions, not just commands
-;;  `icicle-apropos-option' - Only options, not all variables
-;;  `icicle-apropos-variable' - All variables, not just options
-;;  `icicle-apropos-zippy' - Show matching Zippy quotes
-;;  `icicle-bookmark-file-other-window' - Jump to file bookmarks
-;;  `icicle-bookmark-dired-other-window'  - Jump to Dired bookmarks
-;;  `icicle-bookmark-gnus-other-window' - Jump to Gnus bookmarks
-;;  `icicle-bookmark-info-other-window' - Jump to Info bookmarks
-;;  `icicle-bookmark-local-file-other-window' - Jump to local files
-;;  `icicle-bookmark-non-file-other-window' - Jump to buffers
-;;  `icicle-bookmark-region-other-window' - Jump to region bookmarks
-;;  `icicle-bookmark-remote-file-other-window' - Jump to remote files
-;;  `icicle-bookmark-url-other-window' - Jump to URL bookmarks
-;;  `icicle-bookmark-w3m-other-window' - Jump to W3M bookmarks
-;;  `icicle-buffer-config' - Pick options for Icicles buffer commands
-;;  `icicle-buffer-list'  - Choose a list of buffer names
-;;  `icicle-choose-faces' - Choose a list of face names
-;;  `icicle-choose-invisible-faces' - Choose invisible face names
-;;  `icicle-choose-visible-faces' - Choose visible face names
-;;  `icicle-clear-history' - Clear minibuffer histories
-;;  `icicle-color-theme'  - Change color theme
-;;  `icicle-completing-yank' - Yank text using completion
-;;  `icicle-customize-face' - Multi-command `customize-face'
-;;  `icicle-customize-icicles-group' -
-;;                          Customize Icicles options and faces
-;;  `icicle-delete-file'  - Delete a file or directory
-;;  `icicle-delete-windows' - Delete all windows for a buffer
-;;  `icicle-describe-process' - Describe a system process
-;;  `icicle-doc'          - Display doc of function, variable, or face
-;;  `icicle-doremi-increment-variable+' -
-;;                          Increment a variable using Do Re Mi
-;;  `icicle-face-list'    - Choose a list of face names
-;;  `icicle-file-list'    - Choose a list of file names
-;;  `icicle-font'         - Change the frame font
-;;  `icicle-frame-bg'     - Change the frame background color
-;;  `icicle-frame-fg'     - Change the frame foreground color
-;;  `icicle-fundoc'       - Display the doc of a function
-;;  `icicle-hide-faces'   - Hide a set of faces you choose
-;;  `icicle-hide-only-faces' - Hide a set of faces; show all others
-;;  `icicle-increment-option' - Increment numeric options (Do Re Mi)
-;;  `icicle-increment-variable' - Increment variables (Do Re Mi)
-;;  `icicle-Info-virtual-book' - Open Info on a virtual book
-;;  `icicle-insert-thesaurus-entry' -
-;;                          Insert a thesaurus entry
-;;  `icicle-keyword-list' - Choose a list of keywords (regexps)
-;;  `icicle-locate-file'  - Open a file located anywhere
-;;  `icicle-minibuffer-help' - Show Icicles minibuffer help
-;;  `icicle-plist'        - Show symbols, property lists
-;;  `icicle-recent-file'  - Open a recently used file
-;;  `icicle-recompute-shell-command-candidates' - Update from PATH
-;;  `icicle-remove-buffer-candidate' -
-;;                          Remove buffer from those always shown
-;;  `icicle-remove-buffer-config'- Remove from `icicle-buffer-configs'
-;;  `icicle-remove-entry-from-saved-completion-set' -
-;;                          Remove a candidate from a saved set
-;;  `icicle-remove-file-from-recentf-list' - Remove from recent files
-;;  `icicle-remove-saved-completion-set' - Remove a set from
-;;                          `icicle-saved-completion-sets'
-;;  `icicle-reset-option-to-nil' -
-;;                          Set value of binary option to `nil'
-;;  `icicle-save-string-to-variable' -
-;;                          Save text for use with `C-='
-;;  `icicle-search-all-tags-bookmark' - Search bookmarks that have all
-;;                                      of a given set of tags
-;;  `icicle-search-all-tags-regexp-bookmark' - Search bookmarks all of
-;;                                     whose tags match a given regexp
-;;  `icicle-search-autofile-bookmark' - Search autofile bookmarks only
-;;  `icicle-search-bookmark' - Search bookmarks
-;;  `icicle-search-bookmark-list-bookmark' - bookmark-list bookmarks
-;;  `icicle-search-bookmarks-together' - Search bookmarks together
-;;  `icicle-search-buff-menu-marked' - Search marked buffers, in order
-;;  `icicle-search-buffer' - Search multiple buffers
-;;  `icicle-search-char-property' - Search for character properties
-;;  `icicle-search-dired-bookmark' - Search Dired bookmarks
-;;  `icicle-search-dired-marked-recursive' - Search marked files
-;;  `icicle-search-file'  - Search multiple files
-;;  `icicle-search-file-bookmark' - Search file bookmarks
-;;  `icicle-search-gnus-bookmark' - Search Gnus bookmarks
-;;  `icicle-search-ibuffer-marked' - Search marked buffers in Ibuffer
-;;  `icicle-search-info-bookmark' - Search Info bookmarks
-;;  `icicle-search-local-file-bookmark' - Search local file bookmarks
-;;  `icicle-search-man-bookmark' - Search `man'-page bookmarks
-;;  `icicle-search-non-file-bookmark' - Search non-file bookmarks
-;;  `icicle-search-overlay-property' - Search for overlay properties
-;;  `icicle-search-pages' - Search Emacs pages (delimited by ^L chars)
-;;  `icicle-search-paragraphs' - Search Emacs paragraphs
-;;  `icicle-search-region-bookmark' - Search bookmarked regions
-;;  `icicle-search-remote-file-bookmark' - Search remote files
-;;  `icicle-search-sentences' - Search using sentences as contexts
-;;  `icicle-search-some-tags-bookmark' - Search bookmarks that have
-;;                                       some of a given set of tags
-;;  `icicle-search-some-tags-regexp-bookmark' - Search bookmarks some
-;;                                  of whose tags match a given regexp
-;;  `icicle-search-specific-buffers-bookmark' - Search bookmarks for a
-;;                                              given set of buffers
-;;  `icicle-search-specific-files-bookmark' - Search bookmarks for a
-;;                                            given set of files
-;;  `icicle-search-thing' - Search thing-at-point-defined things
-;;  `icicle-search-this-buffer-bookmark' - Search bookmarks in buffer
-;;  `icicle-search-url-bookmark' - Search URL bookmarks
-;;  `icicle-search-w3m-bookmark' - Search W3M bookmarks
-;;  `icicle-search-xml-element' - Search the contents of XML elements
-;;  `icicle-search-xml-element-text-node' - Search XML text nodes
-;;  `icicle-select-window' - Select a window by its buffer name
-;;  `icicle-send-signal-to-process' - Send a signal to a process
-;;  `icicle-set-option-to-t' - Set value of binary option to `t'
-;;  `icicle-sexp-list'    - Choose a list of past or new sexps
-;;  `icicle-show-faces'   - Show invisible faces you choose
-;;  `icicle-show-only-faces' - Show some invisible faces; hide others
-;;  `icicle-string-list' - Choose a list of past or new strings
-;;  `icicle-toggle-option' - Toggle the value of a binary option
-;;  `icicle-vardoc'       - Display the doc of a variable
-;;  `toggle' (alias)      - Toggle the value of a binary option
+;;  There are many Icicles commands that are not bound to any keys by
+;;  default.  You might want to bind some of them to keys in keymap
+;;  `icicle-mode-map', i.e., in Icicle mode.  For a list of top-level
+;;  Icicles commands, see the Commentary headers of files
+;;  `icicles-cmd1.el' and `icicles-cmd2.el'.
 ;;
 ;;(@* "Minibuffer Bindings")
 ;;  ** Minibuffer Bindings **
