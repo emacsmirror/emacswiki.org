@@ -1,15 +1,13 @@
 ;;; oracle-table2entity-4java.el --- oracle table2entity for java   -*- coding:utf-8 -*-
 
-;; Description:oracle table2entity for java
-;; Last Updated: Joseph 2011-11-20 11:36:03 星期日
+;; Last Updated: 纪秀峰 2013-02-17 20:57:52 星期日
 ;; Created: 2011-09-18 21:44
 ;; Author: 孤峰独秀  jixiuf@gmail.com
-;; Maintainer:  孤峰独秀  jixiuf@gmail.com
 ;; Keywords: oracle java entity
 ;; URL: http://www.emacswiki.org/emacs/oracle-table2entity-4java.el
-;; https://github.com/jixiuf/sqlparser
+;;      https://github.com/jixiuf/sqlparser
 
-;; Copyright (C) 2011, 孤峰独秀, all rights reserved.
+;; Copyright (C) 2011~2012 纪秀峰(Joseph) all rights reserved.
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -25,7 +23,8 @@
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ;;; Commentary:
-
+;;
+;; require oracle-query.el
 ;; screencast:
 ;; http://screencast-repos.googlecode.com/files/emacs-sqlserver-oracle-table2entity.mp4.bz2
 ;;  call command : (oracle-table2entity-4java-interactively)
@@ -45,8 +44,6 @@
 ;;  `otej-oracle-type-java-type-alist'
 ;;    key must be upcase.
 ;;    default = (quote (("CHAR" . "String") ("VARCHAR2" . "String") ("NCHAR" . "String") ("NVARCHAR2" . "String") ("DATE" . "String") ...))
-
-;;; Code:
 
 (require 'oracle-query)
 (require   'java-mode nil t)
@@ -101,7 +98,7 @@ key 是db类型，value 是java 中对应类型.要求key大写"
 (defun camelize (s &optional separator )
   "Convert under_score string S to CamelCase string."
   (mapconcat 'identity (mapcar
-                        '(lambda (word) (capitalize (downcase word)))
+                        #'(lambda (word) (capitalize (downcase word)))
                         (if separator (split-string s "_") (list s))
                         ) ""))
 
@@ -223,7 +220,6 @@ key 是db类型，value 是java 中对应类型.要求key大写"
   (unless (and sqlplus-connection
                (equal (process-status (nth 0  sqlplus-connection)) 'run))
     (setq sqlplus-connection (call-interactively 'oracle-query-create-connection)))
-
   (dolist (tablename  (otej-query-all-tablename-in-db))
     (let  ((classname  (otej-tablename2classname tablename) )
            (setter-getters (otej-generate-all-setter-getter-4table tablename)))
