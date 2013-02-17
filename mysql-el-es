@@ -2,7 +2,7 @@
 Lisp:mysql.el trabaja en conjunción con el cliente de !MySQL para poder ejecutar consultas desde [[Elisp]] en una base de datos.
 
 
-=== Cómo usarlo ===
+== Cómo usarlo ==
 
 # Crear una conección usando: <code> (setq mi-mysql (mysql-connect)) </code>
 # Luego, hacer la consulta SQL: <code> (mysql-query sql mi-mysql) </code>
@@ -22,7 +22,7 @@ El parámetro opcional `func' es una función que se ejecuta al terminar la cons
 * `mysql-timeout' cuando la consulta dura más tiempo que el valor de esta variable, la consulta será detenida. Si deseas mucho tiempo, cambia esta variable antes de realizar la consulta y luego restáuralo por el valor original al finalizar la función `func'.
 
 
-=== Algunas Elementos de la API  ===
+== Algunas Elementos de la API  ==
 
 Funciones y macros:
 
@@ -41,7 +41,7 @@ Variables importantes:
 * `mysql-options' Opciones del sub-proceso. Por defecto es <code>"-s"</code>.
 * `mysql-program' Nombre del program cliente a usar. Por defecto es <code>"mysql"</code>.
 
-=== Ejemplos ===
+== Ejemplos ==
 Un ejemplo de aplicación es [[Bibus]], un manejador de referencias realizado por [[Ye_Wenbin]].
 
 Para probar en el buffer borrador(scratch) o para usar en tu propio proyecto:
@@ -53,7 +53,7 @@ Para probar en el buffer borrador(scratch) o para usar en tu propio proyecto:
       )
 
 
-=== Problemas ===
+== Problemas ==
 
 Existen problemas al querer conectar con otro host, ésta librería no provee en su API ninguna variable o facilidad para conectar con una base de datos remota. 
 Para definir el host deberás cambiar la variable `mysql-options' la cual deberá contener el parámetro <code>-s</code> : <code> (setq mysql-options "-s -h mi.host.com")</code>.
