@@ -1,3 +1,4 @@
+[[en:CategorySql]]
 * SqlMode -- Páginas relacionadas a este modo mayor:
 
 ** SqlComplete
@@ -18,12 +19,12 @@
 * OracleOnWindows -- Cosas a tener en cuenta.
 * PostGreSQL -- Una interfaz a nivel de Sockets para Emacs + cosas relacionadas a PostGreSQL.
 * [[MySql-es]] -- Acceder a MySQL desde emacs.
-* MySqlHelp -- alist and completion function for MySQL's `mysql' help facility e.g. mysql> help contents
-* http://lispsql.sourceforge.net Mysql front-end for Emacs, access mysql without tying up your shell prompt, and many other useful mysql things.  
-* PlsqlMode -- support for editing PL/SQL code
-* SqlEdMode -- alternative support for editing PL/SQL code
-* [[SQLite]] -- things for the sqlite database library
-* ModeCompileSql -- a different approach for executing SQL scripts.
+* MySqlHelp -- alist y completado de funciones para la ayuda del cliente MySQL <code>mysql</code>(o sea, para el comando <code>mysql> help contents</code>).
+* http://lispsql.sourceforge.net Front-end de MySQL para Emacs. Acceder MySQL sin enlazar el shell y muchas otras cosas útiles.
+* PlsqlMode -- Soporte para editar código PL/SQL.
+* SqlEdMode -- Soporte alternativo para editar código PL/SQL.
+* [[SQLite-es]] -- Cosas acerca de la librería de bases de datos SQLite.
+* ModeCompileSql -- Una aproximación diferente para ejecutar scripts SQL.
 
 == Scripts Relacionados ==
 
@@ -41,3 +42,5 @@
 * Lisp:oracle-table2entity-4csharp.el   -- Generar entidades para csharp desde tablas de Oracle. [2011-09-27 14:26] 
 
 
+----
+MapaDelSitio
