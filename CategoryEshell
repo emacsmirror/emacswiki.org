@@ -1,6 +1,6 @@
-An entire shell by JohnWiegley written in EmacsLisp.  Great stuff.  And very useful for people on weird operating systems without usable shells.  Also known as [::Eshell]. It was added to Emacs 21.
+An entire shell by JohnWiegley, now maintained by [[aidalgol|Aidan Gauland]] written in EmacsLisp.  Great stuff, and very useful for people on weird operating systems without usable shells.  It was added to Emacs 21.
 
-Unfinished manual:
+Work-in-progress manual:
 
 * [http://www.gnu.org/software/emacs/manual/html_mono/eshell.html Eshell: The Emacs Shell]
 
