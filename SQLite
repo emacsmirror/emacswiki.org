@@ -1,3 +1,4 @@
+[[es:SQLite-es]]
 The SQLite library creates and maintains a database in a single file with basic SQL commands to add data and query.  A front-end "sqlite3" program can be used interactively and for scripting.  Read more at 
 
 : http://www.sqlite.org/
