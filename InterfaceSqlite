@@ -1,0 +1,22 @@
+[[en:SqliteInterace]]
+El item 3 en http://mysite.verizon.net/mbcladwell/ ( de Mortimer B. Cladwell III) explica cómo desarrollar una interfaz para SQLite usando [[Elisp]].
+
+Esta interfaz trabaja creando un proceso SQLite para abrir el archivo de base de datos y así poder enviar y recibir las consultas SQL y su resultado.
+
+== JasonFruit Script ==
+
+JasonFruit creó un script que, por alguna razón, no se tiene acceso. Dejo asentado el link que él dejó por si se reestablece en un futuro: http://www.jasonfruit.com/page/emacs_sqlite_and_widgets.
+
+Su script mejora el de Cladwell en los siguientes items:
+
+* No emite bufferes temporales.
+* Puede "conectarse" a más de una base de datos.
+* Retora todas las filas del conjunto de resultados.
+
+== SQLite.el ==
+
+Como una solución temporal, en febrero del 2013 se creó un nuevo fork de JsonFruit llamado [[SQLite-el]] debido a la imposibilidad de obtener su script.
+No posee todas sus características, pero por lo menos se puede utilizar para conectarse y consultar la base de datos. Puedes descargarlo usando Lisp:sqlite.el.
+
+----
+[[CategoríaSQL]] [[SQLite]]
