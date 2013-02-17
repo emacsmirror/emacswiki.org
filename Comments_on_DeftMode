@@ -1,0 +1,19 @@
+Hi.  When I use deft, it correctly shows all of my files, but doesn't filter at all once I start typing text.  I can see what I am typing showing up after "Deft: " on the first line, but the list of files never changes.
+
+GNU Emacs 24.2.1 (i386-mingw-nt6.1.7601)
+ of 2012-08-28 on MARVIN
+
+My config:
+
+(require 'deft)
+(setq deft-extension "txt")
+(setq deft-directory "~/../../notes")
+(setq deft-use-filename-as-title t)
+(global-set-key [f8] 'deft)
+
+Any ideas?
+
+Thanks!
+
+-- mattm 2013-02-17 06:30 UTC
+
