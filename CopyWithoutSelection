@@ -1,10 +1,10 @@
-Some years ago, I ran GNU Emacs in Cygwin on a Windows machie. So there must be some kind of non-Emcacs programs, such as Microsoft Word, Excel, Lotus Notes and so on. So I used to copy and paste stuffs between them.
+Some years ago, I ran GNU Emacs in Cygwin on a Windows machine. So there must be some kind of non-Emacs programs, such as Microsoft Word, Excel, Lotus Notes and so on. So I used to copy and paste stuff between them.
 
-It's pretty boring to copy and paste so many stuffs all the time. Because select what you want accurately is the most time-consuming.So I decided to leverage GNU Emacs to do it for me.
+It's pretty boring to copy and paste so much stuff all the time. Because selecting what you want accurately is the most time-consuming. So I decided to leverage GNU Emacs to do it for me.
 
-The simplest way to do this is just to put your point on the stuff and GNU Emacs will take over all the others. 
+The simplest way to do this is just to put your point on the stuff and GNU Emacs will take over all the others.
 
-As time went on, I have very much daily work in shell-mode. It made me to rise a new idea, that Emacs would even paste for me. Paste to the mark.
+As time went on, I do a lot of daily work in shell-mode. It gave me a new idea, that Emacs would even paste for me. Paste to the mark.
 
 = Introduction =
 
@@ -159,7 +159,7 @@ Have you see Lisp:thing-edit.el ?  -- AndyStewart
 ==Comment==
 -- David Young
 
-Thanks for your advise. It's cool. I evaluated thing-edit.el. Yeah I actually modified some of my functions to leverage the thingatpt.el. I love to leverage build-in functions as much as possible than to write my own ones. But anyway, it does not give me what copy-string could do fo me. 
+Thanks for your advice. It's cool. I evaluated thing-edit.el. Yeah I actually modified some of my functions to leverage the thingatpt.el. I love to leverage build-in functions as much as possible than to write my own ones. But anyway, it does not give me what copy-string could do fo me. 
 
 I used to do my daily work in shell mode. So I used to need some information to be copied to the command line. For example something like this, when I issue *runmqsc QMCOD* in the command line, I would get a screen like this:
 
