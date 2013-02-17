@@ -1,11 +1,11 @@
 ;;; oracle-query.el --- execute sql select using sqlplus. -*- coding:utf-8 -*-
 
-;; Copyright (C) 2011 孤峰独秀
+;; Copyright (C) 2011~2012 纪秀峰(Joseph)
 
-;; Last Updated: Joseph 2011-10-03 14:03:54 星期一
+;; Last Updated: Joseph 2012-01-15 21:33:39 星期日
 ;; Created: 2011-7-31
 ;; Version: 0.1.4
-;; Author: 孤峰独秀  jixiuf@gmail.com
+;; Author: 纪秀峰(Joseph)  jixiuf@gmail.com
 ;; Keywords: oracle sql emacs
 ;; Filename: oracle-query.el
 ;; Description:execute sql select using sqlplus.
@@ -43,9 +43,9 @@
 ;; the normal way to use oracle-query.el is :
 ;; 1:
 ;; (defvar sqlplus-connection nil)
-;; (unless (and sqlplus-connection
-;;               (equal (process-status (nth 0  sqlplus-connection)) 'run))
-;;    (setq sqlplus-connection (call-interactively 'oracle-query-create-connection)))
+;; (unless (oracle-query-connection-alive-p c)
+;;   (setq sqlplus-connection (call-interactively 'oracle-query-create-connection)))
+;;
 ;; 2:
 ;;   (oracle-query "select empno from emp" sqlplus-connection)
 ;; 3:
@@ -68,9 +68,6 @@
 
 (defvar oracle-query-default-connection nil)
 
-(defvar oracle-query-heading nil
-  "when set heading on ,the result of heading will be stored in the variable")
-
 (defvar oq-timeout-wait-for-result 300
   "waiting 300s for sql result returned.")
 
@@ -84,7 +81,7 @@
 
 
 (defun oq-parse-result-as-list (raw-result)
-  (let (result row index-of-result)
+  (let (result row index-of-result oracle-query-heading)
     (with-temp-buffer
       (insert raw-result)
       (goto-char (point-min))
@@ -108,7 +105,7 @@
           (setq result (append result (list row))))
         (forward-line) (beginning-of-line)
         (setq index-of-result (1+ index-of-result)))
-      )result))
+      )(cons oracle-query-heading result)))
 
 ;; (defun oq-build-connection-string()
 ;;   " default:sqlplus scott/tiger@localhost:1521/orcl"
@@ -154,18 +151,36 @@ created process"
           (oracle-query-fetch-username-from-connect-string connect-string))
     ))
 
+(defun oracle-query-connection-alive-p(connection)
+  "test whether the connection is alive."
+  (and connection
+       (listp connection)
+       (processp (car connection))
+       (bufferp (nth 1 connection))
+       (buffer-live-p (nth 1 connection))
+       (equal (process-status (car connection)) 'run)))
+
 ;;;###autoload
-(defun oracle-query-close-connection(sqlplus-connection)
-  "close connection.kill sqlplus process and buffer ."
-  (kill-process (nth 0 sqlplus-connection))
-  (kill-buffer (nth 1 sqlplus-connection))
-  (setq sqlplus-connection nil)
+(defun oracle-query-close-connection(connection)
+  "close connection.kill oracle process and buffer ."
+  (when (oracle-query-connection-alive-p connection)
+    (process-send-string (car connection)  "exit\n"))
+  (sleep-for 0.1)
+  (when (oracle-query-connection-alive-p connection)
+    (kill-process (car connection))
+    (kill-buffer (nth 1 connection)))
   )
+
 
 ;;(oracle-query "select empno from emp")
 ;; (oracle-query "select empno from emp" (oracle-query-create-connection "scott/tiger"))
 ;;;###autoload
 (defun oracle-query (sql &optional oracle-query-connection)
+  "execute sql using `sqlplus' ,and return the result of it."
+  (cdr (oracle-query-with-heading sql oracle-query-connection)))
+
+
+(defun oracle-query-with-heading (sql &optional oracle-query-connection)
   "execute sql using `sqlplus' ,and return the result of it."
   (let( (connection oracle-query-connection) process)
     (unless connection
@@ -196,13 +211,5 @@ created process"
           (oq-parse-result-as-list (buffer-substring start end)))))))
 
 
-(defun oracle-query-with-heading (sql &optional oracle-query-connection)
-  "execute sql using `sqlplus' ,and return the result of it."
-  (let ((result (oracle-query sql oracle-query-connection)))
-    (cons oracle-query-heading result)))
-
-
 (provide 'oracle-query)
 ;;; oracle-query.el ends here
-
-
