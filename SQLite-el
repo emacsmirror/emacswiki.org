@@ -17,11 +17,11 @@ This interface has the following features:
 == Problems ==
 The library ''had'' some problems that it ''has been'' corrected: 
 
-# *Corrected!* The first query gives you the sqlite welcome and version. This is the first text that sqlite program prompts when you connect. 
-# *Corrected!* There is only one connection, you can't mannage more!
+# '''Corrected!''' The first query gives you the sqlite welcome and version. This is the first text that sqlite program prompts when you connect. 
+# '''Corrected!''' There is only one connection, you can't mannage more!
 # The output buffer has not been erased, just hidden.
 # Process buffers is created for each time you call <code>sqlite-init</code>.
-# *Corrected!* Error manipulation is still under development.
+# '''Corrected!''' Error manipulation is still under development.
 
 ''The first problem is the most important one'', beacuse whe you use this library you'll have to consider it!
 
