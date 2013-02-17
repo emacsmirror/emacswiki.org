@@ -1,0 +1,104 @@
+[[en:mobileorg]]
+!MobileOrg es un applet para Android e iPhone que permite mantener entradas de OrgMode en tu teléfono o tablet. 
+
+Puedes encontrarlo en su sitio oficial en http://mobileorg.ncogni.to/. Para Android, https://github.com/matburt/mobileorg-android/wiki.
+
+También existe una página en la info del OrgMode: http://orgmode.org/manual/MobileOrg.html
+
+== Estructura del Funcionamiento ==
+El funcionamiento se basa en la sincronización de tres elementos:
+
+* Una PC o similar con Emacs
+* Un servidor de archivos, puede ser Dropbox o la misma PC con Webdav o SSH/SCP habilitado.
+* Un dispositivo móvil con !MobileOrg
+
+En el caso de Dropbox, Emacs copia todos los archivos originales y genera archivos escenciales para !MobileOrg a una carpeta accesible por Dropbox, el cual se actualiza en Internet. El dispositivo móvil accede a la carpeta desde el acceso a Internet de Dropbox y descarga el contenido.
+
+Si se usa Webdav o SSH, es muy parecido. Emacs copia todos los archivos originales en carpeta determinada que usará el dispositivo para acceder directamete. 
+
+== Configuración Inicial ==
+Para configurar inicialmente el ambiente debemos tener en cuenta unas cosas:
+
+# `org-directory' es una variable que indica dónde se encuentran tus archivos org ''por defecto''. Cuando se da un Path que no es absoluto, se busca aquí en la carpeta que apunta aquí.
+# `org-agenda-files' una lista que posee los archivos (y directorios) que se verán en la pantalla de la agenda.
+# `org-agenda-file-regexp' si `org-agenda-files' posee directorios, todos los archivos que coincidan con la expresión regular guardada aquí se mostrarán en la pantalla de la agenda. Por defecto coinciden todos los archivos .org.
+
+Variables que existen en OrgMode pero referentes al uso de !MobileOrg:
+
+# `org-mobile-directory' Es donde la interacción con el teléfono se hace. 
+# `org-mobile-files' Son los archivos y directorios a los que tener en cuenta para actualizarse con tu !MobileOrg. Hay algunos símbolos especiales como por ejemplo <code>org-agenda-files</code>.
+
+== Enviando a MobileOrg ==
+Enviando o "Pushing" consiste de:
+
+# Copia todos los archivos desde `org-mobile-files' a `org-mobile-directory'.
+# Genera automáticamente una serie de archivos Org que le permiten a !MobileOrg su funcionamiento normal:
+** agendas.org 
+** checksum.dat -- Archivo con todas las sumas de verificación para evitar errores en la sincronización.
+** index.org -- Un índice de todos los archivos subidos hasta el momento.
+** mobileorg.org -- Guardará entradas por cada sincronización indicando cuáles son las diferencias entre los archivos Org del móvil y los de la PC.
+# Esperar a que el dispositivo móvil realice la sincronización.
+
+Cuando el dispositivo móvil sincroniza, descarga los archivos desde `org-mobile-directory' y actualiza su información.
+
+== Recibiendo desde MobileOrg ==
+Recibiendo o "Pulling" consiste de:
+
+El móvil realiza las acciones normales de sincronización, ésta también incorpora un paso que es la generación del archivo mobileorg.org que posee los cambios realizados.
+
+En la PC, se debe utilizar M-x org-mobile-pull el cual toma este archivo y lo utiliza para actualizar todos los archivos Org del directorio `org-directory'. 
+
+La actualización puede tener conflictos, por ejemplo: cuando se intenta actualizar un archivo modificado tanto en la PC como en el móvil. 
+
+== Un Escenario de Ejemplo ==
+A modo aclaratorio, se mostrará cómo configurar un escenario de ejemplo:
+
+Supongamos que tenemos una PC con Emacs y un dispositivo móvil con !MobileOrg. No usaremos Dropbox aquí, sino SSH/SCP. Lo importante es hacer que tenga acceso a un directorio, más allá de si éste está en Dropbox, o si usamos Webdav para accederlo.
+
+El directorio que debe ser accesible al celular será en este ejemplo: ~/org-mobile. 
+
+=== Configurando el Ambiente ===
+Este paso lo hacemos una sola vez.
+
+
+'''En la PC:'''
+
+# Seteamos `org-directory' con un directorio a elección. Supongamos con <code>~/directorio-org</code>.
+# Seteamos `org-mobile-directory' con un directorio de exportación. Supongamos con <code>~/org-mobile</code>. 
+# Asignamos unos archivos a `org-agenda-files'.
+
+Podemos hacerlo de dos formas.
+** Abriendo el archivo Org que queremos sincronizar y tecleamos C-c [ (o también M-x org-agenda-file-to-front).
+** Usando la herramienta de customización M-x customize-variable org-agenda-files.
+** Seteándolo manualmente, por ejemplo: <code>(setq org-agenda-files '("un-archivo.org" "otro-archivo.org")</code>.
+
+
+Asegúrese de tener el servidor SSH habilitado.
+
+
+'''En el Móvil:'''
+En el movil debemos configurarlo para que se conecte a nuestra PC. 
+
+Debemos ir al ajustes, seleccionar el modo de sincronización SSH/SCP, y luego configurarlo con los siguientes parámetros:
+
+* Path : Indicar el path absoluto al archivo index.org del directorio de exportación.
+* Configurar los datos de conexión, como usuario, host, puerto, etc.
+
+=== Preparando los Archivos Para el Móvil ===
+Para preparar los archivos debemos usar M-x org-mobile-push. Esto preparará los distintos archivos en `org-agenda-files' para que el móvil los reciba.
+
+En el móvil debemos sincronizar para ver los archivos con todos nuestros "TODOes".
+
+=== Recibiendo los Archivos del Móvil ===
+
+Para recibir los cambios y nuevas capturas desde el móvil, debemos considerar que la PC se lleva la mayor parte ya que puede haber conflictos al sincronizar.
+Por ejemplo: Si se modificó el mismo archivo en el móvil y en la PC antes de sincronizar ¿cuál debe tener prioridad? ¿qué se debe hacer?. Sólo el usuario puede indicar cómo proseguir. 
+Ante este caso, Org presentará un informe indicando las diferencias para que el usuario realice el accionar necesario. El informe se guardará en donde indique la variable `org-mobile-inbox-for-pull'.
+
+
+Para empezar, debemos dar la orden de sincronizar al móvil. Cuando haya finalizado, debemos indicarle a Emacs que comience a actualizar los archivos usando M-x org-mobile-pull.
+
+Este comando intentará hacer todo automáticamente, pero cuando encuentra conflictos presentará el informe.
+
+----
+OrgMode
