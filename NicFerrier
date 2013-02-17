@@ -178,6 +178,23 @@ You need to hash the email to generate the url though, here's how in EmacsLisp:
 (print (md5 (downcase "nic@example.com")) (current-buffer))
 }}}
 
+== How to write a modern browser for Emacs ==
+
+Here's another plan of mine:
+
+* make a small webkit process in C that:
+** starts
+** loops around a long poll request to http://localhost:6003/emacs/
+** responses can cause js to load, keys to be bound to event sends, etc...
+* make a deferring elnode app that can drive the webkit process
+** elisp should define what keys do
+*** elnode receives a //user pressed this key// event and responds with the message to the webkit window
+**** eg: //user pressed o// 
+**** emacs asks url?
+**** when it has url elnode responds to request with //open url x//
+
+Difficult bits about this are how to co-ordinate the ui, it's ok to have emacs being the collection point for data but you want the webkit window on the screen at the same time. Maybe most ui should still be done in the webkit window.
+
 
 == List of various other ELisp bits and pieces ==
 
