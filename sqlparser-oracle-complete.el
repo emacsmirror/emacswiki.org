@@ -3,8 +3,8 @@
 ;; Copyright (C) 2011~2012 纪秀峰(Joseph) all rights reserved.
 
 ;; Created: 2011年07月31日 星期日 20时37分31秒
-;; Last Updated: Joseph 2012-02-04 14:08:20 星期六
-;; Version: 0.1.4
+;; Last Updated: Joseph 2012-03-16 01:27:43 星期五
+;; Version: 0.1.5
 ;; Author: 纪秀峰(Joseph)  jixiuf@gmail.com
 ;; Keywords: sql parse oracle complete
 ;; Filename: sqlparser-oracle-complete.el
@@ -13,9 +13,6 @@
 ;;     https://github.com/jixiuf/sqlparser
 ;; screencast:http://screencast-repos.googlecode.com/files/sqlparser0oracle0complete.mkv
 ;; Compatibility: Test on Linux
-;;
-;; Features that might be required by this library:
-;; `anything'
 ;;
 ;; Features  that be required by this library
 ;; `oracle-query.el'
@@ -85,15 +82,10 @@
 
 (require 'oracle-query)
 (require 'thingatpt)
-;; (require 'anything nil t)
 
 (defvar oracle-complete-minor-mode-map
   (let ((map (make-sparse-keymap)))
     (define-key map  (quote [tab]) 'sqlparser-oracle-complete)
-    ;; (if (featurep 'anything)
-    ;;     (define-key map  (quote [tab]) 'anything-oracle-complete)
-
-    ;;   )
     map))
 (defvar  oracle-complete-minor-mode-hook nil)
 
@@ -108,24 +100,6 @@
 
 (defvar sqlparser-sqlplus-connection nil)
 ;; (make-variable-buffer-local 'sqlparser-sqlplus-connection)
-
-;; (defvar anything-c-source-oracle-candidates nil)
-;; (defvar anything-init-postion-4-oracle)
-;; (defvar anything-c-source-oracle
-;;   '((name . "SQL Object:")
-;;     (init (lambda() (setq anything-init-postion-4-oracle (point))(setq anything-c-source-oracle-candidates ( sqlparser-oracle-context-candidates))))
-;;     (candidates . anything-c-source-oracle-candidates)
-;;     (action . (("Complete" . (lambda(candidate) (goto-char anything-init-postion-4-oracle)(backward-delete-char (length (sqlparser-word-before-point-4-oracle))) (insert candidate)))))))
-;; ;;;###autoload
-;; (defun anything-oracle-complete()
-;;   "call `anything' to complete tablename and column name for oracle."
-;;   (interactive)
-;;   (let ((anything-execute-action-at-once-if-one t)
-;;         (anything-quit-if-no-candidate
-;;          (lambda () (message "complete failed."))))
-;;     (anything '(anything-c-source-oracle)
-;;               ;; Initialize input with current symbol
-;;               (sqlparser-word-before-point-4-oracle)  nil nil)))
 
 ;;;###autoload
 (defun sqlparser-oracle-complete(&optional arg)
@@ -528,4 +502,3 @@ it will return 'table' ,or 'column' ,or nil.
 
 (provide 'sqlparser-oracle-complete)
 ;;; sqlparser-oracle-complete.el ends here
-
