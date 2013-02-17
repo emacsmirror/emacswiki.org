@@ -1,11 +1,11 @@
 ;;; sqlserver-query.el --- execute sql select using sqlcmd.exe or osql.exe on SQL SERVER. -*- coding:utf-8 -*-
 
-;; Copyright (C) 2011 Joseph 纪秀峰
+;; Copyright (C) 2011~2012 纪秀峰(Joseph) all rights reserved.
 
 ;; Created: 2011年08月17日 星期三 22时11分54秒
-;; Last Updated: Joseph 2011-11-02 15:08:24 星期三
+;; Last Updated: 纪秀峰 2013-02-17 20:50:54 星期日
 ;; Version: 0.1.4
-;; Author: Joseph  纪秀峰 jixiuf@gmail.com
+;; Author: 纪秀峰(Joseph) jixiuf@gmail.com
 ;; Keywords: sqlserver emacs sql sqlcmd.exe osql.exe
 ;; Filename: sqlserver-query.el
 ;; Description:  execute sql select using sqlcmd.exe or osql.exe on SQL SERVER
