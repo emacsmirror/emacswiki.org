@@ -1,7 +1,7 @@
 ;;; oracle-table2entity-4csharp.el --- oracle table2entity for csharp   -*- coding:utf-8 -*-
 
 ;; Description:oracle table2entity for csharp
-;; Last Updated: Joseph 2011-11-20 11:36:48 星期日
+;; Last Updated: 纪秀峰 2013-02-17 20:59:19 星期日
 ;; Created: 2011-09-18 21:44
 ;; Author: 孤峰独秀  jixiuf@gmail.com
 ;; Maintainer:  孤峰独秀  jixiuf@gmail.com
@@ -9,7 +9,7 @@
 ;; URL: http://www.emacswiki.org/emacs/oracle-table2entity-4csharp.el
 ;; https://github.com/jixiuf/sqlparser
 
-;; Copyright (C) 2011, 孤峰独秀, all rights reserved.
+;; Copyright (C) 2011~2012 纪秀峰(Joseph) all rights reserved.
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -169,7 +169,6 @@ key 是db类型，value 是csharp 中对应类型.要求key大写"
   (unless (and sqlplus-connection
                (equal (process-status (nth 0  sqlplus-connection)) 'run))
     (setq sqlplus-connection (call-interactively 'oracle-query-create-connection)))
-
   (dolist (tablename  (otec-query-all-tablename-in-db))
     (let  ((classname  (otec-tablename2classname tablename) )
            (setter-getters (otec-generate-all-setter-getter-4table tablename)))
