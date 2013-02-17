@@ -1,5 +1,5 @@
 [[en:SQLite]]
-SQLite es un gestor de base de datos basado un tanto particular ya que consiste en una *librería* para acceder a un archivo de bases de datos, no es de arquitectura cliente-servidor.
+SQLite es un gestor de base de datos un tanto particular ya que consiste en una *librería* para acceder a un archivo de bases de datos, no es de arquitectura cliente-servidor.
 
 Igualmente, se puede utilizar los comandos SQL para enviar consultas e introducir datos. 
 
