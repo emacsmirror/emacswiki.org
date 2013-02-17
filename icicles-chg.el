@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Feb 16 15:18:32 2013 (-0800)
+;; Last-Updated: Sat Feb 16 20:23:00 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 9725
+;;     Update #: 9733
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -91,7 +91,7 @@
 ;;     Added defaliases for (new) icicle-find-file(-other-window), depending on Emacs version.
 ;;     icicle-file(-other-window): Corrected current-prefix-arg binding.
 ;;     icicle-find-file-absolute(-other-window): Prefix arg on candidate means open it read-only.
-;;     icicle-find-file-no-search(-other-window0: Include icicle-mouse-candidate-action in memq test.
+;;     *-find-file-(absolute|no-search)(-other-window): Include *-mouse-candidate-action in memq test.
 ;;     icicle-find-file-read-only*: Use icicle-find-file-no-search*, not icicle-find-file*.
 ;;     icicle-find-file-of-content(-other-window): Restore correct read-only status after reverting.
 ;;     *-dired-(saved-file-candidates|project)-other-window, *-find-file-no-search(-other-window)
@@ -5301,6 +5301,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2013/02/16 dadams
+;;     icicle-mode: Removed list of commands from doc string - just refer to file headers.
 ;; 2013/02/09 dadams
 ;;     Moved autoload cookies for icicle-mode, icy-mode to icicles.el (with full doc string).
 ;; 2013/02/04 dadams
@@ -7277,6 +7279,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2013/02/16 dadams
+;;     icicle-general-help-string: Removed list of commands - just refer to file headers.
 ;; 2013/02/03 dadams
 ;;     icicle-general-help-string:
 ;;       Updated for *-(minibuffer|completion(-list))-key-* (add), *-previous-candidate-keys (remove).
@@ -7692,6 +7696,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles.el'")
 ;;
+;; 2013/02/16 dadams
+;;     icicle-mode: Removed list of commands from autoload doc string - just refer to file headers.
 ;; 2013/02/09 dadams
 ;;     Added autoload cookies for icy-mode, icicle-mode, to provide full doc string for info.
 ;; 2012/08/06 dadams
