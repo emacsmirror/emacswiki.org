@@ -3,7 +3,7 @@
 ;; Copyright (C) 2011~2012 纪秀峰(Joseph) all rights reserved.
 
 ;; Created: 2011年07月21日 星期四 20时03分40秒
-;; Last Updated: Joseph 2012-02-04 12:17:18 星期六
+;; Last Updated: Joseph 2012-03-16 01:25:13 星期五
 ;; Version: 0.2.0
 ;; Author: 纪秀峰(Joseph)  jixiuf@gmail.com
 ;; Keywords: sql  mysql complete
@@ -91,7 +91,6 @@
 
 (require 'mysql-query)
 (require 'thingatpt)
-(require 'anything nil t)
 
 (defgroup sqlparser nil
   "SQL-PARSE"
@@ -505,5 +504,3 @@ it will return 'table' ,or 'column' ,or nil.
 
 (provide 'sqlparser-mysql-complete)
 ;;; sqlparser-mysql-complete.el ends here
-
-
