@@ -32,7 +32,7 @@
 == Scripts Relacionados ==
 
 * !MySQL
-** Lisp:sqlparser-mysql-complete.el -- Completando nombres de tablas y columnas. Requiere de Lisp:mysql.el(véase [[MySQL-es]]).
+** Lisp:sqlparser-mysql-complete.el -- Completando nombres de tablas y columnas. Requiere de Lisp:mysql.el(véase [[MySql-es]]).
 ** Lisp:mysql-query.el -- Ejecutando SQL para !MySQL.
 ** Lisp:mysql-table2entity-4java.el -- Generar entidades para java desde tablas !MySQL. [2012-01-16 00:16] 
 ** Lisp:mysql-table2entity-4csharp.el  -- Generar entidades para csharp desde tablas !MySQL.  [2012-01-16 00:16]  
