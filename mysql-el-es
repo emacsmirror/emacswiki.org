@@ -1,0 +1,61 @@
+== MySQL.el ==
+
+Lisp:mysql.el trabaja en conjunción con el cliente de !MySQL para poder ejecutar consultas desde [[Elisp]] en una base de datos.
+
+
+=== Cómo usarlo ===
+
+# Crear una conección usando: <code> (setq mi-mysql (mysql-connect)) </code>
+# Luego, hacer la consulta SQL: <code> (mysql-query sql mi-mysql) </code>
+
+
+En caso de que necesites hacer sólo una consulta, deberías usar <code>mysql-shell-query</code>. Éste no crea un proceso como <code>mysql-connect</code>, por lo que no necesitás hacer ningún tipo de "limpieza".
+
+La sintaxis es: <code>(mysql-shell-query sql &optional db)</code>
+
+
+Si la consulta puede tomar mucho tiempo, puede ser que prefieras hacerlo en segundo plano. Para ello puedes usar <code>mysql-query-background</code>.
+
+La sintaxis es: <code> (mysql-query-background sql conexion &optional func) </code>
+
+El parámetro opcional `func' es una función que se ejecuta al terminar la consulta. Dos variables son importantes al usar esta característica: 
+* `mysql-intrival' indica el retraso que tiene `mysql-timer' para chequear si la consulta a terminado.
+* `mysql-timeout' cuando la consulta dura más tiempo que el valor de esta variable, la consulta será detenida. Si deseas mucho tiempo, cambia esta variable antes de realizar la consulta y luego restáuralo por el valor original al finalizar la función `func'.
+
+
+=== Algunas Elementos de la API  ===
+
+Funciones y macros:
+
+* <code> (mysql-table-header table) </code> Retorna un [[alist]] en el cual posee cada encabezado del resultado su índice respectivo. `table' es debe ser el resultado de la consulta.
+* <code> (mysql-col-number field) </code> Get the column index of the field in result. The Global variable mysql-header is used.
+* <code> (mysql-col table field) </code>  Get the field of the result TABLE. FIELD can be a integer or the column name.
+* <code> (mysql-cell row field) </code> Get the content of the row in field FIELD. FIELD can be a integer or the column name.
+* <code> (with-mysql-table table &rest body) </code> This macro is for execute code BODY without change the global variable mysql-header.
+
+Variables importantes:
+
+* `mysql-user' Nombre de usuario de la base de datos. Por defecto es: <code>"root"</code>.
+* `mysql-password' Clave del usuario de la base de datos. Por defecto es. <code>""</code>.
+* `mysql-intrival' ''Véase más arriba.''
+* `mysql-timeout' ''Véase más arriba.''
+* `mysql-options' Opciones del sub-proceso. Por defecto es <code>"-s"</code>.
+* `mysql-program' Nombre del program cliente a usar. Por defecto es <code>"mysql"</code>.
+
+=== Ejemplos ===
+Un ejemplo de aplicación es [[Bibus]], un manejador de referencias realizado por [[Ye_Wenbin]].
+
+Para probar en el buffer borrador(scratch) o para usar en tu propio proyecto:
+
+
+    (let ((mysql-user "Mi Usuario")
+          (mysql-password "Mi Clave"))
+      (mysql-shell-query "Mi Consulta de Base de Datos;" "Mi Base de Datos")
+      )
+
+
+=== Problemas ===
+
+Existen problemas al querer conectar con otro host, ésta librería no provee en su API ninguna variable o facilidad para conectar con una base de datos remota. 
+Para definir el host deberás cambiar la variable `mysql-options' la cual deberá contener el parámetro <code>-s</code> : <code> (setq mysql-options "-s -h mi.host.com")</code>.
+
