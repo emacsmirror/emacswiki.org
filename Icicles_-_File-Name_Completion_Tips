@@ -193,12 +193,14 @@ Another, cleaner way to skip certain directories is to [[Customize]] or `let'-bi
 [:MatchFileNamesBeforeContent]
 ==== Match File Names Before File Content ====
 
-If you use commands such as '''`<tt>[[Icicles - File-Name Input#icicle-find-file-of-content|icicle-find-file-of-content]]<tt>'''' and
+For Emacs 23 and later, if you use commands such as '''`<tt>[[Icicles - File-Name Input#icicle-find-file-of-content|icicle-find-file]]<tt>'''' and
 '''`icicle-visit-marked-file-of-content'''', which let you match a
-file ''name'' and/or file ''contents'', remember that it is far quicker
-to match names than contents.  So the more you match names to
+file ''name'' and/or file ''content'', remember that it is far quicker
+to match a name than it is to search content.  The more you match names to
 narrow the set of files whose contents need to be searched, the
-quicker matching will be.  Remember too that option
+quicker matching will be.
+
+Remember too that option
 '''`<tt>[[Icicles - Customization and General Tips#icicle-kill-visited-buffers-flag|icicle-kill-visited-buffers-flag]]</tt>'''' controls whether to keep or
 kill any file [[buffer]]s that were searched but whose files did not
 ultimately choose.  Keeping them is essentially caching them.
