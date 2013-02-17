@@ -380,7 +380,7 @@ if you have many buffers or large buffers with no content matches
 then you will waste time searching unnecessarily.
 
 There are similar multi-completion multi-commands for visiting
-''files''.  The general command '''`icicle-find-file-of-content'''' does
+''files''.  The general command '''`icicle-file'''' (`C-x C-f' with no [[prefix argument]]) does
 this for all files and directories, and in [[Dired]] mode command
 '''`icicle-visit-marked-file-of-content'''' (bound to '''`C-S-f'''', aka
 '''`C-F'''') does it for marked files and directories.
@@ -412,7 +412,7 @@ lines.
 * [[Icicles - Multi-Commands]]
 
 * [[Icicles - File-Name Input#MatchFileContent|Match File Names and File Content Too]] for information
-about command `icicle-find-file-of-content'
+about command `icicle-find-file' (`icicle-file' with no prefix arg)
 
 * [[Icicles - Programming Multi-Completions]] for information
 about changing the appearance and behavior of '''Icicles'''
