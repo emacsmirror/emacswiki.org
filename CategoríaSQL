@@ -18,9 +18,12 @@
 * OracleProC -- Cómo mezclar C y SQL.
 * OracleOnWindows -- Cosas a tener en cuenta.
 * PostGreSQL -- Una interfaz a nivel de Sockets para Emacs + cosas relacionadas a PostGreSQL.
-* [[MySql-es]] -- Acceder a MySQL desde emacs.
-* MySqlHelp -- alist y completado de funciones para la ayuda del cliente MySQL <code>mysql</code>(o sea, para el comando <code>mysql> help contents</code>).
-* http://lispsql.sourceforge.net Front-end de MySQL para Emacs. Acceder MySQL sin enlazar el shell y muchas otras cosas útiles.
+
+* [[MySql-es]] -- Acceder a !MySQL desde emacs.
+** [[mysql-el-es]] Información acerca de la librería Lisp:mysql.el
+** MySqlHelp -- alist y completado de funciones para la ayuda del cliente !MySQL <code>mysql</code>(o sea, para el comando <code>mysql> help contents</code>).
+** http://lispsql.sourceforge.net Front-end de !MySQL para Emacs. Acceder !MySQL sin enlazar el shell y muchas otras cosas útiles.
+
 * PlsqlMode -- Soporte para editar código PL/SQL.
 * SqlEdMode -- Soporte alternativo para editar código PL/SQL.
 * [[SQLite-es]] -- Cosas acerca de la librería de bases de datos SQLite.
@@ -28,18 +31,24 @@
 
 == Scripts Relacionados ==
 
-* Lisp:sqlparser-mysql-complete.el -- Completando nombres de tablas y columnas. Requiere de Lisp:mysql.el(véase [[MySQL-es]]).
-* Lisp:mysql-query.el -- Ejecutando SQL para MySQL.
-* Lisp:sqlparser-oracle-complete.el -- Completando nombres de tablas y columnas. Requiere de Lisp:oracle-shell-query.el.
-* Lisp:oracle-query.el -- Ejecutando consultas SQL usando SqlPlus (más rápido que Lisp:oracle-shell-query.el).
-* Lisp:sqlparser-sqlserver-complete.el -- Completando nombres de tablas y columnas al editar SQL para sqlserver2005 y versiones posteriores.
-* Lisp:sqlserver-query.el -- Ejecutar consultas SQL usando sqlcmd.exe o osql.exe * para sql server.
-* Lisp:sqlserver-table2entity-4java.el -- Generar entidades para java desde tablas sqlserver. [2011-09-27 14:26] 
-* Lisp:sqlserver-table2entity-4csharp.el  -- Generar entidades para C#(csharp) desde tabas sqlserver. [2011-09-27 14:26]  
-* Lisp:mysql-table2entity-4java.el -- Generar entidades para java desde tablas MySQL. [2012-01-16 00:16] 
-* Lisp:mysql-table2entity-4csharp.el  -- Generar entidades para csharp desde tablas MySQL.  [2012-01-16 00:16]  
-* Lisp:oracle-table2entity-4java.el  -- Generar entidades para java  desde tablas de Oracle. [2011-09-27 14:26] 
-* Lisp:oracle-table2entity-4csharp.el   -- Generar entidades para csharp desde tablas de Oracle. [2011-09-27 14:26] 
+* !MySQL
+** Lisp:sqlparser-mysql-complete.el -- Completando nombres de tablas y columnas. Requiere de Lisp:mysql.el(véase [[MySQL-es]]).
+** Lisp:mysql-query.el -- Ejecutando SQL para !MySQL.
+** Lisp:mysql-table2entity-4java.el -- Generar entidades para java desde tablas !MySQL. [2012-01-16 00:16] 
+** Lisp:mysql-table2entity-4csharp.el  -- Generar entidades para csharp desde tablas !MySQL.  [2012-01-16 00:16]  
+
+* Oracle
+** Lisp:sqlparser-oracle-complete.el -- Completando nombres de tablas y columnas. Requiere de Lisp:oracle-shell-query.el.
+** Lisp:oracle-query.el -- Ejecutando consultas SQL usando SqlPlus (más rápido que Lisp:oracle-shell-query.el).
+** Lisp:oracle-table2entity-4java.el  -- Generar entidades para java  desde tablas de Oracle. [2011-09-27 14:26] 
+** Lisp:oracle-table2entity-4csharp.el   -- Generar entidades para csharp desde tablas de Oracle. [2011-09-27 14:26] 
+
+* Sqlserver
+** Lisp:sqlparser-sqlserver-complete.el -- Completando nombres de tablas y columnas al editar SQL para sqlserver2005 y versiones posteriores.
+** Lisp:sqlserver-query.el -- Ejecutar consultas SQL usando sqlcmd.exe o osql.exe * para sql server.
+** Lisp:sqlserver-table2entity-4java.el -- Generar entidades para java desde tablas sqlserver. [2011-09-27 14:26] 
+** Lisp:sqlserver-table2entity-4csharp.el  -- Generar entidades para C#(csharp) desde tabas sqlserver. [2011-09-27 14:26]  
+
 
 
 ----
