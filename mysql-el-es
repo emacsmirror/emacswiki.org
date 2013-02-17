@@ -1,5 +1,4 @@
-== MySQL.el ==
-
+[[en:MySql]]
 Lisp:mysql.el trabaja en conjunción con el cliente de !MySQL para poder ejecutar consultas desde [[Elisp]] en una base de datos.
 
 
