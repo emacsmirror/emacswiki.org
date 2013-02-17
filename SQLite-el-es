@@ -1,0 +1,68 @@
+[[en:SQLite-el]]
+sqlite.el es una InterfaceSqlite para "conectarse"[[#nota1]] y obtener información usando el programa [[SQLite]] programando en [[Elisp]]. No está desarrollado para ser una interfaz del usuario, para ello se recomienda usar SqlMode.
+
+Fue creado como una solución temporal porque el script de JasonFruit no está disponible bajo el link que publicó. Su script está basado en el código encontrado en el tercer item de la página http://mysite.verizon.net/mbcladwell/ (está en inglés).
+
+Puedes descargarlo desde Lisp:sqlite.el.
+
+== Características ==
+
+Esta interfaz posee las siguientes características:
+
+* Puede abrir varios archivos de base de datos(y por ende, abrir varias instancias del programa SQLite).
+* El buffer de salida no se muestra. Es ocultado al usar la interfaz.
+* Posee una Expresión regular para capturar errores del programa SQLite.
+* Los archivos no requieren ser escritos en path absolutos. Son expandidos usando la función <code>expand-file-name</code>.
+
+== Problemas ==
+La librería ''tenía'' algunos problemas que fueron corregidos:
+
+# <b>¡Corregido!</b> La primer consulta responde con el mensaje de bienvenida del programa SQLite y su número de versión puesto que es el primer texto que emite el programa al abrirse.
+# <b>¡Corregido!</b> Sólo se puede utilizar una "conexión", ¡no manipula más!
+# El buffer de salida no se borra, sólo se oculta.
+# Los bufferes de proceso son creado cada vez que se llama a <code>sqlite-init</code>.
+# <b>¡Corregido!</b> La manipulación de errores todavía está en desarrollo.
+
+== Elementos de la API ==
+
+La API trabaja con los tres comandos básicos. También se usa un número identificador llamado "descriptor", el cual referencia unívocamente cada conexión. Los comandos <code>mysql-init</code> entregan un descriptor único al crear la "conexión".
+
+
+Los siguientes elements se encuentran en la API:
+
+Variables:
+
+Algunas veces esta variable es importante, pero normalmente es innecesario consultarla:
+
+* `sqlite-process-alist'  : Es un alist en el cual la clave es un número descriptor y el valor una lista con dos elementos: el nombre del buffer del proces y el path del archivo abierto.
+
+
+Funciones:
+
+* <code>(sqlite-init path-archivo)</code> : Para iniciar el programa SQLite con el archivo dado por `path-archivo'(que no necesariamente debe ser un path absoluto, también acepta path relativos). Retorna un descriptor único que podrás usar con los demás comandos.
+* <code>(sqlite-query descriptor string-consulta)</code> : Enviar una consulta al SQLite. También podés enviar comandos ".algo"(propios de SQLite).
+* <code>(sqlite-bye descriptor)</code> : Para terminar el programa SQLite enviando el comando <code>.quit</code>.
+
+== Uso ==
+
+Sólo debes iniciar el programa usando <code>sqlite-init</code>, y luego consulta lo que quieras llamando a la función <code>sqlite-query</code>. Cuando terminés de usar la base de datos, cierra el programa con <code>sqlite-bye</code>.
+
+Un ejemplo de uso:
+
+    (require 'sqlite)
+    
+    (let ((descriptor (sqlite-init "~/mi-basededatos.sqlite")))
+        (setq res (sqlite-query descriptor "SELECT * FROM persona"))
+        (sqlite-bye descriptor)
+        res
+     )
+
+Este ejemplo intentará abrir el archivo mi-basededats.sqlite en el directorio persona y enviar la consulta indicada. También se puede enviar comandos como <code>(sqlite-query descriptor ".tables")</code> para listar las tablas. Ejecutá el programa SQLite y escribí el comando <code>.help</code> para ver los distintos comandos disponibles.
+
+Puedes reemplazar la variable `descriptor' temporal con el número que representa cuando estás usando el buffer borrador "%%*scratch*%%".
+
+----
+[::nota1] Aquí nombramos "conexión" en realidad a la apertura del archivo para consultarlo. Es una mala costumbre (mía y) de mucha gente decir "sqlite se conecta a la base de datos" heredada de usar tanto los gestores como MySQL o MariaDB cuando sabe realmente que no se produce una conexión, sino que en realidad se abre un archivo. ¡SQLite no es una base de datos de estructura cliente-servidor!
+
+----
+[SQLite-es SQLite] CategoríaSQL
