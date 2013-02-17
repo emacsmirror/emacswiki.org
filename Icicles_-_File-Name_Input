@@ -222,11 +222,14 @@ can thus complete against a set of files in ''multiple'' directories.
 
 
 
+
+
+
 [:ReadingFileNames]
 === Icicles Commands that Read File Names ===
 
 '''Icicles''' commands that use `read-file-name' include all [[multi-command]]s,
-such as `icicle-find-file' and `icicle-find-file-of-content', that are defined using
+such as `icicle-find-file', that are defined using
 '''`icicle-define-file-command''''.  Vanilla Emacs command `find-file'
 is another example of a command that uses `read-file-name'.
 
@@ -296,27 +299,24 @@ using face `icicle-special-candidate'.
 [:MatchFileContent]
 ==== Match File Names and File Content Too ====
 
-Command '''`icicle-find-file-of-content'''', available only for Emacs 23
-and later, is similar to `icicle-find-file' (i.e., to
-`icicle-file' with no [[prefix argument]]).  But it also lets you
+Starting with Emacs 23, command '''`icicle-find-file'''' (that is,
+`icicle-file' with no [[prefix argument]]) is an alias for command
+'''`icicle-find-file-of-content'''', which lets you
 optionally provide a [[regexp]] pattern to match against file
-''contents''.  In this it is similar to the buffer-switching
+''content''.  In this it is similar to the buffer-switching
 multi-command `icicle-buffer'
 (see [[Icicles - Multi-Completions#InvisibleMulti-CompletionParts|Multi-Completions with a Part You Never See]]).
 
-If you do not try to match file contents, then
-`icicle-find-file-of-content' behaves just like
-`icicle-find-file'.  In particular, there is no loss of
-performance.  But if you do provide a pattern to match contents
+If you provide a pattern to match file content
 then all files whose names match the file-name part of your input
 are searched for the content pattern.
 
-That search operation is obviously more costly than file-name
+Content searching is obviously more costly than file-name
 matching, so clearly if you can provide some information about the
 file name, that improves performance.  IOW, the more you can limit
 the number of files to search, the better.
 
-To search file contents, the candidate files are visited, that is,
+To search file content, the candidate files are visited, that is,
 buffers are created for them and searched.  By default, after the
 command is finished these buffers are killed, except for those you actually chose as completion candidate(s) and
 any that existed prior to invoking the command.
@@ -328,7 +328,7 @@ option for the command duration.
 
 You can use option '''`<tt>[[Icicles - Customization and General Tips#icicle-find-file-of-content-skip-hook|icicle-find-file-of-content-skip-hook]]</tt>'''' to specify patterns for file names to exclude from content searching
 when you provide a content-matching pattern to
-`icicle-find-file-of-content'.
+`icicle-find-file'.
 
 In [[Dired]] there is a related content-matching multi-command,
 `icicle-visit-marked-file-of-content' (bound to `C-S-f', aka
@@ -336,7 +336,8 @@ In [[Dired]] there is a related content-matching multi-command,
 well (`C-O' in Dired).
 
 
-
+(Prior to Emacs 23, `icicle-find-file' is an alias for
+`icicle-find-file-no-search', which does not search file content.)
 
 
 
