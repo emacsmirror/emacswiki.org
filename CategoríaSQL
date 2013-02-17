@@ -1,0 +1,43 @@
+* SqlMode -- Páginas relacionadas a este modo mayor:
+
+** SqlComplete
+** SqlEscapeCharacter
+** SqlIndent
+** SqlPlusNukeLineNo
+** SqlSendHistory
+** SqlSwitchBuffer
+** SqlTransform
+** SqlPreviousWhereClause
+** SqlBeautify
+** TsqlIndent
+** SqlCustomSession
+** SqlPlusMode
+** SqlPlus
+
+* OracleProC -- Cómo mezclar C y SQL.
+* OracleOnWindows -- Cosas a tener en cuenta.
+* PostGreSQL -- Una interfaz a nivel de Sockets para Emacs + cosas relacionadas a PostGreSQL.
+* [[MySql-es]] -- Acceder a MySQL desde emacs.
+* MySqlHelp -- alist and completion function for MySQL's `mysql' help facility e.g. mysql> help contents
+* http://lispsql.sourceforge.net Mysql front-end for Emacs, access mysql without tying up your shell prompt, and many other useful mysql things.  
+* PlsqlMode -- support for editing PL/SQL code
+* SqlEdMode -- alternative support for editing PL/SQL code
+* [[SQLite]] -- things for the sqlite database library
+* ModeCompileSql -- a different approach for executing SQL scripts.
+
+== Scripts Relacionados ==
+
+* Lisp:sqlparser-mysql-complete.el -- Completando nombres de tablas y columnas. Requiere de Lisp:mysql.el(véase [[MySQL-es]]).
+* Lisp:mysql-query.el -- Ejecutando SQL para MySQL.
+* Lisp:sqlparser-oracle-complete.el -- Completando nombres de tablas y columnas. Requiere de Lisp:oracle-shell-query.el.
+* Lisp:oracle-query.el -- Ejecutando consultas SQL usando SqlPlus (más rápido que Lisp:oracle-shell-query.el).
+* Lisp:sqlparser-sqlserver-complete.el -- Completando nombres de tablas y columnas al editar SQL para sqlserver2005 y versiones posteriores.
+* Lisp:sqlserver-query.el -- Ejecutar consultas SQL usando sqlcmd.exe o osql.exe * para sql server.
+* Lisp:sqlserver-table2entity-4java.el -- Generar entidades para java desde tablas sqlserver. [2011-09-27 14:26] 
+* Lisp:sqlserver-table2entity-4csharp.el  -- Generar entidades para C#(csharp) desde tabas sqlserver. [2011-09-27 14:26]  
+* Lisp:mysql-table2entity-4java.el -- Generar entidades para java desde tablas MySQL. [2012-01-16 00:16] 
+* Lisp:mysql-table2entity-4csharp.el  -- Generar entidades para csharp desde tablas MySQL.  [2012-01-16 00:16]  
+* Lisp:oracle-table2entity-4java.el  -- Generar entidades para java  desde tablas de Oracle. [2011-09-27 14:26] 
+* Lisp:oracle-table2entity-4csharp.el   -- Generar entidades para csharp desde tablas de Oracle. [2011-09-27 14:26] 
+
+
