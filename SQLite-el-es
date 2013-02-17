@@ -62,7 +62,8 @@ Este ejemplo intentará abrir el archivo mi-basededats.sqlite en el directorio p
 Puedes reemplazar la variable `descriptor' temporal con el número que representa cuando estás usando el buffer borrador "%%*scratch*%%".
 
 ----
-[::nota1] Aquí nombramos "conexión" en realidad a la apertura del archivo para consultarlo. Es una mala costumbre (mía y) de mucha gente decir "sqlite se conecta a la base de datos" heredada de usar tanto los gestores como MySQL o MariaDB cuando sabe realmente que no se produce una conexión, sino que en realidad se abre un archivo. ¡SQLite no es una base de datos de estructura cliente-servidor!
+[::nota1]
+Aquí nombramos "conexión" en realidad a la apertura del archivo para consultarlo. Es una mala costumbre (mía y) de mucha gente decir "sqlite se conecta a la base de datos" heredada de usar tanto los gestores como MySQL o MariaDB cuando sabe realmente que no se produce una conexión, sino que en realidad se abre un archivo. ¡SQLite no es una base de datos de estructura cliente-servidor!
 
 ----
-[SQLite-es SQLite] CategoríaSQL
+[SQLite-es SQLite] InterfaceSqlite CategoríaSQL
