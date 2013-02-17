@@ -1,7 +1,7 @@
 ;;; mysql-table2entity-4java.el --- mysql table2entity for java   -*- coding:utf-8 -*-
 
 ;; Description:mysql table2entity for java
-;; Last Updated: Joseph 2012-01-15 23:31:34 星期日
+;; Last Updated: 纪秀峰 2013-02-17 20:53:07 星期日
 ;; Created: 2011-09-18 21:44
 ;; Author: 纪秀峰(Joseph)  jixiuf@gmail.com
 ;; Keywords: mysql java entity
@@ -94,7 +94,7 @@
 (defun camelize (s &optional separator )
   "Convert under_score string S to CamelCase string."
   (mapconcat 'identity (mapcar
-                        '(lambda (word) (capitalize (downcase word)))
+                        #'(lambda (word) (capitalize (downcase word)))
                         (if separator (split-string s "_") (list s))
                         ) ""))
 
