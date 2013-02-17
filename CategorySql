@@ -22,9 +22,9 @@ Click on the header to list all SQL related pages.
 * PostGreSQL -- a socket level interface for Emacs + more PostGreSQL-related things
 * MySql -- a patch to Emacs on the C level
 * [[mysql]] -- access mysql in emacs
-* Lisp:sqlparser-mysql-complete.el completing tablenmae columnname ,need mysql.el
+* Lisp:sqlparser-mysql-complete.el completing tablenmae columnname ,need mysql-query.el
 * Lisp:mysql-query.el executing sql for mysql
-* Lisp:sqlparser-oracle-complete.el completing tablenmae columnname ,need oracle-shell-query.el
+* Lisp:sqlparser-oracle-complete.el completing tablenmae columnname ,need oracle-query.el
 * Lisp:oracle-query.el executing sql query using sqlplus (faster than oracle-shell-query.el)
 * Lisp:sqlparser-sqlserver-complete.el -- completing tablename or column name when editing sql for  sqlserver2005 and later
 * Lisp:sqlserver-query.el -- execute sql query using sqlcmd.exe or osql.exe * for sql server 
