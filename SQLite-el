@@ -1,4 +1,4 @@
-[[es:sqlite-el-es]]
+[[es:SQLite-el-es]]
 sqlite.el is a simple SqliteInterface for connecting and retrieving information using the [[SQLite]] program through [[Elisp]] programming. It is not intended as a user interface, for that see SqlMode.
 
 It has been created as a temporary solution because the JasonFruit's script is not available through the link given. As his script, this is based on the code founded at the third item in this page: http://mysite.verizon.net/mbcladwell/.
