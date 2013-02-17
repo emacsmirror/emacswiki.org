@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Feb 15 14:30:53 2013 (-0800)
+;; Last-Updated: Sat Feb 16 16:12:38 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 27258
+;;     Update #: 27276
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -791,15 +791,6 @@
 ;;  `C-M-j'.  Obviously, content searching is much slower than
 ;;  file-name matching.  If you can match names, that reduces the
 ;;  number of files whose content needs to be searched.
-;;
-;;  OK, a caveat: By default, `C-x 4 f' today does not do the
-;;  multi-completion, content-searching part.  That is only because I
-;;  have not yet promoted the recently added command that adds this
-;;  feature, `icicle-find-file-of-content', to that key binding by
-;;  default.  I will soon do so no doubt, but I would like it to be
-;;  tested more.  Today, `C-x C-f' and `C-x 4 f' are bound to Icicles
-;;  multi-commands that do the same thing, except for the
-;;  multi-completion part.
 ;;
 ;;(@* "Third Example: Tagged Files")
 ;;  *** Third Example: Tagged Files ***
@@ -5207,11 +5198,11 @@
 ;;  if you have many buffers or large buffers with no content matches
 ;;  then you will waste time searching unnecessarily.
 ;;
-;;  There are similar multi-completion multi-commands for visiting
-;;  files.  The general command `icicle-find-file-of-content' does
-;;  this for all files and directories, and in Dired mode command
-;;  `icicle-visit-marked-file-of-content' (bound to `C-S-f', aka
-;;  `C-F') does it for marked files and directories.
+;;  There are similar multi-completion multi-completion multi-commands
+;;  for visiting files.  The general command `icicle-file' (`C-x C-f'
+;;  with no prefix arg) does this for all files and directories, and
+;;  in Dired mode command `icicle-visit-marked-file-of-content' (bound
+;;  to `C-S-f', aka `C-F') does it for marked files and directories.
 ;;
 ;;(@* "Mode-Line Lighter Indication of Multi-Completion")
 ;;  ** Mode-Line Lighter Indication of Multi-Completion **
@@ -5226,7 +5217,8 @@
 ;;
 ;;  * (@> "Multi-Commands")
 ;;  * (@> "Match File Names and File Content Too") for information
-;;    about command `icicle-find-file-of-content'
+;;    about command `icicle-find-file' (`icicle-file' with no prefix
+;;    arg)
 ;;  * (@> "Programming Multi-Completions") for information about
 ;;    changing the appearance and behavior of Icicles
 ;;    multi-completions using Emacs-Lisp code.
@@ -7536,8 +7528,7 @@
 ;;  ** Icicles Commands that Read File Names **
 ;;
 ;;  Icicles commands that use `read-file-name' include all
-;;  multi-commands, such as `icicle-find-file' and
-;;  `icicle-find-file-of-content', that are defined using
+;;  multi-commands, such as `icicle-find-file', that are defined using
 ;;  `icicle-define-file-command'.  Vanilla Emacs command `find-file'
 ;;  is another example of a command that uses `read-file-name'.
 ;;
@@ -7583,26 +7574,21 @@
 ;;(@* "Match File Names and File Content Too")
 ;;  *** Match File Names and File Content Too ***
 ;;
-;;  Command `icicle-find-file-of-content', available for Emacs 23 and
-;;  later, is similar to `icicle-find-file' (i.e., to `icicle-file'
-;;  with no prefix arg).  But it also lets you optionally provide a
-;;  regexp pattern to match against file contents.  In this it is
-;;  similar to the buffer-switching multi-command `icicle-buffer'
-;;  (see (@*>"Multi-Completions with a Part You Never See")).
+;;  Starting with Emacs 23, command `icicle-find-file' (that is,
+;;  `icicle-file' with no prefix arg) is an alias for command
+;;  `icicle-find-file-of-content', which lets you optionally provide a
+;;  regexp pattern to match against file content.  In this it is
+;;  similar to the buffer-switching multi-command `icicle-buffer' (see
+;;  (@*>"Multi-Completions with a Part You Never See")).
 ;;
-;;  If you do not try to match file contents, then
-;;  `icicle-find-file-of-content' behaves just like
-;;  `icicle-find-file'.  In particular, there is no loss of
-;;  performance.  But if you do provide a pattern to match contents
-;;  then all files whose names match the file-name part of your input
-;;  are searched for the content pattern.
+;;  If you provide a pattern to match file content then all files
+;;  whose names match the file-name part of your input are searched
+;;  for the content pattern.  Content searching is obviously more
+;;  costly than file-name matching, so clearly if you can provide some
+;;  information about the file name, that improves performance.  IOW,
+;;  the more you can limit the number of files to search, the better.
 ;;
-;;  That search operation is obviously more costly than file-name
-;;  matching, so clearly if you can provide some information about the
-;;  file name, that improves performance.  IOW, the more you can limit
-;;  the number of files to search, the better.
-;;
-;;  To search file contents, the candidate files are visited, that is,
+;;  To search file content, the candidate files are visited, that is,
 ;;  buffers are created for them and searched.  By default, after the
 ;;  command is finished these buffers are killed, except for those you
 ;;  actually chose as completion candidate(s) and any that existed
@@ -7615,13 +7601,15 @@
 ;;
 ;;  You can use option `icicle-find-file-of-content-skip-hook' to
 ;;  specify patterns for file names to exclude from content searching
-;;  when you provide a content-matching pattern to
-;;  `icicle-find-file-of-content'.
+;;  when you provide a content-matching pattern to `icicle-find-file'.
 ;;
 ;;  In Dired there is a related content-matching multi-command,
 ;;  `icicle-visit-marked-file-of-content' (bound to `C-S-f', aka
 ;;  `C-F').  And there are other-window versions of such commands as
 ;;  well (`C-O' in Dired).
+;;
+;;  (Prior to Emacs 23, `icicle-find-file' is an alias for
+;;  `icicle-find-file-no-search', which does not search file content.)
 ;;
 ;;(@* "Visit Recent Files or Files for Emacs Tags")
 ;;  *** Visit Recent Files or Files for Emacs Tags ***
