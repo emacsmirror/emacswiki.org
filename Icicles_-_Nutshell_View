@@ -331,14 +331,8 @@ without having any idea about the file names --- just start with
 file-name matching.  If you can match names, that reduces the
 number of files whose content needs to be searched.
 
-OK, a caveat: By default, `C-x 4 f' today does not do the
-multi-completion, content-searching part.  That is only because I
-have not yet promoted the recently added command that adds this
-feature, `icicle-find-file-of-content', to that key binding by
-default.  I will soon do so no doubt, but I would like it to be
-tested more.  Today, `C-x C-f' and `C-x 4 f' are bound to '''Icicles'''
-multi-commands that do the same thing, except for the
-multi-completion part.
+
+
 
 
 
