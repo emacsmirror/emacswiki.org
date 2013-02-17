@@ -1,0 +1,18 @@
+[[en:SQLite]]
+SQLite es un gestor de base de datos basado un tanto particular ya que consiste en una *librería* para acceder a un archivo de bases de datos, no es de arquitectura cliente-servidor.
+
+Igualmente, se puede utilizar los comandos SQL para enviar consultas e introducir datos. 
+
+El programa "sqlite3" es utilizado tanto interactivamente(usando SqlMode) como así también para realizar scripts y librerías (véase InterfaceSqlite). 
+
+El sitio oficial de SQLite es http://www.sqlite.org/.
+
+
+Artículos acerca de SQLite relacionados con Emacs:
+
+* SqlMode -- Para interactuar con instancias SQLite (¡y más cosas!)
+* SqliteDump -- Mirar y editar una base de datos SQLite usando su comando <code>.dump</code> propio del programa.
+* InterfaceSqlite -- Usar librerías para escribir código que interactúe con SQLite.
+
+----
+CategoríaSQL
