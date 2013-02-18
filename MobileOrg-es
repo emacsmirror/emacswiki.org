@@ -69,8 +69,11 @@ Este paso lo hacemos una sola vez.
 
 Podemos hacerlo de dos formas.
 ** Abriendo el archivo Org que queremos sincronizar y tecleamos C-c [ (o también M-x org-agenda-file-to-front).
-** Usando la herramienta de customización M-x customize-variable org-agenda-files.
 ** Seteándolo manualmente, por ejemplo: <code>(setq org-agenda-files '("un-archivo.org" "otro-archivo.org")</code>.
+** Usando la herramienta de customización M-x customize-variable org-agenda-files.
+
+La primera y segunda opción mantiene el valor de la variable sólo temporalmente. Usar la herramienta de customización es lo recomendable si se desea preservar el listado de archivos y directorios aún en posteriores inicios de Emacs.
+
 
 
 Asegúrese de tener el servidor SSH habilitado.
