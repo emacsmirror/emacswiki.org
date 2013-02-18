@@ -1,2 +1,4 @@
 [new:AlexSchroeder:2013-02-18 15:25 UTC]
-Anybody interested in Bootstrap and JQuery and everything else that is new and fancy (says the old fart using Perl)... Have a look at [http://www.emacswiki.org/emacs-test/ Emacs Wiki using a Bootstrap config file].
+Anybody interested in Bootstrap and JQuery and everything else that is new and fancy (says the old fart using Perl)... Have a look at [http://www.emacswiki.org/emacs-test/?css= Emacs Wiki using a Bootstrap config file].
+
+This is probably incompatible with any [[CSS]] you might be using.
