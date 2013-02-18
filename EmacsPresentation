@@ -52,7 +52,11 @@ For instance, imagine an outline with a few URLs in it, which reveals itself as 
 
 
 == Experience giving a presentation with org-presie ==
-I gave a presentation to !ThoughtWorks about Emacs, Lisp and Elnode. It worked quite well. The main problem was the fixing of font size. That needs to be made easier.
+I gave a presentation to !ThoughtWorks about Emacs, Lisp and Elnode. It worked quite well. The main problem was the fixing of font size.
+
+I made [[http://github.com/nicferrier/emacs-framesize|framesize]] to deal with that, it makes increasing the font on a frame easy.
+
+It's not automatically installed if you install ##org-pressie##.
  
 ---- 
 CategoryWishList
