@@ -686,6 +686,13 @@ This is certainly a font-lock change, since I noticed strange behavior of it in 
 I will take a look when I can.  Thx for the report. -- DrewAdams
 
 
+[new:DrewAdams:2013-02-18 19:33 UTC]
+So far, this appears to be an Emacs regression. I filed bug #13751 and it was promptly merged to bug #13730.
+
+http://debbugs.gnu.org/cgi/bugreport.cgi?bug=13751
+
+-- DrewAdams
+
 
 
 
