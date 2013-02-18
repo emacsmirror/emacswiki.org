@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Feb 16 16:12:38 2013 (-0800)
+;; Last-Updated: Mon Feb 18 15:25:58 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 27276
+;;     Update #: 27299
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -4781,7 +4781,7 @@
 ;;  `icicle-execute-extended-command' (`M-x'), `icicle-kmacro'
 ;;  (`S-f4'), and `icicle-execute-named-keyboard-macro' (`C-x M-e').
 ;;
-;;  So, for example, if you use `C-u 10 C-RET' on command
+;;  So for example, if you use `C-u 10 C-RET' on command
 ;;  `forward-char' during `M-x' command completion, the cursor
 ;;  advances 10 characters.  Another example: `C-x M-e C-u 200 C-RET'
 ;;  on a keyboard-macro candidate `foo' executes `foo' 200 times.  You
@@ -4795,11 +4795,14 @@
 ;;  free to interpret these differently.  For example, a prefix arg
 ;;  for `icicle-kmacro' provides a default repeat factor, which can
 ;;  then be overridden for any individual action by providing a
-;;  different prefix arg.  As another example, a prefix arg used with
-;;  any file-name candidate for command `icicle-find-file' visits the
-;;  file in read-only mode.  But a prefix arg for the command itself
+;;  different prefix arg.
+;;
+;;  As another example, a prefix arg used with any completion
+;;  candidate for command `icicle-find-file-no-search' visits the file
+;;  in read-only mode.  But a prefix arg for the command itself
 ;;  reverses this effect: read-only becomes the default so that a
-;;  prefix arg for a candidate means visit not read-only.
+;;  prefix arg for a given candidate means that the visited file
+;;  buffer is writable.
 ;;
 ;;  If user option `icicle-use-candidates-only-once-flag' is
 ;;  non-`nil', then, when you act on a candidate, it is removed from
@@ -7566,10 +7569,21 @@
 ;;  With a negative prefix argument, you can match also the
 ;;  modification date.
 ;;
-;;  An additional feature of `icicle-find-file-absolute' and
-;;  `icicle-find-file-absolute-other-window' is that candidates that
-;;  are directory names are highlighted in buffer `*Completions*'
-;;  using face `icicle-special-candidate'.
+;;  An additional feature of `icicle-find-file-absolute' (`C-x C-f'
+;;  with a prefix arg) is that candidates that are directory names are
+;;  highlighted in buffer `*Completions*' using face
+;;  `icicle-special-candidate'.
+;;
+;;  An additional feature of command `icicle-find-file' (`C-x C-f'
+;;  with no prefix arg) is that if you use a prefix arg when acting on
+;;  an individual file-name candidate then the file is visited in
+;;  read-only mode.  The same invocation of `C-x C-f' can thus open
+;;  multiple files, some in read-only mode, some not.
+;;
+;;  (There is also multi-command `icicle-find-file-read-only', unbound
+;;  by default, which is the same as `icicle-find-file' but with the
+;;  prefix arg behavior flipped: with no prefix arg when you act on a
+;;  candidate file it is visited read-only.)
 ;;
 ;;(@* "Match File Names and File Content Too")
 ;;  *** Match File Names and File Content Too ***
