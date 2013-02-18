@@ -673,10 +673,11 @@ Can't do much with that report, I'm afraid.  You don't say what Emacs build date
 
 Starting with ##emacs -Q## with an Emacs 24 trunk build from 2013-02-15 on MS Windows, then loading '''Dired+''' and visiting a directory, I see no problem with the highlighting.  More info, please. -- DrewAdams
 
-
+[new]
 These steps do reproduce bug for me, except I use 2013-02-17 build of GNU Emacs 24.3.50.1 on Linux. -- [[Anonymous]]
 
-
+[new:DrewAdams:2013-02-18 07:04 UTC]
+OK, I'll have to take a look when I get a newer build. But my guess is that the change was in the font-lock code somewhere, and not in the dired code.  See above on this page, for changes in the recent past that also broke font-locking for Dired+.  If you have time to investigate a bit, that would be great. -- DrewAdams
 
 
 
