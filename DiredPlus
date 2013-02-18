@@ -21,7 +21,7 @@ hidden subdirectories of the selected Dired listings.
 
 * Lets you create bookmarks to all of the marked files and directories, ''without visiting'' them.  This means you can bookmark files that you cannot even visit in Emacs, such as sound files and image files.  If you use '''[[Bookmark+]]''', then you can also:
 ** Bookmark a ''project'': Bookmark the marked files and dirs and create a bookmark-file bookmark for them. "Jumping" to the bookmark-file bookmark opens the `##*Bookmark List*##' for those marked-file bookmarks (only).
-** Customize file associations, to create bookmarks with appropriate handlers for additional types of files.
+** Customize file associations, to create bookmarks with appropriate handlers for additional types of files. 
 
 * If you use '''[[Bookmark+]]''', then you can add ''tags'' to the marked files or remove tags from them.  You can ''mark'' or ''unmark'' the files that have given sets of tags in various ways (files with at least one tag matching a [[regexp]], files with all of their tags matching a list of tags you specify, and so on).  These are persistent tags in the "[[http://en.wikipedia.org/wiki/Delicious_(website)|delicious]]" sense.  In effect, an [[BookmarkPlus#AutofileBookmarks|autofile bookmark]] is used for each file you tag.
 
@@ -57,11 +57,11 @@ Things to notice in this screenshot:
 
 * When a file is marked, the entire line is highlighted (e.g. '''<code>Makefile</code>''').
 
-* Files that are marked and files that are flagged for deletion have the mark/flag highlighted differently (e.g. '''<code>Makefile</code>''' versus '''<code>psgml-api.elc</code>''').
+* Files that are marked and files that are flagged for deletion have the mark/flag highlighted differently (e.g. '''<code>Makefile</code>''' versus '''<code>psgml-api.elc</code>'''). 
 
 
 
-If you also use library <tt>[[mouse3.el]]</tt> then you can choose to use its popup menu, which is specially adapted for Dired, whenever there is an active region, rather than the simpler menu shown above.  Here is a screenshot.
+If you also use library <tt>[[mouse3.el]]</tt> then you can choose to use its popup menu, which is specially adapted for Dired, whenever there is an active region, rather than the simpler menu shown above.  Here is a screenshot. 
 
 [[image:DrewsEmacsDiredRegionMouse3]]
 
@@ -244,7 +244,7 @@ If you use '''MenuBarPlus''' then this menu is called '''Single'''.
 [new:Kiwon:2010-03-18 07:31 UTC]
 I found a bug of this useful extension. I'm using the latest dired+, Last-updated: Sun Jan 31 14:06:37 2010 (-0800). The font-lock for date and time invades the area for size of file. My settings for the test are very simple. -- KiwonUm
 
-
+    
     > emacs -Q or emacs -Q -nw
     M-x version : GNU Emacs 24.0.50.1 (i686-pc-linux-gnu, GTK+ Version 2.16.6) ...
     (add-to-list 'load-path "~/.emacs.d")
@@ -265,7 +265,7 @@ Here is the screenshot:
 
 Are you using the latest version of '''Dired+'''? If not, please download it and try it: <tt>[[dired+.el]]</tt>. I ask because (1) I don't see your file size highlighted at all, and (2) your face for the date+time is not the default face (in the latest version), yet you say that you used ##emacs -Q## (so the default faces should be shown). And the only default face for a filename that has a red foreground is for a file flagged `D'. I see no way that your date+time could be red.
 
-Also, your Emacs version is something I don't recognize. It is a development version that is different from the current pretest. It's possible they have changed something recently in the Dired code. Can you test using a different Emacs version -- perhaps download Emacs 23.1 and try with that?
+Also, your Emacs version is something I don't recognize. It is a development version that is different from the current pretest. It's possible they have changed something recently in the Dired code. Can you test using a different Emacs version -- perhaps download Emacs 23.1 and try with that? 
 
 The fontification of the date+time and for the file name are done using the same regexp, the value of `dired-move-to-filename-regexp'. What is your value of that variable? Dunno if I can help much, I'm afraid. That's a very hairy regexp. I would start by trying to figure out why your file size is not getting fontified. -- DrewAdams
 
@@ -282,7 +282,7 @@ The 'dired-move-to-filename-regexp' value is so hairy that I cannot copy&paste h
 -- Kiwon Um
 
 [new:DrewAdams:2010-03-19 03:54 UTC]
-OK, understood. I suspect it is because of some change they've made to the development version. I can't really do much about this until I have such a version. And even then it's not easy to decipher that regexp and make the right changes -- but at least I'll be able to experiment. For now, the most important help will be for you to confirm that it works OK for you with a release version (e.g. 23.1). That will at least tell me where the problem is, in general. And if it's not OK for you in 23.1, then we can try to investigate further. Sorry for your trouble.
+OK, understood. I suspect it is because of some change they've made to the development version. I can't really do much about this until I have such a version. And even then it's not easy to decipher that regexp and make the right changes -- but at least I'll be able to experiment. For now, the most important help will be for you to confirm that it works OK for you with a release version (e.g. 23.1). That will at least tell me where the problem is, in general. And if it's not OK for you in 23.1, then we can try to investigate further. Sorry for your trouble. 
 
 
 BTW, I already see that that regexp has changed considerably. This is the value I have from the Emacs pretest 23.1.92:
@@ -291,9 +291,9 @@ BTW, I already see that that regexp has changed considerably. This is the value 
 
 What is the value of variable `dired-actual-switches' in the Dired buffer? It's weird that your listing shows a period, `##.##', after the file permissions. Perhaps that is something new and it throws off some of the regexps.
 
-However, I just downloaded the latest development ##dired.el##, and it is identical to the version in 23-1-92, which is the pretest I use. Of course, that regexp is defined in file ##files.el##. I'll take a look there also.
+However, I just downloaded the latest development ##dired.el##, and it is identical to the version in 23-1-92, which is the pretest I use. Of course, that regexp is defined in file ##files.el##. I'll take a look there also. 
 
-It could also be a difference of platforms. I use Windows, which uses ##ls-lisp.el## -- the `ls' listing software is different. But I don't recall seeing that `##.##' before, even on UNIX/Linux. Any idea what it represents?
+It could also be a difference of platforms. I use Windows, which uses ##ls-lisp.el## -- the `ls' listing software is different. But I don't recall seeing that `##.##' before, even on UNIX/Linux. Any idea what it represents? 
 
 Another thing you can try is to use `C-u C-x d' and specify various different switches, to see what happens. Let me know about your switches (see above).
 
@@ -328,8 +328,8 @@ Just for fun, another thing you can try is to evaluate this, to change back to t
 
 I've now compared the new regexp value with the old. Essentially, the new regexp just has an extra level of grouping (parens). I don't have a real understanding yet, but try this, just for the heck of it:
 
-In <tt>[[dired+.el]]</tt>, find the `defvar' for `diredp-font-lock-keywords-1'. Copy the defining sexp, which starts with ##(list '("^  \.+:\\)$"...##, and paste it into buffer ##*scratch*##. Put ##(setq
-diredp-font-lock-keywords-1 ## in front of it and add a ##)## after it. Change this:
+In <tt>[[dired+.el]]</tt>, find the `defvar' for `diredp-font-lock-keywords-1'. Copy the defining sexp, which starts with ##(list '("^  \.+:\\)$"...##, and paste it into buffer ##*scratch*##. Put ##(setq 
+diredp-font-lock-keywords-1 ## in front of it and add a ##)## after it. Change this: 
 
   (list dired-move-to-filename-regexp '(1 diredp-date-time t t)...
 
@@ -347,7 +347,7 @@ Oh my god! You wrote a lot during I were testing your code. :) The `dired-actual
 
     (add-to-list 'load-path "~/.emacs.d")
     (require 'dired+)
-
+    
     (setq directory-listing-before-filename-regexp
           (let* ((l "\\([A-Za-z]\\|[^\0-\177]\\)")
                  (l-or-quote "\\([A-Za-z']\\|[^\0-\177]\\)")
@@ -374,7 +374,7 @@ Oh my god! You wrote a lot during I were testing your code. :) The `dired-actual
             (purecopy (concat ".*[0-9][BkKMGTPEZY]?" s
                               "\\(" western "\\|" western-comma "\\|" east-asian "\\|" iso "\\)"
                               s "+"))))
-
+    
     (setq diredp-font-lock-keywords-1
           (list
            '("^  \\(.+:\\)$" 1 diredp-dir-heading) ; Directory headers
@@ -516,11 +516,11 @@ Works fine now, thanks for fast fixing. -- [[Anonymous]]
 Is there any way to disable the dired+ color customizations and just fall back to the colorscheme installed instead? Or do I have to override each individual setting? I use the zenburn colorscheme and the colors specified in dired+ look unreadable with it. Thanks. -- Christoph
 
 [new:DrewAdams:2010-08-27 23:24 UTC]
-Yes, you can customize each '''Dired+''' face separately -- they are separate faces.  They are '''Dired+''' faces, and like most faces throughout Emacs, they have nothing to do with ColorTheme.
+Yes, you can customize each '''Dired+''' face separately -- they are separate faces.  They are '''Dired+''' faces, and like most faces throughout Emacs, they have nothing to do with ColorTheme. 
 
 Is ColorTheme what you meant by "the colorscheme installed" and "zenburn colorscheme"? If not, what did you mean? Did you mean the colors you see for Dired in vanilla Emacs, where there are no such faces?
 
-Vanilla Emacs (Dired) does not have such faces, and ColorTheme does not have faces in general. So the answer is yes, in any case: these are separate faces, so if you want to change them all then you need to customize them all (once). -- DrewAdams
+Vanilla Emacs (Dired) does not have such faces, and ColorTheme does not have faces in general. So the answer is yes, in any case: these are separate faces, so if you want to change them all then you need to customize them all (once). -- DrewAdams 
 
 [new]
 Yes, I have colortheme installed with the zenburn colorscheme. I installed dired+ but I don't like the new colors in the dired buffer. They don't work with Zenburn. So I was wondering if I could keep the general functionality of dired+ but simply disable the "fancy highlighting" or if have to customize each face separately. I think you answered my question though. Thanks! -- Christoph
@@ -528,7 +528,7 @@ Yes, I have colortheme installed with the zenburn colorscheme. I installed dired
 [new:DrewAdams:2010-08-28 03:11 UTC]
 Please download the latest version.  I just updated it to fix a problem that has probably been there since Day 1.  I thought I had provided properly for users to customize `font-lock-maximum-decoration' to skip the second level of Dired fontification, but I had not.  That should now be corrrected.
 
-You can customize [[option]] `font-lock-maximum-decoration' to set the level of fontification you want.  And you can do this for particular modes if you like.  To turn off max highlighting only for Dired mode, do `M-x customize-option font-lock-maximum-decoration' and insert an entry for `dired-mode' that specifies `default' highlighting for it.  (You can set another, catch-all entry for `all' that controls all other modes.)
+You can customize [[option]] `font-lock-maximum-decoration' to set the level of fontification you want.  And you can do this for particular modes if you like.  To turn off max highlighting only for Dired mode, do `M-x customize-option font-lock-maximum-decoration' and insert an entry for `dired-mode' that specifies `default' highlighting for it.  (You can set another, catch-all entry for `all' that controls all other modes.) 
 
 Thanks for bringing this to my attention. Most users want more Dired highlighting, not less, so I never realized this didn't work properly.
 Thx -- DrewAdams
@@ -567,7 +567,7 @@ Yes, I added a call ##(sit-for 2)## after this message, so you will see the mess
 
   NOTE: Deletion of files flagged `D' (not those marked `*')
 
-That waits 2 seconds, but if you type a key then the timeout is interrupted (no wait).  I'm not sure what the right thing to do is.  If I remove the `sit-for' then you will never see the message.  Maybe the message is not so important.  What do you think? -- DrewAdams
+That waits 2 seconds, but if you type a key then the timeout is interrupted (no wait).  I'm not sure what the right thing to do is.  If I remove the `sit-for' then you will never see the message.  Maybe the message is not so important.  What do you think? -- DrewAdams 
 
 [new]
 I think that message is not really important, users who read dired manual alredy know that, ones who didn't — probably won't use that command :) Also i consider prompt delay confusing, even if keys work immediately (but you have to wait anyway to see the ##*Deletions*## buffer with list of files to delete). -- [[Anonymous]]
@@ -625,9 +625,6 @@ Hello, I'm using emacs from bzr, and some recent changes in trunk broke dired+ f
 [new:DrewAdams:2011-11-01 14:25 UTC]
 Yes, they broke font-locking in the latest Emacs 24 pretest.  See Emacs bugs #9919 and #6662.
 http://debbugs.gnu.org/cgi/bugreport.cgi?bug=9919
-
-and
-
 http://debbugs.gnu.org/cgi/bugreport.cgi?bug=6662
 
 Anyway, I fixed this in the latest <tt>[[dired+.el]]</tt> on 2011-10-31, so it should be OK now.  Unfortunately, because of their change font-locking is now done twice: once with the default highlighting, once with the correct ('''Dired+''') highlighting.  You don't see this as a user, but it does theoretically slow things down a bit.  If they fix the bug then I'll be able to remove the call to refresh font-locking.  Be aware too that this will also affect other libraries that set font-lock highlighting. -- DrewAdams
@@ -666,10 +663,25 @@ Hi,  I also had issues using dired+ with zenburn. Instead of shutting off the ex
 [new:DrewAdams:2012-01-06 17:20 UTC]
 You do not say anything about what the issues are that you ran into, or how your customization takes care of them.  So I have no idea what the problem is, so I cannot try to fix it. Please elaborate.  Thx -- DrewAdams
 
+
 ----
 
 [new]
 Recent chages in bzr seem to have broken font-locking in dired+. It does work after `font-lock-mode' called manually for every buffer, but not by itself. -- [[Anonymous]]
+
+[new:DrewAdams:2013-02-18 00:27 UTC]
+Can't do much with that report, I'm afraid.  You don't say what Emacs build date you are using, for one thing.  And a recipe from ##emacs -Q## would help.
+
+Starting with ##emacs -Q## with an Emacs 24 trunk build from 2013-02-15 on MS Windows, then loading '''Dired+''' and visiting a directory, I see no problem with the highlighting.  More info, please. -- DrewAdams
+
+
+
+
+
+
+
+
+
 
 
 
@@ -691,3 +703,4 @@ CategoryFiles
 CategoryWThirtyTwo
 CategoryMouse
 CategoryMenus
+
