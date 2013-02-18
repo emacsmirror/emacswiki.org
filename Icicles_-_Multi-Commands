@@ -122,7 +122,7 @@ command or [[keyboard macro]] and execute the command or macro:
 `icicle-execute-extended-command' (`M-x'), `icicle-kmacro' (`S-f4'), and
 `icicle-execute-named-keyboard-macro' (`C-x M-e'). 
 
-So, for
+So for
 example, if you use `##C-u 10 C-RET##' on command `forward-char'
 during `M-x' command completion, the [[cursor]] advances 10
 characters.  Another example: `##C-x M-e C-u 200 C-RET##' on a
@@ -132,16 +132,18 @@ use all of the [[numeric prefix argument]] shortcuts, such as `M--',
 different meaning (`icicle-candidate-set-difference') in the
 '''Icicles''' minibuffer.
 
-Note that you can supply a prefix argument for both the
+Note that you can supply a [[prefix argument]] for both the
 multi-command and any of its individual actions.  The command is
 free to interpret these differently.  For example, a prefix arg
 for `icicle-kmacro' provides a default repeat factor, which can
 then be overridden for any individual action by providing a
-different prefix arg.  As another example, a prefix arg used with
-any file-name candidate for command `icicle-find-file' visits the
+different prefix arg.
+
+As another example, a prefix arg used with
+any completion candidate for command `icicle-find-file-no-search' visits the
 file in read-only mode.  But a prefix arg for the command itself
 reverses this effect: read-only becomes the default so that a
-prefix arg for a candidate means visit ''not'' read-only.
+prefix arg for a given candidate means that the visited file buffer is writable.
 
 If [[user option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-use-candidates-only-once-flag|icicle-use-candidates-only-once-flag]]</tt>'''' is non-`nil', then, when you act
 on a candidate, it is removed from the list of available
