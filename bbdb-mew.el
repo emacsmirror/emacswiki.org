@@ -9,7 +9,6 @@
 ;;         Shuhei KOBAYASHI <shuhei-k@jaist.ac.jp>
 ;;         Daisuke Kanda <small@first.tsukuba.ac.jp>
 ;;         Mitsuo Nishizawa <mitsuo@phys2.med.osaka-u.ac.jp>
-;; Maintenance: Chris Beggy
 ;; Created: 1996/11/04
 ;; Version: $Id: bbdb-mew.el,v 1.5 2001/12/29 16:12:20 chrisb Exp $
 
