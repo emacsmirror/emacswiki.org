@@ -273,16 +273,23 @@ portion is often a long directory substring.
 [[multi-command|Multi-command]] '''`icicle-file'''' is bound, by default, to '''`C-x C-f'''' in ''Icicle''
 mode, thus taking the place of `find-file'.  It combines multi-commands
 `icicle-find-file' and `icicle-find-file-absolute'.  With ''no''
-prefix argument, it matches ''relative'' file names; with a prefix
-argument, it matches ''absolute'' names (as ordinary strings).  With a ''negative'' prefix argument, you
+prefix argument, it matches ''relative'' file names; with a [[prefix argument]], it matches ''absolute'' names (as ordinary strings).  With a ''negative'' prefix argument, you
 can match also the modification date.
 
-An additional feature of `icicle-find-file-absolute' and
-`icicle-find-file-absolute-other-window' is that candidates that
+An additional feature of `icicle-find-file-absolute' (`C-x C-f' with a prefix arg) is that candidates that
 are directory names are highlighted in buffer `*Completions*'
 using face `icicle-special-candidate'.
 
+An additional feature of command `icicle-find-file' (`C-x C-f'
+with no prefix arg) is that if you use a prefix arg when acting on
+an individual file-name candidate then the file is visited in
+read-only mode.  The same invocation of `C-x C-f' can thus open
+multiple files, some in read-only mode, some not.
 
+(There is also multi-command '''`icicle-find-file-read-only'''', unbound
+by default, which is the same as `icicle-find-file' but with the
+prefix arg behavior flipped: with no prefix arg when you act on a
+candidate file it is visited read-only.)
 
 
 
