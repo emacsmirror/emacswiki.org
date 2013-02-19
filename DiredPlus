@@ -688,8 +688,9 @@ I will take a look when I can.  Thx for the report. -- DrewAdams
 
 [new:DrewAdams:2013-02-18 19:33 UTC]
 So far, this appears to be an Emacs regression. I filed bug #13751 and it was promptly merged to bug #13730.
-
 http://debbugs.gnu.org/cgi/bugreport.cgi?bug=13751
+See also:
+http://lists.gnu.org/archive/html/emacs-devel/2013-02/msg00411.html
 
 -- DrewAdams
 
