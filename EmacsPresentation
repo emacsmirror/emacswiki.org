@@ -1,7 +1,7 @@
 Emacs is often used to write presentations (using outliners like OrgMode) but less often to give presentations. It's perfectly possible though.
 
 
-=== CategoryWishList EmacsPresentation ===
+== One view of a good Emacs style presenting ==
 
 I just saw a presentation given with JMP (proprietary statistical software), and they used an outline to organize and present the material, with interactive outline hiding during the presentation.  The other nice feature was a dynamic underlining of the topics by the speaker as he talked. Is there some way to do this in Emacs? 
 
@@ -34,7 +34,7 @@ In the JMP presentation I saw, some action at a point in the outline would open/
 
 For instance, imagine an outline with a few URLs in it, which reveals itself as above, and, when properly tickled, tells Mozilla to display the appropriate URL.  In emacs, you'd have the organized outline and some notes to share, and in Mozilla, you'd have whatever it was you wanted to talk about.
 
-=== Solutions: ===
+== Solutions ==
 
 * [http://shebang.ws/emacs-outline-presentation-mode.html outline-presentation-mode] -- a minor mode for outline-mode to make presentations from within Emacs.
 
