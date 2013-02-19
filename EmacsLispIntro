@@ -6,7 +6,7 @@ recommended for those without prior Lisp programming experience.
 
 Until Emacs 21, the EmacsLisp introduction was distributed separately. The introduction comes in Texinfo format, which means that it can be converted to a variety of formats: info, html, and others.  So, for example, in Debian, apt-get install emacs-lisp-intro would do the trick.
 
-The way to read the intro is to type `C-h i' to start Info, and then <code>`m Emacs Lisp Intro RET'</code> or evaluate (info "(eintr) Top"). See InfoMode for help on using Info
+The way to read the intro is to type `C-h i' to start Info, and then <code>`m Emacs Lisp Intro RET'</code> or evaluate <code>(info "(eintr) Top")</code>. See InfoMode for help on using Info
 
 Get the <code>emacs-lisp-intro</code> file from any GNU ftp mirror or from:
 
