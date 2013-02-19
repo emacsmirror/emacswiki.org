@@ -34,8 +34,6 @@ In the JMP presentation I saw, some action at a point in the outline would open/
 
 For instance, imagine an outline with a few URLs in it, which reveals itself as above, and, when properly tickled, tells Mozilla to display the appropriate URL.  In emacs, you'd have the organized outline and some notes to share, and in Mozilla, you'd have whatever it was you wanted to talk about.
 
------
-
 === Solutions: ===
 
 * [http://shebang.ws/emacs-outline-presentation-mode.html outline-presentation-mode] -- a minor mode for outline-mode to make presentations from within Emacs.
