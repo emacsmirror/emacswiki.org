@@ -53,11 +53,19 @@ For instance, imagine an outline with a few URLs in it, which reveals itself as 
 
 
 == Experience giving a presentation with org-presie ==
-I gave a presentation to !ThoughtWorks about Emacs, Lisp and Elnode. It worked quite well. The main problem was the fixing of font size.
+NicFerrier gave a presentation to !ThoughtWorks about Emacs, Lisp and Elnode. It worked quite well. The main problem was the fixing of font size.
 
-I made [[http://github.com/nicferrier/emacs-framesize|framesize]] to deal with that, it makes increasing the font on a frame easy.
+NicFerrier made [[http://github.com/nicferrier/emacs-framesize|framesize]] to deal with that, it makes increasing the font on a frame easy.
 
-It's not automatically installed if you install ##org-pressie##.
+It's automatically installed if you install ##org-pressie##.
+
+== Experience giving a presentation with org-present ==
+
+NicFerrier is giving a Skillsmatter talk on the 19th of February 2013 using ##org-present##.
+
+Both ##org-present## and ##org-presie## are just outline based presentations. ##org-present## is better overall though it doesn't quite do what the above JMP story does. That sounds nice.
+
+It would be nice if a different view of the buffer were possible in presenting mode... in presenting mode there would be a single frame with large fonts and no modeline... this is a use for ##indirect buffers##?
  
 ---- 
 CategoryWishList
