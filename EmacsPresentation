@@ -1,3 +1,6 @@
+Emacs is often used to write presentations (using outliners like OrgMode) but less often to give presentations. It's perfectly possible though.
+
+
 === CategoryWishList EmacsPresentation ===
 
 I just saw a presentation given with JMP (proprietary statistical software), and they used an outline to organize and present the material, with interactive outline hiding during the presentation.  The other nice feature was a dynamic underlining of the topics by the speaker as he talked. Is there some way to do this in Emacs? 
