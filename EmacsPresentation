@@ -66,6 +66,8 @@ NicFerrier is giving a Skillsmatter talk on the 19th of February 2013 using ##or
 Both ##org-present## and ##org-presie## are just outline based presentations. ##org-present## is better overall though it doesn't quite do what the above JMP story does. That sounds nice.
 
 It would be nice if a different view of the buffer were possible in presenting mode... in presenting mode there would be a single frame with large fonts and no modeline... this is a use for ##indirect buffers##?
+
+Both ##org-presie## and ##org-present## have structural requirements on the outline buffer that should probably be absent. A presentation tool should just descend through the outline. 
  
 ---- 
 CategoryWishList
