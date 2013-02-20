@@ -24,4 +24,15 @@ Then add this elisp code to your ~/.gnus.el.
 * Use M-x mml-attach-file to add those PGP ASCII-armored attachments (''after'' you have already encrypted your mail with mc-encrypt)
 
 ----
+
+The problem seems to be that Outlook doesn't like unnamed attachments.  Using the following code (based on settings from Sigma [https://github.com/sigma/dotfiles/blob/master/_gnus.el]), Gnus gives the attachment the name "signature.asc" immediately before sending:
+
+  (defadvice mml2015-sign (after mml2015-sign-rename (cont) act)
+    (save-excursion
+      (search-backward "Content-Type: application/pgp-signature")
+      (goto-char (point-at-eol))
+      (insert "; name=\"signature.asc\"; description=\"Digital signature\"")))
+
+
+----
 CategoryGnus
