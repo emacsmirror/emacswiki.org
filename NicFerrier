@@ -69,10 +69,9 @@ I develop and maintain the EmacsLisp version of a [[Creole]] [[http://github.com
 We are using [[Creole]] to develop [[Elwiki]], an EmacsWiki engine in EmacsLisp run with [[Elnode]].
 
 
-== Useful links ==
+== Frame size ==
 
-[[CycleFontSizes|changing font size]] - the most useful thing is //C-0// to reset font size in a window.
-
+Changing font size is a pain so I wrote [[FrameSize]].
 
 
 == Email under Emacs ==
