@@ -2,7 +2,7 @@
 
 1. Select a region.
 
-2. Run "wc" over that region: M-| wc
+2. Run M-=, or M-| wc for older versions of emacs.
 
 3. See the count of lines, words, and characters, in the mode-line.
 
