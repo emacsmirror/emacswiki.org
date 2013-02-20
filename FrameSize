@@ -12,7 +12,7 @@ These packages also let you configure Emacs to ''automatically'' fit ''all'' fra
 
 * <tt>[[frame-cmds.el]]</tt> lets you ''tile'', ''maximize'', or ''restore'' (toggle maximize) frames horizontally or vertically or both. These commands leave room for the Windows task bar and a standalone minibuffer frame, if present.
 
-
+NicFerrier has also written some frame sizing stuff [[http://marmalade-repo.org/packages/framesize|see Marmalade's FrameSize package]]. It uses key-chord by default.
 
 '''See Also:'''
 * Libraries <tt>[[frame-cmds.el]]</tt> and <tt>[[doremi-frm.el]]</tt> have commands for ''incrementally'' resizing a frame (by using the arrow keys or mouse wheel).
