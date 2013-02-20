@@ -426,6 +426,8 @@ somewhere in your init.el [willert@cpan.org]
 
 == Known Issues ==
 
+=== Tags ===
+
 The function cperl-write-tags in cperl-mode.el hard coded tags-file-name to "TAGS". When used conjunction with PerlDevelopEnvironment this will cause problem. 
 
 PerlDevelopEnvironment generates tags content based on Perl syntax. It is good in Perl but very bad for any others. So it'd better to store this kind of tags in to specific files in stead of the general one. But unfortunate, tags-file-name was hard coded into cperl-mode.el. 
@@ -466,11 +468,45 @@ I have reported this problem to bug-gnu-emacs@gnu.org. You can now fix this prob
 
       (setq cperl-tags-file-name "YOUR-TAGS")
 
+=== Spaces in file names ===
 
+There might be some troubles running (compiling) a script and locating compilation errors when script file path contains spaces.
+The following changes will fix the issue.
+
+{{{
+--- mode-compile.el.orig        2013-02-19 18:12:02 -0600
++++ mode-compile.el     2013-02-19 11:00:02 -0600
+@@ -1988,7 +1988,7 @@
+          (shfile  (or mc--remote-pathname (buffer-file-name)
+                       (error "Compilation abort: Buffer %s has no filename"
+                              (buffer-name))))
+-         (run-cmd (concat shcmd " " dbgflags " " shfile " "
++         (run-cmd (concat shcmd " " dbgflags " \"" shfile "\" "
+                           (setq mc--shell-args
+                                 (read-string (if mode-compile-expert-p
+                                                  "Argv: "
+}}}
+
+{{{
+--- lisp/progmodes/compile.el.orig      2013-02-19 18:11:22 -0600
++++ lisp/progmodes/compile.el   2013-02-19 17:45:18 -0600
+@@ -319,7 +319,7 @@
+     ;; warnings" in recent perl when breaking circular references
+     ;; during program or thread exit.
+     (perl
+-     " at \\([^ \n]+\\) line \\([0-9]+\\)\\(?:[,.]\\|$\\| \
++     " at \\([^\n]+\\) line \\([0-9]+\\)\\(?:[,.]\\|$\\| \
+ during global destruction\\.$\\)" 1 2)
+
+     (php
+}}}
 
 == Questions ==
 
 *Note: The wiki is not the place to report bugs.* If you want to report bugs (either in the code or the documentation), use `M-x report-emacs-bug'.
+
+[new]
+'''Question:'''Is /cperl-compilation-error-regexp-alist/ supposed to be used somehow instead of tweaking regexp for perl mode?
 
 [new]
 '''Question:'''Is there a way to get a menu containing function-names in the file
