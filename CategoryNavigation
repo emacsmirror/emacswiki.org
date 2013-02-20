@@ -25,6 +25,7 @@ Navigating through the text of large buffers, or multiple buffers, especially co
 *** EtagsStack -- Navigate the tags stack.
 *** EtagsTable -- Set the tags-table-list based on the current file.
 * GnuGlobal -- Database of code identifiers and tags.
+* OpenGrok -- Database of symbols and references
 
 == Navigation By Hyperlink ==
 
