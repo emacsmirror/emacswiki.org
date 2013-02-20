@@ -1,0 +1,3 @@
+WeeChat is a console based InternetRelayChat client.  It supports a relay protocol for other applications to connect.  [https://github.com/the-kenny/weechat.el WeeChat.el] is such a front end for Emacs.
+
+
