@@ -16,7 +16,7 @@
 ;;           : Randolph Fritz <rfritz@u.washington.edu>
 ;;           : Vincent Belaiche (VB1) <vincentb1@users.sourceforge.net>
 ;; Version: 1.4.12 (2010-10-18)
-;; Serial Version: %Id: 38%
+;; Serial Version: %Id: 39%
 ;; Keywords: languages, basic, Evil
 ;; X-URL:  http://www.emacswiki.org/cgi-bin/wiki/visual-basic-mode.el
 
@@ -829,7 +829,7 @@ changed files."
       (forward-line 1)))
 
   (cond ((fboundp 'zmacs-deactivate-region)
-         (zmacs-d eactivate-region))
+         (zmacs-deactivate-region))
         ((fboundp 'deactivate-mark)
          (deactivate-mark))))
 
