@@ -1,0 +1,39 @@
+[[es:WlFirmarCorreos]]
+Signing Mails with WanderLust is used as a security procedure. This helps to the receiver of the e-mail to confirm the identity of the sender and also that the message hasn't been altered during transmission.
+
+There are two procedures to follow when you want to sign and verify a signature assuming that you already has your private and public key, and the public key of the reciever:
+
+* Inline signing: Put the signature inline showing which region of the text is signed and following the signature.
+* Attached signature: Write the whole contents of the e-mail, and the signatures goes attached to it.
+
+== Inline Signing ==
+
+=== Using EasyPG ===
+EasyPG is an easy and complete option for managing keys and for encrypting/decrypting and signing/verifying. 
+
+For signing, you just has to select all the region you want to sign and type M-x epa-sign-region. 
+
+For verifying, you can select the region and call M-x epa-verify-region.
+
+
+Also, you can use the <code>epa-mail-mode</code>, a minor mode that offers some key binding. 
+
+For signing, press <code>C-c C-e s</code> for sign all the contents of the message.
+
+For verifying, position the cursor in the signed region and press <code>C-c C-e v</code>.
+
+
+=== Other Tools === 
+There are other tools that you can use later I'll complete the page.
+
+== Attached Signature ==
+If you want to sign an e-mail, but you want the original message easy to read, this is the recomended behaviour.
+Some people recomend this way for signing an e-mail.
+
+
+Using <code>mime-edit-set-sign</code> and pressing "y" for accepting, Mime-edit will attach a signature for all the text contents.
+
+For verifying, clic on the header of the mime attach or position the cursor and call <code>M-x mime-preview-play-current-entity</code> and will appear a little buffer with the result of the signature check.
+
+----
+WanderLust CategoryMail
