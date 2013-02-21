@@ -2,9 +2,8 @@
 ;; Copy to the following URL from time to time:
 ;; http://www.emacswiki.org/cgi-bin/wiki?action=edit;id=AlexSchroederConfigWindows
 ;; This is free software.
-;; Currently for GNU Emacs 23.1.50.1 (i386-mingw-nt5.1.2600) of 2009-11-04 on LENNART-69DE564 (patched)
+;; Currently for GNU Emacs 24.2.1 (i386-mingw-nt5.1.2600) of 2012-08-29 on MARVIN
 
-;; ╭∩╮⎝⏠_⏠⎠╭∩╮
 ;; ▇█▓▒░◕~◕░▒▓█▇
 
 (require 'cl)
@@ -304,7 +303,8 @@ Indent by DEPTH, if required"
 
 (global-set-key (kbd "C-c q") 'sql-oracle)
 
-(setq sql-user "ci" sql-password "cipw" sql-database "BSICRM.VD_5164")
+(setq sql-user "pista" sql-password "pista" sql-database "PISTA_11")
+;; (setq sql-user "ci" sql-password "cipw" sql-database "BSICRM.VD_5164")
 ;; (setenv "NLS_LANG" "AMERICAN_AMERICA.UTF8")
 ;; (add-to-list 'process-coding-system-alist '("SQL" . utf-8));; no effect?
 
@@ -645,8 +645,6 @@ Each line consists of a lastname, a tab, and a firstname."
 	    (local-set-key (kbd "<down>") 'next-line)))
 (defalias 'eshell/emacs 'find-file)
 (defun eshell/dired () (dired (eshell/pwd)))
-(eval-after-load 'eshell
-  '(require 'eshell-autojump nil t))
 
 ;;; perl
 (setq cperl-hairy t
@@ -760,8 +758,8 @@ Each line consists of a lastname, a tab, and a firstname."
 
 (global-set-key (kbd "C-c e") 'rcirc)
 
-(eval-after-load 'rcirc '(require 'rcirc-color))
-(eval-after-load 'rcirc '(require 'rcirc-controls))
+(eval-after-load 'rcirc '(require 'rcirc-color nil t))
+(eval-after-load 'rcirc '(require 'rcirc-controls nil t))
 (eval-after-load 'rcirc '(require 'rcirc-notify nil t))
 (eval-after-load 'rcirc '(require 'rcirc-pounce nil t))
 (eval-after-load 'rcirc '(require 'rcirc-groups nil t))
