@@ -67,7 +67,7 @@ https://github.com/melmothx/rcirc/tree/to-emacs
 ; [[rcircRetake]]: ##/retake## -- send RECOVER and RELEASE messages to !NickServ
 ; [[rcircReconnect]]: ##/reconnect## -- quit and reconnect immediately for users waking their laptop from sleep after the server has closed the connection
 ; [[rcircAutoReconnect]]: Automatically reconnect when disconnected from the IRC server
-; [[rcircPounce]]: ##/pounce## -- store messages for people and send them when they join one of the channels you're on
+; [[rcircPounce]]: ##/pounce##, ##/unpounce## -- store messages for people and send them when they join one of the channels you're on
 ; [[rcircSmiley]]: Add little :) and :( smileys
 ; [[rcircAll]]: ##/all## -- run a command such as ##/away## for all connections 
 ; [[rcircNoNamesOnJoin]]: How not to display NAMES list on channel JOIN (ugly hacks inside)
