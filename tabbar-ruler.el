@@ -5,7 +5,7 @@
 ;; Author: Matthew Fidler, Nathaniel Cunningham
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Mon Oct 18 17:06:07 2010 (-0500)
-;; Version: 0.21
+;; Version: 0.22
 ;; Last-Updated: Sat Dec 15 15:44:34 2012 (+0800)
 ;;           By: Matthew L. Fidler
 ;;     Update #: 663
@@ -51,6 +51,12 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 20-Feb-2013    Matthew L. Fidler  
+;;    Last-Updated: Sat Dec 15 15:44:34 2012 (+0800) #663 (Matthew L. Fidler)
+;;    Changed so that the separators do not need to be fancy images.  I
+;;    found that when the separators were images, it slowed down emacs on
+;;    windows.  Therefore, the fancy images are disabled by default.  This
+;;    also includes the stylized close symbols.
 ;; 19-Dec-2012    Matthew L. Fidler  
 ;;    Last-Updated: Sat Dec 15 15:44:34 2012 (+0800) #663 (Matthew L. Fidler)
 ;;    Added back popup-menu
@@ -691,20 +697,22 @@ Call `tabbar-tab-label-function' to obtain a label for TAB."
                                                                        :color (if (eq tab sel)
                                                                                   (face-attribute 'default :foreground)
                                                                                 "gray10"))))))
-          (separator-image (tabbar-find-image
-                            `((:type xpm :data
-                                     ,(tabbar-ruler-tab-separator-image
-                                       (if (eq tab sel)
-                                           'tabbar-selected
-                                         'tabbar-unselected)
-                                       (if not-last
-                                           (if (eq (car not-last) sel)
+          (separator-image (if tabbar-ruler-fancy-tab-separator
+                               (tabbar-find-image
+                                `((:type xpm :data
+                                         ,(tabbar-ruler-tab-separator-image
+                                           (if (eq tab sel)
                                                'tabbar-selected
-                                             'tabbar-unselected) nil)
-                                       nil
-                                       (if (and not-last
-                                                (eq (car not-last) sel))
-                                           t nil))))))
+                                             'tabbar-unselected)
+                                           (if not-last
+                                               (if (eq (car not-last) sel)
+                                                   'tabbar-selected
+                                                 'tabbar-unselected) nil)
+                                           nil
+                                           (if (and not-last
+                                                    (eq (car not-last) sel))
+                                               t nil)))))
+                             nil))
           (face (if selected-p
                     (if modified-p
                         'tabbar-selected-modified
@@ -740,15 +748,30 @@ Call `tabbar-tab-label-function' to obtain a label for TAB."
                  'help-echo 'tabbar-help-on-tab
                  'face face
                  'pointer 'hand)
-     (propertize "[x]"
-                 'display (tabbar-normalize-image close-button-image 0)
-                 'face face
-                 'pointer 'hand
-                 'tabbar-tab tab
-                 'local-map (tabbar-make-tab-keymap tab)
-                 'tabbar-action 'close-tab)
-     (propertize "|"
-                 'display (tabbar-normalize-image separator-image)))))
+     (if tabbar-ruler-fancy-close-image
+         (propertize (with-temp-buffer
+                       (ucs-insert "00D7")
+                       (buffer-string))
+                     'display (tabbar-normalize-image close-button-image 0)
+                     'face face
+                     'pointer 'hand
+                     'tabbar-tab tab
+                     'local-map (tabbar-make-tab-keymap tab)
+                     'tabbar-action 'close-tab)
+       (propertize
+        (with-temp-buffer
+          (ucs-insert "00D7")
+          (insert " ")
+          (buffer-string))
+        'face face
+        'pointer 'hand
+        'tabbar-tab tab
+        'local-map (tabbar-make-tab-keymap tab)
+        'tabbar-action 'close-tab))
+     (if tabbar-ruler-fancy-tab-separator
+         (propertize "|"
+                     'display (tabbar-normalize-image separator-image))
+       tabbar-separator-value))))
 
 (defsubst tabbar-line-format (tabset)
   "Return the `header-line-format' value to display TABSET."
@@ -756,13 +779,15 @@ Call `tabbar-tab-label-function' to obtain a label for TAB."
          (tabs (tabbar-view tabset))
          (padcolor (tabbar-background-color))
          atsel elts
-         (separator-image (tabbar-find-image
-                           `((:type xpm :data
-                                    ,(tabbar-ruler-tab-separator-image
-                                      nil
-                                      (if (eq (car tabs) sel)
-                                          'tabbar-selected
-                                        'tabbar-unselected)))))))
+         (separator-image (if tabbar-ruler-fancy-tab-separator
+                              (tabbar-find-image
+                               `((:type xpm :data
+                                        ,(tabbar-ruler-tab-separator-image
+                                          nil
+                                          (if (eq (car tabs) sel)
+                                              'tabbar-selected
+                                            'tabbar-unselected)))))
+                            nil)))
     ;; Initialize buttons and separator values.
     (or tabbar-separator-value
         (tabbar-line-separator))
@@ -810,17 +835,25 @@ Call `tabbar-tab-label-function' to obtain a label for TAB."
       (setq elts (cons (tabbar-line-tab (car tabs) (cdr tabs) sel) elts)
             tabs (cdr tabs)))
     ;; Cache and return the new tab bar.
-    (tabbar-set-template
-     tabset
-     (list (tabbar-line-buttons tabset)
-           (propertize "|"
-                       'display (tabbar-normalize-image separator-image))
-           (nreverse elts)
-           (propertize "%-"
-                       'face (list :background padcolor
-                                   :foreground padcolor)
-                       'pointer 'arrow)))
-    ))
+    (if tabbar-ruler-fancy-tab-separator
+        (tabbar-set-template
+         tabset
+         (list (tabbar-line-buttons tabset)
+               (propertize "|"
+                           'display (tabbar-normalize-image separator-image))
+               (nreverse elts)
+               (propertize "%-"
+                           'face (list :background padcolor
+                                       :foreground padcolor)
+                           'pointer 'arrow)))
+      (tabbar-set-template
+       tabset
+       (list (tabbar-line-buttons tabset)
+             (nreverse elts)
+             (propertize "%-"
+                         'face (list :background padcolor
+                                     :foreground padcolor)
+                         'pointer 'arrow))))))
 
 (defface tabbar-selected-modified
   '((t
@@ -911,7 +944,18 @@ Call `tabbar-tab-label-function' to obtain a label for TAB."
 
 (defcustom tabbar-ruler-fight-igore-modes '(info-mode helm-mode package-menu-mode)
   "Exclude these mode when changing between tabbar and ruler."
-  :type '(repeat (symbol :tag "Major Mode")))
+  :type '(repeat (symbol :tag "Major Mode"))
+  :group 'tabbar-ruler)
+
+(defcustom tabbar-ruler-fancy-tab-separator nil
+  "Separate each tab with a fancy generated image"
+  :type 'boolean
+  :group 'tabbar-ruler)
+
+(defcustom tabbar-ruler-fancy-close-image nil
+  "Use an image for the close"
+  :type 'boolean
+  :group 'tabbar-ruler)
 
 (defvar tabbar-ruler-tabbar-off 't)
 (defvar tabbar-ruler-ruler-off 't)
@@ -920,27 +964,32 @@ Call `tabbar-tab-label-function' to obtain a label for TAB."
 
 (defvar tabbar-ruler-toolbar-off nil)
 (defvar tabbar-ruler-menu-off nil)
-(add-hook 'find-file-hook (lambda() (interactive) (tabbar-ruler-tabbar-ruler-fight 't)))
-(defcustom tabbar-ruler-ruler-display-commands '(ac-trigger-commands
-                                                 esn-upcase-char-self-insert
-                                                 esn-magic-$
-                                                 right-char
-                                                 left-char
-                                                 previous-line
-                                                 next-line
-                                                 backward-paragraph
-                                                 forward-paragraph
-                                                 cua-scroll-down
-                                                 cua-scroll-up
-                                                 cua-paste
-                                                 cua-paste-pop
-                                                 autopair-newline
-                                                 autopair-insert-opening
-                                                 autopair-skip-close-maybe
-                                                 autopair-backspace
-                                                 backward-delete-char-untabify
-                                                 delete-backward-char
-                                                 self-insert-command)
+(add-hook 'find-file-hook
+          (lambda()
+            (interactive)
+            (tabbar-ruler-tabbar-ruler-fight 't)))
+
+(defcustom tabbar-ruler-ruler-display-commands
+  '(ac-trigger-commands
+    esn-upcase-char-self-insert
+    esn-magic-$
+    right-char
+    left-char
+    previous-line
+    next-line
+    backward-paragraph
+    forward-paragraph
+    cua-scroll-down
+    cua-scroll-up
+    cua-paste
+    cua-paste-pop
+    autopair-newline
+    autopair-insert-opening
+    autopair-skip-close-maybe
+    autopair-backspace
+    backward-delete-char-untabify
+    delete-backward-char
+    self-insert-command)
   "* Ruler display commands."
   :group 'tabbar-ruler
   :type '(repeat symbol))
