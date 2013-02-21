@@ -30,7 +30,43 @@ El método que recomienda mucha gente es el de adjuntar la firma. Será porque e
 
 Usando <code>mime-edit-set-sign</code> y presionando "y" para aceptar, Mime-edit firmará el texto y lo adjuntará previo a enviar.
 
-Para validar la firma adjunta podés hacer clic central(mouse-2) o llamar a la función <code>M-x mime-preview-play-current-entity</code> y aparecerá un pequeño buffer debajo indicando el resultado del chequeo de validez.
+Para validar la firma adjunta podés hacer clic central(mouse-2), presionar "v" o llamar a la función <code>M-x mime-preview-play-current-entity</code> sobre el encabezado del adjunto(el que dice <code>[...  <application/pgp-signature (...)>]</code>). Luego, aparecerá un pequeño buffer debajo indicando el resultado del chequeo de validez.
+
+
+Es posible que desees ''firmar todos los correos salientes'', para ello debés hacer lo siguiente:
+
+# Corregir un pequeño problema en la función <code>pgg-add-passphrase-cache</code>.
+# Agregar una función que habilite la firma digital y que no posea parámetros.
+# Agregar la función al hook correspondiente.
+
+Todo esto se hace con el siguiente código que podés agregar a tu archivo .emacs:
+
+
+    ;; 1.- Corregir un pequeño problema de pgg.
+    (defun pgg-add-passphrase-cache (key passphrase)
+      "Add the PASSPHRASE of a KEY into the passphrase cache. So it will not be requested again.
+    
+    The original didn't check for nil or null string at the begining of the function leading to an error. This functions corrects that."
+      (when key
+        (setq key (pgg-truncate-key-identifier key))
+        (set (intern key pgg-passphrase-cache)
+    	 passphrase)
+        (run-at-time pgg-passphrase-cache-expiry nil
+    		 #'pgg-remove-passphrase-cache
+    		 key)))
+    
+    ;; 2.- Crear una función para habilitar el firmado.
+    (defun mime-aux-enable-signing ()
+      "Análogo a `mime-edit-set-sign' sólo que no pide parámetros."
+      (interactive)
+      (mime-edit-set-sign t))
+    
+    ;; 3.- Agregarlo al hook correspondiente.
+    (add-hook 'mime-edit-translate-hook 'mime-aux-enable-signing)
+
+
+Con esto te evitarás tener que tipear <code>mime-edit-set-sign</code> por cada correo ya que lo hará por sí solo. La desventaja de usar este código es que no podrás desactivar éste comportamiento a menos que lo comentes completamente y reinicies emacs o cambies la función <code>mime-aux-enable-signing</code>.
+
 
 ----
 WanderLust CategoryMail EncryptingMail
