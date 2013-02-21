@@ -11,6 +11,15 @@ Note that this page is not about EmacsWikiMode.
 --------
 
 
+
+== ElispArea Formatting Changed ==
+
+(Minor.) Starting 2013-02-20, the "Emacs" image is now on the left and surrounded by a border.  Is this intentional?  The appearance of ElispArea is no longer the same as the other pages wrt the image. -- DrewAdams
+
+
+----
+
+
 == Double TOC in ElispArea now ==
 
 There are two tables of contents now, for some reason. -- DrewAdams
