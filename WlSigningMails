@@ -36,4 +36,4 @@ Using <code>mime-edit-set-sign</code> and pressing "y" for accepting, Mime-edit 
 For verifying, clic on the header of the mime attach or position the cursor and call <code>M-x mime-preview-play-current-entity</code> and will appear a little buffer with the result of the signature check.
 
 ----
-WanderLust CategoryMail
+WanderLust CategoryMail EncryptingMail
