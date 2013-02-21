@@ -7,9 +7,9 @@
 ;; Copyright (C) 1995-2013, Drew Adams, all rights reserved.
 ;; Created: Wed Aug  2 11:12:24 1995
 ;; Version: 21.1
-;; Last-Updated: Fri Dec 28 10:26:53 2012 (-0800)
+;; Last-Updated: Thu Feb 21 14:16:36 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 2961
+;;     Update #: 2964
 ;; URL: http://www.emacswiki.org/start.el
 ;; Keywords: abbrev, internal, local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -82,6 +82,8 @@
 ;;
 ;; Change Log:
 ;;
+;; 2013/02/21 dadams
+;;     Autoload register-list.el.
 ;; 2012/11/16 dadams
 ;;     New library highlight-chars.el replaces obsolete show-wspace.el.
 ;; 2012/11/14 dadams
@@ -418,7 +420,7 @@
 ;;;   ;; Emacs 20, then you will need to do this, because FJW's `ls-lisp.el' uses `mapc':
 ;;;   ;;(require 'cl)
 ;;;   (load-library "ls-lisp")) ; Don't use `require', so get FJW's version, not vanilla version.
-(unless (and (memq system-type '(windows-nt ms-dos macos)) ; Redefinitions.  
+(unless (and (memq system-type '(windows-nt ms-dos macos)) ; Redefinitions.
              (require 'ls-lisp+ nil t)) ; This loads `files+.el'.
   (require 'files+ nil t))
 (require 'wid-edit+ nil t)              ; Extensions to `wid-edit.el'.
@@ -687,6 +689,9 @@ See the Dired-X Info pages (type \\[info]) for information on this package.")
 (autoload 'display-line-numbers "line-num"
   "Temporarily display line numbers in left margin of current buffer." t)
 (autoload 'setup-training-cc "training-cc" "Set up for code display with projector." t)
+
+(when (> emacs-major-version 21)
+  (autoload 'register-list "register-list" "Display a list of registers." t))
 
 (autoload 'toggle-highlight-hard-hyphens "highlight-chars"
   "Toggle highlighting of hard hyphen characters." t)
