@@ -26,7 +26,7 @@ También existe un modo menor denominado <code>epa-mail-mode</code> el cual ofre
 Existen otras herramientas que puedes usar, más tarde las incorporaré a esta sección.
 
 == Firma Adjunta ==
-El método que recomienda mucha gente es el de adjuntar la firma. Será porque el mensaje es más fácil de leer y poco confuso para usuarios de correos novatos, o puede ser porque muchas veces se firma luego de emitir el comando de "enviar" y previo al envío prohibiendo la posterior modificación accidental del texto o la firma.
+El método que recomienda mucha gente es el de adjuntar la firma. Será porque el mensaje es más fácil de leer y poco confuso para usuarios de correos novatos, o puede ser porque muchas veces se firma automáticamente previo al envío prohibiendo la posterior modificación accidental del texto o la firma.
 
 Usando <code>mime-edit-set-sign</code> y presionando "y" para aceptar, Mime-edit firmará el texto y lo adjuntará previo a enviar.
 
