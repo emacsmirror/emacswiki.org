@@ -1,4 +1,4 @@
-Ever since I started using Emacs, I was looking for ways to navigate vast multi-language source code bases. And OpenGrok is a decent solution to this problem. This package is a first attempt to make OpenGrok available to the Emacs user.
+Ever since I started using Emacs, I was looking for ways to navigate vast multi-language source code bases. And [http://hub.opensolaris.org/bin/view/Project+opengrok OpenGrok] is a decent solution to this problem ("wicked fast source browser"). This package is a first attempt to make !OpenGrok available to the Emacs user.
 
 Lisp:opengrok.el
 
