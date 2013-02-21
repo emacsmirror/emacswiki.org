@@ -5,13 +5,13 @@ This piece of code allows you to get a list of defined [[rcirc]] commands and th
 Example:
 
 {{{
-15:31 /help
-15:31 -kensanata- /MODE /JOIN /KICK /ALL /NICK /WHOIS /RECONNECT
-      /COLOR /DIM /NAMES /UNPOUNCE /QUOTE /KEYWORD /TOPIC /POUNCE
-      /LIST /PART /BRIGHT /MSG /QUIT /IGNORE /ENCODING /OPER /SV
-      /QUERY
-15:31 /help dim
-15:31 -kensanata- Manage the dim nick list.   Note: If PROCESS or
-      TARGET are nil, the values given by `rcirc-buffer-process'
-      and `rcirc-target' will be used.
+10:58 /help
+10:58 -kensanata- /ALL /BAN /BRIGHT /COLOR /DEOP /DIM
+      /ENCODING /HELP /IGNORE /INVITE /JOIN /KEYWORD /KICK
+      /KICKBAN /LIST /MODE /MSG /MUTE /NAMES /NICK /OCCUR /OP
+      /OPER /PART /POUNCE /QUERY /QUIT /QUOTE /RECONNECT /SV
+      /TOPIC /UNBAN /UNMUTE /UNPOUNCE /WHOIS
+10:58 /help help
+10:58 -kensanata- List rcirc commands or print their
+      doc-string.
 }}}
