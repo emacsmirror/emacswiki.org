@@ -1,0 +1,36 @@
+[[en:WlSigningMails]]
+Firmar correos con WanderLust es usado como un procedimiento de seguridad. Esto permite al destinatario del correo confirmar la identidad del que lo envía, incluso para asegurar que el mensaje no fue alterado en el transcurso de la transmisión.
+
+La firma de un texto es una herramienta de seguridad útil para los casos en el que los correos pueden ser leídos por personas agenas o leídos por el público en general. Si sólo se desea que sea un correo privado entre una o varias personas, se recomienda mejor la encriptación del correo.
+
+Hay dos procedimientos para firmar y validar la validez de una firma asumiendo que ya poseemos un nuestra clave privada y pública y también la clave pública del destiantario.
+
+* Firma en línea : Consiste en firmar una región determinada e incorporar la firma inmediatamente en formato texto, incluso delimitando la región abarcada.
+* Firma adjunta : Al enviar, se firma el contenido del mensaje y se incorpora la firma como un archivo adjunto.
+
+== Firma en Línea ==
+
+=== Usando EasyPG ===
+EasyPG es una herramienta fácil y completa para manipular las claves, encriptar y desencriptar como así también firmar y validar.
+
+* ''Para firmar'' debe seleccionar la región y tipear <code>M-x epa-sign-region</code>.
+* ''Para validar'' la firma debe seleccionar la región(incluso la firma) y usar la función <code>M-x epa-verify-region</code>.
+
+
+También existe un modo menor denominado <code>epa-mail-mode</code> el cual ofrece algunos accesos de teclados. Con este modo activo debemos:
+
+* ''Para firmar'' debemos presionar <code>C-c C-e s</code> y se firmará el contenido del mensaje.
+* ''Para validar'' debemos presionar <code>C-c C-e v</code>. En el minibuffer se indicará si fue exitosa o no la validación.
+
+=== Otras Herramientas ===
+Existen otras herramientas que puedes usar, más tarde las incorporaré a esta sección.
+
+== Firma Adjunta ==
+El método que recomienda mucha gente es el de adjuntar la firma. Será porque el mensaje es más fácil de leer y poco confuso para usuarios de correos novatos, o puede ser porque muchas veces se firma luego de emitir el comando de "enviar" y previo al envío prohibiendo la posterior modificación accidental del texto o la firma.
+
+Usando <code>mime-edit-set-sign</code> y presionando "y" para aceptar, Mime-edit firmará el texto y lo adjuntará previo a enviar.
+
+Para validar la firma adjunta podés hacer clic central(mouse-2) o llamar a la función <code>M-x mime-preview-play-current-entity</code> y aparecerá un pequeño buffer debajo indicando el resultado del chequeo de validez.
+
+----
+WanderLust CategoryMail
