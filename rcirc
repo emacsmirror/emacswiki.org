@@ -81,7 +81,7 @@ https://github.com/melmothx/rcirc/tree/to-emacs
 ; [[rcircSound]]: Play sounds through IRC using CTCP SOUND.
 ; [[rcircEncoding]]: Change the encoding per channel
 ; [[rcircLateFix]]: Correct original word when 's/wrong/right' messages are seen.
-; [[rcircHelp]]: Implement /help command
+; [[rcircHelp]]: ##/help##
 ; [[rcircCommandCompletion]]: Let TAB complete commands and nicks
 ; [[rcircDimNicks]]: Dim the entire line for nicks in `rcirc-dim-nicks'.
 ; [[rcircNotify]]: Libnotify notification popups when someone talks to you
@@ -93,7 +93,6 @@ https://github.com/melmothx/rcirc/tree/to-emacs
 ; [[rcircOccur]]: find stuff in all your rcirc buffers
 ; [[rcircOperator]]: ##/op##, ##/deop##, ##/mute##, ##/unmute##, ##/ban##, ##/unban##, ##/kickban##
 ; [[rcircActivities]]: Minimal activity tracker, open for extension. Use ##rcirc-activities/switch-to-buffer## to see and switch to buffers with activities, using ido.
-; [[rcircHelp]]: ##/help##
 
 ==Related stuff that might be of interest==
 
