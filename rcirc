@@ -61,27 +61,26 @@ https://github.com/melmothx/rcirc/tree/to-emacs
 
 ==rcirc add-ons and commands==
 
-; [[rcircColoredNicks]]: Color each nick using a separate color and add the ##/color## command
+; [[rcircColoredNicks]]: ##/color## -- color each nick using a separate color
 ; [[rcircColoredNickClasses]]: Alternative scheme where nicks can belong to classes such as pals or bots
 ; [[rcircColors]]: Handle escape sequences that convey text colors
-; [[rcircRetake]]: Add the ##/retake## command to sind RECOVER and RELEASE messages to !NickServ and to switch your nick using a ##/nick## command.
-; [[rcircReconnect]]: Add the ##/reconnect## command to quit and reconnect immediately for users waking their laptop from sleep after the server has closed the connection
+; [[rcircRetake]]: ##/retake## -- send RECOVER and RELEASE messages to !NickServ
+; [[rcircReconnect]]: ##/reconnect## -- quit and reconnect immediately for users waking their laptop from sleep after the server has closed the connection
 ; [[rcircAutoReconnect]]: Automatically reconnect when disconnected from the IRC server
-; [[rcircPounce]]: Store messages for people and send them when they join one of the channel's you're on
+; [[rcircPounce]]: ##/pounce## -- store messages for people and send them when they join one of the channels you're on
 ; [[rcircSmiley]]: Add little :) and :( smileys
-; [[rcircAll]]: Run a command such as /away for all connections 
+; [[rcircAll]]: ##/all## -- run a command such as ##/away## for all connections 
 ; [[rcircNoNamesOnJoin]]: How not to display NAMES list on channel JOIN (ugly hacks inside)
-; [[rcircShowVersion]]: Display rcirc client informations with /sv
+; [[rcircShowVersion]]: ##/sv## -- show rcirc version
 ; [[rcircAwayTime]]: Display how long you are/were away from IRC
 ; [[rcircBack]]: Cancel your AWAY state with /back (requires [[rcircAwayTime]])
-; [[rcircOpDeop]]: OP commands
 ; [[rcircLogging]]: Log conversations to disk
 ; [[rcircServerAuth]]: Patch that adds server authentication (PASS).
 ; [[rcircAutoAway]]: Go /away after emacs is idle for a period of time.
 ; [[rcircSound]]: Play sounds through IRC using CTCP SOUND.
 ; [[rcircEncoding]]: Change the encoding per channel
 ; [[rcircLateFix]]: Correct original word when 's/wrong/right' messages are seen.
-; [[rcircHelp]]: ##/help##
+; [[rcircHelp]]: ##/help## -- list rcirc commands and show their documentation
 ; [[rcircCommandCompletion]]: Let TAB complete commands and nicks
 ; [[rcircDimNicks]]: Dim the entire line for nicks in `rcirc-dim-nicks'.
 ; [[rcircNotify]]: Libnotify notification popups when someone talks to you
@@ -90,7 +89,7 @@ https://github.com/melmothx/rcirc/tree/to-emacs
 ; [[rcircGroupMode]]: propose an *rcirc-groups* buffer ala gnus *Group*, with refresh and catchup options (and RET to follow), in order to manage notifications in rcirc
 ; [[rcircJoinRestrictedChannel]]: how to automatically join a restricted channel
 ; [[rcircFacebook]]: how to use Facebook chat
-; [[rcircOccur]]: find stuff in all your rcirc buffers
+; [[rcircOccur]]: ##/occur## -- find stuff in all your rcirc buffers
 ; [[rcircOperator]]: ##/op##, ##/deop##, ##/mute##, ##/unmute##, ##/ban##, ##/unban##, ##/kickban##
 ; [[rcircActivities]]: Minimal activity tracker, open for extension. Use ##rcirc-activities/switch-to-buffer## to see and switch to buffers with activities, using ido.
 
