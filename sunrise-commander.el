@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 6
-;; RCS Version: $Rev: 443 $
+;; RCS Version: $Rev: 446 $
 ;; Keywords: files, dired, midnight commander, norton, orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -214,7 +214,9 @@
 
 (eval-and-compile
   (unless (fboundp 'cl-labels)
-    (defalias 'cl-labels 'labels)))
+    (defalias 'cl-labels 'labels))
+  (unless (fboundp 'cl-letf)
+    (defalias 'cl-letf 'letf)))
 
 (defgroup sunrise nil
   "The Sunrise Commander File Manager."
@@ -841,7 +843,7 @@ Helper macro for passive & synchronized navigation."
 
 (defmacro sr-silently (&rest body)
   "Inhibit calls to `message' in BODY."
-  `(letf (((symbol-function 'message) (lambda (_msg &rest _args) (ignore))))
+  `(cl-letf (((symbol-function 'message) (lambda (_msg &rest _args) (ignore))))
      ,@body))
 
 (eval-and-compile
@@ -2628,11 +2630,11 @@ and scale is used when the absolute value of 100% is bigger than
   "Update REPORTER (a Sunrise progress reporter) by adding SIZE to its state."
   (let ((scale (cadr reporter)))
     (setcar reporter (+ (truncate (/ size scale)) (car reporter)))
-    (progress-reporter-update (caddr reporter) (car reporter))))
+    (progress-reporter-update (car (cddr reporter)) (car reporter))))
 
 (defun sr-progress-reporter-done (reporter)
   "Print REPORTER's feedback message followed by \"done\" in echo area."
-  (progress-reporter-done (caddr reporter)))
+  (progress-reporter-done (car (cddr reporter))))
 
 ;;; ============================================================================
 ;;; File manipulation functions:
@@ -2680,6 +2682,16 @@ specifiers are: d (decimal), x (hex) or o (octal)."
   (dired-build-subdir-alist)
   (sr-revert-buffer))
 
+(defmacro sr-protect-terminate-wdired (&rest body)
+  "Compile the `cl-letf' forms used in `sr-terminate-wdired'.
+This macro allows interpreted code to work without requiring
+cl-macs at runtime."
+  `(cl-letf (((symbol-function 'yes-or-no-p) (lambda (prompt) (ignore)))
+          ((symbol-function 'revert-buffer)
+           (lambda (&optional ignore-auto noconfirm preserve-modes))
+           (ignore)))
+     ,@body))
+
 (defun sr-terminate-wdired (fun)
   "Restore the current pane's original mode after editing with WDired."
   (ad-add-advice
@@ -2694,11 +2706,7 @@ specifiers are: d (decimal), x (hex) or o (octal)."
               (saved-point (point)))
           (sr-save-aspect
            (setq major-mode 'wdired-mode)
-           (letf (((symbol-function 'yes-or-no-p) (lambda (prompt) (ignore)))
-                  ((symbol-function 'revert-buffer)
-                   (lambda (&optional ignore-auto noconfirm preserve-modes)
-                     (ignore))))
-             ad-do-it)
+           (sr-protect-terminate-wdired ad-do-it)
            (sr-readonly-pane was-virtual)
            (goto-char saved-point))
           (sr-unhighlight 'sr-editing-path-face)))))
