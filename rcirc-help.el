@@ -36,11 +36,11 @@ will be part of the list returned."
 				      "rcirc-cmd-"))
 		    (setq commands (cons (concat"/" (upcase (substring name 10)))
 					 commands))))))
-    commands))
+    (sort commands 'string<)))
 
 (defun-rcirc-command help (arg)
   "List rcirc commands or print their doc-string."
-  (let* ((sym (intern-soft (concat "rcirc-cmd-" input)))
+  (let* ((sym (intern-soft (concat "rcirc-cmd-" arg)))
 	 (msg (and sym (documentation sym)))
 	 (blurb (concat
 		 "\n\nNote: If PROCESS or TARGET are nil, the values given"
