@@ -1,5 +1,7 @@
 This piece of code allows you to get a list of defined [[rcirc]] commands and their documentation.
 
+* Lisp:rcirc-help.el
+
 Example:
 
 {{{
@@ -12,37 +14,4 @@ Example:
 15:31 -kensanata- Manage the dim nick list.   Note: If PROCESS or
       TARGET are nil, the values given by `rcirc-buffer-process'
       and `rcirc-target' will be used.
-}}}
-
-Code:
-
-{{{
-;; FIXME: This needs a drastic speedup or some caching
-(defun rcirc-commands ()
-  "Return a list of defined IRC commands.
-If a command called rcirc-cmd-foo exists, the IRC command /FOO
-will be part of the list returned."
-  (let ((commands))
-    (mapatoms (lambda (sym)
-		(let ((name (symbol-name sym)))
-		  (when (and (commandp sym)
-			     (string= (substring name 0 (min (length name) 10))
-				      "rcirc-cmd-"))
-		    (setq commands (cons (concat"/" (upcase (substring name 10)))
-					 commands))))))
-    commands))
-
-;;; rcirc command /help
-(eval-after-load 'rcirc
-  '(defun-rcirc-command help (arg)
-     "List rcirc commands or print their doc-string."
-     (if (string= arg "")
-	 (rcirc-print process (rcirc-nick process) "NOTICE" target
-		      (mapconcat 'identity (rcirc-commands) " "))
-       (let ((command (intern-soft (concat "rcirc-cmd-" (downcase arg)))))
-	 (if (fboundp command)
-	     (rcirc-print process (rcirc-nick process) "NOTICE" target
-			  (documentation command))
-	   (rcirc-print process (rcirc-nick process) "NOTICE" target
-			(concat "/" (upcase arg) " is undefined")))))))
 }}}
