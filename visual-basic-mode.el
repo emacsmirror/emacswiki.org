@@ -16,7 +16,7 @@
 ;;           : Randolph Fritz <rfritz@u.washington.edu>
 ;;           : Vincent Belaiche (VB1) <vincentb1@users.sourceforge.net>
 ;; Version: 1.4.12 (2010-10-18)
-;; Serial Version: %Id: 37%
+;; Serial Version: %Id: 38%
 ;; Keywords: languages, basic, Evil
 ;; X-URL:  http://www.emacswiki.org/cgi-bin/wiki/visual-basic-mode.el
 
@@ -395,10 +395,10 @@ Note: shall not contain any \\( \\) (use \\(?: if need be)."
 (defconst visual-basic-else-regexp "^[ \t]*#?[Ee]lse\\([Ii]f\\)?")
 (defconst visual-basic-endif-regexp "[ \t]*#?[Ee]nd[ \t]*[Ii]f")
 
-(defconst visual-basic-looked-at-continuation-regexp   "_[ \t]*$")
+(defconst visual-basic-looked-at-continuation-regexp   "_\\s-*$")
 
 (defconst visual-basic-continuation-regexp
-  (concat "^.*" visual-basic-looked-at-continuation-regexp))
+  (concat "^\\(.*\\([^_[:alnum:]]\\|[^[:alpha:]_][0-9]+\\)\\)?" visual-basic-looked-at-continuation-regexp))
 
 (eval-and-compile
   (defconst visual-basic-label-regexp "^[ \t]*[a-zA-Z0-9_]+:$"))
@@ -829,7 +829,7 @@ changed files."
       (forward-line 1)))
 
   (cond ((fboundp 'zmacs-deactivate-region)
-         (zmacs-deactivate-region))
+         (zmacs-d eactivate-region))
         ((fboundp 'deactivate-mark)
          (deactivate-mark))))
 
@@ -886,6 +886,17 @@ statifying CLOSE-P was visited before during this search."
    (lambda () (looking-at open-regexp))
    (lambda () (looking-at close-regexp))))
 
+(defun visual-bascic-at-line-contination ()
+  (and  (looking-at  visual-basic-looked-at-continuation-regexp)
+	(save-excursion
+	  (or (bolp)
+	      (progn (backward-char)
+		     (or 
+		      (looking-at "[^[:alnum:]_]")
+		      (and (looking-at "[[:digit:]]")
+			   (re-search-forward "[^[:digit:]]" nil t)
+			   (looking-at "[^[:alnum:]]"))))))))
+
 (defun visual-basic-get-complete-tail-of-line ()
   "Return the tail of the current statement line, starting at
 point and going up to end of statement line. If you want the
@@ -900,7 +911,7 @@ complete statement line, you have to call functions
       (end-of-line)
       (setq line-end (point))
       (if (search-backward "_" line-beg t)
-	  (if (looking-at  visual-basic-looked-at-continuation-regexp)
+	  (if (visual-bascic-at-line-contination)
 	      ;; folded line
 	      (progn
 		(setq line-end (1- (point))
@@ -1386,13 +1397,13 @@ Interting an item means:
                                      t))
 				 ;; continuation
 				 (and loop-again
-				      (looking-at visual-basic-looked-at-continuation-regexp) ))
+				      (visual-bascic-at-line-contination) ))
                               (goto-char (setq tentative-split-point (match-end 0))))
 			    (when loop-again
 			      (when (looking-at "As\\s-+\\(?:\\sw\\|\\s_\\)+\\s-*")
 				(setq item-case ':dim-split-after)
 				(goto-char (setq tentative-split-point (match-end 0))))
-			      (when (looking-at visual-basic-looked-at-continuation-regexp)
+			      (when (visual-bascic-at-line-contination)
 				(beginning-of-line 2))
 			      (if (looking-at ",")
 				  (goto-char (setq split-point (match-end 0)))
@@ -1753,6 +1764,3 @@ This function is under construction"
 ;External Links
 ;[http://visualbasic.freetutes.com/ Visual Basic tutorials]
 ;[http://en.wikibooks.org/wiki/Visual_Basic/Coding_Standards]
-567 [[http://www.idbagus.com click here]]
-[[http://www.caraku23.com memasak]]
-[[http://www.getharga.com gadget]]
