@@ -33,4 +33,4 @@ Usando <code>mime-edit-set-sign</code> y presionando "y" para aceptar, Mime-edit
 Para validar la firma adjunta podés hacer clic central(mouse-2) o llamar a la función <code>M-x mime-preview-play-current-entity</code> y aparecerá un pequeño buffer debajo indicando el resultado del chequeo de validez.
 
 ----
-WanderLust CategoryMail
+WanderLust CategoryMail EncryptingMail
