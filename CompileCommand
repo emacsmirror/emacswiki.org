@@ -291,6 +291,14 @@ Here's an alternative to the above that I've been using for a year or so now, wh
     (if found dirname nil)))
 }}}
 
+[new:ceving:2013-02-20 17:35 MEST]
+It seems to be necessary, that the directory name has a terminating slash if used as an default-directory in the way shown in the function in-directory later on. Emacs 23.3.1 ends up a directory too high, if the default-directory does not contain a trailing slash. So try this:
+{{{
+     (if found (concat dirname "/") nil)))
+}}}
+-- ceving
+[new]
+
 I then wrote this mini-function...
 {{{
 (defun std-compile ()
