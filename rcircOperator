@@ -73,8 +73,6 @@ The ##/op## and ##/deop## commands are specific to Freenode's irc server, I thin
 
 Here's an alternate implementation where ##/op## doesn't just request operator status for yourself but where ##/op## grants operator status to someone and ##/opme## does this for yourself.
 
-Here are few commands that you can use to be op on channels. There are also key bindings.
-
 {{{
 (defun-rcirc-command op (nicks)
   "Send OP for `nicks'.
