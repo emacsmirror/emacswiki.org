@@ -1,6 +1,6 @@
 Here are some useful commands for your init file if you use [[rcirc]] and you're an operator.
 
-The ##/op## and ##/deop## commands are specific to Freenode's irc server, I think. They tell !ChanServ to op you instead of using the ##/mode##command.
+The ##/op## and ##/deop## commands are specific to Freenode's irc server, I think. They tell !ChanServ to op you instead of using the ##/mode## command.
 
 {{{
 ;; rcirc /op
