@@ -152,6 +152,7 @@ As of January 2012 there's an IRC channel <code>#wanderlust</code> at irc.freeno
 * WlCanlock -- sign and vertify canlock
 * WlHooks -- A list of Wanderlust hooks
 * WlPgg -- using the PGG package with WanderLust
+* WlSigningMails -- How to sign and verify Armored Signatures?
 * WlEmacsTwentyThree
 * [http://www.emacswiki.org/emacs/MailtoHandler#toc5 MailtoHandler] -- Using wl for <code>mailto:</code> links
 * http://julien.danjou.info/software/offlineimap.el -- Run offlineimap from emacs
