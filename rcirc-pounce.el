@@ -59,7 +59,9 @@
 		   "Empty queue")))
 
 (defun-rcirc-command pounce (message)
-  "Add private MESSAGE for TARGET to its queue."
+  "Add private MESSAGE for TARGET to its queue.
+Without any argument, show the list of targets.
+Without a message, show the list of messages for a target."
   (interactive "i")
   (if (not (string-match "\\([^ ]+\\)\\( \\(.+\\)\\)?" message))
       (rcirc-pounce-queue-overview)
