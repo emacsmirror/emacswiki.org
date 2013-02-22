@@ -115,9 +115,9 @@ As in most cases a one-size-fits-it-all approach doesn't really turn out well, I
 
 * As it seems to be the idea to represent data in some kind of hierarchical (tree-like) fashion using a table as the main datastructure doesn't really well fit to the adressed problem. @Juri: Just in case you haven't ever tried it before storing hierarchical data in a relational database poses a multiplicity of problems reaching from handling foreign-key constrains to maintain data integrity to data-modeling as a whole.
 
-* From a mathematical point of view first-order-predicate-logic forming lying at the base of any relational data model provable doesn't posess enough expressiveness to even formulate queries for questions like that of ancestry that might be extremely interesting - especially if the main purpose is to work with hierarchical data.
+* From a mathematical point of view first-order-predicate-logic lying at the base of any relational data model provable doesn't posess enough expressiveness to even formulate queries for questions like that of ancestry that might be extremely interesting - especially if the main purpose is to work with hierarchical data.
 
-* Proven in this case means mathematically proven, so how cleverly you'll ever try to implement you won't be able to iterate of your data over and over again to answer the probably most interesting an as such most frequent questions.
+* Proven in this case means mathematically proven, so how cleverly you'll ever try to implement you won't be able to answer the probably most interesting an as such most frequent questions without iterating over your data over and over again.
 
 * Last but not least even though there is some support for arrays as well elisp is rather tailored to work perfectly well with nested lists which in turn are nothing else than trees in disguise fitting the hierarchichal approach taken to display data more than well. (A (B C D) E () (F G)) as an example already forms a perfectly well tree without any need for ("root" ...) elements and deeply nested (_s ... (_r .... (_a .. elements as spotted in your view-atree implementation.
 
