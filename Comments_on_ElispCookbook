@@ -119,3 +119,10 @@ I think my approach would be to write a plugin that could index a namespace, eg:
 
 -- [http://nic.ferrier.me.uk NicFerrier] 2013-02-02 16:35 UTC
 
+
+----
+
+The cookbook needs to show how to define basic functions. Because Lisp.
+
+-- [http://www.yellosoft.us/ mcandre] 2013-02-22 00:34 UTC
+
