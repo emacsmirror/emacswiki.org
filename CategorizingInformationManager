@@ -105,5 +105,39 @@ Fantastic!  I love coming across pacakges like this; they really
 breathe new life into emacs by reminding us how extensible it is
 -- Jesse Alama
 
+=Fix it !=
+In its current state this package doesn't even seem to come close to be of any use at all. It sure makes a really nice mock-up but unfortunately its nothing more than exactly that.
+I'm really sorry to have to give it such a bad review, especially as it seems more than obvious that the author invested quite a lot of time and effort in it.
+
+But after almost spending my whole day digging through the code I thought I'd better place a note of warning here. As it seems even if against my estimation the general idea of storing the data to be displayed in a relational database holds there still seems to be a lot of work and time to invest before the package will become useful at all.
+
+As in most cases a one-size-fits-it-all approach doesn't really turn out well, I'm not quite sure about it, but I think I fell a little bit in love with Juris idea of somehow managing a bunch of buffers dedicated to various actions in a more or less unified manner, so I sure hope he won't give up. Nevertheless I think maybe even the basic concept might have to be revisited. For a whole couple of reasons listet below I'm quite unsure that putting a relational database as the ground to work upon doesn't seem to be the right way to go.
+
+* As it seems to be the idea to represent data in some kind of hierarchical (tree-like) fashion using a table as the main datastructure doesn't really well fit to the adressed problem. @Juri: Just in case you haven't ever tried it before storing hierarchical data in a relational database poses a multiplicity of problems reaching from handling foreign-key constrains to maintain data integrity to data-modeling as a whole.
+
+* From a mathematical point of view first-order-predicate-logic forming lying at the base of any relational data model provable doesn't posess enough expressiveness to even formulate queries for questions like that of ancestry that might be extremely interesting - especially if the main purpose is to work with hierarchical data.
+
+* Proven in this case means mathematically proven, so how cleverly you'll ever try to implement you won't be able to iterate of your data over and over again to answer the probably most interesting an as such most frequent questions.
+
+* Last but not least even though there is some support for arrays as well elisp is rather tailored to work perfectly well with nested lists which in turn are nothing else than trees in disguise fitting the hierarchichal approach taken to display data more than well. (A (B C D) E () (F G)) as an example already forms a perfectly well tree without any need for ("root" ...) elements and deeply nested (_s ... (_r .... (_a .. elements as spotted in your view-atree implementation.
+
+* Thinking a bit longer about it, I even doubt the idea of using a separate datastructure to represent "real" data and rewriting the whole buffer instead of just using the buffer contents itself as data source seems to be too clever at all.
+
+* As the buffer contents itself poses some kind of an array like datastructure it won't come up to my mind why I should tranfsform data given in an in-memory table to some kind of hierarchichal data-model in the first place just to afterwards flatten it out again. At least to me this doesn't look like making a needless time-consuming compution once but even twice.
+
+@Juri: I hope by spelling out my view on the _current_ state of your project I didn't hurt or harm your feelings in any way, as this clearly wasn't my intention at all. I hope by the time I invested to formulate my opinion will serve as a proof that 
+I really like your idea and am quite sure you will move your package to a point where ee is not only usable but probably one of the most valuable packages in my emacs session. 
+
+Please don't stop continuing your work on it as my remarks are nothing else but a fools ideas, who can't await to see a finished version.
+
+P.S.: As a last hint - Maybe you should try to concentrate on one part say eee-buffers or whatever you like the most and focus on it's development before spreading out in all too many directions. You already seem to have gathered a lot more TODOs than anyone can handle at all, so probably even dropping some might be a good idea.
+-- bspaeth
+ 
+  
+ 
+
+
+
+
 ----
 CategoryPersonalInformationManager
