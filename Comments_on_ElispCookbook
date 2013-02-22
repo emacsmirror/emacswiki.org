@@ -140,3 +140,135 @@ Unfortunately I don't know the series... Maybe you can change one piece of the p
 
 -- AlexSchroeder 2013-02-22 06:36 UTC
 
+
+----
+
+The following two recipes are quoted from chapter 1 and chapter 7 from "R Cookbook", HTH:
+
+<pre>
+1.1 Downloading and Installing R
+
+Problem
+You want to install R on your computer.
+
+Solution
+Windows and OS X users can download R from CRAN, the Comprehensive R Archive
+Network. Linux and Unix users can install R packages using their package management
+tool:
+
+Windows
+  1. Open http://www.r-project.org/ in your browser.
+  2. Click on “CRAN”. You’ll see a list of mirror sites, organized by country.
+  3. Select a site near you.
+  4. Click on “Windows” under “Download and Install R”.
+  5. Click on “base”.
+  6. Click on the link for downloading the latest version of R (an .exe file).
+  7. When the download completes, double-click on the .exe file and answer the
+  usual questions.
+
+OS X
+  1. Open http://www.r-project.org/ in your browser.
+  2. Click on “CRAN”. You’ll see a list of mirror sites, organized by country.
+  3. Select a site near you.
+  4. Click on “MacOS X”.
+  5. Click on the .pkg file for the latest version of R, under “Files:”, to download it.
+  6. When the download completes, double-click on the .pkg file and answer the
+  usual questions.
+
+Linux or Unix
+  The major Linux distributions have packages for installing R. Here are some
+  examples:
+  | Distribution      | Package name |
+  | Ubuntu or Debian  | r-base       |
+  | Red Hat or Fedora | R.i386       |
+  | Suse              | R-base       |
+  Use the system’s package manager to download and install the package. Normally,
+  you will need the root password or sudo privileges; otherwise, ask a system ad-
+  ministrator to perform the installation.
+
+Discussion
+Installing R on Windows or OS X is straightforward because there are prebuilt binaries
+for those platforms. You need only follow the preceding instructions. The CRAN Web
+pages also contain links to installation-related resources, such as frequently asked
+questions (FAQs) and tips for special situations (“How do I install R when using Win-
+dows Vista?”) that you may find useful.
+
+Theoretically, you can install R on Linux or Unix in one of two ways: by installing a
+distribution package or by building it from scratch. In practice, installing a package is
+the preferred route. The distribution packages greatly streamline both the initial in-
+stallation and subsequent updates.
+
+On Ubuntu or Debian, use apt-get to download and install R. Run under sudo to have
+the necessary privileges:
+
+  $ sudo apt-get install r-base
+
+On Red Hat or Fedora, use yum:
+
+  $ sudo yum install R.i386
+
+Most platforms also have graphical package managers, which you might find more
+convenient.
+
+Beyond the base packages, I recommend installing the documentation packages, too.
+On my Ubuntu machine, for example, I installed r-base-html (because I like browsing
+the hyperlinked documentation) as well as r-doc-html, which installs the important R
+manuals locally:
+
+  $ sudo apt-get install r-base-html r-doc-html
+
+Some Linux repositories also include prebuilt copies of R packages available on CRAN.
+I don’t use them because I’d rather get my software directly from CRAN itself, which
+usually has the freshest versions.
+
+In rare cases, you may need to build R from scratch. You might have an obscure, un-
+supported version of Unix; or you might have special considerations regarding per-
+formance or configuration. The build procedure on Linux or Unix is quite standard.
+Download the tarball from the home page of your CRAN mirror; it’s called something
+like R-2.12.1.tar.gz, except the “2.12.1” will be replaced by the latest version. Unpack
+the tarball, look for a file called INSTALL, and follow the directions.
+
+See Also
+R in a Nutshell (O’Reilly) contains more details of downloading and installing R, in-
+cluding instructions for building the Windows and OS X versions. Perhaps the ultimate
+guide is the one entitled R Installation and Administration, available on CRAN, which
+describes building and installing R on a variety of platforms.
+
+This recipe is about installing the base package. See Recipe 3.9 for installing add-on
+packages from CRAN.
+</pre>
+
+And:
+
+<pre>
+7.1 Getting the Length of a String
+
+Problem
+You want to know the length of a string.
+
+Solution
+Use the nchar function, not the length function.
+
+Discussion
+The nchar function takes a string and returns the number of characters in the string:
+  > nchar("Moe")
+  [1] 3
+  > nchar("Curly")
+  [1] 5
+If you apply nchar to a vector of strings, it returns the length of each string:
+  > s <- c("Moe", "Larry", "Curly")
+  > nchar(s)
+  [1] 3 5 5
+You might think the length function returns the length of a string. Nope—it returns
+the length of a vector. When you apply the length function to a single string, R returns
+the value 1 because it views that string as a singleton vector—a vector with one element:
+  > length("Moe")
+  [1] 1
+  > length(c("Moe","Larry","Curly"))
+  [1] 3
+</pre>
+
+I'd be glad to help improve this page, but I can't understand some recipes (my elisp level sucks).
+
+-- [http://emacswiki.org/emacs/XueFuqiao XueFuqiao] 2013-02-22 12:23 UTC
+
