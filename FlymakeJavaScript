@@ -226,25 +226,19 @@ I get a lot of errors on the first line, like
 
 That is this?
 
-== With JSLINT or JSHINT on Windows using Cscript.exe ==
+== With JSHINT on Windows using Cscript.exe ==
 
-There's no need to install Rhino on Windows; Windows has a built-in Javascript engine in WSH.  Therefore you can run a JS program on any Windows, via WSH.  Which means you can run JSHINT, or JSLINT. 
+There's no need to install Rhino on Windows; Windows has a built-in Javascript engine in WSH.  Therefore you can run a JS program on any Windows, via WSH.  Which means you can run <em>JSHINT</em>. Please note that this solution does not work for <em>JSLint</em>: Since February 2013, [http://tech.groups.yahoo.com/group/jslint_com/message/3128 JSLint requires ECMAScript Fifth Edition], and does not run with WSH anymore.
 
-There are two modules; both allow you to use jslint or JSHINT as the flymake tool for .js buffers on windows.  
+There are two modules; both allow you to use JSHINT as the flymake tool for .js buffers on windows.  
 
-The first, [http://code.google.com/p/jslint-for-wsh/source/browse/#svn/trunk flymake-for-jslint-for-wsh.el], requires you to download JSHINT or JSLINT, modify it slightly, save  it, and set a variable in  your .emacs pointing to the modified script. 
+The first, [http://code.google.com/p/jslint-for-wsh/source/browse/#svn/trunk flymake-for-jslint-for-wsh.el], requires you to download JSHINT, modify it slightly, save it, and set a variable in  your .emacs pointing to the modified script. 
  
-[http://cheeso.members.winisp.net/srcview.aspx?dir=emacs&file=fly-jshint-wsh.el A newer version] downloads and modifies the JSLINT or JSHINT at runtime.  This version is also available on the Marmalade Repo as [http://marmalade-repo.org/packages/fly-jshint-wsh  fly-jshint-wsh].  
+[http://cheeso.members.winisp.net/srcview.aspx?dir=emacs&file=fly-jshint-wsh.el A newer version] downloads and modifies JSHINT at runtime.  This version is also available on the Marmalade Repo as [http://marmalade-repo.org/packages/fly-jshint-wsh  fly-jshint-wsh].  
 
 A sample of using jslint-for-wsh.js as a "compile" command in emacs:
 
 http://i49.tinypic.com/11kuypx.jpg
-
-A sample of using jslint-for-wsh in emacs, with flymake-for-jslint : 
-
-http://i47.tinypic.com/2mk1eh.jpg
-
-
 
 ----
 FlyMake
