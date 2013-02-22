@@ -8,6 +8,7 @@ There are various ways to determine the changes to a file or a buffer in Emacs. 
 == Visiting Buffer Changes ==
 
 * `session-jump-to-last-change': see EmacsSession.  The undo list is analyzed to figure out all the places you've edited, and you visit them reverse chronologically.  Lightweight and efficient.
+* If you don't want session management, GotoLastChange provides the same functionality in an even smaller package.
 
 == Developing interactive highlighting? ==
 
