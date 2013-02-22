@@ -126,3 +126,10 @@ The cookbook needs to show how to define basic functions. Because Lisp.
 
 -- [http://www.yellosoft.us/ mcandre] 2013-02-22 00:34 UTC
 
+
+----
+
+The cookbook shuold contain Emacs Lisp programming recipes presented in a special Problem/Solution/Discussion format, just as the O’Reilly cookbook series of books.
+
+-- [http://emacswiki.org/emacs/XueFuqiao XueFuqiao] 2013-02-22 02:26 UTC
+
