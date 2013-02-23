@@ -1,0 +1,12 @@
+Is there any reason why HTTPS urls for CSS files wouldn't work?
+
+This:
+
+https://raw.github.com/nicferrier/nics-emacswiki-css/master/nicferrier.css
+
+does not work when used in a CSS enabler:
+
+http://www.emacswiki.org/cgi-bin/wiki?action=browse;id=CSS;css=https://raw.github.com/nicferrier/nics-emacswiki-css/master/nicferrier.css
+
+-- [http://nic.ferrier.me.uk NicFerrier] 2013-02-23 18:12 UTC
+
