@@ -55,3 +55,25 @@ I agree about pasting the code to a separate page and perhaps that's the best wa
 
 -- [http://nic.ferrier.me.uk NicFerrier] 2013-02-23 13:02 UTC
 
+
+----
+
+I added
+
+{{{
+.content pre {
+    border: #777777 1px solid;
+    padding: 0.5em;
+    margin-left: 1em;
+    margin-right: 2em;
+    white-space: pre;
+    background-color: #e6e6e6;
+    color: black;
+    overflow: auto;
+    font-size: smaller;
+    width: 120ex;
+}
+}}}
+
+-- AlexSchroeder 2013-02-23 14:57 UTC
+
