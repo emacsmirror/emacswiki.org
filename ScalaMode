@@ -1,4 +1,4 @@
-There are two [MajorMode MarjoMode]s for editing [WikiPedia:Scala_%28programming_language%29 Scala] programs.
+There are two [MajorMode MajorMode]s for editing [WikiPedia:Scala_%28programming_language%29 Scala] programs.
 
 The old scala-mode works on emacs 23 and newer. It is available from https://github.com/scala/scala-dist/tree/master/tool-support/src/emacs
 
