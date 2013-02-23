@@ -558,3 +558,35 @@ Release     : 8.fc16
 
 Workaround:
 Start emacs with "emacs --daemon -q". The first time you connect via emacsclient, open your .emacs file and run 'eval-buffer'.
+
+== Running multiple Emacs daemons under different users ==
+
+[[NicFerrier|I]] run many Emacs instances on a single box, as application servers. Some of them run Elnode, some run ShoesOff, etc... I normally separate these by using different operating system users to run them. Otherwise it is too easy for them to trample on each other.
+
+=== Setting up a complete fresh daemon ===
+
+I always:
+
+* make a new user
+* make a specific ##.emacs.d## directory for the new emacs instance
+* make a boot script to start (and connect as a client) to it
+** I usually copy it from another service, say TeamChat
+** the boot script sets the daemon socket specifically
+* start the emacs service
+
+=== Problems connecting ===
+Sometimes you get problems connecting to these multiple servers. This is normally to do with terminal permissions, especially if you just ##sudo su## from one user to another, you get this:  ##Could not open file## - here's an example:
+
+{{{
+elpad@somebox:~$ emacs-local/bin/emacsclient -s /tmp/emacs1007/elpad  elpad-elpa/
+Waiting for Emacs...
+*ERROR*: Could not open file: /dev/pts/9
+}}}
+
+This is down to ownership of the tty. To fix this I just ##ssh## to the user from the local box, that always fixes it:
+
+{{{
+ssh elpad@localhost
+elpad@somebox:~$ emacs-local/bin/emacsclient -s /tmp/emacs1007/elpad  elpad-elpa/
+## starts emacs...
+}}}
