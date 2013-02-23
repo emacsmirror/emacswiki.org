@@ -84,7 +84,7 @@ Here is a function to create use google groupchat:
 
 
 For versions 0.8.x of JabberEl there may be an issue when connecting with Multi-user chat. You may have to set the variable `jabber-muc-disable-disco-check' to <code>t</code> for disable disco checking if the above function doesn't work(or popup the buffer). 
-For more information read the [[http://emacs-jabber.sourceforge.net/manual-0.8.0/Groupchat.html#Groupchat][jabber.el v.0.8.0 groupchat manual]] third paragraph.
+For more information read the [http://emacs-jabber.sourceforge.net/manual-0.8.0/Groupchat.html#Groupchat jabber.el v.0.8.0 groupchat manual] third paragraph.
 
 ----
 JabberEl CategoryChatClient 
