@@ -272,3 +272,16 @@ I'd be glad to help improve this page, but I can't understand some recipes (my e
 
 -- [http://emacswiki.org/emacs/XueFuqiao XueFuqiao] 2013-02-22 12:23 UTC
 
+
+----
+
+That again would work better if we had a single page per recipe with some combination system to combine the cookbook pages into a single page.
+
+The single page would contain the overview (first h2 of the detail page, say) and a link to the detail page. The detail page could contain much more detail, including probably several "How do I?" type examples.
+
+If one overview could be built then another overview could be built, possibly collecting all the "How do I?" type examples into a summary with links back to the detail pages.
+
+Of course, this is a lot more programming. But programming is fun.
+
+-- [http://nic.ferrier.me.uk NicFerrier] 2013-02-23 14:51 UTC
+
