@@ -49,9 +49,9 @@ If not, can you provide some CSS?
 
 I agree about pasting the code to a separate page and perhaps that's the best way... but it's more complex to the author.
 
-1. no, I mean when rendering the content in the page... note that creole does syntax rendering and stuff by guessing content type (well, currently by being told content type) - I think more guessing could be done. I don't want to use gists, particularly, for the wiki. It's another binding on another service.
-2. Setting "overflow: auto" on a pre and giving it a fixed height or width restricts the pre so it never gets bigger than that and you get scroll bars. It's not ideal so doing it only for long shell scripts or things like that would be best.
-3. yes. just like that.
+# no, I mean when rendering the content in the page... note that creole does syntax rendering and stuff by guessing content type (well, currently by being told content type) - I think more guessing could be done. I don't want to use gists, particularly, for the wiki. It's another binding on another service.
+# Setting "overflow: auto" on a pre and giving it a fixed height or width restricts the pre so it never gets bigger than that and you get scroll bars. It's not ideal so doing it only for long shell scripts or things like that would be best.
+# yes. just like that.
 
 -- [http://nic.ferrier.me.uk NicFerrier] 2013-02-23 13:02 UTC
 
