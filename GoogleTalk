@@ -1,5 +1,34 @@
 How Setup Google Talk in Emacs
 
+
+After a bit of googling, I got '''jabber.el''' to work with my Google Talk account. I'll save others some googling:
+
+<pre>
+(setq jabber-username "my-username" ;; notice: leave off the @gmail.com
+      jabber-server "gmail.com"     ;; this is a part of your user ID, not a part of the server you will connect to.
+      jabber-network-server "talk.google.com"  ;; this is the actual server to connect to
+      jabber-port 5223
+      jabber-connection-type 'ssl)
+</pre>
+
+(thanks Hamsterboy, [[timcharper]])
+
+[new]
+
+I can verify that the above worked (on MacOS X). However, I had some difficulties at first. The version of gnutls installed by Mac ports would always throw an error when I tried to connect: (I could see this by switching to the buffer *-jabber-process-*)
+
+<pre>
+*** Fatal error: A TLS packet with unexpected length was received.
+*** Server has terminated the connection abnormally.
+</pre>
+
+I installed a more recent version of gnutls (2.8.3), and modified both my PATH environment variable and my exec-path setting via Emacs-customize in order to ensure that that most recent version of gnutls was used, and not the version installed by Mac ports.
+
+Once I did that, jabber connected to Google talk swimmingly.
+
+-- [[timcharper]]
+
+
 == jabber.el 0.7.1 and below ==
 Setting up emacs to use Google Talk is pretty easy since it uses the
 XMPP protocol, which is handled by jabber clients.  [[JabberEl]] works
@@ -42,7 +71,7 @@ most of us mortals will need a setup like the following:
 And make sure that you have either gnutls-cli or openssl installed
 and in your path.  Then C-x C-j C-c should Just Work™.
 
-== groupchat ==
+== Multi-user Chat ==
 
 Here is a function to create use google groupchat:
 
@@ -52,3 +81,10 @@ Here is a function to create use google groupchat:
                           (mapcar (lambda (x) (random x)) (make-list 32 15))))
             (account (jabber-read-account)))
         (jabber-groupchat-join account group (jabber-muc-read-my-nickname account group) t)))
+
+
+For versions 0.8.x of JabberEl there may be an issue when connecting with Multi-user chat. You may have to set the variable `jabber-muc-disable-disco-check' to <code>t</code> for disable disco checking if the above function doesn't work(or popup the buffer). 
+For more information read the [[http://emacs-jabber.sourceforge.net/manual-0.8.0/Groupchat.html#Groupchat][jabber.el v.0.8.0 groupchat manual]] third paragraph.
+
+----
+JabberEl CategoryChatClient 
