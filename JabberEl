@@ -299,32 +299,7 @@ Some ideas for improvement:
 
 == Connecting to Google talk ==
 
-After a bit of googling, I got jabber.el to work with my Google Talk account. I'll save others some googling:
-
-<pre>
-(setq jabber-username "my-username" ;; notice: leave off the @gmail.com
-      jabber-server "gmail.com"     ;; this is a part of your user ID, not a part of the server you will connect to.
-      jabber-network-server "talk.google.com"  ;; this is the actual server to connect to
-      jabber-port 5223
-      jabber-connection-type 'ssl)
-</pre>
-
-(thanks Hamsterboy, [[timcharper]])
-
-[new]
-
-I can verify that the above worked (on MacOS X). However, I had some difficulties at first. The version of gnutls installed by Mac ports would always throw an error when I tried to connect: (I could see this by switching to the buffer *-jabber-process-*)
-
-<pre>
-*** Fatal error: A TLS packet with unexpected length was received.
-*** Server has terminated the connection abnormally.
-</pre>
-
-I installed a more recent version of gnutls (2.8.3), and modified both my PATH environment variable and my exec-path setting via Emacs-customize in order to ensure that that most recent version of gnutls was used, and not the version installed by Mac ports.
-
-Once I did that, jabber connected to Google talk swimmingly.
-
--- [[timcharper]]
+<t>There is an article related about jabber.el's issues with Google Talk for connecting and chatting: Read GoogleTalk article. </t>
 
 == Success-stories :) ==
 
