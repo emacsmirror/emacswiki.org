@@ -21,9 +21,9 @@ So I'd revert that, personally.
 
 I think a better solution will involve changing the renderer for pre-formatted sections to:
 
-1. guess the content a bit better (look for start magic, other patterns?)  
-2. look at length and truncate it in CSS if it's too long (overflow)
-3. shade the background
+# guess the content a bit better (look for start magic, other patterns?)  
+# look at length and truncate it in CSS if it's too long (overflow)
+# shade the background
 
 I'm going to make tickets in elwiki and creole referencing this page.
 
