@@ -2,3 +2,11 @@ It's really tedious having that massive code block in there. Maybe we should imp
 
 -- [http://nic.ferrier.me.uk NicFerrier] 2013-02-23 00:22 UTC
 
+
+----
+
+I've added a text formatting rule that passes ##<div class="...">## and ##<div style="...">## and ##</div>## through without checking for correct nesting.
+Incorrect nesting makes me unhappy but I don't have a good solution at hand and I'll leave it to you to get the CSS right. If you have something that you think will work as a generic solution, we can add it as a class to the standard CSS file.
+
+-- AlexSchroeder 2013-02-23 10:15 UTC
+
