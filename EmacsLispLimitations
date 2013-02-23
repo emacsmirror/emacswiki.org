@@ -18,6 +18,9 @@ There is (currently) no facility for using functions from dynamic libraries at r
 
 There is a patch for Emacs, however.  See DynamicallyExtendingEmacs. [[XEmacs]] supports dynamic linking [http://www.xemacs.org/Documentation/21.5/html/emodules.html], so this is not really an EmacsLisp issue.
 
+Update:
+There's a draft for threads in Emacs Lisp [https://github.com/emacsmirror/emacs/blob/f43583d2e8e5fa65cd35326fab4e5ff66e9ff7a6/doc/lispref/threads.texi]
+
 See also WhyDoesElispSuck
 
 ----
