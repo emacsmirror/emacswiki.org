@@ -569,6 +569,8 @@ I always:
 
 * make a new user
 * make a specific ##.emacs.d## directory for the new emacs instance
+** for example ##.emacs.elpad.d##
+** you need this because customs cannot be saved to ##.emacs.d## if you start with -Q
 * make a boot script to start (and connect as a client) to it
 ** I usually copy it from another service, say TeamChat
 ** the boot script sets the daemon socket specifically
