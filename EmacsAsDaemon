@@ -6,24 +6,29 @@ This a new feature that is included in emacs-23.1.
 
 Put
 
-    export ALTERNATE_EDITOR=""
+export ALTERNATE_EDITOR=""
 
-in your .bashrc, or
+in your .bashrc
 
-    setenv ALTERNATE_EDITOR ""
+or
+
+setenv ALTERNATE_EDITOR ""
 
 in your .cshrc depending on your default shell.
 
-After that using `emacsclient' (or `emacsclient -t')
-will automatically start an Emacs in daemon mode and connect to it if one is not found running.
+after that using:
+
+emacsclient
+
+(or emacsclient -t)
+
+will automatically start an emacs in daemon mode and connect to it if one is not found running.
 
 == Debian/Ubuntu ==
 
 Here a little init script for GNU Debian/Ubuntu
 (please help to improve!)
 Save in /etc/init.d/emacs
-
-<div style="width: 72ex; float: right; clear: both; padding: 1ex; border: 3px solid #ddd; background-color: #eee; overflow: scroll">
 <pre>
 #! /bin/sh
 ### BEGIN INIT INFO
@@ -175,7 +180,6 @@ esac
 
 :
 </pre>
-</div>
 
 I use also this start script placed in /usr/bin/emacs
 <pre>
@@ -328,7 +332,6 @@ The display on which the the new frame should be opened can optionally be specif
 
 Note: If a prompt is required this function will always open an frame as an x window.
 
-<div style="width: 72ex; float: right; clear: both; padding: 1ex; border: 3px solid #ddd; background-color: #eee; overflow: scroll">
 {{{
 (defun client-save-kill-emacs(&optional display)
   " This is a function that can bu used to shutdown save buffers and 
@@ -412,7 +415,6 @@ nil are ignored."
   )
 
 }}}
-</div>
 
 == Alternate shutdown method (e.g. via gnome-session-manager) ==
 
