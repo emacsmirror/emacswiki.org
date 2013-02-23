@@ -89,3 +89,14 @@ anon: there is, it's at the bottom of the page just where the regular "Edit this
 
 -- shjk 2012-03-29 16:47 UTC
 
+
+----
+
+I wish we could edit comments... I just posted a comment and I borked the syntax... would like to go back and fix it.
+
+I've been thinking how I'd implement this and I think I'd do it with each comment as a wiki page in a namespace that restricted people from editing each others pages. Maybe the wiki engine would prevent changes after a certain time too.
+
+Then the renderer would pull all the pages in the talk namespace for a particular namespace together.
+
+-- [http://nic.ferrier.me.uk NicFerrier] 2013-02-23 13:07 UTC
+
