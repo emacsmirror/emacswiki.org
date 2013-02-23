@@ -10,3 +10,22 @@ Incorrect nesting makes me unhappy but I don't have a good solution at hand and 
 
 -- AlexSchroeder 2013-02-23 10:15 UTC
 
+
+----
+
+I hate the idea of passing through HTML. I think we should eradicate HTML from the Wiki (it would make the job of elwiki a *lot* easier).
+
+So I'd revert that, personally.
+
+(the nesting is one of the reasons I don't believe in using HTML btw)
+
+I think a better solution will involve changing the renderer for pre-formatted sections to:
+
+1. guess the content a bit better (look for start magic, other patterns?)  
+2. look at length and truncate it in CSS if it's too long (overflow)
+3. shade the background
+
+I'm going to make tickets in elwiki and creole referencing this page.
+
+-- [http://nic.ferrier.me.uk NicFerrier] 2013-02-23 11:51 UTC
+
