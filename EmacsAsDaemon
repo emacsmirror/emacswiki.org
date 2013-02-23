@@ -423,8 +423,6 @@ http://stackoverflow.com/questions/1167484/how-to-gracefully-shutdown-emacs-daem
 
 It's simple enough to run the emacs daemon with [http://www.freedesktop.org/wiki/Software/systemd systemd].
 
-<div style="width: 72ex; float: right; clear: both; padding: 1ex; border: 3px solid #ddd; background-color: #eee; overflow: scroll">
-
 {{{
 $ cat /etc/systemd/system/emacs@.service
 [Unit]
