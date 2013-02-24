@@ -1,1 +1,563 @@
-body { color: white; background-color: blue }
+body {
+    font-family: sans-serif;
+    font-size: 10pt;
+}
+
+/* [Default Theme] */
+
+body, rss {
+    background-color:#FFF;
+    color:       #000;
+    font-weight: normal;
+    padding:     1em 2em;
+}
+div.header h1, title {
+    font-size:   250%;
+    font-family: inherit;
+    font-weight: normal;
+    margin:      1em 0;
+}
+div.header h1 a, div.journal h1 a {
+    text-decoration: none;
+    color:       #000;
+}
+h1, h2, item title {
+    font-size:      larger;
+    font-weight:    normal; /* inherit not supported by IE */
+    margin: 2em 0 1em 0;
+}
+h3 {
+    font-size:     medium;
+    font-weight:   normal;
+    font-style:    italic;
+    margin: 2em 0 1em 0;
+}
+a:link {
+    color:#00F;
+}
+a:visited {
+    color:#A0A;
+}
+a:active {
+    color:#F00;
+}
+span.bar a {
+    margin-right:1ex;
+}
+img {
+    border-style:none;
+}
+img.upload {
+    background: inherit;
+    border: 1px solid #aaa;
+    padding: 5px;
+}
+img.logo {
+    float: right;
+    clear: right;
+}
+div.diff {
+    padding-left:5%;
+    padding-right:5%;
+}
+div.diff p b {
+    font-size: 150%;
+    font-weight: normal;
+}
+div.old {
+    background-color:#FFFFAF;
+}
+div.new {
+    background-color:#CFFFCF;
+}
+div.refer {
+    padding-left:  5%;
+    padding-right: 5%;
+    font-size:     80%;
+}
+div.message {
+    background-color:#FEE;
+}
+div.sister {
+    float:left;
+    margin-right:1ex;
+    background-color:#fff;
+}
+div.sister p {
+    margin-top:0;
+}
+div.sister hr {
+    display:none;
+}
+div.near, div.definition {
+    background-color:#efe;
+}
+div.near p, div.definition p {
+    margin-top: 0;
+}
+div.toc {
+    padding: 0 0.4em 0.4em 0.4em;
+    margin: 3em 20% 1em 2em;
+    margin-right: 200px;
+    background-color:#FAFAFF;
+    border:#999 1px solid;
+    font-size:   80%;
+    font-family: sans-serif;
+}
+div.toc.dense li {
+    display: inline;
+}  
+div.toc h2 {
+    margin:    0;
+    padding-top: 1em;
+    padding-left: 1em;
+    font-size: inherit;
+}
+
+/* get rid of useless "10 results found" when using indexed search. */
+div.search p.result { display:none; }
+
+form.tiny, form.tiny p {
+    display:inline;
+    white-space:nowrap;
+}
+form.tiny input {
+    margin:       0.1em;
+    font-size:    80%;
+    font-family:  inherit;
+}
+form.tiny input[type="text"] {
+    width:        10em;
+}
+
+/* portrait support */
+
+div.color {
+    clear:left;
+}
+div.one {
+    background-color:#eee;
+    padding: 0.1ex 0;
+}
+img.portrait {
+    float:left;
+    clear:left;
+    background-color:#fff;
+    border:#999 1px solid;
+    	padding:10px;
+    margin:10px;
+}
+li {
+    margin-left:1em;
+}
+div.portrait {
+    float:     left;
+    clear:     left;
+    font-size: xx-small;
+    padding-left: 10px;
+}
+div.portrait + p {
+    min-height:70px;
+}
+div.portrait img.portrait {
+    float:none;
+    margin:10px 10px 0 0;
+}
+div.portrait a {
+    text-decoration:none;
+    color:#999;
+}
+
+dl.irc dt {
+    width:15ex;
+    float:left;
+    text-align:right;
+    clear:left;
+}
+dl.irc dt span.time { display:none; }
+dl.irc dd {
+    margin-left:17ex;
+}
+
+table.history {
+    border-style:none;
+}
+table.history td[colspan="3"] {
+    padding: 1em 0;
+}
+td.history {
+    border-style:none;
+}
+table.history input[type="submit"] {
+    font-size: 70%;
+    padding: 0;
+    margin: 0 1ex;
+}
+table.user {
+    border-style:solid;
+    border-width:thin;
+}
+table.user tr td {
+    border-style:solid;
+    border-width:thin;
+    padding:5px;
+}
+span.result {
+    font-size:larger;
+}
+span.info {
+    font-size:smaller;
+    font-style:italic;
+}
+div.rss {
+    background-color:#EEF;
+}
+
+.left { float:left; margin-right:1em; }
+.right { float:right; margin-left:1em; }
+
+/* 
+ * a.definition:before { content:"[::"; }
+ * a.definition:after { content:"]"; }
+ * a.link:before { content:"[##"; }
+ * a.link:after { content:"]" }
+ */
+
+a.definition {
+    color:#000;
+    text-decoration:none;
+    border-bottom:dashed 1px;
+}
+a.alias {
+    text-decoration:none;
+    border-bottom:dashed 1px;
+}
+a.near:link {
+    color:#093;
+}
+a.near:visited {
+    color:#550;
+}
+a.tag:before {
+    content:"\2601\ ";
+}
+ol, ul, dl {
+    padding-top:0.5em;
+}
+dd, li {
+    margin-bottom:0.5em;
+}
+
+/* elisp files and other scripts for download */
+
+p.download a, a.download {
+    padding: 0.5em;
+    color: black;
+    text-decoration: none;
+    background-color: #cfa;
+    border: 1px solid #7a7;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+}
+
+.content pre {
+    border: #777777 1px solid;
+    padding: 0.5em;
+    margin-left: 1em;
+    margin-right: 2em;
+    white-space: pre;
+    background-color: #e6e6e6;
+    color: black;
+    overflow: auto;
+    font-size: smaller;
+    width: 120ex;
+}
+
+/* cal */
+
+pre.cal {
+    float:left;
+    margin:3ex;
+    height:20ex;
+}
+pre.cal a {
+    text-decoration:none;
+    font-weight:bold;
+}
+pre.cal a:hover {
+    background-color:#eef;
+}
+h2, h3, h4, h5, h6, hr, div.footer {
+    clear:both;
+}
+div.footer {
+    margin-top: 2em;
+}
+
+.legal {
+    font-size: 80%;
+}
+
+/* printable index */
+
+div.letter br {
+    display: none;
+}
+div.letter h2 {
+    clear: both;
+    padding-top: 2ex;
+    border-bottom: solid 1px;
+}
+div.letter > a {
+    display: block;
+    width: 40ex;
+    float: left;
+    border:none;
+}
+
+textarea[name="text"] {
+    width:100%;
+    height:80%;
+}
+textarea[name="summary"] {
+    width:100%;
+    height:3em;
+}
+div.comment textarea {
+    height:10em;
+}
+
+/* calendar */
+
+div.month {
+    padding:0;
+    margin:0 2ex;
+}
+
+div.year div.month {
+    float:left;
+}
+
+div.month a {
+    text-decoration:none;;
+}
+
+div.month a.edit {
+    color:inherit;
+}
+
+div.month a.local {
+    font-weight:bold;
+}
+
+/* highlighting */
+
+/* Equivalent to Output::HTML */
+
+span.linecomment  { color: green; }
+span.blockcomment { color: green; }
+span.prepro       { color: purple; }
+span.select       { font-weight: bold; }
+span.quote        { color: blue; }
+span.category_1   { color: teal; }
+span.category_2   { color: blue; }
+span.category_3   { color: blue; }
+
+/* printing */
+
+@media print {
+    body {
+	font-size: 10pt;
+	line-height: 12pt;
+    }
+    a:link, a:visited {
+	color:#000;
+	text-decoration:none;
+    }
+
+    img.logo, img.logo, div.header span, div.header br,
+    div.header form, div.diff,
+    a.edit, a.number span,
+    div.footer, div.footer + hr, div.sister {
+	display:none;
+    }
+    a[class="url number"]:after,
+    a[class="inter number"]:after {
+	content:"[" attr(href) "]";
+    }
+    a[class="local number"]:after {
+	content:"[" attr(title) "]";
+    }
+}
+
+/* remove the logo from the normal flow */
+body.sidebar div.header img.logo {
+    position:absolute;
+    top:10pt;
+    right:10pt;
+}
+
+/* float the top goto bar to the left
+   leave enough space at the top for the logo which is removed from the flow
+   everything should be pixel based -- no scaling
+   assume maximum of 5 rows, 2 colums = 10 items
+*/
+body.sidebar div.header span.gotobar {
+    display:block;
+    width:200px;
+    height:200px;
+    background:#fff;
+    float:right;
+    padding:140px 0 0 30px;
+    margin:0;
+}
+
+body.sidebar div.header span.gotobar + br {
+    display:none;
+}
+
+body.sidebar div.header span.specialdays {
+    color:#aaa;
+}
+
+body.sidebar div.header span.gotobar a {
+    display:block;
+    float:left;
+    width:99px;
+    margin:0;
+    padding:0;
+    font-size:14px;
+}
+
+body.sidebar div.footer span.edit br {
+    display:none;
+}
+    
+body.sidebar div.footer span.edit {
+    display:block;
+    position:absolute;
+    top:230px;
+    right:0;
+    padding:0;
+    margin:0;
+    width:208px;
+}
+
+body.sidebar div.footer span.edit a {
+    display:block;
+    font-size:14px;
+}
+
+body.sidebar div.footer span.gotobar {
+    display:none;
+}
+
+body.sidebar div.footer span.time br {
+    display:none;
+}
+
+body.sidebar hr, body.sidebar h2 {
+    clear: left;
+}
+
+body.sidebar div.toc {
+    margin-right:240px;
+}
+
+/* The textarea needs to be limited in width or else
+   the floating sidebar will force it down */
+body.sidebar div.edit form {
+    margin-right:240px;
+}
+
+body.tiny {
+    font-size:   8pt;
+}
+
+body.small {
+    font-size: 10pt;
+}
+
+body.medium {
+    font-size: 12pt;
+    font-family: "Lucida Bright", serif;
+}
+body.medium div.content h1, body.medium h2 {
+    font-size: 14pt;
+}
+body.medium div.toc h2 {
+    font-size: inherit;
+}
+body.big {
+    font-size:   14pt;
+    font-family: "Lucida Bright", serif;
+}
+body.big div.toc {
+    font-family: "Lucida Sans", sans-serif;
+}
+body.typo div.content h1, body.typo div.content > h2 {
+    font-variant:   small-caps;
+    margin-top:     5em;
+    margin-bottom:  2em;
+}
+body.typo h3 {
+    margin-top:    3em;
+    margin-bottom: 1em;
+}
+
+/* rss */
+
+channel * { display: block; }
+
+channel > link:before {
+    font-size: x-large;
+    display: block;
+    margin: 1ex;;
+    padding: 1ex;
+    content: "This is an RSS feed, designed to be read in an RSS application.";
+    color: red;
+    border: 1px solid red;
+}
+link {
+    font-size: small;
+    margin-bottom: 2ex;
+}
+username:before { content: "Last edited by "; }
+username:after { content: "."; }
+generator:before { content: "Feed generated by "; }
+generator:after { content: "."; }
+description {
+    font-weight: bold;
+    font-style: normal;
+}
+item title {
+    margin-bottom: 0;
+}
+item description {
+    font-weight: normal;
+    font-style: italic;
+    margin-bottom: 1em;
+}
+link, license {
+    font-size: 10pt;
+}
+copyright {
+    font-size: 12pt;
+    margin:    2em;
+}
+image url {
+    text-indent: -5000px; /* hide text off-screen */
+    height: 112px;
+    width: 196px;
+    background:url("http://www.emacswiki.org/emacs_logo.png") no-repeat;
+    position: absolute;
+    top: 0;
+    right: 10px;
+    display: block;
+}
+docs, language,
+pubDate, lastBuildDate, ttl, guid, category, comments,
+docs, image title, image link,
+status, version, diff, history, importance, interwiki {
+    display: none;
+}
