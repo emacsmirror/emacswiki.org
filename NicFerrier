@@ -39,6 +39,12 @@ I hang out on [[EmacsChannel|#emacs]] a lot, I'm listed [[EmacsChannelPeople|her
 
 * [http://nic.ferrier.me.uk/blog/2010_10/elnode about Elnode, the EmacsLisp asycnc HTTP server]
 
+== My CSS for the EmacsWiki ==
+
+My CSS is [[http://www.emacswiki.org/emacs/NicFerrierCss|here]].
+
+The GitHub is [[https://github.com/nicferrier/nics-emacswiki-css|here]]
+
 
 == Elnode: an asynchronous HTTP server for Emacs ==
 // ... or node.js for Emacs //
