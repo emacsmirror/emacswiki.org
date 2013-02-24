@@ -30,6 +30,8 @@ An introduction from the FreeSoftwareFoundation: EmacsLispIntro.
 A work-in-progress (perhaps to be perpetually unfinished) tutorial:
 http://www.gnuvola.org/software/elisp-tutorial/index.html
 
+You might prefer learning by example and then the ElispCookbook would be useful.
+
 See also LearningEmacs.
 
 == Emacs Lisp features ==
