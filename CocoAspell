@@ -1,5 +1,5 @@
 If you're using EmacsForMacOS and compiled from source, you might be interested in using aspell to check your spelling.
-OSX has neither `ispell' nor `aspell'. [http://people.ict.usc.edu/~leuski/cocoaspell/ cocoAspell] is a port of `aspell' and can therefore be used by Emacs' InteractiveSpell and FlySpell.
+OSX has neither `ispell' nor `aspell'. However, you can install `aspell' using [http://mxcl.github.com/homebrew/ Homebrew] - simply execute "brew install aspell" in Terminal.   [http://people.ict.usc.edu/~leuski/cocoaspell/ cocoAspell] is a port of `aspell' and can therefore be used by Emacs' InteractiveSpell and FlySpell.
 
 *Note:* If you use CarbonEmacsPackage or AquamacsEmacs, chances are you already have a fully integrated aspell! Ignore this page.
 
