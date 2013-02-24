@@ -32,4 +32,4 @@ You don't need a real process. One thing we often do is talk to something over a
 
 [[https://github.com/nicferrier/elnode/blob/master/examples/elnode-ijs.el#L82|(full example here)]]
 
-This sets up the derived ComIntMode derived mode and starts a fake process - ##fake-proc## - which keeps ComIntMode happy while we actually talk to the browser over a comet event loop.
+This sets up the derived ComintMode derived mode and starts a fake process - ##fake-proc## - which keeps ComIntMode happy while we actually talk to the browser over a comet event loop.
