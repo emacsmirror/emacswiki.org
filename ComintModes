@@ -1,6 +1,6 @@
 ComintMode is for making shell or repl like buffers in which to interact with an external process.
 
-Derived modes from ComintMode are very easy to build... people should make more of them (and [[Elpa|package them!]])
+Derived modes from ComintMode are very easy to build... people should make more of them (and [[ELPA|package them!]])
 
 This page documents some examples of how to use ComintMode.
 
