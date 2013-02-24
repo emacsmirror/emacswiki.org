@@ -1,0 +1,35 @@
+ComintMode is for making shell or repl like buffers in which to interact with an external process.
+
+Derived modes from ComintMode are very easy to build... people should make more of them (and [[Elpa|package them!]])
+
+This page documents some examples of how to use ComintMode.
+
+== Talking to a fake process ==
+
+You don't need a real process. One thing we often do is talk to something over a socket or some such, something out of band of the actual ComintMode lisp code. An example of this is talking to a browser. Elnode has this example code for doing a Javascript shell:
+
+{{{
+(define-derived-mode
+    elnode-ijs/mode comint-mode "IJSM"
+    "Run a Javascript shell."
+    :syntax-table js2-mode-syntax-table
+    (setq comint-prompt-regexp (concat "^" (regexp-quote elnode-ijs-prompt)))
+    (setq comint-input-sender 'elnode-ijs/input-sender)
+    (unless (comint-check-proc (current-buffer)
+      ;; Was cat, but on non-Unix platforms that might not exist, so
+      ;; use hexl instead, which is part of the Emacs distribution.
+      (let ((fake-proc
+             (condition-case nil
+                 (start-process "ijsm" (current-buffer) "hexl")
+               (file-error (start-process "ijsm" (current-buffer) "cat")))))
+        (set-process-query-on-exit-flag fake-proc nil)
+        ;; Add a silly header
+        (insert "Interactive Javascript Mode\n")
+        (set-marker
+         (process-mark fake-proc) (point))
+        (comint-output-filter fake-proc elnode-ijs-prompt))))
+}}}
+
+[[https://github.com/nicferrier/elnode/blob/master/examples/elnode-ijs.el#L82|(full example here)]]
+
+This sets up the derived ComIntMode derived mode and starts a fake process - ##fake-proc## - which keeps ComIntMode happy while we actually talk to the browser over a comet event loop.
