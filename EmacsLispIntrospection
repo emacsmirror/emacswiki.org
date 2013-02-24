@@ -1,0 +1,8 @@
+Being a Lisp it's possible to discover much about your program dynamically.
+
+EmacsLisp is particularly open to investigation.
+
+Here are some brief notes:
+
+* `find-function' finds a function definition and moves to it: ##(find-function 'somefunc)##
+* `symbol-file' finds the file a function definition is in: ##(symbol-file 'somefunc)##
