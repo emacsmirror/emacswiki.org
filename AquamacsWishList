@@ -16,7 +16,7 @@ DavidReitter: Fixed in post-2.1 git.
 
 [new]
 BryanLHarris: I would like better scrolling support for the Magic Mouse, which is currently kind of crazy.  The scrolling is so quick I just end up at either the top or bottom of the file.
-DavidReitter: I use my MagicMouse all the time to scroll and haven't observed such problems.  Please file a bug report via the usual channel.  Thanks.
+DavidReitter: I use my MagicMouse all the time to scroll and haven't observed such problems.  Please file a bug report via the usual channel.  Thanks.  DavidVincent:  I use a third party mouse all the time and it seems OK.  This was written 2013-02-24.  Maybe it is time to remove this paragraph.
 
 [new:Unhammer:2009-08-08 08:59 UTC]
 Now that emacs 23 has this fancy multi-tty stuff, isn't the time ripe to implement the two functions `collaboration-server-start' and `collaboration-server-join' for user-friendly [[CollaborativeEditing]]?
