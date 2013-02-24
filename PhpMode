@@ -280,6 +280,12 @@ It's a minor mode, and does just that - you can use it in conjunction with any m
 
 - sabof
 
+
+Try also this new indenting/coloring/syntax detection multi-mode (otherwise using std php-mode, js-mode, css-mode, etc.)
+https://github.com/traceypooh/php-htm-mode
+
+
+
 == Discussion ==
 
 [new]
