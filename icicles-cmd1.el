@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Feb 16 15:15:25 2013 (-0800)
+;; Last-Updated: Sat Feb 23 20:06:24 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 25540
+;;     Update #: 25543
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -7519,7 +7519,7 @@ can use the following keys:
         (funcall fn file 'WILDCARDS)
         (when (and (file-readable-p file)  (buffer-file-name))
           (let ((b-r-o  (if buffer-read-only 1 -1)))
-            (revert-buffer nil t) ; Else in fundamental mode.
+            (normal-mode)               ; Else in fundamental mode.
             ;; Reverting imposed the file's read-only status.  Restore the right status.
             (if (fboundp 'read-only-mode) (read-only-mode b-r-o) (toggle-read-only b-r-o))))
         ;; Add the visited buffer to those we will keep (not kill).
@@ -7581,7 +7581,7 @@ Same as `icicle-find-file-of-content' except it uses a different window." ; Doc 
         (funcall fn file 'WILDCARDS)
         (when (and (file-readable-p file)  (buffer-file-name))
           (let ((b-r-o  (if buffer-read-only 1 -1)))
-            (revert-buffer nil t) ; Else in fundamental mode.
+            (normal-mode)               ; Else in fundamental mode.
             ;; Reverting imposed the file's read-only status.  Restore the right status.
             (if (fboundp 'read-only-mode) (read-only-mode b-r-o) (toggle-read-only b-r-o))))
         ;; Add the visited buffer to those we will keep (not kill).
