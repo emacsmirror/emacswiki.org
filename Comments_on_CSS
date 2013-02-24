@@ -47,7 +47,13 @@ Ok... I still don't understand how that helps me upload it to emacswiki?
 
 ----
 
+You just edit a page, of course.
+
+Try it with NicFerrierCss: 
 http://www.emacswiki.org/emacs/Comments_on_CSS?css=http%3A%2F%2Fwww.emacswiki.org%2Femacs%3Faction%3Dbrowse%3Bid%3DNicFerrierCss%3Braw%3D1%3Bmime-type%3Dtext%2Fcss
+
+Return:
+http://www.emacswiki.org/emacs/Comments_on_CSS?css=
 
 -- AlexSchroeder 2013-02-24 21:14 UTC
 
