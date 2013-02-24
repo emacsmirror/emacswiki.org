@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Feb 23 20:06:24 2013 (-0800)
+;; Last-Updated: Sun Feb 24 11:24:32 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 25543
+;;     Update #: 25545
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -7517,11 +7517,7 @@ can use the following keys:
              (fn   (if r-o 'find-file-read-only 'find-file)))
         (setq file  (icicle-transform-multi-completion file))
         (funcall fn file 'WILDCARDS)
-        (when (and (file-readable-p file)  (buffer-file-name))
-          (let ((b-r-o  (if buffer-read-only 1 -1)))
-            (normal-mode)               ; Else in fundamental mode.
-            ;; Reverting imposed the file's read-only status.  Restore the right status.
-            (if (fboundp 'read-only-mode) (read-only-mode b-r-o) (toggle-read-only b-r-o))))
+        (when (and (file-readable-p file)  (buffer-file-name)) (normal-mode)) ; Else in fundamental mode.
         ;; Add the visited buffer to those we will keep (not kill).
         ;; If FILE uses wildcards then there will be multiple such buffers.
         ;; For a directory, get the Dired buffer instead of using `get-file-buffer'.
@@ -7579,11 +7575,7 @@ Same as `icicle-find-file-of-content' except it uses a different window." ; Doc 
              (fn   (if r-o 'find-file-read-only-other-window 'find-file-other-window)))
         (setq file  (icicle-transform-multi-completion file))
         (funcall fn file 'WILDCARDS)
-        (when (and (file-readable-p file)  (buffer-file-name))
-          (let ((b-r-o  (if buffer-read-only 1 -1)))
-            (normal-mode)               ; Else in fundamental mode.
-            ;; Reverting imposed the file's read-only status.  Restore the right status.
-            (if (fboundp 'read-only-mode) (read-only-mode b-r-o) (toggle-read-only b-r-o))))
+        (when (and (file-readable-p file)  (buffer-file-name)) (normal-mode)) ; Else in fundamental mode.
         ;; Add the visited buffer to those we will keep (not kill).
         ;; If FILE uses wildcards then there will be multiple such buffers.
         ;; For a directory, get the Dired buffer instead of using `get-file-buffer'.
