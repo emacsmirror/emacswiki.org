@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: mié feb 13 11:12:31 2013 (-0300)
 ;; Version: 
-;; Last-Updated: dom feb 24 20:35:03 2013 (-0300)
+;; Last-Updated: dom feb 24 20:50:48 2013 (-0300)
 ;;           By: Christian
-;;     Update #: 97
+;;     Update #: 105
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -26,6 +26,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 24-Feb-2013    Christian  
+;;    Last-Updated: dom feb 24 20:49:45 2013 (-0300) #103 (Christian)
+;;    `add-to-list' doesn't let you push new elements if they are already. We don't want this behaviour.
 ;; 24-Feb-2013    Christian  
 ;;    Last-Updated: dom feb 24 20:30:10 2013 (-0300) #95 (Christian)
 ;;    There is a problem in the regexp `sqlite-regexp-sqlite-command'. It doesn't test the "." at the begining of the string.
@@ -211,7 +214,7 @@ Return a list with two elements: (value rest-of-line)"
     (while next
       (setq next (sqlite-take-next-value line))
       (when next
-	(add-to-list 'parsed (car next) t)
+	(add-to-list 'parsed (car next) t 'ignore)
 	(setq line (cadr next))
 	)
       )
@@ -233,7 +236,7 @@ Result: (header-list row1-list row2-list row3-list) "
 	(error (concat "SQLite process error:" (chomp (buffer-string)))))
     ;; no error, as Fredie Mercury said: "show must go on..."
     (while ( < counter num-lines)      
-      (add-to-list 'results-rows (sqlite-parse-line) t)
+      (add-to-list 'results-rows (sqlite-parse-line) t 'ignore)
       (forward-line)
       (setq counter (+ 1 counter)))
     (car `(,results-rows))))
