@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: mié feb 13 11:12:31 2013 (-0300)
 ;; Version: 
-;; Last-Updated: sáb feb 16 19:23:35 2013 (-0300)
+;; Last-Updated: dom feb 24 20:35:03 2013 (-0300)
 ;;           By: Christian
-;;     Update #: 95
+;;     Update #: 97
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -26,6 +26,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 24-Feb-2013    Christian  
+;;    Last-Updated: dom feb 24 20:30:10 2013 (-0300) #95 (Christian)
+;;    There is a problem in the regexp `sqlite-regexp-sqlite-command'. It doesn't test the "." at the begining of the string.
 ;; 16-Feb-2013    Christian  
 ;;    Last-Updated: sáb feb 16 19:22:25 2013 (-0300) #93 (Christian)
 ;;    Some problems with the first query are now solved!
@@ -249,7 +252,7 @@ This is used for `sqlite-check-errors' for raising errors with messages.")
     )
   )
 
-(defvar sqlite-regexp-sqlite-command "\\..*" 
+(defvar sqlite-regexp-sqlite-command "^\\..*" 
   "This regexp must match an SQLite command. This is used for identifying which is an SQL command and which is a proper SQLite command.")
 
 (defun sqlite-prepare-query (sql-command)
