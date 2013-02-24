@@ -1,6 +1,7 @@
 [[es:ÁreaElisp]]
 [[fr:SectionElisp]]
 [[de:ElispSektion]]
+
 This is the EmacsWiki elisp area where we collect EmacsLisp files.  No login required, no version control required, no ftp required, no password required.  It's as simple as the wiki itself.  That also means that anybody can place malicious code in these !EmacsLisp files.  If in doubt, don't use them.
 
 == Downloading ==
@@ -137,7 +138,7 @@ Additional tips can be found on [[Comments on ElispArea]].
 
 If you put a percent sign (%), then "Id:" (the colon is necessary), then another %, in a page of elisp code, it will end up being expanded into a revision number and look like this:
 
-%Id: 296%
+%Id: 297%
 
 So you can have lisp files on the wiki be version-numbered automatically instead of manually.
 
