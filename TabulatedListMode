@@ -4,7 +4,7 @@ TabulatedListMode is distributed with Emacs 24 and is used for making the packag
 
 == Use cases ==
 
-* Display lists of things [[https://github.com/nicferrier/emacs-world-time-mode/blob/master/world-time-mode.el#L54|like the world times]] in WorldTimeMode
+* Display lists of things [[https://github.com/nicferrier/emacs-world-time-mode/blob/master/world-time-mode.el#L54|like the world times]] in WorldTime
 * Display lists of resources and enable their management
 ** like in [[https://github.com/nicferrier/elpakit/blob/master/elpakit.el#L634|Elpakit]]
 ** and in [[https://github.com/nicferrier/elnode/blob/master/elnode.el#L1252|Elnode]]
