@@ -1,0 +1,39 @@
+We often use Elisp and EmacsLisp interchangeably to refer to EmacsLisp. Is this ok?
+
+== Emacs Lisp vs. elisp ==
+
+It seems that "elisp" is not a good name for Emacs Lisp.  When asked,
+RMS said:
+
+ From: RichardStallman
+ Subject: Re: elisp test case question
+ To: guile-devel and other people
+ Date: Sat, 9 Mar 2002 03:48:14 -0700 (MST)
+ 
+ "Elisp" was a trademark in the 80s, for CCA Emacs.
+ I am pretty sure it is long dead.
+ But we can ask a lawyer to check.
+ Eben, can you please check?
+
+Should we prefer "Emacs Lisp" in the EmacsWiki, or is "elisp" ok? -- [[Lars Brinkhoff]]
+
+I looked in the official online database of the US trademarks office ( http://www.uspto.gov/ ) and received no results for "elisp", I personally think it requires less energy than emacslisp. Writing it e-lisp or e.lisp or e/lisp would emphasise that it is an abbreviation. [[Zeth]]
+
+I guess we should use Emacs Lisp.  The EmacsManual doesn't use elisp, either, except when linking to the EmacsLispManual.
+
+[new]
+[http://lists.gnu.org/archive/html/guile-devel/2002-03/msg00081.html Eben Moglen's response]:
+
+ From: Eben Moglen
+ Subject: Re: elisp test case question
+ To: guile-devel and other people
+ Date: Sat, 9 Mar 2002 08:30:13 -0500 (EST)
+
+ "Elisp" is not presently a registered trademark in the US for any
+ software-related line of commerce.  A company called Elispot had marks
+ for laboratory sensing and measurement equipment consisting of the
+ word "Elisp" without graphic, but those marks appear to have been
+ abandoned at the end of 2000.  There is no current record of an
+ "Elisp" mark related to any version of Emacs.
+
+Elisp seems fine.  You aren't trying to sell a product and, as mentioned above by Zeth and Eben's post, there is no trademark registered in the USA for elisp. Even if there were, I highly doubt that informal conversation and notes on a web site (this one) would be enough to be considered infringing use. Then again, [WikiPedia:IANAL IANAL] but Eben is. -- MattPerry
