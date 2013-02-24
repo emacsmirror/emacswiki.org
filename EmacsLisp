@@ -41,10 +41,9 @@ See also LearningEmacs.
 * BackquoteSyntax: what does it mean ##`(foo ,bar baz)##
 * ListModification: operations which inspect and modify lists
 * [[EmacsLispIntrospection|Introspection]]: finding out about functions
-* ...
+* [[DynamicBindingVsLexicalBinding|Dynamic and Lexical Binding]]: it's common to mix both
 
 If you are wondering about all the quoting syntaxes like ##?a 'b #c `(,d e) :f (g . h)## etc., then see at the symbol glossary in CategoryGlossary.
-
 
 
 ----
