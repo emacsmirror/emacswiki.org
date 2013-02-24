@@ -7,6 +7,8 @@ This way, all these specific packages share a common base functionality,
 and a common set of bindings, which makes them easier to use (and
 saves code, implementation time, etc., etc.).
 
+Find examples of ComintModes.
+
 == Leveraging Comint ==
 
 Since SqlMode is based on comint-mode, several aspects of SQLi buffers
