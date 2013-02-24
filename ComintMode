@@ -7,6 +7,7 @@ This way, all these specific packages share a common base functionality,
 and a common set of bindings, which makes them easier to use (and
 saves code, implementation time, etc., etc.).
 
+== Examples ==
 Find examples of ComintModes.
 
 == Leveraging Comint ==
