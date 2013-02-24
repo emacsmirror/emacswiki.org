@@ -134,5 +134,75 @@ The result would be:
 
     ((just . 1) (test . 2) (a . 2) (is . 1) (This . 1))
 
+== Enhanced analysis ==
+Here's an enhanced version of word-count-analysis that does a little more.
+
+    (cond ((not (boundp 'word-count-analysis-syntax-table))
+           (setq word-count-analysis-syntax-table
+                 (make-syntax-table text-mode-syntax-table))
+           ;; allow these to be part of words
+           (modify-syntax-entry ?, "w" word-count-analysis-syntax-table)
+           (modify-syntax-entry ?. "w" word-count-analysis-syntax-table)
+           (modify-syntax-entry ?' "w" word-count-analysis-syntax-table)))
+    
+    (defun word-count-analysis (start end &optional ignore-list len)
+      "Count how many times each word is used in the region.
+        Punctuation is ignored. Third optional parameter is a list of words to ignore;
+        fourth means ignore words shortern than len."
+      (interactive "rxp")
+      (let ((cur-table (syntax-table))
+            words word-str word cell)
+        (set-syntax-table word-count-analysis-syntax-table)
+        (save-excursion
+          (goto-char start)
+          (while (re-search-forward "\\w+" end t)
+            (setq word-str (downcase (match-string 0)))
+            ;; KLUDGE: we want punctuation embedded in words, e.g. 5.10 and
+            ;; 4,300, but not at end
+            (if (string-match "\\(.+\\)[,.]$" word-str)
+                (setq word-str (match-string 1 word-str)))
+            (setq word (intern word-str))
+            (setq cell (assq word words))
+            (if (and (not (eq word ',)) ; in "(foo)," both foo and , are words;
+                                        ; we want to ignore the comma
+                     (not (eq word '.)) ; ditto
+                     (or (not len) (> (length word-str) len))
+                     (or (not ignore-list) (not (memq word ignore-list))))
+                (if cell
+                    (setcdr cell (1+ (cdr cell)))
+                  (setq words (cons (cons word 1) words))))))
+        ;; done, so restore table
+        (set-syntax-table cur-table)
+        (when (interactive-p)
+          (message "%S" words))
+        words))
+
+The following sexps are examples of how to use this enhanced version of word-count-analysis.
+
+    (let ((tot 0)
+	  ;; ignore specific words
+	  ;;(l (word-count-analysis (point-min) (point-max) '(i a an the)))
+	  ;;
+	  ;; ignore one-character words
+	  ;;(l (word-count-analysis (point-min) (point-max) nil 1))
+	  ;;
+	  ;; default
+	  (l (word-count-analysis (point-min) (point-max))))
+      (mapcar '(lambda (cell) (setq tot (+ tot (cdr cell)))) l)
+      (format "total = %d" tot))
+
+    (insert (pp (sort (word-count-analysis (point-min) (point-max))
+                      '(lambda (a b) (> (cdr a) (cdr b)))))))
+
+    (mapcar '(lambda (cell)
+               (let ((w (car cell))
+                     (ct (cdr cell)))
+                 (while (> ct 0)
+                   (insert (format "%s\n" w))
+                   (setq ct (1- ct)))))
+            (sort (word-count-analysis (point-min) (point-max))
+                  '(lambda (a b) (string< (symbol-name (car a))
+                                          (symbol-name (car b))))))
+
 ----
 CategoryDotEmacs
