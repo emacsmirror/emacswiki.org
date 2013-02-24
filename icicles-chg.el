@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Feb 16 20:23:00 2013 (-0800)
+;; Last-Updated: Sat Feb 23 20:11:04 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 9733
+;;     Update #: 9735
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -86,6 +86,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2013/02/23 dadams
+;;    icicle-find-file-of-content(-other-window):
+;;      Use normal-mode, not revert-buffer.  Thx to Michael Heerdegen.
 ;; 2013/02/16 dadams
 ;;     Renamed: icicle-find-file(-other-window) to icicle-find-file-no-search(-other-window).
 ;;     Added defaliases for (new) icicle-find-file(-other-window), depending on Emacs version.
