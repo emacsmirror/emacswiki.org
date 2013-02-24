@@ -1,0 +1,31 @@
+One way to learn EmacsLisp is to compare it with other languages that you might already know. This page lists some comparisons.
+
+== Lisp vs. Pascal ==
+
+From AlanJPerlis' foreword to the Wizard Book (Wiki:StructureAndInterpretationOfComputerPrograms): [http://mydatapages.com/pascal.html Pascal] is for building
+pyramids – imposing, breathtaking, static structures built by armies
+pushing heavy blocks into place. Lisp is for building organisms –
+imposing, breathtaking, dynamic structures built by squads fitting
+fluctuating myriads of simpler organisms into place. The organizing
+principles used are the same in both cases, except for one
+extraordinarily important difference: The discretionary exportable
+functionality entrusted to the individual Lisp programmer is more than
+an order of magnitude greater than that to be found within Pascal
+enterprises. Lisp programs inflate libraries with functions whose
+utility transcends the application that produced them. <i>[...]</i> As
+a result the pyramid must stand unchanged for a millennium; the
+organism must evolve or perish.
+
+SteveYegge in his long rant on different programming languages, ''[http://steve.yegge.googlepages.com/tour-de-babel Tour de Babel]'', tells of the popularity of Emacs and in particular EmacsLisp for software developed and used internally at Amazon.com.
+ 
+== Emergency Emacs Lisp (with C++, Java & JavaScript examples) ==
+
+Examples with equivalent constructs in C++, Java and JavaScript:  [http://steve-yegge.blogspot.com/2008/01/emergency-elisp.html Emergency Emacs Lisp] by Steve Yegge
+
+== Emacs Lisp for Perl Programmers ==
+
+Some mappings between Perl and Emacs Lisp [http://obsidianrook.com/devnotes/elisp-for-perl-programmers.html here].
+
+== Emacs Lisp for Common Lisp, Scheme and Clojure Programmers == 
+
+Mappings between Common Lisp, Scheme, Clojure and Emacs Lisp [http://hyperpolyglot.org/lisp a side-by-side reference sheet].
