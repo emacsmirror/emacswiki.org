@@ -352,13 +352,16 @@ Its contents is fontified grep result."
 
 (defun agrep-goto  (file-line-content)
   "Visit the source for the grep result at point."
-  (string-match ":\\([0-9]+\\):" file-line-content)
-  (save-match-data
-    (funcall anything-grep-find-file-function
-             (expand-file-name (substring file-line-content
-                                          0 (match-beginning 0))
-                               (anything-attr 'pwd))))
-  (goto-line (string-to-number (match-string 1 file-line-content)))
+  (if (not (string-match ":\\([0-9]+\\):" file-line-content))
+      ;; If lineno is unavailable, just open file
+      (funcall anything-grep-find-file-function
+               (expand-file-name file-line-content (anything-attr 'pwd)))
+    (save-match-data
+      (funcall anything-grep-find-file-function
+               (expand-file-name (substring file-line-content
+                                            0 (match-beginning 0))
+                                 (anything-attr 'pwd))))
+    (goto-line (string-to-number (match-string 1 file-line-content))))
   (run-hooks 'anything-grep-goto-hook))
 
 ;; (@* "simple grep interface")
