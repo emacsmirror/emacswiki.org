@@ -1,0 +1,6 @@
+An EmacsLisp function called to handle output from an AsynchronousProcess.
+
+Filter functions are part of a technique of achieving a level of concurrency without actually having real concurrency.
+
+----
+See also [[Manual:Filter-Functions (emacs-lisp)]], ConcurrentEmacs, NoThreads
