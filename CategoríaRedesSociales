@@ -1,0 +1,83 @@
+Herramientas de emacs relacionadas con las redes sociales y los blogs.
+
+== Blogs ==
+
+=== Diarios ===
+
+* EmacsWikiJournal -- Un diario que soporta [#RedifusiónWeb redifusión web] y calendario; basado en EmacsWikiMode.
+* RecordsMode -- Permite mantener un diario y provee soporte para "TODOes".
+* JournalMode -- Mantener un diario en Emacs; basado en EmacsWikiMode.
+* [[Journal]] -- Crear archivos de texto usando la fecha como nombre del archivo.
+
+* PlannerMode -- Ayuda a planificar tu vida usando [[BBDB]], CalendarMode, [[Gnus]] y EmacsMuse.
+
+=== En Texto Plano ===
+
+* BlogMax -- http://billstclair.com/blogmax/
+* EmacsMuse -- Muse puede integrarse muy bien con !PyBlosxom con la ayuda de muse-blosxom.el.
+* OrgBlogging -- blogging usando OrgMode.
+** OrgBlog -- Crear y publicar a un Blog con OrgMode.
+** [[Blorg]] -- Exportar un blog desde un archivo Org.
+* [[lisplog]] -- Crear y manipular un Blog con Emacs. También soporta [#RedifusiónWeb redifusión].
+* [[Skinny]] -- Una aplicación web Elnode para presentar una estructura de directorio de archivos [[Creole]] como si fuese un Blog.
+
+Otros paquetes que pueden ser usados con Emacs sin ningún esfuerzo, ya que algunos dependen de texto plano:
+
+* [[http://www.blosxom.com|Bloxsom]] Es un script CGI que permite mantener un diario con archivos planos normales. Cada entrada es un archivo único.
+
+Paquetes ELisp:
+
+* Lisp:tjic-website.el -- Pequeñas funciones para manipular archivos locales que luego deban ser subidos usando herramientas scp o ftp a un sitio web.
+* Lisp:tjic-blog.el -- Un agregado para tjic-website.el que soporta un Blog(weblog).
+
+
+=== Usando una API ===
+
+* WebloggerMode -- Para varias APIs de Blogs: Blogger, Metaweblog, Moveable Type, Live Journal, Wordpress.
+* [http://github.com/thomas11/wpmail/tree/master wpmail.el] -- Para publicar a Wordpress via correo electrónico. Sólo ha sido testeado actualmente con wordpress.com.
+* [[Tumblr]] -- Implementación para publicar en http://www.tumblr.com.
+* BloggerMode -- Para la API de Blogger.
+* [http://code.google.com/p/emacspeak/ gBlogger] Herramientas para la API de Google. Es parte de la suite "emacspeak", pero disponible de forma separada.
+* Clientes <nowiki>LiveJournal</nowiki> véase MeatBall:LiveJournal.
+** LjUpdate
+** [[http://www.jwz.org/hacks/jwz-lj.el|jwz-lj.el]].
+* [[http://www.zerobeat.in/files/advogato.el|advogato.el]].
+* EmacsAtomApi -- una interfaz para servicios de Weblog que presenta la [http://atomenabled.org API Atom].
+* [[http://www.marginalia.org/code/mt.el|mt.el]] - Moveable Type (This package works well enough, but it only gives access to ''title'', ''description'' i.e. Body, and the categories. 
+* [[Eblog]] - Provee una interfaz tipo MUA para publicar a un Blogger usando la nueva API GData.
+* [[Tumbl]] -- Hacer publicaciones a http://www.tumblr.com desde Emacs.
+* [http://github.com/snim2/posterous.el Posterous.el] -- Publicar a http://posterous.com desde Emacs.
+
+
+== Discussion ==
+
+* EevMode -- e-script permite mantener un diario ejecutable.
+
+== Microblogging ==
+
+* [[Identica-mode]] -- Publicar a cualquier servidor laconi.ca(actualmente conocido como !StatusNet), como por ejemplo: http://identi.ca. (Similar a Twitter pero totalmente libre).
+* [[Twitter]] -- Publicar a http://twitter.com usando varios modos.
+
+
+== Redes Sociales ==
+
+* DiásporaEl -- Cliente ELisp para la red social Diáspora.
+
+== Redifusión Web  ==
+[:RedifusiónWeb]
+
+[https://es.wikipedia.org/wiki/Redifusi%C3%B3n_web Según wikipedia], redifusión web sería el termino correcto de "sindicación". Se refiere a lectores RSS, Atoms o similares.
+
+* NewsTicker -- Mira los feeds por tí.
+* GnusRss -- Leer feeds usando GNUS.
+* WThreeMShimbun -- Leer varios artículos web en [[Gnus]] [[Wanderlust]] o [[Mew]].
+* HOWTOReadFeedsInEmacsViaEmail
+
+
+URLs de Redifusión En Línea:
+
+Puedes utilizar [[emacs-w3m]] Para acceder a la versión móvil de agregadores en línea, por ejemplo: Google Reader. En éste caso, deberás ir [http://www.google.com/reader/m/view/ aquí], iniciar sesión como usualmente se hace. Si alguien más tiene éxito accediendo a otros servicios en línea de esta forma, deberíamos considerar hacer un listado aquí con URLs relevantes -- KamenNedev
+
+
+----
+MapaDelSitio
