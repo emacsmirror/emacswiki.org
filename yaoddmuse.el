@@ -8,15 +8,18 @@
 ;; Copyright (C) 2009, 2010 rubikitch, all rights reserved.
 ;; Created: 2009-01-06 12:41:17
 ;; Version: 0.1.1
-;; Last-Updated: 2010/03/20 20:53
-;;           By: rubikitch
+;; Last-Updated: lun feb 25 14:05:07 2013 (-0300)
+;;           By: Christian
 ;; URL: http://www.emacswiki.org/emacs/download/yaoddmuse.el
 ;; Keywords: yaoddmuse, oddmuse
 ;; Compatibility: GNU Emacs 22 ~ 23
 ;;
 ;; Features that might be required by this library:
 ;;
-;; `url' `cl' `sgml-mode' `skeleton'
+;;   `dired', `find-func', `mail-prsvr', `mailcap', `mm-util',
+;;   `sgml-mode', `skeleton', `thingatpt', `timer', `timezone',
+;;   `url', `url-cookie', `url-expand', `url-history', `url-methods',
+;;   `url-parse', `url-privacy', `url-proxy', `url-util', `url-vars'.
 ;;
 
 ;;; This file is NOT part of GNU Emacs
@@ -395,6 +398,9 @@
 ;;  # If you are a Japanese, please write in Japanese:-)
 
 ;;; Change log:
+;; 25-Feb-2013    ChristianGiménez
+;;    Last-Updated: lun feb 25 14:03:00 2013 (-0300) (ChristianGiménez)
+;;    * Tildes recognition in links.
 ;; 2010/05/04
 ;;      * Bug report command: `yaoddmuse-send-bug-report'
 ;;      
@@ -963,7 +969,7 @@ It must print the page to stdout.
      ("\\[\\[\\(image:\\)\\(\\([^\\[]\\|[^\\]]\\)+\\)\\]\\]" 2 'yaoddmuse-image-link-name)
      ("\\[\\(\\([^\\[]\\|[^\\]]\\)+\\)[[:blank:]]\\(\\([^\\[]\\|[^\\]]\\)+\\)\\]" 1 'yaoddmuse-url)
      ("\\[\\(\\([^\\[]\\|[^\\]]\\)+\\)[[:blank:]]\\(\\([^\\[]\\|[^\\]]\\)+\\)\\]" 3 'yaoddmuse-url-name)
-     ("\\<[A-Z\xc0-\xde]+[a-z\xdf-\xff]+\\([A-Z\xc0-\xde]+[a-z\xdf-\xff]*\\)+\\>" . 'yaoddmuse-link)
+     ("\\<[A-Z\xc0-\xdeÀÈÌÒÙÁÉÍÓÚÖÜ]+[àèìòùáéíóúüöa-z\xdf-\xff]+\\([ÀÈÌÒÙÁÉÍÓÚÖÜA-Z\xc0-\xde]+[àèìòùáéíóúüöa-z\xdf-\xff]*\\)+\\>" . 'yaoddmuse-link)
      ("\\[\\[\\(\\([^\\[]\\|[^\\]]\\)+\\)\\]\\]" 1 'yaoddmuse-link)
      ("\\b\\(Lisp:\\)\\([^ ]+\\.el\\)\\b" 1 'yaoddmuse-lisp-keyword)
      ("\\b\\(Lisp:\\)\\([^ ]+\\.el\\)\\b" 2 'yaoddmuse-lisp-file)
