@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sun Feb 24 11:26:36 2013 (-0800)
+;; Last-Updated: Mon Feb 25 10:36:10 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 9736
+;;     Update #: 9742
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -86,6 +86,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2013/02/25 dadams
+;;     icicle-buffer-multi-complete, icicle-buffer-apropos-complete-match, icicle-find-file-of-content:
+;;       isearch-update-ring if find content-pat match.
 ;; 2013/02/24 dadams
 ;;    icicle-find-file-of-content(-other-window):
 ;;      Use normal-mode, not revert-buffer.  No need to restore r-o status.  Thx to Michael Heerdegen.
