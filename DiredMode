@@ -20,6 +20,7 @@ You can read more about Dired mode by reading the help displayed using `C-h m' i
 * [[Dired X]] -- Many extra features (library ##dired-x.el##).
 * DiredOmitMode -- Selectively remove files and subdirectories from the display, to reduce clutter.
 * DiredSearchAndReplace -- Search multiple files.
+ * OperatingOnFilesInDired – Opening files in associated applications. 
 * [[WDired]] -- Rename files by editing names directly in the Dired buffer.
 
 
@@ -38,7 +39,6 @@ You can read more about Dired mode by reading the help displayed using `C-h m' i
 * DiredPower -- Various Dired tips and features.
 * DiredReuseDirectoryBuffer – Make Dired reuse an existing Dired buffer
 * DiredSorting -- Dired tips and addons for sorting listings
-* DiredSortCriterias -- minimalistic dired sorting by different criterias
 * DiredSync -- Synchronize directories within dired
 * DiredTar - extension for creating and unpacking tar-files from Dired
 * DiredTweaks -- Small Dired tweaks.
@@ -55,7 +55,6 @@ You can read more about Dired mode by reading the help displayed using `C-h m' i
 * Isearch
 ** DiredIsearch -- Run `isearch' in Dired, but match only file names
 ** DiredLis -- Letter `isearch' in dired mode, not nedd press some keys to active `isearch-mode'.
-* OperatingOnFilesInDired – Opening files in associated applications.
 * ThumbsMode -- Modify dired for automatic image previewing.
 * <tt>[[trashcan.el]]</tt> -- A recoverable file-deletion system that behaves like the trash can or recycle bin of many operating systems. NOTE: Starting with Emacs 23.2, we have built-in support for using Recycle Bin or system Trash folder.  See NEWS by pressing C-h n.
 * [[Tumme]] -- Lets you navigate among image files in Dired, with thumbnail previews and more.
