@@ -12,17 +12,6 @@ Note that this page is not about EmacsWikiMode.
 
 
 
-
-
-== Double TOC in ElispArea now ==
-
-There are two tables of contents not at ElispArea, for some reason. -- DrewAdams
-[new]
-Strange, it works for me. -- Alex
-
-Works now for me too.  -- DrewAdams
-
-
 == Search finds nothing when browser is Chrome ==
 
 Using Chrome Version 24.0.1312.52 m and Windows 7 Pro Version 6.1 (Build 7601: Service Pack 1)
