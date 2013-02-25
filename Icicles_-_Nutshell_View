@@ -322,12 +322,12 @@ but with buffer-name candidates.  In fact, most of the behavior
 described above is available for most '''Icicles''' commands.)
 
 Using `C-M-j' followed by a content-matching pattern in your input
-is optional.  If you do not provide it then no content searching
+is optional.  If you do not provide it then no content-searching
 is done.
 
 The file-name pattern is also optional: you can search content
 without having any idea about the file names --- just start with
-`C-M-j'.  Obviously, content searching is much slower than
+`C-M-j'.  Obviously, content-searching is much slower than
 file-name matching.  If you can match names, that reduces the
 number of files whose content needs to be searched.
 
