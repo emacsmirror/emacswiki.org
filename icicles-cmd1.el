@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Feb 25 10:25:35 2013 (-0800)
+;; Last-Updated: Mon Feb 25 10:51:32 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 25550
+;;     Update #: 25557
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -6094,6 +6094,16 @@ The first part is matched as a regexp against a buffer name.
 The second part is matched as a regexp against buffer content.
 Candidates that do not match are filtered out.
 
+When matching buffer content, Icicles just looks for a single match.
+Visiting the buffer does not move to that match or to any other match.
+Matching is used only to filter candidate buffers.
+
+However, if your input includes a content-matching part and it
+matches, that part is automatically added to the Isearch regexp
+history, `regexp-search-ring' whenever you hit `S-TAB' to complete.
+This means that when you visit the buffer you can immediately search
+for matches using `C-M-s' or `C-M-r'.
+
 Your minibuffer input can match a buffer name or buffer content, or
 both.  Use \\<minibuffer-local-completion-map>`C-M-j' (equivalent here to `C-q C-g C-j') to input the
 default separator.
@@ -7479,6 +7489,16 @@ part optional.  If both parts are present they are separated by
 The first part is matched as a regexp against a file or directory
 name.  The second part is matched as a regexp against the file or
 directory content.  Candidates that do not match are filtered out.
+
+When matching file content, Icicles just looks for a single match.
+Visiting the file does not move to that match or to any other match.
+Matching is used only to filter candidate files.
+
+However, if your input includes a content-matching part and it
+matches, that part is automatically added to the Isearch regexp
+history, `regexp-search-ring' whenever you hit `S-TAB' to complete.
+This means that when you visit the file you can immediately search for
+matches using `C-M-s' or `C-M-r'.
 
 Your minibuffer input can match a name or content, or both.  Use
 `C-M-j' (equivalent here to `C-q C-g C-j') to input the default
