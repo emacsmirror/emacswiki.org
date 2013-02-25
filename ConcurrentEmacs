@@ -23,10 +23,15 @@ Shell: EmacsShell must be doing this right?
 
 Introspection: EmacsDebugger seems like it must do this, but maybe I'm thinking about it wrong.
 
+== Practical Approaches to Concurrency in use today ==
+
+//Accept that you can do a lot with just multiple async processes - // this is the [[NodeJs]] approach; a single Emacs can ask another process to do something and use ProcessSentinels and ProcessFilterFunctions to do quite a lot of processing apparently concurrently but really just in an event loop. As long as the ProcessFilterFunction is not too slow this is fine. Elnode takes this approach to making a scalable webserver in EmacsLisp.
+
+//Spawn more Emacs processes to do work for you - // [[JohnWiegley]]'s [[Async]] takes this approach, [[Elnode]] has an alternative and [[Elpakit]] another alternative. No one has unified this approach yet.
+  
 
 == Research ==
 CoRoutines, jit-lock-stealth*, ECB, Lisp:later-do.el, Lisp:coroutine.el, Lisp:tagbody.el, AsyncEval
-
 
 
 http://www.hpl.hp.com/personal/ange/archives/archives-95/ange-ftp-lovers-archive/0073.html
@@ -182,7 +187,7 @@ unequivocally know whether to use deep or shallow binding.
 </pre>
 
 
-== Approaches ==
+== Theoretical Approaches ==
 : threads in c.
 
 : coroutines
