@@ -1,0 +1,3 @@
+Used by an EmacsLisp process to respond to things happening to an asychronous process.
+
+See also [[Manual:Sentinels (emacs-lisp)]], ConcurrentEmacs, NoThreading
