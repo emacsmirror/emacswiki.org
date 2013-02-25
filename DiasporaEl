@@ -1,0 +1,82 @@
+Diaspora is a free (as in freedom) Social Network developed with FreeSoftware. Emacs has its own client for connecting, reading streams and sending posts and comments called diaspora-el.
+
+The FreeSoftwareFoundation recommend Diaspora instead of Facebook(see [http://www.fsf.org/fb Not'faced article from FSF]) for many reasons: 
+
+* For the groups and the privacy you can have -- You can create groups of people(called "aspects") and send them posts. The lemma is: "privacy by design".
+* ''The ownership of the contents'' -- is CreativeCommons! All the contents is yours legally!
+* There are lots of servers called pods -- is a federation project meaning that is not unified in one server, you can start your own and connect to other pods! You can share things between user of differents pods without no problems!
+* ¿More? Read it at [http://diasporial.com/whats-diaspora diasporial page].
+
+
+
+All pods have a beautiful introduction when you have just sign up, so if you're new on this thing you can read it or just ask anyone, all the people in Diaspora are open to newcomers!
+
+
+
+https://commons.wikimedia.org/wiki/File:Diaspora_logo_fleur.jpg
+
+
+
+More information about Diaspora: 
+
+* http://diasporial.com/ -- Information about Diaspora, tutorials and basic information.
+* http://diasporaproject.org/ -- Official Diaspora web page.
+* https://github.com/diaspora/diaspora -- Source code web page. 
+* http://github.com/diaspora/diaspora/wiki -- The Diaspora Wiki.
+* http://www.diasporaforum.org/ -- The forum.
+
+
+== Download and Instalation ==
+
+You can find diaspora.el at github: https://github.com/cnngimenez/diaspora.el.
+
+There are two branches, Master and Test, select one you preffer more. The testing branch is the more "unstable" but it the most recent. 
+
+
+After downloading and unzipped, you have to tell emacs where diaspora.el scripts are and that you want to load it. You can do these actions adding this code into your InitFile (.emacs):
+
+
+    (setq load-path (cons "~/diaspora.el/" load-path))
+    (require 'diaspora)
+
+
+== Usage ==
+
+First of all, you may want to configure your pod and username, type <code>M-x customize-group diaspora</code> and set the variables, mainly the one called "Diaspora Pod"(`diaspora-pod').
+
+
+At first time and if you have a low band-with connection is recommendable to turn off the "Diaspora Show Images By Default"(`diaspora-show-images-by-default') variable.
+
+
+Type <code>M-x diaspora</code> and diaspora.el will ask for your username and password, then a menu buffer will open. There you can clic on the element you want to see.
+
+There are more commands, here we list some of them:
+
+* `diaspora-get-public-stream' -- Get the public stream.
+* `diaspora-get-stream-by-...' --  Get a specific stream, by contact name/username, by aspects, tag, etc.
+* `diaspora-post-to' -- Open a new buffer for sending a post.
+* `diaspora-get-notifications' -- Get all your notifications.
+* `diaspora-get-all-contacts' -- Get a contact list.
+* `diaspora-messages' -- Get all your personal messages.
+
+All the commands are documented.
+
+== Bugs and Contact ==
+
+If you want to send bugs and comments, use the hashtag #diaspora-el. 
+
+You can read public posts at https://joindiaspora.com/tags/diaspora-el. 
+
+== History ==
+
+Diaspora.el has been started by [http://www.diale.org/ Tiago Charters] and later followed by ChristianGiménez. 
+
+Tiago started the project as an interesting idea, if an Emacs client for D\* can be developed. He started writing some code and publishing it at http://www.diale.org/diasp.html having good resoults: he could log in and post simmulating the HTTP transactions using the UrlPackage.
+
+After that, he moved the code to github for developing it in community. Later ChristianGiménez joined, at first answering some doubts but latter developing correcting some bugs and adding more features.
+
+Tiago for some reason stop any develop, still you can find the original project at https://github.com/tchartersazevedo/diaspora-el. Also something happened to his Github count that unlinked both forks. 
+
+Nowadays, Tiago closed his Joindiaspora account.
+
+
