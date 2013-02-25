@@ -1125,7 +1125,7 @@ Run a command return and insert its output at point in the current buffer.
 
 === Tcp server ===
 
-Perhaps EmacsEchoServer and EmacsDaytimeServer can be useful here.
+Perhaps EmacsEchoServer and EmacsDaytimeServer can be useful here. Also [[https://github.com/stsquad/emacs_chrome/blob/master/servers/edit-server.el|Edit with Emacs' edit-server.el]] which is a more complete server implementation.
 
 == Keyboard events ==
 
