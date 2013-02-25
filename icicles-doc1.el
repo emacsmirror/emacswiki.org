@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Mon Feb 18 15:25:58 2013 (-0800)
+;; Last-Updated: Mon Feb 25 14:11:07 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 27299
+;;     Update #: 27354
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -783,12 +783,12 @@
 ;;  described above is available for most Icicles commands.)
 ;;
 ;;  Using `C-M-j' followed by a content-matching pattern in your input
-;;  is optional.  If you do not provide it then no content searching
+;;  is optional.  If you do not provide it then no content-searching
 ;;  is done.
 ;;
 ;;  The file-name pattern is also optional: you can search content
 ;;  without having any idea about the file names - just start with
-;;  `C-M-j'.  Obviously, content searching is much slower than
+;;  `C-M-j'.  Obviously, content-searching is much slower than
 ;;  file-name matching.  If you can match names, that reduces the
 ;;  number of files whose content needs to be searched.
 ;;
@@ -5162,50 +5162,65 @@
 ;;  ** Multi-Completions with a Part You Never See
 ;;
 ;;  Now that you understand multi-completions a bit, I can say more
-;;  about commands `icicle-buffer' and `icicle-buffer-other-window',
-;;  which by default are bound to `C-x b' and `C-x 4 b', replacing
-;;  `switch-to-buffer(-other-window)', in Icicle mode.
+;;  about commands `icicle-buffer', `icicle-file', and their
+;;  other-window versions, which by default are bound to `C-x b', `C-x
+;;  C-f', `C-x 4 b', and C-x 4 f', and which replace vanilla commands
+;;  `switch-to-buffer(-other-window)' and `find-file(-other-window),
+;;  in Icicle mode.
 ;;
 ;;  These are multi-commands, which means that you can act on multiple
-;;  buffers in the same command invocation.  And they each provide
-;;  extra key bindings for special buffer actions.  Use `C-h f' to
-;;  learn more.
+;;  buffers or files in the same command invocation.  And they each
+;;  provide extra key bindings for special buffer or file actions.
+;;  Use `C-h f' to learn more.
 ;;
 ;;  But what is interesting here about these commands is that their
 ;;  completion candidates are multi-completions.  The candidates have
-;;  two parts, the first of which is a buffer name.  If you want, you
-;;  can simply complete against the buffer-name part, which gives you
-;;  a multi-command version of `switch-to-buffer' (but with some
-;;  additional features).
+;;  two parts, the first of which is a buffer name or file name.  If
+;;  you want, you can simply complete against this name part, which
+;;  gives you a multi-command version of `switch-to-buffer' or
+;;  `find-file' (but with some additional features).
 ;;
 ;;  But you can also - or instead - complete against the second part,
-;;  which is the content of the buffer.  You never see the second part
-;;  in buffer `*Completions*' or the minibuffer, as you don't really
-;;  care about which part of the buffer content matches your input.
+;;  which is the content of the buffer or file.  You never see the
+;;  second part of the candidate in buffer `*Completions*' or the
+;;  minibuffer, as you don't really care about which part of the
+;;  content matches your input.
 ;;
-;;  All you care about is whether the buffer content matches your
-;;  input.  In other words, you use the second part to filter
-;;  candidates to retain only those whose buffer contents match your
-;;  input pattern.  As is typical, you use `C-M-j' to match
-;;  `icicle-list-join-string', which separates the candidate parts.
+;;  All you care about is whether the content matches your input.  In
+;;  other words, the second part just filters candidates, retaining
+;;  only those buffers or files whose contents match.  As is typical,
+;;  you use `C-M-j' to match `icicle-list-join-string', which
+;;  separates the candidate parts.
 ;;
-;;  So for example, you can type `f TAB' to match buffers whose names
-;;  begin with `f'.  Or you can type `C-M-j bar TAB' to match buffers
-;;  that contain `bar'.  Or you can type `f C-M-j bar TAB' to match
-;;  buffers whose names begin with `f' and whose contents match `bar'.
-;;  You can of course use a more complex regexp for either part.
+;;  So for example, you can type `f TAB' to match buffers or files
+;;  whose names begin with `f'.  Or you can type `C-M-j bar TAB' to
+;;  match buffers or files whose contents match `bar'.  Or you can
+;;  type `f C-M-j bar TAB' to match buffers or files whose names begin
+;;  with `f' and whose contents match `bar'.  You can of course use a
+;;  more complex regexp for either multi-completion part.
 ;;
-;;  This can be quite handy.  But as a general rule it is a good idea
-;;  to first narrow down the set of candidates by matching buffer
-;;  names, before you set off to search buffer contents.  Otherwise,
-;;  if you have many buffers or large buffers with no content matches
-;;  then you will waste time searching unnecessarily.
+;;  When matching content, Icicles looks for only one match in a given
+;;  buffer or file.  When you then choose a matching candidate,
+;;  visiting the buffer or file does not move to that tested match or
+;;  to any other match.  Matching is used only to filter candidates.
 ;;
-;;  There are similar multi-completion multi-completion multi-commands
-;;  for visiting files.  The general command `icicle-file' (`C-x C-f'
-;;  with no prefix arg) does this for all files and directories, and
-;;  in Dired mode command `icicle-visit-marked-file-of-content' (bound
-;;  to `C-S-f', aka `C-F') does it for marked files and directories.
+;;  However, if your input includes a content-matching part that
+;;  matches, that part is automatically added to the Isearch regexp
+;;  history, `regexp-search-ring', whenever you hit `S-TAB' to
+;;  complete your input.  This means that when you visit the buffer or
+;;  file you can immediately search for matches using `C-M-s' or
+;;  `C-M-r'.
+;;
+;;  This on-the-fly content-matching can be quite handy.  But as a
+;;  general rule it is a good idea to first narrow down the set of
+;;  candidates by matching buffer or file names, before you set off to
+;;  also search content.  Otherwise, if you have many or large buffers
+;;  or files with no content matches then you will waste time
+;;  searching unnecessarily.
+;;
+;;  In Dired mode, command `icicle-visit-marked-file-of-content',
+;;  bound to `C-S-f' (aka `C-F'), is similar: it lets you visit marked
+;;  files and subdirectories whose content matches a regexp.
 ;;
 ;;(@* "Mode-Line Lighter Indication of Multi-Completion")
 ;;  ** Mode-Line Lighter Indication of Multi-Completion **
@@ -7253,7 +7268,7 @@
 ;;    C-x b foo C-M-j toto  ; Match both buffer name and contents
 ;;
 ;;  You can use option `icicle-buffer-skip-hook' to specify patterns
-;;  for buffer names to exclude from content searching when you
+;;  for buffer names to exclude from content-searching when you
 ;;  provide a content-matching pattern to `icicle-buffer'.
 ;;
 ;;  In addition to the usual Icicles key bindings, during buffer-name
@@ -7298,7 +7313,7 @@
 ;;
 ;;  When cached or recently used file names are included as
 ;;  candidates, option `icicle-find-file-of-content-skip-hook' is used
-;;  to exclude files from content searching whose names match its
+;;  to exclude files from content-searching whose names match its
 ;;  patterns, similarly to what `icicle-buffer-skip-hook' does for
 ;;  buffer names.
 ;;
@@ -7331,9 +7346,10 @@
 ;;
 ;;  See Also:
 ;;
-;;  * (@> "Match Multiple Things Together") about content searching
-;;  * (@> "File-Name Input and Locating Files Anywhere") about content
-;;    searching of files
+;;  * (@> "Multi-Completions with a Part You Never See") about
+;;    content-searching
+;;  * (@> "Match File Names and File Content Too") about
+;;    content-searching of files
 ;;  * (@> "Ido and IswitchB") to use Icicles with a buffer-switching
 ;;    behavior that is similar to Ido and IswitchB
 ;;  * (@> "`M-&': Satisfying Additional Predicates") to filter the
@@ -7597,10 +7613,22 @@
 ;;
 ;;  If you provide a pattern to match file content then all files
 ;;  whose names match the file-name part of your input are searched
-;;  for the content pattern.  Content searching is obviously more
-;;  costly than file-name matching, so clearly if you can provide some
-;;  information about the file name, that improves performance.  IOW,
-;;  the more you can limit the number of files to search, the better.
+;;  for the content pattern.  Icicles looks only for a single
+;;  content-match within each file it tests.  Choose a candidate file
+;;  just visits it normally - it does not move to that tested match or
+;;  to any other content-match position.  Matching is used only to
+;;  filter candidate files.
+;;
+;;  However, if your input includes a content-matching part that
+;;  matches, that part is automatically added to the Isearch regexp
+;;  history, `regexp-search-ring', whenever you hit `S-TAB' to
+;;  complete your input.  This means that when you visit the file you
+;;  can immediately search for matches using `C-M-s' or `C-M-r'.
+;;
+;;  Content-searching is obviously more costly than file-name
+;;  matching, so clearly if you can provide some information about the
+;;  file name, that improves performance.  IOW, the more you can limit
+;;  the number of files to search, the better.
 ;;
 ;;  To search file content, the candidate files are visited, that is,
 ;;  buffers are created for them and searched.  By default, after the
@@ -7614,7 +7642,7 @@
 ;;  option for the command duration.
 ;;
 ;;  You can use option `icicle-find-file-of-content-skip-hook' to
-;;  specify patterns for file names to exclude from content searching
+;;  specify patterns for file names to exclude from content-searching
 ;;  when you provide a content-matching pattern to `icicle-find-file'.
 ;;
 ;;  In Dired there is a related content-matching multi-command,
@@ -7796,7 +7824,7 @@
 ;;    for more about `icicle-find-file-in-tags-table'
 ;;  * (@> "Completion On Demand") for information about on-demand
 ;;    insertion of file names, using completion, from any minibuffer
-;;  * (@> "Match Multiple Things Together") about content searching
+;;  * (@> "Match Multiple Things Together") about content-searching
 ;;  * (@> "Buffer-Name Input") about visiting recently used files or
 ;;    files whose names have been cached, and about content-searching
 ;;    them
