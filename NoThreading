@@ -1,6 +1,16 @@
-There is ongoing work to add threading to Emacs. A developer branch is published at http://bzr.savannah.gnu.org/lh/emacs/concurrency/files
+== Adding Threads to Emacs ==
+
+There is ongoing work to add threading to Emacs. 
+
+A developer branch is published at [[http://bzr.savannah.gnu.org/lh/emacs/concurrency/files|here]]
+
+The GitHub mirror also has a branch: [[https://github.com/emacsmirror/emacs/tree/concurrency|here]]
 
 It was discussed in emacs-devel: http://thread.gmane.org/gmane.emacs.devel/120530/focus=122664
+
+== About Threading and Emacs ==
+
+See ConcurrentEmacs for details on how to do concurrency in EmacsLisp without Threads.
 
 A new Emacs -- even a GuileEmacs -- will have no threading.
 
@@ -18,7 +28,8 @@ An interesting, long read.
 
 See also [http://www.catb.org/~esr/writings/taoup/html/ch07s03.html#id2923889 Threads — Threat or Menace?] in EricRaymond's [http://www.catb.org/~esr/writings/taoup/ The Art of Unix Programming].
 
-See ConcurrentEmacs.
+
+== Enlightening Conversations about Threads and Emacs ==
 
 The following is from #emacs on irc.freenode.net, which is not logged.  It took place on 2006-01-17; times are relative to Australian Eastern Standard Time (+1100).
 
