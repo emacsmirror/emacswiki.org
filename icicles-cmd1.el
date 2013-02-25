@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Feb 24 11:24:32 2013 (-0800)
+;; Last-Updated: Mon Feb 25 10:25:35 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 25545
+;;     Update #: 25550
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -6306,13 +6306,21 @@ Used as the value of `icicle-buffer-complete-fn' and hence as
                                      (t
                                       (icicle-remove-if-not
                                        (lambda (buf)
-                                         (prog1 (with-current-buffer buf
-                                                  (save-excursion (goto-char (point-min))
-                                                                  (re-search-forward content-pat nil t)))
+                                         (let ((found  (with-current-buffer buf
+                                                         (save-excursion
+                                                           (goto-char (point-min))
+                                                           (re-search-forward content-pat nil t)))))
                                            ;; Free vars here: EXISTING-BUFFERS, NEW-BUFS--TO-KILL
                                            (when (and (boundp 'existing-bufs)  (boundp 'new-bufs--to-kill)
                                                       (not (memq (setq buf  (get-buffer buf)) existing-bufs)))
-                                             (add-to-list 'new-bufs--to-kill buf))))
+                                             (add-to-list 'new-bufs--to-kill buf))
+                                           (when (and found ; Don't do it just because incrementally complete.
+                                                      (or (get last-command 'icicle-apropos-completing-command)
+                                                          (memq last-command
+                                                                '(icicle-retrieve-next-input
+                                                                  icicle-retrieve-previous-input))))
+                                             (isearch-update-ring content-pat 'REGEXP))
+                                           found))
                                        bufs))))
                  (filnames    (and (> icicle-buffer-include-recent-files-nflag 0)
                                    (require 'recentf nil t)
@@ -6342,6 +6350,12 @@ Used as the value of `icicle-buffer-complete-fn' and hence as
                                            (when (and (boundp 'existing-bufs)  (boundp 'new-bufs--to-kill)
                                                       (not (memq buf existing-bufs)))
                                              (add-to-list 'new-bufs--to-kill buf))
+                                           (when (and found ; Don't do it just because incrementally complete.
+                                                      (or (get last-command 'icicle-apropos-completing-command)
+                                                          (memq last-command
+                                                                '(icicle-retrieve-next-input
+                                                                  icicle-retrieve-previous-input))))
+                                             (isearch-update-ring content-pat 'REGEXP))
                                            found)))
                                   filnames))))
     ;; `icicle-buffer-easy-files' is FREE here - bound in `icicle-buffer(-other-window)'.
@@ -6349,7 +6363,7 @@ Used as the value of `icicle-buffer-complete-fn' and hence as
     (cond ((and (eq 'metadata completion-mode)  (> emacs-major-version 23))
            '(metadata (category . buffer)))
           (completion-mode
-           bufs) ; `all-completions', `test-completion'
+           bufs)                        ; `all-completions', `test-completion'
           (t
            (try-completion              ; `try-completion'
             strg (mapcar #'list bufs) (and pred  (lambda (ss) (funcall pred ss))))))))
@@ -6364,9 +6378,15 @@ BUFFER is a buffer name."
                                  (icicle-transform-multi-completion input))))
     (and (icicle-string-match-p name-pat buffer)
          (or (equal "" content-pat)
-             (with-current-buffer buffer
-               (save-excursion (goto-char (point-min))
-                               (re-search-forward content-pat nil t)))))))
+             (let ((found  (with-current-buffer buffer
+                             (save-excursion (goto-char (point-min))
+                                             (re-search-forward content-pat nil t)))))
+               (when (and found         ; Don't do it just because incrementally complete.
+                          (or (get last-command 'icicle-apropos-completing-command)
+                              (memq last-command '(icicle-retrieve-next-input
+                                                   icicle-retrieve-previous-input))))
+                 (isearch-update-ring content-pat 'REGEXP))
+               found)))))
 
 (defun icicle-cached-files-without-buffers (buffers)
   "Return absolute file-name list represented by `file-cache-alist'.
@@ -7689,6 +7709,11 @@ Return non-nil if the current multi-completion INPUT matches FILE-NAME."
                       (when (and (boundp 'existing-bufs)  (boundp 'new-bufs--to-kill)
                                  (not (memq buf existing-bufs)))
                         (add-to-list 'new-bufs--to-kill buf))
+                      (when (and found ; Don't do it just because incrementally complete.
+                                 (or (get last-command 'icicle-apropos-completing-command)
+                                     (memq last-command '(icicle-retrieve-next-input
+                                                          icicle-retrieve-previous-input))))
+                        (isearch-update-ring content-pat 'REGEXP))
                       found)))))))
 
 (defalias 'icicle-find-file (if (fboundp 'icicle-find-file-of-content) ; Emacs 23+
