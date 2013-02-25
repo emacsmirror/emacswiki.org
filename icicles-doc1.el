@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Mon Feb 25 14:11:07 2013 (-0800)
+;; Last-Updated: Mon Feb 25 14:31:51 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 27354
+;;     Update #: 27363
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -335,6 +335,7 @@
 ;;    (@> "Cleaning Up History Lists")
 ;;
 ;;  (@> "Isearch Enhancements")
+;;    (@> "Content-Matching Pattern as Isearch Regexp")
 ;;    (@> "Launch Occur using the Isearch Search String")
 ;;    (@> "Launch Icicles Search using the Isearch Search String")
 ;;
@@ -8673,6 +8674,8 @@
 ;;    These are described in this section.
 ;;
 ;;    * Search string completion against previous search strings.
+;;    * Reuse of the content-matching pattern for `icicle-buffer' and
+;;      `icicle-file' as the Isearch regexp-search pattern.
 ;;    * Occur mode interface for Isearch hits.
 ;;    * Icicles search (`icicle-search') interface, reusing the
 ;;      Isearch search string (by default).
@@ -8732,6 +8735,17 @@
 ;;  progress (regexp or not) at the moment you use `M-TAB' or `M-o'
 ;;  determines which search ring provides the candidates for
 ;;  completion.
+;;
+;;(@* "Content-Matching Pattern as Isearch Regexp")
+;;  ** Content-Matching Pattern as Isearch Regexp **
+;;
+;;  When your multi-completion input for commands such as
+;;  `icicle-buffer' (`C-x b') and `icicle-file' (`C-x C-f') provides a
+;;  content-matching pattern for completion against buffer or file
+;;  content, and at least one candidate matches, the pattern is saved
+;;  to the Isearch regexp history, `regexp-search-ring'.  If you then
+;;  visit a matching buffer or file, you can immediately search for
+;;  each match using `C-M-s' or `C-M-r'.
 ;;
 ;;(@* "Launch Occur using the Isearch Search String")
 ;;  ** Launch Occur using the Isearch Search String **
