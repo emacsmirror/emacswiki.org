@@ -4,7 +4,7 @@ Herramientas de emacs relacionadas con las redes sociales y los blogs.
 
 === Diarios ===
 
-* EmacsWikiJournal -- Un diario que soporta [#RedifusiónWeb redifusión web] y calendario; basado en EmacsWikiMode.
+* EmacsWikiJournal -- Un diario que soporta redifusión web[[#RedifusiónWeb]] y calendario; basado en EmacsWikiMode.
 * RecordsMode -- Permite mantener un diario y provee soporte para "TODOes".
 * JournalMode -- Mantener un diario en Emacs; basado en EmacsWikiMode.
 * [[Journal]] -- Crear archivos de texto usando la fecha como nombre del archivo.
@@ -18,7 +18,7 @@ Herramientas de emacs relacionadas con las redes sociales y los blogs.
 * OrgBlogging -- blogging usando OrgMode.
 ** OrgBlog -- Crear y publicar a un Blog con OrgMode.
 ** [[Blorg]] -- Exportar un blog desde un archivo Org.
-* [[lisplog]] -- Crear y manipular un Blog con Emacs. También soporta [#RedifusiónWeb redifusión].
+* [[lisplog]] -- Crear y manipular un Blog con Emacs. También soporta redifusión[[#RedifusiónWeb]].
 * [[Skinny]] -- Una aplicación web Elnode para presentar una estructura de directorio de archivos [[Creole]] como si fuese un Blog.
 
 Otros paquetes que pueden ser usados con Emacs sin ningún esfuerzo, ya que algunos dependen de texto plano:
