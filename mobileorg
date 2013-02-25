@@ -1,4 +1,4 @@
-mobileorg is a FREE (open-source) iPhone and iPod Touch application for storing, searching, viewing and editing your Org-mode files.  Its home page is at http://mobileorg.ncogni.to/  The Android version's home page is at: https://github.com/matburt/mobileorg-android/wiki
+mobileorg is a FREE (open-source) iPhone and iPod Touch application for storing, searching, viewing and editing your Org-mode files.  Its home page is at http://mobileorg.ncogni.to/  The Android version's home page is at: https://github.com/matburt/mobileorg-android/wiki . It seems that the Iphone development git is at https://github.com/MobileOrg/mobileorg
 
 == Automatic importing of new items as TODO's ==
 
