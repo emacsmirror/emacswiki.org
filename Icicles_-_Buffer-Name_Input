@@ -33,7 +33,7 @@ matches buffer content.  So for example:
 : '''##C-x b##'''## f o o ##'''##C-M-j##'''## t o t o## -> Match both buffer name and contents
 
 You can use [[option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-buffer-skip-hook|icicle-buffer-skip-hook]]</tt>'''' to specify patterns
-for buffer names to exclude from content searching when you
+for buffer names to exclude from content-searching when you
 provide a content-matching pattern to `icicle-buffer'.
 
 
@@ -81,7 +81,7 @@ is, toggle option '''`<tt>[[Icicles - Customization and General Tips#icicle-buff
   candidate.
 
 When cached or recently used file names are included as candidates, option '''`<tt>[[Icicles - Customization and General Tips#icicle-find-file-of-content-skip-hook|icicle-find-file-of-content-skip-hook]]</tt>'''' is used to exclude
-files from content searching whose names match its patterns,
+files from content-searching whose names match its patterns,
 similarly to what `icicle-buffer-skip-hook' does for buffer names.
 
 
@@ -116,8 +116,8 @@ and [[Icicles - Global Filters]].
 
 '''See Also:'''
 
-* [[Icicles - Nutshell View#MultiCompletion|Match Multiple Things Together]] about content searching
-* [[Icicles - File-Name Input]] about content searching of files
+* [[Icicles - Multi-Completions#InvisibleMulti-CompletionParts|Multi-Completions with a Part You Never See]] about content-searching
+* [[Icicles - File-Name Input#MatchFileContent|Match File Names and File Content Too]] about content-searching of files
 * [[Icicles - Ido and IswitchB]] to use '''Icicles''' with a buffer-switching
   behavior that is similar to [[Ido]] and [[IswitchB]]
 * [[Icicles - Progressive Completion#Predicates]] to filter the
