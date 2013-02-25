@@ -316,9 +316,19 @@ multi-command `icicle-buffer'
 
 If you provide a pattern to match file content
 then all files whose names match the file-name part of your input
-are searched for the content pattern.
+are searched for the content pattern.  '''Icicles''' looks only for a single
+content-match within each file it tests.  Choose a candidate file
+just visits it normally --- it does not move to that tested match or
+to any other content-match position.  Matching is used only to
+filter candidate files.
 
-Content searching is obviously more costly than file-name
+However, if your input includes a content-matching part that
+matches, that part is automatically added to the [[Isearch]] regexp
+history, `regexp-search-ring', whenever you hit `S-TAB' to
+complete your input.  This means that when you visit the file you
+''can immediately search for matches'' using `C-M-s' or `C-M-r'.
+
+Content-searching is obviously more costly than file-name
 matching, so clearly if you can provide some information about the
 file name, that improves performance.  IOW, the more you can limit
 the number of files to search, the better.
@@ -333,7 +343,7 @@ This automatic extra-buffers cleanup is controlled by option
 option for the command duration.
 
 
-You can use option '''`<tt>[[Icicles - Customization and General Tips#icicle-find-file-of-content-skip-hook|icicle-find-file-of-content-skip-hook]]</tt>'''' to specify patterns for file names to exclude from content searching
+You can use option '''`<tt>[[Icicles - Customization and General Tips#icicle-find-file-of-content-skip-hook|icicle-find-file-of-content-skip-hook]]</tt>'''' to specify patterns for file names to exclude from content-searching
 when you provide a content-matching pattern to
 `icicle-find-file'.
 
@@ -542,7 +552,7 @@ original `default-directory' is restored.
 
 * [[Icicles - Completion On Demand]] for information about on-demand insertion of file names, using completion, from any minibuffer
 
-* [[Icicles - Nutshell View#MultiCompletion|Match Multiple Things Together]] about content searching
+* [[Icicles - Nutshell View#MultiCompletion|Match Multiple Things Together]] about content-searching
 
 * [[Icicles - Buffer-Name Input]] about visiting recently used files or
 files whose names have been cached, and about content-searching
