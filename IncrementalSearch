@@ -1,7 +1,23 @@
 '''[::Isearch]''', that is, '''[::incremental search]''', is the standard way to search in vanilla Emacs.  Type `C-s' and start typing a search string -- Emacs finds a match to what you've typed so far. Change your input, and Emacs adjusts to find the new target. This dynamic, on-the-fly behavior is what is meant by "incremental" search.
 
+
+[:RegexpSearches]
+== Regexp Searches (On Beyond Wildcards) ==
+
+Searching with regular expressions ([[regexp]]s) is searching with ''wildcards'' (and more). If you aren't already searching using regexps, then that's the ''next thing you should learn'' -- *NOW!*
+
+Try `C-M-s' (forward) or `C-M-r' (backward) -- or you can use `M-r' after `C-s' or `C-r' (i.e., during a literal search).
+
+With regexp searching you will need to think a little more, but will do fewer searches for a task, and will be able to more precisely get what you're searching for. 
+
+To learn about regexps, see RegularExpression. 
+
+
+
+
+
 [:StdIsearchKeys]
-= Standard Isearch Keys =
+== Standard Isearch Keys ==
 You can define your own keymap to extend Isearch with some other key bindings (see [[#MoreIsearchKeys]], below), but Isearch already comes with these handy keybindings (and more):
 
 * ''Quitting'' Isearch -- Many [[KeySequence]]s quit Isearch.  One that many people use is `RET'. You ''cannot'' use `RET' to search for the end of a line -- use `C-q C-j' for that. The cursor is left on the last match.
@@ -9,6 +25,9 @@ You can define your own keymap to extend Isearch with some other key bindings (s
 * `C-s' -- Repeat the search as many times as you want throughout the buffer.
 * `C-w' -- Select the (rest of the) ''word'' the TextCursor is on as the search string; repeating `C-w' appends more words to the search string.
 * `M-s C-e' -- Select the text up to the end of the ''line'' as the search string (this was bound to `C-y' up until Emacs 24.1).
+* `M-s h r' -- Highlight regular expression (`highlight-regexp')
+* `M-s h u' -- Unhighlight regular expression
+* `M-s o' -- call `occur' with the current search term
 * `C-y' -- Yank (paste) the ''text last copied'' to the kill-buffer (clipboard) to the end of the search string (this was bound to `M-y' up until Emacs 24.1).
 * `M-n', `M-p' -- Re-use a ''previous'' search string. Repeat to choose older strings. `M-n' moves forward in the search history; `M-p' moves backward.
 * `M-TAB' -- ''Complete'' the current search string against all ''previous'' search strings.
@@ -18,29 +37,18 @@ You can define your own keymap to extend Isearch with some other key bindings (s
 * ##‘M-%’## -- Start ''query replace'' using the current string.
 * ##‘C-M-%’## -- Start a regular-expression query replace using the current search string.
 
-''Sidenote'': to enter a literal newline in the search field, you can type
-<code>C-q C-j</code>. You can also bind the literal newline to a simpler shortcut (e.g. <code>C-o</code>) by putting in your init file:
 
-    (define-key isearch-mode-map "\C-o" 
-          '(lambda ()(interactive)(isearch-process-search-char ?\n)))
 
-== Highlighting Matches ==
 
-There's a key binding withing `isearch-mode' to use your current search term as an argument to `highlight-regexp':
 
-* `M-s h r' -- highlight regular expression
-* `M-s h u' -- unhighlight regular expression
 
-== Collecting Matches ==
 
-There's a key binding withing `isearch-mode' to use your current search term as an argument to [[OccurMode|occur]]:
 
-* `M-s o' -- call `occur' with the current search term
 
 [:MoreIsearchKeys]
 == More Isearch Keys: Adding Key Bindings ==
 
-* '''[[Icicles]]''' lets you use `S-TAB' to complete the current search string against all previous search strings. This is thus similar to `M-TAB' (see [[#StdIsearchKeys]], above), but it gives you all of the '''Icicles''' [[Completion]] features: regexp matching, candidate cycling, ... In particular, you can see all matching previous searches in buffer `*Completions*' and either click one (`mouse-2') or cycle to it with '''Page Up'''/'''Down'''.  See [[Icicles - Isearch Enhancements]].
+* '''[[Icicles]]''' lets you use `S-TAB' to complete the current search string against all previous search strings. This is thus similar to `M-TAB' (see [[#StdIsearchKeys]], above), but it gives you all of the '''Icicles''' [[completion]] features: regexp matching, candidate cycling, ... In particular, you can see all matching previous searches in buffer `*Completions*' and either click one (`mouse-2') or cycle to it with '''Page Up'''/'''Down'''.  See [[Icicles - Isearch Enhancements]].
 
 * [[Isearch+]] adds the following bindings.
 ** '''`C-h'''' provides help on Isearch while isearching.  It also redefines `isearch-mode-help' so that it lists ''all'' Isearch bindings and ends Isearch properly
@@ -82,23 +90,21 @@ There's a key binding withing `isearch-mode' to use your current search term as 
        (define-key isearch-mode-map [prior]
          'isearch-repeat-backward)
 
+* Insert a newline char in the search field: `C-q C-j'.  To use another key for this, e.g. `C-o', do this in your init file:
+
+    (define-key isearch-mode-map "\C-o" 
+          '(lambda ()(interactive)(isearch-process-search-char ?\n)))
 
 
 
-[:RegexpSearches]
-= Regexp Searches (On Beyond Wildcards) =
-
-Searching with regular expressions (regexps) is searching with ''wildcards'' (and more). If you aren't already searching using regexps, then that's the ''next thing you should learn'' -- *NOW!*
-
-Try `C-M-s' (forward) or `C-M-r' (backward) -- or you can just do `M-r' from isearch (or `C-t' if you make the binding recommended above -- see [[#MoreIsearchKeys]]).
-
-With regexp searching you will need to think a little more, but will do fewer searches for a task, and will be able to more precisely get what you're searching for. 
-
-To learn about regexps, see RegularExpression. 
 
 
 
-= Position of Point =
+
+
+
+[:PointAfterSearching]
+== Position of the Cursor after Searching ==
 
 Note that when you type `C-r', isearch goes backwards.  When you search
 backwards, find something, and then end the search, for example by
@@ -153,15 +159,31 @@ Now you can use C-s to search normally (point at end) and C-v to make point jump
 
 See also: IsearchOtherEnd.
 
-= Minibuffer Feedback During Isearch =
 
-Lisp library Lisp:oneonone.el, from DrewAdams, changes the background color of the (separate) MiniBuffer [[Frame]] when you isearch. Screenshots of the minibuffer frame (normal, followed by isearch):
+
+
+
+
+
+
+[:OneOnOne]
+== Feedback During Isearch ==
+
+Library <tt>[[oneonone.el]]</tt> changes the background color of the (separate) [[minibuffer]] [[frame]] when you search.  Screenshots of the minibuffer frame (normal, followed by isearch):
 
 [[image:DrewsEmacsMinibufferFrame]]
 [[image:DrewsEmacsMinibufferFrameIsearch]]
 
 
-= Icicles Search: Another Way to Search Incrementally =
+
+
+
+
+
+
+
+[:IciclesSearch]
+== Icicles Search: Another Way to Search Incrementally ==
 
 Besides enhancing Isearch completion (see [[#MoreIsearchKeys]], above), '''[[Icicles]]''' provides an additional, unusual way of searching incrementally that is akin to both isearch and `occur' -- but weirder! The explanation is here: [[Icicles - Search Commands, Overview]]. Highlights:
 
@@ -179,7 +201,10 @@ Besides enhancing Isearch completion (see [[#MoreIsearchKeys]], above), '''[[Ici
 
 
 
-== More Isearch Stuff ==
+
+
+[:SeeAlso]
+== See Also ==
 
 Here is some more info about Isearch:
 
