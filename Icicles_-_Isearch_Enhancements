@@ -15,6 +15,7 @@ new and different way for you to search.  This is described in [[Icicles - Searc
 described here.
 
 ** Search string [[completion]] against previous search strings.
+** Reuse of the content-matching pattern for `icicle-buffer' and `icicle-file' as the [[Isearch]] [[regexp]]-search pattern.
 ** OccurMode interface for Isearch hits.
 ** '''Icicles''' search (`icicle-search') interface, reusing the Isearch search string (by default).
 
@@ -63,6 +64,29 @@ Isearch uses different search histories ([[search ring|rings]]) for regexp and n
 searching.  The kind of search in progress (regexp or not) at the
 moment you use `M-TAB' or `M-o' determines which search ring
 provides the candidates for completion.
+
+
+
+
+
+
+
+
+[:ContentMatchingPatternAsIsearchRegexp]
+=== Content-Matching Pattern as Isearch Regexp ===
+
+When your multi-completion input for commands such as
+`icicle-buffer' (`C-x b') and `icicle-file' (`C-x C-f') provides a
+content-matching pattern for completion against buffer or file
+content, and at least one candidate matches, the pattern is saved
+to the [[Isearch]] [[regexp]] history, `regexp-search-ring'.  If you then
+visit a matching buffer or file, you can immediately search for
+each match using `C-M-s' or `C-M-r'.
+
+
+
+
+
 
 
 [:OccurFromIsearch]
