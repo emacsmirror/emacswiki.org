@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Feb 12 09:15:53 2013 (-0800)
+;; Last-Updated: Tue Feb 26 07:23:22 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 13800
+;;     Update #: 13804
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -5874,31 +5874,15 @@ those functions are not defined then return nil."
 
 (defun icicle-prefix-any-candidates-p (input)
   "Return non-nil if current partial INPUT has prefix completions."
-  (let ((minibuffer-completion-table      minibuffer-completion-table)
-        (minibuffer-completion-predicate  minibuffer-completion-predicate))
-    (if (icicle-not-basic-prefix-completion-p)
-        (icicle-completion-try-completion input minibuffer-completion-table
-                                          minibuffer-completion-predicate
-                                          ;; $$$$$$ (- (point) (field-beginning)))
-                                          (length input)
-                                          (and (fboundp 'completion--field-metadata) ; Emacs 24
-                                               (completion--field-metadata (field-beginning))))
-      (try-completion input minibuffer-completion-table minibuffer-completion-predicate))))
+  (setq input  (regexp-quote input)
+        input  (concat "^" input))
+  (icicle-apropos-any-candidates-p input))     
 
 (defun icicle-prefix-any-file-name-candidates-p (input)
   "Return non-nil if partial file-name INPUT has prefix completions."
-  (let* ((minibuffer-completion-table      minibuffer-completion-table)
-         (minibuffer-completion-predicate  minibuffer-completion-predicate)
-         (pred                             (if (< emacs-major-version 23)
-                                               default-directory
-                                             minibuffer-completion-predicate)))
-    (if (icicle-not-basic-prefix-completion-p)
-        (icicle-completion-try-completion input minibuffer-completion-table
-                                          minibuffer-completion-predicate
-                                          (length input)
-                                          (and (fboundp 'completion--field-metadata) ; Emacs 24
-                                               (completion--field-metadata (field-beginning))))
-      (try-completion input minibuffer-completion-table pred))))
+  (setq input  (regexp-quote input)
+        input  (concat (file-name-directory input) "^" (file-name-nondirectory input)))
+  (icicle-apropos-any-file-name-candidates-p input))
 
 (defun icicle-apropos-any-candidates-p (input)
   "Return non-nil if current partial INPUT has apropos completions."
@@ -5914,7 +5898,12 @@ those functions are not defined then return nil."
       (dolist (cand all)
         ;; Assume no match if error - e.g. due to `string-match' with binary data in Emacs 20.
         ;; Do this everywhere we call `icicle-apropos-complete-match-fn'.
-        (when (condition-case nil (funcall icicle-apropos-complete-match-fn input cand) (error nil))
+        (when (or (not icicle-apropos-complete-match-fn)
+                  (condition-case nil
+                      (and (funcall icicle-apropos-complete-match-fn input cand)
+                           (or (not icicle-must-pass-after-match-predicate)
+                               (funcall icicle-must-pass-after-match-predicate cand)))
+                    (error nil)))
           (throw 'icicle-apropos-any-candidates-p cand)))
       nil)))
 
@@ -5939,13 +5928,15 @@ those functions are not defined then return nil."
                    (dolist (cand candidates)
                      (when (if (member cand '("../" "./"))
                                (member input '(".." ".")) ; Prevent "" from matching "../"
-                             (and (or (not icicle-apropos-complete-match-fn)
-                                      ;; Assume no match if error - e.g. due to `string-match' with
-                                      ;; binary data in Emacs 20.  Do this everywhere we call
-                                      ;; `icicle-apropos-complete-match-fn'.
-                                      (condition-case nil
-                                          (funcall icicle-apropos-complete-match-fn input cand)
-                                        (error nil)))))
+                             (or (not icicle-apropos-complete-match-fn)
+                                 ;; Assume no match if error - e.g. due to `string-match' with
+                                 ;; binary data in Emacs 20.  Do this everywhere we call
+                                 ;; `icicle-apropos-complete-match-fn'.
+                                 (condition-case nil
+                                     (and (funcall icicle-apropos-complete-match-fn input cand)
+                                          (or (not icicle-must-pass-after-match-predicate)
+                                              (funcall icicle-must-pass-after-match-predicate cand)))
+                                   (error nil))))
                        (throw 'icicle-apropos-any-file-name-candidates-p cand)))
                    nil)))
       (quit (top-level)))))             ; Let `C-g' stop it.
