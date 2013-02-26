@@ -7,8 +7,8 @@ well as being the extension language that customizations and extensions are writ
 Emacs Lisp is what makes Emacs ExtensibleSoftware. Customizations and
 extensions can be made quickly and portably. Some of the ways that
 Emacs Lisp is used to extend Emacs include hooking custom Emacs Lisp
-functions into events, binding functions to key combinations, and
-creating new editing modes.
+functions into events, binding functions to key combinations, 
+creating new editing modes and even writing whole applications for the WorldWideWeb or other Internet clients.
 
 Lisp has been rumored to stand for Lots of Insignificant Silly
 Parentheses, but it really means '''LIS'''t '''P'''rocessor.
