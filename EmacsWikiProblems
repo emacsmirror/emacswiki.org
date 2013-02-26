@@ -206,8 +206,8 @@ How to make a `##Manual:##' link to `##(elisp) Circular Objects##'?  I tried ##[
 
 [new]
 Manual:Circular%20Objects is the right form. In a wiki URL, space is represented by an underscore. Using double square brackets might do the wrong thing in this context. -- AlexSchroeder
-
-[::new]
+----
+[new:NicFerrier:2013-02-26 00:29 UTC]
 This doesn't seem to work either, it produces urls like this:
 
 {{{
