@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 21.1
-;; Last-Updated: Sat Feb  9 17:10:08 2013 (-0800)
+;; Last-Updated: Tue Feb 26 11:04:30 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 4784
+;;     Update #: 4794
 ;; URL: http://www.emacswiki.org/info+.el
 ;; Doc URL: http://www.emacswiki.org/InfoPlus
 ;; Keywords: help, docs, internal
@@ -193,6 +193,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/02/26 dadams
+;;     Info-mode-menu and Info-mode doc string: Removed Info-edit, Info-enable-edit (now obsolete).
 ;; 2013/02/09 dadams
 ;;     Info-read-node-name-1: Removed Emacs 23+ redefinition.
 ;; 2013/02/03 dadams
@@ -944,7 +946,6 @@ For example, type `^Q^L^Q^J* ' to set this to \"\\f\\n* \"."
         :help "Copy the name of the current node into the kill ring"]
        ["Merge Subnodes" Info-merge-subnodes
         :help "Integrate current node with nodes referred to in its Menu"]
-       ["Edit" Info-edit :help "Edit contents of this node" :active Info-enable-edit]
        "--"
        ["Quit Info" Info-exit :help "Exit from Info"]))
   (easy-menu-define
@@ -976,7 +977,6 @@ For example, type `^Q^L^Q^J* ' to set this to \"\\f\\n* \"."
      ["Find with Index" Info-index t]
      "--"
      ["Merge Subnodes" Info-merge-subnodes t]
-     ["Edit Node" Info-edit t]
      "--"
      ["Tutorial" Info-help t]
      ["Quit Info" Info-exit t])))
@@ -4804,9 +4804,6 @@ sequence.
 Other commands
 --------------
 \\[Info-search]\tSearch this Info manual for a regexp.
-\\[Info-edit]\tEdit contents of current node.  \
-\(\\<Info-edit-map>`\\[Info-cease-edit]'\\<Info-mode-map> to end editing.)
-\tEditing is enabled only if `Info-enable-edit' is non-nil.
 \\[Info-merge-subnodes]\tIntegrate current node with nodes referred to \
 in its Menu.
 \tDisplay the result outside of Info.  `\\[universal-argument]': Recursively.
@@ -4952,9 +4949,6 @@ Other commands
 \\[Info-merge-subnodes]\tIntegrate current node with nodes referred to \
 in its Menu.
 \tDisplay the result outside of Info.  `\\[universal-argument]': Recursively.
-\\[Info-edit]\tEdit contents of current node.  \
-\(\\<Info-edit-map>`\\[Info-cease-edit]'\\<Info-mode-map> to end editing.)
-\tEditing is enabled only if `Info-enable-edit' is non-nil.
 
 User options you can customize
 ------------------------------
@@ -5093,9 +5087,6 @@ Other commands
 \\[Info-merge-subnodes]\tIntegrate current node with nodes referred to \
 in its Menu.
 \tDisplay the result outside of Info.  `\\[universal-argument]': Recursively.
-\\[Info-edit]\tEdit contents of current node.  \
-\(\\<Info-edit-map>`\\[Info-cease-edit]'\\<Info-mode-map> to end editing.)
-\tEditing is enabled only if `Info-enable-edit' is non-nil.
 
 User options you can customize
 ------------------------------
@@ -5254,9 +5245,6 @@ Other commands
 \\[Info-merge-subnodes]\tIntegrate current node with nodes referred to \
 in its Menu.
 \tDisplay the result outside of Info.  `\\[universal-argument]': Recursively.
-\\[Info-edit]\tEdit contents of current node.  \
-\(\\<Info-edit-map>`\\[Info-cease-edit]'\\<Info-mode-map> to end editing.)
-\tEditing is enabled only if `Info-enable-edit' is non-nil.
 
 User options you can customize
 ------------------------------
