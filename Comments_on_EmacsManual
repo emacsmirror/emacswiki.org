@@ -43,3 +43,10 @@ I suggested a video would be a useful shortcut.
 
 -- [http://nic.ferrier.me.uk NicFerrier] 2013-02-26 16:14 UTC
 
+
+----
+
+Seems like a feature that would be useful to add upstream in [[Texinfo]]: The generated HTML files could contain information on how to visit the node in [[Info]].
+
+-- AaronHawley 2013-02-26 16:26 UTC
+
