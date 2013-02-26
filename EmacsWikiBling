@@ -16,6 +16,4 @@ Clearly you need to change the link and the text.
 
 You could link to your page
 
-Or you could link to the feed of your edits, for example:
-
-[[http://www.emacswiki.org/emacs/?action=rc;rcuseronly=NicFerrier]]
+Or you could link to the feed of your edits, for example: [[http://www.emacswiki.org/emacs/?action=rc;rcuseronly=NicFerrier|feed]]
