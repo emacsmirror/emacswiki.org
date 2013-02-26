@@ -7,9 +7,9 @@
 ;; Copyright (C) 2011-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Oct  7 13:12:52 2011 (-0700)
 ;; Version: 21.0
-;; Last-Updated: Fri Dec 28 10:15:50 2012 (-0800)
+;; Last-Updated: Tue Feb 26 13:02:38 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 167
+;;     Update #: 170
 ;; URL: http://www.emacswiki.org/naked.el
 ;; Doc URL: http://www.emacswiki.org/NaKeD
 ;; Keywords: lisp, key, print, format, help
@@ -94,6 +94,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/02/26 dadams
+;;     Added (put 'naked 'pure t)
 ;; 2012/12/01 dadams
 ;;     Change naked from a macro to a function (like Emacs 24.3).
 ;; 2012/09/28 dadams
@@ -217,7 +219,7 @@ ANGLES."
                       (not (string-match "\\<\\(NUL\\|RET\\|LFD\\|ESC\\|SPC\\|DEL\\|TAB\\)$"
                                          word))))
                (setq key  (list (intern word))))
-              
+
               (t
                (let ((orig-word  word)
                      (prefix     0)
@@ -282,6 +284,7 @@ brackets.  For example:
       (naked-edmacro-parse-keys start end angles)
     (setq last-kbd-macro  (naked-edmacro-parse-keys (buffer-substring start end) nil angles))))
 
+(put 'naked 'pure t)
 ;; Same as `icicle-kbd' in `icicles-opt.el'.
 (defun naked (keys &optional angles)
   "Like `kbd', but does not use angle brackets, by default.
