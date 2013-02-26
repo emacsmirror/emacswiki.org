@@ -1,0 +1,85 @@
+[[en:DiasporaEl]]
+Diáspora es una red social libre desarrollada con SoftwareLibre. Emacs tiene su propio cliente para conectar, leer streams y enviar publicaciones y comentarios llamado diaspora-el.
+
+
+La FreeSoftwareFoundation recomienda el uso de Diáspora en vez de Facebook(véase [http://www.fsf.org/fb el ártículo "Not'faced"]) por muchas razones:
+
+
+* Está basado en la privacidad -- Puedes crear grupos de personas(llamados aspectos) y enviar post a estos. El lema es "Privacidad por diseño".
+* ''La autoría del contenido'' -- ¡Es CreativeCommons! ¡Todo el contenido es tuyo legalmente!
+* Hay muchos servidores llamados pods -- Es un proyecto de tipo federacional, lo que significa que no está todo en un servidor, ¡tu puedes usar tu propio servidor y conectarse con los demás! ¡Puedes compartir cosas entre personas de diferentes pods sin problemas!
+* ¿Más? [http://diasporial.com/whats-diaspora en la página de diasporial.].
+
+
+Todos los pods tienen una hermosa introducción cuando inicias sesión por primera vez, así que no tienes que preocuparte por aprender a usarlo. La gente de Diáspora es muy abierta a las nuevas personas, también puedes consultarlos ante cualquier duda y compartir experiencias.
+
+
+
+https://upload.wikimedia.org/wikipedia/commons/f/fd/Diaspora_logo_fleur.jpg
+
+
+
+Más información acerca de Diáspora:
+
+* http://diasporial.com/ -- Información acerca de Diáspora, tutoriales e información básica.
+* http://diasporaproject.org/ -- Página oficial.
+* https://github.com/diaspora/diaspora -- Código fuente de la página.
+* http://github.com/diaspora/diaspora/wiki -- La Wiki de Diáspora.
+* http://www.diasporaforum.org/ -- El foro.
+
+
+== Descarga e Instalación ==
+
+Puedes encontrar diaspora.el en github: https://github.com/cnngimenez/diaspora.el.
+
+Hay dos ramas(branches): la Master y Test, elije la que más prefieras. El branch de testeo es el más "inestable" pero el más reciente.
+
+
+Luego de descargar y descomprimir, deberás decirle a emacs dónde están los scripts de diaspora.el y que lo quieres cargar. Esto se puede hacer agregando éste código en tu InitFile (.emacs):
+
+    (setq load-path (cons "~/diaspora.el/" load-path))
+    (require 'diaspora)
+
+
+== Uso ==
+
+Primero, puedes configurar el pod que usás y el nombre de usuario tipeando <code>M-x customize-group diaspora</code> y asignar todas las variables que requieras. Observá si está bien la variable "Diaspora Pod"(`diaspora-pod').
+
+
+Si tienes un ancho de banda bajo, o es la primera vez que lo usás, es recomendable asignar nil a la variable "Diaspora Show Image By Default"(`diaspora-show-images-by-default') para evitar descargar todas las imagenes al entrar a un stream.
+
+
+Tipee <code>M-x diaspora</code> y diaspora.el preguntará el nombre de usuario y la clave si no están asignados, luego surgirá un buffer de menú. Allí puedes hacer clic en la opción que quieres ver.
+
+Hay más comandos, aquí hay una lista reducida de ellos:
+
+* `diaspora-get-public-stream' -- Obtener el flujo público.
+* `diaspora-get-stream-by-...' --  Obtener un flujo específico: por nombre de contacto/username, por aspecto, por tag, etc.
+* `diaspora-post-to' -- Abrir un nuevo buffer para enviar un post.
+* `diaspora-get-notifications' -- Obtener todas tus notificaciones.
+* `diaspora-get-all-contacts' -- Obtener una lista de tus contactos.
+* `diaspora-messages' -- Obtener tus mensajes personales.
+
+Todos los comandos están documentados.
+
+== Bugs y Contacto ==
+
+Si deseas enviar bugs y/o comentarios, hazlo publicando un mensaje con el tag #diaspora-el.
+
+Puedes leer las publicaciones públicas acerca de diaspora-el en https://joindiaspora.com/tags/diaspora-el. 
+
+
+== Historia ==
+
+Diaspora.el comenzó de la mando de [http://www.diale.org/ Tiago Charters] y luego seguido por ChristianGiménez.
+
+Tiago comenzó el proyecto por una idea interesante: si un cliente en Emacs para D* puede ser desarrollado. Él comenzó a escribir el código y lo fue publicando en http://www.diale.org/diasp.html obteniendo buenos resultados: logró iniciar sesión y enviar publicaciones simulando transacciones HTTP por medio del paquete UrlPackage.
+
+Luego, movió el código a Github para desarrollarlo en comunidad. ChristianGiménez se unió al principio respondiendo dudas, luego corrigiendo algunos bugs y agregando más características.
+
+Por alguna razón, Tiago detuvo su desarrollo. Aún puedes encontrar el proyecto original a https://github.com/tchartersazevedo/diaspora-el. También algo sucedió en su cuenta de Github que desvinculó ambos forks.
+
+Al día de hoy, Tiago cerró su cuenta en Joindiaspora. El proyecto continúa desarrollándose.
+
+----
+CategoríaRedesSociales
