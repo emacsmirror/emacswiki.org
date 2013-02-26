@@ -120,10 +120,6 @@
 ;; whoever believes in him shall not perish but have eternal life.
 ;;                                             --The Bible, John 3:16
 
-;; TODO
-;;
-;; - create project on UNIX
-
 ;;; Code:
 
 (require 'compile)
