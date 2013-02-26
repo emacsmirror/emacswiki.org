@@ -9,6 +9,10 @@
 This page is about accessing and reusing previous input that you have typed in the [[minibuffer]].
 
 
+
+
+
+
 [:Which]
 === What Input, What History? ===
 
@@ -131,6 +135,8 @@ elements in the minibuffer.
 '''7.''' Command '''`icicle-other-history'''' ('''`C-M-pause'''' in the minibuffer)
 lets you use a different history for the minibuffer reading.  You can choose the history using completion (even if
 the main minibuffer reading does not allow completion).
+
+You can choose among any variables whose names end in `history' or `ring', which includes the [[Isearch]] histories `search-ring' and `regexp-search-ring'.
 
 
 '''8.''' Commands '''`icicle-clear-history'''' and '''`icicle-clear-current-history'''' ('''`M-i'''' in the minibuffer) provide a general way to clean up histories.
