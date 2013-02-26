@@ -41,7 +41,7 @@ Wanderlust starts in folder buffer, from which you can open a summary buffer (pr
 
 Pressing a/A opens the draft buffer for answering the message at point with/without citing the message. To write a new message press "w". You can auto complete email addresses (form ~/.addresses), with TAB in the draft buffer. 
 
-There's tons of more stuff you can do so reading the manual at the home page is a must. 
+There's tons of more stuff you can do so reading the manual is a must. (M-x info RET >> C-s Wanderlust) The original documentation website [http:www.gohome.org] has been taken down and the most up-to-date documentation is in the Info file. (At least as of February 2013 in the wl-beta Ubuntu package).
 
 
 == Configuration (Quickstart) ==
@@ -129,10 +129,8 @@ You can use wl as a NNTP client, and post to usenet newsgroups. In the folder vi
 }}}
 
 == Getting Help ==
-Please read the [http://www.gohome.org/wl/doc/wl_toc.html manual] carefully, 
-as there is an enormous wealth of knowledge and variables to tweak. 
-There is also an [http://wiki.gohome.org/wl/ FAQ] at the homepage, as well 
-as [WlFaq here]. The most active channel of wanderlust discussion (in English) 
+Please read the Info Manual carefully. (M-x info RET >> C-s Wanderlust)
+as there is an enormous wealth of knowledge and variables to tweak. The most active channel of wanderlust discussion (in English) 
 is the mailing list.
 
 === Mailing List ===
