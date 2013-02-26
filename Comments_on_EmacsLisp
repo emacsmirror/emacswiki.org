@@ -11,3 +11,17 @@ Sure
 
 -- AlexSchroeder 2013-02-24 17:06 UTC
 
+
+----
+
+Not sure I agree with this Aaron, you've conflated the learning with the features - we still have people coming to EmacsLisp who are one of two types of people:
+
+1. Lisp programmers who think they know what EmacsLisp is but don't
+2. people who have no idea about Lisp programming
+
+There's also a third group:
+
+3. people who don't know ANY programming language
+
+-- [http://nic.ferrier.me.uk NicFerrier] 2013-02-26 17:33 UTC
+
