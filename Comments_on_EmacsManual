@@ -12,3 +12,16 @@ Result:
 
 -- AlexSchroeder 2013-02-26 08:16 UTC
 
+
+----
+
+Thanks! Btw we discussed this on #emacs.
+
+jlf said he thought it would be a good idea if the manual links explained how to find that manual in Emacs. Sachac and I suggested it could be done via an intermediary page containing instructions on how to get to the manual on your machine.
+
+So the manual cgi could redirect to the display of a page (an SSI?) containing the instructions and a link to the page. Perhaps the link would autodirect if you had a cookie set.
+
+Anyway, people thought this was quite a good idea but recognized how much dev it was. I said I would consider writing it with ElWiki but that I'd mention it on the existing Wiki.
+
+-- [http://nic.ferrier.me.uk NicFerrier] 2013-02-26 14:11 UTC
+
