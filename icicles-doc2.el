@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Feb 16 20:19:31 2013 (-0800)
+;; Last-Updated: Tue Feb 26 11:07:22 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 29259
+;;     Update #: 29262
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -207,6 +207,7 @@
 ;;    (@file :file-name "icicles-doc1.el" :to "Cleaning Up History Lists")
 ;;
 ;;  (@file :file-name "icicles-doc1.el" :to "Isearch Enhancements")
+;;    (@file :file-name "icicles-doc1.el" :to "Content-Matching Pattern as Isearch Regexp")
 ;;    (@file :file-name "icicles-doc1.el" :to "Launch Occur using the Isearch Search String")
 ;;    (@file :file-name "icicles-doc1.el" :to "Launch Icicles Search using the Isearch Search String")
 ;;
@@ -4130,7 +4131,6 @@
 ;;  forward-word     forward-line     forward-page
 ;;  ...
 ;;  ifconfig         info             Info-up
-;;  Info-edit        Info-next        Info-help
 ;;  ...
 ;;  Info-mouse-follow-nearest-node    Info-goto-emacs-key-command-node
 ;;
