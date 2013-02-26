@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Mon Feb 25 10:36:10 2013 (-0800)
+;; Last-Updated: Tue Feb 26 07:31:14 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 9742
+;;     Update #: 9747
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1664,6 +1664,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2013/02/26 dadams
+;;     icicle-(prefix|apropos)-any(-file-name)-candidates-p:
+;;       Fix for use with Icomplete - take icicle-must-pass-after-match-predicate into account.
 ;; 2013/02/12 dadams
 ;;     Typo fix: minibuffer-default--* -> minibuffer-default-*.  Thx to Christopher Schmidt.
 ;; 2013/02/10 dadams
