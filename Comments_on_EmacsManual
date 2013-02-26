@@ -32,3 +32,14 @@ Hm. I'm not sure. If anybody has an idea of how to do this -- infer the locally 
 
 -- AlexSchroeder 2013-02-26 14:34 UTC
 
+
+----
+
+I think it's simpler than that. What jlf meant is something like:
+
+"You can get this manual on your computer too, especially if you're running Emacs or the GNU system. Just open the info browser and read! If you're in Emacs press "C-h" and then "i" and the info browser will come up. If you're using the GNU system and don't have Emacs you should at least have the standalone GNU info browser..." blah blah
+
+I suggested a video would be a useful shortcut.
+
+-- [http://nic.ferrier.me.uk NicFerrier] 2013-02-26 16:14 UTC
+
