@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Feb  4 14:07:31 2013 (-0800)
+;; Last-Updated: Tue Feb 26 13:00:39 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 5587
+;;     Update #: 5593
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -101,11 +101,11 @@
 ;;    `icicle-deletion-action-flag', `icicle-dot-show-regexp-flag',
 ;;    `icicle-dot-string', `icicle-expand-input-to-common-match',
 ;;    `icicle-expand-input-to-common-match-alt', `icicle-file-extras',
-;;    `icicle-find-file-of-content-skip-hook',
 ;;    `icicle-file-match-regexp', `icicle-file-no-match-regexp',
 ;;    `icicle-file-predicate', `icicle-file-require-match-flag',
 ;;    `icicle-file-sort', `icicle-files-ido-like-flag',
 ;;    `icicle-filesets-as-saved-completion-sets-flag',
+;;    `icicle-find-file-of-content-skip-hook',
 ;;    `icicle-functions-to-redefine', `icicle-guess-commands-in-path',
 ;;    `icicle-help-in-mode-line-delay',
 ;;    `icicle-hide-common-match-in-Completions-flag',
@@ -1310,6 +1310,7 @@ brackets.  For example:
       (icicle-edmacro-parse-keys start end angles)
     (setq last-kbd-macro  (icicle-edmacro-parse-keys (buffer-substring start end) nil angles))))
 
+(put 'icicle-kbd 'pure t)
 ;; Same as `naked' in `naked.el'.
 (defun icicle-kbd (keys &optional angles)
   "Like `kbd', but does not use angle brackets, by default.
