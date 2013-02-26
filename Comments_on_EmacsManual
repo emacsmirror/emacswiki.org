@@ -25,3 +25,10 @@ Anyway, people thought this was quite a good idea but recognized how much dev it
 
 -- [http://nic.ferrier.me.uk NicFerrier] 2013-02-26 14:11 UTC
 
+
+----
+
+Hm. I'm not sure. If anybody has an idea of how to do this -- infer the locally installed info file from the URL -- and thinks this is worth it, the Perl 5 [http://www.emacswiki.org/scripts/info-ref source of the little script I'm using is available]. As for myself, I'm not too convinced this is useful information.
+
+-- AlexSchroeder 2013-02-26 14:34 UTC
+
