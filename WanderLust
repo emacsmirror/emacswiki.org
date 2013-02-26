@@ -1,6 +1,6 @@
 Wanderlust is a mail and news reader for Emacs with excellent IMAP support. It was originally developed by Yuuichi Teranishi.
 
-Wandlerlust is hosted on [https://github.com/wanderlust/wanderlust GitHub]. The [http://www.gohome.org/wl web page on gohome.org] is [http://comments.gmane.org/gmane.mail.wanderlust.general.japanese/9108 outdated].
+Wandlerlust is hosted on [https://github.com/wanderlust/wanderlust GitHub]. 
 
 == Features ==
 
@@ -41,7 +41,7 @@ Wanderlust starts in folder buffer, from which you can open a summary buffer (pr
 
 Pressing a/A opens the draft buffer for answering the message at point with/without citing the message. To write a new message press "w". You can auto complete email addresses (form ~/.addresses), with TAB in the draft buffer. 
 
-There's tons of more stuff you can do so reading the manual is a must. (<code>M-x info RET >> C-s Wanderlust</code>). The original documentation website [http:www.gohome.org] has been taken down and the most up-to-date documentation is in the Info file. (At least as of February 2013 in the wl-beta Ubuntu package).
+There's tons of more stuff you can do so reading the manual is a must. (<code>M-x info RET >> C-s Wanderlust</code>). The [http//:www.gohome.org original documentation website] has been taken down and the most up-to-date documentation is in the Info file. (At least as of February 2013 in the wl-beta Ubuntu package).
 
 
 == Configuration (Quickstart) ==
