@@ -10,3 +10,12 @@ So I made some, here's mine:
 }}}
 
 Clearly you need to change the link and the text.
+
+
+== What to link to? ==
+
+You could link to your page
+
+Or you could link to the feed of your edits, for example:
+
+[[http://www.emacswiki.org/emacs/?action=rc;rcuseronly=NicFerrier]]
