@@ -195,6 +195,9 @@ Even this simple command expression combines the effect of Emacs commands
 
 
 
+
+
+
 [:HowMultiCompletionsWork]
 == How Multi-Completions Work ==
 
@@ -332,6 +335,11 @@ forget that you can always reverse the current sort order, using
 
 
 
+
+
+
+
+
 [:icicle-buffer]
 [:icicle-file-of-content]
 [:icicle-visit-marked-file-of-content]
@@ -383,6 +391,9 @@ history, `regexp-search-ring', whenever you hit `S-TAB' to
 complete your input.  This means that when you visit the buffer or
 file you can immediately search for matches using `C-M-s' or
 `C-M-r'.
+
+(You can also work in the other direction, reusing an Isearch
+regexp as a content-matching regexp.  See [[Icicles - History Enhancements#InsertPreviousInputs|Using Completion to Insert Previous Inputs: `M-o']].) 
 
 This on-the-fly content-matching can be quite handy.  But as a general rule it is a good idea
 to first narrow down the set of candidates by matching buffer
