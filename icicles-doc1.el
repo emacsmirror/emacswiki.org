@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Mon Feb 25 14:31:51 2013 (-0800)
+;; Last-Updated: Tue Feb 26 09:54:00 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 27363
+;;     Update #: 27381
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -5212,6 +5212,10 @@
 ;;  file you can immediately search for matches using `C-M-s' or
 ;;  `C-M-r'.
 ;;
+;;  (You can also work in the other direction, reusing an Isearch
+;;  regexp as a content-matching regexp.  See
+;;  (@> "Using Completion to Insert Previous Inputs: `M-o'").)
+;;
 ;;  This on-the-fly content-matching can be quite handy.  But as a
 ;;  general rule it is a good idea to first narrow down the set of
 ;;  candidates by matching buffer or file names, before you set off to
@@ -7626,6 +7630,10 @@
 ;;  complete your input.  This means that when you visit the file you
 ;;  can immediately search for matches using `C-M-s' or `C-M-r'.
 ;;
+;;  (You can also work in the other direction, reusing an Isearch
+;;  regexp as a content-matching regexp.  See
+;;  (@> "Using Completion to Insert Previous Inputs: `M-o'").)
+;;
 ;;  Content-searching is obviously more costly than file-name
 ;;  matching, so clearly if you can provide some information about the
 ;;  file name, that improves performance.  IOW, the more you can limit
@@ -8319,6 +8327,10 @@
 ;;     reading.  You can choose the history using completion (even if
 ;;     the main minibuffer reading does not allow completion).
 ;;
+;;     You can choose among any variables whose names end in `history'
+;;     or `ring', which includes the Isearch histories `search-ring'
+;;     and `regexp-search-ring'.
+;;
 ;;  8. Commands `icicle-clear-history' and
 ;;     `icicle-clear-current-history' (`M-i' in the minibuffer)
 ;;     provide a general way to clean up histories.
@@ -8378,6 +8390,26 @@
 ;;  into the minibuffer.  What is in the minibuffer after you use
 ;;  `M-o' is not used automatically and immediately for the main
 ;;  completion - you can edit it before entering it using `RET'.
+;;
+;;  Here's an example: Reuse a previous Isearch search string as the
+;;  content-matching part of your input for `C-x C-f' (`icicle-file')
+;;  or `C-x b' (`icicle-buffer'):
+;;
+;;    C-x C-f  C-M-j  C-M-pause
+;;
+;;    Choose `regexp-search-ring' (or `search-ring') as the history to
+;;    use.
+;;
+;;    M-o S-TAB
+;;
+;;    Choose a previous search string to insert, then complete to find
+;;    a file whose content matches it.
+;;
+;;  Reminder:
+;;
+;;    `C-M-j'     lets you provide a regexp to match file content.
+;;    `C-M-pause' lets you choose a history.
+;;    `M-o'       lets you insert from the history.
 ;;
 ;;(@* "Multi-Input Insertion with a Prefix Arg")
 ;;  *** Multi-Input Insertion with a Prefix Arg ***
