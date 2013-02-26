@@ -1,8 +1,8 @@
 : no time to learn lisp is false economy ;o)
 : -- resolve
 
-Emacs Lisp (sometimes called [[EmacsLispLegalName|Elisp]]) is a variant of MacLisp that much of Emacs is written in, as
-well as being the extension language customizations and extensions are written in.
+Emacs Lisp, or Elisp (see EmacsLispLegalName), is a variant of MacLisp that much of Emacs is written in, as
+well as being the extension language that customizations and extensions are written in.
 
 Emacs Lisp is what makes Emacs ExtensibleSoftware. Customizations and
 extensions can be made quickly and portably. Some of the ways that
@@ -11,41 +11,37 @@ functions into events, binding functions to key combinations, and
 creating new editing modes.
 
 Lisp has been rumored to stand for Lots of Insignificant Silly
-Parentheses, but it really means LISt Processor.
-
-See also PlainLispForMath for an explanation of simple arithmetic
-expressions in Lisp.
+Parentheses, but it really means '''LIS'''t '''P'''rocessor.
 
 To read about other kinds of Lisp and how to use them in conjunction
 with Emacs, see CommonLisp and [[Scheme]].
 
-== How to learn Emacs Lisp ==
+EmacsLispReference is the offical documentation.
 
-For Emacs Lisp documentation, see the EmacsLispReference node.  For Emacs Lisp SelfDocumentation, see CodingStyle.
+EmacsLispIntro is a book for non-programmers available from the FreeSoftwareFoundation and is shipped with Emacs.
 
 For help on using other people's Emacs Lisp, see InstallingPackages.
-
-An introduction from the FreeSoftwareFoundation: EmacsLispIntro.
 
 A work-in-progress (perhaps to be perpetually unfinished) tutorial:
 http://www.gnuvola.org/software/elisp-tutorial/index.html
 
-You might prefer learning by example and then the ElispCookbook would be useful.
+LearnEmacsLisp as a way of LearningEmacs.
 
-You might prefer learning by looking at differences with languages you do know in EmacsLispComparisons.
+ElispCookbook has a lot of useful short examples.
 
-See also LearningEmacs.
+You might prefer learning by looking at differences with languages you do know in 
 
-== Emacs Lisp features ==
+* EmacsLispComparisons -- Compare Emacs Lisp with other popular languages
+* PlainLispForMath for an explanation of simple arithmetic expressions in Lisp
 * ListStructure: like ##((1 . 2) . (3 . 4))##
 * BackquoteSyntax: what does it mean ##`(foo ,bar baz)##
 * ListModification: operations which inspect and modify lists
 * [[EmacsLispIntrospection|Introspection]]: finding out about functions
 * [[DynamicBindingVsLexicalBinding|Dynamic and Lexical Binding]]: it's common to mix both
 * [[ConcurrentEmacs|Concurrency]] through asynchronous processes
+* CodingStyle -- For suggestions on Emacs Lisp SelfDocumentation
 
 If you are wondering about all the quoting syntaxes like ##?a 'b #c `(,d e) :f (g . h)## etc., then see at the symbol glossary in CategoryGlossary.
-
 
 ----
 CategoryCode
