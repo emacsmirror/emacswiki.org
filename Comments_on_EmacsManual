@@ -1,0 +1,14 @@
+When the manual entry you want to refer to contains a space, you need to use double square brackets:
+
+{{{
+* [[Manual:Circular Objects|Circular Stuff]]
+* [[Manual:Circular Objects]]
+}}}
+
+Result:
+
+* [[Manual:Circular Objects|Circular Stuff]]
+* [[Manual:Circular Objects]]
+
+-- AlexSchroeder 2013-02-26 08:16 UTC
+
