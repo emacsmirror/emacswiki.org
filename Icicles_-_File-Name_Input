@@ -328,6 +328,9 @@ history, `regexp-search-ring', whenever you hit `S-TAB' to
 complete your input.  This means that when you visit the file you
 ''can immediately search for matches'' using `C-M-s' or `C-M-r'.
 
+(You can also work in the other direction, reusing an Isearch
+regexp as a content-matching regexp.  See [[Icicles - History Enhancements#InsertPreviousInputs|Using Completion to Insert Previous Inputs: `M-o']].)
+
 Content-searching is obviously more costly than file-name
 matching, so clearly if you can provide some information about the
 file name, that improves performance.  IOW, the more you can limit
