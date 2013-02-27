@@ -36,7 +36,7 @@ For help on using other people's Emacs Lisp, see InstallingPackages.
 * [[ConcurrentEmacs|Concurrency]] through asynchronous processes
 
 
-If you are wondering about all the quoting syntaxes like ##?a 'b #c `(,d e) :f (g . h)## etc., then see at the symbol glossary in CategoryGlossary.
+If you are wondering about all the quoting syntaxes like ##?a 'b #c `(,d e) :f (g . h)## etc., then see EmacsSymbolNotation.
 
 ----
 CategoryCode
