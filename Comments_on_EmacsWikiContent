@@ -118,8 +118,7 @@ Can we add a link to the subject page to the Talk page on the subject?
 ----
 
 There already is -- do you want it bigger, or somewhere else? (Look for _EmacsWikiContent_ right in front of _Edit this page_.)
-There was some talk about this [[Comments on 2012-03-20|in March 2012]].
-
+There was some talk about this [[Comments on 2012-03-20|in March 2012]]. Ideally we find a CSS solution. Alternatively, we mock something up using CSS but then we make some changes to the HTML output provided that it still looks good using a text-only browser such as w3m.
 
 * [EmacsWiki:action=browse;id=Comments_on_EmacsWikiContent;css=/css/talkative-emacs.css;theme= use Talkative Emacs theme]
 
