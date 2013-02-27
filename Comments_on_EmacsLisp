@@ -76,7 +76,7 @@ I think take it out?
 
 ----
 
-"Be bold" and fix it, no matter who added it. As for a blame feature: theoretically you should be able to use the [[Git repository]] to [https://github.com/emacsmirror/emacswiki.org/blame/master/EmacsLisp figure it out].
+"Be bold" and fix it, no matter who added it. As for a blame feature: theoretically you should be able to use the [[Git repository]] to [https://github.com/emacsmirror/emacswiki.org/blame/master/EmacsLisp figure it out]. I guess it would be easy to add a link at the bottom to link to the !GitHub page -- I'm just not sure we really need it.
 
 -- AlexSchroeder 2013-02-27 10:08 UTC
 
