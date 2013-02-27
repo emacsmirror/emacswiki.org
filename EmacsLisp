@@ -22,20 +22,19 @@ EmacsLispIntro is a book for non-programmers available from the FreeSoftwareFoun
 
 For help on using other people's Emacs Lisp, see InstallingPackages.
 
-A work-in-progress (perhaps to be perpetually unfinished) tutorial:
-http://www.gnuvola.org/software/elisp-tutorial/index.html
-
 * LearnEmacsLisp as a way of LearningEmacs.
-* ElispCookbook has a lot of useful short examples.
+* ElispCookbook has useful short examples.
+* An unfinished [[http://www.gnuvola.org/software/elisp-tutorial/index.html Elisp tutorial]]
+* CodingStyle -- For suggestions on Emacs Lisp SelfDocumentation
 * EmacsLispComparisons -- Compare Emacs Lisp with other popular languages
+* [[DynamicBindingVsLexicalBinding|Dynamic and Lexical Binding]]: it's common to mix both
 * PlainLispForMath for an explanation of simple arithmetic expressions in Lisp
 * ListStructure: like ##((1 . 2) . (3 . 4))##
 * BackquoteSyntax: what does it mean ##`(foo ,bar baz)##
 * ListModification: operations which inspect and modify lists
 * [[EmacsLispIntrospection|Introspection]]: finding out about functions
-* [[DynamicBindingVsLexicalBinding|Dynamic and Lexical Binding]]: it's common to mix both
 * [[ConcurrentEmacs|Concurrency]] through asynchronous processes
-* CodingStyle -- For suggestions on Emacs Lisp SelfDocumentation
+
 
 If you are wondering about all the quoting syntaxes like ##?a 'b #c `(,d e) :f (g . h)## etc., then see at the symbol glossary in CategoryGlossary.
 
