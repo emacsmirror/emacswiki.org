@@ -138,7 +138,9 @@ Aha. Right. It would be good if it was just "the page" or something... just an a
 
 ----
 
-Access keys taken: s (save), p (preview) and e (edit). I called the link "Article" (and need translations of this word for all the languages...) and used access key a (article).
+Access keys taken: s (save), p (preview) and e (edit). I called the link "Article" and used access key a (article).
+
+Update: copied the translations of Article and Discussion from Wikipedia for all the languages Emacs Wiki supports...
 
 -- AlexSchroeder 2013-02-27 15:19 UTC
 
