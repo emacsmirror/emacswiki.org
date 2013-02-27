@@ -378,16 +378,13 @@ It's a lot easier to scan long path names if they're displayed vertically, inste
 
   (defun ido-disable-line-truncation () (set (make-local-variable 'truncate-lines) nil))
   (add-hook 'ido-minibuffer-setup-hook 'ido-disable-line-truncation)
+  (defun ido-define-keys () ;; C-n/p is more intuitive in vertical layout
+    (define-key ido-completion-map (kbd "C-n") 'ido-next-match)
+    (define-key ido-completion-map (kbd "C-p") 'ido-prev-match))
+  (add-hook 'ido-setup-hook 'jf-ido-define-keys)
 
 -- [[timcharper]], [[jpkotta]]
 
-This is a nice feature, thanks.  The `add-hook' line causes this error (GNU Emacs 23.2):
-
-if: Wrong number of arguments: #[(file form) " ; 
-
-Tried on "emacs -Q" too.  Am I alone?  However, afterwards the code works as advertised.
-
-10 Dec 2010: It was a mistake.  The `add-hook' line is fine.
 === Control-TAB buffer switching with Ido ===
 
 [NxhtmlMode nXhtml] tweaks Ido to do ControlTABbufferCycling combined with Ido's normal buffer switching.
