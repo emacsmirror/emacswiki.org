@@ -1,0 +1,3 @@
+An online service for storing bookmarks http://pinboard.in
+
+Some Elisp for turning pinboard urls into CreoleMode is [[https://gist.github.com/nicferrier/5043465|here]]
