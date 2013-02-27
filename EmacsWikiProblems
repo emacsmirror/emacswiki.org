@@ -23,6 +23,10 @@ Could be! I just tried looking at HighlightLibrary using IE 8---the oldest brows
 == Search finds nothing when browser is Chrome ==
 
 Using Chrome Version 24.0.1312.52 m and Windows 7 Pro Version 6.1 (Build 7601: Service Pack 1)
+
+[new]
+Works for me. Chrome Version 25.0.1364.97 m and Windows XP SP3. My guess is a temporary hickup by Google. -- AlexSchroeder
+
 ----
 
 == Site search misses stuff ==
