@@ -9,7 +9,7 @@ You can use these libraries to highlight text in a buffer:
 
 == Comparison ==
 
-* ''%%HiLock%%'' is part of Emacs, starting with version 21. It is complementary to the features of libraries ''Highlight'' and ''%%MarkerPens%%'', and to ''Icicles search'', so it can be used with any of them.
+* Library ''%%HiLock%%'' is part of GnuEmacs (starting with version 21).  Libraries ''Highlight'' and ''%%MarkerPens%%'' are not.
 * Libraries ''Highlight'' and ''%%HiLock%%'', and ''Icicles search'' can highlight a [[regexp]] (or remove highlighting) throughout a [[buffer]].
 * Libraries ''Highlight'' and ''%%MarkerPens%%'' can highlight (or unhighlight) the [[region]].
 * Library ''Highlight'' and ''Icicles search'' can highlight a [[regexp]] throughout the [[region]].
