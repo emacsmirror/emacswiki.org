@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue Feb 26 07:31:14 2013 (-0800)
+;; Last-Updated: Thu Feb 28 10:59:26 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 9747
+;;     Update #: 9769
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -864,6 +864,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2013/02/28 dadams
+;;     icicle-cmd2-after-load-hexrgb, icicle-cmd2-after-load-wid-edit+:
+;;       Use fset, not defalias, for redefinitions of read-color, widget-color-complete.
 ;; 2013/02/04 dadams
 ;;     Removed all autoload cookies.
 ;; 2013/01/06 dadams
@@ -1664,6 +1667,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2013/02/28 dadams
+;;     eval-after-load crm: Use fset, not defalias.  Thx to Michael Heerdegen.
 ;; 2013/02/26 dadams
 ;;     icicle-(prefix|apropos)-any(-file-name)-candidates-p:
 ;;       Fix for use with Icomplete - take icicle-must-pass-after-match-predicate into account.
@@ -5310,6 +5315,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2013/02/28 dadams
+;;     icicle-(redefine|restore)-(standard-functions|std-completion-fns),
+;;       eval-after-load (comint|ess-site|gud|info|bbdb-com|dired-aux|dired-x|recentf|icicles-mode):
+;;         Use fset, not defalias.  Thx to Michael Heerdegen.
 ;; 2013/02/16 dadams
 ;;     icicle-mode: Removed list of commands from doc string - just refer to file headers.
 ;; 2013/02/09 dadams
@@ -6495,6 +6504,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2013/02/26 dadams
+;;     Added (put 'icicle-kbd 'pure t).
 ;; 2013/02/04 dadams
 ;;     Removed all autoload cookies.
 ;; 2013/02/04 dadams
