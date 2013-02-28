@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Fri Feb 15 10:14:13 2013 (-0800)
+;; Last-Updated: Thu Feb 28 08:20:47 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 6224
+;;     Update #: 6226
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -882,7 +882,7 @@ at point, or if none then the visited file."
 (defun icicle-cmd2-after-load-hexrgb ()
   "Things to do for `icicles-cmd2.el' after loading `hexrgb.el'."
   (when (and (fboundp 'read-color)  (not (fboundp 'icicle-ORIG-read-color))) ; Exists with Emacs 23+.
-    (defalias 'icicle-ORIG-read-color (symbol-function 'read-color))) ; Not used, but save it anyway.
+    (fset 'icicle-ORIG-read-color (symbol-function 'read-color))) ; Not used, but save it anyway.
 
   ;; See also `hexrgb-read-color' in `hexrgb.el'.
   (defun icicle-read-color (&optional prompt convert-to-RGB-p allow-empty-name-p msgp)
@@ -1678,7 +1678,7 @@ See `icicle-widget-color-complete'."
   (unless (or (> emacs-major-version 23)  (fboundp 'icicle-ORIG-widget-color-complete))
     (require 'wid-edit)
     (when (fboundp 'widget-color-complete)
-      (defalias 'icicle-ORIG-widget-color-complete (symbol-function 'widget-color-complete))))
+      (fset 'icicle-ORIG-widget-color-complete (symbol-function 'widget-color-complete))))
 
   (defun icicle-widget-color-complete (widget)
     "Complete the color name in `color' widget WIDGET.
