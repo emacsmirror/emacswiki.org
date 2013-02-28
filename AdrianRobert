@@ -1,19 +1,7 @@
-I am [::ABR].  My real name is Adrian Robert.  I maintain the EmacsOnAqua and EmacsApp ports of GNU Emacs to OpenStep platforms.
+I am [::ABR].  My real name is Adrian Robert.  I revived the EmacsOnAqua and created the EmacsApp SourceForge projects for the port of GNU Emacs to OpenStep platforms, and helped bring the port into the GNU Emacs mainline in 2008.  If you do a configure --with-ns, or if you use AquamacsEmacs version 2+, you're using this port.
 
 [new]
 Welcome to the wiki! -- AlexSchroeder
 
-[new]
-BTW, some people wonder why work continues on these ports when the AndrewChoi / YamamotoMitsuharu Carbon-based port behind Aquamacs and Carbon Emacs Package seems further along.  There are three major reasons:
-
-* It also runs on Linux, FreeBSD, and maybe Solaris and Windows, offering anti-aliased text and all of other the benefits of the OS X UI on those platforms, via the [http://gnustep.org GNUstep] free open source implementation.
-
-* It aims for more complete integration with the Aqua UI than the Carbon port, particularly in the areas of customization and font selection.
-
-* It has a codebase half the size of the Carbon port, due to use of a higher level GUI API.
-
-Historically, the Cocoa port came first, deriving from the earlier OpenStep version, then stagnated for a period during which Carbon port came into existence by modifying an independent MacOS 9 port.
-
-(See the Sourceforge pages for the projects for more info.)
 ----
 CategoryHomepage
