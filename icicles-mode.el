@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Feb 16 19:58:27 2013 (-0800)
+;; Last-Updated: Thu Feb 28 10:39:15 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 9474
+;;     Update #: 9486
 ;; URL: http://www.emacswiki.org/icicles-mode.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -3372,7 +3372,7 @@ if `icicle-change-region-background-flag' is non-nil."
   (when (fboundp 'icicle-completing-read)
     (dolist (fn  icicle-functions-to-redefine)
       (when (fboundp (intern (concat "icicle-ORIG-" (symbol-name fn))))
-        (defalias fn (intern (concat "icicle-" (symbol-name fn))))))))
+        (fset fn (intern (concat "icicle-" (symbol-name fn))))))))
 
 (defun icicle-restore-standard-functions ()
   "Restore original versions of functions in `icicle-functions-to-redefine'."
@@ -3380,7 +3380,7 @@ if `icicle-change-region-background-flag' is non-nil."
     (let (orig-fn)
       (dolist (fn  icicle-functions-to-redefine)
         (when (fboundp (setq orig-fn  (intern (concat "icicle-ORIG-" (symbol-name fn)))))
-          (defalias fn orig-fn))))))
+          (fset fn orig-fn))))))
 
 (defun icicle-redefine-standard-widgets ()
   "Alias the widgets in `icicle-widgets-to-redefine' to Icicles versions."
@@ -3410,83 +3410,83 @@ if `icicle-change-region-background-flag' is non-nil."
 (defun icicle-redefine-std-completion-fns ()
   "Replace some standard functions with versions for Icicle mode."
   (when (fboundp 'icicle-completing-read)
-    (defalias 'choose-completion            'icicle-choose-completion)
-    (defalias 'choose-completion-string     'icicle-choose-completion-string)
-    (defalias 'completing-read              'icicle-completing-read)
+    (fset 'choose-completion            'icicle-choose-completion)
+    (fset 'choose-completion-string     'icicle-choose-completion-string)
+    (fset 'completing-read              'icicle-completing-read)
     (when (fboundp 'icicle-completing-read-multiple)
-      (defalias 'completing-read-multiple   'icicle-completing-read-multiple)
+      (fset 'completing-read-multiple   'icicle-completing-read-multiple)
       (setq crm-local-completion-map  icicle-crm-local-completion-map
             crm-local-must-match-map  icicle-crm-local-must-match-map))
-    (defalias 'completion-setup-function    'icicle-completion-setup-function)
+    (fset 'completion-setup-function    'icicle-completion-setup-function)
     (unless (> emacs-major-version 22)
-      (defalias 'dired-smart-shell-command  'icicle-dired-smart-shell-command))
-    (defalias 'display-completion-list      'icicle-display-completion-list)
-    (defalias 'exit-minibuffer              'icicle-exit-minibuffer)
+      (fset 'dired-smart-shell-command  'icicle-dired-smart-shell-command))
+    (fset 'display-completion-list      'icicle-display-completion-list)
+    (fset 'exit-minibuffer              'icicle-exit-minibuffer)
     (when (fboundp 'face-valid-attribute-values)
-      (defalias 'face-valid-attribute-values 'icicle-face-valid-attribute-values))
-    (defalias 'minibuffer-complete-and-exit 'icicle-minibuffer-complete-and-exit)
-    (defalias 'mouse-choose-completion      'icicle-mouse-choose-completion)
-    (defalias 'next-history-element         'icicle-next-history-element)
-    (defalias 'read-buffer                  'icicle-read-buffer)
-    (defalias 'read-face-name               'icicle-read-face-name)
+      (fset 'face-valid-attribute-values 'icicle-face-valid-attribute-values))
+    (fset 'minibuffer-complete-and-exit 'icicle-minibuffer-complete-and-exit)
+    (fset 'mouse-choose-completion      'icicle-mouse-choose-completion)
+    (fset 'next-history-element         'icicle-next-history-element)
+    (fset 'read-buffer                  'icicle-read-buffer)
+    (fset 'read-face-name               'icicle-read-face-name)
     (if (boundp 'read-file-name-function) ; Emacs 22+
         (setq icicle-orig-read-file-name-fn  (prog1 (and (not (eq read-file-name-function
                                                                   'icicle-read-file-name))
                                                          read-file-name-function)
                                                (setq read-file-name-function
                                                      'icicle-read-file-name)))
-      (defalias 'read-file-name             'icicle-read-file-name)) ; Emacs 20, 21
+      (fset 'read-file-name             'icicle-read-file-name)) ; Emacs 20, 21
     (when (fboundp 'read-file-name-default) ; Emacs 24+
-      (defalias 'read-file-name-default       'icicle-read-file-name-default))
+      (fset 'read-file-name-default       'icicle-read-file-name-default))
     (when (fboundp 'icicle-read-number)
-      (defalias 'read-number                'icicle-read-number))
+      (fset 'read-number                'icicle-read-number))
     (unless (> emacs-major-version 22)
-      (defalias 'shell-command              'icicle-shell-command))
+      (fset 'shell-command              'icicle-shell-command))
     (unless (> emacs-major-version 22)
-      (defalias 'shell-command-on-region    'icicle-shell-command-on-region))
+      (fset 'shell-command-on-region    'icicle-shell-command-on-region))
     (when (> emacs-major-version 22)
-      (defalias 'sit-for                    'icicle-sit-for))
-    (defalias 'switch-to-completions        'icicle-switch-to-completions)
+      (fset 'sit-for                    'icicle-sit-for))
+    (fset 'switch-to-completions        'icicle-switch-to-completions)
     ))
 
 (defun icicle-restore-std-completion-fns ()
   "Restore some standard functions that were replaced in Icicle mode."
   (when (fboundp 'icicle-ORIG-completing-read)
-    (defalias 'choose-completion            'icicle-ORIG-choose-completion)
-    (defalias 'choose-completion-string     'icicle-ORIG-choose-completion-string)
-    (defalias 'completing-read              'icicle-ORIG-completing-read)
+    (fset 'choose-completion            'icicle-ORIG-choose-completion)
+    (fset 'choose-completion-string     'icicle-ORIG-choose-completion-string)
+    (fset 'completing-read              'icicle-ORIG-completing-read)
     (when (fboundp 'icicle-ORIG-completing-read-multiple)
-      (defalias 'completing-read-multiple   'icicle-ORIG-completing-read-multiple)
+      (fset 'completing-read-multiple   'icicle-ORIG-completing-read-multiple)
       (setq crm-local-completion-map  icicle-ORIG-crm-local-completion-map
             crm-local-must-match-map  icicle-ORIG-crm-local-must-match-map))
-    (defalias 'completion-setup-function    'icicle-ORIG-completion-setup-function)
+    (fset 'completion-setup-function    'icicle-ORIG-completion-setup-function)
     (when (fboundp 'icicle-ORIG-dired-smart-shell-command) ; Emacs 23
-      (defalias 'dired-smart-shell-command  'icicle-ORIG-dired-smart-shell-command))
-    (defalias 'display-completion-list      'icicle-ORIG-display-completion-list)
-    (defalias 'exit-minibuffer              'icicle-ORIG-exit-minibuffer)
+      (fset 'dired-smart-shell-command  'icicle-ORIG-dired-smart-shell-command))
+    (fset 'display-completion-list      'icicle-ORIG-display-completion-list)
+    (fset 'exit-minibuffer              'icicle-ORIG-exit-minibuffer)
     (when (fboundp 'icicle-ORIG-face-valid-attribute-values)
-      (defalias 'face-valid-attribute-values 'icicle-ORIG-face-valid-attribute-values))
-    (defalias 'minibuffer-complete-and-exit 'icicle-ORIG-minibuffer-complete-and-exit)
-    (defalias 'mouse-choose-completion      'icicle-ORIG-mouse-choose-completion)
-    (defalias 'next-history-element         'icicle-ORIG-next-history-element)
-    (defalias 'read-buffer                  'icicle-ORIG-read-buffer)
-    (defalias 'read-face-name               'icicle-ORIG-read-face-name)
+      (fset 'face-valid-attribute-values 'icicle-ORIG-face-valid-attribute-values))
+    (fset 'minibuffer-complete-and-exit 'icicle-ORIG-minibuffer-complete-and-exit)
+    (fset 'mouse-choose-completion      'icicle-ORIG-mouse-choose-completion)
+    (fset 'next-history-element         'icicle-ORIG-next-history-element)
+    (fset 'read-buffer                  'icicle-ORIG-read-buffer)
+    (fset 'read-face-name               'icicle-ORIG-read-face-name)
     (if (boundp 'read-file-name-function) ; Emacs 22+
         (setq read-file-name-function  (and (not (eq icicle-orig-read-file-name-fn
                                                      'icicle-read-file-name))
                                             icicle-orig-read-file-name-fn))
-      (defalias 'read-file-name             'icicle-ORIG-read-file-name)) ; Emacs 20, 21
+      (fset 'read-file-name             'icicle-ORIG-read-file-name)) ; Emacs 20, 21
     (when (fboundp 'icicle-ORIG-read-file-name-default) ; Emacs 24+
-      (defalias 'read-file-name-default       'icicle-ORIG-read-file-name-default))
+      (fset 'read-file-name-default       'icicle-ORIG-read-file-name-default))
     (when (fboundp 'icicle-ORIG-read-number)
-      (defalias 'read-number                'icicle-ORIG-read-number))
+      (fset 'read-number                'icicle-ORIG-read-number))
     (when (fboundp 'icicle-ORIG-shell-command) ; Emacs < 23
-      (defalias 'shell-command              'icicle-ORIG-shell-command))
+      (fset 'shell-command              'icicle-ORIG-shell-command))
     (when (fboundp 'icicle-ORIG-shell-command-on-region) ; Emacs < 23
-      (defalias 'shell-command-on-region    'icicle-ORIG-shell-command-on-region))
+      (fset 'shell-command-on-region    'icicle-ORIG-shell-command-on-region))
     (when (> emacs-major-version 22)
-      (defalias 'sit-for                    'icicle-ORIG-sit-for))
-    (defalias 'switch-to-completions        'icicle-ORIG-switch-to-completions)
+      (fset 'sit-for                    'icicle-ORIG-sit-for))
+    (fset 'switch-to-completions        'icicle-ORIG-switch-to-completions)
     ))
 
 ;; Free vars here: `icicle-saved-kmacro-ring-max' is bound in `icicles-var.el'.
@@ -3534,20 +3534,20 @@ if `icicle-change-region-background-flag' is non-nil."
                (when icyp (icicle-mode -1))
                (when (and (fboundp 'comint-dynamic-complete)
                           (not (fboundp 'icicle-ORIG-comint-dynamic-complete)))
-                 (defalias 'icicle-ORIG-comint-dynamic-complete
-                     (symbol-function 'comint-dynamic-complete)))
+                 (fset 'icicle-ORIG-comint-dynamic-complete
+                       (symbol-function 'comint-dynamic-complete)))
                (when (and (fboundp 'comint-dynamic-complete-filename)
                           (not (fboundp 'icicle-ORIG-comint-dynamic-complete-filename)))
-                 (defalias 'icicle-ORIG-comint-dynamic-complete-filename
-                     (symbol-function 'comint-dynamic-complete-filename)))
+                 (fset 'icicle-ORIG-comint-dynamic-complete-filename
+                       (symbol-function 'comint-dynamic-complete-filename)))
                (when (and (fboundp 'comint-replace-by-expanded-filename)
                           (not (fboundp 'icicle-ORIG-comint-replace-by-expanded-filename)))
-                 (defalias 'icicle-ORIG-comint-replace-by-expanded-filename
-                     (symbol-function 'comint-replace-by-expanded-filename)))
+                 (fset 'icicle-ORIG-comint-replace-by-expanded-filename
+                       (symbol-function 'comint-replace-by-expanded-filename)))
 	       (when (and (fboundp 'comint-completion-at-point) ; Emacs 24+
                           (not (fboundp 'icicle-ORIG-comint-completion-at-point)))
-                 (defalias 'icicle-ORIG-comint-completion-at-point
-                     (symbol-function 'comint-completion-at-point)))
+                 (fset 'icicle-ORIG-comint-completion-at-point
+                       (symbol-function 'comint-completion-at-point)))
                (when icyp (icicle-mode 1)))))
   (if (featurep 'comint) (eval-after-load "icicles-mode" form) (eval-after-load "comint" form)))
 
@@ -3556,8 +3556,8 @@ if `icicle-change-region-background-flag' is non-nil."
                (when icyp (icicle-mode -1))
                (when (and (fboundp 'ess-complete-object-name)
                           (not (fboundp 'icicle-ORIG-ess-complete-object-name)))
-                 (defalias 'icicle-ORIG-ess-complete-object-name
-                     (symbol-function 'ess-complete-object-name)))
+                 (fset 'icicle-ORIG-ess-complete-object-name
+                       (symbol-function 'ess-complete-object-name)))
                (when icyp (icicle-mode 1)))))
   (if (featurep 'ess-site) (eval-after-load "icicles-mode" form) (eval-after-load "ess-site" form)))
 
@@ -3566,8 +3566,8 @@ if `icicle-change-region-background-flag' is non-nil."
                (when icyp (icicle-mode -1))
                (when (and (fboundp 'gud-gdb-complete-command)
                           (not (fboundp 'icicle-ORIG-gud-gdb-complete-command)))
-                 (defalias 'icicle-ORIG-gud-gdb-complete-command
-                     (symbol-function 'gud-gdb-complete-command)))
+                 (fset 'icicle-ORIG-gud-gdb-complete-command
+                       (symbol-function 'gud-gdb-complete-command)))
                (when icyp (icicle-mode 1)))))
   (if (featurep 'gud) (eval-after-load "icicles-mode" form) (eval-after-load "gud" form)))
 
@@ -3575,9 +3575,9 @@ if `icicle-change-region-background-flag' is non-nil."
 (let ((form  '(let ((icyp  (and (boundp 'icicle-mode)  icicle-mode)))
                (when icyp (icicle-mode -1))
                (when (and (featurep 'info)  (not (fboundp 'icicle-ORIG-Info-goto-node)))
-                 (defalias 'icicle-ORIG-Info-goto-node (symbol-function 'Info-goto-node))
-                 (defalias 'icicle-ORIG-Info-index     (symbol-function 'Info-index))
-                 (defalias 'icicle-ORIG-Info-menu      (symbol-function 'Info-menu)))
+                 (fset 'icicle-ORIG-Info-goto-node (symbol-function 'Info-goto-node))
+                 (fset 'icicle-ORIG-Info-index     (symbol-function 'Info-index))
+                 (fset 'icicle-ORIG-Info-menu      (symbol-function 'Info-menu)))
                (when icyp (icicle-mode 1)))))
   (if (featurep 'info) (eval-after-load "icicles-mode" form) (eval-after-load "info" form)))
 
@@ -3586,7 +3586,7 @@ if `icicle-change-region-background-flag' is non-nil."
                (when icyp (icicle-mode -1))
                (when (and (fboundp 'bbdb-complete-name)
                           (not (fboundp 'icicle-ORIG-bbdb-complete-name)))
-                 (defalias 'icicle-ORIG-bbdb-complete-name (symbol-function 'bbdb-complete-name)))
+                 (fset 'icicle-ORIG-bbdb-complete-name (symbol-function 'bbdb-complete-name)))
                (when icyp (icicle-mode 1)))))
   (if (and (featurep 'bbdb-com)  (fboundp 'bbdb-complete-name))
       (eval-after-load "icicles-mode" form)
@@ -3597,7 +3597,7 @@ if `icicle-change-region-background-flag' is non-nil."
                (when icyp (icicle-mode -1))
                (when (and (fboundp 'bbdb-complete-mail)
                           (not (fboundp 'icicle-ORIG-bbdb-complete-mail)))
-                 (defalias 'icicle-ORIG-bbdb-complete-mail (symbol-function 'bbdb-complete-mail)))
+                 (fset 'icicle-ORIG-bbdb-complete-mail (symbol-function 'bbdb-complete-mail)))
                (when icyp (icicle-mode 1)))))
   (if (and (featurep 'bbdb-com)  (fboundp 'bbdb-complete-mail))
       (eval-after-load "icicles-mode" form)
@@ -3608,8 +3608,8 @@ if `icicle-change-region-background-flag' is non-nil."
                (when icyp (icicle-mode -1))
                (when (and (fboundp 'dired-read-shell-command)
                           (not (fboundp 'icicle-ORIG-dired-read-shell-command)))
-                 (defalias 'icicle-ORIG-dired-read-shell-command
-                     (symbol-function 'dired-read-shell-command)))
+                 (fset 'icicle-ORIG-dired-read-shell-command
+                       (symbol-function 'dired-read-shell-command)))
                (when icyp (icicle-mode 1)))))
   (if (featurep 'dired-aux)
       (eval-after-load "icicles-mode" form)
@@ -3620,13 +3620,13 @@ if `icicle-change-region-background-flag' is non-nil."
                (when icyp (icicle-mode -1))
                (when (and (fboundp 'dired-read-shell-command)
                           (not (fboundp 'icicle-ORIG-dired-read-shell-command)))
-                 (defalias 'icicle-ORIG-dired-read-shell-command
-                     (symbol-function 'dired-read-shell-command)))
+                 (fset 'icicle-ORIG-dired-read-shell-command
+                       (symbol-function 'dired-read-shell-command)))
                (unless (fboundp 'read-shell-command) ; `dired-smart-shell-command' in Emacs < 23.
                  (when (and (fboundp 'dired-smart-shell-command)
                             (not (fboundp 'icicle-ORIG-dired-smart-shell-command)))
-                   (defalias 'icicle-ORIG-dired-smart-shell-command
-                       (symbol-function 'dired-smart-shell-command))))
+                   (fset 'icicle-ORIG-dired-smart-shell-command
+                         (symbol-function 'dired-smart-shell-command))))
                (when icyp (icicle-mode 1)))))
   (if (featurep 'dired-x) (eval-after-load "icicles-mode" form) (eval-after-load "dired-x" form)))
 
@@ -3644,8 +3644,8 @@ if `icicle-change-region-background-flag' is non-nil."
                (when icyp (icicle-mode -1))
                (when (and (fboundp 'recentf-make-menu-items)
                           (not (fboundp 'icicle-ORIG-recentf-make-menu-items)))
-                 (defalias 'icicle-ORIG-recentf-make-menu-items
-                     (symbol-function 'recentf-make-menu-items)))
+                 (fset 'icicle-ORIG-recentf-make-menu-items
+                       (symbol-function 'recentf-make-menu-items)))
                (when icyp (icicle-mode 1)))))
   (if (featurep 'recentf) (eval-after-load "icicles-mode" form) (eval-after-load "recentf" form)))
 
