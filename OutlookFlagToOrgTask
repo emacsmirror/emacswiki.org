@@ -41,6 +41,7 @@ Sub OrgTasks()
     Dim state As String
     Dim tags As String
     Dim iAm As String
+    Dim prioritiy As String
     
     ''''''''''''''''''''''''''''''''''''''
     ' Change Settings In this Block Only '
@@ -80,8 +81,9 @@ Sub OrgTasks()
                     due = IIf(objMail.TaskDueDate < future, objMail.TaskDueDate, future)
                     state = IIf(done = outlookfuture, "TODO", "DONE")
                     mylen = IIf(Len(objMail.body) <= 1024, Len(objMail.body), 1024)
+                    Priority = getPriority(objMail.importance)
 
-                    T = T + "* " + state + " " + objMail.Subject + " " + tags + " " + vbCrLf
+                    T = T + "* " + state + Priority + " " + objMail.Subject + " " + tags + " " + vbCrLf
                     T = T + "  SCHEDULED: <" + Format(DateTime.DateValue(Str(scheduled)), "yyyy-MM-DD") + " +" + Str(diff) + "d>" + vbCrLf
                     'T = T + "  DEADLINE: <" + Format(DateTime.DateValue(Str(due)), "yyyy-MM-DD") + " +" + Str(diff) + "d>" + vbCrLf
                     If done <> outlookfuture Then
@@ -99,7 +101,6 @@ Sub OrgTasks()
     Next
     
     ' Now that we have the org-mode tasks, add to org-mode file
-    ' Now that we have the org-mode tasks, add to org-mode file
     orgtext = "# -*- mode: org -*-" + vbCrLf + vbCrLf
     orgtext = orgtext + "#+COLUMNS: %25ITEM %TODO %SCHEDULED %3PRIORITY %TAGS" + vbCrLf
     orgtext = orgtext + T
@@ -108,4 +109,13 @@ Sub OrgTasks()
     Close #outfile
     
 End Sub
+
+Function getPriority(importance)
+    Select Case importance
+        Case olImportanceHigh
+            getPriority = " [#A] "
+        Case olImportanceLow
+            getPriority = " [#C] "
+    End Select
+End Function
 </pre>
