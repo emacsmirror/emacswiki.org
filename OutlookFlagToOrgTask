@@ -1,0 +1,111 @@
+If you want to export your flagged items in Outlook to Org Mode, you can use this macro.
+
+This macro only feeds data into Org Mode: Completing a task in Org Mode won't complete it in Outlook, you still need to do that by hand.
+
+== Usage Instructions ==
+
+0. This only works on messages flagged for follow up that are in your Inbox folder.  If you want Org Mode to see a message, make sure it's in your Inbox.
+
+1. Add this macro as a button on your toolbar.  You should use it every morning.
+
+2. Select your Inbox folder and then select a message in your Inbox.  Now, click the tool bar button and wait a few minutes as Outlook chugs through every message in the folder.
+
+== Common Errors ==
+
+=== Run-time error -2147221233 ===
+
+You probably forgot to set your "iAm" variable if you see an error like:
+
+<pre>
+Run-time error '-2147221233 (8004010f)':
+
+The attempted operation failed.  An object could not be found.
+</pre>
+
+== Code ==
+
+<pre>
+Sub OrgTasks()
+    Dim T As Variant
+    Dim Outlook As New Outlook.Application
+    Dim orgtext As Variant
+    Dim Pos As Integer
+    Dim taskf As Object
+    Dim outfile As Variant
+    Dim mylen As Integer
+    Dim scheduled As Date
+    Dim due As Date
+    Dim future As Date
+    Dim past As Date
+    Dim diff As Integer
+    Dim state As String
+    Dim tags As String
+    Dim iAm As String
+    
+    ''''''''''''''''''''''''''''''''''''''
+    ' Change Settings In this Block Only '
+    ' Don't Touch Above this Line        '
+    ''''''''''''''''''''''''''''''''''''''
+    
+    ' Days to look back for incomplete tasks:
+    diff = 30
+    ' Tags to apply to each exported task:
+    tags = ":mail:external:"
+    ' Path to your GTD Org File:
+    orgfilepath = "f:\personal\me\org\gtd.org"
+    ' Your email address:
+    iAm = "me@company.com"
+    ' Org Mode errors when dates are too far in the future.
+    future = DateSerial(2050, 1, 1)
+    
+    '''''''''''''''''''''''''''''''
+    ' END OF CHANGEABLE SETTINGS  '
+    ' Don't Touch Below this Line '
+    '''''''''''''''''''''''''''''''
+    
+    Set taskf = Outlook.GetNamespace("MAPI").Folders.item(iAm).Folders.item("Inbox")
+    outlookfuture = DateSerial(4501, 1, 1)
+    past = Date - diff
+    
+    outfile = FreeFile()
+    Open orgfilepath For Output As outfile
+    
+    For Each objMail In taskf.Items
+        If objMail.Class = olMail Then
+            If objMail.FlagStatus <> olNoFlag Then
+                scheduled = objMail.TaskStartDate
+
+                If scheduled > past And scheduled < future Then
+                    done = objMail.TaskCompletedDate
+                    due = IIf(objMail.TaskDueDate < future, objMail.TaskDueDate, future)
+                    state = IIf(done = outlookfuture, "TODO", "DONE")
+                    mylen = IIf(Len(objMail.body) <= 1024, Len(objMail.body), 1024)
+
+                    T = T + "* " + state + " " + objMail.Subject + " " + tags + " " + vbCrLf
+                    T = T + "  SCHEDULED: <" + Format(DateTime.DateValue(Str(scheduled)), "yyyy-MM-DD") + " +" + Str(diff) + "d>" + vbCrLf
+                    'T = T + "  DEADLINE: <" + Format(DateTime.DateValue(Str(due)), "yyyy-MM-DD") + " +" + Str(diff) + "d>" + vbCrLf
+                    If done <> outlookfuture Then
+                        T = T + "  CLOSED: [" + Format(DateTime.DateValue(Str(done)), "yyyy-MM-DD") + "]"
+                    End If
+                    T = T + vbCrLf
+                    T = T + "  MESSAGE: " + objMail.Subject + " (" + objMail.SenderName + ")"
+                    T = T + vbCrLf + vbCrLf
+                    T = T + "  #+begin_src text" + vbCrLf
+                    T = T + "    ," + Replace(Mid(objMail.body, 1, mylen), vbCrLf, vbCrLf + "    ,") + vbCrLf
+                    T = T + "  #+end_src" + vbCrLf + vbCrLf
+                End If
+            End If
+        End If
+    Next
+    
+    ' Now that we have the org-mode tasks, add to org-mode file
+    ' Now that we have the org-mode tasks, add to org-mode file
+    orgtext = "# -*- mode: org -*-" + vbCrLf + vbCrLf
+    orgtext = orgtext + "#+COLUMNS: %25ITEM %TODO %SCHEDULED %3PRIORITY %TAGS" + vbCrLf
+    orgtext = orgtext + T
+    orgtext = Replace(orgtext, vbCrLf, Chr(10)) ' Change to unix line endings.
+    Print #outfile, orgtext
+    Close #outfile
+    
+End Sub
+</pre>
