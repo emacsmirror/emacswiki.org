@@ -1,0 +1,26 @@
+[[en:CategoryDatabase]]
+
+Aquí encontrarás artículos relacionados con las bases de datos.
+
+== Basadas en SQL ==
+
+<i>Véase CategoríaSQL para más información acerca de modos mayores, scripts y artículos acerca de Bases de Datos SQL.</i>
+
+
+Para conectarse con Sistemas Gestores de Bases de Datos(SGBD), modos mayores e interfaces:
+
+* SqlMode -- Modo mayor que permite conectarse a una vasta mayoría de SGBD.
+
+
+Programación en EmacsLisp:
+
+* [[PostGreSQL]] -- Interface para servidores !PostGreSQL.
+* [[MySql-es]] -- Interface para servidores !MySQL.
+* [[SQLite-es]] -- Interface para la librería !SQLite.
+
+== No Basadas en SQL ==
+
+* !MongoDB -- Interace EmacsLisp para [https://github.com/m2ym/mongo-el MongoDB].
+* [[BBDB]] -- Base de datos "insidiosa" del Gran Hermano(Insidious Big Brother Database).
+* LovelySisterDataBase -- In reemplazo liviano para [[BBDB]].
+* EmacsDb -- Interface para la base de datos Emacs.
