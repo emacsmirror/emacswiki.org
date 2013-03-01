@@ -58,6 +58,56 @@ Varios:
 * Artículos:
 ** EscritorioEmacs -- Tu Emacs tuneado desde cualquier parte del mundo.
 
+----
+
+[:UsoGeneral]
+Uso General:
+
+* [[CategoryAccessibility|Accesibilidad]] -- Cómo se puede usar Emacs de forma más accesible a personas con problemas.
+* [[CategoryBookmarking|Marcadores]] -- Marcar archivos y lugares para luego volver.
+* [[CategoryBufferSwitching|CambiarBuffer]] -- Cambiar entre diferentes [[buffer]]es.
+* [[CategoryCommands|Comandos]] -- Invocando y definiendo [[command|comandos]] con `M-x'.
+* [[CategoryCompletion|Autocompletado]] -- Emacs puede completar el texto en el [[minibuffer]] o en otros [[buffer]]es.
+* [[CategoryCustomize|Personalización]] -- Personalizando Emacs de forma general y usando la característica '''Customize''
+* [[CategoryEditing|Editando]] --Información acerca de la edición de texto.
+* [[CategoryFiles|Archivos]] -- Archivos y directorios: locales, remotos, de respaldo.
+* [[CategoryHideStuff|Ocultando]] -- Ocultar partes de un [[buffer]].
+* [[CategoryModes|Modos]] -- Referencia, tips, documentación y extensiones para todos los modos.
+* [[CategoryMenus|Menú]] -- Los menús de Emacs.
+* [[CategoryPrinting|Imprimir]] -- Imprimir archivos, [[buffer]]es, [[region]]es, etc.
+* [[CategoryProgramming|Programación]] -- Usando Emacs para programar.
+* [[CategoryRegexp|Expresiones Regulares]] -- Buscar y reemplazar textos con expresiones regulares([[regexp]]).
+* [[CategoryWriting|Escribiendo]] -- Usando Emacs y otras herramientas para escribir texto.
+
+[:ProgramasExternos]
+Programas externos y Servicios Remotos:
+
+* [[CategoríaInteligenciaArtificial]] -- Emacs, la Inteligencia artificial y los sistemas expertos.
+* [[CategoryCalculators|Calculadoras]] -- Realizar operaciones aritméticas.
+* [[CategoryCalendar|Calendarios]] -- Calendarios, diarios, tareas, recordatorios, etc.
+* [[CategoryEducation|Educación]] -- Usar Emacs en la educación.
+* [[CategoryExternalUtilities|Utilidades externas] -- Usar herramientas externas por medio de Emacs.
+* [[CategoryDatabase|Bases de datos]] -- Bases de datos en Emacs.
+* [[CategoryGames|Juegos]] -- Pasatiempos y entretenimiento.
+* [[CategoryMail|Correos Electrónicos] -- Leer y escribir E-mails.
+* [[CategoryPersonalInformationManager|Administrador de información personal]] -- Herramientas para administrar nuestra información.
+* [[CategoryProgrammerUtils|Utilidades para programar]] -- Herramientas útiles para programadores.
+* [[CategoryRelated|Software Relacionado]] -- Software relacionado que puede ser personalizado para parecerse a Emacs.
+* [[CategoryRemoteEmacs|Emacs Remoto]] -- Usar Emacs en un host remoto.
+* [[CategoryWebBrowser|Explorador Web]] -- Explorando la web.
+
+[:ProgramandoEnEmacs]
+Programando para Emacs en Lisp y C:
+
+* [[CategoryCode|Código]] -- Programar en EmacsLisp.
+* [[CategoryDebug|Depuración]] -- Depurando errores de Emacs, usando Emacs o de EmacsLisp.
+* [[CategoryPatches|Parches]] -- Parches para Emacs.
+* [[CategoryExtensionLanguage|Extensiones del Lenguaje]] -- Extendiendo Emacs usando otros lenguajes aparte de EmacsLisp: Guile, Erlang, Python, etc.
+
+
+----
+
+
 Recursos externos:
 * [http://del.icio.us/search/?p=emacs Delicious] -- Red social de marcadores.
 * [http://programming.reddit.com/search?q=emacs Reddit] -- Red social de marcadores comentados.
