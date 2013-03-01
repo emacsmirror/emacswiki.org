@@ -84,6 +84,7 @@ If you're using Emacs 23 and Org 7.5, then you can also have some pseudo-compata
 * FreeMind lets you import/export between org-mode and freemind file format.
 * [[mobileorg]] ([http://mobileorg.ncogni.to/ home page]) is an iPhone and iPod Touch application for storing, searching, viewing and editing Org-mode files
 * OrgOutlook lets you integrate with Microsoft Outlook
+* OutlookFlagToOrgTask exports emails flagged in Outlook to an Org file.
 * Lisp:org-table-comment.el provides orgtbl-mode (via orgtbl-comment-mode) support for modes that don't support block comments. 
 * Lisp:org-occur-goto.el allows you to jump quickly anywhere in your open org buffers using a dynamic version of the multi-occur interface
 * Lisp:org-search-goto.el a variant of the above package which supports matching multiple substrings given in any order
