@@ -904,6 +904,23 @@ Do not hesitate to ask questions or mention problems you encounter, but the doc 
 
 </pre>
 
+Hi! I'm trying to get my head around Icicles - Search-And-Replace.
+Is there some way to enable completion when specifiying the initial
+context-regexp, and especially when specifying the replacement?
+So far I'm getting by with M-. to insert word at point, and Pause to
+suspend the minibuffer temporarily.
+
+Also, it would be nice to have an option to make the matches for the
+initial content-regexp be visible immediately as one types the
+regexp. Similar to how it works for incremental search.
+
+Thanks, Johan Widén.
+<pre>
+</pre>
+----
+<pre>
+</pre>
+
 Org-mode - Icicles is great for running commands, finding files, but seems to get in the way of Org-mode e.g.
 
 1. Setting tags for a heading with C-c C-q - I want to set several tags (e.g. :book:computer:) one after another, using tab completion for each. Icicles replaces the first tag with the second - any way of avoiding this?
