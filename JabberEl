@@ -116,7 +116,7 @@ Control message history (which stored in <code>~/.emacs-jabber</code> dir):
 [new]
 Don't disturb me if someone chage presence status (usually remote clients make this automatically):
 <pre>
-(set  jabber-alert-presence-message-function (lambda (who oldstatus newstatus statustext) nil)
+(set  jabber-alert-presence-message-function (lambda (who oldstatus newstatus statustext) nil))
 </pre>
 [new]
 The above didn't work for me, and has unbalenced parenthesis in any case...
