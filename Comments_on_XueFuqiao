@@ -25,3 +25,10 @@ Drew: I was born in Urumqi (and I'm in Beijing now).  It takes only 33 hours fro
 
 -- [http://emacswiki.org/emacs/XueFuqiao XueFuqiao] 2013-03-02 10:42 UTC
 
+
+----
+
+`(function (lambda (...) (...)))' is used in many places in Emacs, like shell.el, webjump.el, files.el and so on.  What's the difference between those in Emacs and my expression?
+
+-- [http://emacswiki.org/emacs/XueFuqiao XueFuqiao] 2013-03-02 10:47 UTC
+
