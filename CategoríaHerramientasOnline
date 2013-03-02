@@ -1,10 +1,12 @@
 Esta categoría comprende todas las herramientas, interfaces y servicios de Internet que puedes usar desde Emacs.
 
 
+== Servicios Comúnmente Usados ==
+
 * CategoríaRedesSociales -- Referentes a las redes sociales, microbloging, blogs, diarios y Redifusión web(RSS, Atom, etc.).
 * [[CategoryChatClient|Clientes de Chat]] -- Usar Emacs para chatear.
 * [[CategoryMail|Correos Electrónicos]] -- Leer y enviar correos electronicos usando Emacs.
-** [[CateogoryMailAddons|Extensiones]] -- Extensiones para los Correos Electrónicos.
+** [[CategoryMailAddons|Extensiones]] -- Extensiones para los Correos Electrónicos.
 * [[CategoryWebBrowser|Exploradores Web]] -- Ver archivos y sitios webs.
 
 == Acortar URLs ==
