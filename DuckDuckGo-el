@@ -1,0 +1,24 @@
+[[es:DuckDuckGo-el-es]]
+https://duckduckgo.com/assets/logo_header.v101.png
+[http://duckduckgo.com DuckDuckGo] is a web search engine with an [http://api.duckduckgo.com easy API].
+
+Lisp:ddg.el is the EmacsLisp API for searching and retrieving results from !DuckDuckGo.
+
+== Usage ==
+
+Lisp:ddg.el just have two main functions: 
+
+* `(ddg-search TERM)' -- Search for a term synchronously.
+* `(ddg-search-asyn TERM FUNCTION)' -- Search for a term asynchronously. 
+
+In the asynchronous case when the request has finished, ddg will call the function passed as parameter `FUNCTION' with the result as a parameter. The result will be a JSON parsed list(take a look at the `json-read' function at the [[JSON]] package).
+
+Example:
+
+    (defun myfunc (res)
+      (setq results res)
+      ;; ...
+      ;; ...
+      )
+    (ddg-search-asyn "site:emacswiki duckduckgo-el" 'myfunc)
+
