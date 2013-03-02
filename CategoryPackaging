@@ -36,6 +36,5 @@ These seem to be earlier efforts that have basically been obsoleted by the inclu
 
 == Discussions ==
 
-* [http://lists.nongnu.org/mailman/listinfo/emacs-pms-dev Emacs Package Managers] -- Dedicated mailing list.
 * RationalElispPackaging -- Discussion and presentations of existing implementation.
 * [http://stackoverflow.com/questions/454259 What do you expect from a package manager for Emacs] -- Opinions of various users.
