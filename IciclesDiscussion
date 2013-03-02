@@ -916,9 +916,11 @@ regexp. Similar to how it works for incremental search.
 
 Thanks, Johan Widén.
 <pre>
+
 </pre>
 ----
 <pre>
+
 </pre>
 
 Org-mode - Icicles is great for running commands, finding files, but seems to get in the way of Org-mode e.g.
