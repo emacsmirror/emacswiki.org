@@ -140,8 +140,9 @@ folding.el (version 2006.1118), folding-2.107.el, and folding-2.99 all work on p
 
 == yafolding.el - Yet another folding extension for the Emacs editor ==
 
-It is a simple script folding code blocks based on indentation, so, no special strings are needed.
-[https://github.com/zenozeng/yafolding.el] [[https://github.com/zenozeng/yafolding.el]] 
+* It is a simple script folding code blocks based on indentation, so, no special strings are needed.
+
+* https://github.com/zenozeng/yafolding.el
 ----
 CategoryHideStuff
 CategoryOutline
