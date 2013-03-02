@@ -1,0 +1,106 @@
+Esta categoría comprende todas las herramientas, interfaces y servicios de Internet que puedes usar desde Emacs.
+
+
+* CategoríaRedesSociales -- Referentes a las redes sociales, microbloging, blogs, diarios y Redifusión web(RSS, Atom, etc.).
+* [[CategoryChatClient|Clientes de Chat]] -- Usar Emacs para chatear.
+* [[CategoryMail|Correos Electrónicos]] -- Leer y enviar correos electronicos usando Emacs.
+** [[CateogoryMailAddons|Extensiones]] -- Extensiones para los Correos Electrónicos.
+* [[CategoryWebBrowser|Exploradores Web]] -- Ver archivos y sitios webs.
+
+== Acortar URLs ==
+
+* BitLy -- Acortar URLs usando el servicio bitly.
+* TinyUrl -- Convierte fácilmente una URL a una pequeña URL via tiniurl.com.
+
+== Diccionarios y Traductores Online ==
+
+* Anaya ([http://ftp.sunet.se/pub/gnu/emacs-lisp/incoming/anaya.el anaya.el]) -- Interface para el diccionario español en línea Anaya (por DanielMGerman).
+* Servidores "Dict" como están definidos en la RFC 2229
+** DictWeb -- Buscar en dict.org por EricMarsden
+** DictMode -- Buscar en los diccionarios por TorstenHilbrich
+** DictEm -- Buscar diccionarios con el programa <code>dict</code>.
+** Lisp:dict.el -- Ídem al anterior.
+** Lisp:sdcv.el -- Interface para sdcv (StartDict para la terminal).
+** AutoCompressionMode -- Para ver todo el contenido de un archivo dict(<code>.dz</code>).
+* DictionaryDotCom -- Buscar en dictionary.com con sólo una línea de código ELisp (requiere [[emacs-w3m]]).
+* [http://sourceforge.jp/projects/dic-lookup-w3m/ dic-lookup-w3m] -- Buscar en [http://www.kotoba.ne.jp/ diccionarios online] o [http://homepage2.nifty.com/m_kamada/l_translation.htm traductores de texto] usando [[emacs-w3m]].
+* [http://www.emacswiki.org/cgi-bin/emacs/google-define Google-Define] -- Buscar definiciones usando Google.
+* Hachette (Lisp:hachette.el) -- Buscar una palabra en el diccionario francés Hachette (por JeanPhilippeTheberge) NB. ¡Está actualmente roto!
+* LookUp -- Búsqueda unificada para varios diccionarios en línea.
+* Rdict ([http://lgarc.narod.ru/xemacs-tips/packages/rdict-0.2.tar.gz rdict-0.2.tar.gz]) -- Interfaz para Emacs para utilizar el diccionario inglés-ruso Lingvo.
+
+Traducir:
+
+* TextTranslator -- Paquete de traducción de texto.
+* babel ([http://www.chez.com/emarsden/downloads/babel.el babel.el]) -- Una interfaz para varios motores de traducción web por EricMarsden.
+
+
+== Servicios de Google ==
+
+* GoogleClient -- Blogger, Reader, Calendario.
+* GoogleContacts -- Contactos.
+* GnusGmail -- Correo Electrónico.
+* [http://www.emacswiki.org/cgi-bin/emacs/google-define Google-Define] -- Buscar definiciones usando Google.
+
+
+== Edición de Wikis ==
+
+<i>Véase [[WikiModeDiscussion|Discusión acerca del Modo Wiki]].</i>
+
+<i>Ver CómoEditar para ver cómo editar esta Wiki.</i>
+
+* OddmuseMode -- Editar páginas en esta wiki, suplanta WikiRemote y SimpleWikiEditMode.
+* [[Yaoddmuse]] -- Editar o subir páginas para Oddmuse de forma asíncrona.
+* WikiRemote -- Editar páginas en esta u otras wikis.
+* EmacsWikiRemoteMode -- Alternativa a SimpleWikiEditMode que usa emacs-wiki.el + [[w3m]].
+* HttpGet and HttpPost -- Usado para servicios Web.
+
+Clientes WebDAV como ElDav a veces son usados para editar wikis.
+
+== Clima ==
+
+<i> Véase EmacsWeather para más información. </i>
+
+* RainOrShine -- Tomado desde un sitio web.
+* MetarReport -- Obteniendo reportes codificados desde todos los aeropuertos del mundo.
+* EmacsMeteo -- Un intento de un programa para descargar de forma abstracta datos metar.
+
+== Interfaces para Snippets en Internet ==
+
+Snippets son pequeños retazos de código fuente.
+
+* [http://github.com/defunkt/gist.el gist.el] -- Publicar snippets a  [http://gist.github.com GitHub Gist]
+* SnipplrMode -- Copiar snippets desde y hacia [http://snipplr.com Snipplr]
+* Lisp:openpaste.el -- Emitir post a [http://openpaste.org OpenPastebin]
+* [[Paste2]] -- Pegar o obtener código con [http://paste2.org paste2.org]
+* [[pastebin]] -- Pegar snippets(o todo un buffer) a [http://pastebin.com pastebin.com]
+* Lisp:pastebox.el -- Pegar a recipientes de tipo PasteBox, como por ejemplo [http://pastebin.ch pastebin.ch]
+
+== Referentes a la Implementación de Protocolos ==
+
+* EmacsDaytimeServer -- Servir el tiempo por medio de TCP, implementado la <nowiki>RFC 867</nowiki>
+* EmacsEchoServer -- Hacer eco de flujos TCP de vuelta al emisor.
+
+== Autenticación ==
+
+* HmacShaOne -- Generar códigos de autenticación HMAC-SHA1.
+* OAuthLibrary -- Autenticar usando OAuth.
+
+== Otros ==
+
+* LookUpHTMLDoc -- Buscar documentación en formularios HTML.
+* [http://github.com/cefstat/simplenote.el simplenote.el] -- Usando [http://simplenoteapp.com Simplenote] desde Emacs.
+* WebJump -- Marcador web programable por NeilVanDyke.
+* watson ([http://www.chez.com/emarsden/downloads/watson.el watson.el]) -- Paquete experimental para realizar meta-búsquedas. Podrás realizar búsqudas usando varios motores a la vez (incluye mecanismo de ranking) por EricMarsden.
+* imdb ([http://www.gbvsoft.com/imdb.el.txt imdb.el]) -- Interfaz para buscar películas or título en ([http://us.imdb.com IMDB] ) por GirishB
+* DeliciousEl -- Interfaz para ([http://del.icio.us del.icio.us])
+* CorbaImplementation -- Interfaz para invocar dinámicamente a CORBA usnado el protocolo IIOP.
+* XmlRpc -- Llamar a funciones en un sistema remoto enviando XML.
+* SoapClient -- Hablar a servidores web SOAP.
+* saft-to ([http://asf.void.at/emacs/saft-to.el saft-to.el]) -- Una interfaz simpe para el Protocolo de Transferencia de Archivos Asíncrono(SAFT Protocol).
+* ArxivReader -- A tool to make slogging through arXiv abstracts more fun.  And makes it easy to grab the article pdfs.
+* [[Anything]] -- <code>M-x anything-surfraw-only</code> muestra URLs de muchos motores de búsqueda.
+* [http://repo.or.cz/w/facebook.el.git facebook.el] -- El comienzo de una interfaz para [http://www.fsf.org/fb Facebook].
+
+----
+MapaDelSitio
