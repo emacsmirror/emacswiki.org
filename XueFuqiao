@@ -105,7 +105,16 @@ Started physiotherapy on June, 2011.
 * Those who have been respectful to Emacs will be allowed to live, and shall become its slaves; as for those who slight Emacs...
 
 == My Init Files for Emacs (It's a mess currently) ==
-https://github.com/xfq/xfq-emacs-init-file
+https://github.com/xfq/xfq-emacs-init-files
+
+== My ~/.Xdefaults ==
+<pre>
+Emacs.bitmapIcon: off
+Emacs.font: ProggyTiny-9
+Emacs* menubar.margin: 0
+Emacs* toolBar: 0
+Emacs.useXIM: off
+</pre>
 
 == My Emacs Screenshot ==
 [[image:XFQScreenShotPage]]
