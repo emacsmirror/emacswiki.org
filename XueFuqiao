@@ -39,6 +39,15 @@ or sometimes:
 emacs -nw -f gnus
 </pre>
 
+== My ~/.Xdefaults About Emacs==
+<pre>
+Emacs.bitmapIcon: off
+Emacs.font: ProggyTiny-9
+Emacs* menubar.margin: 0
+Emacs* toolBar: 0
+Emacs.useXIM: off
+</pre>
+
 == My Accounts ==
 * [http://emacsconf.org Emacsconf]
 xfq
