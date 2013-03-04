@@ -21,14 +21,6 @@ I have also written the following extension for [[OneKey]]:
 
 * '''Lisp:one-key-dir.el''' -- navigate directories using [[OneKey]]
 
-[new:SewerynKokot:2010-08-26 08:04 UTC]
-Using [[OneKey]] library, I have a problem in assigning, for example, ‘mark-paragraph’ function to a key, namely typing the OneKey keybinding results in the paragraph not marked. While using ‘M-x mark-paragraph’ it works properly! Any idea what is wrong? -- SewerynKokot
-[new]
-Actually I think the paragraph IS being marked (I tried it), but the coloured overlay is not being applied.
-Try C-w just after applying mark-paragraph and I think you will see the paragraph disappear.
-Not sure why the coloured overlay is not applied though :( 
-[new]
-----
 ==EmacsConf==
 
 I will be attending [[http://emacswiki.org/emacs/Emacs_Conference_2013 EmacsConf]] on 30th March 2013.
