@@ -915,6 +915,22 @@ initial content-regexp be visible immediately as one types the
 regexp. Similar to how it works for incremental search.
 
 Thanks, Johan Widén.
+
+[new:DrewAdams:2013-03-04 18:41 UTC]
+Hi Johan,
+
+1. Completion ''is'' available when you enter the initial regexp (i.e., the context regexp). The completion is against the entries in `regexp-history', and that history is updated to include any context regexp you enter.
+
+2. Likewise, the same kind of completion is available for defining the replacement.
+
+3. Currently there is no default value for #1 and #2.  It sounds like you would want the word (for example) at point.  I can think about doing that.  I'm out this week, but when I get some time I'll look into doing that.
+
+4. I'm afraid that it would be impractical to provide incremental highlighting feedback as you type the context regexp.  Instead, you have completion.  Sorry.  But at least you can see the contexts highlighted as soon as you hit `RET' (though that can take some time).
+
+HTH.  I'm afraid it is about all I can offer.  -- DrewAdams
+
+
+
 <pre>
 
 </pre>
