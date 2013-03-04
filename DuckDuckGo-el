@@ -2,7 +2,15 @@
 https://duckduckgo.com/assets/logo_header.v101.png
 [http://duckduckgo.com DuckDuckGo] is a web search engine with an [http://api.duckduckgo.com easy API].
 
-Lisp:ddg.el is the EmacsLisp API for searching and retrieving results from !DuckDuckGo.
+Lisp:ddg.el is the EmacsLisp API for "The Instant Answer API" for searching and retrieving this kind of results from !DuckDuckGo:
+
+* Topic Summaries
+* Categories
+* Disambiguation
+* [https://api.duckduckgo.com/bang.html !bang redirects] (like <code>!imdb</code>, <code>!safeoff</code>, <code>!ddg</code>, etc.)
+* Definitions
+* Using [https://duckduckgo.com/goodies goodies]
+
 
 == Usage ==
 
@@ -23,3 +31,6 @@ Example:
     (ddg-search-asyn "site:emacswiki duckduckgo-el" 'myfunc)
 
 [new:XueFuqiao:2013-03-03 08:47 UTC] Small but useful, I like it.  -- XueFuqiao
+
+[new] 
+When I was writing this I thought that the API presented at http://api.duckduckgo.com could be used for searching strings on the web, like if you use the textbox in the page... but no, it implemets other caracteristics. I'll update this page now! -- ChristianGiménez
