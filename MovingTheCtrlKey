@@ -409,5 +409,10 @@ One such keyboard is Topre's Realforce 87U, which is sold at elitekeyboards.com.
 You could also install AutoHotKey to a folder in your user account and do it that way.  I just did that and it's working perfectly.
 
 -- Aiguofer
+
+[new:nesiax:2013-03-04 00:00 UTC]
+You could also make your own keyboard and hardware mappings, there is a libre keyboard design at http://www.key64.org/ which have been designed for emacs usesr in mind.
+
+-- Nesiax
 ----
 CategoryKeys CategoryAccessibility
