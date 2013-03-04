@@ -31,6 +31,29 @@ ltxaccnt.el</code> from the [http://www.math.utah.edu/pub/emacs/ same site]. One
 
 bibtex.el doen't contain a good means to handle keywords. So, Bastien Guerry wrote this wonderful Lisp:bibtex-utils.el add-on when I was asking how people handle bibtex keywords on the help.gnu.emacs list. The function bibtex-make-field-keywords scans the extent keywords in a bib file and allows the user to enter keywords with auto-completion. bibtex-select-entries starts a RegExp search for all entries containing a certain keyword.
 
+If your keywords are actually multi-word phrases, they may be split over two lines. bibtex-utils.el can be modified to account for this with the following replacement version of bibtex-collect-keywords-values. This version is noticeably slower (approx. 1 second delay for me):
+
+    (defun bibtex-collect-keywords-values (&optional regexp)
+      "Collect values in keywords fields of all BibTeX entries.
+    Maybe restrict the values to those matching REGEXP. Modified from
+    original by TWS to remove newlines/multiple spaces within keyword
+    entries. This slows down invocation slightly, but makes more
+    sensible keywords."
+      (interactive)
+      (save-excursion
+        (goto-char (point-min))
+        (let (keywords kstring)
+          (while (re-search-forward "^\\s-*keywords.*{\\([^}]+\\)}" nil t)
+    	(setq kstring (replace-regexp-in-string "[ \t\n]+" " " (match-string 1)))
+    	(mapc
+    	 (lambda (v) 
+    	   (if regexp (if (string-match regexp v) 
+    			  (add-to-list 'keywords v t))
+    	     (add-to-list 'keywords v t)))
+              (split-string kstring ",[ \n]*\\|{\\|}" t)))
+          keywords)))
+
+
 Hannes Mehnert developed a [https://github.com/hannesm/bibtex-kindle bibtex-kindle] add-on, which adds a custom field with the path to a pdf - to which title and author metadata is added - and uses keywords and journal/booktitle to create collections
 
 ----
