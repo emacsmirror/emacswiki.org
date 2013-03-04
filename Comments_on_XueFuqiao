@@ -39,3 +39,10 @@ Just a digression: The Mackenzie River and the canyons of the Nahanni National P
 
 -- [http://emacswiki.org/emacs/XueFuqiao XueFuqiao] 2013-03-02 22:38 UTC
 
+
+----
+
+To reply to your question, I'm in California now. Haven't done much traveling lately. (lambda...) and #'(lambda...) should act the same in all respects in Emacs Lisp, I believe (but not in other Lisps). I once asked the same question of StefanMonnier, and he said to just use (lambda...).
+
+-- DrewAdams 2013-03-04 05:26 UTC
+
