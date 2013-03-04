@@ -26,7 +26,7 @@ This ebuild installs a site file, too, so you don't have anything to do and circ
 First copy the sources to some directory:
 <pre>
 cd ~/some/dir/
-cvs -z3 -d:pserver:anonymous@cvs.savannah.nongnu.org:/sources/circe co circe
+git clone git://github.com/jorgenschaefer/circe.git circe
 </pre>
 
 Then add this directory to your emacs load-path and autoload circe by putting this into your ~/.emacs:
@@ -38,7 +38,7 @@ Then add this directory to your emacs load-path and autoload circe by putting th
 To update the sources do
 <pre>
 cd ~/some/dir/circe/
-cvs up
+git pull
 </pre>
 
 = Configuration =
