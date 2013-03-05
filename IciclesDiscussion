@@ -929,6 +929,21 @@ Hi Johan,
 
 HTH.  I'm afraid it is about all I can offer.  -- DrewAdams
 
+[new:DrewAdams:2013-03-05 15:56 UTC]
+I should also have mentioned that you can do the following, to see what your context regexp will match as you type it.  It provides a workaround for your requested incremental highlighting, while still allowing completion against past regexps.
+
+: '''##C-S-r##''' ''<type your regexp>'' '''##S-TAB##'''
+
+That enters '''Icicles''' search and populates the  minibuffer with that Isearch regexp for use as the '''Icicles''' search-context regexp.  You can complete that input against the regexp history or just hit `RET' to accept it.
+
+See:
+
+* [[Icicles - Search Commands, Overview#IsearchStringAsIciclesRegexp]]
+
+* [[Icicles - Isearch Enhancements#IciclesSearchFromIsearch|Icicles Search from Isearch]]
+
+-- DrewAdams
+
 
 
 <pre>
