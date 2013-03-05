@@ -11,12 +11,3 @@ a better name overall, documentation, and better library-fu
 (for instance, it should probably PROVIDE a feature). (ooh,
 and if C-u C-x =  could use this to also show the pinyin
 readings...)
-
-
-! bah, the encoding didn't survive.  I'll get back to this.
-
-[new]
-Yeah, anything that's a page on the wiki is UTF-8 encoded.
-You need to put octal escapes in your lisp code, or use a file upload.
-(_Replace text with file_ at the bottom of the edit window.)
--- AlexSchroeder
