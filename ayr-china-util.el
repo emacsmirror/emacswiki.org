@@ -1,5 +1,5 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; -*- coding: compound-text -*-
+;; -*- coding: utf-8 -*-
 ;;;; Convert chinese characters to pinyin, using TONEPY and PY-b5
 ;; (or rather, excerpts of those.)  I wanted to do this automatically,
 ;; through quail's structure, but gave up on that for now.
