@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Feb 28 10:34:48 2013 (-0800)
+;; Last-Updated: Tue Mar  5 10:34:28 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 13813
+;;     Update #: 13815
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -73,9 +73,10 @@
 ;;    `icicle-completion-setup-function',
 ;;    `icicle-completion--embedded-envvar-table',
 ;;    `icicle-completion-try-completion', `icicle-current-TAB-method',
-;;    `icicle-custom-type', `icicle-define-crm-completion-map',
-;;    `icicle-delete-alist-dups', `icicle-delete-count',
-;;    `icicle-delete-dups', `icicle-delete-whitespace-from-string',
+;;    `icicle-custom-type', `icicle-defaults-at-point',
+;;    `icicle-define-crm-completion-map', `icicle-delete-alist-dups',
+;;    `icicle-delete-count', `icicle-delete-dups',
+;;    `icicle-delete-whitespace-from-string',
 ;;    `icicle-dired-read-shell-command',
 ;;    `icicle-dir-prefix-wo-wildcards', `icicle-dirs-first-p',
 ;;    `icicle-dirs-last-p', `icicle-displayable-cand-from-saved-set',
@@ -6832,6 +6833,19 @@ if non-nil, set SYNTAX-TABLE for the duration."
     (if (and (fboundp 'with-syntax-table)  (syntax-table-p syntax-table)) ; Emacs 21+.
         (with-syntax-table syntax-table (bounds-of-thing-at-point thing syntax-table))
       (bounds-of-thing-at-point thing)))) ; Punt - ignore any SYNTAX-TABLE arg.
+
+(defun icicle-defaults-at-point ()
+  "Return default(s) obtained from things at/near point.
+For Emacs 23 and later, return a list of defaults (strings).
+For Emacs 22 and prior, return a single default (a string)."
+  (cond ((car icicle-thing-at-point-functions)
+         (if (> emacs-major-version 22)
+             (mapcar #'funcall (car icicle-thing-at-point-functions))
+           (funcall (caar icicle-thing-at-point-functions))))
+        ((fboundp 'non-nil-symbol-name-nearest-point)
+         (funcall #'non-nil-symbol-name-nearest-point))
+        ((icicle-thing-at-point 'symbol))
+        ((function-called-at-point))))
  
 ;;(@* "Icicles functions - sort functions")
 
