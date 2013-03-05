@@ -944,7 +944,13 @@ See:
 
 -- DrewAdams
 
+[new:JohanWidén:2013-03-05 16:57 UTC]
 
+OK: C-S-r achieves what I want for visual feedback.
+
+I guess that completing against the regexp history might be enough for the initial regexp, but for the replacement I feel that it would be valuable to be able to complete against the words/symbols in the buffer (file) that I'm editing.
+
+-- Johan Widén
 
 <pre>
 
