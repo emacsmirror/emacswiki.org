@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Thu Feb 28 08:20:47 2013 (-0800)
+;; Last-Updated: Tue Mar  5 11:00:04 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 6226
+;;     Update #: 6239
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -3471,9 +3471,10 @@ The arguments are for use by `completing-read' to read the regexp.
  `completing-read' COLLECTION argument.
  The REQUIRE-MATCH arg to `completing-read' is nil.
  A default prompt is used if PROMPT is nil."
-  (setq hist    (or hist  'regexp-history)
-        prompt  (or prompt  (format "Search %swithin contexts (regexp): "
-                                    (if icicle-search-complement-domain-p "*NOT* " ""))))
+  (setq  prompt  (or prompt  (format "Search %swithin contexts (regexp): "
+                                     (if icicle-search-complement-domain-p "*NOT* " "")))
+         hist    (or hist  'regexp-history)
+         def     (or def   (icicle-defaults-at-point)))
   (let* ((icicle-candidate-action-fn  nil)
          (icicle-candidate-help-fn    nil)
          (regexp                      (icicle-completing-read-history
