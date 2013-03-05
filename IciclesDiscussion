@@ -948,9 +948,22 @@ See:
 
 OK: C-S-r achieves what I want for visual feedback.
 
-I guess that completing against the regexp history might be enough for the initial regexp, but for the replacement I feel that it would be valuable to be able to complete against the words/symbols in the buffer (file) that I'm editing.
+I guess that completing against the regexp history might be enough for the initial regexp, but for the replacement I feel that it would be valuable to be able to complete against the words/symbols in the buffer (file) that I'm editing.  -- Johan Widén
 
--- Johan Widén
+[new:DrewAdams:2013-03-05 19:25 UTC]
+1. Also, for the default, you can always use `##M-.##' (repeating as needed) to insert text things at/near point into the minibuffer.  See [[Icicles - Inserting Text from Cursor]].
+
+2. I have nevertheless now provided similar defaulting for the context regexp, so you can use `M-n' instead of `##M-.##' if you prefer -- try the latest code.
+
+3. Completion for reading the replacement string is against the history `icicle-search-replacement-history', which is specific to this purpose (i.e., previously entered replacement strings).  Defaulting is the same (things at point).
+
+HTH -- DrewAdams
+
+
+
+
+
+
 
 <pre>
 
