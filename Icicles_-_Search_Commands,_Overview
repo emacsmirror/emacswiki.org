@@ -484,11 +484,12 @@ keyword is matched as a substring.  At the `##C-c $##' prompt, you can
 use completion to choose keywords that you have already entered,
 or you can use `C-RET' to enter new keywords.
 
+[:IsearchStringAsIciclesRegexp]
 As a shortcut, you can use the search string during [[Isearch]] as the initial regexp for `icicle-search'.  You
 do this by hitting '''`S-TAB'''' during Isearch.  This ends Isearch and
 passes its search string to `icicle-search'.  This can be a handy
 way to start `icicle-search', picking up its search pattern by
-using, say, `##C-s C-w C-w...##'.  See [[Icicles - Isearch Enhancements#IciclesSearchFromIsearch|Icicles Search from Isearch]].
+using, say, `##C-s C-w C-w...##'.  It lets you see the matches of your regexp highlighted incrementally, as you type it.  See [[Icicles - Isearch Enhancements#IciclesSearchFromIsearch|Icicles Search from Isearch]].
 
 
 
