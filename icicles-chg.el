@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Thu Feb 28 10:59:26 2013 (-0800)
+;; Last-Updated: Tue Mar  5 11:13:24 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 9769
+;;     Update #: 9773
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -86,6 +86,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2013/03/05 dadams
+;;     icicle-search-read-context-regexp: Provide default(s) using icicle-defaults-at-point (new).
 ;; 2013/02/25 dadams
 ;;     icicle-buffer-multi-complete, icicle-buffer-apropos-complete-match, icicle-find-file-of-content:
 ;;       isearch-update-ring if find content-pat match.
@@ -1667,6 +1669,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2013/03/05 dadams
+;;     Added: icicle-defaults-at-point.
 ;; 2013/02/28 dadams
 ;;     eval-after-load crm: Use fset, not defalias.  Thx to Michael Heerdegen.
 ;; 2013/02/26 dadams
