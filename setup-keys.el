@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 21.1
-;; Last-Updated: Fri Jan 18 00:27:23 2013 (-0800)
+;; Last-Updated: Wed Mar  6 14:37:35 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 1172
+;;     Update #: 1179
 ;; URL: http://www.emacswiki.org/setup-keys.el
 ;; Keywords: mouse, keyboard, menus, menu-bar
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -67,6 +67,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/03/06 dadams
+;;     Bind C-x C-M-SPC to set-secondary-start, C-x C-M-RET to secondary-save-then-kill.
 ;; 2013/01/17 dadams
 ;;     Added bindings for move-frame-to-screen-(top|bottom|left|right).
 ;; 2013/01/02 dadams
@@ -312,7 +314,9 @@
                            ;; end-of-line+, goto-longest-line, kill-buffer-and-its-windows,
                            ;; mark-buffer-after-point, mark-buffer-before-point,
                            ;; recenter-top-bottom, region-to-buffer, region-to-file
-(require 'second-sel nil t) ;; (no error if not found): secondary-dwim, isearch-yank-secondary
+(require 'second-sel nil t) ;; (no error if not found): secondary-dwim, isearch-yank-secondary,
+                            ;; yank-pop-commands, isearch-yank-secondary, set-secondary-start,
+                            ;; secondary-save-then-kill
 (require 'pp+ nil t) ;; (no error if not found): pp-eval-expression
 (require 'fit-frame nil t) ;; (no error if not found):
                            ;; fit-frame, fit-frame-or-mouse-drag-vertical-line
@@ -378,13 +382,14 @@
 
 (eval-after-load "second-sel"
   '(progn
-    (global-set-key [(control meta ?y)]    'secondary-dwim)                      ; `C-M-y'
-    (define-key esc-map "y"                'yank-pop-commands)                   ; `M-y'
-    (define-key isearch-mode-map "\C-\M-y" 'isearch-yank-secondary)))            ; `C-M-y'
+    (global-set-key (kbd "C-M-y")               'secondary-dwim)                 ; `C-M-y'
+    (define-key esc-map "y"                     'yank-pop-commands)              ; `M-y'
+    (define-key isearch-mode-map (kbd "C-M-y")  'isearch-yank-secondary)         ; `C-M-y'
+    (global-set-key (kbd "C-x C-M-SPC")         'set-secondary-start)            ;`C-x C-M-SPC'
+    (global-set-key (kbd "C-x C-M-<return>")    'secondary-save-then-kill)))     ;`C-x C-M-RET'
 
-;; Because M-C is being used for secondary.
-(eval-after-load "foldout"
-  '(setq foldout-mouse-modifiers '(meta shift)))
+;; Because C-M- is being used for secondary.
+(eval-after-load "foldout" '(setq foldout-mouse-modifiers '(meta shift)))
 
 (eval-after-load "oneonone"                                                      ; `C-o'
   '(when (framep 1on1-minibuffer-frame) ; Standalone minibuffer frame.
@@ -425,7 +430,7 @@
     (global-set-key [(control meta left)]   'shrink-frame-horizontally)          ; `C-M-left'
     (global-set-key [(control meta right)]  'enlarge-frame-horizontally)         ; `C-M-right'
     ;; Replaces`iconify-or-deiconify-frame'.
-    (global-set-key [(control ?z)] 'iconify/map-frame)                           ; `C-z' 
+    (global-set-key [(control ?z)] 'iconify/map-frame)                           ; `C-z'
     ;; $$$$ (global-set-key [(control ?x) (control ?z)] 'iconify-everything)
     (global-set-key [(shift control meta ?z)] 'show-hide)                        ; `C-M-S-z'
     (global-set-key [C-down-mouse-1] 'mouse-show-hide-mark-unmark)               ; `C-mouse-1'
@@ -554,7 +559,7 @@
     (define-key doremi-map "a" 'doremi-all-faces-fg+) ; "All"                    `C-x t a'
     (define-key doremi-map "c" 'doremi-bg+) ; "Color"                            `C-x t c'
     (define-key doremi-map "f" 'doremi-face-fg+) ; Face"                         `C-x t f'
-    (define-key doremi-map "h" 'doremi-frame-height+) ; Height                   `C-x t h' 
+    (define-key doremi-map "h" 'doremi-frame-height+) ; Height                   `C-x t h'
     (define-key doremi-map "k" 'doremi-face-bg+) ; bacKground"                   `C-x t k'
     (define-key doremi-map "t" 'doremi-font+) ; "Typeface"                       `C-x t t'
     (define-key doremi-map "u" 'doremi-frame-configs+) ; "Undo"                  `C-x t u'
