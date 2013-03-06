@@ -1,5 +1,5 @@
 ;;; auto-install.el --- Auto install elisp file
-;; $Id: auto-install.el,v 1.54 2012/01/15 12:10:20 rubikitch Exp $
+;; $Id: auto-install.el,v 1.54 2012/01/15 12:10:20 rubikitch Exp rubikitch $
 
 ;; Filename: auto-install.el
 ;; Description: Auto install elisp file
@@ -24,7 +24,7 @@
 ;;   `url-util', `url-vars'.
 ;;
 
-(defvar auto-install-version "$Id: auto-install.el,v 1.54 2012/01/15 12:10:20 rubikitch Exp $")
+(defvar auto-install-version "$Id: auto-install.el,v 1.54 2012/01/15 12:10:20 rubikitch Exp rubikitch $")
 ;;; This file is NOT part of GNU Emacs
 
 ;;; License
@@ -884,7 +884,7 @@ You can use this to download marked files in Dired asynchronously."
       (prog1 (not (zerop (buffer-size)))
         (kill-buffer (current-buffer))))))
 ;; (auto-install-network-available-p "www.emacswiki.org")
-
+(require 'timer)
 (defun auto-install-update-emacswiki-package-name (&optional unforced)
   "Update the list of elisp package names from `EmacsWiki'.
 By default, this function will update package name forcibly.
@@ -892,9 +892,11 @@ If UNFORCED is non-nil, just update package name when `auto-install-package-name
   (interactive)
   (unless (and unforced
                auto-install-package-name-list)
-    (if (auto-install-network-available-p "www.emacswiki.org")
-        (auto-install-download "http://www.emacswiki.org/cgi-bin/emacs?action=index;raw=1"
-                               'auto-install-handle-emacswiki-package-name)
+    (if (and (auto-install-network-available-p "www.emacswiki.org")
+             (with-timeout (5 nil)
+               (progn (auto-install-download "http://www.emacswiki.org/cgi-bin/emacs?action=index;raw=1"
+                                             'auto-install-handle-emacswiki-package-name))
+               t))
       (message
        (concat "Network unreachable!\n"
                "Try M-x auto-install-handle-emacswiki-package-name afterward."))
