@@ -31,6 +31,7 @@ With a bit of EmacsLisp:
 * LatexOverview -- describes how to get overview without AUCTeX
 * LaTeXSymbols -- input of TeX symbols, XEmacs only
 * LatexEnc -- coding system from <code>inputenc</code>
+* TexSmartUmlauts -- automatic and persistent conversion of non-ASCII characters
 * InverseDviSearch -- going from dvi preview to editor and vice versa
 * NonbreakableSpace -- inserting nonbreakable spaces into document
 * [[iTe]] -- A semi-WYSIWYG TeX mode, for in buffer manipulation of objects (images fragments)
