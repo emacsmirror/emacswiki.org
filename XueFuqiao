@@ -10,9 +10,7 @@ user since 2008.  I've been an [[Emacsite]] since 2009 and I began to write
 programs in EmacsLisp since 2011.  I started with [[XEmacs]], switched to
 [[SXEmacs]], back to XEmacs, then to GuileEmacs, and now I'm using Emacs.
 I prefer to learn new things from reference manuals, instead of
-tutorials.  Currently I use Emacs on an old laptop with a
-ColemakKeyboard.  My favorite font is [http://www.proggyfonts.com
-ProggyTiny].
+tutorials.
 
 Many thanks to the people who contributed or are contributing to
 emacsen and EmacsWiki.  My daily life becomes very
@@ -26,30 +24,6 @@ I'm a [http://www.fsf.org/free-software-supporter/ FreeSoftwareSupporter].
 You can contact me using (please send plain text mail, not HTML):
 <pre>
 (concat "mailto:" (list 120 102 113) [46] (mapconcat (cl-function (lambda (x) (format "%c" (1- x)))) "gsff" "") "@" "gmail" "." "com")
-</pre>
-
-== My Emacs Invocation ==
-
-<pre>
-emacs -fs -nbi &
-</pre>
-
-or sometimes:
-<pre>
-emacs -nw -f gnus
-</pre>
-
-== My ~/.Xdefaults About Emacs==
-<pre>
-Emacs.bitmapIcon: off
-Emacs.font: ProggyTiny-9
-Emacs* menubar.margin: 0
-Emacs* toolBar: 0
-Emacs.useXIM: off
-Emacs*foreground: white
-Emacs*background: darkblue
-Emacs*cursorColor: white
-Emacs*pointerColor: white
 </pre>
 
 == My Accounts ==
