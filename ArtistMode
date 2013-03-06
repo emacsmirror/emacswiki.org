@@ -6,9 +6,7 @@ characters |, -, / and \.
 It is part of Emacs and can also be gotten at
 http://www.lysator.liu.se/~tab/artist/.
 
-You will use the mouse for drawing and painting if you are running Emacs in an X-window, like in other graphics programs. 
-
-But you can use artist-mode also, when you are running in a terminal. To see how it works type
+You will use the mouse for drawing and painting if you are running Emacs in an X-window, as in other graphics programs. But you can also use artist-mode when you are running on a terminal. To see how it works, type:
  M-x artist-mode RET
  C-c C-a p RET
  RET
