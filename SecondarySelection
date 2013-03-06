@@ -59,15 +59,15 @@ to my .emacs file; I don't know if this is good or not, but it worked for me.  -
 
 
 [:secondary-sel.el]
-== Library secondary-sel.el - Secondary Selection Enhancements ==
+== Library `secondary-sel.el' - Secondary Selection Enhancements ==
 
 Library '''<tt>[[second-sel.el]]</tt>''' enhances secondary selection.
 
-It adds the secondary selection to a new selection ring, '''`secondary-selection-ring'''', which is similar to, but separate from, the `kill-ring'. It also prevents the secondary selection from being added to the `kill-ring', so you now have two separate selection-history rings. 
+It adds the secondary selection to a new selection ring, '''`secondary-selection-ring'''', which is similar to, but separate from, the `kill-ring'.  It also prevents the secondary selection from being added to the `kill-ring', so you now have two separate selection-history rings.
 
 '''`M-y'''' cycles items from the appropriate ring, depending on whether it follows a yank of the primary (region) or the secondary selection (see below). 
 
-##second-sel.el## defines new secondary-selection commands. Library <tt>[[menu-bar+.el]]</tt> adds some of these to the '''Edit''' menu as items '''Paste Secondary''', '''Move Secondary to Region''', '''Swap Region and Secondary''', and '''Select Secondary as Region'''. 
+##second-sel.el## defines new secondary-selection commands. Library <tt>[[menu-bar+.el]]</tt> adds some of these to the '''Edit''' menu as items '''Paste Secondary''', '''Move Secondary to Region''', '''Swap Region and Secondary''', and '''Select Secondary as Region'''.
 
 
 === `secondary-dwim' (`C-M-y') ===
@@ -134,9 +134,31 @@ If the previous command was not a yank at all (from either the `kill-ring' or th
 
 
 
+
+
+=== Defining and Deleting the Secondary Selection using the Keyboard ===
+
+The <tt>[[second-sel.el]]</tt> sections above show that you can use the keyboard instead of the mouse to yank the secondary selection.  You can also use keyboard keys to define it, extend/retract it, and delete its text.  Anything you can do with it using the mouse you can also do using keyboard keys.
+
+* Command '''`set-secondary-start'''' (I bind it to `C-x C-M-SPC') sets the start of the secondary selection at [[point]].  This also undefines it, e.g., if it was defined in some other buffer.
+
+* Command '''`secondary-save-then-kill'''' (I bind it to `C-x C-M-RET') does the same thing that `mouse-secondary-save-then-kill' does (e.g., bound to `C-M-mouse-3' or `M-mouse-3'), but it uses [[point]] instead of the `mouse-3' click position.  That is, it sets, extends/retracts, or deletes the secondary selection.
+
+
+
+
+
+
+
+
+
+
+
+
+
 == See Also ==
 
-AnchoredTranspose makes use of the secondary selection.
+* AnchoredTranspose makes use of the secondary selection.
 
 
 ----
