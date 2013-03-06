@@ -6,7 +6,11 @@
 
 1. Release Lisp:tex-smart-umlauts.el
 
-2. The [http://hub.darcs.net/lyro/tex-smart-umlauts Darcs repository]. To get the latest development version, clone the repository
+2. From Marmalade
+
+    M-x package-install RET tex-smart-umlauts RET
+
+3. The [http://hub.darcs.net/lyro/tex-smart-umlauts Darcs repository]. To get the latest development version, clone the repository
 
     darcs get http://hub.darcs.net/lyro/tex-smart-umlauts
 
