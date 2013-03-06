@@ -32,6 +32,16 @@ Using $* instead of $1 will pass a list of parameters to find-file, and find-fil
     ~ $ emacs test.txt
     Wrong type argument: stringp, ("test.txt")
 
+Note, that $* will work with the following advice (put it into .emacs):
+
+<pre>
+(defadvice find-file (around find-files activate)
+  "Also find all files within a list of files. This even works recursively."
+  (if (listp filename)
+      (loop for f in filename do (find-file f wildcards))
+    ad-do-it))
+</pre>
+
 == Alias 'w3m' to 'w3m-find-file' ==
 
 The same idea is for checking html files. I generate a lot of html 
