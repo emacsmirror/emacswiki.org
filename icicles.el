@@ -6,10 +6,10 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Version: 2013.02.16
-;; Last-Updated: Sat Feb 16 20:00:44 2013 (-0800)
+;; Version: 2013.03.07
+;; Last-Updated: Thu Mar  7 08:39:46 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 23331
+;;     Update #: 23336
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -958,7 +958,7 @@
 ;;    `icicle-current-TAB-method',
 ;;    `icicle-customize-apropos-opt-action', `icicle-customize-faces',
 ;;    `icicle-custom-type', `icicle-dabbrev--abbrev-at-point',
-;;    `icicle-default-buffer-names',
+;;    `icicle-default-buffer-names', `icicle-defaults-at-point',
 ;;    `icicle-define-crm-completion-map', ,
 ;;    `icicle-define-cycling-keys', `icicle-defined-thing-p',
 ;;    `icicle-define-icicle-maps', `icicle-define-minibuffer-maps',
@@ -995,8 +995,7 @@
 ;;    `icicle-file-type-less-p', `icicle-file-writable-p',
 ;;    `icicle-filesets-files-under', `icicle-files-within',
 ;;    `icicle-files-within-1', `icicle-filter-alist',
-;;    `icicle-filter-wo-input',
-;;    `icicle-find-first-tag-action',
+;;    `icicle-filter-wo-input', `icicle-find-first-tag-action',
 ;;    `icicle-find-first-tag-other-window-action',
 ;;    `icicle-find-tag-action', `icicle-find-tag-define-candidates',
 ;;    `icicle-find-tag-define-candidates-1',
@@ -1499,13 +1498,14 @@
  `((,(concat "(" (regexp-opt
                   '("icicle-define-add-to-alist-command" "icicle-define-command"
                     "icicle-define-file-command" "icicle-define-sort-command")
-                             t)
+                  t)
              ;; $$ "\\s-+\\(\\sw\\(\\sw\\|\\s_\\)+\\)")
              "\\>[ \t'\(]*\\(\\sw+\\)?")
     (1 font-lock-keyword-face)
     ;; Index (2 or 3) depends on whether or not shy groups are supported.
     ,(list (if (string-match "\\(?:\\)" "") 2 3) 'font-lock-function-name-face nil t))
-   ("(\\(icicle-condition-case-no-debug\\)\\>" 1 font-lock-keyword-face)))
+   ("(\\(icicle-condition-case-no-debug\\)\\>" 1 font-lock-keyword-face)
+   ("(\\(icicle-user-error\\)\\>" 1 font-lock-warning-face)))
 
 ;; Make Icicles macros indent better.
 (put 'icicle-define-command              'common-lisp-indent-function '(4 &body))
