@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Tue Mar  5 11:00:04 2013 (-0800)
+;; Last-Updated: Thu Mar  7 11:29:34 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 6239
+;;     Update #: 6295
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -930,9 +930,8 @@ Interactively, or with non-nil MSGP, show chosen color in echo area."
       ;; In that case, get the color name that was input from the input history, and convert that to RGB.
       (when (and (not allow-empty-name-p)  (string= "" color))
         (let ((col  (car-safe (symbol-value minibuffer-history-variable))))
-          (if (or (equal "" col)  (not (stringp col)))
-              (error "No such color: %S" color)
-            (setq color  (hexrgb-color-name-to-hex col)))))
+          (when (or (equal "" col)  (not (stringp col))) (icicle-user-error "No such color: %S" color))
+          (setq color  (hexrgb-color-name-to-hex col))))
       (let ((icicle-multi-completing-p  t)
             (icicle-list-use-nth-parts  (if convert-to-RGB-p '(2) '(1)))
             (colr                       (icicle-transform-multi-completion color)))
@@ -1016,7 +1015,7 @@ and HSV (hue, saturation, value) color components.
 This command is intended only for use in Icicle mode (but it can be
 used with `C-u', with Icicle mode turned off)."
     (interactive "P\ni\ni\np")
-    (unless (featurep 'hexrgb) (error "`icicle-read-color-wysiwyg' requires library `hexrgb.el'"))
+    (unless (featurep 'hexrgb) (icicle-user-error "You need library `hexrgb.el' for this command"))
     (let (color)
       (if (consp arg)                   ; Plain `C-u': complete against color name only, and be able to
           (setq color  (hexrgb-read-color nil 'CONVERT-TO-RGB)) ; input any valid RGB string.
@@ -1088,15 +1087,15 @@ used with `C-u', with Icicle mode turned off)."
                    (setq color  (icicle-transform-multi-completion color)))))
                    (when (string= "" color)
                      (let ((col  (car-safe (symbol-value minibuffer-history-variable))))
-                       (if (or (equal "" col)  (not (stringp col)))
-                           (error "No such color: %S" color)
-                         ;; Cannot use `case', since that uses `eql', not `equal'.
-                         (setq color  (cond ((equal '(1) icicle-list-use-nth-parts)  col)
-                                            ((equal '(2) icicle-list-use-nth-parts)
-                                             (hexrgb-color-name-to-hex col))
-                                            (t  (let ((icicle-list-nth-parts-join-string  ": ")
-                                                      (icicle-list-join-string            ": "))
-                                                  (icicle-transform-multi-completion color))))))))))
+                       (when (or (equal "" col)  (not (stringp col)))
+                           (icicle-user-error "No such color: %S" color))
+                       ;; Cannot use `case', since that uses `eql', not `equal'.
+                       (setq color  (cond ((equal '(1) icicle-list-use-nth-parts)  col)
+                                          ((equal '(2) icicle-list-use-nth-parts)
+                                           (hexrgb-color-name-to-hex col))
+                                          (t  (let ((icicle-list-nth-parts-join-string  ": ")
+                                                    (icicle-list-join-string            ": "))
+                                                (icicle-transform-multi-completion color)))))))))
       (when msgp (message "Color: `%s'" (icicle-propertize color 'face 'icicle-msg-emphasis)))
       color))
 
@@ -1627,8 +1626,8 @@ cycling, these keys with prefix `C-' act on the current face name\\<minibuffer-l
                                                  (point-min) (point-max))))))
                (if fs
                    (mapcar #'intern (icicle-choose-invisible-faces)) ; An Icicles multi-command
-                 (error "No%s faces are invisible"
-                        (if hlt-act-on-any-face-flag "" " highlight"))))))
+                 (icicle-user-error "No%s faces are invisible"
+                                    (if hlt-act-on-any-face-flag "" " highlight"))))))
       (dolist (face faces) (hlt-show-default-face face)))
 
     (defun icicle-hide-faces (&optional start end faces)
@@ -1796,11 +1795,11 @@ The new current color is returned."     ; Doc string
           (setq color  (elt colors rand)))
       (let ((hex-string  (hexrgb-rgb-hex-string-p color t)))
         (when (and hex-string  (not (eq 0 hex-string))) (setq color  (concat "#" color))) ; Add #.
-        (if (not (or hex-string  (if (fboundp 'test-completion) ; Not defined in Emacs 20.
-                                     (test-completion color (hexrgb-defined-colors-alist))
-                                   (try-completion color (hexrgb-defined-colors-alist)))))
-            (error "No such color: %S" color)
-          (setq color  (hexrgb-color-name-to-hex color))))
+        (unless (or hex-string  (if (fboundp 'test-completion) ; Not defined in Emacs 20.
+                                    (test-completion color (hexrgb-defined-colors-alist))
+                                  (try-completion color (hexrgb-defined-colors-alist))))
+          (icicle-user-error "No such color: %S" color))
+        (setq color  (hexrgb-color-name-to-hex color)))
       (setq palette-last-color  palette-current-color)
       (save-selected-window
         (setq color  (hexrgb-color-name-to-hex color)) ; Needed if not interactive.
@@ -1871,7 +1870,7 @@ Remember that you can use `\\<minibuffer-local-completion-map>\
     ((icicle-track-pt  (point)))        ; Bindings
     (progn                              ; First code
       (unless (or (boundp 'synonyms-obarray)  (require 'synonyms nil t))
-        (error "You must first load library `synonyms.el'"))
+        (icicle-user-error "You must first load library `synonyms.el'"))
       (synonyms-ensure-synonyms-read-from-cache))
     nil                                 ; Undo code
     (when (window-live-p icicle-orig-window) ; Last code
@@ -1901,9 +1900,9 @@ command `synonyms' before, then the first use of
 build a cache file of synonyms that are used for completion.  See
 `synonyms.el'."
     (interactive (list (word-at-point)))
-    (unless word (error "No word at point to complete"))
+    (unless word (icicle-user-error "No word at point to complete"))
     (unless (or (boundp 'synonyms-obarray)  (require 'synonyms nil t))
-      (error "You must first load library `synonyms.el'"))
+      (icicle-user-error "You must first load library `synonyms.el'"))
     (synonyms-ensure-synonyms-read-from-cache)
     (when (and (looking-at "\\b")  (not (looking-at "\\s-"))) (forward-word 1))
     (delete-region (progn (forward-word -1) (point)) (progn (forward-word 1) (point)))
@@ -2027,9 +2026,9 @@ candidates than `icicle-Info-visited-max-candidates'"
   ;; We allow an arg only for non-interactive use.  E.g., `Info-virtual-index' calls (Info-index TOPIC).
   (interactive)
   (unless (and (featurep 'info)  (eq major-mode 'Info-mode))
-    (error "You must be in Info mode to use this command"))
+    (icicle-user-error "You must be in Info mode to use this command"))
   (when (and (boundp 'Info-current-file)  (equal Info-current-file "dir"))
-    (error "The Info directory node has no index; use `m' to select a manual"))
+    (icicle-user-error "The Info directory node has no index; use `m' to select a manual"))
   (let ((icicle-info-buff            (current-buffer))
         (icicle-info-window          (selected-window))
         (icicle-candidate-action-fn  'icicle-Info-index-action)
@@ -2091,7 +2090,7 @@ See `icicle-ORIG-Info-menu'."
   "Menu item: " icicle-candidates-alist ; `completing-read' args
   nil t nil nil (save-excursion
                   (goto-char (point-min))
-                  (unless (search-forward "\n* menu:" nil t) (error "No menu in this node"))
+                  (unless (search-forward "\n* menu:" nil t) (icicle-user-error "No menu in this node"))
                   (setq menu-eol  (point))
                   (and (< menu-eol opoint)
                        (save-excursion
@@ -2297,7 +2296,7 @@ With no prefix arg, use `icicle-saved-completion-candidates', which
 Non-interactively, argument NODESET is a list of Info node names."
     (interactive
      (progn (unless (and (require 'info+ nil t)  (fboundp 'Info-virtual-book))
-              (error "You need library `info+.el' for this command"))
+              (icicle-user-error "You need library `info+.el' for this command"))
             (list (if (not current-prefix-arg)
                       "Virtual Book"
                     (save-selected-window
@@ -2960,7 +2959,7 @@ RING is the marker ring to use."
               (icicle-last-sort-comparer         nil)
               (icicle-orig-buff                  (current-buffer)))
          (unless (consp markers)
-           (error (if global-ring-p "No global markers" "No markers in this buffer")))
+           (icicle-user-error (if global-ring-p "No global markers" "No markers in this buffer")))
          (cond ((cdr markers)
                 (icicle-apply (mapcar (lambda (mrkr) (icicle-marker+text mrkr global-ring-p))
                                       markers)
@@ -3044,14 +3043,14 @@ then customize option `icicle-top-level-key-bindings'."
         ((and (consp arg)  (< (prefix-numeric-value arg) 16)  (> emacs-major-version 21))
          (exchange-point-and-mark arg))
         ((not (featurep 'bookmark+))
-         (error "You must load library `Bookmark+' to use a prefix arg"))
+         (icicle-user-error "You must load library `Bookmark+' to use a prefix arg"))
         ((atom arg)
          (unless (and transient-mark-mode mark-active  (not (eq (mark) (point))))
-           (error "Cannot bookmark inactive region: you must activate it first"))
+           (icicle-user-error "Cannot bookmark inactive region: you must activate it first"))
          (icicle-bookmark-cmd (and (natnump (prefix-numeric-value arg))  9)))
         (t
          (bookmark-maybe-load-default-file)
-         (unless (consp (bmkp-region-alist-only)) (error "No bookmarked regions"))
+         (unless (consp (bmkp-region-alist-only)) (icicle-user-error "No bookmarked regions"))
          (call-interactively #'icicle-select-bookmarked-region))))
 
 (defun icicle-search-generic ()         ; Bound to `C-c `'.
@@ -3500,7 +3499,7 @@ The arguments are for use by `completing-read' to read the regexp.
 (defun icicle-search-where-arg ()
   "Return WHERE arg for `icicle-search*' commands, based on prefix arg."
   (cond ((consp current-prefix-arg)
-         (unless (require 'bookmark+ nil t) (error "This requires library `Bookmark+'"))
+         (unless (require 'bookmark+ nil t) (icicle-user-error "You need library `Bookmark+' for this"))
          (message "Searching multiple bookmarks...") (sit-for 1)
          ;; $$$$$$ Originally, we just did this: (bmkp-region-alist-only)).  Now we let users choose.
          (let ((icicle-show-Completions-initially-flag  t)
@@ -3615,7 +3614,7 @@ The arguments are the same as for `icicle-search'."
                (icicle-search-define-candidates-1 (find-file-noselect file 'nowarn) nil nil
                                                   scan-fn-or-regexp args))))
           ((and (consp where)  (consp (car where))) ; Search bookmarks - or just their regions if defined.
-           (unless (require 'bookmark+ nil t) (error "This requires library `Bookmark+'"))
+           (unless (require 'bookmark+ nil t) (icicle-user-error "You need library `Bookmark+' for this"))
            (let ((non-existent-buffers  ())
                  buf+beg  buf  beg  end)
              (dolist (bmk  where)
@@ -3705,8 +3704,8 @@ Highlight the matches in face `icicle-search-main-regexp-others'."
                                  ;; Stop if no more match.  But if complementing then continue until eobp.
                                  (or beg  icicle-search-complement-domain-p)))
                 (unless (or (not beg)  (match-beginning icicle-search-context-level))
-                  (error "Search context has no subgroup of level %d - try a lower number"
-                         icicle-search-context-level))
+                  (icicle-user-error "Search context has no subgroup of level %d - try a lower number"
+                                     icicle-search-context-level))
                 (let* ((hit-beg     (if icicle-search-complement-domain-p
                                         last-beg
                                       (match-beginning icicle-search-context-level)))
@@ -3822,7 +3821,7 @@ Highlight the matches in face `icicle-search-main-regexp-others'."
         (icicle-last-completion-command  icicle-last-completion-command)
         (compl-win                       (get-buffer-window "*Completions*" 0)))
     (unless (or icicle-candidate-nb  icicle-all-candidates-action)
-      (error "No current candidate.  Cycle or complete to get to a candidate"))
+      (icicle-user-error "No current candidate.  Cycle or complete to get to a candidate"))
     (unless icicle-search-replacement
       (icicle-search-define-replacement)
       (when (and compl-win  icicle-completion-candidates)
@@ -4082,8 +4081,8 @@ FIXEDCASE is as for `replace-match'.  Non-nil means do not alter case."
                    (funcall (car compiled) (cdr compiled) (setq replace-count  (1+ replace-count)))
                  compiled)
                fixedcase icicle-search-replace-literally-flag nil (match-data)))
-          (buffer-read-only (ding) (error "Buffer is read-only"))
-          (error (icicle-remove-Completions-window) (error "No match for `%s'" replace-string))))
+          (buffer-read-only (ding) (icicle-user-error "Buffer is read-only"))
+          (error (icicle-remove-Completions-window) (icicle-user-error "No match for `%s'" replace-string))))
     (condition-case icicle-search-replace-match2 ; Emacs < 22.  Try to interpret `\'.
         (replace-match replace-string fixedcase icicle-search-replace-literally-flag)
       (error (replace-match replace-string fixedcase t))))) ;   If error, replace literally.
@@ -5081,7 +5080,7 @@ text properties, or both, respectively."
          (dolist (file  where)
            (icicle-char-properties-in-buffer (find-file-noselect file) nil nil type)))
         ((consp where)                  ; Search bookmarked regions.
-         (unless (require 'bookmark+ nil t) (error "This requires library `Bookmark+'"))
+         (unless (require 'bookmark+ nil t) (icicle-user-error "You need library `Bookmark+' for this"))
          (let (buf+beg buf beg end)
            (dolist (bmk  where)
              (setq buf+beg  (bookmark-jump-noselect bmk)
@@ -5432,7 +5431,7 @@ BEG, END, and WHERE."
                       (icicle-search-read-context-regexp))
                  ,(not icicle-show-multi-completion-flag)))
   (unless (fboundp 'bmkp-bmenu-get-marked-files)
-    (error "Command `icicle-bookmark-save-marked-files' requires library Bookmark+"))
+    (icicle-user-error "You need library `Bookmark+' for this command"))
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (let ((icicle-multi-completing-p  icicle-show-multi-completion-flag))
     (apply #'icicle-search nil nil scan-fn-or-regexp require-match (bmkp-bmenu-get-marked-files) args)))
@@ -5473,15 +5472,15 @@ same as for `icicle-search', but without arguments BEG, END, and
 WHERE."
   (interactive
    (progn
-     (unless (fboundp 'diredp-get-files) (error "This command requires library `dired+.el'"))
+     (unless (fboundp 'diredp-get-files) (icicle-user-error "You need library `dired+.el' for this command"))
      (diredp-get-confirmation-recursive) ; Make user confirm, since this can explore *lots* of files.
      `(,current-prefix-arg
        ,(if icicle-search-whole-word-flag
             (icicle-search-read-word)
             (icicle-search-read-context-regexp))
        ,(not icicle-show-multi-completion-flag))))
-  (unless (fboundp 'diredp-get-files) (error "This command requires library `dired+.el'"))
-  (unless (eq major-mode 'dired-mode) (error "This command must be called from a Dired buffer"))
+  (unless (fboundp 'diredp-get-files) (icicle-user-error "You need library `dired+.el' for this command"))
+  (unless (eq major-mode 'dired-mode) (icicle-user-error "This command must be called from a Dired buffer"))
   (apply #'icicle-search nil nil scan-fn-or-regexp require-match (diredp-get-files ignore-marks-p) args))
 
 (defun icicle-search-ibuffer-marked (scan-fn-or-regexp require-match ; Bound to `M-s M-s m' in Ibuffer.
@@ -5495,7 +5494,7 @@ BEG, END, and WHERE."
                       (icicle-search-read-context-regexp))
                  ,(not icicle-show-multi-completion-flag)))
   (unless (eq major-mode 'ibuffer-mode)
-    (error "Command `icicle-search-ibuffer-marked' must be called from an Ibuffer buffer"))
+    (icicle-user-error "This command must be called from an Ibuffer buffer"))
   (let ((marked-bufs (nreverse (ibuffer-get-marked-buffers))))
     (unless marked-bufs (setq marked-bufs  (list (ibuffer-current-buffer t))))
     (apply #'icicle-search nil nil scan-fn-or-regexp require-match marked-bufs args)))
@@ -5511,7 +5510,7 @@ BEG, END, and WHERE."
                       (icicle-search-read-context-regexp))
                  ,(not icicle-show-multi-completion-flag)))
   (unless (eq major-mode 'Buffer-menu-mode)
-    (error "Command `icicle-search-buff-menu-marked' must be called from a Buffer Menu buffer"))
+    (icicle-user-error "This command must be called from a Buffer Menu buffer"))
   (let ((marked-bufs  ()))
     (save-excursion
       (Buffer-menu-beginning)
@@ -5710,7 +5709,7 @@ information about the arguments, see the doc for command
   (interactive (icicle-region-or-buffer-limits))
   ;; Is there a better test we can use, to make sure the current mode inherits from `comint-mode'?
   (unless (where-is-internal 'comint-send-input (keymap-parent (current-local-map)))
-    (error "Current mode must be derived from comint mode"))
+    (icicle-user-error "Current mode must be derived from comint mode"))
   (let ((orig-search-hook           icicle-search-hook)
         (icicle-transform-function  'icicle-remove-duplicates))
     (add-hook 'icicle-search-hook 'icicle-comint-search-send-input)
@@ -5723,7 +5722,7 @@ information about the arguments, see the doc for command
 (defun icicle-comint-search-send-input ()
   "Grab current completion input and use that for comint input."
   (unless (comint-check-proc (current-buffer))
-    (error "No live process associated with this buffer"))
+    (icicle-user-error "No live process associated with this buffer"))
   (let ((comint-get-old-input
          (if (minibuffer-window-active-p (minibuffer-window))
              'icicle-comint-search-get-minibuffer-input ; Use minibuffer input (e.g. for action fn).
@@ -5790,7 +5789,7 @@ information about the arguments, see the doc for command
 `icicle-search'."
   (interactive (icicle-region-or-buffer-limits))
   (unless (condition-case nil (eq (current-buffer) (compilation-find-buffer)) (error nil))
-    (error "Current buffer must be a compilation buffer"))
+    (icicle-user-error "Current buffer must be a compilation buffer"))
   (save-excursion (goto-char (point-min))
                   (compilation-next-error 1)
                   (setq beg  (if beg (max beg (point)) (point))))
@@ -5950,12 +5949,12 @@ search multiple regions, buffers, or files, see the doc for command
                  ,(not icicle-show-multi-completion-flag)
                  ,(icicle-search-where-arg)))
   (unless (or where  (eq major-mode 'emacs-lisp-mode))
-    (error "This command is only for Emacs-Lisp mode"))
+    (icicle-user-error "This command is only for Emacs-Lisp mode"))
   (icicle-imenu-1 nil beg end require-match where 'icicle-imenu-command-p
                   (lambda (menus)
                     (or (car (assoc "Functions" menus))
                         (car (assoc "Other" menus))
-                        (error "No command definitions in buffer")))))
+                        (icicle-user-error "No command definitions in buffer")))))
 
 (defun icicle-imenu-command-full (beg end require-match &optional where)
   "Search/go to an Emacs command definition using `icicle-search'.
@@ -5972,13 +5971,13 @@ anytime during completion using `C-u C-x .'"
                  ,(not icicle-show-multi-completion-flag)
                  ,(icicle-search-where-arg)))
   (unless (or where  (eq major-mode 'emacs-lisp-mode))
-    (error "This command is only for Emacs-Lisp mode"))
+    (icicle-user-error "This command is only for Emacs-Lisp mode"))
   (icicle-imenu-1 (eq major-mode 'emacs-lisp-mode) beg end require-match where
                   'icicle-imenu-command-p
                   (lambda (menus)
                     (or (car (assoc "Functions" menus))
                         (car (assoc "Other" menus))
-                        (error "No command definitions in buffer")))))
+                        (icicle-user-error "No command definitions in buffer")))))
 
 (defun icicle-imenu-command-p (ignored-hit-string ignored-marker)
   "Return non-nil for a command definition.
@@ -6004,12 +6003,12 @@ search multiple regions, buffers, or files, see the doc for command
                  ,(not icicle-show-multi-completion-flag)
                  ,(icicle-search-where-arg)))
   (unless (or where  (memq major-mode '(emacs-lisp-mode lisp-mode)))
-    (error "This command is only for Emacs-Lisp mode"))
+    (icicle-user-error "This command is only for Emacs-Lisp mode"))
   (icicle-imenu-1 nil beg end require-match where 'icicle-imenu-non-interactive-function-p
                   (lambda (menus)
                     (or (car (assoc "Functions" menus))
                         (car (assoc "Other" menus))
-                        (error "No non-command function definitions in buffer")))))
+                        (icicle-user-error "No non-command function definitions in buffer")))))
 
 (defun icicle-imenu-non-interactive-function-full (beg end require-match &optional where)
   "Search/go to an Emacs non-command function definition with `icicle-search'.
@@ -6026,13 +6025,13 @@ anytime during completion using `C-u C-x .'"
                  ,(not icicle-show-multi-completion-flag)
                  ,(icicle-search-where-arg)))
   (unless (or where  (memq major-mode '(emacs-lisp-mode lisp-mode)))
-    (error "This command is only for Emacs-Lisp mode"))
+    (icicle-user-error "This command is only for Emacs-Lisp mode"))
   (icicle-imenu-1 (memq major-mode '(emacs-lisp-mode lisp-mode)) beg end require-match where
                   'icicle-imenu-non-interactive-function-p
                   (lambda (menus)
                     (or (car (assoc "Functions" menus))
                         (car (assoc "Other" menus))
-                        (error "No non-command function definitions in buffer")))))
+                        (icicle-user-error "No non-command function definitions in buffer")))))
 
 (defun icicle-imenu-non-interactive-function-p (ignored-hit-string ignored-marker)
   "Return non-nil for a non-interactive function definition.
@@ -6053,12 +6052,12 @@ search multiple regions, buffers, or files, see the doc for command
                  ,(not icicle-show-multi-completion-flag)
                  ,(icicle-search-where-arg)))
   (unless (or where  (memq major-mode '(emacs-lisp-mode lisp-mode)))
-    (error "This command is only for Emacs-Lisp mode or Lisp mode"))
+    (icicle-user-error "This command is only for Emacs-Lisp mode or Lisp mode"))
   (icicle-imenu-1 nil beg end require-match where 'icicle-imenu-macro-p
                   (lambda (menus)
                     (or (car (assoc "Macros" menus))
                         (car (assoc "Other" menus))
-                        (error "No macro definitions in buffer")))))
+                        (icicle-user-error "No macro definitions in buffer")))))
 
 (defun icicle-imenu-macro-full (beg end require-match &optional where)
   "Search/go to an Emacs macro definition using `icicle-search'.
@@ -6075,13 +6074,13 @@ anytime during completion using `C-u C-x .'"
                  ,(not icicle-show-multi-completion-flag)
                  ,(icicle-search-where-arg)))
   (unless (or where  (memq major-mode '(emacs-lisp-mode lisp-mode)))
-    (error "This command is only for Emacs-Lisp mode"))
+    (icicle-user-error "This command is only for Emacs-Lisp mode"))
   (icicle-imenu-1 (memq major-mode '(emacs-lisp-mode lisp-mode)) beg end require-match where
                   'icicle-imenu-macro-p
                   (lambda (menus)
                     (or (car (assoc "Macro" menus))
                         (car (assoc "Other" menus))
-                        (error "No macro definitions in buffer")))))
+                        (icicle-user-error "No macro definitions in buffer")))))
 
 (defun icicle-imenu-variable (beg end require-match &optional where)
   "Search/go to an Emacs non-option variable definition using `icicle-search'.
@@ -6094,12 +6093,12 @@ search multiple regions, buffers, or files, see the doc for command
                  ,(not icicle-show-multi-completion-flag)
                  ,(icicle-search-where-arg)))
   (unless (or where  (memq major-mode '(emacs-lisp-mode lisp-mode)))
-    (error "This command is only for Emacs-Lisp mode or Lisp mode"))
+    (icicle-user-error "This command is only for Emacs-Lisp mode or Lisp mode"))
   (icicle-imenu-1 nil beg end require-match where nil
                   (lambda (menus)
                     (or (car (assoc "Variables" menus))
                         (car (assoc "Other" menus))
-                        (error "No non-option variable definitions in buffer")))))
+                        (icicle-user-error "No non-option variable definitions in buffer")))))
 
 (defun icicle-imenu-variable-full (beg end require-match &optional where)
   "Search/go to an Emacs non-option variable definition using `icicle-search'.
@@ -6116,12 +6115,12 @@ anytime during completion using `C-u C-x .'"
                  ,(not icicle-show-multi-completion-flag)
                  ,(icicle-search-where-arg)))
   (unless (or where  (memq major-mode '(emacs-lisp-mode lisp-mode)))
-    (error "This command is only for Emacs-Lisp mode or Lisp mode"))
+    (icicle-user-error "This command is only for Emacs-Lisp mode or Lisp mode"))
   (icicle-imenu-1 (memq major-mode '(emacs-lisp-mode lisp-mode)) beg end require-match where nil
                   (lambda (menus)
                     (or (car (assoc "Variables" menus))
                         (car (assoc "Other" menus))
-                        (error "No non-option variable definitions in buffer")))))
+                        (icicle-user-error "No non-option variable definitions in buffer")))))
 
 (defun icicle-imenu-user-option (beg end require-match &optional where)
   "Search/go to an Emacs user option definition using `icicle-search'.
@@ -6134,12 +6133,12 @@ search multiple regions, buffers, or files, see the doc for command
                  ,(not icicle-show-multi-completion-flag)
                  ,(icicle-search-where-arg)))
   (unless (or where  (eq major-mode 'emacs-lisp-mode))
-    (error "This command is only for Emacs-Lisp mode"))
+    (icicle-user-error "This command is only for Emacs-Lisp mode"))
   (icicle-imenu-1 nil beg end require-match where nil
                   (lambda (menus)
                     (or (car (assoc "User Options" menus))
                         (car (assoc "Other" menus))
-                        (error "No user option definitions in buffer")))))
+                        (icicle-user-error "No user option definitions in buffer")))))
 
 (defun icicle-imenu-user-option-full (beg end require-match &optional where)
   "Search/go to an Emacs user option definition using `icicle-search'.
@@ -6156,12 +6155,12 @@ anytime during completion using `C-u C-x .'"
                  ,(not icicle-show-multi-completion-flag)
                  ,(icicle-search-where-arg)))
   (unless (or where  (eq major-mode 'emacs-lisp-mode))
-    (error "This command is only for Emacs-Lisp mode"))
+    (icicle-user-error "This command is only for Emacs-Lisp mode"))
   (icicle-imenu-1 (eq major-mode 'emacs-lisp-mode) beg end require-match where nil
                   (lambda (menus)
                     (or (car (assoc "User Options" menus))
                         (car (assoc "Other" menus))
-                        (error "No user option definitions in buffer")))))
+                        (icicle-user-error "No user option definitions in buffer")))))
 
 (defun icicle-imenu-key-implicit-map (beg end require-match &optional where)
   "Search/go to a global/local Emacs key definition using `icicle-search'.
@@ -6177,12 +6176,12 @@ search multiple regions, buffers, or files, see the doc for command
                  ,(not icicle-show-multi-completion-flag)
                  ,(icicle-search-where-arg)))
   (unless (or where  (eq major-mode 'emacs-lisp-mode))
-    (error "This command is only for Emacs-Lisp mode"))
+    (icicle-user-error "This command is only for Emacs-Lisp mode"))
   (icicle-imenu-1 nil beg end require-match where nil
                   (lambda (menus)
                     (or (car (assoc "Keys" menus))
                         (car (assoc "Other" menus))
-                        (error "No implicit-map key definitions in buffer")))))
+                        (icicle-user-error "No implicit-map key definitions in buffer")))))
 
 (defun icicle-imenu-key-implicit-map-full (beg end require-match &optional where)
   "Search/go to a global/local Emacs key definition using `icicle-search'.
@@ -6194,12 +6193,12 @@ definitions."
                  ,(not icicle-show-multi-completion-flag)
                  ,(icicle-search-where-arg)))
   (unless (or where  (eq major-mode 'emacs-lisp-mode))
-    (error "This command is only for Emacs-Lisp mode"))
+    (icicle-user-error "This command is only for Emacs-Lisp mode"))
   (icicle-imenu-1 (eq major-mode 'emacs-lisp-mode) beg end require-match where nil
                   (lambda (menus)
                     (or (car (assoc "Keys" menus))
                         (car (assoc "Other" menus))
-                        (error "No implicit-map key definitions in buffer")))))
+                        (icicle-user-error "No implicit-map key definitions in buffer")))))
 
 (defun icicle-imenu-key-explicit-map (beg end require-match &optional where)
   "Search/go to an Emacs key definition for a named map using `icicle-search'.
@@ -6212,12 +6211,12 @@ search multiple regions, buffers, or files, see the doc for command
                  ,(not icicle-show-multi-completion-flag)
                  ,(icicle-search-where-arg)))
   (unless (or where  (eq major-mode 'emacs-lisp-mode))
-    (error "This command is only for Emacs-Lisp mode"))
+    (icicle-user-error "This command is only for Emacs-Lisp mode"))
   (icicle-imenu-1 nil beg end require-match where nil
                   (lambda (menus)
                     (or (car (assoc "Keys in Maps" menus))
                         (car (assoc "Other" menus))
-                        (error "No explicit-map key definitions in buffer")))))
+                        (icicle-user-error "No explicit-map key definitions in buffer")))))
 
 (defun icicle-imenu-key-explicit-map-full (beg end require-match &optional where)
   "Search/go to an Emacs key definition for a named map using `icicle-search'.
@@ -6229,12 +6228,12 @@ complete key definitions."
                  ,(not icicle-show-multi-completion-flag)
                  ,(icicle-search-where-arg)))
   (unless (or where  (eq major-mode 'emacs-lisp-mode))
-    (error "This command is only for Emacs-Lisp mode"))
+    (icicle-user-error "This command is only for Emacs-Lisp mode"))
   (icicle-imenu-1 (eq major-mode 'emacs-lisp-mode) beg end require-match where nil
                   (lambda (menus)
                     (or (car (assoc "Keys in Maps" menus))
                         (car (assoc "Other" menus))
-                        (error "No explicit-map key definitions in buffer")))))
+                        (icicle-user-error "No explicit-map key definitions in buffer")))))
 
 (defun icicle-imenu-face (beg end require-match &optional where)
   "Search/go to an Emacs face definition using `icicle-search'.
@@ -6247,12 +6246,12 @@ search multiple regions, buffers, or files, see the doc for command
                  ,(not icicle-show-multi-completion-flag)
                  ,(icicle-search-where-arg)))
   (unless (or where  (eq major-mode 'emacs-lisp-mode))
-    (error "This command is only for Emacs-Lisp mode"))
+    (icicle-user-error "This command is only for Emacs-Lisp mode"))
   (icicle-imenu-1 nil beg end require-match where nil
                   (lambda (menus)
                     (or (car (assoc "Faces" menus))
                         (car (assoc "Other" menus))
-                        (error "No face definitions in buffer")))))
+                        (icicle-user-error "No face definitions in buffer")))))
 
 (defun icicle-imenu-face-full (beg end require-match &optional where)
   "Search/go to an Emacs face definition using `icicle-search'.
@@ -6264,12 +6263,12 @@ definitions."
                  ,(not icicle-show-multi-completion-flag)
                  ,(icicle-search-where-arg)))
   (unless (or where  (eq major-mode 'emacs-lisp-mode))
-    (error "This command is only for Emacs-Lisp mode"))
+    (icicle-user-error "This command is only for Emacs-Lisp mode"))
   (icicle-imenu-1 (eq major-mode 'emacs-lisp-mode) beg end require-match where nil
                   (lambda (menus)
                     (or (car (assoc "Faces" menus))
                         (car (assoc "Other" menus))
-                        (error "No face definitions in buffer")))))
+                        (icicle-user-error "No face definitions in buffer")))))
 
 (defun icicle-imenu-1 (fullp beg end require-match &optional where predicate submenu-fn)
   "Helper for `icicle-imenu*' commands.
@@ -6279,7 +6278,7 @@ Optional arg SUBMENU-FN is a function to apply to the list of Imenu
  submenus to choose one.  If nil then the user chooses one using
  completion.
 The other args are as for `icicle-search'."
-  (unless imenu-generic-expression (error "No Imenu pattern for this buffer"))
+  (unless imenu-generic-expression (icicle-user-error "No Imenu pattern for this buffer"))
   (let ((icicle-multi-completing-p  (and current-prefix-arg
                                          (not (zerop (prefix-numeric-value current-prefix-arg)))
                                          icicle-show-multi-completion-flag))
@@ -6321,7 +6320,7 @@ The other args are as for `icicle-search'."
                   (regexp   (cadr (assoc submenu menus)))
                   (icicle-transform-function
                    (if (interactive-p) nil icicle-transform-function)))
-             (unless (stringp regexp) (error "No match"))
+             (unless (stringp regexp) (icicle-user-error "No match"))
              (icicle-search
               beg end regexp require-match where predicate
               ;; We rely on the match data having been preserved.
@@ -6458,7 +6457,7 @@ This command is intended for use only in Icicle mode."
     (interactive
      (let ((icicle-show-Completions-initially-flag  t)
            (icicle-whole-candidate-as-text-prop-p   icicle-anything-transform-candidates-flag))
-       (unless (require 'anything nil t) (error "You must load library `anything.el' first"))
+       (unless (require 'anything nil t) (icicle-user-error "You must load library `anything.el' first"))
        (list (intern (completing-read "What (type): " (icicle-remove-duplicates
                                                        (mapcar #'list (icicle-get-anything-types)))
                                       nil t)))))
@@ -6573,7 +6572,7 @@ This command is intended for use only in Icicle mode."
                  (icicle-choose-anything-candidate typ anything-candidates
                                                    anything-default-actions anything-actions))
                 ((member (symbol-name typ) (and anything-loaded-p  (icicle-get-anything-types)))
-                 (error "No candidates for type `%s'" (symbol-name typ)))
+                 (icicle-user-error "No candidates for type `%s'" (symbol-name typ)))
                 (t (icicle-choose-candidate-of-type typ))))
          (icicle-candidate-action-fn    ; For "how".
           (lambda (fn) (icicle-apply-to-saved-candidate fn anything-candidates typ)))
@@ -6985,7 +6984,7 @@ This command requires library `expand-region.el'."
   nil t nil nil "er/mark-word" nil
   ((icicle-sort-comparer nil))          ; Bindings
   (unless (require 'expand-region nil t) ; First code
-    (error "This command requires library `expand-region.el'")))
+    (icicle-user-error "You need library `expand-region.el' for this command")))
 
 (defvar icicle-key-prefix nil
   "A prefix key.")
@@ -7131,7 +7130,7 @@ Use `mouse-2', `RET', or `S-RET' to finally choose a candidate, or
       (unwind-protect
            (progn
              (icicle-keys+cmds-w-prefix prefix)
-             (unless icicle-complete-keys-alist (error "No keys for prefix `%s'" prefix))
+             (unless icicle-complete-keys-alist (icicle-user-error "No keys for prefix `%s'" prefix))
              (let* ((icicle-this-cmd-keys ; For error report - e.g. mouse command.
                      (this-command-keys-vector)) ; Free var in `icicle-complete-keys-action'.
                     (icicle-key-prefix-description
@@ -7168,7 +7167,7 @@ Use `mouse-2', `RET', or `S-RET' to finally choose a candidate, or
              (if (string= ".." candidate)
                  (setq cmd-name  "..")
                (unless (and (string-match "\\(.+\\)  =  \\(.+\\)" candidate)  (match-beginning 2))
-                 (error "No match"))
+                 (icicle-user-error "No match"))
                (setq cmd-name  (substring candidate (match-beginning 2) (match-end 2))))
              (cond ((string= ".." cmd-name) ; Go back up to parent prefix.
                     (setq last-command  'icicle-complete-keys)
