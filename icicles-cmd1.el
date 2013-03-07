@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Feb 25 10:51:32 2013 (-0800)
+;; Last-Updated: Thu Mar  7 13:07:44 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 25557
+;;     Update #: 25607
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1192,7 +1192,7 @@ Perform completion on the GDB command preceding point."
     ;; Protect against old versions of GDB.
     (and complete-list
          (string-match "^Undefined command: \"complete\"" (car complete-list))
-         (error "This version of GDB doesn't support the `complete' command"))
+         (icicle-user-error "This version of GDB does not support command `complete'"))
     ;; Sort the list like readline.
     (setq complete-list  (sort complete-list (function string-lessp)))
     ;; Remove duplicates.
@@ -1273,8 +1273,8 @@ if there is a suitable one already."
           ;; Make an obarray with all expansions
           (setq my-obarray  (make-vector (length completion-list) 0))
           (unless (> (length my-obarray) 0)
-            (error "No dynamic expansion for \"%s\" found%s" abbrev
-                   (if dabbrev--check-other-buffers "" " in this-buffer")))
+            (icicle-user-error "No dynamic expansion for \"%s\" found%s" abbrev
+                               (if dabbrev--check-other-buffers "" " in this-buffer")))
           (dolist (string  completion-list)
             (cond ((or (not ignore-case-p)  (not dabbrev-case-replace))
                    (intern string my-obarray))
@@ -1377,7 +1377,7 @@ See your version of BBDB for more information."
   (interactive (list nil current-prefix-arg))
   (unless (and (require 'bbdb nil t)  (require 'bbdb-com nil t)
                (fboundp 'bbdb-complete-mail))
-    (error "`icicle-bbdb-complete-mail' requires a BBDB version such as 3.02"))
+    (icicle-user-error "`icicle-bbdb-complete-mail' requires a BBDB version such as 3.02"))
   (bbdb-buffer)                         ; Make sure database is initialized.
   (lexical-let* ((end                     (point))
                  (beg                     (or start-pos  (save-excursion
@@ -1428,7 +1428,7 @@ See your version of BBDB for more information."
                             (if (try-completion pattern (list elt))
                                 (setq mail   elt
                                       mails  ()))))
-             (unless mail (error "ICICLE-BBDB-COMPLETE-MAIL: No match for `%s'" pattern)) ; Indicates a bug!
+             (unless mail (error "`icicle-bbdb-complete-mail': No match for `%s'" pattern)) ; Indicates a bug!
              (let ((address  (bbdb-dwim-mail one-record mail)))
                (if (string= address (buffer-substring-no-properties beg end))
                    (unless (and bbdb-complete-mail-allow-cycling  (< 1 (length (bbdb-record-mail one-record))))
@@ -1564,7 +1564,7 @@ control completion behaviour using `bbdb-completion-type'."
     (interactive)
     (unless (and (require 'bbdb nil t)  (require 'bbdb-com nil t)
                  (fboundp 'bbdb-complete-name))
-      (error "`icicle-bbdb-complete-name' requires a BBDB version such as 2.35"))
+      (icicle-user-error "`icicle-bbdb-complete-name' requires a BBDB version such as 2.35"))
     (lexical-let* ((end                  (point))
                    (beg                  (or start-pos  (save-excursion (re-search-backward
                                                                          "\\(\\`\\|[\n:,]\\)[ \t]*")
@@ -3051,8 +3051,8 @@ and `\\[repeat-matching-complex-command]' to match regexp input, but Icicles inp
               (setq command-history  (cons newcmd command-history)))
           (eval newcmd))
       (if command-history
-          (error "Argument %d is beyond length of command history" arg)
-        (error "There are no previous complex commands to repeat")))))
+          (icicle-user-error "Argument %d is beyond length of command history" arg)
+        (icicle-user-error "There are no previous complex commands to repeat")))))
 
 (defun icicle-add-entry-to-saved-completion-set (set-name entry type)
   "Add ENTRY to saved completion-candidates set SET-NAME.
@@ -3239,7 +3239,7 @@ You can use this command only from a bookmark-list display buffer
 \(`*Bookmark List*')."
   (interactive "P")
   (unless (fboundp 'bmkp-bmenu-get-marked-files)
-    (error "Command `icicle-bookmark-save-marked-files' requires library `Bookmark+'"))
+    (icicle-user-error "You need library `Bookmark+' for this command"))
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (icicle-candidate-set-save-1 (bmkp-bmenu-get-marked-files) arg))
 
@@ -3263,7 +3263,7 @@ You can use this command only from a bookmark-list display buffer
 \(`*Bookmark List*')."
   (interactive "P")
   (unless (fboundp 'bmkp-bmenu-get-marked-files)
-    (error "Command `icicle-bookmark-save-marked-files-more' requires library `Bookmark+'"))
+    (icicle-user-error "You need library `Bookmark+' for this command"))
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (icicle-candidate-set-save-1 (bmkp-bmenu-get-marked-files) arg t))
 
@@ -3283,7 +3283,7 @@ You can use this command only from a bookmark-list display buffer
 \(`*Bookmark List*')."
   (interactive)
   (unless (fboundp 'bmkp-bmenu-get-marked-files)
-    (error "Command `icicle-bookmark-save-marked-files-to-variable' requires library `Bookmark+'"))
+    (icicle-user-error "You need library `Bookmark+' for this command"))
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (icicle-candidate-set-save-1 (bmkp-bmenu-get-marked-files) 99))
 
@@ -3307,7 +3307,7 @@ You can use this command only from a bookmark-list display buffer
 \(`*Bookmark List*')."
   (interactive "P")
   (unless (fboundp 'bmkp-bmenu-get-marked-files)
-    (error "This command requires library `Bookmark+'"))
+    (icicle-user-error "You need library `Bookmark+' for this command"))
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (icicle-candidate-set-save-1 (bmkp-bmenu-get-marked-files) (if filesetp 0 '(1))))
 
@@ -3335,7 +3335,7 @@ You can use the saved set of candidates for operations such as
 You can use this command only from a Dired buffer."
   (interactive "P")
   (unless (eq major-mode 'dired-mode)
-    (error "You must be in a Dired buffer to use this command"))
+    (icicle-user-error "You must be in a Dired buffer to use this command"))
   (icicle-candidate-set-save-1 (dired-get-marked-files) arg))
 
 (defun icicle-dired-save-marked-more (&optional arg) ; Bound to `C->' in Dired.
@@ -3345,7 +3345,7 @@ saved, if any.  A prefix argument has the same effect as for
 `icicle-dired-save-marked'."
   (interactive "P")
   (unless (eq major-mode 'dired-mode)
-    (error "You must be in a Dired buffer to use this command"))
+    (icicle-user-error "You must be in a Dired buffer to use this command"))
   (icicle-candidate-set-save-1 (dired-get-marked-files) arg t))
 
 (defun icicle-dired-save-marked-to-variable () ; Bound to `C-M-}' in Dired.
@@ -3353,7 +3353,7 @@ saved, if any.  A prefix argument has the same effect as for
 Same as using `icicle-dired-save-marked' with no prefix argument."
   (interactive)
   (unless (eq major-mode 'dired-mode)
-    (error "You must be in a Dired buffer to use this command"))
+    (icicle-user-error "You must be in a Dired buffer to use this command"))
   (icicle-candidate-set-save-1 (dired-get-marked-files) 99))
 
 (defalias 'icicle-dired-save-marked-as-project ; Bound to `C-}' in Dired.
@@ -3374,7 +3374,7 @@ You can use the saved set of candidates for operations such as
 You can use this command only from a Dired buffer."
   (interactive "P")
   (unless (eq major-mode 'dired-mode)
-    (error "You must be in a Dired buffer to use this command"))
+    (icicle-user-error "You must be in a Dired buffer to use this command"))
   (icicle-candidate-set-save-1 (dired-get-marked-files) (if filesetp 0 '(1))))
 
 
@@ -3395,7 +3395,7 @@ Dired buffer and all subdirs, recursively.
 You need library `Dired+' for this command."
     (interactive (progn
                    (unless (fboundp 'diredp-get-confirmation-recursive)
-                     (error "You need library `dired+.el' for this command"))
+                     (icicle-user-error "You need library `dired+.el' for this command"))
                    (diredp-get-confirmation-recursive)
                    (list current-prefix-arg 1)))
     (icicle-candidate-set-save-1 (diredp-get-files ignore-marks-p) arg))
@@ -3414,7 +3414,7 @@ Dired buffer and all subdirs, recursively.
 You need library `Dired+' for this command."
     (interactive (progn
                    (unless (fboundp 'diredp-get-confirmation-recursive)
-                     (error "You need library `dired+.el' for this command"))
+                     (icicle-user-error "You need library `dired+.el' for this command"))
                    (diredp-get-confirmation-recursive)
                    (list current-prefix-arg 1)))
     (icicle-candidate-set-save-1 (diredp-get-files ignore-marks-p) arg t))
@@ -3433,7 +3433,7 @@ Dired buffer and all subdirs, recursively.
 You need library `Dired+' for this command."
     (interactive (progn
                    (unless (fboundp 'diredp-get-confirmation-recursive)
-                     (error "You need library `dired+.el' for this command"))
+                     (icicle-user-error "You need library `dired+.el' for this command"))
                    (diredp-get-confirmation-recursive)
                    (list current-prefix-arg)))
     (icicle-candidate-set-save-1 (diredp-get-files ignore-marks-p) 99))
@@ -3453,7 +3453,7 @@ Dired buffer and all subdirs, recursively.
 You need library `Dired+' for this command."
     (interactive (progn
                    (unless (fboundp 'diredp-get-confirmation-recursive)
-                     (error "You need library `dired+.el' for this command"))
+                     (icicle-user-error "You need library `dired+.el' for this command"))
                    (diredp-get-confirmation-recursive)
                    (list current-prefix-arg)))
     (icicle-candidate-set-save-1 (diredp-get-files ignore-marks-p) '(1)))
@@ -3473,7 +3473,7 @@ Dired buffer and all subdirs, recursively.
 You need library `Dired+' for this command."
     (interactive (progn
                    (unless (fboundp 'diredp-get-confirmation-recursive)
-                     (error "You need library `dired+.el' for this command"))
+                     (icicle-user-error "You need library `dired+.el' for this command"))
                    (unless (require 'filesets nil t)
                      (error "Cannot save to a fileset - feature `filesets' not provided"))
                    (diredp-get-confirmation-recursive)
@@ -3515,7 +3515,7 @@ directory (default directory)."
   (interactive "P")
   ;; $$$$$$$ Maybe filter sets to get only file-name candidate sets?
   (unless icicle-saved-completion-candidates
-    (error "%s" (substitute-command-keys "No saved completion candidates.  \
+    (icicle-user-error "%s" (substitute-command-keys "No saved completion candidates.  \
 Use \\<minibuffer-local-completion-map>`\\[icicle-candidate-set-save]' to save candidates")))
   (let* ((default-directory           (if prompt-for-dir-p
                                           (read-file-name "Directory: " nil default-directory nil)
@@ -3659,7 +3659,7 @@ directory."
    (list
     (let ((file-names  ()))
       (unless icicle-saved-completion-candidates
-        (error "%s" (substitute-command-keys "No saved completion candidates.  \
+        (icicle-user-error "%s" (substitute-command-keys "No saved completion candidates.  \
 Use \\<minibuffer-local-completion-map>`\\[icicle-candidate-set-save]' to save candidates")))
       (unless grep-command (grep-compute-defaults))
       (dolist (ff  icicle-saved-completion-candidates)
@@ -4127,9 +4127,9 @@ an action uses the base prefix arg you used for `icicle-kmacro'."
     (and (kmacro-ring-head)  (null kmacro-ring)  "1") nil
     ((icicle-pref-arg  current-prefix-arg))    ; Additional bindings
     (progn                              ; First code
-      (unless (require 'kmacro nil t) (error "This command requires library `kmacro.el'"))
-      (when defining-kbd-macro (kmacro-end-or-call-macro current-prefix-arg) (error "Done"))
-      (unless (or (kmacro-ring-head)  kmacro-ring) (error "No keyboard macro defined"))))
+      (unless (require 'kmacro nil t) (icicle-user-error "You need library `kmacro.el' for this command"))
+      (when defining-kbd-macro (kmacro-end-or-call-macro current-prefix-arg) (icicle-user-error "Done"))
+      (unless (or (kmacro-ring-head)  kmacro-ring) (icicle-user-error "No keyboard macro defined"))))
 
   ;; Free vars here: `icicle-orig-buff' & `icicle-orig-window' are bound by `icicle-define-command'.
   ;;                 `icicle-pref-arg' is bound in `icicle-kmacro'.
@@ -4267,9 +4267,9 @@ history entries, so `C-next' and so on act on the current candidate."
     (icicle-ding)                       ; Use `error' just to exit and make sure message is seen.
     (if (not (yes-or-no-p (format "Are you sure you want to empty `%s' completely? "
                                   minibuffer-history-variable)))
-        (error "")
+        (icicle-user-error "")
       (set minibuffer-history-variable nil)
-      (error "History `%s' is now empty" minibuffer-history-variable))))
+      (icicle-user-error "History `%s' is now empty" minibuffer-history-variable))))
 
 (when (and icicle-define-alias-commands-flag  (not (fboundp 'clear-option)))
   (defalias 'clear-option 'icicle-reset-option-to-nil))
@@ -4364,7 +4364,8 @@ This command needs library `doremi.el'." ; Doc string
     (or icicle-candidate-alt-action-fn  (setq alt-fn  (icicle-alt-act-fn-for-type "option"))))
    (icicle-all-candidates-list-alt-action-fn ; M-|'
     (or icicle-all-candidates-list-alt-action-fn  alt-fn  (icicle-alt-act-fn-for-type "option"))))
-  (unless (require 'doremi nil t) (error "This command needs library `doremi.el'."))) ; First code
+  (unless (require 'doremi nil t)       ; First code
+    (icicle-user-error "You need library `doremi.el' for this command")))
 
 (icicle-define-command icicle-increment-variable ; Command name
   "Increment variable's value using the arrow keys (`up', `down').
@@ -4399,7 +4400,8 @@ This command needs library `doremi.el'." ; Doc string
    (icicle-all-candidates-list-alt-action-fn ; M-|'
     (or icicle-all-candidates-list-alt-action-fn alt-fn
         (icicle-alt-act-fn-for-type (if prefix-arg "option" "variable")))))
-  (unless (require 'doremi nil t) (error "This command needs library `doremi.el'."))) ; First code
+  (unless (require 'doremi nil t)       ; First code
+    (icicle-user-error "You need library `doremi.el' for this command")))
 
 (defun icicle-doremi-increment-variable+ (variable &optional increment optionp)
   "Increment VARIABLE by INCREMENT (default 1).
@@ -4431,10 +4433,10 @@ Raises an error if VARIABLE's value is not a number."
            (let ((icicle-must-pass-after-match-predicate  icicle-orig-must-pass-after-match-pred))
              (icicle-read-number "Increment (amount): "))
            current-prefix-arg)))
-  (unless (require 'doremi nil t) (error "This command needs library `doremi.el'."))
+  (unless (require 'doremi nil t) (icicle-user-error "You need library `doremi.el' for this command"))
   (unless increment (setq increment 1))
   (unless (numberp (symbol-value variable))
-    (error "Variable's value is not a number: %S" (symbol-value variable)))
+    (icicle-user-error "Variable's value is not a number: %S" (symbol-value variable)))
   (doremi (lambda (new-val)             ; FREE here: VARIABLE.
             (set variable  new-val)
             new-val)
@@ -5877,7 +5879,7 @@ See `icicle-make-frame-alist' for more about FNAME."
   (unless frame-alist (setq frame-alist  (or (and (boundp 'icicle-frame-alist)  icicle-frame-alist)
                                              (icicle-make-frame-alist))))
   (let ((frame  (cdr (assoc name frame-alist))))
-    (unless frame (error "No such frame: `%s'" name))
+    (unless frame (icicle-user-error "No such frame: `%s'" name))
     (make-frame-visible frame)
     (select-frame-set-input-focus frame)))
 
@@ -5939,7 +5941,7 @@ If `crosshairs.el' is loaded, then the target position is highlighted."
     (setq window-alist  (or (and (boundp 'icicle-window-alist)  icicle-window-alist)
                             (icicle-make-window-alist))))
   (let ((window  (cdr (assoc name window-alist))))
-    (unless window (error "No such window: `%s'" name))
+    (unless window (icicle-user-error "No such window: `%s'" name))
     (select-window window)
     (when (fboundp 'crosshairs-highlight) (crosshairs-highlight))
     (select-frame-set-input-focus (selected-frame))))
@@ -6476,9 +6478,9 @@ Same as `icicle-buffer' except it uses a different window." ; Doc string
   "Visit a marked file whose content matches a regexp.
 The marked files are examined, and those whose file names and/or
 contents match your multi-completion input are available as candidate
-buffers to visit.  This command is like `icicle-buffer'.
-See that command for more information.
-You must be in Dired to use this command.
+buffers to visit.  This command is like `icicle-buffer' and
+`icicle-find-file-of-content' - see those commands for more
+information.  You must be in Dired mode to use this command.
 
 When this command is finished, any unused buffers that were created
 for content matching are killed, if option
@@ -6518,7 +6520,7 @@ flips the behavior specified by that option." ; Doc string
                                                  (bufs   ()))
                                             (dolist (file  files) (push (find-file-noselect file) bufs))
                                             bufs)))))
-  (progn (unless (eq major-mode 'dired-mode) (error "Use this command only in Dired mode"))
+  (progn (unless (eq major-mode 'dired-mode) (icicle-user-error "Use this command only in Dired mode"))
          (icicle-bind-buffer-candidate-keys)
          (put-text-property 0 1 'icicle-fancy-candidates t prompt) ; First code
          (icicle-highlight-lighter)
@@ -6568,7 +6570,7 @@ different window.  You must be in Dired to use this command." ; Doc string
                                                  (bufs   ()))
                                             (dolist (file  files) (push (find-file-noselect file) bufs))
                                             bufs)))))
-  (progn (unless (eq major-mode 'dired-mode) (error "Use this command only in Dired mode"))
+  (progn (unless (eq major-mode 'dired-mode) (icicle-user-error "Use this command only in Dired mode"))
          (icicle-bind-buffer-candidate-keys)
          (put-text-property 0 1 'icicle-fancy-candidates t prompt) ; First code
          (icicle-highlight-lighter)
@@ -6632,7 +6634,7 @@ Save the updated option."               ; Doc string
     (or icicle-candidate-alt-action-fn  (icicle-alt-act-fn-for-type "buffer")))
    (icicle-all-candidates-list-alt-action-fn ; M-|'
     (or icicle-all-candidates-list-alt-action-fn  (icicle-alt-act-fn-for-type "buffer"))))
-  (unless icicle-buffer-extras (error "`icicle-extra-buffers' is empty"))) ; First code
+  (unless icicle-buffer-extras (icicle-user-error "`icicle-extra-buffers' is empty"))) ; First code
 
 (defun icicle-remove-buffer-candidate-action (buf)
   "Action function for command `icicle-remove-buffer-candidate'."
@@ -6736,7 +6738,7 @@ snapshot.
 To use this command, you must have loaded library `color-theme.el',
 available from http://www.emacswiki.org/cgi-bin/wiki.pl?ColorTheme." ; Doc string
   (lambda (theme)
-    (when (string= "" theme) (error "No theme name entered (empty input)"))
+    (when (string= "" theme) (icicle-user-error "No theme name entered (empty input)"))
     (funcall  (intern theme)))          ; Action function: just call the theme.
   "Theme: " icicle-color-themes nil t nil ; `completing-read' args
   (if (boundp 'color-theme-history) 'color-theme-history 'icicle-color-theme-history)
@@ -6758,7 +6760,7 @@ available from http://www.emacswiki.org/cgi-bin/wiki.pl?ColorTheme." ; Doc strin
                            (color-theme-initialize)
                            (setq color-theme-initialized  t))
                        (error nil))))
-           (error "This command requires library `color-theme.el'"))
+           (icicle-user-error "You need library `color-theme.el' for this command"))
          (unless icicle-color-themes
            (setq icicle-color-themes
                  (delete '("bury-buffer")
@@ -6804,17 +6806,17 @@ candidates to yank in different ways (repeat)
 
 You need library `second-sel.el' for this command."
   (interactive "p")
-  (unless (featurep 'second-sel) (error "You need library `second-sel.el' for this command"))
+  (unless (featurep 'second-sel) (icicle-user-error "You need library `second-sel.el' for this command"))
   ;; Disable `browse-kill-ring's advice, since we handle such things here instead.
   (when (fboundp 'browse-kill-ring)
     (condition-case nil
         (ad-disable-advice 'yank-pop 'around 'kill-ring-browse-maybe)
       (error nil)))
   (cond ((memq last-command secondary-selection-yank-secondary-commands)
-         (when buffer-read-only (error "Buffer is read-only: %S" (current-buffer)))
+         (when buffer-read-only (icicle-user-error "Buffer is read-only: %S" (current-buffer)))
          (yank-pop-secondary arg))
         ((memq last-command secondary-selection-yank-commands)
-         (when buffer-read-only (error "Buffer is read-only: %S" (current-buffer)))
+         (when buffer-read-only (icicle-user-error "Buffer is read-only: %S" (current-buffer)))
          (yank-pop arg))
         (t
          (icicle-completing-yank)
@@ -6976,7 +6978,8 @@ default separator."
                                               (> (float-time (funcall get-attr s1 'start))
                                                  (float-time (funcall get-attr s2 'start)))))))
      (icicle-sort-comparer               (cdar icicle-sort-orders-alist)))
-    (progn (unless (require 'proced nil t) (error "This command requires library `proced.el'")) ; First code
+    (progn (unless (require 'proced nil t) ; First code
+             (icicle-user-error "You need library `proced.el' for this command"))
            (put-text-property 0 1 'icicle-fancy-candidates t prompt)
            (icicle-highlight-lighter)))
 
@@ -7813,8 +7816,7 @@ Ido-like behavior."                     ; Doc string
     (icicle-abs-file-candidates
      (progn (unless (boundp 'recentf-list) (require 'recentf))
             (when (fboundp 'recentf-mode) (recentf-mode 99))
-            (unless (consp recentf-list)
-              (error "No recently accessed files"))
+            (unless (consp recentf-list) (icicle-user-error "Recent-files list is empty"))
             (mapcar (lambda (file)      ; FREE here: CURRENT-PREFIX-ARG.
                       (if current-prefix-arg (icicle-make-file+date-candidate file) (list file)))
                     recentf-list)))
@@ -7857,8 +7859,7 @@ Ido-like behavior."                     ; Doc string
     (icicle-abs-file-candidates
      (progn (unless (boundp 'recentf-list) (require 'recentf))
             (when (fboundp 'recentf-mode) (recentf-mode 99))
-            (unless (consp recentf-list)
-              (error "No recently accessed files"))
+            (unless (consp recentf-list) (icicle-user-error "Recent-files list is empty"))
             (mapcar (lambda (file)      ; FREE here: CURRENT-PREFIX-ARG.
                       (if current-prefix-arg (icicle-make-file+date-candidate file) (list file)))
                     recentf-list)))
@@ -7885,7 +7886,7 @@ Ido-like behavior."                     ; Doc string
   "Remove from recent files list, `recentf-list': "
   (mapcar #'list (progn (unless (boundp 'recentf-list) (require 'recentf))
                         (when (fboundp 'recentf-mode) (recentf-mode 99))
-                        (unless (consp recentf-list) (error "No recently accessed files"))
+                        (unless (consp recentf-list) (icicle-user-error "Recent-files list is empty"))
                         recentf-list))
   nil (and (fboundp 'confirm-nonexistent-file-or-buffer) ; Emacs 23.
            (confirm-nonexistent-file-or-buffer))
