@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Mar  5 10:34:28 2013 (-0800)
+;; Last-Updated: Thu Mar  7 13:18:28 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 13815
+;;     Update #: 13835
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -466,7 +466,7 @@ the following is true:
            ;; If BUFFER is a minibuffer, barf unless it's currently active.
            (if (and mini-p  (or (not (active-minibuffer-window))
                                 (not (equal buffer (window-buffer (active-minibuffer-window))))))
-               (error "Minibuffer is not active for completion")
+               (icicle-user-error "Minibuffer is not active for completion")
              ;; Set buffer so buffer-local `choose-completion-string-functions' works.
              (set-buffer buffer)
              (unless (run-hook-with-args-until-success 'choose-completion-string-functions
@@ -522,7 +522,7 @@ the following is true:
            ;; If BUFFER is a minibuffer, barf unless it's currently active.
            (if (and mini-p  (or (not (active-minibuffer-window))
                                 (not (equal buffer (window-buffer (active-minibuffer-window))))))
-               (error "Minibuffer is not active for completion")
+               (icicle-user-error "Minibuffer is not active for completion")
              ;; Insert the completion into the buffer where completion was requested.
              (set-buffer buffer)
              (if base-size
@@ -569,7 +569,7 @@ the following is true:
            ;; If BUFFER is a minibuffer, barf unless it's currently active.
            (when (and mini-p  (or (not (active-minibuffer-window))
                                   (not (equal buffer (window-buffer (active-minibuffer-window))))))
-             (error "Minibuffer is not active for completion"))
+             (icicle-user-error "Minibuffer is not active for completion"))
            ;; Insert the completion into the buffer where completion was requested.
            (set-buffer buffer)
            (if base-size
@@ -788,11 +788,11 @@ lax: a match is not required."
       (when (consp init) (setq position  (cdr init)
                                init      (car init)))
       (unless (stringp init)
-        (error "icicle-lisp-vanilla-completing-read, INIT must be a string: %S" init))
+        (error "`icicle-lisp-vanilla-completing-read', INIT not a string: %S" init))
       (if (not position)
           (setq pos  (1+ (length init))) ; Default is to put cursor at end of INITIAL-INPUT.
         (unless (integerp position)
-          (error "icicle-lisp-vanilla-completing-read, POSITION must be an integer: %S" position))
+          (error "`icicle-lisp-vanilla-completing-read', POSITION not an integer: %S" position))
         (setq pos  (1+ position))))     ; Convert zero-based to one-based.
     (if (symbolp hist)
         (setq histvar  hist
@@ -1255,17 +1255,16 @@ and `read-file-name-function'."
            (cond ((save-match-data (string-match "*point file name\\*$" result))
                   (setq result  fap))
                  ((save-match-data (string-match "*mouse-2 file name\\*$" result))
-                  (setq result
-                        (progn (let ((e  (read-event "Click `mouse-2' on file name")))
-                                 (read-event) ; Get rid of mouse up event.
-                                 (save-excursion
-                                   (mouse-set-point e)
-                                   (if (and (eq major-mode 'dired-mode)
-                                            (fboundp 'dired-get-file-for-visit)) ; In `dired+.el'.
-                                       (condition-case nil ; E.g. error: not on file line (ignore)
-                                           (abbreviate-file-name (dired-get-file-for-visit))
-                                         (error "No such file"))
-                                     (or (ffap-guesser) (error "No such file"))))))))))
+                  (setq result  (progn (let ((e  (read-event "Click `mouse-2' on file name")))
+                                         (read-event) ; Get rid of mouse up event.
+                                         (save-excursion
+                                           (mouse-set-point e)
+                                           (if (and (eq major-mode 'dired-mode)
+                                                    (fboundp 'dired-get-file-for-visit)) ; In `dired+.el'.
+                                               (condition-case nil ; E.g. error: not on file line (ignore)
+                                                   (abbreviate-file-name (dired-get-file-for-visit))
+                                                 (error "No such file"))
+                                             (or (ffap-guesser) (error "No such file"))))))))))
          (icicle-unpropertize-completion result)
          (let* ((temp  (member (file-name-nondirectory result) icicle-proxy-candidates))
                 (symb  (and temp  (intern (substring (car temp) 1 (1- (length (car temp))))))))
@@ -1340,9 +1339,8 @@ and `read-file-name-function'."
   ;; substituted for `read-file-name-internal'.
   (defun icicle-read-file-name-default (prompt &optional dir default-filename mustmatch initial predicate)
     "Icicles version of `read-file-name-default'.
-The only difference is that, instead of hard-coding the use of
-`read-file-name-internal', this uses the value of variable
-`icicle-read-file-name-internal-fn'.
+Instead of hard-coding the use of `read-file-name-internal', this uses
+the value of variable `icicle-read-file-name-internal-fn'.
 See `read-file-name' for the meaning of the arguments here."
     (unless dir (setq dir  default-directory))
     (unless (file-name-absolute-p dir) (setq dir  (expand-file-name dir)))
@@ -2487,7 +2485,8 @@ an integer value."
                  (:inherit (cons '("none" . nil)
                                  (mapcar (lambda (c) (cons (symbol-name c) c)) (face-list))))
                  (t
-                  (error "Internal error")))))
+                  (error "`icicle-face-valid-attribute-values': YOU SHOULD NOT SEE THIS; \
+Use `M-x icicle-send-bug-report'")))))
           (if (and (listp valid)  (not (memq attribute '(:inherit))))
               (nconc (list (cons "unspecified" 'unspecified)) valid)
             valid)))
@@ -2528,7 +2527,8 @@ an integer value."
                (:inherit (cons '("none" . nil)
                                (mapcar (lambda (c) (cons (symbol-name c) c)) (face-list))))
                (t
-                (error "Internal error")))))
+                (error "`icicle-face-valid-attribute-values': YOU SHOULD NOT SEE THIS; \
+Use `M-x icicle-send-bug-report'")))))
         (if (and (listp valid)  (not (memq attribute '(:inherit))))
             (nconc (list (cons "unspecified" 'unspecified)) valid)
           valid))))
@@ -2813,7 +2813,7 @@ not available before Emacs 22.
 In an interactive call, the variable `shell-command-default-error-buffer'
 specifies the value of ERROR-BUFFER."
     (interactive (let (string)
-                   (unless (mark) (error "The mark is not set now, so there is no region"))
+                   (unless (mark) (icicle-user-error "The mark is not set now, so no region"))
                    ;; Do this before calling region-beginning and region-end, in case subprocess
                    ;; output relocates them while we are in the minibuffer.
                    (setq string  (icicle-read-shell-command "Shell command on region: "))
@@ -4305,7 +4305,7 @@ large value of `icicle-levenshtein-distance'.  To use this method with
 a value other than 1, you must also have library `levenshtein.el'."
   (if (= icicle-levenshtein-distance 1)
       (icicle-levenshtein-one-match s1 s2)
-    (unless (require 'levenshtein nil t)  (error "You need library `levenshtein.el' for this"))
+    (unless (require 'levenshtein nil t)  (icicle-user-error "You need library `levenshtein.el' for this"))
     (catch 'icicle-levenshtein-match
       (dolist (sub  (icicle-substrings-of-length s2 (length s1)))
         (when (<= (levenshtein-distance s1 sub) icicle-levenshtein-distance)
@@ -5425,7 +5425,9 @@ string candidates."
   (let ((cache-file  (cdr (assoc set-name icicle-saved-completion-sets)))
         fst)
     (cond ((and (not cache-file)        ; Fileset - get explicit file list.
-                icicle-filesets-as-saved-completion-sets-flag (featurep 'filesets) filesets-data
+                icicle-filesets-as-saved-completion-sets-flag
+                (featurep 'filesets)
+                filesets-data
                 (setq fst  (filesets-get-fileset-from-name set-name)))
            (icicle-explicit-saved-completion-candidates (list fst)))
           ((not cache-file) (error "No such saved set: `%s'" set-name))
@@ -5507,7 +5509,8 @@ or (icicle-marker      BUFFER-NAME MARKER-POSITION)"
             (let ((buf  (find-file-noselect file-or-buf)))
               (unless buf (error "Cannot find file `%s'" file-or-buf))
               (setq file-or-buf  buf))
-          (unless (get-buffer file-or-buf) (error "You must first visit buffer `%s'" file-or-buf)))
+          (unless (get-buffer file-or-buf)
+            (icicle-user-error "You must first visit buffer `%s'" file-or-buf)))
         (set-marker (setq mrker  (make-marker)) pos (get-buffer file-or-buf))
         mrker)
     (if (consp cand)
@@ -6142,18 +6145,18 @@ Character FROM is affected (possibly deleted).  Character TO is not."
 (defun icicle-barf-if-outside-minibuffer ()
   "Raise an error if `this-command' is called outside the minibuffer."
   (unless (eq (current-buffer) (window-buffer (minibuffer-window)))
-    (error "Command `%s' must be called from the minibuffer" this-command)))
+    (icicle-user-error "Command `%s' must be called from the minibuffer" this-command)))
 
 (defun icicle-barf-if-outside-Completions ()
   "Raise error if `this-command' is called outside buffer `*Completions*'."
   (unless (eq (current-buffer) (get-buffer "*Completions*"))
-    (error "Command `%s' must be called from `*Completions*' buffer" this-command)))
+    (icicle-user-error "Command `%s' must be called from `*Completions*' buffer" this-command)))
 
 (defun icicle-barf-if-outside-Completions-and-minibuffer ()
   "Error if `this-command' called outside `*Completions*' and minibuffer."
   (unless (or (eq (current-buffer) (window-buffer (minibuffer-window)))
               (eq (current-buffer) (get-buffer "*Completions*")))
-    (error "`%s' must be called from `*Completions*' or the minibuffer" this-command)))
+    (icicle-user-error "`%s' must be called from `*Completions*' or minibuffer" this-command)))
 
 (defun icicle-command-abbrev-save ()
   "Save `icicle-command-abbrev-alist'.  Used on `kill-emacs-hook'."
@@ -6300,7 +6303,7 @@ compared.  If nil, then the entire item is used."
                                            (consp icicle-sort-comparer))
                                       (icicle-multi-sort (funcall key s1) (funcall key s2))
                                     (funcall icicle-sort-comparer (funcall key s1) (funcall key s2))))
-                           (error (message "Inappropriate sort order - reverting to unsorted")
+                           (error (message "Inappropriate sort order - reverting to UNSORTED")
                                   (sit-for 1)
                                   (setq icicle-sort-comparer  nil)
                                   nil))))))
