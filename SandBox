@@ -31,6 +31,12 @@ done things. Then come back here to experiment. Note that you need not save your
        (print "hello"))
 </code>
 
+<pre>
+  (defun test ()
+    (interactive)
+    (print "pre formatted codes"))
+</pre>
+
 ----
 
 testing
