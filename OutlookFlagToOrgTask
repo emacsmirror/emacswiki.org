@@ -84,8 +84,12 @@ Sub OrgTasks()
                     Priority = getPriority(objMail.importance)
 
                     T = T + "* " + state + Priority + " " + objMail.Subject + " " + tags + " " + vbCrLf
-                    T = T + "  SCHEDULED: <" + Format(DateTime.DateValue(Str(scheduled)), "yyyy-MM-DD") + " +" + Str(diff) + "d>" + vbCrLf
-                    'T = T + "  DEADLINE: <" + Format(DateTime.DateValue(Str(due)), "yyyy-MM-DD") + " +" + Str(diff) + "d>" + vbCrLf
+                    If scheduled < due Then
+                        T = T + "  SCHEDULED: <" + Format(DateTime.DateValue(Str(scheduled)), "yyyy-MM-DD") + " +" + Str(diff) + "d>" + vbCrLf
+                        T = T + "  DEADLINE: <" + Format(DateTime.DateValue(Str(due)), "yyyy-MM-DD") + " +" + Str(diff) + "d>" + vbCrLf
+                    Else
+                        T = T + "  SCHEDULED: <" + Format(DateTime.DateValue(Str(scheduled)), "yyyy-MM-DD") + " +" + Str(diff) + "d>" + vbCrLf
+                    End If
                     If done <> outlookfuture Then
                         T = T + "  CLOSED: [" + Format(DateTime.DateValue(Str(done)), "yyyy-MM-DD") + "]"
                     End If
