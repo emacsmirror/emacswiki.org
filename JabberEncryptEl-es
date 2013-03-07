@@ -1,0 +1,48 @@
+[[en:JabberEncryptEl]]
+
+Es posible encriptar los mensajes salientes y desencriptar los entrantes en JabberEl de forma transparente, sólo se debe indicar quién es el receptor del mensaje para seleccionar la clave pública a utilizar.
+
+Para poder hacer esto, debés utilizar Lisp:jabber-encrypt.el. 
+
+
+== Objetivo ==
+
+La idea final de usar encriptación en los mensajes, a pesar de utilizar conexiones seguras, es la de evitar que el servidor pueda almacenar información legible de nuestras conversaciones.
+
+Desconozco si Jabber llega a ser punto a punto al momento de chatear con otra persona, y supongo que por cuestiones de seguridad no es así. En [https://es.wikipedia.org/wiki/Xmpp el artículo de la Wikipedia] no se indica tal cosa, por lo que he de suponer que esto no sucede para nada.
+
+== Instalación y Configuración ==
+
+Descargar el archivo Lisp:jabber-encrypt.el.
+
+Agregar en el `load-path' la ubicación del archivo y cargarlo. Podés agregar el siguiente código en tu InitFile para poder hacerlo de forma automática:
+
+
+    (setq load-path (cons "mi/path/a/jabber-encrypt.el" load-path))
+    (require 'jabber-encrypt)
+
+
+Para su configuración no se requiere nada en sí, excepto tener claves públicas y una clave privada y pública propia.
+
+Podés usar EasyPG para ayudarte con eso. 
+
+== Uso ==
+
+Supongamos que estás conectado en tu cuenta de jabber y tenés a varios amigos(o vos mismo) conectados. También supondré que tenés sus claves públicas. 
+
+En el buffer de chat (el que se llama <nowiki>*-jabber-chat-nombre-de-tu-amigo-*</nowiki>) debemos designar la clave pública a usar(la del receptor y la tuya). Usá el comando M-x `jabber-enc-add-user', pedirá el nombre del receptor: escribí el tuyo. Luego usálo otra vez y poné el nombre de tu amigo.
+
+Estos nombres se usarán para identificar la clave pública, por lo que deberás asegurarte de que son únicos. Podés usar `epa-list-keys' para buscar el nombre entre tus claves públicas. Supongo que también funcionan con el Id de la clave.
+
+Luego deberás utilizar el comando M-x `jabber-enc-start' para iniciar la conversación encriptada. Ahora podés chatear como si no pasara nada.
+Los mensajes encriptados aparecerán con una leyenda "<code>*ENC*</code>".
+
+Si deseás no usar la encriptación, podés usar `jabber-enc-stop'. Lo cual volverás a enviar mensajes sin encriptar.
+
+
+Para listar los amigos que tenés asignado en el buffer de chat, usá `jabber-enc-list-users'. 
+
+
+
+----
+JabberEl
