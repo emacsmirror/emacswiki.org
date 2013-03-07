@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:24:28 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Jan 26 10:39:55 2013 (-0800)
+;; Last-Updated: Thu Mar  7 12:55:51 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 1085
+;;     Update #: 1101
 ;; URL: http://www.emacswiki.org/icicles-mac.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -38,7 +38,7 @@
 ;;    `icicle-define-command', `icicle-define-file-command',
 ;;    `icicle-define-search-bookmark-command',
 ;;    `icicle-define-sort-command', `icicle-file-bindings',
-;;    `icicle-with-selected-window'.
+;;    `icicle-user-error', `icicle-with-selected-window'.
 ;;
 ;;  You might also be interested in my library `imenu+.el', which
 ;;  teaches the macros defined here to Imenu, so the functions defined
@@ -238,6 +238,10 @@ the buffer list ordering."
                 (select-window save-selected-window-window 'norecord) ; Emacs 22+
               (select-window save-selected-window-window))))))))
 
+(defmacro icicle-user-error (&rest args)
+  "`user-error' if defined, otherwise `error'."
+  `(if (fboundp 'user-error) (user-error ,@args) (error ,@args)))
+
 (defmacro icicle-define-add-to-alist-command (command doc-string construct-item-fn alist-var
                                               &optional dont-save)
   "Define COMMAND that adds an item to an alist user option.
@@ -334,7 +338,7 @@ created after the others."
                                          (buffer-list))))
           (buffer-list)))
        (icicle-bufflist
-        (icicle-remove-if                           
+        (icicle-remove-if
          (lambda (bf) (icicle-string-match-p "^ [*]Minibuf-[0-9]" (buffer-name bf)))
          icicle-bufflist)))
      post-bindings))
@@ -772,7 +776,8 @@ to update the list of tags available for completion." "")) ; Doc string
     nil (if (boundp 'bookmark-history) 'bookmark-history 'icicle-bookmark-history)
     nil nil
     ((IGNORED1                               (unless (require 'bookmark+ nil t) ; Additional bindings
-                                               (error "You need library `Bookmark+' for this command")))
+                                               (icicle-user-error
+                                                "You need library `Bookmark+' for this command")))
      (IGNORED2                               (bookmark-maybe-load-default-file)) ; `bookmark-alist'.
      (enable-recursive-minibuffers           t) ; In case we read input, e.g. File changed on disk...
      (bmk-alist                              (bmkp-sort-omit
@@ -866,8 +871,8 @@ You need library `Bookmark+' for this command." type type) ; Doc string
     nil (if (boundp 'bookmark-history) 'bookmark-history 'icicle-bookmark-history)
     nil nil
     ((IGNORED1                                 (unless (require 'bookmark+ nil t) ; Bindings
-                                                 (error "You need library `Bookmark+' for this \
-command")))
+                                                 (icicle-user-error
+                                                  "You need library `Bookmark+' for this command")))
      (IGNORED2                                 (bookmark-maybe-load-default-file)) ; `bookmark-alist'.
      (enable-recursive-minibuffers             t) ; In case we read input, e.g. File changed on...
      (completion-ignore-case                   bookmark-completion-ignore-case)
