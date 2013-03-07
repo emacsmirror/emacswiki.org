@@ -25,13 +25,11 @@ done things. Then come back here to experiment. Note that you need not save your
 
 '''Test it'''
 
- --
-
-hello
-
- ---
-
-emacswiki
+<code>
+    (defun test ()
+       (interactive)
+       (print "hello"))
+</code>
 
 ----
 
