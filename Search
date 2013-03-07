@@ -8,7 +8,7 @@ Matching pagenames:
 <form>
 <table>
 <input type="hidden" name="action" value="index" />
-<tr><td style="width: 15ex">Title match:</td><td><input name="match" /></td><td>(Perl regular expression)</td></tr>
+<tr><td style="width: 15ex">Title match:</td><td><input type="text" name="match" /></td><td>(Perl regular expression)</td></tr>
 <tr><td /><td><input type="submit" /></td><td /></tr>
 </table>
 </form>
@@ -17,8 +17,8 @@ Regular expression search is very slow, but if you are one of the EmacsWikiAdmin
 
 <form>
 <table>
-<tr><td style="width: 15ex">Search:</td><td><input name="search" /></td><td>(Perl regular expression)</td></tr>
-<tr><td style="width: 15ex">Replace:</td><td><input name="replace" /></td><td>(administrators only)</td></tr>
+<tr><td style="width: 15ex">Search:</td><td><input type="text" name="search" /></td><td>(Perl regular expression)</td></tr>
+<tr><td style="width: 15ex">Replace:</td><td><input type="text" name="replace" /></td><td>(administrators only)</td></tr>
 <tr><td /><td><input type="submit" /></td><td /></tr>
 </table>
 </form>
