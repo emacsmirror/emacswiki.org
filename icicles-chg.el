@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue Mar  5 11:13:24 2013 (-0800)
+;; Last-Updated: Thu Mar  7 13:27:27 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 9773
+;;     Update #: 9787
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -86,6 +86,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2013/03/07 dadams
+;;     Updated to use icicle-user-error where appropriate.
 ;; 2013/03/05 dadams
 ;;     icicle-search-read-context-regexp: Provide default(s) using icicle-defaults-at-point (new).
 ;; 2013/02/25 dadams
@@ -866,6 +868,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2013/03/07 dadams
+;;     Updated to use icicle-user-error where appropriate.
 ;; 2013/02/28 dadams
 ;;     icicle-cmd2-after-load-hexrgb, icicle-cmd2-after-load-wid-edit+:
 ;;       Use fset, not defalias, for redefinitions of read-color, widget-color-complete.
@@ -1669,6 +1673,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2013/03/07 dadams
+;;     Updated to use icicle-user-error where appropriate.
 ;; 2013/03/05 dadams
 ;;     Added: icicle-defaults-at-point.
 ;; 2013/02/28 dadams
@@ -3516,6 +3522,9 @@
 ;;       macros needs to be byte-compiled anew after loading the updated macros.
 ;; ****************************************************************************************************
 ;;
+;; 2013/03/07 dadams
+;;     Added: icicle-user-error.
+;;     icicle-define(-search)-bookmark-command(-1): Use icicle-user-error.
 ;; 2013/01/26 dadams
 ;;     icicle-define-file-command: Ensure non-nil icicle-last-input before apply directory-file-name.
 ;; 2012/12/06 dadams
@@ -3730,6 +3739,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2013/03/07 dadams
+;;     Updated to use icicle-user-error where appropriate.
+;;     icicle(mouse)-choose-completion: Added live-buffer test, per Emacs 24.
 ;; 2013/02/04 dadams
 ;;     Removed all autoload cookies.
 ;; 2013/02/03 dadams
@@ -7303,6 +7315,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2013/03/07 dadams
+;;     Updated to use icicle-user-error where appropriate.
 ;; 2013/02/16 dadams
 ;;     icicle-general-help-string: Removed list of commands - just refer to file headers.
 ;; 2013/02/03 dadams
@@ -7720,6 +7734,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles.el'")
 ;;
+;; 2013/03/07 dadams
+;;     Define font-lock-keywords for icicle-user-error.
 ;; 2013/02/16 dadams
 ;;     icicle-mode: Removed list of commands from autoload doc string - just refer to file headers.
 ;; 2013/02/09 dadams
