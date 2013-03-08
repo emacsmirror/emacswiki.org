@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Mar  7 13:07:44 2013 (-0800)
+;; Last-Updated: Fri Mar  8 08:05:21 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 25607
+;;     Update #: 25611
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -6050,7 +6050,8 @@ this remapping, then customize option
 
 (defun icicle-buffer-name-prompt (action &optional other-window-p)
   "Return prompt for buffer-name completion.
-ACTION is the command action, a string.  It starts the prompt."
+ACTION is the command action, a string.  It starts the prompt.
+Non-nil OTHER-WINDOW-P appends \" in other window\" to the prompt."
   (concat  (cond ((null current-prefix-arg)
                   (format "%s buffer" action)) ; `completing-read' args
                  ((and (consp current-prefix-arg)  (fboundp 'derived-mode-p)) ; `C-u'
@@ -6260,7 +6261,7 @@ Same as `icicle-buffer' except it uses a different window." ; Doc string
   (and (fboundp 'confirm-nonexistent-file-or-buffer)  (confirm-nonexistent-file-or-buffer)) ; Emacs 23.
   nil 'buffer-name-history (icicle-default-buffer-names current-prefix-arg) nil
   (icicle-buffer-bindings               ; Bindings
-   ((prompt                                 (icicle-buffer-name-prompt "Switch to"))
+   ((prompt                                 (icicle-buffer-name-prompt "Switch to" 'OTHER-WIN))
     (icicle-show-multi-completion-flag      t) ; Override user setting.
     (icicle-multi-completing-p              t)
     (icicle-list-use-nth-parts              '(1))
@@ -6463,7 +6464,7 @@ part."                                  ; Doc string
   "Switch to a different buffer in another window.
 Same as `icicle-buffer' except it uses a different window." ; Doc string
   switch-to-buffer-other-window         ; Action function
-  (icicle-buffer-name-prompt "Switch to" t) ; `completing-read' args
+  (icicle-buffer-name-prompt "Switch to"  'OTHER-WIN) ; `completing-read' args
   (mapcar (lambda (buf) (list (buffer-name buf))) icicle-bufflist) nil ; `icicle-bufflist' is free.
   (and (fboundp 'confirm-nonexistent-file-or-buffer)  (confirm-nonexistent-file-or-buffer)) ; Emacs 23.
   nil 'buffer-name-history (icicle-default-buffer-names current-prefix-arg) nil
@@ -6543,7 +6544,7 @@ different window.  You must be in Dired to use this command." ; Doc string
   (and (fboundp 'confirm-nonexistent-file-or-buffer)  (confirm-nonexistent-file-or-buffer)) ; Emacs 23.
   nil 'buffer-name-history (icicle-default-buffer-names current-prefix-arg) nil
   (icicle-buffer-bindings               ; Bindings
-   ((prompt                             (icicle-buffer-name-prompt "Visit file"))
+   ((prompt                             (icicle-buffer-name-prompt "Visit file" 'OTHER-WIN))
     (icicle-show-multi-completion-flag  t) ; Override user setting.
     (icicle-multi-completing-p          t)
     (icicle-list-use-nth-parts          '(1))
