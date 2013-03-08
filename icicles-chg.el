@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Thu Mar  7 13:27:27 2013 (-0800)
+;; Last-Updated: Fri Mar  8 08:09:45 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 9787
+;;     Update #: 9791
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -86,6 +86,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2013/03/08 dadams
+;;     (icicle-(visit-marked-file-of-content|buffer(-no-search)))-other-window:
+;;       Forgot OTHER-WIN arg to icicle-buffer-name-prompt.
 ;; 2013/03/07 dadams
 ;;     Updated to use icicle-user-error where appropriate.
 ;; 2013/03/05 dadams
