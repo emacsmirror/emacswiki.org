@@ -11,7 +11,7 @@ This page is about the notation of [[key sequence]]s in Emacs documentation and 
 ; ESC: means the Escape key
 ; TAB: means the Tab key
 
-A notation such as `C-M-s' (or, equivalently, `M-C-x') means press and hold ''both'' Control and Meta (Alt) keys while hitting the `x' key.
+A notation such as `C-M-x' (or, equivalently, `M-C-x') means press and hold ''both'' Control and Meta (Alt) keys while hitting the `x' key.
 
 See the section "Kinds of User Input" in the EmacsManual ([[Manual:User Input]]).
 
