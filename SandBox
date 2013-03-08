@@ -36,6 +36,12 @@ foo
    bar
    </pre>
 
+----
+
+||First Row|||| Second Column ||
+|| || Not Empty||
+||||Span the columns||
+
 
 '''My Editing End'''
 
