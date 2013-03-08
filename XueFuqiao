@@ -163,6 +163,7 @@ https://github.com/xfq/xfq-emacs-init-files
 * Dragora GNU/Linux
 * DuckDuckGo
 * Dvips
+* Ditaa
 * English
 * FilesystemHierarchyStandard
 * Fontconfig
@@ -189,7 +190,8 @@ https://github.com/xfq/xfq-emacs-init-files
 * LambdaExpression
 * LaTeX
 * Lempel-Ziv coding (LZ77)
-* libacl
+* Libacl
+* Libidn
 * LibreJS
 * libxml
 * Linux-libre and GNU Mach
