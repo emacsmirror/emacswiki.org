@@ -3,10 +3,24 @@ This code extends Dired to allow it to sort by file name, file time, file extens
 
 <pre>
 
+;;; dired-fixups.el --- fixups for dired mode
+
+;; Author: Dino Chiesa
+;; Created: Sat, 31 Mar 2012  10:31
+;; Version: 0.1
+;;
+
 (require 'ls-lisp)
 
-;; redefine this function, to fix the formatting of file sizes in dired mode
+    ;; (defun ls-lisp-format-time (file-attr time-index now)
+    ;;   "################")
+
 (defun ls-lisp-format-file-size (file-size human-readable)
+  "This is a redefinition of the function from `dired.el'. This
+fixes the formatting of file sizes in dired mode, to support very
+large files. Without this change, dired supports 8 digits max,
+which is up to 10gb.  Some files are larger than that.
+"
   (if (or (not human-readable)
           (< file-size 1024))
       (format (if (floatp file-size) " %11.0f" " %11d") file-size)
@@ -15,16 +29,16 @@ This code extends Dired to allow it to sort by file name, file time, file extens
          (post-fixes (list "k" "M" "G" "T" "P" "E") (cdr post-fixes)))
         ((< file-size 1024) (format " %10.0f%s"  file-size (car post-fixes))))))
 
-;; Redefine the sorting in dired to flip between sorting on name, size,
-;; time, and extension, rather than simply on name and time.
 
 (defun dired-sort-toggle ()
-  ;; Toggle between sort by date/name.  Reverts the buffer.
+  "This is a redefinition of the fn from dired.el. Normally,
+dired sorts on either name or time, and you can swap between them
+with the s key.  This function one sets sorting on name, size,
+time, and extension. Cycling works the same.
+"
   (setq dired-actual-switches
         (let (case-fold-search)
-
           (cond
-
            ((string-match " " dired-actual-switches) ;; contains a space
             ;; New toggle scheme: add/remove a trailing " -t" " -S",
             ;; or " -U"
@@ -62,14 +76,10 @@ This code extends Dired to allow it to sort by file name, file time, file extens
 
                    (new-sorting-switch
                     (cond
-                     ((string= old-sorting-switch "t")
-                      "X")
-                     ((string= old-sorting-switch "X")
-                      "S")
-                     ((string= old-sorting-switch "S")
-                      "")
-                     (t
-                      "t"))))
+                     ((string= old-sorting-switch "t") "X")
+                     ((string= old-sorting-switch "X") "S")
+                     ((string= old-sorting-switch "S") "")
+                     (t "t"))))
               (concat
                "-l"
                ;; strip -l and any sorting switches
@@ -83,9 +93,11 @@ This code extends Dired to allow it to sort by file name, file time, file extens
   (revert-buffer))
 
 
-;; redefine this fn, to properly provide the modeline in dired mode,
-;; supporting the new search modes I defined above.
 (defun dired-sort-set-modeline ()
+ "This is a redefinition of the fn from `dired.el'. This one
+properly provides the modeline in dired mode, supporting the new
+search modes defined in the new `dired-sort-toggle'.
+"
   ;; Set modeline display according to dired-actual-switches.
   ;; Modeline display of "by name" or "by date" guarantees the user a
   ;; match with the corresponding regexps.  Non-matching switches are
@@ -94,7 +106,7 @@ This code extends Dired to allow it to sort by file name, file time, file extens
     (setq mode-name
           (let (case-fold-search)
             (cond ((string-match "^-[^t]*t[^t]*$" dired-actual-switches)
-                   "Dired by date")
+                   "Dired by time")
                   ((string-match "^-[^X]*X[^X]*$" dired-actual-switches)
                    "Dired by ext")
                   ((string-match "^-[^S]*S[^S]*$" dired-actual-switches)
@@ -106,12 +118,16 @@ This code extends Dired to allow it to sort by file name, file time, file extens
     (force-mode-line-update)))
 
 
+(provide 'dired-fixups)
+
+;;; dired-fixups.el ends here
+
 </pre>
 
 
 See also:
 
-* DiredSorting – Dired tips and addons for sorting listings
+* DiredSorting â Dired tips and addons for sorting listings
 
 
 
