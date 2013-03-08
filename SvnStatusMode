@@ -12,9 +12,18 @@ StefanReichoer provides a SubVersion mode called [::psvn].el, which is similar t
 You can find the very latest version at:
 
 * http://www.xsteve.at/prg/emacs/psvn.el
+
+The above version has this note at the top "This version is currently not under svn control", which means that it's newer than HEAD of trunk:
+
 * http://svn.apache.org/repos/asf/subversion/trunk/contrib/client-side/emacs/psvn.el
 
 SurendraSinghi has confirmed that the psvn.el works with [[XEmacs]]
+
+=== Subversion 1.7 ===
+
+In subversion 1.7 the format of the working copy was changed. Now there's only one .svn subdirectory in the root of the project. Unfortunately ##psvn## expects each directory to have a .svn subdirectory.
+
+In this [http://svn.haxx.se/users/archive-2012-08/0195.shtml post] there's a patch to update HEAD of trunk to work with this new format. But as this is not the latest version, I've created this [[psvn.el.patch]] to work with [http://www.xsteve.at/prg/emacs/psvn.el the latest version] (timestamped "2012-03-26, 21:23:49").
 
 === Usage ===
 
@@ -57,4 +66,3 @@ Download it from the "contributed" section of the official Subversion repository
 
 ----
 CategoryVersionControl
-
