@@ -43,9 +43,9 @@ foo
 ||||Span the columns||
 || abc ||||||
 
-:indent
-::indent2
-:::indent3
+: indent
+:: indent2
+::: indent3
 
 
 '''My Editing End'''
