@@ -21,6 +21,13 @@ The ##-c## is key: without it, you have to pass a file to open (even if it's ##"
   -a EDITOR specifies to the emacsclientw.exe which editor to run if emacs.exe is not already running
   -c tells emacs to create a new frame instead of trying to use the existing frame
 
+Milouse, 2013/03/08: on Windows XP and Gnu/Emacs 24.2, I have to use the following shortcut to have things working as expected with a non integrated Emacs (just unziped version somewhere in my computer) :
+{{{
+C:\Path\To\emacsclientw.exe --alternate-editor="C:\Path\To\runemacs.exe" -c
+}}}
+
+And, more important thing: you have to put the ##(server-start)## declaration in your init.el file, otherwise the shortcut will keep creating new and disconnected instance of emacs.
+
 
 == Create File Associations ==
 
