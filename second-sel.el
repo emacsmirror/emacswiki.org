@@ -7,9 +7,9 @@
 ;; Copyright (C) 2008-2013, Drew Adams, all rights reserved.
 ;; Created: Fri May 23 09:58:41 2008 ()
 ;; Version: 22.0
-;; Last-Updated: Sat Mar  9 10:23:39 2013 (-0800)
+;; Last-Updated: Sat Mar  9 13:13:43 2013 (-0800)
 ;;           By: dradams
-;;     Update #: 542
+;;     Update #: 556
 ;; URL: http://www.emacswiki.org/second-sel.el
 ;; Doc URL: http://emacswiki.org/SecondarySelection
 ;; Keywords: region, selection, yank, paste, edit
@@ -99,6 +99,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/03/09 dadams
+;;     Added: secondary-save-then-kill-1.
+;;     (mouse-)secondary-save-then-kill: Define using secondary-save-then-kill-1.
 ;; 2013/03/09 dadams
 ;;     Added: second-sel-msg.
 ;;     mouse-drag-secondary: Call second-sel-msg when interactive.
@@ -554,13 +557,26 @@ RING defaults to `kill-ring'."
       (and tail (setcar tail (cons (car ring) (min beg end))))))
   (undo-boundary))
 
-(defvar secondary-selection-save-posn nil
-  "Like `mouse-save-then-kill-posn', but for `secondary-selection-ring'.")
+;;;###autoload
+(defun set-secondary-start (&optional msgp)           ; Suggested binding: `C-x C-M-SPC'
+  "Set start of the secondary selection at point.
+Interactively, or with non-nil optional arg MSGP, display a message."
+  (interactive "p")
+  (when mouse-secondary-overlay (delete-overlay mouse-secondary-overlay))
+  (unless mouse-secondary-start (setq mouse-secondary-start  (make-marker)))
+  (move-marker mouse-secondary-start (point))
+  (if mouse-secondary-overlay
+      (move-overlay mouse-secondary-overlay (point) (point) (current-buffer))
+    (setq mouse-secondary-overlay  (make-overlay (point) (point) (current-buffer)))
+    (overlay-put mouse-secondary-overlay 'face 'secondary-selection))
+  (x-set-selection 'SECONDARY nil)
+  (when msgp (second-sel-msg)))
 
 
 ;;; REPLACES ORIGINAL in `mouse.el'.
 ;;;
 ;;; Use `add-secondary-to-ring' instead of `kill-new'.
+;;  Use helper fn `secondary-save-then-kill-1'.
 ;;;
 ;;;###autoload
 (defun mouse-secondary-save-then-kill (click &optional msgp) ; Suggested binding: `C-M-y'
@@ -588,87 +604,11 @@ In all cases, add the selected text to `secondary-selection-ring', or
 if it is already at the start of that ring, update it there."
   (interactive "e\np")
   (mouse-minibuffer-check click)
-  (let* ((posn          (event-start click))
-         (click-posn    (posn-point posn))
-         (win           (posn-window posn))
-         (buf           (window-buffer win))
-         ;; Do not let a subsequent command append to this one.
-         (this-command  this-command)
-         (click-count   (if (eq (overlay-buffer mouse-secondary-overlay) buf)
-                            mouse-secondary-click-count
-                          0))
-         (beg           (overlay-start mouse-secondary-overlay))
-         (end           (overlay-end   mouse-secondary-overlay)))
-    (cond ((not (numberp click-posn))  nil)
+  (let* ((position  (event-start click))
+         (window    (posn-window position))
+         (buffer    (window-buffer window)))
+    (secondary-save-then-kill-1 (posn-point position) window buffer msgp)))
 
-          ;; If secondary sel is not in BUF, start it at point.
-          ((not (eq buf (or (overlay-buffer mouse-secondary-overlay)
-                            (and mouse-secondary-start  (marker-buffer mouse-secondary-start)))))
-           (select-window win)
-           (setq mouse-secondary-start  (make-marker))
-           (move-marker mouse-secondary-start (point))
-           (move-overlay mouse-secondary-overlay (point) click-posn buf)
-           (add-secondary-to-ring (buffer-substring (overlay-start mouse-secondary-overlay)
-                                                    (overlay-end   mouse-secondary-overlay))
-                                  t)   ; Replace old, if any.
-           (when msgp (second-sel-msg)))
-
-          ;; If user clicked same position, delete secondary selection and reset count.
-          ((and (memq last-command '(mouse-secondary-save-then-kill secondary-save-then-kill))
-                (eq click-posn secondary-selection-save-posn)
-                (eq win (selected-window)))
-           (mouse-save-then-kill-delete-region beg end secondary-selection-ring)
-           (delete-overlay mouse-secondary-overlay)
-           (setq mouse-secondary-click-count    0
-                 secondary-selection-save-posn  nil)
-           (when msgp (message "Second sel DELETED: %d chars" (abs (- beg end)))))
-
-          ;; Otherwise, adjust overlay by moving one end (whichever is closer) to CLICK-POSN.
-          ((and beg  (eq buf (overlay-buffer mouse-secondary-overlay)))
-           (let ((range  (mouse-start-end click-posn click-posn click-count)))
-             (if (< (abs (- click-posn beg)) (abs (- click-posn end)))
-                 (move-overlay mouse-secondary-overlay (car range) end)
-               (move-overlay mouse-secondary-overlay beg (nth 1 range))))
-           (add-secondary-to-ring (buffer-substring (overlay-start mouse-secondary-overlay)
-                                                    (overlay-end   mouse-secondary-overlay))
-                                  ;; If repeat this cmd then replace, else add.
-                                  (memq last-command '(mouse-secondary-save-then-kill
-                                                       secondary-save-then-kill)))
-           ;; Arrange for a repeated mouse-3 to kill this region.
-           (setq secondary-selection-save-posn  click-posn)
-           (when msgp (second-sel-msg)))
-
-          ;; Otherwise, set secondary selection overlay.
-          (t
-           (select-window win)
-           (when mouse-secondary-start
-             ;; All we have is one end of a selection, so put the other end here.
-             (let ((start  (+ 0 mouse-secondary-start))) ; Why do we add 0?
-               (move-overlay mouse-secondary-overlay start click-posn)
-               (add-secondary-to-ring (buffer-substring mouse-secondary-start click-posn))))
-           (setq secondary-selection-save-posn  click-posn)
-           (when msgp (second-sel-msg))))
-
-    ;; Finally, set the window system's secondary selection.
-    (when (overlay-buffer mouse-secondary-overlay)
-      (let ((str  (buffer-substring (overlay-start mouse-secondary-overlay)
-                                    (overlay-end   mouse-secondary-overlay))))
-        (when (> (length str) 0) (x-set-selection 'SECONDARY str))))))
-
-;;;###autoload
-(defun set-secondary-start (&optional msgp)           ; Suggested binding: `C-x C-M-SPC'
-  "Set start of the secondary selection at point.
-Interactively, or with non-nil optional arg MSGP, display a message."
-  (interactive "p")
-  (when mouse-secondary-overlay (delete-overlay mouse-secondary-overlay))
-  (unless mouse-secondary-start (setq mouse-secondary-start  (make-marker)))
-  (move-marker mouse-secondary-start (point))
-  (if mouse-secondary-overlay
-      (move-overlay mouse-secondary-overlay (point) (point) (current-buffer))
-    (setq mouse-secondary-overlay  (make-overlay (point) (point) (current-buffer)))
-    (overlay-put mouse-secondary-overlay 'face 'secondary-selection))
-  (x-set-selection 'SECONDARY nil)
-  (when msgp (second-sel-msg)))
 
 ;;;###autoload
 (defun secondary-save-then-kill (&optional position msgp) ; Suggested binding: `C-x C-M-RET'
@@ -676,31 +616,39 @@ Interactively, or with non-nil optional arg MSGP, display a message."
 POSITION (point, if interactive) plays the click-position role.
 Interactively, or with non-nil optional arg MSGP, display a message."
   (interactive "d\np")
+  (secondary-save-then-kill-1 (or position  (point)) (selected-window) (window-buffer) msgp))
+
+(defvar secondary-selection-save-posn nil
+  "Like `mouse-save-then-kill-posn', but for `secondary-selection-ring'.")
+
+(defun secondary-save-then-kill-1 (position win buf msgp)
+  "Helper for `(mouse-)secondary-save-then-kill'."
   (unless position (setq position  (point)))
-  (let* ((buf           (window-buffer))
-         ;; Do not let a subsequent command append to this one.
-         (this-command  this-command)
-         (click-count   (if (eq (overlay-buffer mouse-secondary-overlay) buf)
-                            mouse-secondary-click-count
-                          0))
-         (beg           (overlay-start mouse-secondary-overlay))
-         (end           (overlay-end   mouse-secondary-overlay)))
+  (let ((this-command  this-command)    ; Do not let a subsequent command append to this one.
+        (click-count   (if (eq (overlay-buffer mouse-secondary-overlay) buf)
+                           mouse-secondary-click-count
+                         0))
+        (beg           (overlay-start mouse-secondary-overlay))
+        (end           (overlay-end   mouse-secondary-overlay)))
+
     (cond ((not (numberp position)) nil)
 
-          ;; If secondary sel is not in BUF, start it at point.  Interactively, it is now empty.
+          ;; If secondary sel is not in BUF, start it at point.
           ((not (eq buf (or (overlay-buffer mouse-secondary-overlay)
                             (and mouse-secondary-start  (marker-buffer mouse-secondary-start)))))
+           (select-window win)
            (setq mouse-secondary-start  (make-marker))
            (move-marker mouse-secondary-start (point))
            (move-overlay mouse-secondary-overlay (point) position buf)
            (add-secondary-to-ring (buffer-substring (overlay-start mouse-secondary-overlay)
                                                     (overlay-end   mouse-secondary-overlay))
-                                  t)   ; Replace old, if any.
+                                  t)    ; Replace old, if any.
            (when msgp (second-sel-msg)))
 
-          ;; If user set same position, delete secondary selection and reset count.
+          ;; If user set same position last, delete secondary selection and reset count.
           ((and (memq last-command '(mouse-secondary-save-then-kill secondary-save-then-kill))
-                (eq position secondary-selection-save-posn))
+                (eq position secondary-selection-save-posn)
+                (eq win (selected-window)))
            (mouse-save-then-kill-delete-region beg end secondary-selection-ring)
            (delete-overlay mouse-secondary-overlay)
            (setq mouse-secondary-click-count    0
@@ -724,6 +672,7 @@ Interactively, or with non-nil optional arg MSGP, display a message."
 
           ;; Otherwise, set secondary selection overlay.
           (t
+           (select-window win)
            (when mouse-secondary-start
              ;; All we have is one end of a selection, so put the other end here.
              (let ((start  (+ 0 mouse-secondary-start))) ; Why do we add 0?
