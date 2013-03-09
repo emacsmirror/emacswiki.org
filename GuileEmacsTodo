@@ -11,7 +11,9 @@
 * Installation instructions
 * Debugging instructions
 * Eliminate forwarded variables (either use normal variables or implement symbol macros)
-* Remove unnecessary signal handlers (notably SIGXCPU, SIGPWR which bdw-gc uses)
-* Fix i386 segfault (some format strings are broken but happen to work on amd64)
+* '''DONE''' Remove unnecessary signal handlers (notably SIGXCPU, SIGPWR which bdw-gc uses)
+* '''DONE''' Fix EMACS_INT formatting
 * Find beta testers for non-GNU platforms
 * Fix XSETSUBR syntax error for guile 2.0.x
+* Determine required libgc and guile versions
+* Test gdb configuration
