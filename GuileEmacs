@@ -48,7 +48,7 @@ On 2012-04-09, there was an announcement on emacs-devel about GoogleSummerOfCode
 * [https://lists.gnu.org/archive/html/emacs-devel/2012-04/msg00291.html Re: Emacs and Guile]
 
 
-As of 2013-03, the latest state of "guilemacs" as some call it, can be found at [http://git.hcoop.net/?p=bpt/emacs.git;a=summary BT Templeton's Emacs repository] and in [http://git.hcoop.net/?p=bpt/guile.git;a=summary their Guile repository]. Progress has slowed since the end of GoogleSummerOfCode, but there are still signs of life, and commits being made. Contributions are very welcome; it seems to be almost there.
+As of 2013-03, the latest state of "guilemacs" as some call it, can be found at [http://git.hcoop.net/?p=bpt/emacs.git;a=summary BT Templeton's Emacs repository] and in [http://git.hcoop.net/?p=bpt/guile.git;a=summary their Guile repository]. Progress has slowed since the end of GoogleSummerOfCode, but there are still signs of life, and commits being made. Contributions are very welcome; it seems to be almost there. It compiles and runs ERC, Gnus, etc. all fine, behaving indistinguishable from a normal Emacs build, but not entirely without issues, most notably locking up during certain heavy operations.
 
 See also other EmacsImplementations.
 
