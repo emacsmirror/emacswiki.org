@@ -14,6 +14,16 @@ Discussion about the TextFormattingRules used in contributing to pages  is at Te
 
 '''Add your suggestions below this line.'''
 
+== Diff with Summary ==
+
+[new]
+Random feature request of the day: when viewing the diff of a page (like [http://www.emacswiki.org/emacs/?action=browse;diff=1;id=ShowParenMode here]) it would be quite cool to see the message that the commit had, too.
+
+-- shjk 2013-03-09 16:24 UTC
+
+[new]
+I like the idea. -- Alex
+
 == Provide alternate stylesheets ==
 
 I would like to choose the stylesheet for EmacsWiki easily.  If Emacswiki could provide alternate stylesheets---see  [http://orgmode.org/worg/ Worg]---then I will be able to choose the theme using View->Page Style->etc menu in Firefox. -- [[115.241.16.57]]
