@@ -3,13 +3,18 @@ interface to the web, but you don't really need HTML rendering.
 Just as HttpGet makes HTTP GET requests, the code on this page
 makes HTTP POST requests.
 
+
+== Different methods for doing HTTP POSTS ==
+
 * [http://savannah.nongnu.org/cgi-bin/viewcvs/*checkout*/http-emacs/http-emacs/http-post.el?rev=HEAD&content-type=text/plain http-post.el] HEAD version from [https://savannah.nongnu.org/projects/http-emacs/ http-emacs] project at [https://savannah.nongnu.org Savannah] (non-GNU).
 * Lisp:http-post-curl.el - adds curl support for https urls
 * Lisp:http-post-simple.el - POST support, including multipart, using the UrlPackage.
 
-See HttpGet.
+See also HttpGet.
 
-See also the UrlPackage which is now part of Emacs and provides support for authentication and cookies. It can do POST requests, for example:
+== Url package ==
+
+The UrlPackage which is now part of Emacs, provides support for authentication and cookies and can do POST requests, for example:
 
         (let ((url-request-method        "POST")
 	      (url-request-extra-headers `(("Content-Type" . "application/x-www-form-urlencoded")))
@@ -17,7 +22,7 @@ See also the UrlPackage which is now part of Emacs and provides support for auth
 	  (with-current-buffer (url-retrieve-synchronously url)
             (buffer-string)))
 
-----
+== http-post-simple ==
 
 DennyZhang says: I like Lisp:http-post-simple.el very much.
 
