@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 2013.03.07
-;; Last-Updated: Thu Mar  7 08:39:46 2013 (-0800)
+;; Last-Updated: Sun Mar 10 09:58:59 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 23336
+;;     Update #: 23361
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1496,11 +1496,15 @@
 (font-lock-add-keywords
  'emacs-lisp-mode
  `((,(concat "(" (regexp-opt
-                  '("icicle-define-add-to-alist-command" "icicle-define-command"
-                    "icicle-define-file-command" "icicle-define-sort-command")
+                  '("icicle-define-add-to-alist-command" "icicle-define-bookmark-command"
+                    "icicle-define-bookmark-other-window-command" "icicle-define-command"
+                    "icicle-define-file-command" "icicle-define-search-bookmark-command"
+                    "icicle-define-sort-command")
                   t)
              ;; $$ "\\s-+\\(\\sw\\(\\sw\\|\\s_\\)+\\)")
-             "\\>[ \t'\(]*\\(\\sw+\\)?")
+             ;; $$$$$$ "\\>[ \t'\(]*\\(\\sw+\\)?") ; Does not work for Emacs 24.3+
+             ;; $$$$$$ "\\_>[ \t'\(]*\\(\\(\\sw\\|\\s_\\)+\\)?") ; \\_> does not work for Emacs 20.
+             "\\>[ \t'\(]*\\(\\(\\sw\\|\\s_\\)+\\)?")
     (1 font-lock-keyword-face)
     ;; Index (2 or 3) depends on whether or not shy groups are supported.
     ,(list (if (string-match "\\(?:\\)" "") 2 3) 'font-lock-function-name-face nil t))
@@ -1508,12 +1512,15 @@
    ("(\\(icicle-user-error\\)\\>" 1 font-lock-warning-face)))
 
 ;; Make Icicles macros indent better.
-(put 'icicle-define-command              'common-lisp-indent-function '(4 &body))
-(put 'icicle-define-file-command         'common-lisp-indent-function '(4 &body))
-(put 'icicle-define-sort-command         'common-lisp-indent-function '(4 4 &body))
-(put 'icicle-define-add-to-alist-command 'common-lisp-indent-function '(4 &body))
-(put 'icicle-with-selected-window        'common-lisp-indent-function '(4 &body))
-(put 'icicle-condition-case-no-debug     'common-lisp-indent-function '(4 4 &body))
+(put 'icicle-define-add-to-alist-command          'common-lisp-indent-function '(4 &body))
+(put 'icicle-define-bookmark-command              'common-lisp-indent-function '(4 &body))
+(put 'icicle-define-bookmark-other-window-command 'common-lisp-indent-function '(4 &body))
+(put 'icicle-define-command                       'common-lisp-indent-function '(4 &body))
+(put 'icicle-define-file-command                  'common-lisp-indent-function '(4 &body))
+(put 'icicle-define-search-bookmark-command       'common-lisp-indent-function '(4 &body))
+(put 'icicle-define-sort-command                  'common-lisp-indent-function '(4 4 &body))
+(put 'icicle-with-selected-window                 'common-lisp-indent-function '(4 &body))
+(put 'icicle-condition-case-no-debug              'common-lisp-indent-function '(4 4 &body))
 
 
 
