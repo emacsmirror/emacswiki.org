@@ -57,6 +57,33 @@ Since I can't contact with the original author (Tom Schutzer-Weissmann), I post 
         (beginning-of-buffer))
       ))
 
+== Emacs-Web ==
+
+[[http://github.com/nicferrier/emacs-web|Emacs-Web]] is an attempt to make a simple HTTP client library for EmacsLisp.
+
+Simple example:
+
+{{{
+;; -*- lexical-binding: t -*-
+
+(require 'web)
+
+(defun my-web-post-done (result)
+   (message "the web post is done! %S" result))
+
+(let ((query-data (make-hash-table :test 'equal)))
+  (puthash 'name "nic" query-data)
+  (puthash 'email "nic@example.com" query-data)
+  (web-http-post
+    (lambda (con header data)
+      (my-web-post-done data))
+    "http://localhost:8001/someplace"
+    :data query-data))
+}}}
+
+=== Getting Emacs-Web ===
+
+It's available from marmalade [[http://marmalade-repo.org/packages/emacs-web|here]].
 
 ----
 CategoryInterface
