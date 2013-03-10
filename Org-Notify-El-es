@@ -1,0 +1,26 @@
+[[en:Org-Notify-El]]
+
+Una pequeña librería diseñada para poder realizar notificaciones de los "DEADLINES" que se vencen en dos semanas.
+
+
+Utiliza [[XCowsayEl-es]] para poder notificar, aunque también se puede adaptar para otro notificador.
+
+== Instalación ==
+
+Primero, instale [[XCowsayEl-es]]. El procedimiento es similar a la instalación de esta librería.
+
+Para instalarlo, descarge Lisp:org-notify.el y escriba lo siguiente en el InitFile(.emacs):
+
+     (setq load-path (cons "/mi/path/a/org-notify/" load-path))
+     (require 'org-notify)
+     
+
+Para que org-notify se ejecute automáticamente al abrir un archivo Org, agrege esto al final del código anterior:
+
+     (add-hook 'org-mode-hook 'org-notify)
+
+
+== Uso ==
+
+Sencillamente, al ejecutar M-x `org-notify' sobre una archivo Org abierto la librería buscará todos los DEADLINES y mostrará los resutados usando la aplicación xcowsay. 
+
