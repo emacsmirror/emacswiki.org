@@ -25,7 +25,7 @@ You can reach me at **rbielaws at i1 dot net** (thats the letter I and
 * [http://www.emacswiki.org/cgi-bin/wiki/DoubleKeyBinding#rgb-insert-if-double rgb-insert-if-double]## . . . ##some HTML keys
 * ColumnizeWords## . . . . ##Formats a series of words into multiple columns
 * ColumnMarker## . . . . . ##Column markers for text alignment
-* [http://www.emacswiki.org/cgi-bin/wiki/CategoryUndo#temporary-invisible-change temporary-invisible-change]##. ##Make temporary changes that go away without changing the buffer-undo-list.
+* [http://www.emacswiki.org/cgi-bin/wiki/UndoCommands#temporary-invisible-change temporary-invisible-change]##. ##Make temporary changes that go away without changing the buffer-undo-list.
 * Lisp:PowerShell-Mode.el ## . ##Major mode for editing PowerShell scripts
 
 
