@@ -76,6 +76,34 @@ RTFM'ing :). You can see the details (not final explanation) on my
 wiki page XavierMaillard. 
 
 
+== Emacs-Web ==
+
+[[http://github.com/nicferrier/emacs-web|Emacs-Web]] is an attempt to make a simple HTTP client library for EmacsLisp.
+
+Simple example:
+
+{{{
+;; -*- lexical-binding: t -*-
+
+(require 'web)
+
+(let ((query-data (make-hash-table :test 'equal)))
+  (puthash 'name "nic" query-data)
+  (puthash 'email "nic@example.com" query-data)
+  (web-http-get
+    (lambda (con header data)
+      (with-current-buffer (get-buffer-create "*httpbuf*")
+         (erase-buffer)
+         (insert data)
+         (switch-to-buffer (current-buffer))))
+    "http://localhost:8001/someplace"
+    :data query-data))
+}}}
+
+=== Getting Emacs-Web ===
+
+It's available from marmalade [[http://marmalade-repo.org/packages/emacs-web|here]].
+
 
 ----
 See also: SimpleWikiEditMode, HttpPost, [[HttpGetWin32]]
