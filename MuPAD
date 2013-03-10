@@ -1,9 +1,5 @@
 Is a computer algebra system, available for educational and personal use at [http://www.mupad.com/ MuPAD].  Only the Windows GUI is really proprietary, but nevertheless it is non-free.
 
-There us a mupad elisp package available:
-
-* ftp://vh213601.truman.edu/pub/EMuPAD/mupad.el
-
 See MuPACS for editing mode.
 
 And perhaps a line on that I believe one needs a commercial license for commercial use -- Duh!
