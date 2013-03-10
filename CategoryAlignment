@@ -8,7 +8,7 @@ Matthias Helmling. Do not confuse with the align.el lisp file
 provided with recent emacs versions and described above.
 
   
-* ColumnizeWords is an extension written by Rick Bielawski. It provides the
+* ColumnizeWords is an extension written by [[Rick_Bielawski]]. It provides the
 <code>columnize-text</code> command, which lines up words or numbers, 
 either by rows or columns.  This function is designed to be used manually
 when editing buffers.
