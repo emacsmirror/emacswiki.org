@@ -7,16 +7,17 @@ http://Microsoft.com/powershell
 
 == Editing Mode ==
 
-There are two editing modes:
+There are three editing modes:
 
 * [http://VivekSharma.com/techlog/attache/powershell-mode.el.txt Powershell-mode]. Version: 0.5, Author: Vivek Sharma, Date: Oct 2008.
 
 * [http://svn.fperrin.net/powershell-mode/powershell-mode.el powershell-mode.el]. Author: Frédéric Perrin, last updated : Feb 2010.
 
-I (Frédéric Perrin) started the second because of a lack of licence on Vivek's mode. My version has more simple code for indenting (more robust and less imposing of a style in general than Vivek's version), speedbar/imenu support, syntax hilighting (some features for v2 may be missing).
+: I (Frédéric Perrin) started the second because of a lack of licence on Vivek's mode. My version has more simple code for indenting (more robust and less imposing of a style in general than Vivek's version), speedbar/imenu support, syntax highlighting (some features for v2 may be missing).
 
-* [[Lisp:PowerShell-Mode.el]]. with permission, [[Rick_Bielawski]] made significant updates to Frédéric Perrin's version Sep 2012.
-Frédéric told me he is ok with this (the ElispArea version) being the version receiving long term maintenance.
+* [[Lisp:PowerShell-Mode.el]].  Frédéric Perrin's version with significant updates made by [[Rick_Bielawski]].
+
+: Frédéric told [[Rick_Bielawski|me]] he is ok with the ElispArea version being the version receiving long term maintenance (which I'm trying to provide) so hopefully we can now have just this one place for people to look.  If I can't be contacted or are unresponsive to your needs the license lets you pick up where we left off right [[Lisp:PowerShell-Mode.el|here]] rather than creating yet another location for people to consider.  Thanks.
 
 == Powershell as an Inferior Shell == 
 
