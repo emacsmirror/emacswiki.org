@@ -51,5 +51,19 @@ are therefore free to use A- prefix for you own keys!
 
 Enjoy ;-)
 
+=== Using xkb options to choose the meaning of the Window key ===
+
+Most modern xorg installations have a bundle of options to set keyboard behaviour; with the xkb tool it's easy to configure everything on a single command line.
+Currently I'm using this on a standard PC keyboard:
+
+ setxkbmap -model pc105 -layout us,us -variant dvorak-alt-intl,basic -option "" -option lv3:ralt_switch -option ctrl:nocaps -option grp:shifts_toggle -option grp_led:caps -option altwin:left_meta_win
+
+This rather long line chooses two variants, i.e. 'normal' (qwerty) and dvorak, allows me to switch by pressing both shift keys together, use the right alt key to 'group shift' (i.e. type accented characters), indicate the alternate variant by turning on the Caps Lock indicator, set the Caps Lock key to function as an extra Ctrl key, and (finally) use the left Windows key as a Meta key. This leaves Alt to the window manager.
+
+You should check out /usr/share/X11/xkb/rules/base to find options you like.
+
+Most desktop environments allow you to configure xkb settings in a GUI, which usually overrides whatever you type on the command line. For my environment, which is xfce4, it is unfortunately not possible to enter options--just layout and variant.
+
+
 ----
 MetaKeyProblems
