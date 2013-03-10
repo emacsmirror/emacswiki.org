@@ -9,7 +9,9 @@ I use [https://duckduckgo.com/?q=site%3Aemacswiki.org DuckDuckGo] for searching 
 * [[Execute.el]] : For executing various asynchronous external programs.
 * [[SQLite-el]] : For connecting and executing queries using the SqliteInterface.
 * [[DuckDuckGo-el]] : For searching in the web using EmacsLisp and [https://duckduckgo.com DuckDuckGo].
-* [[JabberEncryptEl-es]] :: For sending and recieving encrypted information transparently using JabberEl.
+* [[JabberEncryptEl-es]] : For sending and recieving encrypted information transparently using JabberEl.
+* [[XCowsayEl-es]] : For using showing message using !XCowSay.
+* [[Org-Notify-El-es]] : For notifying the coming DEADLINES using [[XCowSayEl-es]].
 
 === On GNA! ===
 https://gna.org/images/Water.theme/gnalogo.png
