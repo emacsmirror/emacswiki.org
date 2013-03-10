@@ -1,0 +1,19 @@
+[[en:XCowsayEl]]
+
+La librería Lisp:xcowsay.el brinda una serie de comandos para comunicarse con la aplicación xcowsay. Ésta aplicación es similar a "cowsay", muestra una vaquita con un mensaje, el cuál es útil para mostrar fortunes(un mensaje divertido) o para notificar eventos.
+
+== Instalación ==
+
+Se requiere el programa xcowsay y dbus.
+
+Simplemente, agrega lo siguiente en tu InitFile(.emacs):
+
+     (setq load-path (cons "/mi/path/a/xcowsay/" load-path))
+     (require 'xcowsay)
+
+== Uso ==
+
+Primero se deberá ejecutar xcowsay en forma de "daemon"(en segundo plano) de la siguiente manera: <tt>xcowsay --daemon</tt>.
+
+Puedes utilizar la función `xcowsay' de forma interactiva llamándola con M-x `xcowsay' o utilizarla dentro de otra función. Recibe un único parámetro: un string que es el mensaje a mostrar.
+
