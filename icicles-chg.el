@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Mar  8 08:09:45 2013 (-0800)
+;; Last-Updated: Sun Mar 10 10:07:34 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 9791
+;;     Update #: 9797
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -7737,6 +7737,12 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles.el'")
 ;;
+;; 2013/03/10 dadams
+;;     Font-lock keywords for emacs-lisp-mode:
+;;       Changed \\>[ \t'\(]*\\(\\sw+\\)? to \\>[ \t'\(]*\\(\\(\\sw\\|\\s_\\)+\\)?
+;;         (see Emacs bug #13755).
+;;     Added for font-lock and common-lisp-indent-function:
+;;       icicle-define(-search)-bookmark(-other-window)-command.
 ;; 2013/03/07 dadams
 ;;     Define font-lock-keywords for icicle-user-error.
 ;; 2013/02/16 dadams
