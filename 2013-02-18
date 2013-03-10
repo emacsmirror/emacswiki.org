@@ -11,3 +11,9 @@ It looks more and more likely that Emacs Wiki will eventually switch to the new 
 Please tell us how to get back to the current default appearance and cookie state, IOW, how to completely undo (cleanly) the effect of that clicking that link will have.  Then I will try it out and offer feedback.
 
 Also, please let us know how, after you make the change, to get back to the effect of the current (now) default appearance, in case we prefer it.  Thx. -- DrewAdams
+
+[new]
+Simply getting rid of the "-test" switches you back to the old look and feel:
+http://www.emacswiki.org/emacs/?css=
+
+Later, once the switch is done, I'm sure we can provide the old look with a different script or cookie setting. I just haven't decided on the details,yet.
