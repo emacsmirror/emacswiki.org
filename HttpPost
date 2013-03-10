@@ -9,6 +9,7 @@ makes HTTP POST requests.
 * [http://savannah.nongnu.org/cgi-bin/viewcvs/*checkout*/http-emacs/http-emacs/http-post.el?rev=HEAD&content-type=text/plain http-post.el] HEAD version from [https://savannah.nongnu.org/projects/http-emacs/ http-emacs] project at [https://savannah.nongnu.org Savannah] (non-GNU).
 * Lisp:http-post-curl.el - adds curl support for https urls
 * Lisp:http-post-simple.el - POST support, including multipart, using the UrlPackage.
+* [[http://marmalade-repo.org/packages/emacs-web|Emacs Web]] - a simple HTTP client with POST support
 
 See also HttpGet.
 
