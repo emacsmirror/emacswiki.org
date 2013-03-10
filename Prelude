@@ -1,0 +1,17 @@
+*Prelude* has the goal to ease the initial Emacs setup process and to provide you with a much more powerful and productive experience than that you get out of the box. By using Emacs Prelude you're basically getting a "Get me out of the nasty _get to know Emacs enough to be able to use it_ process, I just want to use Emacs" card.
+
+Emacs Prelude is compatible ONLY with GNU Emacs 24.
+
+== Installation == 
+
+Assuming you're using an Unix-like OS (*BSD, GNU/Linux, OS X, Solaris, etc), you already have Emacs 24 installed, as well as git & curl you can skip the whole manual and just type in your favorite shell the following command:
+
+    curl -L https://github.com/bbatsov/prelude/raw/master/utils/installer.sh | sh
+
+You can now power up your Emacs, sit back and enjoy Prelude.
+
+More information and installation instructions are available on [https://github.com/bbatsov/prelude GitHub].
+
+---
+
+CategoryProgrammerUtils
