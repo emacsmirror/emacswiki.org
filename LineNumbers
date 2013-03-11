@@ -267,6 +267,13 @@ Tested with GNU Emacs 23.3
 
 -- sabof
 
+== Linum: background color under linum in the left-margin area? ==
+
+It is possible to change the linum's face so that the background has a custom color, but how to fix the background of the left-margin under line numbers so that it has the same color (not the default one)? See the snapshot.
+
+[[image:leftmargin]]
+
+
 == Setnu ==
 
 If you want to display line numbers for every line you are editing,
