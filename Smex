@@ -70,3 +70,40 @@ I don't like to have smex update every time I run (auto-update is usually good e
       (when (boundp 'smex-cache)
         (smex-update)))
     (add-hook 'after-load-functions 'smex-update-after-load)
+
+== Using acronyms ==
+You can see mnemonical commands (within completion) before the others with this code snippet:
+{{{
+(defun acronym-matches ()
+  (let* ((regex
+          (concat "^"
+                  (mapconcat 'char-to-string
+                             ido-text
+                             "[^-]*-") "[^-]*$")))
+    (reverse (remove-if-not (lambda (i) (string-match regex i)) items))))
+
+(defadvice ido-set-matches-1 (after acronym-matches)
+  (if (> (length ido-text) 1)
+      (setq ad-return-value (append (acronym-matches) ad-return-value))))
+
+(ad-activate 'ido-set-matches-1)
+
+(defun acronym-matches ()
+  (let* ((regex
+          (concat "^"
+                  (mapconcat 'char-to-string
+                             ido-text
+                             "[^-]*-") "[^-]*$")))
+    (reverse (remove-if-not (lambda (i) (string-match regex i)) items))))
+}}}
+e.g. <b>without</b> this code the completion of 'ffow' shows:
+<pre>
+{ ediff-show-registry | Buffer-menu-1-window | Buffer-menu-2-window ...
+</pre>
+<b>with</b>:
+<pre>
+{ find-file-other-window | find-function-other-window | ediff-show-registry ...
+</pre>
+
+[new]
+<b>Warning:</b> as you can see, this is an advice for 'ido-set-matches-1' and it's run on every 'ido-completing-read'. Is there a way to ignore all calls but smex?
