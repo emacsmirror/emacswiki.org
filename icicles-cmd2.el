@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Thu Mar  7 11:29:34 2013 (-0800)
+;; Last-Updated: Mon Mar 11 15:29:58 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6295
+;;     Update #: 6314
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -338,17 +338,14 @@
 (require 'icicles-var)                  ; (This is required anyway by `icicles-fn.el'.)
   ;; icicle-abs-file-candidates, icicle-acting-on-next/prev, icicle-all-candidates-action,
   ;; icicle-all-candidates-list-action-fn, icicle-all-candidates-list-alt-action-fn,
-  ;; icicle-apply-nomsg, icicle-apropos-complete-match-fn, icicle-bookmark-history,
-  ;; icicle-buffer-sort-first-time-p, icicle-candidate-action-fn, icicle-candidate-alt-action-fn,
-  ;; icicle-candidate-entry-fn, icicle-candidate-help-fn, icicle-candidate-nb,
-  ;; icicle-candidate-properties-alist, icicle-candidates-alist, icicle-char-property-value-history,
-  ;; icicle-color-history, icicle-complete-keys-alist, icicle-completing-keys-p,
-  ;; icicle-completion-candidates, icicle-completion-set-history, icicle-current-completion-mode,
-  ;; icicle-current-input, icicle-delete-candidate-object, icicle-dictionary-history,
-  ;; icicle-doc-last-initial-cand-set, icicle-explore-final-choice, icicle-explore-final-choice-full,
-  ;; icicle-extra-candidates, icicle-extra-candidates-dir-insert-p, icicle-face-name-history,
-  ;; icicle-fancy-candidates-p, icicle-font-name-history, icicle-full-cand-fn,
-  ;; icicle-function-name-history, icicle-fundoc-last-initial-cand-set,
+  ;; icicle-apply-nomsg, icicle-bookmark-history, icicle-buffer-sort-first-time-p,
+  ;; icicle-candidate-action-fn, icicle-candidate-alt-action-fn, icicle-candidate-entry-fn,
+  ;; icicle-candidate-help-fn, icicle-candidate-nb, icicle-candidate-properties-alist,
+  ;; icicle-candidates-alist, icicle-char-property-value-history, icicle-complete-keys-alist,
+  ;; icicle-completing-keys-p, icicle-completion-candidates, icicle-current-completion-mode,
+  ;; icicle-current-input, icicle-delete-candidate-object,  icicle-doc-last-initial-cand-set,
+  ;; icicle-explore-final-choice, icicle-explore-final-choice-full, icicle-extra-candidates,
+  ;; icicle-extra-candidates-dir-insert-p, icicle-full-cand-fn, icicle-fundoc-last-initial-cand-set,
   ;; icicle-get-alist-candidate-function, icicle-hist-cands-no-highlight, icicle-hist-var,
   ;; icicle-Info-only-rest-of-book-p, icicle-key-prefix-description, icicle-last-completion-candidate,
   ;; icicle-last-completion-command, icicle-last-input, icicle-last-sort-comparer,
@@ -360,11 +357,10 @@
   ;; icicle-proxy-candidates, icicle-require-match-p, icicle-saved-completion-candidate,
   ;; icicle-saved-completion-candidates, icicle-scan-fn-or-regexp, icicle-search-command,
   ;; icicle-search-complement-domain-p, icicle-search-context-level, icicle-search-context-regexp,
-  ;; icicle-search-current-overlay, icicle-search-final-choice, icicle-search-history,
-  ;; icicle-search-in-context-fn, icicle-searching-p, icicle-search-level-overlays, icicle-search-modes,
-  ;; icicle-search-overlays, icicle-search-refined-overlays, icicle-search-replacement,
-  ;; icicle-transform-before-sort-p, icicle-vardoc-last-initial-cand-set,
-  ;; icicle-variable-name-history, icicle-whole-candidate-as-text-prop-p
+  ;; icicle-search-current-overlay, icicle-search-final-choice, icicle-search-in-context-fn,
+  ;; icicle-searching-p, icicle-search-level-overlays, icicle-search-modes, icicle-search-overlays,
+  ;; icicle-search-refined-overlays, icicle-search-replacement, icicle-transform-before-sort-p,
+  ;; icicle-vardoc-last-initial-cand-set, icicle-whole-candidate-as-text-prop-p
 (require 'icicles-fn)                   ; (This is required anyway by `icicles-mcmd.el'.)
   ;; icicle-candidate-short-help, icicle-completing-read-history, icicle-highlight-lighter,
   ;; icicle-insert-cand-in-minibuffer, icicle-some
