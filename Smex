@@ -87,14 +87,6 @@ You can see mnemonical commands (within completion) before the others with this 
       (setq ad-return-value (append (acronym-matches) ad-return-value))))
 
 (ad-activate 'ido-set-matches-1)
-
-(defun acronym-matches ()
-  (let* ((regex
-          (concat "^"
-                  (mapconcat 'char-to-string
-                             ido-text
-                             "[^-]*-") "[^-]*$")))
-    (reverse (remove-if-not (lambda (i) (string-match regex i)) items))))
 }}}
 e.g. <b>without</b> this code the completion of 'ffow' shows:
 <pre>
