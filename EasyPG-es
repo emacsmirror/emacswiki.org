@@ -1,0 +1,80 @@
+!EasyPG es una interfaz para GnuPG en Emacs. Tiene dos aspectos interesantes:
+
+* EPA -- Herramientas convenientes para usar GnuPG desde Emacs (Asistente !EasyPG).
+* EPG -- Una librería que aporta una interfaz funcional a GnuPG (Librería !EasyPG).
+
+La página oficial es:
+
+* http://epg.sourceforge.jp/ 
+* epa-file.el es parte de GNU Emacs: Véase http://git.savannah.gnu.org/cgit/emacs.git/tree/lisp/epa-file.el para el código fuente.
+
+== La Armadura ==
+
+Se dice que una clave posee armadura(armor) cuando se ha traducido a caracteres de texto, de forma que se puede copiar y pegar a correos electrónicos, páginas webs, etc.
+
+Las claves sin armaduras son bytes de información que se torna difícil de enviar en un correo sólo copiando y pegando, posiblemente fucione mejor como archivo adjunto. 
+
+== EasyPG Assistant ==
+
+Se explicará a continuación diversos comandos muy útiles para poder usar básicamente !EasyPG.
+
+<b>Listar las Claves Públicas</b>
+[:listar_claves]
+
+Para listar las claves públicas se debe usar M-x `epa-list-keys'. A partír de aquí se puede:
+
+* Seleccionar una o varias claves para encriptar un archivo o región.
+* [#exportar_claves Exportar] la clave pública para compartir.
+
+<b>Importar Claves Públicas</b>
+[:importar_claves]
+
+Es puede importar mediante dos formas:
+
+* Importando un archivo -- Usando M-x `epa-import-keys'.
+* Importando desde una región de texto -- Usando M-x `epa-import-keys-region'.
+
+Se puede importar tanto claves con armadura o sin armadura.
+
+<b>Exportar Claves Públicas</b>
+[:exportar_claves]
+
+Para exportar una clave pública es preciso:
+
+# Listar las claves(Véase [[#listar_claves]]).
+# Seleccionarlas -- Posicione el cursor sobre una de las claves y presione `m'.
+# Ejecutar la función apropiada -- Usando `epa-export-keys' o seguir leyendo...
+
+Lo ideal sería exportar con armadura, pero !EasyPG, lamentablemente, no posee una función que le otorge armadura a la clave exportada. Por suerte es fácil de hacer, sólo incorpore esta función en su IniFile(~/.emacs):
+
+    (defun epa-export-keys-armored (keys file)
+      "Export selected public KEYS to FILE in an armored."
+      (interactive
+       (let ((epa-armor t)
+    	 (keys (epa--marked-keys))
+    	 default-name)
+         (unless keys
+           (error "No keys selected"))
+         (setq default-name
+    	   (expand-file-name
+    	    (concat (epg-sub-key-id (car (epg-key-sub-key-list (car keys))))
+    		    ".asc")
+    	    default-directory))
+         (list keys
+    	   (expand-file-name
+    	    (read-file-name
+    	     (concat "To file (default "
+    		     (file-name-nondirectory default-name)
+    		     ") ")
+    	     (file-name-directory default-name)
+    	     default-name)))))
+       
+      (let ((epa-armor t))
+        (epa-export-keys keys file)
+        )
+      )
+    
+    (define-key epa-key-list-mode-map "O" 'epa-export-keys-armored)
+        
+Ahora puede exportar usando `epa-export-keys-armored' o la tecla `O'.
+
