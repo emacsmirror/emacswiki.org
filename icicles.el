@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 2013.03.07
-;; Last-Updated: Sun Mar 10 09:58:59 2013 (-0700)
+;; Last-Updated: Mon Mar 11 15:09:59 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 23361
+;;     Update #: 23374
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1501,13 +1501,15 @@
                     "icicle-define-file-command" "icicle-define-search-bookmark-command"
                     "icicle-define-sort-command")
                   t)
-             ;; $$ "\\s-+\\(\\sw\\(\\sw\\|\\s_\\)+\\)")
-             ;; $$$$$$ "\\>[ \t'\(]*\\(\\sw+\\)?") ; Does not work for Emacs 24.3+
-             ;; $$$$$$ "\\_>[ \t'\(]*\\(\\(\\sw\\|\\s_\\)+\\)?") ; \\_> does not work for Emacs 20.
-             "\\>[ \t'\(]*\\(\\(\\sw\\|\\s_\\)+\\)?")
+             (if (> emacs-major-version 21)
+                 "\\_>[ \t'\(]*\\(\\(\\sw\\|\\s_\\)+\\)?"
+               "\\>[ \t'\(]*\\(\\sw+\\)?"))
     (1 font-lock-keyword-face)
     ;; Index (2 or 3) depends on whether or not shy groups are supported.
-    ,(list (if (string-match "\\(?:\\)" "") 2 3) 'font-lock-function-name-face nil t))
+    ,(list (if (string-match "\\(?:\\)" "")
+               2
+             5)
+           'font-lock-function-name-face nil t))
    ("(\\(icicle-condition-case-no-debug\\)\\>" 1 font-lock-keyword-face)
    ("(\\(icicle-user-error\\)\\>" 1 font-lock-warning-face)))
 
