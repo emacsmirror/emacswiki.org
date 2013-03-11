@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Mon Mar 11 10:20:36 2013 (-0700)
+;; Last-Updated: Mon Mar 11 15:45:38 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 9800
+;;     Update #: 9809
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -86,6 +86,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2013/03/11 dadams
+;;     icicle(-customize)-apropos-options-of-type:
+;;       Bound *-last-apropos-complete-match-fn to *-multi-comp-apropos-complete-match for progressive.
 ;; 2013/03/08 dadams
 ;;     (icicle-(visit-marked-file-of-content|buffer(-no-search)))-other-window:
 ;;       Forgot OTHER-WIN arg to icicle-buffer-name-prompt.
@@ -7739,6 +7742,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles.el'")
 ;;
+;; 2012/03/11 dadams
+;;     Font-lock keywords for emacs-lisp-mode, for all Emacs versions, 20-24.
 ;; 2013/03/10 dadams
 ;;     Font-lock keywords for emacs-lisp-mode:
 ;;       Changed \\>[ \t'\(]*\\(\\sw+\\)? to \\>[ \t'\(]*\\(\\(\\sw\\|\\s_\\)+\\)?
