@@ -15,6 +15,19 @@ You can put it into your ~/.emacs file, too, if you like.
 	 (goto-char eshell-last-output-end)
 	 (setq ad-return-value (eldoc-current-symbol)))))
 
+A similar solution that works with emacs 24 and supports eshell aliases -- RussellSim
+
+  (defadvice eldoc-current-symbol (around eldoc-current-symbol activate)
+    ad-do-it
+    (if (and (not ad-return-value)
+             (eq major-mode 'eshell-mode))
+        (save-excursion
+          (goto-char eshell-last-output-end)
+          (let ((esym (eshell-find-alias-function (current-word)))
+                (sym (intern-soft (current-word))))
+            (setq ad-return-value (or esym sum))))))
+
+
 When in eshell, use M-x eldoc-mode to activate it.  Now the following will work as well:
 
  c:/Internet/tmp $ find-file
