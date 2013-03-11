@@ -10,7 +10,6 @@
 dissertation\.com
 essay(writingservices|help|lib|ontime)
 mightystudents\.com
-cheappoolproducts\.com
 koncept\.com
 thoughtmesh\.net
 resumesplanet\.com
@@ -38,3 +37,4 @@ erolove
 japan(ese)?\.com # 2013-02-28 Icicles - Key Binding Discussion
 storejp\.com # 2013-02-28 Icicles - Key Binding Discussion
 jpsales\.com # 2013-02-28 Icicles - Key Binding Discussion
+\bcheap # 2013-03-11 KeyboardMacros
