@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Mar  7 13:18:28 2013 (-0800)
+;; Last-Updated: Mon Mar 11 10:10:27 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 13835
+;;     Update #: 13837
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -4344,10 +4344,11 @@ If LEN is nil, treat it as the length of STRING."
 ;;; Icicles functions - common helper functions ----------------------
 
 (defun icicle-try-switch-buffer (buffer)
-  "Try to switch to BUFFER, first in same window, then in other window."
+  "Try to switch to BUFFER, first in same window, then in other window.
+If the selected window already shows BUFFER, then do nothing."
   (when (and (buffer-live-p buffer)  (not icicle-inhibit-try-switch-buffer))
     (condition-case err-switch-to
-        (switch-to-buffer buffer)
+        (unless (eq (window-buffer) buffer) (switch-to-buffer buffer))
       (error (and (string= "Cannot switch buffers in minibuffer window"
                            (error-message-string err-switch-to))
                   ;; Try another window.  Don't bother if the buffer to switch to is a minibuffer.
