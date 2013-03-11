@@ -3,7 +3,7 @@ This is based on a posting by ThomasBurdick. -- AlexSchroeder
 Newbies are often confused when creating new lists.  This page presents some
 examples showing box diagrams.  Maybe that helps.
 
-Of the Lisp functions described here, the following can use side effects to modify ListStructure: `delete', `add-to-list', `nconc', and `setcar'.  The other functions described here are non-destructive.
+Of the Lisp functions described here, the following can use side effects to modify ListStructure: `delete', `add-to-list', `nconc', `setcar', and `setcdr'.  The other functions described here are non-destructive.
 
 The list we shall be using in our examples is this:
 
@@ -353,6 +353,28 @@ calling setcar on it changes the corresponding element of the list.
  nthcdr 2--------------------------------+
 
 }}}
+
+== setcdr ==
+
+Like `setcar', `setcdr' can be used to modify a list destructively, though instead of modifying the car (ie the "contents") of the cell, it modifies its cdr, or "pointer cell".
+
+  ELISP> (setq list '(alpha beta gamma delta))
+  (alpha beta gamma delta)
+  
+  ELISP> (setcdr (last list) '(epsilon))
+  (epsilon)
+  
+  ELISP> list
+  (alpha beta gamma delta epsilon)
+    
+  ELISP> (setq list '(alpha beta (gamma delta)))
+  (alpha beta (gamma delta))
+  
+  ELISP> (setcdr (nth 2 list) '(eta))
+  (eta)
+  
+  ELISP> list
+  (alpha beta (gamma eta))
 
 == last ==
 
