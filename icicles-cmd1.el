@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Mar  8 08:05:21 2013 (-0800)
+;; Last-Updated: Mon Mar 11 15:43:28 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 25611
+;;     Update #: 25621
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2195,9 +2195,10 @@ the use of a prefix argument."          ; Doc string
    ;; Bind `icicle-apropos-complete-match-fn' to nil to prevent automatic input matching
    ;; in `icicle-unsorted-apropos-candidates' etc., because `icicle-describe-opt-of-type-complete'
    ;; does everything.
-   (icicle-apropos-complete-match-fn   nil)
-   (icicle-candidate-help-fn           'icicle-describe-opt-action)
-   (icicle-pref-arg                    current-prefix-arg))
+   (icicle-apropos-complete-match-fn       nil)
+   (icicle-last-apropos-complete-match-fn  'icicle-multi-comp-apropos-complete-match)
+   (icicle-candidate-help-fn               'icicle-describe-opt-action)
+   (icicle-pref-arg                        current-prefix-arg))
   (progn (put-text-property 0 1 'icicle-fancy-candidates t prompt) ; First code
          (icicle-highlight-lighter)
          (message "Gathering user options and their types...")))
@@ -2535,15 +2536,16 @@ See also:
   icicle-apropos-opt-action             ; Action function
   prompt                       ; `completing-read' args
   'icicle-describe-opt-of-type-complete nil nil nil nil nil nil
-  ((prompt                             "OPTION `C-M-j' TYPE: ") ; Bindings
-   (icicle-multi-completing-p          t)
-   (icicle-candidate-properties-alist  '((1 (face icicle-candidate-part))))
+  ((prompt                                 "OPTION `C-M-j' TYPE: ") ; Bindings
+   (icicle-multi-completing-p              t)
+   (icicle-candidate-properties-alist      '((1 (face icicle-candidate-part))))
    ;; Bind `icicle-apropos-complete-match-fn' to nil to prevent automatic input matching
    ;; in `icicle-unsorted-apropos-candidates' etc., because `icicle-describe-opt-of-type-complete'
    ;; does everything.
    (icicle-apropos-complete-match-fn   nil)
-   (icicle-candidate-help-fn           'icicle-describe-opt-action)
-   (icicle-pref-arg                    current-prefix-arg))
+   (icicle-last-apropos-complete-match-fn  'icicle-multi-comp-apropos-complete-match)
+   (icicle-candidate-help-fn               'icicle-describe-opt-action)
+   (icicle-pref-arg                        current-prefix-arg))
   (progn (put-text-property 0 1 'icicle-fancy-candidates t prompt) ; First code
          (icicle-highlight-lighter)
          (message "Gathering user options and their types...")))
@@ -6494,33 +6496,33 @@ flips the behavior specified by that option." ; Doc string
   (and (fboundp 'confirm-nonexistent-file-or-buffer)  (confirm-nonexistent-file-or-buffer)) ; Emacs 23.
   nil 'buffer-name-history (icicle-default-buffer-names current-prefix-arg) nil
   (icicle-buffer-bindings               ; Bindings
-   ((prompt                             (icicle-buffer-name-prompt "Visit file"))
-    (icicle-show-multi-completion-flag  t) ; Override user setting.
-    (icicle-multi-completing-p          t)
-    (icicle-list-use-nth-parts          '(1))
+   ((prompt                                 (icicle-buffer-name-prompt "Visit file"))
+    (icicle-show-multi-completion-flag      t) ; Override user setting.
+    (icicle-multi-completing-p              t)
+    (icicle-list-use-nth-parts              '(1))
     ;; Bind `icicle-apropos-complete-match-fn' to nil to prevent automatic input matching in
     ;; `icicle-unsorted-apropos-candidates' etc., because `icicle-buffer-multi-complete' does everything.
-    (icicle-apropos-complete-match-fn   nil)
-    (init-pref-arg                      current-prefix-arg)
-    (existing-bufs                      (buffer-list))
-    (new-bufs--to-kill                  ())
-    (new-bufs--to-keep                  ())
-    (icicle-candidate-help-fn           (lambda (cand)
-                                          (setq cand  (icicle-transform-multi-completion cand))
-                                          (when (and (bufferp (get-buffer cand))
-                                                     (with-current-buffer cand
-                                                       (if (fboundp 'describe-buffer) ; In `help-fns+.el'.
-                                                           (describe-buffer)
-                                                         (describe-mode)) t))))))
-   ((icicle-buffer-complete-fn          'icicle-buffer-multi-complete)
+    (icicle-apropos-complete-match-fn       nil)
+    (init-pref-arg                          current-prefix-arg)
+    (existing-bufs                          (buffer-list))
+    (new-bufs--to-kill                      ())
+    (new-bufs--to-keep                      ())
+    (icicle-candidate-help-fn               (lambda (cand)
+                                              (setq cand  (icicle-transform-multi-completion cand))
+                                              (when (and (bufferp (get-buffer cand))
+                                                         (with-current-buffer cand
+                                                           (if (fboundp 'describe-buffer) ; In `help-fns+.el'.
+                                                               (describe-buffer)
+                                                             (describe-mode)) t))))))
+   ((icicle-buffer-complete-fn              'icicle-buffer-multi-complete)
     ;; `icicle-bufflist' is free here.
-    (icicle-bufflist                    (save-excursion
-                                          (let* ((files  (dired-get-marked-files
-                                                          nil nil
-                                                          (lambda (file) (not (file-directory-p file)))))
-                                                 (bufs   ()))
-                                            (dolist (file  files) (push (find-file-noselect file) bufs))
-                                            bufs)))))
+    (icicle-bufflist                        (save-excursion
+                                              (let* ((files  (dired-get-marked-files
+                                                              nil nil
+                                                              (lambda (file) (not (file-directory-p file)))))
+                                                     (bufs   ()))
+                                                (dolist (file  files) (push (find-file-noselect file) bufs))
+                                                bufs)))))
   (progn (unless (eq major-mode 'dired-mode) (icicle-user-error "Use this command only in Dired mode"))
          (icicle-bind-buffer-candidate-keys)
          (put-text-property 0 1 'icicle-fancy-candidates t prompt) ; First code
@@ -6544,33 +6546,33 @@ different window.  You must be in Dired to use this command." ; Doc string
   (and (fboundp 'confirm-nonexistent-file-or-buffer)  (confirm-nonexistent-file-or-buffer)) ; Emacs 23.
   nil 'buffer-name-history (icicle-default-buffer-names current-prefix-arg) nil
   (icicle-buffer-bindings               ; Bindings
-   ((prompt                             (icicle-buffer-name-prompt "Visit file" 'OTHER-WIN))
-    (icicle-show-multi-completion-flag  t) ; Override user setting.
-    (icicle-multi-completing-p          t)
-    (icicle-list-use-nth-parts          '(1))
+   ((prompt                                 (icicle-buffer-name-prompt "Visit file" 'OTHER-WIN))
+    (icicle-show-multi-completion-flag      t) ; Override user setting.
+    (icicle-multi-completing-p              t)
+    (icicle-list-use-nth-parts              '(1))
     ;; Bind `icicle-apropos-complete-match-fn' to nil to prevent automatic input matching in
     ;; `icicle-unsorted-apropos-candidates' etc., because `icicle-buffer-multi-complete' does everything.
-    (icicle-apropos-complete-match-fn   nil)
-    (init-pref-arg                      current-prefix-arg)
-    (existing-bufs                      (buffer-list))
-    (new-bufs--to-kill                  ())
-    (new-bufs--to-keep                  ())
-    (icicle-candidate-help-fn           (lambda (cand)
-                                          (setq cand  (icicle-transform-multi-completion cand))
-                                          (when (and (bufferp (get-buffer cand))
-                                                     (with-current-buffer cand
-                                                       (if (fboundp 'describe-buffer) ; In `help-fns+.el'.
-                                                           (describe-buffer)
-                                                         (describe-mode)) t))))))
-   ((icicle-buffer-complete-fn          'icicle-buffer-multi-complete)
+    (icicle-apropos-complete-match-fn       nil)
+    (init-pref-arg                          current-prefix-arg)
+    (existing-bufs                          (buffer-list))
+    (new-bufs--to-kill                      ())
+    (new-bufs--to-keep                      ())
+    (icicle-candidate-help-fn               (lambda (cand)
+                                              (setq cand  (icicle-transform-multi-completion cand))
+                                              (when (and (bufferp (get-buffer cand))
+                                                         (with-current-buffer cand
+                                                           (if (fboundp 'describe-buffer) ; In `help-fns+.el'.
+                                                               (describe-buffer)
+                                                             (describe-mode)) t))))))
+   ((icicle-buffer-complete-fn              'icicle-buffer-multi-complete)
     ;; `icicle-bufflist' is free here.
-    (icicle-bufflist                    (save-excursion
-                                          (let* ((files  (dired-get-marked-files
-                                                          nil nil
-                                                          (lambda (file) (not (file-directory-p file)))))
-                                                 (bufs   ()))
-                                            (dolist (file  files) (push (find-file-noselect file) bufs))
-                                            bufs)))))
+    (icicle-bufflist                        (save-excursion
+                                              (let* ((files  (dired-get-marked-files
+                                                              nil nil
+                                                              (lambda (file) (not (file-directory-p file)))))
+                                                     (bufs   ()))
+                                                (dolist (file  files) (push (find-file-noselect file) bufs))
+                                                bufs)))))
   (progn (unless (eq major-mode 'dired-mode) (icicle-user-error "Use this command only in Dired mode"))
          (icicle-bind-buffer-candidate-keys)
          (put-text-property 0 1 'icicle-fancy-candidates t prompt) ; First code
