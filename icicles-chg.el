@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sun Mar 10 10:07:34 2013 (-0700)
+;; Last-Updated: Mon Mar 11 10:20:36 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 9797
+;;     Update #: 9800
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1676,6 +1676,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2013/03/11 dadams
+;;     icicle-try-switch-buffer: If BUFFER is already current, do nothing, to prevent hooks kicking in.
 ;; 2013/03/07 dadams
 ;;     Updated to use icicle-user-error where appropriate.
 ;; 2013/03/05 dadams
