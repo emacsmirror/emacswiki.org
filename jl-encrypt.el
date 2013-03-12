@@ -2,9 +2,9 @@
 ;; -*- Mode: Emacs-Lisp -*-
 ;; -*- coding: utf-8 -*-
 
-;; Copyright (C) 2011, 2012 Jens Lechtenbörger
+;; Copyright (C) 2011, 2012, 2013 Jens Lechtenbörger
 
-;; Version: $Id: jl-encrypt.el,v 1.1 2012/03/09 10:37:08 lechten Exp lechten $
+;; Version: $Id: jl-encrypt.el,v 1.2 2013/03/12 16:14:23 lechten Exp lechten $
 ;; Compatibility: Should work with GNU Emacs 23.1 and later
 
 ;; This program is free software; you can redistribute it and/or
@@ -38,9 +38,9 @@
 ;; described in Info node `(message) Security':
 ;; https://www.gnu.org/software/emacs/manual/html_node/message/Security.html
 ;;
-;; The code aims for automatic insertion of MML secure tags into messages
-;; if public keys (either GnuPG public keys or S/MIME certificates) for
-;; all recipients are available.  In addition, before a message is sent,
+;; The code aims for automatic insertion of an MML secure encryption tags into
+;; messages if public keys (either GnuPG public keys or S/MIME certificates)
+;; for all recipients are available.  In addition, before a message is sent,
 ;; the user is asked if plaintext should really be sent unencryptedly when
 ;; public keys for all recipients are available.
 ;; This works by rebinding `C-c C-c' and `C-c C-s' as well as by adding
@@ -51,7 +51,9 @@
 ;; Install:
 ;; Place this file into your load-path and add the following to ~/.emacs.
 ;;     (require 'jl-encrypt)
-;; In general, no further configuration should be necessary.
+;; If you share my preferences, no further configuration should be necessary.
+;; Configurable variables are `jl-gpg-without-mime',
+;; `jl-encrypt-without-signature', and `jl-recipient-headers'.
 
 ;; Sanity check:
 ;; Without any further configuration, send a GnuPG encrypted e-mail to
@@ -158,8 +160,8 @@ you know what you are doing.  And let me know how to do that properly ;)")
   (jl-message-send-maybe-exit nil arg))
 
 (defun jl-message-send-maybe-exit (exit arg)
-  "Send message if MML secure tag is present or not appropriate.
-If MML secure tag is not present check via
+  "Send message if MML secure encrypt tag is present or not appropriate.
+If MML secure encrypt tag is not present, check via
 `jl-proceed-without-encryption-p' whether public keys for all
 recipients are available and an MML secure tag should be added, or
 whether the message should be sent without encryption.  In the latter
@@ -167,7 +169,7 @@ case EXIT controls whether `message-send-and-exit' or `message-send'
 is called, and ARG is passed as argument."
   (save-excursion
     (goto-char (point-min))
-    (if (or (search-forward "<#secure" nil t)
+    (if (or (search-forward "<#secure.+encrypt" nil t)
 	    (jl-proceed-without-encryption-p))
 	(if exit
 	    (message-send-and-exit arg)
@@ -235,15 +237,28 @@ Return nil if some test returns nil; otherwise, return t."
 (defun jl-secure-message-gpg ()
   "Invoke MML function to add appropriate secure tag for GnuPG.
 The choice between pgp or pgpmime is based on `jl-gpg-without-mime'.
-Creation of signatures is controlled by `jl-encrypt-without-signature'."
+Creation of signatures is controlled by `jl-do-not-sign-p'."
   (if jl-gpg-without-mime
-      (mml-secure-message-encrypt-pgp jl-encrypt-without-signature)
-    (mml-secure-message-encrypt-pgpmime jl-encrypt-without-signature)))
+      (mml-secure-message-encrypt-pgp (jl-do-not-sign-p))
+    (mml-secure-message-encrypt-pgpmime (jl-do-not-sign-p))))
 
 (defun jl-secure-message-smime ()
   "Invoke MML function to add appropriate secure tag for S/MIME.
 Creation of signatures is controlled by `jl-encrypt-without-signature'."
-  (mml-secure-message-encrypt-smime jl-encrypt-without-signature))
+  (mml-secure-message-encrypt-smime (jl-do-not-sign-p)))
+
+(defun jl-is-signed-p ()
+  "Check whether secure sign tag is present."
+  (save-excursion
+    (goto-char (point-min))
+    (re-search-forward "<#secure.+sign>" nil t)))
+
+(defun jl-do-not-sign-p ()
+  "Check whether the message should not be signed.
+This is the case if the `jl-encrypt-without-signature' is True and no secure
+sign tag is present."
+  (and jl-encrypt-without-signature
+       (not (jl-is-signed-p))))
 
 (defun jl-encrypt-if-possible ()
   "Insert MML encryption tag if appropriate.
