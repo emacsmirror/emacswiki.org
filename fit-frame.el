@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Created: Thu Dec  7 09:32:12 2000
 ;; Version: 22.0
-;; Last-Updated: Fri Dec 28 09:45:33 2012 (-0800)
+;; Last-Updated: Tue Mar 12 09:41:30 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 1343
+;;     Update #: 1346
 ;; URL: http://www.emacswiki.org/fit-frame.el
 ;; Doc URL: http://www.emacswiki.org/Shrink-Wrapping_Frames
 ;; Doc URL: http://www.emacswiki.org/OneOnOneEmacs
@@ -130,6 +130,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/03/12 dadams
+;;     Do not defalias if a function with the alias name already exists.
 ;; 2012/11/01 dadams
 ;;     fit-frame-skip-header-lines-alist: Use 3 for Dired (1 for wildcards line).
 ;; 2011/03/04 dadams
@@ -582,21 +584,21 @@ This function assumes that FRAME has only one window."
 ;; Note that in Windows you can also just double-click the title bar
 ;; of a frame to alternately maximize and restore it.
 (when (eq window-system 'w32)
-  (defalias 'restore-frame 'fit-frame-restore-frame)
+  (unless (fboundp 'restore-frame) (defalias 'restore-frame 'fit-frame-restore-frame))
   (defun fit-frame-restore-frame (&optional frame)
     "Restore FRAME to previous size (default: current frame)."
     (interactive)
     (w32-send-sys-command 61728 frame)))
 
 (when (eq window-system 'w32)
-  (defalias 'maximize-frame 'fit-frame-maximize-frame)
+  (unless (fboundp 'maximize-frame) (defalias 'maximize-frame 'fit-frame-maximize-frame))
   (defun fit-frame-maximize-frame (&optional frame)
     "Maximize FRAME (default: current frame)."
     (interactive)
     (w32-send-sys-command 61488 frame)))
 
 (when (eq window-system 'w32)
-  (defalias 'minimize-frame 'fit-frame-minimize-frame)
+  (unless (fboundp 'minimize-frame) (defalias 'minimize-frame 'fit-frame-minimize-frame))
   (defalias 'fit-frame-minimize-frame
       (if (fboundp 'thumfr-really-iconify-frame)
           'thumfr-really-iconify-frame
