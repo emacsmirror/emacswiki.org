@@ -19,6 +19,8 @@ Las claves sin armaduras son bytes de información que se torna difícil de envi
 
 Se explicará a continuación diversos comandos muy útiles para poder usar básicamente !EasyPG.
 
+
+
 <b>Listar las Claves Públicas</b>
 [:listar_claves]
 
@@ -27,8 +29,9 @@ Para listar las claves públicas se debe usar M-x `epa-list-keys'. A partír de 
 * Seleccionar una o varias claves para encriptar un archivo o región.
 * [#exportar_claves Exportar] la clave pública para compartir.
 
+
+
 <b>Importar Claves Públicas</b>
-[:importar_claves]
 
 Es puede importar mediante dos formas:
 
@@ -36,6 +39,8 @@ Es puede importar mediante dos formas:
 * Importando desde una región de texto -- Usando M-x `epa-import-keys-region'.
 
 Se puede importar tanto claves con armadura o sin armadura.
+
+
 
 <b>Exportar Claves Públicas</b>
 [:exportar_claves]
@@ -79,7 +84,10 @@ Lo ideal sería exportar con armadura, pero !EasyPG, lamentablemente, no posee u
         
 Ahora puede exportar usando `epa-export-keys-armored' o la tecla `O'.
 
+
+
 <b>Encriptar</b>
+
 Para encriptar se puede optar por dos opciones:
 
 * Encriptar un archivo
@@ -92,7 +100,9 @@ Para <i>encriptar un archivo</i> debemos ejecutar M-x `epa-encrypt-file', selecc
 Para <i>encriptar una región</i> seleccionamos el texto y tipeamos M-x `epa-encrypt-region' y seleccionamos las claves públicas de los receptores.
 
 
+
 <b>Desencriptar</b>
+
 Para desencriptar tenemos nuevamente dos opciones:
 
 * Desencriptar un archivo.
