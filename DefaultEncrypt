@@ -11,7 +11,7 @@ all recipients are available.  In addition, before a message is sent,
 the user is asked if plaintext should really be sent unencryptedly when
 public keys for all recipients are available.
 This works by rebinding the standard keys for message sending
-(`C-c C-c'} and `C-c C-s') as well as by adding a check
+(`C-c C-c') and `C-c C-s') as well as by adding a check
 to `gnus-message-setup-hook'.
 
 A signed version of jl-encrypt.el is available
@@ -68,59 +68,5 @@ Confidentiality with perfect forward secrecy, integrity,
 and repudiability.
 Unfortunately, that's not an option for e-mail.
 
-== To sign mails by default ==
-When having a hook in message mode that automatically sign messages (like in (add-hook 'message-setup-hook 'mml-secure-message-sign-pgpmime)), it may be welcome to be proposed to additionnaly encrypt the message.
-
-Following patch will make jl-encrypt not ask about crypting mail only if there is a crypt in a secure MML tag in the mail, not only if the secure tag is present.
-
-{{{
---- a/jl-encrypt.el
-+++ b/jl-encrypt.el
-@@ -167,7 +167,7 @@ case EXIT controls whether `message-send-and-exit' or `message-send'
- is called, and ARG is passed as argument."
-   (save-excursion
-     (goto-char (point-min))
--    (if (or (search-forward "<#secure" nil t)
-+    (if (or (re-search-forward "<#secure.+encrypt>" nil t)
- 			(jl-proceed-without-encryption-p))
- 		(if exit
- 			(message-send-and-exit arg)
-@@ -237,13 +237,30 @@ Return nil if some test returns nil; otherwise, return t."
- The choice between pgp or pgpmime is based on `jl-gpg-without-mime'.
- Creation of signatures is controlled by `jl-encrypt-without-signature'."
-   (if jl-gpg-without-mime
--      (mml-secure-message-encrypt-pgp jl-encrypt-without-signature)
--    (mml-secure-message-encrypt-pgpmime jl-encrypt-without-signature)))
-+      (mml-secure-message-encrypt-pgp (jl-do-not-sign-p))
-+    (mml-secure-message-encrypt-pgpmime (jl-do-not-sign-p))))
- 
- (defun jl-secure-message-smime ()
-   "Invoke MML function to add appropriate secure tag for S/MIME.
- Creation of signatures is controlled by `jl-encrypt-without-signature'."
--  (mml-secure-message-encrypt-smime jl-encrypt-without-signature))
-+  (mml-secure-message-encrypt-smime (jl-do-not-sign-p)))
-+
-+(defun jl-is-signed-p ()
-+  (save-excursion
-+    (goto-char (point-min))
-+	(re-search-forward "<#secure.+sign>" nil t)
-+	)
-+  )
-+
-+(defun jl-do-not-sign-p ()
-+  "Do not sign if the user explicitely asked not to and the
-+message was not previously configured to be signed."
-+  (and jl-encrypt-without-signature
-+	   (not
-+		(jl-is-signed-p)
-+		)
-+	   )
-+  )
- 
- (defun jl-encrypt-if-possible ()
-   "Insert MML encryption tag if appropriate.
-}}}
-
-The signed configuration is kept in case it was already set before jl-send-message is called.
 ----
 CategoryGnus SigningMail EncryptingMail
