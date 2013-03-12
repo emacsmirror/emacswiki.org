@@ -1,3 +1,4 @@
+[[en:EasyPG]]
 !EasyPG es una interfaz para GnuPG en Emacs. Tiene dos aspectos interesantes:
 
 * EPA -- Herramientas convenientes para usar GnuPG desde Emacs (Asistente !EasyPG).
@@ -77,4 +78,27 @@ Lo ideal sería exportar con armadura, pero !EasyPG, lamentablemente, no posee u
     (define-key epa-key-list-mode-map "O" 'epa-export-keys-armored)
         
 Ahora puede exportar usando `epa-export-keys-armored' o la tecla `O'.
+
+<b>Encriptar</b>
+Para encriptar se puede optar por dos opciones:
+
+* Encriptar un archivo
+* Encriptar una región
+
+Lo ideal sería encriptar un archivo y luego borrar el original usando <code>shred -u</code>, una aplicación que llena al archivo de bits aleatorios previo al borrado, con el fin de que no se pueda recuperar usando ingeniería forense.
+
+Para <i>encriptar un archivo</i> debemos ejecutar M-x `epa-encrypt-file', seleccionar el archivo y elegir la clave pública de los receptores del mismo. Se generará un archivo nuevo con el mismo nombre sumado una extensión ".gpg" al final(si se usa GnuPG).
+
+Para <i>encriptar una región</i> seleccionamos el texto y tipeamos M-x `epa-encrypt-region' y seleccionamos las claves públicas de los receptores.
+
+
+<b>Desencriptar</b>
+Para desencriptar tenemos nuevamente dos opciones:
+
+* Desencriptar un archivo.
+* Desencriptar una región.
+
+Para <i>desencriptar un archivo</i> debemos ejecutar M-x `epa-decrypt-file' e indicar el archivo a desencriptar, finalmente indicar cuál va a ser el nombre del archivo destino.
+
+Para <i>desencriptar una región</i> seleccionamos el texto encriptado y presionamos M-x `epa-decrypt-region' y luego nos preguntará si reemplazar el texto o abrir un nuevo buffer con el texto desencriptado.
 
