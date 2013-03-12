@@ -51,7 +51,7 @@ Para exportar una clave pública es preciso:
 # Seleccionarlas -- Posicione el cursor sobre una de las claves y presione `m'.
 # Ejecutar la función apropiada -- Usando `epa-export-keys' o seguir leyendo...
 
-Lo ideal sería exportar con armadura, pero !EasyPG, lamentablemente, no posee una función que le otorge armadura a la clave exportada. Por suerte es fácil de hacer, sólo incorpore esta función en su IniFile(~/.emacs):
+Lo ideal sería exportar con armadura, pero !EasyPG, lamentablemente, no posee una función que le otorge armadura a la clave exportada. Por suerte es fácil de hacer, sólo incorpore esta función en su InitFile(~/.emacs):
 
     (defun epa-export-keys-armored (keys file)
       "Export selected public KEYS to FILE in an armored."
