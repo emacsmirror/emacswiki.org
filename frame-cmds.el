@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Mar  5 16:30:45 1996
 ;; Version: 21.0
-;; Last-Updated: Wed Feb  6 14:40:30 2013 (-0800)
+;; Last-Updated: Tue Mar 12 13:12:42 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2705
+;;     Update #: 2739
 ;; URL: http://www.emacswiki.org/frame-cmds.el
 ;; Doc URL: http://emacswiki.org/FrameModes
 ;; Doc URL: http://www.emacswiki.org/OneOnOneEmacs
@@ -257,6 +257,13 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/03/12 dadams
+;;     maximize-frame: Corrected new-left, new-top.
+;;                     Corrected arg to modify-frame-parameters - use frame-geom-value-numeric
+;;     Do not alias if function name is already fboundp.
+;;     toggle-max-frame-*: Use toggle-max-frame, not restore-frame (the alias).
+;;     toggle-max-frame: If no restore-* parameter then first maximize.
+;;                       Condition last four parameters on orig-*, not restore-*.
 ;; 2013/02/06 dadams
 ;;     move-frame-(up|down|left|right): Set N to 1 if nil.
 ;; 2013/01/17 dadams
@@ -1037,8 +1044,8 @@ In Lisp code:
         (orig-width       (frame-parameter frame 'width))
         (orig-height      (frame-parameter frame 'height)))
     (let* ((borders     (* 2 (cdr (assq 'border-width (frame-parameters frame)))))
-           (new-left    (if (memq direction '(horizontal both)) fr-origin 0))
-           (new-top     (if (memq direction '(horizontal both)) 0         fr-origin))
+           (new-left    (if (memq direction '(horizontal both)) 0 orig-left))
+           (new-top     (if (memq direction '(vertical   both)) 0 orig-top))
            ;; Subtract borders, scroll bars, & title bar, then convert pixel sizes to char sizes.
            (new-width   (if (memq direction '(horizontal both))
                             (/ (- fr-pixel-width borders (frame-extra-pixels-width frame))
@@ -1062,15 +1069,20 @@ In Lisp code:
          (top    . ,new-top)
          (height . ,new-height)
          ;; If we actually changed a parameter, record the old one for restoration.
-         ,(and new-left   (/= orig-left new-left)     (cons 'restore-left   orig-left))
-         ,(and new-top    (/= orig-top  new-top)      (cons 'restore-top    orig-top))
-         ,(and new-width  (/= orig-width  new-width)  (cons 'restore-width  orig-width))
-         ,(and new-height (/= orig-height new-height) (cons 'restore-height orig-height)))))
+         ,(and new-left   (/= (frame-geom-value-numeric 'left orig-left) new-left)
+               (cons 'restore-left   orig-left))
+         ,(and new-top    (/= (frame-geom-value-numeric 'top orig-top) new-top)
+               (cons 'restore-top    orig-top))
+         ,(and new-width  (/= (frame-geom-value-numeric 'width orig-width) new-width)
+               (cons 'restore-width  orig-width))
+         ,(and new-height (/= (frame-geom-value-numeric 'height orig-height) new-height)
+               (cons 'restore-height orig-height)))))
     (show-frame frame)
     (incf fr-origin (if (eq direction 'horizontal) fr-pixel-width fr-pixel-height))))
 
 ;;;###autoload
-(defalias 'restore-frame-horizontally 'toggle-max-frame-horizontally)
+(unless (fboundp 'restore-frame-horizontally)
+  (defalias 'restore-frame-horizontally 'toggle-max-frame-horizontally))
 ;;;###autoload
 (defun toggle-max-frame-horizontally (&optional frame)
   "Toggle maximization of FRAME horizontally.
@@ -1079,10 +1091,11 @@ This affects the `left' and `width' frame parameters.
 
 FRAME defaults to the selected frame."
   (interactive (list (selected-frame)))
-  (restore-frame 'horizontal frame))
+  (toggle-max-frame 'horizontal frame))
 
 ;;;###autoload
-(defalias 'restore-frame-horizontally 'toggle-max-frame-horizontally)
+(unless (fboundp 'restore-frame-vertically)
+  (defalias 'restore-frame-vertically 'toggle-max-frame-vertically))
 ;;;###autoload
 (defun toggle-max-frame-vertically (&optional frame)
   "Toggle maximization of FRAME vertically.
@@ -1091,10 +1104,10 @@ This affects the `top' and `height' frame parameters.
 
 FRAME defaults to the selected frame."
   (interactive (list (selected-frame)))
-  (restore-frame 'vertical frame))
+  (toggle-max-frame 'vertical frame))
 
 ;;;###autoload
-(defalias 'restore-frame 'toggle-max-frame)
+(unless (fboundp 'restore-frame) (defalias 'restore-frame 'toggle-max-frame))
 ;;;###autoload
 (defun toggle-max-frame (&optional direction frame)
   "Toggle maximization of FRAME horizontally, vertically, or both.
@@ -1105,10 +1118,11 @@ With no prefix arg, toggle both directions.
 With a non-negative prefix arg, toggle only vertically.
 With a negative prefix arg, toggle horizontally.
 
-When toggling both, each is toggled from its last maximize or restore
-state.  This means that using this after `maximize-horizontal',
-`maximize-vertical', `toggle-max-horizontal', or `toggle-max-vertical'
-does not necessarily just reverse the effect of that command.
+When toggling both directions, each is toggled from its last maximize
+or restore state.  This means that using this after
+`maximize-horizontal', `maximize-vertical', `toggle-max-horizontal',
+or `toggle-max-vertical' does not necessarily just reverse the effect
+of that command.
 
 In Lisp code:
  DIRECTION is the direction: `horizontal', `vertical', or `both'.
@@ -1130,15 +1144,20 @@ In Lisp code:
         (orig-height     (frame-parameter frame 'height))
         (horiz           (memq direction '(horizontal both)))
         (vert            (memq direction '(vertical both))))
+    (case direction
+      (both        (unless (and restore-left  restore-width  restore-top  restore-height)
+                     (maximize-frame 'both frame)))
+      (vertical    (unless (and restore-top  restore-height) (maximize-frame-vertically frame)))
+      (horizontal  (unless (and restore-left  restore-width) (maximize-frame-horizontally frame))))
     (modify-frame-parameters
-     frame `(,(and horiz restore-left   (cons 'left   restore-left))
-             ,(and horiz restore-width  (cons 'width  restore-width))
-             ,(and vert  restore-top    (cons 'top    restore-top))
-             ,(and vert  restore-height (cons 'height restore-height))
-             ,(and horiz restore-left   (cons 'restore-left   orig-left))
-             ,(and horiz restore-width  (cons 'restore-width  orig-width))
-             ,(and vert  restore-top    (cons 'restore-top    orig-top))
-             ,(and vert  restore-height (cons 'restore-height orig-height)))))
+     frame `(,(and horiz  restore-left    (cons 'left           restore-left))
+             ,(and horiz  restore-width   (cons 'width          restore-width))
+             ,(and vert   restore-top     (cons 'top            restore-top))
+             ,(and vert   restore-height  (cons 'height         restore-height))
+             ,(and horiz  orig-left       (cons 'restore-left   orig-left))
+             ,(and horiz  orig-width      (cons 'restore-width  orig-width))
+             ,(and vert   orig-top        (cons 'restore-top    orig-top))
+             ,(and vert   orig-height     (cons 'restore-height orig-height)))))
   (show-frame frame))
 
 ;;;###autoload
@@ -1259,7 +1278,7 @@ frames (except a standalone minibuffer frame, if any)."
       t)))))
 
 (defun available-screen-pixel-bounds ()
-  "Returns a value of the same form as `available-screen-pixel-bounds'.
+  "Returns a value of the same form as option `available-screen-pixel-bounds'.
 This represents the currently available screen area."
   (or available-screen-pixel-bounds     ; Use the option value, if available.
       (if (fboundp 'mac-display-available-pixel-bounds) ; Mac-OS-specific.
