@@ -27,7 +27,7 @@ Se explicará a continuación diversos comandos muy útiles para poder usar bás
 Para listar las claves públicas se debe usar M-x `epa-list-keys'. A partír de aquí se puede:
 
 * Seleccionar una o varias claves para encriptar un archivo o región.
-* [#exportar_claves Exportar] la clave pública para compartir.
+* [EasyPG-es#exportar_claves Exportar] la clave pública para compartir.
 
 
 
