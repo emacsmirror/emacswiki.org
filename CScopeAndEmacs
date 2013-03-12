@@ -183,7 +183,6 @@ del "%LIST_FILE%.tmp"
 echo Done
 }}}
 
-[new]
 Here is a patch created from revision 1.14 of contrib/xcscope/xcscope.el in the official cscope CVS repository on SourceForge that fixes a bug causing databases to be skipped over when using `cscope-database-regexps' if they are contained in the same directory.  I emailed Darryl Okahata with the patch but I do not know if he is still reachable.
 
 <pre>
@@ -248,6 +247,22 @@ Here is a patch created from revision 1.14 of contrib/xcscope/xcscope.el in the 
  	    cscope-command-args args
  	    cscope-filter-func filter-func
  	    cscope-sentinel-func sentinel-func
+</pre>
+
+I got the original cscope-indexer script to work by copying it to the bin folder of an installed MinGW and the following trivial patch for xcscope.el. Your PATH has to be set accordingly, though.
+
+<pre>
+--- xcscope.el	(revision 9370)
++++ xcscope.el	(working copy)
+@@ -2123,7 +2123,7 @@
+       (setq cscope-unix-index-process
+ 	    (apply 'start-process "cscope-indexer"
+ 		   cscope-unix-index-process-buffer
+-		   cscope-indexing-script args))
++		   "sh" cscope-indexing-script args))
+       (set-process-sentinel cscope-unix-index-process
+ 			    'cscope-unix-index-files-sentinel)
+       (process-kill-without-query cscope-unix-index-process)
 </pre>
 
 == xcscope+ ==
