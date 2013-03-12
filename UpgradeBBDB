@@ -33,7 +33,7 @@
 || bbdb-ignore-some-messages-alist |||| bbdb-ignore-message-alist ||
 || bbdb-ignore-some-messages-hook |||| [gone] ||
 || bbdb-initialize |||| same + bbdb-mua-auto-update-init ||
-|| bbdb-new-nets-always-primary |||| bbdb-new-mails-always-primary ||
+|| bbdb-new-nets-always-primary |||| bbdb-new-mails-primary ||
 || bbdb-north-american-phone-numbers-p |||| bbdb-phone-style ||
 || bbdb-notice-hook |||| bbdb-notice-mail-hook ||
 || bbdb-offer-save |||| [gone] ||
