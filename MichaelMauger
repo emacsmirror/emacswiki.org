@@ -2,7 +2,7 @@ Maintainer of sql.el
 
 I'm always interested in:
 *Workflows from other Emacs/SQL-mode users (I use sql-mode like this:...)
-*Product specific keywords for font-lock.  I try to stay on top of Free databases (Sqlite, Postgres, MySQL/MariaDB) but don't have time for other vendor products.  I do use Oracle professionally so I do tend to keep that more up-to-date.  Assistance with other tools is always appreciated.
+*Product specific keywords for font-lock.  I try to stay on top of Free databases (Sqlite, Postgres, !MySQL/MariaDB) but don't have time for other vendor products.  I do use Oracle professionally so I do tend to keep that more up-to-date.  Assistance with other tools is always appreciated.
 *Bugs or disruptive or unanticipated behavior.
 *Code samples related to workflow convenience, indenting, or completion.  Obviously, larger contributions may require an FSF copyright assignment covering the submission to Emacs.
 *Small cash gifts ;-)   Actually, large cash gifts are welcome too!
