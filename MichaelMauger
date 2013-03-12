@@ -1,17 +1,23 @@
-Maintainer of sql.el
+Maintainer of sql.el [[SqlMode]]
 
-I'm always interested in:
-*Workflows from other Emacs/SQL-mode users (I use sql-mode like this:...)
-*Product specific keywords for font-lock.  I try to stay on top of Free databases (Sqlite, Postgres, !MySQL/MariaDB) but don't have time for other vendor products.  I do use Oracle professionally so I do tend to keep that more up-to-date.  Assistance with other tools is always appreciated.
-*Bugs or disruptive or unanticipated behavior.
-*Code samples related to workflow convenience, indenting, or completion.  Obviously, larger contributions may require an FSF copyright assignment covering the submission to Emacs.
-*Small cash gifts ;-)   Actually, large cash gifts are welcome too!
+I'm always interested in hearing from fellow Emacs and/or sql.el users:
 
-I use GNU Emacs and sql.el to develop software in a data warehouse environment.  Much of my day is spent with the Emacs frame full screen on my monitor with Eshell, shell, and SQL/SQLi buffers.  My co-workers are always when they discover I can edit scripts on our servers directly from my desktop using [[TrampMode]] and not have to start a terminal session, log in and fire up ``vi''.  Unfortunately, I am stuck with a non-Free desktop currently, but [http://www.cygwin.com Cygwin] and it's new Emacs-w32 package (Cygwin memory, file and process management, W32 window, font interface; faster and lighter-weight that the emacs-x11 package), make life very bearable.  I keep the bulk of my Emacs customization's on a personal [http://www.ownCloud.com ownCloud] directory that is synced between my professional installations and my home computers.
+* Workflows from other Emacs/SQL-mode users (I use sql-mode like this:...)
+* Product specific keywords for font-lock.  I try to stay on top of Free databases (Sqlite, Postgres, !MySQL/!MariaDB) but don't have time for other vendor products.  I do use Oracle professionally so I do tend to keep that more up-to-date.  Assistance with other tools is always appreciated.
+* Bugs or disruptive or unanticipated behavior.
+* Code samples related to workflow convenience, indenting, or completion.  Obviously, larger contributions may require an FSF copyright assignment covering the submission to Emacs.
+* Small cash gifts ;-)   Actually, large cash gifts are welcome too!
+
+I use GNU Emacs and sql.el to develop software in a data warehouse environment.  Much of my day is spent with the Emacs frame full screen on my monitor with Eshell, shell, and SQL/SQLi buffers.  My co-workers are always when they discover I can edit scripts on our servers directly from my desktop using [[TrampMode]] and not have to start a terminal session, log in and fire up ##vi##.  Unfortunately, I am stuck with a non-Free desktop currently, but [http://www.cygwin.com Cygwin] and it's new Emacs-w32 package (Cygwin memory, file and process management, W32 window, font interface; faster and lighter-weight that the emacs-x11 package), make life very bearable.  
+
+I keep the bulk of my Emacs customization's on a personal [http://www.ownCloud.com ownCloud] directory that is synced between my professional installations and my home computers.  Each site has a small ##~/.emacs.d/init.el## which invokes the scripts in my cloud directory.  This allows me to drag 20+ years of Emacs cruft along with me so that I am immediately functional at a client site.
 
 I can be reached at mailto:Michael@Mauger.com (or my still active, older address mailto:mmaug@yahoo.com)
 
-I also actively read the emacs-devel [[EmacsMailingLists]] mailing lists.
+I also actively read the emacs-devel ([[EmacsMailingLists]]) mailing lists.
+
+[http://www.fsf.org/register_form?referrer=4247 FSF Member 4247] "Free as in Freedom!"
+
 [new]
 Welcome on the wiki ! -- LucasBonnet
 ----
