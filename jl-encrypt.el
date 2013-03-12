@@ -1,222 +1,264 @@
-#FILE text/x-emacs-lisp 
-Ozs7IGpsLWVuY3J5cHQuZWwgLS0tIEluc2VydCBNTUwgZW5jcnlwdGlvbiB0YWdzIGlmIHB1Ymxp
-YyBrZXlzIGFyZSBhdmFpbGFibGUKOzsgLSotIE1vZGU6IEVtYWNzLUxpc3AgLSotCjs7IC0qLSBj
-b2Rpbmc6IHV0Zi04IC0qLQoKOzsgQ29weXJpZ2h0IChDKSAyMDExLCAyMDEyLCAyMDEzIEplbnMg
-TGVjaHRlbmLDtnJnZXIKCjs7IFZlcnNpb246ICRJZDogamwtZW5jcnlwdC5lbCx2IDEuMiAyMDEz
-LzAzLzEyIDE2OjE0OjIzIGxlY2h0ZW4gRXhwIGxlY2h0ZW4gJAo7OyBDb21wYXRpYmlsaXR5OiBT
-aG91bGQgd29yayB3aXRoIEdOVSBFbWFjcyAyMy4xIGFuZCBsYXRlcgoKOzsgVGhpcyBwcm9ncmFt
-IGlzIGZyZWUgc29mdHdhcmU7IHlvdSBjYW4gcmVkaXN0cmlidXRlIGl0IGFuZC9vcgo7OyBtb2Rp
-ZnkgaXQgdW5kZXIgdGhlIHRlcm1zIG9mIHRoZSBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZSBh
-cwo7OyBwdWJsaXNoZWQgYnkgdGhlIEZyZWUgU29mdHdhcmUgRm91bmRhdGlvbjsgZWl0aGVyIHZl
-cnNpb24gMywgb3IKOzsgKGF0IHlvdXIgb3B0aW9uKSBhbnkgbGF0ZXIgdmVyc2lvbi4KCjs7IFRo
-aXMgcHJvZ3JhbSBpcyBkaXN0cmlidXRlZCBpbiB0aGUgaG9wZSB0aGF0IGl0IHdpbGwgYmUgdXNl
-ZnVsLAo7OyBidXQgV0lUSE9VVCBBTlkgV0FSUkFOVFk7IHdpdGhvdXQgZXZlbiB0aGUgaW1wbGll
-ZCB3YXJyYW50eSBvZgo7OyBNRVJDSEFOVEFCSUxJVFkgb3IgRklUTkVTUyBGT1IgQSBQQVJUSUNV
-TEFSIFBVUlBPU0UuICBTZWUgdGhlIEdOVQo7OyBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlIGZvciBt
-b3JlIGRldGFpbHMuCgo7OyBZb3Ugc2hvdWxkIGhhdmUgcmVjZWl2ZWQgYSBjb3B5IG9mIHRoZSBH
-TlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZQo7OyBhbG9uZyB3aXRoIEdOVSBFbWFjczsgc2VlIHRo
-ZSBmaWxlIENPUFlJTkcuCjs7IElmIG5vdCwgc2VlIGh0dHA6Ly93d3cuZ251Lm9yZy9saWNlbnNl
-cy8gb3Igd3JpdGUgdG8gdGhlCjs7IEZyZWUgU29mdHdhcmUgRm91bmRhdGlvbiwgSW5jLiwgNTEg
-RnJhbmtsaW4gU3RyZWV0LCBGaWZ0aCBGbG9vciwKOzsgQm9zdG9uLCBNQSAwMjExMC0xMzAxLCBV
-U0EuCgo7OyBLZXl3b3JkczogbWFpbCwgZW5jcnlwdGlvbiwgR251UEcsIGdwZywgUy9NSU1FLCBP
-cGVuUEdQCgo7OyBVUkw6IGh0dHA6Ly93d3cuZW1hY3N3aWtpLm9yZy9lbWFjcy9qbC1lbmNyeXB0
-LmVsCjs7IEVtYWNzV2lraTogRGVmYXVsdEVuY3J5cHQKCjs7IEEgc2lnbmVkIHZlcnNpb24gb2Yg
-dGhpcyBmaWxlIGlzIGF2YWlsYWJsZSBvdmVyIHRoZXJlOgo7OyBodHRwOi8vd3d3LmluZm9ybWF0
-aW9uZWxsZS1zZWxic3RiZXN0aW1tdW5nLWltLWludGVybmV0LmRlL2VtYWNzLwoKOzs7IENvbW1l
-bnRhcnk6Cjs7IElmIHlvdSBzb21ldGltZXMgc2VuZCBwbGFpbnRleHQgZS1tYWlscyB0aGF0IHJl
-YWxseSBzaG91bGQgaGF2ZSBiZWVuCjs7IGVuY3J5cHRlZCBvbmVzLCB0aGVuIHRoaXMgZmlsZSBt
-YXkgYmUgZm9yIHlvdS4KOzsgSSBhc3N1bWUgdGhhdCB5b3UgYXJlIGZhbWlsaWFyIHdpdGggR251
-UEcgc3VwcG9ydCBmb3IgR251cyBtZXNzYWdlcyBhcwo7OyBkZXNjcmliZWQgaW4gSW5mbyBub2Rl
-IGAobWVzc2FnZSkgU2VjdXJpdHknOgo7OyBodHRwczovL3d3dy5nbnUub3JnL3NvZnR3YXJlL2Vt
-YWNzL21hbnVhbC9odG1sX25vZGUvbWVzc2FnZS9TZWN1cml0eS5odG1sCjs7Cjs7IFRoZSBjb2Rl
-IGFpbXMgZm9yIGF1dG9tYXRpYyBpbnNlcnRpb24gb2YgYW4gTU1MIHNlY3VyZSBlbmNyeXB0aW9u
-IHRhZ3MgaW50bwo7OyBtZXNzYWdlcyBpZiBwdWJsaWMga2V5cyAoZWl0aGVyIEdudVBHIHB1Ymxp
-YyBrZXlzIG9yIFMvTUlNRSBjZXJ0aWZpY2F0ZXMpCjs7IGZvciBhbGwgcmVjaXBpZW50cyBhcmUg
-YXZhaWxhYmxlLiAgSW4gYWRkaXRpb24sIGJlZm9yZSBhIG1lc3NhZ2UgaXMgc2VudCwKOzsgdGhl
-IHVzZXIgaXMgYXNrZWQgaWYgcGxhaW50ZXh0IHNob3VsZCByZWFsbHkgYmUgc2VudCB1bmVuY3J5
-cHRlZGx5IHdoZW4KOzsgcHVibGljIGtleXMgZm9yIGFsbCByZWNpcGllbnRzIGFyZSBhdmFpbGFi
-bGUuCjs7IFRoaXMgd29ya3MgYnkgcmViaW5kaW5nIGBDLWMgQy1jJyBhbmQgYEMtYyBDLXMnIGFz
-IHdlbGwgYXMgYnkgYWRkaW5nCjs7IGBqbC1lbmNyeXB0LWlmLXBvc3NpYmxlJyB0byBgZ251cy1t
-ZXNzYWdlLXNldHVwLWhvb2snLgo7OyBJZiB5b3UgYXJlIHJlYWxseSBpbnRlcmVzdGVkIGluIFMv
-TUlNRSB0aGVuIEkgc3VnZ2VzdCB0aGF0IHlvdSB0YWtlIGEKOzsgbG9vayBhdCBqbC1zbWltZS5l
-bCBpbiBhZGRpdGlvbiB0byB0aGlzIGZpbGUuCgo7OyBJbnN0YWxsOgo7OyBQbGFjZSB0aGlzIGZp
-bGUgaW50byB5b3VyIGxvYWQtcGF0aCBhbmQgYWRkIHRoZSBmb2xsb3dpbmcgdG8gfi8uZW1hY3Mu
-Cjs7ICAgICAocmVxdWlyZSAnamwtZW5jcnlwdCkKOzsgSWYgeW91IHNoYXJlIG15IHByZWZlcmVu
-Y2VzLCBubyBmdXJ0aGVyIGNvbmZpZ3VyYXRpb24gc2hvdWxkIGJlIG5lY2Vzc2FyeS4KOzsgQ29u
-ZmlndXJhYmxlIHZhcmlhYmxlcyBhcmUgYGpsLWdwZy13aXRob3V0LW1pbWUnLAo7OyBgamwtZW5j
-cnlwdC13aXRob3V0LXNpZ25hdHVyZScsIGFuZCBgamwtcmVjaXBpZW50LWhlYWRlcnMnLgoKOzsg
-U2FuaXR5IGNoZWNrOgo7OyBXaXRob3V0IGFueSBmdXJ0aGVyIGNvbmZpZ3VyYXRpb24sIHNlbmQg
-YSBHbnVQRyBlbmNyeXB0ZWQgZS1tYWlsIHRvCjs7IHlvdXJzZWxmIGFzIGZvbGxvd3MuICBFbnRl
-ciB5b3VyIG93biBlLW1haWwgYWRkcmVzcyBhZnRlciBUbywgY2hvb3NlIHNvbWUKOzsgU3ViamVj
-dCwgYW5kIGVudGVyIGBNLXggc3Bvb2snIGluIHRoZSBib2R5LCB3aGljaCB3aWxsIGluc2VydCBz
-dWl0YWJsZQo7OyB0ZXh0LiAgVGhlbiBwcmVzcyBgQy1jIEMtYycgdG8gc2VuZCB0aGUgZS1tYWls
-IGFzIHVzdWFsIChmb3JnZXR0aW5nIHRvCjs7IGVuY3J5cHQpLiAgSWYgeW91IG93biBhIEdudVBH
-IHB1YmxpYyBmb3IgdGhlIFRvIGUtbWFpbCBhZGRyZXNzIHRoZW4geW91Cjs7IHdpbGwgYmUgYXNr
-ZWQgd2hldGhlciB5b3UgcmVhbGx5IHdhbnQgdG8gc2VuZCB0aGF0IGUtbWFpbCBhcyBwbGFpbnRl
-eHQuCjs7IEFuc3dlcmluZyBgbm8nIHdpbGwgaW5zZXJ0IGFuIE1NTCBzZWN1cmUgdGFnIGZvciB5
-b3UuICBQcmVzcyBgQy1jIEMtYycKOzsgYWdhaW4sIGFuZCBhbiBlbmNyeXB0ZWQgZS1tYWlsIHdp
-bGwgYmUgc2VudC4gIElmIHlvdSByZWNlaXZlIHRoYXQgZS1tYWlsCjs7IHdpdGggZ2FyYmxlZCBh
-dHRhY2htZW50cyByZWFkIHRoZSBjb21tZW50IGZvciBgamwtZ3BnLXdpdGhvdXQtbWltZScuCgo7
-OyBZb3UgbWF5IHdhbnQgdG8gY2hlY2sgdGhlIHN1YnNlcXVlbnQgY29tbWVudHMgdG8gdW5kZXJz
-dGFuZCB0aGUgcmF0aW9uYWxlCjs7IG9mIG15IGNoYW5nZXMgdG8gc3RhbmRhcmQgbWVzc2FnZSBi
-ZWhhdmlvci4KCjs7IFRoaXMgZmlsZSBpcyAqTk9UKiBwYXJ0IG9mIEdOVSBFbWFjcy4KCjs7OyBD
-b2RlOgoocmVxdWlyZSAnZ251cykKKHJlcXVpcmUgJ21lc3NhZ2UpCgo7OyBGb3IgcGdwKG1pbWUp
-IHRoZSBmb2xsb3dpbmcgdmFyaWFibGUgZW5zdXJlcyB0aGF0IHJlcGxpZXMgdG8gZW5jcnlwdGVk
-Cjs7IGUtbWFpbHMgYXJlIGVuY3J5cHRlZCAoaS5lLiwgYW4gTU1MIHRhZyBpcyBpbnNlcnRlZCBp
-bnRvIHRoZSBtZXNzYWdlCjs7IGJ1ZmZlcikuCjs7IEhvd2V2ZXIsIHRoaXMgZG9lcyBub3Qgd29y
-ayBmb3IgUy9NSU1FIGVuY3J5cHRlZCBlLW1haWxzLiAgT25jZSBkZWNyeXB0ZWQsCjs7IHRoZXkg
-bG9vc2UgdGhlaXIgZW5jcnlwdGVkIHByb3BlcnR5IGluIGdudXMtYXJ0aWNsZS13YXNoLXR5cGVz
-LiAgSWYgeW91Cjs7IGFyZSBpbnRlcmVzdGVkIGluIFMvTUlNRSwgeW91IG1heSB3YW50IHRvIGNv
-bnNpZGVyIGpsLXNtaW1lLmVsLgooc2V0cSBnbnVzLW1lc3NhZ2UtcmVwbHllbmNyeXB0IHQpCgo7
-OyBSZWJpbmQga2V5cyBmb3Igc2VuZGluZyBtZXNzYWdlcyB0byBjaGVjayB3aGV0aGVyIGVuY3J5
-cHRpb24gaXMgcG9zc2libGUKOzsgKGFsbCBuZWNlc3NhcnkgcHVibGljIGtleXMgYXJlIGF2YWls
-YWJsZSkuCjs7IEluIHRoZSBwYXN0LCB0aGlzIGNvdWxkIGhhdmUgcHJldmVudGVkIG1lIGZyb20g
-c2VuZGluZyBwbGFpbnRleHQgZS1tYWlscwo7OyB0aGF0IHNob3VsZCBoYXZlIGJlZW4gc2VudCBl
-bmNyeXB0ZWQuCihkZWZpbmUta2V5IG1lc3NhZ2UtbW9kZS1tYXAgKGtiZCAiQy1jIEMtYyIpICdq
-bC1tZXNzYWdlLXNlbmQtYW5kLWV4aXQpCihkZWZpbmUta2V5IG1lc3NhZ2UtbW9kZS1tYXAgKGti
-ZCAiQy1jIEMtcyIpICdqbC1tZXNzYWdlLXNlbmQpCgo7OyBNYWtlIGdudXMgaW5zZXJ0IE1NTCBl
-bmNyeXB0aW9uIHRhZ3MgaWYga2V5cyBmb3IgYWxsIHJlY2lwaWVudHMgYXJlCjs7IGF2YWlsYWJs
-ZS4gIFRodXMsIGlmIHlvdSByZXBseSAob3Igd2lkZSByZXBseSkgdG8gYSBtZXNzYWdlIG9yIGVk
-aXQKOzsgYSBzYXZlZCBkcmFmdCwgdGhlbiBNTUwgZW5jcnlwdGlvbiB0YWdzIHdpbGwgYmUgaW5z
-ZXJ0ZWQgcmlnaHQgYXdheS4KKGFkZC1ob29rICdnbnVzLW1lc3NhZ2Utc2V0dXAtaG9vayAnamwt
-ZW5jcnlwdC1pZi1wb3NzaWJsZSkKCihkZWZ2YXIgamwtZ3BnLXdpdGhvdXQtbWltZSBuaWwKICAi
-Q29udHJvbCB3aGV0aGVyIE1NTCBlbmNyeXB0aW9uIHNob3VsZCB1c2UgTUlNRSBTZWN1cml0eSB3
-aXRoIE9wZW5QR1AuClJGQyAzMTU2IHNwZWNpZmllcyBob3cgT3BlblBHUCAoYW5kLCB0aHVzLCBH
-bnVQRykgYW5kIE1JTUUgd29yayB0b2dldGhlci4KSW4gR251cywgYG1tbC1zZWN1cmUtbWVzc2Fn
-ZS1lbmNyeXB0LXBncG1pbWUnIGZvbGxvd3MgdGhhdCBzdGFuZGFyZC4KQW4gYWx0ZXJuYXRpdmUg
-aXMgYG1tbC1zZWN1cmUtbWVzc2FnZS1lbmNyeXB0LXBncCcsIHdoaWNoIHJlcHJlc2VudHMgYQps
-ZXNzIHBvd2VyZnVsIGFwcHJvYWNoLiAgSWYgeW91IChsaWtlIG1lIGluIHRoZSBwYXN0KSBoYXBw
-ZW4gdG8gc2VuZAplLW1haWxzIGluIGFuIGVudmlyb25tZW50IHVzaW5nIGJyb2tlbiBNJCBTTVRQ
-IHNlcnZlcnMsIHRoZW4geW91cgpiZWF1dGlmdWwgZS1tYWlscyBwcm9kdWNlZCBieSBgbW1sLXNl
-Y3VyZS1tZXNzYWdlLWVuY3J5cHQtcGdwbWltZScsCmZvbGxvd2luZyBSRkMgMzE1Niwgd2lsbCBi
-ZSBjb3JydXB0ZWQgYWxvbmcgdGhlIHdheS4gIEUuZy4sIHRoZSBTTVRQCnNlcnZlciBhdCBteSBk
-ZXBhcnRtZW50IHRocm93cyBhd2F5IHRoZSBlLW1haWwncyBDb250ZW50LVR5cGUKYG11bHRpcGFy
-dC9lbmNyeXB0ZWQnIGFuZCBpdHMgYHByb3RvY29sPVwiYXBwbGljYXRpb24vcGdwLWVuY3J5cHRl
-ZFwiJwphbmQgaW5zZXJ0cyBhIG1lYW5pbmdsZXNzIGBtdWx0aXBhcnQvbWl4ZWQnIG9uZS4gIFRo
-dXMsIHRoZSByZWNpcGllbnQKd2lsbCBoYXZlIGEgaGFyZCB0aW1lIGZpZ3VyaW5nIG91dCB3aGF0
-IHRoZSBlLW1haWwncyBzdHJhbmdlIGF0dGFjaG1lbnRzCmFyZSBnb29kIGZvci4gIEZVQkFSLgpJ
-ZiB0aGlzIHZhcmlhYmxlIGlzIHNldCB0byBuaWwgKHRoZSBkZWZhdWx0KSB0aGVuIHlvdXIgZS1t
-YWlscyBhcmUgYnVpbHQKYWNjb3JkaW5nIHRvIFJGQyAzMTU2LiAgSSBzdWdnZXN0IHRoYXQgeW91
-IHNlbmQgYW4gZW5jcnlwdGVkIGUtbWFpbCB0bwp5b3Vyc2VsZi4gIENvbXBsYWluIHRvIHlvdXIg
-SVQgZGVwYXJ0bWVudCBpZiB5b3UgcmVjZWl2ZSBnYXJibGVkCmF0dGFjaG1lbnRzLiAgVGhlbiBz
-ZXQgdGhpcyB2YXJpYWJsZSB0byBub24tbmlsLCB3aGlsZSB0aGV5IGFyZSBzZXR0aW5nCnVwIGEg
-cmVhc29uYWJsZSBTTVRQIHNlcnZlci4iKQoKKGRlZnZhciBqbC1lbmNyeXB0LXdpdGhvdXQtc2ln
-bmF0dXJlIHQKICAiQ29udHJvbCB3aGV0aGVyIE1NTCBlbmNyeXB0aW9uIHRhZ3Mgc2hvdWxkIGFs
-c28gcHJvZHVjZSBzaWduYXR1cmVzLgpTZXQgdG8gbmlsIHRvIHByb2R1Y2UgYW4gTU1MIHRhZyB0
-aGF0IHNpZ25zIGluIGFkZGl0aW9uIHRvIGVuY3J5cHRpb24uCkluIGdlbmVyYWwsIEknbSBub3Qg
-aW50ZXJlc3RlZCBpbiBzaWduaW5nIG15IGUtbWFpbHMuICBJbiBjb250cmFzdCwgSQpiZWxpZXZl
-IHRoYXQgb2ZmLXRoZS1yZWNvcmQgY29tbXVuaWNhdGlvbiBhaW1zIGZvciB0aGUgY29ycmVjdCBz
-ZXQgb2YKc2VjdXJpdHkgZ29hbHM6IENvbmZpZGVudGlhbGl0eSB3aXRoIHBlcmZlY3QgZm9yd2Fy
-ZCBzZWNyZWN5LCBpbnRlZ3JpdHksCmFuZCByZXB1ZGlhYmlsaXR5LCBzZWU6IGh0dHA6Ly93d3cu
-Y3lwaGVycHVua3MuY2Evb3RyLwpVbmZvcnR1bmF0ZWx5LCB0aGF0J3Mgbm90IGFuIG9wdGlvbiBm
-b3IgZS1tYWlsLiIpCgooZGVmdmFyIGpsLXJlY2lwaWVudC1oZWFkZXJzICcoInRvIiAiY2MiKQog
-ICJMaXN0IG9mIGhlYWRlcnMgdGhhdCBkZXRlcm1pbmUgd2hvc2Uga2V5cyBtdXN0IGJlIGF2YWls
-YWJsZS4KQW4gTU1MIHNlY3VyZSB0YWcgd2lsbCBvbmx5IGJlIGluc2VydGVkIGJhc2VkIG9uIGBq
-bC1lbmNyeXB0JyBpZiBwdWJsaWMga2V5cwpvciBjZXJ0aWZpY2F0ZXMgYXJlIGF2YWlsYWJsZSBm
-b3IgYWxsIHJlY2lwaWVudHMgbWVudGlvbmVkIGluIHRoZXNlIGhlYWRlcnMuCk5vdGUgdGhhdCB0
-aGlzIGxpc3QgZG9lcyBub3QgaW5jbHVkZSBGcm9tOyBpbiBjYXNlIG9mIEdudVBHLCBJIHJlY29t
-bWVuZCB0aGUKZW5jcnlwdC10byBvcHRpb24gaW4gZ3BnLmNvbmYgaW5zdGVhZCAod2hpY2ggbWFr
-ZXMgc3VyZSB0aGF0IHlvdSBjYW4gZGVjcnlwdAplLW1haWxzIHNlbnQgYnkgeW91cnNlbGYpLgpB
-bHNvLCBiZSBjYXJlZnVsIHdpdGggQmNjIGhlYWRlcnM7IGl0ICptaWdodCogYmUgcG9zc2libGUg
-dG8gbWFrZSB0aGlzIHdvcmsKd2l0aG91dCBnaXZpbmcgYXdheSB0aGUgQmNjJ2VkIGlkZW50aXRp
-ZXMsIGJ1dCBJIGRpZCBub3QgdGVzdCB0aGlzIGFuZApyZWNvbW1lbmQgYWdhaW5zdCBzdWNoIGEg
-dGhpbmc6IE9ubHkgYWRkIEJjYyBpZiB5b3UgYXJlIGFic29sdXRlbHkgc3VyZSB0aGF0CnlvdSBr
-bm93IHdoYXQgeW91IGFyZSBkb2luZy4gIEFuZCBsZXQgbWUga25vdyBob3cgdG8gZG8gdGhhdCBw
-cm9wZXJseSA7KSIpCgo7OyBGb3IgdGhlIHJlYXNvbiBzdGF0ZWQgaW4gdGhlIGRvY3N0cmluZyBv
-ZiBqbC1lbmNyeXB0LXdpdGhvdXQtc2lnbmF0dXJlLAo7OyBJJ20gbm90IHVzaW5nOgo7OyAoc2V0
-cSBnbnVzLW1lc3NhZ2UtcmVwbHlzaWduIHQpCgo7OyBNb3Jlb3ZlciwgSSBkb24ndCB0aGluayB0
-aGF0IHNldHRpbmcgbW1sLWRlZmF1bHQtZW5jcnlwdC1tZXRob2QgbWFrZXMgbXVjaAo7OyBzZW5z
-ZS4gIFRoZSBjb2RlIGluIHRoaXMgZmlsZSBkZXRlcm1pbmVzIHdoYXQgbWV0aG9kIHRvIHVzZSBi
-YXNlZCBvbiB0aGUKOzsgYXZhaWxhYmlsaXR5IG9mIHB1YmxpYyBrZXlzIG9yIGNlcnRpZmljYXRl
-cy4gIEFuZCBvbiBqbC1ncGctd2l0aG91dC1taW1lLgo7OyBCZSBzdXJlIHRvIHJlYWQgaXRzIGNv
-bW1lbnQuCgo7Owo7OyBObyBjb25maWd1cmF0aW9uIG9wdGlvbnMgYmV5b25kIHRoaXMgcG9pbnQu
-ICBKdXN0IGNvZGUuCjs7CgooZGVmdW4gamwtbWVzc2FnZS1zZW5kLWFuZC1leGl0ICgmb3B0aW9u
-YWwgYXJnKQogICJEZWxlZ2F0ZSB3b3JrIHRvIGBqbC1tZXNzYWdlLXNlbmQtbWF5YmUtZXhpdCcs
-IHBhc3NpbmcgQVJHLiIKICAoaW50ZXJhY3RpdmUgInAiKQogIChqbC1tZXNzYWdlLXNlbmQtbWF5
-YmUtZXhpdCB0IGFyZykpCgooZGVmdW4gamwtbWVzc2FnZS1zZW5kICgmb3B0aW9uYWwgYXJnKQog
-ICJEZWxlZ2F0ZSB3b3JrIHRvIGBqbC1tZXNzYWdlLXNlbmQtbWF5YmUtZXhpdCcsIHBhc3Npbmcg
-QVJHLiIKICAoaW50ZXJhY3RpdmUgInAiKQogIChqbC1tZXNzYWdlLXNlbmQtbWF5YmUtZXhpdCBu
-aWwgYXJnKSkKCihkZWZ1biBqbC1tZXNzYWdlLXNlbmQtbWF5YmUtZXhpdCAoZXhpdCBhcmcpCiAg
-IlNlbmQgbWVzc2FnZSBpZiBNTUwgc2VjdXJlIGVuY3J5cHQgdGFnIGlzIHByZXNlbnQgb3Igbm90
-IGFwcHJvcHJpYXRlLgpJZiBNTUwgc2VjdXJlIGVuY3J5cHQgdGFnIGlzIG5vdCBwcmVzZW50LCBj
-aGVjayB2aWEKYGpsLXByb2NlZWQtd2l0aG91dC1lbmNyeXB0aW9uLXAnIHdoZXRoZXIgcHVibGlj
-IGtleXMgZm9yIGFsbApyZWNpcGllbnRzIGFyZSBhdmFpbGFibGUgYW5kIGFuIE1NTCBzZWN1cmUg
-dGFnIHNob3VsZCBiZSBhZGRlZCwgb3IKd2hldGhlciB0aGUgbWVzc2FnZSBzaG91bGQgYmUgc2Vu
-dCB3aXRob3V0IGVuY3J5cHRpb24uICBJbiB0aGUgbGF0dGVyCmNhc2UgRVhJVCBjb250cm9scyB3
-aGV0aGVyIGBtZXNzYWdlLXNlbmQtYW5kLWV4aXQnIG9yIGBtZXNzYWdlLXNlbmQnCmlzIGNhbGxl
-ZCwgYW5kIEFSRyBpcyBwYXNzZWQgYXMgYXJndW1lbnQuIgogIChzYXZlLWV4Y3Vyc2lvbgogICAg
-KGdvdG8tY2hhciAocG9pbnQtbWluKSkKICAgIChpZiAob3IgKHNlYXJjaC1mb3J3YXJkICI8I3Nl
-Y3VyZS4rZW5jcnlwdCIgbmlsIHQpCgkgICAgKGpsLXByb2NlZWQtd2l0aG91dC1lbmNyeXB0aW9u
-LXApKQoJKGlmIGV4aXQKCSAgICAobWVzc2FnZS1zZW5kLWFuZC1leGl0IGFyZykKCSAgKG1lc3Nh
-Z2Utc2VuZCBhcmcpKSkpKQoKKGRlZnVuIGpsLXByb2NlZWQtd2l0aG91dC1lbmNyeXB0aW9uLXAg
-KCkKICAiUmV0dXJuIHQgaWYgbm8gKGFkZGl0aW9uYWwpIGVuY3J5cHRpb24gaXMgbmVjZXNzYXJ5
-LgpUaGlzIGhhcHBlbnMgaWYgKGEpIHRoZSBtZXNzYWdlIGNhbm5vdCBiZSBlbmNyeXB0ZWQgYmVj
-YXVzZSBhIGtleQpmb3Igc29tZSByZWNpcGllbnQgaXMgbWlzc2luZywgb3IgKGIpIGFsbCBrZXlz
-IGFyZSBhdmFpbGFibGUgYnV0CnRoZSB1c2VyIGV4cGxpY2l0bHkgYW5zd2VyZWQgYHllcycgdG8g
-cHJvY2VlZCB3aXRob3V0IGVuY3J5cHRpb24uCk90aGVyd2lzZSwgaS5lLiwgYWxsIGtleXMgYXJl
-IGF2YWlsYWJsZSBhbmQgdGhlIHVzZXIgYW5zd2VyZWQKYG5vJywgYW4gYXBwcm9wcmlhdGUgTU1M
-IHRhZyBpcyBpbnNlcnRlZCwgYW5kIG5pbCBpcyByZXR1cm5lZC4iCiAgKGludGVyYWN0aXZlKQog
-IChsZXQgKChyZWNpcGllbnRzIChqbC1tZXNzYWdlLWZldGNoLXJlY2lwaWVudHMpKSkKICAgIChp
-ZiAoamwtdGVzdC1saXN0IHJlY2lwaWVudHMgJ2psLWdwZ2tleS1hdmFpbGFibGUtcCkKCShpZiAo
-eWVzLW9yLW5vLXAgIkdudVBHIHB1YmxpYyBrZXlzIGF2YWlsYWJsZSBmb3IgYWxsIHJlY2lwaWVu
-dHMuICBSZWFsbHkgcHJvY2VlZCAqd2l0aG91dCogZW5jcnlwdGlvbj8gIikKCSAgICB0CgkgIChq
-bC1zZWN1cmUtbWVzc2FnZS1ncGcpCgkgIG5pbCkKICAgICAgKGlmIChqbC10ZXN0LWxpc3QgcmVj
-aXBpZW50cyAnamwtY2VydGZpbGUtYXZhaWxhYmxlLXApCgkgIChpZiAoeWVzLW9yLW5vLXAgIlMv
-TUlNRSBjZXJ0aWZpY2F0ZXMgYXZhaWxhYmxlIGZvciBhbGwgcmVjaXBpZW50cy4gIFJleWxseSBw
-cm9jZWVkICp3aXRob3V0KiBlbmNyeXB0aW9uPyAiKQoJICAgICAgdAoJICAgIChqbC1zZWN1cmUt
-bWVzc2FnZS1zbWltZSkKCSAgICBuaWwpCgl0KSkpKQoKKGRlZnVuIGpsLW1lc3NhZ2UtZmV0Y2gt
-cmVjaXBpZW50cyAoKQogICJSZXR1cm4gbGlzdCBvZiBjdXJyZW50IG1lc3NhZ2UncyByZWNpcGll
-bnRzLgpFYWNoIGxpc3QgZWxlbWVudCByZXByZXNlbnRzIG9uZSByZWNpcGllbnQgKGFtb25nIHRo
-b3NlIGxpc3RlZCBpbiB0aGUKaGVhZGVycyBgamwtcmVjaXBpZW50LWhlYWRlcnMnKSB1c2luZyB0
-aGUgZm9ybWF0IG9mCmBtYWlsLWV4dHJhY3QtYWRkcmVzcy1jb21wb25lbnRzJy4iCiAgKHNhdmUt
-ZXhjdXJzaW9uCiAgICAoc2F2ZS1yZXN0cmljdGlvbgogICAgICAobWVzc2FnZS1uYXJyb3ctdG8t
-aGVhZGVycykKICAgICAgKGxldCAoKHJlY2lwaWVudHMKCSAgICAgKG1hcGNvbmNhdCAnaWRlbnRp
-dHkKCQkJKHJlbW92ZSBuaWwgKGRlbGV0ZS1kdXBzCgkJCQkgICAgIChtYXBjYXIgJ21lc3NhZ2Ut
-ZmV0Y2gtZmllbGQKCQkJCQkgICAgIGpsLXJlY2lwaWVudC1oZWFkZXJzKSkpCgkJCSIsIikpKQoJ
-ICAobWFpbC1leHRyYWN0LWFkZHJlc3MtY29tcG9uZW50cyByZWNpcGllbnRzIHQpKSkpKQoKKGRl
-ZnVuIGpsLWNlcnRmaWxlLWF2YWlsYWJsZS1wIChyZWNpcGllbnQpCiAgIkNoZWNrIHdoZXRoZXIg
-Y2VydGlmaWNhdGUgZmlsZSBpcyBhdmFpbGFibGUgZm9yIFJFQ0lQSUVOVC4KVGhpcyB0ZXN0cyB3
-aGV0aGVyIGBzbWltZS1jZXJ0aWZpY2F0ZS1kaXJlY3RvcnknIGNvbnRhaW5zIGEKY2VydGlmaWNh
-dGUgZmlsZSB3aG9zZSBuYW1lIGVxdWFscyB0aGUgZS1tYWlsIGFkZHJlc3Mgb2YKUkVDSVBJRU5U
-ICh3aGljaCBpcyBpbiB0aGUgZm9ybWF0IG9mCmBtYWlsLWV4dHJhY3QtYWRkcmVzcy1jb21wb25l
-bnRzJykuClByb2JhYmx5IHRoaXMgdGVzdCBpcyBvbmx5IHVzZWZ1bCBpbiBjb21iaW5hdGlvbiB3
-aXRoIGBqbC1zbWltZScuIgogIChmaWxlLWV4aXN0cy1wIChjb25jYXQgc21pbWUtY2VydGlmaWNh
-dGUtZGlyZWN0b3J5IChjYWRyIHJlY2lwaWVudCkpKSkKCihkZWZ1biBqbC1ncGdrZXktYXZhaWxh
-YmxlLXAgKHJlY2lwaWVudCkKICAiQ2hlY2sgd2hldGhlciBHbnVQRyBrbm93cyBhIHB1YmxpYyBr
-ZXkgZm9yIHRoZSBnaXZlbiBSRUNJUElFTlQuClJFQ0lQSUVOVCBtdXN0IGJlIGluIHRoZSBmb3Jt
-YXQgb2YgYG1haWwtZXh0cmFjdC1hZGRyZXNzLWNvbXBvbmVudHMnLiIKICAoPSAwIChjYWxsLXBy
-b2Nlc3MgImdwZyIgbmlsIG5pbCBuaWwgIi0tbGlzdC1rZXkiIChjYWRyIHJlY2lwaWVudCkpKSkK
-CihkZWZ1biBqbC10ZXN0LWxpc3QgKGxpc3QgcHJlZGljYXRlKQogICJUbyBlYWNoIGVsZW1lbnQg
-b2YgTElTVCBhcHBseSBQUkVESUNBVEUuClJldHVybiBuaWwgaWYgc29tZSB0ZXN0IHJldHVybnMg
-bmlsOyBvdGhlcndpc2UsIHJldHVybiB0LiIKICAobGV0ICgocmVzdWx0IChtYXBjYXIgcHJlZGlj
-YXRlIGxpc3QpKSkKICAgIChpZiAobWVtcSBuaWwgcmVzdWx0KQoJbmlsCiAgICAgIHQpKSkKCihk
-ZWZ1biBqbC1zZWN1cmUtbWVzc2FnZS1ncGcgKCkKICAiSW52b2tlIE1NTCBmdW5jdGlvbiB0byBh
-ZGQgYXBwcm9wcmlhdGUgc2VjdXJlIHRhZyBmb3IgR251UEcuClRoZSBjaG9pY2UgYmV0d2VlbiBw
-Z3Agb3IgcGdwbWltZSBpcyBiYXNlZCBvbiBgamwtZ3BnLXdpdGhvdXQtbWltZScuCkNyZWF0aW9u
-IG9mIHNpZ25hdHVyZXMgaXMgY29udHJvbGxlZCBieSBgamwtZG8tbm90LXNpZ24tcCcuIgogIChp
-ZiBqbC1ncGctd2l0aG91dC1taW1lCiAgICAgIChtbWwtc2VjdXJlLW1lc3NhZ2UtZW5jcnlwdC1w
-Z3AgKGpsLWRvLW5vdC1zaWduLXApKQogICAgKG1tbC1zZWN1cmUtbWVzc2FnZS1lbmNyeXB0LXBn
-cG1pbWUgKGpsLWRvLW5vdC1zaWduLXApKSkpCgooZGVmdW4gamwtc2VjdXJlLW1lc3NhZ2Utc21p
-bWUgKCkKICAiSW52b2tlIE1NTCBmdW5jdGlvbiB0byBhZGQgYXBwcm9wcmlhdGUgc2VjdXJlIHRh
-ZyBmb3IgUy9NSU1FLgpDcmVhdGlvbiBvZiBzaWduYXR1cmVzIGlzIGNvbnRyb2xsZWQgYnkgYGps
-LWVuY3J5cHQtd2l0aG91dC1zaWduYXR1cmUnLiIKICAobW1sLXNlY3VyZS1tZXNzYWdlLWVuY3J5
-cHQtc21pbWUgKGpsLWRvLW5vdC1zaWduLXApKSkKCihkZWZ1biBqbC1pcy1zaWduZWQtcCAoKQog
-ICJDaGVjayB3aGV0aGVyIHNlY3VyZSBzaWduIHRhZyBpcyBwcmVzZW50LiIKICAoc2F2ZS1leGN1
-cnNpb24KICAgIChnb3RvLWNoYXIgKHBvaW50LW1pbikpCiAgICAocmUtc2VhcmNoLWZvcndhcmQg
-Ijwjc2VjdXJlLitzaWduPiIgbmlsIHQpKSkKCihkZWZ1biBqbC1kby1ub3Qtc2lnbi1wICgpCiAg
-IkNoZWNrIHdoZXRoZXIgdGhlIG1lc3NhZ2Ugc2hvdWxkIG5vdCBiZSBzaWduZWQuClRoaXMgaXMg
-dGhlIGNhc2UgaWYgdGhlIGBqbC1lbmNyeXB0LXdpdGhvdXQtc2lnbmF0dXJlJyBpcyBUcnVlIGFu
-ZCBubyBzZWN1cmUKc2lnbiB0YWcgaXMgcHJlc2VudC4iCiAgKGFuZCBqbC1lbmNyeXB0LXdpdGhv
-dXQtc2lnbmF0dXJlCiAgICAgICAobm90IChqbC1pcy1zaWduZWQtcCkpKSkKCihkZWZ1biBqbC1l
-bmNyeXB0LWlmLXBvc3NpYmxlICgpCiAgIkluc2VydCBNTUwgZW5jcnlwdGlvbiB0YWcgaWYgYXBw
-cm9wcmlhdGUuCklmIHRoZXJlIGlzIGF0IGxlYXN0IG9uZSByZWNpcGllbnQgKG5vdCBjb3VudGlu
-ZyB0aGUgRnJvbSBoZWFkZXIpCmFuZCBHbnVQRyBwdWJsaWMga2V5cyBvciBTL01JTUUgY2VydGlm
-aWNhdGVzIGFyZSBhdmFpbGFibGUgZm9yIGFsbApyZWNpcGllbnRzIGluIGBqbC1yZWNpcGllbnQt
-aGVhZGVycycgdGhlbiBpbnNlcnQgTU1MIGVuY3J5cHRpb24gdGFnLiIKICAobGV0ICgocmVjaXBp
-ZW50cyAoamwtbWVzc2FnZS1mZXRjaC1yZWNpcGllbnRzKSkpCiAgICAoaWYgKD4gKGxlbmd0aCBy
-ZWNpcGllbnRzKQoJICAgKGlmIChtZW1iZXItaWdub3JlLWNhc2UgImZyb20iIGpsLXJlY2lwaWVu
-dC1oZWFkZXJzKQoJICAgICAgIDEKCSAgICAgMCkpCgkoaWYgKGpsLXRlc3QtbGlzdCByZWNpcGll
-bnRzICdqbC1ncGdrZXktYXZhaWxhYmxlLXApCgkgICAgKGpsLXNlY3VyZS1tZXNzYWdlLWdwZykK
-CSAgKGlmIChqbC10ZXN0LWxpc3QgcmVjaXBpZW50cyAnamwtY2VydGZpbGUtYXZhaWxhYmxlLXAp
-CgkgICAgICAoamwtc2VjdXJlLW1lc3NhZ2Utc21pbWUpKSkpKSkKCihwcm92aWRlICdqbC1lbmNy
-eXB0KQo7OzsgamwtZW5jcnlwdC5lbCBlbmRzIGhlcmUK
+;;; jl-encrypt.el --- Insert MML encryption tags if public keys are available
+;; -*- Mode: Emacs-Lisp -*-
+;; -*- coding: utf-8 -*-
+
+;; Copyright (C) 2011, 2012 Jens Lechtenbörger
+
+;; Version: $Id: jl-encrypt.el,v 1.1 2012/03/09 10:37:08 lechten Exp lechten $
+;; Compatibility: Should work with GNU Emacs 23.1 and later
+
+;; This program is free software; you can redistribute it and/or
+;; modify it under the terms of the GNU General Public License as
+;; published by the Free Software Foundation; either version 3, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+;; General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with GNU Emacs; see the file COPYING.
+;; If not, see http://www.gnu.org/licenses/ or write to the
+;; Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+;; Boston, MA 02110-1301, USA.
+
+;; Keywords: mail, encryption, GnuPG, gpg, S/MIME, OpenPGP
+
+;; URL: http://www.emacswiki.org/emacs/jl-encrypt.el
+;; EmacsWiki: DefaultEncrypt
+
+;; A signed version of this file is available over there:
+;; http://www.informationelle-selbstbestimmung-im-internet.de/emacs/
+
+;;; Commentary:
+;; If you sometimes send plaintext e-mails that really should have been
+;; encrypted ones, then this file may be for you.
+;; I assume that you are familiar with GnuPG support for Gnus messages as
+;; described in Info node `(message) Security':
+;; https://www.gnu.org/software/emacs/manual/html_node/message/Security.html
+;;
+;; The code aims for automatic insertion of MML secure tags into messages
+;; if public keys (either GnuPG public keys or S/MIME certificates) for
+;; all recipients are available.  In addition, before a message is sent,
+;; the user is asked if plaintext should really be sent unencryptedly when
+;; public keys for all recipients are available.
+;; This works by rebinding `C-c C-c' and `C-c C-s' as well as by adding
+;; `jl-encrypt-if-possible' to `gnus-message-setup-hook'.
+;; If you are really interested in S/MIME then I suggest that you take a
+;; look at jl-smime.el in addition to this file.
+
+;; Install:
+;; Place this file into your load-path and add the following to ~/.emacs.
+;;     (require 'jl-encrypt)
+;; In general, no further configuration should be necessary.
+
+;; Sanity check:
+;; Without any further configuration, send a GnuPG encrypted e-mail to
+;; yourself as follows.  Enter your own e-mail address after To, choose some
+;; Subject, and enter `M-x spook' in the body, which will insert suitable
+;; text.  Then press `C-c C-c' to send the e-mail as usual (forgetting to
+;; encrypt).  If you own a GnuPG public for the To e-mail address then you
+;; will be asked whether you really want to send that e-mail as plaintext.
+;; Answering `no' will insert an MML secure tag for you.  Press `C-c C-c'
+;; again, and an encrypted e-mail will be sent.  If you receive that e-mail
+;; with garbled attachments read the comment for `jl-gpg-without-mime'.
+
+;; You may want to check the subsequent comments to understand the rationale
+;; of my changes to standard message behavior.
+
+;; This file is *NOT* part of GNU Emacs.
+
+;;; Code:
+(require 'gnus)
+(require 'message)
+
+;; For pgp(mime) the following variable ensures that replies to encrypted
+;; e-mails are encrypted (i.e., an MML tag is inserted into the message
+;; buffer).
+;; However, this does not work for S/MIME encrypted e-mails.  Once decrypted,
+;; they loose their encrypted property in gnus-article-wash-types.  If you
+;; are interested in S/MIME, you may want to consider jl-smime.el.
+(setq gnus-message-replyencrypt t)
+
+;; Rebind keys for sending messages to check whether encryption is possible
+;; (all necessary public keys are available).
+;; In the past, this could have prevented me from sending plaintext e-mails
+;; that should have been sent encrypted.
+(define-key message-mode-map (kbd "C-c C-c") 'jl-message-send-and-exit)
+(define-key message-mode-map (kbd "C-c C-s") 'jl-message-send)
+
+;; Make gnus insert MML encryption tags if keys for all recipients are
+;; available.  Thus, if you reply (or wide reply) to a message or edit
+;; a saved draft, then MML encryption tags will be inserted right away.
+(add-hook 'gnus-message-setup-hook 'jl-encrypt-if-possible)
+
+(defvar jl-gpg-without-mime nil
+  "Control whether MML encryption should use MIME Security with OpenPGP.
+RFC 3156 specifies how OpenPGP (and, thus, GnuPG) and MIME work together.
+In Gnus, `mml-secure-message-encrypt-pgpmime' follows that standard.
+An alternative is `mml-secure-message-encrypt-pgp', which represents a
+less powerful approach.  If you (like me in the past) happen to send
+e-mails in an environment using broken M$ SMTP servers, then your
+beautiful e-mails produced by `mml-secure-message-encrypt-pgpmime',
+following RFC 3156, will be corrupted along the way.  E.g., the SMTP
+server at my department throws away the e-mail's Content-Type
+`multipart/encrypted' and its `protocol=\"application/pgp-encrypted\"'
+and inserts a meaningless `multipart/mixed' one.  Thus, the recipient
+will have a hard time figuring out what the e-mail's strange attachments
+are good for.  FUBAR.
+If this variable is set to nil (the default) then your e-mails are built
+according to RFC 3156.  I suggest that you send an encrypted e-mail to
+yourself.  Complain to your IT department if you receive garbled
+attachments.  Then set this variable to non-nil, while they are setting
+up a reasonable SMTP server.")
+
+(defvar jl-encrypt-without-signature t
+  "Control whether MML encryption tags should also produce signatures.
+Set to nil to produce an MML tag that signs in addition to encryption.
+In general, I'm not interested in signing my e-mails.  In contrast, I
+believe that off-the-record communication aims for the correct set of
+security goals: Confidentiality with perfect forward secrecy, integrity,
+and repudiability, see: http://www.cypherpunks.ca/otr/
+Unfortunately, that's not an option for e-mail.")
+
+(defvar jl-recipient-headers '("to" "cc")
+  "List of headers that determine whose keys must be available.
+An MML secure tag will only be inserted based on `jl-encrypt' if public keys
+or certificates are available for all recipients mentioned in these headers.
+Note that this list does not include From; in case of GnuPG, I recommend the
+encrypt-to option in gpg.conf instead (which makes sure that you can decrypt
+e-mails sent by yourself).
+Also, be careful with Bcc headers; it *might* be possible to make this work
+without giving away the Bcc'ed identities, but I did not test this and
+recommend against such a thing: Only add Bcc if you are absolutely sure that
+you know what you are doing.  And let me know how to do that properly ;)")
+
+;; For the reason stated in the docstring of jl-encrypt-without-signature,
+;; I'm not using:
+;; (setq gnus-message-replysign t)
+
+;; Moreover, I don't think that setting mml-default-encrypt-method makes much
+;; sense.  The code in this file determines what method to use based on the
+;; availability of public keys or certificates.  And on jl-gpg-without-mime.
+;; Be sure to read its comment.
+
+;;
+;; No configuration options beyond this point.  Just code.
+;;
+
+(defun jl-message-send-and-exit (&optional arg)
+  "Delegate work to `jl-message-send-maybe-exit', passing ARG."
+  (interactive "p")
+  (jl-message-send-maybe-exit t arg))
+
+(defun jl-message-send (&optional arg)
+  "Delegate work to `jl-message-send-maybe-exit', passing ARG."
+  (interactive "p")
+  (jl-message-send-maybe-exit nil arg))
+
+(defun jl-message-send-maybe-exit (exit arg)
+  "Send message if MML secure tag is present or not appropriate.
+If MML secure tag is not present check via
+`jl-proceed-without-encryption-p' whether public keys for all
+recipients are available and an MML secure tag should be added, or
+whether the message should be sent without encryption.  In the latter
+case EXIT controls whether `message-send-and-exit' or `message-send'
+is called, and ARG is passed as argument."
+  (save-excursion
+    (goto-char (point-min))
+    (if (or (search-forward "<#secure" nil t)
+	    (jl-proceed-without-encryption-p))
+	(if exit
+	    (message-send-and-exit arg)
+	  (message-send arg)))))
+
+(defun jl-proceed-without-encryption-p ()
+  "Return t if no (additional) encryption is necessary.
+This happens if (a) the message cannot be encrypted because a key
+for some recipient is missing, or (b) all keys are available but
+the user explicitly answered `yes' to proceed without encryption.
+Otherwise, i.e., all keys are available and the user answered
+`no', an appropriate MML tag is inserted, and nil is returned."
+  (interactive)
+  (let ((recipients (jl-message-fetch-recipients)))
+    (if (jl-test-list recipients 'jl-gpgkey-available-p)
+	(if (yes-or-no-p "GnuPG public keys available for all recipients.  Really proceed *without* encryption? ")
+	    t
+	  (jl-secure-message-gpg)
+	  nil)
+      (if (jl-test-list recipients 'jl-certfile-available-p)
+	  (if (yes-or-no-p "S/MIME certificates available for all recipients.  Reylly proceed *without* encryption? ")
+	      t
+	    (jl-secure-message-smime)
+	    nil)
+	t))))
+
+(defun jl-message-fetch-recipients ()
+  "Return list of current message's recipients.
+Each list element represents one recipient (among those listed in the
+headers `jl-recipient-headers') using the format of
+`mail-extract-address-components'."
+  (save-excursion
+    (save-restriction
+      (message-narrow-to-headers)
+      (let ((recipients
+	     (mapconcat 'identity
+			(remove nil (delete-dups
+				     (mapcar 'message-fetch-field
+					     jl-recipient-headers)))
+			",")))
+	  (mail-extract-address-components recipients t)))))
+
+(defun jl-certfile-available-p (recipient)
+  "Check whether certificate file is available for RECIPIENT.
+This tests whether `smime-certificate-directory' contains a
+certificate file whose name equals the e-mail address of
+RECIPIENT (which is in the format of
+`mail-extract-address-components').
+Probably this test is only useful in combination with `jl-smime'."
+  (file-exists-p (concat smime-certificate-directory (cadr recipient))))
+
+(defun jl-gpgkey-available-p (recipient)
+  "Check whether GnuPG knows a public key for the given RECIPIENT.
+RECIPIENT must be in the format of `mail-extract-address-components'."
+  (= 0 (call-process "gpg" nil nil nil "--list-key" (cadr recipient))))
+
+(defun jl-test-list (list predicate)
+  "To each element of LIST apply PREDICATE.
+Return nil if some test returns nil; otherwise, return t."
+  (let ((result (mapcar predicate list)))
+    (if (memq nil result)
+	nil
+      t)))
+
+(defun jl-secure-message-gpg ()
+  "Invoke MML function to add appropriate secure tag for GnuPG.
+The choice between pgp or pgpmime is based on `jl-gpg-without-mime'.
+Creation of signatures is controlled by `jl-encrypt-without-signature'."
+  (if jl-gpg-without-mime
+      (mml-secure-message-encrypt-pgp jl-encrypt-without-signature)
+    (mml-secure-message-encrypt-pgpmime jl-encrypt-without-signature)))
+
+(defun jl-secure-message-smime ()
+  "Invoke MML function to add appropriate secure tag for S/MIME.
+Creation of signatures is controlled by `jl-encrypt-without-signature'."
+  (mml-secure-message-encrypt-smime jl-encrypt-without-signature))
+
+(defun jl-encrypt-if-possible ()
+  "Insert MML encryption tag if appropriate.
+If there is at least one recipient (not counting the From header)
+and GnuPG public keys or S/MIME certificates are available for all
+recipients in `jl-recipient-headers' then insert MML encryption tag."
+  (let ((recipients (jl-message-fetch-recipients)))
+    (if (> (length recipients)
+	   (if (member-ignore-case "from" jl-recipient-headers)
+	       1
+	     0))
+	(if (jl-test-list recipients 'jl-gpgkey-available-p)
+	    (jl-secure-message-gpg)
+	  (if (jl-test-list recipients 'jl-certfile-available-p)
+	      (jl-secure-message-smime))))))
+
+(provide 'jl-encrypt)
+;;; jl-encrypt.el ends here
