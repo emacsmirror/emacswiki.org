@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Mar 12 20:14:19 2013 (-0700)
+;; Last-Updated: Tue Mar 12 20:20:57 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 25644
+;;     Update #: 25646
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1887,7 +1887,8 @@ considered."
   (browse-url (format (concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=\
 Icicles bug: \
 &body=Describe bug below, using a precise recipe that starts with `emacs -Q' or `emacs -q'.  \
-Each Icicles file has a header `Update #' that you can use to identify it.\
+Each Icicles file has a header `Update #' that you can use to identify it.  \
+Include at least the `Update #' from file `icicles-chg.el', if you have that file.\
 %%0A%%0AEmacs version: %s.")
                       (emacs-version))))
 
