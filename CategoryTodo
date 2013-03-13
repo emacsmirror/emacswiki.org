@@ -10,7 +10,6 @@ for all pages related to todo lists.
 * TodoGnus -- implemented as Gnus backends, therefore use the same interface as a newsgroup where every article is a todo item
 * BugTrack -- has an RMAIL-like interface and some RMAIL integration
 * RecordsMode -- lets you keep a diary and also provides support for todo items.
-* ToDoAndPalmPilot -- more information for people wanting to share their data with the Palm Pilot
 * PlannerMode -- this is more like a PersonalInformationManager (PIM), but can serve as a complex todo mode.
 * RkTodo -- very simple todo sorter function (I use it within EmacsWikiMode files)
 * EtaskMode -- project tasks, Gantt charts, LaTeX output
