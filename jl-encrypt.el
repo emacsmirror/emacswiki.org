@@ -2,9 +2,21 @@
 ;; -*- Mode: Emacs-Lisp -*-
 ;; -*- coding: utf-8 -*-
 
-;; Copyright (C) 2011, 2012, 2013 Jens Lechtenbörger
+;; Copyright (C) 2011, 2012, 2013 Jens LechtenbÃ¶rger
+;; Copyright (C) 2013 konubinix
 
-;; Version: $Id: jl-encrypt.el,v 1.2 2013/03/12 16:14:23 lechten Exp lechten $
+;; Version: $Id: jl-encrypt.el,v 1.3 2013/03/13 06:58:20 lechten Exp $
+;; Changelog:
+;; 2012/03/09, Version 1.1, initial release
+;; 2013/03/12, Version 1.2, integrate patch by konubinix to also encrypt
+;;   e-mail that already contains a secure sign tag:
+;;   - Add functions jl-is-signed-p and jl-do-not-sign-p.
+;;   - Change jl-secure-message-gpg and jl-secure-message-smime to use
+;;     jl-do-not-sign-p (and not only jl-encrypt-without-signature).
+;;   - Change jl-message-send-maybe-exit to look for secure encrypt tag
+;;     (instead of any secure tag).
+;; 2013/03/13, Version 1.3, add Changelog, give credit to konubinix
+
 ;; Compatibility: Should work with GNU Emacs 23.1 and later
 
 ;; This program is free software; you can redistribute it and/or
@@ -244,7 +256,7 @@ Creation of signatures is controlled by `jl-do-not-sign-p'."
 
 (defun jl-secure-message-smime ()
   "Invoke MML function to add appropriate secure tag for S/MIME.
-Creation of signatures is controlled by `jl-encrypt-without-signature'."
+Creation of signatures is controlled by `jl-do-not-sign-p'."
   (mml-secure-message-encrypt-smime (jl-do-not-sign-p)))
 
 (defun jl-is-signed-p ()
