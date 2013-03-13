@@ -1,4 +1,4 @@
-BBDB stands for The Insidious Big Brother Database -- an address book that you can hook into your mail- and newsreader, sync with your Palm, etc. Click on the header to list all [::BBDB] related pages.
+BBDB stands for The Insidious Big Brother Database -- an address book that you can hook into your mail- and newsreader, sync with your mobile device, etc. Click on the header to list all [::BBDB] related pages.
 
 ==Bbdb and Custom Address Formats==
 
@@ -19,7 +19,7 @@ BBDB stands for The Insidious Big Brother Database -- an address book that you c
 ==Importing and Exporting==
 
 * BbdbMerging -- merging two databases
-* BbdbExportImportSync -- export, import, synchronization (was BbdbSyncWithPalm)
+* BbdbExportImportSync -- export, import, synchronization
 * BbdbImporters -- importing stuff into BBDB
 * BbdbExporters -- exporting stuff from BBDB
 * BbdbImportFromOutlook -- use to export Outlook contacts to .bbdb
