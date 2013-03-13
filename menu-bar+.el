@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Thu Aug 17 10:05:46 1995
 ;; Version: 21.1
-;; Last-Updated: Fri Dec 28 10:12:50 2012 (-0800)
+;; Last-Updated: Tue Mar 12 19:17:31 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 3554
+;;     Update #: 3557
 ;; URL: http://www.emacswiki.org/menu-bar+.el
 ;; Doc URL: http://www.emacswiki.org/MenuBarPlus
 ;; Keywords: internal, local, convenience
@@ -102,6 +102,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/03/12 dadams
+;;     toggle-max-frame-*: Removed :enable (no longer needed).
 ;; 2011/12/03 dadams
 ;;     All region commands: Enable only if region is also nonempty.
 ;;     All editing commands: Enable only if buffer is not read-only.
@@ -159,7 +161,7 @@
 ;;     Added to Help > Describe: describe-(option(-of-type)|command).
 ;; 2007/12/02 dadams
 ;;     Added to Help > Describe (and reordered):
-;;       describe-(face|keymap|file|input-method|coding-system(-briefly)|current-display-table), 
+;;       describe-(face|keymap|file|input-method|coding-system(-briefly)|current-display-table),
 ;;     Soft require help-fns+.el.
 ;; 2007/11/01 dadams
 ;;     Do Re Mi menu:
@@ -186,7 +188,7 @@
 ;;     Added to menu-bar-edit-menu: undo, cut, copy, paste, select paste, clear,
 ;;       separator-edit-delete-lines.
 ;;     Added to menu-bar-search-tags-menu: set-tags-name, apropos-tags, separator-tags-misc,
-;;       separator-tags-regexp, next-tag-other-frame, 
+;;       separator-tags-regexp, next-tag-other-frame,
 ;;     Added: yank-menu, menu-bar-next-tag-other-frame, menu-bar-select-frame.
 ;; 2005/10/23 dadams
 ;;     Removed references to menu-bar-files-menu - test version, not boundp menu-bar-file-menu.
@@ -486,7 +488,7 @@ submenu of the \"Help\" menu."))
 (when (featurep 'fit-frame)
   (define-key menu-bar-frames-menu [fit-frame]
     '(menu-item "Fit This Frame" fit-frame :help "Resize frame to fit its selected window")))
-  
+
 (when (featurep 'frame-cmds)
   (define-key menu-bar-frames-menu [set-all-params-from-frame]
     '(menu-item "Set All Frame Parameters from Frame" set-all-frame-alist-parameters-from-frame
@@ -504,16 +506,13 @@ submenu of the \"Help\" menu."))
   (define-key menu-bar-frames-menu [separator-frame-2] '("--"))
   (define-key menu-bar-frames-menu [toggle-max-frame-vertically]
     '(menu-item "Toggle Max Frame Vertically" toggle-max-frame-vertically
-      :help "Maximize or restore the selected frame vertically"
-      :enable (frame-parameter nil 'restore-height)))
+      :help "Maximize or restore the selected frame vertically"))
   (define-key menu-bar-frames-menu [toggle-max-frame-horizontally]
     '(menu-item "Toggle Max Frame Horizontally" toggle-max-frame-horizontally
-      :help "Maximize or restore the selected frame horizontally"
-      :enable (frame-parameter nil 'restore-width)))
+      :help "Maximize or restore the selected frame horizontally"))
   (define-key menu-bar-frames-menu [toggle-max-frame]
     '(menu-item "Toggle Max Frame" toggle-max-frame
-      :help "Maximize or restore the selected frame (in both directions)"
-      :enable (or (frame-parameter nil 'restore-width) (frame-parameter nil 'restore-height))))
+      :help "Maximize or restore the selected frame (in both directions)"))
   (define-key menu-bar-frames-menu [maximize-frame-vertically]
     '(menu-item "Maximize Frame Vertically" maximize-frame-vertically
       :help "Maximize the selected frame vertically"))
@@ -1033,7 +1032,7 @@ string.\nIt is most convenient from the keyboard.  Try it!")))
       :help "Search backwards for a string as you type it"))
   (define-key menu-bar-i-search-menu [isearch-forward]
     '(menu-item "String Forward..." isearch-forward
-      :help "Search forward for a string as you type it"))  
+      :help "Search forward for a string as you type it"))
   (define-key menu-bar-search-menu [i-search]
     (list 'menu-item "Incremental Search" menu-bar-i-search-menu))
   ;;--------------------
@@ -1100,7 +1099,7 @@ string.\nIt is most convenient from the keyboard.  Try it!")))
           ((and (eq menu-bar-last-search-type 'word) search-ring)
            (word-search-forward (car search-ring)))
           (t (error "No previous search"))))
-  
+
   (defun nonincremental-repeat-search-backward ()
     "Search backward for the previous search string or regexp."
     (interactive)
@@ -1120,7 +1119,7 @@ string.\nIt is most convenient from the keyboard.  Try it!")))
         (word-search-forward (car search-ring))
       (isearch-update-ring word nil)
       (word-search-forward word)))
-  
+
   (defun menu-bar-word-search-backward (word)
     "Search backward, ignoring differences in punctuation."
     (interactive "sSearch for word: ")
@@ -1362,7 +1361,7 @@ string.\nIt is most convenient from the keyboard.  Try it!")))
   'describe-input-method)
 (when (fboundp 'help-on-click/key)      ; `This...' - defined in `help+.el' and `help+20.el'.
   (define-key-after menu-bar-describe-menu [help-on-click/key]
-    '(menu-item "This..." help-on-click/key       
+    '(menu-item "This..." help-on-click/key
       :help "Describe a key/menu sequence or object clicked with the mouse")
     'describe-coding-system))
 
