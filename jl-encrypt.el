@@ -2,7 +2,7 @@
 ;; -*- Mode: Emacs-Lisp -*-
 ;; -*- coding: utf-8 -*-
 
-;; Copyright (C) 2011, 2012, 2013 Jens LechtenbÃ¶rger
+;; Copyright (C) 2011, 2012, 2013 Jens Lechtenbörger
 ;; Copyright (C) 2013 konubinix
 
 ;; Version: $Id: jl-encrypt.el,v 1.3 2013/03/13 06:58:20 lechten Exp $
