@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Mon Mar 11 15:45:38 2013 (-0700)
+;; Last-Updated: Tue Mar 12 20:21:41 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 9809
+;;     Update #: 9815
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -86,6 +86,14 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2013/03/12 dadams
+;;     Added: icicle-buffer-cand-help (factored out).
+;;     icicle-buffer(other-window), icicle-visit-marked-file-of-content(-other-window):
+;;       Use icicle-buffer-cand-help.
+;;     icicle-visit-marked-file-of-content:
+;;       Bind icicle-last-apropos-complete-match-fn to icicle-buffer-apropos-complete-match.
+;;       Bind icicle-apropos-complete-match-fn in second part of icicle-buffer-bindings, not first.
+;;     icicle-send-bug-report: Ask for Update # from icicles-chg.el.
 ;; 2013/03/11 dadams
 ;;     icicle(-customize)-apropos-options-of-type:
 ;;       Bound *-last-apropos-complete-match-fn to *-multi-comp-apropos-complete-match for progressive.
