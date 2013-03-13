@@ -1,0 +1,10 @@
+The kill-ring-save method that I used extensively isn't working anymore with emacs version 24.3.1.
+
+When I hit "meta-w" for the first time, I get the error: "Wrong type argument: integer-or-marker-p, nil", although it does successfully copy the line. However, further "meta-w" presses copy from the current position to the last mark, regardless of whether the region is highlighted. (My transient-mark-mode is true.)
+
+The "Control-w" for kill current line is working still, though.
+
+Any thoughts on getting the "M-w" to work? Thanks.
+
+-- Anonymous 2013-03-13 07:12 UTC
+
