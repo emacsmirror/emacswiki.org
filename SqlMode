@@ -22,7 +22,7 @@ interpreters are supported:
 Type M-x sql-help RET to read the online help.
 The latest version is available from Emacs's source control:
 
-* [http://bzr.savannah.gnu.org/lh/emacs/trunk/annotate/head:/lisp/progmodes/sql.el lisp/progmodes/sql.el]
+* GIT:progmodes/sql.el
 
 The current maintainer of sql.el is MichaelMauger.
 
@@ -135,3 +135,4 @@ Another option for users lacking access to osql/isql is sqsh, another Java-based
 ----
 CategoryModes
 CategorySql
+
