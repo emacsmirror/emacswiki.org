@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Mar 11 15:43:28 2013 (-0700)
+;; Last-Updated: Tue Mar 12 20:14:19 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 25621
+;;     Update #: 25644
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -273,7 +273,8 @@
 ;;    `icicle-bookmark-delete-action', `icicle-bookmark-help-string',
 ;;    `icicle-bookmark-jump-1',
 ;;    `icicle-buffer-apropos-complete-match',
-;;    `icicle-buffer-multi-complete', `icicle-buffer-name-prompt',
+;;    `icicle-buffer-cand-help', `icicle-buffer-multi-complete',
+;;    `icicle-buffer-name-prompt',
 ;;    `icicle-cached-files-without-buffers', `icicle-clear-history-1',
 ;;    `icicle-clear-history-entry',
 ;;    `icicle-comint-completion-at-point',
@@ -6200,14 +6201,7 @@ the behavior."                          ; Doc string
     (icicle-show-multi-completion-flag      t) ; Override user setting.
     (icicle-multi-completing-p              t)
     (icicle-list-use-nth-parts              '(1))
-
-    (icicle-candidate-help-fn               (lambda (cand)
-                                              (setq cand  (icicle-transform-multi-completion cand))
-                                              (when (and (bufferp (get-buffer cand))
-                                                         (with-current-buffer cand
-                                                           (if (fboundp 'describe-buffer) ; In `help-fns+.el'.
-                                                               (describe-buffer)
-                                                             (describe-mode)) t)))))
+    (icicle-candidate-help-fn               'icicle-buffer-cand-help)
     (icicle-buffer-easy-files               ()))
    ((icicle-buffer-complete-fn              'icicle-buffer-multi-complete)
     ;; Bind `icicle-apropos-complete-match-fn' to nil to prevent automatic input matching in
@@ -6250,6 +6244,13 @@ the prefix argument in Icicles buffer commands:
         (setq bfnames  (icicle-remove-if (lambda (bfname) (icicle-string-match-p "^ " bfname)) bfnames)))
       (icicle-first-N 4 bfnames))))
 
+(defun icicle-buffer-cand-help (cand)
+  "Help function for multi-completion buffer-name candidate CAND."
+  (setq cand  (icicle-transform-multi-completion cand))
+  (when (and (bufferp (get-buffer cand))
+             (with-current-buffer cand
+               (if (fboundp 'describe-buffer) (describe-buffer) (describe-mode)) t)))) ; In `help-fns+.el'.
+
 
 (put 'icicle-buffer-other-window 'icicle-Completions-window-max-height 200)
 (icicle-define-command icicle-buffer-other-window ; Bound to `C-x 4 b' in Icicle mode.
@@ -6267,13 +6268,7 @@ Same as `icicle-buffer' except it uses a different window." ; Doc string
     (icicle-show-multi-completion-flag      t) ; Override user setting.
     (icicle-multi-completing-p              t)
     (icicle-list-use-nth-parts              '(1))
-    (icicle-candidate-help-fn               (lambda (cand)
-                                              (setq cand  (icicle-transform-multi-completion cand))
-                                              (when (and (bufferp (get-buffer cand))
-                                                         (with-current-buffer cand
-                                                           (if (fboundp 'describe-buffer) ; In `help-fns+.el'.
-                                                               (describe-buffer)
-                                                             (describe-mode)) t)))))
+    (icicle-candidate-help-fn               'icicle-buffer-cand-help)
     (icicle-buffer-easy-files               ()))
    ((icicle-buffer-complete-fn              'icicle-buffer-multi-complete)
     ;; Bind `icicle-apropos-complete-match-fn' to nil to prevent automatic input matching in
@@ -6313,7 +6308,8 @@ Used as the value of `icicle-buffer-complete-fn' and hence as
                                                  bufs))
                  (bufs         (cond ((equal "" content-pat)
                                       (dolist (buf  bufs)
-                                        ;; Free vars here: EXISTING-BUFFERS, NEW-BUFS--TO-KILL
+                                        ;; Free vars here: EXISTING-BUFFERS, NEW-BUFS--TO-KILL.
+                                        ;; Bound in `icicle-visit-marked-file-of-content(-other-window)'.
                                         (when (and (boundp 'existing-bufs)  (boundp 'new-bufs--to-kill)
                                                    (not (memq (setq buf  (get-buffer buf)) existing-bufs)))
                                           (add-to-list 'new-bufs--to-kill buf)))
@@ -6325,7 +6321,8 @@ Used as the value of `icicle-buffer-complete-fn' and hence as
                                                          (save-excursion
                                                            (goto-char (point-min))
                                                            (re-search-forward content-pat nil t)))))
-                                           ;; Free vars here: EXISTING-BUFFERS, NEW-BUFS--TO-KILL
+                                           ;; Free vars here: EXISTING-BUFFERS, NEW-BUFS--TO-KILL.
+                                           ;; Bound in `icicle-visit-marked-file-of-content(-other-window)'.
                                            (when (and (boundp 'existing-bufs)  (boundp 'new-bufs--to-kill)
                                                       (not (memq (setq buf  (get-buffer buf)) existing-bufs)))
                                              (add-to-list 'new-bufs--to-kill buf))
@@ -6500,22 +6497,16 @@ flips the behavior specified by that option." ; Doc string
     (icicle-show-multi-completion-flag      t) ; Override user setting.
     (icicle-multi-completing-p              t)
     (icicle-list-use-nth-parts              '(1))
-    ;; Bind `icicle-apropos-complete-match-fn' to nil to prevent automatic input matching in
-    ;; `icicle-unsorted-apropos-candidates' etc., because `icicle-buffer-multi-complete' does everything.
-    (icicle-apropos-complete-match-fn       nil)
     (init-pref-arg                          current-prefix-arg)
     (existing-bufs                          (buffer-list))
     (new-bufs--to-kill                      ())
     (new-bufs--to-keep                      ())
-    (icicle-candidate-help-fn               (lambda (cand)
-                                              (setq cand  (icicle-transform-multi-completion cand))
-                                              (when (and (bufferp (get-buffer cand))
-                                                         (with-current-buffer cand
-                                                           (if (fboundp 'describe-buffer) ; In `help-fns+.el'.
-                                                               (describe-buffer)
-                                                             (describe-mode)) t))))))
+    (icicle-candidate-help-fn               'icicle-buffer-cand-help))
    ((icicle-buffer-complete-fn              'icicle-buffer-multi-complete)
-    ;; `icicle-bufflist' is free here.
+    ;; Bind `icicle-apropos-complete-match-fn' to nil to prevent automatic input matching in
+    ;; `icicle-unsorted-apropos-candidates' etc., because `icicle-buffer-multi-complete' does everything.
+    (icicle-apropos-complete-match-fn       nil)
+    (icicle-last-apropos-complete-match-fn  'icicle-buffer-apropos-complete-match)
     (icicle-bufflist                        (save-excursion
                                               (let* ((files  (dired-get-marked-files
                                                               nil nil
@@ -6550,22 +6541,16 @@ different window.  You must be in Dired to use this command." ; Doc string
     (icicle-show-multi-completion-flag      t) ; Override user setting.
     (icicle-multi-completing-p              t)
     (icicle-list-use-nth-parts              '(1))
-    ;; Bind `icicle-apropos-complete-match-fn' to nil to prevent automatic input matching in
-    ;; `icicle-unsorted-apropos-candidates' etc., because `icicle-buffer-multi-complete' does everything.
-    (icicle-apropos-complete-match-fn       nil)
     (init-pref-arg                          current-prefix-arg)
     (existing-bufs                          (buffer-list))
     (new-bufs--to-kill                      ())
     (new-bufs--to-keep                      ())
-    (icicle-candidate-help-fn               (lambda (cand)
-                                              (setq cand  (icicle-transform-multi-completion cand))
-                                              (when (and (bufferp (get-buffer cand))
-                                                         (with-current-buffer cand
-                                                           (if (fboundp 'describe-buffer) ; In `help-fns+.el'.
-                                                               (describe-buffer)
-                                                             (describe-mode)) t))))))
+    (icicle-candidate-help-fn               'icicle-buffer-cand-help))
    ((icicle-buffer-complete-fn              'icicle-buffer-multi-complete)
-    ;; `icicle-bufflist' is free here.
+    ;; Bind `icicle-apropos-complete-match-fn' to nil to prevent automatic input matching in
+    ;; `icicle-unsorted-apropos-candidates' etc., because `icicle-buffer-multi-complete' does everything.
+    (icicle-apropos-complete-match-fn       nil)
+    (icicle-last-apropos-complete-match-fn  'icicle-buffer-apropos-complete-match)
     (icicle-bufflist                        (save-excursion
                                               (let* ((files  (dired-get-marked-files
                                                               nil nil
