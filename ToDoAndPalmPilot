@@ -1,3 +1,5 @@
+DeletedPage: Of no historical interest, IMO. -- AaronHawley
+
 I did some work trying to write a conduit between OliverSeidel's
 TodoMode and the PalmPilot.  The problem is that exchanging data is
 lossy in both directions.  Not all of the fields in todo-mode
