@@ -1,5 +1,5 @@
 ;;; viewer.el --- View-mode extension
-;; $Id: viewer.el,v 1.12 2012/12/31 11:38:16 rubikitch Exp $
+;; $Id: viewer.el,v 1.13 2013/03/14 23:37:05 rubikitch Exp $
 
 ;; Copyright (C) 2009  rubikitch
 
@@ -124,6 +124,9 @@
 ;;; History:
 
 ;; $Log: viewer.el,v $
+;; Revision 1.13  2013/03/14 23:37:05  rubikitch
+;; Rename obsolete face name: modeline -> mode-line
+;;
 ;; Revision 1.12  2012/12/31 11:38:16  rubikitch
 ;; viewer-change-modeline-color: fix advice of select-window
 ;;
@@ -166,7 +169,7 @@
 
 ;;; Code:
 
-(defvar viewer-version "$Id: viewer.el,v 1.12 2012/12/31 11:38:16 rubikitch Exp $")
+(defvar viewer-version "$Id: viewer.el,v 1.13 2013/03/14 23:37:05 rubikitch Exp $")
 (require 'view)
 (eval-when-compile (require 'cl))
 
@@ -294,7 +297,7 @@ Stay in `view-mode' when the file is unwritable."
   (viewer-stay-in-unless-writable-advice view-mode-disable))
 
 ;;;; (@* "Change mode-line color")
-(defvar viewer-modeline-color-default (face-background 'modeline))
+(defvar viewer-modeline-color-default (face-background 'mode-line))
 (defcustom viewer-modeline-color-unwritable "tomato"
   "*Modeline color when file is not writable."
   :type 'string
@@ -309,7 +312,7 @@ Stay in `view-mode' when the file is unwritable."
   (when (eq (selected-window)
             (get-buffer-window (current-buffer)))
     (set-face-background
-     'modeline
+     'mode-line
      (cond ((and buffer-file-name view-mode
                  (not (file-writable-p buffer-file-name)))
             viewer-modeline-color-unwritable)
