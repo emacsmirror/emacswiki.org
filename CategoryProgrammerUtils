@@ -74,6 +74,7 @@ See also CategoryVersionControl.
 == Testing ==
 
 * TestR -- Minor mode for Ruby TDD.
+* ToggleTest -- A Language, tech stack independent tool to quickly create/switch between Test files and Source (Test Subject) files 
 
 == Related tools and information ==
 
