@@ -1,0 +1,3 @@
+test-toggle.el allows you to quickly switch between test and test subject. This is a very useful tool to have when you are TDDing. Test Toggle is similar to test toggle functionality provided by IntelliJ and other JetBrains IDEs.
+
+You can find complete document and the source [https://github.com/rags/toggle-test here]
