@@ -1,4 +1,4 @@
-Timestamp: Wed Nov  7 12:19:04 GMT 2012
+Timestamp: Thu Mar 14 09:47:33 GMT 2013
 
 This page is based on the EmacsLispList by StephenEglen and updated automatically.
 
@@ -2290,7 +2290,7 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 
 [http://www.coling.uni-freiburg.de/~schauer/resources/emacs/translate.el.gz translate.el] --- use a wordlist to do simple translation (by Holger Schauer)
 
-[http://www-rp.lip6.fr/~deleuze/translation.el translation.el] --- translation minor mode (by Christophe Deleuze)
+[http://christophe.deleuze.free.fr/P/translation.el translation.el] --- translation minor mode (by Christophe Deleuze)
 
 [http://davin.50webs.com/research/2006/trashcan.el.html trashcan.el] --- A recoverable file deletion system (by Davin Pearson)
 
