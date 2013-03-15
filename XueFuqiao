@@ -5,12 +5,7 @@
 I use Emacs.
 
 My name is Xue Fuqiao.  English is not my native language; please
-excuse typing errors.  I have been a GNU/Linux user since 2008.
-I've been an [[Emacsite]] since 2009 and I began to write
-programs in EmacsLisp since 2011.  I started with [[XEmacs]],
-switched to [[SXEmacs]], back to XEmacs, then to GuileEmacs, and
-now I'm using Emacs.  I prefer to learn new things from reference
-manuals, instead of tutorials.
+excuse typing errors.  I'm a GNU/Linux user.
 
 Many thanks to the people who contributed or are contributing to
 emacsen and EmacsWiki.  My daily life becomes very interesting.
@@ -20,8 +15,6 @@ I was born and raised in Urumqi, China, and I'm currently a
 student of [http://www.ncut.edu.cn NCUT].  My major is
 Communication Engineering.  Feel free to ask anything about
 Emacs :)
-
-I'm a [http://www.fsf.org/free-software-supporter/ FreeSoftwareSupporter].
 
 You can contact me using (please send plain text mail, not HTML):
 <pre>
@@ -44,182 +37,15 @@ xfq
 * Wikipedia
 [http://en.wikipedia.org/wiki/User:Xfq Xfq]
 
-== RSI ==
-Started physiotherapy on June, 2011.
-
 == Some Sentences I Like ==
 * There is no system but GNU, and Linux is one of its kernels.
 
 * I could have made money this way, and perhaps amused myself writing code. But I knew that at the end of my career, I would look back on years of building walls to divide people, and feel I had spent my life making the world a worse place.
 
-* Once GNU is written, everyone will be able to obtain good system software free, just like air.
-
-* Talk is cheap. Show me the code.
-
-* Microsoft is not the answer.  Microsoft is the question.  NO is the answer.
-
-* The GNU GPL was not designed to be "open source".
-
-* You don't have to like Emacs to like it.
-
-* You can leave politics alone, but politics won't leave you alone.
-
-* I am a pessimist by nature. Many people can only keep on fighting when they expect to win. I'm not like that, I always expect to lose. I fight anyway, and sometimes I win.
-
-* I want to encourage free software to spread, replacing proprietary software that forbids cooperation, and thus make our society better.
-
-* Isn't vi that text editor with two modes... one that beeps and one that corrupts your file?
-
 * It is a logical impossibility to make a language more powerful by omitting features, no matter how bad they may be.  -- [[WikiPedia:John_Hughes_(computer_scientist)|John Hughes]]
-
-* I use Emacs, which might be thought of as a thermonuclear word processor.
-
-* It's like a digital Swiss army knife.
-
-* You can use any editor you want, but remember that vi vi vi is the text editor of the beast. 
-
-* While any text editor can save your files, only Emacs can save your soul.
-
-* My other car is a cdr.
-
-* We prefer the term “free software” because, once you have heard that it refers to freedom rather than price, it calls to mind freedom. The word “open” never refers to freedom.
-
-* A bad day in () is better than a good day in {}.
-
-* Lisp is a programmable programming language.
-
-* Don't worry about what anybody else is going to do. The best way to predict the future is to invent it.
-
-* Those who have been respectful to Emacs will be allowed to live, and shall become its slaves; as for those who slight Emacs...
 
 == My Init Files for Emacs ==
 https://github.com/xfq/xfq-emacs-init-files
-
-== My Emacs Screenshot ==
-[[image:XFQScreenShotPage]]
-
-== Inside Emacsen, I Like: ==
-* '''[[Icicles]]'''
-* '''BookmarkPlus'''
-* '''LaCarte'''
-* '''DiredPlus'''
-* '''EmacsLockPlus'''
-* '''FilesPlus'''
-* '''GrepPlus'''
-* '''ReplacePlus'''
-* '''[[Synonyms]]'''
-* AlignCommands
-* AngeFtp
-* AUCTeX
-* AutoSave
-* CsvMode
-* DeskTop
-* DiaryMode
-* DistributedVersionControl and VersionControl
-* EasyPG
-* EdiffMode
-* EmacsLispScreen
-* EmacSpeak
-* ImenuMode
-* EmacsSpeaksStatistics
-* EmacsVersor
-* GoMode
-* HideShow
-* KeyboardMacros
-* KeyWiz
-* LookUp
-* MediaWikiMode
-* MultipleNarrowings
-* NxhtmlMode
-* OrgMode
-* ParEdit
-* RefillMode
-* SlimeMode
-* SokobanMode
-* SqlMode
-* TrampMode
-* TypingOfEmacs
-* UndoTree
-* WcheckMode
-* XWindowEmacsManager
-* ZoneMode
-* [[ElDoc]]
-* [[ERC]]
-* [[Eshell]]
-* [[Gnus]]
-* [[Htmlize]]
-* [[N3Mode]]
-* [[w3]]
-* [[Yasnippet]]
-* indent-tabs-mode
-
-== Outside Emacsen, I Like: ==
-* ArtificialIntelligence
-* [[Bash]]
-* CProgrammingLanguage
-* ConTeXt
-* Coreboot
-* Dragora GNU/Linux
-* DuckDuckGo
-* Dvips
-* English
-* FilesystemHierarchyStandard
-* Fontconfig
-* FootSwitches
-* GnuFindutils
-* GnuCoreutils
-* GnuReadlineLibrary
-* GnuAspell
-* GnuAutotools
-* GnuBazaar
-* GnuGrub
-* GnuCompilerCollection
-* GnuDebugger
-* GnuGeneralPublicLicense and GnuFreeDocumentationLicense
-* GnuGo
-* GnuOctave
-* GnuPlot
-* GnuTLS
-* Grav-mass
-* gzip
-* grep
-* HappyHackingKeyboard
-* html tidy
-* LambdaExpression
-* Lempel-Ziv coding (LZ77)
-* Libacl
-* Libidn
-* LibreJS
-* libxml
-* Linux-libre and GNU Mach
-* MassiveMultiauthorCollaborationSite
-* mbox
-* MIPS
-* MIT
-* MLDonkey
-* NNTP
-* Ogg
-* POSIX
-* RegularExpression
-* RSA
-* Savane
-* Sawfish and StumpWM
-* scp
-* SecureShell
-* SELinux
-* SQLite
-* STARTTLS
-* StickyModifiers
-* TeXLive
-* top
-* Trackball
-* UnicodeEncoding
-* VoiceRecognition
-* XModMap
-* XULRunner
-* zlib
-* [[TECO]]
-* [[Texinfo]]
 
 == Wish List==
 * Implement a version control system in EmacsLisp.
