@@ -98,7 +98,8 @@ emacs under X. To do this:
 BTW, Kris Thielemans says "you should mention in that how-to that
 emacs-X runs with any (proper) X-windows emulator. (In my case, it
 runs happily using Exceed.) Also, the startx command is only available
-when you installed the XFree package." Also, lemme mention the batch file I use to
+when you installed the XFree package." (It looks like now startx comes 
+in xinit package.) Also, lemme mention the batch file I use to
 start X (automating the first two steps above:
 
 <pre>
