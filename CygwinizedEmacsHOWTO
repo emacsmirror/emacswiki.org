@@ -16,28 +16,28 @@ Note that the Meta key doesn't always work as well as you'd like: CygwinMeta.
 
 I had persistent display problems running in bash:
 
-* When emacs started up, the display was usually shifted either down a\
-  line or to the right a column from where it should be, with\
-  extraneous characters showing in either the minibuffer, or the top\
+* When emacs started up, the display was usually shifted either down a
+  line or to the right a column from where it should be, with
+  extraneous characters showing in either the minibuffer, or the top
   of the display (first line under windows titlebar) or both.
-* After startup, the minibuffer's contents, and sometimes that of the\
-  window, shifts to the right. I can "move it back" via the horizontal\
-  scrollbar, but then I lose the first column of the minibuffer prompt\
+* After startup, the minibuffer's contents, and sometimes that of the
+  window, shifts to the right. I can "move it back" via the horizontal
+  scrollbar, but then I lose the first column of the minibuffer prompt
   (or of the contents of the window).
-* After startup, if I change buffers, "garbage" characters from the\
-  previous buffer (i.e. normal 7-bit ASCII chars, just ones that don't\
+* After startup, if I change buffers, "garbage" characters from the
+  previous buffer (i.e. normal 7-bit ASCII chars, just ones that don't
   belong in the current buffer) are often visible in the new one.
 
 I found (after a lot of posting) I could solve these problems by:
 
-* Setting the window size "properly." Kris Thielemans suggested that\
-  cygwin probably assumes that the horizontal size is equal to\
-  "'window size'.  Change it in the Properties->Layout menu\
-  of the shortcut that one uses to launch\
-  bash.  Setting the window size that way (rather than resizing the window\
+* Setting the window size "properly." Kris Thielemans suggested that
+  cygwin probably assumes that the horizontal size is equal to
+  "'window size'.  Change it in the Properties->Layout menu
+  of the shortcut that one uses to launch
+  bash.  Setting the window size that way (rather than resizing the window
   manually, at "runtime") fixed the shifting problem.
-* Setting the appropriate enviroment variables. (Thanks to Joe Buehler\
-  for the suggestion.) Now I use the following batch file to start\
+* Setting the appropriate enviroment variables. (Thanks to Joe Buehler
+  for the suggestion.) Now I use the following batch file to start
   bash:
 
 <pre>
@@ -87,11 +87,11 @@ him.
 Life was easier (but also slower and more memory-intensive) running
 emacs under X. To do this:
 
-# When you install, (in category view) select Editors>emacs-X11. That\
-  should bring in emacs (though not the lisp sources--that's a\
+# When you install, (in category view) select Editors>emacs-X11. That
+  should bring in emacs (though not the lisp sources--that's a
   separate package), XFree86, and lots of other stuff.
-# Run bash (i.e. the cygwin shortcut), and within bash run 'startx'.\
-  This will eventually launch a (windows) window running X, plus a\
+# Run bash (i.e. the cygwin shortcut), and within bash run 'startx'.
+  This will eventually launch a (windows) window running X, plus a
   bunch of xterm's.
 # From one of the xterm's, run 'emacs &'.
 
