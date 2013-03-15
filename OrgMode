@@ -63,6 +63,18 @@ If you're using session.el (EmacsSession), you need to excempt a circular data s
 
 If you're using Emacs 23 and Org 7.5, then you can also have some pseudo-compatability while maintaining CUA support with Lisp:org-cua-dwim.el
 
+== External Data Sources ==
+
+If you publish external sources to org mode agenda files, you'll need to refresh those files after changes occur.  Try this snippet to reload those files.
+
+    (defun org-reload ()
+      (interactive)
+      (switch-to-buffer "mail.org")
+      (revert-buffer nil 1)
+      (org-agenda nil "a")
+      (delete-other-windows))
+
+
 == Add-ons and other files ==
 
 * [http://dto.mamalala.org/e/org-publish.el org-publish.el] (this comes in the latest version of org-mode) by DavidOtoole
