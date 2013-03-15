@@ -236,6 +236,15 @@ Try AutoMark if you are tired of setting the mark manually.
 
 expandregion.el is a very useful tool for increasing the selected region by semantic units. Download it at: https://github.com/magnars/expand-region.el
 
+== Mark Tools ==
+
+mark-tools.el provides a simple table for browsing the global and local mark-rings. The code is at: https://github.com/stsquad/emacs-mark-tools and the package is available on the MELPA and Marmalade repositories.
+
+== Helm ==
+
+Helm has M-x helm-mark-ring
+
+
 ----
 CategoryEditing
 CategoryNavigation
