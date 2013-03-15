@@ -37,9 +37,6 @@ xfq
 
 * It is a logical impossibility to make a language more powerful by omitting features, no matter how bad they may be.  -- [[WikiPedia:John_Hughes_(computer_scientist)|John Hughes]]
 
-== My Init Files for Emacs ==
-https://github.com/xfq/xfq-emacs-init-files
-
 == Wish List==
 * Implement a version control system in EmacsLisp.
 * Extended text-properties (to make overlays obsolete) in Emacs.
