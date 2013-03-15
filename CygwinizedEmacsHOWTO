@@ -8,7 +8,7 @@ For information about how to use native w32 Emacs port with Cygwin see NTEmacsWi
 
 GNU Emacs ported to the Cygwin environment comes with Cygwin. 
 The initial setup is easy (from setup.exe, browse to
-Editors>emacs). Choose emacs-X11 to run both the X and terminal
+Editors -> emacs). Choose emacs-X11 to run both the X and terminal
 (character-mode) versions, or emacs to run only on terminal (i.e.
 within bash).
 
@@ -32,7 +32,7 @@ I found (after a lot of posting) I could solve these problems by:
 
 * Setting the window size "properly." Kris Thielemans suggested that
   cygwin probably assumes that the horizontal size is equal to
-  "'window size'.  Change it in the Properties->Layout menu
+  "'window size'.  Change it in the Properties -> Layout menu
   of the shortcut that one uses to launch
   bash.  Setting the window size that way (rather than resizing the window
   manually, at "runtime") fixed the shifting problem.
@@ -76,8 +76,8 @@ the cmd/command shell from which you ran the cygwin.bat file. As cygwin is usual
 launched from the Start button or an Icon, the cmd/command shell exits just after
 you exit cygwin.
 
-Kris Thielemans also says that you do not need to set HOME as /etc/profile
-sets it to /home/$USER. If this doesn't end up where you want, you can always
+Kris Thielemans also says that you do not need to set HOME as ##/etc/profile##
+sets it to ##/home/$USER##. If this doesn't end up where you want, you can always
 use cygwin's mount to put /home where you like.
 
 And finally, Kris Thielemans also says that the usual setting for TERM is 
