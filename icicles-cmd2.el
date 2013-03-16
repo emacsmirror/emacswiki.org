@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Sat Mar 16 12:38:46 2013 (-0700)
+;; Last-Updated: Sat Mar 16 13:24:11 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6340
+;;     Update #: 6341
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2274,7 +2274,8 @@ Remove pseudo-node `*'.  (This just fixes a bug in Emacs 21 and 22.1.)"
            (with-current-buffer (window-buffer) ; Needed if `*Completions*' redirected to minibuffer.
              (goto-char (icicle-minibuffer-prompt-end))
              (icicle-clear-minibuffer)))))
-  (select-window (active-minibuffer-window)))
+  (select-window (active-minibuffer-window))
+  (select-frame-set-input-focus (selected-frame)))
 
 (when (> emacs-major-version 21)
   (defun icicle-Info-virtual-book (nodeset)
