@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue Mar 12 20:21:41 2013 (-0700)
+;; Last-Updated: Fri Mar 15 17:02:53 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 9815
+;;     Update #: 9832
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -882,6 +882,16 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2013/03/15 dadams
+;;     Removed: icicle-Info-book-order-p (just ensure book order as default order).
+;;     icicle-Info-goto-node:
+;;       Bind icicle-pref-arg, so it is available in icicle-Info-goto-node-action.
+;;       Use nil, not icicle-Info-book-order-p, in icicle-sort-orders-alist and icicle-sort-comparer.
+;;     icicle-Info-goto-node-1: Use natnump as ARG test.
+;;     icicle-Info-build-node-completions-1: Ensure result is in book order, whatever Emacs version.
+;;     icicle-Info-build-node-completions: Do not do any reversing, since *-1 now uses book order.
+;;     icicle-Info-goto-node-action: Pass icicle-pref-arg to icicle-Info-goto-node-1 (bug fix).
+;;                                   Do not reverse list.
 ;; 2013/03/07 dadams
 ;;     Updated to use icicle-user-error where appropriate.
 ;; 2013/02/28 dadams
