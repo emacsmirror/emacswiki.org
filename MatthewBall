@@ -12,18 +12,18 @@ I have been using GNU Emacs for the past five or so years, currently using GNU E
 Roughly, the tasks GNU Emacs easily accommodates which are of interest to myself can be classified as follows:
 ==== Notes and Authoring ====
 For notes and authoring, I have found the following to be useful:
-* deft
-* org-mode
+* '''[[DeftMode]]'''
+* '''[[OrgMode]]'''
 
 ==== Dictionary and Thesaurus ====
 For dictionary and thesaurus purposes I have found the following to be useful:
-* dictem
-* thesaurus
+* '''[[DictEm]]'''
+* '''[[thesaurus.el]]'''
 
 ==== Reference and Bibliography ====
 For references and bibliography I have found the following to be useful:
-* bibtex
-* ebib
+* '''[[BibTeX]]'''
+* ebib at http://ebib.sourceforge.net/
 
 ----
 CategoryHomepage
