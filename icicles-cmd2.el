@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Fri Mar 15 17:02:23 2013 (-0700)
+;; Last-Updated: Sat Mar 16 12:38:46 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6339
+;;     Update #: 6340
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2187,7 +2187,9 @@ You can use `C-x m' during completion to access Info bookmarks, if you
          (let* ((completion-ignore-case           t)
                 (Info-read-node-completion-table  (icicle-Info-build-node-completions include-file-p))
                 (nodename                         (completing-read prompt 'Info-read-node-name-1 nil nil)))
-           (if (equal nodename "") (icicle-Info-read-node-name prompt) nodename))
+           (if (equal nodename "")
+               (icicle-Info-read-node-name prompt include-file-p) ; Empty input - read again.
+             nodename))
       (define-key minibuffer-local-completion-map (icicle-kbd "C-x m") C-x-m))))
 
 (defun icicle-Info-build-node-completions (&optional include-file-p)
