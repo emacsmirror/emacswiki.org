@@ -12,18 +12,26 @@ I have been using GNU Emacs for the past five or so years, currently using GNU E
 Roughly, the tasks GNU Emacs easily accommodates which are of interest to myself can be classified as follows:
 === Notes and Authoring ===
 For notes and authoring, I have found the following to be useful:
-* '''[[DeftMode]]'''
-* '''[[OrgMode]]'''
+* [[DeftMode]]
+* [[OrgMode]]
 
 === Dictionary and Thesaurus ===
 For dictionary and thesaurus purposes I have found the following to be useful:
-* '''[[DictEm]]'''
-* '''[[thesaurus.el]]'''
+* [[DictEm]]
+* [[thesaurus.el]]
 
 === Reference and Bibliography ===
 For references and bibliography I have found the following to be useful:
-* '''[[BibTeX]]'''
-* ebib at http://ebib.sourceforge.net/
+* [[BibTeX]]
+* [http://ebib.sourceforge.net/ ebib]
+
+== StumpWM ==
+Spend some time with GNU Emacs and the user is invited to learn emacs lisp. I enjoyed emacs lisp so much I started looking into other lisps, finding common lisp and stumpwm.
+
+I've been using StumpWM for a few years and find it to be the best window manager for my purposes - which is really just an instance of GNU Emacs and an instance of Chromium.
+
+== Configuration ==
+I will get around to cleaning up my dot emacs file and putting it online eventually.
 
 ----
 CategoryHomepage
