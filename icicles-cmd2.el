@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Mon Mar 11 15:29:58 2013 (-0700)
+;; Last-Updated: Fri Mar 15 17:02:23 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6314
+;;     Update #: 6339
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -191,7 +191,6 @@
 ;;    `icicle-goto-marker-1-action', `icicle-group-regexp',
 ;;    `icicle-imenu-command-p', `icicle-imenu-in-buffer-p',
 ;;    `icicle-imenu-non-interactive-function-p',
-;;    `icicle-Info-book-order-p',
 ;;    `icicle-Info-build-node-completions',
 ;;    `icicle-Info-build-node-completions-1',
 ;;    `icicle-Info-goto-node-1', `icicle-Info-goto-node-action',
@@ -2158,12 +2157,11 @@ This is an Icicles command - see command `icicle-mode'."
    (let* ((icicle-info-buff                 (current-buffer))
           (icicle-info-window               (selected-window))
           (icicle-candidate-action-fn       'icicle-Info-goto-node-action)
+          (icicle-pref-arg                  current-prefix-arg)
           (icicle-Info-only-rest-of-book-p  (< (prefix-numeric-value current-prefix-arg) 0))
-          (icicle-sort-orders-alist         (cons '("in book order" .  icicle-Info-book-order-p)
-                                                  icicle-sort-orders-alist))
-          (icicle-sort-comparer             (if icicle-Info-only-rest-of-book-p
-                                                #'icicle-Info-book-order-p
-                                              icicle-sort-comparer)))
+          (icicle-sort-orders-alist         (cons '("in book order") icicle-sort-orders-alist))
+          (icicle-sort-comparer             (and (not icicle-Info-only-rest-of-book-p)
+                                                 icicle-sort-comparer)))
      (list (icicle-Info-read-node-name "Go to node: " (consp current-prefix-arg))
            current-prefix-arg)))
   (icicle-Info-goto-node-1 nodename arg))
@@ -2173,7 +2171,7 @@ This is an Icicles command - see command `icicle-mode'."
   (if (and (string= nodename "..")  (Info-check-pointer "up"))
       (Info-up)
     (if (> emacs-major-version 20)
-        (icicle-ORIG-Info-goto-node nodename (and (not icicle-Info-only-rest-of-book-p)  arg))
+        (icicle-ORIG-Info-goto-node nodename (natnump arg))
       (icicle-ORIG-Info-goto-node nodename))))
 
 (defun icicle-Info-read-node-name (prompt &optional include-file-p)
@@ -2199,9 +2197,7 @@ Non-nil INCLUDE-FILE-P means include current Info file in the name."
   (icicle-highlight-lighter)
   (if (or (not icicle-Info-only-rest-of-book-p)  (string= Info-current-node "Top"))
       (icicle-Info-build-node-completions-1 include-file-p)
-    (reverse (cons '("..")
-                   (member (list Info-current-node)
-                           (reverse (icicle-Info-build-node-completions-1 include-file-p)))))))
+    (cons '("..") (member (list Info-current-node) (icicle-Info-build-node-completions-1 include-file-p)))))
 
 (defun icicle-Info-build-node-completions-1 (&optional include-file-p)
   "Helper function for `icicle-Info-build-node-completions'.
@@ -2209,6 +2205,9 @@ Use `Info-build-node-completions' to build node list for completion.
 Non-nil INCLUDE-FILE-P means include current Info file in the name.
 Remove pseudo-node `*'.  (This just fixes a bug in Emacs 21 and 22.1.)"
   (let ((comps  (Info-build-node-completions)))
+    ;; Emacs 24 after 2012-12-18: `Info-build-node-completions' no longer reverses the node order.
+    (when (or (< emacs-major-version 24)  (and (= emacs-major-version 24)  (< emacs-minor-version 3)))
+         (setq comps  (reverse comps)))
     (when (equal (car comps) '("*")) (setq comps  (cdr comps)))
     (if include-file-p
         (let ((file  (concat "(" (cond ((stringp Info-current-file)
@@ -2227,18 +2226,18 @@ Remove pseudo-node `*'.  (This just fixes a bug in Emacs 21 and 22.1.)"
   "Completion action function for `icicle-Info-goto-node'."
   (set-buffer icicle-info-buff)
   (select-window icicle-info-window)
-  (icicle-Info-goto-node-1 node)
+  (icicle-Info-goto-node-1 node icicle-pref-arg)
   (when icicle-Info-only-rest-of-book-p
     (setq Info-read-node-completion-table  (icicle-Info-build-node-completions)
           icicle-current-input             "")
     (icicle-complete-again-update)
     (if (and (string= Info-current-node "Top")  Info-history)
         (let* ((hist  Info-history)
-               (last  (car (cdr (car hist)))))
-          (while (string= "Top" (car (cdr (car hist)))) (pop hist))
+               (last  (cadr (car hist))))
+          (while (string= "Top" (cadr (car hist))) (pop hist))
           (setq icicle-candidate-nb
-                (1- (length (reverse (member (list (car (cdr (car hist))))
-                                             (icicle-Info-build-node-completions-1)))))))
+                (1- (length (member (list (cadr (car hist)))
+                                    (icicle-Info-build-node-completions-1))))))
       (setq icicle-candidate-nb  1))     ; Skip `..'.
 
     ;; $$$$$$ Maybe factor this out. Same thing in several places.  However, here we don't do
@@ -2274,10 +2273,6 @@ Remove pseudo-node `*'.  (This just fixes a bug in Emacs 21 and 22.1.)"
              (goto-char (icicle-minibuffer-prompt-end))
              (icicle-clear-minibuffer)))))
   (select-window (active-minibuffer-window)))
-
-(defun icicle-Info-book-order-p (s1 s2)
-  "Non-nil if Info node S1 comes before node S2 in the book."
-  t)        ; This just reverses the default order, which is reversed.
 
 (when (> emacs-major-version 21)
   (defun icicle-Info-virtual-book (nodeset)
