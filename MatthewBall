@@ -1,20 +1,29 @@
-I am an Australian university student studying philosophy/linguistics.
+== Introduction ==
 
-I have been using GNU Emacs for the past five or so years, currently using GNU Emacs 24. I run Debian Squeeze with StumpWM.
+I am an Australian university student studying philosophy/linguistics.
 
 I'm not much of a programmer, my interest in GNU Emacs is primarily focused on how it can be used as a writing environment.
 
 I spend a fair amount of time idling in #emacs on freenode under the nickname "[::chu]".
 
-- GNU Emacs for Writing:
+== GNU Emacs ==
+I have been using GNU Emacs for the past five or so years, currently using GNU Emacs 24. I run Debian Squeeze with StumpWM.
 
 Roughly, the tasks GNU Emacs easily accommodates which are of interest to myself can be classified as follows:
+==== Notes and Authoring ====
+For notes and authoring, I have found the following to be useful:
+* deft
+* org-mode
 
-1. Notes and Authoring
+==== Dictionary and Thesaurus ====
+For dictionary and thesaurus purposes I have found the following to be useful:
+* dictem
+* thesaurus
 
-2. Dictionary and Thesaurus
-
-3. Reference and Bibliography
+==== Reference and Bibliography ====
+For references and bibliography I have found the following to be useful:
+* bibtex
+* ebib
 
 ----
 CategoryHomepage
