@@ -37,5 +37,21 @@ and trying to get list of completions:
 Does somebody knows how to use the same strategy - horizontal splitting - when
 opening files or buffers with C-x4b or C-x4f?
 
+Here is a solution that also works for X-x4b etc.
+
+         (defun split-window-prefer-horizonally (window)
+           "If there's only one window (excluding any possibly active
+         minibuffer), then split the current window horizontally."
+           (if (and (one-window-p t)
+                    (not (active-minibuffer-window)))
+               (let ((split-height-threshold nil))
+                 (split-window-sensibly window))
+             (split-window-sensibly window)))
+
+         (setq split-window-preferred-function 'split-window-prefer-horizonally)
+
+
+-- GeoffJacobsen
+
 ----------
 CategoryWindows
