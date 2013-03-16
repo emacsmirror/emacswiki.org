@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 2013.03.07
-;; Last-Updated: Mon Mar 11 15:09:59 2013 (-0700)
+;; Last-Updated: Fri Mar 15 16:54:46 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 23374
+;;     Update #: 23376
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -894,8 +894,9 @@
 ;;    `icicle-bookmark-jump-1', `icicle-bounds-of-thing-at-point',
 ;;    `icicle-buffer-file/process-name-less-p',
 ;;    `icicle-buffer-apropos-complete-match',
-;;    `icicle-buffer-multi-complete', `icicle-buffer-name-prompt',
-;;    `icicle-buffer-smaller-p', `icicle-buffer-sort-*...*-last',
+;;    `icicle-buffer-cand-help', `icicle-buffer-multi-complete',
+;;    `icicle-buffer-name-prompt', `icicle-buffer-smaller-p',
+;;    `icicle-buffer-sort-*...*-last',
 ;;    `icicle-cached-files-without-buffers',
 ;;    `icicle-call-then-update-Completions',
 ;;    `icicle-cancel-Help-redirection', `icicle-candidate-action-1',
@@ -1029,7 +1030,6 @@
 ;;    `icicle-imenu-command-p', `icicle-imenu-in-buffer-p',
 ;;    `icicle-imenu-non-interactive-function-p',
 ;;    `icicle-increment-cand-nb+signal-end',
-;;    `icicle-Info-book-order-p',
 ;;    `icicle-Info-build-node-completions',
 ;;    `icicle-Info-build-node-completions-1',
 ;;    `icicle-Info-goto-node-1', `icicle-Info-goto-node-action',
