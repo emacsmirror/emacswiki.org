@@ -10,17 +10,17 @@ I spend a fair amount of time idling in #emacs on freenode under the nickname "[
 I have been using GNU Emacs for the past five or so years, currently using GNU Emacs 24. I run Debian Squeeze with StumpWM.
 
 Roughly, the tasks GNU Emacs easily accommodates which are of interest to myself can be classified as follows:
-==== Notes and Authoring ====
+=== Notes and Authoring ===
 For notes and authoring, I have found the following to be useful:
 * '''[[DeftMode]]'''
 * '''[[OrgMode]]'''
 
-==== Dictionary and Thesaurus ====
+=== Dictionary and Thesaurus ===
 For dictionary and thesaurus purposes I have found the following to be useful:
 * '''[[DictEm]]'''
 * '''[[thesaurus.el]]'''
 
-==== Reference and Bibliography ====
+=== Reference and Bibliography ===
 For references and bibliography I have found the following to be useful:
 * '''[[BibTeX]]'''
 * ebib at http://ebib.sourceforge.net/
