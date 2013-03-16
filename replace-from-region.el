@@ -5,7 +5,7 @@
 ;; Author: rubikitch <rubikitch@ruby-lang.org>
 ;; Maintainer: rubikitch <rubikitch@ruby-lang.org>
 ;; Copyright (C) 2013, rubikitch, all rights reserved.
-;; Time-stamp: <2013-01-28 14:54:51 rubikitch>
+;; Time-stamp: <2013-03-17 08:02:16 rubikitch>
 ;; Created: 2013-01-28 14:49:07
 ;; Version: 0.1
 ;; URL: http://www.emacswiki.org/emacs/download/replace-from-region.el
@@ -44,7 +44,9 @@
 (defun query-replace-from-region (from to)
   "Perform `query-replace', but getting FROM string from region."
   (interactive
-   (let ((from0 (buffer-substring (region-beginning) (region-end))))
+   (let ((from0 (if (region-active-p)
+                    (buffer-substring (region-beginning) (region-end))
+                  (query-replace-read-from "Query replace" nil))))
      (list from0
            (query-replace-read-to from0 "Query replace" nil))))
   (deactivate-mark)
@@ -55,7 +57,9 @@
 (defun query-replace-regexp-from-region (from to)
   "Perform `query-replace-regexp', but getting FROM string from region."
   (interactive
-   (let ((from0 (query-replace-regexp-read-from "Query replace regexp")))
+   (let ((from0 (if (region-active-p)
+                    (query-replace-regexp-read-from "Query replace regexp")
+                  (query-replace-read-from "Query replace regexp" nil))))
      (list from0
            (query-replace-read-to from0 "Query replace regexp" nil))))
   (deactivate-mark)
