@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Mon Jan  7 20:34:21 2013 (-0800)
+;; Last-Updated: Sun Mar 17 08:16:39 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2414
+;;     Update #: 2416
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -1209,7 +1209,8 @@ Non-nil INTERACTIVEP means `bookmark-bmenu-list' was called
         (insert "\n")))
     (goto-char (point-min)) (forward-line bmkp-bmenu-header-lines)
     (bookmark-bmenu-mode)
-    (when bookmark-bmenu-toggle-filenames (bookmark-bmenu-toggle-filenames t 'NO-MSG-P))
+    (when (and bookmark-alist  bookmark-bmenu-toggle-filenames)
+      (bookmark-bmenu-toggle-filenames t 'NO-MSG-P))
     (when (and (fboundp 'fit-frame-if-one-window)
                (eq (selected-window) (get-buffer-window (get-buffer-create "*Bookmark List*") 0)))
       (fit-frame-if-one-window)))
@@ -1915,7 +1916,7 @@ See `bookmark-jump' for info about the prefix arg."
 ;;
 ;; 1. Added optional arg MARKEDP: handle bookmarks marked `>', not just those flagged `D'.
 ;; 2. Inhibit saving until all are deleted, then save all.  This is because the Bookmark+ version of
-;;    `bookmark-save' refreshes the bookmark list display, and that removes `D' flags. 
+;;    `bookmark-save' refreshes the bookmark list display, and that removes `D' flags.
 ;; 3. Use `bookmark-bmenu-surreptitiously-rebuild-list', instead of using
 ;;    `bookmark-bmenu-list', updating the modification count, and saving.
 ;; 3. Update `bmkp-latest-bookmark-alist' to reflect the deletions.
