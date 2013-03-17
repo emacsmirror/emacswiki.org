@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Mar 15 17:02:53 2013 (-0700)
+;; Last-Updated: Sat Mar 16 17:40:38 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 9832
+;;     Update #: 9842
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -882,6 +882,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2013/03/16 dadams
+;;     icicle-Info-goto-node-action: Give focus back to minibuffer frame at end.
+;;     icicle-Info-read-node-name: Retain INCLUDE-FILE-P arg in recursive call.
 ;; 2013/03/15 dadams
 ;;     Removed: icicle-Info-book-order-p (just ensure book order as default order).
 ;;     icicle-Info-goto-node:
@@ -3765,6 +3768,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2013/03/16 dadams
+;;     icicle(-complete-and)-(widen|narrow)-candidates, icicle-regexp-quote-input:
+;;       Put properties icicle(-apropos)-completing-command.
 ;; 2013/03/07 dadams
 ;;     Updated to use icicle-user-error where appropriate.
 ;;     icicle(mouse)-choose-completion: Added live-buffer test, per Emacs 24.
