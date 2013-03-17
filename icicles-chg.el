@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Mar 16 17:40:38 2013 (-0700)
+;; Last-Updated: Sat Mar 16 17:49:02 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 9842
+;;     Update #: 9848
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -86,6 +86,11 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2013/03/16 dadams
+;;     custom-variable-p: Return nil if arg is not a symbol.
+;;     icicle-buffer-multi-complete, icicle-(buffer|file-of-content)-apropos-complete-match:
+;;       Test this-command, not last-command, and test it also for icicle-cycling-command.
+;;     icicle-binary-option-p, icicle-buffer-multi-complete: Use icicle-get-safe, not get.
 ;; 2013/03/12 dadams
 ;;     Added: icicle-buffer-cand-help (factored out).
 ;;     icicle-buffer(other-window), icicle-visit-marked-file-of-content(-other-window):
