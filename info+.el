@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 21.1
-;; Last-Updated: Tue Feb 26 11:04:30 2013 (-0800)
+;; Last-Updated: Sun Mar 17 14:32:52 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 4794
+;;     Update #: 4854
 ;; URL: http://www.emacswiki.org/info+.el
 ;; Doc URL: http://www.emacswiki.org/InfoPlus
 ;; Keywords: help, docs, internal
@@ -50,7 +50,7 @@
 ;;
 ;;    `Info-breadcrumbs-in-mode-line-mode' (Emacs 23+),
 ;;    `info-emacs-manual', `Info-follow-nearest-node-new-window',
-;;    `Info-merge-subnodes',
+;;    `Info-history-clear', `Info-merge-subnodes',
 ;;    `Info-mouse-follow-nearest-node-new-window',
 ;;    `Info-save-current-node', `Info-set-breadcrumbs-depth' (Emacs
 ;;    23+), `Info-toggle-fontify-angle-bracketed',
@@ -59,6 +59,10 @@
 ;;    `Info-toggle-breadcrumbs-in-header-line' (Emacs 23+),
 ;;    `Info-virtual-book', `menu-bar-read-lispref',
 ;;    `menu-bar-read-lispintro',
+;;
+;;  Macros defined here:
+;;
+;;    `info-user-error'.
 ;;
 ;;  Non-interactive functions defined here:
 ;;
@@ -81,7 +85,7 @@
 ;;
 ;;
 ;;  ***** NOTE: The following standard functions defined in `info.el'
-;;              have been REDEFINED HERE:
+;;              have been REDEFINED or ADVISED HERE:
 ;;
 ;;  `info-display-manual' - Use completion to input manual name.
 ;;  `Info-find-emacs-command-nodes' - Added arg MSGP and message.
@@ -114,6 +118,7 @@
 ;;     1. Added optional arg MSGP.
 ;;     2. If key's command not found, then `Info-search's for key
 ;;        sequence in text and displays message about repeating.
+;;  `Info-history' - A prefix arg clears the history.
 ;;  `Info-insert-dir' -
 ;;     Added optional arg NOMSG to inhibit showing progress msgs.
 ;;  `Info-mode' - Doc string shows all bindings.
@@ -193,6 +198,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/03/17 dadams
+;;     Added: Info-history-clear, macro info-user-error (and font-lock it).  Advised: Info-history.
+;;     Use info-user-error instead of error, where appropriate.
 ;; 2013/02/26 dadams
 ;;     Info-mode-menu and Info-mode doc string: Removed Info-edit, Info-enable-edit (now obsolete).
 ;; 2013/02/09 dadams
@@ -590,6 +598,16 @@
 ;;;;;;;;;;;;;;;;;;;;
 
 
+;;; MACROS ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmacro info-user-error (&rest args)
+  "`user-error' if defined, otherwise `error'."
+  `(if (fboundp 'user-error) (user-error ,@args) (error ,@args)))
+
+(font-lock-add-keywords
+ 'emacs-lisp-mode
+ '(("(\\(info-user-error\\)\\>" 1 font-lock-warning-face)))
+
 ;;; KEYS & MENUS ;;;;;;;;;;;;;;;;;;;;;;;;
 
 (define-key Info-mode-map "?" 'describe-mode) ; Don't use `Info-summary'.
@@ -869,6 +887,16 @@ For example, type `^Q^L^Q^J* ' to set this to \"\\f\\n* \"."
     (interactive)
     (Info-follow-nearest-node t)))
 
+;;;###autoload (autoload 'Info-clear "info+")
+(defun Info-history-clear (&optional msgp)
+  "Clear Info history and reload current manual."
+  (interactive (progn (unless (y-or-n-p "Clear the Info history? ") (info-user-error "OK, canceled"))
+                      (list t)))
+  (setq Info-history       ()
+        Info-history-list  ())
+  (when (derived-mode-p 'Info-mode) (revert-buffer nil t))
+  (when msgp (message "Info history cleared")))
+
 
 ;;; INTERNAL VARIABLES ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1096,6 +1124,21 @@ For example, type `^Q^L^Q^J* ' to set this to \"\\f\\n* \"."
 
 
 
+;; REPLACE ORIGINAL in `info.el' (Emacs 23+):
+;;
+;; Added prefix arg.
+;;
+(when (> emacs-major-version 22)
+  (defadvice Info-history (around clear-info-hist-with-prefix-arg first (&optional clearp) activate)
+    "With a prefix arg, clear the history instead, upon confirmation."
+    (interactive "P")
+    (if (not (ad-get-arg 0))
+        ad-do-it
+      (when (equal "*History*" Info-current-file) (Info-up))
+      (call-interactively #'Info-history-clear))))
+
+
+
 ;; REPLACE ORIGINAL in `info.el':
 ;;
 ;; Added final clause to `cond', to handle virtual books.  (Emacs 23.2+)
@@ -1148,7 +1191,7 @@ just return nil (no error)."
              (setq filename  found)
            (if noerror
                (setq filename nil)
-             (error "Info file %s does not exist" filename)))
+             (info-user-error "Info file `%s' does not exist" filename)))
          filename))
       ((member filename '(apropos history toc))  filename))) ; Handle virtual books - `toc'.
   )
@@ -1198,7 +1241,7 @@ just return nil (no error)."
                            (setq found  temp-downcase)))
                     (setq suffix-list  (cdr suffix-list))))
                 (setq dirs  (cdr dirs)))))
-          (if found (setq filename found) (error "Info file `%s' does not exist" filename))))
+          (if found (setq filename found) (info-user-error "Info file `%s' does not exist" filename))))
     ;; Record the node we are leaving.
     (when (and Info-current-file (not no-going-back))
       (setq Info-history  (cons (list Info-current-file Info-current-node (point)) Info-history)))
@@ -1333,9 +1376,9 @@ just return nil (no error)."
                                      (unless nodepos (setq nodepos  (point)))))))
                              (if nodepos
                                  (progn (goto-char nodepos) (beginning-of-line))
-                               (error "No such anchor in tag table or node in tag table \
-or file: `%s'"
-                                      nodename))))))
+                               (info-user-error
+                                "No such anchor in tag table or node in tag table or file: `%s'"
+                                nodename))))))
                  (goto-char (max (point-min) (- guesspos 1000)))
                  ;; Now search from our advised position (or from beg of buffer)
                  ;; to find the actual node.
@@ -1353,7 +1396,9 @@ or file: `%s'"
                              (if (string-equal (match-string 2) nodename)
                                  (throw 'foo t)
                                (unless nodepos (setq nodepos  (point)))))))
-                       (if nodepos (goto-char nodepos) (error "No such node: `%s'" nodename))))))
+                       (if nodepos
+                           (goto-char nodepos)
+                         (info-user-error "No such node: `%s'" nodename))))))
              (Info-select-node)
              (goto-char (or anchorpos (point-min))))
            (when (and (one-window-p t) (not (window-minibuffer-p))
@@ -1498,7 +1543,8 @@ it says do not attempt further (recursive) error recovery."
                  ;; buffer begins with a node.
                  (let ((pos  (Info-find-node-in-buffer regexp)))
                    (when pos (goto-char pos) (throw 'foo t))
-                   (error "No such anchor in tag table or node in tag table or file: %s" nodename)))
+                   (info-user-error "No such anchor in tag table or node in tag table or file: `%s'"
+                                    nodename)))
                (Info-select-node)
                (goto-char (or anchorpos (point-min)))))
            (when (and (one-window-p t) (not (window-minibuffer-p))
@@ -1650,7 +1696,7 @@ it says do not attempt further (recursive) error recovery."
                    (throw 'foo t))
 
                  ;; No such anchor in tag table or node in tag table or file
-                 (error "No such node or anchor: %s" nodename))
+                 (info-user-error "No such node or anchor: `%s'" nodename))
 
                (Info-select-node)
                (goto-char (point-min))
@@ -1815,7 +1861,7 @@ it says do not attempt further (recursive) error recovery."
                    (widen)
                    (throw 'foo t))
                  ;; No such anchor in tag table or node in tag table or file
-                 (error "No such node or anchor: %s" nodename))
+                 (info-user-errorerror "No such node or anchor: `%s'" nodename))
                (Info-select-node)
                (goto-char (point-min))
                (forward-line 1)         ; skip header line
@@ -1941,8 +1987,7 @@ it says do not attempt further (recursive) error recovery."
                    (file-name-as-directory (car dirs))))
             (setq dirs (cdr dirs))))
 
-        (or buffers
-            (error "Can't find the Info directory node"))
+        (or buffers  (info-user-error "Can't find the Info directory node"))
 
         ;; Distinguish the dir file that comes with Emacs from all the
         ;; others.  Yes, that is really what this is supposed to do.
@@ -2308,7 +2353,7 @@ is, (FILENAME NODENAME BUFFERPOS\)."
                  (progn (Info-find-node info-file "Top" (not msgp))
                         (or (and (search-forward "\n* menu:" nil t)
                                  (re-search-forward "\n\\* \\(.*\\<Index\\>\\)" nil t))
-                            (error "Info file `%s' appears to lack an index" info-file)))
+                            (info-user-error "Info file `%s' appears to lack an index" info-file)))
                (error nil))             ; Return nil: not found.
              (goto-char (match-beginning 1))
              ;; Bind Info-history to nil, to prevent the index nodes from
@@ -2335,7 +2380,7 @@ is, (FILENAME NODENAME BUFFERPOS\)."
                  (progn (Info-find-node info-file "Top")
                         (or (and (search-forward "\n* menu:" nil t)
                                  (re-search-forward "\n\\* \\(.*\\<Index\\>\\)" nil t))
-                            (error "Info file `%s' appears to lack an index" info-file)))
+                            (info-user-error "Info file `%s' appears to lack an index" info-file)))
                (error nil))             ; Return nil: not found.
              (goto-char (match-beginning 1))
              ;; Bind Info-history to nil, to prevent the index nodes from
@@ -2427,7 +2472,7 @@ COMMAND must be a symbol or string."
                        (if (> num-matches 2) "them" "it"))))
           num-matches)                  ; Return num-matches found.
       (and (interactive-p)              ; Return nil for unfound.
-           (error "No documentation found for command `%s'" command)))))
+           (info-user-error "No documentation found for command `%s'" command)))))
 
 
 ;; REPLACES ORIGINAL in `info.el':
@@ -5417,7 +5462,7 @@ argument says to include Info nodes recorded as bookmarks."
             (push (concat "(" (file-name-nondirectory (cdr (assq 'filename bm))) ")" node) bm-nodes)))
         (setq nodes  (append nodes bm-nodes))))
     (unless (and nodes (stringp (car nodes))) ; Minimal sanity check.
-      (error (if (interactive-p) "No saved Info nodes" "No Info nodes")))
+      (info-user-error (if (interactive-p) "No saved Info nodes" "No Info nodes")))
     (unless (stringp book) (setq book  "Virtual Book")) ; Non-interactive - NODESET is a list.
     (let ((file  (and (stringp Info-current-file)
                       (concat "(" (file-name-nondirectory Info-current-file) ")"))))
@@ -5454,9 +5499,9 @@ argument says to include Info nodes recorded as bookmarks."
   (defun Info-save-current-node (&optional msgp)
     "Save name of current Info node to list `Info-saved-nodes'."
     (interactive "p")
-    (unless (eq major-mode 'Info-mode) (error "You must be in Info to use this command"))
-    (unless Info-current-node (error "No current Info node"))
-    (unless Info-current-file (error "No Info file"))
+    (unless (eq major-mode 'Info-mode) (info-user-error "You must be in Info to use this command"))
+    (unless Info-current-node          (info-user-error "No current Info node"))
+    (unless Info-current-file          (info-user-error "No Info file"))
     (add-to-list 'Info-saved-nodes (concat "(" (file-name-nondirectory Info-current-file) ")"
                                            Info-current-node))
     (when msgp (message (format "Node `%s' saved" Info-current-node)))))
@@ -5529,7 +5574,7 @@ top-level call to `Info-merge-subnodes'."
   (when (interactive-p)
     (unless (y-or-n-p "Do you really want to integrate this node with its \
 subnodes (outside Info)? ")
-      (error (substitute-command-keys
+      (info-user-error (substitute-command-keys
               "OK.  If you are not sure what this command is about, type \
 `\\[describe-function] Info-merge-subnodes'.")))) ; Defined in `help.el'.
   (garbage-collect)
