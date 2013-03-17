@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Mar  7 13:25:00 2013 (-0800)
+;; Last-Updated: Sat Mar 16 17:36:45 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 18925
+;;     Update #: 18938
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -5803,6 +5803,9 @@ is the menu title and PANE-TITLE is a submenu title.
               (when choice              ; MENU is a pane.
                 (throw 'icicle-Completions-popup-choice (call-interactively choice)))))))))
 
+
+(put 'icicle-widen-candidates 'icicle-completing-command t)
+(put 'icicle-widen-candidates 'icicle-apropos-completing-command t)
 (defun icicle-widen-candidates ()       ; Bound to `M-+' in minibuffer.
   "Complete, allowing also candidates that match an alternative regexp.
 You are prompted for the alternative input pattern.  Use `RET' to
@@ -5828,6 +5831,9 @@ it is the same as `S-TAB' followed by `\\[icicle-widen-candidates]'."
         (icicle-expand-input-to-common-match  2)) ; Only explicit `TAB' or `S-TAB' or sole match.
     (icicle-apropos-complete)))
 
+
+(put 'icicle-narrow-candidates 'icicle-completing-command t)
+(put 'icicle-narrow-candidates 'icicle-apropos-completing-command t)
 (defun icicle-narrow-candidates ()      ; Bound to `M-*' in minibuffer.
   "Narrow the set of completion candidates using another input regexp.
 This, in effect, performs a set intersection operation on 1) the set
@@ -5862,8 +5868,7 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
                  (throw 'icicle-read-top
                    (if (and (icicle-file-name-input-p)
                             insert-default-directory
-                            (or (not (member (car icicle-completion-candidates)
-                                             icicle-extra-candidates))
+                            (or (not (member (car icicle-completion-candidates) icicle-extra-candidates))
                                 icicle-extra-candidates-dir-insert-p))
                        (expand-file-name (car icicle-completion-candidates))
                      (car icicle-completion-candidates)))
@@ -5929,6 +5934,9 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
                    (error (message "%s" (error-message-string i-narrow-candidates))))
                result))))))
 
+
+(put 'icicle-apropos-complete-and-widen 'icicle-completing-command t)
+(put 'icicle-apropos-complete-and-widen 'icicle-apropos-completing-command t)
 (defun icicle-apropos-complete-and-widen () ; Bound to `S-backspace' in minibuffer.
   "Apropos complete, then `icicle-widen-candidates'.
 You must enter the new, alternative input pattern using `RET'.
@@ -5954,6 +5962,9 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
     (icicle-apropos-complete))
   (icicle-widen-candidates))
 
+
+(put 'icicle-apropos-complete-and-narrow 'icicle-completing-command t)
+(put 'icicle-apropos-complete-and-narrow 'icicle-apropos-completing-command t)
 (defun icicle-apropos-complete-and-narrow () ; Bound to `S-SPC' in minibuffer.
   "Apropos complete, then `icicle-narrow-candidates'.
 You can use this command only from the minibuffer (`\\<minibuffer-local-completion-map>\
@@ -7199,7 +7210,6 @@ If `icicle-scroll-Completions-reverse-p' is non-nil, scroll forward."
 (put 'icicle-history 'icicle-cycling-command            t)
 (put 'icicle-history 'icicle-prefix-completing-command  t)
 (put 'icicle-history 'icicle-apropos-completing-command t)
-
 (defun icicle-history ()                ; Bound to `M-h' in minibuffer.
   "Access the appropriate history list using completion or cycling.
 Complete the current minibuffer input against items in the history
@@ -7985,6 +7995,9 @@ Bound to `C-`' in the minibuffer."
    "Escaping of regexp special characters is now %s"
    (icicle-propertize (if icicle-regexp-quote-flag "ON" "OFF") 'face 'icicle-msg-emphasis)))
 
+
+(put 'icicle-regexp-quote-input 'icicle-completing-command t)
+(put 'icicle-regexp-quote-input 'icicle-apropos-completing-command t)
 (defun icicle-regexp-quote-input (beg end) ; Bound to `M-%' in minibuffer.
   "Regexp quote current input or its active region, then apropos-complete.
 Use this if you want to literally match all of what is currently in
