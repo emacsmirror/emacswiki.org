@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Sat Mar 16 13:24:11 2013 (-0700)
+;; Last-Updated: Sat Mar 16 15:26:52 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6341
+;;     Update #: 6347
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2110,9 +2110,6 @@ See `icicle-ORIG-Info-menu'."
 
 (defun icicle-Info-goto-node (nodename &optional arg)
   "Go to Info node named NODENAME.
-NODENAME has the form NODE or (FILE)NODE-IN-FILE, where:
- NODE names a node in the current Info file or one of its subfiles.
- FILE names an Info file containing node NODE-IN-FILE.
 Completion is available for node names in the current Info file.
 
 With a prefix argument:
@@ -2121,22 +2118,20 @@ With a prefix argument:
    to each node name.  For example: `(emacs)Paragraphs' instead of
    just `Paragraphs'.
 
- * A negative numeric prefix arg (e.g. `C--') means present completion
-   candidates in book order, and limit the candidates to the current
-   node and the rest of the book following it.  In this case, the
+ * A negative numeric prefix arg (e.g. `C--') means present candidate
+   nodes in book order, and limit them to the current node and the
+   nodes in the rest of the book following it.  In this case, the
    first candidate is `..', which means go up.
 
  * A non-negative numeric prefix arg (e.g. `C-1') means show the
    target node in a new Info buffer (not available prior to Emacs 21).
-   (This applies only to the final completion choice, not to
-   intermediate candidate actions using, e.g., `C-RET'.)
-
-In Lisp code, if optional argument ARG is a string, then show the node
-in a new Info buffer named `*info-ARG*'.
 
 With no prefix argument, or with a non-negative prefix arg, you can
 use `C-,' to choose how to sort completion candidates.  By default,
 they are sorted alphabetically.
+
+If you use library `Bookmark+' then you can use `C-x m' during
+ completion to jump to Info bookmarks.
 
 Input-candidate completion and cycling are available.  While cycling,
 these keys with prefix `C-' are active:
@@ -2152,7 +2147,17 @@ these keys with prefix `C-' are active:
 Use `mouse-2', `RET', or `S-RET' to finally choose a candidate, or
 `C-g' to quit.
 
-This is an Icicles command - see command `icicle-mode'."
+This is an Icicles command - see command `icicle-mode'.
+
+From Lisp code:
+
+ Argument NODENAME has the form NODE or (FILE)NODE-IN-FILE, where:
+
+ NODE names a node in the current Info file or one of its subfiles.
+ FILE names an Info file containing node NODE-IN-FILE.
+
+ If optional argument ARG is a string, then show the node in a new
+ Info buffer named `*info-ARG*'."
   (interactive
    (let* ((icicle-info-buff                 (current-buffer))
           (icicle-info-window               (selected-window))
@@ -2176,9 +2181,8 @@ This is an Icicles command - see command `icicle-mode'."
 
 (defun icicle-Info-read-node-name (prompt &optional include-file-p)
   "Read a node name, prompting with PROMPT.
-Non-nil INCLUDE-FILE-P means include current Info file in the name.
-You can use `C-x m' during completion to access Info bookmarks, if you
- use library `Bookmark+'."
+Non-nil optional arg INCLUDE-FILE-P means include current Info file in
+the name."
   (let ((C-x-m  (lookup-key minibuffer-local-completion-map "\C-xm")))
     (when (and (require 'bookmark+ nil t)  (fboundp 'icicle-bookmark-info-other-window))
       (define-key minibuffer-local-completion-map (icicle-kbd "C-x m")
