@@ -21,3 +21,6 @@ I can't seem to get imports to work, and can't find any resolution to these erro
 
 == Contribute ==
 The project is living on github at http://github.com/senny/emacs-eclim. Since the active development has just started lately we are glad for every contribution. Feel free to fork the project and send me a pull-request when you got some new features implemented or some bugs fixed.
+
+----
+See also [[http://www.skybert.net/emacs/java/|Description of what ECLIM can do]]
