@@ -6,6 +6,7 @@ I'm not much of a programmer, my interest in GNU Emacs is primarily focused on h
 
 I spend a fair amount of time idling in [[EmacsChannel|#emacs]] on freenode under the nickname "[::chu]".
 
+
 == GNU Emacs ==
 I have been using GNU Emacs for the past five or so years, currently using GNU Emacs 24. I run Debian Squeeze with StumpWM.
 
@@ -19,7 +20,7 @@ I use the following GNU Emacs modes extensively:
 
 Roughly, the tasks GNU Emacs easily accommodates which are of interest to myself (and I would say "writers in general" but I don't want to talk on behalf of *all* writers) can be classified as follows:
 === Notes and Authoring ===
-For notes and authoring, I have found the following to be useful:
+For notes and authoring I have found the following to be useful:
 * [[DeftMode]]
 * [[OrgMode]]
 
@@ -28,7 +29,7 @@ For dictionary and thesaurus purposes I have found the following to be useful:
 * [[DictEm]]
 * [[thesaurus.el]]
 
-=== Reference and Bibliography ===
+=== References and Bibliography ===
 For references and bibliography I have found the following to be useful:
 * [[BibTeX]]
 * [http://ebib.sourceforge.net/ ebib]
