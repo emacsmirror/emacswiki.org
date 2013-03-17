@@ -4,12 +4,20 @@ I am an Australian university student studying philosophy/linguistics.
 
 I'm not much of a programmer, my interest in GNU Emacs is primarily focused on how it can be used as a writing environment.
 
-I spend a fair amount of time idling in #emacs on freenode under the nickname "[::chu]".
+I spend a fair amount of time idling in [[EmacsChannel|#emacs]] on freenode under the nickname "[::chu]".
 
 == GNU Emacs ==
 I have been using GNU Emacs for the past five or so years, currently using GNU Emacs 24. I run Debian Squeeze with StumpWM.
 
-Roughly, the tasks GNU Emacs easily accommodates which are of interest to myself can be classified as follows:
+I'm interested in somehow //giving back// to the (GNU) Emacs community - though I cannot code, I can at the very least write documentation, one day I will upload some of the (personal) stuff I have written about GNU Emacs.
+
+I use the following GNU Emacs modes extensively:
+* [[ERC]]
+* [[Gnus]]
+* [[DiredMode]]
+* [[AnsiTerm]]
+
+Roughly, the tasks GNU Emacs easily accommodates which are of interest to myself (and I would say "writers in general" but I don't want to talk on behalf of *all* writers) can be classified as follows:
 === Notes and Authoring ===
 For notes and authoring, I have found the following to be useful:
 * [[DeftMode]]
