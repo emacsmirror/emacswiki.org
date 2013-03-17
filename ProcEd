@@ -1,0 +1,27 @@
+A tool for accessing the UNIX ps list (the UNIX process list).
+
+Here's a snippet of NicFerrier's laptop via proced:
+
+{{{
+  nferrier  2693 0     1.2  6.6 Mar 13 01:03:26 /usr/lib/chromium-browser/chromium-browser
+  nferrier  2867  1    3.2  4.6 Mar 13 02:49:26 /usr/lib/chromium-browser/chromium-browser\ --type=plugin\ --plugin-path=/usr/lib/flashplugin-installer/libflashplayer.so\ --lang=en-GB\ --channel=2693.12.1075958101
+  nferrier  2913  1    0.0  2.5 Mar 13    01:06 /usr/lib/chromium-browser/chromium-browser\ --type=gpu-process\ --channel=2693.16.1851619101\ --disable-gl-multisampling
+  nferrier  2696  1    0.0  0.2 Mar 13    00:15 /usr/lib/chromium-browser/chromium-browser
+  nferrier  2246  1    0.0  0.6  08:33    00:00 /usr/lib/chromium-browser/chromium-browser\ --type=service\ --lang=en-GB
+  nferrier  4927 0     0.4  5.0 Mar 13    20:00 rhythmbox
+  nferrier  1906 0     0.2  0.2 Mar 13    11:01 /usr/bin/pulseaudio --start --log-target=syslog
+  nferrier  1929  1    0.0  0.1 Mar 13    00:00 /usr/lib/pulseaudio/pulse/gconf-helper
+  nferrier  1032 0     0.2  3.0  07:36    00:09 /usr/bin/python /usr/bin/update-manager --no-focus-on-map
+  nferrier  1953 0     0.1  1.4 Mar 13    05:53 /usr/lib/unity/unity-panel-service
+  nferrier  1954 0     0.1  0.3 Mar 13    04:48 /usr/lib/indicator-appmenu/hud-service
+  nferrier  1829 0     0.0  0.1 Mar 13    02:02 //bin/dbus-daemon --fork --print-pid 5 --print-address 7 --session
+  nferrier  1987 0     0.0  0.2 Mar 13    01:28 /usr/lib/indicator-application/indicator-application-service
+  nferrier  1933 0     0.0  0.3 Mar 13    01:09 /usr/lib/bamf/bamfdaemon
+  nferrier  6005 0     0.0  0.7 Mar 13    01:03 gnome-terminal
+  nferrier 23398  1    0.0  0.2 Mar 16    00:00 bash
+  nferrier  8977  1    0.0  0.2 Mar 13    00:01 bash
+}}}
+
+proced has all sorts of tools for manipulating the processes and the display. 
+
+See the online help.
