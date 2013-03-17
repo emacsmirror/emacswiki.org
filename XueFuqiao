@@ -60,7 +60,6 @@ xfq
 * Implement a DOM binding for EmacsLisp.
 * Make Emacs/W3 be able to parse XSL.
 * Make Emacs support more image formats.
-* Implement multithreaded features in Emacs.
 * Make the face code to be simpler, clearer and faster.
 * Make an OpenPGP implementation in EmacsLisp.
 * Implement a EmacsLisp library that generates XPMs dynamically.
