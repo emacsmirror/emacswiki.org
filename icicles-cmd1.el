@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Mar 12 20:20:57 2013 (-0700)
+;; Last-Updated: Sat Mar 16 17:16:14 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 25646
+;;     Update #: 25654
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2106,7 +2106,8 @@ separate the words (any strings, in fact, including regexps) using
 (unless (fboundp 'custom-variable-p)
   (defun custom-variable-p (variable)
     "Return non-nil if VARIABLE is a custom variable."
-    (or (get variable 'standard-value)  (get variable 'custom-autoload))))
+    (and (symbolp variable)
+         (or (get variable 'standard-value)  (get variable 'custom-autoload)))))
 
 ;; Icicles replacement for `customize-apropos-faces', defined in `cus-edit.el'.
 ;; 1. Uses `completing-read' to read the regexp.
@@ -4341,7 +4342,7 @@ candidates, as follows:
 
 (defun icicle-binary-option-p (symbol)
   "Non-nil if SYMBOL is a user option that has custom-type `boolean'."
-  (eq (get symbol 'custom-type) 'boolean))
+  (eq (icicle-get-safe symbol 'custom-type) 'boolean))
 
 (icicle-define-command icicle-increment-option ; Command name
   "Increment option's value using the arrow keys (`up', `down').
@@ -6328,8 +6329,11 @@ Used as the value of `icicle-buffer-complete-fn' and hence as
                                                       (not (memq (setq buf  (get-buffer buf)) existing-bufs)))
                                              (add-to-list 'new-bufs--to-kill buf))
                                            (when (and found ; Don't do it just because incrementally complete.
-                                                      (or (get last-command 'icicle-apropos-completing-command)
-                                                          (memq last-command
+                                                      (or (icicle-get-safe this-command
+                                                                           'icicle-apropos-completing-command)
+                                                          (icicle-get-safe this-command
+                                                                           'icicle-cycling-command)
+                                                          (memq this-command
                                                                 '(icicle-retrieve-next-input
                                                                   icicle-retrieve-previous-input))))
                                              (isearch-update-ring content-pat 'REGEXP))
@@ -6364,8 +6368,11 @@ Used as the value of `icicle-buffer-complete-fn' and hence as
                                                       (not (memq buf existing-bufs)))
                                              (add-to-list 'new-bufs--to-kill buf))
                                            (when (and found ; Don't do it just because incrementally complete.
-                                                      (or (get last-command 'icicle-apropos-completing-command)
-                                                          (memq last-command
+                                                      (or (icicle-get-safe this-command
+                                                                           'icicle-apropos-completing-command)
+                                                          (icicle-get-safe this-command
+                                                                           'icicle-cycling-command)
+                                                          (memq this-command
                                                                 '(icicle-retrieve-next-input
                                                                   icicle-retrieve-previous-input))))
                                              (isearch-update-ring content-pat 'REGEXP))
@@ -6395,8 +6402,9 @@ BUFFER is a buffer name."
                              (save-excursion (goto-char (point-min))
                                              (re-search-forward content-pat nil t)))))
                (when (and found         ; Don't do it just because incrementally complete.
-                          (or (get last-command 'icicle-apropos-completing-command)
-                              (memq last-command '(icicle-retrieve-next-input
+                          (or (icicle-get-safe this-command 'icicle-apropos-completing-command)
+                              (icicle-get-safe this-command 'icicle-cycling-command)
+                              (memq this-command '(icicle-retrieve-next-input
                                                    icicle-retrieve-previous-input))))
                  (isearch-update-ring content-pat 'REGEXP))
                found)))))
@@ -7722,8 +7730,9 @@ Return non-nil if the current multi-completion INPUT matches FILE-NAME."
                                  (not (memq buf existing-bufs)))
                         (add-to-list 'new-bufs--to-kill buf))
                       (when (and found ; Don't do it just because incrementally complete.
-                                 (or (get last-command 'icicle-apropos-completing-command)
-                                     (memq last-command '(icicle-retrieve-next-input
+                                 (or (icicle-get-safe this-command 'icicle-apropos-completing-command)
+                                     (icicle-get-safe this-command 'icicle-cycling-command)
+                                     (memq this-command '(icicle-retrieve-next-input
                                                           icicle-retrieve-previous-input))))
                         (isearch-update-ring content-pat 'REGEXP))
                       found)))))))
