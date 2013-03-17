@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 21.1
-;; Last-Updated: Sun Mar 17 14:32:52 2013 (-0700)
+;; Last-Updated: Sun Mar 17 14:38:02 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 4854
+;;     Update #: 4855
 ;; URL: http://www.emacswiki.org/info+.el
 ;; Doc URL: http://www.emacswiki.org/InfoPlus
 ;; Keywords: help, docs, internal
@@ -1861,7 +1861,7 @@ it says do not attempt further (recursive) error recovery."
                    (widen)
                    (throw 'foo t))
                  ;; No such anchor in tag table or node in tag table or file
-                 (info-user-errorerror "No such node or anchor: `%s'" nodename))
+                 (info-user-error "No such node or anchor: `%s'" nodename))
                (Info-select-node)
                (goto-char (point-min))
                (forward-line 1)         ; skip header line
