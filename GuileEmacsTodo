@@ -26,3 +26,5 @@ Bug-reports from TaylanUB on 2013-03-10:
 * Certain heavy operations (namely displaying a big e-mail in Gnus) cause a lock-up (or take very long, I waited several minutes before having to send SIGKILL).
 
 Other than the above 4 issues, I could say I can't distinguish my Guile-Emacs build from a normal Emacs build, apart from the fact that it can run Scheme! <code>M-: (eval-scheme "(call-with-current-continuation (lambda (k) (k 42)))") RET => 42</code> (The return-value is an Elisp datum.)
+
+2013-03-17: Points 1, 2, and 4 are re-producable on the wip-bdw-gc branch; 3 is unique to the wip-guile branch.
