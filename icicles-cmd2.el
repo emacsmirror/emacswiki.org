@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Sat Mar 16 15:26:52 2013 (-0700)
+;; Last-Updated: Sun Mar 17 17:27:01 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6347
+;;     Update #: 6374
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -96,7 +96,8 @@
 ;;    (+)`icicle-imenu-user-option',
 ;;    (+)`icicle-imenu-user-option-full', (+)`icicle-imenu-variable',
 ;;    (+)`icicle-imenu-variable-full', `icicle-ido-like-mode',
-;;    (+)`icicle-Info-goto-node', (+)`icicle-Info-index',
+;;    (+)`icicle-Info-goto-node',
+;;    (+)`icicle-Info-goto-node-of-content', (+)`icicle-Info-index',
 ;;    (+)`icicle-Info-index-20', (+)`icicle-Info-menu',
 ;;    (+)`icicle-Info-menu-cmd', `icicle-Info-virtual-book',
 ;;    (+)`icicle-insert-thesaurus-entry', (+)`icicle-map',
@@ -191,10 +192,14 @@
 ;;    `icicle-goto-marker-1-action', `icicle-group-regexp',
 ;;    `icicle-imenu-command-p', `icicle-imenu-in-buffer-p',
 ;;    `icicle-imenu-non-interactive-function-p',
+;;    `icicle-Info-apropos-complete-match',
 ;;    `icicle-Info-build-node-completions',
 ;;    `icicle-Info-build-node-completions-1',
-;;    `icicle-Info-goto-node-1', `icicle-Info-goto-node-action',
-;;    `icicle-Info-index-action', `icicle-Info-read-node-name',
+;;    `icicle-Info-content-match', `icicle-Info-goto-node-1',
+;;    `icicle-Info-goto-node-action', `icicle-Info-index-action',
+;;    `icicle-Info-multi-read-node-name',
+;;    `icicle-Info-read-node-name',
+;;    `icicle-Info-read-node-of-content',
 ;;    `icicle-insert-thesaurus-entry-cand-fn',
 ;;    `icicle-invisible-face-p', `icicle-invisible-p',
 ;;    `icicle-keys+cmds-w-prefix', `icicle-make-color-candidate',
@@ -2280,6 +2285,314 @@ Remove pseudo-node `*'.  (This just fixes a bug in Emacs 21 and 22.1.)"
              (icicle-clear-minibuffer)))))
   (select-window (active-minibuffer-window))
   (select-frame-set-input-focus (selected-frame)))
+
+(when (fboundp 'clone-buffer)           ; Emacs 22+
+  (defun icicle-Info-goto-node-of-content (nodename &optional arg)
+    "Go to Info node whose node name or content matches.
+Candidate node names are those in the current Info file.
+
+With a prefix argument:
+
+ * Plain `C-u' means prepend the current Info file name (manual name)
+   to each node name.  For example: `(emacs)Paragraphs' instead of
+   just `Paragraphs'.
+
+ * A negative numeric prefix arg (e.g. `C--') means present candidate
+   nodes in book order, and limit them to the current node and the
+   nodes in the rest of the book following it.  In this case, the
+   first candidate is `..', which means go up.
+
+ * A non-negative numeric prefix arg (e.g. `C-1') means show the
+   target node in a new Info buffer.
+
+With no prefix argument, or with a non-negative prefix arg, you can
+use `C-,' to choose how to sort completion candidates (node names).
+By default, they are sorted alphabetically.
+
+Completion candidates are two-part multi-completions, with the second
+part optional.  If both parts are present they are separated by
+`icicle-list-join-string' (\"^G^J\", by default).
+
+The first part is matched as a regexp against a node name.  The second
+part is matched as a regexp against the node content.  Candidates that
+do not match are filtered out.
+
+When matching node content, Icicles just looks for a single match.
+Visiting the node does not move to that match or to any other match.
+Matching is used only to filter candidate files.
+
+However, if your input includes a content-matching part and it
+matches, that part is automatically added to the Isearch regexp
+history, `regexp-search-ring' whenever you hit `S-TAB' to complete.
+This means that when you visit the node you can immediately search for
+matches using `C-M-s' or `C-M-r'.
+
+Your minibuffer input can match a node name or content, or both.  Use
+`C-M-j' (equivalent here to `C-q C-g C-j') to input the default
+separator.
+
+For example:
+
+ To match `foo' against node names, use input `foo'.
+ To match `bar' against node contents, use input `C-M-j bar'.
+ To match both names and content, use input `foo C-M-j bar'.
+
+Only the matching node names are shown in buffer `*Completions*', and
+only the chosen name is returned.  The actual content matches are
+unimportant anyway: content matching is used only to filter the
+candidates.
+
+If your input does not include a content-matching part then this
+command acts similar to `icicle-Info-goto-node-no-search'.
+
+If your input includes a content-matching part then all nodes matching
+the name part of your input (or all, if no name part) are searched.
+As you would expect, content matching can be costly in time, even
+though it can be quite helpful.  Use name matching to narrow the set
+of nodes that must be visited to search their contents.
+
+If you use library `Bookmark+' then you can use `C-x m' during
+ completion to jump to Info bookmarks.
+
+Input-candidate completion and cycling are available.  While cycling,
+these keys with prefix `C-' are active:
+
+`C-mouse-2', `C-RET' - Go to current completion candidate (node)
+`C-down'  - Go to next completion candidate
+`C-up'    - Go to previous completion candidate
+`C-next'  - Go to next apropos-completion candidate
+`C-prior' - Go to previous apropos-completion candidate
+`C-end'   - Go to next prefix-completion candidate
+`C-home'  - Go to previous prefix-completion candidate
+
+Use `mouse-2', `RET', or `S-RET' to finally choose a candidate, or
+`C-g' to quit.
+
+This is an Icicles command - see command `icicle-mode'.
+
+From Lisp code:
+
+ Argument NODENAME has the form NODE or (FILE)NODE-IN-FILE, where:
+
+ NODE names a node in the current Info file or one of its subfiles.
+ FILE names an Info file containing node NODE-IN-FILE.
+
+ If optional argument ARG is a string, then show the node in a new
+ Info buffer named `*info-ARG*'."
+    (interactive
+     (let* ((icicle-info-buff                       (current-buffer))
+            (icicle-info-window                     (selected-window))
+            (icicle-candidate-action-fn             'icicle-Info-goto-node-action)
+            (icicle-pref-arg                        current-prefix-arg) ; For `icicle-Info-*-action'.
+            (icicle-Info-only-rest-of-book-p        (< (prefix-numeric-value current-prefix-arg) 0))
+            (icicle-sort-orders-alist               (cons '("in book order") icicle-sort-orders-alist))
+            (icicle-sort-comparer                   (and (not icicle-Info-only-rest-of-book-p)
+                                                         icicle-sort-comparer))
+            (icicle-multi-completing-p              t)
+            (icicle-candidate-properties-alist      '((1 (face icicle-candidate-part))))
+            ;; Bind `icicle-apropos-complete-match-fn' to nil to prevent automatic input matching
+            ;; in `icicle-unsorted-apropos-candidates' etc., because `icicle-Info-multi-read-node-name'
+            ;; does everything.
+            (icicle-apropos-complete-match-fn       nil)
+            (icicle-last-apropos-complete-match-fn  'icicle-Info-apropos-complete-match))
+       (list (icicle-Info-read-node-of-content "Go to node: " (consp current-prefix-arg))
+             current-prefix-arg)))
+    (icicle-Info-goto-node-1 nodename arg))
+
+  (defun icicle-Info-apropos-complete-match (input node)
+    "Match fn for progressive completion with `icicle-Info-goto-node-of-content'.
+Return non-nil if the current multi-completion INPUT matches NODE.
+NODE is an Info node name.
+If INPUT contains a content-matching part then it too must match."
+    (lexical-let* ((node-pat     (let ((icicle-list-use-nth-parts  '(1)))
+                                   (icicle-transform-multi-completion input)))
+                   (content-pat  (let ((icicle-list-use-nth-parts  '(2)))
+                                   (icicle-transform-multi-completion input))))
+      (and (icicle-string-match-p node-pat node)
+           (or (equal "" content-pat)  (icicle-Info-content-match content-pat node)))))
+
+  (defun icicle-Info-content-match (content-pat node)
+    "Return non-nil if CONTENT-PAT matches content of NODE.
+CONTENT-PAT is a regexp.  NODE is an Info node name."
+    ;; Gross hack.  If `C-u' was used then NODE has form `(FILE)NODE',
+    ;; and we need to remove the `(FILE)', for arg to `Info-find-node'.
+    (when (and (consp icicle-pref-arg)  (string-match "^([^)]+)\\(.+\\)$" node))
+      (setq node  (match-string 1 node)))
+    (let* ((Info-history       ())      ; Do not record the node searched.
+           (Info-history-list  ())
+           (found  (with-current-buffer Info-complete-menu-buffer
+                     (when (and (string= node "..")  (Info-check-pointer "up"))
+                       (setq node  (Info-extract-pointer "up")))
+                     (if (and (featurep 'info+)  (> emacs-major-version 21))
+                         (Info-find-node Info-current-file node 'NO-BACK 'NOMSG)
+                       (Info-find-node Info-current-file node 'NO-BACK))
+                     (goto-char (point-min))
+                     (re-search-forward content-pat nil t))))
+      (when (and found                  ; Do not do it just because incrementally complete.
+                 (or (get this-command 'icicle-apropos-completing-command)
+                     (memq this-command '(icicle-retrieve-next-input icicle-retrieve-previous-input))))
+        (isearch-update-ring content-pat 'REGEXP))
+      found))
+
+  (defun icicle-Info-read-node-of-content (prompt &optional include-file-p)
+    "Read node name and content search string, prompting with PROMPT.
+See `icicle-Info-goto-node-of-content' for a description of the input.
+Non-nil optional arg INCLUDE-FILE-P means include current Info file in
+the name."
+    (let ((C-x-m                      (lookup-key minibuffer-local-completion-map "\C-xm"))
+          (Info-complete-menu-buffer  (clone-buffer)))
+      (when (and (require 'bookmark+ nil t)  (fboundp 'icicle-bookmark-info-other-window))
+        (define-key minibuffer-local-completion-map (icicle-kbd "C-x m")
+          'icicle-bookmark-info-other-window))
+      (unwind-protect
+           (let* ((completion-ignore-case           t)
+                  (Info-read-node-completion-table  (icicle-Info-build-node-completions include-file-p))
+                  (icicle-list-use-nth-parts        '(1))
+                  (nodename                         (icicle-transform-multi-completion
+                                                     (completing-read
+                                                      prompt 'icicle-Info-multi-read-node-name))))
+             (if (equal nodename "")
+                 (icicle-Info-read-node-of-content prompt include-file-p) ; Empty input - read again.
+               nodename))
+        (kill-buffer Info-complete-menu-buffer)
+        (define-key minibuffer-local-completion-map (icicle-kbd "C-x m") C-x-m))))
+
+;;;; $$$$$$$$
+;;;; This version is in effect what we'll use at first (it is equivalent to those below, which have
+;;;; commented-out sections).  It does not let users switch manuals by completing against the manual name.
+;;;; It just uses the current manual.
+;;;;
+;;;;   (defun icicle-Info-multi-read-node-name (strg pred completion-mode)
+;;;;     "Completion function for `icicle-Info-read-node-of-content'.
+;;;; This is used as the value of `minibuffer-completion-table'."
+;;;;     (setq strg  icicle-current-input)
+;;;;     (lexical-let* ((node-pat     (let ((icicle-list-use-nth-parts  '(1)))
+;;;;                                    (icicle-transform-multi-completion strg)))
+;;;;                    (node-pat     (if (memq icicle-current-completion-mode '(nil apropos))
+;;;;                                      node-pat
+;;;;                                    (concat "^" node-pat)))
+;;;;                    (content-pat  (let ((icicle-list-use-nth-parts  '(2)))
+;;;;                                    (icicle-transform-multi-completion strg)))
+;;;;                    (nodes         (mapcar #'car Info-read-node-completion-table))
+;;;;                    (nodes         (icicle-remove-if-not (lambda (nod)
+;;;;                                                           (icicle-string-match-p node-pat nod))
+;;;;                                                         nodes))
+;;;;                    (nodes         (if (equal "" content-pat)
+;;;;                                       nodes
+;;;;                                     (icicle-remove-if-not
+;;;;                                      `(lambda (node)
+;;;;                                         (icicle-Info-content-match ',content-pat node))
+;;;;                                      nodes))))
+;;;;       (cond ((and (eq 'metadata completion-mode)  (> emacs-major-version 23))
+;;;;              '(metadata (category . info-node)))
+;;;;             (completion-mode nodes) ; `all-completions', `test-completion'
+;;;;             (t
+;;;;              (try-completion            ; `try-completion'
+;;;;               strg (mapcar #'list nodes) (and pred  (lambda (ss) (funcall pred ss))))))))
+
+  )
+
+(when (fboundp 'completion-table-with-context) ; Emacs 23+.
+  (defun icicle-Info-multi-read-node-name (strg pred completion-mode)
+    "Completion function for `icicle-Info-read-node-of-content'.
+This is used as the value of `minibuffer-completion-table'."
+    (setq strg  icicle-current-input)
+    (if (eq 'metadata completion-mode)
+        '(metadata (category . info-node)) ; $$$$$$ Not used currently.
+      (cond
+;;; $$$$$$ Fix and add back later.  This is the vanilla Emacs approach, which loses parens.
+;;;         ((string-match "\\`([^)]*\\'" strg) ; Incomplete file name: `(...' - complete it.
+;;;          (completion-table-with-context "("
+;;;                                         (apply-partially
+;;;                                          'completion-table-with-terminator ")"
+;;;                                          (apply-partially 'Info-read-node-name-2
+;;;                                                           Info-directory-list
+;;;                                                           (mapcar 'car Info-suffix-list)))
+;;;                                         (substring strg 1) pred completion-mode))
+;;;         ((string-match "\\`(\\([^)]+\\))" strg) ; A complete file name.  Complete nodes in file.
+;;;          (let ((file0     (match-string 0 strg))
+;;;                (file1     (match-string 1 strg))
+;;;                (nodename  (substring strg (match-end 0))))
+;;;            (if (and (equal nodename "")  (eq completion-mode 'lambda))
+;;;                t                        ; Empty node name means "Top".
+;;;              (completion-table-with-context file0
+;;;                                             (apply-partially (lambda (string pred action)
+;;;                                                                (complete-with-action
+;;;                                                                 action
+;;;                                                                 (Info-build-node-completions
+;;;                                                                  (Info-find-file file1))
+;;;                                                                 string pred)))
+;;;                                             nodename pred completion-mode))))
+        (t
+         (lexical-let* ((node-pat     (let ((icicle-list-use-nth-parts  '(1)))
+                                        (icicle-transform-multi-completion strg)))
+                        (node-pat     (if (memq icicle-current-completion-mode '(nil apropos))
+                                          node-pat
+                                        (concat "^" node-pat)))
+                        (content-pat  (let ((icicle-list-use-nth-parts  '(2)))
+                                        (icicle-transform-multi-completion strg)))
+                        (nodes        (mapcar #'car Info-read-node-completion-table))
+                        (nodes        (icicle-remove-if-not
+                                       `(lambda (nod) (icicle-string-match-p ',node-pat nod))
+                                       nodes))
+                        (nodes        (if (equal "" content-pat)
+                                          nodes
+                                        (icicle-remove-if-not
+                                         `(lambda (nod) (icicle-Info-content-match ',content-pat nod))
+                                         nodes))))
+           (if completion-mode          ; `all-completions', `test-completion'
+               nodes
+             (try-completion            ; `try-completion'
+              strg (mapcar #'list nodes) (and pred  (lambda (ss) (funcall pred ss))))))))))
+
+  )
+
+(when (= emacs-major-version 22)        ; Emacs 22.
+  (defun icicle-Info-multi-read-node-name (strg pred completion-mode)
+    "Completion function for `icicle-Info-read-node-of-content'.
+This is used as the value of `minibuffer-completion-table'."
+    (setq strg  icicle-current-input)
+    (cond
+;;; $$$$$$ Fix and add back later.  This is the vanilla Emacs approach, which loses parens (so broken).
+;;;       ((string-match "\\`([^)]*\\'" strg) ; Incomplete file name: `(...' - complete it.
+;;;        (let ((file (substring strg 1)))
+;;;          (cond ((eq completion-mode nil)
+;;;                 (let ((comp  (try-completion
+;;;                               file 'Info-read-node-name-2 (cons Info-directory-list
+;;;                                                                 (mapcar 'car Info-suffix-list)))))
+;;;                   (cond ((eq comp t) (concat strg ")"))
+;;;                         (comp (concat "(" comp)))))
+;;;                ((eq completion-mode t)
+;;;                 (all-completions file 'Info-read-node-name-2 (cons Info-directory-list
+;;;                                                                    (mapcar 'car Info-suffix-list))))
+;;;                (t nil))))
+;;;       ((string-match "\\`(" strg)       ; A complete file name.  Any node is fair game.
+;;;        (cond ((eq completion-mode nil) strg)
+;;;              ((eq completion-mode t)   nil)
+;;;              (t                        t)))
+      (t
+       (lexical-let* ((node-pat     (let ((icicle-list-use-nth-parts  '(1)))
+                                      (icicle-transform-multi-completion strg)))
+                      (node-pat     (if (memq icicle-current-completion-mode '(nil apropos))
+                                        node-pat
+                                      (concat "^" node-pat)))
+                      (content-pat  (let ((icicle-list-use-nth-parts  '(2)))
+                                      (icicle-transform-multi-completion strg)))
+                      (nodes        (mapcar #'car Info-read-node-completion-table))
+                      (nodes        (icicle-remove-if-not
+                                     `(lambda (nod) (icicle-string-match-p ',node-pat nod))
+                                     nodes))
+                      (nodes        (if (equal "" content-pat)
+                                        nodes
+                                      (icicle-remove-if-not
+                                       `(lambda (nod) (icicle-Info-content-match ',content-pat nod))
+                                       nodes))))
+         (if completion-mode            ; `all-completions', `test-completion'
+             nodes
+           (try-completion              ; `try-completion'
+            strg (mapcar #'list nodes) (and pred  (lambda (ss) (funcall pred ss)))))))))
+
+  )
 
 (when (> emacs-major-version 21)
   (defun icicle-Info-virtual-book (nodeset)
