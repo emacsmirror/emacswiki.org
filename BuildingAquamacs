@@ -13,7 +13,7 @@ Ensure you have a recent version of Git installed.
 Then:
 
   git clone git://github.com/davidswelt/aquamacs-emacs.git
-  cd aquamacs-emacs.git
+  cd aquamacs-emacs
 
 == Building ==
 
