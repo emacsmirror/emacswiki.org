@@ -162,6 +162,21 @@ I have updated minimap.el to use a single dedicated minimap sidebar window inste
 Current bugs include semantic overlays disappearing when the current buffer changes.
 
 ----
+And for this updated version... Here is the equivalent above function to keep buffer sizes to 80 wide...
+<pre>
+(defun minimap-toggle-retain-size ()
+  "Toggle minimap"
+  (interactive)
+  (if (or (not (boundp 'minimap-exists))
+	  (not minimap-exists))
+      (progn (minimap-create)
+	     (setf minimap-exists t)
+	     (set-frame-width (selected-frame) 100))
+    (progn (minimap-kill)
+	   (setf minimap-exists nil)
+	   (set-frame-width (selected-frame) 80))))
+</pre>
+----
 Would it be possible to make the minimap buffer scroll-wheel enabled ? Currently using the scroll-wheel triggers a refresh which just makes the buffer glitch a bit. As a workaround, tips to (really) disable the scroll wheel would be welcome.
 
 ----
@@ -184,3 +199,4 @@ I am using Emacs in server environments where I do not have X11 available, so I 
 
 ----  
 CategoryWindows   CategoryDisplay
+[http://www.sublimetext.com/ Minimap] is a feature provided by the Sublime editor. It shows a smaller, 
