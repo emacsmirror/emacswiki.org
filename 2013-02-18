@@ -37,3 +37,6 @@ Thanks for the feedback. As for myself, I find the font-size too small for my iP
 
 [new:DrewAdams:2013-03-10 17:22 UTC]
 The font size is big, but the font is light-lined and without serifs, which is not ideal for reading text.  Dunno whether that pertains to mobile devices, however.  Clearly it is good to have multiple renderings, to let users choose.  I don't mind choosing a non-default look (e.g., what is currently the default). -- DrewAdams
+
+[new:AaronHawley:2013-03-18 14:44 UTC]
+I'm looking forward to this.  I'll play with it in my Samsung Galaxy handheld.  The only thing disruptive is the zero-margin.  I'd suggest the following [[CSS]] change: ##body { margin: 1em; }##. -- AaronHawley
