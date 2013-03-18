@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Mar 16 17:49:02 2013 (-0700)
+;; Last-Updated: Sun Mar 17 17:50:31 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 9848
+;;     Update #: 9855
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -887,6 +887,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2013/03/17 dadams
+;;     Added: icicle-Info-goto-node-of-content, icicle-Info-apropos-complete-match,
+;;            icicle-Info-content-match, icicle-Info-read-node-of-content,
+;;            icicle-Info-multi-read-node-name,
 ;; 2013/03/16 dadams
 ;;     icicle-Info-goto-node-action: Give focus back to minibuffer frame at end.
 ;;     icicle-Info-read-node-name: Retain INCLUDE-FILE-P arg in recursive call.
