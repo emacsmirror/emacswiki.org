@@ -8,6 +8,7 @@ If you use Transient-mark-mode, you probably only want to mark text when in term
 
 The following defadvice functions take care of these two issues:
 
+<pre>
     ;; enable cua and transient mark modes in term-line-mode
     (defadvice term-line-mode (after term-line-mode-fixes ())
       (set (make-local-variable 'cua-mode) t)
@@ -19,11 +20,13 @@ The following defadvice functions take care of these two issues:
       (set (make-local-variable 'cua-mode) nil)
       (set (make-local-variable 'transient-mark-mode) nil))
     (ad-activate 'term-char-mode)
+</pre>
 
 == M-x shell like behavior ==
 Those who are accustomed to use M-x shell may find M-x ansi-term does not adhere explicit-bash-args (e.g. to make the login-shell), nor .emacs_bash (or .emacs.d/init_bash.sh).  Since M-x ansi-term does not support additional arguments to the shell, I'd write small replacement
 to M-x ansi-term to mimic M-x shell.
 
+<pre>
     (defun term/shell (program &optional new-buffer-name)
       "Start a terminal-emulator in a new buffer.
 
@@ -96,6 +99,7 @@ to M-x ansi-term to mimic M-x shell.
       (switch-to-buffer term-ansi-buffer-name))
 
     (global-set-key "\C-cd" 'term/shell)
+</pre>
 
 It seems that the author of ansi-term likes the behavior which Emacs create new terminal each time ansi-term is invoked.  Since I prefer that Emacs raises the terminal buffer if it existed,  M-x term/shell does not create additional terminal buffer by default.  Instead, if you give a prefix argument, it will create additional buffer. -- CinSK
 
@@ -137,6 +141,7 @@ frequently visit with it's own buffer name and connection parameters:
 
 One of the best features of AnsiTerm mode is its remote directory tracking. Whatever remote directory your terminal is in, that will be the default directory that tramp uses if you choose to edit a file with C-x C-f. But you have to set up the following in your ##.bash_profile## on each remote host first:
 
+<pre>
     function set-eterm-dir {
         echo -e "\033AnSiTu" "$LOGNAME" # $LOGNAME is more portable than using whoami.
         echo -e "\033AnSiTc" "$(pwd)"
@@ -146,7 +151,8 @@ One of the best features of AnsiTerm mode is its remote directory tracking. What
         else
             hostname_options="-f";
         fi
-        echo -e "\033AnSiTh" "$(hostname $hostname_options)" # Using the -f option can cause problems on some OSes.
+        echo -e "\033AnSiTh" "$(hostname $hostname_options)" # Using the -f option can
+                                                             # cause problems on some OSes.
         history -a # Write history to disk.
     }
 
@@ -154,6 +160,7 @@ One of the best features of AnsiTerm mode is its remote directory tracking. What
     if [ "$TERM" = "eterm-color" ]; then
         PROMPT_COMMAND=set-eterm-dir
     fi
+</pre>
 
 Note that the above code may not work if /etc/hosts does not contain the fully qualified domain name (eg. it contains example instead of www.example.com).  This is the case by default on Ubuntu when it is installed using the live CD and can be fixed by editing /etc/hosts.  Tested on FreeBSD, Ubuntu and SunOS.
 
@@ -169,18 +176,23 @@ If you are using Zsh, you will notice setting the variable PROMPT_COMMAND doesn'
         else
             hostname_options="-f";
         fi
-        echo -e "\033AnSiTh" "$(hostname $hostname_options)" # Using the -f option can cause problems on some OSes.
+        echo -e "\033AnSiTh" "$(hostname $hostname_options)" # Using the -f option can
+                                                             # cause problems on some OSes.
     }
 
 On some systems using precmd in the manner above may cause errors.  In this case try the following:
 
+<pre>
     function eterm-update {
         # Only set the full hostname for ssh sessions.
         if [[ -n "$SSH_CONNECTION" ]]; then
-            # For ssh connections, use the hostname (it is assumed here that there an ssh alias on the connecting machince that has the same name as the ssh alias).
+            # For ssh connections, use the hostname (it is assumed here
+            # that there is an ssh alias on the connecting machine that has
+            # the same name as the ssh alias).
             echo -e "\033AnSiTh" "$(hostname)"
         else
-            # For local sessions, use the full host name so tramp will know that the path is not remote.
+            # For local sessions, use the full host name so tramp will know
+            # that the path is not remote.
             echo -e "\033AnSiTh" "$(hostname -f)"
         fi
         
@@ -193,6 +205,7 @@ On some systems using precmd in the manner above may cause errors.  In this case
     }
 
     cd "$(pwd)"
+</pre>
 
 == Remote Term Type ==
 
