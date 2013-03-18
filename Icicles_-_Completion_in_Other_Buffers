@@ -59,9 +59,11 @@ with `M-/' can be tedious.  You can use `M-C-/' to complete to a
 common prefix, thus narrowing the set of candidates, but then you
 lose the ability to cycle among them.
 
-If [[user option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-functions-to-redefine|icicle-functions-to-redefine]]</tt>'''' contains an entry for `dabbrev-completion' (which it does by default) then '''Icicles''' redefines command `dabbrev-completion' (it does not change
-`dabbrev-expand') so that it uses '''Icicles''' completion when there are multiple completions.  You can use any '''Icicles''' features, such
-as apropos completion and candidate cycling.   In addition, you can even complete an ''empty'' prefix, starting from scratch with apropos completion.
+If [[user option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-top-level-key-bindings|icicle-top-level-key-bindings]]</tt>'''' contains an entry for `dabbrev-completion' then '''Icicles''' remaps keys normally bound
+to command `dabbrev-completion' to command
+'''`icicle-dabbrev-completion'''', which
+uses '''Icicles''' completion whenever there are multiple completion candidates.  You can then use any '''Icicles''' features, such
+as apropos completion and candidate cycling.   In addition, you can complete an ''empty'' prefix, starting from scratch with apropos completion.
 
 
 
