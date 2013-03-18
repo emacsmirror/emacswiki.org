@@ -181,7 +181,7 @@ case EXIT controls whether `message-send-and-exit' or `message-send'
 is called, and ARG is passed as argument."
   (save-excursion
     (goto-char (point-min))
-    (if (or (search-forward "<#secure.+encrypt" nil t)
+    (if (or (re-search-forward "<#secure.+encrypt" nil t)
 	    (jl-proceed-without-encryption-p))
 	(if exit
 	    (message-send-and-exit arg)
