@@ -45,6 +45,10 @@ or
 
  (define-key emacs-lisp-mode-map (kbd "C-;") 'my-describe-function)
 
+[new]
+
+You can also try the package [[https://github.com/Fuco1/clippy.el clippy.el]]. It does the same thing with a little twist :)
+
 === Screenshot ===
 
 [[image:PosTipScreenshotDescFun]]
