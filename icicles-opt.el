@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Feb 26 13:00:39 2013 (-0800)
+;; Last-Updated: Mon Mar 18 13:36:43 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 5593
+;;     Update #: 5595
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -4126,7 +4126,7 @@ toggle Icicle mode off and then back on."
     (customize-apropos-options     icicle-customize-apropos-options    t)
     (customize-face                icicle-customize-face               t)
     (customize-face-other-window   icicle-customize-face-other-window  t)
-    (dabbrev-completion            icicle-dabbrev-completion           t)
+    (dabbrev-completion            icicle-dabbrev-completion           (< emacs-major-version 24))
     (delete-window                 icicle-delete-window                t) ; `C-x 0'
     (delete-windows-for            icicle-delete-window                t) ; `C-x 0' (`frame-cmds.el')
     (dired                         icicle-dired                        t) ; `C-x d'
