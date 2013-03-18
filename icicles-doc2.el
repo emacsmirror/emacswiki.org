@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue Feb 26 11:07:22 2013 (-0800)
+;; Last-Updated: Mon Mar 18 14:50:47 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 29262
+;;     Update #: 29264
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -4345,14 +4345,14 @@
 ;;  common prefix, thus narrowing the set of candidates, but then you
 ;;  lose the ability to cycle among them.
 ;;
-;;  If user option `icicle-functions-to-redefine' contains an entry
-;;  for `dabbrev-completion' (which it does by default) then Icicles
-;;  redefines command `dabbrev-completion' (it does not change
-;;  `dabbrev-expand') so that it uses Icicles completion when there
-;;  are multiple completions.  You can use any Icicles features, such
-;;  as apropos completion and candidate cycling.  In addition, you can
-;;  even complete an empty prefix, starting from scratch with apropos
-;;  completion.
+;;  If user option `icicle-top-level-key-bindings' contains an entry
+;;  for `dabbrev-completion' then Icicles remaps keys normally bound
+;;  to command `dabbrev-completion' to command
+;;  `icicle-dabbrev-completion', which uses Icicles completion
+;;  whenever there are multiple completion candidates.  You can then
+;;  use any Icicles features, such as apropos completion and candidate
+;;  cycling.  In addition, you can complete an empty prefix, starting
+;;  from scratch with apropos completion.
 ;;
 ;;(@* "BBDB Completion")
 ;;  ** BBDB Completion **
