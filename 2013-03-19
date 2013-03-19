@@ -11,3 +11,6 @@ Sometimes it takes a really long time to save an edit. I suspect this happens wh
 Today I installed a job that [http://www.emacswiki.org/emacs/lock.log logs the wiki lock status every ten minutes].
 There's [http://www.emacswiki.org/emacs/lock.svg very primitive SVG output] as well.
 Perhaps that will help identify the source of the forgotten locks...
+
+[new:DrewAdams:2013-03-19 14:57 UTC]
+Thanks for your efforts looking into this, Alex. -- DrewAdams
