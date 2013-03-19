@@ -17,21 +17,6 @@ There are other useful functions provided by the library, including:
 
 The thingatpt library is quintessential Emacs, powerful but minimal. View the source code with `M-x find-library RET thingatpt RET' to learn more its features and how to extend it to things of your own.
 
-For keybindings to cursor motion functions that use thing-at-point, enable ShiftSelectMode by wrapping the function in another that adds a `^' to its interactive spec.  For example,
-
-{{{
-(defun forward-symbol-shift-aware (arg)
-  "Calls forward-symbol (from thingatpt.el), but supports
-shift-select-mode (from simple.el), so that 
-S-<key bound to forward-symbol-shift-aware> will apply the mark."
-  (interactive "^p")
-  (forward-symbol arg))
-
-(local-set-key (kbd "C-<right>") 'forward-symbol-shift-aware)
-(local-set-key (kbd "C-<left>")
-               '(lambda () (interactive "^") (forward-symbol-shift-aware -1)))
-}}}
-
 
 == Specific "-at-point" functions ==
 
@@ -85,6 +70,8 @@ The following add new kinds of things at point. They provide examples of how to 
 == See Also ==
 
 * DescribeThingAtPoint for commands that display Emacs documentation related to a thing at [[point]].
+
+* ShiftSelectMode for binding keys to cursor motion functions that use thing-at-point.
 
 
 
