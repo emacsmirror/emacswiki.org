@@ -3,6 +3,7 @@ This page lists modes for Emacs which are designed primarily for managing refere
 === Major Modes ===
 * [[BibTeX]] -- a major mode for editing and validating BibTeX files.
 * [[EbibMode]] -- a major mode for managing BibTeX databases.
+* [[Bibus]] -- a major mode for displaying and managing reference keys.
 
 === Minor Modes ===
 * [[RefdbMode]] -- a minor mode which provides access to [http://refdb.sourceforge.net/|RefDB].
