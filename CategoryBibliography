@@ -10,3 +10,6 @@ This page lists modes for Emacs which are designed primarily for managing refere
 * [[RefTeX]] -- a minor mode which provides support for creating labels, references and citations in LaTeX.
 
 === Discussion ===
+[new:MatthewBall:2013-03-19 08:59 UTC]
+If anyone knows of any other modes related to reference material/bibliographies, please add them to the list.
+
