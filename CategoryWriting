@@ -1,5 +1,6 @@
 Clicking the title heading to search for pages about writing in natural languages with Emacs.
 
+=== Dictionary and Thesaurus ===
 * DictMode -- also comes as a debian package called dictionary-el 
 * Xemacs' -- dictionary.el is probably different from dictionary-el  See DictMode above. 
 * DictWeb -- provides a possibility to query a dict server
@@ -7,16 +8,23 @@ Clicking the title heading to search for pages about writing in natural language
 * <tt>[[wordnik.el]]</tt> -- look up word definitions on [[http://WordNik.com|WordNik.com]], and display them.
 * LookUp -- "Lookup provides the simple and unified search interface for the commercial electric dictionary as well as the network dictionary server ."  Available as the debian package lookup-el, woody onwards. 
 * Hachette (hachette.el) -- looks up online French dictionaries.
-* NaturalLanguageMode -- Conceptual ideas for how Emacs could support writers.
+* !RDictCc -- is an english-german (and vice versa) dictionary written in Ruby. It includes an emacs module which integrates it into emacs. Get it from apps section at the author's [http://www.tsdh.de homepage].
+* ThesauriAndSynonyms -- Finding roughly equivalent words in natural languages.  Lists applications to other related information and tasks.
+
+=== Text Manipulation ===
 * [[Paragraphs]] -- Editing paragraphs. 
+* [[Sentences]] -- Editing sentences. 
+* TypographicalPunctuationMarks -- insert ‘smart’ quotes
+
+=== Notes and Authoring ===
+* DeftMode -- Quickly browse, filer, and edit directories of plain text notes.
 * PersonalDiary -- Using Emacs to maintain a simple daily journal / personal diary.
+* ScreenPlay -- Write a dramatic screenplay.
+
+=== Miscellaneous ===
+* NaturalLanguageMode -- Conceptual ideas for how Emacs could support writers.
 * PredictiveMode -- minor mode that tries to predict the rest of the word, and offers you an appropriate completion.
 * PrintingFromEmacs -- Publishing your written work.
-* !RDictCc -- is an english-german (and vice versa) dictionary written in Ruby. It includes an emacs module which integrates it into emacs. Get it from apps section at the author's [http://www.tsdh.de homepage].
-* ScreenPlay -- Write a dramatic screenplay.
-* [[Sentences]] -- Editing sentences. 
-* ThesauriAndSynonyms -- Finding roughly equivalent words in natural languages.  Lists applications to other related information and tasks.
-* TypographicalPunctuationMarks -- insert ‘smart’ quotes
 * UnDoc -- Convert Word files to plain text.
 * UnPdf -- Convert PDF files to plain text.
 * UnXls -- Convert Excel files to plain text.
@@ -24,7 +32,8 @@ Clicking the title heading to search for pages about writing in natural language
 * RefdbMode -- Insert and look up citations stored in a SQL database
 * MemoPop -- Helps you pop up and pop out a specific file buffer easily.
 * AcroBuffer -- Expands acronyms correctly for writing in plain text.
-* DeftMode -- Quickly browse, filer, and edit directories of plain text notes.
+
+
 
 ''Note: This page overlaps with material at CategoryEducation, and occasionally may need to synchronize.''
 
@@ -37,4 +46,3 @@ See also these sections of ThisWiki:
 * CategorySpelling -- Correct your spelling or have it be done automatically.
 * CategoryTex -- Typeset your words, papers, articles and books for the printer.
 * CategoryBibliography -- Organise references and bibliographical data.
-
