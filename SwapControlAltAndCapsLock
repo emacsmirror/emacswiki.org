@@ -121,14 +121,16 @@ final line is required to make Alt+Tab work correctly, it's on the
 autohotkey wiki.
 
 <pre>
-LCtrl::LWin
 LWin::LAlt
 LAlt::LCtrl
+LCtrl::LWin
 
 RAlt::RCtrl
 RWin::RAlt
 AppsKey::RAlt
 RCtrl::AppsKey
+
+CapsLock::LAlt
 *Tab::Send {Blind}{Tab}
 </pre>
 
