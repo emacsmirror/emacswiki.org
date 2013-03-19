@@ -2,10 +2,38 @@ Starting with Emacs 23, "When Shift Select mode is on, shift-translated
 motion keys (e.g. S-left and S-down) activate and extend a temporary
 region, similar to mouse-selection." (Emacs 23.1 News file [http://www.gnu.org/software/emacs/NEWS.23.1])
 
-[new]
+
+
+== Use with `interactive' and "^" ==
+
 I'm trying to replace pc-selection-mode with the new shift-select-mode with emacs 23. It works generally well, only the shift+pgup/down keys don't create a selected region and I can't find a confguration setting where I could tell emacs I want these keys too shift translated. Are the supported keys hardcoded? It would be so unlike emacs, so there must be some setting somewhere which I overlook. Any ideas?
+
+
+
 [new:Msw1520:2013-03-19 02:24 UTC]
-: What functions are your pgup/pgdown bound to?  They may not support ShiftSelectMode.  For a way around this, wrap them in a function that does, using `^' in the interactive specification.  See the example in [[ThingAtPoint#toc1]]. 
+: What functions are your pgup/pgdown bound to?  They may not support ShiftSelectMode.  For a way around this, wrap them in a function that does, using `^' in the interactive specification.  
+
+: Here is an example:
+
+{{{
+(defun forward-symbol-shift-aware (arg)
+  "`forward-symbol', with shift-select-mode support.
+Shift + this command's key extends/activates the region
+around the text moved over."
+  (interactive "^p")
+  (forward-symbol arg))
+
+(local-set-key (kbd "C-<right>") 'forward-symbol-shift-aware)
+(local-set-key (kbd "C-<left>") (lambda () (interactive "^")
+                                  (forward-symbol-shift-aware -1)))
+}}}
+
+
+
+
+
+
+
 
 ----
 CategoryRegion
