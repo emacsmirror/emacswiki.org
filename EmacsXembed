@@ -18,7 +18,7 @@ I created a small [[http://bitbucket.org/ArneBab/kembed-emacs/src/tip/qxembed-em
 [new]
 You can now embed emacs in KMail: https://bugs.kde.org/show_bug.cgi?id=255008
 emacs --parent-id %w %f 
-I still have some issues with it, though: the emacs frame starts tiny instead of filling the textarea.
+I still have some issues with it, though: the emacs frame starts tiny instead of filling the textarea (I filed an emacs bug for that: http://lists.gnu.org/archive/html/bug-gnu-emacs/2013-01/msg00623.html ).
 
 
 == embedding apps in emacs windows ==
