@@ -13,6 +13,8 @@ I have been using GNU Emacs for the past five or so years, currently using GNU E
 I'm interested in somehow //giving back// to the (GNU) Emacs community - though I cannot code, I can at the very least write documentation, one day I will upload some of the (personal) stuff I have written about GNU Emacs.
 
 I use the following GNU Emacs modes extensively:
+* [[Ido]]
+* [[Smex]]
 * [[ERC]]
 * [[Gnus]]
 * [[DiredMode]]
@@ -32,6 +34,7 @@ For dictionary and thesaurus purposes I have found the following to be useful:
 === References and Bibliography ===
 For references and bibliography I have found the following to be useful:
 * [[BibTeX]]
+* [[RefTeX]]
 * [http://ebib.sourceforge.net/ ebib]
 
 == StumpWM ==
