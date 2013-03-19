@@ -25,6 +25,28 @@ In subversion 1.7 the format of the working copy was changed. Now there's only o
 
 In this [http://svn.haxx.se/users/archive-2012-08/0195.shtml post] there's a patch to update HEAD of trunk to work with this new format. But as this is not the latest version, I've created this [[psvn.el.patch]] to work with [http://www.xsteve.at/prg/emacs/psvn.el the latest version] (timestamped "2012-03-26, 21:23:49").
 
+=== Subversion 1.17 ===
+
+In subversion 1.17 the output of modified externals has changed to include the full path rather the relative one, this confuses psvn. 
+I've used a pre-parse hook to put output back into the expected format. If you don't use externals or edit them you don't need this.
+{{{
+(add-hook 'svn-pre-parse-status-hook 'svn-status-parse-fixup-externals-full-path)
+
+(defun svn-status-parse-fixup-externals-full-path ()
+ "SubVersion 1.17 adds the full path to externals; 
+  this pre-parse hook fixes it up to look like pre-1.17.
+  Allowing psvn to continue as normal"
+ (goto-char (point-min))
+ (let (( search-string  (file-truename default-directory) ))
+      (save-match-data
+        (save-excursion
+          (while (re-search-forward search-string (point-max) t)
+          (replace-match "" nil nil)
+          )))))
+}}}
+
+
+
 === Usage ===
 
 To check the status of a Subversion repository at `DIR':
