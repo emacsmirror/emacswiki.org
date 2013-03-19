@@ -3,9 +3,10 @@ I occasionally get reports from people saying that they find the wiki *locked*. 
 
 If the time window is large, twenty minutes or more, for example, chances are that the lock was left behind after a crash. You can click on _Administration_ -> _Unlock Wiki_ and that should solve the problem.
 
-I'd still like to know what keeps crashing the site. A few days ago I changed the way the maintenance job cleans up our git directory ([[Git repository]]). Sometimes it takes a really long time to save an edit. I suspect this happens when github is slow. I push all changes immediately. Maybe I should change that.
+I'd still like to know what keeps crashing the site. A few days ago I changed the way the maintenance job cleans up our git directory ([[Git repository]]). The log files indicated that this was where it crashed. I was able to reproduce it and changed how git is called from Perl.
+I recently started posting the [http://emacswiki.org/maintenance/emacs.html result of the maintenance job], just in case there's a similar problem in the future.
 
-I recently started posting the [http://emacswiki.org/maintenance/emacs.html result of the maintenance job].
+Sometimes it takes a really long time to save an edit. I suspect this happens when github is slow. I push all changes immediately. Maybe I should change that. Git is still on my mind.
 
 Today I installed a job that [http://www.emacswiki.org/emacs/lock.log logs the wiki lock status every ten minutes].
 There's [http://www.emacswiki.org/emacs/lock.svg very primitive SVG output] as well.
