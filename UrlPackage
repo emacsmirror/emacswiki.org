@@ -31,6 +31,7 @@ a URL into a buffer (opens in another window).
 
 We are sending a response to a form.  Define the following functions:
 
+{{{
     (defun my-url-http-post (url args)
       "Send ARGS to URL as a POST request."
       (let ((url-request-method "POST")
@@ -54,6 +55,7 @@ We are sending a response to a form.  Define the following functions:
       "Switch to the buffer returned by `url-retreive'.
     The buffer contains the raw HTTP response sent by the server."
       (switch-to-buffer (current-buffer)))
+}}}
 
 And then you can do the following:
 
