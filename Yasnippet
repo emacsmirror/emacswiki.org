@@ -123,6 +123,36 @@ Note: yasnippet from git (ver. 0.8) (new yas-* instead of yas/* functions and va
 (setq yas-prompt-functions '(yas-popup-isearch-prompt yas-ido-prompt yas-no-prompt))
 }}}
 
+== ido-complete yasnippet keys ==
+Evaluate this snippet:
+{{{
+;; Completing point by some yasnippet key
+(defun yas-ido-expand ()
+  "Lets you select (and expand) a yasnippet key"
+  (interactive)
+    (let ((original-point (point)))
+      (while (and
+              (not (= (point) (point-min) ))
+              (not
+               (string-match "[[:space:]\n]" (char-to-string (char-before)))))
+        (backward-word 1))
+    (let* ((init-word (point))
+           (word (buffer-substring init-word original-point))
+           (list (remove-if-not
+                  (lambda (s) (string-match (concat "^" word) s))
+                  (yas-active-keys))))
+      (goto-char original-point)
+      (when list
+        (let ((key (ido-completing-read "key: " list)))
+          (delete-char (- init-word original-point))
+          (insert key)
+          (yas-expand))))))
+}}}
+and map yas-ido-expand with a chord, e.g.:
+
+    (define-key yas-minor-mode-map (kbd "<C-tab>")     'yas-ido-expand)
+
+enjoy ;)
 
 == Discussion ==
 
