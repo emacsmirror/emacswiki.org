@@ -1,0 +1,12 @@
+[new:AlexSchroeder:2013-03-19 10:48 UTC]
+I occasionally get reports from people saying that they find the wiki *locked*. The usual effect is that you edit a page and try to save, it waits for a while and finally you get a message saying that the "main lock exists" and a time period.
+
+If the time window is large, twenty minutes or more, for example, chances are that the lock was left behind after a crash. You can click on _Administration_ -> _Unlock Wiki_ and that should solve the problem.
+
+I'd still like to know what keeps crashing the site. A few days ago I changed the way the maintenance job cleans up our git directory ([[Git repository]]). Sometimes it takes a really long time to save an edit. I suspect this happens when github is slow. I push all changes immediately. Maybe I should change that.
+
+I recently started posting the [http://emacswiki.org/maintenance/emacs.html result of the maintenance job].
+
+Today I installed a job that [http://www.emacswiki.org/emacs/lock.log logs the wiki lock status every ten minutes].
+There's [http://www.emacswiki.org/emacs/lock.svg very primitive SVG output] as well.
+Perhaps that will help identify the source of the forgotten locks...
