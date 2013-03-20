@@ -1,0 +1,30 @@
+https://duckduckgo.com/assets/logos/cispa/logo_homepage.normal.png
+
+[http://duckduckgo.com DuckDuckGo] is a web search engine created with the principle of privacy in mind. Their lemma is "We believe in better search and real privacy at the same time."
+
+Four important things they do:
+
+* Have [https://duckduckgo.com/goodies tons of goodies] -- Small application that you can use just typing some keywords at the search box.
+* Don't [http://donttrack.us/ track you].
+* Don't [http://dontbubble.us/ bubble you].
+* Drop the clutter.
+
+
+== DDG ==
+There is an aplication for using the !DuckDuckGo API (and use goodies!) composing of three files:
+
+* Lisp:ddg.el -- A library for retrieving information from !DuckDuckGo. See [[DuckDuckGo-el]]
+* Lisp:ddg-search.el -- Some commands for interactive searching and displaying results. Requires the next library.
+* Lisp:ddg-mode.el --A major mode for displaying properly the results.
+
+Download all these three libraries and add the following into your InitFile(.emacs):
+
+    (setq load-path (cons "/path/to/all/ddg/files" load-path))
+    (require 'ddg)
+    (require 'ddg-search)
+    (require 'ddg-mode)
+
+You can call !DuckDuckGo from the minibuffer using M-x <code>duckduckgo</code>. 
+
+----
+SiteMap
