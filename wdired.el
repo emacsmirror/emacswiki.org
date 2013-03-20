@@ -358,7 +358,6 @@ See `wdired-mode'."
     (menu-bar-mode (or menu-bar-mode -1))) ;Force redisplay menu
   (setq buffer-read-only nil)
   (dired-unadvertise default-directory)
-  (make-local-hook 'kill-buffer-hook)
   (add-hook 'kill-buffer-hook 'wdired-check-kill-buffer nil t)
   (setq major-mode 'wdired-mode)
   (setq mode-name "Edit filenames")
