@@ -1,3 +1,5 @@
+DeletedPage: This code ships with Emacs, now.
+
 To start a [[Texinfo]] file from scratch with a AutoInsertMode, add this bit of EmacsLisp to your [[.emacs]] file.
 
   ;; Based on "Emacs Lisp Header" in auto-insert.el
