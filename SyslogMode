@@ -1,6 +1,9 @@
-Download: http://www.mahalito.net/~harley/elisp/syslog-mode.el
 
-syslog-mode.el is a  mode for viewing system logfiles.
+
+Harley Gorrell's download: http://www.mahalito.net/~harley/elisp/syslog-mode.el.
+Emacswiki version download: Lisp:syslog-mode.el.
+
+syslog-mode.el is a mode for viewing system logfiles.
 
 === Configuration ===
 
