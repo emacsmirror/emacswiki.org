@@ -138,15 +138,12 @@ Evaluate this snippet:
         (backward-word 1))
     (let* ((init-word (point))
            (word (buffer-substring init-word original-point))
-           (list (remove-if-not
-                  (lambda (s) (string-match (concat "^" word) s))
-                  (yas-active-keys))))
+           (list (yas-active-keys)))
       (goto-char original-point)
-      (when list
-        (let ((key (ido-completing-read "key: " list nil nil word)))
-          (delete-char (- init-word original-point))
-          (insert key)
-          (yas-expand))))))
+      (let ((key (ido-completing-read "key: " list nil nil word)))
+        (delete-char (- init-word original-point))
+        (insert key)
+        (yas-expand)))))
 }}}
 and map yas-ido-expand with a chord, e.g.:
 
