@@ -3,15 +3,13 @@ You can use rsync to get copies from there. Note that the setup does not contain
 files that can be read as-is. You will need a webserver and [http://www.oddmuse.org/ Oddmuse]
 to read them!
 
-(The DNS service seems unreliable, therefore use 201.238.193.36 instead of zeus.blueplanet.cl!)
-
 List what's available:
 
-    rsync 201.238.193.36::
+    rsync theshire.emacs.cl::
 
 Here's how to get or update a copy into the ##emacswiki## directory:
 
-    rsync -avz --no-perms 201.238.193.36::emacswiki emacswiki
+    rsync -avz --no-perms theshire.emacs.cl::emacswiki emacswiki
 
 Alternatively, get a copy of the raw text files via the [[SVN repository]].
 Or if you're just interested in source files, get them via the [[CVS repository]].
