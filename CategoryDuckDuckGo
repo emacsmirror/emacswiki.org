@@ -1,6 +1,9 @@
 https://duckduckgo.com/assets/logos/cispa/logo_homepage.normal.png
 
-[http://duckduckgo.com DuckDuckGo] is a web search engine created with the principle of privacy in mind. Their lemma is "We believe in better search and real privacy at the same time."
+[http://duckduckgo.com DuckDuckGo] is a web search engine created with the principle of privacy in mind. 
+Their lemma is:
+
+: "We believe in better search and real privacy at the same time."
 
 Four important things they do:
 
@@ -13,7 +16,7 @@ Four important things they do:
 == DDG ==
 There is an aplication for using the !DuckDuckGo API (and use goodies!) composing of three files:
 
-* Lisp:ddg.el -- A library for retrieving information from !DuckDuckGo. See [[DuckDuckGo-el]]
+* Lisp:ddg.el -- A library for retrieving information from !DuckDuckGo. See [[DuckDuckGo-el]].
 * Lisp:ddg-search.el -- Some commands for interactive searching and displaying results. Requires the next library.
 * Lisp:ddg-mode.el --A major mode for displaying properly the results.
 
