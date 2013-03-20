@@ -8,7 +8,7 @@
 * <b>Author </b> --  Matthew Fidler, Nathaniel Cunningham
 * <b>Maintainer </b> --  Matthew L. Fidler
 * <b>Created </b> --  Mon Oct 18 17:06:07 2010 (-0500)
-* <b>Version </b> --  0.22
+* <b>Version </b> --  0.23
 * <b>Last-Updated </b> --  Sat Dec 15 15:44:34 2012 (+0800)
 * <b>By </b> --  Matthew L. Fidler
 * <b>Update # </b> --  663
@@ -49,210 +49,14 @@ the left arrow is text instead of an image.
 == Functions ==
 === Interactive Functions ===
 
-==== tabbar-context-menu ====
-<tt>(tabbar-context-menu)</tt>
-
-Pop up a context menu.
-
-==== tabbar-install-faces ====
-<tt>(tabbar-install-faces &optional FRAME)</tt>
-
-Installs faces for a frame.
-
-==== tabbar-popup-bz2 ====
-<tt>(tabbar-popup-bz2)</tt>
-
-Bzip file
-
-==== tabbar-popup-close ====
-<tt>(tabbar-popup-close)</tt>
-
-Tab-bar pop up close
-
-==== tabbar-popup-close-but ====
-<tt>(tabbar-popup-close-but)</tt>
-
-Tab-bar close all BUT this buffer
-
-==== tabbar-popup-decompress ====
-<tt>(tabbar-popup-decompress)</tt>
-
-Decompress file
-
-==== tabbar-popup-delete ====
-<tt>(tabbar-popup-delete)</tt>
-
-Tab-bar delete file
-
-==== tabbar-popup-gz ====
-<tt>(tabbar-popup-gz &optional EXT ERR)</tt>
-
-Gzips the file
-
-==== tabbar-popup-print ====
-<tt>(tabbar-popup-print)</tt>
-
-Print Buffer
-
-==== tabbar-popup-rename ====
-<tt>(tabbar-popup-rename)</tt>
-
-Tab-bar rename
-
-==== tabbar-popup-save-as ====
-<tt>(tabbar-popup-save-as)</tt>
-
-Tab-bar save as
-
-==== tabbar-reset ====
-<tt>(tabbar-reset)</tt>
-
-Reset memoized functions.
-
-==== tabbar-ruler-mouse-movement ====
-<tt>(tabbar-ruler-mouse-movement)</tt>
-
-* Mouse Movement function
-
-==== tabbar-select-tab-callback ====
-<tt>(tabbar-select-tab-callback EVENT)</tt>
-
-Handle a mouse EVENT on a tab.
-Pass mouse click events on a tab to <tt>tabbar-click-on-tab</tt>.
-
 === Internal Functions ===
-
-==== tabbar-create-or-get-tabbar-cache ====
-<tt>(tabbar-create-or-get-tabbar-cache)</tt>
-
-Return a frame-local hash table that acts as a memoization
-cache for tabbar. Create one if the frame doesn't have one
-yet.
-
-==== tabbar-hex-color ====
-<tt>(tabbar-hex-color COLOR)</tt>
-
-Gets the hexadecimal value of a color
-
-==== tabbar-memoize ====
-<tt>(tabbar-memoize FUNC)</tt>
-
-Memoize FUNC.
-If argument is a symbol then install the tabbar-memoized function over
-the original function.  Use frame-local memoization.
-
-==== tabbar-memoize-wrap-frame-local ====
-<tt>(tabbar-memoize-wrap-frame-local FUNC)</tt>
-
-Return the tabbar-memoized version of FUNC.  The memoization cache is
-frame-local.
-
-==== tabbar-popup-menu ====
-<tt>(tabbar-popup-menu)</tt>
-
-Keymap for pop-up menu.  Emacs only.
-
-==== tabbar-popup-remove-compression-ext ====
-=(tabbar-popup-remove-compression-ext FILE-NAME &optional
-NEW-COMPRESSION)=
-
-Removes compression extension, and possibly adds a new extension
-
-==== tabbar-ruler-image ====
-<tt>(tabbar-ruler-image &rest G70832)</tt>
-
-Returns the scroll-images
-
-(fn &key TYPE DISABLED COLOR)
-(tabbar-memoized function)
-
-==== tabbar-ruler-tab-separator-image ====
-<tt>(tabbar-ruler-tab-separator-image &rest G70829)</tt>
-
-Creates a Tabbar Ruler Separator Image.
-FACE1 is the face to the left
-FACE2 is the face to the right
-FACE3 is the background face (optional)
-
-When FACE1 is nil and FACE2 is present this function creates the
-first tab image.
-
-When FACE2 is nil and FACE1 is present this function creates the
-last tab image.
-
-When FACE1 = FACE2, this creates a non-selected separator
-
-When FACE1 does not equal FACE2, this creates a selected separator
-
-(tabbar-memoized function)
-
-==== tabbar-ruler-tabbar-buffer-groups ====
-<tt>(tabbar-ruler-tabbar-buffer-groups)</tt>
-
-Return the list of group names the current buffer belongs to.
-Return a list of one element based on major mode.
-
-==== tabbar-ruler-tabbar-buffer-list ====
-<tt>(tabbar-ruler-tabbar-buffer-list)</tt>
-
-Return the list of buffers to show in tabs.
-Exclude buffers whose name starts with a space or *, when they are not
-visiting a file.  The current buffer is always included.
-
-==== tabbar-ruler-tabbar-ruler-fight ====
-<tt>(tabbar-ruler-tabbar-ruler-fight &optional INITIALIZE)</tt>
-
-* Defines the fighting behavior of the tabbar-ruler ruler and tabbar.
 == Variables ==
 === Customizable Variables ===
 
-==== tabbar-ruler-do-not-switch-on-ruler-when-tabbar-is-on-y ====
-* Minimum number of pixels to switch on ruler when tabbar is on.
-
-==== tabbar-ruler-excluded-buffers ====
-* Excluded buffers in tabbar.
-
-==== tabbar-ruler-fancy-close-image ====
-Use an image for the close
-
-==== tabbar-ruler-fancy-tab-separator ====
-Separate each tab with a fancy generated image
-
-==== tabbar-ruler-fight-igore-modes ====
-Exclude these mode when changing between tabbar and ruler.
-
-==== tabbar-ruler-global-ruler ====
-* Should tabbar-ruler have a global ruler?
-
-==== tabbar-ruler-global-tabbar ====
-* Should tabbar-ruler have a global tabbar?
-
-==== tabbar-ruler-popup-menu ====
-* Should tabbar-ruler have a popup menu.  As mouse moves toward top of window, the menu pops up.
-
-==== tabbar-ruler-popup-menu-min-y ====
-* Minimum number of pixels from the top before a menu/toolbar pops up.
-
-==== tabbar-ruler-popup-menu-min-y-leave ====
-* Minimum number of pixels form the top before a menu/toolbar disappears.
-
-==== tabbar-ruler-popup-toolbar ====
-* Should tabbar-ruler have a popup toolbar.  As mouse moves toward top of window, the toolbar pops up.
-
-==== tabbar-ruler-ruler-display-commands ====
-* Ruler display commands.
-
 === Internal Variables ===
-
-==== tabbar-close-tab-function ====
-Function to call to close a tabbar tab.  Passed a single argument, the tab
-construct to be closed.
-
-==== tabbar-new-tab-function ====
-Function to call to create a new buffer in tabbar-mode.  Optional single
-argument is the MODE for the new buffer.
 == History ==
 
+* <b>20-Mar-2013 </b> --   Emacs 24.3 had an error when using ucs-insert. Added fallbacks so that this works when ucs-insert does not work. (Matthew L. Fidler)
 * <b>20-Feb-2013 </b> --   Changed so that the separators do not need to be fancy images. I found that when the separators were images, it slowed down emacs on windows. Therefore, the fancy images are disabled by default. This also includes the stylized close symbols. (Matthew L. Fidler)
 * <b>19-Dec-2012 </b> --   Added back popup-menu (Matthew L. Fidler)
 * <b>19-Dec-2012 </b> --   Upload to marmalade (Matthew L. Fidler)
