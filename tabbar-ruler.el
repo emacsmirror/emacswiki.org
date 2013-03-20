@@ -5,7 +5,7 @@
 ;; Author: Matthew Fidler, Nathaniel Cunningham
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Mon Oct 18 17:06:07 2010 (-0500)
-;; Version: 0.22
+;; Version: 0.23
 ;; Last-Updated: Sat Dec 15 15:44:34 2012 (+0800)
 ;;           By: Matthew L. Fidler
 ;;     Update #: 663
@@ -51,6 +51,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 20-Mar-2013    Matthew L. Fidler  
+;;    Last-Updated: Sat Dec 15 15:44:34 2012 (+0800) #663 (Matthew L. Fidler)
+;;    Emacs 24.3 had an error when using ucs-insert.  Added fallbacks so
+;;    that this works when ucs-insert does not work.
 ;; 20-Feb-2013    Matthew L. Fidler  
 ;;    Last-Updated: Sat Dec 15 15:44:34 2012 (+0800) #663 (Matthew L. Fidler)
 ;;    Changed so that the separators do not need to be fancy images.  I
@@ -739,7 +743,9 @@ Call `tabbar-tab-label-function' to obtain a label for TAB."
       'pointer 'hand)
      (propertize (if modified-p
                      (with-temp-buffer
-                       (ucs-insert "207A")
+                       (condition-case err
+                           (ucs-insert "207A")
+                         (error (insert "*")))
                        (insert " ")
                        (buffer-substring (point-min) (point-max))) " ")
                  'face face
@@ -750,7 +756,9 @@ Call `tabbar-tab-label-function' to obtain a label for TAB."
                  'pointer 'hand)
      (if tabbar-ruler-fancy-close-image
          (propertize (with-temp-buffer
-                       (ucs-insert "00D7")
+                       (condition-case err
+                           (ucs-insert "00D7")
+                         (error (insert "x")))
                        (buffer-string))
                      'display (tabbar-normalize-image close-button-image 0)
                      'face face
@@ -760,7 +768,9 @@ Call `tabbar-tab-label-function' to obtain a label for TAB."
                      'tabbar-action 'close-tab)
        (propertize
         (with-temp-buffer
-          (ucs-insert "00D7")
+          (condition-case err
+              (ucs-insert "00D7")
+            (error (insert "x")))
           (insert " ")
           (buffer-string))
         'face face
@@ -803,9 +813,13 @@ Call `tabbar-tab-label-function' to obtain a label for TAB."
         (tabbar-scroll tabset -1)
         (setq tabs (tabbar-view tabset)))
       (while (and tabs (not atsel))
-        (setq elts  (cons (tabbar-line-tab (car tabs) (cdr tabs) sel) elts)
-              atsel (eq (car tabs) sel)
-              tabs  (cdr tabs)))
+        (if tabbar-ruler-fancy-tab-separator
+            (setq elts  (cons (tabbar-line-tab (car tabs) (cdr tabs) sel) elts)
+                  atsel (eq (car tabs) sel)
+                  tabs  (cdr tabs))
+          (setq elts  (cons (tabbar-line-tab (car tabs)) elts)
+                atsel (eq (car tabs) sel)
+                tabs  (cdr tabs))))
       (setq elts (nreverse elts))
       ;; At this point the selected tab is the last elt in ELTS.
       ;; Scroll TABSET and ELTS until the selected tab becomes
@@ -832,8 +846,11 @@ Call `tabbar-tab-label-function' to obtain a label for TAB."
       (setq tabbar--track-selected nil))
     ;; Format remaining tabs.
     (while tabs
-      (setq elts (cons (tabbar-line-tab (car tabs) (cdr tabs) sel) elts)
-            tabs (cdr tabs)))
+      (if tabbar-ruler-fancy-tab-separator
+          (setq elts (cons (tabbar-line-tab (car tabs) (cdr tabs) sel) elts)
+                tabs (cdr tabs))
+        (setq elts (cons (tabbar-line-tab (car tabs)) elts)
+              tabs (cdr tabs))))
     ;; Cache and return the new tab bar.
     (if tabbar-ruler-fancy-tab-separator
         (tabbar-set-template
