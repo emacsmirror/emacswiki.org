@@ -18,7 +18,7 @@ There is an aplication for using the [http://api.duckduckgo.com DuckDuckGo API] 
 
 * Lisp:ddg.el -- A library for retrieving information from !DuckDuckGo. See [[DuckDuckGo-el]].
 * Lisp:ddg-search.el -- Some commands for interactive searching and displaying results. Requires the next library.
-* Lisp:ddg-mode.el --A major mode for displaying properly the results.
+* Lisp:ddg-mode.el -- A major mode for displaying properly the results.
 
 Download all these three libraries and add the following into your InitFile(.emacs):
 
