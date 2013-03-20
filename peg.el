@@ -2,7 +2,8 @@
 ;;
 ;; Copyright 2008  Helmut Eller <eller.helmut@gmail.com>.
 ;;
-;; Version: 0.6 (2009-Nov-04)
+;; Version: 0.6
+;; Modified: 2009-Nov-04
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
