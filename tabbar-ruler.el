@@ -5,7 +5,7 @@
 ;; Author: Matthew Fidler, Nathaniel Cunningham
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Mon Oct 18 17:06:07 2010 (-0500)
-;; Version: 0.23
+;; Version: 0.24
 ;; Last-Updated: Sat Dec 15 15:44:34 2012 (+0800)
 ;;           By: Matthew L. Fidler
 ;;     Update #: 663
@@ -51,6 +51,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 20-Mar-2013    Matthew L. Fidler  
+;;    Last-Updated: Sat Dec 15 15:44:34 2012 (+0800) #663 (Matthew L. Fidler)
+;;    Changed emacs 24.3 to support the times character.  Also removed
+;;    starred documentation strings.
 ;; 20-Mar-2013    Matthew L. Fidler  
 ;;    Last-Updated: Sat Dec 15 15:44:34 2012 (+0800) #663 (Matthew L. Fidler)
 ;;    Emacs 24.3 had an error when using ucs-insert.  Added fallbacks so
@@ -745,7 +749,10 @@ Call `tabbar-tab-label-function' to obtain a label for TAB."
                      (with-temp-buffer
                        (condition-case err
                            (ucs-insert "207A")
-                         (error (insert "*")))
+                         (error
+                          (condition-case err
+                              (insert-char 0x207A)
+                            (error (insert "*")))))
                        (insert " ")
                        (buffer-substring (point-min) (point-max))) " ")
                  'face face
@@ -758,7 +765,10 @@ Call `tabbar-tab-label-function' to obtain a label for TAB."
          (propertize (with-temp-buffer
                        (condition-case err
                            (ucs-insert "00D7")
-                         (error (insert "x")))
+                         (error
+                          (condition-case err
+                              (insert-char #x00D7)
+                            (error (insert "x")))))
                        (buffer-string))
                      'display (tabbar-normalize-image close-button-image 0)
                      'face face
@@ -770,7 +780,9 @@ Call `tabbar-tab-label-function' to obtain a label for TAB."
         (with-temp-buffer
           (condition-case err
               (ucs-insert "00D7")
-            (error (insert "x")))
+            (error (condition-case err
+                       (insert-char #x00D7)
+                     (error (insert "x")))))
           (insert " ")
           (buffer-string))
         'face face
@@ -926,36 +938,36 @@ Call `tabbar-tab-label-function' to obtain a label for TAB."
 (add-hook 'after-save-hook 'tabbar-ruler-modification-state-change)
 
 (defcustom tabbar-ruler-global-tabbar 't
-  "* Should tabbar-ruler have a global tabbar?"
+  "Should tabbar-ruler have a global tabbar?"
   :type 'boolean
   :group 'tabbar-ruler)
 (defcustom tabbar-ruler-global-ruler nil
-  "* Should tabbar-ruler have a global ruler?"
+  "Should tabbar-ruler have a global ruler?"
   :type 'boolean
   :group 'tabbar-ruler)
 (defcustom tabbar-ruler-popup-menu nil
-  "* Should tabbar-ruler have a popup menu.  As mouse moves toward top of window, the menu pops up."
+  "Should tabbar-ruler have a popup menu.  As mouse moves toward top of window, the menu pops up."
   :type 'boolean
   :group 'tabbar-ruler)
 (defcustom tabbar-ruler-popup-toolbar nil
-  "* Should tabbar-ruler have a popup toolbar.  As mouse moves toward top of window, the toolbar pops up."
+  "Should tabbar-ruler have a popup toolbar.  As mouse moves toward top of window, the toolbar pops up."
   :type 'boolean
   :group 'tabbar-ruler)
 (defcustom tabbar-ruler-popup-menu-min-y 5 ;
-  "* Minimum number of pixels from the top before a menu/toolbar pops up."
+  "Minimum number of pixels from the top before a menu/toolbar pops up."
   :type 'integer
   :group 'tabbar-ruler)
 (defcustom tabbar-ruler-popup-menu-min-y-leave 50
-  "* Minimum number of pixels form the top before a menu/toolbar disappears."
+  "Minimum number of pixels form the top before a menu/toolbar disappears."
   :type 'integer
   :group 'tabbar-ruler)
 (defcustom tabbar-ruler-do-not-switch-on-ruler-when-tabbar-is-on-y 75
-  "* Minimum number of pixels to switch on ruler when tabbar is on."
+  "Minimum number of pixels to switch on ruler when tabbar is on."
   :type 'integer          
   :group 'tabbar-ruler)
 
 (defcustom tabbar-ruler-excluded-buffers '("*Messages*" "*Completions*" "*ESS*")
-  "* Excluded buffers in tabbar."
+  "Excluded buffers in tabbar."
   :type '(repeat (string :tag "Buffer Name"))
   :group 'tabbar-ruler)
 
@@ -1007,12 +1019,12 @@ Call `tabbar-tab-label-function' to obtain a label for TAB."
     backward-delete-char-untabify
     delete-backward-char
     self-insert-command)
-  "* Ruler display commands."
+  "Ruler display commands."
   :group 'tabbar-ruler
   :type '(repeat symbol))
 
 (defun tabbar-ruler-tabbar-ruler-fight (&optional initialize)
-  "* Defines the fighting behavior of the tabbar-ruler ruler and tabbar."
+  "Defines the fighting behavior of the tabbar-ruler ruler and tabbar."
   (condition-case error
       (progn
         (cond
@@ -1079,7 +1091,7 @@ Call `tabbar-tab-label-function' to obtain a label for TAB."
 (defvar tabbar-ruler-movement-y nil)
 
 (defun tabbar-ruler-mouse-movement ()
-  "* Mouse Movement function"
+  "Mouse Movement function"
   (interactive)
   (when tabbar-ruler-movement-timer
     (cancel-timer tabbar-ruler-movement-timer))
