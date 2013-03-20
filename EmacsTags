@@ -16,6 +16,22 @@ Once you have a [[tags file]] and M-x visit-tags-table, you can follow tags (of 
 
 See the Emacs manual, node '''Tags''' for more information: Manual:Tags.
 
+=== View tag other window ===
+
+This function acts like `find-tag-other-window' but lets the point on current buffer:
+
+{{{
+(defun view-tag-other-window (arg)
+  "Same as `find-tag-other-window' but doesn't move the point"
+  (interactive "P")
+  (let ((window (get-buffer-window)))
+    (if arg
+        (find-tag-other-window nil t)
+      (call-interactively 'find-tag-other-window))
+    (recenter 0)
+    (select-window window)))
+}}}
+
 == Choosing Among Multiple Tags for the Same Name ==
 
 A [[tags file]] can have multiple definitions, hence multiple tags, for the same name. The different definitions for the name can be in the same source file or in different source files. And you can have multiple tags files. This means that when you ask to follow a name to its definition there can be some ambiguity.
