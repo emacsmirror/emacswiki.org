@@ -7,9 +7,9 @@
 ;; Copyright (C) 2004-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 10 16:44:55 2004
 ;; Version: 21.0
-;; Last-Updated: Fri Dec 28 10:28:49 2012 (-0800)
+;; Last-Updated: Thu Mar 21 13:56:04 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 1463
+;;     Update #: 1467
 ;; URL: http://www.emacswiki.org/thumb-frm.el
 ;; Doc URL: http://www.emacswiki.org/FisheyeWithThumbs
 ;; Keywords: frame, icon
@@ -53,9 +53,9 @@
 ;;  a *replacement* for iconifying and deiconifying.  Loading the
 ;;  library changes the standard commands `iconify-frame' and
 ;;  `iconify-or-deiconify-frame' so that they use thumbnails instead
-;;  of icons whenever option `thumbify-instead-of-iconify-flag' is
+;;  of icons whenever option `thumfr-thumbify-dont-iconify-flag' is
 ;;  non-nil.  To prevent this thumbnail behavior, you can set
-;;  `thumbify-instead-of-iconify-flag' to nil in your init file.
+;;  `thumfr-thumbify-dont-iconify-flag' to nil in your init file.
 ;;  Alternatively, you can deactivate (`ad-deactivate') the advice
 ;;  imposed here on these functions to give them back their original
 ;;  behavior.
@@ -115,7 +115,7 @@
 ;;  a useful feature but in order to avoid confusion.
 ;;
 ;;  If you do bind `thumfr-thumbify-frame-upon-event' to
-;;  `iconify-frame', be aware that `thumbify-instead-of-iconify-flag'
+;;  `iconify-frame', be aware that `thumfr-thumbify-dont-iconify-flag'
 ;;  will no longer have any effect: Emacs will *always* thumbify
 ;;  instead of iconify (except for functions `really-iconify-*frame',
 ;;  which are designed to counter this).  If you try this behavior and
