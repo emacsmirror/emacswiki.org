@@ -29,6 +29,8 @@ Download all these three libraries and add the following into your InitFile(.ema
 
 You can call !DuckDuckGo from the minibuffer using M-x <code>duckduckgo</code>. 
 
+Also you can call a browser with a term using M-x <code>duckduckgo-web</code> or M-x <code>duckduckgo-emacswiki</code> for searching EmacsWiki's articles.
+
 == Searching EmacsWiki using DuckDuckGo ==
 
 If you like to search EmacsWiki articles you can type the following at the search box at [http://duckduckgo.com DuckDuckGo] site:
