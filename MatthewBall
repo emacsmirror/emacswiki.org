@@ -4,7 +4,7 @@ I am an Australian university student studying philosophy/linguistics.
 
 I'm not much of a programmer, my interest in GNU Emacs is primarily focused on how it can be used as a writing environment.
 
-I spend a fair amount of time idling in [[EmacsChannel|#emacs]] on freenode under the nickname "[::chu]".
+I spend a fair amount of time idling in [[EmacsChannel|#emacs]], #stumpwm, #org-mode and various other channels on freenode under the nickname "[::chu]".
 
 
 == GNU Emacs ==
@@ -21,6 +21,7 @@ I use the following GNU Emacs modes extensively:
 * [[AnsiTerm]]
 
 Roughly, the tasks GNU Emacs easily accommodates which are of interest to myself (and I would say "writers in general" but I don't want to talk on behalf of *all* writers) can be classified as follows:
+
 === Notes and Authoring ===
 For notes and authoring I have found the following to be useful:
 * [[DeftMode]]
@@ -44,6 +45,9 @@ I've been using StumpWM for a few years and find it to be the best window manage
 
 == Configuration ==
 I will get around to cleaning up my dot emacs file and putting it online eventually.
+
+== Contact ==
+I can be contacted by email at "mathew.ball at gmail.com".
 
 ----
 CategoryHomepage
