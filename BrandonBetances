@@ -1,0 +1,16 @@
+=Introduction=
+There's nothing to introduce about me; my name is Brandon Betances. I'm a true believer that emacs is the end-all solution to every software need, as shortsighted as that statement is. On freenode, I can be found in [[EmacsChannel|#emacs]], #stumpwm, and a few other places as "[::syrinx]"
+
+=My Setup=
+Currently, I use emacs 24. I'm a fond Archlinux user, but make use of other, lesser operating systems from time to time. No, I jest; I only use Archlinux.
+
+You can check out my config files for various things: emacs, stumpwm, etc, here: https://github.com/bbetances/conf-scripts
+
+=Projects=
+I've started to write an emacs mode for pacman, the Archlinux package manager. I haven't had time to work on it recently, but will pick it up again soon. You can find it here: https://github.com/bbetances/conf-scripts/blob/master/emacs-dir/custom-modes/pacman.el
+
+=Contact=
+If you really need to, you can email me here: mailto:syrinx.optimised@gmail.com
+
+----
+CategoryHomepage
