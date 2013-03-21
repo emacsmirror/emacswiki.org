@@ -45,6 +45,8 @@ If you're using WindMove, CuaMode or MTorus (with default keybindings), you migh
 
     (setq org-replace-disputed-keys t)
 
+(This need to be done before org.el is loaded, or requires a restart of Emacs to be effective.)
+
 This will result in the following replacements:
 
 *  S-RET   -> C-S-RET
