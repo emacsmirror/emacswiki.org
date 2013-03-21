@@ -67,7 +67,7 @@ the same keyboard key, it is considered to be auto-repeated.")
 
 (defvar acc--last-time (current-time))
 (defvar acc--next-multiplier '(1))
-(defvar acc--last-command-char nil)
+(defvar acc--last-command-event nil)
 
 (defun acc-time-diff (time1 time2)
   "Difference between TIME1 and TIME2 in microseconds.
@@ -113,9 +113,9 @@ See `current-time' for time format."
   ;; the advised command, ARG0 is returned unchanged.
   ;; SYMB is the command symbol, which is used to get the multiplier list
   ;; stored in a property on that symbol.
-  ;; Variables `acc--last-command-char', `acc--last-time' and/or
+  ;; Variables `acc--last-command-event', `acc--last-time' and/or
   ;; `acc--next-multiplier' are updated.
-  (if (and (eq last-command-char acc--last-command-char)
+  (if (and (eq last-command-event acc--last-command-event)
 	   (not defining-kbd-macro)
 	   (not executing-kbd-macro)
 	   (eq arg0 1))
@@ -129,7 +129,7 @@ See `current-time' for time format."
 	    (setq acc--next-multiplier (get symb 'accelerate)))
 	  (setq acc--last-time curr)))
     ;; else  temporary disabled
-    (setq acc--last-command-char last-command-char))
+    (setq acc--last-command-event last-command-event))
   arg0)
 
 ;;;###autoload
