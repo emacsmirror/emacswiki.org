@@ -1,13 +1,8 @@
-[http://www.lisp.se/emacs-cl/ Emacs Common Lisp] is an implementation of CommonLisp written in EmacsLisp.  That means you can run CommonLisp programs in Emacs, and you can write Emacs extensions (including interactive functions) in CommonLisp.  At this stage, most of ANSI Common Lisp is implemented, but CLOS and pretty printing are missing.  For more information, see the [http://www.nocrew.org/cgi-bin/cvsweb/cvsweb.cgi/emacs-cl/README?rev=1.27 README] file.
+[http://www.lisp.se/emacs-cl/ Emacs Common Lisp] is an implementation of CommonLisp written in EmacsLisp.  That means you can run CommonLisp programs in Emacs, and you can write Emacs extensions (including interactive functions) in CommonLisp.  At this stage, most of ANSI Common Lisp is implemented, but CLOS and pretty printing are missing.  For more information, see the [http://github.com/larsbrinkhoff/emacs-cl/blob/master/README README] file.
 
 Go to http://mailman.nocrew.org/cgi-bin/mailman/listinfo/emacs-cl for a mailing list for discussion about Emacs Common Lisp.
 
-There hasn't been a release yet, but the software can be accessed from CVS
-or from a CVS snapshot.  Browse the CVS repository here: http://www.nocrew.org/cgi-bin/cvsweb/cvsweb.cgi/emacs-cl/
-
-Instructions for accessing CVS: http://www.nocrew.org/software-cvs.html
-
-Daily CVS snapshots can be found here: ftp://ftp.nocrew.org/pub/cvs-snapshot/
+There hasn't been a release yet, but the software can be accessed from GitHub.  Browse the CVS repository here: http://github.com/larsbrinkhoff/emacs-cl
 
 See also CommonLispForEmacs.
 
@@ -70,8 +65,12 @@ From <http://www.gnu.org/gnu/rms-lisp.html>:
 [new]
 I can't find any of the links pointing to the nocrew.org site that are actually valid. Does anyone know if this project is still active in any way? --[[mon_key]]
 
+  Sorry, the old links were broken.  I have updated them. -- LarsBrinkhoff
+
 [new]
 Is this the same cl package that is part of Emacs? -- JonasBernoulli
+
+  No, it's not. -- LarsBrinkhoff
 
 ----
 CategoryCode
