@@ -1,3 +1,5 @@
+DeletedPage
+
 The `*scratch*' buffer is created by Emacs automatically at startup.  Unfortunately, it is automatically saved into files of the form:
 
   #!scratch!...
