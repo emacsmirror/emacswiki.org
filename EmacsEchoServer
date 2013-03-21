@@ -82,11 +82,14 @@ Well, it's a standard protocol -- see RFC 862, or
 [http://www.rfc-es.org/getfile.php?rfc=862 RFC 862 in Spanish] -- PierreGaston
 
 How do you make an echo-socket?   -- Naveen
- 
+
+{{{
 (setq client-process
      (open-network-stream "echo-client"
                           "*echo-client*" "localhost" echo-server-port))
       (process-send-string client-process "hello world\n")
+}}}
+
 Thanks to PierreGaston
 
 
