@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: sáb mar  2 20:33:12 2013 (-0300)
 ;; Version: 
-;; Last-Updated: mié mar 20 02:37:51 2013 (-0300)
+;; Last-Updated: jue mar 21 02:12:50 2013 (-0300)
 ;;           By: Christian
-;;     Update #: 36
+;;     Update #: 39
 ;; URL: 
 ;; Doc URL: 
 ;; Keywords: 
@@ -27,6 +27,11 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 21-Mar-2013    Christian  
+;;    Last-Updated: jue mar 21 01:57:40 2013 (-0300) #37 (Christian)
+;;    Adding `duckduckgo-web' for searching in the web and
+;;    `duckduckgo-emacswiki' for searching inside EmacsWiki using 
+;;    DuckDuckGo.
 ;; 20-Mar-2013    Christian  
 ;;    Last-Updated: mié mar 20 02:19:36 2013 (-0300) #34 (Christian)
 ;;    The first revision.
@@ -74,6 +79,18 @@
   
   (ddg-search-asyn term 'ddg-show-results)  
   )
+
+(defun duckduckgo-web (term)
+  "Search in the web using `browse-url'."
+  (interactive "MSearch on the web?")
+  (browse-url (concat "https://duckduckgo.com/?q="
+		      (url-hexify-string term)))
+  )
+
+(defun duckduckgo-emacswiki (term)
+  "Searcn inside emacswiki site using `browse-url'."
+  (interactive "MSearch inside EmacsWiki.org?")
+  (duckduckgo-web (concat "site:emacswiki.org " term)))
 
 (defun ddg-show-results (list)
   "Show all the result from the LIST."
