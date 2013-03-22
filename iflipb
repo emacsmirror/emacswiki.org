@@ -105,6 +105,15 @@ Have fun!
 
 == Discussion ==
 
+[new]
+Cause error when buffer name contains %.
+
+  (defun iflipb-message (text)
+    (let (message-log-max)
+      (message "%s" text)))
+
+-- [[rubikitch]]
+
 [new:익명:2012-05-09 01:33 UTC]
 After several days of using other buffer switching packages, I've settled down on yours. Thanks. neat implementation.
 Sometimes it would be more convenient if buffer switching action is stopped by timer(without inputing any command instead). 
