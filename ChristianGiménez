@@ -1,4 +1,3 @@
-
 https://duckduckgo.com/assets/logo_header.v101.png
 I use [https://duckduckgo.com/?q=site%3Aemacswiki.org DuckDuckGo] for searching about Emacs articles, use: <code>site:emacswiki.org OrgMode</code> for example.
 
@@ -174,6 +173,12 @@ Thanks in advance...
 
 [new]
 I think either way is fine. The wiki exists somewhere between informal like IRC and formal like the official Emacs documentation. It has pages that act like a manual such as Icicles and it has pages that contain the discussion between various people. I would use whatever you would like to see more of. :) -- Alex
+
+----
+
+[new:JoeBloggs:2013-03-22 05:35 UTC]
+Hi. I added some commands to [[syslog-mode.el]] for filtering and highlighting items.
+Shouldn't be difficult to add commands for reporting statistics aswell, but I don't have time for that now. -- JoeBloggs
 
 ----
 
