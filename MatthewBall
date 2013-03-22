@@ -39,7 +39,7 @@ For references and bibliography I have found the following to be useful:
 * [http://ebib.sourceforge.net/ ebib]
 
 == StumpWM ==
-Spend some time with GNU Emacs and the user is invited to learn emacs lisp. I enjoyed emacs lisp so much I started looking into other lisps, finding common lisp and stumpwm.
+Spend some time with GNU Emacs and the user is invited to learn EmacsLisp. I enjoyed EmacsLisp so much I started looking into other lisps, finding CommonLisp and StumpWM.
 
 I've been using StumpWM for a few years and find it to be the best window manager for my purposes - which is really just an instance of GNU Emacs and an instance of Chromium.
 
