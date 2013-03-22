@@ -8,7 +8,7 @@
 * <b>Author </b> --  Matthew L. Fidler
 * <b>Maintainer </b> --  Matthew L. Fidler
 * <b>Created </b> --  Fri Aug  3 22:33:41 2012 (-0500)
-* <b>Version </b> --  20130322.923
+* <b>Version </b> --  20130322.924
 * <b>Package-Requires </b> --  ((http-post-simple "1.0") (yaoddmuse "0.1.1")(header2 "21.0") (lib-requires "21.0"))
 * <b>Last-Updated </b> --  Wed Aug 22 13:11:26 2012 (-0500)
 * <b>By </b> --  Matthew L. Fidler
@@ -82,6 +82,7 @@ libraries and why they are needed.
 === Internal Variables ===
 == History ==
 
+* <b>22-Mar-2013 </b> --   Bug fix for org-readme generating texinfo documentation from org-files. (Matthew L. Fidler)
 * <b>22-Mar-2013 </b> --   Separated out the texinfo conversion so that this may be applied to a generalized readme. (Matthew L. Fidler)
 * <b>13-Mar-2013 </b> --   Added bug fix so that starred initial variables do not mess with org-cut-region. That way, strange duplication of lines and regions do not occur. (Matthew L. Fidler)
 * <b>10-Dec-2012 </b> --   Changed melpa versions to be nil. However if a melpa version is detected, continue using it. (Matthew L. Fidler)
