@@ -31,12 +31,12 @@ and ColumnNumberMode.
 
 == Rectangle Commands ==
 
-* Kill a rectangle `C-x r k'
-* Yank the last rectangle killing `C-x r y'
-* Insert a text rectangle `C-x r t'
-* Delete the selected rectangle: `C-x r d'
-* Insert a whitespace rectangle into the region: `C-x r o'
-* Number lines in rectangle: `C-x r N'. This command also inserts a column of spaces after numbers.
+* Kill a rectangle: kill-rectangle `C-x r k' 
+* Yank the last rectangle killing: yank-rectangle `C-x r y'
+* Insert a text rectangle: insert-rectangle `C-x r t'
+* Delete the selected rectangle: delete-rectangle `C-x r d'
+* Insert a whitespace rectangle into the region: open-rectangle `C-x r o'
+* Number lines in rectangle: number-to-register `C-x r N'. This command also inserts a column of spaces after numbers.
 
 == Use case: Copying tables from a Web browser ==
 
