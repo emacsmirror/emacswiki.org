@@ -5,7 +5,7 @@
 ;; Author: Matthew L. Fidler
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Fri Aug  3 22:33:41 2012 (-0500)
-;; Version: 20121210.1148
+;; Version: 20130322.923
 ;; Package-Requires: ((http-post-simple "1.0") (yaoddmuse "0.1.1")(header2 "21.0") (lib-requires "21.0"))
 ;; Last-Updated: Wed Aug 22 13:11:26 2012 (-0500)
 ;;           By: Matthew L. Fidler
@@ -79,6 +79,15 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 22-Mar-2013    Matthew L. Fidler  
+;;    Last-Updated: Wed Aug 22 13:11:26 2012 (-0500) #794 (Matthew L. Fidler)
+;;    Separated out the texinfo conversion so that this may be applied to a
+;;    generalized readme.
+;; 13-Mar-2013    Matthew L. Fidler  
+;;    Last-Updated: Wed Aug 22 13:11:26 2012 (-0500) #794 (Matthew L. Fidler)
+;;    Added bug fix so that starred initial variables do not mess with
+;;    org-cut-region.  That way, strange duplication of lines and regions do
+;;    not occur.
 ;; 10-Dec-2012    Matthew L. Fidler  
 ;;    Last-Updated: Wed Aug 22 13:11:26 2012 (-0500) #794 (Matthew L. Fidler)
 ;;    Changed melpa versions to be nil.  However if a melpa version is
@@ -534,6 +543,9 @@
                      (replace-match " - "))
                    (goto-char (point-max))
                    (insert "\n")
+                   (goto-char (point-min))
+                   (while (re-search-forward "^[ \t]*[*]+")
+                     (replace-match ""))
                    (buffer-string))))
         (setq ret1 "** Interactive Functions\n")
         (setq ret2 "** Internal Functions\n")
@@ -588,6 +600,9 @@
                      (replace-match " - "))
                    (goto-char (point-max))
                    (insert "\n")
+                   (goto-char (point-min))
+                   (while (re-search-forward "^[ \t]*[*]+")
+                     (replace-match ""))
                    (buffer-string))))
         (setq ret1 "** Customizable Variables\n")
         (setq ret2 "** Internal Variables\n")
@@ -1230,6 +1245,59 @@ If so, return the name of that lisp file, otherwise return nil."
       nil)))
 
 ;;;###autoload
+(defun org-readme-gen-info ()
+  "With the proper tools, generates an info and dir from the current readme.org"
+  (interactive)
+  (when org-readme-build-markdown 
+    (org-readme-convert-to-markdown)
+    (when org-readme-build-texi
+      (when (executable-find "pandoc")
+        (let ((default-directory (file-name-directory (buffer-file-name)))
+              (base (file-name-sans-extension
+                     (file-name-nondirectory (buffer-file-name))))
+              (file (concat (file-name-sans-extension
+                             (file-name-nondirectory (buffer-file-name)))
+                            ".texi"))
+              pkg
+              ver
+              desc
+              cnt)
+          (shell-command (concat "pandoc Readme.md -s -o " file))
+          ;; Now add direntry.
+          (setq cnt (with-temp-buffer
+                      (insert-file-contents file)
+                      (goto-char (point-min))
+                      (if (not (search-forward "@strong{Description} -- " nil t))
+                          (setq desc base)
+                        (setq desc (buffer-substring (point) (point-at-eol))))
+                      (goto-char (point-min))
+                      (if (not (search-forward "@strong{Package-Requires} -- " nil t))
+                          (setq pkg "()")
+                        (setq pkg (buffer-substring (point) (point-at-eol))))
+                      (goto-char (point-min))
+                      (if (not (search-forward "@strong{Version} -- " nil t))
+                          (setq ver "0.0")
+                        (setq ver (buffer-substring (point) (point-at-eol))))
+                      (buffer-string)))
+          (with-temp-file file
+            (insert cnt)
+            (goto-char (point-min))
+            (when (re-search-forward "@documentencoding")
+              (goto-char (point-at-eol))
+              (insert "\n@dircategory Emacs lisp libraries\n@direntry\n* ")
+              (insert base)
+              (insert ": (")
+              (insert base)
+              (insert ").     ")
+              (insert desc)
+              (insert "\n@end direntry\n")))
+          (when (and org-readme-build-info
+                     (executable-find "makeinfo"))
+            (shell-command (concat "makeinfo " base ".texi"))
+            (when (executable-find "install-info")
+              (shell-command (concat "install-info --dir-file=dir " base ".info")))))))))
+
+;;;###autoload
 (defun org-readme-sync (&optional comment-added)
   "Syncs Readme.org with current buffer.
 When COMMENT-ADDED is non-nil, the comment has been added and the syncing should begin.
@@ -1282,86 +1350,38 @@ When COMMENT-ADDED is non-nil, the comment has been added and the syncing should
       (when org-readme-add-top-header-to-readme
         (org-readme-top-header-to-readme))
       (save-buffer)
+      (org-readme-gen-info)
+      (when (file-exists-p (concat base ".tar"))
+        (delete-file (concat base ".tar")))
       
-      (when org-readme-build-markdown 
-        (org-readme-convert-to-markdown)
-        (when org-readme-build-texi
-          (when (executable-find "pandoc")
-            (let ((default-directory (file-name-directory (buffer-file-name)))
-                  (base (file-name-sans-extension
-                         (file-name-nondirectory (buffer-file-name))))
-                  (file (concat (file-name-sans-extension
-                                 (file-name-nondirectory (buffer-file-name)))
-                                ".texi"))
-                  pkg
-                  ver
-                  desc
-                  cnt)
-              (shell-command (concat "pandoc Readme.md -s -o " file))
-              ;; Now add direntry.
-              (setq cnt (with-temp-buffer
-                          (insert-file-contents file)
-                          (goto-char (point-min))
-                          (if (not (search-forward "@strong{Description} -- " nil t))
-                              (setq desc base)
-                            (setq desc (buffer-substring (point) (point-at-eol))))
-                          (goto-char (point-min))
-                          (if (not (search-forward "@strong{Package-Requires} -- " nil t))
-                              (setq pkg "()")
-                            (setq pkg (buffer-substring (point) (point-at-eol))))
-                          (goto-char (point-min))
-                          (if (not (search-forward "@strong{Version} -- " nil t))
-                              (setq ver "0.0")
-                            (setq ver (buffer-substring (point) (point-at-eol))))
-                          (buffer-string)))
-              (with-temp-file file
-                (insert cnt)
-                (goto-char (point-min))
-                (when (re-search-forward "@documentencoding")
-                  (goto-char (point-at-eol))
-                  (insert "\n@dircategory Emacs lisp libraries\n@direntry\n* ")
-                  (insert base)
-                  (insert ": (")
-                  (insert base)
-                  (insert ").     ")
-                  (insert desc)
-                  (insert "\n@end direntry\n")))
-              (when (and org-readme-build-info
-                         (executable-find "makeinfo"))
-                (shell-command (concat "makeinfo " base ".texi"))
-                (when (executable-find "install-info")
-                  (shell-command (concat "install-info --dir-file=dir " base ".info"))
-                  ;; Now Make a marmalade package
-                  (when (file-exists-p (concat base ".tar"))
-                    (delete-file (concat base ".tar")))
-                  (when (and org-readme-create-tar-package
-                             (or (executable-find "tar")
-                                 (executable-find "7z")
-                                 (executable-find "7za")))
-                    (make-directory (concat base "-" ver))
-                    (copy-file (concat base ".el") (concat base "-" ver "/" base ".el"))
-                    (copy-file (concat base ".info") (concat base "-" ver "/" base ".info"))
-                    (copy-file "dir" (concat base "-" ver "/dir"))
-                    (with-temp-file (concat base "-" ver "/" base "-pkg.el")
-                      (insert "(define-package \"")
-                      (insert base)
-                      (insert "\" \"")
-                      (insert ver)
-                      (insert "\" \"")
-                      (insert desc)
-                      (insert "\" '")
-                      (insert pkg)
-                      (insert ")"))
-                    (if (executable-find "tar")
-                        (shell-command (concat "tar -cvf " base ".tar " base "-" ver "/"))
-                      (shell-commad (concat "7z" (if (executable-find "7za") "a" "")
-                                            " -ttar -so " base ".tar " base "-" ver "/*.*")))
-                    
-                    (delete-file (concat base "-" ver "/" base ".el"))
-                    (delete-file (concat base "-" ver "/" base "-pkg.el"))
-                    (delete-file (concat base "-" ver "/" base ".info"))
-                    (delete-file (concat base "-" ver "/dir"))
-                    (delete-directory (concat base "-" ver)))))))))
+      (when (and org-readme-create-tar-package
+                 (or (executable-find "tar")
+                     (executable-find "7z")
+                     (executable-find "7za")))
+        (make-directory (concat base "-" ver))
+        (copy-file (concat base ".el") (concat base "-" ver "/" base ".el"))
+        (copy-file (concat base ".info") (concat base "-" ver "/" base ".info"))
+        (copy-file "dir" (concat base "-" ver "/dir"))
+        (with-temp-file (concat base "-" ver "/" base "-pkg.el")
+          (insert "(define-package \"")
+          (insert base)
+          (insert "\" \"")
+          (insert ver)
+          (insert "\" \"")
+          (insert desc)
+          (insert "\" '")
+          (insert pkg)
+          (insert ")"))
+        (if (executable-find "tar")
+            (shell-command (concat "tar -cvf " base ".tar " base "-" ver "/"))
+          (shell-commad (concat "7z" (if (executable-find "7za") "a" "")
+                                " -ttar -so " base ".tar " base "-" ver "/*.*")))
+        
+        (delete-file (concat base "-" ver "/" base ".el"))
+        (delete-file (concat base "-" ver "/" base "-pkg.el"))
+        (delete-file (concat base "-" ver "/" base ".info"))
+        (delete-file (concat base "-" ver "/dir"))
+        (delete-directory (concat base "-" ver)))
       
       (when (and (featurep 'http-post-simple)
                  org-readme-sync-marmalade)
@@ -1375,7 +1395,7 @@ When COMMENT-ADDED is non-nil, the comment has been added and the syncing should
       
       (when org-readme-sync-git
         (org-readme-git))
-
+      
       (when (and (featurep 'yaoddmuse)
                  org-readme-sync-emacswiki)
         (message "Posting Description to emacswiki")
