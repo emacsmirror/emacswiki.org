@@ -140,7 +140,11 @@ Evaluate this snippet:
            (word (buffer-substring init-word original-point))
            (list (yas-active-keys)))
       (goto-char original-point)
-      (let ((key (ido-completing-read "key: " list nil nil word)))
+      (let ((key (remove-if-not
+                  (lambda (s) (string-match (concat "^" word) s)) list)))
+        (if (= (length key) 1)
+            (setq key (pop key))
+          (setq key (ido-completing-read "key: " list nil nil word)))
         (delete-char (- init-word original-point))
         (insert key)
         (yas-expand)))))
