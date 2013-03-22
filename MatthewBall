@@ -4,7 +4,7 @@ I am an Australian university student studying philosophy/linguistics.
 I'm not much of a programmer, my interest in (GNU) Emacs is primarily focused on how it can be used as a writing environment.
 
 == GNU Emacs ==
-I have been using GNU Emacs for the past five or so years, and am currently using GNU Emacs 24. I'm absolutely in love with [[package.el]] and [[ELPA]] for GNU Emacs 24, and have attempted to automatically handle as much configuration as possible using it. I have a small, lightweight, netbook running Debian Squeeze with StumpWM, which is ideal for my needs. Despite this, I'm not much of a "minimalist" - I've never been a terminal user for instance - a GNU Emacs session for me is, I would say, relatively "heavy". I use the following GNU Emacs modes extensively:
+I have been using GNU Emacs for the past five or so years, and am currently using [http://emacs.naquadah.org/|GNU Emacs 24]. I'm absolutely in love with [[package.el]] and [[ELPA]] for GNU Emacs 24, and have attempted to automatically handle as much configuration as possible using it. I have a small, lightweight, netbook running [http://wiki.debian.org/DebianSqueeze|Debian Squeeze] with StumpWM, GNU Emacs, and Chromium web-browser, which is ideal for my needs. Despite this, I'm not much of a "minimalist" - I've never been a terminal user for instance - a GNU Emacs session for me is, I would say, relatively "heavy". I use the following GNU Emacs modes extensively:
 
 * [[Ido]]
 * [[Smex]]
