@@ -5,7 +5,7 @@
 ;; Author: Matthew L. Fidler
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Fri Aug  3 22:33:41 2012 (-0500)
-;; Version: 20130322.923
+;; Version: 20130322.924
 ;; Package-Requires: ((http-post-simple "1.0") (yaoddmuse "0.1.1")(header2 "21.0") (lib-requires "21.0"))
 ;; Last-Updated: Wed Aug 22 13:11:26 2012 (-0500)
 ;;           By: Matthew L. Fidler
@@ -79,6 +79,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 22-Mar-2013    Matthew L. Fidler  
+;;    Last-Updated: Wed Aug 22 13:11:26 2012 (-0500) #794 (Matthew L. Fidler)
+;;    Bug fix for org-readme generating texinfo documentation from org-files.
 ;; 22-Mar-2013    Matthew L. Fidler  
 ;;    Last-Updated: Wed Aug 22 13:11:26 2012 (-0500) #794 (Matthew L. Fidler)
 ;;    Separated out the texinfo conversion so that this may be applied to a
@@ -1262,6 +1265,15 @@ If so, return the name of that lisp file, otherwise return nil."
               ver
               desc
               cnt)
+          (when (string= (downcase base) "readme")
+            (let ((df (directory-files (file-name-directory (buffer-file-name)) t ".*[.]el$")))
+              (unless (= 1 (length df))
+                (setq df (directory-files (file-name-directory (buffer-file-name)) t ".*-mode[.]el$")))
+              (unless (= 1 (length df))
+                (setq df (directory-files (file-name-directory (buffer-file-name)) t ".*-pkg[.]el$")))
+              (when (= 1 (length df))
+                (setq base (file-name-sans-extension (file-name-nondirectory (nth 0 df))))
+                (setq file (concat base ".texi")))))
           (shell-command (concat "pandoc Readme.md -s -o " file))
           ;; Now add direntry.
           (setq cnt (with-temp-buffer
