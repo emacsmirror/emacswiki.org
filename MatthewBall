@@ -1,18 +1,11 @@
 == Introduction ==
-
 I am an Australian university student studying philosophy/linguistics.
 
-I'm not much of a programmer, my interest in GNU Emacs is primarily focused on how it can be used as a writing environment.
-
-I spend a fair amount of time idling in [[EmacsChannel|#emacs]], #stumpwm, #org-mode, and various other channels on freenode under the nickname "[::chu]".
-
+I'm not much of a programmer, my interest in (GNU) Emacs is primarily focused on how it can be used as a writing environment.
 
 == GNU Emacs ==
-I have been using GNU Emacs for the past five or so years, currently using GNU Emacs 24. I run Debian Squeeze with StumpWM.
+I have been using GNU Emacs for the past five or so years, and am currently using GNU Emacs 24. I'm absolutely in love with [[package.el]] and [[ELPA]] for GNU Emacs 24, and have attempted to automatically handle as much configuration as possible using it. I have a small, lightweight, netbook running Debian Squeeze with StumpWM, which is ideal for my needs. Despite this, I'm not much of a "minimalist" - I've never been a terminal user for instance - a GNU Emacs session for me is, I would say, relatively "heavy". I use the following GNU Emacs modes extensively:
 
-I'm interested in somehow //giving back// to the (GNU) Emacs community - though I cannot code, I can at the very least write documentation, one day I will upload some of the (personal) stuff I have written about GNU Emacs.
-
-I use the following GNU Emacs modes extensively:
 * [[Ido]]
 * [[Smex]]
 * [[IbufferMode]]
@@ -20,22 +13,26 @@ I use the following GNU Emacs modes extensively:
 * [[Gnus]]
 * [[DiredMode]]
 * [[AnsiTerm]]
+* [[DeskTop]]
 * [[RecentFiles]]
 * [[AutoComplete]]
+* [[ELPA]]
 
-Roughly, the tasks GNU Emacs easily accommodates which are of interest to myself (and I would say "writers in general" but I don't want to talk on behalf of *all* writers) can be classified as follows:
-=== Notes and Authoring ===
+== Writing ==
+Roughly, the tasks GNU Emacs easily accommodates which are of interest to myself can be classified as follows:
+
+=== 1. Notes and Authoring ===
 For notes and authoring I have found the following to be useful:
 * [[DeftMode]]
 * [[OrgMode]]
 
-=== Dictionary, Spelling and Thesaurus ===
+=== 2. Dictionary, Spelling and Thesaurus ===
 For dictionary, spelling and thesaurus purposes I have found the following to be useful:
 * [[DictEm]]
 * [[FlySpell]]
 * [[thesaurus.el]]
 
-=== References and Bibliography ===
+=== 3. References and Bibliography ===
 For references and bibliography I have found the following to be useful:
 * [[BibTeX]]
 * [[RefTeX]]
@@ -48,6 +45,11 @@ I've been using StumpWM for a few years and find it to be the best window manage
 
 == Configuration ==
 I will get around to cleaning up my dot emacs file and putting it online eventually.
+
+== Contact ==
+I can be reached via email at "mathew.ball" at "gmail.com".
+
+I spend a fair amount of time idling in [[EmacsChannel|#emacs]], #stumpwm, #org-mode, and various other channels on freenode under the nickname "[::chu]".
 
 ----
 CategoryHomepage
