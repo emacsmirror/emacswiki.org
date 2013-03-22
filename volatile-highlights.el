@@ -98,7 +98,7 @@
 
 ;;; Change Log:
 
-;; v1.10
+;; v1.10  Thu Mar 21 22:37:27 2013 JST
 ;;   - Use inherit in face definition when detected.
 ;;   - Suppress compiler warnings regarding to emacs/xemacs private
 ;;     functions by file local variable.
