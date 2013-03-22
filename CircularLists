@@ -45,7 +45,7 @@ You can also use the same syntax to make a circular structure, which appears as 
   => t
 }}}
 
-The Lisp printer can produce this syntax if you bind the variable <code>print-circle</code> to a non-<code>nil</code> value. For more details, see the GNU Emacs Lisp Reference Manual, section 2.5.
+The Lisp printer can produce this syntax if you bind the variable <code>print-circle</code> to a non-<code>nil</code> value. For more details, see [[Manual:Circular Objects]].
 
 ----
 CategoryCode
