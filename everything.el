@@ -2,9 +2,9 @@
 
 ;; Copyright (C) 2012 Martin Weinig
 
-;; Author: Martin Weinig
+;; Author: Martin Weinig <mokkaee@gmail.com>
 ;; Keywords: tools,windows,files,searching
-;; Version: 0.1.2
+;; Version: 0.1.5
 ;; Filename: everything.el
 ;; Compatibility: GNU Emacs 23.x
 
@@ -24,11 +24,14 @@
 
 ;;; Commentary:
 ;;
+;;   NEW: SUPPORT COMMANDLINE INTERFACE ES.EXE
+;;
 ;;   Everything is a very fast and lightweight desktop search-engine
 ;;   for MS Windows for finding files scattered around your hard discs
 ;;   (see http://www.voidtools.com).
 ;;   The package everything.el provides a simple interface to access
-;;   Everything's search power via its ftp interface within Emacs.
+;;   Everything's search power via its command line interface 'es.exe'
+;;   or its ftp interface.
 ;;
 ;;   Everything.el can also integrate itself into find-file-at-point
 ;;   aka ffap. So, whenever all other methods of ffap fail, let everything
@@ -37,19 +40,15 @@
 ;;
 ;;   Everything.el supports the following search patterns:
 ;;
-;;   + wildcards:
-;;     * ?
+;;   + wildcards
 ;;
-;;   + boolean operators (besides the default 'and'):
-;;     | 'or'
-;;     ! 'not'
+;;   + boolean operators
 ;;
 ;;   + case matching
 ;;
 ;;   + whole words matching
 ;;
 ;;   + full path matching
-;;     via \ in your query
 ;;
 
 ;;; Installation:
@@ -61,23 +60,28 @@
 ;;   Basic steps to setup:
 ;;
 ;;    (add-to-list 'load-path "~/path/to/everything.el")
-;;    (setq everything-ffap-integration nil) ;; to disable ffap integration
+;;    (setq everything-ffap-integration nil)                ;; to disable ffap integration
+;;    (setq everything-cmd "c:/path/to/your/es.exe")        ;; to let everything.el know where to find es.exe
 ;;    (require 'everything)
+;;
 ;;
 ;;   Alternatively use the package archive at http://marmalade-repo.org
 ;;   and find everything.el via M-x list-packages.
 ;;
-;;   ... and finally dont forget to start Everthings
-;;       fpt server via Tools->Start ETP/FTP Server!
-
+;;
 ;;   Interesting variables:
 ;;
+;;    `everything-query-limit'      defaults to #xffffffff for the maximum number of returned filenames
+;;    `everything-ffap-integration' flag to integrate everything into ffap, defaults to t
+;;    `everything-cmd'              Path to Everythings commandline interface es.exe
+;;
+;;    If you want the ftp interface, you are interested in:
+;;
+;;    `everything-use-ftp'          Use the ftp interface instead of the commandline interface, defaults to nil
 ;;    `everything-host'             defaults to 127.0.0.1
 ;;    `everything-port'             defaults to 21
 ;;    `everything-user'             defaults to anonymous
 ;;    `everything-pass'             defaults to nil
-;;    `everything-query-limit'      defaults to #xffffffff for the maximum number of returned filenames
-;;    `everything-ffap-integration' flag to integrate everything into ffap, defaults to t
 ;;
 ;;
 ;;   Interactive commands are:
@@ -117,6 +121,7 @@
   :group 'external
   :prefix "everything-")
 
+
 (defcustom everything-host "127.0.0.1" "Ftp server address of Everything. Defaults to 127.0.0.1."
   :group 'everything
   :type 'string)
@@ -133,11 +138,19 @@
   :group 'everything
   :type 'string)
 
-(defcustom everything-query-limit #xffffffff "Maximum number of filenames returned."
+(defcustom everything-query-limit #xfff "Maximum number of filenames returned. The maximum supported is #xfffffff."
   :group 'everything
   :type 'integer)
 
 (defcustom everything-ffap-integration t "Integrate everything into ffap."
+  :group 'everything
+  :type 'boolean)
+
+(defcustom everything-cmd "c:/Programme/Everything/es.exe" "Path to es.exe."
+  :group 'everything
+  :type 'string)
+
+(defcustom everything-use-ftp nil "Use ftp interface instead of es.exe"
   :group 'everything
   :type 'boolean)
 
@@ -149,9 +162,7 @@
 (defvar everything-matchpath nil "Tells everything to include matching the file's path.")
 (defvar everything-wait 100 "Time in milliseconds to wait for responses.")
 (defvar everything-post-process-hook nil "Functions that post-process the buffer `everything-result-buffer'
-after the server finished sending the query result.
-Usefull i.e. for replacing all pathnames with their subst-counterparts. A hook can assume `everything-default-buffer' being
-the current buffer. A hook can not assume that point is at any specific location.")
+after the server finished sending the query result.")
 (defvar everything-response-counter 0)
 (defvar everything-response-handler nil "Function to handle server responses.")
 (defvar everything-response-finished nil "Indicates if a response is finished, so emacs can stop waiting for responses.
@@ -240,14 +251,20 @@ If query is already an existing file, return it without running a query."
 (defun everything-locate (query)
   "Run a query via Everything and return a list of files, nil
 otherwise."
-  (everything-ftp-query query
-			everything-host
-			everything-port
-			everything-user
-			everything-query-limit
-			everything-matchcase
-			everything-matchwholeword
-			everything-matchpath)
+  (if everything-use-ftp
+      (everything-ftp-query query
+                            everything-host
+                            everything-port
+                            everything-user
+                            everything-query-limit
+                            everything-matchcase
+                            everything-matchwholeword
+                            everything-matchpath)
+    (everything-cmd-query query
+                          everything-query-limit
+                          everything-matchcase
+                          everything-matchwholeword
+                          everything-matchpath))
   (save-excursion
     (set-buffer (get-buffer-create everything-result-buffer))
     (goto-char (point-min))
@@ -256,6 +273,28 @@ otherwise."
     (run-hooks 'everything-post-process-hook)
     (split-string
      (buffer-substring-no-properties (point-min) (point-max)) "\n" t)))
+
+
+;; es.exe parameters
+;; -r basic regular expression
+;; -i case sensitve
+;; -w whole word
+;; -p full path
+;; -n N result limit
+;; -s sort by full path
+(defun everything-cmd-query (query maxfiles matchcase matchwholeword matchpath)
+  (when (not (file-exists-p everything-cmd)) (error (concat everything-cmd " not found")))
+  (let ((args nil))
+    (when matchcase (add-to-list 'args "-i" t))
+    (when matchwholeword (add-to-list 'args "-w" t))
+    (when matchpath (add-to-list 'args "-p" t))
+    (add-to-list 'args "-n" t)
+    (add-to-list 'args (number-to-string maxfiles) t)
+    (add-to-list 'args "-r"  t)
+    (add-to-list 'args query t)
+    (when (get-buffer everything-result-buffer)
+      (kill-buffer everything-result-buffer))
+    (apply #'call-process  everything-cmd nil (get-buffer-create everything-result-buffer) nil args)))
 
 
 (defun everything-is-running ()
@@ -327,6 +366,7 @@ otherwise."
       (set-buffer (get-buffer-create everything-log-buffer))
       (goto-char (point-max))
       (insert message))))
+
 
 ;; Everything's ftp query syntax
 ;; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
