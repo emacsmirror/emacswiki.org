@@ -1,391 +1,561 @@
-#FILE text/x-emacs-lisp 
-Ozs7IGV2YWwtc2V4cC1mdS5lbCAtLS0gVGlueSBmdW5jdGlvbmFsaXR5IGVuaGFuY2VtZW50cyBm
-b3IgZXZhbHVhdGluZyBzZXhwcy4KCjs7IENvcHlyaWdodCAoQykgMjAwOSBUYWtlc2hpIEJhbnNl
-IDx0YWtlYmlAbGFhZmMubmV0Pgo7OyBBdXRob3I6IFRha2VzaGkgQmFuc2UgPHRha2ViaUBsYWFm
-Yy5uZXQ+Cjs7IEtleXdvcmRzOiBsaXNwLCBoaWdobGlnaHQsIGNvbnZlbmllbmNlCgo7OyBUaGlz
-IHByb2dyYW0gaXMgZnJlZSBzb2Z0d2FyZTsgeW91IGNhbiByZWRpc3RyaWJ1dGUgaXQgYW5kL29y
-IG1vZGlmeQo7OyBpdCB1bmRlciB0aGUgdGVybXMgb2YgdGhlIEdOVSBHZW5lcmFsIFB1YmxpYyBM
-aWNlbnNlIGFzIHB1Ymxpc2hlZCBieQo7OyB0aGUgRnJlZSBTb2Z0d2FyZSBGb3VuZGF0aW9uOyBl
-aXRoZXIgdmVyc2lvbiAzLCBvciAoYXQgeW91ciBvcHRpb24pCjs7IGFueSBsYXRlciB2ZXJzaW9u
-LgoKOzsgVGhpcyBmaWxlIGlzIGRpc3RyaWJ1dGVkIGluIHRoZSBob3BlIHRoYXQgaXQgd2lsbCBi
-ZSB1c2VmdWwsCjs7IGJ1dCBXSVRIT1VUIEFOWSBXQVJSQU5UWTsgd2l0aG91dCBldmVuIHRoZSBp
-bXBsaWVkIHdhcnJhbnR5IG9mCjs7IE1FUkNIQU5UQUJJTElUWSBvciBGSVRORVNTIEZPUiBBIFBB
-UlRJQ1VMQVIgUFVSUE9TRS4gIFNlZSB0aGUKOzsgR05VIEdlbmVyYWwgUHVibGljIExpY2Vuc2Ug
-Zm9yIG1vcmUgZGV0YWlscy4KCjs7IFlvdSBzaG91bGQgaGF2ZSByZWNlaXZlZCBhIGNvcHkgb2Yg
-dGhlIEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlCjs7IGFsb25nIHdpdGggR05VIEVtYWNzOyBz
-ZWUgdGhlIGZpbGUgQ09QWUlORy4gIElmIG5vdCwgd3JpdGUgdG8KOzsgdGhlIEZyZWUgU29mdHdh
-cmUgRm91bmRhdGlvbiwgSW5jLiwgNTEgRnJhbmtsaW4gU3RyZWV0LCBGaWZ0aCBGbG9vciwKOzsg
-Qm9zdG9uLCBNQSAwMjExMC0xMzAxLCBVU0EuCgo7OzsgQ29tbWVudGFyeToKOzsKOzsgVGlueSBm
-dW5jdGlvbmFsaXR5IGVuaGFuY2VtZW50cyBmb3IgZXZhbHVhdGluZyBzZXhwcy4KOzsgVGhpcyBw
-YWNrYWdlIHByb3ZpZGVzOgo7OyAtIEZsYXNoaW5nIHRoZSBzZXhwcyBkdXJpbmcgdGhlIGV2YWx1
-YXRpb24uCjs7IC0gYGV2YWwtbGFzdC1zZXhwJyB2YXJpYW50cyAoaW5uZXItbGlzdC9pbm5lci1z
-ZXhwKS4KCjs7OyBJbnN0YWxsYXRpb246Cjs7Cjs7IFB1dCB0aGUgaGlnaGxpZ2h0LmVsIHRvIHlv
-dXIgbG9hZC1wYXRoLgo7OyBUaGVuIHJlcXVpcmUgdGhpcyBwYWNrYWdlLgoKOzs7IENvbW1hbmRz
-Ogo7Owo7OyBCZWxvdyBhcmUgY29tcGxldGUgY29tbWFuZCBsaXN0Ogo7Owo7OyAgYGV2YWwtc2V4
-cC1mdS1mbGFzaC1tb2RlJwo7OyAgICBUb2dnbGUgRXZhbFNleHBGdUZsYXNoIG1vZGUgb24gb3Ig
-b2ZmLiBJZiB0aGlzIG1vZGUgaXMgb24sIHNvbWUgYGV2YWwtbGFzdC1zZXhwJy1pc2ggY29tbWFu
-ZHMgd2lsbCBoaWdobGlnaHQgdGhlIHNleHBzIGR1cmluZyBldmFsdWF0aW9uLgo7OyAgYHR1cm4t
-b24tZXZhbC1zZXhwLWZ1LWZsYXNoLW1vZGUnCjs7ICAgIFVuZXF1aXZvY2FsbHkgdHVybiBvbiBF
-dmFsU2V4cEZ1Rmxhc2ggbW9kZQo7OyAgYGV2YWwtc2V4cC1mdS1ldmFsLXNleHAtaW5uZXItbGlz
-dCcKOzsgICAgRXZhbHVhdGUgdGhlIGxpc3QgX2N1cnJlbnRseV8gcG9pbnRlZCBhdCBhcyBzZXhw
-OyBwcmludCB2YWx1ZSBpbiBtaW5pYnVmZmVyLgo7OyAgYGV2YWwtc2V4cC1mdS1ldmFsLXNleHAt
-aW5uZXItc2V4cCcKOzsgICAgRXZhbHVhdGUgdGhlIHNleHAgX2N1cnJlbnRseV8gcG9pbnRlZDsg
-cHJpbnQgdmFsdWUgaW4gbWluaWJ1ZmZlci4KOzsKOzs7IEN1c3RvbWl6YWJsZSBPcHRpb25zOgo7
-Owo7OyBCZWxvdyBhcmUgY3VzdG9taXphYmxlIG9wdGlvbiBsaXN0Ogo7Owo7OyAgYGV2YWwtc2V4
-cC1mdS1mbGFzaC1mYWNlJwo7OyAgICAqRmFjZSB0byB1c2UgZm9yIHNob3dpbmcgdGhlIHNleHBz
-JyBvdmVybGF5IGR1cmluZyB0aGUgZXZhbHVhdGlvbi4KOzsgICAgZGVmYXVsdCA9IChxdW90ZSBl
-dmFsLXNleHAtZnUtZmxhc2gpCjs7ICBgZXZhbC1zZXhwLWZ1LWZsYXNoLWVycm9yLWZhY2UnCjs7
-ICAgICpGYWNlIHRvIHVzZSBmb3Igc2hvd2luZyB0aGUgc2V4cHMnIG92ZXJsYXkgaWYgdGhlIGV2
-YWx1YXRpb24gc2lnbmFsZWQgYW55IGVycm9yLiBUaGUgZXJyb3IgaGlnaGxpZ2h0aW5nIGlzIHRh
-a2UgaW50byBhY2NvdW50IG9ubHkgaWYgbm9uLW5pbCB2YWx1ZS4KOzsgICAgZGVmYXVsdCA9IChx
-dW90ZSBldmFsLXNleHAtZnUtZmxhc2gtZXJyb3IpCjs7ICBgZXZhbC1zZXhwLWZ1LWZsYXNoLWR1
-cmF0aW9uJwo7OyAgICAqRm9yIHRpbWUgZHVyYXRpb24sIGhpZ2hsaWdodCB0aGUgZXZhbHVhdGlu
-ZyBzZXhwcy4KOzsgICAgZGVmYXVsdCA9IDAuMTUKOzsgIGBldmFsLXNleHAtZnUtZmxhc2gtZXJy
-b3ItZHVyYXRpb24nCjs7ICAgICpGb3IgdGltZSBkdXJhdGlvbiwgaGlnaGxpZ2h0IHRoZSBldmFs
-dWF0aW5nIHNleHBzIHNpZ25hbGVkIGVycm9ycy4KOzsgICAgZGVmYXVsdCA9IDAuMwo7OyAgYGV2
-YWwtc2V4cC1mdS1mbGFzaC1mdW5jdGlvbicKOzsgICAgKkZ1bmN0aW9uIHRvIGJlIHVzZWQgdG8g
-Y3JlYXRlIGFsbCBvZiB0aGUgYWN0dWFsIGZsYXNoaW5nIGltcGxlbWVudGF0aW9ucy4KOzsgICAg
-ZGVmYXVsdCA9IChxdW90ZSBldmFsLXNleHAtZnUtZmxhc2gtZGVmYXVsdCkKOzsgIGBldmFsLXNl
-eHAtZnUtZmxhc2gtZG9pdC1mdW5jdGlvbicKOzsgICAgKkZ1bmN0aW9uIHRvIHVzZSBmb3IgZmxh
-c2hpbmcgdGhlIHNleHBzLgo7OyAgICBkZWZhdWx0ID0gKHF1b3RlIGV2YWwtc2V4cC1mdS1mbGFz
-aC1kb2l0LXNpbXBsZSkKCjs7OyBOb3RlOgo7Owo7OyBGb3IgU0xJTUUgdXNlciwgdGhpcyBwYWNr
-YWdlIHJlZ2lzdGVycyB0aGUgc2V0dXAgY2xhdXNlcyB3aGljaCBzZXQgdXAgdGhlCjs7IGZsYXNo
-ZXJzIGFuZCB0aGUgc2V2ZXJhbCBpbnRlcmFjdGl2ZSBjb21tYW5kcyBhdCBgZXZhbC1hZnRlci1s
-b2FkJyB0aGUKOzsgJ3NsaW1lIHBoYXNlLiBUaGUgaW50ZXJhY3RpdmUgY29tbWFuZHMgYmVsbG93
-IHdpbGwgYmUgZGVmaW5lZCwKOzsgYGV2YWwtc2V4cC1mdS1zbGltZS1ldmFsLWV4cHJlc3Npb24t
-aW5uZXItbGlzdCcsCjs7IGBldmFsLXNleHAtZnUtc2xpbWUtZXZhbC1leHByZXNzaW9uLWlubmVy
-LXNleHAnCjs7IGFuZCB0aGUgcHByaW50IHZhcmlhbnRzIHJlc3BlY3RpdmVseS4KCjs7OyBIaXN0
-b3J5OgoKOzsgdjAuNC4wCjs7IFdvcmthcm91bmQgYnVnIzEzOTUyIGZpeCBhYm91dCBgZW5kLW9m
-LXNleHAnLgoKOzsgdjAuMy4wCjs7IFJlbGF4IGBldmFsLXNleHAtZnUtZmxhc2gnIHdpdGggb21p
-dHRpbmcgdGhlICJzZXhwIiBjaGVjay4KCjs7IHYwLjIuMAo7OyBBZGQgdGhlIHBhcmVuLW9ubHkg
-Zmxhc2hpbmcgdmFyaWFudC4KCjs7IHYwLjEuMAo7OyBJbml0aWFsIHZlcnNpb24uCgo7OzsgQ29k
-ZToKCihldmFsLXdoZW4tY29tcGlsZSAocmVxdWlyZSAnY2wpKQoocmVxdWlyZSAnaGlnaGxpZ2h0
-KQoKKGRlZmdyb3VwIGV2YWwtc2V4cC1mdSBuaWwKICAiVGlueSBmdW5jdGlvbmFsaXR5IGVuaGFu
-Y2VtZW50cyBmb3IgZXZhbHVhdGluZyBzZXhwcy4iCiAgOnByZWZpeCAiZXZhbC1zZXhwLWZ1LSIK
-ICA6Z3JvdXAgJ2V2YWwtc2V4cC1mdSkKCjs7OyBGbGFzaGluZyB0aGUgc2V4cHMgZHVyaW5nIHRo
-ZSBldmFsdWF0aW9uIGZvciBqdXN0IGFuIGV5ZSBjYW5keS4KKGRlZmZhY2UgZXZhbC1zZXhwLWZ1
-LWZsYXNoCiAgJygoKChjbGFzcyBjb2xvcikpICg6YmFja2dyb3VuZCAiYmx1ZSIgOmZvcmVncm91
-bmQgIndoaXRlIiA6Ym9sZCB0KSkKICAgICh0ICg6aW52ZXJzZS12aWRlbyB0KSkpCiAgIkZhY2Ug
-Zm9yIGhpZ2hsaWdodGluZyBzZXhwcyBkdXJpbmcgZXZhbHVhdGlvbi4iCiAgOmdyb3VwICdldmFs
-LXNleHAtZnUpCihkZWZmYWNlIGV2YWwtc2V4cC1mdS1mbGFzaC1lcnJvcgogICcoKCgoY2xhc3Mg
-Y29sb3IpKSAoOmZvcmVncm91bmQgInJlZCIgOmJvbGQgdCkpCiAgICAodCAoOmludmVyc2Utdmlk
-ZW8gdCkpKQogICJGYWNlIGZvciBoaWdobGlnaHRpbmcgc2V4cHMgc2lnbmFsZWQgZXJyb3JzIGR1
-cmluZyBldmFsdWF0aW9uLiIKICA6Z3JvdXAgJ2V2YWwtc2V4cC1mdSkKCihkZWZjdXN0b20gZXZh
-bC1zZXhwLWZ1LWZsYXNoLWZhY2UgJ2V2YWwtc2V4cC1mdS1mbGFzaAogICIqRmFjZSB0byB1c2Ug
-Zm9yIHNob3dpbmcgdGhlIHNleHBzJyBvdmVybGF5IGR1cmluZyB0aGUgZXZhbHVhdGlvbi4iCiAg
-OnR5cGUgJ2ZhY2UKICA6Z3JvdXAgJ2V2YWwtc2V4cC1mdSkKKGRlZmN1c3RvbSBldmFsLXNleHAt
-ZnUtZmxhc2gtZXJyb3ItZmFjZSAnZXZhbC1zZXhwLWZ1LWZsYXNoLWVycm9yCiAgIipGYWNlIHRv
-IHVzZSBmb3Igc2hvd2luZyB0aGUgc2V4cHMnIG92ZXJsYXkgaWYgdGhlIGV2YWx1YXRpb24gc2ln
-bmFsZWQgYW55IGVycm9yLiBUaGUgZXJyb3IgaGlnaGxpZ2h0aW5nIGlzIHRha2UgaW50byBhY2Nv
-dW50IG9ubHkgaWYgbm9uLW5pbCB2YWx1ZS4iCiAgOnR5cGUgJ2ZhY2UKICA6Z3JvdXAgJ2V2YWwt
-c2V4cC1mdSkKKGRlZmN1c3RvbSBldmFsLXNleHAtZnUtZmxhc2gtZHVyYXRpb24gMC4xNQogICIq
-Rm9yIHRpbWUgZHVyYXRpb24sIGhpZ2hsaWdodCB0aGUgZXZhbHVhdGluZyBzZXhwcy4iCiAgOnR5
-cGUgJ251bWJlcgogIDpncm91cCAnZXZhbC1zZXhwLWZ1KQooZGVmY3VzdG9tIGV2YWwtc2V4cC1m
-dS1mbGFzaC1lcnJvci1kdXJhdGlvbiAwLjMKICAiKkZvciB0aW1lIGR1cmF0aW9uLCBoaWdobGln
-aHQgdGhlIGV2YWx1YXRpbmcgc2V4cHMgc2lnbmFsZWQgZXJyb3JzLiIKICA6dHlwZSAnbnVtYmVy
-CiAgOmdyb3VwICdldmFsLXNleHAtZnUpCihkZWZjdXN0b20gZXZhbC1zZXhwLWZ1LWZsYXNoLWZ1
-bmN0aW9uICdldmFsLXNleHAtZnUtZmxhc2gtZGVmYXVsdAogICIqRnVuY3Rpb24gdG8gYmUgdXNl
-ZCB0byBjcmVhdGUgYWxsIG9mIHRoZSBhY3R1YWwgZmxhc2hpbmcgaW1wbGVtZW50YXRpb25zLiIK
-ICA6dHlwZSAnKGNob2ljZSAoZnVuY3Rpb24taXRlbSBldmFsLXNleHAtZnUtZmxhc2gtZGVmYXVs
-dCkKICAgICAgICAgICAgICAgICAoZnVuY3Rpb24taXRlbSBldmFsLXNleHAtZnUtZmxhc2gtcGFy
-ZW4tb25seSkpCiAgOmdyb3VwICdldmFsLXNleHAtZnUpCgo7OzsgVG9vbHMKKGRlZm1hY3JvIGVz
-Zi1rb25zdGFudGx5ICh2KQogIGAobGFtYmRhICgmcmVzdCBfaXQpICx2KSkKKGRlZnVuIGVzZi1l
-dmVyeTAgKHByZWQgeHMpCiAgKGxhYmVscyAoKHJlYyAocHJlZCB4cyBhY2MpCiAgICAgICAgICAg
-ICAoaWYgKG51bGwgeHMpCiAgICAgICAgICAgICAgICAgYWNjCiAgICAgICAgICAgICAgIChsZXQg
-KChpdCAoZnVuY2FsbCBwcmVkIChjYXIgeHMpKSkpCiAgICAgICAgICAgICAgICAgKGFuZCBpdCAo
-cmVjIHByZWQgKGNkciB4cykgaXQpKSkpKSkKICAgIChyZWMgcHJlZCB4cyBuaWwpKSkKKGRlZnVu
-IGVzZi1ldmVyeS1wcmVkICgmcmVzdCBwcmVkcykKICAobGV4aWNhbC1sZXQgKChwcmVkcyBwcmVk
-cykpCiAgICAobGFtYmRhICh4KQogICAgICAoZXNmLWV2ZXJ5MCAobGFtYmRhIChwcmVkKSAoZnVu
-Y2FsbCBwcmVkIHgpKQogICAgICAgICAgICAgICAgICBwcmVkcykpKSkKCihkZWZ1biBlc2YtaGwt
-aGlnaGxpZ2h0LWJvdW5kcyAoYm91bmRzIGZhY2UgYnVmKQogICh3aXRoLWN1cnJlbnQtYnVmZmVy
-IGJ1ZgogICAgKGhsdC1oaWdobGlnaHQtcmVnaW9uIChjYXIgYm91bmRzKSAoY2RyIGJvdW5kcykg
-ZmFjZSkpKQooZGVmdW4gZXNmLWhsLXVuaGlnaGxpZ2h0LWJvdW5kcyAoYm91bmRzIGJ1ZikKICAo
-d2l0aC1jdXJyZW50LWJ1ZmZlciBidWYKICAgIChobHQtdW5oaWdobGlnaHQtcmVnaW9uIChjYXIg
-Ym91bmRzKSAoY2RyIGJvdW5kcykpKSkKKGRlZnVuIGVzZi1mbGFzaC1lcnJvci1ib3VuZHMgKGJv
-dW5kcyBidWYgZmFjZSkKICAod2hlbiBmYWNlCiAgICAobGV0ICgoZmxhc2gtZXJyb3IKICAgICAg
-ICAgICAobGFtYmRhIChib3VuZHMgYnVmIGZhY2UpCiAgICAgICAgICAgICAoZXNmLWhsLWhpZ2hs
-aWdodC1ib3VuZHMgYm91bmRzIGZhY2UgYnVmKQogICAgICAgICAgICAgKHJ1bi1hdC10aW1lIGV2
-YWwtc2V4cC1mdS1mbGFzaC1lcnJvci1kdXJhdGlvbiBuaWwKICAgICAgICAgICAgICAgICAgICAg
-ICAgICAnZXNmLWhsLXVuaGlnaGxpZ2h0LWJvdW5kcwogICAgICAgICAgICAgICAgICAgICAgICAg
-IGJvdW5kcyBidWYpKSkpCiAgICAgIChydW4td2l0aC1pZGxlLXRpbWVyIChtYXggZXZhbC1zZXhw
-LWZ1LWZsYXNoLWVycm9yLWR1cmF0aW9uCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ZXZhbC1zZXhwLWZ1LWZsYXNoLWR1cmF0aW9uKQogICAgICAgICAgICAgICAgICAgICAgICAgICBu
-aWwgZmxhc2gtZXJyb3IKICAgICAgICAgICAgICAgICAgICAgICAgICAgYm91bmRzIGJ1ZiBmYWNl
-KSkpKQooZGVmdW4qIGV2YWwtc2V4cC1mdS1mbGFzaCAoYm91bmRzICZvcHRpb25hbCAoZmFjZSBl
-dmFsLXNleHAtZnUtZmxhc2gtZmFjZSkgKGVmYWNlIGV2YWwtc2V4cC1mdS1mbGFzaC1lcnJvci1m
-YWNlKSkKICAiQk9VTlMgaXMgZWl0aGVyIHRoZSBjZWxsIG9yIHRoZSBmdW5jdGlvbiByZXR1cm5z
-LCBzdWNoIHRoYXQgKEJFR0lOIC4gRU5EKS4KUmV1cm4gdGhlIDQgdmFsdWVzOyBib3VuZHMsIGhp
-Z2hsaWdodGluZywgdW4taGlnaGxpZ2h0aW5nIGFuZCBlcnJvciBmbGFzaGluZyBwcm9jZWR1cmUu
-IFRoaXMgZnVuY3Rpb24gaXMgY29udmVuaWVudCB0byB1c2Ugd2l0aCBgZGVmaW5lLWV2YWwtc2V4
-cC1mdS1mbGFzaC1jb21tYW5kJy4iCiAgKGZsZXQgKChib3VuZHMgKCkgKGlmIChmdW5jdGlvbnAg
-Ym91bmRzKSAoZnVuY2FsbCBib3VuZHMpIGJvdW5kcykpKQogICAgKGxldCAoKGIgKGJvdW5kcykp
-KQogICAgICAod2hlbiBiCiAgICAgICAgKGZ1bmNhbGwgZXZhbC1zZXhwLWZ1LWZsYXNoLWZ1bmN0
-aW9uIGIgZmFjZSBlZmFjZSAoY3VycmVudC1idWZmZXIpKSkpKSkKKGRlZnVuIGV2YWwtc2V4cC1m
-dS1mbGFzaC1kZWZhdWx0IChib3VuZHMgZmFjZSBlZmFjZSBidWYpCiAgIkNyZWF0ZSBhbGwgb2Yg
-dGhlIGFjdHVhbCBmbGFzaGluZyBpbXBsZW1lbnRhdGlvbnMuIFNlZSBhbHNvIGBldmFsLXNleHAt
-ZnUtZmxhc2gnLiIKICAodmFsdWVzIGJvdW5kcwogICAgICAgICAgKGFwcGx5LXBhcnRpYWxseSAn
-ZXNmLWhsLWhpZ2hsaWdodC1ib3VuZHMgYm91bmRzIGZhY2UgYnVmKQogICAgICAgICAgKGFwcGx5
-LXBhcnRpYWxseSAnZXNmLWhsLXVuaGlnaGxpZ2h0LWJvdW5kcyBib3VuZHMgYnVmKQogICAgICAg
-ICAgKGFwcGx5LXBhcnRpYWxseSAnZXNmLWZsYXNoLWVycm9yLWJvdW5kcyBib3VuZHMgYnVmIGVm
-YWNlKSkpCgooZGVmdW4gZXZhbC1zZXhwLWZ1LWZsYXNoLXBhcmVuLW9ubHkgKGJvdW5kcyBmYWNl
-IGVmYWNlIGJ1ZikKICAoZXNmLWZsYXNoLXBhcmVuLW9ubHktaWYgKGVzZi1ldmVyeS1wcmVkCiAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAnZXNmLWZsYXNoLXBhcmVuLXN1cnJvdW5kZWQtcAog
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgJ2VzZi1mbGFzaC1wYXJlbi12aXNpYmxlLXApCiAg
-ICAgICAgICAgICAgICAgICAgICAgICAgIGJvdW5kcyBmYWNlIGVmYWNlIGJ1ZikpCihkZWZ1biBl
-c2YtZmxhc2gtcGFyZW4tb25seS1pZiAocHJlZCBib3VuZHMgZmFjZSBlZmFjZSBidWYpCiAgKGxl
-dCAoKGZsYXNoIChpZiAoZnVuY2FsbCBwcmVkIChjb25zIGJvdW5kcyBidWYpKQogICAgICAgICAg
-ICAgICAgICAgJ2VzZi1mbGFzaC1wYXJlbi1vbmx5CiAgICAgICAgICAgICAgICAgJ2V2YWwtc2V4
-cC1mdS1mbGFzaC1kZWZhdWx0KSkpCiAgICAoZnVuY2FsbCBmbGFzaCBib3VuZHMgZmFjZSBlZmFj
-ZSBidWYpKSkKKGRlZnVuIGVzZi1mbGFzaC1wYXJlbi1vbmx5IChib3VuZHMgZmFjZSBlZmFjZSBi
-dWYpCiAgIkNyZWF0ZSB0aGUgXCJwYXJlbi1vbmx5XCIgZmxhc2hpbmcgaW1wbGVtZW50YXRpb25z
-LiIKICAobGV0ICgoaGkgKGxhbWJkYSAobGVmdCByaWdodCBmYWNlIGJ1ZikKICAgICAgICAgICAg
-ICAoZXNmLWhsLWhpZ2hsaWdodC1ib3VuZHMgbGVmdCBmYWNlIGJ1ZikKICAgICAgICAgICAgICAo
-ZXNmLWhsLWhpZ2hsaWdodC1ib3VuZHMgcmlnaHQgZmFjZSBidWYpKSkKICAgICAgICAodWggKGxh
-bWJkYSAobGVmdCByaWdodCBidWYpCiAgICAgICAgICAgICAgKGVzZi1obC11bmhpZ2hsaWdodC1i
-b3VuZHMgbGVmdCBidWYpCiAgICAgICAgICAgICAgKGVzZi1obC11bmhpZ2hsaWdodC1ib3VuZHMg
-cmlnaHQgYnVmKSkpCiAgICAgICAgKGVmIChsYW1iZGEgKGxlZnQgcmlnaHQgZWZhY2UgYnVmKQog
-ICAgICAgICAgICAgIChlc2YtZmxhc2gtZXJyb3ItYm91bmRzIGxlZnQgYnVmIGVmYWNlKQogICAg
-ICAgICAgICAgIChlc2YtZmxhc2gtZXJyb3ItYm91bmRzIHJpZ2h0IGJ1ZiBlZmFjZSkpKQogICAg
-ICAgIChycGFyZW4gKGNvbnMgKDEtIChjZHIgYm91bmRzKSkgKGNkciBib3VuZHMpKSkKICAgICAg
-ICAobHBhcmVuIChjb25zIChjYXIgYm91bmRzKSAoc2F2ZS1leGN1cnNpb24KICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgIChnb3RvLWNoYXIgKGNhciBib3VuZHMpKQogICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKGRvd24tbGlzdCkKICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgIChwb2ludCkpKSkpCiAgICAodmFsdWVzIGJvdW5kcwogICAg
-ICAgICAgICAoYXBwbHktcGFydGlhbGx5IGhpIGxwYXJlbiBycGFyZW4gZmFjZSBidWYpCiAgICAg
-ICAgICAgIChhcHBseS1wYXJ0aWFsbHkgdWggbHBhcmVuIHJwYXJlbiBidWYpCiAgICAgICAgICAg
-IChhcHBseS1wYXJ0aWFsbHkgZWYgbHBhcmVuIHJwYXJlbiBlZmFjZSBidWYpKSkpCihkZWZ1biog
-ZXNmLWZsYXNoLXBhcmVuLXN1cnJvdW5kZWQtcCAoKGJvdW5kcyAuIGJ1ZikpCiAgKHdpdGgtY3Vy
-cmVudC1idWZmZXIgYnVmCiAgICAoYW5kIChzYXZlLWV4Y3Vyc2lvbgogICAgICAgICAgIChnb3Rv
-LWNoYXIgKDEtIChjZHIgYm91bmRzKSkpCiAgICAgICAgICAgKGxvb2tpbmctYXQgKHJ4IChzeW50
-YXggY2xvc2UtcGFyZW50aGVzaXMpKSkpCiAgICAgICAgIChzYXZlLWV4Y3Vyc2lvbgogICAgICAg
-ICAgIChnb3RvLWNoYXIgKGNhciBib3VuZHMpKQogICAgICAgICAgIChsb29raW5nLWF0IChyeCAo
-b3IgKHN5bnRheCBleHByZXNzaW9uLXByZWZpeCkKICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgIChzeW50YXggb3Blbi1wYXJlbnRoZXNpcykpKSkpKSkpCihkZWZ1biogZXNmLWZsYXNoLXBh
-cmVuLXZpc2libGUtcCAoKGJvdW5kcyAuIF9idWYpKQogIChhbmQgKHBvcy12aXNpYmxlLWluLXdp
-bmRvdy1wIChjZHIgYm91bmRzKSkKICAgICAgIChwb3MtdmlzaWJsZS1pbi13aW5kb3ctcCAoY2Fy
-IGJvdW5kcykpKSkKCihkZWZjdXN0b20gZXZhbC1zZXhwLWZ1LWZsYXNoLWRvaXQtZnVuY3Rpb24g
-J2V2YWwtc2V4cC1mdS1mbGFzaC1kb2l0LXNpbXBsZQogICIqRnVuY3Rpb24gdG8gdXNlIGZvciBm
-bGFzaGluZyB0aGUgc2V4cHMuCgpQbGVhc2Ugc2VlIHRoZSBhY3R1YWwgaW1wbGVtZW50YXRpb25z
-OgotIGBldmFsLXNleHAtZnUtZmxhc2gtZG9pdC1zaW1wbGUnCi0gYGV2YWwtc2V4cC1mdS1mbGFz
-aC1kb2l0LWhvbGQtb24tZXJyb3InIgogIDp0eXBlICdmdW5jdGlvbgogIDpncm91cCAnZXZhbC1z
-ZXhwLWZ1KQooZGVmdW4gZXZhbC1zZXhwLWZ1LWZsYXNoLWRvaXQgKGRvLWl0LXRodW5rIGhpIHVu
-aGkpCiAgKGZ1bmNhbGwgZXZhbC1zZXhwLWZ1LWZsYXNoLWRvaXQtZnVuY3Rpb24gZG8taXQtdGh1
-bmsgaGkgdW5oaSkpCihkZWZ1biBldmFsLXNleHAtZnUtZmxhc2gtZG9pdC1zaW1wbGUgKGRvLWl0
-LXRodW5rIGhpIHVuaGkpCiAgKGZ1bmNhbGwgaGkpCiAgKHJ1bi1hdC10aW1lIGV2YWwtc2V4cC1m
-dS1mbGFzaC1kdXJhdGlvbiBuaWwgdW5oaSkKICAoZnVuY2FsbCBkby1pdC10aHVuaykpCihkZWZ1
-biBldmFsLXNleHAtZnUtZmxhc2gtZG9pdC1ob2xkLW9uLWVycm9yIChkby1pdC10aHVuayBoaSB1
-bmhpKQogIChmdW5jYWxsIGhpKQogICh1bndpbmQtcHJvdGVjdAogICAgICAgKGZ1bmNhbGwgZG8t
-aXQtdGh1bmspCiAgICAocnVuLWF0LXRpbWUgZXZhbC1zZXhwLWZ1LWZsYXNoLWR1cmF0aW9uIG5p
-bCB1bmhpKSkpCgooZGVmbWFjcm8gZXNmLXVud2luZC1wcm90ZWN0LXdpdGgtdHJhY2tpbmcgKG5v
-cm1hbGx5cCBib2R5IHVud2luZCkKICAoZGVjbGFyZSAoaW5kZW50IDIpKQogIGAobGV0ICgsbm9y
-bWFsbHlwKQogICAgICh1bndpbmQtcHJvdGVjdAogICAgICAgICAgKHByb2cxICxib2R5CiAgICAg
-ICAgICAgIChzZXRxICxub3JtYWxseXAgdCkpCiAgICAgICAsdW53aW5kKSkpCihkZWZ1biBlc2Yt
-Zmxhc2gtZG9pdCAoZG8taXQtdGh1bmsgaGkgdW5oaSBlZmxhc2gpCiAgKGVzZi11bndpbmQtcHJv
-dGVjdC13aXRoLXRyYWNraW5nIHJldAogICAgICAoZXZhbC1zZXhwLWZ1LWZsYXNoLWRvaXQgZG8t
-aXQtdGh1bmsgaGkgdW5oaSkKICAgICh1bmxlc3MgcmV0CiAgICAgIChmdW5jYWxsIGVmbGFzaCkp
-KSkKCjs7IEVudHJ5IHBvaW50LgooZGVmbWFjcm8gZGVmaW5lLWV2YWwtc2V4cC1mdS1mbGFzaC1j
-b21tYW5kIChjb21tYW5kIGZvcm0pCiAgIkluc3RhbGwgdGhlIGZsYXNoZXIgaW1wbGVtZW50ZWQg
-YXMgdGhlIENPTU1BTkQncyBhcm91bmQgYWR2aWNlLgoKRk9STSBpcyBleHBlY3RlZCB0byByZXR1
-cm4gNCB2YWx1ZXM7Ci0gQSBib3VuZHMgKEJFR0lOIC4gRU5EKSB0byBiZSBoaWdobGlnaHRlZCBv
-ciBuaWwuCi0gQW4gYWN0dWFsIGhpZ2hsaWdodGluZyBwcm9jZWR1cmUgdGFrZXMgMCBhcmd1bWVu
-dHMuCi0gQW4gYWN0dWFsIHVuLWhpZ2hsaXRpbmcgcHJvY2VkdXJlIHRha2VzIDAgYXJndW1lbnRz
-LgotIEFuIGFjdHVhbCBmbGFzaGluZyBlcnJvciBwcm9jZWR1cmUgdGFrZXMgMCBhcmd1bWVudHMu
-ClNlZSBhbHNvIGBldmFsLXNleHAtZnUtZmxhc2gnLiIKICAoZGVjbGFyZSAoaW5kZW50IDEpKQog
-IGAoZGVmYWR2aWNlICxjb21tYW5kIChhcm91bmQgZXZhbC1zZXhwLWZ1LWZsYXNoLXJlZ2lvbiBh
-Y3RpdmF0ZSkKICAgICAoaWYgZXZhbC1zZXhwLWZ1LWZsYXNoLW1vZGUKICAgICAgICAgKG11bHRp
-cGxlLXZhbHVlLWJpbmQgKGJvdW5kcyBoaSB1bmhpIGVmbGFzaCkgLGZvcm0KICAgICAgICAgICAo
-aWYgYm91bmRzCiAgICAgICAgICAgICAgIChlc2YtZmxhc2gtZG9pdCAoZXNmLWtvbnN0YW50bHkg
-YWQtZG8taXQpIGhpIHVuaGkgZWZsYXNoKQogICAgICAgICAgICAgYWQtZG8taXQpKQogICAgICAg
-YWQtZG8taXQpKSkKKGRlZmluZS1taW5vci1tb2RlIGV2YWwtc2V4cC1mdS1mbGFzaC1tb2RlCiAg
-ICAiVG9nZ2xlIEV2YWxTZXhwRnVGbGFzaCBtb2RlIG9uIG9yIG9mZi4gSWYgdGhpcyBtb2RlIGlz
-IG9uLCBzb21lIGBldmFsLWxhc3Qtc2V4cCctaXNoIGNvbW1hbmRzIHdpbGwgaGlnaGxpZ2h0IHRo
-ZSBzZXhwcyBkdXJpbmcgZXZhbHVhdGlvbi4iCiAgOmluaXQtdmFsdWUgdCA6Z2xvYmFsIHQpCihk
-ZWZ1biB0dXJuLW9uLWV2YWwtc2V4cC1mdS1mbGFzaC1tb2RlICgpCiAgIlVuZXF1aXZvY2FsbHkg
-dHVybiBvbiBFdmFsU2V4cEZ1Rmxhc2ggbW9kZQogKHNlZSBhbHNvIGBldmFsLXNleHAtZnUtZmxh
-c2gtbW9kZScpLiIKICAoaW50ZXJhY3RpdmUpCiAgKGV2YWwtc2V4cC1mdS1mbGFzaC1tb2RlIDEp
-KQoKOzs7IGV2YWwtaW5uZXItIHN0dWZmLgooZGVmdW4gZXNmLWZ1bmNhbGwtYW5kLWV2YWwtbGFz
-dC1zZXhwIChiZWZvcmUgZXZhbC1sYXN0LXNleHApCiAgIkNhbGwgMCBhcmcgcHJvY2VkdXJlIEJF
-Rk9SRSB0aGVuIGNhbGwgaW50ZXJhY3RpdmUgY29tbWFuZCBFVkFMLUxBU1QtU0VYUC4iCiAgKHNh
-dmUtZXhjdXJzaW9uCiAgICAoZnVuY2FsbCBiZWZvcmUpCiAgICAoY2FsbC1pbnRlcmFjdGl2ZWx5
-IGV2YWwtbGFzdC1zZXhwKSkpCgoocmVxdWlyZSAncngpCihkZWZ1biBlc2YtZm9yd2FyZC1pbm5l
-ci1zZXhwMCAoKQogIChmbGV0ICgocG9zcyAoKQogICAgICAgICAgIChsZXQKICAgICAgICAgICAg
-ICAgKChwcmV2IChzYXZlLWV4Y3Vyc2lvbiAoYmFja3dhcmQtc2V4cCkgKGZvcndhcmQtc2V4cCkg
-KHBvaW50KSkpCiAgICAgICAgICAgICAgICAobmV4dCAoc2F2ZS1leGN1cnNpb24gKGZvcndhcmQt
-c2V4cCkgKGJhY2t3YXJkLXNleHApIChwb2ludCkpKSkKICAgICAgICAgICAgIChsaXN0IHByZXYg
-KGxpbmUtbnVtYmVyLWF0LXBvcyBwcmV2KQogICAgICAgICAgICAgICAgICAgbmV4dCAobGluZS1u
-dW1iZXItYXQtcG9zIG5leHQpCiAgICAgICAgICAgICAgICAgICAocG9pbnQpIChsaW5lLW51bWJl
-ci1hdC1wb3MpKSkpKQogICAgKGNvbmQgKChsb29raW5nLWF0IChyeCAob3IgKHN5bnRheCBzeW1i
-b2wpIChzeW50YXggd29yZCkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIChzeW50YXgg
-b3Blbi1wYXJlbnRoZXNpcykpKSkKICAgICAgICAgICAoZm9yd2FyZC1zZXhwKSkKICAgICAgICAg
-ICh0IChkZXN0cnVjdHVyaW5nLWJpbmQgKHBwIHBsIG5wIG5sIGNwIGNsKSAocG9zcykKICAgICAg
-ICAgICAgICAgKGNvbmQgKChhbmQgKDw9ICBwcCBjcCkgKDw9IGNwIG5wKSkKICAgICAgICAgICAg
-ICAgICAgICAgIChjb25kICgoPSBwbCBjbCkgKGJhY2t3YXJkLXNleHApKQogICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgKCg9IG5sIGNsKSkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICgo
-PCAoLSBjbCBwbCkgKC0gbmwgY2wpKSAoYmFja3dhcmQtc2V4cCkpCiAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAoKDwgKC0gbmwgY2wpICgtIGNsIHBsKSkpCiAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAodCAoYmFja3dhcmQtc2V4cCkpKQogICAgICAgICAgICAgICAgICAgICAgKGZvcndh
-cmQtc2V4cCkpCiAgICAgICAgICAgICAgICAgICAgICh0IChiYWNrd2FyZC1zZXhwKSAoZm9yd2Fy
-ZC1zZXhwKSkpKSkpKSkKKGRlZnVuIGVzZi1mb3J3YXJkLWlubmVyLXNleHAgKCkKICAoY29uZGl0
-aW9uLWNhc2UgbmlsCiAgICAgIChlc2YtZm9yd2FyZC1pbm5lci1zZXhwMCkKICAgIChzY2FuLWVy
-cm9yIG5pbCkpKQooZGVmdW4gZXNmLWJhY2t3YXJkLXVwLWlubmVyLWxpc3QwIChzdGVwcykKICAo
-dW5sZXNzIHN0ZXBzIChzZXRxIHN0ZXBzIDEpKQogICh3aGVuIChsb29raW5nLWF0IChyeCAoc3lu
-dGF4IG9wZW4tcGFyZW50aGVzaXMpKSkgKGRlY2Ygc3RlcHMpKQogIChkb3RpbWVzIChfIHN0ZXBz
-KSAoYmFja3dhcmQtdXAtbGlzdCkpKQooZGVmdW4gZXNmLWJhY2t3YXJkLXVwLWlubmVyLWxpc3Qg
-KHN0ZXBzKQogIChjb25kaXRpb24tY2FzZSBuaWwKICAgICAgKGVzZi1iYWNrd2FyZC11cC1pbm5l
-ci1saXN0MCBzdGVwcykKICAgIChzY2FuLWVycm9yIG5pbCkpKQooZGVmdW4gZXNmLWVuZC1vZi1i
-YWNrd2FyZC11cC1pbm5lci1saXN0IChzdGVwcykKICAoZXNmLWJhY2t3YXJkLXVwLWlubmVyLWxp
-c3Qgc3RlcHMpCiAgKGVzZi1mb3J3YXJkLWlubmVyLXNleHApKQoKKGRlZnVuIGV2YWwtc2V4cC1m
-dS1ldmFsLXNleHAtaW5uZXItbGlzdCAoJm9wdGlvbmFsIGFyZykKICAiRXZhbHVhdGUgdGhlIGxp
-c3QgX2N1cnJlbnRseV8gcG9pbnRlZCBhdCBhcyBzZXhwOyBwcmludCB2YWx1ZSBpbiBtaW5pYnVm
-ZmVyLgoKSW50ZXJhY3RpdmVsbHkgd2l0aCBudW1lcmljIHByZWZpeCBhcmd1bWVudCwgY2FsbCB0
-byBgYmFja3dhcmQtdXAtbGlzdCcgaGFwcGVucyBzZXZlcmFsIHRpbWVzLiBUaGlzIGZ1bmN0aW9u
-IGlzIGFuIFwiRXZhbHVhdGUgdGhpcyBOIGxpc3RzLCBwbGVhc2UuXCIgdGhpbmcuIgogIChpbnRl
-cmFjdGl2ZSAiUCIpCiAgKGVzZi1mdW5jYWxsLWFuZC1ldmFsLWxhc3Qtc2V4cCAoYXBwbHktcGFy
-dGlhbGx5CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgJ2VzZi1lbmQtb2YtYmFj
-a3dhcmQtdXAtaW5uZXItbGlzdCBhcmcpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAnZXNmLWV2YWwtbGFzdC1zZXhwKSkKKGRlZnVuIGV2YWwtc2V4cC1mdS1ldmFsLXNleHAtaW5u
-ZXItc2V4cCAoKQogICJFdmFsdWF0ZSB0aGUgc2V4cCBfY3VycmVudGx5XyBwb2ludGVkOyBwcmlu
-dCB2YWx1ZSBpbiBtaW5pYnVmZmVyLiIKICAoaW50ZXJhY3RpdmUpCiAgKGVzZi1mdW5jYWxsLWFu
-ZC1ldmFsLWxhc3Qtc2V4cCAnZXNmLWZvcndhcmQtaW5uZXItc2V4cCAnZXNmLWV2YWwtbGFzdC1z
-ZXhwKSkKCihkZWZtYWNybyBkZWZpbmUtZXNmLWV2YWwtbGFzdC1zZXhwLTEgKGNvbW1hbmQtbmFt
-ZSBldmFsLWxhc3Qtc2V4cCkKICAiRGVmaW5lIGFuIGludGVyYWN0aXZlIGNvbW1hbmQgQ09NTUFO
-RC1OQU1FIGtpbmQgb2YgRVZBTC1MQVNULVNFWFAKc3VjaCB0aGF0IGlnbm9yZXMgYW55IHByZWZp
-eCBhcmd1bWVudHMuIgogIGAoZGVmdW4gLGNvbW1hbmQtbmFtZSAoKQogICAgIChpbnRlcmFjdGl2
-ZSkKICAgICAobGV0IChjdXJyZW50LXByZWZpeC1hcmcpCiAgICAgICAoY2FsbC1pbnRlcmFjdGl2
-ZWx5ICcsZXZhbC1sYXN0LXNleHApKSkpCihkZWZpbmUtZXNmLWV2YWwtbGFzdC1zZXhwLTEgZXNm
-LWV2YWwtbGFzdC1zZXhwIGV2YWwtbGFzdC1zZXhwKQoKOzsgUGllY2Ugb2YgY29kZSB3aGljaCBk
-ZWZpbmVzIHRoZSBhYm92ZSBpbm5lci17c2V4cCxsaXN0fSBmdW5jdGlvbnMuCjs7IFRoaXMgbWFr
-ZXMgaXQgcG9zc2libGUgdG8gYmF0Y2ggaW5zdGFsbCB0aGUKOzsgZXZhbC1zZXhwLWZ1LWV2YWwt
-c2V4cC1pbm5lci17c2V4cCxsaXN0fSB3aXRoIGJlbG93IGZvcm0uCjs7ICogKGRlZmluZS1ldmFs
-LXNleHAtZnUtZXZhbC1zZXhwIGV2YWwtc2V4cC1mdS1ldmFsLXNleHAgZXZhbC1sYXN0LXNleHAp
-Cjs7IFVzZWQgYnkgbWFraW5nIHRoZSBgc2xpbWUtZXZhbC1sYXN0LWV4cHJlc3Npb24nIHZhcmlh
-bnQgZnVuY3Rpb25zLgooZGVmbWFjcm8gZGVmaW5lLWVzZi1ldmFsLXNleHAqIChldmFsLWxhc3Qt
-c2V4cCBpbm5lci1zZXhwIGlubmVyLWxpc3QpCiAgIkJhc2VkIG9uIEVWQUwtTEFTVC1TRVhQLCBk
-ZWZpbmUgSU5ORVItU0VYUCBhbmQgSU5ORVItTElTVCBpbnRlcmFjdGl2ZSBjb21tYW5kcy4iCiAg
-KGRlY2xhcmUgKGluZGVudCAxKSkKICBgKHByb2duCiAgICAgKGRlZnVuICxpbm5lci1zZXhwICgp
-CiAgICAgICAoaW50ZXJhY3RpdmUpCiAgICAgICAoZXNmLWZ1bmNhbGwtYW5kLWV2YWwtbGFzdC1z
-ZXhwICdlc2YtZm9yd2FyZC1pbm5lci1zZXhwCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICcsZXZhbC1sYXN0LXNleHApKQogICAgIChkZWZ1biAsaW5uZXItbGlzdCAoJm9w
-dGlvbmFsIGFyZykKICAgICAgIChpbnRlcmFjdGl2ZSAiUCIpCiAgICAgICAoZXNmLWZ1bmNhbGwt
-YW5kLWV2YWwtbGFzdC1zZXhwIChhcHBseS1wYXJ0aWFsbHkKICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICdlc2YtZW5kLW9mLWJhY2t3YXJkLXVwLWlubmVyLWxpc3QgYXJn
-KQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAnLGV2YWwtbGFzdC1zZXhw
-KSkpKQooZGVmbWFjcm8gZGVmaW5lLWV2YWwtc2V4cC1mdS1ldmFsLXNleHAgKGNvbW1hbmQtbmFt
-ZS1wcmVmaXggZXZhbC1sYXN0LXNleHApCiAgIkRlZmluZSAtaW5uZXItc2V4cCBhbmQgLWlubmVy
-LWxpc3QgaW50ZXJhY3RpdmUgY29tbWFuZHMgcHJlZml4ZWQgYnkgQ09NTUFORC1OQU1FLVBSRUZJ
-WCBiYXNlZCBvbiBFVkFMLUxBU1QtU0VYUC4gQWN0dWFsIHdvcmsgaXMgZG9uZSBieSBgZGVmaW5l
-LWVzZi1ldmFsLXNleHAqJy4iCiAgKGxldCAoKGVzZi1ldmFsLWxhc3Qtc2V4cC0xCiAgICAgICAg
-IChpbnRlcm4gKGZvcm1hdCAiZXNmLSVzLTEiIChzeW1ib2wtbmFtZSBldmFsLWxhc3Qtc2V4cCkp
-KSkpCiAgICBgKHByb2duCiAgICAgICAoZGVmaW5lLWVzZi1ldmFsLWxhc3Qtc2V4cC0xICxlc2Yt
-ZXZhbC1sYXN0LXNleHAtMSAsZXZhbC1sYXN0LXNleHApCiAgICAgICAoZGVmaW5lLWVzZi1ldmFs
-LXNleHAqICxlc2YtZXZhbC1sYXN0LXNleHAtMQogICAgICAgICAsQChtYXBjYXIgKGxhbWJkYSAo
-cG9zdCkKICAgICAgICAgICAgICAgICAgICAgKGludGVybiAoY29uY2F0IChzeW1ib2wtbmFtZSBj
-b21tYW5kLW5hbWUtcHJlZml4KSBwb3N0KSkpCiAgICAgICAgICAgICAgICAgICAnKCItaW5uZXIt
-c2V4cCIgIi1pbm5lci1saXN0IikpKSkpKQoKOzsgYnVnIzEzOTUyCihpZiAodmVyc2lvbjwgIjI0
-LjMuNTAiIGVtYWNzLXZlcnNpb24pCiAgICAoZGVmbWFjcm8gd2l0aC1lc2YtZW5kLW9mLXNleHAg
-KCZyZXN0IGJvZHkpCiAgICAgIChkZWNsYXJlIChpbmRlbnQgMCkpCiAgICAgIGAocHJvZ24gLEBi
-b2R5KSkKICAoZGVmbWFjcm8gd2l0aC1lc2YtZW5kLW9mLXNleHAgKCZyZXN0IGJvZHkpCiAgICAo
-ZGVjbGFyZSAoaW5kZW50IDApKQogICAgYChzYXZlLWV4Y3Vyc2lvbgogICAgICAgKGJhY2t3YXJk
-LWNoYXIpCiAgICAgICAsQGJvZHkpKSkKCjs7OyBpbml0aWFsaXplLgooZGVmdW4gZXNmLWluaXRp
-YWxpemUgKCkKICAoZGVmaW5lLWV2YWwtc2V4cC1mdS1mbGFzaC1jb21tYW5kIGV2YWwtbGFzdC1z
-ZXhwCiAgICAoZXZhbC1zZXhwLWZ1LWZsYXNoICh3aGVuIChpZ25vcmUtZXJyb3JzIChwcmVjZWRp
-bmctc2V4cCkpCiAgICAgICAgICAgICAgICAgICAgICAgICAgKHdpdGgtZXNmLWVuZC1vZi1zZXhw
-CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAoYm91bmRzLW9mLXRoaW5nLWF0LXBvaW50ICdz
-ZXhwKSkpKSkKICAoZGVmaW5lLWV2YWwtc2V4cC1mdS1mbGFzaC1jb21tYW5kIGV2YWwtZGVmdW4K
-ICAgIChldmFsLXNleHAtZnUtZmxhc2ggKHdoZW4gKGlnbm9yZS1lcnJvcnMgKHByZWNlZGluZy1z
-ZXhwKSkKICAgICAgICAgICAgICAgICAgICAgICAgICAoc2F2ZS1leGN1cnNpb24KICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgIChlbmQtb2YtZGVmdW4pCiAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAoYmVnaW5uaW5nLW9mLWRlZnVuKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgKGJv
-dW5kcy1vZi10aGluZy1hdC1wb2ludCAnc2V4cCkpKSkpCiAgKGV2YWwtYWZ0ZXItbG9hZCAnZWV2
-CiAgICAnKHByb2duCiAgICAgIDs7IGBlZWstZXZhbC1sYXN0LXNleHAnIGlzIGRlZmluZWQgaW4g
-ZWV2LmVsLgogICAgICAoZGVmaW5lLWV2YWwtc2V4cC1mdS1mbGFzaC1jb21tYW5kIGVlay1ldmFs
-LWxhc3Qtc2V4cAogICAgICAgIChldmFsLXNleHAtZnUtZmxhc2ggKHdoZW4gKHRoaW5nLWF0LXBv
-aW50ICdzZXhwKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoY29ucyAoc2F2ZS1leGN1
-cnNpb24gKGVlay1iYWNrd2FyZC1zZXhwKSkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgKHBvaW50KSkpKSkpKSkKKGRlZnVuIGVzZi1pbml0aWFsaXplLXNsaW1lICgpCiAgKGRl
-ZmluZS1ldmFsLXNleHAtZnUtZmxhc2gtY29tbWFuZCBzbGltZS1ldmFsLWxhc3QtZXhwcmVzc2lv
-bgogICAgKGV2YWwtc2V4cC1mdS1mbGFzaCAod2l0aC1lc2YtZW5kLW9mLXNleHAKICAgICAgICAg
-ICAgICAgICAgICAgICAgICAod2hlbiAoc2xpbWUtc2V4cC1hdC1wb2ludCkKICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgIChib3VuZHMtb2YtdGhpbmctYXQtcG9pbnQgJ3NleHApKSkpKQogIChk
-ZWZpbmUtZXZhbC1zZXhwLWZ1LWZsYXNoLWNvbW1hbmQgc2xpbWUtcHByaW50LWV2YWwtbGFzdC1l
-eHByZXNzaW9uCiAgICAoZXZhbC1zZXhwLWZ1LWZsYXNoICh3aXRoLWVzZi1lbmQtb2Ytc2V4cAog
-ICAgICAgICAgICAgICAgICAgICAgICAgICh3aGVuIChzbGltZS1zZXhwLWF0LXBvaW50KQogICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgKGJvdW5kcy1vZi10aGluZy1hdC1wb2ludCAnc2V4cCkp
-KSkpCiAgKGRlZmluZS1ldmFsLXNleHAtZnUtZmxhc2gtY29tbWFuZCBzbGltZS1ldmFsLWRlZnVu
-CiAgICAoZXZhbC1zZXhwLWZ1LWZsYXNoIChzYXZlLWV4Y3Vyc2lvbgogICAgICAgICAgICAgICAg
-ICAgICAgICAgIChzbGltZS1lbmQtb2YtZGVmdW4pCiAgICAgICAgICAgICAgICAgICAgICAgICAg
-KHNsaW1lLWJlZ2lubmluZy1vZi1kZWZ1bikKICAgICAgICAgICAgICAgICAgICAgICAgICAod2hl
-biAoc2xpbWUtc2V4cC1hdC1wb2ludCkKICAgICAgICAgICAgICAgICAgICAgICAgICAgIChib3Vu
-ZHMtb2YtdGhpbmctYXQtcG9pbnQgJ3NleHApKSkpKQogIChwcm9nbgogICAgOzsgRGVmaW5lczoK
-ICAgIDs7IGBldmFsLXNleHAtZnUtc2xpbWUtZXZhbC1leHByZXNzaW9uLWlubmVyLWxpc3QnLAog
-ICAgOzsgYGV2YWwtc2V4cC1mdS1zbGltZS1ldmFsLWV4cHJlc3Npb24taW5uZXItc2V4cCcKICAg
-IDs7IGFuZCB0aGUgcHByaW50IHZhcmlhbnRzIHJlc3BlY3RpdmVseS4KICAgIChkZWZpbmUtZXZh
-bC1zZXhwLWZ1LWV2YWwtc2V4cCBldmFsLXNleHAtZnUtc2xpbWUtZXZhbC1leHByZXNzaW9uCiAg
-ICAgICAgc2xpbWUtZXZhbC1sYXN0LWV4cHJlc3Npb24pCiAgICAoZGVmaW5lLWV2YWwtc2V4cC1m
-dS1ldmFsLXNleHAgZXZhbC1zZXhwLWZ1LXNsaW1lLXBwcmludC1ldmFsLWV4cHJlc3Npb24KICAg
-ICAgICBzbGltZS1wcHJpbnQtZXZhbC1sYXN0LWV4cHJlc3Npb24pKSkKCihldmFsLXdoZW4gKGxv
-YWQgZXZhbCkKICAoZXNmLWluaXRpYWxpemUpCiAgKGV2YWwtYWZ0ZXItbG9hZCAnc2xpbWUKICAg
-ICcoZXNmLWluaXRpYWxpemUtc2xpbWUpKSkKCihkb250LWNvbXBpbGUKICAod2hlbiAoZmJvdW5k
-cCAnZXhwZWN0YXRpb25zKQogICAgKGV4cGVjdGF0aW9ucwogICAgICAoZGVzYyAiZXNmLWV2ZXJ5
-LXByZWQiKQogICAgICAoZXhwZWN0ICJ2YWx1ZSIKICAgICAgICAoZnVuY2FsbCAoZXNmLWV2ZXJ5
-LXByZWQgJ3N0cmluZ3AgJ2lkZW50aXR5KQogICAgICAgICAgICAgICAgICJ2YWx1ZSIpKQogICAg
-ICAoZXhwZWN0IHQKICAgICAgICAobm90IChmdW5jYWxsIChldmVyeS1wcmVkICdzdHJpbmdwICdu
-dW1iZXJwICdpZGVudGl0eSkKICAgICAgICAgICAgICAgICAgICAgICJ2YWx1ZSIpKSkKICAgICAg
-KGRlc2MgImVzZi1mb3J3YXJkLWlubmVyLXNleHAwIikKICAgICAgKGV4cGVjdCA/cAogICAgICAg
-ICh3aXRoLXRlbXAtYnVmZmVyCiAgICAgICAgICAoZW1hY3MtbGlzcC1tb2RlKQogICAgICAgICAg
-KGluc2VydCAicytleHAiKQogICAgICAgICAgKGdvdG8tY2hhciAocG9pbnQtbWluKSkKICAgICAg
-ICAgIChlc2YtZm9yd2FyZC1pbm5lci1zZXhwMCkKICAgICAgICAgIChjaGFyLWJlZm9yZSkpKQog
-ICAgICAoZXhwZWN0ID9wCiAgICAgICAgKHdpdGgtdGVtcC1idWZmZXIKICAgICAgICAgIChlbWFj
-cy1saXNwLW1vZGUpCiAgICAgICAgICAoaW5zZXJ0ICJzK2V4cCIpCiAgICAgICAgICAoZ290by1j
-aGFyICgxKyAocG9pbnQtbWluKSkpCiAgICAgICAgICAoZXNmLWZvcndhcmQtaW5uZXItc2V4cDAp
-CiAgICAgICAgICAoY2hhci1iZWZvcmUpKSkKICAgICAgKGV4cGVjdCA/XCkKICAgICAgICAod2l0
-aC10ZW1wLWJ1ZmZlcgogICAgICAgICAgKGVtYWNzLWxpc3AtbW9kZSkKICAgICAgICAgIChpbnNl
-cnQgInMoZXhwKSIpCiAgICAgICAgICAoZ290by1jaGFyICgxKyAocG9pbnQtbWluKSkpCiAgICAg
-ICAgICAoZXNmLWZvcndhcmQtaW5uZXItc2V4cDApCiAgICAgICAgICAoY2hhci1iZWZvcmUpKSkK
-ICAgICAgKGRlc2MgImVzZi1mb3J3YXJkLWlubmVyLXNleHAwIHNhbWUgbGluZSwgYnV0IGZhciBu
-ZWFyIHRoZSBuZXh0IikKICAgICAgOzsgQWx3YXlzIHByZXZpb3VzLCBpcyB0aGlzIE9LPwogICAg
-ICAoZXhwZWN0ID8wCiAgICAgICAgKHdpdGgtdGVtcC1idWZmZXIKICAgICAgICAgIChlbWFjcy1s
-aXNwLW1vZGUpCiAgICAgICAgICAoaW5zZXJ0ICJzZXhwMCAgIHNleHAxIikKICAgICAgICAgIChn
-b3RvLWNoYXIgKCsgKHBvaW50LW1pbikgNykpCiAgICAgICAgICAoZXNmLWZvcndhcmQtaW5uZXIt
-c2V4cDApCiAgICAgICAgICAoY2hhci1iZWZvcmUpKSkKICAgICAgKGRlc2MgImVzZi1mb3J3YXJk
-LWlubmVyLXNleHAwIGFjcm9zcyBsaW5lcyIpCiAgICAgIChleHBlY3QgPzAKICAgICAgICAod2l0
-aC10ZW1wLWJ1ZmZlcgogICAgICAgICAgKGVtYWNzLWxpc3AtbW9kZSkKICAgICAgICAgIChpbnNl
-cnQgInNleHAwXG5cblxuXG5zZXhwMSIpCiAgICAgICAgICAoZ290by1jaGFyIChwb2ludC1taW4p
-KQogICAgICAgICAgKGVzZi1mb3J3YXJkLWlubmVyLXNleHAwKQogICAgICAgICAgKGNoYXItYmVm
-b3JlKSkpCiAgICAgIChleHBlY3QgPzAKICAgICAgICAod2l0aC10ZW1wLWJ1ZmZlcgogICAgICAg
-ICAgKGVtYWNzLWxpc3AtbW9kZSkKICAgICAgICAgIChpbnNlcnQgInNleHAwXG5cblxuXG5zZXhw
-MSIpCiAgICAgICAgICAoZ290by1jaGFyIChwb2ludC1taW4pKQogICAgICAgICAgKGZvcndhcmQt
-bGluZSkKICAgICAgICAgIChlc2YtZm9yd2FyZC1pbm5lci1zZXhwMCkKICAgICAgICAgIChjaGFy
-LWJlZm9yZSkpKQogICAgICAoZXhwZWN0ID8xCiAgICAgICAgKHdpdGgtdGVtcC1idWZmZXIKICAg
-ICAgICAgIChlbWFjcy1saXNwLW1vZGUpCiAgICAgICAgICAoaW5zZXJ0ICJzZXhwMFxuXG5cblxu
-c2V4cDEiKQogICAgICAgICAgKGdvdG8tY2hhciAocG9pbnQtbWluKSkKICAgICAgICAgIChmb3J3
-YXJkLWxpbmUgMykKICAgICAgICAgIChlc2YtZm9yd2FyZC1pbm5lci1zZXhwMCkKICAgICAgICAg
-IChjaGFyLWJlZm9yZSkpKQogICAgICAoZXhwZWN0ID8xCiAgICAgICAgKHdpdGgtdGVtcC1idWZm
-ZXIKICAgICAgICAgIChlbWFjcy1saXNwLW1vZGUpCiAgICAgICAgICAoaW5zZXJ0ICJzZXhwMFxu
-XG5cblxuc2V4cDEiKQogICAgICAgICAgKGdvdG8tY2hhciAocG9pbnQtbWluKSkKICAgICAgICAg
-IChmb3J3YXJkLWxpbmUgMykKICAgICAgICAgIChlc2YtZm9yd2FyZC1pbm5lci1zZXhwMCkKICAg
-ICAgICAgIChjaGFyLWJlZm9yZSkpKQogICAgICAoZXhwZWN0ID8xCiAgICAgICAgKHdpdGgtdGVt
-cC1idWZmZXIKICAgICAgICAgIChlbWFjcy1saXNwLW1vZGUpCiAgICAgICAgICAoaW5zZXJ0ICJz
-ZXhwMFxuXG5cblxuc2V4cDEiKQogICAgICAgICAgKGdvdG8tY2hhciAocG9pbnQtbWluKSkKICAg
-ICAgICAgIChmb3J3YXJkLWxpbmUgNCkKICAgICAgICAgIChlc2YtZm9yd2FyZC1pbm5lci1zZXhw
-MCkKICAgICAgICAgIChjaGFyLWJlZm9yZSkpKQogICAgICAoZGVzYyAiZXNmLWZvcndhcmQtaW5u
-ZXItc2V4cDAgYWNyb3NzIGxpbmVzIChlcXVhbCBkZWx0YSkiKQogICAgICA7OyBBbHdheXMgcHJl
-dmlvdXMgbGluZXMnLCBpcyB0aGlzIE9LPwogICAgICAoZXhwZWN0ID8wCiAgICAgICAgKHdpdGgt
-dGVtcC1idWZmZXIKICAgICAgICAgIChlbWFjcy1saXNwLW1vZGUpCiAgICAgICAgICAoaW5zZXJ0
-ICJzZXhwMFxuXG5cblxuc2V4cDEiKQogICAgICAgICAgKGdvdG8tY2hhciAocG9pbnQtbWluKSkK
-ICAgICAgICAgIChmb3J3YXJkLWxpbmUgMikKICAgICAgICAgIChlc2YtZm9yd2FyZC1pbm5lci1z
-ZXhwMCkKICAgICAgICAgIChjaGFyLWJlZm9yZSkpKQogICAgICAoZGVzYyAiZXNmLWZvcndhcmQt
-aW5uZXItc2V4cDAgbm8gbW9yZSIpCiAgICAgIChleHBlY3QgPzAKICAgICAgICAod2l0aC10ZW1w
-LWJ1ZmZlcgogICAgICAgICAgKGVtYWNzLWxpc3AtbW9kZSkKICAgICAgICAgIChpbnNlcnQgInNl
-eHAwXG5cbiIpCiAgICAgICAgICAoZ290by1jaGFyIChwb2ludC1tYXgpKQogICAgICAgICAgKGVz
-Zi1mb3J3YXJkLWlubmVyLXNleHAwKQogICAgICAgICAgKGNoYXItYmVmb3JlKSkpCiAgICAgIChk
-ZXNjICJlc2YtZm9yd2FyZC1pbm5lci1zZXhwMCBubyBsZXNzIikKICAgICAgKGV4cGVjdCA/MAog
-ICAgICAgICh3aXRoLXRlbXAtYnVmZmVyCiAgICAgICAgICAoZW1hY3MtbGlzcC1tb2RlKQogICAg
-ICAgICAgKGluc2VydCAiXG5cbnNleHAwIikKICAgICAgICAgIChnb3RvLWNoYXIgKHBvaW50LW1p
-bikpCiAgICAgICAgICAoZXNmLWZvcndhcmQtaW5uZXItc2V4cDApCiAgICAgICAgICAoY2hhci1i
-ZWZvcmUpKSkKICAgICAgKGRlc2MgImVzZi1mb3J3YXJkLWlubmVyLXNleHAwIG5vIGFueSIpCiAg
-ICAgIChleHBlY3QgNQogICAgICAgICh3aXRoLXRlbXAtYnVmZmVyCiAgICAgICAgICAoZW1hY3Mt
-bGlzcC1tb2RlKQogICAgICAgICAgKGluc2VydCAiXG5cblxuXG4iKQogICAgICAgICAgKGdvdG8t
-Y2hhciAocG9pbnQtbWluKSkKICAgICAgICAgIChlc2YtZm9yd2FyZC1pbm5lci1zZXhwMCkKICAg
-ICAgICAgIChwb2ludCkpKQogICAgICApKSkKCihwcm92aWRlICdldmFsLXNleHAtZnUpCjs7OyBl
-dmFsLXNleHAtZnUuZWwgZW5kcyBoZXJlCg==
+;;; eval-sexp-fu.el --- Tiny functionality enhancements for evaluating sexps.
+
+;; Copyright (C) 2009 Takeshi Banse <takebi@laafc.net>
+;; Author: Takeshi Banse <takebi@laafc.net>
+;; Keywords: lisp, highlight, convenience
+
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation; either version 3, or (at your option)
+;; any later version.
+
+;; This file is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with GNU Emacs; see the file COPYING.  If not, write to
+;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+;; Boston, MA 02110-1301, USA.
+
+;;; Commentary:
+;;
+;; Tiny functionality enhancements for evaluating sexps.
+;; This package provides:
+;; - Flashing the sexps during the evaluation.
+;; - `eval-last-sexp' variants (inner-list/inner-sexp).
+
+;;; Installation:
+;;
+;; Put the highlight.el to your load-path.
+;; Then require this package.
+
+;;; Commands:
+;;
+;; Below are complete command list:
+;;
+;;  `eval-sexp-fu-flash-mode'
+;;    Toggle EvalSexpFuFlash mode on or off. If this mode is on, some `eval-last-sexp'-ish commands will highlight the sexps during evaluation.
+;;  `turn-on-eval-sexp-fu-flash-mode'
+;;    Unequivocally turn on EvalSexpFuFlash mode
+;;  `eval-sexp-fu-eval-sexp-inner-list'
+;;    Evaluate the list _currently_ pointed at as sexp; print value in minibuffer.
+;;  `eval-sexp-fu-eval-sexp-inner-sexp'
+;;    Evaluate the sexp _currently_ pointed; print value in minibuffer.
+;;
+;;; Customizable Options:
+;;
+;; Below are customizable option list:
+;;
+;;  `eval-sexp-fu-flash-face'
+;;    *Face to use for showing the sexps' overlay during the evaluation.
+;;    default = (quote eval-sexp-fu-flash)
+;;  `eval-sexp-fu-flash-error-face'
+;;    *Face to use for showing the sexps' overlay if the evaluation signaled any error. The error highlighting is take into account only if non-nil value.
+;;    default = (quote eval-sexp-fu-flash-error)
+;;  `eval-sexp-fu-flash-duration'
+;;    *For time duration, highlight the evaluating sexps.
+;;    default = 0.15
+;;  `eval-sexp-fu-flash-error-duration'
+;;    *For time duration, highlight the evaluating sexps signaled errors.
+;;    default = 0.3
+;;  `eval-sexp-fu-flash-function'
+;;    *Function to be used to create all of the actual flashing implementations.
+;;    default = (quote eval-sexp-fu-flash-default)
+;;  `eval-sexp-fu-flash-doit-function'
+;;    *Function to use for flashing the sexps.
+;;    default = (quote eval-sexp-fu-flash-doit-simple)
+
+;;; Note:
+;;
+;; For SLIME user, this package registers the setup clauses which set up the
+;; flashers and the several interactive commands at `eval-after-load' the
+;; 'slime phase. The interactive commands bellow will be defined,
+;; `eval-sexp-fu-slime-eval-expression-inner-list',
+;; `eval-sexp-fu-slime-eval-expression-inner-sexp'
+;; and the pprint variants respectively.
+
+;;; History:
+
+;; v0.4.0
+;; Workaround bug#13952 fix about `end-of-sexp'.
+
+;; v0.3.0
+;; Relax `eval-sexp-fu-flash' with omitting the "sexp" check.
+
+;; v0.2.0
+;; Add the paren-only flashing variant.
+
+;; v0.1.0
+;; Initial version.
+
+;;; Code:
+
+(eval-when-compile (require 'cl))
+(require 'highlight)
+
+(defgroup eval-sexp-fu nil
+  "Tiny functionality enhancements for evaluating sexps."
+  :prefix "eval-sexp-fu-"
+  :group 'eval-sexp-fu)
+
+;;; Flashing the sexps during the evaluation for just an eye candy.
+(defface eval-sexp-fu-flash
+  '((((class color)) (:background "blue" :foreground "white" :bold t))
+    (t (:inverse-video t)))
+  "Face for highlighting sexps during evaluation."
+  :group 'eval-sexp-fu)
+(defface eval-sexp-fu-flash-error
+  '((((class color)) (:foreground "red" :bold t))
+    (t (:inverse-video t)))
+  "Face for highlighting sexps signaled errors during evaluation."
+  :group 'eval-sexp-fu)
+
+(defcustom eval-sexp-fu-flash-face 'eval-sexp-fu-flash
+  "*Face to use for showing the sexps' overlay during the evaluation."
+  :type 'face
+  :group 'eval-sexp-fu)
+(defcustom eval-sexp-fu-flash-error-face 'eval-sexp-fu-flash-error
+  "*Face to use for showing the sexps' overlay if the evaluation signaled any error. The error highlighting is take into account only if non-nil value."
+  :type 'face
+  :group 'eval-sexp-fu)
+(defcustom eval-sexp-fu-flash-duration 0.15
+  "*For time duration, highlight the evaluating sexps."
+  :type 'number
+  :group 'eval-sexp-fu)
+(defcustom eval-sexp-fu-flash-error-duration 0.3
+  "*For time duration, highlight the evaluating sexps signaled errors."
+  :type 'number
+  :group 'eval-sexp-fu)
+(defcustom eval-sexp-fu-flash-function 'eval-sexp-fu-flash-default
+  "*Function to be used to create all of the actual flashing implementations."
+  :type '(choice (function-item eval-sexp-fu-flash-default)
+                 (function-item eval-sexp-fu-flash-paren-only))
+  :group 'eval-sexp-fu)
+
+;;; Tools
+(defmacro esf-konstantly (v)
+  `(lambda (&rest _it) ,v))
+(defun esf-every0 (pred xs)
+  (labels ((rec (pred xs acc)
+             (if (null xs)
+                 acc
+               (let ((it (funcall pred (car xs))))
+                 (and it (rec pred (cdr xs) it))))))
+    (rec pred xs nil)))
+(defun esf-every-pred (&rest preds)
+  (lexical-let ((preds preds))
+    (lambda (x)
+      (esf-every0 (lambda (pred) (funcall pred x))
+                  preds))))
+
+(defun esf-hl-highlight-bounds (bounds face buf)
+  (with-current-buffer buf
+    (hlt-highlight-region (car bounds) (cdr bounds) face)))
+(defun esf-hl-unhighlight-bounds (bounds buf)
+  (with-current-buffer buf
+    (hlt-unhighlight-region (car bounds) (cdr bounds))))
+(defun esf-flash-error-bounds (bounds buf face)
+  (when face
+    (let ((flash-error
+           (lambda (bounds buf face)
+             (esf-hl-highlight-bounds bounds face buf)
+             (run-at-time eval-sexp-fu-flash-error-duration nil
+                          'esf-hl-unhighlight-bounds
+                          bounds buf))))
+      (run-with-idle-timer (max eval-sexp-fu-flash-error-duration
+                                eval-sexp-fu-flash-duration)
+                           nil flash-error
+                           bounds buf face))))
+(defun* eval-sexp-fu-flash (bounds &optional (face eval-sexp-fu-flash-face) (eface eval-sexp-fu-flash-error-face))
+  "BOUNS is either the cell or the function returns, such that (BEGIN . END).
+Reurn the 4 values; bounds, highlighting, un-highlighting and error flashing procedure. This function is convenient to use with `define-eval-sexp-fu-flash-command'."
+  (flet ((bounds () (if (functionp bounds) (funcall bounds) bounds)))
+    (let ((b (bounds)))
+      (when b
+        (funcall eval-sexp-fu-flash-function b face eface (current-buffer))))))
+(defun eval-sexp-fu-flash-default (bounds face eface buf)
+  "Create all of the actual flashing implementations. See also `eval-sexp-fu-flash'."
+  (values bounds
+          (apply-partially 'esf-hl-highlight-bounds bounds face buf)
+          (apply-partially 'esf-hl-unhighlight-bounds bounds buf)
+          (apply-partially 'esf-flash-error-bounds bounds buf eface)))
+
+(defun eval-sexp-fu-flash-paren-only (bounds face eface buf)
+  (esf-flash-paren-only-if (esf-every-pred
+                            'esf-flash-paren-surrounded-p
+                            'esf-flash-paren-visible-p)
+                           bounds face eface buf))
+(defun esf-flash-paren-only-if (pred bounds face eface buf)
+  (let ((flash (if (funcall pred (cons bounds buf))
+                   'esf-flash-paren-only
+                 'eval-sexp-fu-flash-default)))
+    (funcall flash bounds face eface buf)))
+(defun esf-flash-paren-only (bounds face eface buf)
+  "Create the \"paren-only\" flashing implementations."
+  (let ((hi (lambda (left right face buf)
+              (esf-hl-highlight-bounds left face buf)
+              (esf-hl-highlight-bounds right face buf)))
+        (uh (lambda (left right buf)
+              (esf-hl-unhighlight-bounds left buf)
+              (esf-hl-unhighlight-bounds right buf)))
+        (ef (lambda (left right eface buf)
+              (esf-flash-error-bounds left buf eface)
+              (esf-flash-error-bounds right buf eface)))
+        (rparen (cons (1- (cdr bounds)) (cdr bounds)))
+        (lparen (cons (car bounds) (save-excursion
+                                     (goto-char (car bounds))
+                                     (down-list)
+                                     (point)))))
+    (values bounds
+            (apply-partially hi lparen rparen face buf)
+            (apply-partially uh lparen rparen buf)
+            (apply-partially ef lparen rparen eface buf))))
+(defun* esf-flash-paren-surrounded-p ((bounds . buf))
+  (with-current-buffer buf
+    (and (save-excursion
+           (goto-char (1- (cdr bounds)))
+           (looking-at (rx (syntax close-parenthesis))))
+         (save-excursion
+           (goto-char (car bounds))
+           (looking-at (rx (or (syntax expression-prefix)
+                               (syntax open-parenthesis))))))))
+(defun* esf-flash-paren-visible-p ((bounds . _buf))
+  (and (pos-visible-in-window-p (cdr bounds))
+       (pos-visible-in-window-p (car bounds))))
+
+(defcustom eval-sexp-fu-flash-doit-function 'eval-sexp-fu-flash-doit-simple
+  "*Function to use for flashing the sexps.
+
+Please see the actual implementations:
+- `eval-sexp-fu-flash-doit-simple'
+- `eval-sexp-fu-flash-doit-hold-on-error'"
+  :type 'function
+  :group 'eval-sexp-fu)
+(defun eval-sexp-fu-flash-doit (do-it-thunk hi unhi)
+  (funcall eval-sexp-fu-flash-doit-function do-it-thunk hi unhi))
+(defun eval-sexp-fu-flash-doit-simple (do-it-thunk hi unhi)
+  (funcall hi)
+  (run-at-time eval-sexp-fu-flash-duration nil unhi)
+  (funcall do-it-thunk))
+(defun eval-sexp-fu-flash-doit-hold-on-error (do-it-thunk hi unhi)
+  (funcall hi)
+  (unwind-protect
+       (funcall do-it-thunk)
+    (run-at-time eval-sexp-fu-flash-duration nil unhi)))
+
+(defmacro esf-unwind-protect-with-tracking (normallyp body unwind)
+  (declare (indent 2))
+  `(let (,normallyp)
+     (unwind-protect
+          (prog1 ,body
+            (setq ,normallyp t))
+       ,unwind)))
+(defun esf-flash-doit (do-it-thunk hi unhi eflash)
+  (esf-unwind-protect-with-tracking ret
+      (eval-sexp-fu-flash-doit do-it-thunk hi unhi)
+    (unless ret
+      (funcall eflash))))
+
+;; Entry point.
+(defmacro define-eval-sexp-fu-flash-command (command form)
+  "Install the flasher implemented as the COMMAND's around advice.
+
+FORM is expected to return 4 values;
+- A bounds (BEGIN . END) to be highlighted or nil.
+- An actual highlighting procedure takes 0 arguments.
+- An actual un-highliting procedure takes 0 arguments.
+- An actual flashing error procedure takes 0 arguments.
+See also `eval-sexp-fu-flash'."
+  (declare (indent 1))
+  `(defadvice ,command (around eval-sexp-fu-flash-region activate)
+     (if eval-sexp-fu-flash-mode
+         (multiple-value-bind (bounds hi unhi eflash) ,form
+           (if bounds
+               (esf-flash-doit (esf-konstantly ad-do-it) hi unhi eflash)
+             ad-do-it))
+       ad-do-it)))
+(define-minor-mode eval-sexp-fu-flash-mode
+    "Toggle EvalSexpFuFlash mode on or off. If this mode is on, some `eval-last-sexp'-ish commands will highlight the sexps during evaluation."
+  :init-value t :global t)
+(defun turn-on-eval-sexp-fu-flash-mode ()
+  "Unequivocally turn on EvalSexpFuFlash mode
+ (see also `eval-sexp-fu-flash-mode')."
+  (interactive)
+  (eval-sexp-fu-flash-mode 1))
+
+;;; eval-inner- stuff.
+(defun esf-funcall-and-eval-last-sexp (before eval-last-sexp)
+  "Call 0 arg procedure BEFORE then call interactive command EVAL-LAST-SEXP."
+  (save-excursion
+    (funcall before)
+    (call-interactively eval-last-sexp)))
+
+(require 'rx)
+(defun esf-forward-inner-sexp0 ()
+  (flet ((poss ()
+           (let
+               ((prev (save-excursion (backward-sexp) (forward-sexp) (point)))
+                (next (save-excursion (forward-sexp) (backward-sexp) (point))))
+             (list prev (line-number-at-pos prev)
+                   next (line-number-at-pos next)
+                   (point) (line-number-at-pos)))))
+    (cond ((looking-at (rx (or (syntax symbol) (syntax word)
+                               (syntax open-parenthesis))))
+           (forward-sexp))
+          (t (destructuring-bind (pp pl np nl cp cl) (poss)
+               (cond ((and (<=  pp cp) (<= cp np))
+                      (cond ((= pl cl) (backward-sexp))
+                            ((= nl cl))
+                            ((< (- cl pl) (- nl cl)) (backward-sexp))
+                            ((< (- nl cl) (- cl pl)))
+                            (t (backward-sexp)))
+                      (forward-sexp))
+                     (t (backward-sexp) (forward-sexp))))))))
+(defun esf-forward-inner-sexp ()
+  (condition-case nil
+      (esf-forward-inner-sexp0)
+    (scan-error nil)))
+(defun esf-backward-up-inner-list0 (steps)
+  (unless steps (setq steps 1))
+  (when (looking-at (rx (syntax open-parenthesis))) (decf steps))
+  (dotimes (_ steps) (backward-up-list)))
+(defun esf-backward-up-inner-list (steps)
+  (condition-case nil
+      (esf-backward-up-inner-list0 steps)
+    (scan-error nil)))
+(defun esf-end-of-backward-up-inner-list (steps)
+  (esf-backward-up-inner-list steps)
+  (esf-forward-inner-sexp))
+
+(defun eval-sexp-fu-eval-sexp-inner-list (&optional arg)
+  "Evaluate the list _currently_ pointed at as sexp; print value in minibuffer.
+
+Interactivelly with numeric prefix argument, call to `backward-up-list' happens several times. This function is an \"Evaluate this N lists, please.\" thing."
+  (interactive "P")
+  (esf-funcall-and-eval-last-sexp (apply-partially
+                                   'esf-end-of-backward-up-inner-list arg)
+                                  'esf-eval-last-sexp))
+(defun eval-sexp-fu-eval-sexp-inner-sexp ()
+  "Evaluate the sexp _currently_ pointed; print value in minibuffer."
+  (interactive)
+  (esf-funcall-and-eval-last-sexp 'esf-forward-inner-sexp 'esf-eval-last-sexp))
+
+(defmacro define-esf-eval-last-sexp-1 (command-name eval-last-sexp)
+  "Define an interactive command COMMAND-NAME kind of EVAL-LAST-SEXP
+such that ignores any prefix arguments."
+  `(defun ,command-name ()
+     (interactive)
+     (let (current-prefix-arg)
+       (call-interactively ',eval-last-sexp))))
+(define-esf-eval-last-sexp-1 esf-eval-last-sexp eval-last-sexp)
+
+;; Piece of code which defines the above inner-{sexp,list} functions.
+;; This makes it possible to batch install the
+;; eval-sexp-fu-eval-sexp-inner-{sexp,list} with below form.
+;; * (define-eval-sexp-fu-eval-sexp eval-sexp-fu-eval-sexp eval-last-sexp)
+;; Used by making the `slime-eval-last-expression' variant functions.
+(defmacro define-esf-eval-sexp* (eval-last-sexp inner-sexp inner-list)
+  "Based on EVAL-LAST-SEXP, define INNER-SEXP and INNER-LIST interactive commands."
+  (declare (indent 1))
+  `(progn
+     (defun ,inner-sexp ()
+       (interactive)
+       (esf-funcall-and-eval-last-sexp 'esf-forward-inner-sexp
+                                       ',eval-last-sexp))
+     (defun ,inner-list (&optional arg)
+       (interactive "P")
+       (esf-funcall-and-eval-last-sexp (apply-partially
+                                        'esf-end-of-backward-up-inner-list arg)
+                                       ',eval-last-sexp))))
+(defmacro define-eval-sexp-fu-eval-sexp (command-name-prefix eval-last-sexp)
+  "Define -inner-sexp and -inner-list interactive commands prefixed by COMMAND-NAME-PREFIX based on EVAL-LAST-SEXP. Actual work is done by `define-esf-eval-sexp*'."
+  (let ((esf-eval-last-sexp-1
+         (intern (format "esf-%s-1" (symbol-name eval-last-sexp)))))
+    `(progn
+       (define-esf-eval-last-sexp-1 ,esf-eval-last-sexp-1 ,eval-last-sexp)
+       (define-esf-eval-sexp* ,esf-eval-last-sexp-1
+         ,@(mapcar (lambda (post)
+                     (intern (concat (symbol-name command-name-prefix) post)))
+                   '("-inner-sexp" "-inner-list"))))))
+
+;; bug#13952
+(if (version< "24.3.50" emacs-version)
+    (defmacro with-esf-end-of-sexp (&rest body)
+      (declare (indent 0))
+      `(progn ,@body))
+  (defmacro with-esf-end-of-sexp (&rest body)
+    (declare (indent 0))
+    `(save-excursion
+       (backward-char)
+       ,@body)))
+
+;;; initialize.
+(defun esf-initialize ()
+  (define-eval-sexp-fu-flash-command eval-last-sexp
+    (eval-sexp-fu-flash (when (ignore-errors (preceding-sexp))
+                          (with-esf-end-of-sexp
+                            (bounds-of-thing-at-point 'sexp)))))
+  (define-eval-sexp-fu-flash-command eval-defun
+    (eval-sexp-fu-flash (when (ignore-errors (preceding-sexp))
+                          (save-excursion
+                            (end-of-defun)
+                            (beginning-of-defun)
+                            (bounds-of-thing-at-point 'sexp)))))
+  (eval-after-load 'eev
+    '(progn
+      ;; `eek-eval-last-sexp' is defined in eev.el.
+      (define-eval-sexp-fu-flash-command eek-eval-last-sexp
+        (eval-sexp-fu-flash (when (thing-at-point 'sexp)
+                              (cons (save-excursion (eek-backward-sexp))
+                                    (point))))))))
+(defun esf-initialize-slime ()
+  (define-eval-sexp-fu-flash-command slime-eval-last-expression
+    (eval-sexp-fu-flash (with-esf-end-of-sexp
+                          (when (slime-sexp-at-point)
+                            (bounds-of-thing-at-point 'sexp)))))
+  (define-eval-sexp-fu-flash-command slime-pprint-eval-last-expression
+    (eval-sexp-fu-flash (with-esf-end-of-sexp
+                          (when (slime-sexp-at-point)
+                            (bounds-of-thing-at-point 'sexp)))))
+  (define-eval-sexp-fu-flash-command slime-eval-defun
+    (eval-sexp-fu-flash (save-excursion
+                          (slime-end-of-defun)
+                          (slime-beginning-of-defun)
+                          (when (slime-sexp-at-point)
+                            (bounds-of-thing-at-point 'sexp)))))
+  (progn
+    ;; Defines:
+    ;; `eval-sexp-fu-slime-eval-expression-inner-list',
+    ;; `eval-sexp-fu-slime-eval-expression-inner-sexp'
+    ;; and the pprint variants respectively.
+    (define-eval-sexp-fu-eval-sexp eval-sexp-fu-slime-eval-expression
+        slime-eval-last-expression)
+    (define-eval-sexp-fu-eval-sexp eval-sexp-fu-slime-pprint-eval-expression
+        slime-pprint-eval-last-expression)))
+
+(eval-when (load eval)
+  (esf-initialize)
+  (eval-after-load 'slime
+    '(esf-initialize-slime)))
+
+(dont-compile
+  (when (fboundp 'expectations)
+    (expectations
+      (desc "esf-every-pred")
+      (expect "value"
+        (funcall (esf-every-pred 'stringp 'identity)
+                 "value"))
+      (expect t
+        (not (funcall (every-pred 'stringp 'numberp 'identity)
+                      "value")))
+      (desc "esf-forward-inner-sexp0")
+      (expect ?p
+        (with-temp-buffer
+          (emacs-lisp-mode)
+          (insert "s+exp")
+          (goto-char (point-min))
+          (esf-forward-inner-sexp0)
+          (char-before)))
+      (expect ?p
+        (with-temp-buffer
+          (emacs-lisp-mode)
+          (insert "s+exp")
+          (goto-char (1+ (point-min)))
+          (esf-forward-inner-sexp0)
+          (char-before)))
+      (expect ?\)
+        (with-temp-buffer
+          (emacs-lisp-mode)
+          (insert "s(exp)")
+          (goto-char (1+ (point-min)))
+          (esf-forward-inner-sexp0)
+          (char-before)))
+      (desc "esf-forward-inner-sexp0 same line, but far near the next")
+      ;; Always previous, is this OK?
+      (expect ?0
+        (with-temp-buffer
+          (emacs-lisp-mode)
+          (insert "sexp0   sexp1")
+          (goto-char (+ (point-min) 7))
+          (esf-forward-inner-sexp0)
+          (char-before)))
+      (desc "esf-forward-inner-sexp0 across lines")
+      (expect ?0
+        (with-temp-buffer
+          (emacs-lisp-mode)
+          (insert "sexp0\n\n\n\nsexp1")
+          (goto-char (point-min))
+          (esf-forward-inner-sexp0)
+          (char-before)))
+      (expect ?0
+        (with-temp-buffer
+          (emacs-lisp-mode)
+          (insert "sexp0\n\n\n\nsexp1")
+          (goto-char (point-min))
+          (forward-line)
+          (esf-forward-inner-sexp0)
+          (char-before)))
+      (expect ?1
+        (with-temp-buffer
+          (emacs-lisp-mode)
+          (insert "sexp0\n\n\n\nsexp1")
+          (goto-char (point-min))
+          (forward-line 3)
+          (esf-forward-inner-sexp0)
+          (char-before)))
+      (expect ?1
+        (with-temp-buffer
+          (emacs-lisp-mode)
+          (insert "sexp0\n\n\n\nsexp1")
+          (goto-char (point-min))
+          (forward-line 3)
+          (esf-forward-inner-sexp0)
+          (char-before)))
+      (expect ?1
+        (with-temp-buffer
+          (emacs-lisp-mode)
+          (insert "sexp0\n\n\n\nsexp1")
+          (goto-char (point-min))
+          (forward-line 4)
+          (esf-forward-inner-sexp0)
+          (char-before)))
+      (desc "esf-forward-inner-sexp0 across lines (equal delta)")
+      ;; Always previous lines', is this OK?
+      (expect ?0
+        (with-temp-buffer
+          (emacs-lisp-mode)
+          (insert "sexp0\n\n\n\nsexp1")
+          (goto-char (point-min))
+          (forward-line 2)
+          (esf-forward-inner-sexp0)
+          (char-before)))
+      (desc "esf-forward-inner-sexp0 no more")
+      (expect ?0
+        (with-temp-buffer
+          (emacs-lisp-mode)
+          (insert "sexp0\n\n")
+          (goto-char (point-max))
+          (esf-forward-inner-sexp0)
+          (char-before)))
+      (desc "esf-forward-inner-sexp0 no less")
+      (expect ?0
+        (with-temp-buffer
+          (emacs-lisp-mode)
+          (insert "\n\nsexp0")
+          (goto-char (point-min))
+          (esf-forward-inner-sexp0)
+          (char-before)))
+      (desc "esf-forward-inner-sexp0 no any")
+      (expect 5
+        (with-temp-buffer
+          (emacs-lisp-mode)
+          (insert "\n\n\n\n")
+          (goto-char (point-min))
+          (esf-forward-inner-sexp0)
+          (point)))
+      )))
+
+(provide 'eval-sexp-fu)
+;;; eval-sexp-fu.el ends here
