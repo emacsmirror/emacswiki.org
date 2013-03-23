@@ -21,7 +21,7 @@ completion is to typing things manually every time."'' [http://article.gmane.org
 ** prefix matching (as in vanilla Emacs)
 ** [[command]] abbreviation matching [[Icicles - Multi M-x#icicle-command-abbrev|*]]
 * use multiple input patterns (e.g., [[regexp]]s) to match candidates ''progressively'' (intersection), chaining these filters together like piped `grep' commands  [[Icicles - Progressive Completion|*]]
-* use multiple input patterns at the same time to match multi-part candidates ([[multi-completion]]s) piecewise --- for example, match a container's name and/or its contained text [[Icicles - Multi-Completions|*]]
+* use multiple input patterns at the same time to match multi-part candidates ([[multi-completion]]s) piecewise --- for example, match a container's name and/or its contained text, in parallel [[Icicles - Multi-Completions|*]]
 * ''see all'' possible complete inputs (pertinent commands, variables, and so on) that match your partial or regexp input -- the list is ''updated dynamically'' (incrementally) if you change your input  [[Icicles - Icompletion|*]]
 * ''see all previous'' inputs that match your partial or regexp input, and selectively reuse them  [[Icicles - History Enhancements|*]]
 * match input against completion candidates that do ''not'' match a given regexp; that is, ''complement the set of matches'' and use the result for subsequent matching  [[Icicles - Candidate Sets|*]]
