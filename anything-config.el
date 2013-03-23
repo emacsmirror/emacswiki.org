@@ -3105,7 +3105,7 @@ Don't set it directly, use instead `anything-ff-auto-update-initial-value'.")
     (header-name . (lambda (name)
                      (concat name anything-c-find-files-doc-header)))
     ;; It is needed for filenames with capital letters
-    (disable-shortcuts)
+    ;;(disable-shortcuts)
     (init . (lambda ()
               (setq anything-ff-auto-update-flag
                     anything-ff-auto-update-initial-value)))
@@ -4740,7 +4740,7 @@ Find inside `require' and `declare-function' sexp."
     (header-name . (lambda (name)
                      (concat name anything-c-find-files-doc-header)))
     ;; It is needed for filenames with capital letters
-    (disable-shortcuts)
+    ;;(disable-shortcuts)
     (candidates . anything-find-files-get-candidates)
     (filtered-candidate-transformer anything-c-find-files-transformer)
     (persistent-action . anything-find-files-persistent-action)
@@ -4756,7 +4756,7 @@ Find inside `require' and `declare-function' sexp."
     (header-name . (lambda (name)
                      (concat name anything-c-find-files-doc-header)))
     ;; It is needed for filenames with capital letters
-    (disable-shortcuts)
+    ;;(disable-shortcuts)
     (candidates . anything-find-files-get-candidates)
     (filtered-candidate-transformer anything-c-find-files-transformer)
     (persistent-action . anything-find-files-persistent-action)
@@ -4774,7 +4774,7 @@ Find inside `require' and `declare-function' sexp."
     (header-name . (lambda (name)
                      (concat name anything-c-find-files-doc-header)))
     ;; It is needed for filenames with capital letters
-    (disable-shortcuts)
+    ;;(disable-shortcuts)
     (candidates . anything-find-files-get-candidates)
     (filtered-candidate-transformer anything-c-find-files-transformer)
     (persistent-action . anything-find-files-persistent-action)
@@ -4794,7 +4794,7 @@ Find inside `require' and `declare-function' sexp."
     (header-name . (lambda (name)
                      (concat name anything-c-find-files-doc-header)))
     ;; It is needed for filenames with capital letters
-    (disable-shortcuts)
+    ;;(disable-shortcuts)
     (candidates . anything-find-files-get-candidates)
     (filtered-candidate-transformer anything-c-find-files-transformer)
     (persistent-action . anything-find-files-persistent-action)
@@ -4813,7 +4813,7 @@ Find inside `require' and `declare-function' sexp."
     (header-name . (lambda (name)
                      (concat name anything-c-find-files-doc-header)))
     ;; It is needed for filenames with capital letters
-    (disable-shortcuts)
+    ;;(disable-shortcuts)
     (candidates . anything-find-files-get-candidates)
     (filtered-candidate-transformer anything-c-find-files-transformer)
     (persistent-action . anything-find-files-persistent-action)
@@ -4833,7 +4833,7 @@ Find inside `require' and `declare-function' sexp."
     (header-name . (lambda (name)
                      (concat name anything-c-find-files-doc-header)))
     ;; It is needed for filenames with capital letters
-    (disable-shortcuts)
+    ;;(disable-shortcuts)
     (candidates . anything-find-files-get-candidates)
     (filtered-candidate-transformer anything-c-find-files-transformer)
     (persistent-action . anything-find-files-persistent-action)
@@ -5072,7 +5072,7 @@ Keys description:
            `(((name . ,(format "%s History" name))
               (header-name . (lambda (name)
                                (concat name anything-c-find-files-doc-header)))
-              (disable-shortcuts)
+              ;;(disable-shortcuts)
               (mode-line . anything-read-file-name-mode-line-string)
               (candidates . hist)
               (persistent-action . ,persistent-action)
@@ -5085,7 +5085,7 @@ Keys description:
                         (setq anything-ff-auto-update-flag
                               anything-ff-auto-update-initial-value)))
               ;; It is needed for filenames with capital letters
-              (disable-shortcuts)
+              ;;(disable-shortcuts)
               (mode-line . anything-read-file-name-mode-line-string)
               (candidates
                . (lambda ()
@@ -5876,7 +5876,7 @@ If a prefix arg is given run grep on all buffers ignoring non--file-buffers."
               (require 'recentf)
               (or recentf-mode (recentf-mode 1))))
     ;; Needed for filenames with capitals letters.
-    (disable-shortcuts)
+    ;;(disable-shortcuts)
     (candidates . recentf-list)
     (keymap . ,anything-generic-files-map)
     (help-message . anything-generic-file-help-message)
@@ -8234,7 +8234,7 @@ http://bbdb.sourceforge.net/")
 
 (defvar anything-c-source-evaluation-result
   '((name . "Evaluation Result")
-    (disable-shortcuts)
+    ;;(disable-shortcuts)
     (dummy)
     (multiline)
     (mode-line . "C-RET: nl-and-indent, tab: reindent, C-tab:complete, C-p/n: next/prec-line.")
