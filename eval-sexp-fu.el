@@ -76,6 +76,20 @@
 ;; `eval-sexp-fu-slime-eval-expression-inner-sexp'
 ;; and the pprint variants respectively.
 
+;;; History:
+
+;; v0.4.0
+;; Workaround bug#13952 fix about `end-of-sexp'.
+
+;; v0.3.0
+;; Relax `eval-sexp-fu-flash' with omitting the "sexp" check.
+
+;; v0.2.0
+;; Add the paren-only flashing variant.
+
+;; v0.1.0
+;; Initial version.
+
 ;;; Code:
 
 (eval-when-compile (require 'cl))
@@ -116,8 +130,25 @@
   :group 'eval-sexp-fu)
 (defcustom eval-sexp-fu-flash-function 'eval-sexp-fu-flash-default
   "*Function to be used to create all of the actual flashing implementations."
-  :type 'function
+  :type '(choice (function-item eval-sexp-fu-flash-default)
+                 (function-item eval-sexp-fu-flash-paren-only))
   :group 'eval-sexp-fu)
+
+;;; Tools
+(defmacro esf-konstantly (v)
+  `(lambda (&rest _it) ,v))
+(defun esf-every0 (pred xs)
+  (labels ((rec (pred xs acc)
+             (if (null xs)
+                 acc
+               (let ((it (funcall pred (car xs))))
+                 (and it (rec pred (cdr xs) it))))))
+    (rec pred xs nil)))
+(defun esf-every-pred (&rest preds)
+  (lexical-let ((preds preds))
+    (lambda (x)
+      (esf-every0 (lambda (pred) (funcall pred x))
+                  preds))))
 
 (defun esf-hl-highlight-bounds (bounds face buf)
   (with-current-buffer buf
@@ -140,18 +171,59 @@
 (defun* eval-sexp-fu-flash (bounds &optional (face eval-sexp-fu-flash-face) (eface eval-sexp-fu-flash-error-face))
   "BOUNS is either the cell or the function returns, such that (BEGIN . END).
 Reurn the 4 values; bounds, highlighting, un-highlighting and error flashing procedure. This function is convenient to use with `define-eval-sexp-fu-flash-command'."
-  (when (ignore-errors (preceding-sexp))
-    (flet ((bounds () (if (functionp bounds) (funcall bounds) bounds)))
-      (let ((b (bounds)) (buf (current-buffer)))
-        (when b
-          (funcall eval-sexp-fu-flash-function b face eface buf))))))
+  (flet ((bounds () (if (functionp bounds) (funcall bounds) bounds)))
+    (let ((b (bounds)))
+      (when b
+        (funcall eval-sexp-fu-flash-function b face eface (current-buffer))))))
 (defun eval-sexp-fu-flash-default (bounds face eface buf)
   "Create all of the actual flashing implementations. See also `eval-sexp-fu-flash'."
-  (lexical-let ((bounds bounds) (face face) (eface eface) (buf buf))
+  (values bounds
+          (apply-partially 'esf-hl-highlight-bounds bounds face buf)
+          (apply-partially 'esf-hl-unhighlight-bounds bounds buf)
+          (apply-partially 'esf-flash-error-bounds bounds buf eface)))
+
+(defun eval-sexp-fu-flash-paren-only (bounds face eface buf)
+  (esf-flash-paren-only-if (esf-every-pred
+                            'esf-flash-paren-surrounded-p
+                            'esf-flash-paren-visible-p)
+                           bounds face eface buf))
+(defun esf-flash-paren-only-if (pred bounds face eface buf)
+  (let ((flash (if (funcall pred (cons bounds buf))
+                   'esf-flash-paren-only
+                 'eval-sexp-fu-flash-default)))
+    (funcall flash bounds face eface buf)))
+(defun esf-flash-paren-only (bounds face eface buf)
+  "Create the \"paren-only\" flashing implementations."
+  (let ((hi (lambda (left right face buf)
+              (esf-hl-highlight-bounds left face buf)
+              (esf-hl-highlight-bounds right face buf)))
+        (uh (lambda (left right buf)
+              (esf-hl-unhighlight-bounds left buf)
+              (esf-hl-unhighlight-bounds right buf)))
+        (ef (lambda (left right eface buf)
+              (esf-flash-error-bounds left buf eface)
+              (esf-flash-error-bounds right buf eface)))
+        (rparen (cons (1- (cdr bounds)) (cdr bounds)))
+        (lparen (cons (car bounds) (save-excursion
+                                     (goto-char (car bounds))
+                                     (down-list)
+                                     (point)))))
     (values bounds
-            (apply-partially 'esf-hl-highlight-bounds bounds face buf)
-            (apply-partially 'esf-hl-unhighlight-bounds bounds buf)
-            (apply-partially 'esf-flash-error-bounds bounds buf eface))))
+            (apply-partially hi lparen rparen face buf)
+            (apply-partially uh lparen rparen buf)
+            (apply-partially ef lparen rparen eface buf))))
+(defun* esf-flash-paren-surrounded-p ((bounds . buf))
+  (with-current-buffer buf
+    (and (save-excursion
+           (goto-char (1- (cdr bounds)))
+           (looking-at (rx (syntax close-parenthesis))))
+         (save-excursion
+           (goto-char (car bounds))
+           (looking-at (rx (or (syntax expression-prefix)
+                               (syntax open-parenthesis))))))))
+(defun* esf-flash-paren-visible-p ((bounds . _buf))
+  (and (pos-visible-in-window-p (cdr bounds))
+       (pos-visible-in-window-p (car bounds))))
 
 (defcustom eval-sexp-fu-flash-doit-function 'eval-sexp-fu-flash-doit-simple
   "*Function to use for flashing the sexps.
@@ -173,8 +245,6 @@ Please see the actual implementations:
        (funcall do-it-thunk)
     (run-at-time eval-sexp-fu-flash-duration nil unhi)))
 
-(defmacro esf-konstantly (v)
-  `(lambda (&rest _it) ,v))
 (defmacro esf-unwind-protect-with-tracking (normallyp body unwind)
   (declare (indent 2))
   `(let (,normallyp)
@@ -310,37 +380,51 @@ such that ignores any prefix arguments."
                      (intern (concat (symbol-name command-name-prefix) post)))
                    '("-inner-sexp" "-inner-list"))))))
 
+;; bug#13952
+(if (version< "24.3.50" emacs-version)
+    (defmacro with-esf-end-of-sexp (&rest body)
+      (declare (indent 0))
+      `(progn ,@body))
+  (defmacro with-esf-end-of-sexp (&rest body)
+    (declare (indent 0))
+    `(save-excursion
+       (backward-char)
+       ,@body)))
+
 ;;; initialize.
 (defun esf-initialize ()
   (define-eval-sexp-fu-flash-command eval-last-sexp
-    (eval-sexp-fu-flash (save-excursion
-                          (backward-char)
-                          (bounds-of-thing-at-point 'sexp))))
+    (eval-sexp-fu-flash (when (ignore-errors (preceding-sexp))
+                          (with-esf-end-of-sexp
+                            (bounds-of-thing-at-point 'sexp)))))
   (define-eval-sexp-fu-flash-command eval-defun
-    (eval-sexp-fu-flash (save-excursion
-                          (end-of-defun)
-                          (beginning-of-defun)
-                          (bounds-of-thing-at-point 'sexp))))
+    (eval-sexp-fu-flash (when (ignore-errors (preceding-sexp))
+                          (save-excursion
+                            (end-of-defun)
+                            (beginning-of-defun)
+                            (bounds-of-thing-at-point 'sexp)))))
   (eval-after-load 'eev
     '(progn
       ;; `eek-eval-last-sexp' is defined in eev.el.
       (define-eval-sexp-fu-flash-command eek-eval-last-sexp
-        (eval-sexp-fu-flash (cons (save-excursion (eek-backward-sexp))
-                                  (point)))))))
+        (eval-sexp-fu-flash (when (thing-at-point 'sexp)
+                              (cons (save-excursion (eek-backward-sexp))
+                                    (point))))))))
 (defun esf-initialize-slime ()
   (define-eval-sexp-fu-flash-command slime-eval-last-expression
-    (eval-sexp-fu-flash (save-excursion
-                          (backward-char)
-                          (bounds-of-thing-at-point 'sexp))))
+    (eval-sexp-fu-flash (with-esf-end-of-sexp
+                          (when (slime-sexp-at-point)
+                            (bounds-of-thing-at-point 'sexp)))))
   (define-eval-sexp-fu-flash-command slime-pprint-eval-last-expression
-    (eval-sexp-fu-flash (save-excursion
-                          (backward-char)
-                          (bounds-of-thing-at-point 'sexp))))
+    (eval-sexp-fu-flash (with-esf-end-of-sexp
+                          (when (slime-sexp-at-point)
+                            (bounds-of-thing-at-point 'sexp)))))
   (define-eval-sexp-fu-flash-command slime-eval-defun
     (eval-sexp-fu-flash (save-excursion
                           (slime-end-of-defun)
                           (slime-beginning-of-defun)
-                          (bounds-of-thing-at-point 'sexp))))
+                          (when (slime-sexp-at-point)
+                            (bounds-of-thing-at-point 'sexp)))))
   (progn
     ;; Defines:
     ;; `eval-sexp-fu-slime-eval-expression-inner-list',
@@ -359,6 +443,13 @@ such that ignores any prefix arguments."
 (dont-compile
   (when (fboundp 'expectations)
     (expectations
+      (desc "esf-every-pred")
+      (expect "value"
+        (funcall (esf-every-pred 'stringp 'identity)
+                 "value"))
+      (expect t
+        (not (funcall (every-pred 'stringp 'numberp 'identity)
+                      "value")))
       (desc "esf-forward-inner-sexp0")
       (expect ?p
         (with-temp-buffer
