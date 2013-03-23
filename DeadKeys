@@ -1,4 +1,4 @@
-On some non-English systems, trying to type an accented character, for example with a tilde (##~##), will result in Emacs spitting out "##<dead_tilde>## is undefined". The problem can be fixed by adding this line to ##.emacs##:
+On some non-English systems, trying to type an accented character, for example with a tilde (##~##), will result in Emacs spitting out "##<dead_tilde>## is undefined". Some people suggest that by adding the following line to ##.emacs##, they can work around this problem:
 
    (require 'iso-transl)
 
