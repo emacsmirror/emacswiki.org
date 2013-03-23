@@ -18,13 +18,14 @@
 * Determine required libgc and guile versions
 * Test gdb configuration
 
-Bug-reports from TaylanUB on 2013-03-10:
+Bug-reports, last updated 2013-03-24:
 
-# Start-up takes long. (Tip: During compilation, use another Emacs to byte-compile .el files, or it will take hours because each guilemacs instance takes so long to start.)
-# An invalid entry with a non-string car ends up in `load-history' and makes several things error. (Tip: Run <code>(delete-if (lambda (elt) (not (stringp (car elt)))) load-history)</code> to work around it.)
-# Some hash-tables created with <code>:test 'equal</code> misbehave, not really using `equal' for their equality test. Test-cases like <code>(let ((table (make-hash-table :test 'equal))) (puthash "foo" "bar" table) (gethash "foo" table))</code> in M-: seem to work, and re-creating the problematic hash-tables via `setq' from M-: seems to fix some of them.
+wip-bdw-gc branch:
+# Start-up takes long because dumping doesn't work anymore. (Tip: During compilation, use another Emacs to byte-compile .el files, or it will take hours because each guilemacs instance takes so long to start.)
+# When from my init file (cannot reproduce interactively) I do <code>(load "flymake")</code>, add my popup.el and AutoComplete (see https://github.com/auto-complete for both) directories to `load-path', and <code>(load "auto-complete-config") (ac-config-default)</code>, an invalid entry with a non-string car ends up in `load-history' and makes several things error. (Tip: Run <code>(delete-if (lambda (elt) (not (stringp (car elt)))) load-history)</code> to delete that entry.)
 # Certain heavy operations (namely displaying a big e-mail in Gnus) cause a lock-up (or take very long, I waited several minutes before having to send SIGKILL).
 
-Other than the above 4 issues, I could say I can't distinguish my Guile-Emacs build from a normal Emacs build, apart from the fact that it can run Scheme! <code>M-: (eval-scheme "(call-with-current-continuation (lambda (k) (k 42)))") RET => 42</code> (The return-value is an Elisp datum.)
+wip-guile branch:
+# <code>(let ((table (make-hash-table :test 'equal))) (puthash "1234567890" "foo" table) (gethash "1234567890" table)) => nil</code>. Some other (most?) keys work; I couldn't see a pattern in what does and doesn't work. If you use the same object for both keys (i.e. they're `eq') then it seems to always work, so don't let-bind keys if you want to test this.
 
-2013-03-17: Points 1, 2, and 4 are re-producable on the wip-bdw-gc branch; 3 is unique to the wip-guile branch.
+Other than the above 4 issues, I could say I can't distinguish my Guile-Emacs build from a normal Emacs build, apart from the fact that it can run Scheme! <code>M-: (eval-scheme "(call-with-current-continuation (lambda (k) (k 42)))") RET => 42</code> (The return-value is an Elisp datum.) -- TaylanUB
