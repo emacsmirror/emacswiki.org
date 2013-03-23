@@ -3319,7 +3319,7 @@ if optional NOUPDATE is non-nil, anything buffer is not changed."
                 (accept-empty)
                 (match identity)
                 (filtered-candidate-transformer . anything-dummy-candidate)
-                (disable-shortcuts)
+                ;;(disable-shortcuts)
                 (volatile)))
       source))
 
