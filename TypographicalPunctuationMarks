@@ -2,7 +2,7 @@
 
 ----
 
-For a simple solution to insert single or double "curly quotes" or "smart quotes" in a context-sensitive manner, [http://gareth-rees.livejournal.com/9306.html smart-quotes.el] may provide a workable solution. Tested on Emacs ver 22 and 23. The remainder of this page deals with the <tt>typopunct.el</tt> package.
+For a simple solution to insert single or double "curly quotes" or "smart quotes" in a context-sensitive manner, [https://github.com/gareth-rees/smart-quotes smart-quotes.el] may provide a workable solution. Tested on Emacs 22-24. The remainder of this page deals with the <tt>typopunct.el</tt> package.
 
 ----
 
