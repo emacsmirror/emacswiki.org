@@ -136,7 +136,7 @@ In addition, '''Icicles''' provides specializations of `icicle-imenu' to find on
 * '''`icicle-imenu-user-option'''' -- Emacs [[user option]]s
 * '''`icicle-imenu-variable'''' -- Lisp non-option [[variable]]s
 
-All of these commands use only the [[Imenu]] [[regexp]]s that match
+All of these commands use only the [[ImenuMode|Imenu]] [[regexp]]s that match
 entities of different types.  Because these regexps were designed
 (for Imenu) only to ''locate the start'' of a definition, they
 generally do not match full definitions.  This makes them OK for
