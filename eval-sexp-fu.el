@@ -1,6 +1,6 @@
 ;;; eval-sexp-fu.el --- Tiny functionality enhancements for evaluating sexps.
 
-;; Copyright (C) 2009 Takeshi Banse <takebi@laafc.net>
+;; Copyright (C) 2009-2013 Takeshi Banse <takebi@laafc.net>
 ;; Author: Takeshi Banse <takebi@laafc.net>
 ;; Keywords: lisp, highlight, convenience
 
