@@ -1,6 +1,6 @@
 : [[image:iciclesimage]]
 
-|| *Previous:*  [[Icicles - Multi-Completions]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - More About Multi-Commands]] ||
+|| *Previous:*  [[Icicles - Searching Named Containers]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - More About Multi-Commands]] ||
 
 ----
 
@@ -108,7 +108,7 @@ command `icicle-save-string-to-variable':
 
 ----
 
-|| *Previous:*  [[Icicles - Multi-Completions]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - More About Multi-Commands]] ||
+|| *Previous:*  [[Icicles - Searching Named Containers]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - More About Multi-Commands]] ||
 
 
 
