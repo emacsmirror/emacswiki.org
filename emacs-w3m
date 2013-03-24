@@ -15,6 +15,10 @@ Gmane, as <code>gmane.emacs.w3m</code>.  Emacs-w3m comes with a manual
 in TexInfo format, from which a normal, comfortable section of the manual in
 InfoMode form will be built by the installation process.
 
+[new:PhilHudson:2013-03-24 12:10 UTC]
+If you are building from cvs, be aware of one gotcha: if the first ##emacs## executable in your ##$PATH### is a symlink, then the directory containing that symlink will be used as the base install location by ##make install##. Fix: either change ##$PATH## to expose the actual installed ##emacs## binary first, at least for the duration of the configure/make/install procedure, or hand-edit the ##Makefile## created by running ##./configure##.
+
+
 = Basic Setup =
 
  (setq browse-url-browser-function 'w3m-browse-url)
