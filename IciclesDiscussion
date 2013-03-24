@@ -2252,7 +2252,8 @@ Let me know what you do find out.  Thx -- DrewAdams
 </pre>
 
 [new]
-Hello. I have a newbie question. When I do icicle-find-tag I can cicle candidates by using C-up and C-down. When I push RET or select tag with a mouse, it opens in a new window and I have two emacs windows open. Is there a way to make it open in the original window? Also how do I change C-up and C-down to something else? Setting them Icicle Modal Cycle or Icicle Modal Cycle Action using customize-group didn't work. -- Nikolay Kudryavtsev
+Hello. I have a newbie question. When I do icicle-find-tag I can cicle candidates by using C-up and C-down. When I push RET or select tag with a mouse, it opens in a new window and I have two emacs windows open. Is there a way to make it open in the original window? Also how do I change C-up and C-down to something else? Setting them Icicle Modal Cycle or Icicle Modal Cycle Action using customize-group didn't work.
+UPD: was able to set keys, my mistake -- Nikolay Kudryavtsev
 
 
 ----
