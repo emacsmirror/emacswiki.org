@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Sun Mar 17 17:27:01 2013 (-0700)
+;; Last-Updated: Sat Mar 23 20:01:53 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6374
+;;     Update #: 6418
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -97,6 +97,7 @@
 ;;    (+)`icicle-imenu-user-option-full', (+)`icicle-imenu-variable',
 ;;    (+)`icicle-imenu-variable-full', `icicle-ido-like-mode',
 ;;    (+)`icicle-Info-goto-node',
+;;    (+)`icicle-Info-goto-node-no-search',
 ;;    (+)`icicle-Info-goto-node-of-content', (+)`icicle-Info-index',
 ;;    (+)`icicle-Info-index-20', (+)`icicle-Info-menu',
 ;;    (+)`icicle-Info-menu-cmd', `icicle-Info-virtual-book',
@@ -367,7 +368,7 @@
   ;; icicle-vardoc-last-initial-cand-set, icicle-whole-candidate-as-text-prop-p
 (require 'icicles-fn)                   ; (This is required anyway by `icicles-mcmd.el'.)
   ;; icicle-candidate-short-help, icicle-completing-read-history, icicle-highlight-lighter,
-  ;; icicle-insert-cand-in-minibuffer, icicle-some
+  ;; icicle-insert-cand-in-minibuffer, icicle-some, icicle-string-match-p
 (require 'icicles-cmd1)
   ;; icicle-bookmark-cleanup, icicle-bookmark-cleanup-on-quit, icicle-bookmark-cmd,
   ;; icicle-bookmark-help-string, icicle-bookmark-propertize-candidate, icicle-buffer-list,
@@ -405,6 +406,7 @@
 
 ;; (< emacs-major-version 22)
 (defvar compilation-current-error)
+(defvar Info-complete-menu-buffer)      ; In `info.el'
 (defvar Info-history-list)              ; In `info.el'
 (defvar Info-menu-entry-name-re)        ; In `info.el'
 (defvar Info-read-node-completion-table) ; In `info.el'
@@ -2085,8 +2087,9 @@ See `icicle-ORIG-Info-menu'."
 
 ;; Free vars here: `Info-menu-entry-name-re' is bound in `info.el'.
 (icicle-define-command icicle-Info-menu-cmd
-  "Go to a menu node."                  ; Doc string
-  (lambda (m) (icicle-Info-goto-node (cdr (funcall icicle-get-alist-candidate-function m)))) ; Action
+  "Go to an Info menu node."            ; Doc string
+  (lambda (m)
+    (icicle-Info-goto-node-no-search (cdr (funcall icicle-get-alist-candidate-function m)))) ; Action
   "Menu item: " icicle-candidates-alist ; `completing-read' args
   nil t nil nil (save-excursion
                   (goto-char (point-min))
@@ -2113,7 +2116,7 @@ See `icicle-ORIG-Info-menu'."
                                                    (reverse (all-completions "" 'Info-complete-menu-item))))
    menu-eol))
 
-(defun icicle-Info-goto-node (nodename &optional arg)
+(defun icicle-Info-goto-node-no-search (nodename &optional arg)
   "Go to Info node named NODENAME.
 Completion is available for node names in the current Info file.
 
@@ -2185,7 +2188,7 @@ From Lisp code:
       (icicle-ORIG-Info-goto-node nodename))))
 
 (defun icicle-Info-read-node-name (prompt &optional include-file-p)
-  "Read a node name, prompting with PROMPT.
+  "Read an Info node name, prompting with PROMPT.
 Non-nil optional arg INCLUDE-FILE-P means include current Info file in
 the name."
   (let ((C-x-m  (lookup-key minibuffer-local-completion-map "\C-xm")))
@@ -2231,7 +2234,7 @@ Remove pseudo-node `*'.  (This just fixes a bug in Emacs 21 and 22.1.)"
       comps)))
 
 ;; Free vars here:
-;; `icicle-info-buff' and `icicle-info-window' are bound in `icicle-Info-goto-node'.
+;; `icicle-info-buff' and `icicle-info-window' are bound in `icicle-Info-goto-node(-no-search|of-content)'.
 ;; `Info-read-node-completion-table' is bound in `info.el'.
 (defun icicle-Info-goto-node-action (node)
   "Completion action function for `icicle-Info-goto-node'."
@@ -2288,7 +2291,7 @@ Remove pseudo-node `*'.  (This just fixes a bug in Emacs 21 and 22.1.)"
 
 (when (fboundp 'clone-buffer)           ; Emacs 22+
   (defun icicle-Info-goto-node-of-content (nodename &optional arg)
-    "Go to Info node whose node name or content matches.
+    "Go to Info node whose node name or content matches your input.
 Candidate node names are those in the current Info file.
 
 With a prefix argument:
@@ -2423,6 +2426,8 @@ CONTENT-PAT is a regexp.  NODE is an Info node name."
            (found  (with-current-buffer Info-complete-menu-buffer
                      (when (and (string= node "..")  (Info-check-pointer "up"))
                        (setq node  (Info-extract-pointer "up")))
+                     ;; `icicle-Info-tag-table-posn' FREE HERE, defined in `icicle-Info-read-node-of-content'.
+                     (set-marker Info-tag-table-marker icicle-Info-tag-table-posn)
                      (if (and (featurep 'info+)  (> emacs-major-version 21))
                          (Info-find-node Info-current-file node 'NO-BACK 'NOMSG)
                        (Info-find-node Info-current-file node 'NO-BACK))
@@ -2439,8 +2444,11 @@ CONTENT-PAT is a regexp.  NODE is an Info node name."
 See `icicle-Info-goto-node-of-content' for a description of the input.
 Non-nil optional arg INCLUDE-FILE-P means include current Info file in
 the name."
-    (let ((C-x-m                      (lookup-key minibuffer-local-completion-map "\C-xm"))
-          (Info-complete-menu-buffer  (clone-buffer)))
+    (let ((C-x-m                       (lookup-key minibuffer-local-completion-map "\C-xm"))
+          (Info-complete-menu-buffer   (clone-buffer))
+          ;; Save the position for the current file (manual), so we can then set the (local) marker
+          ;; to it when we visit the cloned buffer for the same file.
+          (icicle-Info-tag-table-posn  (marker-position Info-tag-table-marker)))
       (when (and (require 'bookmark+ nil t)  (fboundp 'icicle-bookmark-info-other-window))
         (define-key minibuffer-local-completion-map (icicle-kbd "C-x m")
           'icicle-bookmark-info-other-window))
@@ -2593,6 +2601,10 @@ This is used as the value of `minibuffer-completion-table'."
             strg (mapcar #'list nodes) (and pred  (lambda (ss) (funcall pred ss)))))))))
 
   )
+
+(defalias 'icicle-Info-goto-node (if (fboundp 'icicle-Info-goto-node-of-content) ; Emacs 22+
+                                     'icicle-Info-goto-node-of-content
+                                   'icicle-Info-goto-node-no-search))
 
 (when (> emacs-major-version 21)
   (defun icicle-Info-virtual-book (nodeset)
