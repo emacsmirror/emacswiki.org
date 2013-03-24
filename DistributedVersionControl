@@ -18,5 +18,8 @@ The mailing list is at https://mail.gna.org/listinfo/dvc-dev/ and archived at [h
 
 The bug tracker is at https://bugs.launchpad.net/dvc.
 
+[new:PhilHudson:2013-03-24 12:02 UTC]
+If you are building from bzr, be aware of one gotcha: if the first ##emacs## executable in your ##$PATH## is a symlink, then the directory containing that symlink will be used as the base install location by ##make install##. Fix: either change ##$PATH## to expose the actual installed ##emacs## binary first, at least for the duration of the configure/make/install procedure, or hand-edit the ##Makefile## created by running ##./configure## to install to the correct location.
+
 ----
 CategoryVersionControl
