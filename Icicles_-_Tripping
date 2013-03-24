@@ -209,6 +209,7 @@ The '''`a'''' indicates that the command completes an [[autofile bookmark]] name
 * '''`icicle-buffer'''' ('''`C-x b'''') -- Trip among [[buffer]]s
 * '''`icicle-compilation-search'''' ('''`##C-c `##'''') -- Trip among `grep' hits
 * '''`icicle-dired'''' -- Trip among directories in [[Dired]] mode
+* '''`icicle-file'''' ('''`C-x C-f'''') -- Trip among files
 * '''`icicle-find-file'''' ('''`C-x C-f'''') -- Trip among files
 * '''`icicle-find-file-absolute'''' ('''`C-u C-x C-f'''') -- Trip among files
 * '''`icicle-find-file-in-tags-table'''' -- Trip among the files listed in the current [[TagsFile|tags table]] (think "project")
