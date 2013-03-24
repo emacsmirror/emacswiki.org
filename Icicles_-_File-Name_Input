@@ -311,8 +311,7 @@ Starting with Emacs 23, command '''`icicle-find-file'''' (that is,
 '''`icicle-find-file-of-content'''', which lets you
 optionally provide a [[regexp]] pattern to match against file
 ''content''.  In this it is similar to the buffer-switching
-multi-command `icicle-buffer'
-(see [[Icicles - Multi-Completions#InvisibleMulti-CompletionParts|Multi-Completions with a Part You Never See]]).
+multi-command `icicle-buffer'.
 
 If you provide a pattern to match file content
 then all files whose names match the file-name part of your input
@@ -352,14 +351,13 @@ when you provide a content-matching pattern to
 
 In [[Dired]] there is a related content-matching multi-command,
 `icicle-visit-marked-file-of-content' (bound to `C-S-f', aka
-`C-F').  And there are other-window versions of such commands as
-well (`C-O' in Dired).
-
+'''`C-F'''', and `C-S-o', aka '''`C-O'''' for other-window), which you can use
+to visit marked files and subdirectories whose content matches a [[regexp]].
 
 (Prior to Emacs 23, `icicle-find-file' is an alias for
 `icicle-find-file-no-search', which does not search file content.)
 
-
+See also [[Icicles - Searching Named Containers]].
 
 
 
