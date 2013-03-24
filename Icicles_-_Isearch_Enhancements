@@ -76,12 +76,22 @@ provides the candidates for completion.
 === Content-Matching Pattern as Isearch Regexp ===
 
 When your multi-completion input for commands such as
-`icicle-buffer' (`C-x b') and `icicle-file' (`C-x C-f') provides a
-content-matching pattern for completion against buffer or file
+`icicle-buffer' (`C-x b'), `icicle-file' (`C-x C-f'), and  `icicle-Info-goto-node' (`g' in [[Info]]) provides a
+content-matching pattern for completion against buffer, file, or Info node
 content, and at least one candidate matches, the pattern is saved
 to the [[Isearch]] [[regexp]] history, `regexp-search-ring'.  If you then
 visit a matching buffer or file, you can immediately search for
 each match using `C-M-s' or `C-M-r'.
+
+
+This gives you another way to search a set of [[buffer]]s, files, or
+[[Info]] nodes.  You can use [[progressive completion]] to narrow down
+the search hits, either by container (buffer, file, or node name) or by content.
+
+(This content-searching behavior is available for `icicle-file'
+starting with Emacs 23, and for `icicle-Info-goto-node' starting with Emacs 22.)
+
+See also [[Icicles - Searching Named Containers]].
 
 
 
