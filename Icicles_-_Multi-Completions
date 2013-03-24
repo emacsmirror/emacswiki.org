@@ -1,6 +1,6 @@
 : [[image:iciclesimage]]
 
-|| *Previous:*  [[Icicles - Multi-Commands]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Dot, Dot, Dot]] ||
+|| *Previous:*  [[Icicles - Multi-Commands]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Searching Named Containers]] ||
 
 ----
 
@@ -198,6 +198,24 @@ Even this simple command expression combines the effect of Emacs commands
 
 
 
+[:ModeLineIndicator]
+== Mode-Line Lighter Indication of Multi-Completion ==
+
+Whenever multi-completion candidates are available, the `Icy'
+minor-mode lighter has the suffix '''`##||##'''' (think "parallel") appended
+to it.  You can see this lighter at the left of the [[mode line]] of
+buffer `*Completions*' or in the [[minor mode]] part of other mode
+lines.
+
+
+
+
+
+
+
+
+
+
 [:HowMultiCompletionsWork]
 == How Multi-Completions Work ==
 
@@ -278,6 +296,7 @@ as well.
 
 
 
+
 [:MultiCompletionsVsCRM]
 == Multi-Completions vs completing-read-multiple ==
 
@@ -347,82 +366,16 @@ forget that you can always reverse the current sort order, using
 [:InvisibleMulti-CompletionParts]
 == Multi-Completions with a Part You Never See ==
 
-Now that you understand multi-completions a bit, I can say more
-about commands '''`icicle-buffer'''', '''`icicle-file'''', and their other-window versions,
-which by default are bound to `C-x b', `C-x C-f', `C-x 4 b', and `C-x 4 f', and which replace vanilla Emacs commands `##switch-to-buffer(-other-window)##' and `##find-file(-other-window)##', in ''Icicle'' mode.
+Some [[multi-command]]s, such as `icicle-buffer' (`C-x b'), and
+`icicle-file' (`C-x C-f'), `icicle-visit-marked-file-of-content'
+(`C-F' in [[Dired]]), and `icicle-Info-goto-node' (`g' in [[Info]]), do
+not show the second part of multi-completion candidates in
+`*Completions*', because it would just be distracting.  The point
+of such commands is to access a named container (buffer, file, or
+node), and the optional second multi-completion part matches the
+entire container content (the buffer, file, or node text).
 
-These are [[multi-command]]s, which means that you can act on multiple
-[[buffer]]s or files in the same command invocation.  And they each provide
-extra key bindings for special buffer or file actions.  Use `C-h f' to
-learn more.
-
-But what is interesting here about these commands is that their
-completion candidates are multi-completions.  The candidates have two parts, the
-first of which is a buffer name or file name.  If you want, you can simply
-complete against this name part, which gives you a
-multi-command version of `switch-to-buffer' or `find-file' (but with some
-additional features).
-
-But you can also --- or instead --- complete against the second part,
-which is the ''content'' of the buffer or file.  You ''never see'' the second part of the candidate
-in buffer `*Completions*' or the [[minibuffer]], as you don't really
-care about which part of the content matches your input.
-
-All you care about is ''whether'' the 
-content matches your input.  In other words, the second
-part just filters candidates, retaining only those buffers or files whose
-contents match.  As is typical, you use `C-M-j'
-to match `icicle-list-join-string', which separates the candidate parts.
-
-So for example, you can type `##f TAB##' to match buffers or files whose names
-begin with `f'.  Or you can type `C-M-j bar TAB' to match buffers or files 
-whose ''contents match'' `bar'.  Or you can type `##f C-M-j bar TAB##' to match
-buffers or files whose names begin with `f' ''and'' whose contents match `bar'.
-You can of course use a more complex [[regexp]] for either multi-completion part.
-
-When matching content, '''Icicles''' looks for only one match in a given
-buffer or file.  When you then choose a matching candidate,
-visiting the buffer or file does not move to that tested match or
-to any other match.  Matching is used only to filter candidates.
-
-However, if your input includes a content-matching part that
-matches, that part is automatically added to the [[Isearch]] regexp
-history, `regexp-search-ring', whenever you hit `S-TAB' to
-complete your input.  This means that when you visit the buffer or
-file you can immediately search for matches using `C-M-s' or
-`C-M-r'.
-
-(You can also work in the other direction, reusing an Isearch
-regexp as a content-matching regexp.  See [[Icicles - History Enhancements#InsertPreviousInputs|Using Completion to Insert Previous Inputs: `M-o']].) 
-
-This on-the-fly content-matching can be quite handy.  But as a general rule it is a good idea
-to first narrow down the set of candidates by matching buffer
-or file names, before you set off to also search content.  Otherwise,
-if you have many or large buffers or files with no content matches
-then you will waste time searching unnecessarily.
-
-In DiredMode, command
-'''`icicle-visit-marked-file-of-content'''', bound to '''`C-S-f'''' (aka
-'''`C-F''''), is similar: it lets you visit marked files and subdirectories whose content matches a regexp.
-
-
-
-
-
-
-
-
-[:ModeLineIndicator]
-== Mode-Line Lighter Indication of Multi-Completion ==
-
-Whenever multi-completion candidates are available, the `Icy'
-minor-mode lighter has the suffix '''`##||##'''' (think "parallel") appended
-to it.  You can see this lighter at the left of the [[mode line]] of
-buffer `*Completions*' or in the [[minor mode]] part of other mode
-lines.
-
-
-
+See [[Icicles - Searching Named Containers]] for more about this.
 
 
 
@@ -431,8 +384,8 @@ lines.
 
 * [[Icicles - Multi-Commands]]
 
-* [[Icicles - File-Name Input#MatchFileContent|Match File Names and File Content Too]] for information
-about command `icicle-find-file' (`icicle-file' with no prefix arg)
+* [[Icicles - Searching Named Containers]] and [[Icicles - File-Name Input#MatchFileContent|Match File Names and File Content Too]] for information
+about commands that find containers such as files, [[buffer]]s, and [[Info]] nodes by name and by content
 
 * [[Icicles - Programming Multi-Completions]] for information
 about changing the appearance and behavior of '''Icicles'''
@@ -446,7 +399,7 @@ multi-completions using EmacsLisp code.
 
 ----
 
-|| *Previous:*  [[Icicles - Multi-Commands]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Dot, Dot, Dot]] ||
+|| *Previous:*  [[Icicles - Multi-Commands]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Searching Named Containers]] ||
 
 
 
