@@ -31,6 +31,8 @@
 
 ;;; Require
 (require 'hide-lines)
+(require 'cl)
+(require 'ido)
 
 ;;; Code:
 
@@ -64,15 +66,56 @@
     (define-key map (kbd "h l") 'highlight-lines-matching-regexp)
     (define-key map (kbd "h u") 'unhighlight-regexp)
     (define-key map (kbd "C-/") 'syslog-filter-dates)
-    (define-key map "D" (lambda nil (interactive) (dired "/var/log")))
+    (define-key map "D" (lambda nil (interactive) (dired syslog-log-file-directory)))
     (define-key map "j" 'ffap)
     (define-key map "<" 'syslog-previous-file)
     (define-key map ">" 'syslog-next-file)
+    (define-key map "o" 'syslog-open-files)
+    (define-key map "q" 'quit-window)
     ;; XEmacs does not like the Alt bindings
     (if (string-match "XEmacs" (emacs-version))
 	t)
     map)
   "The local keymap for `syslog-mode'.")
+
+(defun syslog-get-basename-and-number (filename)
+  "Return the basename and number suffix of a log file in FILEPATH.
+Return results in a cons cell '(basename . number) where basename is a string,
+and number is a number."
+  (let* ((res (string-match "\\(.*?\\)\\.\\([0-9]+\\)\\(\\.t?gz\\)?" filename))
+         (basename (if res (match-string 1 filename) filename))
+         (str (and res (match-string 2 filename)))
+         (num (or (and str (string-to-number str)) 0)))
+    (cons basename num)))
+
+(defun syslog-open-files (filename num)
+  "Open consecutive log files in same buffer.
+When called interactively the user is prompted for the initial file FILENAME,
+and the number NUM of consecutive backup files to include."
+  (interactive (list (ido-read-file-name "Log file: " syslog-log-file-directory "syslog" t)
+                     (read-number "Number of consecutive backup files to include" 0)))
+  (let* ((pair (syslog-get-basename-and-number filename))
+         (basename (car pair))
+         (curver (cdr pair))
+         (buf (get-buffer-create
+               (concat (file-name-nondirectory basename)
+                       "[" (number-to-string curver) "-"
+                       (number-to-string (+ curver num)) "]"))))
+    (with-current-buffer buf
+      (erase-buffer)
+      (goto-char (point-min))
+      (insert-file-contents filename)
+      (loop for n from (1+ curver) to (+ curver num)
+            for numsuffix = (concat "." (number-to-string n))
+            for nextfile = (loop for suffix in '(nil ".gz" ".tgz")
+                                 if (file-readable-p (concat basename numsuffix suffix))
+                                 return (concat basename numsuffix suffix))
+            if nextfile do
+            (goto-char (point-min))
+            (insert-file-contents nextfile))
+      (goto-char (point-min))
+      (syslog-mode))
+    (switch-to-buffer buf)))
 
 (defun syslog-previous-file (&optional arg)
   "Open the previous logfile backup, or the next one if a prefix arg is used.
@@ -81,19 +124,19 @@ where higher numbers indicate older log files.
 This function will load the previous log file to the current one (if it exists), or the next
 one if ARG is non-nil."
   (interactive "P")
-  (string-match "\\(.*?\\)\\.\\([0-9]+\\)\\(\\.gz\\)?" buffer-file-name)
-  (let* ((basename (or (match-string 1 buffer-file-name)
-                       buffer-file-name))
-         (str (match-string 2 buffer-file-name))
-         (curver (or (and str (string-to-number str)) 0))
+  (let* ((pair (syslog-get-basename-and-number buffer-file-name))
+         (basename (car pair))
+         (curver (cdr pair))
          (nextver (if arg (1- curver) (1+ curver)))
          (nextfile (if (> nextver 0)
                        (concat basename "." (number-to-string nextver))
                      basename)))
-    (if (file-readable-p nextfile)
-        (find-file nextfile)
-      (if (file-readable-p (concat nextfile ".gz"))
-          (find-file (concat nextfile ".gz"))))))
+    (cond ((file-readable-p nextfile)
+           (find-file nextfile))
+          ((file-readable-p (concat nextfile ".gz"))
+           (find-file (concat nextfile ".gz")))
+          ((file-readable-p (concat nextfile ".tgz"))
+           (find-file (concat nextfile ".tgz"))))))
 
 (defun syslog-next-file nil
   "Open the next logfile.
@@ -119,6 +162,11 @@ With prefix arg: remove lines matching regexp."
   "A regular expression matching the date-time at the beginning of each line in the log file."
   :group 'syslog
   :type 'regexp)
+
+(defcustom syslog-log-file-directory "/var/log/"
+  "The directory in which log files are stored."
+  :group 'syslog
+  :type 'directory)
 
 ;;;###autoload
 (defun* syslog-date-to-time (date &optional safe)
@@ -185,6 +233,7 @@ With prefix arg: remove lines between dates."
   (use-local-map syslog-mode-map)
   (make-local-variable 'font-lock-defaults)
   (setq font-lock-defaults '(syslog-font-lock-keywords))
+  (toggle-read-only 1)
   (run-hooks 'syslog-mode-hook))
 
 (defvar syslog-boot-start-regexp "unix: SunOS"
