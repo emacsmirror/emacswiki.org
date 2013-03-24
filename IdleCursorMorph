@@ -1,0 +1,5 @@
+I got annoyed that sometimes after I lost focus from my screen, I couldn't immediately find the cursor when I came back, which I otherwise prefer to have a non-disruptive look, so I thought "wouldn't it be neat if the cursor turned bright red or something after 20 seconds of inactivity?" And since this is Emacs, why not?
+
+https://github.com/TaylanUB/idle-cursor-morph
+
+The implementation is simple, or even primitive if you will, and provides its own settings for the non-idle appearance instead of smartly saving existing settings each time it changes the appearance to the "idle" one. So it might override cursor-appearance settings coming from elsewhere. I had weird bugs when I tried to implement it the smart way and didn't have time to bother, so followed the simple approach. Improvements welcome.
