@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Feb 13 16:47:45 1996
 ;; Version: 21.0
-;; Last-Updated: Sat Mar 23 14:20:30 2013 (-0700)
+;; Last-Updated: Fri Dec 28 10:28:22 2012 (-0800)
 ;;           By: dradams
-;;     Update #: 2100
+;;     Update #: 2094
 ;; URL: http://www.emacswiki.org/thingatpt%2b.el
 ;; Doc URL: http://www.emacswiki.org/ThingAtPointPlus#ThingAtPoint%2b
 ;; Keywords: extensions, matching, mouse
@@ -234,8 +234,6 @@
 ;;
 ;;; Change Log:
 ;;
-;; 2013/03/23 dadams
-;;     tap-string-match-p, tap-looking-at-p: Do not use defalias - see Note in comment.
 ;; 2012/11/10 dadams
 ;;     Added: tap(-bounds-of)-color-at-point, tap-color-nearest-point(-with-bounds).
 ;;     tap-word-nearest-point: Corrected doc string: returns nil if none found.
@@ -452,20 +450,17 @@ this setting temporarily."
 ;;; Utility Functions ------------------------------------------------
 
 
-;; NOTE: Even when the vanilla functions are defined (in Emacs 23+), we cannot just define
-;; these using defalias, because `subr.el' defines them using `defsubst', which would mean
-;; that compiling this code with older Emacs versions would not work for later versions.
-;; So we just duplicate the `subr.el' definitions.
-
 ;; Same as `icicle-string-match-p' in `icicles-fn.el'.
-(defun tap-string-match-p (regexp string &optional start)
-  "Like `string-match', but this saves and restores the match data."
-  (let ((inhibit-changing-match-data  t))
+(if (fboundp 'string-match-p)
+    (defalias 'tap-string-match-p 'string-match-p) ; Emacs 23+
+  (defun tap-string-match-p (regexp string &optional start)
+    "Like `string-match', but this saves and restores the match data."
     (save-match-data (string-match regexp string start))))
 
-(defun tap-looking-at-p (regexp)
-  "Like `looking-at', but this saves and restores the match data."
-  (let ((inhibit-changing-match-data  t))
+(if (fboundp 'looking-at-p)
+    (defalias 'tap-looking-at-p 'looking-at-p) ; Emacs 23+
+  (defun tap-looking-at-p (regexp)
+    "Like `looking-at', but this saves and restores the match data."
     (save-match-data (looking-at regexp))))
 
 (defun tap-looking-back-p (regexp &optional limit greedy)
@@ -1611,7 +1606,7 @@ prompt for the function or variable to find, instead."
                       (call-interactively
                        (if (y-or-n-p "Find function? (n means find variable) ")
                            'find-function
-                         'find-variable)))
+                         'find-variable)))                   
                      (var (find-variable var))
                      ((and (fboundp 'help-C-file-name) ; Emacs 22
                            fn  (subrp (symbol-function fn)))
