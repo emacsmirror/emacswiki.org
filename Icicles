@@ -121,6 +121,7 @@ The most important links are '''bold''' here.
 
 * '''[[Icicles - Multi-Commands]]''' -- making ''multiple input choices'' in a single command execution; performing actions on candidates while cycling
 * '''[[Icicles - Multi-Completions]]''' -- matching a list of regexps in parallel -- e.g., matching against names and their doc strings
+* '''[[Icicles - Searching Named Containers]]''' -- '''Chapter & Verse''': accessing containers such as files, [[buffer]]s, and [[Info]] nodes by matching their names and/or searching their content
 * [[Icicles - Dot, Dot, Dot]] -- a multi-line `##.##', for matching any character, including newline, in [[regexp]]s
 * '''[[Icicles - More About Multi-Commands]]''' -- more about multi-commands
 * [[Icicles - Multi-Inputs]] -- multiple inputs in the same minibuffer
