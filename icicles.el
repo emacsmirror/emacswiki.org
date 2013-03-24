@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 2013.03.07
-;; Last-Updated: Fri Mar 15 16:54:46 2013 (-0700)
+;; Last-Updated: Sat Mar 23 19:52:50 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 23376
+;;     Update #: 23383
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -296,7 +296,8 @@
 ;;    `icicle-imenu-user-option', `icicle-imenu-user-option-full',
 ;;    `icicle-imenu-variable', `icicle-imenu-variable-full',
 ;;    `icicle-increment-option', `icicle-increment-variable',
-;;    `icicle-Info-goto-node', `icicle-Info-index',
+;;    `icicle-Info-goto-node', `icicle-Info-goto-node-no-search',
+;;    `icicle-Info-goto-node-of-content', `icicle-Info-index',
 ;;    `icicle-Info-index-20', `icicle-Info-menu',
 ;;    `icicle-Info-menu-cmd', `icicle-Info-virtual-book',
 ;;    `icicle-insert-buffer', `icicle-insert-thesaurus-entry',
@@ -1030,12 +1031,16 @@
 ;;    `icicle-imenu-command-p', `icicle-imenu-in-buffer-p',
 ;;    `icicle-imenu-non-interactive-function-p',
 ;;    `icicle-increment-cand-nb+signal-end',
+;;    `icicle-Info-apropos-complete-match',
 ;;    `icicle-Info-build-node-completions',
 ;;    `icicle-Info-build-node-completions-1',
-;;    `icicle-Info-goto-node-1', `icicle-Info-goto-node-action',
-;;    `icicle-Info-index-action',
+;;    `icicle-Info-content-match', `icicle-Info-goto-node-1',
+;;    `icicle-Info-goto-node-action', `icicle-Info-index-action',
+;;    `icicle-Info-multi-read-node-name',
 ;;    `icicle-Info-node-is-indexed-by-topic',
-;;    `icicle-Info-read-node-name', `icicle-input-from-minibuffer',
+;;    `icicle-Info-read-node-name',
+;;    `icicle-Info-read-node-of-content',
+;;    `icicle-input-from-minibuffer',
 ;;    `icicle-input-is-a-completion-p', `icicle-insert-candidates',
 ;;    `icicle-insert-candidate-action',
 ;;    `icicle-insert-cand-in-minibuffer',
@@ -1288,10 +1293,11 @@
 ;;    `icicle-ignored-extensions', `icicle-ignored-extensions-regexp',
 ;;    `icicle-incremental-completion-p', `icicle-info-buff',
 ;;    `icicle-Info-index-cache', `icicle-info-menu-map',
-;;    `icicle-Info-only-rest-of-book-p', `icicle-info-window',
-;;    `icicle-inhibit-sort-p', `icicle-inhibit-try-switch-buffer',
-;;    `icicle-initial-value', `icicle-input-completion-fail-overlay',
-;;    `icicle-input-fail-pos', `icicle-insert-string-at-pt-end',
+;;    `icicle-Info-only-rest-of-book-p', `icicle-Info-tag-table-posn',
+;;    `icicle-info-window', `icicle-inhibit-sort-p',
+;;    `icicle-inhibit-try-switch-buffer', `icicle-initial-value',
+;;    `icicle-input-completion-fail-overlay', `icicle-input-fail-pos',
+;;    `icicle-insert-string-at-pt-end',
 ;;    `icicle-insert-string-at-pt-start',
 ;;    `icicle-interactive-history', `icicle-key-prefix',
 ;;    `icicle-key-prefix-2', `icicle-key-prefix-description',
