@@ -68,8 +68,22 @@ argument has the same meaning as for `Info-goto-node'.)
 In addition, except when you are at the `Top' node, a pseudo-node
 '''`##..##'''' is added to the set of completion candidates.  Choosing this
 takes you up to the parent of the current node.  You can thus use
-`g' in Info not only to explore nodes by name, but also as another
+'''`g'''' in Info not only to explore nodes by name, but also as another
 means to traverse the Info menu hierarchy.
+
+Starting with Emacs 22, command `icicle-Info-goto-node' lets you
+type [[multi-completion]] input whose second part (after `C-M-j') is a
+content-searching pattern ([[regexp]]).  This means you can search a
+set of nodes (or an entire manual) and choose from the list of
+matching nodes.  The `*Completions*' candidates you see are just
+the node names.  After you choose one of the matching nodes to
+visit, you can use `C-M-s' to find each match of the
+content-search pattern.  See [[Icicles - Searching Named Containers]].
+
+
+
+
+
 
 
 
