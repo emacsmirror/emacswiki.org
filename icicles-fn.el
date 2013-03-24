@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Mar 11 10:10:27 2013 (-0700)
+;; Last-Updated: Sat Mar 23 19:45:02 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 13837
+;;     Update #: 13860
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -361,10 +361,10 @@
 (defvar font-weight-table)              ; In C code.
 (defvar font-slant-table)               ; In C code.
 (defvar history-delete-duplicates)      ; In C code for Emacs 22+.
-(defvar icicle-file-name-completion-table) ; In `icicles-fn.el'
-(defvar icicle-Info-hist-list)          ; In `icicles-fn.el'
-(defvar icicle-Info-index-nodes)        ; In `icicles-fn.el'
-(defvar icicle-Info-manual)             ; In `icicles-fn.el'
+(defvar icicle-file-name-completion-table) ; In `icicles-var.el' for Emacs 23+.
+(defvar icicle-Info-hist-list)          ; In `icicles-cmd2.el'
+(defvar icicle-Info-index-nodes)        ; In `icicles-cmd2.el'
+(defvar icicle-Info-manual)             ; In `icicles-cmd2.el'
 (defvar icicle-read-char-history)       ; In `icicles-var.el' for Emacs 23+.
 (defvar icicle-read-file-name-internal-fn) ; In `icicles-var.el' for Emacs 24+.
 (defvar list-colors-sort)               ; In `facemenu.el'
