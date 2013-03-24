@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Mar 16 17:16:14 2013 (-0700)
+;; Last-Updated: Sat Mar 23 19:27:56 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 25654
+;;     Update #: 25658
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -489,7 +489,7 @@
   ;; icicle-whole-candidate-as-text-prop-p, icicle-variable-name-history
 (require 'icicles-fn)                   ; (This is required anyway by `icicles-mcmd.el'.)
   ;; icicle-delete-dups, icicle-highlight-lighter, icicle-multi-comp-apropos-complete-match,
-  ;; icicle-read-from-minibuf-nil-default
+  ;; icicle-read-from-minibuf-nil-default, icicle-string-match-p
 
 
 ;; Byte-compiling this file, you will likely get some byte-compiler warning messages.
@@ -536,8 +536,8 @@
 (defvar color-themes)                   ; In `color-theme.el'
 (defvar color-theme-initialized)        ; In `color-theme.el'
 (defvar cookie-cache)
-(defvar dabbrev--last-obarray)
-(defvar dabbrev--last-completion-buffer)
+(defvar dabbrev--last-obarray)          ; In `dabbrev.el' for Emacs < 24
+(defvar dabbrev--last-completion-buffer) ; In `dabbrev.el' for Emacs < 24
 (defvar ess-current-process-name)       ; In `ess-inf.el'
 (defvar ess-mode-syntax-table)          ; In `ess-cust.el'
 (defvar ess-use-R-completion)           ; In `ess-cust.el'
@@ -1513,7 +1513,7 @@ See your version of BBDB for more information."
                    (insert (bbdb-dwim-mail record mail))
                    (setq done  'CYCLE)))))))
     (when (eq done 'CHOOSE)
-      ;; Icicles completion.  `completion-in-region' does not work here as `dwim-completions' is not a
+      ;; Icicles completion.  `completion-in-region' does not work here, as `dwim-completions' is not a
       ;; collection for completion in the usual sense.  It is really a list of replacements.
       (unless (eq (selected-window) (minibuffer-window)) (message "Making completion list..."))
       (icicle-condition-case-no-debug nil
