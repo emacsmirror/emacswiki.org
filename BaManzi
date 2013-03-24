@@ -1,6 +1,6 @@
 I'm a Emacs newbie, started using Emacs since late of 2009.
 
-I'm a Chinese guy. Fortunately, the first version of Emacs that I used in GNU Emacs 23.1, which supports unicode and xft. Thus I was not bothered with those font and charset problems described in many articles of other earlier user. 
+Although a Chinese guy, fortunately the first version of Emacs that I used in GNU Emacs 23.1, which supports unicode and xft. Thus I was not bothered with those problems relating to fonts and charsets described in many Chinese articles by other guyes. 
 
 Twitter: bamanzi
 
@@ -10,13 +10,16 @@ Blog:
 
 
 My emacs configurations:
-  http://code.google.com/p/bamanzi-misc/source/browse/trunk/_emacs.d/
+  http://bitubucket.org/bamanzi/dotemacs-full/
 
 Some my stuff:
-* [http://www.cnblogs.com/bamanzi/archive/2011/03/07/emacs-auto-complete-scite-api.html auto-complete-scite-api] - auto-completion source with scite API files  (please read the [http://bamanzi-misc.googlecode.com/svn/trunk/_emacs.d/lisp/auto-complete-scite-api.el source code] for English introduction.)
-* [http://www.cnblogs.com/bamanzi/archive/2010/04/07/delphi-imenu-parser-emacs.html imenu parser for emacs delphi-mode]
-* [http://www.cnblogs.com/bamanzi/archive/2011/04/06/emacs-delphi-jump-to-decl-impl.html jump to function declaration/implementation in delphi-mode]
-* [http://www.cnblogs.com/bamanzi/archive/2011/10/09/emacs-outline-org-like.html OutlineOrgLike] - Use OrgMode like headings in any major-mode (e.g. in emacs-lisp-mode, any line starting with ";;*" would be section heading. Based on code stolen from [http://www.mygooglest.com/fni/dot-emacs.html FabriceNiessen's dotemacs file].)  Refer [http://code.google.com/p/bamanzi-misc/source/browse/trunk/_emacs.d/lisp/outline-org-like.el source code file] for English instructions.
+* [http://code.google.com/p/emacs-manual-chm/ Emacs Manual CHM project] aims to providing chm version of GNU Emacs, so that you can read them on some occasions when chm is more convinient
+* [http://www.cnblogs.com/bamanzi/archive/2011/03/07/emacs-auto-complete-scite-api.html auto-complete-scite-api] - auto-completion source with scite API files  (please read the [https://bitbucket.org/bamanzi/dotemacs-full/src/default/lisp/auto-complete-scite-api.el?at=default source code] for English introduction.)
+* [https://bitbucket.org/bamanzi/dotemacs-full/src/default/lisp/delphi-ext.el?at=default delphi-ext.el] improves pascal-mode to make it support object pascal & delphi better: highlighting object pascal keywords, imenu support for object pascal class and new commands to jump between function/method declartion and implementation
+** [http://www.cnblogs.com/bamanzi/archive/2010/04/07/delphi-imenu-parser-emacs.html imenu parser for emacs delphi-mode]
+** [http://www.cnblogs.com/bamanzi/archive/2011/04/06/emacs-delphi-jump-to-decl-impl.html jump to function declaration/implementation in delphi-mode]
+* [http://www.cnblogs.com/bamanzi/archive/2011/10/09/emacs-outline-org-like.html OutlineOrgLike] - Use OrgMode like headings in any major-mode (e.g. in emacs-lisp-mode, any line starting with ";;*" would be section heading. Based on code stolen from [http://www.mygooglest.com/fni/dot-emacs.html FabriceNiessen's dotemacs file].)  Refer [https://bitbucket.org/bamanzi/dotemacs-full/src/default/lisp/outline-org-like.el?at=default source code file] for English instructions.
+* [https://bitbucket.org/bamanzi/dotemacs-full/src/default/lisp/mark-copy-something.el?at=default mark-copy-something.el] is a quick-and-dirty package to mark/copy something. It was written in early days in my emacs history, at that time I don't know about thing-at-point. Maybe someday I'll rewrite it.
 
 
 
