@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Mon Mar 18 14:50:47 2013 (-0700)
+;; Last-Updated: Sat Mar 23 21:39:27 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 29264
+;;     Update #: 29274
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -125,10 +125,16 @@
 ;;
 ;;  (@file :file-name "icicles-doc1.el" :to "Multi-Completions")
 ;;    (@file :file-name "icicles-doc1.el" :to "Icicles Multi-Completion Commands")
+;;    (@file :file-name "icicles-doc1.el" :to "Mode-Line Lighter Indication of Multi-Completion")
 ;;    (@file :file-name "icicles-doc1.el" :to "How Multi-Completions Work")
 ;;    (@file :file-name "icicles-doc1.el" :to "Multi-Completions vs `completing-read-multiple'")
+;;    (@file :file-name "icicles-doc1.el" :to "Sorting Candidates by Their Second Part")
+;;    (@file :file-name "icicles-doc1.el" :to "Multi-Completions with a Part You Never See")
+;;
+;;  (@file :file-name "icicles-doc1.el" :to "Chapter & Verse: Searching Named Containers")
 ;;
 ;;  (@file :file-name "icicles-doc1.el" :to "Dot, Dot, Dot")
+;;
 ;;  (@file :file-name "icicles-doc1.el" :to "More about Multi-Commands")
 ;;    (@file :file-name "icicles-doc1.el" :to "Alternative Actions")
 ;;    (@file :file-name "icicles-doc1.el" :to "Deleting Objects")
@@ -2826,6 +2832,16 @@
 ;;  takes you up to the parent of the current node.  You can thus use
 ;;  `g' in Info not only to explore nodes by name, but also as another
 ;;  means to traverse the Info menu hierarchy.
+;;
+;;  Starting with Emacs 22, command `icicle-Info-goto-node' lets you
+;;  type multi-completion input whose second part (after `C-M-j') is a
+;;  content-searching pattern (regexp).  This means you can search a
+;;  set of nodes (or an entire manual) and choose from the list of
+;;  matching nodes.  The `*Completions*' candidates you see are just
+;;  the node names.  After you choose one of the matching nodes to
+;;  visit, you can use `C-M-s' to find each match of the
+;;  content-search pattern.  See
+;;  (@file :file-name "icicles-doc1.el" :to "Chapter & Verse: Searching Named Containers").
 ;;
 ;;(@* "Highlighting Index Topics for Visited Info Nodes")
 ;;  *** Highlighting Index Topics for Visited Info Nodes ***
