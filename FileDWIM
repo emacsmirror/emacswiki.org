@@ -1,0 +1,3 @@
+https://github.com/TaylanUB/file-dwim
+
+Do What I Mean for files. Like freedesktop.org's xdg-open(1) or OS X's open(1), etc., does any action on a file according to a rule-list. Could be bound to RET in Dired or used instead of `find-file' in various places, to e.g. play media files instead of visiting them.
