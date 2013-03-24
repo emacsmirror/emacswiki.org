@@ -116,7 +116,7 @@ and [[Icicles - Global Filters]].
 
 '''See Also:'''
 
-* [[Icicles - Multi-Completions#InvisibleMulti-CompletionParts|Multi-Completions with a Part You Never See]] about content-searching
+* [[Icicles - Searching Named Containers]] about content-searching
 * [[Icicles - File-Name Input#MatchFileContent|Match File Names and File Content Too]] about content-searching of files
 * [[Icicles - Ido and IswitchB]] to use '''Icicles''' with a buffer-switching
   behavior that is similar to [[Ido]] and [[IswitchB]]
