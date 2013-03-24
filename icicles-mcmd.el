@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Mar 16 17:36:45 2013 (-0700)
+;; Last-Updated: Sat Mar 23 19:29:38 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 18938
+;;     Update #: 18939
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -405,7 +405,7 @@
   ;; icicle-saved-ignored-extensions, icicle-successive-grab-count, icicle-thing-at-pt-fns-pointer,
   ;; icicle-universal-argument-map, icicle-variable-name-history
 (require 'icicles-fn)
-  ;; icicle-minibuf-input-sans-dir, icicle-toggle-icicle-mode-twice
+  ;; icicle-minibuf-input-sans-dir, icicle-string-match-p, icicle-toggle-icicle-mode-twice
 
 (require 'doremi nil t) ;; (no error if not found):
                         ;; doremi, doremi(-boost)-(up|down)-keys, doremi-limit, doremi-wrap
