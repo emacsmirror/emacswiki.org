@@ -291,7 +291,7 @@ In the *One-Key* buffer:
 ==Plugins==
 
 The following libraries are available for defining extra one-key menu types:
-: Lisp:one-key-dir.el - one-key menus for quickly navigating directories 
+: Lisp:one-key-dir.el - one-key menus for quickly navigating directories (useful for navigating procfs or sysfs on *nix systems)
 : Lisp:one-key-yas.el - one-key menus for yasnippet templates (see [[Yasnippet]])
 : Lisp:one-key-bmkp.el - one-key menus for bookmark+ bookmarks (see [[BookmarkPlus]])
 
