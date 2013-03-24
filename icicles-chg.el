@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sun Mar 17 17:50:31 2013 (-0700)
+;; Last-Updated: Sat Mar 23 20:08:55 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 9855
+;;     Update #: 9870
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -887,6 +887,12 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2013/03/23 dadams
+;;     Renamed icicle-Info-goto-node to icicle-Info-goto-node-no-search.
+;;     Added: icicle-Info-goto-node (new version) - use *-of-content or *-no-search.
+;;     icicle-Info-menu-cmd: Use icicle-Info-goto-node-no-search, not new icicle-Info-goto-node.
+;;     icicle-Info-content-match: Set Info-tag-table-marker to saved position.
+;;     icicle-Info-read-node-of-content: Save position of Info-tag-table-marker for *-content-match. 
 ;; 2013/03/17 dadams
 ;;     Added: icicle-Info-goto-node-of-content, icicle-Info-apropos-complete-match,
 ;;            icicle-Info-content-match, icicle-Info-read-node-of-content,
@@ -6561,6 +6567,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2013/03/18 dadams
+;;     icicle-top-level-key-bindings: Temporarily removed icicle-dabbrev-completion for Emacs 24+.
 ;; 2013/02/26 dadams
 ;;     Added (put 'icicle-kbd 'pure t).
 ;; 2013/02/04 dadams
@@ -7356,6 +7364,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2013/03/23 dadams
+;;     Added: icicle-Info-tag-table-posn.
 ;; 2013/03/07 dadams
 ;;     Updated to use icicle-user-error where appropriate.
 ;; 2013/02/16 dadams
