@@ -1,0 +1,109 @@
+: [[image:iciclesimage]]
+
+|| *Previous:*  [[Icicles - Multi-Completions]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Dot, Dot, Dot]] ||
+
+----
+
+
+
+== Chapter & Verse: Searching Named Containers ==
+
+Some '''Icicles''' [[multi-command]]s, such as `icicle-buffer' ('''`C-x b''''),
+`icicle-file' ('''`C-x C-f''''), `icicle-visit-marked-file-of-content'
+('''`C-F'''' in [[Dired]]), and `icicle-Info-goto-node' ('''`g'''' in [[Info]]),
+access ''containers'' of text ([[buffer]], file, or [[Info]] node) by name.
+
+When this is the case, '''Icicles''' provides [[multi-completion]]
+candidates, the first part being the container ''name'' and the second
+part being the entire ''content'' of the container with that name (the
+buffer, file, or node text).
+
+You can think of these as '''[::chapter-and-verse]''' commands: you name a
+chapter or you search for a verse among chapters.  Or you do both
+at the same time, searching particular chapters for particular
+verses.
+
+The second multi-completion part (the verse, or content)
+is never shown in `*Completions*', and you can ignore it
+altogether if you want.  If you do not use `C-M-j' and then type a
+content-matching pattern, then no content-searching occurs, which
+is of course quicker than searching lots of text.
+
+But if the container (chapter) names are not enough to help you
+locate some information, then you can search the content instead.
+Or you can match both at the same time: one pattern for the name
+and another for the content.  Each pattern is optional.
+
+When you search using a chapter-&-verse command, all you care
+about is whether the content matches your input.  '''Icicles''' looks
+for only one content match in a given container.  In other words,
+the second part of your input just ''filters'' candidates, retaining
+only those containers whose contents match.
+
+This is a powerful and unique way to search.  Of course there are
+commands, such as `grep', that act similarly, but they are
+generally not incremental: letting you change name and/or content
+pattern on the fly as you see the corresponding matches.
+
+'''[[Icicles - Search Commands, Overview|Icicles search]]''' (e.g., `##C-c `##') has some similarities.  It lets you
+first choose a set of files or buffers to search, then it shows you
+the search hits as you change your content-matching pattern.  But
+you cannot change the set of containers to search incrementally:
+you choose them at the outset once and for all, before you start
+to search.
+
+For '''Icicles''' search commands the emphasis is thus on the content
+search.  For '''Icicles''' chapter-&-verse commands the emphasis is not
+on searching; the aim is just to identify and go to a given
+container.  Searching is just one way to find the right container.
+
+Chapter-&-verse commands access a container in the same way,
+whether or not they have search it contents.  They do not move to
+any search-hit location.  For instance, `icicle-file' (`C-x C-f') simply
+visits the chosen file, just as `find-file' would do.
+
+But you can search the container once you visit it, using
+`C-M-s' or `C-M-r' ([[regexp]] [[Isearch]]).  Whenever a content search is
+successful the search pattern is added to `regexp-search-ring'
+when you hit `S-TAB'.  So when the chapter-&-verse command is finished you can
+immediately search for content matches incrementally.
+
+(You can also work in the other direction, reusing an Isearch
+regexp as a content-matching regexp.  See
+[[Icicles - History Enhancements#InsertPreviousInputs|Using Completion to Insert Previous Inputs: `M-o']].)
+
+This on-the-fly, on-demand content-matching can be quite handy.
+But as a general rule it is a good idea to first narrow down the
+set of candidates by matching container names before you set off
+to also search content.  Otherwise, if you have many or large
+containers with no content matches then you will waste time
+searching unnecessarily.  It is also generally a good idea to
+temporarily turn off '''Icicles''' incremental completion and [[IcompleteMode]] when you search container content.
+
+See Also:
+
+* [[Icicles - Multi-Completions]]
+* [[Icicles - File-Name Input#MatchFileContent|
+Match File Names and File Content Too]]
+* [[Icicles - Isearch Enhancements#ContentMatchingPatternAsIsearchRegexp|Content-Matching Pattern as Isearch Regexp]]
+
+
+
+----
+
+
+|| *Previous:*  [[Icicles - Multi-Completions]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Dot, Dot, Dot]] ||
+
+
+
+
+DrewsElispLibraries referenced here: Lisp:icicles.el
+
+CategoryCommands 
+CategoryCompletion
+CategoryRegexp
+CategoryDocumentation
+CategoryHelp
+CategoryProgrammerUtils
+CategoryCode
+
