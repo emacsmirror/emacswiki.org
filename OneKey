@@ -265,9 +265,6 @@ In the *One-Key* buffer:
 
 :: You can always use the keystroke "C-g" to abort OneKey, whatever special keybindings you have set.
 
-==Bugs==
-: To report a bug either enter M-x one-key-submit-bug-report, or press C-f11 in the *One-Key* buffer.
-
 ==Plugins==
 
 The following libraries are available for defining extra one-key menu types:
@@ -279,6 +276,9 @@ The following libraries are available for defining extra one-key menu types:
 
 If you want to help develop OneKey have a look at the github repo: https://github.com/vapniks/one-key
 The code there is currently broken as I am in the midst of a major refactoring (but the code here on the wiki should work).
+
+==Bugs==
+: You can report a bug from within emacs by entering M-x one-key-submit-bug-report, or press C-f11 in the *One-Key* buffer.
 
 ==Related==
 
