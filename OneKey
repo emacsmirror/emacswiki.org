@@ -197,28 +197,28 @@ All the options below can be customized by M-x customize-group RET one-key RET
 || one-key-min-keymap-submenu-size   || The minimum number of elements allowed in a submenu when creating menus from keymaps.||
 || one-key-popup-window   || Whether to popup window when `one-key-menu' is run for the first time.||
 || one-key-buffer-name   || The buffer name of the popup menu window.||
-|| one-key-column-major-order   || If true then menu items are displayed in column major order, otherwise row major order.||
-|| one-key-force-multi-column-keymap-menus   || If non-nil then one-key menus created from keymaps will have command descriptions shortened to fit two columns.||
-|| one-key-menu-window-max-height   || The max height of popup menu window.||
-|| one-key-menus-save-file   || The file where `one-key' menus are saved.||
-|| one-key-autosave-menus   || If non-nil then one-key menus will automatically be saved when created or changed.||
-|| one-key-exclude-from-save   || List of regular expressions matching names of menus which should not be autosaved.||
-|| one-key-include-menubar-items   || Whether or not to include menu items with no keybinding when creating one-key menus from keymaps.||
-|| one-key-item-foreground-colour   || Foreground colour of highlighted items in `one-key' menus.||
-|| one-key-auto-brighten-used-keys   || If non-nil then set brightness of menu items colours according to how often the keys are pressed.||
-|| one-key-submenus-replace-parents   || If non-nil then when a submenu of a `one-key' menu is opened it will replace the parent menu.||
-|| one-key-major-mode-remap-alist   || A list of cons cells mapping major modes to one-key-menus.||
-|| one-key-toplevel-alist   || The `one-key' top-level alist.||
-|| one-key-sets-of-menus-alist   || Saved menu sets (sets of menus).||
-|| one-key-default-menu-set   || The default menu set. It's value should be the car of one of the items in `one-key-sets-of-menus-alist'.||
-|| one-key-default-sort-method-alist   || An alist of sorting methods to use on the `one-key' menu items.||
-|| one-key-special-keybindings   || An list of special keys; labels, keybindings, descriptions and associated functions.||
-|| one-key-default-special-keybindings   || List of special keys to be used if no other set of special keys is defined for a given one-key menu type.||
-|| one-key-menu-sets-special-keybindings   || List of special keys to be used for menu-sets menus (see `one-key-default-special-keybindings' for more info).||
-|| one-key-disallowed-keymap-menu-keys   || List of keys that should be excluded from one-key menus created from keymaps.||
-|| one-key-types-of-menu   || A list of names of different types of `one-key' menu, and associated functions.||
-|| one-key-persistent-menu-number   || If non-nil then when the default menu set is opened it will start with the same menu as when previously opened.||
-|| one-key-mode-line-message   || Form that when evaluated should produce a string for the mode-line in the *One-Key* buffer.||
+|| one-key-column-major-order   || If true then menu items are displayed in column major order, otherwise row major order. ||
+|| one-key-force-multi-column-keymap-menus   || If non-nil then one-key menus created from keymaps will have command descriptions shortened to fit two columns. ||
+|| one-key-menu-window-max-height   || The max height of popup menu window. ||
+|| one-key-menus-save-file   || The file where `one-key' menus are saved. ||
+|| one-key-autosave-menus   || If non-nil then one-key menus will automatically be saved when created or changed. ||
+|| one-key-exclude-from-save   || List of regular expressions matching names of menus which should not be autosaved. ||
+|| one-key-include-menubar-items   || Whether or not to include menu items with no keybinding when creating one-key menus from keymaps. ||
+|| one-key-item-foreground-colour   || Foreground colour of highlighted items in `one-key' menus. ||
+|| one-key-auto-brighten-used-keys   || If non-nil then set brightness of menu items colours according to how often the keys are pressed. ||
+|| one-key-submenus-replace-parents   || If non-nil then when a submenu of a `one-key' menu is opened it will replace the parent menu. ||
+|| one-key-major-mode-remap-alist   || A list of cons cells mapping major modes to one-key-menus. ||
+|| one-key-toplevel-alist   || The `one-key' top-level alist. ||
+|| one-key-sets-of-menus-alist   || Saved menu sets (sets of menus). ||
+|| one-key-default-menu-set   || The default menu set. It's value should be the car of one of the items in `one-key-sets-of-menus-alist'. ||
+|| one-key-default-sort-method-alist   || An alist of sorting methods to use on the `one-key' menu items. ||
+|| one-key-special-keybindings   || An list of special keys; labels, keybindings, descriptions and associated functions. ||
+|| one-key-default-special-keybindings   || List of special keys to be used if no other set of special keys is defined for a given one-key menu type. ||
+|| one-key-menu-sets-special-keybindings   || List of special keys to be used for menu-sets menus (see `one-key-default-special-keybindings' for more info). ||
+|| one-key-disallowed-keymap-menu-keys   || List of keys that should be excluded from one-key menus created from keymaps. ||
+|| one-key-types-of-menu   || A list of names of different types of `one-key' menu, and associated functions. ||
+|| one-key-persistent-menu-number   || If non-nil then when the default menu set is opened it will start with the same menu as when previously opened. ||
+|| one-key-mode-line-message   || Form that when evaluated should produce a string for the mode-line in the *One-Key* buffer. ||
 
 ==Tips==
 In the *One-Key* buffer:
