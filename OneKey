@@ -8,7 +8,7 @@ JoeBloggs, why don't you put this on github.  This way you get issue tracking, g
 
 [new]
 
-Here is the github repo: https://github.com/vapniks/one-key -- JoeBloggs
+
 
 [new]
 
@@ -289,6 +289,11 @@ The following libraries are available for defining extra one-key menu types:
 : Lisp:one-key-dir.el - one-key menus for quickly navigating directories (useful for navigating procfs or sysfs on *nix systems)
 : Lisp:one-key-yas.el - one-key menus for yasnippet templates (see [[Yasnippet]])
 : Lisp:one-key-bmkp.el - one-key menus for bookmark+ bookmarks (see [[BookmarkPlus]])
+
+==Github==
+
+If you want to help develop OneKey have a look at the github repo: https://github.com/vapniks/one-key
+The code there is currently broken as I am in the midst of a major refactoring (but the code here on the wiki should work).
 
 ==Related==
 
