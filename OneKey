@@ -8,7 +8,7 @@ With so many Emacs extensions there are a lot of keystrokes to remember, and you
 This package fixes that problem, and helps new users to learn the common keybindings.
 By default menus for common prefix keys and commands, as well as major-mode keybindings are defined.
 
-You can delete, edit, sort, highlight, filter and add new menu items and you can even add new menus.
+You can delete, edit, sort, highlight, filter and add new menu items and you can also add new menus.
 You can access different menus from the same window which can be navigated with the arrow keys.
 Such a collection of menus is called a menu set.
 You can define different menu sets, and define which one will be opened when the default key is pressed depending
@@ -17,7 +17,7 @@ on different conditions.
 Several different types of menus are defined for holding different types of items.
 For example the "major-mode" type opens a menu of commands associated with the current major-mode.
 More different types are defined by one-key plugin libraries, and you can create your own types.
-See "Plugins" and "Creating menus" below.
+See "Plugins" below.
 
 ==Why do I need OneKey ?==
 * *I am new to emacs and want to learn the common keybindings*
