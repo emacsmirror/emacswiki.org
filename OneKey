@@ -62,8 +62,8 @@ arrow keys. You can toggle the visibility and size of the *One-Key* window by re
 This is useful if there are a large number of items in the menu, or when you need to see part of the buffer that is
 obscured by the *One-Key* window.
 
-By default one-key will quit and the *One-Key* window will close after pressing a key corresponding to one of the
-menu items. If you want one-key to stay active after pressing an item key you should toggle the menu persistence
+By default the *One-Key* window will close after pressing a key corresponding to one of the
+menu items. If you want *One-Key* to stay active after pressing an item key you should toggle the menu persistence
 by pressing the appropriate special key (C-menu by default, see "Special keybindings" below).
 To quit one-key and close the *One-Key* window press ESC. If you want to quit but keep the window open (e.g. to see
 the keybindings for a major mode), press C-ESC.
