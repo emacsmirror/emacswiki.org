@@ -28,9 +28,9 @@ A similar logic applies to double-quotes, especially if one is frequently adding
 
 Useful markdown-specific editing features:
 
-* Change heading level two ways: by cycling with C-c C-- or C-c C-= or by re-issuing a heading insertion command when the point is at a heading (e.g., C-c C-t 4 will replace the current heading with a level-four heading).
-* Section navigation via outline-minor-mode using the same keybindings as in org-mode (C-c C-f, C-c C-b, C-c C-u, C-c C-p, and C-c C-n).
-* Reorder list items with M-UP and M-DOWN.
+* Change heading level two ways: by cycling with `C-c C--' or `C-c C-=' or by re-issuing a heading insertion command when the point is at a heading (e.g., `C-c C-t 4' will replace the current heading with a level-four heading).
+* Section navigation via outline-minor-mode using the same keybindings as in org-mode (`C-c C-f', `C-c C-b', `C-c C-u', `C-c C-p', and `C-c C-n').
+* Reorder list items with `M-<up>' and `M-<down>'.
 
 ----
 MarkupModes
