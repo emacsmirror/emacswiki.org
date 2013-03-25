@@ -1,5 +1,4 @@
-;;; iy-go-to-char.el -- Go to next CHAR which is similar to "f" in vim
-
+;;; iy-go-to-char.el --- Go to next CHAR which is similar to "f" in vim
 ;; Copyright (C) 2009 Ian Yang
 
 ;; Author: Ian Yang <doit dot ian (at) gmail dot com>
@@ -7,10 +6,12 @@
 ;; Filename: iy-go-to-char.el
 ;; Description: Go to char
 ;; Created: 2009-08-23 01:27:34
-;; Version: 1.1
-;; Last-Updated: 2012-04-16 08:42:00
-;; URL: http://www.emacswiki.org/emacs/download/iy-go-to-char.el
+;; Version: 2.0
+;; Last-Updated: 2013-03-25 08:33:00
+;; URL: https://github.com/doitian/iy-go-to-char
 ;; Compatibility: GNU Emacs 23.1.1
+
+;;; License:
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -36,14 +37,14 @@
 ;; To use, make sure this file is on your `load-path' and put the
 ;; following in your .emacs file:
 ;;
-;; (require 'iy-go-to-char)
+;;     (require 'iy-go-to-char)
 ;;
 ;; Then you can bind functions like:
 ;;
-;; (global-set-key (kbd "C-c f") 'iy-go-to-char)
-;; (global-set-key (kbd "C-c F") 'iy-go-to-char-backward)
-;; (global-set-key (kbd "C-c ;") 'iy-go-to-char-continue)
-;; (global-set-key (kbd "C-c ,") 'iy-go-to-char-continue-backward)
+;;     (global-set-key (kbd "C-c f") 'iy-go-to-char)
+;;     (global-set-key (kbd "C-c F") 'iy-go-to-char-backward)
+;;     (global-set-key (kbd "C-c ;") 'iy-go-to-char-continue)
+;;     (global-set-key (kbd "C-c ,") 'iy-go-to-char-continue-backward)
 
 ;; Except repeating the char key, followings keys are defined before
 ;; quitting the search:
@@ -85,8 +86,11 @@
 ;; `iy-go-to-char-continue' and `iy-go-to-char-continue-backward'.
 
 ;;; Change Log:
+;; 2013-03-25 (2.0)
+;;    - Use overriding-local-map to setup keymap
+;;    - multiple-cursors compatible
 ;; 2012-04-16 (1.1)
-;;    fix C-s/C-r to enter isearch
+;;    - fix C-s/C-r to enter isearch
 
 ;;; Code:
 
@@ -105,14 +109,103 @@
   :type 'character
   :group 'iy-go-to-char)
 
-(defvar iy-go-to-char-last-char nil
-  "last char used in iy-go-to-char"
-  )
+(defvar iy-go-to-char-start-pos nil
+  "position where go to char mode is enabled")
 
-(defun iy-go-to-char-isearch-setup ()
-  (remove-hook 'isearch-mode-hook 'iy-go-to-char-isearch-setup)
+(defvar iy-go-to-char-last-char nil
+  "last char used in iy-go-to-char")
+
+(defvar iy-go-to-char-keymap (let ((map (make-sparse-keymap)))
+                               (define-key map (kbd "C-s") 'iy-go-to-char-isearch)
+                               (define-key map (kbd "C-r") 'iy-go-to-char-isearch-backward)
+                               (define-key map (kbd "C-w") 'iy-go-to-char-kill-region)
+                               (define-key map (kbd "M-w") 'iy-go-to-char-kill-ring-save)
+                               (define-key map (kbd "C-g") 'iy-go-to-char-quit)
+
+                               map)
+  "keymap used when iy-go-to-char is ongoing")
+
+ 
+
+(defun iy-go-to-char--isearch-setup ()
+  (remove-hook 'isearch-mode-hook 'iy-go-to-char--isearch-setup)
   (setq isearch-string (if iy-go-to-char-last-char (string iy-go-to-char-last-char) ""))
   (isearch-search-and-update))
+
+(defun iy-go-to-char--override-local-map (char)
+  "Override the local key map"
+  (setq overriding-local-map
+        (let ((map (copy-keymap iy-go-to-char-keymap)))
+
+          (define-key map (string char) 'iy-go-to-char-continue)
+          (define-key map (string iy-go-to-char-key-forward) 'iy-go-to-char-continue)
+          (define-key map (string iy-go-to-char-key-backward) 'iy-go-to-char-continue-backward)
+
+          (define-key map [t] 'iy-go-to-char-pass-through)
+
+          map)))
+
+ 
+
+(defun iy-go-to-char-done ()
+  "Finish iy-go-to-char-mode"
+  (interactive)
+  (push-mark iy-go-to-char-start-pos t)
+  (setq iy-go-to-char-start-pos nil)
+  (setq overriding-local-map nil))
+
+(defun iy-go-to-char-quit ()
+  "Quit iy-go-to-char-mode"
+  (interactive)
+  (goto-char iy-go-to-char-start-pos)
+  (setq iy-go-to-char-start-pos nil)
+  (setq overriding-local-map nil))
+
+(defun iy-go-to-char-pass-through ()
+  "Finish iy-go-to-char-mode and invoke the corresponding command"
+  (interactive)
+  (iy-go-to-char-done)
+  (let* ((keys (progn
+                 (setq unread-command-events
+                       (append (this-single-command-raw-keys)
+                               unread-command-events))
+                 (read-key-sequence-vector "")))
+         (command (and keys (key-binding keys))))
+    (when (commandp command)
+      (setq this-command command
+            this-original-command command
+            mc--this-command command)
+      (call-interactively command))))
+
+(defun iy-go-to-char-isearch ()
+  "Start isearch using the char"
+  (interactive)
+  (iy-go-to-char-done)
+  (add-hook 'isearch-mode-hook 'iy-go-to-char--isearch-setup)
+  (isearch-forward))
+
+(defun iy-go-to-char-isearch-backward ()
+  "Start isearch backward using the char"
+  (interactive)
+  (iy-go-to-char-done)
+  (add-hook 'isearch-mode-hook 'iy-go-to-char--isearch-setup)
+  (isearch-backward))
+
+(defun iy-go-to-char-kill-region ()
+  "Kill region between current position and the position where go to char starts"
+  (interactive)
+  (iy-go-to-char-done)
+  (kill-region (point) (mark)))
+
+(defun iy-go-to-char-kill-ring-save ()
+  "Save region between current position and the position where go to char starts"
+  (interactive)
+  (iy-go-to-char-done)
+  (kill-ring-save (point) (mark)))
+
+(defun iy-go-to-char--internal (n)
+  (interactive "p")
+  (search-forward (string iy-go-to-char-last-char) nil nil (if (zerop n) 1 n)))
 
 ;;;###autoload
 (defun iy-go-to-char (n char)
@@ -128,53 +221,14 @@ Unless quit using C-g or the region is activated before searching, the start
  point is set as mark.
 "
   (interactive "p\ncGo to char: ")
-  (let ((count (if (zerop n) 1 n))
-        (cont t)
-        (orig (if (region-active-p) (mark) (point)))
-        (dir (if (< n 0) -1 1))
-        ev pt)
-    (when (and (= char ?\C-z) iy-go-to-char-last-char)
-      (setq char iy-go-to-char-last-char))
-    (save-excursion
-      (search-forward (string char) nil nil count)
-      (setq pt (match-end 0))
-      (setq iy-go-to-char-last-char char) ;; save char only if success
-      (while cont
-        (setq ev (read-event))
-        (cond ((eq ev iy-go-to-char-key-forward)
-               (search-forward (string char) nil nil 1)
-               (setq pt (match-end 0)))
-              ((eq ev iy-go-to-char-key-backward)
-               (search-forward (string char) nil nil -1)
-               (setq pt (match-end 0)))
-              ((eq ev char)
-               (search-forward (string char) nil nil dir)
-               (setq pt (match-end 0)))
-              ((eq ev ?\C-z)
-               (search-forward (string char) nil nil dir)
-               (setq pt (match-end 0)))
-              (t
-               (setq cont nil)))))
-    (if (not pt)
-        (push ev unread-command-events)
-      (goto-char pt)
-      (push-mark orig t)
-      (cond
-       ((or (eq ev ?\C-s) (eq ev ?\C-r))
-        (add-hook 'isearch-mode-hook 'iy-go-to-char-isearch-setup)
-        (if (eq ev ?\C-s) (isearch-forward) (isearch-backward)))
-       ((eq ev ?\C-w)
-        (goto-char pt)
-        (push-mark orig t)
-        (kill-region orig pt))
-       ((eq ev ?\M-w)
-        (goto-char pt)
-           (push-mark orig t)
-           (kill-ring-save orig pt))
-       (t
-        (push ev unread-command-events)
-        (goto-char pt)
-        (push-mark orig t))))))
+  (setq iy-go-to-char-last-char char)
+  (unless iy-go-to-char-start-pos
+    (setq iy-go-to-char-start-pos (point))
+    (iy-go-to-char--override-local-map char))
+
+  (setq this-original-command 'iy-go-to-char--internal
+        this-command 'iy-go-to-char--internal)
+  (call-interactively 'iy-go-to-char--internal))
 
 ;;;###autoload
 (defun iy-go-to-char-backward (n char)
@@ -204,3 +258,6 @@ Typing C-s or C-r will start `isearch` using CHAR"
  
 
 (provide 'iy-go-to-char)
+
+;;; iy-go-to-char.el ends here
+
