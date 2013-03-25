@@ -193,10 +193,10 @@ You can also reposition items in a menu:
 ==Customize==
 All the options below can be customized by M-x customize-group RET one-key RET
 
-|| one-key-default-menu-keys   || A list of chars which may be used as the default keys in automatically generated `one-key' menus.||
-|| one-key-min-keymap-submenu-size   || The minimum number of elements allowed in a submenu when creating menus from keymaps.||
-|| one-key-popup-window   || Whether to popup window when `one-key-menu' is run for the first time.||
-|| one-key-buffer-name   || The buffer name of the popup menu window.||
+|| one-key-default-menu-keys   || A list of chars which may be used as the default keys in automatically generated `one-key' menus. ||
+|| one-key-min-keymap-submenu-size   || The minimum number of elements allowed in a submenu when creating menus from keymaps. ||
+|| one-key-popup-window   || Whether to popup window when `one-key-menu' is run for the first time. ||
+|| one-key-buffer-name   || The buffer name of the popup menu window.  ||
 || one-key-column-major-order   || If true then menu items are displayed in column major order, otherwise row major order. ||
 || one-key-force-multi-column-keymap-menus   || If non-nil then one-key menus created from keymaps will have command descriptions shortened to fit two columns. ||
 || one-key-menu-window-max-height   || The max height of popup menu window. ||
