@@ -58,7 +58,7 @@ brackets to its left. Pressing one of these keys executes the corresponding comm
 
 Along the top of the buffer in the header line you will see a list of menu names. One of these names will be
 highlighted and indicates the current menu. You can navigate between the different menus by pressing the left/right
-arrow keys. You can toggle the visibility and size of the *One-Key* window by repeatedly pressing top key.
+arrow keys. You can toggle the visibility and size of the *One-Key* window by repeatedly pressing the top key.
 This is useful if there are a large number of items in the menu, or when you need to see part of the buffer that is
 obscured by the *One-Key* window.
 
