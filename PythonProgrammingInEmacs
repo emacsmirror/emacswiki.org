@@ -1,45 +1,85 @@
-emacs.el
-
-== Overview ==
-
 This page collects information for creating a usable Python programming environment in Emacs.
 
-There are three major implementations of a Python mode for Emacs: one called python-mode.el and two called python.el.  In order of beginning development, these are:
 
-# ProgrammingWithPythonModeDotEl -- [https://launchpad.net/python-mode python-mode.el], once distributed with Python, now maintained separately.
+== Python Modes ==
 
-# ProgrammingWithPythonDotEl -- python.el, as came with GNU Emacs 24.1 and before[http://www.loveshack.ukfsn.org/emacs/python.el],[https://github.com/leoliu/python-el].  "the main raison d'être for python.el was that we couldn't get
-copyright papers for python-mode.el for inclusion in Emacs" [http://mail.python.org/pipermail/python-mode/2009-January/000514.html].  
+There are a number of Python modes for Emacs. The major ones right now are [ProgrammingWithPythonDotElGallina python.el] which comes with Emacs 24.2 and up and [ProgrammingWithPythonModeDotEl python-mode.el] which used to be included in Python (up to 2.6.8). The older [ProgrammingWithPythonDotEl python.el] from Emacs 24.1 and before has a number of fans as well.
 
-# ProgrammingWithPythonDotElGallina -- [https://github.com/fgallina/python.el Fabián Ezequiel Gallina's python.el],  included as the Emacs trunk [http://bzr.savannah.gnu.org/lh/emacs/trunk/annotate/head:/lisp/progmodes/python.el  python.el] as of revno [http://bzr.savannah.gnu.org/lh/emacs/trunk/revision/108614 108614].  Gallina discusses his motivation [http://lists.gnu.org/archive/html/emacs-devel/2012-04/msg00583.html here].
+=== Emacs as a Python IDE ===
+
+Beyond the basic Python modes described above, there are a number of modes that support Python programming.
+
+* [http://gabrielelanaro.github.com/emacs-for-python/ Emacs for Python], a collection of emacs extensions specifically collected for python development, with workflow guidelines.
+* [https://github.com/jorgenschaefer/elpy Elpy], an Emacs Python development environment available via package.el as a simple installation. Can use Rope or Jedi to provide completions.
+* [https://bitbucket.org/agr/ropemacs Ropemacs], a library using [[Pymacs]] to talk with the Rope refactoring library. You need to install [http://rope.sourceforge.net/ Rope], [http://pypi.python.org/pypi/ropemode Ropemode], [http://pymacs.progiciels-bpi.ca/ Pymacs] and [http://rope.sourceforge.net/ropemacs.html Ropemacs] to make this work.
+
+=== Other Support Modes ===
+
+* [http://taesoo.org/Opensource/Pylookup taesoo.org/Opensource/Pylookup Pylookup mode], a mode to search the Python online/offline documentation ([http://github.com/tsgates/pylookup github.com/tsgates/pylookup github])
+* [https://github.com/tavisrudd/emacs.d/blob/master/dss-completion.el Auto-Complete support in IPython shell buffers]
+* [https://github.com/aculich/virtualenv.el virtualenv.el], a mode for working with virtualenvs
+* [https://bitbucket.org/durin42/nosemacs nosemacs], a mode to run the nosetests testing framework
+* [http://tkf.github.com/emacs-ipython-notebook/ Emacs IPython Notebook], an IPython notebook client for Emacs.
+
+== Various Python Interpreters ==
+
+=== IPython ===
+
+Emacs' 24.2+ python.el contains the following guide on how to set it up to use IPython 0.11:
+
+{{{
+(setq
+ python-shell-interpreter "ipython"
+ python-shell-interpreter-args ""
+ python-shell-prompt-regexp "In \\[[0-9]+\\]: "
+ python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "
+ python-shell-completion-setup-code
+   "from IPython.core.completerlib import module_completion"
+ python-shell-completion-module-string-code
+   "';'.join(module_completion('''%s'''))\n"
+ python-shell-completion-string-code
+   "';'.join(get_ipython().Completer.all_completions('''%s'''))\n")
+}}}
+
+For iPython 0.10 everything would be the same except for `python-shell-completion-string-code` and `python-shell-completion-module-string-code`:
+
+{{{
+(setq python-shell-completion-string-code
+      "';'.join(__IP.complete('''%s'''))\n"
+      python-shell-completion-module-string-code "")
+}}}
+
+Unfortunately running iPython on Windows needs some more tweaking. The way you must set `python-shell-interpreter` and `python-shell-interpreter-args` is as follows:
+
+{{{
+(setq
+ python-shell-interpreter "C:\\Python27\\python.exe"
+ python-shell-interpreter-args
+ "-i C:\\Python27\\Scripts\\ipython-script.py")
+}}}
+
+That will spawn the iPython process correctly (Of course you need to modify the paths according to your system).
 
 
-You may also find these pages useful:
+=== IronPython ===
 
-* [http://gabrielelanaro.github.com/emacs-for-python/ Gabriele Lanaro's python setup].  Includes and sets up several common python packages, including Gallina's python.el.  Highly recommended for quickly setting up a Python programming environment, e.g. "If you google python+emacs, you’ll find a lot of packages and recipes how to glue it all together, but if you are Emacs Lisp newbie like me, having all that stuff in one easy-to-install, tested package
-would be priceless." [http://maddemcode.com/python/emacs-and-python-the-definitive-answer/]
+* Install [ProgrammingWithPythonModeDotEl python-mode]
+* ##(setq py-jython-command "c:/Program Files/IronPython 2.6 for .NET 4.0/ipy.exe")##
+* Open a .py file. C-c C-t will toggle "jython", C-c ! will start a shell
+
+
+
+== Further Reading ==
 
 * [http://www.enigmacurry.com/2008/05/09/emacs-as-a-powerful-python-ide/ Emacs as a powerful Python IDE]
-
-* [http://www.enigmacurry.com/2009/01/21/autocompleteel-python-code-completion-in-emacs/ AutoComplete.el : Python Code Completion in Emacs]
-
-* see [http://www.enigmacurry.com/2009/01/19/my-emacs-config-on-github/ My Emacs config on Github] for dotfiles
-
+* [http://www.enigmacurry.com/2009/01/21/autocompleteel-python-code-completion-in-emacs/ AutoComplete.el: Python Code Completion in Emacs]
+** See [http://www.enigmacurry.com/2009/01/19/my-emacs-config-on-github/ My Emacs config on Github] for dotfiles
 * [http://pedrokroger.net/2010/07/configuring-emacs-as-a-python-ide-2/ Pedro Kroger's python setup]
 
-== Emacs as a Python IDE ==
 
-# Install rope ([http://rope.sourceforge.net/ homepage], [http://rope.sourceforge.net/ download here])
-# Install ropemode ([http://pypi.python.org/pypi/ropemode homepage on PyPI])
-# Install Pymacs ([http://pymacs.progiciels-bpi.ca/ homepage])
-# Install ropemacs ([http://rope.sourceforge.net/ropemacs.html homepage], [http://bitbucket.org/agr/ropemacs/get/tip.gz direct link to snapshot])
+== Various Configuration Tips ==
 
-Rope is a refactoring library, and ropemode is a wrapper. Pymacs allows Emacs to spawn a Python process and interact with it. Finally, ropemacs gives a convenient in-emacs interface to all this, including Python documentation access, inlining, finding function definitions and so on.
-
-: I installed emacs-vcs-24.0.9999 on gentoo, and ropemacs stopped working;
-'rope-completions' (or 'foo-completions', depending on how you import it) froze emacs on the first or second invocation. This had worked OK on emacs-23.2-r1, and did again once I reverted. This was possibly a problem with Pymacs, which might not handle problems well, allowing emacs to just hang. It's also bad that some of the functions added to save and exit hooks are also pymacs derived! --CH
-
-== Comment/Uncomment Region ==
+=== Comment/Uncomment Region ===
 
 If you have `transient-mark-mode' on, you can just use `comment-dwim': select a region and hit `M-;'. The DoWhatIMean means that it will comment or uncomment the region as appropriate. If you do not have `transient-mark-mode' on by default, you can hit C-SPC twice to activate it temporarily.
 
@@ -47,15 +87,7 @@ If you have `transient-mark-mode' on, you can just use `comment-dwim': select a 
 
 You can also use "rectangles" with comment/uncomment region (among other things that you can do with rectangles).  See RectangleCommands or "(emacs) Rectangles" in the Emacs manual.
 
-== Search the python documentation in Emacs ==
-
-Search the python online/offline documentations with convenience in Emacs
-
-Github : [http://github.com/tsgates/pylookup github.com/tsgates/pylookup]
-
-Pylookup Mode : [http://taesoo.org/Opensource/Pylookup taesoo.org/Opensource/Pylookup ]
-
-== Browse the Python Documentation using Info ==
+=== Browse the Python Documentation using Info ===
 
 To browse the new Python documentation using Info, you will need the necessary Info files.  These files are not currently available from the official download site since they are generated by a development version of [http://sphinx.pocoo.org/latest/ Sphinx], the documentation system used by Python.  You can however download a copy of the documentation for
 
@@ -77,9 +109,10 @@ These Info files are different than the ones generated from the old Python docum
 
 An alternative method for fixing `info-lookup-symbol' support is provided by the [https://bitbucket.org/jonwaltman/pydoc-info/ pydoc-info] package.
 
-== Using Flymake with Python ===
 
-= Using flymake with multiple lint, style and syntax checkers =
+=== Using Flymake with Python ====
+
+==== Using flymake with multiple lint, style and syntax checkers ====
 
 More than one code checking tool can be applied in flymake by using a
 wrapper script that runs the desired tools and combines their output.
@@ -109,7 +142,7 @@ to support virtual environments, but this is largely untested.
 
 : I added this code to pastebins (didn't know which to prefer, so chose three) which should be better than dumping the code here. -- CH
 
-= Using flymake with pylint =
+==== Using flymake with pylint ====
 
 [new]
 Please note that pylint now comes with an executable "epylint" that is meant to be the interface to Emacs.
@@ -167,7 +200,7 @@ You can customise the way flymake highlights your Python by running
 example, you can remove the background highlight and make the face
 be just a subtle coloured underline.
 
-= Using flymake with pyflakes =
+==== Using flymake with pyflakes ====
 
 Found a desciption on how to use this pair at [http://www.plope.com/Members/chrism/flymake-mode www.plope.com/Members/chrism/flymake-mode]
 I did a copy 'n paste for simplicity.
@@ -190,7 +223,7 @@ I did a copy 'n paste for simplicity.
 The normal operation of flymake allows the user to see the error message for a particular line by "hovering" the mouse over the line. This is inconvenient for people who try to use the keyboard for all input. FlymakeCursor was designed to address that: it displays the flymake error in the minibuffer region, when the cursor is placed on a line containing a flymake error.
 
 
-= Using flymake with pyflakes on Windows =
+==== Using flymake with pyflakes on Windows ====
 
 Download the pyflakes tgz file from [http://pypi.python.org/pypi/pyflakes/  Pypi]. Unpack it, then run the setup:
 
@@ -242,136 +275,10 @@ Then, modify one line in the elisp snip given above, to be like this:
 }}}
 
 
-* PyIndent
+Also see PyIndent
 
-== Issues ==
-This is a known bug (emacs 21.3): python-mode interferes with gud in such a way as to make the overlay arrow not work when debugging (even C source).
 
-Disable auto-loading python-mode to get around this bug.
-: This is one of the things fixed by the patch to python-mode.el, see ProgrammingWithPythonDotEl
-
-== iPython Emacs 23 ==
-
-RichardRiley
-
-I found this which got me up and running with iPython integrated nicely into emacs 23.
-
-[http://lists.ipython.scipy.org/pipermail/ipython-user/2008-September/005791.html
- lists.ipython.scipy.org/pipermail/ipython-user/2008-September/005791.html
-]
-The important file, ipython.el, can be found here : [http://ipython.scipy.org/dist/ipython.el
- ipython.scipy.org/dist/ipython.el
-]
-If you load it, ipython becomes the default python shell assuming the ipython executable is available.
-
-my python integration is now like this:
-
-<pre>
-(setq load-path
-      (append (list nil
-                    "~/.emacs.d/python-mode-1.0/"
-		    "~/.emacs.d/pymacs/"
-		    "~/.emacs.d/ropemacs-0.6"
-                    )
-              load-path))
-
-(require 'ipython)
-(setq py-python-command-args '( "--colors" "Linux"))
-
-(require 'python-mode)
-
-(require 'pymacs)
-(pymacs-load "ropemacs" "rope-")
-
-;; (defadvice py-execute-buffer (around python-keep-focus activate)
-;;   "Thie advice to make focus python source code after execute command `py-execute-buffer'."
-;;   (let ((remember-window (selected-window))
-;;         (remember-point (point)))
-;;     ad-do-it
-;;     (select-window remember-window)
-;;     (goto-char remember-point)))
-
-;; (defun rgr/python-execute()
-;;   (interactive)
-;;   (if mark-active
-;;       (py-execute-string (buffer-substring-no-properties (region-beginning) (region-end)))
-;;     (py-execute-buffer)))
-
-;; (global-set-key (kbd "C-c C-e") 'rgr/python-execute)
-
-(add-hook 'python-mode-hook
-          '(lambda () (eldoc-mode 1)) t)
-
-(provide 'python-programming)
-</pre>
-
-More iPython info here: [http://ipython.scipy.org/moin/FrontPage
- ipython.scipy.org/moin/FrontPage
-]
-My own python files are here : [http://richardriley.net/projects/emacs/dotprogramming#sec-1.4
- richardriley.net/projects/emacs/dotprogramming#sec-1.4
-]
-Having got iPython working in emacs, I found the following "howto tutorial" videos to be superb for the beginner (me!) :
-
-[http://showmedo.com/videos/video?name=1000010&fromSeriesID=100
- showmedo.com/videos/video?name=1000010&fromSeriesID=100
-]
-
-== Ipython completion ==
-
-Ipython provide good completion support without extra dependencies.
-
-However, to make it working in emacs, you will have to add this line to your .emacs, the full patch for ipython.el is at [https://github.com/ipython/ipython/issues/issue/204
- github.com/ipython/ipython/issues/issue/204
-]
-<pre>
-(setq ipython-completion-command-string "print(';'.join(get_ipython().Completer.complete('%s')[1])) #PYTHON-MODE SILENT\n")
-</pre>
-
-The definition in ipython.el is wrong (or deprecated may be).
-
-Note that Lisp:anything-ipython.el already fix this.
-
-To have ido completion, simply comment and insert the following lines in ipython.el as shown below
-<pre>
-;; (with-output-to-temp-buffer "*IPython Completions*"
-;;   (display-completion-list (all-completions pattern completion-table)))
-(let* ((dotposition (- (length pattern ) (length (first (last (split-string pattern "[\.]")) ) ) ))
-       (ido-ipython-selection  (ido-completing-read (concat  "Choose a completion: " pattern)
-						    (mapcar (lambda (x) (substring x dotposition))
-							    (all-completions pattern completion-table)))))
-  (delete-char (- dotposition (length pattern)))
-  (insert ido-ipython-selection))
-</pre>
-
-To have an even better completion, you should install also rlcompleter2.
-
-[http://codespeak.net/rlcompleter2/
- codespeak.net/rlcompleter2/
-]
-
-Lisp:anything-ipython.el provide an anything interface for ipython completion in your python buffer.
-
-You will find all instructions to install Lisp:anything-ipython.el in the headers of file.
-
-You will need of course a complete Anything install, look how to install Anything at
-
-[http://www.emacswiki.org/cgi-bin/emacs/Anything
- www.emacswiki.org/cgi-bin/emacs/Anything
-]
-
-Screenshot of anything-ipython in action:
-
-[http://farm4.static.flickr.com/3459/3760695525_887356961c.jpg
- farm4.static.flickr.com/3459/3760695525_887356961c.jpg]
-
-== auto-complete.el support in ipython shell buffers ==
-
-[https://github.com/tavisrudd/emacs.d/blob/master/dss-completion.el
- github.com/tavisrudd/emacs.d/blob/master/dss-completion.el
-]
-
-== Ipython debugging/pdbtrack ==
+=== IPython debugging/pdbtrack ===
 
 I made the following changes to python-mode.el to make debugging work again with current IPython (0.9.1):
 
@@ -399,71 +306,8 @@ I made the following changes to python-mode.el to make debugging work again with
 
 Now when I debug in the IPython console (using %run -d, or %pdb on, etc.) pdbtrack makes sure to show me the current source code and corresponding line. Note that these changes may break debugging in a standard python-shell, I have not tested this.
 
-== IronPython ==
-* Install [ProgrammingWithPythonModeDotEl python-mode]
-* ##(setq py-jython-command "c:/Program Files/IronPython 2.6 for .NET 4.0/ipy.exe")##
-* Open a .py file. C-c C-t will toggle "jython", C-c ! will start a shell
 
-== Pedro Kroger's python setup ==
-
-=== dependencies ===
-
-The following is based on [http://pedrokroger.net/2010/07/configuring-emacs-as-a-python-ide-2/ Pedro Kroger's python setup], which this user found to provide much functionality. Note Kroger's instructions are especially well suited for users of Ubuntu or other Debian-based systems. While the instructions at that page are quite good, some gotcha's were found, Since I cannot edit that page, the following tips are offered here from my experience setting this up in Feb 2011 using the following dependencies:
-
-* From the Ubuntu/Debian package management system. All were up-to-date as of 1 Feb 2011.
-** Ubuntu Lucid 10.04.1 (kernel=2.6.32-28)
-** GNU Emacs 23.1.50.1 (package=emacs-snapshot-gtk)
-** Python=2.6.5
-** IPython=0.10
-** other python-related Ubuntu/Debian packages: python2.6-doc, pep8, pylint
-* Python packages installed with `easy_install' (as directed by [http://pedrokroger.net/2010/07/configuring-emacs-as-a-python-ide-2/ Kroger's page])
-** ipdb
-** reimport
-* From other sources, (as directed by [http://pedrokroger.net/2010/07/configuring-emacs-as-a-python-ide-2/ Kroger's page])
-** python-mode.el=5.2.0
-** ipython.el=2927
-** anything.el=1.287
-** anything-ipython.el=25 July 2009 18:48:31 (+0200)
-** anything-show-completion.el=1.19
-** pylookup=current (no versioning visible)
-** autopair.el=0.4
-** python-pep8.el=1.01
-** python-pylint.el=1.01
-** yasnippet=0.6.1c
-* Note I did not install
-** lambda-mode
-** flymake
-
-=== my procedure ===
-
-(Apologies for manual numbering, but I don't know how to make the wiki resume numbering after, e.g., including a preformatted section.)
-
-0. I previously had ubuntu, emacs, python, and ipython installed, with python configured for ##easy_install##.
-
-1. I first followed all procedures in Kroger's section=/Tools installation and configuration/ except for ##lambda-mode##. (I also did not install ##flymake##; Kroger's page does not either, though it is mentioned.)
-
-*  Note I also byte-compiled all the *.el after downloading.
-
-2. For my first test, I made the following file=<code>/tmp/Test.py</code> in a buffer, noting syntax coloration.
-<pre>class Test():
-    def foo1(self):
-        print "foo1"
-
-    def foo2(self):
-        print "foo2"
-</pre>
-
-3. from buffer=<code>Test.py</code>, I did
-
-3.1 ##C-c !## to start an ipython buffer.
-
-== Emacs Mode for files not ending with '.py' ==
-You can set the mode for python files with file names not ending with '.py' by adding line
-<pre># -*- python -*-
-</pre>as second line in your file (the first usually being #!/usr/bin/env python).
-
-
-== Using PythonTidy to pretty-print a buffer ==
+=== Using PythonTidy to pretty-print a buffer ===
 
 [http://lacusveris.com/PythonTidy/ PythonTidy] can be used to pretty-print a buffer in combination
 with shell-command-on-region.
