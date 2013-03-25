@@ -393,8 +393,63 @@ Please describe what you want a bit more.  To define such a command, you would k
 
 
 
+<pre>
 
+</pre>
+----
+<pre>
 
+</pre>
+
+I'm trying my first steps with icicles, and I seem to be missing something
+fundamental.  I'm using GNU Emacs 23.4.1 (i686-pc-linux-gnu, GTK+ Version
+2.20.1).
+
+1. Trying to find a file (C-x C-f) under
+"/foo/bar/prefix_many_candidates_unique/", I'm using prefix completion (TAB)
+until the minibuffer shows /foo/bar/prefix and the completion buffer displays
+lots of candidates.  I'm interested in the candidate with the unique suffix
+"unique".
+I thought that changing to regexp completion was a good idea.  In response
+to S-SPC the minibuffer says "Match also (regexp)" (as expected).  Entering the
+suffix "unique", the minibuffer's contents change to
+"prefix_many_candidates_unique/".  Good.  How do I proceed from here?  Hitting
+"RET" or "S-return" I'm instructed "Use M-x make-directory RET RET to create
+the directory and its parents", and I find myself in a buffer
+"~/prefix_many_candidates_unique/".
+Essentially, "/foo/bar/" from prefix completion is lost.  What am I missing
+here?
+
+2. When writing a file (C-x C-w) I'd like to create a directory on the fly.
+Based on the description in [[Icicles - File-Name Input]], I was hoping for
+icicle-make-directory.  However, "C-c +" is not bound in that situation (it is
+bound when finding files via C-x C-f, though).  Is there a way to enable that
+that keybinding (and others) for write-file as well? -- JensLechtenboerger
+
+[new:DrewAdams:2013-03-25 03:55 UTC]
+Sorry, I didn't notice your post until now.  I moved it to this page from IciclesDiscussion because #1 is a bug, I think.  You can also email me; that is more sure than hoping I see a post on the wiki, especially since page IciclesDiscussion keeps getting spammed and rolled back.
+
+1. I think what you are describing is a known '''Icicles''' bug that I have not yet had a chance to fix.  If so, as a workaround try setting `insert-default-directory' to `t'.  If that does not work then please come back to me.
+
+2. The discussion at [[Icicles - File-Name Input]] that mentions `##C-c +##' is not about commands that act on files or read file names in general.  As it says, it is about "'''Icicles''' commands that read file names."
+
+There is currently no '''Icicles''' replacement command for `write-file'.  Instead, `C-x C-w' is the ordinary Emacs command `write-file', even in ''Icicle'' mode.  The only thing that '''Icicles''' offers for it is the general enhancement of completion that it provides for `read-file-name' (since `write-file' uses `read-file-name') --- no extra key bindings, and no [[multi-command]] behavior.
+
+If you wanted, you could define your own multi-command to replace `write-file', using macro `icicle-define-file-command' (be sure to ##(require 'icicles-mac)## in that case for the file that contains your definition).
+
+In your multi-command definition you would use macro `icicle-file-bindings' to pick up bindings such as `##C-c +##'.  For an example, look at the definition of `icicle-delete-file', `icicle-dired', or `icicle-find-file-no-search'.  For the action function of the multi-command, you would use just `write-file'.  Something like this:
+
+  (icicle-define-file-command icicle-write-file ; Command name
+    "Multi-command version of `write-file'."    ; Doc string
+    write-file                                  ; Action function
+    ;; `read-file-name' args - they depend on behavior you want
+    "Write file: " default-directory nil nil nil nil
+    (icicle-file-bindings)                ; Extra bindings
+    (icicle-bind-file-candidate-keys)     ; First code
+    nil                                   ; Undo code
+    (icicle-unbind-file-candidate-keys))  ; Last code
+
+HTH -- DrewAdams
 
 
 
