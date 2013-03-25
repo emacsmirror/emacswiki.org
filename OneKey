@@ -30,8 +30,6 @@ See "Plugins" below.
 * *I don't have a spare, easy keystroke free to bind to a command.*
 : OneKey allows you to easily create your own menus, which can be saved and automatically reloaded when you restart emacs.
 
-[http://www.emacswiki.org/cgi-bin/emacs/OneKey#toc16 Here] is a screenshot to show how OneKey works.
-
 ==Installation==
 : Download Lisp:one-key.el and save it in your load-path (usually "~/.emacs.d/").
 : Make sure that you also have Lisp:hexrgb.el in your load-path
