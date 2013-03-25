@@ -42,8 +42,7 @@ See "Plugins" below.
 : (to find the name of a keybinding press *C-h k* followed by the keybinding and check the top left of the <nowiki>"*Help*"</nowiki> buffer).
 
 
-: It is also recommended that you increase the values of `max-lisp-eval-depth' and `max-specpdl-size'
-: from their defaults to prevent the probability of an error occurring. You can do this with:
+: It is also recommended that you increase the values of `max-lisp-eval-depth' and `max-specpdl-size' from their defaults to prevent the probability of an error occurring. You can do this with:
 :: M-x customize-variable max-lisp-eval-depth
 : and:
 :: M-x customize-variable max-specpdl-size
