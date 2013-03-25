@@ -154,6 +154,8 @@ This function is used in calls to `one-key-dir-build-menu-alist'."
                             one-key-default-title-func
                             'one-key-default-special-keybindings) t)
 
+(add-to-list 'one-key-exclude-from-save "^yas:")
+
 (provide 'one-key-yas)
 ;;; one-key-yas.el ends here
 
