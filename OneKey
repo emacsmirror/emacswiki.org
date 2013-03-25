@@ -1,9 +1,3 @@
-OneKey is designed to help you remember keybindings.  It saves you time and frees up your head!
-
-[new]
-Please send suggestions and bug reports to [http://www.emacswiki.org/emacs/JoeBloggs JoeBloggs], he's the new maintainer. Thanks! -- AndyStewart
-
-IMPORTANT NOTE: one-key.el is currently undergoing some major internal refactoring so don't build on it while this message is still here.
 
 ==What is OneKey ?==
 With so many Emacs extensions there are a lot of keystrokes to remember, and you probably forget most of them.
