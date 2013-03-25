@@ -112,14 +112,13 @@ them yourself (see `one-key-types-of-menu'):
 
 ===Default menu types===
 
-* *top-level*         : contains items defined in `one-key-toplevel-alist', which by default contains common prefix key
-                      menus, and menus for common commands to help new users learn emacs
-* *blank menu*        : creates a blank menu with no items
-* *major-mode*        : contains items corresponding to the current major mode (keybindings and menu-bar items)
-* *existing menu*     : prompts for an existing menu to use
-* *existing keymap*   : contains items in a given keymap (prompted for)
-* *prefix key keymap* : contains items whose usual keybindings begin with a given prefix key (prompted for)
-* *menu-sets*         : contains items for opening menu sets (see below)
+| *top-level*         | contains items defined in `one-key-toplevel-alist', which by default contains common prefix key menus, and menus for common commands to help new users learn emacs |
+| *blank menu*        | creates a blank menu with no items                                                                                                                                 |
+| *major-mode*        | contains items corresponding to the current major mode (keybindings and menu-bar items)                                                                            |
+| *existing menu*     | prompts for an existing menu to use                                                                                                                                |
+| *existing keymap*   | contains items in a given keymap (prompted for)                                                                                                                    |
+| *prefix key keymap* | contains items whose usual keybindings begin with a given prefix key (prompted for)                                                                                |
+| *menu-sets*         | contains items for opening menu sets (see below)                                                                                                                   |
 
 ===Saving menus===
 
