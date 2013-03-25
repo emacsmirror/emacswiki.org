@@ -15,16 +15,11 @@ Here is the github repo: https://github.com/vapniks/one-key -- JoeBloggs
 IMPORTANT NOTE: one-key.el is currently undergoing some major internal refactoring so don't build on it while this message is still here.
 
 ==What is OneKey ?==
-OneKey is a popup help window which appears when you type a *Top Key*.
-It shows *Keystrokes* and *Commands* in a help window.
-
-With so many Emacs extensions, you have a lot of keystrokes to remember, and you probably forget most of them.
-
+With so many Emacs extensions there are a lot of keystrokes to remember, and you probably forget most of them.
 This package fixes that problem, and helps new users to learn the common keybindings.
 
 One Key provides a single keystroke that when pressed presents you with a menu of choices in a popup window
 for commands to execute with a further keystroke. By default menus for common prefix keys and commands are defined.
-
 Just type one of the listed keystrokes to execute the corresponding command.
 
 You can delete, edit, sort, highlight and filter the menu items, add new menu items and even add new menus.
