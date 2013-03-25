@@ -2,9 +2,9 @@ markdown-mode is a major mode for GNU Emacs which provides syntax highlighting a
 
 http://jblevins.org/projects/markdown-mode/
 
-markdown-mode version 1.9 was released on January 25, 2013.  Release notes can be found here:
+markdown-mode version 2.0 was released on March 24, 2013.  Release notes can be found here:
 
-http://jblevins.org/projects/markdown-mode/rev-1-9
+http://jblevins.org/projects/markdown-mode/rev-2-0
 
 == Customization ==
 
@@ -26,23 +26,11 @@ A similar logic applies to double-quotes, especially if one is frequently adding
 
 == Usage notes ==
 
-It should be noted that in practice this thing is not too usable, because
+Useful markdown-specific editing features:
 
-* for a file > 500 lines in size it gets rather slow (in Aquamacs-current, based on GNU Emacs 23.3.50.1)
-* completion with Meta-/ is broken (inserts a new line)
-* syntax highlithing is broken in several places (especially for pre-formatted text)
-* and so on
-
-Except for some help with indentation there is no markdown-specific stuff here
-* no way to change header level
-* no section navigation
-* no shortcuts for reordering list items
-
-There are some shortcuts to insert markdown elements, but as a rule they are longer than corresponding
-elements themselves (e.g. "shortcut" 'Ctrl-C Ctr-S C' to insert a pair of backticks).
-
-Sadly this is the only mode for markdown editing I've found yet. For now I'd use text mode for short projects
-or excellent org-mode (with markdown export) for long ones.
+* Change heading level by re-issuing a heading insertion command when the point is at a heading (e.g., C-c C-t 4 will replace the current heading with a level-four heading).
+* Section navigation via outline-minor-mode using the same keybindings as in org-mode (C-c C-f, C-c C-b, C-c C-u, C-c C-p, and C-c C-n).
+* Reorder list items with M-UP and M-DOWN.
 
 ----
 MarkupModes
