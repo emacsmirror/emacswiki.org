@@ -26,9 +26,9 @@ You can delete, edit, sort, highlight and filter the menu items, add new menu it
 You can have access to several different menus from the same window which can be navigated with the arrow keys.
 Such a collection of menus is called a menu set and you can define several different menu sets containing different
 types of menus.
-Several different types of menus are defined (and more may be added) for holding different types of menu items.
-For example the "major-mode" type opens the menu corresponding to the current major-mode.
-More different types are defined by one-key extension libraries (e.g. `one-key-dir' for fast directory
+Several different types of menus are defined (and more may be added) for holding different types of items.
+For example the "major-mode" type opens a menu of commands associated with the current major-mode.
+More different types are defined by one-key plugins (e.g. `one-key-dir' for fast directory
 tree navigation), or you can create your own types. See "Creating menus" below.
 
 ==Why do I need OneKey ?==
