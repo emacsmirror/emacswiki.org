@@ -6,7 +6,7 @@
 ;; Filename: iy-go-to-char.el
 ;; Description: Go to char
 ;; Created: 2009-08-23 01:27:34
-;; Version: 2.0
+;; Version: 2.1
 ;; Last-Updated: 2013-03-25 08:33:00
 ;; URL: https://github.com/doitian/iy-go-to-char
 ;; Compatibility: GNU Emacs 23.1.1
@@ -86,6 +86,8 @@
 ;; `iy-go-to-char-continue' and `iy-go-to-char-continue-backward'.
 
 ;;; Change Log:
+;; 2013-03-25 (2.1)
+;;    - Fix a but that I forget to set `mc--this-command`
 ;; 2013-03-25 (2.0)
 ;;    - Use overriding-local-map to setup keymap
 ;;    - multiple-cursors compatible
@@ -227,7 +229,8 @@ Unless quit using C-g or the region is activated before searching, the start
     (iy-go-to-char--override-local-map char))
 
   (setq this-original-command 'iy-go-to-char--internal
-        this-command 'iy-go-to-char--internal)
+        this-command 'iy-go-to-char--internal
+        mc--this-command 'iy-go-to-char--internal)
   (call-interactively 'iy-go-to-char--internal))
 
 ;;;###autoload
@@ -260,4 +263,3 @@ Typing C-s or C-r will start `isearch` using CHAR"
 (provide 'iy-go-to-char)
 
 ;;; iy-go-to-char.el ends here
-
