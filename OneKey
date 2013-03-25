@@ -41,6 +41,7 @@ See "Plugins" below.
 : to your ~/.emacs file, and replace <menu> with whatever top key you want to use
 : (to find the name of a keybinding press C-h k followed by the key and check the top left of the "*Help*" buffer).
 
+
 : It is also recommended that you increase the values of `max-lisp-eval-depth' and `max-specpdl-size'
 : from their defaults to prevent the probability of an error occurring. You can do this with:
 :: M-x customize-variable max-lisp-eval-depth
