@@ -142,27 +142,26 @@ See "Creating menus" above for info on how to add the "menu-sets" menu to the *O
 
 ===Other features===
 
-Item help: to get help on a particular menu item press C-h followed by the key for the item. The help page
-for the associated command will be displayed. If part of the *Help* buffer is obscured by the *One-Key* buffer,
-you can hide the *One-Key* buffer by pressing the special key to toggle the display (<menu> by default).
+/Item help/: to get help on a particular menu item press *C-h* followed by the key for the item.
+The help page for the associated command will be displayed. If part of the *Help* buffer is obscured by the *One-Key* buffer,
+you can hide the *One-Key* buffer by pressing the top key to toggle the window visibility.
 
-Item brightening: By default the background colour of a menu item is increased relative to the brightness
-of other items each time the item is executed. This means you can quickly find the most frequently used items
-in a large menu. To turn this feature off set `one-key-auto-brighten-used-keys' to nil.
+/Item brightening/: By default the background colour of a menu item is increased relative to the brightness
+of other items each time the item is executed. This means you can easily see the most frequently used items.
+To turn this feature off set `one-key-auto-brighten-used-keys' to nil.
 
-Sorting/ordering: you can sort the items in a menu by pressing the appropriate special key, and add new sort
-methods by customizing `one-key-default-sort-method-alist'. The current sort method is displayed in the mode-line,
-however this information is not guaranteed to be correct when the *One-Key* menu is initially opened.
+/Sorting/ordering/: you can sort the items in a menu by pressing the appropriate special key, and add new sort
+methods by customizing `one-key-default-sort-method-alist'. The current sort method is displayed in the mode-line.
 You can also toggle between row/column ordering of items, and reverse the order of items.
 By trying out different sort and ordering combinations you can find a configuration which is most readable,
 or fits most items on screen. The order of menu items is persistent between sessions if the menus are saved
 (see "Saving menus").
 
-Filtering and colouring items: you can filter the items displayed to match a regular expression, or specify
+/Filtering and colouring items/: you can filter the items displayed to match a regular expression, or specify
 the background colour of items that match a given regular expression (press f1 to see which key to press).
 This can make the menus more readable. The background colours will be saved with the menu.
 
-Editing menus: you can add, delete and edit menu items, and also copy or kill (i.e. cut) and yank (i.e. paste)
+/Editing menus/: you can add, delete and edit menu items, and also copy or kill (i.e. cut) and yank (i.e. paste)
 menu items from one menu to another. To copy or kill a bunch of items first make sure they are all highlighted
 with the same background colour (doesn't matter if they have different brightness levels), and then press the
 appropriate special key (press f1 for help). You will be prompted for an item in the group, and whether or not
