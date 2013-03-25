@@ -206,13 +206,12 @@ All the options below can be customized by *M-x customize-group RET one-key RET*
 || *one-key-mode-line-message*   || Form that when evaluated should produce a string for the mode-line in the *One-Key* buffer. ||
 
 ==Tips==
-In the *One-Key* buffer:
+
 : Press *F1* to toggle the help window showing special keybindings and their associated actions.
 : Press *C-h* followed by one of the keys in the menu to show a description of the associated command.
 : Press *q* to quit OneKey and hide the *One-Key* window.
 : Press *F11* to help support further development by donating to the author.
-
-:: NOTE: The keystrokes above are built-ins for controlling the *One-Key* window. They can be changed by customizing `one-key-default-special-keybindings'. You can always use the keystroke *C-g* to abort OneKey, whatever special keybindings you have set.
+: You can always use the keystroke *C-g* to abort OneKey, whatever special keybindings you have set.
 
 ==Plugins==
 
