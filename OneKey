@@ -52,14 +52,13 @@ Press the top key (e.g. "<menu>") and the *One-Key* buffer will popup. Read on f
 
 ===The *One-Key* buffer===
 
-Running the command `one-key-open-default-menu-set' or `one-key-open-menu-set' opens the *One-Key* buffer.
-(these commands may be bound to keys - see "Installation" above).
+Pressing the top key or running the command `one-key-open-default-menu-set' or `one-key-open-menu-set' opens the *One-Key* buffer.
 
 Within the *One-Key* buffer you will see a list of command descriptions each with a corresponding key in square
 brackets to its left. Pressing the key executes the command.
 Along the top of the buffer in the header line you will see a list of menu names. One of these names will be
 highlighted and indicates the current menu. You can navigate between the different menus by pressing the left/right
-arrow keys (unless these have been redefined to other keys in `one-key-special-keybindings', see below).
+arrow keys (these can been redefined to other keys, see below).
 
 You can toggle the size of the window holding the *One-Key* buffer by pressing the appropriate special key (see below).
 The window size is toggled between default size, large size (so that all items fit in the window), and hidden (window
