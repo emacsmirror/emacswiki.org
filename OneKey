@@ -53,9 +53,9 @@ Press the top key (e.g. "<menu>") and the *One-Key* buffer will popup. Read on f
 ===The *One-Key* buffer===
 
 Pressing the top key or running the command `one-key-open-default-menu-set' or `one-key-open-menu-set' opens the *One-Key* buffer.
-
 Within the *One-Key* buffer you will see a list of command descriptions each with a corresponding key in square
 brackets to its left. Pressing the key executes the command.
+
 Along the top of the buffer in the header line you will see a list of menu names. One of these names will be
 highlighted and indicates the current menu. You can navigate between the different menus by pressing the left/right
 arrow keys (these can been redefined to other keys, see below).
