@@ -54,15 +54,13 @@ Press the top key (e.g. "<menu>") and the *One-Key* buffer will popup. Read on f
 
 Pressing the top key or running the command `one-key-open-default-menu-set' or `one-key-open-menu-set' opens the *One-Key* buffer.
 Within the *One-Key* buffer you will see a list of command descriptions each with a corresponding key in square
-brackets to its left. Pressing the key executes the command.
+brackets to its left. Pressing the key executes the command. Press q to quit the buffer.
 
 Along the top of the buffer in the header line you will see a list of menu names. One of these names will be
 highlighted and indicates the current menu. You can navigate between the different menus by pressing the left/right
-arrow keys (these keys can been redefined, see below).
-You can toggle the size of the window holding the *One-Key* buffer by pressing the appropriate special key (see below).
-The window size is toggled between default size, large size (so that all items fit in the window), and hidden (window
-is closed, but one-key is still active). This is useful if there are a large number of items in the menu, or when you
-need to see part of the buffer that is obscured by the *One-Key* window.
+arrow keys. You can toggle the visibility and size of the *One-Key* window by repeatedly pressing top key.
+This is useful if there are a large number of items in the menu, or when you need to see part of the buffer that is
+obscured by the *One-Key* window.
 
 By default one-key will quit and the *One-Key* window will close after pressing a key corresponding to one of the
 menu items. If you want one-key to stay active after pressing an item key you should toggle the menu persistence
