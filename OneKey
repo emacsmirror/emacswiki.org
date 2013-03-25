@@ -170,7 +170,7 @@ The items will be saved in `one-key-copied-items' and can be then be yanked into
 Any further copy/kills will overwrite the value of `one-key-copied-items'.
 You cannot retrieve previous kills so take care.
 You can also reposition items in a menu:
-# press the appropriate specialkey
+# press the special key for repositioning items (default is f10, press f1 to check)
 # press the key of the item to be moved
 # use the up/down arrow keys to move the item
 # exit one-key to fix the item
