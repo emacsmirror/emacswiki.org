@@ -140,8 +140,18 @@ I ([[dim]]) am doing that instead:
     
     (global-set-key (kbd "C-S-d") 'duplicate-current-line)
 
+==== smart copy region ====
+To copy the rest of the line without marking it, I use
+
+    (defun my-kill-ring-save ()
+        (interactive)
+        (if (equal mark-active nil) (kill-ring-save (point) (line-end-position)) (kill-ring-save (point) (mark))))
+    (global-set-key "\M-w" 'my-kill-ring-save)
+
+If you mark a region this behaves as expected and saves the region to the kill ring, otherwise, saves the region between (point) and the end of line to the kill ring.
 
 [:ModifyVanillaCommands]
+
 === Modifying the default commands ===
 
 !SlickEdit, !TextMate and !VisualStudio have clever line-wise behavior: if no text is selected, the copy and cut commands act on the current line instead. '''To do this in Emacs (with ##M-w## and ##C-w##), see WholeLineOrRegion.'''
