@@ -20,14 +20,14 @@ More different types are defined by one-key plugin libraries, and you can create
 See "Plugins" below.
 
 ==Why do I need OneKey ?==
-##* *I am new to emacs and want to learn the common keybindings*
+* *I am new to emacs and want to learn the common keybindings*
 :: By default OneKey comes with a *top-level* menu containing submenus for all the commonly used prefix keys and commands.
 :: The emacs keybindings are displayed next to the commands to help you learn them. More frequently accessed items
 :: are highlighted to help you quickly pick them out.
-##* *I have too many commands I need to remember*
+* *I have too many commands I need to remember*
 :: OneKey contains a *major-mode* menu which contains the keybindings and menu items for the current major-mode, and it
 :: also allows you to quickly find a command by filtering by regular expressions.
-##* *I don't have a spare, easy keystroke free to bind to a command.*
+* *I don't have a spare, easy keystroke free to bind to a command.*
 :: OneKey allows you to easily create your own menus, which can be saved and automatically reloaded when you restart emacs.
 
 : [http://www.emacswiki.org/cgi-bin/emacs/OneKey#toc16 Here] is a screenshot to show how OneKey works.
