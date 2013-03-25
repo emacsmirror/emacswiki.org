@@ -161,14 +161,14 @@ or fits most items on screen. The order of menu items is persistent between sess
 the background colour of items that match a given regular expression (press f1 to see which key to press).
 This can make the menus more readable. The background colours will be saved with the menu.
 
-/Editing menus/: you can add, delete and edit menu items, and also copy or kill (i.e. cut) and yank (i.e. paste)
-menu items from one menu to another. To copy or kill a bunch of items first make sure they are all highlighted
-with the same background colour (doesn't matter if they have different brightness levels), and then press the
-appropriate special key (press f1 for help). You will be prompted for an item in the group, and whether or not
-you want to also kill (cut) the items from the current menu. The items will be saved in `one-key-copied-items' and
-can be then be yanked (pasted) into another menu.
-Any further copy/kills will overwrite the value of `one-key-copied-items', and you cannot retrieve previous kills
-so take care.
+/Editing menus/: you can add, delete and edit menu items, and also copy, kill (i.e. cut) and yank (i.e. paste) items from
+one menu to another.
+To copy or kill a bunch of items first make sure they are all highlighted with the same background colour
+(doesn't matter if they have different brightness levels), and then press the appropriate special key (press f1 for help).
+You will be prompted for an item in the group, and whether or not you want to also kill the items from the current menu.
+The items will be saved in `one-key-copied-items' and can be then be yanked into another menu.
+Any further copy/kills will overwrite the value of `one-key-copied-items'.
+You cannot retrieve previous kills so take care.
 You can also reposition items in a menu:
    1) press the appropriate specialkey
    2) press the key of the item to be moved
