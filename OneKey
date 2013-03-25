@@ -1,7 +1,5 @@
 
-/OneKey to rule them all, OneKey to find them, OneKey to bring them all and in the darkness bind them./\
-(with apologies to J.R.R. Tolkien)
-
+/OneKey to rule them all, OneKey to find them, OneKey to bring them all and in the darkness bind them./
 ==What is OneKey ?==
 With so many Emacs extensions there are a lot of keystrokes to remember, and you probably forget most of them.
 This package fixes that problem, and helps new users to learn the common keybindings.
