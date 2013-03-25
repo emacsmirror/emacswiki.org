@@ -15,7 +15,7 @@ You can define different menu sets, and define which one will be opened when the
 on different conditions.
 
 Several different types of menus are defined for holding different types of items.
-For example the "major-mode" type opens a menu of commands associated with the current major-mode.
+For example the "prefix-key" type opens a menu of commands that are associated with a given prefix key.
 More different types are defined by one-key plugin libraries, and you can create your own types.
 See "Plugins" below.
 
@@ -118,7 +118,7 @@ By default the following special keybindings are defined:
 || **f9**        || Add a menu item                          || **C-f9**      || Add a menu                               || **C-S-f9**    || Remove this menu                       ||
 || **f10**       || Reposition item (with arrow keys)        || **f11**       || Donate to support further development    || **C-f11**     || Report a bug                           ||
 
-===Creating menus===
+===Adding menus===
  
 All of the menus are stored in the file `one-key-menus-save-file' (customizable), but you should never need to
 edit this file. Instead you can create and edit menus from within the *One-Key* buffer.
