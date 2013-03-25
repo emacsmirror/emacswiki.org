@@ -1,21 +1,23 @@
 
 /OneKey to rule them all, OneKey to find them, OneKey to bring them all and in the darkness bind them./
 ==What is OneKey ?==
+One Key provides a single keystroke that when pressed presents you with a menu of commands which can be executed with a
+further keystroke. 
+
 With so many Emacs extensions there are a lot of keystrokes to remember, and you probably forget most of them.
 This package fixes that problem, and helps new users to learn the common keybindings.
-
-One Key provides a single keystroke that when pressed presents you with a menu of choices in a popup window
-for commands to execute with a further keystroke. By default menus for common prefix keys and commands are defined.
-Just type one of the listed keystrokes to execute the corresponding command.
+By default menus for common prefix keys and commands, as well as major-mode keybindings are defined.
 
 You can delete, edit, sort, highlight and filter the menu items, add new menu items and even add new menus.
-You can have access to several different menus from the same window which can be navigated with the arrow keys.
-Such a collection of menus is called a menu set and you can define several different menu sets containing different
-types of menus.
-Several different types of menus are defined (and more may be added) for holding different types of items.
+You can access different menus from the same window which can be navigated with the arrow keys.
+Such a collection of menus is called a menu set.
+You can define different menu sets, and define which one will be opened when the default key is pressed depending
+on different conditions.
+
+Several different types of menus are defined for holding different types of items.
 For example the "major-mode" type opens a menu of commands associated with the current major-mode.
-More different types are defined by one-key plugins (e.g. `one-key-dir' for fast directory
-tree navigation), or you can create your own types. See "Creating menus" below.
+More different types are defined by one-key plugin libraries, and you can create your own types.
+See "Plugins" and "Creating menus" below.
 
 ==Why do I need OneKey ?==
 * *I am new to emacs and want to learn the common keybindings*
