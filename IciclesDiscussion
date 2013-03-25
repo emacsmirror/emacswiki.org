@@ -999,46 +999,10 @@ The best way to report a problem is to use `M-x icicle-send-bug-report'.  Or you
 
 
 
-<pre>
-
-</pre>
-----
-<pre>
-
-</pre>
-
-I'm trying my first steps with icicles, and I seem to be missing something
-fundamental.  I'm using GNU Emacs 23.4.1 (i686-pc-linux-gnu, GTK+ Version
-2.20.1).
-
-1. Trying to find a file (C-x C-f) under
-"/foo/bar/prefix_many_candidates_unique/", I'm using prefix completion (TAB)
-until the minibuffer shows /foo/bar/prefix and the completion buffer displays
-lots of candidates.  I'm interested in the candidate with the unique suffix
-"unique".
-I thought that changing to regexp completion was a good idea.  In response
-to S-SPC the minibuffer says "Match also (regexp)" (as expected).  Entering the
-suffix "unique", the minibuffer's contents change to
-"prefix_many_candidates_unique/".  Good.  How do I proceed from here?  Hitting
-"RET" or "S-return" I'm instructed "Use M-x make-directory RET RET to create
-the directory and its parents", and I find myself in a buffer
-"~/prefix_many_candidates_unique/".
-Essentially, "/foo/bar/" from prefix completion is lost.  What am I missing
-here?
-
-2. When writing a file (C-x C-w) I'd like to create a directory on the fly.
-Based on the description in "Icicles - File-Name Input", I was hoping for
-icicle-make-directory.  However, "C-c +" is not bound in that situation (it is
-bound when finding files via C-x C-f, though).  Is there a way to enable that
-that keybinding (and others) for write-file as well? -- JensLechtenboerger
-
-
-
-
-
 
 
 [:LatestEntry]
+
 
 <pre>
 
@@ -1055,8 +1019,6 @@ UPD: was able to set keys, my mistake -- Nikolay Kudryavtsev
 
 [new:DrewAdams:2013-03-25 03:00 UTC]
 I guess you were able to take care of the key customization.  For the other problem, I'm afraid there is no simple way to have the file you finally choose (with `RET') take the place of the current buffer, since the action function for [[multi-command]] `icicle-find-tag', `icicle-find-tag-action', uses `switch-to-buffer-other-window'.  You could modify that function or you could make a copy of the `icicle-find-tag' definition that calls a different action function that uses, say, `switch-to-buffer' instead of `switch-to-buffer-other-window'.  HTH -- DrewAdams
-
-
 
 
 
