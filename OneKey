@@ -150,7 +150,7 @@ you can hide the *One-Key* buffer by pressing the top key to toggle the window v
 of other items each time the item is executed. This means you can easily see the most frequently used items.
 To turn this feature off set `one-key-auto-brighten-used-keys' to nil.
 
-/Sorting/: you can sort the items in a menu by pressing the appropriate special key, and add new sort
+/Sorting items/: you can sort the items in a menu by pressing the appropriate special key, and add new sort
 methods by customizing `one-key-default-sort-method-alist'. The current sort method is displayed in the mode-line.
 You can also toggle between row/column ordering of items, and reverse the order of items.
 By trying out different sort and ordering combinations you can find a configuration which is most readable,
