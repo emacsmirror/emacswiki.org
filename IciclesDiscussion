@@ -890,7 +890,12 @@ Do not hesitate to ask questions or mention problems you encounter, but the doc 
 
 
 
-[:LatestEntry]
+
+
+
+
+
+
 
 
 
@@ -2243,6 +2248,19 @@ With '''Icicles''', BTW, it is not unusual at all to have 100 or more matching c
 
 Let me know what you do find out.  Thx -- DrewAdams
 
+
+
+
+
+
+
+
+
+
+
+[:LatestEntry]
+
+
 <pre>
 
 </pre>
@@ -2253,7 +2271,23 @@ Let me know what you do find out.  Thx -- DrewAdams
 
 [new]
 Hello. I have a newbie question. When I do icicle-find-tag I can cicle candidates by using C-up and C-down. When I push RET or select tag with a mouse, it opens in a new window and I have two emacs windows open. Is there a way to make it open in the original window? Also how do I change C-up and C-down to something else? Setting them Icicle Modal Cycle or Icicle Modal Cycle Action using customize-group didn't work.
-UPD: was able to set keys, my mistake -- Nikolay Kudryavtsev
+UPD: was able to set keys, my mistake -- NikolayKudryavtsev
+
+
+[new:DrewAdams:2013-03-25 03:00 UTC]
+I guess you were able to take care of the key customization.  For the other problem, I'm afraid there is no simple way to have the file you finally choose (with `RET') take the place of the current buffer, since the action function for [[multi-command]] `icicle-find-tag', `icicle-find-tag-action', uses `switch-to-buffer-other-window'.  You could modify that function or you could make a copy of the `icicle-find-tag' definition that calls a different action function that uses, say, `switch-to-buffer' instead of `switch-to-buffer-other-window'.  HTH -- DrewAdams
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ----
