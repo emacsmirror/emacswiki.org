@@ -170,10 +170,10 @@ The items will be saved in `one-key-copied-items' and can be then be yanked into
 Any further copy/kills will overwrite the value of `one-key-copied-items'.
 You cannot retrieve previous kills so take care.
 You can also reposition items in a menu:
-   1) press the appropriate specialkey
-   2) press the key of the item to be moved
-   3) use the up/down arrow keys to move the item
-   4) exit one-key to fix the item
+# press the appropriate specialkey
+# press the key of the item to be moved
+# use the up/down arrow keys to move the item
+# exit one-key to fix the item
 
 ==Customize==
 All the options below can be customized by M-x customize-group RET one-key RET
