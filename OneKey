@@ -57,16 +57,18 @@ Within the *One-Key* buffer you will see a list of command descriptions each wit
 brackets to its left. Pressing one of these keys executes the corresponding command. Press q to quit.
 
 Along the top of the buffer in the header line you will see a list of menu names. One of these names will be
-highlighted and indicates the current menu. You can navigate between the different menus by pressing the left/right
-arrow keys. You can toggle the visibility and size of the *One-Key* window by repeatedly pressing the top key.
+highlighted and indicates the current menu. You can navigate between the different menus by pressing the left/right arrow keys.
+
+You can scroll the menus up & down using the up/down arrow keys and scroll up/down keys, and you can toggle the visibility
+and size of the *One-Key* window by repeatedly pressing the top key.
 This is useful if there are a large number of items in the menu, or when you need to see part of the buffer that is
 obscured by the *One-Key* window.
 
-By default the *One-Key* window will close after pressing a key corresponding to one of the
-menu items. If you want *One-Key* to stay active after pressing an item key you should toggle the menu persistence
+By default the *One-Key* window will close after pressing a key corresponding to one of the menu items.
+If you want to keep the window open after pressing an item key you should toggle the menu persistence
 by pressing the appropriate special key (C-menu by default, see "Special keybindings" below).
-To quit one-key and close the *One-Key* window press ESC. If you want to quit but keep the window open (e.g. to see
-the keybindings for a major mode), press C-ESC.
+To quit one-key and close the *One-Key* window press q. If you want to quit but keep the window open (e.g. to see
+the keybindings for a major mode), press C-q.
 
 ===Special keybindings===
 
@@ -89,7 +91,7 @@ to the menu type defined in the library.
 
 By default the following special keybindings are defined:
 
-|| **ESC**       || Quit and close menu window               || **C-escape**  || Quit, but keep menu window open          || **C-menu**    || Toggle menu persistence                ||
+|| **q**          || Quit and close menu window               || **C-q**  || Quit, but keep menu window open          || **C-menu**    || Toggle menu persistence                ||
 || **menu**      || Toggle menu display                      || **left**      || Change to next menu                      || **right**     || Change to previous menu                ||
 || **up**        || Scroll/move up one line                  || **down**      || Scroll/move down one line                || **Page Up**   || Scroll menu down one page              ||
 || **Page Down** || Scroll menu up one page                  || **C-h**       || Show help for next item chosen           || **C-s**       || Save current state of menu             ||
@@ -102,7 +104,7 @@ By default the following special keybindings are defined:
 
 ===Adding menus===
  
-All of the menus are stored in the file `one-key-menus-save-file' (customizable), but you should never need to
+Persistent menus are stored in the file `one-key-menus-save-file' (customizable), but you should never need to
 edit this file. Instead you can create and edit menus from within the *One-Key* buffer.
 If you press the special key corresponding to "Add a menu" you will be prompted for the type of menu to add.
 By default the following menu types are defined, but more may be added with extension libraries, or by creating
@@ -110,14 +112,14 @@ them yourself (see `one-key-types-of-menu'):
 
 ===Default menu types===
 
-top-level         : contains items defined in `one-key-toplevel-alist', which by default contains common prefix key
-                    menus, and menus for common commands to help new users learn emacs
-blank menu        : creates a blank menu with no items
-major-mode        : contains items corresponding to the current major mode (keybindings and menu-bar items)
-existing menu     : prompts for an existing menu to use
-existing keymap   : contains items in a given keymap (prompted for)
-prefix key keymap : contains items whose usual keybindings begin with a given prefix key (prompted for)
-menu-sets         : contains items for opening menu sets (see below)
+* top-level         : contains items defined in `one-key-toplevel-alist', which by default contains common prefix key
+                      menus, and menus for common commands to help new users learn emacs
+* blank menu        : creates a blank menu with no items
+* major-mode        : contains items corresponding to the current major mode (keybindings and menu-bar items)
+* existing menu     : prompts for an existing menu to use
+* existing keymap   : contains items in a given keymap (prompted for)
+* prefix key keymap : contains items whose usual keybindings begin with a given prefix key (prompted for)
+* menu-sets         : contains items for opening menu sets (see below)
 
 ===Saving menus===
 
