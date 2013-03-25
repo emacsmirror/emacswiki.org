@@ -113,7 +113,7 @@ them yourself (see `one-key-types-of-menu'):
 ===Default menu types===
 
 * *top-level*          : contains items defined in `one-key-toplevel-alist', which by default contains menus for common commands and prefix keys to help new users learn emacs 
-* *blank menu*         : creates a blank menu with no item 
+* *blank menu*         : creates a blank menu with no item (to be filled with your own items)
 * *major-mode*         : contains items corresponding to the current major mode (keybindings and menu-bar items) 
 * *existing menu*      : prompts for an existing menu to use 
 * *existing keymap*    : contains items in a given keymap (prompted for) 
