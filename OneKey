@@ -207,10 +207,10 @@ All the options below can be customized by *M-x customize-group RET one-key RET*
 
 ==Tips==
 In the *One-Key* buffer:
-: Press "F1" to toggle the help window showing special keybindings and their associated actions.
-: Press "C-h" followed by one of the keys in the menu to show a description of the associated command.
-: Press "ESC" to quit OneKey and hide the *One-Key* window.
-: Press "F11" to help support further development by donating to the author.
+: Press *F1* to toggle the help window showing special keybindings and their associated actions.
+: Press *C-h* followed by one of the keys in the menu to show a description of the associated command.
+: Press *q* to quit OneKey and hide the *One-Key* window.
+: Press *F11* to help support further development by donating to the author.
 
 :: NOTE: The keystrokes above are built-ins for controlling the *One-Key* window.
 :: They can be changed by customizing `one-key-default-special-keybindings'
