@@ -38,8 +38,7 @@ See "Plugins" below.
         (require 'one-key)
         (global-set-key (kbd "<menu>") 'one-key-open-associated-menu-set)
 }}}
-: to your ~/.emacs file, and replace <menu> with whatever top key you want to use.
-: To find the emacs code for a particular keybinding press C-h k followed by the key.
+: to your ~/.emacs file, and replace <menu> with whatever top key you want to use (to find the emacs code for a particular keybinding press C-h k followed by the key).
 : The key description in the top left of the <nowiki>"*Help*"</nowiki> buffer that pops up is what you
 : should use to replace <menu> above.
 
