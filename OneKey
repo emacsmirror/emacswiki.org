@@ -39,7 +39,7 @@ See "Plugins" below.
         (global-set-key (kbd "<menu>") 'one-key-open-associated-menu-set)
 }}}
 : to your ~/.emacs file, and replace <menu> with whatever top key you want to use
-: (to find the name of a keybinding press C-h k followed by the key and check the top left of the <nowiki>"*Help*"</nowiki> buffer).
+: (to find the name of a keybinding press `C-h k' followed by the keybinding and check the top left of the <nowiki>"*Help*"</nowiki> buffer).
 
 
 : It is also recommended that you increase the values of `max-lisp-eval-depth' and `max-specpdl-size'
