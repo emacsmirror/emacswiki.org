@@ -210,7 +210,7 @@ All the options below can be customized by *M-x customize-group RET one-key RET*
 : Press *F1* to toggle the help window showing special keybindings and their associated actions.
 : Press *C-h* followed by one of the keys in the menu to show a description of the associated command.
 : Press *q* to quit OneKey and hide the *One-Key* window.
-: Press *F11* to help support further development by donating to the author.
+: Press *F11* to help support further development by donating to the author :)
 : You can always use the keystroke *C-g* to abort OneKey, whatever special keybindings you have set.
 
 ==Plugins==
