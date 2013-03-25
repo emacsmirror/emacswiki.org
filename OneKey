@@ -21,22 +21,14 @@ See "Plugins" below.
 
 ==Why do I need OneKey ?==
 * *I am new to emacs and want to learn the common keybindings*
-:: By default OneKey comes with a *top-level* menu containing submenus for all the common prefix keys and commands.
+:: By default OneKey comes with a *top-level* menu containing submenus for all the commonly used prefix keys and commands.
 :: The emacs keybindings are displayed next to the commands to help you learn them. More frequently accessed items
 :: are highlighted to help you quickly pick them out.
-* *I have too many commands I need to remember*:
-:: When I install lots of useful extension in Emacs I always forget the bindings for their commands because there are so many to remember.
+* *I have too many commands I need to remember*
 :: OneKey contains a *major-mode* menu which contains the keybindings and menu items for the current major-mode, and it
 :: also allows you to quickly find a command by filtering by regular expressions.
-:: You can also easily create your own menus.
-* *I don't have a spare, easy keystroke free to bind to a command.*:
-:: Emacs has so many handy commands, but I don't have any keystrokes free to bind new commands to.
-
-: OneKey provides a single top-level keystroke, which gives you access to kestroke menus in a pop-up window. 
-: You simply type the keystroke shown in the window, which executes the corresponding command, or press the left/right
-: arrow key to change to a different menu. You can also easily create your own menus.
-: So you just need remember the Top keystroke, and the other keystrokes will be displayed in a pop-up window.
-
+* *I don't have a spare, easy keystroke free to bind to a command.*
+:: OneKey allows you to easily create your own menus, which can be saved and automatically reloaded when you restart emacs.
 
 : [http://www.emacswiki.org/cgi-bin/emacs/OneKey#toc16 Here] is a screenshot to show how OneKey works.
 
