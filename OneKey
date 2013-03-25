@@ -212,9 +212,7 @@ In the *One-Key* buffer:
 : Press *q* to quit OneKey and hide the *One-Key* window.
 : Press *F11* to help support further development by donating to the author.
 
-: NOTE: The keystrokes above are built-ins for controlling the *One-Key* window. They can be changed by customizing `one-key-default-special-keybindings'
-
-: You can always use the keystroke *C-g* to abort OneKey, whatever special keybindings you have set.
+:: NOTE: The keystrokes above are built-ins for controlling the *One-Key* window. They can be changed by customizing `one-key-default-special-keybindings'. You can always use the keystroke *C-g* to abort OneKey, whatever special keybindings you have set.
 
 ==Plugins==
 
