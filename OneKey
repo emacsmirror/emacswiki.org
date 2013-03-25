@@ -25,8 +25,8 @@ See "Plugins" below.
 : The emacs keybindings are displayed next to the commands to help you learn them.
 : More frequently accessed items are highlighted to help you quickly pick them out.
 * *I have too many commands I need to remember*
-: OneKey contains a *major-mode* menu which contains the keybindings and menu items for the current major-mode, and it also
-allows you to quickly find a command by filtering by regular expressions.
+: OneKey contains a *major-mode* menu which contains the keybindings and menu items for the current major-mode.
+: It also allows you to quickly find a command by filtering by regular expressions.
 * *I don't have a spare, easy keystroke free to bind to a command.*
 : OneKey allows you to easily create your own menus, which can be saved and automatically reloaded when you restart emacs.
 
