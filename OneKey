@@ -225,7 +225,7 @@ The following plugin libraries are available:
 : Lisp:one-key-yas.el - one-key menus for yasnippet templates (see [[Yasnippet]])
 : Lisp:one-key-bmkp.el - one-key menus for bookmark+ bookmarks (see [[BookmarkPlus]])
 
-==OneKey menus for your own libraries==
+==OneKey menus for your own elisp code==
 Note: the following functions are not yet complete, but should be finished soon.
 
 You can use the following functions in your own code to offer the user a simple way to select different types of items:
