@@ -353,7 +353,6 @@ A recursive function for describing numbers in English.
 ==> "negative four-thousand, four-hundred and forty-four"
 }}}
 
-* See also [[WikiPedia:Pattern matching]]
-
+* See also [[WikiPedia:Pattern matching]], [[http://nic.ferrier.me.uk/blog/2013_03/refactoring-elisp-polymorphically|Nic Ferrier on using pcase for refactoring]]
 ----
 CategoryCode
