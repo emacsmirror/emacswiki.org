@@ -29,6 +29,11 @@ See "Plugins" below.
 : It also allows you to quickly find a command by filtering by regular expressions.
 * *I don't have a spare, easy keystroke free to bind to a command.*
 : OneKey allows you to easily create your own menus, which can be saved and automatically reloaded when you restart emacs.
+* *I want to be more productive*
+: With OneKey plugins you get quick access to bookmarks, yasnippets, registers, keyboard macros, and other items.
+* *I want to include a simple menu in my elisp library*
+: You can use the OneKey functions `one-key-read', `one-key-read-tree', `one-key-read-list' and `one-key-read-logical-formula'
+: in your code for prompting the user for different types of items.
 
 ==Installation==
 : Download Lisp:one-key.el and save it in your load-path (usually "~/.emacs.d/").
@@ -219,6 +224,15 @@ The following plugin libraries are available:
 : Lisp:one-key-dir.el - one-key menus for quickly navigating directories (useful for navigating procfs or sysfs on *nix systems)
 : Lisp:one-key-yas.el - one-key menus for yasnippet templates (see [[Yasnippet]])
 : Lisp:one-key-bmkp.el - one-key menus for bookmark+ bookmarks (see [[BookmarkPlus]])
+
+==OneKey menus for your own libraries==
+Note: the following functions are not yet complete, but should be finished very soon.
+
+You can use the following functions in your own code to offer the user a simple way to select different types of items:
+|| *one-key-read* || OneKey replacement for the built-in `completing-read' function     ||
+|| *one-key-read-tree* || Read a tree (recursive list) of items using OneKey menus  ||
+|| *one-key-read-list* || OneKey replacement for the `completing-read-multiple' function ||
+|| *one-key-read-logical-formula* || Read a logical/boolean formula (e.g. for filtering items) using OneKey menus. The result is an elisp form which can be evaluated.         ||
 
 ==Github==
 
