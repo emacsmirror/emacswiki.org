@@ -166,7 +166,7 @@ and by `simple-call-tree-visit-function' and `simple-call-tree-view-function'."
 
 (defcustom simple-call-tree-default-sort-method 'position
   "The default sort method to use when a call tree is newly created.
-The the children of each header will be sorted separately."
+The children of each header will be sorted separately."
   :group 'simple-call-tree
   :type '(choice (const :tag "Sort by position" position)
                  (const :tag "Sort alphabetically" alphabet)))
@@ -349,6 +349,7 @@ END-REGEXP a regular expression to match the end of a token, by default this is 
   (define-key simple-call-tree-mode-map (kbd "M-p") 'simple-call-tree-jump-prev)
   (define-key simple-call-tree-mode-map (kbd "M-n") 'simple-call-tree-jump-next)
   (define-key simple-call-tree-mode-map (kbd "w") 'widen)
+  (define-key simple-call-tree-mode-map (kbd "C-M-x") 'simple-call-tree-eval-defun)
   (use-local-map simple-call-tree-mode-map)
   (easy-menu-define nil simple-call-tree-mode-map "test"
     `("Simple Call Tree"
@@ -363,6 +364,8 @@ END-REGEXP a regular expression to match the end of a token, by default this is 
        :help "Perform query-replace on the function at point"]
       ["Replace Regexp In Function At Point..." simple-call-tree-query-replace-regexp
        :help "Perform query-replace-regexp on the function at point"]
+      ["Evaluate function at point" simple-call-tree-eval-defun
+       :help "Evaluate the function at point. With a prefix arg instrument it for debugging."]
       ["Bookmark Current Position..." simple-call-tree-bookmark
        :help "Create a bookmark for the position corresponding to the branch at point"]
       ["Jump To Branch At Point" simple-call-tree-jump-to-function
@@ -1111,6 +1114,18 @@ If ARG is non-nil perform query-replace-regexp instead."
     (fm-unhighlight 1)
     (setq fm-working nil))
   (delete-other-windows))
+
+(defun simple-call-tree-eval-defun (&optional arg)
+  "Evaluate the function/variable/struct corresponding to the branch at point.
+With a prefix arg, and if the form is a function, instrument it for debugging with edebug."
+  (interactive "P")
+  (let* ((funmark (get-text-property (point) 'location))
+         (buf (and funmark (marker-buffer funmark)))
+         (pos (and funmark (marker-position funmark))))
+    (if funmark
+        (with-current-buffer buf
+          (goto-char pos)
+          (eval-defun arg)))))
 
 (unless (not (featurep 'fm))
   (add-to-list 'fm-modes '(simple-call-tree-mode simple-call-tree-visit-function))
