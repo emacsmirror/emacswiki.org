@@ -226,7 +226,7 @@ The following plugin libraries are available:
 : Lisp:one-key-bmkp.el - one-key menus for bookmark+ bookmarks (see [[BookmarkPlus]])
 
 ==OneKey menus for your own libraries==
-Note: the following functions are not yet complete, but should be finished very soon.
+Note: the following functions are not yet complete, but should be finished soon.
 
 You can use the following functions in your own code to offer the user a simple way to select different types of items:
 || *one-key-read* || OneKey replacement for the built-in `completing-read' function     ||
