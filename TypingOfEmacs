@@ -1,4 +1,4 @@
- typing.el --- The Typing Of Emacs
+: typing.el --- The Typing Of Emacs
 
 You can get the source code here:
 
@@ -6,8 +6,8 @@ You can get the source code here:
 
 A game for fast typers!  A game for Emacs!
 
-This is a game inspired by The Typing Of The Dead on the Dreamcast.
-That game itself is a parody of The House Of The Dead.  In the latter,
+This is a game inspired by [https://en.wikipedia.org/wiki/The_Typing_of_the_Dead The Typing Of The Dead].
+That game itself is a parody of [https://en.wikipedia.org/wiki/The_House_of_the_Dead_2 The House Of The Dead].  In the latter,
 players use a light gun to shoot zombies and other undead.  In the
 former, players have to *type* the names of the undead in order to
 shoot them.  The Typing Of Emacs is the parody of the parody, since
