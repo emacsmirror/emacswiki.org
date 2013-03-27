@@ -5,8 +5,8 @@ See InsertingAndUpdatingDates for other ways to insert dates in buffers and file
 
 == Using the Shell to Insert the Date ==
 
-(defun insert-current-date () (interactive)
-  (insert (shell-command-to-string "echo -n $(date +%Y-%m-%d)")))
+  (defun insert-current-date () (interactive)
+    (insert (shell-command-to-string "echo -n $(date +%Y-%m-%d)")))
 
 Or
 
