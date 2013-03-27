@@ -398,6 +398,7 @@ That code was based upon a version by Tassilo Horn, which worked for me with old
 
 [new]
 You may want to add "(select-frame-set-input-focus (selected-frame))" after "(switch-to-buffer buf)" if you want the emacs window to be automatically brought up when clicking in evince.
+
 -- Bangsheng
 
 Finally, in your .tex buffer you need to do ##M-x TeX-source-correlate-mode## so that the synctex information is written when you compile your documents. You can enable that with ##C-c C-t C-s##.
