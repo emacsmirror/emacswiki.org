@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Mar 23 19:29:38 2013 (-0700)
+;; Last-Updated: Tue Mar 26 17:11:30 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 18939
+;;     Update #: 18948
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -5221,7 +5221,7 @@ If any of these conditions is true, remove all occurrences of CAND:
                      ;; Add excluding of candidate to the existing predicate.
                      (lexical-let ((curr-pred  minibuffer-completion-predicate))
                        `(lambda (cand) (and (not (equal cand ',mct-cand))  (funcall ',curr-pred cand))))
-                   ;; Set predicate to excluding the candidate.
+                   ;; Set predicate to exclude the candidate.
                    `(lambda (cand) (not (equal cand ',mct-cand))))))))
 
 
@@ -6333,6 +6333,19 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
                          minibuffer-completion-predicate
                          (and icicle-buffer-name-input-p ; Used only by Emacs < 23.2.
                               icicle-buffer-ignore-space-prefix-flag))))
+    ;; Depending on the type of `minibuffer-completion-table', narrowing can read again with
+    ;; `icicle-must-pass-predicate' bound, in which case we must here filter the display candidates
+    ;; using that predicate.
+    ;;
+    ;; The choice between `icicle-must-pass-predicate' and
+    ;; `icicle-must-pass-after-match-predicate' could be per-command, by binding a variable.
+    ;; Without such a conditional choice, the former is better, because matching can be
+    ;; complex (costly).
+    ;;
+    ;; This is essentially the same comment as the one in `icicle-narrow-candidates'.
+    ;; If we change the code in one then we probably need to change it in the other.
+    (when icicle-must-pass-predicate
+      (setq initial-cands  (remove-if-not icicle-must-pass-predicate initial-cands)))
     (setq icicle-completion-candidates  (icicle-set-difference
                                          (if icicle-must-pass-after-match-predicate
                                              (icicle-remove-if-not
@@ -6343,7 +6356,26 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
   (message "Displaying completion candidates...")
   (with-output-to-temp-buffer "*Completions*" (display-completion-list icicle-completion-candidates))
   (minibuffer-message "  [Set of candidates COMPLEMENTED]")
-  (icicle-narrow-candidates))
+  ;; This part of the code is similar to part of `icicle-candidate-set-retrieve-1'.
+  (cond ((and (consp icicle-completion-candidates)  (null (cdr icicle-completion-candidates)))
+         ;; $$$$$$ Should this now use `icicle-current-input'
+         ;;        instead of (car icicle-completion-candidates), for PCM?
+         (icicle-remove-Completions-window)
+         (icicle-insert-completion (car icicle-completion-candidates)) ; Insert sole cand.
+         (minibuffer-message "  [Sole candidate restored]")
+         (save-selected-window (select-window (minibuffer-window))
+                               (icicle-highlight-complete-input))
+         (setq icicle-mode-line-help  (car icicle-completion-candidates)))
+        ((consp icicle-completion-candidates)
+         (deactivate-mark)
+         (icicle-display-candidates-in-Completions)
+         (let ((icicle-minibuffer-setup-hook ; Pre-complete
+                (cons (if (eq icicle-last-completion-command
+                              'icicle-apropos-complete-no-display)
+                          'icicle-apropos-complete-no-display
+                        'icicle-apropos-complete)
+                      icicle-minibuffer-setup-hook)))
+           (icicle-narrow-candidates)))))
 
 (defun icicle-candidate-set-truncate (n) ; Bound to `M-$' in minibuffer.
   "Trim the set of current completion candidates at the end.
@@ -6422,6 +6454,7 @@ MOREP non-nil means add the saved candidates, don't replace existing."
             (setq saved-cands  (append (and morep  curr-cands) icicle-saved-completion-candidates))))
       ;; Retrieve from the default variable, `icicle-saved-completion-candidates'.
       (setq saved-cands  (append (and morep  curr-cands) icicle-saved-completion-candidates)))
+    ;; This part of the code is similar to part of `icicle-candidate-set-complement'.
     (cond ((null saved-cands)
            (deactivate-mark)
            (icicle-display-candidates-in-Completions)
