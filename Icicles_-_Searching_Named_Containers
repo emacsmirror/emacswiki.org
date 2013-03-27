@@ -78,7 +78,7 @@ set of candidates by matching container names before you set off
 to also search content.  Otherwise, if you have many or large
 containers with no content matches then you will waste time
 searching unnecessarily.  It is also generally a good idea to
-temporarily turn off '''Icicles''' incremental completion and [[IcompleteMode]] when you search container content.
+temporarily turn off '''Icicles''' [[Icicles - Icompletion#CompletionsIcompletion|incremental completion]] and [[IcompleteMode]] when you search container content.
 
 See Also:
 
