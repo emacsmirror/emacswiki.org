@@ -8,6 +8,7 @@ Once loaded, M-x pacman-mode to start it. The keybindings are all listed in the 
 
 [new]
 Sooner or later, I'll move it to its own repo, and streamline the installation process. -- BrandonBetances
-
+[new]
+I was hoping for a new game written in Emacs Lisp… :'( -- AlexSchroeder
 ----
 CategoryModes
