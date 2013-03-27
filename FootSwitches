@@ -2,6 +2,13 @@ Footswitches (pedals), such as those designed by XKeys (http://www.xkeys.com/xke
 
 Update, 2011-05-31: I've been struggling to set up the USB version of the XKeys pedals in an all-Linux environment, having previously always used the PS2 version.  XKeys provide a Windows-only program for setting the keycodes, and when I asked about getting the information necessary for programming the pedals from Linux, they said they don't release that information.  So in an all-Linux environment, I now recommend making your own: cannibalize a cheap keyboard for its controller, and add switches and your own mechanical hardware.  (It'll be a lot cheaper too.)
 
+[new:XueFuqiao:2013-03-27 08:38 UTC]
+It has a Software Development Kit now:
+  http://www.xkeys.com/developer/LinuxSDK.php
+
+-- XueFuqiao
+
+[new]
 See also http://shorttalk-emacs.sourceforge.net/ShortStep/index.html
 
 [new]
