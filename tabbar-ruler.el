@@ -5,7 +5,7 @@
 ;; Author: Matthew Fidler, Nathaniel Cunningham
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Mon Oct 18 17:06:07 2010 (-0500)
-;; Version: 0.26
+;; Version: 0.27
 ;; Last-Updated: Sat Dec 15 15:44:34 2012 (+0800)
 ;;           By: Matthew L. Fidler
 ;;     Update #: 663
@@ -51,6 +51,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 27-Mar-2013    Matthew L. Fidler  
+;;    Last-Updated: Sat Dec 15 15:44:34 2012 (+0800) #663 (Matthew L. Fidler)
+;;    Fixed typo to fix issue #2.
 ;; 27-Mar-2013    Matthew L. Fidler  
 ;;    Last-Updated: Sat Dec 15 15:44:34 2012 (+0800) #663 (Matthew L. Fidler)
 ;;    Attempt to fix issue #2.  Whenever the color is not a string, assume
@@ -344,7 +347,7 @@
   "Gets the hexadecimal value of a color"
   (let ((ret color))
     (cond
-     ((not (eq (type-of color 'string)))
+     ((not (eq (type-of color) 'string))
       (setq ret "None"))
      ((string= "#" (substring color 0 1))
       (setq ret (upcase ret)))
