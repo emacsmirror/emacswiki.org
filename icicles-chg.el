@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Mar 23 20:08:55 2013 (-0700)
+;; Last-Updated: Wed Mar 27 13:12:34 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 9870
+;;     Update #: 9876
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -86,6 +86,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2013/03/27 dadams
+;;     Do not require dabbrev for Emacs 24+ (until I get around to fixing icicle-dabbrev-completion).
+;;     Temporarily removed icicle-dabbrev-completion for Emacs 24+.
 ;; 2013/03/16 dadams
 ;;     custom-variable-p: Return nil if arg is not a symbol.
 ;;     icicle-buffer-multi-complete, icicle-(buffer|file-of-content)-apropos-complete-match:
@@ -887,6 +890,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2013/03/26 dadams
+;;     icicle-Info-multi-read-node-name: setq STRG only if it is nil.
+;;     icicle-Info-goto-node-of-content: Do not bother to bind icicle-candidate-properties-alist.
 ;; 2013/03/23 dadams
 ;;     Renamed icicle-Info-goto-node to icicle-Info-goto-node-no-search.
 ;;     Added: icicle-Info-goto-node (new version) - use *-of-content or *-no-search.
@@ -3783,6 +3789,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2013/03/26 dadams
+;;     icicle-candidate-set-complement:
+;;       When icicle-must-pass-predicate, e.g., after narrowing, filter display candidates using it.
+;;       Added code from icicle-candidate-set-retrieve-1 to recomplete (can cycle immediately etc.).
 ;; 2013/03/16 dadams
 ;;     icicle(-complete-and)-(widen|narrow)-candidates, icicle-regexp-quote-input:
 ;;       Put properties icicle(-apropos)-completing-command.
