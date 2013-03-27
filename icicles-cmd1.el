@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Mar 23 19:27:56 2013 (-0700)
+;; Last-Updated: Wed Mar 27 12:57:36 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 25658
+;;     Update #: 25662
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -402,7 +402,9 @@
 (eval-when-compile (when (>= emacs-major-version 21) (require 'recentf))) ;; recentf-mode
 (require 'apropos-fn+var nil t) ;; (no error if not found):
   ;; apropos-command, apropos-function, apropos-option, apropos-variable
-(eval-when-compile (require 'dabbrev))
+(eval-when-compile
+ (when (< emacs-major-version 24)       ; $$$$$$$$ TODO: Update it for Emacs 24+
+   (require 'dabbrev)))
   ;; dabbrev-case-fold-search, dabbrev-upcase-means-case-search, dabbrev--last-obarray,
   ;; dabbrev--last-completion-buffer, dabbrev--last-abbreviation, dabbrev--check-other-buffers,
   ;; dabbrev-case-replace, dabbrev--reset-global-variables, dabbrev--minibuffer-origin,
@@ -1225,11 +1227,13 @@ Perform completion on the GDB command preceding point."
 ;; You can complete from an empty abbrev also.
 ;; Uses Icicles completion when there are multiple candidates.
 ;;
-(when (and (fboundp 'dabbrev-completion)  (not (fboundp 'icicle-ORIG-dabbrev-completion)))
-  (defalias 'icicle-ORIG-dabbrev-completion (symbol-function 'dabbrev-completion)))
+(when (< emacs-major-version 24)        ; $$$$$$$$ TODO: Update this for Emacs 24+.
 
-(defun icicle-dabbrev-completion (&optional arg) ; Bound to `C-M-/' globally.
-  "Completion on current word.
+  (when (and (fboundp 'dabbrev-completion)  (not (fboundp 'icicle-ORIG-dabbrev-completion)))
+    (defalias 'icicle-ORIG-dabbrev-completion (symbol-function 'dabbrev-completion)))
+
+  (defun icicle-dabbrev-completion (&optional arg) ; Bound to `C-M-/' globally.
+    "Completion on current word.
 Like \\[dabbrev-expand], but finds all expansions in the current buffer
 and presents suggestions for completion.
 
@@ -1241,108 +1245,108 @@ searches *ALL* buffers.
 
 With no prefix argument, it reuses an old completion list
 if there is a suitable one already."
-  (interactive "*P")
-  (unless (featurep 'dabbrev)
-    (unless (require 'dabbrev nil t) (error "Library `dabbrev' not found"))
-    (icicle-mode 1))                    ; Redefine `dabbrev-completion' to Icicles version.
-  (dabbrev--reset-global-variables)
-  (let* ((dabbrev-check-other-buffers  (and arg  t)) ; Must be t
-         (dabbrev-check-all-buffers    (and arg  (= (prefix-numeric-value arg) 16)))
-         (abbrev                       (icicle-dabbrev--abbrev-at-point))
-         (ignore-case-p                (and (if (eq dabbrev-case-fold-search 'case-fold-search)
-                                                case-fold-search
-                                              dabbrev-case-fold-search)
-                                            (or (not dabbrev-upcase-means-case-search)
-                                                (string= abbrev (downcase abbrev)))))
-         (my-obarray                   dabbrev--last-obarray)
-         init)
-    ;; If new abbreviation to expand, then expand it.
-    (save-excursion
-      (unless (and (null arg)
-                   my-obarray
-                   (or (eq dabbrev--last-completion-buffer (current-buffer))
-                       (and (window-minibuffer-p (selected-window))
-                            (eq dabbrev--last-completion-buffer (dabbrev--minibuffer-origin))))
-                   dabbrev--last-abbreviation
-                   (>= (length abbrev) (length dabbrev--last-abbreviation))
-                   (string= dabbrev--last-abbreviation
-                            (substring abbrev 0 (length dabbrev--last-abbreviation)))
-                   (setq init  (try-completion abbrev my-obarray)))
-        (setq dabbrev--last-abbreviation  abbrev)
-        (let ((completion-list         (dabbrev--find-all-expansions abbrev ignore-case-p))
-              (completion-ignore-case  ignore-case-p))
-          ;; Make an obarray with all expansions
-          (setq my-obarray  (make-vector (length completion-list) 0))
-          (unless (> (length my-obarray) 0)
-            (icicle-user-error "No dynamic expansion for \"%s\" found%s" abbrev
-                               (if dabbrev--check-other-buffers "" " in this-buffer")))
-          (dolist (string  completion-list)
-            (cond ((or (not ignore-case-p)  (not dabbrev-case-replace))
-                   (intern string my-obarray))
-                  ((string= abbrev (icicle-upcase abbrev))
-                   (intern (icicle-upcase string) my-obarray))
-                  ((string= (substring abbrev 0 1) (icicle-upcase (substring abbrev 0 1)))
-                   (intern (capitalize string) my-obarray))
-                  (t (intern (downcase string) my-obarray))))
-          (setq dabbrev--last-obarray            my-obarray
-                dabbrev--last-completion-buffer  (current-buffer)
-                ;; Find the expanded common string.
-                init                             (try-completion abbrev my-obarray)))))
-    ;; Let the user choose between the expansions
-    (unless (stringp init) (setq init  abbrev))
-    (cond
-      ((and (not (string-equal init ""))
-            (not (string-equal (downcase init) (downcase abbrev)))
-            (<= (length (all-completions init my-obarray)) 1))
-       (message "Completed (no other completions)")
-       (if (< emacs-major-version 21)
-           (dabbrev--substitute-expansion nil abbrev init)
-         (dabbrev--substitute-expansion nil abbrev init nil))
-       (when (window-minibuffer-p (selected-window)) (message nil)))
-;;$$       ;; Complete text only up through the common root. NOT USED.
-;;       ((and icicle-dabbrev-stop-at-common-root-p
-;;             (not (string-equal init ""))
-;;             (not (string-equal (downcase init) (downcase abbrev))))
-;;        (message "Use `%s' again to complete further"
-;;                 (icicle-key-description (this-command-keys) nil icicle-key-descriptions-use-<>-flag))
-;;        (if (< emacs-major-version 21)
-;;            (dabbrev--substitute-expansion nil abbrev init)
-;;          (dabbrev--substitute-expansion nil abbrev init nil))
-;;        (when (window-minibuffer-p (selected-window)) (message nil))) ; $$ NEEDED?
-      (t
-       ;; String is a common root already.  Use Icicles completion.
-       (icicle-highlight-lighter)
-       (message "Making completion list...")
-       (search-backward abbrev)
-       (replace-match "")
-       (condition-case nil
-           (let* ((icicle-show-Completions-initially-flag  t)
-                  (icicle-incremental-completion-p         'display)
-                  (minibuffer-completion-table             my-obarray)
-                  (choice
-                   (completing-read "Complete: " my-obarray nil nil init nil init)))
-             (when choice (insert choice)))
-         (quit (insert abbrev)))))))
+    (interactive "*P")
+    (unless (featurep 'dabbrev)
+      (unless (require 'dabbrev nil t) (error "Library `dabbrev' not found"))
+      (icicle-mode 1))                  ; Redefine `dabbrev-completion' to Icicles version.
+    (dabbrev--reset-global-variables)
+    (let* ((dabbrev-check-other-buffers  (and arg  t)) ; Must be t
+           (dabbrev-check-all-buffers    (and arg  (= (prefix-numeric-value arg) 16)))
+           (abbrev                       (icicle-dabbrev--abbrev-at-point))
+           (ignore-case-p                (and (if (eq dabbrev-case-fold-search 'case-fold-search)
+                                                  case-fold-search
+                                                dabbrev-case-fold-search)
+                                              (or (not dabbrev-upcase-means-case-search)
+                                                  (string= abbrev (downcase abbrev)))))
+           (my-obarray                   dabbrev--last-obarray)
+           init)
+      ;; If new abbreviation to expand, then expand it.
+      (save-excursion
+        (unless (and (null arg)
+                     my-obarray
+                     (or (eq dabbrev--last-completion-buffer (current-buffer))
+                         (and (window-minibuffer-p (selected-window))
+                              (eq dabbrev--last-completion-buffer (dabbrev--minibuffer-origin))))
+                     dabbrev--last-abbreviation
+                     (>= (length abbrev) (length dabbrev--last-abbreviation))
+                     (string= dabbrev--last-abbreviation
+                              (substring abbrev 0 (length dabbrev--last-abbreviation)))
+                     (setq init  (try-completion abbrev my-obarray)))
+          (setq dabbrev--last-abbreviation  abbrev)
+          (let ((completion-list         (dabbrev--find-all-expansions abbrev ignore-case-p))
+                (completion-ignore-case  ignore-case-p))
+            ;; Make an obarray with all expansions
+            (setq my-obarray  (make-vector (length completion-list) 0))
+            (unless (> (length my-obarray) 0)
+              (icicle-user-error "No dynamic expansion for \"%s\" found%s" abbrev
+                                 (if dabbrev--check-other-buffers "" " in this-buffer")))
+            (dolist (string  completion-list)
+              (cond ((or (not ignore-case-p)  (not dabbrev-case-replace))
+                     (intern string my-obarray))
+                    ((string= abbrev (icicle-upcase abbrev))
+                     (intern (icicle-upcase string) my-obarray))
+                    ((string= (substring abbrev 0 1) (icicle-upcase (substring abbrev 0 1)))
+                     (intern (capitalize string) my-obarray))
+                    (t (intern (downcase string) my-obarray))))
+            (setq dabbrev--last-obarray            my-obarray
+                  dabbrev--last-completion-buffer  (current-buffer)
+                  ;; Find the expanded common string.
+                  init                             (try-completion abbrev my-obarray)))))
+      ;; Let the user choose between the expansions
+      (unless (stringp init) (setq init  abbrev))
+      (cond
+        ((and (not (string-equal init ""))
+              (not (string-equal (downcase init) (downcase abbrev)))
+              (<= (length (all-completions init my-obarray)) 1))
+         (message "Completed (no other completions)")
+         (if (< emacs-major-version 21)
+             (dabbrev--substitute-expansion nil abbrev init)
+           (dabbrev--substitute-expansion nil abbrev init nil))
+         (when (window-minibuffer-p (selected-window)) (message nil)))
+        ;;$$       ;; Complete text only up through the common root. NOT USED.
+        ;;       ((and icicle-dabbrev-stop-at-common-root-p
+        ;;             (not (string-equal init ""))
+        ;;             (not (string-equal (downcase init) (downcase abbrev))))
+        ;;        (message "Use `%s' again to complete further"
+        ;;                 (icicle-key-description (this-command-keys) nil icicle-key-descriptions-use-<>-flag))
+        ;;        (if (< emacs-major-version 21)
+        ;;            (dabbrev--substitute-expansion nil abbrev init)
+        ;;          (dabbrev--substitute-expansion nil abbrev init nil))
+        ;;        (when (window-minibuffer-p (selected-window)) (message nil))) ; $$ NEEDED?
+        (t
+         ;; String is a common root already.  Use Icicles completion.
+         (icicle-highlight-lighter)
+         (message "Making completion list...")
+         (search-backward abbrev)
+         (replace-match "")
+         (condition-case nil
+             (let* ((icicle-show-Completions-initially-flag  t)
+                    (icicle-incremental-completion-p         'display)
+                    (minibuffer-completion-table             my-obarray)
+                    (choice
+                     (completing-read "Complete: " my-obarray nil nil init nil init)))
+               (when choice (insert choice)))
+           (quit (insert abbrev)))))))
 
-(defun icicle-dabbrev--abbrev-at-point ()
-  "Like `dabbrev--abbrev-at-point', but returns \"\" if there is no match.
+  (defun icicle-dabbrev--abbrev-at-point ()
+    "Like `dabbrev--abbrev-at-point', but returns \"\" if there is no match.
 Vanilla `dabbrev--abbrev-at-point' raises an error if no match."
-  (let ((abv ""))
-    (setq dabbrev--last-abbrev-location  (point)) ; Record the end of the abbreviation.
-    (unless (bobp)
-      (save-excursion                   ; Return abbrev at point
-        ;; If we aren't right after an abbreviation, move point back to just after one.
-        ;; This is so the user can get successive words by typing the punctuation followed by M-/.
-        (save-match-data
-          (when (and (save-excursion
-                       (forward-char -1)
-                       (not (looking-at
-                             (concat "\\(" (or dabbrev-abbrev-char-regexp  "\\sw\\|\\s_") "\\)+"))))
-                     (re-search-backward (or dabbrev-abbrev-char-regexp  "\\sw\\|\\s_") nil t))
-            (forward-char 1)))
-        (dabbrev--goto-start-of-abbrev) ; Now find the beginning of that one.
-        (setq abv  (buffer-substring-no-properties dabbrev--last-abbrev-location (point)))))
-    abv))
+    (let ((abv ""))
+      (setq dabbrev--last-abbrev-location  (point)) ; Record the end of the abbreviation.
+      (unless (bobp)
+        (save-excursion                 ; Return abbrev at point
+          ;; If we aren't right after an abbreviation, move point back to just after one.
+          ;; This is so the user can get successive words by typing the punctuation followed by M-/.
+          (save-match-data
+            (when (and (save-excursion
+                         (forward-char -1)
+                         (not (looking-at
+                               (concat "\\(" (or dabbrev-abbrev-char-regexp  "\\sw\\|\\s_") "\\)+"))))
+                       (re-search-backward (or dabbrev-abbrev-char-regexp  "\\sw\\|\\s_") nil t))
+              (forward-char 1)))
+          (dabbrev--goto-start-of-abbrev) ; Now find the beginning of that one.
+          (setq abv  (buffer-substring-no-properties dabbrev--last-abbrev-location (point)))))
+      abv)))
 
 
 ;; REPLACE ORIGINAL `bbdb-complete-mail' defined in `bbdb-com.el', version 3.02
