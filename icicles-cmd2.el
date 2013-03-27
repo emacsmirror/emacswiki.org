@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Sat Mar 23 20:01:53 2013 (-0700)
+;; Last-Updated: Tue Mar 26 16:51:48 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6418
+;;     Update #: 6420
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2392,7 +2392,6 @@ From Lisp code:
             (icicle-sort-comparer                   (and (not icicle-Info-only-rest-of-book-p)
                                                          icicle-sort-comparer))
             (icicle-multi-completing-p              t)
-            (icicle-candidate-properties-alist      '((1 (face icicle-candidate-part))))
             ;; Bind `icicle-apropos-complete-match-fn' to nil to prevent automatic input matching
             ;; in `icicle-unsorted-apropos-candidates' etc., because `icicle-Info-multi-read-node-name'
             ;; does everything.
@@ -2504,7 +2503,7 @@ the name."
   (defun icicle-Info-multi-read-node-name (strg pred completion-mode)
     "Completion function for `icicle-Info-read-node-of-content'.
 This is used as the value of `minibuffer-completion-table'."
-    (setq strg  icicle-current-input)
+    (unless strg (setq strg  icicle-current-input))
     (if (eq 'metadata completion-mode)
         '(metadata (category . info-node)) ; $$$$$$ Not used currently.
       (cond
