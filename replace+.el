@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Jan 30 15:01:06 1996
 ;; Version: 21.0
-;; Last-Updated: Thu Feb  7 19:11:11 2013 (-0800)
+;; Last-Updated: Wed Mar 27 11:32:27 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 1515
+;;     Update #: 1595
 ;; URL: http://www.emacswiki.org/replace%2b.el
 ;; Doc URL: http://www.emacswiki.org/ReplacePlus
 ;; Keywords: matching, help, internal, tools, local
@@ -89,12 +89,16 @@
 ;;                              and visited linenum in occur buffer.
 ;;    `occur-read-primary-args' - (Emacs 21 only) Default regexps via
 ;;                                `search/replace-default'.
-;;    `query-replace-read-args',  - (Not needed for Emacs 21+)
-;;                                1. Uses `completing-read' if
+;;    `query-replace', `query-replace-regexp', `replace-string',
+;;      `replace-regexp'        - No " in region" in prompt if
+;;                                `*-region-as-default-flag'.
+;;    `query-replace-read-args' - 1. Uses `completing-read' if
 ;;                                   `replace-w-completion-flag' is
 ;;                                   non-nil.
 ;;                                2. Default regexps are obtained via
 ;;                                   `search/replace-default'.
+;;                                3. Deactivates region if
+;;                                   `*-region-as-default-flag'.
 ;;    `query-replace-read-(from|to)' - Like `query-replace-read-args',
 ;;                                     but for Emacs 21+.
 ;;    `read-regexp' (Emacs 23+) -
@@ -129,6 +133,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/03/28 dadams
+;;     Added redefinition of query-replace-read-args for Emacs 22+.
+;;     Added defadvice for query-replace(-regexp), replace-(string|regexp).
+;;     query-replace-read-args: deactivate mark when search/replace-region-as-default-flag is non-nil.
 ;; 2013/02/07 dadams
 ;;     Added: search/replace-region-as-default-flag, toggle-search/replace-region-as-default'
 ;;            usable-region.
@@ -371,13 +379,13 @@ the region is not active."
 That is, if the region is currently active then use its text as the
 default input.  All text properties are removed from the text.
 
-Note that in this case the active region is not used as to limit the
+Note that in this case the active region is not used to limit the
 search/replacement scope.  But in that case you can of course just
 narrow the buffer temporarily to restrict the operation scope.
 
 A non-nil value of this option takes precedence over the use of option
 `search/replace-2nd-sel-as-default-flag'.  To give that option
-precedence over useing the active region, you can set this option to
+precedence over using the active region, you can set this option to
 nil and use `region-or-non-nil-symbol-name-nearest-point' as the value
 of option `search/replace-default-fn'."
   :type 'boolean :group 'matching)
@@ -424,12 +432,12 @@ See also options `search/replace-region-as-default-flag' and
           (function :tag "Function of 0 args to provide default for search/replace"))
   :group 'matching)
 
-(defun usable-region (&optional remove-props)
+(defun usable-region (&optional no-props)
   "Return the region text if the region is active and nonempty.
-Non-nil optional arg REMOVE-PROPS means strip the text of all
+Non-nil optional arg NO-PROPS means return the text without any
 properties."
   (and transient-mark-mode  mark-active  (/= (region-end) (region-beginning))
-       (if remove-props
+       (if no-props
            (buffer-substring-no-properties (region-beginning) (region-end))
          (buffer-substring (region-beginning) (region-end)))))
 
@@ -583,6 +591,73 @@ See `query-replace-read-from'."
         (setq to  (cons 'replace-eval-replacement (if (> (length to) 1) (cons 'concat to) (car to)))))
       to)))
 
+
+
+
+;; REPLACE ORIGINAL in `replace.el'.
+;;
+;; 1. Use `completing-read' if `replace-w-completion-flag' is non-nil.
+;; 2. Provide default regexps using `search/replace-default'.
+;; 3. Deactivate mark if using region text for default.
+;;
+(unless (> emacs-major-version 21)
+  (defun query-replace-read-args (string regexp-flag &optional noerror)
+    "Read arguments for replacement functions such as `\\[query-replace]'.
+See options `search/replace-region-as-default-flag',
+`search/replace-2nd-sel-as-default-flag', and
+`search/replace-default-fn' regarding the default value.
+
+Option `replace-w-completion-flag', if non-nil, provides for
+minibuffer completion while you type the arguments.  In that case, to
+insert a `SPC' or `TAB' character, you will need to precede it by \
+`\\[quoted-insert]'."
+    (unless noerror (barf-if-buffer-read-only))
+    (let* ((default     (search/replace-default regexp-history))
+           (old-prompt  (concat string ".  OLD (to be replaced): "))
+           (oldx        (if replace-w-completion-flag
+                            (completing-read old-prompt obarray nil nil nil
+                                             query-replace-from-history-variable default t)
+                          (if query-replace-interactive
+                              (car (if regexp-flag regexp-search-ring search-ring))
+                            (read-from-minibuffer old-prompt nil nil nil
+                                                  query-replace-from-history-variable default t))))
+           (new-prompt  (format "NEW (replacing %s): " oldx))
+           (newx        (if replace-w-completion-flag
+                            (completing-read new-prompt obarray nil nil nil
+                                             query-replace-to-history-variable default t)
+                          (read-from-minibuffer new-prompt nil nil nil
+                                                query-replace-to-history-variable default t))))
+      (when (and search/replace-region-as-default-flag  (usable-region t)) (deactivate-mark))
+      (list oldx newx current-prefix-arg))))
+
+
+
+;; REPLACE ORIGINAL in `replace.el'.
+;;
+;; Deactivate mark if using region text for default.
+;;
+(when (> emacs-major-version 21)
+  (defun query-replace-read-args (prompt regexp-flag &optional noerror)
+    "Read arguments for replacement functions such as `\\[query-replace]'.
+See options `search/replace-region-as-default-flag',
+`search/replace-2nd-sel-as-default-flag', and
+`search/replace-default-fn' regarding the default values.
+
+Option `replace-w-completion-flag', if non-nil, provides for
+minibuffer completion while you type the arguments.  In that case, to
+insert a `SPC' or `TAB' character, you will need to precede it by \
+`\\[quoted-insert]'."
+    (unless noerror
+      (barf-if-buffer-read-only))
+    (let* ((from  (query-replace-read-from prompt regexp-flag))
+           (to    (if (consp from) (prog1 (cdr from) (setq from (car from)))
+                    (query-replace-read-to from prompt regexp-flag))))
+      (when (and search/replace-region-as-default-flag  (usable-region t)) (deactivate-mark))
+      (list from to current-prefix-arg))))
+
+
+
+
 (when (boundp 'menu-bar-search-replace-menu) ; In `menu-bar+.el'.
   (define-key menu-bar-search-replace-menu [query-replace]
     '(menu-item "Query String" query-replace-w-options
@@ -596,6 +671,9 @@ See `query-replace-read-from'."
                                     "Using completion with query replace")
   'case-fold-search)
 
+
+
+
 ;; The main difference between this and `query-replace' is in the treatment of the PREFIX
 ;; arg.  Only a positive (or nil) PREFIX value gives the same behavior.  A negative PREFIX
 ;; value does a regexp query replace.  Another difference is that non-nil
@@ -605,7 +683,9 @@ See `query-replace-read-from'."
 ;; `query-replace-read-from' defined here:
 ;;
 ;;    1. Uses `completing-read' if `replace-w-completion-flag' is non-nil.
-;;    2. Default values are provided by `search/replace-default'.
+;;    2. Default values are provided by `search/replace-default', which respects options
+;;       `search/replace-region-as-default-flag', `search/replace-2nd-sel-as-default-flag', and
+;;       `search/replace-default-fn'.
 ;;
 ;;    You can still use the history lists, and you can still enter
 ;;    nothing to repeat the previous query replacement operation.
@@ -637,7 +717,7 @@ NEW.
 
 Option `replace-w-completion-flag', if non-nil, provides for
 minibuffer completion while you type OLD and NEW.  In that case, to
-insert a SPC or TAB character, you will need to preceed it by \
+insert a SPC or TAB character, you will need to precede it by \
 `\\[quoted-insert]'.
 
 If option `isearchp-set-region-flag' is non-nil, then select the last
@@ -649,10 +729,8 @@ replacement."
                          (t " STRING")))
           (common  (query-replace-read-args (concat "Query replace" kind) (string= " REGEXP " kind))))
      (list (nth 0 common) (nth 1 common) (nth 2 common)
-           ;; These are done separately here, so that command-history will record these expressions
-           ;; rather than the values they had this time.
-           (and transient-mark-mode mark-active (region-beginning))
-           (and transient-mark-mode mark-active (region-end)))))
+           (and transient-mark-mode mark-active  (region-beginning))
+           (and transient-mark-mode mark-active  (region-end)))))
   (let ((kind  (cond ((and prefix (natnump (prefix-numeric-value prefix))) 'WORD)
                      (prefix 'REGEXP)
                      (t 'STRING))))
@@ -670,39 +748,86 @@ replacement."
     (isearchp-set-region-around-search-target))) ; Defined in `isearch+.el'.
 
 
-;; REPLACE ORIGINAL in `replace.el'.
-;;
-;; 1. Use `completing-read' if `replace-w-completion-flag' is non-nil.
-;; 2. Provide default regexps using `search/replace-default'.
-;;
-(unless (> emacs-major-version 21)
-  (defun query-replace-read-args (string regexp-flag &optional noerror)
-    "Read arguments for replacement functions such as `\\[query-replace]'.
-See options `search/replace-region-as-default-flag',
-`search/replace-2nd-sel-as-default-flag', and
-`search/replace-default-fn' regarding the default values.
 
-Option `replace-w-completion-flag', if non-nil, provides for
-minibuffer completion while you type the arguments.  In that case, to
-insert a `SPC' or `TAB' character, you will need to preceed it by \
-`\\[quoted-insert]'."
-    (unless noerror (barf-if-buffer-read-only))
-    (let* ((default     (search/replace-default regexp-history))
-           (old-prompt  (concat string ".  OLD (to be replaced): "))
-           (oldx        (if replace-w-completion-flag
-                            (completing-read old-prompt obarray nil nil nil
-                                             query-replace-from-history-variable default t)
-                          (if query-replace-interactive
-                              (car (if regexp-flag regexp-search-ring search-ring))
-                            (read-from-minibuffer old-prompt nil nil nil
-                                                  query-replace-from-history-variable default t))))
-           (new-prompt  (format "NEW (replacing %s): " oldx))
-           (newx        (if replace-w-completion-flag
-                            (completing-read new-prompt obarray nil nil nil
-                                             query-replace-to-history-variable default t)
-                          (read-from-minibuffer new-prompt nil nil nil
-                                                query-replace-to-history-variable default t))))
-      (list oldx newx current-prefix-arg))))
+;; ADVISE ORIGINAL in `replace.el':
+;;
+;; Do not add " in region" to prompt if `search/replace-region-as-default-flag'.
+;;
+(when (> emacs-major-version 21)
+  (defadvice query-replace (before respect-search/replace-region-as-default-flag activate)
+    nil
+    (interactive
+     (let ((common
+            (query-replace-read-args (concat "Query replace" (and current-prefix-arg  " word")
+                                             (and transient-mark-mode  mark-active
+                                                  (not search/replace-region-as-default-flag)
+                                                  " in region"))
+                                     nil)))
+       (list (nth 0 common) (nth 1 common) (nth 2 common)
+             ;; These are done separately here, so that `command-history' will record these expressions
+             ;; rather than the values they had this time.
+             (and transient-mark-mode  mark-active  (region-beginning))
+             (and transient-mark-mode  mark-active  (region-end)))))))
+
+
+
+;; ADVISE ORIGINAL in `replace.el':
+;;
+;; Do not add " in region" to prompt if `search/replace-region-as-default-flag'.
+;;
+(when (> emacs-major-version 21)
+  (defadvice query-replace-regexp (before respect-search/replace-region-as-default-flag activate)
+    nil
+    (interactive
+     (let ((common
+            (query-replace-read-args (concat "Query replace" (and current-prefix-arg  " word") " regexp"
+                                             (and transient-mark-mode  mark-active
+                                                  (not search/replace-region-as-default-flag)
+                                                  " in region"))
+                                     t)))
+       (list (nth 0 common) (nth 1 common) (nth 2 common)
+             (and transient-mark-mode  mark-active  (region-beginning))
+             (and transient-mark-mode  mark-active  (region-end)))))))
+
+
+
+;; ADVISE ORIGINAL in `replace.el':
+;;
+;; Do not add " in region" to prompt if `search/replace-region-as-default-flag'.
+;;
+(when (> emacs-major-version 21)
+  (defadvice replace-string (before respect-search/replace-region-as-default-flag activate)
+    nil
+    (interactive
+     (let ((common
+            (query-replace-read-args (concat "Replace" (and current-prefix-arg  " word") " string"
+                                             (and transient-mark-mode  mark-active
+                                                  (not search/replace-region-as-default-flag)
+                                                  " in region"))
+                                     nil)))
+       (list (nth 0 common) (nth 1 common) (nth 2 common)
+             (and transient-mark-mode  mark-active  (region-beginning))
+             (and transient-mark-mode  mark-active  (region-end)))))))
+
+
+
+;; ADVISE ORIGINAL in `replace.el':
+;;
+;; Do not add " in region" to prompt if `search/replace-region-as-default-flag'.
+;;
+(when (> emacs-major-version 21)
+  (defadvice replace-regexp (before respect-search/replace-region-as-default-flag activate)
+    nil
+    (interactive
+     (let ((common
+            (query-replace-read-args (concat "Replace" (and current-prefix-arg " word") " regexp"
+                                             (and transient-mark-mode  mark-active
+                                                  (not search/replace-region-as-default-flag)
+                                                  " in region"))
+                                     t)))
+       (list (nth 0 common) (nth 1 common) (nth 2 common)
+             (and transient-mark-mode  mark-active  (region-beginning))
+             (and transient-mark-mode  mark-active  (region-end)))))))
 
 
 
@@ -745,6 +870,7 @@ the last replacement regexp."
       (if (equal input "")
           (or (car defaults)  input)
         (prog1 input (add-to-history 'regexp-history input))))))
+
 
 
 ;; REPLACE ORIGINAL in `replace.el':
