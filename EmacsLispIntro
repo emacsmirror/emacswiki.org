@@ -20,5 +20,7 @@ You will also want the EmacsLispReference as you start to learn how
 Emacs Lisp works.  Note: EmacsLispIntro is for beginners;
 EmacsLispReference is truly a reference, not a tutorial.
 
+Solutions to the exercises on Emacs Lisp Intro: https://github.com/RenWenshan/emacs-lisp-intro-solutions
+
 ----
 CategoryDocumentation
