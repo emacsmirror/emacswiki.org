@@ -5,7 +5,7 @@
 ;; Author: Matthew Fidler, Nathaniel Cunningham
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Mon Oct 18 17:06:07 2010 (-0500)
-;; Version: 0.25
+;; Version: 0.26
 ;; Last-Updated: Sat Dec 15 15:44:34 2012 (+0800)
 ;;           By: Matthew L. Fidler
 ;;     Update #: 663
@@ -51,6 +51,12 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 27-Mar-2013    Matthew L. Fidler  
+;;    Last-Updated: Sat Dec 15 15:44:34 2012 (+0800) #663 (Matthew L. Fidler)
+;;    Attempt to fix issue #2.  Whenever the color is not a string, assume
+;;    that it should be transparent.  I'm unsure if the mac osx puts the
+;;    translated color to a string.  However, it seems that the undefined
+;;    should be the same as transparent.  Therefore, this fix *should* work...
 ;; 20-Mar-2013    Matthew L. Fidler  
 ;;    Last-Updated: Sat Dec 15 15:44:34 2012 (+0800) #663 (Matthew L. Fidler)
 ;;    Add inverse video option for unselected tabbar.  Made it the default.
@@ -338,6 +344,8 @@
   "Gets the hexadecimal value of a color"
   (let ((ret color))
     (cond
+     ((not (eq (type-of color 'string)))
+      (setq ret "None"))
      ((string= "#" (substring color 0 1))
       (setq ret (upcase ret)))
      ((color-defined-p color)
@@ -386,7 +394,7 @@
                       :box nil))
 
 (add-hook 'after-make-frame-functions 'tabbar-install-faces)
-
+(add-hook 'emacs-startup-hook 'tabbar-install-faces)
 (tabbar-install-faces)
 
 
