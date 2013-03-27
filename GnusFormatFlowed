@@ -73,5 +73,9 @@ The gotcha here is to avoid using `use-hard-newlines' entirely, and simply compo
 
 By default, composing a flowed message is only enabled for mail, but it also works for groups coming from mail-to-news gateways such as [http://www.gmane.org GMane]. Change `message-setup-hook' accordingly if you wish to do that.
 
+== Note About Fill Long Lines ==
+
+You can also customize `gnus-treat-fill-long-lines` to prevent gnus from wrapping long lines. Not sure if this is the same thing as the format=flowed stuff above, but I always land on this page when trying to remember how to disable "word wrap" in gnus :).
+
 ----
 CategoryGnus
