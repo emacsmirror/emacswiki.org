@@ -12,7 +12,7 @@ There's a number of ways this requirement may come about, and a number of ways t
 [:TabsAndAlignment]
 === Tabs and alignment ===
 
-This is Emacs' default behavior. Well, sort of. By default, the ''tab size'' (the distance between tab stops) and the ''indentation offset'' (the number of columns an indented line is shifted to the right) have different values. [[IndentationBasics#TabSizeVsOffset|Nothing good]] can come of this arrangement. Below, we've set them both to ##4##, so that one tab (‘##--->##’) corresponds to one indentation level:
+This is Emacs' default behavior. Well, sort of. By default, the ''tab size'' (the distance between tab stops) and the ''indentation offset'' (the number of columns an indented line is shifted to the right) have different values. [[IndentationBasics#TabSizeVsOffset|Nothing good]] can come of this arrangement. Below, we've set them both to ##4##, so that one tab (â##--->##â) corresponds to one indentation level:
 
     1 int foo(char bar[]) {
     2 --->int i = 0;
@@ -39,7 +39,7 @@ We shall refer to the extra leading whitespace of the second and fourth lines as
     4 --->--->--->.y);    4 ->->->.y);
     5 }                   5 }
 
-However, look closely at the ''third'' line (“##return## ...”), which has no alignment, just indentation. It is not garbled. Thus, one way to handle the problem is to ''disallow alignment altogether''.
+However, look closely at the ''third'' line (â##return## ...â), which has no alignment, just indentation. It is not garbled. Thus, one way to handle the problem is to ''disallow alignment altogether''.
 
 [:TabsAndNoAlignment]
 === Tabs and no alignment ===
@@ -82,7 +82,7 @@ In Emacs, we may set ##indent-tabs-mode## to ##nil## and use spaces only:
 
 This will, of course, look correct in any editor, spaces being the same everywhere.
 
-The original problem remains, however. That is, spaces ''lock'' the indentation offset, so we have to [IndentationBasics set up our editor’s auto-indentation values] to match the file's (which gets really tedious when working with different projects -- see GuessOffset for automatic approaches). If we wanted a different offset, we would have to reformat the whole file. Tabs were [[#TabsPurpose|supposed to]] address this, but failed unless we [[#TabsAndNoAlignment|disallowed alignment]]. Is there a better way to employ them?
+The original problem remains, however. That is, spaces ''lock'' the indentation offset, so we have to [IndentationBasics set up our editorâs auto-indentation values] to match the file's (which gets really tedious when working with different projects -- see GuessOffset for automatic approaches). If we wanted a different offset, we would have to reformat the whole file. Tabs were [[#TabsPurpose|supposed to]] address this, but failed unless we [[#TabsAndNoAlignment|disallowed alignment]]. Is there a better way to employ them?
 
 [:SmartTabs]
 == ... and how they ought to handle it ==
@@ -163,7 +163,7 @@ When all is said and done, excessive trailing comments are bad style in any case
 
 Here is why tab characters are evil.
 
-Tabs are assumed to be good. Spaces aren't useful for lining things up, particularly in word processing, or when using non-proportional fonts.
+Tabs are assumed to be good. Spaces aren't useful for lining things up, particularly in word processing, or when using proportional fonts.
 
 When hacking or reviewing source code, spaces for indentation instead of tabs is more useful when looking through code from different individuals using different editors and indentation styles.
 
@@ -194,7 +194,7 @@ On the other hand, with tabs you get graceful degradation -- in the above exampl
 :: As of yet, even Emacs isn't smart enough to do that. <i><b>Edit:</b> [SmartTabs Yes, it is].</i> The problem is that my example is really a half-level of indentation.
 
 [new]
-I accept that. But ... don't you think that as a user, you should be in control of how code looks? Particularly, when you have a 800×600 res. machine to review some code, if it's hard-coded with spaces and does not obey the EightyColumnRule, I think it makes sense for me to set the tab offset to, say, 2, and view it properly ... my 2¢ -- GirishB
+I accept that. But ... don't you think that as a user, you should be in control of how code looks? Particularly, when you have a 800Ã600 res. machine to review some code, if it's hard-coded with spaces and does not obey the EightyColumnRule, I think it makes sense for me to set the tab offset to, say, 2, and view it properly ... my 2Â¢ -- GirishB
 
 [new]
 In such a situation I think the problem is the author of the code you're reviewing not using the EightyColumnRule. Moreover, there's a very good chance that setting offset to 2 won't let you view the code properly. I've seen plenty of code which has been a combination of tabs and spaces through no direct fault of the author. Setting tab width to something other than they intended can result in an awful mess. -- DavePearson
@@ -252,7 +252,7 @@ OK, has everyone stopped using tabs? Great. Now forget whatever you used to use 
 Tabs themselves are not evil in source code, only changing the tab <em>size</em> is evil. -- don provan, 2006-07-26
 
 [new]
-What is the point of having a special key and a special character that means "8 × another character"? If that's all that tab is, we should remove the key from the keyboard, and remove the character from the ASCII set, because it is worthless.
+What is the point of having a special key and a special character that means "8 Ã another character"? If that's all that tab is, we should remove the key from the keyboard, and remove the character from the ASCII set, because it is worthless.
 
 No, what it comes down to is that it's useful to have a special key and a special character which represents code indent. Tab is that key and that character. If you reduce this concept to just a bunch of spaces, its semantic value is lost. Modern editors are pretty clever at reconstructing the meaning by guessing at which spaces are code indents and which are not, but why go through these backflips when we have a character design to represent exactly that? This makes everything simpler, files smaller, and lets individual users make choices about their own visual needs without adversely affecting other users.
 
@@ -265,7 +265,7 @@ Hmmm ... didn't I say ''let's be consistent?'' Anyway, tabs have a semantic mean
 
 That's why no one uses them for programming. In facts, it also wastes lots of CPU to compute paragraphs that use fancy fonts. Let's all stick to <tt>Courier New</tt>!
 
-'''Better yet, exhume your 80×25 B&W phosphor alphanumeric CRT!'''
+'''Better yet, exhume your 80Ã25 B&W phosphor alphanumeric CRT!'''
 
 Nice one: less flickering, good contrast, hight persistence, no glares.
 
