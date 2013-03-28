@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Mar 23 21:35:03 2013 (-0700)
+;; Last-Updated: Wed Mar 27 22:19:25 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 27473
+;;     Update #: 27548
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -178,8 +178,9 @@
 ;;    (@> "README")
 ;;    (@> "Flashy Demo to Peak Your Curiosity")
 ;;      (@> "First Example: Multi-Inputs")
-;;      (@> "Second Example: Multi-Completion")
-;;      (@> "Third Example: Tagged Files")
+;;      (@> "Second Example: Multi-Completions")
+;;      (@> "Third Example: Narrowing a Manual")
+;;      (@> "Fourth Example: Tagged Files")
 ;;
 ;;    (@> "Toggle Options on the Fly")
 ;;    (@> "Cycle Completion Candidates")
@@ -256,7 +257,6 @@
 ;;    (@> "Multi-Completions with a Part You Never See")
 ;;
 ;;  (@> "Chapter & Verse: Searching Named Containers")
-;;
 ;;  (@> "Dot, Dot, Dot")
 ;;
 ;;  (@> "More about Multi-Commands")
@@ -708,10 +708,9 @@
 ;;(@* "Flashy Demo to Peak Your Curiosity")
 ;;  ** Flashy Demo to Peak Your Curiosity **
 ;;
-;;  You are used to `C-x C-f' (`find-file') and `C-x 4 f'
-;;  (`find-file-other-window'), which visit files whose names you
-;;  provide.  In Icicle mode, these keys act the same way, but they
-;;  can also give you a little more magic.
+;;  This section shows a few examples to get you started and hopefully
+;;  interested.  Subsequent sections in this nutshell view show more
+;;  Icicles features in more detail, but still giving an overview.
 ;;
 ;;(@* "First Example: Multi-Inputs")
 ;;  *** First Example: Multi-Inputs ***
@@ -740,8 +739,8 @@
 ;;  [*] (For brevity, spaces were not used here to separate each
 ;;  printable character typed: `ici*.el' instead of `i c i * . e l'.)
 ;;
-;;(@* "Second Example: Multi-Completion")
-;;  *** Second Example: Multi-Completion ***
+;;(@* "Second Example: Multi-Completions")
+;;  *** Second Example: Multi-Completions ***
 ;;
 ;;  Suppose that you do this:
 ;;
@@ -801,15 +800,169 @@
 ;;  file-name matching.  If you can match names, that reduces the
 ;;  number of files whose content needs to be searched.
 ;;
-;;  The same behavior is available for visiting a buffer or an Info
-;;  node.  By default, `C-x b' is bound to `icicle-buffer', and `g' in
-;;  Info mode is bound to `icicle-Info-goto-node'.  These commands act
-;;  as described above but with buffer-name and node-name candidates.
-;;  In fact, most of the behavior described above is available for
-;;  most Icicles commands.
+;;  Most of the behavior you see in this example is available for most
+;;  Icicles commands.  The name+content behavior is available for only
+;;  some Icicles commands.
 ;;
-;;(@* "Third Example: Tagged Files")
-;;  *** Third Example: Tagged Files ***
+;;  See Also:
+;;
+;;  * (@> "Icompletion")
+;;  * (@> "Prefix Completion and Apropos Completion")
+;;  * (@> "Multi-Completions")
+;;  * (@> "Progressive Completion")
+;;  * (@> "Multi-Commands")
+;;
+;;(@* "Third Example: Narrowing a Manual")
+;;  *** Third Example: Narrowing a Manual ***
+;;
+;;  The second example showed how you can match either the name or the
+;;  contents of a file, or both.  The same behavior of matching both
+;;  the name and the contents of a container is available for visiting
+;;  an Info node (chapter of a manual) or a buffer.  In Icicle mode,
+;;  by default, `g' in Info mode is bound to `icicle-Info-goto-node',
+;;  and `C-x b' is bound to `icicle-buffer'.
+;;
+;;  These multi-commands act just as described in the second example,
+;;  but using buffer-name/contents and node-name/contents candidates
+;;  instead of file name/contents.
+;;
+;;  In this example you look up information about indenting text to a
+;;  column in the Emacs manual.
+;;
+;;  Using the indexes of the manual is always a good way to start.
+;;  And Icicles helps with that too, by letting you match index
+;;  entries using patterns (e.g., `indent') that are substrings and
+;;  regexps.
+;;
+;;  You could use incremental search to search the whole manual for
+;;  terms like `indent', but that would be quite laborious.  (You can
+;;  also use Icicles search to search a manual - see
+;;  (@file :file-name "icicles-doc2.el" :to "Using Icicle-Search With Info").
+;;
+;;  But this example uses the same approach as in the second one:
+;;  match node names and node content.
+;;
+;;  1. Start by searching all nodes of the manual for `indent':
+;;
+;;       g C-M-j indent
+;;
+;;     That takes a moment, and shows lots of matching nodes.
+;;
+;;  2. Search also for `column':
+;;
+;;       S-SPC C-M-j column
+;;
+;;     There are a lot fewer nodes in `*Completions*' now.  But still
+;;     too many to browse.
+;;
+;;  3. There are a bunch of nodes whose names all start with
+;;     `Glossary', and they just get in the way, so get rid of them.
+;;     First match only those nodes, by name:
+;;
+;;       loss S-TAB
+;;
+;;     Then toss those nodes out and ask to match something else:
+;;
+;;       C-~
+;;
+;;   4. You're down to just these nodes now, in `*Completions*':
+;;
+;;      Acknowledgments      Basic Indent        Command Index
+;;      Comment Commands     Concept Index       Directory Variables
+;;      Directory Variables-Footnote-1           Enriched Indentation
+;;      Fill Prefix          ForIndent Cont      ForIndent Num
+;;      Fortran              Fortran Autofill    Fortran Columns 
+;;      Fortran Comments     Fortran Indent      Indentation Commands
+;;      Just Spaces          Key Index           Left Margin Paren
+;;      Lisp Indent          Multi-Line Comments Multi-line Indent
+;;      Options for Comments Picture Mode        Program Modes
+;;      Selective Display    Tab Stops           Table Conversion 
+;;      Text                 Top                 Variable Index 
+;;
+;;   5. There's a lot of Fortran stuff there, which you can remove:
+;;
+;;        C-M-j fortr S-TAB C-~
+;;
+;;   6. Now selectively remove some of the other ones individually.
+;;      You can do that by clicking them with `S-mouse-2' or by
+;;      cycling to them and hitting the `delete' key.  Click
+;;      `Acknowledgments' and `Top' to begin with.
+;;
+;;   7. Not being too sure about some of the others, you can take a
+;;      quick look at them and hit `delete' if they don't look
+;;      interesting.  Use `down' or `up' to cycle among them, `C-RET'
+;;      to take a look at the node that is the current candidate
+;;      (highlighted in `*Completions*'), then `delete' to remove it
+;;      if not pertinent.
+;;
+;;   8. Now you're down to just these node names:
+;;
+;;      Basic Indent        Command Index         Comment Commands
+;;      Concept Index       Enriched Indentation  Indentation Commands 
+;;      Just Spaces         Key Index             Multi-line Indent
+;;      Program Modes       Tab Stops             Text
+;;      Variable Index 
+;;
+;;      That might seem like a lot of trouble, but each of the
+;;      operations is simple and you will soon make use of them
+;;      everywhere in Icicles.
+;;
+;;      What you have now is essentially a customized, mini-manual
+;;      about indenting text.  You can visit any of its nodes by
+;;      cycling to them and hitting `C-RET', or by just clicking
+;;      `C-mouse-2' on the node name in `*Completions*'.
+;;
+;;   9. You can "save", or "mark", this set of nodes, so you can
+;;      easily come back and reuse it later.
+;;
+;;        C-M->
+;;
+;;      The nodes are now shaded/highlighted, showing that they are
+;;      "saved" for the current Emacs session.  Hit `RET' to end at
+;;      one of the nodes or repeat `C-g' or `C-]' to cancel the
+;;      command and return to `Top'.
+;;
+;;   10. To restore the mini-manual:
+;;
+;;        g C-M-<
+;;
+;;   11. You can save the mini-manual persistently, so you can come
+;;      back to it in a later Emacs session.  Retrieve the node-name
+;;      candidates, then use `C-}' to save them.  You are prompted for
+;;      a saved-candidates-set name and the cache file location, which
+;;      can be anything you like.
+;;
+;;        g C-M-< C-} Indentation Topics RET
+;;
+;;        /here/IndentationTopics.icy RET
+;;
+;;   12. To restore the mini-manual in any Emacs session:
+;;
+;;        g C-{
+;;
+;;      Alternatively, you could have just saved the candidates
+;;      persistently to begin with, using `C-}' instead of `C-M->'.
+;;
+;;  These are the features used in this example, which you did not use
+;;  in the second example:
+;;
+;;  * removing selected candidates from the current matching set
+;;    (`delete' key, `S-mouse-2', and `C-~')
+;;
+;;  * saving and retrieving a set of candidates (`C-M->', `C-}',
+;;    `C-M-<', `C-{')
+;;
+;;  See Also:
+;;
+;;  * (@> "Chip Away the Non-Elephant")
+;;  * (@> "Persistent Sets of Completion Candidates")
+;;  * (@file :file-name "icicles-doc2.el" :to "Icicles Info Enhancements")
+;;  * (@file :file-name "icicles-doc2.el" :to "Virtual Info Books")
+;;  * (@file :file-name "icicles-doc2.el" :to "Using Icicle-Search With Info")
+;;  * (@> "Buffer-Name Input")
+;;
+;;(@* "Fourth Example: Tagged Files")
+;;  *** Fourth Example: Tagged Files ***
 ;;
 ;;  This feature works only if you also use library Bookmark+, which
 ;;  lets you tag files with arbitrary labels (delicious-style tags)
@@ -818,9 +971,9 @@
 ;;  Suppose you have previously tagged some files, and now you want to
 ;;  visit one or more of the files that have both of the tags `2013'
 ;;  and `mountains'.  If you also have some idea of the file names or
-;;  file contents, then you can match those too, as explained above -
-;;  see (@> "Second Example: Multi-Completion").  But let's suppose
-;;  you do not and you just want to match tags.
+;;  file contents, then you can match those too, as explained in the
+;;  second example - see (@> "Second Example: Multi-Completions").
+;;  But let's suppose you do not and you just want to match tags.
 ;;
 ;;    C-x 4 f TAB C-x C-t *  2013  RET  mountains  RET RET
 ;;
@@ -7917,11 +8070,9 @@
 ;;
 ;;  Tip: Suppose you have already saved a set of candidates, but not
 ;;       persistently, and you now want to write this saved set to a
-;;       cache file.  Use `C-M-<' followed by `TAB' or `S-TAB',
-;;       followed by `C-}'.  That is, retrieve the saved candidates
-;;       and then save the retrieved candidates persistently.  (You
-;;       use `TAB' or `S-TAB' because retrieval opens a recursive
-;;       minibuffer.)
+;;       cache file.  Use `C-M-<' followed by `C-}'.  That is,
+;;       retrieve the saved candidates and then save the retrieved
+;;       candidates persistently.
 ;;
 ;;  Note that using a numeric prefix argument (`C-u' with a number)
 ;;  with `C-M->' and `C-M-<' saves or retrieves a
