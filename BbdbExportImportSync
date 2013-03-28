@@ -1,32 +1,31 @@
-The most useful exchange format for address/contact data seems to be vCard (see http://www.imc.org/pdi/).
 
-See BbdbImporters and BbdbExporters for simple import/export utilities.
-This page is for keeping stuff in /sync/.
 
 CategoryBbdb
 
 =Synchronization=
 
+If you are interested in a one time import or export from BBDB to some other contacts store format, you should see bdbImporters and BbdbExporters. See B for simple import/export utilities. 
+
+Synchronization, as distinct from the above, is a stateful bi-directional operation. This page talks about the software, utilities and general issues related to keeping your BBDB in sync with other PIM (personal information management) systems.
+
 == ASynK ==
 
-ASynK is a python program that performs bi-directional synchronization for Contacts, and works between MS Outlook, Google Contacts, and Emacs BBDB. The project page is at: http://karra-asynk.appspot.com/
+ASynK is a python program that performs bi-directional synchronization for Contacts, and works between MS Outlook, Google Contacts, and Emacs BBDB. The project page is at: http://karra-asynk.appspot.com/ As of March 2013 the software is under active development. Check out the project website for more information on finding the source, the asynk-users mailing list, announcements, and more.
 
 ==PalmPilot==
 
-Various people have been writing software to sync their BBDB (BbdbMode) with their Palm.
+Although the Palm handheld products are more or less dead now, they had their share of fame, and in its heyday, the Palm had multiple working bi-directional sync utilities for BBDB!
 
 * SyncBBDB by ThomasDeWeese -- Supports BBDB 2.2 and later. ie. file format 6 (recommended on the mailing list), but has dropped off the net.  The source code can still be found in Debian, however, at http://packages.debian.org/stable/source/syncbbdb
+
 * http://www.neilvandyke.org/bbdbpalm/ by NeilVanDyke -- BBDBpalm was developed with BBDB 1.51 (outdated!) (It has also been reported to work with BBDB 2.00.02. -- also outdated)
 
 ==General==
 
 Be sure to search the [http://www.mail-archive.com/bbdb-info@lists.sourceforge.net/ BBDB Info mailing-list archives] for the latest stuff.
 
-===Time Stamp===
+===CardDav===
 
-It seems to me that in order to support proper synchronization, BBDB would need to store a full timestamp, not just the date as it does now. If you synchronize more than one time in a day, this will become an issue or at least an inconvenience. In BBDB v2.x there you can set 'bbdb-time-internal-format' to "%Y-%m-%dT%T%z" to produce full ISO 8601 format. This should be perfect for syncing. See the documentation of 'format-time-string' to find what specifiers you can use. ColinMarquardt. 
- 
-With BBDB v3 the default timestamp is good enough for sync purposes. ASynK uses this feature to find updates since the last synchronization.
+CardDav is a IETF standards-track protocol designed from the ground up for keeping PIM clients in sync with a contacts server. It has emerged as the most generic and open standard for contacts synchronization. Apple Addressbook can connect to a CardDav server for synchronization. Gmail can act as a contacts server (you can think of the contacts UI in gmail as google's CardDav client). CardDav is based on vCard format for storing individual contact information.
 
-== Two-way CardDAV sync ==
-Has anyone got this working?
+As of March 2013 there is no known solution for synching BBDB to a CardDav server.
