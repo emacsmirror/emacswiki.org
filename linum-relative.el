@@ -90,5 +90,5 @@
 (setq linum-format 'linum-relative)
 
 (provide 'linum-relative)
-;; linum-relative.el ends here.
+;;; linum-relative.el ends here.
 
