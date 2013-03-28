@@ -270,3 +270,4 @@ MCharacter to replace with: ")
 
 
 (provide 'pretty-mode)
+;;; pretty-mode.el ends here
