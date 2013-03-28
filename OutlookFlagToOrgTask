@@ -53,7 +53,7 @@ Sub OrgTasks()
     ' Tags to apply to each exported task:
     tags = ":mail:external:"
     ' Path to your GTD Org File:
-    orgfilepath = "f:\personal\me\org\gtd.org"
+    orgfilepath = "f:\personal\me\org\mail.org"
     ' Your email address:
     iAm = "me@company.com"
     ' Org Mode errors when dates are too far in the future.
