@@ -1467,7 +1467,7 @@ integer or marker. The type of ATTR is symbol. Its default value is bold."
 
 (provide 'summarye)
  
-;; summarye.el ends here
+;;; summarye.el ends here
 ;; Local Variables:
 ;; time-stamp-format: "%u@%h %:y-%02m-%02dT%02H:%02M:%02S"
 ;; End:
