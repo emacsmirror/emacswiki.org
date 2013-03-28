@@ -1,10 +1,9 @@
 
-
 CategoryBbdb
 
 =Synchronization=
 
-If you are interested in a one time import or export from BBDB to some other contacts store format, you should see bdbImporters and BbdbExporters. See B for simple import/export utilities. 
+If you are interested in a one time import or export from BBDB to some other contacts store format, you should see BbdbImporters and BbdbExporters. See B for simple import/export utilities. 
 
 Synchronization, as distinct from the above, is a stateful bi-directional operation. This page talks about the software, utilities and general issues related to keeping your BBDB in sync with other PIM (personal information management) systems.
 
