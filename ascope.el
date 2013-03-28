@@ -1,4 +1,4 @@
-;;; Another cscope interface for emacs
+;;; ascope.el --- Another cscope interface for emacs
 ;; Wrtitten by Staton Sun
 ;; my email address is sunnycamel@gmail.com
 ;;
@@ -624,3 +624,4 @@ ascope-last-file nil)
 )
 
 (provide 'ascope)
+;;; ascope.el ends here
