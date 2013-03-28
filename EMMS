@@ -640,15 +640,3 @@ The discnumber tag is supported by at least mp3 and ogg files, and most players 
 
 [new]
 I implemented support for discnumber, patch sent to emms-patches and viewable from here: http://article.gmane.org/gmane.emacs.emms.patches/691 .  No response yet.  -- ChristopheRhodes
-
-== EMMS: Makes easy things hard and hard things impossible. ==
-Such a steaming pile of shitty spaghetti code --> avoid to keep sanity.
-
-[new]
-Anonymous insults on the Internet… Ooooohh! -- AlexSchroeder
-
-[new]
-EMMS isn't part of Emacs. If you want to dump on EMMS, at least make an effort and get your facts right. -- DavidEngster
-
-[new]
-It fills exactly the niche I have for my roleplaying sessions: full keyboard control, fast playlist creation, repeat one (but “next” goes to next). It’s hard to believe how many players don’t get these basic things working. -- ArneBab
