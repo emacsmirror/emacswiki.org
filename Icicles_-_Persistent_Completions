@@ -121,11 +121,8 @@ set of candidates, use either `##C-u C-M-<##' or '''`##C-{##''''
 
 '''Tip:''' Suppose you have already saved a set of candidates, but not
 persistently, and you now want to write this saved set to a
-cache file.  Use `##C-M-<##' followed by `TAB' or `S-TAB',
-followed by `##C-}##'.  That is, retrieve the saved candidates
-and then save the retrieved candidates persistently.  (You
-use `TAB' or `S-TAB' because retrieval opens a recursive
-[[minibuffer]].)
+cache file.  Use `##C-M-<##' followed by `##C-}##'.  That is, retrieve the saved candidates
+and then save the retrieved candidates persistently.  
 
 Note that using a [[numeric prefix argument]] (`C-u' with a number)
 with `##C-M->##' and `##C-M-<##' saves or retrieves a completion-candidates
