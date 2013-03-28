@@ -5,7 +5,7 @@
 ;; Author: Matthew L. Fidler
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Thu Feb  9 09:37:32 2012 (-0600)
-;; Version: 0.4
+;; Version: 0.5
 ;; Last-Updated: Fri Feb 10 20:59:30 2012 (-0600)
 ;;           By: Matthew L. Fidler
 ;;     Update #: 52
@@ -80,6 +80,11 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 28-Mar-2013    Matthew L. Fidler  
+;;    Last-Updated: Fri Feb 10 20:59:30 2012 (-0600) #52 (Matthew L. Fidler)
+;;    When dragging in an org snippet with the latest emacs and org-mode,
+;;    the buffer-file-name returns nil.  Added extend-dnd-buffer-file-name
+;;    to get the true buffer file name for calculation...
 ;; 18-Dec-2012    Matthew L. Fidler  
 ;;    Last-Updated: Fri Feb 10 20:59:30 2012 (-0600) #52 (Matthew L. Fidler)
 ;;    Fixed yasnippet 0.8 problems
@@ -186,6 +191,17 @@
   (interactive)
   (setq extend-dnd-active t))
 
+(defun extend-dnd-buffer-file-name ()
+  "Get buffer file name.  If in an org-mode snippet, return the org-mode file"
+  (let ((f (buffer-file-name)))
+    (unless f
+      (save-match-data
+        (when (string-match "^[*]Org Src" (buffer-name))
+          (org-edit-src-exit)
+          (setq f (buffer-file-name))
+          (org-edit-special))))
+    (symbol-value 'f)))
+
 (defun extend-dnd-file (file text type )
   "Handle Drag and Drop for FILE of TYPE with TEXT"
   (let ((f file)
@@ -194,7 +210,7 @@
       (when (string-match "^[A-Z]:" f)
         (setq f (concat (downcase  (substring f 0 1))
                         (substring f 1))))
-      (setq f (file-relative-name f (file-name-directory (buffer-file-name)))))
+      (setq f (file-relative-name f (file-name-directory (extend-dnd-buffer-file-name)))))
     (cond
      ((eq type 'format)
       (insert (format text f))
@@ -296,7 +312,7 @@ The test for presence of the car of ELT-CONS is done with `equal'."
 (defun extend-dnd-yas-add ()
   "Adds currently opened buffer to DND snippet list"
   (interactive)
-  (let ((f (buffer-file-name)) key ext mode-lst)
+  (let ((f (extend-dnd-buffer-file-name)) key ext mode-lst)
     (when f
       (setq f (file-name-directory f))
       (setq key (file-name-sans-extension (file-name-nondirectory f)))
