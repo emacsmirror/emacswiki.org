@@ -210,4 +210,4 @@ lines separate fields.  The COLUMN must be inserted using
     (forward-char -2)))
 
 (provide 'csv-nav)
-;; csv-nav.el ends here
+;;; csv-nav.el ends here
