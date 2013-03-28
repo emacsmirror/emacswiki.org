@@ -4,6 +4,7 @@
 ;; Time-stamp: <narazaki@xingu.cs.cis.nagasaki-u.ac.jp 2005-07-25T09:28:12>
 ;; Author: narazaki@cs.cis.nagasaki-u.ac.jp
 ;; Home Page: http://www.cs.cis.nagasaki-u.ac.jp/~narazaki/index.cgi/resources/summarye.html
+;; Version: 2.5.2a
 
 ;; This file is part of GNU Emacs.
 
