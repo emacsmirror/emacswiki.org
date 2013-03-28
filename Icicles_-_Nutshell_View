@@ -375,13 +375,13 @@ In this example you look up information about indenting text to a
 column in the Emacs manual (`C-h r').
 
 Using the ''indexes'' of the manual is always a good way to start.
-And '''Icicles''' helps with that too, by letting you match index
+And '''Icicles''' [[Icicles - Info Enhancements#IciclesCompletionForInfo|helps with that]] too, by letting you match index
 entries using patterns (e.g., `indent') that are substrings and
 [[regexp]]s.
 
 You could use [[Isearch|incremental search]] to search the whole manual for
 terms like `indent', but that would be quite laborious.  (You can
-also use [[Icicles - Info Enhancements#UsingIcicleSearchWithInfo|Icicles search]] to search a manual.
+also use [[Icicles - Info Enhancements#UsingIcicleSearchWithInfo|Icicles search]] to search a manual.)
 
 But this example uses the same approach as in the [[#SecondExampleMultiCompletion|second one]] :
 match node names and node content.
@@ -430,8 +430,8 @@ First match only those nodes, by name:
 
 
 : '''6.''' Now selectively remove some of the other ones individually.
-You can do that by clicking them with `S-mouse-2' or by
-cycling to them and hitting the `delete' key.  Click
+You can do that by clicking them with '''`S-mouse-2'''' or by
+cycling to them and hitting the '''`delete'''' key.  Click
 `Acknowledgments' and `Top' to begin with.
 
 
@@ -453,7 +453,7 @@ if not pertinent.
 
 : That might seem like a lot of trouble, but each of the
 operations is simple and you will soon make use of them
-everywhere in Icicles.
+everywhere in '''Icicles'''.
 
 : What you have now is essentially a customized, mini-manual
 about indenting text.  You can visit any of its nodes by
