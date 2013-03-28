@@ -39,7 +39,7 @@ So packages are initialized //AFTER// the init.el is loaded.  This means you sho
 * customization variables for a package are fine, they can be set before a package has loaded
 * some package specific initialization can be done with eval-after-load. Following code is an example for customizing a hypothetical major mode called abcd-mode using eval-after-load
 {{{
-    (eval-after-load "abcd-mode"
+    (eval-after-load "abcd-mode" ; <-- "abcd-mode", not 'abcd-mode
       '(progn
          (setq-default abcd-basic-offset 7) ; setting some option
          (add-to-list 'abcd-globals-list "console") ; appending to a list option
@@ -50,7 +50,7 @@ So packages are initialized //AFTER// the init.el is loaded.  This means you sho
 
 Following code is an example for a hypothetical global minor mode called broccoli mode.
 {{{
-    (eval-after-load "broccoli-autoloads"
+    (eval-after-load "broccoli-autoloads" ; <-- "broccoli-autoloads", not "broccoli"
       '(progn
          (if (require 'broccoli nil t)
              (progn
