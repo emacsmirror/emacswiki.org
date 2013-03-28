@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Wed Mar 27 22:19:25 2013 (-0700)
+;; Last-Updated: Thu Mar 28 08:23:36 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 27548
+;;     Update #: 27556
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -837,7 +837,7 @@
 ;;  You could use incremental search to search the whole manual for
 ;;  terms like `indent', but that would be quite laborious.  (You can
 ;;  also use Icicles search to search a manual - see
-;;  (@file :file-name "icicles-doc2.el" :to "Using Icicle-Search With Info").
+;;  (@file :file-name "icicles-doc2.el" :to "Using Icicle-Search With Info").)
 ;;
 ;;  But this example uses the same approach as in the second one:
 ;;  match node names and node content.
@@ -890,10 +890,12 @@
 ;;
 ;;   7. Not being too sure about some of the others, you can take a
 ;;      quick look at them and hit `delete' if they don't look
-;;      interesting.  Use `down' or `up' to cycle among them, `C-RET'
-;;      to take a look at the node that is the current candidate
-;;      (highlighted in `*Completions*'), then `delete' to remove it
-;;      if not pertinent.
+;;      interesting.  Use `down' or `up' to cycle among them.  Use
+;;      `C-RET' to take a look at the node that is the current
+;;      candidate (highlighted in `*Completions*').  Use `C-M-s' in
+;;      the Info window to check occurrences of the content pattern,
+;;      if you want.  Use `delete' (in the minibuffer) to remove the
+;;      current candidate node if not pertinent.
 ;;
 ;;   8. Now you're down to just these node names:
 ;;
