@@ -37,6 +37,30 @@ You can also use customize to control these variables.
 So packages are initialized //AFTER// the init.el is loaded.  This means you should //NOT// put package specific initialization into your init.el except in a few ways:
 
 * customization variables for a package are fine, they can be set before a package has loaded
+* some package specific initialization can be done with eval-after-load. Following code is an example for customizing a hypothetical major mode called abcd-mode using eval-after-load
+{{{
+    (eval-after-load "abcd-mode"
+      '(progn
+         (setq-default abcd-basic-offset 7) ; setting some option
+         (add-to-list 'abcd-globals-list "console") ; appending to a list option
+         (add-hook 'abcd-mode-hook 'prepare-some-abcd-soup) ; things to do for abcd mode buffers
+         (define-key abcd-mode-map (kbd "C-c C-c") 'play-some-abcd-song) ; add some key binding for abcd mode
+     ))
+}}}
+
+Following code is an example for a hypothetical global minor mode called broccoli mode.
+{{{
+    (eval-after-load "broccoli-autoloads"
+      '(progn
+         (if (require 'broccoli nil t)
+             (progn
+               (broccoli-mode 1) ; Turn on Broccoli global minor mode if broccoli-autoloads.el doesn't do it.
+               (setq-default broccoli-how 'steamed) ; set some option.
+               (add-to-list 'broccoli-additional-stuff 'salt) ; add to a list option.
+               )
+           (warn "broccoli is not found."))))
+}}}
+A benefit to using eval-after-load instead of require is graceful degradation: the init file containing code like above does not cause error when packages for broccoli mode and abcd mode are not installed.
 * auto-mode-alist changes can be made in a way that does not require the package to be loaded before they are setup:
 
 {{{
