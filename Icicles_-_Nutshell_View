@@ -437,9 +437,10 @@ cycling to them and hitting the '''`delete'''' key.  Click
 
 : '''7.''' Not being too sure about some of the others, you can take a
 quick look at them and hit `delete' if they don't look
-interesting.  Use `down' or `up' to cycle among them, `C-RET'
+interesting.  Use `down' or `up' to cycle among them.  Use `C-RET'
 to take a look at the node that is the current candidate
-(highlighted in `*Completions*'), then `delete' to remove it
+(highlighted in `*Completions*').  Use `C-M-s' in the Info  
+window to check occurrences of the content pattern, if you want.  Use `delete' (in the minibuffer) to remove the current candidate node
 if not pertinent.
 
 
