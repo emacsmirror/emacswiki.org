@@ -24,11 +24,9 @@ Be sure to search the [http://www.mail-archive.com/bbdb-info@lists.sourceforge.n
 
 ===Time Stamp===
 
-It seems to me that in order to support proper synchronization, BBDB would need to store a full timestamp, not just
-the date as it does now. If you synchronize more than one time in a day, this will become an issue or at least an inconvenience.
-
-Ah, I now found that you can set 'bbdb-time-internal-format' to "%Y-%m-%dT%T%z" to produce full ISO 8601 format. This should be perfect for syncing. See the documentation of 'format-time-string' to find what specifiers you can use. ColinMarquardt
+It seems to me that in order to support proper synchronization, BBDB would need to store a full timestamp, not just the date as it does now. If you synchronize more than one time in a day, this will become an issue or at least an inconvenience. In BBDB v2.x there you can set 'bbdb-time-internal-format' to "%Y-%m-%dT%T%z" to produce full ISO 8601 format. This should be perfect for syncing. See the documentation of 'format-time-string' to find what specifiers you can use. ColinMarquardt. 
  
+With BBDB v3 the default timestamp is good enough for sync purposes. ASynK uses this feature to find updates since the last synchronization.
 
 == Two-way CardDAV sync ==
 Has anyone got this working?
