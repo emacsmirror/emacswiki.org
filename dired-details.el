@@ -1,4 +1,4 @@
-;;; dired-details.el -- make file details hide-able in dired
+;;; dired-details.el --- make file details hide-able in dired
 
 ;; Copyright (C) 2003-2011 Rob Giardina
 
