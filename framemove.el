@@ -229,3 +229,4 @@ Default MODIFIER is 'meta."
        (error (error-message-string err))))))
 
 (provide 'framemove)
+;;; framemove.el ends here
