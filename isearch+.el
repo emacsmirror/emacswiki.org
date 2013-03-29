@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 21.0
-;; Last-Updated: Fri Mar 29 14:08:43 2013 (-0700)
+;; Last-Updated: Fri Mar 29 14:30:25 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 1910
+;;     Update #: 1928
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -232,14 +232,32 @@
 ;;    yanks that search string, so you can append it to whatever you
 ;;    are already searching for.
 ;;
-;;  * `C-M-y' yanks the secondary selection into the search string, if
-;;    you also use library `second-sel.el'.
+;;  * `C-M-y' (`secondary-dwim') yanks the secondary selection into
+;;    the search string, if you also use library `second-sel.el'.
+;;    (This is a global binding, not an Isearch mode binding.)
 ;;
 ;;  * `C-_' yanks successive symbols (or words or chars) into the
 ;;    search string.
 ;;
 ;;  * `C-(' yanks successive sexps (or symbols or words or chars) into
 ;;    the search string.
+;;
+;;  * `M-w' (`isearchp-kill-ring-save') copies the current search
+;;    string to the kill ring.  You can then, for example, use `C-s
+;;    M-y' to search for the same thing in another Emacs session.
+;;    (Use `M-s w' for `isearch-toggle-word'.)
+;;
+;;  * All commands that yank text onto the search string are bound to
+;;    keys with prefix `C-y':
+;;
+;;      `C-y c'     isearch-yank-char
+;;      `C-y w'     isearch-yank-word-or-char
+;;      `C-y _'     isearchp-yank-symbol-or-char
+;;      `C-y ('     isearchp-yank-sexp-symbol-or-char
+;;      `C-y C-2'   secondary-dwim
+;;      `C-y C-e'   isearch-yank-line
+;;      `C-y C-y'   isearch-yank-kill
+;;      `C-y M-y'   isearch-yank-pop
 ;;
 ;;  * `C-x 8 RET' reads the name of a Unicode character with
 ;;    completion and appends it to the search string.  Same thing when
@@ -273,10 +291,6 @@
 ;;    anything else  - Your current input is ignored (removed) if it
 ;;                     causes a mismatch.  The search string always
 ;;                     has successful matches.
-;;
-;;  * Command and binding to copy the current search string to the
-;;    kill ring: `isearchp-kill-ring-save', bound to `M-w'. (Use `M-s
-;;    w' for `isearch-toggle-word').
 ;;
 ;;  * Command and binding to toggle invisible-text sensitivity while
 ;;    searching: `isearchp-toggle-invisible, bound to `C-+'.
@@ -336,6 +350,7 @@
 ;;       C-y w     isearch-yank-word-or-char
 ;;       C-y _     isearchp-yank-symbol-or-char
 ;;       C-y (     isearchp-yank-sexp-symbol-or-char
+;;       C-y C-2   secondary-dwim
 ;;       C-y C-e   isearch-yank-line
 ;;       C-y C-y   isearch-yank-kill
 ;;       C-y M-y   isearch-yank-pop
@@ -1182,7 +1197,7 @@ If first char entered is \\[isearch-yank-word], then do word search instead."
                                                           ""))))))))
 
 (when (fboundp 'isearch-yank-internal)  ; Emacs 22+
-  (defun isearchp-yank-symbol-or-char () ; Bound to `C-_' in `isearch-mode-map'.
+  (defun isearchp-yank-symbol-or-char () ; Bound to `C-y C-_' in `isearch-mode-map'.
     "Yank char, subword, word, or symbol from buffer into search string."
     (interactive)
     (isearch-yank-internal
@@ -1194,7 +1209,7 @@ If first char entered is \\[isearch-yank-word], then do word search instead."
        (point)))))
 
 (when (fboundp 'isearch-yank-internal)  ; Emacs 22+
-  (defun isearchp-yank-sexp-symbol-or-char () ; Bound to `C-(' in `isearch-mode-map'.
+  (defun isearchp-yank-sexp-symbol-or-char () ; Bound to `C-y C-(' in `isearch-mode-map'.
     "Yank sexp, symbol, or char from buffer into search string."
     (interactive)
     (isearch-yank-internal
@@ -2036,10 +2051,10 @@ Type \\[isearchp-char-prop-forward-regexp] to regexp-search for a character (ove
 Type \\[isearchp-cycle-mismatch-removal] to cycle option `isearchp-drop-mismatch'
 Type \\[isearch-insert-char-by-name] to add a Unicode char to search string by Unicode name
 Type \\[isearchp-open-recursive-edit] to invoke Emacs command loop recursively
-Type \\[isearchp-retrieve-last-quit-search] to insert successful search string from when you hit `C-g'
 Type \\[isearchp-toggle-set-region] to toggle setting region around search target
 Type \\[isearchp-toggle-invisible] to toggle invisible-text sensitivity (`search-invisible')
 Type \\[isearchp-toggle-regexp-quote-yank] to toggle quoting (escaping) of regexp special characters
+Type \\[isearchp-retrieve-last-quit-search] to insert successful search string from when you hit `C-g'
 Type \\[isearchp-yank-symbol-or-char] to yank a symbol or char from buffer onto search string
 Type \\[isearchp-yank-sexp-symbol-or-char] to yank sexp, symbol, or char from buffer onto search string
 Type \\[isearchp-put-prop-on-region] to add a text property to region
@@ -2127,7 +2142,10 @@ Options
 (when (fboundp 'isearchp-yank-sexp-symbol-or-char)
 (define-key isearch-mode-map "\C-y("           'isearchp-yank-sexp-symbol-or-char))
 (define-key isearch-mode-map "\C-y\C-e"        'isearch-yank-line)
+(when (fboundp 'secondary-dwim)
+  (define-key isearch-mode-map "\C-y\C-2"      'secondary-dwim))
 (define-key isearch-mode-map "\C-y\C-y"        'isearch-yank-kill)
+(define-key isearch-mode-map "\C-y\M-g"        'isearchp-retrieve-last-quit-search)
 (when (fboundp 'isearch-yank-pop)
   (define-key isearch-mode-map "\C-y\M-y"      'isearch-yank-pop)) ; It is also just `M-y'.
 
