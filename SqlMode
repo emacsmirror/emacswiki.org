@@ -89,9 +89,33 @@ Want to save you history between sessions?  Consider adding this hook to your [[
 
 When using sql-send-region to execute a query in a SQLi buffer, the table formatting is off because the column names are printed on the same row as the the prompt. By adding a newline before the comint output we can make sure everything lines up nice. This will add a preceding newline to every comint output, even queries run at the prompt - though the extra line isn't too noticeable.
 
+  (defvar sql-last-prompt-pos 1
+    "position of last prompt when added recording started")
+  (make-variable-buffer-local 'sql-last-prompt-pos)
+  (put 'sql-last-prompt-pos 'permanent-local t)
+
   (defun sql-add-newline-first (output)
-    "Add newline to beginning of OUTPUT for `comint-preoutput-filter-functions'"
-    (concat "\n" output))
+    "Add newline to beginning of OUTPUT for `comint-preoutput-filter-functions'
+
+    This fixes up the display of queries sent to the inferior buffer
+    programatically.  But an new-line
+    "
+    (let ((begin-of-prompt
+           (or (and comint-last-prompt-overlay
+                    ;; sometimes this overlay is not on prompt
+                    (save-excursion
+                      (goto-char (overlay-start comint-last-prompt-overlay))
+                      (looking-at-p comint-prompt-regexp)
+                      (point)))
+               1)))
+      (if (> begin-of-prompt sql-last-prompt-pos)
+          (progn
+            (setq sql-last-prompt-pos begin-of-prompt)
+            (concat "\n" output))
+        output)))
+  
+
+
 
   (defun sqli-add-hooks ()
     "Add hooks to `sql-interactive-mode-hook'."
