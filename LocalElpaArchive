@@ -37,7 +37,7 @@ You might want only some code to affect the local archive. Here is ##package-let
   (package-refresh-contents))
 }}}
 
-An example of it's use:
+An example of its use:
 
 {{{
 (package-let 'kv "~/teamchat.net/shoesoff-elpa")
