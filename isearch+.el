@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 21.0
-;; Last-Updated: Fri Mar 29 10:09:57 2013 (-0700)
+;; Last-Updated: Fri Mar 29 13:19:46 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 1850
+;;     Update #: 1872
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -67,8 +67,9 @@
 ;;    `isearchp-set-region-around-search-target',
 ;;    `isearchp-toggle-invisible',
 ;;    `isearchp-toggle-regexp-quote-yank',
-;;    `isearchp-toggle-set-region', `isearch-toggle-word',
-;;    `isearchp-yank-sexp-symbol-or-char'.
+;;    `isearchp-toggle-set-region',
+;;    `isearchp-yank-sexp-symbol-or-char',
+;;    `isearchp-yank-symbol-or-char'.
 ;;
 ;;  User options defined here:
 ;;
@@ -142,7 +143,7 @@
 ;;    `M-g'        `isearchp-retrieve-last-quit-search'
 ;;    `M-k'        `isearchp-cycle-mismatch-removal'
 ;;    `M-r'        `isearch-toggle-regexp'
-;;    `M-w'        `isearch-toggle-word'
+;;    `M-w'        `isearchp-kill-ring-save'
 ;;    `C-M-t'      `isearchp-char-prop-forward-regexp' (Emacs 23+)
 ;;    `C-M-tab'    `isearch-complete' (on MS Windows)
 ;;    `next'       `isearch-repeat-forward'
@@ -266,8 +267,8 @@
 ;;                     causes a mismatch.  The search string always
 ;;                     has successful matches.
 ;;
-;;  * Command and binding to toggle (incremental) word search:
-;;    `isearch-toggle-word', bound to `M-w'.
+;;  * Command and binding to copy the current search string to the
+;;    kill ring: `isearchp-kill-ring-save', bound to `M-w'.
 ;;
 ;;  * Command and binding to toggle invisible-text sensitivity while
 ;;    searching: `isearchp-toggle-invisible, bound to `C-+'.
@@ -316,6 +317,8 @@
 ;;(@* "Change log")
 ;;
 ;; 2013/03/29 dadams
+;;     Added: isearchp-kill-ring-save.  Bind it to M-w, instead of isearch-toggle-word (which is now M-s w).
+;;     Bind isearch-toggle-word to M-s w for Emacs < 23.
 ;;     Renamed: isearchp-with-search-suspended to with-isearch-suspended,
 ;;              isearchp-insert-char-by-name to isearch-insert-char-by-name.
 ;;     For Emacs 24.3+, do not define with-isearch-suspended or isearch-insert-char-by-name
@@ -746,7 +749,9 @@ You can toggle this with `isearchp-toggle-set-region', bound to
 (define-key isearch-mode-map "\M-k"            'isearchp-cycle-mismatch-removal)
 ;; This one is needed only for Emacs 20.  It is automatic after release 20.
 (define-key isearch-mode-map "\M-r"            'isearch-toggle-regexp)
-(define-key isearch-mode-map "\M-w"            'isearch-toggle-word)
+(when (< emacs-major-version 23)
+  (define-key isearch-mode-map "\M-sw"         'isearch-toggle-word))
+(define-key isearch-mode-map "\M-w"            'isearchp-kill-ring-save)
 (when (fboundp 'isearch-yank-internal)
   (define-key isearch-mode-map "\C-_"          'isearchp-yank-symbol-or-char)
   (define-key isearch-mode-map [(control ?\()] 'isearchp-yank-sexp-symbol-or-char))
@@ -882,7 +887,7 @@ This is used only for Transient Mark mode."
 ;; From Juri Linkov, 2006-10-29, to emacs-devel@gnu.org
 ;; From Stefan Monnier, 2006-11-23, to help-gnu-emacs@gnu.org
 ;;
-(defun isearch-toggle-word ()           ; Bound to `M-w' in `isearch-mode-map'.
+(defun isearch-toggle-word ()           ; Bound to `M-s w' in `isearch-mode-map'.
   "Toggle word searching on or off."
   ;; The status stack is left unchanged.
   (interactive)
@@ -1290,6 +1295,16 @@ If first char entered is \\[isearch-yank-word], then do word search instead."
              (if (and (boundp 'subword-mode)  subword-mode) (subword-forward 1) (forward-symbol 1))
            (forward-char 1)))
        (point)))))
+
+(defun isearchp-kill-ring-save ()       ; Bound to `M-w' in `isearch-mode-map'.
+  "Copy current search string to the kill ring.
+For example, this lets you then use `C-s M-y' to search for the same
+thing in another Emacs session."
+  (interactive)
+  (kill-new isearch-string)
+  (let ((message-log-max  nil)) (message "Copied search string as kill"))
+  (sit-for 1)
+  (isearch-update))
 
 (defun isearchp-retrieve-last-quit-search () ; Bound to `M-g' in `isearch-mode-map'.
   "Insert last successful search string from when you hit `C-g' in Isearch.
