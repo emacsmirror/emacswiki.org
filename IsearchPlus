@@ -42,7 +42,7 @@ removes all faces from the region.
 * '''`M-g'''' yanks the last successful search string (regexp or plain) from when you last hit `C-g' in Isearch.  Sometimes you search for something but abandon the search --- you just want to check the locations of something, without staying at any of them.  Afterward, if you want to find them again, use `M-g'.  This yanks that search string, so you can append it to whatever you are already searching for.
 
 [:isearch-yank-secondary]
-* '''`isearch-yank-secondary'''' (suggested binding: '''`C-M-y'''') yanks the secondary selection into the search string, if you also use library <tt>[[second-sel.el]]</tt> (see [[SecondarySelection#secondary-sel.el|secondary selection enhancements]]).
+* '''`C-M-y'''' ('''`isearch-yank-secondary'''') yanks the [[secondary selection]] onto the search string, if you also use library <tt>[[second-sel.el]]</tt> (see [[SecondarySelection#secondary-sel.el|secondary selection enhancements]]).
 
 [:isearchp-yank-symbol-or-char]
 * '''`##C-_##'''' yanks successive [[symbol]]s (or words or chars) into the search string.
@@ -52,8 +52,19 @@ removes all faces from the region.
 
 
 [:isearchp-kill-ring-save]
-* '''`M-w'''' copies the current search string to the [[kill ring]].  You can then, for example, use `C-s M-y' to search for the same
-thing in another Emacs session.
+* '''`M-w'''' (`isearchp-kill-ring-save') copies the current search string to the [[kill ring]].  You can then, for example, use `C-s M-y' to search for the same
+thing in another Emacs session.  (Use `M-s w' for `isearch-toggle-word'.)
+
+* All commands that yank text onto the search string are bound to keys with prefix `C-y' (in addition to any other Isearch bindings):
+
+     C-y c     isearch-yank-char
+     C-y w     isearch-yank-word-or-char
+     C-y _     isearchp-yank-symbol-or-char
+     C-y (     isearchp-yank-sexp-symbol-or-char
+     C-y C-2   isearch-yank-secondary
+     C-y C-e   isearch-yank-line
+     C-y C-y   isearch-yank-kill
+     C-y M-y   isearch-yank-pop
 
 [:isearchp-read-unicode-char]
 * '''`C-x 8 RET'''' reads the name of a Unicode character with
