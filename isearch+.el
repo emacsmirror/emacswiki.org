@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 21.0
-;; Last-Updated: Mon Jan 28 15:18:47 2013 (-0800)
+;; Last-Updated: Fri Mar 29 10:09:57 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 1822
+;;     Update #: 1850
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -50,18 +50,19 @@
 ;;
 ;;  Macros defined here:
 ;;
-;;    `isearchp-with-search-suspended' (Emacs 22+).
+;;    `with-isearch-suspended' (Emacs 22-24.2).
 ;;
 ;;  Commands defined here:
 ;;
+;;    `isearch-insert-char-by-name' (Emacs 23-24.2),
 ;;    `isearchp-char-prop-backward',
 ;;    `isearchp-char-prop-backward-regexp',
 ;;    `isearchp-char-prop-forward',
 ;;    `isearchp-char-prop-forward-regexp',
 ;;    `isearchp-cycle-mismatch-removal',
 ;;    `isearchp-fontify-buffer-now', `isearchp-init-edit',
-;;    `isearchp-insert-char-by-name', `isearchp-open-recursive-edit'
-;;    (Emacs 22+), `isearchp-put-prop-on-region',
+;;    `isearchp-open-recursive-edit' (Emacs 22+),
+;;    `isearchp-put-prop-on-region',
 ;;    `isearchp-retrieve-last-quit-search',
 ;;    `isearchp-set-region-around-search-target',
 ;;    `isearchp-toggle-invisible',
@@ -136,7 +137,7 @@
 ;;    `C-h'        `isearch-mode-help'
 ;;    `C-t'        `isearchp-char-prop-forward' (Emacs 23+)
 ;;    `C-x o'      `isearchp-open-recursive-edit' (Emacs 22+)
-;;    `C-x 8 RET'  `isearchp-insert-char-by-name' (Emacs 23+)
+;;    `C-x 8 RET'  `isearch-insert-char-by-name' (Emacs 23-24.2)
 ;;    `M-e'        `isearch-edit-string'
 ;;    `M-g'        `isearchp-retrieve-last-quit-search'
 ;;    `M-k'        `isearchp-cycle-mismatch-removal'
@@ -314,6 +315,11 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2013/03/29 dadams
+;;     Renamed: isearchp-with-search-suspended to with-isearch-suspended,
+;;              isearchp-insert-char-by-name to isearch-insert-char-by-name.
+;;     For Emacs 24.3+, do not define with-isearch-suspended or isearch-insert-char-by-name
+;;       (vanilla has same definitions).  Do not duplicate key binding for isearch-insert-char-by-name.
 ;; 2013/01/28 dadams
 ;;     Advise isearch-forward to add Isearch+ doc.
 ;; 2013/01/16 dadams
@@ -511,8 +517,8 @@
 (defvar isearch-invalid-regexp)         ; In `isearch.el' (Emacs 20-21).
 (defvar isearch-last-case-fold-search)  ; In `isearch.el'.
 (defvar isearch-message-prefix-add)     ; In `isearch.el'.
-(defvar isearch-new-message)            ; In `isearchp-with-search-suspended' (here).
-(defvar isearch-new-string)             ; In `isearchp-with-search-suspended' (here).
+(defvar isearch-new-message)            ; In `with-isearch-suspended' (here).
+(defvar isearch-new-string)             ; In `with-isearch-suspended' (here).
 (defvar isearch-original-minibuffer-message-timeout) ; In `isearch.el'.
 (defvar isearch-push-state-function)    ; In `isearch.el'.
 (defvar isearch-start-hscroll)          ; In `isearch.el'.
@@ -754,9 +760,10 @@ You can toggle this with `isearchp-toggle-set-region', bound to
 (when (> emacs-major-version 21)
   (define-key isearch-mode-map "\C-x"          nil)
   (define-key isearch-mode-map "\C-xo"         'isearchp-open-recursive-edit) ; `o'pen edit session
-  (when (> emacs-major-version 22)
+  (when (and (> emacs-major-version 22)   ; Emacs 23 (supports Unicode) through 24.2
+             (or (< emacs-major-version 24)  (and (= emacs-major-version 24)  (< emacs-minor-version 3))))
     (define-key isearch-mode-map "\C-x8"       nil)
-    (define-key isearch-mode-map "\C-x8\r"     'isearchp-insert-char-by-name)))
+    (define-key isearch-mode-map "\C-x8\r"     'isearch-insert-char-by-name)))
 
 (when (and (eq system-type 'windows-nt) ; Windows uses M-TAB for something else.
            (not (lookup-key minibuffer-local-isearch-map [C-M-tab])))
@@ -900,8 +907,7 @@ This is used only for Transient Mark mode."
 (defun isearchp-message-prefix (&optional arg1 arg2 arg3)
   "Version of `isearch-message-prefix' that works for all Emacs releases."
   (if (or (< emacs-major-version 24)
-          (and (= emacs-major-version 24)
-               (< emacs-minor-version 3)
+          (and (= emacs-major-version 24)  (< emacs-minor-version 3)
                (not (string-match "^[0-9]+\\.[0-9]+\\.[0-9]+" emacs-version))))
       (isearch-message-prefix arg1 arg2 arg3) ; Emacs 20 through 24.2.
     (isearch-message-prefix arg1 arg2))) ; Emacs 24.1.N and 24.3+
@@ -909,8 +915,7 @@ This is used only for Transient Mark mode."
 (defun isearchp-message-suffix (&optional arg1 arg2)
   "Version of `isearch-message-suffix' that works for all Emacs releases."
   (if (or (< emacs-major-version 24)
-          (and (= emacs-major-version 24)
-               (< emacs-minor-version 3)
+          (and (= emacs-major-version 24)  (< emacs-minor-version 3)
                (not (string-match "^[0-9]+\\.[0-9]+\\.[0-9]+" emacs-version))))
       (isearch-message-suffix arg1 arg2) ; Emacs 20 through 24.2.
     (isearch-message-suffix arg1)))     ; Emacs 24.1.N and  24.3+
@@ -961,9 +966,10 @@ Bindings in Isearch minor mode:
 
 
 
-(when (> emacs-major-version 21)        ; Emacs 22+
+(when (and (> emacs-major-version 21)        ; Emacs 22 through 24.2
+           (or (< emacs-major-version 24)  (and (= emacs-major-version 24)  (< emacs-minor-version 3))))
 
-  (defmacro isearchp-with-search-suspended (&rest body)
+  (defmacro with-isearch-suspended (&rest body)
     "Exit Isearch mode, run BODY, and reinvoke the pending search.
 BODY can involve use of the minibuffer, including recursive minibuffers.
 You can update the global isearch variables by setting new values to
@@ -1076,7 +1082,7 @@ You can update the global isearch variables by setting new values to
   ;; REPLACE ORIGINAL in `isearch.el'.
   ;;
   ;; 1. Start with point at the mismatch position - use `isearchp-message-prefix'.
-  ;; 2. Use macro `isearchp-with-search-suspended'.
+  ;; 2. Use macro `with-isearch-suspended'.
   ;;
   (defun isearch-edit-string ()         ; Bound to `M-e' in `isearch-mode-map'.
     "Edit the search string in the minibuffer.
@@ -1091,14 +1097,14 @@ The following additional command keys are active while editing.
 \\<isearch-mode-map>
 If first char entered is \\[isearch-yank-word-or-char], then do word search instead."
     (interactive)
-    (isearchp-with-search-suspended
+    (with-isearch-suspended
      (let* ((message-log-max            nil)
             ;; Do not add a new search string to the search ring here in `read-from-minibuffer'.
             ;; It should be added only by `isearch-update-ring', called from `isearch-done'.
             (history-add-new-input      nil)
             (minibuffer-history-symbol  nil)) ; Workaround for some incompatibility with `gmhist'.
        ;; FREE VARS here: `isearch-new-string', `isearch-new-message'.
-       ;; Bound in `isearchp-with-search-suspended'.
+       ;; Bound in `with-isearch-suspended'.
        (setq isearch-new-string   (read-from-minibuffer
                                    (isearchp-message-prefix nil nil isearch-nonincremental)
                                    (cons isearch-string (1+ (or (isearch-fail-pos)
@@ -1119,7 +1125,7 @@ If first char entered is \\[isearch-yank-word-or-char], then do word search inst
 Use `\\[exit-recursive-edit]' to end the recursive edit and resume searching from there.
 Or use `abort-recursive-edit' to exit the recursive edit and cancel the previous search."
     (interactive)
-    (isearchp-with-search-suspended (recursive-edit))))
+    (with-isearch-suspended (recursive-edit))))
 
 (when (< emacs-major-version 22)        ; Emacs 20-21.
   ;; Parts of the definition were taken from later Emacs versions, but are compatible with Emacs 20.
@@ -1245,19 +1251,20 @@ If first char entered is \\[isearch-yank-word], then do word search instead."
       ;; Handle `abort-recursive-edit' outside of let to restore outside global values.
       (quit (isearch-abort)))))
 
-(when (> emacs-major-version 22)        ; Emacs 23+ supports Unicode.
-  (defun isearchp-insert-char-by-name () ; Bound to `C-x 8 RET' in `isearch-mode-map'.
+(when (and (> emacs-major-version 22)   ; Emacs 23 (bc supports Unicode) through 24.2
+           (or (< emacs-major-version 24)  (and (= emacs-major-version 24)  (< emacs-minor-version 3))))
+  (defun isearch-insert-char-by-name () ; Bound to `C-x 8 RET' in `isearch-mode-map'.
     "Read a character by its Unicode name and insert it into search string."
     (interactive)
-    (isearchp-with-search-suspended
-     (let ((char  (read-char-by-name "Insert char (Unicode name or hex): ")))
-       (when char
-         (setq isearch-new-string   (concat isearch-string (string char))
-               isearch-new-message  (concat isearch-message
-                                            (mapconcat 'isearch-text-char-description (string char)
-                                                       ""))))))))
+    (with-isearch-suspended
+        (let ((char  (read-char-by-name "Insert character (Unicode name or hex): ")))
+          (when char
+            (setq isearch-new-string   (concat isearch-string (string char))
+                  isearch-new-message  (concat isearch-message
+                                               (mapconcat 'isearch-text-char-description (string char)
+                                                          ""))))))))
 
-(when (fboundp 'isearch-yank-internal) ; Emacs 22+
+(when (fboundp 'isearch-yank-internal)  ; Emacs 22+
   (defun isearchp-yank-symbol-or-char () ; Bound to `C-_' in `isearch-mode-map'.
     "Yank char, subword, word, or symbol from buffer into search string."
     (interactive)
@@ -1630,8 +1637,7 @@ If MSG is non-nil, use `isearch-message', otherwise `isearch-string'."
 ;; Highlight message according to search characteristics.
 ;;
 (when (and (> emacs-major-version 21)   ; Emacs 22 through Emacs 24.2
-           (or (< emacs-major-version 24)
-               (and (= emacs-major-version 24)  (< emacs-minor-version 3))))
+           (or (< emacs-major-version 24)  (and (= emacs-major-version 24)  (< emacs-minor-version 3))))
   (defun isearch-message-prefix (&optional _c-q-hack ellipsis nonincremental)
     ;; If about to search, and previous search regexp was invalid, check that it still is.
     ;; If it is valid now, let the message we display while searching say that it is valid.
@@ -1669,8 +1675,7 @@ If MSG is non-nil, use `isearch-message', otherwise `isearch-string'."
       (concat (upcase (substring m 0 1)) (substring m 1)))))
 
 (when (and (> emacs-major-version 23)   ; Emacs 24.3+
-           (or (> emacs-major-version 24)
-               (and (= emacs-major-version 24)  (> emacs-minor-version 2))))
+           (or (> emacs-major-version 24)  (and (= emacs-major-version 24)  (> emacs-minor-version 2))))
   (defun isearch-message-prefix (&optional ellipsis nonincremental)
     ;; If about to search, and previous search regexp was invalid,
     ;; check that it still is.  If it is valid now,
@@ -2102,7 +2107,7 @@ Commands
 Type \\<isearch-mode-map>\\[isearchp-char-prop-forward] to search for a character (overlay or text) property
 Type \\[isearchp-char-prop-forward-regexp] to regexp-search for a character (overlay or text) property
 Type \\[isearchp-cycle-mismatch-removal] to cycle option `isearchp-drop-mismatch'
-Type \\[isearchp-insert-char-by-name] to add a Unicode char to search string by Unicode name
+Type \\[isearch-insert-char-by-name] to add a Unicode char to search string by Unicode name
 Type \\[isearchp-open-recursive-edit] to invoke Emacs command loop recursively
 Type \\[isearchp-retrieve-last-quit-search] to insert successful search string from when you hit `C-g'
 Type \\[isearchp-toggle-set-region] to toggle setting region around search target
