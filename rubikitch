@@ -75,6 +75,8 @@ EevMode is my partner for years.
 * Lisp:savekill.el -- Save `kill-ring' to disk. Risk hedge of sudden death.
 * Lisp:esh-myparser.el -- Call zsh/bash/ruby from EmacsShell
 * Lisp:hippie-exp-ext.el -- Extension of HippieExpand
+* Lisp:helm-anything.el -- Bridge between helm and [[Anything]]
+
 * I maintained
 ** OddmuseMode -- Edit oddmuse wikis (including EmacsWiki) in Emacs
 
