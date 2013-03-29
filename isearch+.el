@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 21.0
-;; Last-Updated: Fri Mar 29 14:30:25 2013 (-0700)
+;; Last-Updated: Fri Mar 29 15:21:30 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 1928
+;;     Update #: 1953
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -232,9 +232,8 @@
 ;;    yanks that search string, so you can append it to whatever you
 ;;    are already searching for.
 ;;
-;;  * `C-M-y' (`secondary-dwim') yanks the secondary selection into
-;;    the search string, if you also use library `second-sel.el'.
-;;    (This is a global binding, not an Isearch mode binding.)
+;;  * `C-M-y' (`isearch-yank-secondary') yanks the secondary selection
+;;    into the search string, if you also use library `second-sel.el'.
 ;;
 ;;  * `C-_' yanks successive symbols (or words or chars) into the
 ;;    search string.
@@ -248,13 +247,14 @@
 ;;    (Use `M-s w' for `isearch-toggle-word'.)
 ;;
 ;;  * All commands that yank text onto the search string are bound to
-;;    keys with prefix `C-y':
+;;    keys with prefix `C-y' (in addition to any other Isearch
+;;    bindings):
 ;;
 ;;      `C-y c'     isearch-yank-char
 ;;      `C-y w'     isearch-yank-word-or-char
 ;;      `C-y _'     isearchp-yank-symbol-or-char
 ;;      `C-y ('     isearchp-yank-sexp-symbol-or-char
-;;      `C-y C-2'   secondary-dwim
+;;      `C-y C-2'   isearch-yank-secondary
 ;;      `C-y C-e'   isearch-yank-line
 ;;      `C-y C-y'   isearch-yank-kill
 ;;      `C-y M-y'   isearch-yank-pop
@@ -350,7 +350,7 @@
 ;;       C-y w     isearch-yank-word-or-char
 ;;       C-y _     isearchp-yank-symbol-or-char
 ;;       C-y (     isearchp-yank-sexp-symbol-or-char
-;;       C-y C-2   secondary-dwim
+;;       C-y C-2   isearch-yank-secondary
 ;;       C-y C-e   isearch-yank-line
 ;;       C-y C-y   isearch-yank-kill
 ;;       C-y M-y   isearch-yank-pop
@@ -2142,8 +2142,10 @@ Options
 (when (fboundp 'isearchp-yank-sexp-symbol-or-char)
 (define-key isearch-mode-map "\C-y("           'isearchp-yank-sexp-symbol-or-char))
 (define-key isearch-mode-map "\C-y\C-e"        'isearch-yank-line)
-(when (fboundp 'secondary-dwim)
-  (define-key isearch-mode-map "\C-y\C-2"      'secondary-dwim))
+(eval-after-load "second-sel"
+  '(progn
+    (define-key isearch-mode-map (kbd "C-y C-2") 'isearch-yank-secondary)
+    (define-key isearch-mode-map (kbd "C-M-y") 'isearch-yank-secondary)))
 (define-key isearch-mode-map "\C-y\C-y"        'isearch-yank-kill)
 (define-key isearch-mode-map "\C-y\M-g"        'isearchp-retrieve-last-quit-search)
 (when (fboundp 'isearch-yank-pop)
