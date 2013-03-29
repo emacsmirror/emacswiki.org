@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 21.0
-;; Last-Updated: Fri Mar 29 13:19:46 2013 (-0700)
+;; Last-Updated: Fri Mar 29 14:08:43 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 1872
+;;     Update #: 1910
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -139,6 +139,13 @@
 ;;    `C-t'        `isearchp-char-prop-forward' (Emacs 23+)
 ;;    `C-x o'      `isearchp-open-recursive-edit' (Emacs 22+)
 ;;    `C-x 8 RET'  `isearch-insert-char-by-name' (Emacs 23-24.2)
+;;    `C-y c'      `isearch-yank-char' (Emacs 22+)
+;;    `C-y w'      `isearch-yank-word-or-char' (Emacs 22+)
+;;    `C-y _'      `isearchp-yank-symbol-or-char' (Emacs 22+)
+;;    `C-y ('      `isearchp-yank-sexp-symbol-or-char' (Emacs 22+)
+;;    `C-y C-e'    `isearch-yank-line'
+;;    `C-y C-y'    `isearch-yank-kill'
+;;    `C-y M-y'    `isearch-yank-pop' (Emacs 24+)
 ;;    `M-e'        `isearch-edit-string'
 ;;    `M-g'        `isearchp-retrieve-last-quit-search'
 ;;    `M-k'        `isearchp-cycle-mismatch-removal'
@@ -268,7 +275,8 @@
 ;;                     has successful matches.
 ;;
 ;;  * Command and binding to copy the current search string to the
-;;    kill ring: `isearchp-kill-ring-save', bound to `M-w'.
+;;    kill ring: `isearchp-kill-ring-save', bound to `M-w'. (Use `M-s
+;;    w' for `isearch-toggle-word').
 ;;
 ;;  * Command and binding to toggle invisible-text sensitivity while
 ;;    searching: `isearchp-toggle-invisible, bound to `C-+'.
@@ -323,6 +331,15 @@
 ;;              isearchp-insert-char-by-name to isearch-insert-char-by-name.
 ;;     For Emacs 24.3+, do not define with-isearch-suspended or isearch-insert-char-by-name
 ;;       (vanilla has same definitions).  Do not duplicate key binding for isearch-insert-char-by-name.
+;;     Make C-y a prefix key, and put all yank commands on it:
+;;       C-y c     isearch-yank-char
+;;       C-y w     isearch-yank-word-or-char
+;;       C-y _     isearchp-yank-symbol-or-char
+;;       C-y (     isearchp-yank-sexp-symbol-or-char
+;;       C-y C-e   isearch-yank-line
+;;       C-y C-y   isearch-yank-kill
+;;       C-y M-y   isearch-yank-pop
+;;     Moved key bindings and hooks to the end of the file.
 ;; 2013/01/28 dadams
 ;;     Advise isearch-forward to add Isearch+ doc.
 ;; 2013/01/16 dadams
@@ -706,111 +723,6 @@ You can toggle this with `isearchp-toggle-set-region', bound to
 
 (defvar isearchp-win-pt-line nil
   "Line number of point before searching, relative to `window-start'.")
-
-;; An alternative to binding `isearch-edit-string' (but less flexible):
-;; (setq search-exit-option  'edit) ; M- = edit search string, not exit.
- 
-;;(@* "Keys and Hooks")
-
-;;; Keys and Hooks ---------------------------------------------------
-
-(define-key isearch-mode-map [mouse-2]         'isearch-mouse-2)
-;; Must not be just `nil'.  Need to override a global binding such as `mouse-flash-position-or-M-x'.
-(define-key isearch-mode-map [down-mouse-2]    'ignore)
-
-;; Must not be just `nil'.  Otherwise, if click `mouse-2' in a standalone minibuffer frame then
-;; the `switch-frame' event exits Isearch and the following `down-mouse-2' invokes, e.g.,
-;; `mouse-flash-position-or-M-x'.
-(define-key isearch-mode-map [switch-frame]    'ignore)
-
-;;; Use this instead of `ignore' for `switch-frame', if you want it to exit Isearch when you switch
-;;; to any frame other than a standalone minibuffer frame.
-;;; (defun isearchp-switch-frame-or-exit ()
-;;;   "Return nil if switch to minibuffer frame.  Else exit Isearch.
-;;; Bind to `switch-frame' event."
-;;;   (interactive)
-;;;   (let* ((vec   (this-command-keys-vector))
-;;;          (evnt  (aref vec 0)))
-;;;     (unless (and (consp evnt)  (eq 'switch-frame (car evnt))
-;;;                  (cadr evnt)   (window-minibuffer-p (frame-selected-window (cadr evnt))))
-;;;       (isearch-done)
-;;;       (isearch-clean-overlays))))
-
-;;; (define-key isearch-mode-map [switch-frame]    'isearchp-switch-frame-or-exit)
-
-(define-key isearch-mode-map [(control ?+)]    'isearchp-toggle-invisible)
-(define-key isearch-mode-map [(control ?`)]    'isearchp-toggle-regexp-quote-yank)
-(define-key isearch-mode-map [(control ? )]    'isearchp-toggle-set-region)
-(define-key isearch-mode-map "\C-c"            'isearch-toggle-case-fold)
-(define-key isearch-mode-map "\C-h"            'isearch-mode-help)
-;; This one is needed only for Emacs 20.  It is automatic after release 20.
-(define-key isearch-mode-map "\M-e"            'isearch-edit-string)
-(define-key isearch-mode-map "\M-g"            'isearchp-retrieve-last-quit-search)
-(define-key isearch-mode-map "\M-k"            'isearchp-cycle-mismatch-removal)
-;; This one is needed only for Emacs 20.  It is automatic after release 20.
-(define-key isearch-mode-map "\M-r"            'isearch-toggle-regexp)
-(when (< emacs-major-version 23)
-  (define-key isearch-mode-map "\M-sw"         'isearch-toggle-word))
-(define-key isearch-mode-map "\M-w"            'isearchp-kill-ring-save)
-(when (fboundp 'isearch-yank-internal)
-  (define-key isearch-mode-map "\C-_"          'isearchp-yank-symbol-or-char)
-  (define-key isearch-mode-map [(control ?\()] 'isearchp-yank-sexp-symbol-or-char))
-(when (and (fboundp 'goto-longest-line)  window-system) ; Defined in `misc-cmds.el'
-  (define-key isearch-mode-map [(control end)] 'goto-longest-line))
-(define-key isearch-mode-map [next]            'isearch-repeat-forward)
-(define-key isearch-mode-map [prior]           'isearch-repeat-backward)
-(when (and (eq system-type 'windows-nt) ; Windows uses M-TAB for something else.
-           (not (lookup-key isearch-mode-map [C-M-tab])))
-  (define-key isearch-mode-map [C-M-tab]       'isearch-complete))
-(when (> emacs-major-version 21)
-  (define-key isearch-mode-map "\C-x"          nil)
-  (define-key isearch-mode-map "\C-xo"         'isearchp-open-recursive-edit) ; `o'pen edit session
-  (when (and (> emacs-major-version 22)   ; Emacs 23 (supports Unicode) through 24.2
-             (or (< emacs-major-version 24)  (and (= emacs-major-version 24)  (< emacs-minor-version 3))))
-    (define-key isearch-mode-map "\C-x8"       nil)
-    (define-key isearch-mode-map "\C-x8\r"     'isearch-insert-char-by-name)))
-
-(when (and (eq system-type 'windows-nt) ; Windows uses M-TAB for something else.
-           (not (lookup-key minibuffer-local-isearch-map [C-M-tab])))
-  (define-key minibuffer-local-isearch-map [C-M-tab] 'isearch-complete-edit))
-(when (> emacs-major-version 22)
-  (define-key minibuffer-local-isearch-map "\C-x8\r" 'insert-char))
-
-(defun isearchp-set-region ()
-  "Set the region around the search target, if `isearchp-set-region-flag'.
-This is used only for Transient Mark mode."
-  (when (and isearchp-set-region-flag  transient-mark-mode)
-    (push-mark isearch-other-end t 'activate)))
-
-(add-hook 'isearch-mode-end-hook 'isearchp-set-region)
-
-
-;; ADVISE `isearch-update' to run `isearch-update-post-hook', in releases that do not do that.
-(unless (boundp 'isearch-update-post-hook) ; Emacs 20-23
-  (defadvice isearch-update (after run-isearch-update-post-hook activate)
-    "Run `isearch-update-post-hook' at the end."
-    (run-hooks 'isearch-update-post-hook)))
-
-(defun isearchp-highlight-lighter ()
-  "Update minor-mode mode-line lighter to reflect case sensitivity."
-  (let ((case-fold-search  isearch-case-fold-search))
-    (when (and (eq case-fold-search t)  search-upper-case)
-      (setq case-fold-search  (isearch-no-upper-case-p isearch-string isearch-regexp)))
-    ;; Vanilla Isearch uses the symbol `isearch-mode', hence the first of these.
-    (setq minor-mode-alist  (delete '(isearch-mode isearch-mode) minor-mode-alist)
-          minor-mode-alist  (delete '(isearch-mode " ISEARCH")   minor-mode-alist)
-          minor-mode-alist  (delete '(isearch-mode " Isearch")   minor-mode-alist))
-    (let ((lighter  (if case-fold-search " ISEARCH" " Isearch")))
-      (add-to-list
-       'minor-mode-alist
-       `(isearch-mode ,(if (and (fboundp 'propertize)  isearch-wrapped) ;Emacs 22+
-                           (propertize lighter 'face 'isearchp-wrapped)
-                           lighter)))))
-  (condition-case nil
-      (if (fboundp 'redisplay) (redisplay t) (force-mode-line-update t))
-    (error nil)))
-
-(add-hook 'isearch-update-post-hook 'isearchp-highlight-lighter)
  
 ;;(@* "Commands")
 
@@ -1297,9 +1209,9 @@ If first char entered is \\[isearch-yank-word], then do word search instead."
        (point)))))
 
 (defun isearchp-kill-ring-save ()       ; Bound to `M-w' in `isearch-mode-map'.
-  "Copy current search string to the kill ring.
-For example, this lets you then use `C-s M-y' to search for the same
-thing in another Emacs session."
+  "Copy the current search string to the kill ring.
+For example, you can then use `C-s M-y' to search for the same thing
+in another Emacs session."
   (interactive)
   (kill-new isearch-string)
   (let ((message-log-max  nil)) (message "Copied search string as kill"))
@@ -2140,6 +2052,127 @@ Options
 `isearchp-mouse-2-flag' - `mouse-2' anywhere yanks the selection?
 `isearchp-regexp-quote-yank-flag' - regexp-quote yanked text?
 `isearchp-set-region-flag' - select last search target?")
+ 
+;;(@* "Keys and Hooks")
+
+;;; Keys and Hooks ---------------------------------------------------
+
+(define-key isearch-mode-map [mouse-2]         'isearch-mouse-2)
+;; Must not be just `nil'.  Need to override a global binding such as `mouse-flash-position-or-M-x'.
+(define-key isearch-mode-map [down-mouse-2]    'ignore)
+
+;; Must not be just `nil'.  Otherwise, if click `mouse-2' in a standalone minibuffer frame then
+;; the `switch-frame' event exits Isearch and the following `down-mouse-2' invokes, e.g.,
+;; `mouse-flash-position-or-M-x'.
+(define-key isearch-mode-map [switch-frame]    'ignore)
+
+;;; Use this instead of `ignore' for `switch-frame', if you want it to exit Isearch when you switch
+;;; to any frame other than a standalone minibuffer frame.
+;;; (defun isearchp-switch-frame-or-exit ()
+;;;   "Return nil if switch to minibuffer frame.  Else exit Isearch.
+;;; Bind to `switch-frame' event."
+;;;   (interactive)
+;;;   (let* ((vec   (this-command-keys-vector))
+;;;          (evnt  (aref vec 0)))
+;;;     (unless (and (consp evnt)  (eq 'switch-frame (car evnt))
+;;;                  (cadr evnt)   (window-minibuffer-p (frame-selected-window (cadr evnt))))
+;;;       (isearch-done)
+;;;       (isearch-clean-overlays))))
+
+;;; (define-key isearch-mode-map [switch-frame]    'isearchp-switch-frame-or-exit)
+
+(define-key isearch-mode-map [(control ?+)]    'isearchp-toggle-invisible)
+(define-key isearch-mode-map [(control ?`)]    'isearchp-toggle-regexp-quote-yank)
+(define-key isearch-mode-map [(control ? )]    'isearchp-toggle-set-region)
+(define-key isearch-mode-map "\C-c"            'isearch-toggle-case-fold)
+(define-key isearch-mode-map "\C-h"            'isearch-mode-help)
+
+;; An alternative to binding `isearch-edit-string' (but less flexible):
+;; (setq search-exit-option  'edit) ; M- = edit search string, not exit.
+
+;; This one is needed only for Emacs 20.  It is automatic after release 20.
+(define-key isearch-mode-map "\M-e"            'isearch-edit-string)
+(define-key isearch-mode-map "\M-g"            'isearchp-retrieve-last-quit-search)
+(define-key isearch-mode-map "\M-k"            'isearchp-cycle-mismatch-removal)
+;; This one is needed only for Emacs 20.  It is automatic after release 20.
+(define-key isearch-mode-map "\M-r"            'isearch-toggle-regexp)
+(when (< emacs-major-version 23)
+  (define-key isearch-mode-map "\M-sw"         'isearch-toggle-word))
+(define-key isearch-mode-map "\M-w"            'isearchp-kill-ring-save)
+(when (fboundp 'isearch-yank-internal)
+  (define-key isearch-mode-map "\C-_"          'isearchp-yank-symbol-or-char)
+  (define-key isearch-mode-map [(control ?\()] 'isearchp-yank-sexp-symbol-or-char))
+(when (and (fboundp 'goto-longest-line)  window-system) ; Defined in `misc-cmds.el'
+  (define-key isearch-mode-map [(control end)] 'goto-longest-line))
+(define-key isearch-mode-map [next]            'isearch-repeat-forward)
+(define-key isearch-mode-map [prior]           'isearch-repeat-backward)
+(when (and (eq system-type 'windows-nt) ; Windows uses M-TAB for something else.
+           (not (lookup-key isearch-mode-map [C-M-tab])))
+  (define-key isearch-mode-map [C-M-tab]       'isearch-complete))
+(when (> emacs-major-version 21)
+  (define-key isearch-mode-map "\C-x"          nil)
+  (define-key isearch-mode-map "\C-xo"         'isearchp-open-recursive-edit) ; `o'pen edit session
+  (when (and (> emacs-major-version 22)   ; Emacs 23 (supports Unicode) through 24.2
+             (or (< emacs-major-version 24)  (and (= emacs-major-version 24)  (< emacs-minor-version 3))))
+    (define-key isearch-mode-map "\C-x8"       nil)
+    (define-key isearch-mode-map "\C-x8\r"     'isearch-insert-char-by-name)))
+
+(define-key isearch-mode-map "\C-y"            nil) ; Put all yanking commands on prefix `C-y'.
+(when (fboundp 'isearch-yank-char)
+  (define-key isearch-mode-map "\C-yc"         'isearch-yank-char))
+(when (fboundp 'isearch-yank-word-or-char)
+  (define-key isearch-mode-map "\C-yw"         'isearch-yank-word-or-char))
+(when (fboundp 'isearchp-yank-symbol-or-char)
+  (define-key isearch-mode-map "\C-y_"         'isearchp-yank-symbol-or-char))
+(when (fboundp 'isearchp-yank-sexp-symbol-or-char)
+(define-key isearch-mode-map "\C-y("           'isearchp-yank-sexp-symbol-or-char))
+(define-key isearch-mode-map "\C-y\C-e"        'isearch-yank-line)
+(define-key isearch-mode-map "\C-y\C-y"        'isearch-yank-kill)
+(when (fboundp 'isearch-yank-pop)
+  (define-key isearch-mode-map "\C-y\M-y"      'isearch-yank-pop)) ; It is also just `M-y'.
+
+
+(when (and (eq system-type 'windows-nt) ; Windows uses M-TAB for something else.
+           (not (lookup-key minibuffer-local-isearch-map [C-M-tab])))
+  (define-key minibuffer-local-isearch-map [C-M-tab] 'isearch-complete-edit))
+(when (> emacs-major-version 22)
+  (define-key minibuffer-local-isearch-map "\C-x8\r" 'insert-char))
+
+(defun isearchp-set-region ()
+  "Set the region around the search target, if `isearchp-set-region-flag'.
+This is used only for Transient Mark mode."
+  (when (and isearchp-set-region-flag  transient-mark-mode)
+    (push-mark isearch-other-end t 'activate)))
+
+(add-hook 'isearch-mode-end-hook 'isearchp-set-region)
+
+
+;; ADVISE `isearch-update' to run `isearch-update-post-hook', in releases that do not do that.
+(unless (boundp 'isearch-update-post-hook) ; Emacs 20-23
+  (defadvice isearch-update (after run-isearch-update-post-hook activate)
+    "Run `isearch-update-post-hook' at the end."
+    (run-hooks 'isearch-update-post-hook)))
+
+(defun isearchp-highlight-lighter ()
+  "Update minor-mode mode-line lighter to reflect case sensitivity."
+  (let ((case-fold-search  isearch-case-fold-search))
+    (when (and (eq case-fold-search t)  search-upper-case)
+      (setq case-fold-search  (isearch-no-upper-case-p isearch-string isearch-regexp)))
+    ;; Vanilla Isearch uses the symbol `isearch-mode', hence the first of these.
+    (setq minor-mode-alist  (delete '(isearch-mode isearch-mode) minor-mode-alist)
+          minor-mode-alist  (delete '(isearch-mode " ISEARCH")   minor-mode-alist)
+          minor-mode-alist  (delete '(isearch-mode " Isearch")   minor-mode-alist))
+    (let ((lighter  (if case-fold-search " ISEARCH" " Isearch")))
+      (add-to-list
+       'minor-mode-alist
+       `(isearch-mode ,(if (and (fboundp 'propertize)  isearch-wrapped) ;Emacs 22+
+                           (propertize lighter 'face 'isearchp-wrapped)
+                           lighter)))))
+  (condition-case nil
+      (if (fboundp 'redisplay) (redisplay t) (force-mode-line-update t))
+    (error nil)))
+
+(add-hook 'isearch-update-post-hook 'isearchp-highlight-lighter)
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 
