@@ -22,7 +22,7 @@ I have also written the following extension for [[OneKey]]:
 * '''Lisp:one-key-dir.el''' -- navigate directories using [[OneKey]]
 
 [new:SewerynKokot:2010-08-26 08:04 UTC]
-Using [[OneKey]] library, I have a problem in assigning, for example, ‘mark-paragraph’ function to a key, namely typing the OneKey keybinding results in the paragraph not marked. While using ‘M-x mark-paragraph’ it works properly! Any idea what is wrong? -- SewerynKokot
+Using [[OneKey]] library, I have a problem in assigning, for example, âmark-paragraphâ function to a key, namely typing the OneKey keybinding results in the paragraph not marked. While using âM-x mark-paragraphâ it works properly! Any idea what is wrong? -- SewerynKokot
 [new]
 Actually I think the paragraph IS being marked (I tried it), but the coloured overlay is not being applied.
 Try C-w just after applying mark-paragraph and I think you will see the paragraph disappear.
@@ -32,7 +32,7 @@ Not sure why the coloured overlay is not applied though :(
 ==EmacsConf==
 
 I will be attending [[http://emacswiki.org/emacs/Emacs_Conference_2013 EmacsConf]] on 30th March 2013.
-I will update this page with a note about what I am wearing in case anyone wants to find me to chat about OneKey at the conference.
+If anyone wants to chat with me about OneKey or any other library of mine look out for the guy in dark blue jeans and top, balding , stubble, with a blue and white bike courier shoulder bag. 
 ----
 
 == Mail Box ==
