@@ -157,12 +157,10 @@
     html-helper-basic-offset
     yahtml-environment-indent
     nxml-child-indent
-    nxml-attribute-indent
     css-indent-level
     cssm-indent-level
     javascript-indent-level
     js-indent-level
-    js-expr-indent-offset
     js2-basic-offset)
   "Variables of indent width"
   :type  '(repeat symbol)
@@ -654,12 +652,10 @@
   :group   'judge-indent
   (if judge-indent-mode
       (progn
-        (setq local-enable-local-variables nil)
         (make-local-variable 'judge-indent-minor-indent-width)
         (make-local-variable 'judge-indent-minor-tab-width)
         (make-local-variable 'judge-indent-minor-mode-lighter)
         (judge-indent-buffer))
-    (setq local-enable-local-variables t)
     (kill-local-variable 'judge-indent-minor-indent-width)
     (kill-local-variable 'judge-indent-minor-tab-width)
     (kill-local-variable 'judge-indent-minor-mode-lighter)))
