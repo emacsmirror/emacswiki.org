@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Mon Jan  7 19:56:33 2013 (-0800)
+;; Last-Updated: Fri Mar 29 21:00:29 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6034
+;;     Update #: 6043
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -3665,8 +3665,10 @@ If the initial value of `bookmark-save-flag' is nil, then this
 command has no effect.
 Non-interactively, non-nil MSG-P means display a status message."
   (interactive "p")
-  (unless (or bmkp-last-save-flag-value bookmark-save-flag)
+  (unless (or bmkp-last-save-flag-value  bookmark-save-flag)
     (error "Cannot toggle: initial value of `bookmark-save-flag' is nil"))
+  ;; One of the two vars should be nil.  If both are non-nil, set `*-last-*' to nil before toggling.
+  (when (and bmkp-last-save-flag-value  bookmark-save-flag) (setq bmkp-last-save-flag-value  nil))  
   (setq bmkp-last-save-flag-value  (prog1 bookmark-save-flag
                                      (setq bookmark-save-flag  bmkp-last-save-flag-value)))
   (when msg-p (message (if bookmark-save-flag
@@ -10358,7 +10360,7 @@ Non-interactively, non-nil MSG-P means display a status message."
           (bookmark-save-flag  (and (not bmkp-count-multi-mods-as-one-flag)
                                     bookmark-save-flag))) ; Save at most once, after `dolist'.
       (dolist (bmk  bmks-to-delete)  (bookmark-delete bmk 'BATCHP))) ; No refresh yet.
-    (bmkp-refresh/rebuild-menu-list nil 'BATCHP))) ; Now refresh, after iterate.    
+    (bmkp-refresh/rebuild-menu-list nil 'BATCHP))) ; Now refresh, after iterate.
 
 ;;;###autoload (autoload 'bmkp-delete-bookmarks "bookmark+")
 (defun bmkp-delete-bookmarks (&optional position allp alist msg-p) ; Bound to `C-x p delete'
@@ -10407,7 +10409,7 @@ Non-interactively:
                       (bookmark-delete bname 'BATCHP) ; No refresh yet.
                       ;; This is the same as `add-to-list' with `EQ' (not available for Emacs 20-21).
                       (unless (memq bname bmks-deleted) (setq bmks-deleted  (cons bname bmks-deleted)))))
-                  (bmkp-refresh/rebuild-menu-list nil (not msg-p)) ; Now refresh.    
+                  (bmkp-refresh/rebuild-menu-list nil (not msg-p)) ; Now refresh.
                   (when msg-p
                     (message (if bmks-deleted
                                  (format "Deleted bookmarks: %s"
