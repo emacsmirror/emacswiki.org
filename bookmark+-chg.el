@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Mar 17 08:21:03 2013 (-0700)
+;; Last-Updated: Fri Mar 29 21:03:24 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 15202
+;;     Update #: 15204
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2013/03/29 dadams
+;;     bmkp-toggle-saving-bookmark-file: If neither is nil, set *-last-* to nil before toggling.
 ;; 2013/03/17 dadams
 ;;     bmkp-bmenu-list-1: Do not toggle filenames unless bookmark-alist is defined (Emacs bug #13972).
 ;; 2013/01/07 dadams
