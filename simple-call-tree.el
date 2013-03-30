@@ -1,4 +1,4 @@
-;;; simple-call-tree.el -- analyze source code based on font-lock text-properties
+;;; simple-call-tree.el --- analyze source code based on font-lock text-properties
 
 ;; Copyright (C) 2003  Alex Schroeder
 
