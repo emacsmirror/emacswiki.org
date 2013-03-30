@@ -169,7 +169,7 @@ Q: Is there any way to protect the password? I don't like the idea of leaving it
 [new]
 A1: MSMTP can use gnome keyring to store your password. If you specify auth but no pass, it will interrogate gnome-keyring-daemon for a password. This mitigates the risk of plain text password storage but is difficult to configure in a non-desktop environment.
 
-A2: MSMTP takes the argument **--passwordeval=<cmd>**. In order to retrieve the password for the specified account, it will then run **<cmd>**. Since **<cmd>** can be anything, in particular **gpg**, you need not store your password unencrypted, just add **"--passwordeval=gpg --quiet --batch -d name-of-file"** to **message-sendmail-extra-arguments**, where **name-of-file** should be a gpg-encrypted text file containing nothing but the password.
+A2: MSMTP takes the argument **--passwordeval=<cmd>**. In order to retrieve the password for the specified account, it will then run **<cmd>**. Since **<cmd>** can be anything, in particular **gpg**, you need not store your password unencrypted, just add **"--passwordeval=gpg --quiet --batch -d name-of-file"** to **message-sendmail-extra-arguments**, where **name-of-file** should be a gpg-encrypted text file containing nothing but the password. Note that if you miss **--batch** or **--quiet**, you will get errors which are hard to trace; the two disable unnecessary output to stdout and stderr, both of which emacs would capture.
 
 
 [new]
