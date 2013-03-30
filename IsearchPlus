@@ -39,16 +39,19 @@ removes all faces from the region.
 * [[option|Option]] ('''`isearchp-regexp-quote-yank-flag'''') and command (`isearchp-toggle-regexp-quote-yank', bound to '''`##C-`##'''') to toggle quoting (escaping) of [[regexp]] special characters.  With escaping turned off, you can yank text such as ##^\*.*## without it being transformed to ##\^\\\*\.\*##.
 
 [:isearchp-retrieve-last-quit-search]
-* '''`M-g'''' yanks the last successful search string (regexp or plain) from when you last hit `C-g' in Isearch.  Sometimes you search for something but abandon the search --- you just want to check the locations of something, without staying at any of them.  Afterward, if you want to find them again, use `M-g'.  This yanks that search string, so you can append it to whatever you are already searching for.
+* '''`M-g'''' ('''`isearchp-retrieve-last-quit-search'''') yanks the last successful search string (regexp or plain) from when you last hit `C-g' in Isearch.  Sometimes you search for something but abandon the search --- you just want to check the locations of something, without staying at any of them.  Afterward, if you want to find them again, use `M-g'.  This yanks that search string, so you can append it to whatever you are already searching for.
 
 [:isearch-yank-secondary]
 * '''`C-M-y'''' ('''`isearch-yank-secondary'''') yanks the [[secondary selection]] onto the search string, if you also use library <tt>[[second-sel.el]]</tt> (see [[SecondarySelection#secondary-sel.el|secondary selection enhancements]]).
 
+[:isearchp-yank-char]
+* '''`##C-c##'''' ('''`isearchp-yank-char'''') yanks successive characters onto the search string.
+
 [:isearchp-yank-symbol-or-char]
-* '''`##C-_##'''' yanks successive [[symbol]]s (or words or chars) into the search string.
+* '''`##C-_##'''' ('''`isearchp-yank-symbol-or-char'''') yanks successive [[symbol]]s (or words or subwords or chars) onto the search string.
 
 [:isearchp-yank-sexp-symbol-or-char]
-* '''`##C-(##'''' yanks successive [[sexp]]s (or symbols or words or chars) into the search string.
+* '''`##C-(##'''' ('''`isearchp-yank-sexp-symbol-or-char'''') yanks successive [[sexp]]s (or symbols or words or subwords or chars) onto the search string.
 
 
 [:isearchp-kill-ring-save]
@@ -57,22 +60,28 @@ thing in another Emacs session.  (Use `M-s w' for `isearch-toggle-word'.)
 
 * All commands that yank text onto the search string are bound to keys with prefix `C-y' (in addition to any other Isearch bindings):
 
-     C-y c     isearch-yank-char
-     C-y w     isearch-yank-word-or-char
-     C-y _     isearchp-yank-symbol-or-char
-     C-y (     isearchp-yank-sexp-symbol-or-char
+     C-y C-_   isearchp-yank-symbol-or-char
+     C-y C-(   isearchp-yank-sexp-symbol-or-char
      C-y C-2   isearch-yank-secondary
-     C-y C-e   isearch-yank-line
+     C-y C-c   isearchp-yank-char
+     C-y C-e   isearchp-yank-line
+     C-y C-w   isearchp-yank-word-or-char
      C-y C-y   isearch-yank-kill
      C-y M-y   isearch-yank-pop
 
+:: You can repeat any of these for which it makes sense (i.e., all except `isearch-yank-secondary', `isearch-yank-kill', and `isearch-yank-pop') by just repeating the last key.  For example: `C-y C-e C-e C-e' adds the text up to the end of three lines.
+
+:: ''Note:'' Because of [[http://debbugs.gnu.org/cgi/bugreport.cgi?bug=14095| Emacs bug #14095]] (a regression), this does not yet work in Emacs 24 for `isearchp-yank-line'.  (It "works" for the others in Emacs 24 only because the same key without the `C-y' prefix is bound to essentially the same command.  So the
+"repetition" is really a separate command.)
+
+
 [:isearchp-read-unicode-char]
-* '''`C-x 8 RET'''' reads the name of a Unicode character with
+* '''`C-x 8 RET'''' ('''`isearchp-read-unicode-char'''') reads the name of a Unicode character with
 completion and appends it to the search string.  Same thing when
 editing the search string (i.e., after `M-e').
 
 [:isearchp-open-recursive-edit]
-* '''`C-x o'''' opens a recursive editing session, where you can do
+* '''`C-x o'''' ('''`isearchp-open-recursive-edit'''') opens a recursive editing session, where you can do
 anything you like (including search for something different).
 Using '''`C-M-c'''' closes the recursive editing session and resumes
 the search (from the current position when you hit `C-M-c').
@@ -84,8 +93,8 @@ the search (from the current position when you hit `C-M-c').
 
 [:isearchp-cycle-mismatch-removal]
 [:isearchp-drop-mismatch]
-* Command and binding to cycle automatic removal or replacement of the input portion
-that does not match, bound to '''`M-k''''.  Behavior
+* '''`M-k'''' ('''`isearchp-cycle-mismatch-removal'''') cycles automatic removal or replacement of the input portion
+that does not match.  The behavior
 is controlled by the value of option '''`isearchp-drop-mismatch'''':
 
 ** `replace-last' -- Your current input ''replaces'' the last mismatched text.  You can always see your last input, even if it is a mismatch.  And it is available for editing using `M-e'.
@@ -97,28 +106,19 @@ previous input has a mismatched portion.
 successful matches.
 
 
-
-
-[:isearch-toggle-word]
-* Command and binding to toggle (incremental) word search (from JuriLinkov): `isearch-toggle-word', bound to '''`M-w''''.
-
 [:isearchp-toggle-invisible']
-* Command and binding to toggle invisible-text sensitivity while searching: `isearchp-toggle-invisible', bound to '''`##C-+##''''.
+* '''`##C-+##'''' ('''`isearchp-toggle-invisible'''') toggles invisible-text sensitivity while searching.
 
 
-[:isearchp-toggle-invisible]
 [:isearchp-toggle-set-region]
 [:goto-longest-line]
-* Bindings during Isearch (the standard bindings for some of these use the Meta modifier, `M-',  instead):
-** '''`next'''', '''`prior'''' repeat the last Isearch forward and backward (easier than using the [[chord]]s `C-s', `C-r'.
-** '''`C-h'''' provides ''help'' on Isearch while isearching. Library <tt>[[isearch+.el]]</tt> also redefines `isearch-mode-help' so that it lists ''all'' Isearch bindings and ends Isearch properly
-** '''`C-c'''' lets you toggle ''case-sensitivity'' while isearching. (Standard binding is `M-c'.)
-** '''`##C-+##'''' lets you toggle ''invisible-text sensitivity'' while isearching.
-** '''`C-SPC'''' lets you toggle setting the region around the last found occurrence.
+* Other bindings during Isearch:
+** '''`next'''', '''`prior'''' repeat the last Isearch forward and backward (easier than using the [[chord]]s `C-s', `C-r').
 ** '''`C-end'''' -- go to the longest line. Repeat to go to the longest line following that one in the buffer. As usual, `C-g' puts you back where you started. This binding is made only if you also use library <tt>[[misc-cmds.el]]</tt>. See [[FindLongLines#goto-longest-line|Find Long Lines]].
+** '''`C-h'''' provides ''help'' on Isearch while searching. Library <tt>[[isearch+.el]]</tt> also redefines `isearch-mode-help' so that it lists ''all'' Isearch bindings and ends Isearch properly.
 
 [:isearch-edit-string]
-* '''`M-e'''' (`isearch-edit-string') automatically puts the [[cursor]] at the first mismatch position in the search string, for easy editing.  Whereas `C-g' (see also `M-k') removes all of the mismatch, this feature lets you change or insert a character or two, without losing the rest of the search string.
+* '''`M-e'''' ('''`isearch-edit-string'''') automatically puts the [[cursor]] at the first mismatch position in the search string, for easy editing.  Whereas `C-g' (see also `M-k') removes all of the mismatch, this feature lets you change or insert a character or two, without losing the rest of the search string.
 
 [:isearchp-initiate-edit-commands]
 * A [[user option]], '''`isearchp-initiate-edit-commands'''', that specifies [[command]]s whose [[key]]s will not exit Isearch but will instead initiate editing of the search string.  For example, if `backward-char' is included in the list then `C-b' and `left' will just move the [[cursor]] backward over the search string so you can change, delete, or insert chars in the middle somewhere.  This makes the search string more [[minibuffer]]-like.
