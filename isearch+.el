@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 21.0
-;; Last-Updated: Sat Mar 30 10:40:39 2013 (-0700)
+;; Last-Updated: Sat Mar 30 11:15:14 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2069
+;;     Update #: 2080
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -230,22 +230,26 @@
 ;;    turned off, you can yank text such as `^\*.*' without it being
 ;;    transformed to `\^\\\*\.\*'.
 ;;
-;;  * `M-g' yanks the last successful search string (regexp or plain)
-;;    from when you last hit `C-g' in Isearch.  Sometimes you search
-;;    for something but abandon the search - you just want to check
-;;    the locations of something, without staying at any of them.
-;;    Afterward, if you want to find them again, use `M-g'.  This
-;;    yanks that search string, so you can append it to whatever you
-;;    are already searching for.
+;;  * `M-g' (`isearchp-retrieve-last-quit-search') yanks the last
+;;    successful search string (regexp or plain) from when you last
+;;    hit `C-g' in Isearch.  Sometimes you search for something but
+;;    abandon the search - you just want to check the locations of
+;;    something, without staying at any of them.  Afterward, if you
+;;    want to find them again, use `M-g'.  This yanks that search
+;;    string, so you can append it to whatever you are already
+;;    searching for.
 ;;
 ;;  * `C-M-y' (`isearch-yank-secondary') yanks the secondary selection
 ;;    into the search string, if you also use library `second-sel.el'.
 ;;
-;;  * `C-_' yanks successive symbols (or words or chars) into the
-;;    search string.
-;;
-;;  * `C-(' yanks successive sexps (or symbols or words or chars) into
+;;  * `C-c' (`isearchp-yank-char') yanks successive characters onto
 ;;    the search string.
+;;
+;;  * `C-_' (`isearchp-yank-symbol-or-char') yanks successive symbols
+;;    (or words or subwords or chars) into the search string.
+;;
+;;  * `C-(' (`isearchp-yank-symbol-or-char') yanks successive sexps
+;;    (or symbols or words or subwords or chars) into the search string.
 ;;
 ;;  * `M-w' (`isearchp-kill-ring-save') copies the current search
 ;;    string to the kill ring.  You can then, for example, use `C-s
@@ -277,14 +281,16 @@
 ;;    `C-y' prefix is bound to essentially the same command.  So the
 ;;    "repetition" is really a separate command.)
 ;;
-;;  * `C-x 8 RET' reads the name of a Unicode character with
-;;    completion and appends it to the search string.  Same thing when
-;;    editing the search string (i.e., after `M-e').
+;;  * `C-x 8 RET' (`isearchp-read-unicode-char') reads the name of a
+;;    Unicode character with completion and appends it to the search
+;;    string.  Same thing when editing the search string (i.e., after
+;;    `M-e').
 ;;
-;;  * `C-x o' opens a recursive editing session, where you can do
-;;    anything you like (including search for something different).
-;;    Using `C-M-c' closes the recursive editing session and resumes
-;;    the search (from the current position when you hit `C-M-c').
+;;  * `C-x o' (`isearchp-open-recursive-edit') opens a recursive
+;;    editing session, where you can do anything you like (including
+;;    search for something different).  Using `C-M-c' closes the
+;;    recursive editing session and resumes the search (from the
+;;    current position when you hit `C-M-c').
 ;;
 ;;  * Highlighting of the mismatched portion of your search string in
 ;;    the minibuffer.  This is the portion that is removed if you do
@@ -296,9 +302,10 @@
 ;;    IOW, you get back to what you saw before searching.  Fixes Emacs
 ;;    bug #12253 for Isearch.
 ;;
-;;  * Command and binding to cycle automatic removal or replacement of
-;;    the input portion that does not match, bound to `M-k'.  Behavior
-;;    is controlled by the value of option `isearchp-drop-mismatch':
+;;  * `M-k' (`isearchp-cycle-mismatch-removal') cycles automatic
+;;    removal or replacement of the input portion that does not match,
+;;    bound to .  The behavior is controlled by the value of option
+;;    `isearchp-drop-mismatch':
 ;;
 ;;    `replace-last' - Your current input replaces the last mismatched
 ;;                     text.  You can always see your last input, even
@@ -310,27 +317,20 @@
 ;;                     causes a mismatch.  The search string always
 ;;                     has successful matches.
 ;;
-;;  * Command and binding to toggle invisible-text sensitivity while
-;;    searching: `isearchp-toggle-invisible, bound to `C-+'.
+;;  * `C-+' (`isearchp-toggle-invisible') toggles invisible-text
+;;    sensitivity while searching.
 ;;
-;;  * Bindings during Isearch (the standard bindings for some of these
-;;    use the Meta modifier, `M-',  instead):
+;;  * Other bindings during Isearch:
 ;;
 ;;    - `next', `prior' repeat the last Isearch forward and backward
-;;      (easier than using the chords `C-s', `C-r'.
-;;    - `C-h' provides help on Isearch while isearsching.  This library
-;;      also redefines `isearch-mode-help' so that it lists all
-;;      Isearch bindings and ends Isearch properly
-;;    - `C-c' lets you toggle case-sensitivity while isearching.
-;;      (Standard binding is `M-c'.)
-;;    - `C-+' lets you toggle invisible-text sensitivity while
-;;      isearching.
-;;    - `C-SPC' lets you toggle setting the region around the last
-;;      found occurrence.
+;;      (easier than using the chords `C-s', `C-r').
 ;;    - `C-end' - go to the longest line.  Repeat to go to the longest
 ;;      line following that one in the buffer.  As usual, `C-g' puts
 ;;      you back where you started.  This binding is made only if you
 ;;      also use `misc-cmds.el'.
+;;    - `C-h' provides help on Isearch while searsching.  This library
+;;      also redefines `isearch-mode-help' so that it lists all
+;;      Isearch bindings and ends Isearch properly.
 ;;
 ;;  * `M-e' (`isearch-edit-string') automatically puts the cursor at
 ;;    the first mismatch position in the search string, for easy
