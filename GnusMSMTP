@@ -1,7 +1,7 @@
 Don't confuse the program <code>msmtp</code> with the ability to use [[MultipleSMTPAccounts]] in Gnus.
 
 == Basic Setup ==
-Here’s a quick and short description of setting Gnus and <tt>msmtp</tt> to work with Gmail. This should work with the following software on Windows and *nix platform. The examples here are shown for the Microsoft Windows versions of the software but should work with just the path changes on *nix platforms.
+Hereâs a quick and short description of setting Gnus and <tt>msmtp</tt> to work with Gmail. This should work with the following software on Windows and *nix platform. The examples here are shown for the Microsoft Windows versions of the software but should work with just the path changes on *nix platforms.
 
 <pre>
 No Gnus v0.6 or higher
@@ -13,10 +13,10 @@ The details above can be got by
 <pre>
 1.	M-x gnus-version in Emacs 
 2.	M-x emacs-version in emacs 
-3.	msmtp –-version at the command prompt 
+3.	msmtp â-version at the command prompt 
 </pre>
 
-Your typical <tt>msmtprc.txt</tt> file would look like this.  Note <tt>msmtp –-version </tt> will also tell you where <tt>msmtp</tt> looks for the configuration file. 
+Your typical <tt>msmtprc.txt</tt> file would look like this.  Note <tt>msmtp â-version </tt> will also tell you where <tt>msmtp</tt> looks for the configuration file. 
 
 <pre>
 ########################
@@ -43,7 +43,7 @@ logfile c:\msmtplog.txt
 ########################
 </pre>
 
-Now, we’d like to use Gnus to send email through <tt>msmtp</tt>. Add the following lines to the <tt>.gnus.el</tt> file. 
+Now, weâd like to use Gnus to send email through <tt>msmtp</tt>. Add the following lines to the <tt>.gnus.el</tt> file. 
 
 <pre>
 ;; with Emacs 23.1, you have to set this explicitly (in MS Windows)
@@ -71,7 +71,7 @@ In the example above, we have used only 1 of the email accounts.
 Gnus allows you to post using different accounts, which can be
 accomplished with [[PostingStyles]].
 
-To use [[PostingStyles]] in Gnus with <tt>msmtp</tt>, here’s an example of how it’s done
+To use [[PostingStyles]] in Gnus with <tt>msmtp</tt>, hereâs an example of how itâs done
 
 <pre>
 (setq gnus-parameters
@@ -167,7 +167,10 @@ Anyone who can read Chinese, and if you are interested, you can visit original a
 Q: Is there any way to protect the password? I don't like the idea of leaving it in plain text in the file, and for some reason I do not get prompted in gnus if I leave it out (although it works fine from the command line).
 
 [new]
-A: MSMTP can use gnome keyring to store your password. If you specify auth but no pass, it will interrogate gnome-keyring-daemon for a password. This mitigates the risk of plain text password storage but is difficult to configure in a non-desktop environment.
+A1: MSMTP can use gnome keyring to store your password. If you specify auth but no pass, it will interrogate gnome-keyring-daemon for a password. This mitigates the risk of plain text password storage but is difficult to configure in a non-desktop environment.
+
+A2: MSMTP takes the argument **--passwordeval=<cmd>**. In order to retrieve the password for the specified account, it will then run **<cmd>**. Since **<cmd>** can be anything, in particular **gpg**, you need not store your password unencrypted, just add **"--passwordeval=gpg --quiet --batch -d name-of-file"** to **message-sendmail-extra-arguments**, where **name-of-file** should be a gpg-encrypted text file containing nothing but the password.
+
 
 [new]
 == Using msmtpQ to queue your mail ==
@@ -189,5 +192,6 @@ connection or queues it when there is none. It is part of the debian package:
 I put it into "/usr/local/bin/". Don't forget to set 3 vars in the script and
 make it +x.
 To send your mails, you flush your queue with "msmtpq -r" (Yes, small q).
+
 ----
 CategoryGnus
