@@ -46,6 +46,7 @@ For those of us using earlier versions, use the PictureModeTrailingWhitespaceTri
 
 * A few months ago, I finally wrote code to do incremental numbering of columns.  My life is better for it: http://www.antisleep.com/download/elisp/gse-number-rect.el -- ScottEvans
 * Use MarkCommands to remember and go back and forth between locations in buffers or across buffers.
+** [[register]] is also a good feature. -- XueFuqiao
 * Use BreadcrumbForEmacs to set a series of breadcrumb bookmarks in the buffers, and jump back to them quickly.  Visiting the bookmarks in the other window is a quick way to browse all the bookmarked locations.
 * When you are inserting from [[register]] with <code>C-x r i</code>, you may use a prefix argument to jump to the end of the inserted text, but if you forget you can use <code>C-x C-x</code>.
 * Use <code>M-m</code> instead of <code>C-a TAB</code> to jump to identation point.  Also consider switching C-a and M-m, since most of the time you want back-to-indentation.
