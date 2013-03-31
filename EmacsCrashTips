@@ -63,6 +63,10 @@ learn after you grab the symmetry of the layout. So, practice them.
 If backspace (sorry, <tt>delete-backward-char</tt>) 
 has been remapped to <tt>C-h</tt>,
 you may want to bind <tt>backward-kill-word</tt> to <tt>M-h</tt>.
+
+[new:XueFuqiao:2013-03-31 12:49 UTC]
+But <tt>M-h</tt>runs the command <tt>mark-paragraph</tt>, which is also a very useful command.  -- XueFuqiao
+
 It's usually faster to kill a mispelled word and retype it instead
 to go back to the typo, deleting one character at a time.
 
