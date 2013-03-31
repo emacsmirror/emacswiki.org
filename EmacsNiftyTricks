@@ -272,6 +272,8 @@ RET##', but not all systems have `uniq'.
 * RectangleCommands: kill, yank, insert, delete rectangles and more!
 == Miscellaneous ==
 * `M-x phases-of-moon' -- Awoooo!
+** This function is obsolete since 23.1; use `lunar-phases' instead. -- XueFuqiao
+
 * EmacsAsDesktopBackground -- The ''real'' active background window
 * `##ESC ESC ESC##' -- Go back to just one window (by deleting all but the selected window).
 * ##(fset 'yes-or-no-p 'y-or-n-p)## --  Make all "##yes or no##" prompts show "##y or n##" instead.  See YesOrNoP.
