@@ -158,8 +158,6 @@ User defined units can also be edited with
 s U
 }}}
 
--- JayBelanger
-
 == Minimalistic calculation ==
 I always calculate something, so there is a way i use calc.el
 
@@ -188,8 +186,6 @@ There is also quick-calc, which can be called with `##M-# q##'
 It will give you a prompt in the minibuffer, and the result will be given in the minibuffer
 and put in the kill-ring.  If the input is ended with a linefeed (or `C-j') instead of RET,
 the result will be put in the current buffer as well as the minibuffer.
-
--- JayBelanger
 
 == Embedded Formula To Stack ==
 I was seeking out a function to take an embedded formula, evaluate it and put it on the stack. I didn't find one so here is the one I wrote. Beware, it uses current calc settings. 
