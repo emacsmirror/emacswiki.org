@@ -180,6 +180,9 @@ I think either way is fine. The wiki exists somewhere between informal like IRC 
 Hi. I added some commands to [[syslog-mode.el]] for filtering and highlighting items.
 Shouldn't be difficult to add commands for reporting statistics aswell, but I don't have time for that now. -- JoeBloggs
 
+[new:ChristianGiménez:2013-03-31 14:08 UTC]
+Thanks! I'll update my Lisp:syslog-mode.el immediately. :-) -- ChristianGiménez
+
 ----
 
 = Identica Public Posts =
