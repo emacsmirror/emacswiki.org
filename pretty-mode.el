@@ -81,6 +81,7 @@ MODE is nil. Return nil if there are no keywords."
 (defgroup pretty nil "Minor mode for replacing text with symbols "
   :group 'faces)
 
+;;;###autoload
 (define-minor-mode pretty-mode
   "Toggle Pretty minor mode.
 With arg, turn Pretty minor mode on if arg is positive, off otherwise.
@@ -103,6 +104,7 @@ displayed as λ in lisp modes."
   (if (pretty-keywords)
       (pretty-mode 1)))
 
+;;;###autoload
 (define-globalized-minor-mode global-pretty-mode
   pretty-mode turn-on-pretty-if-desired
   :init-value t)
@@ -111,7 +113,7 @@ displayed as λ in lisp modes."
   (interactive)
   (pretty-mode -1))
 
-
+;;;###autoload
 (defun turn-on-pretty-mode ()
   (interactive)
   (pretty-mode +1))
