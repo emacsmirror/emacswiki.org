@@ -12,6 +12,7 @@ Anything having to do with editing, encoding, or displaying Unicode characters i
 
 These libraries are intended to help users who edit Unicode files.
 
+* [[ucs-cmds.el]]
 * UnicodeHelperMode
 * UnicodeFonts
 * [http://user42.tuxfamily.org/unicode-disp/index.html unicode-disp.el]
@@ -25,7 +26,7 @@ Ways to use Unicode to prettify the Emacs user interface.
 
 == Utility Extensions ==
 
-These libraries are useful to call from Emacs Lisp but do not focus on user-facing functionality.
+These libraries are useful to call from EmacsLisp but do not necessarily focus on user-facing functionality.
 
 * [[ucs-cmds.el]]
 * UcsUtils
