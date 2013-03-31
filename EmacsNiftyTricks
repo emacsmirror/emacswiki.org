@@ -243,6 +243,7 @@ See also GnusNiftyTricks
 RET##', but not all systems have `uniq'.
 * Use EmacsTags
 * Bind `M-g' to `M-x goto-line'.
+** <code>M-g</code> was made a prefix by RMS in 2005.  <code>goto-line</code> has been bound to <code>M-g g</code> and <code>M-g M-g</code>. -- XueFuqiao
 * Poor man's tagging: Find all files in a "project" and use `##M-/##'. Emacs searches through all the buffers for the completion. -- ttn
 * Use LXR and run cron jobs every night to tag the entire code base. I wrote:
 ** a mod_perl module that take http requests, query the LXR database and and spit back... ''sexps''. 
