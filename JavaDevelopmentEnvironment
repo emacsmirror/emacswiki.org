@@ -67,7 +67,7 @@ Link to your success stories here!
 ===Emacs 24===
 Download CEDET 1.1 and load it in Elisp.  Emacs comes with CEDET 2.0; you must load CEDET 1.1 before other packages load the version in Emacs.  JDEE is not compatible with new CEDET.
 
-You could use latest JDEE from Subversion https://jdee.svn.sourceforge.net/svnroot/jdee/trunk and wrestle with the build, or download the latest release at http://sourceforge.net/projects/jdee/files/jdee/2.4.0.1/ .  When taking the latter option, you'll need some Elisp to prevent fatal errors:
+You could use latest JDEE from Subversion https://jdee.svn.sourceforge.net/svnroot/jdee/trunk and wrestle with the build, or download the latest prebuilt release at http://sourceforge.net/projects/jdee/files/jdee/2.4.0.1/ .  When taking the latter option, you'll need some Elisp to prevent fatal errors:
 
 <pre>
 (setq jde-check-version-flag nil)
