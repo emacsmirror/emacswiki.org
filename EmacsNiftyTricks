@@ -57,6 +57,9 @@ For those of us using earlier versions, use the PictureModeTrailingWhitespaceTri
 
 === Searching and Replacing ===
 * When doing isearch, `C-w' adds the word following point to the search buffer.  Very useful. `C-y' adds the rest of the current line to the search buffer. Sometimes useful.
+** <code>C-y</code> in Isearch has been bound to `isearch-yank-kill' since GNU Emacs 24.1.  -- XueFuqiao
+
+
 * Use `isearch' as a navigation mechanism.  Consider modifying Isearch's behavior by using IsearchOtherEnd.
 * Regexps can be limited to a region by using BasicNarrowing or selecting an active region with TransientMarkMode.
 * Set the variable `enable-recursive-minibuffers' non-nil, then you can bring up a complex search and replace that you've just done (either because it didn't work and you want to tweak it and try again, or because you want to another similar one) in the MiniBuffer using the history mechanism, and use search and replace to edit the original search and replace. For example, if you've just replaced "##aabbcc##" with "##zzbbyy##" and now want to replace "##aaddcc##" with "##zzddyy##", you can bring up the original search, and use replace-string to change the "##bb##" strings to "##dd##" in both pattern and replacement.
