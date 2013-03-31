@@ -594,6 +594,9 @@ mechanism that reduces millions of colors to 16.  Not good.  All of themes I kno
 retro orange or retro green look terrible on a 16 color terminal.  Have you tried running on
 a 256 color terminal?  Might be a bit better. -- AlexSchroeder
 
+[new]
+It may still be desirable to filter for themes designed for those 256 color themes; 256 color ttys will still degrade themes designed for a 24-bit display.
+
 == Bugs and caveats ==
 
 [new:DaveAbrahams:2011-10-03 19:03 UTC]
