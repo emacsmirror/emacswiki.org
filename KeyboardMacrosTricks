@@ -60,6 +60,7 @@ Here are a few tricks to get the most out of Emacs macros:
 * Take care to make your macro independent of the length of the manipulated text, the number of words being manipulated, and independent of indententaion.  Within your macro use positioning commands like <code>C-a</code> (beginning of line), <code>C-e</code> (end of line), <code>M-f</code> (forward word), <code>M-b</code> (backward word), and ~especially~ incremental search (<code>C-s</code>).  Edit with <code>M-d</code> (delete word forward), <code>M-backspace</code> (delete word backward), <code>C-k</code> (kill-line) erase to end of line, and especially cut (mark, <code>C-space</code>, move cursor, and then kill-region <code>C-w</code>) and paste (<code>C-y</code> yank, and <code>M-y</code> pop kill ring and yank).  Both yanks will paste the text deleted with any of the commands mentioned.  It often takes very little effort to make a macro independent of where the cursor is positioned in the line when the macro is invoked.
 
 * Use 0 as argument to call-last-kbd-macro <code>C-x e</code> to execute the macro until an error occurs (e.g. because a search failed or the end of buffer has been reached ), i.e. <code>C-u 0 C-x e</code>.
+** It seems that this trick won't work if <code>next-line-add-newlines</code> is non-nil.  -- XueFuqiao
 
 * Limit the region that is affected by the macro by narrowing your buffer with narrow-to-region <code>C-x n n</code>.  Undo narrowing with <code>C-x n w</code>.
 
