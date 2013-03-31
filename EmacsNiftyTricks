@@ -209,6 +209,10 @@ See also GnusNiftyTricks
 == Programming ==
 * If you work in languages that use studlyCaps and you don't like them, you can use 'glasses-mode' to separate the words visually without altering the content of the buffer.
 * For studlyCaps, use <code>(c-subword-mode 1)</code> in your mode setup: makes some movement and text commands recognize case-change as a word boundary.
+** In subword.el:
+<code>
+(define-obsolete-function-alias 'c-subword-mode 'subword-mode "23.2")
+</code>  -- XueFuqiao
 * Use your FunctionKeys.
 * SkeletonMode -- suggested by MarioLang
 * Use ElectricPair to automatically close pairs of symbols, and bring down the symbols on the upper key row. Move frequently used symbols to easy-to-reach keys.
