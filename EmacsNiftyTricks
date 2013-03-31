@@ -266,6 +266,7 @@ RET##', but not all systems have `uniq'.
 :: `untabify' acts only on the region, so that is typically not a problem. The better guideline is to not use it on a region that contains TABs other than as insignificant whitespace. IOW, it is not a proble of badly written code but of knowing what the code is/does before you act on it. -- DrewAdams
 [new]
 * Make the region lowercase: `downcase-region' -- JonAquino
+** It is bound to `C-x C-l'. -- XueFuqiao
 * Align lines in region on a common string with `M-x align-regexp'
 * Delete all space around point with ##M-\##
 * RectangleCommands: kill, yank, insert, delete rectangles and more!
