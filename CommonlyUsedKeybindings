@@ -7,8 +7,8 @@ Please contribute to this list, and if there are any disagreements we can straig
 || C-n      || move to next char/item                                                                      ||
 || C-p      || move to previous char/item                                                                  ||
 || /        || filter items                                                                                ||
-|| q     || quit/exit                                                                                   ||
-|| ESC  || quit/exit                                                                                   ||
+|| q     || quit/exit (prefer q to ESC)                                                                                    ||
+|| ESC  || quit/exit (prefer q to ESC)                                                                                  ||
 || C-h      || help (don't shadow the built in help commands unless you have to though)    ||
 || F1   || help (don't shadow the built in help commands unless you have to though)  ||
 || e || edit ||
