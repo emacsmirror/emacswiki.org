@@ -10,7 +10,7 @@ and to learn keybindings (which are displayed in the menu).
 By default the menu items are highlighted according to usage to help you identify commonly used items, and you can 
 apply your own colour scheme to make them more readable.
 
-Different types of menus for accessing different types of objects are defined by one-key plugin libraries (see "Plugins" below).
+Different types of menus for accessing different types of objects are defined by one-key plugin libraries (see [[#plugins]] below).
 You can also easily create your own menus on the fly, or edit existing ones, and save them.
 By default menus for common prefix keys and commands, as well as major-mode keybindings, are defined. 
 
@@ -221,7 +221,7 @@ All the options below can be customized by *M-x customize-group RET one-key RET*
 : You can always use the keystroke *C-g* to abort OneKey, whatever special keybindings you have set.
 
 ==Plugins==
-
+[[#plugins]]
 The following plugin libraries are available:
 : Lisp:one-key-dir.el - one-key menus for quickly navigating directories (useful for navigating procfs or sysfs on *nix systems)
 : Lisp:one-key-yas.el - one-key menus for yasnippet templates (see [[Yasnippet]])
