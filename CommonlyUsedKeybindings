@@ -7,5 +7,7 @@ Please contribute to this list, and if there are any disagreements we can straig
 || C-n      || move to next char/item                                                                      ||
 || C-p      || move to previous char/item                                                                  ||
 || /        || filter items                                                                                ||
-|| q / ESC  || quit/exit                                                                                   ||
-|| C-h / F1 || help (these should only be used when the normal help commands aren't immediately available) ||
+|| q     || quit/exit                                                                                   ||
+|| ESC  || quit/exit                                                                                   ||
+|| C-h      || help (these should only be used when the normal help commands aren't immediately available) ||
+|| F1   || help (these should only be used when the normal help commands aren't immediately available) ||
