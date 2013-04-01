@@ -1,7 +1,7 @@
 Some keybindings are used for similar commands in different packages.
 This page aims to keep a track of commonly used keybindings so that library writers can refer to it when deciding which keybindings to use.
 
-This list is by no means exhaustive and you can refer to the standard keybindings, and keybindings in popular libraries such as dired and org for more ideas.
+This list is by no means exhaustive and you can refer to the standard keybindings, keybindings in popular libraries such as dired and org, or keybindings in libraries similar to the one you are creating for more ideas.
 Note that C-c is the standard prefix key to use when defining your own major-mode (see [http://www.gnu.org/software/emacs/manual/html_node/elisp/Major-Mode-Conventions.html#Major-Mode-Conventions Major Mode Conventions]).
 
 Please contribute to this list, and if there are any disagreements we can straighten them out in discussions below.
