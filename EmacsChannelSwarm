@@ -12,7 +12,7 @@ If it works then we may do it regularly.
 
 == The plan ==
 
-* fire up a server on heroku
+* fire up a server on [[https://syme.herokuapp.com|Syme]]
 * install tmux and Emacs 24 on it
 * start the tmux, start Emacs inside it
 * install the swarmhacker package
