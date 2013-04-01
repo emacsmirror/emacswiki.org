@@ -3,7 +3,6 @@
 * Shrink regexp cache after GC
 * GC messages
 * Automatic deletion of undo list elements updating freed markers
-* '''DONE''' Guile 2.0.0 compatibility
 * '''DONE''' Fix backtraces ''(fixed Vlexical_binding bug)''
 * '''DONE''' Use Guile facilities for control flow
 * QUIT at each SCM_TICK
@@ -14,7 +13,6 @@
 * '''DONE''' Remove unnecessary signal handlers (notably SIGXCPU, SIGPWR which bdw-gc uses)
 * '''DONE''' Fix EMACS_INT formatting
 * Find beta testers for non-GNU platforms
-* Fix XSETSUBR syntax error for guile 2.0.x
 * Determine required libgc and guile versions
 * Test gdb configuration
 * Fix [http://debbugs.gnu.org/cgi/bugreport.cgi?bug=14120] (reported by TaylanUB)
