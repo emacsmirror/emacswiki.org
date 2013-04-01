@@ -75,18 +75,16 @@ I don't like to have smex update every time I run (auto-update is usually good e
 You can see mnemonical commands (within completion) before the others with this code snippet:
 {{{
 (defun acronym-matches ()
-  (let* ((regex
-          (concat "^"
-                  (mapconcat 'char-to-string
-                             ido-text
-                             "[^-]*-") "[^-]*$")))
+  (let ((regex
+         (concat "^"
+                 (mapconcat 'char-to-string
+                            ido-text
+                            "[^-]*-") "[^-]*$")))
     (reverse (remove-if-not (lambda (i) (string-match regex i)) items))))
 
-(defadvice ido-set-matches-1 (after acronym-matches)
+(defadvice ido-set-matches-1 (after acronym-matches activate)
   (if (> (length ido-text) 1)
       (setq ad-return-value (append (acronym-matches) ad-return-value))))
-
-(ad-activate 'ido-set-matches-1)
 }}}
 e.g. <b>without</b> this code the completion of 'ffow' shows:
 <pre>
