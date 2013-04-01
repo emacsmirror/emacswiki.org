@@ -14,9 +14,9 @@ Different types of menus for accessing different types of objects are defined by
 You can also easily create your own menus on the fly, or edit existing ones, and save them.
 By default menus for common prefix keys and commands, as well as major-mode keybindings, are defined. 
 
-Several different menus can be stored together as a [[#menusets][menu set]], and you can switch between these menus using the left/right arrow keys.
+Several different menus can be stored together as a menu set, and you can switch between these menus using the left/right arrow keys.
 Different menu sets can be associated with different major-modes or buffers, and OneKey will open the appropriate menu set when
-the top key is pressed.
+the top key is pressed (see [[#menusets]] below).
 
 ==Why do I need OneKey ?==
 * *I am new to emacs and want to learn the common keybindings*
