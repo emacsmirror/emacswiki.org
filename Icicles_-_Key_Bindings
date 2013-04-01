@@ -576,15 +576,19 @@ are also in effect:
 
 * '''`C-x m'''' -- `icicle-bookmark-non-file-other-window': Visit a [[BookmarkPlus#AdditionalTypes|buffer (non-file) bookmark]].  See also [[Icicles - More About Multi-Commands#AccessingBookmarks|Accessing Saved Locations (Bookmarks) on the Fly]].  (Available only if you use '''[[Bookmark+]]'''.)
 
-* '''`C-x C-m -'''' -- `icicle-remove-buffer-cands-for-derived-mode': Remove buffer-name candidates with a [[major mode]] that is derived from a given mode.  Repeat to filter progressively.  (`C-m' is the same key as `RET'.)
+* '''`C-x C-m -'''' -- `icicle-remove-buffer-cands-for-derived-mode': ''Remove'' buffer-name candidates with a [[major mode]] that is ''derived'' from a given ''mode''.  Repeat to filter progressively.  (`C-m' is the same key as `RET'.)
 
-* '''`##C-x C-m +##'''' -- `icicle-keep-only-buffer-cands-for-derived-mode': Keep only buffer-name candidates with a major mode that is derived from a given mode.
+* '''`##C-x C-m +##'''' -- `icicle-keep-only-buffer-cands-for-derived-mode': ''Keep'' only buffer-name candidates with a major mode that is ''derived'' from a given ''mode''.
 
 * '''`C-x M -'''' -- `icicle-remove-buffer-cands-for-mode': Same as `C-x C-m -', but excludes ancestor modes.
 
 * '''`##C-x M +##'''' -- `icicle-keep-only-buffer-cands-for-mode': Same as `##C-x C-m +##', but excludes ancestor modes.
 
 
+* '''`C-x v -''''  -- `icicle-remove-buffer-cands-for-visible': ''Remove'' buffers that are ''visible''.  Includes
+buffers in iconified frames.
+
+* '''`##C-x v +##''''  -- `icicle-keep-only-buffer-cands-for-visible': ''Keep'' only buffers that are ''visible''.  Includes buffers in iconified frames.
 
 
 
