@@ -1,0 +1,37 @@
+After the success of [[Emacs_Conference_2013]] some people at the conference and not at the conference collected on the //#emacs// channel to discuss running a Swarm.
+
+//Swarm// is a term invented by [[PhilHagelberg]] which refers to collecting together some hackers in a screen or tmux or using some other screen or editor sharing tool to hack collaboratively on some code. A swarm can take place in virtual space and is therefore ideal for very distributed //#emacs// people.
+
+NicFerrier has written a [[https://github.com/nicferrier/emacs-swarmhacker|swarm hacker mode]] to allow A Swarm using an Emacs buffer as a chat sink. There can be as many users as there are colors. That's probably an effective limit of 5 or 6.
+
+== When? ==
+
+An experiment will happen sometime in the week ending 6th/7th April 2013.
+
+If it works then we may do it regularly.
+
+== The plan ==
+
+* fire up a server on heroku
+* install tmux and Emacs 24 on it
+* start the tmux, start Emacs inside it
+* install the swarmhacker package
+* hack on something
+
+== Coping with different dev styles ==
+
+Say you want to use paredit and I don't, we can still co-operate in, the same Emacs instance, by using indirect buffers:
+
+{{{
+C-x b the-file-being-hacked [RET]
+M-x clone-indirect-buffer [RET]
+}}}
+
+now you can turn on whatever editing eccentricity you like //for the current buffer// and it won't affect anyone else.
+
+This is pretty much how the //swarmhacker// code, above, works.
+
+
+-----
+CategoryEvent
+See also [[http://technomancy.us/162|Phil's article on Swarming]]
