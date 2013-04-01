@@ -17,11 +17,7 @@
 * Fix XSETSUBR syntax error for guile 2.0.x
 * Determine required libgc and guile versions
 * Test gdb configuration
-
-Bug-reports, last updated 2013-03-24:
-
-Any Emacs that CANNOT_DUMP:
-# When from my init file (cannot reproduce interactively) I do <code>(load "flymake")</code>, add my popup.el and AutoComplete (see https://github.com/auto-complete for both) directories to `load-path', and <code>(load "auto-complete-config") (ac-config-default)</code>, an invalid entry with a non-string car, <code>((require . help-fns))</code>, ends up in `load-history' and makes several things error. (Tip: Run <code>(delete-if (lambda (elt) (not (stringp (car elt)))) load-history)</code> to delete that entry.)
+* Fix [http://debbugs.gnu.org/cgi/bugreport.cgi?bug=14120] (reported by TaylanUB)
 
 wip-bdw-gc branch:
 # Start-up takes long because dumping doesn't work. (Tip: During compilation, use another Emacs to byte-compile .el files, or it will take hours/days because each guilemacs instance takes so long to start.)
