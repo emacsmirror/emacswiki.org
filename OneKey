@@ -337,11 +337,13 @@ That command is now redundant. Just use the "top-level" menu instead.
 Could you please update the git repository (and keep it up-to-date) -- JonasBernoulli
 
 [new]
-Actually the git repository is the most upto date version, but it's not usable.
-The version on emacswiki should work (at least on linux with graphical windows).
+OK, just pushed the "no-structs" branch to github, which is the version here on the emacswiki.
+The no-structs branch should work (at least on linux with graphical windows).
 
-Really sorry about this guys & gals.
-I want to make it more flexible and extensible allowing multiple *One-Key* windows for example, but this requires a large refactoring which is taking some time. My current strategy is to learn a few tools such as smartparens to aid the otherwise painful process.
+The master branch on github is not usable.
+Really sorry about this, but I want to make it more flexible and extensible allowing multiple *One-Key* windows for example.
+This requires a large refactoring which is taking some time.
+My current strategy is to learn a few tools such as smartparens to aid the otherwise painful process.
 [new:JoeBloggs:2013-04-01 23:29 UTC]
 -- JoeBloggs
 
