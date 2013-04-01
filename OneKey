@@ -4,7 +4,7 @@
 One Key provides a single keystroke that when pressed presents you with a menu of commands which can be executed with a
 further keystroke. 
 
-It provides a convenient way to quickly find commands, or other objects such as [[Yasnippet][yasnippets]] or [BookmarkPlus bookmarks],
+It provides a convenient way to quickly find commands, or other objects such as [[Yasnippet]]s or [BookmarkPlus bookmarks],
 and to learn keybindings (which are displayed in the menu).
 
 By default the menu items are highlighted according to usage to help you identify commonly used items, and you can 
