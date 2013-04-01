@@ -98,6 +98,7 @@ Writing code that works on different versions of Emacs and XEmacs is Comparative
 * LineInformation -- eolp vs. line-end-position
 * MouseEvent -- where was the mouse clicked
 * WindowHeight -- how big is a window
+* CommonlyUsedKeybindings -- Try to use keys that correlate with other packages.
 
 == Emacs Lisp Tools and Tricks ==
 
