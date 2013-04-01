@@ -1,11 +1,20 @@
+
+
 Some keybindings are used for similar commands in different packages.
 This page aims to keep a track of commonly used keybindings so that library writers can refer to it when deciding which keybindings to use.
+You can refer to the standard keybindings, but
+
+Obviously you should not overwrite a standard keybinding if it could otherwise be used legitimately in the buffer, 
+
+
+always try to keep your keybindings similar to the standard keybindings
 
 Please contribute to this list, and if there are any disagreements we can straighten them out in discussions below.
 
+* Commonly used keys
+|| C-n / C-p / etc. || standard movement commands for navigating items (see [http://www.gnu.org/software/emacs/manual/html_node/emacs/Moving-Point.html#Moving-Point emacs documentation]) ||
+|| C-w / C-y / etc. || standard editing commands for editing items (see [http://www.gnu.org/software/emacs/manual/html_node/emacs/Killing.html#Killing emacs documentation])     ||
 || g        || refresh buffer                                                                              ||
-|| C-n      || move to next char/item                                                                      ||
-|| C-p      || move to previous char/item                                                                  ||
 || /        || filter items                                                                                ||
 || q     || quit/exit (prefer q to ESC)                                                                                    ||
 || ESC  || quit/exit (prefer q to ESC)                                                                                  ||
@@ -13,3 +22,9 @@ Please contribute to this list, and if there are any disagreements we can straig
 || F1   || help (don't shadow the built in help commands unless you have to though)  ||
 || e || edit ||
 || C-e || edit ||
+|| C-s || save ||
+|| m || mark item ||
+|| # || mark item ||
+|| u || unmark item ||
+|| U || unmark all items ||
+* Proposals
