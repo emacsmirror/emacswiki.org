@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Mar 26 17:11:30 2013 (-0700)
+;; Last-Updated: Sun Mar 31 17:15:49 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 18948
+;;     Update #: 18960
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -118,6 +118,9 @@
 ;;    `icicle-insert-string-from-variable', `icicle-isearch-complete',
 ;;    (+)`icicle-isearch-history-complete',
 ;;    (+)`icicle-isearch-history-insert',
+;;    `icicle-keep-only-buffer-cands-for-derived-mode',
+;;    `icicle-keep-only-buffer-cands-for-mode',
+;;    `icicle-keep-only-buffer-cands-for-visible',
 ;;    `icicle-keep-only-past-inputs', `icicle-kill-line',
 ;;    `icicle-kill-paragraph', `icicle-kill-region',
 ;;    `icicle-kill-region-wimpy', `icicle-kill-sentence',
@@ -168,11 +171,14 @@
 ;;    `icicle-previous-prefix-candidate-action',
 ;;    `icicle-previous-prefix-candidate-alt-action',
 ;;    `icicle-read+insert-file-name', `icicle-regexp-quote-input',
-;;    `icicle-remove-candidate', `icicle-remove-Completions-window',
-;;    `icicle-resolve-file-name', `icicle-retrieve-last-input',
-;;    `icicle-retrieve-next-input', `icicle-retrieve-previous-input',
-;;    `icicle-reverse-sort-order', (+)`icicle-roundup',
-;;    `icicle-save-predicate-to-variable',
+;;    `icicle-remove-candidate',
+;;    `icicle-remove-buffer-cands-for-derived-mode',
+;;    `icicle-remove-buffer-cands-for-mode',
+;;    `icicle-remove-buffer-cands-for-visible',
+;;    `icicle-remove-Completions-window', `icicle-resolve-file-name',
+;;    `icicle-retrieve-last-input', `icicle-retrieve-next-input',
+;;    `icicle-retrieve-previous-input', `icicle-reverse-sort-order',
+;;    (+)`icicle-roundup', `icicle-save-predicate-to-variable',
 ;;    `icicle-save/unsave-candidate',
 ;;    `icicle-scroll-Completions-backward',
 ;;    `icicle-scroll-Completions-forward', `icicle-scroll-backward',
@@ -283,6 +289,7 @@
 ;;    `icicle-input-is-a-completion-p',
 ;;    `icicle-insert-candidate-action', `icicle-insert-dot',
 ;;    `icicle-insert-input', `icicle-insert-thing',
+;;    `icicle-keep/remove-buffer-cands-for-visible',
 ;;    `icicle-looking-at-p', `icicle-looking-back-at-p',
 ;;    `icicle-markers-to-readable',
 ;;    `icicle-maybe-multi-completion-completing-p',
@@ -6152,6 +6159,11 @@ Return the string that was inserted."
       'icicle-remove-buffer-cands-for-derived-mode)
     (define-key map (icicle-kbd "C-x C-m +")                                  ; `C-x C-m +', aka `C-x RET +'
       'icicle-keep-only-buffer-cands-for-derived-mode)
+    (define-key map (icicle-kbd "C-x v")      nil)
+    (define-key map (icicle-kbd "C-x v -")                                                       ; `C-x v -'
+      'icicle-remove-buffer-cands-for-visible)
+    (define-key map (icicle-kbd "C-x v +")                                                       ; `C-x v +'
+      'icicle-keep-only-buffer-cands-for-visible)
     (define-key map (icicle-kbd "C-x F") 'icicle-toggle-include-cached-files)                    ; `C-x F'
     (when (> emacs-major-version 20)
       (define-key map (icicle-kbd "C-x R") 'icicle-toggle-include-recent-files))))               ; `C-x R'
@@ -6166,6 +6178,9 @@ Return the string that was inserted."
     (define-key map (icicle-kbd "C-x C-m -")  nil)
     (define-key map (icicle-kbd "C-x C-m +")  nil)
     (define-key map (icicle-kbd "C-x C-m")    nil)
+    (define-key map (icicle-kbd "C-x v -")    nil)
+    (define-key map (icicle-kbd "C-x v +")    nil)
+    (define-key map (icicle-kbd "C-x v")      nil)
     (define-key map (icicle-kbd "C-x F")      nil)
     (define-key map (icicle-kbd "C-x R")      nil)))
 
@@ -8254,6 +8269,32 @@ from the mode."
   "Prompt for a major mode.  Keep only buffer candidates derived from it."
   (interactive)
   (icicle-remove-buffer-cands-for-mode 'DERIVEDP 'KEEP-P))
+
+(defun icicle-keep/remove-buffer-cands-for-visible (&optional keep-p)
+  "Keep/remove buffer-name candidates for visible buffers.
+This includes buffers in iconified frames.
+Non-nil KEEP-P means keep only such candidates.  Else remove them."
+  (let ((new-pred  (if keep-p
+                       `(lambda (buf) (get-buffer-window buf 0))
+                     `(lambda (buf) (not (get-buffer-window buf 0))))))
+    (setq icicle-must-pass-after-match-predicate
+          (if icicle-must-pass-after-match-predicate
+              (lexical-let ((curr-pred  icicle-must-pass-after-match-predicate))
+                `(lambda (buf) (and (funcall ',curr-pred buf)  (funcall ',new-pred buf))))
+            new-pred)))
+  (icicle-complete-again-update))
+
+(defun icicle-remove-buffer-cands-for-visible ()
+  "Remove buffer-name candidates for visible buffers.
+This includes buffers in iconified frames."
+  (interactive)
+  (icicle-keep/remove-buffer-cands-for-visible))
+
+(defun icicle-keep-only-buffer-cands-for-visible ()
+  "Keep only buffer-name candidates for visible buffers.
+This includes buffers in iconified frames."
+  (interactive)
+  (icicle-keep/remove-buffer-cands-for-visible 'KEEP-P))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
