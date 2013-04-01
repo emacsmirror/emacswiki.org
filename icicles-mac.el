@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:24:28 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Mar  7 12:55:51 2013 (-0800)
+;; Last-Updated: Sun Mar 31 16:53:41 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 1101
+;;     Update #: 1107
 ;; URL: http://www.emacswiki.org/icicles-mac.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -320,7 +320,11 @@ created after the others."
         (or icicle-all-candidates-list-alt-action-fn  (icicle-alt-act-fn-for-type "buffer")))
        (icicle-bufflist
         (if current-prefix-arg
-            (cond ((and (consp current-prefix-arg)  (fboundp 'derived-mode-p)) ; `C-u'
+            (cond ((and (consp current-prefix-arg)
+                        (> (prefix-numeric-value current-prefix-arg) 4)) ; `C-u C-u'
+                   (icicle-remove-if-not (lambda (bf) (get-buffer-window bf 0))
+                                         (buffer-list)))
+                  ((and (consp current-prefix-arg)  (fboundp 'derived-mode-p)) ; `C-u'
                    (icicle-remove-if-not (lambda (bf)
                                            (derived-mode-p (with-current-buffer bf major-mode)))
                                          (buffer-list)))
