@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Mar 18 13:36:43 2013 (-0700)
+;; Last-Updated: Mon Apr  1 15:36:56 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 5595
+;;     Update #: 5598
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -2848,6 +2848,8 @@ to toggle the option."
     (,(icicle-kbd "C-a")           icicle-beginning-of-line+ t)                       ; `C-a'
     (,(icicle-kbd "C-e")           icicle-end-of-line+ t)                             ; `C-e'
     (,(icicle-kbd "C-g")           icicle-abort-recursive-edit t)                     ; `C-g'
+    (,(icicle-kbd "C-M-S-t")       icicle-top-level t)                                ; `C-M-S-t'
+                                                                                      ; ( `C-M-T')
     (,(icicle-kbd "C-M-v")         icicle-scroll-forward t)                           ; `C-M-v'
     (,(icicle-kbd "C-M-S-v")       icicle-scroll-backward t)                          ; `C-M-S-v'
                                                                                       ; ( `C-M-V')
