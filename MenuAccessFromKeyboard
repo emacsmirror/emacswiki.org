@@ -26,7 +26,7 @@ There is no Windows specific code in it really, but the needed support in Emacs 
 
 * IswitchMenu -- [[IswitchBuffers|Iswitchb]]-like access to menu items.
 
-
+* OneKey -- customizable menus for different types of items (major-mode commands, standard keybindings, yasnippets, etc). Useful for learning keybindings, or quickly finding relevant commands.
 
 ----
 
