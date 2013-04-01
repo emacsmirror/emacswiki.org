@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Thu Mar 28 08:23:36 2013 (-0700)
+;; Last-Updated: Sun Mar 31 17:03:06 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 27556
+;;     Update #: 27562
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -7464,6 +7464,7 @@
 ;;  satisfy these conditions:
 ;;
 ;;  * Plain `C-u': whose mode is derived from the current buffer mode
+;;  * `C-u C-u':   visible (possibly in an iconified frame)
 ;;  * Zero:        whose mode is the same as the current buffer mode
 ;;  * Positive:    visiting files
 ;;  * Negative:    associated with the selected frame
@@ -7517,6 +7518,14 @@
 ;;
 ;;  * `C-x M +' (`icicle-keep-only-buffer-cands-for-mode') - same as
 ;;    `C-x C-m +', but excludes ancestor modes.
+;;
+;;  * `C-x v -' (`icicle-remove-buffer-cands-for-visible') to remove
+;;    the candidate buffers that are visible.  This includes buffers
+;;    that are in iconified frames.
+;;
+;;  * `C-x v +' (`icicle-keep-only-buffer-cands-for-visible') to keep
+;;    only the candidate buffers that are visible.  This includes
+;;    buffers that are in iconified frames.
 ;;
 ;;  * `S-delete' to kill the buffer named by the current completion
 ;;    candidate.
