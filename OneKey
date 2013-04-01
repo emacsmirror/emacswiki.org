@@ -220,7 +220,8 @@ All the options below can be customized by *M-x customize-group RET one-key RET*
 : Press *F11* to help support further development by donating to the author :')
 : You can always use the keystroke *C-g* to abort OneKey, whatever special keybindings you have set.
 
-==Plugins==[:plugins]
+[:plugins]
+==Plugins==
 The following plugin libraries are available:
 : Lisp:one-key-dir.el - one-key menus for quickly navigating directories (useful for navigating procfs or sysfs on *nix systems)
 : Lisp:one-key-yas.el - one-key menus for yasnippet templates (see [[Yasnippet]])
