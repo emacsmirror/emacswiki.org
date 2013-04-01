@@ -3,9 +3,9 @@ This page aims to keep a track of commonly used keybindings so that library writ
 
 Please contribute to this list, and if there are any disagreements we can straighten them out in discussions below.
 
-| g        | refresh buffer                                                                              |
-| C-n      | move to next char/item                                                                      |
-| C-p      | move to previous char/item                                                                  |
-| /        | filter items                                                                                |
-| q / ESC  | quit/exit                                                                                   |
-| C-h / F1 | help (these should only be used when the normal help commands aren't immediately available) |
+|| g        || refresh buffer                                                                              ||
+|| C-n      || move to next char/item                                                                      ||
+|| C-p      || move to previous char/item                                                                  ||
+|| /        || filter items                                                                                ||
+|| q / ESC  || quit/exit                                                                                   ||
+|| C-h / F1 || help (these should only be used when the normal help commands aren't immediately available) ||
