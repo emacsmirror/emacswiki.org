@@ -4,20 +4,19 @@
 One Key provides a single keystroke that when pressed presents you with a menu of commands which can be executed with a
 further keystroke. 
 
-With so many Emacs extensions there are a lot of keystrokes to remember, and you probably forget most of them.
-This package fixes that problem, and helps new users to learn the common keybindings.
-By default menus for common prefix keys and commands, as well as major-mode keybindings are defined.
+It provides a convenient way to quickly find commands, or other objects such as [Yasnippet yasnippets] or [BookmarkPlus bookmarks],
+and to learn keybindings (which are displayed in the menu).
 
-You can delete, edit, sort, highlight, filter and add new menu items and you can also add new menus.
-You can access different menus from the same window which can be navigated with the arrow keys.
-Such a collection of menus is called a menu set.
-You can define different menu sets, and define which one will be opened when the default key is pressed depending
-on different conditions.
+By default the menu items are highlighted according to usage to help you identify commonly used items, and you can 
+apply your own colour scheme to make them more readable.
 
-Several different types of menus are defined for holding different types of items.
-For example the "prefix-key" type opens a menu of commands that are associated with a given prefix key.
-More different types are defined by one-key plugin libraries, and you can create your own types.
-See "Plugins" below.
+Different types of menus for accessing different types of objects are defined by one-key plugin libraries (see "Plugins" below).
+You can also easily create your own menus on the fly, or edit existing ones, and save them.
+By default menus for common prefix keys and commands, as well as major-mode keybindings, are defined. 
+
+Several different menus can be stored together as a menu set, and you can switch between these menus using the left/right arrow keys.
+Different menu sets can be associated with different major-modes or buffers, and OneKey will open the appropriate menu set when
+the top key is pressed.
 
 ==Why do I need OneKey ?==
 * *I am new to emacs and want to learn the common keybindings*
@@ -36,6 +35,9 @@ See "Plugins" below.
 : in your code for prompting the user for different types of items.
 
 ==Installation==
+: Note: the current version of OneKey has only been tested in an X-windows environment on Linux.
+: It has been found to have problems in when used without a graphical frame. This will be fixed soon.
+
 : Download Lisp:one-key.el and save it in your load-path (usually "~/.emacs.d/").
 : Make sure that you also have Lisp:hexrgb.el in your load-path
 : Then add:
