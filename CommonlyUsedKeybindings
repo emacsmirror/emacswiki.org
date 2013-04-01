@@ -1,14 +1,14 @@
 Some keybindings are used for similar commands in different packages.
 This page aims to keep a track of commonly used keybindings so that library writers can refer to it when deciding which keybindings to use.
 
-This list is by no means exhaustive and you can refer to the standard keybindings, keybindings in popular libraries such as dired and org, or keybindings in libraries similar to the one you are creating for more ideas.
-Note that C-c is the standard prefix key to use when defining your own major-mode (see [http://www.gnu.org/software/emacs/manual/html_node/elisp/Major-Mode-Conventions.html#Major-Mode-Conventions Major Mode Conventions]).
+This list is by no means exhaustive and you can refer to the standard keybindings, keybindings in popular libraries such as DiredMode and OrgMode, or keybindings in libraries similar to the one you are creating for more ideas.
+Note that C-c is the standard prefix key to use when defining your own major-mode (see [[Manual:Major Mode Conventions]]).
 
 Please contribute to this list, and if there are any disagreements we can straighten them out in discussions below.
 
 == Commonly used keys ==
-|| C-n / C-p / etc. || standard movement commands for navigating items (see [http://www.gnu.org/software/emacs/manual/html_node/emacs/Moving-Point.html#Moving-Point emacs documentation]) ||
-|| C-w / C-y / etc. || standard editing commands for editing items (see [http://www.gnu.org/software/emacs/manual/html_node/emacs/Killing.html#Killing emacs documentation])     ||
+|| C-n / C-p / etc. || standard movement commands for navigating items (see [[Manual:Moving Point]]) ||
+|| C-w / C-y / etc. || standard editing commands for editing items (see [[Manual:Killing]])     ||
 || g        || refresh buffer                                                                              ||
 || TAB || complete item / move to next item  ||
 || /        || filter items                                                                                ||
