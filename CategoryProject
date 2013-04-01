@@ -6,57 +6,104 @@ These libraries (though they may be at varying stages of development) have the g
 
 It is probably not useful to use more than one of these at the same time, for the same project.
 
-* [https://github.com/bbatsov/projectile projectile]
+* [http://cedet.sourceforge.net/projects.shtml CEDET]
 * [http://wiki.github.com/jrockway/eproject eproject] -- assign files to projects, programatically
 * a different library named [[eproject]] -- Project workspaces for Emacs.
-* [http://cedet.sourceforge.net/projects.shtml CEDET]
-* [[project-buffer-mode.el]]
-* [http://github.com/mattkeller/mk-project mk-project] --  Quickly switch between projects and perform operations on a per-project basis.
-* [http://www.ozymandias.dk/emacs/emacs.html#vps vps] Projects as directory sets (by VagnJohansen).
-* [[Emacs-IDE]]
-* [http://www.shellarchive.co.uk/content/lisp/project-root.el project-root.el] (link down as of 2010-12-15)
 * EtaskMode
+* [[Icicles - Support for Projects]]
 * JavaDevelopmentEnvironment
-* FsProject -- plugin for ProjectBufferMode 
-* SlnMode -- SLN file plugin for ProjectBufferMode 
-* [[IProject]] -- interactive project plugin for ProjectBufferMode 
+* [http://github.com/mattkeller/mk-project mk-project] --  Quickly switch between projects and perform operations on a per-project basis.
+* [[project-buffer-mode.el]]
+** FsProject -- plugin for ProjectBufferMode 
+** [[IProject]] -- interactive project plugin for ProjectBufferMode 
+** SlnMode -- SLN file plugin for ProjectBufferMode 
+
+* [https://github.com/bbatsov/projectile projectile]
+* [[Emacs-IDE]]
+* [http://github.com/rdallasgray/project-persist project-persist.el] -- A minor mode to allow loading and saving of project settings.
+* [http://www.shellarchive.co.uk/content/lisp/project-root.el project-root.el] (link down as of 2010-12-15)
 * ProjmanMode -- emphasis on the ability to switch between projects
 * SimpleProjectManagment
-* [http://github.com/rdallasgray/project-persist project-persist.el] -- A minor mode to allow loading and saving of project settings.
+* [http://www.ozymandias.dk/emacs/emacs.html#vps vps] Projects as directory sets (by VagnJohansen).
+
+
+
 
 == Project Helpers or Simplified Project Libraries ==
 
 These libraries address some aspect of project management without trying to be all-in-one solutions.  You may find it helpful to use several of these at the same time, even in addition to the all-in-one solutions in the section above.
 
-* Searching
-** [https://github.com/eglaysher/find-things-fast find-things-fast] -- leverage Git for faster searching
-** FindFileInProject -- file finder
-** ProjectBufferOccur -- Occur plugin for ProjectBufferMode
-** [http://github.com/technomancy/rinari/tree/master rinari-find-file-in-project] -- file finder
-** [http://github.com/justinweiss/fuzzy-find-in-project fuzzy-find-in-project] -- file finder
-** [[Gpicker]] -- file finder
-** Lisp:ifind-mode.el -- file finder
-** [http://github.com/re5et/simp simp] -- file finder
-* Persistence
-** GIT:desktop.el (included with Emacs) -- session saver
-** MinimalSessionSaver -- session saver
-* Settings
-** ProjectLocalVariables  -- settings which apply to multiple files
-** [[Profiles]] - Non-invasive user settings common to multiple projects.
-* Navigation
-** IdeSkel -- Navigation framework
-** [[Bookmark+]] -- Tag files in different projects a la [[http://delicious.com|del.icio.us]]. Bookmark a set of files in arbitrary locations and jump to it in [[Dired]]. Save/restore Dired states (markings, expanded subdirs).
-** [[Icicles - Support for Projects]]
-** EmacsCodeBrowser (ECB) -- navigation tools built on CEDET
-* Templates
-** ProjectWizard -- create stub files when starting a project
-* Workspaces
-** EmacsScreen 
-** EmacsLispScreen
-** [http://github.com/nex3/perspective-el perspective]
-** WorkgroupsForWindows
-** [[workspaces.el]]
-** [http://github.com/kiwanami/emacs-window-manager e2wm]
+===  Searching ===
+* FindFileInProject -- file finder
+* [https://github.com/eglaysher/find-things-fast find-things-fast] -- leverage Git for faster searching
+* [http://github.com/justinweiss/fuzzy-find-in-project fuzzy-find-in-project] -- file finder
+* [[Gpicker]] -- file finder
+* Lisp:ifind-mode.el -- file finder
+* ProjectBufferOccur -- Occur plugin for ProjectBufferMode
+* [http://github.com/technomancy/rinari/tree/master rinari-find-file-in-project] -- file finder
+* [http://github.com/re5et/simp simp] -- file finder
+
+
+
+
+
+
+
+
+=== Persistence ===
+* GIT:desktop.el (included with Emacs) -- session saver
+* MinimalSessionSaver -- session saver
+
+
+
+
+
+
+
+=== Settings ===
+* [[Profiles]] - Non-invasive user settings common to multiple projects.
+* ProjectLocalVariables  -- settings which apply to multiple files
+
+
+
+
+
+=== Navigation ===
+* [[Bookmark+]] -- Tag files in different projects a la [[http://delicious.com|del.icio.us]]. Bookmark a set of files in arbitrary locations and jump to it in [[Dired]]. Save/restore Dired states (markings, expanded subdirs).
+* EmacsCodeBrowser (ECB) -- navigation tools built on CEDET
+* [[Icicles - Support for Projects]]
+* IdeSkel -- Navigation framework
+
+
+
+
+
+
+
+
+=== Templates ===
+* ProjectWizard -- create stub files when starting a project
+
+
+
+=== Workspaces ===
+
+* DeskTop
+* [http://github.com/kiwanami/emacs-window-manager e2wm]
+
+
+* EmacsLispScreen
+* EmacsScreen 
+* [http://github.com/nex3/perspective-el perspective]
+* WorkgroupsForWindows
+* [[workspaces.el]]
+
+
+
+
+
+
+
 
 == Utilities ==
 
@@ -64,7 +111,15 @@ These libraries have little to do with project management **per se**, but are ha
 
 * MultiTerm
 * DiredMode -- Operate on files.
+
 ** [[GrepMode#GrepOnlyMarkedFiles|grep only marked files in Dired]] -- search subsets of files
+
+
+
+
+
+
+
 
 == See Also ==
 
