@@ -2,7 +2,7 @@
 /OneKey to rule them all, OneKey to find them, OneKey to bring them all and in the darkness bind them./
 ==What is OneKey ?==
 One Key provides a single keystroke that when pressed presents you with a menu of commands which can be executed with a
-further keystroke. 
+further keystroke. The menu is presented as a buffer either within the current frame or within its own frame (see [[#screenshot]] below).
 
 It provides a convenient way to quickly find commands, or other objects such as [[Yasnippet]]s or [BookmarkPlus bookmarks],
 and to learn keybindings (which are displayed in the menu).
@@ -253,6 +253,7 @@ The code there is currently broken as I am in the midst of a major refactoring (
 :: And have some enhanced functions for LazySearch, at Lisp:lazy-search-extension.el .
 
 
+[:screenshot]
 ==Screenshot==
 The OneKey "top-level" menu.
 The two menu items "mode specific bindings" and "outline commands" are highlighted which indicates that they have been
