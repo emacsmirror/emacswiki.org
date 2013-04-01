@@ -9,6 +9,8 @@ it does not mean that you are limited to these, however.  You can of
 course rebind any key you want.  See, for instance, Lisp:unbound.el,
 which finds keys not already in use.
 
+If you are deciding which keybindings to use for a new elisp library you're creating, have a look at CommonlyUsedKeybindings -- JoeBloggs
+
 == Finding the Key Map ==
 
 The simplest thing is probably to use the global keymap:
