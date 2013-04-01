@@ -1,9 +1,8 @@
 Some keybindings are used for similar commands in different packages.
 This page aims to keep a track of commonly used keybindings so that library writers can refer to it when deciding which keybindings to use.
 
-Note that C-c is the standard prefix key to use when defining your own major-mode and you don't want to shadow the standard keybindings.
-
 This list is by no means exhaustive and you can refer to the standard keybindings, and keybindings in popular libraries such as dired and org for more ideas.
+Note that C-c is the standard prefix key to use when defining your own major-mode and you don't want to shadow the standard keybindings.
 
 Please contribute to this list, and if there are any disagreements we can straighten them out in discussions below.
 
