@@ -12,11 +12,24 @@ If it works then we may do it regularly.
 
 == The plan ==
 
-* fire up a server on [[https://syme.herokuapp.com|Syme]]
-* install tmux and Emacs 24 on it
-* start the tmux, start Emacs inside it
+* fire up a server somewhere, NicFerrier has one we can use for now
+** PhilHagelberg suggests using [[https://syme.herokuapp.com|Syme]]
+* install Emacs 24 on it
+* start emacs 24 as a daemon
+
+{{{
+emacs --daemon=someserver
+}}}
+
+* create emacsclients with their own frames
+
+{{{
+emacsclient -c -s /tmp/emacsXXXX/someserver somefile
+}}}
+
 * install the swarmhacker package
-* hack on something
+* ##M-x swarmhacker## to give everyone a name in the single //chat// buffer
+* hack on something together using a lot of indirect buffers
 
 == Coping with different dev styles ==
 
