@@ -20,6 +20,7 @@ For information on using the menu for actions instead of keys, see CategoryMenus
 * EmacsKeyBindingCriticisms -- Criticisms of Emacs default key bindings
 * MenuAccessFromKeyboard -- Libraries that let you access menus from the keyboard (without the mouse)
 * ModifierKeys -- Shift, Alt, Meta, Control, Super, Hyper
+* CommonlyUsedKeybindings -- Refer to this when deciding which keybindings to use for your new elisp library
 
 == Key Problems Solved ==
 
