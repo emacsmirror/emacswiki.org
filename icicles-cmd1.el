@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Mar 27 12:57:36 2013 (-0700)
+;; Last-Updated: Sun Mar 31 16:56:32 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 25662
+;;     Update #: 25668
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -6062,7 +6062,9 @@ this remapping, then customize option
 ACTION is the command action, a string.  It starts the prompt.
 Non-nil OTHER-WINDOW-P appends \" in other window\" to the prompt."
   (concat  (cond ((null current-prefix-arg)
-                  (format "%s buffer" action)) ; `completing-read' args
+                  (format "%s buffer" action))
+                 ((and (consp current-prefix-arg)  (> (prefix-numeric-value current-prefix-arg) 4)) ; `C-u C-u'
+                  (format "%s visible buffer" action))
                  ((and (consp current-prefix-arg)  (fboundp 'derived-mode-p)) ; `C-u'
                   (format "%s buffer with same or ancestor mode" action))
                  ((zerop (prefix-numeric-value current-prefix-arg)) ; `C-0'
@@ -6141,8 +6143,9 @@ depending on the prefix arg:
 * Numeric arg > 0: buffers visiting files or directories (Dired)
 * Numeric arg < 0: buffers associated with the selected frame
 * Numeric arg = 0: buffers with the same mode as the current buffer
-* Plain prefix arg (`C-u'): buffers with the same mode as current, or
-  with a mode that the current mode is derived from
+* Plain prefix arg (`C-u'): buffers with the same mode as current,
+  or with a mode that the current mode is derived from
+* Double plain (`C-u C-u'): visible buffers (possibly iconified)
 
 For Emacs 23 and later, the default values (via `M-n') are the
 \(buffer-name components of the) first four completion candidates
@@ -6155,11 +6158,13 @@ You can use these additional keys during completion:
 * `C-x R'     Toggle including recent file names as candidates (option
               `icicle-buffer-include-recent-files-nflag').
 * `C-x m'     Visit a bookmarked buffer (only if you use Bookmark+).
+* `C-x M -'   Remove buffers in a given mode.  Repeatable.
+* `C-x M +'   Keep only buffers in a given mode.
 * `C-x C-m -' Remove candidate buffers whose mode is derived from a
               given mode.  Repeatable.  (`C-m' = `RET'.)
-* `C-x M -'   Remove buffers in a given mode.  Repeatable.
 * `C-x C-m +' Keep only buffers in a mode derived from a given mode.
-* `C-x M +'   Keep only buffers in a given mode.
+* `C-x v -'   Remove buffers that are visible (maybe iconified).
+* `C-x v +'   Keep only buffers that are visible (maybe iconified).
 * `\\[icicle-delete-candidate-object]'  Kill the buffer named by a completion candidate.
 
 These options, when non-nil, control candidate matching and filtering:
