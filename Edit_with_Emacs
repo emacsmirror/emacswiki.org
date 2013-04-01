@@ -42,6 +42,21 @@ your running Emacs instance do:
   (edit-server-start))
 </pre>
 
+=== Integration with Google Mail ===
+
+[http://gmailblog.blogspot.co.uk/2013/03/gmails-new-compose-now-default.html Gmail has switched to a new compose window]
+which unfortunately breaks interaction with ##edit-server##.  However fortunately someone has hacked together a solution
+for this: https://github.com/frobtech/edit-server-htmlize
+
+To use, simply ensure that ##edit-server-htmlize.el## is on your ##load-path## and then do:
+
+<pre>
+(autoload 'edit-server-maybe-dehtmlize-buffer "edit-server-htmlize" "edit-server-htmlize" t)
+(autoload 'edit-server-maybe-htmlize-buffer   "edit-server-htmlize" "edit-server-htmlize" t)
+(add-hook 'edit-server-start-hook 'edit-server-maybe-dehtmlize-buffer)
+(add-hook 'edit-server-done-hook  'edit-server-maybe-htmlize-buffer)
+</pre>
+
 === Integrating with other modes ===
 
 TODO: Look at integrating as-external...
