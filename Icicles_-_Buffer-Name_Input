@@ -84,7 +84,7 @@ the candidate buffers that are ''visible''.  This includes buffers
 that are in iconified frames.
 
 [:icicle-keep-only-buffer-cands-for-visible]
-* '''`C-x v +'''' ('''`icicle-keep-only-buffer-cands-for-visible'''') to ''keep
+* '''`##C-x v +##'''' ('''`icicle-keep-only-buffer-cands-for-visible'''') to ''keep
 only'' the candidate buffers that are ''visible''.  This includes
 buffers that are in iconified frames.
 
