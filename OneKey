@@ -343,7 +343,7 @@ The no-structs branch should work (at least on linux with graphical windows).
 The master branch on github is not usable.
 Really sorry about this, but I want to make it more flexible and extensible allowing multiple *One-Key* windows for example.
 This requires a large refactoring which is taking some time.
-My current strategy is to learn a few tools such as smartparens to aid the otherwise painful process.
+My current strategy is to learn a few tools such as [https://github.com/Fuco1/smartparens smartparens] to aid the otherwise painful process.
 [new:JoeBloggs:2013-04-01 23:29 UTC]
 -- JoeBloggs
 
