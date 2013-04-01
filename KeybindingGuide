@@ -14,6 +14,11 @@ Very easy way:
 [new]
 I think it tells you more than you wanted to know in terms of mis-information and dubious opinion.  Please see the EmacsLisp manual.  If that doesn't help, make a bug report against it.  If you want examples of doing things portably between Emacs and XEmacs, have a look at Gnus, for instance.  -- Dave Love
 
+[new]
+For help on choosing keybindings for new elisp libraries see CommonlyUsedKeybindings [new:JoeBloggs:2013-04-01 05:12 UTC]
+-- JoeBloggs
+
+
 ----
 CategoryHelp
 CategoryKeys
