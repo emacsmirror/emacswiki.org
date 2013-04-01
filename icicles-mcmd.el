@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Mar 31 17:15:49 2013 (-0700)
+;; Last-Updated: Mon Apr  1 15:36:31 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 18960
+;;     Update #: 18962
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -226,9 +226,10 @@
 ;;    `icicle-toggle-search-whole-word',
 ;;    `icicle-toggle-show-multi-completion', `icicle-toggle-sorting',
 ;;    `icicle-toggle-transforming',
-;;    `icicle-toggle-WYSIWYG-Completions', `icicle-transpose-chars',
-;;    `icicle-transpose-sexps', `icicle-transpose-words',
-;;    `icicle-universal-argument', `icicle-universal-argument-minus',
+;;    `icicle-toggle-WYSIWYG-Completions', `icicle-top-level',
+;;    `icicle-transpose-chars', `icicle-transpose-sexps',
+;;    `icicle-transpose-words', `icicle-universal-argument',
+;;    `icicle-universal-argument-minus',
 ;;    `icicle-universal-argument-more',
 ;;    `icicle-universal-argument-other-key', `icicle-up-directory',
 ;;    `icicle-use-interactive-command-history',
@@ -8197,6 +8198,12 @@ it is the only frame or a standalone minibuffer frame."
             (if (and (one-window-p t)  (cdr (visible-frame-list))) ; Sole window but not sole frame.
                 (delete-frame)
               (delete-window (selected-window)))))))))
+
+(defun icicle-top-level ()
+  "Remove `*Completions*' window and call `top-level'."
+  (interactive)
+  (icicle-remove-Completions-window 'FORCE)
+  (top-level))
 
 ;; Free var here: `icicle-bufflist' is bound by `icicle-buffer-bindings'.
 (defun icicle-remove-buffer-cands-for-mode (&optional derivedp keep-p)
