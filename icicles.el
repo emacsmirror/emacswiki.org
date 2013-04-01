@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 2013.03.07
-;; Last-Updated: Sun Mar 31 15:28:32 2013 (-0700)
+;; Last-Updated: Mon Apr  1 15:59:27 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 23385
+;;     Update #: 23386
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -637,9 +637,10 @@
 ;;    `icicle-toggle-search-replace-whole',
 ;;    `icicle-toggle-search-whole-word',
 ;;    `icicle-toggle-show-multi-completion', `icicle-toggle-sorting',
-;;    `icicle-toggle-transforming', `icicle-transpose-chars',
-;;    `icicle-transpose-sexps', `icicle-transpose-words',
-;;    `icicle-universal-argument', `icicle-universal-argument-minus',
+;;    `icicle-toggle-transforming', `icicle-top-level',
+;;    `icicle-transpose-chars', `icicle-transpose-sexps',
+;;    `icicle-transpose-words', `icicle-universal-argument',
+;;    `icicle-universal-argument-minus',
 ;;    `icicle-universal-argument-more',
 ;;    `icicle-universal-argument-other-key', `icicle-up-directory',
 ;;    `icicle-use-interactive-command-history',
