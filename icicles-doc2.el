@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Wed Mar 27 22:26:32 2013 (-0700)
+;; Last-Updated: Sun Mar 31 15:43:54 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 29276
+;;     Update #: 29277
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -6810,6 +6810,14 @@
 ;;
 ;;    `C-x M +'       - `icicle-keep-only-buffer-cands-for-mode': Same
 ;;                      as `C-x C-m +', but excludes ancestor modes.
+;;
+;;    `C-x v -'       - `icicle-remove-buffer-cands-for-visible':
+;;                      Remove buffers that are visible.  Includes
+;;                      buffers in iconified frames.
+;;
+;;    `C-x v +'       - `icicle-keep-only-buffer-cands-for-visible':
+;;                      Keep only buffers that are visible.  Includes
+;;                      buffers in iconified frames.
 ;;
 ;;  The following minibuffer binding moves the cursor to the start of
 ;;  the part of your input, if any, that is highlighted because it
