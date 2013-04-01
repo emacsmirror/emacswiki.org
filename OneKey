@@ -1,4 +1,3 @@
-
 /OneKey to rule them all, OneKey to find them, OneKey to bring them all and in the darkness bind them./
 ==What is OneKey ?==
 One Key provides a single keystroke that when pressed presents you with a menu of commands which can be executed with a
@@ -266,7 +265,9 @@ and right of this. The user can navigate to the other menus by pressing the left
 Notice also that the mode line indicates the current sort method.
 
 ==Discussion==
+[new]
 : Do you know OneTwoThreeMenu? -- [[rubikitch]]
+[new]
 :: Wow, i have never heard it, and looks have same design purpose for remember keystroke.
 :: At the beginning, i just want write a mode to help me remember keystroke and *free* my handy keystrokes for other extensions.
 :: So i write OneKey, just for lazy.  -- AndyStewart
@@ -326,14 +327,11 @@ key for the required prefix key.
 
 [new]
 
-
-[new]
-
 I found that when I have (one-key-default-setup-keys) in my .emacs, I do not get the eshell prompt.
 [new]
 That command is now redundant. Just use the "top-level" menu instead.
 [new:JoeBloggs:2012-08-02 17:56 UTC]
 -- JoeBloggs
 
-
 [new]
+Could you please update the git repository. -- JonasBernoulli
