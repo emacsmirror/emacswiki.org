@@ -340,7 +340,7 @@ Could you please update the git repository (and keep it up-to-date) -- JonasBern
 Actually the git repository is the most upto date version, but it's not usable.
 The version on emacswiki should work (at least on linux with graphical windows).
 
-Really sorry about this.
+Really sorry about this guys & gals.
 I want to make it more flexible and extensible allowing multiple *One-Key* windows for example, but this requires a large refactoring which is taking some time. My current strategy is to learn a few tools such as smartparens to aid the otherwise painful process.
 [new:JoeBloggs:2013-04-01 23:29 UTC]
 -- JoeBloggs
