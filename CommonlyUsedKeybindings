@@ -7,7 +7,7 @@ This list is by no means exhaustive and you can refer to the standard keybinding
 
 Please contribute to this list, and if there are any disagreements we can straighten them out in discussions below.
 
-* Commonly used keys
+= Commonly used keys
 || C-n / C-p / etc. || standard movement commands for navigating items (see [http://www.gnu.org/software/emacs/manual/html_node/emacs/Moving-Point.html#Moving-Point emacs documentation]) ||
 || C-w / C-y / etc. || standard editing commands for editing items (see [http://www.gnu.org/software/emacs/manual/html_node/emacs/Killing.html#Killing emacs documentation])     ||
 || g        || refresh buffer                                                                              ||
@@ -23,4 +23,5 @@ Please contribute to this list, and if there are any disagreements we can straig
 || # || mark item ||
 || u || unmark item ||
 || U || unmark all items ||
-* Proposals
+= Proposed keys
+= Discussion
