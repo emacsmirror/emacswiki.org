@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 2013.03.07
-;; Last-Updated: Sat Mar 23 19:52:50 2013 (-0700)
+;; Last-Updated: Sun Mar 31 15:28:32 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 23383
+;;     Update #: 23385
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -535,6 +535,7 @@
 ;;    `icicle-isearch-history-insert',
 ;;    `icicle-keep-only-buffer-cands-for-derived-mode',
 ;;    `icicle-keep-only-buffer-cands-for-mode',
+;;    `icicle-keep-only-buffer-cands-for-visible',
 ;;    `icicle-keep-only-past-inputs', `icicle-kill-line',
 ;;    `icicle-kill-paragraph', `icicle-kill-region',
 ;;    `icicle-kill-region-wimpy', `icicle-kill-sentence',
@@ -587,6 +588,7 @@
 ;;    `icicle-read+insert-file-name', `icicle-regexp-quote-input',
 ;;    `icicle-remove-buffer-cands-for-derived-mode',
 ;;    `icicle-remove-buffer-cands-for-mode',
+;;    `icicle-remove-buffer-cands-for-visible',
 ;;    `icicle-remove-candidate', `icicle-remove-Completions-window',
 ;;    `icicle-resolve-file-name', `icicle-retrieve-last-input',
 ;;    `icicle-retrieve-next-input', `icicle-retrieve-previous-input',
@@ -1049,8 +1051,9 @@
 ;;    `icicle-insert-thesaurus-entry-cand-fn', `icicle-insert-thing',
 ;;    `icicle-invisible-face-p', `icicle-invisible-p',
 ;;    `icicle-isearch-complete-past-string', `icicle-join-nth-parts',
-;;    `icicle-kbd', `icicle-key-description',
-;;    `icicle-keys+cmds-w-prefix', `icicle-kill-a-buffer',
+;;    `icicle-kbd', `icicle-keep/remove-buffer-cands-for-visible',
+;;    `icicle-key-description', `icicle-keys+cmds-w-prefix',
+;;    `icicle-kill-a-buffer',
 ;;    `icicle-kill-a-buffer-and-update-completions',
 ;;    `icicle-kmacro-action', `icicle-last-accessed-first-p',
 ;;    `icicle-last-modified-first-p', `icicle-levenshtein-match',
