@@ -13,7 +13,6 @@
 * '''DONE''' Remove unnecessary signal handlers (notably SIGXCPU, SIGPWR which bdw-gc uses)
 * '''DONE''' Fix EMACS_INT formatting
 * Find beta testers for non-GNU platforms
-* Determine required libgc and guile versions
 * Test gdb configuration
 * Fix [http://debbugs.gnu.org/cgi/bugreport.cgi?bug=14120] (reported by TaylanUB)
 
