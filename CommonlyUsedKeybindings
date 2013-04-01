@@ -11,3 +11,5 @@ Please contribute to this list, and if there are any disagreements we can straig
 || ESC  || quit/exit                                                                                   ||
 || C-h      || help (don't shadow the built in help commands unless you have to though)    ||
 || F1   || help (don't shadow the built in help commands unless you have to though)  ||
+|| e || edit ||
+|| C-e || edit ||
