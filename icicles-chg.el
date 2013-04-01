@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sun Mar 31 17:18:01 2013 (-0700)
+;; Last-Updated: Mon Apr  1 15:55:59 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 9893
+;;     Update #: 9899
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -3794,6 +3794,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2013/04/01 dadams
+;;     Added: icicle-top-level.
 ;; 2013/03/31 dadams
 ;;     Added: icicle-(keep-only|remove|keep/remove)-buffer-cands-for-visible.
 ;;     icicle-(un)bind-buffer-candidate-keys: Bind/unbind C-x v +/-.
@@ -6585,6 +6587,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2013/04/01 dadams
+;;     icicle-minibuffer-key-bindings: Added icicle-top-level binding (C-M-T).
 ;; 2013/03/18 dadams
 ;;     icicle-top-level-key-bindings: Temporarily removed icicle-dabbrev-completion for Emacs 24+.
 ;; 2013/02/26 dadams
