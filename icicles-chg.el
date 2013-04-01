@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Wed Mar 27 13:12:34 2013 (-0700)
+;; Last-Updated: Sun Mar 31 17:18:01 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 9876
+;;     Update #: 9893
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -86,6 +86,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2013/03/31 dadams
+;;     icicle-buffer-name-prompt: (new) C-u C-u means visible buffer.
+;;     icicle-buffer: Update doc string for visible buffers as candidates.
 ;; 2013/03/27 dadams
 ;;     Do not require dabbrev for Emacs 24+ (until I get around to fixing icicle-dabbrev-completion).
 ;;     Temporarily removed icicle-dabbrev-completion for Emacs 24+.
@@ -3572,6 +3575,8 @@
 ;;       macros needs to be byte-compiled anew after loading the updated macros.
 ;; ****************************************************************************************************
 ;;
+;; 2013/03/31 dadams
+;;     icicle-buffer-bindings: (New) C-u C-u means visible buffers only.
 ;; 2013/03/07 dadams
 ;;     Added: icicle-user-error.
 ;;     icicle-define(-search)-bookmark-command(-1): Use icicle-user-error.
@@ -3789,6 +3794,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2013/03/31 dadams
+;;     Added: icicle-(keep-only|remove|keep/remove)-buffer-cands-for-visible.
+;;     icicle-(un)bind-buffer-candidate-keys: Bind/unbind C-x v +/-.
 ;; 2013/03/26 dadams
 ;;     icicle-candidate-set-complement:
 ;;       When icicle-must-pass-predicate, e.g., after narrowing, filter display candidates using it.
