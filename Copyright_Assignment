@@ -3,7 +3,7 @@ Gathering some links for the benefit of people who want to check-in changes to v
 * [http://www.gnu.org/licenses/gpl-faq.html#AssignCopyright  Why assign copyright]
 * [http://www.gnu.org/prep/maintain/html_node/Copyright-Papers.html Copyright papers]
 * [http://git.savannah.gnu.org/gitweb/?p=gnulib.git;a=tree;f=doc/Copyright;hb=HEAD How the papers look]
-* etc/CONTRIBUTE under [DataDirectory etc/] of Emacs distribution.  (C-h v data-directory for DataDirectory).
+* [http://bzr.savannah.gnu.org/lh/emacs/trunk/annotate/head:/etc/CONTRIBUTE etc/CONTRIBUTE] under [DataDirectory etc/] of Emacs distribution.  (C-h v data-directory for locating DataDirectory).
 
 
 Insistent of Assignment of rights is met with mixed reaction in general.
