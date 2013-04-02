@@ -1,5 +1,9 @@
 A [[Git]] mirror of the [EmacsFromBazaar Emacs Bazaar repository] is available. <b>Note:</b> Only Bazaar repo is official!
 
+[https://savannah.gnu.org/git/?group=emacs  Instruction for checking out Emacs via git]
+
+
+
 <b>Note:</b> Seems that all Git mirrors are near one day old! Read [http://thread.gmane.org/gmane.emacs.help/79267 discussion].
 
 <b>Note:</b> <code>clone/pull</code> operations on Bazaar repo seems have same time, network efficient as Git when used <code>bzr://</code> or <code>nosmart+bzr://</code> protocols. <code>http://</code> protocols for Bazaar and for Git both are not efficient!
