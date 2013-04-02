@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue Apr  2 11:38:30 2013 (-0700)
+;; Last-Updated: Tue Apr  2 14:52:58 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 27565
+;;     Update #: 27567
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -6743,9 +6743,9 @@
 ;;  9. Change the input to `describe-coding-system' and play again,
 ;;     this time with coding-system names...
 ;;
-;;  Remember, if you get confused or lost: `C-]'
-;;  (`abort-recursive-edit') or `M-x top-level' should always
-;;  straighten you out.
+;;  Remember, if you get confused or lost in the minibuffer: `C-]'
+;;  (`abort-recursive-edit') or `C-M-S-t' (aka `C-M-T',
+;;  `icicle-top-level') should always straighten you out.
 ;;
 ;;(@* "What about describe-variable and describe-function?")
 ;;  *** What about describe-variable and describe-function? ***
