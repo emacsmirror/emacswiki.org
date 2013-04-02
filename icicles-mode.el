@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Feb 28 10:39:15 2013 (-0800)
+;; Last-Updated: Tue Apr  2 14:39:38 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 9486
+;;     Update #: 9492
 ;; URL: http://www.emacswiki.org/icicles-mode.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -2470,11 +2470,11 @@ is unbound in all keymaps accessible from keymap MAP."
          ;; Keyboard keys
          (icicle-bind-custom-minibuffer-keys map icicle-minibuffer-key-bindings)
          ;; Need `C-g' anyway, even if `minibuffer-local-must-match-map' inherits completion map.
-         (define-key map (icicle-kbd "C-g") 'icicle-abort-recursive-edit)              ; `C-g'
+         (define-key map (icicle-kbd "C-g") 'icicle-abort-recursive-edit) ; `C-g'
          (dolist (key  icicle-completing-read+insert-keys)
-           (define-key map key 'icicle-completing-read+insert)) ; `C-M-S-c'
+           (define-key map key 'icicle-completing-read+insert))           ; `C-M-S-c'
          (dolist (key  icicle-read+insert-file-name-keys)
-           (define-key map key 'icicle-read+insert-file-name))  ; `C-M-S-f'
+           (define-key map key 'icicle-read+insert-file-name))            ; `C-M-S-f'
          ))                             ; End `minibuffer-local-must-match-map'.
 
      ;; `completion-list-mode-map': map for `*Completions*' buffer.
@@ -2483,8 +2483,9 @@ is unbound in all keymaps accessible from keymap MAP."
        ;; Keyboard keys
        (icicle-bind-custom-minibuffer-keys map icicle-completion-list-key-bindings)
        (dolist (key  icicle-candidate-help-keys) ; `C-M-return', `C-help', `C-M-help', `C-f1',
-         (define-key map key 'icicle-help-on-candidate)) ; `C-M-f1'
+         (define-key map key 'icicle-help-on-candidate))                     ; `C-M-f1'
        (define-key map (icicle-kbd "C-g")      'icicle-abort-recursive-edit) ; `C-g'
+       (define-key map (icicle-kbd "C-M-S-t")  'icicle-top-level)            ; `C-M-S-t' (aka `C-M-T')
        ))                               ; End `completion-list-mode-map'.
 
     (t                                  ; TURN IT OFF *******************************
@@ -2644,6 +2645,7 @@ is unbound in all keymaps accessible from keymap MAP."
        (icicle-restore-custom-minibuffer-keys map icicle-completion-list-key-bindings)
        (dolist (key  icicle-candidate-help-keys)       (define-key map key nil))
        (define-key map (icicle-kbd "C-g")              nil)
+       (define-key map (icicle-kbd "C-M-S-t")          nil)
        ;; Do these last:
        (define-key map (icicle-kbd "right")            'next-completion)
        (define-key map (icicle-kbd "left")             'previous-completion))))
