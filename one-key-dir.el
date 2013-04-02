@@ -38,7 +38,9 @@
 ;; Floor, Boston, MA 02110-1301, USA.
 
 ;;; Commentary: 
-;; 
+;;
+;; Bitcoin donations gratefully accepted: 1HnSqGHrVenb1t2V2aijyocWyZcd7qt1k
+
 ;; This library defines a `one-key' menu type for navigating directories, and visiting files.
 ;; See the documentation for `one-key' for how to add a new menu to a menu-set.
 ;; From the *One-Key* buffer you can add a menu of type "directory" which will prompt you for a given directory.
@@ -432,3 +434,6 @@ If ALLOW-EQUAL is non-nil also return t if DIR is the same dir as TOPDIR."
 
 (provide 'one-key-dir)
 ;;; one-key-dir.el ends here
+
+;; (magit-push)
+;; (yaoddmuse-post "EmacsWiki" "one-key-dir.el" (buffer-name) (buffer-string) "update")
