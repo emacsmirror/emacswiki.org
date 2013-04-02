@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun Mar 31 17:03:06 2013 (-0700)
+;; Last-Updated: Tue Apr  2 11:38:30 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 27562
+;;     Update #: 27565
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -7889,6 +7889,12 @@
 ;;
 ;;  You can use `icicle-recent-file' to open any file that you have
 ;;  visited recently, perhaps in a previous Emacs session.
+;;
+;;  Because Icicles lets you easily sort and filter candidates,
+;;  consider customizing option `recentf-max-saved-items' to a large
+;;  number, such as 1000.  The default number (20) is very small
+;;  because it assumes that you will access the candidates using a
+;;  menu.
 ;;
 ;;(@* "Find Files Anywhere, Without Knowing Where")
 ;;  *** Find Files Anywhere, Without Knowing Where ***
