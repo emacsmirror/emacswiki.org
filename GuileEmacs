@@ -4,12 +4,7 @@ provide a better programming environment for both Emacs
 users and Guile users.  Guile is in fact [[Scheme]], a much simpler and cleaner
 dialect of Lisp than CommonLisp.
 
-Some original work was by KeisukeNishida and was based on Emacs 20.7 and Guile 1.5.  The last work on this project was 2000-06-01.  The goal was to support both Guile and EmacsLisp.  The project's
-aim was not intended to rip out EmacsLisp from the guts of Emacs and replace
-it with Guile.
-
-You can find more information at
-http://sourceforge.net/projects/gemacs/
+Some original work was by KeisukeNishida and was based on Emacs 20.7 and Guile 1.5.  The last work on this project was 2000-06-01.  The goal was to support both Guile and EmacsLisp.  You can find more information on [http://sourceforge.net/projects/gemacs/ its Sourceforge page], or in the project's [http://sourceware.org/ml/guile-emacs/ mailing list archive].
 
 Matthias Neubauer and Michael Sperber studied the possibility of automatically translating Emacs Lisp Code into Scheme.  See DownWithEmacsLisp.
 
@@ -27,9 +22,6 @@ On 2002-07-16, there was a discussion started on [[emacs-devel]] about [http://l
 By 2006-01-03, according to Ken "Some stuff does work, actually. Non-tty displays don't".  This was for reasons that "have less to do directly with Guile than with the fact that the Guile library isn't unexec-safe".  Consequently, Ken was not doing the unexec step.  Guile Emacs in a terminal window has a "shell mode, browses directories, does font-lock coloring of C source files, etc."
 
 As of 2009-06-11, Ken has provided [http://www.mit.edu/~raeburn/guilemacs/ an updated snapshot] of the work.
-
-To subscribe to a mailing list about about Guile Emacs send a blank messsage to
-mailto:guile-emacs-subscribe@sources.redhat.com
 
 As brought to our attention in [[2010-04-16]] by AlexSchroeder:
 : Apparently there's more discussion regarding Guile, Emacs, and GuileEmacs on emacs-devel.
