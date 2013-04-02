@@ -38,7 +38,9 @@
 ;; Floor, Boston, MA 02110-1301, USA.
 
 ;;; Commentary: 
-;; 
+;;
+;; Bitcoin donations gratefully accepted: 1HnSqGHrVenb1t2V2aijyocWyZcd7qt1k
+
 ;; This library defines a `one-key' menu type for accessing yasnippets.
 ;; See the documentation for `one-key' for how to add a new menu to a menu-set.
 ;; You can add a menu of type "yasnippet" which will contain snippets for the major-mode of the current buffer,
@@ -159,7 +161,5 @@ This function is used in calls to `one-key-dir-build-menu-alist'."
 (provide 'one-key-yas)
 ;;; one-key-yas.el ends here
 
-
-
-
-
+;; (magit-push)
+;; (yaoddmuse-post "EmacsWiki" "one-key-yas.el" (buffer-name) (buffer-string) "update")
