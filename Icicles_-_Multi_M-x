@@ -108,8 +108,7 @@ documentation.
 9. Change the input to `describe-coding-system' and play
 again, this time with coding-system names...
 
-Remember, if you get confused or lost: `##C-]##' (`abort-recursive-edit') or `##M-x
-top-level##' should always straighten you out.
+Remember, if you get confused or lost in the minibuffer: `##C-]##' (`abort-recursive-edit') or `C-M-S-t' (aka `C-M-T', '''`icicle-top-level'''') should always straighten you out.
 
 
 
