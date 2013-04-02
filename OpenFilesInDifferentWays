@@ -16,9 +16,11 @@ There are *many* different ways to find the files you want to open in Emacs. Her
 
 * [[Icicles - File-Name Input]]
 
-** open files with prefix, substring, or [[regexp]] match
+** open files with prefix, substring, fuzzy, or [[regexp]] match
 ** open recently used files
 ** find and open files located anywhere, even if you don't know where they are -- find by date
+** find files whose names match '''''or''''' whose content matches '''''or''''' both at the same time
+** match against multiple patterns ([[progressive completion]])
 * InteractivelyDoThings -- open files with prefix, substring, or regexp match
 * IswitchRecentFiles -- open recently used files
 * LocateFilesAnywhere, GlobalFF -- find and open files located anywhere, even if you don't know where they are
