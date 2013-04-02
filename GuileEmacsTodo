@@ -14,7 +14,7 @@
 * '''DONE''' Fix EMACS_INT formatting
 * Find beta testers for non-GNU platforms
 * Test gdb configuration
-* Fix [http://debbugs.gnu.org/cgi/bugreport.cgi?bug=14120] (reported by TaylanUB)
+* '''DONE''' Fix [http://debbugs.gnu.org/cgi/bugreport.cgi?bug=14120] (reported by TaylanUB)
 
 wip-bdw-gc branch:
 # Start-up takes long because dumping doesn't work. (Tip: During compilation, use another Emacs to byte-compile .el files, or it will take hours/days because each guilemacs instance takes so long to start.)
