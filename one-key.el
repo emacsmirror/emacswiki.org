@@ -40,6 +40,8 @@
 
 ;;; Commentary:
 ;;
+;; Bitcoin donations gratefully accepted: 1HnSqGHrVenb1t2V2aijyocWyZcd7qt1k
+
 ;; With so many Emacs extensions, you have a lot of keystrokes to remember, and you probably forget most of them.
 ;;
 ;; This package fixes that problem, and helps new users to learn the common keybindings.
@@ -1259,8 +1261,8 @@ This should probably be left alone unless you remove `toggle-help' or `quit-clos
 
 (defvar one-key-default-title-func (lambda nil
                                      (let* ((keystr (one-key-get-special-key-descriptions 'donate))
-                                            (msg (concat "If you find this useful please press "
-                                                         keystr " to support the author and further development.\n"))
+                                            (msg (concat "To support the author press "
+                                                         keystr " or donate bitcoins to 1HnSqGHrVenb1t2V2aijyocWyZcd7qt1k\n"))
                                             (len (length msg))
                                             (dif (- (window-width) len)))
                                        (if (<= dif 0)
@@ -3517,5 +3519,6 @@ This function assumes dynamic binding of okr-title-string to the current title s
 
 ;;; one-key.el ends here
 
-
+;; (magit-push)
+;; (yaoddmuse-post "EmacsWiki" "one-key.el" (buffer-name) (buffer-string) "update")
 
