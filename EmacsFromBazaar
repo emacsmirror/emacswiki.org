@@ -1,5 +1,7 @@
 On 2009-12-27, GNU Emacs switched from using [[CVS]] to [[Bazaar]].
 
+[https://savannah.gnu.org/bzr/?group=emacs Instructions on checking out Emacs sources via Bazaar]
+
 * BzrForEmacsDevs gives full instructions for Emacs hackers.
 * BzrForEmacsCasualDevs gives a quick start for other Emacs users.
 
@@ -8,4 +10,5 @@ See also EmacsDevelopmentSources, EmacsDevelopmentFeatures.
 ----
 CategoryBuilding
 CategoryWishList
+CategoryContributingToEmacs
 
