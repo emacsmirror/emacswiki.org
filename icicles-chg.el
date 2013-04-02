@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Mon Apr  1 15:55:59 2013 (-0700)
+;; Last-Updated: Tue Apr  2 14:40:37 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 9899
+;;     Update #: 9903
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -5398,6 +5398,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2013/04/02 dadams
+;;     icicle-define-minibuffer-maps: Bind C-M-T to icicle-top-level in completion-list-mode-map.
 ;; 2013/02/28 dadams
 ;;     icicle-(redefine|restore)-(standard-functions|std-completion-fns),
 ;;       eval-after-load (comint|ess-site|gud|info|bbdb-com|dired-aux|dired-x|recentf|icicles-mode):
