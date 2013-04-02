@@ -343,3 +343,9 @@ Even if you use one of those simpler setups at first, we still encourage you to 
 * [http://doc.bazaar-vcs.org/migration/en/survival/bzr-for-git-users.html Bazaar for Git users]  A pretty complete overview of the differences between Git and Bazaar.  Contains a couple of glossaries of VCS terms, which are probably useful to those who don't know git, too.
 * [http://doc.bazaar-vcs.org/migration/en/survival/bzr-for-cvs-users.html Bazaar for CVS users]  A whirlwind introduction to the features and command-line UI of Bazaar.  The workflow described is very similar to that of BzrQuickStartForEmacsDevs, and the latter document may be easier to understand because it concentrates on introducing the workflow rather than the wider field of distributed version control.
 * For diehard lovers of git, JohnWiegley reports that [http://github.com/kfish/git-bzr git-bzr], a bi-directional gateway, works well.
+
+
+---------
+
+
+CategoryContributingToEmacs
