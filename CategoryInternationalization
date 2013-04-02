@@ -45,6 +45,7 @@ Getting started:
 * TextTranslator -- text translation package
 * TransEJ -- English-Japanese translator using multiple Web translation services
 * Lisp:eijiro.el -- Search Eijiro, Japanese <=> English dictionary, with [[Anything]]
+* [http://sourceforge.jp/projects/dic-lookup-w3m/ dic-lookup-w3m] -- Lookup [http://www.kotoba.ne.jp/ online dictionaries] or [http://homepage2.nifty.com/m_kamada/l_translation.htm translate text] using [http://www.emacswiki.org/emacs/emacs-w3m emacs-w3m].
 
 Coding System stuff:
 
@@ -73,8 +74,5 @@ Background Information:
 * ReCode
 * ChangingEncodings
 
-For some basic information on MULE, read the paper by Handa et al.
-
-* http://tsukuba.m17n.org/mule/pricai96/index.html
-
+For some basic information on MULE, read [http://tsukuba.m17n.org/mule/pricai96/index.html the paper] by Handa et al.
 
