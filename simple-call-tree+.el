@@ -38,7 +38,9 @@
 ;; If not, see <http://www.gnu.org/licenses/>.
 
 ;;; Commentary: 
-;; 
+;;
+;; Bitcoin donations gratefully accepted: 1AmWPmshr6i9gajMi1yqHgx7BYzpPKuzMz
+
 ;; This library is based on simple-call-tree.el by Alex Schroeder.
 ;; It displays a buffer containing a call tree for functions in source
 ;; code files. You can easily & quickly navigate the call tree, displaying
@@ -628,6 +630,7 @@ nil."
       (unless (not end)
         (cons end (buffer-substring start end))))))
 
+;;;###autoload
 (defun* simple-call-tree-display-buffer (&optional files)
   "Display call tree for current buffer.
 If optional arg FILES is supplied it specifies a list of files to search for functions
@@ -638,7 +641,12 @@ When called interactively files will be prompted for and only functions in the c
     (or files
         (if (y-or-n-p "Include other files?")
             (whilelast
-             (setq dir (ido-read-directory-name "Dir containing files: "))
+             (setq dir
+                   (if (and (featurep 'ido)
+                            (or (eq ido-mode 'file)
+                                (eq ido-mode 'both)))
+                       (ido-read-directory-name "Dir containing files: ")
+                     (read-directory-name "Dir cointaining files: ")))
              (list-directory dir)
              (setq regexp (read-regexp "Regexp matching filenames (RET to finish)"))
              (unless (string= regexp "")
@@ -659,6 +667,7 @@ When called interactively files will be prompted for and only functions in the c
     (setq simple-call-tree-jump-ring (make-ring simple-call-tree-jump-ring-max)
           simple-call-tree-jump-ring-index 0)))
 
+;;;###autoload
 (defun* simple-call-tree-current-function (func &optional wide)
   "Display call tree for function FUNC.
 If called interactively FUNC will be set to the symbol nearest point,
@@ -942,8 +951,10 @@ or if called with a prefix arg it will be prompted for.
 Unless optional arg SKIPRING is non-nil (which will be true if called with a negative
 prefix arg) then the function name will be added to `simple-call-tree-jump-ring'"
   (interactive (list (if current-prefix-arg
-                         (ido-completing-read "Jump to function: "
-                                              (mapcar 'caar simple-call-tree-alist))
+                         (if (and (featurep 'ido)
+                                  (not (nullp ido-mode)))
+                             (ido-completing-read "Jump to function: " (mapcar 'caar simple-call-tree-alist))
+                           (completing-read "Jump to function: " (mapcar 'caar simple-call-tree-alist)))
                        (simple-call-tree-get-function-at-point))
                      (< (prefix-numeric-value current-prefix-arg) 0)))
   (let* ((narrowedp (simple-call-tree-buffer-narrowed-p)))
