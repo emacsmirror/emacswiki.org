@@ -380,7 +380,9 @@ defined by the tags table''.
 You can use '''`icicle-recent-file'''' to open any file that you have
 visited recently, perhaps in a previous Emacs session.
 
-
+Because '''Icicles''' lets you easily sort and filter candidates,
+consider customizing [[option]] `recentf-max-saved-items' to a large
+number, such as 1000.  The default number (20) is very small because it assumes that you will access the candidates using a menu.
 
 
 
