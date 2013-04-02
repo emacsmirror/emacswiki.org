@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun Mar 31 15:43:54 2013 (-0700)
+;; Last-Updated: Tue Apr  2 15:01:55 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 29277
+;;     Update #: 29282
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -6487,10 +6487,13 @@
 ;;  ** Minibuffer Bindings **
 ;;
 ;;  There are many key bindings available while your input is read in
-;;  the minibuffer, for example, while you are editing it.  Most of
-;;  these keys are bound in the minibuffer completion keymaps, but
-;;  some are bound in the `*Completions*' buffer keymap and some are
-;;  bound in the minibuffer when reading input without completion.
+;;  the minibuffer, for example, while you are editing it.  Some of
+;;  these keys are available regardless of whether completion is
+;;  available for your input.
+;;
+;;  Others are available only during completion.  Most of those keys
+;;  are bound in the minibuffer completion keymaps, but some are bound
+;;  in the `*Completions*' buffer keymap.
 ;;
 ;;  In addition, clicking `C-mouse-3' on a completion candidate in
 ;;  buffer `*Completions*' pops up a menu of available commands.  Some
@@ -6514,6 +6517,12 @@
 ;;  commands and the current toggle values.
 ;;
 ;;    `M-?' - `icicle-minibuffer-help'
+;;
+;;  The following key will always cancel all minibuffer input.  No
+;;  matter whether you have recursive minibuffers, it always returns
+;;  you directly to the Emacs top level.
+;;
+;;    `C-M-T' (aka `C-M-S-t') - `icicle-top-level'
 ;;
 ;;  The following key bindings are made for the minibuffer completion
 ;;  keymaps.  They are in effect whenever you are using the minibuffer
@@ -7079,6 +7088,7 @@
 ;;    `C-a', `C-e'    - `icicle-beginning-of-line+',
 ;;                      `icicle-end-of-line+' (repeatable)
 ;;    `C-g', `q'      - `icicle-abort-recursive-edit'
+;;    `C-M-T'         - `icicle-top-level'
 ;;    `mouse-2'       - `icicle-mouse-choose-completion'
 ;;    `C-mouse-2'     - `icicle-mouse-candidate-action'
 ;;    `M-mouse-2'     - `icicle-mouse-candidate-read-fn-invoke'
