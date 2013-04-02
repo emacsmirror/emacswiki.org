@@ -31,6 +31,7 @@ files.
 * [[Icicles]] -- use [[minibuffer]] [[regexp]] [[completion]] and completion-candidate [[Icicles - Cycling Completions|cycling]] to navigate and perform operations on files anywhere in your file system
 * [[Journal]] -- in a user-specified directory create and visit a file whose name is fashioned after the current date, e.g., <tt>2007-09-04-Tue.html</tt>.  Other time functions: <code>yesterday</code> inserts yesterday's date into current buffer; <code>tomorrow</code> inserts tomorrow's date</code>; and other.  Together these are handy for keeping a diary for work or personal use.
 * LocalVariables -- [[variable]]s changed local to files, automatically when you open the files
+* LocateFilesAnywhere -- find files anywhere on your system
 * LustyExplorer -- Dynamic filesystem explorer and buffer switcher
 * OpenFilesInDifferentWays -- different ways to find and open files
 * OrgAnnotateFile -- annotate a file with org syntax
