@@ -24,7 +24,7 @@ identified by one of the following symbol.
   (   open delimiter character    >   comment ender            
   )   close delimiter character   !   generic comment delimiter
   "   string quote character      |   generic string delimiter 
-  \   escape character            
+  \   escape character            @   inherit from `standard-syntax-table'
 
 For example, the backslash \ is the only character with escape syntax
 in the text-mode-syntax-table. On the other hand, in that table, 
