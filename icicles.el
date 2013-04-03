@@ -6,10 +6,10 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Version: 2013.03.07
-;; Last-Updated: Wed Apr  3 08:28:27 2013 (-0700)
+;; Version: 2013.04.03
+;; Last-Updated: Wed Apr  3 14:21:18 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 23388
+;;     Update #: 23390
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
