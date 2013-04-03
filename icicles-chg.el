@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue Apr  2 14:40:37 2013 (-0700)
+;; Last-Updated: Tue Apr  2 22:34:30 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 9903
+;;     Update #: 9913
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -86,6 +86,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2013/04/02 dadams
+;;     Removed: icicle-ess-* (four Icicles completion functions for ESS).
 ;; 2013/03/31 dadams
 ;;     icicle-buffer-name-prompt: (new) C-u C-u means visible buffer.
 ;;     icicle-buffer: Update doc string for visible buffers as candidates.
@@ -5398,6 +5400,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2013/04/03 dadams
+;;     Added: defadvice for ess-* completion functions.
+;;     icicle-mode: Turn that defadvice on/off.
 ;; 2013/04/02 dadams
 ;;     icicle-define-minibuffer-maps: Bind C-M-T to icicle-top-level in completion-list-mode-map.
 ;; 2013/02/28 dadams
@@ -6589,6 +6594,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2013/04/03 dadams
+;;     icicle-comint-dynamic-complete-replacements: Removed entries for ess-complete-*.
 ;; 2013/04/01 dadams
 ;;     icicle-minibuffer-key-bindings: Added icicle-top-level binding (C-M-T).
 ;; 2013/03/18 dadams
