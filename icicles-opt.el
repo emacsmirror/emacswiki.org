@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Apr  1 15:36:56 2013 (-0700)
+;; Last-Updated: Tue Apr  2 21:43:41 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 5598
+;;     Update #: 5599
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1024,8 +1024,6 @@ in your `load-path'."
     (shell-dynamic-complete-environment-variable
      'icicle-shell-dynamic-complete-environment-variable)
     (shell-dynamic-complete-filename     'icicle-shell-dynamic-complete-filename)
-    (ess-complete-filename               'icicle-ess-complete-filename)
-    (ess-complete-object-name            'icicle-ess-complete-object-name)
     ((pcomplete-completions-at-point
       comint-filename-completion
       shell-filename-completion)
