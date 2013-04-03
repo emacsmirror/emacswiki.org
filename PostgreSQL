@@ -1,0 +1,48 @@
+== Elisp Interface ==
+
+Code by EricMarsden for a socket-level elisp interface to PostgreSQL.
+
+* Look for pg.el [[http://www.chez.com/emarsden/downloads/|here]]
+
+* For newer versions look at [http://www.online-marketwatch.com/pgel/pg.html pg.el]
+
+If you don't require a flashy interface and sophisticated programming
+language features this may be a good option. Otherwise near the same
+URL you can find a Common Lisp implementation of the same code, which
+has better exception handling support.
+
+== Info Documentation ==
+
+You can convert Postgres' DocBook docs to Texinfo via docbook2X for
+ultimate studying pleasure within Emacs.  With 8.2, '''make
+postgres.info''' in '''doc/src/sgml/''' should automate this somewhat
+when you have docbook2X and toolchains for SGML, XML, and Texinfo
+installed.
+
+Here's how the result looks like with the 8.3.3 docs:
+* [[http://gate450.dyndns.org/~andreas/postgres.info.gz|PostgreSQL info]]
+
+== Using outline-minor-mode with SQL Dumps ==
+
+I recently discovered that using outline-minor-mode is quite an
+elegant way to deal with vast SQL dumps.  The following snippet will
+automatically set it up when visiting pg_dump output.
+
+ (defun my-possibly-setup-pgdump-outline nil
+   (interactive)
+   (save-excursion
+     (goto-char (point-min))
+     (forward-line 1)
+     (when (looking-at "-- PostgreSQL database dump")
+       (set (make-local-variable 'outline-regexp)
+ 	   "-- \\(Data for \\)?Name:")
+       (set (make-local-variable 'outline-level)
+ 	   (lambda nil 1))
+       (outline-minor-mode 1)
+       (hide-sublevels 1))))
+ 
+ (add-hook 'sql-mode-hook 'my-possibly-setup-pgdump-outline)
+ 
+----
+CategorySql
+CategoryDatabase
