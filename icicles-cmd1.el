@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Mar 31 16:56:32 2013 (-0700)
+;; Last-Updated: Tue Apr  2 21:45:32 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 25668
+;;     Update #: 25670
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -202,10 +202,6 @@
 ;;    `icicle-dired-save-marked-to-variable',
 ;;    `icicle-dired-save-marked-to-variable-recursive',
 ;;    `icicle-doremi-increment-variable+',
-;;    `icicle-ess-complete-filename',
-;;    `icicle-ess-complete-object-name',
-;;    `icicle-ess-internal-complete-object-name',
-;;    `icicle-ess-R-complete-object-name',
 ;;    (+)`icicle-execute-extended-command',
 ;;    (+)`icicle-execute-named-keyboard-macro', (+)`icicle-face-list',
 ;;    (+)`icicle-file', (+)`icicle-file-list',
@@ -1090,90 +1086,6 @@ Otherwise, replace only the filename-matching text before point."
              (completion-in-region start end #'completion-file-name-table)))
           (t
            (widget-file-complete)))))
-
-(defun icicle-ess-complete-object-name (&optional listcomp)
-  "`ess-complete-object-name', but uses Icicles completion.
-Complete `ess-language' object preceding point.
-This is `icicle-ess-R-complete-object-name' if `ess-use-R-completion',
-and `icicle-ess-internal-complete-object-name' otherwise."
-  (interactive "P")
-  (if ess-use-R-completion
-      (icicle-ess-R-complete-object-name)
-    (icicle-ess-internal-complete-object-name listcomp)))
-
-(defun icicle-ess-internal-complete-object-name (&optional listcomp)
-  "`ess-internal-complete-object-name', but uses Icicles completion.
-Complete `ess-language' object preceding point."
-  (interactive "P")
-  (ess-make-buffer-current)
-  (if (memq (char-syntax (preceding-char)) '(?w ?_))
-      (let* ((comint-completion-addsuffix  nil)
-             (end                          (point))
-             (buffer-syntax                (syntax-table))
-             (beg                          (unwind-protect
-                                                (save-excursion
-                                                  (set-syntax-table ess-mode-syntax-table)
-                                                  (backward-sexp 1)
-                                                  (point))
-                                             (set-syntax-table buffer-syntax)))
-             (full-prefix                  (buffer-substring beg end))
-             (pattern                      full-prefix)
-             (listname                  ; See if we're indexing a list with `$'
-              (and (string-match "\\(.+\\)\\$\\(\\(\\sw\\|\\s_\\)*\\)$" full-prefix)
-                   (setq pattern  (if (not (match-beginning 2))
-                                      ""
-                                    (substring full-prefix (match-beginning 2) (match-end 2))))
-                   (substring full-prefix (match-beginning 1) (match-end 1))))
-             (classname                 ; Are we trying to get a slot via `@' ?
-              (and (string-match "\\(.+\\)@\\(\\(\\sw\\|\\s_\\)*\\)$" full-prefix)
-                   (setq pattern  (if (not (match-beginning 2))
-                                      ""
-                                    (substring full-prefix (match-beginning 2) (match-end 2))))
-                   (progn (ess-write-to-dribble-buffer (format "(ess-C-O-Name : slots..) : patt=%s"
-                                                               pattern))
-                          (substring full-prefix (match-beginning 1) (match-end 1)))))
-             (components
-              (if listname
-                  (ess-object-names listname)
-                (if classname
-                    (ess-slot-names classname)
-                  ;; Default case: It hangs here when options (error=recoves):
-                  (ess-get-object-list ess-current-process-name)))))
-        ;; Return non-nil to prevent history expansions
-        (or (icicle-comint-dynamic-simple-complete  pattern components)  'none))))
-
-(defun icicle-ess-complete-filename ()
-  "`ess-complete-filename', but uses Icicles completion.
-Do file completion only within strings, or when `!' call is used."
-  (if (comint-within-quotes
-       (1- (process-mark (get-buffer-process (current-buffer)))) (point))
-      (progn (if (featurep 'xemacs)
-                 (icicle-comint-dynamic-complete-filename) ; Work around XEmacs bug.  GNU Emacs and
-               (icicle-comint-replace-by-expanded-filename)) ; a working XEmacs return t in a string
-             t)))
-
-(defun icicle-ess-R-complete-object-name ()
-  "`ess-R-complete-object-name', but uses Icicles completion.
-Completion in R."
-  (interactive)
-  (ess-make-buffer-current)
-  (let* ((comint-completion-addsuffix  nil)
-         (bol                          (save-excursion (comint-bol nil) (point)))
-         (eol                          (line-end-position))
-         (line-buffer                  (buffer-substring bol eol))
-         (NS                           (if (ess-current-R-at-least '2.7.0)
-                                           "utils:::"
-                                         "rcompgen:::"))
-         (token-string                  ; Setup, including computation of the token
-          (progn
-            (ess-command (format (concat NS ".assignLinebuffer('%s')\n") line-buffer))
-            (ess-command (format (concat NS ".assignEnd(%d)\n") (- (point) bol)))
-            (car (ess-get-words-from-vector (concat NS ".guessTokenFromLine()\n")))))
-         (possible-completions          ; Compute and retrieve possible completions
-          (progn
-            (ess-command (concat NS ".completeToken()\n"))
-            (ess-get-words-from-vector (concat NS ".retrieveCompletions()\n")))))
-    (or (icicle-comint-dynamic-simple-complete token-string possible-completions)  'none)))
 
 (defun icicle-gud-gdb-complete-command (&optional command a b)
   "`gud-gdb-complete-command', but uses Icicles completion.
