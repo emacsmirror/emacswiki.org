@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 2013.03.07
-;; Last-Updated: Mon Apr  1 15:59:27 2013 (-0700)
+;; Last-Updated: Wed Apr  3 08:28:27 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 23386
+;;     Update #: 23388
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -247,9 +247,6 @@
 ;;    `icicle-dired-save-marked-to-variable-recursive',
 ;;    `icicle-dired-smart-shell-command', `icicle-doc',
 ;;    `icicle-doremi-increment-variable+',
-;;    `icicle-ess-complete-object-name',
-;;    `icicle-ess-internal-complete-object-name',
-;;    `icicle-ess-R-complete-object-name',
 ;;    `icicle-exchange-point-and-mark',
 ;;    `icicle-execute-extended-command',
 ;;    `icicle-execute-named-keyboard-macro', `icicle-face-list',
@@ -982,7 +979,6 @@
 ;;    `icicle-display-candidates-in-Completions', `icicle-doc-action',
 ;;    `icicle-edmacro-parse-keys',
 ;;    `icicle-ensure-overriding-map-is-bound',
-;;    `icicle-ess-complete-filename',
 ;;    `icicle-execute-extended-command-1',
 ;;    `icicle-expanded-common-match',
 ;;    `icicle-expanded-common-match-1', `icicle-expand-file-name-20',
