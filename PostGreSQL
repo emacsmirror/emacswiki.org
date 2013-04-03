@@ -1,6 +1,6 @@
 == Elisp Interface ==
 
-Code by EricMarsden for a socket-level elisp interface to PostGreSQL.
+Code by EricMarsden for a socket-level elisp interface to PostgreSQL.
 
 * Look for pg.el [[http://www.chez.com/emarsden/downloads/|here]]
 
