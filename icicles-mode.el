@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Apr  2 14:39:38 2013 (-0700)
+;; Last-Updated: Wed Apr  3 08:20:09 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 9492
+;;     Update #: 9508
 ;; URL: http://www.emacswiki.org/icicles-mode.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -140,12 +140,11 @@
 ;;
 ;;; Code:
 
-(eval-when-compile (require 'cl)) ;; pushnew, case
+(eval-when-compile (require 'cl)) ;; flet, pushnew, case
                                   ;; plus, for Emacs < 21: push, dolist
-
 (require 'advice)
   ;; ad-activate, ad-copy-advice-info, ad-deactivate, ad-disable-advice, ad-enable-advice,
-  ;; ad-find-some-advice, ad-get-arg, ad-is-active, ad-set-advice-info
+  ;; ad-find-some-advice, ad-get-arg, ad-is-active, ad-set-advice-info, defadvice
 
 (require 'icicles-opt)                  ; (This is required anyway by `icicles-var.el'.)
   ;; icicle-buffer-configs, icicle-buffer-extras, icicle-change-region-background-flag,
@@ -290,7 +289,30 @@ bindings in `*Completions*'.")
       (add-hook 'savehist-save-hook
                 (lambda () (setq savehist-minibuffer-history-variables
                                  (delq 'icicle-interactive-history
-                                       savehist-minibuffer-history-variables))))))
+                                       savehist-minibuffer-history-variables)))))
+    
+    ;; Just replace the original ESS definitions so that the new ones use Icicles completion.
+    (defadvice ess-internal-complete-object-name (around icicle-ess-internal-complete-object-name
+                                                         disable activate)
+      "`ess-internal-complete-object-name', but in Icicle mode use Icicles completion."
+      (flet ((comint-dynamic-simple-complete (stub candidates)
+               (icicle-comint-dynamic-simple-complete stub candidates)))
+        ad-do-it))
+
+    (defadvice ess-complete-filename (around icicle-ess-complete-filename disable activate)
+      "`ess-complete-filename', but in Icicle mode use Icicles completion."
+      (flet ((comint-dynamic-complete-filename (&optional replace-to-eol-p)
+               (icicle-comint-dynamic-complete-filename replace-to-eol-p))
+             (comint-replace-by-expanded-filename () ; This one is not used for recent ESS versions.
+               (icicle-comint-replace-by-expanded-filename)))
+        ad-do-it))
+
+    (defadvice ess-R-complete-object-name (around icicle-ess-R-complete-object-name disable activate)
+      "`ess-R-complete-object-name', but in Icicle mode use Icicles completion."
+      (flet ((comint-dynamic-simple-complete (stub candidates)
+               (icicle-comint-dynamic-simple-complete stub candidates)))
+        ad-do-it)))
+
   (when (> emacs-major-version 21)
     (defadvice describe-face (before icicle-respect-WYSIWYG activate)
       "`read-face-name' respects `icicle-WYSIWYG-Completions-flag'.
@@ -354,6 +376,18 @@ Commentary headers of files `icicles-cmd1.el' and `icicles-cmd2.el'."
                  (icicle-redefine-standard-widgets)
                  (when (ad-find-some-advice 'describe-face 'before 'icicle-respect-WYSIWYG)
                    (ad-enable-advice 'describe-face 'before 'icicle-respect-WYSIWYG))
+                 (when (ad-find-some-advice 'ess-internal-complete-object-name 'around
+                                            'icicle-ess-internal-complete-object-name)
+                   (ad-enable-advice 'ess-internal-complete-object-name 'around
+                                     'icicle-ess-internal-complete-object-name))
+                 (when (ad-find-some-advice 'ess-complete-filename 'around
+                                            'icicle-ess-complete-filename)
+                   (ad-enable-advice 'ess-complete-filename 'around
+                                     'icicle-ess-complete-filename))
+                 (when (ad-find-some-advice 'ess-R-complete-object-name 'around
+                                            'icicle-ess-R-complete-object-name)
+                   (ad-enable-advice 'ess-R-complete-object-name 'around
+                                     'icicle-ess-R-complete-object-name))
                  (when (fboundp 'minibuffer-depth-indicate-mode) ; In `mb-depth(+).el'
                    (minibuffer-depth-indicate-mode 99))
                  (if icicle-menu-items-to-history-flag
@@ -396,6 +430,18 @@ Commentary headers of files `icicles-cmd1.el' and `icicles-cmd2.el'."
                  (icicle-restore-standard-widgets)
                  (when (ad-find-some-advice 'describe-face 'before 'icicle-respect-WYSIWYG)
                    (ad-disable-advice 'describe-face 'before 'icicle-respect-WYSIWYG))
+                 (when (ad-find-some-advice 'ess-internal-complete-object-name 'around
+                                            'icicle-ess-internal-complete-object-name)
+                   (ad-disable-advice 'ess-internal-complete-object-name 'around
+                                      'icicle-ess-internal-complete-object-name))
+                 (when (ad-find-some-advice 'ess-complete-filename 'around
+                                            'icicle-ess-complete-filename)
+                   (ad-disable-advice 'ess-complete-filename 'around
+                                      'icicle-ess-complete-filename))
+                 (when (ad-find-some-advice 'ess-R-complete-object-name 'around
+                                            'icicle-ess-R-complete-object-name)
+                   (ad-disable-advice 'ess-R-complete-object-name 'around
+                                      'icicle-ess-R-complete-object-name))
                  (when (fboundp 'minibuffer-depth-indicate-mode)
                    (minibuffer-depth-indicate-mode -99))
                  (remove-hook 'pre-command-hook 'icicle-add-menu-item-to-cmd-history)
