@@ -303,7 +303,7 @@ or use this to always use fullscreen:
 (set-frame-parameter nil 'fullscreen 'fullboth)
 }}}
 
-The fullscreen functionality has not made it into Emacs-24 as of late 2012.
+Apparently the fullscreen functionality had not made it into Emacs 24 as of late 2012 but it is confirmed to be in Emacs 24.3.1 running on OS X 10.8.3 as of April 2013.
 
 ==== Maximizer ====
 
