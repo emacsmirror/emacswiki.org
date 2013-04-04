@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Apr  3 08:20:09 2013 (-0700)
+;; Last-Updated: Thu Apr  4 09:18:27 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 9508
+;;     Update #: 9515
 ;; URL: http://www.emacswiki.org/icicles-mode.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -311,6 +311,11 @@ bindings in `*Completions*'.")
       "`ess-R-complete-object-name', but in Icicle mode use Icicles completion."
       (flet ((comint-dynamic-simple-complete (stub candidates)
                (icicle-comint-dynamic-simple-complete stub candidates)))
+        ad-do-it))
+
+    (defadvice ess-completing-read (around icicle-ess-completing-read disable activate)
+      "Make `ess-completing-read' use Icicles completion in Icicle mode."
+      (let ((ess-use-ido  (or icicle-ess-use-ido  nil)))
         ad-do-it)))
 
   (when (> emacs-major-version 21)
@@ -382,10 +387,12 @@ Commentary headers of files `icicles-cmd1.el' and `icicles-cmd2.el'."
                                      'icicle-ess-internal-complete-object-name))
                  (when (ad-find-some-advice 'ess-complete-filename 'around
                                             'icicle-ess-complete-filename)
-                   (ad-enable-advice 'ess-complete-filename 'around
-                                     'icicle-ess-complete-filename))
+                   (ad-enable-advice 'ess-complete-filename 'around 'icicle-ess-complete-filename))
                  (when (ad-find-some-advice 'ess-R-complete-object-name 'around
                                             'icicle-ess-R-complete-object-name)
+                   (ad-enable-advice 'ess-R-complete-object-name 'around
+                                     'icicle-ess-R-complete-object-name))
+                 (when (ad-find-some-advice 'ess-completing-read 'around 'icicle-ess-completing-read)
                    (ad-enable-advice 'ess-R-complete-object-name 'around
                                      'icicle-ess-R-complete-object-name))
                  (when (fboundp 'minibuffer-depth-indicate-mode) ; In `mb-depth(+).el'
@@ -436,10 +443,12 @@ Commentary headers of files `icicles-cmd1.el' and `icicles-cmd2.el'."
                                       'icicle-ess-internal-complete-object-name))
                  (when (ad-find-some-advice 'ess-complete-filename 'around
                                             'icicle-ess-complete-filename)
-                   (ad-disable-advice 'ess-complete-filename 'around
-                                      'icicle-ess-complete-filename))
+                   (ad-disable-advice 'ess-complete-filename 'around 'icicle-ess-complete-filename))
                  (when (ad-find-some-advice 'ess-R-complete-object-name 'around
                                             'icicle-ess-R-complete-object-name)
+                   (ad-disable-advice 'ess-R-complete-object-name 'around
+                                      'icicle-ess-R-complete-object-name))
+                 (when (ad-find-some-advice 'ess-completing-read 'around 'icicle-ess-completing-read)
                    (ad-disable-advice 'ess-R-complete-object-name 'around
                                       'icicle-ess-R-complete-object-name))
                  (when (fboundp 'minibuffer-depth-indicate-mode)
