@@ -6,10 +6,10 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Version: 2013.04.03
-;; Last-Updated: Wed Apr  3 14:21:18 2013 (-0700)
+;; Version: 2013.04.04
+;; Last-Updated: Thu Apr  4 09:22:48 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 23390
+;;     Update #: 23392
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1274,8 +1274,8 @@
 ;;    `icicle-dictionary-history', `icicle-dir-candidate-can-exit-p',
 ;;    `icicle-dirs-done', `icicle-doc-last-initial-cand-set',
 ;;    `icicle-dot-string-internal', `icicle-edit-menu-map',
-;;    `icicle-edit-update-p', `icicle-exclude-default-proxies',
-;;    `icicle-explore-final-choice',
+;;    `icicle-edit-update-p', `icicle-ess-use-ido',
+;;    `icicle-exclude-default-proxies', `icicle-explore-final-choice',
 ;;    `icicle-explore-final-choice-full', `icicle-extra-candidates',
 ;;    `icicle-extra-candidates-dir-insert-p',
 ;;    `icicle-face-name-history', `icicle-fancy-candidates-p',
