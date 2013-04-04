@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Apr  4 09:18:27 2013 (-0700)
+;; Last-Updated: Thu Apr  4 11:10:41 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 9515
+;;     Update #: 9517
 ;; URL: http://www.emacswiki.org/icicles-mode.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -393,8 +393,7 @@ Commentary headers of files `icicles-cmd1.el' and `icicles-cmd2.el'."
                    (ad-enable-advice 'ess-R-complete-object-name 'around
                                      'icicle-ess-R-complete-object-name))
                  (when (ad-find-some-advice 'ess-completing-read 'around 'icicle-ess-completing-read)
-                   (ad-enable-advice 'ess-R-complete-object-name 'around
-                                     'icicle-ess-R-complete-object-name))
+                   (ad-enable-advice 'ess-completing-read 'around 'icicle-ess-completing-read))
                  (when (fboundp 'minibuffer-depth-indicate-mode) ; In `mb-depth(+).el'
                    (minibuffer-depth-indicate-mode 99))
                  (if icicle-menu-items-to-history-flag
@@ -449,8 +448,7 @@ Commentary headers of files `icicles-cmd1.el' and `icicles-cmd2.el'."
                    (ad-disable-advice 'ess-R-complete-object-name 'around
                                       'icicle-ess-R-complete-object-name))
                  (when (ad-find-some-advice 'ess-completing-read 'around 'icicle-ess-completing-read)
-                   (ad-disable-advice 'ess-R-complete-object-name 'around
-                                      'icicle-ess-R-complete-object-name))
+                   (ad-disable-advice 'ess-completing-read 'around 'icicle-ess-completing-read))
                  (when (fboundp 'minibuffer-depth-indicate-mode)
                    (minibuffer-depth-indicate-mode -99))
                  (remove-hook 'pre-command-hook 'icicle-add-menu-item-to-cmd-history)
