@@ -15,12 +15,10 @@
 * Find beta testers for non-GNU platforms
 * Test gdb configuration
 * '''DONE''' Fix [http://debbugs.gnu.org/cgi/bugreport.cgi?bug=14120] (reported by TaylanUB)
+* '''DONE''' Fix hashing. <code>(let ((table (make-hash-table :test 'equal))) (puthash "1234567890" "foo" table) (gethash "1234567890" table)) => nil</code>. Some other (most?) keys work; I couldn't see a pattern in what does and doesn't work. If you use the same object for both keys (i.e. they're `eq') then it seems to always work, so don't let-bind keys if you want to test this. ''INTMASK is wrong in wip-guile; fix pending''
 
 wip-bdw-gc branch:
 # Start-up takes long because dumping doesn't work. (Tip: During compilation, use another Emacs to byte-compile .el files, or it will take hours/days because each guilemacs instance takes so long to start.)
 # Certain heavy operations (namely displaying a big e-mail in Gnus) cause a lock-up (or take very long, I waited several minutes before having to send SIGKILL).
 
-wip-guile branch:
-# <code>(let ((table (make-hash-table :test 'equal))) (puthash "1234567890" "foo" table) (gethash "1234567890" table)) => nil</code>. Some other (most?) keys work; I couldn't see a pattern in what does and doesn't work. If you use the same object for both keys (i.e. they're `eq') then it seems to always work, so don't let-bind keys if you want to test this. ''INTMASK is wrong in wip-guile; fix pending''
-
-Other than the above 4 issues, I could say I can't distinguish my Guile-Emacs build from a normal Emacs build, apart from the fact that it can run Scheme! <code>M-: (eval-scheme "(call-with-current-continuation (lambda (k) (k 42)))") RET => 42</code> (The return-value is an Elisp datum.) -- TaylanUB
+Other than the above issues, I could say I can't distinguish my Guile-Emacs build from a normal Emacs build, apart from the fact that it can run Scheme! <code>M-: (eval-scheme "(call-with-current-continuation (lambda (k) (k 42)))") RET => 42</code> (The return-value is an Elisp datum.) -- TaylanUB
