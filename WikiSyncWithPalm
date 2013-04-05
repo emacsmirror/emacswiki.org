@@ -1,5 +1,0 @@
-DeletedPage: Of no historical interest, IMO. -- AaronHawley
-
-Software to sync local wiki files (see EmacsWikiMode) with Palm devices
-
-* wikisync.sh -- shell script that uses pilot-xfer for communicating with the device.  Wiki files are exported as memos in a "Wiki" category on the Palm.  For more info see: 
