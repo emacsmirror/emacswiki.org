@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Apr  4 11:10:41 2013 (-0700)
+;; Last-Updated: Fri Apr  5 10:57:30 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 9517
+;;     Update #: 9523
 ;; URL: http://www.emacswiki.org/icicles-mode.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -380,20 +380,27 @@ Commentary headers of files `icicles-cmd1.el' and `icicles-cmd2.el'."
                  (icicle-redefine-standard-options)
                  (icicle-redefine-standard-widgets)
                  (when (ad-find-some-advice 'describe-face 'before 'icicle-respect-WYSIWYG)
-                   (ad-enable-advice 'describe-face 'before 'icicle-respect-WYSIWYG))
+                   (ad-enable-advice 'describe-face 'before 'icicle-respect-WYSIWYG)
+                   (unless (ad-is-active 'describe-face) (ad-activate 'describe-face)))
                  (when (ad-find-some-advice 'ess-internal-complete-object-name 'around
                                             'icicle-ess-internal-complete-object-name)
                    (ad-enable-advice 'ess-internal-complete-object-name 'around
-                                     'icicle-ess-internal-complete-object-name))
+                                     'icicle-ess-internal-complete-object-name)
+                   (unless (ad-is-active 'ess-internal-complete-object-name)
+                     (ad-activate 'ess-internal-complete-object-name)))
                  (when (ad-find-some-advice 'ess-complete-filename 'around
                                             'icicle-ess-complete-filename)
-                   (ad-enable-advice 'ess-complete-filename 'around 'icicle-ess-complete-filename))
+                   (ad-enable-advice 'ess-complete-filename 'around 'icicle-ess-complete-filename)
+                   (unless (ad-is-active 'ess-complete-filename) (ad-activate 'ess-complete-filename)))
                  (when (ad-find-some-advice 'ess-R-complete-object-name 'around
                                             'icicle-ess-R-complete-object-name)
                    (ad-enable-advice 'ess-R-complete-object-name 'around
-                                     'icicle-ess-R-complete-object-name))
+                                     'icicle-ess-R-complete-object-name)
+                   (unless (ad-is-active 'ess-R-complete-object-name)
+                     (ad-activate 'ess-R-complete-object-name)))
                  (when (ad-find-some-advice 'ess-completing-read 'around 'icicle-ess-completing-read)
-                   (ad-enable-advice 'ess-completing-read 'around 'icicle-ess-completing-read))
+                   (ad-enable-advice 'ess-completing-read 'around 'icicle-ess-completing-read)
+                   (unless (ad-is-active 'ess-completing-read) (ad-activate 'ess-completing-read)))
                  (when (fboundp 'minibuffer-depth-indicate-mode) ; In `mb-depth(+).el'
                    (minibuffer-depth-indicate-mode 99))
                  (if icicle-menu-items-to-history-flag
