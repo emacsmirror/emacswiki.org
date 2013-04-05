@@ -4,6 +4,8 @@ Read all about it at [http://json.org/ json.org]!
 
 You can read and write JSON from Emacs Lisp using [http://edward.oconnor.cx/elisp/json.el json.el].
 
+Some highlighting support for editing json files is provided by [https://github.com/joshwnj/json-mode json-mode]
+
 ----
 CategoryData
 CategoryExtensions
