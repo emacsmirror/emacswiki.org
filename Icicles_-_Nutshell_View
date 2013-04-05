@@ -26,6 +26,55 @@ If you want to know more about '''Icicles''' by reading instead of just trying, 
 
 
 
+
+
+
+
+
+[:Menus]
+== Menus ==
+
+One way to start with '''Icicles''' is to explore [[menu bar|menu-bar]] menus 
+'''[[Icicles - Icicles Menu|Icicles]]''' and '''[[Icicles - Minibuf Menu|Minibuf]]'''.  You can access most '''Icicles''' features using these menus, without at the same time struggling to learn new [[key binding]]s.
+
+[:IciclesMenuBarMenu]
+[:MinibufMenuBarMenu]
+The '''Icicles''' menu is available all of the time (that is, whenever you are in ''Icicle'' mode). The '''Minibuf''' menu is available whenever the [[minibuffer]] is active.  It is enhanced for ''Icicle'' mode.
+
+[:CompletionPopupMenu]
+During minibuffer input
+[[completion]], you can also press Control and right-click
+(`C-mouse-3') on a completion candidate in [[buffer]] `##*Completions*##',
+and choose from a contextual popup menu, '''[[Icicles - Completion Menu|Completion]]'''.
+
+You can [[Customize|customize]] this menu.  By default, its submenu '''This Candidate'''
+has menu items that apply to the candidate you clicked to pop up
+the menu.  The other submenus have items that apply to all
+candidates, candidates you have selected (the region in
+`##*Completions*##'), or candidates you have saved (marked).
+
+Altogether there are many menu items in the popup menu.  Think of
+this menu as a learning device and a way to remind you of possible
+operations on completion candidates and the keys they are bound
+to.  In this it is similar to the help you get when you use '''`##M-?##''''
+in the minibuffer, but with the menu you can also act, not just be
+reminded.
+
+See Also: [[Icicles - Completions Display]].
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 [:README]
 == README ==
 
@@ -585,48 +634,6 @@ tag the current candidate, hit '''`##C-x a +##'''', then enter the tags to
 add.
 
 See [[Icicles - Bookmark Enhancements#UsingTaggedFiles|Using Tagged Files]].
-
-
-
-
-
-
-
-
-
-
-
-[:Menus]
-== Menus ==
-
-One way to start with '''Icicles''' is to explore [[menu bar|menu-bar]] menus 
-'''[[Icicles - Icicles Menu|Icicles]]''' and '''[[Icicles - Minibuf Menu|Minibuf]]'''.  You can access most '''Icicles''' features using these menus, without at the same time struggling to learn new [[key binding]]s.
-
-[:IciclesMenuBarMenu]
-[:MinibufMenuBarMenu]
-The '''Icicles''' menu is available all of the time (that is, whenever you are in ''Icicle'' mode). The '''Minibuf''' menu is available whenever the [[minibuffer]] is active.  It is enhanced for ''Icicle'' mode.
-
-[:CompletionPopupMenu]
-During minibuffer input
-[[completion]], you can also press Control and right-click
-(`C-mouse-3') on a completion candidate in [[buffer]] `##*Completions*##',
-and choose from a contextual popup menu, '''[[Icicles - Completion Menu|Completion]]'''.
-
-You can [[Customize|customize]] this menu.  By default, its submenu '''This Candidate'''
-has menu items that apply to the candidate you clicked to pop up
-the menu.  The other submenus have items that apply to all
-candidates, candidates you have selected (the region in
-`##*Completions*##'), or candidates you have saved (marked).
-
-Altogether there are many menu items in the popup menu.  Think of
-this menu as a learning device and a way to remind you of possible
-operations on completion candidates and the keys they are bound
-to.  In this it is similar to the help you get when you use '''`##M-?##''''
-in the minibuffer, but with the menu you can also act, not just be
-reminded.
-
-See Also: [[Icicles - Completions Display]].
-
 
 
 
