@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Thu Apr  4 09:21:58 2013 (-0700)
+;; Last-Updated: Fri Apr  5 10:57:06 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 9919
+;;     Update #: 9921
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -5400,6 +5400,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2013/04/05 dadams
+;;     icicle-mode: Call ad-activate for all enabled advice.
 ;; 2013/04/04 dadams
 ;;     Added: defadvice for ess-completing-read.
 ;;     icicle-mode: Turn that defadvice on/off.
