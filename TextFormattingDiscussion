@@ -91,6 +91,18 @@ it's pretty easy to support and quite useful.
 
 An alternative would be to just do youtube style embedding of video links I guess... but that's quite hard.
 
+[new]
+If you're one of the EmacsWikiAdministrators, you can already add raw HTML. Compare [[Search]] and Self:action=browse;raw=1;id=Search.
+Currently raw HTML is only allowed on locked pages---and only administrators can edit locked pages.
+The reason it was designed that way was that I hoped this would prevent people from ever adding malicious code to the wiki.
+
+If you /really/ want it, I could add some code to allow raw HTML everywhere. Are you sure this is what we want?
+-> Oddmuse:Raw_HTML
+
+It would be just as easy to add an extension that supports embedding from a limited number of video hosting sites. Perhaps that would be preferable? -> Oddmuse:Flashbox_Extension
+
+-- Alex
+
 == Slightly richer source code ==
 
 The automatic semicolon detection enables the "download" link and syntax highlighting, but makes it impossible to add a category or link to the author's home page.
