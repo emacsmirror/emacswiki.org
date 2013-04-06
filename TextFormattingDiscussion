@@ -116,7 +116,7 @@ The horizontal-line feature isn't documented as well as it could be -- I only fo
 
 I wanted a command name and an apostrophe: ##`undo''s state## but I got a command name and an open quote: `undo''s state
 
-Previewing doesn't update the table of contents; you must save.
+
 
 
 
