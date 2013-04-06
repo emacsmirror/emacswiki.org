@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue Apr  2 15:01:55 2013 (-0700)
+;; Last-Updated: Fri Apr  5 09:19:01 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 29282
+;;     Update #: 29286
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -55,11 +55,14 @@
 ;;
 ;;  (@file :file-name "icicles-doc1.el" :to "Nutshell View of Icicles")
 ;;    (@file :file-name "icicles-doc1.el" :to "README for Non-Readers")
+;;    (@file :file-name "icicles-doc1.el" :to "Menus")
+;;    (@file :file-name "icicles-doc1.el" :to "README")
 ;;    (@file :file-name "icicles-doc1.el" :to "Flashy Demo to Peak Your Curiosity")
 ;;      (@file :file-name "icicles-doc1.el" :to "First Example: Multi-Inputs")
 ;;      (@file :file-name "icicles-doc1.el" :to "Second Example: Multi-Completions")
 ;;      (@file :file-name "icicles-doc1.el" :to "Third Example: Narrowing a Manual")
 ;;      (@file :file-name "icicles-doc1.el" :to "Fourth Example: Tagged Files")
+;;    (@file :file-name "icicles-doc1.el" :to "Top Level to Minibuffer... and Back Again")
 ;;    (@file :file-name "icicles-doc1.el" :to "Toggle Options on the Fly")
 ;;    (@file :file-name "icicles-doc1.el" :to "Cycle Completion Candidates")
 ;;    (@file :file-name "icicles-doc1.el" :to "Display Completion Candidates")
