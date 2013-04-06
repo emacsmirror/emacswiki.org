@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Mar 23 19:45:02 2013 (-0700)
+;; Last-Updated: Sat Apr  6 10:45:53 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 13860
+;;     Update #: 13868
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -2895,8 +2895,8 @@ produce extra completion candidates (which are indicated using face
   `dired-guess-shell-alist-default' provide candidates appropriate for
   the marked files in Dired.
 
-* Starting with Emacs 23, MIME-type associations provide candidates
-  appropriate for the marked files.
+* MIME-type associations provide candidates appropriate for the marked
+  files (Emacs 23 and later), 
 
 * If option `icicle-guess-commands-in-path' is non-nil, then
   executable files (or all files, if `shell-completion-execonly' is
@@ -2937,10 +2937,9 @@ the file's properties."
     (when (and dired-guess-files  (atom dired-guess-files))
       (setq dired-guess-files  (list dired-guess-files)))
     ;; Add dired-guess guesses and mailcap guesses to `icicle-extra-candidates'.
-    (setq icicle-extra-candidates  (append dired-guess-files
-                                           (and files  (require 'mailcap nil t) ; Emacs 23.
-                                                (fboundp 'mailcap-file-default-commands)
-                                                (mailcap-file-default-commands files))
+    (setq icicle-extra-candidates  (append dired-guess-files (and files  (require 'mailcap nil t) ; Emacs 23+.
+                                                                  (fboundp 'mailcap-file-default-commands)
+                                                                  (mailcap-file-default-commands files))
                                            icicle-extra-candidates))
     (when icicle-guess-commands-in-path ; Add commands available from user's search path.
       (setq icicle-extra-candidates  (append icicle-extra-candidates
@@ -6462,28 +6461,16 @@ Use the function, not the variable, to test, if not sure to be in the
 minibuffer."
   (setq icicle-completing-p             ; Cache the value.
         (and (active-minibuffer-window)
-             ;; $$$ (where-is-internal 'icicle-candidate-action nil 'first-only)
-             (let* ((loc-map  (current-local-map))
-                    (parent   (keymap-parent loc-map))
-                    (maps     (cond ((boundp 'minibuffer-local-filename-must-match-map)
-                                     (list minibuffer-local-completion-map
-                                           minibuffer-local-must-match-map
-                                           minibuffer-local-filename-completion-map
-                                           minibuffer-local-filename-must-match-map))
-                                    ((boundp 'minibuffer-local-must-match-filename-map)
-                                     (list minibuffer-local-completion-map
-                                           minibuffer-local-must-match-map
-                                           minibuffer-local-filename-completion-map
-                                           minibuffer-local-must-match-filename-map))
-                                    ((boundp 'minibuffer-local-filename-completion-map)
-                                     (list minibuffer-local-completion-map
-                                           minibuffer-local-must-match-map
-                                           minibuffer-local-filename-completion-map))
-                                    (t
-                                     (list minibuffer-local-completion-map
-                                           minibuffer-local-must-match-map)))))
-               (and (or (and parent (member parent maps))  (member loc-map maps))
-                    t)))))              ; Cache t, not the keymap portion.
+             ;; We used to include filename keymaps in MAPS, but that does not work for
+             ;; Emacs > 24.3 - it uses a composed keymap that it creates on the fly.
+             ;; So instead we just check `minibuffer-completing-file-name' now for Emacs 22+.
+             (or (and minibuffer-completing-file-name  (> emacs-major-version 21))
+                 (let* ((loc-map  (current-local-map))
+                        (parent   (keymap-parent loc-map))
+                        (maps     (list minibuffer-local-completion-map
+                                        minibuffer-local-must-match-map)))
+                   (and (or (and parent (member parent maps))  (member loc-map maps))
+                        t))))))              ; Cache t, not the keymap portion.
 
 ;; This is just `substring-no-properties', defined also for Emacs < 22.
 (defun icicle-substring-no-properties (string &optional from to)
