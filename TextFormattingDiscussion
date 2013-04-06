@@ -73,7 +73,7 @@ Why are you punishing people who know HTML by making us learn another set of tag
 I find it harder to write correct HTML than any of the various alternatives out there.  Since there are so many alternatives out there, I am not alone in thinking that having to write HTML directly is a big problem. -- AlexSchroeder
 
 [new]
-Another problem with allowing people to write unrestricted HTML directly (OddMuse + extensions used here allow for some HTML tags, like &lt;u&gt; and &lt;/u&gt; for <u>underline</u>) is security, among others cross site scripting. Also it would be easier to transform the pages into (invisible) link farms. -- JakubNarebski
+Another problem with allowing people to write unrestricted HTML directly (Oddmuse + extensions used here allow for some HTML tags, like &lt;u&gt; and &lt;/u&gt; for <u>underline</u>) is security, among others cross site scripting. Also it would be easier to transform the pages into (invisible) link farms. -- JakubNarebski
 
 == Embedding HTML ==
 
