@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue Apr  2 14:52:58 2013 (-0700)
+;; Last-Updated: Fri Apr  5 21:50:10 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 27567
+;;     Update #: 27717
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -175,6 +175,7 @@
 ;;
 ;;  (@> "Nutshell View of Icicles")
 ;;    (@> "README for NON-Readers")
+;;    (@> "Menus")
 ;;    (@> "README")
 ;;    (@> "Flashy Demo to Peak Your Curiosity")
 ;;      (@> "First Example: Multi-Inputs")
@@ -182,6 +183,7 @@
 ;;      (@> "Third Example: Narrowing a Manual")
 ;;      (@> "Fourth Example: Tagged Files")
 ;;
+;;    (@> "Top Level to Minibuffer ... and Back Again")
 ;;    (@> "Toggle Options on the Fly")
 ;;    (@> "Cycle Completion Candidates")
 ;;    (@> "Display Completion Candidates")
@@ -507,25 +509,29 @@
 ;;  get wet.  Above all, do not be overwhelmed by the doc - if it
 ;;  helps, fine.
 ;;
-;;  One good way to start is to explore menus `Icicles' and `Minibuf';
-;;  you can access most Icicles features using these menus, without at
-;;  the same time struggling to learn new key bindings.  The `Icicles'
-;;  menu is available all of the time (that is, whenever you are in
-;;  Icicle mode), and the `Minibuf' menu is available whenever the
-;;  minibuffer is active.
+;;(@* "Menus")
+;;  ** Menus **
+;;
+;;  One good way to start with Icicles is to explore menu-bar menus
+;;  `Icicles' and `Minibuf'.  You can access most Icicles features
+;;  using these menus, without at the same time struggling to learn
+;;  new key bindings.  The `Icicles' menu is available all of the time
+;;  (that is, whenever you are in Icicle mode), and the `Minibuf' menu
+;;  is available whenever the minibuffer is active.  It is enhanced
+;;  for Icicle mode.
 ;;
 ;;  During minibuffer input completion, you can also press Control and
 ;;  right-click (`C-mouse-3') on a completion candidate in buffer
 ;;  `*Completions*', and choose from a contextual popup menu,
 ;;  `Completion'.
 ;;
-;;  You can customize this menu.  By default, submenu `This Candidate'
-;;  has menu items that apply to the candidate you clicked to pop up
-;;  the menu.  The other submenus have items that apply to all
-;;  candidates, candidates you have selected (the region in
+;;  You can customize this menu.  By default, its submenu `This
+;;  Candidate' has menu items that apply to the candidate you clicked
+;;  to pop up the menu.  The other submenus have items that apply to
+;;  all candidates, candidates you have selected (the region in
 ;;  `*Completions*'), or candidates you have saved (marked).
 ;;
-;;  Altogether there are many menu items in the popup menu.  Think of
+;;  Altogether, there are many menu items in the popup menu.  Think of
 ;;  the menu as a learning device and a way to remind you of possible
 ;;  operations on completion candidates and the keys they are bound
 ;;  to.  In this it is similar to the help you get when you use `M-?'
@@ -757,7 +763,7 @@
 ;;
 ;;  Then you do this, with the previous candidates still current:
 ;;
-;;  c m   C-M-j   i n e - f
+;;    c m   C-M-j   i n e - f
 ;;
 ;;  As you type, the candidates shown in `*Completions*' are updated.
 ;;  When you finish typing, the set of candidates is reduced to just
@@ -984,7 +990,7 @@
 ;;  tags you enter.  You type each tag to be matched, followed by
 ;;  `RET', then you add a second `RET' after the last tag.
 ;;
-;;  In this case, the current candidates before using `C-x t *'
+;;  In this case, the current candidates before using `C-x C-t *'
 ;;  included all files in the current directory (you hit `TAB'
 ;;  immediately, without typing anything to match file names or file
 ;;  contents).
@@ -1007,18 +1013,168 @@
 ;;    C-x p t + a  Icicles  RET  help  RET RET
 ;;                 ici  S-SPC  doc  C-! C-g C-g
 ;;
-;;  During file-name completion, `C-x p t + a' runs multi-command
-;;  `icicle-tag-a-file', which adds the tags you type (ending the last
-;;  with `RET RET' instead of `RET') to the files whose candidate
-;;  names you act on.  In this case, you hit `C-!', which acts on all
-;;  candidates, which in this case are the file names matching both
-;;  `ici' and `doc'.
+;;  `C-x p t + a' runs multi-command `icicle-tag-a-file', which adds
+;;  the tags you type (ending the last with `RET RET' instead of
+;;  `RET') to the files whose candidate names you act on.  In this
+;;  case, you hit `C-!', which acts on all candidates, which in this
+;;  case are the file names matching both `ici' and `doc'.
 ;;
 ;;  You can also tag files on the fly during file-name completion.  To
 ;;  tag the current candidate, hit `C-x a +', then enter the tags to
 ;;  add.
 ;;
 ;;  See (@file :file-name "icicles-doc2.el" :to "Using Tagged Files").
+;;
+;;(@* "Top Level to Minibuffer ... and Back Again")
+;;  ** Top Level to Minibuffer ... and Back Again **
+;;
+;;  While the minibuffer is active, waiting for you to finish your
+;;  input, you can optionally perform various side actions,
+;;  interacting with Emacs in pretty much the usual ways.  For
+;;  example, you can move to another buffer, type some text there,
+;;  check the definition of a key using `C-h k', and then return to
+;;  typing your input in the minibuffer.  This is true of vanilla
+;;  Emacs, not just Icicles.
+;;
+;;  In other words, the Emacs minibuffer is not "modal", in the sense
+;;  that while it is interacting with you it does not force you to
+;;  stop interacting with Emacs in other ways.  You can select some
+;;  other window, edit some text there, hit keys that perform various
+;;  actions, and so on.
+;;
+;;  You can tell by now that Icicles uses the minibuffer heavily.  It
+;;  takes advantage of and enhances such side-trip interaction.  It
+;;  does this in part by binding lots of keys in the minibuffer
+;;  keymaps.  The examples seen so far exhibit some of those keys:
+;;
+;;    M-?          Show Icicles minibuffer help
+;;    M-R          Act on multiple minibuffer inputs
+;;    C-M-j        Separate multi-completion component patterns
+;;    S-SPC        Initiate progressive completion
+;;    C-!          Act on each matching candidate, in turn
+;;    S-TAB        Apropos-complete (regexp or substring matching)
+;;    down, up     Cycle to the next or previous candidate
+;;    C-RET        Act on the current candidate
+;;    delete       Remove the current candidate from the matches
+;;    C-~          Remove all of the current candidates (complement)
+;;    C-M->        Save (mark) the current candidates, for later reuse
+;;    C-M-<        Retrieve (reuse) the saved (marked) candidates
+;;    C-}          Save the current candidates persistently
+;;    C-{          Retrieve a persistently saved set of candidates
+;;    C-x C-t *    Narrow to files having each of the tags you specify
+;;    C-x a +      Add tags to the current file-name candidate
+;;
+;;  (How to remember all of this?  You don't need to.  You will learn
+;;  some of the keys little by little.  And `M-?' in the minibuffer
+;;  lists many of them.  And the keys you don't know won't hurt you.
+;;  You can also use `C-h M-k' from library `help-fns+.el' to list the
+;;  keys in any keymap, including the minibuffer maps.)
+;;
+;;  Sometimes this temporary, side-track, or parallel interaction can
+;;  itself involve inputting something different in a separate
+;;  minibuffer.  That is, in some cases it can mean that you are
+;;  prompted for minibuffer input at a different level.
+;;
+;;  A recursive minibuffer is used for this interaction: the original
+;;  minibuffer interaction disappears from view temporarily, replaced
+;;  by the new, recursive one.  The original minibuffer interaction is
+;;  not shown, but it is still there, waiting for the new, recursive
+;;  minibuffer interaction to finish before showing itself again.
+;;
+;;  Node `Recursive Editing Levels' in the Emacs manual covers the
+;;  general topic of recursive editing levels, of which recursive
+;;  minibuffer levels is a particular case.  You will want to read
+;;  this.
+;;
+;;  Unfortunately however, though it is worth reading it says next to
+;;  nothing about the case of recursive minibuffers, because vanilla
+;;  Emacs makes little use of this feature.  The Elisp manual, node
+;;  `Recursive Mini', says a little about the topic, but still not
+;;  much.
+;;
+;;  Whereas Emacs provides a special indication of recursive editing
+;;  in the mode line, using nested `[...]' to show the current
+;;  recursive-edit depth, It offers less to show you the depth of
+;;  minibuffer recursion.  To get it to show anything at all, you need
+;;  to turn on `minibuffer-depth-indicate-mode'.  Then it prepends a
+;;  depth indicator to the minibuffer prompt.
+;;
+;;  Emacs bug #14147 asks Emacs Dev to turn on
+;;  `minibuffer-depth-indicate-mode' by default.  In any case, it is
+;;  turned on automatically whenever you are in Icicle mode, because a
+;;  recursive minibuffer is not uncommon in Icicles.  In addition, if
+;;  you use library `mb-depth+.el' then you can customize the
+;;  appearance of the depth indicator.
+;;
+;;(@* "Canceling Minibuffer Interaction")
+;;  *** Canceling Minibuffer Interaction ***
+;;
+;;  Whether or not the minibuffer is active, `C-g' cancels the current
+;;  Emacs operation, essentially the current command.  If the current
+;;  command is reading your input from the minibuffer, then `C-g'
+;;  exits the minibuffer.  If this is a recursive minibuffer then you
+;;  pop up a level, either to a shallower minibuffer or, if there is
+;;  none, to the top level of Emacs (no active minibuffer).
+;;
+;;  But sometimes when the minibuffer is active the current command is
+;;  something other than the command that initiated reading input from
+;;  the minibuffer.  This is common in Icicles, but not so common in
+;;  vanilla Emacs.  When you hit a key during minibuffer input, the
+;;  command bound to that key becomes the current command until it is
+;;  finished.  If it is a self-inserting key like `e' then the command
+;;  (`self-insert-command') finishes immediately, of course.
+;;
+;;  But sometimes the command expects more interaction on your part,
+;;  or perhaps it performs an operation that takes a while.  If you
+;;  then hit `C-g', it is that command, the now current command, that
+;;  is interrupted (canceled), and not the minibuffer.
+;;
+;;  Repeating `C-g' a few times can in many cases cancel the
+;;  minibuffer as well.  But you can always cancel a minibuffer
+;;  immediately and pop up to the previous level by hitting `C-]'
+;;  (`icicle-abort-recursive-minibuffer').
+;;
+;;  So `C-g' cancels the current command, which sometimes means
+;;  canceling the minibuffer.  And `C-]' cancels the current
+;;  minibuffer, popping up to the previous one or to the top level if
+;;  there is no other minibuffer level.
+;;
+;;  But suppose you are in a fairly deep recursive minibuffer (for
+;;  example, you have used progressive completion several times, where
+;;  each time pushes you down another minibuffer level).  How can you
+;;  jump directly all the way up to the top level, instead of hitting
+;;  `C-]' once for each minibuffer level?
+;;
+;;  Answer: use `C-M-T' (that is, `C-M-S-t'), which is bound to
+;;  `icicle-top-level'.
+;;
+;;  So you have three degrees of canceling when you are in the
+;;  minibuffer: `C-g' (cancel the current command), `C-]' (cancel the
+;;  current minibuffer), and `C-M-T' (cancel all minibuffers).
+;;
+;;  Which you use depends on what you want.  Sometimes you want to
+;;  cancel the current operation and resume editing the same
+;;  minibuffer.  Sometimes you want to cancel the current minibuffer
+;;  level.  And sometimes you want to get out of the minibuffer
+;;  altogether.
+;;
+;;  For example, suppose you are using `g' in Info to look up some
+;;  information and you use progressive completion with a content
+;;  search, such as in (@* "Third Example: Narrowing a Manual").  You
+;;  might decide that the current search is taking too long, or that
+;;  perhaps you change your mind about which pattern to search for.
+;;
+;;  In this case, you might hit `C-g' to cancel the current matching
+;;  operation.  After `C-g', you can type the pattern you really want
+;;  and hit `S-TAB' again.  Alternatively, you could hit `C-]' to
+;;  cancel the current minibuffer, and then hit `S-SPC' to create
+;;  another recursive minibuffer.
+;;
+;;  The effect is the same: you abandon the current search and start
+;;  another, without starting over from scratch.  You keep the
+;;  progressive-completion filtering already accomplished at previous
+;;  minibuffer levels.  If you instead decide to stop searching
+;;  altogether then you hit `C-M-T'.
 ;;
 ;;(@* "Toggle Options on the Fly")
 ;;  ** Toggle Options on the Fly **
