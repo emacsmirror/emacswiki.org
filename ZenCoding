@@ -5,6 +5,10 @@ The following blogs provide summary and examples:
 * http://www.456bereastreet.com/archive/200909/write_html_and_css_quicker_with_with_zen_coding/
 * http://mondaybynoon.com/2009/08/17/the-art-of-zen-coding-bringing-snippets-to-a-new-level/ (skip the cruft about snippets)
 
+== Emmet ==
+
+Zen Coding has been renamed to [http://emmet.io/ Emmet] and includes an expanded feature set.  See Shin Aoyama's [https://github.com/smihica/zencoding Github page] for a fork of Ron's repo that includes new Emmet features.
+
 == zencoding-mode ==
 
 A minor mode providing support for Zen Coding by producing HTML from CSS-like selectors. Example:
