@@ -218,7 +218,18 @@ I'm typing "A tab B tab Enter" and get :AAA:BBB: as a result
 I've just disabled icy-mode for org major mode for now, so it is not a big case. -- AvangoAtZoho
 
 [new:DrewAdams:2013-04-07 05:01 UTC]
-Sorry, I'm not very familiar with Org mode, and I cannot follow your recipe.  Can you be more specific as to just what keys to type?  Be very specific, assuming that I know nothing about Org mode.  Thx -- DrewAdams
+I got clarification from someone else about the recipe: 
+
+
+: Create a new buffer, M-x org-mode RET.  Insert this:
+ 
+    * a :aaa:
+    * b :bbb:
+    * c
+
+Then, with point after the `c', hit `C-c C-c', then `a TAB', then `b TAB'.  Vanilla Emacs lets you do multiple, consecutive completions, in this case to `##aaa:bbb:##', but '''Icicles''' does not.
+
+I'm afraid I don't have a workaround for this problem, and I won't have a fix for it anytime soon.  Sorry -- DrewAdams
 
 
 
