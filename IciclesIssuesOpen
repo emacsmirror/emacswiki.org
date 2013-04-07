@@ -224,10 +224,15 @@ I got clarification from someone else about the recipe:
 
 
 : Create a new buffer, M-x org-mode RET.  Insert this:
- 
-    * a :aaa:
-    * b :bbb:
-    * c
+
+this text should be escaped to preserve line separation, asterisk at the *start* of line. I've tried <code> and <example> but could employ neither.
+
+* a :aaa:
+
+* b :bbb:
+
+* c
+
 
 Then, with point after the `c', hit `C-c C-c', then `a TAB', then `b TAB'.  Vanilla Emacs lets you do multiple, consecutive completions, in this case to `##aaa:bbb:##', but '''Icicles''' does not.
 
@@ -240,11 +245,13 @@ More precise repro recipe:
 
 2. paste there lines below (they would be parsed by org)
 
+<literal>
 * one :AAA:
 
 * two :BBB:
 
 * three
+</literal>
 
 3. Go to line "three" (Alt-g Alt-g 5)
 
