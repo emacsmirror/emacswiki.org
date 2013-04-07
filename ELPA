@@ -68,13 +68,15 @@ So packages are initialized //AFTER// the init.el is loaded.  This means you sho
 
     (global-set-key (kbd "C-'")     'shell-switcher-switch-buffer)
 }}}
-* some package specific initialization can be done with eval-after-load, see eval-after-load
+* some package specific initialization can be done with eval-after-load, see [[ELPA#eval-after-load|eval-after-load]]
 
 * if all these tricks don't work you can still postpone config until after the packages have been loaded like this:
 
 {{{
     (add-hook 'after-init-hook 'cycbuf-init)
 }}}
+
+=== Using the `after-init-hook' for package config ===
 
 Some people think that using //after-init-hook// seems like a last resort because it may force the load of the package you're referring to (thus slowing down Emacs). Others point out that moving your whole initialization to after ELPA is loaded makes things easier to use. 
 
@@ -86,12 +88,10 @@ You can do that by putting this in your init file:
 
 and moving all your normal init to the ##<<real init file>>##. 
 
-You can also move the customizations into their own init file, though that shouldn't matter, they could stay in your standard init file with the single ##after-init-hook##. 
-
 [[NicFerrier#PackagesForConfig|See also PackagesForConfig]]
 
-
-=== Using `eval-after-load' for configuration ===
+[:eval-after-load]
+=== Using `eval-after-load' for package config ===
 
 Using `eval-after-load' is one way of achieving fine grained configuration per-package. It falls back gracefully if the package is not present. 
 
