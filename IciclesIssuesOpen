@@ -127,7 +127,7 @@ Better yet, use this to separate threads (puts space before and after the horizo
 
 [:AyvangoStopVisibleBuffersSuggestion]
 
-<code>[new]</code>
+[new]
 
 system: Ubuntu 12.04.1 LTS
 
@@ -170,7 +170,7 @@ I need to ignore visible buffers when calculating default choice for buffer swit
 
 [:AyvangoMultiTaggingInOrgMode]
 
-<code>[new]</code>
+[new]
 
 system: Ubuntu 12.04.1 LTS
 
