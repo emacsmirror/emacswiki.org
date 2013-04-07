@@ -6,11 +6,26 @@ When used with a [[prefix argument]] (e.g, `##C-u M-!##'), the shell-command out
 
 To provide the [[region]] text to the shell command as input, use `##M-|##' (`shell-command-on-region'). If you want the shell to ''replace'' the region text with the output from the shell command, use `##C-u M-|##'.
 
-If you are programming using an interpreted language, such as Perl or Python, or a shell script, such as BASH, you might want to run your entire program through the interpreter.  To do that, use `C-x h' (`mark-whole-buffer'), then use `##M-|##' to send all of the buffer text to the interpreter.
-
 Buffer `##*Shell Command Buffer*##' is displayed briefly whenever you run a shell command.  You can switch to that buffer using `C-x b'.
 
+=== Using the whole buffer ===
 
+If you are programming using an interpreted language, such as Perl or Python, or a shell script, such as BASH, you might want to run your entire program through the interpreter.  To do that, use `C-x h' (`mark-whole-buffer'), then use `##M-|##' to send all of the buffer text to the interpreter.
+
+This function runs a command with the whole buffer as input:
+{{{
+(defun shell-command-on-buffer ()
+  "Asks for a command and executes it in inferior shell with current buffer
+as input."
+  (interactive)
+  (shell-command-on-region
+   (point-min) (point-max)
+   (read-shell-command "Shell command on buffer: ")))
+}}}
+You can also bind this function with a key:
+{{{
+(global-set-key (kbd "M-\"") 'shell-command-on-buffer)
+}}}
 
 == TAB Completion for `M-!' and `M-|' ==
 
