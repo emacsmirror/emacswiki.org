@@ -1244,3 +1244,5 @@ using the arguments BIND-REPLACE-... and filling MATCHED-REPLACE.
 )
 
 (provide 'pkb-html)
+
+CategoryNeedsAttention (Please rename to pkb-html.el)
