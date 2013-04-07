@@ -150,9 +150,11 @@ step to reproduce:
 
 3. Put down two entries with different tags:
 
+{{{
 * one_________  :AAA:
 
 * another_____  :BBB:
+}}}
 
 4. Try to add third entry with both tags
 
@@ -172,14 +174,13 @@ I got clarification from someone else about the recipe:
 
 : Create a new buffer, M-x org-mode RET.  Insert this:
 
-this text should be escaped to preserve line separation, asterisk at the *start* of line. I've tried <code> and <example> but could employ neither.
-
+{{{
 * a :aaa:
 
 * b :bbb:
 
 * c
-
+}}}
 
 Then, with point after the `c', hit `C-c C-c', then `a TAB', then `b TAB'.  Vanilla Emacs lets you do multiple, consecutive completions, in this case to `##aaa:bbb:##', but '''Icicles''' does not.
 
@@ -192,13 +193,13 @@ More precise repro recipe:
 
 2. paste there lines below (they would be parsed by org)
 
-<literal>
+{{{
 * one :AAA:
 
 * two :BBB:
 
 * three
-</literal>
+}}}
 
 3. Go to line "three" (Alt-g Alt-g 5)
 
@@ -215,6 +216,12 @@ Type "A tab B tab Enter" and line three would be tagged with both tags: ":AAA:BB
 6. How icicles changes tag completion:
 
 After typing "A tab" the tag would be completed to AAA, if you type B after that, it would be completed to BBB *overriding* AAA tag
+
+
+
+
+
+
 
 
 
