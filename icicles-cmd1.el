@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Apr  2 21:45:32 2013 (-0700)
+;; Last-Updated: Sat Apr  6 21:42:22 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 25670
+;;     Update #: 25681
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -6144,16 +6144,18 @@ the behavior."                          ; Doc string
 ;; Free var here: `icicle-bufflist' is bound by `icicle-buffer-bindings'.
 (defun icicle-default-buffer-names (&optional arg)
   "Default buffer names (Emacs 23+) or name (< Emacs 23).
-For Emacs 23+, up to four names are returned.
+For Emacs 23+, up to six names are returned.
 
 Optional ARG is used only for Emacs 23+.  Its meaning is the same as
-the prefix argument in Icicles buffer commands:
+the prefix argument in Icicles buffer commands - it determines what
+kinds of buffers to include:
  * nil       :  all buffers
  * Number > 0: buffers visiting files or directories (Dired)
  * Number < 0: buffers associated with the selected frame
  * Number = 0: buffers with the same mode as the current buffer
  * Cons      : buffers with the same mode as current, or with
-               a mode that the current mode is derived from"
+               a mode that the current mode is derived from
+When ARG is nil, the first buffer is `other-buffer'."
   (if (< emacs-major-version 23)
       (let ((bname  (buffer-name (if (fboundp 'another-buffer) ; In `misc-fns.el'.
                                      (another-buffer nil t)
@@ -6165,7 +6167,9 @@ the prefix argument in Icicles buffer commands:
     (let* ((bfnames  (mapcar #'buffer-name (delete (current-buffer) (or icicle-bufflist  (buffer-list))))))
       (when icicle-buffer-ignore-space-prefix-flag
         (setq bfnames  (icicle-remove-if (lambda (bfname) (icicle-string-match-p "^ " bfname)) bfnames)))
-      (icicle-first-N 4 bfnames))))
+      (let ((six  (icicle-first-N 6 bfnames)))
+        (if arg six (let ((other  (buffer-name (other-buffer (current-buffer)))))
+                      (cons other (delete other six))))))))
 
 (defun icicle-buffer-cand-help (cand)
   "Help function for multi-completion buffer-name candidate CAND."
