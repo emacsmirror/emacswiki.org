@@ -1,6 +1,6 @@
 == About Me ==
 <pre>
-(minibuffer-message "Welcome to my homepage! ;-)")
+(message "Welcome to my homepage! ;-)")
 </pre>
 
 I use Emacs.My name is Xue Fuqiao.  English is not my native language; please
