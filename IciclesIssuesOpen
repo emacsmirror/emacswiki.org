@@ -154,7 +154,7 @@ step to reproduce:
 what I see: "a.txt"
 what I need: "*scratch*"
 
-I need to ignore visible buffers when calculating default choice for buffer switching -- AvangoAtSoho
+I need to ignore visible buffers when calculating default choice for buffer switching -- AvangoAtZoho
 
 
 [new:DrewAdams:2013-04-07 04:53 UTC]
@@ -215,7 +215,7 @@ With icy-mode disabled:
 
 I'm typing "A tab B tab Enter" and get :AAA:BBB: as a result
 
-I've just disabled icy-mode for org major mode for now, so it is not a big case. -- AvangoAtSoho
+I've just disabled icy-mode for org major mode for now, so it is not a big case. -- AvangoAtZoho
 
 
 
