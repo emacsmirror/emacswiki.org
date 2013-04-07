@@ -1,17 +1,21 @@
 ELPA is the *Emacs Lisp Package Archive*, originally by TomTromey, now included in Emacs 24 after contributions from others.
 
 == ELPA  ==
-: "Our goal is to make it simple to install, use, and upgrade Emacs Lisp packages. We supply ##package.el##, a simple package manager for Emacs, and a repository of pre-packed Emacs Lisp code."
+//"Our goal is to make it simple to install, use, and upgrade Emacs Lisp packages. We supply ##package.el##, a simple package manager for Emacs, and a repository of pre-packed Emacs Lisp code."//
 
-##package.el## (from ELPA) has been added to GnuEmacs, version 24.  An [http://elpa.gnu.org/ ELPA repository] has been set up.
+##package.el## is a package manager included in Emacs since version 24. It includes a built-in repository of FSF sanctioned Emacs packages, also called ELPA and found at [[http://elpa.gnu.org/|ELPA repository]].
 
-The Emacs version of ##package.el## will support multiple repositories.  You can use the GNU ELPA plus other repositories like this:
+The Emacs version of ##package.el## supports multiple repositories.  You can use the GNU ELPA plus other repositories like this:
 
-  (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
-                           ("marmalade" . "http://marmalade-repo.org/packages/")
-                           ("melpa" . "http://melpa.milkbox.net/packages/")))
+{{{
+(setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
+                         ("marmalade" . "http://marmalade-repo.org/packages/")
+                         ("melpa" . "http://melpa.milkbox.net/packages/")))
+}}}
 
 Any combination of repositories is fine.  You should probably always include GNU's core repository but it's not required.
+
+Package archives may also be [[LocalElpaArchive|local to your machine]].
 
 === Adding transactionally ===
 You can also do it transactionally.
@@ -24,9 +28,13 @@ Adding [[MELPA]]:
 
   (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
 
-Package archives may also be [[LocalElpaArchive|local to your machine]].
+=== Using customize ===
 
-You can also use customize to control these variables.
+You can also customize `package-archives'. Try:
+
+{{{
+M-x customize-variable [RET] package-archives [RET]
+}}}
 
 
 == How Packages work in Emacs 24 ==
@@ -38,6 +46,7 @@ So packages are initialized //AFTER// the init.el is loaded.  This means you sho
 
 * customization variables for a package are fine, they can be set before a package has loaded
 * some package specific initialization can be done with eval-after-load. Following code is an example for customizing a hypothetical major mode called abcd-mode using eval-after-load
+
 {{{
     (eval-after-load "abcd-mode" ; <-- "abcd-mode", not 'abcd-mode
       '(progn
@@ -49,6 +58,7 @@ So packages are initialized //AFTER// the init.el is loaded.  This means you sho
 }}}
 
 Following code is an example for a hypothetical global minor mode called broccoli mode.
+
 {{{
     (eval-after-load "broccoli-autoloads" ; <-- "broccoli-autoloads", not "broccoli"
       '(progn
