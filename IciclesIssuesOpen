@@ -115,9 +115,96 @@ Better yet, use this to separate threads (puts space before and after the horizo
 
 
 
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
 
 
 
+[:AyvangoStopVisibleBuffersSuggestion]
+
+<code>[new]</code>
+
+system: Ubuntu 12.04.1 LTS
+
+emacs: GNU Emacs 24.2.1 (x86_64-pc-linux-gnu, GTK+ Version 2.24.10) of 2012-11-09 on lakoocha, modified by Debian.
+
+icicles update: Update #: 9921
+
+problem:
+
+Emacs suggest some sane default buffer to switch to when performing "C-x b". It places default choice into parentheses. You may switch to it just hitting Enter. It's very convenient and I'd like to keep this behavior while using icicles.
+
+step to reproduce:
+
+1. Start emacs with icicles in the .emacs file
+
+2. Visit a file (say "a.txt")
+
+3. Split windows (with "C-x 2" or "C-x 3")
+
+4. Visit another file (say "b.txt")
+
+5. Try to switch buffer with "C-x b"
+
+what I see: "a.txt"
+what I need: "*scratch*"
+
+I need to ignore visible buffers when calculating default choice for buffer switching
+
+
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+
+
+[:AyvangoMultiTaggingInOrgMode]
+
+<code>[new]</code>
+
+system: Ubuntu 12.04.1 LTS
+
+emacs: GNU Emacs 24.2.1 (x86_64-pc-linux-gnu, GTK+ Version 2.24.10) of 2012-11-09 on lakoocha, modified by Debian.
+
+icicles update: Update #: 9921
+
+problem:
+
+icicles rewrites entire tag list when autocompleting tags for an org-mode entry
+
+step to reproduce:
+
+1. Start emacs with icicles in the .emacs file
+
+2. Visit org-mode file ( "temp.org" )
+
+3. Put down two entries with different tags:
+
+* one_________  :AAA:
+
+* another_____  :BBB:
+
+4. Try to add third entry with both tags
+
+With icy-mode enabled:
+
+I've forced to choose either :AAA: or :BBB:, not both
+
+With icy-mode disabled:
+
+I'm typing "A tab B tab Enter" and get :AAA:BBB: as a result
+
+I've just disabled icy-mode for org major mode for now, so it is not a big case.
 
 
 <pre>
