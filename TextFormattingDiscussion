@@ -103,6 +103,15 @@ It would be just as easy to add an extension that supports embedding from a limi
 
 -- Alex
 
+[::new]
+Yeah. I guess it is problematic. I'll have to think about that for creole. I guess we could whitelist certain HTML tags, parse the HTML and only allow what's whitelisted. 
+
+I think it would be very difficult to support lots of different movie formats. Especially right now as that whole world is changing a lot.
+
+The trouble is the movie plugins vary so much. Some are js, some (like youtubes) are iframes and some are just EMBEDs or HTML5 movie objects.
+
+But I guess supporting movies directly is really the only way to go right now. It would be cool if EmacsWiki could support them coz they're obviously a great way to teach newbies. 
+
 == Slightly richer source code ==
 
 The automatic semicolon detection enables the "download" link and syntax highlighting, but makes it impossible to add a category or link to the author's home page.
