@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Apr  5 10:57:06 2013 (-0700)
+;; Last-Updated: Sat Apr  6 21:38:48 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 9921
+;;     Update #: 9926
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -86,6 +86,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2013/04/06 dadams
+;;     icicle-default-buffer-names: If ARG is nil, put other-buffer first.  Return up to six, not four.
 ;; 2013/04/02 dadams
 ;;     Removed: icicle-ess-* (four Icicles completion functions for ESS).
 ;; 2013/03/31 dadams
@@ -1726,6 +1728,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2013/04/06 dadams
+;;     icicle-completing-p:
+;;       Bug fix for Emacs > 24.3.  Test minibuffer-completing-file-name, not filename keymaps.
 ;; 2013/03/11 dadams
 ;;     icicle-try-switch-buffer: If BUFFER is already current, do nothing, to prevent hooks kicking in.
 ;; 2013/03/07 dadams
