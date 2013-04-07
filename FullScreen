@@ -56,7 +56,7 @@ These methods may be useful with older versions of Emacs, or ports where the 'fu
 
 === MS Windows ===
 
-The simplest way to get near fullscreen editing is to hide the Windows taskbar and maximize the current Emacs frame. You can use the control panel to make the taskbar always hidden (autohide), or call [http://www.ctrl-alt-del.com.au/CAD_TSUtils.htm TSTBARSET] from the command line with the appropriate flag to toggle the taskbar between visible and hidden. (TSTBARSET is a utility to manipulate the taskbar from the command line; scroll near the bottom of linked page to download it).
+The simplest way to get near fullscreen editing is to hide the Windows taskbar and maximize the current Emacs frame. You can use the control panel to make the taskbar always hidden (autohide), or call [http://www.ctrl-alt-del.com.au/CAD_TSUtils.htm TSTBARSET] from the command line with the appropriate flag to toggle the taskbar's visibility. (TSTBARSET is a utility to manipulate the taskbar from the command line; scroll near the bottom of linked page to download it).
 
 If the menubar on the emacs frame still bothers you, a call to emacs-fullscreen-win32 listed below will get rid of it.
 
