@@ -160,7 +160,9 @@ I need to ignore visible buffers when calculating default choice for buffer swit
 [new:DrewAdams:2013-04-07 04:53 UTC]
 Please try the latest <tt>[[icicles-cmd1.el]]</tt>.  Thx -- DrewAdams
 
+[new:Ayvango:2013-04-07 10:20 UTC]
 
+I've checked icicles-cmd1.el version 25681 (chg version 9926). It works! Thx -- Ayvango
 
 
 
@@ -231,7 +233,34 @@ Then, with point after the `c', hit `C-c C-c', then `a TAB', then `b TAB'.  Vani
 
 I'm afraid I don't have a workaround for this problem, and I won't have a fix for it anytime soon.  Sorry -- DrewAdams
 
+[new:Ayvango:2013-04-07 10:20 UTC]
+More precise repro recipe:
 
+1. visit some file with org mode e.g. "temp.org"
+
+2. paste there lines below (they would be parsed by org)
+
+* one :AAA:
+
+* two :BBB:
+
+* three
+
+3. Go to line "three" (Alt-g Alt-g 5)
+
+4. Press (C-c C-q) and thus invoke tag editing.
+
+Line three have no tags, line one have tag :AAA:, line two have tag :BBB: Now we editing tag list for the third line and using existing tags in the file for completion
+
+5. Original way without icicles
+
+after completing first tag separator ":" would be put and org-mode become ready for next tag competion
+
+Type "A tab B tab Enter" and line three would be tagged with both tags: ":AAA:BBB:"
+
+6. How icicles changes tag completion:
+
+After typing "A tab" the tag would be completed to AAA, if you type B after that, it would be completed to BBB *overriding* AAA tag
 
 
 
