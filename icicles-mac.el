@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:24:28 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Mar 31 16:53:41 2013 (-0700)
+;; Last-Updated: Sun Apr  7 00:53:31 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 1107
+;;     Update #: 1108
 ;; URL: http://www.emacswiki.org/icicles-mac.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -294,7 +294,7 @@ created after the others."
        (icicle-transform-function                   'icicle-remove-dups-if-extras)
        (icicle--temp-orders
         (append (list
-                 '("by last access")    ; Renamed from "turned OFF'.
+                 '("by last display time")    ; Renamed from "turned OFF'.
                  '("*...* last" . icicle-buffer-sort-*...*-last)
                  '("by buffer size" . icicle-buffer-smaller-p)
                  '("by major mode name" . icicle-major-mode-name-less-p)
