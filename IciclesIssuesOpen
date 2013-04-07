@@ -127,7 +127,7 @@ Better yet, use this to separate threads (puts space before and after the horizo
 
 [:AyvangoStopVisibleBuffersSuggestion]
 
-[new]
+[new:Ayvango:2013-04-07 01:43 UTC]
 
 system: Ubuntu 12.04.1 LTS
 
@@ -170,8 +170,7 @@ I need to ignore visible buffers when calculating default choice for buffer swit
 
 [:AyvangoMultiTaggingInOrgMode]
 
-[new]
-
+[new:Ayvango:2013-04-07 01:43 UTC]
 system: Ubuntu 12.04.1 LTS
 
 emacs: GNU Emacs 24.2.1 (x86_64-pc-linux-gnu, GTK+ Version 2.24.10) of 2012-11-09 on lakoocha, modified by Debian.
