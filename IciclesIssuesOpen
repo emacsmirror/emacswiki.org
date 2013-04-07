@@ -154,7 +154,19 @@ step to reproduce:
 what I see: "a.txt"
 what I need: "*scratch*"
 
-I need to ignore visible buffers when calculating default choice for buffer switching
+I need to ignore visible buffers when calculating default choice for buffer switching -- AvangoAtSoho
+
+
+[new:DrewAdams:2013-04-07 04:53 UTC]
+Please try the latest <tt>[[icicles-cmd1.el]]</tt>.  Thx -- DrewAdams
+
+
+
+
+
+
+
+
 
 
 
