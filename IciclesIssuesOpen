@@ -166,11 +166,12 @@ With icy-mode disabled:
 
 I'm typing "A tab B tab Enter" and get :AAA:BBB: as a result
 
-I've just disabled icy-mode for org major mode for now, so it is not a big case. -- AvangoAtZoho
+I've just disabled icy-mode for org major mode for now, so it is not a big case. -- [[Ayvango]]
+
+
 
 [new:DrewAdams:2013-04-07 05:01 UTC]
 I got clarification from someone else about the recipe: 
-
 
 : Create a new buffer, M-x org-mode RET.  Insert this:
 
@@ -185,6 +186,8 @@ I got clarification from someone else about the recipe:
 Then, with point after the `c', hit `C-c C-c', then `a TAB', then `b TAB'.  Vanilla Emacs lets you do multiple, consecutive completions, in this case to `##aaa:bbb:##', but '''Icicles''' does not.
 
 I'm afraid I don't have a workaround for this problem, and I won't have a fix for it anytime soon.  Sorry -- DrewAdams
+
+
 
 [new:Ayvango:2013-04-07 10:20 UTC]
 More precise repro recipe:
@@ -215,10 +218,11 @@ Type "A tab B tab Enter" and line three would be tagged with both tags: ":AAA:BB
 
 6. How icicles changes tag completion:
 
-After typing "A tab" the tag would be completed to AAA, if you type B after that, it would be completed to BBB *overriding* AAA tag
+After typing "A tab" the tag would be completed to AAA, if you type B after that, it would be completed to BBB *overriding* AAA tag. -- [[Ayvango]]
 
 
-
+[new:DrewAdams:2013-04-07 18:03 UTC]
+Yes, that is the same recipe, essentially. Sorry, I don't have a solution for it. -- DrewAdams
 
 
 
