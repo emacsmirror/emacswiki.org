@@ -177,5 +177,24 @@ In any case, this discussion is somewhat moot. I originally wrote PredictiveMode
 
 -- TobyCubitt
 
+==== Receipt for saving keystrokes with Predictive ====
+
+[new]
+
+Based on Toby's suggestion, here is what I have for saving keystrokes. 
+
+* (setq auto-completion-syntax-alist (quote (global accept . word))) ;; Use space and punctuation to accept the current the most likely completion.
+
+* (setq auto-completion-min-chars (quote (global . 2))) ;; Avoid completion for short trivial words. 
+
+Predictive is very powerful, it takes time to figure out. I hope that this receipt could help those who just want to save time in entering key-strokes. 
+
+==== Another wish: automatically stop completion when there is little key-stroke saving ====
+
+[new]
+
+For example, for the very common word: "the", it would be help to complete with "he" when I type character 't', but it does not help to suggest the remaining 'e', but distract when I already type "th". So I wondering if the dynamic completion could be even more smart by checking on the remaining characters left to complete in the most likely completion, if it's smaller than a set threshold stop the completion. Not sure if it's already supported? I've read the manual, but could not find any clue. 
+
+--- YuShen
 ----
 CategoryModes | CategoryCompletion | CategorySpelling
