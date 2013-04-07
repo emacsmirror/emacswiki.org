@@ -26,6 +26,7 @@
 
 ;;; Code:
 
+;;;###autoload
 (define-generic-mode csv-nav-mode
   nil '(",") nil '(".csv\\'")
   '((lambda ()
