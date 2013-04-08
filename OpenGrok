@@ -8,3 +8,6 @@ Lisp:opengrok.el
 CategoryProgrammerUtils
 CategoryExternalUtilities
 CategoryNavigation
+
+
+The output is not correctly seperated by line, all output all in a single line.
