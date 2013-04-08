@@ -2,7 +2,9 @@ If you're wanting to learn Emacs or EmacsLisp you could do worse than finding a 
 
 Here's a list of people and projects you could hack on:
 
-* Fuco has stuff in [[https://github.com/Fuco1/litable/blob/master/litable.el#L248|litable]] that you could do
+* GnuEmacs [http://debbugs.gnu.org/db/ix/full.html
+ bugs] needing fixing (in many cases there is a patch to apply or the fix is otherwise simple). 
+* [[Fuco]] has stuff in [[https://github.com/Fuco1/litable/blob/master/litable.el#L248|litable]] that you could do
 * NicFerrier has stuff in [[https://github.com/nicferrier/elwikicreole/blob/master/creole.el|WikiCreole]], we need to add lots of OddMuse support
 
 ----
