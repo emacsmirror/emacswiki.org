@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Jan 30 15:01:06 1996
 ;; Version: 21.0
-;; Last-Updated: Wed Mar 27 11:32:27 2013 (-0700)
+;; Last-Updated: Mon Apr  8 08:21:28 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 1595
+;;     Update #: 1598
 ;; URL: http://www.emacswiki.org/replace%2b.el
 ;; Doc URL: http://www.emacswiki.org/ReplacePlus
 ;; Keywords: matching, help, internal, tools, local
@@ -101,7 +101,7 @@
 ;;                                   `*-region-as-default-flag'.
 ;;    `query-replace-read-(from|to)' - Like `query-replace-read-args',
 ;;                                     but for Emacs 21+.
-;;    `read-regexp' (Emacs 23+) -
+;;    `read-regexp' (Emacs 23-24.2) -
 ;;                        1. Allow DEFAULTS to be a list of strings.
 ;;                        2. Prepend DEFAULTS to the vanilla defaults.
 ;;
@@ -133,6 +133,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/04/08 dadams
+;;     read-regexp: Not needed for Emacs 24.3 or later.
 ;; 2013/03/28 dadams
 ;;     Added redefinition of query-replace-read-args for Emacs 22+.
 ;;     Added defadvice for query-replace(-regexp), replace-(string|regexp).
@@ -836,9 +838,11 @@ replacement."
 ;; 1. Allow DEFAULTS to be a list of strings.
 ;; 2. Prepend DEFAULTS to the vanilla defaults.
 ;;
+;; Not needed for Emacs 24.3+.
+;;
 ;; $$$$$$ Should we let this return empty input ("") under some conditions?  E.g., if DEFAULTS contains ""?
 ;;
-(when (> emacs-major-version 22)
+(when (or (= emacs-major-version 23)  (and (= emacs-major-version 24)  (< emacs-minor-version 3)))
   (defun read-regexp (prompt &optional defaults)
     "Read and return a regular expression as a string.
 Prompt with PROMPT, which should not include a final `: '.
