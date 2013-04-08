@@ -1,135 +1,17 @@
-== Power Line ==
 Some code to modify mode-line to display things like in the VIM powerline (https://github.com/Lokaltog/vim-powerline)
 
 http://www.loria.fr/~rougier/images/emacs-powerline.png
 
-A more complete version, including minor modes, is included in Lisp:powerline.el
+=== Emacswiki version ===
 
+Lisp:powerline.el was first released here on the Emacswiki by Nicolas Rougier and later improved by Chen Yuan.
 
-=== New Version / Rewrite ===
+=== Donald Ephraim Curtis' version ===
 
 https://github.com/milkypostman/powerline
 
 I have rewritten this package and am hosting the repository on Github.  My version uses many of the techniques in the original---posted here---but tries to make it easier to add new things.  Please submit issues there and any of your own mode-line themes using PowerLine --DonaldCurtis
 
+=== Jonathan Chu's version ===
 
-
-=== Hacking ===
-
-I got tired of seeing blank olive-drab mode-lines and fixed it up a little to warn the user when there was a problem displaying the modeline, by A) outputting "ERR" on the modeline where the problem was and B) sending a message out to the console telling the user as much.  This should make tracking-down and removing errors a little easier.  --JonathanArkell
-
-
-=== Original Powerline ===
-
-(original code kept for posterity.  If you delete it, lets at least keep Nicolas's name somewhere on the page, as he may be the originator of this awesomeness.)
-
-
-Code:
-
-{{{
-;; powerline.el --- fancy statusline
-;; Name: Emacs Powerline
-;; Author: Nicolas Rougier
-;; Version: 1.0
-;; Keywords: statusline
-;;
-;; Commentary:
-;; This package simply provides a minor mode for fancifying the status line.
-
-(defun arrow-right-xpm (color1 color2)
-  "Return an XPM right arrow string representing."
-  (format "/* XPM */
-static char * arrow_right[] = {
-\"12 18 2 1\",
-\".	c %s\",
-\" 	c %s\",
-\".           \",
-\"..          \",
-\"...         \",
-\"....        \",
-\".....       \",
-\"......      \",
-\".......     \",
-\"........    \",
-\".........   \",
-\".........   \",
-\"........    \",
-\".......     \",
-\"......      \",
-\".....       \",
-\"....        \",
-\"...         \",
-\"..          \",
-\".           \"};"  color1 color2))
-
-(defun arrow-left-xpm (color1 color2)
-  "Return an XPM right arrow string representing."
-  (format "/* XPM */
-static char * arrow_right[] = {
-\"12 18 2 1\",
-\".	c %s\",
-\" 	c %s\",
-\"           .\",
-\"          ..\",
-\"         ...\",
-\"        ....\",
-\"       .....\",
-\"      ......\",
-\"     .......\",
-\"    ........\",
-\"   .........\",
-\"   .........\",
-\"    ........\",
-\"     .......\",
-\"      ......\",
-\"       .....\",
-\"        ....\",
-\"         ...\",
-\"          ..\",
-\"           .\"};"  color2 color1))
-
-
-(defconst color1 "#999")
-(defconst color2 "#555")
-
-(defvar arrow-right-1 (create-image (arrow-right-xpm color1 color2) 'xpm t :ascent 'center))
-(defvar arrow-right-2 (create-image (arrow-right-xpm color2 "None") 'xpm t :ascent 'center))
-(defvar arrow-left-1  (create-image (arrow-left-xpm color2 color1) 'xpm t :ascent 'center))
-(defvar arrow-left-2  (create-image (arrow-left-xpm "None" color2) 'xpm t :ascent 'center))
-
-(setq-default mode-line-format
- (list  '(:eval (concat (propertize " %b " 'face 'mode-line-color-1)
-                        (propertize " " 'display arrow-right-1)))
-        '(:eval (concat (propertize " %m " 'face 'mode-line-color-2)
-                        (propertize " " 'display arrow-right-2)))
-
-        ;; Justify right by filling with spaces to right fringe - 16
-        ;; (16 should be computed rahter than hardcoded)
-        '(:eval (propertize " " 'display '((space :align-to (- right-fringe 17)))))
-
-        '(:eval (concat (propertize " " 'display arrow-left-2)
-                        (propertize " %p " 'face 'mode-line-color-2)))
-        '(:eval (concat (propertize " " 'display arrow-left-1)
-                        (propertize "%4l:%2c  " 'face 'mode-line-color-1)))
-)) 
-
-(make-face 'mode-line-color-1)
-(set-face-attribute 'mode-line-color-1 nil
-                    :foreground "#fff"
-                    :background color1)
-
-(make-face 'mode-line-color-2)
-(set-face-attribute 'mode-line-color-2 nil
-                    :foreground "#fff"
-                    :background color2)
-
-(set-face-attribute 'mode-line nil
-                    :foreground "#fff"
-                    :background "#000"
-                    :box nil)
-(set-face-attribute 'mode-line-inactive nil
-                    :foreground "#fff"
-                    :background "#000")
-}}}
-
-NicolasRougier
+://github.com/jonathanchu/emacs-powerline
