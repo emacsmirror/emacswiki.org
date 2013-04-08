@@ -1122,7 +1122,7 @@ before the command gets run.")
 	  "Best Match: " (car pabbrev-suggestions-best-suggestion)
 	  "\n"))
 	(if suggestions
-	    (loop for iv from 0 to 9 do
+	    (loop for i from 0 to 9 do
 	      ;; are we less than the suggestions
 	      (if (< i (length suggestions))
 		  (progn
