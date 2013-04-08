@@ -5,5 +5,5 @@ Here's a list of people and projects you could hack on:
 * Fuco has stuff in [[https://github.com/Fuco1/litable/blob/master/litable.el#L248|litable]] that you could do
 * NicFerrier has stuff in [[https://github.com/nicferrier/elwikicreole/blob/master/creole.el|WikiCreole]], we need to add lots of OddMuse support
 
----
-CategoryEmacsLisp
+----
+CategoryCode
