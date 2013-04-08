@@ -78,16 +78,21 @@
 ;; start position is set as marker. So you can use "C-x C-x" back to
 ;; that position.
 
-;; `iy-go-to-char-backward' search backward by default. Not like in
-;; "vim", ";" is always searching forward and "," is searching
-;; backward, whether the search is started forward or backward. It
-;; does be the same even when the search char is ";" or ",". Also the
-;; search can cross lines. To continue search last char, use
-;; `iy-go-to-char-continue' and `iy-go-to-char-continue-backward'.
+;; `iy-go-to-char-backward' search backward by default. Also the search can
+;; cross lines. To continue search last char, use `iy-go-to-char-continue' and
+;; `iy-go-to-char-continue-backward'.
 
 ;;; Change Log:
+;; 2013-04-08 (3.0)
+;;
+;;    - When jump is started backward (with negative parameter, or
+;;      `iy-go-to-char-backward'). Repeating continues the search
+;;      backward. Also `iy-go-to-char-key-forward' jumps with the same
+;;      direction when jump is started, and `iy-go-to-char-key-backward' jumps
+;;      to reverse direction.
+;;
 ;; 2013-03-25 (2.1)
-;;    - Fix a but that I forget to set `mc--this-command`
+;;    - Fix a but that I forget to set `mc--this-command'
 ;; 2013-03-25 (2.0)
 ;;    - Use overriding-local-map to setup keymap
 ;;    - multiple-cursors compatible
@@ -114,8 +119,14 @@
 (defvar iy-go-to-char-start-pos nil
   "position where go to char mode is enabled")
 
+(defvar iy-go-to-char-start-dir 1
+  "jump start direction")
+
 (defvar iy-go-to-char-last-char nil
   "last char used in iy-go-to-char")
+
+(defvar iy-go-to-char-last-step 1
+  "last jump step used in iy-go-to-char")
 
 (defvar iy-go-to-char-keymap (let ((map (make-sparse-keymap)))
                                (define-key map (kbd "C-s") 'iy-go-to-char-isearch)
@@ -205,9 +216,33 @@
   (iy-go-to-char-done)
   (kill-ring-save (point) (mark)))
 
-(defun iy-go-to-char--internal (n)
-  (interactive "p")
-  (search-forward (string iy-go-to-char-last-char) nil nil (if (zerop n) 1 n)))
+(defun iy-go-to-char--command ()
+  "Repeatable command to really move cursor."
+  (interactive)
+  (let ((n (if (< iy-go-to-char-start-dir 0)
+               (- iy-go-to-char-last-step)
+             iy-go-to-char-last-step)))
+    (search-forward (string iy-go-to-char-last-char) nil nil n)))
+
+(defun iy-go-to-char--internal (n char)
+  "Store information when jump is started. Delegate real cursor
+movement to `iy-go-to-char--command' and set it as
+`mc--this-command' so that iy-go-to-char can be used with multiple-cursors.
+"
+  (interactive "p\ncGo to char: ")
+  (setq iy-go-to-char-last-step n)
+  (setq iy-go-to-char-last-char char)
+  (unless iy-go-to-char-start-pos
+    (setq iy-go-to-char-start-pos (point))
+    (iy-go-to-char--override-local-map char))
+
+  (setq this-original-command 'iy-go-to-char--command
+        this-command 'iy-go-to-char--command
+        mc--this-command 'iy-go-to-char--command)
+
+  (message "%s %d" (make-string 1 iy-go-to-char-last-char) iy-go-to-char-start-dir)
+
+  (call-interactively 'iy-go-to-char--command))
 
 ;;;###autoload
 (defun iy-go-to-char (n char)
@@ -223,15 +258,8 @@ Unless quit using C-g or the region is activated before searching, the start
  point is set as mark.
 "
   (interactive "p\ncGo to char: ")
-  (setq iy-go-to-char-last-char char)
-  (unless iy-go-to-char-start-pos
-    (setq iy-go-to-char-start-pos (point))
-    (iy-go-to-char--override-local-map char))
-
-  (setq this-original-command 'iy-go-to-char--internal
-        this-command 'iy-go-to-char--internal
-        mc--this-command 'iy-go-to-char--internal)
-  (call-interactively 'iy-go-to-char--internal))
+  (setq iy-go-to-char-start-dir (if (< n 0) -1 1))
+  (iy-go-to-char--internal n char))
 
 ;;;###autoload
 (defun iy-go-to-char-backward (n char)
@@ -242,21 +270,22 @@ Typing , will move to the previous occurence of CHAR.
 Typing C-g will quit and return to the original point.
 Typing C-s or C-r will start `isearch` using CHAR"
   (interactive "p\ncGo to char: ")
-  (iy-go-to-char (- n) char))
+  (setq iy-go-to-char-start-dir (if (< n 0) 1 -1))
+  (iy-go-to-char--internal n char))
 
 ;;;###autoload
 (defun iy-go-to-char-continue (n)
   "Continue last `iy-go-to-char` or `iy-go-to-char-backward`"
   (interactive "p")
   (when iy-go-to-char-last-char
-    (iy-go-to-char n iy-go-to-char-last-char)))
+    (iy-go-to-char--internal n iy-go-to-char-last-char)))
 
 ;;;###autoload
 (defun iy-go-to-char-continue-backward (n)
   "Continue last `iy-go-to-char` or `iy-go-to-char-backward`"
   (interactive "p")
   (when iy-go-to-char-last-char
-    (iy-go-to-char (- n) iy-go-to-char-last-char)))
+    (iy-go-to-char--internal (- n) iy-go-to-char-last-char)))
 
  
 
