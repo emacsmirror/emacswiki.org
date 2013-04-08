@@ -1,7 +1,5 @@
 StripeBuffer is mode that striple buffer with color overlay.
 
-You can get it from [[stripe-buffer.el]].
-
-== Dialog ==
-I tried to use it. Do you know highlight-regexp? -- [[rubikitch]]
+You can get it from [[stripe-buffer.el]] another implementation
+is available from https:// github.com/sabof/stripe-buffer.
 
