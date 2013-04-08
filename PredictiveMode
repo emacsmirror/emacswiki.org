@@ -187,6 +187,9 @@ Based on Toby's suggestion, here is what I have for saving keystrokes.
 
 * (setq auto-completion-min-chars (quote (global . 2))) ;; Avoid completion for short trivial words. 
 
+The purpose of the receipt is to let me to type as few as possible but without looking at the echo area nor tool tips nor any display of other options, 
+in order to save keystrokes as much as possible, while not being distracted from the flow of writing. 
+
 Predictive is very powerful, it takes time to figure out. I hope that this receipt could help those who just want to save time in entering key-strokes. 
 
 ==== Another wish: automatically stop completion when there is little key-stroke saving ====
