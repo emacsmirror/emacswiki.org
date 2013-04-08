@@ -43,5 +43,10 @@ Here are the various Emacs bits I use.  Some come with it, some are external. Th
 * JavaScriptMode - Major mode for editing JavaScript source code
 * ErcMode - Emacs IRC
 * [[emacs-w3m]] - an Emacs interface to w3m
+* OrgMode - use this for everything from a project reminder to a journal
+* PerforceSCM - my SCCS of choice
+* NewsTicker - since the demise of Google Reader, I'm trying to use Emacs as an RSS reader
+* [[Iedit]] - edit multiple instances
+
 ----
 CategoryHomepage
