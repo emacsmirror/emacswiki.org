@@ -10,6 +10,12 @@ Would be very neat for Python, emacs-lisp, etc.
 
 Also see http://www.kickstarter.com/projects/568774734/emacsy-an-embeddable-emacs 
 
+[new]
+
+I've started a project implementing this: https://github.com/Fuco1/litable . The name will probably change to something more emacsy, the old repo will stay there for redirect.
+
+-- Fuco
+
 ===Rendering html within emacs===
 ==Picking and showing function definitions side-by-side regardless of files==
 "the smallest unit is a function, not a file"
