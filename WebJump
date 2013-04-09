@@ -61,3 +61,34 @@ Below are some customizations compared to default behavior. Hope it's useful for
       (webjump-builtin expr name)))
 
 </pre>
+
+[new]
+
+Here is a customization type that you can use for setting webjump sites:
+
+<pre>
+(defcustom webjump-sites-custom (if (featurep 'webjump-plus)
+                                    (append webjump-plus-sites webjump-sample-sites)
+                                  webjump-sample-sites)
+  "List of sites for `webjump'.
+See `webjump-sites' for information on the format of this variable."
+  :type '(alist :key-type (string :tag "Name")
+                :value-type (choice (string :tag "URL")
+                                    (choice :tag "Vector"
+                                            (vector :tag "Name"
+                                                    (const name))
+                                            (vector :tag "Simple-query"
+                                                    (const simple-query)
+                                                    (string :tag "Static URL")
+                                                    (string :tag "Prefix")
+                                                    (string :tag "Suffix"))
+                                            (sexp :tag "Mirrors"
+                                                  :help-echo "This should be a vector whos first element is the symbol 'mirrors and subsequent elements are strings containing URLs of mirror sites."))
+                                    (function :tag "Function")
+                                    (sexp :tag "Sexp to eval"))))
+(setq webjump-sites webjump-sites-custom)
+</pre>
+
+ -- JoeBloggs 2013-04-09 06:13 UTC
+
+[new]
