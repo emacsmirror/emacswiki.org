@@ -43,3 +43,10 @@ The message should list the rule it triggers. You can then find the rules on Ban
 
 -- [http://alexschroeder.ch/alex/Emacs AlexSchroeder] 2013-04-09 20:23 UTC
 
+
+----
+
+The message should list the rule it triggers. You can then find the rules on BannedContent and related pages.
+
+-- [http://alexschroeder.ch/alex/Emacs AlexSchroeder] 2013-04-09 20:23 UTC
+
