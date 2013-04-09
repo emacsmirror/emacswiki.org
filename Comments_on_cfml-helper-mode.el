@@ -27,7 +27,7 @@ Thanks
 
 -- JonasBernoulli 2013-02-01 15:47 UTC
 
-
+http://elfmaidsandoctopi.blogspot.ch/2013/04/races-from-beyond-black-stump.html?m=1
 ----
 
 Alex: Did you actually comment that rule?
@@ -39,14 +39,6 @@ Here are two more files that need fixing StripeBuffer and PowerLine. I added a s
 
 ----
 
-The message should list the rule it triggers. You can then find the rules on BannedContent and related pages.
-
--- [http://alexschroeder.ch/alex/Emacs AlexSchroeder] 2013-04-09 20:23 UTC
-
-
-----
-
 The message should list the rule it triggers. You can then find the rules on BannedContent and BannedRegexps.
 
 -- [http://alexschroeder.ch/alex/Emacs AlexSchroeder] 2013-04-09 20:23 UTC
-
