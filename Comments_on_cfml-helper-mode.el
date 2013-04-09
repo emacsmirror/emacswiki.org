@@ -27,3 +27,12 @@ Thanks
 
 -- JonasBernoulli 2013-02-01 15:47 UTC
 
+
+----
+
+Alex: Did you actually comment that rule?
+
+Here are two more files that need fixing StripeBuffer and PowerLine. I added a space between the protocol and the rest of the url. (When I just tried doing the same here it did not work; the spam rule still kicked in.)
+
+-- JonasBernoulli 2013-04-09 00:17 UTC
+
