@@ -68,9 +68,9 @@ Here is a customization type that you can use for setting webjump sites:
 
 <pre>
 
-(defcustom webjump-sites (if (featurep 'webjump-plus)
-                             (append webjump-plus-sites webjump-sample-sites)
-                           webjump-sample-sites)
+(defcustom webjump-sites-custom (if (featurep 'webjump-plus)
+                                (append webjump-plus-sites webjump-sample-sites)
+                                webjump-sample-sites)
   "*Hotlist for WebJump.
 
 The hotlist is represented as an association list, with the CAR of each cell
@@ -116,7 +116,7 @@ submitting the URL."
                                                   :help-echo "This should be a vector whos first element is the symbol 'mirrors and subsequent elements are strings containing URLs of mirror sites."))
                                     (function :tag "Function")
                                     (sexp :tag "Sexp to eval"))))
-                                    
+(setq webjump-sites webjump-sites-custom)
 </pre>
 
  -- JoeBloggs 2013-04-09 06:13 UTC
