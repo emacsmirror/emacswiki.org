@@ -1,0 +1,13 @@
+PDFTools is a collection of minor-modes centered around a server
+querying PDF documents for all kinds of informations.
+
+The code is on github: https://github.com/politza/pdf-tools .
+
+http://www.hochschule-trier.de/~politza/emacs/pdf-tools.png
+
+It supports
+* Isearching documents,
+* browsing PDF Outlines via Imenu,
+* following internal and external links,
+* copying text with the mouse and
+* some other stuff.
