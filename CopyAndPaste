@@ -65,7 +65,7 @@ and with the following customizations, that analogy might actually work out okay
    ;; least of text you've pasted into it in the first place.
    ; (setq yank-pop-change-selection t)  ; makes rotating the kill ring change the X11 clipboard.
 
-==== Alternate method (recent Emacs): ====
+=== Alternate method (recent Emacs): ===
 
 Not sure when this appeared in GNU emacs, or if it's how the developers intended things, buts it's useful for me (I habitually use emacs from CVS, BTW, so not sure when this tip first applies):
 The "x-select-enable-clipboard t" method seems to resuscitate the "traditional" (and IMHO deeply strange) emacs interaction with the X11 primary and clipboard selections.  EVERYTHING you highlight as a region winds up in both PRIMARY and CLIPBOARD X11 selections.  That is... painful. (but N.B. no longer true in CVS emacs, which has x-select-enable-primary to manage primary behaviour separately as above).
