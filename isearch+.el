@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 21.0
-;; Last-Updated: Sat Mar 30 11:15:14 2013 (-0700)
+;; Last-Updated: Tue Apr  9 15:18:34 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2080
+;;     Update #: 2081
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -583,6 +583,7 @@
 (defvar isearch-original-minibuffer-message-timeout) ; In `isearch.el'.
 (defvar isearch-push-state-function)    ; In `isearch.el'.
 (defvar isearch-start-hscroll)          ; In `isearch.el'.
+(defvar isearch-within-brackets)        ; In `isearch.el'.
 (defvar isearch-wrap-function)          ; In `isearch.el'.
 (defvar last-repeatable-command)        ; In `repeat.el'.
 (defvar minibuffer-message-timeout)     ; In Emacs C code.
