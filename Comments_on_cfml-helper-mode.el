@@ -36,3 +36,10 @@ Here are two more files that need fixing StripeBuffer and PowerLine. I added a s
 
 -- JonasBernoulli 2013-04-09 00:17 UTC
 
+
+----
+
+The message should list the rule it triggers. You can then find the rules on BannedContent and related pages.
+
+-- [http://alexschroeder.ch/alex/Emacs AlexSchroeder] 2013-04-09 20:23 UTC
+
