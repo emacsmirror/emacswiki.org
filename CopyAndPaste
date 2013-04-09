@@ -1,4 +1,4 @@
-=== Alternatives to Kill & Yank ===
+== Alternatives to Kill & Yank ==
 
 If you don't care for the DefaultKillingAndYanking [[key binding]]s (##C-w##, ##M-w##, ##C-y##, ##M-y##, and so on), then consider these alternatives:
 
@@ -8,16 +8,16 @@ If you don't care for the DefaultKillingAndYanking [[key binding]]s (##C-w##, ##
 * DeleteSelectionMode -- ##DEL## deletes the region; just typing replaces it.
 * WholeLineOrRegion -- ##C-w## and ##M-w## act on the current line when TransientMarkMode is not active
 
-=== X11 Copy & Paste to/from Emacs: ===
+== X11 Copy & Paste to/from Emacs: ==
 
 If you are having issues with cutting and pasting between emacs and other applications, it may be an issue with interactions between the UI's clipboard or selection buffer and the emacs.   Windows has a single clipboard buffer. X11 has more then one buffer.  Consider these solutions:
 
-==== XEmacs: ====
+=== XEmacs: ===
 
  (setq interprogram-cut-function 'own-clipboard)
  (setq interprogram-paste-function 'get-clipboard)
 
-==== GNU Emacs 21.2.1 & newer: ====
+=== GNU Emacs 21.2.1 & newer: ===
 
  (setq x-select-enable-clipboard t)
 
@@ -26,7 +26,7 @@ See also http://www.oreillynet.com/lpt/wlg/6162 which suggests
  (setq x-select-enable-clipboard t) ; as above
  (setq interprogram-paste-function 'x-cut-buffer-or-selection-value)
 
-==== GNU Emacs CVS / 23 : ====
+=== GNU Emacs CVS / 23 : ===
 
 This has recently been expanded with more possible customisations.
 
@@ -94,7 +94,7 @@ This produces behaviour I like: The current region becomes PRIMARY as one might 
 <code>clipboard-yank</code> in particular seems eerily smart.
 
 
-==== Alternate alternate method ====
+=== Alternate alternate method ===
 
 Instead of relying on the above, you can install the xsel program for manipulating the X selection and pipe the region contents to it like this:
 
@@ -379,7 +379,7 @@ I use gnome-terminal with Emacs with xt-mouse.el. To get text from X11's clipboa
 [new]
 Guess with the most recent CVS emacs enabling cua-mode is enough. Anything else causes problems.
 
-==== Alternate method (tested with emacs 23.0.90.1): ====
+=== Alternate method (tested with emacs 23.0.90.1): ===
 
 I'm a fan of independent CLIPBOARD (accessed via explicit edit commands like ''copy'' and ''paste'') and PRIMARY (accessed via mouse marking and middle mouse click) selections and have a setup as advised here:
 
