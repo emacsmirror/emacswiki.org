@@ -1,4 +1,4 @@
-Emacs comes with a generic version control interface called [::VC].  It supports the ConcurrentVersionsSystem (CVS), RevisionControlSystem (RCS), SCCS, [[Arch]], [[Git]], [[Mercurial]], Bzr, Monotone, MetaCVS and SubVersion (SVN).  DaRcs support will appear in the next version of Emacs with VcDarcs -- and not DarcSum.
+Emacs comes with a generic version control interface called [::VC].  It supports the ConcurrentVersionsSystem (CVS), RevisionControlSystem (RCS), SCCS, [[Arch]], [[Git]], [[Mercurial]], Bzr, Monotone, MetaCVS and SubVersion (SVN).  DaRcs support will appear in the next version of Emacs (does this mean 25?) with VcDarcs -- and not DarcSum.
 
 On [[2007-10-03]], the original author of VC mode, EricRaymond, announced a major rewrite of VC mode whose principal goal is "to change VC so that its primitive operations (notably checkin/commit) take sets of files as arguments rather than single files".  The necessary changes to the VC backend have already been added to EmacsFromCVS.
 
