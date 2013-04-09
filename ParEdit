@@ -21,12 +21,13 @@ A spinoff of %%ParEdit%% (by the same author) is also now available in the curre
 
 To use %%ParEdit%% with Emacs' Lisp modes, add the following to <tt>[InitFile .emacs]</tt>:
 
-    (autoload 'paredit-mode "paredit"
-      "Minor mode for pseudo-structurally editing Lisp code." t)
-    (add-hook 'emacs-lisp-mode-hook       (lambda () (paredit-mode +1)))
-    (add-hook 'lisp-mode-hook             (lambda () (paredit-mode +1)))
-    (add-hook 'lisp-interaction-mode-hook (lambda () (paredit-mode +1)))
-    (add-hook 'scheme-mode-hook           (lambda () (paredit-mode +1)))
+    (autoload 'enable-paredit-mode "paredit" "Turn on pseudo-structural editing of Lisp code." t)
+    (add-hook 'emacs-lisp-mode-hook       #'enable-paredit-mode)
+    (add-hook 'eval-expression-minibuffer-setup-hook #'enable-paredit-mode)
+    (add-hook 'ielm-mode-hook             #'enable-paredit-mode)
+    (add-hook 'lisp-mode-hook             #'enable-paredit-mode)
+    (add-hook 'lisp-interaction-mode-hook #'enable-paredit-mode)
+    (add-hook 'scheme-mode-hook           #'enable-paredit-mode)
 
 
 == ParEdit and ElDoc ==
