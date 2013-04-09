@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Apr  8 19:06:06 2013 (-0700)
+;; Last-Updated: Sat Apr  6 10:45:53 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 13924
+;;     Update #: 13868
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -449,7 +449,7 @@ rather than FUN itself, to `minibuffer-setup-hook'."
 (unless (fboundp 'icicle-ORIG-choose-completion-string)
   (defalias 'icicle-ORIG-choose-completion-string (symbol-function 'choose-completion-string)))
 
-(cond ((= emacs-major-version 22)                
+(cond ((> emacs-major-version 21)       ; Emacs 22+
        (defun icicle-choose-completion-string (choice &optional buffer base-size)
          "Switch to BUFFER and insert the completion choice CHOICE.
 BASE-SIZE, if non-nil, says how many characters of BUFFER's text
@@ -504,117 +504,7 @@ the following is true:
                         (select-window mini)
                         (when minibuffer-auto-raise (raise-frame (window-frame mini)))))))))))
 
-      ((and (= emacs-major-version 23)  (= emacs-minor-version 1)) ; Emacs 23.1
-       (defun icicle-choose-completion-string (choice &optional buffer base-size)
-         "Switch to BUFFER and insert the completion choice CHOICE.
-BASE-SIZE, if non-nil, says how many characters of BUFFER's text
-to keep.  If it is nil, we call `choose-completion-delete-max-match'
-to decide what to delete.
-If BUFFER is the minibuffer, then exit the minibuffer, unless one of
-the following is true:
-   - it is reading a file name, CHOICE is a directory, and
-     `icicle-dir-candidate-can-exit-p' is nil
-   - `completion-no-auto-exit' is non-nil
-   - this is just a `lisp-complete-symbol' completion."
-         (let* ((buffer  (or buffer completion-reference-buffer))
-                (mini-p  (minibufferp buffer)))
-           ;; If BUFFER is a minibuffer, barf unless it's currently active.
-           (if (and mini-p  (or (not (active-minibuffer-window))
-                                (not (equal buffer (window-buffer (active-minibuffer-window))))))
-               (icicle-user-error "Minibuffer is not active for completion")
-             (set-buffer buffer)        ; So buffer-local `choose-completion-string-functions' works.
-             (unless (run-hook-with-args-until-success 'choose-completion-string-functions
-                                                       choice buffer mini-p base-size)
-               ;; Insert the completion into the buffer where it was requested.
-               ;; Vanilla Emacs FIXME:
-               ;; - There may not be a field at point, or there may be a field but it is not a
-               ;;   "completion field", in which case we have to call `choose-completion-delete-max-match',
-               ;;   even if BASE-SIZE is set.
-               ;; - We may need to delete further than (point) to (field-end), depending on the
-               ;;   `completion-style', and for that we need extra data `completion-extra-size'.
-               (if base-size
-                   (delete-region (+ base-size (field-beginning)) (point))
-                 (choose-completion-delete-max-match choice))
-               (insert choice)
-               (remove-text-properties (- (point) (length choice)) (point) '(mouse-face nil))
-               ;; Update point in the window that BUFFER is showing in.
-               (let ((window  (get-buffer-window buffer 0))) (set-window-point window (point)))
-               ;; If completing for the minibuffer, exit it with this choice,
-               ;; unless this was a `lisp-complete-symbol' completion.
-               (and (not completion-no-auto-exit)
-                    (minibufferp buffer)
-                    (or minibuffer-completion-table
-                        (and icicle-mode  (or icicle-extra-candidates  icicle-proxy-candidates)))
-                    (not (eq 'lisp-complete-symbol icicle-cmd-calling-for-completion))
-                    ;; Exit the minibuffer if `icicle-dir-candidate-can-exit-p',
-                    ;; or not reading a file name, or chosen file is not a directory.
-                    (if (or icicle-dir-candidate-can-exit-p
-                            (not (eq minibuffer-completion-table 'read-file-name-internal))
-                            (not (file-directory-p (field-string (point-max)))))
-                        (exit-minibuffer)
-                      (let ((mini  (active-minibuffer-window)))
-                        (select-window mini)
-                        (when minibuffer-auto-raise (raise-frame (window-frame mini)))))))))))
-
-      ((or (> emacs-major-version 23)   ; Emacs 23.2+
-           (and (= emacs-major-version 23)  (> emacs-minor-version 1)))
-       (defun icicle-choose-completion-string (choice &optional buffer base-position)
-         "Switch to BUFFER and insert the completion choice CHOICE.
-BASE-POSITION should be a cons whose car is the position where the
- choice is inserted.  It is ignored if not a cons.
-If BUFFER is the minibuffer, then exit the minibuffer, unless one of
- the following is true:
-   - it is reading a file name, CHOICE is a directory, and
-     `icicle-dir-candidate-can-exit-p' is nil
-   - `completion-no-auto-exit' is non-nil
-   - this is just a `lisp-complete-symbol' completion."
-         (unless (consp base-position)  ; Older code may pass BASE-SIZE instead of BASE-POSITION.  Ignore it.
-           (message "Obsolete BASE-SIZE argument passed to `choose-completion-string'")
-           (setq base-position  nil))
-         (let* ((buffer  (or buffer completion-reference-buffer))
-                (mini-p  (minibufferp buffer)))
-           ;; If BUFFER is a minibuffer, barf unless it is currently active.
-           (if (and mini-p  (or (not (active-minibuffer-window))
-                                (not (equal buffer (window-buffer (active-minibuffer-window))))))
-               (icicle-user-error "Minibuffer is not active for completion")
-             ;; Set buffer so buffer-local `choose-completion-string-functions' works.
-             (set-buffer buffer)
-             (unless (run-hook-with-args-until-success
-                      'choose-completion-string-functions
-                      ;; 4th arg used to be MINI-P, but it was useless and unused - can just use
-                      ;; (minibufferp BUFFER).  The last arg used to be BASE-SIZE - keep it to avoid
-                      ;; breaking older code.
-                      choice buffer base-position nil)
-               ;; Insert the completion candidate into the buffer where it was requested.
-               (delete-region (or (car base-position)  (point)) (or (cadr base-position)  (point)))
-               (insert choice)
-               (remove-text-properties (- (point) (length choice)) (point) '(mouse-face nil))
-               ;; Update point in the window where BUFFER is showing.
-               (let ((window  (get-buffer-window buffer t))) (set-window-point window (point)))
-               ;; If completing for the minibuffer, exit it with this choice,
-               ;; unless this was a `lisp-complete-symbol' completion.
-               (and (not completion-no-auto-exit)
-                    (minibufferp buffer)
-                    (or minibuffer-completion-table
-                        (and icicle-mode  (or icicle-extra-candidates  icicle-proxy-candidates)))
-                    (not (eq 'lisp-complete-symbol icicle-cmd-calling-for-completion))
-                    ;; Exit the minibuffer if `icicle-dir-candidate-can-exit-p',
-                    ;; or not reading a file name, or chosen file is not a directory.
-                    (let* ((result  (buffer-substring (field-beginning) (point)))
-                           (bounds  (completion-boundaries result minibuffer-completion-table
-                                                           minibuffer-completion-predicate "")))
-                      (if (or icicle-dir-candidate-can-exit-p
-                              (not (eq (car bounds) (length result))))
-                          ;; $$$$$$ (not (eq minibuffer-completion-table 'read-file-name-internal))
-                          ;; $$$$$$ (not (file-directory-p (field-string (point-max)))))
-                          (exit-minibuffer)
-                        ;; The candidate chosen leads to a new set of candidates (e.g., it is a dir).
-                        ;; Do not exit the minibuffer yet.
-                        (let ((mini  (active-minibuffer-window)))
-                          (select-window mini)
-                          (when minibuffer-auto-raise (raise-frame (window-frame mini))))))))))))
-
-      ((= emacs-major-version 21)       ; Emacs 21
+      ((> emacs-major-version 20)       ; Emacs 21
        (defun icicle-choose-completion-string (choice &optional buffer base-size)
          "Switch to BUFFER and insert the completion choice CHOICE.
 BASE-SIZE, if non-nil, says how many characters of BUFFER's text
