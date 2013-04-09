@@ -47,6 +47,12 @@ The GitHub is [[https://github.com/nicferrier/nics-emacswiki-css|here]]
 
 Use it by clicking here [[http://www.emacswiki.org/cgi-bin/wiki?action=browse;id=NicFerrier;css=http://www.emacswiki.org/emacs/download/NicFerrierCss|here]]
 
+== Building Emacs from source ==
+
+I mostly always build Emacs from source (though I think the emacs-snapshot packages are great) so I use this [[EmacsSnapshotAndDebian|page]] to track what I need to do.
+
+I keep a [[https://github.com/nicferrier/emacs|git mirror]] of the Emacs sources irregularly up to date.
+
 == Elnode: an asynchronous HTTP server for Emacs ==
 // ... or node.js for Emacs //
 
