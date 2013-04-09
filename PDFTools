@@ -1,7 +1,7 @@
 PDFTools is a collection of minor-modes centered around a server
 querying PDF documents for all kinds of informations.
 
-The code is on github: https://github.com/politza/pdf-tools/archive/v0.11.tar.gz
+The code is on github: http://github.com/politza/pdf-tools
 
 It supports
 * Isearching documents,
