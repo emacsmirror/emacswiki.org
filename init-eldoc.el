@@ -7,8 +7,8 @@
 ;; Copyright (C) 2008, 2009, Andy Stewart, all rights reserved.
 ;; Created: 2008-10-20 09:32:12
 ;; Version: 0.1
-;; Last-Updated: 2008-10-20 09:32:14
-;;           By: Andy Stewart
+;; Last-Updated: 2013-04-09 19:34:00
+;;           By: Reuben Thomas <rrt@sc3d.org>
 ;; URL:
 ;; Keywords: eldoc
 ;; Compatibility: GNU Emacs 23.0.60.1
@@ -72,7 +72,7 @@
 ;;
 
 ;;; Require
-
+(require 'eldoc-extension)
 
 ;;; Code:
 
