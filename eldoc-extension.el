@@ -4,7 +4,7 @@
 ;; Description: Some extension for eldoc
 ;; Author: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Maintainer: rubikitch <rubikitch@ruby-lang.org>
-;; Time-stamp: <2010-05-04 18:13:43 rubikitch>
+;; Time-stamp: <2013-04-10 00:12:00 rrt@sc3d.org>
 ;; Copyright (C) 2008, 2009, Andy Stewart, all rights reserved.
 ;; Copyright (C) 2010, rubikitch, all rights reserved.
 ;; Created: 2008-12-07 21:44:29
@@ -106,7 +106,7 @@
 ;;; Code:
 
 (defun eldoc-argument-list (string)
-  "Down case and fortify STRING for use with `eldoc-mode'."
+  "Down case and fontify STRING for use with `eldoc-mode'."
   (propertize (downcase string)
               'face 'font-lock-variable-name-face))
 
