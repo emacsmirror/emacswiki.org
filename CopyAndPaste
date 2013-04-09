@@ -420,6 +420,23 @@ CLIPBOARD is always in sync with the head of the kill ring, that is, yank will e
 
 Enjoy.
 
+== GNU Emacs in Terminal + OS X 10.8.3 + tmux ==
+##1. ## Link Emacs to OS X
+<pre>
+(defun copy-from-osx ()
+  (shell-command-to-string "pbpaste"))
+
+(defun paste-to-osx (text &optional push)
+  (let ((process-connection-type nil))
+    (let ((proc (start-process "pbcopy" "*Messages*" "pbcopy")))
+      (process-send-string proc text)
+      (process-send-eof proc))))
+
+(setq interprogram-cut-function 'paste-to-osx)
+(setq interprogram-paste-function 'copy-from-osx)
+</pre>
+
+##2. ## Link tmux to OS X by setting <code>reattach-to-user-namespace</code> as the tmux default command as explained at: https://github.com/ChrisJohnsen/tmux-MacOSX-pasteboard
 
 == Interfacing with ClipX on Windows ==
 
