@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Fri Mar 29 21:00:29 2013 (-0700)
+;; Last-Updated: Wed Apr 10 14:57:32 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6043
+;;     Update #: 6048
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -1893,7 +1893,7 @@ The names are those of the bookmarks in ALIST or, if nil,
 PROMPT is automatically suffixed with \": \", so do not include that.
 
 Optional arg DEFAULT is a string to return if the user enters the
- empty string.
+ empty string.  If nil then return \"\".
 The alist argument used for completion is ALIST or, if nil,
  `bookmark-alist'.
 Optional arg PRED is a predicate used for completion.
@@ -2882,7 +2882,7 @@ bookmark files that were created using the bookmark functions."
   (unless (file-readable-p file) (error "Cannot read bookmark file `%s'" file))
   (unless batchp (message "Loading bookmarks from `%s'..." file))
   (let ((existing-buf  (get-file-buffer file)))
-    (with-current-buffer (let ((enable-local-variables nil)) (find-file-noselect file))
+    (with-current-buffer (let ((enable-local-variables  nil)) (find-file-noselect file))
       (goto-char (point-min))
       (bookmark-maybe-upgrade-file-format)
       (let ((blist  (bookmark-alist-from-buffer)))
@@ -3145,11 +3145,10 @@ Force user to enter non-empty input, if DEFAULT is nil or \"\"."
            (sort (bookmark-all-names alist) 'string-lessp)
          (bookmark-all-names alist)))
     (let* ((icicle-delete-candidate-object  (lambda (cand) ; For `S-delete' in Icicles.
-                                              (bookmark-delete
-                                               (icicle-transform-multi-completion cand))))
+                                              (bookmark-delete (icicle-transform-multi-completion cand))))
            (completion-ignore-case          bookmark-completion-ignore-case)
            (default                         default)
-           (prompt                          (if default
+           (prompt                          (if (and default  (not (equal "" default)))
                                                 (concat prompt
                                                         (format " (%s): "
                                                                 (if (consp default) (car default) default)
@@ -6824,9 +6823,9 @@ shell command, return a Lisp function that invokes that shell command.
 
 2. If no match is found and `bmkp-guess-default-handler-for-file-flag'
 is non-nil, then try to find an appropriate shell command using, in
-order, `dired-guess-default' and (Emacs 23+ only)
-`mailcap-file-default-commands'.  If a match is found then return a
-Lisp function that invokes that shell command."
+order, `dired-guess-default' and `mailcap-file-default-commands'
+\(Emacs 23+ only).  If a match is found then return a Lisp function
+that invokes that shell command."
   (let* ((bmkp-user  (bmkp-default-handler-user filename))
          (shell-cmd  (if (stringp bmkp-user)
                          bmkp-user
