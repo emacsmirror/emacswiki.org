@@ -57,6 +57,7 @@ Here are some of the pages in CategoryFaces.
 ** `doremi-font' in library Lisp:doremi-frm.el, to cycle fonts
 ** `icicle-font' in [[Icicles]] to cycle fonts, with [[Completion]]
 ** MenuFont
+** ProportionalFonts
 ** [[Win32Fonts]]
 * ShowWhiteSpace -- Highlight various kinds of whitespace
 * StippleAttribute 
