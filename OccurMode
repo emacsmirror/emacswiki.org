@@ -6,7 +6,9 @@ This is so useful that you might want to use a keybinding in your [[init file]] 
 
  (global-set-key (kbd "C-c o") 'occur)
 
-Starting with Emacs 23, you can also use `M-s o' within [[isearch]] to run `occur'.
+Starting with Emacs 23, you can use `C-o' within [[isearch]] to run `occur'.
+
+In Emacs 23, you can also use `M-s o' within [[isearch]] to run `occur'.
 
 Starting with Emacs 22, you can also use '''`##C-x `##'''' (`next-error') or `M-g p' (`previous-error') to navigate to the next or previous occurrence. You can also turn on `next-error-follow-minor-mode' in the Occur buffer, which binds `C-n' and `C-p'.
 
