@@ -7,3 +7,5 @@ A natural further generalization would be to lists of lists of ranges, to select
 Long story short: some very experimental and very ugly code is at [[Lisp:multipoint.el]]. It contains too much commentary and does some very questionable things, but it's a nicer way to perform, at least, rectangle operations. And it makes Emacs a little more powerful and dangerous, in the best enough-rope-to-shoot-yourself-in-the-foot tradition.
 
 Feel free to discuss this here. I'm not quite sure I really want to be associated with this code.
+
+There is another implementation which seems to work quite stable [https://github.com/emacsmirror/multiple-cursors here]. Maybe merge your efforts?
