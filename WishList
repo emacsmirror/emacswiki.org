@@ -137,6 +137,7 @@ or to support other human languages and compatibility issues between other Emacs
 ** Can be done with Lisp:multiple-line-edit.el
 ** Also CuaMode can edit multiple lines
 ** Quick and dirty: C-x r t
+** I've just written a mode that does this, among other things: [[Multipoint]]. It's not very good.
 
 These are wishes for better support for text editing, especially writers, but not exclusively.
 [new]
