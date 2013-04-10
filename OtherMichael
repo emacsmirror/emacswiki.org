@@ -1,16 +1,25 @@
 Unsurprisingly, OtherMichael uses Emacs.
 
-But only since the summer of 2007, and mainly on [[EmacsW32|Windows]]. As of May, 2008, he's starting to use it on the [[http://wiki.laptop.org/go/Emacs OLPC]] [[http://wiki.laptop.org/go/User:OtherMichael XO]]
-
-If you're an XO user, edits to http://wiki.laptop.org/go/Emacs are more than welcome!
+But only since the summer of 2007, and mainly on [[EmacsW32|Windows]].
 
 OtherMichael often refers to himself in the third person.
 
 He can also be found online at http://www.xradiograph.com/ and http://www.xradiograph.com/Emacs
 
-== Packages I like ==
-[[emacs-w3m]]
-ElScreen
-[[ELPA]]
+== Packages/pages/things I like ==
+* ElScreen
+* [[ELPA]]
+* [[Js2Mode]]
+* [http://www.splode.com/~friedman/software/emacs-lisp/src/string-fns.el string-fns.el] via [http://www.splode.com/~friedman/software/emacs-lisp/ Noah Friedman]
+* [[extraedit.el]]
+* [[DiredPlus]]
+* [[NxmlModeForXHTML]]
+* [[CategoryWThirtyTwo]] since I primarily use Windows. :::sigh:::
+
+
+== Packages I used to like ==
+* [[emacs-w3m]]
+** I don't have anything against w3m, I just don't use it anymore. too much Javascript in my world....
+
 ----
 CategoryHomepage
