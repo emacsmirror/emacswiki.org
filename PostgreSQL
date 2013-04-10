@@ -11,7 +11,7 @@ language features this may be a good option. Otherwise near the same
 URL you can find a Common Lisp implementation of the same code, which
 has better exception handling support.
 
-NicFerrier's EmacsDB has a [https://github.com/nicferrier/emacs-db-pg backend] for PostgreSQL
+NicFerrier's EmacsDb has a [https://github.com/nicferrier/emacs-db-pg backend] for PostgreSQL
 
 == Info Documentation ==
 
