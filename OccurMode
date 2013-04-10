@@ -6,7 +6,7 @@ This is so useful that you might want to use a keybinding in your [[init file]] 
 
  (global-set-key (kbd "C-c o") 'occur)
 
-Starting with Emacs 23, you can use `C-o' within [[isearch]] to run `occur'.
+Starting with Emacs 24, you can use `C-o' within [[isearch]] to run `occur'.
 
 In Emacs 23, you can also use `M-s o' within [[isearch]] to run `occur'.
 
