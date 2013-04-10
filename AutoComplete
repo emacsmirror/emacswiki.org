@@ -28,6 +28,8 @@ Lisp:auto-complete-extension.el is some enhancement by AndyStewart.
 
 [https://github.com/monsanto/readline-complete.el Readline completion for shell-mode]
 
+[https://github.com/aki2o/auto-complete-nxml Auto Complete on nXML-mode]
+
 Other extensions are found in [[AutoCompleteSources]].
 
 == Development Version Notes ==
