@@ -2,6 +2,7 @@
 * https://github.com/ruediger/osm-mode --- [http://www.openstreetmap.org/ OpenStreetMap] and Geonames support in Emacs (work in progress)
 * https://github.com/ruediger/weather-metno-el --- Weather data from met.no in Emacs (work in progress) See also EmacsWeather
 * https://github.com/ruediger/gcc-etags --- Generate EmacsTags (etags) with a GCC plugin (work in progress)
+* https://github.com/ruediger/systemtap-mode --- A mode for SystemTap based on Tomoki Sekiyama's mode and now [http://sourceware.org/git/gitweb.cgi?p=systemtap.git;a=tree;f=emacs; shipped with SystemTap].
 
 [new]
 Welcome! -- JonasBernoulli
