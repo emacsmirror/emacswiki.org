@@ -459,6 +459,9 @@
 ;;
 ;; one-key menus listing all commands in a given elisp library. Prompt user for library name first.
 ;; one-key-navigate - for navigating org-files and call trees
+;;
+;; Could use this https://github.com/nicferrier/emacs-kv for handling nested one-key menus?
+;; (download from marmalade)
 
 
 ;;; Require
@@ -3108,18 +3111,23 @@ major mode) exists then it will be used, otherwise it will be created."
 
 (defun one-key-create-menu-from-existing-keymap (name)
   "Prompt the user for a keymap and return a one-key menu for it along with it's name, in a cons cell."
-  (let* ((names (loop for sym being the symbols
-                      when (or (keymapp sym)
-                               (and (boundp sym)
-                                    (keymapp (symbol-value sym))))
-                      collect (symbol-name sym)))
-         (name (if (featurep 'ido)
-                   (ido-completing-read "Keymap: " names)
-                 (completing-read "Keymap: " names)))
-         (partname (replace-regexp-in-string "-map$" "" name))
-         (kmap (intern-soft name)))
-    (one-key-create-menus-from-keymap kmap partname)
-    (cons name (intern-soft (concat "one-key-menu-" partname "-alist")))))
+  (let (partname)
+    (if (string-match "^keymap:" name)
+        (setq partname (replace-regexp-in-string "^keymap:" "" name)
+              name (concat partname "-map"))
+      (let* ((names (loop for sym being the symbols
+                          when (or (keymapp sym)
+                                   (and (boundp sym)
+                                        (keymapp (symbol-value sym))))
+                          collect (symbol-name sym))))
+        (setq name (if (featurep 'ido)
+                       (ido-completing-read "Keymap: " names)
+                     (completing-read "Keymap: " names))
+              partname (replace-regexp-in-string "-map$" "" name))))
+    (let ((kmap (intern-soft name)))
+      (one-key-create-menus-from-keymap kmap partname)
+      (cons (concat "keymap:" partname)
+            (intern-soft (concat "one-key-menu-" partname "-alist"))))))
 
 (defun one-key-create-menu-from-prefix-key-keymap (keystr)
   "Prompt the user for a prefix key and return a one-key menu for it along with it's name, in a cons cell."
@@ -3482,8 +3490,8 @@ This function assumes dynamic binding of okr-title-string to the current title s
                             'one-key-retrieve-existing-menu
                             nil nil) t)
 (one-key-add-to-alist 'one-key-types-of-menu
-                      (list "existing keymap"
-                            (lambda (name) (equal name "existing keymap"))
+                      (list "keymap"
+                            (lambda (name) (string-match "^keymap" name))
                             'one-key-create-menu-from-existing-keymap
                             nil nil) t)
 (one-key-add-to-alist 'one-key-types-of-menu
