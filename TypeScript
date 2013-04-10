@@ -5,3 +5,8 @@ Emacs has been mentioned as "providing support" for Typescript, but it appears t
 There are two (related?) highlight modes for Typescript:
 * [http://blogs.msdn.com/b/interoperability/archive/2012/10/01/sublime-text-vi-emacs-typescript-enabled.aspx typescript_support_for_emacs.zip] (blogs.msdn.com)
 * [https://github.com/mattdeboard/dotfiles-emacs/blob/master/typescript-mode/typescript-mode.el typescript-mode.el] (mattdeboard @ github)
+
+----
+CategoryModes
+CategoryJavaScript
+CategoryHypermedia
