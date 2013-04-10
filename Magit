@@ -41,6 +41,8 @@ mo-git-blame is a great addition as a frontend for git blame (which magit curren
 
 http://www.bunkus.org/blog/2009/10/an-interactive-iterative-git-blame-mode-for-emacs/
 
+Update: magit does provide a blame mode called ##magit-blame-mode##
+
 == Removing Highlights on Diff mode==
 [new:MarcoCraveiro:dt Feb  08 10:26:37 GMT 2010]
 Don't really like the highlights on diff mode... Made it optional using:
