@@ -2,7 +2,7 @@
 
 It uses [[Elnode]] as a webserver and [[Creole]] for converting pages to HTML.
 
-NicFerrier wrote about [[Elwiki]] in his [[http://nic.ferrier.me.uk/blog/2013_01/year-in-emacs|2013 plan]].
+NicFerrier wrote about [[Elwiki]] in his [[http://nic.ferrier.me.uk/blog/2013_01/year-in-emacs|2013 plan]] and gave a [[Emacs Conference 2013 Emacsing the EmacsWiki|talk at EmacsConf 2013]].
 
 == NicFerrier and AlexSchroeder talk EmacsWiki -> Elwiki ==
 
