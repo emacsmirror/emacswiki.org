@@ -1,0 +1,9 @@
+Have you ever wanted to type in two places at once? You can do so today with [[Lisp:multiple-line-edit.el]], but multipoint mode is a more general approach to the same, arguable, problem. (Is it really a problem? What was I thinking?)
+
+The standard Emacs region is a single range from <code>(point)</code> to <code>(mark)</code>. I had the idea that this should be generalized, but not to a multi-range "selection" with a cursor position somewhere in there, but to a list of ranges, each of which has its own point and mark. For example, you could select a rectangle that way, and type (or delete) in all rectangle lines at once.
+
+A natural further generalization would be to lists of lists of ranges, to select a table, for instance; or a list of lists of lists, for a table composed of several subtables. In fact, I've decided to go with full generality and allow a sexp of ranges.
+
+Long story short: some very experimental and very ugly code is at [[Lisp:multipoint.el]]. It contains too much commentary and does some very questionable things, but it's a nicer way to perform, at least, rectangle operations. And it makes Emacs a little more powerful and dangerous, in the best enough-rope-to-shoot-yourself-in-the-foot tradition.
+
+Feel free to discuss this here. I'm not quite sure I really want to be associated with this code.
