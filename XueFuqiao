@@ -25,30 +25,15 @@ You can contact me using (please send plain text mail, not HTML):
 * It is a logical impossibility to make a language more powerful by omitting features, no matter how bad they may be.  -- [[WikiPedia:John_Hughes_(computer_scientist)|John Hughes]]
 
 == Wish List==
-* Implement a version control system in EmacsLisp.
-* Extended text-properties (to make overlays obsolete) in Emacs.
-* Make emacsclient work across all network connections.
 * Implement a search engine in EmacsLisp.
-* Make a keyboard layout for Emacs.
-* Implement a mailing list manager in EmacsLisp.
 * Port XWindowEmacsManager to Emacs.
-* Implement a DHCP client in EmacsLisp.
-* Make GNU Emacs support both [[Guile]] and EmacsLisp.
 * Implement an FTP server in EmacsLisp.
-* Completion of labels in Rmail.
-* Implement a spell checker in EmacsLisp.
-* Add a command line argument named ##--slim##, it can invoke Emacs with only the bare-minimum EmacsLisp libraries needed for quick editing.
-* FFI support in Emacs.
-* Make all Unix and Unix-like systems come with Emacs built-in.
-* Implement a multi-protocol download utility in Emacs Lisp.
-* Make EmacsLisp simpler and cleaner.
 * Implement a URL Shortener in EmacsLisp.
 * Make Emacs/W3 be able to deal with HTML5.
 * Implement a DOM binding for EmacsLisp.
 * Make Emacs/W3 be able to parse XSL.
 * Make Emacs support more image formats.
 * Make the face code to be simpler, clearer and faster.
-* Make an OpenPGP implementation in EmacsLisp.
 * Implement a EmacsLisp library that generates XPMs dynamically.
 
 = Comments =
