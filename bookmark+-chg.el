@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Mar 29 21:03:24 2013 (-0700)
+;; Last-Updated: Wed Apr 10 15:00:58 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 15204
+;;     Update #: 15210
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2013/04/10 dadams
+;;     bmkp-completing-read-1: Do not put DEFAULT in PROMPT if DEFAULT is "".
+;;     bookmark-completing-read: Mention in doc string that nil DEFAULT means return "".
 ;; 2013/03/29 dadams
 ;;     bmkp-toggle-saving-bookmark-file: If neither is nil, set *-last-* to nil before toggling.
 ;; 2013/03/17 dadams
