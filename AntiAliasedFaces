@@ -1,71 +1,13 @@
 = XEmacs =
 
-As of version 21.5b24 [[XEmacs]] has support for Xft fonts right out of the box. The release notes at http://xemacs.org/Releases/21.5.24.html have all the details. [http://blog.clemens.endorphin.org/2006/02/beautiful-xemacs.html Additional configuration suggestions] available from CFruhwirth's Weblog.
+As of version 21.5b24 [[XEmacs]] has support for Xft fonts included (but it must be selected at build time). The release notes at http://xemacs.org/Releases/21.5.24.html have all the details. [http://blog.clemens.endorphin.org/2006/02/beautiful-xemacs.html Additional configuration suggestions] available from CFruhwirth's Weblog.
 
 = GNU Emacs =
-Support for this is in GNU Emacs version 23.1. Quouting `NEWS.23.1':
 
-   *** Added support for the Xft library for antialiasing.
-
-A full list of changes can be found [http://www.gnu.org/software/emacs/NEWS.23.1 here].
-
-[new]
-Emacs on GNUstep (aka EmacsOnAqua; http://emacs-on-aqua.sf.net) renders antialiased fonts on Linux/X11 via Xft.  However, this requires installing GNUstep (http://gnustep.org) and living with the older emacs-20 for now.
+Support for this is in GNU Emacs version 23.1. See [[XftGnuEmacs]]. Most X systems will have sub-pixel antialiasing configured by default, but see this [http://jmason.org/howto/subpixel.html HOWTO] if you have trouble.
 
 [new]
 AquamacsEmacs (on Mac OS X) comes configured to use a range of scalable fonts with antialiasing, which are usable out-of-the box.  
-
-
-Other GnuEmacs information from Chris Gray, [http://thread.gmane.org/gmane.emacs.devel/19089], and see also [[XftGnuEmacs]].
-
-There are some free True-Type or Type-1 fonts
-  out there with international characters. Because the free fonts are
-  rarely hinted they are not very usable on a computer
-  screen. Anti-aliasing could help here. It should be an attribute of
-  a [[Face]], however, since anti-aliasing is OTOH bad for the eyes. 
-
-Although often lumped in with antialiasing (because Xft does it too...), sub-pixel rendering (a.k.a "cleartype")
-  is far more important in these days of affordable LCD monitors.   This is where
-  the red, green and blue subpixels are treated separately. LCD monitors
-  have "ordered", predictable locations of each subpixel. Thus, sub-pixel rendering
-  approximately triples the horizontal b/w resolution of the screen, and thereby sharpens, rather 
-  than  blurs, fonts on LCD displays. Note that on unordered displays like most CRTs, it just
-  gives "rainbow fringing". But oodles of emacs users must have laptops with LCDs! It is IMHO the subpixel
-  rendering that would make Xft support in emacs worthwhile, and the sooner the better.
-
-Keep in mind that the Xft issue is for people running X.  In Microsoft Windows, XEmacs uses Windows native font rendering, which has antialiasing and sub-pixel rendering.  It looks great.
-
-
-''The  mythical GtkEmacs might do that, since GTK+ 2 does antialiased and
-  truetype fonts.''  Unfortunately GtkXEmacs does not use GTK font
-  rendering; it bypasses GTK and uses X directly.  
-
-[new]
-: Since the XFT [[XEmacs]] port also uses X directly--not using, say, Qt, or some other toolkit--and since the GTK X redisplay code was ripped straight from the Athena/Motif X redisplay code, where the XFT code was added, making the GTK port work with Xft would not be obscenely difficult, a couple of days' work once you're comfortable with the [[XEmacs]] build process. Unfortunately, GTK 2 integration isn't there quite yet, so GTK support for XFT would for the moment have to involve gdkxft, which is a crazy hack :-( --- AidanKehoe
-
-[new]
-
-One not-amazingly-satisfactory workaround until Xft support makes it into emacs: 
-  Open an antialiased terminal window (e.g. kde konsole or even a correctly configured recent version of xterm), 
-  and run <tt>emacs -nw</tt> in it. This will launch emacs as if it was on a non-X text-mode display,
-  ignoring DISPLAY, running inside the terminal emulator window, and therefore will use the terminal emulator's 
-  much better  font rendering.  If you then do <tt>M-x xterm-mouse-mode</tt> the mouse might even sort of work!
-
-[new]
-There is a non-mainstream branch of GNU emacs which supports Xft font rendering. It is called XFT_JHD_BRANCH.
-  An all-personal way to build such version is as follows:
-
-    export CVS_RSH="ssh"
-    cvs -z3  -d:ext:anoncvs@savannah.gnu.org:/cvsroot/emacs co -r XFT_JHD_BRANCH emacs
-    cd emacs
-    ./configure --with-x-toolkit=gtk --prefix=/scratch/scarpaz/emacs-xft
-    CFLAGS='-O3 -fexpensive-optimizations' make bootstrap
-    make
-    make install
-
-You can also find a non-maintained snapshot of the sources here: http://www.scarpaz.com/backup/emacs-xft-2006-03-09.tar.gz
-
-
 
 == Proportional Fonts and the Fill Column==
 
