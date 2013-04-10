@@ -6,9 +6,7 @@ This is so useful that you might want to use a keybinding in your [[init file]] 
 
  (global-set-key (kbd "C-c o") 'occur)
 
-Starting with Emacs 24, you can use `C-o' within [[isearch]] to run `occur'.
-
-In Emacs 23, you can also use `M-s o' within [[isearch]] to run `occur'.
+Starting with Emacs 23, you can also use `M-s o' within [[isearch]] to run `occur'.
 
 Starting with Emacs 22, you can also use '''`##C-x `##'''' (`next-error') or `M-g p' (`previous-error') to navigate to the next or previous occurrence. You can also turn on `next-error-follow-minor-mode' in the Occur buffer, which binds `C-n' and `C-p'.
 
@@ -194,4 +192,82 @@ The following deletes the context around the match on the same line.
 {{{
 (defun occurrences (regexp &rest ignore)
   "Show all matches for REGEXP in an `occur' buffer."
-  ;; keep text covered by occur-
+  ;; keep text covered by occur-prefix and match text-properties
+  (interactive (occur-read-primary-args))
+  (occur regexp)
+  (with-current-buffer (get-buffer "*Occur*")
+    (let ((inhibit-read-only t)
+	  delete-from
+	  pos)
+      (save-excursion
+	(while (setq pos (next-property-change (point)))
+	  (goto-char pos)
+	  (if (not (or (get-text-property (point) 'occur-prefix)
+		       (get-text-property (point) 'occur-match)))
+	      (if delete-from
+		  (delete-region delete-from (point))
+		(setq delete-from (point)))
+	    (when delete-from
+	      (delete-region delete-from (point))
+	      (if (get-text-property (point) 'occur-prefix)
+		  (insert "\n")
+		(insert " ")))
+	    (setq delete-from nil)))))))
+}}}
+
+list-matching-lines does almost the same as occur. There's also delete-matching-lines.
+
+== Occur-like minor mode ==
+[https://github.com/fourier/loccur loccur.el] 
+
+There is a minor mode for Emacs acting like occur but w/o creating a new window.
+It just hides all the text excepting lines containing matches. To use it,
+add the following to your .emacs file:
+
+{{{
+(require 'loccur)
+;; defines shortcut for loccur of the current word
+(define-key global-map [(control o)] 'loccur-current)
+;; defines shortcut for the interactive loccur command
+(define-key global-map [(control meta o)] 'loccur)
+;; defines shortcut for the loccur of the previously found word
+(define-key global-map [(control shift o)] 'loccur-previous-match)
+}}}
+
+Now you can point the cursor to the word and press "Ctrl+o" to hide 
+all lines except those containing this word. Moving cursor to the required 
+line and pressing "Ctrl+o" again will shows all the text.
+The good thing about this mode is what you can navigate through the buffer easily.
+"Ctrl+Shift+o" will repeat last search.
+[new:fourier:2009-10-06 12:43 UTC]
+
+[new] 
+See also IncrementalOccur
+
+-- ThierryVolpiatto
+
+
+== Keep the *Occur* window visible when using next-error/previous-error ==
+
+When using `next-error' I like to keep the `*Occur*' window visible just like when I open the matches by pressing `RET' on them in the `*Occur*' window. If I use `next-error' from an other window then it reuses the `*Occur*' window and displays the match in it (Emacs 23). The following advice selects the `*Occur*' window before calling `occur-next-error' thereby keeping it displaying the matches and showing the match in the other window:
+
+    (defadvice occur-next-error (before my-occur-next-error activate)
+      (let ((win (get-buffer-window (current-buffer))))
+        (if win
+            (select-window win))))
+
+-- [[Anonymous]]
+
+[new:DrewAdams:2011-04-08 18:21 UTC]
+I don't have a problem in this regard, because I use a dedicated window for `*Occur*':
+
+  (setq special-display-regexps  '("[ ]?[*][^*]+[*]"))
+
+-- DrewAdams
+
+[new]
+
+But this solution opens an additional frame for occur by default which I don't want, so it would need further configuration to prevent that. The solution above doesn't have this problem, because it operates in the current frame. -- anon
+
+----
+CategoryModes CategoryRegexp GrepMode CategorySearchAndReplace CategoryNavigation
