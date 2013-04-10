@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Wed Apr 10 14:57:32 2013 (-0700)
+;; Last-Updated: Wed Apr 10 16:00:23 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6048
+;;     Update #: 6079
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -330,6 +330,7 @@
 ;;    `bmkp-bookmark-record-from-name', `bmkp-bookmark-type',
 ;;    `bmkp-buffer-last-access-cp', `bmkp-buffer-names',
 ;;    `bmkp-compilation-file+line-at', `bmkp-completing-read-1',
+;;    `bmkp-completing-read-bookmarks',
 ;;    `bmkp-completing-read-buffer-name',
 ;;    `bmkp-completing-read-file-name', `bmkp-completing-read-lax',
 ;;    `bmkp-cp-not', `bmkp-create-variable-list-bookmark',
@@ -3100,6 +3101,25 @@ for its existence, as is `bmkp-get-bookmark-in-alist'."
   "`bmkp-last-as-first-bookmark-file', or `bookmark-default-file' if nil."
   (or bmkp-last-as-first-bookmark-file bookmark-default-file))
 
+(defun bmkp-completing-read-bookmarks (&optional alist pred hist names-only-p)
+  "Read bookmark names and return the bookmarks named as a list.
+You are prompted for each bookmark name.  Hit `RET' with empty input
+to end.
+
+ALIST is the bookmark alist to use.  If nil, use `bookmark-alist'.
+NAMES-ONLY-P non-nil means return bookmark names, not full bookmarks.
+If NAMES-ONLY-P is `lax' then completion is lax."
+  (let ((bmks  ())
+        (bmk   t))
+    (while bmk
+      (setq bmk  (bmkp-completing-read-1 "Bookmark (RET for each, empty input to finish)"
+                                         "" alist pred hist (eq names-only-p 'lax)))
+      (when (equal "" bmk) (setq bmk  nil))
+      (when (and bmk  (not names-only-p)) (setq bmk (bmkp-get-bookmark-in-alist bmk 'NO-ERROR alist)))
+      (when bmk (push bmk bmks)))
+    (setq bmks  (nreverse bmks))
+    bmks))
+
 (defun bmkp-completing-read-lax (prompt &optional default alist pred hist)
   "Read a bookmark name, prompting with PROMPT.
 Like `bookmark-completing-read', but completion is lax: your input
@@ -3130,8 +3150,7 @@ In addition:
 
 (defun bmkp-completing-read-1 (prompt default alist pred hist laxp)
   "Helper for `bookmark-completing-read(-lax)'.
-LAXP non-nil means use lax completion.
-Force user to enter non-empty input, if DEFAULT is nil or \"\"."
+LAXP non-nil means use lax completion."
   (bookmark-maybe-load-default-file)
   (setq alist  (or alist bookmark-alist))
   (if (and (not laxp)
