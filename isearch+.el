@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 21.0
-;; Last-Updated: Tue Apr  9 15:18:34 2013 (-0700)
+;; Last-Updated: Wed Apr 10 13:37:09 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2081
+;;     Update #: 2083
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -50,7 +50,7 @@
 ;;
 ;;  Macros defined here:
 ;;
-;;    `with-isearch-suspended' (Emacs 22-24.2).
+;;    `with-isearch-suspended' (Emacs 22-24.3).
 ;;
 ;;  Commands defined here:
 ;;
@@ -356,6 +356,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2013/04/10 dadams
+;;     Define with-isearch-suspended for Emacs 24.3 too.  Apparently it did not make it into the release.
 ;; 2013/03/30 dadams
 ;;     Added: isearchp-yank-char, isearchp-yank-word-or-char, isearchp-yank-line, isearchp-repeat-command.
 ;;     Renamed isearchp-yank(-sexp)-symbol-or-char to isearchp-yank(-sexp)-symbol-or-char-1.
@@ -927,7 +929,7 @@ Bindings in Isearch minor mode:
 
 
 (when (and (> emacs-major-version 21)   ; Emacs 22 through 24.2
-           (or (< emacs-major-version 24)  (and (= emacs-major-version 24)  (< emacs-minor-version 3))))
+           (or (< emacs-major-version 24)  (and (= emacs-major-version 24)  (< emacs-minor-version 4))))
 
   (defmacro with-isearch-suspended (&rest body)
     "Exit Isearch mode, run BODY, and reinvoke the pending search.
