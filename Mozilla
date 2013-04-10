@@ -13,6 +13,9 @@ following attribute:
 
 Now type "emacs <term>" in the adressbar to search the wiki for a term.
 
+== Developing with Firefox ==
+[https://github.com/segv/jss jsSlime] provides an interface for Firefox' JavaScript debugger.
+
 == Editing text areas with Emacs ==
 
 === Firefox add-on: It's all text ===
