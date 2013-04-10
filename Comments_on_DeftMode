@@ -17,3 +17,11 @@ Thanks!
 
 -- mattm 2013-02-17 06:30 UTC
 
+
+----
+
+[new:JasonBlevins:2013-04-10 03:17 UTC]
+The problem is a missing <code>(require 'cl)</code> statement in <code>deft.el</code>.  Deft uses the `every' function from `cl-extra'.  This issue is fixed in the latest development version.
+
+-- [http://jblevins.org/ JasonBlevins] 2013-04-10 03:24 UTC
+
