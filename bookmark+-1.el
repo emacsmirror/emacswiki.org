@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Thu Apr 11 12:49:49 2013 (-0700)
+;; Last-Updated: Thu Apr 11 13:44:44 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6085
+;;     Update #: 6089
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -3166,7 +3166,6 @@ LAXP non-nil means use lax completion."
     (let* ((icicle-delete-candidate-object  (lambda (cand) ; For `S-delete' in Icicles.
                                               (bookmark-delete (icicle-transform-multi-completion cand))))
            (completion-ignore-case          bookmark-completion-ignore-case)
-           (default                         default)
            (prompt                          (if (and default  (not (equal "" default)))
                                                 (concat prompt
                                                         (format " (%s): "
@@ -3175,8 +3174,6 @@ LAXP non-nil means use lax completion."
                                               (concat prompt ": ")))
            (str                             (completing-read prompt alist pred (not laxp) nil
                                                              (or hist 'bookmark-history) default)))
-      (when (consp default) (setq default  (car default))) ; Emacs 23+
-      (when (and (string-equal "" str)  default)  (setq str  default))
       str)))
 
 (defun bmkp-jump-1 (bookmark display-function use-region-p)
