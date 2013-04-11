@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Wed Apr 10 15:26:37 2013 (-0700)
+;; Last-Updated: Wed Apr 10 21:51:29 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 15211
+;;     Update #: 15215
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -147,7 +147,7 @@
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
 ;; 2013/04/10 dadams
-;;     Added: bmkp-completing-read-bookmarks.
+;;     Added: bmkp-set-sequence-bookmark, bmkp-make-sequence-record, bmkp-completing-read-bookmarks.
 ;;     bmkp-completing-read-1: Do not put DEFAULT in PROMPT if DEFAULT is "".
 ;;     bookmark-completing-read: Mention in doc string that nil DEFAULT means return "".
 ;; 2013/03/29 dadams
@@ -865,6 +865,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2013/04/10 dadams
+;;     bmkp-bmenu-make-sequence-from-marked: Redefine using bmkp-set-sequence-bookmark (new).
 ;; 2013/01/07 dadams
 ;;     bookmark-bmenu-mode:
 ;;       Added: bmkp-bmenu-set-tag-value-for-marked, bmkp-bmenu-paste-(add|replace)-tags-for-marked.
