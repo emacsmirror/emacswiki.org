@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Wed Apr 10 21:51:29 2013 (-0700)
+;; Last-Updated: Thu Apr 11 13:45:02 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 15215
+;;     Update #: 15218
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -148,7 +148,9 @@
 ;;
 ;; 2013/04/10 dadams
 ;;     Added: bmkp-set-sequence-bookmark, bmkp-make-sequence-record, bmkp-completing-read-bookmarks.
-;;     bmkp-completing-read-1: Do not put DEFAULT in PROMPT if DEFAULT is "".
+;;     bmkp-completing-read-1:
+;;       Do not put DEFAULT in PROMPT if DEFAULT is "".  Removed useless let-binding of DEFAULT.
+;;       Removed unnecessary final massaging of STR.
 ;;     bookmark-completing-read: Mention in doc string that nil DEFAULT means return "".
 ;; 2013/03/29 dadams
 ;;     bmkp-toggle-saving-bookmark-file: If neither is nil, set *-last-* to nil before toggling.
