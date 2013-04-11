@@ -381,22 +381,23 @@ lists will be returned (as list of lists). These lists can be navigated from the
            (items (sort (remove-if 'exclude (directory-files dirname t)) sortfunc))
            (commands (mapcar 'cmdfunc items))
            (descriptions (mapcar 'descfunc items))
-           (menus (or (one-key-create-menu-lists commands descriptions nil nil
+           (menus (one-key-create-menu-lists commands descriptions nil nil
                                              :maxsize one-key-dir-max-items-per-page
-                                             :keyfunc keyfunc)
-                      '(nil)))
+                                             :keyfunc keyfunc))
            (thisdircmd `(lambda nil (interactive) (funcall ',dirfunc ,dirname)))
            (updircmd (cmdfunc (file-name-directory (file-truename (if (equal (substring dir -1) "/")
                                                                       (substring dir 0 -1)
                                                                     dir))))))
-      
-      (loop for menu in-ref menus do
-            (if visitable
-                (push (cons (cons (single-key-description one-key-dir-current-directory-key)
-                                  ".") thisdircmd) menu))
-            (if (one-key-dir-descendant-p dir nil topdir)
-                (push (cons (cons (single-key-description one-key-dir-parentdir-key)
-                                  "..") updircmd) menu)))
+      (if menus
+          (loop for menu in-ref menus do
+                (if visitable
+                    (push (cons (cons (single-key-description one-key-dir-current-directory-key)
+                                      ".") thisdircmd) menu))
+                (if (one-key-dir-descendant-p dir nil topdir)
+                    (push (cons (cons (single-key-description one-key-dir-parentdir-key)
+                                      "..") updircmd) menu)))
+        (setq menus (list (list (cons (cons "." ".") thisdircmd)
+                                (cons (cons "^" "..") updircmd)))))
       menus)))
 
 (defun* one-key-dir-descendant-p (dir &optional allow-equal (topdir one-key-dir-topdir))
