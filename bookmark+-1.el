@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Wed Apr 10 16:00:23 2013 (-0700)
+;; Last-Updated: Wed Apr 10 21:41:35 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6079
+;;     Update #: 6084
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -245,8 +245,8 @@
 ;;    `bmkp-set-autonamed-regexp-buffer',
 ;;    `bmkp-set-autonamed-regexp-region',
 ;;    `bmkp-set-bookmark-file-bookmark', `bmkp-set-desktop-bookmark',
-;;    `bmkp-set-restrictions-bookmark', `bmkp-set-tag-value',
-;;    `bmkp-set-tag-value-for-navlist',
+;;    `bmkp-set-restrictions-bookmark', `bmkp-set-sequence-bookmark',
+;;    `bmkp-set-tag-value', `bmkp-set-tag-value-for-navlist',
 ;;    `bmkp-set-variable-list-bookmark', `bmkp-some-tags-jump',
 ;;    `bmkp-some-tags-jump-other-window',
 ;;    `bmkp-some-tags-regexp-jump',
@@ -399,7 +399,7 @@
 ;;    `bmkp-make-bookmark-list-record', `bmkp-make-desktop-record',
 ;;    `bmkp-make-dired-record', `bmkp-make-gnus-record',
 ;;    `bmkp-make-man-record', `bmkp-make-plain-predicate',
-;;    `bmkp-make-record-for-target-file',
+;;    `bmkp-make-record-for-target-file', `bmkp-make-sequence-record',
 ;;    `bmkp-make-url-browse-record', `bmkp-make-variable-list-record',
 ;;    `bmkp-make-w3m-record', `bmkp-make-woman-record' (Emacs 21+),
 ;;    `bmkp-man-alist-only', `bmkp-man-bookmark-p',
@@ -7765,6 +7765,32 @@ You need library `wide-n.el' to use the bookmark created."
                                      wide-n-restrictions)))))))
       (call-interactively #'bookmark-set)
       (unless (featurep 'wide-n) (message "Bookmark created, but you need `wide-n.el' to use it")))))
+
+;;;###autoload (autoload 'bmkp-set-sequence-bookmark "bookmark+")
+(defun bmkp-set-sequence-bookmark (bookmark-names seqname &optional msgp)
+  "Create or update a sequence bookmark named SEQNAME from BOOKMARK-NAMES.
+BOOKMARK-NAMES is a list of existing bookmark names.
+From Lisp code, non-nil MSGP means show status message."
+  (interactive (list (read-string "Create sequence bookmark: ")
+                     (bmkp-completing-read-bookmark-names)))
+  (when msgp (message "Making sequence bookmark..."))
+  (let ((bmk  (bmkp-get-bookmark-in-alist seqname 'NOERROR)))
+    (when (and bmk  (bmkp-sequence-bookmark-p bmk))
+      (if (y-or-n-p (format "ADD to existing sequence `%s' (otherwise, REPLACE it)? " seqname))
+          (setq bookmark-names  (nconc bookmark-names (bookmark-prop-get bmk 'sequence)))
+        "OK, existing sequence will be replaced")))
+  (let ((bookmark-make-record-function `(lambda () (bmkp-make-sequence-record ',bookmark-names))))
+    (bookmark-set seqname)))
+
+(defun bmkp-make-sequence-record (bookmark-names)
+  "Create and return a sequence bookmark record.
+BOOKMARK-NAMES is a list of names of the bookmarks to be invoked in
+sequence."
+  (let ((record  `(,@(bookmark-make-record-default 'no-file 'no-context)
+                   (filename . ,bmkp-non-file-filename)
+                   (sequence . ,bookmark-names)
+                   (handler  . bmkp-jump-sequence))))
+    record))
 
 ;;;###autoload (autoload 'bmkp-set-variable-list-bookmark "bookmark+")
 (defun bmkp-set-variable-list-bookmark (variables)
