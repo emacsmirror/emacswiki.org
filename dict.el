@@ -1,4 +1,4 @@
-;; dict.el --- Emacs interface to dict client
+;;; dict.el --- Emacs interface to dict client
 ;;
 ;; $Id: dict.el,v 1.61 2011-02-03 22:58:35 rrt Exp $
 ;;
