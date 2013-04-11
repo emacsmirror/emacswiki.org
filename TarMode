@@ -1,6 +1,6 @@
 TarMode is a neat mode that comes with Emacs that can view <code>.tar</code> archives, including compresssed <code>.tar.gz</code> etc if you use AutoCompressionMode.  (For other archive types, like <code>.zip</code>, see ArchiveMode.)
 
-Tar mode looks and operates a lot like DiredMode.  You can view and edit files on a need-only basis.  Or, if you want to extract all the files to the filesystem, tar-mode will help you do that, too.  Impressively, tar-mode doesn't require the tar command, it directly manipulates the file.
+Tar mode looks and operates a lot like DiredMode.  You can view and edit files on a need-only basis.  Or, if you want to extract all the files to the filesystem, tar-mode will help you do that, too.  Impressively, tar-mode doesn't require the tar command, it directly manipulates the file.  However, this means that if you are accessing a remote <code>.tar</code> file using TrampMode, the entire file contents of the (possibly compressed) file must be transferred, rather than just the file listing and the contents of any files that you choose to view.
 
 TarMode doesn't allow you to interactively add files.  You need to do this on the command-line.
 
