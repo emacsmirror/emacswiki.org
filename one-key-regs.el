@@ -38,7 +38,9 @@
 ;; Floor, Boston, MA 02110-1301, USA.
 
 ;;; Commentary:
-;; 
+;;
+;; Bitcoin donations gratefully accepted: 1HnSqGHrVenb1t2V2aijyocWyZcd7qt1k
+
 ;; This library adds a new menu type to `one-key' called `one-key-registers' which creates a menu
 ;; for the currently loaded registers in `register-alist'. For more information on one-key see `one-key.el'.
 ;; Registers may be edited, created and deleted from within the `one-key-registers' menu, and many
@@ -431,7 +433,7 @@ and COLOUR is the name of the associated colour to use in the `one-key' menu."
                          'one-key-special-keybindings
                          '((show-register help "Display register contents"
                                           (lambda nil
-                                            (let* ((key (read-key "Enter the key for the register to display"))
+                                            (let* ((key (read-event "Enter the key for the register to display"))
                                                    (reg (assoc key register-alist)))
                                               (if reg
                                                   (message "Register \"%c\" contains: %S" key (cdr reg))
@@ -447,13 +449,20 @@ and COLOUR is the name of the associated colour to use in the `one-key' menu."
                                                         one-key-regs-currently-loaded-file
                                                         t) t))
                            (edit-register edit-item "Edit a register"
-                                          (lambda nil (one-key-regs-edit-menu-item okm-info-alist okm-full-list) t))
+                                          (lambda nil (one-key-regs-edit-menu-item
+                                                       one-key-buffer-filtered-list
+                                                       one-key-buffer-full-list) t))
                            (delete-register delete-item "Delete a register"
-                                            (lambda nil (one-key-regs-delete-menu-item okm-info-alist okm-full-list) t))
+                                            (lambda nil (one-key-regs-delete-menu-item
+                                                         one-key-buffer-filtered-list
+                                                         one-key-buffer-full-list) t))
                            (swap-register-keys swap-keys "Swap register keys"
-                                               (lambda nil (one-key-regs-swap-menu-items okm-full-list) t))
+                                               (lambda nil (one-key-regs-swap-menu-items
+                                                            one-key-buffer-full-list) t))
                            (add-register add-item "Add a register"
-                                         (lambda nil (one-key-regs-prompt-to-add-menu-item okm-info-alist okm-full-list) t))
+                                         (lambda nil (one-key-regs-prompt-to-add-menu-item
+                                                      one-key-buffer-filtered-list
+                                                      one-key-buffer-full-list) t))
                            (show-register-prefix-keys "C-p" "Show prefix associations"
                                                       one-key-regs-show-prefix-key-associations)
                            (clear-registers "<C-f6>" "Delete all registers"
@@ -462,14 +471,18 @@ and COLOUR is the name of the associated colour to use in the `one-key' menu."
                                               (lambda nil (one-key-regs-open-register-sets-menu "replace") t))
                            (merge-registers "M-l" "Load registers (merge)"
                                             (lambda nil (one-key-regs-open-register-sets-menu "prompt") t))
+                           (regs-documentation documentation "Show one-key-regs documentation"
+                                               (lambda nil (finder-commentary (locate-library "one-key-regs"))
+                                                 (setq one-key-menu-window-configuration nil)
+                                                 nil))
                            ) t))
 
 (defcustom one-key-regs-special-keybindings
-  '(quit-close quit-open toggle-persistence toggle-display next-menu prev-menu up down scroll-down scroll-up
-               show-register show-register-prefix-keys save-registers merge-registers replace-registers toggle-help
-               toggle-row/column-order sort-next sort-prev reverse-order limit-items highlight-items edit-register
-               delete-register clear-registers swap-register-keys add-register add-menu remove-menu move-item donate
-               report-bug)
+  (one-key-add-elements-to-list
+   'one-key-general-special-keybindings
+   '(show-register show-register-prefix-keys save-registers merge-registers replace-registers regs-documentation limit-items
+                   highlight-items edit-register delete-register clear-registers swap-register-keys add-register add-menu
+                   remove-menu move-item donate report-bug))
   "List of special keys to be used for one-key-registers menus (see `one-key-default-special-keybindings' for more info)."  
   :group 'one-key-regs
   :type '(repeat (symbol :tag "Name" :help-echo "The name/symbol corresponding to the keybinding.")))
@@ -731,7 +744,7 @@ If COLOUR is \"\" then all highlighting (and more generally any text properties)
           (setf (cdar item)
                 (propertize str 'face (list :background colour :foreground one-key-item-foreground-colour)))))
   (setq one-key-menu-call-first-time t)
-  (one-key-menu-window-close))
+  (one-key-set-window-state 'close))
 
 (defun one-key-regs-shift-key-queue (char)
   "If CHAR is a member of a key queue in `one-key-regs-key-queues' then shift registers in keys after it in the queue.
@@ -1067,15 +1080,15 @@ Unless NOPROMPT is non-nil the user will be prompted to check if they want to co
     (one-key-regs-function key '(4))
     (one-key-regs-update-menu-alist)
     (setq one-key-menu-call-first-time t)
-    (one-key-menu-window-close)))
+    (one-key-set-window-state 'close)))
 
 (defun one-key-regs-swap-menu-items (full-list)
   "Prompt user for a pair of items from FULL-LIST and swap the corresponding keys."
   (let* ((keya (read-event "Press key for first item"))
-         (keyastr (single-key-description keya))
+         (keyastr (one-key-key-description keya))
          (itema (one-key-get-menu-item keyastr full-list))
-         (keyb (read-key "Press key for second item"))
-         (keybstr (single-key-description keyb))
+         (keyb (read-event "Press key for second item"))
+         (keybstr (one-key-key-description keyb))
          (itemb (one-key-get-menu-item keybstr full-list)))
     (if (not (and itema itemb)) (message "Invalid key!")
       (setf (caar itema) keybstr (caar itemb) keyastr)
@@ -1083,17 +1096,17 @@ Unless NOPROMPT is non-nil the user will be prompted to check if they want to co
             (regb (assq keyb register-alist)))
         (setf (car rega) keyb (car regb) keya)))
     (setq one-key-menu-call-first-time t)
-    (one-key-menu-window-close)))
+    (one-key-set-window-state 'close)))
 
 (defun one-key-regs-edit-menu-item (info-alist full-list)
   "Prompt user for details of item in FULL-LIST to edit, make changes and then reopen `one-key' menu."
   (let* ((oldkey (read-event "Press the key of the item you want to edit"))
          (item (one-key-get-menu-item oldkey full-list))
-         (newkey (let ((key (read-key "Enter new key for the item")))
+         (newkey (let ((key (read-event "Enter new key for the item")))
                    (while (and (one-key-get-menu-item key full-list)
                                (not (eq key oldkey))
                                (not (y-or-n-p "That key is already used! Use it anyway?")))
-                     (setq key (read-key "Enter new key for the item")))
+                     (setq key (read-event "Enter new key for the item")))
                    key))
          (desc (read-string "Item description: " (cdar item) nil nil))
          (oldcontents (get-register oldkey))
@@ -1112,7 +1125,7 @@ Unless NOPROMPT is non-nil the user will be prompted to check if they want to co
     (setq register-alist (assq-delete-all oldkey register-alist))
     (set-register newkey contents))
     (setq one-key-menu-call-first-time t)
-    (one-key-menu-window-close))
+    (one-key-set-window-state 'close))
 
 (defun one-key-regs-delete-menu-item (info-alist full-list)
   "Prompt the user for an item to delete from FULL-LIST, delete it, and then redisplay the `one-key' menu."
@@ -1124,7 +1137,7 @@ Unless NOPROMPT is non-nil the user will be prompted to check if they want to co
           (setq info-alist (delete item full-list))))
     (setq register-alist (assq-delete-all key register-alist))
     (setq one-key-menu-call-first-time t)
-    (one-key-menu-window-close)))
+    (one-key-set-window-state 'close)))
 
 ;; Set the value of `one-key-regs-legend-string' to match the current value of `one-key-regs-colours-alist'
 (setq one-key-regs-legend-string
@@ -1199,7 +1212,7 @@ Unless NOPROMPT is non-nil the user will be prompted to check if they want to co
                                             "Unsaved registers"))))
                               'one-key-regs-special-keybindings) t)
 
-(add-to-list 'one-key-exclude-from-save "registers")
+(add-to-list 'one-key-exclude-from-save "^registers")
 ;; Load the default register set
 (if (file-readable-p one-key-regs-default-file)
     (progn (load one-key-regs-default-file)
@@ -1211,3 +1224,6 @@ Unless NOPROMPT is non-nil the user will be prompted to check if they want to co
 (provide 'one-key-regs)
 
 ;;; one-key-regs.el ends here
+
+;; (magit-push)
+;; (yaoddmuse-post "EmacsWiki" "one-key-regs.el" (buffer-name) (buffer-string) "update")
