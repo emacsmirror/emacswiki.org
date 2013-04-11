@@ -186,8 +186,9 @@
          (command (and keys (key-binding keys))))
     (when (commandp command)
       (setq this-command command
-            this-original-command command
-            mc--this-command command)
+            this-original-command command)
+      (when (and (boundp 'multiple-cursors-mode) multiple-cursors-mode)
+        (setq mc--this-command command))
       (call-interactively command))))
 
 (defun iy-go-to-char-isearch ()
@@ -237,8 +238,9 @@ movement to `iy-go-to-char--command' and set it as
     (iy-go-to-char--override-local-map char))
 
   (setq this-original-command 'iy-go-to-char--command
-        this-command 'iy-go-to-char--command
-        mc--this-command 'iy-go-to-char--command)
+        this-command 'iy-go-to-char--command)
+  (when (and (boundp 'multiple-cursors-mode) multiple-cursors-mode)
+    (setq mc--this-command 'iy-go-to-char--command))
 
   (call-interactively 'iy-go-to-char--command))
 
