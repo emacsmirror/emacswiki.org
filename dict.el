@@ -1,6 +1,6 @@
-;;; dict.el --- Emacs interface to dict client
+;; dict.el --- Emacs interface to dict client
 ;;
-;; $Id: dict.el,v 1.43 2004/03/04 17:38:14 fagot Exp $
+;; $Id: dict.el,v 1.61 2011-02-03 22:58:35 rrt Exp $
 ;;
 
 ;; Copyright (c) 2002, 2003, 2004 Max Vasin
@@ -42,7 +42,7 @@
 ;; definitions, and of cause you can find them in the customisation buffer
 ;; (External->Dict).
 ;;
-;; I hope you find the program useful. And also I would like to know your
+;; I hope you find the program usefull.  And also I would like to know your
 ;; opinion about the program, improvement suggestions and of cause bug reports.
 ;; Mail them to <max-appolo@mail.ru>
 
@@ -279,8 +279,8 @@ display the results in the Emacs buffer."
 
 (defun dict-get-databases (host)
   "Get a list of available databases."
-  (let* ((dbinfo-string (shell-command-to-string (format "dict -h %s -D 2> /dev/null | awk 'BEGIN { print \"(\"; } \
-/^[ ]+/ { match($0, /^[ ]+([a-z0-9]+)[ ]+(.+)/, r); print \"(\\\"\" r[1] \"\\\"\" \" \\\"\" r[2]\"\\\")\"; } \
+  (let* ((dbinfo-string (shell-command-to-string (format "dict -h %s -D 2> /dev/null | grep -v -e --exit-- | awk 'BEGIN { print \"(\"; } \
+/^[ ]+/ { match($0, /^[ ]+([a-z0-9-]+)[ ]+(.+)/, r); print \"(\\\"\" r[1] \"\\\"\" \" \\\"\" r[2]\"\\\")\"; } \
 END { print \")\" }'" host)))
 	 (dbinfo (read dbinfo-string))
 	 (dbnames (mapcar 'car dbinfo))
@@ -305,13 +305,13 @@ END { print \")\" }'" host)))
   "Get a list of available database names."
   (mapcar 'symbol-name
 	  (read (concat "(" (shell-command-to-string 
-			     (format "dict -h %s -D 2> /dev/null | cut -f 2 -d ' ' | sed -e '1 d'" host host)) ")"))))
+			     (format "dict -h %s -D 2> /dev/null | grep -v -e --exit-- | cut -f 2 -d ' ' | sed -e '1 d'" host host)) ")"))))
 
 (defcustom dict-strategies  (mapcar (lambda (h) (list h nil)) dict-servers)
   "Specify a matching strategy.
 By default, the server default match strategy is used.  This is
 usually \"exact\" for definitions, and some form of
-spelling-correction strategy for matches (\".\" fromthe DICT
+spelling-correction strategy for matches (\".\" from the DICT
 protocol). The available strategies are dependent on the server
 implemenation."
   :type `(list :tag "Server" ,@(mapcar
@@ -458,7 +458,9 @@ the databases until a match is found, and then stop searching."
     (lambda (process msg)
       (let ((process-buffer (process-buffer process)))
 	(cond
-	 ((string= "finished\n" msg)
+	 ((or (string= "finished\n" msg)
+              (and (string-match "^exited abnormally with code " msg)
+                   (< (process-exit-status process) 30)))
 	  (save-excursion
 	    (set-buffer process-buffer)
 	    (set-buffer-modified-p nil)
@@ -480,17 +482,30 @@ the databases until a match is found, and then stop searching."
 	 ((string-match "exited abnormally with code" msg)
 	  (message msg)))))))
 
-(defsubst dict-default-dict-entry ()
-  "Make a guess at a default dict entry.
-This guess is based on the text surrounding the cursor."
-  (let (word)
-    (save-excursion
-      (setq word (current-word))
-      (cond ((null word) "")
-	    ((string-match "[._]+$" word)
-	     (substring word 0 (match-beginning 0)))
-	    (t word)))))
+;;(defsubst dict-default-dict-entry ()
+;;  "Make a guess at a default dict entry.
+;;This guess is based on the text surrounding the cursor."
+;;  (let (word)
+;;    (save-excursion
+;;      (setq word (current-word))
+;;      (if (string-match "[._]+$" word)
+;;	  (setq word (substring word 0 (match-beginning 0))))
+;;      word)))
 
+;; Debian Bug 301293 reported and patched by Jorgen Schaefer <forcer@debian.org>
+;; `current-word' can return nil, which causes this function to
+;; error out in the `string-match'. Also, `save-excursion' doesn't
+;; do anything here.
+;;
+;; This should be written as:
+(defsubst dict-default-dict-entry ()
+  "Make a guess at the default dict entry.
+This guess is based on the text surrounding the cursor."
+  (let ((word (or (current-word)
+                  "")))
+    (if (string-match "[._]+$" word)
+        (substring word 0 (match-beginning 0))
+      word)))
 
 ;;;;
 ;;;; Lookup functions
@@ -614,7 +629,7 @@ This guess is based on the text surrounding the cursor."
   (shell-command "dict --version"))
 
 (defconst dict-version
-  "$Revision: 1.43 $"
+  "$Revision: 1.6 $"
   "Version number for 'dict' package.")
 
 (defun dict-version-number ()
