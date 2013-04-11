@@ -240,8 +240,6 @@ movement to `iy-go-to-char--command' and set it as
         this-command 'iy-go-to-char--command
         mc--this-command 'iy-go-to-char--command)
 
-  (message "%s %d" (make-string 1 iy-go-to-char-last-char) iy-go-to-char-start-dir)
-
   (call-interactively 'iy-go-to-char--command))
 
 ;;;###autoload
