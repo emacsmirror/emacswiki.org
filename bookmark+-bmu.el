@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Wed Apr 10 21:43:58 2013 (-0700)
+;; Last-Updated: Thu Apr 11 12:50:27 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2419
+;;     Update #: 2420
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -2971,7 +2971,7 @@ Returns the bookmark (internal record) created or updated."
           (push (bookmark-bmenu-bookmark) marked-bmks)
           (setq count  (1+ count)))))
     (when (zerop count) (error "No marked bookmarks"))
-      (bmkp-set-sequence-bookmark (nreverse marked-bmks) seqname))
+      (bmkp-set-sequence-bookmark seqname (nreverse marked-bmks)))
   (let ((new  (bookmark-get-bookmark seqname 'NOERROR)))
     (unless (memq new bmkp-latest-bookmark-alist)
       (setq bmkp-latest-bookmark-alist  (cons new bmkp-latest-bookmark-alist)))
