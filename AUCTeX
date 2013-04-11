@@ -314,7 +314,12 @@ Feel free to improve this function to suit your needs (for example by adding sup
 == Synctex and Evince ==
 
 Recent versions of the document reader Evince (since 2.32) have support for backward search; i.e. you press Ctrl
-and the left mouse button within a PDF document to be taken back to the corresponding line of the .tex source file that generated the PDF.  This requires synctex.  (Original solution due to Tassilo Horn:
+and the left mouse button within a PDF document to be taken back to the corresponding line of the .tex source file that generated the PDF.  This requires synctex.
+
+Since AUCTeX 11.87, enabling this feature is as easy as enabling ##TeX-source-correlate-mode##.
+The following is only needed with older AUCTeX.
+
+(Original solution due to Tassilo Horn:
 http://permalink.gmane.org/gmane.emacs.auctex.general/4074)
 
 Evince works by sending a message via DBus that we can configure Emacs to pick up on. Unfortunately, the contents of the message seem to have changed somewhere between versions 2.32 and 3.2. The following code works for me with the newer version.
