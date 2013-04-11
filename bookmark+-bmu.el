@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Sun Mar 17 08:16:39 2013 (-0700)
+;; Last-Updated: Wed Apr 10 21:43:58 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2416
+;;     Update #: 2419
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -383,7 +383,8 @@ Elements of ALIST that are not conses are ignored."
 ;; bmkp-last-specific-file, bmkp-latest-bookmark-alist,
 ;; bmkp-local-file-bookmark-p, bmkp-local-file-type-cp,
 ;; bmkp-local-file-accessed-more-recently-cp,
-;; bmkp-local-file-updated-more-recently-cp, bmkp-man-bookmark-p,
+;; bmkp-local-file-updated-more-recently-cp,
+;; bmkp-set-sequence-bookmark, bmkp-man-bookmark-p,
 ;; bmkp-marked-bookmark-p, bmkp-marked-bookmarks-only, bmkp-marked-cp,
 ;; bmkp-msg-about-sort-order, bmkp-non-file-filename,
 ;; bmkp-read-tag-completing, bmkp-read-tags-completing,
@@ -2938,7 +2939,7 @@ to turn saving back on."
                                       ", "))))))
 
 ;;;###autoload (autoload 'bmkp-bmenu-make-sequence-from-marked "bookmark+")
-(defun bmkp-bmenu-make-sequence-from-marked (bookmark-name &optional dont-omit-p) ; Not bound
+(defun bmkp-bmenu-make-sequence-from-marked (seqname &optional dont-omit-p) ; Not bound
   "Create or update a sequence bookmark from the visible marked bookmarks.
 The bookmarks that are currently marked are recorded as a sequence, in
 their current order in buffer `*Bookmark List*'.
@@ -2970,26 +2971,15 @@ Returns the bookmark (internal record) created or updated."
           (push (bookmark-bmenu-bookmark) marked-bmks)
           (setq count  (1+ count)))))
     (when (zerop count) (error "No marked bookmarks"))
-    (let ((new-seq  (nreverse marked-bmks))
-          (bmk      (bmkp-get-bookmark-in-alist bookmark-name 'NOERROR)))
-      (when (and bmk  (bmkp-sequence-bookmark-p bmk))
-        (if (y-or-n-p (format "ADD marked to existing sequence `%s' (otherwise, REPLACES it)? "
-                              bookmark-name))
-            (setq new-seq  (nconc new-seq (bookmark-prop-get bmk 'sequence)))
-          "OK, existing sequence will be replaced"))
-      (bookmark-store bookmark-name `((filename . ,bmkp-non-file-filename)
-                                      (position . 0)
-                                      (sequence ,@new-seq)
-                                      (handler  . bmkp-jump-sequence))
-                      nil)))
-  (let ((new  (bookmark-get-bookmark bookmark-name 'NOERROR)))
+      (bmkp-set-sequence-bookmark (nreverse marked-bmks) seqname))
+  (let ((new  (bookmark-get-bookmark seqname 'NOERROR)))
     (unless (memq new bmkp-latest-bookmark-alist)
       (setq bmkp-latest-bookmark-alist  (cons new bmkp-latest-bookmark-alist)))
     (unless dont-omit-p
       (bmkp-bmenu-omit-marked)
       (message "Marked bookmarks now OMITTED - use `bmkp-bmenu-show-only-omitted' to show"))
     (bookmark-bmenu-surreptitiously-rebuild-list 'NO-MSG-P)
-    (bmkp-bmenu-goto-bookmark-named bookmark-name)
+    (bmkp-bmenu-goto-bookmark-named seqname)
     new))
 
 
