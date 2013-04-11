@@ -308,7 +308,9 @@ Default values for TOPDIR and VISITABLE are `one-key-dir-topdir' and t respectiv
              (nummenus (length dir-alists))
              (dirname (file-name-as-directory (file-truename dir)))
              (menunames (one-key-append-numbers-to-menu-name dirname nummenus)))
-        (one-key-menu menunames dir-alists))))
+        (with-current-buffer (get-buffer one-key-buffer-name)
+          (setq one-key-buffer-temp-action (car one-key-window-toggle-sequence)))
+        (one-key-menu menunames dir-alists nil))))
 
 (defun* one-key-dir-build-menu-alist (dir &key
                                           (filefunc one-key-dir-default-file-func)                                          
