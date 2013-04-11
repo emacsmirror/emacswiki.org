@@ -87,6 +87,13 @@ that package. --- [[Bernard Hurley]]
 As of 2013-01-15, `defun` in the Emacs trunk appears to work correctly in lexically bound contexts
 so this hack is no longer needed. --- [[Bernard Hurley]]
 
+== Using lexical binding in elisp libraries ==
+
+To enable lexical binding in your elisp library put a line like this at the top of the file:
+
+{{{
+;; -*- lexical-binding: t -*-
+}}}
 
 ----
 CategoryCode
