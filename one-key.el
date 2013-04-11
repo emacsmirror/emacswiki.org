@@ -938,8 +938,8 @@ sort methods for different menus."
     (documentation "<S-f1>" "Show one-key documentation"
                    (lambda nil (finder-commentary (locate-library "one-key"))))
     (save-menu "C-s" "Save state of current menu"
-               (lambda nil (one-key-save-menu (nth one-key-buffer-menu-number one-key-buffer-menu-names)
-                                              (nth one-key-buffer-menu-number one-key-buffer-menu-alists))))
+               (lambda nil (one-key-save-menu one-key-buffer-this-name
+                                              one-key-buffer-full-list)))
     (toggle-help "<f1>" "Toggle this help buffer"
                  (lambda nil (if (get-buffer-window one-key-help-buffer-name)
                                  (one-key-set-window-state 'hidehelp)
@@ -981,8 +981,7 @@ sort methods for different menus."
                    (lambda nil
                      (let* ((key (read-event "Enter the key for the menu set"))
                             (item (one-key-get-menu-item
-                                   key (nth one-key-buffer-menu-number
-                                            one-key-buffer-menu-alists)))
+                                   key one-key-buffer-full-list))
                             (menuset (assoc (cdar item) one-key-sets-of-menus-alist))
                             (desc (car menuset))
                             (names (cdr menuset)))
@@ -996,8 +995,7 @@ sort methods for different menus."
                             (lambda nil
                               (let* ((key (read-event "Press the key of item to set as default"))
                                      (item (one-key-get-menu-item
-                                            key (nth one-key-buffer-menu-number
-                                                     one-key-buffer-menu-alists)))
+                                            key one-key-buffer-full-list))
                                      (name (cdar item))
                                      (pos (position "menu-sets" one-key-buffer-menu-names :test 'equal)))
                                 (if name (eval `(customize-save-variable 'one-key-default-menu-set
@@ -1053,8 +1051,7 @@ sort methods for different menus."
                      (lambda nil (setq selected-item 'godown)))
     (read-tree-delete "<backspace>" "Remove last item from list"
                       (lambda nil (setq selected-item 'del)))
-    (read-logical-negate "!" "Negate next item" (lambda nil (setq selected-item 'not)))
-    )
+    (read-logical-negate "!" "Negate next item" (lambda nil (setq selected-item 'not))))
   "An list of special keys; labels, keybindings, descriptions and associated functions.
 Each item in the list contains (in this order):
 
@@ -1534,7 +1531,10 @@ MENU-NUMBER should be nil if NAMES is a single name, otherwise it should index t
                  one-key-buffer-miss-match-action
                  one-key-buffer-match-action
                  one-key-buffer-associated-window
-                 one-key-buffer-dedicated-frame))
+                 one-key-buffer-dedicated-frame
+                 one-key-buffer-this-name
+                 one-key-buffer-full-list
+                 one-key-buffer-this-list))
     (set (make-local-variable var) nil))
   ;; Set mode-line and header-line
   (setq mode-line-format one-key-mode-line-format
@@ -2185,27 +2185,26 @@ doesn't exist."
            (error "Buffer local variable one-key-buffer-menu-names is nil"))
           ((not one-key-buffer-menu-alists)
            (error "Buffer local variable one-key-buffer-menu-alists is nil")))
-    (let* ((this-list (nth one-key-buffer-menu-number one-key-buffer-menu-alists))
-           (issymbol (symbolp this-list))
-           (full-list (if issymbol (eval this-list) this-list))
-           (this-name (nth one-key-buffer-menu-number one-key-buffer-menu-names)))
-      ;; Fill buffer with menu items.
-      (setq one-key-buffer-filtered-list
-            (if (stringp one-key-buffer-filter-regex)
-                (remove-if-not
-                 (lambda (elt) (string-match one-key-buffer-filter-regex (cdar elt)))
-                 (remove nil full-list))
-              (remove nil full-list))
-            one-key-buffer-special-keybindings
-            (or (one-key-get-special-key-contents
-                 (one-key-eval-if-symbol
-                  (or (fifth (one-key-get-menu-type this-name))
-                      one-key-default-special-keybindings)))))
-      (erase-buffer)
-      (goto-char (point-min))
-      (insert (one-key-highlight-menu
-               (one-key-menu-format one-key-buffer-filtered-list)
-               one-key-buffer-menu-names one-key-buffer-menu-number title-string))))
+    ;; Fill buffer with menu items.
+    (setq one-key-buffer-this-list (nth one-key-buffer-menu-number one-key-buffer-menu-alists)
+          one-key-buffer-full-list (one-key-eval-if-symbol one-key-buffer-this-list)
+          one-key-buffer-this-name (nth one-key-buffer-menu-number one-key-buffer-menu-names)
+          one-key-buffer-filtered-list
+          (if (stringp one-key-buffer-filter-regex)
+              (remove-if-not
+               (lambda (elt) (string-match one-key-buffer-filter-regex (cdar elt)))
+               (remove nil one-key-buffer-full-list))
+            (remove nil one-key-buffer-full-list))
+          one-key-buffer-special-keybindings
+          (or (one-key-get-special-key-contents
+               (one-key-eval-if-symbol
+                (or (fifth (one-key-get-menu-type one-key-buffer-this-name))
+                    one-key-default-special-keybindings)))))
+    (erase-buffer)
+    (goto-char (point-min))
+    (insert (one-key-highlight-menu
+             (one-key-menu-format one-key-buffer-filtered-list)
+             one-key-buffer-menu-names one-key-buffer-menu-number title-string)))
   (one-key-reposition-window-contents))
 
 (defun* one-key-menu (&optional menu-names menu-alists menu-number
@@ -2767,8 +2766,7 @@ in `one-key-default-special-keybindings'."
                         "-map$" "" (symbol-name keymap))
                      "unknown")))
          (keymap1 (if (functionp keymap) (symbol-function keymap)
-                    (if (symbolp keymap) (eval keymap)
-                      keymap)))         ;get the keymap value
+                    (one-key-eval-if-symbol keymap)))         ;get the keymap value
          (menubar (lookup-key keymap1 [menu-bar])) ;get any menu-bar items
          (mainvar (intern (concat "one-key-menu-" name "-alist"))) ;variable to hold the main menu
          usedkeys usedcmds menu-alist)
