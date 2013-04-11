@@ -226,6 +226,7 @@ The following plugin libraries are available:
 : Lisp:one-key-dir.el - one-key menus for quickly navigating directories (useful for navigating procfs or sysfs on *nix systems)
 : Lisp:one-key-yas.el - one-key menus for yasnippet templates (see [[Yasnippet]])
 : Lisp:one-key-bmkp.el - one-key menus for bookmark+ bookmarks (see [[BookmarkPlus]])
+: [https://github.com/aki2o/one-key-local one-key-local.el] - one-key menus for any major-mode and minor-mode
 
 ==OneKey menus for your own elisp code==
 Note: the following functions are not yet complete, but should be finished soon.
