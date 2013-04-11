@@ -808,7 +808,7 @@ Because tramp uses plink to login with all putty variants, and ssh to login with
 
 This is problematic with hosting accounts where access is only via sftp... other protocals (such as ssh) are disabled.
 
-=== Using tramp with archive-mode ===
+=== Using tramp with archive-mode under Windows/Cygwin ===
 
 Does anyone have a working configuration that combines tramp and archive-mode?
 I can open the remote archive but when I try to open a file within the archive I get:
@@ -849,6 +849,8 @@ This is using the following config:
 		(tramp-default-port 22)))
 
 scpwrapper is just a script that converts arguments of the form ##"c:/"## to ##"/cygdrive/c"##.
+
+Fixed to make this question Windows/Cygwin-specific - in GNU Emacs 24.2, I can view /ssh:...:....zip (and also .tar.gz, which isn't archive-mode) files, and view files inside them, out-of-the-box with no configuration, and I think this has been the case for some time. -- DavidOShea
 
 ----
 
