@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Fri Apr 12 09:03:19 2013 (-0700)
+;; Last-Updated: Fri Apr 12 09:52:45 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6102
+;;     Update #: 6116
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -440,11 +440,12 @@
 ;;    `bmkp-repeat-command', `bmkp-replace-existing-bookmark',
 ;;    `bmkp-root-or-sudo-logged-p', `bmkp-same-creation-time-p',
 ;;    `bmkp-same-file-p', `bmkp-save-new-region-location',
-;;    `bmkp-select-buffer-other-window', `bmkp-sequence-bookmark-p',
-;;    `bmkp-set-tag-value-for-bookmarks', `bmkp-set-union',
-;;    `bmkp-some', `bmkp-some-marked-p', `bmkp-some-tags-alist-only',
-;;    `bmkp-some-tags-regexp-alist-only', `bmkp-some-unmarked-p',
-;;    `bmkp-sorting-description', `bmkp-sort-omit', `bmkp-sound-jump',
+;;    `bmkp-select-buffer-other-window', `bmkp-sequence-alist-only',
+;;    `bmkp-sequence-bookmark-p', `bmkp-set-tag-value-for-bookmarks',
+;;    `bmkp-set-union', `bmkp-some', `bmkp-some-marked-p',
+;;    `bmkp-some-tags-alist-only', `bmkp-some-tags-regexp-alist-only',
+;;    `bmkp-some-unmarked-p', `bmkp-sorting-description',
+;;    `bmkp-sort-omit', `bmkp-sound-jump',
 ;;    `bmkp-specific-buffers-alist-only',
 ;;    `bmkp-specific-files-alist-only',
 ;;    `bmkp-string-less-case-fold-p', `bmkp-string-match-p',
@@ -3222,9 +3223,9 @@ available during this input.
 With a prefix arg, edit the complete bookmark record (the
  internal, Lisp form)."
   (interactive
-   (list (bookmark-completing-read
-          (concat "Edit " (and current-prefix-arg  "internal record for ") "bookmark")
-          (bmkp-default-bookmark-name))
+   (list (bookmark-completing-read (concat "Edit " (and current-prefix-arg  "internal record for ")
+                                           "bookmark")
+                                   (bmkp-default-bookmark-name))
          current-prefix-arg))
   (setq bookmark  (bmkp-get-bookmark-in-alist bookmark))
   (if edit-record-p
@@ -3259,7 +3260,8 @@ With a prefix arg, edit the complete bookmark record (the
 (define-derived-mode bmkp-edit-bookmark-records-mode emacs-lisp-mode
     "Edit Bookmark Records"
   "Mode for editing a list of bookmark records, as in `bookmark-alist'.
-When you have finished editing, use `\\[bmkp-edit-bookmark-record-send]'."
+When you finish editing, use \\<bmkp-edit-bookmark-record-mode-map>\
+`\\[bmkp-edit-bookmark-record-send]' in the record-editing buffer."
   :group 'bookmark-plus)
 
 ;; This binding must be defined *after* the mode, so `bmkp-edit-bookmark-records-mode-map' is defined.
@@ -3329,7 +3331,8 @@ by `bmkp-bmenu-edit-marked' (`\\<bookmark-bmenu-mode-map>\\[bmkp-bmenu-edit-mark
 (define-derived-mode bmkp-edit-bookmark-record-mode emacs-lisp-mode
     "Edit Bookmark Record"
   "Mode for editing an internal bookmark record.
-When you have finished editing, use `\\[bmkp-edit-bookmark-record-send]'."
+When you finish editing, use \\<bmkp-edit-bookmark-record-mode-map>\
+`\\[bmkp-edit-bookmark-record-send]' in the record-editing buffer."
   :group 'bookmark-plus)
 
 ;; This binding must be defined *after* the mode, so `bmkp-edit-bookmark-record-mode-map' is defined.
@@ -3341,9 +3344,10 @@ When you have finished editing, use `\\[bmkp-edit-bookmark-record-send]'."
 (defun bmkp-edit-bookmark-record (bookmark) ; Bound to `C-x p e'.
   "Edit the full record (the Lisp sexp) for BOOKMARK.
 BOOKMARK is a bookmark name or a bookmark record.
-When you finish editing, use `\\[bmkp-edit-bookmark-record-send]'.
+When you finish editing, use \\<bmkp-edit-bookmark-record-mode-map>\
+`\\[bmkp-edit-bookmark-record-send]' in the record-editing buffer.
 The current bookmark list is then updated to reflect your edits."
-  (interactive (list (bookmark-completing-read "Edit Lisp record for bookmark:"
+  (interactive (list (bookmark-completing-read "Edit Lisp record for bookmark"
                                                (bmkp-default-bookmark-name))))
   (bookmark-maybe-load-default-file)
   (setq bmkp-edit-bookmark-orig-record  (bmkp-get-bookmark-in-alist bookmark))
@@ -5285,6 +5289,12 @@ A new list is returned (no side effects)."
 A new list is returned (no side effects)."
   (bookmark-maybe-load-default-file)
   (bmkp-remove-if-not #'bmkp-remote-file-bookmark-p bookmark-alist))
+
+(defun bmkp-sequence-alist-only ()
+  "`bookmark-alist', filtered to retain only sequence bookmarks.
+A new list is returned (no side effects)."
+  (bookmark-maybe-load-default-file)
+  (bmkp-remove-if-not #'bmkp-sequence-bookmark-p bookmark-alist))  
 
 (defun bmkp-some-tags-alist-only (tags)
   "`bookmark-alist', but with only bookmarks having some tags in TAGS.
@@ -7768,20 +7778,39 @@ You need library `wide-n.el' to use the bookmark created."
       (unless (featurep 'wide-n) (message "Bookmark created, but you need `wide-n.el' to use it")))))
 
 ;;;###autoload (autoload 'bmkp-set-sequence-bookmark "bookmark+")
-(defun bmkp-set-sequence-bookmark (seqname bookmark-names &optional msgp)
+(defun bmkp-set-sequence-bookmark (seqname bookmark-names &optional prependp msgp)
   "Create or update a sequence bookmark named SEQNAME from BOOKMARK-NAMES.
-BOOKMARK-NAMES is a list of existing bookmark names.
+If a bookmark named SEQNAME does not already exist, create one.
+Otherwise:
+ * With no prefix arg, append BOOKMARK-NAMES to bookmark SEQNAME.
+ * With a prefix arg, prepend BOOKMARK-NAMES to bookmark SEQNAME.
+You are prompted for SEQNAME and each of the BOOKMARK-NAMES.
 From Lisp code, non-nil MSGP means show status message."
-  (interactive (list (read-string "Create sequence bookmark: ")
-                     (bmkp-completing-read-bookmarks nil nil nil 'NAMES-ONLY)))
-  (when msgp (message "Making sequence bookmark..."))
-  (let ((bmk  (bmkp-get-bookmark-in-alist seqname 'NOERROR)))
-    (when (and bmk  (bmkp-sequence-bookmark-p bmk))
-      (if (y-or-n-p (format "ADD to existing sequence `%s' (otherwise, REPLACE it)? " seqname))
-          (setq bookmark-names  (nconc bookmark-names (bookmark-prop-get bmk 'sequence)))
-        "OK, existing sequence will be replaced")))
-  (let ((bookmark-make-record-function `(lambda () (bmkp-make-sequence-record ',bookmark-names))))
-    (bookmark-set seqname)))
+  (interactive (list (bmkp-completing-read-lax "Create or update sequence bookmark"
+                                               (bmkp-new-bookmark-default-names)
+                                               (bmkp-sequence-alist-only))
+                     (bmkp-completing-read-bookmarks nil nil nil 'NAMES-ONLY)
+                     current-prefix-arg
+                     'MSGP))
+  (let* ((bmk         (bmkp-get-bookmark-in-alist seqname 'NOERROR))
+         (exists      (and bmk  (bmkp-sequence-bookmark-p bmk)))
+         (replacing  t))
+    (if (and exists  msgp)
+        (cond ((y-or-n-p (format "%s bookmarks to existing sequence `%s' (else REPLACE it)? "
+                                 (if prependp "PREPEND" "APPEND")
+                                 seqname))
+               (message "%sing to sequence bookmark..." (if prependp "Prepend" "Append")) (sit-for 0.5)
+               (setq replacing       nil
+                     bookmark-names  (if prependp
+                                         (nconc bookmark-names (bookmark-prop-get bmk 'sequence))
+                                       (nconc (bookmark-prop-get bmk 'sequence) bookmark-names))))
+              (t (message "OK, replacing sequence bookmark...") (sit-for 0.5)))
+      (when msgp (message "Creating sequence bookmark...")))
+    (let ((bookmark-make-record-function `(lambda () (bmkp-make-sequence-record ',bookmark-names))))
+      (bookmark-set seqname))
+    (when msgp (message "Sequence `%s' %s" seqname (if exists
+                                                       (if replacing "replaced" "updated")
+                                                     "created")))))
 
 (defun bmkp-make-sequence-record (bookmark-names)
   "Create and return a sequence bookmark record.
