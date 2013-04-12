@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Thu Apr 11 13:44:44 2013 (-0700)
+;; Last-Updated: Fri Apr 12 06:56:00 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6089
+;;     Update #: 6093
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -1893,11 +1893,15 @@ The names are those of the bookmarks in ALIST or, if nil,
   "Read a bookmark name, prompting with PROMPT.
 PROMPT is automatically suffixed with \": \", so do not include that.
 
-Optional arg DEFAULT is a string to return if the user enters the
- empty string.  If nil then return \"\".
+DEFAULT is a string or a list of strings.  If the user input is empty
+then return the string (or the first string in the list).  If DEFAULT
+is nil (absent) then return \"\" for empty input.
+
 The alist argument used for completion is ALIST or, if nil,
- `bookmark-alist'.
+`bookmark-alist'.
+
 Optional arg PRED is a predicate used for completion.
+
 Optional arg HIST is a history variable for completion.  Default is
  `bookmark-history'.
 
