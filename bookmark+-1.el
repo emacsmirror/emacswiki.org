@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Fri Apr 12 08:48:53 2013 (-0700)
+;; Last-Updated: Fri Apr 12 09:03:19 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6101
+;;     Update #: 6102
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -7773,7 +7773,7 @@ You need library `wide-n.el' to use the bookmark created."
 BOOKMARK-NAMES is a list of existing bookmark names.
 From Lisp code, non-nil MSGP means show status message."
   (interactive (list (read-string "Create sequence bookmark: ")
-                     (bmkp-completing-read-bookmark-names)))
+                     (bmkp-completing-read-bookmarks nil nil nil 'NAMES-ONLY)))
   (when msgp (message "Making sequence bookmark..."))
   (let ((bmk  (bmkp-get-bookmark-in-alist seqname 'NOERROR)))
     (when (and bmk  (bmkp-sequence-bookmark-p bmk))
