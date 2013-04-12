@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Fri Apr 12 06:56:00 2013 (-0700)
+;; Last-Updated: Fri Apr 12 08:48:53 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6093
+;;     Update #: 6101
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -2089,7 +2089,7 @@ bookmarks)."
                                 (t nil)))
                 (defname  (and defname  (bmkp-replace-regexp-in-string "\n" " " defname)))
                 (bname    (or name  (bmkp-completing-read-lax
-                                     "Set bookmark "
+                                     "Set bookmark"
                                      (bmkp-new-bookmark-default-names defname)
                                      (and (or (not parg) (consp parg)) ; No numeric PARG: all bookmarks.
                                           (bmkp-specific-buffers-alist-only))
@@ -2100,7 +2100,7 @@ bookmarks)."
            (while (string= "" bname)
              (message "Enter a NON-EMPTY bookmark name") (sit-for 2)
              (setq bname  (bmkp-completing-read-lax
-                           "Set bookmark "
+                           "Set bookmark"
                            (bmkp-new-bookmark-default-names defname)
                                      (and (or (not parg) (consp parg)) ; No numeric PARG: all bookmarks.
                                           (bmkp-specific-buffers-alist-only))
@@ -2600,7 +2600,7 @@ candidate."
   (setq bookmark-current-point  (point)) ; `bookmark-current-point' is a free var here.
   (save-excursion (skip-chars-forward " ") (setq bookmark-yank-point  (point)))
   (setq bookmark-current-buffer  (current-buffer))
-  (let ((newname  (or new  (and (not batchp)  (bmkp-completing-read-lax "New name: " old)))))
+  (let ((newname  (or new  (and (not batchp)  (bmkp-completing-read-lax "New name" old)))))
 ;;; $$$$$$  (read-from-minibuffer "New name: " nil
 ;;;           (let ((now-map  (copy-keymap minibuffer-local-map)))
 ;;;             (define-key now-map  "\C-w" 'bookmark-yank-word)
@@ -3153,7 +3153,7 @@ In addition:
       (define-key minibuffer-local-completion-map (kbd "?")     orig-qmark))))
 
 (defun bmkp-completing-read-1 (prompt default alist pred hist laxp)
-  "Helper for `bookmark-completing-read(-lax)'.
+  "Helper for `bookmark-completing-read' and `bmkp-completing-read-lax'.
 LAXP non-nil means use lax completion."
   (bookmark-maybe-load-default-file)
   (setq alist  (or alist bookmark-alist))
@@ -3232,7 +3232,7 @@ With a prefix arg, edit the complete bookmark record (the
     (let* ((bookmark-name                               (bmkp-bookmark-name-from-record bookmark))
            (bookmark-filename                           (bookmark-get-filename bookmark-name))
            (new-bmk-name                                (bmkp-completing-read-lax
-                                                         "New bookmark name: " bookmark-name))
+                                                         "New bookmark name" bookmark-name))
            (icicle-unpropertize-completion-result-flag  t) ; For `read-file-name'.
            (new-filename                                (read-file-name
                                                          "New file name (location): "
@@ -7034,10 +7034,10 @@ Starting with Emacs 22, if the file is an image file then:
   `$PATH' or `exec-path', then show EXIF data (metadata) about the
   image.  See standard Emacs library `image-dired.el' for more
   information about `exiftool'"
-  (interactive (list (bookmark-completing-read
-                      "Describe bookmark"
-                      (or (and (fboundp 'bmkp-default-lighted)  (bmkp-default-lighted))
-                          (bmkp-default-bookmark-name)))
+  (interactive (list (bookmark-completing-read "Describe bookmark"
+                                               (or (and (fboundp 'bmkp-default-lighted)
+                                                        (bmkp-default-lighted))
+                                                   (bmkp-default-bookmark-name)))
                      current-prefix-arg))
   (if defn
       (bmkp-describe-bookmark-internals bookmark)
@@ -7540,7 +7540,7 @@ Non-interactively, non-nil MSG-P means display a status message."
       (error (error "Not a valid bookmark file: `%s'" file))))
   (let ((bookmark-make-record-function  (lexical-let ((ff  file))
                                           (lambda () (bmkp-make-bookmark-file-record ff))))
-        (bookmark-name                  (bmkp-completing-read-lax "Bookmark-file BOOKMARK name "
+        (bookmark-name                  (bmkp-completing-read-lax "Bookmark-file BOOKMARK name"
                                                                   file nil nil 'bookmark-history)))
     (bookmark-set bookmark-name 99 'INTERACTIVEP))
   (when msg-p (message "Set bookmark-file bookmark")))
@@ -8185,7 +8185,7 @@ Non-nil PRED is a predicate used for bookmark-name completion.
 Non-nil HIST is a history symbol.  Default is `bookmark-history'.
 ACTION is the action to mention in the prompt.  `Jump to ', if nil."
   (unless alist (error "No bookmarks of type %s" type))
-  (bookmark-completing-read (concat (or action "Jump to ") type " bookmark"
+  (bookmark-completing-read (concat (or action  "Jump to ") type " bookmark"
                                     (and other-win  " in another window"))
                             (bmkp-default-bookmark-name alist)
                             alist pred hist))
