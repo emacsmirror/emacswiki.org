@@ -160,7 +160,7 @@ whose names end in ##".scala"##:
 
 
 Using `define-generic-mode' takes care of that for you, however.  Note
-how the fith argument, ##AUTO-MODE-LIST##, allows you to specify the
+how the fourth argument, ##AUTO-MODE-LIST##, allows you to specify the
 patterns filenames should match.  There is no need for adding patterns
 to `auto-mode-alist' as shown above, if you define new modes using
 `define-generic-mode'.
