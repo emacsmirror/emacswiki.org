@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Fri Apr 12 09:52:45 2013 (-0700)
+;; Last-Updated: Fri Apr 12 14:20:39 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6116
+;;     Update #: 6122
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -1702,7 +1702,10 @@ This function is like `bmkp-get-bookmark-in-alist', except that
 full bookmark.  `bmkp-get-bookmark-in-alist' is thus a real test for
 bookmark existence.  Use `bookmark-get-bookmark' only when you do NOT
 want to look up the bookmark in `bookmark-alist'."
-  (cond ((consp bookmark) bookmark)     ; No test of alist membership.
+  ;; The first test means that any cons with a string car is considered a bookmark.
+  ;; We test for the string (the name) so that you can distinguish, for example, a list of bookmarks
+  ;; from a single bookmark - just consp is not enough for that.
+  (cond ((and (consp bookmark)  (stringp (car bookmark))) bookmark) ; No test of alist membership.
         ((stringp bookmark) (bmkp-bookmark-record-from-name bookmark noerror)) ; No MEMP check.
         (t (and (not noerror)  (error "Invalid bookmark: `%s'" bookmark)))))
 
@@ -3708,7 +3711,7 @@ Returns the new bookmark (internal record).
 Non-interactively, non-nil optional arg MSG-P means display a status
 message."
   (interactive (let ((icicle-unpropertize-completion-result-flag  t))
-                 (list (read-string "Bookmark: ")
+                 (list (bmkp-completing-read-lax "Bookmark")
                        (completing-read "Function: " obarray 'functionp)
                        'MSG)))
   (bookmark-store bookmark-name `((filename . ,bmkp-non-file-filename)
@@ -7785,13 +7788,17 @@ Otherwise:
  * With no prefix arg, append BOOKMARK-NAMES to bookmark SEQNAME.
  * With a prefix arg, prepend BOOKMARK-NAMES to bookmark SEQNAME.
 You are prompted for SEQNAME and each of the BOOKMARK-NAMES.
-From Lisp code, non-nil MSGP means show status message."
+
+From Lisp code:
+ BOOKMARK-NAMES is a list of strings or a single string.
+ MSGP means show status messages."
   (interactive (list (bmkp-completing-read-lax "Create or update sequence bookmark"
                                                (bmkp-new-bookmark-default-names)
                                                (bmkp-sequence-alist-only))
                      (bmkp-completing-read-bookmarks nil nil nil 'NAMES-ONLY)
                      current-prefix-arg
                      'MSGP))
+  (unless (listp bookmark-names) (setq bookmark-names  (list bookmark-names)))
   (let* ((bmk         (bmkp-get-bookmark-in-alist seqname 'NOERROR))
          (exists      (and bmk  (bmkp-sequence-bookmark-p bmk)))
          (replacing  t))
