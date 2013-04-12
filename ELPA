@@ -166,6 +166,9 @@ You can make packages work in Emacs 23, you need to add something like this to y
 (package-initialize)
 }}}
 
+In order to use package.el in Emacs 23, the following package.el (link found on github) version is needed:
+http://bit.ly/pkg-el23 (source of info:https://github.com/technomancy/package.el)
+
 == Other Repositories ==
 
 AndrewHyatt has written an [http://code.google.com/p/elpa-on-appengine/ implementation of ELPA for AppEngine], written in Go.  It is not yet running publicly yet.
