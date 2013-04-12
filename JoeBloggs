@@ -22,7 +22,7 @@ I have also written the following extension for [[OneKey]]:
 * '''Lisp:one-key-dir.el''' -- navigate directories using [[OneKey]]
 
 [new:SewerynKokot:2010-08-26 08:04 UTC]
-Using [[OneKey]] library, I have a problem in assigning, for example, âmark-paragraphâ function to a key, namely typing the OneKey keybinding results in the paragraph not marked. While using âM-x mark-paragraphâ it works properly! Any idea what is wrong? -- SewerynKokot
+Using [[OneKey]] library, I have a problem in assigning, for example, ‘mark-paragraph’ function to a key, namely typing the OneKey keybinding results in the paragraph not marked. While using ‘M-x mark-paragraph’ it works properly! Any idea what is wrong? -- SewerynKokot
 [new]
 Actually I think the paragraph IS being marked (I tried it), but the coloured overlay is not being applied.
 Try C-w just after applying mark-paragraph and I think you will see the paragraph disappear.
