@@ -11,6 +11,8 @@ There are also a number of ways to integrate with javascript subprocesses:
 * SwankJs, a full-blown SlimeMode backend for [[NodeJs|node.js]] and can connect to a running web browser process through the socket.io package.  https://github.com/swank-js/swank-js
 * [http://js-comint-el.sourceforge.net/ js-comint.el] is a lightweight comint integration package, that also seems to integrate with org-mode nicely. 
 * JavascriptShell A REPL for Windows Scripting Host, and a [[Lisp:jsshell-bundle.el]]. It does simple completion on JS objects.
+** JavascriptShellServer
+
 * WshRepl A decrepit console into the Windows Scripting Host from within Emacs.  It does have a project on github, and is looking for a maintainer
 * ElnodeIJS, NicFerrier having a go at writing an Emacs to JavaScript shell. It uses comet for communication. Currently [[https://gist.github.com/4700573|here]] and in the [[Elnode]] source tree.
 * [http://github.com/segv/jss jsSlime] provides an Emacs interface to the browser's debugger and javascript engine.
@@ -33,7 +35,6 @@ WishList:
 
 Waiting for a short summary:
 
-* JavascriptShellServer
 * TypeScript
 
 ----
