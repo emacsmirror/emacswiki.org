@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Thu Apr 11 13:45:02 2013 (-0700)
+;; Last-Updated: Sat Apr 13 16:01:14 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 15218
+;;     Update #: 15232
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,17 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2013/04/13 dadams
+;;     Added: bmkp-dired-remember-*-marks.
+;;     bmkp-make-dired-record: Use bmkp-dired-remember-*-marks, not dired-remember-marks.
+;;     bmkp-make-function-bookmark: If FUNCTION is a function, do not convert (i.e., read) it.
+;;     bmkp-set-sequence-bookmark: Use lax as value of NAMES-ONLY-P to bmkp-completing-read-bookmarks.
+;; 2013/04/12 dadams
+;;     Added: bmkp-sequence-alist-only.
+;;     bmkp-set-sequence-bookmark: Added prefix arg PREPENDP.  Use bmkp-completing-read-lax.
+;;     Use \\<bmkp-edit-bookmark-record-mode-map> in doc strings with *-record-send.
+;;     bookmark-get-bookmark: A cons must also have a string car, to tell a bmk from a list of bmks.
+;;     bmkp-make-function-bookmark: Use bmkp-completing-read-lax for BOOKMARK-NAME.
 ;; 2013/04/10 dadams
 ;;     Added: bmkp-set-sequence-bookmark, bmkp-make-sequence-record, bmkp-completing-read-bookmarks.
 ;;     bmkp-completing-read-1:
