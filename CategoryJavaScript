@@ -20,11 +20,12 @@ There are a number of helpful modes and elisp packages to working with javascrip
 * [[Ejacs]], which is an Ecma-262 compliant Javascript interpreter written IN Emacs lisp
 * QuickMode to execute your current JS buffer
 
-Finally There are some specific modes available as well:
+Finally, there are some specific modes available as well:
 * GwtMuMaMo Multiple Major Mode (MuMaMo) for working with the Google Web Toolkit
 * CouchdbDocument interacting with couchDB
 * MozRepl -- A great way to hook into the lower level javascript engine of Mozilla.
 * [http://flusspferd.github.com/ Flusspferd] provides a [https://github.com/ruediger/flusspferd/blob/master/misc/emacs/flusspferd.el mode for Emacs].
+* [[JSON]] -- editing JSON data
 
 WishList:
 * NPM and Ender package manager front-ends
@@ -33,7 +34,6 @@ WishList:
 Waiting for a short summary:
 
 * JavascriptShellServer
-* [[JSON]]
 * TypeScript
 
 ----
