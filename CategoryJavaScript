@@ -2,18 +2,41 @@ Click on the title to list all pages in the javascript category.
 
 Examples:
 
-* [[Ejacs]]
-* [[ECMAScriptMode]]
-* ElnodeIJS
-* FlymakeJavaScript
-* JavaScript - this legacy page is probably the REAL CategoryJavaScript page, just without the prefix
-* JavaScriptMode
-* JavascriptShell
 * JavascriptShellServer
 * [[JSON]]
-* [[Js2Mode]]
-* MozRepl
 * [[NodeJs]]
 * TypeScript
-* [[WshRepl]]
 
+Emacs has 2 major Javascript modes:
+
+* JavaScriptMode -- js-mode is a bare-bones mode built upon cc-mode.  It used to be called espresso-mode at one time, but got folded into the Emacs core
+* [[Js2Mode]] -- js2-mode is a full blown IDE style mode, with its own parser.
+* ECMAScriptMode -- another javascript mode, but it's last update was 2005.  You're likely better off using js-mode
+
+There are also a number of ways to integrate with javascript subprocesses:
+
+* SwankJs, a full-blown SlimeMode backend for [[NodeJs|node.js]] and can connect to a running web browser process through the socket.io package.  https://github.com/swank-js/swank-js
+* [http://js-comint-el.sourceforge.net/ js-comint.el] is a lightweight comint integration package, that also seems to integrate with org-mode nicely. 
+* JavascriptShell A REPL for Windows Scripting Host, and a [[Lisp:jsshell-bundle.el]]. It does simple completion on JS objects.
+* WshRepl A decrepit console into the Windows Scripting Host from within Emacs.  It does have a project on github, and is looking for a maintainer
+* ElnodeIJS, NicFerrier having a go at writing an Emacs to JavaScript shell. It uses comet for communication. Currently [[https://gist.github.com/4700573|here]] and in the [[Elnode]] source tree.
+* [http://github.com/segv/jss jsSlime] provides an Emacs interface to the browser's debugger and javascript engine.
+
+There are a number of helpful modes and elisp packages to working with javascript as well:
+* FlymakeJavaScript
+* [[Ejacs]], which is an Ecma-262 compliant Javascript interpreter written IN Emacs lisp
+* QuickMode to execute your current JS buffer
+
+Finally There are some specific modes available as well:
+* GwtMuMaMo Multiple Major Mode (MuMaMo) for working with the Google Web Toolkit
+* CouchdbDocument interacting with couchDB
+* MozRepl -- A great way to hook into the lower level javascript engine of Mozilla.
+* [http://flusspferd.github.com/ Flusspferd] provides a [https://github.com/ruediger/flusspferd/blob/master/misc/emacs/flusspferd.el mode for Emacs].
+
+WishList:
+* NPM and Ender package manager front-ends
+* Lookups to the [http://www.javascripture.com/ Javascripture]
+
+----
+CategoryHypermedia
+CategoryProgramming
