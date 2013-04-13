@@ -6,7 +6,7 @@ There are a number of ways of learning, but screencasts have proven unmatched fo
 
 == Screencasts about Emacs ==
 
-* [http://www.youtube.com/watch?v=53YeTdVtDkU rebox2] screencast by [LeWang]
+* [http://www.youtube.com/watch?v=53YeTdVtDkU rebox2] screencast by LeWang.
 
 * [http://vimeo.com/2871241 Meet Magit] introduces [http://zagadka.vm.bytemark.co.uk/magit/ Magit], a git mode, by demonstrating a variety of features designed to keep you productive with git without ever leaving the comfort of Emacs.
 
@@ -67,13 +67,16 @@ http://www.foldr.org/~michaelw/emacs/redshank/
 
 * Various Emacs screencasts -- ScreencastSources and ScreencastRecordings have links to screencasts made with ScreencastMode and ScreencastRecord respectively.
 
-
 * [http://www.microsoft.com/downloads/details.aspx?FamilyId=ADF1B9E7-74A8-401D-9B0E-8326749F9419&displaylang=en Video] showing Emacs in action by Don Box. Funny. You can see how he changes slash into backslash in shell mode running ##cmdproxy.exe##. :-)
 
 * Emacsmovies.org: http://emacsmovies.org/
 ** This has a really nice beginners introduction to Emacs in an X-Windows session.
 
 * [http://www.youtube.com/watch?v=0vumR5Hcz7s GNEVE / GNU Emacs Video Editing ] demonstration video on Youtube, edited by GNEVE.
+
+* Programothesis has a [http://www.youtube.com/user/emailataskcom/videos?query=emacs series of screencasts].
+
+* [http://www.youtube.com/user/rpdillon/videos?query=hack+emacs Hack Emacs] - Richard Dillon's series of screencasts.
 
 == Tips about Creating Screencasts ==
 
@@ -84,6 +87,12 @@ http://www.foldr.org/~michaelw/emacs/redshank/
 * See also [http://www.debugmode.com/wink/ wink] (freeware w32, creates flash video, is it ok to link to it here? An open source version is on its [http://groups.google.com/group/wink-discuss/browse_thread/thread/42812132e43573a0 way].)
 
 * A post describing how the screencasts on the emacsmovies.org website are done. - http://emacsmovies.org/blog/2012/01/21/welcome_to_emacsmovies.org/
+
+== Ideas for Screencasts ==
+
+* [InternetRelayChat IRC]ing in Emacs - demoing the popular clients and introducing [EmacsChannel #emacs].
+
+* See also: [SachaChua Sacha]'s [http://sachachua.com/blog/2013/04/brainstorming-ways-to-help-build-the-emacs-community/ community building ideas].
 
 ----
 CategoryHelp
