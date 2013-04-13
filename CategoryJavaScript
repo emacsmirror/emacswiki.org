@@ -1,12 +1,5 @@
 Click on the title to list all pages in the javascript category.
 
-Examples:
-
-* JavascriptShellServer
-* [[JSON]]
-* [[NodeJs]]
-* TypeScript
-
 Emacs has 2 major Javascript modes:
 
 * JavaScriptMode -- js-mode is a bare-bones mode built upon cc-mode.  It used to be called espresso-mode at one time, but got folded into the Emacs core
@@ -36,6 +29,13 @@ Finally There are some specific modes available as well:
 WishList:
 * NPM and Ender package manager front-ends
 * Lookups to the [http://www.javascripture.com/ Javascripture]
+
+Waiting for a short summary:
+
+* JavascriptShellServer
+* [[JSON]]
+* [[NodeJs]]
+* TypeScript
 
 ----
 CategoryHypermedia
