@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Fri Apr 12 14:20:39 2013 (-0700)
+;; Last-Updated: Sat Apr 13 15:54:42 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6122
+;;     Update #: 6144
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -343,7 +343,8 @@
 ;;    `bmkp-delete-temporary-no-confirm', `bmkp-desktop-alist-only',
 ;;    `bmkp-desktop-bookmark-p', `bmkp-desktop-kill',
 ;;    `bmkp-dired-alist-only', `bmkp-dired-bookmark-p',
-;;    `bmkp-dired-subdirs', `bmkp-dired-this-dir-alist-only',
+;;    `bmkp-dired-remember-*-marks.', `bmkp-dired-subdirs',
+;;    `bmkp-dired-this-dir-alist-only',
 ;;    `bmkp-dired-this-dir-bookmark-p',
 ;;    `bmkp-dired-wildcards-bookmark-p',
 ;;    `bmkp-edit-bookmark-record-mode',
@@ -1502,7 +1503,7 @@ bookmarked.
  (dired-marked . MARKED-FILES)
  (dired-switches . SWITCHES)
 
- MARKED-FILES is the list of files that were marked.
+ MARKED-FILES is the list of files that were marked `*'.
  SWITCHES is the string of `dired-listing-switches'.
 
 9. The following additional entries are used for a Gnus bookmark.
@@ -3158,7 +3159,7 @@ In addition:
 
 (defun bmkp-completing-read-1 (prompt default alist pred hist laxp)
   "Helper for `bookmark-completing-read' and `bmkp-completing-read-lax'.
-LAXP non-nil means use lax completion."
+LAXP non-nil means use lax (non-strict) completion."
   (bookmark-maybe-load-default-file)
   (setq alist  (or alist bookmark-alist))
   (if (and (not laxp)
@@ -3174,12 +3175,12 @@ LAXP non-nil means use lax completion."
     (let* ((icicle-delete-candidate-object  (lambda (cand) ; For `S-delete' in Icicles.
                                               (bookmark-delete (icicle-transform-multi-completion cand))))
            (completion-ignore-case          bookmark-completion-ignore-case)
-           (prompt                          (if (and default  (not (equal "" default)))
-                                                (concat prompt
-                                                        (format " (%s): "
-                                                                (if (consp default) (car default) default)
-                                                                default))
-                                              (concat prompt ": ")))
+           (default                         (and (not (equal "" default))  default)) ; Treat "" like nil.
+           (prompt                          (concat prompt (if default
+                                                               (format " (%s): " (if (consp default)
+                                                                                     (car default)
+                                                                                   default))
+                                                             ": ")))
            (str                             (completing-read prompt alist pred (not laxp) nil
                                                              (or hist 'bookmark-history) default)))
       str)))
@@ -3705,7 +3706,6 @@ Non-interactively, non-nil MSG-P means display a status message."
 (defun bmkp-make-function-bookmark (bookmark-name function &optional msg-p) ; Not bound
   "Create a bookmark that invokes FUNCTION when \"jumped\" to.
 You are prompted for the bookmark name and the name of the function.
-Interactively, you are prompted for the bookmark and the function.
 Returns the new bookmark (internal record).
 
 Non-interactively, non-nil optional arg MSG-P means display a status
@@ -3714,9 +3714,10 @@ message."
                  (list (bmkp-completing-read-lax "Bookmark")
                        (completing-read "Function: " obarray 'functionp)
                        'MSG)))
+  (unless (functionp function) (setq function (read function))) ; Convert name to symbol.
   (bookmark-store bookmark-name `((filename . ,bmkp-non-file-filename)
                                   (position . 0)
-                                  (function . ,(read function))
+                                  (function . ,function)
                                   (handler  . bmkp-jump-function))
                   nil nil (not msg-p))
   (let ((new  (bmkp-bookmark-record-from-name bookmark-name 'NOERROR)))
@@ -7158,13 +7159,10 @@ the file is an image file then the description includes the following:
                    (bookmark-file-p  (format "Bookmark file:\t\t%s\n"
                                              (bookmark-prop-get bookmark 'bookmark-file)))
                    (dired-p          (let ((switches  (bookmark-prop-get bookmark 'dired-switches))
-                                           (marked    (length (bookmark-prop-get bookmark
-                                                                                 'dired-marked)))
-                                           (inserted  (length (bookmark-prop-get bookmark
-                                                                                 'dired-subdirs)))
-                                           (hidden    (length
-                                                       (bookmark-prop-get bookmark
-                                                                          'dired-hidden-dirs))))
+                                           (marked    (length (bookmark-prop-get bookmark 'dired-marked)))
+                                           (inserted  (length (bookmark-prop-get bookmark 'dired-subdirs)))
+                                           (hidden    (length (bookmark-prop-get bookmark
+                                                                                 'dired-hidden-dirs))))
                                        (format "Dired%s:%s\t\t%s\nMarked:\t\t\t%s\n\
 Inserted subdirs:\t%s\nHidden subdirs:\t\t%s\n"
                                                (if switches (format " `%s'" switches) "")
@@ -7795,7 +7793,7 @@ From Lisp code:
   (interactive (list (bmkp-completing-read-lax "Create or update sequence bookmark"
                                                (bmkp-new-bookmark-default-names)
                                                (bmkp-sequence-alist-only))
-                     (bmkp-completing-read-bookmarks nil nil nil 'NAMES-ONLY)
+                     (bmkp-completing-read-bookmarks nil nil nil 'lax)
                      current-prefix-arg
                      'MSGP))
   (unless (listp bookmark-names) (setq bookmark-names  (list bookmark-names)))
@@ -8156,6 +8154,17 @@ BOOKMARK is a bookmark name or a bookmark record."
     (while (get-process "man") (sit-for 0.2))
     (bookmark-default-handler (bookmark-get-bookmark bookmark))))
 
+(defun bmkp-dired-remember-*-marks (beg end)
+  "Return a list of the files and subdirs marked `*' in Dired."
+  (if selective-display			; must unhide to make this work.
+      (let ((inhibit-read-only  t)) (subst-char-in-region beg end ?\r ?\n)))
+  (let ((mfiles  ())
+        fil)
+    (save-excursion (goto-char beg)
+                    (while (re-search-forward "^\\*" end t) ; Not `dired-re-mark' - match only `*' marks.
+                      (when (setq fil  (dired-get-filename nil t)) (push fil mfiles))))
+    (nreverse mfiles)))
+
 (defun bmkp-make-dired-record ()
   "Create and return a Dired bookmark record."
   (let ((hidden-dirs  (save-excursion (dired-remember-hidden))))
@@ -8164,7 +8173,7 @@ BOOKMARK is a bookmark name or a bookmark record."
                                                (file-name-directory (car dired-directory))
                                              dired-directory)))
                (subdirs  (bmkp-dired-subdirs))
-               (mfiles   (mapcar #'car (dired-remember-marks (point-min) (point-max)))))
+               (mfiles   (bmkp-dired-remember-*-marks (point-min) (point-max))))
            `(,dir
              ,@(bookmark-make-record-default 'no-file)
              (filename . ,dir) (dired-directory . ,dired-directory)
