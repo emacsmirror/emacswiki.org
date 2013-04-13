@@ -1,6 +1,6 @@
 == GNU Emacs 23 and Later ==
 
-Starting with GNU Emacs 23, there is quite complete Unicode support.  See the Emacs manual for more information.  Some starter tips about entering (inserting) Unicode characters:
+Starting with GNU Emacs 23, there is relatively complete Unicode support.  See the Emacs manual for more information.  Some starter tips about entering (inserting) Unicode characters:
 
 * You can use one of the Emacs InputMethods.
 * You can use [[command]] `ucs-insert' (`C-x 8 RET'), which lets you either enter a Unicode code point or complete against the Unicode character name.  It can be slow, because there are '''''many''''' candidate characters to choose from.
