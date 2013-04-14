@@ -16,6 +16,11 @@
 * [ComoEditar Cómo editar] -- Cómo puedes colaborar con la página
 * [AdministradoresEmacsWiki Administración] -- Control del vandalismo y el spam
 
+[:ManualesEmacs]
+Manuales de Emacs:
+* [http://www.davidam.com/docu/orgguide.es.html Guía de Org Mode]
+* [https://savannah.nongnu.org/projects/elisp-es Una Introducción a Emacs Lisp]
+
 [:AcercaEmacs]
 Acerca de Emacs:
 * CategoríaHistoria -- Evolución histórica.
