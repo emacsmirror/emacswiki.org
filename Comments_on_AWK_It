@@ -1,0 +1,15 @@
+awk-it is now broken for me.
+Error: "unknown symbol kbd" or maybe "no symbol value kbd" or something like that, don't remember.
+
+Simple fix:
+
+{{{
+(defmacro awk-it-macro-expand-value (macro &rest list)
+  "Expands MACRO with values of variables in LIST."
+  `(,(symbol-function macro) ,@(mapcar 'symbol-value list)))
+}}}
+
+Really want it to be fixed. :)
+
+-- Bad_ptr 2013-04-14 18:55 UTC
+
