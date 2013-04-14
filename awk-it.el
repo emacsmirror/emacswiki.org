@@ -674,7 +674,7 @@ syntax."
 
 (defmacro awk-it-macro-expand-value (macro &rest list)
   "Expands MACRO with values of variables in LIST."
-  `(,macro ,@(mapcar 'symbol-value list)))
+  `(,(symbol-function macro) ,@(mapcar 'symbol-value list)))
 
 
 (provide 'awk-it)
