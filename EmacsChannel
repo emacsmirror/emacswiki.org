@@ -83,7 +83,7 @@ One of the most beloved commands of birny is '''.quote'''.
 
 '''[::fsbot]'''
 
-Fsbot, an instance of ErBot is the simplest to use.  It has pointers to nearly all the pages on this wiki, among massive amounts of other usefulness.  Fsbot commands start with an initial comma.  It's cunning enough to respond to other syntaxes too.
+Fsbot, an instance of ErBot, is the simplest to use.  It has pointers to nearly all the pages on this wiki, among massive amounts of other usefulness.  Fsbot commands start with an initial comma.  It's cunning enough to respond to other syntaxes too.
 
     <kensanata> ,setfonts
     <fsbot> me thinks SetFonts is at
