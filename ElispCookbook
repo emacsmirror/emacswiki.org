@@ -818,17 +818,12 @@ All vectors are sequences and the map functions work on sequences, so:
   ==> (1 2 3 4)
 }}}
 
--- NicFerrier
-
-
-[new:DrewAdams:2013-04-14 19:22 UTC]
 Here is another Lisp idiom for the same thing:
+
 {{{
 (append [1 2 3 4] ())
   ==> (1 2 3 4)
 }}}
-
--- DrewAdams
 
 
 == Hash tables ==
