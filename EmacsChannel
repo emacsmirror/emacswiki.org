@@ -45,8 +45,6 @@ If you need the help of a friendly *operator* (usually for kicking and banning o
 
 : ops?
 
-fsbot should reply with a list of nicks that have operator status. Usually this wakes up some of the operators.
-
 In the background the Freenode server maitains an *access list* for the channel.  Try it for yourself:
 
     /msg chanserv access #emacs list
