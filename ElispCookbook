@@ -809,6 +809,16 @@ Vectors are fixed in size, and their elements can be accessed in constant time (
       words)
     ==> ["fight" "bar" "for" "food!"]
 
+==== Convert vector to list ====
+
+All vectors are sequences and the map functions work on sequences, so:
+
+{{{
+(mapcar 'identity [1 2 3 4]) 
+  ==> (1 2 3 4)
+}}}
+
+
 == Hash tables ==
 
 Hash tables map keys to values. They are similar to alists, but
