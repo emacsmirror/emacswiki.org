@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Apr 13 16:01:14 2013 (-0700)
+;; Last-Updated: Sun Apr 14 17:07:26 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 15232
+;;     Update #: 15275
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,11 +146,26 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
-;; 2013/04/13 dadams
-;;     Added: bmkp-dired-remember-*-marks.
+;; 2013/04/14 dadams
+;;     Added: bmkp-wrap-bookmark-with-last-kbd-macro, bmkp-dired-remember-*-marks.
+;;     bookmark-write-file: If not saving propertized, remove text props for bmks in sequence bmk.
+;;     bmkp-edit-bookmark-record-send:
+;;       Raise error if bmkp-edit-bookmark-record-send was somehow reset to nil.
+;;       Do not reset bmkp-edit-bookmark-orig-record if read error.
+;;     bmkp-make-function-bookmark:
+;;       Prefix arg means use last-kbd-macro instead of prompting for FUNCTION.
+;;       Use read-from-whole-string, not read, to convert name to symbol.
+;;       If FUNCTION is a function or vector, do not convert it.
+;;     bmkp-bookmark-description: For sequence-p, remove properties from each bmk name in sequence.
+;;     Define bmkp-bookmark-name-from-record (no longer a defalias) with an optional UNPROPERTIZE arg.
 ;;     bmkp-make-dired-record: Use bmkp-dired-remember-*-marks, not dired-remember-marks.
-;;     bmkp-make-function-bookmark: If FUNCTION is a function, do not convert (i.e., read) it.
-;;     bmkp-set-sequence-bookmark: Use lax as value of NAMES-ONLY-P to bmkp-completing-read-bookmarks.
+;;       FUNCTION can now be a vector (a keyboard macro).  Use read-from-whole-string, not read.
+;;     bmkp-jump-function: If function property is a vector, invoke it as a keyboard macro.
+;;     bmkp-set-sequence-bookmark:
+;;       Prefix ARG now allows for replace, in addition to append and prepend.  No replace question.
+;;       A BOOKMARK-NAMES item can now be a bookmark, a function, or keyboard macro - or its name.
+;;       A BOOKMARK-NAMES item that is itself a sequence has its bookmarks spliced in.
+;;       Use lax as value of NAMES-ONLY-P to bmkp-completing-read-bookmarks.
 ;; 2013/04/12 dadams
 ;;     Added: bmkp-sequence-alist-only.
 ;;     bmkp-set-sequence-bookmark: Added prefix arg PREPENDP.  Use bmkp-completing-read-lax.
@@ -1438,6 +1453,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+.el'")
 ;;
+;; 2013/04/14 dadams
+;;     Added Version entry to header.  Updated bmkp-version-number to the same thing.
 ;; 2012/10/09 dadams
 ;;     Made all autoload cookies explicitly load bookmark+.el(c).  Should help ELPA (e.g. MELPA).
 ;; 2012/06/26 dadams
