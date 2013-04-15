@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sat Apr 13 15:54:42 2013 (-0700)
+;; Last-Updated: Sun Apr 14 20:11:30 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6144
+;;     Update #: 6195
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -273,7 +273,8 @@
 ;;    `bmkp-url-jump', `bmkp-url-jump-other-window',
 ;;    `bmkp-variable-list-jump', `bmkp-version',
 ;;    `bmkp-w32-browser-jump', `bmkp-w3m-jump',
-;;    `bmkp-w3m-jump-other-window'.
+;;    `bmkp-w3m-jump-other-window',
+;;    `bmkp-wrap-bookmark-with-last-kbd-macro'.
 ;;
 ;;  User options defined here:
 ;;
@@ -2756,6 +2757,7 @@ If called from Lisp:
 ;; 4. Insert code piecewise, to improve performance when saving `bookmark-alist'.
 ;;    (Do not let `pp' parse all of `bookmark-alist' at once.)
 ;; 5. Unless `bmkp-propertize-bookmark-names-flag', remove text properties from bookmark name and file name.
+;;    Remove them also from bookmark names in a sequence bookmark `sequence' entry.
 ;; 6. Bind `print-circle' to t around `pp', to record bookmark name with `bmkp-full-record' property.
 ;; 7. Use `case', not `cond'.
 ;;
@@ -2783,13 +2785,29 @@ contain a `%s' construct, so that it can be passed along with FILE to
           (unless (bmkp-temporary-bookmark-p bmk)
             (setq bname  (car bmk)
                   fname  (bookmark-get-filename bmk))
-            (when (or (not (> emacs-major-version 20)) ; Emacs 20 can't do (not (boundp 'print-circle)).
+            ;; Remove text properties from bookmark name.
+            (when (or (not (> emacs-major-version 20)) ; Emacs 20 cannot do `(not (boundp 'print-circle))'.
                       (not bmkp-propertize-bookmark-names-flag))
               (set-text-properties 0 (length bname) () bname)
               (when fname (set-text-properties 0 (length fname) () fname)))
             (setcar bmk bname)
             (when (setq last-fname  (assq 'filename bmk)) (setcdr last-fname fname))
-            (let ((print-circle  t)) (pp bmk (current-buffer)))))
+            (let ((print-circle  t))
+              (if (not (and (or (not (> emacs-major-version 20)) ; Emacs 20.
+                                (not bmkp-propertize-bookmark-names-flag))
+                            (bmkp-sequence-bookmark-p bmk)))
+                  (pp bmk (current-buffer))
+                ;; Remove text properties from bookmark names in the `sequence' entry of sequence bookmark.
+                (insert "(" (car bmk) "\n")
+                (dolist (prop  (cdr bmk))
+                  (if (not (eq 'sequence prop))
+                      (insert " " (pp-to-string prop))
+                    (insert " (sequence " (mapconcat (lambda (bname)
+                                                       (let ((name  (copy-sequence bname)))
+                                                         (set-text-properties 0 (length name) () name)
+                                                         name))
+                                                     prop " ")
+                            ")")))))))
         (insert ")")
         (let ((version-control        (case bookmark-version-control
                                         ((nil)      nil)
@@ -3382,6 +3400,8 @@ Non-interactively, optional arg MSG-P means display progress messages."
   (interactive "p")
   (unless (eq major-mode 'bmkp-edit-bookmark-record-mode)
     (error "Not in `bmkp-edit-bookmark-record-mode'"))
+  (unless (and (boundp 'bmkp-edit-bookmark-orig-record)  (consp bmkp-edit-bookmark-orig-record))
+    (error "Lost original bookmark record - try edit command again"))
   (when msg-p (message "Reading edited bookmark..."))
   (let* ((editbuf     (current-buffer))
          (bmk-name    nil)
@@ -3413,8 +3433,9 @@ Non-interactively, optional arg MSG-P means display progress messages."
     (if (stringp read-error-msg)
         (if msg-p (message "%s  --> edit and try again" read-error-msg) (error read-error-msg))
       (when (get-buffer editbuf) (kill-buffer editbuf))
-      (bmkp-refresh/rebuild-menu-list bmk-name (not msg-p))))
-  (setq bmkp-edit-bookmark-orig-record  nil)) ; Reset it.
+      (bmkp-refresh/rebuild-menu-list bmk-name (not msg-p)))
+    (unless read-error-msg
+      (setq bmkp-edit-bookmark-orig-record  nil)))) ; Reset it, but keep it if error so can try again.
 
 (define-derived-mode bmkp-edit-tags-mode emacs-lisp-mode
     "Edit Bookmark Tags"
@@ -3706,15 +3727,21 @@ Non-interactively, non-nil MSG-P means display a status message."
 (defun bmkp-make-function-bookmark (bookmark-name function &optional msg-p) ; Not bound
   "Create a bookmark that invokes FUNCTION when \"jumped\" to.
 You are prompted for the bookmark name and the name of the function.
+But with a prefix arg the last keyboard macro defined is used instead
+of prompting you for a function.
+
 Returns the new bookmark (internal record).
 
 Non-interactively, non-nil optional arg MSG-P means display a status
 message."
   (interactive (let ((icicle-unpropertize-completion-result-flag  t))
                  (list (bmkp-completing-read-lax "Bookmark")
-                       (completing-read "Function: " obarray 'functionp)
+                       (if (and current-prefix-arg  last-kbd-macro)
+                           (read-kbd-macro last-kbd-macro 'NEED-VECTOR)
+                         (completing-read "Function: " obarray 'functionp))
                        'MSG)))
-  (unless (functionp function) (setq function (read function))) ; Convert name to symbol.
+  (unless (or (functionp function)  (vectorp function))
+    (setq function (read-from-whole-string function))) ; Convert name to symbol.
   (bookmark-store bookmark-name `((filename . ,bmkp-non-file-filename)
                                   (position . 0)
                                   (function . ,function)
@@ -7130,9 +7157,14 @@ the file is an image file then the description includes the following:
             (concat
              (format "%sBookmark `%s'\n%s\n\n" temp-text bname
                      (make-string (+ 11 (length temp-text) (length bname)) ?-))
-             (cond (sequence-p       (format "Sequence:\n%s\n"
-                                             (pp-to-string
-                                              (bookmark-prop-get bookmark 'sequence))))
+             (cond (sequence-p       (concat "Sequence:\n\t"
+                                             (mapconcat (lambda (bname)
+                                                          (let ((name  (copy-sequence bname)))
+                                                            (set-text-properties 0 (length name) () name)
+                                                            name))
+                                                        (bookmark-prop-get bookmark 'sequence)
+                                                        "\n\t")
+                                             "\n"))
                    (function-p       (let ((fn  (bookmark-prop-get bookmark 'function)))
                                        (if (symbolp fn)
                                            (format "Function:\t\t%s\n" fn)
@@ -7472,7 +7504,10 @@ BOOKMARK is a bookmark name or a bookmark record."
   "Handle a function bookmark BOOKMARK.
 Handler function for function bookmarks.
 BOOKMARK is a bookmark name or a bookmark record."
-  (funcall (bookmark-prop-get bookmark 'function)))
+  (let ((fn  (bookmark-prop-get bookmark 'function)))
+    (cond ((functionp fn) (funcall fn))
+          ((vectorp fn)
+           (execute-kbd-macro fn current-prefix-arg)))))
 
 (defun bmkp-make-bookmark-list-record ()
   "Create and return a bookmark-list bookmark record.
@@ -7778,40 +7813,126 @@ You need library `wide-n.el' to use the bookmark created."
       (call-interactively #'bookmark-set)
       (unless (featurep 'wide-n) (message "Bookmark created, but you need `wide-n.el' to use it")))))
 
-;;;###autoload (autoload 'bmkp-set-sequence-bookmark "bookmark+")
-(defun bmkp-set-sequence-bookmark (seqname bookmark-names &optional prependp msgp)
-  "Create or update a sequence bookmark named SEQNAME from BOOKMARK-NAMES.
-If a bookmark named SEQNAME does not already exist, create one.
-Otherwise:
- * With no prefix arg, append BOOKMARK-NAMES to bookmark SEQNAME.
- * With a prefix arg, prepend BOOKMARK-NAMES to bookmark SEQNAME.
-You are prompted for SEQNAME and each of the BOOKMARK-NAMES.
+;;;###autoload (autoload 'bmkp-wrap-bookmark-with-last-kbd-macro "bookmark+")
+(defun bmkp-wrap-bookmark-with-last-kbd-macro (sequence bookmark &optional arg msgp)
+  "Return a SEQUENCE bookmark that invokes BOOKMARK plus `last-kbd-macro'.
+If bookmark SEQUENCE does not yet exist, create it.  Else, update it.
+You are prompted for the SEQUENCE and BOOKMARK names.
 
-From Lisp code:
- BOOKMARK-NAMES is a list of strings or a single string.
- MSGP means show status messages."
-  (interactive (list (bmkp-completing-read-lax "Create or update sequence bookmark"
-                                               (bmkp-new-bookmark-default-names)
-                                               (bmkp-sequence-alist-only))
-                     (bmkp-completing-read-bookmarks nil nil nil 'lax)
+BOOKMARK can be any kind of bookmark.  A special case is when it is a
+sequence bookmark:
+
+ * If BOOKMARK is the same as SEQUENCE and is an existing sequence
+   bookmark then it is updated only by appending the keyboard macro to
+   the sequence.
+
+ * If BOOKMARK is a sequence bookmark different from SEQUENCE then
+   SEQUENCE is updated to invoke the sequence in BOOKMARK plus
+   `last-kbd-macro' either before or after the other bookmarks of
+   SEQUENCE, according to the prefix arg. which is passed to
+   `bmkp-set-sequence-bookmark'."
+  (interactive (list (bmkp-completing-read-lax "Sequence bookmark" (bmkp-new-bookmark-default-names))
+                     (bmkp-completing-read-lax "Bookmark" (bmkp-new-bookmark-default-names))
                      current-prefix-arg
                      'MSGP))
-  (unless (listp bookmark-names) (setq bookmark-names  (list bookmark-names)))
-  (let* ((bmk         (bmkp-get-bookmark-in-alist seqname 'NOERROR))
-         (exists      (and bmk  (bmkp-sequence-bookmark-p bmk)))
-         (replacing  t))
-    (if (and exists  msgp)
-        (cond ((y-or-n-p (format "%s bookmarks to existing sequence `%s' (else REPLACE it)? "
-                                 (if prependp "PREPEND" "APPEND")
-                                 seqname))
-               (message "%sing to sequence bookmark..." (if prependp "Prepend" "Append")) (sit-for 0.5)
-               (setq replacing       nil
-                     bookmark-names  (if prependp
-                                         (nconc bookmark-names (bookmark-prop-get bmk 'sequence))
-                                       (nconc (bookmark-prop-get bmk 'sequence) bookmark-names))))
-              (t (message "OK, replacing sequence bookmark...") (sit-for 0.5)))
-      (when msgp (message "Creating sequence bookmark...")))
-    (let ((bookmark-make-record-function `(lambda () (bmkp-make-sequence-record ',bookmark-names))))
+  (unless last-kbd-macro (error "No keyboard macro defined"))
+  (let ((kbd-macro-vec  (read-kbd-macro (format-kbd-macro last-kbd-macro) 'VECTOR)))
+    (bmkp-set-sequence-bookmark sequence (if (equal bookmark sequence)
+                                             (list kbd-macro-vec)
+                                           (list bookmark kbd-macro-vec))
+                                arg msgp)))
+
+;;;###autoload (autoload 'bmkp-set-sequence-bookmark "bookmark+")
+(defun bmkp-set-sequence-bookmark (seqname bookmark-names &optional arg msgp)
+  "Create or update a sequence bookmark named SEQNAME from BOOKMARK-NAMES.
+If a sequence bookmark named SEQNAME does not exist then create one.
+Else act on the existing bookmarks in bookmark SEQNAME as follows:
+
+ * no prefix arg:    Append BOOKMARK-NAMES to those present.
+ * prefix arg < 0:   Replace those present with BOOKMARK-NAMES.
+ * other prefix arg: Prepend BOOKMARK-NAMES to those present.
+
+You are prompted for SEQNAME and each of the BOOKMARK-NAMES.
+
+When entering each item of BOOKMARK-NAMES you can enter an existing or
+future bookmark name, or you can enter the name of a function or a
+named keyboard macro (provided what you type does not match a bookmark
+name).  If a function or keyboard macro, then a function bookmark is
+created for it and that bookmark is included in the sequence.
+
+When the sequence bookmark is invoked (\"jumped to\"), its bookmarks
+are invoked in order.  In particular, any given bookmark is invoked
+once for each of its occurrences in the sequence.
+
+From Lisp code:
+
+BOOKMARK-NAMES is generally a list of bookmarks or bookmark names
+ \(strings).
+
+ Each item in BOOKMARK-NAMES can alternatively be one of the
+ following, in which case a function bookmark is created for it and is
+ used in the sequence.
+
+  * a keyboard macro as a vector
+  * a function, which includes a lambda form or a symbol whose
+    function value is a function or a keyboard macro.
+
+ If an item in BOOKMARK-NAMES is a sequence bookmark then its
+ bookmarks are used as if they were items of BOOKMARK-NAMES.
+
+MSGP non-nil means possibly interact with the user, showing messages."
+  (interactive (list
+                (if (< (prefix-numeric-value current-prefix-arg) 0)
+                    (bookmark-completing-read "Replace existing sequence bookmark" nil
+                                              (bmkp-sequence-alist-only))
+                  (bmkp-completing-read-lax "Create or update sequence bookmark"
+                                            (bmkp-new-bookmark-default-names)
+                                            (bmkp-sequence-alist-only)))
+                (bmkp-completing-read-bookmarks nil nil nil 'lax)
+                current-prefix-arg
+                'MSGP))
+  (let* ((seq        (bmkp-get-bookmark-in-alist seqname 'NOERROR))
+         (exists     (and seq  (bmkp-sequence-bookmark-p seq)))
+         (replacing  t)
+         (bnames     ()))
+    (dolist (bname  bookmark-names)
+      (cond ((or (functionp (setq fun bname)) ; Function from Lisp.
+                 (vectorp fun)          ; Keyboard macro.
+                 (functionp (setq fun  (condition-case nil ; Function name from user
+                                           (read-from-whole-string bname)
+                                         (error nil)))))
+             (let ((fun-bmk-name
+                    (cond ((symbolp fun) (symbol-name fun)) ; Named function.  Use its name.
+                          ((vectorp fun) (format-kbd-macro fun)) ; Keyboard macro.  Use human-readable strg
+                          ;; Lambda form.  Use as much as possible, but uniquify (no such symbol name).
+                          (t (let ((ii     1)
+                                   (len    (length bname))
+                                   (trial  (make-string (1+ bmkp-bookmark-name-length-max) 88)))
+                               (while (and (< ii len)  (> (length trial) bmkp-bookmark-name-length-max))
+                                 (setq trial  (make-temp-name (substring bname 0 (- ii)))))
+                               (while (intern-soft
+                                       (setq trial  (make-temp-name (substring bname 0 (- ii))))))
+                               trial)))))
+               (push (bmkp-bookmark-name-from-record (bmkp-make-function-bookmark fun-bmk-name fun))
+                     bnames)))
+            ((bmkp-sequence-bookmark-p bname) ; Sequence bookmark.
+             (setq bnames (append (reverse (bookmark-prop-get seq 'sequence)) bnames)))
+            ((stringp bname) (push bname bnames)) ; Bookmark name.
+            ((bookmark-get-bookmarkp bname 'NOERROR) ; Full bookmark.
+             (push (bmkp-bookmark-name-from-record bname) bnames))
+            (t (error "Bad BOOKMARK-NAMES arg to `bmkp-set-sequence-bookmark': `%S'"
+                      bookmark-names)))) ; Punt.
+    (setq bnames  (nreverse bnames))
+    (if (not exists)
+        (when msgp (message "Creating sequence bookmark..."))
+      (if (< (prefix-numeric-value arg) 0)
+          (when msgp (message "REPLACING existing sequence bookmark...") (sit-for 0.5))
+        (when msgp (message "%sing to sequence bookmark..." (if arg "Prepend" "Append")) (sit-for 0.5))
+        (setq replacing  nil
+              bnames     (if arg
+                             (nconc bnames (bookmark-prop-get seq 'sequence))
+                           (nconc (bookmark-prop-get seq 'sequence) bnames)))))
+    (let ((bookmark-make-record-function `(lambda () (bmkp-make-sequence-record ',bnames))))
       (bookmark-set seqname))
     (when msgp (message "Sequence `%s' %s" seqname (if exists
                                                        (if replacing "replaced" "updated")
