@@ -147,6 +147,15 @@ Maybe the work in EmacsWiki can be licensed under GNU GPLv3. -- XueFuqiao
 
 [new]
 There was a lot of discussion regarding the Emacs Wiki license [[2003-11-16|back in 2003]]. I'd rather not do it again. :) -- Alex
+----
+
+Questions or possibly a FAQ
+-------------------------
+* Why is it called XWEM? Why not EXWM for Emacs X Window Manager?
+* Are there pre-built sources? What about a PPA?
+* Aren't you essentially recreating Sawfish from scratch?
+
+See also HowTo
 
 ----
 CategoryEmacsWikiSite
