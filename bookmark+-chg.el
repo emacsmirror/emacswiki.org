@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Apr 14 17:07:26 2013 (-0700)
+;; Last-Updated: Mon Apr 15 14:51:01 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 15275
+;;     Update #: 15279
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2013/04/15 dadams
+;;     bookmark-write-file: Corrected write-out of sequence bookmarks.
+;;     bookmark-alist-from-buffer: Better error message if read error.
 ;; 2013/04/14 dadams
 ;;     Added: bmkp-wrap-bookmark-with-last-kbd-macro, bmkp-dired-remember-*-marks.
 ;;     bookmark-write-file: If not saving propertized, remove text props for bmks in sequence bmk.
