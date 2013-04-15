@@ -7,5 +7,7 @@ The term was coined by RyanMcGeary on 2007-10-07[http://www.emacsblog.org/2007/1
 [new]
 :: I thought people should be comfortable with managing ~10000 lines of text with ease. -- [[Leo]]
 
+:: For configuration code related to rarely or no longer used modes, you can move the code into eval-after-load forms to reduce emacs startup time. -- [[JisangYoo]]
+
 ----
 CategoryDotEmacs
