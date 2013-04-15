@@ -49,7 +49,7 @@ Starting first time emacs with desktopaid enabled we will be asked 'Select confi
 Generally i wouldnt recommended for new emacs users since it seems not-maintained and tricky to set-up correctly. Unless ofcourse the functionality is needed.
 AlexandrosPrekates
 
-
+[new]
 
 I use EmacsSession, because it doesn't reload all the files and doesn't require a lot of customization like DeskTop does. -- AlexSchroeder
 
