@@ -7,9 +7,9 @@
 ;; Copyright (C) 2010-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  1 15:34:50 2011 (-0700)
 ;; Version:
-;; Last-Updated: Fri Dec 28 09:30:14 2012 (-0800)
+;; Last-Updated: Sun Apr 14 17:15:27 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 574
+;;     Update #: 580
 ;; URL: http://www.emacswiki.org/bookmark+-key.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -54,6 +54,12 @@
 ;;    (The commentary links in #1 and #3 work only if you have library
 ;;    `bookmark+-doc.el' in your `load-path'.)
 ;;
+;;
+;;  Non-interactive functions defined here:
+;;
+;;    `bookmark-name-from-full-record', `bookmark-name-from-record',
+;;    `bmkp-bookmark-data-from-record',
+;;    `bmkp-bookmark-name-from-record.'
 ;;
 ;;  Internal variables defined here:
 ;;
