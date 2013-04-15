@@ -37,7 +37,7 @@ See also: http://emacs-session.sourceforge.net/related.html.
 === Discussion ===
 
 [new]
-I tried desktopaid at April 2013 in 23.1.1. I downloaded the package from [http://sourceforge.net/projects/desktopaid/ source page]. The package has desktopaid.elc but it's compiled for older version of emacs so it wont work. Trying with desktopaid.el emacs opened with no error. So i changed a little the proposed .emacs lines and i added:
+I tried *desktopaid* at April 2013 in 23.1.1. I downloaded the package from [http://sourceforge.net/projects/desktopaid/ source page]. The package has desktopaid.elc but it's compiled for older version of emacs so it wont work. Trying with desktopaid.el emacs opened with no error. So i changed a little the proposed .emacs lines and i added:
 <pre>
 ;; desktopaid
 (setq load-path (cons "~/.emacs.d/" load-path))
