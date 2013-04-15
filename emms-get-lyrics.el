@@ -69,7 +69,7 @@
   (call-process "w3m" nil buffer nil "-dump" url))
 
 
-  (defun emms-get-lyrics (artist title fn &optional file) ;"changed by using duckduckgo"
+(defun emms-get-lyrics (artist title fn &optional file) ;"changed by using duckduckgo"
   (let ((bname (concat "Lyrics: " title " by " artist)))
     (cond ((get-buffer bname)
            (switch-to-buffer bname))
