@@ -1,0 +1,6 @@
+I tried desktopaid at April 2013 in 23.1.1. I downloaded the package from http://sourceforge.net/projects/desktopaid/.  
+The package has desktopaid.elc but is compiled for older version of emacs so it wont work. 
+Trying with desktopaid.el emacs opened with no error but i couldnt use it. Firstly i was getting an error about a missing .desktopaid folder, but even after it didnt work as expected.
+
+-- [http://librebytes.gr aprekates] 2013-04-15 08:51 UTC
+
