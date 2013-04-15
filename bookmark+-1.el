@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Mon Apr 15 14:47:36 2013 (-0700)
+;; Last-Updated: Mon Apr 15 15:55:32 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6207
+;;     Update #: 6230
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -2805,17 +2805,20 @@ contain a `%s' construct, so that it can be passed along with FILE to
                             (bmkp-sequence-bookmark-p bmk)))
                   (pp bmk (current-buffer))
                 ;; Remove text properties from bookmark names in the `sequence' entry of sequence bookmark.
-                (insert "(\"" (car bmk) "\"\n")
+                (insert "(\"" (let ((sname  (copy-sequence (car bmk))))
+                                (set-text-properties 0 (length sname) () sname)
+                                sname)
+                        "\"\n")
                 (dolist (prop  (cdr bmk))
-                  (if (not (eq 'sequence prop))
+                  (if (not (eq 'sequence (car prop)))
                       (insert " " (pp-to-string prop))
                     (insert " (sequence " (mapconcat (lambda (bname)
                                                        (let ((name  (copy-sequence bname)))
                                                          (set-text-properties 0 (length name) () name)
-                                                         name))
-                                                     prop " ")
-                            ")")))
-                (insert ")")))))
+                                                         (concat "\"" name "\"")))
+                                                     (cdr prop) " ")
+                            ")\n")))
+                (insert " )\n")))))
         (insert ")")
         (let ((version-control        (case bookmark-version-control
                                         ((nil)      nil)
