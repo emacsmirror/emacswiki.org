@@ -1,5 +1,6 @@
 ;;; emms-get-lyrics.el --- Get the lyrics of the song emms is currently playing
 
+;;; Copyright (C) 2013 andres.ramirez
 ;;; Copyright (C) 2007 Jay Belanger
 
 ;; emms-get-lyrics.el is free software; you can redistribute it and/or 
@@ -56,19 +57,19 @@
 
 (defun emms-get-lyrics-url (artist title)
   (concat
-   "http://www.lyricwiki.org/index.php?title="
-   (replace-regexp-in-string 
-    " " "_"
+   "https://duckduckgo.com/?q=!ducky+lyrics007.com+"
+   (replace-regexp-in-string
+    " " "+"
     (concat
      artist
-     ":"
-     title))
-   "&printable=yes"))
+     " "
+     title ""))))
 
 (defun emms-get-lyrics-w3m (url buffer)
   (call-process "w3m" nil buffer nil "-dump" url))
 
-(defun emms-get-lyrics (artist title fn &optional file)
+
+  (defun emms-get-lyrics (artist title fn &optional file) ;"changed by using duckduckgo"
   (let ((bname (concat "Lyrics: " title " by " artist)))
     (cond ((get-buffer bname)
            (switch-to-buffer bname))
@@ -83,36 +84,34 @@
              (set-buffer buffer)
              (funcall fn (emms-get-lyrics-url artist title) buffer)
              (goto-char (point-min))
+
              (if (and
-                  (search-forward "Jump to:" nil t)
+                  (search-forward "Send Ringtones to your Cell" nil t)
+                  ;; (search-forward "Jump to:" nil t)
                   (not (search-forward 
-                        "There is currently no text in this page" nil t)))
-                 (let ((frominsert
-                        (save-excursion
-                          (if (re-search-forward "^Retrieved from")
-                              (buffer-substring-no-properties
-                               (line-beginning-position)
-                               (line-end-position))
-                            "From LyricWiki"))))
+                        "No results." nil t)))
+                 (let ((frominsert ""))
                    (delete-region (point-min) (1+ (line-end-position)))
                    (insert title " by " artist "\n")
-                   (insert frominsert "\n")
+                   ;; (insert frominsert "\n")
                    (goto-char (point-max))
                    (if (or
-                        (search-backward "External links" nil t)
-                        (search-backward "Retrieved from" nil t))
-                       (delete-region (point) (point-max)))
+                        (search-backward "Send Ringtones to your Cell" nil t)
+                        ;(search-backward "Retrieved from" nil t)
+                        )
+                       (progn (beginning-of-line)(delete-region (point) (point-max))))
                    (when file 
                      (rename-buffer bname)
                      (save-buffer)))
                (delete-region (point-min) (point-max))
                (insert "Unable to find lyrics for " title " by " artist)
                (if file (set-buffer-modified-p nil)))
+
           (goto-char (point-min))
           (emms-get-lyrics-mode)
           (switch-to-buffer buffer)
           (goto-char (point-min)))))))
-  
+
 (defun emms-get-lyrics-current-song ()
   (interactive)
   (let* ((track (emms-playlist-current-selected-track))
