@@ -1,36 +1,36 @@
 ;;; bookmark+-lit.el --- Bookmark highlighting for Bookmark+.
-;; 
+;;
 ;; Filename: bookmark+-lit.el
 ;; Description: Bookmark highlighting for Bookmark+.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2010-2013, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 23 07:49:32 2010 (-0700)
-;; Last-Updated: Fri Dec 28 09:30:30 2012 (-0800)
+;; Last-Updated: Sun Apr 14 17:11:59 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 841
+;;     Update #: 848
 ;; URL: http://www.emacswiki.org/bookmark+-lit.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, highlighting, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
-;; 
+;;
 ;; Features that might be required by this library:
 ;;
 ;;   `bookmark', `pp', `pp+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
-;;; Commentary: 
-;; 
+;;
+;;; Commentary:
+;;
 ;;    Bookmark highlighting for Bookmark+ (library `bookmark+.el').
-;; 
+;;
 ;;    The Bookmark+ libraries are:
 ;;
 ;;    `bookmark+.el'     - main code library
 ;;    `bookmark+-mac.el' - Lisp macros
 ;;    `bookmark+-lit.el' - code for highlighting bookmarks (this file)
 ;;    `bookmark+-bmu.el' - code for the `*Bookmark List*'
-;;    `bookmark+-1.el'   - other required code (non-bmenu) 
+;;    `bookmark+-1.el'   - other required code (non-bmenu)
 ;;    `bookmark+-key.el' - key and menu bindings
 ;;
 ;;    `bookmark+-doc.el' - documentation (comment-only file)
@@ -51,7 +51,7 @@
 ;;
 ;;    2. From the Emacs-Wiki Web site:
 ;;       http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus.
-;;    
+;;
 ;;    3. From the Bookmark+ group customization buffer:
 ;;       `M-x customize-group bookmark-plus', then click link
 ;;       `Commentary'.
@@ -87,7 +87,7 @@
 ;;
 ;;  Commands defined here:
 ;;
-;;    
+;;
 ;;    `bmkp-bmenu-light', `bmkp-bmenu-light-marked',
 ;;    `bmkp-bmenu-set-lighting', `bmkp-bmenu-set-lighting-for-marked',
 ;;    `bmkp-bmenu-show-only-lighted', `bmkp-bmenu-unlight',
@@ -133,17 +133,20 @@
 ;;
 ;;    `bmkp-a-bookmark-lighted-at-pos',
 ;;    `bmkp-a-bookmark-lighted-on-this-line',
-;;    `bmkp-bookmark-overlay-p', `bmkp-default-lighted',
-;;    `bmkp-fringe-string' (Emacs 22+), `bmkp-get-lighting',
-;;    `bmkp-lighted-p', `bmkp-light-face', `bmkp-light-style',
-;;    `bmkp-light-style-choices', `bmkp-light-when',
-;;    `bmkp-lighted-alist-only', `bmkp-lighting-attribute',
-;;    `bmkp-lighting-face', `bmkp-lighting-style',
-;;    `bmkp-lighting-when', `bmkp-make/move-fringe' (Emacs 22+),
+;;    `bmkp-bookmark-data-from-record',
+;;    `bmkp-bookmark-name-from-record', `bmkp-bookmark-overlay-p',
+;;    `bmkp-default-lighted', `bmkp-fringe-string' (Emacs 22+),
+;;    `bmkp-get-lighting', `bmkp-lighted-p', `bmkp-light-face',
+;;    `bmkp-light-style', `bmkp-light-style-choices',
+;;    `bmkp-light-when', `bmkp-lighted-alist-only',
+;;    `bmkp-lighting-attribute', `bmkp-lighting-face',
+;;    `bmkp-lighting-style', `bmkp-lighting-when',
+;;    `bmkp-make/move-fringe' (Emacs 22+),
 ;;    `bmkp-make/move-overlay-of-style', `bmkp-number-lighted',
 ;;    `bmkp-overlay-of-bookmark', `bmkp-read-set-lighting-args',
 ;;    `bmkp-set-lighting-for-bookmarks',
-;;    `bmkp-this-buffer-lighted-alist-only'.
+;;    `bmkp-this-buffer-lighted-alist-only',
+;;    `bookmark-name-from-full-record', `bookmark-name-from-record'.
 ;;
 ;;  Internal variables defined here:
 ;;
@@ -151,24 +154,24 @@
 ;;    `bmkp-non-autonamed-overlays'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
 ;; published by the Free Software Foundation; either version 3, or
 ;; (at your option) any later version.
-;; 
+;;
 ;; This program is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 ;; General Public License for more details.
-;; 
+;;
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program; see the file COPYING.  If not, write to
 ;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
 ;; Floor, Boston, MA 02110-1301, USA.
-;; 
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;;; Code:
 
 ;;;;;;;;;;;;;;;;;;;;;;;
@@ -600,7 +603,7 @@ No prefix arg: unhighlight them only in the current buffer.
 Prefix arg, unhighlight them everywhere."
   (interactive "P")
   (bmkp-unlight-bookmarks '(bmkp-autonamed-overlays) (not everywherep)))
- 
+
 ;;;###autoload (autoload 'bmkp-unlight-non-autonamed-this-buffer "bookmark+")
 (defun bmkp-unlight-non-autonamed-this-buffer (&optional everywherep)
   "Unhighlight non-autonamed bookmarks.
@@ -981,7 +984,7 @@ Prefix arg < 0:  non-autonamed bookmarks only."
 Positive INCREMENT cycles forward.  Negative INCREMENT cycles backward.
 Interactively, the prefix arg determines INCREMENT:
  Plain `C-u': 1
- otherwise: the numeric prefix arg value 
+ otherwise: the numeric prefix arg value
 
 To change the sort order, you can filter the `*Bookmark List*' to show
 only highlighted bookmarks for this buffer, sort the bookmarks there,
