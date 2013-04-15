@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sun Apr 14 20:11:30 2013 (-0700)
+;; Last-Updated: Mon Apr 15 14:47:36 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6195
+;;     Update #: 6207
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -1987,10 +1987,17 @@ a text property.  Point is irrelevant and unaffected."
   (let ((bmks  (save-excursion
                  (goto-char (point-min))
                  (if (search-forward bookmark-end-of-version-stamp-marker nil t)
-                     (read (current-buffer))
+                     (condition-case err
+                         (read (current-buffer))
+                       (error (error "Cannot read definitions in bookmark file:  %s"
+                                     (error-message-string err))))
                    ;; Else we're dealing with format version 0
                    (if (search-forward "(" nil t)
-                       (progn (forward-char -1) (read (current-buffer)))
+                       (progn (forward-char -1)
+                              (condition-case err
+                                  (read (current-buffer))
+                                (error (error "Cannot read definitions in bookmark file:  %s"
+                                              (error-message-string err)))))
                      ;; Else no hope of getting information here.
                      (error "Buffer is not in bookmark-list format"))))))
     ;; Put full bookmark on bookmark names as property `bmkp-full-record'.
@@ -2798,7 +2805,7 @@ contain a `%s' construct, so that it can be passed along with FILE to
                             (bmkp-sequence-bookmark-p bmk)))
                   (pp bmk (current-buffer))
                 ;; Remove text properties from bookmark names in the `sequence' entry of sequence bookmark.
-                (insert "(" (car bmk) "\n")
+                (insert "(\"" (car bmk) "\"\n")
                 (dolist (prop  (cdr bmk))
                   (if (not (eq 'sequence prop))
                       (insert " " (pp-to-string prop))
@@ -2807,7 +2814,8 @@ contain a `%s' construct, so that it can be passed along with FILE to
                                                          (set-text-properties 0 (length name) () name)
                                                          name))
                                                      prop " ")
-                            ")")))))))
+                            ")")))
+                (insert ")")))))
         (insert ")")
         (let ((version-control        (case bookmark-version-control
                                         ((nil)      nil)
@@ -7829,7 +7837,7 @@ sequence bookmark:
  * If BOOKMARK is a sequence bookmark different from SEQUENCE then
    SEQUENCE is updated to invoke the sequence in BOOKMARK plus
    `last-kbd-macro' either before or after the other bookmarks of
-   SEQUENCE, according to the prefix arg. which is passed to
+   SEQUENCE, according to the prefix arg, which is passed to
    `bmkp-set-sequence-bookmark'."
   (interactive (list (bmkp-completing-read-lax "Sequence bookmark" (bmkp-new-bookmark-default-names))
                      (bmkp-completing-read-lax "Bookmark" (bmkp-new-bookmark-default-names))
