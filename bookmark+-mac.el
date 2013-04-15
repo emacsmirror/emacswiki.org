@@ -1,27 +1,27 @@
 ;;; bookmark+-mac.el --- Macros for Bookmark+.
-;; 
+;;
 ;; Filename: bookmark+-mac.el
 ;; Description: Macros for Bookmark+.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Created: Sun Aug 15 11:12:30 2010 (-0700)
-;; Last-Updated: Fri Dec 28 09:30:49 2012 (-0800)
+;; Last-Updated: Sun Apr 14 17:19:50 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 111
+;;     Update #: 119
 ;; URL: http://www.emacswiki.org/bookmark+-mac.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
-;; 
+;;
 ;; Features that might be required by this library:
 ;;
 ;;   `bookmark', `pp'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
-;;; Commentary: 
-;; 
+;;
+;;; Commentary:
+;;
 ;;    Macros for Bookmark+.
 ;;
 ;;    The Bookmark+ libraries are these:
@@ -47,7 +47,7 @@
 ;;
 ;;    2. From the Emacs-Wiki Web site:
 ;;       http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus.
-;;    
+;;
 ;;    3. From the Bookmark+ group customization buffer:
 ;;       `M-x customize-group bookmark-plus', then click link
 ;;       `Commentary'.
@@ -104,25 +104,31 @@
 ;;    `bmkp-menu-bar-make-toggle',
 ;;    `bmkp-with-output-to-plain-temp-buffer'.
 ;;
+;;  Non-interactive functions defined here:
+;;
+;;    `bmkp-bookmark-data-from-record',
+;;    `bmkp-bookmark-name-from-record',
+;;    `bookmark-name-from-full-record', `bookmark-name-from-record'.
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
 ;; published by the Free Software Foundation; either version 3, or
 ;; (at your option) any later version.
-;; 
+;;
 ;; This program is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 ;; General Public License for more details.
-;; 
+;;
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program; see the file COPYING.  If not, write to
 ;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
 ;; Floor, Boston, MA 02110-1301, USA.
-;; 
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;;; Code:
 
 ;;;;;;;;;;;;;;;;;;;;;;;
@@ -184,7 +190,7 @@ Non-nil OTHERP means define a command that cycles in another window."
 Positive INCREMENT cycles forward.  Negative INCREMENT cycles backward.
 Interactively, the prefix arg determines INCREMENT:
  Plain `C-u': 1
- otherwise: the numeric prefix arg value 
+ otherwise: the numeric prefix arg value
 
 Plain `C-u' also means start over at first bookmark.
 
