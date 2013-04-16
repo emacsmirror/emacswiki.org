@@ -830,7 +830,7 @@ I guess you're asking about maximizing a frame -- is that right? (I'm not famili
 If so, I think the answer is that there is no platform-independent answer. If you use Windows, then you can use commands `maximize-frame' and `restore-frame', defined in library <tt>[[fit-frame.el]]</tt>. If not, try asking LennartBorgman; I think he might have an answer for you about this. -- DrewAdams
 
 [new:Dave:2008-01-09 16:02 UTC]
-FullScreen is a little bigger than maximizing – it turns off the window decoration and handles and makes the application area match the full screen. Like windows powerpoint in slideshow mode, or a full-screen video or slideshow player. I think I found what I wanted from the page FullScreen.  See WriteRoom for an application.  Thanks – Dave
+FullScreen is a little bigger than maximizing â it turns off the window decoration and handles and makes the application area match the full screen. Like windows powerpoint in slideshow mode, or a full-screen video or slideshow player. I think I found what I wanted from the page FullScreen.  See WriteRoom for an application.  Thanks â Dave
 
 ----
 
@@ -948,6 +948,23 @@ Remember too that from the wiki page for the Lisp code you can just click the pa
 
 Thx -- DrewAdams
 
+---
+
+[new:BrianKavanagh:2013-04-16 00:10 UTC]
+
+Hi Drew.
+
+Any chance of modifying <tt>icicle-default-buffer-names<tt> within [[icicles-cmd1.el]] so that it includes an options so that it doesn't include currently displayed buffers?
+
+i.e. add something like
+
+<pre>
+      (let* ((dbfnames (mapcar (lambda (window) (buffer-name (window-buffer window))) (window-list)))))
+         (if icicle-buffer-ignore-visible-buffers
+           (setq bfnames (icicle-remove-if (lambda (bfname) (member bfname dbfnames)) bfnames))))
+</pre>
+
+BrianKavanagh
 
 ----
 [:AllLibraries]
