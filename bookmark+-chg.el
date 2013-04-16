@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Apr 15 14:51:01 2013 (-0700)
+;; Last-Updated: Mon Apr 15 19:47:14 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 15279
+;;     Update #: 15286
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -147,6 +147,7 @@
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
 ;; 2013/04/15 dadams
+;;     bmkp-set-sequence-bookmark: Corrected case of adding one sequence to another.
 ;;     bookmark-write-file: Corrected write-out of sequence bookmarks.
 ;;     bookmark-alist-from-buffer: Better error message if read error.
 ;; 2013/04/14 dadams
@@ -1282,6 +1283,10 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-key.el'")
 ;;
+;; 2013/04/15 dadams
+;;     In bmkp-set-map: Bind F to bmkp-make-function-bookmark (C-x p c F).
+;;                      Bind C-k to bmkp-wrap-bookmark-with-last-kbd-macro (C-x p c C-k).
+;;                      Bind s to bmkp-set-sequence (C-x p c s).
 ;; 2012/08/31 dadams
 ;;     Do not bind bmkp-compilation-target-set(-all) unless defined.
 ;; 2012/06/26 dadams
