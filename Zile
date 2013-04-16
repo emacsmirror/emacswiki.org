@@ -2,7 +2,6 @@ GNU *Zile* ("Zile Is Lossy Emacs") is a lightweight ErsatzEmacs from the Free So
 
 For customization, Zile uses its own limited configuration language known as *Zile Lisp*.
 Zile Lisp is a tiny subset of Emacs Lisp that consists of the Zile commands plus `setq'.
-[http://www.gnu.org/software/zile/manual/zile.html#File-syntax]
 
 * http://www.gnu.org/software/zile/
 
