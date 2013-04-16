@@ -158,5 +158,11 @@ If I add a word during a flyspell session, it's still marked up as misspelled.  
 
 -kd
 
+== Flyspell with subword-mode ==
+[new]
+
+When the subword mode is on, especially with cc-mode, the words are distinguished more skilfully, e.g., "GoodBadType" -> "Good", "Bad", and "Type". How do I set the flyspell to work in this context?
+
+-Kiwon
 ----
 CategoryModes | CategorySpelling
