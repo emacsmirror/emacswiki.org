@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Apr  6 21:42:22 2013 (-0700)
+;; Last-Updated: Mon Apr 15 20:28:23 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 25681
+;;     Update #: 25686
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -6058,6 +6058,7 @@ depending on the prefix arg:
 * Plain prefix arg (`C-u'): buffers with the same mode as current,
   or with a mode that the current mode is derived from
 * Double plain (`C-u C-u'): visible buffers (possibly iconified)
+* Triple plain (`C-u C-u C-u'): invisible buffers
 
 For Emacs 23 and later, the default values (via `M-n') are the
 \(buffer-name components of the) first four completion candidates
@@ -6153,8 +6154,10 @@ kinds of buffers to include:
  * Number > 0: buffers visiting files or directories (Dired)
  * Number < 0: buffers associated with the selected frame
  * Number = 0: buffers with the same mode as the current buffer
- * Cons      : buffers with the same mode as current, or with
+ * (4)       : buffers with the same mode as current, or with
                a mode that the current mode is derived from
+ * (16)      : visible buffers
+ * (64)      : invisible buffers
 When ARG is nil, the first buffer is `other-buffer'."
   (if (< emacs-major-version 23)
       (let ((bname  (buffer-name (if (fboundp 'another-buffer) ; In `misc-fns.el'.
