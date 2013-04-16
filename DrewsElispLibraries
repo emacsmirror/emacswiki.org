@@ -954,7 +954,7 @@ Thx -- DrewAdams
 
 Hi Drew.
 
-Any chance of modifying <tt>icicle-default-buffer-names<tt> within [[icicles-cmd1.el]] so that it includes an options so that it doesn't include currently displayed buffers?
+Any chance of modifying <tt>icicle-default-buffer-names</tt> within [[icicles-cmd1.el]] so that it includes an options so that it doesn't include currently displayed buffers?
 
 i.e. add something like
 
