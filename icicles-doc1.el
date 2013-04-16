@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Apr  5 21:50:10 2013 (-0700)
+;; Last-Updated: Mon Apr 15 20:53:36 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 27717
+;;     Update #: 27719
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -7621,6 +7621,7 @@
 ;;
 ;;  * Plain `C-u': whose mode is derived from the current buffer mode
 ;;  * `C-u C-u':   visible (possibly in an iconified frame)
+;;  * `C-u C-u C-u': invisible
 ;;  * Zero:        whose mode is the same as the current buffer mode
 ;;  * Positive:    visiting files
 ;;  * Negative:    associated with the selected frame
@@ -7645,7 +7646,7 @@
 ;;    `icicle-buffer' includes cached file names as candidates.  That
 ;;    is, toggle option `icicle-buffer-include-cached-files-nflag'.
 ;;    A prefix arg sets the option value to the numeric prefix value.
-;;    
+;;
 ;;  * `C-x R' (`icicle-toggle-include-recent-files') Toggle whether
 ;;    `icicle-buffer' includes recent file names as candidates.  That
 ;;    is, toggle option `icicle-buffer-include-recent-files-nflag'.
