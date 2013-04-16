@@ -1063,7 +1063,23 @@ i.e. add something like
 
 </pre>
 
+Hi Brian.  During commands that read buffer-name input, `C-x v -' removes buffers that are visible (and `##C-x v +##' removes those that are invisible).
 
+However, although there has been a prefix arg possibility (namely `C-u C-u') that gives you only visible buffers as candidates (and as default values), there has not been one that gives you only invisible buffers.  I've just added that now, so you should be able to do `C-u C-u C-u C-x b' to get what you want.
+
+You can also easily create a command that does only that, so you don't have to hit `C-u C-u C-u' if you use this behavior a lot.  (Just `let'-bind `current-prefix-arg' as you like and call `icicle-buffer'.)
+
+I suppose a user option would also be possible, but I'm not sure what the best form for that would be.  One thing that might be helpful would be to let users choose which prefix arg forms give which behaviors --- today that matchup is hard-coded.
+
+I don't have any plans to add an option for something like this, but I'm always open to considering suggestions.  In the meantime, try `C-u C-u C-u', or try using `C-x v -' to filter on the fly.
+
+Another thing you can do is to simply set option `icicle-buffer-predicate' to a predicate that excludes visible buffers.  I think most users will not want to use an option such as this or the one you suggested, because it is a blanket that covers ''all'' buffer-name completion.
+
+Another possibility is to dissociate the selectivity for default values (accessible via `M-n') from that for completion candidates.  Today they both follow the prefix argument form the same way.
+
+I mention that because you asked about default values, not about completion candidates.  Dunno whether that means that you would like all buffers as candidates but only invisible ones as default values?
+
+Thx -- DrewAdams
 
 
 
