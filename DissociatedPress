@@ -1,4 +1,4 @@
-Disscociated Press is a semi-randomizing algorithm that takes your buffer, runs it through a\
+Disscociated Press is a semi-randomizing algorithm that takes your buffer, runs it through a
 blender, and displays the result.
 
 
@@ -6,7 +6,7 @@ This "feature" can be reached through the command
  M-x dissociated-press
 to run it with default settings. (C-h C-x dissociated-press has more information.)
 
-This always has comical results. For example, I can put my literature homework into the\
+This always has comical results. For example, I can put my literature homework into the
 Dissociated Press-
 
  Section III. UNDERSTANDING FIGURATIVE LANGUAGE
