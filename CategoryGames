@@ -32,8 +32,9 @@ Add-on games:
 * [http://www.daimi.au.dk/~terryp/emacsia.tar.gz Emacsia](dead link) A demo of a nethack-like (dungeon exploration) game
 * EightPuzzle -- a game of eight puzzle
 * [[Sudoku]] -- classic number puzzle
-* EmacsPoker - simple video poker game for Emacs
+* EmacsPoker -- simple video poker game for Emacs
 * [http://www.gwenhael.net/emstar/ Emstar] - another implementation of dstar ([http://github.com/cycojesus/emstar/tree/master github repository])
+* [[Conx]] -- like the built-in DissociatedPress
 
 Builtin games/amusements:
 
