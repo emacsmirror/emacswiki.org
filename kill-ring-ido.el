@@ -1,4 +1,4 @@
-;;; kill-ring-ido.el --- command for keyring browsing with ido
+;;; kill-ring-ido.el --- command for kill-ring browsing with ido
 ;;
 ;; Copyright 2012 Horishnii Oleksii
 ;;
@@ -21,7 +21,7 @@
 ;; Commentary:
 ;;
 ;; This package provides `kill-ring-ido', that allows you to browse
-;; keyring with ido. Obviously, need ido to work. With arg,
+;; the kill-ring with ido. Obviously, need ido to work. With arg,
 ;; `kill-ring-ido' can browse throung secondary-selection. If previous
 ;; command was yank, it will act like `yank-pop'(default M-y).
 ;; All choise's length cut to `kill-ring-ido-shortage-length'. Number
