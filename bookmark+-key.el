@@ -7,9 +7,9 @@
 ;; Copyright (C) 2010-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  1 15:34:50 2011 (-0700)
 ;; Version:
-;; Last-Updated: Sun Apr 14 17:15:27 2013 (-0700)
+;; Last-Updated: Mon Apr 15 19:19:17 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 580
+;;     Update #: 601
 ;; URL: http://www.emacswiki.org/bookmark+-key.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -138,34 +138,34 @@
 ;; `bookmark-map'
 
 (define-key ctl-x-map "p" bookmark-map)
-(define-key ctl-x-map "pj" 'bookmark-jump-other-window) ; `C-x p j' (also `C-x 4 j j')
-(define-key ctl-x-map "rK" 'bmkp-set-desktop-bookmark) ; `C-x r K' (also `C-x p K', `C-x p c K')
-(define-key bookmark-map "0"      'bmkp-empty-file) ; `C-x p 0'
-(define-key bookmark-map "B"      'bmkp-choose-navlist-from-bookmark-list) ; `C-x p B'
+(define-key ctl-x-map "pj" 'bookmark-jump-other-window)                  ; `C-x p j' (also `C-x 4 j j')
+(define-key ctl-x-map "rK" 'bmkp-set-desktop-bookmark)        ; `C-x r K' (also `C-x p K', `C-x p c K')
+(define-key bookmark-map "0"      'bmkp-empty-file)                                   ; `C-x p 0'
+(define-key bookmark-map "B"      'bmkp-choose-navlist-from-bookmark-list)            ; `C-x p B'
 ;; `e' is `edit-bookmarks' (aka `bookmark-bmenu-list', from vanilla Emacs.
-(define-key bookmark-map "E"      'bmkp-edit-bookmark-record) ; `C-x p E'
+(define-key bookmark-map "E"      'bmkp-edit-bookmark-record)                         ; `C-x p E'
 ;; The original `bookmark-insert-location' in `bookmark.el' was `f'.
-(define-key bookmark-map "I"      'bookmark-insert-location) ; `C-x p I'
+(define-key bookmark-map "I"      'bookmark-insert-location)                          ; `C-x p I'
 (define-key bookmark-map "K"      'bmkp-set-desktop-bookmark) ; `C-x p K' (also `C-x r K', `C-x p c K')
-(define-key bookmark-map "L"      'bmkp-switch-bookmark-file-create) ; `C-x p L'
-(define-key bookmark-map "N"      'bmkp-navlist-bmenu-list) ; `C-x p N'
-(define-key bookmark-map "o"      'bookmark-jump-other-window) ; `C-x p o' (also `C-x 4 j j')
-(define-key bookmark-map "q"      'bookmark-jump-other-window) ; `C-x p q' (also `C-x 4 j j')
-(define-key bookmark-map "r"      'bmkp-edit-bookmark-name-and-file) ; `C-x p r'
-(define-key bookmark-map "x"      'bmkp-toggle-autotemp-on-set) ; `C-x p x'
-(define-key bookmark-map "y"      'bmkp-set-bookmark-file-bookmark) ; `C-x p y'
+(define-key bookmark-map "L"      'bmkp-switch-bookmark-file-create)                  ; `C-x p L'
+(define-key bookmark-map "N"      'bmkp-navlist-bmenu-list)                           ; `C-x p N'
+(define-key bookmark-map "o"      'bookmark-jump-other-window)           ; `C-x p o' (also `C-x 4 j j')
+(define-key bookmark-map "q"      'bookmark-jump-other-window)           ; `C-x p q' (also `C-x 4 j j')
+(define-key bookmark-map "r"      'bmkp-edit-bookmark-name-and-file)                  ; `C-x p r'
+(define-key bookmark-map "x"      'bmkp-toggle-autotemp-on-set)                       ; `C-x p x'
+(define-key bookmark-map "y"      'bmkp-set-bookmark-file-bookmark)                   ; `C-x p y'
 (when (featurep 'bookmark+-lit)
-  (define-key bookmark-map "h"    'bmkp-light-bookmark-this-buffer) ; `C-x p h'
-  (define-key bookmark-map "H"    'bmkp-light-bookmarks) ; `C-x p H'
-  (define-key bookmark-map "u"    'bmkp-unlight-bookmark-this-buffer) ; `C-x p u'
-  (define-key bookmark-map "U"    'bmkp-unlight-bookmarks) ; `C-x p U'
-  (define-key bookmark-map "\C-u" 'bmkp-unlight-bookmark-here) ; `C-x p C-u'
-  (define-key bookmark-map "="    'bmkp-bookmarks-lighted-at-point)) ; `C-x p ='
-(define-key bookmark-map ","      'bmkp-this-file/buffer-bmenu-list) ; `C-x p ,'
-(define-key bookmark-map "?"      'bmkp-describe-bookmark) ; `C-x p ?'
-(define-key bookmark-map ":"      'bmkp-choose-navlist-of-type) ; `C-x p :'
-(define-key bookmark-map "\r"     'bmkp-toggle-autonamed-bookmark-set/delete) ; `C-x p RET'
-(define-key bookmark-map [delete] 'bmkp-delete-bookmarks) ; `C-x p delete'
+  (define-key bookmark-map "h"    'bmkp-light-bookmark-this-buffer)                   ; `C-x p h'
+  (define-key bookmark-map "H"    'bmkp-light-bookmarks)                              ; `C-x p H'
+  (define-key bookmark-map "u"    'bmkp-unlight-bookmark-this-buffer)                 ; `C-x p u'
+  (define-key bookmark-map "U"    'bmkp-unlight-bookmarks)                            ; `C-x p U'
+  (define-key bookmark-map "\C-u" 'bmkp-unlight-bookmark-here)                        ; `C-x p C-u'
+  (define-key bookmark-map "="    'bmkp-bookmarks-lighted-at-point))                  ; `C-x p ='
+(define-key bookmark-map ","      'bmkp-this-file/buffer-bmenu-list)                  ; `C-x p ,'
+(define-key bookmark-map "?"      'bmkp-describe-bookmark)                            ; `C-x p ?'
+(define-key bookmark-map ":"      'bmkp-choose-navlist-of-type)                       ; `C-x p :'
+(define-key bookmark-map "\r"     'bmkp-toggle-autonamed-bookmark-set/delete)         ; `C-x p RET'
+(define-key bookmark-map [delete] 'bmkp-delete-bookmarks)                             ; `C-x p delete'
 
 ;; If you use Emacs before Emacs 22, then you will want to bind the commands
 ;; whose names do *not* end in `-repeat' to keys that are easily repeatable.
@@ -184,7 +184,7 @@
              (or (> emacs-major-version 23)
                  (and (= emacs-major-version 23) (> emacs-minor-version 2))))
     (define-key bookmark-map (vector (list mouse-wheel-up-event))
-      'bmkp-next-bookmark-this-file/buffer-repeat)) ; `C-x p mouse-wheel-up'
+      'bmkp-next-bookmark-this-file/buffer-repeat))                            ; `C-x p mouse-wheel-up'
   (define-key bookmark-map [up]         'bmkp-previous-bookmark-this-file/buffer-repeat) ; `C-x p up'
   (define-key bookmark-map "p"          'bmkp-previous-bookmark-this-file/buffer-repeat) ; `C-x p p'
   (define-key bookmark-map "\C-p"       'bmkp-previous-bookmark-this-file/buffer-repeat) ; `C-x p C-p'
@@ -196,17 +196,17 @@
              (or (> emacs-major-version 23)
                  (and (= emacs-major-version 23) (> emacs-minor-version 2))))
     (define-key bookmark-map (vector (list mouse-wheel-down-event))
-      'bmkp-previous-bookmark-this-file/buffer-repeat)) ; `C-x p mouse-wheel-down'
-  (define-key bookmark-map [right]      'bmkp-next-bookmark-repeat) ; `C-x p right'
-  (define-key bookmark-map "f"          'bmkp-next-bookmark-repeat) ; `C-x p f'
-  (define-key bookmark-map "\C-f"       'bmkp-next-bookmark-repeat) ; `C-x p C-f'
-  (define-key bookmark-map [left]       'bmkp-previous-bookmark-repeat) ; `C-x p left'
-  (define-key bookmark-map "b"          'bmkp-previous-bookmark-repeat) ; `C-x p b'
-  (define-key bookmark-map "\C-b"       'bmkp-previous-bookmark-repeat) ; `C-x p C-b'
-  (define-key bookmark-map [next]       'bmkp-next-bookmark-w32-repeat) ; `C-x p next'
-  (define-key bookmark-map [prior]      'bmkp-previous-bookmark-w32-repeat) ; `C-x p prior'
+      'bmkp-previous-bookmark-this-file/buffer-repeat))                      ; `C-x p mouse-wheel-down'
+  (define-key bookmark-map [right]      'bmkp-next-bookmark-repeat)                  ; `C-x p right'
+  (define-key bookmark-map "f"          'bmkp-next-bookmark-repeat)                  ; `C-x p f'
+  (define-key bookmark-map "\C-f"       'bmkp-next-bookmark-repeat)                  ; `C-x p C-f'
+  (define-key bookmark-map [left]       'bmkp-previous-bookmark-repeat)              ; `C-x p left'
+  (define-key bookmark-map "b"          'bmkp-previous-bookmark-repeat)              ; `C-x p b'
+  (define-key bookmark-map "\C-b"       'bmkp-previous-bookmark-repeat)              ; `C-x p C-b'
+  (define-key bookmark-map [next]       'bmkp-next-bookmark-w32-repeat)              ; `C-x p next'
+  (define-key bookmark-map [prior]      'bmkp-previous-bookmark-w32-repeat)          ; `C-x p prior'
   (when (featurep 'bookmark+-lit)
-    (define-key bookmark-map [C-down]   'bmkp-next-lighted-this-buffer-repeat) ; `C-x p C-down'
+    (define-key bookmark-map [C-down]   'bmkp-next-lighted-this-buffer-repeat)       ; `C-x p C-down'
     (define-key bookmark-map [C-up]     'bmkp-previous-lighted-this-buffer-repeat))) ; `C-x p C-up'
 
 
@@ -215,15 +215,18 @@
 (defvar bmkp-set-map nil "Keymap containing bindings for bookmark set commands.")
 
 (define-prefix-command 'bmkp-set-map)
-(define-key bookmark-map "c"  bmkp-set-map) ; `C-x p c' for create
+(define-key bookmark-map "c"  bmkp-set-map)                                    ; `C-x p c' for create
 
-(define-key bmkp-set-map "a"  'bmkp-autofile-set) ; `C-x p c a'
-(define-key bmkp-set-map "f"  'bmkp-file-target-set) ; `C-x p c f'
-(define-key bmkp-set-map "K"  'bmkp-set-desktop-bookmark) ; `C-x p c K'
-(define-key bmkp-set-map "m"  'bookmark-set) ; `C-x p c m'
-(define-key bmkp-set-map "u"  'bmkp-url-target-set) ; `C-x p c u'
-(define-key bmkp-set-map "y"  'bmkp-set-bookmark-file-bookmark) ; `C-x p c y'
-(define-key bmkp-set-map "\r" 'bmkp-toggle-autonamed-bookmark-set/delete) ; `C-x p c RET'
+(define-key bmkp-set-map "a"    'bmkp-autofile-set)                            ; `C-x p c a'
+(define-key bmkp-set-map "f"    'bmkp-file-target-set)                         ; `C-x p c f'
+(define-key bmkp-set-map "F"    'bmkp-make-function-bookmark)                  ; `C-x p c F'
+(define-key bmkp-set-map "K"    'bmkp-set-desktop-bookmark)                    ; `C-x p c K'
+(define-key bmkp-set-map "\C-k" 'bmkp-wrap-bookmark-with-last-kbd-macro)       ; `C-x p C-k'
+(define-key bmkp-set-map "m"    'bookmark-set)                                 ; `C-x p c m'
+(define-key bmkp-set-map "s"    'bmkp-set-sequence)                            ; `C-x p c s'
+(define-key bmkp-set-map "u"    'bmkp-url-target-set)                          ; `C-x p c u'
+(define-key bmkp-set-map "y"    'bmkp-set-bookmark-file-bookmark)              ; `C-x p c y'
+(define-key bmkp-set-map "\r"   'bmkp-toggle-autonamed-bookmark-set/delete)    ; `C-x p c RET'
 
 
 ;; Add set commands to other keymaps: occur, compilation: `C-c C-b', `C-c C-M-b', `C-c C-M-B'.
@@ -232,27 +235,27 @@
 (add-hook 'occur-mode-hook
           #'(lambda ()
               (unless (lookup-key occur-mode-map "\C-c\C-b")
-                (define-key occur-mode-map "\C-c\C-b" 'bmkp-occur-target-set)) ; `C-c C-b'
+                (define-key occur-mode-map "\C-c\C-b" 'bmkp-occur-target-set))          ; `C-c C-b'
               (unless (lookup-key occur-mode-map "\C-c\C-\M-b")
-                (define-key occur-mode-map "\C-c\C-\M-b" 'bmkp-occur-target-set-all)) ; `C-c C-M-b'
+                (define-key occur-mode-map "\C-c\C-\M-b" 'bmkp-occur-target-set-all))   ; `C-c C-M-b'
               (unless (lookup-key occur-mode-map [(control ?c) (control meta shift ?b)])
                 (define-key occur-mode-map [(control ?c) (control meta shift ?b)]
-                  'bmkp-occur-create-autonamed-bookmarks)))) ; `C-c C-M-B' (aka `C-c C-M-S-b')
+                  'bmkp-occur-create-autonamed-bookmarks))))          ; `C-c C-M-B' (aka `C-c C-M-S-b')
 
 (when (fboundp 'bmkp-compilation-target-set)
   (add-hook 'compilation-mode-hook
             #'(lambda ()
                 (unless (lookup-key occur-mode-map "\C-c\C-b")
-                  (define-key occur-mode-map "\C-c\C-b" 'bmkp-compilation-target-set)) ; `C-c C-b'
-                (unless (lookup-key occur-mode-map "\C-c\C-\M-b") ; `C-c C-M-b'
+                  (define-key occur-mode-map "\C-c\C-b" 'bmkp-compilation-target-set))  ; `C-c C-b'
+                (unless (lookup-key occur-mode-map "\C-c\C-\M-b")                       ; `C-c C-M-b'
                   (define-key occur-mode-map "\C-c\C-\M-b" 'bmkp-compilation-target-set-all)))))
 
 (when (fboundp 'bmkp-compilation-target-set)
   (add-hook 'compilation-minor-mode-hook
             #'(lambda ()
                 (unless (lookup-key occur-mode-map "\C-c\C-b")
-                  (define-key occur-mode-map "\C-c\C-b" 'bmkp-compilation-target-set)) ; `C-c C-b'
-                (unless (lookup-key occur-mode-map "\C-c\C-\M-b") ; `C-c C-M-b'
+                  (define-key occur-mode-map "\C-c\C-b" 'bmkp-compilation-target-set))  ; `C-c C-b'
+                (unless (lookup-key occur-mode-map "\C-c\C-\M-b")                       ; `C-c C-M-b'
                   (define-key occur-mode-map "\C-c\C-\M-b" 'bmkp-compilation-target-set-all)))))
 
 
@@ -261,25 +264,25 @@
 (defvar bmkp-tags-map nil "Keymap containing bindings for bookmark tag commands.")
 
 (define-prefix-command 'bmkp-tags-map)
-(define-key bookmark-map "t"  bmkp-tags-map) ; `C-x p t' for tags
+(define-key bookmark-map "t"  bmkp-tags-map)                                      ; `C-x p t' for tags
 
-(define-key bmkp-tags-map "0"    'bmkp-remove-all-tags) ; `C-x p t 0'
+(define-key bmkp-tags-map "0"    'bmkp-remove-all-tags)                           ; `C-x p t 0'
 (define-key bmkp-tags-map "+"    nil) ; For Emacs 20
-(define-key bmkp-tags-map "+b"   'bmkp-add-tags) ; `C-x p t + b'
-(define-key bmkp-tags-map "-b"   'bmkp-remove-tags) ; `C-x p t - b'
-(define-key bmkp-tags-map "+a"   'bmkp-tag-a-file) ; `C-x p t + a'
-(define-key bmkp-tags-map "-a"   'bmkp-untag-a-file) ; `C-x p t - a'
-(define-key bmkp-tags-map "c"    'bmkp-copy-tags) ; `C-x p t c'
-(define-key bmkp-tags-map "d"    'bmkp-remove-tags-from-all) ; `C-x p t d'
-(define-key bmkp-tags-map "e"    'bmkp-edit-tags) ; `C-x p t e'
-(define-key bmkp-tags-map "l"    'bmkp-list-all-tags) ; `C-x p t l'
-(define-key bmkp-tags-map "p"    'bmkp-paste-add-tags) ; `C-x p t p'
-(define-key bmkp-tags-map "q"    'bmkp-paste-replace-tags) ; `C-x p t q'
-(define-key bmkp-tags-map "r"    'bmkp-rename-tag) ; `C-x p t r'
-(define-key bmkp-tags-map "v"    'bmkp-set-tag-value) ; `C-x p t v'
-(define-key bmkp-tags-map "V"    'bmkp-set-tag-value-for-navlist) ; `C-x p t V'
-(define-key bmkp-tags-map "\M-w" 'bmkp-copy-tags) ; `C-x p t M-w'
-(define-key bmkp-tags-map "\C-y" 'bmkp-paste-add-tags) ; `C-x p t C-y'
+(define-key bmkp-tags-map "+b"   'bmkp-add-tags)                                  ; `C-x p t + b'
+(define-key bmkp-tags-map "-b"   'bmkp-remove-tags)                               ; `C-x p t - b'
+(define-key bmkp-tags-map "+a"   'bmkp-tag-a-file)                                ; `C-x p t + a'
+(define-key bmkp-tags-map "-a"   'bmkp-untag-a-file)                              ; `C-x p t - a'
+(define-key bmkp-tags-map "c"    'bmkp-copy-tags)                                 ; `C-x p t c'
+(define-key bmkp-tags-map "d"    'bmkp-remove-tags-from-all)                      ; `C-x p t d'
+(define-key bmkp-tags-map "e"    'bmkp-edit-tags)                                 ; `C-x p t e'
+(define-key bmkp-tags-map "l"    'bmkp-list-all-tags)                             ; `C-x p t l'
+(define-key bmkp-tags-map "p"    'bmkp-paste-add-tags)                            ; `C-x p t p'
+(define-key bmkp-tags-map "q"    'bmkp-paste-replace-tags)                        ; `C-x p t q'
+(define-key bmkp-tags-map "r"    'bmkp-rename-tag)                                ; `C-x p t r'
+(define-key bmkp-tags-map "v"    'bmkp-set-tag-value)                             ; `C-x p t v'
+(define-key bmkp-tags-map "V"    'bmkp-set-tag-value-for-navlist)                 ; `C-x p t V'
+(define-key bmkp-tags-map "\M-w" 'bmkp-copy-tags)                                 ; `C-x p t M-w'
+(define-key bmkp-tags-map "\C-y" 'bmkp-paste-add-tags)                            ; `C-x p t C-y'
 
 
 ;; `bmkp-jump-map' and `bmkp-jump-other-window-map': prefixes `C-x j' and `C-x 4 j'
@@ -296,179 +299,179 @@
 
 (define-key bmkp-jump-map              "."    nil) ; For Emacs 20
 (define-key bmkp-jump-other-window-map "."    nil) ; For Emacs 20
-(define-key bmkp-jump-map              ".d"   'bmkp-dired-this-dir-jump) ; `C-x j . d'
-(define-key bmkp-jump-other-window-map ".d"   'bmkp-dired-this-dir-jump-other-window) ; `C-x 4 j . d'
-(define-key bmkp-jump-map              ".f"   'bmkp-file-this-dir-jump) ; `C-x j . f'
-(define-key bmkp-jump-other-window-map ".f"   'bmkp-file-this-dir-jump-other-window) ; `C-x 4 j . f'
+(define-key bmkp-jump-map              ".d"   'bmkp-dired-this-dir-jump)                 ; `C-x j . d'
+(define-key bmkp-jump-other-window-map ".d"   'bmkp-dired-this-dir-jump-other-window)  ; `C-x 4 j . d'
+(define-key bmkp-jump-map              ".f"   'bmkp-file-this-dir-jump)                  ; `C-x j . f'
+(define-key bmkp-jump-other-window-map ".f"   'bmkp-file-this-dir-jump-other-window)   ; `C-x 4 j . f'
 
 (define-key bmkp-jump-map              ","    nil) ; For Emacs 20
 (define-key bmkp-jump-other-window-map ","    nil) ; For Emacs 20
-(define-key bmkp-jump-map              ",,"   'bmkp-this-buffer-jump) ; `C-x j , ,'
-(define-key bmkp-jump-other-window-map ",,"   'bmkp-this-buffer-jump-other-window) ; `C-x 4 j , ,'
-(define-key bmkp-jump-map              ",#"   'bmkp-autonamed-this-buffer-jump) ; `C-x j , #'
+(define-key bmkp-jump-map              ",,"   'bmkp-this-buffer-jump)                    ; `C-x j , ,'
+(define-key bmkp-jump-other-window-map ",,"   'bmkp-this-buffer-jump-other-window)     ; `C-x 4 j , ,'
+(define-key bmkp-jump-map              ",#"   'bmkp-autonamed-this-buffer-jump)          ; `C-x j , #'
 (define-key bmkp-jump-other-window-map ",#"
-  'bmkp-autonamed-this-buffer-jump-other-window) ; `C-x 4 j , #'
+  'bmkp-autonamed-this-buffer-jump-other-window)                                       ; `C-x 4 j , #'
 
-(define-key bmkp-jump-map              "#"    'bmkp-autonamed-jump) ; `C-x j #'
-(define-key bmkp-jump-other-window-map "#"    'bmkp-autonamed-jump-other-window) ; `C-x 4 j #'
+(define-key bmkp-jump-map              "#"    'bmkp-autonamed-jump)                        ; `C-x j #'
+(define-key bmkp-jump-other-window-map "#"    'bmkp-autonamed-jump-other-window)         ; `C-x 4 j #'
 
 (define-key bmkp-jump-map              "="    nil) ; For Emacs 20
 (define-key bmkp-jump-other-window-map "="    nil) ; For Emacs 20
-(define-key bmkp-jump-map              "=b"   'bmkp-specific-buffers-jump) ; `C-x j = b'
+(define-key bmkp-jump-map              "=b"   'bmkp-specific-buffers-jump)                ; `C-x j = b'
 (define-key bmkp-jump-other-window-map "=b"   'bmkp-specific-buffers-jump-other-window) ; `C-x 4 j = b'
-(define-key bmkp-jump-map              "=f"   'bmkp-specific-files-jump) ; `C-x j = f'
-(define-key bmkp-jump-other-window-map "=f"   'bmkp-specific-files-jump-other-window) ; `C-x 4 j = f'
+(define-key bmkp-jump-map              "=f"   'bmkp-specific-files-jump)                  ; `C-x j = f'
+(define-key bmkp-jump-other-window-map "=f"   'bmkp-specific-files-jump-other-window)   ; `C-x 4 j = f'
 
-(define-key bmkp-jump-map              "a"    'bmkp-autofile-jump) ; `C-x j a'
-(define-key bmkp-jump-other-window-map "a"    'bmkp-autofile-jump-other-window) ; `C-x 4 j a'
-(define-key bmkp-jump-map              "b"    'bmkp-non-file-jump) ; `C-x j b'
-(define-key bmkp-jump-other-window-map "b"    'bmkp-non-file-jump-other-window) ; `C-x 4 j b'
-(define-key bmkp-jump-map              "B"    'bmkp-bookmark-list-jump) ; `C-x j B'
-(define-key bmkp-jump-other-window-map "B"    'bmkp-bookmark-list-jump) ; SAME
-(define-key bmkp-jump-map              "d"    'bmkp-dired-jump) ; `C-x j d'
-(define-key bmkp-jump-other-window-map "d"    'bmkp-dired-jump-other-window) ; `C-x 4 j d'
-(define-key bmkp-jump-map              "f"    'bmkp-file-jump) ; `C-x j f'
-(define-key bmkp-jump-other-window-map "f"    'bmkp-file-jump-other-window) ; `C-x 4 j f'
-(define-key bmkp-jump-map              "\C-f" 'bmkp-find-file) ; `C-x j C-f'
-(define-key bmkp-jump-other-window-map "\C-f" 'bmkp-find-file-other-window) ; `C-x 4 j C-f'
-(define-key bmkp-jump-map              "g"    'bmkp-gnus-jump) ; `C-x j g'
-(define-key bmkp-jump-other-window-map "g"    'bmkp-gnus-jump-other-window) ; `C-x 4 j g'
-(define-key bmkp-jump-map              "h"    'bmkp-lighted-jump) ; `C-x j h'
-(define-key bmkp-jump-other-window-map "h"    'bmkp-lighted-jump-other-window) ; `C-x 4 j h'
-(define-key bmkp-jump-map              "i"    'bmkp-info-jump) ; `C-x j i'
-(define-key bmkp-jump-other-window-map "i"    'bmkp-info-jump-other-window) ; `C-x 4 j i'
-(define-key bmkp-jump-map              "\M-i" 'bmkp-image-jump) ; `C-x j M-i'
-(define-key bmkp-jump-other-window-map "\M-i" 'bmkp-image-jump-other-window) ; `C-x 4 j M-i'
-(define-key bmkp-jump-map              "j"    'bookmark-jump) ; `C-x j j'
+(define-key bmkp-jump-map              "a"    'bmkp-autofile-jump)                          ; `C-x j a'
+(define-key bmkp-jump-other-window-map "a"    'bmkp-autofile-jump-other-window)           ; `C-x 4 j a'
+(define-key bmkp-jump-map              "b"    'bmkp-non-file-jump)                          ; `C-x j b'
+(define-key bmkp-jump-other-window-map "b"    'bmkp-non-file-jump-other-window)           ; `C-x 4 j b'
+(define-key bmkp-jump-map              "B"    'bmkp-bookmark-list-jump)                     ; `C-x j B'
+(define-key bmkp-jump-other-window-map "B"    'bmkp-bookmark-list-jump)     ; SAME COMMAND: `C-x 4 j B'
+(define-key bmkp-jump-map              "d"    'bmkp-dired-jump)                             ; `C-x j d'
+(define-key bmkp-jump-other-window-map "d"    'bmkp-dired-jump-other-window)              ; `C-x 4 j d'
+(define-key bmkp-jump-map              "f"    'bmkp-file-jump)                              ; `C-x j f'
+(define-key bmkp-jump-other-window-map "f"    'bmkp-file-jump-other-window)               ; `C-x 4 j f'
+(define-key bmkp-jump-map              "\C-f" 'bmkp-find-file)                            ; `C-x j C-f'
+(define-key bmkp-jump-other-window-map "\C-f" 'bmkp-find-file-other-window)             ; `C-x 4 j C-f'
+(define-key bmkp-jump-map              "g"    'bmkp-gnus-jump)                              ; `C-x j g'
+(define-key bmkp-jump-other-window-map "g"    'bmkp-gnus-jump-other-window)               ; `C-x 4 j g'
+(define-key bmkp-jump-map              "h"    'bmkp-lighted-jump)                           ; `C-x j h'
+(define-key bmkp-jump-other-window-map "h"    'bmkp-lighted-jump-other-window)            ; `C-x 4 j h'
+(define-key bmkp-jump-map              "i"    'bmkp-info-jump)                              ; `C-x j i'
+(define-key bmkp-jump-other-window-map "i"    'bmkp-info-jump-other-window)               ; `C-x 4 j i'
+(define-key bmkp-jump-map              "\M-i" 'bmkp-image-jump)                           ; `C-x j M-i'
+(define-key bmkp-jump-other-window-map "\M-i" 'bmkp-image-jump-other-window)            ; `C-x 4 j M-i'
+(define-key bmkp-jump-map              "j"    'bookmark-jump)                               ; `C-x j j'
 (put 'bookmark-jump :advertised-binding "\C-xjj")
 
-(define-key bmkp-jump-other-window-map "j"    'bookmark-jump-other-window) ; `C-x 4 j j'
+(define-key bmkp-jump-other-window-map "j"    'bookmark-jump-other-window)                ; `C-x 4 j j'
 (put 'bookmark-jump-other-window :advertised-binding "\C-x4jj")
 (put 'jump-other :advertised-binding "\C-x4jj")
 
-(define-key bmkp-jump-map              "K"    'bmkp-desktop-jump) ; `C-x j K'
-(define-key bmkp-jump-other-window-map "K"    'bmkp-desktop-jump) ; SAME
-(define-key bmkp-jump-map              "l"    'bmkp-local-file-jump) ; `C-x j l'
-(define-key bmkp-jump-other-window-map "l"    'bmkp-local-file-jump-other-window) ; `C-x 4 j l'
-(define-key bmkp-jump-map              "m"    'bmkp-man-jump) ; `C-x j m'
-(define-key bmkp-jump-other-window-map "m"    'bmkp-man-jump-other-window) ; `C-x 4 j m'
-(define-key bmkp-jump-map              "n"    'bmkp-remote-file-jump) ; `C-x j n' ("_n_etwork")
-(define-key bmkp-jump-other-window-map "n"    'bmkp-remote-file-jump-other-window) ; `C-x 4 j n'
-(define-key bmkp-jump-map              "N"    'bmkp-jump-in-navlist) ; `C-x j N'
-(define-key bmkp-jump-other-window-map "N"    'bmkp-jump-in-navlist-other-window) ; `C-x 4 j N'
-(define-key bmkp-jump-map              "r"    'bmkp-region-jump) ; `C-x j r'
-(define-key bmkp-jump-other-window-map "r"    'bmkp-region-jump-other-window) ; `C-x 4 j r'
+(define-key bmkp-jump-map              "K"    'bmkp-desktop-jump)                           ; `C-x j K'
+(define-key bmkp-jump-other-window-map "K"    'bmkp-desktop-jump)             ; SAME COMMAND: `C-x j K'
+(define-key bmkp-jump-map              "l"    'bmkp-local-file-jump)                        ; `C-x j l'
+(define-key bmkp-jump-other-window-map "l"    'bmkp-local-file-jump-other-window)         ; `C-x 4 j l'
+(define-key bmkp-jump-map              "m"    'bmkp-man-jump)                               ; `C-x j m'
+(define-key bmkp-jump-other-window-map "m"    'bmkp-man-jump-other-window)                ; `C-x 4 j m'
+(define-key bmkp-jump-map              "n"    'bmkp-remote-file-jump)         ; `C-x j n' ("_n_etwork")
+(define-key bmkp-jump-other-window-map "n"    'bmkp-remote-file-jump-other-window)        ; `C-x 4 j n'
+(define-key bmkp-jump-map              "N"    'bmkp-jump-in-navlist)                        ; `C-x j N'
+(define-key bmkp-jump-other-window-map "N"    'bmkp-jump-in-navlist-other-window)         ; `C-x 4 j N'
+(define-key bmkp-jump-map              "r"    'bmkp-region-jump)                            ; `C-x j r'
+(define-key bmkp-jump-other-window-map "r"    'bmkp-region-jump-other-window)             ; `C-x 4 j r'
 
 (define-key bmkp-jump-map              "t"    nil) ; For Emacs 20
 (define-key bmkp-jump-other-window-map "t"    nil) ; For Emacs 20
-(define-key bmkp-jump-map              "t*"   'bmkp-all-tags-jump) ; `C-x j t *'
-(define-key bmkp-jump-other-window-map "t*"   'bmkp-all-tags-jump-other-window) ; `C-x 4 j t *'
-(define-key bmkp-jump-map              "t+"   'bmkp-some-tags-jump) ; `C-x j t +'
-(define-key bmkp-jump-other-window-map "t+"   'bmkp-some-tags-jump-other-window) ; `C-x 4 j t +'
+(define-key bmkp-jump-map              "t*"   'bmkp-all-tags-jump)                        ; `C-x j t *'
+(define-key bmkp-jump-other-window-map "t*"   'bmkp-all-tags-jump-other-window)         ; `C-x 4 j t *'
+(define-key bmkp-jump-map              "t+"   'bmkp-some-tags-jump)                       ; `C-x j t +'
+(define-key bmkp-jump-other-window-map "t+"   'bmkp-some-tags-jump-other-window)        ; `C-x 4 j t +'
 
 (define-key bmkp-jump-map              "t%"   nil) ; For Emacs 20
 (define-key bmkp-jump-other-window-map "t%"   nil) ; For Emacs 20
-(define-key bmkp-jump-map              "t%*"  'bmkp-all-tags-regexp-jump) ; `C-x j t % *'
+(define-key bmkp-jump-map              "t%*"  'bmkp-all-tags-regexp-jump)               ; `C-x j t % *'
 (define-key bmkp-jump-other-window-map "t%*"
-  'bmkp-all-tags-regexp-jump-other-window) ; `C-x 4 j t % *'
-(define-key bmkp-jump-map              "t%+"  'bmkp-some-tags-regexp-jump) ; `C-x j t % +'
+  'bmkp-all-tags-regexp-jump-other-window)                                            ; `C-x 4 j t % *'
+(define-key bmkp-jump-map              "t%+"  'bmkp-some-tags-regexp-jump)              ; `C-x j t % +'
 (define-key bmkp-jump-other-window-map "t%+"
-  'bmkp-some-tags-regexp-jump-other-window) ; `C-x 4 j t % +'
+  'bmkp-some-tags-regexp-jump-other-window)                                           ; `C-x 4 j t % +'
 
 (define-key bmkp-jump-map              "t."   nil) ; For Emacs 20
 (define-key bmkp-jump-other-window-map "t."   nil) ; For Emacs 20
-(define-key bmkp-jump-map              "t.*" 'bmkp-file-this-dir-all-tags-jump) ; `C-x j t . *'
+(define-key bmkp-jump-map              "t.*" 'bmkp-file-this-dir-all-tags-jump)         ; `C-x j t . *'
 (define-key bmkp-jump-other-window-map "t.*"
-  'bmkp-file-this-dir-all-tags-jump-other-window) ; `C-x 4 j t . *'
-(define-key bmkp-jump-map              "t.+" 'bmkp-file-this-dir-some-tags-jump) ; `C-x j t . +'
+  'bmkp-file-this-dir-all-tags-jump-other-window)                                     ; `C-x 4 j t . *'
+(define-key bmkp-jump-map              "t.+" 'bmkp-file-this-dir-some-tags-jump)        ; `C-x j t . +'
 (define-key bmkp-jump-other-window-map "t.+"
-  'bmkp-file-this-dir-some-tags-jump-other-window) ; `C-x 4 j t . +'
+  'bmkp-file-this-dir-some-tags-jump-other-window)                                    ; `C-x 4 j t . +'
 
 (define-key bmkp-jump-map              "t.%" nil) ; For Emacs 20
 (define-key bmkp-jump-other-window-map "t.%" nil) ; For Emacs 20
 (define-key bmkp-jump-map              "t.%*"
-  'bmkp-file-this-dir-all-tags-regexp-jump) ; `C-x j t . % *'
+  'bmkp-file-this-dir-all-tags-regexp-jump)                                           ; `C-x j t . % *'
 (define-key bmkp-jump-other-window-map "t.%*"
-  'bmkp-file-this-dir-all-tags-regexp-jump-other-window) ; `C-x 4 j t . % *'
+  'bmkp-file-this-dir-all-tags-regexp-jump-other-window)                            ; `C-x 4 j t . % *'
 (define-key bmkp-jump-map              "t.%+"
-  'bmkp-file-this-dir-some-tags-regexp-jump) ; `C-x j t . % +'
+  'bmkp-file-this-dir-some-tags-regexp-jump)                                          ; `C-x j t . % +'
 (define-key bmkp-jump-other-window-map "t.%+"
-  'bmkp-file-this-dir-some-tags-regexp-jump-other-window) ; `C-x 4 j t . % +'
+  'bmkp-file-this-dir-some-tags-regexp-jump-other-window)                           ; `C-x 4 j t . % +'
 
 
 (define-key bmkp-jump-map              "ta"   nil) ; For Emacs 20
 (define-key bmkp-jump-other-window-map "ta"   nil) ; For Emacs 20
-(define-key bmkp-jump-map              "ta*"  'bmkp-autofile-all-tags-jump) ; `C-x j t a *'
+(define-key bmkp-jump-map              "ta*"  'bmkp-autofile-all-tags-jump)             ; `C-x j t a *'
 (define-key bmkp-jump-other-window-map "ta*"
-  'bmkp-autofile-all-tags-jump-other-window) ; `C-x 4 j t a *'
-(define-key bmkp-jump-map              "ta+"  'bmkp-autofile-some-tags-jump) ; `C-x j t a +'
+  'bmkp-autofile-all-tags-jump-other-window)                                          ; `C-x 4 j t a *'
+(define-key bmkp-jump-map              "ta+"  'bmkp-autofile-some-tags-jump)            ; `C-x j t a +'
 (define-key bmkp-jump-other-window-map "ta+"
-  'bmkp-autofile-some-tags-jump-other-window) ; `C-x 4 j t a +'
+  'bmkp-autofile-some-tags-jump-other-window)                                         ; `C-x 4 j t a +'
 
 (define-key bmkp-jump-map              "ta%"  nil) ; For Emacs 20
 (define-key bmkp-jump-other-window-map "ta%"  nil) ; For Emacs 20
-(define-key bmkp-jump-map              "ta%*" 'bmkp-autofile-all-tags-regexp-jump) ; `C-x j t a % *'
+(define-key bmkp-jump-map              "ta%*" 'bmkp-autofile-all-tags-regexp-jump)    ; `C-x j t a % *'
 (define-key bmkp-jump-other-window-map "ta%*"
-  'bmkp-autofile-all-tags-regexp-jump-other-window) ; `C-x 4 j t a % *'
-(define-key bmkp-jump-map              "ta%+" 'bmkp-autofile-some-tags-regexp-jump) ; `C-x j t a % +'
+  'bmkp-autofile-all-tags-regexp-jump-other-window)                                 ; `C-x 4 j t a % *'
+(define-key bmkp-jump-map              "ta%+" 'bmkp-autofile-some-tags-regexp-jump)   ; `C-x j t a % +'
 (define-key bmkp-jump-other-window-map "ta%+"
-  'bmkp-autofile-some-tags-regexp-jump-other-window) ; `C-x 4 j t a % +'
+  'bmkp-autofile-some-tags-regexp-jump-other-window)                                ; `C-x 4 j t a % +'
 
 (define-key bmkp-jump-map              "tf"   nil) ; For Emacs 20
 (define-key bmkp-jump-other-window-map "tf"   nil) ; For Emacs 20
-(define-key bmkp-jump-map              "tf*"  'bmkp-file-all-tags-jump) ; `C-x j t f *'
-(define-key bmkp-jump-other-window-map "tf*"  'bmkp-file-all-tags-jump-other-window) ; `C-x 4 j t f *'
-(define-key bmkp-jump-map              "tf+"  'bmkp-file-some-tags-jump) ; `C-x j t f +'
+(define-key bmkp-jump-map              "tf*"  'bmkp-file-all-tags-jump)                 ; `C-x j t f *'
+(define-key bmkp-jump-other-window-map "tf*"  'bmkp-file-all-tags-jump-other-window)  ; `C-x 4 j t f *'
+(define-key bmkp-jump-map              "tf+"  'bmkp-file-some-tags-jump)                ; `C-x j t f +'
 (define-key bmkp-jump-other-window-map "tf+"  'bmkp-file-some-tags-jump-other-window) ; `C-x 4 j t f +'
 
 (define-key bmkp-jump-map              "tf%"  nil) ; For Emacs 20
 (define-key bmkp-jump-other-window-map "tf%"  nil) ; For Emacs 20
-(define-key bmkp-jump-map              "tf%*" 'bmkp-file-all-tags-regexp-jump) ; `C-x j t f % *'
+(define-key bmkp-jump-map              "tf%*" 'bmkp-file-all-tags-regexp-jump)        ; `C-x j t f % *'
 (define-key bmkp-jump-other-window-map "tf%*"
-  'bmkp-file-all-tags-regexp-jump-other-window) ; `C-x 4 j t f % *'
-(define-key bmkp-jump-map              "tf%+" 'bmkp-file-some-tags-regexp-jump) ; `C-x j t f % +'
+  'bmkp-file-all-tags-regexp-jump-other-window)                                     ; `C-x 4 j t f % *'
+(define-key bmkp-jump-map              "tf%+" 'bmkp-file-some-tags-regexp-jump)       ; `C-x j t f % +'
 (define-key bmkp-jump-other-window-map "tf%+"
-  'bmkp-file-some-tags-regexp-jump-other-window) ; `C-x 4 j t f % +'
+  'bmkp-file-some-tags-regexp-jump-other-window)                                    ; `C-x 4 j t f % +'
 
 (when (> emacs-major-version 21)        ; Needs `read-file-name' with a PREDICATE arg.
-  (define-key bmkp-jump-map              "t\C-f*" 'bmkp-find-file-all-tags) ; `C-x j t C-f *'
+  (define-key bmkp-jump-map              "t\C-f*" 'bmkp-find-file-all-tags)           ; `C-x j t C-f *'
   (define-key bmkp-jump-other-window-map "t\C-f*"
-    'bmkp-find-file-all-tags-other-window) ; `C-x 4 j t C-f *'
-  (define-key bmkp-jump-map              "t\C-f+" 'bmkp-find-file-some-tags) ; `C-x j t C-f +'
+    'bmkp-find-file-all-tags-other-window)                                          ; `C-x 4 j t C-f *'
+  (define-key bmkp-jump-map              "t\C-f+" 'bmkp-find-file-some-tags)          ; `C-x j t C-f +'
   (define-key bmkp-jump-other-window-map "t\C-f+"
-    'bmkp-find-file-some-tags-other-window) ; `C-x 4 j t C-f +'
+    'bmkp-find-file-some-tags-other-window)                                         ; `C-x 4 j t C-f +'
   (define-key bmkp-jump-map              "t\C-f%*" 'bmkp-find-file-all-tags-regexp) ; `C-x j t C-f % *'
   (define-key bmkp-jump-other-window-map "t\C-f%*"
-    'bmkp-find-file-all-tags-regexp-other-window) ; `C-x 4 j t C-f % *'
+    'bmkp-find-file-all-tags-regexp-other-window)                                 ; `C-x 4 j t C-f % *'
   (define-key bmkp-jump-map              "t\C-f%+"
-    'bmkp-find-file-some-tags-regexp) ; `C-x j t C-f % +'
+    'bmkp-find-file-some-tags-regexp)                                               ; `C-x j t C-f % +'
   (define-key bmkp-jump-other-window-map "t\C-f%+"
-    'bmkp-find-file-some-tags-regexp-other-window)) ; `C-x 4 j t C-f % +'
+    'bmkp-find-file-some-tags-regexp-other-window))                               ; `C-x 4 j t C-f % +'
 
-(define-key bmkp-jump-map              "u"    'bmkp-url-jump) ; `C-x j u'
-(define-key bmkp-jump-other-window-map "u"    'bmkp-url-jump-other-window) ; `C-x 4 j u'
-(define-key bmkp-jump-map              "v"    'bmkp-variable-list-jump) ; `C-x j v'
-(define-key bmkp-jump-map              "w"    'bmkp-w3m-jump) ; `C-x j w'
-(define-key bmkp-jump-other-window-map "w"    'bmkp-w3m-jump-other-window) ; `C-x 4 j w'
-(define-key bmkp-jump-map              "x"    'bmkp-temporary-jump) ; `C-x j x'
-(define-key bmkp-jump-other-window-map "x"    'bmkp-temporary-jump-other-window) ; `C-x 4 j x'
-(define-key bmkp-jump-map              "y"    'bmkp-bookmark-file-jump) ; `C-x j y'
-(define-key bmkp-jump-map              ":"    'bmkp-jump-to-type) ; `C-x j :'
-(define-key bmkp-jump-other-window-map ":"    'bmkp-jump-to-type-other-window) ; `C-x 4 j :'
+(define-key bmkp-jump-map              "u"    'bmkp-url-jump)                               ; `C-x j u'
+(define-key bmkp-jump-other-window-map "u"    'bmkp-url-jump-other-window)                ; `C-x 4 j u'
+(define-key bmkp-jump-map              "v"    'bmkp-variable-list-jump)                     ; `C-x j v'
+(define-key bmkp-jump-map              "w"    'bmkp-w3m-jump)                               ; `C-x j w'
+(define-key bmkp-jump-other-window-map "w"    'bmkp-w3m-jump-other-window)                ; `C-x 4 j w'
+(define-key bmkp-jump-map              "x"    'bmkp-temporary-jump)                         ; `C-x j x'
+(define-key bmkp-jump-other-window-map "x"    'bmkp-temporary-jump-other-window)          ; `C-x 4 j x'
+(define-key bmkp-jump-map              "y"    'bmkp-bookmark-file-jump)                     ; `C-x j y'
+(define-key bmkp-jump-map              ":"    'bmkp-jump-to-type)                           ; `C-x j :'
+(define-key bmkp-jump-other-window-map ":"    'bmkp-jump-to-type-other-window)            ; `C-x 4 j :'
 
 ;; Add jump commands to other keymaps: Buffer-menu, Dired, Gnus, Info, Man, Woman, W3M.
 (add-hook 'buffer-menu-mode-hook
           #'(lambda () (unless (lookup-key Buffer-menu-mode-map "j")
-                         (define-key Buffer-menu-mode-map "j" 'bmkp-non-file-jump)))) ; `j'
+                         (define-key Buffer-menu-mode-map "j" 'bmkp-non-file-jump))))             ; `j'
 (add-hook 'dired-mode-hook
           #'(lambda ()
               (let ((now  (lookup-key dired-mode-map "J")))
                 ;; Uppercase, since `j' is `dired-goto-file'.
                 (unless (and now (not (eq now 'undefined))) ; `dired+.el' uses `undefined'.
-                  (define-key dired-mode-map "J" 'bmkp-dired-jump)) ; `j'
+                  (define-key dired-mode-map "J" 'bmkp-dired-jump))                               ; `j'
                 (setq now  (lookup-key dired-mode-map "\C-j"))
                 (unless (and now (not (eq now 'undefined))) ; `dired+.el' uses `undefined'.
-                  (define-key dired-mode-map "\C-j" 'bmkp-dired-this-dir-jump))) ; `C-j'
+                  (define-key dired-mode-map "\C-j" 'bmkp-dired-this-dir-jump)))                ; `C-j'
               (let ((map   dired-mode-map)
                     (sep   '(menu-bar subdir separator-bmkp))
                     (bdj   '(menu-bar subdir bmkp-dired-jump))
