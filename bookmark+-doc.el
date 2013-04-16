@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Dec 28 09:30:00 2012 (-0800)
+;; Last-Updated: Tue Apr 16 08:23:05 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 14640
+;;     Update #: 14700
 ;; URL: http://www.emacswiki.org/bookmark+-doc.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -974,34 +974,85 @@
 ;;  Bookmarks are typically thought of only as recorded locations.
 ;;  Invoking a bookmark, called "jumping" to it, traditionally means
 ;;  just visiting its location.  Bookmark+ looks at bookmarks in a
-;;  more general way than that.  A bookmark is a shortcut of some
-;;  kind - nothing more.
+;;  more general way than that.  A bookmark is a shortcut of some kind
+;;  - nothing more.  It is typically persistent, but it need not be
+;;  (see (@> "Temporary Bookmarks")).
 ;;
 ;;  A given type of bookmark is defined by its handler function, which
-;;  really could do anything you like.  We've already seen the
-;;  examples of region bookmarks, which restore the active region, and
-;;  Dired bookmarks, which restore a set of Dired markings, switches,
-;;  inserted subdirectories, and hidden (sub)directories.
+;;  can do anything you like.  We've already seen the examples of
+;;  region bookmarks, which restore the active region, and Dired
+;;  bookmarks, which restore Dired markings, switches, inserted
+;;  subdirectories, and hidden (sub)directories.
 ;;
 ;;  A "function bookmark" simply invokes some function - any function.
 ;;  You can, for instance, define a window or frame configuration and
-;;  record that as a bookmark.  Then jump to the bookmark to switch
-;;  contexts.  (You can also bookmark a desktop and jump to that.)
+;;  record the configuration as a bookmark.  Then jump to the bookmark
+;;  to switch contexts.  (You can also bookmark a desktop and jump to
+;;  that.)
 ;;
-;;  Function bookmarks might not seem too interesting, since we have
-;;  other ways of invoking functions in Emacs.  But the other features
+;;  Function bookmarks might not seem too interesting, since there are
+;;  other ways to invoke functions in Emacs.  But the other features
 ;;  of Bookmark+ combine with this feature.  You can, for instance,
-;;  tag such bookmarks.
+;;  tag function bookmarks.
 ;;
 ;;  And you can combine them, invoking the functions sequentially.
-;;  This is just a particular case of using a "sequence bookmark",
-;;  which simply records a sequence of bookmarks.  The bookmarks in a
+;;  This is a particular case of using a "sequence bookmark", which
+;;  simply records a sequence of bookmarks.  The bookmarks in a
 ;;  sequence can be of any kind, including other sequence bookmarks.
 ;;
-;;  Command `bmkp-make-function-bookmark' creates a function bookmark
-;;  - you give it a function symbol or a lambda expression.  Command
-;;  `bmkp-bmenu-make-sequence-from-marked' creates a sequence from the
-;;  marked bookmarks in the bookmark list, in their current order.
+;;  Command `bmkp-make-function-bookmark' (`C-x p c F') creates a
+;;  function bookmark - you give it a function symbol or a lambda
+;;  expression.
+;;
+;;  A function bookmark can invoke a keyboard macro instead of a
+;;  function.  With a prefix argument, `bmkp-make-function-bookmark'
+;;  creates a function bookmark from the last keyboard macro.  Jumping
+;;  to the bookmark executes the keyboard macro.  A bookmark is thus
+;;  one way to make a keyboard macro persistent.
+;;
+;;  If you provide a prefix argument to the bookmark jump command or
+;;  key that invokes a function bookmark, it is passed along to the
+;;  function.  If the bookmark invokes a keyboard macro then the
+;;  prefix argument determines how many times the macro is invoked.
+;;
+;;  The most general way to create or update a sequence bookmark is
+;;  using command `bmkp-set-sequence-bookmark' (`C-x p c s').  You are
+;;  prompted for the sequence bookmark name and the names of the
+;;  bookmarks that form its sequence and are thus invoked by it
+;;  sequentially.
+;;
+;;  If the sequence bookmark already exists then a prefix argument
+;;  determines whether the bookmarks you name are added to the
+;;  existing sequence or replace it, and if added, whether before or
+;;  after the bookmarks already in the sequence.
+;;
+;;  Command `bmkp-wrap-bookmark-with-last-kbd-macro' (`C-x p c C-k')
+;;  returns a sequence bookmark that invokes a bookmark you name and
+;;  then invokes the last keyboard macro.  You are prompted for the
+;;  names of both bookmarks.  If the sequence bookmark does not yet
+;;  exist then it is created.  (The bookmark to be added to the
+;;  sequence need not exist yet, and it is not created by adding its
+;;  name to the sequence.)
+;;
+;;  If you enter the same name for the sequence bookmark and the
+;;  bookmark to wrap with the keyboard macro, then the macro is simply
+;;  added to that (sequence) bookmark.
+;;
+;;  For example, if you enter `my-seq' for both of the
+;;  `bmkp-wrap-bookmark-with-last-kbd-macro' prompts, then the last
+;;  keyboard macro is added to sequence bookmark `my-seq'. Bookmark
+;;  `my-seq' need not exist yet, in which case it is created, with the
+;;  keyboard macro as its only member bookmark.
+;;
+;;  If the bookmark to add to the sequence is itself a different
+;;  (existing) sequence bookmark, then its member bookmarks are added
+;;  to the sequence being updated (or created), either before or after
+;;  its existing members, according to the prefix arg (which is passed
+;;  to `bmkp-set-sequence-bookmark').
+;;
+;;  Command `bmkp-bmenu-make-sequence-from-marked' creates a sequence
+;;  bookmark from the marked bookmarks in the bookmark-list display,
+;;  in their current order.
 ;;
 ;;  A variable-list bookmark saves and restores the values of a set of
 ;;  variables.  Command `bmkp-set-variable-list-bookmark' prompts you
