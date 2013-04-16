@@ -17,6 +17,7 @@ satisfy these conditions:
 
 * '''Plain `C-u'''': whose ''[[major mode|mode]]'' is ''derived'' from the current buffer mode
 * '''`C-u C-u'''' ('''double'''): ''visible'' (possibly in an iconified frame)
+* '''`C-u C-u C-u'''' ('''triple'''): ''invisible''
 * '''Zero:''' whose ''mode'' is the ''same'' as the current buffer mode
 * '''Positive:''' visiting ''files''
 * '''Negative:''' associated with the selected ''[[frame]]''
