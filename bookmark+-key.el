@@ -7,9 +7,9 @@
 ;; Copyright (C) 2010-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  1 15:34:50 2011 (-0700)
 ;; Version:
-;; Last-Updated: Mon Apr 15 19:19:17 2013 (-0700)
+;; Last-Updated: Mon Apr 15 19:28:02 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 601
+;;     Update #: 602
 ;; URL: http://www.emacswiki.org/bookmark+-key.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -223,7 +223,7 @@
 (define-key bmkp-set-map "K"    'bmkp-set-desktop-bookmark)                    ; `C-x p c K'
 (define-key bmkp-set-map "\C-k" 'bmkp-wrap-bookmark-with-last-kbd-macro)       ; `C-x p C-k'
 (define-key bmkp-set-map "m"    'bookmark-set)                                 ; `C-x p c m'
-(define-key bmkp-set-map "s"    'bmkp-set-sequence)                            ; `C-x p c s'
+(define-key bmkp-set-map "s"    'bmkp-set-sequence-bookmark)                   ; `C-x p c s'
 (define-key bmkp-set-map "u"    'bmkp-url-target-set)                          ; `C-x p c u'
 (define-key bmkp-set-map "y"    'bmkp-set-bookmark-file-bookmark)              ; `C-x p c y'
 (define-key bmkp-set-map "\r"   'bmkp-toggle-autonamed-bookmark-set/delete)    ; `C-x p c RET'
