@@ -9,11 +9,14 @@ to run it with default settings. (C-h C-x dissociated-press has more information
 This always has comical results. For example, I can put my literature homework into the
 Dissociated Press-
 
+{{{
  Section III. UNDERSTANDING FIGURATIVE LANGUAGE
  ...
+}}}
 
 a perfectly sensible section of homework, and it spits out something like
 
+{{{
  Section III: UNDERSe!
 
  4.    "He wout
@@ -21,7 +24,7 @@ a perfectly sensible section of homework, and it spits out something like
              --Song Of Myself, getting madder and mis
 
  5. "He mississississippi river."
-
+}}}
 
 M-x Dissociated-press works far better with longer inputs, of course.
 
