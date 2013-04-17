@@ -4,7 +4,7 @@ still works with both emacsen. Usually it does not because of some
 byte compiled files and then I wish that at least one of those emacsen
 had a configurable byte-compile-file-extension :-(
 
-I have written the xgtags package which is mentioned on the TagFile
+I have written the xgtags package which is mentioned on the GnuGlobal
 page.
 
 [new]
