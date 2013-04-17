@@ -7,9 +7,9 @@
 ;; Copyright (C) 2004-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 10 16:44:55 2004
 ;; Version: 21.0
-;; Last-Updated: Thu Mar 21 13:56:04 2013 (-0700)
+;; Last-Updated: Wed Apr 17 09:58:15 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 1467
+;;     Update #: 1509
 ;; URL: http://www.emacswiki.org/thumb-frm.el
 ;; Doc URL: http://www.emacswiki.org/FisheyeWithThumbs
 ;; Keywords: frame, icon
@@ -26,19 +26,23 @@
 ;;
 ;;    Shrink frames to a thumbnail size and restore them again.
 ;;
-;;  The main command here is `thumfr-thumbify-other-frames', alias
-;;  `thumfr-fisheye'. It shrinks all frames except the selected frame
-;;  to a thumbnail size. The thumbnail frames are stacked from top to
-;;  bottom, left to right on your display. This provides a kind of
-;;  "fisheye" view of the frames you are using. Command
-;;  `thumfr-dethumbify-all-frames' restores all thumbnails to full
-;;  size.
+;;  User option `thumfr-frame-parameters' defines the appearance of
+;;  the thumbnail frames.  If you change it and set the new definition
+;;  for the current session you can immediately see the effect in all
+;;  of your thumbnail frames.
 ;;
-;;  You can also thumbify or dethumbify any individual frame, using
-;;  commands `thumfr-toggle-thumbnail-frame', `thumfr-thumbify-frame',
-;;  and `thumfr-dethumbify-frame'. You might want to thumbify the
-;;  frame of a progressive output buffer, for instance, just to keep
-;;  an eye on the output as it is produced.
+;;  Commands `thumfr-toggle-thumbnail-frame', `thumfr-thumbify-frame',
+;;  and `thumfr-dethumbify-frame' thumbify and dethumbify an
+;;  individual frame.  If option `thumfr-thumbify-dont-iconify-flag'
+;;  is non-nil (the default), then keys (e.g., `C-z') that normally
+;;  iconify and deiconify will instead thumbify and dethumbify.
+;;
+;;  Command `thumfr-thumbify-other-frames', alias `thumfr-fisheye',
+;;  shrinks all frames except the selected frame to a thumbnail
+;;  size. The thumbnail frames are stacked from top to bottom, left to
+;;  right on your display. This provides a kind of "fisheye" view of
+;;  the frames you are using. Command `thumfr-dethumbify-all-frames'
+;;  restores all thumbnails to full size.
 ;;
 ;;  Command `thumfr-stack-thumbnail-frames' neatly stacks all of the
 ;;  thumbnail frames along the display edge.  You can use it at any
@@ -54,11 +58,10 @@
 ;;  library changes the standard commands `iconify-frame' and
 ;;  `iconify-or-deiconify-frame' so that they use thumbnails instead
 ;;  of icons whenever option `thumfr-thumbify-dont-iconify-flag' is
-;;  non-nil.  To prevent this thumbnail behavior, you can set
-;;  `thumfr-thumbify-dont-iconify-flag' to nil in your init file.
-;;  Alternatively, you can deactivate (`ad-deactivate') the advice
-;;  imposed here on these functions to give them back their original
-;;  behavior.
+;;  non-nil.  To prevent this thumbnail behavior, you can customize
+;;  `thumfr-thumbify-dont-iconify-flag' to nil.  Alternatively, you
+;;  can deactivate (`ad-deactivate') the advice imposed here on these
+;;  functions to give them back their original behavior.
 ;;
 ;;  The original behavior of commands `iconify-frame' and
 ;;  `iconify-or-deiconify-frame' is available using commands
@@ -74,7 +77,7 @@
 ;;
 ;;  Emacs built-in function `raise-frame' is redefined here to also
 ;;  dethumbify.  The original behavior of `raise-frame' is available
-;;  in new function `thumfr-only-raise-frame'.
+;;  in command `thumfr-only-raise-frame'.
 ;;
 ;;  You can cycle among the visible frames in two ways, applying
 ;;  `thumfr-fisheye' to each in turn.  The first way is using commands
@@ -132,19 +135,22 @@
 ;;  Other user options (variables) not mentioned above are these:
 ;;
 ;;    `thumfr-font-difference'             - Zoom of thumbnail frames.
-;;    `thumfr-frame-parameters'    - Thumbnail frame frame parameters.
 ;;    `thumfr-rename-when-thumbify-flag'   - Rename frame to buffer.
 ;;    `thumfr-stack-display-edge'         - Display edge for stacking.
 ;;    `window-mgr-title-bar-pixel-width'   - Thickness of title bar.
 ;;
 ;;
-;;  WARNING:
+;;  IMPORTANT:
 ;;
 ;;    Thumbnail frames are *FULLY FUNCTIONAL*.  In particular, their
 ;;    buffers are *NOT* read-only in any way.  You can edit their
-;;    buffers normally, even if you can't see what you're doing
-;;    :-).  You can also scroll and search their buffers, of course.
+;;    buffers normally, even if you can't see what you're doing :-).
 ;;
+;;    You can also scroll and search their buffers.  You can thumbify
+;;    the frame of a progressive output buffer, to monitor the output
+;;    from 4,000 meters as it is produced.  In other words, you can
+;;    interactive with thumbnail frames in the usual ways.  They are
+;;    not special; they are just small.
 ;;
 ;;  Functions defined here:
 ;;
@@ -181,18 +187,12 @@
 ;;    `thumfr-next-stack-xoffset', `thumfr-next-stack-yoffset'.
 ;;
 ;;
-;;  ***** NOTE: The following EMACS functions have been REDEFINED HERE:
+;;  ***** NOTE: These EMACS functions have been ADVISED or REDEFINED:
 ;;
 ;;  `iconify-frame' - Thumbify if `thumfr-thumbify-dont-iconify-flag'.
 ;;  `iconify-or-deiconify-frame' - Similar to `iconify-frame', plus
 ;;                                 dethumbify if already a thumbnail.
 ;;  `raise-frame' - Dethumbify also, if a thumbnail.
-;;
-;;
-;;  ***** NOTE: The following EMACS functions have been ADVISED HERE:
-;;
-;;  `fringe-mode', `menu-bar-mode', `scroll-bar-mode',
-;;  `tool-bar-mode'.
 ;;
 ;;
 ;;  Put this in your init file (`~/.emacs'): (require 'thumb-frm)
@@ -263,6 +263,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/04/17 dadams
+;;     thumfr-frame-parameters: Added :set.  Added (scroll-bar-width . 6).
+;;     Moved defvars before defcustoms (thumfr-frame-parameters uses thumfr-thumbnail-frames).
+;;     Removed defadvice for *-mode (just use :set for thumfr-frame-parameters).
 ;; 2012/03/02 dadams
 ;;     Added thumfr-delete-if-not, thumfr-(n)set-difference: to avoid runtime load of cl.el.
 ;;     thumfr-thumbify-other-frames: Use thumfr-nset-difference.
@@ -380,6 +384,38 @@
 
 
 
+;;; INTERNAL VARIABLES ;;;;;;;;;;
+
+(defvar thumfr-thumbnail-frames nil
+  "An alist of frames currently displayed as thumbnails.
+Each entry is of the form (FRAME . FRAME-PARAMETERS), which
+records the `frame-parameters' of FRAME before it was turned into a
+thumbnail.")
+
+(defvar thumfr-non-thumbnail-frames nil
+  "An alist of frames currently not displayed as thumbnails.
+Each entry is of the form (FRAME . FRAME-PARAMETERS), which
+records the `frame-parameters' of FRAME when it was a thumbnail.")
+
+(defvar thumfr-last-sort-function nil
+  "Last non-nil value for `thumfr-sort-function' during this session.")
+
+(defvar thumfr-last-row-show 0.7
+  "Minimum amount showing of frames in last row (or column).
+Set to 1.0 to see whole frames.
+A smaller value uses display real estate better.")
+
+(defvar thumfr-next-stack-xoffset nil
+  "X offset for position to stack next thumbnail frame.")
+
+(defvar thumfr-next-stack-yoffset nil
+  "Y offset for position to stack next thumbnail frame.")
+
+;; Just so we don't need to test boundp each time.
+(defvar 1on1-minibuffer-frame nil)
+
+
+
 ;;; USER OPTIONS ;;;;;;;;;;;;;;;;
 
 ;;;###autoload
@@ -454,20 +490,17 @@ along the right edge from top to bottom."
 
 ;;;###autoload
 (defcustom thumfr-frame-parameters
-  '((menu-bar-lines . 0) (tool-bar-lines . 0))
-  ;; Emacs 21+ does not shrink scroll bars when the font shrinks.
-  ;; '((menu-bar-lines . 0) (tool-bar-lines . 0)
-  ;;   (vertical-scroll-bars) (horizontal-scroll-bars))
+  '((menu-bar-lines . 0) (tool-bar-lines . 0) (scroll-bar-width . 6))
   "*Frame parameters of thumbnail frames.
 Use this to show or hide things like the menu bar, tool bar, tab bar,
-and scroll bars for thumbnail frames.
-
-In particular, if you don't use the scroll bar in a thumbnail frame,
-you might want to set parameter `vertical-scroll-bars' to nil here, to
-save real estate.  (Starting with Emacs 21, the scroll bar does not
-shrink along with the font - it retains the same width.)"
+and scroll bars for thumbnail frames."
   :type '(repeat (cons symbol sexp))
-  :group 'Thumbnail-Frames)
+  :group 'Thumbnail-Frames
+  :set (lambda (sym defs)
+         (custom-set-default sym defs)
+         (dolist (frm  thumfr-thumbnail-frames)
+           (setq frm  (car frm))
+           (when (frame-live-p frm) (modify-frame-parameters frm thumfr-frame-parameters)))))
 
 ;;;###autoload
 (defcustom thumfr-sort-function 'thumfr-sort-by-name
@@ -494,38 +527,6 @@ and off."
     "*Width of frame title bar provided by window manager, in pixels."
     :type 'integer :group 'Thumbnail-Frames)) ; Normally, the :group is `Frame-Commands'.
 
-
-
-
-;;; INTERNAL VARIABLES ;;;;;;;;;;
-
-(defvar thumfr-thumbnail-frames nil
-  "An alist of frames currently displayed as thumbnails.
-Each entry is of the form (FRAME . FRAME-PARAMETERS), which
-records the `frame-parameters' of FRAME before it was turned into a
-thumbnail.")
-
-(defvar thumfr-non-thumbnail-frames nil
-  "An alist of frames currently not displayed as thumbnails.
-Each entry is of the form (FRAME . FRAME-PARAMETERS), which
-records the `frame-parameters' of FRAME when it was a thumbnail.")
-
-(defvar thumfr-last-sort-function nil
-  "Last non-nil value for `thumfr-sort-function' during this session.")
-
-(defvar thumfr-last-row-show 0.7
-  "Minimum amount showing of frames in last row (or column).
-Set to 1.0 to see whole frames.
-A smaller value uses display real estate better.")
-
-(defvar thumfr-next-stack-xoffset nil
-  "X offset for position to stack next thumbnail frame.")
-
-(defvar thumfr-next-stack-yoffset nil
-  "Y offset for position to stack next thumbnail frame.")
-
-;; Just so we don't need to test boundp each time.
-(defvar 1on1-minibuffer-frame nil)
 
 
 
@@ -1082,54 +1083,6 @@ that of second.  The `window-id' can be used as a substitute for time
 of window creation."
   (string-lessp (cdr (assq 'window-id (cdr framespec1)))
                 (cdr (assq 'window-id (cdr framespec2)))))
-
-
-;;; After toggling these modes, make thumbnail frames respect `thumfr-frame-parameters'.
-
-(defadvice menu-bar-mode (after thumfr-restore-menu-bar-setting activate)
-  "Restore menu bar setting for thumbnail frames."
-  (let ((def  (assq 'menu-bar-lines thumfr-frame-parameters)))
-    (when def
-      (dolist (frm  thumfr-thumbnail-frames)
-        (setq frm  (car frm))
-        (when (and (frame-live-p frm)
-                   (not (equal (cdr def) (cdr (assq 'menu-bar-lines (frame-parameters frm))))))
-          (modify-frame-parameters frm (list def)))))))
-    
-(defadvice tool-bar-mode (after thumfr-restore-tool-bar-setting activate)
-  "Restore tool bar setting for thumbnail frames."
-  (let ((def  (assq 'tool-bar-lines thumfr-frame-parameters)))
-    (when def
-      (dolist (frm  thumfr-thumbnail-frames)
-        (setq frm  (car frm))
-        (when (and (frame-live-p frm)
-                   (not (equal (cdr def) (cdr (assq 'tool-bar-lines (frame-parameters frm))))))
-          (modify-frame-parameters frm (list def)))))))
-
-(defadvice scroll-bar-mode (after thumfr-restore-scroll-bar-setting activate)
-  "Restore scroll bar setting for thumbnail frames."
-  (let ((def  (assq 'vertical-scroll-bars thumfr-frame-parameters)))
-    (when def
-      (dolist (frm  thumfr-thumbnail-frames)
-        (setq frm  (car frm))
-        (when (and (frame-live-p frm)
-                   (not (equal (cdr def)
-                               (cdr (assq 'vertical-scroll-bars (frame-parameters frm))))))
-          (modify-frame-parameters frm (list def)))))))
-
-(defadvice fringe-mode (after thumfr-restore-fringe-setting activate)
-  "Restore fringe setting for thumbnail frames."
-  (let ((def1  (assq 'left-fringe thumfr-frame-parameters))
-        (def2  (assq 'right-fringe thumfr-frame-parameters)))
-    (when (or def1 def2)
-      (dolist (frm  thumfr-thumbnail-frames)
-        (setq frm  (car frm))
-        (when (and (frame-live-p frm)
-                   (not (equal (cdr def1) (cdr (assq 'left-fringe (frame-parameters frm))))))
-          (modify-frame-parameters frm (list def1)))
-        (when (and (frame-live-p frm)
-                   (not (equal (cdr def2) (cdr (assq 'right-fringe (frame-parameters frm))))))
-          (modify-frame-parameters frm (list def2)))))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
