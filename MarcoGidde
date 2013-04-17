@@ -12,5 +12,9 @@ Welcome to the wiki! :) I have long ago given up on having a ~/.emacs file
 that works for both emacsen. I used XEmacs so rarely that it basically
 never worked whenever I tried it. -- AlexSchroeder
 
+[new]
+Late answer, I know :-) By now I also gave up with XEmacs, nowadays the
+problem is more how to maintain a more or less identical configuration under
+Ubuntu, !SuSE and Windows 7 - oh well ... :-)
 ----
 CategoryHomepage
