@@ -74,8 +74,7 @@ gtags.el in several ways:
   database
 * query-replace based on the current search result
 * the selection buffer is colored :-)
-* the package can be downloaded from http://home.tiscali.de/mgidde/source/xgtags.el (link is dead; does anyone know another source than <http://www.mail-archive.com/help-global@gnu.org/msg00022/xgtags.el> or the newer one from <http://web.archive.org/web/20080117124425/http://home.tiscali.de/mgidde/source/xgtags.el>?)
-* there is a copy of the file in this wiki at [[xgtags.el]]
+* there is a copy of the file in this wiki at [[xgtags.el]] (thanks to whoever uploaded this -- [[MarcoGidde]])
 
 [new]
 while using xgtags.el, if you have spaces in the path for sources, you may want to consider to change xgtags--tag-regexp likecedet
