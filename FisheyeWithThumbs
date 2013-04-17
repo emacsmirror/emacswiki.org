@@ -26,24 +26,22 @@ A picture is worth a thousand words. Well, maybe a thumbnail is worth only 50 wo
 
 == Thumbnail Frame FAQ ==
 
-; '''''What is a thumbnail frame?''''': It's just a tiny [[frame]], where everything is shrunk: characters, [[scroll bar]], [[minibuffer]] (if present) -- everything -- and it has no [[menu bar]] or [[tool bar]]. It's like a large icon that shows you what is in the frame -- a ''transparent icon''. 
+; '''''What is a thumbnail frame?''''': It's just a tiny [[frame]], where everything is shrunk: characters, [[scroll bar]], [[minibuffer]] (if present) -- everything.  By default it has no [[menu bar]] or [[tool bar]].  It's like a large desktop icon, but it shows you what is in the frame --- a ''transparent icon''.  And it is live --- you can interact with it normally. 
 
-: (Starting with Emacs 21, scroll bars do not shrink along with text; their width remains the same.  If you do not use them in thumbnail frames, and you want to save screen real estate, you can remove them by customizing [[user option]] '''`thumfr-frame-parameters''''.)
-
-; '''''Is it just a picture?''''': No, a thumbnail frame is a fully functioning, active frame. So ''be careful'': you can make changes in it without necessarily seeing what you are doing. (I haven't found a way to make a frame read-only without rendering its buffers read-only everywhere.)
+; '''''Is it just a picture?''''': No, a thumbnail frame is a fully functioning, active frame. So ''be careful'': you can make changes in it without necessarily seeing what you are doing.
 
 ; '''''Can I use <tt>[[thumb-frm.el]]</tt> to view images (e.g. photos) as thumbnails?''''': No, it shrinks only text, not graphics -- a thumbnail of a displayed image just shows a tiny part of the image at full size. To create and view image thumbnails, see ThumbsMode.  
 
 ; '''''What _good_ is a thumbnail frame?''''': You can see what is in it, but it doesn't take up much room. It's as easy to thumbify and dethumbify a frame as it is to iconify and deiconify it. Thumbnail frames can be stacked (arranged) along an edge of your display for access and reference. They aren't quite as out-of-the-way as icons, and they provide more info and content access than icons.
 
-: You can, for instance, search through or monitor the progress of their buffers. Put a progressive-output buffer (make, grep, shell, communication) in a thumbnail frame to monitor its progress, then blow it up when something interesting happens. Or use a thumbnail when you want a buffer to be current but not in your face -- click to choose a buffer without fanfare.
+: You can, for instance, search through or monitor the progress of their buffers. Put a progressive-output buffer (make, grep, shell, communication) in a thumbnail frame to monitor its progress, then dethumbify it when something interesting happens. Or use a thumbnail frame when you want a buffer to be current but not in-your-face -- click to choose a buffer without fanfare.
 
 ; '''''What's the "fisheye" stuff all about?''''': A fisheye lens shows you the center of attention close up and everything else (on the periphery) appears very small. This effect is sometimes used in user-interface design to achieve a compromise between showing you what you're focusing on and giving you some idea of its surrounding context.
 
 : Command `thumfr-fisheye' thumbifies all frames except the selected frame, so you can still see them but concentrate on the frame at hand -- the others are there, but out of the way. You can use other fisheye commands to cycle the fisheye among the visible frames. (This is kind of like using `##ALT TAB##' in Windows.)
 
-; '''''Is this really useful, or just a gadget?''''': Yes, it is useful ;-). Try it out and decide for yourself. (Those baby frames are ''cute'', in any case, no?)
-: Actually, at first I didn't think this would be very useful. After using it for a while, however, I realized that I preferred it to iconifying, so I decided to provide it as a general replacement for iconifying. Out of the box, <tt>[[thumb-frm.el]]</tt> now replaces iconifying with thumbifying; if you don't want that behavior, you can easily turn it off.
+; '''''Is this really useful, or just a gadget?''''': Yes, it is useful ;-). Try it and decide for yourself. (Those baby frames are ''cute'', in any case, no?)
+: Actually, at first I did not expect that this feature would be very useful.  After using it for a while, however, I realized that I greatly preferred it to iconifying, so I decided to provide it as a general replacement for iconifying. Out of the box, <tt>[[thumb-frm.el]]</tt> now replaces iconifying with thumbifying; if you do not want that replacement, you can easily turn it off.
 
 ; '''''How can I get back the original behavior of `iconify-frame'?''''': Set `thumfr-thumbify-dont-iconify-flag' to `nil', or use `ad-deactivate' on `iconify-frame' and `iconify-or-deiconify-frame'.
 
@@ -127,9 +125,9 @@ These [[option]]s control the behavior and appearance of thumbnail frames:
 
 * '''`thumfr-font-difference'''' -- Change the value of this parameter to change the thumbnail size.
 
-* '''`thumfr-thumbify-dont-iconify-flag'''' -- Set this to `nil' if you do ''not'' want thumbifying to ''replace'' iconifying generally. With this non-`nil' (default value), commands `iconify-frame' and `iconify-or-deiconify-frame' thumbify/dethumbify.
+* '''`thumfr-frame-parameters'''' -- Frame parameters of thumbnail frames. This is what removes (or adds) things like the [[menu bar]] from thumbnail frames.
 
-* '''`thumfr-frame-parameters'''' -- Frame parameters of thumbnail frames. This is what removes things like the [[menu bar]] from thumbnail frames (or adds them).
+* '''`thumfr-thumbify-dont-iconify-flag'''' -- Set this to `nil' if you do ''not'' want thumbifying to ''replace'' iconifying generally. With this non-`nil' (default value), commands `iconify-frame' and `iconify-or-deiconify-frame' thumbify/dethumbify.
 
 * '''`thumfr-sort-function'''' -- Function to use for sorting the stacked thumbnail frames. If `nil', then no sorting is done. Default value is `thumfr-sort-by-name', which sorts in alphabetical order. Another possible value is `thumfr-sort-by-window-id', which sorts by the `window-id' frame parameter -- that parameter can be used as as a time surrogate in some contexts.
 
@@ -180,7 +178,7 @@ Your comments and questions here, please:
 [new:DrewAdams:2009-03-28 17:13 UTC]
 Can't have a package for every combination of libraries. ;-) However, there was really no need for me to have hard-required library <tt>[[doremi-frm.el]]</tt>. I've removed that -- it is needed now only when (if) you invoke command `doremi-thumbnail-frames'.
 
-So now there are now only two libraries strictly needed by <tt>[[thumb-frm.el]]</tt>:
+So now there are only two libraries strictly needed by <tt>[[thumb-frm.el]]</tt>:
 * <tt>[[frame-fns.el]]</tt>
 * <tt>[[frame-cmds.el]]</tt>
 
