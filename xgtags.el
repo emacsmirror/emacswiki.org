@@ -1,10 +1,10 @@
 ;;; xgtags.el --- gtags facility for Emacs
 
 ;;
-;; Copyright (c) 2006 Marco Gidde
+;; Copyright (c) 2006-2013 Marco Gidde
 ;;
-;; Author: Marco Gidde <marco.gidde@tiscali.de>
-;; Maintainer: Marco Gidde <marco.gidde@tiscali.de>
+;; Author: Marco Gidde <marco.gidde@freenet.de>
+;; Maintainer: Marco Gidde <marco.gidde@freenet.de>
 ;; URL: http://home.tiscali.de/mgidde/source/xgtags.el
 ;;
 ;; This program is free software; you can redistribute it and/or modify it under
