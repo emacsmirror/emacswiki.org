@@ -23,7 +23,6 @@ You can contact me using (please send plain text mail, not HTML):
 
 == Wish List==
 * Implement a search engine in EmacsLisp.
-* Port XWindowEmacsManager to Emacs.
 * Implement an FTP server in EmacsLisp.
 * Implement a URL Shortener in EmacsLisp.
 * Make Emacs/W3 be able to deal with HTML5.
