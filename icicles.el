@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 2013.04.04
-;; Last-Updated: Thu Apr  4 09:22:48 2013 (-0700)
+;; Last-Updated: Thu Apr 18 14:15:02 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 23392
+;;     Update #: 23394
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -718,16 +718,18 @@
 ;;    `icicle-apropos-cycle-previous-alt-action-keys',
 ;;    `icicle-apropos-cycle-previous-help-keys',
 ;;    `icicle-bookmark-name-length-max',
-;;    `icicle-bookmark-refresh-cache-flag', `icicle-buffer-configs',
+;;    `icicle-bookmark-refresh-cache-flag',
+;;    `icicle-buffer-candidate-key-bindings', `icicle-buffer-configs',
 ;;    `icicle-buffer-extras',
 ;;    `icicle-buffer-ignore-space-prefix-flag',
 ;;    `icicle-buffer-include-cached-files-nflag',
 ;;    `icicle-buffer-include-recent-files-nflag',
 ;;    `icicle-buffer-match-regexp', `icicle-buffer-no-match-regexp',
-;;    `icicle-buffer-predicate', `icicle-buffer-require-match-flag'
-;;    `icicle-buffer-skip-hook', `icicle-buffer-sort',
-;;    `icicle-buffers-ido-like-flag', `icicle-candidate-action-keys',
-;;    `icicle-candidate-help-keys', `icicle-candidate-width-factor',
+;;    `icicle-buffer-predicate', `icicle-buffer-prefix-arg-filtering',
+;;    `icicle-buffer-require-match-flag' `icicle-buffer-skip-hook',
+;;    `icicle-buffer-sort', `icicle-buffers-ido-like-flag',
+;;    `icicle-candidate-action-keys', `icicle-candidate-help-keys',
+;;    `icicle-candidate-width-factor',
 ;;    `icicle-change-region-background-flag',
 ;;    `icicle-change-sort-order-completion-flag',
 ;;    `icicle-C-l-uses-completion-flag', `icicle-color-themes',
