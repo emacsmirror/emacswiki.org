@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Apr  5 09:19:01 2013 (-0700)
+;; Last-Updated: Thu Apr 18 08:18:39 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 29286
+;;     Update #: 29295
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -62,7 +62,7 @@
 ;;      (@file :file-name "icicles-doc1.el" :to "Second Example: Multi-Completions")
 ;;      (@file :file-name "icicles-doc1.el" :to "Third Example: Narrowing a Manual")
 ;;      (@file :file-name "icicles-doc1.el" :to "Fourth Example: Tagged Files")
-;;    (@file :file-name "icicles-doc1.el" :to "Top Level to Minibuffer... and Back Again")
+;;    (@file :file-name "icicles-doc1.el" :to "Top Level to Minibuffer ... and Back Again")
 ;;    (@file :file-name "icicles-doc1.el" :to "Toggle Options on the Fly")
 ;;    (@file :file-name "icicles-doc1.el" :to "Cycle Completion Candidates")
 ;;    (@file :file-name "icicles-doc1.el" :to "Display Completion Candidates")
@@ -4839,6 +4839,12 @@
 ;;    in different ways.  The value has the same form as for option
 ;;    `icicle-top-level-key-bindings'.
 ;;
+;;  * User option `icicle-buffer-candidate-key-bindings' specifies
+;;    bindings for additional keys available during completion of
+;;    buffer-name candidates.  The default value of the option
+;;    provides keys that filter (narrow) the set of available
+;;    candidates.
+;;
 ;;  * User option `icicle-completion-list-key-bindings' specifies key
 ;;    bindings for buffer `*Completions*'.  The value has the same
 ;;    form as for option `icicle-top-level-key-bindings'.
@@ -6799,8 +6805,9 @@
 ;;  `cd').  See also
 ;;  (@file :file-name "icicles-doc1.el" :to "Absolute File Names and Different Directories").
 ;;
-;;  During buffer-name completion, the following minibuffer bindings
-;;  are also in effect:
+;;  During buffer-name completion, additional minibuffer bindings are
+;;  defined by user option `icicle-buffer-candidate-key-bindings'.  By
+;;  default, they are the following:
 ;;
 ;;    `C-x m'         - `icicle-bookmark-non-file-other-window':
 ;;                      Visit a buffer (non-file) bookmark.  See also
@@ -6830,6 +6837,14 @@
 ;;    `C-x v +'       - `icicle-keep-only-buffer-cands-for-visible':
 ;;                      Keep only buffers that are visible.  Includes
 ;;                      buffers in iconified frames.
+;;
+;;    `C-x F'         - Toggle whether to include cached files (i.e.,
+;;                      toggle option
+;;                      `icicle-buffer-include-cached-files-nflag')
+;;
+;;    `C-x R'         - Toggle whether to include recent files (i.e.,
+;;                      toggle option
+;;                      `icicle-buffer-include-recent-files-nflag')
 ;;
 ;;  The following minibuffer binding moves the cursor to the start of
 ;;  the part of your input, if any, that is highlighted because it
@@ -7092,7 +7107,7 @@
 ;;                      `icicle-end-of-line+' (repeatable)
 ;;    `C-g', `q'      - `icicle-abort-recursive-edit'
 ;;    `C-M-T'         - `icicle-top-level'
-;;    `mouse-2'       - `icicle-mouse-choose-completion'
+;;    `mouse-2'       - `icicle-mouse-choose-completion' (Emacs <23.2)
 ;;    `C-mouse-2'     - `icicle-mouse-candidate-action'
 ;;    `M-mouse-2'     - `icicle-mouse-candidate-read-fn-invoke'
 ;;    `C-M-mouse-2'   - `icicle-mouse-help-on-candidate'
@@ -7364,18 +7379,18 @@
 ;;    `read-color', `read-from-minibuffer', `read-string',
 ;;    `recentf-make-menu-items'.
 ;;
-;;  Icicles unconditionally redefines these standard Emacs functions
-;;  while in Icicle mode:
+;;  Icicles redefines these standard Emacs functions while in Icicle
+;;  mode:
 ;;
 ;;    `choose-completion', `choose-completion-string',
 ;;    `completing-read', `completing-read-multiple',
 ;;    `completion-setup-function', `dired-smart-shell-command',
 ;;    `display-completion-list', `exit-minibuffer',
 ;;    `face-valid-attribute-values', `minibuffer-complete-and-exit',
-;;    `mouse-choose-completion', `next-history-element',
-;;    `read-face-name', `read-file-name', `read-number',
-;;    `shell-command', `shell-command-on-region', `sit-for',
-;;    `switch-to-completions'.
+;;    `mouse-choose-completion' (Emacs < 23.2),
+;;    `next-history-element', `read-face-name', `read-file-name',
+;;    `read-number', `shell-command', `shell-command-on-region',
+;;    `sit-for', `switch-to-completions'.
 ;;
 ;;  When you exit Icicle mode, the standard definitions are restored.
  
