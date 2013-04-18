@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Apr  5 10:57:30 2013 (-0700)
+;; Last-Updated: Mon Apr  8 14:17:09 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 9523
+;;     Update #: 9533
 ;; URL: http://www.emacswiki.org/icicles-mode.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -3487,7 +3487,9 @@ if `icicle-change-region-background-flag' is non-nil."
     (when (fboundp 'face-valid-attribute-values)
       (fset 'face-valid-attribute-values 'icicle-face-valid-attribute-values))
     (fset 'minibuffer-complete-and-exit 'icicle-minibuffer-complete-and-exit)
-    (fset 'mouse-choose-completion      'icicle-mouse-choose-completion)
+    (unless (or (> emacs-major-version 23)  (and (= emacs-major-version 23)
+                                                 (> emacs-minor-version 1)))
+      (fset 'mouse-choose-completion    'icicle-mouse-choose-completion)) ; Emacs < 23.2
     (fset 'next-history-element         'icicle-next-history-element)
     (fset 'read-buffer                  'icicle-read-buffer)
     (fset 'read-face-name               'icicle-read-face-name)
@@ -3529,7 +3531,9 @@ if `icicle-change-region-background-flag' is non-nil."
     (when (fboundp 'icicle-ORIG-face-valid-attribute-values)
       (fset 'face-valid-attribute-values 'icicle-ORIG-face-valid-attribute-values))
     (fset 'minibuffer-complete-and-exit 'icicle-ORIG-minibuffer-complete-and-exit)
-    (fset 'mouse-choose-completion      'icicle-ORIG-mouse-choose-completion)
+    (unless (or (> emacs-major-version 23)  (and (= emacs-major-version 23)
+                                                 (> emacs-minor-version 1)))
+      (fset 'mouse-choose-completion    'icicle-ORIG-mouse-choose-completion)) ; Emacs < 23.2
     (fset 'next-history-element         'icicle-ORIG-next-history-element)
     (fset 'read-buffer                  'icicle-ORIG-read-buffer)
     (fset 'read-face-name               'icicle-ORIG-read-face-name)
