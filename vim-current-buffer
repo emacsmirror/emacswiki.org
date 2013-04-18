@@ -1,9 +1,11 @@
 A simple elisp function to call vim to open and edit current buffer. 
 
+(Update: [[toggle-viper-keychord]] : an alternative vi-like editing solution in conjunction with KeyChord and ViperMode )
+
 Instructions: Please change the path of vim/gvim to where it is on your computer.
 
  - Todo: re-open the edited file in Emacs, after opening it in vim.
- - Update: [[toggle-viper-keychord]] : an alternative vi-like editing solution in conjunction with [[KeyChord]]
+
 
 {{{
 (defun vim-current-buffer ()
