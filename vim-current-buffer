@@ -1,8 +1,8 @@
 A simple elisp function to call vim to open and edit current buffer. 
 
 Instructions: Please change the path of vim/gvim to where it is on your computer.
-
  - Todo: re-open the edited file in Emacs, after opening it in vim.
+ - Alternative solution for vi-like editing solution (ipstone's current favorite): [toggle-viper-keychord] setup for seamless toggle [Viper] mode and [keyChord] mode
 
 
 {{{
@@ -20,3 +20,4 @@ Instructions: Please change the path of vim/gvim to where it is on your computer
       (error "Current buffer doesn't point to a file yet."))
     (unless result (find-file gvim-file-name))))
 }}}
+
