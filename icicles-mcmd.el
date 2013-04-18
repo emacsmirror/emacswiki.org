@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Apr  1 15:36:31 2013 (-0700)
+;; Last-Updated: Thu Apr 18 11:44:28 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 18962
+;;     Update #: 19075
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -441,6 +441,7 @@
   (defvar read-buffer-completion-ignore-case)
   (defvar mouse-drag-copy-region))
 
+(defvar completion-base-position)       ; Emacs 23.2+.
 (defvar count)                          ; Here.
 (defvar doremi-boost-down-keys)         ; In `doremi.el'
 (defvar doremi-boost-up-keys)           ; In `doremi.el'
@@ -627,40 +628,87 @@ This differs from `icicle-minibuffer-complete-and-exit' (bound to
 ;; REPLACE ORIGINAL `choose-completion' in `simple.el',
 ;; saving it for restoration when you toggle `icicle-mode'.
 ;;
-;; Don't iconify frame or bury buffer.
-;; Don't strip text properties.
+;; Return the number of the completion.
+;; Do not remove text properties from candidate.
+;; Respect `icicle-extra-candidates' and `icicle-extra-candidates-dir-insert-p'.
+;; Adjust to `icicle-start-of-candidates-in-Completions'.
+;; Do not use `completion-list-insert-choice-function'.
+;; Do not iconify frame or bury buffer (in Emacs 23-24.2 code).
+;; Do not quit *Completions* window (Emacs 24.3+).
 ;;
 (unless (fboundp 'icicle-ORIG-choose-completion)
   (defalias 'icicle-ORIG-choose-completion (symbol-function 'choose-completion)))
 
-(defun icicle-choose-completion ()
-  "Choose the completion that point is in or next to."
-  (interactive)
-  (let ((buffer     completion-reference-buffer)
-	(base-size  completion-base-size)
-        beg end completion)
-    (when (and (not (eobp))  (get-text-property (point) 'mouse-face))
-      (setq end  (point)
-            beg  (1+ (point))))
-    (when (and (>= (point) (icicle-start-of-candidates-in-Completions))
-               (get-text-property (max (point-min) (1- (point))) 'mouse-face))
-      (setq end  (max (point-min) (1- (point)))
-            beg  (point)))
-    (unless beg	(icicle-user-error "No completion here"))
-    (setq beg         (previous-single-property-change beg 'mouse-face)
-          end         (or (next-single-property-change end 'mouse-face)  (point-max))
-          ;; $$$$ completion  (buffer-substring-no-properties beg end))
-          completion  (buffer-substring beg end))
-    ;; (let ((owindow  (selected-window)))
-    ;;   (if (and (one-window-p t 'selected-frame)  (window-dedicated-p (selected-window)))
-    ;;    (iconify-frame (selected-frame)) ; Iconify special buffer's frame
-    ;;  (or (window-dedicated-p (selected-window))  (bury-buffer)))
-    ;;   (select-window owindow))
-    (unless (or (not (member completion icicle-extra-candidates))
-                icicle-extra-candidates-dir-insert-p)
-      (setq base-size  0))
-    (unless (buffer-live-p buffer) (icicle-user-error "Destination buffer is dead"))
-    (choose-completion-string completion buffer base-size)))
+(if (or (> emacs-major-version 23)
+        (and (= emacs-major-version 23)  (> emacs-minor-version 1))) ; Emacs 23.2+
+    (defun icicle-choose-completion (&optional event)
+      "Choose the completion at point.
+Return the number of the candidate: 0 for first, 1 for second, ..."
+      (interactive (list last-nonmenu-event))
+      ;; In case this is run via the mouse, give temporary modes such as Isearch a chance to turn off.
+      (run-hooks 'mouse-leave-buffer-hook)
+      (with-current-buffer (window-buffer (posn-window (event-start event)))
+        (let ((buffer           completion-reference-buffer)
+              (base-size        completion-base-size)
+              (choice
+               (save-excursion
+                 (goto-char (posn-point (event-start event)))
+                 (let (beg end)
+                   (cond ((and (not (eobp))  (get-text-property (point) 'mouse-face))
+                          (setq end  (point)
+                                beg  (1+ (point))))
+                         ((and (>= (point) (icicle-start-of-candidates-in-Completions))
+                               (get-text-property (max (point-min) (1- (point))) 'mouse-face))
+                          (setq end  (max (point-min) (1- (point)))
+                                beg  (point)))
+                         (t (icicle-user-error "No candidate here")))
+                   (setq beg  (previous-single-property-change beg 'mouse-face)
+                         end  (or (next-single-property-change end 'mouse-face)  (point-max)))
+                   (buffer-substring beg end)))))
+          (unless (or (not (member choice icicle-extra-candidates))  icicle-extra-candidates-dir-insert-p)
+            (setq base-size  0))
+          (setq icicle-candidate-nb  (icicle-nb-of-cand-at-Completions-pos (posn-point (event-start event))))
+          (unless (buffer-live-p buffer) (icicle-user-error "Destination buffer is dead"))
+          (when (and (icicle-file-name-input-p)  insert-default-directory
+                     (or (not (member choice icicle-extra-candidates))
+                         icicle-extra-candidates-dir-insert-p))
+            (let ((dir  (icicle-file-name-directory-w-default icicle-current-input)))
+              (with-current-buffer buffer
+                (icicle-clear-minibuffer)
+                (insert dir)
+                (setq choice     (concat dir choice)
+                      base-size  0))))
+          (choose-completion-string choice buffer base-size))
+        icicle-candidate-nb))
+
+  (defun icicle-choose-completion ()    ; Emacs < 23.2.
+    "Choose the completion that point is in or next to."
+    (interactive)
+    (let ((buffer     completion-reference-buffer)
+          (base-size  completion-base-size)
+          beg end choice)
+      (when (and (not (eobp))  (get-text-property (point) 'mouse-face))
+        (setq end  (point)
+              beg  (1+ (point))))
+      (when (and (>= (point) (icicle-start-of-candidates-in-Completions))
+                 (get-text-property (max (point-min) (1- (point))) 'mouse-face))
+        (setq end  (max (point-min) (1- (point)))
+              beg  (point)))
+      (unless beg       (icicle-user-error "No completion here"))
+      (setq beg     (previous-single-property-change beg 'mouse-face)
+            end     (or (next-single-property-change end 'mouse-face)  (point-max))
+            ;; $$$$ choice  (buffer-substring-no-properties beg end))
+            choice  (buffer-substring beg end))
+      ;; (let ((owindow  (selected-window)))
+      ;;   (if (and (one-window-p t 'selected-frame)  (window-dedicated-p (selected-window)))
+      ;;    (iconify-frame (selected-frame)) ; Iconify special buffer's frame
+      ;;  (or (window-dedicated-p (selected-window))  (bury-buffer)))
+      ;;   (select-window owindow))
+      (unless (or (not (member choice icicle-extra-candidates))
+                  icicle-extra-candidates-dir-insert-p)
+        (setq base-size  0))
+      (unless (buffer-live-p buffer) (icicle-user-error "Destination buffer is dead"))
+      (choose-completion-string choice buffer base-size))))
 
 
 ;; REPLACE ORIGINAL `mouse-choose-completion' in `mouse.el',
@@ -672,47 +720,49 @@ This differs from `icicle-minibuffer-complete-and-exit' (bound to
 (when (and (fboundp 'mouse-choose-completion)  (not (fboundp 'icicle-ORIG-mouse-choose-completion)))
   (defalias 'icicle-ORIG-mouse-choose-completion (symbol-function 'mouse-choose-completion)))
 
-(defun icicle-mouse-choose-completion (event) ; Bound to `mouse-2' in `*Completions*'.
-  "Click a completion candidate in buffer `*Completions*', to choose it.
+(unless (or (> emacs-major-version 23)  (and (= emacs-major-version 23) ; < Emacs 23.2
+                                             (> emacs-minor-version 1)))
+  (defun icicle-mouse-choose-completion (event) ; Bound to `mouse-2' in `*Completions*'.
+    "Click a completion candidate in buffer `*Completions*', to choose it.
 Return the number of the candidate: 0 for first, 1 for second, ..."
-  (interactive "e")
-  ;; $$$$$ (unless (active-minibuffer-window) (icicle-user-error "Minibuffer is not active"))
-  ;; Give temporary modes such as isearch a chance to turn off.
-  (run-hooks 'mouse-leave-buffer-hook)
-  (let ((buffer  (window-buffer))
-        ;; $$$$$$ (icicle-orig-buff  buffer)
-        choice base-size)
-    (with-current-buffer (window-buffer (posn-window (event-start event)))
-      (save-excursion
-        (when completion-reference-buffer (setq buffer  completion-reference-buffer))
-        (setq base-size  completion-base-size)
+    (interactive "e")
+    ;; $$$$$ (unless (active-minibuffer-window) (icicle-user-error "Minibuffer is not active"))
+    ;; Give temporary modes such as isearch a chance to turn off.
+    (run-hooks 'mouse-leave-buffer-hook)
+    (let ((buffer  (window-buffer))
+          ;; $$$$$$ (icicle-orig-buff  buffer)
+          choice base-size)
+      (with-current-buffer (window-buffer (posn-window (event-start event)))
         (save-excursion
-          (goto-char (posn-point (event-start event)))
-          (let (beg end)
-            (when (and (not (eobp))  (get-text-property (point) 'mouse-face))
-              (setq end  (point)
-                    beg  (1+ (point))))
-            (unless beg (icicle-user-error "No completion here"))
-            (setq beg  (previous-single-property-change beg 'mouse-face)
-                  end  (or (next-single-property-change end 'mouse-face)  (point-max)))
-            ;; $$$$$$ (setq choice  (buffer-substring-no-properties beg end)))))
-            (setq choice  (buffer-substring beg end))))))
-    ;; $$$$$ (if (eq icicle-orig-buff (get-buffer "*Completions*"))
-    ;;    (icicle-remove-Completions-window)
-    ;;    (save-selected-window (icicle-remove-Completions-window)))
-    (setq icicle-candidate-nb  (icicle-nb-of-cand-at-Completions-pos (posn-point (event-start event))))
-    (unless (buffer-live-p buffer) (icicle-user-error "Destination buffer is dead"))
-    (when (and (icicle-file-name-input-p)  insert-default-directory
-               (or (not (member choice icicle-extra-candidates))
-                   icicle-extra-candidates-dir-insert-p))
-      (let ((dir  (icicle-file-name-directory-w-default icicle-current-input)))
-        (with-current-buffer buffer
-          (icicle-clear-minibuffer)
-          (insert dir)
-          (setq choice     (concat dir choice)
-                base-size  0))))
-    (choose-completion-string choice buffer base-size))
-  icicle-candidate-nb)
+          (when completion-reference-buffer (setq buffer  completion-reference-buffer))
+          (setq base-size  completion-base-size)
+          (save-excursion
+            (goto-char (posn-point (event-start event)))
+            (let (beg end)
+              (when (and (not (eobp))  (get-text-property (point) 'mouse-face))
+                (setq end  (point)
+                      beg  (1+ (point))))
+              (unless beg (icicle-user-error "No completion here"))
+              (setq beg  (previous-single-property-change beg 'mouse-face)
+                    end  (or (next-single-property-change end 'mouse-face)  (point-max)))
+              ;; $$$$$$ (setq choice  (buffer-substring-no-properties beg end)))))
+              (setq choice  (buffer-substring beg end))))))
+      ;; $$$$$ (if (eq icicle-orig-buff (get-buffer "*Completions*"))
+      ;;    (icicle-remove-Completions-window)
+      ;;    (save-selected-window (icicle-remove-Completions-window)))
+      (setq icicle-candidate-nb  (icicle-nb-of-cand-at-Completions-pos (posn-point (event-start event))))
+      (unless (buffer-live-p buffer) (icicle-user-error "Destination buffer is dead"))
+      (when (and (icicle-file-name-input-p)  insert-default-directory
+                 (or (not (member choice icicle-extra-candidates))
+                     icicle-extra-candidates-dir-insert-p))
+        (let ((dir  (icicle-file-name-directory-w-default icicle-current-input)))
+          (with-current-buffer buffer
+            (icicle-clear-minibuffer)
+            (insert dir)
+            (setq choice     (concat dir choice)
+                  base-size  0))))
+      (choose-completion-string choice buffer base-size))
+    icicle-candidate-nb))
 
 (defun icicle-nb-of-cand-at-Completions-pos (position)
   "Return number of candidate at POSITION in `*Completions*'.
@@ -6150,40 +6200,20 @@ Return the string that was inserted."
     result))
 
 (defun icicle-bind-buffer-candidate-keys () ; Use in first code of buffer-candidate commands.
-  "Bind specific keys for acting on the current buffer-name candidate."
+  "Bind specific keys for acting on the current buffer-name candidate.
+The bindings made are those defined by option
+`icicle-buffer-candidate-key-bindings'."
   (dolist (map  (list minibuffer-local-completion-map minibuffer-local-must-match-map))
-    (when (require 'bookmark+ nil t)
-      (define-key map (icicle-kbd "C-x m") 'icicle-bookmark-non-file-other-window))              ; `C-x m'
-    (define-key map (icicle-kbd "C-x M -") 'icicle-remove-buffer-cands-for-mode)                 ; `C-x M -'
-    (define-key map (icicle-kbd "C-x M +") 'icicle-keep-only-buffer-cands-for-mode)              ; `C-x M +'
-    (define-key map (icicle-kbd "C-x C-m -")                                  ; `C-x C-m -', aka `C-x RET -'
-      'icicle-remove-buffer-cands-for-derived-mode)
-    (define-key map (icicle-kbd "C-x C-m +")                                  ; `C-x C-m +', aka `C-x RET +'
-      'icicle-keep-only-buffer-cands-for-derived-mode)
-    (define-key map (icicle-kbd "C-x v")      nil)
-    (define-key map (icicle-kbd "C-x v -")                                                       ; `C-x v -'
-      'icicle-remove-buffer-cands-for-visible)
-    (define-key map (icicle-kbd "C-x v +")                                                       ; `C-x v +'
-      'icicle-keep-only-buffer-cands-for-visible)
-    (define-key map (icicle-kbd "C-x F") 'icicle-toggle-include-cached-files)                    ; `C-x F'
-    (when (> emacs-major-version 20)
-      (define-key map (icicle-kbd "C-x R") 'icicle-toggle-include-recent-files))))               ; `C-x R'
+    (dolist (entry  icicle-buffer-candidate-key-bindings)
+      (when (car (cddr entry)) (define-key map (car entry) (cadr entry))))))
 
 (defun icicle-unbind-buffer-candidate-keys () ; Use in last code of buffer-candidate commands.
-  "Unbind specific keys for acting on the current buffer-name candidate."
+  "Unbind specific keys for acting on the current buffer-name candidate.
+The bindings removed are those defined by option
+`icicle-buffer-candidate-key-bindings'."
   (dolist (map  (list minibuffer-local-completion-map minibuffer-local-must-match-map))
-    (define-key map (icicle-kbd "C-x m")      nil)
-    (define-key map (icicle-kbd "C-x M -")    nil)
-    (define-key map (icicle-kbd "C-x M +")    nil)
-    (define-key map (icicle-kbd "C-x M")      nil)
-    (define-key map (icicle-kbd "C-x C-m -")  nil)
-    (define-key map (icicle-kbd "C-x C-m +")  nil)
-    (define-key map (icicle-kbd "C-x C-m")    nil)
-    (define-key map (icicle-kbd "C-x v -")    nil)
-    (define-key map (icicle-kbd "C-x v +")    nil)
-    (define-key map (icicle-kbd "C-x v")      nil)
-    (define-key map (icicle-kbd "C-x F")      nil)
-    (define-key map (icicle-kbd "C-x R")      nil)))
+    (dolist (entry  icicle-buffer-candidate-key-bindings)
+      (define-key map (car entry) (cadr entry)))))
 
 
 ;; `minibuffer-local-filename-completion-map' and `minibuffer-local-must-match-filename-map'
