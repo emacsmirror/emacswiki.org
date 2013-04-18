@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:24:28 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Apr 15 20:14:55 2013 (-0700)
+;; Last-Updated: Thu Apr 18 14:17:33 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 1111
+;;     Update #: 1124
 ;; URL: http://www.emacswiki.org/icicles-mac.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -39,6 +39,10 @@
 ;;    `icicle-define-search-bookmark-command',
 ;;    `icicle-define-sort-command', `icicle-file-bindings',
 ;;    `icicle-user-error', `icicle-with-selected-window'.
+;;
+;;  Non-interactive functions defined here:
+;;
+;;    `icicle-assoc-delete-all', `icicle-remove-if'.
 ;;
 ;;  You might also be interested in my library `imenu+.el', which
 ;;  teaches the macros defined here to Imenu, so the functions defined
@@ -75,7 +79,6 @@
 ;;  headings throughout this file.  You can get `linkd.el' here:
 ;;  http://dto.freeshell.org/notebook/Linkd.html.
 ;;
-;;  (@> "User Options")
 ;;  (@> "Macros")
  
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -146,6 +149,21 @@
   (let ((result  ()))
     (dolist (x xs) (unless (funcall pred x) (push x result)))
     (nreverse result)))
+
+;; Same definition as in `icicles-fn.el'.
+(defun icicle-assoc-delete-all (key alist)
+  "Delete from ALIST all elements whose car is `equal' to KEY.
+Return the modified alist.
+Elements of ALIST that are not conses are ignored."
+  (while (and (consp (car alist))  (equal (car (car alist)) key))
+    (setq alist  (cdr alist)))
+  (let ((tail  alist)
+        tail-cdr)
+    (while (setq tail-cdr  (cdr tail))
+      (if (and (consp (car tail-cdr))  (equal (car (car tail-cdr)) key))
+          (setcdr tail (cdr tail-cdr))
+        (setq tail  tail-cdr))))
+  alist)
 
 (defmacro icicle-condition-case-no-debug (var bodyform &rest handlers)
   "Like `condition-case', but do not catch per `debug-on-(error|quit)'.
@@ -266,7 +284,7 @@ Optional arg DONT-SAVE non-nil means do not call
 PRE-BINDINGS is a list of additional bindings, which are created
 before the others.  POST-BINDINGS is similar, but the bindings are
 created after the others."
-  ;; We use `append' rather than backquote syntax (with ,@post-bindings in particular) because of a bug
+  ;; Use `append' rather than backquote syntax (with ,@post-bindings in particular) because of a bug
   ;; in Emacs 20.  This ensures that you can byte-compile in, say, Emacs 20 and still use the result
   ;; in later Emacs releases.
   `,(append
@@ -294,7 +312,7 @@ created after the others."
        (icicle-transform-function                   'icicle-remove-dups-if-extras)
        (icicle--temp-orders
         (append (list
-                 '("by last display time")    ; Renamed from "turned OFF'.
+                 '("by last display time") ; Renamed from "turned OFF'.
                  '("*...* last" . icicle-buffer-sort-*...*-last)
                  '("by buffer size" . icicle-buffer-smaller-p)
                  '("by major mode name" . icicle-major-mode-name-less-p)
@@ -319,30 +337,37 @@ created after the others."
        (icicle-all-candidates-list-alt-action-fn
         (or icicle-all-candidates-list-alt-action-fn  (icicle-alt-act-fn-for-type "buffer")))
        (icicle-bufflist
-        (if current-prefix-arg
-            (cond ((and (consp current-prefix-arg)
-                        (> (prefix-numeric-value current-prefix-arg) 16)) ; `C-u C-u C-u'
-                   (icicle-remove-if (lambda (bf) (get-buffer-window bf 0)) (buffer-list)))
-                  ((and (consp current-prefix-arg)
-                        (> (prefix-numeric-value current-prefix-arg) 4)) ; `C-u C-u'
-                   (icicle-remove-if-not (lambda (bf) (get-buffer-window bf 0)) (buffer-list)))
-                  ((and (consp current-prefix-arg)  (fboundp 'derived-mode-p)) ; `C-u'
-                   (icicle-remove-if-not (lambda (bf)
-                                           (derived-mode-p (with-current-buffer bf major-mode)))
-                                         (buffer-list)))
-                  ((zerop (prefix-numeric-value current-prefix-arg)) ; `C-0'
-                   (let ((this-mode  major-mode))
-                     (icicle-remove-if-not `(lambda (bf)
-                                             (with-current-buffer bf (eq major-mode ',this-mode)))
-                                           (buffer-list))))
-                  ((< (prefix-numeric-value current-prefix-arg) 0) ; `C--'
-                   (cdr (assq 'buffer-list (frame-parameters))))
-                  (t                    ; `C-1'
-                   (icicle-remove-if-not (lambda (bf)
-                                           (or (buffer-file-name bf)  (with-current-buffer bf
-                                                                        (eq major-mode 'dired-mode))))
-                                         (buffer-list))))
-          (buffer-list)))
+        (if (eq 'use-default icicle-buffer-prefix-arg-filtering)
+            (if (not current-prefix-arg)
+                (buffer-list)
+              (cond ((and (consp current-prefix-arg)
+                          (> (prefix-numeric-value current-prefix-arg) 16)) ; `C-u C-u C-u'
+                     (icicle-remove-if (lambda (bf) (get-buffer-window bf 0)) (buffer-list)))
+                    ((and (consp current-prefix-arg)
+                          (> (prefix-numeric-value current-prefix-arg) 4)) ; `C-u C-u'
+                     (icicle-remove-if-not (lambda (bf) (get-buffer-window bf 0)) (buffer-list)))
+                    ((and (consp current-prefix-arg)  (fboundp 'derived-mode-p)) ; `C-u'
+                     (icicle-remove-if-not (lambda (bf)
+                                             (derived-mode-p (with-current-buffer bf major-mode)))
+                                           (buffer-list)))
+                    ((zerop (prefix-numeric-value current-prefix-arg)) ; `C-0'
+                     (let ((this-mode  major-mode))
+                       (icicle-remove-if-not `(lambda (bf)
+                                               (with-current-buffer bf (eq major-mode ',this-mode)))
+                                             (buffer-list))))
+                    ((< (prefix-numeric-value current-prefix-arg) 0) ; `C--'
+                     (cdr (assq 'buffer-list (frame-parameters))))
+                    (t                  ; `C-1'
+                     (icicle-remove-if-not (lambda (bf)
+                                             (or (buffer-file-name bf)
+                                                 (with-current-buffer bf (eq major-mode 'dired-mode))))
+                                           (buffer-list)))))
+          (catch 'icicle-buffer-bindings
+            (dolist (entry  icicle-buffer-prefix-arg-filtering)
+              (when (funcall (car entry) current-prefix-arg)
+                (throw 'icicle-buffer-bindings
+                  (if (cdr entry) (icicle-remove-if (cdr entry) (buffer-list)) (buffer-list)))))
+            (buffer-list))))
        (icicle-bufflist
         (icicle-remove-if
          (lambda (bf) (icicle-string-match-p "^ [*]Minibuf-[0-9]" (buffer-name bf)))
@@ -692,21 +717,6 @@ This is an Icicles command - see command `icicle-mode'.")
         (error (icicle-try-switch-buffer icicle-orig-buff) ,undo-sexp
                (error "%s" (error-message-string act-on-choice))))
       ,last-sexp)))
-
-;; Same definition as in `icicles-fn.el'.
-(defun icicle-assoc-delete-all (key alist)
-  "Delete from ALIST all elements whose car is `equal' to KEY.
-Return the modified alist.
-Elements of ALIST that are not conses are ignored."
-  (while (and (consp (car alist))  (equal (car (car alist)) key))
-    (setq alist  (cdr alist)))
-  (let ((tail  alist)
-        tail-cdr)
-    (while (setq tail-cdr  (cdr tail))
-      (if (and (consp (car tail-cdr))  (equal (car (car tail-cdr)) key))
-          (setcdr tail (cdr tail-cdr))
-        (setq tail  tail-cdr))))
-  alist)
 
 (defmacro icicle-define-sort-command (sort-order comparison-fn doc-string)
   "Define a command to sort completions by SORT-ORDER.
