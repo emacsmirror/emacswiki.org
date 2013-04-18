@@ -1,0 +1,39 @@
+In searching for a simple solution for seamless using KeyChord and ViperMode, 
+the following functions and setups is derived:
+
+{{{
+(defun toggle-viper-keychord ()
+  "To toggle viper-mode and key-chord-mode back and forth."
+  (interactive)
+  (if (and (boundp 'viper-mode) viper-mode)
+    (progn
+      (toggle-viper-mode)
+      (key-chord-mode 1)
+      (message "Key-chord On."))
+    (progn
+      (key-chord-mode 0)
+      (viper-mode)
+	   (message "Viper-mode."))))
+
+(defun key-chord-turn-on ()
+  (interactive)
+  (key-chord-mode 1))
+
+(defun key-chord-turn-off ()
+  (interactive)
+  (key-chord-mode 0))
+}}}
+
+Then add these hooks for vi-mode and keychord in 'sync' (anti-sync):
+{{{
+(add-hook 'viper-insert-state-hook 'key-chord-turn-on)
+(add-hook 'viper-vi-state-hook 'key-chord-turn-off)
+}}}
+
+Lastly pick your favorite key-chord to toggle viper mode and Emacs mode (with key-chord) seamlessly:
+{{{
+(key-chord-define-global "jk" 'toggle-viper-keychord)
+}}}
+
+-- enjoy! 
+[[ipstone]]
