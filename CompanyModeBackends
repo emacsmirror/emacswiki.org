@@ -4,12 +4,16 @@ http://groups.google.com/group/gnu.emacs.sources/msg/844540d2ec531e0d?
 
 = SlimeMode =
 
-A backend plugging into the slime completion mechanism:
+A backend plugging into the slime completion mechanism.  It can
+display arglists, docstrings and display the source of a completion
+candidate.
+
+The newest version can always be found at its
+[http://github.com/anwyn/slime-company GitHub] repository.
+
+There is a copy on the EmacsWiki, though it may be outdated:
 
 Lisp:slime-company.el
-
-It can display docstrings and display the source of a completion candidate.
-Please note that it needs a Slime not older than 2009-11-07.
 
 A variant that is always kept compatible with the latest Slime ELPA package is available at:
 http://gist.github.com/179847
