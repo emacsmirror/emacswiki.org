@@ -541,6 +541,20 @@ form as for option '''`<tt>[[#icicle-top-level-key-bindings|icicle-top-level-key
 
 
 
+
+----
+[:icicle-buffer-candidate-key-bindings]
+==== Option icicle-buffer-candidate-key-bindings ====
+
+User option '''`icicle-buffer-candidate-key-bindings'''' specifies
+bindings for additional keys available during [[completion]] of
+[[buffer]]-name candidates.  The default value of the option
+provides keys that filter (narrow) the set of available
+candidates.
+
+
+
+
 ----
 [:icicle-completion-list-key-bindings]
 ==== Option icicle-completion-list-key-bindings ====
