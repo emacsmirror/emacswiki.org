@@ -1,16 +1,17 @@
 an Emacs hacker since 2010
 
-- previous vim user, converted due to orgmode
+- previous vim user, converted due to orgmode.
 
-
-
-
-
+Some complains that Emacs is great but vim is a better Editor: - there are lots of rescues in Emacs, here are some of my contributions:
+* [[toggle-viper-keychord]] : my current solution for the vi-like editing
+* [[vim-current-buffer]] : an old solution, but not as seamless as I hoped.
 
 
 [new:DrewAdams:2012-08-08 00:07 UTC]
 Welcome to the wiki. -- DrewAdams
 
+Thanks DrewAdams! a grateful dired+ user here.
+Guess my presence changed the 'Emacs functional state' a little bit, hopefully in a positive way. Much to learn to code in Elisp.
 
 
 
