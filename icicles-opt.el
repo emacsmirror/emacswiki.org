@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Apr  2 21:43:41 2013 (-0700)
+;; Last-Updated: Thu Apr 18 08:02:50 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 5599
+;;     Update #: 5619
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -65,16 +65,18 @@
 ;;    `icicle-apropos-cycle-previous-help-keys',
 ;;    `icicle-anything-transform-candidates-flag',
 ;;    `icicle-bookmark-name-length-max',
-;;    `icicle-bookmark-refresh-cache-flag', `icicle-buffer-configs',
+;;    `icicle-bookmark-refresh-cache-flag',
+;;    `icicle-buffer-candidate-key-bindings', `icicle-buffer-configs',
 ;;    `icicle-buffer-extras',
 ;;    `icicle-buffer-ignore-space-prefix-flag',
 ;;    `icicle-buffer-include-cached-files-nflag',
 ;;    `icicle-buffer-include-recent-files-nflag',
 ;;    `icicle-buffer-match-regexp', `icicle-buffer-no-match-regexp',
-;;    `icicle-buffer-predicate', `icicle-buffer-require-match-flag',
-;;    `icicle-buffer-skip-hook', `icicle-buffer-sort',
-;;    `icicle-buffers-ido-like-flag', `icicle-candidate-action-keys',
-;;    `icicle-candidate-help-keys', `icicle-candidate-width-factor',
+;;    `icicle-buffer-predicate', `icicle-buffer-prefix-arg-filtering',
+;;    `icicle-buffer-require-match-flag', `icicle-buffer-skip-hook',
+;;    `icicle-buffer-sort', `icicle-buffers-ido-like-flag',
+;;    `icicle-candidate-action-keys', `icicle-candidate-help-keys',
+;;    `icicle-candidate-width-factor',
 ;;    `icicle-change-region-background-flag',
 ;;    `icicle-change-sort-order-completion-flag',
 ;;    `icicle-C-l-uses-completion-flag', `icicle-color-themes',
@@ -536,6 +538,190 @@
 
 ;;; User options, organized alphabetically, except for dependencies --
 
+
+;;; But first some functions and a widget that are used in option definitions.
+
+;; Same as `naked-edmacro-parse-keys' in `naked.el'.
+;; Based on `edmacro-parse-keys' in standard library `edmacro.el'
+;; Differences are:
+;;
+;; 1. Addition of optional arg ANGLES.
+;; 2. Ensure same behavior as `edmacro-parse-keys', if ANGLES is non-nil.
+;; 2. Handle angle brackets, whether ANGLES is nil or non-nil.
+;; 3. Handle `TAB' correctly, if ANGLES is nil.
+;; 4. Handle names without angle brackets, if ANGLES is nil.
+;; 5. Works for all Emacs versions.
+;;
+(defun icicle-edmacro-parse-keys (string &optional need-vector angles)
+  "Like `edmacro-parse-keys', but does not use angle brackets, by default.
+Non-nil optional arg ANGLES means to use angle brackets, exactly like
+`edmacro-parse-keys'.  See `icicle-read-kbd-macro' for more about
+ANGLES."
+  (let ((case-fold-search  nil)
+	(len               (length string)) ; We won't alter string in the loop below.
+        (pos               0)
+        (res               []))
+    (while (and (< pos len)  (string-match "[^ \t\n\f]+" string pos))
+      (let* ((word-beg  (match-beginning 0))
+	     (word-end  (match-end 0))
+	     (word      (substring string word-beg len))
+	     (times     1)
+             (key       nil))
+	;; Try to catch events of the form "<as df>".
+        (if (string-match "\\`<[^ <>\t\n\f][^>\t\n\f]*>" word)
+            (setq word  (match-string 0 word)
+                  pos   (+ word-beg (match-end 0)))
+          (setq word  (substring string word-beg word-end)
+                pos   word-end))
+        (when (string-match "\\([0-9]+\\)\\*." word)
+          (setq times  (string-to-number (substring word 0 (match-end 1)))
+                word   (substring word (1+ (match-end 1)))))
+        (cond ((string-match "^<<.+>>$" word)
+               (setq key  (vconcat (if (eq (key-binding [?\M-x])
+                                           'execute-extended-command)
+                                       [?\M-x]
+                                     (or (car (where-is-internal 'execute-extended-command))  [?\M-x]))
+                                   (substring word 2 -2) "\r")))
+
+              ;; Must test this before [ACHMsS]- etc., to prevent match.
+              ((or (equal word "REM")  (string-match "^;;" word))
+               (setq pos  (string-match "$" string pos)))
+
+              ;; Straight `edmacro-parse-keys' case - ensure same behavior.
+              ;; Includes same bugged handling of `TAB'.  That is Emacs bug #12535.
+              ;; The bug fix is to add `TAB' to the list in this clause.
+	      ((and angles  (string-match "^\\(\\([ACHMsS]-\\)*\\)<\\(.+\\)>$" word)
+		    (progn
+		      (setq word  (concat (substring word (match-beginning 1)
+                                                     (match-end 1))
+                                          (substring word (match-beginning 3)
+                                                     (match-end 3))))
+		      (not (string-match "\\<\\(NUL\\|RET\\|LFD\\|ESC\\|SPC\\|DEL\\)$" word))))
+	       (setq key  (list (intern word))))
+
+              ;; NaKeD handling of <...>.  Recognize it anyway, even without non-nil ANGLES.
+              ;; But unlike `edmacro-parse-keys', include <TAB>, to handle it correctly.
+              ((and (string-match "^\\(\\([ACHMsS]-\\)*\\)<\\(..+\\)>$" word)
+                    (progn (setq word  (concat (substring word (match-beginning 1) (match-end 1))
+                                               (substring word (match-beginning 3) (match-end 3))))
+                           (not (string-match "\\<\\(NUL\\|RET\\|LFD\\|ESC\\|SPC\\|DEL\\|TAB\\)$"
+                                              word))))
+               (setq key  (list (intern word))))
+
+              ;; NaKeD handling of names without <...>.
+              ((and (not angles)
+                    (string-match "^\\(\\([ACHMsS]-\\)*\\)\\([^ \t\f\n][^ \t\f\n]+\\)$" word)
+                    ;; Do not count `C-' etc. when at end of string.
+                    (save-match-data (not (string-match "\\([ACHMsS]-.\\)+$" word)))
+                    (progn (setq word  (concat (substring word (match-beginning 1) (match-end 1))
+                                               (substring word (match-beginning 3) (match-end 3))))
+                           (not (string-match "\\<\\(NUL\\|RET\\|LFD\\|ESC\\|SPC\\|DEL\\|TAB\\)$"
+                                              word))))
+               (setq key  (list (intern word))))
+
+              (t
+               (let ((orig-word  word)
+                     (prefix     0)
+                     (bits       0))
+                 (while (string-match "^[ACHMsS]-." word)
+                   (incf bits (cdr (assq (aref word 0) '((?A . ?\A-\^@) (?C . ?\C-\^@)
+                                                         (?H . ?\H-\^@) (?M . ?\M-\^@)
+                                                         (?s . ?\s-\^@) (?S . ?\S-\^@)))))
+                   (incf prefix 2)
+                   (callf substring word 2))
+                 (when (string-match "^\\^.$" word)
+                   (incf bits ?\C-\^@)
+                   (incf prefix)
+                   (callf substring word 1))
+                 (let ((found  (assoc word '(("NUL" . "\0") ("RET" . "\r") ("LFD" . "\n")
+                                             ("ESC" . "\e") ("SPC" . " ") ("DEL" . "\177")
+                                             ("TAB" . "\t")))))
+                   (when found (setq word  (cdr found))))
+                 (when (string-match "^\\\\[0-7]+$" word)
+                   (loop for ch across word
+                         for n = 0 then (+ (* n 8) ch -48)
+                         finally do (setq word  (vector n))))
+                 (cond ((= bits 0) (setq key  word))
+                       ((and (= bits ?\M-\^@)  (stringp word)  (string-match "^-?[0-9]+$" word))
+                        (setq key  (loop for x across word collect (+ x bits))))
+                       ((/= (length word) 1)
+                        (error "%s must prefix a single character, not %s"
+                               (substring orig-word 0 prefix) word))
+                       ((and (/= (logand bits ?\C-\^@) 0)  (stringp word)
+                             ;; Used to accept `.' and `?' here, but `.' is simply wrong,
+                             ;; and `C-?' is not used (so use `DEL' instead).
+                             (string-match "[@-_a-z]" word))
+                        (setq key  (list (+ bits (- ?\C-\^@) (logand (aref word 0) 31)))))
+                       (t (setq key  (list (+ bits (aref word 0)))))))))
+        (when key (loop repeat times do (callf vconcat res key)))))
+    (when (and (>= (length res) 4)  (eq (aref res 0) ?\C-x)  (eq (aref res 1) ?\( )
+               (eq (aref res (- (length res) 2)) ?\C-x)  (eq (aref res (- (length res) 1)) ?\)))
+      (setq res  (edmacro-subseq res 2 -2)))
+    (if (and (not need-vector)
+	     (loop for ch across res
+		   always (and (if (fboundp 'characterp)  (characterp ch)  (char-valid-p ch))
+			       (let ((ch2  (logand ch (lognot ?\M-\^@))))
+				 (and (>= ch2 0)  (<= ch2 127))))))
+	(concat (loop for ch across res collect (if (= (logand ch ?\M-\^@) 0)  ch  (+ ch 128))))
+      res)))
+
+;; Same as `naked-read-kbd-macro' in `naked.el'.
+(defun icicle-read-kbd-macro (start &optional end angles)
+  "Read the region as a keyboard macro definition.
+Like `read-kbd-macro', but does not use angle brackets, by default.
+
+With a prefix arg use angle brackets, exactly like `read-kbd-macro'.
+That is, with non-nil arg ANGLES, expect key descriptions to use angle
+brackets (<...>).  Otherwise, expect key descriptions not to use angle
+brackets.  For example:
+
+ (icicle-read-kbd-macro  \"mode-line\"  t) returns [mode-line]
+ (icicle-read-kbd-macro \"<mode-line>\" t t)   returns [mode-line]"
+  (interactive "r\P")
+  (if (stringp start)
+      (icicle-edmacro-parse-keys start end angles)
+    (setq last-kbd-macro  (icicle-edmacro-parse-keys (buffer-substring start end) nil angles))))
+
+(put 'icicle-kbd 'pure t)
+;; Same as `naked' in `naked.el'.
+(defun icicle-kbd (keys &optional angles)
+  "Like `kbd', but does not use angle brackets, by default.
+With non-nil optional arg ANGLES, expect key descriptions to use angle
+brackets (<...>), exactly like `kbd'.  Otherwise, expect key
+descriptions not to use angle brackets.  For example:
+
+ (icicle-kbd \"mode-line\")     returns [mode-line]
+ (icicle-kbd \"<mode-line>\" t) returns [mode-line]
+
+The default behavior lets you use, e.g., \"C-x delete\" and \"C-delete\"
+instead of \"C-x <delete>\" and \"C-<delete>\"."
+  (icicle-read-kbd-macro keys nil angles))
+
+;; Must be before first use, which is currently in `icicle-buffer-candidate-key-bindings'.
+(define-widget 'icicle-key-definition 'lazy
+  "Key definition type for Icicle mode keys.
+A list of three components: KEY, COMMAND, CONDITION, that represents
+an `icicle-mode-map' binding of COMMAND according to KEY, if CONDITION
+evaluates to non-nil.
+
+KEY is either a key sequence (string or vector) or a command.
+COMMAND is a command.
+CONDITION is a sexp.
+
+If KEY is a command, then the binding represented is its remapping to
+COMMAND."
+  :indent 1 :offset 0 :tag ""           ; $$$$$ "Icicle Mode Key Definition"
+  :type
+  '(list
+    (choice
+     (key-sequence :tag "Key" :value [ignore])
+     ;; Use `symbolp' instead of `commandp', in case the library defining the
+     ;; command is not loaded.
+     (restricted-sexp :tag "Command to remap" :match-alternatives (symbolp) :value ignore))
+     ;; Use `symbolp' instead of `commandp'...
+    (restricted-sexp :tag "Command" :match-alternatives (symbolp) :value ignore)
+    (sexp :tag "Condition")))
+
 (defcustom icicle-act-before-cycle-flag nil
   "*Non-nil means act on current candidate, then cycle to next/previous.
 Otherwise (nil), cycle to the next or previous candidate, and then act
@@ -753,6 +939,42 @@ Remember that you can use multi-command `icicle-toggle-option' anytime
 to toggle the option."
   :type 'boolean :group 'Icicles-Completions-Display :group 'Icicles-Matching)
 
+(defcustom icicle-buffer-candidate-key-bindings
+  `(
+    (,(icicle-kbd "C-x m")         icicle-bookmark-non-file-other-window             ; `C-x m'
+     (require 'bookmark+ nil t))
+    (,(icicle-kbd "C-x M -")       icicle-remove-buffer-cands-for-mode            t) ; `C-x M -'
+    (,(icicle-kbd "C-x M +")       icicle-keep-only-buffer-cands-for-mode         t) ; `C-x M +'
+    (,(icicle-kbd "C-x C-m -")     icicle-remove-buffer-cands-for-derived-mode    t) ; `C-x C-m -'
+    (,(icicle-kbd "C-x C-m +")     icicle-keep-only-buffer-cands-for-derived-mode t) ; `C-x C-m +'
+    (,(icicle-kbd "C-x v -")       icicle-remove-buffer-cands-for-visible         t) ; `C-x v -'
+    (,(icicle-kbd "C-x v +")       icicle-keep-only-buffer-cands-for-visible      t) ; `C-x v +'
+    (,(icicle-kbd "C-x F"  )       icicle-toggle-include-cached-files             t) ; `C-x F'
+    (,(icicle-kbd "C-x R"  )       icicle-toggle-include-recent-files             t) ; `C-x R'
+    )
+  "*List of minibuffer key bindings for use with buffer-name completion.
+The option value has the same form as that of option
+`icicle-top-level-key-bindings' (which see).
+Each list element is of custom type `icicle-key-definition' and has
+the form (KEY COMMAND CONDITION)."
+  :type (if (> emacs-major-version 21)
+            '(repeat icicle-key-definition)
+          '(repeat
+            (list
+             (choice
+              (restricted-sexp :tag "Key"
+               :match-alternatives ((lambda (x) (or (stringp x)  (vectorp x))))
+               :value [ignore])
+              (restricted-sexp :tag "Command to remap"
+               ;; Use `symbolp' instead of `commandp', in case the library defining the
+               ;; command is not loaded.
+               :match-alternatives (symbolp) :value ignore))
+             ;; Use `symbolp' instead of `commandp'...
+             (restricted-sexp :tag "Command"
+              :match-alternatives (symbolp) :value ignore)
+             (sexp :tag "Condition"))))
+  :group 'Icicles-Key-Bindings)
+
 (defcustom icicle-buffer-extras nil
   "*List of additional buffer-name candidates added to the normal list.
 List elements are strings."
@@ -838,6 +1060,75 @@ corresponds to `icicle-must-pass-after-match-predicate', not to
 `icicle-must-pass-predicate'."
   :type '(choice (const :tag "None" nil) function)
   :group 'Icicles-Buffers :group 'Icicles-Matching)
+
+(defcustom icicle-buffer-prefix-arg-filtering 'use-default
+  "*Conditions that filter buffers for buffer-name candidates.
+This filtering is in addition to removing the names of minibuffers.
+
+If the value is `use-default' then use the default Icicles behavior
+\(see the doc).
+
+Otherwise, it is a list of conditions that are applied, in order until
+one matches, to filter out buffers.  If none match then no filtering
+is done.
+
+Each condition is a list of two items: (PREF-ARG-TEST BUF-TEST).
+
+PREF-ARG-TEST is a predicate that accepts a raw prefix argument value,
+such as is returned by `current-prefix-arg', as its argument.
+
+If PREF-ARG-TEST returns non-nil then BUF-TEST is used to filter
+buffers (see next).  If PREF-ARG-TEST returns nil then the next
+condition is checked, and so on.  If none of the conditions match then
+no filtering is done.
+
+BUF-TEST is a predicate that accepts a buffer as argument.  If it
+returns non-nil then name of that buffer is removed as a completion
+candidate.  Alternatively, BUF-TEST can be the constant `nil', which
+has the same effect as applying (lambda (buf) nil) as the filter
+predicate: the buffer is not removed.
+
+As an example, this value of `icicle-buffer-prefix-arg-filtering'
+provides the same behavior as value `use-default' (but it is slower):
+
+  ((not nil) ; (no prefix arg): no filtering.
+  ((lambda (cpa)                                       ; `C-u C-u C-u'
+     (and (consp cpa)                                  ; Visible
+          (> (prefix-numeric-value cpa) 16)))
+   (lambda (bf) (get-buffer-window bf 0)))
+  ((lambda (cpa)                                       ; `C-u C-u'
+     (and (consp cpa)                                  ; Invisible
+          (> (prefix-numeric-value cpa) 4)))
+   (lambda (bf) (not (get-buffer-window bf 0))))
+  ((lambda (cpa)                                       ; `C-u'
+     (and (consp current-prefix-arg)                   ; Derived mode
+          (fboundp 'derived-mode-p)))
+   (lambda (bf) (derived-mode-p
+                 (with-current-buffer bf major-mode))))
+  ((lambda (cpa)                                       ; 0
+     (zerop (prefix-numeric-value cpa)))               ; Same mode
+   (let ((this-mode  major-mode))
+     `(lambda (bf)
+        (with-current-buffer bf 
+          (not (eq major-mode ',this-mode))))))
+  ((lambda (cpa)                                       ; < 0
+     (< (prefix-numeric-value cpa) 0))                 ; Other frame
+   (lambda (bf)
+     (not (member bf (cdr (assq 'buffer-list (frame-parameters)))))))
+  ((lambda (cpa) cpa)                                  ; > 0
+   (lambda (bf)                                        ; Not file/dir
+     (and (not (buffer-file-name bf))
+          (with-current-buffer bf
+            (not (eq major-mode 'dired-mode)))))))"
+  :type '(choice
+          (const :tag "Use the default Icicles behavior" 'use-default)
+          (repeat :tag "Conditions tested in order, to filter buffer-name candidates"
+           (list
+            (function :tag "Predicate to test raw prefix arg")
+            (choice
+             (const :tag "No filtering - include all buffer names" nil)
+             (function :tag "Predicate to filter out a buffer name")))))
+  :group 'Icicles-Buffers)
 
 (defcustom icicle-buffer-require-match-flag nil
   "*Override `icicle-require-match-flag' for `icicle-buffer*' commands.
@@ -1167,187 +1458,6 @@ multi-command `icicle-increment-option' anytime to change the option
 value incrementally."
   :type 'integer :group 'Icicles-Miscellaneous)
 
-;; Same as `naked-edmacro-parse-keys' in `naked.el'.
-;; Based on `edmacro-parse-keys' in standard library `edmacro.el'
-;; Differences are:
-;;
-;; 1. Addition of optional arg ANGLES.
-;; 2. Ensure same behavior as `edmacro-parse-keys', if ANGLES is non-nil.
-;; 2. Handle angle brackets, whether ANGLES is nil or non-nil.
-;; 3. Handle `TAB' correctly, if ANGLES is nil.
-;; 4. Handle names without angle brackets, if ANGLES is nil.
-;; 5. Works for all Emacs versions.
-;;
-(defun icicle-edmacro-parse-keys (string &optional need-vector angles)
-  "Like `edmacro-parse-keys', but does not use angle brackets, by default.
-Non-nil optional arg ANGLES means to use angle brackets, exactly like
-`edmacro-parse-keys'.  See `icicle-read-kbd-macro' for more about
-ANGLES."
-  (let ((case-fold-search  nil)
-	(len               (length string)) ; We won't alter string in the loop below.
-        (pos               0)
-        (res               []))
-    (while (and (< pos len)  (string-match "[^ \t\n\f]+" string pos))
-      (let* ((word-beg  (match-beginning 0))
-	     (word-end  (match-end 0))
-	     (word      (substring string word-beg len))
-	     (times     1)
-             (key       nil))
-	;; Try to catch events of the form "<as df>".
-        (if (string-match "\\`<[^ <>\t\n\f][^>\t\n\f]*>" word)
-            (setq word  (match-string 0 word)
-                  pos   (+ word-beg (match-end 0)))
-          (setq word  (substring string word-beg word-end)
-                pos   word-end))
-        (when (string-match "\\([0-9]+\\)\\*." word)
-          (setq times  (string-to-number (substring word 0 (match-end 1)))
-                word   (substring word (1+ (match-end 1)))))
-        (cond ((string-match "^<<.+>>$" word)
-               (setq key  (vconcat (if (eq (key-binding [?\M-x])
-                                           'execute-extended-command)
-                                       [?\M-x]
-                                     (or (car (where-is-internal 'execute-extended-command))  [?\M-x]))
-                                   (substring word 2 -2) "\r")))
-
-              ;; Must test this before [ACHMsS]- etc., to prevent match.
-              ((or (equal word "REM")  (string-match "^;;" word))
-               (setq pos  (string-match "$" string pos)))
-
-              ;; Straight `edmacro-parse-keys' case - ensure same behavior.
-              ;; Includes same bugged handling of `TAB'.  That is Emacs bug #12535.
-              ;; The bug fix is to add `TAB' to the list in this clause.
-	      ((and angles  (string-match "^\\(\\([ACHMsS]-\\)*\\)<\\(.+\\)>$" word)
-		    (progn
-		      (setq word  (concat (substring word (match-beginning 1)
-                                                     (match-end 1))
-                                          (substring word (match-beginning 3)
-                                                     (match-end 3))))
-		      (not (string-match "\\<\\(NUL\\|RET\\|LFD\\|ESC\\|SPC\\|DEL\\)$" word))))
-	       (setq key  (list (intern word))))
-
-              ;; NaKeD handling of <...>.  Recognize it anyway, even without non-nil ANGLES.
-              ;; But unlike `edmacro-parse-keys', include <TAB>, to handle it correctly.
-              ((and (string-match "^\\(\\([ACHMsS]-\\)*\\)<\\(..+\\)>$" word)
-                    (progn (setq word  (concat (substring word (match-beginning 1) (match-end 1))
-                                               (substring word (match-beginning 3) (match-end 3))))
-                           (not (string-match "\\<\\(NUL\\|RET\\|LFD\\|ESC\\|SPC\\|DEL\\|TAB\\)$"
-                                              word))))
-               (setq key  (list (intern word))))
-
-              ;; NaKeD handling of names without <...>.
-              ((and (not angles)
-                    (string-match "^\\(\\([ACHMsS]-\\)*\\)\\([^ \t\f\n][^ \t\f\n]+\\)$" word)
-                    ;; Do not count `C-' etc. when at end of string.
-                    (save-match-data (not (string-match "\\([ACHMsS]-.\\)+$" word)))
-                    (progn (setq word  (concat (substring word (match-beginning 1) (match-end 1))
-                                               (substring word (match-beginning 3) (match-end 3))))
-                           (not (string-match "\\<\\(NUL\\|RET\\|LFD\\|ESC\\|SPC\\|DEL\\|TAB\\)$"
-                                              word))))
-               (setq key  (list (intern word))))
-
-              (t
-               (let ((orig-word  word)
-                     (prefix     0)
-                     (bits       0))
-                 (while (string-match "^[ACHMsS]-." word)
-                   (incf bits (cdr (assq (aref word 0) '((?A . ?\A-\^@) (?C . ?\C-\^@)
-                                                         (?H . ?\H-\^@) (?M . ?\M-\^@)
-                                                         (?s . ?\s-\^@) (?S . ?\S-\^@)))))
-                   (incf prefix 2)
-                   (callf substring word 2))
-                 (when (string-match "^\\^.$" word)
-                   (incf bits ?\C-\^@)
-                   (incf prefix)
-                   (callf substring word 1))
-                 (let ((found  (assoc word '(("NUL" . "\0") ("RET" . "\r") ("LFD" . "\n")
-                                             ("ESC" . "\e") ("SPC" . " ") ("DEL" . "\177")
-                                             ("TAB" . "\t")))))
-                   (when found (setq word  (cdr found))))
-                 (when (string-match "^\\\\[0-7]+$" word)
-                   (loop for ch across word
-                         for n = 0 then (+ (* n 8) ch -48)
-                         finally do (setq word  (vector n))))
-                 (cond ((= bits 0) (setq key  word))
-                       ((and (= bits ?\M-\^@)  (stringp word)  (string-match "^-?[0-9]+$" word))
-                        (setq key  (loop for x across word collect (+ x bits))))
-                       ((/= (length word) 1)
-                        (error "%s must prefix a single character, not %s"
-                               (substring orig-word 0 prefix) word))
-                       ((and (/= (logand bits ?\C-\^@) 0)  (stringp word)
-                             ;; Used to accept `.' and `?' here, but `.' is simply wrong,
-                             ;; and `C-?' is not used (so use `DEL' instead).
-                             (string-match "[@-_a-z]" word))
-                        (setq key  (list (+ bits (- ?\C-\^@) (logand (aref word 0) 31)))))
-                       (t (setq key  (list (+ bits (aref word 0)))))))))
-        (when key (loop repeat times do (callf vconcat res key)))))
-    (when (and (>= (length res) 4)  (eq (aref res 0) ?\C-x)  (eq (aref res 1) ?\( )
-               (eq (aref res (- (length res) 2)) ?\C-x)  (eq (aref res (- (length res) 1)) ?\)))
-      (setq res  (edmacro-subseq res 2 -2)))
-    (if (and (not need-vector)
-	     (loop for ch across res
-		   always (and (if (fboundp 'characterp)  (characterp ch)  (char-valid-p ch))
-			       (let ((ch2  (logand ch (lognot ?\M-\^@))))
-				 (and (>= ch2 0)  (<= ch2 127))))))
-	(concat (loop for ch across res collect (if (= (logand ch ?\M-\^@) 0)  ch  (+ ch 128))))
-      res)))
-
-;; Same as `naked-read-kbd-macro' in `naked.el'.
-(defun icicle-read-kbd-macro (start &optional end angles)
-  "Read the region as a keyboard macro definition.
-Like `read-kbd-macro', but does not use angle brackets, by default.
-
-With a prefix arg use angle brackets, exactly like `read-kbd-macro'.
-That is, with non-nil arg ANGLES, expect key descriptions to use angle
-brackets (<...>).  Otherwise, expect key descriptions not to use angle
-brackets.  For example:
-
- (icicle-read-kbd-macro  \"mode-line\"  t) returns [mode-line]
- (icicle-read-kbd-macro \"<mode-line>\" t t)   returns [mode-line]"
-  (interactive "r\P")
-  (if (stringp start)
-      (icicle-edmacro-parse-keys start end angles)
-    (setq last-kbd-macro  (icicle-edmacro-parse-keys (buffer-substring start end) nil angles))))
-
-(put 'icicle-kbd 'pure t)
-;; Same as `naked' in `naked.el'.
-(defun icicle-kbd (keys &optional angles)
-  "Like `kbd', but does not use angle brackets, by default.
-With non-nil optional arg ANGLES, expect key descriptions to use angle
-brackets (<...>), exactly like `kbd'.  Otherwise, expect key
-descriptions not to use angle brackets.  For example:
-
- (icicle-kbd \"mode-line\")     returns [mode-line]
- (icicle-kbd \"<mode-line>\" t) returns [mode-line]
-
-The default behavior lets you use, e.g., \"C-x delete\" and \"C-delete\"
-instead of \"C-x <delete>\" and \"C-<delete>\"."
-  (icicle-read-kbd-macro keys nil angles))
-
-;; Must be before first use, which is in `icicle-completion-key-bindings'.
-(define-widget 'icicle-key-definition 'lazy
-  "Key definition type for Icicle mode keys.
-A list of three components: KEY, COMMAND, CONDITION, that represents
-an `icicle-mode-map' binding of COMMAND according to KEY, if CONDITION
-evaluates to non-nil.
-
-KEY is either a key sequence (string or vector) or a command.
-COMMAND is a command.
-CONDITION is a sexp.
-
-If KEY is a command, then the binding represented is its remapping to
-COMMAND."
-  :indent 1 :offset 0 :tag ""           ; $$$$$ "Icicle Mode Key Definition"
-  :type
-  '(list
-    (choice
-     (key-sequence :tag "Key" :value [ignore])
-     ;; Use `symbolp' instead of `commandp', in case the library defining the
-     ;; command is not loaded.
-     (restricted-sexp :tag "Command to remap" :match-alternatives (symbolp) :value ignore))
-     ;; Use `symbolp' instead of `commandp'...
-    (restricted-sexp :tag "Command" :match-alternatives (symbolp) :value ignore)
-    (sexp :tag "Condition")))
-
 (defcustom icicle-completion-key-bindings
   `((,(icicle-kbd "M-return")  icicle-candidate-read-fn-invoke t)                     ;`M-RET'
                                                                                       ; (`M-return')
@@ -1441,10 +1551,10 @@ COMMAND."
     (,(icicle-kbd "C-<")       icicle-candidate-set-retrieve-more t)                  ; `C-<'
     (,(icicle-kbd "C-M-_")     icicle-toggle-proxy-candidates t)                      ; `C-M-_'
     (,(icicle-kbd "C-$")       icicle-toggle-transforming t)                          ; `C-$'
-    ;; In Emacs 22+, local is parent of local-completion
-    ;; $$$$$$ Keep `C-?' also for a while, undocumented, for backward compatibility only.
-    (,(icicle-kbd "C-?")     icicle-minibuffer-help
-     (not (eq minibuffer-local-map (keymap-parent minibuffer-local-completion-map)))) ; `C-?'
+;;;     ;; In Emacs 22+, local is parent of local-completion
+;;;     ;; $$$$$$ Keep `C-?' also for a while, undocumented, for backward compatibility only.
+;;;     (,(icicle-kbd "C-?")     icicle-minibuffer-help
+;;;      (not (eq minibuffer-local-map (keymap-parent minibuffer-local-completion-map)))) ; `C-?'
     (,(icicle-kbd "M-?")     icicle-minibuffer-help
      (not (eq minibuffer-local-map (keymap-parent minibuffer-local-completion-map)))) ; `M-?'
     (,(icicle-kbd "C-.")       icicle-dispatch-C-. t)                                 ; `C-.'
@@ -1534,7 +1644,8 @@ before you enter Icicle mode."
   :group 'Icicles-Key-Bindings)
 
 (defcustom icicle-completion-list-key-bindings
-  `((,(icicle-kbd "C-?")                icicle-minibuffer-help t)                         ; `C-?'
+  `(
+;;;    (,(icicle-kbd "C-?")                icicle-minibuffer-help t)                         ; `C-?'
     (,(icicle-kbd "M-?")                icicle-minibuffer-help t)                         ; `M-?'
     (,(icicle-kbd "q")                  icicle-abort-recursive-edit t)                    ; `q'
     (,(icicle-kbd "C-insert")           icicle-insert-completion t)                       ; `C-insert'
@@ -1824,7 +1935,7 @@ save the current value, you can set this to your function."
   :type 'function :group 'Icicles-Miscellaneous)
 
 (defcustom icicle-default-in-prompt-format-function (lambda (default) (format " (%s)" default))
-  "Function that formats the default value to include in the prompt.
+  "*Function that formats the default value to include in the prompt.
 The function must accept the default value (a string) as its (first)
 argument and return a string, which is prepended to the first
 occurrence of `: ' in the prompt.  This option has no effect unless
@@ -2459,7 +2570,7 @@ anytime to toggle the option."
   :type 'boolean :group 'Icicles-Completions-Display)
 
 (defcustom icicle-ignore-comments-flag t
-  "Non-nil means `icicle-with-comments-hidden' hides comments.
+  "*Non-nil means `icicle-with-comments-hidden' hides comments.
 You can toggle this option using `C-M-;' in the minibuffer, but to see
 the effect you might need to invoke the current command again.
 
@@ -2830,7 +2941,8 @@ to toggle the option."
   :type 'hook :group 'Icicles-Miscellaneous)
 
 (defcustom icicle-minibuffer-key-bindings
-  `((,(icicle-kbd "C-?")           icicle-minibuffer-help t)                          ; `C-?'
+  `(
+;;;    (,(icicle-kbd "C-?")           icicle-minibuffer-help t)                          ; `C-?'
     (,(icicle-kbd "M-?")           icicle-minibuffer-help t)                          ; `M-?'
     (,(icicle-kbd "M-S-backspace") icicle-erase-minibuffer t)                         ; `M-S-backspace'
     (,(icicle-kbd "M-S-delete")    icicle-erase-minibuffer t)                         ; `M-S-delete'
@@ -3412,7 +3524,7 @@ option."
 ;; Based more or less on `shell-dynamic-complete-as-command'.
 ;; Must be before `icicle-shell-command-candidates-cache'.
 (defun icicle-compute-shell-command-candidates ()
-  "Compute shell command candidates from search path, and return them.
+  "*Compute shell command candidates from search path, and return them.
 The candidates are the executable files in your search path or, if
 `shell-completion-execonly' is nil, all files in your search path."
   (require 'shell)                      ; `shell-completion-execonly'
@@ -3943,7 +4055,7 @@ That is, `TAB' and `S-TAB' perform only completion, not cycling."
   :type 'boolean :group 'Icicles-Key-Bindings)
 
 (defcustom icicle-recenter -4
-  "Argument passed to `recenter' to recenter point in the target window.
+  "*Argument passed to `recenter' to recenter point in the target window.
 Used during functions such as `icicle-search' when the destination to
 visit would otherwise be off-screen.
 
