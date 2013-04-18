@@ -32,7 +32,7 @@ functions:
 * `read-string'
 * `recentf-make-menu-items'
 
-'''Icicles''' unconditionally redefines these standard Emacs functions while in ''Icicle'' mode:
+'''Icicles''' redefines these standard Emacs functions while in ''Icicle'' mode:
 
 * `choose-completion'
 * `choose-completion-string'
@@ -44,7 +44,7 @@ functions:
 * `exit-minibuffer'
 * `face-valid-attribute-values'
 * `minibuffer-complete-and-exit'
-* `mouse-choose-completion'
+* `mouse-choose-completion' (Emacs < 23.2)
 * `next-history-element'
 * `read-face-name'
 * `read-file-name'
