@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Mon Apr 15 20:53:36 2013 (-0700)
+;; Last-Updated: Thu Apr 18 08:12:35 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 27719
+;;     Update #: 27720
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -7640,7 +7640,9 @@
 ;;  provide a content-matching pattern to `icicle-buffer'.
 ;;
 ;;  In addition to the usual Icicles key bindings, during buffer-name
-;;  completion you can use the following keys:
+;;  completion you can use additional keys, which are defined by
+;;  option `icicle-buffer-candidate-key-bindings'.  These are the keys
+;;  provided by the default value of the option:
 ;;
 ;;  * `C-x F' (`icicle-toggle-include-cached-files') Toggle whether
 ;;    `icicle-buffer' includes cached file names as candidates.  That
