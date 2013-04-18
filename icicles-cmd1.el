@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Apr 15 20:28:23 2013 (-0700)
+;; Last-Updated: Wed Apr 17 16:38:51 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 25686
+;;     Update #: 25712
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -5959,9 +5959,13 @@ this remapping, then customize option
 `icicle-top-level-key-bindings'."       ; Doc string
   icicle-kill-a-buffer-and-update-completions ; Action function
   (icicle-buffer-name-prompt "Kill")    ; `completing-read' args
-  (mapcar (lambda (buf) (list (buffer-name buf))) icicle-bufflist) nil ; `icicle-bufflist' is free.
+  (mapcar (lambda (buf) (list (buffer-name buf))) icicle-bufflist) nil ; `icicle-bufflist' is free here.
   (and (fboundp 'confirm-nonexistent-file-or-buffer)  (confirm-nonexistent-file-or-buffer)) ; Emacs 23.
-  nil 'buffer-name-history (buffer-name (current-buffer)) nil
+  nil 'buffer-name-history (if (< emacs-major-version 23)
+                               (buffer-name (current-buffer))
+                             (cons (buffer-name (current-buffer))
+                                   (icicle-default-buffer-names current-prefix-arg)))
+  nil
   (icicle-buffer-bindings)              ; Bindings
   ;; Actually, there is no reason to bind `C-x m' to `icicle-bookmark-non-file-other-window' here,
   ;; but to keep things simple we do it anyway.
@@ -5975,6 +5979,8 @@ ACTION is the command action, a string.  It starts the prompt.
 Non-nil OTHER-WINDOW-P appends \" in other window\" to the prompt."
   (concat  (cond ((null current-prefix-arg)
                   (format "%s buffer" action))
+                 ((and (consp current-prefix-arg)  (> (prefix-numeric-value current-prefix-arg) 16)) ; 3 `C-u'
+                  (format "%s invisible buffer" action))
                  ((and (consp current-prefix-arg)  (> (prefix-numeric-value current-prefix-arg) 4)) ; `C-u C-u'
                   (format "%s visible buffer" action))
                  ((and (consp current-prefix-arg)  (fboundp 'derived-mode-p)) ; `C-u'
@@ -6148,9 +6154,11 @@ the behavior."                          ; Doc string
 For Emacs 23+, up to six names are returned.
 
 Optional ARG is used only for Emacs 23+.  Its meaning is the same as
-the prefix argument in Icicles buffer commands - it determines what
-kinds of buffers to include:
- * nil       :  all buffers
+the prefix argument in Icicles buffer commands, except that it
+determines which kinds of buffers to include as default values, not as
+completion candidates:
+
+ * nil       : all buffers, and the first default is `other-buffer'
  * Number > 0: buffers visiting files or directories (Dired)
  * Number < 0: buffers associated with the selected frame
  * Number = 0: buffers with the same mode as the current buffer
@@ -6158,7 +6166,8 @@ kinds of buffers to include:
                a mode that the current mode is derived from
  * (16)      : visible buffers
  * (64)      : invisible buffers
-When ARG is nil, the first buffer is `other-buffer'."
+
+In any case, the current buffer is always excluded."
   (if (< emacs-major-version 23)
       (let ((bname  (buffer-name (if (fboundp 'another-buffer) ; In `misc-fns.el'.
                                      (another-buffer nil t)
@@ -6167,7 +6176,7 @@ When ARG is nil, the first buffer is `other-buffer'."
             (car icicle-bufflist)
           bname))
     ;; Emacs 23 accepts a list of default values.  ; Just keep the first 4.  (This could be an option.)
-    (let* ((bfnames  (mapcar #'buffer-name (delete (current-buffer) (or icicle-bufflist  (buffer-list))))))
+    (let ((bfnames  (mapcar #'buffer-name (delete (current-buffer) (or icicle-bufflist  (buffer-list))))))
       (when icicle-buffer-ignore-space-prefix-flag
         (setq bfnames  (icicle-remove-if (lambda (bfname) (icicle-string-match-p "^ " bfname)) bfnames)))
       (let ((six  (icicle-first-N 6 bfnames)))
@@ -6428,7 +6437,7 @@ flips the behavior specified by that option." ; Doc string
           new-bufs--to-keep))           ; Add the visited buffer to those we will keep (not kill).
   prompt 'icicle-buffer-multi-complete nil ; `completing-read' args
   (and (fboundp 'confirm-nonexistent-file-or-buffer)  (confirm-nonexistent-file-or-buffer)) ; Emacs 23.
-  nil 'buffer-name-history (icicle-default-buffer-names current-prefix-arg) nil
+  nil 'buffer-name-history (icicle-default-buffer-names) nil
   (icicle-buffer-bindings               ; Bindings
    ((prompt                                 (icicle-buffer-name-prompt "Visit file"))
     (icicle-show-multi-completion-flag      t) ; Override user setting.
@@ -6472,7 +6481,7 @@ different window.  You must be in Dired to use this command." ; Doc string
           new-bufs--to-keep))           ; Add the visited buffer to those we will keep (not kill).
   prompt 'icicle-buffer-multi-complete nil ; `completing-read' args
   (and (fboundp 'confirm-nonexistent-file-or-buffer)  (confirm-nonexistent-file-or-buffer)) ; Emacs 23.
-  nil 'buffer-name-history (icicle-default-buffer-names current-prefix-arg) nil
+  nil 'buffer-name-history (icicle-default-buffer-names) nil
   (icicle-buffer-bindings               ; Bindings
    ((prompt                                 (icicle-buffer-name-prompt "Visit file" 'OTHER-WIN))
     (icicle-show-multi-completion-flag      t) ; Override user setting.
@@ -6537,7 +6546,11 @@ completion candidates, default values, and additional key bindings." ; Doc strin
   (icicle-buffer-name-prompt "Show always") ; `completing-read' args
   (mapcar (lambda (buf) (list (buffer-name buf))) icicle-bufflist) nil ; `icicle-bufflist' is free.
   (and (fboundp 'confirm-nonexistent-file-or-buffer)  (confirm-nonexistent-file-or-buffer)) ; Emacs 23.
-  nil 'buffer-name-history (icicle-default-buffer-names current-prefix-arg) nil
+  nil 'buffer-name-history (if (< emacs-major-version 23)
+                               (buffer-name (current-buffer))
+                             (cons (buffer-name (current-buffer))
+                                   (icicle-default-buffer-names current-prefix-arg)))
+  nil
   (icicle-buffer-bindings               ; Bindings
    ((icicle-delete-candidate-object        'icicle-remove-buffer-candidate-action) ; Override default (kill).
     (icicle-use-candidates-only-once-flag  t)))
