@@ -24,6 +24,11 @@ Add (key-chord-mode 1) to your .emacs file to activate parent mode.
 
 Lisp:space-chord.el  -- [[rubikitch]]
 
+[new:ipstone:2013-04-18]
+Love key-chord! here's a setup to use keychord and viper mode 
+more seamlessly - [[toggle-viper-keychord]].
+-- [[ipstone]]
+
 [new:PatRegan:2009-02-19 05:23 UTC]
 key-chord and space-chord both looked interesting to me.  space-chord didn't seem to want to work at all, but I didn't investigate that at all.
 
