@@ -17,11 +17,15 @@ the following functions and setups is derived:
 
 (defun key-chord-turn-on ()
   (interactive)
-  (key-chord-mode 1))
+  (if (not (window-minibuffer-p))
+      (key-chord-mode 1)))
+
 
 (defun key-chord-turn-off ()
   (interactive)
-  (key-chord-mode 0))
+  (if (not (window-minibuffer-p))
+  (key-chord-mode 0)))
+
 }}}
 
 Then add these hooks for vi-mode and keychord in 'sync' (anti-sync):
