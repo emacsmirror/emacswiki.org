@@ -40,7 +40,9 @@ provide a content-matching pattern to `icicle-buffer'.
 
 
 In addition to the usual '''Icicles''' key bindings, during buffer-name
-completion you can use the following keys:
+completion you can use additional keys, which are defined by
+option '''`<tt>[[Icicles - Customization and General Tips#icicle-buffer-candidate-key-bindings|icicle-buffer-candidate-key-bindings]]</tt>''''.  These are the keys
+provided by the default value of the option:
 
 [:icicle-toggle-include-cached-files]
 [:icicle-buffer-include-cached-files-nflag]
