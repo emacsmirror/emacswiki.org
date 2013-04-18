@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Apr  6 21:38:48 2013 (-0700)
+;; Last-Updated: Thu Apr 18 14:32:30 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 9926
+;;     Update #: 9963
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -86,6 +86,11 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2013/04/17 dadams
+;;     icicle-buffer-name-prompt, icicle-default-buffer-names: C-u C-u C-u means invisible buffers.
+;;     icicle-kill-buffer: Add current buff to icicle-default-buffer-names.
+;;     icicle-visit-marked-file-of-content*: Pass no arg to icicle-default-buffer-names.
+;;     icicle-add-buffer-candidate: Single default if < Emacs 23.
 ;; 2013/04/06 dadams
 ;;     icicle-default-buffer-names: If ARG is nil, put other-buffer first.  Return up to six, not four.
 ;; 2013/04/02 dadams
@@ -1728,6 +1733,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2013/04/08 dadams
+;;     icicle-choose-completion-string: Added versions for Emacs 23.1 and 23.2+.
 ;; 2013/04/06 dadams
 ;;     icicle-completing-p:
 ;;       Bug fix for Emacs > 24.3.  Test minibuffer-completing-file-name, not filename keymaps.
@@ -3582,6 +3589,10 @@
 ;;       macros needs to be byte-compiled anew after loading the updated macros.
 ;; ****************************************************************************************************
 ;;
+;; 2013/04/17 dadams
+;;     icicle-buffer-bindings: For icicle-bufflist: use icicle-buffer-prefix-arg-filtering.
+;; 2013/04/15 dadams
+;;     icicle-buffer-bindings: (New) C-u C-u C-u means invisible buffers only.
 ;; 2013/03/31 dadams
 ;;     icicle-buffer-bindings: (New) C-u C-u means visible buffers only.
 ;; 2013/03/07 dadams
@@ -3801,6 +3812,12 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2013/04/18 dadams
+;;     icicle-(un)bind-buffer-candidate-keys:
+;;       Rewrote to use (new) option icicle-buffer-candidate-key-bindings.
+;; 2013/04/08 dadams
+;;     icicle-choose-completion: Added version for Emacs 23.2+.  Return completion number now.
+;;     icicle-mouse-choose-completion: Do not define for Emacs 23.2+ (uses icicle-choose-completion).
 ;; 2013/04/01 dadams
 ;;     Added: icicle-top-level.
 ;; 2013/03/31 dadams
@@ -5405,6 +5422,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2013/04/08 dadams
+;;     icicle-(redefine|restore)-std-completion-fns:
+;;       icicle-mouse-choose-completion is only for Emacs < 23.2.
 ;; 2013/04/05 dadams
 ;;     icicle-mode: Call ad-activate for all enabled advice.
 ;; 2013/04/04 dadams
@@ -6604,6 +6624,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2013/04/18 dadams
+;;     Added: icicle-buffer-candidate-key-bindings, icicle-buffer-prefix-arg-filtering.
+;;     *-completion-key-bindings, *-completion-list-key-bindings, *-minibuffer-key-bindings:
+;;       Removed C-? binding - use only M-?.
 ;; 2013/04/03 dadams
 ;;     icicle-comint-dynamic-complete-replacements: Removed entries for ess-complete-*.
 ;; 2013/04/01 dadams
