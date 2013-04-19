@@ -24,7 +24,17 @@ From a terminal
     git add -p                    # make all your choices (add the changes you do want)
     git commit                    # make the commit!
 
-In Emacs you can do this magically with 'M-x magit-status' using the following
-commands:
+With Magit you can cherry-pick an entire commit as follows:
+* 'M-x magit-status' to enter open a Magit buffer
+* 'b v' to list current branches
+* select branch to receive patch, RET to checkout
+* 'l rl' to list patches from this branch to the branch with the cherries (or l rL, long diff) (M-x magit-log-ranged)
+* select the patch to cherry-pick
+* 'A' to bring the patch onto the current branch
 
-* ... TODO
+In Emacs you can select just part of a commit using the following
+commands (from a 'M-x magit-status' buffer):
+
+* 'x' to reset to previous commit (defaults to HEAD^) (M-x magit-reset-head)
+* 'u' to unstage unwanted changes (after selecting in status buffer)
+* 'c' to commit again 
