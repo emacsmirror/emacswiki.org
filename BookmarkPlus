@@ -2109,6 +2109,35 @@ bookmark file, whatever that might be (e.g. `##~/.emacs.bmk##').
 
 '''Bookmark+''' enhances the bookmark list (aka the bookmark "menu list", a misnomer) that is displayed in buffer `##*Bookmark List*##' when you use `C-x p e' or `C-x r l' (command `bookmark-bmenu-list').
 
+At the top of the bookmark-list display is this header
+information:
+
+* The bookmark file used currently.  This is important because
+'''Bookmark+''' makes it easy for you to have multiple bookmark files
+and switch among them.
+
+* A title that describes the kinds of bookmarks listed, that is,
+it reflects athe current filtering, if any.
+
+For example, this header indicates that the current bookmark file
+is ##c:/.emacs.bmk## and only file and directory bookmarks are
+shown:
+
+{{{
+Bookmark file:
+c:/.emacs.bmk
+
+File and Directory Bookmarks
+----------------------------
+}}}
+
+('''Bookmark+''' does not use the sliding header line of vanilla Emacs
+24+, which means that option `bookmark-bmenu-use-header-line' has
+no effect.  You do not need to see `Bookmark' and `File' column
+headers as you scroll.)
+
+
+
 Bookmarks are highlighted to
 indicate their type. You can mark and unmark bookmarks, show or
 hide bookmarks of particular types, and more.  Bookmarks that have tags are marked with a '''`t''''.  Bookmarks that have an annotation are marked with an '''`a'''' (not with a `##*##' as in vanilla ##bookmark.el##).  Bookmarks that have been modified since the last save of the bookmark file are marked with a '''`##*##''''.
