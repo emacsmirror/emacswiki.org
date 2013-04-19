@@ -1,4 +1,4 @@
-[[fr:FaireDesChosesIntéractivement]]
+[[fr:FaireDesChosesIntÃ©ractivement]]
 
 '''[::Ido]''' is part of Emacs, starting with release 22. You can get the latest version from the unofficial [http://bazaar.launchpad.net/~vcs-imports/emacs/trunk/annotate/head%3A/lisp/ido.el bzr mirror] or [http://repo.or.cz/w/emacs.git/blob_plain/HEAD:/lisp/ido.el git mirror]. You may get a current version from the canonical emacs bzr repository at Savannah when it gains a web interface ([[BzrForEmacsDevs#toc6]]). Or you can get a very outdated version of it at http://www.cua.dk/.
 
@@ -108,6 +108,37 @@ This is based on what RichardRiley provided. I extracted it out, so I can easily
 (global-set-key (kbd "C-c s") 'ido-shell-buffer)
 }}}
 
+=== Limit to Current Major Mode ===
+Further variation on RichardRiley's and ajvargo's examples: Limit ido to the current major mode, whatever that might be.
+-- WGreenhouse
+
+{{{
+(defun wg/ido-for-this-mode
+  ()
+  (interactive)
+  (let
+      ((the-mode major-mode))
+    (switch-to-buffer
+     (ido-completing-read
+      (format "Buffers of %s: " the-mode)
+      (save-excursion
+	(delq
+	 nil
+	 (mapcar
+	  (lambda
+	    (buf)
+	    (when
+		(buffer-live-p buf)
+	      (with-current-buffer buf
+		(and
+		 (eq major-mode the-mode)
+		 (buffer-name buf)))))
+	  (buffer-list))))))))
+
+(global-set-key (kbd "H-t") 'wg/ido-for-this-mode)
+(global-set-key (kbd "C-c t") 'wg/ido-for-this-mode)
+}}}
+
 = Mimicking an invocation of ido followed by some keys =
 
 I use ERC, and I wanted to bind something to the equivalent of "C-x b #": that is, launching ido-switch-buffer and hitting a # so that ERC channels are given as options.  However, it's tough in general to write elisp or keyboard macros that run a command and start entering things into a minibuffer without finishing the prompt. For this special case, though, this elisp works:
@@ -184,7 +215,7 @@ Here is a better way:
   	  ido-rotate-temp t)
       (exit-minibuffer)))
 
---Gaël Deest
+--GaÃ«l Deest
 
 
 See also [[#InvokeBookmarks]].
