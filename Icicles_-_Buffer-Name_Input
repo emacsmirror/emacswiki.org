@@ -22,6 +22,9 @@ satisfy these conditions:
 * '''Positive:''' visiting ''files''
 * '''Negative:''' associated with the selected ''[[frame]]''
 
+Those are the default behaviors, but you can change them using
+[[option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-buffer-prefix-arg-filtering|icicle-buffer-prefix-arg-filtering]]</tt>'''' 
+
 
 `icicle-buffer' (`C-x b' in ''Icicle'' mode, by default) is a [[multi-command]] that accepts [[multi-completion]] input: the first part
 matches buffer names, and the second part, which is optional,
