@@ -1690,6 +1690,20 @@ Options '''`icicle-file-match-regexp'''',
                   nil)))))
 
 
+
+----
+[:icicle-buffer-prefix-arg-filtering]
+==== Option icicle-buffer-prefix-arg-filtering ====
+
+Option '''`icicle-buffer-prefix-arg-filtering'''' defines the
+[[prefix argument|prefix-argument]] filtering behavior for '''Icicles''' buffer commands.
+It lets you choose what any given prefix argument (including
+lack of a prefix argument) does to filter buffer-name completion
+candidates.
+
+
+
+
 ----
 [:icicle-buffer-include-cached-files-nflag]
 [:icicle-buffer-include-recent-files-nflag]
