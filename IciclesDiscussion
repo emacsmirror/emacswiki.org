@@ -1024,6 +1024,10 @@ I guess you were able to take care of the key customization.  For the other prob
 
 
 
+
+
+
+
 [:LatestEntry]
 
 
@@ -1083,6 +1087,14 @@ Thx -- DrewAdams
 
 
 
+[new:DrewAdams:2013-04-19 02:23 UTC]
+I just added two user options that I think might help:
+
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-buffer-prefix-arg-filtering|icicle-buffer-prefix-arg-filtering]]</tt>'''', which controls the [[prefix argument]] behavior.  So, for instance, if you want lack of a prefix arg to mean use only invisible buffers and `C-u C-u C-u' to mean use all buffers, you can easily have that behavior.  You can define any prefix-arg tests you want, with any corresponding filter behaviors you want.
+
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-buffer-candidate-key-bindings|icicle-buffer-candidate-key-bindings]]</tt>'''', which defines the key bindings to use for on-the-fly filtering (narrowing).
+
+I think this should offer you the flexibility you seek. HTH -- DrewAdams
 
 
 
