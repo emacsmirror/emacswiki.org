@@ -13,6 +13,7 @@
 * '''DONE''' Remove unnecessary signal handlers (notably SIGXCPU, SIGPWR which bdw-gc uses)
 * '''DONE''' Fix EMACS_INT formatting
 * Find beta testers for non-GNU platforms
+** I'd love to help out with testing GuileEmacs on Mac OS X! I don't know how to start (where to go, who to talk to, etc.) so could someone email me at <code>(rot13-string "ZrerylNCfrhqbalz@tznvy.pbz")</code>?
 * Test gdb configuration
 * '''DONE''' Fix [http://debbugs.gnu.org/cgi/bugreport.cgi?bug=14120] (reported by TaylanUB)
 * '''DONE''' Fix hashing. <code>(let ((table (make-hash-table :test 'equal))) (puthash "1234567890" "foo" table) (gethash "1234567890" table)) => nil</code>. Some other (most?) keys work; I couldn't see a pattern in what does and doesn't work. If you use the same object for both keys (i.e. they're `eq') then it seems to always work, so don't let-bind keys if you want to test this.
