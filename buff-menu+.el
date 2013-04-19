@@ -7,13 +7,13 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Sep 11 10:29:56 1995
 ;; Version: 21.0
-;; Last-Updated: Fri Dec 28 09:31:45 2012 (-0800)
+;; Last-Updated: Fri Apr 19 10:05:02 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2820
+;;     Update #: 2836
 ;; URL: http://www.emacswiki.org/buff-menu+.el
 ;; Doc URL: http://www.emacswiki.org/BufferMenuPlus
 ;; Keywords: mouse, local, convenience
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.1
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -27,6 +27,23 @@
 ;;    Extensions to `buff-menu.el', including: new bindings, faces,
 ;;    and menus; selective column display; and directional column
 ;;    sorting.
+;;
+;;    NOTE: Emacs Dev rewrote `buff-menu.el' for Emacs 24.2, so that
+;;          it uses `tabulated-list-mode'.  I have not yet updated
+;;          `buff-menu+.el' to accommodate this vanilla rewrite, and I
+;;          do not know when I might get around to doing that.
+;;
+;;          If you want to use `buff-menu+.el' with Emacs 24.2 or
+;;          later, then you can download the Emacs 23 or Emacs 24.1
+;;          version of `buff-menu.el' and put that in your `load-path'
+;;          in such a way that it shadows the Emacs 24.2+ version.
+;;          You can get the Emacs 23.4 version here, for instance
+;;          (combine the URL into a single line):
+;;
+;;            http://bzr.savannah.gnu.org/lh/emacs/emacs-23/download/
+;;             head:/buffmenu.el-20091113204419-o5vbwnq5f7feedwu-197/buff-menu.el
+;;
+;;          Sorry for the inconvenience.
 ;;
 ;;    Note: By default, the buffer menu is shown in a different
 ;;          window.  If you prefer to show it in the current window,
@@ -163,6 +180,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/04/19 dadams
+;;     list-buffers-noselect and globally:
+;;       Set Buffer-menu-buffer+size-width to 26 if nil.  Emacs 24.3+ defaults it to nil.
 ;; 2012/08/28 dadams
 ;;     Buffer-menu-select: Updated for Emacs 24.3+ (but I don't yet support > 24.2).
 ;;     Handle Emacs 23 capitalization of buffer-menu-mode-hook.
@@ -680,6 +700,13 @@ Click a column heading to sort by that field and update this option."
                               ?\  )     ; ?\  instead of ?\s, so can be byte-compiled in Emacs 20.
             size))
   )
+
+
+;; Emacs 24.3+ sets the default value to nil.
+(unless Buffer-menu-buffer+size-width (setq Buffer-menu-buffer+size-width  26))
+
+
+
 
 ;;; Faces used to fontify buffer.
 
@@ -1467,6 +1494,8 @@ For more information, see the function `buffer-menu'."
     ;; $$$$$$ Could be costly if lots of buffers - maybe have an option to be able to not do it?
     (let ((len  0)
           buf+size)
+      ;; Emacs 24.3+ sets the default value of `Buffer-menu-buffer+size-width' to nil.
+      (unless Buffer-menu-buffer+size-width  (setq Buffer-menu-buffer+size-width  26))
       (setq Buffer-menu-buffer+size-computed-width  Buffer-menu-buffer+size-width)
       (dolist (buffer (buffer-list))
         (setq buf+size  (concat (buffer-name buffer) (number-to-string (buffer-size buffer))))
