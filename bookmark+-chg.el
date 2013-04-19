@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Apr 19 07:42:12 2013 (-0700)
+;; Last-Updated: Fri Apr 19 07:29:18 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 15289
+;;     Update #: 15287
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -899,9 +899,6 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
-;; 2013/04/19 dadams
-;;     bmkp-bmenu-list-1:
-;;       Removed test for non-empty bookmark-alist before toggle file names (Emacs bug #13972).
 ;; 2013/04/10 dadams
 ;;     bmkp-bmenu-make-sequence-from-marked: Redefine using bmkp-set-sequence-bookmark (new).
 ;; 2013/01/07 dadams
