@@ -1455,5 +1455,3 @@ would be stored."
 	(cons (vconcat but-last [27]) last-event-no-meta)
      ;; else KEY-SEQUENCE would not be stored in the ESC key
       (cons but-last last-event))))
-
-CategoryNeedsAttention (Please rename to pkb.el)
