@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Apr 17 16:38:51 2013 (-0700)
+;; Last-Updated: Thu Apr 18 19:13:32 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 25712
+;;     Update #: 25716
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -6066,6 +6066,9 @@ depending on the prefix arg:
 * Double plain (`C-u C-u'): visible buffers (possibly iconified)
 * Triple plain (`C-u C-u C-u'): invisible buffers
 
+Those are the default prefix-argument behaviors, but you can change
+them using option `icicle-buffer-prefix-arg-filtering'.
+
 For Emacs 23 and later, the default values (via `M-n') are the
 \(buffer-name components of the) first four completion candidates
 \(respecting the prefix argument).
@@ -6085,6 +6088,9 @@ You can use these additional keys during completion:
 * `C-x v -'   Remove buffers that are visible (maybe iconified).
 * `C-x v +'   Keep only buffers that are visible (maybe iconified).
 * `\\[icicle-delete-candidate-object]'  Kill the buffer named by a completion candidate.
+
+Those are default key bindings, but you can change them using option
+`icicle-buffer-candidate-key-bindings'.
 
 These options, when non-nil, control candidate matching and filtering:
 
