@@ -2209,8 +2209,8 @@ work in any buffer, not just buffer `##*Bookmark List*##'):
 * Keys that add/remove tags:
 ** '''`##T +##'''' ('''`##C-x p t + b##'''') adds some tags to a bookmark.
 ** '''`##T -##'''' ('''`##C-x p t - b##'''') removes some tags from a bookmark.
-** '''`##T 0##'''' ('''`##C-x p t 0##''') removes all tags from a bookmark.
-** '''`##T d##'''' ('''`##C-x p t d##''') removes a set of tags from all bookmarks.
+** '''`##T 0##'''' ('''`##C-x p t 0##'''') removes all tags from a bookmark.
+** '''`##T d##'''' ('''`##C-x p t d##'''') removes a set of tags from all bookmarks.
 
 In the bookmark list display you can also sort bookmarks according
 to how they are tagged, even in complex ways.  See [[#SortingBookmarks]].
