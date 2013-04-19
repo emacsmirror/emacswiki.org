@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Sun Apr 14 17:17:58 2013 (-0700)
+;; Last-Updated: Fri Apr 19 07:41:01 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2427
+;;     Update #: 2428
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -1213,8 +1213,7 @@ Non-nil INTERACTIVEP means `bookmark-bmenu-list' was called
         (insert "\n")))
     (goto-char (point-min)) (forward-line bmkp-bmenu-header-lines)
     (bookmark-bmenu-mode)
-    (when (and bookmark-alist  bookmark-bmenu-toggle-filenames)
-      (bookmark-bmenu-toggle-filenames t 'NO-MSG-P))
+    (when bookmark-bmenu-toggle-filenames (bookmark-bmenu-toggle-filenames t 'NO-MSG-P))
     (when (and (fboundp 'fit-frame-if-one-window)
                (eq (selected-window) (get-buffer-window (get-buffer-create "*Bookmark List*") 0)))
       (fit-frame-if-one-window)))
