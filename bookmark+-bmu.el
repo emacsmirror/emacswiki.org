@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Sun Apr 14 17:17:58 2013 (-0700)
+;; Last-Updated: Fri Apr 19 13:47:03 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2427
+;;     Update #: 2444
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -875,9 +875,9 @@ Non-interactively:
     (unless no-re-sort-p
       ;; If it was unmarked but now is marked, and if sort order is `s >', then re-sort.
       (when (and was-unmarked-p  (equal bmkp-sort-comparer '((bmkp-marked-cp) bmkp-alpha-p)))
-        (let ((current-bmk  (bookmark-bmenu-bookmark)))
+        (let ((curr-bmk  (bookmark-bmenu-bookmark)))
           (bookmark-bmenu-surreptitiously-rebuild-list (not msg-p))
-          (when current-bmk (bmkp-bmenu-goto-bookmark-named current-bmk))))))
+          (when curr-bmk (bmkp-bmenu-goto-bookmark-named curr-bmk))))))
   (forward-line 1)
   (when (fboundp 'bmkp-bmenu-mode-line) (bmkp-bmenu-mode-line)))
 
@@ -921,9 +921,9 @@ Non-interactively:
     (unless no-re-sort-p
       ;; If it was marked but now is unmarked, and if sort order is `s >', then re-sort.
       (when (and was-marked-p  (equal bmkp-sort-comparer '((bmkp-marked-cp) bmkp-alpha-p)))
-        (let ((current-bmk  (bookmark-bmenu-bookmark)))
+        (let ((curr-bmk  (bookmark-bmenu-bookmark)))
           (bookmark-bmenu-surreptitiously-rebuild-list (not msg-p))
-          (when current-bmk (bmkp-bmenu-goto-bookmark-named current-bmk))))))
+          (when curr-bmk (bmkp-bmenu-goto-bookmark-named curr-bmk))))))
   (forward-line (if backup -1 1))
   (when (fboundp 'bmkp-bmenu-mode-line) (bmkp-bmenu-mode-line)))
 
@@ -1052,8 +1052,8 @@ Non-interactively:
 
  - Non-nil optional arg MSG-P means display progress messages.
 
-In Lisp code, non-nil optional argument FILTEREDP means the bookmark
-list has been filtered, which means:
+Non-interactively, non-nil optional argument FILTEREDP means the
+bookmark list has been filtered, which means:
  * Use `bmkp-bmenu-title' not the default menu-list title.
  * Do not reset `bmkp-latest-bookmark-alist' to `bookmark-alist'."
   (interactive "i\np")
@@ -1908,7 +1908,8 @@ See `bookmark-jump' for info about the prefix arg."
 ;;
 ;;;###autoload (autoload 'bookmark-bmenu-show-annotation "bookmark+")
 (defun bookmark-bmenu-show-annotation (msg-p)
-  "Show the annotation for the current bookmark in another window."
+  "Show the annotation for the current bookmark in another window.
+Non-interactively, non-nil MSG-P means display messages."
   (interactive "p")
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (bookmark-bmenu-ensure-position)
@@ -2508,7 +2509,7 @@ first or last (`s >'), then re-sort.
 
 Non-interactively:
 * Non-nil optional arg NO-RE-SORT-P inhibits re-sorting.
-* Non-nil optional arg MSG-P meands display a status message."
+* Non-nil optional arg MSG-P means display a status message."
   (interactive "i\np")
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (let ((count      0)
@@ -2520,9 +2521,9 @@ Non-interactively:
     (unless no-re-sort-p
       ;; If some were unmarked before, and if sort order is `s >' then re-sort.
       (when (and (/= nb-marked count)  (equal bmkp-sort-comparer '((bmkp-marked-cp) bmkp-alpha-p)))
-        (let ((current-bmk  (bookmark-bmenu-bookmark)))
+        (let ((curr-bmk  (bookmark-bmenu-bookmark)))
           (bookmark-bmenu-surreptitiously-rebuild-list 'NO-MSG-P)
-          (when current-bmk (bmkp-bmenu-goto-bookmark-named current-bmk)))))
+          (when curr-bmk (bmkp-bmenu-goto-bookmark-named curr-bmk)))))
     (when msg-p (message "Marked: %d" count))))
 
 ;; This is similar to `dired-unmark-all-files'.
@@ -2541,7 +2542,7 @@ Non-interactively:
 * MARK is the mark character or a carriage-return character (`?\r').
 * Non-nil ARG (prefix arg) means query.
 * Non-nil optional arg NO-RE-SORT-P inhibits re-sorting.
-* Non-nil optional arg MSG-P meands display a status message."
+* Non-nil optional arg MSG-P means display a status message."
   (interactive "cRemove marks (RET means all): \nP\ni\np")
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (require 'dired-aux)
@@ -2571,9 +2572,9 @@ Non-interactively:
     (unless no-re-sort-p
       ;; If some were marked before, and if sort order is `s >', then re-sort.
       (when (and some-marked-p  (equal bmkp-sort-comparer '((bmkp-marked-cp) bmkp-alpha-p)))
-        (let ((current-bmk  (bookmark-bmenu-bookmark)))
+        (let ((curr-bmk  (bookmark-bmenu-bookmark)))
           (bookmark-bmenu-surreptitiously-rebuild-list 'NO-MSG-P)
-          (when current-bmk (bmkp-bmenu-goto-bookmark-named current-bmk)))))
+          (when curr-bmk (bmkp-bmenu-goto-bookmark-named curr-bmk)))))
     (when msg-p (if (= 1 count) (message "1 mark removed") (message "%d marks removed" count)))))
 
 ;;;###autoload (autoload 'bmkp-bmenu-regexp-mark "bookmark+")
@@ -2603,9 +2604,9 @@ Non-interactively:
       ;; If some were unmarked before, and if sort order is `s >', then re-sort.
       (when (and (equal bmkp-sort-comparer '((bmkp-marked-cp) bmkp-alpha-p))
                  (< nb-marked (length bmkp-bmenu-marked-bookmarks)))
-        (let ((current-bmk  (bookmark-bmenu-bookmark)))
+        (let ((curr-bmk  (bookmark-bmenu-bookmark)))
           (bookmark-bmenu-surreptitiously-rebuild-list 'NO-MSG-P)
-          (when current-bmk (bmkp-bmenu-goto-bookmark-named current-bmk)))))
+          (when curr-bmk (bmkp-bmenu-goto-bookmark-named curr-bmk)))))
     (when msg-p (if (= 1 count) (message "1 bookmark matched") (message "%d bookmarks matched" count)))))
 
 ;;;###autoload (autoload 'bmkp-bmenu-mark-autofile-bookmarks "bookmark+")
@@ -2774,9 +2775,9 @@ Non-interactively:
       ;; If some were unmarked before, and if sort order is `s >', then re-sort.
       (when (and (equal bmkp-sort-comparer '((bmkp-marked-cp) bmkp-alpha-p))
                  (< nb-marked (length bmkp-bmenu-marked-bookmarks)))
-        (let ((current-bmk  (bookmark-bmenu-bookmark)))
+        (let ((curr-bmk  (bookmark-bmenu-bookmark)))
           (bookmark-bmenu-surreptitiously-rebuild-list 'NO-MSG-P)
-          (when current-bmk (bmkp-bmenu-goto-bookmark-named current-bmk)))))
+          (when curr-bmk (bmkp-bmenu-goto-bookmark-named curr-bmk)))))
     (when msg-p (if (= 1 count) (message "1 bookmark matched") (message "%d bookmarks matched" count)))))
 
 ;;;###autoload (autoload 'bmkp-bmenu-toggle-marks "bookmark+")
@@ -2808,9 +2809,9 @@ message."
                  (setq marked-count  (1+ marked-count)))))))
     ;; If sort order is `s >' then re-sort.
     (when (and (not no-re-sort-p)  (equal bmkp-sort-comparer '((bmkp-marked-cp) bmkp-alpha-p)))
-      (let ((current-bmk  (bookmark-bmenu-bookmark)))
+      (let ((curr-bmk  (bookmark-bmenu-bookmark)))
         (bookmark-bmenu-surreptitiously-rebuild-list 'NO-MSG-P)
-        (when current-bmk (bmkp-bmenu-goto-bookmark-named current-bmk))))
+        (when curr-bmk (bmkp-bmenu-goto-bookmark-named curr-bmk))))
     (when msg-p (message "Marked: %d, unmarked: %d" marked-count unmarked-count))))
 
 ;;;###autoload (autoload 'bmkp-bmenu-toggle-marked-temporary/savable "bookmark+")
@@ -3214,7 +3215,9 @@ Interactively, you are required to confirm."
   "Set the value of TAG to VALUE, for each of the marked bookmarks.
 If no bookmark is marked, act on the bookmark of the current line.
 With a prefix arg, act on all bookmarks.
-If any of the bookmarks has no tag named TAG, then add one with VALUE."
+If any of the bookmarks has no tag named TAG, then add one with VALUE.
+
+Non-interactively, non-nil MSG-P means display messages."
   (interactive (list (bmkp-read-tag-completing) (read (read-string "Value: ")) current-prefix-arg 'MSG))
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (when msg-p (message "Setting tag values..."))
@@ -3226,7 +3229,8 @@ If any of the bookmarks has no tag named TAG, then add one with VALUE."
 
 ;;;###autoload (autoload 'bmkp-bmenu-remove-tags "bookmark+")
 (defun bmkp-bmenu-remove-tags (&optional msg-p) ; Only on `mouse-3' menu in bookmark list.
-  "Remove some tags from this bookmark."
+  "Remove some tags from this bookmark.
+Non-interactively, non-nil MSG-P means display messages."
   (interactive "p")
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (bookmark-bmenu-ensure-position)
@@ -3250,11 +3254,13 @@ With a prefix arg, act on all bookmarks.
 
 Hit `RET' to enter each tag, then hit `RET' again after the last tag.
 You can use completion to enter each tag, but you are not limited to
-choosing existing tags."
+choosing existing tags.
+
+Non-interactively, non-nil MSG-P means display messages."
   (interactive (list (bmkp-read-tags-completing) current-prefix-arg 'MSG))
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (let ((marked                (bmkp-bmenu-marked-or-this-or-all allp))
-        (bmk                   (bookmark-bmenu-bookmark))
+        (curr-bmk              (bookmark-bmenu-bookmark))
         (bookmark-save-flag    (and (not bmkp-count-multi-mods-as-one-flag)
                                     bookmark-save-flag)) ; Save at most once, after `dolist'.
         (some-were-untagged-p  nil))
@@ -3263,7 +3269,7 @@ choosing existing tags."
     (dolist (bmk  (mapcar #'car marked))
       (when (< (bmkp-add-tags bmk tags 'NO-UPDATE-P) 0)  (setq some-were-untagged-p  t)))
     (bmkp-tags-list)                    ; Update the tags cache now, after iterate.
-    (bmkp-refresh-menu-list bmk (not msg-p)) ; Refresh after iterate.
+    (bmkp-refresh-menu-list curr-bmk (not msg-p)) ; Refresh after iterate.
     (when (and some-were-untagged-p  (equal bmkp-sort-comparer '((bmkp-tagged-cp) bmkp-alpha-p)))
       (bmkp-bmenu-sort-tagged-before-untagged))
     (when (and msg-p  tags) (message "Tags added: %S" tags))))
@@ -3275,7 +3281,9 @@ If no bookmark is marked, act on the bookmark of the current line.
 With a prefix arg, act on all bookmarks.
 
 Hit `RET' to enter each tag, then hit `RET' again after the last tag.
-You can use completion to enter each tag."
+You can use completion to enter each tag.
+
+Non-interactively, non-nil MSG-P means display messages."
   (interactive (let ((cand-tags       ()))
                  (dolist (bmk  (bmkp-bmenu-marked-or-this-or-all allp))
                    (setq cand-tags  (bmkp-set-union cand-tags (bmkp-get-tags bmk))))
@@ -3285,7 +3293,7 @@ You can use completion to enter each tag."
   (let ((marked                   (or (bmkp-marked-bookmarks-only)
                                       (and (bookmark-bmenu-bookmark)
                                            (list (bookmark-get-bookmark (bookmark-bmenu-bookmark))))))
-        (bmk                      (bookmark-bmenu-bookmark))
+        (curr-bmk                 (bookmark-bmenu-bookmark))
         (bookmark-save-flag       (and (not bmkp-count-multi-mods-as-one-flag)
                                        bookmark-save-flag)) ; Save at most once, after `dolist'.
         (some-are-now-untagged-p  nil))
@@ -3294,7 +3302,7 @@ You can use completion to enter each tag."
     (dolist (bmk  (mapcar #'car marked))
       (when (< (bmkp-remove-tags bmk tags 'NO-UPDATE-P) 0)  (setq some-are-now-untagged-p  t)))
     (bmkp-tags-list)                    ; Update the tags cache now, after iterate.
-    (bmkp-refresh-menu-list bmk (not msg-p)) ; Refresh after iterate.
+    (bmkp-refresh-menu-list curr-bmk (not msg-p)) ; Refresh after iterate.
     (when (and some-are-now-untagged-p  (equal bmkp-sort-comparer '((bmkp-tagged-cp) bmkp-alpha-p)))
       (bmkp-bmenu-sort-tagged-before-untagged))
     (when (and msg-p  tags) (message "Tags removed: %S" tags))))
@@ -3332,9 +3340,9 @@ Non-interactively:
       ;; If some were unmarked before, and if sort order is `s >', then re-sort.
       (when (and (equal bmkp-sort-comparer '((bmkp-marked-cp) bmkp-alpha-p))
                  (/= nb-marked (length bmkp-bmenu-marked-bookmarks)))
-        (let ((current-bmk  (bookmark-bmenu-bookmark)))
+        (let ((curr-bmk  (bookmark-bmenu-bookmark)))
           (bookmark-bmenu-surreptitiously-rebuild-list 'NO-MSG-P)
-          (when current-bmk (bmkp-bmenu-goto-bookmark-named current-bmk)))))
+          (when curr-bmk (bmkp-bmenu-goto-bookmark-named curr-bmk)))))
     (when msg-p (if (= 1 count) (message "1 bookmark matched") (message "%d bookmarks matched" count)))))
 
 ;;;###autoload (autoload 'bmkp-bmenu-mark-bookmarks-tagged-all "bookmark+")
@@ -3417,9 +3425,9 @@ Non-interactively:
       ;; If some were marked before, and if sort order is `s >', then re-sort.
       (when (and (equal bmkp-sort-comparer '((bmkp-marked-cp) bmkp-alpha-p))
                  (/= nb-marked (length bmkp-bmenu-marked-bookmarks)))
-        (let ((current-bmk  (bookmark-bmenu-bookmark)))
+        (let ((curr-bmk  (bookmark-bmenu-bookmark)))
           (bookmark-bmenu-surreptitiously-rebuild-list 'NO-MSG-P)
-          (when current-bmk (bmkp-bmenu-goto-bookmark-named current-bmk)))))
+          (when curr-bmk (bmkp-bmenu-goto-bookmark-named curr-bmk)))))
     (when msg-p (if (= 1 count) (message "1 bookmark matched") (message "%d bookmarks matched" count)))))
 
 ;;;###autoload (autoload 'bmkp-bmenu-unmark-bookmarks-tagged-all "bookmark+")
@@ -3504,9 +3512,9 @@ sort order is marked first or last (`s >'), then re-sort."
         ;; If some were (un)marked before but not afterward, and if sort order is `s >', then re-sort.
         (when (and (equal bmkp-sort-comparer '((bmkp-marked-cp) bmkp-alpha-p))
                    (/= nb-marked (length bmkp-bmenu-marked-bookmarks)))
-          (let ((current-bmk  (bookmark-bmenu-bookmark)))
+          (let ((curr-bmk  (bookmark-bmenu-bookmark)))
             (bookmark-bmenu-surreptitiously-rebuild-list 'NO-MSG-P)
-            (when current-bmk (bmkp-bmenu-goto-bookmark-named current-bmk)))))
+            (when curr-bmk (bmkp-bmenu-goto-bookmark-named curr-bmk)))))
       (when msg-p (if (= 1 count)
                       (message "1 bookmark matched")
                     (message "%d bookmarks matched" count))))))
@@ -3550,9 +3558,9 @@ sort order is marked first or last (`s >'), then re-sort."
         ;; If some were (un)marked before but not afterward, and if sort order is `s >', then re-sort.
         (when (and (equal bmkp-sort-comparer '((bmkp-marked-cp) bmkp-alpha-p))
                    (/= nb-marked (length bmkp-bmenu-marked-bookmarks)))
-          (let ((current-bmk  (bookmark-bmenu-bookmark)))
+          (let ((curr-bmk  (bookmark-bmenu-bookmark)))
             (bookmark-bmenu-surreptitiously-rebuild-list 'NO-MSG-P)
-            (when current-bmk (bmkp-bmenu-goto-bookmark-named current-bmk)))))
+            (when curr-bmk (bmkp-bmenu-goto-bookmark-named curr-bmk)))))
       (when msg-p
         (if (= 1 count) (message "1 bookmark matched") (message "%d bookmarks matched" count))))))
 
@@ -4441,15 +4449,15 @@ With a prefix arg, reverse the current sort order."
   (setq bmkp-sort-orders-for-cycling-alist  (delq nil bmkp-sort-orders-for-cycling-alist))
   (if arg
       (bmkp-reverse-sort-order)
-    (let ((current-bmk  (bookmark-bmenu-bookmark))
+    (let ((curr-bmk  (bookmark-bmenu-bookmark))
           next-order)
       (let ((orders  (mapcar #'car bmkp-sort-orders-for-cycling-alist)))
         (setq next-order          (or (cadr (member (bmkp-current-sort-order) orders))  (car orders))
               bmkp-sort-comparer  (cdr (assoc next-order bmkp-sort-orders-for-cycling-alist))))
       (message "Sorting...")
       (bookmark-bmenu-surreptitiously-rebuild-list 'NO-MSG-P)
-      (when current-bmk                 ; Put cursor back on the right line.
-        (bmkp-bmenu-goto-bookmark-named current-bmk))
+      (when curr-bmk                 ; Put cursor back on the right line.
+        (bmkp-bmenu-goto-bookmark-named curr-bmk))
       (when (interactive-p) (bmkp-msg-about-sort-order next-order)))))
 
 ;; This is a general command.  It is in this file because it is used only by the bmenu code.
@@ -4461,10 +4469,10 @@ If you combine this with \\<bookmark-bmenu-mode-map>\
   (interactive)
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (setq bmkp-reverse-sort-p  (not bmkp-reverse-sort-p))
-  (let ((current-bmk  (bookmark-bmenu-bookmark)))
+  (let ((curr-bmk  (bookmark-bmenu-bookmark)))
     (bookmark-bmenu-surreptitiously-rebuild-list 'NO-MSG-P)
-    (when current-bmk                   ; Put cursor back on the right line.
-      (bmkp-bmenu-goto-bookmark-named current-bmk)))
+    (when curr-bmk                   ; Put cursor back on the right line.
+      (bmkp-bmenu-goto-bookmark-named curr-bmk)))
   (when (interactive-p) (bmkp-msg-about-sort-order (bmkp-current-sort-order))))
 
 ;; This is a general command.  It is in this file because it is used only by the bmenu code.
@@ -4505,10 +4513,10 @@ use it."
   (interactive)
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (setq bmkp-reverse-multi-sort-p  (not bmkp-reverse-multi-sort-p))
-  (let ((current-bmk  (bookmark-bmenu-bookmark)))
+  (let ((curr-bmk  (bookmark-bmenu-bookmark)))
     (bookmark-bmenu-surreptitiously-rebuild-list 'NO-MSG-P)
-    (when current-bmk                   ; Put cursor back on the right line.
-      (bmkp-bmenu-goto-bookmark-named current-bmk)))
+    (when curr-bmk                   ; Put cursor back on the right line.
+      (bmkp-bmenu-goto-bookmark-named curr-bmk)))
   (when (interactive-p) (bmkp-msg-about-sort-order (bmkp-current-sort-order))))
 
 
