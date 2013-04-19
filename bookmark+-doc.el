@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Apr 16 08:23:05 2013 (-0700)
+;; Last-Updated: Fri Apr 19 08:51:48 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 14700
+;;     Update #: 14707
 ;; URL: http://www.emacswiki.org/bookmark+-doc.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -1986,6 +1986,31 @@
 ;;  list", a misnomer) that is displayed in buffer `*Bookmark List*'
 ;;  when you use `C-x p e' or `C-x r l' (command
 ;;  `bookmark-bmenu-list').
+;;
+;;  At the top of the bookmark-list display is this header
+;;  information:
+;;
+;;  * The bookmark file used currently.  This is important because
+;;    Bookmark+ makes it easy for you to have multiple bookmark files
+;;    and switch among them.
+;;
+;;  * A title that describes the kinds of bookmarks listed, that is,
+;;    it reflects athe current filtering, if any.
+;;
+;;  For example, this header indicates that the current bookmark file
+;;  is `c:/.emacs.bmk' and only file and directory bookmarks are
+;;  shown:
+;;
+;;    Bookmark file:
+;;    c:/.emacs.bmk
+;;
+;;    File and Directory Bookmarks
+;;    ----------------------------
+;;
+;;  (Bookmark+ does not use the sliding header line of vanilla Emacs
+;;  24+, which means that option `bookmark-bmenu-use-header-line' has
+;;  no effect.  You do not need to see `Bookmark' and `File' column
+;;  headers as you scroll.)
 ;;
 ;;  Bookmarks are highlighted to indicate their type. You can mark and
 ;;  unmark bookmarks, show or hide bookmarks of particular types, and
