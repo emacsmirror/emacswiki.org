@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Apr 15 19:47:14 2013 (-0700)
+;; Last-Updated: Fri Apr 19 07:29:18 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 15286
+;;     Update #: 15287
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2013/04/19 dadams
+;;     bookmark-exit-hook-internal: Removed test for non-empty bookmark-alist (Emacs bug #13972).
 ;; 2013/04/15 dadams
 ;;     bmkp-set-sequence-bookmark: Corrected case of adding one sequence to another.
 ;;     bookmark-write-file: Corrected write-out of sequence bookmarks.
