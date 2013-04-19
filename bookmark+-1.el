@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Mon Apr 15 19:44:37 2013 (-0700)
+;; Last-Updated: Fri Apr 19 07:31:37 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6234
+;;     Update #: 6239
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -2543,16 +2543,16 @@ candidate."
 If a file is bookmarked, insert the recorded file name.
 If a non-file buffer is bookmarked, insert the recorded buffer name.
 
-Optional second arg NO-HISTORY means do not record this in the
-minibuffer history list `bookmark-history'.
+Optional arg NO-HISTORY means do not record BOOKMARK-NAME in
+`bookmark-history'.
 
-If you use Icicles, then you can use `S-delete' during completion of a
+If you use Icicles then you can use `S-delete' during completion of a
 bookmark name to delete the bookmark named by the current completion
 candidate."
   (interactive
    (let ((bmk  (bookmark-completing-read "Insert bookmark location" (bmkp-default-bookmark-name))))
      (if (> emacs-major-version 21) (list bmk) bmk)))
-  (or no-history  (bookmark-maybe-historicize-string bookmark-name))
+  (unless no-history (bookmark-maybe-historicize-string bookmark-name))
   (insert (bookmark-location bookmark-name))) ; Return the line inserted.
 
 
@@ -3015,7 +3015,7 @@ Run `bookmark-exit-hook', then save bookmarks if they were updated.
 Then save menu-list state to file `bmkp-bmenu-state-file', but only if
 that option is non-nil."
   (run-hooks 'bookmark-exit-hook)
-  (when (and bookmark-alist  (bookmark-time-to-save-p t))  (bookmark-save))
+  (when (bookmark-time-to-save-p t) (bookmark-save))
   (bmkp-save-menu-list-state))
  
 ;;(@* "Bookmark+ Functions (`bmkp-*')")
