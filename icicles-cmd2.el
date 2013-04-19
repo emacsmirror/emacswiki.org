@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Tue Mar 26 16:51:48 2013 (-0700)
+;; Last-Updated: Fri Apr 19 10:29:01 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6420
+;;     Update #: 6424
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -6194,8 +6194,11 @@ submenus:
  8. Other        - other definitions
 
 If you use this command with a prefix argument then multiple buffers,
-files, or bookmarks are used (see `icicle-search' for information
-about prefix arg behavior).  When this is the case, the Imenu mode
+files, or bookmarks are used.  See `icicle-search' for information
+about prefix arg behavior and the use of
+`icicle-show-multi-completion-flag' in this context.
+
+When multiple buffers, files, or bookmarks are used, the Imenu mode
 \(and `imenu-generic-expression') of the current buffer at time of
 command invocation determines what kinds of definitions are found.
 So, if you want to search for definitions in a certain language, then
