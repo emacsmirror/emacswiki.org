@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Thu Apr 18 08:12:35 2013 (-0700)
+;; Last-Updated: Thu Apr 18 19:17:13 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 27720
+;;     Update #: 27721
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -7625,6 +7625,9 @@
 ;;  * Zero:        whose mode is the same as the current buffer mode
 ;;  * Positive:    visiting files
 ;;  * Negative:    associated with the selected frame
+;;
+;;  Those are the default behaviors, but you can change them using
+;;  option `icicle-buffer-prefix-arg-filtering'.
 ;;
 ;;  `icicle-buffer' (`C-x b' in Icicle mode, by default) is a
 ;;  multi-command that accepts multi-completion input: the first part
