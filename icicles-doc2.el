@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Thu Apr 18 08:18:39 2013 (-0700)
+;; Last-Updated: Thu Apr 18 19:27:40 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 29295
+;;     Update #: 29296
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -5638,6 +5638,12 @@
 ;;                            file)
 ;;                       (throw 'nevfp t)))
 ;;                   nil)))))
+;;
+;;  * Option `icicle-buffer-prefix-arg-filtering' defines the
+;;    prefix-argument filtering behavior for Icicles buffer commands.
+;;    It lets you choose what any given prefix argument (including
+;;    lack of a prefix argument) does to filter buffer-name completion
+;;    candidates.
 ;;
 ;;  * Options `icicle-buffer-include-cached-files-nflag' and
 ;;    `icicle-buffer-include-recent-files-nflag' also determine the
