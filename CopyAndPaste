@@ -10,7 +10,7 @@ If you don't care for the DefaultKillingAndYanking [[key binding]]s (##C-w##, ##
 
 == X11 Copy & Paste to/from Emacs: ==
 
-If you are having issues with cutting and pasting between emacs and other applications, it may be an issue with interactions between the UI's clipboard or selection buffer and the emacs.   Windows has a single clipboard buffer. X11 has more then one buffer.  Consider these solutions:
+If you are having issues with cutting and pasting between emacs and other applications, it may be an issue with interactions between the UI's clipboard or selection buffer and the emacs.   Windows has a single clipboard buffer. X11 has more than one buffer.  Consider these solutions:
 
 === XEmacs: ===
 
