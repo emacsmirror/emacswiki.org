@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Sep 11 10:29:56 1995
 ;; Version: 21.0
-;; Last-Updated: Fri Apr 19 10:05:02 2013 (-0700)
+;; Last-Updated: Sat Apr 20 09:28:08 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2836
+;;     Update #: 2839
 ;; URL: http://www.emacswiki.org/buff-menu+.el
 ;; Doc URL: http://www.emacswiki.org/BufferMenuPlus
 ;; Keywords: mouse, local, convenience
@@ -180,9 +180,9 @@
 ;;
 ;;; Change Log:
 ;;
-;; 2013/04/19 dadams
+;; 2013/04/20 dadams
 ;;     list-buffers-noselect and globally:
-;;       Set Buffer-menu-buffer+size-width to 26 if nil.  Emacs 24.3+ defaults it to nil.
+;;       Set Buffer-menu-buffer+size-width to 26 if nil or unbound.  Emacs 24.3+ defaults it to nil.
 ;; 2012/08/28 dadams
 ;;     Buffer-menu-select: Updated for Emacs 24.3+ (but I don't yet support > 24.2).
 ;;     Handle Emacs 23 capitalization of buffer-menu-mode-hook.
@@ -703,7 +703,8 @@ Click a column heading to sort by that field and update this option."
 
 
 ;; Emacs 24.3+ sets the default value to nil.
-(unless Buffer-menu-buffer+size-width (setq Buffer-menu-buffer+size-width  26))
+(unless (and (boundp 'Buffer-menu-buffer+size-width)  Buffer-menu-buffer+size-width)
+  (setq Buffer-menu-buffer+size-width  26))
 
 
 
