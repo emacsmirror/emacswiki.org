@@ -4,7 +4,7 @@ This page describes library <tt>[[modeline-posn.el]]</tt>, which provides extens
 
 The following extensions are provided by library ##modeline-posn.el##:
 
-* In TransientMarkMode, when the [[region]] is [[active region|active]], the size indicated is that of the region, not the [[buffer]]. This portion of the mode-line is then highlighted with face `region'.
+* In TransientMarkMode, when the [[region]] is [[active region|active]], the size indicated is that of the region, not the [[buffer]].  This portion of the mode-line is then highlighted with face `region'.  ([[option|Option]] '''`modelinepos-empty-region-flag'''' determines whether to also indicate an ''empty'' active region.)
 
 * Whenever the current column is greater than ‘modelinepos-column-limit’, the column-number indication in the mode-line is highlighted in face `font-lock-function-name-face'. This lets you know when you've gone past a certain number of characters in any line. You can customize user option ‘modelinepos-column-limit’, and you can bind it to different values in different modes. 
 
