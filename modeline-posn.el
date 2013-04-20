@@ -7,9 +7,9 @@
 ;; Copyright (C) 2006-2013, Drew Adams, all rights reserved.
 ;; Created: Thu Sep 14 08:15:39 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Feb  1 10:31:17 2013 (-0800)
+;; Last-Updated: Fri Apr 19 22:56:29 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 126
+;;     Update #: 134
 ;; URL: http://www.emacswiki.org/modeline-posn.el
 ;; Keywords: mode-line, region, column
 ;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x
@@ -49,6 +49,10 @@
 ;;  information at all.  It need not have anything to do with the
 ;;  region, but it is nevertheless shown when the region is active.
 ;;
+;;  Option `modelinepos-empty-region-flag' determines whether to show
+;;  the active-region indication when the active region is empty.  By
+;;  default it is nil, meaning do not indicate an empty active region.
+;;
 ;;  Note: Loading this library changes the default definition of
 ;;        `mode-line-position'.
 ;;
@@ -74,6 +78,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/04/19 dadams
+;;     Added: modelinepos-empty-region-flag.  Use it in mode-line-position.
 ;; 2013/02/01 dadams
 ;;     Do not show size of active region in mode line if it is empty.
 ;; 2012/05/25 dadams
@@ -145,6 +151,11 @@ Value `chars+lines' means print the number of characters and the number of lines
            (repeat :inline t (sexp :tag "Sexp argument for format string"))))
   :group 'Modeline :group 'Convenience :group 'Help)
 
+;;;###autoload
+(defcustom modelinepos-empty-region-flag nil
+  "*Non-nil means indicate an active region even when empty."
+  :type 'boolean :group 'Modeline :group 'Convenience :group 'Help)
+
 
 
 ;; REPLACES ORIGINAL defined in `simple.el'
@@ -177,11 +188,13 @@ delete others, mouse-3: delete this"))
                       (size-indication-mode
                        (8 ,(propertize
                             (if (and transient-mark-mode  mark-active
-                                     (/= (region-beginning) (region-end)))
+                                     (or modelinepos-empty-region-flag
+                                         (/= (region-beginning) (region-end))))
                                 (apply #'format (mapcar #'eval modelinepos-style))
                               " of %I")
                             'face (and transient-mark-mode  mark-active
-                                       (/= (region-beginning) (region-end))
+                                       (or modelinepos-empty-region-flag
+                                           (/= (region-beginning) (region-end)))
                                        'modelinepos-region)
                             'help-echo help-echo)))
                       (line-number-mode
@@ -217,11 +230,13 @@ delete others, mouse-3: delete this"))
                       (size-indication-mode
                        (8 ,(propertize
                             (if (and transient-mark-mode  mark-active
-                                     (/= (region-beginning) (region-end)))
+                                     (or modelinepos-empty-region-flag
+                                         (/= (region-beginning) (region-end))))
                                 (apply #'format (mapcar #'eval modelinepos-style))
                               " of %I")
                             'face (and transient-mark-mode  mark-active
-                                       (/= (region-beginning) (region-end))
+                                       (or modelinepos-empty-region-flag
+                                           (/= (region-beginning) (region-end)))
                                        'modelinepos-region)
                             'local-map mode-line-column-line-number-mode-map
                             'mouse-face 'mode-line-highlight
