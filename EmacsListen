@@ -1,4 +1,7 @@
 The EmacsLisp frontend to ShortTalk.
 
+[new:XueFuqiao:2013-04-20 06:26 UTC]
+It is unmaintained.  The latest commit in its [http://shorttalk-emacs.cvs.sourceforge.net/viewvc/shorttalk-emacs/shorttalk-emacs/ CVS Repository] was in 2004.  -- XueFuqiao
+
 ----
 SpeechToText
