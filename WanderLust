@@ -178,10 +178,5 @@ As of January 2012 there's an IRC channel <code>#wanderlust</code> at irc.freeno
 * http://thread.gmane.org/gmane.mail.wanderlust.general.japanese/8534 -- Simple setup from the mailing list.
 * http://www.mail-archive.com/emacs-orgmode@gnu.org/msg20250/wlconfiguration.org -- Good config, in org-mode.
 
-=== Sources & patches ===
-* https://github.com/wanderlust/wanderlust -- Semi-official up-to-date wanderlust development repository. 
-* http://www.jpl.org/elips/wl/ -- Official according to outdated home page.
-* http://repo.or.cz/w/more-wl.git -- Various patches.
-
 ----
 CategoryMail
