@@ -48,7 +48,7 @@ zoom out and browse the organization of a file at a higher level.
 
 See also these libraries, for similar functionality:
 
-* <tt>[[zoom-frm.el]]</tt>, commands `zoom-in' and `zoom-out'
+* <tt>[[zoom-frm.el]]</tt>, commands `zoom-in/out', `zoom-in', and `zoom-out'
 * DoReMi, commands `doremi-frame-font-size' and `doremi-buffer-font-size'
 * [[Icicles]], command `icicle-font'
 
