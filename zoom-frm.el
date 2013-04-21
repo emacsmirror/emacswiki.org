@@ -7,9 +7,9 @@
 ;; Copyright (C) 2005-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Jan 07 10:24:35 2005
 ;; Version: 20
-;; Last-Updated: Sun Apr 21 11:18:15 2013 (-0700)
+;; Last-Updated: Sun Apr 21 11:52:37 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 286
+;;     Update #: 289
 ;; URL: http://www.emacswiki.org/zoom-frm.el
 ;; Doc URL: http://emacswiki.org/SetFonts
 ;; Keywords: frames, extensions, convenience
@@ -35,7 +35,8 @@
 ;;
 ;;  Because it is a more general replacement for `text-scale-adjust',
 ;;  I suggest you bind `zoom-in/out' to the keys bound by default to
-;;  `text-scale-adjust': `C-x +', `C-x =', `C-x -', and `C-x 0'.
+;;  `text-scale-adjust': `C-x C-+', `C-x C-=', `C-x C--', and `C-x
+;;  C-0'.
 ;;
 ;;  It is also handy to use a mouse button or wheel for zooming, hence
 ;;  the mouse binding suggestions.  For example, binding `zoom-in' and
@@ -335,9 +336,9 @@ A prefix arg determines the behavior, as follows:
 Similar to the behavior of command `text-scale-adjust', you can
 continue to use any of the keys `+', `-', `0', and `C-u' repeatedly.
 The zoom amount from the initial key sequence is used each time.
-Example:
 
-`C-3 C-x - - - -' zooms out 4 times with a zoom amount of 3 each time.
+Example: `C-3 C-x C-- C-- C-- C--' zooms out 4 times with a zoom
+amount of 3 each time.
 
 The zoom amount for frame zooming is a point-size increment/decrement.
 The zoom amount for buffer zooming is a number of text-scaling steps.
