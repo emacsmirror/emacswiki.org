@@ -7,9 +7,9 @@
 ;; Copyright (C) 2004-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 10 16:44:55 2004
 ;; Version: 21.0
-;; Last-Updated: Wed Apr 17 09:58:15 2013 (-0700)
+;; Last-Updated: Sun Apr 21 12:33:59 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 1509
+;;     Update #: 1518
 ;; URL: http://www.emacswiki.org/thumb-frm.el
 ;; Doc URL: http://www.emacswiki.org/FisheyeWithThumbs
 ;; Keywords: frame, icon
@@ -263,6 +263,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/04/21 dadams
+;;     thumfr-dethumbify-all-frames: Added prefix arg behavior (arg ICONIFIED-ALSO-P).
+;;     thumfr-cull-thumbnail-frames: Added optional arg KEEP-ICONIFIED-P.
+;;     thumfr-deiconify-thumbnail-frames: Pass arg to thumfr-cull-thumbnail-frames (bug fix).
 ;; 2013/04/17 dadams
 ;;     thumfr-frame-parameters: Added :set.  Added (scroll-bar-width . 6).
 ;;     Moved defvars before defcustoms (thumfr-frame-parameters uses thumfr-thumbnail-frames).
@@ -758,11 +762,14 @@ Dethumbify the next frame (if it is a thumbnail frame)."
   (message "%s" (get-frame-name)))
 
 ;;;###autoload
-(defun thumfr-dethumbify-all-frames ()
+(defun thumfr-dethumbify-all-frames (&optional iconified-also-p)
   "Dethumbify all visible frames
-restoring them to their states before they were thumbified."
-  (interactive)
-  (dolist (fr (mapcar 'car (thumfr-cull-thumbnail-frames))) (thumfr-dethumbify-frame fr))
+restoring them to their states before they were thumbified.
+With a prefix arg, restore also iconified frames, not just thumbified
+frames."
+  (interactive "P")
+  (dolist (fr (mapcar 'car (thumfr-cull-thumbnail-frames iconified-also-p)))
+    (thumfr-dethumbify-frame fr))
   (setq thumfr-thumbnail-frames  ()))   ; Make sure.
 
 
@@ -1015,15 +1022,19 @@ Non-nil prefix FORCE-P => Sort iff FORCE-P >= 0."
   "Deiconify all thumbnail frames."
   (interactive)
   (mapcar (lambda (fr-spec) (make-frame-visible (car fr-spec)))
-          (thumfr-cull-thumbnail-frames)))
+          (thumfr-cull-thumbnail-frames 'KEEP-ICONIFIED)))
 
-(defun thumfr-cull-thumbnail-frames ()
+(defun thumfr-cull-thumbnail-frames (&optional keep-iconified-p)
   "Remove iconified and useless frames from `thumfr-thumbnail-frames'.
-This includes dead and invisible frames."
+This includes dead and invisible frames.
+Non-nil optional arg KEEP-ICONIFIED-P means do not remove iconified
+frames."
   (setq thumfr-thumbnail-frames  (thumfr-delete-if-not
                                   (lambda (fr+params)
                                     (and (frame-live-p (car fr+params))
-                                         (eq t (frame-visible-p (car fr+params)))))
+                                         (frame-visible-p (car fr+params))
+                                         (or keep-iconified-p
+                                             (eq t (frame-visible-p (car fr+params))))))
                                   thumfr-thumbnail-frames)))
 
 ;; Define this here to avoid requiring `cl.el' at runtime.
