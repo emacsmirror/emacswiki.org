@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 21.1
-;; Last-Updated: Wed Mar  6 14:37:35 2013 (-0800)
+;; Last-Updated: Sun Apr 21 11:24:49 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 1179
+;;     Update #: 1184
 ;; URL: http://www.emacswiki.org/setup-keys.el
 ;; Keywords: mouse, keyboard, menus, menu-bar
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -67,6 +67,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/04/21 dadams
+;;     Bind zoom-in/out to C-x +, C-x -, C-x =, C-x 0.
 ;; 2013/03/06 dadams
 ;;     Bind C-x C-M-SPC to set-secondary-start, C-x C-M-RET to secondary-save-then-kill.
 ;; 2013/01/17 dadams
@@ -461,7 +463,13 @@
                       [C-mouse-wheel])  ; Emacs 20, 21
      'zoom-in)
     (when (boundp 'mouse-wheel-up-event)
-      (global-set-key (vector (list 'control mouse-wheel-up-event)) 'zoom-out))))
+      (global-set-key (vector (list 'control mouse-wheel-up-event)) 'zoom-out))
+
+    (when (fboundp 'text-scale-adjust)  ; Emacs 23+
+      (define-key ctl-x-map [(control ?+)] 'zoom-in/out)                         ; `C-x +'
+      (define-key ctl-x-map [(control ?-)] 'zoom-in/out)                         ; `C-x -'
+      (define-key ctl-x-map [(control ?=)] 'zoom-in/out)                         ; `C-x ='
+      (define-key ctl-x-map [(control ?0)] 'zoom-in/out))))                      ; `C-x 0'
 
 ;;;   ;; These [nil] bindings are no doubt a HACK, based on an undocumented handy "feature".
 ;;;   ;; (This works in Emacs 19.34.6, but it doesn't work in Emacs 20.6.)
