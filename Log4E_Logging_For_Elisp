@@ -1,0 +1,38 @@
+If you want to get a log when developing in Elisp, what are you doing?
+
+Try to collect up the way in this page.
+
+== Log4E ==
+
+'log4e.el' provides a logging framework for Elisp.
+
+For detail, see https://github.com/aki2o/log4e
+
+=== Coding Sample ===
+
+By using 'log4e.el', you can develop about logging like the following in your elisp.
+
+<pre>
+(require 'log4e)
+(log4e:deflogger "hoge" "%t [%l] %m" "%H:%M:%S" '((fatal . "fatal")
+                                                  (error . "error")
+                                                  (warn  . "warn")
+                                                  (info  . "info")
+                                                  (debug . "debug")
+                                                  (trace . "trace")))
+
+(defun hoge-do-hoge (hoge)
+  (if (not (stringp hoge))
+      (progn (hoge--fatal "failed do hoge : hoge is '%s'" hoge)
+             (hoge--log-open-log-if-debug))
+    (hoge--debug "start do hoge about '%s'" hoge)
+    (message "hoge!")
+    (hoge--info "done hoge about '%s'" hoge)))
+</pre>
+
+=== Log Sample ===
+
+You can get like the following buffer for your elisp.
+
+[[image:Log4EScreenshot]]
+
