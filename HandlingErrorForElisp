@@ -1,0 +1,71 @@
+The default way for handling error on Elisp is troublesome.
+
+'yaxception.el' provides a framework about exception like Java for Elisp.
+
+For detail, see https://github.com/aki2o/yaxception
+
+== Coding like Java's try/catch/finally/throw ==
+
+You can develop about exception like the following.
+
+<pre>
+(yaxception:$
+  (yaxception:try
+    (delete-file "not found"))
+  (yaxception:catch 'file-error e
+    (message "Error happened by handling file : %s" (yaxception:get-text e)))
+  (yaxception:catch 'error e
+    (message "Error happened by something : %s" (yaxception:get-text e))
+    (yaxception:throw e))
+  (yaxception:finally
+    (message "finished doing")))
+</pre>
+
+== Customized Error ==
+
+You can define and raise a customized error.
+
+<pre>
+;; define hoge-error as child of file-error
+(yaxception:deferror 'hoge-error
+                     'file-error
+                     "Errored by hoge file - path:[%s] size:[%s]" 'path 'size)
+
+;; raise customized error
+(yaxception:throw 'hoge-error
+                  :path "c:/hoge.txt"
+                  :size (nth 7 (file-attributes "c:/hoge.txt")))
+</pre>
+
+== Stacktrace like Java ==
+
+You can get a stacktrace like Java.
+
+=== Coding Sample ===
+
+<pre>
+(defun aaa (aa bb &optional cc) (bbb bb))
+(defun bbb (bb) (ccc))
+(defun ccc () (replace-regexp-in-string " " "" 'hogege))
+(defun xxx (zzz) "xxx")
+(defun yyy () "yyy")
+    
+(yaxception:$
+  (yaxception:try
+    (xxx "hoge")
+    (yyy)
+    (aaa "ABC" "DEF" '("GHI" "JKL")))
+  (yaxception:catch 'error e
+    (message "%s" (yaxception:get-stack-trace-string e))))
+</pre>
+
+=== Output Sample ===
+
+<pre>
+Exception is 'wrong-type-argument'. Wrong type argument: sequencep, hogege
+  at replace-regexp-in-string(\" \" \"\" hogege)
+  at ccc()
+  at bbb(\"DEF\")
+  at aaa(\"ABC\" \"DEF\" (\"GHI\" \"JKL\"))
+  in yaxception:try
+</pre>
