@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Mar  5 16:30:45 1996
 ;; Version: 21.0
-;; Last-Updated: Tue Mar 12 13:12:42 2013 (-0700)
+;; Last-Updated: Sun Apr 21 10:25:44 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2739
+;;     Update #: 2740
 ;; URL: http://www.emacswiki.org/frame-cmds.el
 ;; Doc URL: http://emacswiki.org/FrameModes
 ;; Doc URL: http://www.emacswiki.org/OneOnOneEmacs
@@ -250,8 +250,8 @@
 ;;     `thumb-frm.el'     - Shrink frames to a thumbnail size and
 ;;                          restore them again.
 ;;
-;;     `zoom-frm.el'      - Zoom a frame, so that its font becomes
-;;                          larger or smaller.
+;;     `zoom-frm.el'      - Zoom a frame or buffer, so that its text
+;;                          appears larger or smaller.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
