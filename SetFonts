@@ -35,6 +35,10 @@ I found that the only way to set fonts so that they remain consistent across ema
 in my ~/.Xresources and ~/.emacs, respectively.
 
 
+
+
+
+
 [:ChangingFontSize]
 == Changing Font Size ==
 
@@ -47,14 +51,18 @@ You can resize (text-scale) the text in a buffer (in all windows showing it), or
 
 Starting with GnuEmacs 23, you can zoom the text in the current [[buffer]], in all frames displaying it:
 
-* Vanilla Emacs: You can use `##C-x C-+##' and `C-x C--' to increase or decrease the buffer text size (`##C-+##' or `C--' to repeat).  To restore the default (global) face height, type C-x C-0.  `S-mouse-1' pops up a menu where you can choose these same actions.
+* Vanilla Emacs: You can use `##C-x C-+##' and `C-x C--' (`text-scale-adjust') to increase or decrease the buffer text size (`##C-+##' or `C--' to repeat).  To restore the default (global) face height, type `C-x C-0'.  `S-mouse-1' pops up a menu where you can choose these same actions.
 
 [new]
-: If you use a fontset with Xft, `##C-x C-+##` this does not scale the secondary font.  For example, If you use a fontset -- ##dejavu-sans-mono## for latin, ##NanumGothic_Coding## for hangul(Korean) --, increasing the text size does not scale the Korean characters. --cinsk
+:: BUG? -- If you use a fontset with Xft, `##C-x C-+##' this does not scale the secondary font.  For example, If you use a fontset -- ##dejavu-sans-mono## for latin, ##NanumGothic_Coding## for hangul(Korean) -- , increasing the text size does not scale the Korean characters. -- [[cinsk]]
 [new]
 
 
-* '''`zoom-in'''', '''`zoom-out'''' (in <tt>[[zoom-frm.el]]</tt>) -- Use the mouse wheel, like you do in a Web browser, or use mouse clicks. You can use these same commands to zoom a frame (see [[#ZoomFrame|above]]): `C-u' toggles the buffer/frame behavior.
+
+[:zoom-in-out]
+[:zoom-in]
+[:zoom-out]
+* '''`zoom-in/out'''', '''`zoom-in'''', '''`zoom-out'''' (in <tt>[[zoom-frm.el]]</tt>) -- The first is a more general replacement for the vanilla command (`text-scale-adjust') bound by default to `##C-x C-+##', `C-x C--', `C-x C-0', and `##C-x C-=##'.  You can bind the other two to mouse-wheel rotations, so you can use the wheel like you do in a Web browser.  You can also use these same commands to zoom a frame (see [[#ZoomFrame|below]]): `C-u' for each command toggles between buffer and frame zooming.  And `C-u' while repeating toggles buffer/frame on the fly during '''`zoom-in/out''''.
 
 * '''`doremi-buffer-font-size'''' (in <tt>[[doremi-frm.el]]</tt>) -- Change buffer font size incrementally using the arrow keys or the mouse wheel.
 
@@ -66,17 +74,27 @@ Starting with GnuEmacs 23, you can zoom the text in the current [[buffer]], in a
 
 
 
+
+
 [:ZoomFrame]
 === Resize (Zoom) Frame Font Incrementally ===
 
-You can use any of the following to increase or decrease the font size for the current [[frame]], effectively resizing it incrementally -- ''zooming'' the text in or out:
+You can use any of the following to increase or decrease the font size for the current [[frame]], effectively resizing it incrementally -- ''zooming'' the text in or out.  
 
-* '''`zoom-in'''', '''`zoom-out'''' (in <tt>[[zoom-frm.el]]</tt>) -- Use the mouse wheel, like you do in a Web browser, or use mouse clicks (or bind to keyboard [[key]]s).  You can use these same commands to zoom a buffer (see [[#ZoomBuffer|below]]): `C-u' toggles [[option]] `zoom-frame/buffer', which determines the behavior.
+* '''`zoom-in/out'''', '''`zoom-in'''', '''`zoom-out'''' (in <tt>[[zoom-frm.el]]</tt>) -- see [[#zoom-in|above]] for the descriptions.  For frame zooming these zoom all windows of the frame, and they do not affect the display in another frame of a buffer that is shown in the frame.
+
 * '''`zoom-frm-unzoom'''' (in <tt>[[zoom-frm.el]]</tt>) -- Undo any frame zooming from `zoom-in' and `zoom-out'.
+
 * '''`toggle-zoom-frame'''' (in <tt>[[zoom-frm.el]]</tt>) -- Alternately zoom a frame and unzoom it.
+
 * '''`doremi-frame-font-size'''' (in <tt>[[doremi-frm.el]]</tt>) -- Change frame font size incrementally using the arrow keys or the mouse wheel.
+
 * '''`enlarge-font'''' (in <tt>[[frame-cmds.el]]</tt>) -- Change font size by a given increment (prefix arg).
+
 * CycleFontSizes -- Cycle a sequence of font sizes.
+
+
+
 
 
 === Resize Frame Font using Lisp ===
