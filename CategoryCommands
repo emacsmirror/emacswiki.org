@@ -21,6 +21,7 @@ See also CategoryCode
 
 = Packages for command manipulation= 
 * CommandLogMode -- Demonstrate your Emacs editing skills to other people
+* InteractionLogMode -- An exhaustive log of your interactions with Emacs
 * DoReMi -- Define commands that change things incrementally.
 * ExecAbbrevCmd -- Execute emacs commands by giving an abbreviation
 * [[Icicles]] -- Define commands that read and match input (simple or [[regexp]]), providing input-[[completion]] and [[Icicles - Cycling Completions|cycling]] of matching candidates. Define multiple-choice commands and menus easily.
