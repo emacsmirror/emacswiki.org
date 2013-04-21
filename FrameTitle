@@ -13,14 +13,6 @@ to rename a frame named ##OLD-NAME## to ##NEW-NAME##.
 : ##OLD-NAME## can be a frame, its name, or `nil'.  Default is `selected-frame'.
 : ##NEW-NAME## is a string or `nil'.  Default ##NEW-NAME## is current `buffer-name'.
 
-
-
-
-
-
-
-
-
 == Setting the Frame Title and Icon Title ==
 
 The frame title is changed by changing the value of the variable
@@ -50,10 +42,6 @@ as variable `mode-line-format':
     %[ -- print one [ for each recursive editing level.  %] similar.
     %% -- print %.   %- -- print infinitely many dashes.
   Decimal digits after the % specify field width to which to pad.
-
-
-
-
 
 === Examples of Setting Frame and Icon Titles ===
 
@@ -102,11 +90,6 @@ Display date/time if `display-time-mode' is set:
 
 Feel free to add your titles here!
 
-
-
-
-
-
 === Discussion ===
 
 [new]
@@ -134,12 +117,21 @@ but I still do not know how they work (don't let me google, I have googled a lot
 
 [new:DrewAdams:2012-06-28 14:24 UTC]
 See the Elisp manual, here: [[Manual:Frame Titles]]. It refers you to [[Manual:Mode Line Data]] for the details.  How did I find that in the manual?  `i' (`Info-index') in a manual is your friend.  -- DrewAdams
-
-
-
-
-
-
+[new:targzeta:2013-04-21 22:24 UTC]
+From `mode-line-format`:
+<pre>
+The value may be nil, a string, a symbol or a list.
+...
+A list whose car is a string or list is processed by processing each
+of the list elements recursively, as separate mode line constructs,
+and concatenating the results.
+...
+A list whose car is a symbol is processed by examining the symbol's
+value, and, if that value is non-nil, processing the cadr of the list
+recursively; and if that value is nil, processing the caddr of the
+list recursively.
+</pre>
+targzeta
 
 == Setting Xterm Window Titles from within Emacs ==
 
@@ -154,9 +146,6 @@ and the following snippet for your <code>.emacs</code>:
       (xterm-title-mode 1))
 
 Then modify the frame/icon frame title variables as you would in a window system.
-
-
-
 
 === Notes ===
 
