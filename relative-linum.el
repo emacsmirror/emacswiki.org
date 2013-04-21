@@ -2,7 +2,7 @@
 
 ;; Version: 1.1
 ;; Author: Wilfred Hughes <me@wilfred.me.uk>
-;; Mostly taken from http://stackoverflow.com/a/7882046 by phils
+;; Taken from http://stackoverflow.com/a/6928112 by phils
 
 ;; This file is not part of GNU Emacs.
 ;; However, it is distributed under the same license.
