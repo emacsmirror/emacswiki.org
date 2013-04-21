@@ -23,7 +23,7 @@
 ;;; Commentary:
 
 ;;; ChangeLog
-;; 1.4: simplified code; removed font save/restore
+;; 1.4: overhauled code; removed font save/restore, and made support for maximizing/deiconifying generic
 ;; 1.3: simplified install (now just copy one line to .emacs, and eval the next)
 ;; 1.3: added checks for running in terminal
 ;; 1.3: added checks for running on non-w32
@@ -51,20 +51,14 @@
     (set-frame-position (selected-frame) (max (eval (first frame-restore-params)) 0)
                         (max (eval (second frame-restore-params)) 0))
     (when (fifth frame-restore-params)
-        (if (eq window-system 'w32)
-            (w32-send-sys-command ?\xf030)
-          ;; FIXME: else, do X something to maximize window
-          ))))
+      (set-frame-parameter (selected-frame) 'fullscreen 'maximized))))
 
 (add-hook 'desktop-after-read-hook 'frame-restore)
 
 ;; Add our vars to the save list so `desktop.el' will save them out to disk
 (defun frame-restore-save ()
   "Save the frame parameters in `frame-restore-params'."
-  (if (eq window-system 'w32)
-      (w32-send-sys-command ?\xf120) ; restore the frame (so we can save the 'restored' size/pos)
-    ;; FIXME: else, do X something to restore the frame
-    )
+  (make-frame-visible)
   (add-to-list 'desktop-globals-to-save 'frame-restore-params)
   (setq frame-restore-params 
         (list
