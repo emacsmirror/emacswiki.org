@@ -113,7 +113,7 @@ need not actually use that argument).
 Using a lambda expression here is a good way to ''curry'' a function
 that requires multiple arguments, so that it adapts to expect just
 a single argument of the appropriate object type.  For example,
-##(lambda (sym-name) (get (intern (sym-name)) 'invisible))##
+##(lambda (sym-name) (get (intern sym-name) 'invisible))##
 transforms function `get', which takes a [[symbol]] and a property as arguments, to
 a function that takes a symbol name and looks up the `invisible'
 property of the symbol.
