@@ -760,7 +760,7 @@ is interrupted (canceled), and not the minibuffer.
 Repeating `C-g' a few times can in many cases cancel the
 minibuffer as well.  But you can always cancel a minibuffer
 immediately and pop up to the previous level by hitting '''`##C-]##''''
-(`icicle-abort-recursive-minibuffer').
+(`icicle-abort-recursive-edit').
 
 So `C-g' cancels the current command, which sometimes means
 canceling the minibuffer.  And `##C-]##' cancels the current
