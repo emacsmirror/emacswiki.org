@@ -179,10 +179,8 @@ Argument PROC process."
     "Send to connected PROC a MESSAGE."
   (tcp-server-trace proc (concat "S:" message))
   (process-send-string proc message)
-  ;;  (message "Hello")
   (when tcp-server-sleep-after-send
     (sleep-for tcp-server-sleep-after-send))
-  ;;  (tcp-server-trace proc (concat "sent " message " to " (process-name proc)))
   )
 
 (defun tcp-server-broadcast-now()
