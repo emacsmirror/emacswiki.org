@@ -275,7 +275,7 @@ provide.  See [[Icicles - Libraries#Optional|Recommended Libraries]].
 ----
 
 [:FlashyDemo]
-== Flashy Demo to Peak Your Curiosity ==
+== Flashy Demo to Pique Your Curiosity ==
 
 This section shows a few examples to get you started and hopefully
 interested.  Subsequent sections in this nutshell view show more
@@ -435,9 +435,11 @@ also use [[Icicles - Info Enhancements#UsingIcicleSearchWithInfo|Icicles search]
 But this example uses the same approach as in the [[#SecondExampleMultiCompletion|second one]] :
 match node names and node content.
 
-: '''1.''' Start by searching all nodes of the manual for `indent':
+: '''1.''' Start by searching all nodes of the Emacs manual for `indent':
 
-     g C-M-j indent
+     C-h r
+
+     g C-M-j indent S-TAB
 
 : That takes a moment, and shows lots of matching nodes.
 
@@ -452,7 +454,7 @@ too many to browse.
 `Glossary', and they just get in the way, so get rid of them.
 First match only those nodes, by name:
 
-     loss S-TAB
+     S-SPC loss S-TAB
 
 : Then toss those nodes out and ask to match something else:
 
@@ -475,7 +477,7 @@ First match only those nodes, by name:
 
 : '''5.''' There's a lot of Fortran stuff there, which you can remove:
 
-      C-M-j fortr S-TAB C-~
+      S-SPC fortr S-TAB C-~
 
 
 : '''6.''' Now selectively remove some of the other ones individually.
