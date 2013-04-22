@@ -1,6 +1,6 @@
 ;;; tcp-server.el --- an emacs tcp server
 
-;; Author: frédéric frances.
+;; Author: frédéric frances. http://www.emacswiki.org/emacs/FredericFrances
 ;; Keywords: tcp-server
 
 ;;; Commentary:
