@@ -35,7 +35,7 @@ at most a given number of character operations, the so-called
 [[LevenshteinDistance|Levenshtein distance]].    You must have library <tt>[[levenshtein.el]]</tt> to use this.
 
 * '''[[#JaroWinklerMatchCompletion|Jaro-Winkler]]''' -- This method gives matching weight to having both
-(a) more characters that match in the right positions (Jara) and
+(a) more characters that match in the right positions (Jaro) and
 (b) a longer exact prefix within the first four characters
 (Winkler).
 
