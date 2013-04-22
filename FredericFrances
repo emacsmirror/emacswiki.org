@@ -3,8 +3,13 @@ I'm a emacs user currently using emacs 24 on windows and linux.
 I've an old french page on this wiki, see FrédéricFrances, and I'm actually writing a new on in English.
 I'm using emacs since 1999 mostly on my work as developper.
 
-My recent works:
- * http://www.emacswiki.org/emacs/tcp-server.el
+My recent works: 
+: * [http://www.emacswiki.org/emacs/tcp-server.el tcp-server.el]
+:: Use *M-x customize-group tcp-server* to declare a tcp-server (filter is to be used as callback function, answer can be sent using tcp-server-send)
+:: Use *tcp-server-start-all-servers* and *tcp-server-stop-all-servers* to either start or stop servers.
+:: Trace on server are logged in buffer \*tcp-server\* only if *toggle-tcp-server-trace* is not nil.
+
+
 
 
 
