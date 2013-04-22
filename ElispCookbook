@@ -454,7 +454,7 @@ There's a set of functions that work in strings, and a set that work in buffers.
     (string-match "foo*" "Fight foo for food!")
     ==> 6
 
-Buffers:
+Using a temporary buffer instead:
 
     (with-temp-buffer
       (insert "Fight foo for food!")
@@ -483,7 +483,7 @@ Sometimes you just want to check whether you're at the right place:
     (replace-regexp-in-string "foo*" "fu" "Fight foo for food!")
     ==> "Fight fu fur fud!"
 
-Buffers:
+Using a temporary buffer instead:
 
     (with-temp-buffer
        (insert "Fight foo for food!")
