@@ -49,7 +49,9 @@ Normal, non multi-command `find-file' uses this prompt, which has no `##+##':
 : ##Find file:## 
 
 Just remember that '''`##+##''''
-means that you can choose any number of inputs. For a list of predefined '''Icicles''' multi-commands, use `##M-?##' (`icicle-minibuffer-help') in the [[minibuffer]] -- search for `##+##' at the beginning of a line. 
+means that you can choose any number of inputs.
+
+
 
 
 
