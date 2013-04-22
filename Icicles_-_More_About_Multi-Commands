@@ -49,8 +49,8 @@ you can use `C-S-RET' to print one or more files on the fly, even as you are com
 the name of a file to be visited.
 
 Keys '''`##C-|##'''' and '''`##M-|##'''' apply the ''alternative'' action defined for a
-given multi-command to '''''all''''' matching candidates at once, in the same way that
-'''`##C-!##'''' and '''`##M-!##'''' apply the main action defined for it to all candidates.  See [[Icicles - Choose All Candidates]].
+given multi-command to '''''all''''' matching candidates at once.  (In the same way, 
+'''`##C-!##'''' and '''`##M-!##'''' apply the ''main'' action defined for it to all candidates. --- see [[Icicles - Choose All Candidates]].)
 
 
 
