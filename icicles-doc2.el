@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Mon Apr 22 11:36:29 2013 (-0700)
+;; Last-Updated: Mon Apr 22 13:27:33 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 29300
+;;     Update #: 29302
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -3893,7 +3893,7 @@
 ;;    to use this.
 ;;
 ;;  * Jaro-Winkler - This method gives matching weight to having both
-;;    (a) more characters that match in the right positions (Jara) and
+;;    (a) more characters that match in the right positions (Jaro) and
 ;;    (b) a longer exact prefix within the first four characters
 ;;    (Winkler).
 ;;
@@ -4804,7 +4804,7 @@
 ;;    that candidate is used immediately, without requiring you to hit
 ;;    `RET' or `S-RET'.
 ;;
-;;  * When `icicle-top-level-when-sole-completion-flag' is `nil',
+;;  * When `icicle-top-level-when-sole-completion-flag' is non-`nil',
 ;;    option `icicle-top-level-when-sole-completion-delay' is the
 ;;    number of seconds Icicles waits, before returning to top level
 ;;    with the sole completion.  (It has no effect if the flag is
