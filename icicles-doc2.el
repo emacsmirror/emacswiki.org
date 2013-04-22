@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun Apr 21 12:44:45 2013 (-0700)
+;; Last-Updated: Mon Apr 22 11:36:29 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 29297
+;;     Update #: 29300
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1421,9 +1421,10 @@
 ;;  `icicle-comint-search').
 ;;
 ;;  [Programmer Note: Actually, the way this works is that `C-c `' is
-;;  bound to the value of internal variable `icicle-search-generic'.
-;;  You can use this mechanism to provide custom Icicles search
-;;  commands for particular buffers.]
+;;  bound to `icicle-search-generic', which calls the command that is
+;;  the value of internal variable `icicle-search-command'.  You can
+;;  use this mechanism to provide custom Icicles search commands for
+;;  particular buffers.]
 ;;
 ;;  Besides the commands described in this section, there are Icicles
 ;;  search commands for navigating tags-file definitions and searching
@@ -6243,13 +6244,12 @@
 ;;    whose names end in `t'.  See
 ;;    (@file :file-name "icicles-doc1.el" :to "What About Special-Character Conflicts?").
 ;;
-;;  * Starting with Emacs 23, and if the current `TAB' completion
-;;    method is `vanilla' (see (@* "Fuzzy Completion")), you can
-;;    complete environment variables during file-name completion,
-;;    using `TAB'.  So you can, for example, complete `$HO' to any of
-;;    the candidates `HOME', `HOMEDRIVE', `HOMEPATH'.  This is in
-;;    addition to the expansion of complete environment variables
-;;    (e.g. `$HOME' to `/my/home/dir/') when you use `S-TAB' or `RET'.
+;;  * Starting with Emacs 23, you can complete environment variables
+;;    during file-name completion, using `TAB'.  So you can, for
+;;    example, complete `$HO' to any of the candidates `HOME',
+;;    `HOMEDRIVE', `HOMEPATH'.  This is in addition to the expansion
+;;    of complete environment variables (e.g. `$HOME' to
+;;    `/my/home/dir/') when you use `S-TAB' or `RET'.
 ;;
 ;;  * You can use the idiom `\W$' as input to match only directories,
 ;;    when a command asks for a file or directory name.  The `\W' says
