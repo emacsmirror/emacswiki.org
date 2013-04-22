@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Thu Apr 18 19:17:13 2013 (-0700)
+;; Last-Updated: Sun Apr 21 18:40:16 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 27721
+;;     Update #: 27726
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -177,7 +177,7 @@
 ;;    (@> "README for NON-Readers")
 ;;    (@> "Menus")
 ;;    (@> "README")
-;;    (@> "Flashy Demo to Peak Your Curiosity")
+;;    (@> "Flashy Demo to Pique Your Curiosity")
 ;;      (@> "First Example: Multi-Inputs")
 ;;      (@> "Second Example: Multi-Completions")
 ;;      (@> "Third Example: Narrowing a Manual")
@@ -711,8 +711,8 @@
 ;;  order to use Icicles, but they are recommended because of the
 ;;  synergy they provide.  See (@> "Installing Icicles").
 ;;
-;;(@* "Flashy Demo to Peak Your Curiosity")
-;;  ** Flashy Demo to Peak Your Curiosity **
+;;(@* "Flashy Demo to Pique Your Curiosity")
+;;  ** Flashy Demo to Pique Your Curiosity **
 ;;
 ;;  This section shows a few examples to get you started and hopefully
 ;;  interested.  Subsequent sections in this nutshell view show more
@@ -848,9 +848,11 @@
 ;;  But this example uses the same approach as in the second one:
 ;;  match node names and node content.
 ;;
-;;  1. Start by searching all nodes of the manual for `indent':
+;;  1. Start by searching all nodes of the Emacs manual for `indent':
 ;;
-;;       g C-M-j indent
+;;       C-h r
+;;
+;;       g C-M-j indent S-TAB
 ;;
 ;;     That takes a moment, and shows lots of matching nodes.
 ;;
@@ -865,7 +867,7 @@
 ;;     `Glossary', and they just get in the way, so get rid of them.
 ;;     First match only those nodes, by name:
 ;;
-;;       loss S-TAB
+;;       S-SPC loss S-TAB
 ;;
 ;;     Then toss those nodes out and ask to match something else:
 ;;
@@ -887,7 +889,7 @@
 ;;
 ;;   5. There's a lot of Fortran stuff there, which you can remove:
 ;;
-;;        C-M-j fortr S-TAB C-~
+;;        S-SPC fortr S-TAB C-~
 ;;
 ;;   6. Now selectively remove some of the other ones individually.
 ;;      You can do that by clicking them with `S-mouse-2' or by
@@ -5039,9 +5041,7 @@
 ;;    Find file:
 ;;
 ;;  Just remember that `+' means that you can choose any number of
-;;  inputs.  For a list of predefined Icicles multi-commands, use
-;;  `M-?' (`icicle-minibuffer-help') in the minibuffer - search for
-;;  `+' at the beginning of a line.
+;;  inputs.
 ;;
 ;;(@* "How Does a Multi-Command Work?")
 ;;  ** How Does a Multi-Command Work? **
