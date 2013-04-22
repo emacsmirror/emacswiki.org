@@ -1,5 +1,4 @@
 StripeBuffer is mode that striple buffer with color overlay.
 
-You can get it from [[stripe-buffer.el]] another implementation
-is available from github.com/sabof/stripe-buffer.
+You can find the latest version at github.com/sabof/stripe-buffer, or through MELPA.
 
