@@ -33,7 +33,7 @@ in buffer `*Completions*' using face
 What your input matches directly is highlighted in `*Completions*'
 using face `icicle-match-highlight-Completions' (red foreground, by default).
 
-It is of course possible that a given regexp match different
+It is of course possible that a given regexp matches different
 candidates differently, so that there is no common match.  In that
 case, only the individual matches are highlighted in `*Completions*'
 -- you will see only red, no magenta, highlighting.  For example,
