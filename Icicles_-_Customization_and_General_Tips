@@ -478,7 +478,7 @@ whenever there is only one completion candidate that matches
 your input, that candidate is used immediately, without
 requiring you to hit `RET' or `S-RET'.
 
-When `icicle-top-level-when-sole-completion-flag' is `nil', option
+When `icicle-top-level-when-sole-completion-flag' is non-`nil', option
 '''`icicle-top-level-when-sole-completion-delay'''' is the number of
 seconds '''Icicles''' waits, before returning to top level with the
 sole completion.  (It has no effect if the flag is `nil'.)  The
