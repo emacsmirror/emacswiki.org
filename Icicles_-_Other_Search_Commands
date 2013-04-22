@@ -26,7 +26,7 @@ if the current [[major mode]] is a compilation mode (for `icicle-compilation-sea
 interactive interpreter mode such as `shell-mode' or Lisp interactive mode (for `icicle-comint-search').
 
 : ['''Programmer Note:''' Actually, the way this works is that `##C-c `##' is
-bound to the value of internal [[variable]] `icicle-search-generic'.
+bound to `icicle-search-generic', which calls the command that is the value of internal [[variable]] `icicle-search-command'.
 You can use this mechanism to provide custom '''Icicles''' search
 commands for particular buffers.]
 
