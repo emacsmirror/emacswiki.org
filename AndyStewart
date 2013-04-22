@@ -70,7 +70,7 @@ Free feel to copy any code you like and don't need my permission, just enjoy! :)
 
 *** ShowHelp -- Popup help information for elisp symbol at cursor.
 
-*** StripeBuffer -- Stripe color with buffer.
+*** StripeBuffer -- Add stripes to any buffer. (Maintainer: sabof)
 
 *** GnusSummaryStripe -- Make Gnus summary buffer with stripe color, based on [[StripeBuffer]].
 
