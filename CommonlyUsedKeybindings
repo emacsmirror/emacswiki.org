@@ -23,6 +23,8 @@ Please contribute to this list, and if there are any disagreements we can straig
 || # || mark item ||
 || u || unmark item ||
 || U || unmark all items ||
+|| C-+ / C-x + / C-c +  || increase something (e.g. volume, font size)          ||
+|| C-- / C-x - / C-c - || decrease something ||
 == Proposed keys ==
 == Discussion ==
 
