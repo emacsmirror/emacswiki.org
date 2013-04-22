@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Mon Apr 22 07:52:26 2013 (-0700)
+;; Last-Updated: Mon Apr 22 11:07:08 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 27729
+;;     Update #: 27730
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -9205,7 +9205,7 @@
 ;;  hits.
 ;;
 ;;  With Emacs 22 and later, and provided option
-;;  `isearch-allow-scrolling' (a misnomer) is non-`nil', you can use a
+;;  `isearch-allow-scroll' (a misnomer) is non-`nil', you can use a
 ;;  prefix argument with `S-TAB' to change the behavior.  You still
 ;;  choose an Isearch search string using completion.  But in this
 ;;  case the string does not define the Icicles search contexts.
