@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Mon Apr 22 11:07:08 2013 (-0700)
+;; Last-Updated: Mon Apr 22 13:22:17 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 27730
+;;     Update #: 27737
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1134,7 +1134,7 @@
 ;;  Repeating `C-g' a few times can in many cases cancel the
 ;;  minibuffer as well.  But you can always cancel a minibuffer
 ;;  immediately and pop up to the previous level by hitting `C-]'
-;;  (`icicle-abort-recursive-minibuffer').
+;;  (`icicle-abort-recursive-edit').
 ;;
 ;;  So `C-g' cancels the current command, which sometimes means
 ;;  canceling the minibuffer.  And `C-]' cancels the current
@@ -2651,7 +2651,7 @@
 ;;  `*Completions*' using face `icicle-match-highlight-Completions'
 ;;  (red foreground, by default).
 ;;
-;;  It is of course possible that a given regexp match different
+;;  It is of course possible that a given regexp matches different
 ;;  candidates differently, so that there is no common match.  In that
 ;;  case, only the individual matches are highlighted in
 ;;  `*Completions*' - you will see only red, no magenta, highlighting.
@@ -5808,7 +5808,7 @@
 ;;  then you must use `M-|', not `C-|', because `C-|' prompts you for
 ;;  each candidate.  `M-|' is designed to do the right thing here: it
 ;;  prompts you once for the function to apply, and then applies it to
-;;  each of the current candidates.  Andyou can filter the set of
+;;  each of the current candidates.  And you can filter the set of
 ;;  current candidates (progressive completion and so on), or retrieve
 ;;  a saved set of candidates to operate on.
 ;;
@@ -6625,7 +6625,7 @@
 ;;  `icicle-apropos-complete-keys', `icicle-key-complete-keys', and
 ;;  `icicle-completion-list-key-bindings'.
 ;;
-;;*@* "Complete Keys in the Minibuffer Also")
+;;(@* "Complete Keys in the Minibuffer Also")
 ;;  ** Complete Keys in the Minibuffer Also **
 ;;
 ;;  In the minibuffer, `S-TAB' performs apropos completion of your
@@ -6922,7 +6922,7 @@
 ;;  argument you chose.  However, completion candidates are always
 ;;  strings, and the command you chose might expect something other
 ;;  than a string.  That is the case for `describe-variable', for
-;;  instance.  The case of describe-function' is special: it
+;;  instance.  The case of `describe-function' is special: it
 ;;  interprets a string argument blindly as a keyboard macro sequence.
 ;;
 ;;  Icicles is smart enough to pick up a `wrong-type-argument' error,
@@ -7277,14 +7277,14 @@
 ;;
 ;;  Another way to add to the list of saved candidates is to use `M-S'
 ;;  (`icicle-multi-inputs-save').  This is available for any
-;;  minibuffer inupt, not just during completion.  It adds all of the
+;;  minibuffer input, not just during completion.  It adds all of the
 ;;  multi-inputs currently in in the minibuffer to the set of saved
 ;;  candidates.  So you can, for instance, use `M-S' on a minibuffer
 ;;  containing the following input, to add its three file names to the
 ;;  current saved set of candidates in variable
 ;;  `icicle-saved-completion-candidates'.
 ;;
-;;    iciicles-mac.el "my file.txt" bookmark+.el
+;;    icicles-mac.el "my file.txt" bookmark+.el
 ;;
 ;;  Matching, saving, and retrieving candidates is a powerful way to
 ;;  interact with completion.  One important use is to prepare a list
