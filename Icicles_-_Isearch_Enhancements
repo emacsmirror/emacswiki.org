@@ -130,7 +130,7 @@ those that match what you type.  Then use `C-next' to visit search
 hits.
 
 With Emacs 22 and later, and provided option
-`isearch-allow-scrolling' (a misnomer) is non-`nil', you can use a
+`isearch-allow-scroll' (a misnomer) is non-`nil', you can use a
 [[prefix argument]] with `S-TAB' to change the behavior.  You still
 choose an Isearch search string using completion.  But in this
 case the string does not define the '''Icicles''' search contexts.
