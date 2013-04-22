@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Apr 18 11:33:06 2013 (-0700)
+;; Last-Updated: Mon Apr 22 13:37:18 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 13959
+;;     Update #: 13960
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1739,7 +1739,7 @@ Case sensitivity is determined by
 This binds variable `icicle-buffer-name-input-p' to non-nil."
   (let ((icicle-buffer-name-input-p  t))
     (if (and (boundp 'read-buffer-function)  read-buffer-function)
-        (funcall read-buffer-function prompt)
+        (funcall read-buffer-function prompt default require-match)
       (when (interactive-p)
         (setq default  (or default  (if (fboundp 'another-buffer) ; In `misc-fns.el'.
                                         (another-buffer nil t)
