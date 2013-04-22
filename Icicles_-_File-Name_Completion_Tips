@@ -121,8 +121,7 @@ special character.  For example, you can use a pattern such as
 [:EnvVarCompletion]
 ==== Completion of Environment Variables ====
 
-Starting with Emacs 23, and and if the current `TAB' completion
-method is `vanilla' (see [[Icicles - Fuzzy Completion]]), you can
+Starting with Emacs 23, you can
 complete environment variables during file-name completion,
 using `TAB'.  So you can, for example, complete `##$HO##' to any of
 the candidates `HOME', `HOMEDRIVE', `HOMEPATH'.  This is in
