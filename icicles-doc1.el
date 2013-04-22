@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun Apr 21 18:40:16 2013 (-0700)
+;; Last-Updated: Mon Apr 22 07:52:26 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 27726
+;;     Update #: 27729
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -5760,9 +5760,9 @@
 ;;  as you are completing the name of a file to be visited.
 ;;
 ;;  Keys `C-|' and `M-|' apply the alternative action defined for a
-;;  given multi-command to *all* matching candidates at once, in the
-;;  same way that `C-!' and `M-!' apply the main action defined for it
-;;  to all candidates.  See (@> "Choose All Completion Candidates").
+;;  given multi-command to *all* matching candidates at once.  (In the
+;;  same way, `C-!' and `M-!' apply the main action defined for it to
+;;  all candidates - see (@> "Choose All Completion Candidates").)
 ;;
 ;;  For example, in Icicles search (e.g. `C-c `'), the alternative
 ;;  action (e.g. `C-S-RET') replaces all or part of the current search
@@ -5821,9 +5821,9 @@
 ;;  Using a lambda expression here is a good way to curry a function
 ;;  that requires multiple arguments, so that it adapts to expect just
 ;;  a single argument of the appropriate object type.  For example,
-;;  (lambda (sym-name) (get (intern (sym-name)) 'invisible))
-;;  transforms function `get', which takes a symbol and a property as
-;;  arguments, to a function that takes a symbol name and looks up the
+;;  (lambda (sym-name) (get (intern sym-name) 'invisible)) transforms
+;;  function `get', which takes a symbol and a property as arguments,
+;;  to a function that takes a symbol name and looks up the
 ;;  `invisible' property of the symbol.
 ;;
 ;;  Option `icicle-type-actions-alist' is predefined with a number of
