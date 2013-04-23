@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Apr  8 14:17:09 2013 (-0700)
+;; Last-Updated: Tue Apr 23 10:15:17 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 9533
+;;     Update #: 9541
 ;; URL: http://www.emacswiki.org/icicles-mode.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -234,6 +234,7 @@
 (defvar inferior-tcl-mode-map)          ; In `tcl.el'.
 (defvar Info-mode-map)                  ; In `info.el'.
 (defvar isearch-mode-map)               ; In `isearch.el'.
+(defvar menu-bar-buffers-menu-command-entries) ; In `menu-bar.el' for Emacs 24+.
 (defvar menu-bar-goto-menu)             ; In `menu-bar.el'.
 (defvar savehist-minibuffer-history-variables) ; In `savehist.el'
 (defvar shell-mode-map)                 ; In `shell.el'.
@@ -1680,10 +1681,17 @@ Used on `pre-command-hook'."
 
     ;; `Buffers' -----------------------------------------------------
     (cond ((not icicle-touche-pas-aux-menus-flag)
-           (defvar icicle-buffers-menu-map (make-sparse-keymap)
-             "`File' > `Icicles' > `Buffers' submenu.")
-           (define-key icicle-file-menu-map [buffers]
-             (list 'menu-item "Buffers" icicle-buffers-menu-map)))
+           (cond ((boundp 'menu-bar-buffers-menu-command-entries) ; Emacs 22+.
+                  (defvar icicle-buffers-menu-map (make-sparse-keymap)
+                    "`Buffers' > `Icicles' submenu.")
+                  (setq menu-bar-buffers-menu-command-entries
+                        (cons (list 'FOO 'menu-item "Icicles" icicle-buffers-menu-map)
+                              menu-bar-buffers-menu-command-entries)))
+                 (t
+                  (defvar icicle-buffers-menu-map (make-sparse-keymap)
+                    "`File' > `Icicles' > `Buffers' submenu.")
+                  (define-key icicle-file-menu-map [buffers]
+                    (list 'menu-item "Buffers" icicle-buffers-menu-map)))))
           (t
            (defvar icicle-buffers-menu-map (make-sparse-keymap)
              "`Icicles' > `Buffers' submenu.")
