@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Apr 18 08:02:50 2013 (-0700)
+;; Last-Updated: Mon Apr 22 20:04:03 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 5619
+;;     Update #: 5622
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -259,7 +259,8 @@
 
 ;; Emacs 20 does not DTRT wrt `:type' and `:set' sexps at compile time,
 ;; so there seems no way around this, short of coding without push and dolist.
-(eval-when-compile (when (< emacs-major-version 21) (require 'cl))) ;; dolist, push
+;; This MUST be `eval-and-compile', even though in principle `eval-when-compile' should be enough.
+(eval-and-compile (when (< emacs-major-version 21) (require 'cl))) ;; dolist, push
 
 (require 'thingatpt)        ;; symbol-at-point, thing-at-point, thing-at-point-url-at-point
 
