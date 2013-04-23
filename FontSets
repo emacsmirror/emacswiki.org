@@ -31,17 +31,56 @@ If you are content with Emacs' default fonts and just want to change the font fo
 
 You can have even more finegrained control and make such changes only for a range of characters within an Emacs charset.  The following sets characters from the Unicode code charts "Greek and Coptic" and "Greek extended" to `palatino linotype':
 
-    ;; "Greek extended"  U+1F00 - U+1FEF
+    ;; "Greek extended"  U+1F00 - U+1FFF
     (set-fontset-font "fontset-standard"
                       (cons (decode-char 'ucs #x1f00)
-                            (decode-char 'ucs #x1fef))
+                            (decode-char 'ucs #x1fff))
                       "-*-palatino linotype-*-*-r-*-14-*-*-*-*-*-iso10646-1")
 
-    ;; "Greek and Coptic"  U+0374 - U+03FB
+    ;; "Greek and Coptic"  U+0370 - U+03FF
     (set-fontset-font "fontset-standard"
-                      (cons (decode-char 'ucs #x0374)
-                            (decode-char 'ucs #x03fb))
+                      (cons (decode-char 'ucs #x0370)
+                            (decode-char 'ucs #x03ff))
                       "-*-palatino linotype-*-*-r-*-14-*-*-*-*-*-iso10646-1")
+
+
+Which other Unicode block ranges to choose from can be seen in [https://en.wikipedia.org/wiki/Unicode_block Wikipedia's block overview].
+
+As documented in the emacs online help you can  specify fonts for X in [https://www.gnu.org/software/emacs/manual/html_node/emacs/Fonts.html four ways]. You must not use X Logical Font Description, as in the examples above.
+
+Here is an example of using fontconfig's font name for a font, specifying the "Lohit Devanagari" font for Devenagari script (Unicode block range U+0900..U+097F):
+
+
+    ;; "Devanagari"  U+0900 - U+1097F
+    (set-fontset-font "fontset-default"
+                      (cons (decode-char 'ucs #x0900)
+                            (decode-char 'ucs #x097f))
+                      "Lohit Devanagari")
+
+
+The "Lohit Devanagari" font displays nicely in emacs. (And this also fixes an annoying display bug in emacs 23 and 24 for the default font selected for devanagari in Debian (FreeSans), for example wildly displaced diacritic u.)
+
+In the same manner, for Greek and Classical Greek you could use the nice font "GentiumAlt" or the monospaced "Ubuntu Mono", just using these font names in the two script snippets for Greek above (you must change both Greek and Greek extended for consistent font display).
+
+Specifying just the fontconfig's name for the font in this way you can use emacs commands for changing font size with '<code>C-x +</code>' or '<code>C-x -</code>'. If you want a specific font size regardless, you could for example use "Lohit Devanagari-13" in the code snippet above.
+
+Or you can specify a relative font enlargement or reduction relative to the standard font size, while '<code>C-x +</code>' and '<code>C-x -</code>'continue to work. For example, to enlarge the Devanagari and Greek fonts used in the examples above:
+
+    (setq face-font-rescale-alist
+         '(
+           (".*Lohit Devanagari.*" . 1.1)
+           (".*Gentium.*" . 1.2)
+           (".*Ubuntu Mono.*" . 1.2)
+           ))
+
+(This example is based on a tip in [https://skalldan.wordpress.com/2011/08/05/mac-os-x-%E3%81%A7%E3%81%AE-emacs-2/ this blog].)
+
+For X systems using fontconfig, you can see which font names are available with the command (CLI):
+
+    fc-list : file fullname family style
+
+To check which font emacs actually selected for you, click on a character in the buffer and use the command '<code>C-u C-x =</code>'.
+
 
 == Choosing a fontset ==
 
