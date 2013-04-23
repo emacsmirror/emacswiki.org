@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Mon Apr 22 13:22:17 2013 (-0700)
+;; Last-Updated: Tue Apr 23 13:10:25 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 27737
+;;     Update #: 27746
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -515,10 +515,19 @@
 ;;  One good way to start with Icicles is to explore menu-bar menus
 ;;  `Icicles' and `Minibuf'.  You can access most Icicles features
 ;;  using these menus, without at the same time struggling to learn
-;;  new key bindings.  The `Icicles' menu is available all of the time
-;;  (that is, whenever you are in Icicle mode), and the `Minibuf' menu
-;;  is available whenever the minibuffer is active.  It is enhanced
-;;  for Icicle mode.
+;;  new key bindings.
+;;
+;;  Menu `Icicles' is available all of the time (that is, whenever you
+;;  are in Icicle mode).  Menu `Minibuf' is available whenever the
+;;  minibuffer is active.  It is enhanced for Icicle mode.
+;;
+;;  Menu `Icicles' offers top-level commands of all sorts that are
+;;  available in Icicle mode.  Instead of grouping these all in the
+;;  same menu, `Icicles', by default they are spread among appropriate
+;;  existing menus such as `File' and `Edit', on `Icicles' submenus.
+;;  Whether this is done is controlled by user option
+;;  `icicle-touche-pas-aux-menus-flag'.  When it is done, menu-bar
+;;  menu `Icicles' contains only menu items that do not fit elsewhere.
 ;;
 ;;  During minibuffer input completion, you can also press Control and
 ;;  right-click (`C-mouse-3') on a completion candidate in buffer
