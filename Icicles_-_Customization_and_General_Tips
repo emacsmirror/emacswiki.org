@@ -403,7 +403,7 @@ menu.
 The value of this option is used only when ''Icicle'' mode is initially
 established, so changing it has no effect after '''Icicles''' has
 been loaded.  However, you can change it and save the new value,
-so that it will be used next time. See [[Icicles - Nutshell View]] for more about the '''Icicles''' and '''Minibuf''' menus.
+so that it will be used next time. See [[Icicles - Nutshell View#Menus|Icicles - Menus]] for more about the '''Icicles''' and '''Minibuf''' menus.
 
 
 ----
