@@ -72,8 +72,6 @@ VM is very well documented. It comes with a fine set of info pages, and there ar
 
 * XEmacs, [[http://www.xemacs.org/Documentation/21.5/html/xemacs-faq_7.html|XEmacs 21.5 FAQ section on Connecting to the Internet]], includes FAQ's on VM.
 
-* José E. Marchesi, [[http://es.gnu.org/~jemarch/EmacsEmail.html|Email Management with Emacs]], May 12, 2009.  An example configuration for VM. Dead link --PasJa
-
 * Francois Flueret, [[http://www.idiap.ch/~fleuret/files/fleuret.vm|VM configuration file]]
 
 * Glen Morris, [[http://www.stanford.edu/~rgm/comp.html|Computer stuff]] (includes VM configuration file).
