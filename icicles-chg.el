@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Thu Apr 18 14:32:30 2013 (-0700)
+;; Last-Updated: Tue Apr 23 10:24:45 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 9963
+;;     Update #: 9969
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1733,6 +1733,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2013/04/22 dadams
+;;     icicle-read-buffer: Pass all args to read-buffer-function funcall.  Thx to Nick Alcock.
 ;; 2013/04/08 dadams
 ;;     icicle-choose-completion-string: Added versions for Emacs 23.1 and 23.2+.
 ;; 2013/04/06 dadams
@@ -5422,6 +5424,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2013/04/23 dadams
+;;     icicle-define-icicle-maps: Put buffer stuff on Buffers > Icicles, not File > Icicles > Buffers. 
 ;; 2013/04/08 dadams
 ;;     icicle-(redefine|restore)-std-completion-fns:
 ;;       icicle-mouse-choose-completion is only for Emacs < 23.2.
@@ -6624,6 +6628,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2013/04/22 dadams
+;;     Reverted the change of 2012/02/28.  Emacs does not DTRT for push if require only when compile.
+;;       Must use eval-and-compile to require cl.el, not eval-when-compile, for Emacs 20.
 ;; 2013/04/18 dadams
 ;;     Added: icicle-buffer-candidate-key-bindings, icicle-buffer-prefix-arg-filtering.
 ;;     *-completion-key-bindings, *-completion-list-key-bindings, *-minibuffer-key-bindings:
