@@ -58,9 +58,9 @@ Here is an example of using fontconfig's font name for a font, specifying the "L
                       "Lohit Devanagari")
 
 
-The "Lohit Devanagari" font displays nicely in emacs. (And this also fixes an annoying display bug in emacs 23 and 24 for the default font selected for devanagari in Debian (FreeSans), for example wildly displaced diacritic u.)
+The "Lohit Devanagari" font displays nicely in emacs. (And this also fixes an annoying display bug in emacs 23 and 24 for the default font selected for devanagari in Debian (!FreeSans), for example wildly displaced diacritic u.)
 
-In the same manner, for Greek and Classical Greek you could use the nice font "GentiumAlt" or the monospaced "Ubuntu Mono", just using these font names in the two script snippets for Greek above (you must change both Greek and Greek extended for consistent font display).
+In the same manner, for Greek and Classical Greek you could use the nice font "!GentiumAlt" or the monospaced "Ubuntu Mono", just using these font names in the two script snippets for Greek above (you must change both Greek and Greek extended for consistent font display).
 
 Specifying just the fontconfig's name for the font in this way you can use emacs commands for changing font size with '<code>C-x +</code>' or '<code>C-x -</code>'. If you want a specific font size regardless, you could for example use "Lohit Devanagari-13" in the code snippet above.
 
