@@ -12,7 +12,68 @@ This page is not part of the regular sequence of '''Icicles''' doc pages, but it
 === Icicles Menu-Bar Menu ===
 : [[image:drew-emacs-Icicles-menu]]
 
-The '''Icicles''' menu is available whenever you are in ''Icicle'' mode.  See [[Icicles - Nutshell View]].
+The '''Icicles''' menu is available whenever you are in ''Icicle'' mode.   By default, many of the entries shown here are ''not'' in menu '''Icicles''' but are instead in appropriate existing menus, such as '''File'''.  Whether they are in menu '''Icicles''' or other menus is controlled by [[user option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-touche-pas-aux-menus-flag|icicle-touche-pas-aux-menus-flag]]</tt>''''.  See [[Icicles - Nutshell View]].
+
+: '''Dired Dirs''' submenu (in [[DiredMode]] only):
+::: [[image:drew-emacs-Dired-Dirs-menu]]
+
+
+: '''Dired Marked''' submenu (in [[DiredMode]] only):
+::: [[image:drew-emacs-Dired-Marked-menu]]
+
+:: '''Dired Marked''' > '''Here and Below''' submenu (in [[DiredMode]] only):
+:::: [[image:drew-emacs-Here-and-Below-menu]]
+
+: '''Buffers''' submenu:
+::: [[image:drew-emacs-icicle-Buffers-menu]]
+
+: '''File''' submenu:
+::: [[image:drew-emacs-icicle-File-menu]]
+
+
+: '''Edit''' submenu:
+::: [[image:drew-emacs-icicle-Edit-menu]]
+
+: '''Bookmarks''' submenu (see also '''[[Bookmark+]]'''):
+::: [[image:drew-emacs-icicle-Bookmarks-menu]]
+
+: '''Frames''' submenu:
+::: [[image:drew-emacs-icicle-Frames-menu]]
+
+
+: '''Go To''' submenu:
+::: [[image:drew-emacs-icicle-Go-To-menu]]
+
+
+:: '''Go To''' > '''Bookmarks''' submenu:
+:::: [[image:drew-emacs-icicle-Go-To-Bookmarks-menu]]
+
+
+:: '''Go To''' > '''Emacs Tags''' submenu:
+:::: [[image:drew-emacs-icicle-Go-To-Emacs-Tags-menu]]
+
+: '''Describe''' submenu:
+::: [[image:drew-emacs-icicle-Describe-menu]]
+
+
+: '''Apropos''' submenu:
+::: [[image:drew-emacs-icicle-Apropos-menu]]
+
+
+: '''Customize''' submenu:
+::: [[image:drew-emacs-icicle-Customize-menu]]
+
+
+: '''Icicles Options''' submenu:
+::: [[image:drew-emacs-icicle-Icicles-Options-menu]]
+
+
+
+
+
+
+
+
 
 
 
