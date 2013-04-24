@@ -6,10 +6,10 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Version: 2013.04.04
-;; Last-Updated: Thu Apr 18 14:15:02 2013 (-0700)
+;; Version: 2013.04.23
+;; Last-Updated: Tue Apr 23 19:21:57 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 23394
+;;     Update #: 23399
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1313,11 +1313,15 @@
 ;;    `icicle-locate-file-action-fn',
 ;;    `icicle-locate-file-no-symlinks-p', `icicle-lighter-truncation',
 ;;    `icicle-list-use-nth-parts', `icicle-menu-map',
-;;    `icicle-minibuffer-message-ok-p', `icicle-minor-mode-map-entry',
-;;    `icicle-mode-line-help', `icicle-mode-map',
-;;    `icicle-ms-windows-drive-hash', `icicle-multi-completing-p',
-;;    `icicle-multi-inputs-action-fn', `icicle-must-match-regexp',
-;;    `icicle-must-not-match-regexp',
+;;    `icicle-minibuf-act-on-all-menu-map',
+;;    `icicle-minibuf-candidate-set-menu-map',
+;;    `icicle-minibuf-edit-menu-map' `icicle-minibuffer-message-ok-p',
+;;    `icicle-minibuf-history-menu-map',
+;;    `icicle-minibuf-save-retrieve-menu-map',
+;;    `icicle-minor-mode-map-entry', `icicle-mode-line-help',
+;;    `icicle-mode-map', `icicle-ms-windows-drive-hash',
+;;    `icicle-multi-completing-p', `icicle-multi-inputs-action-fn',
+;;    `icicle-must-match-regexp', `icicle-must-not-match-regexp',
 ;;    `icicle-must-pass-after-match-predicate',
 ;;    `icicle-must-pass-predicate', `icicle-named-colors',
 ;;    `icicle-narrow-regexp',
