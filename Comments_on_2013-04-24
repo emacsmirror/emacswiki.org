@@ -64,3 +64,21 @@ Thanks for the work, looking forward to version 2.0.1.
 
 -- [http://funwithemacs.wordpress.com/ plovs] 2013-04-24 17:21 UTC
 
+
+----
+
+Perhaps add some simple borders for tables.
+
+{{{
+table.user {
+    border: 1px solid #ccc;
+    box-shadow: 0 0 1em #eee;
+}
+table.user tbody tr td {
+    padding: 0.1em 0.25em;
+    border: 1px solid #ccc;
+}
+}}}
+
+-- AaronHawley 2013-04-24 19:01 UTC
+
