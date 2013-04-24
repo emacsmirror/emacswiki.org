@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Apr 18 11:44:28 2013 (-0700)
+;; Last-Updated: Wed Apr 24 11:27:28 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 19075
+;;     Update #: 19101
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -667,7 +667,8 @@ Return the number of the candidate: 0 for first, 1 for second, ..."
                    (buffer-substring beg end)))))
           (unless (or (not (member choice icicle-extra-candidates))  icicle-extra-candidates-dir-insert-p)
             (setq base-size  0))
-          (setq icicle-candidate-nb  (icicle-nb-of-cand-at-Completions-pos (posn-point (event-start event))))
+          (setq icicle-candidate-nb  (icicle-nb-of-cand-at-Completions-pos
+                                      (posn-point (event-start event))))
           (unless (buffer-live-p buffer) (icicle-user-error "Destination buffer is dead"))
           (when (and (icicle-file-name-input-p)  insert-default-directory
                      (or (not (member choice icicle-extra-candidates))
@@ -1958,17 +1959,23 @@ If ALTERNATIVEP is non-nil, the alternative sort order is returned."
 ;; redirect focus back to the frame with the minibuffer.  Leave it as
 ;; is, for now, in hopes Emacs will eventually fix this.
 ;;
-(defun icicle-minibuffer-help ()        ; Bound to `M-?' (and `C-?') in the minibuffer.
+(defun icicle-minibuffer-help ()        ; Bound to `M-?' in the minibuffer.
   "Describe Icicles minibuffer and *Completion* buffer bindings."
   (interactive)
-  (let ((cur-buf  (current-buffer)))
+  (let ((cur-buf        (current-buffer))
+        (icicles-cmd-p  (or icicle-candidate-action-fn icicle-multi-completing-p)))
     (with-output-to-temp-buffer "*Help*"
       (help-setup-xref (list #'icicle-minibuffer-help) (interactive-p))
       (when (icicle-completing-p)
-        (princ (concat "You are completing input" (and icicle-candidate-action-fn
-                                                       " for an Icicles multi-command")
-                       ".\n\n"))
-        (princ "To show help on individual completion candidates:
+        (princ (format "You are completing input%s.  %s"
+                       (if icicles-cmd-p
+                           (format " for an Icicles %scommand%s"
+                                   (if icicle-candidate-action-fn "multi-" "")
+                                   (if icicle-multi-completing-p " that uses multi-\ncompletion" ""))
+                         "")
+                       (format "To show help on individual completion%scandidates:\n"
+                               (if icicles-cmd-p "" "\n"))))
+        (princ "
      Current candidate                       C-M-RET, C-M-mouse-2
      Next, previous candidate                C-M-down, C-M-up,
                                               C-M- plus mouse wheel
