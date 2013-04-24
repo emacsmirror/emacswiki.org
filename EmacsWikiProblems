@@ -10,7 +10,7 @@ Note that this page is not about EmacsWikiMode.
 
 --------
 
-== New Emacs-wiki CSS makes the site (2013-04-24) is much harder to read ==
+== New Emacs-wiki CSS (2013-04-24) makes the sitemuch harder to read ==
 
 Using lots of "grey contrast" does make a site look more stylish if you're not actually spending much time reading it, but the decreased contrast also decreases readability for many of us (especially if you no longer have the eyesight of a teenager).  The styling of comments here now is a particularly bad example, now being dark grey against light grey, forcing me to squint to read them.  Please choose solid contrasts, rather than shades of grey, it tends to give me a headache. Thanks. -- JohnWiegley
 
