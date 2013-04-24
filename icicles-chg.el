@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue Apr 23 10:24:45 2013 (-0700)
+;; Last-Updated: Tue Apr 23 19:21:05 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 9969
+;;     Update #: 9977
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -5425,6 +5425,9 @@
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
 ;; 2013/04/23 dadams
+;;     Added: icicle-minibuf-(act-on-all|candidate-set|edit|history|save-retrieve)-menu-map,
+;;     Minibuf menu: Factored with submenus:
+;;       Act on All Candidates, Candidate Set, Edit, History, Save/Retrieve Candidates.
 ;;     icicle-define-icicle-maps: Put buffer stuff on Buffers > Icicles, not File > Icicles > Buffers. 
 ;; 2013/04/08 dadams
 ;;     icicle-(redefine|restore)-std-completion-fns:
