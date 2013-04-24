@@ -8,6 +8,36 @@ The '''Minibuf''' menu is available whenever the [[minibuffer]] is active.  In '
 
 : [[image:drew-emacs-Minibuf-menu]]
 
+: '''Save/Retrieve Candidates''' submenu:
+::: [[image:drew-emacs-i-Minibuf-Save-Retrieve-menu.png]]
+
+: '''Candidate Set''' submenu:
+::: [[image:drew-emacs-i-Minibuf-Candidate Set-menu.png]]
+
+: '''Act on All Candidates''' submenu:
+::: [[image:drew-emacs-i-Minibuf-Act-on-All-Candidates-menu.png]]
+
+
+: '''History''' submenu:
+::: [[image:drew-emacs-i-Minibuf-History-Candidates-menu.png]]
+
+
+: '''Edit''' submenu:
+::: [[image:drew-emacs-i-Minibuf-Edit-Candidates-menu.png]]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ----
 
