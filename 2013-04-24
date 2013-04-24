@@ -6,5 +6,5 @@ If you're interested, the bootstrap-specific changes are mostly in [http://emacs
 
 If you don't like the new design, here's how to control the cookie:
 
-* http://www.emacswiki.org/?bootstrap=0 -- disable
-* http://www.emacswiki.org/?bootstrap=1 -- enable (the default)
+* http://www.emacswiki.org/emacs/2013-04-24?bootstrap=0 -- disable
+* http://www.emacswiki.org/emacs/2013-04-24?bootstrap=1 -- enable (the default)
