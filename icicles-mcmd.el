@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Apr 24 11:27:28 2013 (-0700)
+;; Last-Updated: Wed Apr 24 14:34:01 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 19101
+;;     Update #: 19118
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -2047,7 +2047,19 @@ If ALTERNATIVEP is non-nil, the alternative sort order is returned."
                     Icicles Minibuffer Completion
                     -----------------------------
 
-Minibuffer input can be completed in several ways.
+Completion indicators:
+
+  Mode line `Icy' lighter (additive):
+    red = Completion available      (use `TAB' or `S-TAB' to complete)
+    +   = Multi-command completion   (use `C-RET' to act on candidate)
+    ||  = Multi-completion candidates  (use `C-M-j' to separate parts)
+    ... = `icicle-max-candidates' shown        (use `C-x #' to change)
+
+  Prompt prefix (exclusive):
+    . = Simple completion
+    + = Multi-command completion
+
+You can complete your minibuffer input in several ways.
 These are the main Icicles actions and their minibuffer key bindings:
 
  * Show Icicles minibuffer help (this).      \\[icicle-minibuffer-help]
