@@ -9,13 +9,6 @@ Note that this page is not about EmacsWikiMode.
 '''Add your problem descriptions below this line'''
 
 --------
-
-== New Emacs-wiki CSS (2013-04-24) makes the site much harder to read ==
-
-Using lots of "grey contrast" does make a site look more stylish if you're not actually spending much time reading it, but the decreased contrast also decreases readability for many of us (especially if you no longer have the eyesight of a teenager).  The styling of comments here now is a particularly bad example, now being dark grey against light grey, forcing me to squint to read them.  Please choose solid contrasts, rather than shades of grey, it tends to give me a headache. Thanks. -- JohnWiegley
-
---------
-
 == Still seeing double TOCs ==
 
 I removed the entry for the double-TOC in ElispArea.  But now I see one at HighlightLibrary.  I suspect that something introduced the problem but perhaps if the page then gets edited and saved anew the problem goes away? -- DrewAdams
