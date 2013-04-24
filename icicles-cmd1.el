@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Apr 18 19:13:32 2013 (-0700)
+;; Last-Updated: Wed Apr 24 08:30:27 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 25716
+;;     Update #: 25717
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -3435,9 +3435,6 @@ Existence of files with relative names is checked in the Dired
 directory (default directory)."
   (interactive "P")
   ;; $$$$$$$ Maybe filter sets to get only file-name candidate sets?
-  (unless icicle-saved-completion-candidates
-    (icicle-user-error "%s" (substitute-command-keys "No saved completion candidates.  \
-Use \\<minibuffer-local-completion-map>`\\[icicle-candidate-set-save]' to save candidates")))
   (let* ((default-directory           (if prompt-for-dir-p
                                           (read-file-name "Directory: " nil default-directory nil)
                                         default-directory))
