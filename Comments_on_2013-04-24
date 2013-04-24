@@ -13,3 +13,22 @@ Sharp.  Nice work Alex and Evgkeni!
 
 -- AaronHawley 2013-04-24 14:06 UTC
 
+
+----
+
+Just one user --- I disabled it.
+
+Too wide, for one thing, and text truncated at browser edge instead of wrapped.  Plus changing the text size in the brower has no effect (so less accessible in this respect also).  Not to mention ochre/orange text on off-white background; a non-serif font that makes many uppercase and lowercase letters practically indistinguishable,...
+
+'''Generally less readable than the old default.'''  The ''default'' should be as accessible as possible, IMHO.  Those wanting something (that they find) more asthetically pleasing can opt ''in'' for that.
+
+Here's what I see in my browser (IE7, and it's similar in Google Chrome --- images scaled to 75% here).  Even ignoring the problems with the top of the page, there is a lot more information visible in the actual text area of the old compared to the new.
+
+==== New style: ====
+[[image:newwikistyle]]
+
+==== Old style: ====
+[[image:oldwikistyle]]
+
+-- DrewAdams 2013-04-24 14:37 UTC
+
