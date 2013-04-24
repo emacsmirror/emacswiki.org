@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Apr 24 08:30:27 2013 (-0700)
+;; Last-Updated: Wed Apr 24 10:13:26 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 25717
+;;     Update #: 25719
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -3449,6 +3449,7 @@ directory (default directory)."
                                                 (mapcar #'icicle-transform-multi-completion
                                                         icicle-saved-completion-candidates))
                                            (icicle-file-list)))))
+    (unless file-names (error "No files or directories chosen"))
     (dired (cons (generate-new-buffer-name "Icy File Set") (nreverse file-names)))))
 
 (put 'icicle-dired-saved-file-candidates-other-window 'icicle-Completions-window-max-height 200)
@@ -3479,6 +3480,7 @@ directory (default directory)."
                                                 (mapcar #'icicle-transform-multi-completion
                                                         icicle-saved-completion-candidates))
                                            (icicle-file-list)))))
+    (unless file-names (error "No files or directories chosen"))
     (dired-other-window (cons (generate-new-buffer-name "Icy File Set") (nreverse file-names)))))
 
 (put 'icicle-dired-project 'icicle-Completions-window-max-height 200)
