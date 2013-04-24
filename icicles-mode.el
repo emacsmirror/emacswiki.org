@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Apr 23 10:15:17 2013 (-0700)
+;; Last-Updated: Tue Apr 23 19:09:19 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 9541
+;;     Update #: 9720
 ;; URL: http://www.emacswiki.org/icicles-mode.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -578,6 +578,225 @@ Commentary headers of files `icicles-cmd1.el' and `icicles-cmd2.el'."
 
     (add-to-list 'minor-mode-alist '(icicle-mode " Icy"))))
 
+
+;; `Minibuf' > `Save/Retrieve Candidates' Menu------------------------
+(defvar icicle-minibuf-save-retrieve-menu-map (make-sparse-keymap)
+  "`Minibuf' > `Save/Retrieve Candidates' submenu.")
+
+(define-key icicle-minibuf-save-retrieve-menu-map [icicle-saved-completion-candidates]
+  '(menu-item "Swap Saved and Current Sets" icicle-candidate-set-swap
+    :enable icicle-saved-completion-candidates
+    :help "Swap the saved and current sets of completion candidates"))
+(define-key icicle-minibuf-save-retrieve-menu-map [icicle-candidate-set-save-more-selected]
+  '(menu-item "Save More Selected (Region) Candidates"
+    icicle-candidate-set-save-more-selected
+    :help "Add the candidates in the region to the saved candidates"))
+(define-key icicle-minibuf-save-retrieve-menu-map [icicle-candidate-set-save-selected]
+  '(menu-item "Save Selected (Region) Candidates"
+    icicle-candidate-set-save-selected
+    :help "Save the candidates in the region, for later recall"))
+(define-key icicle-minibuf-save-retrieve-menu-map [icicle-candidate-set-save-more]
+  '(menu-item "Save More Candidates" icicle-candidate-set-save-more
+    :help "Add current completion candidates to saved candidates set"))
+(define-key icicle-minibuf-save-retrieve-menu-map [icicle-candidate-set-save-persistently]
+  '(menu-item "    to Cache File..." icicle-candidate-set-save-persistently
+    :help "Save current completion candidates to a cache file, for later recall"))
+(define-key icicle-minibuf-save-retrieve-menu-map [icicle-candidate-set-save-to-variable]
+  '(menu-item "    to Variable..." icicle-candidate-set-save-to-variable
+    :help "Save current completion candidates to a variable, for later recall"))
+(define-key icicle-minibuf-save-retrieve-menu-map [icicle-candidate-set-save]
+  '(menu-item "Save Candidates" icicle-candidate-set-save
+    :help "Save the set of current completion candidates, for later recall"))
+(define-key icicle-minibuf-save-retrieve-menu-map [icicle-candidate-set-retrieve-more]
+  '(menu-item "Retrieve More Saved Candidates" icicle-candidate-set-retrieve-more
+    :help "Add saved candidates to current completion candidates"))
+(define-key icicle-minibuf-save-retrieve-menu-map [icicle-candidate-set-retrieve-persistent]
+  '(menu-item "    from Cache File..."
+    icicle-candidate-set-retrieve-persistent
+    :help "Retrieve saved completion candidates from a cache file, making them current"))
+(define-key icicle-minibuf-save-retrieve-menu-map [icicle-candidate-set-retrieve-from-variable]
+  '(menu-item "    from Variable..." icicle-candidate-set-retrieve-from-variable
+    :help "Retrieve saved completion candidates from variable, making them current"))
+(define-key icicle-minibuf-save-retrieve-menu-map [icicle-candidate-set-retrieve]
+  '(menu-item "Retrieve Saved Candidates" icicle-candidate-set-retrieve
+    :enable icicle-saved-completion-candidates
+    :help "Retrieve the saved set of completion candidates, making it current"))
+
+
+;; `Minibuf' > `Candidate Set' Menu-----------------------------------
+
+(defvar icicle-minibuf-candidate-set-menu-map (make-sparse-keymap)
+  "`Minibuf' > `Candidate Set' submenu.")
+
+(define-key icicle-minibuf-candidate-set-menu-map [icicle-candidate-set-define]
+  '(menu-item "Define Candidates by Lisp Sexp" icicle-candidate-set-define
+    :help "Define the set of current completion candidates by evaluating a sexp"))
+(define-key icicle-minibuf-candidate-set-menu-map [icicle-keep-only-past-inputs]
+  '(menu-item "Keep Only Previously Entered" icicle-keep-only-past-inputs
+    :enable (and icicle-completion-candidates  (consp (symbol-value minibuffer-history-variable)))
+    :help "Removed candidates that you have not previously chosen and entered"))
+(define-key icicle-minibuf-candidate-set-menu-map [icicle-candidate-set-union]
+  '(menu-item "Add (Union) Saved Candidate Set" icicle-candidate-set-union
+    :enable icicle-saved-completion-candidates
+    :help "Set union between the current and saved completion candidates"))
+(define-key icicle-minibuf-candidate-set-menu-map [icicle-candidate-set-difference]
+  '(menu-item "Subtract Saved Candidate Set" icicle-candidate-set-difference
+    :enable icicle-saved-completion-candidates
+    :help "Set difference between the current and saved completion candidates"))
+(define-key icicle-minibuf-candidate-set-menu-map [icicle-candidate-set-intersection]
+  '(menu-item "Intersect Saved Candidate Set" icicle-candidate-set-intersection
+    :enable icicle-saved-completion-candidates
+    :help "Set intersection between the current and saved candidates"))
+(define-key icicle-minibuf-candidate-set-menu-map [icicle-save-predicate-to-variable]
+  '(menu-item "Save Predicate to Variable" icicle-save-predicate-to-variable
+    :help "Save the current completion predicate to a variable"))
+(define-key icicle-minibuf-candidate-set-menu-map [icicle-narrow-candidates-with-predicate]
+  '(menu-item "Satisfy Also Predicate..." icicle-narrow-candidates-with-predicate
+    :help "Match another input pattern (narrow completions set)"
+    :enable icicle-completion-candidates))
+(define-key icicle-minibuf-candidate-set-menu-map [icicle-narrow-candidates]
+  '(menu-item "Match Also Regexp..." icicle-narrow-candidates
+    :enable icicle-completion-candidates
+    :help "Match another input pattern (narrow completions set)"))
+(define-key icicle-minibuf-candidate-set-menu-map [icicle-widen-candidates]
+  '(menu-item "Match Alternative..." icicle-widen-candidates
+    :enable icicle-completion-candidates
+    :help "Match alternative input pattern (widen completions set)"))
+(define-key icicle-minibuf-candidate-set-menu-map [icicle-candidate-set-complement]
+  '(menu-item "Complement Candidates" icicle-candidate-set-complement
+    :help "Complement the set of current completion candidates"))
+
+
+;; `Minibuf' > `Act on All Candidates' Menu---------------------------
+
+(defvar icicle-minibuf-act-on-all-menu-map (make-sparse-keymap)
+  "`Minibuf' > `Act on All Candidates' submenu.")
+
+(define-key icicle-minibuf-act-on-all-menu-map [icicle-all-candidates-list-alt-action]
+  '(menu-item "Alternate Act on List" icicle-all-candidates-list-alt-action
+    :help "Apply the alternative action to the list of matching completion candidates"
+    :enable icicle-all-candidates-list-alt-action-fn))
+(define-key icicle-minibuf-act-on-all-menu-map [icicle-all-candidates-alt-action]
+  '(menu-item "Alternate Act on Each" icicle-all-candidates-alt-action
+    :help "Apply the alternative action to each matching completion candidates"
+    :enable icicle-candidate-alt-action-fn))
+(define-key icicle-minibuf-act-on-all-menu-map [separator-alt] '("--"))
+(define-key icicle-minibuf-act-on-all-menu-map [icicle-all-candidates-list-action]
+  '(menu-item "Act on List" icicle-all-candidates-list-action
+    :help "Apply the command action to the list of matching completion candidates"
+    :enable icicle-all-candidates-list-action-fn))
+(define-key icicle-minibuf-act-on-all-menu-map [icicle-all-candidates-action]
+  '(menu-item "Act on Each" icicle-all-candidates-action
+    :help "Apply the command action to each matching completion candidates"
+    :enable icicle-candidate-action-fn))
+
+
+;; `Minibuf' > `History' Menu--------------------------------------------
+
+(defvar icicle-minibuf-history-menu-map (make-sparse-keymap)
+  "`Minibuf' > `History' submenu.")
+
+(define-key icicle-minibuf-history-menu-map [icicle-clear-current-history]
+  '(menu-item "Clear History Entries" icicle-clear-current-history
+    :help "Clear current minibuffer history of selected entries"))
+(define-key icicle-minibuf-history-menu-map [icicle-erase-minibuffer]
+  '(menu-item "Delete from History" icicle-erase-minibuffer-or-history-element
+    :visible (memq last-command
+              '(previous-history-element next-history-element
+                icicle-erase-minibuffer-or-history-element
+                previous-matching-history-element next-matching-history-element))
+    :help "Delete current history element (in minibuffer now)" :keys "M-k"))
+(define-key icicle-minibuf-history-menu-map [history-isearch-forward]
+  '(menu-item "Isearch History Forward" isearch-forward
+    :help "Incrementally search minibuffer history forward"))
+(define-key icicle-minibuf-history-menu-map [history-isearch-backward]
+  '(menu-item "Isearch History Backward" isearch-backward
+    :help "Incrementally search minibuffer history backward"))
+(define-key icicle-minibuf-history-menu-map [history-next]
+  '(menu-item "Next History Item" next-history-element
+    :help "Put next minibuffer history element in the minibuffer"))
+(define-key icicle-minibuf-history-menu-map [history-previous]
+  '(menu-item "Previous History Item" previous-history-element
+    :help "Put previous minibuffer history element in the minibuffer"))
+
+
+;; `Minibuf' > `Edit' Menu--------------------------------------------
+
+(defvar icicle-minibuf-edit-menu-map (make-sparse-keymap)
+  "`Minibuf' > `Edit' submenu.")
+
+(define-key icicle-minibuf-edit-menu-map [icicle-delete-history-element]
+  '(menu-item "Clear (Erase) Minibuffer" icicle-erase-minibuffer-or-history-element
+    :visible (not (memq last-command
+                   '(previous-history-element next-history-element
+                     icicle-erase-minibuffer-or-history-element
+                     previous-matching-history-element next-matching-history-element)))
+    :help "Erase the Minibuffer" :keys "M-k"))
+(define-key icicle-minibuf-edit-menu-map [icicle-goto/kill-failed-input]
+  '(menu-item "Cursor to Mismatch (Repeat: Kill)" icicle-goto/kill-failed-input
+    :visible icicle-completing-p
+    :enable (and (overlayp icicle-input-completion-fail-overlay)
+             (overlay-start icicle-input-completion-fail-overlay))
+    :help "Put cursor where input fails to complete - repeat to kill mismatch"))
+(define-key icicle-minibuf-edit-menu-map [icicle-retrieve-next-input]
+  '(menu-item "Restore Next Completion Input" icicle-retrieve-next-input
+    :visible icicle-completing-p
+    :enable (consp (symbol-value (if (icicle-file-name-input-p)
+                                     'icicle-previous-raw-file-name-inputs
+                                   'icicle-previous-raw-non-file-name-inputs)))
+    :help "Cycle forward to insert a previous completion input in the minibuffer (`C-u': \
+complete)"))
+(define-key icicle-minibuf-edit-menu-map [icicle-retrieve-previous-input]
+  '(menu-item "Restore Previous Completion Input" icicle-retrieve-previous-input
+    :visible icicle-completing-p
+    :enable (consp (symbol-value (if (icicle-file-name-input-p)
+                                     'icicle-previous-raw-file-name-inputs
+                                   'icicle-previous-raw-non-file-name-inputs)))
+    :help "Cycle backward to insert a previous completion input in the minibuffer (`C-u': \
+complete)"))
+(define-key icicle-minibuf-edit-menu-map [icicle-regexp-quote-input]
+  '(menu-item "Regexp-Quote Input" icicle-regexp-quote-input
+    :enable (with-current-buffer (window-buffer (minibuffer-window))
+              (goto-char (icicle-minibuffer-prompt-end))  (not (eobp)))
+    :help "Regexp-quote current input or its active region, then apropos-complete" :keys "M-%"))
+(define-key icicle-minibuf-edit-menu-map [icicle-insert-key-description]
+  '(menu-item "Insert Key Description" icicle-insert-key-description
+    :visible (not icicle-searching-p) :keys "M-q"
+    :help "Read key and insert its description - e.g., reading ^F inserts `C-f'"))
+(define-key icicle-minibuf-edit-menu-map [icicle-roundup]
+  '(menu-item "Insert Completion Candidate(s)" icicle-roundup
+    :visible icicle-completing-p
+    :enable icicle-completion-candidates
+    :help "Insert one or more completion candidates in the minibuffer" :keys "M-r"))
+(define-key icicle-minibuf-edit-menu-map [icicle-insert-string-from-a-var]
+  '(menu-item "Insert String from a Variable..." icicle-insert-string-from-variable
+    :visible current-prefix-arg :keys "C-="
+    :help "Read a variable name and insert its string value into the minibuffer"))
+(define-key icicle-minibuf-edit-menu-map [icicle-insert-string-from-std-var]
+  '(menu-item "Insert `icicle-input-string'" icicle-insert-string-from-variable
+    :visible (not current-prefix-arg) :keys "C-="
+    :help "Insert text from variable `icicle-input-string' into the minibuffer"))
+(define-key icicle-minibuf-edit-menu-map [icicle-completing-read+insert]
+  '(menu-item "Insert On-Demand Completion" icicle-completing-read+insert
+    :visible (consp icicle-completing-read+insert-candidates)
+    :help "Read and insert something using (lax) completion"))
+(define-key icicle-minibuf-edit-menu-map [icicle-read+insert-file-name]
+  '(menu-item "Insert File Name" icicle-read+insert-file-name
+    :help "Read and insert a file name using (lax) completion"))
+(define-key icicle-minibuf-edit-menu-map [icicle-insert-history-element]
+  '(menu-item "Insert Past Input(s) using Completion" icicle-insert-history-element
+    :enable (consp (symbol-value minibuffer-history-variable))
+    :help "Use completion to insert a previous input into the minibuffer"))
+(define-key icicle-minibuf-edit-menu-map [icicle-insert-list-join-string]
+  '(menu-item "Insert Join-String" icicle-insert-list-join-string
+    :visible icicle-multi-completing-p
+    :help "Insert `icicle-list-join-string' into the minibuffer" :keys "C-M-j"))
+(define-key icicle-minibuf-edit-menu-map [icicle-insert-string-at-point]
+  '(menu-item "Insert Text from Point" icicle-insert-string-at-point
+    :help "Insert text at or near the cursor into the minibuffer"))
+
+
+
 (defun icicle-add-menu-item-to-cmd-history ()
   "Add `this-command' to command history, if it is a menu item.
 Menu items that are not associated with a command symbol are ignored.
@@ -610,13 +829,15 @@ Used on `pre-command-hook'."
   ;; Define `Icicles' menu-bar menu.  Create it only once: sacrifice any new bindings for speed.
   (unless icicle-menu-map
     (setq icicle-menu-map  (make-sparse-keymap "Icicles"))
-    (define-key icicle-menu-map [icicle-mode] '(menu-item "Turn Off Icicle Mode" icicle-mode))
 
     ;; End of `Icicles' menu -----------------------------------------
     (define-key icicle-menu-map [icicle-report-bug]
       '(menu-item "Send Icicles Bug Report" icicle-send-bug-report))
     (define-key icicle-menu-map [icicle-customize-icicles-group]
       '(menu-item "Customize Icicles" icicle-customize-icicles-group))
+    (define-key icicle-menu-map [icicle-help]
+      '(menu-item "Icicles Help" icicle-minibuffer-help
+        :help "Display help for minibuffer input and completion" :keys "M-? in minibuf"))
 
 
     ;; `Options' -----------------------------------------------------
@@ -783,14 +1004,19 @@ Used on `pre-command-hook'."
 
 
     ;; Beginning of non-submenu `Icicles' menu -----------------------
-    (define-key icicle-menu-map [icicle-help]
-      '(menu-item "Icicles Help" icicle-minibuffer-help
-        :help "Display help for minibuffer input and completion" :keys "M-? in minibuf"))
-    (define-key icicle-menu-map [icicle-abort]
-      '(menu-item "Cancel Minibuffer" icicle-abort-recursive-edit
+    (define-key icicle-menu-map [icicle-separator-help] '("--"))
+
+    (define-key icicle-menu-map [icicle-mode]
+      '(menu-item "Turn Off Icicle Mode" icicle-mode))
+    (define-key icicle-menu-map [icicle-top-level]
+      '(menu-item "Top Level (Cancel All Minibuffers)" icicle-top-level
         :enable (active-minibuffer-window)
-        :help "Cancel minibuffer input and return to higher level"))
-    (define-key icicle-menu-map [icicle-separator-last] '("--"))
+        :help "Cancel all minibuffers and return to the top level" :keys "C-M-T"))
+    (define-key icicle-menu-map [icicle-abort]
+      '(menu-item "Cancel This Minibuffer" icicle-abort-recursive-edit
+        :enable (active-minibuffer-window)
+        :help "Cancel this minibuffer and return to the next higher level"))
+    (define-key icicle-menu-map [icicle-separator-levels] '("--"))
 
     (define-key icicle-menu-map [icicle-apply]
       '(menu-item "+ Apply Function to Alist Items..." icicle-apply
@@ -1685,7 +1911,7 @@ Used on `pre-command-hook'."
                   (defvar icicle-buffers-menu-map (make-sparse-keymap)
                     "`Buffers' > `Icicles' submenu.")
                   (setq menu-bar-buffers-menu-command-entries
-                        (cons (list 'FOO 'menu-item "Icicles" icicle-buffers-menu-map)
+                        (cons (list 'Icicles 'menu-item "Icicles" icicle-buffers-menu-map)
                               menu-bar-buffers-menu-command-entries)))
                  (t
                   (defvar icicle-buffers-menu-map (make-sparse-keymap)
@@ -2234,9 +2460,20 @@ is unbound in all keymaps accessible from keymap MAP."
      (let ((map  minibuffer-local-map))
 
        ;; Menu-bar `Minibuf' menu.
+
+       ;; First, remove some standard bindings that are on submenus here.
+       (define-key map [menu-bar minibuf isearch-forward]  nil)
+       (define-key map [menu-bar minibuf isearch-backward] nil)
+       (define-key map [menu-bar minibuf next]             nil)
+       (define-key map [menu-bar minibuf previous]         nil)
+
+       (define-key-after map [menu-bar minibuf icicle-top-level]
+         '(menu-item "Top Level" icicle-top-level
+           :help "Cancel all minibuffers and return to the top level")
+         'quit)
        (define-key map [menu-bar minibuf quit] ; Replace `keyboard-escape-quit'
          '(menu-item "Quit" icicle-abort-recursive-edit
-           :help "Cancel minibuffer input or recursive edit"))
+           :help "Cancel this minibuffer and return to the next higher level"))
        (define-key map [menu-bar minibuf return]
          '(menu-item "Enter" exit-minibuffer
            :help "Terminate input and exit minibuffer" :keys "RET"))
@@ -2259,66 +2496,15 @@ is unbound in all keymaps accessible from keymap MAP."
          '(menu-item "Save Multiple Inputs for Completion" icicle-multi-inputs-save
            :help "Add inputs in minibuffer to saved candidates set for completion"))
        (define-key map [menu-bar minibuf icicle-multi-inputs-act]
-         '(menu-item "Act on multiple inputs in the minibuffer" icicle-multi-inputs-act
+         '(menu-item "Act on Multiple Inputs" icicle-multi-inputs-act
            :help "Parse minibuffer input into a list of candidates, then act on each"))
-       (define-key map [menu-bar minibuf icicle-regexp-quote-input]
-         '(menu-item "Regexp-Quote Input" icicle-regexp-quote-input
-           :enable (with-current-buffer (window-buffer (minibuffer-window))
-                     (not (zerop (buffer-size))))
-           :help "Regexp-quote current input or its active region, then apropos-complete"
-           :keys "M-%"))
-       (define-key map [menu-bar minibuf separator-set2] '("--"))
+       (define-key map [menu-bar minibuf separator-misc] '("--"))
 
-       (define-key map [menu-bar minibuf icicle-clear-current-history]
-         '(menu-item "Clear History Entries" icicle-clear-current-history
-           :help "Clear current minibuffer history of selected entries"))
-       (define-key map [menu-bar minibuf icicle-erase-minibuffer]
-         '(menu-item "Delete from History" icicle-erase-minibuffer-or-history-element
-           :visible (memq last-command
-                     '(previous-history-element next-history-element
-                       icicle-erase-minibuffer-or-history-element
-                       previous-matching-history-element next-matching-history-element))
-           :help "Delete current history element (in minibuffer now)" :keys "M-k"))
-       (define-key map [menu-bar minibuf icicle-delete-history-element]
-         '(menu-item "Clear (Erase) Minibuffer" icicle-erase-minibuffer-or-history-element
-           :visible (not (memq last-command
-                          '(previous-history-element next-history-element
-                            icicle-erase-minibuffer-or-history-element
-                            previous-matching-history-element next-matching-history-element)))
-           :help "Erase the Minibuffer" :keys "M-k"))
-       (define-key map [menu-bar minibuf icicle-insert-list-join-string]
-         '(menu-item "Insert Join-String" icicle-insert-list-join-string
-           :help "Insert `icicle-list-join-string' into the minibuffer"))
-       (define-key map [menu-bar minibuf icicle-insert-key-description]
-         '(menu-item "Insert Key Description" icicle-insert-key-description
-           :visible (not icicle-searching-p) :keys "M-q"
-           :help "Read key and insert its description - e.g., reading ^F inserts `C-f'"))
-       (define-key map [menu-bar minibuf icicle-roundup]
-         '(menu-item "Insert Completion Candidate(s)" icicle-roundup
-           :enable (and (icicle-completing-p)  icicle-completion-candidates)
-           :help "Insert one or more completion candidates in the minibuffer"))
-       (define-key map [menu-bar minibuf icicle-insert-history-element]
-         '(menu-item "Insert Past Input(s) using Completion" icicle-insert-history-element
-           :enable (consp (symbol-value minibuffer-history-variable))
-           :help "Use completion to insert a previous input into the minibuffer"))
-       (define-key map [menu-bar minibuf icicle-insert-string-from-a-var]
-         '(menu-item "Insert String from a Variable..." icicle-insert-string-from-variable
-           :visible current-prefix-arg :keys "C-="
-           :help "Read a variable name and insert its string value into the minibuffer"))
-       (define-key map [menu-bar minibuf icicle-insert-string-from-std-var]
-         '(menu-item "Insert `icicle-input-string'" icicle-insert-string-from-variable
-           :visible (not current-prefix-arg) :keys "C-="
-           :help "Insert text from variable `icicle-input-string' into the minibuffer"))
-       (define-key map [menu-bar minibuf icicle-insert-string-at-point]
-         '(menu-item "Insert Text from Point" icicle-insert-string-at-point
-           :help "Insert text at or near the cursor into the minibuffer"))
-       (define-key map [menu-bar minibuf icicle-completing-read+insert]
-         '(menu-item "Insert On-Demand Completion" icicle-completing-read+insert
-           :visible (consp icicle-completing-read+insert-candidates)
-           :help "Read and insert something using (lax) completion"))
-       (define-key map [menu-bar minibuf icicle-read+insert-file-name]
-         '(menu-item "Insert File Name" icicle-read+insert-file-name
-           :help "Read and insert a file name using (lax) completion"))
+       (define-key map [menu-bar minibuf edit]
+         (list 'menu-item "Edit" icicle-minibuf-edit-menu-map))
+
+       (define-key map [menu-bar minibuf history]
+         (list 'menu-item "History" icicle-minibuf-history-menu-map))
 
          ;; Keyboard keys
        (icicle-bind-custom-minibuffer-keys map icicle-minibuffer-key-bindings)
@@ -2333,9 +2519,13 @@ is unbound in all keymaps accessible from keymap MAP."
      ;; In Emacs 22+, local is parent of local-ns.
      (unless (eq minibuffer-local-map (keymap-parent minibuffer-local-ns-map))
        (let ((map  minibuffer-local-ns-map))
+         (define-key-after map [menu-bar minibuf icicle-top-level]
+           '(menu-item "Top Level" icicle-top-level
+             :help "Cancel all minibuffers and return to the top level")
+           'quit)
          (define-key map [menu-bar minibuf quit] ; Replace `keyboard-escape-quit'
            '(menu-item "Quit" icicle-abort-recursive-edit
-             :help "Cancel minibuffer input or recursive edit"))
+             :help "Cancel this minibuffer and return to the next higher level"))
          (define-key map [menu-bar minibuf return]
            '(menu-item "Enter" exit-minibuffer
              :help "Terminate input and exit minibuffer" :keys "RET"))
@@ -2358,66 +2548,15 @@ is unbound in all keymaps accessible from keymap MAP."
            '(menu-item "Save Multiple Inputs for Completion" icicle-multi-inputs-save
              :help "Add inputs in minibuffer to saved candidates set for completion"))
          (define-key map [menu-bar minibuf icicle-multi-inputs-act]
-           '(menu-item "Act on multiple inputs in the minibuffer" icicle-multi-inputs-act
+           '(menu-item "Act on Multiple Inputs" icicle-multi-inputs-act
              :help "Parse minibuffer input into a list of candidates, then act on each"))
-         (define-key map [menu-bar minibuf icicle-regexp-quote-input]
-           '(menu-item "Regexp-Quote Input" icicle-regexp-quote-input
-             :enable (with-current-buffer (window-buffer (minibuffer-window))
-                       (not (zerop (buffer-size))))
-             :help "Regexp-quote current input or its active region, then apropos-complete"
-             :keys "M-%"))
-         (define-key map [menu-bar minibuf separator-set2] '("--"))
+         (define-key map [menu-bar minibuf separator-misc] '("--"))
 
-         (define-key map [menu-bar minibuf icicle-clear-current-history]
-           '(menu-item "Clear History Entries" icicle-clear-current-history
-             :help "Clear current minibuffer history of selected entries"))
-         (define-key map [menu-bar minibuf icicle-erase-minibuffer]
-           '(menu-item "Delete from History" icicle-erase-minibuffer-or-history-element
-             :visible (memq last-command
-                       '(previous-history-element next-history-element
-                         icicle-erase-minibuffer-or-history-element
-                         previous-matching-history-element next-matching-history-element))
-             :help "Delete current history element (in minibuffer now)" :keys "M-k"))
-         (define-key map [menu-bar minibuf icicle-delete-history-element]
-           '(menu-item "Clear (Erase) Minibuffer" icicle-erase-minibuffer-or-history-element
-             :visible (not (memq last-command
-                            '(previous-history-element next-history-element
-                              icicle-erase-minibuffer-or-history-element
-                              previous-matching-history-element next-matching-history-element)))
-             :help "Erase the Minibuffer" :keys "M-k"))
-         (define-key map [menu-bar minibuf icicle-insert-list-join-string]
-           '(menu-item "Insert Join-String" icicle-insert-list-join-string
-             :help "Insert `icicle-list-join-string' into the minibuffer"))
-         (define-key map [menu-bar minibuf icicle-insert-key-description]
-           '(menu-item "Insert Key Description" icicle-insert-key-description
-             :visible (not icicle-searching-p) :keys "M-q"
-             :help "Read key and insert its description - e.g., reading ^F inserts `C-f'"))
-         (define-key map [menu-bar minibuf icicle-roundup]
-           '(menu-item "Insert Completion Candidate(s)" icicle-roundup
-             :enable (and (icicle-completing-p) icicle-completion-candidates)
-             :help "Insert one or more completion candidates in the minibuffer"))
-         (define-key map [menu-bar minibuf icicle-insert-history-element]
-           '(menu-item "Insert Past Input(s) using Completion" icicle-insert-history-element
-             :enable (consp (symbol-value minibuffer-history-variable))
-             :help "Use completion to insert a previous input into the minibuffer"))
-         (define-key map [menu-bar minibuf icicle-insert-string-from-a-var]
-           '(menu-item "Insert String from a Variable..." icicle-insert-string-from-variable
-             :visible current-prefix-arg :keys "C-="
-             :help "Read a variable name and insert its string value into the minibuffer"))
-         (define-key map [menu-bar minibuf icicle-insert-string-from-std-var]
-           '(menu-item "Insert `icicle-input-string'" icicle-insert-string-from-variable
-             :visible (not current-prefix-arg) :keys "C-="
-             :help "Insert text from variable `icicle-input-string' into the minibuffer"))
-         (define-key map [menu-bar minibuf icicle-insert-string-at-point]
-           '(menu-item "Insert Text from Point" icicle-insert-string-at-point
-             :help "Insert text at or near the cursor into the minibuffer"))
-         (define-key map [menu-bar minibuf icicle-completing-read+insert]
-           '(menu-item "Insert On-Demand Completion" icicle-completing-read+insert
-             :visible (consp icicle-completing-read+insert-candidates)
-             :help "Read and insert something using (lax) completion"))
-         (define-key map [menu-bar minibuf icicle-read+insert-file-name]
-           '(menu-item "Insert File Name" icicle-read+insert-file-name
-             :help "Read and insert a file name using (lax) completion"))
+         (define-key map [menu-bar minibuf edit]
+           (list 'menu-item "Edit" icicle-minibuf-edit-menu-map))
+
+         (define-key map [menu-bar minibuf history]
+           (list 'menu-item "History" icicle-minibuf-history-menu-map))
 
          ;; Keyboard keys
          (icicle-bind-custom-minibuffer-keys map icicle-minibuffer-key-bindings)
@@ -2431,10 +2570,15 @@ is unbound in all keymaps accessible from keymap MAP."
      ;; `minibuffer-local-isearch-map': minibuffer map for editing isearch strings.
      ;; In Emacs 21+, local is parent of local-isearch.
      (unless (eq minibuffer-local-map (keymap-parent minibuffer-local-isearch-map))
+
        (let ((map  minibuffer-local-isearch-map))
+         (define-key-after map [menu-bar minibuf icicle-top-level]
+           '(menu-item "Top Level" icicle-top-level
+             :help "Cancel all minibuffers and return to the top level")
+           'quit)
          (define-key map [menu-bar minibuf quit] ; Replace `keyboard-escape-quit'
            '(menu-item "Quit" icicle-abort-recursive-edit
-             :help "Cancel minibuffer input or recursive edit"))
+             :help "Cancel this minibuffer and return to the next higher level"))
          (define-key map [menu-bar minibuf return]
            '(menu-item "Enter" exit-minibuffer
              :help "Terminate input and exit minibuffer" :keys "RET"))
@@ -2457,66 +2601,15 @@ is unbound in all keymaps accessible from keymap MAP."
            '(menu-item "Save Multiple Inputs for Completion" icicle-multi-inputs-save
              :help "Add inputs in minibuffer to saved candidates set for completion"))
          (define-key map [menu-bar minibuf icicle-multi-inputs-act]
-           '(menu-item "Act on multiple inputs in the minibuffer" icicle-multi-inputs-act
+           '(menu-item "Act on Multiple Inputs" icicle-multi-inputs-act
              :help "Parse minibuffer input into a list of candidates, then act on each"))
-         (define-key map [menu-bar minibuf icicle-regexp-quote-input]
-           '(menu-item "Regexp-Quote Input" icicle-regexp-quote-input
-             :enable (with-current-buffer (window-buffer (minibuffer-window))
-                       (not (zerop (buffer-size))))
-             :help "Regexp-quote current input or its active region, then apropos-complete"
-             :keys "M-%"))
-         (define-key map [menu-bar minibuf separator-set2] '("--"))
+         (define-key map [menu-bar minibuf separator-misc] '("--"))
 
-         (define-key map [menu-bar minibuf icicle-clear-current-history]
-           '(menu-item "Clear History Entries" icicle-clear-current-history
-             :help "Clear current minibuffer history of selected entries"))
-         (define-key map [menu-bar minibuf icicle-erase-minibuffer]
-           '(menu-item "Delete from History" icicle-erase-minibuffer-or-history-element
-             :visible (memq last-command
-                       '(previous-history-element next-history-element
-                         icicle-erase-minibuffer-or-history-element
-                         previous-matching-history-element next-matching-history-element))
-             :help "Delete current history element (in minibuffer now)" :keys "M-k"))
-         (define-key map [menu-bar minibuf icicle-delete-history-element]
-           '(menu-item "Clear (Erase) Minibuffer" icicle-erase-minibuffer-or-history-element
-             :visible (not (memq last-command
-                            '(previous-history-element next-history-element
-                              icicle-erase-minibuffer-or-history-element
-                              previous-matching-history-element next-matching-history-element)))
-             :help "Erase the Minibuffer" :keys "M-k"))
-         (define-key map [menu-bar minibuf icicle-insert-list-join-string]
-           '(menu-item "Insert Join-String" icicle-insert-list-join-string
-             :help "Insert `icicle-list-join-string' into the minibuffer"))
-         (define-key map [menu-bar minibuf icicle-insert-key-description]
-           '(menu-item "Insert Key Description" icicle-insert-key-description
-             :visible (not icicle-searching-p) :keys "M-q"
-             :help "Read key and insert its description - e.g., reading ^F inserts `C-f'"))
-         (define-key map [menu-bar minibuf icicle-roundup]
-           '(menu-item "Insert Completion Candidate(s)" icicle-roundup
-             :enable (and (icicle-completing-p) icicle-completion-candidates)
-             :help "Insert one or more completion candidates in the minibuffer"))
-         (define-key map [menu-bar minibuf icicle-insert-history-element]
-           '(menu-item "Insert Past Input(s) using Completion" icicle-insert-history-element
-             :enable (consp (symbol-value minibuffer-history-variable))
-             :help "Use completion to insert a previous input into the minibuffer"))
-         (define-key map [menu-bar minibuf icicle-insert-string-from-a-var]
-           '(menu-item "Insert String from a Variable..." icicle-insert-string-from-variable
-             :visible current-prefix-arg :keys "C-="
-             :help "Read a variable name and insert its string value into the minibuffer"))
-         (define-key map [menu-bar minibuf icicle-insert-string-from-std-var]
-           '(menu-item "Insert `icicle-input-string'" icicle-insert-string-from-variable
-             :visible (not current-prefix-arg) :keys "C-="
-             :help "Insert text from variable `icicle-input-string' into the minibuffer"))
-         (define-key map [menu-bar minibuf icicle-insert-string-at-point]
-           '(menu-item "Insert Text from Point" icicle-insert-string-at-point
-             :help "Insert text at or near the cursor into the minibuffer"))
-         (define-key map [menu-bar minibuf icicle-completing-read+insert]
-           '(menu-item "Insert On-Demand Completion" icicle-completing-read+insert
-             :visible (consp icicle-completing-read+insert-candidates)
-             :help "Read and insert something using (lax) completion"))
-         (define-key map [menu-bar minibuf icicle-read+insert-file-name]
-           '(menu-item "Insert File Name" icicle-read+insert-file-name
-             :help "Read and insert a file name using (lax) completion"))
+         (define-key map [menu-bar minibuf edit]
+           (list 'menu-item "Edit" icicle-minibuf-edit-menu-map))
+
+         (define-key map [menu-bar minibuf history]
+           (list 'menu-item "History" icicle-minibuf-history-menu-map))
 
          ;; Keyboard keys
          (icicle-bind-custom-minibuffer-keys map icicle-minibuffer-key-bindings)
@@ -2742,11 +2835,28 @@ MAP is `minibuffer-local-completion-map' or
 
   ;; Menu-bar `Minibuf' menu.
 
+  (define-key map [menu-bar minibuf separator-complete2] '("--"))
+  (define-key map [menu-bar minibuf word-complete]
+    '(menu-item "Word-Complete" icicle-prefix-word-complete
+      :help "Complete at most one word of prefix"))
+  (define-key map [menu-bar minibuf prefix-complete]
+    '(menu-item "Prefix-Complete" icicle-prefix-complete
+      :help "Complete prefix as far as possible"))
+  (define-key map [menu-bar minibuf apropos-complete]
+    '(menu-item "Apropos-Complete" icicle-apropos-complete :keys "S-TAB"
+      :help "Complete regular expression as far as possible and list completions"))
+  (define-key map [menu-bar minibuf separator-complete1] '("--"))
+
+
   ;; In Emacs 22+, local is parent of local-completion
   (unless (eq minibuffer-local-map (keymap-parent minibuffer-local-completion-map))
+    (define-key-after map [menu-bar minibuf icicle-top-level]
+      '(menu-item "Top Level" icicle-top-level
+        :help "Cancel all minibuffers and return to the top level")
+      'quit)
     (define-key map [menu-bar minibuf quit] ; Replace `keyboard-escape-quit'
       '(menu-item "Quit" icicle-abort-recursive-edit
-        :help "Cancel minibuffer input or recursive edit"))
+        :help "Cancel this minibuffer and return to the next higher level"))
     (define-key map [menu-bar minibuf return]
       '(menu-item "Enter" exit-minibuffer
         :help "Terminate input and exit minibuffer" :keys "RET"))
@@ -2769,196 +2879,30 @@ MAP is `minibuffer-local-completion-map' or
       '(menu-item "Save Multiple Inputs for Completion" icicle-multi-inputs-save
         :help "Add inputs in minibuffer to saved candidates set for completion"))
     (define-key map [menu-bar minibuf icicle-multi-inputs-act]
-      '(menu-item "Act on multiple inputs in the minibuffer" icicle-multi-inputs-act
+      '(menu-item "Act on Multiple Inputs" icicle-multi-inputs-act
         :help "Parse minibuffer input into a list of candidates, then act on each"))
-    (define-key map [menu-bar minibuf icicle-regexp-quote-input]
-      '(menu-item "Regexp-Quote Input" icicle-regexp-quote-input
-        :enable (with-current-buffer (window-buffer (minibuffer-window)) (not (zerop (buffer-size))))
-        :help "Regexp-quote current input or its active region, then apropos-complete"
-        :keys "M-%"))
-    (define-key map [menu-bar minibuf separator-set2] '("--"))
+    (define-key map [menu-bar minibuf separator-misc] '("--"))
 
-    (define-key map [menu-bar minibuf icicle-clear-current-history]
-      '(menu-item "Clear History Entries" icicle-clear-current-history
-        :help "Clear current minibuffer history of selected entries"))
-    (define-key map [menu-bar minibuf icicle-erase-minibuffer]
-      '(menu-item "Delete from History" icicle-erase-minibuffer-or-history-element
-        :visible (memq last-command
-                  '(previous-history-element next-history-element
-                    icicle-erase-minibuffer-or-history-element
-                    previous-matching-history-element next-matching-history-element))
-        :help "Delete current history element (in minibuffer now)" :keys "M-k"))
-    (define-key map [menu-bar minibuf icicle-delete-history-element]
-      '(menu-item "Clear (Erase) Minibuffer" icicle-erase-minibuffer-or-history-element
-        :visible (not (memq last-command
-                       '(previous-history-element next-history-element
-                         icicle-erase-minibuffer-or-history-element
-                         previous-matching-history-element next-matching-history-element)))
-        :help "Erase the Minibuffer" :keys "M-k"))
-    (define-key map [menu-bar minibuf icicle-insert-list-join-string]
-      '(menu-item "Insert Join-String" icicle-insert-list-join-string
-        :help "Insert `icicle-list-join-string' into the minibuffer"))
-    (define-key map [menu-bar minibuf icicle-insert-key-description]
-      '(menu-item "Insert Key Description" icicle-insert-key-description
-        :visible (not icicle-searching-p) :keys "M-q"
-        :help "Read key and insert its description - e.g., reading ^F inserts `C-f'"))
-    (define-key map [menu-bar minibuf icicle-roundup]
-      '(menu-item "Insert Completion Candidate(s)" icicle-roundup
-        :enable (and (icicle-completing-p) icicle-completion-candidates)
-        :help "Insert one or more completion candidates in the minibuffer"))
-    (define-key map [menu-bar minibuf icicle-insert-history-element]
-      '(menu-item "Insert Past Input(s) using Completion" icicle-insert-history-element
-        :help "Use completion to insert a previous input into the minibuffer"))
-    (define-key map [menu-bar minibuf icicle-insert-string-from-a-var]
-      '(menu-item "Insert String from a Variable..." icicle-insert-string-from-variable
-        :visible current-prefix-arg :keys "C-="
-        :help "Read a variable name and insert its string value into the minibuffer"))
-    (define-key map [menu-bar minibuf icicle-insert-string-from-std-var]
-      '(menu-item "Insert `icicle-input-string'" icicle-insert-string-from-variable
-        :visible (not current-prefix-arg) :keys "C-="
-        :help "Insert text from variable `icicle-input-string' into the minibuffer"))
-    (define-key map [menu-bar minibuf icicle-insert-string-at-point]
-      '(menu-item "Insert Text from Point" icicle-insert-string-at-point
-        :help "Insert text at or near the cursor into the minibuffer"))
-    (define-key map [menu-bar minibuf icicle-completing-read+insert]
-      '(menu-item "Insert On-Demand Completion" icicle-completing-read+insert
-        :visible (consp icicle-completing-read+insert-candidates)
-        :help "Read and insert something using (lax) completion"))
-    (define-key map [menu-bar minibuf icicle-read+insert-file-name]
-      '(menu-item "Insert File Name" icicle-read+insert-file-name
-        :help "Read and insert a file name using (lax) completion"))
+    ;; Submenus.
+    (define-key map [menu-bar minibuf edit]
+      (list 'menu-item "Edit" icicle-minibuf-edit-menu-map))
+    (define-key map [menu-bar minibuf history]
+      (list 'menu-item "History" icicle-minibuf-history-menu-map))
+
     )
-  (define-key map [menu-bar minibuf icicle-goto/kill-failed-input]
-    '(menu-item "Cursor to Mismatch (Repeat: Kill)" icicle-goto/kill-failed-input
-      :enable (and (overlayp icicle-input-completion-fail-overlay)
-               (overlay-start icicle-input-completion-fail-overlay))
-      :help "Put cursor where input fails to complete - repeat to kill mismatch"))
-  (define-key map [menu-bar minibuf icicle-retrieve-next-input]
-    '(menu-item "Restore Next Completion Input" icicle-retrieve-next-input
-      :enable (consp (symbol-value (if (icicle-file-name-input-p)
-                                       'icicle-previous-raw-file-name-inputs
-                                     'icicle-previous-raw-non-file-name-inputs)))
-      :help "Cycle forward to insert a previous completion input in the minibuffer (`C-u': \
-complete)"))
-  (define-key map [menu-bar minibuf icicle-retrieve-previous-input]
-    '(menu-item "Restore Previous Completion Input" icicle-retrieve-previous-input
-      :enable (consp (symbol-value (if (icicle-file-name-input-p)
-                                       'icicle-previous-raw-file-name-inputs
-                                     'icicle-previous-raw-non-file-name-inputs)))
-      :help "Cycle backward to insert a previous completion input in the minibuffer (`C-u': \
-complete)"))
-  (define-key map [menu-bar minibuf separator-C-l] '("--"))
 
+  ;; Remove some standard menu items.
   (define-key map [menu-bar minibuf ?\?] nil)
   (define-key map [menu-bar minibuf space] nil)
   (define-key map [menu-bar minibuf tab] nil)
-  (define-key map [menu-bar minibuf alt-action-list-all]
-    '(menu-item "Alt Act on List of Candidates" icicle-all-candidates-list-alt-action
-      :help "Apply the alternative action to the list of matching completion candidates"
-      :enable icicle-all-candidates-list-alt-action-fn))
-  (define-key map [menu-bar minibuf alt-action-all]
-    '(menu-item "Alt Act on Each Candidate" icicle-all-candidates-alt-action
-      :help "Apply the alternative action to each matching completion candidates"
-      :enable icicle-candidate-alt-action-fn))
-  (define-key map [menu-bar minibuf action-list-all]
-    '(menu-item "Act on List of Candidates" icicle-all-candidates-list-action
-      :help "Apply the command action to the list of matching completion candidates"
-      :enable icicle-all-candidates-list-action-fn))
-  (define-key map [menu-bar minibuf action-all]
-    '(menu-item "Act on Each Candidate" icicle-all-candidates-action
-      :help "Apply the command action to each matching completion candidates"
-      :enable icicle-candidate-action-fn))
-  (define-key map [menu-bar minibuf separator-actions] '("--"))
 
-  (define-key map [menu-bar minibuf set-define]
-    '(menu-item "Define Candidates by Lisp Sexp" icicle-candidate-set-define
-      :help "Define the set of current completion candidates by evaluating a sexp"))
-  (define-key map [menu-bar minibuf icicle-keep-only-past-inputs]
-    '(menu-item "Keep Only Previously Entered" icicle-keep-only-past-inputs
-      :enable (and icicle-completion-candidates  (consp (symbol-value minibuffer-history-variable)))
-      :help "Removed candidates that you have not previously chosen and entered"))
-  (define-key map [menu-bar minibuf set-union]
-    '(menu-item "Add (Union) Saved Candidate Set" icicle-candidate-set-union
-      :enable icicle-saved-completion-candidates
-      :help "Set union between the current and saved completion candidates"))
-  (define-key map [menu-bar minibuf set-difference]
-    '(menu-item "Subtract Saved Candidate Set" icicle-candidate-set-difference
-      :enable icicle-saved-completion-candidates
-      :help "Set difference between the current and saved completion candidates"))
-  (define-key map [menu-bar minibuf set-intersection]
-    '(menu-item "Intersect Saved Candidate Set" icicle-candidate-set-intersection
-      :enable icicle-saved-completion-candidates
-      :help "Set intersection between the current and saved candidates"))
-  (define-key map [menu-bar minibuf icicle-save-predicate-to-variable]
-    '(menu-item "Save Predicate to Variable" icicle-save-predicate-to-variable
-      :help "Save the current completion predicate to a variable"))
-  (define-key map [menu-bar minibuf icicle-narrow-candidates-with-predicate]
-    '(menu-item "Satisfy Also Predicate..." icicle-narrow-candidates-with-predicate
-      :help "Match another input pattern (narrow completions set)"
-      :enable icicle-completion-candidates))
-  (define-key map [menu-bar minibuf icicle-narrow-candidates]
-    '(menu-item "Match Also Regexp..." icicle-narrow-candidates
-      :enable icicle-completion-candidates
-      :help "Match another input pattern (narrow completions set)"))
-  (define-key map [menu-bar minibuf icicle-widen-candidates]
-    '(menu-item "Match Alternative..." icicle-widen-candidates
-      :enable icicle-completion-candidates
-      :help "Match alternative input pattern (widen completions set)"))
-  (define-key map [menu-bar minibuf set-complement]
-    '(menu-item "Complement Candidates" icicle-candidate-set-complement
-      :help "Complement the set of current completion candidates"))
-  (define-key map [menu-bar minibuf separator-set1] '("--"))
-
-  (define-key map [menu-bar minibuf set-swap]
-    '(menu-item "Swap Saved and Current Sets" icicle-candidate-set-swap
-      :enable icicle-saved-completion-candidates
-      :help "Swap the saved and current sets of completion candidates"))
-  (define-key map [menu-bar minibuf icicle-candidate-set-save-more-selected]
-    '(menu-item "Save More Selected (Region) Candidates"
-      icicle-candidate-set-save-more-selected
-      :help "Add the candidates in the region to the saved candidates"))
-  (define-key map [menu-bar minibuf icicle-candidate-set-save-selected]
-    '(menu-item "Save Selected (Region) Candidates"
-      icicle-candidate-set-save-selected
-      :help "Save the candidates in the region, for later recall"))
-  (define-key map [menu-bar minibuf icicle-candidate-set-save-more]
-    '(menu-item "Save More Candidates" icicle-candidate-set-save-more
-      :help "Add current completion candidates to saved candidates set"))
-  (define-key map [menu-bar minibuf set-save-to-cache-file]
-    '(menu-item "    to Cache File..." icicle-candidate-set-save-persistently
-      :help "Save current completion candidates to a cache file, for later recall"))
-  (define-key map [menu-bar minibuf set-save-to-variable]
-    '(menu-item "    to Variable..." icicle-candidate-set-save-to-variable
-      :help "Save current completion candidates to a variable, for later recall"))
-  (define-key map [menu-bar minibuf set-save]
-    '(menu-item "Save Candidates" icicle-candidate-set-save
-      :help "Save the set of current completion candidates, for later recall"))
-  (define-key map [menu-bar minibuf icicle-candidate-set-retrieve-more]
-    '(menu-item "Retrieve More Saved Candidates"
-      icicle-candidate-set-retrieve-more
-      :help "Add saved candidates to current completion candidates"))
-  (define-key map [menu-bar minibuf set-retrieve-from-cache-file]
-    '(menu-item "    from Cache File..."
-      icicle-candidate-set-retrieve-persistent
-      :help "Retrieve saved completion candidates from a cache file, making them current"))
-  (define-key map [menu-bar minibuf set-retrieve-from-variable]
-    '(menu-item "    from Variable..." icicle-candidate-set-retrieve-from-variable
-      :help "Retrieve saved completion candidates from variable, making them current"))
-  (define-key map [menu-bar minibuf set-retrieve]
-    '(menu-item "Retrieve Saved Candidates" icicle-candidate-set-retrieve
-      :enable icicle-saved-completion-candidates
-      :help "Retrieve the saved set of completion candidates, making it current"))
-  (define-key map [menu-bar minibuf separator-complete] '("--"))
-
-  (define-key map [menu-bar minibuf word-complete]
-    '(menu-item "Word-Complete" icicle-prefix-word-complete
-      :help "Complete at most one word of prefix"))
-  (define-key map [menu-bar minibuf prefix-complete]
-    '(menu-item "Prefix-Complete" icicle-prefix-complete
-      :help "Complete prefix as far as possible"))
-  (define-key map [menu-bar minibuf apropos-complete]
-    '(menu-item "Apropos-Complete" icicle-apropos-complete :keys "S-TAB"
-      :help "Complete regular expression as far as possible and list completions"))
+  ;; Submenus.
+  (define-key map [menu-bar minibuf candidate-action]
+    (list 'menu-item "Act on All Candidates" icicle-minibuf-act-on-all-menu-map))
+  (define-key map [menu-bar minibuf candidate-set]
+    (list 'menu-item "Candidate Set" icicle-minibuf-candidate-set-menu-map))
+  (define-key map [menu-bar minibuf save/retrieve]
+    (list 'menu-item "Save/Retrieve Candidates" icicle-minibuf-save-retrieve-menu-map))
 
   ;; Remap some commands for completion.
   (icicle-remap 'self-insert-command           'icicle-self-insert map (current-global-map))
