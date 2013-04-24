@@ -86,3 +86,14 @@ table.user tbody tr td {
 
 -- AaronHawley 2013-04-24 19:01 UTC
 
+
+----
+
+Concerning John's squinting:
+
+The default text is dark (#333) on gray (#eee) a difference of #bbb (3003).
+
+Comments are gray text (#888) on white (#fff) a difference of #777 (1911).  If it was changed to #444, it would be the same contrast.
+
+-- AaronHawley 2013-04-24 19:44 UTC
+
