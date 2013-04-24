@@ -84,6 +84,33 @@ The '''Icicles''' menu is available whenever you are in ''Icicle'' mode.   By de
 The '''Minibuf''' menu is available whenever the [[minibuffer]] is active.
 See [[Icicles - Nutshell View]].
 
+: '''Save/Retrieve Candidates''' submenu:
+::: [[image:drew-emacs-i-Minibuf-Save-Retrieve-menu.png]]
+
+: '''Candidate Set''' submenu:
+::: [[image:drew-emacs-i-Minibuf-Candidate Set-menu.png]]
+
+: '''Act on All Candidates''' submenu:
+::: [[image:drew-emacs-i-Minibuf-Act-on-All-Candidates-menu.png]]
+
+
+: '''History''' submenu:
+::: [[image:drew-emacs-i-Minibuf-History-Candidates-menu.png]]
+
+
+: '''Edit''' submenu:
+::: [[image:drew-emacs-i-Minibuf-Edit-Candidates-menu.png]]
+
+
+
+
+
+
+
+
+
+
+
 
 
 [:CompletionPopupMenu]
