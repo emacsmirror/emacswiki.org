@@ -1,216 +1,320 @@
-#FILE text/x-emacs-lisp 
-Ozs7IHJlZG8rLmVsIC0tLSBSZWRvL3VuZG8gc3lzdGVtIGZvciBFbWFjcwoKOzsgQ29weXJpZ2h0
-IChDKSAxOTg1LCAxOTg2LCAxOTg3LCAxOTkzLTE5OTUgRnJlZSBTb2Z0d2FyZSBGb3VuZGF0aW9u
-LCBJbmMuCjs7IENvcHlyaWdodCAoQykgMTk5NSBUaW5rZXIgU3lzdGVtcyBhbmQgSU5TIEVuZ2lu
-ZWVyaW5nIENvcnAuCjs7IENvcHlyaWdodCAoQykgMTk5NyBLeWxlIEUuIEpvbmVzCjs7IENvcHly
-aWdodCAoQykgMjAwOCwgMjAwOSBTLiBJcmllCjs7IENvcHlyaWdodCAoQykgMjAxMyBIZW5yeVZJ
-SUkKCjs7IEF1dGhvcjogS3lsZSBFLiBKb25lcywgRmVicnVhcnkgMTk5Nwo7OyAgICAgICAgIFMu
-IElyaWUsIE1hcmNoIDIwMDgKOzsgS2V5d29yZHM6IGxpc3AsIGV4dGVuc2lvbnMKOzsgVmVyc2lv
-bjogMS4xNgoKOzsgVGhpcyBwcm9ncmFtIGlzIGZyZWUgc29mdHdhcmU7IHlvdSBjYW4gcmVkaXN0
-cmlidXRlIGl0IGFuZC9vcgo7OyBtb2RpZnkgaXQgdW5kZXIgdGhlIHRlcm1zIG9mIHRoZSBHTlUg
-R2VuZXJhbCBQdWJsaWMgTGljZW5zZSBhcwo7OyBwdWJsaXNoZWQgYnkgdGhlIEZyZWUgU29mdHdh
-cmUgRm91bmRhdGlvbjsgZWl0aGVyIHZlcnNpb24gMiwgb3IKOzsgKGF0IHlvdXIgb3B0aW9uKSBh
-bnkgbGF0ZXIgdmVyc2lvbi4KCjs7IEl0IGlzIGRpc3RyaWJ1dGVkIGluIHRoZSBob3BlIHRoYXQg
-aXQgd2lsbCBiZSB1c2VmdWwsIGJ1dCBXSVRIT1VUCjs7IEFOWSBXQVJSQU5UWTsgd2l0aG91dCBl
-dmVuIHRoZSBpbXBsaWVkIHdhcnJhbnR5IG9mIE1FUkNIQU5UQUJJTElUWQo7OyBvciBGSVRORVNT
-IEZPUiBBIFBBUlRJQ1VMQVIgUFVSUE9TRS4gIFNlZSB0aGUgR05VIEdlbmVyYWwgUHVibGljCjs7
-IExpY2Vuc2UgZm9yIG1vcmUgZGV0YWlscy4KCjs7IFlvdSBzaG91bGQgaGF2ZSByZWNlaXZlZCBh
-IGNvcHkgb2YgdGhlIEdOVSBHZW5lcmFsIFB1YmxpYwo7OyBMaWNlbnNlIGFsb25nIHdpdGggdGhp
-cyBwcm9ncmFtOyBpZiBub3QsIHdyaXRlIHRvIHRoZSBGcmVlCjs7IFNvZnR3YXJlIEZvdW5kYXRp
-b24sIEluYy4sIDU5IFRlbXBsZSBQbGFjZSwgU3VpdGUgMzMwLCBCb3N0b24sCjs7IE1BIDAyMTEx
-LTEzMDcgVVNBCgoKOzs7IENvbW1lbnRhcnk6Cgo7OyByZWRvKy5lbCBpcyBidWcgZml4IGFuZCBl
-eHRlbmRlZCB2ZXJzaW9uIG9mIFhFbWFjcycgcmVkbyBwYWNrYWdlLgoKOzsgRW1hY3MnIG5vcm1h
-bCB1bmRvIHN5c3RlbSBhbGxvd3MgeW91IHRvIHVuZG8gYW4gYXJiaXRyYXJ5Cjs7IG51bWJlciBv
-ZiBidWZmZXIgY2hhbmdlcy4gIFRoZXNlIHVuZG9zIGFyZSByZWNvcmRlZCBhcyBvcmRpbmFyeQo7
-OyBidWZmZXIgY2hhbmdlcyB0aGVtc2VsdmVzLiAgU28gd2hlbiB5b3UgYnJlYWsgdGhlIGNoYWlu
-IG9mCjs7IHVuZG9zIGJ5IGlzc3Vpbmcgc29tZSBvdGhlciBjb21tYW5kLCB5b3UgY2FuIHRoZW4g
-dW5kbyBhbGwKOzsgdGhlIHVuZG9zLiAgVGhlIGNoYWluIG9mIHJlY29yZGVkIGJ1ZmZlciBtb2Rp
-ZmljYXRpb25zCjs7IHRoZXJlZm9yZSBncm93cyB3aXRob3V0IGJvdW5kLCB0cnVuY2F0ZWQgb25s
-eSBhdCBnYXJiYWdlCjs7IGNvbGxlY3Rpb24gdGltZS4KOzsKOzsgVGhlIHJlZG8vdW5kbyBzeXN0
-ZW0gaXMgZGlmZmVyZW50IGluIHR3byB3YXlzOgo7OyAgIDEuIFRoZSB1bmRvL3JlZG8gY29tbWFu
-ZCBjaGFpbiBpcyBvbmx5IGJyb2tlbiBieSBhIGJ1ZmZlcgo7OyAgICAgIG1vZGlmaWNhdGlvbi4g
-IFlvdSBjYW4gbW92ZSBhcm91bmQgdGhlIGJ1ZmZlciBvciBzd2l0Y2gKOzsgICAgICBidWZmZXJz
-IGFuZCBzdGlsbCBjb21lIGJhY2sgYW5kIGRvIG1vcmUgdW5kb3Mgb3IgcmVkb3MuCjs7ICAgMi4g
-VGhlIGByZWRvJyBjb21tYW5kIHJlc2NpbmRzIHRoZSBtb3N0IHJlY2VudCB1bmRvIHdpdGhvdXQK
-OzsgICAgICByZWNvcmRpbmcgdGhlIGNoYW5nZSBhcyBhIF9uZXdfIGJ1ZmZlciBjaGFuZ2UuICBJ
-dAo7OyAgICAgIGNvbXBsZXRlbHkgcmV2ZXJzZXMgdGhlIGVmZmVjdCBvZiB0aGUgdW5kbywgd2hp
-Y2gKOzsgICAgICBpbmNsdWRlcyBtYWtpbmcgdGhlIGNoYWluIG9mIGJ1ZmZlciBtb2RpZmljYXRp
-b24gcmVjb3Jkcwo7OyAgICAgIHNob3J0ZXIgYnkgb25lLCB0byBjb3VudGVyYWN0IHRoZSBlZmZl
-Y3Qgb2YgdGhlIHVuZG8KOzsgICAgICBjb21tYW5kIG1ha2luZyB0aGUgcmVjb3JkIGxpc3QgbG9u
-Z2VyIGJ5IG9uZS4KCjs7Cjs7IEluc3RhbGxhdGlvbjoKOzsKOzsgU2F2ZSB0aGlzIGZpbGUgYXMg
-cmVkbysuZWwsIGJ5dGUgY29tcGlsZSBpdCBhbmQgcHV0IHRoZQo7OyByZXN1bHRpbmcgcmVkby5l
-bGMgZmlsZSBpbiBhIGRpcmVjdG9yeSB0aGF0IGlzIGxpc3RlZCBpbgo7OyBsb2FkLXBhdGguCjs7
-Cjs7IEluIHlvdXIgLmVtYWNzIGZpbGUsIGFkZAo7OyAgIChyZXF1aXJlICdyZWRvKykKOzsgYW5k
-IHRoZSBzeXN0ZW0gd2lsbCBiZSBlbmFibGVkLgo7Owo7OyBJbiBhZGRpdGlvbiwgaWYgeW91IGRv
-bid0IHdhbnQgdG8gcmVkbyBhIHByZXZpb3VzIHVuZG8sIGFkZAo7OyAgIChzZXRxIHVuZG8tbm8t
-cmVkbyB0KQo7OyBZb3UgY2FuIGFsc28gdXNlIGEgZnVuY3Rpb24gYHVuZG8tb25seScgaW5zdGVh
-ZCBvZiBgdW5kbycKOzsgaW4gR05VIEVtYWNzIDIyIG9yIGxhdGVyLgoKCjs7IEhpc3Rvcnk6Cjs7
-IDIwMTMtMDQtMjMgIEhlbnJ5VklJSQo7OyAgICAgICAgICogRml4IGZvciBHTlUgYnVnIHJlcG9y
-dCAjMTI1ODEKOzsgICAgICAgICAqIFZlcnNpb24gMS4xNgo7Owo7OyAyMDA5LTAxLTA3ICBTLiBJ
-cmllCjs7ICAgICAgICAgKiBEZWxldGUgdW5uZWNlc3NhcnkgbWVzc2FnZXMKOzsgICAgICAgICAq
-IEJ1ZyBmaXgKOzsgICAgICAgICAqIFZlcnNpb24gMS4xNQo7Owo7OyAyMDA4LTA1LTIzICBTLiBJ
-cmllCjs7ICAgICAgICAgKiBCdWcgZml4Cjs7ICAgICAgICAgKiBWZXJzaW9uIDEuMTQKOzsKOzsg
-MjAwOC0wNS0xMSAgUy4gSXJpZQo7OyAgICAgICAgICogcmVjb3JkIHVubW9kaWZpZWQgc3RhdHVz
-IGVudHJ5IHdoZW4gcmVkb2luZwo7OyAgICAgICAgICogVmVyc2lvbiAxLjEzCjs7Cjs7IDIwMDgt
-MDUtMTAgIFMuIElyaWUKOzsgICAgICAgICAqIEJ1ZyBmaXgKOzsgICAgICAgICAqIFZlcnNpb24g
-MS4xMgo7Owo7OyAyMDA4LTA1LTA5ICBTLiBJcmllCjs7ICAgICAgICAgKiBCdWcgZml4Cjs7ICAg
-ICAgICAgKiBWZXJzaW9uIDEuMTEKOzsKOzsgMjAwOC0wNC0wMiAgUy4gSXJpZQo7OyAgICAgICAg
-ICogdW5kby1uby1yZWRvIGF2YWlsYWJsZQo7OyAgICAgICAgICogR05VIEVtYWNzIG1lbnUtYmFy
-IGFuZCB0b29sLWJhciBpdGVtCjs7ICAgICAgICAgKiBCdWcgZml4Cjs7ICAgICAgICAgKiBWZXJz
-aW9uIDEuMTAKCjs7IFRvRG86Cjs7Cjs7IC0gdW5kby9yZWRvIGluIHJlZ2lvbgoKOzs7IENvZGU6
-CgooZGVmdmFyIHJlZG8tdmVyc2lvbiAiMS4xNCIKICAiVmVyc2lvbiBudW1iZXIgZm9yIHRoZSBS
-ZWRvKyBwYWNrYWdlLiIpCgooZGVmdmFyIGxhc3QtYnVmZmVyLXVuZG8tbGlzdCBuaWwKICAiVGhl
-IGhlYWQgb2YgYnVmZmVyLXVuZG8tbGlzdCBhdCB0aGUgbGFzdCB0aW1lIGFuIHVuZG8gb3IgcmVk
-byB3YXMgZG9uZS4iKQoobWFrZS12YXJpYWJsZS1idWZmZXItbG9jYWwgJ2xhc3QtYnVmZmVyLXVu
-ZG8tbGlzdCkKCihtYWtlLXZhcmlhYmxlLWJ1ZmZlci1sb2NhbCAncGVuZGluZy11bmRvLWxpc3Qp
-Cgo7OyBFbWFjcyAyMCB2YXJpYWJsZQo7OyhkZWZ2YXIgdW5kby1pbi1wcm9ncmVzcykgOyBFbWFj
-cyAyMCBpcyBubyBsb25nZXIgc3VwcG9ydGVkLgoKOzsgRW1hY3MgMjEgdmFyaWFibGUKKGRlZnZh
-ciB1bmRvLW5vLXJlZG8gbmlsKQoKKGRlZnVuIHJlZG8gKCZvcHRpb25hbCBjb3VudCkKICAiUmVk
-byB0aGUgdGhlIG1vc3QgcmVjZW50IHVuZG8uClByZWZpeCBhcmcgQ09VTlQgbWVhbnMgcmVkbyB0
-aGUgQ09VTlQgbW9zdCByZWNlbnQgdW5kb3MuCklmIHlvdSBoYXZlIG1vZGlmaWVkIHRoZSBidWZm
-ZXIgc2luY2UgdGhlIGxhc3QgcmVkbyBvciB1bmRvLAp0aGVuIHlvdSBjYW5ub3QgcmVkbyBhbnkg
-dW5kb3MgYmVmb3JlIHRoZW4uIgogIChpbnRlcmFjdGl2ZSAiKnAiKQogIChpZiAoZXEgYnVmZmVy
-LXVuZG8tbGlzdCB0KQogICAgICAoZXJyb3IgIk5vIHVuZG8gaW5mb3JtYXRpb24gaW4gdGhpcyBi
-dWZmZXIiKSkKICAoaWYgKGVxIGxhc3QtYnVmZmVyLXVuZG8tbGlzdCBuaWwpCiAgICAgIChlcnJv
-ciAiTm8gdW5kb3MgdG8gcmVkbyIpKQogIChvciAoZXEgbGFzdC1idWZmZXItdW5kby1saXN0IGJ1
-ZmZlci11bmRvLWxpc3QpCiAgICAgIDs7IHNraXAgb25lIHVuZG8gYm91bmRhcnkgYW5kIGFsbCBw
-b2ludCBzZXR0aW5nIGNvbW1hbmRzIHVwCiAgICAgIDs7IHVudGlsIHRoZSBuZXh0IHVuZG8gYm91
-bmRhcnkgYW5kIHRyeSBhZ2Fpbi4KICAgICAgKGxldCAoKHAgYnVmZmVyLXVuZG8tbGlzdCkpCiAg
-ICAgICAgKGFuZCAobnVsbCAoY2FyLXNhZmUgcCkpIChzZXRxIHAgKGNkci1zYWZlIHApKSkKICAg
-ICAgICAod2hpbGUgKGFuZCBwIChpbnRlZ2VycCAoY2FyLXNhZmUgcCkpKQogICAgICAgICAgKHNl
-dHEgcCAoY2RyLXNhZmUgcCkpKQogICAgICAgIChlcSBsYXN0LWJ1ZmZlci11bmRvLWxpc3QgcCkp
-CiAgICAgIChlcnJvciAiQnVmZmVyIG1vZGlmaWVkIHNpbmNlIGxhc3QgdW5kby9yZWRvLCBjYW5u
-b3QgcmVkbyIpKQogIChhbmQgKGVxIChjZHIgYnVmZmVyLXVuZG8tbGlzdCkgcGVuZGluZy11bmRv
-LWxpc3QpCiAgICAgICAoZXJyb3IgIk5vIGZ1cnRoZXIgdW5kb3MgdG8gcmVkbyBpbiB0aGlzIGJ1
-ZmZlciIpKQogIDs7IFRoaXMgbWVzc2FnZSBzZWVtcyB0byBiZSB1bm5lY2Vzc2FyeSBiZWNhdXNl
-IHRoZSBlY2hvIGFyZWEKICA7OyBpcyByZXdyaXR0ZW4gYmVmb3JlIHRoZSBzY3JlZW4gaXMgdXBk
-YXRlZC4KICA7OyhvciAoZXEgKHNlbGVjdGVkLXdpbmRvdykgKG1pbmlidWZmZXItd2luZG93KSkK
-ICA7OyAgICAobWVzc2FnZSAiUmVkby4uLiIpKQogIChsZXQgKChtb2RpZmllZCAoYnVmZmVyLW1v
-ZGlmaWVkLXApKQogICAgICAgICh1bmRvLWluLXByb2dyZXNzIHQpCiAgICAgICAgKHJlY2VudC1z
-YXZlIChyZWNlbnQtYXV0by1zYXZlLXApKQogICAgICAgIChvbGQtdW5kby1saXN0IGJ1ZmZlci11
-bmRvLWxpc3QpCiAgICAgICAgKHAgYnVmZmVyLXVuZG8tbGlzdCkKICAgICAgICAocSAob3IgcGVu
-ZGluZy11bmRvLWxpc3QgdCkpCiAgICAgICAgKHJlY29yZHMtYmV0d2VlbiAwKQogICAgICAgIChw
-cmV2IG5pbCkgbmV4dCkKICAgIDs7IGNvdW50IHRoZSBudW1iZXIgb2YgdW5kbyByZWNvcmRzIGJl
-dHdlZW4gdGhlIGhlYWQgb2YgdGhlCiAgICA7OyB1bmRvIGNoYWluIGFuZCB0aGUgcG9pbnRlciB0
-byB0aGUgbmV4dCBjaGFuZ2UuICBOb3RlIHRoYXQKICAgIDs7IGJ5IGByZWNvcmQnIHdlIG1lYW4g
-Y2x1bXBzIG9mIGNoYW5nZSByZWNvcmRzLCBub3QgdGhlCiAgICA7OyBib3VuZGFyeSByZWNvcmRz
-LiAgVGhlIG51bWJlciBvZiByZWNvcmRzIHdpbGwgYWx3YXlzIGJlIGEKICAgIDs7IG11bHRpcGxl
-IG9mIDIsIGJlY2F1c2UgYW4gdW5kbyBtb3ZlcyB0aGUgcGVuZGluZyBwb2ludGVyCiAgICA7OyBm
-b3J3YXJkIG9uZSByZWNvcmQgYW5kIHByZXBlbmQgYSByZWNvcmQgdG8gdGhlIGhlYWQgb2YgdGhl
-CiAgICA7OyBjaGFpbi4gIFRodXMgdGhlIHNlcGFyYXRpb24gYWx3YXlzIGluY3JlYXNlcyBieSB0
-d28uICBXaGVuCiAgICA7OyB3ZSBkZWNyZWFzZSBpdCB3ZSB3aWxsIGRlY3JlYXNlIGl0IGJ5IGEg
-bXVsdGlwbGUgb2YgMgogICAgOzsgYWxzby4KICAgICh3aGlsZSBwCiAgICAgIChzZXRxIG5leHQg
-KGNkciBwKSkKICAgICAgKGNvbmQgKChlcSBuZXh0IHEpCiAgICAgICAgIDs7IGluc2VydCB0aGUg
-dW5tb2RpZmllZCBzdGF0dXMgZW50cnkgaW50byB1bmRvIHJlY29yZHMKICAgICAgICAgOzsgaWYg
-YnVmZmVyIGlzIG5vdCBtb2RpZmllZC4gIFRoZSB1bmRvIGNvbW1hbmQgaW5zZXJ0cwogICAgICAg
-ICA7OyB0aGlzIGluZm9ybWF0aW9uIG9ubHkgaW4gcmVkbyBlbnRyaWVzLgogICAgICAgICAod2hl
-biAoYW5kIChub3QgbW9kaWZpZWQpIChidWZmZXItZmlsZS1uYW1lKSkKICAgICAgICAgICAobGV0
-KiAoKHRpbWUgKG50aCA1IChmaWxlLWF0dHJpYnV0ZXMgKGJ1ZmZlci1maWxlLW5hbWUpKSkpCiAg
-ICAgICAgICAgICAgKGVsdCAoY29ucyAoY2FyIHRpbWUpIChjYWRyIHRpbWUpKSkpCiAgICAgICAg
-IChpZiAoZXEgKGNhci1zYWZlIChjYXIgcHJldikpIHQpCiAgICAgICAgICAgICAoc2V0Y2RyIChj
-YXIgcHJldikgZWx0KQogICAgICAgICAgIChzZXRjZHIgcHJldiAoY29ucyAoY29ucyB0IGVsdCkg
-cCkpKSkpCiAgICAgICAgIChzZXRxIG5leHQgbmlsKSkKICAgICAgICAoKG51bGwgKGNhciBuZXh0
-KSkKICAgICAgICAgKHNldHEgcmVjb3Jkcy1iZXR3ZWVuICgxKyByZWNvcmRzLWJldHdlZW4pKSkp
-CiAgICAgIChzZXRxIHByZXYgcAogICAgICAgIHAgbmV4dCkpCiAgICA7OyBkb24ndCBhbGxvdyB0
-aGUgdXNlciB0byByZWRvIG1vcmUgdW5kb3MgdGhhbiBleGlzdC4KICAgIDs7IG9ubHkgaGFsZiB0
-aGUgcmVjb3JkcyBiZXR3ZWVuIHRoZSBsaXN0IGhlYWQgYW5kIHRoZSBwZW5kaW5nCiAgICA7OyBw
-b2ludGVyIGFyZSB1bmRvcyB0aGF0IGFyZSBhIHBhcnQgb2YgdGhpcyBjb21tYW5kIGNoYWluLgog
-ICAgKHNldHEgY291bnQgKG1pbiAoLyByZWNvcmRzLWJldHdlZW4gMikgY291bnQpCiAgICAgIHAg
-KHByaW1pdGl2ZS11bmRvICgxKyBjb3VudCkgYnVmZmVyLXVuZG8tbGlzdCkpCiAgICAoaWYgKGVx
-IHAgb2xkLXVuZG8tbGlzdCkKICAgICAgICBuaWwgOzsgbm90aGluZyBoYXBwZW5lZAogICAgICA7
-OyBzZXQgYnVmZmVyLXVuZG8tbGlzdCB0byB0aGUgbmV3IHVuZG8gbGlzdC4gIGlmIGhhcyBiZWVu
-CiAgICAgIDs7IHNob3J0ZW5lZCBieSBgY291bnQnIHJlY29yZHMuCiAgICAgIChzZXRxIGJ1ZmZl
-ci11bmRvLWxpc3QgcCkKICAgICAgOzsgcHJpbWl0aXZlLXVuZG8gcmV0dXJucyBhIGxpc3Qgd2l0
-aG91dCBhIGxlYWRpbmcgdW5kbwogICAgICA7OyBib3VuZGFyeS4gIGFkZCBvbmUuCiAgICAgICh1
-bmRvLWJvdW5kYXJ5KQogICAgICA7OyBub3cgbW92ZSB0aGUgcGVuZGluZyBwb2ludGVyIGJhY2t3
-YXJkIGluIHRoZSB1bmRvIGxpc3QKICAgICAgOzsgdG8gcmVmbGVjdCB0aGUgcmVkby4gIHN1cmUg
-d291bGQgYmUgbmljZSBpZiB0aGlzIGxpc3QKICAgICAgOzsgd2VyZSBkb3VibHkgbGlua2VkLCBi
-dXQgbm8uLi4gc28gd2UgaGF2ZSB0byBydW4gZG93biB0aGUKICAgICAgOzsgbGlzdCBmcm9tIHRo
-ZSBoZWFkIGFuZCBzdG9wIGF0IHRoZSByaWdodCBwbGFjZS4KICAgICAgKGxldCAoKG4gKC0gcmVj
-b3Jkcy1iZXR3ZWVuIGNvdW50KSkpCiAgICAgICAgKHNldHEgcCAoY2RyIG9sZC11bmRvLWxpc3Qp
-KQogICAgICAgICh3aGlsZSAoYW5kIHAgKD4gbiAwKSkKICAgICAgKHNldHEgcCAoY2RyIChtZW1x
-IG5pbCBwKSkKICAgICAgICAgICAgbiAoMS0gbikpKQogICAgICAgIChzZXRxIHBlbmRpbmctdW5k
-by1saXN0IHApKSkKICAgIChhbmQgbW9kaWZpZWQgKG5vdCAoYnVmZmVyLW1vZGlmaWVkLXApKQog
-ICAgIChkZWxldGUtYXV0by1zYXZlLWZpbGUtaWYtbmVjZXNzYXJ5IHJlY2VudC1zYXZlKSkKICAg
-IChvciAoZXEgKHNlbGVjdGVkLXdpbmRvdykgKG1pbmlidWZmZXItd2luZG93KSkKICAgICAgICAo
-bWVzc2FnZSAiUmVkbyEiKSkKICAgIChzZXRxIGxhc3QtYnVmZmVyLXVuZG8tbGlzdCBidWZmZXIt
-dW5kby1saXN0KSkpCgooZGVmdW4gdW5kbyAoJm9wdGlvbmFsIGFyZykKICAiVW5kbyBzb21lIHBy
-ZXZpb3VzIGNoYW5nZXMuClJlcGVhdCB0aGlzIGNvbW1hbmQgdG8gdW5kbyBtb3JlIGNoYW5nZXMu
-CkEgbnVtZXJpYyBhcmd1bWVudCBzZXJ2ZXMgYXMgYSByZXBlYXQgY291bnQuIgogIChpbnRlcmFj
-dGl2ZSAiKnAiKQogIChsZXQgKChtb2RpZmllZCAoYnVmZmVyLW1vZGlmaWVkLXApKQogICAgICAg
-IChyZWNlbnQtc2F2ZSAocmVjZW50LWF1dG8tc2F2ZS1wKSkpCiAgICA7OyBUaGlzIG1lc3NhZ2Ug
-c2VlbXMgdG8gYmUgdW5uZWNlc3NhcnkgYmVjYXVzZSB0aGUgZWNobyBhcmVhCiAgICA7OyBpcyBy
-ZXdyaXR0ZW4gYmVmb3JlIHRoZSBzY3JlZW4gaXMgdXBkYXRlZC4KICAgIDs7KG9yIChlcSAoc2Vs
-ZWN0ZWQtd2luZG93KSAobWluaWJ1ZmZlci13aW5kb3cpKQogICAgOzsgICAgKG1lc3NhZ2UgIlVu
-ZG8uLi4iKSkKICAgIChsZXQgKChwIGJ1ZmZlci11bmRvLWxpc3QpCiAgICAgIChvbGQtcGVuZGlu
-Zy11bmRvLWxpc3QgcGVuZGluZy11bmRvLWxpc3QpKQogICAgICAob3IgKGVxIGxhc3QtYnVmZmVy
-LXVuZG8tbGlzdCBidWZmZXItdW5kby1saXN0KQogICAgICA7OyBza2lwIG9uZSB1bmRvIGJvdW5k
-YXJ5IGFuZCBhbGwgcG9pbnQgc2V0dGluZyBjb21tYW5kcyB1cAogICAgICA7OyB1bnRpbCB0aGUg
-bmV4dCB1bmRvIGJvdW5kYXJ5IGFuZCB0cnkgYWdhaW4uCiAgICAgIChwcm9nbiAoYW5kIChudWxs
-IChjYXItc2FmZSBwKSkgKHNldHEgcCAoY2RyLXNhZmUgcCkpKQogICAgICAgICAod2hpbGUgKGFu
-ZCBwIChpbnRlZ2VycCAoY2FyLXNhZmUgcCkpKQogICAgICAgICAgIChzZXRxIHAgKGNkci1zYWZl
-IHApKSkKICAgICAgICAgKGVxIGxhc3QtYnVmZmVyLXVuZG8tbGlzdCBwKSkKICAgICAgKHByb2du
-ICh1bmRvLXN0YXJ0KQogICAgICAgICA7OyBnZXQgcmlkIG9mIGluaXRpYWwgdW5kbyBib3VuZGFy
-eQogICAgICAgICAodW5kby1tb3JlIDEpCiAgICAgICAgIChub3QgdW5kby1uby1yZWRvKSkKICAg
-ICAgOzsgZGlzY2FyZCBvbGQgcmVkbyBpbmZvcm1hdGlvbiBpZiB1bmRvLW5vLXJlZG8gaXMgbm9u
-LW5pbAogICAgICAocHJvZ24gKGlmIChjYXItc2FmZSBsYXN0LWJ1ZmZlci11bmRvLWxpc3QpCiAg
-ICAgICAgICAgICAod2hpbGUgKGFuZCBwIChub3QgKGVxIGxhc3QtYnVmZmVyLXVuZG8tbGlzdAog
-ICAgICAgICAgICAgICAgICAgICAgICAoY2RyLXNhZmUgcCkpKSkKICAgICAgICAgICAgICAgKHNl
-dHEgcCAoY2RyLXNhZmUgcCkpKQogICAgICAgICAgIChzZXRxIHAgbGFzdC1idWZmZXItdW5kby1s
-aXN0KSkKICAgICAgICAgKGlmIHAgKHNldGNkciBwIG9sZC1wZW5kaW5nLXVuZG8tbGlzdCkpKQog
-ICAgICApKQogICAgKHVuZG8tbW9yZSAob3IgYXJnIDEpKQogICAgOzsgRG9uJ3Qgc3BlY2lmeSBh
-IHBvc2l0aW9uIGluIHRoZSB1bmRvIHJlY29yZCBmb3IgdGhlIHVuZG8gY29tbWFuZC4KICAgIDs7
-IEluc3RlYWQsIHVuZG9pbmcgdGhpcyBzaG91bGQgbW92ZSBwb2ludCB0byB3aGVyZSB0aGUgY2hh
-bmdlIGlzLgogICAgOzsKICAgIDs7OzsgVGhlIG9sZCBjb2RlIGZvciB0aGlzIHdhcyBtYWQhICBJ
-dCBkZWxldGVkIGFsbCBzZXQtcG9pbnQKICAgIDs7OzsgcmVmZXJlbmNlcyB0byB0aGUgcG9zaXRp
-b24gZnJvbSB0aGUgd2hvbGUgdW5kbyBsaXN0LAogICAgOzs7OyBpbnN0ZWFkIG9mIGp1c3QgdGhl
-IGNlbGxzIGZyb20gdGhlIGJlZ2lubmluZyB0byB0aGUgbmV4dAogICAgOzs7OyB1bmRvIGJvdW5k
-YXJ5LiAgVGhpcyBkb2VzIHdoYXQgSSB0aGluayB0aGUgb3RoZXIgY29kZQogICAgOzs7OyBtZWFu
-dCB0byBkby4KICAgIChsZXQqICgocCBidWZmZXItdW5kby1saXN0KQogICAgICAgKGxpc3QgKGNv
-bnMgbmlsIHApKQogICAgICAgKHByZXYgbGlzdCkpCiAgICAgICh3aGlsZSAoY2FyIHApCiAgICAg
-ICAgKGlmIChpbnRlZ2VycCAoY2FyIHApKQogICAgICAgIChzZXRjZHIgcHJldiAoY2RyIHApKQog
-ICAgICAoc2V0cSBwcmV2IHApKQogICAgICAgIChzZXRxIHAgKGNkciBwKSkpCiAgICAgIChzZXRx
-IGJ1ZmZlci11bmRvLWxpc3QgKGNkciBsaXN0KSkpCiAgICAoYW5kIG1vZGlmaWVkIChub3QgKGJ1
-ZmZlci1tb2RpZmllZC1wKSkKICAgICAoZGVsZXRlLWF1dG8tc2F2ZS1maWxlLWlmLW5lY2Vzc2Fy
-eSByZWNlbnQtc2F2ZSkpKQogIChvciAoZXEgKHNlbGVjdGVkLXdpbmRvdykgKG1pbmlidWZmZXIt
-d2luZG93KSkKICAgICAgKG1lc3NhZ2UgIlVuZG8hIikpCiAgKHNldHEgbGFzdC1idWZmZXItdW5k
-by1saXN0IGJ1ZmZlci11bmRvLWxpc3QpKQoKOzsgTW9kaWZ5IG1lbnUtYmFyIGFuZCB0b29sLWJh
-ciBpdGVtIG9mIEdOVSBFbWFjcwoodW5sZXNzIChmZWF0dXJlcCAneGVtYWNzKQogIDs7IGNvbmRp
-dGlvbiB0byB1bmRvCiAgKG1hcGMgKGxhbWJkYSAobWFwKQogICAgICAgICAgKGxldCAoKGVsZW0g
-KGNvcHktc2VxdWVuY2UgKGNkciAoYXNzcSAndW5kbyBtZW51LWJhci1lZGl0LW1lbnUpKSkpKQog
-ICAgICAgICAgICAoc2V0Y2FyIChjZHIgKG1lbXEgOmVuYWJsZSBlbGVtKSkKICAgICAgICAgICAg
-ICAgICAgICAnKGFuZCAobm90IGJ1ZmZlci1yZWFkLW9ubHkpCiAgICAgICAgICAgICAgICAgICAg
-ICAgICAgKGNvbnNwIGJ1ZmZlci11bmRvLWxpc3QpCiAgICAgICAgICAgICAgICAgICAgICAgICAg
-KG9yIChub3QgKG9yIChlcSBsYXN0LWJ1ZmZlci11bmRvLWxpc3QKICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgIGJ1ZmZlci11bmRvLWxpc3QpCiAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgIChlcSBsYXN0LWJ1ZmZlci11bmRvLWxpc3QKICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIChjZHIgYnVmZmVyLXVuZG8tbGlz
-dCkpKSkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKGxpc3RwIHBlbmRpbmctdW5kby1s
-aXN0KSkpKQogICAgICAgICAgICBlbGVtKSkKICAgICAgICAoYXBwZW5kIChsaXN0IG1lbnUtYmFy
-LWVkaXQtbWVudSkKICAgICAgICAgICAgICAgIChpZiB3aW5kb3ctc3lzdGVtIChsaXN0IHRvb2wt
-YmFyLW1hcCkpKSkKICA7OyByZWRvJ3MgbWVudS1iYXIgZW50cnkKICAoZGVmaW5lLWtleS1hZnRl
-ciBtZW51LWJhci1lZGl0LW1lbnUgW3JlZG9dCiAgICAnKG1lbnUtaXRlbSAiUmVkbyIgcmVkbwog
-ICAgICAgICAgICAgICAgOmVuYWJsZQogICAgICAgICAgICAgICAgKGFuZAogICAgICAgICAgICAg
-ICAgIChub3QgYnVmZmVyLXJlYWQtb25seSkKICAgICAgICAgICAgICAgICAobm90IChlcSBidWZm
-ZXItdW5kby1saXN0IHQpKQogICAgICAgICAgICAgICAgIChub3QgKGVxIGxhc3QtYnVmZmVyLXVu
-ZG8tbGlzdCBuaWwpKQogICAgICAgICAgICAgICAgIChvciAoZXEgbGFzdC1idWZmZXItdW5kby1s
-aXN0IGJ1ZmZlci11bmRvLWxpc3QpCiAgICAgICAgICAgICAgICAgICAgIChsZXQgKChwIGJ1ZmZl
-ci11bmRvLWxpc3QpKQogICAgICAgICAgICAgICAgICAgICAgIChhbmQgKG51bGwgKGNhci1zYWZl
-IHApKSAoc2V0cSBwIChjZHItc2FmZSBwKSkpCiAgICAgICAgICAgICAgICAgICAgICAgKHdoaWxl
-IChhbmQgcCAoaW50ZWdlcnAgKGNhci1zYWZlIHApKSkKICAgICAgICAgICAgICAgICAgICAgICAg
-IChzZXRxIHAgKGNkci1zYWZlIHApKSkKICAgICAgICAgICAgICAgICAgICAgICAoZXEgbGFzdC1i
-dWZmZXItdW5kby1saXN0IHApKSkKICAgICAgICAgICAgICAgICAobm90IChlcSAoY2RyIGJ1ZmZl
-ci11bmRvLWxpc3QpIHBlbmRpbmctdW5kby1saXN0KSkpCiAgICAgICAgICAgICAgICA6aGVscCAi
-UmVkbyB0aGUgbW9zdCByZWNlbnQgdW5kbyIpCiAgICAndW5kbykKICA7OyByZWRvJ3MgdG9vbC1i
-YXIgaWNvbgogICh3aGVuIHdpbmRvdy1zeXN0ZW0KICAgICh0b29sLWJhci1hZGQtaXRlbS1mcm9t
-LW1lbnUKICAgICAncmVkbyAicmVkbyIgbmlsCiAgICAgOnZpc2libGUgJyhub3QgKGVxICdzcGVj
-aWFsIChnZXQgbWFqb3ItbW9kZSAnbW9kZS1jbGFzcykpKSkKICAgIChkZWZpbmUta2V5LWFmdGVy
-IHRvb2wtYmFyLW1hcCBbcmVkb10KICAgICAgKGNkciAoYXNzcSAncmVkbyB0b29sLWJhci1tYXAp
-KSAndW5kbykKICAgIDs7IHVzZSBndGsrIGljb24gaWYgRW1hY3MyMwogICAgKGlmIChib3VuZHAg
-J3gtZ3RrLXN0b2NrLW1hcCkKICAgICAgICAoc2V0cSB4LWd0ay1zdG9jay1tYXAKICAgICAgICAg
-ICAgICAoY29ucyAnKCJldGMvaW1hZ2VzL3JlZG8iIC4gImd0ay1yZWRvIikgeC1ndGstc3RvY2st
-bWFwKSkpCiAgICA7OyB1cGRhdGUgdG9vbC1iYXIgaWNvbiBpbW1lZGlhdGVseQogICAgKGRlZnVu
-IHJlZG8tdG9vbGJhci11cGRhdGUgKCZvcHRpb25hbCBiZ24gZW5kIGxuZykKICAgICAgKGludGVy
-YWN0aXZlKQogICAgICAoc2V0LWJ1ZmZlci1tb2RpZmllZC1wIChidWZmZXItbW9kaWZpZWQtcCkp
-KQogICAgKGFkZC1ob29rICdhZnRlci1jaGFuZ2UtZnVuY3Rpb25zICdyZWRvLXRvb2xiYXItdXBk
-YXRlKSkKICApCgoocHJvdmlkZSAncmVkbyspCgo7OzsgcmVkbysuZWwgZW5kcyBoZXJlCg==
+;;; redo+.el --- Redo/undo system for Emacs
+
+;; Copyright (C) 1985, 1986, 1987, 1993-1995 Free Software Foundation, Inc.
+;; Copyright (C) 1995 Tinker Systems and INS Engineering Corp.
+;; Copyright (C) 1997 Kyle E. Jones
+;; Copyright (C) 2008, 2009 S. Irie
+;; Copyright (C) 2013 HenryVIII
+
+;; Author: Kyle E. Jones, February 1997
+;;         S. Irie, March 2008
+;; Keywords: lisp, extensions
+;; Version: 1.16
+
+;; This program is free software; you can redistribute it and/or
+;; modify it under the terms of the GNU General Public License as
+;; published by the Free Software Foundation; either version 2, or
+;; (at your option) any later version.
+
+;; It is distributed in the hope that it will be useful, but WITHOUT
+;; ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+;; or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public
+;; License for more details.
+
+;; You should have received a copy of the GNU General Public
+;; License along with this program; if not, write to the Free
+;; Software Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+;; MA 02111-1307 USA
+
+
+;;; Commentary:
+
+;; redo+.el is bug fix and extended version of XEmacs' redo package.
+
+;; Emacs' normal undo system allows you to undo an arbitrary
+;; number of buffer changes.  These undos are recorded as ordinary
+;; buffer changes themselves.  So when you break the chain of
+;; undos by issuing some other command, you can then undo all
+;; the undos.  The chain of recorded buffer modifications
+;; therefore grows without bound, truncated only at garbage
+;; collection time.
+;;
+;; The redo/undo system is different in two ways:
+;;   1. The undo/redo command chain is only broken by a buffer
+;;      modification.  You can move around the buffer or switch
+;;      buffers and still come back and do more undos or redos.
+;;   2. The `redo' command rescinds the most recent undo without
+;;      recording the change as a _new_ buffer change.  It
+;;      completely reverses the effect of the undo, which
+;;      includes making the chain of buffer modification records
+;;      shorter by one, to counteract the effect of the undo
+;;      command making the record list longer by one.
+
+;;
+;; Installation:
+;;
+;; Save this file as redo+.el, byte compile it and put the
+;; resulting redo.elc file in a directory that is listed in
+;; load-path.
+;;
+;; In your .emacs file, add
+;;   (require 'redo+)
+;; and the system will be enabled.
+;;
+;; In addition, if you don't want to redo a previous undo, add
+;;   (setq undo-no-redo t)
+;; You can also use a function `undo-only' instead of `undo'
+;; in GNU Emacs 22 or later.
+
+
+;; History:
+;; 2013-04-23  HenryVIII
+;;         * Fix for GNU bug report #12581
+;;         * Version 1.16
+;;
+;; 2009-01-07  S. Irie
+;;         * Delete unnecessary messages
+;;         * Bug fix
+;;         * Version 1.15
+;;
+;; 2008-05-23  S. Irie
+;;         * Bug fix
+;;         * Version 1.14
+;;
+;; 2008-05-11  S. Irie
+;;         * record unmodified status entry when redoing
+;;         * Version 1.13
+;;
+;; 2008-05-10  S. Irie
+;;         * Bug fix
+;;         * Version 1.12
+;;
+;; 2008-05-09  S. Irie
+;;         * Bug fix
+;;         * Version 1.11
+;;
+;; 2008-04-02  S. Irie
+;;         * undo-no-redo available
+;;         * GNU Emacs menu-bar and tool-bar item
+;;         * Bug fix
+;;         * Version 1.10
+
+;; ToDo:
+;;
+;; - undo/redo in region
+
+;;; Code:
+
+(defvar redo-version "1.14"
+  "Version number for the Redo+ package.")
+
+(defvar last-buffer-undo-list nil
+  "The head of buffer-undo-list at the last time an undo or redo was done.")
+(make-variable-buffer-local 'last-buffer-undo-list)
+
+(make-variable-buffer-local 'pending-undo-list)
+
+;; Emacs 20 variable
+;;(defvar undo-in-progress) ; Emacs 20 is no longer supported.
+
+;; Emacs 21 variable
+(defvar undo-no-redo nil)
+
+(defun redo (&optional count)
+  "Redo the the most recent undo.
+Prefix arg COUNT means redo the COUNT most recent undos.
+If you have modified the buffer since the last redo or undo,
+then you cannot redo any undos before then."
+  (interactive "*p")
+  (if (eq buffer-undo-list t)
+      (error "No undo information in this buffer"))
+  (if (eq last-buffer-undo-list nil)
+      (error "No undos to redo"))
+  (or (eq last-buffer-undo-list buffer-undo-list)
+      ;; skip one undo boundary and all point setting commands up
+      ;; until the next undo boundary and try again.
+      (let ((p buffer-undo-list))
+        (and (null (car-safe p)) (setq p (cdr-safe p)))
+        (while (and p (integerp (car-safe p)))
+          (setq p (cdr-safe p)))
+        (eq last-buffer-undo-list p))
+      (error "Buffer modified since last undo/redo, cannot redo"))
+  (and (eq (cdr buffer-undo-list) pending-undo-list)
+       (error "No further undos to redo in this buffer"))
+  ;; This message seems to be unnecessary because the echo area
+  ;; is rewritten before the screen is updated.
+  ;;(or (eq (selected-window) (minibuffer-window))
+  ;;    (message "Redo..."))
+  (let ((modified (buffer-modified-p))
+        (undo-in-progress t)
+        (recent-save (recent-auto-save-p))
+        (old-undo-list buffer-undo-list)
+        (p buffer-undo-list)
+        (q (or pending-undo-list t))
+        (records-between 0)
+        (prev nil) next)
+    ;; count the number of undo records between the head of the
+    ;; undo chain and the pointer to the next change.  Note that
+    ;; by `record' we mean clumps of change records, not the
+    ;; boundary records.  The number of records will always be a
+    ;; multiple of 2, because an undo moves the pending pointer
+    ;; forward one record and prepend a record to the head of the
+    ;; chain.  Thus the separation always increases by two.  When
+    ;; we decrease it we will decrease it by a multiple of 2
+    ;; also.
+    (while p
+      (setq next (cdr p))
+      (cond ((eq next q)
+         ;; insert the unmodified status entry into undo records
+         ;; if buffer is not modified.  The undo command inserts
+         ;; this information only in redo entries.
+         (when (and (not modified) (buffer-file-name))
+           (let* ((time (nth 5 (file-attributes (buffer-file-name))))
+              (elt (cons (car time) (cadr time))))
+         (if (eq (car-safe (car prev)) t)
+             (setcdr (car prev) elt)
+           (setcdr prev (cons (cons t elt) p)))))
+         (setq next nil))
+        ((null (car next))
+         (setq records-between (1+ records-between))))
+      (setq prev p
+        p next))
+    ;; don't allow the user to redo more undos than exist.
+    ;; only half the records between the list head and the pending
+    ;; pointer are undos that are a part of this command chain.
+    (setq count (min (/ records-between 2) count)
+      p (primitive-undo (1+ count) buffer-undo-list))
+    (if (eq p old-undo-list)
+        nil ;; nothing happened
+      ;; set buffer-undo-list to the new undo list.  if has been
+      ;; shortened by `count' records.
+      (setq buffer-undo-list p)
+      ;; primitive-undo returns a list without a leading undo
+      ;; boundary.  add one.
+      (undo-boundary)
+      ;; now move the pending pointer backward in the undo list
+      ;; to reflect the redo.  sure would be nice if this list
+      ;; were doubly linked, but no... so we have to run down the
+      ;; list from the head and stop at the right place.
+      (let ((n (- records-between count)))
+        (setq p (cdr old-undo-list))
+        (while (and p (> n 0))
+      (setq p (cdr (memq nil p))
+            n (1- n)))
+        (setq pending-undo-list p)))
+    (and modified (not (buffer-modified-p))
+     (delete-auto-save-file-if-necessary recent-save))
+    (or (eq (selected-window) (minibuffer-window))
+        (message "Redo!"))
+    (setq last-buffer-undo-list buffer-undo-list)))
+
+(defun undo (&optional arg)
+  "Undo some previous changes.
+Repeat this command to undo more changes.
+A numeric argument serves as a repeat count."
+  (interactive "*p")
+  (let ((modified (buffer-modified-p))
+        (recent-save (recent-auto-save-p)))
+    ;; This message seems to be unnecessary because the echo area
+    ;; is rewritten before the screen is updated.
+    ;;(or (eq (selected-window) (minibuffer-window))
+    ;;    (message "Undo..."))
+    (let ((p buffer-undo-list)
+      (old-pending-undo-list pending-undo-list))
+      (or (eq last-buffer-undo-list buffer-undo-list)
+      ;; skip one undo boundary and all point setting commands up
+      ;; until the next undo boundary and try again.
+      (progn (and (null (car-safe p)) (setq p (cdr-safe p)))
+         (while (and p (integerp (car-safe p)))
+           (setq p (cdr-safe p)))
+         (eq last-buffer-undo-list p))
+      (progn (undo-start)
+         ;; get rid of initial undo boundary
+         (undo-more 1)
+         (not undo-no-redo))
+      ;; discard old redo information if undo-no-redo is non-nil
+      (progn (if (car-safe last-buffer-undo-list)
+             (while (and p (not (eq last-buffer-undo-list
+                        (cdr-safe p))))
+               (setq p (cdr-safe p)))
+           (setq p last-buffer-undo-list))
+         (if p (setcdr p old-pending-undo-list)))
+      ))
+    (undo-more (or arg 1))
+    ;; Don't specify a position in the undo record for the undo command.
+    ;; Instead, undoing this should move point to where the change is.
+    ;;
+    ;;;; The old code for this was mad!  It deleted all set-point
+    ;;;; references to the position from the whole undo list,
+    ;;;; instead of just the cells from the beginning to the next
+    ;;;; undo boundary.  This does what I think the other code
+    ;;;; meant to do.
+    (let* ((p buffer-undo-list)
+       (list (cons nil p))
+       (prev list))
+      (while (car p)
+        (if (integerp (car p))
+        (setcdr prev (cdr p))
+      (setq prev p))
+        (setq p (cdr p)))
+      (setq buffer-undo-list (cdr list)))
+    (and modified (not (buffer-modified-p))
+     (delete-auto-save-file-if-necessary recent-save)))
+  (or (eq (selected-window) (minibuffer-window))
+      (message "Undo!"))
+  (setq last-buffer-undo-list buffer-undo-list))
+
+;; Modify menu-bar and tool-bar item of GNU Emacs
+(unless (featurep 'xemacs)
+  ;; condition to undo
+  (mapc (lambda (map)
+          (let ((elem (copy-sequence (cdr (assq 'undo menu-bar-edit-menu)))))
+            (setcar (cdr (memq :enable elem))
+                    '(and (not buffer-read-only)
+                          (consp buffer-undo-list)
+                          (or (not (or (eq last-buffer-undo-list
+                                           buffer-undo-list)
+                                       (eq last-buffer-undo-list
+                                           (cdr buffer-undo-list))))
+                              (listp pending-undo-list))))
+            elem))
+        (append (list menu-bar-edit-menu)
+                (if window-system (list tool-bar-map))))
+  ;; redo's menu-bar entry
+  (define-key-after menu-bar-edit-menu [redo]
+    '(menu-item "Redo" redo
+                :enable
+                (and
+                 (not buffer-read-only)
+                 (not (eq buffer-undo-list t))
+                 (not (eq last-buffer-undo-list nil))
+                 (or (eq last-buffer-undo-list buffer-undo-list)
+                     (let ((p buffer-undo-list))
+                       (and (null (car-safe p)) (setq p (cdr-safe p)))
+                       (while (and p (integerp (car-safe p)))
+                         (setq p (cdr-safe p)))
+                       (eq last-buffer-undo-list p)))
+                 (not (eq (cdr buffer-undo-list) pending-undo-list)))
+                :help "Redo the most recent undo")
+    'undo)
+  ;; redo's tool-bar icon
+  (when window-system
+    (tool-bar-add-item-from-menu
+     'redo "redo" nil
+     :visible '(not (eq 'special (get major-mode 'mode-class))))
+    (define-key-after tool-bar-map [redo]
+      (cdr (assq 'redo tool-bar-map)) 'undo)
+    ;; use gtk+ icon if Emacs23
+    (if (boundp 'x-gtk-stock-map)
+        (setq x-gtk-stock-map
+              (cons '("etc/images/redo" . "gtk-redo") x-gtk-stock-map)))
+    ;; update tool-bar icon immediately
+    (defun redo-toolbar-update (&optional bgn end lng)
+      (interactive)
+      (set-buffer-modified-p (buffer-modified-p)))
+    (add-hook 'after-change-functions 'redo-toolbar-update))
+  )
+
+(provide 'redo+)
+
+;;; redo+.el ends here
