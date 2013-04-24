@@ -39,3 +39,28 @@ The current design does not seem to properly support zooming in Chromium browser
 
 -- Jmnoz 2013-04-24 16:11 UTC
 
+
+----
+
+I disagree with the above statement, that "the default should be as accessible as possible". A fancy default with a simple fallback can be very reasonable. But, in all honesty, the css could use some work:
+
+The body is very wide which makes it annoying to read, some simple fixes are:
+
+{{{
+.wrapper,.span12 {
+    max-width: 960px;
+  }
+  @media (max-width:480px){
+      h1 { font-size: 1.8em; }
+      .footer .legal {
+          margin: 70px 5px 5px !important;
+      }
+  }
+}}}
+
+This could just be added to bootstrap.css. Bootstrap also has some nice code to make a small collapsable menu on smaller screens.
+
+Thanks for the work, looking forward to version 2.0.1.
+
+-- [http://funwithemacs.wordpress.com/ plovs] 2013-04-24 17:21 UTC
+
