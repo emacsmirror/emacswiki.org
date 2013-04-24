@@ -11,7 +11,8 @@ The Lisp:reference-sheet-help-utils.el (ReferenceSheetHelpUtils) also provide a 
  open:
  emacs& RET -- or click a graphical icon
  emacs -nw RET -- start in terminal, not in a windowing system
- q -- clear splash screen
+ C-h C-a -- information about Emacs
+ M-x emacs-version -- show version in echo area
  M-x emacs-uptime -- show time since started
  
  exit:
@@ -33,12 +34,12 @@ The Lisp:reference-sheet-help-utils.el (ReferenceSheetHelpUtils) also provide a 
  
  customize:
  C-x C-f ~/.emacs RET -- Emacs initialization file
- M-x emacs-init-time -- Run time of loading user init file
+ M-x emacs-init-time -- run time of loading user init file
  M-x customize -- main menu
  M-x customize-variable -- variable
  M-x customize-apropos -- search
  M-x customize-mode -- mode
- M-x global-set-key -- define key binding
+ M-x global-set-key -- define key binding (see "key" below)
  M-x local-set-key -- define key binding for current buffer
  M-x normal-mode -- reread settings in file local variables
  M-x display-time -- show clock, system load and email flag in mode line
@@ -77,7 +78,7 @@ The Lisp:reference-sheet-help-utils.el (ReferenceSheetHelpUtils) also provide a 
  C-h m -- show current modes
  C-h b -- show current key bindings
  C-x C-h -- list bindings starting with C-x (see "key" below)
- C-x C-h -- list bindings starting with C-c (see "key" below)
+ C-c C-h -- list bindings starting with C-c (see "key" below)
  C-h a -- list commands matching search
  C-u C-h a -- list commands and functions matching search
  C-h f <FUNCTION> RET -- describe FUNCTION
@@ -89,8 +90,10 @@ The Lisp:reference-sheet-help-utils.el (ReferenceSheetHelpUtils) also provide a 
  C-u M-x apropos-value -- list all variables with values matching search
  C-u M-x apropos-documentation -- list all  with values matching search
  TAB -- forward to cross-reference link
- M-TAB -- backward cross-reference link
  S-TAB -- backward cross-reference link
+ M-TAB -- same as previous
+ C-M-i -- same as previous
+ C-[ C-i -- same as previous
  RET -- follow cross-reference
  C-c C-c -- follow cross-reference
  C-c C-b -- go back
@@ -105,8 +108,10 @@ The Lisp:reference-sheet-help-utils.el (ReferenceSheetHelpUtils) also provide a 
  d -- back to directory
  m <ENTRY> -- visit menu ENTRY in table of contents
  TAB -- forward to cross-reference link
- M-TAB -- backward cross-reference link
  S-TAB -- backward cross-reference link
+ M-TAB -- same as previous
+ C-M-i -- same as previous
+ C-[ C-i -- same as previous
  RET -- follow link
  l -- back to last visited page
  r -- forward to last visited page
@@ -166,6 +171,9 @@ The Lisp:reference-sheet-help-utils.el (ReferenceSheetHelpUtils) also provide a 
  file:
  C-x C-f -- open
  C-x C-f -- new
+ C-x C-f .. <file> RET -- open in parent directory
+ C-x C-f / <file> RET -- open from root directory
+ C-x C-f *.c RET -- open all C sources in current directory
  M-x make-directory RET RET -- including parent directories
  C-x C-v -- close current and open another
  C-x C-s -- save
@@ -173,20 +181,19 @@ The Lisp:reference-sheet-help-utils.el (ReferenceSheetHelpUtils) also provide a 
  C-u M-~ C-x C-s -- same as previous (see M-~ below)
  C-x s -- prompt to save any buffer that has been modified
  C-u C-x s -- save any buffer that has been modified with no questions
- M-~ -- mark buffer as not modified
- C-u M-~ -- mark buffer as modified
- C-u M-~ C-x C-s -- mark buffer as modified
  C-x C-f M-p RET -- open previously saved or opened
  C-x C-w <PATH> RET -- save current to PATH
  C-x C-w <DIRECTORY> RET -- save to DIRECTORY using file or buffer name
  M-~ -- mark buffer as unmodified
+ C-u M-~ -- mark buffer as modified
  C-x C-q -- toggle as read only
  C-x C-f archive.tar RET -- list contents of archive
  C-x C-f file.gz RET -- open compressed Gzip
- C-x C-f file.zip RET -- list contents of ZIP 
+ C-x C-f file.zip RET -- list contents of ZIP
  M-x rename-file RET <FILE> RET <NEW> -- rename current
  M-x rename-file RET RET <NAME> RET -- rename current to NAME
  M-x rename-file RET RET <NAME> RET -- rename current to NAME
+ M-x delete-file RET <NAME> RET -- delete NAME
  M-x view-file -- (see "read only" below)
  M-x find-file-literally -- open in basic mode with no conversions
  <insert> -- toggle between overwrite mode and insert mode
@@ -200,25 +207,34 @@ The Lisp:reference-sheet-help-utils.el (ReferenceSheetHelpUtils) also provide a 
  M-x set-visited-file-name -- set buffer to alternate
  M-x set-file-modes -- set permissions of current
  M-x find-file-at-point -- open name at point
- M-x revert-buffer -- restore buffer with version on disk
+ M-x revert-buffer -- restore buffer from disk
  C-x C-v RET -- same as previous
+ C-x C-f M-n RET -- same as previous
+ C-x C-f M-n ~ RET -- open backup
+ C-u C-x C-s -- save and make it the next backup
+ C-0 C-x C-s -- save without making a backup
+ C-u C-u C-x C-s -- backup previous then save
+ C-u C-u C-u C-x C-s -- backup previous, save, make it the next backup
  M-x recover-file -- recover auto-save data after a crash
  M-x recover-session -- recover using auto-save data
  M-x size-indication-mode -- show size in mode line
  M-x auto-revert-mode -- update with changes on disk
  M-x global-auto-revert-mode -- update with changes for any buffer
  M-x auto-revert-tail-mode -- update end of buffer with changes on disk
- M-x unix-sync -- flush changes in file system to disk
  M-x highlight-changes-mode -- use color overlays for tracking edits
+ M-x add-name-to-file -- make link
+ M-x make-symbolic-link -- make symbolic link
+ M-x unix-sync -- flush changes in file system to disk
  
  buffer:
  M-< -- beginning
  M-> -- end
- M-5 M-< -- Go to half way
- M-1 M-< -- Go to 10 percent
- M-9 M-< -- Go to 90 percent
+ M-5 M-< -- go to half way
+ M-1 M-< -- go to 10 percent
+ M-9 M-< -- go to 90 percent
  C-u C-SPC -- go back (see "mark" below)
  C-x h -- mark
+ M-> M-< -- same as previous
  C-x k <BUFFER> RET -- kill BUFFER
  C-x k RET -- kill current
  M-x kill-some-buffers -- ask to kill each and all
@@ -234,7 +250,6 @@ The Lisp:reference-sheet-help-utils.el (ReferenceSheetHelpUtils) also provide a 
  M-x buffer-menu -- list in current window
  M-x buffer-menu-other-window -- list in other window and select it
  M-x bury-buffer -- avoid switching to current buffer and switch to last
- ;M-x quit-window -- same
  M-x unbury-buffer -- undo last bury
  C-x b M-p M-p RET -- switch to previously switched buffer
  C-x C-<right> -- bury buffer and switch to next buffer
@@ -243,6 +258,7 @@ The Lisp:reference-sheet-help-utils.el (ReferenceSheetHelpUtils) also provide a 
  M-x rename-buffer RET <NAME> -- rename current to NAME
  M-x rename-uniquely -- remove "<X>" suffix from buffer name if possible
  M-x revert-buffer -- restore contents with file on disk (see "undo" below)
+ C-x C-v RET -- same as previous
  M-x insert-buffer -- copy all of another to point in current
  M-x append-to-buffer -- copy region to other (see "region" below)
  M-x copy-to-buffer -- overwrite BUFFER with region (see "region" below)
@@ -251,6 +267,7 @@ The Lisp:reference-sheet-help-utils.el (ReferenceSheetHelpUtils) also provide a 
  M-x clone-indirect-buffer -- open an indirect buffer based on current
  C-x 4 c -- open an indirect buffer but in another window
  C-h f car RET C-x o M-x clone-buffer RET C-h f cdr RET -- compare two functions
+ M-x highlight-compare-buffers -- show differences with color
  
  read only:
  C-x C-r <FILE> RET -- open FILE as read only
@@ -287,17 +304,18 @@ The Lisp:reference-sheet-help-utils.el (ReferenceSheetHelpUtils) also provide a 
  C-x 4 C-o -- show a buffer in other window
  C-x 0 -- close current
  C-x 1 -- close all others leaving current
+ ESC ESC ESC -- same as previous
  C-x 4 C-f -- open file in other
  C-x 4 f -- open file in other
  C-x - -- shrink to fit text
  C-x + -- equalize window heights
  C-x 4 C-h -- list all commands starting with C-x 4
- C-u 5 C-x ^ -- enlarge 5 lines taller
- M-- 5 C-x ^ -- shrink 5 lines shorter
+ C-x ^ -- enlarge window by 1 line
+ C-u 5 C-x ^ -- enlarge window 5 lines
+ M-- 5 C-x ^ -- shrink window 5 lines
  C-x 3 -- split horizontally
- C-x + -- equalize window widths
- C-u 5 C-x } -- enlarge 5 columns wider
- C-5 C-x } -- shrink 5 columns narrower
+ C-u 5 C-x } -- enlarge window 5 columns wider
+ C-5 C-x { -- shrink window 5 columns narrower
  C-x < -- scroll horizontally right
  C-x > -- scroll horizontally left
  M-x toggle-truncate-lines -- change if long lines fold or are truncated
@@ -335,11 +353,11 @@ The Lisp:reference-sheet-help-utils.el (ReferenceSheetHelpUtils) also provide a 
  k -- mark to delete current and move down
  C-k -- mark to delete current and move down
  x -- execute marks
- M-2 M-x Buffer-menu-sort -- Sort by name
- M-3 M-x Buffer-menu-sort -- Sort by size (ascending)
- M-4 M-x Buffer-menu-sort -- Sort by mode
- M-5 M-x Buffer-menu-sort -- Sort by file name
- M-x Buffer-menu-sort -- Sort by display time
+ M-2 M-x Buffer-menu-sort -- sort by name
+ M-3 M-x Buffer-menu-sort -- sort by size (ascending)
+ M-4 M-x Buffer-menu-sort -- sort by mode
+ M-5 M-x Buffer-menu-sort -- sort by file name
+ M-x Buffer-menu-sort -- sort by display time
  q -- quit
  
  redisplay:
@@ -349,6 +367,7 @@ The Lisp:reference-sheet-help-utils.el (ReferenceSheetHelpUtils) also provide a 
  M-- C-l -- same as previous
  C-u -1 C-l -- same as previous
  C-M-l -- try to make the top of the current function visible in the window
+ C-[ C-l -- same as previous
  C-M-l C-M-l -- with current line at top of window
  
  command:
@@ -361,7 +380,7 @@ The Lisp:reference-sheet-help-utils.el (ReferenceSheetHelpUtils) also provide a 
  M-x TAB -- complete name of command (see "completion" above)
  M-x ? -- list completions in other window
  M-x forward TAB -- list completions starting with "forward"
- M-x *line TAB  -- list completions containg "line"
+ M-x *line TAB  -- list completions containing "line"
  M-x M-r <REGEXP> -- search backward 
  M-x M-s <REGEXP> -- search for previously executed
  C-h l -- show recently typed keys
@@ -411,16 +430,51 @@ The Lisp:reference-sheet-help-utils.el (ReferenceSheetHelpUtils) also provide a 
  F4  -- same as previous
  C-x e -- finish recording and run what was just recorded
  C-x e -- run last again
+ C-x e e -- run last twice
  M-3 C-x e -- run last 3 times
- M-0 C-x e -- run last infinite times until error
+ C-0 C-x e -- run last infinite times until error
+ M-0 C-x e -- same as previous
  C-x C-k r -- go to each line in region and run last iteratively
- C-x C-k e C-x e -- edit last
+ C-x C-k C-i -- insert counter and increment
+ C-x C-k C-c -- set counter
+ F3 F3 RET F4 F4 F4 F4 -- insert numbers 0 through 3 one-per-line
+ C-x ( C-x C-k C-i RET C-x e e e -- same as previous
+ F3 C-u 2 F3 RET F4 F4 F4 F4 -- insert evens 0 through 6 one-per-line
+ C-x ( C-2 C-x C-k C-i RET C-x e e e -- same as previous
+ C-x ( C-2 C-x C-k C-i RET C-x e e e -- same as previous
+ C-x C-k C-c 1 RET F3 F3 RET F4 F4 F4 F4 -- insert numbers 1 through 3
+ C-x C-k C-c 1 RET C-x ( C-x C-k C-i RET C-x e e e -- same as previous
+ C-a C-SPC C-3 C-n C-x r N -- same as previous (see "rectangle" below)
+ C-S-DEL F3 C-y C-9 F4 -- duplicate line 9 times
+ C-S-DEL C-x ( C-y C-9 C-x e -- duplicate line 10 times
+ C-u C-x e -- run last and append more commands
+ C-u F3 -- same as previous
+ C-k C-k C-d -- delete current macro from ring
+ C-k C-k C-p -- switch to previous macro in ring
+ C-k C-k C-n -- switch to next macro in ring
+ C-x C-k e C-x e -- edit current
  C-x C-k C-e -- same as previous
- C-x C-k n <NAME> -- give last NAME
+ C-x C-k n <NAME> -- give current NAME
+ M-x <NAME> -- run NAME
+ C-x C-k b 1 -- bind current to C-x C-k 1
+ C-x C-k b A -- bind current to C-x C-k A
+ C-x C-k b C-c 1 -- bind current to C-c 1
+ C-x C-k b C-c a -- bind current to C-c a
  M-x <NAME> -- run NAME
  C-x C-k e M-x <NAME> -- edit NAME
- C-x C-k e C-h l -- edit and make recently typed keys
- C-c C-q <KEY> -- insert key
+ C-x C-k e C-h l -- make recently typed keys and edit
+ C-x C-k l -- same as previous
+ C-c C-q <KEY> -- insert key in editor
+ ^X -- insert C-x in editor
+ <<COMMAND>> -- insert M-x COMMAND in editor
+ 3 * R E T -- insert 3 newlines in editor
+ 3 * ^ M -- same as previous
+ 3 * <<newline>> -- same as previous
+ 3 * L F D -- same as previous
+ C-a ;; -- delete line in editor
+ C-a REM -- same as previous
+ C-a C-k -- same as previous
+ C-a ;;; -- comment line in editor
  C-c C-c -- save edits
  C-x C-f ~/.emacs RET M-x insert-kbd-macro RET <NAME> RET -- save NAME
  C-x C-f ~/.emacs RET M-x insert-kbd-macro RET RET -- save last
@@ -435,12 +489,17 @@ The Lisp:reference-sheet-help-utils.el (ReferenceSheetHelpUtils) also provide a 
  C-k -- skip current and delete rest of macro
  q -- quit
  C-g -- same as previous
+ I -- insert one key
+ i -- insert series of keys
+ R -- replace current key
+ r -- replace current key with series of keys
+ A -- append to end of macro
+ a -- append after current key
  
  key:
  C-h l -- show recently typed keys
- ;M-x open-dribble-file -- log to file
- ;M-x open-dribble-file RET RET -- shut off all logging
  M-x global-set-key -- set for all buffers
+ M-x global-unset-key -- remove binding for all buffers
  M-x local-set-key  -- define binding for current buffer
  M-x local-unset-key -- remove binding for current buffer
  C-q -- insert next character literally
@@ -457,17 +516,20 @@ The Lisp:reference-sheet-help-utils.el (ReferenceSheetHelpUtils) also provide a 
  C-x @ C-h -- list bindings starting with C-x @
  C-x @ c C-x @ m -- modify next key with Control and Meta
  C-x @ c C-x @ m C-x @ h -- modify with Control, Meta and Hyper
+ C-x C-h -- list bindings starting with C-x
+ C-c C-h -- list bindings starting with C-c
  C-x 4 C-h -- list bindings starting with C-x 4
  C-x 5 C-h -- list bindings starting with C-x 5
  C-x 8 C-h  -- list bindings starting with C-x 8
  C-h 4 C-h  -- list bindings starting with C-h 4
  C-x ESC C-h  -- list bindings starting with C-x M-
  C-x C-[ C-h  -- same as previous
+ M-: (describe-bindings "\e") RET -- list bindings starting with ESC
+ M-x global-unset-key ESC C-h ESC C-h -- same as previous
  ESC ESC C-h  -- list bindings starting with M-ESC
  C-[ C-[ C-h  -- same as previous
  M-g C-h  -- list bindings starting with M-g
  M-o C-h  -- list bindings starting with M-o
- C-x @ C-h -- list bindings starting with C-x @
  
  undo:
  C-x u -- undo, repeat to further undo
@@ -476,12 +538,16 @@ The Lisp:reference-sheet-help-utils.el (ReferenceSheetHelpUtils) also provide a 
  C-/ C-g C-/ -- undo, then redo
  C-/ C-/ C-g C-/ C-/ -- undo, undo, then redo, redo
  M-x revert-buffer -- restore buffer with file on disk
+ C-x C-v RET -- same as previous
  M-x buffer-disable-undo -- turn off for current buffer
  M-x buffer-enable-undo -- turn on for current buffer
  
  search:
  C-s <MATCH> -- forward to end of MATCH
  C-r <MATCH> -- reverse to front of MATCH
+ C-h k C-s -- help
+ C-s C-h m -- same as previous
+ C-s C-h b -- show key bindings
  C-r C-s <MATCH> -- forward to end of MATCH
  C-s C-r <MATCH> -- reverse to front of MATCH
  C-s <MATCH> C-s -- forward to end of second MATCH
@@ -489,6 +555,7 @@ The Lisp:reference-sheet-help-utils.el (ReferenceSheetHelpUtils) also provide a 
  DEL -- if not at first match, go to previous match
  DEL -- if at first match, delete character from search string
  C-M-w -- always delete character from search string
+ C-[ C-w -- same as previous
  C-s <MATCH> C-s C-r -- forward to start of second MATCH
  C-r <MATCH> C-r C-s -- reverse to end of second MATCH
  C-s <MATCH> C-s C-s DEL -- forward to end of second MATCH
@@ -499,35 +566,37 @@ The Lisp:reference-sheet-help-utils.el (ReferenceSheetHelpUtils) also provide a 
  C-s C-j -- search for newline
  C-s C-q C-m -- search for carriage return
  C-s C-M-y -- search for current character
+ C-s C-[ C-y -- same as previous
  C-s C-M-y C-M-y -- search for next two characters
  C-s C-M-y C-M-y DEL -- search for current character
  C-s C-w -- search for rest of current word
  C-s C-w C-w -- search for next two words
  C-s C-w C-w DEL -- search for rest of current word
- C-s C-y -- search for rest of current line
- C-s C-y DEL -- undo search for rest of current line
- C-s M-y -- search for last killed text (see "kill" below)
- C-s M-y -- search for last killed text (see "kill" below)
+ C-s M-s C-e -- search for rest of current line
+ C-s M-s C-e DEL -- undo search for rest of current line
+ C-s C-y -- search for last killed text (see "kill" below)
+ C-s M-y -- search for second to last killed text (see "kill" below)
  C-s M-p -- show previous search
  C-s M-n -- show oldest stored search
  C-s M-TAB <BEGINNING>  -- complete for BEGINNING of stored searches
+ C-s C-M-i -- same as previous
+ C-s C-[ C-i -- same as previous
  C-s C-s -- resume last search backward
  C-r C-r -- resume last search forward
  M-e -- edit search
- M-r -- toggle regular expression search (see below)
+ M-r -- toggle regular expression search (see "regular expression" below)
  M-c -- toggle case-sensitivity of search
  M-s w -- toggle word-based search
  M-% -- search, query, and replace (see "replace" below)
  C-s <SEARCH> M-% <REPLACE> -- interactive query SEARCH and REPLACE
  C-u M-% -- query replace by word
  M-x isearch-toggle-case-fold -- change case-sensitivity of all searches
- C-h k C-s -- help
  
  non-interactive search:
  C-s RET -- forward case-sensitive
  C-r RET -- backward case-sensitive
- M-x word-search-forward -- forward word-based ignoring punctuation and whitespace
- M-x word-search-backward -- backward word-based ignoring punctuation and whitespace
+ M-x word-search-forward -- ignoring punctuation and whitespace
+ M-x word-search-backward -- ignoring punctuation and whitespace
  
  regular expression:
  C-M-s -- search forward
@@ -535,12 +604,14 @@ The Lisp:reference-sheet-help-utils.el (ReferenceSheetHelpUtils) also provide a 
  C-u C-s -- same as previous
  C-s M-r -- same as previous
  C-M-r -- search reverse
- M-r -- toggle off regexp
- C-M-s C-s -- repeat last regexp forward
- C-M-r C-s -- repeat last regexp backward
+ C-[ C-r -- same as previous
+ M-r -- toggle off regular expression syntax
+ C-M-s C-s -- repeat last regular expression forward
+ C-M-r C-s -- repeat last regular expression backward
  C-r -- suspend replacement and editing buffer (see "recursive edit" above)
  C-M-c -- resume query and replace
- C-M-% -- regexp replace
+ C-[ C-c -- same as previous
+ C-M-% -- regular expression replace
  C-M-s <SEARCH> M-% <REPLACE> -- interactive query replace (see "replace" below)
  M-x occur -- show matches in buffer (see "occur" below)
  M-s o -- same as previous
@@ -557,20 +628,23 @@ The Lisp:reference-sheet-help-utils.el (ReferenceSheetHelpUtils) also provide a 
  replace:
  M-% -- search, query, and replace
  C-M-% -- search regular expression, query, and replace
+ C-[ C-% -- same as previous
  M-% RET -- resume last
- C-M-% RET -- resume last as regexp
+ C-M-% RET -- resume last as regular expression
  C-s <SEARCH> M-% <REPLACE> -- interactive
- C-M-s <SEARCH> M-% <REPLACE> -- interactive with regexp
+ C-M-s <SEARCH> M-% <REPLACE> -- interactive with regular expression
  y -- replace one and go to next
- SPC -- replace one and go to next
+ SPC -- same as previous
  , -- replace but don't move
  n -- skip
- DEL -- skip
+ DEL -- same as previous
  ^ -- previous
  ! -- replace all
  e -- edit replacement
  C-r -- suspend to edit buffer (see "recursive edit" above)
+ C-w -- delete match and suspend to edit buffer
  C-M-c -- finish edit and resume
+ C-[ C-c -- same as previous
  RET -- stop
  q -- stop
  C-x d *.c RET Q int RET long -- replace "long" for "int" in .c files
@@ -609,12 +683,14 @@ The Lisp:reference-sheet-help-utils.el (ReferenceSheetHelpUtils) also provide a 
  C-DEL -- word backwards
  M-DEL -- word backwards
  C-M-k -- sexp (see "sexp" below)
+ C-[ C-k -- same as previous
  C-M-DEL -- sexp backwards
+ C-[ C-DEL -- same as previous
  C-x DEL -- sentence backwards (see "sentence" below)
  M-x kill-paragraph -- paragraph (see "paragraph" below)
  M-x backward-kill-paragraph -- paragraph backwards (see "paragraph" below)
- C-M-w C-w -- append to next
  C-M-w -- append to next
+ C-[ C-w -- same as previous
  C-M-w C-w -- region appending to previous
  C-M-w M-w -- region appending to previous, but don't delete (copy)
  C-M-w C-k -- line appending to previous
@@ -631,7 +707,8 @@ The Lisp:reference-sheet-help-utils.el (ReferenceSheetHelpUtils) also provide a 
  
  yank (paste):
  C-y -- the last kill sequence
- M-y -- the 2nd to last kill sequence
+ C-y -- the last kill sequence
+ C-y M-y -- the 2nd to last kill sequence
  C-2 C-y -- same as previous
  C-w C-y M-y -- replace region with last kill
  C-u C-y -- the last kill sequence with point at beginning
@@ -645,32 +722,59 @@ The Lisp:reference-sheet-help-utils.el (ReferenceSheetHelpUtils) also provide a 
  C-x C-SPC -- move to last set mark in any buffer
  C-x C-@ -- move to last set mark in any buffer
  C-x h -- buffer
+ M-> M-< -- same as previous
  M-@ -- word
  M-h -- paragraph
  M-x mark-end-of-sentence -- sentence
  C-M-h -- function
+ C-[ C-h -- same as previous
  C-x C-p -- page separated by form feed
  C-M-@ -- sexp (see "sexp" below)
+ C-[ C-@ -- same as previous
  C-M-SPC -- sexp
- C-SPC C-SPC -- set the mark and temporarily turn on transient mark mode
- C-u C-x C-x -- temporarily turn on transient mark mode
- C-g -- cancel temporary transient mark
- M-x transient-mark-mode -- turn on transient mark mode
+ C-[ C-SPC -- same as previous
  
  region:
  C-SPC -- set end-point of region (see "mark" above)
  C-@ -- set end-point of region
  C-w -- kill (see "kill" above)
  M-w -- kill but don't delete (copy)
- M-= -- count lines and characters
+ M-= -- count lines, words and characters
  M-x enable-command RET narrow-to-region RET -- permanently enable
  C-x n n -- narrow
  C-x n w -- widen
  M-x delete-region -- delete
  M-x write-region RET <FILE> -- save to FILE
  M-x append-to-buffer RET <BUFFER> -- copy to point in BUFFER
- M-x append-to-file RET <FILE> -- save to end of FILE (see 
+ M-x append-to-file RET <FILE> -- save to end of FILE
  M-x copy-to-buffer RET <BUFFER> RET -- copy and overwrite BUFFER
+ 
+ text register:
+ C-x r s a -- store region to "a" key
+ C-u C-x r s a -- kill region to "a" key
+ C-x r i a -- insert region stored to "a" key
+ C-x r r a -- store rectangle to "a" key (see "rectangle" below)
+ 
+ point register:
+ C-x r SPC a -- store current to "a" key
+ C-x r j a -- move to point to "a" key
+ 
+ window register:
+ C-x r w a -- store configuration of windows in frame
+ C-x r j a -- restore window configurations
+ 
+ number register:
+ C-u 1 C-x r n a -- store 1 to "a" key
+ C-u 1 C-x r + a -- add 1 to number to "a" key
+ C-x r i a -- insert number to "a" key
+ 
+ bookmark register:
+ C-x r m RET -- save default
+ C-x r m <NAME> RET -- save as NAME
+ C-x r b RET -- move to default
+ C-x r b <NAME> RET -- move to NAME
+ C-x r l -- list
+ M-x bookmark-save -- save all to file
  
  whitespace:
  SPC -- insert space
@@ -681,26 +785,28 @@ The Lisp:reference-sheet-help-utils.el (ReferenceSheetHelpUtils) also provide a 
  M-SPC -- remove all whitespace at point except one space
  M-\ -- remove all whitespace around point
  C-u M-\ -- remove whitespace before point
- M-\ -- remove trailing whitespace at point
+ C-SPC M-m C-w -- remove whitespace after point
  M-x delete-trailing-whitespace -- remove at end of all lines in buffer
- C-a C-0 C-M-\ -- remove at beginning of all lines in region
- C-x h C-0 C-M-\ -- remove at beginning of all in lines buffer
- ;M-x whitespace-toggle-
- ;M-x whitespace-
- ;M-x canonically-space-region
+ C-a C-0 C-M-\ -- remove leading for all lines in region
+ C-x h C-0 C-M-\ -- remove all leading in lines buffer
+ M-x whitespace-mode -- display whitespace visually
+ M-x whitespace-toggle-options -- configure Whitespace Mode
  
  indent:
  TAB -- line with mode-specific rules
- C-i -- line with mode-specific rules
+ C-i -- same as previous
+ C-u TAB -- line and (for supported modes) expression on subsequent lines
+ C-u C-i -- same as previous
  M-m -- go to indentation at beginning of line
- M-s -- center line
+ M-o M-s -- center line
  C-M-\ -- region with mode-specific rules
- C-x h C-M-\ -- buffer
- M-h C-M-\ -- paragraph
- C-M-h C-M-\ -- defun
- C-x C-p C-M-\ -- page
- C-M-SPC C-M-\ -- sexp
- C-SPC C-a C-M-\ -- line
+ C-[ C-\ -- same as previous
+ C-x h C-M-\ C-u C-SPC -- buffer
+ C-x h C-M-\ C-u C-SPC -- buffer
+ M-h C-M-\ C-u C-SPC -- paragraph
+ C-M-h C-M-\ C-u C-SPC -- defun
+ C-x C-p C-M-\ C-u C-SPC -- page
+ C-M-SPC C-M-\ C-u C-SPC -- sexp
  C-u C-M-\ -- region to 4 columns
  C-SPC C-a C-u C-M-\ -- line to 4 columns
  C-x h C-u C-M-\ -- buffer to 4 columns
@@ -732,6 +838,7 @@ The Lisp:reference-sheet-help-utils.el (ReferenceSheetHelpUtils) also provide a 
  C-q C-j -- literal newline
  C-q C-m -- insert literal carriage return
  C-M-o -- keep text following point at same column
+ C-[ C-o -- same as previous
  C-u 3 RET -- three
  C-u 3 C-m -- three
  C-u 3 C-j -- three and indent
@@ -758,17 +865,21 @@ The Lisp:reference-sheet-help-utils.el (ReferenceSheetHelpUtils) also provide a 
  M-- C-k -- kill to beginning of previous
  M-^ -- merge current line with previous
  C-u M-^ -- merge next line with current
+ C-n M-^ -- same as previous
  C-o -- insert new after current and indent (see "newline" above)
  C-M-o -- keep text following point at same column (see "newline" above)
+ C-[ C-o -- same as previous
  C-x C-o -- when not empty line, remove all empty lines below current
  C-x C-o -- when only empty line, remove all empty lines
  C-x C-o -- when empty, remove all but one empty lines
  M-= -- count lines in region
  C-x l -- count lines in page
- C-x h M-= -- count lines in buffer
+ C-x h M-= C-u C-SPC -- count lines in buffer
  C-SPC M-> C-x C-x M-= -- count lines from point forward
+ M-> C-x C-x M-= -- same as previous
  M-x what-line -- display number
- C-x C-t -- transpose
+ C-x C-t -- transpose with previous
+ C-0 C-x C-t -- swap with line of mark (see "mark" above)
  M-x sort-lines -- alphabetically (see "sort" below)
  M-x reverse-region -- reverse order in region
  M-x occur -- show lines matches in buffer (see "occur" below)
@@ -776,11 +887,12 @@ The Lisp:reference-sheet-help-utils.el (ReferenceSheetHelpUtils) also provide a 
  M-x flush-lines -- delete matches to end of buffer
  M-x flush-lines RET RET -- delete all lines after point
  M-x keep-lines -- keep matches to end of buffer, delete the rest
- C-SPC C-SPC C-2 C-SPC M-x keep-lines -- keep lines in region, delete the rest
+ C-SPC C-SPC C-2 C-SPC M-x keep-lines -- keep matches in region, delete rest
  C-a C-SPC C-e C-x n n -- narrow
  C-x RET f unix RET -- change file to UNIX style line endings
  C-x RET f dos RET -- change file to DOS
  C-x RET f dos RET -- change file to Mac
+ C-x RET f utf-8 RET -- change file to UTF-8
  M-x line-number-mode -- show line number in mode line
  M-x toggle-truncate-lines -- change if long lines fold or are truncated
  M-x toggle-word-wrap -- change if long lines are wrapped at word boundary
@@ -793,6 +905,8 @@ The Lisp:reference-sheet-help-utils.el (ReferenceSheetHelpUtils) also provide a 
  C-t -- transpose
  C-x = -- information of current
  C-u C-x = -- list properties of current in Help buffer
+ M-x describe-char -- same as previous
+ M-x goto-char RET <N> RET -- visit Nth character in buffer
  M-x list-characters-sets -- list names of charsets
  C-q 0 RET -- insert null
  C-q SPC -- insert space
@@ -806,7 +920,11 @@ The Lisp:reference-sheet-help-utils.el (ReferenceSheetHelpUtils) also provide a 
  
  word:
  M-f -- forward
+ M-<right> -- same as previous
+ C-<right> -- same as previous
  M-b -- backward
+ M-<left> -- same as previous
+ C-<left> -- same as previous
  M-d -- kill forward
  C-DEL -- kill backward
  M-DEL -- kill backward
@@ -814,7 +932,10 @@ The Lisp:reference-sheet-help-utils.el (ReferenceSheetHelpUtils) also provide a 
  M-@ -- mark
  C-u 100 M-@ -- mark next 100
  M-- 3 M-@ -- mark previous 3
- M-< M-x how-many RET \w+ RET -- count for buffer (see "regular expression" above)
+ M-< M-x how-many RET \w+ RET -- count for buffer
+ C-x h M-= -- same as previous
+ M-x modify-syntax-entry RET - w RET -- make hyphens word character
+ M-x modify-syntax-entry RET _ w RET -- make underscores a word character
  
  capitalization:
  M-l -- lowercase next word
@@ -850,14 +971,21 @@ The Lisp:reference-sheet-help-utils.el (ReferenceSheetHelpUtils) also provide a 
  M-x fill-region -- fill all in region
  M-x fill-region-as-paragraph -- fill all region together as one
  M-x fill-individual-paragraphs -- fill region as separate
- C-u 72 C-x f -- set fill column to 72
+ C-x f RET  -- set fill column to current point
+ C-x f 72 RET  -- set fill column to 72
+ C-u 72 C-x f -- same as previous
  M-x backward-kill-paragraph -- kill to beginning
  M-x kill-paragraph -- kill to end
  M-{ M-x kill-paragraph -- kill entire
  M-h C-w -- kill entire
  M-h M-w -- kill entire but don't delete (copy)
  M-x transpose-paragraphs -- transpose
- M-S -- center
+ M-o M-S -- center
+ M-x set-justification-left -- justify region to the left
+ M-x set-justification-right -- justify region to the right
+ M-x set-justification-full -- justify region to full width
+ M-x set-justification-center -- justify region to the center
+ M-x set-justification-none -- unjustify region
  M-x sort-paragraphs -- alphabetically
  C-u M-x sort-paragraphs -- in reverse
  M-x paragraph-indent-text-mode -- expect leading space rather than empty lines
@@ -872,6 +1000,7 @@ The Lisp:reference-sheet-help-utils.el (ReferenceSheetHelpUtils) also provide a 
  M-x decrease-left-margin -- remove 4 columns to current paragraph
  C-x . -- set text to beginning of line as fill prefix
  C-M-\ -- add the fill prefix in region
+ C-[ C-\ -- same as previous
  M-m C-x . -- set indentation as fill prefix
  C-a C-x . -- reset fill prefix
  
@@ -890,23 +1019,39 @@ The Lisp:reference-sheet-help-utils.el (ReferenceSheetHelpUtils) also provide a 
  M-( -- insert opening and closing parentheses
  M-) -- reindent current and start new line past closing parenthesis
  C-M-f -- move to the next
+ C-[ C-f -- same as previous
+ C-M-<right> -- same as previous
  C-M-b -- move backward
+ C-[ C-b -- same as previous
+ C-M-<left> -- same as previous
  C-M-d -- move down into the expression
+ C-[ C-d -- same as previous
+ C-M-<down> -- same as previous
  C-M-u -- move up from current and to beginning of outside
+ C-[ C-u -- same as previous
+ C-M-<up> -- same as previous
  M-x up-list -- move up from current and to end of outside
  M-- C-M-u -- same as previous
  C-M-k -- kill
+ C-[ C-k -- same as previous
  C-M-DEL -- kill backward
+ C-[ C-DEL -- same as previous
  C-M-@ -- mark
+ C-[ C-@ -- same as previous
  C-M-t -- transpose
+ C-[ C-t -- same as previous
  M-x check-parens -- match all open and closed parentheses in buffer
  
  function:
  C-M-a -- go to beginning
+ C-[ C-a -- same as previous
  C-M-e -- go to end
+ C-[ C-e -- same as previous
  C-M-h -- mark current
- C-M-h C-M-\ -- indent current
+ C-[ C-h -- same as previous
+ C-M-h C-M-\ C-u C-SPC -- indent current
  C-M-x -- evaluate current (see "emacs lisp" below)
+ C-[ C-x -- same as previous
  C-x n d -- narrow
  C-x n w -- widen
  
@@ -924,18 +1069,237 @@ The Lisp:reference-sheet-help-utils.el (ReferenceSheetHelpUtils) also provide a 
  C-u C-x ; -- insert and align or just align to column on previous line
  M-j -- if within one, continue on next line and indent
  C-M-j -- same as previous
+ C-[ C-j -- same as previous
  M-x comment-box -- surround region
  M-^ -- merge current line with previous
  C-u M-^ -- merge next line with current
+ C-n M-^ -- same as previous
  
  occur:
- M-x occur -- show regexp match in buffer
+ M-x occur -- list matching lines for regular expression
  M-s o -- same as previous
  C-x n n M-x occur -- show matches in region (see "region" above)
  C-u 3 M-x occur -- show matches with 3 lines of context
  C-u - 3 M-x occur -- show matches with 3 lines before match
- M-n -- next match
- M-p -- previous match
+ ? -- help
+ h -- same as previous
+ RET -- go to current match
+ C-c C-c -- same as previous
+ o -- same as previous
+ C-o -- show current match in other window
+ n -- next match
+ p -- previous match
+ g -- update list of matching lines
+ c -- keep Occur buffer around by cloning
+ r -- keep Occur buffer around by renaming
+ q -- quit
+ z -- quit and kill buffer
+ e -- edit buffer from Occur buffer
+ 
+ transpose:
+ C-t -- characters (see "character" above)
+ M-- C-t -- previous with its previous
+ C-u 3 C-t -- forward 3 characters
+ C-u C-t -- forward 4 characters
+ M-- 3 C-t -- backward 3 characters
+ C-u C-t -- backward 4 characters
+ M-t -- words (see "word" above)
+ C-x C-t -- lines (see "line" above)
+ M-x transpose-paragraphs -- paragraphs (see "paragraph" above)
+ M-x transpose-sentences -- sentences (see "sentence" above)
+ C-M-t -- parenthetical expressions (see "sexp" above)
+ 
+ column:
+ M-0 M-x move-to-column -- move to first column
+ M-x move-to-column -- move to second column
+ M-7 M-x move-to-column -- move to column 8
+ M-x column-number-mode -- show column number in mode line
+ M-x enable-command RET set-goal-column RET -- permanently enable
+ M-r -- move to beginning of center line of window (see "window" above)
+ C-x C-n -- set column for line motion commands
+ C-u C-x C-n -- unset goal column for line motion commands
+ M-x ruler-mode -- add a ruler to the current buffer's window
+ 
+ rectangle:
+ C-x r d -- delete, no kill
+ C-x r k -- kill
+ C-x r y -- yank
+ C-x r c -- convert to whitespace
+ C-x r o -- insert whitespace
+ C-x r t <STRING> -- replace each line with STRING
+ M-x string-insert-rectangle -- insert STRING at each line
+ M-x delete-whitespace-rectangle -- remove leading whitespace
+ M-x delete-whitespace-rectangle -- remove leading whitespace
+ C-x r r a -- store to register "a"
+ C-x r N -- number region starting at 1
+ C-u C-x r N 10 RET %03d SPC RET -- number region starting with 010
+ 
+ table:
+ M-x table-insert -- insert
+ M-x table-recognize-table -- activate mode at point
+ M-x table-unrecognize-table -- deactivate mode at point
+ TAB -- forward cell
+ S-TAB -- backward cell
+ C-u M-x table-recognize-table -- inactivate table at point
+ C-u 3 M-x table-insert-column -- insert 3 columns
+ C-u 3 M-x table-delete-column -- delete 3 columns
+ C-u 3 M-x table-insert-row -- insert 3 rows
+ C-u 3 M-x table-delete-row -- delete 3 rows
+ C-> -- widen column at point
+ C-< -- narrow column at point
+ C-} -- heighten row at point
+ C-{ -- shorten row at point
+ C-: -- justify text in cell
+ C-| -- split cell
+ C-c C-c * -- merge cell
+ M-x table-sequence -- insert sequence of characters or numbers
+ M-x table-capture RET C-q C-i RET C-q C-j RET RET RET -- convert tab delimited region
+ M-x table-generate-source -- convert to HTML or LaTeX
+ M-x table-recognize -- activate mode for all
+ M-x table-unrecognize -- deactivate mode for all
+ 
+ delimited text:
+ M-x delimit-columns-customize -- change settings
+ M-x delimit-columns-rectangle -- format rectangle (see "rectangle" above)
+ M-x delimit-columns-region -- format region
+ 
+ align:
+ C-u M-x align -- by guessing separator
+ M-x align-current -- on entire "section"
+ M-x align-regexp -- based on regular expression
+ C-u M-x align-regexp -- ask for grouping, number of spaces and repeating
+ 
+ sort:
+ M-x sort-lines -- lines alphabetically in region
+ C-u M-x sort-lines -- in reverse
+ C-3 M-x sort-fields -- region alphabetically by 3rd word in each line
+ M-x sort-numeric-fields -- region numerically by 3rd number in each line
+ M-x sort-columns -- lines alphabetically for column between point and mark
+ C-u M-x sort-columns -- in reverse
+ M-x sort-paragraphs -- paragraphs alphabetically (see "paragraph" above)
+ C-u M-x sort-paragraphs -- in reverse
+ M-x sort-pages -- pages alphabetically (see "page" above)
+ M-x sort-regexp-fields -- records alphabetically by key in region
+ 
+ directory (folder):
+ M-x cd -- change working
+ M-x make-directory RET <PATH> RET -- make PATH including any missing parents
+ M-x delete-directory RET <NAME> RET -- delete NAME
+ M-x copy-directory RET <NAME> RET -- delete NAME
+ M-x rename-file RET RET <NAME> RET -- rename current to NAME
+ C-x d RET -- list current
+ C-x C-f RET -- same as previous
+ C-x 4 d RET -- list current in other window (see "window" above)
+ C-x d .. RET -- list parent
+ C-x C-f .. RET -- same as previous
+ C-x C-d RET ^ -- same as previous
+ C-x C-d RET C-x C-j -- same as previous
+ C-x d <PATH> RET -- list PATH
+ C-x C-f <PATH> RET -- same as previous
+ ? -- help
+ ? -- show recent errors
+ M-x dired-jump RET RET -- go to listing of current file
+ > -- go to next
+ < -- go to previous
+ n -- next file
+ p -- next file
+ j -- move to file in listing
+ g -- reread the listing
+ s -- toggle sort by date
+ ^ -- list parent
+ M-x dired-jump -- list parent
+ C-u s -- edit the command switches for the file list command
+ M-x auto-revert-mode -- automatically update list every 5 seconds
+ C-s -- search listings (see "search" above)
+ RET -- open file or directory
+ f -- same as previous
+ e -- same as previous
+ o -- open in other window
+ C-o -- display in other window
+ y -- show file type
+ + -- add new
+ i -- show listing of current subdirectory
+ C-u s R RET -- show listings of all subdirectories, "fully recursive"
+ $ -- hide listing of current subdirectory
+ M-$ -- hide listing of all subdirectories
+ C-M-n -- go to next subdirectory listings
+ C-M-p -- go to previous subdirectory listings
+ C-x C-f <FILE> RET -- visit FILE (see "file" above)
+ ! -- run command on current file
+ M o+r RET -- make current file world-readable
+ O <OWNER> RET -- change current file to OWNER
+ G <GROUP> RET -- change current file to GROUP
+ R <FILE> RET -- move current file to FILE
+ R M-n ~ RET -- add ~ to the end of current file's name
+ C <FILE> RET -- copy current file to file
+ C M-n ~ RET -- make a tilde copy the current file
+ P RET -- send current file to default printer
+ P RET M-DEL a2ps -- print current file in Postscript
+ P SPC -P SPC <PRINTER> -- send current file to <PRINTER>
+ T -- touch current file
+ Z -- compress current file
+ H <FILE> RET -- hardlink current file to FILE
+ S <FILE> RET -- symlink current file to FILE
+ m -- mark current file
+ u -- unmark current file
+ DEL -- unmark current file and go to previous
+ t -- toggle marks
+ U -- unmark all files
+ * ! -- same as previous
+ A -- search marked
+ M-s a C-s -- same as previous
+ M-s a C-M-s -- search marked with regular expression
+ M-, -- find next match
+ w -- kill marked file but don't delete
+ k -- hide marked files
+ C -- copy marked files to another directory
+ R -- move marked files to another directory
+ d -- mark current file for deletion
+ % d <PATTERN> -- mark files containing PATTERN for deletion
+ % & -- mark garbage files for deletion
+ # -- mark auto-save files for deletion (see "file" above)
+ . -- delete numerical backups
+ D -- delete marked files
+ M-x wdired-change-to-wdired-mode -- manually edit listing with WDired
+ C-c C-c -- quit WDired and commit the edits made to the listing
+ C-c ESC -- cancel WDired
+ C-c C-[ -- same as previous
+ M-x find-name-dired RET <PATTERN> RET -- list file names matching PATTERN
+ M-x find-grep-dired RET <PATTERN> RET -- list files containing grep PATTERN
+ M-x find-lisp-find-dired RET <REGEXP> RET -- list files containing REGEXP
+ % g <PATTERN> -- mark files containing PATTERN
+ % m <PATTERN> -- mark file names matching PATTERN
+ * % -- same as previous
+ M-} -- go to next marked file
+ * C-n -- same as previous
+ M-{ -- go to previous marked file
+ * C-p -- same as previous
+ * * -- mark executables
+ * @ -- mark symlinks
+ * / -- mark directories
+ q -- quit
+ 
+ dired-x:
+ M-x load-library RET dired-x RET -- load extra Dired functionality
+ * . -- mark extension
+ C-x C-j -- list parent
+ M-! -- smart shell command
+ M-x dired-do-relsymlink <FILE> RET -- relative symlink current file to FILE
+ Y <FILE> RET -- relative symlink current file to FILE
+ %Y <REGEXP> RET -- relative symlink files matching REGEXP to current file
+ F -- open marked files
+ V -- send file by email
+ M-o -- hide uninteresting files
+ M-G -- go to subdirectory listing in buffer
+ 
+ tramp:
+ C-x C-f /HOST:DIR/FILE -- open FILE in DIR on remote HOST
+ C-x C-f /scp:HOST:DIR/FILE -- same but use secure copy (SCP)
+ C-x C-f /ssh:HOST:DIR/FILE -- same but demand the use of SSH
+ C-x C-f /ssh1:HOST:DIR/FILE -- same but demand version 1 of SSH
+ C-x C-f /HOST:DIR -- list contents of DIR on remote HOST
+ C-x d /HOST:DIR -- same as previous
+ M-x shell -- start a remote shell at HOST
  
  spell check:
  M-$ -- word
@@ -946,6 +1310,7 @@ The Lisp:reference-sheet-help-utils.el (ReferenceSheetHelpUtils) also provide a 
  M-x ispell-continue -- resume suspended session
  M-r -- edit word at point in buffer (see "recursive edit" above)
  C-M-c -- return to spell check by exiting recursive edit
+ C-[ C-c -- same as previous
  4 -- use third suggested choice
  0 -- use first suggested choice
  ? -- quick help
@@ -966,30 +1331,23 @@ The Lisp:reference-sheet-help-utils.el (ReferenceSheetHelpUtils) also provide a 
  C-; C-; -- use second proposed correction for previous word
  C-c $ -- select correct word at or before point from a pop up menu
  
- transpose:
- C-t -- characters (see "character" above)
- M-- C-t -- previous with its previous
- C-u 3 C-t -- forward 3 characters
- C-u C-t -- forward 4 characters
- M-- 3 C-t -- backward 3 characters
- C-u C-t -- backward 4 characters
- M-t -- words (see "word" above)
- C-x C-t -- lines (see "line" above)
- M-x transpose-paragraphs -- paragraphs (see "paragraph" above)
- M-x transpose-sentences -- sentences (see "sentence" above)
- C-M-t -- parenthetical expressions (see "sexp" above)
- 
- sort:
- M-x sort-lines -- lines alphabetically in region
- C-u M-x sort-lines -- in reverse
- C-3 M-x sort-fields -- region alphabetically by 3rd word in each line
- M-x sort-numeric-fields -- region numerically by 3rd number in each line
- M-x sort-columns -- lines alphabetically for column between point and mark
- C-u M-x sort-columns -- in reverse
- M-x sort-paragraphs -- paragraphs alphabetically
- C-u M-x sort-paragraphs -- in reverse
- M-x sort-pages -- pages alphabetically
- M-x sort-regexp-fields -- records alphabetically by key in region
+ abbreviations:
+ cpu C-x a i g computer RET -- define "cpu" as "computer"
+ computer C-3 C-x a g cpu RET -- same as previous
+ cpu C-x a e -- expand "cpu" to "computer"
+ cpu C-x a ' -- same as previous
+ cpu C-x ' -- same as previous
+ M-x abbrev-mode -- automatically expand
+ C-/ -- undo expansion
+ C-x a u -- undo last expand
+ super M-' cpu C-x ' -- insert "supercomputer"
+ C-x a i l -- define new mode-specific
+ C-x a C-l -- list all
+ C-x a C-e -- edit all
+ M-x expand-region-abbrevs -- expand in region
+ M-x write-abbrev-file -- save
+ M-x read-abbrev-file -- open
+ M-x kill-all-abbrevs -- delete all
  
  composition:
  C-\ french-postfix RET -- set to French characters
@@ -1029,163 +1387,7 @@ The Lisp:reference-sheet-help-utils.el (ReferenceSheetHelpUtils) also provide a 
  coding:
  C-h C <SYSTEM> RET -- describe SYSTEM
  C-h C RET -- describe current system
- M-x list-coding-systems -- Display coding systems
- 
- text register:
- C-x r s a -- store region to "a" key
- C-x r i a -- insert region stored to "a" key
- C-x r r a -- store rectangle to "a" key (see "rectangle" below)
- 
- point register:
- C-x r SPC a -- store current to "a" key
- C-x r j a -- move to point to "a" key
- 
- window register:
- C-x r w a -- store configuration of windows in frame
- C-x r j a -- restore window configurations
- 
- number register:
- C-u 1 C-x r n a -- store 1 to "a" key
- C-u 1 C-x r + a -- add 1 to number to "a" key
- C-x r i a -- insert number to "a" key
- 
- position register:
- C-x r m RET -- save default
- C-x r m <NAME> RET -- save as NAME
- C-x r b RET -- move to default
- C-x r b <NAME> RET -- move to NAME
- C-x r l -- list
- M-x bookmark-save -- save positions to file
- 
- column:
- M-0 M-x move-to-column -- move to first column
- M-x move-to-column -- move to second column
- M-7 M-x move-to-column -- move to column 8
- M-x column-number-mode -- show column number in mode line
- M-x enable-command RET set-goal-column RET -- permanently enable
- M-r -- move to beginning of center line of window (see "window" above)
- C-x C-n -- set column for line motion commands
- C-u C-x C-n -- unset goal column for line motion commands
- M-x ruler-mode -- add a ruler to the current buffer's window
- 
- rectangle:
- C-x r d -- delete, no kill
- C-x r k -- kill
- C-x r y -- yank
- C-x r c -- blank out
- C-x r t <STRING> -- replace each line with STRING
- M-x string-insert-rectangle -- insert STRING at each line
- M-x delete-whitespace-rectangle -- remove leading whitespace
- M-x delete-whitespace-rectangle -- remove leading whitespace
- C-x r r a -- store to register "a"
- 
- table:
- M-x insert-table -- insert table
- M-x table-recognize-table -- activate mode at point
- M-x table-unrecognize-table -- deactivate mode at point
- C-u M-x table-recognize-table -- inactivate table at point
- C-u 3 M-x table-insert-column -- insert 3 columns
- C-u 3 M-x table-delete-column -- delete 3 columns
- 
- delimited text:
- M-x delimit-columns-customize -- change settings
- M-x delimit-columns-rectangle -- format rectangle
- M-x delimit-columns-region -- format region
- 
- align:
- C-u M-x align -- by guessing separator
- M-x align-current -- on entire "section"
- M-x align-regexp -- based on regexp
- C-u M-x align-regexp -- ask for grouping, number of spaces and repeating
- 
- directory (folder):
- M-x cd -- change working
- M-x make-directory RET <PATH> RET -- make PATH including any missing parents
- C-x d RET -- list current
- C-x C-f RET -- same as previous
- C-x 4 d RET -- list current in other window (see "window" above)
- C-x d .. RET -- list parent
- C-x C-f .. RET -- same as previous
- C-x C-d RET ^ -- same as previous
- C-x C-d RET C-x C-j -- same as previous
- C-x d <PATH> RET -- list PATH
- C-x C-f <PATH> RET -- same as previous
- ? -- help
- M-x dired-jump RET RET -- go to listing of current file
- j -- move to file in listing
- g -- reread the listing
- s -- toggle sort by date
- C-u s -- edit the command switches for the file list command
- M-x auto-revert-mode -- automatically update list every 5 seconds
- C-s -- search listings (see "search" above)
- RET -- open file or directory
- y -- show file type
- + -- add new
- i -- show listing of current subdirectory
- C-u s R RET -- show listings of all subdirectories, "fully recursive"
- > -- skip between directory listings
- < -- skip between directory listings
- C-x C-f <FILE> RET -- visit FILE (see "file" above)
- A -- search marked
- M-, -- find next match
- M o+r RET -- make current file world-readable
- O <OWNER> RET -- change current file to OWNER
- G <GROUP> RET -- change current file to GROUP
- R <FILE> RET -- move current file to FILE
- R M-n ~ RET -- add ~ to the end of current file's name
- C <FILE> RET -- copy current file to file
- C M-n ~ RET -- make a tilde copy the current file 
- P RET -- send current file to default printer
- P RET M-DEL a2ps -- print current file in Postscript
- P SPC -P SPC <PRINTER> -- send current file to <PRINTER>
- T -- touch current file
- Z -- compress current file
- H <FILE> RET -- hardlink current file to FILE
- S <FILE> RET -- symlink current file to FILE
- M-x dired-do-relsymlink <FILE> RET -- relative symlink current file to FILE
- ^ -- list parent
- M-x dired-jump -- list parent
- m -- mark current file
- u -- unmark current file
- d -- mark current file for deletion
- t -- toggle marks
- U -- unmark all files
- C -- copy marked files to another directory
- R -- move marked files to another directory
- D -- delete marked files
- M-x wdired-change-to-wdired-mode -- manually edit listing with WDired
- C-c C-c -- Exit WDired and commit the edits made to the listing
- C-c ESC -- Cancel WDired
- C-c C-[ -- same as previous
- M-x find-grep-dired -- (see "directory" above)
- ;k
- ;dired-do-igrep
- ;dired-do-igrep-find
- ;find-name-dired
- ;find-lisp-find-dired
- ? -- Show recent messages
- 
- dired-x:
- M-x load-library RET dired-x RET -- load extra Dired functionality
- * . -- mark extension
- C-x C-j -- list parent
- M-! -- smart shell command
- w -- kill filename but don't delete
- ;M-g
- ;M-o
- ;F
- Y <FILE> RET -- relative symlink current file to FILE
- %Y <REGEXP> RET -- relative symlink files matching REGEXP to current file
- V -- send file by email
- 
- tramp:
- C-x C-f /HOST:DIR/FILE -- open FILE in DIR on remote HOST
- C-x C-f /scp:HOST:DIR/FILE -- same but use secure copy (SCP)
- C-x C-f /ssh:HOST:DIR/FILE -- same but demand the use of SSH
- C-x C-f /ssh1:HOST:DIR/FILE -- same but demand version 1 of SSH
- C-x C-f /HOST:DIR -- list contents of DIR on remote HOST
- C-x d /HOST:DIR -- same as previous
- M-x shell -- start a remote shell at HOST
+ M-x list-coding-systems -- display coding systems
  
  environment:
  M-x setenv <VAR> RET <VALUE> RET -- set VAR to VALUE in Emacs
@@ -1202,10 +1404,33 @@ The Lisp:reference-sheet-help-utils.el (ReferenceSheetHelpUtils) also provide a 
  C-SPC -- set end point of region
  M-| -- send region to command
  C-u M-| -- replace region with output of command
+ M-& -- run command in the background asynchronously
  M-x shell -- new window
  C-u M-x shell RET RET -- new buffer
  C-u M-x shell RET <NAME> RET -- new buffer with NAME.
+ C-c C-a -- beginning of command line
+ C-c C-e -- go to command prompt and to the end of command
+ C-c C-e -- redisplay buffer so prompt is at bottom (see "redisplay" above)
+ C-c C-f -- forward command when looking at multi-command
+ C-c C-b -- backwards command when looking at multi-command
+ C-c C-w -- kill word backward (see "word" above)
+ M-DEL -- same as previous
+ C-c C-d -- send "end of file" to the process
+ C-c C-c -- send process interrupt
+ C-c C-z -- stop the process
+ C-c C-\ -- quit the process
+ C-c SPC -- add newline to command
+ C-q C-j -- same as previous
+ C-c C-l -- list command history
+ M-p -- previous command
+ M-n -- next command
+ M-r -- search history backward
+ C-c M-r -- next history match backward
+ C-c M-s -- history match forward
+ C-c C-r -- show beginning of output for last command
  C-x C-w <FILE> RET -- save session transcript to FILE
+ C-c C-s <FILE> RET -- write output of last command to FILE
+ C-u C-c C-s <FILE> RET -- append output of last command to FILE
  
  shell script:
  C-x C-f file.sh RET -- start a script named file.sh
@@ -1218,9 +1443,9 @@ The Lisp:reference-sheet-help-utils.el (ReferenceSheetHelpUtils) also provide a 
  M-a -- beginning of command
  M-e -- end of command
  C-M-a -- beginning of function
+ C-[ C-a -- same as previous
  C-M-e -- end of function
- C-[ C-a -- beginning of function
- C-[ C-e -- end of function
+ C-[ C-e -- same as previous
  TAB -- indent
  C-j -- newline and indent
  C-c < -- use indentation level of current line
@@ -1234,21 +1459,28 @@ The Lisp:reference-sheet-help-utils.el (ReferenceSheetHelpUtils) also provide a 
  C-c ( -- insert syntax for function
  
  executable:
- M-x executable-set-magic <COMMAND> RET <ARGS> -- set interpreter COMMAND and ARGS
+ M-x executable-set-magic -- set interpreter command and arguments
  M-x executable-self-display -- make file a command to display itself
  M-x executable-interpret -- interpret current file
  C-x ` -- go to next error
+ M-: M-( executable-find "COMMAND" RET -- find path for COMMAND
  
  lisp:
  C-M-a -- beginning of defun
+ C-[ C-a -- same as previous
  C-M-e -- end of defun
+ C-[ C-e -- same as previous
  C-M-n -- forward list
+ C-[ C-n -- same as previous
  C-M-p -- backward list
+ C-[ C-p -- same as previous
  C-M-d -- down sexp (see "sexp" above)
+ C-[ C-d -- same as previous
  C-M-u -- upward sexp
+ C-[ C-u -- same as previous
  M-x up-list -- upward sexp and forward
  M-( -- insert parens for sexp
- C-m-t -- transpose sexp
+ C-M-t -- transpose sexp
  C-M-SPC -- mark sexp
  C-[ C-SPC -- same as previous
  C-c C-z -- run interpreter
@@ -1266,27 +1498,42 @@ The Lisp:reference-sheet-help-utils.el (ReferenceSheetHelpUtils) also provide a 
  C-[ C-x -- same as previous
  M-: -- prompt for expression then evaluate
  C-u M-: -- eval expression and insert result at point
- TAB -- indent
+ TAB -- indent (see "indent" above)
+ C-i -- same as previous
+ C-u TAB -- indent line and expression for subsequent lines
+ C-u C-i -- same as previous
  C-M-q -- indent expression after point
  C-[ C-q -- same as previous
+ C-u C-M-q -- pretty print expression after point
  M-TAB -- complete symbol at point
+ C-M-i -- same as previous
+ C-[ C-i -- same as previous
  M-x eval-region -- evaluate expressions in region
  M-x eval-buffer -- evaluate buffer
  M-x load-file RET <FILE> RET -- load FILE
  M-x load-file RET RET -- load current file
  M-x load-libary -- load library
+ M-x locate-library -- path of library
+ M-x find-library <LIBRARY> -- go to LIBRARY
+ M-x locate-library RET TAB -- show all libraries on load-path
+ M-x apropos-libary RET <LIBRARY> RET -- list definitions in library
+ M-x list-load-path-shadows -- show library conflicts in load-path
+ C-h P -- describe library
+ C-h p -- find packages (see "finder" below)
  M-x customize-set-variable -- permanently set a variable
  M-x set-variable RET <VAR> RET <VALUE> RET -- temporarily set VAR to VALUE
  M-x make-local-variable RET <VAR> RET -- scope VAR to current buffer
  M-x kill-local-variable RET <VAR> RET -- make VAR global for current buffer
  M-x byte-compile-file RET <FILE> RET -- byte compile current FILE
  M-x byte-compile-file RET RET -- same as previous
- M-x byte-recompile-directory RET -- byte compile every file, recursively
+ M-x byte-recompile-directory -- byte compile every file, recursively
+ M-0 M-x byte-recompile-directory -- byte compile every file, recursively
+ M-x compile-defun -- byte compile defun
+ C-x ` -- go to source code for compile error (see "compile" below)
  M-x find-function RET <FUNCTION> RET -- go to definition of FUNCTION
  M-x find-function RET RET -- go to definition of function at point
  M-x find-variable RET <VARIABLE> RET -- go to definition of VARIABLE
  M-x find-variable RET RET -- go to definition of variable at point
- M-x find-library <LIBRARY> -- go to LIBRARY
  M-x emacs-lisp-mode -- start Emacs Lisp mode if not started
  M-x checkdoc -- validate coding style
  M-x checkdoc-ispell -- and spell check comments and documentation strings
@@ -1297,6 +1544,7 @@ The Lisp:reference-sheet-help-utils.el (ReferenceSheetHelpUtils) also provide a 
  M-x lisp-interaction-mode -- evaluate expressions interactively
  C-j -- evaluate sexp before point and insert results on next line
  C-M-x -- evaluate current defun (see "emacs lisp" above)
+ C-[ C-x -- same as previous
  
  debug elisp:
  M-x toggle-debug-on-error -- change whether to start session on error
@@ -1368,8 +1616,8 @@ The Lisp:reference-sheet-help-utils.el (ReferenceSheetHelpUtils) also provide a 
  Q -- quit
  
  finder:
- C-h P -- list keywords
- M-x finder-commentary RET <LIBRARY> RET -- Describe LIBRARY
+ C-h p -- list keywords
+ M-x finder-commentary RET <LIBRARY> RET -- describe LIBRARY
  ? -- help
  n -- move down
  p -- move up
@@ -1424,8 +1672,9 @@ The Lisp:reference-sheet-help-utils.el (ReferenceSheetHelpUtils) also provide a 
  C-x n w -- widen
  C-M-h -- mark current function
  C-M-@ -- mark to end of operator, ident, string, paren, brace
- C-M-\ -- indent lines in region properly
- C-x h C-M-\ -- indent buffer properly
+ C-x C-x TAB -- indent lines in region properly
+ C-M-\ -- same as previous
+ C-x h C-M-\ C-u C-SPC -- indent buffer properly
  C-c C-q -- indent current function properly
  C-c C-\ -- align backslash characters in region
  C-u C-c C-\ -- delete backslash characters in region
@@ -1438,10 +1687,11 @@ The Lisp:reference-sheet-help-utils.el (ReferenceSheetHelpUtils) also provide a 
  C-c C-DEL -- same as previous
  M-^ -- merge current line with previous
  C-u M-^ -- merge next line with current (see "line" above)
+ C-n M-^ -- same as previous
  C-c C-d -- hungrily delete all whitespace including newlines forwards
  M-x c-toggle-hungry-state -- always hungrily delete whitespace
  C-c C-e -- show expansion of macros for region in other window
- M-x set-variable RET c-tab-always-indent RET nil -- don't indent mid-line with TAB
+ M-x set-variable RET c-tab-always-indent RET nil -- don't indent mid-line
  
  compile:
  M-x compile -- execute a compilation command
@@ -1482,15 +1732,23 @@ The Lisp:reference-sheet-help-utils.el (ReferenceSheetHelpUtils) also provide a 
  M-, -- go to next entry in index
  M-x tags-query-replace -- search and replace for regular expression
  M-TAB -- complete tag at point
+ C-M-i -- same as previous
+ C-[ C-i -- same as previous
  C-u M-TAB -- complete language symbol, avoid tags, at point
  M-x list-tags -- for a source file
  M-x tags-apropos RET <PATTERN> RET -- lists tags matching PATTERN
  M-x tags-reset-tags-tables -- forget all previous
  M-x select-tags-table -- choose tags file to use
  
- ;make
- 
- ;gdb
+ make:
+ C-x C-f Makefile RET -- new
+ C-x C-f foo.mk RET -- new
+ M-n -- next target
+ M-p -- previous target
+ C-c C-\ -- backslash region
+ C-c C-c -- comment region
+ C-c C-b -- list macros and targets
+ C-c C-u -- list up-to-date status for targets
  
  diff:
  M-x diff RET <OLD> RET <NEW> RET -- compare OLD file with NEW file
@@ -1544,7 +1802,7 @@ The Lisp:reference-sheet-help-utils.el (ReferenceSheetHelpUtils) also provide a 
  C-x v a -- update ChangeLog (see "changelog" below)
  C-x v m -- merge two revisions
  C-x v h -- insert revision header keyword
- M-x vc-resolve-conflicts -- start ediff-merge session on a file with conflict markers
+ M-x vc-resolve-conflicts -- start ediff (see "ediff" below) on file
  
  changelog:
  C-x 4 a -- start new entry using context of current file
@@ -1623,33 +1881,97 @@ The Lisp:reference-sheet-help-utils.el (ReferenceSheetHelpUtils) also provide a 
  C-o -- open file in other window
  V -- open current file in dired (see "directory" above)
  
- ;calendar
- ; M-x display-time-world
+ calendar:
+ M-x calendar -- view previous, current and next months
+ C-h m -- help
+ ? -- user manual
+ C-f -- one day forward
+ C-b -- one day backward
+ 7 C-f -- seven days forward
+ C-7 C-f -- same as previous
+ C-n -- one week forward
+ C-p -- one week backward
+ 52 C-n -- fifty-two weeks forward
+ C-5 C-2 C-n -- same as previous
+ M-} -- one month forward
+ M-{ -- one month backward
+ 12 M-} -- twelve months forward
+ M-1 M-2 M-} -- same as previous
+ C-x ] -- one year forward
+ C-x [ -- one year backward
+ 4 C-x ] -- four years forward
+ C-u C-x ] -- same as previous
+ C-a -- beginning of week
+ C-e -- end of week
+ M-a -- beginning of the month
+ M-e -- end of the month
+ M-< -- beginning of year
+ M-> -- end of year
+ < -- scroll month backward
+ > -- scroll month forward
+ C-v -- scroll forward 3 months
+ M-v -- scroll backward 3 months
+ C-SPC 3 M-} M-= -- how many days three months from now
+ g d RET Feb RET 29 RET -- go to February 29 of current year
+ o RET May RET -- go to May
+ g D RET 60 RET -- go to sixtieth day of current year
+ g w RET 5 RET -- go to fifth week of current year
+ . -- back to today
+ p d -- print day of year
+ p c -- print week of year
+ h -- holidays on day
+ a -- holidays in next 3 months
+ x -- mark holidays
+ u -- unmark holidays
+ S -- sunrise/sunset
+ M -- lunar phases
+ m -- mark all diary entries (see "diary" later)
+ u -- unmark diary entries
+ d -- diary entries for day
+ d -- diary entries for day
+ i d -- insert single diary entry
+ i w -- insert weekly entry
+ i m -- insert monthly entry
+ i y -- insert annual entry
+ i a -- insert anniversary
+ i c 10 RET -- repeat entry every ten days
+ C-SPC C-f i b -- making a two-day diary entry
+ C-SPC C-n i b -- making a week-long diary entry
+ C-SPC 2 C-n i b -- making a two week-long diary entry
+ s -- open diary
+ H m -- Export month to an HTML file
+ H y -- Export all months in year to HTML files
+ t m -- Export month to TeX file
+ t M -- Export month in landscape display to TeX file
+ t w 1 -- Export week in to TeX file
+ t y -- Export year to TeX file
+ q -- quit
  
- ;diary
- 
- ;abbrev
- ;M-'
- 
- ;dabbrev
- ;M-/
- ;
- 
- ;autoinsert
- 
- ;ediff
- 
- ;emerge
+ ediff:
+ M-x ediff -- compare two files
+ M-x ediff-buffers -- compare two buffers
+ M-x ediff-regions-linewise -- compare regions by lines in two buffers
+ M-x ediff-regions-wordwise -- compare regions by word in two buffers
+ M-x ediff-backup -- compare with backup file
+ M-x ediff-current-file -- compare buffer with file
+ M-x ediff-revision -- compare in version control (see "version control" above)
+ ? -- help
+ | -- toggle vertical and horizontal display
+ h -- toggle highlighting mode
+ n -- next difference
+ SPC -- next difference
+ p -- previous difference
+ a -- use a
+ b -- use b
+ r a -- undo in a
+ r b -- undo in b
+ q -- quit
  
  browse-url:
  M-x browse-url -- same as previous
  M-x ffap -- same as previous
  M-x browse-url-at-point -- visit URL at point in Web browser
  M-x browse-url RET RET -- same as previous
- 
- ;email
- 
- ;w3
  
  HTML:
  C-h m -- help
@@ -1716,11 +2038,6 @@ The Lisp:reference-sheet-help-utils.el (ReferenceSheetHelpUtils) also provide a 
  C-u M-; -- kill comment
  M-x sgml-show-context -- display hierarchy of tags for point
  M-x sgml-validate -- check markup with external tool
- ;C-M-f
- ;C-M-b
- ;M-q
- ;C-M-a
- ;C-M-e
  
  outline:
  M-x outline-mode -- set major mode
@@ -1752,8 +2069,6 @@ The Lisp:reference-sheet-help-utils.el (ReferenceSheetHelpUtils) also provide a 
  C-c @ -- mark current subtree
  C-c C-< -- increase heading level in current subtree
  C-c C-> -- decrease heading level in current subtree
- 
- ;latex
  
  SQL:
  M-x sql-help -- help
@@ -1794,6 +2109,8 @@ The Lisp:reference-sheet-help-utils.el (ReferenceSheetHelpUtils) also provide a 
  SPC -- same as previous
  TAB -- swap top stack items
  M-TAB -- cycle all stack items
+ C-M-i -- same as previous
+ C-[ C-i -- same as previous
  DEL -- delete from stack
  M-0 DEL -- delete all from stack
  o -- move point to top of the stack
@@ -1803,15 +2120,25 @@ The Lisp:reference-sheet-help-utils.el (ReferenceSheetHelpUtils) also provide a 
  - -- subtract
  * -- multiply
  / -- divide
+ \ -- integer divide
  ^ -- raise number to power
  I ^ -- root
  Q -- square root
  n -- negative
  & -- reciprocal
- x -- execute calc named command
+ ' -- enter algebraic expression
+ = -- re-evaluate
+ m f -- fraction mode
+ m f -- change back to floating point decimal
+ ' 2 : 3 RET -- enter two-thirds (2/3) as a fraction
+ ' 2 / 3 = > RET -- divide 3 from 2 as an "evaluate-to"
+ ' evalto ( 2 / 3 RET -- same as previous
+ m f = -- show 2/3 as a fraction
+ m f = -- show 2/3 as a decimal
  f -- convert an integer to a float
  F -- floor a float to an integer
- R -- round a float to the cloasest integer
+ R -- round a float to the closest integer
+ x -- execute calc named command
  3 4 RET x hypot -- find hypotenuse of two sides
  ' hypot(3,4) -- find hypotenuse of two sides
  3 4 f h -- find hypotenuse of two sides
@@ -1826,13 +2153,15 @@ The Lisp:reference-sheet-help-utils.el (ReferenceSheetHelpUtils) also provide a 
  s l <VAR> -- store top of stack to VAR, evaluate stack, and unstore
  s r TAB -- see list of current variables
  = -- evaluate variables
- t [ -- reset trail
+ t [ -- first trail item
+ t ] -- last trail item
  t n -- forward trail item
  t p -- backward trail item
+ t h -- current trail item
  t y -- yank item from trail to stack
+ t i -- visit trail
+ t o -- leave trail
  m a -- toggle algebra mode
- d 6 -- hex
- d 0 -- dec
  d z -- leading zero notation
  d n -- normal notation
  d s -- scientific notation
@@ -1850,28 +2179,44 @@ The Lisp:reference-sheet-help-utils.el (ReferenceSheetHelpUtils) also provide a 
  H d SPC -- manually refresh stack with current display mode
  2# -- enter in binary
  8# -- enter in octal
- 16# -- enter in hexidecimal
+ 16# -- enter in hexadecimal
  10# -- enter in decimal
  d r -- change display radix
  d r 2 -- display in binary
+ d 2 -- same as previous
  d r 8 -- display in octal
- d r 16 -- display in hexidecimal
+ d 8 -- same as previous
+ d r 16 -- display in hexadecimal
+ d 6 -- same as previous
  d r 10 -- display in decimal
+ d 0 -- same as previous
  p -- change precision
  m r -- change to radians mode
- m r -- change to degrees mode
+ m d -- change to degrees mode
+ m p -- change to polar mode
+ m h -- change to hours, minutes, and seconds mode
+ 40@11'15" -- enter 40 degrees, 11 minutes and 15 seconds
  S -- sine
  C -- cosine
  T -- tangent
- u c -- convert units
+ c r -- convert radians
+ c d -- convert degrees
+ c p -- convert polar
+ c h -- convert hms
  ' 1 m -- 1 meter
  ' 1 cm -- 1 centimeter
- ' 1 mm -- 1 milimeter
+ ' 1 mm -- 1 millimeter
  ' 1 mi -- 1 mile
- 
- ;term
- 
- ;terminal
+ u c -- convert units
+ ' 26.2 SPC mi RET u c km RET -- convert 26.2 miles to kilometers
+ ' 90 SPC km/hr RET u c mph RET -- 90 km per hour to miles per hour
+ ' 72 SPC degF RET u c degC RET -- 72 degrees Fahrenheit to Celsius
+ ' hms(26.2) mi RET ' 2@3'38" hr RET / -- speed of 26.2 miles in 2:03:38
+ ' 2@3'38" hr RET ' 26.2 mi RET / -- pace of 26.2 miles in 2:03:38
+ ' hms(26.2) mi RET ' 2@3'38" hr RET / & u r c h -- same as previous
+ u v -- view available units
+ ' 14 SPC lb RET u d st RET Stone (mass) RET -- define unit
+ u p -- save units permanently to ~/.emacs.d/calc.el
  
  timeclock:
  M-x timeclock-in -- start a project
@@ -1897,11 +2242,14 @@ The Lisp:reference-sheet-help-utils.el (ReferenceSheetHelpUtils) also provide a 
  M-- M-x type-break-mode -- shut off reminders for breaks
  
  animation:
- M-x animate-birthday-present RET <NAME> RET -- Birthday wishes to NAME
- M-x butterfly-mode -- strike the drive platter and flip the desired bit
+ M-x animate-birthday-present RET <NAME> RET -- birthday wishes to NAME
+ M-x butterfly -- strike the drive platter and flip the desired bit
  M-x dissociated-press -- scramble current text in another buffer
  M-x hanoi -- towers of hanoi
  M-x life -- the game of life
  M-x studlify-buffer -- give text in buffer strange capitalization
  M-x studlify-region -- give text in region strange capitalization
  M-x zone -- display text tricks
+
+----
+CategoryReferenceSheet
