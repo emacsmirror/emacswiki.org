@@ -115,6 +115,27 @@ Here is the version of latex-help-get-cmd-alist function which worked for me:
     )
 
 PS: quite surprised though, latex-help is not integrated in auctex. Did I miss something?
+
+[new:MMitra:2013-04-24 05:50 UTC]
+Another change seems to be required in the ##latex-help## function, since ##try-completion## returns the actual match in case of a partial match, but only t in case of a perfect match. This causes ltx-help to sometimes land on the top page, instead of the actual target node. Changed the let* in ##latex-help## as follows (ugly, but seems to work). Feedback appreciated.
+
+    (let* ((cw (latex-help-guess))
+	   (cww (concat "\\" cw))
+	   (cmd-alist (latex-help-get-cmd-alist))
+           ; changes start here
+           (node (try-completion cw cmd-alist))
+           ; try-completion returns actual string in case of partial match
+           ; but returns t in case of exact match
+           (nodename1 (if (equal node t) cw node))
+           (nodename2 (if (equal nodename1 nil) 
+                          (try-completion cww cmd-alist) nodename1))
+	   (guess (cond ((equal nodename2 t) cww)
+                        ((equal nodename2 nil) nil)
+                        (t nodename2)))
+           ; changes end here
+	   (val (completing-read (if guess ...
+
+
 [new]
 Yes, InfoLook.
 
