@@ -52,8 +52,27 @@ This page is about ways to browse the [[kill ring]], choosing a kill to [[yank]]
        (global-set-key "\C-cy" '(lambda ()
                                  (interactive)
                                  (popup-menu 'yank-menu)))
+* Yet another mean to get access to the kill ring with completion, let anything, icicles, ido or any other stuff that customize completing-read do the rest:
 
-* Similar function with 
+ (defun konix/kill-ring-insert ()
+   (interactive)
+   (let (
+        (to_insert (completing-read "Yank : "
+                                    (delete-duplicates kill-ring :test #'equal)
+                                    )
+                   )
+        )
+    (when (and to_insert
+               (region-active-p)
+               )
+      ;; the currently highlighted section is to be replaced by the yank
+      (delete-region (region-beginning) (region-end))
+      )
+    (insert to_insert)
+    )
+   )
+
+* Similar function with
 [[Anything]], a candidate selection framework. Start with `M-x anything-show-kill-ring', narrow the list by typing some patterns(multiple patterns are space-delimited string),
 select with up/down/pgup/pgdown/C-p/C-n/C-v/M-v, choose with enter to insert an element of `kill-ring'.
 
@@ -64,7 +83,7 @@ select with up/down/pgup/pgdown/C-p/C-n/C-v/M-v, choose with enter to insert an 
 I can't praise browse-kill-ring enough -- I don't use it all that much, but when I need it there's no replacing it. -- [[Anonymous]]
 
 [new]
-Someone once said "The easiest way to invoke kill-ring browsing is just to use `M-y' without first using `C-y'".  But when I try that (with Emacs 22) I just get "Previous command was not a yank". 
+Someone once said "The easiest way to invoke kill-ring browsing is just to use `M-y' without first using `C-y'".  But when I try that (with Emacs 22) I just get "Previous command was not a yank".
 
 [new]
 To get the "M-y immediately pulls up the kill ring" behavior, you need to run M-x browse-kill-ring-default-keybindings.  Or, to put this in .emacs
