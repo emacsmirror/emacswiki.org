@@ -1,0 +1,10 @@
+[new:AlexSchroeder:2013-04-24 13:33 UTC]
+Ok, I've been postponing this [[2013-02-18|for the longest time]]. Time to take the plunge!
+I activated the "bootstrap" using configuration for EmacsWiki.
+If you're interested, the bootstrap-specific changes are mostly in [http://emacswiki.org/emacs/emacs-bootstrap.js emacs-bootstrap.js].
+*Evgkeni Sampelnikof* did most of the design once I had the initial framework in place. Thanks!
+
+If you don't like the new design, here's how to control the cookie:
+
+* http://www.emacswiki.org/?bootstrap=0 -- disable
+* http://www.emacswiki.org/?bootstrap=1 -- enable (the default)
