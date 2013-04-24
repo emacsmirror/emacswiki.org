@@ -62,9 +62,9 @@ The "Lohit Devanagari" font displays nicely in emacs. (And this also fixes an an
 
 In the same manner, for Greek and Classical Greek you could use the nice font "!GentiumAlt" or the monospaced "Ubuntu Mono", just using these font names in the two script snippets for Greek above (you must change both Greek and Greek extended for consistent font display).
 
-Specifying just the fontconfig's name for the font in this way you can use emacs commands for changing font size with '<code>C-x +</code>' or '<code>C-x -</code>'. If you want a specific font size regardless, you could for example use "Lohit Devanagari-13" in the code snippet above.
+Specifying just the fontconfig's name for the font in this way you can use emacs commands for changing font size with '<code>C-x C-+</code>' or '<code>C-x C--</code>'. If you want a specific font size regardless, you could for example use "Lohit Devanagari-13" in the code snippet above.
 
-Or you can specify a relative font enlargement or reduction relative to the standard font size, while '<code>C-x +</code>' and '<code>C-x -</code>'continue to work. For example, to enlarge the Devanagari and Greek fonts used in the examples above:
+Or you can specify a relative font enlargement or reduction relative to the standard font size, while '<code>C-x C-+</code>' and '<code>C-x C--</code>'continue to work. For example, to enlarge the Devanagari and Greek fonts used in the examples above:
 
     (setq face-font-rescale-alist
          '(
