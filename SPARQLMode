@@ -4,12 +4,12 @@ A major mode for emacs that provides syntax highlighting for SPARQL. It also pro
 == Getting Started ==
 Download sparql-mode and put it in a directory somewhere.
 Add the following to your .emacs file
-<code>
+{{{
 (add-to-list 'load-path "/path/to/sparql-mode-dir")
 (autoload 'sparql-mode "sparql-mode.el"
-  "Major mode for editing SPARQL files" t)
+   "Major mode for editing SPARQL files" t)
 (add-to-list 'auto-mode-alist '("\\.sparql$" . sparql-mode))
-</code>
+}}}
 Now sparql-mode will load whenever you visit a file whose name ends with .sparql. Alternatively, run M-x sparql-mode in an existing buffer containing SPARQL commands
 
 == Executing SPARQL Queries from within Emacs ==
