@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Apr 23 19:09:19 2013 (-0700)
+;; Last-Updated: Wed Apr 24 09:20:03 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 9720
+;;     Update #: 9733
 ;; URL: http://www.emacswiki.org/icicles-mode.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -2467,7 +2467,7 @@ is unbound in all keymaps accessible from keymap MAP."
        (define-key map [menu-bar minibuf next]             nil)
        (define-key map [menu-bar minibuf previous]         nil)
 
-       (define-key-after map [menu-bar minibuf icicle-top-level]
+       (define-key-after (lookup-key map [menu-bar minibuf]) [icicle-top-level]
          '(menu-item "Top Level" icicle-top-level
            :help "Cancel all minibuffers and return to the top level")
          'quit)
@@ -2519,7 +2519,7 @@ is unbound in all keymaps accessible from keymap MAP."
      ;; In Emacs 22+, local is parent of local-ns.
      (unless (eq minibuffer-local-map (keymap-parent minibuffer-local-ns-map))
        (let ((map  minibuffer-local-ns-map))
-         (define-key-after map [menu-bar minibuf icicle-top-level]
+         (define-key-after (lookup-key map [menu-bar minibuf]) [icicle-top-level]
            '(menu-item "Top Level" icicle-top-level
              :help "Cancel all minibuffers and return to the top level")
            'quit)
@@ -2572,7 +2572,7 @@ is unbound in all keymaps accessible from keymap MAP."
      (unless (eq minibuffer-local-map (keymap-parent minibuffer-local-isearch-map))
 
        (let ((map  minibuffer-local-isearch-map))
-         (define-key-after map [menu-bar minibuf icicle-top-level]
+         (define-key-after (lookup-key map [menu-bar minibuf]) [icicle-top-level]
            '(menu-item "Top Level" icicle-top-level
              :help "Cancel all minibuffers and return to the top level")
            'quit)
@@ -2850,7 +2850,7 @@ MAP is `minibuffer-local-completion-map' or
 
   ;; In Emacs 22+, local is parent of local-completion
   (unless (eq minibuffer-local-map (keymap-parent minibuffer-local-completion-map))
-    (define-key-after map [menu-bar minibuf icicle-top-level]
+    (define-key-after (lookup-key map [menu-bar minibuf]) [icicle-top-level]
       '(menu-item "Top Level" icicle-top-level
         :help "Cancel all minibuffers and return to the top level")
       'quit)
