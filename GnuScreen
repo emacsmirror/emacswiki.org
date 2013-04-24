@@ -34,6 +34,8 @@ to use `C-\' as the command key:
 
     escape ^\\\
 
+But be aware that C-\ sends SIGABRT to the foreground process.  I ended up killing many programs because of typos and muscle-memory. (fadein)
+
 Or C-z:
 
     escape ^Zz
@@ -45,6 +47,10 @@ I really like rebinding it to C-o, this way you can flip between split screens q
 I use C-] (Anonymous):
 
     escape ^]^]
+
+I like Ctrl-Space.  Besides Emacs, I haven't encountered another program that uses this control character. Moreover, your thumb is always on the spacebar, making this as fast as a home-row escape key (fadein):
+
+    escape ^@@
 
 I ([[piyo]]) use C-T because it doesn't collide with anything else other than M-x transpose-char and your favorite shell's transpose-char (often used bindkey setting). C-z is too risky because it's a Unix (suspend-emacs) and Windows (undo) vital key. Though they are all great unique keystrokes, C-] and C-\ and C-o are two-handed and too far away. I suppose C-o is good because it replaces the useless M-x open-line. But still I assert C-T's dominance (haha). Make sure to bind C-T C-T to self-insert a C-T, so you don't lose your transpostion-ness muscle memory. Here's a .screenrc excerpt sample:
 
