@@ -1060,6 +1060,7 @@ This is a reference card that is unlike other ReferenceCards in that it will not
 ||##C-u C-x C-n##||unset goal column for line motion commands||
 ||##M-x ruler-mode##||add a ruler to the current buffer's window||
 ||||**rectangle**||
+||##C-x r M-w##||copy rectangle as kill||
 ||##C-x r d##||delete, no kill||
 ||##C-x r k##||kill||
 ||##C-x r y##||yank||
