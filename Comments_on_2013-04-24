@@ -119,3 +119,14 @@ FWIW, I agree with Johnw , I like the modern look but IMHO contrast is not good.
 
 -- Yagnesh 2013-04-25 12:11 UTC
 
+
+----
+
+Twitter Bootstrap is a very nice starter for websites. [http://bootswatch.com/spacelab/ Bootswatch] has some good examples what can be done easily. Maybe some of the alternatives to the current css could be had from there? They are like color-themes for Bootstrap.
+
+Some good pointers on readability cab be found on [http://www.smashingmagazine.com/2012/05/02/applying-macrotypography-for-readable-web-page/ smashing-magazine]. Some more adjustments to the contrast and margins might improve readability a lot.
+
+As someone mentioned on #emacs, the logo (wich does not link back to http://www.emacswiki.org/ btw) is chosen a bit poorly: ew doesn't sound very positive.
+
+-- [http://funwithemacs.wordpress.com/ plovs] 2013-04-25 13:31 UTC
+
