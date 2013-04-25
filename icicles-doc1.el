@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue Apr 23 13:10:25 2013 (-0700)
+;; Last-Updated: Thu Apr 25 13:31:19 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 27746
+;;     Update #: 27766
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -7729,13 +7729,29 @@
 ;;  etc. also lists the full name of the file or directory associated
 ;;  with the buffer.
 ;;
-;;  Finally, several user options control the completion behavior.
-;;  See (@file :file-name "icicles-doc2.el" :to "Customization and General Tips")
-;;  and (@file :file-name "icicles-doc2.el" :to "Global Filters").
+;;  The following user options control buffer-name completion.
 ;;
+;;  * `icicle-buffer-candidate-key-bindings'
+;;  * `icicle-buffer-extras' (*)
+;;  * `icicle-buffer-ignore-space-prefix-flag'
+;;  * `icicle-buffer-include-cached-files-nflag'
+;;  * `icicle-buffer-include-recent-files-nflag'
+;;  * `icicle-buffer-match-regexp' (*)
+;;  * `icicle-buffer-no-match-regexp' (*)
+;;  * `icicle-buffer-predicate' (*)
+;;  * `icicle-buffer-prefix-arg-filtering'
+;;  * `icicle-buffer-require-match-flag'
+;;  * `icicle-buffer-skip-hook'
+;;  * `icicle-buffer-sort' (*)
+;;
+;;  You can use option `icicle-buffer-configs' to define buffer
+;;  configurations: persistent sets of the option values marked (*).
 ;;
 ;;  See Also:
 ;;
+;;  * (@file :file-name "icicles-doc2.el" :to "Customization and General Tips") and
+;;    (@file :file-name "icicles-doc2.el" :to "Global Filters") for
+;;    information about user options affecting buffer-name completion
 ;;  * (@> "Chapter & Verse: Searching Named Containers") about
 ;;    content-searching
 ;;  * (@> "Match File Names and File Content Too") about
