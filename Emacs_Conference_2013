@@ -1,10 +1,25 @@
 There was an Emacs Conference on 30 March 2013.
 
-Videos: http://j.mp/emacs2013videos
-
 == Notes and content from the conference ==
 
-* SachaChua did [[http://experivis.com/collection/emacsconf2013/|sketch notes]]
+* SachaChua posted videos and sketchnotes.
+** Sketchnotes compiled in one [[http://j.mp/emacsconf2013sketches|PDF]]
+** All videos as a [[http://j.mp/emacs2013videos|YouTube playlist]]
+** Notes paired with corresponding videos--warning, the notes are fairly large PNG format images:
+*** XWidgets - Joakim Verona  [[http://www.youtube.com/watch?v=hEqqbq0lL4k&list=PL4th0AZixyRE9bb8OevAb7I8RuaWJQWnO&index=1|video]] [[http://sachachua.com/blog/wp-content/gallery/emacs-conference-2013/20130330%20Emacs%20Conf%202013%20-%20XWidgets%20-%20Joakim%20Verona.png|Sacha's notes]]
+*** Emacs Wiki - Nic Ferrier  [[http://www.youtube.com/watch?v=H9E5qmiuYOQ&list=PL4th0AZixyRE9bb8OevAb7I8RuaWJQWnO&index=2|video]] [[http://sachachua.com/blog/wp-content/gallery/emacs-conference-2013/20130330%20Emacs%20Conf%202013%20-%20Emacswiki%20-%20Nic%20Ferrier.png|Sacha's notes]]
+*** Arxana - Joe Corneli  [[http://www.youtube.com/watch?v=gswAVtzQ7to&list=PL4th0AZixyRE9bb8OevAb7I8RuaWJQWnO&index=3|video]] [[http://sachachua.com/blog/wp-content/gallery/emacs-conference-2013/20130330%20Emacs%20Conf%202013%20-%20Arxana%20-%20Joe%20Corneli.png|Sacha's notes]]
+*** Emacs Live - Sam Aaron  [[http://www.youtube.com/watch?v=-jSePveaIPA&list=PL4th0AZixyRE9bb8OevAb7I8RuaWJQWnO&index=4|video]] [[http://sachachua.com/blog/wp-content/gallery/emacs-conference-2013/20130330%20Emacs%20Conf%202013%20-%20Emacs%20Live%20-%20Sam%20Aaron.png|Sacha's notes]]
+*** El-get - Dimitri Fontaine  [[http://www.youtube.com/watch?v=Z7-tWOl07hY&list=PL4th0AZixyRE9bb8OevAb7I8RuaWJQWnO&index=5|video]] [[http://sachachua.com/blog/wp-content/gallery/emacs-conference-2013/20130330%20Emacs%20Conf%202013%20-%20El-get%20-%20Dimitri%20Fontaine.png|Sacha's notes]]
+*** From Marmalade to Emacs - Michael Olson  [[http://www.youtube.com/watch?v=VhnEQj7Sn8E&list=PL4th0AZixyRE9bb8OevAb7I8RuaWJQWnO&index=6|video]] [[http://sachachua.com/blog/wp-content/gallery/emacs-conference-2013/20130330%20Emacs%20Conf%202013%20-%20From%20Marmalade%20to%20Emacs%20-%20Michael%20Olson.png|Sacha's notes]]
+*** Emacs Lisp Development - John Wiegley  [[http://www.youtube.com/watch?v=RvPFZL6NJNQ&list=PL4th0AZixyRE9bb8OevAb7I8RuaWJQWnO&index=7|video]] [[http://sachachua.com/blog/wp-content/gallery/emacs-conference-2013/20130330%20Emacs%20Conf%202013%20-%20Emacs%20Devel%20-%20John%20Wiegley.png|Sacha's notes]]
+*** Package Management - Nic Ferrier, Steve Purcell, Dimitri Fontaine   [[http://www.youtube.com/watch?v=ApoNHiLZVCA&list=PL4th0AZixyRE9bb8OevAb7I8RuaWJQWnO&index=8|video]] [[http://sachachua.com/blog/wp-content/gallery/emacs-conference-2013/20130330%20Emacs%20Conf%202013%20-%20Package%20Management%20-%20Nic%20Ferrier,%20Steve%20Purcell,%20Dimitri%20Fontaine.png|Sacha's notes]]
+*** SLIME - Luke Gorrie   [[http://www.youtube.com/watch?v=eZDWJfB9XY4&list=PL4th0AZixyRE9bb8OevAb7I8RuaWJQWnO&index=9|video]] [[http://sachachua.com/blog/wp-content/gallery/emacs-conference-2013/20130330%20Emacs%20Conf%202013%20-%20Slime%20-%20Luke%20Gorrie.png|Sacha's notes]]
+*** Project Grok - Steve Yegge   [[http://www.youtube.com/watch?v=uRO3dNJx5Dw&list=PL4th0AZixyRE9bb8OevAb7I8RuaWJQWnO&index=10|video]] [[http://sachachua.com/blog/wp-content/gallery/emacs-conference-2013/20130330%20Emacs%20Conf%202013%20-%20Project%20Grok%20-%20Steve%20Yegge.png|Sacha's notes]]
+*** Fixing My ELisp - Christophe Rhodes   [[http://www.youtube.com/watch?v=BQUd3VjqENU&list=PL4th0AZixyRE9bb8OevAb7I8RuaWJQWnO&index=11|video]] [[http://sachachua.com/blog/wp-content/gallery/emacs-conference-2013/20130330%20Emacs%20Conf%202013%20-%20Lightning%20Talks.png|Sacha's notes]]
+*** Javascript REPL - Kris Jenkins  [[http://www.youtube.com/watch?v=ufE-aBQXg-A&list=PL4th0AZixyRE9bb8OevAb7I8RuaWJQWnO&index=12|video]] [[http://sachachua.com/blog/wp-content/gallery/emacs-conference-2013/20130330%20Emacs%20Conf%202013%20-%20Lightning%20Talks.png|Sacha's notes]]
+*** Intro to One-Key - Ben Veal (Joe Bloggs)  [[http://www.youtube.com/watch?v=ARa5GlzxGvw&list=PL4th0AZixyRE9bb8OevAb7I8RuaWJQWnO&index=13|video]] [[http://sachachua.com/blog/wp-content/gallery/emacs-conference-2013/20130330%20Emacs%20Conf%202013%20-%20Lightning%20Talks.png|Sacha's notes]]
+*** Minor Mode for Writing - Daniel Szmulewicz   [[http://www.youtube.com/watch?v=REvuT16GRVA&list=PL4th0AZixyRE9bb8OevAb7I8RuaWJQWnO&index=14|video]] [[http://sachachua.com/blog/wp-content/gallery/emacs-conference-2013/20130330%20Emacs%20Conf%202013%20-%20Lightning%20Talks.png|Sacha's notes]]
 * SachaChua did [[https://gist.github.com/sachac/5278905|notes on her talk]]
 * JohnWiegley did [[https://gist.github.com/jwiegley/5277578|notes on his talk]]
 * NicFerrier did [[https://gist.github.com/nicferrier/5278913|notes on his talk]]
