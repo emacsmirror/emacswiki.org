@@ -1,6 +1,6 @@
 Page for OrgMode user (formerly a PlannerMode user) RaymondZeitler.
 
-I use Emacs.  I've gone from Brief to Zeus with a tiny diversion to Vedit before switching on July 10, 2000. I'm currently running v23.4.1 on Windows 7 Professional SP1.
+I use Emacs.  I've gone from Brief to Zeus with a tiny diversion to Vedit before switching on July 10, 2000. I'm currently running v24.1.1 on Windows 7 Professional SP1 64-bit.
 
 My background is electrical engineering, but I spend more time designing photomasks and surface acoustic wave devices, and writing code in Visual Basic, Basic, NTScript, VBScript, Fortran and Perl.  My specialty is in applying the techniques of computer automation to design processes, data processing and computer maintenance.  Emacs is also my HTML editor.
 
@@ -16,32 +16,34 @@ I can be reached at r.zeitler&#64;ieee&#46;org.  But questions or comments that 
 
 My .emacs:
 <pre>
-;;; .emacs for version 23.2+ Raymond Zeitler's work computer.
-;; Time-stamp: <2010-10-27 16:52:05 rayz>
+;;; .emacs for version 24.1 on Raymond Zeitler's work computer.
+;; Time-stamp: <2013-03-14 11:02:19 rayz>
 ;;
-(setq initial-frame-alist '((top . 0) (left . 285)
+(setq initial-frame-alist '((top . 0) (left . 0)
 			    (width . 135) (height . 67)
 			    (cursor-type . bar)
 			    (font . "-outline-Bitstream Vera Sans Mono-normal-r-normal-normal-12-90-96-96-c-70-iso8859-1")))
-(setq frame-title-format '("Emacs-23.2: %b" (buffer-file-name ": %f")))
+(setq frame-title-format '("GNU Emacs " emacs-version ": %b" (buffer-file-name ": %f")))
 ;; Always end a file with a newline
 (setq require-final-newline t)
+(setq line-move-visual nil)
 (setq printer-name "LPT2")
 (add-hook 'write-file-hooks 'time-stamp)
 
-(load "c:/emacs-23.2/mylisp/csrshp")
-(load "c:/emacs-23.2/mylisp/fill-mod")
-(load "c:/emacs-23.2/mylisp/msc.el")
-(load "c:/emacs-23.2/mylisp/m2c.el")
-(load "c:/emacs-23.2/mylisp/remcr.kbm")
-(load "c:/emacs-23.2/mylisp/cpr.kbm")
-(load "c:/emacs-23.2/mylisp/stp2scr.kbm")
-(load "c:/emacs-23.2/mylisp/rep2csv.kbm")
-(load "c:/emacs-23.2/mylisp/exeln")
-(load "c:/emacs-23.2/mylisp/unfill.kbm")
+(load "~/MyLisp/csrshp")
+(load "~/MyLisp/fill-mod")
+(load "~/MyLisp/msc.el")
+(load "~/MyLisp/m2c.el")
+(load "~/MyLisp/remcr.kbm")
+(load "~/MyLisp/cpr.kbm")
+(load "~/MyLisp/stp2scr.kbm")
+(load "~/MyLisp/rep2csv.kbm")
+(load "~/MyLisp/exeln")
+(load "~/MyLisp/exelnA")
+(load "~/MyLisp/unfill.kbm")
 (load "~/.abbrev_defs")
 
-(load "c:/emacs-23.2/site-lisp/patn-insert")
+(load "c:/emacs-23.4/site-lisp/patn-insert")
 
 (require 'hfyview)
 (setq hfyview-quick-print-in-files-menu t)
@@ -65,6 +67,7 @@ My .emacs:
 (global-set-key [C-tab] 'next-buffer)
 (global-set-key [C-S-tab] 'previous-buffer)
 (global-set-key "\C-cx" 'exeln)
+(global-set-key "\C-cA" 'exelnA)
 (global-set-key "\C-cc" 'shellfn)
 (global-set-key [M-q] 'fill-region-or-paragraph)
 (global-set-key "\C-cd" 'insert-date-and-time)
@@ -80,14 +83,14 @@ My .emacs:
 ;;; Modes
 
 ;; Required statements for Org Mode
-(load "C:/Emacs-23.2/RZHome/.orgmode")
+(load "~/.orgmode")
 
 
 (autoload 'visual-basic-mode "visual-basic-mode" "Visual Basic mode." t)
 (setq visual-basic-mode-indent 4)
 (autoload 'dos-mode "dos" "Edit Dos scripts." t)
 (autoload 'csv-mode "csv-mode-rz" "Major mode for editing comma-separated value files." t)
-(load "c:/emacs-23.2/nxhtml/autostart.el")
+(load "c:/emacs-23.4/nxhtml/autostart.el")
 (column-number-mode t)
 (abbrev-mode 1)
 (tool-bar-mode nil)
@@ -113,22 +116,23 @@ My .emacs:
         ("english" "[A-Za-z]" "[^A-Za-z]" "[']" nil ("-B")
          nil raw-text-dos)))
 
-(load "C:/Emacs-23.2/RZHome/.plan")
+(load "~/.plan")
 
 (server-start)
 
 (custom-set-variables
-  ;; custom-set-variables was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
  '(column-number-mode t)
+ '(doc-view-ghostscript-program "C:\\\\Program Files\\\\gs\\\\gs9.05\\\\bin\\\\gswin64c.exe")
  '(epa-file-cache-passphrase-for-symmetric-encryption t)
  '(inhibit-startup-screen nil)
  '(major-mode (quote text-mode))
  '(org-agenda-custom-commands (quote (("x" "My agenda" agenda "" ((org-agenda-ndays 7) (org-agenda-skip-function (quote my-org-skip-sunrise)))) ("d" todo "DELEGATED" nil) ("c" todo "DONE|CANCELLED" nil) ("w" todo "WAITING" nil) ("W" agenda "" ((org-agenda-ndays 21))) ("A" agenda "" ((org-agenda-skip-function (lambda nil (org-agenda-skip-entry-if (quote notregexp) "\\=.*\\[#A\\]"))) (org-agenda-ndays 1) (org-agenda-overriding-header "Today's Priority #A tasks: "))) ("u" alltodo "" ((org-agenda-skip-function (lambda nil (org-agenda-skip-entry-if (quote scheduled) (quote deadline) (quote regexp) "<[^>
 ]+>"))) (org-agenda-overriding-header "Unscheduled TODO entries: "))))))
- '(org-agenda-files (quote ("~/todo.org" "C:/JOBS/1616-07/SAT_DM.org" "C:/JOBS/DEV/SSDev/SSDFC.org")))
+ '(org-agenda-files (quote ("~/probe3.org" "~/mask.org" "c:/Mask/N637A/M637.org" "~/16-bit.org" "~/todo.org" "~/SSDFC.org" "~/f90.org" "~/PSTATS.org" "~/LRID.org")))
  '(org-agenda-ndays 7)
  '(org-agenda-show-all-dates t)
  '(org-agenda-skip-deadline-if-done t)
@@ -143,6 +147,7 @@ My .emacs:
  '(org-modules (quote (org-bbdb org-bibtex org-crypt org-docview org-gnus org-info org-jsinfo org-irc org-mew org-mhe org-rmail org-vm org-wl org-w3m)))
  '(org-mouse-features (quote (yank-link activate-stars activate-bullets activate-checkboxes)))
  '(org-refile-targets (quote ((org-agenda-files :maxlevel . 1) (nil :maxlevel . 1))))
+ '(org-refile-use-outline-path (quote file))
  '(org-remember-store-without-prompt t)
  '(org-remember-templates (quote ((116 "* TODO %?
   %u" "~/todo.org" "Tasks") (110 "* %u %?" "~/notes.org" "Notes"))))
@@ -155,10 +160,10 @@ My .emacs:
  '(require-final-newline t)
  '(truncate-lines t))
 (custom-set-faces
-  ;; custom-set-faces was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
  '(org-hide ((((background light)) (:foreground "grey88")))))
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
