@@ -152,3 +152,12 @@ Even though I disabled the new design, it is now showing up at ElispArea.
 
 -- DrewAdams 2013-04-25 14:47 UTC
 
+
+----
+
+I suppose the readability might improve a little if the default text color where changed from #333 to #000.
+
+It might be possible to fix the lack flexibility on IE7/IE8 if some "width"s where substituted with "max-width"s.
+
+-- sabof 2013-04-25 15:44 UTC
+
