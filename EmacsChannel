@@ -54,7 +54,7 @@ In the background the Freenode server maitains an *access list* for the channel.
 * Anybody with the +t flag may change the *topic* (although topic lock is almsot always off)
 * Anybody with the +o flag is a potential *operator*
 
-The most powerful flag is the *founder* flag (+F).  Currently only [[delYsid]] has it.
+The most powerful flag is the *founder* flag (+F).  Currently (2013 Apr 25) [[delYsid]], [[johnw]] and [[kensanata]] have it.
 
 If you're in trouble:
 
