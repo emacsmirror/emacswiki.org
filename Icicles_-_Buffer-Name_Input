@@ -128,14 +128,30 @@ etc. also lists the full name of the file or directory associated
 with the buffer.
 
 
-Finally, several [[user option]]s control the completion behavior.
-See [[Icicles - Customization and General Tips#icicle-buffer-match-regexp|buffer-name options]]
-and [[Icicles - Global Filters]].
+The following [[user option]]s control buffer-name completion.
+
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-buffer-candidate-key-bindings|icicle-buffer-candidate-key-bindings]]</tt>'''' 
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-buffer-extras|icicle-buffer-extras]]</tt>'''' (*)
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-buffer-ignore-space-prefix-flag|icicle-buffer-ignore-space-prefix-flag]]</tt>'''' 
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-buffer-include-cached-files-nflag|icicle-buffer-include-cached-files-nflag]]</tt>'''' 
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-buffer-include-recent-files-nflag|icicle-buffer-include-recent-files-nflag]]</tt>'''' 
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-buffer-match-regexp|icicle-buffer-match-regexp]]</tt>'''' (*)
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-buffer-no-match-regexp|icicle-buffer-no-match-regexp]]</tt>'''' (*)
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-buffer-predicate|icicle-buffer-predicate]]</tt>'''' (*)
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-buffer-prefix-arg-filtering|icicle-buffer-prefix-arg-filtering]]</tt>''''
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-buffer-require-match-flag|icicle-buffer-require-match-flag]]</tt>''''
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-buffer-skip-hook|icicle-buffer-skip-hook]]</tt>''''
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-buffer-sort|icicle-buffer-sort]]</tt>'''' (*)
+
+You can use option `icicle-buffer-configs' to define buffer
+configurations: persistent sets of the option values marked (*).
 
 
 
 '''See Also:'''
 
+* [[Icicles - Customization and General Tips#icicle-buffer-match-regexp|buffer-name options]]
+and [[Icicles - Global Filters]] for information about user options affecting buffer-name completion
 * [[Icicles - Searching Named Containers]] about content-searching
 * [[Icicles - File-Name Input#MatchFileContent|Match File Names and File Content Too]] about content-searching of files
 * [[Icicles - Ido and IswitchB]] to use '''Icicles''' with a buffer-switching
