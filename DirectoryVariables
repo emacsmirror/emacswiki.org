@@ -33,6 +33,10 @@ Here's an example of a `.dir-locals.el' file:
 Emacs (23.2.1) will not attempt to apply directory local variables
 to buffers visiting remote files (via tramp).
 
+As of Emacs 24.3, you can set the variable `enable-remote-dir-locals'
+to apply such values on remote files. If you're using an earlier version
+of Emacs, read on:
+
 We can advise `hack-dir-local-variables' to work around this, if you
 are willing to incur the associated performance cost (which can be
 relatively minimal in some situations).
