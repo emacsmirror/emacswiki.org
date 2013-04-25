@@ -168,3 +168,10 @@ ffs use stylish
 
 -- cx 2013-04-25 18:59 UTC
 
+
+----
+
+Drew, it just works for me. I click the link, my cookie changes, and when I return to the Elisp Area, the look is changed. Perhaps you force a reload of those pages that refuse to update. (Control Shift R or something like that?)
+
+-- [http://alexschroeder.ch/alex/Emacs AlexSchroeder] 2013-04-25 21:13 UTC
+
