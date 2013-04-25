@@ -99,3 +99,16 @@ Comments are gray text (#888) on white (#fff) a difference of #777 (1911).  If i
 
 -- AaronHawley 2013-04-24 19:44 UTC
 
+
+----
+
+Thank you all for your feedback and the CSS suggestions.
+
+I added [http://twitter.github.io/bootstrap/base-css.html#tables bootstrap default table style] to all tables. Examples: [Self:action=history;id=Comments_on_2013-04-24 page history], [[Reference Sheet by Aaron Hawley]].
+
+I made some changes to the footer for iPhones "@media (max-width:480px)" and hid the CC logo, made the legal blurb wider, etc.
+
+I also made the "comments" when you use ##[new]## on a page darker. Examples: [[2013-03-19]], EmacsWikiProblems.
+
+-- AlexSchroeder 2013-04-25 09:49 UTC
+
