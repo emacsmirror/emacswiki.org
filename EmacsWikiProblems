@@ -9,6 +9,17 @@ Note that this page is not about EmacsWikiMode.
 '''Add your problem descriptions below this line'''
 
 --------
+
+
+== Disabling new CSS design has no effect on ElispArea ==
+
+Title says it all.  I disabled it, but it still shows up at ElispArea.  This was not the case yesterday (2013-04-24) but it is today. -- DrewAdams
+
+
+
+
+
+
 == Still seeing double TOCs ==
 
 I removed the entry for the double-TOC in ElispArea.  But now I see one at HighlightLibrary.  I suspect that something introduced the problem but perhaps if the page then gets edited and saved anew the problem goes away? -- DrewAdams
