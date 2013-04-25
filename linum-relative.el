@@ -5,7 +5,7 @@
 ;; Author: coldnew <coldnew.tw@gmail.com>
 ;; Keywords: converience
 ;; X-URL: http://www.emacswiki.org/cgi-bin/wiki/download/linum-relative.el
-(defconst linum-relative-version "0.2")
+;; Version: 0.2
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@
 
 ;;; Changelog
 ;;
-;; 2012/09/05 
+;; 2012/09/05
 ;; Added linum-relative-toggle command.
 ;;
 ;; 2012/09/03 merge patch from Raffaele Ricciardi
@@ -62,6 +62,9 @@
 (defvar linum-relative-plusp-offset 0
   "Offset to use for positive relative line numbers.")
 
+(defvar linum-relative-format "%3s"
+  "Format for each line. Good for adding spaces/paddings like so: \" %3s \"")
+
 ;;;; Advices
 (defadvice linum-update (before relative-linum-update activate)
   "This advice get the last position of linum."
@@ -78,7 +81,7 @@
 			     linum-relative-current-symbol
 			   (number-to-string diff)))
 	 (face (if current-p 'linum-relative-current-face 'linum)))
-    (propertize (format "%3s" current-symbol) 'face face)))
+    (propertize (format linum-relative-format current-symbol) 'face face)))
 
 (defun linum-relative-toggle ()
   "Toggle between linum-relative and linum."
@@ -91,4 +94,3 @@
 
 (provide 'linum-relative)
 ;;; linum-relative.el ends here.
-
