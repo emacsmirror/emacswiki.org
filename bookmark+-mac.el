@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Created: Sun Aug 15 11:12:30 2010 (-0700)
-;; Last-Updated: Sun Apr 14 17:19:50 2013 (-0700)
+;; Last-Updated: Fri Apr 26 12:28:30 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 119
+;;     Update #: 125
 ;; URL: http://www.emacswiki.org/bookmark+-mac.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -101,7 +101,7 @@
 ;;    `bmkp-define-cycle-command',
 ;;    `bmkp-define-next+prev-cycle-commands',
 ;;    `bmkp-define-sort-command', `bmkp-define-file-sort-predicate',
-;;    `bmkp-menu-bar-make-toggle',
+;;    `bmkp-menu-bar-make-toggle', `bmkp-with-bookmark-dir',
 ;;    `bmkp-with-output-to-plain-temp-buffer'.
 ;;
 ;;  Non-interactive functions defined here:
@@ -392,6 +392,17 @@ setting the variable and displaying a status message (not MESSAGE)."
   (if (< emacs-major-version 21)
       `(menu-bar-make-toggle ,name ,variable ,doc ,message ,@body)
     `(menu-bar-make-toggle ,name ,variable ,doc ,message ,help ,@body)))
+
+;;; Not used currently.  Provided so you can use it in your own code, if appropriate.
+;;;###autoload (autoload 'bmkp-with-bookmark-dir "bookmark+")
+(defmacro bmkp-with-bookmark-dir (bookmark &rest body)
+  "Evaluate BODY forms with BOOKMARK location as `default-directory'.
+If BOOKMARK has no location then use nil as `default-directory'."
+  `(let* ((loc                (bookmark-location ,bookmark))
+          (default-directory  (and (stringp loc)  (not (member loc (list bmkp-non-file-filename
+                                                                    "-- Unknown location --")))
+                               (if (file-directory-p loc) loc (file-name-directory loc)))))
+    ,@body))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
