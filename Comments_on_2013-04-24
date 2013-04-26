@@ -278,3 +278,20 @@ div.toc li {
 
 -- AlexSchroeder 2013-04-26 12:13 UTC
 
+
+----
+
+Thanks for looking into the ElispArea problem, Alex. But I don't understand what to do --- I still get the new style.  I went to this URL to turn it off:
+http://www.emacswiki.org/emacs/2013-04-24?bootstrap=0
+
+I deleted temporary files and closed the browser completely.  When I start it again and go to the ElispArea file listing, I still get the new style.  This is the URL:
+http://www.emacswiki.org/emacs/?action=elisp-area;context=0
+
+What am I missing?  What do I need to do to turn off the new style completely?
+
+Again, it's not just a problem of appearance; the new style slows down my system and practically hangs the browser, so I really want to turn it off.
+
+Thx.
+
+-- DrewAdams 2013-04-26 14:26 UTC
+
