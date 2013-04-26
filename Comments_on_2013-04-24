@@ -295,3 +295,15 @@ Thx.
 
 -- DrewAdams 2013-04-26 14:26 UTC
 
+
+----
+
+Another case where the new style keeps coming back:
+
+I clicked the title of the page for ##zoom-frm.el## (which rendered OK, i.e., in the old style), to find pages that link to it.  I clicked the search hit for ##EmacsWiki: Set Fonts##, and it opened this page using the new style:
+http://emacswiki.org/emacs/SetFonts.
+
+There needs to be a simple way to turn this new style off completely.
+
+-- DrewAdams 2013-04-26 14:34 UTC
+
