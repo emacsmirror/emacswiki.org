@@ -1,3 +1,4 @@
+[[zh:interaction-log]]
 ;;; interaction-log.el --- exhaustive log of interactions with Emacs
 
 ;; Copyright (C) 2012-2013 Michael Heerdegen
