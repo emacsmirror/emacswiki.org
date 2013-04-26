@@ -254,5 +254,7 @@ I'm now producing "no bootstrap" versions of the files and added Apache rewrite 
 * http://www.emacswiki.org/emacs/elisp-area-no-bootstrap.html, and
 * http://www.emacswiki.org/emacs/elisp-area-compact-no-bootstrap.html
 
+You may have to reload after changing your cookie because the caching for static files only depends on the last modified date, not on the value of your cookie.
+
 -- AlexSchroeder 2013-04-26 08:23 UTC
 
