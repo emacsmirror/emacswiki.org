@@ -265,3 +265,16 @@ I also applied all the changes Evgkeni sent me. Thanks!
 
 -- AlexSchroeder 2013-04-26 08:26 UTC
 
+
+----
+
+Looking at EmacsWikiProblems I also felt that the TOC is very widely spaced so I changed it to:
+{{{
+div.toc li {
+    font-size: 12px;
+    line-height: 20px;
+}
+}}}
+
+-- AlexSchroeder 2013-04-26 12:13 UTC
+
