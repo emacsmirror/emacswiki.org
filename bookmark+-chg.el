@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Apr 19 07:29:18 2013 (-0700)
+;; Last-Updated: Fri Apr 26 12:25:42 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 15287
+;;     Update #: 15291
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -1434,6 +1434,8 @@
 ;;       that depends on macros needs to be byte-compiled anew after loading the updated macros.
 ;; **************************************************************************************************
 ;;
+;; 2013/04/26 dadams
+;;     Added: bmkp-with-bookmark-dir.  (Not used currently.  For user code.)
 ;; 2012/10/09 dadams
 ;;     Made all autoload cookies explicitly load bookmark+.el(c).  Should help ELPA (e.g. MELPA).
 ;; 2012/06/26 dadams
