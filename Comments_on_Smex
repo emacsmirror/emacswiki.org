@@ -1,0 +1,27 @@
+= Space on Hyphen Discussion =
+Does anyone know how to modify smex so that typing a space will insert a hyphen '-' like in normal M-x?
+: Space already has the function of paging through the list of possible completions. But what's even better than typing a space is not typing anything; I see that in smex you can just type the function name as one word without hyphens, and it still works, including auto-completion. BTW, I think smex is very cool! -- ThomasKappler
+[new:IstaZahn:2010-06-17 16:16 UTC]
+: I disagree that not typing anything is better than typing a space. Commands often have a word-like structure, and the separation is important. So I'm adding my voice the the request for a way to restore the old functionality and have the space key insert a hyphen.
+[new]
+: This issue is not specific to Smex and a fix would benefit all Ido users. It will be addressed by the next Smex release.
+[new:IstaZahn:2010-06-19 03:14 UTC]
+: I did not mean to imply that the issue is specific to smex. Indeed, the same issue occurs when following the instructions to add [http://www.emacswiki.org/emacs/InteractivelyDoThings#toc5/ M-x support to ido]. Thanks for taking this on, it will really make it easier for me to use smex!
+[new:Anonymous:2011-03-10 04:41 UTC]
+: I, too, want this effect, especially since omitting the hyphen seems to make the completion function do *alot* more work; i.e. when the next character in the command name is a hyphen and you omit the hyphen, there's a noticable lag as you type the rest of the characters in the name (try typing M-x backward-delete-char-untabify). Here's an easy fix, though if there is only one match it will be completed instead of inserting a hyphen, which may well be a desirable thing:
+{{{
+      (defadvice smex (around space-inserts-hyphen activate compile)
+        (let ((ido-cannot-complete-command 
+               `(lambda ()
+                  (interactive)
+                  (if (string= " " (this-command-keys))
+                      (insert ?-)
+                    (funcall ,ido-cannot-complete-command)))))
+          ad-do-it))
+}}}
+: To not have it complete if there's only one match, fset ##ido-complete-space## to that lambda form above, then fset it back after ##ad-do-it## (##flet## doesn't work for interactive functions).
+[new]
+/Wicked cool./ Is it inspired by this [http://www.vimeo.com/1013263 video]? :)
+
+[new:Ian Yang:2012-12-07 07:20 UTC]
+I wrote a function that will also test whether hyphen can be inserted when press space. See [https://github.com/doitian/ido-complete-space-or-hyphen ido-complete-space-or-hyphen].
