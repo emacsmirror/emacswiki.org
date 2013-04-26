@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Thu Apr 25 13:31:19 2013 (-0700)
+;; Last-Updated: Fri Apr 26 09:23:54 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 27766
+;;     Update #: 27782
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -7241,6 +7241,15 @@
 ;;  like `M-*' by entering a recursive minibuffer, which removes any
 ;;  saved-candidates highlighting.  Using `TAB' or `S-TAB' restores
 ;;  the highlighting.
+;;
+;;  What if you have defined the saved set and you later decide to
+;;  narrow it by excluding some of its members?  First, if the saved
+;;  candidates are not current then use `C-M-<' to make them so.  Then
+;;  use progressive completion to narrow the current candidates.  Then
+;;  use `C-M->' to define (only) them as the saved candidates.  For
+;;  example, if you hit `C-M->' after narrowing to the files matching
+;;  prefix `ici', you can narrow that saved set to only those files
+;;  that also match `m', by using `S-SPC m C-M->'.
 ;;
 ;;(@* "Saving or Retrieving Additional Candidates")
 ;;  ** Saving or Retrieving Additional Candidates **
