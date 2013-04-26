@@ -234,3 +234,10 @@ It's possible to change the font-sizes to percentages or ems, instead of pixels.
 
 -- sabof 2013-04-26 05:26 UTC
 
+
+----
+
+Actually, Google Chrome does support both the things you mention (text zoom, line-width following browser width) --- I was wrong wrt that browser.  I still prefer the old design for readability, but I'm fine with choosing that for myself.
+
+-- DrewAdams 2013-04-26 05:47 UTC
+
