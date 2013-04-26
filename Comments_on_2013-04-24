@@ -212,3 +212,14 @@ Thanks for your devotion!
 
 -- XueFuqiao 2013-04-26 03:28 UTC
 
+
+----
+
+: ''I think the criticism regrading the page width is valid. The best width readability-wise would probably be around 600. 900 is not as good, but it doesn’t create a situation where the margins are bigger than the body on a wide-screen.'' -- Evgeni
+
+Why make the line widths fixed by design instead of changeable by users?  Let users resize their browser windows as they like, getting the line widths and page shapes they want.
+
+There's little worse than text that users cannot control using browser settings.  Hard-coded line widths and font sizes are no-no's for web-page design.  They might make for one person's idea of pretty, but they work against usability and user control.
+
+-- DrewAdams 2013-04-26 03:47 UTC
+
