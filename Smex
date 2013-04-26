@@ -60,6 +60,7 @@ I don't like to have smex update every time I run (auto-update is usually good e
         (smex-update)))
     (add-hook 'after-load-functions 'smex-update-after-load)
 
+See also [https://github.com/nonsequitur/smex/pull/4 Update smex after function calls that are likely to define new commands]
 === Using acronyms ===
 You can see mnemonical commands (within completion) before the others with this code snippet:
 {{{
