@@ -97,6 +97,13 @@ like `##M-*##' by entering a recursive [[minibuffer]], which removes any
 saved-candidates highlighting.  Using `TAB' or `S-TAB' restores
 the highlighting.
 
+What if you have defined the saved set and you later decide to narrow it
+by excluding some of its members?  First, if the saved
+candidates are not current then use `##C-M-<##' to make them so.   Then use [[progressive completion]]
+to narrow the current candidates.  Then use `##C-M->##' to define (only) them as the saved candidates.  For example, if you hit
+`##C-M->##' after narrowing to the files matching prefix `ici', you
+can narrow that saved set to only those files that also match `m',
+by using `##S-SPC m C-M->##'.
 
 
 
