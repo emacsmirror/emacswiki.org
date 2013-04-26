@@ -202,6 +202,12 @@ and choose all the defaults.
 
 (The above is a brief version of a [https://bugs.launchpad.net/ubuntu/+source/console-tools/+bug/140786/comments/7 bug comment])
 
+On Ubuntu Raring Ringtail (13.04) (and possibly on other versions), it is posible to simply edit the file /etc/default/keyboard, modify the XKBOPTIONS setting (for example XKBOPTIONS="ctrl:nocaps") and do:
+
+ $ sudo dpkg-reconfigure keyboard-configuration
+
+Which will apply the change to both virtual consoles and X.org.
+
 === On Gentoo Linux ===
 
 For i386 systems, to make Caps Lock another control: In /etc/conf.d/keymaps set
