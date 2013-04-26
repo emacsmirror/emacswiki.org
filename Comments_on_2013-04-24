@@ -228,7 +228,7 @@ There's little worse than text that users cannot control using browser settings.
 
 Currently the only the maximum width is hard coded to 1170px. If one reduces the size of the window, the line width becomes smaller. Bootstrap uses "media-queries" to achieve this behavior, which evidently neither of your browsers supports. It should be possible however to broaden backward compatibility.
 
-Hardcoding the maximum width provides easier readability if someone tries to use the page with a maximized window. 
+Hardcoding the maximum width provides better readability if someone tries to use the page with a maximized window. 
 
 It's possible to change the font-sizes to percentages or ems, instead of pixels. There shouldn't be any serious downsides in doing so.
 
