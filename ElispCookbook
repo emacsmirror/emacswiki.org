@@ -517,6 +517,17 @@ This loads EmacsLisp files listed one per line in a text file.
         (when (file-exists-p filename)
           (load-file filename)))))
 
+=== Extracting submatches from a regex match ===
+
+Like in most other regex implementations, if you use grouping parentheses in a regular expression, you can extract the text that matched each parenthesized group.  Groups are numbered from the opening parenthesis, left to right.  These are also called back references, or backrefs, or matching groups.
+
+    (save-match-data ; is usually a good idea
+      (and (string-match "\\`\\([^@]+\\)@\\([^@]+\\)\\'" email)
+           (setq user (match-string 1 email)
+                 domain (match-string 2 email) ) ))
+
+Usually you would use ##*let*## instead of ##*setq*## but this is just a simple self-contained example.  See also DynamicBindingVsLexicalBinding.
+
 === Mapping with a regex ===
 
 This invokes a function at every match of a [[regexp]]:
