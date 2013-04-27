@@ -99,6 +99,15 @@ Library <tt>[[imenu+.el]]</tt> (Imenu+) extends standard library ##imenu.el##.
 [:ImenuScreenshot]
 :: [[image:DrewEmacsImenuImage]]
 
+== Imenu anywhere with IDO and Helm ==
+
+[https://github.com/vitoshka/imenu-anywhere imenu-anywhere] package provides `imenu-anywhere` command that pops an IDO interface with all the imenu tags across all buffers with the same mode as the current one. This makes it similar to etag selection, but only for the open buffers. This is often more convenient as you don't have to explicitly build the etags table.
+
+The package is also available from [http://melpa.milkbox.net/ melpa] repository. To activate, just bind `imenu-anywhere` to a convenient key:
+
+    (global-set-key (kbd "C-.") 'imenu-anywhere)
+
+There is also `helm-imenu-anywhere` which is like `menu-anywhere` but uses [(https://github.com/emacs-helm helm]  interface instead of IDO. 
 
 
 == Defining an Imenu Menu for a Mode ==
