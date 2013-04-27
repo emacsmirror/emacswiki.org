@@ -396,3 +396,14 @@ Trying once more...
 
 -- DrewAdams 2013-04-27 19:23 UTC
 
+
+----
+
+Apparently, it didn't like the captcha text I typed, and when I retyped it it put me back to anonymous. 
+
+Anyway, closing and reopening the browser brings back the recaptcha and empty user name.  So apparently that is now broken also.  This is new since I tried those two URLs today.  I also found an old emacswiki cookie from 2011, and deleted that.  That had no effect either.
+
+Sorry, but the wiki is currently pretty much unusable for me.
+
+-- DrewAdams 2013-04-27 19:27 UTC
+
