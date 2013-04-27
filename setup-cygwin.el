@@ -7,9 +7,9 @@
 ;; Copyright (C) 2004-2013, Drew Adams, all rights reserved.
 ;; Created: Thu Jan 15 11:13:38 2004
 ;; Version: 21.0
-;; Last-Updated: Fri Mar  8 08:48:58 2013 (-0800)
+;; Last-Updated: Sat Apr 27 12:06:01 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 129
+;;     Update #: 130
 ;; URL: http://www.emacswiki.org/setup-cygwin.el
 ;; Doc URL: http://www.emacswiki.org/NTEmacsWithCygwin
 ;; Keywords: os, unix, cygwin
@@ -30,6 +30,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/04/27 dadams
+;;     Put Cygwin path stuff before the stuff from getenv.
 ;; 2013/03/08 dadams
 ;;     Added: defgroup setup-cygwin, option cygwin-root-directory.
 ;;     Use cygwin-root-directory instead of hardcoding root dir.  Thx to Gabor Vida.
@@ -120,7 +122,8 @@ loaded as such.)"
 (add-to-list 'exec-path (expand-file-name "bin" cygwin-root-directory))
 (setq shell-file-name  (expand-file-name "bin/bash.exe" cygwin-root-directory)) ; Subprocesses invoked by shell.
 (setenv "SHELL" shell-file-name)
-(setenv "PATH" (concat (getenv "PATH") ";" (expand-file-name "bin" cygwin-root-directory)))
+;; (setenv "PATH" (concat (getenv "PATH") ";" (expand-file-name "bin" cygwin-root-directory)))
+(setenv "PATH" (concat (expand-file-name "bin" cygwin-root-directory) ";" (getenv "PATH")))
 (setq explicit-shell-file-name  shell-file-name) ; Interactive shell
 (setq ediff-shell               shell-file-name)    ; Ediff shell
 (setq explicit-shell-args       '("--login" "-i"))
