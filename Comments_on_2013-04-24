@@ -339,3 +339,10 @@ I really cannot use the new style listing of the ElispArea at all -- far too slo
 
 -- DrewAdams 2013-04-27 14:38 UTC
 
+
+----
+
+I'm at a loss to explain what you're seeing, Drew. At one point I thought perhaps you had the correct cookie set for emacswiki.org and the wrong cookie set for www.emacswiki.org (since cookies are domain-specific), but it's hard to tell. I'm still hoping to resolve this issue, but I'm out of ideas right now. I'm hoping for some insight in the next few days. :(
+
+-- AlexSchroeder 2013-04-27 15:06 UTC
+
