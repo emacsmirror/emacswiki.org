@@ -33,6 +33,8 @@ http://groups.google.com/groups?hl=en&lr=&ie=UTF-8&th=52b56e235ffba787
 [new]
 
 Look also at `M-x next-multiframe-window' command and possibly bound it to a handy keybinding! 
+also exist: `M-x previous-multiframe-window', so it will be better than default: other-window (C-x 5 o)
+
 
 ----
 CategoryWindows
