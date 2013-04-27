@@ -354,8 +354,8 @@ Here's what I did to test my cookie hypothesis. First, set up a broken environme
 
 In order to fix this, you need to switch the theme "twice":
 
-# Visit http://emacswiki.org/emacs/?action=edit;id=Comments_on_2013-04-24?bootstrap=0 for emacswiki.org
-# Visit http://www.emacswiki.org/emacs/?action=edit;id=Comments_on_2013-04-24?bootstrap=0 for www.emacswiki.org
+# Visit http://emacswiki.org/emacs/Comments_on_2013-04-24?bootstrap=0 for emacswiki.org
+# Visit http://www.emacswiki.org/emacs/Comments_on_2013-04-24?bootstrap=0 for www.emacswiki.org
 
 I'm not quite sure why Google is sending you to emacswiki.org instead of www.emacswiki.org – I'll take a look at the search engine definition.
 
