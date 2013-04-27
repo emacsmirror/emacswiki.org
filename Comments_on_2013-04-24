@@ -344,8 +344,22 @@ I really cannot use the new style listing of the ElispArea at all -- far too slo
 
 I'm at a loss to explain what you're seeing, Drew. At one point I thought perhaps you had the correct cookie set for emacswiki.org and the wrong cookie set for www.emacswiki.org (since cookies are domain-specific), but it's hard to tell. I'm still hoping to resolve this issue, but I'm out of ideas right now. I'm hoping for some insight in the next few days. :(
 
--- AlexSchroeder 2013-04-27 15:06 UTC
+Here's what I did to test my cookie hypothesis. First, set up a broken environment:
 
+* Visit http://emacswiki.org/emacs/zoom-frm.el?bootstrap=1 which enables the new style for emacswiki.org
+* Visit http://www.emacswiki.org/emacs/zoom-frm.el?bootstrap=0 which disables the new style for www.emacswiki.org
+* Click on the header, I am shown a list of links by Google
+* Click on the first one, for SetFont
+* I'm now looking at http://emacswiki.org/emacs/SetFonts which displays in the old style, which is expected
+
+In order to fix this, you need to switch the theme "twice":
+
+# Visit http://emacswiki.org/emacs/?action=edit;id=Comments_on_2013-04-24?bootstrap=0 for emacswiki.org
+# Visit http://www.emacswiki.org/emacs/?action=edit;id=Comments_on_2013-04-24?bootstrap=0 for www.emacswiki.org
+
+I'm not quite sure why Google is sending you to emacswiki.org instead of www.emacswiki.org – I'll take a look at the search engine definition.
+
+-- AlexSchroeder 2013-04-27 15:06 UTC
 
 ----
 
