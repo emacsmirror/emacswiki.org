@@ -321,11 +321,3 @@ This is awesome, Very much professional, I am daily user of EmacsWiki.  Congratu
 gnumonk
 
 -- [http://blog.gnumonk.com gnumonk] 2013-04-27 07:36 UTC
-
-
-----
-
-I've enabled cookies for the site, and when I visit a page with ?bootstrap=0 it uses the old theme, which is good, but as soon as I visit any other page without that query argument, the new theme comes back. When I view my cookies for the site, it hasn't set any. I can only assume that you're relying on javascript to set the cookie? I would definitely suggest that you deal with that from the server side.
-
--- Anonymous 2013-04-27 07:49 UTC
-
