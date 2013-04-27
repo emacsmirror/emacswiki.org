@@ -321,3 +321,21 @@ This is awesome, Very much professional, I am daily user of EmacsWiki.  Congratu
 gnumonk
 
 -- [http://blog.gnumonk.com gnumonk] 2013-04-27 07:36 UTC
+
+----
+
+: Alex said: ''I'm now producing "no bootstrap" versions of the files and added Apache rewrite rules that check your cookie. Thus, you should see the following two files:''
+
+** http://www.emacswiki.org/emacs/elisp-area-no-bootstrap.html, and
+** http://www.emacswiki.org/emacs/elisp-area-compact-no-bootstrap.html
+
+: ''You may have to reload after changing your cookie because the caching for static files only depends on the last modified date, not on the value of your cookie.''
+
+Doesn't help, AFAICT. When I follow those links directly I get to an old-style listing, but when I delete the cache and reopen the browser things are back to the new style.
+
+And even in the same session after I click one of those links directly (which works), when I click the link at the ElispArea Download page for alphabetical listing, for example, it goes right back to the new style.
+
+I really cannot use the new style listing of the ElispArea at all -- far too slow (essentially hangs the browser).
+
+-- DrewAdams 2013-04-27 14:38 UTC
+
