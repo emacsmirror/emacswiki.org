@@ -107,7 +107,7 @@ The package is also available from [http://melpa.milkbox.net/ melpa] repository.
 
     (global-set-key (kbd "C-.") 'imenu-anywhere)
 
-There is also `helm-imenu-anywhere` which is like `menu-anywhere` but uses [(https://github.com/emacs-helm helm]  interface instead of IDO. 
+There is also `helm-imenu-anywhere` which is like `menu-anywhere` but uses [https://github.com/emacs-helm helm]  interface instead of IDO. 
 
 
 == Defining an Imenu Menu for a Mode ==
