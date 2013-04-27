@@ -346,3 +346,16 @@ I'm at a loss to explain what you're seeing, Drew. At one point I thought perhap
 
 -- AlexSchroeder 2013-04-27 15:06 UTC
 
+
+----
+
+I applied some more changes Evgkeni sent me. His Change Log:
+
+* Better Mobile/IE compatibility
+* Formatting for the "new comment" box
+* Changed some fonts from pixels to ems, allowing text-only zooming in ie/chrome
+
+Enjoy!
+
+-- AlexSchroeder 2013-04-27 15:13 UTC
+
