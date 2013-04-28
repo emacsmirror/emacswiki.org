@@ -51,6 +51,9 @@ Note the absence of "alternate stylesheet" attributes.  I am wondering whether s
 [new]
 Given the selection we have on the [[CSS]] page, which are the themes you'd like to hard-code as alternatives? -- Alex
 
+[new]
+Currently none of the CSS "use it" links seem to work. Tested with Iceweasel 10 on debian testing and Firefox 20.0 on Ubuntu 12.10. -- [[LeonidasTsampros]]
+
 == Includes == 
 
 One of the things about media wiki that is decent, is the ability to set up a different wiki page as a sub-page for includes.  This is especially helpful for marking certain pages as out-of-date, requiring refactoring, candidates for deletion, or wiki projects.  I don't think it has to be very complicated to start, just some simple way to include the text from one wikipage in another, and a way to list any pages that have that include.  (This is particularly handy for getting a list of pages that have out-of-date content).  Things like a separate namespace for templates, template variables, etc can come later. -- JonathanArkell
