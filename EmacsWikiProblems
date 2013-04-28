@@ -15,7 +15,8 @@ Note that this page is not about EmacsWikiMode.
 
 Title says it all.  I disabled it, but it still shows up at ElispArea.  This was not the case yesterday (2013-04-24) but it is today. -- DrewAdams
 
-
+[new]
+Currently none of the CSS "use it" links seem to work. Tested with Iceweasel 10 on debian testing and Firefox 20.0 on Ubuntu 12.10. -- [[LeonidasTsampros]]
 
 
 
