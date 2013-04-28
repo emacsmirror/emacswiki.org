@@ -347,6 +347,7 @@ I have too many buffers to reasonably put them all into tabbar at the same time,
 and I wanted to group by project instead of by major-mode, so I use this:
 
 THIS CODE WORKS FOR 24.3
+
     (require 'tabbar)
     (tabbar-mode t)
     (setq tabbar-cycle-scope 'tabs)
@@ -369,6 +370,7 @@ THIS CODE WORKS FOR 24.3
         )
 
 THIS CODE DOES NOT WORK FOR 24.3, AND IT INCORRECTLY POSTS THE SAME CODE TWICE.
+
     (setq tabbar-buffer-groups-function
         (lambda (buffer)
       "Put all files in the same directory into the same tab bar"
