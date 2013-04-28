@@ -347,55 +347,54 @@ I have too many buffers to reasonably put them all into tabbar at the same time,
 and I wanted to group by project instead of by major-mode, so I use this:
 
 THIS CODE WORKS FOR 24.3
-
-(require 'tabbar)
-(tabbar-mode t)
-(setq tabbar-cycle-scope 'tabs)
-(setq tabbar-buffer-groups-function
-      (lambda ()
-          (let ((dir (expand-file-name default-directory)))
-        (cond ((member (buffer-name) '("*Completions*"
-                       "*scratch*"
-                       "*Messages*"
-                       "*Ediff Registry*"))
-           (list "#misc"))
-          (
-           (string-match-p "/.emacs.d/" dir)
-           '".emacs.d"
-           )
-          (t (list dir))
+    (require 'tabbar)
+    (tabbar-mode t)
+    (setq tabbar-cycle-scope 'tabs)
+    (setq tabbar-buffer-groups-function
+          (lambda ()
+              (let ((dir (expand-file-name default-directory)))
+            (cond ((member (buffer-name) '("*Completions*"
+                           "*scratch*"
+                           "*Messages*"
+                           "*Ediff Registry*"))
+               (list "#misc"))
+              (
+               (string-match-p "/.emacs.d/" dir)
+               '".emacs.d"
+               )
+              (t (list dir))
+              )
+            )
           )
         )
-      )
-    )
 
 THIS CODE DOES NOT WORK FOR 24.3, AND IT INCORRECTLY POSTS THE SAME CODE TWICE.
-(setq tabbar-buffer-groups-function
-    (lambda (buffer)
-  "Put all files in the same directory into the same tab bar"
-  (with-current-buffer (get-buffer buffer)
-    (let ((dir (expand-file-name default-directory)))
-      (cond ((member (buffer-name) '("*Completions*"
-                                     "*scratch*"
-                                     "*Messages*"
-                                     "*Ediff Registry*"))
-             (list "#misc"))
-            ((string-match-p "/.emacs.d/" dir)
-             (list ".emacs.d"))
-            (t (list dir)))))))
-(setq tabbar-buffer-groups-function
-      (lambda (buffer)
-        "Put all files in the same directory into the same tab bar"
-        (with-current-buffer (get-buffer buffer)
-          (let ((dir (expand-file-name default-directory)))
-            (cond ((member (buffer-name) '("*Completions*"
-                                           "*scratch*"
-                                           "*Messages*"
-                                           "*Ediff Registry*"))
-                   (list "#misc"))
-                  ((string-match-p "/.emacs.d/" dir)
-                   (list ".emacs.d"))
-                  (t (list dir)))))))
+    (setq tabbar-buffer-groups-function
+        (lambda (buffer)
+      "Put all files in the same directory into the same tab bar"
+      (with-current-buffer (get-buffer buffer)
+        (let ((dir (expand-file-name default-directory)))
+          (cond ((member (buffer-name) '("*Completions*"
+                                         "*scratch*"
+                                         "*Messages*"
+                                         "*Ediff Registry*"))
+                 (list "#misc"))
+                ((string-match-p "/.emacs.d/" dir)
+                 (list ".emacs.d"))
+                (t (list dir)))))))
+    (setq tabbar-buffer-groups-function
+          (lambda (buffer)
+            "Put all files in the same directory into the same tab bar"
+            (with-current-buffer (get-buffer buffer)
+              (let ((dir (expand-file-name default-directory)))
+                (cond ((member (buffer-name) '("*Completions*"
+                                               "*scratch*"
+                                               "*Messages*"
+                                               "*Ediff Registry*"))
+                       (list "#misc"))
+                      ((string-match-p "/.emacs.d/" dir)
+                       (list ".emacs.d"))
+                      (t (list dir)))))))
 
 
 Certain buffers get put into the #misc group; everything under
