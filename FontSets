@@ -57,6 +57,12 @@ Here is an example of using fontconfig's font name for a font, specifying the "L
                             (decode-char 'ucs #x097f))
                       "Lohit Devanagari")
 
+    ;; "Devanagari Extended"  U+A8E0 - U+A8FF
+    (set-fontset-font "fontset-default"
+                      (cons (decode-char 'ucs #xa8e0)
+                            (decode-char 'ucs #xa8ff))
+                      "Lohit Devanagari")
+
 
 The "Lohit Devanagari" font displays nicely in emacs. (And this also fixes an annoying display bug in emacs 23 and 24 for the default font selected for devanagari in Debian (!FreeSans), for example wildly displaced diacritic u.)
 
