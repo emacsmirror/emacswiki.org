@@ -1,3 +1,11 @@
-Node-JS is an asynchronous TCP programming framework using JavaScript.
+[[http://nodejs.org/|Node-JS]] is an asynchronous TCP programming framework using JavaScript.
 
 There is a [[https://github.com/abicky/nodejs-mode.el|node.js mode]]. As of 2013-04-15 it has not been updated for Node.js 0.8 or later.
+[new:OtherMichael:2013-04-28 19:59 UTC]Question: But does it still work with newer versions of node.js ?
+
+== some links ==
+* There are some notes on integrating node.js with Emacs in [[http://blog.deadpansincerity.com/2011/05/setting-up-emacs-as-a-javascript-editing-environment-for-fun-and-profit/|Setting up Emacs as a Javascript editing environment for Fun or Profit]]
+* Stackoverflow: [[http://stackoverflow.com/questions/8909836/how-to-run-node-js-interactively-in-emacs-on-windows|How to run node.js interactively in Emacs on Windows]]
+* Stackoverflow: [[http://stackoverflow.com/questions/13862471/using-node-js-with-js-comint-in-emacs|Using Node.js with JS-comint in Emacs]]
+* [[https://coderwall.com/p/qvqhkg|Live-code Node.js apps]] - mostly about configuring js-comint
+* http://grokbase.com/t/gg/nodejs/127cs8cewg/emacs - some discussion of what tools used in emacs with node.js
