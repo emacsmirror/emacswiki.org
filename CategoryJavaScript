@@ -1,15 +1,17 @@
 Click on the title to list all pages in the javascript category.
 
-Emacs has 2 major Javascript modes:
+Emacs has some major Javascript modes:
 
 * JavaScriptMode -- js-mode is a bare-bones mode built upon cc-mode.  It used to be called espresso-mode at one time, but got folded into the Emacs core
 * [[Js2Mode]] -- js2-mode is a full blown IDE style mode, with its own parser.
 * ECMAScriptMode -- another javascript mode, but it's last update was 2005.  You're likely better off using js-mode
+* [[https://github.com/thomblake/js3-mode|js3-mode]] is "[a] chimeric fork of js-mode (included with emacs 24) and js2-mode that supports comma-first style and other quirks."
+
 
 There are also a number of ways to integrate with javascript subprocesses:
 
 * SwankJs, a full-blown SlimeMode backend for [[NodeJs|node.js]] and can connect to a running web browser process through the socket.io package.  https://github.com/swank-js/swank-js
-* [http://js-comint-el.sourceforge.net/ js-comint.el] is a lightweight comint integration package, that also seems to integrate with org-mode nicely. 
+* [http://js-comint-el.sourceforge.net/ js-comint.el] is a lightweight [[ComintModes|comint]] integration package, that also seems to integrate with org-mode nicely. 
 * JavascriptShell A REPL for Windows Scripting Host, and a [[Lisp:jsshell-bundle.el]]. It does simple completion on JS objects.
 ** JavascriptShellServer
 
@@ -28,14 +30,11 @@ Finally, there are some specific modes available as well:
 * MozRepl -- A great way to hook into the lower level javascript engine of Mozilla.
 * [http://flusspferd.github.com/ Flusspferd] provides a [https://github.com/ruediger/flusspferd/blob/master/misc/emacs/flusspferd.el mode for Emacs].
 * [[JSON]] -- editing JSON data
+* TypeScript - minor mode to add syntax highlighting for MS's Typescript
 
 WishList:
 * NPM and Ender package manager front-ends
 * Lookups to the [http://www.javascripture.com/ Javascripture]
-
-Waiting for a short summary:
-
-* TypeScript
 
 ----
 CategoryHypermedia
