@@ -1,6 +1,12 @@
 Click the heading to list pages in this category.
 This category is about editing, not modes.  See CategoryModes, instead.
 
+* Moving text
+** MoveLine -- Moving the current line
+** MoveRegion -- Moving a region
+** MoveLineRegion -- Indifferently move the current line or region
+** [https://github.com/targzeta/move-lines move-lines] -- Indifferently move the current line or the lines surrounding region (like Eclipse)
+
 * [[kill|Killing]], [[yank|yanking]], copying and deleting:
 ** CopyFromAbove -- Copy line or characters from previous line
 ** CopyWithoutSelection -- simply copy current [[line]], current word and current paragraph to the [[kill ring]] without selecting each line, word or paragraph
