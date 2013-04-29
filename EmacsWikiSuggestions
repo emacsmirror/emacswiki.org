@@ -14,16 +14,6 @@ Discussion about the TextFormattingRules used in contributing to pages  is at Te
 
 '''Add your suggestions below this line.'''
 
-== Diff with Summary ==
-
-[new]
-Random feature request of the day: when viewing the diff of a page (like [http://www.emacswiki.org/emacs/?action=browse;diff=1;id=ShowParenMode here]) it would be quite cool to see the message that the commit had, too.
-
--- shjk 2013-03-09 16:24 UTC
-
-[new]
-I like the idea and implemented it. Let me know if there's anything amiss. -- Alex
-
 == Provide alternate stylesheets ==
 
 I would like to choose the stylesheet for EmacsWiki easily.  If Emacswiki could provide alternate stylesheets---see  [http://orgmode.org/worg/ Worg]---then I will be able to choose the theme using View->Page Style->etc menu in Firefox. -- [[115.241.16.57]]
@@ -50,9 +40,6 @@ Note the absence of "alternate stylesheet" attributes.  I am wondering whether s
 
 [new]
 Given the selection we have on the [[CSS]] page, which are the themes you'd like to hard-code as alternatives? -- Alex
-
-[new]
-Currently none of the CSS "use it" links seem to work. Tested with Iceweasel 10 on debian testing and Firefox 20.0 on Ubuntu 12.10. -- [[LeonidasTsampros]]
 
 == Includes == 
 
@@ -144,21 +131,6 @@ There are many more parameters to tune this.
 Finally, if a few people were interested, we could add an _email subscription_ extension to the wiki. If you'd like to see this, edit this page and leave your name or send me an email <mailto:alex@emacswiki.org>.
 
 -- AlexSchroeder
-
-== License ==
-Maybe the work in EmacsWiki can be licensed under GNU GPLv3. -- XueFuqiao
-
-[new]
-There was a lot of discussion regarding the Emacs Wiki license [[2003-11-16|back in 2003]]. I'd rather not do it again. :) -- Alex
-----
-
-Questions or possibly a FAQ
--------------------------
-* Why is it called XWEM? Why not EXWM for Emacs X Window Manager?
-* Are there pre-built sources? What about a PPA?
-* Aren't you essentially recreating Sawfish from scratch?
-
-See also HowTo
 
 ----
 CategoryEmacsWikiSite
