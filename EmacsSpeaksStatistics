@@ -8,19 +8,34 @@ ESS is a package that integrates various statistical software with Emacs. S, R (
 
 Consider using the prefix "ESS" for new ESS-related pages. -- PaulJohnson
 
-== Maybe useful configuration options ==
+== Basic configuration options ==
 
- (setq ess-eval-visibly nil) ;otherwise C-c C-r (eval region) takes forever
+ (setq ess-eval-visibly nil) ; ESS will not print the evaluated comands, also speeds up the evaluation 
  (setq ess-ask-for-ess-directory nil) ;if you don't want to be prompted each time you start an interactive R session
 
-== Tips about Using ESS ==
+== Completion ==
 
 * [[ESSAuto-complete|Auto-complete ESS integration]] -- [part of ESS]
 
-* [[http://code.google.com/p/ess-tracebug/|ess-tracebug]] -- [part of ESS]
-
 * [[ESSIciclesCompletion|Icicles Completion]] -- Completion for ESS.
 
+* [[ESSr-autoyas|Automatic YASnippets for function arguments]] -- Easy insertion and editing of arguments and values of a R function.
+
+== Code Navigation And Inspection ==
+
+* [[ESSTags-for-directory|ess-build-tags-for-directory]] - [part of ESS]
+
+* [[https://github.com/vitoshka/imenu-anywhere|imenu-anywhere]] -- ido and helm imenu tag selection across all buffers with the same mode
+
+* [[ESSSpeed-bar|speedbar]] -- configure speed bar with ESS.
+
+
+== Debugging ==
+
+* [[http://code.google.com/p/ess-tracebug/|ess-tracebug]] -- [part of ESS]
+
+
+== Tips and Tricks ==
 
 * [[ESSShiftEnter|Configure Shift+Enter]] -- The [[key sequence]] `##S-<return>##' can launch R and send commands to R (by FelipeCsaszar)
 
@@ -28,11 +43,8 @@ Consider using the prefix "ESS" for new ESS-related pages. -- PaulJohnson
 
 * [[ESSAutoParens|Automatic Brackets]] -- Configure ESS to automatically close Brackets and Parentheses (by anonymous)
 
-* [[ESSOutlineMode|Configure ESS for Outline Mode]] -- Use the Outline Mode With R Code in Emacs (by Sven)
 
 * [[ESSWindowsAdvice|Configure Emacs for R in Windows]] -- Concrete advice for Emacs Users Who are Forced to use MS Windows (by PaulJohnson).
-
-* [[ESSr-autoyas|Automatic YASnippets for function arguments]] -- Easy insertion and editing of arguments and values of a R function.
 
 * [[EssSmartUnderscore|Smarter Ess Underscore behavior]] 
 
