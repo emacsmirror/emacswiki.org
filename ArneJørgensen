@@ -13,7 +13,7 @@ As my day job I develop Drupal sites at [http://reload.dk Reload!]
 * [https://plus.google.com/100889241650786452076?rel=author Google+]
 * [https://github.com/arnested GitHub]
 
-From AUTHORS:
+From [http://bzr.savannah.gnu.org/lh/emacs/trunk/annotate/head:/etc/AUTHORS AUTHORS]:
 <pre>
 Arne Jørgensen: wrote latexenc.el
 and changed smime.el mml-smime.el smime-ldap.el flymake.el gnus-art.el
