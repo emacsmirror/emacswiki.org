@@ -1,4 +1,4 @@
-To make speedbar show an R buffer's functions, variables, etc, you need to add R to the set of supported extensions; for instance, add to your .emacs 
+To make [[http://emacswiki.org/emacs/SpeedBar|speedbar]] show an R buffer's functions, variables, etc, you need to add R to the set of supported extensions; for instance, add to your .emacs 
 
     (speedbar-add-supported-extension ".R")
 
@@ -9,3 +9,6 @@ By default, speedbar will split the list of functions into groups if there are m
 to a larger number.
 
 These settings will also work with [[http://www.emacswiki.org/emacs/SrSpeedbar|sr-speedbar]], a mode to make speedbar show in the current frame.
+
+
+Note that you do not need to do anything special for [[http://emacswiki.org/emacs/EmacsCodeBrowser|Emacs Code Browser]] to work with ESS/R.
