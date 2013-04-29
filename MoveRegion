@@ -1,6 +1,6 @@
 Analogous to MoveLine, for a curious person on the EmacsChannel wondering about moving the [[region]] along with the text.
 
-If you want a function that does MoveLine and MoveRegion similar to Eclipse's Alt-Up/Down (i.e. determining whether to move lines or regions) then you need MoveLineRegion.
+If you want a function that does MoveLine and MoveRegion similar to Eclipse's Alt-Up/Down (i.e. determining whether to move lines or regions) then you need MoveLineRegion or the [https://github.com/targzeta/move-lines move-lines] package that moves indifferently current line or lines surrounding region.
 
 {{{
 (defun move-region (start end n)
