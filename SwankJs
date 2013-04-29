@@ -13,7 +13,7 @@ The [[http://wikemacs.org/index.php/Swank-js|wikemacs page]] notes that "Install
 
 == See Also ==
 NodeJs
-http://wikemacs.org/index.php/Swank-js - the wikemacs page existed prior to this one Installation is complicated and requires Node.JS, SLIME, js2-mode. On Ubuntu/Debian the nodejs-legacy package might be required. 
+http://wikemacs.org/index.php/Swank-js - the wikemacs page existed prior to this one.
 
 == Categories ==
 CategoryJavaScript CategoryModes
