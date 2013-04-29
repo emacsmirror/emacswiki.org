@@ -1,10 +1,10 @@
 To make speedbar show an R buffer's functions, variables, etc, you need to add R to the set of supported extensions; for instance, add to your .emacs 
 
-(speedbar-add-supported-extension ".R")
+    (speedbar-add-supported-extension ".R")
 
 By default, speedbar will split the list of functions into groups if there are more than 10. If you do not like this behavior, set the variable 
 
-speedbar-tag-regroup-maximum-length 
+    speedbar-tag-regroup-maximum-length 
 
 to a larger number.
 
