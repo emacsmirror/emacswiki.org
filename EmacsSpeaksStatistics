@@ -8,16 +8,16 @@ ESS is a package that integrates various statistical software with Emacs. S, R (
 
 Consider using the prefix "ESS" for new ESS-related pages. -- PaulJohnson
 
-== The must-haves in your .emacs ==
+== Maybe useful configuration options ==
 
- (setq ess-eval-visibly-p nil) ;otherwise C-c C-r (eval region) takes forever
- (setq ess-ask-for-ess-directory nil) ;otherwise you are prompted each time you start an interactive R session
+ (setq ess-eval-visibly nil) ;otherwise C-c C-r (eval region) takes forever
+ (setq ess-ask-for-ess-directory nil) ;if you don't want to be prompted each time you start an interactive R session
 
 == Tips about Using ESS ==
 
-* [[ESSAuto-complete|Auto-complete ESS integration]] -- Now part of default ESS
+* [[ESSAuto-complete|Auto-complete ESS integration]] -- [part of ESS]
 
-* [[http://code.google.com/p/ess-tracebug/|ess-tracebug]] -- Visual debugger and error tracer for ESS. Will considerably speed  up error navigation and debugging.
+* [[http://code.google.com/p/ess-tracebug/|ess-tracebug]] -- [part of ESS]
 
 * [[ESSIciclesCompletion|Icicles Completion]] -- Completion for ESS.
 
