@@ -27,13 +27,7 @@ Consider using the prefix "ESS" for new ESS-related pages. -- PaulJohnson
 
 * [[https://github.com/vitoshka/imenu-anywhere|imenu-anywhere]] -- ido and helm imenu tag selection across all buffers with the same mode
 
-* [[ESSSpeed-bar|speedbar]] -- configure speed bar with ESS.
-To make speedbar show an R buffer's functions, variables, etc, you need to add R to the set of supported extensions; for instance, add to your .emacs 
-(speedbar-add-supported-extension ".R")
-
-By default, speedbar will split the list of functions into groups if there are more than 10. If you do not like this behavior, set the variable speedbar-tag-regroup-maximum-length to a larger number.
-
-These settings will also work with [[http://www.emacswiki.org/emacs/SrSpeedbar|sr-speedbar]], a mode to make speedbar show in the current frame.
+* [[ESSSpeedbar|speedbar]] -- configure speed bar with ESS.
 
 
 == Debugging ==
