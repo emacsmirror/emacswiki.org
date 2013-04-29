@@ -16,7 +16,7 @@ Note that this page is not about EmacsWikiMode.
 Title says it all.  I disabled it, but it still shows up at ElispArea.  This was not the case yesterday (2013-04-24) but it is today. -- DrewAdams
 
 [new]
-Currently none of the CSS "use it" links seem to work. Tested with Iceweasel 10 on debian testing and Firefox 20.0 on Ubuntu 12.10. -- [[LeonidasTsampros]]
+Currently none of the [[CSS]] "use it" links seem to work. Tested with Iceweasel 10 on debian testing and Firefox 20.0 on Ubuntu 12.10. -- [[LeonidasTsampros]]
 
 [new]
 Yeah, I assume they all need ##;bootstrap=0## or I should check for the presence of the CSS cookie. -- AlexSchroeder
