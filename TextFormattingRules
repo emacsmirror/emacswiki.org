@@ -266,6 +266,22 @@ Result:
 <hybrid> emacs has a text adventure game in it
 <PyroMithrandir> emacs IS a text adventure game
 
+
+
+== Inclusion / Transclusion == 
+
+A page on the wiki can "include" other pages.  This is especially helpful for marking certain pages as out-of-date, requiring refactoring, candidates for deletion, or wiki projects.
+
+{{{
+<include "ExamplePage">
+}}}
+
+There is more to it, however. See Oddmuse:Transclusion.
+
+The resulting HTML doesn't tell you that !ExamplePage has been transcluded, but if you're on !ExamplePage, clicking on the header will search for it. It's up to the users to use a decent prefix to identify pages that are to be transcluded and to mention the page name this piece of text is from.
+
+
+
 == See Also ==
 
 For questions, problems, and comments see TextFormattingDiscussion.
