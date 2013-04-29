@@ -12,8 +12,8 @@ The [[http://wikemacs.org/index.php/Swank-js|wikemacs page]] notes that "Install
 * [[http://blog.danielwoelfel.com/2012/07/how-to-use-swank-js-with-coffeescript/|How to use swank-js with CoffeeScript]]
 
 == See Also ==
-NodeJs
-http://wikemacs.org/index.php/Swank-js - the wikemacs page existed prior to this one.
+* NodeJs
+* http://wikemacs.org/index.php/Swank-js - the wikemacs page existed prior to this one.
 
 == Categories ==
 CategoryJavaScript CategoryModes
