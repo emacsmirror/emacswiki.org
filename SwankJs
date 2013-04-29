@@ -3,6 +3,8 @@
 == installation ==
 There's a list of instructions on [[https://github.com/swank-js/swank-js|SwankJs's gitjhub page]]. At times they seem verbose, at other times, too terse.
 Also relies on symlinks, so installation for Windows environments may be funky.
+There's a different installation page @ https://github.com/swank-js/swank-js/wiki/Installation
+
 The [[http://wikemacs.org/index.php/Swank-js|wikemacs page]] notes that "Installation is complicated and requires Node.JS, SLIME, js2-mode. On Ubuntu/Debian the nodejs-legacy package might be required." Charming.
 
 [[http://www.idryman.org/blog/2013/03/23/installing-swank-dot-js/|Installing swank.js]] has more elaborate steps for installing on a Mac
