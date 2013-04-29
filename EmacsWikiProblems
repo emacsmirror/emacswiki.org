@@ -21,6 +21,9 @@ Currently none of the CSS "use it" links seem to work. Tested with Iceweasel 10 
 [new]
 Yeah, I assume they all need ##;bootstrap=0## or I should check for the presence of the CSS cookie. -- AlexSchroeder
 
+[new]
+Thanks. This works now. -- AlexSchroeder
+
 
 == Still seeing double TOCs ==
 
