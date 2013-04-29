@@ -1,0 +1,19 @@
+[[https://github.com/swank-js/swank-js|SwankJs]] is a full-blown SlimeMode backend for [[NodeJs|node.js]] and can connect to a running web browser process through the socket.io package. 
+
+== installation ==
+There's a list of instructions on [[https://github.com/swank-js/swank-js|SwankJs's gitjhub page]]. At times they seem verbose, at other times, too terse.
+Also relies on symlinks, so installation for Windows environments may be funky.
+The [[http://wikemacs.org/index.php/Swank-js|wikemacs page]] notes that "Installation is complicated and requires Node.JS, SLIME, js2-mode. On Ubuntu/Debian the nodejs-legacy package might be required." Charming.
+
+[[http://www.idryman.org/blog/2013/03/23/installing-swank-dot-js/|Installing swank.js]] has more elaborate steps for installing on a Mac
+
+== uncategorized links ==
+* [[http://emacsrocks.com/e11.html|EmacsRocks screencast on swank-js]]
+* [[http://blog.danielwoelfel.com/2012/07/how-to-use-swank-js-with-coffeescript/|How to use swank-js with CoffeeScript]]
+
+== See Also ==
+NodeJs
+http://wikemacs.org/index.php/Swank-js - the wikemacs page existed prior to this one Installation is complicated and requires Node.JS, SLIME, js2-mode. On Ubuntu/Debian the nodejs-legacy package might be required. 
+
+== Categories ==
+CategoryJavaScript CategoryModes
