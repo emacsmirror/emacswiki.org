@@ -24,4 +24,6 @@ Also working on Win7, Emacs 24 and node.js 0.10.5
 == See Also ==
 * [[Elnode]] - a non-blocking IO webserver written entirely in EmacsLisp. It’s like an EmacsLisp version of node.js.
 * WikiPedia:Nodejs
-* JavaScript
+
+----
+CategoryJavaScript CategoryProgramming
