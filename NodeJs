@@ -3,9 +3,25 @@
 There is a [[https://github.com/abicky/nodejs-mode.el|node.js mode]]. As of 2013-04-15 it has not been updated for Node.js 0.8 or later.
 [new:OtherMichael:2013-04-28 19:59 UTC]Question: But does it still work with newer versions of node.js ?
 
+== running node.js from Emacs on Windows ==
+Stackoverflow: [[http://stackoverflow.com/questions/8909836/how-to-run-node-js-interactively-in-emacs-on-windows|How to run node.js interactively in Emacs on Windows]]
+
+<pre>
+The simplest way to have node.js (tested using node v0.8.1) as an inferior shell under Emacs is to use the js-comint package. Then, set (setq inferior-js-program-command "node --interactive") to force node to run in interactive mode. The command M-x run-js will then open the interpreter.
+</pre>
+
+http://js-comint-el.sourceforge.net/ - how can I make the above a blockquote, with wiki-links? (colon-indentation seems to be broken)
+
+Also working on Win7, Emacs 24 and node.js 0.10.5
+
 == some links ==
 * There are some notes on integrating node.js with Emacs in [[http://blog.deadpansincerity.com/2011/05/setting-up-emacs-as-a-javascript-editing-environment-for-fun-and-profit/|Setting up Emacs as a Javascript editing environment for Fun or Profit]]
-* Stackoverflow: [[http://stackoverflow.com/questions/8909836/how-to-run-node-js-interactively-in-emacs-on-windows|How to run node.js interactively in Emacs on Windows]]
 * Stackoverflow: [[http://stackoverflow.com/questions/13862471/using-node-js-with-js-comint-in-emacs|Using Node.js with JS-comint in Emacs]]
 * [[https://coderwall.com/p/qvqhkg|Live-code Node.js apps]] - mostly about configuring js-comint
 * http://grokbase.com/t/gg/nodejs/127cs8cewg/emacs - some discussion of what tools used in emacs with node.js
+
+
+== See Also ==
+* [[Elnode]] - a non-blocking IO webserver written entirely in EmacsLisp. It’s like an EmacsLisp version of node.js.
+* WikiPedia:Nodejs
+* JavaScript
