@@ -1,0 +1,21 @@
+portrait:http://gravatar.com/avatar/5b50630eab8c1a6d8b43f91db6d3316e?s=80
+
+Emacs user since 1994.
+
+I made a few contributions to Emacs, [[Gnus]] and AUCTeX and created a couple of other  [http://marmalade-repo.org/profiles/arne packages distributed via Marmalade Repos].
+
+As my day job I develop Drupal sites at [http://reload.dk Reload!]
+
+* Homepage: http://arnested.dk
+* Mail: [mailto:arne@arnested.dk arne@arnested.dk]
+* [http://marmalade-repo.org/profiles/arne Marmalade Repos]
+* [https://plus.google.com/100889241650786452076?rel=author Google+]
+* [https://github.com/arnested GitHub]
+
+From AUTHORS:
+<pre>
+Arne Jørgensen: wrote latexenc.el
+and changed smime.el mml-smime.el smime-ldap.el flymake.el gnus-art.el
+  gnus-sieve.el ldap.el message.el mm-decode.el mml-sec.el mml.el
+  mule-conf.el nnimap.el nnrss.el wid-edit.el
+</pre>
