@@ -65,3 +65,32 @@ Well, I guess we could just copy the documentation over, possibly rewrite it. Bu
 
 -- AlexSchroeder 2013-04-30 13:30 UTC
 
+
+----
+
+I've been using the emacswiki on-and-off for... 5 years? I never noticed the link to external documentation until today. Promoting those links would help.
+
+However, once I go there, there's a jarring visual difference.
+
+Plus, if somebody needs to edit the docs, they... can't on the external site? Or they'll have to have author-priviledges and pages on two sites.
+
+I use [[http://www.pmwiki.org|PmWiki]] a lot. Each install ships with the documentation for that version. That way all docs are local, can be transcluded, modified, extended, etc. Yes, there is an issue with newer docs for newer versions on the host trickling down to upgraded installs, although it's never really been a problem. It seems the current method may not have been a problem for anybody but me.....
+
+----
+
+So.... the hover-effect has nothing to do with the name, and everything to do with the pictures? I'm not seeing any hover-effect here with the names. I'm using Aurora 22.02a on Win7.
+
+Also, the timestamps are still not appearing for me in rendered output (in pages; they're appearing automatically in comments). From from NodeJs:
+
+{{{
+[new:OtherMichael:2013-04-28 19:59 UTC]Question: But does it still work with newer versions of node.js ?
+}}}
+
+renders as
+
+{{{
+<div class="color one level0"><p>Question: But does it still work with newer versions of node.js ?</p></div>
+}}}
+
+-- MichaelPaulukonis 2013-04-30 14:54 UTC
+
