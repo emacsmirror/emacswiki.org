@@ -23,4 +23,29 @@ I find it quite useful, and have bound it to Ctrl-z (since emacs is not to be su
 (global-set-key (kbd "C-z") 'replace-in-buffer)
 }}}
 
-[jannis: this is the first thing I wrote in elisp, so please improve it if you can]
+[new:jannis:2013-04-30 00:17 UTC]
+this is the first thing I wrote in elisp, so please improve it if you can. -- jannis
+[new]
+That is some good first Lisp.
+
+Eventually you might be happy with the Emacs [[KeyBinding]]s once you get used to them:
+
+; Search and replace word at point:
+: `M-b' runs the command backward-word
+: `C-s' runs the command isearch-forward
+: `C-w' runs the command isearch-yank-word
+: ##`M-%'## runs the command query-replace
+: ##`!'##' replaces all
+: `C-x C-x' runs the command exchange-point-and-mark
+
+; Search and replace region:
+: `M-w' runs the command kill-ring-save
+: `C-s' runs the command isearch-forward
+: `C-y' runs the command isearch-yank-kill
+: ##`M-%'##' runs the command query-replace
+: ##`!'##' replaces all
+: `C-x C-x' runs the command exchange-point-and-mark
+
+See IncrementalSearch.
+
+I find knowing the various search and replace commands of Emacs useful for adapting to the specific situation.  I had also written commands to do search and replace, but I've since thrown them out. -- AaronHawley
