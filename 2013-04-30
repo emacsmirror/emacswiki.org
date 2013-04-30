@@ -3,4 +3,26 @@ Any _new_ elisp files pasted on to the wiki---ie. any page that starts with ";;;
 
 Here's an example: AlexSchroederConfigPyrobombus.
 
+I'm using the same code to highlight all pre-formatted code blocks.
+
+Using the ##<pre>## tag:
+
+{{{
+<pre>
+code
+</pre>
+}}}
+
+Indenting using whitespace:
+
+    code 
+
+Using triple braces:
+
+<pre>
+{{{
+code
+}}}
+</pre>
+
 Old files are unaffected -- their HTML code remains cached.
