@@ -412,7 +412,7 @@ It's a lot easier to scan long path names if they're displayed vertically, inste
   (defun ido-define-keys () ;; C-n/p is more intuitive in vertical layout
     (define-key ido-completion-map (kbd "C-n") 'ido-next-match)
     (define-key ido-completion-map (kbd "C-p") 'ido-prev-match))
-  (add-hook 'ido-setup-hook 'jf-ido-define-keys)
+  (add-hook 'ido-setup-hook 'ido-define-keys)
 
 -- [[timcharper]], [[jpkotta]]
 
