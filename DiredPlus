@@ -728,6 +728,17 @@ One would load it like this:
 (defvar diredp-auto-initialise nil)
 (require 'dired+)
 ;;; Then I will manually specify what I want redefined.
+(defalias 'dired-find-file 'diredp-find-file)
+(defalias 'dired-get-filename 'diredp-get-filename)
+(defalias 'dired-goto-file 'diredp-goto-file)
+(defalias 'dired-insert-directory 'diredp-insert-directory)
+(defalias 'dired-insert-set-properties 'diredp-insert-set-properties)
+(defalias 'dired-mark-files-regexp 'diredp-mark-files-regexp)
+(defalias 'dired-mark-pop-up 'diredp-mark-pop-up)
+(defalias 'dired-pop-to-buffer 'diredp-pop-to-buffer)
+(defalias 'dired-revert 'diredp-revert)
+(defalias 'dired-switches-escape-p 'diredp-switches-escape-p)
+(defalias 'dired-up-directory 'diredp-up-directory)
 }}}
 
 Otherwise I have to load dired+ like this (which is fine, as far as I'm concerned, but a less obvious solution than the above one):
@@ -760,11 +771,10 @@ I don't really understand the use case either.  If someone really needs to pick 
 
 Trying to understand the why & how of what you're asking.  Thx -- DrewAdams
 
+[new:sabof:2013-04-30 15:34 UTC]
+I've edited the comment above to make it more clear.
 
-
-
-
-
+They probably conflicted with something - I no longer remember exactly what. And I think it's "normal" for someone to only want to use a part of the package. The advantage of this approach over simply editing the file, is that it's easier to upgrade.
 
 
 
