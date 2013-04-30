@@ -753,7 +753,12 @@ Otherwise I have to load dired+ like this (which is fine, as far as I'm concerne
 }}} -- [[sabof]]
 
 
+[new:DrewAdams:2013-04-30 13:13 UTC]
+Your macro is the only part that I understand. ;-) (Without it) how will you "manually specify what [you] want redefined"?
 
+I don't really understand the use case either.  If someone really needs to pick apart the '''Dired+''' code they can always do that to get some other behavior.  But I don't see anyone else doing that.  Just why do you want the original definitions of a few functions?
+
+Trying to understand the why & how of what you're asking.  Thx -- DrewAdams
 
 
 
