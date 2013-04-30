@@ -460,3 +460,12 @@ In the meantime, I'm also using a mod_rewrite directive to redirect all emacswik
 
 -- AlexSchroeder 2013-04-30 14:02 UTC
 
+
+----
+
+We seem to be miscommunicating.  What I said wrt http://www.emacswiki.org/emacs-test/  was that it did ''not'' seem to help at all.
+
+Even for just that page, if I hit ##Edit##, I get asked for my username and captcha.  See my previous post for the other problems, e.g., for what happens if I go to ElispArea etc. (and for the color & font size changes).
+
+-- Anonymous 2013-04-30 16:33 UTC
+
