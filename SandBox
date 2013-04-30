@@ -38,3 +38,15 @@ your edits to see how they look; you can just click '''Preview'''.
 }}}
 
 Testing highlighting in fragments.
+
+: indentation
+
+:: indentation
+
+::: INDENTATION!
+
+:not really
+
+:     colon followed by multiple spaces
+
+:	colon followed by tab
