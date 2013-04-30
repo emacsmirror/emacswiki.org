@@ -207,6 +207,12 @@ four (4) spaces.
 
 * Lines between tags ##{{{## and ##}}}## are formatted as code.
 
+*  '''##<code>##''': Code (usually monospaced, plus escaping of wiki processing): %%<code>foo</code>%% -> <code>foo</code> (see [[#WikiTags|WikiTags]] above)
+
+*  '''##<pre>##''': Preformatted (usually monospaced, for paragraphs, plus
+whitespace is preserved, plus escaping of wiki processing). ##<pre>## tags must be alone on a line, to work. (see [[#WikiTags|WikiTags]] above)
+
+[:headings]
 == Headings ==
 
 Headings are enclosed in equals signs (%%=%%) on a line of their own.  You can use up to six equals signs to produce headers of level one to
@@ -228,6 +234,7 @@ Overuse of headings is poor style, as short Wiki pages are
 preferred to long ones.  Consider splitting the page into two or more
 pages.
 
+[:images]
 == Images ==
 
 To put an image on a page, insert the URL with an image suffix.
@@ -267,7 +274,7 @@ Result:
 <PyroMithrandir> emacs IS a text adventure game
 
 
-
+[:transclusion]
 == Inclusion / Transclusion == 
 
 A page on the wiki can "include" other pages.  This is especially helpful for marking certain pages as out-of-date, requiring refactoring, candidates for deletion, or wiki projects.
@@ -280,8 +287,15 @@ There is more to it, however. See Oddmuse:Transclusion.
 
 The resulting HTML doesn't tell you that !ExamplePage has been transcluded, but if you're on !ExamplePage, clicking on the header will search for it. It's up to the users to use a decent prefix to identify pages that are to be transcluded and to mention the page name this piece of text is from.
 
+[:redirect]
+== Rename / Redirect ==
 
+To change the name of a page without losing all of the archived links to the original name, create a new page with the original content and new name, and ''redirect'' the old name, by replacing the entire page with:
+<code>#REDIRECT FooBar</code>", where "!FooBar" is the new, target Wiki page.
 
+More details at PageRedirection
+
+[:seealso]
 == See Also ==
 
 For questions, problems, and comments see TextFormattingDiscussion.
