@@ -36,3 +36,5 @@ your edits to see how they look; you can just click '''Preview'''.
 (when {{{ }}})
 (unless :other)
 }}}
+
+Testing highlighting in fragments.
