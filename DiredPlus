@@ -777,8 +777,23 @@ I've edited the comment above to make it more clear.
 They probably conflicted with something - I no longer remember exactly what. And I think it's "normal" for someone to only want to use a part of the package. The advantage of this approach over simply editing the file, is that it's easier to upgrade. -- [[sabof]]
 
 
+[new:DrewAdams:2013-04-30 17:25 UTC]
+Thanks for the clarification.  I understand better now.  If I were to do something like that it would probably be in the opposite direction, however, as in your macro: let users opt out (not in) for individual function redefinitions.
+
+But I do not plan to do that, unless some good reasons change my mind.  '''Dired+''' redefines 2 (very important) Dired macros, 2 Dired menus, and '''''23''''' Dired functions.  And some such redefinitions work together; they are not independent.
+
+FWIW, I have never had a request similar to yours.  So far, I really do not see an important use case for it, sorry.  Anyone interested in such fine-grained tweaking is already at an EmacsLisp level that s?he can redefine functions as s?he likes.
+
+The real question wrt use cases is why --- what is the need?  If you were to communicate your real need/problem, as opposed to just a solution (implementation change), I would be more interested.
 
 
+IOW, what would you like to see changed wrt particular function redefinitions --- specifically?  Just what does not work as you expect/like?  I would prefer to start by confirming that something specific does not work and then try to fix it.
+
+I do appreciate your feedback and your suggestion, which is clear.  So far, I'm not convinced of the need, for '''Dired+'''; that's all.  And you have found a solution/workaround for your own use, even if you do not recall what the problems are that it works around.
+
+Consider `dired-do-deletions', for example.  AFAIK, the changes I make to it are trivial: (1) add a helpful message and (2) accommodate a signature change to `dired-internal-do-deletions' for Emacs 23+.
+
+Just why is that redefinition of `dired-do-deletions' problematic for you?  If I have a better understanding of this and other specific ''problems'' you see, that will help. -- DrewAdams
 
 
 
