@@ -1,4 +1,4 @@
-A '''[::key]''', or more properly a '''[::key sequence]''', is similar to what is sometimes called a keyboard ''shortcut'' in other editors. However, in Emacs:
+A '''[::key]''', '''[::KeyBinding]''' or more properly a '''[::key sequence]''', is similar to what is sometimes called a keyboard ''shortcut'' in other editors. However, in Emacs:
 
 * A key sequence can be short for any [[Command | command]] or [[KeyboardMacros | keyboard macro]]; it is not necessarily short for a menu item.
 * A key sequence is not necessarily a sequence of keyboard key presses. It can be any combination of the following:
