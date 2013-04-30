@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Mar  5 16:30:45 1996
 ;; Version: 21.0
-;; Last-Updated: Sun Apr 21 10:25:44 2013 (-0700)
+;; Last-Updated: Mon Apr 29 20:37:25 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2740
+;;     Update #: 2751
 ;; URL: http://www.emacswiki.org/frame-cmds.el
 ;; Doc URL: http://emacswiki.org/FrameModes
 ;; Doc URL: http://www.emacswiki.org/OneOnOneEmacs
@@ -102,12 +102,12 @@
 ;;    `delete/iconify-windows-on', `delete-other-frames',
 ;;    `delete-windows-for', `enlarge-font', `enlarge-frame',
 ;;    `enlarge-frame-horizontally', `hide-everything', `hide-frame',
-;;    `iconify-everything', `iconify/map-frame',
+;;    `iconify-everything', `iconify/map-frame', `iconify/show-frame',
 ;;    `jump-to-frame-config-register', `maximize-frame',
 ;;    `maximize-frame-horizontally', `maximize-frame-vertically',
-;;    `mouse-iconify/map-frame', `mouse-remove-window',
-;;    `mouse-show-hide-mark-unmark', `move-frame-down',
-;;    `move-frame-left', `move-frame-right',
+;;    `mouse-iconify/map-frame', `mouse-iconify/show-frame',
+;;    `mouse-remove-window', `mouse-show-hide-mark-unmark',
+;;    `move-frame-down', `move-frame-left', `move-frame-right',
 ;;    `move-frame-to-screen-bottom', `move-frame-to-screen-left',
 ;;    `move-frame-to-screen-right', `move-frame-to-screen-top',
 ;;    `move-frame-up', `other-window-or-frame', `remove-window',
@@ -163,8 +163,8 @@
 ;;   (global-set-key [(control meta left)]          'shrink-frame-horizontally)
 ;;   (global-set-key [(control ?x) (control ?z)]    'iconify-everything)
 ;;   (global-set-key [vertical-line S-down-mouse-1] 'iconify-everything)
-;;   (global-set-key [(control ?z)]                 'iconify/map-frame)
-;;   (global-set-key [mode-line mouse-3]            'mouse-iconify/map-frame)
+;;   (global-set-key [(control ?z)]                 'iconify/show-frame)
+;;   (global-set-key [mode-line mouse-3]            'mouse-iconify/show-frame)
 ;;   (global-set-key [mode-line C-mouse-3]          'mouse-remove-window)
 ;;   (global-set-key [(control meta ?z)]            'show-hide)
 ;;   (global-set-key [vertical-line C-down-mouse-1] 'show-hide)
@@ -257,6 +257,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/04/29 dadams
+;;     Added: deiconify-everything, (mouse-)iconify/show-frame (renamed (mouse-)iconify/map-frame).
+;;     iconify/show-frame: Negative prefix arg now deiconifies all.
 ;; 2013/03/12 dadams
 ;;     maximize-frame: Corrected new-left, new-top.
 ;;                     Corrected arg to modify-frame-parameters - use frame-geom-value-numeric
@@ -604,6 +607,14 @@ You can restore it with \\[jump-to-frame-config-register]."
   (jump-to-register frame-config-register))
 
 ;;;###autoload
+(defun deiconify-everything ()
+  "Deiconify any iconified frames."
+  (interactive)
+  (frame-configuration-to-register frame-config-register)
+  (dolist (frame  (frame-list))
+    (when (eq 'icon (frame-visible-p frame)) (make-frame-visible frame))))
+
+;;;###autoload
 (defun iconify-everything ()
   "Iconify all frames of session at once.
 Remembers frame configuration in register `C-l' (Control-L).
@@ -671,18 +682,26 @@ being made invisible."
         (mouse-buffer-menu event))))
 
 ;;;###autoload
-(defun iconify/map-frame (&optional iconify-all)
-  "Iconify selected frame if now mapped.  Map it if now iconified.
-With non-nil prefix arg ICONIFY-ALL, iconify all visible frames."
+(defalias 'iconify/map-frame 'iconify/show-frame) ; `.../map...' is the old name.
+;;;###autoload
+(defun iconify/show-frame (&optional all-action)
+  "Iconify selected frame if now shown.  Show it if now iconified.
+A non-negative prefix arg iconifies all shown frames.
+A negative prefix arg deiconifies all iconified frames."
   (interactive "P")
-  (if iconify-all
-      (iconify-everything)
-    (when rename-frame-when-iconify-flag (rename-non-minibuffer-frame))
-    (iconify-or-deiconify-frame)))
+  (cond ((not all-action)
+         (when rename-frame-when-iconify-flag (rename-non-minibuffer-frame))
+         (iconify-or-deiconify-frame))
+        ((natnump (prefix-numeric-value all-action))
+         (iconify-everything))
+        (t
+         (deiconify-everything))))
 
 ;;;###autoload
-(defun mouse-iconify/map-frame (event)
-  "Iconify frame clicked on, if now mapped.  Map it if now iconified."
+(defalias 'mouse-iconify/map-frame 'mouse-iconify/show-frame) ; `.../map...' is the old name.
+;;;###autoload
+(defun mouse-iconify/show-frame (event)
+  "Iconify frame you click, if now shown.  Show it if now iconified."
   (interactive "e")
   (select-window (posn-window (event-start event)))
   (when rename-frame-when-iconify-flag (rename-non-minibuffer-frame))
