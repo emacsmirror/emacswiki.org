@@ -718,6 +718,7 @@ This way it would be easier to use some re-definitions, but not others, and back
 Not sure I follow you.  How would that make it easier for you to choose which redefinitions you get?  Please elaborate.  Thx -- DrewAdams
 
 [new:sabof:2013-04-30 07:57 UTC]
+One would load it like this:
 
 {{{
 (defvar diredp-auto-initialise nil)
@@ -725,7 +726,7 @@ Not sure I follow you.  How would that make it easier for you to choose which re
 ;;; Then I will manually specify what I want redefined.
 }}}
 
-Otherwise I have to load dired+ like this (which is fine, as far as I'm concerned, a less obvious solution than the above one):
+Otherwise I have to load dired+ like this (which is fine, as far as I'm concerned, but a less obvious solution than the above one):
 
 {{{
 (cl-defmacro es-preserve-functions ((&rest funcs) &rest body)
