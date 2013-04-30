@@ -774,7 +774,7 @@ Trying to understand the why & how of what you're asking.  Thx -- DrewAdams
 [new:sabof:2013-04-30 15:34 UTC]
 I've edited the comment above to make it more clear.
 
-They probably conflicted with something - I no longer remember exactly what. And I think it's "normal" for someone to only want to use a part of the package. The advantage of this approach over simply editing the file, is that it's easier to upgrade.
+They probably conflicted with something - I no longer remember exactly what. And I think it's "normal" for someone to only want to use a part of the package. The advantage of this approach over simply editing the file, is that it's easier to upgrade. -- [[sabof]]
 
 
 
