@@ -5,6 +5,7 @@ How do you learn to format Wiki pages?
 * Check how others have done things you want to do (bullets, indentation, whatever): Click '''Edit this page''' at the bottom of a page to see its source code.
 * Use '''Preview''' when you edit, to see the effect of what you write.
 
+[:basics]
 == Basics ==
 
 Generally, it is important to use as little markup as possible:
@@ -42,6 +43,9 @@ The official documentation is here:
 * [[Oddmuse:Markup Extension]]
 * [[Oddmuse:Usemod Markup Extension]]
 
+[new:MichaelPaulukonis:2013-04-30 12:59 UTC]
+Shouldn't '''official''' documentation be included here? Or certainly have more prominence.
+I'm surprised to find an offsite-link buried in a sub-section.
 
 [:AlternativeMarkup]
 == Alternative Markup ==
@@ -65,6 +69,7 @@ whitespace is preserved, plus escaping of wiki processing). ##<pre>## tags must 
         foo
         </pre>
 
+[:htmltags]
 === HTML Tags ===
 
 The following standard HTML tags can be used on the wiki.  Use them like HTML tags.
@@ -81,6 +86,7 @@ The following standard HTML tags can be used on the wiki.  Use them like HTML ta
 
 ; '''##<strong>##''': <strong>Strong</strong> (usually bold): ##<strong>foo bar (toto)</strong>## -> <strong>foo bar (toto)</strong>
 
+[:links][:anchors]
 == Links and Anchors ==
 
 * Words in %%CamelCase%% (mixed case) are transformed
@@ -128,7 +134,7 @@ Lists and indented paragraphs start with a special character ''followed by at le
 ; Example: This list is an example of definition list
 ; Third item: and its definition
 
-
+[:tables]
 == Tables ==
 
 For tabular information that doesn't fit in lists or definition lists, use tables.
@@ -149,10 +155,13 @@ Becomes:
 
 Official documentation is at [[Oddmuse:Table Markup Extension]].
 
+[:indendation]
 == Indentation ==
 
-Indented lines start with one or more colons ('##:##') -- more colons
-mean more indention.  (This is useful for personal replies. See also [[#Dialog]].)
+* Indented lines start with one or more colons, followed by one or more whitespace characters [space or tabs]
+* ('##: ##') -- more colons mean more indention. 
+* Indented lines must be the first sentence in a paragraph.
+* (This is useful for personal replies or blockquotes. See also [[#Dialog]].)
 
 
 [:Dialog]
@@ -257,6 +266,7 @@ Result:
 
 [[image:AngryFruitSaladTwo_Screenshot]]
 
+[[:irc]
 == IRC Quotes ==
 
 Discussions in the EmacsChannel can be copied directly to the Wiki.
