@@ -25,6 +25,6 @@ Using triple braces:
 }}}
 </pre>
 
-This may result in mis-formatted code fragments that contain something other than Emacs Lisp.
+This may result in mis-formatted code fragments that contain something other than Emacs Lisp. Let me know if you find any egregious problems.
 
 Old files are unaffected -- their HTML code remains cached.
