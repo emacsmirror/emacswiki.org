@@ -17,3 +17,26 @@ Is this about using ##<include list "^AlexSchroeder">## on a wiki page to displa
 
 -- DrewAdams 2013-02-03 02:18 UTC
 
+
+----
+
+[[TextFormattingRules#new]] - alternate-row highlighting (''Alternate contributions (alternate [new]’s) are shaded,'') does not appear to be active (with the new CSS?).
+
+::: http://i.imgur.com/kghAGhg.png
+
+Same goes for 
+''Putting
+<tt>
+[<nowiki>new::</nowiki>]
+</tt>
+will insert your UserName, and adds a timestamp to your contribution when you save the page.  The timestamp appears when you move the mouse over the contribution.''
+
+the ''mouse over'' sounds like a CSS/JS thing, which has little to do with markup, and everything to do with one particular form of presentation, which might change.
+Plus, I'm not seeing the timestamp rendered to the HTML in any format, as of today.
+
+Except for here in the talk section, where it is not a mouse-over effect.
+
+[new:MichaelPaulukonis:2013-04-30 13:06 UTC]
+
+-- MichaelPaulukonis 2013-04-30 13:15 UTC
+
