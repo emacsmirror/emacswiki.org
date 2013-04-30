@@ -1,0 +1,4 @@
+[new:AlexSchroeder:2013-04-30 09:34 UTC]
+Any _new_ elisp files pasted on to the wiki---ie. any page that starts with ";;;"---will now get a different Emacs Lisp highlighting that is supposed to match the default colors used by Emacs. If you want to look at the source code, search for "elisp_formatting" in the [http://www.emacswiki.org/emacs/config config file]. It's supposed to match `lisp-font-lock-keywords-1' and `lisp-font-lock-keywords-2' in ##font-lock.el##.
+
+Old files are unaffected -- their HTML code remains cached.
