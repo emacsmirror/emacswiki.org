@@ -1,4 +1,4 @@
-A '''[::key]''', '''[::KeyBinding]''' or more properly a '''[::key sequence]''', is similar to what is sometimes called a keyboard ''shortcut'' in other editors. However, in Emacs:
+A '''[::key]''', or more properly a '''[::key sequence]''', is similar to what is sometimes called a keyboard ''shortcut'' in other editors. However, in Emacs:
 
 * A key sequence can be short for any [[Command | command]] or [[KeyboardMacros | keyboard macro]]; it is not necessarily short for a menu item.
 * A key sequence is not necessarily a sequence of keyboard key presses. It can be any combination of the following:
@@ -9,7 +9,7 @@ A '''[::key]''', '''[::KeyBinding]''' or more properly a '''[::key sequence]''',
 
 * A key sequence can also include information on ''where'' you use a key or mouse button. Particular places include the ModeLine and the HeaderLine. It sometimes does this by including '''pseudokeys''' like `<code>[mode-line]</code>'. Other places, like the MiniBuffer are just special buffers -- see the explanation of buffer-local bindings, below.
 
-A key sequence is typically bound to a command. For example, the command `forward-char', meaning "move the TextCursor forward one character" is bound to the key sequence `C-f'. Even simple key sequences such as `s' (just typing the letter "s") are bound to commands in Emacs -- `s' is bound globally to the command `self-insert-command', which just inserts an `s' character.
+A key sequence is typically bound to a command.  This mapping or association is called a '''[::key binding]'''.  For example, the command `forward-char', meaning "move the TextCursor forward one character" is bound to the key sequence `C-f'. Even simple key sequences such as `s' (just typing the letter "s") are bound to commands in Emacs -- `s' is bound globally to the command `self-insert-command', which just inserts an `s' character.
 
 ; '''Examples''':
 The command `indent-code-rigidly' is (by default) not bound to any keyboard sequence. The command `grep' is (by default) not bound to a keyboard key sequence, but it is bound to the MenuBar key sequence '''Tools''' -> '''Search Files''' (= ##[menu-bar tools grep]##).
