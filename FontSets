@@ -48,23 +48,27 @@ Which other Unicode block ranges to choose from can be seen in [https://en.wikip
 
 As documented in the emacs online help you can  specify fonts for X in [https://www.gnu.org/software/emacs/manual/html_node/emacs/Fonts.html four ways]. You must not use X Logical Font Description, as in the examples above.
 
-Here is an example of using fontconfig's font name for a font, specifying the "Lohit Devanagari" font for Devenagari script (Unicode block range U+0900..U+097F):
-
+Here is an example of using fontconfig's font name for a font, specifying the "Siddhanta" font for Devenagari scripts (distributed across three Unicode blocks):
 
     ;; "Devanagari"  U+0900 - U+1097F
     (set-fontset-font "fontset-default"
                       (cons (decode-char 'ucs #x0900)
                             (decode-char 'ucs #x097f))
-                      "Lohit Devanagari")
+                      "Siddhanta")
 
     ;; "Devanagari Extended"  U+A8E0 - U+A8FF
     (set-fontset-font "fontset-default"
                       (cons (decode-char 'ucs #xa8e0)
                             (decode-char 'ucs #xa8ff))
-                      "Lohit Devanagari")
+                      "Siddhanta")
 
+    ;; "Vedic Extensions" (Devanagari) U+1CD0 - U+1CFF
+    (set-fontset-font "fontset-default"
+                      (cons (decode-char 'ucs #x1cd0)
+                            (decode-char 'ucs #x1cff))
+                      "Siddhanta")
 
-The "Lohit Devanagari" font displays nicely in emacs. (And this also fixes an annoying display bug in emacs 23 and 24 for the default font selected for devanagari in Debian (!FreeSans), for example wildly displaced diacritic u.)
+The "Siddhanta" font is a rather classic looking font (i.e. rather "calligraphic") which actually looks nice in emacs. You can download Siddhanta [http://svayambhava.org/index.php/en/fonts here]. Another more "sans serif" font is "Lohit Devanagari" and it also displays nicely in emacs, but it does not yet cover the "Vedic Extensions" block. (Both these fonts fixes an annoying display bug in emacs 23 and 24 for the default font selected for devanagari in Debian (!FreeSans), for example wildly displaced diacritic u.)
 
 In the same manner, for Greek and Classical Greek you could use the nice font "!GentiumAlt" or the monospaced "Ubuntu Mono", just using these font names in the two script snippets for Greek above (you must change both Greek and Greek extended for consistent font display).
 
@@ -75,7 +79,8 @@ Or you can specify a relative font enlargement or reduction relative to the stan
     (setq face-font-rescale-alist
          '(
            (".*Lohit Devanagari.*" . 1.1)
-           (".*Gentium.*" . 1.2)
+           (".*Siddhanta.*" . 1.15)
+           (".*GentiumAlt.*" . 1.2)
            (".*Ubuntu Mono.*" . 1.2)
            ))
 
