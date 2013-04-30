@@ -426,7 +426,7 @@ Quite annoying.  I have nothing against others having a different wiki appearanc
 
 ----
 
-shjk, I added it back. I think I really need to write a little bit of Perl to add more highlighting, however. :)
+shjk, I added it back. In fact, instead of using some weird library, I've written a new highlighter (see [[2013-04-30]]).
 
 Drew, right now your browser is not handling cookies correctly: It's not recording your username, it's not recording the fact that you have added the captcha, and it's not recording the fact that you prefer the old style. The wiki itself hasn't changed. Just to be sure, let's try this URL:
 
