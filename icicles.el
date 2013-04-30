@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 2013.04.23
-;; Last-Updated: Tue Apr 23 19:21:57 2013 (-0700)
+;; Last-Updated: Tue Apr 30 13:51:20 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 23399
+;;     Update #: 23400
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -866,8 +866,7 @@
 ;;
 ;;    `custom-variable-p', `icicle-2nd-part-string-less-p',
 ;;    `icicle-abbreviate-or-expand-file-name', `icicle-activate-mark',
-;;    `icicle-add-default-to-prompt', `icicle-add-key+cmd',
-;;    `icicle-add-menu-item-to-cmd-history',
+;;    `icicle-add-key+cmd', `icicle-add-menu-item-to-cmd-history',
 ;;    `icicle-all-candidates-action-1', `icicle-all-completions',
 ;;    `icicle-all-exif-data', `icicle-alpha-p',
 ;;    `icicle-alt-act-fn-for-type', `icicle-any-candidates-p',
@@ -1021,6 +1020,7 @@
 ;;    `icicle-get-candidates-from-saved-set', `icicle-get-safe',
 ;;    `icicle-goto-marker-1', `icicle-goto-marker-1-action',
 ;;    `icicle-group-regexp', `icicle-dired-guess-shell-command',
+;;    `icicle-handle-default-for-prompt',
 ;;    `icicle-help-on-candidate-symbol', `icicle-help-line-buffer',
 ;;    `icicle-help-line-file', `icicle-help-string-completion',
 ;;    `icicle-highlight-candidate-in-Completions',
