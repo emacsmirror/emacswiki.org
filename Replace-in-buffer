@@ -1,0 +1,28 @@
+Often, when editing code, I want to change the name of some function or variable. The standard replace does not really work then, because I want to replace all occurrences. Furthermore, it would be nice if the current region or the next word was used as a starting guess of the text to be replaced.
+
+This is what the replace-in-buffer tries to solve:
+{{{
+;; Replace text in whole buffer. The suggested OLD text is either the current region,
+;; or the next word (as mark-word would select it). The suggested text for the
+;; replacement is the same as the OLD text.
+(defun replace-in-buffer ()
+  (interactive)
+  (save-excursion
+    (if (equal mark-active nil) (mark-word))
+    (setq curr-word (buffer-substring-no-properties (mark) (point)))
+    (setq old-string
+          (read-string "OLD string:\n" curr-word))
+    (setq new-string
+          (read-string "NEW string:\n" old-string))
+    (query-replace old-string new-string nil (point-min) (point-max))
+    )
+  )
+}}}
+
+After you are done replacing, you return back at the point where you started.
+I find it quite useful, and have bound it to Ctrl-Z (since emacs is not to be suspended :))
+{{{
+(global-set-key (kbd "C-z") 'replace-in-buffer)
+}}}
+
+[jannis: this is the first thing I wrote in elisp, so please improve it if you can]
