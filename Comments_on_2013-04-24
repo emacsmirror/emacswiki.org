@@ -436,3 +436,14 @@ It currently uses a config file that has all references to bootstrap removed. (S
 
 -- AlexSchroeder 2013-04-30 07:35 UTC
 
+
+----
+
+Alex, the captcha and username problems are new, since you created the two different URLS.  That change did not help wrt getting the old style for ElispArea.  Before that change things were the same: no old style for ElispArea, no old style when clicking a search link, etc.  But at least the username and captcha were not problems.
+
+Clicking the ##emacs-test## link gives me the SiteMap OK (old style).  Trying to click the ElispArea link from there took several minutes, then finally gave me something between the old and new styles: orange text on light gray background etc., ##Elisp Area!## as the header title (with `!').  But the text is at least similar to the original (old-style) font, except that it is smaller. If I click a file name and then choose Edit, I still get asked for the username and captcha.
+
+My browser works fine elswhere than the wiki.  And prior to all the changes it worked fine for the wiki too.
+
+-- DrewAdams 2013-04-30 13:01 UTC
+
