@@ -711,9 +711,22 @@ Might it be possible to rewrite the redefinitions to something similar to this:
   (defalias 'dired-do-delete diredp-do-delete))
 }}}
 
-This way it would be easier to use some re-definitions, but not others, and backward-compatibility would be maintained.
+This way it would be easier to use some re-definitions, but not others, and backward-compatibility would be maintained.  -- [[sabof]]
 
--- sabof
+[new:DrewAdams:2013-04-30 05:23 UTC]
+
+Not sure I follow you.  How would that make it easier for you to choose which redefinitions you get?  Please elaborate.  Thx -- DrewAdams
+
+
+
+
+
+
+
+
+
+
+
 
 
 
