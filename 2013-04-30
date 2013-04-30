@@ -9,19 +9,19 @@ Using the ##<pre>## tag:
 
 {{{
 <pre>
-code
+(lambda (n) (1+ n))
 </pre>
 }}}
 
 Indenting using whitespace:
 
-    code 
+    (lambda (n) (1+ n))
 
 Using triple braces:
 
 <pre>
 {{{
-code
+(lambda (n) (1+ n))
 }}}
 </pre>
 
