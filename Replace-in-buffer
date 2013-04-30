@@ -20,7 +20,7 @@ This is what the replace-in-buffer tries to solve:
 }}}
 
 After you are done replacing, you return back at the point where you started.
-I find it quite useful, and have bound it to Ctrl-Z (since emacs is not to be suspended :))
+I find it quite useful, and have bound it to Ctrl-z (since emacs is not to be suspended :))
 {{{
 (global-set-key (kbd "C-z") 'replace-in-buffer)
 }}}
