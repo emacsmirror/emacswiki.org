@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Apr 22 13:37:18 2013 (-0700)
+;; Last-Updated: Tue Apr 30 13:55:53 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 13960
+;;     Update #: 13964
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -45,9 +45,9 @@
 ;;
 ;;    `assq-delete-all', `icicle-2nd-part-string-less-p',
 ;;    `icicle-abbreviate-or-expand-file-name',
-;;    `icicle-add-default-to-prompt', `icicle-all-completions',
-;;    `icicle-alpha-p', `icicle-alt-act-fn-for-type',
-;;    `icicle-any-candidates-p', `icicle-apropos-any-candidates-p',
+;;    `icicle-all-completions', `icicle-alpha-p',
+;;    `icicle-alt-act-fn-for-type', `icicle-any-candidates-p',
+;;    `icicle-apropos-any-candidates-p',
 ;;    `icicle-apropos-any-file-name-candidates-p',
 ;;    `icicle-apropos-candidates', `icicle-assoc-delete-all',
 ;;    `icicle-barf-if-outside-Completions',
@@ -103,7 +103,8 @@
 ;;    `icicle-flat-list', `icicle-frames-on',
 ;;    `icicle-fuzzy-candidates', `icicle-get-alist-candidate',
 ;;    `icicle-get-candidates-from-saved-set', `icicle-get-safe',
-;;    `icicle-dired-guess-shell-command', `icicle-help-line-buffer',
+;;    `icicle-dired-guess-shell-command',
+;;    `icicle-handle-default-for-prompt', `icicle-help-line-buffer',
 ;;    `icicle-help-line-file',
 ;;    `icicle-highlight-candidate-in-Completions',
 ;;    `icicle-highlight-complete-input',
@@ -1137,8 +1138,7 @@ Completion ignores case when `completion-ignore-case' is non-nil."
         (setq collection  (car c+p)     ; After banalizing for vanilla Emacs.
               predicate   (cadr c+p))))
     ;; $$$$$$ (setq minibuffer-completion-table  collection)
-    (when (and def  (eq icicle-default-value t)) ; Add the (first) default value to PROMPT.
-      (setq prompt  (icicle-add-default-to-prompt prompt def)))
+    (when def (setq prompt  (icicle-handle-default-for-prompt prompt def (eq icicle-default-value t))))
     (cond ((not icicle-mode)
            (setq result  (icicle-lisp-vanilla-completing-read
                           prompt collection predicate require-match initial-input
@@ -1162,21 +1162,34 @@ Completion ignores case when `completion-ignore-case' is non-nil."
     (when require-match (icicle-remove-Completions-window))
     result))
 
-(defun icicle-add-default-to-prompt (prompt default)
-  "Return PROMPT, but with DEFAULT added to it if appropriate."
-  (if (not default)
-      prompt
-    (when (consp default) (setq default  (car default)))
-    (dolist (rgx  (if (boundp 'minibuffer-default-in-prompt-regexps) ; Get rid of HINT if already there.
-                      minibuffer-default-in-prompt-regexps
-                    '(("\\( (default\\(?: is\\)? \\(.*\\))\\):? \\'"  1)
-                      ("\\( \\[.*\\]\\):? *\\'"                       1))))
-      (setq prompt  (replace-regexp-in-string  (car rgx) "" prompt nil nil (cadr rgx))))
-    ;; $$$$$$$$$ (when (icicle-file-name-input-p) (setq default  (file-name-nondirectory default)))
-    (replace-regexp-in-string ".*\\(\\): *\\'"
-                              (funcall icicle-default-in-prompt-format-function
-                                       default)
-                              prompt nil t 1)))
+(defun icicle-handle-default-for-prompt (prompt default include)
+  "Return PROMPT, possibly changed to format or remove DEFAULT value.
+Argument INCLUDE:
+ * nil means do not include DEFAULT in prompt.  Remove it if there.
+ * non-nil means include DEFAULT, formatted according to
+   `icicle-default-in-prompt-format-function'.
+
+In the existing PROMPT before modification, recognizes inclusion of
+a default value according to these possible patterns:
+
+ `minibuffer-default-in-prompt-regexps'
+ \"(default ___):\"
+ \"(default is ___):\"
+ \" [___] \""
+  (when (consp default) (setq default  (car default)))
+  ;; Remove the default, if already there.
+  (dolist (rgx  (if (boundp 'minibuffer-default-in-prompt-regexps) ; Get rid of HINT if already there.
+                    minibuffer-default-in-prompt-regexps
+                  '(("\\( (default\\(?: is\\)? \\(.*\\))\\):? \\'"  1)
+                    ("\\( \\[.*\\]\\):? *\\'"                       1))))
+    (setq prompt  (replace-regexp-in-string  (car rgx) "" prompt nil nil (cadr rgx))))
+  ;; $$$$$$$$$ (when (icicle-file-name-input-p) (setq default  (file-name-nondirectory default)))
+  ;; Add DEFAULT, if INCLUDE.
+  (if include
+      (replace-regexp-in-string ".*\\(\\): *\\'"
+                                (funcall icicle-default-in-prompt-format-function default)
+                                prompt nil t 1)
+    prompt))
 
 
 (defun icicle-mctize-all (coll pred)
@@ -2178,7 +2191,7 @@ Fourth arg DEFAULT-VALUE is the default value.  If non-nil, it is used
  the empty string.
 Fifth arg INHERIT-INPUT-METHOD, if non-nil, means the minibuffer inherits
  the current input method and the setting of enable-multibyte-characters."
-  (setq prompt  (icicle-add-default-to-prompt prompt default-value))
+  (setq prompt  (icicle-handle-default-for-prompt prompt default-value 'INCLUDE))
   (let ((value  (read-from-minibuffer prompt initial-input nil nil hist-m@%=!$+&^*z
                                       default-value inherit-input-method)))
     (when (and default-value  (equal value ""))
