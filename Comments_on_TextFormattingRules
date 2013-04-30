@@ -61,7 +61,7 @@ I'm surprised to find an offsite-link buried in a sub-section.
 
 ----
 
-Well, I guess we could just copy the documentation over, possibly rewrite it. But what purpose would it serve? Who will maintain the documentation here if features change?
+Well, I guess we could just copy the documentation over, possibly rewrite it. But what purpose would it serve? Who will maintain the documentation here if features change? As for it being buried in a subsection, I guess it's a question of priorities: which information do you need to learn right away? Which information is most likely to be be useful and remain so for a long time? And which information is tricky, for the advanced users, for the rare use cases?
 
 -- AlexSchroeder 2013-04-30 13:30 UTC
 
