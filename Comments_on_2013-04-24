@@ -447,3 +447,16 @@ My browser works fine elswhere than the wiki.  And prior to all the changes it w
 
 -- DrewAdams 2013-04-30 13:01 UTC
 
+
+----
+
+Yes, as I said, I want to make sure http://www.emacswiki.org/emacs-test/ works for you *before* I rethink the implementation of the ElispArea.
+
+So, to confirm: If you use the emacs-test URL, the site works for you—username is remembered, captcha is only required once, it displays in the old style.
+
+I think what I'll do next is change the mod_rewrite for the Elisp Area from an internal rewrite to a redirect.
+
+In the meantime, I'm also using a mod_rewrite directive to redirect all emacswiki.org requests to www.emacswiki.org. Perhaps that helps reduce the cookie confusion I'm still suspecting.
+
+-- AlexSchroeder 2013-04-30 14:02 UTC
+
