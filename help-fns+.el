@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 22.1
-;; Last-Updated: Fri Feb  8 11:55:52 2013 (-0800)
+;; Last-Updated: Mon Apr 29 22:00:48 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 1558
+;;     Update #: 1567
 ;; URL: http://www.emacswiki.org/help-fns+.el
 ;; Doc URL: http://emacswiki.org/HelpPlus
 ;; Keywords: help, faces, characters, packages, description
@@ -119,6 +119,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/04/29 dadams
+;;     describe-(function|command|variable|option|option-of-type):
+;;       Provide default only if symbol is of the right type.  Put default in prompt.
 ;; 2013/02/08 dadams
 ;;     describe-variable: Updated wrt Emacs 24 build of 2013-01-30.
 ;; 2012/11/18 dadams
@@ -889,16 +892,19 @@ the innermost function call surrounding point
 \(`function-called-at-point').
 Return the description that was displayed, as a string."
   (interactive
-   (let ((fn                            (or (and (fboundp 'symbol-nearest-point)
-                                                 (symbol-nearest-point))
-                                            (function-called-at-point)))
-         (enable-recursive-minibuffers  t)
-         (completion-annotate-function  (lambda (fn)
-                                          (and (commandp (intern-soft fn))  "  (command)")))
-         val)
-     (setq val  (completing-read (if current-prefix-arg "Describe command: " "Describe function: ")
-                                 obarray (if current-prefix-arg 'commandp 'fboundp) t nil nil
-                                 (and fn  (symbol-name fn))))
+   (let* ((fn                            (or (and (fboundp 'symbol-nearest-point)
+                                                  (symbol-nearest-point))
+                                             (function-called-at-point)))
+          (enable-recursive-minibuffers  t)
+          (completion-annotate-function  (lambda (fn) (and (commandp (intern-soft fn))  "  (command)")))
+          (type                          (if current-prefix-arg 'command 'function))
+          (prompt                        (format "Describe %s%s:" type
+                                                 (if (if current-prefix-arg (commandp fn) (fboundp fn))
+                                                     (format " (default %s)" fn)
+                                                   "")))
+          val)
+     (setq val  (completing-read prompt obarray (if current-prefix-arg 'commandp 'fboundp) t nil nil
+                                 (and (if current-prefix-arg (commandp fn) (fboundp fn))  (symbol-name fn))))
      (list (if (equal val "") fn (intern val)) current-prefix-arg)))
   (if (not function)
       (when (interactive-p) (message "You did not specify a function"))
@@ -1404,7 +1410,8 @@ Same as using a prefix arg with `describe-function'."
          (enable-recursive-minibuffers  t)
          val)
      (setq val  (completing-read
-                 "Describe command: " obarray 'commandp t nil nil (and fn  (symbol-name fn))))
+                 (format "Describe command%s: " (if (commandp fn) (format " (default %s)" fn) ""))
+                 obarray 'commandp t nil nil (and fn  (commandp fn)  (symbol-name fn))))
      (list (if (equal val "") fn (intern val)))))
   (describe-function function t))
 
@@ -1436,11 +1443,13 @@ it is displayed along with the global value."
            (completion-annotate-function  (lambda (var)
                                             (and (custom-variable-p (intern-soft var))  "  (option)")))
            val)
-       (setq val  (completing-read "Describe variable: " obarray
-                                   (if current-prefix-arg
-                                       (lambda (vv) (user-variable-p vv))
-                                     (lambda (vv) (or (boundp vv)  (get vv 'variable-documentation))))
-                                   t nil nil (and (symbolp symb)  (symbol-name symb))))
+       (setq val  (completing-read
+                   (format "Describe variable%s: "
+                           (if (and symb  (boundp symb)) (format " (default %s)" symb) ""))
+                   obarray (if current-prefix-arg
+                               (lambda (vv) (user-variable-p vv))
+                             (lambda (vv) (or (boundp vv)  (get vv 'variable-documentation))))
+                   t nil nil (and (symbolp symb)  (boundp symb)  (symbol-name symb))))
        (list (if (equal val "") symb (intern val))
              nil
              current-prefix-arg)))
@@ -1632,12 +1641,14 @@ it is displayed along with the global value."
                                             (and (custom-variable-p (intern-soft var))  "  (option)")))
            val)
        (setq val  (completing-read
-                   "Describe variable: " obarray
+                   (format "Describe variable%s: "
+                           (if (and symb  (boundp symb)) (format " (default %s)" symb) ""))
+                   obarray
                    (if current-prefix-arg
                        (lambda (vv) (user-variable-p vv))
                      (lambda (vv)
                        (or (get vv 'variable-documentation)  (and (boundp vv)  (not (keywordp vv))))))
-                   t nil nil (and (symbolp symb)  (symbol-name symb))))
+                   t nil nil (and (symbolp symb)  (boundp symb)  (symbol-name symb))))
        (list (if (equal val "") symb (intern val))
              nil
              nil
@@ -1836,11 +1847,13 @@ it is displayed along with the global value."
            (completion-annotate-function  (lambda (vv) (and (custom-variable-p (intern-soft vv))  "  (option)")))
            val)
        (setq val (completing-read
-                  "Describe variable: " obarray (if current-prefix-arg
-                                                    (lambda (vv) (user-variable-p vv))
-                                                  (lambda (vv) (or (get vv 'variable-documentation)
-                                                              (and (boundp vv)  (not (keywordp vv))))))
-                  t nil nil (and (symbolp symb)  (symbol-name symb))))
+                  (format "Describe variable%s: "
+                          (if (and symb  (boundp symb)) (format " (default %s)" symb) ""))
+                  obarray (if current-prefix-arg
+                              (lambda (vv) (user-variable-p vv))
+                            (lambda (vv) (or (get vv 'variable-documentation)
+                                        (and (boundp vv)  (not (keywordp vv))))))
+                  t nil nil (and (symbolp symb)  (boundp symb)  (symbol-name symb))))
        (list (if (equal val "") symb (intern val))
              nil
              nil
@@ -2040,8 +2053,12 @@ Same as using a prefix arg with `describe-variable'."
                                                         (and (symbolp (variable-at-point))
                                                              (variable-at-point))))
                      (enable-recursive-minibuffers  t))
-                 (list (intern (completing-read "Describe user option: " obarray 'user-variable-p
-                                                t nil nil (and symb  (symbol-name symb)) t)))))
+                 (list (intern (completing-read
+                                (format "Describe user option%s: "
+                                        (if (and symb  (user-variable-p symb)) (format " (default %s)" symb) ""))
+                                
+                                obarray 'user-variable-p
+                                t nil nil (and symb  (user-variable-p symb)  (symbol-name symb)) t)))))
   (describe-variable variable buffer t))
 
 ;;;###autoload
@@ -2080,7 +2097,8 @@ defined with `defcustom' (with `*'-prefixed doc strings)."
      (list typ
            (intern
             (completing-read
-             "Option: " obarray
+             (format "Option%s: " (if (and symb  (user-variable-p symb)) (format " (default %s)" symb) ""))
+             obarray
              (lambda (v)
                (and (custom-variable-p v)
                     (or (not typ) ; Allow all vars if requested type = nil.
@@ -2090,7 +2108,7 @@ defined with `defcustom' (with `*'-prefixed doc strings)."
                                                                     (prefix-numeric-value pref-arg))
                                                                    'direct-or-value)
                                                                   (t  'direct))))))
-             t nil nil (and symb  (symbol-name symb)) t)))))
+             t nil nil (and symb  (user-variable-p symb)  (symbol-name symb)) t)))))
   (describe-variable option nil t))
 
 (defun help-var-is-of-type-p (variable types &optional mode)
