@@ -795,7 +795,12 @@ Consider `dired-do-deletions', for example.  AFAIK, the changes I make to it are
 
 Just why is that redefinition of `dired-do-deletions' problematic for you?  If I have a better understanding of this and other specific ''problems'' you see, that will help. -- DrewAdams
 
+[new:sabof:2013-04-30 21:51 UTC]
+I just think it's nice to be able to load a package as a library, and use only the functionality one needs.
 
+I don't care much about the implementation, as long as it's easy to do -- maybe you could include a similar macro to the one I've used, and add some relevant documentation.
+
+At the moment I don't have any (objective) improvements to particular functions in mind. -- [[sabof]]
 
 ----
 
