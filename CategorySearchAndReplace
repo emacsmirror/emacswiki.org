@@ -52,6 +52,7 @@ Additional:
 * ReplaceGarbageChars -- Replace MS and other goofy/"garbage" characters with latin1.  Simple elisp code can be easily applied to LaTeX or HTML or other kinds of buffers.
 * ReplaceRecentCharacter -- Quickly fix typos using a non-incremental search and replace.
 * SearchAndReplaceDelimitedStrings -- Replace (only) the prefix and suffix of a pattern.
+* [[Replace-in-buffer]] -- Replace text in complete buffer, use current region or next word as pattern
 
 
 
