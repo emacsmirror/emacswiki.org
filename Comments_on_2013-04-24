@@ -423,3 +423,16 @@ Quite annoying.  I have nothing against others having a different wiki appearanc
 
 -- DrewAdams 2013-04-30 02:11 UTC
 
+
+----
+
+shjk, I added it back. I think I really need to write a little bit of Perl to add more highlighting, however. :)
+
+Drew, right now your browser is not handling cookies correctly: It's not recording your username, it's not recording the fact that you have added the captcha, and it's not recording the fact that you prefer the old style. The wiki itself hasn't changed. Just to be sure, let's try this URL:
+
+http://www.emacswiki.org/emacs-test/
+
+It currently uses a config file that has all references to bootstrap removed. (Since the ElispArea is handled by a website configuration, it will not be affected by the use of the …/emacs-test URL).
+
+-- AlexSchroeder 2013-04-30 07:35 UTC
+
