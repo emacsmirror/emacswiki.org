@@ -10,10 +10,8 @@ This is what the replace-in-buffer tries to solve:
   (save-excursion
     (if (equal mark-active nil) (mark-word))
     (setq curr-word (buffer-substring-no-properties (mark) (point)))
-    (setq old-string
-          (read-string "OLD string:\n" curr-word))
-    (setq new-string
-          (read-string "NEW string:\n" old-string))
+    (setq old-string (read-string "OLD string:\n" curr-word))
+    (setq new-string (read-string "NEW string:\n" old-string))
     (query-replace old-string new-string nil (point-min) (point-max))
     )
   )
