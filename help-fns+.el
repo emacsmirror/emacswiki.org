@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 22.1
-;; Last-Updated: Mon Apr 29 22:00:48 2013 (-0700)
+;; Last-Updated: Mon Apr 29 22:12:38 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 1567
+;;     Update #: 1568
 ;; URL: http://www.emacswiki.org/help-fns+.el
 ;; Doc URL: http://emacswiki.org/HelpPlus
 ;; Keywords: help, faces, characters, packages, description
@@ -898,7 +898,7 @@ Return the description that was displayed, as a string."
           (enable-recursive-minibuffers  t)
           (completion-annotate-function  (lambda (fn) (and (commandp (intern-soft fn))  "  (command)")))
           (type                          (if current-prefix-arg 'command 'function))
-          (prompt                        (format "Describe %s%s:" type
+          (prompt                        (format "Describe %s%s: " type
                                                  (if (if current-prefix-arg (commandp fn) (fboundp fn))
                                                      (format " (default %s)" fn)
                                                    "")))
