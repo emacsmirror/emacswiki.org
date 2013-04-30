@@ -43,10 +43,6 @@ The official documentation is here:
 * [[Oddmuse:Markup Extension]]
 * [[Oddmuse:Usemod Markup Extension]]
 
-[new:MichaelPaulukonis:2013-04-30 12:59 UTC]
-Shouldn't '''official''' documentation be included here? Or certainly have more prominence.
-I'm surprised to find an offsite-link buried in a sub-section.
-
 [:AlternativeMarkup]
 == Alternative Markup ==
 
@@ -266,7 +262,7 @@ Result:
 
 [[image:AngryFruitSaladTwo_Screenshot]]
 
-[[:irc]
+[:irc]
 == IRC Quotes ==
 
 Discussions in the EmacsChannel can be copied directly to the Wiki.
