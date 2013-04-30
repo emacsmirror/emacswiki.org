@@ -7,7 +7,7 @@
 
 ;; Darwinports and other paths, since my .bashrc is not being read
 (add-to-list 'load-path (expand-file-name "elisp" (getenv "HOME")))
-(setq exec-path (split-string "/Users/alex/bin:/opt/local/bin:/bin:/sbin:/usr/local/bin:/usr/bin:/usr/sbin" path-separator))
+(setq exec-path (split-string "/Users/alex/bin:/opt/local/bin:/bin:/sbin:/usr/local/bin:/usr/bin:/usr/sbin:/usr/local/texlive/2012/bin/universal-darwin" path-separator))
 (setenv "PATH" (mapconcat 'identity exec-path ":"))
 ;; (setenv "PERL5LIB" "/Library/Perl/5.8.1")
 (setenv "ODD" "/Users/Shared/Oddmuse")
@@ -389,6 +389,9 @@ in parsed XML OPML."
 (defalias 'eshell/less 'find-file)
 (defun eshell/dired () (dired (eshell/pwd)))
 
+(eval-after-load 'eshell
+  '(require 'eshell-autojump nil t))
+
 ;;; scheme
 (require 'cmuscheme)
 (setq scheme-program-name "/opt/local/bin/scsh")
@@ -432,7 +435,8 @@ in parsed XML OPML."
       rcirc-server-alist
       '(("irc.freenode.net" :channels
 	 ("#emacs" "#emacs-ops" "#rcirc" "#wiki" "#oddmuse"
-	  "#epfarms" "#inkscape"))
+	  "#epfarms" "#inkscape" "#emacswiki" "#raspbian"))
+	("irc.gimp.org" :channels ("#gimp-users"))
 	;; "#eclipse" "#eclipse-de" "#osgi" "#perl6"
 	;; "#ubuntu" "#hcoop" "#biology" "#clojure" "#clojure.de"
 	;; ("ircnet.eversible.com" :channels ("#drsrm"))
@@ -446,7 +450,8 @@ in parsed XML OPML."
 	;; ("irc2.magicstar.net" :channels ("#magicstar" "#rpgnet"))
 	("localhost" :channels ("&bitlbee" "&roleplaying" "&emacs"
 				"&bsi"))
-	("irc.oftc.net" :channels ("#bitlbee")))
+	;; ("irc.oftc.net" :channels ("#bitlbee"))
+	)
       rcirc-decode-coding-system 'undecided
       rcirc-coding-system-alist
       '(("#nihongo" undecided . iso-2022-jp))
@@ -1160,6 +1165,19 @@ This moves them into the Spam folder."
 					 (+  (string-to-number num)
 					     xp)))))))))
 
+;;; Wilderlande XP
+
+(defun wilderlande-xp (xp)
+  (interactive "nXP: ")
+  (save-excursion
+    (while (re-search-forward "^|\\(.*?\\)[ \t]*|\\([ \t]*[0-9]+\\)|" nil t)
+      (let ((name (match-string 1))
+	    (num (match-string 2)))
+	(when (y-or-n-p (format "War %s dabei?" name))
+	  (replace-match (format "|%s | %d|" name
+				 (+  (string-to-number num)
+				     xp))))))))
+
 ;;; D&D Alder King XP
 
 (defun alder-king-level (xp)
@@ -1212,6 +1230,68 @@ This moves them into the Spam folder."
 	   (str (buffer-substring start end)))
       (delete-region start end)
       (insert "[" base (url-escape str) ".pdf " str "]"))))
+
+;;; Inkscape
+
+(defun round-floating-points (start end)
+  (interactive "r")
+  (save-restriction
+    (narrow-to-region start end)
+    (goto-char (point-min))
+    (while (re-search-forward "-?[0-9]*\\.[0-9]+" nil t)
+      (let ((n (string-to-number (match-string 0))))
+	(replace-match (number-to-string
+			(if current-prefix-arg
+			    (/ (round (* 10 n)) 10.0)
+			  (round n))))))))
+
+;; LaTeX
+ 
+(define-skeleton my-latex-bold
+  "Make bold in LaTeX using \\textbf{}."
+  nil
+  "\\textbf{" _ "}")
+
+(define-skeleton my-latex-italic
+  "Make italic in LaTeX using \\textit{}."
+  nil
+  "\\textit{" _ "}")
+
+(define-skeleton my-latex-emphasis
+  "Make italic in LaTeX using \\emph{}."
+  nil
+  "\\emph{" _ "}")
+
+(defun my-latex-unit (str)
+  "Transform STR to \\unit[123]{xyz}."
+  (interactive "sExpression: ")
+  (when (string-match "^\\([0-9]+\\)\\s-*\\(.*\\)" str)
+    (insert (format "\\unit[%s]{%s}"
+		    (match-string 1 str)
+		    (match-string 2 str)))))
+
+(eval-after-load 'tex-mode
+  '(progn
+     (define-key latex-mode-map (kbd "C-c b") 'my-latex-bold)
+     (define-key latex-mode-map (kbd "C-c i") 'my-latex-italic)
+     (define-key latex-mode-map (kbd "C-c e") 'my-latex-emphasis)
+     (define-key latex-mode-map (kbd "C-c u") 'my-latex-unit)))
+
+(add-hook 'latex-mode-hook (lambda () (reftex-mode 1)))
+
+(defun my-latex-m-to-ft ()
+  "Tranform meters to feet.
+\\unit[3]{m} turns to \\unit[10]{Fuss}."
+  (interactive)
+  (while (re-search-forward "\\\\unit\\[\\([0-9]+\\)\\]{m}" nil t)
+    (let* ((m (string-to-number (match-string 1)))
+	   (ft (* 3 m))
+	   (s))
+      (setq ft
+	    (cond ((= m 3) 10)
+		  ((= m 6) 20)
+		  (t ft)))
+      (replace-match (format "\\\\unit[%d]{Fuss}" ft)))))
 
 ;;; automatic additions
 
