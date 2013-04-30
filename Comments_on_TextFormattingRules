@@ -40,3 +40,14 @@ Except for here in the talk section, where it is not a mouse-over effect.
 
 -- MichaelPaulukonis 2013-04-30 13:15 UTC
 
+
+----
+
+Yes, obviously the text needs to be changed.
+
+As for the timestamp, it's still there: ##<div class="color one level0"><div class="portrait"><p><a class="newauthor" title="2013-04-30 09:34 UTC" href="http://www.emacswiki.org/emacs-en/AlexSchroeder"><img class="portrait" src="http://alexschroeder.ch/pics/alex-drinking-coffee-48-bw.jpg" alt="new: 2013-04-30 09:34 UTC" /></a> <br /> <a class="local" href="http://www.emacswiki.org/emacs-en/AlexSchroeder">AlexSchroeder</a></p></div>## and it still renders as a tool-tip when I hover over the image with the mouse.
+
+http://i.imgur.com/5suVsME.png
+
+-- AlexSchroeder 2013-04-30 13:25 UTC
+
