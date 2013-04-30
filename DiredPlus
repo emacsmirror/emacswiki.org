@@ -700,9 +700,20 @@ Regression appears to be fixed now (26.02.2013) -- [[Anonymous]]
 [new:DrewAdams:2013-02-26 06:20 UTC]
 Yes, I just noticed the same thing.  Unfortunately, there are at least two other font-lock bugs that were introduced at the same time, and they are still not fixed.  But this problem, affecting Dired+, can be closed.  -- DrewAdams
 
+[new:sabof:2013-04-30 05:46 UTC]
+Might it be possible to rewrite the redefinitions to something similar to this:
+{{{
+(defvar diredp-auto-initialise t)
 
+(defun diredp-do-delete (...) ...)
 
+(when diredp-auto-initialise
+  (defalias 'dired-do-delete diredp-do-delete))
+}}}
 
+This way it would be easier to use some re-definitions, but not others, and backward-compatibility would be maintained.
+
+-- sabof
 
 
 
@@ -718,4 +729,3 @@ CategoryFiles
 CategoryWThirtyTwo
 CategoryMouse
 CategoryMenus
-
