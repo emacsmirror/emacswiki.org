@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue Apr 23 19:21:05 2013 (-0700)
+;; Last-Updated: Tue Apr 30 13:54:39 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 9977
+;;     Update #: 9992
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -86,6 +86,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2013/04/24 dadams
+;;     icicle-dired-saved-file-candidates:
+;;       Removed error if no saved file names.  Forgot to remove, when added icicle-file-list choosing.
+;;       icicle-dired-saved-file-candidates(-other-window): Error if no files after icicle-file-list.
 ;; 2013/04/17 dadams
 ;;     icicle-buffer-name-prompt, icicle-default-buffer-names: C-u C-u C-u means invisible buffers.
 ;;     icicle-kill-buffer: Add current buff to icicle-default-buffer-names.
@@ -1733,6 +1737,13 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2013/04/30 dadams
+;;     Renamed: icicle-add-default-to-prompt to icicle-handle-default-for-prompt.
+;;     icicle-handle-default-for-prompt: Always remove existing default expression from prompt.
+;;                                       Added INCLUDE.  If nil, do not add DEFAULT (just remove it).
+;;     icicle-completing-read:
+;;       Invoke icicle-handle-default-for-prompt unconditionally, passing (eq icicle-default-value t).
+;;     icicle-read-string: Use icicle-handle-default-for-prompt, not icicle-add-default-to-prompt.
 ;; 2013/04/22 dadams
 ;;     icicle-read-buffer: Pass all args to read-buffer-function funcall.  Thx to Nick Alcock.
 ;; 2013/04/08 dadams
@@ -3814,6 +3825,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2013/04/24 dadams
+;;     icicle-minibuffer-help: Better intro for completion cases.
 ;; 2013/04/18 dadams
 ;;     icicle-(un)bind-buffer-candidate-keys:
 ;;       Rewrote to use (new) option icicle-buffer-candidate-key-bindings.
@@ -5424,6 +5437,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2013/04/24 dadams
+;;     Fixed define-key-after sexps for older Emacs versions that do not allow multi-event KEY.
 ;; 2013/04/23 dadams
 ;;     Added: icicle-minibuf-(act-on-all|candidate-set|edit|history|save-retrieve)-menu-map,
 ;;     Minibuf menu: Factored with submenus:
