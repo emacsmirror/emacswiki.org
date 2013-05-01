@@ -8,6 +8,8 @@ The hints that has a alphabet code are shown when you push a "f" key on Firefox 
 
 Then, if you push the alphabet, you can jump the linked URL.
 
+=== pophint.el ===
+
 "pophint.el" provides same interface on Emacs.
 
 For detail, see https://github.com/aki2o/emacs-pophint
