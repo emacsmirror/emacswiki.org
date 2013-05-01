@@ -23,17 +23,17 @@ This is Korean page for SiteMap.  영어로 된 페이지를 보려면, [EmacsWi
 == 이맥스 배우기 ==
 
 * EmacsNewbie / [[이맥스초보]] -- 기본개념들, 용어집, 문서내에서 사용되는 표기법
-* [EmacsWiki:CategoryDocumentation 문서분류(CategoryDocumentation)]-- 이맥스는 그 자체가 문서화도구이며 유용합니다. 
-* [EmacsWiki:CategoryHelp 도움말분류(CategoryHelp)] -- 이맥스의 온라인 및  이맥스를 쓰는 이들이 만든 도움말
-* [EmacsWiki:CategoryGlossary 용어분류(CategoryGlossary)] -- 이맥스 사용자가 쓰는 용어들에 대한 설명
+* [EmacsWiki:CategoryDocumentation 문서(Documentation)]-- 이맥스는 그 자체가 문서화도구이며 유용합니다. 
+* [EmacsWiki:CategoryHelp 도움말(Help)] -- 이맥스의 온라인 및  이맥스를 쓰는 이들이 만든 도움말
+* [EmacsWiki:CategoryGlossary 용어(Glossary)] -- 이맥스 사용자가 쓰는 용어들에 대한 설명
 * EmacsNiftyTricks / [[이맥스멋진요령]] -- 여러분들이 좀처럼 못 찾은 몇몇 팁이 있습니다.
 * RandomPage -- 닥치는데로 배우고 싶은 열성적인 학습자들을 위해....
 
 == 이맥스를 구해 설치하기 ==
 
-* [EmacsWiki:CategoryPorts 이맥스이식분류(Ports)] - MS-Windows, Mac, GNU/Linux, 및 free BSD 등을 위한 빌드된 바이너리
+* [EmacsWiki:CategoryPorts 이맥스이식(Ports)] - MS-Windows, Mac, GNU/Linux, 및 free BSD 등을 위한 빌드된 바이너리
 * [EmacsWiki:CategoryWThirtyTwo MsWindows] / [[이맥스윈도우즈분류]] - 윈도우즈에서의 설치에 대한 상세한 내용
-* [EmacsWiki:CategoryBuilding 이맥스빌드분류(CategoryBuilding)] - 소스 코드로부터 이맥스를 컴파일하고 빌드하는 순서 및 방법
+* [EmacsWiki:CategoryBuilding 이맥스빌드(Building)] - 소스 코드로부터 이맥스를 컴파일하고 빌드하는 순서 및 방법
 
 == 이맥스 한글 팁 ==
 
@@ -42,95 +42,95 @@ This is Korean page for SiteMap.  영어로 된 페이지를 보려면, [EmacsWi
 = 일반적인 사용법 ==
 
 * [EmacsWiki:CategoryAccessibility Accessibility] -- 이맥스가 어떻게 컴퓨터의 사용을 좀 더 쉽게 해주는지에 대한 내용
-* [EmacsWiki:CategoryBufferSwitching 버퍼변경분류(CategoryBufferSwitching)] - 하나의 버퍼에서 다른 버퍼로 바꾸는 법
-* [EmacsWiki:CategoryCommands 명령어분류(CategoryCommands)] - M-x(메타키(보통ALT키 또는 ESC키)-x 를 누른후 입력할 수 있는) 명령, [EmacsWiki:MinibufferHistory 미니버퍼입력내역(MinibufferHistory)], 파일열기...
-* [EmacsWiki:CategoryCompletion 자동완성분류(CategoryCompletion)] - 자동완성(completion)기능이 어떻게 동작하는가, 어떤 라이브러리가 쓰이는가, 그리고 이맥스가 어떤 특별한 모드를 주는가.
+* [EmacsWiki:CategoryBufferSwitching 버퍼변경(BufferSwitching)] - 하나의 버퍼에서 다른 버퍼로 바꾸는 법
+* [EmacsWiki:CategoryCommands 명령어(Commands)] - M-x(메타키(보통ALT키 또는 ESC키)-x 를 누른후 입력할 수 있는) 명령, [EmacsWiki:MinibufferHistory 미니버퍼입력내역(MinibufferHistory)], 파일열기...
+* [EmacsWiki:CategoryCompletion 자동완성(Completion)] - 자동완성(completion)기능이 어떻게 동작하는가, 어떤 라이브러리가 쓰이는가, 그리고 이맥스가 어떤 특별한 모드를 주는가.
 
-* [EmacsWiki:CategoryCustomize 커스터마이즈분류(CategoryCustomize)]커스터마이징에 대한 일반적인 내용 및 "간편 커스터마이징"(M-x customize)기능에 대한 내용. 
-* [EmacsWiki:CategoryDotEmacs 이맥스설정파일분류(CategoryDotEmacs)] - 이맥스의 설정파일인 ~/.emacs(보통 [[DotEmacs]]라고 부른다)에 대한 내용. Elisp의 초보자에게 도움이 될 만한 내용이 있음.
-* [EmacsWiki:CategoryDisplay 화면설정분류(CategoryDisplay)] X윈도우의 마우스 포인터나 윈도우 프레임(외곽선)의 모양과 같은 화면설정과 관련된 내용
-* [EmacsWiki:CategoryFaces 글꼴설정분류(CategoryFaces)] 문맥강조(Syntax highlighting), 색상, 폰트락(font-lock)에 대하여.
-** [EmacsWiki:CategoryFrames 프레임분류(CategoryFrame)] : 여기서의 프레임은 우리가 보통 알고 있는 "윈도우"로 이맥스의 프레임 설정(크기,위치등)에 대한 설정관련 내용
-* [EmacsWiki:CategoryInternationalization 다국어사용분류(CategoryInternationalization)] -  이맥스를 자국어 사용이 가능하도록 설정하는 방법 등 "국제화(internalization, i18n)"에 대한 내용. 
-* [EmacsWiki:CategoryKeys 단축키분류(CategoryKeys)] 키바인딩(보통 "단축키"라고 하는)의 커스터마이징
-* [EmacsWiki:CategoryMouse 마우스분류(CategoryMouse)] -- 마우스 동작을 특정기능과 연동시키는 방법과 다양한 활용법
-* [EmacsWiki:CategoryPaths 경로설정분류(CategoryPaths)] - 운영체제의 경로와 이맥스내에서의 경로를 함께 사용하기
-* [EmacsWiki:CategoryPersistence 이맥스상태저장분류(CategoryPersistence)] - 이맥스를 사용하는 매 session마다 상태를 저장해 두었다가 다음번 실행때 복구하는 방법등에 대한 내용.
-** [EmacsWiki:CategoryWindows 윈도우분류(CategoryWindows)] : 여기서의 윈도우는 우리가 보통 알고 있는 "윈도우"가 아니라, 이맥스내의 "화면분할영역"이며, 이의 설정에 관련된 내용
+* [EmacsWiki:CategoryCustomize 커스터마이즈(Customize)]커스터마이징에 대한 일반적인 내용 및 "간편 커스터마이징"(M-x customize)기능에 대한 내용. 
+* [EmacsWiki:CategoryDotEmacs 이맥스설정파일(DotEmacs)] - 이맥스의 설정파일인 ~/.emacs(보통 [[DotEmacs]]라고 부른다)에 대한 내용. Elisp의 초보자에게 도움이 될 만한 내용이 있음.
+* [EmacsWiki:CategoryDisplay 화면설정(Display)] X윈도우의 마우스 포인터나 윈도우 프레임(외곽선)의 모양과 같은 화면설정과 관련된 내용
+* [EmacsWiki:CategoryFaces 글꼴설정(Faces)] 문맥강조(Syntax highlighting), 색상, 폰트락(font-lock)에 대하여.
+** [EmacsWiki:CategoryFrames 프레임(Frame)] : 여기서의 프레임은 우리가 보통 알고 있는 "윈도우"로 이맥스의 프레임 설정(크기,위치등)에 대한 설정관련 내용
+* [EmacsWiki:CategoryInternationalization 다국어사용(Internationalization)] -  이맥스를 자국어 사용이 가능하도록 설정하는 방법 등 "국제화(internalization, i18n)"에 대한 내용. 
+* [EmacsWiki:CategoryKeys 단축키(Keys)] 키바인딩(보통 "단축키"라고 하는)의 커스터마이징
+* [EmacsWiki:CategoryMouse 마우스(Mouse)] -- 마우스 동작을 특정기능과 연동시키는 방법과 다양한 활용법
+* [EmacsWiki:CategoryPaths 경로설정(Paths)] - 운영체제의 경로와 이맥스내에서의 경로를 함께 사용하기
+* [EmacsWiki:CategoryPersistence 이맥스상태저장(Persistence)] - 이맥스를 사용하는 매 session마다 상태를 저장해 두었다가 다음번 실행때 복구하는 방법등에 대한 내용.
+** [EmacsWiki:CategoryWindows 윈도우(Windows)] : 여기서의 윈도우는 우리가 보통 알고 있는 "윈도우"가 아니라, 이맥스내의 "화면분할영역"이며, 이의 설정에 관련된 내용
 
-* [EmacsWiki:CategoryEditing 편집기능분류(CategoryEditing)] - 효율적인 편집을 위한 멋진 아이디어들.
-* [EmacsWiki:CategoryFilling 자동줄바꿈분류(CategoryFilling)] - 긴 줄을 아래로 둘러 내림, 줄 바꾸기
-** [EmacsWiki:CategoryIndentation 들여쓰기분류(CategoryIndentation)] - 어떻게 문장과 프로그램 코드등이 들여써질 지를 다룸.
-** [EmacsWiki:CategoryParentheses 괄호맞춤분류(CategoryParentheses)] - 괄호를 맞춤, 괄호를 바꿈
-** [EmacsWiki:CategoryRegion 선택영역분류(CategoryRegion)] - 선택영역에 대해 할 수 있는 것
-** [EmacsWiki:CategorySpelling 맞춤법분류(CategorySpelling)] - 입력한 문장의 맞춤법을 검사하기.
-** [EmacsWiki:CategoryTemplates 템플릿분류(CategoryTemplates)] - 반복되는 단어의 입력, 템플릿(template), 서식(form)등, 사용자 키입력의 양을 줄이는 방법
-** [EmacsWiki:CategoryUndo 되돌리기분류(CategoryUndo)] - 변경사항을 되돌림, 되돌려진 사항의 확인등.
+* [EmacsWiki:CategoryEditing 편집기능(Editing)] - 효율적인 편집을 위한 멋진 아이디어들.
+* [EmacsWiki:CategoryFilling 자동줄바꿈(Filling)] - 긴 줄을 아래로 둘러 내림, 줄 바꾸기
+** [EmacsWiki:CategoryIndentation 들여쓰기(Indentation)] - 어떻게 문장과 프로그램 코드등이 들여써질 지를 다룸.
+** [EmacsWiki:CategoryParentheses 괄호맞춤(Parentheses)] - 괄호를 맞춤, 괄호를 바꿈
+** [EmacsWiki:CategoryRegion 선택영역(Region)] - 선택영역에 대해 할 수 있는 것
+** [EmacsWiki:CategorySpelling 맞춤법(Spelling)] - 입력한 문장의 맞춤법을 검사하기.
+** [EmacsWiki:CategoryTemplates 템플릿(Templates)] - 반복되는 단어의 입력, 템플릿(template), 서식(form)등, 사용자 키입력의 양을 줄이는 방법
+** [EmacsWiki:CategoryUndo 되돌리기(Undo)] - 변경사항을 되돌림, 되돌려진 사항의 확인등.
 * [EmacsWiki:CategoryFiles Files] -- 로컬 파일, 원격 파일, 백업 파일등등...의 파일과 디렉토리들을 다루는 법.
-** [EmacsWiki:CategoryDirectories 파일관리분류(CategoryDirectories)] - 예전 한국에서 유명했던 mdir과 같이 쉽고 빠르면서도 유용한 파일관리환경인 '''Dired'''
-* [EmacsWiki:CategoryHideStuff 생략기능분류(CategoryHideStuff)] - 한 버퍼의 아무 곳을 감춤
-** [EmacsWiki:CategoryOutline 요약기능분류(CategoryOutline)] - 폴딩(folding)이라 불리우는 "내용요약(outlining) 및 상세내용표시기능(zooming)"을 사용해 버퍼의 내용 일부를 감추기
-* [EmacsWiki:CategoryModes 모드분류(CategoryMode)] - 이 페이지에서 나오지 않는 다양한 모드에 대한 문서,확장기능등..
-** [EmacsWiki:CategoryHypermedia 하이퍼미디어분류(CategoryHypermedia)] - HTML, 위키, GNU Info파일등.
-** [EmacsWiki:CategorySql SQL분류(CategorySql)] - SQL과 데이터베이스
+** [EmacsWiki:CategoryDirectories 파일관리(Directories)] - 예전 한국에서 유명했던 mdir과 같이 쉽고 빠르면서도 유용한 파일관리환경인 '''Dired'''
+* [EmacsWiki:CategoryHideStuff 생략기능(HideStuff)] - 한 버퍼의 아무 곳을 감춤
+** [EmacsWiki:CategoryOutline 요약기능(Outline)] - 폴딩(folding)이라 불리우는 "내용요약(outlining) 및 상세내용표시기능(zooming)"을 사용해 버퍼의 내용 일부를 감추기
+* [EmacsWiki:CategoryModes 모드(Mode)] - 이 페이지에서 나오지 않는 다양한 모드에 대한 문서,확장기능등..
+** [EmacsWiki:CategoryHypermedia 하이퍼미디어(Hypermedia)] - HTML, 위키, GNU Info파일등.
+** [EmacsWiki:CategorySql SQL(Sql)] - SQL과 데이터베이스
 ** [EmacsWiki:CategoryTables Table] - 표 작성기능
-** [EmacsWiki:CategoryTex TEX분류(CategoryTex)] - Tex과 Latex
-** [EmacsWiki:CategoryXML XML분류(CategoryXML)] - XML관련 기술내용
-* [EmacsWiki:CategoryMenus 메뉴분류(CategoryMenus)] -- 메뉴막대 및 팝업메뉴를 포함한 이맥스 메뉴들.
-** [EmacsWiki:CategoryMouse 마우스분류(CategoryMouse)] -- 마우스 동작을 특정기능과 연동시키는 방법과 다양한 활용법
-* [EmacsWiki:CategoryPrinting 인쇄분류(CategoryPrinting)] -- 파일, 버퍼, 및 (선택)영역의 인쇄.
-* [EmacsWiki:CategoryProgramming 프로그래밍분류(CategoryProgramming)] -- 프로그래밍하는 사람들이 하는 커스터마이징에 대해.
-* [EmacsWiki:CategorySearchAndReplace 찾기바꾸기분류(CategorySearchAndReplace)] -- 모든 편집기가 할 수 있는 기능. 하지만 이맥스는 조금 더 할 수 있는 부분.
-** [EmacsWiki:CategoryRegexp 정규표현식분류(CategoryRegexp)] - 정규표현식(regular expressions; regexp)을 이용한 찾기과 바꾸기 등
-* [EmacsWiki:CategoryWriting 문서작성분류(CategoryWriting)] -- 이맥스와 다른 도구들을 함께 사용해 문서를 만드는 방법.
+** [EmacsWiki:CategoryTex TEX(Tex)] - Tex과 Latex
+** [EmacsWiki:CategoryXML XML(XML)] - XML관련 기술내용
+* [EmacsWiki:CategoryMenus 메뉴(Menus)] -- 메뉴막대 및 팝업메뉴를 포함한 이맥스 메뉴들.
+** [EmacsWiki:CategoryMouse 마우스(Mouse)] -- 마우스 동작을 특정기능과 연동시키는 방법과 다양한 활용법
+* [EmacsWiki:CategoryPrinting 인쇄(Printing)] -- 파일, 버퍼, 및 (선택)영역의 인쇄.
+* [EmacsWiki:CategoryProgramming 프로그래밍(Programming)] -- 프로그래밍하는 사람들이 하는 커스터마이징에 대해.
+* [EmacsWiki:CategorySearchAndReplace 찾기와바꾸기(SearchAndReplace)] -- 모든 편집기가 할 수 있는 기능. 하지만 이맥스는 조금 더 할 수 있는 부분.
+** [EmacsWiki:CategoryRegexp 정규표현식(Regexp)] - 정규표현식(regular expressions; regexp)을 이용한 찾기과 바꾸기 등
+* [EmacsWiki:CategoryWriting 문서작성(Writing)] -- 이맥스와 다른 도구들을 함께 사용해 문서를 만드는 방법.
 
 == 외부 프로그램과 원격 서비스 ==
 
-* [EmacsWiki:CategoryBatchMode 일괄처리분류(CategoryBatchMode)] -- EmacsLisp 을 또 하나의 스크립트언어로 활용
-* [EmacsWiki:CategoryCalculators 계산기분류(CategoryCalculators)] -- 수학적 연산을 하는 이맥스의 계산기. 공대생들이 쓰는 계산기 그 이상의 기능을 가지고 있다.
-** [EmacsWiki:CategoryFinancial 회계분류(CategoryFinancial)] -- 금전관리기능
-* [EmacsWiki:CategoryTodo 해야할일분류(CategoryTodo)] - 달력, 일기, 약속 스케쥴러... 
-** [EmacsWiki:CategoryTimeTracking 시간추적분류(CategoryTimeTracking)] -- 해야할 일에 들어갈 시간을 추적
-* [EmacsWiki:CategoryEducation 교육분류(CategoryEducation)] -- 새로운 것을 배우고, 사전으로 활용하고, 시험을 치는 기능들.
-* [EmacsWiki:CategoryExternalUtilities 외부유틸리티부류(CategoryExternalUtilities)] -- 소프트웨어 개발(즉, 프로그래밍)이외의 작업을 위해 사용할 만한 외부 유틸리티.
-** [EmacsWiki:CategoryCryptography 암호화분류(CategoryCryptography)] -- 이맥스를 사용해 편집하거나 읽을 파일을 암호화하기 및 해독하기.
-** [EmacsWiki:CategoryShell 쉘분류(CategoryShell)] -- 이맥스에 내장된 쉘 사용하기
-** [EmacsWiki:CategoryEshell Eshell분류(CategoryEshell)] -- 완전히 [[EmacsLisp]]으로 구현된 또 다른 내장 쉘 환경.
-** [EmacsWiki:CategoryVersionControl 버젼관리분류(CategoryVersionControl)] -- Emacs를 사용해 버젼관리하기(CVS, RCS, SCCS, SVN, GIT,...)
-* [EmacsWiki:CategoryGames 게임분류(CategoryGames)] -- 이맥스에는 게임도 내장되어 있다.
-* [EmacsWiki:CategoryInterface 인터페이스분류(CategoryInterface)] -- 온라인 유틸리티과의 상호 연동에 관한 내용
-** [EmacsWiki:CategoryChatClient 채팅분류(CategoryChatClient)] -- 이맥스를 사용해 채팅하기.
-** [EmacsWiki:CategoryJournaling 블로그분류(CategoryJournaling)] -- 이맥스를 사용해 블로그 관리하기 등.
-* [EmacsWiki:CategoryMail 메일분류(CategoryMail)] -- 메일 클라이언트 이맥스.
-** [EmacsWiki:CategoryGnus Gnus분류(CategoryGnus)] -- 뉴스그룹에 올라온 글 및 메일 읽기 클라이언트.
-** [EmacsWiki:CategoryMailAddons 메일애드온분류(CategoryMailAddons)] -- 이메일을 자동으로 처리하는 기능(Gnus이외).
-* [EmacsWiki:CategoryPersonalInformationManager 다이어리분류(CategoryPersonalInformationManager)] -- PIM 즉, 속칭 "다이어리" 기능
-** [EmacsWiki:CategoryBbdb Bbdb분류(CategoryBbdb)] -- Bbdb란 "Big Brother <nowiki>DataBase</nowiki>"란 이름의 데이터베이스. 전화번호, 이름, 나이등을 관리하는 기능.
-* [EmacsWiki:CategoryProgrammerUtils 프로그래밍도구분류(CategoryProgrammerUtils] -- 코드 브라우저와 같은 프로그래머의 생산성을 향상시키는 도구들
-* [EmacsWiki:CategoryRelated 이맥스관련분류(CategoryRelated)] -- 다른 프로그램하에서 실행되는 이맥스 환경(브라우저, 터미널 에뮬레이터...)
-* [EmacsWiki:CategoryRemoteEmacs 원격접속분류(CategoryRemoteEmacs)] --- 아주 멀리 있는 서버에서 이맥스 실행시키기. 
-* [EmacsWiki:CategoryWebBrowser 웹브라우저분류(CategoryWebBrowser)] -- 이맥스 환경에서 웹 서핑하기
+* [EmacsWiki:CategoryBatchMode 일괄처리(BatchMode)] -- EmacsLisp 을 또 하나의 스크립트언어로 활용
+* [EmacsWiki:CategoryCalculators 계산기(Calculators)] -- 수학적 연산을 하는 이맥스의 계산기. 공대생들이 쓰는 계산기 그 이상의 기능을 가지고 있다.
+** [EmacsWiki:CategoryFinancial 회계(Financial)] -- 금전관리기능
+* [EmacsWiki:CategoryTodo 해야할일(Todo)] - 달력, 일기, 약속 스케쥴러... 
+** [EmacsWiki:CategoryTimeTracking 시간추적(TimeTracking)] -- 해야할 일에 들어갈 시간을 추적
+* [EmacsWiki:CategoryEducation 교육(Education)] -- 새로운 것을 배우고, 사전으로 활용하고, 시험을 치는 기능들.
+* [EmacsWiki:CategoryExternalUtilities 외부유틸리티(ExternalUtilities)] -- 소프트웨어 개발(즉, 프로그래밍)이외의 작업을 위해 사용할 만한 외부 유틸리티.
+** [EmacsWiki:CategoryCryptography 암호화(Cryptography)] -- 이맥스를 사용해 편집하거나 읽을 파일을 암호화하기 및 해독하기.
+** [EmacsWiki:CategoryShell 쉘(Shell)] -- 이맥스에 내장된 쉘 사용하기
+** [EmacsWiki:CategoryEshell Eshell(Eshell)] -- 완전히 [[EmacsLisp]]으로 구현된 또 다른 내장 쉘 환경.
+** [EmacsWiki:CategoryVersionControl 버젼관리(VersionControl)] -- Emacs를 사용해 버젼관리하기(CVS, RCS, SCCS, SVN, GIT,...)
+* [EmacsWiki:CategoryGames 게임(Games)] -- 이맥스에는 게임도 내장되어 있다.
+* [EmacsWiki:CategoryInterface 인터페이스(Interface)] -- 온라인 유틸리티과의 상호 연동에 관한 내용
+** [EmacsWiki:CategoryChatClient 채팅(ChatClient)] -- 이맥스를 사용해 채팅하기.
+** [EmacsWiki:CategoryJournaling 블로그(Journaling)] -- 이맥스를 사용해 블로그 관리하기 등.
+* [EmacsWiki:CategoryMail 메일(Mail)] -- 메일 클라이언트 이맥스.
+** [EmacsWiki:CategoryGnus Gnus] -- 뉴스그룹에 올라온 글 및 메일 읽기 클라이언트.
+** [EmacsWiki:CategoryMailAddons 메일애드온(MailAddons)] -- 이메일을 자동으로 처리하는 기능(Gnus이외).
+* [EmacsWiki:CategoryPersonalInformationManager 다이어리(PersonalInformationManager)] -- PIM 즉, 속칭 "다이어리" 기능
+** [EmacsWiki:CategoryBbdb Bbdb] -- Bbdb란 "Big Brother <nowiki>DataBase</nowiki>"란 이름의 데이터베이스. 전화번호, 이름, 나이등을 관리하는 기능.
+* [EmacsWiki:CategoryProgrammerUtils 프로그래밍도구(ProgrammerUtils] -- 코드 브라우저와 같은 프로그래머의 생산성을 향상시키는 도구들
+* [EmacsWiki:CategoryRelated 이맥스관련(Related)] -- 다른 프로그램하에서 실행되는 이맥스 환경(브라우저, 터미널 에뮬레이터...)
+* [EmacsWiki:CategoryRemoteEmacs 원격접속(RemoteEmacs)] --- 아주 멀리 있는 서버에서 이맥스 실행시키기. 
+* [EmacsWiki:CategoryWebBrowser 웹브라우저(WebBrowser)] -- 이맥스 환경에서 웹 서핑하기
 
 
 == 이맥스 개발하기 : Lisp and C Source Code ==
 
-* [English:CategoryCode 코드분류(CategoryCode)] -- EmacsLisp 코딩 팁들.
-* [English:CategoryDebug 디버그(CategoryDebug)] -- 이맥스를 디버깅하거나 이맥스를 사용해 디버깅하기
-* [English:CategoryExtensionLanguage 확장언어분류(CategoryExtensionLanguage)] -- [[EmacsLisp]]을 대체하는 이맥스용 언어. Guile, Erlang, Python...
-* [English:CategoryBuilding 빌드분류(CategoryBuilding)] -- 소스코드로 부터 이맥스를 빌드하는 방법
-* [English:CategoryPatches 패치분류(CategoryPatches] -- 거의 대부분, C 언어 수준에서 (기능/성능)확장이 이루어지며, 이맥스가 패치된다.
+* [English:CategoryCode 코드(Code)] -- EmacsLisp 코딩 팁들.
+* [English:CategoryDebug 디버그(Debug)] -- 이맥스를 디버깅하거나 이맥스를 사용해 디버깅하기
+* [English:CategoryExtensionLanguage 확장언어(ExtensionLanguage)] -- [[EmacsLisp]]을 대체하는 이맥스용 언어. Guile, Erlang, Python...
+* [English:CategoryBuilding 빌드(Building)] -- 소스코드로 부터 이맥스를 빌드하는 방법
+* [English:CategoryPatches 패치(Patches] -- 거의 대부분, C 언어 수준에서 (기능/성능)확장이 이루어지며, 이맥스가 패치된다.
 
 == 이맥스의 버그, 요청 사항 ==
 
 * EmacsBugs -- 이맥스의 버그에 대한 토론
-* [English:CategoryWishList 요구사항분류(CategoryWishList)] -- 아직 이맥스는 완전하지 않으므로..
+* [English:CategoryWishList 요구사항(WishList)] -- 아직 이맥스는 완전하지 않으므로..
 
 == 이맥스 동호회 ==
 
 * EmacsImplementations -- 이맥스인들(Emacsen)과 이들에게 영향을 준 인물들.
-* [English:CategoryHistory 역사분류(CategoryHistory)] -- 20년 이상의 이맥스의 장고한 역사.
-* [English:CategoryHomepage 홈페이지분류(CategoryHomepage)] -- 이맥스 친구들의 페이지. '''''당신'''''의 홈페이지도 여기에 있을 수 있습니다!!!!
-* [English:CategoryHumor 유머분류(CategoryHumor)] --  이맥스 사용자는 이맥스를 커스터마이징하지 않는 시간에는 웃긴 거리들을 많이 만듭니다. 
+* [English:CategoryHistory 역사(History)] -- 20년 이상의 이맥스의 장고한 역사.
+* [English:CategoryHomepage 홈페이지(Homepage)] -- 이맥스 친구들의 페이지. '''''당신'''''의 홈페이지도 여기에 있을 수 있습니다!!!!
+* [English:CategoryHumor 유머(Humor)] --  이맥스 사용자는 이맥스를 커스터마이징하지 않는 시간에는 웃긴 거리들을 많이 만듭니다. 
 
 == 이어지는 이야기, 글 ==
 
