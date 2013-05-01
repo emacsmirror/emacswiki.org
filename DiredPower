@@ -165,6 +165,10 @@ A small customization to use your [mouse-2] button (middle button) to "find-alte
 
 To omit unmarked files, just type tk. This toggles the mark and then kills all the marked lines (which were previously the unmarked lines). Silly, but simple.
 
+= Hide details =
+
+By default, Dired prints many fields for each file, some of which might be unnecessary clutter. An easy way cut away some of it is to add "-Gg --time-style=+ " to variable dired-listing-switches. This makes Dired omit owner, group and date fields.
+
 = See Also =
 
 
