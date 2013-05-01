@@ -1,11 +1,11 @@
 These, in combination with MoveLine and MoveRegion, provide behavior similar to Eclipse's Alt-Up/Down.  They use MoveLine if there is no active [[region]], MoveRegion if there is.  Note that unlike in Eclipse, the [[region]] will not expand to the beginning of the first line or the end of the last line, see the [https://github.com/targzeta/move-lines move-lines] package for this.
 
 {{{
-(defun move-line-region-up (start end n)
+(defun move-line-region-up (&optional start end n)
   (interactive "r\np")
   (if (region-active-p) (move-region-up start end n) (move-line-up n)))
 
-(defun move-line-region-down (start end n)
+(defun move-line-region-down (&optional start end n)
   (interactive "r\np")
   (if (region-active-p) (move-region-down start end n) (move-line-down n)))
 
