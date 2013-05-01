@@ -5,7 +5,7 @@ below the surface that I never use. I was not disappointed.
 
 Yes, I know, this should really be placed under Emacs nifty features, but I did not want to SPAM that page... :) -- ''Alex says: Don't worry, that page should be ripped appart and redistributed over the wiki!!''
 
-= Dired Marks vs Dired Flags =
+== Dired Marks vs Dired Flags ==
 
 Also something I did not know: you can flag a file with almost any
 character, not just `D' and `*' which you are probably used to. For
@@ -161,15 +161,18 @@ A small customization to use your [mouse-2] button (middle button) to "find-alte
 (define-key dired-mode-map [mouse-2] 'dired-mouse-find-alternate-file)
 </pre>
 
-= Hiding unmarked files = 
+== Hiding unmarked files ==
 
 To omit unmarked files, just type tk. This toggles the mark and then kills all the marked lines (which were previously the unmarked lines). Silly, but simple.
 
-= Hide details =
+== Hide details ==
 
 By default, Dired prints many fields for each file, some of which might be unnecessary clutter. An easy way cut away some of it is to add "-Gg --time-style=+ " to variable dired-listing-switches. This makes Dired omit owner, group and date fields.
 
-= See Also =
+[new:DrewAdams:2013-05-01 18:41 UTC]
+That does not work on MS WIndows, AFAICT.  But you can hide details on any platform, and regardless of the `ls' switches used, using DiredDetails. -- DrewAdams
+
+== See Also ==
 
 
 * [[Bookmark+]] -- Bookmark Dired buffers (their markings, insertions, etc.). Open a set of file bookmarks in Dired. Bookmark each of the marked files in Dired.
