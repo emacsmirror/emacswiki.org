@@ -1,6 +1,3 @@
-[[de:维基下载]]
-[[de:维基下载]]
-[[de:维基下载]]
 Here is how to download the wiki:
 
 * [[Git repository]] of the raw EmacsWiki pages. Every change on the Emacswiki is checked in individually. Also contains branches for individual packages with intact history. Great in every regard ;-)
