@@ -4,10 +4,10 @@ Lisp:perl-completion.el - minor mode provides useful features for editing perl c
 perl-completion.el is a minor mode which provides several useful features such as variable/method/module code completion, easy perldoc browsing, and more described below in your perl-mode.
 
 This module is one of anything application [AnythingApplications] .
-So that means anything.el is required to run this elisp. please install anyhing.el first unless you already have.
+So that means anything.el is required to run this elisp. please install anything.el first unless you already have.
 
 === Screen cast is available ===
-My English is not so good, so i made ScreenCast.
+My English is not so good, so I made a screencast.
 
 [http://vimeo.com/4739908 Screen Cast(vimeo)]
 
