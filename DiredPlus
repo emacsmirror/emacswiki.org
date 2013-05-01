@@ -802,6 +802,19 @@ I don't care much about the implementation, as long as it's easy to do -- maybe 
 
 At the moment I don't have any (objective) improvements to particular functions in mind. -- [[sabof]]
 
+[new:DrewAdams:2013-05-01 00:09 UTC]
+While I agree with you in the abstract, there are zillions of pieces that one could offer as being optional.  In '''[[Icicles]]]''', for example, there are 200 [[user option]]s and the non-'''Icicles''' libraries it loads are all optional.  There are many ways to customize the default behavior.  
+
+But the same thing goes there: Unless someone points to a particular reason why some '''Dired+''' or '''Icicles'''  function redefinition should be optional I am disinclined to make it so.
+
+If can point to a problem you run into because of a particular redefinition, I'll be glad to take a closer look.  Thx -- DrewAdams
+
+
+
+
+
+
+
 ----
 
 ----
