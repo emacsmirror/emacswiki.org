@@ -3,11 +3,11 @@ These, in combination with MoveLine and MoveRegion, provide behavior similar to 
 {{{
 (defun move-line-region-up (&optional start end n)
   (interactive "r\np")
-  (if (region-active-p) (move-region-up start end n) (move-line-up n)))
+  (if (use-region-p) (move-region-up start end n) (move-line-up n)))
 
 (defun move-line-region-down (&optional start end n)
   (interactive "r\np")
-  (if (region-active-p) (move-region-down start end n) (move-line-down n)))
+  (if (use-region-p) (move-region-down start end n) (move-line-down n)))
 
 (global-set-key (kbd "M-p") 'move-line-region-up)
 (global-set-key (kbd "M-n") 'move-line-region-down)
