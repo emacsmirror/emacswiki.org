@@ -1,0 +1,18 @@
+Do you know Vimperator of Firefox Addon and the Hint Mode?
+
+If you don't know it, see a screenshot below.
+
+[[image:VimperatorScreenshot]]
+
+The hints that has a alphabet code are shown when you push a "f" key on Firefox like above.
+
+Then, if you push the alphabet, you can jump the linked URL.
+
+"pophint.el" provides same interface on Emacs.
+
+For detail, see https://github.com/aki2o/emacs-pophint
+
+=== ScreenShot ===
+
+[[image:PophintScreenshot]]
+
