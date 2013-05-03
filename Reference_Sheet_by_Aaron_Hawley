@@ -1975,8 +1975,8 @@ This is a reference card that is unlike other ReferenceCards in that it will not
 ||||**SQL**||
 ||##M-x sql-help##||help||
 ||##M-x sql-db2##||open DB2 interactive buffer||
-||##M-x sql-informix##||open DB2 interactive buffer||
-||##M-x sql-ingres##||open Informix interactive buffer||
+||##M-x sql-informix##||open Informix interactive buffer||
+||##M-x sql-ingres##||open Ingres interactive buffer||
 ||##M-x sql-interbase##||open !InterBase interactive buffer||
 ||##M-x sql-linter##||open RELEX Linter interactive buffer||
 ||##M-x sql-ms##||open Microsoft SQL interactive buffer||
