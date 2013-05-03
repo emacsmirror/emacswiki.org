@@ -10,7 +10,7 @@ and specify dependencies between code blocks.
 Using tag matches you can also reuse the same org file for different emacs setups by specifying different
 tag matches for each setup, or load parts of the file on demand.
 
-== Commands ==
+== Commands/Usage ==
 
 The main command is `org-dotemacs-load-default' which loads your default org-dotemacs file (~/.dotemacs.org)
 and prompts for a tag match to specify which code blocks to load. 
