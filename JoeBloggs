@@ -14,6 +14,7 @@ Note to self: put some of these on elpa/melpa/marmalade
 * '''Lisp:one-key-dir.el''' -- fast directory navigation and file browser using [[OneKey]]
 * '''Lisp:one-key-yas.el''' -- [[OneKey]] menu for [[Yasnippet]]
 * '''Lisp:one-key-bmkp.el''' -- [[OneKey]] menu for [[BookmarkPlus]]
+* '''Lisp:org-dotemacs.el''' -- Store your emacs config as an org file, and choose which bits to load.
 
 ==One-Key==
 I am the current maintainer for [[OneKey]] (Lisp:one-key.el), [[LazySearch]] (Lisp:lazy-search.el), and Lisp:lazy-search-extension.el written by [[AndyStewart]] and [[rubikitch]].
