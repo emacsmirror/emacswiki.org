@@ -47,7 +47,7 @@ After doing that your .dotemacs.org file might look something like this:
 }}}
 
 To load code blocks on startup you need to ensure that this file is loaded before calling
-`org-dotemacs-load-default', see [[Installation]] below.
+`org-dotemacs-load-default', see Installation below.
 
 If you do M-x org-dotemacs-load-default, you will be prompted for a tag match and the corresponding
 code blocks will be loaded (enter an empty tag match string to load all blocks). In this way you can load
