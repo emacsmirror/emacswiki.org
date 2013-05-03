@@ -5,7 +5,7 @@
 ;; Author: Matthew L. Fidler
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Fri Aug  3 22:33:41 2012 (-0500)
-;; Version: 20130322.924
+;; Version: 20130322.925
 ;; Package-Requires: ((http-post-simple "1.0") (yaoddmuse "0.1.1")(header2 "21.0") (lib-requires "21.0"))
 ;; Last-Updated: Wed Aug 22 13:11:26 2012 (-0500)
 ;;           By: Matthew L. Fidler
@@ -79,6 +79,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 3-May-2013    Matthew L. Fidler  
+;;    Last-Updated: Wed Aug 22 13:11:26 2012 (-0500) #794 (Matthew L. Fidler)
+;;    Uploading using org-readme.
 ;; 22-Mar-2013    Matthew L. Fidler  
 ;;    Last-Updated: Wed Aug 22 13:11:26 2012 (-0500) #794 (Matthew L. Fidler)
 ;;    Bug fix for org-readme generating texinfo documentation from org-files.
@@ -1315,107 +1318,117 @@ If so, return the name of that lisp file, otherwise return nil."
 When COMMENT-ADDED is non-nil, the comment has been added and the syncing should begin.
 "
   (interactive)
-  (if (and (not comment-added)
-           (org-readme-in-readme-org-p))
-      (let ((single-lisp-file (org-readme-single-lisp-p)))
-        (message "In Readme.org")
-        (if single-lisp-file
-            (progn
-              (setq org-readme-edit-last-window-configuration (current-window-configuration))
-              (find-file single-lisp-file)
-              (setq org-readme-edit-last-buffer (current-buffer))
-              (org-readme-sync))
-          ;; Multiple lisp files or no lisp files.
-          (message "Posting Description to emacswiki")
-          (org-readme-convert-to-emacswiki)))
-    (if (not comment-added)
-        (progn
-          (setq org-readme-edit-last-buffer (current-buffer))
-          (org-readme-edit))
-      (when (yes-or-no-p "Is this a minor revision (upload to Marmalade)? ")
-        (save-excursion
-          (goto-char (point-min))
-          (let ((case-fold-search t))
-            (when (re-search-forward "^[ \t]*;+[ \t]*Version:" nil t)
-              (if (or org-readme-use-melpa-versions
-                      (save-match-data (looking-at "[ \t]*[0-9]\\{8\\}[.][0-9]\\{4\\}[ \t]*$")))
-                  (progn
-                    (delete-region (point) (point-at-eol))
-                    (insert (concat " " (format-time-string "%Y%m%d." (current-time))
-                                    (format "%d" (or (string-to-number (format-time-string "%H%M" (current-time))) 0)))))
-                (end-of-line)
-                (when (looking-back "\\([ .]\\)\\([0-9]+\\)[ \t]*")
-                  (replace-match (format "\\1%s"
-                                         (+ 1 (string-to-number (match-string 2)))))))))))
-      
-      (message "Adding Readme to Header Commentary")
-      (org-readme-to-commentary)
-      (when org-readme-add-functions-to-readme
-        (message "Updating Functions.")
-        (org-readme-insert-functions))
-      (when org-readme-add-variables-to-readme
-        (message "Updating Variables.")
-        (org-readme-insert-variables))
-      (when org-readme-add-changelog-to-readme
-        (message "Updating Changelog in current file.")
-        (org-readme-changelog-to-readme))
-      (when org-readme-add-top-header-to-readme
-        (org-readme-top-header-to-readme))
-      (save-buffer)
-      (org-readme-gen-info)
-      (when (file-exists-p (concat base ".tar"))
-        (delete-file (concat base ".tar")))
-      
-      (when (and org-readme-create-tar-package
-                 (or (executable-find "tar")
-                     (executable-find "7z")
-                     (executable-find "7za")))
-        (make-directory (concat base "-" ver))
-        (copy-file (concat base ".el") (concat base "-" ver "/" base ".el"))
-        (copy-file (concat base ".info") (concat base "-" ver "/" base ".info"))
-        (copy-file "dir" (concat base "-" ver "/dir"))
-        (with-temp-file (concat base "-" ver "/" base "-pkg.el")
-          (insert "(define-package \"")
-          (insert base)
-          (insert "\" \"")
-          (insert ver)
-          (insert "\" \"")
-          (insert desc)
-          (insert "\" '")
-          (insert pkg)
-          (insert ")"))
-        (if (executable-find "tar")
-            (shell-command (concat "tar -cvf " base ".tar " base "-" ver "/"))
-          (shell-commad (concat "7z" (if (executable-find "7za") "a" "")
-                                " -ttar -so " base ".tar " base "-" ver "/*.*")))
+  (let ((base (file-name-sans-extension
+               (file-name-nondirectory (buffer-file-name)))))
+    (when (string= (downcase base) "readme")
+      (let ((df (directory-files (file-name-directory (buffer-file-name)) t ".*[.]el$")))
+        (unless (= 1 (length df))
+          (setq df (directory-files (file-name-directory (buffer-file-name)) t ".*-mode[.]el$")))
+        (unless (= 1 (length df))
+          (setq df (directory-files (file-name-directory (buffer-file-name)) t ".*-pkg[.]el$")))
+        (when (= 1 (length df))
+          (setq base (file-name-sans-extension (file-name-nondirectory (nth 0 df)))))))
+    (if (and (not comment-added)
+             (org-readme-in-readme-org-p))
+        (let ((single-lisp-file (org-readme-single-lisp-p)))
+          (message "In Readme.org")
+          (if single-lisp-file
+              (progn
+                (setq org-readme-edit-last-window-configuration (current-window-configuration))
+                (find-file single-lisp-file)
+                (setq org-readme-edit-last-buffer (current-buffer))
+                (org-readme-sync))
+            ;; Multiple lisp files or no lisp files.
+            (message "Posting Description to emacswiki")
+            (org-readme-convert-to-emacswiki)))
+      (if (not comment-added)
+          (progn
+            (setq org-readme-edit-last-buffer (current-buffer))
+            (org-readme-edit))
+        (when (yes-or-no-p "Is this a minor revision (upload to Marmalade)? ")
+          (save-excursion
+            (goto-char (point-min))
+            (let ((case-fold-search t))
+              (when (re-search-forward "^[ \t]*;+[ \t]*Version:" nil t)
+                (if (or org-readme-use-melpa-versions
+                        (save-match-data (looking-at "[ \t]*[0-9]\\{8\\}[.][0-9]\\{4\\}[ \t]*$")))
+                    (progn
+                      (delete-region (point) (point-at-eol))
+                      (insert (concat " " (format-time-string "%Y%m%d." (current-time))
+                                      (format "%d" (or (string-to-number (format-time-string "%H%M" (current-time))) 0)))))
+                  (end-of-line)
+                  (when (looking-back "\\([ .]\\)\\([0-9]+\\)[ \t]*")
+                    (replace-match (format "\\1%s"
+                                           (+ 1 (string-to-number (match-string 2)))))))))))
         
-        (delete-file (concat base "-" ver "/" base ".el"))
-        (delete-file (concat base "-" ver "/" base "-pkg.el"))
-        (delete-file (concat base "-" ver "/" base ".info"))
-        (delete-file (concat base "-" ver "/dir"))
-        (delete-directory (concat base "-" ver)))
-      
-      (when (and (featurep 'http-post-simple)
-                 org-readme-sync-marmalade)
-        (message "Attempting to post to marmalade-repo.org")
-        (org-readme-marmalade-post))
-      
-      (when (and (featurep 'yaoddmuse)
-                 org-readme-sync-emacswiki)
-        (message "Posting lisp file to emacswiki")
-        (emacswiki-post nil ""))
-      
-      (when org-readme-sync-git
-        (org-readme-git))
-      
-      (when (and (featurep 'yaoddmuse)
-                 org-readme-sync-emacswiki)
-        (message "Posting Description to emacswiki")
-        (org-readme-convert-to-emacswiki))
-      
-      (when org-readme-edit-last-window-configuration
-        (set-window-configuration org-readme-edit-last-window-configuration)
-        (setq org-readme-edit-last-window-configuration nil)))))
+        (message "Adding Readme to Header Commentary")
+        (org-readme-to-commentary)
+        (when org-readme-add-functions-to-readme
+          (message "Updating Functions.")
+          (org-readme-insert-functions))
+        (when org-readme-add-variables-to-readme
+          (message "Updating Variables.")
+          (org-readme-insert-variables))
+        (when org-readme-add-changelog-to-readme
+          (message "Updating Changelog in current file.")
+          (org-readme-changelog-to-readme))
+        (when org-readme-add-top-header-to-readme
+          (org-readme-top-header-to-readme))
+        (save-buffer)
+        (org-readme-gen-info)
+        (when (file-exists-p (concat base ".tar"))
+          (delete-file (concat base ".tar")))
+        
+        (when (and org-readme-create-tar-package
+                   (or (executable-find "tar")
+                       (executable-find "7z")
+                       (executable-find "7za")))
+          (make-directory (concat base "-" ver))
+          (copy-file (concat base ".el") (concat base "-" ver "/" base ".el"))
+          (copy-file (concat base ".info") (concat base "-" ver "/" base ".info"))
+          (copy-file "dir" (concat base "-" ver "/dir"))
+          (with-temp-file (concat base "-" ver "/" base "-pkg.el")
+            (insert "(define-package \"")
+            (insert base)
+            (insert "\" \"")
+            (insert ver)
+            (insert "\" \"")
+            (insert desc)
+            (insert "\" '")
+            (insert pkg)
+            (insert ")"))
+          (if (executable-find "tar")
+              (shell-command (concat "tar -cvf " base ".tar " base "-" ver "/"))
+            (shell-commad (concat "7z" (if (executable-find "7za") "a" "")
+                                  " -ttar -so " base ".tar " base "-" ver "/*.*")))
+          
+          (delete-file (concat base "-" ver "/" base ".el"))
+          (delete-file (concat base "-" ver "/" base "-pkg.el"))
+          (delete-file (concat base "-" ver "/" base ".info"))
+          (delete-file (concat base "-" ver "/dir"))
+          (delete-directory (concat base "-" ver)))
+        
+        (when (and (featurep 'http-post-simple)
+                   org-readme-sync-marmalade)
+          (message "Attempting to post to marmalade-repo.org")
+          (org-readme-marmalade-post))
+        
+        (when (and (featurep 'yaoddmuse)
+                   org-readme-sync-emacswiki)
+          (message "Posting lisp file to emacswiki")
+          (emacswiki-post nil ""))
+        
+        (when org-readme-sync-git
+          (org-readme-git))
+        
+        (when (and (featurep 'yaoddmuse)
+                   org-readme-sync-emacswiki)
+          (message "Posting Description to emacswiki")
+          (org-readme-convert-to-emacswiki))
+        
+        (when org-readme-edit-last-window-configuration
+          (set-window-configuration org-readme-edit-last-window-configuration)
+          (setq org-readme-edit-last-window-configuration nil))))))
 
 ;;;###autoload
 (defun org-readme-to-commentary ()
