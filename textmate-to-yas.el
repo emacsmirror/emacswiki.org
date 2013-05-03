@@ -5,7 +5,7 @@
 ;; Author: Matthew L. Fidler
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Wed Oct 20 15:08:50 2010 (-0500)
-;; Version: 0.17
+;; Version: 0.20
 ;; Last-Updated: Fri Jun 29 12:22:42 2012 (-0500)
 ;;           By: Matthew L. Fidler
 ;;     Update #: 1747
@@ -23,10 +23,70 @@
 ;; This is done with the command `textmate-import-bundle'.  You need to
 ;; specify both the root directory of the bundle ant the parent modes for
 ;; importing (like text-mode).
+;; *Example function for importing Sata snippets into Yasnippet
+;; 
+;; *** textmate-import-svn-get-pkgs
+;; =(textmate-import-svn-get-pkgs)=
+;; 
+;;  - Gets textmate bundles from svn
+;; 
+;; *** textmate-import-svn-snippets
+;; =(textmate-import-svn-snippets SNIPPET-URL PLIST TEXTMATE-NAME)=
+;; 
+;; *Imports snippets based on textmate svn tree.
+;; 
+;; *** textmate-regexp-to-emacs-regexp
+;; =(textmate-regexp-to-emacs-regexp REXP)=
+;; 
+;;  - Convert a textmate regular expression to an emacs regular expression (as much as possible)
+;; 
+;; *** textmate-yas-menu
+;; =(textmate-yas-menu PLIST &optional MODE-NAME)=
+;; 
+;;  - Builds `yas-define-menu'from info.plist file
+;; 
+;; *** textmate-yas-menu-get-items
+;; =(textmate-yas-menu-get-items TXT)=
+;; 
+;; Gets items from TXT and puts them into a list
+;; 
+;; *** yas---t/
+;; =(yas---t/ TEXTMATE-REG TEXTMATE-REP &optional TEXTMATE-OPTION T-TEXT)=
+;; 
+;;  - Textmate like mirror.  Uses textmate regular expression and textmate formatting.
+;; 
+;; *** yas-format-match-?-buf
+;; =(yas-format-match-\?-buf TEXT &optional STRING EMPTY-MISSING
+;; START-POINT STOP-POINT)=
+;; 
+;;  - Recursive call to temporary buffer to replace conditional formats.
+;; 
+;; *** yas-getenv
+;; =(yas-getenv VAR)=
+;; 
+;;  - Gets environment variable or customized variable for Textmate->Yasnippet conversion
+;; 
+;; *** yas-replace-match
+;; =(yas-replace-match TEXT &optional STRING
+;; TREAT-EMPTY-MATCHES-AS-MISSING-MATCHES SUBEXP)=
+;; 
+;;  - yas-replace-match is similar to emacs replace-match but using Textmate formats
+;; 
+;; *** yas-text-on-moving-away
+;; =(yas-text-on-moving-away DEFAULT-TEXT)=
+;; 
+;;  - Changes text when moving away AND original text has not changed
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 3-May-2013    Matthew L. Fidler  
+;;    Last-Updated: Fri Jun 29 12:22:42 2012 (-0500) #1747 (Matthew L. Fidler)
+;;    Better fix for requiring 'textmate-to-yas in Emacs 24+.  It should
+;;    download textmate-to-yas if it isn't present.
+;; 3-May-2013    Matthew L. Fidler  
+;;    Last-Updated: Fri Jun 29 12:22:42 2012 (-0500) #1747 (Matthew L. Fidler)
+;;    Added textmate-to-yas automatic package installation for emacs 24
 ;; 18-Oct-2012    Matthew L. Fidler  
 ;;    Last-Updated: Fri Jun 29 12:22:42 2012 (-0500) #1747 (Matthew L. Fidler)
 ;;    Bug fix for yasnippet backward compatibility.
@@ -405,6 +465,7 @@ C-c C-y M-a
           (list (string :tag "Textmate Expression")
                 (string :tag "Emacs Expression"))))
 
+;;;###autoload
 (defun textmate-regexp-to-emacs-regexp (rexp)
   "* Convert a textmate regular expression to an emacs regular expression (as much as possible)"
   (save-match-data
@@ -716,6 +777,7 @@ C-c C-y M-a
 (defvar textmate-yas-known-uuid nil
   "Known UUIDs for current import.")
 
+;;;###autoload
 (defun textmate-yas-submenu (lst submenus space mode-name)
   (let ((ret "")
         submenu
@@ -865,8 +927,8 @@ C-c C-y M-a
               (with-temp-file yas-setup
                 (insert fc)
                 (goto-char (point-max))
-                (unless (search-backward "(require 'textmate-to-yas)" nil t)
-                  (insert "(require 'textmate-to-yas)\n"))
+                (unless (search-backward "(require 'textmate-to-yas" nil t)
+                  (insert "(require 'textmate-to-yas nil t)(if (and (or (not (fboundp 'yas---t/)) (not (featurep 'textmate-to-yas))) (fboundp 'package-install))(require 'package)(add-to-list 'package-archives '(\"marmalade\" .\"http://marmalade-repo.org/packages/\"))(package-initialize) (package-install 'textmate-to-yas))\n"))
                 (insert (textmate-yas-menu plist mode))
                 (insert "\n")
                 (emacs-lisp-mode)
@@ -1151,8 +1213,9 @@ The test for presence of the car of ELT-CONS is done with `equal'."
                         (with-temp-file (concat new-dir "/" m ".yas-setup.el")
                           (insert fc)
                           (goto-char (point-max))
-                          (unless (search-backward "(require 'textmate-to-yas)" nil t)
-                            (insert "(require 'textmate-to-yas)\n"))
+                          (unless (search-backward "(require 'textmate-to-yas" nil t)
+                            (insert "(require 'textmate-to-yas nil t)(if (and (or (not (fboundp 'yas---t/)) (not (featurep 'textmate-to-yas)))
+                         (fboundp 'package-install))(require 'package)(add-to-list 'package-archives '(\"marmalade\" .\"http://marmalade-repo.org/packages/\"))(package-initialize) (package-install 'textmate-to-yas))\n"))
                           (goto-char (point-max))
                           (unless (search-backward defg nil t)
                             (insert defg)
@@ -1611,6 +1674,7 @@ Also tries to handle nested conditional statements like (?1:$0:(?2:\\t$0))
   "* yas-replace-match is similar to emacs replace-match but using Textmate formats"
   (replace-match (yas-format-match text string treat-empty-matches-as-missing-matches) 't 't string subexp))
 
+;;;###autoload
 (defun yas---t/ (textmate-reg textmate-rep &optional textmate-option t-text)
   "* Textmate like mirror.  Uses textmate regular expression and textmate formatting."
   (let ((option (or textmate-option ""))
@@ -1656,7 +1720,7 @@ Also tries to handle nested conditional statements like (?1:$0:(?2:\\t$0))
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defvar yas-ma-was-modified nil)
 (make-variable-buffer-local 'yas-ma-was-modified)
-
+;;;###autoload
 (defun yas-text-on-moving-away (default-text)
   "* Changes text when moving away AND original text has not changed"
   (cond
