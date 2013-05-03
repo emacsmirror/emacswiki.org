@@ -173,3 +173,5 @@ To load a different org file either customize `org-dotemacs-default-file' or use
 (load-file "~/.emacs.d/org-dotemacs.el")
 (org-dotemacs-load-file "~/.emacs.d/my_emacs_config.org" "<TAG-MATCH>")
 }}}
+
+ -- JoeBloggs 2013-05-03 18:35 UTC
