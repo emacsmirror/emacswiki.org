@@ -8,6 +8,7 @@ See [[SQL]] for information on how to use SQL databases from Emacs, as well as:
 * [[PostgreSQL]] - EmacsLisp interface to the PostgreSQL database server
 * [[MySql]] - EmacsLisp interface to MySQL server
 
+* [[EmacsDb]]  -- an abstract database interface
 
 == NoSQL Databases ==
 
