@@ -46,13 +46,8 @@ After doing that your .dotemacs.org file might look something like this:
 #+END_SRC
 }}}
 
-
-You can get a nice columns view of your code blocks by adding the following line to the top of the org file:
-
-#+COLUMNS: %35ITEM %15NAME %35DEPENDS %15TAGS %TODO
-
 To load code blocks on startup you need to ensure that this file is loaded before calling
-`org-dotemacs-load-default', see installation below.
+`org-dotemacs-load-default', see [[Installation]] below.
 
 If you do M-x org-dotemacs-load-default, you will be prompted for a tag match and the corresponding
 code blocks will be loaded (enter an empty tag match string to load all blocks). In this way you can load
@@ -61,6 +56,12 @@ just the parts of your config file that you need, when you need them.
 If you have another org dotemacs file you can use `org-dotemacs-load-file' to load the code blocks from
 this file and optionally save them to an elisp file. This can be loaded from your .emacs faster than
 the org file.
+
+== Columns View ==
+
+You can get a nice columns view of your code blocks by adding the following line to the top of the org file:
+
+#+COLUMNS: %35ITEM %15NAME %35DEPENDS %15TAGS %TODO
 
 == Error handling ==
 
