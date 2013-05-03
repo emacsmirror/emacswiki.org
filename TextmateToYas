@@ -8,7 +8,7 @@
 * <b>Author </b> --  Matthew L. Fidler
 * <b>Maintainer </b> --  Matthew L. Fidler
 * <b>Created </b> --  Wed Oct 20 15:08:50 2010 (-0500)
-* <b>Version </b> --  0.17
+* <b>Version </b> --  0.20
 * <b>Last-Updated </b> --  Fri Jun 29 12:22:42 2012 (-0500)
 * <b>By </b> --  Matthew L. Fidler
 * <b>Update # </b> --  1747
@@ -25,104 +25,7 @@ importing (like text-mode).
 == Functions ==
 === Interactive Functions ===
 
-==== textmate-import-bundle ====
-=(textmate-import-bundle DIR PARENT-MODES &optional ORIGINAL-AUTHOR
-YAS-DIR MODE TRANSFORM-FUNCTION)=
-
-Imports textmate bundle to new-dir.  Mode may be a string or a function determining which mode to place files in...
-
-==== textmate-import-git-tar.gz ====
-<tt>(textmate-import-git-tar\.gz FILE PARENT-MODES)</tt>
-
-* Imports a !TextMate git-hub bundle.
-
-==== textmate-import-svn-from-url ====
-<tt>(textmate-import-svn-from-url)</tt>
-
-* Imports a textmate bundle and extracts snippets from <tt>textmate-import-svn-url</tt>
-
-==== yas-editing-field-num-p ====
-<tt>(yas-editing-field-num-p &optional ARG)</tt>
-
-Which field is active?
-
 === Internal Functions ===
-
-==== textmate-get-group ====
-<tt>(textmate-get-group UUID PLIST)</tt>
-
-* Gets group from textmate info.plist file
-
-==== textmate-import-add-to-alist ====
-<tt>(textmate-import-add-to-alist ALIST-VAR ELT-CONS &optional NO-REPLACE)</tt>
-
-Add to the value of ALIST-VAR an element ELT-CONS if it isn't there yet.
-If an element with the same car as the car of ELT-CONS is already present,
-replace it with ELT-CONS unless NO-REPLACE is non-nil; if a matching
-element is not already present, add ELT-CONS to the front of the alist.
-The test for presence of the car of ELT-CONS is done with <tt>equal</tt>.
-
-==== textmate-import-convert-template ====
-<tt>(textmate-import-convert-template TEMPLATE)</tt>
-
-* Converts template to Yasnippet template
-
-==== textmate-import-convert-template-t ====
-<tt>(textmate-import-convert-template-t BEGIN-TEXT MAX)</tt>
-
-* Subroutine to convert regular expressions to (yas---t expressions)
-
-==== textmate-import-convert-to-xml ====
-<tt>(textmate-import-convert-to-xml FILE)</tt>
-
-Converts a binary plist to XML
-
-==== textmate-import-current-buffer ====
-=(textmate-import-current-buffer NEW-DIR &optional PLIST BUFFER-NAME
-ORIGINAL-AUTHOR MODE-STRING-OR-FUNCTION TRANSFORM-FUNCTION
-PARENT-MODES EXT)=
-
-* Changes Textmate (current buffer) plist to yas snippet.
-
-==== textmate-import-drag-and-drop ====
-<tt>(textmate-import-drag-and-drop URI &rest IGNORE)</tt>
-
-* Drag and drop interface to import files.
-
-==== textmate-import-file ====
-=(textmate-import-file FILE NEW-DIR &optional MODE ORIGINAL-AUTHOR
-PLIST TRANSFORM-FUNCTION PARENT-MODES)=
-
-* Imports textmate file
-
-==== textmate-import-get-property ====
-<tt>(textmate-import-get-property NAME START STOP)</tt>
-
-* Get property from plist
-
-==== textmate-import-guess-mode ====
-<tt>(textmate-import-guess-mode SCOPE-O &optional SNIPPET-Q)</tt>
-
-* Guesses mode based on Textmate scope.
-
-==== textmate-import-guess-possiblities ====
-<tt>(textmate-import-guess-possiblities P-QUOTE MATCH-STRING)</tt>
-
-* Guesses possible modes...
-
-==== textmate-import-rmate ====
-<tt>(textmate-import-rmate DIR &optional NEW-DIR)</tt>
-
-* Example Function for importing Rmate into Yasnippet
-
-==== textmate-import-snippets-supported ====
-<tt>(textmate-import-snippets-supported TEXTMATE-URL)</tt>
-
-Check to see if snippets are supported
-
-==== textmate-import-stata ====
-<tt>(textmate-import-stata DIR &optional NEW-DIR)</tt>
-
 == Example function for importing Sata snippets into Yasnippet ==
 
 ==== textmate-import-svn-get-pkgs ====
@@ -179,88 +82,16 @@ TREAT-EMPTY-MATCHES-AS-MISSING-MATCHES SUBEXP)=
 == Variables ==
 === Customizable Variables ===
 
-==== textmate-default-key-prefix ====
-When importing key codes, this prefix is used as well.
-
-For example if a Textmate snippet specifies a key of Meta-A, the emacs key specified is
-<tt>textmate-default-key-prefix</tt> added to the detected key.  With the default C-c C-y, this
-becomes:
-
-C-c C-y M-a
-
-==== textmate-import-convert-known-expressions ====
-Known Textmate Expressions
-
-==== textmate-import-key-bindings ====
-Import key bindings into the snippets.
-
-==== textmate-import-plutil.pl ====
-plutil.pl path to deal with binary plists.
-
-==== textmate-key-to-emacs-key-known ====
-Textmate Key to Emacs Key
-
-==== textmate-regexp-emacs-unsupported ====
-Emacs Unsupported Regular Expression
-
-==== textmate-regexp-to-emacs-regexp-known ====
-Known Textmate to Emacs regular expression translations.
-
-==== textmate-use-define-menu ====
-* Use <tt>yas/define-menu</tt> or <tt>yas-define-menu</tt> (0.8+) instead of placing the menu choice in the group tag.
-
 === Internal Variables ===
-
-==== textmate-import-backward ====
-textmate-import use backward compatability?
-
-==== textmate-import-convert-env-lst ====
-List to convert Textmate Environmental variables to customizable fields.
-
-==== textmate-import-saved-guesses ====
-Saved guesses for textmate import
-
-==== textmate-import-svn-pkgs-cache ====
-* Cached list of Textmate svn bundles
-
-==== textmate-import-svn-url ====
-* Url for Textmate svn
-
-==== textmate-to-yas-backward-compatability ====
-Yasnippet backward compatability functions used in textmate-to-yas.el
-
-Value: ((yas/expand-snippet yas-expand-snippet)
-(yas/active-field-overlay yas--active-field-overlay)
-(yas/wrap-around-region yas-wrap-around-region)
-(yas/moving-away-p yas-moving-away-p)
-(yas/expand yas-expand)
-(yas/modified-p yas-modified-p)
-(yas/moving-away-p yas-moving-away-p)
-(yas/text yas-text)
-(yas/skip-and-clear-or-delete-char yas-skip-and-clear-or-delete-char)
-(yas/snippet-fields yas--snippet-fields)
-(yas/snippets-at-point yas--snippets-at-point)
-(yas/update-mirrors yas--update-mirrors)
-(yas/fallback-behavior yas-fallback-behavior)
-(yas/minor-mode yas-minor-mode)
-(yas/field-probably-deleted-p yas--field-probably-deleted-p)
-(yas/field yas-field)
-(yas/field-text-for-display yas--field-text-for-display)
-(yas/snippet-control-overlay yas--snippet-control-overlay)
-(yas/exit-snippet yas-exit-snippet)
-(yas/check-commit-snippet yas--check-commit-snippet)
-(yas/define-snippets yas--check-commit-snippet)
-(yas/after-exit-snippet-hook yas-after-exit-snippet-hook))
-
-
-
-==== textmate-yas-known-uuid ====
-Known UUIDs for current import.
-
-==== yas---t-lst ====
-Variable for expanding textmate transformations with Yasnippet
 == History ==
 
+3-May-2013    Matthew L. Fidler  
+Last-Updated: Fri Jun 29 12:22:42 2012 (-0500) #1747 (Matthew L. Fidler)
+Better fix for requiring 'textmate-to-yas in Emacs 24+.  It should
+download textmate-to-yas if it isn't present.
+3-May-2013    Matthew L. Fidler  
+Last-Updated: Fri Jun 29 12:22:42 2012 (-0500) #1747 (Matthew L. Fidler)
+Added textmate-to-yas automatic package installation for emacs 24
 * <b>18-Oct-2012 </b> --   Bug fix for yasnippet backward compatibility. (Matthew L. Fidler)
 * <b>18-Sep-2012 </b> --   Backward compatibility update. (Matthew L. Fidler)
 * <b>12-Sep-2012 </b> --   First attempt to support 0.8x. Currently untested. (Matthew L. Fidler)
