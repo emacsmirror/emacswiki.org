@@ -1,3 +1,5 @@
+
+== About ==
 Keeping your emacs config in an org file makes it easier for you to keep your .emacs under control,
 and avoid DotEmacsBankruptcy.
 With your config code stored in an org file you can easily edit the structure and keep notes.
