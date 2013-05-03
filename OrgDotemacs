@@ -49,6 +49,13 @@ defining buffer-wide properties, etc. This way I can get a nice column view of t
 After setting properties and tags you might have something that looks a bit like this:
 
 {{{
+* Notes
+This is an example.
+* Buffer-wide properties
+#+PROPERTY: comments link
+#+PROPERTY: results output
+#+COLUMNS: %35ITEM %15NAME %35DEPENDS %15TAGS %TODO
+#+TODO: BROKEN CHECK TODO
 * Code blocks
 ** Display settings code                :settings:
   :PROPERTIES:
@@ -98,6 +105,12 @@ You can tag your subtrees and use tag matches to specify which blocks to evaluat
 Also, by default any blocks in a subtree marked with a todo state of BROKEN will not be evaluated.
 You can specify which TODO states to include/exclude for evaluation by customizing the `org-dotemacs-include-todo' and
 `org-dotemacs-exclude-todo' options.
+
+To add the BROKEN state to the list of todo states for the file you need to add buffer-wide todo states by adding a line
+like this somewhere in your org file (see [http://orgmode.org/manual/Per_002dfile-keywords.html per file keywords] in the
+org manual).
+
+#+TODO: BROKEN CHECK TODO
 
 == Columns View ==
 
