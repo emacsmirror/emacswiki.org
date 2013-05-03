@@ -196,6 +196,20 @@ This variable can be set from the command line using the dotemacs-error-handling
   :group 'org-dotemacs
   :type 'symbol)
 
+(defcustom org-dotemacs-include-todo nil
+  "A regular expression matching TODO states to be included.
+If non-nil then only headers with TODO states matching this regexp will be checked for code blocks.
+See also `org-dotemacs-exclude-todo'."
+  :group 'org-dotemacs
+  :type 'regexp)
+
+(defcustom org-dotemacs-exclude-todo "BROKEN"
+  "A regular expression matching TODO states to be excluded.
+If non-nil then headers with TODO states matching this regexp will not be checked for code blocks.
+See also `org-dotemacs-include-todo'."
+  :group 'org-dotemacs
+  :type 'regexp)
+
 (defvar org-dotemacs-tag-match nil
   "An org tag match string indicating which code blocks to load with `org-dotemacs-load-file'.
 If non-nil the value of this variable will override the match argument to `org-dotemacs-load-file'.")
@@ -232,9 +246,14 @@ If optional arg LIMIT is specified, split into no more than that many
     (nreverse string-list)))
 
 ;;;###autoload
-(defun org-dotemacs-extract-subtrees (match)
+(defun* org-dotemacs-extract-subtrees (match &optional
+                                             (exclude-todo-state org-dotemacs-exclude-todo)
+                                             (include-todo-state org-dotemacs-include-todo))
   "Extract subtrees in current org-mode buffer that match tag MATCH.
 MATCH should be a tag match as detailed in the org manual.
+If EXCLUDE-TODO-STATE is non-nil then subtrees with todo states matching this regexp will be
+excluding, and if INCLUDE-TODO-STATE is non-nil then only subtrees with todo states matching
+this regexp will be included.
 The copied subtrees will be placed in a new buffer which is returned by this function.
 If called interactively MATCH is prompted from the user, and the new buffer containing
 the copied subtrees will be visited."
@@ -242,10 +261,16 @@ the copied subtrees will be visited."
   (let ((buf (generate-new-buffer (buffer-name)))
         todo-only copied-areas)
     (org-scan-tags (lambda nil
-                     (unless (loop for pair in copied-areas
-                                   if (and (>= (point) (car pair))
-                                           (< (point) (cdr pair)))
-                                   return t)
+                     (unless (or (and exclude-todo-state
+                                      (string-match exclude-todo-state
+                                                    (org-get-todo-state)))
+                                 (and include-todo-state
+                                      (not (string-match include-todo-state
+                                                         (org-get-todo-state)))))
+                       (loop for pair in copied-areas
+                             if (and (>= (point) (car pair))
+                                     (< (point) (cdr pair)))
+                             return t)
                        (let ((start (point)) end)
                          (org-copy-subtree)
                          (setq end (+ start (length (current-kill 0 t))))
@@ -260,7 +285,8 @@ the copied subtrees will be visited."
       buf)))
 
 ;;;###autoload
-(defun* org-dotemacs-load-blocks (&optional target-file (error-handling org-dotemacs-error-handling))
+(defun* org-dotemacs-load-blocks (&optional target-file
+                                            (error-handling org-dotemacs-error-handling))
   "Load the emacs-lisp code blocks in the current org-mode file.
 Save the blocks to TARGET-FILE if it is non-nil.
 See the definition of `org-dotemacs-error-handling' for an explanation of the ERROR-HANDLING
