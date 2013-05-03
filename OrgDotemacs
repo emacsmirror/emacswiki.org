@@ -82,7 +82,7 @@ blocks that have errors.
 
 == Installation ==
 
-Put org-dotemacs.el in a directory in your load-path, e.g. ~/.emacs.d/
+Put Lisp:org-dotemacs.el in a directory in your load-path, e.g. ~/.emacs.d/
 You can add a directory to your load-path with the following line in ~/.emacs
 (add-to-list 'load-path (expand-file-name "~/elisp"))
 where ~/elisp is the directory you want to add 
@@ -96,7 +96,7 @@ the end of your .emacs file:
 (org-dotemacs-load-default)
 }}}
 
-or if you want to just load code blocks matching a tag match:
+or if you want to just load code blocks matching a [http://orgmode.org/manual/Matching-tags-and-properties.html tag match]:
 
 {{{
 (load-file "~/.emacs.d/org-dotemacs.el")
