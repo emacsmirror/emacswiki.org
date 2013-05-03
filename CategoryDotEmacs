@@ -69,5 +69,6 @@ Some Complete Init packages:
 * [[Grail]] -- Grand unified .emacs loader - robust and flexible load-path hack. 
 * DotEmacsModular -- a simple package for loading everything under <tt>.emacs.d%%/site-start.d/%%</tt>
 * [http://user42.tuxfamily.org/startup-file-name-history/index.html startup-file-name-history.el] -- put command line files into the ##find-file## history
+* OrgDotemacs - Keep your InitFile organized in an OrgMode file, choose which bits to load, and handle errors & dependencies gracefully.
 
 See also DotEmacsDotD, DumpingEmacs, CategoryPersistence, SessionManagement.
