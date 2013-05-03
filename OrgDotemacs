@@ -62,6 +62,8 @@ If you have another org dotemacs file you can use `org-dotemacs-load-file' to lo
 this file and optionally save them to an elisp file. This can be loaded from your .emacs faster than
 the org file.
 
+== Error handling ==
+
 Error handling can be controlled by customizing `org-dotemacs-error-handling' or by setting the error-handling
 command line option when starting emacs.
 By default code blocks with unmet dependencies or errors are skipped over as soon as an error is encountered,
