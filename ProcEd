@@ -1,5 +1,7 @@
 A tool for accessing the UNIX ps list (the UNIX process list).
 
+== Example ProcEd output ==
+
 Here's a snippet of NicFerrier's laptop via proced:
 
 {{{
@@ -24,4 +26,15 @@ Here's a snippet of NicFerrier's laptop via proced:
 
 proced has all sorts of tools for manipulating the processes and the display. 
 
-See the online help.
+== ProcEd as top ==
+
+You can also use ProcEd as a top like tool by doing:
+
+{{{
+M-x proced-toggle-auto-update
+}}}
+
+the update interval is 5 seconds by default but can be defined by customization.
+
+
+See also the online help.
