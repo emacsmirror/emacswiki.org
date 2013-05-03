@@ -291,23 +291,26 @@ the copied subtrees will be visited."
   (let ((buf (generate-new-buffer (buffer-name)))
         todo-only copied-areas)
     (org-scan-tags (lambda nil
-                     (unless (or (and exclude-todo-state
-                                      (string-match exclude-todo-state
-                                                    (org-get-todo-state)))
-                                 (and include-todo-state
-                                      (not (string-match include-todo-state
-                                                         (org-get-todo-state)))))
-                       (loop for pair in copied-areas
-                             if (and (>= (point) (car pair))
-                                     (< (point) (cdr pair)))
-                             return t)
-                       (let ((start (point)) end)
-                         (org-copy-subtree)
-                         (setq end (+ start (length (current-kill 0 t))))
-                         (push (cons start end) copied-areas))
-                       (with-current-buffer buf 
-                         (goto-char (point-max))
-                         (yank))))
+		     (let ((todo-state (org-get-todo-state)))
+		       (unless (or (and exclude-todo-state
+					todo-state
+					(string-match exclude-todo-state
+						      todo-state))
+				   (and include-todo-state
+					todo-state
+					(not (string-match include-todo-state
+							   todo-state))))
+			 (loop for pair in copied-areas
+			       if (and (>= (point) (car pair))
+				       (< (point) (cdr pair)))
+			       return t)
+			 (let ((start (point)) end)
+			   (org-copy-subtree)
+			   (setq end (+ start (length (current-kill 0 t))))
+			   (push (cons start end) copied-areas))
+			 (with-current-buffer buf 
+			   (goto-char (point-max))
+			   (yank)))))
                    (cdr (org-make-tags-matcher match)) todo-only)
     (with-current-buffer buf (org-mode))
     (if (called-interactively-p 'any)
