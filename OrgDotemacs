@@ -103,8 +103,6 @@ or if you want to just load code blocks matching a [http://orgmode.org/manual/Ma
 (org-dotemacs-load-default "<TAG-MATCH>")
 }}}
 
-See the org manual [http://orgmode.org/manual/Matching-tags-and-properties.html "Matching-tags-and-properties"] section for more details on tag matches.
-
 To load a different org file either customize `org-dotemacs-default-file' or use the
 `org-dotemacs-load-file' function, e.g:
 
