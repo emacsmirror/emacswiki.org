@@ -1,5 +1,3 @@
-= Mo-vi-ment-mode =
-
 MoViMentMode is a minor mode that provides vi-like cursor movement that's easy on the fingers. With MoViMentMode enabled, you can move the cursor like so -
 
         M-]
