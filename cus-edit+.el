@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Created: Thu Jun 29 13:19:36 2000
 ;; Version: 21.1
-;; Last-Updated: Fri Dec 28 09:34:00 2012 (-0800)
+;; Last-Updated: Sat May  4 08:51:30 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 1409
+;;     Update #: 1438
 ;; URL: http://www.emacswiki.org/cus-edit+.el
 ;; Doc URL: http://emacswiki.org/CustomizingAndSaving
 ;; Keywords: help, customize, help, faces
@@ -345,6 +345,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/05/04 dadams
+;;     custom-magic-alist: Updated wrt vanilla Emacs (added themed).
 ;; 2012/04/21 dadams
 ;;     Added redefinition of customize-mode.  See Emacs bugs #11299 and #11301.
 ;; 2012/01/18 dadams
@@ -564,32 +566,36 @@ use etags instead.  Etags support is not as robust as imenu support."
 ;; was necessarily set and saved.
 ;;
 (defconst custom-magic-alist '((nil "#" underline "\
-uninitialized, you should not see this.")
+UNINITIALIZED - you should not see this.")
                                (unknown "?" italic "\
-unknown, you should not see this.")
+UNKNOWN - you should not see this.")
                                (hidden "-" default "\
-hidden, invoke \"Show\" in the previous line to show." "\
-group now hidden, invoke \"Show\", above, to show contents.")
+HIDDEN - invoke \"Show\" in the previous line to show." "\
+The group is now hidden - invoke \"Show\" to show it.")
                                (invalid "x" custom-invalid-face "\
-the value displayed for this %c is invalid and cannot be set.")
+INVALID - the %c cannot be set to the value shown.")
                                (modified "*" custom-modified-face "\
-you have edited the value as text, but you have not set the %c." "\
-you have edited something in this group, but not set it.")
+EDITED - your changes for this %c take effect only when you set or save it." "\
+You have edited something in this group, but not set it.")
                                (set "+" custom-set-face "\
-you have set this %c, but not saved it for future sessions." "\
-something in this group has been set, but not saved.")
+SET - your changes for this %c are for this session only, unless you also save them." "\
+Something in this group has been set, but not saved.")
                                (changed ":" custom-changed-face "\
-this %c has been changed outside the customize buffer." "\
-something in this group has been changed outside customize.")
+CHANGED OUTSIDE - this %c has been changed outside buffer *Customize*." "\
+Something in this group has been changed outside customize.")
                                (saved "!" custom-saved-face "\
-this %c is unchanged from the saved (startup) setting." "\
-something in this group is unchanged from the saved (startup) setting.")
+UNCHANGED - this %c is unchanged from the SAVED (startup) setting." "\
+Something in this group is unchanged from the saved (startup) setting.")
+                               (themed "o" custom-themed "\
+THEMED - this %c has been set by a theme." "\
+Visible group members are all at standard values.")
                                (rogue "@" custom-rogue-face "\
-this %c has not been changed with customize." "\
-something in this group is not prepared for customization.")
+NO CUSTOMIZATION DATA - this %c has NOT been changed using Customize." "\
+Something in this group is not prepared for customization.")
                                (standard " " nil "\
-this %c is unchanged from its standard setting." "\
-visible group members are all at standard settings."))
+STANDARD - this %c is unchanged from its standard setting." "\
+Visible group members are all at standard settings."))
+
   "Alist of customize option states.
 Each entry is of the form (STATE MAGIC FACE ITEM-DESC [ GROUP-DESC ]), where
 
@@ -611,6 +617,8 @@ STATE is one of the following symbols:
    The current value of this item has been changed temporarily.
 `saved'
    This item is marked for saving.
+`themed'
+   This item has been set by a theme.
 `rogue'
    This item has no customization information.
 `standard'
@@ -625,7 +633,7 @@ ITEM-DESC is a string describing the state for options.
 GROUP-DESC is a string describing the state for groups.  If this is
 left out, ITEM-DESC will be used.
 
-The string %c in either description will be replaced with the
+The string `%c' in either description will be replaced with the
 category of the item.  These are `group'. `option', and `face'.
 
 The list should be sorted most significant first.")
@@ -883,7 +891,7 @@ potential candidates."
                            (or (get symb 'saved-value)
                                (custom-variable-p symb))
                            (or (not type) ; Options of all types if requested type = nil.
-                               (if arg                               
+                               (if arg
                                    (custom-var-is-of-type-p symb (list type))
                                  (equal (get symb 'custom-type) type))))
                   (push (list symb 'custom-variable) found))))
@@ -949,7 +957,7 @@ impossible to know which concrete types a value must match."
                   (save-match-data (string-match type (format "%s" (format "%S" var-type))))
                 (equal var-type type))
           (throw 'custom-type-matches t))))
-    nil))  
+    nil))
 
 (defun custom-var-inherits-type-p (variable types)
   "VARIABLE's type matches or is a subtype of a member of list TYPES."
@@ -1597,7 +1605,7 @@ are ignored by `customize-customized'."
            "Tell Customize that all preferences changed outside it are now set."
            "set_from_external"
            "Set from External Changes")
-        
+
           (" Undo edits " Custom-reset-current t
            "Restore all settings in this buffer to reflect their current values."
            "refresh"
