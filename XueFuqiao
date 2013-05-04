@@ -10,9 +10,9 @@ Many thanks to the people who contributed or are contributing to
 emacsen and EmacsWiki.  My daily life becomes very interesting.
 
 You can contact me using (please send plain text mail, not HTML):
-<pre>
+<code>
 (concat "mailto:" "xfq" "." "free" "@" "gmail" "." "com")
-</pre>
+</code>
 
 == Some Sentences I Like ==
 * There is no system but GNU, and Linux is one of its kernels.
