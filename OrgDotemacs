@@ -1,24 +1,3 @@
-== Library Information ==
-org-dotemacs.el --- Store your emacs config as an org file, and choose which bits to load.
-
-* <b>Filename </b> --  org-dotemacs.el
-* <b>Description </b> --  Store your emacs config as an org file, and load code snippets based on tag matches.
-* <b>Author </b> --  Joe Bloggs <vapniks@yahoo.com>
-* <b>Maintainer </b> --  Joe Bloggs <vapniks@yahoo.com>
-* Copyleft (Ↄ) 2013, Joe Bloggs, all rites reversed.
-* <b>Created </b> --  2013-04-27 20:19:18
-* <b>Version </b> --  0.1
-* <b>Last-Updated </b> --  2013-04-27 20:19:18
-* <b>By </b> --  Joe Bloggs
-* <B>URL </B> --  https://github.com/vapniks/org-dotemacs
-* <b>Keywords </b> --  local
-* <b>Compatibility </b> --  GNU Emacs 24.3.1
-* <b>Package-Requires </b> --  ((org "7.9.3") (cl-lib "1.0"))
-* <b>Features that might be required by this library </b> --  org cl
-
-This file is NOT part of GNU Emacs
-
-Licensed under the [GPL version 3](http://www.gnu.org/licenses/) or later.
 
 Bitcoin donations gratefully accepted: 1Ph9srQ!BspJCDS9!CnGUyWJPTrU4ydX9Aa3
 
