@@ -1,1 +1,180 @@
+Alex, I think they are right, exept about the content (What, no extensions ? Sheesh). All content must stay, only it has to be collectively validated. At the very least there should be a way to tell the questions from the answers! I say put *everything* on a robust (I did not say perfect) wiki system, and keep oddmuse as a baseless blogging SW.
+
+I too have hard feelings about emacswiki, but then again, I cannot count the times I found useful bits of info on it.
+
+For emacs, there is the (great) GNU emacs manual
+For emacs extensions, there's emacs-wiki. Kill emacs-wiki, and stare at the gaping void it leaves.
+
+-- [http://https://github.com/xaccrocheur/kituu xaccrocheur] 2012-05-21 11:46 UTC
+
+
+----
+
+I agree with the first part: the content has to be collectively validated and questions and answers should be clearly marked as such using subheadings, the [new] tag to change the background or bold keywords.
+
+In order to get this project started, I charge *you* with building the necessary community and to get started. Thank you very much for organizing this major effort.
+
+As for using a /robust/ wiki system, please check out http://wikemacs.org/ where Mediawiki is being used. I'm sure you'll find it more robust.
+
+I cannot imagine myself simply killing Emacs Wiki – if it ends up being overtaken by other platforms, there's still the option of switching it to read-only mode… I'm afraid those who would prefer the gaping void will have to destroy their monitors instead. 
+
+-- AlexSchroeder 2012-05-21 14:09 UTC
+
+
+----
+
+By checking the recent changes it seems the development of WikEmacs slowed down considerably, [http://wikemacs.org/wiki/Special:RecentChanges there were only two edits in the last 7 days], so it doesn't look like it's killing EmacsWiki anytime soon. EmacsWiki is more alive.
+
+----
+
+Well, who knows. There was also a time when XEmacs was more popular than Emacs. That doesn't mean that the two teams had to merge. People just join the team they feel more comfortable with.
+
+I guess I'm just tired of people telling me the things I already know (it would be nice to have professional editing) without volunteering the means to do it (massive amounts of cash to the tune of at least $100/h in my case or investing hours of their own time). That's just useless complaining. If, in addition to that, people tell me that I should switch the software from something I know and like to something I don't know and they like, or worse, to discontinue the project that works (albeit poorly) and invest /my/ time into /their/ ideas, then I feel just a little bit tired and I'm more than happy to point them to the alternative that purports to solve all the perceived problems.
+
+I've written a [http://www.emacswiki.org/alex/2012-03-24_How_Emacs_Wiki_Works longer blog post on the topic].
+
+-- AlexSchroeder 2012-05-21 21:03 UTC
+
+
+----
+
+I love EmacsWiki, to me it is a staple in my Emacs experience. I learned so much, and I am constantly learning so much here. I appreciate any other resource (like the good quality blogs, and other wiki attempts), but, somehow, EmacsWiki is unique in quality content and personality. Please, do not change that. It would be like trying to change Emacs only because a new tool is (temporarily) the new cool kid on the block, and we would want to emulate him.
+
+I am so grateful to AlexSchroeder and all EmacsWiki's contributors. Thanks!
+
+-- priyadarshan 2012-05-27 07:34 UTC
+
+
+----
+
+Maybe Oddmuse should add some features, for example:
+
+1. Add database support.
+
+2. External links marked with rel="nofollow" to discourage spamming.
+
+3. Edit a certain part of a page only.  This is useful for editing very long pages.
+
+4. Page templates to prefill new pages
+
+5. Textile support
+
+6. Exported pages as XML or PDF
+
+7. Popular pages, like this: http://wikemacs.org/wiki/Special:PopularPages
+
+8. Embedded Video support
+
+9. Edit SVG graphics through the Wiki interface
+
+...
+
+And I didn't find any mailing lists or bug trackers for Oddmuse.
+
+-- [http://emacswiki.org/emacs/XueFuqiao XueFuqiao] 2012-11-27 08:57 UTC
+
+
+----
+
+Interesting list. Are these features ranked? I have some follow-up questions:
+
+*Database support*: What would be the benefit for Emacs Wiki? Easy sharing and working with the raw data? (Compared to WikiDownload?)
+
+*External links*: I already use ##rel="nofollow"## for internal links that I feel a spider should not be following.
+I doubt that spammers check whether the wiki adds ##nofollow##.
+Is there any evidence available showing that ##nofollow## reduces spam?
+
+*Editing page sections*: Such an extension already exists [http://www.oddmuse.org/cgi-bin/oddmuse/EditSection_Module].
+I hesitate to install it, however. Wouldn't it be better to break those pages up into smaller ones?
+I'd be willing to put it up for a vote, however.
+
+*Page templates*: Two related extensions exist. One of them offers you to pick a template when creating a new page.
+[http://www.oddmuse.org/cgi-bin/oddmuse/Template_Extension]
+The other extension allows you to specify templates with the replacement of named variables.
+[http://www.oddmuse.org/cgi-bin/oddmuse/Live_Template_Extension]
+I think the latter extension is more or less what Mediawiki does.
+[http://www.mediawiki.org/wiki/Help:Templates]
+The Oddmuse extension does not support positional parameters, etc.
+Again, I hesitate to install it. What would be the use?
+Something like WikEmacs' templates? [http://wikemacs.org/wiki/WikEmacs:Guidelines#Templates]
+I'd be willing to put it up for a vote, however.
+
+*Textile*: I don't think so. Why Textile and not Markdown? Or Mediawiki?
+I think we'd be better off relying on Creole [http://www.oddmuse.org/cgi-bin/oddmuse/Creole_Markup_Extension] -- at least that's a sort of wiki markup standard.
+I can think of only one site that uses Textile. From my perspective, it's way to obscure.
+In fact, if the problem is that our current wiki syntax is too obscure, I'd say we might be better off supporting bbCode! [http://www.oddmuse.org/cgi-bin/oddmuse/bbCode_Extension] This would allow us to reach people unfamiliar with wikis but familiar with forums. Either way, I'd say we need to add something that doesn't conflict with existing markup because I don't think anybody wants to convert the old wiki texts (nor write and test and use automated conversion).
+
+*Export as XML*: The HTML we generate is XHTML. What exactly are you looking for?
+
+*Export as PDF*: Depending on your browser, printing to PDF comes free of charge. I'd hate to waste time working on it. At the time I looked for a solution, Prince XML [http://www.princexml.com/] was the only tool that seemed to work well -- and it's not free software. There are also the option of adding a button for Print Friendly. [http://www.printfriendly.com/button] Would you like that? As I said, I really don't think it's worth it.
+I'd be willing to put it up for a vote, however.
+
+*Popular pages*: I never use lists like those. What would you use it for? I guess you'd have to filter important pages like SiteMap and RecentChanges, filter bots, allow users to filter by language (if available)... It seems like a lot of work for little benefit. The naive implementation would be super simple, however. I'd be willing to put it up for a vote, once I'm convinced there is a reasonable Use Case for it.
+
+*Embed video*: Really? An extension exists to do it. [http://www.oddmuse.org/cgi-bin/oddmuse/Flashbox_Extension] I just have never felt the need to embed Emacs related videos. Are there that many? Perhaps there are more now than when we started... I'd be willing to put it up for a vote.
+
+*Editing SVG*: There's an WYSIWYG SVG editor extension. [http://www.oddmuse.org/cgi-bin/oddmuse/SVG_Editor_Extension] It uses svg-edit. [http://code.google.com/p/svg-edit/] I'd say if people wanted to add a lot of diagrams to the wiki, they would have drawn them using Inkscape and uploaded the bitmaps. Since nobody did that, I'm assuming the need for SVG support is rather limited. Even then, I think I'd prefer Oddmuse to support SVG as an image format, and allow the upload of SVG files. No inline editing. People can download the SVG, edit it locally, and upload it again. Currently the MIME type ##image/svg+xml## is not allowed, but that is easily changed. What do you think? I've been doing that on other sites and feel comfortable with it even though I still think that not many people will be drawing SVG diagrams.
+
+As for mailing lists and bug trackers: You can send mailto:kensanata@gmail.com.
+
+-- AlexSchroeder 2012-11-27 13:47 UTC
+
+
+----
+
+Answers:
+
+*Database support*: Many web hosts do not allow file writing operations.
+And of course EmacsWiki don't have this Problem.
+
+*External links*: I'm not sure whether ##nofollow## reduces spam, but I
+think it discourages spam.
+
+*Editing page sections*: Sorry for not noticing this extension.  I
+personally don't use this feature because I prefer using Emacs to edit
+page so I can use ##narrow-to-region##.  But many people who doesn't
+use Emacs like it very much.  Putting it up for a vote is a good
+choice.
+
+*Page templates*: Putting it up for a vote is also a good choice.
+
+*Textile*: You're right.  Converting the old wiki texts isn't a good
+idea.
+
+*Export as XML*: Maybe DocBook.  There are a number of existing tools --
+free or proprietary -- for converting DocBook XML to other formats,
+such as rtf, Postscript, and PDF.
+
+*Export as PDF*: It's not an important feature.  Putting it up for a
+vote or using services like Print Friendly is OK.
+
+*Popular pages*: I use it to see what is popular in the Wiki these
+days(or overall), and I personally like this feature.  You can put it
+up for a vote.
+
+*Embed video*: Maybe EmacsScreencasts are not so many, but [[Oddmuse]] isn't
+just for EmacsWiki.  Put it up for a vote.
+
+*Editing SVG*: It's also not an important feature.  But some people
+spend most of their computer time on the Web.  They use products like
+Google Cloud Print and Microsoft Office Live.
+
+Thanks for your attention and your contribution to EmacsWiki, [[Oddmuse]]
+and free software.
+
+-- [http://emacswiki.org/emacs/XueFuqiao XueFuqiao] 2012-11-28 09:27 UTC
+
+
+----
+
+Survey here: [[2012-11-28]].
+
+-- AlexSchroeder 2012-11-28 11:11 UTC
+
+
+----
+
+Just a general comment.  I have no objection to adding any such things, as long as users can continue to edit and use the wiki in the same ways as in the past, as well.  IOW, as an ''addition'', OK -- doesn't hurt -- but as a ''replacement'' for existing features, I'm not in favor.
+
+-- DrewAdams 2012-11-28 15:24 UTC
 
