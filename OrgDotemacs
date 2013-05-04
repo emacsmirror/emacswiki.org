@@ -47,14 +47,16 @@ Use the `org-dotemacs-load-file' command for this and specify a target file when
 == Structure of the org file  ==
 The elisp code should be contained in emacs-lisp code blocks, e.g:
 
-~#+BEGIN_SRC emacs-lisp~
-(setq line-number-mode t)
-(setq column-number-mode t)
-(setq frame-title-format "%b")
-(set-background-color "Black")
-(set-foreground-color "White")
-(set-cursor-color "White")
-~#+END_SRC~
+{{{
+#+BEGIN_SRC emacs-lisp
+  (setq line-number-mode t)
+  (setq column-number-mode t)
+  (setq frame-title-format "%b")
+  (set-background-color "Black")
+  (set-foreground-color "White")
+  (set-cursor-color "White")
+}}}
+
 
 Ideally you should have each code block under a separate org subtree, then you can use properties to
 name the blocks and define dependencies, and tags and todo states to specify which blocks
