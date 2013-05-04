@@ -6,6 +6,7 @@ This category is about editing, not modes.  See CategoryModes, instead.
 ** MoveRegion -- Moving a region
 ** MoveLineRegion -- Indifferently move the current line or region
 ** [https://github.com/targzeta/move-lines move-lines] -- Indifferently move the current line or the lines surrounding region (like Eclipse)
+** MoViMentMode -- A minor mode for easier cursor movement
 
 * [[kill|Killing]], [[yank|yanking]], copying and deleting:
 ** CopyFromAbove -- Copy line or characters from previous line
@@ -23,7 +24,7 @@ This category is about editing, not modes.  See CategoryModes, instead.
 ** RectangleCommands --  commands that operate across lines in a region in a column-intelligent manner.
 ** WholeLineOrRegion -- operate on current [[line]] if [[region]] is undefined
 ** ZapToChar -- Delete the characters from [[point]] to a character you specify.
-** KillMatchingLines -- The power of ‘M-x flush-lines’ with killing.
+** KillMatchingLines -- The power of âM-x flush-linesâ with killing.
 ** [[Anything]] -- `M-x anything-show-kill-ring' narrows the kill-ring by multiple patterns.
 ** [[MRU-yank]] -- maintain [[kill ring]] as MRU (Most Recently Used) stack.  Similar to the application stack (M-tab) on MS Windows
 ** duplicate-previous/next-line lets you replace current line with a neighboring one by cycling through them like you can with history in Bash. I bind them to M-n and M-p.  Lisp:duplicate-line.el
@@ -34,7 +35,7 @@ This category is about editing, not modes.  See CategoryModes, instead.
 ** UnifyKillringAndRegister -- make [[register]]s easy to use
 * [[cursor|Cursor]] indication
 ** ChangingCursorDynamically -- change cursor type and color, depending on context
-** CrosshairHighlighting – highlight the current [[line]] and column; track cursor or show cross hairs momentarily.
+** CrosshairHighlighting â highlight the current [[line]] and column; track cursor or show cross hairs momentarily.
 ** HighlightCurrentLine -- highlight the line of the cursor
 ** HighlightCurrentColumn -- highlight the column of the cursor
 * Column indication and finding long [[line]]s:
