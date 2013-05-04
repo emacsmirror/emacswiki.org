@@ -1,7 +1,7 @@
 
 == Commentary ==
 Keeping your emacs config in an org file makes it easier for you to keep your .emacs under control,
-and avoid [http://www.emacswiki.org/emacs/!DotEmacsBankruptcy DotEmacsBankruptcy].
+and avoid [http://www.emacswiki.org/emacs/DotEmacsBankruptcy DotEmacsBankruptcy].
 With your config code stored in an org file you can easily edit the structure and keep notes.
 
 This library allows you to load elisp code from an org file on emacs startup.
@@ -14,7 +14,7 @@ The main command is `org-dotemacs-load-default' which loads your default org-dot
 and prompts for a tag match to specify which code blocks to load. 
 In this way you can load bits of config code when you need them.
 
-You can also put this command in your [http://www.emacswiki.org/emacs/!InitFile InitFile] (see Installation below) to load the code on startup.
+You can also put this command in your [http://www.emacswiki.org/emacs/InitFile InitFile] (see Installation below) to load the code on startup.
 To change the default org file use the `org-dotemacs-default-file' option.
 If you want to load a different org file from your default one, use `org-dotemacs-load-file'.
 
