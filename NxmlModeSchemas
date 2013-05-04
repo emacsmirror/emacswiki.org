@@ -6,6 +6,10 @@ Adding schemas to NxmlMode helps you turn a generic xml editor into one specific
 == Acquiring Schemas ==
 For standardized document formats, some kind of validation documents almost always exist.  Unfortunately, not all provide the RNC (RelaxNG compact syntax) schemas required by NxmlMode.  Luckily, however, some conversion tools are available. [http://relaxng.org/#conversion]
 
+[new]
+Otherwise, you can acquire and apply the schemas other than the RNC schemas by using [https://github.com/aki2o/emacs-genrnc genrnc.el]
+--HiroakiOtsu
+
 == Applying Schemas ==
 The variable rng-schema-locating-files points to a list of XML files specifying when to use which schema based on file name or namespace.
 
