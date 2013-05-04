@@ -1,38 +1,57 @@
-So some content here needs work, so Lets make this happen.  
+So some content here needs work, so Lets make this happen.
 
 One of the ways I can see doing this is through a top down approach, by setting up a bunch of "wiki projects" with some discreet goals in mind, and any who are interested in that project picking a goal, and working with it.
 
 === How can you start a project? ===
 Just do it up?
 
+[:contributing]
 === How can you contribute to a project? ===
 * Add some todo items if you think you have some good ideas on how to improve a particular project
 * Pick one of the todo items and get cracking!
 
 Another method is to go from the bottom up approach. If you find a page that needs help, then tag it with CategoryNeedsAttention.  If you have a few spare cycles, hit up CategoryNeedsAttention and see what you can do to fix it.
 
+[:projects]
 == Projects ==
 
+[:javascript]
 === JavaScript Project ===
 
 ==== Ideas, and todo list ====
-* Find any other loose javascript related packages, and categorize them properly, and add them to the main JavaScript page.
-* Consider renaming JavaScript to JavaScriptLangauge ...?
+* Find any other loose javascript related packages, and categorize them properly, and add them to the main CategoryJavaScript page.
+* update and "beef up" a number of the CategoryJavaScript pages
+** EmacsJs - does anybody have direct experience with this package?
+** NodeJs - are there any working packages that allow tab-completion when the node REPL is used from Emacs?
+** SwankJs - if you're familiar with SwankJs can you review the content?
+** [http://js-comint-el.sourceforge.net/ js-comint.el] has no dedicated page; do we need one?
+** "[https://github.com/ruediger/flusspferd/blob/master/misc/emacs/flusspferd.el mode for Emacs]" - do we know anything else about it?
 
 ==== Contributors: ====
 
 * JonathanArkell
+* MichaelPaulukonis
 
+[:helm]
 === Helm (formerly Anything) Project ===
 
 ==== Ideas and todo list ====
-Congrats to Helm (formerly Anything) on its new name change!   There is a bunch of anything code on the wiki that is getting waaay out of date, so this is a great opportunity to fix and update it.  
+Congrats to Helm (formerly Anything) on its new name change!   There is a bunch of anything code on the wiki that is getting waaay out of date, so this is a great opportunity to fix and update it.
 
 * Move the documentation to the official github wiki: https://github.com/emacs-helm/helm/wiki
-* Find old anything extensions on the wiki that are out of date and do something with them.  If they are useless, delete them.  If they are out of date, and could use a refresh, mark them as such. You should submit them to the GitHub emacs-helm organization. It's the Helm team's wish to house all the source code under that roof for maintainability's sake.  
-* Make sure some history about anything is kept around.  The fact that both Rubikitch, Therry, Tassilo and AndyStuart all contributed to this project should be celebrated.   Anything is one of the many awesome projects that was housed at this wiki. 
+* Find old anything extensions on the wiki that are out of date and do something with them.  If they are useless, delete them.  If they are out of date, and could use a refresh, mark them as such. You should submit them to the GitHub emacs-helm organization. It's the Helm team's wish to house all the source code under that roof for maintainability's sake.
+* Make sure some history about anything is kept around.  The fact that both Rubikitch, Therry, Tassilo and AndyStuart all contributed to this project should be celebrated.   Anything is one of the many awesome projects that was housed at this wiki.
 
 ==== Contributors ====
- 
+
 * JonathanArkell - (but not in a large capacity)
 * We need you!
+
+[:wikemacs]
+=== WikEmacs integration ===
+
+Does anybody want to play RMS and replicate/rewrite the WikEmacs information?
+
+----
+CategoryNeedsAttention
+CategoryEmacsWikiSite
