@@ -1,5 +1,3 @@
-[[ko:OrgDotemacs사용하기]]
-[[ko:OrgDotemacsKr]]
 
 == Commentary ==
 Keeping your emacs config in an org file makes it easier for you to keep your .emacs under control,
@@ -107,9 +105,6 @@ To use without using a package manager:
 * Add (require 'org-dotemacs) in your ~/.emacs file
 * If you have [http://www.marmalade-repo.org/ marmalade-repo.org], this org-dotemacs is part of the emacs packges you can install.  
 Just type M-x package-install org-dotemacs marmalade 
-
-This is in emacswiki, so this package can also be installed using el-get.
-After installing el-get, Type M-x el-get-install org-dotemacs.
 
 After installing org-dotemacs make sure you have an ~/.dotemacs.org file and add the following lines to
 the end of your .emacs file:
