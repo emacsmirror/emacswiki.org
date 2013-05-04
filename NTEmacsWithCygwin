@@ -12,7 +12,7 @@ This shell then is rather useless, because apart from the missing job control so
 The helpful people from the Cygwin mailing list suggest that it is an NTEmacs problem. This issue does not seem to be resolved yet(as of 15 Mar 2012).
 
 Workarounds: 
-# Use Cygwin Emacs (under Cygwin/XFree in rootless mode)
+# Use Cygwin Emacs (emacs-w32 uses the windows GUI, there are also X11 and console packages)
 # Don't upgrade Cygwin above, I think Cygwin1.dll, version 1.7.9.
 
 I took route 1. and I can say, that it is quite a hassle when you are coming from NTemacs: The look-and-feel (provided by X/Free) of the frame is significant less MS Windows-like, keyboard mappings are changed, no window shortcuts, no drag-n-drop, etc.
