@@ -94,10 +94,10 @@ emacs --error-handling retry --tag-match "settings-mouse"
 Then only code blocks tagged "settings" but not "mouse" will be loaded, and org-dotemacs will try to reload any
 blocks that have errors.
 == Customizable options ==
-`org-dotemacs-default-file'   : The default org file containing the code blocks to load when `org-dotemacs-load-file' is called.
-`org-dotemacs-error-handling' : Indicates how errors should be handled by `org-dotemacs-load-blocks'.
-`org-dotemacs-include-todo'   : A regular expression matching TODO states to be included.
-`org-dotemacs-exclude-todo'   : A regular expression matching TODO states to be excluded.
+* `org-dotemacs-default-file'   : The default org file containing the code blocks to load when `org-dotemacs-load-file' is called.
+* `org-dotemacs-error-handling' : Indicates how errors should be handled by `org-dotemacs-load-blocks'.
+* `org-dotemacs-include-todo'   : A regular expression matching TODO states to be included.
+* `org-dotemacs-exclude-todo'   : A regular expression matching TODO states to be excluded.
 == Installation ==
 To use without using a package manager:
 
