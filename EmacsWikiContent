@@ -25,7 +25,7 @@ Another method is to go from the bottom up approach. If you find a page that nee
 ** NodeJs - are there any working packages that allow tab-completion when the node REPL is used from Emacs?
 ** SwankJs - if you're familiar with SwankJs can you review the content?
 ** [http://js-comint-el.sourceforge.net/ js-comint.el] has no dedicated page; do we need one?
-** "[https://github.com/ruediger/flusspferd/blob/master/misc/emacs/flusspferd.el mode for Emacs]" - do we know anything else about it?
+** "[https://github.com/ruediger/flusspferd/blob/master/misc/emacs/flusspferd.el flusspferd.el mode for Emacs]" - do we know anything else about it?
 
 ==== Contributors: ====
 
