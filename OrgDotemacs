@@ -55,6 +55,7 @@ The elisp code should be contained in emacs-lisp code blocks, e.g:
   (set-background-color "Black")
   (set-foreground-color "White")
   (set-cursor-color "White")
+#+END_SRC  
 }}}
 
 
@@ -89,13 +90,13 @@ You can specify which TODO states to include/exclude for evaluation by customizi
 To add the BROKEN state to the list of todo states for the file you need to add buffer-wide todo states by adding a line
 like this somewhere in your org file (see "[http://orgmode.org/org.html#Per_002dfile-keywords Per file keywords]" in the org manual).
 
-~#+TODO: BROKEN CHECK TODO~
+#+TODO: BROKEN CHECK TODO
 
 == Columns View  ==
 If you use properties for defining names and dependencies then you can get a nice column view of your code subtrees
 with the following columns view specification:
 
-~#+COLUMNS: %35ITEM %15NAME %35DEPENDS %15TAGS %TODO~
+#+COLUMNS: %35ITEM %15NAME %35DEPENDS %15TAGS %TODO
 
 This can be placed anywhere in your dotemacs org file.
 Then if you press C-c C-x C-c on the toplevel header for your code blocks you'll get a column view that allows you
