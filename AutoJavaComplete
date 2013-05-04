@@ -50,6 +50,9 @@ You can clone it using
       git clone git://github.com/emacs-java/auto-java-complete.git
       git checkout 0.2.8 (tag0.2.8,last version)
 
+whitypig make a fork on https://github.com/whitypig/ajc-java-complete
+and this fork support  multiple tag files
+
 ==Video Demo==
 
 There is a 2.8M video demo in another repos .   
