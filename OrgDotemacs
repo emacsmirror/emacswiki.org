@@ -1,30 +1,7 @@
-== Library Information ==
-org-dotemacs.el --- Store your emacs config as an org file, and choose which bits to load.
-
-* <b>Filename </b> --  org-dotemacs.el
-* <b>Description </b> --  Store your emacs config as an org file, and load code snippets based on tag matches.
-* <b>Author </b> --  Joe Bloggs <vapniks@yahoo.com>
-* <b>Maintainer </b> --  Joe Bloggs <vapniks@yahoo.com>
-* Copyleft (Ↄ) 2013, Joe Bloggs, all rites reversed.
-* <b>Created </b> --  2013-04-27 20:19:18
-* <b>Version </b> --  0.1
-* <b>Last-Updated </b> --  2013-04-27 20:19:18
-* <b>By </b> --  Joe Bloggs
-* <B>URL </B> --  https://github.com/vapniks/org-dotemacs
-* <b>Keywords </b> --  local
-* <b>Compatibility </b> --  GNU Emacs 24.3.1
-* <b>Package-Requires </b> --  ((org "7.9.3") (cl-lib "1.0"))
-* <b>Features that might be required by this library </b> --  org cl
-
-This file is NOT part of GNU Emacs
-
-Licensed under the [GPL version 3](http://www.gnu.org/licenses/) or later.
-
-Bitcoin donations gratefully accepted: 1Ph9srQ!BspJCDS9!CnGUyWJPTrU4ydX9Aa3
 
 == Commentary ==
 Keeping your emacs config in an org file makes it easier for you to keep your .emacs under control,
-and avoid !DotEmacsBankruptcy.
+and avoid DotEmacsBankruptcy.
 With your config code stored in an org file you can easily edit the structure and keep notes.
 
 This library allows you to load elisp code from an org file on emacs startup.
@@ -37,7 +14,7 @@ The main command is `org-dotemacs-load-default' which loads your default org-dot
 and prompts for a tag match to specify which code blocks to load. 
 In this way you can load bits of config code when you need them.
 
-You can also put this command in your !InitFile (see Installation below) to load the code on startup.
+You can also put this command in your InitFile (see Installation below) to load the code on startup.
 To change the default org file use the `org-dotemacs-default-file' option.
 If you want to load a different org file from your default one, use `org-dotemacs-load-file'.
 
@@ -55,6 +32,7 @@ The elisp code should be contained in emacs-lisp code blocks, e.g:
   (set-background-color "Black")
   (set-foreground-color "White")
   (set-cursor-color "White")
+#+END_SRC  
 }}}
 
 
@@ -89,13 +67,13 @@ You can specify which TODO states to include/exclude for evaluation by customizi
 To add the BROKEN state to the list of todo states for the file you need to add buffer-wide todo states by adding a line
 like this somewhere in your org file (see "Per file keywords" in the org manual).
 
-~#+TODO: BROKEN CHECK TODO~
+#+TODO: BROKEN CHECK TODO
 
 == Columns View  ==
 If you use properties for defining names and dependencies then you can get a nice column view of your code subtrees
 with the following columns view specification:
 
-~#+COLUMNS: %35ITEM %15NAME %35DEPENDS %15TAGS %TODO~
+#+COLUMNS: %35ITEM %15NAME %35DEPENDS %15TAGS %TODO
 
 This can be placed anywhere in your dotemacs org file.
 Then if you press C-c C-x C-c on the toplevel header for your code blocks you'll get a column view that allows you
