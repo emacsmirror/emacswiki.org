@@ -2,6 +2,7 @@
 
 * [[JDEE]] - a big IDE type thing for Emacs; mostly defunct
 * [[CEDET]] - massive IDE thing eating all C type languages including Java
+* [[EmacsEclim]] - extensively integrate Emacs and the Eclipse editor
 
 == Completion ==
 
