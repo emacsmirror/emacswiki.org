@@ -1,6 +1,6 @@
 Almost no one seems to have been using Emacs for Java by the time [[http://maven.apache.org/|Maven]] came along as the de facto Java build tool and there is only minor integration.
 
-Mvn compile is a tiny helper package to make {{{mvn test}}} the compile command for Java files.
+Mvn compile is a tiny helper package to make ##mvn test## the compile command for Java files.
 
 
 -----
