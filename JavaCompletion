@@ -34,7 +34,7 @@ Clearly the best thing to do is to bind `java-complete' to `C-TAB'.
 
     (add-hook 'java-mode-hook (lambda () (local-set-key (kbd "C-<tab>") 'java-complete)))
 
-== Background ==
+== Background Rant ==
 
 I've been using Emacs to hack on Java code since about 1998, I haven't used a Java IDE since then so a lot of the advances with Eclipse and the like have passed me by except noting that many programmers seem to like them.
 
