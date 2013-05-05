@@ -11,7 +11,9 @@ Workgroups a window-configuration persistence package.
 
 == Get Workgroups ==
 
-Here: http://github.com/tlh/workgroups.el
+https://github.com/pashinin/workgroups2 (I continue the project based on experimental branch of the original one)
+
+Original: http://github.com/tlh/workgroups.el (2011)
 
 
 ----
