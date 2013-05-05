@@ -5,11 +5,7 @@ Source:
 * Lisp:java-complete.el
 * Download:Tags.java
 
-Here's what the original author told AlexSchroeder in an email:
-
-: I'm not currently doing anything with it coz I'm trying to avoid
-Java. I'd love someone else to take it on though.
-: Feel free to put it on the wiki. -- NicFerrier
+NicFerrier has now picked this up again and will try and make it into an ELPA package. The Github is [[https://github.com/nicferrier/emacs-nic-java-ac|here]]
 
 == Setup ==
 
