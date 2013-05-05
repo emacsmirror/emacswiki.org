@@ -35,4 +35,4 @@ If you set `indent-tabs-mode' to nil, then Emacs will insert 4 spaces instead.
 See also IndentingC and SmartTabs for more info.
 
 ----
-CategoryIndentation
+CategoryIndentation CategoryJava
