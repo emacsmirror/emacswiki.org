@@ -1,0 +1,21 @@
+== Major Modes ==
+
+[[JDEE]] - a big IDE type thing for Emacs.
+
+== Completion ==
+
+* AutoComplete - works with Java
+* JavaComplete - is an old tags based system that is being looked at again
+
+== Indenting ==
+
+* JavaMode is built into Emacs but has some deficiencies
+* IndentingJava is about indenting
+
+== Compiling and such ==
+
+* FlymakeJava - how to use flymake with Java
+* MvnCompile - how to setup Maven to be the compile command
+
+----
+CategoryProgramming
