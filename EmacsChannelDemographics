@@ -47,7 +47,7 @@ can link to your nickname from this page using
 * Russia: lg_, ott, <nowiki>[BoBuk]</nowiki>, az`, [[dut]] (1986)
 * Spain: [[jemarch]] (1980)
 * Sweden: bojohan (1980), lurwas, [[maDa]] (1973), [[phubuh]] (1988), [[shapr]] (1971), [[bkhl]] (1980)
-* Switzerland: [[kensanata]] (1973), [[keramida]] (1976)
+* Switzerland: [[kensanata]] (1973), [[keramida]] (1976), [[steckerhalter]]
 * Uruguay: [[legumbre]] (1982)
 * USA: [[bpalmer]], derekv (1978), davidmccabe, jordanb, franl, fnord, dort, hober (1979), keithr, [[mkennedy]], Mongoose (1977), [[dsmith]] (1959), getoo, [[offby1]], oknowton (1977), drewr (1977), dto (1978), schussat, smitty1e(1969), chandler, [[mwolson]] (1983), [[jfm3]] (1969), [[TTimo]] (1976), strlen (1983 in Belarus), [[johnsu01]] (1976), jessealama (1980), gamename (1962), inkedmn (1978), [[quotemstr]] (1985), [[Nafai]] (1977)
 * Ukraine: [[gavenkoa]] (1984)
@@ -131,6 +131,7 @@ What topics are you confident answering questions in? What things interest you? 
 ; [[smitty1e]] (ChristopherSmith): contractor in Washington, DC area.  Former squid.  Fairly agnostic about languages and tools.  Play highland bagpipe, and follow the carpenter.
 ; [[spacebat]]: Programmer in Adelaide University web team. Debian, Perl and Lisp are preferred. Interested in where elnode could take us.
 ; Stoerte: trained as clerk, cs student, likes *nix in general, knows some shellscripting, Java (was forced to), plays with ruby; wants to learn Elisp and C someday, speaks English and German. Has (also) no clue about, but is interested in philosophy.
+; [[steckerhalter]]: PHP programmer @work (the only one using Emacs). hacking Elisp more and more, Linux administration background, [[http://www.vagrantup.com/|Vagrant]] lover, sometimes musician (piano, guitar), boring guy in general (if I can't hack something I don't have to say much)
 ; [[sunwukong]]: !PhD student in CS, loves oriental and programming languages (Japanese/Chinese/C++/ELisp/etc.) and above all Emacs. Also has some musical background (cello & piano).
 ; [http://technomancy.us technomancy] aka PhilHagelberg: Clojure hacker, Ubuntu user, [http://technomancy.us/137 Emacs all the way]. I created the [http://github.com/technomancy/emacs-starter-kit Emacs Starter Kit] as a way for users to get started with better defaults and more bundled modes. I maintain ClojureMode and am working to integrate [ELPA] and package.el into Emacs 24.
 ; [[tekai]]: cs student, does PHP for money, java, C/C++ (novice), javascript, vba (regret it), lisp fan, german , english, finnish (novice)
