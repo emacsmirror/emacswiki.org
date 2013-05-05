@@ -102,6 +102,7 @@ He uses Emacs. He's also known as [::snogglethorpe].
      turn-on-literal-tab-mode)
    (defun turn-on-literal-tab-mode () (literal-tab-mode 1))
 
+[new:XueFuqiao:2013-05-05 23:03 UTC] Useful.  I've added it to my .emacs.
 
 [:list-fonts-display]
 == Frob for displaying a list of fonts available via font-config ==
