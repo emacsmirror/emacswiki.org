@@ -1,5 +1,6 @@
 [[AutoComplete]] provides Java completion. It seems to work.
 
+== Tags based project ==
 
 JavaComplete is a tags based system for completing Java. The idea is you generate a tags file and load it in a buffer. Emacs can complete using the tags file. This project was necessary because the existing tags based completion system for C did not fit the Java language very well.
 
