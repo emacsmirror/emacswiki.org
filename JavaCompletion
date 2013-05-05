@@ -1,54 +1,16 @@
-This package consists of two parts: A Java program to generate a [[tags file]] which an EmacsLisp library uses to provide [[completion]].
+[[AutoComplete]] provides Java completion. It seems to work.
 
-Source:
 
-* Lisp:java-complete.el
-* Download:Tags.java
+JavaComplete is a tags based system for completing Java. The idea is you generate a tags file and load it in a buffer. Emacs can complete using the tags file. This project was necessary because the existing tags based completion system for C did not fit the Java language very well.
 
-NicFerrier has now picked this up again and will try and make it into an ELPA package. The Github is [[https://github.com/nicferrier/emacs-nic-java-ac|here]]
+This is a very old project, NicFerrier is trying to resurrect it to see if it's useful in anyway, perhaps as a supplement to AutoComplete.
 
-== Setup ==
+The plan is to make it into an ELPA package and see if it can be integrated with Java build tools better.
 
-You'll need to build the ##Tags## program and use it to generate a [[tags file]] which ##java-complete.el## then uses.
+The Github is [[https://github.com/nicferrier/emacs-nic-java-ac|here]]
 
-A good place to save a general tags file is ##~/.java.tags##. This file is used by default if a project specific tags file can't be found.
 
-So here's how to generate the home directory's tags file:
-
-(for Unix-like system)
-
-    javac -d ~/ Tags.java
-    java -cp ~/:$JAVA_HOME/jre/lib/rt.jar Tags "java.*" > ~/.java.tags
-
-(for Windows)
-
-    cd %HOME%
-    javac Tags.java
-    java -cp .;"%JAVA_HOME%/jre/lib/rt.jar" Tags "java.*" > .java.tags
-
-Make sure ##java-complete.el## is installed in your LoadPath.
-
-Once you have a ##.java.tags## file and loaded the elisp library you can do Java completion using the command `M-x java-complete'.
-
-Clearly the best thing to do is to bind `java-complete' to `C-TAB'.
-
-    (add-hook 'java-mode-hook (lambda () (local-set-key (kbd "C-<tab>") 'java-complete)))
-
-== Background Rant ==
-
-I've been using Emacs to hack on Java code since about 1998, I haven't used a Java IDE since then so a lot of the advances with Eclipse and the like have passed me by except noting that many programmers seem to like them.
-
-Some people have suggested to me that modern Java IDEs are more powerful than Emacs and that I should convert. They don't know what they are talking about of course. When I point to my mail client and ask if Eclipse could do that with as little effort they are mostly incredulous: why would anyone want to read their mail in an editor?
-
-In reality the only tool for Java programming that Emacs has not had is good code completion. Emacs has code completion facilities built in (the [EmacsTags Etags] system) but it doesn't work very well for Java, possibly because Java is so different from C, which Etags was invented for.
-
-I used to use the [[JDEE]] which had code completion based on parsing the source file with the beanshell. I didn't like the amount of effort the JDEE took to integrate into Emacs. Some people love it though. There's no doubt it's a great tool and a new version has just been released.
-
-I've done without code completion for quite a long while but I find as I care less and less about Java. I don't want to spend time keeping my knowledge of class and member names fresh and code completion would therefore be very useful.
-
-But if I'm not going to use the JDEE and Etags doesn't work then what's a boy to do? Invent another system of course.
-
-== Requirements ==
+== Java completion requirements ==
 
 I only really want 4 things from completion in Emacs' Java buffers.
 
@@ -56,30 +18,38 @@ First, to complete a package or class in an import statement
 
 Second, to complete a class in a decleration, eg:
 
+
+{{{
       public static void someMethod ()
       {
          StringBu
+}}}
 
 Completion should get the class !StringBuffer. This should work based on the import statements in the file.
 
 Third, to complete a member name based on a variable's type, eg:
 
+{{{
       public static void someMethod ()
       {
          StringBuffer sb = new StringBuffer();
          sb.ap
+}}}
 
 Completion should get the method name append().
 
 And fourth, to easily see completion expansions, including methods and their argument types, eg:
 
+{{{
       public static void someMethod ()
       {
          StringBuffer sb = new StringBuffer();
          sb.
+}}}
 
 Completion should present a list of expansions such as this:
 
+{{{
       Possible completions are:
       append(char) returns java.lang.StringBuffer
       append(double) returns java.lang.StringBuffer
@@ -121,52 +91,10 @@ Completion should present a list of expansions such as this:
       reverse() returns java.lang.StringBuffer
       setCharAt(int, char) returns void
       setLength(int) returns void
+}}}
 
 With those 4 tools Emacs would have just as good completion as Eclipse.
 
-== Technical Background ==
-
-##java-complete.el## is a start in implementing the 4 tools described above.
-
-##java-complete.el## is a tags based completer. As such it needs to build a file of tags that it can use to do completion. A small Java program called ##Tags## does that. You'll need to compile it.
-
-##Tags## uses Java's reflection system to build a tags table of all the classes and their methods in the current system class path.
-
-Here's how to run it:
-
-    javac -d ~/ Tags.java
-    java -cp ~/:$JAVA_HOME/jre/lib/rt.jar Tags "java.*"
-
-The parameter given to ##Tags## is a regular expression used to match package names. Only packages with names matching the regular expression are output.
-
-Here's some of the output produced by the above command:
-
-{{{
-javax.accessibility.AccessibleExtendedTable
-	public abstract javax.accessibility.AccessibleExtendedTable.getAccessibleColumn(int) returns int
-	public abstract javax.accessibility.AccessibleExtendedTable.getAccessibleIndex(int, int) returns int
-	public abstract javax.accessibility.AccessibleExtendedTable.getAccessibleRow(int) returns int
-javax.accessibility.AccessibleHyperlink
-	public javax.accessibility.AccessibleHyperlink()
-	public abstract javax.accessibility.AccessibleHyperlink.doAccessibleAction(int) returns boolean
-	public abstract javax.accessibility.AccessibleHyperlink.getAccessibleActionAnchor(int) returns java.lang.Object
-	public abstract javax.accessibility.AccessibleHyperlink.getAccessibleActionCount() returns int
-	public abstract javax.accessibility.AccessibleHyperlink.getAccessibleActionDescription(int) returns java.lang.String
-	public abstract javax.accessibility.AccessibleHyperlink.getAccessibleActionObject(int) returns java.lang.Object
-	public abstract javax.accessibility.AccessibleHyperlink.getEndIndex() returns int
-	public abstract javax.accessibility.AccessibleHyperlink.getStartIndex() returns int
-	public abstract javax.accessibility.AccessibleHyperlink.isValid() returns boolean
-javax.accessibility.AccessibleHypertext
-	public abstract javax.accessibility.AccessibleHypertext.getLink(int) returns javax.accessibility.AccessibleHyperlink
-	public abstract javax.accessibility.AccessibleHypertext.getLinkCount() returns int
-	public abstract javax.accessibility.AccessibleHypertext.getLinkIndex(int) returns int
-}}}
-
-##Tags## simply sends its output to stdout. There's a good reason for this, it means it's easy to combine the output of various ##Tags## invocations into a larger tag file.
-
-== To Do ==
-
-* Completion of import statements.
 
 ----
-CategoryCompletion
+CategoryCompletion CategoryJava
