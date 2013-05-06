@@ -45,6 +45,8 @@ Testing highlighting in fragments.
 
 ::: INDENTATION!
 
+:::: level 4
+
 :not really
 
 :     colon followed by multiple spaces
