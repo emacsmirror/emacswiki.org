@@ -1,7 +1,7 @@
 Perl mode helps you write [PerlLanguage Perl] code.  Since the Perl syntax is very hairy,
-Perl mode will often mess up syntax hilighting.
+Perl mode has to work extra hard to try and avoid messing up syntax hilighting.
 
-We recommend using CPerlMode instead of PerlMode.
+Historically, CPerlMode did a much better job, but nowadays PerlMode should work fine in most cases.
 
 == font-lock problems ==
 
