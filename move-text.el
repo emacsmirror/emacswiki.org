@@ -77,8 +77,9 @@
           (transpose-lines arg)
           ;; Account for changes to transpose-lines in Emacs 24.3
           (when (and (eval-when-compile
-                       '(and (>= emacs-major-version 24)
-                             (>= emacs-minor-version 3)))
+                       (not (version-list-<
+                             (version-to-list emacs-version)
+                             '(24 3 50 0))))
                      (< arg 0))
             (forward-line -1)))
         (forward-line -1))
