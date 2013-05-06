@@ -2,3 +2,10 @@ The special handling for Emacs 24.3 breaks move-text for me, though I am running
 
 -- GregLucas 2013-04-30 16:58 UTC
 
+
+----
+
+Yeah, might just be HEAD. Let me investigate and adjust things accordingly.
+
+-- StevePurcell 2013-05-06 18:13 UTC
+
