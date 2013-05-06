@@ -1,4 +1,4 @@
-What up? It's **steckerhalter** trying to setup a page on Emacswiki!
+== about ==
 
 Blog (running on Elnode): [[http://postmomentum.ch| postmomentum.ch]]
 
@@ -6,23 +6,19 @@ Github Account: [[https://github.com/steckerhalter|steckerhalter]]
 
 Twitter: [[https://twitter.com/steckerhalter|@steckerhalter]]
 
-Emacs config: [[https://github.com/steckerhalter/steckemacs|steckemacs]]
+== emacs stuff ==
 
-Emacs theme: [[https://github.com/steckerhalter/grandshell-theme|Grandshell Theme]]
+* [[https://github.com/steckerhalter/steckemacs|steckemacs]] -- my emacs config
+* [[https://github.com/steckerhalter/grandshell-theme|Grandshell Theme]] -- my emacs theme
+* [[https://github.com/steckerhalter/ac-php-doc]] -- PHP quick help auto-complete source
 
 
-
-
-
+== discussion ==
 
 [new:DrewAdams:2013-05-05 14:26 UTC]
 Welcome to the wiki. -- DrewAdams
-
-
-
-
-
-
+[new:steckerhalter:2013-05-05 18:45 UTC]
+thanks, what are the timestamps for?
 
 ----
 CategoryHomepage
