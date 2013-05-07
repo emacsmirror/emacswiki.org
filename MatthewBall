@@ -29,7 +29,7 @@ Roughly, the tasks GNU Emacs easily accommodates which are of interest to myself
 === 1. Notes and Authoring ===
 For notes and authoring I have found the following to be useful:
 * [[DeftMode]]: /insert description/.
-* [[OrgMode]]: I use [[OrgMode]] for absolutely /everything/ in a GNU Emacs session.
+* [[OrgMode]]: I use [[OrgMode]] for most of my needs in GNU Emacs session; which is primarily writing.
 ## Toggle the display of unicode characters in an [[OrgMode]] buffer with the command "org-toggle-pretty-entities".
 
 === 2. Dictionary, Spelling and Thesaurus ===
@@ -52,10 +52,23 @@ I've been using StumpWM for a few years and find it to be the best window manage
 == Configuration ==
 I will get around to cleaning up my dot emacs file and putting it online eventually.
 
+My configuration is split into the following hierarchy:
+* ~/.emacs.d/init.el
+* ~/.emacs.d/config-el/general-config.el
+* ~/.emacs.d/config-el/writing-config.el
+* ~/.emacs.d/config-el/programming-config.el
+* ~/.emacs.d/config-el/user-config.el
+* ~/.emacs.d/config-el/key-bindings-config.el
+* ~/.emacs.d/config-el/appearance-config.el
+
+This configuration sets a number of variables in *init.el* before loading the files in the *config-el* directory; it is structured such that everything included in *general-config.el* is available by default with GNU Emacs 24, while everything included in *user-config.el* are packages (and settings) which I have found useful using [[ELPA]]. I believe the function of the remaining configurations should be evident from their names. These configurations tend to /include/ packages from [[ELPA]]; even though there is the *general-config.el* and *user-config.el* distinction. The *general-config.el* file sets a number of packages to be downloaded which the configuration "requires", although the corresponding command needs to be manually called.
+
+I guess this is an attempt at writing a "general" configuration file another user could easily adapt to their own purposes; at some point I was interested in writing a document to the effect of "GNU Emacs for Writers".
+
 == Contact ==
 I can be reached via email at "mathew.ball" at "gmail.com".
 
-I spend a fair amount of time idling in [[EmacsChannel|#emacs]], #stumpwm, #org-mode, and various other channels on freenode under the nickname "[::chu]".
+I spend a fair amount of time idling in [[EmacsChannel|#emacs]], #stumpwm, #org-mode, #gnus, and various other channels on freenode under the nickname "[::chu]".
 
 ----
 CategoryHomepage
