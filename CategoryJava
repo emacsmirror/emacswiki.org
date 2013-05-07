@@ -10,6 +10,8 @@
 * JavaComplete - is an old tags based system that is being looked at again
 * AutoJavaComplete - tags based system with AutoComplete supported
 
+//these 3 could be combined somehow, NicFerrier is looking at that//
+
 == Indenting ==
 
 * JavaMode is built into Emacs but has some deficiencies
