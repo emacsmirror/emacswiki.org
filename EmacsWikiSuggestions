@@ -14,6 +14,10 @@ Discussion about the TextFormattingRules used in contributing to pages  is at Te
 
 '''Add your suggestions below this line.'''
 
+== Easy navigation from talk page back to parent ==
+Pages ("parents" or "parent pages") have links to goto/create talk pages, but there's no reverse functionality on the talk pages to go back to the parent (that I can see).
+This would be nice. --MichaelPaulukonis
+
 == Provide alternate stylesheets ==
 
 I would like to choose the stylesheet for EmacsWiki easily.  If Emacswiki could provide alternate stylesheets---see  [http://orgmode.org/worg/ Worg]---then I will be able to choose the theme using View->Page Style->etc menu in Firefox. -- [[115.241.16.57]]
