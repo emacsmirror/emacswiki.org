@@ -149,8 +149,8 @@ Additionally, even with a domain, pages lack a canonical URI; ##/cgi-bin/emacs/f
 [new]
 Yeah, I think you're right. I'm not comfortable enough with mod_alias, mod_rewrite, and all those and I don't have an automated test suite that would point out how changes to .htaccess are affecting the site. That's why I hesitate to fix these. -- AlexSchroeder
 
-
-
+[new]
+emacswiki.org now redirects to www.emacswiki.org -- AlexSchroeder
 
 
 == Revisioning Problems ==
