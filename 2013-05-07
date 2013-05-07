@@ -1,0 +1,9 @@
+[new:AlexSchroeder:2013-05-07 09:00 UTC]
+All the search issues on EmacsWikiProblems make me think that perhaps we'd be better off using DuckDuckGo?
+Apparently, [http://www.schneier.com/blog/archives/2013/03/changes_to_the.html Bruce Schneier uses it].
+If you feel like trying it, I've added a second search box to the site that you can activate:
+
+* http://www.emacswiki.org/emacs/?action=browse;id=2013-05-07;duckduckgo=1 -- enable it
+* http://www.emacswiki.org/emacs/?action=browse;id=2013-05-07;duckduckgo=0 -- disable it
+
+I've also added a menu item to the _Administration_ section (link at the bottom of every page).
