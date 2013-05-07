@@ -13,6 +13,7 @@ I have been using GNU Emacs for the past five or so years, and am currently usin
 * [[Gnus]]
 * [[DiredMode]]
 * [[AnsiTerm]]
+* [[CategoryEshell]]
 * [[DeskTop]]
 * [[RecentFiles]]
 * [[FindFileAtPoint]]
@@ -27,8 +28,9 @@ Roughly, the tasks GNU Emacs easily accommodates which are of interest to myself
 
 === 1. Notes and Authoring ===
 For notes and authoring I have found the following to be useful:
-* [[DeftMode]]
-* [[OrgMode]]
+* [[DeftMode]]: /insert description/.
+* [[OrgMode]]: I use [[OrgMode]] for absolutely /everything/ in a GNU Emacs session.
+## Toggle the display of unicode characters in an [[OrgMode]] buffer with the command "org-toggle-pretty-entities".
 
 === 2. Dictionary, Spelling and Thesaurus ===
 For dictionary, spelling and thesaurus purposes I have found the following to be useful:
