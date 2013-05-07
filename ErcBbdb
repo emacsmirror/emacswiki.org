@@ -25,7 +25,8 @@ M-x customize-variable RET erc-modules.
 ** Implementation Pitfalls:
 *** Right now, I have the option of searching for an ignore entry whenever a server message is received (SLOW!) or of building a new ignore-list in `bbdb-change-hook'. If you have bbdb-auto-notice-hook set to t, you will change your BBDB very often, too. So iterating over all of the BBDB to re-build the ignore list every time is not an option, and neither is building an alist of the ignore list entries which map to the relevant BBDB entries; there is no unique identifier for BBDB records. )-:
 
-* From the popup in gnus/WL/etc., it should be possible to open a PM or bitlbee IM with a single function. (Already got "online status" to show in the message buffer with https://gist.github.com/3235461)
+== See also==
+https://github.com/unhammer/bbdb2erc (which depends on erc-bbdb) makes the bbdb popup (e.g. from gnus) print whether the user is online in an ERC server, and lets you open a PM with that user on pressing "i".
 
 ----
 [[ERC]], ErcExtraModules
