@@ -8,6 +8,7 @@
 
 * AutoComplete - works with Java
 * JavaComplete - is an old tags based system that is being looked at again
+* AutoJavaComplete - tags based system with AutoComplete supported
 
 == Indenting ==
 
