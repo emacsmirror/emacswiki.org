@@ -391,5 +391,13 @@ I believe you. Unfortunately I don't know what to do about it. I'm sure your bro
 [new:DrewAdams:2008-09-07 06:27 UTC]
 Yes, as I said, I've done that. The point was that it's a shame that users will now need to do that -- some might become discouraged or not understand. What's odd is that I've never seen this (treating '''Open in New Window''' as a popup) on any other site. Anyway, it's not a biggee. And perhaps it affects only IE6 users who happen to use Google Toolbar -- dunno. -- DrewAdams
 
+== Missing table of contents ==
+
+My understanding is that the TOC should be auto-generated.
+
+This works fine on some pages (e.g. OddmuseMode )
+
+But is missing completely on others (e.g. TrampMode (and *this* page, in fact))
+
 ----
 CategoryEmacsWikiSite
