@@ -36,16 +36,38 @@ Could be! I just tried looking at HighlightLibrary using IE 8---the oldest brows
 
 ------
 
-== Search finds nothing when browser is Chrome ==
+
+
+== Search ==
+
+=== Switch to DuckDuckGo? ===
+
+[new]
+All these search issues make me think that perhaps we'd be better off using DuckDuckGo?
+Apparently, [http://www.schneier.com/blog/archives/2013/03/changes_to_the.html Bruce Schneier uses it].
+
+Issues mentioned below:
+
+* [https://duckduckgo.com/?q=site%3Awww.emacswiki.org+apropos-fn%2Bvar.el apropos-fn+var.el]
+* [https://duckduckgo.com/?q=site%3Awww.emacswiki.org+BrowseKillRing BrowseKillRing]
+* [https://duckduckgo.com/?q=site%3Awww.emacswiki.org+buff-menu%2B.el buff-menu+.el]
+* [https://duckduckgo.com/?q=site%3Awww.emacswiki.org+DiredPlus DiredPlus]
+
+Then again, I'm not sure whether all of these issues still persist. The only one that clearly still didn't work was the ##DiredPlus## example.
+Anyway, what do you think? Switch away from Google?
+
+Perhaps I should just offer both in order to allow easy testing. -- AlexSchroeder
+
+
+
+=== Search finds nothing when browser is Chrome ==
 
 Using Chrome Version 24.0.1312.52 m and Windows 7 Pro Version 6.1 (Build 7601: Service Pack 1)
 
 [new]
 Works for me. Chrome Version 25.0.1364.97 m and Windows XP SP3. My guess is a temporary hickup by Google. -- AlexSchroeder
 
-----
-
-== Site search misses stuff ==
+=== Site search misses stuff ==
 
 Search for "apropos-fn+var.el", or even just "apropos-fn+var".  You will not find most of the pages that link to page <tt>[[apropos-fn+var.el]]</tt>.
 
@@ -93,6 +115,7 @@ As I mentioned earlier, one guess I have is that the page titles are simply not 
 
 I know nothing about this stuff.  Just talking off the top of my head.  If it doesn't help, please ignore. -- DrewAdams
 
+
 === Site search misses main page for highlight.el ===
 
 Visit <tt>[[highlight.el]]</tt>. Click the title to google-search for references to that page.  There are 5 pages of hits, but none of them are HighLight, which is the main page documenting Lisp:highlight.el.  There is even a link ##Lisp:highlight.el## on page HighLight, so it can't just be a problem of using ##<tt>[[highlight.el]]</tt>## instead of ##Lisp:##.  Maybe the problem has something to do with case-sensitivity in the page name "##HighLight##"? -- DrewAdams
@@ -108,9 +131,11 @@ Wrt your suggestion, I don't think that's the solution here, but I might rename 
 [new]
 I can't say I understand completely, either. Google ought to know that there is a page with Url bla/HighLight, title High Light and h1 HighLight -- why doesn't a search for "highlight" find it? I don't know. :(
 
+
 === Page not found by search ===
 
 Just mentioning in case it indicates a bug: Search for ##DiredPlus## and you will not see the DiredPlus page in the list.  But search for ##GrepPlus## and you will see the GrepPlus page.  Wonder why. -- DrewAdams
+
 
 === Problem with Google search ===
 
@@ -121,6 +146,7 @@ Just mentioning in case it indicates a bug: Search for ##DiredPlus## and you wil
 [new] Is there something magic with StickyModifiers (except that it saves you)? You can't search for StickyModifiers now. Or for "sticky modifiers". Anyone understands this? -- LennartBorgman
 [new] I set my search languages to Chinese in google search preferences, so when I search in emacswiki.org, only a few pages can be found, can I just search all languages in emacswiki.org without change my google preferences? Or in the page of search result provides a radio button to select language.  
 -- [[Ye_Wenbin]]
+
 
 === Search Flooded with Source Code ===
 
@@ -139,6 +165,7 @@ Somebody could start working on a multi-lingual setup for Lucene or whatever the
 For the example given, Google returns MacroBasics on third place. That's not so bad, is it?
 
 We could certainly add options to the [[Search]] page. would that be acceptable? -- AlexSchroeder
+
 
 === both www.emacsen.org and emacsen.org work without one redirecting to the other ===
 
