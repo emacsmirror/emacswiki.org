@@ -1,4 +1,16 @@
 [http://wikemacs.org/ WikEmacs] (pronounced wiki-macs) collects useful resources for working with GnuEmacs.
-It got started soon after [[2012-03-20]] in an effort to create a cleaned up wiki.
+It got started soon after [[2012-03-20]] in an effort to create a [[http://batsov.com/articles/2012/03/20/die-emacswiki/|cleaned up wiki.]]
 
 In January 2013 the project was announced to be [[http://news.slashdot.org/story/13/01/29/0242216/after-a-year-emacswiki-alternative-shutting-down|shutting down]], but the wiki announced it was [[http://wikemacs.org/index.php?title=Main_Page&oldid=3731|"under new management" in April 2013]] and [[http://wikemacs.org/index.php/Talk:Main_Page#WikEmacs_staying_open.3F_Great.21|staying open]]
+
+* Founder declares WikEmacs [[http://batsov.com/articles/2013/01/27/the-wikemacs-experiment-is-over-long-live-emacswiki/|a failed experiment]]
+* Founder posts his notes about [[http://batsov.com/articles/2013/04/24/wikemacs-lives-on-under-new-stewardship/|new stewardship]]
+
+The goal of this page is not a collection of gossip, but to (eventually) provide insight into the workings of the wiki (and its contributors):
+
+:: [.... S]tewarding documentation projects and nurturing a healthy community around them is much harder than writing software. [....]
+
+:: I hope that something good has(will) come up from all this drama. At the very least I urge everyone who cares for EmacsWiki to try and clean up, extend and improve at least a couple of articles on subjects that are of importance to him. I know that’s something I’ll be doing from now on. ([[http://batsov.com/articles/2013/01/27/the-wikemacs-experiment-is-over-long-live-emacswiki/|source]])
+
+----
+CategoryEmacsWikiSite - as the spark for the creation of WikEmacs was the desire for a revised Emacs Wiki. 
