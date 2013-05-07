@@ -228,34 +228,6 @@ Hm, I'm not sure. When [http://www.emacswiki.org/emacs/Emacsmirror?cache=0 using
 
 == Markup/Generation Issues==
 
-=== Problem with `Manual:' syntax? ===
-
-How to make a `##Manual:##' link to `##(elisp) Circular Objects##'?  I tried ##[[Manual:Circular Objects]]## and a few variants, but didn't find anything that works.  -- DrewAdams
-
-[new]
-Manual:Circular%20Objects is the right form. In a wiki URL, space is represented by an underscore. Using double square brackets might do the wrong thing in this context. -- AlexSchroeder
-
-[new:NicFerrier:2013-02-26 00:29 UTC]
-This doesn't seem to work either, it produces urls like this:
-
-{{{
-http://www.emacswiki.org/cgi-bin/info-ref?find=Circular%2520Objects
-}}}
-
-This is wrong. The %20 is being escaped somehow.
-
-[new:AlexSchroeder:2013-02-26 08:12 UTC]
-You're right. Something broke when I added alternative-picking to the formatting rule. It no longer uses the InterMap and that's why escaping now works like for ordinary page links. Breaking compatibility is unfortunate but I think this looks better:
-
-{{{
-* [[Manual:Circular Objects|Circular Stuff]]
-* [[Manual:Circular Objects]]
-}}}
-
-Result:
-
-* [[Manual:Circular Objects|Circular Stuff]]
-* [[Manual:Circular Objects]]
 
 === Apostrophes etc. not prettified in links ==
 
