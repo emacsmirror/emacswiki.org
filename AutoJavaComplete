@@ -7,7 +7,7 @@ First you should have installed
  AutoComplete and  [https://github.com/capitaomorte/yasnippet Yasnippet]
    Then install this one for java completion.
 
- Please Do not forget to read 
+Please Do not forget to read 
 [https://github.com/emacs-java/auto-java-complete/raw/0.2.8/Install Install] 
 [https://github.com/emacs-java/auto-java-complete/raw/0.2.8/README.txt README.txt] 
 [https://github.com/emacs-java/auto-java-complete/raw/0.2.8/ChangeLog ChangeLog] 
@@ -35,7 +35,7 @@ Enjoy!
 
 * https://github.com/emacs-java/auto-java-complete/raw/0.2.8/Tags.java
 
-  if 
+ if 
 [https://github.com/emacs-java/auto-java-complete/raw/0.2.8/Tags.java Tags.java]
 can not work on your PC. you can use my tag file: 
   just bunzip and rename it to [https://github.com/emacs-java/auto-java-complete/raw/0.2.8/java_base.tag.bz2 ~/.java_base.tag]
