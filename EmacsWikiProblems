@@ -282,6 +282,9 @@ none of them worked. I think this *should* be ok.
 
 Again though, I'm happy with it not being fixed because we'll fix it with Elwiki.
 
+[new]
+If you read RFC 2396 you'll note that curly braces are deemed "unwise" in section
+2.4.3. Excluded US-ASCII Characters.
 
 == Server Issues ==
 
