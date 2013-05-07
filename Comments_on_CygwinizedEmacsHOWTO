@@ -1,0 +1,8 @@
+you can add  following command  
+
+export PS1="[${LOGNAME}@$(hostname)] $"
+
+to your .profile  file
+
+-- manojjoshi 2013-05-07 01:12 UTC
+
