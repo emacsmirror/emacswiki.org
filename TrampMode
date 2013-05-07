@@ -132,6 +132,44 @@ To connect to a very old system I had to switch the remote, default LANG to a ''
 
 == Tips and tricks ==
 
+=== The NEW (Emacs 24) ad-hoc multi-hop syntax -- the replacement for multi: ===
+
+Note that some of the Tips and tricks below still refer to the old ##multi:## syntax, which was removed in Emacs 23 (in Emacs 23 you must configure proxies manually to facilitate multi-hops).
+
+As of Emacs 24, an analog of the old ##multi:## syntax has been layered on top of the modern `tramp-default-proxies-alist' approach, meaning that you can once again perform multi-hops without any prior configuration. For details, see:
+
+ C-h i g (tramp) Ad-hoc multi-hops RET
+
+With the new syntax, each 'hop' is separated by ##|##. The example in the manual is:
+
+ C-x C-f /ssh:bird@bastion|ssh:you@remotehost:/path
+
+Which connects firstly as ##bird@bastion##, and from there to ##you@remotehost:/path##
+
+==== /su:: or /sudo:: on remote hosts ====
+
+You can also use this syntax to sudo/su to root (or of course any other user) on a remote host:
+
+ C-x C-f /ssh:you@remotehost|sudo:remotehost:/path/to/file RET
+
+*Important*: be sure to specify the hostname explicitly: ##sudo:remotehost## rather than ##sudo::## (see below).
+
+As this still uses the proxy mechanism underneath, `tramp-default-proxies-alist' should now include the value ##("remotehost" "root" "/ssh:you@remotehost:")##
+
+Meaning that the proxy ##/ssh:user@server:## is going to be used whenever you request a file as ##root@server##.
+
+##root## is the default user for these methods, but you can of course also change to a non-root user with:
+
+ C-x C-f /ssh:you@remotehost|sudo:them@remotehost:/path/to/file RET
+
+==== Always specify the remote hostname explicitly ====
+
+You are probably used to using ##sudo::## or ##su::## and omitting the hostname. If you are /staying/ on the localhost then this is still fine, but if you are hopping to a remote server then you /must/ specify the hostname for every hop -- even if it is the same as for the previous hop. Always use ##sudo:hostname## or ##su:hostname## with remote hosts.
+
+The trap here is that ##sudo::## /does/ actually appear to work -- /however/ when you do that the HOST for the dynamic proxy entry will be the hostname you /originated/ from rather than the host you connected to. This will not only look confusing (as the wrong host will be displayed in the file paths), but it will also mean that any subsequent attempt to use ##sudo::## on your localhost will instead be proxied to the remote server! (and the proxy would also presumably be clobbered if you did the same thing on a second server, causing further issues).
+
+In short, don't use ##::## when you multi-hop!
+
 === Using su to edit stuff as root ===
 
 C-x C-f /su:&#58;/etc/hosts RET
@@ -687,42 +725,6 @@ Why is multi:... an obsolete format? Was it deemed too easy or something? Why sh
 I hope there's a sensible explanation. I would love to be pointed to a logical explanation of why trying to open /multi:ssh:foo:ssh:bar: will cause the heat death of the universe but I fear there may be no such thing.
 
 -- Matthew
-
-=== The NEW (Emacs 24) ad-hoc multi-hop syntax -- the replacement for multi: ===
-
-As of Emacs 24, an analog of the old multi: syntax has been layered on top of the modern `tramp-default-proxies-alist' approach, meaning that you can once again perform multi-hops without any prior configuration. For details, see:
-
- C-h i g (tramp) Ad-hoc multi-hops RET
-
-With the new syntax, each 'hop' is separated by ##|##. The example in the manual is:
-
- C-x C-f /ssh:bird@bastion|ssh:you@remotehost:/path
-
-Which connects firstly as ##bird@bastion##, and from there to ##you@remotehost:/path##
-
-==== /su:: or /sudo:: on remote hosts ====
-
-You can also use this syntax to sudo/su to root (or of course any other user) on a remote host:
-
- C-x C-f /ssh:you@remotehost|sudo:remotehost:/path/to/file RET
-
-*Important*: be sure to specify the hostname explicitly: ##sudo:remotehost## rather than ##sudo::## (see below).
-
-As this still uses the proxy mechanism underneath, `tramp-default-proxies-alist' should now include the value ##("remotehost" "root" "/ssh:you@remotehost:")##
-
-Meaning that the proxy ##/ssh:user@server:## is going to be used whenever you request a file as ##root@server##.
-
-##root## is the default user for these methods, but you can of course also change to a non-root user with:
-
- C-x C-f /ssh:you@remotehost|sudo:them@remotehost:/path/to/file RET
-
-==== Always specify the remote hostname explicitly ====
-
-You are probably used to using ##sudo::## or ##su::## and omitting the hostname. If you are /staying/ on the localhost then this is still fine, but if you are hopping to a remote server then you /must/ specify the hostname for every hop -- even if it is the same as for the previous hop. Always use ##sudo:hostname## or ##su:hostname## with remote hosts.
-
-The trap here is that ##sudo::## /does/ actually appear to work -- /however/ when you do that the HOST for the dynamic proxy entry will be the hostname you /originated/ from rather than the host you connected to. This will not only look confusing (as the wrong host will be displayed in the file paths), but it will also mean that any subsequent attempt to use ##sudo::## on your localhost will instead be proxied to the remote server! (and the proxy would also presumably be clobbered if you did the same thing on a second server, causing further issues).
-
-In short, don't use ##::## when you multi-hop!
 
 === Editing files via sudo doesnt work with vc-svn.el. ===
 
