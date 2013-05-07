@@ -358,6 +358,7 @@ Hm, maybe this is unrelated. Possibly it just took him more than nine minutes to
 
 EmacsWiki doesnt appear to work well with w3m, specifically the search button. --JoakimVerona
 
+[new]
 Try this solution, been using it a while now --[[pft]]:
 
    (define-key w3m-mode-map "\C-c\C-c" 
@@ -366,6 +367,11 @@ Try this solution, been using it a while now --[[pft]]:
         (if (member 'w3m-href-anchor (text-properties-at (point)))
             (w3m-view-this-url)
           (w3m-submit-form))))
+
+[new]
+I've just opened at terminal and used w3m to browse and search the wiki and didn't see anything wrong.
+The answer above makes me think that maybe it's a w3m-mode question but I'm not sure. If it's a w3m issue,
+can you elaborate? -- AlexSchroeder
 
 === RSS for single-pages doesn't work in Google Reader ===
 
