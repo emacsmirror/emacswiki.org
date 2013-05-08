@@ -25,7 +25,17 @@ Do you see the link at the bottom that says _Article_? If so, that's the one and
 Ah! '''NOW''' I see it. I'd probably like both of them up top, next to the page name. When I'm on the talk page I more want to go back to the parent then to see what links to the talk page (default title-link behavior). --MichaelPaulukonis
 
 [new]
-Do you know jQuery and bootstrap? If you do, I'm sure there's a way to add a copy of that link somewhere beneath the page name… Any suggestions? -- AlexSchroeder
+What do you think of the change I just made? It moves the _Article_ or _Talk_ link (if any) to right after the header.
+
+In case you're interested, I added the following to [emacswiki.org/emacs/emacs-bootstrap.js emacs-bootstrap.js]:
+
+  // move article link and talk link below title
+  var $link = $('a.original').add('a.comment');
+  if ($link) {
+    $('.header h1').after($('<p>').append($link));
+  }
+
+ -- AlexSchroeder
 
 == Provide alternate stylesheets ==
 
