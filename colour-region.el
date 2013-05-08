@@ -156,7 +156,6 @@
 
 ;;; TODO
 ;;
-;;  colour-region-kill, colour-region-copy
 ;; 
 
 ;;; Require
