@@ -8,7 +8,7 @@
 * <b>Author </b> --  Matthew L. Fidler
 * <b>Maintainer </b> --  Matthew L. Fidler
 * <b>Created </b> --  Fri Aug  3 22:33:41 2012 (-0500)
-* <b>Version </b> --  20130322.925
+* <b>Version </b> --  20130322.926
 * <b>Package-Requires </b> --  ((http-post-simple "1.0") (yaoddmuse "0.1.1")(header2 "21.0") (lib-requires "21.0"))
 * <b>Last-Updated </b> --  Wed Aug 22 13:11:26 2012 (-0500)
 * <b>By </b> --  Matthew L. Fidler
@@ -82,6 +82,9 @@ libraries and why they are needed.
 === Internal Variables ===
 == History ==
 
+8-May-2013    Matthew L. Fidler  
+Last-Updated: Wed Aug 22 13:11:26 2012 (-0500) #794 (Matthew L. Fidler)
+Add bugfix from vapniks for org-readme-to-commentray
 3-May-2013    Matthew L. Fidler  
 Last-Updated: Wed Aug 22 13:11:26 2012 (-0500) #794 (Matthew L. Fidler)
 Uploading using org-readme.
