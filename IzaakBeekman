@@ -3,7 +3,7 @@ Aerospace engineering graduate student at [http://www.princeton.edu/ Princeton U
 [:AboutMe]
 ==About Me==
 portrait:http://www.princeton.edu/~ibeekman/images/ZBeekman.jpg
-I use Emacs 24.  I am an new to intermediate programmer and emacs user, but a fast learner.  My main interest is scientific computing, but I am very interested in leveraging emacs and Linux in a powerful way to increase my productivity.  [:My.Emacs] My ##.emacs## can be found at [https://github.com/zbeekman/.emacs.d/blob/master/init.el on github] Edits, suggestions and comments are all welcome.
+I use Emacs 24.  I am an new to intermediate programmer and emacs user, but a fast learner.  My main interest is scientific computing, but I am very interested in leveraging emacs and Linux in a powerful way to increase my productivity.  [:My.Emacs] My .emacs can be found [https://github.com/zbeekman/.emacs.d/blob/master/init.el on github] Edits, suggestions and comments are all welcome.
 
 [:MyBlog]
 ====My Blog====
