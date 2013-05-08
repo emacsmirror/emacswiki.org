@@ -532,6 +532,7 @@ Usually you would use ##*let*## instead of ##*setq*## but this is just a simple 
 
 This invokes a function at every match of a [[regexp]]:
 
+{{{
    (defun map-regex (buffer regex fn)
      "Map the REGEX over the BUFFER executing FN.
 
@@ -551,9 +552,11 @@ This invokes a function at every match of a [[regexp]]:
                                 (save-match-data
                                   (funcall fn f))))))))
            res))))
+}}}
 
 An example use might be:
 
+{{{
     (map-regex
      (find-file-noselect "~/work/elnode-auth/build-parts.txt")
      "^\\(.*.el\\(\\.gz\\)*\\)$"
@@ -561,7 +564,7 @@ An example use might be:
        (let ((filename (match-string 0)))
          (when (file-exists-p filename)
            (load-file filename))))))
-
+}}}
 
 === Finding all the strings that match ===
 
