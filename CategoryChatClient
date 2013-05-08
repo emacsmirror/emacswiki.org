@@ -4,11 +4,15 @@ for Emacs.
 == IRC ==
 InternetRelayChat clients
 * ZenIRC -- old but still popular
-* [[ERC]] -- the fantastic ERC, which is included with Emacs 22
-* [[rcirc]] -- the sane alternative, which is also included with Emacs 22
+* [[ERC]] -- the fantastic ERC, which is included with Emacs since v22
+* [[rcirc]] -- the sane alternative, which is also included with Emacs since v22
 * [[Circe]] -- the saner alternative
 * Riece http://www.nongnu.org/riece/ -- Another alternative
 * BitlBee can be used as an IRC gateway to instant messaging services (AIM, ICQ, MSN)
+
+There is also an IRC bouncer, a proxy, to make your IRC connections persistent:
+
+* ShoesOff - IRC bouncer in Emacs
 
 == Instant Messaging ==
 * Jabber clients
