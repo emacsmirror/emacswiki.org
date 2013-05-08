@@ -23,6 +23,16 @@ Each use of `let' creates a fresh location, even if you use the same name:
          2
          1
 
+[new:HongxuChen:2013-05-08 13:29 UTC]
+    
+    Know little about elisp. But the result of this expression is as follows on my Emacs(24.3).  So am I missing something?
+    3
+    
+    2
+    
+    1
+    1
+
 A binding made by `let' lasts until the end of the `let' form.
 
 Function calls create bindings for their formal arguments when they are
