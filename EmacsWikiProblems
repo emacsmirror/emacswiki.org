@@ -416,5 +416,10 @@ If it was last edited after the change, the TOC has been removed from the cached
 [new]
 Yes, I usually browse with Javascript off (Firefox + Noscript). Good to know that's the workaround. It's a shame the inline TOC was disabled. Was it still buggy? (I gathered from other discussions that there were some problems with it at some stage.)
 
+[new]
+I guess it worked most of the time, but at the same time it was very /brittle/ and required constant attention and compatibility cross-checking. I feel it's just not worth the effort. Perhaps we can improve the wiki for noscript users and add some explanatory text and instructions for how to selectively enable scripts.
+
+The DuckDuckGo search also uses JavaScript to quietly add //site:www.emacswiki.org// to the search terms. Without JavaScript, this will also look weird. -- AlexSchroeder
+
 ----
 CategoryEmacsWikiSite
