@@ -414,7 +414,7 @@ If it was last edited after the change, the TOC has been removed from the cached
 -- AlexSchroeder
 
 [new]
-Yes, I usually browse with Javascript off. Good to know that's the workaround. It's a shame the inline TOC was disabled. Was it still buggy? (I gathered from other discussions that there were some problems with it at some stage.)
+Yes, I usually browse with Javascript off (Firefox + Noscript). Good to know that's the workaround. It's a shame the inline TOC was disabled. Was it still buggy? (I gathered from other discussions that there were some problems with it at some stage.)
 
 ----
 CategoryEmacsWikiSite
