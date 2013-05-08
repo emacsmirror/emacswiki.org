@@ -54,6 +54,9 @@ The simplest way to ban a host or IP number is to edit BannedHosts. Alternativel
 # IP numbers and host names that aren't banned have a nice, big *Ban!* button next to them
 # click the button and a new entry will be made in BannedHosts
 
+Note that these entries are probably useless against spammers that keep changing their IP number.
+That's what the next section is about: banning whole ranges.
+
 == Banning Ranges ==
 
 Whois can tell you whether you should bother banning just one IP, or an entire range.  I use http://network-tools.com/ when working on a system that does not provide whois.
