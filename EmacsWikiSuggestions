@@ -50,6 +50,9 @@ On a related note, are there any keybindings for common functionality -- like ed
 
 I agree with Drew about the "article" issue. I usually think of everything in here as a page, anyway. [for all of my caveats, I was amazed at the response time. woooh!] --MichaelPaulukonis
 
+[new]
+The name "article" is just what Wikipedia uses so it is easier to understand. There are "access keys" which might work for you but I don't know them by heart. If you use the English interface then I'd try e for edit, c for comment and a for article, perhaps? -- Alex
+
 == Provide alternate stylesheets ==
 
 I would like to choose the stylesheet for EmacsWiki easily.  If Emacswiki could provide alternate stylesheets---see  [http://orgmode.org/worg/ Worg]---then I will be able to choose the theme using View->Page Style->etc menu in Firefox. -- [[115.241.16.57]]
