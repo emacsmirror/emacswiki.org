@@ -413,7 +413,8 @@ If it was last edited before the change, the TOC is part of the cached HTML and 
 If it was last edited after the change, the TOC has been removed from the cached HTML by previous contributors and the Javascript ought to recreate it for you. Perhaps you have disabled Javascript?
 -- AlexSchroeder
 
-
+[new]
+Yes, I usually browse with Javascript off. Good to know that's the workaround. It's a shame the inline TOC was disabled. Was it still buggy? (I gathered from other discussions that there were some problems with it at some stage.)
 
 ----
 CategoryEmacsWikiSite
