@@ -37,6 +37,12 @@ In case you're interested, I added the following to [http://emacswiki.org/emacs/
 
 -- AlexSchroeder
 
+
+[new:DrewAdams:2013-05-08 14:33 UTC]
+I don't see it.  Then again, I don't use the bootstrap version... 
+
+I agree that the link back to the page commented on should be much more prominent.  And the main page is not necessarily an "article".  It is sometimes a file in ElispArea, for instance. -- DrewAdams
+
 == Provide alternate stylesheets ==
 
 I would like to choose the stylesheet for EmacsWiki easily.  If Emacswiki could provide alternate stylesheets---see  [http://orgmode.org/worg/ Worg]---then I will be able to choose the theme using View->Page Style->etc menu in Firefox. -- [[115.241.16.57]]
