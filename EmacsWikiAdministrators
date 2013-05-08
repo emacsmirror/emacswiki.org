@@ -44,6 +44,16 @@ The powers of an administrator:
 
 Old InterMap discussion is at InterMapDiscussion.
 
+== Banning Hosts ==
+
+The simplest way to ban a host or IP number is to edit BannedHosts. Alternatively, proceed as follows:
+
+# at the bottom of the page, click on _Administration_
+# click on _Ban contributors_
+# it will list IP numbers and host names and the usernames used, if any
+# IP numbers and host names that aren't banned have a nice, big *Ban!* button next to them
+# click the button and a new entry will be made in BannedHosts
+
 == Banning Ranges ==
 
 Whois can tell you whether you should bother banning just one IP, or an entire range.  I use http://network-tools.com/ when working on a system that does not provide whois.
