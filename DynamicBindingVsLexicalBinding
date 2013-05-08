@@ -1,4 +1,4 @@
-Dynamic binding is sometimes called ''fluid binding''.  Lexical binding is sometimes called ''static binding''.
+jjjDynamic binding is sometimes called ''fluid binding''.  Lexical binding is sometimes called ''static binding''.
 
 == Binding ==
 
@@ -104,6 +104,8 @@ Suppose you are using a function `foo' that generates output using
 `print'.  But sometimes you would like to capture the output in a buffer
 of your choosing.  With dynamic binding, it's easy:
 
+
+    ;; FIXME the parens are not matched
    (let ((b (generate-new-buffer-name " *string-output*"))))
      (let ((standard-output b))
        (foo))
