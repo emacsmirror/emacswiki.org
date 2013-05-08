@@ -35,7 +35,7 @@ In case you're interested, I added the following to [emacswiki.org/emacs/emacs-b
     $('.header h1').after($('<p>').append($link));
   }
 
- -- AlexSchroeder
+-- AlexSchroeder
 
 == Provide alternate stylesheets ==
 
