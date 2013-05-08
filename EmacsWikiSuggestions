@@ -27,7 +27,7 @@ Ah! '''NOW''' I see it. I'd probably like both of them up top, next to the page 
 [new]
 What do you think of the change I just made? It moves the _Article_ or _Talk_ link (if any) to right after the header.
 
-In case you're interested, I added the following to [emacswiki.org/emacs/emacs-bootstrap.js emacs-bootstrap.js]:
+In case you're interested, I added the following to [http://emacswiki.org/emacs/emacs-bootstrap.js emacs-bootstrap.js]:
 
   // move article link and talk link below title
   var $link = $('a.original').add('a.comment');
