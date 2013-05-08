@@ -64,8 +64,10 @@ There is no central documentation. They just get added ad-hoc. Let me check the 
 ; s: save
 ; p: preview
 ; f: find
+; a: article
+; c: comment
 
-I think I will add a and c, since they seem to be missing. -- Alex
+As for where to document them, I don't know. Probably a new page to link from HowToEdit? -- Alex
 
 == Provide alternate stylesheets ==
 
