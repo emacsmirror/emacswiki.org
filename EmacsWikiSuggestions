@@ -24,6 +24,9 @@ Do you see the link at the bottom that says _Article_? If so, that's the one and
 [new:MichaelPaulukonis:2013-05-08 13:16 UTC]
 Ah! '''NOW''' I see it. I'd probably like both of them up top, next to the page name. When I'm on the talk page I more want to go back to the parent then to see what links to the talk page (default title-link behavior). --MichaelPaulukonis
 
+[new]
+Do you know jQuery and bootstrap? If you do, I'm sure there's a way to add a copy of that link somewhere beneath the page name… Any suggestions? -- AlexSchroeder
+
 == Provide alternate stylesheets ==
 
 I would like to choose the stylesheet for EmacsWiki easily.  If Emacswiki could provide alternate stylesheets---see  [http://orgmode.org/worg/ Worg]---then I will be able to choose the theme using View->Page Style->etc menu in Firefox. -- [[115.241.16.57]]
