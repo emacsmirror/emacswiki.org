@@ -9,3 +9,41 @@ I'm going to rework it at some point:
 
 -- [http://nic.ferrier.me.uk NicFerrier] 2013-03-03 10:38 UTC
 
+
+----
+
+----
+
+: Each use of `let' creates a fresh location, even if you use the same name:
+
+      (let ((a 1))
+        (let ((a 2))
+           (let ((a 3))
+             (print a))
+           (print a))
+        (print a))
+        ==> 3
+            2
+            1
+
+[new:HongxuChen:2013-05-08 13:29 UTC]
+    
+Know little about elisp. But the result of this expression is as follows on my Emacs(24.3).  So am I missing something?
+
+    3
+    
+    2
+    
+    1
+    1
+
+
+[new:DrewAdams:2013-05-08 14:42 UTC]
+(Moved HongxuChen's comment here from main page.)
+
+I think your question is "Why do I see an extra `1' at the end?"  If so, the answer is that when you evaluated the `let' form you probably used something like `##M-:##', that is, some command that, itself, prints the result of the evaluation.  The `3 2 1' is printed by the `let' form, and the final `1' is printed by whatever command you used to evaluate the `let' form.
+
+----
+
+-- DrewAdams 2013-05-08 14:45 UTC
+
