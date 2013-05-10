@@ -69,6 +69,9 @@ There is no central documentation. They just get added ad-hoc. Let me check the 
 
 As for where to document them, I don't know. Probably a new page to link from HowToEdit? -- Alex
 
+[new:MichaelPaulukonis:2013-05-10 18:31 UTC]
+Say "hello!" to AccessKey --MichaelPaulukonis
+
 == Provide alternate stylesheets ==
 
 I would like to choose the stylesheet for EmacsWiki easily.  If Emacswiki could provide alternate stylesheets---see  [http://orgmode.org/worg/ Worg]---then I will be able to choose the theme using View->Page Style->etc menu in Firefox. -- [[115.241.16.57]]
