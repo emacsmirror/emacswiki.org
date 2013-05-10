@@ -1,0 +1,20 @@
+Bugs Report:  
+version: GNU Emacs 23.3.1
+Hi, I am a chinese student.  Thanks you for developing such a wonderful emacs printing plugin!
+
+When I installed  the PsPrintPackage-23, I have found a bug in  ps-print-7-3-5/lisp/ps-print/ps-mule.el 
+
+When I used the  ps-print-region-with-faces function as well as the othersï¼ a error occured 
+" Symbol's function definition is void: auto-compose-region" . 
+
+It remembered me that there was also  a warning in ps-mule.el when I compiled It 
+"ps-mule.el:1226:1:Warning: the function `auto-compose-region' is not known to  be defined."
+
+So I changed the 1043 line from " (auto-compose-region from to )"  to "(auto-compose-chars nil from to nil nil)".
+And it works now! 
+
+I am a elisp  newbie, I don't whether is it a bug! But it occured in my GNU Emacs 23.3.1 .
+Please forgive my poor English! Thank you for the wonderful plugin again!
+
+-- [http://gavin_he@foxmail.com gavin_he] 2013-05-10 09:57 UTC
+
