@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Fri Apr 19 07:31:37 2013 (-0700)
+;; Last-Updated: Fri May 10 10:51:49 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6239
+;;     Update #: 6242
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -1700,10 +1700,11 @@ what `bmkp-bookmark-record-from-name' (with no MEMP check) returns.
 
 This function is like `bmkp-get-bookmark-in-alist', except that
 `bmkp-get-bookmark-in-alist' always tests whether BOOKMARK is in
-`bookmark-alist', whether BOOKMARK is a string (a bookmark name) or a
-full bookmark.  `bmkp-get-bookmark-in-alist' is thus a real test for
-bookmark existence.  Use `bookmark-get-bookmark' only when you do NOT
-want to look up the bookmark in `bookmark-alist'."
+`bookmark-alist', regardless of whether BOOKMARK is a string (a
+bookmark name) or a full bookmark.  `bmkp-get-bookmark-in-alist' is
+thus a real test for bookmark existence.  Use `bookmark-get-bookmark'
+only when you do NOT want to look up the bookmark in
+`bookmark-alist'."
   ;; The first test means that any cons with a string car is considered a bookmark.
   ;; We test for the string (the name) so that you can distinguish, for example, a list of bookmarks
   ;; from a single bookmark - just consp is not enough for that.
@@ -1885,7 +1886,7 @@ BOOKMARK is a bookmark name or a bookmark record."
 The names are those of the bookmarks in ALIST or, if nil,
 `bookmark-alist'."
   (bookmark-maybe-load-default-file)
-  (mapcar (lambda (bmk) (bmkp-bookmark-name-from-record bmk)) (or alist bookmark-alist)))
+  (mapcar (lambda (bmk) (bmkp-bookmark-name-from-record bmk)) (or alist  bookmark-alist)))
 
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
@@ -2559,13 +2560,16 @@ candidate."
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
 ;; 1. Pass full bookmark to the various "get" functions.
-;; 2. Location returned can be a buffer name, instead of a file name.
+;; 2. Location returned can be a buffer name.
 ;;
 (defun bookmark-location (bookmark)
-  "Return the name of the file or buffer associated with BOOKMARK.
+  "Return a description of the location of BOOKMARK.
 BOOKMARK is a bookmark name or a bookmark record.
 If it is a record then it need not belong to `bookmark-alist'.
-Return \"-- Unknown location --\" if no location name can be found."
+
+Look first for property `location', then for property `filename', then
+for property `buffer-name'.  Return the first such property found, or
+\"-- Unknown location --\" if none is found."
   (bookmark-maybe-load-default-file)
   (setq bookmark  (bookmark-get-bookmark bookmark))
   (or (bookmark-prop-get bookmark 'location)
@@ -2573,8 +2577,6 @@ Return \"-- Unknown location --\" if no location name can be found."
       (bmkp-get-buffer-name bookmark)
       (bookmark-prop-get bookmark 'buffer)
       "-- Unknown location --"))
-      ;; $$$$$$$$$ ""))
-      ;; $$$$ (error "Bookmark has no file or buffer name: %S" bookmark)))
 
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
