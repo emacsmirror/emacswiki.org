@@ -84,9 +84,18 @@ These commands can be used for loading and saving colour-regions.
 The following options can be customized:
 
 * colour-region-formats : List of text-properties to apply to the different states of each region type.
-* colour-region-save-on-kill : If set to t then save colour-regions when buffer is killed.
+* colour-region-save-on-kill : Whether or not to save colour-regions when buffer is killed.
 * colour-region-load-on-find-file : If set to t then always load colour-regions when a new file is opened.
 * colour-region-kill-ring-max : The maximum number of elements allowed on the colour-region-kill-ring before old ones are removed.
+
+See the doc strings for more details.
+== Hooks ==
+The following hook functions are used to load/save colour regions automatically. 
+They are added to the relevant hooks when colour-region-initialize is run.
+
+* colour-region-find-file-hook 
+* colour-region-kill-emacs-hook 
+* colour-region-kill-buffer-hook
 
 == Installation ==
 
@@ -94,7 +103,11 @@ The following options can be customized:
 Just type M-x package-install colour-region marmalade 
 * Otherwise download the library from here Lisp:colour-region.el, and put it in a directory in the emacs load path, 
 like ~/.emacs.d
-* Add (require 'colour-region) in your ~/.emacs file
+* Add the following lines to your ~/.emacs file:
+
+(require 'colour-region)
+(colour-region-initialize)
+
 
 
 This was generated with OrgReadme.  On updating the library, this page is likely to be replaced with updated content.
