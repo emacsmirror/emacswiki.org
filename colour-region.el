@@ -125,6 +125,10 @@
 ;; Add the following to your ~/.emacs startup file.
 ;;
 ;; (require 'colour-region)
+;; (colour-region-initialize)
+;;
+
+
 
 ;;; Customize:
 ;;
@@ -921,7 +925,9 @@ start, end, type and status values"
 (defun colour-region-kill-emacs-hook nil
   "Hook for saving colour-regions when emacs is killed.
 Note: colour-regions will not be usable after running this function until it
-is restored with colour-region-update-overlays"
+is restored with `colour-region-update-overlays'.
+
+This is added to `kill-emacs-hook' when `colour-region-initialize' is run."
   ;; need to adjust colour-regions for each buffer, since it is a buffer local variable
   (dolist (thisbuffer (buffer-list)) 
     (with-current-buffer thisbuffer
@@ -934,8 +940,10 @@ is restored with colour-region-update-overlays"
 	    (colour-region-save))))))
 
 (defun colour-region-kill-buffer-hook nil
-  "Save colour-regions if buffer is killed, and colour-region-save-on-kill is t.
-Prompt for save if colour-region-save-on-kill equals 'prompt."
+  "Save colour-regions if buffer is killed, and `colour-region-save-on-kill' is t.
+Prompt for save if `colour-region-save-on-kill' equals 'prompt.
+
+This is added to `kill-buffer-hook' when `colour-region-initialize' is run."
   (if (and colour-region-save-on-kill (> (length colour-regions) 0))
       (if (eq colour-region-save-on-kill 'prompt)
 	  (if (y-or-n-p 
@@ -945,10 +953,12 @@ Prompt for save if colour-region-save-on-kill equals 'prompt."
 	(colour-region-save))))
 
 (defun colour-region-find-file-hook nil
-  "If colour-region-load-on-find-file is t, load colour-regions from filename returned by colour-region-default-save-file function.
-If colour-region-load-on-find-file is equal to 'prompt, then prompt the user first.
-If colour-region-load-on-find-file is nil, or the filename returned by colour-region-default-save-file doesn't exist,
-then don't load."
+  "If `colour-region-load-on-find-file' is t, load colour-regions from filename returned by
+`colour-region-default-save-file' function.If `colour-region-load-on-find-file' is equal to 'prompt, then prompt the user first.
+If `colour-region-load-on-find-file' is nil, or the filename returned by `colour-region-default-save-file' doesn't exist,
+then don't load.
+
+This is added to `find-file-hook' when `colour-region-initialize' is run."
   (let ((filename (colour-region-default-save-file)))
     (if (and colour-region-load-on-find-file
 	     (file-exists-p filename))
@@ -990,7 +1000,6 @@ the colour-region-default-save-file function."
        filename2)
       ;; restore overlays to colour-regions
       (colour-region-update-overlays))))
-
 
 (defun colour-region-load (&optional filename)
   "Load colour-regions for the current buffer from FILENAME.
