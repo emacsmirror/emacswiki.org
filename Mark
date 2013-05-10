@@ -1,16 +1,41 @@
-The '''[::mark]''' is one end of the [[region]]; the other end is [[point]].
+== Library Information ==
+Readme.org --- Navigate and visualize the mark-ring
 
-There is only one current mark in a [[buffer]], but you can access past positions of the mark, sometimes also referred to also as "marks". In particular, you can cycle among these positions.
+* <b>Filename </b> --  [[mark.el]]
+* <b>Description </b> --  Navigate and visualize the mark-ring
+* <b>Author </b> --  Greg Rowe <emacs@therowes.net>
+* <b>Maintainer </b> --  Joe Bloggs <vapniks@yahoo.com>
+* Copyright (c) 2003 Greg Rowe
+* <b>Created </b> --  2003
+* <b>Version </b> --  0.1
+* <b>Last-Updated </b> --  2013-05-10 23:09:35
+* <b>By </b> --  Joe Bloggs
+* <B>URL </B> --  https://github.com/vapniks/mark
+* <b>Keywords </b> --  convenience
+* <b>Compatibility </b> --  GNU Emacs 24.3.1
+* <b>Package-Requires </b> --  ((fm "1.0"))
 
-Being a buffer position, the mark is located before or after a character. It is updated dynamically whenever the buffer's contents are modified.
+== Possible Dependencies ==
+fm
+== Commentary ==
+This library provides the commands to navigate and display the mark ring.
+The `show-marks' command displays a buffer listing the marks in the buffer from which it was called.
+You can then press enter on one of the listed marks to jump to it, or press d to delete it from the
+mark ring. You can also use the `forward-mark' and `backward-mark' commands to navigate the marks in
+the mark ring. 
+== Installation ==
 
-You can set the mark in any of these ways:
+* If you have [http://www.marmalade-repo.org/ marmalade-repo.org], this mark is part of the emacs packages you can install.  
+Just type M-x package-install mark marmalade 
+* Otherwise download the library from here Lisp:mark.el, and put it in a directory in the emacs load path, 
+like ~/.emacs.d
+* Add (require 'mark) in your ~/.emacs file
+* I recommend also binding the commands to global keys, e.g:
+{{{
+   (global-set-key (kbd "<C-s-right>") 'forward-mark)
+   (global-set-key (kbd "<C-s-left>") 'backward-mark)
+   (global-set-key (kbd "<C-s-down>") 'show-marks)
+}}}
 
-* `C-SPC' (point stays where it was)
-* dragging point with `mouse-1' (old point becomes mark)
-* clicking `mouse-3' (clicked position becomes point; old point becomes mark)
 
-See MarkCommands for information on commands involving the mark.
-
-----
-CategoryGlossary
+This was generated with OrgReadme.  On updating the library, this page is likely to be replaced with updated content.
