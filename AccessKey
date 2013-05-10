@@ -1,0 +1,27 @@
+== Usage ==
+
+In common browsers, to edit a page, just use `'''<code>Alt e</code>''''
+
+* on Mac OS X + Firefox, it's `'''<code>Ctrl Alt e</code>''''.
+* On Windows/Linux + Firefox it's `'''<code>Alt Shift e</code>''''. 
+
+In some browsers, you will need to hit `RETURN' after that.
+
+== List of Access Keys ==
+
+; e: edit (German: b)
+; s: save
+; p: preview
+; f: find
+; a: article
+; c: comment
+
+TODO: this list may not be complete
+
+== See Also ==
+http://en.wikipedia.org/wiki/Access_key 
+
+== Categories ==
+CategoryEmacsWikiSite
+CategoryHowTo
+HowTo
