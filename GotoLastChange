@@ -5,6 +5,9 @@ http://www.emacswiki.org/elisp/goto-last-change.el allows you to move point thro
 [new]
 If anyone feels ambitious I'd like to suggest that this function be modified (or a new one written .. perhaps called goto-next-undo) to be a bit more undo-friendly.  I think it would be quite useful if one could use this function while undoing.  That is, after hitting the undo key, being able to hit the goto-last-change key to see where the next undo will occur and not have the operation cause undo to reverse directions and undo my last undo.
 
+I placed this question on StackOverflow: [http://stackoverflow.com/questions/16469644/is-there-emacs-capability-for-visiting-last-edits "Is there emacs capability for visiting last edits?"]
+
+Basically, it would be awesome to get a similar function that works across all buffers.
 
 ----
 CategoryUndo
