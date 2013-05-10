@@ -212,7 +212,7 @@ Thanks for visiting!
 Welcome to the wiki. -- DrewAdams
 
 [new:AmitPatel:2013-05-10 18:00 UTC]
-XEmacs had per-buffer faces. I used that to make the active buffer brighter than the inactive ones. It was great! I miss that feature in Emacs. There's some approximation with buffer-local faces and/or overlays but neither is quite clean. Hm, I just searched EmacsWiki and found FacesPerBuffer. Looks promising! For ERC, it looks like it uses `header-line' instead of `erc-header-line'.
+XEmacs had per-buffer faces. I used that to make the active buffer brighter than the inactive ones. It was great! I miss that feature in Emacs. There's some approximation with buffer-local faces and/or overlays but neither is quite clean. Hm, I just searched EmacsWiki and found FacesPerBuffer. Looks promising! For ERC, it looks like it uses `header-line' instead of `erc-header-line'. Thank you for your auto-save trick for scrolling; I've been so annoyed by that. --AmitPatel
 
 ----
 CategoryHomepage
