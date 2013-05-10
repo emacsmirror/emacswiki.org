@@ -1,0 +1,13 @@
+Instead of
+;; Recompile if .elc exists.
+                (add-hook (make-local-variable 'after-save-hook)
+                          (lambda ()
+                            (byte-force-recompile default-directory)))
+why not only do what's necessary?
+;; Recompile if .elc exists.
+                (add-hook (make-local-variable 'after-save-hook)
+                          (lambda ()
+                            (byte-compile-file buffer-file-name)))
+
+-- [http://scw.us NetMage] 2013-05-10 23:58 UTC
+
