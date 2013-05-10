@@ -6,10 +6,10 @@
 ;; Maintainer: Joe Bloggs <vapniks@yahoo.com>
 ;; Copyleft (Ↄ) 2013, Joe Bloggs, all rites reversed.
 ;; Created: 2013-04-27 20:19:18
-;; Version: 0.1
+;; Version: 0.2
 ;; Last-Updated: 2013-04-27 20:19:18
 ;;           By: Joe Bloggs
-;; URL: http://www.emacswiki.org/emacs/download/org-dotemacs.el
+;; URL: https://github.com/vapniks/org-dotemacs
 ;; Keywords: local
 ;; Compatibility: GNU Emacs 24.3.1
 ;; Package-Requires: ((org "7.9.3") (cl-lib "1.0"))
@@ -174,15 +174,19 @@
 
 ;;; Customize:
 ;;
-;; `org-dotemacs-default-file' : The default org file containing the code blocks to load when `org-dotemacs-load-file'
-;;                               is called.
-;; `org-dotemacs-error-handling' : Specify how errors are handled.
+;; `org-dotemacs-default-file' : The default org file containing the code blocks to load when `org-dotemacs-load-file' is called.
+;; `org-dotemacs-error-handling' : Indicates how errors should be handled by `org-dotemacs-load-blocks'.
+;; `org-dotemacs-include-todo' : A regular expression matching TODO states to be included.
+;; `org-dotemacs-exclude-todo' : A regular expression matching TODO states to be excluded.
 ;;
 ;; All of the above can customized by:
 ;;      M-x customize-group RET org-dotemacs RET
 ;;
 
 ;;; Change log:
+;; 4-May-2013      
+;;    Last-Updated: 2013-04-27 20:19:18 (Joe Bloggs)
+;;    ;;    
 ;;	
 ;; 2013/04/27
 ;;      * First released.
@@ -195,7 +199,6 @@
 
 ;;; TODO
 ;;
-;; Upload to elpa/melpa/marmalade and emacswiki
 ;;
 ;; 
 
@@ -299,11 +302,11 @@ the copied subtrees will be visited."
 				   (and include-todo-state
 					todo-state
 					(not (string-match include-todo-state
-							   todo-state))))
-			 (loop for pair in copied-areas
-			       if (and (>= (point) (car pair))
-				       (< (point) (cdr pair)))
-			       return t)
+							   todo-state)))
+                                   (loop for pair in copied-areas
+                                         if (and (>= (point) (car pair))
+                                                 (< (point) (cdr pair)))
+                                         return t))
 			 (let ((start (point)) end)
 			   (org-copy-subtree)
 			   (setq end (+ start (length (current-kill 0 t))))
@@ -346,9 +349,9 @@ argument which uses `org-dotemacs-error-handling' for its default value."
                                      (condition-case err
                                          (eval-buffer)
                                        (error
-                                        (setq fail 'error)
+                                        (setq fail (error-message-string err))
                                         (message "org-dotemacs: Error in %s code block: %s"
-                                                 blockname (error-message-string err))))
+                                                 blockname fail)))
                                    (eval-buffer))
                                  (unless fail
                                    (setq evaluated-blocks (append evaluated-blocks (list blockname)))
@@ -384,18 +387,17 @@ argument which uses `org-dotemacs-error-handling' for its default value."
                                                               subtreedeps)
                                                       "[ ,\f\t\n\r\v]+"))))
              (let ((fail (funcall try-eval spec blockname blockdeps)))
-               (case fail
-                 (error
-                  (setq unevaluated-blocks (append unevaluated-blocks (list (cons blockname spec)))))
-                 (unmet
-                  (setq unmet-dependencies (append unmet-dependencies (list (cons blockname spec)))))
-                 (nil (if (eq error-handling 'retry)
-                          (while (not fail)
-                            (loop for blk in (append unevaluated-blocks unmet-dependencies)
-                                  do (setq fail (funcall try-eval (car blk) (cdr blk)))
-                                  unless fail do (setq unevaluated-blocks (remove blk unevaluated-blocks))
-                                  (setq unmet-dependencies (remove blk unmet-dependencies))
-                                  and return t))))))
+               (cond ((stringp fail)
+                      (setq unevaluated-blocks (append unevaluated-blocks (list (list spec blockname blockdeps fail)))))
+                     ((eq fail 'unmet)
+                      (setq unmet-dependencies (append unmet-dependencies (list (list spec blockname blockdeps)))))
+                     (t (if (eq error-handling 'retry)
+                            (while (and (not fail) (or unevaluated-blocks unmet-dependencies))
+                              (loop for blk in (append unevaluated-blocks unmet-dependencies)
+                                    do (setq fail (funcall try-eval (car blk) (second blk) (third blk)))
+                                    unless fail do (setq unevaluated-blocks (remove blk unevaluated-blocks)
+                                                         unmet-dependencies (remove blk unmet-dependencies))
+                                    and return t))))))
              (setq block-counter (+ 1 block-counter))))
          specs)
         (if (and (not unevaluated-blocks) (not unmet-dependencies))
@@ -405,15 +407,19 @@ argument which uses `org-dotemacs-error-handling' for its default value."
                        (length evaluated-blocks)
                        (mapconcat 'identity evaluated-blocks " ")))
           (if unevaluated-blocks
-              (message "\norg-dotemacs: The following %d code block%s errors: %s\n"
+              (message "\norg-dotemacs: The following %d code block%s errors: \n %s\n"
                        (length unevaluated-blocks)
                        (if (= 1 (length unevaluated-blocks)) " has" "s have")
-                       (mapconcat 'car unevaluated-blocks " ")))
+                       (mapconcat (lambda (blk) (concat "   " (second blk)
+                                                        " block error: " (fourth blk) "\n"))
+                                  unevaluated-blocks " ")))
           (if unmet-dependencies
-              (message "\norg-dotemacs: The following %d code block%s unmet dependencies: %s\n"
+              (message "\norg-dotemacs: The following %d code block%s unmet dependencies: \n %s\n"
                        (length unmet-dependencies)
                        (if (= 1 (length unmet-dependencies)) " has" "s have")
-                       (mapconcat 'car unmet-dependencies " ")))))
+                       (mapconcat (lambda (blk) (concat "   " (second blk)
+                                                        " block depends on blocks: " (third blk)))
+                                  unmet-dependencies " ")))))
       ;; run `org-babel-post-tangle-hook' in tangled file
       (when (and org-babel-post-tangle-hook
                  target-file
@@ -490,7 +496,7 @@ and no code is saved."
 
 (provide 'org-dotemacs)
 
-;;; org-dotemacs.el ends here
-
 ;; (magit-push)
 ;; (yaoddmuse-post "EmacsWiki" "org-dotemacs.el" (buffer-name) (buffer-string) "update")
+
+;;; org-dotemacs.el ends here
