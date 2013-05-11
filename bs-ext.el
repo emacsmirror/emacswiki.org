@@ -6,7 +6,7 @@
 ;; Maintainer: Joe Bloggs <vapniks@yahoo.com>
 ;; Copyleft (Ↄ) 2012, Joe Bloggs, all rites reversed.
 ;; Created: 2012-06-28 14:23:56
-;; Version: 0.1
+;; Version: 0.2
 ;; Last-Updated: 2012-06-28 14:23:56
 ;;           By: Joe Bloggs
 ;; URL: http://www.emacswiki.org/emacs/download/bs-ext.el
@@ -38,6 +38,8 @@
 
 ;;; Commentary: 
 ;; 
+;; Bitcoin donations gratefully accepted: 13NyoPq3iusGsCtHNRT9xfA9jsqPjYtyyE
+;;
 ;; Extensions to emacs buffer-selection library (bs.el)
 ;; This extension allows you to bind keys to buffer selection configurations (using `bs-ext-config-keys'),
 ;; and optionally displays the configuration names and associated keybindings in the header line of the
@@ -310,6 +312,9 @@ to show always.
     (switch-to-buffer "*Occur*")))
 
 (provide 'bs-ext)
+
+;; (magit-push)
+;; (yaoddmuse-post "EmacsWiki" "bs-ext.el" (buffer-name) (buffer-string) "update")
 
 ;;; bs-ext.el ends here
 
