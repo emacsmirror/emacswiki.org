@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue Apr 30 13:54:39 2013 (-0700)
+;; Last-Updated: Sat May 11 13:08:53 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 9992
+;;     Update #: 9993
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1737,6 +1737,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2013/05/11 dadams
+;;     icicle-handle-default-for-prompt: Do not add nil DEFAULT to prompt.
 ;; 2013/04/30 dadams
 ;;     Renamed: icicle-add-default-to-prompt to icicle-handle-default-for-prompt.
 ;;     icicle-handle-default-for-prompt: Always remove existing default expression from prompt.
