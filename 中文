@@ -1,18 +1,5 @@
 ELPA是 *Emacs Lisp Package Archive* 的缩写,最初是由TomTromey编写的，在很多人贡献后，现在elpa已经包含到了emacs24中
 
-<pre>
-1.ELPA
- 1.<nowiki>[www.njit.edu.cn 增加了事务处理]</nowiki>
- 2.可定制
-2.emacs24中的包是怎么工作的
-1.用'after-init-hook'来配置包
-2.用'eval-after-load'来配置包
-3.在包更新完成后调整load－path
-4.elpa的策略
-3.emacs23中包是怎么工作的
-4.其它的资源
-</pre>
-
 ==ELPA==
 //"我们的目标是让安装，使用，升级emacs的包变得更加容易"，我们提供＃＃package.el＃＃，一个简单的emacs包管理工具，还有一个预先包装好了的emacs lisp代码库.//
 
@@ -49,7 +36,8 @@ emacs版本的package.el支持多个仓库，你可以用GNU ELPA来添加其它
 M-x customize-variable [RET] package-archives [RET]
 }}}
 
-在emacs24中包是如何工作的
+== 在emacs24中包是如何工作的==
+
 Elisp 手册描述了包系统是如何初始化的：
 每当emacs被打开的时候，emacs都会自动的调用'package－initialize'来导入已经安装了的包，这件事是在导入初始文件和简写文件（如果有的话）之后，在运行'after-init-hook'之后完成的（参看startup简介）如果用户选项package-enable-at-startup被禁用的话，那么自动加载就不会被执行。
 所以在init.el文件被加载了以后包才会被初始化，这就意味着你不应该把包的具体的初始化放到你的init.el文件中，出了几个方面以外。
