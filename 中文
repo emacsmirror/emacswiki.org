@@ -40,12 +40,14 @@ emacs版本的package.el支持多个仓库，你可以用GNU ELPA来添加其它
 
 增加了 [[MELPA]]:
  
-(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
+ (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
 
-你可以自定义
-你可以定制'package－archinves'，试试这个，
+===你可以自定义===
+
+你可以定制 `package－archinves'，试试这个:
+{{{
 M-x customize-variable [RET] package-archives [RET]
-
+}}}
 
 在emacs24中包是如何工作的
 Elisp 手册描述了包系统是如何初始化的：
