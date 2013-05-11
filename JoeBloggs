@@ -15,6 +15,7 @@ Note to self: put some of these on elpa/melpa/marmalade
 * '''Lisp:one-key-yas.el''' -- [[OneKey]] menu for [[Yasnippet]]
 * '''Lisp:one-key-bmkp.el''' -- [[OneKey]] menu for [[BookmarkPlus]]
 * '''Lisp:org-dotemacs.el''' -- Store your emacs config as an org file, and choose which bits to load.
+* '''Lisp:colour-region.el''' -- Toggle regions of the buffer with different text snippets (see ColourRegion)
 
 ==One-Key==
 I am the current maintainer for [[OneKey]] (Lisp:one-key.el), [[LazySearch]] (Lisp:lazy-search.el), and Lisp:lazy-search-extension.el written by [[AndyStewart]] and [[rubikitch]].
@@ -46,6 +47,10 @@ Joe -- please see my reply to you at BookmarkPlus. Thx -- DrewAdams
 Joe -- Page [[Mark]] is about the emacs mark.  It is pointed to by the [[Glossary]] and many other pages.  Newbies looking for infor about the mark will click links to it for more info.
 
 If you want to create a page about library <tt>[[mark.el]]</tt> that would be good.  But please do not co-opt an existing page with existing links to it and with a general title such as '''Mark'''.  Call your page something specific, such as [[Library mark.el]].  Thx -- DrewAdams
+
+--
+Sorry, that was a mistake caused by my overzealous use of OrgReadme  -- JoeBloggs 
+
 
 ----
 CategoryHomepage
