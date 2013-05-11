@@ -2,7 +2,7 @@ ELPA是 *Emacs Lisp Package Archive* 的缩写，最初是由TomTromey编写的�
 
 <pre>
 1.ELPA
- 1.增加了事务处理
+ 1.[[增加了事务处理]]
  2.可定制
 2.emacs24中的包是怎么工作的
 1.用'after-init-hook'来配置包
