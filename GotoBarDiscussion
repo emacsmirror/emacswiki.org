@@ -7,7 +7,5 @@ The current existince and order of the links in the goto bar are based on the fo
 * SiteMap, [[Search]], ElispArea, and HowTo are all things that newbies will look for; the rest is more for wiki junkies. 
 * [[News]] and RecentChanges should be next to each other.
 
-XML and TXT buttons used to be in the goto bar, but are now appear as just text links on RecentChanges.  The two most recent days for the [[News]] blog also existed in the goto bar, but more often than not led to empty pages and never facilated the starting of new blog entries.  The [[CSS]] page used to also be available from each page.   These were removed in 2005.
-
 ----
 CategoryEmacsWikiSite
