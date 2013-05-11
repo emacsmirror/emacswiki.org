@@ -21,9 +21,11 @@ emacs24中把 ##package.el## 这个包管理工具包含进来了,它包含了�
 
 
 emacs版本的package.el支持多个仓库，你可以用GNU ELPA来添加其它的仓库，例如这样：
-<code>(setq package-archives (("gnu" . "http://elpa.gnu.org/packages/")
+{{{
+(setq package-archives (("gnu" . "http://elpa.gnu.org/packages/")
                          ("marmalade" . "http://marmalade-repo.org/packages/")
-                         ("melpa" . "http://melpa.milkbox.net/packages/"))))</code>
+                         ("melpa" . "http://melpa.milkbox.net/packages/"))))
+}}}
 任何仓库的组合都是很好的。你或许应该总是把GNU的核心的仓库班汉进去，但是这个不是必需的。
 包的归档也可以是在本地的
 
