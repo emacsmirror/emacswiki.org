@@ -26,15 +26,18 @@ emacs版本的package.el支持多个仓库，你可以用GNU ELPA来添加其它
                          ("marmalade" . "http://marmalade-repo.org/packages/")
                          ("melpa" . "http://melpa.milkbox.net/packages/"))))
 }}}
-任何仓库的组合都是很好的。你或许应该总是把GNU的核心的仓库班汉进去，但是这个不是必需的。
-包的归档也可以是在本地的
+任何仓库的组合都是很好的。你或许应该总是把GNU的核心的仓库包括进去，但是这个不是必需的。
 
-增加事务处理
-你可以交互性的做
+包的归档也可以是本地的
 
-增加了Marmalade:
-(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
-增加了MELPA:
+===增加交互性===
+你可以交互性的做.
+
+增加了 [[Marmalade]]:
+
+ (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
+
+增加了 [[MELPA]]:
 (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
 
 你可以自定义
