@@ -11,7 +11,7 @@ emacsen and EmacsWiki.  My daily life becomes very interesting.
 
 You can contact me using (please send plain text mail, not HTML):
 <code>
-(concat "mailto:" "xfq" "." "free" "@" "gmail" "." "com")
+(concat "xfq" "." "free" "@" "gmail.com")
 </code>
 
 == Some Sentences I Like ==
