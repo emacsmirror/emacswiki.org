@@ -1,4 +1,4 @@
-ELPA是*Emacs Lisp Package Archive*的缩写，最初是由TomTromey编写的，在很多人贡献后，现在elpa已经包含到了emacs24中
+ELPA是 *Emacs Lisp Package Archive* 的缩写，最初是由TomTromey编写的，在很多人贡献后，现在elpa已经包含到了emacs24中
 
 1.ELPA
  1.增加了事务处理
