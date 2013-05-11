@@ -17,7 +17,7 @@ ELPA是 *Emacs Lisp Package Archive* 的缩写,最初是由TomTromey编写的，
 //"我们的目标是让安装，使用，升级emacs的包变得更加容易"，我们提供＃＃package.el＃＃，一个简单的emacs包管理工具，还有一个预先包装好了的emacs lisp代码库.//
 
 
-emacs24中把＃＃package.el＃＃这个包管理工具包含进来了,它包含了一个内置的FSF所支持的emacs包，也称为ELPA，你可以在ELPA 仓库中找到。
+emacs24中把｀＃＃package.el＃＃｀这个包管理工具包含进来了,它包含了一个内置的FSF所支持的emacs包，也称为ELPA，你可以在ELPA 仓库中找到。
 
 
 emacs版本的package.el支持多个仓库，你可以用GNU ELPA来添加其它的仓库，例如这样：
