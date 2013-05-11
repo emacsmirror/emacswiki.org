@@ -35,11 +35,11 @@ emacs版本的package.el支持多个仓库，你可以用GNU ELPA来添加其它
 
 增加了 [[Marmalade]]:
 
-[[fenghelong]]
 
  (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
 
 增加了 [[MELPA]]:
+ 
 (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
 
 你可以自定义
