@@ -1,1 +1,114 @@
+elpa是Emacs Lisp Package Archive的缩写，最初是由TomTromey编写的，在很多人贡献后，现在elpa已经包含到了emacs24中
 
+1.ELPA
+ 1.增加了事务处理
+ 2.可定制
+2.emacs24中的包是怎么工作的
+1.用'after-init-hook'来配置包
+2.用'eval-after-load'来配置包
+3.在包更新完成后调整load－path
+4.elpa的策略
+3.emacs23中包是怎么工作的
+4.其它的资源
+
+ELPA
+"我们的目标是让安装，使用，升级emacs的包变得更加容易"，我们提供＃＃package.el＃＃，一个简单的emacs包管理工具，还有一个预先包装好了的emacs lisp代码库
+
+emacs24中把package.el这个包管理工具包含进来了,它包含了一个内置的FSF所支持的emacs包，也称为ELPA，你可以在ELPA 仓库中找到。
+
+emacs版本的package.el支持多个仓库，你可以用GNU ELPA来添加其它的仓库，例如这样：
+(setq package-archives (("gnu" . "http://elpa.gnu.org/packages/")
+                         ("marmalade" . "http://marmalade-repo.org/packages/")
+                         ("melpa" . "http://melpa.milkbox.net/packages/"))))
+任何仓库的组合都是很好的。你或许应该总是把GNU的核心的仓库班汉进去，但是这个不是必需的。
+包的归档也可以是在本地的
+
+增加事务处理
+你可以交互性的做
+
+增加了Marmalade:
+(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
+增加了MELPA:
+(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
+
+你可以自定义
+你可以定制'package－archinves'，试试这个，
+M-x customize-variable [RET] package-archives [RET]
+
+
+在emacs24中包是如何工作的
+Elisp 手册描述了包系统是如何初始化的：
+每当emacs被打开的时候，emacs都会自动的调用'package－initialize'来导入已经安装了的包，这件事是在导入初始文件和简写文件（如果有的话）之后，在运行'after-init-hook'之后完成的（参看startup简介）如果用户选项package-enable-at-startup被禁用的话，那么自动加载就不会被执行。
+所以在init.el文件被加载了以后包才会被初始化，这就意味着你不应该把包的具体的初始化放到你的init.el文件中，出了几个方面以外。
+为包定制变量是好的，这个动作可以在包加载之前就被使用
+在某种程度上，auto-mode-alist的改变不需要这个包在设置之前被加载
+(add-to-list 'auto-mode-alist '("\\.gradle" . groovy-mode))
+一个包的具体的模式定制可以在它被加载之前通过一个包的hook来执行，例如
+(add-hook 'groovy-mode-hook (lambda () (setq tab-width 4)))
+通过这个方法，尽管一个包还没有被加载，但是键的绑定也能够正常的工作而不会导致一个错误。
+(global-set-key
+     "\M-?"
+     (lambda ()
+       (interactive)
+       (call-interactively 'magit-status)))
+
+    (global-set-key (kbd "C-'")     'shell-switcher-switch-buffer)
+一个包的具体的初始化可以被eval-after-load所做，可以参考eval-after-load
+如果所有的这些技巧都不行的话，你仍旧可以延迟配置直到包被加载，你可以这样做，
+(add-hook 'after-init-hook 'cycbuf-init)
+
+用after-init-hook来配置包
+一些人认为用after-init-hook似乎是最后一种解决方案，因为它强制包的加载（因此会让你的emacs的速度变慢），然而另外一些人指出在所有的包都加载完成后在配置它们会更易于使用。
+
+你可以在你的初始化文件中这样做，
+(add-hook 'after-init-hook #'(lambda () (load "<real init file>")))
+然后把你所有的常规的初始放到<<real init file>>中
+参考PackagesForConfig
+
+
+使用eval－after－load来配置包
+用eval-after-load来为每个文件进行配置是一个比较不错的方法，如果这个包不存在的话，它会回滚。
+下面的这个例子展示了用定制了一个假设的叫做abcd－mode的主要模式，
+(eval-after-load "abcd-mode" ; <-- "abcd-mode", not 'abcd-mode
+      '(progn
+         (setq-default abcd-basic-offset 7) ; setting some option
+         (add-to-list 'abcd-globals-list "console") ; appending to a list option
+         (add-hook 'abcd-mode-hook 'prepare-some-abcd-soup) ; things to do for abcd mode buffers
+         (define-key abcd-mode-map (kbd "C-c C-c") 'play-some-abcd-song) ; add some key binding for abcd mode
+     ))
+
+
+这里有一个假设叫做broccoli的副模式
+(eval-after-load "broccoli-autoloads" ; <-- "broccoli-autoloads", not "broccoli"
+      '(progn
+         (if (require 'broccoli nil t)
+             (progn
+               (broccoli-mode 1) ; Turn on Broccoli global minor mode if broccoli-autoloads.el doesn't do it.
+               (setq-default broccoli-how 'steamed) ; set some option.
+               (add-to-list 'broccoli-additional-stuff 'salt) ; add to a list option.
+               )
+           (warn "broccoli is not found."))))
+
+在更新包之后调整load－path
+elpa的一个缺点就是当新的包被安装后，加载路径并不会被更新，这里有一个例子可以为你到做
+
+
+ELPA的规则
+
+emacs中ELPA的规则在这里被讨论过
+http://thread.gmane.org/gmane.emacs.devel/132634/focus=132640
+
+emacs23中包是怎么工作的
+
+你能够让包在emacs23中工作，你需要在你的init.el文件中增加像这样的一些东西
+(require 'package)
+;; Any add to list for package-archives (to add marmalade or melpa) goes here
+(add-to-list 'package-archives 
+    '("marmalade" .
+      "http://marmalade-repo.org/packages/"))
+(package-initialize)
+为了能够在emacs23中用package.el，下面链接中的package.el版本是需要的，http://bit.ly/pkg-el23
+
+其它的资源
+
+AndrewHyatt已经写了一个ELPA的appengin实现，是用go语言写的，
