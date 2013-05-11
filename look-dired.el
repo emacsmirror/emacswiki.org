@@ -12,7 +12,7 @@
 ;; URL: https://github.com/vapniks/look-dired
 ;; Keywords: convenience
 ;; Compatibility: GNU Emacs 24.3.1
-;; Package-Requires: ((look-mode "version"))
+;; Package-Requires: ((look-mode "1.0"))
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -89,7 +89,6 @@
 
 ;;; TODO
 ;;
-;; 
 ;;
 
 ;;; Require
