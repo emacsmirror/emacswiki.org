@@ -1,21 +1,4 @@
-== Library Information ==
-* Filename: colour-region.el
-* Description: Toggle regions of the buffer with different text snippets
-* Author: Joe Bloggs <vapniks@yahoo.com>
-* Maintainer: Joe Bloggs <vapniks@yahoo.com>
-* Copyleft (Ↄ) 2013, Joe Bloggs, all rites reversed.
-* Created: Sometime in 2008 (can't remember when exactly)
-* Version: 0.1
-* Last-Updated: 2013-05-04 21:37:20
-* By: Joe Bloggs
-* URL: https://github.com/vapniks/colour-region
-* Keywords: 
-* Compatibility: GNU Emacs 24.3.1
-* Package-Requires:  
-* Features that might be required by this library:
-
 == Commentary ==
-Bitcoin donations gratefully accepted: 1Aa6Hh39RCBvr6!BrxDWvThYynuKcwv6NL4
 
 This library is based on [http://www.emacswiki.org/emacs/hide-region.el hide-region].
 You can define areas of the buffer as "colour-regions" which can be toggled between various states,
