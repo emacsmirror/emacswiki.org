@@ -16,6 +16,7 @@ Note to self: put some of these on elpa/melpa/marmalade
 * '''Lisp:one-key-bmkp.el''' -- [[OneKey]] menu for [[BookmarkPlus]]
 * '''Lisp:org-dotemacs.el''' -- Store your emacs config as an org file, and choose which bits to load.
 * '''Lisp:colour-region.el''' -- Toggle regions of the buffer with different text snippets (see ColourRegion)
+* '''Lisp:look-dired.el''' -- Extra functions for LookMode
 
 ==One-Key==
 I am the current maintainer for [[OneKey]] (Lisp:one-key.el), [[LazySearch]] (Lisp:lazy-search.el), and Lisp:lazy-search-extension.el written by [[AndyStewart]] and [[rubikitch]].
