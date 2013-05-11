@@ -1,6 +1,4 @@
-**ELPA **
-
-elpa是Emacs Lisp Package Archive的缩写，最初是由TomTromey编写的，在很多人贡献后，现在elpa已经包含到了emacs24中
+ELPA是*Emacs Lisp Package Archive*的缩写，最初是由TomTromey编写的，在很多人贡献后，现在elpa已经包含到了emacs24中
 
 1.ELPA
  1.增加了事务处理
@@ -19,9 +17,9 @@ ELPA
 emacs24中把package.el这个包管理工具包含进来了,它包含了一个内置的FSF所支持的emacs包，也称为ELPA，你可以在ELPA 仓库中找到。
 
 emacs版本的package.el支持多个仓库，你可以用GNU ELPA来添加其它的仓库，例如这样：
-(setq package-archives (("gnu" . "http://elpa.gnu.org/packages/")
+<code>(setq package-archives (("gnu" . "http://elpa.gnu.org/packages/")
                          ("marmalade" . "http://marmalade-repo.org/packages/")
-                         ("melpa" . "http://melpa.milkbox.net/packages/"))))
+                         ("melpa" . "http://melpa.milkbox.net/packages/"))))</code>
 任何仓库的组合都是很好的。你或许应该总是把GNU的核心的仓库班汉进去，但是这个不是必需的。
 包的归档也可以是在本地的
 
@@ -113,4 +111,4 @@ emacs23中包是怎么工作的
 
 其它的资源
 
-AndrewHyatt已经写了一个ELPA的appengin实现，是用go语言写的，
+AndrewHyatt已经写了一个ELPA的appengin实现，是用go语言写的，它还没有公开的
