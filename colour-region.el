@@ -6,7 +6,7 @@
 ;; Maintainer: Joe Bloggs <vapniks@yahoo.com>
 ;; Copyleft (Ↄ) 2013, Joe Bloggs, all rites reversed.
 ;; Created: Sometime in 2008 (can't remember when exactly)
-;; Version: 0.2
+;; Version: 0.4
 ;; Last-Updated: 2013-05-04 21:37:20
 ;;           By: Joe Bloggs
 ;; URL: https://github.com/vapniks/colour-region
@@ -39,16 +39,16 @@
 
 ;;; Commentary: 
 ;; 
+;; * Commentary
 ;; Bitcoin donations gratefully accepted: 1Aa6Hh39RCBvr6BrxDWvThYynuKcwv6NL4
-
-;; This library is based on hide-region.el (see http://www.emacswiki.org/emacs/hide-region.el).
+;; 
+;; This library is based on [[http://www.emacswiki.org/emacs/hide-region.el][hide-region]].
 ;; You can define areas of the buffer as "colour-regions" which can be toggled between various states,
 ;; e.g. for hiding or highlighting the text. Each colour-region can also contain several different texts which can be 
 ;; toggled between. 
 ;; I'm not sure how useful this is in practice, but it was fun to build.
 ;; 
 ;; * Creating colour-regions of different types
-;;
 ;; You can create a new colour-region by selecting an area of text in the buffer, and executing any of the following 
 ;; commands:
 ;; 
@@ -68,9 +68,7 @@
 ;;    in the current buffer.
 ;;  - A positive non-zero prefix of say N means apply the command to all colour-regions of the Nth type
 ;;    (that were created using the same prefix).
-;;
 ;; * Navigation
-;;
 ;; You can quickly move between colour regions using the following commands:
 ;; 
 ;; - colour-region-next 
@@ -91,9 +89,7 @@
 ;; 
 ;; The remove/copy/kill commands accept the previously mentioned prefix keys to specify with regions they apply to.
 ;; See the commands documentation for details.
-;;
 ;; * Altering colour-regions
-;;
 ;; The following commands can be used to alter the content and display format of colour-regions:
 ;; 
 ;; - colour-region-toggle-overlay
@@ -105,14 +101,40 @@
 ;; 
 ;; All of these commands accept the previously mentioned prefix keys for specifying which regions they apply to.
 ;; See the commands documentation for details.
-;;
 ;; * Saving colour-regions
-;;
 ;; These commands can be used for loading and saving colour-regions.
 ;; 
 ;; - colour-region-load 
 ;; - colour-region-save
 ;;  
+;; * Customizable options
+;; The following options can be customized:
+;; 
+;;  - colour-region-formats : List of text-properties to apply to the different states of each region type.
+;;  - colour-region-save-on-kill : Whether or not to save colour-regions when buffer is killed.
+;;  - colour-region-load-on-find-file : If set to t then always load colour-regions when a new file is opened.
+;;  - colour-region-kill-ring-max : The maximum number of elements allowed on the colour-region-kill-ring before old ones are removed.
+;; 
+;; See the doc strings for more details.
+;; * Hooks
+;; The following hook functions are used to load/save colour regions automatically. 
+;; They are added to the relevant hooks when colour-region-initialize is run.
+;; 
+;;  - colour-region-find-file-hook 
+;;  - colour-region-kill-emacs-hook 
+;;  - colour-region-kill-buffer-hook
+;; 
+;; * Installation
+;; 
+;;  - If you have [[http://www.marmalade-repo.org/][marmalade-repo.org]], this colour-region is part of the emacs packages you can install.  
+;;    Just type M-x package-install colour-region marmalade 
+;;  - Otherwise download the library from here Lisp:colour-region.el, and put it in a directory in the emacs load path, 
+;;    like ~/.emacs.d
+;;  - Add the following lines to your ~/.emacs file:
+;; 
+;;      (require 'colour-region)
+;;      (colour-region-initialize)
+;; 
 ;;;;
 
 
@@ -147,6 +169,9 @@
 ;;
 
 ;;; Change log:
+;; 11-May-2013      
+;;    Last-Updated: 2013-05-04 21:37:20 (Joe Bloggs)
+;;    Add bitcoin address for donations
 ;; 7-May-2013      
 ;;    Last-Updated: 2013-05-04 21:37:20 (Joe Bloggs)
 ;;    Try org-readme-sync
