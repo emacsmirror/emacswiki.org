@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Apr 30 13:55:53 2013 (-0700)
+;; Last-Updated: Sat May 11 13:06:56 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 13964
+;;     Update #: 13965
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1184,8 +1184,8 @@ a default value according to these possible patterns:
                     ("\\( \\[.*\\]\\):? *\\'"                       1))))
     (setq prompt  (replace-regexp-in-string  (car rgx) "" prompt nil nil (cadr rgx))))
   ;; $$$$$$$$$ (when (icicle-file-name-input-p) (setq default  (file-name-nondirectory default)))
-  ;; Add DEFAULT, if INCLUDE.
-  (if include
+  ;; Add non-nil DEFAULT, if INCLUDE.
+  (if (and default  include)
       (replace-regexp-in-string ".*\\(\\): *\\'"
                                 (funcall icicle-default-in-prompt-format-function default)
                                 prompt nil t 1)
