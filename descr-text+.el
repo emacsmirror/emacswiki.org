@@ -7,9 +7,9 @@
 ;; Copyright (C) 2011-2013, Drew Adams, all rights reserved.
 ;; Created: Thu Nov 24 11:57:04 2011 (-0800)
 ;; Version: 23.1
-;; Last-Updated: Fri Dec 28 09:27:54 2012 (-0800)
+;; Last-Updated: Sat May 11 14:33:07 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 266
+;;     Update #: 269
 ;; URL: http://www.emacswiki.org/descr-text+.el
 ;; Keywords: help, characters, description
 ;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x
@@ -53,6 +53,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/05/11 dadams
+;;     describe-char: Updated per Emacs bug #14360 fix.
 ;; 2012/11/01 dadams
 ;;     Removed redefinition of describe-char for Emacs 22 - hassles with macros & defsubsts.
 ;; 2012/06/02 dadams
@@ -979,7 +981,7 @@ overlays, and text properties."
                       (insert " by these characters:\n")
                       (while (and (<= from to)
                                   (setq glyph  (lgstring-glyph gstring from)))
-                        (insert (format " %c (#x%d)\n"
+                        (insert (format " %c (#x%x)\n"
                                         (lglyph-char glyph) (lglyph-char glyph)))
                         (setq from  (1+ from)))))
                 (insert " by the rule:\n\t(")
