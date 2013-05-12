@@ -41,7 +41,8 @@
 ;;
 ;; Bitcoin donations gratefully accepted: 1AmWPmshr6i9gajMi1yqHgx7BYzpPKuzMz
 
-;; This library is based on simple-call-tree.el by Alex Schroeder.
+;; This library is based on simple-call-tree.el by Alex Schroeder, but you
+;; do not need that library to use it (this is a replacement).
 ;; It displays a buffer containing a call tree for functions in source
 ;; code files. You can easily & quickly navigate the call tree, displaying
 ;; the code in another window, and perform query-replace on the functions
