@@ -81,12 +81,17 @@ M-x customize-variable [RET] package-archives [RET]
 
 然后把你所有的常规的初始放到 ##<<real init file>>## 中.
 
+
 [[NicFerrier#PackagesForConfig|参考PackagesForConfig]]
 
 
-使用eval－after－load来配置包
-用eval-after-load来为每个文件进行配置是一个比较不错的方法，如果这个包不存在的话，它会回滚。
+===使用`eval-after-load'来配置包===
+
+用 `eval-after-load' 来为每个文件进行配置是一个比较不错的方法，如果这个包不存在的话，它会回滚。
+
 下面的这个例子展示了用定制了一个假设的叫做abcd－mode的主要模式，
+
+{{{
 (eval-after-load "abcd-mode" ; <-- "abcd-mode", not 'abcd-mode
       '(progn
          (setq-default abcd-basic-offset 7) ; setting some option
@@ -94,9 +99,12 @@ M-x customize-variable [RET] package-archives [RET]
          (add-hook 'abcd-mode-hook 'prepare-some-abcd-soup) ; things to do for abcd mode buffers
          (define-key abcd-mode-map (kbd "C-c C-c") 'play-some-abcd-song) ; add some key binding for abcd mode
      ))
+}}}
 
 
-这里有一个假设叫做broccoli的副模式
+这里有一个假设叫做broccoli的副模式.
+
+{{{
 (eval-after-load "broccoli-autoloads" ; <-- "broccoli-autoloads", not "broccoli"
       '(progn
          (if (require 'broccoli nil t)
@@ -106,27 +114,57 @@ M-x customize-variable [RET] package-archives [RET]
                (add-to-list 'broccoli-additional-stuff 'salt) ; add to a list option.
                )
            (warn "broccoli is not found."))))
+}}}
 
-在更新包之后调整load－path
-elpa的一个缺点就是当新的包被安装后，加载路径并不会被更新，这里有一个例子可以为你到做
+===在更新包之后调整load-path===
 
+在我的印象中，elpa的一个缺点就是当新的包被安装后，加载路径并不会被更新，这里有一个命令可以为你到做到:
 
-ELPA的规则
+{{{
+(defun package-update-load-path ()
+  "Update the load path for newly installed packages."
+  (interactive)
+  (let ((package-dir (expand-file-name package-user-dir)))
+    (mapc (lambda (pkg)
+            (let ((stem (symbol-name (car pkg)))
+		  (version "")
+		  (first t)
+		  path)
+	      (mapc (lambda (num)
+		      (if first
+			  (setq first nil)
+			  (setq version (format "%s." version)))
+		      (setq version (format "%s%s" version num)))
+		    (aref (cdr pkg) 0))
+              (setq path (format "%s/%s-%s" package-dir stem version))
+              (add-to-list 'load-path path)))
+          package-alist)))
+}}}
 
-emacs中ELPA的规则在这里被讨论过
-http://thread.gmane.org/gmane.emacs.devel/132634/focus=132640
+[new:NicFerrier:2013-01-20 12:21 UTC] 这会是更好的建议么？也许甚至连包都会安装这个建议
 
-emacs23中包是怎么工作的
+===ELPA的规则===
+
+emacs中ELPA的规则在这里被讨论过:http://thread.gmane.org/gmane.emacs.devel/132634/focus=132640
+
+===emacs23中包是怎么工作的===
 
 你能够让包在emacs23中工作，你需要在你的init.el文件中增加像这样的一些东西
+
+{{{
 (require 'package)
 ;; Any add to list for package-archives (to add marmalade or melpa) goes here
 (add-to-list 'package-archives 
     '("marmalade" .
       "http://marmalade-repo.org/packages/"))
 (package-initialize)
-为了能够在emacs23中用package.el，下面链接中的package.el版本是需要的，http://bit.ly/pkg-el23
+}}}
 
-其它的资源
+为了能够在emacs23中用package.el，下面链接中的package.el版本是需要的，http://bit.ly/pkg-el23(源代码(source of info:https://github.com/technomancy/package.el)
 
-AndrewHyatt已经写了一个ELPA的appengin实现，是用go语言写的，它还没有公开的
+===其它的资源===
+
+AndrewHyatt从2013年4月，已经写了一个ELPA的appengin实现，是用go语言写的，它还没有公开的。
+
+----
+CategoryCode CategoryPackaging
