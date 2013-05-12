@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Fri May 10 10:51:49 2013 (-0700)
+;; Last-Updated: Sun May 12 10:46:33 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6242
+;;     Update #: 6280
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -303,7 +303,7 @@
 ;;    `bmkp-temporary-bookmarking-mode-hook',
 ;;    `bmkp-temporary-bookmarking-mode-lighter',
 ;;    `bmkp-this-file/buffer-cycle-sort-comparer', `bmkp-use-region',
-;;    `bmkp-w3m-allow-multi-tabs'.
+;;    `bmkp-w3m-allow-multi-tabs', `bmkp-write-bookmark-file-hook'.
 ;;
 ;;  Non-interactive functions defined here:
 ;;
@@ -1222,6 +1222,13 @@ is enabled.  Set this to nil or \"\" if you do not want any lighter."
 (defcustom bmkp-w3m-allow-multi-tabs t
   "*Non-nil means jump to W3M bookmarks in a new session."
   :type 'boolean :group 'bookmark-plus)
+
+;;;###autoload (autoload 'bmkp-write-bookmark-file-hook "bookmark+")
+(defcustom bmkp-write-bookmark-file-hook ()
+  "*List of functions called, in order, after writing a bookmark file.
+Each function should accept the bookmark file name as first argument.
+Used after `after-save-hook'."
+  :type 'hook :group 'bookmark-plus)
  
 ;;(@* "Internal Variables")
 ;;; Internal Variables -----------------------------------------------
@@ -2769,6 +2776,7 @@ If called from Lisp:
 ;;    Remove them also from bookmark names in a sequence bookmark `sequence' entry.
 ;; 6. Bind `print-circle' to t around `pp', to record bookmark name with `bmkp-full-record' property.
 ;; 7. Use `case', not `cond'.
+;; 8. Run `bmkp-write-bookmark-file-hook' functions after writing the bookmark file.
 ;;
 (defun bookmark-write-file (file &optional alt-msg)
   "Write `bookmark-alist' to FILE.
@@ -2833,6 +2841,7 @@ contain a `%s' construct, so that it can be passed along with FILE to
               (write-file file)
             (file-error (setq errorp  t) (message "CANNOT WRITE FILE `%s'" file) (sit-for 4)))
           (kill-buffer (current-buffer))
+          (run-hook-with-args 'bmkp-write-bookmark-file-hook (list file))
           (unless errorp (message (concat msg "done") file)))))))
 
 
