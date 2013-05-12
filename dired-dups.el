@@ -16,7 +16,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;; 
+;; Unix find and md5sum commands
 ;;
 
 ;;; This file is NOT part of GNU Emacs
@@ -43,7 +43,7 @@
 ;;
 ;; This library provides the command `dired-find-duplicates' which searches a directory for
 ;; duplicates of the marked files in the current dired buffer.
-
+;; It requires that the unix find and md5sum commands are on your system.
 
 ;;; Installation:
 ;;
