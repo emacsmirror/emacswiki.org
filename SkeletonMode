@@ -118,7 +118,7 @@ And assuming some very simple input, here's the result:
 
 == Using the power of repeating skeletons ==
 
-I like the way you can make a skeleton repeat until you don't want anymore input (see above), however I struggled until today to work out how to act on the str so that you can transform it how you will.
+I like the way you can make a skeleton repeat until you don't want any more input (see above), however I struggled until today to work out how to act on the str so that you can transform it how you will.
 
   (define-skeleton add-tags
     "Enter tags in any case and the output will be upcased."
@@ -126,6 +126,14 @@ I like the way you can make a skeleton repeat until you don't want anymore input
     "Tags: "
     ((upcase (read-string "Tag: ")) ":"  str) ":" \n)
 
+== Skeletonizing skeletons ==
+It's easy to create interactive skeletons for multiple distinct inputs. Here's a skeleton which aids in writing new skeletons! It first prompts for the name and docstring, and then repeatedly prompts for every line of the new skeleton definition. This could easily be adapted to writing simple functions or classes in different languages.
+
+ (define-skeleton skeleton-skel
+   "Interactive keleton for writing skeletons."
+   > "(define-skeleton " (skeleton-read "Skeleton name: ") \n
+   > "\"" (skeleton-read "Docstring: ") "\""
+   > ("Content line: " \n str) _ ")")
 
 == Using Multiple Variables with Skeleton Mode ==
 
