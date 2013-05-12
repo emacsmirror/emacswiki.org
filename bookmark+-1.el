@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sun May 12 10:46:33 2013 (-0700)
+;; Last-Updated: Sun May 12 10:56:47 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6280
+;;     Update #: 6281
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -2841,7 +2841,7 @@ contain a `%s' construct, so that it can be passed along with FILE to
               (write-file file)
             (file-error (setq errorp  t) (message "CANNOT WRITE FILE `%s'" file) (sit-for 4)))
           (kill-buffer (current-buffer))
-          (run-hook-with-args 'bmkp-write-bookmark-file-hook (list file))
+          (run-hook-with-args 'bmkp-write-bookmark-file-hook file)
           (unless errorp (message (concat msg "done") file)))))))
 
 
