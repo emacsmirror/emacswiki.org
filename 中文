@@ -29,7 +29,7 @@ emacs版本的package.el支持多个仓库，你可以用GNU ELPA来添加其它
  
  (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
 
-===你可以自定义===
+===定制===
 
 你可以定制 `package－archinves'，试试这个:
 {{{
@@ -38,15 +38,21 @@ M-x customize-variable [RET] package-archives [RET]
 
 == 在emacs24中包是如何工作的==
 
-Elisp 手册描述了包系统是如何初始化的：
-每当emacs被打开的时候，emacs都会自动的调用'package－initialize'来导入已经安装了的包，这件事是在导入初始文件和简写文件（如果有的话）之后，在运行'after-init-hook'之后完成的（参看startup简介）如果用户选项package-enable-at-startup被禁用的话，那么自动加载就不会被执行。
-所以在init.el文件被加载了以后包才会被初始化，这就意味着你不应该把包的具体的初始化放到你的init.el文件中，出了几个方面以外。
-为包定制变量是好的，这个动作可以在包加载之前就被使用
-在某种程度上，auto-mode-alist的改变不需要这个包在设置之前被加载
+[[http://www.gnu.org/software/emacs/manual/html_node/elisp/Packaging-Basics.html#Packaging-Basics|Elisp手册描述了包系统是如何初始化的]]:
+:每当emacs被打开的时候，emacs都会自动的调用'package－initialize'来导入已经安装了的包，这件事是在导入初始文件和简写文件（如果有的话）之后，在运行'after-init-hook'之后完成的（参看startup简介）如果用户选项package-enable-at-startup被禁用的话，也就是package-enable-at-startup的值为nil，那么自动加载就不会被执行。
+所以在init.el文件被加载了//之后//包才会被初始化，这就意味着你//不应该//把包的具体的初始化放到你的init.el文件中，除了几个方面以外。
+* 为包定制变量是好的，这个动作可以在包加载之前就被使用
+* 在某种程度上，auto-mode-alist的改变不需要这个包在设置之前被加载
+{{{
 (add-to-list 'auto-mode-alist '("\\.gradle" . groovy-mode))
-一个包的具体的模式定制可以在它被加载之前通过一个包的hook来执行，例如
+}}}
+* 一个包的具体的模式定制可以在它被加载之前通过一个包的hook来执行，例如
+{{{
 (add-hook 'groovy-mode-hook (lambda () (setq tab-width 4)))
-通过这个方法，尽管一个包还没有被加载，但是键的绑定也能够正常的工作而不会导致一个错误。
+}}}
+
+* 通过这个方法，尽管一个包还没有被加载，但是键的绑定也能够正常的工作而不会导致一个错误。
+{{{
 (global-set-key
      "\M-?"
      (lambda ()
@@ -54,17 +60,28 @@ Elisp 手册描述了包系统是如何初始化的：
        (call-interactively 'magit-status)))
 
     (global-set-key (kbd "C-'")     'shell-switcher-switch-buffer)
-一个包的具体的初始化可以被eval-after-load所做，可以参考eval-after-load
-如果所有的这些技巧都不行的话，你仍旧可以延迟配置直到包被加载，你可以这样做，
+}}}
+
+* 一个包的具体的初始化可以被eval-after-load所做，可以参考[[ELPA#eval-after-load|eval-after-load]]
+
+* 如果所有的这些技巧都不行的话，你仍旧可以延迟配置直到包被加载，你可以这样做，
+{{{
 (add-hook 'after-init-hook 'cycbuf-init)
+}}}
 
-用after-init-hook来配置包
-一些人认为用after-init-hook似乎是最后一种解决方案，因为它强制包的加载（因此会让你的emacs的速度变慢），然而另外一些人指出在所有的包都加载完成后在配置它们会更易于使用。
+===用after-init-hook来配置包===
 
-你可以在你的初始化文件中这样做，
+一些人认为用//after-init-hook//似乎是最后一种解决方案，因为它强制包的加载（因此会让你的emacs的速度变慢），然而另外一些人指出在所有的包都加载完成后在配置它们会更易于使用。
+
+你可以在你的初始化文件中这样做:
+
+{{{
 (add-hook 'after-init-hook #'(lambda () (load "<real init file>")))
-然后把你所有的常规的初始放到<<real init file>>中
-参考PackagesForConfig
+}}}
+
+然后把你所有的常规的初始放到 ##<<real init file>>## 中.
+
+[[NicFerrier#PackagesForConfig|参考PackagesForConfig]]
 
 
 使用eval－after－load来配置包
