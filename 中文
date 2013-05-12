@@ -164,7 +164,7 @@ emacs中ELPA的规则在这里被讨论过:http://thread.gmane.org/gmane.emacs.d
 
 ===其它的资源===
 
-AndrewHyatt从2013年4月，已经写了一个ELPA的appengin实现，是用go语言写的，它还没有公开的。
+AndrewHyatt 从2013年4月，已经写了一个ELPA的appengin实现，是用go语言写的，它还没有公开的。
 
 ----
 CategoryCode CategoryPackaging
