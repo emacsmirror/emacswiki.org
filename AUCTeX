@@ -488,6 +488,9 @@ enabled and the `synctex' binary is available."
 Because synctex includes a redundant string "./" in the path, this codes will help.
 -- Kiwon 
 
+== Question ==
+* Is there any simple way to highlight (or font-lock) whole "\section{title}" lines as the hl-line-mode highlights the current line?
+
 ----
 CategoryModes
 CategoryTex
