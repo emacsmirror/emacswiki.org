@@ -555,7 +555,6 @@ Wanderlust automatically saves the draft every second there's a change. If your 
 == How can I unsubscribe from the wanderlust mailing list? ==
 For English mail list, send an email to <code>wl-en-ctl@ml.gentei.org</code> with "unsubscribe" in body.
 
-
 == I want to contribute to Wanderlust, where can I learn more? ==
 Patches, modifications, or suggestions can be sent to the mail list. To learn Luna, the tiny OOP core that powers WL, reading Peter Seibel's "Practical Common Lisp", Chapter 16 and 17 is highly recommended [http://www.gigamonkeys.com/book/ link]. This book is worth reading not just for understanding WL.
 
@@ -583,3 +582,9 @@ add the following to your Wanderlust init file:
 (setq-default mime-transfer-level 8)
 (setq mime-header-accept-quoted-encoded-words t)
 }}}
+
+== See Also ==
+WanderLust
+
+----
+CategoryMail
