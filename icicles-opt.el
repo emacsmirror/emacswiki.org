@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Apr 22 20:04:03 2013 (-0700)
+;; Last-Updated: Mon May 13 07:01:29 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 5622
+;;     Update #: 5626
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -78,7 +78,7 @@
 ;;    `icicle-candidate-action-keys', `icicle-candidate-help-keys',
 ;;    `icicle-candidate-width-factor',
 ;;    `icicle-change-region-background-flag',
-;;    `icicle-change-sort-order-completion-flag',
+;;    `icicle-change-sort-order-completion',
 ;;    `icicle-C-l-uses-completion-flag', `icicle-color-themes',
 ;;    `icicle-comint-dynamic-complete-replacements',
 ;;    `icicle-command-abbrev-alist',
@@ -372,19 +372,35 @@
       "Sorting"
       (keymap
        (change-sort-order menu-item "Change Sort Order  (`C-,')" icicle-change-sort-order
-        :visible (or (and icicle-change-sort-order-completion-flag (not current-prefix-arg))
-                  (and (not icicle-change-sort-order-completion-flag) current-prefix-arg)))
-       (next-sort-order menu-item "Next Sort Order" icicle-change-sort-order
-        :visible (not (or (and icicle-change-sort-order-completion-flag (not current-prefix-arg))
-                       (and (not icicle-change-sort-order-completion-flag) current-prefix-arg))))
+        :visible (let ((use-completion-p  (if (integerp icicle-change-sort-order-completion)
+                                              (> (length (icicle-current-sort-functions))
+                                                 icicle-change-sort-order-completion)
+                                            icicle-change-sort-order-completion)))
+                   (or (and (not current-prefix-arg)  use-completion-p)
+                       (and current-prefix-arg        (not use-completion-p)))))
+       (next-sort-order menu-item "Next Sort Order  (`C-,')" icicle-change-sort-order
+        :visible (not (let ((use-completion-p  (if (integerp icicle-change-sort-order-completion)
+                                                   (> (length (icicle-current-sort-functions))
+                                                      icicle-change-sort-order-completion)
+                                                 icicle-change-sort-order-completion)))
+                        (or (and (not current-prefix-arg)  use-completion-p)
+                            (and current-prefix-arg        (not use-completion-p))))))
        (change-alt-sort menu-item "Change Alternative Sort Order  (`M-,')"
         icicle-change-alternative-sort-order
-        :visible (or (and icicle-change-sort-order-completion-flag (not current-prefix-arg))
-                  (and (not icicle-change-sort-order-completion-flag) current-prefix-arg)))
+        :visible (let ((use-completion-p  (if (integerp icicle-change-sort-order-completion)
+                                              (> (length (icicle-current-sort-functions))
+                                                 icicle-change-sort-order-completion)
+                                            icicle-change-sort-order-completion)))
+                   (or (and (not current-prefix-arg)  use-completion-p)
+                       (and current-prefix-arg        (not use-completion-p)))))
        (next-alt-sort menu-item "Next Alternative Sort Order  (`M-,')"
         icicle-change-alternative-sort-order
-        :visible (not (or (and icicle-change-sort-order-completion-flag (not current-prefix-arg))
-                       (and (not icicle-change-sort-order-completion-flag) current-prefix-arg))))
+        :visible (not (let ((use-completion-p  (if (integerp icicle-change-sort-order-completion)
+                                                   (> (length (icicle-current-sort-functions))
+                                                      icicle-change-sort-order-completion)
+                                                 icicle-change-sort-order-completion)))
+                        (or (and (not current-prefix-arg)  use-completion-p)
+                            (and current-prefix-arg        (not use-completion-p))))))
        (swap-sort menu-item "Swap Alternative/Normal Sort"
         icicle-toggle-alternative-sorting)))
   "Submenu for sorting completion candidates.")
@@ -1275,14 +1291,23 @@ Remember that you can use multi-command `icicle-toggle-option' anytime
 to toggle the option."
   :type 'boolean :group 'Icicles-Minibuffer-Display)
 
-(defcustom icicle-change-sort-order-completion-flag nil
-  "*Non-nil means `icicle-change-sort-order' uses completion, by default.
-Otherwise, it cycles among the possible sort orders.  You can override
-the behavior by using `C-u' with `icicle-change-sort-order'.
+(defcustom icicle-change-sort-order-completion 7
+  "*Whether `icicle-change-sort-order' uses completion, by default.
+The behavior of `icicle-change-sort-order' with no prefix arg depends
+on the option value as follows:
 
-Remember that you can use multi-command `icicle-toggle-option' anytime
-to toggle the option."
-  :type 'boolean :group 'Icicles-Completions-Display :group 'Icicles-Matching)
+ - nil means cycle to the next order; do not use completion to choose
+   the new order.
+
+ - An integer means use completion if there are currently more than
+   that number of sort orders to choose from.  Otherwise, cycle next.
+
+ - Any other non-nil value means use completion."
+  :type '(choice
+          (integer :tag "Complete if more than this number of sort orders" :value 7)
+          (const   :tag "Complete always"                                  :value t)
+          (const   :tag "Cycle always"                                     :value nil))
+  :group 'Icicles-Completions-Display :group 'Icicles-Matching)
 
 (defcustom icicle-C-l-uses-completion-flag nil
   "*Non-nil means \\<minibuffer-local-completion-map>\
