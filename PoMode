@@ -4,7 +4,7 @@
 
 <code>po-mode</code> is used by translators working on writing translations for the messages.  The mode has many facilities for jumping around as-yet untranslated messages or "unfuzzying" messages when the program source changes.  The mode is described in detail in the Gettext manual,
 
-: http://www.gnu.org/software/gettext/manual/
+: http://www.gnu.org/software/gettext/manual/html_node/PO-Mode.html
 
 See also [[po-mode+.el]] by GauteHvoslefKvalnes, it adds extra features to <code>po-mode</code>.  And also see MoMode for viewing compiled message files (using <code>po-mode</code>).
 
