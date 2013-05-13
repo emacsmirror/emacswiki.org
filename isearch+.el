@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 21.0
-;; Last-Updated: Wed Apr 10 13:37:09 2013 (-0700)
+;; Last-Updated: Mon May 13 08:18:04 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2083
+;;     Update #: 2087
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -356,6 +356,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2013/05/13 dadams
+;;     isearchp-highlight-lighter: Use face isearchp-wrapped only if defined (Emacs 22+). 
 ;; 2013/04/10 dadams
 ;;     Define with-isearch-suspended for Emacs 24.3 too.  Apparently it did not make it into the release.
 ;; 2013/03/30 dadams
@@ -2253,7 +2255,7 @@ This is used only for Transient Mark mode."
     (let ((lighter  (if case-fold-search " ISEARCH" " Isearch")))
       (add-to-list
        'minor-mode-alist
-       `(isearch-mode ,(if (and (fboundp 'propertize)  isearch-wrapped) ;Emacs 22+
+       `(isearch-mode ,(if (and isearch-wrapped  (facep 'isearchp-wrapped)) ;Emacs 22+
                            (propertize lighter 'face 'isearchp-wrapped)
                            lighter)))))
   (condition-case nil
