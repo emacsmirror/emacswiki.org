@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Apr 26 09:23:54 2013 (-0700)
+;; Last-Updated: Mon May 13 07:23:25 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 27782
+;;     Update #: 27802
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -4309,25 +4309,45 @@
 ;;  ** Changing the Sort Order **
 ;;
 ;;  There are a couple of ways to use `C-,' (bound to command
-;;  `icicle-change-sort-order').  Its behavior depends on the value of
-;;  user option `icicle-change-sort-order-completion-flag', which is
-;;  `nil' by default.  This value means to simply cycle to the next
-;;  sort order each time you hit `C-,'.  A non-`nil' value means to
-;;  use completion to choose another sort order.  If you have many
-;;  available sort orders, then you might prefer a non-`nil' value.
-;;  In any case, you can also change this behavior on the fly: using
-;;  plain `C-u' (no number) with `C-,' reverses the meaning of
-;;  `icicle-change-sort-order-completion-flag' for `C-,'.
+;;  `icicle-change-sort-order'), to change the current sort order.
+;;  Its behavior depends on the value of user option
+;;  `icicle-change-sort-order-completion', which is 7 by default.  The
+;;  option value determines whether `C-,' lets you use completion to
+;;  choose a sort order or it just cycles to the next order.  The
+;;  default value of 7 means cycle if there are no more than 7 sort
+;;  orders for the current command, and complete if there are more
+;;  than 7.
 ;;
-;;  However, a numeric prefix argument, such as `C-9', means to simply
-;;  reverse the direction of the current sort order; it invokes
-;;  command `icicle-reverse-sort-order'.  For example, if candidates
-;;  are sorted alphabetically from A to Z, then `C-9 C-,' flips the
-;;  sort order, so that from then on sorting is from Z to A.  If
-;;  buffer names are sorted from small to large buffer size, then `C-9
-;;  C-,' sorts large buffers first.  This works for all sort orders.
-;;  The new sort order is echoed, so you can use this twice to just
-;;  remind yourself of the current sort order.
+;;  The option value can be an integer, as described, or it can be
+;;  `nil', meaning always cycle, or otherwise non-`nil' (e.g. `t'),
+;;  meaning always complete.
+;;
+;;  Whatever the value of `icicle-change-sort-order-completion', a
+;;  non-numeric prefix argument (e.g., plain `C-u') flips the behavior
+;;  defined by the option: if completion would normally be used then
+;;  `C-u C-,' cycles to the next sort order.  If cycling would
+;;  normally be used then `C-u C-,' initiates completion to choose a
+;;  sort order.
+;;
+;;  For example, suppose you use the default option value of 7 and
+;;  there are fewer than 7 sort orders for the completion operation
+;;  provided by the current command.  In this case, `C-,' cycles to
+;;  the next order.  But if you would like to see what the available
+;;  orders are, just use `C-u C-,' and pick one using completion.
+;;
+;;  A numeric prefix arg (e.g. `C-9') reverses the direction of the
+;;  current sort order.  It invokes command
+;;  `icicle-reverse-sort-order'.
+;;
+;;  For example, if candidates are currently sorted alphabetically
+;;  from A to Z, then `C-9 C-,' flips the sort order, so that from
+;;  then on sorting is from Z to A.  If buffer names are sorted from
+;;  small to large buffer size, then `C-9 C-,' sorts large buffers
+;;  first.  This works for all sort orders.
+;;
+;;  Whenever you change the sort order, the new sort order is echoed,
+;;  so you can use `C-9 C-,' twice to just remind yourself of the
+;;  current sort order.
 ;;
 ;;  In addition to the current sort order, which is defined by the
 ;;  value of user option `icicle-sort-comparer', an alternative sort
@@ -4338,6 +4358,8 @@
 ;;
 ;;  Just as you can choose a different current sort order using `C-,',
 ;;  so you can choose a different alternative sort order using `M-,'.
+;;  It behaves the same way, including regarding option
+;;  `icicle-change-sort-order-completion' and a prefix argument.
 ;;
 ;;  How do you actually use the alternative sort order?  Use `C-M-,'
 ;;  (command `icicle-toggle-alternative-sorting') to swap the
