@@ -14,6 +14,75 @@
 ;; * Handy functions for looking at system logs.
 ;; * Fontifys the date and su messages.
 
+;;; Keybindings
+;; "C-down" : syslog-boot-start
+;; "R"      : revert-buffer
+;; "/"      : syslog-filter-lines
+;; "g"      : show-all-invisible
+;; "h r"    : highlight-regexp
+;; "h p"    : highlight-phrase
+;; "h l"    : highlight-lines-matching-regexp
+;; "h u"    : unhighlight-regexp
+;; "C-/"    : syslog-filter-dates
+;; "D"      : open dired buffer in log directory (`syslog-log-file-directory')
+;; "j"      : ffap
+;; "<"      : syslog-previous-file
+;; ">"      : syslog-next-file
+;; "o"      : syslog-open-files
+;; "q"      : quit-window
+
+
+;;; Commands:
+;;
+;; Below are complete command list:
+;;
+;;  `syslog-open-files'
+;;    Open consecutive log files in same buffer.
+;;  `syslog-previous-file'
+;;    Open the previous logfile backup, or the next one if a prefix arg is used.
+;;  `syslog-next-file'
+;;    Open the next logfile.
+;;  `syslog-filter-lines'
+;;    Restrict buffer to lines matching regexp.
+;;  `syslog-filter-dates'
+;;    Restrict buffer to lines between dates.
+;;  `syslog-mode'
+;;    Major mode for working with system logs.
+;;  `syslog-boot-start'
+;;    Jump forward in the log to when the system booted.
+;;
+;;; Customizable Options:
+;;
+;; Below are customizable option list:
+;;
+;;  `syslog-datetime-regexp'
+;;    A regular expression matching the date-time at the beginning of each line in the log file.
+;;    default = "^[a-z]\\{3\\} [0-9]\\{1,2\\} \\([0-9]\\{2\\}:\\)\\{2\\}[0-9]\\{2\\} "
+;;  `syslog-log-file-directory'
+;;    The directory in which log files are stored.
+;;    default = "/var/log/"
+;;  `syslog-ip-face'
+;;    Face for IPs
+;;    default = (quote ((t :underline t :slant italic ...)))
+;;  `syslog-hour-face'
+;;    Face for IPs
+;;    default = (quote ((t :weight bold :inherit font-lock-type-face)))
+;;  `syslog-error-face'
+;;    Face for IPs
+;;    default = (quote ((t :weight bold :foreground "red")))
+;;  `syslog-warn-face'
+;;    Face for IPs
+;;    default = (quote ((t :weight bold :foreground "goldenrod")))
+;;  `syslog-info-face'
+;;    Face for IPs
+;;    default = (quote ((t :weight bold :foreground "deep sky blue")))
+;;  `syslog-debug-face'
+;;    Face for IPs
+;;    default = (quote ((t :weight bold :foreground "medium spring green")))
+;;  `syslog-su-face'
+;;    Face for IPs
+;;    default = (quote ((t :weight bold :foreground "firebrick")))
+
 ;;; History:
 ;; 20-Mar-2013    Christian Giménez
 ;;    Added more keywords for font-lock.
@@ -354,4 +423,5 @@ looks like syslog.  It will also turn enable fontification for `syslog-mode'."
 
 ;;; syslog-mode.el ends here
 
+;;; (magit-push)
 ;;; (yaoddmuse-post "EmacsWiki" "syslog-mode.el" (buffer-name) (buffer-string) "update")
