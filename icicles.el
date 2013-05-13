@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 2013.04.23
-;; Last-Updated: Tue Apr 30 13:51:20 2013 (-0700)
+;; Last-Updated: Sun May 12 19:30:35 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 23400
+;;     Update #: 23401
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -731,7 +731,7 @@
 ;;    `icicle-candidate-action-keys', `icicle-candidate-help-keys',
 ;;    `icicle-candidate-width-factor',
 ;;    `icicle-change-region-background-flag',
-;;    `icicle-change-sort-order-completion-flag',
+;;    `icicle-change-sort-order-completion',
 ;;    `icicle-C-l-uses-completion-flag', `icicle-color-themes',
 ;;    `icicle-comint-dynamic-complete-replacements',
 ;;    `icicle-command-abbrev-alist',
