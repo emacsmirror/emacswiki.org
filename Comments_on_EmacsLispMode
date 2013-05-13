@@ -15,3 +15,10 @@ why not only do what's necessary?
 
 -- [http://scw.us NetMage] 2013-05-10 23:58 UTC
 
+
+----
+
+As the page says, "recompile on save if the ByteCompilation file *does* exist" [emphasis added].  That's the difference.
+
+-- AaronHawley 2013-05-13 13:22 UTC
+
