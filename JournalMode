@@ -49,3 +49,11 @@ You may also be interested in muse-journal.el, part of EmacsMuse. (Muse is emacs
 14 Feb, 2006: Hey I've fixed the link, sorry to everyone who couldn't get it for the 6 MONTHS it was offline.  I'm not much of an Emacs junkie anymore, so I don't use it.  It probably be better to use muse-journal if you want an Emacs journal.  You can probably tell from the code that at the time I didn't know macros very well.  Maybe I'll try and get it down to 400 lines (it is currently a whopping 1252 lines and 106 forms!) one day. -- HoanTonThat
 
 
+== See Also ==
+Not to be confused with [[Journal]]
+
+
+----
+CategoryJournaling
+
+
