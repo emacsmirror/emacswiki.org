@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat May 11 13:08:53 2013 (-0700)
+;; Last-Updated: Mon May 13 07:11:58 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 9993
+;;     Update #: 10003
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -3827,6 +3827,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2013/05/13 dadams
+;;     icicle-change-sort-order: Handle integer value for icicle-change-sort-order-completion.
 ;; 2013/04/24 dadams
 ;;     icicle-minibuffer-help: Better intro for completion cases.
 ;; 2013/04/18 dadams
@@ -6648,6 +6650,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2013/05/13 dadams
+;;     Renamed icicle-change-sort-order-completion-flag to icicle-change-sort-order-completion.
+;;     icicle-change-sort-order-completion: Can now be an integer.
+;;     icicle-Completions-sorting-submenu: Updated to reflect new icicle-change-sort-order-completion.
 ;; 2013/04/22 dadams
 ;;     Reverted the change of 2012/02/28.  Emacs does not DTRT for push if require only when compile.
 ;;       Must use eval-and-compile to require cl.el, not eval-when-compile, for Emacs 20.
@@ -7456,6 +7462,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2013/05/13 dadams
+;;     icicle-general-help-string: Reflect renaming to icicle-change-sort-order-completion.
 ;; 2013/04/04 dadams
 ;;     Added: icicle-ess-use-ido.
 ;; 2013/03/23 dadams
