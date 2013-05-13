@@ -9,6 +9,11 @@ He can also be found online at http://www.xradiograph.com/ and http://www.xradio
 [new:DrewAdams:2013-04-30 02:00 UTC]
 Welcome to the wiki. -- DrewAdams
 
+[:todo]
+== TODOs ==
+* [[Journal]] - I use a modified version of this. Should push the modifications back to public. And fix the issues
+* cleanup the [[MichaelPaulukonis#navaigation|navigation section]] below
+
 == Packages/pages/things I like ==
 * [[Reference_Sheet_by_Aaron_Hawley]]
 * ElScreen
@@ -20,7 +25,7 @@ Welcome to the wiki. -- DrewAdams
 * [[NxmlModeForXHTML]]
 * [[CategoryWThirtyTwo]] since I primarily use Windows. :::sigh:::
 
-* [[Journal]] - I use a modified version of this. Should push the modifications back to public. And fix the issues
+* [[Journal]] - I use a modified version of this. 
 ** see also: JournalMode - not the same thing. differences?
 
 == Packages I used to like ==
@@ -34,6 +39,21 @@ Welcome to the wiki. -- DrewAdams
 * a way to get nxml mode to be happy with html5
 * a NodeJs mode that gives me auto-completion on the REPL
 * [[SkeletonMode]]
+
+
+[:navigation]
+== Navaigation to places I want to remember ==
+TODO: work on this section
+
+* EmacsWikiContent - list of some TODOs for the wiki
+* HowTo
+* HowToEdit
+* EmacsWikiSuggestions
+* CategoryEmacsWikiSite
+* [[News]]
+* [[Problems]]
+* [[WikiQuestions]]
+
 
 ----
 CategoryHomepage
