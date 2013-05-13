@@ -1244,10 +1244,14 @@ inputs that you have used previously at the top of buffer
 using '''`##M-,##''''.  See also `<tt>[[Icicles - History Enhancements#icicle-toggle-alternative-sorting|toggle-alternative-sorting]]</tt>' and [[Icicles - Sorting Candidates]].
 
 ----
-[:icicle-change-sort-order-completion-flag]
-==== Option icicle-change-sort-order-completion-flag ====
+[:icicle-change-sort-order-completion]
+==== Option icicle-change-sort-order-completion ====
 
-User option '''`icicle-change-sort-order-completion-flag'''' specifies whether `##C-,##' cycles among available sort orders or lets you choose a sort order using '''Icicles''' completion.  Non-`nil' means to use completion; `nil' (the default value) means to cycle.  You can override the current setting at any time by using `##C-u C-,##'. See [[Icicles - Sorting Candidates]].
+User option '''`icicle-change-sort-order-completion'''' specifies whether '''`##C-,##'''' and '''`##M-,##'''' cycle among available sort orders or they let you choose a sort order using '''Icicles''' completion.
+
+The default value is 7, meaning cycle to the next order if there are no more than 7 sort orders currently available, but use completion to choose a sort order if there more than 7.  An option value of `nil' means always cycle, and a non-integer, non-`nil' value means always complete.
+
+However, you can override the current option setting at any time by using a plain [[prefix argument]]: '''`##C-u C-,##'''' or '''`##C-u M-,##''''.  See [[Icicles - Sorting Candidates]].
 
 ----
 [:icicle-sort-orders-alist]
