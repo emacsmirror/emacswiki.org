@@ -1,3 +1,13 @@
 How do I install wanderlust, together with all dependencies?
 
 It would be really nice if this page were to give step-by-step instructions on how to install Wanderlust with el-get, and where to find the support packages (SEMI, APEL, and FLIM), if one chooses not to use el-get for some reason.  The Wanderlust FAQ page has only dead FTP links to those libraries, and there are no instructions in the github INSTALL file (which seems __very__ stale).  At the very least, we should have good pointers to the required libraries.
+
+----
+
+Why is the prefix "Wl" instead of "WanderLust" ?
+
+For an insider, this is obvious.
+For an outsider, it is not obvious.
+
+-- MichaelPaulukonis 2013-05-13 12:48 UTC
+
