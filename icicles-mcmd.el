@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Apr 24 14:34:01 2013 (-0700)
+;; Last-Updated: Sun May 12 19:29:32 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 19118
+;;     Update #: 19119
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1780,16 +1780,24 @@ restored as soon as you return to the top level."
 ;;
 (defalias 'cycle-icicle-sort-order 'icicle-change-sort-order)
 (defun icicle-change-sort-order (&optional arg alternativep) ; Bound to `C-,' in minibuffer.
-  "Choose a sort order.
-With a numeric prefix arg, reverse the current sort order.
+  "Choose a sort order using completion or by cycling to the next one.
+With a numeric prefix arg, just reverse the current sort order.
 
-If plain `C-u' is used or `C-u' is not used at all:
+Option `icicle-change-sort-order-completion' determines whether to use
+completion or cycling to choose the new sort order, as follows:
 
-- Use completion if `icicle-change-sort-order-completion-flag' is
-  non-nil and no prefix arg is used, or if it is nil and a prefix arg
-  is used.
+ - nil means cycle to the next order; do not use completion to choose
+   the new order.
 
-- Otherwise, just cycle to the next sort order.
+ - An integer means use completion if there are currently more than
+   that number of sort orders to choose from.  Otherwise, cycle next.
+
+ - Any other non-nil value means use completion.
+
+However, a plain prefix argument (`C-u') flips the behavior defined
+thus between cycling and completion.  That is, if the option would
+normally lead to completion then `C-u' causes cycling instead, and
+vice versa.
 
 This command updates `icicle-sort-comparer'.  Non-interactively,
 optional arg ALTERNATIVEP means change the current alternative sort
@@ -1800,10 +1808,15 @@ order instead, updating `icicle-alternative-sort-comparer'."
       (icicle-msg-maybe-in-minibuffer "Cannot sort candidates now")
     (if (and arg  (not (consp arg)))
         (icicle-reverse-sort-order)
-      (let ((following-order  nil)
-            next-order)
-        (cond ((or (and icicle-change-sort-order-completion-flag        (not arg)) ; Use completion.
-                   (and (not icicle-change-sort-order-completion-flag)  arg))
+      (let* ((following-order   nil)
+             (use-completion-p  (if (integerp icicle-change-sort-order-completion)
+                                    (> (length (icicle-current-sort-functions))
+                                       icicle-change-sort-order-completion)
+                                  icicle-change-sort-order-completion))
+             (use-completion-p  (or (and (not arg)  use-completion-p) ; Use completion.
+                                    (and arg        (not use-completion-p))))
+             next-order)
+        (cond (use-completion-p
                (setq next-order  (let ((icicle-whole-candidate-as-text-prop-p   nil)
                                        (enable-recursive-minibuffers            t)
                                        (icicle-must-pass-after-match-predicate  nil))
