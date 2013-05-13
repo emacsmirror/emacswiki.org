@@ -1,14 +1,32 @@
-;;; erc-babel.el --- communicate in different languages with ERC, using automatic translation
+;;; erc-babel.el --- Communicate with ERC in different languages using online translation services
 
-;; Copyright (C) 2010  Joe Bloggs
+;; Filename: erc-babel.el
+;; Description: Communicate with ERC in different languages using google translate
+;; Author: Joe Bloggs <vapniks@yahoo.com>
+;; Maintainer: Joe Bloggs <vapniks@yahoo.com>
+;; Copyleft (Ↄ) 2013, Joe Bloggs, all rites reversed.
+;; Created: 2010
+;; Version: 0.1
+;; Last-Updated: 2013-05-13 18:23:24
+;;           By: Joe Bloggs
+;; URL: https://github.com/vapniks/erc-babel
+;; Keywords: 
+;; Compatibility: GNU Emacs 24.3.1
+;; Package-Requires: ((babel "") (erc "5.3"))
+;;
+;; Features that might be required by this library:
+;;
+;; babel erc
+;;
 
-;; Author: JoeBloggs <vapniks@yahoo.com>
-;; Keywords: comm, languages
+;;; This file is NOT part of GNU Emacs
 
+;;; License
+;;
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
-;; the Free Software Foundation, either version 3 of the License, or
-;; (at your option) any later version.
+;; the Free Software Foundation; either version 3, or (at your option)
+;; any later version.
 
 ;; This program is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -16,17 +34,20 @@
 ;; GNU General Public License for more details.
 
 ;; You should have received a copy of the GNU General Public License
-;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+;; along with this program; see the file COPYING.
+;; If not, see <http://www.gnu.org/licenses/>.
 
-;;; Commentary:
-
+;;; Commentary: 
+;;
+;; Bitcoin donations gratefully accepted: 199uU1gHyepvBmrQGyGdCWPCrqtZ6G4pbh
+;;
 ;; This library integrates babel (http://www.emacswiki.org/emacs/babel.el) with ERC 
 ;; (an emacs IRC client: http://www.emacswiki.org/cgi-bin/wiki/ERC) to provide automatic
 ;; translation of messages. It requires those two libraries are installed.
 ;; All sent and received messages will be translated if possible.
 ;; Different languages combinations can be set for different buffers, and translation can be toggled on or off.
 
-;; It has only been tested on emacs 23.1.50.1 (CVS emacs), with ERC version 5.3.
+;; It has been tested on emacs 23, with ERC version 5.3.
 
 ;; To toggle translation on/off (it is off by default) call `erc-babel-toggle'.
 
@@ -47,23 +68,85 @@
 ;; It shows you the languages being translated, and in which direction(s). 
 ;; By default it uses the full language names but you can change it to use short abbreviations.
 
-;; As usual to use this library just put to following somewhere in your .emacs:
-
-;; (require 'erc-babel)
-
-;; it requires the babel and erc libraries.
-
 ;; You may also want to bind some keys in erc-mode like this:
 
 ;; (define-key erc-mode-map (kbd "C-c C-S-t") 'erc-babel-toggle)
 ;; (define-key erc-mode-map (kbd "C-c C-S-o") 'erc-babel-include-orig-toggle)
 
 ;; which can be put somewhere in your .emacs 
+;; 
+;;;;
 
-;;; Code:
+;;; Commands:
+;;
+;; Below are complete command list:
+;;
+;;  `erc-babel-toggle'
+;;    Toggle automatic translation on/off.
+;;  `erc-babel-include-orig-toggle'
+;;    Toggle inclusion of original text in translations.
+;;  `erc-babel-set-languages'
+;;    Set translation languages for `buf' for use with erc-babel-translate-msg.
+;;
+;;; Customizable Options:
+;;
+;; Below are customizable option list:
+;;
+;;  `erc-babel-enable'
+;;    Whether messages should be automatically translated or not
+;;    default = nil
+;;  `erc-babel-include-orig'
+;;    Whether or not to include original text with translations.
+;;    default = t
+;;  `erc-babel-backend'
+;;    Webservice backend to use for translations.
+;;    default = "Google"
+;;  `erc-babel-modeline-type'
+;;    What do display in modeline:
+;;    default = "long"
+;;
+;;
+;; All of the above can customized by:
+;;      M-x customize-group RET erc-babel RET
+;;
 
+;;; Installation:
+;;
+;; Put erc-babel.el in a directory in your load-path, e.g. ~/.emacs.d/
+;; You can add a directory to your load-path with the following line in ~/.emacs
+;; (add-to-list 'load-path (expand-file-name "~/elisp"))
+;; where ~/elisp is the directory you want to add 
+;; (you don't need to do this for ~/.emacs.d - it's added by default).
+;;
+;; Add the following to your ~/.emacs startup file.
+;;
+;; (require 'erc-babel)
+
+
+;;; Change log:
+;;	
+;; 2013/05/13
+;;      * Use google-translate.el instead of babel.el (since that no longer works and is not available
+;;        in the repositories)
+;; 
+;; 2010
+;;      * First released
+
+;;; Acknowledgements:
+;;
+;; Juergen Hoetzel <juergen@hoetzel.info> - creator of babel.el
+;;
+
+;;; TODO
+;;
+;; 
+;;
+
+;;; Require
 (require 'babel)
 (require 'erc)
+
+;;; Code:
 
 (defgroup erc-babel nil
   "Variables related to babel usage."
@@ -165,11 +248,13 @@ It will add/alter the entry in erc-babel-alist corresponding to this buffer."
 		     (ido-completing-read "From language: " 
 					  (let ((backend (symbol-name (cdr (assoc erc-babel-backend babel-backends)))))
 					    (mapcar (if (equal backend "google") 'car 'cdr)
-						    (eval (intern-soft (concat "babel-" backend "-languages"))))))
+						    (eval (intern-soft (concat "babel-" backend "-languages")))))
+                                          nil t)
 		     (ido-completing-read "To language: " 
 					  (let ((backend (symbol-name (cdr (assoc erc-babel-backend babel-backends)))))
 					    (mapcar (if (equal backend "google") 'car 'cdr)
-						    (eval (intern-soft (concat "babel-" backend "-languages"))))))))
+						    (eval (intern-soft (concat "babel-" backend "-languages")))))
+                                          nil t)))
   (let* ((backend (symbol-name (cdr (assoc erc-babel-backend babel-backends))))
 	 (langsym (intern-soft (concat "babel-" backend "-languages")))
 	 (languages (eval langsym))
@@ -235,5 +320,11 @@ from the element of erc-babel-alist corresponding to the current buffer."
 ;; add translation function to start of erc-insert-modify-hook to translate incoming messages
 (add-hook 'erc-insert-modify-hook 'erc-babel-translate-incoming-msg)
 
+
 (provide 'erc-babel)
+
+;; (magit-push)
+;; (yaoddmuse-post "EmacsWiki" "erc-babel.el" (buffer-name) (buffer-string) "update")
+
 ;;; erc-babel.el ends here
+
