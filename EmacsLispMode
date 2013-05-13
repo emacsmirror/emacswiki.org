@@ -19,7 +19,7 @@ As an example of customizing Emacs Lisp Mode, with Emacs Lisp, we will enable th
 * recompile on save if the ByteCompilation file does exist and
 * have `RET' reindent the current and new line.
 
-Try these customizations by adding the following code it to your InitFile or by EvaluatingExpressions.  If you are already visiting a buffer in Emacs Lisp Mode, then after evaluating this code reopen the associated file or restart the mode with `M-x normal-mode'.
+Try these customizations by adding the following code it to your InitFile or by EvaluatingExpressions.  If you are already visiting a buffer in Emacs Lisp Mode, then after evaluating this code reopen the associated file or restart the mode with `M-x normal-mode'. 
 
     (add-hook 'emacs-lisp-mode-hook
               (lambda ()
@@ -38,6 +38,8 @@ Try these customizations by adding the following code it to your InitFile or by 
                             "\r" 'reindent-then-newline-and-indent)))
     (add-hook 'emacs-lisp-mode-hook 'eldoc-mode)
     (add-hook 'emacs-lisp-mode-hook 'flyspell-prog-mode) ;; Requires Ispell
+
+Use `byte-compile-file' instead of `byte-force-recompile' above to compile regardless if the file is already compiled.
 
 Related EmacsLisp major and minor modes:
 
