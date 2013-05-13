@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Mon Apr 22 13:27:33 2013 (-0700)
+;; Last-Updated: Mon May 13 07:47:06 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 29302
+;;     Update #: 29309
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -5306,12 +5306,17 @@
 ;;    using `C-M-,'.  See (@> "Sorting Candidates") and
 ;;    (@file :file-name "icicles-doc1.el" :to "History Enhancements").
 ;;
-;;  * User option `icicle-change-sort-order-completion-flag' specifies
-;;    whether `C-,' cycles among available sort orders or lets you
-;;    choose a sort order using Icicles completion.  Non-`nil' means
-;;    to use completion; `nil' (the default value) means to cycle.
-;;    You can override the current setting at any time by using `C-u
-;;    C-,'.  See (@> "Sorting Candidates").
+;;  * User option `icicle-change-sort-order-completion' specifies
+;;    whether `C-,' and `M-,' cycle among available sort orders or
+;;    they let you choose a sort order using Icicles completion.  The
+;;    default value is 7, meaning cycle to the next order if there are
+;;    no more than 7 sort orders currently available, but use
+;;    completion to choose a sort order if there more than 7.  An
+;;    option value of `nil' means always cycle, and a non-integer,
+;;    non-`nil' value means always complete.  However, you can
+;;    override the current option setting at any time by using a plain
+;;    prefix argument: `C-u C-,' or `C-u M-,'.
+;;    See (@> "Sorting Candidates").
 ;;
 ;;  * User option `icicle-sort-orders-alist' is an alist of possible
 ;;    sort orders for user to choose from using `C-,' or `M-,'.
