@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Apr  4 09:11:50 2013 (-0700)
+;; Last-Updated: Sun May 12 19:26:45 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 1710
+;;     Update #: 1711
 ;; URL: http://www.emacswiki.org/icicles-var.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -584,7 +584,7 @@ noted in parentheses.
 * `icicle-buffer-*'                      - `icicle-buffer' options
 * `icicle-candidate-width-factor'        - Width %%, candidate columns
 * `icicle-change-region-background-flag' - Change region color?
-* `icicle-change-sort-order-completion-flag' - Control `C-,' behavior
+* `icicle-change-sort-order-completion'  - Control `C-,' behavior
 * `icicle-C-l-uses-completion-flag'      - `C-l' uses completion?
 * `icicle-color-themes'                  - For `icicle-color-theme'
 * `icicle-comint-dynamic-complete-replacements' - Comint complete fns
