@@ -27,6 +27,15 @@ If you want the text to scroll one line at a time when you move the [[cursor]] p
 
 Unfortunately, the text still jumps sometimes, in a really irritating way.  I haven't been able to work out why or how to stop it.
 
+--> here's a fix: http://zhangda.wordpress.com/2009/05/21/customize-emacs-automatic-scrolling-and-stop-the-cursor-from-jumping-around-as-i-move-it/
+
+    (setq scroll-margin 1
+      scroll-conservatively 0
+      scroll-up-aggressively 0.01
+      scroll-down-aggressively 0.01)
+    (setq-default scroll-up-aggressively 0.01
+      scroll-down-aggressively 0.01)
+
 The scrolling will still be jumpy if Emacs is unable to redisplay text fast enough to keep the scrolling rate up (this typically happens on slow terminals). The view will then be recentered around the cursor.  Recentering also occurs if you move more than one (or the number specified by scroll-step) lines away from the visible portion of the buffer. -- MicheleBini
 
 [new]
