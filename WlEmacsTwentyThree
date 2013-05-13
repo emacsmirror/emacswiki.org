@@ -1,4 +1,4 @@
-Wanderlust has some problems with Emacs 23:
+WanderLust has some problems with Emacs 23:
 
 * UTF-8 text is misencoded
 
@@ -9,3 +9,9 @@ I was able to get UTF-8 working on Emacs 23 with WL 2.15.9 by adding the follwin
     (setq-default mime-transfer-level 8)
 
 Taken from [http://lists.airs.net/wl-en/archive/201001/msg00054.html this] thread.
+
+== See Also ==
+WanderLust
+
+----
+CategoryMail
