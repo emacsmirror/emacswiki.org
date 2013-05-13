@@ -20,10 +20,19 @@ Welcome to the wiki. -- DrewAdams
 * [[NxmlModeForXHTML]]
 * [[CategoryWThirtyTwo]] since I primarily use Windows. :::sigh:::
 
+* [[Journal]] - I use a modified version of this. Should push the modifications back to public. And fix the issues
+** see also: JournalMode - not the same thing. differences?
 
 == Packages I used to like ==
 * [[emacs-w3m]]
 ** I don't have anything against w3m, I just don't use it anymore. too much Javascript in my world.... 
+
+
+== Packages and things I am thinking about liking ==
+* BookmarkPlus
+* OrgMode - c'mon. it's a bout time.
+* a way to get nxml mode to be happy with html5
+* a NodeJs mode that gives me auto-completion on the REPL
 
 ----
 CategoryHomepage
