@@ -18,6 +18,7 @@ Note to self: put some of these on elpa/melpa/marmalade
 * '''Lisp:colour-region.el''' -- Toggle regions of the buffer with different text snippets (see ColourRegion)
 * '''Lisp:look-dired.el''' -- Extra functions for LookMode
 * '''Lisp:dired-dups.el''' -- Find duplicate files with dired
+* '''Lisp:eviews.el''' -- Major-mode for editing eviews program files
 
 ==One-Key==
 I am the current maintainer for [[OneKey]] (Lisp:one-key.el), [[LazySearch]] (Lisp:lazy-search.el), and Lisp:lazy-search-extension.el written by [[AndyStewart]] and [[rubikitch]].
