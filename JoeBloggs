@@ -7,6 +7,7 @@ Note to self: put some of these on elpa/melpa/marmalade
 
 * '''Lisp:sms.el''' -- compose text (SMS) messages 
 * '''Lisp:bbdb-sms.el''' -- integration of [[BBDB]] with [[sms.el]]
+* '''Lisp:bbdb-ext.el''' -- extra commands for searching BBDB
 * '''Lisp:erc-babel.el''' -- automatic translation of IRC messages between different (spoken) languages
 * '''Lisp:bs-ext.el''' -- extensions to Buffer Selection mode
 * '''Lisp:simple-call-tree+.el''' -- programming aid for navigating call trees
