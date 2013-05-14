@@ -14,6 +14,19 @@ Discussion about the TextFormattingRules used in contributing to pages  is at Te
 
 '''Add your suggestions below this line.'''
 
+== Talk link indicates whether page already exists ==
+Could there be some sort of styling or tooltip to indicate if the talk page exists/has talk on it?
+I like to browse the talk pages to see some meta-discussion.
+But if it's not there, I don't want to bother clicking through.
+
+On Pmwiki, Talk-links are followed by a question-mark if there is no page (it's the default indicator that a wiki-link does not exist). I don't actually like the question-mark.
+On Wikipedia... well, I can't find an article without a talk page right now. 
+No idea.
+
+
+While I'm on about Talk, is there a reason that Talk asks for a users homepage-url, while other edits only ask for username?
+
+
 == Easy navigation from talk page back to parent ==
 Pages ("parents" or "parent pages") have links to goto/create talk pages, but there's no reverse functionality on the talk pages to go back to the parent (that I can see).
 This would be nice. --MichaelPaulukonis
