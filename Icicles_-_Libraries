@@ -169,8 +169,7 @@ If you have Emacs 24 or later, then the first method is probably the easiest way
 	  
 Note: Bash complains with the message "./get-icicles.sh: line 67: [: missing `]'", but the line looks fine, and the script works anyway.
 
-
-
+''It looks like you need to use -a instead of &&, or else this line fails and it won't create the backup, at least on cygwin bash.  So, the correct line is '''if [ -z "$no_backup"  -a  -d "$dir" ]; then'''''
 
 '''3.''' '''Using git''': The GitHubMirror
 contains a git repository that includes the '''[[https://github.com/emacsmirror/icicles Icicles files]]''' (https://github.com/emacsmirror/icicles), as well as other repositories.
@@ -229,4 +228,3 @@ DrewsElispLibraries referenced here: Lisp:lacarte.el, Lisp:icicles.el, Lisp:icic
 CategoryCommands 
 CategoryCompletion
 CategoryRegexp
-
