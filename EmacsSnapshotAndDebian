@@ -17,6 +17,10 @@ sudo aptitude install build-essential
 
 The following packages are available through apt-get/aptitude and might need to be installed. Check the output from the configure stage described below.
 
+* autoconf
+* automake
+* libtool
+* texinfo -- is not essential but if you want the manuals you need it
 * build-essential
 * xorg-dev
 * libgtk2.0-dev
