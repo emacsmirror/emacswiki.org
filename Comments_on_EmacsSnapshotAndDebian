@@ -1,5 +1,6 @@
 You would have thought that "build-essential" would include autotools but in Ubuntu 12, at least, it does not:
 
+{{{
 $ apt-cache depends build-essential
 build-essential
  |Depends: libc6-dev
@@ -10,6 +11,6 @@ build-essential
   Depends: make
   Depends: dpkg-dev
   Conflicts: build-essential:i386
-
+}}}
 -- [http://nic.ferrier.me.uk NicFerrier] 2013-05-14 04:22 UTC
 
