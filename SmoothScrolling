@@ -144,6 +144,9 @@ None of these solutions worked for me. Cursor jumped even during non-scrolling-m
 </pre>
 -- [[Zarza]] in Emacs 24.0
 
+[new:AmitPatel:2013-05-14 15:48 UTC]
+[[Zarza]]'s solution is the only one that worked for me. Thank you! I turned off auto save interval altogether.
+
 ----
 CategoryDisplay
 CategoryMouse
