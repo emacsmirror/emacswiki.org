@@ -8,7 +8,7 @@ If you needed a command specifically for killing backwards, use the following co
 
 {{{
 (defun backward-kill-line (arg)
-  "Kill chars backward until encountering the end of a line."
+  "Kill ARG lines backward."
   (interactive "p")
   (kill-line (- 1 arg)))
 }}}
