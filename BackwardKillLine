@@ -1,58 +1,28 @@
+KillingAndYanking a line backwards can be done with `C-0 C-k' or `C-u 0 C-k'.
+
+Deleting words backwards with `C-DEL' or `M-DEL' (`backward-kill-word') is useful since each kill appends to the kill ring and is available as a single yank.  If the point is anywhere in the first sentence, `C-x DEL' (`backward-kill-sentence') can also delete to the beginning of the line.
+
+Note, `C-M-backspace' is bound to restarting X Windows or rebooting the system with the Linux kernel, so beware.
+
+If you needed a command specifically for killing backwards, use the following code by EvaluatingExpressions or by adding it to your InitFile:
+
 {{{
-;; define the function to kill the characters from the cursor 
-;; to the beginning of the current line
 (defun backward-kill-line (arg)
   "Kill chars backward until encountering the end of a line."
   (interactive "p")
-  (kill-line 0))
-
-;; you may want to bind it to a different key
-(global-set-key "\C-u" 'backward-kill-line)
+  (kill-line (- 1 arg)))
 }}}
-[new]
-Doesn't `kill-line' already do this, when you give it a prefix argument of 0? (`C-u 0 C-k')
 
-[new]
-Yes, I've changed the code accordingly. Thanks!
+You may want to bind it to a different key
 
-[new]
-I use `C-0 C-k' to do the same thing.
-
-[new]
-If you're using this to delete stuff in the minibuffer, `C-M-backspace' (command `backward-kill-sexp') is also handy. It doesn't always delete to the line beginning, but it is very simple and quick to repeat.
-
-[new]
-: Note though, that `C-M-backspace' is also usually bound to restarting X Windows, so beware.
-
-[new]
-I'd like a backward-kill-line that, if the cursor is at the beginning of the line, only erases the previous linefeed. I.e. more similar to kill-line in function. How would I achieve this? /zrajm [2008-09-21]
-
-[new]
-: You mean the <backspace> key (`DEL')? -- AaronHawley
-
-[new]
-Please try this piece of code:
 {{{
-(defun my-kill-line (arg) 
-  "Delete the linefeed and carriage return of the previous line when point is at the beginning of the current line"
-  (interactive "p")
-  (let ((prev-char (char-before (point)))
-        (at-beginning-of-line nil))
-    (while (and (characterp prev-char)
-             (or (char-equal prev-char 10)
-                 (char-equal prev-char 13)))
-      (setq at-beginning-of-line t)
-      (backward-delete-char 1)
-      (setq prev-char (char-before (point))))
-    (if (and (characterp prev-char)
-             (not at-beginning-of-line))
-        (kill-line arg))))
+(global-set-key "\C-cu" 'backward-kill-line) ;; `C-c u'
 }}}
 
-[new]
-I don't think Emacs Lisp has a `characterp' function.  The alternatives here are the Emacs commands available from `DEL' (backspace on most keyboards) or `C- M-^'. -- AaronHawley
+To join a line with the previous use `M-^' (`delete-indentation').  It deletes the newline character on the previous line.  To delete the newline at the end of the current line use `C-u M-^'.
+
+See LineCommands
 
 ----
 CategoryKeys
 CategoryEditing
-
