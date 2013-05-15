@@ -66,6 +66,11 @@ There's no way to save the undo history if the file is changed behind Emacs's ba
 
 It can undo changes to a buffer, whether or not it is associated with a file.
 
+A couple of bug reports exist:
+http://debbugs.gnu.org/cgi/bugreport.cgi?bug=18 
+and
+http://debbugs.gnu.org/cgi/bugreport.cgi?bug=8447 
+
 == Reverting but keeping undo ==
 
 Emacs doesn't actually save undo history with `revert-buffer'
