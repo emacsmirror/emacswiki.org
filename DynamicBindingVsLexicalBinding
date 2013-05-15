@@ -1,3 +1,4 @@
+[[zh:动态绑定_vs_词法绑定]]
 Dynamic binding is sometimes called ''fluid binding''.  Lexical binding is sometimes called ''static binding''.
 
 == Binding ==
