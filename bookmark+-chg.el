@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun May 12 10:34:52 2013 (-0700)
+;; Last-Updated: Wed May 15 10:57:56 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 15295
+;;     Update #: 15297
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2013/05/15 dadams
+;;     bmkp-*-alist-only: Make sure we call bookmark-maybe-load-default-file.
 ;; 2013/05/12 dadams
 ;;     Added: bmkp-write-bookmark-file-hook.
 ;;     bookmark-write-file: Run bmkp-bookmark-write-file-hook functions after writing.
