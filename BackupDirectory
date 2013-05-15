@@ -104,5 +104,10 @@ which other packages don't do.  For example, diff-backup
 will stop working unless you redefine (or advise) the code
 to find backup files.  b-d.el does that.  -- gambarimasu
 
+[[bugs]]
+When using the backup directory cleanup code I get this error:
+"Symbol's function definition is void: fifth"
+GNU Emacs 23.3.1
+Ubuntu 12.04.2 LTS
 ----
 CategoryFiles
