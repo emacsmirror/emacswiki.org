@@ -5,7 +5,7 @@
 ;; Author: Matthew L. Fidler
 ;; Maintainer: Matthew Fidler
 ;; Created: Thu Jul 14 11:04:42 2011 (-0500)
-;; Version: 0.74
+;; Version: 0.75
 ;; Last-Updated: Mon Apr  9 15:27:09 2012 (-0500)
 ;;           By: Matthew L. Fidler
 ;;     Update #: 137
@@ -86,6 +86,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 15-May-2013    Matthew L. Fidler  
+;;    Last-Updated: Mon Apr  9 15:27:09 2012 (-0500) #137 (Matthew L. Fidler)
+;;    Added ggplot function prefixes.  
 ;; 05-Nov-2012    Matthew L. Fidler  
 ;;    Last-Updated: Mon Apr  9 15:27:09 2012 (-0500) #137 (Matthew L. Fidler)
 ;;    Better handling of noweb.  I think it Came from Denis Haine and
@@ -176,6 +179,41 @@ This requires `ess-S-underscore-when-inside-paren' to be true.
   :group 'ess-S
   :type 'boolean)
 
+(defcustom ess-S-underscore-when-preceeding-words
+  '("aes"
+    "add"
+    "annotation"
+    "calc"
+    "coord"
+    "cut"
+    "discrete"
+    "element"
+    "expand"
+    "facet"
+    "geom"
+    "gg"
+    "guide"
+    "label"
+    "last"
+    "mean"
+    "position"
+    "scale"
+    "scale_color"
+    "scale_colour"
+    "scale_x"
+    "scale_y"
+    "stat"
+    "theme"
+    "translate"
+    "translate_qplot"
+    "update"
+    "update_"
+    "update_geom")
+  "Things that should have underscores after them. "
+  :group 'ess-S
+  :type '(repeat
+          (string :tag "Word")))
+
 
 (defcustom ess-S-underscore-when-variable-contains-underscores t
   "Should an underscore be produced instead of `ess-S-assign' when variable already contains an underscore?"
@@ -188,7 +226,7 @@ This requires `ess-S-underscore-when-inside-paren' to be true.
   :type 'boolean)
 
 ;;;###autoload
-(defun ess-smart-underscore ()
+(defun ess-smarter-underscore ()
   "Smart \"_\" key: insert `ess-S-assign', unless:
   1. in string/comment
   2. after a $ (like d$one_two) (toggle with `ess-S-underscore-after-$')
@@ -203,6 +241,7 @@ This requires `ess-S-underscore-when-inside-paren' to be true.
      (toggle with `ess-S-underscore-when-variable-contains-underscores')
   8. The preceding character is not a tab/space
      (toggle with `ess-S-underscore-when-last-character-is-a-space'.  Not enabled by default.)
+  9. The preceding words/characters are in `ess-S-underscore-when-preceeding-words'
 
 
 An exception to #4 is in the following situation:
@@ -230,7 +269,7 @@ an underscore is always inserted. "
   (interactive)
   ;;(insert (if (ess-inside-string-or-comment-p (point)) "_"
   ;;ess-S-assign))
-  (message "%s" (looking-back "_[^ \t\n]*?\\="))
+  ;;(message "%s" (looking-back "_[^ \t\n]*?\\="))
   (save-restriction
     (ignore-errors
       (when (and (eq major-mode 'inferior-ess-mode)
@@ -243,6 +282,7 @@ an underscore is always inserted. "
     (if (or
          (not (equal ess-language "S"))
          (looking-back "^[ \t\n]*\\=")
+         (looking-back (regexp-opt ess-S-underscore-when-preceeding-words t))
          (and ess-S-underscore-when-variable-contains-underscores
               (looking-back "_[^ \t\n]*?\\="))
          (and ess-S-underscore-when-last-character-is-a-space
@@ -299,7 +339,7 @@ an underscore is always inserted. "
               (insert "_"))
           (delete-horizontal-space)
           (insert ess-S-assign))))))
-
+(define-key ess-mode-map (kbd "_") 'ess-smarter-underscore)
 (provide 'ess-smart-underscore)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ess-smart-underscore.el ends here
