@@ -7,9 +7,9 @@
 ;; Copyright (C) 2004-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 10 16:44:55 2004
 ;; Version: 21.0
-;; Last-Updated: Sun Apr 21 12:33:59 2013 (-0700)
+;; Last-Updated: Wed May 15 09:45:18 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 1518
+;;     Update #: 1520
 ;; URL: http://www.emacswiki.org/thumb-frm.el
 ;; Doc URL: http://www.emacswiki.org/FisheyeWithThumbs
 ;; Keywords: frame, icon
@@ -263,6 +263,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/05/15 dadams
+;;     thumfr-thumbify-frame: Handle font-too-small signal: try smaller thumfr-font-difference.
 ;; 2013/04/21 dadams
 ;;     thumfr-dethumbify-all-frames: Added prefix arg behavior (arg ICONIFIED-ALSO-P).
 ;;     thumfr-cull-thumbnail-frames: Added optional arg KEEP-ICONIFIED-P.
@@ -629,6 +631,13 @@ which frame parameters (such as menu-bar) to remove."
               (setq thumfr-next-stack-xoffset  nil
                     thumfr-next-stack-yoffset  nil))
             (modify-frame-parameters frame thumfr-frame-parameters))
+        (font-too-small                ; Try again, with a larger font.
+         (when fr+tf-params (add-to-list 'thumfr-non-thumbnail-frames fr+tf-params))
+         (setq thumfr-thumbnail-frames  (delq fr+non-tf-params thumfr-thumbnail-frames))
+         (unless (> thumfr-font-difference 0)
+           (error (error-message-string thumfr-thumbify-frame)))
+         (let ((thumfr-font-difference  (1- thumfr-font-difference)))
+           (thumfr-thumbify-frame frame)))
         (error
          (when fr+tf-params (add-to-list 'thumfr-non-thumbnail-frames fr+tf-params))
          (setq thumfr-thumbnail-frames  (delq fr+non-tf-params thumfr-thumbnail-frames))
