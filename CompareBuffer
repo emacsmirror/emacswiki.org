@@ -1,6 +1,6 @@
 == Comparing and merging a buffer with the underlying file ==
 
-Sometimes you might be in a situation where the file underlying your buffer changes (like if it's in a directory synced with dropbox). To comare with the underlying file you can use
+Sometimes you might be in a situation where the file underlying your buffer changes (like if it's in a directory synced with dropbox). To compare with the underlying file you can use
 * diff-buffer-with-file
 and if you want to merge the buffer with the file you can use
 * ediff-current-file
