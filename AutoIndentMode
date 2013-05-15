@@ -8,7 +8,7 @@
 * <b>Author </b> --  Matthew L. Fidler, Le Wang & Others
 * <b>Maintainer </b> --  Matthew L. Fidler
 * <b>Created </b> --  Sat Nov  6 11:02:07 2010 (-0500)
-* <b>Version </b> --  0.97
+* <b>Version </b> --  0.99
 * <b>Last-Updated </b> --  Tue Aug 21 13:08:42 2012 (-0500)
 * <b>By </b> --  Matthew L. Fidler
 * <b>Update # </b> --  1467
@@ -78,6 +78,21 @@ If you only want this on for a single mode, you would add the following to
 
 You could always turn on the minor mode with the command
 <tt>auto-indent-minor-mode</tt>
+== Auto-indent and repositories ==
+auto-indent-mode will now be more conservative when it determines
+that you are in a repository.  It will only indent the local area you
+are editing.  This can be changed to be conservative everywhere by:
+{{{
+  (setq auto-indent-indent-style 'conservative)
+}}}
+
+You can revert to the old behavior of aggressive by:
+
+{{{
+  (setq auto-indent-indent-style 'aggressive)
+}}}
+
+
 == Setting the number of spaces for indenting major modes ==
 While this is controlled by the major mode, as a convenience,
 auto-indent-mode attempts to set the default number of spaces for an
@@ -268,6 +283,7 @@ See:
 === Internal Variables ===
 == History ==
 
+* <b>15-May-2013 </b> --   Made the indentation selective. Should fix Issue #15. 9-May-2013 Matthew L. Fidler Last-Updated: Tue Aug 21 13:08:42 2012 (-0500) #1467 (Matthew L. Fidler) Changed the AI indicator to be used at all times. That way it doesn't interfere with the diminish package. I believe that is the standard way to take off mode lines. (Matthew L. Fidler)
 * <b>18-Mar-2013 </b> --   Should fix issue #14 (Matthew L. Fidler)
 * <b>18-Mar-2013 </b> --   Add bug fix for Issue #13 (Matthew L. Fidler)
 * <b>13-Mar-2013 </b> --   Push again after merging minibuffer fix (Matthew L. Fidler)
