@@ -10,7 +10,7 @@ I use [https://duckduckgo.com/?q=site%3Aemacswiki.org DuckDuckGo] for searching 
 * [[DuckDuckGo-el]] : For searching in the web using EmacsLisp and [https://duckduckgo.com DuckDuckGo].
 * [[JabberEncryptEl-es]] : For sending and recieving encrypted information transparently using JabberEl.
 * [[XCowsayEl-es]] : For using showing message using !XCowSay.
-* [[Org-Notify-El-es]] : For notifying the coming DEADLINES using [[XCowSayEl-es]].
+* [[Org-Notify-El-es]] : For notifying the coming DEADLINES using [[XCowsayEl-es]].
 * SyslogMode : A modified version for adding more font-locks. See Lisp:syslog-mode.el for more information.
 
 === On GNA! ===
