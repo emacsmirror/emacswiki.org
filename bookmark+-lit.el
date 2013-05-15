@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2010-2013, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 23 07:49:32 2010 (-0700)
-;; Last-Updated: Sun Apr 14 17:11:59 2013 (-0700)
+;; Last-Updated: Wed May 15 14:18:54 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 848
+;;     Update #: 851
 ;; URL: http://www.emacswiki.org/bookmark+-lit.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, highlighting, bookmark+
@@ -1073,8 +1073,8 @@ Returns:
  or `bmkp-light-non-autonamed' otherwise."
   (setq bookmark  (bookmark-get-bookmark bookmark 'NOERROR))
   (or (bmkp-lighting-face bookmark)
-      (and bookmark  (if (string-match (format bmkp-autoname-format ".*")
-                                       (bmkp-bookmark-name-from-record bookmark))
+      (and bookmark  (if (bmkp-string-match-p (format bmkp-autoname-format ".*")
+                                              (bmkp-bookmark-name-from-record bookmark))
                          'bmkp-light-autonamed
                        'bmkp-light-non-autonamed))))
 
@@ -1088,8 +1088,8 @@ Returns:
  or the value of `bmkp-light-style-non-autonamed' otherwise."
   (setq bookmark  (bookmark-get-bookmark bookmark 'NOERROR))
   (or (bmkp-lighting-style bookmark)
-      (and bookmark  (if (string-match (format bmkp-autoname-format ".*")
-                                       (bmkp-bookmark-name-from-record bookmark))
+      (and bookmark  (if (bmkp-string-match-p (format bmkp-autoname-format ".*")
+                                              (bmkp-bookmark-name-from-record bookmark))
                          bmkp-light-style-autonamed
                        bmkp-light-style-non-autonamed))))
 
@@ -1219,7 +1219,7 @@ Optional args are the default values (strings) for reading new values."
                         ("never"  . :no-light)))
          (when         (completing-read "When: " when-cands nil t nil nil
                                         (if default-when "conditionally (read sexp)" "auto")))
-         (evald       (if (string-match "^con" when)
+         (evald       (if (bmkp-string-match-p "^con" when)
                           (read-from-minibuffer "Highlight when (sexp): " nil
                                                 (if (boundp 'pp-read-expression-map)
                                                     pp-read-expression-map
