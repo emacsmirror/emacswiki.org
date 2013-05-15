@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Fri Apr 19 13:47:03 2013 (-0700)
+;; Last-Updated: Wed May 15 13:58:00 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2444
+;;     Update #: 2449
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -70,6 +70,7 @@
 ;;  http://dto.freeshell.org/notebook/Linkd.html.
 ;;
 ;;  (@> "Things Defined Here")
+;;  (@> "Utility Functions")
 ;;  (@> "Faces (Customizable)")
 ;;  (@> "User Options (Customizable)")
 ;;  (@> "Internal Variables")
@@ -417,6 +418,16 @@ Elements of ALIST that are not conses are ignored."
 (defvar bmkp-edit-bookmark-records-number) ; In `bookmark+-1.el'.
 (defvar bmkp-temporary-bookmarking-mode) ; In `bookmark+-1.el'.
 
+ 
+;;(@* "Utility Functions")
+;;; Utility Functions ------------------------------------------------
+
+;; Same as `tap-string-match-p' in `thingatpt+.el' and `icicle-string-match-p' in `icicles-fn.el'.
+(if (fboundp 'string-match-p)
+    (defalias 'bmkp-string-match-p 'string-match-p) ; Emacs 23+
+  (defun bmkp-string-match-p (regexp string &optional start)
+    "Like `string-match', but this saves and restores the match data."
+    (save-match-data (string-match regexp string start))))
  
 ;;(@* "Faces (Customizable)")
 ;;; Faces (Customizable) ---------------------------------------------
@@ -3330,7 +3341,7 @@ Non-interactively:
       (when msg-p (message "Updating bookmark-list display..."))
       (while (not (eobp))
         (setq tags  (bmkp-get-tags (bookmark-bmenu-bookmark))
-              anyp  (and tags  (bmkp-some (lambda (tag) (string-match regexp (bmkp-tag-name tag)))
+              anyp  (and tags  (bmkp-some (lambda (tag) (bmkp-string-match-p regexp (bmkp-tag-name tag)))
                                           tags)))
         (if (not (and tags  (if notp (not anyp) anyp)))
             (forward-line 1)
@@ -3415,7 +3426,7 @@ Non-interactively:
       (when msg-p (message "Updating bookmark-list display..."))
       (while (not (eobp))
         (setq tags  (bmkp-get-tags (bookmark-bmenu-bookmark))
-              anyp  (and tags  (bmkp-some (lambda (tag) (string-match regexp (bmkp-tag-name tag)))
+              anyp  (and tags  (bmkp-some (lambda (tag) (bmkp-string-match-p regexp (bmkp-tag-name tag)))
                                           tags)))
         (if (not (and tags  (if notp (not anyp) anyp)))
             (forward-line 1)
@@ -4234,8 +4245,8 @@ Return the propertized string (the bookmark name)."
 
          (filep           (bookmark-get-filename bookmark))
          (sudop           (and filep  (boundp 'tramp-file-name-regexp)
-                               (string-match tramp-file-name-regexp filep)
-                               (string-match bmkp-su-or-sudo-regexp filep))))
+                               (bmkp-string-match-p tramp-file-name-regexp filep)
+                               (bmkp-string-match-p bmkp-su-or-sudo-regexp filep))))
     ;; Put the full bookmark itself on string `bookmark-name' as property `bmkp-full-record'.
     ;; Then put that string on the name in the buffer text as property `bmkp-bookmark-name'.
     (put-text-property 0 (length bookmark-name) 'bmkp-full-record bookmark bookmark-name)
