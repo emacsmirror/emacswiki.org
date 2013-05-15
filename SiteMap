@@ -47,6 +47,7 @@ General Use:
 * [[CategoryBookmarking|Bookmarking]] -- setting persistent locations and returning to them
 * [[CategoryBufferSwitching|BufferSwitching]] -- switching among different [[buffer]]s
 * [[CategoryCommands|Commands]] -- invoking and defining Emacs [[command]]s, `M-x'
+* [[CategoryComparing|Comparing]] -- Comparing, diffing and merging
 * [[CategoryCompletion|Completion]] -- completing text in the [[minibuffer]] or other [[buffer]]s
 * [[CategoryCustomize|Customize]] -- customizing Emacs generally and with the "easy customizing" feature, '''Customize'''
 ** [[CategoryDotEmacs|DotEmacs]] -- EmacsLisp code to put in your [[init file]] (##~/.emacs## or ##_emacs##).
