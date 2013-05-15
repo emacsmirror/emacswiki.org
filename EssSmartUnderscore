@@ -8,7 +8,7 @@
 * <b>Author </b> --  Matthew L. Fidler
 * <b>Maintainer </b> --  Matthew Fidler
 * <b>Created </b> --  Thu Jul 14 11:04:42 2011 (-0500)
-* <b>Version </b> --  0.74
+* <b>Version </b> --  0.75
 * <b>Last-Updated </b> --  Mon Apr  9 15:27:09 2012 (-0500)
 * <b>By </b> --  Matthew L. Fidler
 * <b>Update # </b> --  137
@@ -84,64 +84,20 @@ In addition the ess-smart-underscore attempts to work with noweb-mode
 
 == History ==
 
+* <b>15-May-2013 </b> --   Added ggplot function prefixes.  (Matthew L. Fidler)
 * <b>05-Nov-2012 </b> --   Better handling of noweb. I think it Came from Denis Haine and Martin Maechler. (Matthew L. Fidler)
 * <b>22-Feb-2012 </b> --   Support unbalanced sexps. (Matthew L. Fidler)
 * <b>02-Feb-2012 </b> --   Took out auto-installing. Most package managers don't want you to do this. (Matthew L. Fidler)
 * <b>03-Aug-2011 </b> --   Bug fix for parenthetical statement (Matthew L. Fidler)
 * <b>20-Jul-2011 </b> --   Changed to allow underscore instead of assign when inside a parenthetical statement.  (Matthew L. Fidler)
-* <b>15-Jul-2011 </b> --   Bug fix for d[d$CMT <tt></tt> 2,"DV"] _ to produce d[d$CMT <tt></tt> 2,"DV"] <-  (Matthew L. Fidler)* Functions
-=== Interactive Functions ===
-
-==== ess-smart-underscore ====
-<tt>(ess-smart-underscore)</tt>
-
-Smart "_" key: insert <tt>ess-S-assign</tt>, unless in string/comment.
-If the underscore key is pressed a second time, the assignment
-operator is removed and replaced by the underscore.  <tt>ess-S-assign</tt>,
-typically " <- ", can be customized.  In ESS modes other than R/S,
-an underscore is always inserted. 
-
-=== Internal Functions ===
-== Variables ==
+* <b>15-Jul-2011 </b> --   Bug fix for d[d$CMT <tt></tt> 2,"DV"] _ to produce d[d$CMT <tt></tt> 2,"DV"] <-  (Matthew L. Fidler)* Variables
 === Customizable Variables ===
 
-==== ess-S-space-underscore-is-assignment ====
-Should underscore produce <tt>ess-S-assign</tt> when a space is right before the cursor.
-
-Used by M-x ess-smart-underscore.
-
-==== ess-S-underscore-after-$ ====
-Should underscore produce an underscore if it is an element of a list/data structure?
-
-Used by M-x ess-smart-underscore.
-
-==== ess-S-underscore-after-<-or-= ====
-Should underscore produce an underscore if it is after a "<-" or "="?
-
-Used by M-x ess-smart-underscore.
-
-==== ess-S-underscore-after-defined ====
-Should underscore produce an underscore if it is after a variable has been defined?
-
-Used by M-x ess-smart-underscore.
-
-==== ess-S-underscore-when-inside-paren ====
-Should an underscore be produced instead of <tt>ess-S-assign</tt> when inside a parenthetical expression?
-
-==== ess-S-underscore-when-inside-unbalanced-parenthesis ====
-Should an underscore be produced instead of <tt>ess-S-assign</tt> when inside an unbalanced parenthetical expression such as:
-
-foo(bar_
-
-This requires <tt>ess-S-underscore-when-inside-paren</tt> to be true.
-
-==== ess-S-underscore-when-last-character-is-a-space ====
-ESS produces an underscore only when the last character is not a space or a tab.
-
-==== ess-S-underscore-when-variable-contains-underscores ====
-Should an underscore be produced instead of <tt>ess-S-assign</tt> when variable already contains an underscore?
-
 === Internal Variables ===
+== Functions ==
+=== Interactive Functions ===
+
+=== Internal Functions ===
 
 
 This was generated with OrgReadme.  On updating the library, this page is likely to be replaced with updated content.
