@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Mar  5 16:30:45 1996
 ;; Version: 21.0
-;; Last-Updated: Mon Apr 29 20:37:25 2013 (-0700)
+;; Last-Updated: Wed May 15 09:41:17 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2751
+;;     Update #: 2760
 ;; URL: http://www.emacswiki.org/frame-cmds.el
 ;; Doc URL: http://emacswiki.org/FrameModes
 ;; Doc URL: http://www.emacswiki.org/OneOnOneEmacs
@@ -135,6 +135,10 @@
 ;;    `new-frame-position', `read-args-for-tile-frames',
 ;;    `read-buffer-for-delete-windows', `smart-tool-bar-pixel-height'.
 ;;
+;;  Error symbols defined here:
+;;
+;;    `font-too-small', `font-size'.
+;;
 ;;
 ;;
 ;;  ***** NOTE: The following EMACS PRIMITIVES have been REDEFINED HERE:
@@ -257,6 +261,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/05/15 dadams
+;;     Added error symbols font-too-small and font-size.
+;;     enlarged-font-name: Signal font-too-small error.
 ;; 2013/04/29 dadams
 ;;     Added: deiconify-everything, (mouse-)iconify/show-frame (renamed (mouse-)iconify/map-frame).
 ;;     iconify/show-frame: Negative prefix arg now deiconifies all.
@@ -1482,25 +1489,7 @@ With a prefix arg, offset it that many char widths from the right."
    `((left . ,(- (x-display-pixel-width) (+ (frame-pixel-width) 7 arg))))))
 
 
-
-
-;;; This was a workaround hack for an Emacs 23 bug (#119, aka #1562).
-;;; This works OK, but it is not as refined as the version I use, and it does not work for
-;;; older Emacs versions.
-;;;
-;;; (when (> emacs-major-version 22)
-;;;   (defun enlarge-font (&optional increment frame)
-;;;     "Increase size of font in FRAME by INCREMENT.
-;;; Interactively, INCREMENT is given by the prefix argument.
-;;; Optional FRAME parameter defaults to current frame."
-;;;     (interactive "p")
-;;;     (setq frame (or frame (selected-frame)))
-;;;     (set-face-attribute
-;;;      'default frame :height (+ (* 10 increment)
-;;;                                (face-attribute 'default :height frame 'default)))))
-
-
-;; This still doesn't work 100% well.  For instance, set frame font to
+;; This does not work 100% well.  For instance, set frame font to
 ;; "-raster-Terminal-normal-r-normal-normal-12-90-96-96-c-50-ms-oemlatin", then decrease font size.
 ;; The next smaller existing font on my machine is
 ;; "-raster-Terminal-normal-r-normal-normal-11-*-96-96-c-*-ms-oemlatin".  Decrease size again.
@@ -1525,6 +1514,36 @@ Optional FRAME parameter defaults to current frame."
     ;; Update faces that want a bold or italic version of the default font.
     (when (< emacs-major-version 21) (frame-update-faces frame))))
 
+;;; This was a workaround hack for an Emacs 23 bug (#119, aka #1562).
+;;; This works OK, but it is not as refined as the version I use, and it does not work for
+;;; older Emacs versions.
+;;;
+;;; (when (> emacs-major-version 22)
+;;;   (defun enlarge-font (&optional increment frame)
+;;;     "Increase size of font in FRAME by INCREMENT.
+;;; Interactively, INCREMENT is given by the prefix argument.
+;;; Optional FRAME parameter defaults to current frame."
+;;;     (interactive "p")
+;;;     (setq frame (or frame (selected-frame)))
+;;;     (set-face-attribute
+;;;      'default frame :height (+ (* 10 increment)
+;;;                                (face-attribute 'default :height frame 'default)))))
+
+
+
+
+
+;;; Define error symbols `font-too-small' and `font-size', and their error conditions and messages.
+;;;
+;;; You can use these to handle an error of trying to make the font too small.
+;;; See library `thumb-frm.el', command `thumfr-thumbify-frame'.
+;;;
+(put 'font-too-small 'error-conditions '(error font-size font-too-small))
+(put 'font-too-small 'error-message    "Font size is too small")
+
+(put 'font-size      'error-conditions '(error font-size))
+(put 'font-size      'error-message    "Bad font size")
+
 (defun enlarged-font-name (fontname frame increment)
   "FONTNAME, after enlarging font size of FRAME by INCREMENT.
 FONTNAME is the font of FRAME."
@@ -1535,7 +1554,7 @@ FONTNAME is the font of FRAME."
     (unless xlfd-fields (error "Cannot decompose font name"))
     (let ((new-size (+ (string-to-number (aref xlfd-fields xlfd-regexp-pixelsize-subnum))
                        increment)))
-      (unless (> new-size 0) (error "New font size is too small: %s" new-size))
+      (unless (> new-size 0) (signal 'font-too-small (list new-size)))
       (aset xlfd-fields xlfd-regexp-pixelsize-subnum (number-to-string new-size)))
     ;; Set point size & width to "*", so frame width will adjust to new font size
     (aset xlfd-fields xlfd-regexp-pointsize-subnum "*")
