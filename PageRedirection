@@ -4,6 +4,7 @@ Here's how you do it:
 
 # Edit the page to be redirected.
 # Remove all its text, and replace it with this: "<code>#REDIRECT FooBar</code>", where "!FooBar" is the new, target Wiki page. Save.
+## Note that ''Talk'' and other pages that are not camel-cased need to encased in double-brackets to work. E.g. <code>[[Comments_on_OpenQuestions]]</code>
 
 Benefit: [http://www.w3.org/Provider/Style/URI Cool URIs don't change].
 
