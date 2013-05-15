@@ -75,10 +75,10 @@ I've found that if you compile with these arguments you can avoid the console wi
 <tt>
   gcc -Wl,--subsystem,windows -o call-ediff call-ediff.c
 </tt>
-----
+
 Ediff example:
 
 [[image:EdiffScreenshot]]
 
-
-CategoryWThirtyTwo
+----
+CategoryWThirtyTwo CategoryComparing
