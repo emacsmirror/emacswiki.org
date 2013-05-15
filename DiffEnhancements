@@ -29,4 +29,4 @@ Libraries <tt>[[diff+.el]]</tt> and <tt>[[diff+20.el]]</tt> extend the functiona
 * [[Diffstat]] - Show summary and histograms of modification for the complicated diff file.
 
 ----
-CategoryExternalUtilities
+CategoryExternalUtilities CategoryComparing
