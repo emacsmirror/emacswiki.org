@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Wed May 15 10:57:56 2013 (-0700)
+;; Last-Updated: Wed May 15 14:21:02 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 15297
+;;     Update #: 15305
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -148,6 +148,8 @@
 ;;
 ;; 2013/05/15 dadams
 ;;     bmkp-*-alist-only: Make sure we call bookmark-maybe-load-default-file.
+;;     Moved bmkp-string-match-p to bookmark+-bmu.el.
+;;     Use bmkp-string-match-p instead of string-match wherever appropriate.
 ;; 2013/05/12 dadams
 ;;     Added: bmkp-write-bookmark-file-hook.
 ;;     bookmark-write-file: Run bmkp-bookmark-write-file-hook functions after writing.
@@ -904,6 +906,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2013/05/15 dadams
+;;     Moved here from bookmark+-1.el: bmkp-string-match-p.
+;;     Use bmkp-string-match-p instead of string-match wherever appropriate.
 ;; 2013/04/10 dadams
 ;;     bmkp-bmenu-make-sequence-from-marked: Redefine using bmkp-set-sequence-bookmark (new).
 ;; 2013/01/07 dadams
@@ -1383,6 +1388,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-lit.el'")
 ;;
+;; 2013/05/15 dadams
+;;     Use bmkp-string-match-p instead of string-match wherever appropriate.
 ;; 2012/10/09 dadams
 ;;     Made all autoload cookies explicitly load bookmark+.el(c).  Should help ELPA (e.g. MELPA).
 ;; 2012/09/22 dadams
