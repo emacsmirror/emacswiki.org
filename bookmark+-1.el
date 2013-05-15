@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sun May 12 10:56:47 2013 (-0700)
+;; Last-Updated: Wed May 15 10:54:16 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6281
+;;     Update #: 6294
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -5011,6 +5011,7 @@ If it is a record then it need not belong to `bookmark-alist'."
   "`bookmark-alist', but with only bookmarks having all their tags in TAGS.
 Does not include bookmarks that have no tags.
 A new list is returned (no side effects)."
+  (bookmark-maybe-load-default-file)
   (bmkp-remove-if-not
    (lambda (bmk)
      (lexical-let* ((tgs       tags)
@@ -5022,6 +5023,7 @@ A new list is returned (no side effects)."
   "`bookmark-alist', but with only bookmarks having all tags match REGEXP.
 Does not include bookmarks that have no tags.
 A new list is returned (no side effects)."
+  (bookmark-maybe-load-default-file)
   (bmkp-remove-if-not
    (lexical-let ((rg  regexp))
      (lambda (bmk)
@@ -5050,6 +5052,7 @@ With non-nil arg PREFIX, the bookmark names must all have that PREFIX."
 (defun bmkp-autofile-all-tags-alist-only (tags)
   "`bookmark-alist', with only autofiles having all tags in TAGS.
 A new list is returned (no side effects)."
+  (bookmark-maybe-load-default-file)
   (bmkp-remove-if-not
    (lexical-let ((tgs  tags))
      (lambda (bmk)
@@ -5060,6 +5063,7 @@ A new list is returned (no side effects)."
 (defun bmkp-autofile-all-tags-regexp-alist-only (regexp)
   "`bookmark-alist', with only autofiles having all tags match REGEXP.
 A new list is returned (no side effects)."
+  (bookmark-maybe-load-default-file)
   (bmkp-remove-if-not
    (lexical-let ((rg  regexp))
      (lambda (bmk)
@@ -5071,6 +5075,7 @@ A new list is returned (no side effects)."
 (defun bmkp-autofile-some-tags-alist-only (tags)
   "`bookmark-alist', with only autofiles having some tags in TAGS.
 A new list is returned (no side effects)."
+  (bookmark-maybe-load-default-file)
   (bmkp-remove-if-not
    (lambda (bmk) (and (bmkp-autofile-bookmark-p bmk)
                       (bmkp-some (lexical-let ((bk  bmk)) (lambda (tag) (bmkp-has-tag-p bk tag)))  tags)))
@@ -5079,6 +5084,7 @@ A new list is returned (no side effects)."
 (defun bmkp-autofile-some-tags-regexp-alist-only (regexp)
   "`bookmark-alist', with only autofiles having some tags match REGEXP.
 A new list is returned (no side effects)."
+  (bookmark-maybe-load-default-file)
   (bmkp-remove-if-not
    (lexical-let ((rg  regexp))
      (lambda (bmk) (and (bmkp-autofile-bookmark-p bmk)
@@ -5138,6 +5144,7 @@ A new list is returned (no side effects)."
 (defun bmkp-file-all-tags-alist-only (tags)
   "`bookmark-alist', with only file bookmarks having all tags in TAGS.
 A new list is returned (no side effects)."
+  (bookmark-maybe-load-default-file)
   (bmkp-remove-if-not
    (lexical-let ((tgs  tags))
      (lambda (bmk)
@@ -5148,6 +5155,7 @@ A new list is returned (no side effects)."
 (defun bmkp-file-all-tags-regexp-alist-only (regexp)
   "`bookmark-alist', with only file bookmarks having all tags match REGEXP.
 A new list is returned (no side effects)."
+  (bookmark-maybe-load-default-file)
   (bmkp-remove-if-not
    (lexical-let ((rg  regexp))
      (lambda (bmk)
@@ -5159,6 +5167,7 @@ A new list is returned (no side effects)."
 (defun bmkp-file-some-tags-alist-only (tags)
   "`bookmark-alist', with only file bookmarks having some tags in TAGS.
 A new list is returned (no side effects)."
+  (bookmark-maybe-load-default-file)
   (bmkp-remove-if-not
    (lexical-let ((tgs  tags))
      (lambda (bmk) (and (bmkp-file-bookmark-p bmk)
@@ -5168,6 +5177,7 @@ A new list is returned (no side effects)."
 (defun bmkp-file-some-tags-regexp-alist-only (regexp)
   "`bookmark-alist', with only file bookmarks having some tags match REGEXP.
 A new list is returned (no side effects)."
+  (bookmark-maybe-load-default-file)
   (bmkp-remove-if-not
    (lexical-let ((rg  regexp))
      (lambda (bmk) (and (bmkp-file-bookmark-p bmk)
@@ -5188,6 +5198,7 @@ A new list is returned (no side effects)."
   "`bookmark-alist', for files in this dir having all tags in TAGS.
 Include only files and subdir that are in `default-directory'.
 A new list is returned (no side effects)."
+  (bookmark-maybe-load-default-file)
   (bmkp-remove-if-not
    (lexical-let ((tgs  tags))
      (lambda (bmk)
@@ -5199,6 +5210,7 @@ A new list is returned (no side effects)."
   "`bookmark-alist', for files in this dir having all tags match REGEXP.
 Include only files and subdir that are in `default-directory'.
 A new list is returned (no side effects)."
+  (bookmark-maybe-load-default-file)
   (bmkp-remove-if-not
    (lexical-let ((rg  regexp))
      (lambda (bmk)
@@ -5212,6 +5224,7 @@ A new list is returned (no side effects)."
   "`bookmark-alist', for files in this dir having some tags in TAGS.
 Include only files and subdir that are in `default-directory'.
 A new list is returned (no side effects)."
+  (bookmark-maybe-load-default-file)
   (bmkp-remove-if-not
    (lexical-let ((tgs  tags))
      (lambda (bmk) (and (bmkp-file-this-dir-bookmark-p bmk)
@@ -5222,6 +5235,7 @@ A new list is returned (no side effects)."
   "`bookmark-alist', for files in this dir having some tags match REGEXP.
 Include only files and subdir that are in `default-directory'.
 A new list is returned (no side effects)."
+  (bookmark-maybe-load-default-file)
   (bmkp-remove-if-not
    (lexical-let ((rg  regexp))
      (lambda (bmk) (and (bmkp-file-this-dir-bookmark-p bmk)
@@ -5352,6 +5366,7 @@ A new list is returned (no side effects)."
 (defun bmkp-some-tags-alist-only (tags)
   "`bookmark-alist', but with only bookmarks having some tags in TAGS.
 A new list is returned (no side effects)."
+  (bookmark-maybe-load-default-file)
   (bmkp-remove-if-not (lexical-let ((tgs  tags))
                         (lambda (bmk)
                           (bmkp-some (lexical-let ((bk  bmk)) (lambda (tag) (bmkp-has-tag-p bk tag)))
@@ -5361,6 +5376,7 @@ A new list is returned (no side effects)."
 (defun bmkp-some-tags-regexp-alist-only (regexp)
   "`bookmark-alist', but with only bookmarks having some tags match REGEXP.
 A new list is returned (no side effects)."
+  (bookmark-maybe-load-default-file)
   (bmkp-remove-if-not (lexical-let ((rg  regexp))
                         (lambda (bmk)
                           (bmkp-some (lambda (tag) (string-match rg (bmkp-tag-name tag)))
@@ -5454,10 +5470,12 @@ A new list is returned (no side effects)."
 
 (defun bmkp-marked-bookmarks-only ()
   "Return the list of marked bookmarks."
+  (bookmark-maybe-load-default-file)
   (bmkp-remove-if-not #'bmkp-marked-bookmark-p bookmark-alist))
 
 (defun bmkp-unmarked-bookmarks-only ()
   "Return the list of unmarked bookmarks."
+  (bookmark-maybe-load-default-file)
   (bmkp-remove-if #'bmkp-marked-bookmark-p bookmark-alist))
 
 (defun bmkp-some-marked-p (alist)
