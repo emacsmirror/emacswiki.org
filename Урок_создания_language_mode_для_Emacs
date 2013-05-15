@@ -49,3 +49,26 @@
 }}}
 Поскольку интеллектуальная подсветка текста - задача крайне ресурсоемкая, оптимизация регулярных выражений может привести к выигрышу в производительности.
 И наконец, рег. выражения заключены в угловые скобки. Это означает, что выражение соответствует подстроке, только если последняя окружена специальными символами, в роли которых могут выступать: пробел, табуляция, начало файла, конец файла. Это, например, предохраняет от подсветки слог ##if## в слове ##difference##.
+{{{
+(defconst wpdl-font-lock-keywords-2
+  (append wpdl-font-lock-keywords-1
+		  (list
+		   '("\\<\\(AUTHOR\\|C\\(ONDITION\\|REATED\\)\\|DE\\(FAULT_VALUE\\|SCRIPTION\\)\\|EXTENDED_ATTRIBUTE\\|FROM\\|I\\(MPLEMENTATION\\|N_PARAMETERS\\)\\|JOIN\\|NAME\\|O\\(THERWISE\\|UT_PARAMETERS\\)\\|PERFORMER\\|ROUTE\\|S\\(PLIT\\|TATUS\\)\\|T\\(O\\(OLNAME\\)?\\|YPE\\)\\|VENDOR\\|WPDL_VERSION\\)\\>" . font-lock-keyword-face)
+		   '("\\<\\(TRUE\\|FALSE\\)\\>" . font-lock-constant-face)))
+  "Additional Keywords to highlight in WPDL mode")
+}}}
+Теперь я определил второй уровень подсветки. Обратите внимание, что второй уровень присоединен к первому, и таким образом хранит шаблоны всех ключевых слов на обоих уровнях. Здесь я определил еще больше ключевых слов и две встроенных константы язака WPDL - TRUE и FALSE.
+{{{
+(defconst wpdl-font-lock-keywords-3
+  (append wpdl-font-lock-keywords-2
+		  (list
+		   '("\\<\\(A\\(ND\\|PPLICATIONS\\)\\|BOOLEAN\\|HUMAN\\|INTEGER\\|NO\\|OR\\(GANISATIONAL_UNIT\\)?\\|R\\(EFERENCE\\|OLE\\)\\|S\\(TRING\\|YNCHR\\)\\|UNDER_REVISION\\|WORKFLOW\\|XOR\\)\\>" . font-lock-constant-face)))
+  "Balls-out highlighting in WPDL mode")
+}}}
+Добавляем другие константы WPDL. На этом закончим со списками ключевых слов.
+{{{
+(defvar wpdl-font-lock-keywords wpdl-font-lock-keywords-3
+  "Default highlighting expressions for WPDL mode")
+}}}
+Здесь я назначил список для подсветки по умолчанию - самый широкий. Это просто мое предпочтение, пользователю разрешается изменить значение этой переменной (если, конечно, он знает, как! Возможно, об этом следует написать в документации к вашему режиму редактирования.).
+==Отступы==
