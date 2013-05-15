@@ -26,3 +26,13 @@
 (add-to-list 'auto-mode-alist '("\\.wpd\\'" . wpdl-mode))
 }}}
 Здесь мы регистрируем свой режим в ‘auto-mode-alist’. Теперь, когда в какой-либо текстовый буфер будет загружен файл, название которого заканчивается на ".wpd", Emacs назначит для этого буфера режим редактирования wpdl-mode. Некоторые режимы оставляют данный шаг на откуп пользователю.
+
+==Подсветка ключевых слов==
+{{{
+(defconst wpdl-font-lock-keywords-1
+  (list
+   '("\\<\\(A\\(CTIVITY\\|PPLICATION\\)\\|DATA\\|END_\\(A\\(CTIVITY\\|PPLICATION\\)\\|DATA\\|MODEL\\|PARTICIPANT\\|T\\(OOL_LIST\\|RANSITION\\)\\|WORKFLOW\\)\\|MODEL\\|PARTICIPANT\\|T\\(OOL_LIST\\|RANSITION\\)\\|WORKFLOW\\)\\>" . font-lock-builtin-face)
+   '("\\('\\w*'\\)" . font-lock-variable-name-face))
+  "Minimal highlighting expressions for WPDL mode")
+}}}
+Это мы определили минимальный набор ключевых слов для подсветки. Переменная ‘font-lock-keyword’ представляет собой список ключевых слов для подсветки. Есть много способов организации этого списка, в данном случае он представляет собой список пар ##(шаблон . шрифт)##.
