@@ -108,6 +108,10 @@ Yes, with an overlay:
    (let ((overlay (make-overlay (buffer-end -1) (buffer-end +1) (current-buffer) nil t)))
      (overlay-put overlay 'face (list ':background color))))
 
+or with Emacs 23, you can use face remapping:
+
+ (face-remap-add-relative 'default :background "green")
+
 --AmitPatel
 
 
