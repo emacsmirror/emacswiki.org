@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Wed May 15 10:54:16 2013 (-0700)
+;; Last-Updated: Wed May 15 14:11:52 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6294
+;;     Update #: 6311
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -450,18 +450,17 @@
 ;;    `bmkp-sort-omit', `bmkp-sound-jump',
 ;;    `bmkp-specific-buffers-alist-only',
 ;;    `bmkp-specific-files-alist-only',
-;;    `bmkp-string-less-case-fold-p', `bmkp-string-match-p',
-;;    `bmkp-tagged-bookmark-p', `bmkp-tagged-cp', `bmkp-tag-name',
-;;    `bmkp-tags-in-bookmark-file', `bmkp-tags-list',
-;;    `bmkp-temporary-alist-only', `bmkp-temporary-bookmark-p',
-;;    `bmkp-thing-at-point', `bmkp-this-buffer-alist-only',
-;;    `bmkp-this-buffer-p', `bmkp-this-file-alist-only',
-;;    `bmkp-this-file/buffer-alist-only', `bmkp-this-file-p',
-;;    `bmkp-unmarked-bookmarks-only', `bmkp-upcase',
-;;    `bmkp-update-autonamed-bookmark', `bmkp-url-alist-only',
-;;    `bmkp-url-bookmark-p', `bmkp-url-browse-alist-only',
-;;    `bmkp-url-browse-bookmark-p', `bmkp-url-cp',
-;;    `bmkp-variable-list-alist-only',
+;;    `bmkp-string-less-case-fold-p', `bmkp-tagged-bookmark-p',
+;;    `bmkp-tagged-cp', `bmkp-tag-name', `bmkp-tags-in-bookmark-file',
+;;    `bmkp-tags-list', `bmkp-temporary-alist-only',
+;;    `bmkp-temporary-bookmark-p', `bmkp-thing-at-point',
+;;    `bmkp-this-buffer-alist-only', `bmkp-this-buffer-p',
+;;    `bmkp-this-file-alist-only', `bmkp-this-file/buffer-alist-only',
+;;    `bmkp-this-file-p', `bmkp-unmarked-bookmarks-only',
+;;    `bmkp-upcase', `bmkp-update-autonamed-bookmark',
+;;    `bmkp-url-alist-only', `bmkp-url-bookmark-p',
+;;    `bmkp-url-browse-alist-only', `bmkp-url-browse-bookmark-p',
+;;    `bmkp-url-cp', `bmkp-variable-list-alist-only',
 ;;    `bmkp-variable-list-bookmark-p', `bmkp-visited-more-cp',
 ;;    `bmkp-w3m-alist-only', `bmkp-w3m-bookmark-p', `bmkp-w3m-cp',
 ;;    `bmkp-w3m-set-new-buffer-name'.
@@ -3993,14 +3992,14 @@ This sets variable `bmkp-nav-alist'."
   "Return non-nil if BOOKMARK is an autonamed bookmark.
 BOOKMARK is a bookmark name or a bookmark record."
   (unless (stringp bookmark) (setq bookmark  (bmkp-bookmark-name-from-record bookmark)))
-  (string-match (format bmkp-autoname-format ".*") bookmark))
+  (bmkp-string-match-p (format bmkp-autoname-format ".*") bookmark))
 
 (defun bmkp-autonamed-this-buffer-bookmark-p (bookmark)
   "Return non-nil if BOOKMARK is an autonamed bookmark for this buffer."
   (unless (stringp bookmark) (setq bookmark  (bmkp-bookmark-name-from-record bookmark)))
   ;; $$$$$$ This did not require the buffer name part to match:
   ;;        (and (bmkp-autonamed-bookmark-p bookmark)  (bmkp-this-buffer-p bookmark)))
-  (and (string-match (format bmkp-autoname-format (buffer-name)) bookmark)
+  (and (bmkp-string-match-p (format bmkp-autoname-format (buffer-name)) bookmark)
        (bmkp-this-buffer-p bookmark)))  ; Just to be sure.
 
 (defun bmkp-autonamed-bookmark-for-buffer-p (bookmark buffer-name)
@@ -4010,7 +4009,7 @@ BUFFER-NAME is a string matching the buffer-name part of an autoname.
 This does not check the `buffer-name' entry of BOOKMARK.  It checks
 only the buffer indicated by the bookmark name."
   (unless (stringp bookmark) (setq bookmark  (bmkp-bookmark-name-from-record bookmark)))
-  (string-match (format bmkp-autoname-format (regexp-quote buffer-name)) bookmark))
+  (bmkp-string-match-p (format bmkp-autoname-format (regexp-quote buffer-name)) bookmark))
 
 (defun bmkp-update-autonamed-bookmark (bookmark)
   "Update the name and position of the autonamed BOOKMARK at point.
@@ -5028,7 +5027,8 @@ A new list is returned (no side effects)."
    (lexical-let ((rg  regexp))
      (lambda (bmk)
        (let ((bmk-tags  (bmkp-get-tags bmk)))
-         (and bmk-tags  (bmkp-every (lambda (tag) (string-match rg (bmkp-tag-name tag))) bmk-tags)))))
+         (and bmk-tags
+              (bmkp-every (lambda (tag) (bmkp-string-match-p rg (bmkp-tag-name tag))) bmk-tags)))))
    bookmark-alist))
 
 (defun bmkp-annotated-alist-only ()
@@ -5069,7 +5069,8 @@ A new list is returned (no side effects)."
      (lambda (bmk)
        (and (bmkp-autofile-bookmark-p bmk)
             (let ((bmk-tags  (bmkp-get-tags bmk)))
-              (and bmk-tags  (bmkp-every (lambda (tag) (string-match rg (bmkp-tag-name tag))) bmk-tags))))))
+              (and bmk-tags
+                   (bmkp-every (lambda (tag) (bmkp-string-match-p rg (bmkp-tag-name tag))) bmk-tags))))))
    bookmark-alist))
 
 (defun bmkp-autofile-some-tags-alist-only (tags)
@@ -5088,7 +5089,7 @@ A new list is returned (no side effects)."
   (bmkp-remove-if-not
    (lexical-let ((rg  regexp))
      (lambda (bmk) (and (bmkp-autofile-bookmark-p bmk)
-                        (bmkp-some (lambda (tag) (string-match rg (bmkp-tag-name tag)))
+                        (bmkp-some (lambda (tag) (bmkp-string-match-p rg (bmkp-tag-name tag)))
                                    (bmkp-get-tags bmk)))))
    bookmark-alist))
 (defun bmkp-autonamed-alist-only ()
@@ -5161,7 +5162,8 @@ A new list is returned (no side effects)."
      (lambda (bmk)
        (and (bmkp-file-bookmark-p bmk)
             (let ((bmk-tags  (bmkp-get-tags bmk)))
-              (and bmk-tags  (bmkp-every (lambda (tag) (string-match rg (bmkp-tag-name tag))) bmk-tags))))))
+              (and bmk-tags
+                   (bmkp-every (lambda (tag) (bmkp-string-match-p rg (bmkp-tag-name tag))) bmk-tags))))))
    bookmark-alist))
 
 (defun bmkp-file-some-tags-alist-only (tags)
@@ -5181,7 +5183,7 @@ A new list is returned (no side effects)."
   (bmkp-remove-if-not
    (lexical-let ((rg  regexp))
      (lambda (bmk) (and (bmkp-file-bookmark-p bmk)
-                        (bmkp-some (lambda (tag) (string-match rg (bmkp-tag-name tag)))
+                        (bmkp-some (lambda (tag) (bmkp-string-match-p rg (bmkp-tag-name tag)))
                                    (bmkp-get-tags bmk)))))
    bookmark-alist))
 
@@ -5217,7 +5219,7 @@ A new list is returned (no side effects)."
        (and (bmkp-file-this-dir-bookmark-p bmk)
             (let ((bmk-tags  (bmkp-get-tags bmk)))
               (and bmk-tags
-                   (bmkp-every (lambda (tag) (string-match rg (bmkp-tag-name tag)))  bmk-tags))))))
+                   (bmkp-every (lambda (tag) (bmkp-string-match-p rg (bmkp-tag-name tag)))  bmk-tags))))))
    bookmark-alist))
 
 (defun bmkp-file-this-dir-some-tags-alist-only (tags)
@@ -5239,7 +5241,7 @@ A new list is returned (no side effects)."
   (bmkp-remove-if-not
    (lexical-let ((rg  regexp))
      (lambda (bmk) (and (bmkp-file-this-dir-bookmark-p bmk)
-                        (bmkp-some (lambda (tag) (string-match rg (bmkp-tag-name tag)))
+                        (bmkp-some (lambda (tag) (bmkp-string-match-p rg (bmkp-tag-name tag)))
                                    (bmkp-get-tags bmk)))))
    bookmark-alist))
 
@@ -5319,19 +5321,20 @@ A new list is returned (no side effects)."
    (lambda (bmk)
      (let ((annot  (bookmark-get-annotation bmk)))
        (and (stringp annot)  (not (string= "" annot))
-            (string-match bmkp-bmenu-filter-pattern annot))))
+            (bmkp-string-match-p bmkp-bmenu-filter-pattern annot))))
    bookmark-alist))                     ; (Could use `bmkp-annotated-alist-only' here instead.)
 
 (defun bmkp-regexp-filtered-bookmark-name-alist-only ()
   "`bookmark-alist' for bookmarks matching `bmkp-bmenu-filter-pattern'."
   (bookmark-maybe-load-default-file)
-  (bmkp-remove-if-not (lambda (bmk) (string-match bmkp-bmenu-filter-pattern (car bmk))) bookmark-alist))
+  (bmkp-remove-if-not (lambda (bmk) (bmkp-string-match-p bmkp-bmenu-filter-pattern (car bmk)))
+                      bookmark-alist))
 
 (defun bmkp-regexp-filtered-file-name-alist-only ()
   "`bookmark-alist' for files matching `bmkp-bmenu-filter-pattern'."
   (bookmark-maybe-load-default-file)
   (bmkp-remove-if-not (lambda (bmk) (let ((fname  (bookmark-get-filename bmk)))
-                                      (and fname  (string-match bmkp-bmenu-filter-pattern fname))))
+                                      (and fname  (bmkp-string-match-p bmkp-bmenu-filter-pattern fname))))
                       bookmark-alist))
 
 (defun bmkp-regexp-filtered-tags-alist-only ()
@@ -5340,8 +5343,8 @@ A new list is returned (no side effects)."
   (bmkp-remove-if-not (lambda (bmk)
                         (let ((bmk-tags  (bmkp-get-tags bmk)))
                           (and bmk-tags  (bmkp-some (lambda (tag)
-                                                      (string-match bmkp-bmenu-filter-pattern
-                                                                    (bmkp-tag-name tag)))
+                                                      (bmkp-string-match-p bmkp-bmenu-filter-pattern
+                                                                           (bmkp-tag-name tag)))
                                                     bmk-tags))))
                       bookmark-alist))
 
@@ -5379,7 +5382,7 @@ A new list is returned (no side effects)."
   (bookmark-maybe-load-default-file)
   (bmkp-remove-if-not (lexical-let ((rg  regexp))
                         (lambda (bmk)
-                          (bmkp-some (lambda (tag) (string-match rg (bmkp-tag-name tag)))
+                          (bmkp-some (lambda (tag) (bmkp-string-match-p rg (bmkp-tag-name tag)))
                                      (bmkp-get-tags bmk))))
                       bookmark-alist))
 
@@ -5515,13 +5518,6 @@ Test using `equal' by default, or `eq' if optional USE-EQ is non-nil."
           (push (car tail) new))
         (pop tail))
       (nreverse new))))
-
-;; Same as `icicle-string-match-p' in `icicles-fn.el'.
-(if (fboundp 'string-match-p)
-    (defalias 'bmkp-string-match-p 'string-match-p) ; Emacs 23+
-  (defun bmkp-string-match-p (regexp string &optional start)
-    "Like `string-match', but this saves and restores the match data."
-    (save-match-data (string-match regexp string start))))
 
 ;; For a name propertized with `bmkp-full-record', this is similar to `bmkp-assoc-delete-all'.
 (defun bmkp-delete-bookmark-name-from-list (delname bnames)
@@ -6645,7 +6641,7 @@ The bookmarked position will be the beginning of the file."
            ;; NEED to keep this code sync'd with `diredp-bookmark'.
            `(lambda ()
              ',(append common `((image-type . ,(image-type file)) (handler . image-bookmark-jump)))))
-          ((let ((case-fold-search  t))  (string-match "\\([.]au$\\|[.]wav$\\)" file)) ; Sound
+          ((let ((case-fold-search  t))  (bmkp-string-match-p "\\([.]au$\\|[.]wav$\\)" file)) ; Sound
            ;; Obsolete: `(lambda () '((filename . ,file) (handler . bmkp-sound-jump))))
            `(lambda () ',(append common '((file-handler . play-sound-file)))))
           (t
@@ -6951,8 +6947,7 @@ that invokes that shell command."
 The value is based on `bmkp-default-handlers-for-file-types'."
   (catch 'bmkp-default-handler-user
     (dolist (assn  bmkp-default-handlers-for-file-types)
-      (when (string-match (car assn) filename)
-        (throw 'bmkp-default-handler-user (cdr assn))))
+      (when (bmkp-string-match-p (car assn) filename) (throw 'bmkp-default-handler-user (cdr assn))))
     nil))
 
 ;; Keep this only for compatibility with existing bookmarks that have `bmkp-sound-jump' as `handler' prop.
@@ -7348,7 +7343,7 @@ Typically, these are all commands."
 Otherwise, return nil."
   (catch 'break
     (dolist (ii  (mapcar #'buffer-name (buffer-list)))
-      (when (string-match "*tramp/\\(su\\|sudo\\) ." ii) (throw 'break t)))))
+      (when (bmkp-string-match-p "*tramp/\\(su\\|sudo\\) ." ii) (throw 'break t)))))
 
 (defun bmkp-position-post-context (breg)
   "Return `bookmark-search-size' chars, starting at position BREG.
@@ -9482,7 +9477,7 @@ You are prompted for the REGEXP."
                     (lambda (ff)
                       (let* ((bk    (bmkp-get-autofile-bookmark ff))
                              (btgs  (and bk  (bmkp-get-tags bk))))
-                        (and btgs  (bmkp-every (lambda (tag) (string-match rg (bmkp-tag-name tag)))
+                        (and btgs  (bmkp-every (lambda (tag) (bmkp-string-match-p rg (bmkp-tag-name tag)))
                                                btgs)))))
                    (icicle-unpropertize-completion-result-flag  t) ; For `read-file-name'.
                    (icicle-must-pass-after-match-predicate      pred)
@@ -9506,7 +9501,7 @@ You are prompted for the REGEXP."
                     (lambda (ff)
                       (let* ((bk    (bmkp-get-autofile-bookmark ff))
                              (btgs  (and bk  (bmkp-get-tags bk))))
-                        (and btgs  (bmkp-every (lambda (tag) (string-match rg (bmkp-tag-name tag)))
+                        (and btgs  (bmkp-every (lambda (tag) (bmkp-string-match-p rg (bmkp-tag-name tag)))
                                                btgs)))))
                    (icicle-unpropertize-completion-result-flag  t) ; For `read-file-name'.
                    (icicle-must-pass-after-match-predicate      pred)
@@ -9589,7 +9584,7 @@ You are prompted for the REGEXP."
                     (lambda (ff)
                       (let* ((bk    (bmkp-get-autofile-bookmark ff))
                              (btgs  (and bk  (bmkp-get-tags bk))))
-                        (and btgs  (bmkp-some (lambda (tag) (string-match rg (bmkp-tag-name tag)))
+                        (and btgs  (bmkp-some (lambda (tag) (bmkp-string-match-p rg (bmkp-tag-name tag)))
                                               btgs)))))
                    (icicle-unpropertize-completion-result-flag  t) ; For `read-file-name'.
                    (icicle-must-pass-after-match-predicate      pred)
@@ -9613,7 +9608,8 @@ You are prompted for the REGEXP."
                     (lambda (ff)
                       (let* ((bk    (bmkp-get-autofile-bookmark ff))
                              (btgs  (and bk  (bmkp-get-tags bk))))
-                        (and btgs  (bmkp-some (lambda (tag) (string-match rg (bmkp-tag-name tag))) btgs)))))
+                        (and btgs  (bmkp-some (lambda (tag) (bmkp-string-match-p rg (bmkp-tag-name tag)))
+                                              btgs)))))
                    (icicle-unpropertize-completion-result-flag  t) ; For `read-file-name'.
                    (icicle-must-pass-after-match-predicate      pred)
                    (fil                                         (or (and file  (funcall pred file)  file)
