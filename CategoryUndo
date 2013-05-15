@@ -14,7 +14,7 @@ In Emacs, '''[::undo]''' means undoing changes to buffers. However, this page in
 * UndoTree -- Replace Emacs' undo system with one that treats undo history as what it is: a branching tree of changes.  Includes an undo-tree visualizer to view and browse around the undo history.
 * ViewUndo is a quick hack that shows a buffer's undo list in one message.
 It doesn't modify the undo list, but it does change the `undo' state from undoing to redoing, a definite problem.  Only tested with GNU Emacs 21.2.1 on Mac OS 10.3.7.
-* old-fashioned-undo.el --- Undo/Redo in very simple, and old fashioned way.
+* Lisp:old-fashioned-undo.el -- Undo/Redo in very simple, and old fashioned way.
 * Lisp:volatile-highlights.el - Volatile highlights mode brings visual
 feedback of "undo" operation by making highlights on text inserted by "undo" command.
 
