@@ -26,7 +26,7 @@ Related Projects:
 
 Unrelated Projects:
 
-* [https://gna.org/projects/liliputworld/ LiliputWorld] | [http://home.gna.org/liliputworld/ Home Page] : A 3d engine written in Ruby. Latter in C++.
+* [https://gna.org/projects/liliputworld/ LiliputWorld] | [http://home.gna.org/liliputworld/ Home Page] : A 3d engine written in Ruby. Latter in C++. /Moved to Savannah, see below.../
 
 
 === On Savannah ===
@@ -37,6 +37,7 @@ https://savannah.nongnu.org/images/Savannah.theme/icon.png
 Unrelated Projects:
 
 * [https://savannah.nongnu.org/projects/pillowcase/ Pillow-Case] A minimalistic HTTP web server written in [http://ciaohome.org/ Ciao Prolog]
+* [http://www.nongnu.org/liliputworld/ LiliputWorld] An RPG game "engine" with free contents.
 
 Collaborating on  Projects:
 
