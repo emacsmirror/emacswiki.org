@@ -108,6 +108,17 @@ See CreateNewPages.
 * See also InterLinks for URL abbreviations for commonly used Web sites, and NearLinks for linking to nearby Wikis.
 * It is a good idea to provide links to appropriate category (or "parent") pages at the bottom of a page -- see WikiOrganization.
 
+[:actions][:action][:wikiactions]
+== Wiki actions ==
+The reflexive intermap-link %%EmacsWiki%% has some of the following actions:
+* EmacsWiki:action=history;id=SiteMap
+* EmacsWiki:action=edit;id=SandBox
+* to show all contributions by a user:  EmacsWiki:action=rc;all=1;showedit=1;from=1;rcuseronly=AlexSchroeder
+* To give an EmacsWiki action link text, follow the action with whitespace and link text in square brackets (mysteriously, just like a URL)
+** %%[EmacsWiki:action=edit;id=SandBox Play in the Sandbox]%% -> [EmacsWiki:action=edit;id=SandBox Play in the Sandbox]
+
+A more complete list can be found at http://www.oddmuse.org/cgi-bin/oddmuse/Action_List
+
 [:Lists]
 == Lists ==
 
