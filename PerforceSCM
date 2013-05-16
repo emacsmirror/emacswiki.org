@@ -1,29 +1,11 @@
-Perforce is a proprietary Software Configuration Management (SCM)
-system available from http://www.perforce.com/.  Perforce is not FreeSoftware. You can have two users without paying for a licence, and they offer licences free of charge for open source development; see http://www.perforce.com/perforce/opensource-faq.html.
+[http://www.perforce.com/ Perforce] is a proprietary Software Configuration Management (SCM) system. Perforce is not FreeSoftware. You can have twenty users without paying for a licence, and they [http://www.perforce.com/purchase/perforce-open-source-faq offer licences free of charge for open source development].
 
-p4.el, the client software for emacs, is available from
-<nowiki>SourceForge</nowiki> at http://p4el.sourceforge.net/.  p4.el is included in the standard XEmacs packages.
+There are two packages that integrate Perforce with Emacs:
 
-There is also an integration of Perforce with Emacs VC mode.  This integration makes all of the standard Emacs VC commands work with Perforce, and it is fully compatible with p4.el, i.e., you can use both at the same time (this is significant because p4.el has commands which operate on groups of files, and VC doesn't really have any concept of that).  The integration was originally written by [mailto:jik@kamens.brookline.ma.us Jonathan Kamens] and has recently been enhanced by [mailto:dann@ics.uci.edu Dan Nicolaescu].  You can find the P4 VC files in the [http://public.perforce.com:8080/@md=d&cd=//guest/jonathan_kamens/&ra=s&c=uLL@//guest/jonathan_kamens/vc-p4/?ac=83 Perforce public depot]; see also this [http://maillist.perforce.com/pipermail/perforce-user/2002-January/007609.html announcement about them].
+* **p4.el** is [https://github.com/gareth-rees/p4.el available from GitHub]. This package is suitable for users who are familiar with Perforce and want to have the full power of the Perforce client interface (changelists, jobs, branch specifications, status, resolve, annotate and so on). This package is maintained by [http://garethrees.org/ Gareth Rees]; it is a fork of the the [http://p4el.sourceforge.net/ SourceForge version] by Rajesh Vaidheeswarran and others, which has been dormant since 2005.
 
-The above seems to be currently maintained by Magnus Henoch. See  [http://public.perforce.com/wiki/Emacs_VC-P4 Emacs VC-P4] Perforce wiki page and his [http://public.perforce.com:8080/@md=d&cd=//guest/magnus_henoch/vc-p4/&ra=s&c=W5c@//guest/magnus_henoch/vc-p4/?ac=83 Perforce public depot]. This version fixed a "wrong number of arguments" error I was seeing with vc-p4-print-log (C-x v l) in Emacs 23.2.1. The history shows more recent changes in both files than the ones in Jonathan's depot.
-
-Paul Du Bois's p4.el. <code>//guest/paul_dubois/perforce/utils/emacs</code> at http://public.perforce.com/ (But as of 2011-05-15, last checkin was in 2000 so Paul Du Bois' version of p4.el and associated files must be quite old).
+* **vc-p4.el** is [http://public.perforce.com/wiki/Emacs_VC-P4 available from the Perforce Public Depot]. This package is suitable for users who are familiar with VersionControl in Emacs and want to work with Perforce in the same way. This integration makes all of the standard Emacs VC commands work with Perforce, and it is fully compatible with p4.el (that is, you can use both at the same time, for example if you need occasional access to the Perforce client features that don't map onto Emacs' VersionControl features). This package was originally written by [mailto:jik@kamens.brookline.ma.us Jonathan Kamens], has been contributed to by [mailto:dann@ics.uci.edu Dan Nicolaescu], and seems to be currently maintained by Magnus Henoch.
 
 See also: Wiki:PerforceVersionControl.
-
-[new]
-I've been using the vc-p4.el in order to use 'vc-resolve-conflicts' for conflict resolution. Here's how I've been doing it. I'd be interested to know if there's a better way.
-
-* Integrate the branch
-* Run 'p4 resolve' and manage the easy cases until 'p4 resolve' only shows the cases you want to resolve using vc.
-* Run 'p4 resolve -af' which leaves the conflicts in the files.
-* Run 'p4 edit' on those files with conflicts.
-* Visit those files in emacs and execute 'vc-resolve-conflicts'.
-* Run 'p4 submit'.
-
-NB: so far I haven't gotten it to work via tramp. When I was using CVS I thought I was able to do everything via tramp, but maybe I remember incorrectly.
-
-Squiddo
 ----
 CategoryVersionControl
