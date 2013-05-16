@@ -109,3 +109,15 @@ ACTIVITY    'MailRoom'      // Rule 5 applies
     PERFORMER 'Joe'         // Rule 3
 END_ACTIVITY                // Rule 2
 }}}
+{{{
+(defun wpdl-indent-line ()
+  "Indent current line as WPDL code"
+  (interactive)
+  (beginning-of-line)
+}}}
+Начнем с функции, определяющей, какой отступ должен быть применен к данной строке. Полезно сделать эту функцию интерактивной, чтобы по мере разработки было удобно ее тестировать. Интерактивную функцию можно вызвать напрямую: 'M-x your-function'. Также мы перемещаем точку редактирования в начало строки.
+{{{
+(if (bobp)  ; Check for rule 1
+      (indent-line-to 0)
+}}}
+Здесь мы с помощью функции ##bobp## проверяем, не находимся ли в начале буфера. Если это так, функцией ‘indent-line-to’ назначаем нулевой отступ.
