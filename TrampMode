@@ -152,11 +152,11 @@ You can also use this syntax to sudo/su to root (or of course any other user) on
 
  C-x C-f /ssh:you@remotehost|sudo:remotehost:/path/to/file RET
 
-*Important*: be sure to specify the hostname explicitly: ##sudo:remotehost## rather than ##sudo::## (see below).
+*Important*: be sure to specify the hostname explicitly: ##sudo:remotehost:## rather than ##sudo::## (see below).
 
 As this still uses the proxy mechanism underneath, `tramp-default-proxies-alist' should now include the value ##("remotehost" "root" "/ssh:you@remotehost:")##
 
-Meaning that the proxy ##/ssh:user@server:## is going to be used whenever you request a file as ##root@server##.
+Meaning that the proxy ##/ssh:you@remotehost:## is going to be used whenever you request a file as ##root@remotehost##.
 
 ##root## is the default user for these methods, but you can of course also change to a non-root user with:
 
@@ -164,7 +164,7 @@ Meaning that the proxy ##/ssh:user@server:## is going to be used whenever you re
 
 ==== Always specify the remote hostname explicitly ====
 
-You are probably used to using ##sudo::## or ##su::## and omitting the hostname. If you are /staying/ on the localhost then this is still fine, but if you are hopping to a remote server then you /must/ specify the hostname for every hop -- even if it is the same as for the previous hop. Always use ##sudo:hostname## or ##su:hostname## with remote hosts.
+You are probably used to using ##sudo::## or ##su::## and omitting the hostname. If you are /staying/ on the localhost then this is still fine, but if you are hopping to a remote server then you /must/ specify the hostname for every hop -- even if it is the same as for the previous hop. Always use ##sudo:hostname:## or ##su:hostname:## with remote hosts.
 
 The trap here is that ##sudo::## /does/ actually appear to work -- /however/ when you do that the HOST for the dynamic proxy entry will be the hostname you /originated/ from rather than the host you connected to. This will not only look confusing (as the wrong host will be displayed in the file paths), but it will also mean that any subsequent attempt to use ##sudo::## on your localhost will instead be proxied to the remote server! (and the proxy would also presumably be clobbered if you did the same thing on a second server, causing further issues).
 
