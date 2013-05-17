@@ -83,5 +83,7 @@ Can someone provide some light as to how to understand what is Emacs doing? In p
 * how to print a Lisp stack trace?
 * etc. 
 
+[new]
+See the mentioned file .gdbinit in the emacs src directory.  E.g. xbacktrace prints a lisp backtrace.
 ----
 CategoryCode, CategoryDebug
