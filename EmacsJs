@@ -1,8 +1,31 @@
-* https://github.com/azer/emacs.js claims to be a "ready-to-use Emacs setup for JavaScript coders". Claims to have auto-completion
+== A "ready-to-use" Emacs setup for JavaScript coders ==
+* https://github.com/azer/emacs.js - github home
 * http://webification.com/emacs-setup-for-js-developers-emacs-js
 * [[http://www.youtube.com/watch?v=4iSfLy8qfbM&feature=youtu.be|screencast]]
 
-[new:XueFuqiao:2013-05-05 23:08 UTC] Looks good, it comes with tools for NPM and works for JavaScript/CoffeeScript.  -- XueFuqiao
+== Included packages (partial list) ==
+* npm.el
+* js2-mode
+* coffee-mode
+* auto-complete
+* yasnippet
+* zencoding
+* js2-refactor
+* js-comint
+* expand-region
+* smart-forward
+* powerline
+* smex
+* ETC
+
+== Installation ==
+See complete instructions @ https://github.com/azer/emacs.j
+
+Basically, git-clone and make.
+
+So, Windows installation is not yet documented.... (TODO)
+
 
 ----
 CategoryJavaScript
+CategoryNeedsAttention
