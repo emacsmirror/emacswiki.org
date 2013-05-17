@@ -1,0 +1,12 @@
+== CoffeeScript compiles to JavaScript ==
+[[http://coffeescript.org/|CoffeeScript]] 
+
+* https://github.com/defunkt/coffee-mode - Coffeescript major mode
+* [[http://ozmm.org/posts/coffee_mode.html|some notes on CoffeeMode]]
+* https://github.com/ajkavanagh/coffeelintnode - lint, for Coffeescript - well, for [[http://www.coffeelint.org/|Coffee Lint]]
+* https://github.com/purcell/flymake-coffee - a flymake handler for syntax-checking Coffeescript source code using coffeelint or coffee.
+
+
+----
+CategoryJavaScript
+CategoryNeedsAttention
