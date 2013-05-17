@@ -36,12 +36,13 @@ Thanks, Drew -- 'cept I've been here for years. Just renamed the page from my "h
 ** I don't have anything against w3m, I just don't use it anymore. too much Javascript in my world.... 
 
 
-== Packages and things I am thinking about liking ==
+== Packages, Pages, and things I am thinking about liking ==
 * BookmarkPlus
 * OrgMode - c'mon. it's a bout time.
 * a way to get nxml mode to be happy with html5
-* a NodeJs mode that gives me auto-completion on the REPL
+* a NodeJs mode that gives me auto-completion on the REPL '''within Emacs, of course'''
 * [[SkeletonMode]]
+* [[SachaChua]] - in particular, the link about re-orging the .emacs file
 
 
 [:navigation]
