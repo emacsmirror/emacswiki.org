@@ -53,6 +53,10 @@ is equivalent to
 Note that there are plenty of other ways to make bindings: `defconst', `defun',
 `defvar', `flet', `labels', `prog', etc.
 
+
+
+
+
 == Dynamic and Lexical Binding ==
 
 Two regimes for handling variable binding emerged:
@@ -91,6 +95,10 @@ about dynamic binding to make sure that one thread doesn't see bindings
 created on another thread.  But EmacsLisp is single-threaded so that's
 not a worry.)
 
+
+
+
+
 === Another example which shows the difference ===
 This is a lambda function which adds 3 to a number: <code>(lambda (arg) (+ 3 arg))</code>. You may apply it so: <code>((lambda (arg) (+ 3 arg)) 5)</code> and it gives 8.
 
@@ -98,6 +106,10 @@ Now you want to store the 3 somewhere else (let's say in variable <code>to_add</
 
 Now for how to do what you wanted. This wouldn't work either: <code>(let ((to_add 3)) `(lambda (arg) (+ ,to_add arg)) )</code> because it is not a closure, it is a substitution (see: [[BackquoteSyntax]]).
 A solution would be: <code>(lexical-let ((to_add 3)) (lambda (arg) (+ to_add arg)))</code>, which can be applied with funcall: <code>(funcall (lexical-let ((to_add 3)) (lambda (arg) (+ to_add arg))) 5)</code> is 8. More on the theory is below, and other solutions in [[FakeClosures]].
+
+
+
+
 
 == Advantages of dynamic binding ==
 
@@ -131,12 +143,19 @@ substitute your new value, call `foo' and then restore the old value.
 And remember to handle non-local exits using `throw'.  When you're
 through with this, you'll see that you've implemented dynamic binding!
 
+RichardStallman explains the advantages of dynamic binding in the context of EmacsLisp: http://www.gnu.org/software/emacs/emacs-paper.html#SEC17
+
+
+
+
 == Advantages of lexical binding ==
 
- From: MilesBader
- Subject: Re: Emacs 22
- Newsgroups: comp.emacs
- Date: Sun, 19 Aug 2001 01:47:53 GMT
+
+{{{
+From: MilesBader
+Subject: Re: Emacs 22
+Newsgroups: comp.emacs
+Date: Sun, 19 Aug 2001 01:47:53 GMT
 
 Because it's (1) much easier for the user [that is, programmer], because
 it eliminates the problem of which variables lambda-expressions use
@@ -144,10 +163,11 @@ it eliminates the problem of which variables lambda-expressions use
 (2) much easier for the compiler to optimize, because it doesn't need to
 worry about variables escaping their lexical context, and so doesn't
 need to allow for the possibility (this is a big problem with the
-current compiler).
+current compiler).}}}
 
-Emacs lisp probably would have been converted to use lexical scoping a
-long time ago, if it weren't for backwards compatibility issues.
+
+
+
 
 == Languages ==
 
