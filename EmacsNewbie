@@ -2,17 +2,18 @@
 [[es:CategoriaAyuda]]
 [[fr:NouvelUtilisateurEmacs]]
 
-* WikiPedia:Emacs -- An overview.
-* [http://www.gnu.org/software/emacs/tour/ A guided tour] of GnuEmacs by PhilSung
-* LearningEmacs -- Different strategies for learning.
-* OnePageGuideToLearningEmacs -- A visual guide to key Emacs concepts
-* EmacsNewbieHelpReference -- Commonly used keys.
-* EmacsNewbieKeyReference -- Commonly used commands. 
-* EmacsNewbieMouseReference -- How the Emacs mouse works.
-* CategoryReferenceSheet -- Emacs key reference sheet examples.
-* KeyboardMacros -- Capture what you do and then play it back again, multiple times. Almost everything you do (mouse, menus, keyboard keys) can be recorded and replayed.
-* CommonProblems -- Common sources of confusion.
+* WikiPedia:Emacs -- Overview. of Emacs.
 * CategoryGlossary -- Emacs terminology.
+* A [http://www.gnu.org/software/emacs/tour/ guided tour] of GnuEmacs.
+* LearningEmacs -- Different ways to learn Emacs.
+* EmacsNewbieMouseReference -- How the Emacs mouse works.
+* EmacsNewbieHelpReference -- Commonly used Emacskeys.
+* EmacsNewbieKeyReference -- Commonly used Emacscommands. 
+* EmacsNewbieWithIcicles – Help while you use Emacs (discovery, feedback).
+* KeyboardMacros -- Record what you do (mouse, menu, keyboard).  Play it back again.
+* CategoryReferenceSheet -- Emacs key reference sheet.
+* CommonProblems -- Common sources of confusion.
+
 
 ----
 CategoryHelp
