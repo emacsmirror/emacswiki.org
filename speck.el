@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 2006, 2007, 2008, 2009, 2010 Martin Rudalics
 
-;; Time-stamp: "2013-05-19 15:46:28 andrei"
+;; Time-stamp: "2013-05-19 16:06:43 andrei"
 ;; Author: Martin Rudalics <rudalics@gmx.at>
 ;; Keywords: spell checking
 ;; Version: 2013.02.03
@@ -32,7 +32,7 @@
 
 ;; Change Log:
 ;; 2013/05/19 Andrei Chițu
-;;     bugfix: in `speck-windows', `window' is checked before specking it
+;;     bugfix: bugfix: in `speck-windows' check that `window' is non-nil before specking it
 ;;     bugfix: keep case of dictionary names in `speck-hunspell-dictionary-alist'
 ;; 2013/02/03 Frank Fischer
 ;;     Add LIMIT to `looking-back' in `speck-auto-correct-after-change'.
