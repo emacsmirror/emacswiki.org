@@ -4,7 +4,7 @@ I wanted underlining instead of highlighting, but the code from this page wasn't
 
 I'm very new to emacs, but ended up adding a hook to flymake mode like this:
 
-<code>
+<pre>
 (add-hook 'flymake-mode-hook
 	  (lambda ()
 
@@ -21,7 +21,7 @@ I'm very new to emacs, but ended up adding a hook to flymake mode like this:
 				:underline "lime green"
 				:weight 'bold
 				:background nil)))
-</code>
+</pre>
 
 -- David 2013-05-19 07:24 UTC
 
