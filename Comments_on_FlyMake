@@ -1,0 +1,27 @@
+<b>Turning off errline & warnline highlighting</b>
+
+I wanted underlining instead of highlighting, but the code from this page wasn't working - maybe conflicting with the theme (solarized), or something else.
+
+I'm very new to emacs, but ended up adding a hook to flymake mode like this:
+
+<code>
+(add-hook 'flymake-mode-hook
+	  (lambda ()
+
+	    (set-face-attribute 'flymake-errline nil
+				:underline "red"
+				:weight 'bold
+				:background nil)
+	    (set-face-attribute 'flymake-warnline nil
+				:underline "yellow"
+				:weight 'bold
+				:background nil)
+
+	    (set-face-attribute 'flymake-infoline nil
+				:underline "lime green"
+				:weight 'bold
+				:background nil)))
+</code>
+
+-- David 2013-05-19 07:24 UTC
+
