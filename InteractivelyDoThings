@@ -110,7 +110,7 @@ This is based on what RichardRiley provided. I extracted it out, so I can easily
 
 === Limit to Current Major Mode ===
 Further variation on RichardRiley's and ajvargo's examples: Limit ido to the current major mode, whatever that might be.
--- WGreenhouse
+-- [[wgreenhouse]]
 
 {{{
 (defun wg/ido-for-this-mode
