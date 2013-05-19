@@ -1,14 +1,15 @@
-;;; speck.el --- minor mode for spell checking
+;;; speck.el --- minor mode for spell checking    -*- coding: utf-8; -*-
 
 ;; Copyright (C) 2006, 2007, 2008, 2009, 2010 Martin Rudalics
 
-;; Time-stamp: "2013-02-03 15:59:07 fifr"
+;; Time-stamp: "2013-05-19 15:46:28 andrei"
 ;; Author: Martin Rudalics <rudalics@gmx.at>
 ;; Keywords: spell checking
 ;; Version: 2013.02.03
 
 ;; Contributors:
 ;; Frank Fischer <frank.fischer@mathematik.tu-chemnitz.de>
+;; Andrei Chițu <andrei.chitu1@gmail.com>
 
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -30,6 +31,9 @@
 ;; of all windows showing the current buffer.
 
 ;; Change Log:
+;; 2013/05/19 Andrei Chițu
+;;     bugfix: in `speck-windows', `window' is checked before specking it
+;;     bugfix: keep case of dictionary names in `speck-hunspell-dictionary-alist'
 ;; 2013/02/03 Frank Fischer
 ;;     Add LIMIT to `looking-back' in `speck-auto-correct-after-change'.
 ;;     Set `speck-auto-correct-after-change' to nil.
@@ -926,28 +930,30 @@ the Hunspell executable resides."
          (file-exists-p speck-hunspell-library-directory)
          (let ((names (directory-files
                        speck-hunspell-library-directory nil "\\.dic$"))
-               alist aname)
+               alist aname lower-aname)
            (dolist (name names)
-             (setq aname (downcase (file-name-sans-extension name)))
+             (setq aname (file-name-sans-extension name)
+		   lower-aname (downcase aname))
              (setq alist
-                   (cons (or (rassoc aname speck-iso-639-1-alist)
-                             (cons (substring aname 0 2) aname))
+                   (cons (or (rassoc lower-aname speck-iso-639-1-alist)
+                             (cons (substring lower-aname 0 2) aname))
                          alist)))
            (nreverse alist))))
    ((and (speck-hunspell-binary-directory)
          (file-exists-p (speck-hunspell-binary-directory)))
     (let ((files (directory-files (speck-hunspell-binary-directory) t))
-          alist aname)
+          alist aname lower-aname)
       (dolist (file files)
         (when (and (not (string-equal file "."))
                    (not (string-equal file ".."))
                    (file-directory-p file))
           (let ((names (directory-files file nil "\\.dic")))
             (dolist (name names)
-              (setq aname (downcase (file-name-sans-extension name)))
+              (setq aname (file-name-sans-extension name)
+                    lower-aname (downcase aname))
               (setq alist
-                    (cons (or (rassoc aname speck-iso-639-1-alist)
-                              (cons (substring aname 0 2) aname))
+                    (cons (or (rassoc lower-aname speck-iso-639-1-alist)
+                              (cons (substring lower-aname 0 2) aname))
                           alist))))))
       (nreverse alist)))))
 
@@ -2876,14 +2882,15 @@ by `speck-pause-timer'."
                    ;; from `speck-window-list'.
                    (speck-window-remove window)))))))
       ;; Speck `window'.
-      (with-selected-window window
-        ;; Do this after we selected the window and thus implicitly made
-        ;; its buffer current.
-        (when (and speck-process (not (process-get speck-process 'preempted)))
-          (with-buffer-prepared-for-specking
-           (let (minibuffer-auto-raise message-log-max)
-             (save-excursion
-               (speck-window)))))))))
+      (when window
+        (with-selected-window window
+	  ;; Do this after we selected the window and thus implicitly made
+	  ;; its buffer current.
+	  (when (and speck-process (not (process-get speck-process 'preempted)))
+	    (with-buffer-prepared-for-specking
+		(let (minibuffer-auto-raise message-log-max)
+		  (save-excursion
+		    (speck-window))))))))))
   (when speck-window-list
     ;; Pause by `speck-pause' seconds.
     (speck-respeck speck-pause)))
