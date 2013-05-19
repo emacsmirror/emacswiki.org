@@ -1,9 +1,7 @@
-To use the [http://www.google.com/coop/cse/ Google Custom Search Engine] for EmacsWiki, right-click the search box in the top right of every page (the one with the faint Google Custom Search background) and select "Add a keyword for this search".
+Bookmark http://www.google.com/cse?cx=004774160799092323420%3A6-ff2s0o6yi&q=%s and add your keyword to it. Don't forget to name your bookmark or you won't be able to save the bookmark. Hitting Enter will cancel the bookmark... X-(
 
 Now select a suitable keyword (say ew) and save it. If you are using the del.icio.us extension, you'll be asked if you want to save it to del.icio.us as well. Saving it there will enable you to use this keyword wherever you use the del.icio.us extension. 
 
 Typing <code>ew sticky keys</code> in your location bar will now search the wiki for "sticky keys" using the Google CSE, which is widely regarded as a marked improvement over the older indexed search.
-
-For the impatient (or knowledgeable), just bookmark http://www.google.com/cse?cx=004774160799092323420%3A6-ff2s0o6yi&q=%s and add your keyword to it. Don't forget to name your bookmark or you won't be able to save the bookmark. Hitting Enter will cancel the bookmark... X-(
 
 If you prefer to search page names only, you can do the same thing for the "Title match" field on the [[Search]] page.
