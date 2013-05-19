@@ -29,11 +29,11 @@
 
 ;; Take following sentance for example:
 ;;
-;;      ä½ å¥½ï¼ææ¯coldnewï¼æåæ­¡ä½¿ç¨emacsã
+;;      你好，我是coldnew，我喜歡使用emacs。
 ;;
 ;; After you use pangu-spacing-mdoe, you will see
 ;;
-;;      ä½ å¥½ï¼ææ¯ coldnewï¼æåæ­¡ä½¿ç¨ emacsã
+;;      你好，我是 coldnew，我喜歡使用 emacs。
 
 ;; This space between English and Chinese characters is called
 ;; pangu-spacing by sinologist. Since it separate the chaos between
@@ -41,22 +41,22 @@
 
 ;;; Commentary (Chinese):
 
-;; pangu-spacing-mode æ¯ä¸åå¯ä»¥èªåå¹«ä½ å°ä¸­æèè±æä¹éå ä¸`ç©ºç½'ä½çºå
-;; éç minor-mode, ä»çåç¨±ä¾èªæ¼ paranoid-auto-spacing ä¸ç READMEã
+;; pangu-spacing-mode 是一個可以自動幫你將中文與英文之間加上`空白'作為分
+;; 隔的 minor-mode, 他的名稱來自於 paranoid-auto-spacing 上的 README。
 ;;
-;;      å¼è¿°èª paranoid-auto-spacing README [1]
+;;      引述自 paranoid-auto-spacing README [1]
 ;;
-;;      å¦æä½ è·æä¸æ¨£ï¼æ¯æ¬¡çå°ç¶²é ä¸çä¸­æå­åè±æãæ¸å­ãç¬¦èæ å¨ä¸å¡ï¼å°±æ
-;;      åç«é£å®ï¼å¿ä¸ä½æ³å¨å®åä¹éå åç©ºæ ¼ãéåå¤æï¼æ¯æ´ Chrome å Firefoxï¼
-;;      æ­£æ¯ä½ å¨ç¶²è·¯ä¸çèµ°è·³æéè¦çæ±è¥¿ï¼å®æèªåæ¿ä½ å¨ç¶²é ä¸­ææçä¸­æå­åå
-;;      å½¢çè±æãæ¸å­ãç¬¦èä¹éæå¥ç©ºç½ã
+;;      如果你跟我一樣，每次看到網頁上的中文字和英文、數字、符號擠在一塊，就會
+;;      坐立難安，忍不住想在它們之間加個空格。這個外掛（支援 Chrome 和 Firefox）
+;;      正是你在網路世界走跳所需要的東西，它會自動替你在網頁中所有的中文字和半
+;;      形的英文、數字、符號之間插入空白。
 ;;
-;;      æ¼¢å­¸å®¶ç¨±éåç©ºç½å­åçºãç¤å¤ä¹ç½ãï¼å çºå®åéäºå¨å½¢å­ååå½¢å­ä¹éçæ··
-;;      æ²ãå¦æç ç©¶é¡¯ç¤ºï¼æå­çæåä¸åæ­¡å¨ä¸­æåè±æä¹éå ç©ºæ ¼çäººï¼ææè·¯é½
-;;      èµ°å¾å¾è¾è¦ï¼æä¸æçæ¯ä¾æå¨ 34 æ­²çæåè·èªå·±ä¸æçäººçµå©ï¼èå¶é¤ä¸æ
-;;      çäººæå¾åªè½æéºç¢ççµ¦èªå·±çè²ãç¢ç«ææè·æ¸å¯«é½éè¦é©æå°çç½ã
+;;      漢學家稱這個空白字元為「盤古之白」，因為它劈開了全形字和半形字之間的混
+;;      沌。另有研究顯示，打字的時候不喜歡在中文和英文之間加空格的人，感情路都
+;;      走得很辛苦，有七成的比例會在 34 歲的時候跟自己不愛的人結婚，而其餘三成
+;;      的人最後只能把遺產留給自己的貓。畢竟愛情跟書寫都需要適時地留白。
 ;;
-;;      èå¤§å®¶å±åä¹ãori test
+;;      與大家共勉之。ori test
 
 ;;      [1] https://github.com/gibuloto/paranoid-auto-spacing
 
@@ -108,13 +108,13 @@
   "Regexp to find Chinese character after English character.")
 
 (defvar pangu-spacing-chinese-before-english-regexp-exclude
-  (rx (group-n 1 (in "[ãï¼ï¼ï¼ï¼ï¼ããï¼ï¼ã]"))
+  (rx (group-n 1 (in "[。，！？；：「」（）、]"))
       (group-n 2 (in "a-zA-Z0-9")))
   "Excluded regexp to find Chinese character before English character.")
 
 (defvar pangu-spacing-chinese-after-english-regexp-exclude
   (rx (group-n 1 (in "a-zA-Z0-9"))
-      (group-n 2 (in "[ãï¼ï¼ï¼ï¼ï¼ããï¼ï¼ã]")))
+      (group-n 2 (in "[。，！？；：「」（）、]")))
   "Excluded regexp to find Chinese character after English character.")
 
 ;;;; Functions
@@ -211,7 +211,7 @@ pangu-sapce-mode."
   :group 'pangu-spacing
   :global nil
   :init-value nil
-  :lighter "Î¡"
+  :lighter "Ρ"
   (make-variable-buffer-local 'post-command-hook)
   (save-restriction
     (widen)
