@@ -2,6 +2,6 @@ Bookmark https://duckduckgo.com/?q=%s+site%3Aemacswiki.org and add your keyword 
 
 Now select a suitable keyword (say ew) and save it. If you are using the del.icio.us extension, you'll be asked if you want to save it to del.icio.us as well. Saving it there will enable you to use this keyword wherever you use the del.icio.us extension. 
 
-Typing <code>ew sticky keys</code> in your location bar will now search the wiki for "sticky keys" using the Google CSE, which is widely regarded as a marked improvement over the older indexed search.
+Typing <code>ew sticky keys</code> in your location bar will now search the wiki for sticky keys.
 
 If you prefer to search page names only, you can do the same thing for the "Title match" field on the [[Search]] page.
