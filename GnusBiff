@@ -68,3 +68,30 @@ How about:
                              (format " [%d]" count)))))
 </pre>
 -- [[nschum]]
+
+I wanted a variant that would work with arbitrary Gnus groups, including remote IMAP and NNTP groups.  So I wrote this, which reuses the existing display-time-mail mail signalling functions and lets you point them at an arbitrary group:
+<pre>
+;; Mail notification configuration
+
+(require 'mail-source)
+(defvar wg/gnus-biff-groups nil
+  "Groups to track within Gnus.")
+
+(defun wg/gnus-biff
+  ()
+  "Update `mail-source-new-mail-available' with selected Gnus
+newsgroups."
+  (setq mail-source-new-mail-available
+	(ignore-errors
+	  (apply 'append
+		 (mapcar 'gnus-list-of-unread-articles wg/gnus-biff-groups))))
+  (display-time-event-handler))
+
+(setq display-time-mail-function 'mail-source-new-mail-p)
+(add-hook 'gnus-after-getting-new-news-hook 'wg/gnus-biff)
+(add-hook 'gnus-summary-exit-hook 'wg/gnus-biff)
+(setq wg/gnus-biff-groups
+      '("nnvirtual:mail" "gmane.linux.debian.user.security.announce")
+      mail-source-flash nil)
+</pre>
+--[[wgreenhouse]]
