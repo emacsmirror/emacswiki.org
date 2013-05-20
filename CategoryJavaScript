@@ -47,6 +47,7 @@ Finally, there are some specific modes available as well:
 ** [EmacsJs emacs.js] claims to have <code>npm</code> integration
 * Lookups to the [http://www.javascripture.com/ Javascripture]
 * more cleanup per [[EmacsWikiContent#javascript]]
+* Notes on the pros and cons of using these Emacs w/ these tools vs using another IDE (like Visual Studio or Webstorm). Of course "don't have to leave Emacs"... but, other reasons? Are there shortcomings we should look to address?
 
 [:categories]
 ----
