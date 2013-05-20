@@ -1,0 +1,12 @@
+Extended search doesn't trim input.
+
+If you enter a username as "MichaelPaulukonis " and hit enter, you'll get the corresponding URL <code>http://www.emacswiki.org/cgi-bin/emacs?action=rc&match=&rcfilteronly=&rcuseronly=MichaelPaulukonis+&rchostonly=&followup=&lang=&dofilter=Go!</code> Where the ''space'' has been converted to a ''plus-sign''.
+
+Why would you enter something stupid like a space at the end of an input?
+
+Maybe you cut-n-pasted some text, and the trailing space came along for an invisible ride.
+
+Maybe this would be better posed on [[Problems]]. It's not the biggest issue in the Emacs world.
+
+-- MichaelPaulukonis 2013-05-20 19:23 UTC
+
