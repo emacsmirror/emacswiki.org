@@ -8,6 +8,9 @@ By default, we're using a bootstrap theme.  In order to use a
 different style sheet, you just need to switch off bootstrap and
 provide a new CSS file.
 
+Turn bootrap back on with [EmacsWiki:action=browse;id=CSS;bootstrap=1 this link] or append <code>?boostrap=1</code> to most URLs
+
+
 == Style Sheets ==
 
 You can change the theme used for this wiki using one of the following links:
