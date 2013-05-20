@@ -7,3 +7,16 @@ Q: What emacs files can be stored on dropbox to share between computers running 
 Does anything get screwed up? -- E.g., lots of dropbox-conflicted files proliferate in a directory? (This happens to me with Pidgin-Portable shared in Dropbox)
 
 --MichaelPaulukonis, who hopes this page will turn into something useful.
+
+I keep my emacs folder and my .emacs.d folder (which includes all my ELPA packages) in Dropbox, and symlink them into my home dir (I don't want my entire home dir in Dropbox).
+
+A couple of things worth mentioning:
+
+If you use Emacs as a server (server-start) you will want to move server-auth-dir out of Dropbox, or make sure you have a custom server-name on each machine (system-name is convenient for setting this up), otherwise they'll both try to use the same file.
+
+If there's anything you want to keep secret (.authinfo files, say, or org files containing your plans for the Death Star), keep them off Dropbox, or encrypt them using something like Easy PG. Dropbox has had security issues in the past.
+
+If you add machines often, it's convenient to create a script that sets up your environment variables and does the symlinks for a new machine. Install Dropbox + wait + run script = Emacs!
+
+My experience is mostly on Windows, and OS X. YMMV.
+-- BrianCasiello
