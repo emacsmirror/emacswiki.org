@@ -35,6 +35,8 @@ The jslint tool has an advanced version of this feature - the globals list can s
 
 Some comment on the use of the function <code>buffer-substring-no-properties</code> in the example code given above in case someone wants to see how the code works. The function <code>buffer-substring</code> and <code>buffer-substring-no-properties</code> have some gotchas. The expression <code>(buffer-substring-no-properties 1 (buffer-size))</code> captures the whole text except the last character, and causes args-out-of-range error in an empty buffer. The expression <code>(buffer-substring-no-properties 1 (1+ (buffer-size)))</code> captures the whole text but causes args-out-of-range error in a narrowed buffer. Finally, the expression <code>(save-restriction (widen) (buffer-substring-no-properties (point-min) (point-max)))</code> captures the whole text fine even in a narrowed buffer. -- JisangYoo
 
+[new:dgutov:2013-05-20 21:46 UTC]
+JSLint-style globals declaration is supported natively in the latest version, so the above snippet of code is not required. Should we remove it from the page? -- DmitryGutov
 
 == js2-mode + google closure ==
 If you want js2-mode to use names from goog.provide/goog.require you can add this to your .emacs:
