@@ -24,6 +24,22 @@ Use the function ##put## to alter the interactive form of ##kill-ring-save## and
 
 Thus, `M-w' with no selection copies the current line, `C-w' kills it entirely, and `C-a M-w C-y' duplicates it. As the ##interactive-form## property only affects the commands' ''interactive'' behavior, they are safe for other functions to call.
 
+For emacs versions >= 24.3, the above code for altering ##kill-ring-save## does not work (see http://lists.gnu.org/archive/html/help-gnu-emacs/2013-03/msg00261.html). Instead, use this:
+
+    (defun my-kill-ring-save (beg end flash)
+      (interactive (if (use-region-p)
+                       (list (region-beginning) (region-end) nil)
+                     (list (line-beginning-position)
+                           (line-beginning-position 2) 'flash)))
+      (kill-ring-save beg end)
+      (when flash
+        (save-excursion
+          (if (equal (current-column) 0)
+              (goto-char end)
+            (goto-char beg))
+          (sit-for blink-matching-delay))))
+    (global-set-key [remap kill-ring-save] 'my-kill-ring-save)
+
 If you use slime-repl-mode (a mode for interacting with an external REPL), replace ##(line-beginning-position)## with 
 
     (if (eq major-mode 'slime-repl-mode)
