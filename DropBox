@@ -1,0 +1,9 @@
+[[https://www.dropbox.com/ DropBox]] is a "free" (as in beer, not as in speech) service for file storage and synchronization.
+
+Q: What emacs files can be stored on dropbox to share between computers running Emacs? config files? site-lisp? home directory? ELPA packages?
+** This would presume that the same Emacs version is running on all machines connected to that Dropbox (or do not care about a particular Emacs folder).
+** or config-files are set to account for this
+
+Does anything get screwed up? -- E.g., lots of dropbox-conflicted files proliferate in a directory? (This happens to me with Pidgin-Portable shared in Dropbox)
+
+--MichaelPaulukonis, who hopes this page will turn into something useful.
