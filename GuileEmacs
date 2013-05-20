@@ -1,3 +1,4 @@
+[[zh:Guile_Emacs]]
 Guile Emacs is a variant of Emacs which is integrating the
 [[Guile]] extension language in addition to EmacsLisp so to
 provide a better programming environment for both Emacs
