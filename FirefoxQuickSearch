@@ -1,5 +1,8 @@
 Bookmark https://duckduckgo.com/?q=%s+site%3Aemacswiki.org and add your keyword to it. Don't forget to name your bookmark or you won't be able to save the bookmark. Hitting Enter will cancel the bookmark... X-(
 
+An alternative that will search '''or''' default to the home-page is <code>javascript:if('%s') location.href='https://duckduckgo.com/?q=%s+site%3Aemacswiki.org';else location.href='http://emacswiki.org/';</code>
+
+
 Now select a suitable keyword (say ew) and save it. If you are using the del.icio.us extension, you'll be asked if you want to save it to del.icio.us as well. Saving it there will enable you to use this keyword wherever you use the del.icio.us extension. 
 
 Typing <code>ew sticky keys</code> in your location bar will now search the wiki for sticky keys.
