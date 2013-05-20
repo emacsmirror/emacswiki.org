@@ -6,7 +6,7 @@
 ;; Maintainer: Joe Bloggs <vapniks@yahoo.com>
 ;; Copyright (c) 2003 Greg Rowe
 ;; Created: 2003
-;; Version: 0.1
+;; Version: 0.2
 ;; Last-Updated: 2013-05-10 23:09:35
 ;;           By: Joe Bloggs
 ;; URL: https://github.com/vapniks/mark
@@ -116,6 +116,7 @@ reset."
 (ad-activate 'set-mark-command)
 
 ;; use addition to go backwards, and subtraction to go forward
+;;;###autoload
 (defun backward-mark (arg)
   "Moves the point arg points backward in the mark ring."
   (interactive "P")
@@ -129,7 +130,7 @@ reset."
                     (- (- mark-ring-pos mark-ring-length ) 1)))
           (goto-nth-mark mark-ring-pos)))))
 
-  
+;;;###autoload  
 (defun forward-mark (arg)
   "Moves the point arg points forward in the mark ring."
   (interactive "P")
@@ -146,10 +147,10 @@ reset."
 
 (defun goto-nth-mark (arg)
   ;; Moves the point to the nth position in the mark ring (starts at 1).
-  (let ( (the-place (cond
-                     ((= arg 0) (mark t))
-                     ((= arg 1) (car mark-ring))
-                     (t (car (nthcdr (- arg 1) mark-ring))))))
+  (let ((the-place (cond
+                    ((= arg 0) (mark t))
+                    ((= arg 1) (car mark-ring))
+                    (t (car (nthcdr (- arg 1) mark-ring))))))
     (if the-place
         (goto-char the-place))))
 
@@ -181,13 +182,15 @@ reset."
   (toggle-read-only 1)
   (fm-start))
 
+;;;###autoload
 (defun mark-mode-goto ()
   "Go to the occurrence the current line describes."
   (interactive)
   (let ((pos (get-text-property (point) 'marker)))
     (pop-to-buffer mark-buffer)
     (goto-char pos)))
-    
+
+;;;###autoload
 (defun mark-mode-delete nil
   "Delete mark at current line from mark-ring."
   (interactive)
@@ -198,6 +201,7 @@ reset."
     (kill-line 1)
     (toggle-read-only 1)))
 
+;;;###autoload
 (defun mark-mode-prev-mark ()
   "Move to previous mark in *mark* buffer, wrapping if necessary."
   (interactive)
@@ -207,6 +211,7 @@ reset."
     (previous-line)
     (move-beginning-of-line nil)))
 
+;;;###autoload
 (defun mark-mode-next-mark ()
   "Move to next mark in *mark* buffer, wrapping if necessary."
   (interactive)
@@ -236,6 +241,7 @@ reset."
         (put-text-property prop-start (point) 'marker mymarker)
         (show-mark (cdr mark-list)))))
 
+;;;###autoload
 (defun show-marks ()
   "Displays all the lines for each point in the mark ring.  Pressing
 RET in the result buffer will send you to corresponding mark point
