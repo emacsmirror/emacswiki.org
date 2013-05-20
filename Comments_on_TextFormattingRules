@@ -94,3 +94,16 @@ renders as
 
 -- MichaelPaulukonis 2013-04-30 14:54 UTC
 
+
+----
+
+Is it possible to have an inlined-image, from an external source, link to something?
+
+like, say, <code>[[http://www.fsf.org/register_form?referrer=8082 https://static.fsf.org/nosvn/associate/fsf-8082.png]]</code>
+
+So that the image is rendered, '''and''' it functions as a link?
+
+If this exists, I couldn't find the formatting
+
+-- MichaelPaulukonis 2013-05-20 17:16 UTC
+
