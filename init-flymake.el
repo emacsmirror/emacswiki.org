@@ -87,7 +87,7 @@
 ;; flymake-shell
 (add-hook 'sh-mode-hook 'flymake-shell-load)
 ;; flymake extension
-(setq flymake-extension-use-showtip t)  ;use `shotip' display error or warning.
+(setq flymake-extension-use-showtip t)  ;use `showtip' display error or warning.
 
 (provide 'init-flymake)
 
