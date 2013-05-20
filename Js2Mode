@@ -1,14 +1,10 @@
-js2-mode by SteveYegge is currently the best javascript mode available for emacs. It has very accurate syntax highlighting, even if you use non-standard javascript extensions, and highlights syntax errors as you type.
+js2-mode by SteveYegge is arguably the best JavaScript mode available for emacs. It has very accurate syntax highlighting, supports newer JavaScript extensions implemented in [https://developer.mozilla.org/en/docs/SpiderMonkey SpiderMonkey], and highlights syntax errors as you type.
 
-js2-mode does not ship with Emacs but is available from the official elpa branch of the Emacs repository. [[Package]] can be used to install it. Else you can get it using [http://bzr.savannah.gnu.org/lh/emacs/elpa/files bzr] or [http://git.savannah.gnu.org/cgit/emacs.git git].
+js2-mode does not ship with Emacs, but it's included in [http://elpa.gnu.org/ GNU ELPA].
 
-Also a fork of js2-mode is available from [https://github.com/mooz/js2-mode mooz's project page]. Steve's [http://code.google.com/p/js2-mode original repository] isn't used for development anymore.
+Development of js2-mode has moved to [https://github.com/mooz/js2-mode mooz's repository]. Steve's [http://code.google.com/p/js2-mode original repository] hasn't seen a lot of updates for quite some time. Stable snapshots get committed to the [http://bzr.savannah.gnu.org/lh/emacs/elpa/files elpa branch].
 
-Mooz's fork of js2-mode is being actively maintained, whereas Steve Yegge's original branch has not been updated since 2009. Mooz's fork has much improved indentation and removed a number of glitches and annoyances. It also removes auto-insertion of parenthesis, since you are better off getting those from either emacs 24's built in support for that, or from [http://code.google.com/p/autopair/ autopair.el].
-
-[new]
-I have asked Mooz to get his changes merged into the elpa branch. -- JonasBernoulli
-[new]
+The latest version requires Emacs 24, and has had some non-essential features removed, like auto-insertion of parentheses, since you are better off getting those from either Emacs 24's built-in [[ElectricPair|electric-pair-mode]], or from [http://code.google.com/p/autopair/ autopair.el].
 
 [[SmartTabs#Js2Mode|Smart Tabs: Js2Mode]]
 
