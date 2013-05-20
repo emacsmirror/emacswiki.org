@@ -5,6 +5,8 @@ But only since the summer of 2007, and mainly on [[EmacsW32|Windows]].
 
 He can also be found online at http://michaelpaulukonis.com/ and http://www.xradiograph.com/Emacs
 
+He's a member of the FSF -- and [[http://www.fsf.org/register_form?referrer=8082 you should be, too]] (especially if you use Emacs) !
+* https://static.fsf.org/nosvn/associate/fsf-8082.png
 
 [new:DrewAdams:2013-04-30 02:00 UTC]
 Welcome to the wiki. -- DrewAdams
@@ -16,8 +18,6 @@ Thanks, Drew -- 'cept I've been here for years. Just renamed the page from my "h
 == TODOs ==
 * [[Journal]] - I use a modified version of this. Should push the modifications back to public. And fix the issues
 * cleanup the [[MichaelPaulukonis#navigation|navigation section]] below
-* add FSF badge a la [[wgreenhouse]] ???
-** <code>https://static.fsf.org/nosvn/associate/fsf-10646.png[https://static.fsf.org/nosvn/associate/fsf-10646.png]</code>
 * look at WikiModeDiscussion
 ** revisit pmwiki-mode
 *** start an Emacs-wiki page for it??
