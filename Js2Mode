@@ -10,6 +10,8 @@ The latest version requires Emacs 24, and has had some non-essential features re
 
 The js2-mode has a nice feature in that it highlights undeclared variables, but sometimes you want to ignore these for certain symbols (perhaps you know the global is defined properly in another file). The jslint tool will look for a globals comment at the top of a file and consider any symbols defined in there to be valid globals, the following elisp code installs a hook into js2-mode so it that it respects the same declaration -- TimMeadowcroft
 
+JSLint-style globals declaration is supported natively since 20130510. So using the code below is only advised for people who stay with an older version, i.e. for Emacs 23 compatibilty. -- DmitryGutov
+
     ;; After js2 has parsed a js file, we look for jslint globals decl comment ("/* global Fred, _, Harry */") and
     ;; add any symbols to a buffer-local var of acceptable global vars
     ;; Note that we also support the "symbol: true" way of specifying names via a hack (remove any ":true"
@@ -30,9 +32,6 @@ The js2-mode has a nice feature in that it highlights undeclared variables, but 
 The jslint tool has an advanced version of this feature - the globals list can specify symbols that are valid globals ("name: true") but it can also declare that some symbols are valid as long as you don't assign to them ("name: false"), and it also seems that the globals comments can be placed inside a function and there the checking will respect the function scope. The js2-mode doesn't seem (to me) to have either of these concepts inherently built in, so the version below will consider all global decls to have file scope, and it will respect "name: true" symbols but it will ignore "name: false" symbols (i.e. they'll still be reported as invalid globals when used) - you could change this by adjusting the regexps below, but extending js2-mode to understand these more advanced concepts for looking at undeclared symnbols is probably a more major task -- TimMeadowcroft
 
 Some comment on the use of the function <code>buffer-substring-no-properties</code> in the example code given above in case someone wants to see how the code works. The function <code>buffer-substring</code> and <code>buffer-substring-no-properties</code> have some gotchas. The expression <code>(buffer-substring-no-properties 1 (buffer-size))</code> captures the whole text except the last character, and causes args-out-of-range error in an empty buffer. The expression <code>(buffer-substring-no-properties 1 (1+ (buffer-size)))</code> captures the whole text but causes args-out-of-range error in a narrowed buffer. Finally, the expression <code>(save-restriction (widen) (buffer-substring-no-properties (point-min) (point-max)))</code> captures the whole text fine even in a narrowed buffer. -- JisangYoo
-
-[new:dgutov:2013-05-20 21:46 UTC]
-JSLint-style globals declaration is supported natively in the latest version, so the above snippet of code is not required. Should we remove it from the page? -- DmitryGutov
 
 == js2-mode + google closure ==
 If you want js2-mode to use names from goog.provide/goog.require you can add this to your .emacs:
