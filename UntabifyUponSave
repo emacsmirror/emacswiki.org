@@ -90,5 +90,14 @@ I just have the following in my init file, which does nothing fancy at all and w
 
 --JoostDiepenmaat
 
+Edit: I've been using Joost's 'nothing-fancy' hook as above, but as of v24, this seems to block files being saved. I believe this is because the hook should return nil to signify that it hasn't performed the write itself ... hence
+
+ ;; if indent-tabs-mode is off, untabify before saving
+ (add-hook 'write-file-hooks 
+          (lambda () (if (not indent-tabs-mode)
+                         (untabify (point-min) (point-max)))
+                      nil ))
+
+--TimMeadowcroft 
 ----
 CategoryIndentation
