@@ -3,7 +3,7 @@
 
 ;; Author: Stefan Reichoer <stefan@xsteve.at>
 ;; URL: http://www.xsteve.at/prg/emacs/psvn.el
-;; VERSION:2012-03-26, 21:23:49
+;; VERSION:x.x.x.
 ;; Note: This version is currently not under svn control
 ;; For the revision date see svn-psvn-revision below
 
