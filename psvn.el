@@ -3,7 +3,8 @@
 
 ;; Author: Stefan Reichoer <stefan@xsteve.at>
 ;; URL: http://www.xsteve.at/prg/emacs/psvn.el
-;; VERSION:x.x.x.
+;; VERSION: 1.1.1
+;; Note: Version is not 1.1.1, this is a dummy for Marmalade.
 ;; Note: This version is currently not under svn control
 ;; For the revision date see svn-psvn-revision below
 
