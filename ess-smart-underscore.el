@@ -5,7 +5,7 @@
 ;; Author: Matthew L. Fidler
 ;; Maintainer: Matthew Fidler
 ;; Created: Thu Jul 14 11:04:42 2011 (-0500)
-;; Version: 0.77
+;; Version: 0.78
 ;; Last-Updated: Mon Apr  9 15:27:09 2012 (-0500)
 ;;           By: Matthew L. Fidler
 ;;     Update #: 137
@@ -86,6 +86,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 21-May-2013    Matthew L. Fidler  
+;;    Last-Updated: Mon Apr  9 15:27:09 2012 (-0500) #137 (Matthew L. Fidler)
+;;    Added math to ggplot's functions...
 ;; 21-May-2013    Matthew L. Fidler  
 ;;    Last-Updated: Mon Apr  9 15:27:09 2012 (-0500) #137 (Matthew L. Fidler)
 ;;    Added hook to R-mode to make it behave a little better.
@@ -188,6 +191,7 @@ This requires `ess-S-underscore-when-inside-paren' to be true.
 (defcustom ess-S-underscore-when-preceeding-words
   '("aes"
     "add"
+    "math"
     "annotation"
     "calc"
     "coord"
@@ -197,6 +201,7 @@ This requires `ess-S-underscore-when-inside-paren' to be true.
     "expand"
     "facet"
     "geom"
+    "trans"
     "gg"
     "guide"
     "label"
