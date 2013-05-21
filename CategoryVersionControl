@@ -16,6 +16,7 @@ This is information on specific centralized version control systems.
 ** CvsAdminMode -- Support for ##CVSROOT/## configuration files
 * RevisionControlSystem -- RCS is supported by default in VC.
 * SubVersion -- psvn.el is similar to pcl-cvs for CVS, but there is support for Subversion in VC.
+** [[psvn.el]]
 ** SvnMisc -- some functions to invoke subversion easily from emacs.
 * [[SVK]] -- Two preliminary modes, vc-svk.el and a psvk.el are available.
 ** [[TortoiseSVN]] -- !TorotoiseSVN's front end.
