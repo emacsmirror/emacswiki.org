@@ -5,7 +5,7 @@
 ;; Author: Matthew L. Fidler
 ;; Maintainer: Matthew Fidler
 ;; Created: Thu Jul 14 11:04:42 2011 (-0500)
-;; Version: 0.75
+;; Version: 0.77
 ;; Last-Updated: Mon Apr  9 15:27:09 2012 (-0500)
 ;;           By: Matthew L. Fidler
 ;;     Update #: 137
@@ -86,6 +86,12 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 21-May-2013    Matthew L. Fidler  
+;;    Last-Updated: Mon Apr  9 15:27:09 2012 (-0500) #137 (Matthew L. Fidler)
+;;    Added hook to R-mode to make it behave a little better.
+;; 15-May-2013    Matthew L. Fidler  
+;;    Last-Updated: Mon Apr  9 15:27:09 2012 (-0500) #137 (Matthew L. Fidler)
+;;    Fixed ess-smart-underscore to work in an inferior R process.
 ;; 15-May-2013    Matthew L. Fidler  
 ;;    Last-Updated: Mon Apr  9 15:27:09 2012 (-0500) #137 (Matthew L. Fidler)
 ;;    Added ggplot function prefixes.  
@@ -340,6 +346,13 @@ an underscore is always inserted. "
           (delete-horizontal-space)
           (insert ess-S-assign))))))
 (define-key ess-mode-map (kbd "_") 'ess-smarter-underscore)
+
+(defun ess-smart-underscore-add-inf ()
+  "Add to inferior mode."
+  (local-set-key (kbd "_") 'ess-smarter-underscore))
+
+(add-hook 'ess-R-post-run-hook 'ess-smart-underscore-add-inf)
+(add-hook 'R-mode-hook 'ess-smart-underscore-add-inf)
 (provide 'ess-smart-underscore)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ess-smart-underscore.el ends here
