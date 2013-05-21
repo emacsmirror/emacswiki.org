@@ -122,7 +122,7 @@ one wins."
   :group 'ediff-trees)
 
 
-
+;;;###autoload
 (defun ediff-trees (root1 root2)
   "Starts a new ediff session that recursively compares two
 trees."
