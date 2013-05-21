@@ -6,7 +6,7 @@ Language-specific:
 * CPlusPlus -- C++ specific programming.
 * CProgrammingLanguage -- C specific programming.
 * DProgrammingLanguage -- D specific programming.
-* JavaScript -- (including JScript) also see FlashActionscript.
+* CategoryJavaScript -- (including JScript) also see FlashActionscript.
 * [[JavaLanguage]] -- Java programming with Emacs.
 * ErlangLanguage -- Erlang specific programming
 * MozillaDevelopmentEnvironmentforEmacs -- support for Mozilla technologies in Emacs.
