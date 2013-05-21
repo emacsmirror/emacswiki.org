@@ -18,7 +18,7 @@ The latest version requires Emacs 24, and has had some non-essential features re
 == Js2Mode and jslint ==
 The js2-mode has a nice feature in that it highlights undeclared variables, but sometimes you want to ignore these for certain symbols (perhaps you know the global is defined properly in another file). The jslint tool will look for a globals comment at the top of a file and consider any symbols defined in there to be valid globals, the following elisp code installs a hook into js2-mode so it that it respects the same declaration -- TimMeadowcroft
 
-JSLint-style globals declaration is supported natively since 20130510. So using the code below is only advised for people who stay with an older version, i.e. for Emacs 23 compatibilty. -- DmitryGutov
+JSLint-style globals declaration is supported natively since 20130510. So using the code below is only advised for people who stay with an older version, e.g. for Emacs 23 compatibilty. -- DmitryGutov
 
     ;; After js2 has parsed a js file, we look for jslint globals decl comment ("/* global Fred, _, Harry */") and
     ;; add any symbols to a buffer-local var of acceptable global vars
