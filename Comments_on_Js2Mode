@@ -1,0 +1,6 @@
+>JSLint-style globals declaration is supported natively in the latest version, so the above snippet of code is not required. Should we remove it from the page? – DmitryGutov
+
+Dmitry -- how about we leave it, but explicitly mark it as (only) for earlier versions? It's been pointed out that the latest version of js2-mode only works with v24, and not everybody runs that.
+
+-- [http://www.xradiograph.com MichaelPaulukonis] 2013-05-21 01:10 UTC
+
