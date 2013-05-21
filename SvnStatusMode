@@ -19,6 +19,10 @@ The above version has this note at the top "This version is currently not under 
 
 SurendraSinghi has confirmed that the psvn.el works with [[XEmacs]]
 
+A version prepared for [[Marmalade]] is hosted on the Wiki's ElispArea:
+
+* Lisp:psvn.el
+
 === Subversion 1.7 ===
 
 In subversion 1.7 the format of the working copy was changed. Now there's only one .svn subdirectory in the root of the project. Unfortunately ##psvn## expects each directory to have a .svn subdirectory.
