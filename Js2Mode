@@ -1,13 +1,21 @@
+[:overview]
+== Overview ==
 js2-mode by SteveYegge is arguably the best JavaScript mode available for emacs. It has very accurate syntax highlighting, supports newer JavaScript extensions implemented in [https://developer.mozilla.org/en/docs/SpiderMonkey SpiderMonkey], and highlights syntax errors as you type.
 
+[:installation]
+== Obtaining and installing ==
 js2-mode does not ship with Emacs, but it's included in [http://elpa.gnu.org/ GNU ELPA].
 
 Development of js2-mode has moved to [https://github.com/mooz/js2-mode mooz's repository]. Steve's [http://code.google.com/p/js2-mode original repository] hasn't seen a lot of updates for quite some time. Stable snapshots get committed to the [http://bzr.savannah.gnu.org/lh/emacs/elpa/files elpa branch].
 
 The latest version requires Emacs 24, and has had some non-essential features removed, like auto-insertion of parentheses, since you are better off getting those from either Emacs 24's built-in [[ElectricPair|electric-pair-mode]], or from [http://code.google.com/p/autopair/ autopair.el].
 
+[:smarttabs]
+== Smart Tabs ==
 [[SmartTabs#Js2Mode|Smart Tabs: Js2Mode]]
 
+[:jslint]
+== Js2Mode and jslint ==
 The js2-mode has a nice feature in that it highlights undeclared variables, but sometimes you want to ignore these for certain symbols (perhaps you know the global is defined properly in another file). The jslint tool will look for a globals comment at the top of a file and consider any symbols defined in there to be valid globals, the following elisp code installs a hook into js2-mode so it that it respects the same declaration -- TimMeadowcroft
 
 JSLint-style globals declaration is supported natively since 20130510. So using the code below is only advised for people who stay with an older version, i.e. for Emacs 23 compatibilty. -- DmitryGutov
@@ -46,3 +54,8 @@ If you want js2-mode to use names from goog.provide/goog.require you can add thi
 		(add-to-list 'js2-additional-externs (match-string 2 buf))))))
 
 Of course, it is only useful if you keep direct relationship between strings in goog.provide/goog.require and actual objects. -- AdamRzepka
+
+----
+CategoryJavaScript
+CategoryModes
+
