@@ -64,7 +64,15 @@ Thanks, Drew -- 'cept I've been here for years. Just renamed the page from my "h
 == Navigation to places I want to remember ==
 TODO: work on this section
 
-* EmacsWikiContent - list of some TODOs for the wiki
+* wiki work
+** EmacsWikiContent - list of some TODOs for the wiki
+** [[https://duckduckgo.com/?q=%22CategoryNeedsAttention%22+site%3Aemacswiki.org|pages tagged with CategoryNeedsAttention]]
+* EmacsWikiSuggestions
+* CategoryEmacsWikiSite
+* [[News]]
+* [[Problems]]
+* [[WikiQuestions]]
+
 * HowTo
 * Editing
 ** HowToEdit
@@ -72,11 +80,6 @@ TODO: work on this section
 ** [[TextFormattingRules#actions]]
 ** Oddmuse:Text_Formatting_Rules#Transclusion_Rules
 * PageRedirection
-* EmacsWikiSuggestions
-* CategoryEmacsWikiSite
-* [[News]]
-* [[Problems]]
-* [[WikiQuestions]]
 
 * [[OpenQuestions]]
 
