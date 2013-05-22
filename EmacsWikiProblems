@@ -10,6 +10,18 @@ Note that this page is not about EmacsWikiMode.
 
 --------
 
+== DuckDuckGo search not strictly limited to site ==
+
+# I search for [[https://duckduckgo.com/?q=storing+dotfiles+site%3Aemacswiki.org|storing dotfiles site:emacswiki.org]]
+# Another site come up first in the results, THEN emacswiki.org, THEN other sites, emacswiki, etc.
+## same results for [[https://duckduckgo.com/?q=site%3Aemacswiki.org+storing+dotfiles|site:emacswiki.org storing dotfiles]]
+# as much as it pains me to admit this, when I do the same search on google, the results are limited to emacswiki
+## https://www.google.com/search?q=site%3Aemacswiki.org+storing+dotfiles
+
+[[http://imgur.com/K2UweJp screenshot @ imgur.com]]
+
+-- MichaelPaulukonis 2013-05-22 15:15 UTC
+
 
 == Disabling new CSS design has no effect on ElispArea ==
 
