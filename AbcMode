@@ -6,8 +6,10 @@ features.
     (autoload 'abc-mode "abc-mode" "abc music files" t)
     (add-to-list 'auto-insert-alist '(abc-mode . abc-skeleton))
 
-Source:
+Old Source:
 [[abc-mode.el]]
+
+Latest source: https://gist.github.com/mkjunker/5624795
 
 ----
 CategoryModes
