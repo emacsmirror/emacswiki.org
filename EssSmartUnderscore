@@ -8,7 +8,7 @@
 * <b>Author </b> --  Matthew L. Fidler
 * <b>Maintainer </b> --  Matthew Fidler
 * <b>Created </b> --  Thu Jul 14 11:04:42 2011 (-0500)
-* <b>Version </b> --  0.78
+* <b>Version </b> --  0.79
 * <b>Last-Updated </b> --  Mon Apr  9 15:27:09 2012 (-0500)
 * <b>By </b> --  Matthew L. Fidler
 * <b>Update # </b> --  137
@@ -84,6 +84,7 @@ In addition the ess-smart-underscore attempts to work with noweb-mode
 
 == History ==
 
+* <b>22-May-2013 </b> --   Added more ggplot operators.  (Matthew L. Fidler)
 * <b>21-May-2013 </b> --   Added math to ggplot's functions... (Matthew L. Fidler)
 * <b>21-May-2013 </b> --   Added hook to R-mode to make it behave a little better. (Matthew L. Fidler)
 * <b>15-May-2013 </b> --   Fixed ess-smart-underscore to work in an inferior R process. (Matthew L. Fidler)
@@ -93,14 +94,14 @@ In addition the ess-smart-underscore attempts to work with noweb-mode
 * <b>02-Feb-2012 </b> --   Took out auto-installing. Most package managers don't want you to do this. (Matthew L. Fidler)
 * <b>03-Aug-2011 </b> --   Bug fix for parenthetical statement (Matthew L. Fidler)
 * <b>20-Jul-2011 </b> --   Changed to allow underscore instead of assign when inside a parenthetical statement.  (Matthew L. Fidler)
-* <b>15-Jul-2011 </b> --   Bug fix for d[d$CMT <tt></tt> 2,"DV"] _ to produce d[d$CMT <tt></tt> 2,"DV"] <-  (Matthew L. Fidler)* Functions
-=== Interactive Functions ===
-
-=== Internal Functions ===
-== Variables ==
+* <b>15-Jul-2011 </b> --   Bug fix for d[d$CMT <tt></tt> 2,"DV"] _ to produce d[d$CMT <tt></tt> 2,"DV"] <-  (Matthew L. Fidler)* Variables
 === Customizable Variables ===
 
 === Internal Variables ===
+== Functions ==
+=== Interactive Functions ===
+
+=== Internal Functions ===
 
 
 This was generated with OrgReadme.  On updating the library, this page is likely to be replaced with updated content.
