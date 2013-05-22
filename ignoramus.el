@@ -5,8 +5,8 @@
 ;; Author: Roland Walker <walker@pobox.com>
 ;; Homepage: http://github.com/rolandwalker/ignoramus
 ;; URL: http://raw.github.com/rolandwalker/ignoramus/master/ignoramus.el
-;; Version: 0.6.4
-;; Last-Updated: 18 Oct 2012
+;; Version: 0.6.8
+;; Last-Updated: 22 May 2013
 ;; EmacsWiki: Ignoramus
 ;; Keywords: convenience, tools
 ;;
@@ -150,7 +150,7 @@
 ;;; Code:
 ;;
 
-;;; requires
+;;; requirements
 
 ;; for callf
 (require 'cl)
@@ -271,8 +271,10 @@ A directory prefix is a leading absolute path component.")
 ;;;###autoload
 (defgroup ignoramus nil
   "Ignore backups, build files, et al."
-  :version "0.6.4"
-  :link '(emacs-commentary-link "ignoramus")
+  :version "0.6.8"
+  :link '(emacs-commentary-link :tag "Commentary" "ignoramus")
+  :link '(url-link :tag "Github" "http://github.com/rolandwalker/ignoramus")
+  :link '(url-link :tag "EmacsWiki" "http://emacswiki.org/emacs/Ignoramus")
   :prefix "ignoramus-"
   :group 'tools
   :group 'convenience)
@@ -441,6 +443,7 @@ the behavior of other libraries configured by ignoramus."
     ".sx32fsl"                                ; LISP
     ".sx64fsl"                                ; LISP
     ".synctex.gz"                             ; latex
+    ".ttc"                                    ; template toolkit
     ".tfm"                                    ; latex
     ".tmproj"                                 ; textmate
     ".tmproject"                              ; textmate
@@ -676,6 +679,8 @@ Also identify bogons."
 (defun ignoramus--string-or-symbol (str-or-sym)
   "Return the string for STR-OR-SYM."
   (cond
+    ((null str-or-sym)
+     nil)
     ((and (symbolp str-or-sym)
           (boundp str-or-sym))
      (ignoramus--string-or-symbol (symbol-value str-or-sym)))
