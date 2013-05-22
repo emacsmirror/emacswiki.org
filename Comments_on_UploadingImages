@@ -1,0 +1,17 @@
+=== imgur.com hosted images ===
+An ''ordinary URL'' is not defined explicitly, but it would appear to require an image-type suffix (eg. <code>.jpg .png .gif</code> etc.)
+
+
+http://imgur.com is a decent, easy-to-use host that does not require an account (unlike Flickr), but their images are not inlined by default <code>http://imgur.com/K2UweJp</code>
+
+::: http://imgur.com/K2UweJp
+
+Unless you grab the special URL <code>http://i.imgur.com/mEfHEIZ.png</code>
+
+::: http://i.imgur.com/mEfHEIZ.png
+
+
+'''To top it all off, this matches banned regexes and can't be posted in the main page'''
+
+-- MichaelPaulukonis 2013-05-22 15:30 UTC
+
