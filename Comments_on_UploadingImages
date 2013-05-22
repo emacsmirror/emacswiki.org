@@ -11,7 +11,7 @@ Unless you grab the special URL <code>http://i.imgur.com/mEfHEIZ.png</code>
 ::: http://i.imgur.com/mEfHEIZ.png
 
 
-'''To top it all off, this matches banned regexes and can't be posted in the main page'''
+'''To top it all off, this matches something in BannedRegexps and can't be posted in the main page''' Surprisingly (worringly?), comments don't get the same ban-hammer.
 
 -- MichaelPaulukonis 2013-05-22 15:30 UTC
 
