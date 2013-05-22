@@ -5,8 +5,8 @@
 ;; Author: Roland Walker <walker@pobox.com>
 ;; Homepage: http://github.com/rolandwalker/unicode-fonts
 ;; URL: http://raw.github.com/rolandwalker/unicode-fonts/master/unicode-fonts.el
-;; Version: 0.3.4
-;; Last-Updated: 10 Oct 2012
+;; Version: 0.3.6
+;; Last-Updated: 22 May 2013
 ;; EmacsWiki: UnicodeFonts
 ;; Keywords: i18n, faces, frames, wp, interface
 ;; Package-Requires: ((font-utils "0.6.8") (ucs-utils "0.7.2") (persistent-soft "0.8.6") (pcache "0.2.3"))
@@ -22,7 +22,7 @@
 ;;
 ;;     Install these fonts
 ;;
-;;        http://users.teilar.gr/~g1951d/Symbola702.zip
+;;        http://users.teilar.gr/~g1951d/Symbola706.zip
 ;;        http://www.quivira-font.com/files/Quivira.ttf
 ;;        http://sourceforge.net/projects/dejavu/files/dejavu/2.33/dejavu-fonts-ttf-2.33.tar.bz2
 ;;
@@ -47,13 +47,14 @@
 ;; Emacs does this out of the box.
 ;;
 ;; However, font mappings via fontsets are a bit difficult to
-;; configure.  Furthermore, the default setup does not always pick the
-;; most legible fonts.  As the manual warns, the choice of font
+;; configure.  In addition, the default setup does not always pick
+;; the most legible fonts.  As the manual warns, the choice of font
 ;; actually displayed for a non-ASCII character is "somewhat random".
 ;;
-;; Unicode provides a way to organize font mappings: it divides character
-;; ranges into logical groups called "blocks".  This library configures
-;; Emacs in a Unicode-friendly way by providing mappings from
+;; The Unicode standard provides a way to organize font mappings: it
+;; divides character ranges into logical groups called "blocks".  This
+;; library configures Emacs in a Unicode-friendly way by providing
+;; mappings from
 ;;
 ;;     each Unicode block  ---to--->   a font with good coverage
 ;;
@@ -375,7 +376,7 @@
 ;;; Code:
 ;;
 
-;;; requires
+;;; requirements
 
 ;; for callf, callf2, member*, incf, remove-if, remove-if-not
 (require 'cl)
@@ -1162,8 +1163,10 @@
 ;;;###autoload
 (defgroup unicode-fonts nil
   "Configure Unicode fonts."
-  :version "0.3.4"
-  :link '(emacs-commentary-link "unicode-fonts")
+  :version "0.3.6"
+  :link '(emacs-commentary-link :tag "Commentary" "unicode-fonts")
+  :link '(url-link :tag "Github" "http://github.com/rolandwalker/unicode-fonts")
+  :link '(url-link :tag "EmacsWiki" "http://emacswiki.org/emacs/UnicodeFonts")
   :prefix "unicode-fonts-"
   :group 'i18n
   :group 'faces)
@@ -2847,8 +2850,6 @@ these mappings."
 ;; note: variable outside unicode-fonts- namespace
 (defvar unicode-block-history                 nil "History of Unicode blocks entered in the minibuffer.")
 
-;;; compatibility functions
-
 ;;; utility functions
 
 ;;;###autoload
@@ -3270,8 +3271,8 @@ buffer instead of sending it to the *Messages* log."
         (counter 0)
         (all-override-ranges nil))
     (when insert
-      (require 'alert)
-      (setq message-function 'alert-message-insert))
+      (require 'express)
+      (setq message-function 'express-message-insert))
 
     ;; known fonts
     (setq reporter (make-progress-reporter "Checking fonts for duplicates ... " 0 (length known-fonts)))
