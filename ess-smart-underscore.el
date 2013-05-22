@@ -5,7 +5,7 @@
 ;; Author: Matthew L. Fidler
 ;; Maintainer: Matthew Fidler
 ;; Created: Thu Jul 14 11:04:42 2011 (-0500)
-;; Version: 0.78
+;; Version: 0.79
 ;; Last-Updated: Mon Apr  9 15:27:09 2012 (-0500)
 ;;           By: Matthew L. Fidler
 ;;     Update #: 137
@@ -86,6 +86,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 22-May-2013    Matthew L. Fidler  
+;;    Last-Updated: Mon Apr  9 15:27:09 2012 (-0500) #137 (Matthew L. Fidler)
+;;    Added more ggplot operators. 
 ;; 21-May-2013    Matthew L. Fidler  
 ;;    Last-Updated: Mon Apr  9 15:27:09 2012 (-0500) #137 (Matthew L. Fidler)
 ;;    Added math to ggplot's functions...
@@ -189,11 +192,12 @@ This requires `ess-S-underscore-when-inside-paren' to be true.
   :type 'boolean)
 
 (defcustom ess-S-underscore-when-preceeding-words
-  '("aes"
+  '(
     "add"
-    "math"
+    "aes"
     "annotation"
     "calc"
+    "continuous"
     "coord"
     "cut"
     "discrete"
@@ -201,11 +205,11 @@ This requires `ess-S-underscore-when-inside-paren' to be true.
     "expand"
     "facet"
     "geom"
-    "trans"
     "gg"
     "guide"
     "label"
     "last"
+    "math"
     "mean"
     "position"
     "scale"
@@ -215,11 +219,13 @@ This requires `ess-S-underscore-when-inside-paren' to be true.
     "scale_y"
     "stat"
     "theme"
+    "trans"
     "translate"
     "translate_qplot"
     "update"
     "update_"
-    "update_geom")
+    "update_geom"
+    )
   "Things that should have underscores after them. "
   :group 'ess-S
   :type '(repeat
