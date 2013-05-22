@@ -189,6 +189,23 @@ Another way is to use keychords.el as a basis for an escape key sequence. For ex
 
 <include gist "https://gist.github.com/4963125">
 
+== Changing the mode-line color by state ==
+
+In Vim I like to have the status line change color when in insert mode and when the buffer is dirty (needs saving). It's much easier to do in Evil than it is in Vim itself.
+
+   ;; change mode-line color by evil state
+   (lexical-let ((default-color (cons (face-background 'mode-line)
+                                      (face-foreground 'mode-line))))
+     (add-hook 'post-command-hook
+       (lambda ()
+         (let ((color (cond ((minibufferp) default-color)
+                            ((evil-insert-state-p) '("#e80000" . "#ffffff"))
+                            ((evil-emacs-state-p)  '("#444488" . "#ffffff"))
+                            ((buffer-modified-p)   '("#006fa0" . "#ffffff"))
+                            (t default-color))))
+           (set-face-background 'mode-line (car color))
+           (set-face-foreground 'mode-line (cdr color))))))
+
 == Discussion ==
 
 : ''(Evil is also discussed at the [http://lists.ourproject.org/cgi-bin/mailman/listinfo/implementations-list gmane.emacs.vim-emulation] mailing list and in our IRC channel #evil-mode on irc.freenode.net.)''
