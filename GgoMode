@@ -1,0 +1,4 @@
+Source code is at https://gist.github.com/mkjunker/5619356.
+
+ggo-mode.el provides a major mode for editing Gengetopt .ggo files (http://www.gnu.org/software/gengetopt/).
+
