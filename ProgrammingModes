@@ -48,6 +48,7 @@ This is a subpage of CategoryModes.  It lists modes for programming languages or
 * GaucheScheme -- using Gauche from Emacs
 * GdbMode -- gdb user interface
 * GdlMode
+* GgoMode - edit Gengetopt .ggo files
 * GimpMode -- Script-fu programming for the GIMP GNU Image Manipulation Program.
 * [[GLSL]] -- !OpenGL Shading Language
 * GnomeWizard -- Gwizard
