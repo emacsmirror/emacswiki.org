@@ -1,4 +1,4 @@
-;;; ergo-movement-mode.el --- Eronomic keybindings for cursor movement
+;;; ergo-movement-mode.el --- Ergonomic keybindings for cursor movement
 ;;
 ;; Copyright (C) 2009-2010 Teemu Likonen
 
