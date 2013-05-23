@@ -69,7 +69,7 @@ most of us mortals will need a setup like the following:
        (:connection-type . ssl))))
 
 And make sure that you have either gnutls-cli or openssl installed
-and in your path.  Then C-x C-j C-c should Just Work™.
+and in your path.  Then C-x C-j C-c should Just Workâ¢.
 
 == Multi-user Chat ==
 
@@ -85,6 +85,11 @@ Here is a function to create use google groupchat:
 
 For versions 0.8.x of JabberEl there may be an issue when connecting with Multi-user chat. You may have to set the variable `jabber-muc-disable-disco-check' to <code>t</code> for disable disco checking if the above function doesn't work(or popup the buffer). 
 For more information read the [http://emacs-jabber.sourceforge.net/manual-0.8.0/Groupchat.html#Groupchat jabber.el v.0.8.0 groupchat manual] third paragraph.
+
+== Success Stories ==
+Works great for me after installing gnutls package on Mac OS X using [http://mxcl.github.io/homebrew/ homebrew]
+
+<code>$ brew install gnutls</code>
 
 ----
 JabberEl CategoryChatClient 
