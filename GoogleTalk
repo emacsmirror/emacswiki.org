@@ -87,9 +87,12 @@ For versions 0.8.x of JabberEl there may be an issue when connecting with Multi-
 For more information read the [http://emacs-jabber.sourceforge.net/manual-0.8.0/Groupchat.html#Groupchat jabber.el v.0.8.0 groupchat manual] third paragraph.
 
 == Success Stories ==
+[new]
 Works great for me after installing gnutls package on Mac OS X using [http://mxcl.github.io/homebrew/ homebrew]
 
 <code>$ brew install gnutls</code>
+
+-Alex
 
 ----
 JabberEl CategoryChatClient 
