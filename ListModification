@@ -278,7 +278,7 @@ See also CircularLists.
 
 == append ==
 
-`append' creates a copy of the list that is added to the front of the other list. The front is new; the tail is shared. Because come new list structure is created this can be more expensive than using `nconc'.
+`append' creates a copy of the list that is added to the front of the other list. The front is new; the tail is shared. Because a new list structure is created this can be more expensive than using `nconc'.
 
  ELISP> (setq list1 '(alpha beta gamma))
  (alpha beta gamma)
