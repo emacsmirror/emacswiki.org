@@ -84,7 +84,7 @@ Some people think that using //after-init-hook// seems like a last resort becaus
 You can do that by putting this in your init file:
 
 {{{
-(add-hook 'after-init-hook #'(lambda () (load "<real init file>")))
+(add-hook 'after-init-hook (lambda () (load "<real init file>")))
 }}}
 
 and moving all your normal init to the ##<<real init file>>##. 
