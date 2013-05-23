@@ -19,3 +19,7 @@ If you add machines often, it's convenient to create a script that sets up your 
 My experience is mostly on Windows, and OS X. YMMV.
 
 --BrianCasiello
+
+If you use DeskTop and you have multiple Emacsen running simultaneously, you might want to have each machine keep its own set of open files. One way to do that is <code>(setq desktop-base-file-name (concat ".desktop." (system-name)))</code>.
+
+--AmitPatel
