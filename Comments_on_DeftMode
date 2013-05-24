@@ -41,3 +41,19 @@ To replicate:
 
 -- max 2013-05-24 15:20 UTC
 
+
+----
+
+When I use Deft, it starts showing duplicates in the list of files.
+
+To replicate:
+
+1.) Create a new note
+2.) Exit Emacs
+3.) Open Emacs
+4.) Open the file using the Deft list
+5.) Add some text to the top of the file
+6.) Switch back to the Deft list. Two duplicate entries of the file will appear.
+
+-- max 2013-05-24 15:21 UTC
+
