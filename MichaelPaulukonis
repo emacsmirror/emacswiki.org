@@ -16,11 +16,7 @@ Thanks, Drew -- 'cept I've been here for years. Just renamed the page from my "h
 
 [:todo]
 == TODOs ==
-* [[Journal]] - I use a modified version of this. Should push the modifications back to public. And fix the issues
-* cleanup the [[MichaelPaulukonis#navigation|navigation section]] below
 * look at WikiModeDiscussion
-** revisit pmwiki-mode
-*** start an Emacs-wiki page for it??
 * [[CSS]]
 ** look into darkstrap
 ** look into variant on [EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/pedia.css wikipedia css] -- I like how the layout works, just not the stark-white fluorscently-lit colors (it's like a website at walmart)
@@ -31,6 +27,22 @@ Thanks, Drew -- 'cept I've been here for years. Just renamed the page from my "h
 ** and this [[https://twitter.com/noahsussman/status/969924361 cryptic, pregnant tweet]]
 * whee! [[CategoryGames|games!]] I didn't know most of these existed. As if I'd have the time....
 
+== Projects ==
+* hoping to work on pmwiki-mode
+** started up an org/repo @ https://github.com/emacs-pmwiki-mode
+** need to start an Emacswiki page for it....
+
+* [[Journal]] - I use a modified version of this. 
+** created a repo @ https://github.com/MichaelPaulukonis/fisler-journal.el
+*** contains original code as found @ [[Journal]] and my modifications
+** TODO: Clean up code, prefix-space ("namespace") the code, and fix the issues
+** I'm migrating over to use org-mode, but I used [[Journal]] for about 6 years; I have a lot of fondness for it
+** and it's influenced how I ''want'' to work with org-mode (which may not be how I ''should'' work with org-mode)
+
+* working on documentation withing CategoryJavaScript
+
+* OrgMode
+** learning and using....
 
 == Packages/pages/things I like ==
 * [[Reference_Sheet_by_Aaron_Hawley]]
@@ -42,7 +54,6 @@ Thanks, Drew -- 'cept I've been here for years. Just renamed the page from my "h
 * [[DiredPlus]]
 * [[NxmlModeForXHTML]]
 * [[CategoryWThirtyTwo]] since I primarily use Windows. :::sigh:::
-
 * [[Journal]] - I use a modified version of this. 
 ** see also: JournalMode - not the same thing. differences?
 
@@ -53,7 +64,6 @@ Thanks, Drew -- 'cept I've been here for years. Just renamed the page from my "h
 
 == Packages, Pages, and things I am thinking about liking ==
 * BookmarkPlus
-* OrgMode - c'mon. it's a bout time.
 * a way to get nxml mode to be happy with html5
 * a NodeJs mode that gives me auto-completion on the REPL '''within Emacs, of course'''
 * [[SkeletonMode]]
@@ -62,8 +72,6 @@ Thanks, Drew -- 'cept I've been here for years. Just renamed the page from my "h
 
 [:navigation]
 == Navigation to places I want to remember ==
-TODO: work on this section
-
 * wiki work
 ** EmacsWikiContent - list of some TODOs for the wiki
 ** [[https://duckduckgo.com/?q=%22CategoryNeedsAttention%22+site%3Aemacswiki.org|pages tagged with CategoryNeedsAttention]]
