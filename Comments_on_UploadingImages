@@ -15,3 +15,10 @@ Unless you grab the special URL <code>http://i.imgur.com/mEfHEIZ.png</code>
 
 -- MichaelPaulukonis 2013-05-22 15:30 UTC
 
+
+----
+
+It depends on the actual regular expression that triggered the banning. Assuming you triggered the regexp that bans ending a page with a URL, for example, the explanation is simple: as a comment, your "signature" is added and thus your URL can never be "at the end" of the page text? Then again, bugs are always a possibility. :)
+
+-- AlexSchroeder 2013-05-24 06:46 UTC
+
