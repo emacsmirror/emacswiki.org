@@ -40,3 +40,22 @@ Example:
 Result:
 
 http://www.emacswiki.org/pics/oddmuse-logo.png
+
+=== imgur.com hosted images ===
+An ''ordinary URL'' is not defined explicitly, but it would appear to require an image-type suffix (eg. <code>.jpg .png .gif</code> etc.)
+
+http://imgur.com is a decent, easy-to-use host that does not require an account (unlike Flickr), but their images are not inlined by default: <code>http://imgur.com/K2UweJp</code>
+
+::: http://imgur.com/K2UweJp
+
+Unless you grab the special URL <code>http://i.imgur.com/mEfHEIZ.png</code>
+
+::: http://i.imgur.com/mEfHEIZ.png
+
+
+=== Ending a page with an External Image ===
+Don't, and probably can't. 
+
+One of the BannedRegexps prohibits pages from ending with URLS, so an ending url-image will fire off the ban-hammer.
+You will see this in action if you hit preview.
+If the page can't be rendered, backup, and edit the page so that ''something else'' (non-whitespace) comes after the url.
