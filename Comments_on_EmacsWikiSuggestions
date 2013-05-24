@@ -2,3 +2,16 @@ I'm adding some talk for a test
 
 -- MichaelPaulukonis 2013-05-14 19:07 UTC
 
+
+----
+
+== ALT Multiple commands on a single key stroke ==
+
+An example of a simple solution to mapping a chain of commands to a single key stroke:
+<code>
+(setq newline-under-current-line "\C-e\C-o")
+(global-set-key "\C-i" newline-under-current-line)
+</code>
+
+-- [http://region aterrf snewt] 2013-05-24 07:58 UTC
+
