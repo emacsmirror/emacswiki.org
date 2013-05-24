@@ -69,7 +69,7 @@ most of us mortals will need a setup like the following:
        (:connection-type . ssl))))
 
 And make sure that you have either gnutls-cli or openssl installed
-and in your path.  Then C-x C-j C-c should Just Workâ¢.
+and in your path.  Then C-x C-j C-c should Just Work™.
 
 == Multi-user Chat ==
 
