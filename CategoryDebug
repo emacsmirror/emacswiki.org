@@ -29,8 +29,9 @@ Debugging other programs using Emacs:
 ** [http://github.com/rocky/kshdb kshdb]   --  Ksh debugger
 ** pdb -- Stock C Python debugger
 ** perl    --  Stock perl5db debugger
-** [http://bashdb.sourceforge.net/pydb/ pydb] --  Python debugger (but please use the newer pydbgr instead)
-** [http://code.google.com/p/pydbgr/ pydbgr] --  Python debugger
+** [http://bashdb.sourceforge.net/pydb/ pydb] --  Python 2.x debugger (but please use the newer pydbgr instead)
+** [http://code.google.com/p/pydbgr/ trepan2] --  Python 2.x debugger (formerly pydbgr)
+** [http://code.google.com/p/trepan3k trepan3k] -- Python 3.x debugger
 ** rdebug  --  Ruby debugger ruby-debug 
 ** [http://bashdb.sf.net/remake remake]  --  GNU make debugger
 ** [https://github.com/rocky/rb-trepanning/wiki trepan]  --  Ruby 1.9 YARV debugger
