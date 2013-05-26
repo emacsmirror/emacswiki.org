@@ -124,34 +124,6 @@ And here is an example for a hypothetical global minor mode called broccoli mode
            (warn "broccoli is not found."))))
 }}}
 
-
-=== Adjusting load-path after updating packages ===
-
-To my mind one of the faults of ELPA is that the load path is not updated when new packages are installed.  Here is a command that will do it for you:
-
-{{{
-(defun package-update-load-path ()
-  "Update the load path for newly installed packages."
-  (interactive)
-  (let ((package-dir (expand-file-name package-user-dir)))
-    (mapc (lambda (pkg)
-            (let ((stem (symbol-name (car pkg)))
-		  (version "")
-		  (first t)
-		  path)
-	      (mapc (lambda (num)
-		      (if first
-			  (setq first nil)
-			  (setq version (format "%s." version)))
-		      (setq version (format "%s%s" version num)))
-		    (aref (cdr pkg) 0))
-              (setq path (format "%s/%s-%s" package-dir stem version))
-              (add-to-list 'load-path path)))
-          package-alist)))
-}}}
-
-[new:NicFerrier:2013-01-20 12:21 UTC] Would this be better as some advice? Perhaps even a package that installed the advice?
-
 === ELPA policy ===
 
 ELPA policy for Emacs 24 was discussed here: http://thread.gmane.org/gmane.emacs.devel/132634/focus=132640
