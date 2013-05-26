@@ -1,0 +1,22 @@
+<b>Beware of Sytem-Wide Installation of PDE</b>
+
+Beware if, like me, you try to install the Perl Development Environment (pde) on a system-wide emacs. I tried
+
+   ./Build.PL --elispdir=/usr/local/share/emacs/site-lisp/pde
+   ./Build test
+   ./Build
+   sudo ./Build install > install_log.txt
+
+The pipe writes the standard output to the file install_log.txt (useful for uninstalling). All seemed to go well with the installation. However when I ran pde in emacs (23.2 and 24.2), I received a sentinel error when I tried to build the perldoc cache with  M-x perldoc RET. 
+
+I removed the pde installation completely and installed it again - this time in my local area with
+
+   ./Build.PL --elispdir=/home/username/.emacs-lisp/pde
+   ./Build test
+   ./Build
+   sudo ./Build install > install_log.txt
+
+Root (sudo) is still required for the final step since the installation puts a couple of pde perl modules - Emacs/PDE.pm, Emacs/PDE/Util.pm into /usr/local/share/perl/5.x.x/Emacs, and man pages - Emacs::PDE.3pm, Emacs::PDE::Util.3pm into /usr/local/man/man3. The permissions of the pde directory were of course root:root. I changed them back to my ownership through chown. The pde installation works perfectly now, with no perldoc errors. I'm guessing that the original error was due to wrong permissions. Does anyone have any further ideas?
+
+-- [http://www.colin-baxter.com/ baxc] 2013-05-26 16:01 UTC
+
