@@ -18,5 +18,5 @@ I removed the pde installation completely and installed it again - this time in 
 
 Root (sudo) is still required for the final step since the installation puts a couple of pde perl modules - Emacs/PDE.pm, Emacs/PDE/Util.pm into /usr/local/share/perl/5.x.x/Emacs, and man pages - Emacs::PDE.3pm, Emacs::PDE::Util.3pm into /usr/local/man/man3. The permissions of the pde directory were of course root:root. I changed them back to my ownership through chown. The pde installation works perfectly now, with no perldoc errors. I'm guessing that the original error was due to wrong permissions. Does anyone have any further ideas?
 
--- [http://www.colin-baxter.com/ baxc] 2013-05-26 16:01 UTC
+-- [http://www.emacswiki.org/emacs/ColinBaxter ColinBaxter] 2013-05-26 16:01 UTC
 
