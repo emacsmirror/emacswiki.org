@@ -6,7 +6,7 @@
 ;; Maintainer: Joe Bloggs <vapniks@yahoo.com>
 ;; Copyleft (Ↄ) 2013, Joe Bloggs, all rites reversed.
 ;; Created: 2013-05-15 05:04:08
-;; Version: 0.1
+;; Version: 0.2
 ;; Last-Updated: 2013-05-15 05:04:08
 ;;           By: Joe Bloggs
 ;; URL: https://github.com/vapniks/kmacro-decision
@@ -100,13 +100,19 @@
 ;;; Code:
 
 (defun kmacro-decision nil
-  "Query user for another kbd macro to execute during execution of current kbd macro.
-If called while defining a kbd macro then a query point will be inserted into the
-kbd macro which will ask the user for a named kbd macro to execute at that point.
-After executing the named kbd macro the calling macro will continue execution.
+  "Prompt for an action to perform, or conditional branch to add to a query point in a keyboard macro.
+This is a replacement for the `kbd-macro-query' command that comes with emacs.
+When called from within a keyboard macro it offer the user the following choices:
 
-You should define and name some macros first using `kmacro-start-macro' (C-x ( or f3),
-and `kmacro-name-last-macro' (C-x C-k n)."
+1) Quit the macro
+2) Continue executing the macro
+3) Enter recursive edit and create a new named macro
+4) Add a conditional branch
+5) Replay a previously saved named macro
+
+If the user chooses to add a conditional branch they will be further prompted for a condition form
+and an action to perform if that form evaluates to non-nil the next time that the query point
+is reached."
   (interactive)
   (if defining-kbd-macro
       nil
@@ -179,7 +185,7 @@ and `kmacro-name-last-macro' (C-x C-k n)."
                 ((symbolp val) (funcall val))))))))
 
 (defun kmacro-decision-named-macros nil
-  "Return list of all named macros."
+  "Return list of all named keyboard macros."
   (cl-loop for elt being the symbols
            if (and (fboundp elt)
                    (or (stringp (symbol-function elt))
@@ -188,7 +194,11 @@ and `kmacro-name-last-macro' (C-x C-k n)."
            collect elt))
 
 (defun* kmacro-decision-menu (&optional withcond)
-  "Prompt the user for a kbd macro using a keyboard menu."
+  "Prompt the user for an action to perform at a query point in a keyboard macro.
+If WITHCOND is non-nil then prompt for an action to perform for the previously entered
+condition.
+This function returns one of the following symbols 'continue, 'edit, 'new, 'branch, 'quit
+or a symbol corresponding to a named keyboard macro."
   (let* ((kmacros (cl-loop for elt being the symbols
                            if (and (fboundp elt)
                                    (or (stringp (symbol-function elt))
