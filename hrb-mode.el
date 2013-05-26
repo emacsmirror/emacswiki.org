@@ -1,6 +1,6 @@
 ;;; -*- coding: utf-8 -*-
 
-;;; hrb-block.el - highlight ruby blocks just like `show-paren-mode`
+;;; hrb-block.el - highlight ruby blocks
 
 ;; Copyright (C) 2013 Christian Kruse
 
@@ -22,6 +22,41 @@
 ;; along with GNU Emacs; see the file COPYING.	If not, write to
 ;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 ;; Boston, MA 02110-1301, USA.
+
+;; Commentary:
+
+;; hrb-mode is a Emacs minor mode for highlighting Ruby keyword pairs
+;; and blocks just like `show-paren-mode`
+;;
+;; To install it just copy this file to your `load-path` and require it:
+;;
+;; (add-to-list 'load-path "~/emacs.d/hrb-mode")
+;; (require 'hrb-mode)
+;;
+;; Configuration:
+;;
+;; show region immediately
+;; (setq hrb-delay 0)
+;;
+;; set different face for highlighting keywords
+;; (setq hrb-highlight-keyword-face 'show-paren-match-face)
+;;
+;; set different face for highlighting block
+;; (setq hrb-highlight-block-face 'highlight)
+;;
+;; highlight only keywords
+;; (setq hrb-highlight-mode 'keywords)
+;;
+;; highlight complete block
+;; (setq hrb-highlight-mode 'complete)
+;;
+;; highlight keywords if both are visible, highlight complete block otherwise
+;; (setq hrb-highlight-mode 'mixed)
+;;
+;; enable hrb-mode
+;; (hrb-mode t)
+;;
+;;
 
 (require 'ruby-mode)
 
