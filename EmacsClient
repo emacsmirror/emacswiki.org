@@ -776,6 +776,10 @@ I also suppose a similar solution works for gnuclient(w), which has apparently s
 
 -PGLPM
 
+Saveplace with emacsclient doesn't have the described problem in the latest version of GNU emacs. Atleast on 24.2 I don't see this problem.
+
+-- SantoshSivaraj
+
 = Making C-x k end an emacsclient session =
 
 If your fingers are wired to using C-x k to kill off buffers (and you dont like having to type C-x #) then try this :
