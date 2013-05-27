@@ -6,7 +6,7 @@
 ;; Maintainer: Joe Bloggs <vapniks@yahoo.com>
 ;; Copyleft (Ↄ) 2013, Joe Bloggs, all rites reversed.
 ;; Created: 2008
-;; Version: 0.1
+;; Version: 0.2
 ;; Last-Updated: 2013-05-14 03:59:52
 ;;           By: Joe Bloggs
 ;; URL: https://github.com/vapniks/apt-utils-ido
