@@ -6,7 +6,7 @@
 ;; Maintainer: Joe Bloggs <vapniks@yahoo.com>
 ;; Copyleft (Ↄ) 2013, Joe Bloggs, all rites reversed.
 ;; Created: 2013-05-15 05:04:08
-;; Version: 0.2
+;; Version: 0.3
 ;; Last-Updated: 2013-05-15 05:04:08
 ;;           By: Joe Bloggs
 ;; URL: https://github.com/vapniks/kmacro-decision
@@ -99,6 +99,7 @@
 
 ;;; Code:
 
+;;;###autoload
 (defun kmacro-decision nil
   "Prompt for an action to perform, or conditional branch to add to a query point in a keyboard macro.
 This is a replacement for the `kbd-macro-query' command that comes with emacs.
@@ -184,6 +185,7 @@ is reached."
                    (setq last-kbd-macro (concatenate 'vector pre condcode post))))
                 ((symbolp val) (funcall val))))))))
 
+;;;###autoload
 (defun kmacro-decision-named-macros nil
   "Return list of all named keyboard macros."
   (cl-loop for elt being the symbols
@@ -193,6 +195,7 @@ is reached."
                        (get elt 'kmacro)))
            collect elt))
 
+;;;###autoload
 (defun* kmacro-decision-menu (&optional withcond)
   "Prompt the user for an action to perform at a query point in a keyboard macro.
 If WITHCOND is non-nil then prompt for an action to perform for the previously entered
@@ -227,6 +230,7 @@ RET : Recursive edit (C-M-c to finish)\n"
            (nth (- nmacros (- key 97)) kmacros))
           (t 'quit))))
 
+;;;###autoload
 (defalias 'kbd-macro-query 'kmacro-decision
   (documentation 'kmacro-decision))
 
