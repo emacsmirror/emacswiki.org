@@ -28,7 +28,7 @@ This is information on specific distributed version control systems.
 * ArchVersionControl (and Bazaar) -- The suggested package is Xtla, but consider DVC and VC works, too.
 * [[Bazaar]] (##bzr##) -- There are interfaces with and without VC support.
 * DaRcs -- There's a VC backend available, a pcl-cvs like interface available, and a non-VC interface.
-* [[Fossil]] -- A VC backend is under development. 
+* [[fossil]] -- A VC backend is under development. 
 * [[Git]] -- Supported by VC, but git.el comes with the package and there are many other Git-specific modes.
 * [[Mercurial]] (##hg##)
 * MonoTone -- Partially supported by DVC, but a mode is distributed with Monotone.
