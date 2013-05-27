@@ -18,7 +18,7 @@ Here are some libraries I wrote:
 * '''Lisp:spss.el''' -- Major-mode for editing SPSS program files (needs work).
 * '''Lisp:apt-utils-ido.el''' -- Ido functions for Lisp:apt-utils.el
 * '''Lisp:kmacro-decision.el''' -- Conditional branching in keyboard macros.
-* '''Lisp:one-key.el''' -- Easy keyboard menus for displaying keybindings and other things [[OneKey]].
+* '''Lisp:one-key.el''' -- Easy keyboard menus for displaying keybindings and other things [[OneKey]] (rewrite of [[AndyStewart]]s original library).
 * '''Lisp:one-key-dir.el''' -- Fast directory navigation and file browser using [[OneKey]].
 * '''Lisp:one-key-yas.el''' -- [[OneKey]] menu for [[Yasnippet]].
 * '''Lisp:one-key-bmkp.el''' -- [[OneKey]] menu for [[BookmarkPlus]].
