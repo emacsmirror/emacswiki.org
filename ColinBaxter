@@ -1,8 +1,8 @@
 == About ==
 I'm a physicist based in the UK - my [[http://www.colin-baxter.com/|web-page]] gives details of my research.
 
-== Emacs and me ==
-Beginning with AUCTeX and using Emacs as a writing tool, I have, over several years, gradually moving to adopting Emacs as my default application for command-line work, file management, emailer, browser, organiser, etc., etc. The abandonment of most other applications has wonderfully removed desktop clutter.
+== My Relationship with Emacs ==
+Beginning with AUCTeX and using Emacs as a writing tool, I have, over several years, gradually moving to adopting Emacs as my default application for command-line work, file management, emailer, Internet browser, organiser, etc., etc. The abandonment of most other applications has wonderfully removed desktop clutter.
 
 == Contributions to EmacsWiki ==
 # Perl Development Environment (pde) - [[http://www.emacswiki.org/emacs/Comments_on_PerlDevelopEnvironment|Beware of Sytem-Wide Installation]]
