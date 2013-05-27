@@ -96,7 +96,7 @@
 
 ;;; Code:
 
-
+;;;###autoload
 (defun apt-utils-ido-select-search (type)
   "Use ido to select type of package search to do in apt-utils mode"
   (interactive (list (ido-completing-read "Search: " 
@@ -107,6 +107,7 @@
 		       ("selected fields" . apt-utils-search-grep-dctrl))))
     (call-interactively (cdr (assoc type functionmap)))))
 
+;;;###autoload
 (defun apt-utils-ido-select-view (type)
   "Use ido to select type of file to view in apt-utils mode"
   (interactive (list (ido-completing-read "View: " 
@@ -123,6 +124,7 @@
 		       ("man page" . apt-utils-view-man-page))))
     (call-interactively (cdr (assoc type functionmap)))))
 
+;;;###autoload
 (defun apt-utils-ido-select-browse (type)
   "Use ido to select type of webpage to browse in apt-utils mode"
   (interactive (list (ido-completing-read "Webpage: " 
