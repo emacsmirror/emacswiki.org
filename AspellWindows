@@ -1,4 +1,4 @@
-Once you've set up GNU [[EmacsW32]] you will probably want to add spell checking ability.  &nbsp;[http://aspell.net/win32/ aspell] is a good choice as it integrates seamlessly with Emacs.  
+Once you've set up GNU [[EmacsW32]] you will probably want to add spell checking ability.  &nbsp;[http://aspell.net/win32/ aspell] is not a very good choice.  True, it integrates seamlessly with Emacs; but the last version of it for Windows was compiled in 2002 and is hopelessly out of date.
 
 == Setup for 64-bit Windows 7 ==
 
