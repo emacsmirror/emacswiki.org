@@ -16,7 +16,7 @@ I removed the pde installation completely and installed it again - this time in 
    ./Build
    sudo ./Build install > install_log.txt
 
-Root (sudo) is still required for the final step since the installation puts a couple of pde perl modules - Emacs/PDE.pm, Emacs/PDE/Util.pm into /usr/local/share/perl/5.x.x/Emacs, and man pages - Emacs::PDE.3pm, Emacs::PDE::Util.3pm into /usr/local/man/man3. The permissions of the pde directory were of course root:root. I changed them back to my ownership through chown. The pde installation works perfectly now, with no perldoc errors. 
+Root (sudo) is still required for the final step since the installation puts a couple of pde perl modules - Emacs/PDE.pm, Emacs/PDE/Util.pm into /usr/local/share/perl/5.x.x/Emacs, and man pages - Emacs::PDE.3pm, Emacs::PDE::Util.3pm into /usr/local/man/man3. The permissions of the pde directory were of course root:root. I changed them back to my ownership through chown. *This is important* - see the next paragraph. The pde installation works perfectly now, with no perldoc errors. 
 
 The command M-x perldoc RET writes to the file perldoc-cache.el, which is located at ~/.emacs-lisp/pde/tools/perldoc-cache.el. The error arises in the first installation because only root would be able to write to the file if it were located at /usr/local/share/emacs/site-lisp/pde/tools/perdoc-cache.el.
 
