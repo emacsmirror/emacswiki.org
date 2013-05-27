@@ -87,4 +87,20 @@ I just retrained myself to use $_, which works in both eshell and bash.
 
 -- JoeE
 ----
+
+I use eshell mode quite extensively for my daily work. To have quick access to eshells history, I prefer to use ido-completing-read. Have a look at a code snippet from my init.el.
+
+    (add-hook 'eshell-mode-hook
+              (lambda ()
+                (local-set-key (kbd "C-c h")
+                               (lambda ()
+                                 (interactive)
+                                 (insert
+                                  (ido-completing-read "Eshell history: "
+                                                       (delete-dups
+                                                        (ring-elements eshell-history-ring))))))
+                (local-set-key (kbd "C-c C-h") 'eshell-list-history)))
+
+-- Markus P
+----
 CategoryEshell
