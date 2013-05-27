@@ -6,7 +6,7 @@
 ;; Maintainer: Joe Bloggs <vapniks@yahoo.com>
 ;; Copyleft (Ↄ) 2013, Joe Bloggs, all rites reversed.
 ;; Created: 2013-05-12 01:30:22
-;; Version: 0.2
+;; Version: 0.3
 ;; Last-Updated: 2013-05-12 01:30:22
 ;;           By: Joe Bloggs
 ;; URL: https://github.com/vapniks/dired-dups
@@ -84,7 +84,7 @@
 ;;; Code:
 
 
-
+;;;###autoload
 (defun dired-find-duplicates (files dir)
   "Find duplicates of files and put them in a dired buffer.
 FILES is a list of files which will be compared. DIR is the directory
