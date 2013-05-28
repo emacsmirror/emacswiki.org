@@ -2176,7 +2176,7 @@ from the associated menu type in `one-key-types-of-menu' or using `one-key-defau
              (one-key-set-window-state 'close))
             (t (one-key-set-window-state postaction)))
       ;; Reset one-key-buffer-temp-action.
-      (with-current-buffer "*One-Key*" (setq one-key-buffer-temp-action nil)))))
+      (with-current-buffer one-key-buffer-name (setq one-key-buffer-temp-action nil)))))
 
 (defun* one-key-update-buffer-contents (&optional title-string (buf one-key-buffer-name))
   "Update the contents of the one-key menu buffer.
