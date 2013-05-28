@@ -60,7 +60,7 @@ You have of course to install Anything on your emacs.
 
 [new] There is now app-emacs/anything in the Portage tree. -- ulm
 
-The anything package has been replaced by [Helm].  Once you install Helm, you should be able to just type M-x helm-gentoo
+The anything package has been replaced by [https://github.com/emacs-helm/helm Helm].  Once you install Helm, you should be able to just type M-x helm-gentoo
 
 ----
 See also: EmacsForDebian
