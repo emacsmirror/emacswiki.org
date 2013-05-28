@@ -12,7 +12,9 @@ With '''Bookmark+''' you can use bookmarks that were created with any Emacs vers
 == Quick Start ==
 
 Create a bookmark in the file you are editing: ##C-x p m##
+
 See the bookmark list: ##C-x r l##
+
 Jump to a bookmark: ##C-x r b##
 
 [:Libraries]
