@@ -6,7 +6,7 @@
 ;; Maintainer: Joe Bloggs <vapniks@yahoo.com>
 ;; Copyleft (Ↄ) 2013, Joe Bloggs, all rites reversed.
 ;; Created: 2013-05-15 05:04:08
-;; Version: 0.3
+;; Version: 0.4
 ;; Last-Updated: 2013-05-15 05:04:08
 ;;           By: Joe Bloggs
 ;; URL: https://github.com/vapniks/kmacro-decision
@@ -47,7 +47,7 @@
 ;; When the macro is replayed and the query point is reached the user will be prompted with
 ;; options to either quit the macro, continue the rest of the macro, enter recursive edit and
 ;; store a new macro, add a conditional branch (explained next), or replay a previously saved
-;; (named) macro.
+;; (named) macro. The user may also recenter the window by pressing C-l.
 ;; If the user chooses to add a conditional branch they will be prompted for a condition form,
 ;; and an action to perform if that condition evaluates to non-nil. The action can be to quit the macro,
 ;; continue the macro, create a new macro for that condition, or replay a previously saved macro.
@@ -60,7 +60,8 @@
 ;; By adding query points to the end of each newly created macro, macro decision trees can be built up
 ;; and complex automated operations performed.
 
-
+;; Note: you can also use `kbd-macro-query' to choose a named macro to replay when not recording a macro
+;; (in case you forgot the name).
 
 ;;;;
 
@@ -214,16 +215,22 @@ or a symbol corresponding to a named keyboard macro."
                          "
 
 C-g : Quit macro
+C-l : Recenter window about cursor
 SPC : Continue executing macro
 RET : Recursive edit (C-M-c to finish)\n"
                          (unless withcond "?   : Add conditional branch\n")
                          (loop for i from 0 to nmacros
                                for kmacro = (nth (- nmacros i) kmacros)
                                concat (format "%c   : %s\n" (+ 97 i) kmacro))))
-         (key (read-key prompt)))
-    (cond ((= key 32) 'continue)
-          ((= key 13) 'edit)
+         (maxkey (+ 97 (length kmacros)))
+         (key 0))
+    (while (not (or (member key '(7 13 14 32 63))
+                    (and (> key 96) (< key maxkey))))
+      (if (= key 12) (recenter-top-bottom))
+      (setq key (read-key prompt)))
+    (cond ((= key 13) 'edit)
           ((= key 14) 'new)
+          ((= key 32) 'continue)
           ((= key 63) 'branch)
           ((and (> key 96)
                 (< key (+ 97 (length kmacros))))
