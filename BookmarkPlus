@@ -17,6 +17,8 @@ See the bookmark list: ##C-x r l##
 
 Jump to a bookmark: ##C-x r b##
 
+Tag a file: ##C-x p t + a##
+
 [:Libraries]
 == Bookmark+ Libraries ==
 
@@ -4510,4 +4512,3 @@ CategoryBookmarking CategoryHypermedia CategoryPersistence
 CategoryProgramming CategoryRegion CategoryWThirtyTwo
 CategoryProgrammerUtils SessionManagement CategoryDirectories
 CategoryProject
-
