@@ -5,10 +5,6 @@ First several sections are devoted for Linux solutions. Note that the keyboard m
 == Introduction ==
 For some, swapping Control and CapsLock is very important; the virtually useless CapsLock is far easier to press Control, crucial to Emacs yet really awkwardly located.
 
-Some history: Old Unix keyboards had these keys' positions inverted, and Sun keyboards always have.  It seems the current layout became standard about the same time cheap x86 hardware became ubiquitous, although why is beyond me.  [Note that the original IBM PC keyboards also had the Control key in the right place; it was only with the 101-key "enhanced" keyboards that it was moved to its currently useless position.]
-
-It is possible to embrace this "new" keyboard layout, however, and go a step further than just swapping Control and CapsLock keys - and SwapControlAltAndCapsLock for an old Unix or Sun keyboard-like experience.  It's a mindblowing change for the first few days, but it makes keyboard usage much simpler and easier.
-
 == Gnome Desktop Environment ==
 
 Recent versions of the Gnome desktop have a Keyboard Preferences dialog that allows you to configure the Ctrl key position.  On Ubuntu this is found under System -> Preferences -> Keyboard.  Under the "Layout Options" tab choose "Ctrl key position" and it gives you a number of choices.
