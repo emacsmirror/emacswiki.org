@@ -8,6 +8,12 @@ The internal bookmark format (data structure) used by '''Bookmark+''' is compati
 
 With '''Bookmark+''' you can use bookmarks that were created with any Emacs version in any other Emacs version. But see also [[#Compatibility]], below.
 
+[:Quick-Start]
+== Quick Start ==
+
+Create a bookmark in the file you are editing: ##C-x p m##
+See the bookmark list: ##C-x r l##
+Jump to a bookmark: ##C-x r b##
 
 [:Libraries]
 == Bookmark+ Libraries ==
@@ -4502,5 +4508,4 @@ CategoryBookmarking CategoryHypermedia CategoryPersistence
 CategoryProgramming CategoryRegion CategoryWThirtyTwo
 CategoryProgrammerUtils SessionManagement CategoryDirectories
 CategoryProject
-
 
