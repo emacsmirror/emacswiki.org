@@ -43,5 +43,7 @@ On 2012-04-09, there was an announcement on emacs-devel about GoogleSummerOfCode
 
 As of 2013-03, the latest state of "guilemacs" as some call it, can be found at [http://git.hcoop.net/?p=bpt/emacs.git;a=summary BT Templeton's Emacs repository] and in [http://git.hcoop.net/?p=bpt/guile.git;a=summary their Guile repository]. Progress has slowed since the end of GoogleSummerOfCode, but there are still signs of life, and commits being made. Contributions are very welcome; it seems to be almost there. It compiles and runs ERC, Gnus, etc. all fine, behaving indistinguishable from a normal Emacs build, but not entirely without issues; see GuileEmacsTodo.
 
+As of 2013-05, a GoogleSummerOfCode 2013 project for the continuation of the effort so far has been announced, with BT Templeton as the author again: http://www.google-melange.com/gsoc/proposal/review/google/gsoc2013/bpt/35002
+
 ----
 CategoryExtensionLanguage EmacsImplementations
