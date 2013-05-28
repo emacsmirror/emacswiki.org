@@ -1,4 +1,4 @@
-== Beware of Sytem-Wide Installation of PDE ==
+== Beware of Permissions when Installing PDE ==
 
 Beware if, like me, you try to install the Perl Development Environment (pde) on a system-wide emacs. I tried
 
