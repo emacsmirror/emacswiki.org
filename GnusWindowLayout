@@ -39,7 +39,7 @@ very well in the EmacsManual InfoMode node "Window Layout". Some popular example
 Put the above code in your .gnus.el file.
 
 Note that the first symbol in each configuration is a key indicating when the configuration should be applied.
-See the gnus-buffer-configuration variable for a list of all possible window config keys.
+See the {{{gnus-buffer-configuration}}} variable for a list of all possible window config keys.
 Here are the main ones that you may want to alter:
 
 * group : used when the group buffer is to be displayed (e.g. when starting gnus or quitting a Summary buffer)
