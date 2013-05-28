@@ -458,11 +458,16 @@
 ;; Utilize 'booldnf' in linux for converting a logical formula into a DNF.
 ;;
 ;; one-key menus listing all commands in a given elisp library. Prompt user for library name first.
-;; one-key-navigate - for navigating org-files and call trees
+;; one-key-navigate - for navigating org-files and call trees (also have a look at org-favtable: http://orgmode.org/worg/org-contrib/org-favtable.html)
 ;;
 ;; Could use this https://github.com/nicferrier/emacs-kv for handling nested one-key menus?
 ;; (download from marmalade)
-
+;;
+;; Show filter regexp in mode-line
+;;
+;; one-key menu for showing ido keybindings (I always forget them). Needs to revert focus to minibuffer after closing.
+;; In fact we should have menus for all minibuffer modes since there are quite a few keybindings that I always forget
+;; (e.g. M-n in the prompt for dired-mark).
 
 ;;; Require
 (eval-when-compile (require 'cl))
@@ -2171,7 +2176,7 @@ from the associated menu type in `one-key-types-of-menu' or using `one-key-defau
              (one-key-set-window-state 'close))
             (t (one-key-set-window-state postaction)))
       ;; Reset one-key-buffer-temp-action.
-      (setq one-key-buffer-temp-action nil))))
+      (with-current-buffer "*One-Key*" (setq one-key-buffer-temp-action nil)))))
 
 (defun* one-key-update-buffer-contents (&optional title-string (buf one-key-buffer-name))
   "Update the contents of the one-key menu buffer.
