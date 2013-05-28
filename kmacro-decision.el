@@ -175,13 +175,13 @@ is reached."
                         (pre (subseq calling-kbd-macro 0 executing-kbd-macro-index))
                         (condexists (and (> (length pre) 33)
                                          (equal (string-to-vector "(t (kmacro-decision)))")
-                                                (substring pre -26))))
+                                                (subseq pre -26))))
                         (post (subseq calling-kbd-macro executing-kbd-macro-index))
                         (condcode
                          (concatenate 'vector (unless condexists (concatenate 'vector (kbd "M-:") "(cond "))
                                       "(" condition " " actioncode ") "
                                       "(t (kmacro-decision)))")))
-                   (setq pre (if condexists (substring pre 0 -26) (concat pre " ")))
+                   (setq pre (if condexists (subseq pre 0 -26) (concatenate 'vector pre " ")))
                    (setq last-kbd-macro (concatenate 'vector pre condcode post))))
                 ((symbolp val) (funcall val))))))))
 
