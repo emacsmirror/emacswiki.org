@@ -13,11 +13,24 @@ With '''Bookmark+''' you can use bookmarks that were created with any Emacs vers
 
 Create a bookmark in the file you are editing: ##C-x p m##
 
-See the bookmark list: ##C-x r l##
-
 Jump to a bookmark: ##C-x r b##
 
 Tag a file: ##C-x p t + a##
+
+The bookmark+ list, is a list where you can manipulate your
+bookmarks.
+
+See the bookmark list: ##C-x r l##
+
+Add tag(s) to a bookmark: ##T +##
+
+Mark all bookmarks that have a tag: ##T m +##.  It will prompt you
+for tags, hit ##RET## after each tag and a blank ##RET## when done.
+
+Open your marked tags in a Dired buffer: ##M-d >##.  It will ask you
+to name the dired buffer first.  You can use this to keep all your
+project files in one place.  Then just press ##e## on a file to edit
+it.
 
 [:Libraries]
 == Bookmark+ Libraries ==
