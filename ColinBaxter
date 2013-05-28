@@ -5,7 +5,7 @@ I'm a physicist based in the UK - my [[http://www.colin-baxter.com/|web-page]] g
 Beginning with AUCTeX and using Emacs as a writing tool, I have, over several years, gradually moved to adopting Emacs as my default application for command-line work, (AnsiTerm), file management (DiredMode), email, Internet browser (WThreeM), a universal organiser (OrgMode), etc., etc. The abandonment of most other applications has wonderfully removed desktop clutter.
 
 == Contributions to EmacsWiki ==
-#  [[http://www.emacswiki.org/emacs/Comments_on_PerlDevelopEnvironment|Perl Development Environment (pde) - Beware of Sytem-Wide Installation]]
+#  [[http://www.emacswiki.org/emacs/Comments_on_PerlDevelopEnvironment|Beware of Permissions when Installing Perl Development Environment]]
 
 == Emacs Projects ==
 # Even though it is byte-compiled, my init-file is far too long. I am working on moving to a modular form of Emacs initialisation.
