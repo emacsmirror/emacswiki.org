@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Wed May 15 13:58:00 2013 (-0700)
+;; Last-Updated: Tue May 28 08:05:39 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2449
+;;     Update #: 2451
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -242,7 +242,8 @@
 ;;    `bmkp-maybe-unpropertize-string',
 ;;    `bmkp-replace-regexp-in-string',
 ;;    `bmkp-reverse-multi-sort-order', `bmkp-reverse-sort-order',
-;;    `bookmark-name-from-full-record', `bookmark-name-from-record',
+;;    `bmkp-string-match-p', `bookmark-name-from-full-record',
+;;    `bookmark-name-from-record',
 ;;
 ;;  Internal variables defined here:
 ;;
@@ -1217,7 +1218,7 @@ Non-nil INTERACTIVEP means `bookmark-bmenu-list' was called
           (put-text-property (1- (point)) (point) 'face 'bmkp-light-mark))
         (when (and (bmkp-image-bookmark-p bmk)  show-image-file-icon-p)
           (let ((image  (create-image bmkp-bmenu-image-bookmark-icon-file nil nil :ascent 95)))
-            (put-image image (point))))
+            (when image (put-image image (point)))))
         (insert name)
         (move-to-column max-width t)
         (bmkp-bmenu-propertize-item bmk start (point))
