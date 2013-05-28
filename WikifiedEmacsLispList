@@ -540,7 +540,7 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 
 [http://www.emacswiki.org/cgi-bin/wiki/download/dired-details+.el dired-details+.el] --- extensions to library dired-details.el (by Drew Adams)
 
-[http://groups.google.com/groups?as_ugroup=gnu.emacs.sources&as_q=efap dired-efap.el] --- Edit Filename At Point in a dired buffer (by Juan Leon Lahoz Garcia)
+[http://www.emacswiki.org/emacs/dired-efap.el dired-efap.el] --- Edit Filename At Point in a dired buffer (by Juan Leon Lahoz Garcia)
 
 [http://www.northbound-train.com/emacs.html dired-single.el] --- reuse the current dired buffer to visit another directory (by Joe Casadonte)
 
@@ -2595,4 +2595,3 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 = Z =
 
 [http://www.emacswiki.org/cgi-bin/wiki/download/zoom-frm.el zoom-frm.el] --- commands to zoom frame (change font size) (by Drew Adams)
-
