@@ -36,6 +36,21 @@ very well in the EmacsManual InfoMode node "Window Layout". Some popular example
 			 (summary 1.0 point)))))
 
 </pre>
+Put the above code in your .gnus.el file.
+
+Note that the first symbol in each configuration is a key indicating when the configuration should be applied.
+See the gnus-buffer-configuration variable for a list of all possible window config keys.
+Here are the main ones that you may want to alter:
+
+* group : used when the group buffer is to be displayed (e.g. when starting gnus or quitting a Summary buffer)
+* article : used when an article is opened
+* summary : used when a group is opened
+* message : used when starting to compose a new mail
+* reply : used when replying to an article
+* forward : used when forwarding an article
+
+
+
 
 ----
 CategoryGnus
