@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Wed May 15 14:21:02 2013 (-0700)
+;; Last-Updated: Tue May 28 08:06:39 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 15305
+;;     Update #: 15308
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -906,6 +906,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2013/05/28 dadams
+;;     bmkp-bmenu-list-1: Do not call put-image if create-image returns nil.
 ;; 2013/05/15 dadams
 ;;     Moved here from bookmark+-1.el: bmkp-string-match-p.
 ;;     Use bmkp-string-match-p instead of string-match wherever appropriate.
