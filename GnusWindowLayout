@@ -42,12 +42,12 @@ Note that the first symbol in each configuration is a key indicating when the co
 See the `gnus-buffer-configuration' variable for a list of all possible window config keys.
 Here are the main ones that you may want to alter:
 
-* group : used when the group buffer is to be displayed (e.g. when starting gnus or quitting a Summary buffer)
-* article : used when an article is opened
-* summary : used when a group is opened
-* message : used when starting to compose a new mail
-* reply : used when replying to an article
-* forward : used when forwarding an article
+* `group' : used when the group buffer is to be displayed (e.g. when starting gnus or quitting a Summary buffer)
+* `article' : used when an article is opened
+* `summary' : used when a group is opened
+* `message' : used when starting to compose a new mail
+* `reply' : used when replying to an article
+* `forward' : used when forwarding an article
 
 
 
