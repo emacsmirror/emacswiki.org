@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Wed May 15 14:11:52 2013 (-0700)
+;; Last-Updated: Tue May 28 20:56:10 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6311
+;;     Update #: 6319
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -146,8 +146,8 @@
 ;;    `bmkp-desktop-jump', `bmkp-desktop-read', `bmkp-dired-jump',
 ;;    `bmkp-dired-jump-other-window', `bmkp-dired-this-dir-jump',
 ;;    `bmkp-dired-this-dir-jump-other-window',
-;;    `bmkp-edit-bookmark-name-and-file', `bmkp-edit-bookmark-record',
-;;    `bmkp-edit-bookmark-record-send',
+;;    `bmkp-edit-bookmark-name-and-location',
+;;    `bmkp-edit-bookmark-record', `bmkp-edit-bookmark-record-send',
 ;;    `bmkp-edit-bookmark-records-send', `bmkp-edit-tags',
 ;;    `bmkp-edit-tags-send', `bmkp-empty-file',
 ;;    `bmkp-file-target-set', `bmkp-file-all-tags-jump',
@@ -3250,18 +3250,18 @@ Non-nil optional arg SAME-COUNT-P means do not increment
   (unless same-count-p (setq bookmark-alist-modification-count  (1+ bookmark-alist-modification-count)))
   (when (bookmark-time-to-save-p) (bookmark-save)))
 
-;;;###autoload (autoload 'bmkp-edit-bookmark-name-and-file "bookmark+")
-(defun bmkp-edit-bookmark-name-and-file (bookmark &optional edit-record-p)
+;;;###autoload (autoload 'bmkp-edit-bookmark-name-and-location "bookmark+")
+(defun bmkp-edit-bookmark-name-and-location (bookmark &optional edit-record-p)
                                         ; Bound to `C-x p r' (`r' in bookmark list)
-  "Edit BOOKMARK's name and file name, and maybe save them.
-Return a list of the new bookmark name and new file name.
+  "Edit BOOKMARK's name and location, and maybe save them.
+Return a list of the new bookmark name and new location.
 BOOKMARK is a bookmark name or a bookmark record.
 
 Without a prefix arg, you are prompted for the new bookmark name and
- the new file name.  When entering the new name you can use completion
- against existing names.  This completion is lax, so you can easily
- edit an existing name.  See `bookmark-set' for particular keys
-available during this input.
+ the new location name.  When entering the new names you can use
+ completion against existing names.  This completion is lax, so you
+ can easily edit an existing name.  See `bookmark-set' for particular
+ keysavailable during this input.
 
 With a prefix arg, edit the complete bookmark record (the
  internal, Lisp form)."
@@ -3273,32 +3273,64 @@ With a prefix arg, edit the complete bookmark record (the
   (setq bookmark  (bmkp-get-bookmark-in-alist bookmark))
   (if edit-record-p
       (bmkp-edit-bookmark-record bookmark)
-    (let* ((bookmark-name                               (bmkp-bookmark-name-from-record bookmark))
-           (bookmark-filename                           (bookmark-get-filename bookmark-name))
+    (let* ((bmk-name                                    (bmkp-bookmark-name-from-record bookmark))
+           (bmk-location                                (bookmark-prop-get bookmark 'location))
+           (bmk-urlp                                    (and bmk-location
+                                                             (require 'ffap nil t)
+                                                             (ffap-url-p bmk-location)))
+           (bmk-filename                                (bookmark-get-filename bmk-name))
+           (bmk-buffname                                (or (bmkp-get-buffer-name bookmark)
+                                                            (bookmark-prop-get bookmark 'buffer)))
            (new-bmk-name                                (bmkp-completing-read-lax
-                                                         "New bookmark name" bookmark-name))
+                                                         "New bookmark name" bmk-name))
            (icicle-unpropertize-completion-result-flag  t) ; For `read-file-name'.
-           (new-filename                                (read-file-name
-                                                         "New file name (location): "
-                                                         (and bookmark-filename
-                                                              (file-name-directory bookmark-filename))
-                                                         bookmark-filename))
+           (new-location                                (cond (bmk-location
+                                                               (if bmk-urlp
+                                                                   (if (and (featurep 'w3m)
+                                                                            (bmkp-w3m-bookmark-p bmk-name))
+                                                                       (w3m-input-url "New url: " bmk-location)
+                                                                     (require 'ffap)
+                                                                     (ffap-read-file-or-url "New url: " bmk-location))
+                                                                 (read-string "New location: ")))
+                                                              (bmk-filename
+                                                               (if (and (featurep 'w3m)
+                                                                        (bmkp-w3m-bookmark-p bmk-name))
+                                                                   (w3m-input-url "New url: " bmk-filename)
+                                                                 (read-file-name "New file name (location): "
+                                                                                 (and bmk-filename
+                                                                                      (file-name-directory
+                                                                                       bmk-filename))
+                                                                                 bmk-filename)))
+                                                              (bmk-buffname
+                                                               (read-buffer "New location: " bmk-buffname))
+                                                              (t ; No current location.
+                                                               (read-string "New location: "))))
+           ;; $$$$$$ Should we automatically change a W3M bookmark that uses `filename' to use `location' instead?
            (changed-bmk-name-p                          (and (not (equal new-bmk-name ""))
-                                                             (not (equal new-bmk-name bookmark-name))))
-           (changed-filename-p                          (and (not (equal new-filename ""))
-                                                             (not (equal new-filename bookmark-filename)))))
-      (when (or changed-bmk-name-p  changed-filename-p)
-        (when changed-bmk-name-p (bookmark-rename bookmark-name new-bmk-name 'BATCHP))
-        (when changed-filename-p (bookmark-set-filename new-bmk-name new-filename))
+                                                             (not (equal new-bmk-name bmk-name))))
+           (changed-location-p                          (and bmk-location
+                                                             (not (equal new-location ""))
+                                                             (not (equal new-location bmk-location))))
+           (changed-filename-p                          (and bmk-filename
+                                                             (not (equal new-location ""))
+                                                             (not (equal new-location bmk-filename))))
+           (changed-buffname-p                          (and bmk-buffname
+                                                             (not (equal new-location ""))
+                                                             (not (equal new-location bmk-buffname)))))
+      (when (or changed-bmk-name-p  changed-location-p  changed-filename-p  changed-buffname-p)
+        (when changed-bmk-name-p (bookmark-rename bmk-name new-bmk-name 'BATCHP))
+        (when changed-location-p (bookmark-prop-set new-bmk-name 'location new-location))
+        (when changed-filename-p (bookmark-set-filename new-bmk-name new-location))
+        (when changed-buffname-p (bookmark-prop-set new-bmk-name 'buffer-name new-location))
         ;; Change location for Dired too, but not if different from original file name (e.g. a cons).
         (let ((dired-dir  (bookmark-prop-get new-bmk-name 'dired-directory)))
-          (when (and dired-dir  (equal dired-dir bookmark-filename))
-            (bookmark-prop-set new-bmk-name 'dired-directory new-filename)))
+          (when (and dired-dir  (equal dired-dir bmk-filename))
+            (bookmark-prop-set new-bmk-name 'dired-directory new-location)))
         (bmkp-maybe-save-bookmarks)     ; Maybe save automatically.
         (when (and bookmark-alist-modification-count ; Did not save automatically.  Ask user.
                    (y-or-n-p "Save changes? "))
           (bookmark-save))
-        (list new-bmk-name new-filename)))))
+        (list new-bmk-name new-location)))))
 
 (define-derived-mode bmkp-edit-bookmark-records-mode emacs-lisp-mode
     "Edit Bookmark Records"
@@ -8126,7 +8158,7 @@ BOOKMARK is a bookmark name or a bookmark record."
   (require 'w3m)                        ; For `w3m-current-url'.
   `(,w3m-current-title
     ,@(bookmark-make-record-default 'no-file)
-    (filename . ,w3m-current-url)
+    (location . ,w3m-current-url)
     (handler . bmkp-jump-w3m)))
 
 (add-hook 'w3m-mode-hook (lambda () (set (make-local-variable 'bookmark-make-record-function)
@@ -8142,7 +8174,7 @@ BOOKMARK is a bookmark name or a bookmark record."
   "Jump to W3M bookmark BOOKMARK, setting a new tab."
   (require 'w3m)
   (let ((buf   (bmkp-w3m-set-new-buffer-name)))
-    (w3m-browse-url (bookmark-prop-get bookmark 'filename) 'newsession)
+    (w3m-browse-url (bookmark-location bookmark) 'newsession)
     (while (not (get-buffer buf)) (sit-for 1)) ; Be sure we have the W3M buffer.
     (with-current-buffer buf
       (goto-char (point-min))
@@ -8155,7 +8187,7 @@ BOOKMARK is a bookmark name or a bookmark record."
   "Close all W3M sessions and jump to BOOKMARK in a new W3M buffer."
   (require 'w3m)
   (w3m-quit 'force)                     ; Be sure we start with an empty W3M buffer.
-  (w3m-browse-url (bookmark-prop-get bookmark 'filename))
+  (w3m-browse-url (bookmark-location bookmark))
   (with-current-buffer "*w3m*" (while (eq (point-min) (point-max)) (sit-for 1)))
   (bookmark-default-handler
    `("" (buffer . ,(buffer-name (current-buffer))) . ,(bmkp-bookmark-data-from-record bookmark))))
