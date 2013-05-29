@@ -142,3 +142,24 @@ I made the following modifications:
  - I added support for sidecar files, so each annotated file.txt saves out its own file.txt.ipa.
 
 -Ido
+
+== Indented multiline annotations ==
+I noticed it is possible to insert multiline annotations by pressing M-j in the minibuffer. 
+This function redefinition supports indenting multi-line annotations:
+
+;; REDEFINED!
+(defun ipa-set-overlay-text-above (overlay text)
+  (if (string-match ipa-annotation-id-regexp text)
+      (setq text (match-string 2 text)))
+  (save-excursion
+    (let ((ipa-indent-level (current-indentation)))
+      (beginning-of-line)
+      (let ((text (mapconcat #'identity (split-string text "\n")
+                             (concat "\n" (string-repeat " " (+ 2 ipa-indent-level))))))
+        (overlay-put overlay 'before-string
+                     (if (equal text "") ""
+                       (propertize
+                        (concat
+                         (string-repeat " " ipa-indent-level) "* " text "\n")
+                        'face ipa-annotation-face)))))))
+-- Alessandro
