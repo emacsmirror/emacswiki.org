@@ -6,7 +6,7 @@
 ;; Maintainer: Joe Bloggs <vapniks@yahoo.com>
 ;; Copyleft (Ↄ) 2013, Joe Bloggs, all rites reversed.
 ;; Created: 2010
-;; Version: 0.2
+;; Version: 0.3
 ;; Last-Updated: 2013-05-28 03:20:06
 ;;           By: Joe Bloggs
 ;; URL: https://github.com/vapniks/emms-mark-ext
@@ -145,7 +145,15 @@ for words to add to the notes field."
   (define-key emms-mark-mode-map (kbd "/ p") 'emms-mark-mark-performer)
   (define-key emms-mark-mode-map (kbd "/ t") 'emms-mark-mark-title)
   (define-key emms-mark-mode-map (kbd "/ l") 'emms-mark-mark-album)
-  (define-key emms-mark-mode-map (kbd "/ y") 'emms-mark-mark-year))
+  (define-key emms-mark-mode-map (kbd "/ y") 'emms-mark-mark-year)
+  (define-key emms-playlist-mode-map (kbd "/") 'emms-mark-tag-match-map)
+  (define-key emms-playlist-mode-map (kbd "/ m") 'emms-mark-mark-tagged)
+  (define-key emms-playlist-mode-map (kbd "/ a") 'emms-mark-mark-artist)
+  (define-key emms-playlist-mode-map (kbd "/ c") 'emms-mark-mark-composer)
+  (define-key emms-playlist-mode-map (kbd "/ p") 'emms-mark-mark-performer)
+  (define-key emms-playlist-mode-map (kbd "/ t") 'emms-mark-mark-title)
+  (define-key emms-playlist-mode-map (kbd "/ l") 'emms-mark-mark-album)
+  (define-key emms-playlist-mode-map (kbd "/ y") 'emms-mark-mark-year))
 
 (add-hook 'emms-playlist-mode-hook 'emms-mark-ext-hook)
 
