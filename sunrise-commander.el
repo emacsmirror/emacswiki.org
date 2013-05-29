@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 6
-;; RCS Version: $Rev: 446 $
+;; RCS Version: $Rev: 447 $
 ;; Keywords: files, dired, midnight commander, norton, orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -1104,6 +1104,7 @@ the Sunrise Commander."
 (define-key sr-mode-map "\C-cv"       'sr-virtualize-pane)
 (define-key sr-mode-map "\C-c\C-v"    'sr-pure-virtual)
 (define-key sr-mode-map "Q"           'sr-do-query-replace-regexp)
+(define-key sr-mode-map "\C-q"        'sr-multi-occur)
 (define-key sr-mode-map "F"           'sr-do-find-marked-files)
 (define-key sr-mode-map "A"           'sr-do-search)
 (define-key sr-mode-map "\C-cs"       'sr-sticky-isearch-forward)
@@ -3330,6 +3331,19 @@ items (as opposed to the current default directory). Removes itself from the
         (setcar args (replace-regexp-in-string
                       "find \." (format "find %s" sr-find-items) (car args)))))
     (apply operation args)))
+
+(defun sr-multi-occur (string)
+  "Execute `multi-occur' on all marked files. Note this command needs to visit
+first all the selected files."
+  (interactive "sSearch in selected files for occurrences of: ")
+  (let ((regular-files (delq nil (mapcar (lambda (x)
+                                           (and (file-regular-p x) x)) 
+                                         (dired-get-marked-files)))))
+    (if (not regular-files)
+        (error "Sunrise: no regular files to search")
+      (sr-quit)
+      (multi-occur (mapcar 'find-file regular-files) string)
+      (other-window 1))))
 
 (defun sr-flatten-branch (&optional mode)
   "Display a flat view of the items contained in the current directory and all
