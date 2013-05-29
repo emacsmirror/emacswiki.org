@@ -7,9 +7,9 @@
 ;; Copyright (C) 2010-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  1 15:34:50 2011 (-0700)
 ;; Version:
-;; Last-Updated: Mon Apr 15 19:28:02 2013 (-0700)
+;; Last-Updated: Tue May 28 20:49:42 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 602
+;;     Update #: 604
 ;; URL: http://www.emacswiki.org/bookmark+-key.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -151,7 +151,7 @@
 (define-key bookmark-map "N"      'bmkp-navlist-bmenu-list)                           ; `C-x p N'
 (define-key bookmark-map "o"      'bookmark-jump-other-window)           ; `C-x p o' (also `C-x 4 j j')
 (define-key bookmark-map "q"      'bookmark-jump-other-window)           ; `C-x p q' (also `C-x 4 j j')
-(define-key bookmark-map "r"      'bmkp-edit-bookmark-name-and-file)                  ; `C-x p r'
+(define-key bookmark-map "r"      'bmkp-edit-bookmark-name-and-location)              ; `C-x p r'
 (define-key bookmark-map "x"      'bmkp-toggle-autotemp-on-set)                       ; `C-x p x'
 (define-key bookmark-map "y"      'bmkp-set-bookmark-file-bookmark)                   ; `C-x p y'
 (when (featurep 'bookmark+-lit)
@@ -601,17 +601,17 @@
 
 (define-key-after menu-bar-bookmark-map [separator-edit] '("--") ;-------------------------------------
                   'bmkp-purge-notags-autofiles)
-;; Remove this predefined item - we use `bmkp-edit-bookmark-name-and-file' instead.
+;; Remove this predefined item - we use `bmkp-edit-bookmark-name-and-location' instead.
 (define-key menu-bar-bookmark-map [rename] nil)
 
-(define-key-after menu-bar-bookmark-map [bmkp-edit-bookmark-name-and-file]
-  '(menu-item "Rename or Relocate Bookmark..." bmkp-edit-bookmark-name-and-file
+(define-key-after menu-bar-bookmark-map [bmkp-edit-bookmark-name-and-location]
+  '(menu-item "Rename or Relocate Bookmark..." bmkp-edit-bookmark-name-and-location
     :help "Rename and/or relocate a bookmark")
   'separator-edit)
 (define-key-after menu-bar-bookmark-map [bmkp-edit-bookmark-record]
   '(menu-item "Edit Bookmark Record (Lisp)..." bmkp-edit-bookmark-record
     :help "Edit the internal record of a bookmark,a Lisp sexp")
-  'bmkp-edit-bookmark-name-and-file)
+  'bmkp-edit-bookmark-name-and-location)
 
 (define-key-after menu-bar-bookmark-map [separator-show] '("--") ;-------------------------------------
                   'bmkp-edit-bookmark-record)
