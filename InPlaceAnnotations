@@ -146,7 +146,7 @@ I made the following modifications:
 == Indented multiline annotations ==
 I noticed it is possible to insert multiline annotations by pressing M-j in the minibuffer. 
 This function redefinition supports indenting multi-line annotations:
-
+<pre>
 ;; REDEFINED!
 (defun ipa-set-overlay-text-above (overlay text)
   (if (string-match ipa-annotation-id-regexp text)
@@ -162,4 +162,5 @@ This function redefinition supports indenting multi-line annotations:
                         (concat
                          (string-repeat " " ipa-indent-level) "* " text "\n")
                         'face ipa-annotation-face)))))))
+</pre>
 -- Alessandro
