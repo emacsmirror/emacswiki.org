@@ -139,7 +139,6 @@ the Emacs Lisp function 'do-applescript' and the Mac OS X application
    (setq apscript (format "
     set cusrPath to (path to \"cusr\" as string)
     set soundAlias to (cusrPath & \"notebook:sounds:DJ Scratch.aiff\") as alias ;; path to your sound file from your home directory
-
     tell application \"Play Sound\"
 	play (soundAlias as alias)
     end tell
