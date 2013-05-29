@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Tue May 28 08:05:39 2013 (-0700)
+;; Last-Updated: Tue May 28 21:04:06 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2451
+;;     Update #: 2457
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -104,7 +104,7 @@
 ;;    `bmkp-bmenu-describe-this+move-down',
 ;;    `bmkp-bmenu-describe-this+move-up',
 ;;    `bmkp-bmenu-describe-this-bookmark',`bmkp-bmenu-dired-marked',
-;;    `bmkp-bmenu-edit-bookmark-name-and-file', `bmkp-edit-tags-send',
+;;    `bmkp-bmenu-edit-bookmark-name-and-location',
 ;;    `bmkp-bmenu-filter-annotation-incrementally',
 ;;    `bmkp-bmenu-filter-bookmark-name-incrementally',
 ;;    `bmkp-bmenu-filter-file-name-incrementally',
@@ -377,7 +377,7 @@ Elements of ALIST that are not conses are ignored."
 ;; bmkp-completing-read-file-name, bmkp-current-bookmark-file,
 ;; bmkp-current-sort-order, bmkp-describe-bookmark,
 ;; bmkp-describe-bookmark-internals, bmkp-desktop-bookmark-p,
-;; bmkp-edit-bookmark-name-and-file, bmkp-file-alpha-cp,
+;; bmkp-edit-bookmark-name-and-location, bmkp-file-alpha-cp,
 ;; bmkp-file-remote-p, bmkp-function-bookmark-p,
 ;; bookmark-get-bookmark, bmkp-get-buffer-name, bmkp-get-tags,
 ;; bmkp-gnus-bookmark-p, bmkp-gnus-cp, bmkp-handler-cp,
@@ -1484,7 +1484,7 @@ Modify, Delete Bookmarks
 
 \(See also `Tags', next.)
 
-\\[bmkp-bmenu-edit-bookmark-name-and-file]\t- Rename or relocate bookmark
+\\[bmkp-bmenu-edit-bookmark-name-and-location]\t- Rename or relocate bookmark
 \\[bmkp-bmenu-edit-tags]\t- Edit bookmark's tags
 C-u \\[bmkp-bmenu-show-or-edit-annotation]\t- Edit bookmark's annotation
 \\[bmkp-bmenu-edit-bookmark-record]\t- Edit internal Lisp record for bookmark
@@ -4159,9 +4159,9 @@ specified tags, in order, separated by hyphens (`-').  E.g., for TAGS
         (when (and msg-p  (not errorp))
           (message "Defined and saved command `%s'" (concat "bmkp-bmenu-sort-" sort-order)))))))
 
-;;;###autoload (autoload 'bmkp-bmenu-edit-bookmark-name-and-file "bookmark+")
-(defun bmkp-bmenu-edit-bookmark-name-and-file (&optional internalp) ; Bound to `r' in bookmark list
-  "Edit the bookmark under the cursor: its name and file name.
+;;;###autoload (autoload 'bmkp-bmenu-edit-bookmark-name-and-location "bookmark+")
+(defun bmkp-bmenu-edit-bookmark-name-and-location (&optional internalp) ; Bound to `r' in bookmark list
+  "Edit the bookmark under the cursor: its name and location.
 With a prefix argument, edit the complete bookmark record (the
 internal, Lisp form)."
   (interactive "P")
@@ -4170,7 +4170,7 @@ internal, Lisp form)."
   (let ((bmk-name  (bookmark-bmenu-bookmark)))
     (if internalp
         (bmkp-edit-bookmark-record bmk-name)
-      (let* ((new-data  (bmkp-edit-bookmark-name-and-file bmk-name))
+      (let* ((new-data  (bmkp-edit-bookmark-name-and-location bmk-name))
              (new-name  (car new-data)))
         (if (not new-data) (message "No changes made") (bmkp-refresh-menu-list new-name))))))
 
@@ -4887,7 +4887,7 @@ Non-nil optional ALLP means return all bookmarks: `bookmark-alist'."
 (define-key bookmark-bmenu-mode-map "PT"                   'bmkp-bmenu-filter-tags-incrementally)
 (define-key bookmark-bmenu-mode-map "q"                    'bmkp-bmenu-quit)
 (define-key bookmark-bmenu-mode-map "\M-q"            'bmkp-bmenu-query-replace-marked-bookmarks-regexp)
-(define-key bookmark-bmenu-mode-map "r"                    'bmkp-bmenu-edit-bookmark-name-and-file)
+(define-key bookmark-bmenu-mode-map "r"                    'bmkp-bmenu-edit-bookmark-name-and-location)
 (define-key bookmark-bmenu-mode-map "R"                    nil) ; For Emacs 20
 (define-key bookmark-bmenu-mode-map "RM"                   'bmkp-bmenu-mark-region-bookmarks)
 (define-key bookmark-bmenu-mode-map "RS"                   'bmkp-bmenu-show-only-regions)
@@ -5557,7 +5557,7 @@ Non-nil optional ALLP means return all bookmarks: `bookmark-alist'."
 
                                     "--" ; ----------------------------------------------------
                                     ["Toggle Temporary/Savable" bmkp-bmenu-toggle-temporary]
-                                    ["Rename or Relocate..." bmkp-bmenu-edit-bookmark-name-and-file]
+                                    ["Rename or Relocate..." bmkp-bmenu-edit-bookmark-name-and-location]
                                     ["Edit Internal Record (Lisp)..." bmkp-bmenu-edit-bookmark-record]
                                     ["Show Annotation" bookmark-bmenu-show-annotation
                                      :active (bookmark-get-annotation bmk-name)]
