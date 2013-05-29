@@ -7,9 +7,9 @@
 ;; Copyright (C) 1995-2013, Drew Adams, all rights reserved.
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 21.0
-;; Last-Updated: Mon Jan 28 06:47:14 2013 (-0800)
+;; Last-Updated: Tue May 28 22:25:41 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 3174
+;;     Update #: 3179
 ;; URL: http://www.emacswiki.org/highlight.el
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
 ;; Keywords: faces, help, local
@@ -548,6 +548,9 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2013/05/28 dadams
+;;     Require easymenu.el.
+;;     hlt-highlighter, hlt-eraser: Wrap with with-current-buffer.  Thx to Michael Heerdegen.
 ;; 2012/07/11 dadams
 ;;     hlt-(highlighter|eraser)-mouse: Skip over event of choosing menu item, for Emacs 20-21.
 ;; 2011/12/01 dadams
@@ -746,6 +749,7 @@
 ;;
 ;;; Code:
 
+(require 'easymenu) ;; easy-menu-add-item
 (require 'frame-fns nil t) ;; (no error if not found): flash-ding
 (when (< emacs-major-version 21) (require 'faces+ nil t)) ;; (no error if not found):
                                                           ;; read-face-name
@@ -910,32 +914,33 @@ You can use command `hlt-choose-default-face' to choose a different face."
            (start-point      (posn-point start-posn))
            (end-point        start-point)
            (start-window     (posn-window start-posn)))
-      (let ((read-only                          buffer-read-only)
-            (modified-p                         (buffer-modified-p))
-            (inhibit-modification-hooks         t)
-            (overlay                            (and hlt-use-overlays-flag
-                                                     (make-overlay start-point start-point)))
-            ;; Otherwise, `put-text-property' calls this, which would remove highlight.
-            (font-lock-fontify-region-function  'ignore)
-            event)
-        (setq buffer-read-only  nil)
-        (track-mouse
-          (while (progn (setq event  (read-event))
-                        (or (mouse-movement-p event)
-                            (memq (car-safe event) '(switch-frame select-window))))
-            (unless (memq (car-safe event) '(switch-frame select-window))
-              (setq end-point  (posn-point (event-end event))))
-            (cond (hlt-use-overlays-flag
-                   (setq overlay  (move-overlay overlay start-point end-point))
-                   (overlay-put overlay 'face          hlt-last-face)
-                   (overlay-put overlay 'hlt-highlight hlt-last-face))
-                  (t
-                   (put-text-property start-point end-point 'face             hlt-last-face)
-                   (put-text-property start-point end-point 'hlt-highlight    hlt-last-face)
-                   (put-text-property start-point end-point 'font-lock-ignore t)
-                   ))))
-        (setq buffer-read-only  read-only)
-        (set-buffer-modified-p modified-p)))))
+      (with-current-buffer (window-buffer start-window)
+        (let ((read-only                          buffer-read-only)
+              (modified-p                         (buffer-modified-p))
+              (inhibit-modification-hooks         t)
+              (overlay                            (and hlt-use-overlays-flag
+                                                       (make-overlay start-point start-point)))
+              ;; Otherwise, `put-text-property' calls this, which would remove highlight.
+              (font-lock-fontify-region-function  'ignore)
+              event)
+          (setq buffer-read-only  nil)
+          (track-mouse
+            (while (progn (setq event  (read-event))
+                          (or (mouse-movement-p event)
+                              (memq (car-safe event) '(switch-frame select-window))))
+              (unless (memq (car-safe event) '(switch-frame select-window))
+                (setq end-point  (posn-point (event-end event))))
+              (cond (hlt-use-overlays-flag
+                     (setq overlay  (move-overlay overlay start-point end-point))
+                     (overlay-put overlay 'face          hlt-last-face)
+                     (overlay-put overlay 'hlt-highlight hlt-last-face))
+                    (t
+                     (put-text-property start-point end-point 'face             hlt-last-face)
+                     (put-text-property start-point end-point 'hlt-highlight    hlt-last-face)
+                     (put-text-property start-point end-point 'font-lock-ignore t)
+                     ))))
+          (setq buffer-read-only  read-only)
+          (set-buffer-modified-p modified-p))))))
 
 ;;;###autoload
 (defun hlt-eraser (start-event)         ; Suggested binding: `C-x S-mouse-2'.
@@ -956,29 +961,30 @@ overlays for the last face and text properties for all faces."
            (start            (posn-point start-posn))
            (end              start)
            (start-window     (posn-window start-posn)))
-      (let ((read-only                          buffer-read-only)
-            (modified-p                         (buffer-modified-p))
-            (inhibit-modification-hooks         t)
-            ;; Otherwise, `put-text-property' calls this, which removes highlight.
-            (font-lock-fontify-region-function  'ignore)
-            event)
-        (setq buffer-read-only  nil)
-        (track-mouse
-          (while (progn (setq event  (read-event))
-                        (or (mouse-movement-p event)
-                            (memq (car-safe event) '(switch-frame select-window))))
-            (unless (memq (car-safe event) '(switch-frame select-window))
-              (let ((posn-point  (posn-point (event-end event))))
-                (setq end    (max end posn-point)
-                      start  (min start posn-point))))
-            (when hlt-use-overlays-flag ; Erase overlay properties
-              (dolist (ov  (overlays-in start end))
-                (hlt-unhighlight-for-overlay ov start end hlt-last-face)))
-            (unless (eq 'only hlt-use-overlays-flag) ; Erase text properties
-              (remove-text-properties
-               start end '(face nil hlt-highlight nil font-lock-ignore nil)))))
-        (setq buffer-read-only  read-only)
-        (set-buffer-modified-p modified-p)))))
+      (with-current-buffer (window-buffer start-window)
+        (let ((read-only                          buffer-read-only)
+              (modified-p                         (buffer-modified-p))
+              (inhibit-modification-hooks         t)
+              ;; Otherwise, `put-text-property' calls this, which removes highlight.
+              (font-lock-fontify-region-function  'ignore)
+              event)
+          (setq buffer-read-only  nil)
+          (track-mouse
+            (while (progn (setq event  (read-event))
+                          (or (mouse-movement-p event)
+                              (memq (car-safe event) '(switch-frame select-window))))
+              (unless (memq (car-safe event) '(switch-frame select-window))
+                (let ((posn-point  (posn-point (event-end event))))
+                  (setq end    (max end posn-point)
+                        start  (min start posn-point))))
+              (when hlt-use-overlays-flag ; Erase overlay properties
+                (dolist (ov  (overlays-in start end))
+                  (hlt-unhighlight-for-overlay ov start end hlt-last-face)))
+              (unless (eq 'only hlt-use-overlays-flag) ; Erase text properties
+                (remove-text-properties
+                 start end '(face nil hlt-highlight nil font-lock-ignore nil)))))
+          (setq buffer-read-only  read-only)
+          (set-buffer-modified-p modified-p))))))
 
 ;;;###autoload
 (defun hlt-highlighter-mouse ()
