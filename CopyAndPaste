@@ -71,7 +71,7 @@ Not sure when this appeared in GNU emacs, or if it's how the developers intended
 The "x-select-enable-clipboard t" method seems to resuscitate the "traditional" (and IMHO deeply strange) emacs interaction with the X11 primary and clipboard selections.  EVERYTHING you highlight as a region winds up in both PRIMARY and CLIPBOARD X11 selections.  That is... painful. (but N.B. no longer true in CVS emacs, which has x-select-enable-primary to manage primary behaviour separately as above).
 
 
-But, some heroic emacs developer saw fit to produce the following functions, though they are by default bound to X keys I doubt many people have (actual keys called <code>cut/copy/paste</code>), so one can put the following in <code>.emacs</code> instead:
+But, some heroic emacs developer saw fit to produce the following functions, though they are by default bound to X keys that I doubt many people have (actual keys called <code>cut/copy/paste</code>), so one can put the following in <code>.emacs</code> instead:
 <pre>
 (global-set-key "\C-w" 'clipboard-kill-region)
 (global-set-key "\M-w" 'clipboard-kill-ring-save)
