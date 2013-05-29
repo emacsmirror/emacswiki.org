@@ -44,7 +44,14 @@ Just a note: I have been reading everything I have been able to find about print
 [new]
 w32-print no longer exists.  I believe that hfyview from nxhtml works, though.
 
+[new]
+I just found this and already love it; mostly for now being able to copy code for pasting into e-mails. I have couple of questions/requests:
 
+# I use [http://www.emacswiki.org/LineNumbers#toc5 nlinum]. Any chance the generated can html can show the line numbers? 
+
+# The formatted html does not look quite the same as my buffer, for example see [http://i.imgur.com/qcnmLSl.gif here]. I realize this might be property of browser configuration  but I am hoping you will know how to correct the situation
+
+# Is it possible to extend styles so that changes to a basic style like <code>body</code> affects other styles like <code>span.constant</code>?
 
 ----
 *See also:* PrintingFromEmacs,
