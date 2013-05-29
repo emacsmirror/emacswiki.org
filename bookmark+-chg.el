@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue May 28 08:06:39 2013 (-0700)
+;; Last-Updated: Tue May 28 20:57:10 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 15308
+;;     Update #: 15315
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,11 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2013/05/28 dadams
+;;     Renamed: bmkp-edit-bookmark-name-and-file to bmkp-edit-bookmark-name-and-location.
+;;     bmkp-edit-bookmark-name-and-location: Handle location property, urls.
+;;     bmkp-jump-w3m-new-session, bmkp-jump-w3m-only-one-tab: Use location property, not filename.
+;;     Thx to Michael Heerdegen.
 ;; 2013/05/15 dadams
 ;;     bmkp-*-alist-only: Make sure we call bookmark-maybe-load-default-file.
 ;;     Moved bmkp-string-match-p to bookmark+-bmu.el.
@@ -907,6 +912,8 @@
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
 ;; 2013/05/28 dadams
+;;     Renamed: bmkp-bmenu-edit-bookmark-name-and-file to bmkp-bmenu-edit-bookmark-name-and-location.
+;; 2013/05/28 dadams
 ;;     bmkp-bmenu-list-1: Do not call put-image if create-image returns nil.
 ;; 2013/05/15 dadams
 ;;     Moved here from bookmark+-1.el: bmkp-string-match-p.
@@ -1297,6 +1304,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-key.el'")
 ;;
+;; 2013/05/28 dadams
+;;     Applied renaming of bmkp-edit-bookmark-name-and-file to bmkp-edit-bookmark-name-and-location.
 ;; 2013/04/15 dadams
 ;;     In bmkp-set-map: Bind F to bmkp-make-function-bookmark (C-x p c F).
 ;;                      Bind C-k to bmkp-wrap-bookmark-with-last-kbd-macro (C-x p c C-k).
