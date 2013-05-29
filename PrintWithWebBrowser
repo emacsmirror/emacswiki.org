@@ -49,11 +49,11 @@ I just found this and already love it; mostly for now being able to copy code fo
 
 # I use [http://www.emacswiki.org/LineNumbers#toc5 nlinum]. Any chance the generated can html can show the line numbers? 
 
-# The formatted html does not look quite the same as my buffer, as follows:. 
+# The formatted html does not look quite the same as my buffer, here's a screenshot of how it looks in my Emacs and in browsers
 
-:: http://i.imgur.com/qcnmLSl.gif 
+::: http://i.imgur.com/u4eAxyj.png
 
-I realize this might be property of browser configuration  but I am hoping you will know how to correct the situation
+The important differences for me are that the browser has slightly smaller size and (I think) the small amount of space between lines is lost. I realize this might be property of browser configuration  but I am hoping you will know how to correct the situation
 
 # Is it possible to extend styles so that changes to a basic style like <code>body</code> affects other styles like <code>span.constant</code>?
 
