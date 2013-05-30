@@ -217,63 +217,37 @@ In the recently released Emacs 24.1, one could utilitize the fact that SMTPMAIL 
 [new]
 Following code makes use of gnus-newsgroup-name variable. It adds a hook for message-mode. This makes sense as FROM field is also handled in these function.You can extend to more number of smtp servers.
 
-;;To set the yahoo smtp details
+    ;;To set the yahoo smtp details
+    (defun setYahoo ()
+      (interactive)
+      (message "from yahoo")
+      (setq user-mail-address "Ymailusername@yahoo.co.in")
+      (setq message-send-mail-function 'smtpmail-send-it
+            smtpmail-auth-credentials '(("smtp.mail.yahoo.com" 587 "Ymail@yahoo.co.in" nil))
+            smtpmail-default-smtp-server "smtp.mail.yahoo.com"
+            smtpmail-smtp-server "smtp.mail.yahoo.com"
+            smtpmail-smtp-service 587
+            smtpmail-local-domain "yahoo.com"))
 
-(defun setYahoo ()
+    ;;To set gmail smtp details
+    (defun setGmail ()
+      (interactive)
+      (message "from gmail")
+      (setq user-mail-address "GmailUsername@gmail.com")
+      (setq message-send-mail-function 'smtpmail-send-it
+            smtpmail-starttls-credentials '(("smtp.gmail.com" 587 nil nil))
+            smtpmail-auth-credentials '(("smtp.gmail.com" 587 "GmailUsername@gmail.com" nil))
+            smtpmail-default-smtp-server "smtp.gmail.com"
+            smtpmail-smtp-server "smtp.gmail.com"
+            smtpmail-smtp-service 587
+            smtpmail-local-domain "gmail.com"))
 
-  (interactive)
-
-  (message "from yahoo")
-
-  (setq user-mail-address "Ymailusername@yahoo.co.in")
-
-  (setq message-send-mail-function 'smtpmail-send-it
-
-    smtpmail-auth-credentials '(("smtp.mail.yahoo.com" 587 "Ymail@yahoo.co.in" nil))
-
-    smtpmail-default-smtp-server "smtp.mail.yahoo.com"
-
-    smtpmail-smtp-server "smtp.mail.yahoo.com"
-
-    smtpmail-smtp-service 587
-
-    smtpmail-local-domain "yahoo.com"))
-
-;;To set gmail smtp details
-
-(defun setGmail ()
-
-  (interactive)
-
-  (message "from gmail")
-
-  (setq user-mail-address "GmailUsername@gmail.com")
-
-  (setq message-send-mail-function 'smtpmail-send-it
-
-    smtpmail-starttls-credentials '(("smtp.gmail.com" 587 nil nil))
-
-    smtpmail-auth-credentials '(("smtp.gmail.com" 587 "GmailUsername@gmail.com" nil))
-
-    smtpmail-default-smtp-server "smtp.gmail.com"
-
-    smtpmail-smtp-server "smtp.gmail.com"
-
-    smtpmail-smtp-service 587
-
-    smtpmail-local-domain "gmail.com"))
-
-;;Select automatically while replying 
-
-;;(add-hook 'message-mode-hook 'showMsg)
-
-(add-hook 'message-mode-hook
-
-      '(lambda ()
-
-         (cond ((string-match "yahoomail" gnus-newsgroup-name) (setYahoo))
-
-           (t (setGmail)))))
+    ;;Select automatically while replying 
+    ;;(add-hook 'message-mode-hook 'showMsg)
+    (add-hook 'message-mode-hook
+              '(lambda ()
+                 (cond ((string-match "yahoomail" gnus-newsgroup-name) (setYahoo))
+                       (t (setGmail)))))
 
 - Abhijeet Dhadge
 ----
