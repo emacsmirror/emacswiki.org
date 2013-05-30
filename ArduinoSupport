@@ -23,6 +23,13 @@ This is what I did in order to get Arduino support for OS X:
 ~/.emacs.d/vendor $ make EMACS=/Applications/Emacs.app/Contents/MacOS/Emacs
 </pre>
 
+or, if you are using [http://aquamacs.org/ Aquamacs], instead of using ##make## open ##~/.emacs.d/vendor/cedet/cedet-build.el## in Aquamacs then:
+
+<pre>
+M-x eval-buffer
+M-x cedet-build-in-this-emacs
+</pre>
+
 Then, following the INSTALL file, add this to your emacs config file:
 
 <pre>
