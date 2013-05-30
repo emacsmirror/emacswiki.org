@@ -326,6 +326,9 @@ There is a small piece of software called '''keymap''' which modifies the regist
 ===KeyMapper===
 It seems that keymap.exe does not work on Windows 7. KeyMapper (http://code.google.com/p/keymapper/) works fine.
 
+===SharpKeys===
+[http://sharpkeys.codeplex.com/ SharpKeys] works like Keymap and KeyMapper as it will modify the registry for you, and it is know to work with Windows 8.
+
 === In Lisp? ===
 I know this is fairly simple to do for emacs only, but I've never looked into how exactly, and Lisp is not my forte.  Anyone?
 
