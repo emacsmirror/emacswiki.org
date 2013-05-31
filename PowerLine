@@ -11,6 +11,10 @@ Lisp:powerline.el was first released here on the Emacswiki by Nicolas Rougier an
 https://github.com/milkypostman/powerline
 
 I have rewritten this package and am hosting the repository on Github.  My version uses many of the techniques in the original---posted here---but tries to make it easier to add new things.  Please submit issues there and any of your own mode-line themes using PowerLine --DonaldCurtis
+==== Evil integration ====
+available at https://github.com/laynor/emacs-conf/blob/master/packages/sm-package-powerline.el 
+
+[[image:PowerlineEvilScreenshot]]
 
 === Jonathan Chu's version ===
 
