@@ -9,3 +9,4 @@ Here are some of the pages in category Comparing:
 
 == Howtos ==
 * [[CompareBuffer|Compare a buffer with the underlying file]]
+* [[CompareRegions|Compare regions within a buffer]]
