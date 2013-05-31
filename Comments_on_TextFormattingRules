@@ -115,3 +115,16 @@ For example how would one mark up  M-x ediff-regions-wordwise ?
 
 -- jasonblewis 2013-05-31 02:11 UTC
 
+
+----
+
+Use ##`...'##.  E.g., Here's an example of using the `M-x' key to execute command `ediff-regions-wordwise': `M-x ediff-regions-wordwise'.
+
+You can also show code snippets by indenting them (space chars before each line) or wrapping the set of lines with ##{{{## and ##}}}##. Example:
+
+{{{
+   M-x ediff-regions-wordwise
+}}}
+
+-- DrewAdams 2013-05-31 02:50 UTC
+
