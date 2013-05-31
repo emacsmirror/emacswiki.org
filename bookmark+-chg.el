@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue May 28 20:57:10 2013 (-0700)
+;; Last-Updated: Fri May 31 14:59:26 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 15315
+;;     Update #: 15317
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2013/05/31 dadams
+;;     bmkp-save-menu-list-state: Display warning, do not raise error, if write-file fails.
 ;; 2013/05/28 dadams
 ;;     Renamed: bmkp-edit-bookmark-name-and-file to bmkp-edit-bookmark-name-and-location.
 ;;     bmkp-edit-bookmark-name-and-location: Handle location property, urls.
