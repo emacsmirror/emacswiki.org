@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Tue May 28 20:56:10 2013 (-0700)
+;; Last-Updated: Fri May 31 14:58:12 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6319
+;;     Update #: 6326
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -3742,9 +3742,9 @@ Non-interactively, optional arg MSG-P means display progress messages."
       (with-current-buffer (find-file-noselect bmkp-bmenu-state-file)
         (goto-char (point-min))
         (delete-region (point-min) (point-max))
-        (let ((print-length     nil)
-              (print-level      nil)
-              (print-circle     t)
+        (let ((print-length           nil)
+              (print-level            nil)
+              (print-circle           t)
               (version-control        (case bookmark-version-control
                                         ((nil)      nil)
                                         (never      'never)
@@ -3755,7 +3755,11 @@ Non-interactively, optional arg MSG-P means display progress messages."
           (pp config-list (current-buffer))
           (condition-case nil
               (write-file bmkp-bmenu-state-file)
-            (file-error (setq errorp  t) (error "CANNOT WRITE FILE `%s'" bmkp-bmenu-state-file)))
+            (file-error
+             (setq errorp  t)
+             ;; Do NOT raise an error, because used in `bookmark-exit-hook-internal'.  (Need to be able to exit.)
+             (let ((msg  (format "CANNOT WRITE FILE `%s'" bmkp-bmenu-state-file)))
+               (if (fboundp 'display-warning) (display-warning 'bookmark-plus msg) (message msg)))))
           (kill-buffer (current-buffer))
           (when (and msg-p  (not errorp)) (message "Saving bookmark-list display state...done")))))))
 
