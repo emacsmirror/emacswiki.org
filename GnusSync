@@ -127,5 +127,34 @@ I myself discovered that what's provided above (authored by myself) is still not
 
 this change excludes all the unnecessary "Incoming*" files to be pushed onto servers.
 
+
+
+
+== With Unison
+
+I use unison for all my syncing needs. This is much saver than --delete on rsync, I think. This profile does the trick.
+
+    path = Mail
+    path = News
+    path = .newsrc.eld
+    path = .newsrc
+    path = .nnmail-cache
+    path = .signature
+
+
+    ignore = Path {Mail/swtmploc*}
+    ignore = Path {Mail/Incoming*}
+
+
+I have not found out what Incoming* or swtmploc* files are for, but they tend to build up. 
+
+One problem with this approach is that unison works ideally for one machine to another, but can
+generate artificial conflicts when uses with a more heavy duty, multimachine syncing. If you do 
+get conflicts, they are, unfortunately, a pain to fix. I move all the articles which are conflicting
+to a new group with gnus, rerun unison, then move all the conflicted articles back into mail.misc.
+Occasionally, I also find gnus looses some of the "read messages" state -- I think this is all kept in 
+.newsrc.eld which is a shame. A single file per group would be less sensitive to sync errors.
+
+
 ----
 CategoryGnus
