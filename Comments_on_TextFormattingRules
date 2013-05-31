@@ -1,12 +1,18 @@
-I wonder whether something simple as this might be useful when listing pages with a particular prefix. The major drawback I see is that the resulting list is _not annotated_.
+== List of pages matching a regular expression ==
+
+Should we document this?
+
+Example:
 
 {{{
-<include list "^AlexSchroeder">
+<include list "^Icicles_-">
 }}}
 
-<include list "^AlexSchroeder">
+Result
 
--- AlexSchroeder 2013-02-03 00:07 UTC
+<include list "^Icicles_-">
+
+-- AlexSchroeder 
 
 
 ----
@@ -17,8 +23,11 @@ Is this about using ##<include list "^AlexSchroeder">## on a wiki page to displa
 
 -- DrewAdams 2013-02-03 02:18 UTC
 
-
 ----
+
+The use case: depending on how you named pages, this generates a table of contents for a set of pages such that you don't have to manually maintain an index to all the pages belonging to a collection. But there are drawbacks: the pages them selves are not automatically linked to a structure (no next, previous, contents); the page titles are listed without annotation ("this page explains how to do foo…"). -- Alex
+
+== Alternate-row highlighting ==
 
 [[TextFormattingRules#new]] - alternate-row highlighting (''Alternate contributions (alternate [new]’s) are shaded,'') does not appear to be active (with the new CSS?).
 
@@ -52,7 +61,7 @@ http://i.imgur.com/5suVsME.png
 -- AlexSchroeder 2013-04-30 13:25 UTC
 
 
-----
+== Official documentation ==
 
 Shouldn't '''official''' documentation be included here? Or certainly have more prominence.
 I'm surprised to find an offsite-link buried in a sub-section.
@@ -95,7 +104,7 @@ renders as
 -- MichaelPaulukonis 2013-04-30 14:54 UTC
 
 
-----
+== Images linking to things ==
 
 Is it possible to have an inlined-image, from an external source, link to something?
 
@@ -107,8 +116,17 @@ If this exists, I couldn't find the formatting
 
 -- MichaelPaulukonis 2013-05-20 17:16 UTC
 
-
 ----
+
+Sure: ##[[image:<image URL>|alt text|<link URL>]]##.
+
+Example:
+
+[[image:http://www.gnu.org/software/emacs/tour/images/splash-small.png|Emacs Guided Tour|http://www.gnu.org/software/emacs/tour/]]
+
+
+
+== Formatting keyboard shortcuts and function names ==
 
 Is there a convention for the formatting of keyboard shortcuts and elisp function names?
 For example how would one mark up  M-x ediff-regions-wordwise ?
@@ -127,4 +145,9 @@ You can also show code snippets by indenting them (space chars before each line)
 }}}
 
 -- DrewAdams 2013-05-31 02:50 UTC
+
+
+== Other stuff ==
+
+...
 
