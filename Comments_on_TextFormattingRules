@@ -1,3 +1,4 @@
+[:regexlist]
 == List of pages matching a regular expression ==
 
 Should we document this?
@@ -30,6 +31,19 @@ The use case: depending on how you named pages, this generates a table of conten
 ----
 
 OK, I understand now.  I see no problem with it, but I'm not sure how useful it will be.  Someone wanting such a list dynamically can use search to get it, no?  If there is no problem adding it, why not?  Maybe someone will put it to good use.
+
+
+[new:MichaelPaulukonis:2013-05-31 18:55 UTC]
+One use-case of the top of my head - "orphan pages" -- pages that have no in-bound links.
+Manually creating a page linking to orphaned pages removes them from that category.
+An auto-generated list of such pages does not.
+
+Second use-case is squirrelly searches. It takes a long time to figure out initially, but can be saved for future ease, and for others.
+I mean -- that's why we have links in the first place. Because while it is completely possible to search for data in other pages, it's a lot easier to link to what you want NOW.
+
+[http://www.pmwiki.org/wiki/PmWiki/PageLists Pagelists] are a very powerful technique in Pmwiki, and I've been looking for something like this within the EmacsWiki.
+
+-- MichaelPaulukonis 2013-05-31 18:55 UTC
 
 == Alternate-row highlighting ==
 
