@@ -27,6 +27,10 @@ Is this about using ##<include list "^AlexSchroeder">## on a wiki page to displa
 
 The use case: depending on how you named pages, this generates a table of contents for a set of pages such that you don't have to manually maintain an index to all the pages belonging to a collection. But there are drawbacks: the pages them selves are not automatically linked to a structure (no next, previous, contents); the page titles are listed without annotation ("this page explains how to do foo…"). -- Alex
 
+----
+
+OK, I understand now.  I see no problem with it, but I'm not sure how useful it will be.  Someone wanting such a list dynamically can use search to get it, no?  If there is no problem adding it, why not?  Maybe someone will put it to good use.
+
 == Alternate-row highlighting ==
 
 [[TextFormattingRules#new]] - alternate-row highlighting (''Alternate contributions (alternate [new]’s) are shaded,'') does not appear to be active (with the new CSS?).
