@@ -107,3 +107,11 @@ If this exists, I couldn't find the formatting
 
 -- MichaelPaulukonis 2013-05-20 17:16 UTC
 
+
+----
+
+Is there a convention for the formatting of keyboard shortcuts and elisp function names?
+For example how would one mark up  M-x ediff-regions-wordwise ?
+
+-- jasonblewis 2013-05-31 02:11 UTC
+
