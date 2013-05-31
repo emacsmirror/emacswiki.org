@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Fri May 31 14:58:12 2013 (-0700)
+;; Last-Updated: Fri May 31 15:15:08 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6326
+;;     Update #: 6333
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -2838,7 +2838,13 @@ contain a `%s' construct, so that it can be passed along with FILE to
               (errorp                 nil))
           (condition-case nil
               (write-file file)
-            (file-error (setq errorp  t) (message "CANNOT WRITE FILE `%s'" file) (sit-for 4)))
+            (file-error (setq errorp  t)
+                        ;; Do NOT raise error.  (Need to be able to exit.)
+                        (let ((msg  (format "CANNOT WRITE FILE `%s'" file)))
+                          (if (fboundp 'display-warning)
+                              (display-warning 'bookmark-plus msg)
+                            (message msg)
+                            (sit-for 4)))))
           (kill-buffer (current-buffer))
           (run-hook-with-args 'bmkp-write-bookmark-file-hook file)
           (unless errorp (message (concat msg "done") file)))))))
@@ -3755,11 +3761,13 @@ Non-interactively, optional arg MSG-P means display progress messages."
           (pp config-list (current-buffer))
           (condition-case nil
               (write-file bmkp-bmenu-state-file)
-            (file-error
-             (setq errorp  t)
-             ;; Do NOT raise an error, because used in `bookmark-exit-hook-internal'.  (Need to be able to exit.)
-             (let ((msg  (format "CANNOT WRITE FILE `%s'" bmkp-bmenu-state-file)))
-               (if (fboundp 'display-warning) (display-warning 'bookmark-plus msg) (message msg)))))
+            (file-error (setq errorp  t)
+                        ;; Do NOT raise error - used in `bookmark-exit-hook-internal'.  (Need to be able to exit.)
+                        (let ((msg  (format "CANNOT WRITE FILE `%s'" bmkp-bmenu-state-file)))
+                          (if (fboundp 'display-warning)
+                              (display-warning 'bookmark-plus msg)
+                            (message msg)
+                            (sit-for 4)))))
           (kill-buffer (current-buffer))
           (when (and msg-p  (not errorp)) (message "Saving bookmark-list display state...done")))))))
 
