@@ -130,7 +130,7 @@ this change excludes all the unnecessary "Incoming*" files to be pushed onto ser
 
 
 
-== With Unison
+== With Unison ==
 
 I use unison for all my syncing needs. This is much saver than --delete on rsync, I think. This profile does the trick.
 
