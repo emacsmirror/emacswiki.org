@@ -298,7 +298,7 @@ This is the simplest approach, and works with CarbonEmacs and Aquamacs and the Y
   (interactive)
   (set-frame-parameter
      nil 'fullscreen
-     (when (not (frame-parameter nil 'fullscreen)) 'fullboth))))
+     (when (not (frame-parameter nil 'fullscreen)) 'fullboth)))
 }}}
 
 or use this to always use fullscreen:
