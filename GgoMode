@@ -1,8 +1,7 @@
-Source:https://gist.github.com/mkjunker/5619356.
+Source:https://raw.github.com/mkjunker/ggo-mode/master/ggo-mode.el
 
 ggo-mode.el provides a major mode for editing Gengetopt .ggo files (http://www.gnu.org/software/gengetopt/).
 
 ProgrammingModes
 
 MattJunker
-
