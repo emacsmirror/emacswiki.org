@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 21.0
-;; Last-Updated: Mon May 13 08:18:04 2013 (-0700)
+;; Last-Updated: Fri May 31 21:07:10 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2087
+;;     Update #: 2092
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -356,6 +356,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2013/05/31 dadams
+;;     Require cl.el at compile time, for case.
 ;; 2013/05/13 dadams
 ;;     isearchp-highlight-lighter: Use face isearchp-wrapped only if defined (Emacs 22+). 
 ;; 2013/04/10 dadams
@@ -568,6 +570,8 @@
 ;;
 ;;; Code:
 
+(eval-when-compile (require 'cl)) ;; case
+
  ;; Cannot do (require 'isearch), because `isearch.el' does no `provide'.
  ;; Don't want to do a (load-library "isearch") either, because it wouldn't
  ;; allow doing (eval-after-load "isearch" '(progn (require 'isearch+)))
@@ -577,6 +581,7 @@
 
 ;; Quiet the byte compiler.
 (defvar bidi-display-reordering)        ; Emacs 24+, built-in.
+(defvar icicle-WYSIWYG-Completions-flag) ; In `icicles-opt.el'.
 (defvar isearch-error)                  ; In `isearch.el'.
 (defvar isearch-filter-predicate)       ; In `isearch.el'.
 (defvar isearch-invalid-regexp)         ; In `isearch.el' (Emacs 20-21).
