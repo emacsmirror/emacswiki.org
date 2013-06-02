@@ -6,7 +6,7 @@
 ;; Maintainer: Joe Bloggs <vapniks@yahoo.com>
 ;; Copyleft (Ↄ) 2013, Joe Bloggs, all rites reversed.
 ;; Created: 2013-05-15 05:04:08
-;; Version: 0.7
+;; Version: 0.8
 ;; Last-Updated: 2013-05-15 05:04:08
 ;;           By: Joe Bloggs
 ;; URL: https://github.com/vapniks/kmacro-decision
