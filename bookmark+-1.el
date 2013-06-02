@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Fri May 31 15:15:08 2013 (-0700)
+;; Last-Updated: Sun Jun  2 11:26:52 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6333
+;;     Update #: 6334
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -7973,7 +7973,8 @@ MSGP non-nil means possibly interact with the user, showing messages."
   (let* ((seq        (bmkp-get-bookmark-in-alist seqname 'NOERROR))
          (exists     (and seq  (bmkp-sequence-bookmark-p seq)))
          (replacing  t)
-         (bnames     ()))
+         (bnames     ())
+         fun)
     (dolist (bname  bookmark-names)
       (cond ((or (functionp (setq fun bname)) ; Function from Lisp.
                  (vectorp fun)          ; Keyboard macro.
