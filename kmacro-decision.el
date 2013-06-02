@@ -6,7 +6,7 @@
 ;; Maintainer: Joe Bloggs <vapniks@yahoo.com>
 ;; Copyleft (Ↄ) 2013, Joe Bloggs, all rites reversed.
 ;; Created: 2013-05-15 05:04:08
-;; Version: 0.8
+;; Version: 0.9
 ;; Last-Updated: 2013-05-15 05:04:08
 ;;           By: Joe Bloggs
 ;; URL: https://github.com/vapniks/kmacro-decision
@@ -183,7 +183,7 @@ is reached."
                                     kmacro-decision-conditions))
                         (action (kmacro-decision-menu t))
                         (resetmacro "(let* ((calling-kbd-macro executing-kbd-macro) (executing-kbd-macro nil)) ")
-                        (revertmacro " (setq executing-kbd-macro calling-kbd-macro))")
+                        (revertmacro " (setq executing-kbd-macro calling-kbd-macro) (message nil))")
                         (actioncode
                          (concat
                           (cond ((eq action 'quit) "(keyboard-quit)")
