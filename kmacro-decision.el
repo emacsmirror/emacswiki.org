@@ -6,7 +6,7 @@
 ;; Maintainer: Joe Bloggs <vapniks@yahoo.com>
 ;; Copyleft (Ↄ) 2013, Joe Bloggs, all rites reversed.
 ;; Created: 2013-05-15 05:04:08
-;; Version: 0.6
+;; Version: 0.7
 ;; Last-Updated: 2013-05-15 05:04:08
 ;;           By: Joe Bloggs
 ;; URL: https://github.com/vapniks/kmacro-decision
@@ -182,24 +182,31 @@ is reached."
                                     "Condition: " nil nil nil nil
                                     kmacro-decision-conditions))
                         (action (kmacro-decision-menu t))
+                        (resetmacro "(let* ((calling-kbd-macro executing-kbd-macro) (executing-kbd-macro nil)) ")
+                        (revertmacro " (setq executing-kbd-macro calling-kbd-macro))")
                         (actioncode
-                         (concat (cond ((eq action 'quit) "(keyboard-quit)")
-                                       ((eq action 'continue) "t")
-                                       ((eq action 'edit)
-                                        (concat "(funcall '"
-                                                (prin1-to-string (funcall editfunc))
-                                                ")"))
-                                       ((eq action 'form)
-                                        (read-from-minibuffer
-                                         "Elisp: " nil read-expression-map nil
-                                         'read-expression-history))
-                                       ((eq action 'command)
-                                        (concat  "(call-interactively '" (symbol-name (read-command "Command : ")) ")"))
-                                       ((symbolp action)
-                                        (concat "(funcall '" (symbol-name action) ")")))
-                                 (unless (or (member action '(quit continue))
-                                             (y-or-n-p "Continue with macro after performing this action?"))
-                                   " (keyboard-quit)")))
+                         (concat
+                          (cond ((eq action 'quit) "(keyboard-quit)")
+                                ((eq action 'continue) "t")
+                                ((eq action 'edit)
+                                 (concat resetmacro "(funcall '"
+                                         (prin1-to-string (funcall editfunc))
+                                         ")" revertmacro))
+                                ((eq action 'form)
+                                 (concat resetmacro 
+                                         (read-from-minibuffer
+                                          "Elisp: " nil read-expression-map nil
+                                          'read-expression-history)
+                                         revertmacro))
+                                ((eq action 'command)
+                                 (concat resetmacro "(call-interactively '"
+                                         (symbol-name (read-command "Command : ")) ")"
+                                         revertmacro))
+                                ((symbolp action)
+                                 (concat resetmacro "(funcall '" (symbol-name action) ")" revertmacro)))
+                          (unless (or (member action '(quit continue))
+                                      (y-or-n-p "Continue with macro after performing this action?"))
+                            " (keyboard-quit)")))
                         (pre (subseq calling-kbd-macro 0 executing-kbd-macro-index))
                         (condexists (and (> (length pre) 33)
                                          (equal (string-to-vector "(t (kmacro-decision)))")
