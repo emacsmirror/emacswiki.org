@@ -13,6 +13,17 @@ By default, auto-save files are stored in the current directory with a file name
 
 This will all place all auto-saves and [BackupDirectory backups] in the directory pointed to by ##temporary-file-directory## (e.g., ##C:/Temp/## on Windows).
 
+Or even more dramatic:
+  ;; Save all tempfiles in $TMPDIR/emacs$UID/                                                        
+  (defconst emacs-tmp-dir (format "%s/%s%s/" temporary-file-directory "emacs" (user-uid)))
+  (setq backup-directory-alist
+      `((".*" . ,emacs-tmp-dir)))
+  (setq auto-save-file-name-transforms
+      `((".*" ,emacs-tmp-dir t)))
+  (setq auto-save-list-file-prefix
+      emacs-tmp-dir)
+
+
 == Delete auto-save files ==
 
 * To delete all auto-save files in the current directory, use `<tt>#</tt>' in [[Dired]] to mark the files, then `x' to delete them.
