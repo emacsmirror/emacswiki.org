@@ -108,8 +108,8 @@
 
 ;;; Code:
 
-(defcustom kmacro-decision-conditions '("(search-forward \"??\" nil nil)"
-                                        "(re-search-forward \"??\" nil nil)")
+(defcustom kmacro-decision-conditions '("(search-forward \"??\" nil t)"
+                                        "(re-search-forward \"??\" nil t)")
   "A list of conditions to be made available in the history list in calls to `kmacro-decision'"
   :type '(repeat string)
   :group 'kmacro)
