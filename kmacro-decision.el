@@ -6,7 +6,7 @@
 ;; Maintainer: Joe Bloggs <vapniks@yahoo.com>
 ;; Copyleft (Ↄ) 2013, Joe Bloggs, all rites reversed.
 ;; Created: 2013-05-15 05:04:08
-;; Version: 0.4
+;; Version: 0.5
 ;; Last-Updated: 2013-05-15 05:04:08
 ;;           By: Joe Bloggs
 ;; URL: https://github.com/vapniks/kmacro-decision
@@ -50,7 +50,8 @@
 ;; (named) macro. The user may also recenter the window by pressing C-l.
 ;; If the user chooses to add a conditional branch they will be prompted for a condition form,
 ;; and an action to perform if that condition evaluates to non-nil. The action can be to quit the macro,
-;; continue the macro, create a new macro for that condition, or replay a previously saved macro.
+;; continue the macro, create a new macro for that condition, execute an elisp form or command, or replay
+;; a previously saved macro.
 ;; If the condition evaluates to non-nil the next time the macro is replayed then the corresponding
 ;; action will be performed. If several conditions-action pairs are created for a given query point
 ;; then the conditions will be evaluated in the order in which they where created until one of them evaluates
@@ -61,10 +62,17 @@
 ;; and complex automated operations performed.
 
 ;; Note: you can also use `kbd-macro-query' to choose a named macro to replay when not recording a macro
-;; (in case you forgot the name).
+;; (in case you forgot the name). Also note that when prompted for a condition you can scroll forward through
+;; the input history using M-n to get conditions for searching for strings/regexps. You can add to this list
+;; by customizing `kmacro-decision-conditions'.
 
-;;;;
-
+;;; Customizable Options:
+;;
+;; Below are customizable option list:
+;;
+;;  `kmacro-decision-conditions'
+;;    A list of conditions to be made available in the history list in calls to `kmacro-decision'
+;;    default = (quote ("(search-forward \"??\" nil nil)" "(re-search-forward \"??\" nil nil)"))
 
 ;;; Installation:
 ;;
@@ -99,6 +107,12 @@
 (require 'el-x)
 
 ;;; Code:
+
+(defcustom kmacro-decision-conditions '("(search-forward \"??\" nil nil)"
+                                        "(re-search-forward \"??\" nil nil)")
+  "A list of conditions to be made available in the history list in calls to `kmacro-decision'"
+  :type '(repeat string)
+  :group 'kmacro)
 
 ;;;###autoload
 (defun kmacro-decision nil
@@ -164,22 +178,37 @@ is reached."
                 ((eq val 'continue) nil)
                 ((eq val 'edit) (funcall editfunc))
                 ((eq val 'branch)
-                 (let* ((condition (read-from-minibuffer "Condition: "))
+                 (let* ((condition (read-from-minibuffer
+                                    "Condition: " nil nil nil nil
+                                    kmacro-decision-conditions))
                         (action (kmacro-decision-menu t))
                         (actioncode
-                         (cond ((eq action 'quit) "(keyboard-quit)")
-                               ((eq action 'continue) "t")
-                               ((eq action 'edit)
-                                (concat "(funcall '" (prin1-to-string (funcall editfunc)) ") (keyboard-quit)"))
-                               ((symbolp action)
-                                (concat "(funcall '" (symbol-name action) ") (keyboard-quit)"))))
+                         (concat (cond ((eq action 'quit) "(keyboard-quit)")
+                                       ((eq action 'continue) "t")
+                                       ((eq action 'edit)
+                                        (concat "(funcall '"
+                                                (prin1-to-string (funcall editfunc))
+                                                ")"))
+                                       ((eq action 'form)
+                                        (read-from-minibuffer
+                                         "Elisp: " nil read-expression-map nil
+                                         'read-expression-history))
+                                       ((eq action 'command)
+                                        (concat  "(call-interactively '" (symbol-name (read-command "Command : ")) ")"))
+                                       ((symbolp action)
+                                        (concat "(funcall '" (symbol-name action) ")")))
+                                 (unless (or (member action '(quit continue))
+                                             (y-or-n-p "Continue with macro after performing this action?"))
+                                   " (keyboard-quit)")))
                         (pre (subseq calling-kbd-macro 0 executing-kbd-macro-index))
                         (condexists (and (> (length pre) 33)
                                          (equal (string-to-vector "(t (kmacro-decision)))")
                                                 (subseq pre -26))))
                         (post (subseq calling-kbd-macro executing-kbd-macro-index))
                         (condcode
-                         (concatenate 'vector (unless condexists (concatenate 'vector (kbd "M-:") "(cond "))
+                         (concatenate 'vector
+                                      (unless condexists
+                                        (concatenate 'vector (kbd "M-:") "(cond "))
                                       "(" condition " " actioncode ") "
                                       "(t (kmacro-decision)))")))
                    (setq pre (if condexists (subseq pre 0 -26) (concatenate 'vector pre " ")))
@@ -218,13 +247,16 @@ C-g : Quit macro
 C-l : Recenter window about cursor
 SPC : Continue executing macro
 RET : Recursive edit (C-M-c to finish)\n"
-                         (unless withcond "?   : Add conditional branch\n")
+                         (if withcond "M-: : Eval elisp\nM-x : Execute command\n"
+                           "?   : Add conditional branch\n")
                          (loop for i from 0 to nmacros
                                for kmacro = (nth (- nmacros i) kmacros)
                                concat (format "%c   : %s\n" (+ 97 i) kmacro))))
          (maxkey (+ 97 (length kmacros)))
          (key 0))
-    (while (not (or (member key '(7 13 14 32 63))
+    (while (not (or (member key (list 7 13 14 32 63
+                                      (elt (kbd "M-:") 0)
+                                      (elt (kbd "M-x") 0)))
                     (and (> key 96) (< key maxkey))))
       (if (= key 12) (recenter-top-bottom))
       (setq key (read-key prompt)))
@@ -232,6 +264,8 @@ RET : Recursive edit (C-M-c to finish)\n"
           ((= key 14) 'new)
           ((= key 32) 'continue)
           ((= key 63) 'branch)
+          ((= key (elt (kbd "M-:") 0)) 'form)
+          ((= key (elt (kbd "M-x") 0)) 'command)
           ((and (> key 96)
                 (< key (+ 97 (length kmacros))))
            (nth (- nmacros (- key 97)) kmacros))
