@@ -25,3 +25,5 @@ https://github.com/rafl/git-commit-mode
 <pre>
     (add-hook 'git-commit-mode-hook 'flyspell-mode-on)
 </pre>
+----
+CategoryVersionControl
