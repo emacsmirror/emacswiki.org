@@ -29,8 +29,13 @@ Thanks, Drew -- 'cept I've been here for years. Just renamed the page from my "h
 ** my notes @ http://www.xradiograph.com/Programming/DropBox
 ** and this [[https://twitter.com/noahsussman/status/969924361 cryptic, pregnant tweet]]
 * whee! [[CategoryGames|games!]] I didn't know most of these existed. As if I'd have the time....
+* do git from w/in Emacs?
+** get list of pages, incl. GitCommitMode
 
 == Projects ==
+* OrgMode
+** learning and using....
+
 * hoping to work on pmwiki-mode
 ** started up an org/repo @ https://github.com/emacs-pmwiki-mode
 ** need to start an Emacswiki page for it....
@@ -44,8 +49,6 @@ Thanks, Drew -- 'cept I've been here for years. Just renamed the page from my "h
 
 * working on documentation withing CategoryJavaScript
 
-* OrgMode
-** learning and using....
 
 == Packages/pages/things I like ==
 * [[Reference_Sheet_by_Aaron_Hawley]]
