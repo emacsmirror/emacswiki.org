@@ -21,17 +21,7 @@ like `M-q', You might want to integrate `flyspell-mode' into the `git-commit-mod
 Visit Florian Ragwitz's <rafl@debian.org> Gitbub project page at
 https://github.com/rafl/git-commit-mode
 
-== Configuration examples ==
+== Configuration example ==
 <pre>
-    (defun my-turn-on-toggle-save-place ()
-       (toggle-save-place 0))
-
-    (require 'git-commit)
-    (add-hook 'git-commit-mode-hook 'turn-on-flyspell)
-    (add-hook 'git-commit-mode-hook 'my-turn-on-toggle-save-place)
+    (add-hook 'git-commit-mode-hook 'flyspell-mode-on)
 </pre>
-
-The last line is handy if you have save-place on by default. When you
-make a new commit, it would then normally place the cursor where a
-previously edited commit message was finished, because to the
-save-place functionality, it looks as though it's the same file.
