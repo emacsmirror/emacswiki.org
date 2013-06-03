@@ -10,6 +10,8 @@ between files with `N' and `P'. A whole file can be killed with `K'.
 To refine the patch, split it with `C-c C-s'. If you toggle read-only
 with `C-x C-q', you can edit everything freely; be careful about it.
 
+See  [http://chneukirchen.org/blog/archive/2008/02/introducing-gitsum.html Introduction].
+
 == Download ==
 
 Christian Neukirchen's  Gitbub project page at
