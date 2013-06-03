@@ -7,9 +7,9 @@
 ;; Copyright (C) 2004-2013, Drew Adams, all rights reserved.
 ;; Created: Thu Jan 15 11:13:38 2004
 ;; Version: 21.0
-;; Last-Updated: Sun Jun  2 21:18:45 2013 (-0700)
+;; Last-Updated: Sun Jun  2 21:37:50 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 133
+;;     Update #: 135
 ;; URL: http://www.emacswiki.org/setup-cygwin.el
 ;; Doc URL: http://www.emacswiki.org/NTEmacsWithCygwin
 ;; Keywords: os, unix, cygwin
@@ -32,6 +32,7 @@
 ;;
 ;; 2013/06/02 dadams
 ;;     Set env var CYGWIN to nodosfilewarning, to workaround ediff-buffers problem with names of temp files.
+;;     Set null-device to /dev/null.
 ;; 2013/04/27 dadams
 ;;     Put Cygwin path stuff before the stuff from getenv.
 ;; 2013/03/08 dadams
@@ -116,6 +117,9 @@ loaded as such.)"
 
 ;;; Use Unix-style line endings.
 (setq-default buffer-file-coding-system 'undecided-unix)
+
+;;; Use /dev/null, not NUL.
+(setq null-device  "/dev/null")
 
 ;;; Without this env var setting, Cygwin causes `ediff-buffers', at least, to raise an error.
 (setenv "CYGWIN" "nodosfilewarning")
