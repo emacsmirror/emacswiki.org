@@ -1,0 +1,23 @@
+== Overview ==
+
+`M-x git-status' from official Git distribution's contrib directory is
+usually good enough to use, but it does not support partial commits,
+that is, commit only parts of a file. After running `M-x gitsum' from
+git controlled buffer, a new buffer will created, containing all
+changes, made in current repository. You can kill everything you don't
+want to commit with `k', navigate between hunks with `n' and `p' and
+between files with `N' and `P'. A whole file can be killed with `K'.
+To refine the patch, split it with `C-c C-s'. If you toggle read-only
+with `C-x C-q', you can edit everything freely; be careful about it.
+
+== Download ==
+
+Christian Neukirchen's <chneukirchen@gmail.com> Gitbub project page at
+https://github.com/chneukirchen/gitsum
+
+== Configuration example ==
+<pre>
+    (require 'gitsum)
+</pre>
+----
+CategoryVersionControl
