@@ -7,9 +7,9 @@
 ;; Copyright (C) 2004-2013, Drew Adams, all rights reserved.
 ;; Created: Thu Jan 15 11:13:38 2004
 ;; Version: 21.0
-;; Last-Updated: Sun Jun  2 21:37:50 2013 (-0700)
+;; Last-Updated: Mon Jun  3 13:19:19 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 135
+;;     Update #: 136
 ;; URL: http://www.emacswiki.org/setup-cygwin.el
 ;; Doc URL: http://www.emacswiki.org/NTEmacsWithCygwin
 ;; Keywords: os, unix, cygwin
@@ -122,6 +122,9 @@ loaded as such.)"
 (setq null-device  "/dev/null")
 
 ;;; Without this env var setting, Cygwin causes `ediff-buffers', at least, to raise an error.
+;;; Making this setting here might have no effect, as the env var is checked only by the first Cygwin process
+;;; invoked during your Windows session.  For best results, set this env var globally, in Windows itself.
+;;; An alternative is to use `cygpath' to change from MS Windows file names to POSIX.
 (setenv "CYGWIN" "nodosfilewarning")
 
 ;;; Add Cygwin Info pages
