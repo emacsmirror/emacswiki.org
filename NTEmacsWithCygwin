@@ -158,6 +158,9 @@ Cygwin-mount is a non sequitur here, since no one would actually open ##/dev/nul
 
 Yes, using ##/dev/null## globally and for all scenarios would break any NT Emacs commands that use "non-Cygwin functionality" and use `null-device'.  A feature that requires such a combination doesn't exist.  If otherwise, let it be known.
 
+[new:DrewAdams:2013-06-03 04:46 UTC]
+I added ##(setq null-device "/dev/null")## to <tt>[[setup-cygwin.el]]</tt>.  I don't think it will cause any problems, but if you run into a problem with it, just comment it out. -- DrewAdams
+
 ----
 
 If you want to launch NTEmacs via Cygwin (in order that it inherits your Cygwin environment variables -- particularly useful if your bash profile does things like managing a ssh-agent), then you can use a shortcut like the following to enable this, while maintaining consistency with the standard (for NTEmacs) HOME directory:
