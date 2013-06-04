@@ -85,3 +85,15 @@ It would be great to have a mode that assists with this more. Some ideas:
 * Create region->flashcard function.
 * Create a "finished reading buffer" function that archives the material.
 * Parse and font-lock HTML buffers (something like emacs-w3m-mode).
+
+== Incremental Reading with Org Drill ==
+
+[http://orgmode.org/worg/org-contrib/org-drill.html#sec-23 Incremental Reading with Org Drill]
+
+Org mode already has full support for spaced repetition via the Org Drill extension.
+
+You can select text from Firefox and have Org mode add it to the appropriate location using org-protocol.
+
+However, Org Drill does not yet support the Incremental Reading paradigm fully. So, you'll probably have to roll your own.
+
+I found the Usage Hints on [http://frankraiser.de/drupal/AnkiIR this post] very helpful in setting up a homegrown Incremental Reading system. He describes steps for Anki but they can easily be translated for Org Drill.
