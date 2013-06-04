@@ -10,5 +10,8 @@ See also:
 * HighLight
 * AutoHighlightSymbolMode: https://github.com/mitsuo-saito/auto-highlight-symbol-mode
 
+====Problems====
+* If the highlighted symbol has an overlay with dark background, the highlight is not visible.
+
 ----
 CategoryFaces CategoryModes
