@@ -2,3 +2,14 @@ I don't care about all this fancy stuff.  Somebody decided to default the font t
 
 -- Anonymous 2013-06-04 16:27 UTC
 
+
+----
+
+Dear Anonymous: [http://www.emacswiki.org/emacs-en/SetFonts#toc2 Globally Change the Default Font]
+
+in your case, add this to your .emacs (or whatever) file: <code>(set-face-attribute 'default nil :font "Courier")</code>
+
+To view available fonts on your system, look at <code>(font-family-list)</code>
+
+-- MichaelPaulukonis 2013-06-04 17:58 UTC
+
