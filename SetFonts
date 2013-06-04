@@ -1,4 +1,4 @@
-The most important info first. Here's how to change the default font in your InitFile: use `M-x customize-face' to customize the ##default## face.
+The most important info first. Here's how to change the default font in your InitFile: use ##M-x customize-face## to customize the ##default## face.
 
 == Inspecting and Changing Fonts ==
 
