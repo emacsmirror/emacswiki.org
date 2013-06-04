@@ -5,7 +5,7 @@
 ;; Author: Matthew Fidler, Nathaniel Cunningham
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Mon Oct 18 17:06:07 2010 (-0500)
-;; Version: 0.32
+;; Version: 0.33
 ;; Last-Updated: Sat Dec 15 15:44:34 2012 (+0800)
 ;;           By: Matthew L. Fidler
 ;;     Update #: 663
@@ -77,7 +77,7 @@
 ;;   (global-set-key [(control next)]  'tabbar-ruler-tabbar-press-scroll-right)
 ;; 
 ;; 
-;; These bindings are quite aggressive and overwrite may of the
+;; These bindings are quite aggressive and overwrite many of the
 ;; functions in emacs.  Control-Home is beginning of buffer, etc etc.
 ;; However, if you do not use these functions, it is safe to overwrite
 ;; these keys.  
@@ -91,6 +91,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 4-Jun-2013    Matthew L. Fidler  
+;;    Last-Updated: Sat Dec 15 15:44:34 2012 (+0800) #663 (Matthew L. Fidler)
+;;    Turn off ruler mode in the next buffer (if necessary)
 ;; 4-Jun-2013    Matthew L. Fidler  
 ;;    Last-Updated: Sat Dec 15 15:44:34 2012 (+0800) #663 (Matthew L. Fidler)
 ;;    Add movement keys.  Also add toggles for different groupings.
@@ -1381,7 +1384,14 @@ visiting a file.  The current buffer is always included."
             (when tabbar-ruler-tabbar-off
               (tabbar-mode 1)
               (setq tabbar-ruler-tabbar-off nil))
-            (call-interactively ',x))))
+            (call-interactively ',x)
+            (setq tabbar-ruler-keep-tabbar t)
+            (unless tabbar-ruler-ruler-off
+              (ruler-mode -1)
+              (setq tabbar-ruler-ruler-off 't))
+            (when tabbar-ruler-tabbar-off
+              (tabbar-mode 1)
+              (setq tabbar-ruler-tabbar-off nil)))))
  tabbar-display-functions)
 
 
