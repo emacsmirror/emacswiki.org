@@ -1,6 +1,6 @@
 : ''For editing shell scripts, see ShMode.''
 
-Use `M-x shell' to invoke a shell.  The shell is an external program, and shell mode inherits the ability to interact with the program and its basic behaviors from ComintMode.  If you want to use a shell written entirely in elisp use `M-x eshell', see [[Eshell]].
+Use `M-x shell' to invoke a shell.  The shell is an external program, and shell mode inherits the ability to interact with the program and its basic behaviors from ComintMode.  If you want to use a shell written entirely in elisp use `M-x eshell', see [[Eshell]]. To invoke another shell, use `C-u M-x shell'.
 
 ==Removing ^M Characters==
 
