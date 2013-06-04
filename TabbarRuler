@@ -8,7 +8,7 @@
 * <b>Author </b> --  Matthew Fidler, Nathaniel Cunningham
 * <b>Maintainer </b> --  Matthew L. Fidler
 * <b>Created </b> --  Mon Oct 18 17:06:07 2010 (-0500)
-* <b>Version </b> --  0.32
+* <b>Version </b> --  0.33
 * <b>Last-Updated </b> --  Sat Dec 15 15:44:34 2012 (+0800)
 * <b>By </b> --  Matthew L. Fidler
 * <b>Update # </b> --  663
@@ -76,7 +76,7 @@ change the bindings.  A possible way to bind this is given below:
   (global-set-key [(control next)]  'tabbar-ruler-tabbar-press-scroll-right)
 }}}
 
-These bindings are quite aggressive and overwrite may of the
+These bindings are quite aggressive and overwrite many of the
 functions in emacs.  Control-Home is beginning of buffer, etc etc.
 However, if you do not use these functions, it is safe to overwrite
 these keys.  
@@ -96,6 +96,9 @@ the left arrow is text instead of an image.
 === Internal Variables ===
 == History ==
 
+4-Jun-2013    Matthew L. Fidler  
+Last-Updated: Sat Dec 15 15:44:34 2012 (+0800) #663 (Matthew L. Fidler)
+Turn off ruler mode in the next buffer (if necessary)
 4-Jun-2013    Matthew L. Fidler  
 Last-Updated: Sat Dec 15 15:44:34 2012 (+0800) #663 (Matthew L. Fidler)
 Add movement keys.  Also add toggles for different groupings.
