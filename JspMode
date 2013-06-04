@@ -112,9 +112,5 @@ This is a mode written specifically for JSP files and based on xml-mode, which i
 
 This solution handles indenting the Java code better than the MultipleModes solution, but it does not highlight or colorize the Java code. It also causes HTML code to be indented differently, meaning that switching back and forth requires re-indenting your file each time.
 
-===Using web-mode===
-
-This is a mode written for web templates (HTML/PHP, JSP). More info on http://web-mode.org.
-
 ----
 ProgrammingModes
