@@ -79,7 +79,7 @@
 
 ;;; Acknowledgements:
 ;;
-;; 
+;; Lars Brinkhoof for macro-utils.el, Paul Graham for his book "On Lisp"
 ;;
 
 ;;; TODO
@@ -91,7 +91,7 @@
 (require 'macro-utils)
 
 ;;; Code:
-;; put macros in gist on github, or in their own package (if there are many of them)
+
 (defmacro untilnext (initform nextform &optional testfunc &rest bindings)
   "Evaluate INITFORM followed by NEXTFORM repeatedly. Stop when one of them returns non-nil, and returning that value.
 If TESTFUNC is supplied it should be a function that takes a single argument (the results of evaluating INITFORM or NEXTFORM),
@@ -99,19 +99,17 @@ and will be used as the stopping criterion. In this case evaluation will stop wh
 return value of the macro will still be the return value of INITFORM or NEXTFORM.
 If BINDINGS are supplied then these will be placed in a let form wrapping the code, thus allowing for some persistence of state
 between successive evaluations of NEXTFORM."
-  (let ((sym1 (gensym))
-        (retval (gensym)))
-    `(let* (,@bindings ,retval
-            (,sym1 ,initform))
-       (or (and ,test
-                (or (and (funcall ,test ,sym1) ,sym1)
-                    (while (not (funcall ,test (setq ,retval ,nextform))))
-                    ,retval))
-           ,sym1
-           (and 
-            (while (not (setq ,retval ,nextform)))
-            ,retval)))))
-
+  (once-only (initform)
+             (let ((retval (gensym)))
+               `(let* (,@bindings ,retval)
+                  (or (and ,testfunc
+                           (or (and (funcall ,testfunc ,initform) ,initform)
+                               (while (not (funcall ,testfunc (setq ,retval ,nextform))))
+                               ,retval))
+                      ,initform
+                      (and 
+                       (while (not (setq ,retval ,nextform)))
+                       ,retval))))))
 
 (provide 'jb-misc-macros)
 
