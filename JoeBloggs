@@ -21,6 +21,7 @@ Here are some libraries I wrote:
 * '''Lisp:one-key-dir.el''' -- Fast directory navigation and file browser using [[OneKey]].
 * '''Lisp:one-key-yas.el''' -- [[OneKey]] menu for [[Yasnippet]].
 * '''Lisp:one-key-bmkp.el''' -- [[OneKey]] menu for [[BookmarkPlus]].
+* '''Lisp:jb-misc-macros.el''' -- Miscellaneous macros used in some of my libs
 
 
 ===Libraries I maintain===
