@@ -84,7 +84,7 @@
 
 ;;; TODO
 ;;
-;; 
+;; More macros.
 ;;
 
 ;;; Require
@@ -110,6 +110,11 @@ between successive evaluations of NEXTFORM."
                       (and 
                        (while (not (setq ,retval ,nextform)))
                        ,retval))))))
+
+;; This might be better as an inline function.
+(defmacro list-subset (indices list)
+  "Return elements of LIST corresponding to INDICES."
+  `(mapcar (lambda (i) (nth i ,list)) ,indices))
 
 (provide 'jb-misc-macros)
 
