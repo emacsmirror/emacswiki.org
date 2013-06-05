@@ -6,6 +6,7 @@
 ;; Keywords: files, convenience
 ;; X-URL: http://www.emacswiki.org/elisp/swbuff-x.el
 ;; Time-stamp: <2003-11-16 17:23:10 kahlil>
+;; Package-Requires: ((swbuff "19991231.1800"))
 
 ;; This file is NOT part of GNU Emacs.
 
