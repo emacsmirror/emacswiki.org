@@ -132,6 +132,7 @@ package to identify where the list of processes begins."
   (define-key top-mode-map "u" 'top-mode-unmark)
   (define-key top-mode-map "U" 'top-mode-show-specific-user))
 
+;;;###autoload
 (defun top-mode ()
   "Major mode for running top and interacting with processes."
   (interactive)
