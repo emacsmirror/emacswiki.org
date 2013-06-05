@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 21.1
-;; Last-Updated: Fri Jan 18 09:11:36 2013 (-0800)
+;; Last-Updated: Wed Jun  5 08:59:53 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2729
+;;     Update #: 2738
 ;; URL: http://www.emacswiki.org/oneonone.el
 ;; Doc URL: http://emacswiki.org/OneOnOneEmacs
 ;; Keywords: local, frames
@@ -59,7 +59,7 @@
 ;;  minibuffer.  If you customize `1on1-minibuffer-frame-flag' to nil,
 ;;  then each frame will have its own minibuffer, as usual, and there
 ;;  will be no standalone minibuffer frame.
-;;  
+;;
 ;;  By default, if you use a standalone minibuffer frame, it is
 ;;  automatically sized to the full width of your display and placed
 ;;  at the bottom of the display.
@@ -280,6 +280,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/06/05 dadams
+;;     *-frame-font: Changed sizes other than pixels to *, to work around an Emacs 20 bug with
+;;                   x-list-fonts' on Windows 7.  See:
+;;                   http://lists.gnu.org/archive/html/help-emacs-windows/2013-06/msg00009.html
 ;; 2013/01/18 dadams
 ;;     Removed: 1on1-increment-color-hue - use hexrgb-increment-hue.
 ;;     1on1-color-minibuffer-frame-on-(setup|exit)-increment: Divided increment by 100.
@@ -299,7 +303,7 @@
 ;;       1on1-set-minibuffer-frame-top/bottom: Use force-mode-line-update, not redisplay.
 ;; 2012/08/06 dadams
 ;;     Renamed: old-* to 1on1-ORIG-*:
-;;       1on1-ORIG-abort-recursive-edit, 1on1-ORIG-top-level, 1on1-ORIG-y-or-n-p, 
+;;       1on1-ORIG-abort-recursive-edit, 1on1-ORIG-top-level, 1on1-ORIG-y-or-n-p,
 ;; 2012/07/16 dadams
 ;;     1on1-fit-minibuffer-frame:
 ;;       Do nothing if last-event-frame is not the minibuffer frame.  Alternatively we could do
@@ -625,7 +629,7 @@ Don't forget to mention your Emacs and library versions."))
           "http://www.emacswiki.org/cgi-bin/wiki/OneOnOneEmacs")
   :link '(emacs-commentary-link :tag "Commentary" "oneonone")
   )
- 
+
 
 
 ;;; Minibuffer frame: ********************************
@@ -732,9 +736,11 @@ Note: This is not used if `1on1-color-mode-line-flag' is nil."
 
 (defvar 1on1-minibuffer-frame-font
   (if (eq system-type 'windows-nt)
-      "-*-Lucida Console-normal-r-*-*-14-112-96-96-c-*-iso8859-1"
+      ;;; "-*-Lucida Console-normal-r-*-*-14-112-96-96-c-*-iso8859-1"
+      "-*-Lucida Console-normal-r-*-*-14-*-*-*-c-*-iso8859-1"
       ;;;;;;;"-*-Lucida Console-normal-r-*-*-15-*-*-*-c-*-*-ansi-"
-    "-Misc-Fixed-Medium-R-Normal--15-140-75-75-C-90-ISO8859-1")
+    ;;; "-Misc-Fixed-Medium-R-Normal--15-140-75-75-C-90-ISO8859-1")
+    "-Misc-Fixed-Medium-R-Normal--15-*-*-*-C-90-ISO8859-1")
   "Default font for the minibuffer frame.
 
 Note: This is not used if `1on1-minibuffer-frame-flag' is nil.
@@ -900,7 +906,7 @@ This is a percentage of the display height.
 Not used unless `1on1-fit-minibuffer-frame-max-height' is nil.
 This has no effect if you do not use library `fit-frame.el'."
   :type 'integer :group 'One-On-One)
- 
+
 
 
 ;;; *Help* frame: ********************************
@@ -934,7 +940,7 @@ Note: This is not used if `1on1-*Help*-frame-flag' is nil.
 If you customize this variable, you will need to rerun `1on1-emacs'
 for the new value to take effect."
   :type (if (>= emacs-major-version 21) 'color 'string) :group 'One-On-One)
- 
+
 
 
 ;;; *Completions* frame: ********************************
@@ -996,7 +1002,7 @@ This must be less than the current default font size, since the new
 font size cannot be less than 1 point.
 A value of zero or nil means the *Completions* frame is not zoomed."
   :type '(restricted-sexp :match-alternatives (integerp null)) :group 'One-On-One)
- 
+
 
 
 ;;; Default for normal frames: `1on1-default-frame-alist' **************************
@@ -1017,9 +1023,11 @@ take effect.")
 
 (defvar 1on1-default-frame-font
   (if (eq system-type 'windows-nt)
-      "-*-Lucida Console-normal-r-*-*-14-112-96-96-c-*-iso8859-1"
+      ;;; "-*-Lucida Console-normal-r-*-*-14-112-96-96-c-*-iso8859-1"
+      "-*-Lucida Console-normal-r-*-*-14-*-*-*-c-*-iso8859-1"
       ;;;;;;"-*-Lucida Console-normal-r-*-*-15-*-*-*-c-*-*-ansi-"
-    "-Misc-Fixed-Medium-R-Normal--15-140-75-75-C-90-ISO8859-1")
+    ;;; "-Misc-Fixed-Medium-R-Normal--15-140-75-75-C-90-ISO8859-1")
+    "-Misc-Fixed-Medium-R-Normal--15-*-*-*-C-90-ISO8859-1")
   "Default font for non-special frames.
 This is used only to define the standard value of
 `1on1-default-frame-alist'.  Customize that variable, not this one.
@@ -1186,7 +1194,7 @@ for the new value to take effect."
   ;; :type '(alist :key-type symbol :value-type sexp)
   :type '(repeat (cons :format "%v" (symbol :tag "Frame Parameter") (sexp :tag "Value")))
   :group 'One-On-One)
- 
+
 
 
 ;;; Special-display frames: `1on1-special-display-frame-alist' ************************
@@ -1209,9 +1217,11 @@ it to take effect.")
 
 (defvar 1on1-default-special-frame-font
   (if (eq system-type 'windows-nt)
-      "-*-Lucida Console-normal-r-*-*-14-112-96-96-c-*-iso8859-1"
+      ;;; "-*-Lucida Console-normal-r-*-*-14-112-96-96-c-*-iso8859-1"
+      "-*-Lucida Console-normal-r-*-*-14-*-*-*-c-*-iso8859-1"
       ;;;;;;;;"-*-Lucida Console-normal-r-*-*-15-*-*-*-c-*-*-ansi-"
-    "-Misc-Fixed-Medium-R-Normal--15-140-75-75-C-90-ISO8859-1")
+    ;;; "-Misc-Fixed-Medium-R-Normal--15-140-75-75-C-90-ISO8859-1")
+    "-Misc-Fixed-Medium-R-Normal--15-*-*-*-C-90-ISO8859-1")
   "Default font for special display frames.
 
 This is used only to define the standard value of
@@ -1301,7 +1311,7 @@ for the new value to take effect."
   ;; :type '(alist :key-type symbol :value-type sexp)
   :type '(repeat (cons :format "%v" (symbol :tag "Frame Parameter") (sexp :tag "Value")))
   :group 'One-On-One)
- 
+
 
 
 ;;; Main command ***************************************
@@ -1464,7 +1474,7 @@ To get the frame's current cursor type, use `frame-parameters'."
   (let ((type (cdr (assoc 'cursor-type (frame-parameters)))))
     (unless (eq type 'box)
       (setq 1on1-last-cursor-type type)
-      (1on1-set-cursor-type 'box))))     
+      (1on1-set-cursor-type 'box))))
 
 (defun 1on1-box-cursor-when-idle-off ()
   "Turn off changing the cursor to a box cursor when Emacs is idle."
@@ -1580,7 +1590,7 @@ If `zoom-frm.el' is used, then shrink the text according to
           (let ((frame-zoom-font-difference  1on1-completions-frame-zoom-font-difference))
             (zoom-frm-out))             ; In `zoom-frm.el'.
         (error nil)))
-    
+
     ;; We reposition frame this way, instead of binding `special-display-frame-alist'
     ;; with this value, because `after-make-frame-functions' might resize frame.
     (when 1on1-*Completions*-frame-at-right-flag
