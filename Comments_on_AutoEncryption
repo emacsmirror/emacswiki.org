@@ -1,0 +1,15 @@
+Hi All,
+
+I applied the solution reported in section number 3 stock emacs. I created a .gpg file, I opened it with emacs-24.2-18.fc18.x86_64 on a fedora 18.
+
+- emacs reports the following message after password insertion: "Package pgg-gpg is obsolete!"
+- I edited the decrypted file
+- When I save it emacs told me: "Symbol's value as variable is void: pgg-text-mode" and forced me to quit without saving the file content
+
+Do you have a solution?
+An updated version of code to insert in init.el file exist?
+
+Thanks a lot,   Armando
+
+-- armando.fella 2013-06-05 16:33 UTC
+
