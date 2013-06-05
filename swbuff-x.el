@@ -490,6 +490,7 @@ iconified frames are also excluded."
       (setq swbuff-buffer-list (butlast swbuff-buffer-list))
       (setq swbuff-buffer-list (cons buf swbuff-buffer-list)))))
 
+;;;###autoload
 (defun swbuff-switch-to-previous-buffer ()
   "\\[swbuff-switch-to-previous-buffer] switch to the previous buffer
 in the buffer list."
@@ -501,6 +502,7 @@ in the buffer list."
   (or swbuff-delay-switch (swbuff-previous-buffer))
   (swbuff-show-status-window))
 
+;;;###autoload
 (defun swbuff-switch-to-next-buffer ()
   "\\[swbuff-switch-to-next-buffer] switch to the next buffer in the
 buffer list."
