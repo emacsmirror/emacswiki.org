@@ -158,8 +158,7 @@ If you use flyspell with aspell instead of ispell you have to add :
 (setq ispell-list-command "--list")
 </pre>
 
-the "-l" option mean in aspell "--lang"
-the "-l" option mean in ispell "--list"
+Because the "-l" option mean "--lang" in aspell and the "-l" option mean "--list" in ispell.
 flyspell-buffer, and flyspell-region are affected by this problem.
 
 == Run flyspell-buffer after change to dictionary ==
