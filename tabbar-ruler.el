@@ -1,11 +1,11 @@
-;;; tabbar-ruler.el --- Setup tabbar to look pretty...
+;;; tabbar-ruler.el --- Pretty tabbar, autohide, use both tabbar/ruler
 ;;
 ;; Filename: tabbar-ruler.el
 ;; Description: Changes tabbar setup to be similar to Aquaemacs.
 ;; Author: Matthew Fidler, Nathaniel Cunningham
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Mon Oct 18 17:06:07 2010 (-0500)
-;; Version: 0.33
+;; Version: 0.34
 ;; Last-Updated: Sat Dec 15 15:44:34 2012 (+0800)
 ;;           By: Matthew L. Fidler
 ;;     Update #: 663
@@ -49,12 +49,12 @@
 ;; The default behavior for tabbar-ruler is to group the tabs by frame.
 ;; You can change this back to the old-behavior by:
 ;; 
-;;   (tabbar-ruler-group-old-tabbar)
+;;   (tabbar-ruler-group-buffer-groups)
 ;; 
 ;; or by issuing the following code:
 ;; 
 ;; 
-;;   (setq tabbar-buffer-list-function 'tabbar-buffer-list)
+;;   (setq tabbar-buffer-groups-function 'tabbar-buffer-groups)
 ;; 
 ;; 
 ;; In addition, you can also group by projectile project easily by:
@@ -91,6 +91,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 4-Jun-2013    Matthew L. Fidler  
+;;    Last-Updated: Sat Dec 15 15:44:34 2012 (+0800) #663 (Matthew L. Fidler)
+;;    Change package description.  Fixed the documentation to actually
+;;    change to the old tabbar method of grouping buffers.
 ;; 4-Jun-2013    Matthew L. Fidler  
 ;;    Last-Updated: Sat Dec 15 15:44:34 2012 (+0800) #663 (Matthew L. Fidler)
 ;;    Turn off ruler mode in the next buffer (if necessary)
@@ -1352,7 +1356,12 @@ visiting a file.  The current buffer is always included."
   (interactive)
   (setq tabbar-buffer-groups-function 'tabbar-ruler-projectile-tabbar-buffer-groups))
 
-(defun tabbar-ruler-group-old-tabbar ()
+(defun tabbar-ruler-group-buffer-groups ()
+  "Use tabbar's major-mode grouping of buffers."
+  (interactive)
+  (setq tabbar-buffer-groups-function 'tabbar-buffer-groups))
+
+(defun tabbar-ruler-group-buffer-list ()
   "Use tabbar's old grouping"
   (interactive)
   (setq tabbar-buffer-groups-function 'tabbar-buffer-list))
