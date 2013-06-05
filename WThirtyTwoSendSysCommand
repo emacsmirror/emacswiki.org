@@ -1,11 +1,14 @@
+[:sendsyscommand]
 = WThirtyTwoSendSysCommand =
 
 One way that you can interact with Windows is to send it commands via `w32-send-sys-command'.  These can be bound to a key with an anonymous function or a named function.  Examples of both are given.
 
+[:anonymous]
 == Anonymous Functions ==
 
  (global-set-key [(f4)] (function (lambda () "Maximize frame" (interactive) (w32-send-sys-command 61488))))
 
+[:named]
 == Named Functions ==
 
  (defun my-maximize-frame ()
@@ -15,6 +18,7 @@ One way that you can interact with Windows is to send it commands via `w32-send-
  
  (global-set-key [(f4)] 'my-maximize-frame)
 
+[:commandcodes]
 = w32-send-sys-command Codes =
 * 61440 - resize the window via keyboard
 * 61456 - move window via keyboard
