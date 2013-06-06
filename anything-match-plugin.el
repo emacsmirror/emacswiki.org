@@ -630,14 +630,21 @@ If (direct-insert-match) is in the source, this function is used."
           (unless search-from-end
             (insert "cat " allfiles))
         (when search-from-end (insert " | "))
-        (loop for (flag . re) in (anything-mp-3-get-patterns-internal query)
+        (loop with exist-ary = (file-exists-p (concat (car files) ".ary"))
+              for (flag . re) in (anything-mp-3-get-patterns-internal query)
               for i from 0
               do
               (setq re (replace-regexp-in-string "^-" "\\-" re))
               (unless (zerop i) (insert " | ")) 
-              (insert "grep -ih "
-                      (if (eq flag 'identity) "" "-v ")
-                      (shell-quote-argument re))
+              (if (and (not (cdr files))
+                       (not search-from-end)
+                       (eq flag 'identity)
+                       (zerop i)
+                       exist-ary)
+                  (insert "sary " (shell-quote-argument re))
+                (insert "grep -ih "
+                        (if (eq flag 'identity) "" "-v ")
+                        (shell-quote-argument re)))
               (when (and (not search-from-end) (zerop i))
                 (insert " " allfiles))))
       
