@@ -7,9 +7,9 @@
 ;; Copyright (C) 2004-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 10 16:44:55 2004
 ;; Version: 21.0
-;; Last-Updated: Wed May 15 09:45:18 2013 (-0700)
+;; Last-Updated: Thu Jun  6 11:05:41 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 1520
+;;     Update #: 1521
 ;; URL: http://www.emacswiki.org/thumb-frm.el
 ;; Doc URL: http://www.emacswiki.org/FisheyeWithThumbs
 ;; Keywords: frame, icon
@@ -88,9 +88,9 @@
 ;;
 ;;  To be able to use `thumfr-doremi-thumbnail-frames+', you need
 ;;  library `doremi-frm.el' (which in turn requires libraries
-;;  `hexrgb.el', `ring+.el', `faces+.el', and `doremi.el').  The only
-;;  libraries strictly required by `thumb-frm.el' are `frame-fns.el'
-;;  and `frame-cmds.el'.
+;;  `hexrgb.el', `faces+.el', `doremi.el', and perhaps `ring+.el',
+;;  depending on your Emacs version).  The only libraries strictly
+;;  required by `thumb-frm.el' are `frame-fns.el' and `frame-cmds.el'.
 ;;
 ;;  A more comprehensive, lower-level way of substituting thumbifying
 ;;  for iconifying is to do the following in your init file:
