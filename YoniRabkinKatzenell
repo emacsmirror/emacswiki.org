@@ -27,7 +27,7 @@ I wrote [http://yrk.nfshost.com/repos/vernacular-time/vernacular-time.el vernacu
 SLIME, the Superior Lisp Interaction Mode for Emacs, displays a MOTD type encouragement when loaded. With [http://yrk.nfshost.com/repos/slime-cl-pitfalls/slime-cl-pitfalls.el slime-cl-pitfalls.el] you will instead be treated with a randomly selected Common Lisp pitfall for your edification. You can pull from the Darcs repository at http://yrk.nfshost.com/repos/slime-cl-pitfalls/.
 
 === rt-liberation.el ===
-rt-liberation is a GNU/Emacs interface to the [http://bestpractical.com/rt/ RT] system. I wrote and use it every day in order to avoid using a browser and an HTML Web interface to RT. It integrates with Gnus and it's also convenient for zapping spam tickets on public-facing RT queues. Get it with: git clone http://yrk.nfshost.com/repos/rt-liberation.git/
+rt-liberation is a GNU/Emacs interface to the [http://bestpractical.com/rt/ RT] system. I wrote and use it every day in order to avoid using a browser and an HTML Web interface to RT. It integrates with Gnus and it's also convenient for zapping spam tickets on public-facing RT queues. Get it at http://yrk.nfshost.com/projects/rt-liberation/
 
 === emacs-android.el ===
 I write some Android stuff. Some of the Emacs Lisp hacks I write to help me hack Android Java in Emacs find their way into emacs-android.el. You can get a copy with: git clone http://yrk.nfshost.com/repos/emacs-android.git
