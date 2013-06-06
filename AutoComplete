@@ -484,6 +484,17 @@ Could you please write more documentation on how to use/reuse popup menus from p
 In css-mode, as soon as I hit ';' to complete a declaration, the auto-complete menu appears and auto-selects a completion. Naturally, I'll hit RET to begin a new line, but instead the first-selected auto-completion is inserted! I have to use C-j to get new lines. How can I prevent this without disabling auto-complete in every other mode? --IanL
 
 [new]
+Hey, if you want to stop having an autocomplete prompt when you hit RET, edit your auto-complete-config.el file and add the semicolon to the prefix regex. You should have something like that:
+<pre>
+(defun ac-css-prefix ()
+  (when (save-excursion (re-search-backward "\\_<\\(.+?\\)\\_>\\s *:.*\\=\\;" nil t))
+    (setq ac-css-property (match-string 1))
+    (or (ac-prefix-symbol) (point))))
+</pre>
+
+Happy hacking! -- [http://blog.etenil.net Etenil]
+
+[new]
 I got tired of removing a character from a function name in order to see the docstring for it popup. The code below will display the docstring for a function in a popup when the point is on the function name or over a space in the function call list. [http://jaderholm.com Scott Jaderholm]
 <pre>
 (require 'pos-tip)
