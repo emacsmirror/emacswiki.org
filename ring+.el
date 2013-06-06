@@ -7,13 +7,13 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Thu Apr 11 16:46:04 1996
 ;; Version: 21.0
-;; Last-Updated: Fri Dec 28 10:20:14 2012 (-0800)
+;; Last-Updated: Thu Jun  6 11:11:40 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 215
+;;     Update #: 223
 ;; URL: http://www.emacswiki.org/ring%2b.el
 ;; Doc URL: http://emacswiki.org/RingPlus
 ;; Keywords: extensions, lisp, emacs-lisp
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -24,6 +24,9 @@
 ;;; Commentary:
 ;;
 ;;    Extensions to `ring.el'.
+;;
+;;  The code in this library is part of GNU Emacs 23 and later, so
+;;  this library is useful only for releases prior to Emacs 23.
 ;;
 ;;  Main new functions here:
 ;;
@@ -74,17 +77,13 @@
 
 ;;;;;;;;;;;;;;;;;
 
-
 (defun ring-member (ring item)
-  "Return index of ITEM if on RING, else nil.  Comparison via `equal'.
-The index is 0-based."
-  (let ((ind 0)
-        (len (1- (ring-length ring)))
-        (memberp nil))
-    (while (and (<= ind len)
-                (not (setq memberp (equal item (ring-ref ring ind)))))
-      (setq ind (1+ ind)))
-    (and memberp ind)))
+  "Return index of ITEM if on RING, else nil.
+Comparison is done via `equal'.  The index is 0-based."
+  (catch 'found
+    (dotimes (ind (ring-length ring) nil)
+      (when (equal item (ring-ref ring ind))
+        (throw 'found ind)))))
 
 (defun ring-next (ring item)
   "Return the next item in the RING, after ITEM.
