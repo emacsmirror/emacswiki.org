@@ -7,9 +7,9 @@
 ;; Copyright (C) 2004-2013, Drew Adams, all rights reserved.
 ;; Created: Thu Sep 02 08:21:37 2004
 ;; Version: 21.1
-;; Last-Updated: Fri Dec 28 09:37:34 2012 (-0800)
+;; Last-Updated: Thu Jun  6 11:10:23 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 1606
+;;     Update #: 1613
 ;; URL: http://www.emacswiki.org/doremi.el
 ;; Doc URL: http://www.emacswiki.org/DoReMi
 ;; Keywords: keys, cycle, repeat, higher-order
@@ -64,9 +64,10 @@
 ;; of using function `doremi', see files `doremi-frm.el' and
 ;; `doremi-cmd.el'.
 ;;
-;; This library uses library `ring+.el', which provides extensions to
-;; the standard library `ring.el' to let you manipulate circular
-;; structures.
+;; For Emacs prior to release 23, this library requires library
+;; `ring+.el', which provides extensions to the standard library
+;; `ring.el' to let you manipulate circular structures.  (Library
+;; `ring+.el' is part of GNU Emacs 23 and later.)
 ;;
 ;;
 ;;  Non-interactive functions defined here:
@@ -105,6 +106,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/06/06 dadams
+;;     Do not require ring+.el unless prior to Emacs 23.
 ;; 2011/09/07 dadams
 ;;     doremi: Use mouse-wheel-(up|down)-event everywhere.  Thx to Michael Heerdegen.
 ;; 2011/01/04 dadams
@@ -189,8 +192,9 @@
 ;;
 ;;; Code:
 
-(require 'ring+) ;; ring-convert-sequence-to-ring, ring-insert+extend,
-                 ;; ring-member, ring-next, ring-previous
+(require 'ring)
+(unless (fboundp 'ring-member) (require 'ring+))
+  ;; ring-convert-sequence-to-ring, ring-insert+extend, ring-member, ring-next, ring-previous
 (require 'mwheel nil t) ; (no error if not found): mwheel-event-button
 
 ;; In Emacs 20, because `mwheel.el' is not loaded, byte-compiling
@@ -274,7 +278,7 @@ the same effect as using `doremi-boost-up-keys' or
 
 ;; Originally, the key-variable options were for a single key, not a list of keys.
 ;; Top-level warning when load the library.
-(when (or (boundp 'doremi-up-key)   (boundp 'doremi-boost-up-key) 
+(when (or (boundp 'doremi-up-key)   (boundp 'doremi-boost-up-key)
           (boundp 'doremi-down-key) (boundp 'doremi-boost-down-key))
   (message "WARNING: Single-key options `doremi-...-key' are OBSOLETE. Use `doremi-...-keys'."))
  
@@ -522,7 +526,6 @@ MAX must be greater than min."
     (while (> new max) (setq new  (- new del)))
     (while (< new min) (setq new  (+ new del)))
     new))
-  
  
 ;;; Example Commands.  Uncomment these and try them to get the idea.
 ;;
