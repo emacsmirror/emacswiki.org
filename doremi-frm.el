@@ -7,9 +7,9 @@
 ;; Copyright (C) 2004-2013, Drew Adams, all rights reserved.
 ;; Created: Sat Sep 11 10:40:32 2004
 ;; Version: 22.0
-;; Last-Updated: Fri Jan 18 08:58:22 2013 (-0800)
+;; Last-Updated: Thu Jun  6 10:59:05 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2990
+;;     Update #: 2993
 ;; URL: http://www.emacswiki.org/doremi-frm.el
 ;; Doc URL: http://www.emacswiki.org/DoReMi
 ;; Keywords: frames, extensions, convenience, keys, repeat, cycle
@@ -276,6 +276,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/06/06 dadams
+;;     Do not require ring+.el unless prior to Emacs 23.
 ;; 2012/03/02 dadams
 ;;     Added doremi-delete-if: to avoid runtime load of cl.el.
 ;;     doremi-frame-config-wo-parameters: Use doremi-delete-if.
@@ -295,7 +297,7 @@
 ;;     Added: doremi-adjust-increment-for-color-component, doremi-face-bg/fg-1,
 ;;            doremi-face-color-component, doremi-increment-face-color
 ;;            doremi-face-default, doremi-increment-(blue|green|red),
-;;            doremi-all-(frames|faces)-bg/fg-1, 
+;;            doremi-all-(frames|faces)-bg/fg-1,
 ;;     doremi-all-frames-(bg|fg)+: Use *-all-frames-bg/fg-1, *-read-component.
 ;;                                 Set increment to 1 if nil.  Use only visible frames.
 ;;     doremi-face-(bg|fg)+:
@@ -320,7 +322,7 @@
 ;;       Set *-last-frame-color only when interactive.
 ;;       Use *-1 helper fn.  Wrap in condition-case for C-g.
 ;;     doremi-(bg|fg): Handle R, H, and a list of increments, via *-(bg|fg)-1 and
-;;                     *-frame-color-component.  
+;;                     *-frame-color-component.
 ;;     doremi-set-(back|fore)ground-color: Use doremi-set-frame-color.
 ;; 2009/11/03 dadams
 ;;     Renamed: doremi-number-arg to doremi-read-increment-arg.
@@ -568,7 +570,8 @@
                   ;; hexrgb-defined-colors, hexrgb-defined-colors-alist,
                   ;; hexrgb-increment-blue, hexrgb-increment-green, hexrgb-increment-red,
                   ;; hexrgb-hsv-to-rgb, hexrgb-rgb-to-hsv
-(require 'ring+)  ;; ring-insert, ring-member, ring-next
+(require 'ring)
+(unless (fboundp 'ring-member) (require 'ring+)) ;; ring-insert, ring-member, ring-next
 (require 'frame-fns) ;; frame-geom-spec-cons, frame-geom-value-cons, get-a-frame
 (require 'faces+) ;; face-background-20+, face-foreground-20+, Emacs 20: read-face-name
 (if (fboundp 'defvaralias) ;; Emacs 22
@@ -855,7 +858,7 @@ behavior (value `t') is to wrap frame movement around the display."
             (- increment)               ; Reverse, so arrows correspond.
             t))
   (when (member (car unread-command-events)
-                (append doremi-up-keys   doremi-boost-up-keys 
+                (append doremi-up-keys   doremi-boost-up-keys
                         doremi-down-keys doremi-boost-down-keys))
     (doremi-frame-vertically+ increment frame)))
 
@@ -1538,7 +1541,7 @@ the frame background color."
     (condition-case nil
         (doremi-face-bg/fg-color-name-1 'background-color face)
       (quit (set-face-background face curr-bg)))))
-    
+
 ;;;###autoload
 (defun doremi-all-faces-bg+ (component increment)
   "Change background color of all faces incrementally, for all frames.
@@ -1642,7 +1645,7 @@ the frame foreground color."
     (condition-case nil
         (doremi-face-bg/fg-color-name-1 'foreground-color face)
       (quit (set-face-foreground face curr-fg)))))
-    
+
 ;;;###autoload
 (defun doremi-all-faces-fg+ (component increment)
   "Change foreground color of all faces incrementally, for all frames.
@@ -1705,7 +1708,7 @@ INCREMENT is the increment to increase the value component of COLOR."
           "Adjust red, green, blue, hue, saturation, or value? [rgbhsv]: ")
          ;; Cannot use `facemenu-read-color' here, because we allow "#...".
          (completing-read "Color (name or #rrrrggggbbbb): " (hexrgb-defined-colors-alist))
-         (doremi-read-increment-arg 3 1)))      
+         (doremi-read-increment-arg 3 1)))
   (setq color  (hexrgb-color-name-to-hex color))
   (let ((hlen  (/ (1- (length color)) 3)) ; length of one hex color, R, G, or B
         result)
@@ -1887,7 +1890,7 @@ For [Rrgb], scale the number(s) by `doremi-RGB-increment-factor'."
     (when (eq component ?R)
       (setq new  (mapcar (lambda (in) (* in doremi-RGB-increment-factor)) new)))
     new))
-  
+
 (defun doremi-increment-background-color-1 (component increment &optional frame)
   "Non-interactive version of `doremi-increment-background-color'."
   (doremi-increment-frame-color 'background-color component increment frame))
@@ -2286,7 +2289,7 @@ value. Use `\\[customize-face]' to revisit changes.")))
       (let ((fr  (get-a-frame "*Face Sample*"))) (when fr (delete-frame fr))))))
 
 ;; A function like this should be available as part of the Customize
-;; code, but there is none.  
+;; code, but there is none.
 ;; This is OK for Emacs 22, but won't work for Emacs 20, because of `set-face-attribute'.
 ;; We don't bother to use this now.
 (when (fboundp 'set-face-attribute)
@@ -2297,7 +2300,7 @@ SPEC is as for `defface'."
       (while attrs
         (let ((attribute  (car attrs))
               (value      (cadr attrs)))
-          (when attribute 
+          (when attribute
             (set-face-attribute face nil attribute value)))
         (setq attrs  (cddr attrs))))
     (put face 'customized-face spec)
