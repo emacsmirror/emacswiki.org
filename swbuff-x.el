@@ -140,7 +140,7 @@ highlighting in the buffer display.")
 ;; Respect different Emacsen naming conventions, otherwise interactuve
 ;; help will not work as expected.
 
-(if xemacsp
+(if (featurep 'xemacs)
   (defvar swbuff-modeline-format ""
     "Adjust modeline of the status window.
 See `mode-line-format' for a detailed format description.")
@@ -298,7 +298,7 @@ BCURR is the buffer name to highlight."
       (select-window window)
 
       (setq header-line-format nil) ;; Hide Emacs 21 header line.
-      (if xemacsp
+      (if (featurep 'xemacs)
 	  (setq modeline-format swbuff-modeline-format)
 	(setq mode-line-format swbuff-mode-line-format))
 
