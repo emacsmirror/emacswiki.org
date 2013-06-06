@@ -7,9 +7,9 @@
 ;; Copyright (C) 1995-2013, Drew Adams, all rights reserved.
 ;; Created: Wed Aug  2 11:12:24 1995
 ;; Version: 21.1
-;; Last-Updated: Thu Feb 21 14:16:36 2013 (-0800)
+;; Last-Updated: Thu Jun  6 09:46:38 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2964
+;;     Update #: 2970
 ;; URL: http://www.emacswiki.org/start.el
 ;; Keywords: abbrev, internal, local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -82,6 +82,8 @@
 ;;
 ;; Change Log:
 ;;
+;; 2013/06/06 dadams
+;;     Added autoload for auto-update-file-header.
 ;; 2013/02/21 dadams
 ;;     Autoload register-list.el.
 ;; 2012/11/16 dadams
@@ -572,7 +574,9 @@ See the Dired-X Info pages (type \\[info]) for information on this package.")
 (autoload 'clipboard-kill-region-wimpy "wimpy-del"
   "Kill region, with confirmation if > `wimpy-delete-size'." t)
 
-(autoload 'auto-make-header "header2" "Call `make-header' if current buffer is empty." t)
+(autoload 'auto-update-file-header "header2" "Update file header if file is modified.")
+(autoload 'auto-make-header "header2"
+  "Call `make-header' if current buffer is empty and is a file buffer.")
 (autoload 'update-file-header "header2" "Update file header." t)
 (autoload 'make-header "header2" "Insert (mode-dependent) header comment at beginning of file." t)
 (autoload 'make-revision "header2" "Prepare for a new history comment." t)
