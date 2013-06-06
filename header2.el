@@ -10,9 +10,9 @@
 ;; Copyright (C) 1988 Lynn Randolph Slater, Jr.
 ;; Created: Tue Aug  4 17:06:46 1987
 ;; Version: 21.0
-;; Last-Updated: Fri Dec 28 09:16:48 2012 (-0800)
+;; Last-Updated: Thu Jun  6 09:41:17 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 1827
+;;     Update #: 1829
 ;; URL: http://www.emacswiki.org/header2.el
 ;; Doc URL: http://emacswiki.org/AutomaticFileHeaders
 ;; Keywords: tools, docs, maint, abbrev, local
@@ -70,11 +70,13 @@
 ;; To have Emacs update file headers automatically whenever you save a
 ;; file, put this in your init file (~/.emacs):
 ;;
+;;   (autoload 'auto-update-file-header "header2")
 ;;   (add-hook 'write-file-hooks 'auto-update-file-header)
 ;;
 ;; To have Emacs add a file header whenever you create a new file in
 ;; some mode, put this in your init file (~/.emacs):
 ;;
+;;   (autoload 'auto-make-header "header2")
 ;;   (add-hook 'emacs-lisp-mode-hook 'auto-make-header)
 ;;   (add-hook 'c-mode-common-hook   'auto-make-header)
 ;;   ...
@@ -968,7 +970,7 @@ the strings that cause them to be invoked."
 (defun auto-update-file-header ()
   "Update file header if file is modified.
 Call `update-file-header' if:
- `header-auto-update-enabled' is non-nil, 
+ `header-auto-update-enabled' is non-nil,
  the file is modified,
  it is longer than 100 chars,
  and the buffer is not read-only.
