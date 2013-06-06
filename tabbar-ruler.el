@@ -5,7 +5,7 @@
 ;; Author: Matthew Fidler, Nathaniel Cunningham
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Mon Oct 18 17:06:07 2010 (-0500)
-;; Version: 0.34
+;; Version: 0.35
 ;; Last-Updated: Sat Dec 15 15:44:34 2012 (+0800)
 ;;           By: Matthew L. Fidler
 ;;     Update #: 663
@@ -63,27 +63,16 @@
 ;;   (tabbar-ruler-group-by-projectile-project)
 ;; 
 ;; * Adding key-bindings to tabbar-ruler
-;; You can add key-bindings to change the current tab.  These key
-;; bindings will make sure that the ruler mode is enabled and then
-;; change the bindings.  A possible way to bind this is given below:
+;; You can add key-bindings to change the current tab.  The easiest way
+;; to add the bindings is to add a key like:
 ;; 
 ;; 
-;;   (global-set-key [(control home)]  'tabbar-ruler-tabbar-press-home)
-;;   (global-set-key [(control left)]  'tabbar-ruler-tabbar-backward)
-;;   (global-set-key [(control right)] 'tabbar-ruler-tabbar-forward)
-;;   (global-set-key [(control up)]    'tabbar-ruler-tabbar-backward-group)
-;;   (global-set-key [(control down)]  'tabbar-ruler-tabbar-forward-group)
-;;   (global-set-key [(control prior)] 'tabbar-ruler-tabbar-press-scroll-left)
-;;   (global-set-key [(control next)]  'tabbar-ruler-tabbar-press-scroll-right)
+;;   (global-set-key (kbd "C-c t") 'tabbar-ruler-move)
 ;; 
 ;; 
-;; These bindings are quite aggressive and overwrite many of the
-;; functions in emacs.  Control-Home is beginning of buffer, etc etc.
-;; However, if you do not use these functions, it is safe to overwrite
-;; these keys.  
-;; 
-;; You should choose your own key bindings for these keys.
-;; 
+;; After that, all you would need to press is Control+c t and then the
+;; arrow keys will allow you to change the buffer quite easily.  To exit
+;; the buffer movement you can press enter or space.
 ;; 
 ;; * Known issues
 ;; the left arrow is text instead of an image.
@@ -91,6 +80,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 6-Jun-2013    Matthew L. Fidler  
+;;    Last-Updated: Sat Dec 15 15:44:34 2012 (+0800) #663 (Matthew L. Fidler)
+;;    Changed movement commands.  The movement commands are simpler (in my opinion)
 ;; 4-Jun-2013    Matthew L. Fidler  
 ;;    Last-Updated: Sat Dec 15 15:44:34 2012 (+0800) #663 (Matthew L. Fidler)
 ;;    Change package description.  Fixed the documentation to actually
@@ -1346,11 +1338,6 @@ visiting a file.  The current buffer is always included."
           (t '("Main"))))
     (symbol-value 'tabbar-ruler-projectile-tabbar-buffer-group-calc)))
 
-(defun tabbar-ruler-group-per-frame ()
-  "Groups tabs by frame"
-  (interactive)
-  (setq tabbar-buffer-groups-function 'tabbar-ruler-tabbar-buffer-groups))
-
 (defun tabbar-ruler-group-by-projectile-project()
   "Group by projectile project."
   (interactive)
@@ -1361,12 +1348,7 @@ visiting a file.  The current buffer is always included."
   (interactive)
   (setq tabbar-buffer-groups-function 'tabbar-buffer-groups))
 
-(defun tabbar-ruler-group-buffer-list ()
-  "Use tabbar's old grouping"
-  (interactive)
-  (setq tabbar-buffer-groups-function 'tabbar-buffer-list))
-
-(tabbar-ruler-group-per-frame)
+(tabbar-ruler-group-buffer-groups)
 
 ;;; Adapted from auto-hide in EmacsWiki
 
@@ -1374,18 +1356,21 @@ visiting a file.  The current buffer is always included."
   '(tabbar-press-home
     tabbar-backward
     tabbar-forward
+    tabbar-backward-tab
+    tabbar-forward-tab
     tabbar-backward-group
     tabbar-forward-group
     tabbar-press-scroll-left
     tabbar-press-scroll-right)
   "Tabbar movement functions")
+
 (defvar tabbar-ruler-keep-tabbar nil)
 
 (mapc
  (lambda(x)
-   (eval `(defun ,(intern (concat "tabbar-ruler-" (symbol-name x))) ()
+   (eval `(defun ,(intern (concat "tabbar-ruler-" (symbol-name x))) (&optional arg)
             ,(concat "Turn on tabbar before running `" (symbol-name x) "'")
-            (interactive)
+            (interactive "p")
             (setq tabbar-ruler-keep-tabbar t)
             (unless tabbar-ruler-ruler-off
               (ruler-mode -1)
@@ -1393,6 +1378,7 @@ visiting a file.  The current buffer is always included."
             (when tabbar-ruler-tabbar-off
               (tabbar-mode 1)
               (setq tabbar-ruler-tabbar-off nil))
+            (setq current-prefix-arg current-prefix-arg)
             (call-interactively ',x)
             (setq tabbar-ruler-keep-tabbar t)
             (unless tabbar-ruler-ruler-off
@@ -1403,6 +1389,106 @@ visiting a file.  The current buffer is always included."
               (setq tabbar-ruler-tabbar-off nil)))))
  tabbar-display-functions)
 
+;;;###autoload
+(defun tabbar-ruler-up (&optional arg)
+  "Tabbar press up key."
+  (interactive "p")
+  (setq current-prefix-arg current-prefix-arg)
+  (call-interactively 'tabbar-ruler-tabbar-press-home))
+
+;;;###autoload
+(defun tabbar-ruler-forward (&optional arg)
+  "Forward ruler. Takes into consideration if the home-key was pressed.
+This is based on the variable `tabbar--buffer-show-groups'"
+  (interactive "p")
+  (cond
+   (tabbar--buffer-show-groups
+    (setq current-prefix-arg current-prefix-arg)
+    (call-interactively 'tabbar-ruler-tabbar-forward-group)
+    (tabbar-ruler-tabbar-press-home))
+   (t
+    (setq current-prefix-arg current-prefix-arg)
+    (call-interactively 'tabbar-ruler-tabbar-forward-tab))))
+
+;;;###autoload
+(defun tabbar-ruler-backward (&optional arg)
+  "Backward ruler.  Takes into consideration if the home-key was pressed."
+  (interactive "p")
+  (cond
+   (tabbar--buffer-show-groups
+    (setq current-prefix-arg current-prefix-arg)
+    (call-interactively 'tabbar-ruler-tabbar-backward-group)
+    (tabbar-ruler-tabbar-press-home))
+   (t
+    (setq current-prefix-arg current-prefix-arg)
+    (call-interactively 'tabbar-ruler-tabbar-backward-tab))))
+
+(when (not (fboundp 'set-temporary-overlay-map))
+  ;; Backport this function from newer emacs versions
+  (defun set-temporary-overlay-map (map &optional keep-pred)
+    "Set a new keymap that will only exist for a short period of time.
+The new keymap to use must be given in the MAP variable. When to
+remove the keymap depends on user input and KEEP-PRED:
+
+- if KEEP-PRED is nil (the default), the keymap disappears as
+  soon as any key is pressed, whether or not the key is in MAP;
+
+- if KEEP-PRED is t, the keymap disappears as soon as a key *not*
+ i in MAP is pressed;
+
+- otherwise, KEEP-PRED must be a 0-arguments predicate that will
+  decide if the keymap should be removed (if predicate returns
+  nil) or kept (otherwise). The predicate will be called after
+  each key sequence."
+    
+    (let* ((clearfunsym (make-symbol "clear-temporary-overlay-map"))
+           (overlaysym (make-symbol "t"))
+           (alist (list (cons overlaysym map)))
+           (clearfun
+            `(lambda ()
+               (unless ,(cond ((null keep-pred) nil)
+                              ((eq t keep-pred)
+                               `(eq this-command
+                                    (lookup-key ',map
+                                                (this-command-keys-vector))))
+                              (t `(funcall ',keep-pred)))
+                 (remove-hook 'pre-command-hook ',clearfunsym)
+                 (setq emulation-mode-map-alists
+                       (delq ',alist emulation-mode-map-alists))))))
+      (set overlaysym overlaysym)
+      (fset clearfunsym clearfun)
+      (add-hook 'pre-command-hook clearfunsym)
+      
+      (push alist emulation-mode-map-alists))))
+
+(defvar tabbar-ruler-move-keymap (make-sparse-keymap)
+  "Keymap for tabbar-ruler movement")
+
+(define-key tabbar-ruler-move-keymap [remap previous-line] 'tabbar-ruler-up)
+(define-key tabbar-ruler-move-keymap [remap next-line] 'tabbar-ruler-up)
+(define-key tabbar-ruler-move-keymap [remap backward-char] 'tabbar-ruler-backward)
+(define-key tabbar-ruler-move-keymap [remap forward-char] 'tabbar-ruler-forward)
+(define-key tabbar-ruler-move-keymap (kbd "SPC") (lambda() (interactive) (message "Exited tabbar-movement")))
+(define-key tabbar-ruler-move-keymap (kbd "<return>") (lambda() (interactive) (message "Exited tabbar-movement")))
+
+(defun tabbar-ruler-move-pred ()
+  "Determines if emacs should keep the temporary keymap
+  `tabbar-ruler-move-keymap' when running `tabbar-ruler-move'."
+  (memq this-command '(tabbar-ruler-up tabbar-ruler-backward tabbar-ruler-forward)))
+
+;;;###autoload
+(defun tabbar-ruler-move ()
+  "Start the movement for the tabbar"
+  (interactive)
+  (setq tabbar-ruler-keep-tabbar t)
+  (unless tabbar-ruler-ruler-off
+    (ruler-mode -1)
+    (setq tabbar-ruler-ruler-off 't))
+  (when tabbar-ruler-tabbar-off
+    (tabbar-mode 1)
+    (setq tabbar-ruler-tabbar-off nil))
+  (message "Use arrow keys to change buffers (or line movement commands).  Exit with space/return or any other key.")
+  (set-temporary-overlay-map tabbar-ruler-move-keymap 'tabbar-ruler-move-pred))
 
 (provide 'tabbar-ruler)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
