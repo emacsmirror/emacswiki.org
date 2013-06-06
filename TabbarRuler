@@ -8,7 +8,7 @@
 * <b>Author </b> --  Matthew Fidler, Nathaniel Cunningham
 * <b>Maintainer </b> --  Matthew L. Fidler
 * <b>Created </b> --  Mon Oct 18 17:06:07 2010 (-0500)
-* <b>Version </b> --  0.34
+* <b>Version </b> --  0.35
 * <b>Last-Updated </b> --  Sat Dec 15 15:44:34 2012 (+0800)
 * <b>By </b> --  Matthew L. Fidler
 * <b>Update # </b> --  663
@@ -62,27 +62,16 @@ In addition, you can also group by projectile project easily by:
   (tabbar-ruler-group-by-projectile-project)
 }}}
 == Adding key-bindings to tabbar-ruler ==
-You can add key-bindings to change the current tab.  These key
-bindings will make sure that the ruler mode is enabled and then
-change the bindings.  A possible way to bind this is given below:
+You can add key-bindings to change the current tab.  The easiest way
+to add the bindings is to add a key like:
 
 {{{
-  (global-set-key [(control home)]  'tabbar-ruler-tabbar-press-home)
-  (global-set-key [(control left)]  'tabbar-ruler-tabbar-backward)
-  (global-set-key [(control right)] 'tabbar-ruler-tabbar-forward)
-  (global-set-key [(control up)]    'tabbar-ruler-tabbar-backward-group)
-  (global-set-key [(control down)]  'tabbar-ruler-tabbar-forward-group)
-  (global-set-key [(control prior)] 'tabbar-ruler-tabbar-press-scroll-left)
-  (global-set-key [(control next)]  'tabbar-ruler-tabbar-press-scroll-right)
+  (global-set-key (kbd "C-c t") 'tabbar-ruler-move)
 }}}
 
-These bindings are quite aggressive and overwrite many of the
-functions in emacs.  Control-Home is beginning of buffer, etc etc.
-However, if you do not use these functions, it is safe to overwrite
-these keys.  
-
-You should choose your own key bindings for these keys.
-
+After that, all you would need to press is Control+c t and then the
+arrow keys will allow you to change the buffer quite easily.  To exit
+the buffer movement you can press enter or space.
 
 == Known issues ==
 the left arrow is text instead of an image.
@@ -96,6 +85,9 @@ the left arrow is text instead of an image.
 === Internal Variables ===
 == History ==
 
+6-Jun-2013    Matthew L. Fidler  
+Last-Updated: Sat Dec 15 15:44:34 2012 (+0800) #663 (Matthew L. Fidler)
+Changed movement commands.  The movement commands are simpler (in my opinion)
 4-Jun-2013    Matthew L. Fidler  
 Last-Updated: Sat Dec 15 15:44:34 2012 (+0800) #663 (Matthew L. Fidler)
 Change package description.  Fixed the documentation to actually
