@@ -1,11 +1,7 @@
-Keys like M-p, M-n function just as in shell --- they can be used to access history (see MinibufferHistory)..
+Keys like M-p, M-n function just as in shell --- they can be used to access history (see MinibufferHistory).
 
- <more details>
+There are additional modes within eshell (see eshell-startup help) which allow you to configure eshell such that commands like <arrow-up> and <arrow-down> can be used to access history just as in zsh or bash. 
 
-There are additional modes within eshell (see eshell-startup help) which allow you to configure eshell such that commands like <arrow-up> and <arrow-down> can be used to access history.. just as in tcsh or bash. 
-
-
- <plug>:
 
 Imagine i am running lisp or some other application inside eshell.  In that application, I type a hairy expression:
 
@@ -68,8 +64,7 @@ The downsides to this method are:
 
 ----
 
-
-Not sure if this is the right page - but in eshell currently you can't use !$ to refer to the last component of the previous command. (I use this all the time in other shells). Anyway, here's a quick fix:
+In eshell currently (24.3.1) you can't use !$ to refer to the last component of the previous command. (I use this all the time in other shells). Anyway, here's a quick fix:
 
     ;; Fix eshell history completion to allow !$
     ;; This is done by advising eshell-history-reference to expand !$
@@ -79,7 +74,6 @@ Not sure if this is the right page - but in eshell currently you can't use !$ to
       (if (string= (ad-get-arg 0) "!$")
           (ad-set-arg 0 "!!:$")))
     (ad-activate 'eshell-history-reference)
-
 
 --Ben Moseley
 
