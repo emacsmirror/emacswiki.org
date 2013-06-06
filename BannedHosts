@@ -20,7 +20,7 @@
 ^60\.10\.12\.117 # for spamming Comments on CategoryData
 ^89\.163\.39\.37 # for spamming us with links to hacked boards and the like
 ^46-105-54-85\.kimsufi\.com # for spamming, creating new pages with links
-^46\.183\.162\.80 # for spamming [[Icicles - Key Binding Discussion]]
+^46\.183\.162\.80 # for spamming Icicles - Key Binding Discussion
 ^23\.19\.79\.210\.rdns\.ubiquity\.io # for spamming
 ^23\.19\.195\.34\.rdns\.ubiquity\.io # for spamming
 ^147\.255\.183\.235\.rdns\.ubiquity\.io # for spamming CategoryProject
@@ -105,6 +105,7 @@
 ^192\.74\.229\.1 # for spamming WThirtyTwoFontifiedRegionToClipboard
 ^112\.111\.1(6[0-9]|7[0-5])\. # 112.111.160.0 - 112.111.175.255
 newemailcenter # spamming SiteMap Discussion
+^46\.119\.116\.228 # 1013-06-05 SiteMap Discussion
 arx94-119\.araxinfo\.com # 2013-05-08 IciclesDiscussion
 ^91\.232\.96\.4 # 2013-05-15 Comments on MapaDelSitio
 ^goro83\.la\.net\.ua # 2013-05-16 SiteMap Discussion
