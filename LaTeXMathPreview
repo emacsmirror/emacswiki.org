@@ -253,6 +253,11 @@ the foreground and background colors of png images respectively.
 If these variables are nil, these colors are the same as it of
 the default face.
 
+e.g)
+(setq latex-math-preview-dvipng-color-option nil)
+(setq latex-math-preview-image-foreground-color "#FFF39F")
+(setq latex-math-preview-image-background-color "#FF7E80")
+
 === Matching mathematical expression ===
 When you make preview images, 
 the default setting supports the following LaTeX mathematical
