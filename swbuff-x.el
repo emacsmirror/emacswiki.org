@@ -419,8 +419,7 @@ frame.  Useful if we want to skip buffers displayed in other frames
   "Return non-nil iff the major mode of BUFFER matches
 `swbuff-exclude-mode-regexps'."
   (unless (string-equal "" swbuff-exclude-mode-regexp)
-    (save-excursion
-      (set-buffer buffer)
+    (with-current-buffer buffer
       (string-match swbuff-exclude-mode-regexp
 		    (symbol-name major-mode)))))
 
