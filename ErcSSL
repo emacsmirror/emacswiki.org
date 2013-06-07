@@ -77,5 +77,10 @@ nickserv login and password saved to an erc-auth file to be loaded by erc.
 
 You skipped a part of the tutorial, E1f. Check under "Connecting to OFTC with your Cert" -> "Unlisted Clients" -> "Irssi", and adjust for your designated paths. -- ootput
 
+=== Switching to Emacs 24 seems to ignore tls-program ===
+[new]
+When using emacs24, I am no longer seeing the openssl process running on my system so I assume it uses
+a built-in tls library. The certificate isn't passed in the SSL session either. -- vled
+
 ----
 [[ERC]]
