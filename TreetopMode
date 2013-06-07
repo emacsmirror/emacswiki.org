@@ -1,0 +1,7 @@
+TreetopMode provides font-locking, indentation support, and navigation for Treetop grammar files.
+
+Adapted from original work on RubyMode by Yukihiro Matsumoto, Nobuyoshi Nakada
+
+  git clone gist.github.com/5732203.git
+
+Available as a Gist: gist.github.com/gnurag/5732203
