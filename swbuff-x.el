@@ -135,7 +135,8 @@ highlighting in the buffer display.")
 
 (defface swbuff-special-buffers-face
   '((t (:foreground "red" :bold nil :underline nil)))
-  "Face for highlighting special buffers in swbuff display." )
+  "Face for highlighting special buffers in swbuff display."
+  :group 'swbuff)
 
 ;; Respect different Emacsen naming conventions, otherwise interactuve
 ;; help will not work as expected.
