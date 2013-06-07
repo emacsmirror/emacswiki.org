@@ -31,7 +31,7 @@ The command examples are generally given in Unix command-line style, although we
 [:BzrVersion]
 === What Version of Bazaar to Use ===
 
-As Emacs needs some of the improvements provided by 1.17 release, this quick-start guide assumes you use GNU Bazaar 1.17 or higher to develop Emacs.  Use of version 2.0 or higher is /strongly/ recommended because a large number of performance improvements have been made.
+Use of version 2.5 or higher is a requirement.
 
 [:WhereIsEmacs]
 === Where is Emacs? ===
