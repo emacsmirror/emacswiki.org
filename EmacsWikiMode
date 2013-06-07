@@ -7,7 +7,7 @@ on your local system and export HTML pages, in its basic
 configuration.  It does not allow you to edit the pages of
 emacswiki.org -- see WikiModeDiscussion for more.  To obtain the
 latest version, it is best to use Arch.  Instructions may be found on
-http://www.mwolson.org/projects/EmacsWiki.html.  Development snapshots
+http://mwolson.org/projects/EmacsWikiMode.html.  Development snapshots
 and releases are available on the aforementioned site.
 
 || Archive || <code>mwolson@gnu.org--2005</code> ||
