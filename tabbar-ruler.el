@@ -5,7 +5,7 @@
 ;; Author: Matthew Fidler, Nathaniel Cunningham
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Mon Oct 18 17:06:07 2010 (-0500)
-;; Version: 0.35
+;; Version: 0.36
 ;; Last-Updated: Sat Dec 15 15:44:34 2012 (+0800)
 ;;           By: Matthew L. Fidler
 ;;     Update #: 663
@@ -80,6 +80,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 6-Jun-2013    Matthew L. Fidler  
+;;    Last-Updated: Sat Dec 15 15:44:34 2012 (+0800) #663 (Matthew L. Fidler)
+;;    Added left-char and right char to tabbar-ruler-move-keymap so that
+;;    keybindings in emacs 24.3 work correctly.
 ;; 6-Jun-2013    Matthew L. Fidler  
 ;;    Last-Updated: Sat Dec 15 15:44:34 2012 (+0800) #663 (Matthew L. Fidler)
 ;;    Changed movement commands.  The movement commands are simpler (in my opinion)
@@ -1468,6 +1472,8 @@ remove the keymap depends on user input and KEEP-PRED:
 (define-key tabbar-ruler-move-keymap [remap next-line] 'tabbar-ruler-up)
 (define-key tabbar-ruler-move-keymap [remap backward-char] 'tabbar-ruler-backward)
 (define-key tabbar-ruler-move-keymap [remap forward-char] 'tabbar-ruler-forward)
+(define-key tabbar-ruler-move-keymap [remap left-char] 'tabbar-ruler-backward)
+(define-key tabbar-ruler-move-keymap [remap right-char] 'tabbar-ruler-forward)
 (define-key tabbar-ruler-move-keymap (kbd "SPC") (lambda() (interactive) (message "Exited tabbar-movement")))
 (define-key tabbar-ruler-move-keymap (kbd "<return>") (lambda() (interactive) (message "Exited tabbar-movement")))
 
