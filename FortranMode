@@ -10,5 +10,8 @@ Use `f90-mode' by adding the following to your InitFile.
 
 Information on configuring these modes is also in the manual.  Also read the commentary at the top of the EmacsLisp source of these libraries to see more details, ##M-x find-library RET fortran RET## or ##M-x find-library RET f90 RET##.
 
+[new]
+Add-to list may not be necessary since Emacs normally uses Fortran-mode for files with extensions "f", "F", "for" ‘and F90-mode for files with extensions "f90", "f95", "f03", "f08". See the [https://www.gnu.org/software/emacs/manual/html_node/emacs/Fortran.html|GNU Fortran manual] for more information. -ColinBaxter
+
 ----
 CategoryProgramming
