@@ -1,5 +1,5 @@
 ;;; hl-line+.el --- Extensions to hl-line.el.
-;; 
+;;
 ;; Filename: hl-line+.el
 ;; Description: Extensions to hl-line.el.
 ;; Author: Drew Adams
@@ -7,22 +7,22 @@
 ;; Copyright (C) 2006-2013, Drew Adams, all rights reserved.
 ;; Created: Sat Aug 26 18:17:18 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Jan 17 08:10:22 2013 (-0800)
+;; Last-Updated: Sat Jun  8 08:07:19 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 474
+;;     Update #: 481
 ;; URL: http://www.emacswiki.org/hl-line+.el
 ;; Doc URL: http://www.emacswiki.org/HighlightCurrentLine
 ;; Doc URL: http://www.emacswiki.org/CrosshairHighlighting
 ;; Keywords: highlight, cursor, accessibility
 ;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x
-;; 
+;;
 ;; Features that might be required by this library:
 ;;
 ;;   `hl-line'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
-;;; Commentary: 
+;;
+;;; Commentary:
 ;;
 ;;  This library extends standard library `hl-line.el' in these ways:
 ;;
@@ -36,7 +36,7 @@
 ;;     customize `global-hl-line-mode' to nil.
 ;;
 ;;  3. It provides a face, `hl-line', that you can customize, instead
-;;     of using option `hl-line-face'.  
+;;     of using option `hl-line-face'.
 ;;
 ;;     I suggested #3 to the Emacs developers, and it was added to
 ;;     Emacs 22, but with a different default value.  If you use
@@ -111,9 +111,12 @@
 ;;    `global-hl-line-highlight', `hl-line-highlight'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;;; Change Log:
 ;;
+;; 2013/06/08 dadams
+;;     hl-line-inhibit-highlighting-for-modes: Corrected :type.
+;;     global-hl-line-highlight defadvice: Respect in hl-line-inhibit-highlighting-for-modes.
 ;; 2013/01/17 dadams
 ;;     toggle-hl-line-when-idle: Added optional MSGP arg.
 ;; 2012/05/18 dadams
@@ -149,24 +152,24 @@
 ;;            hl-line-when-idle(-off).
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
 ;; published by the Free Software Foundation; either version 3, or
 ;; (at your option) any later version.
-;; 
+;;
 ;; This program is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 ;; General Public License for more details.
-;; 
+;;
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program; see the file COPYING.  If not, write to
 ;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
 ;; Floor, Boston, MA 02110-1301, USA.
-;; 
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;;; Code:
 
 (require 'hl-line)
@@ -193,7 +196,8 @@
 (defcustom hl-line-inhibit-highlighting-for-modes ()
   "*Modes where highlighting is inhibited for `hl-line-highlight-now'.
 A list of `major-mode' values (symbols)."
-  :type 'list :group 'hl-line)
+  :type '(repeat (symbol :tag "Major mode where `hl-line' highlighting is inhibited"))
+  :group 'hl-line)
 
 ;;;###autoload
 (defcustom hl-line-overlay-priority 300
@@ -227,9 +231,13 @@ Do NOT change this yourself; instead, use `\\[toggle-hl-line-when-idle]'.")
   "Set the overlay priority to `hl-line-overlay-priority'."
   (overlay-put hl-line-overlay 'priority hl-line-overlay-priority))
 
-(defadvice global-hl-line-highlight (after set-priority activate)
-  "Set the overlay priority to `hl-line-overlay-priority'."
-  (overlay-put global-hl-line-overlay 'priority hl-line-overlay-priority))
+(defadvice global-hl-line-highlight (around set-priority-+respect-mode-inhibit activate)
+  "Set hl-line overlay priority and inhibit for specific modes.
+Set the overlay to `hl-line-overlay-priority'.
+Respect option `hl-line-inhibit-highlighting-for-modes'."
+  (unless (member major-mode hl-line-inhibit-highlighting-for-modes)
+    ad-do-it
+    (overlay-put global-hl-line-overlay 'priority hl-line-overlay-priority)))
 
 ;;;###autoload
 (defalias 'toggle-hl-line-when-idle 'hl-line-toggle-when-idle)
@@ -269,7 +277,7 @@ use `\\[toggle-hl-line-when-idle]."
     (global-hl-line-mode 1)
     (global-hl-line-highlight)
     (add-hook 'pre-command-hook 'hl-line-unhighlight-now)))
-    
+
 (defun hl-line-unhighlight-now ()
   "Turn off `global-hl-line-mode' and unhighlight current line now."
   (global-hl-line-mode -1)
