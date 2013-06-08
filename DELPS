@@ -47,7 +47,7 @@ has been:
 
 *   Find an extension at places like
     [http://dir.gmane.org/gmane.emacs.sources gmane.emacs.sources] or
-    [http://www.emacswiki.org www.emacswiki.org] 
+    [http://www.emacswiki.org www.emacswiki.org]
 *   Download and save the *.el file(s) along `load-path'
 *   Read the installation information. Usually embedded in comments
     at the beginning of *.el file(s).
@@ -155,7 +155,7 @@ The epackage manager can also be called from command line UI:
    cd epacakge
    make ui
 
-    # Or if you want to make a shell alias or function, the command needed is 
+    # Or if you want to make a shell alias or function, the command needed is
     emacs --batch --quick --load ~/.emacs.d/packages/epackage/epackage.el --funcall epackage-batch-ui-menu
 
 == ELPA and Epackages - What's the difference? ==
@@ -191,24 +191,31 @@ both the concept (distributed) and the use of tools (version control).
 
 /For the developer/
 
-* No more "submitting" code to "archive". Set up a Git repository and
-  you're sharing your code to everyone with minimal initial
-  setup. See section /When upstream IS also the packager/
-  in [https://github.com/jaalto/project--emacs-epackage-template Epackage Primer]
-* Users receive updates directly from your Git repository.
-  No need to send announcements or notifications. No more outdated
-  versions in archive sites.
-* Low maintenance. No more release prcess overhead which includes
-  making .tar.gz, ensuring README and NEWS to be
-  up to date, packaging wrong release etc. 
-  Just concentrate on doing what you do best:
-  improving your Emacs Lisp utility. No distribution hassles (ssh or
-  logging to a remote site, web page etc.)
+* No more work for submitting code to archive sites; no hassles about
+  making an archive, logins, uploads and keeping versions straight.
+  Set up a Git repository and you're sharing your code to everyone
+  with minimal initial setup. See section /When upstream IS also the
+  packager/ in
+  [https://github.com/jaalto/project--emacs-epackage-template Epackage Primer]
+* Users receive updates directly from your Git repository. No middle
+  man. No need to send announcements or notifications. No more
+  outdated versions in archive sites. No more copies floating around
+  at different places.
+* Low maintenance. No more release processs overhead which includes
+  making archives like `.tar.gz', no more ensuring that README and
+  NEWS files are up to date, no more mistakenly packaging wrong
+  release, wrong files, missed to generate up-to-date docs etc. Just
+  concentrate on doing what you do best: programming and improving
+  your Emacs Lisp utility. Forget extra administrative tasks required
+  in traditional release processes: Git tag your releases with
+  `release/N.N.N' and your are done. No distribution hassles: ssh or
+  need for logging to a remote site, updating web pages etc.
 
 /Downsides/
 
-* As a developer: It's not traditional *.tar.gz any more. You need to learn Git
-  to distribute your code.
+* As a developer: It's not traditional <code>*.tar.gz</code> any more.
+  You need to learn Git to distribute your code. Consider learning Git
+  an investment for the future.
 * As a user: you need to install Git to download packages; In Windows,
   the best and easiest is to use Git from <http://cygwin.com>.
 * ...other than that, sharing and distributing packages has never been this
@@ -217,7 +224,7 @@ both the concept (distributed) and the use of tools (version control).
 == Contact ==
 
 Please send comments, suggestion, ideas, bug reports to me directly
-or to the bug tracker. Please do not send questions to this page as this
+or to the bug tracker. Please do not add questions to this page as this
 page is not monitored.
 Thanks --Jari
 
