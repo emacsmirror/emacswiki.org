@@ -218,27 +218,7 @@ If so, you can simply use `isearch-yank-word-or-char' (called by `C-w' in `isear
 			      isearch-mode-map)))
 }}} 
 
-== Alternative: search for the current regexp as a whole symbol ==
 
-The  following approach was  implemented by JimBlandy (See
-http://www.red-bean.com/pipermail/arcana/2007-February/000011.html):
-{{{
-(defun isearch-regexp-whole-symbol ()
-  "Search for the current regexp as a whole symbol.
-You must be in a regexp incremental search for this to work."
-  (interactive)
-  (if isearch-regexp
-      (unless (string-match "^\\\\_<.*\\\\_>" isearch-string)
-        (setq isearch-string (concat "\\_<" isearch-string "\\_>")
-              isearch-message (mapconcat 'isearch-text-char-description
-                                         isearch-string "")
-              ;; Don't move cursor in reverse search.
-              isearch-yank-flag t))
-    (ding))
-  (isearch-search-and-update))
-
-(define-key isearch-mode-map "\M-e" 'isearch-regexp-whole-symbol)
-}}}
 
 == Another variation that is very vim-like ==
 
@@ -268,6 +248,28 @@ This is meant to closely simulate what Vim does ... match entire words, jump to 
       (isearch-search-and-update))))
 
 (add-hook 'isearch-mode-hook 'my-isearch-yank-word-hook)
+}}}
+
+== Related: search for the current regexp as a whole symbol ==
+
+The  following approach was  implemented by JimBlandy (See
+http://www.red-bean.com/pipermail/arcana/2007-February/000011.html):
+{{{
+(defun isearch-regexp-whole-symbol ()
+  "Search for the current regexp as a whole symbol.
+You must be in a regexp incremental search for this to work."
+  (interactive)
+  (if isearch-regexp
+      (unless (string-match "^\\\\_<.*\\\\_>" isearch-string)
+        (setq isearch-string (concat "\\_<" isearch-string "\\_>")
+              isearch-message (mapconcat 'isearch-text-char-description
+                                         isearch-string "")
+              ;; Don't move cursor in reverse search.
+              isearch-yank-flag t))
+    (ding))
+  (isearch-search-and-update))
+
+(define-key isearch-mode-map "\M-e" 'isearch-regexp-whole-symbol)
 }}}
 
 == See also ==
