@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Mar  5 16:15:50 1996
 ;; Version: 21.1
-;; Last-Updated: Fri Dec 28 09:49:09 2012 (-0800)
+;; Last-Updated: Sat Jun  8 11:55:38 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 204
+;;     Update #: 221
 ;; URL: http://www.emacswiki.org/frame-fns.el
 ;; Doc URL: http://emacswiki.org/FrameModes
 ;; Keywords: internal, extensions, local, frames
@@ -92,8 +92,8 @@ If POSITION is nil, (point) is used."
 (defun distance (pt1 pt2)
   "Distance as the crow flies between PT1 and PT2.
 PT1 and PT2 are each a cons of the form (X . Y)."
-  (let ((xdiff (abs (- (car pt1) (car pt2))))
-        (ydiff (abs (- (cdr pt1) (cdr pt2)))))
+  (let ((xdiff  (abs (- (car pt1) (car pt2))))
+        (ydiff  (abs (- (cdr pt1) (cdr pt2)))))
     (sqrt (+ (* xdiff xdiff) (* ydiff ydiff)))))
 
 (defun frame-geom-value-numeric (type value &optional frame)
@@ -125,13 +125,13 @@ opposite frame edge from the edge indicated in the input spec."
           ;; e.g. (+ 300) or (- 300) => 300 or -300
           (funcall (car value) (cadr value))
         ;; e.g. (+ -300) or (- -300)
-        (let ((oppval (- (if (eq 'left type)
-                             (x-display-pixel-width)
-                           (x-display-pixel-height))
-                         (cadr value)
-                         (if (eq 'left type)
-                             (frame-pixel-width frame)
-                           (frame-pixel-height frame)))))
+        (let ((oppval  (- (if (eq 'left type)
+                              (x-display-pixel-width)
+                            (x-display-pixel-height))
+                          (cadr value)
+                          (if (eq 'left type)
+                              (frame-pixel-width frame)
+                            (frame-pixel-height frame)))))
           (if (eq '+ (car value))
               (- oppval)                ; e.g. (+ -300) => -724
             oppval)))                   ; e.g. (- -300) =>  724
@@ -186,7 +186,7 @@ Examples (measures in pixels) -
 
 In the 3rd, 4th, and 6th examples, the returned value is relative to
 the opposite frame edge from the edge indicated in the input spec."
-  (cond ((and (consp value) (eq '+ (car value))) ; e.g. (+ 300), (+ -300)
+  (cond ((and (consp value)  (eq '+ (car value))) ; e.g. (+ 300), (+ -300)
          value)
         ((natnump value) (list '+ value)) ; e.g. 300 => (+ 300)
         (t                              ; e.g. -300, (- 300), (- -300)
@@ -224,7 +224,7 @@ the opposite frame edge from the edge indicated in the input spec."
 
 (defun get-frame-name (&optional frame)
   "Return the string that names FRAME (a frame).  Default is selected frame."
-  (unless frame (setq frame (selected-frame)))
+  (unless frame (setq frame  (selected-frame)))
   (if (framep frame)
       (cdr (assq 'name (frame-parameters frame)))
     (error "Function `get-frame-name': Argument not a frame: `%s'" frame)))
@@ -240,10 +240,9 @@ If FRAME is a frame, it is returned."
              (when (string= frame (get-frame-name fr))
                (throw 'get-a-frame-found fr)))
            nil))
-        (t
-         (error
-          "Function `get-frame-name': Arg neither a string nor a frame: `%s'"
-          frame))))
+        (t (error
+            "Function `get-frame-name': Arg neither a string nor a frame: `%s'"
+            frame))))
 
 (defun read-frame (prompt &optional default existing)
   "Read the name of a frame, and return it as a string.
@@ -254,11 +253,11 @@ string or a frame, or by the `selected-frame', if nil.
 
 Non-nil optional 3rd arg, EXISTING, means to allow only names of
 existing frames."
-  (setq default (if (framep default) (get-frame-name default)
-                  (or default (get-frame-name))))
+  (setq default  (if (framep default)
+                     (get-frame-name default)
+                   (or default  (get-frame-name))))
   (unless (stringp default)
-    (error
-     "Function `read-frame': DEFAULT arg is neither a frame nor a string"))
+    (error "Function `read-frame': DEFAULT arg is neither a frame nor a string"))
   (completing-read prompt (make-frame-names-alist)
                    ;; To limit to live frames:
                    ;; (function (lambda (fn+f)(frame-live-p (cdr fn+f))))
@@ -274,26 +273,27 @@ The optional FRAME argument is as for function `get-buffer-window'."
   "List of all visible 1-window frames showing BUFFER."
   (setq buffer  (get-buffer buffer))
   (when buffer                          ; Do nothing if BUFFER is not a buffer.
-    (let ((frs nil))
+    (let ((frs  ()))
       (with-current-buffer buffer
         (when (buffer-live-p buffer)    ; Do nothing if dead buffer.
-          (dolist (fr (frames-on buffer)) ; Is it better to search through
-            (save-window-excursion      ; frames-on or windows-on?
-              (select-frame fr)
-              (when (one-window-p t fr) (push fr frs))))))
+          ;; $$$$$$ Is it better to search through frames-on or windows-on?
+          (dolist (fr  (frames-on buffer))
+            (save-window-excursion (select-frame fr)
+                                   (when (one-window-p t fr) (push fr frs))))))
       frs)))
 
 (defun multi-window-frames-on (buffer)
   "List of all visible multi-window frames showing BUFFER."
   (setq buffer  (get-buffer buffer))
   (when buffer                          ; Do nothing if BUFFER is not a buffer.
-    (let ((frs nil))
+    (let ((frs  ()))
       (with-current-buffer buffer
         (when (buffer-live-p buffer)    ; Do nothing if dead buffer.
-          (dolist (fr (frames-on buffer)) ; Is it better to search through
-            (save-window-excursion      ; frames-on or windows-on?
-              (select-frame fr)
-              (when (not (one-window-p t fr)) (push fr frs))))))
+          ;; $$$$$$ Is it better to search through frames-on or windows-on?
+          (dolist (fr  (frames-on buffer))
+            (save-window-excursion (select-frame fr)
+                                   (unless (one-window-p t fr)
+                                     (push fr frs))))))
       frs)))
 
 (defun flash-ding (&optional do-not-terminate frame)
@@ -301,10 +301,8 @@ The optional FRAME argument is as for function `get-buffer-window'."
 Terminates any keyboard macro executing, unless arg DO-NOT-TERMINATE non-nil."
   (save-window-excursion
     (when frame (select-frame frame))
-    (let ((visible-bell t))             ; Flash.
-      (ding do-not-terminate)))
-  (let ((visible-bell nil))
-    (ding do-not-terminate)))           ; Bell.
+    (let ((visible-bell  t)) (ding do-not-terminate))) ; Flash.
+  (let ((visible-bell  nil)) (ding do-not-terminate))) ; Bell.
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 
