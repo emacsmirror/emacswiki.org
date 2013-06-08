@@ -178,7 +178,7 @@ both the concept (distributed) and the use of tools (version control).
   hand are simple downloads with only extra byte compilation and
   `load-path' support added. You still have to manually configure
   each and every ELPA package by adding the necessary lines to
-  ~/.emacs InitFile.
+  `~/.emacs' InitFile.
 * Faster updates. Massive package updates are instantaneous due to Git delta.
 * Easy bug reporting. Each package contains contact information meta data.
 * Personal contacts. Someone is there to contact about package
