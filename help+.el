@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Mar 16 14:18:11 1999
 ;; Version: 20.0
-;; Last-Updated: Fri Dec 28 09:50:49 2012 (-0800)
+;; Last-Updated: Sat Jun  8 12:17:12 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2144
+;;     Update #: 2160
 ;; URL: http://www.emacswiki.org/help+.el
 ;; Doc URL: http://emacswiki.org/HelpPlus
 ;; Keywords: help
@@ -201,16 +201,18 @@ Return nil if KEY is undefined; else return t."
        (when saved-yank-menu
          (setq yank-menu  (copy-sequence saved-yank-menu))
          (fset 'yank-menu (cons 'keymap yank-menu))))))
-  (if (numberp untranslated)
-      (setq untranslated  (this-single-command-raw-keys)))
+  (when (numberp untranslated) (setq untranslated  (this-single-command-raw-keys)))
   (let* ((event      (aref key (if (and (symbolp (aref key 0))
                                         (> (length key) 1)
                                         (consp (aref key 1)))
                                    1
                                  0)))
          (modifiers  (event-modifiers event))
-         (mouse-msg  (if (or (memq 'click modifiers) (memq 'down modifiers)
-                             (memq 'drag modifiers)) " at that spot" ""))
+         (mouse-msg  (if (or (memq 'click modifiers)
+                             (memq 'down modifiers)
+                             (memq 'drag modifiers))
+                         " at that spot"
+                       ""))
          (defn       (key-binding key t))
          defn-up defn-up-tricky ev-type mouse-1-remapped mouse-1-tricky)
 
@@ -219,17 +221,15 @@ Return nil if KEY is undefined; else return t."
                (stringp (aref key (1- (length key))))
                (eq (key-binding (substring key 0 -1)) 'yank-menu))
       (setq defn  'menu-bar-select-yank))
-    (cond ((or (null defn) (integerp defn) (equal defn 'undefined))
-           (message "%s%s is undefined"
-                    (help-key-description key untranslated) mouse-msg)
+    (cond ((or (null defn)  (integerp defn)  (equal defn 'undefined))
+           (message "%s%s is undefined" (help-key-description key untranslated) mouse-msg)
            nil)                         ; Return nil: undefined.
           (t
            (help-setup-xref (list #'describe-function defn) (interactive-p))
            ;; Don't bother user with strings from (e.g.) the select-paste menu.
            (when (stringp (aref key (1- (length key))))
              (aset key (1- (length key)) "(any string)"))
-           (when (and untranslated
-                      (stringp (aref untranslated (1- (length untranslated)))))
+           (when (and untranslated  (stringp (aref untranslated (1- (length untranslated)))))
              (aset untranslated (1- (length untranslated))
                    "(any string)"))
            ;; Need to do this before erasing *Help* buffer in case event
@@ -259,9 +259,7 @@ Return nil if KEY is undefined; else return t."
                             mouse-msg defn))
              (describe-function-1 defn)
              (when up-event
-               (unless (or (null defn-up)
-                           (integerp defn-up)
-                           (equal defn-up 'undefined))
+               (unless (or (null defn-up)  (integerp defn-up)  (equal defn-up 'undefined))
                  (princ (format "
 
 ----------------- up-event %s----------------
@@ -269,8 +267,7 @@ Return nil if KEY is undefined; else return t."
 <%S>%s%s runs the command %S, which is "
                                 (if mouse-1-tricky "(short click) " "")
                                 ev-type mouse-msg
-                                (if mouse-1-remapped
-                                    " is remapped to <mouse-2>, which" "")
+                                (if mouse-1-remapped " is remapped to <mouse-2>, which" "")
                                 defn-up))
                  (describe-function-1 defn-up))
                (unless (or (null defn-up-tricky)
@@ -388,7 +385,8 @@ in the current buffer."
                                             (where-is-internal c overriding-local-map
                                                                'non-ascii)))))
                                  t))
-     (list (if (equal val "") fn (intern val)) (consp current-prefix-arg))))
+     (list (if (equal val "") fn (intern val))
+           (consp current-prefix-arg))))
   (unless definition (error "No command"))
   (let ((func             (indirect-function definition))
         (defs             ())
@@ -435,7 +433,7 @@ Optional args PP-KEY and WHERE are strings naming KEY and its type.
 Their defaults are KEY's `key-description' and \"Key sequence\".
 Function `Info-goto-emacs-key-command-node' is used to look up KEY."
   (sit-for 0 200) ;; HACK to fix bug if click on scroll bar in `help-on-click/key'.
-  (setq where   (or where "Key sequence ")
+  (setq where   (or where  "Key sequence ")
         pp-key  (or pp-key  (if (fboundp 'naked-key-description)
                                 (naked-key-description key)
                               (key-description key))))
@@ -443,8 +441,8 @@ Function `Info-goto-emacs-key-command-node' is used to look up KEY."
          ;; The version of `Info-goto-emacs-key-command-node' defined in `info+.el' returns
          ;; non-nil if Info doc is found.  The standard version defined `info.el' will not.
          (documented-p  (Info-goto-emacs-key-command-node key))) ; nil if have only std version
-    (when (and (not documented-p)(get-buffer-window "*info*" 'visible)) (Info-exit))
-    (cond ((and described-p documented-p)
+    (when (and (not documented-p)  (get-buffer-window "*info*" 'visible)) (Info-exit))
+    (cond ((and described-p  documented-p)
            (when (fboundp 'show-*Help*-buffer) (show-*Help*-buffer))
            (message "%s`%s': summary in *Help* buffer; doc in buffer `*info*'."
                     where pp-key))
@@ -494,7 +492,7 @@ If you click elsewhere in a buffer other than the minibuffer, then
            (help-on-click/key-lookup key))
           (t                            ; Vector.
            (let ((type  (aref key 0)))
-             (cond ((or (symbolp type)(integerp type))
+             (cond ((or (symbolp type)  (integerp type))
                     (cond ((eq 'mode-line type) ; Click on the mode line.
                            (Info-goto-node "(emacs)Mode Line")
                            (message "Mode line: decribed in *info* buffer."))
@@ -544,11 +542,11 @@ If you click elsewhere in a buffer other than the minibuffer, then
                                     (setq found  (apropos symb-regexp))
                                     ;; Remove empty stuff.
                                     (setq found  (and (consp found)
-                                                      (or (cdr found) (cadr found))))
+                                                      (or (cdr found)  (cadr found))))
                                     ;; Remove *Apropos* window that was displayed needlessly.
                                     (unless found (delete-windows-on "*Apropos*"))
                                     (cond
-                                      ((and found-doc found)
+                                      ((and found-doc  found)
                                        (message
                                         "See buffers `*Apropos*' and `*Apropos Doc*'."))
                                       (found
