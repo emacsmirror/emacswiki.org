@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Fri Apr 19 10:29:01 2013 (-0700)
+;; Last-Updated: Fri Jun  7 21:11:17 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6424
+;;     Update #: 6433
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -24,7 +24,7 @@
 ;;   `fuzzy', `fuzzy-match', `hexrgb', `icicles-cmd1', `icicles-fn',
 ;;   `icicles-mcmd', `icicles-opt', `icicles-var', `image-dired',
 ;;   `kmacro', `levenshtein', `misc-fns', `mouse3', `mwheel',
-;;   `naked', `regexp-opt', `ring', `ring+', `second-sel', `strings',
+;;   `naked', `regexp-opt', `ring', `second-sel', `strings',
 ;;   `thingatpt', `thingatpt+', `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -4624,7 +4624,7 @@ future search commands, not the current one.)" ; Doc string
                                                    '((2 (face file-name-shadow))
                                                      (3 (face bookmark-menu-heading)))
                                                  '((3 (face bookmark-menu-heading))))))
-   (icicle-transform-function                (if (interactive-p) nil icicle-transform-function))
+   (icicle-transform-function                (and (not (interactive-p))  icicle-transform-function))
    (icicle-whole-candidate-as-text-prop-p    t)
    (icicle-transform-before-sort-p           t)
    (icicle-delete-candidate-object           'icicle-bookmark-delete-action)
@@ -5173,7 +5173,7 @@ the bounds of THING.  Return nil if no such THING is found."
         ;; $$$$$$ Which is better, > or >=, < or <=, for the comparisons?
         ;; $$$$$$ Seems that < is better than <=, at least for `icicle-search-thing':
         ;; $$$$$$ for XML elements and lists, <= misses the first one.
-        (while (and thg+bds  (if backward  (> (cddr thg+bds) (point))  (< (cadr thg+bds) (point))))
+        (while (and thg+bds  (if backward (> (cddr thg+bds) (point)) (< (cadr thg+bds) (point))))
           (if backward
               (setq start  (max end (1- (cadr thg+bds))))
             (setq start  (min end (1+ (cddr thg+bds)))))
@@ -5864,7 +5864,7 @@ using `icicle-search'.  For more information, see the doc for command
                                          icicle-show-multi-completion-flag))
         (fg (face-foreground        'icicle-search-main-regexp-others))
         (bg (face-background        'icicle-search-main-regexp-others))
-        (icicle-transform-function  (if (interactive-p) nil icicle-transform-function)))
+        (icicle-transform-function  (and (not (interactive-p))  icicle-transform-function)))
     (unwind-protect
          (progn (set-face-foreground 'icicle-search-main-regexp-others nil)
                 (set-face-background 'icicle-search-main-regexp-others nil)
@@ -5905,7 +5905,7 @@ using `icicle-search'.  For more information, see the doc for command
                                          icicle-show-multi-completion-flag))
         (fg (face-foreground        'icicle-search-main-regexp-others))
         (bg (face-background        'icicle-search-main-regexp-others))
-        (icicle-transform-function  (if (interactive-p) nil icicle-transform-function)))
+        (icicle-transform-function  (and (not (interactive-p))  icicle-transform-function)))
     (unwind-protect
          (progn (set-face-foreground 'icicle-search-main-regexp-others nil)
                 (set-face-background 'icicle-search-main-regexp-others nil)
@@ -5941,7 +5941,7 @@ using `icicle-search'.  For more information, see the doc for command
                                          icicle-show-multi-completion-flag))
         (fg (face-foreground        'icicle-search-main-regexp-others))
         (bg (face-background        'icicle-search-main-regexp-others))
-        (icicle-transform-function  (if (interactive-p) nil icicle-transform-function)))
+        (icicle-transform-function  (and (not (interactive-p))  icicle-transform-function)))
     (unwind-protect
          (progn (set-face-foreground 'icicle-search-main-regexp-others nil)
                 (set-face-background 'icicle-search-main-regexp-others nil)
@@ -5975,7 +5975,7 @@ using `icicle-search'.  For more information, see the doc for command
                                          icicle-show-multi-completion-flag))
         (fg (face-foreground        'icicle-search-main-regexp-others))
         (bg (face-background        'icicle-search-main-regexp-others))
-        (icicle-transform-function  (if (interactive-p) nil icicle-transform-function)))
+        (icicle-transform-function  (and (not (interactive-p))  icicle-transform-function)))
     (unwind-protect
          (progn (set-face-foreground 'icicle-search-main-regexp-others nil)
                 (set-face-background 'icicle-search-main-regexp-others nil)
@@ -6115,7 +6115,7 @@ information about the arguments, see the doc for command
   (save-excursion (goto-char (point-min))
                   (compilation-next-error 1)
                   (setq beg  (if beg (max beg (point)) (point))))
-  (let ((icicle-transform-function    (if (interactive-p) nil icicle-transform-function))
+  (let ((icicle-transform-function    (and (not (interactive-p))  icicle-transform-function))
         (icicle-candidate-alt-action-fn
          (if (boundp 'compilation-highlight-overlay) ; Emacs 22 test.
              icicle-candidate-alt-action-fn
@@ -6644,7 +6644,7 @@ The other args are as for `icicle-search'."
                                 (caar menus)))) ; Only one submenu, so use it.
                   (regexp   (cadr (assoc submenu menus)))
                   (icicle-transform-function
-                   (if (interactive-p) nil icicle-transform-function)))
+                   (and (not (interactive-p))  icicle-transform-function)))
              (unless (stringp regexp) (icicle-user-error "No match"))
              (icicle-search
               beg end regexp require-match where predicate
