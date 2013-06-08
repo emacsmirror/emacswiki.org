@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Sat May 11 13:06:56 2013 (-0700)
+;; Last-Updated: Fri Jun  7 21:32:39 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 13965
+;;     Update #: 13988
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -800,13 +800,13 @@ so it is called after completion-list buffer text is written."
                           (< (setq element-common-end  (+ element-start common-string-length))
                              maxp))
                 (when (get-char-property element-start 'mouse-face)
-                  (if (and (> common-string-length 0)
-                           (get-char-property (1- element-common-end) 'mouse-face))
-                      (put-text-property element-start element-common-end
-                                         'font-lock-face 'completions-common-part))
-                  (if (get-char-property element-common-end 'mouse-face)
-                      (put-text-property element-common-end (1+ element-common-end)
-                                         'font-lock-face 'completions-first-difference)))))))))))
+                  (when (and (> common-string-length 0)
+                             (get-char-property (1- element-common-end) 'mouse-face))
+                    (put-text-property element-start element-common-end
+                                       'font-lock-face 'completions-common-part))
+                  (when (get-char-property element-common-end 'mouse-face)
+                    (put-text-property element-common-end (1+ element-common-end)
+                                       'font-lock-face 'completions-first-difference)))))))))))
 
 (when (or (> emacs-major-version 23)    ; Emacs 23.2+
           (and (= emacs-major-version 23)  (>= emacs-minor-version 2)))
@@ -894,8 +894,8 @@ lax: a match is not required."
     (setq init                             initial-input
           minibuffer-completion-table      collection
           minibuffer-completion-predicate  predicate
-          minibuffer-completion-confirm    (if (eq require-match t) nil require-match))
-    (setq position  nil)
+          minibuffer-completion-confirm    (and (not (eq require-match t))  require-match)
+          position                         nil)
     (when init
       (when (consp init) (setq position  (cdr init)
                                init      (car init)))
@@ -938,9 +938,8 @@ lax: a match is not required."
                             (not (boundp 'minibuffer-local-filename-completion-map)))
                         minibuffer-local-completion-map
                       (if (fboundp 'make-composed-keymap) ; Emacs 24, starting July 2011.
-                          (make-composed-keymap
-                           minibuffer-local-filename-completion-map
-                           minibuffer-local-completion-map)
+                          (make-composed-keymap minibuffer-local-filename-completion-map
+                                                minibuffer-local-completion-map)
                         minibuffer-local-filename-completion-map))
                   (if (or (not minibuffer-completing-file-name)
                           (eq minibuffer-completing-file-name 'lambda)
@@ -948,9 +947,8 @@ lax: a match is not required."
                                (not (boundp 'minibuffer-local-filename-must-match-map))))
                       minibuffer-local-must-match-map
                     (if (fboundp 'make-composed-keymap) ; Emacs 24, starting July 2011.
-                        (make-composed-keymap
-                         minibuffer-local-filename-completion-map
-                         minibuffer-local-must-match-map)
+                        (make-composed-keymap minibuffer-local-filename-completion-map
+                                              minibuffer-local-must-match-map)
                       minibuffer-local-filename-must-match-map)))
                 nil histvar def inherit-input-method))
     ;; Use `icicle-filtered-default-value', not DEF, because `read-from-minibuffer' filters it.
@@ -1388,7 +1386,7 @@ and `read-file-name-function'."
                                                (condition-case nil ; E.g. error: not on file line (ignore)
                                                    (abbreviate-file-name (dired-get-file-for-visit))
                                                  (error "No such file"))
-                                             (or (ffap-guesser) (error "No such file"))))))))))
+                                             (or (ffap-guesser)  (error "No such file"))))))))))
          (icicle-unpropertize-completion result)
          (let* ((temp  (member (file-name-nondirectory result) icicle-proxy-candidates))
                 (symb  (and temp  (intern (substring (car temp) 1 (1- (length (car temp))))))))
@@ -1810,7 +1808,7 @@ whose value or whose custom type is compatible with type `integer',
                  icicle-proxy-candidates))
 
                ;; Emacs 23 allows DEFAULT to be a list of strings - use the first one for prompt etc.
-               (default1  (if (atom default)  default  (setq default  (delq nil default))  (car default))))
+               (default1  (if (atom default) default (setq default  (delq nil default))  (car default))))
            (when default
              (save-match-data
                (setq prompt  (if (string-match "\\(\\):[ \t]*\\'" prompt)
@@ -2191,7 +2189,8 @@ Fourth arg DEFAULT-VALUE is the default value.  If non-nil, it is used
  the empty string.
 Fifth arg INHERIT-INPUT-METHOD, if non-nil, means the minibuffer inherits
  the current input method and the setting of enable-multibyte-characters."
-  (setq prompt  (icicle-handle-default-for-prompt prompt default-value 'INCLUDE))
+  (when default-value
+    (setq prompt  (icicle-handle-default-for-prompt prompt default-value 'INCLUDE)))
   (let ((value  (read-from-minibuffer prompt initial-input nil nil hist-m@%=!$+&^*z
                                       default-value inherit-input-method)))
     (when (and default-value  (equal value ""))
@@ -2746,9 +2745,7 @@ Analog of `minibuffer-local-completion-map'.")
       (let ((map  (make-sparse-keymap)))
         (icicle-define-crm-completion-map map)
         (define-key map [remap minibuffer-complete-and-exit]
-          (if (fboundp 'crm-complete-and-exit)
-              #'crm-complete-and-exit
-            #'crm-minibuffer-complete-and-exit))
+          (if (fboundp 'crm-complete-and-exit) #'crm-complete-and-exit #'crm-minibuffer-complete-and-exit))
         map)
       "Local keymap for minibuffer multiple input with exact match completion.
 Analog of `minibuffer-local-must-match-map' for crm.")
@@ -4125,8 +4122,8 @@ same as for `substitute-in-file-name'."
                      `(boundaries 0     ; Return 0 as first boundary, since we do not remove `$' prefix.
                        . ,(when (string-match "[^[:alnum:]_]" suffix) (match-beginning 0)))))))
               (t
-               (if (eq ?{  (aref string (1- beg)))
-                   (setq table  (apply-partially 'completion-table-with-terminator "}" table)))
+               (when (eq ?{  (aref string (1- beg)))
+                 (setq table  (apply-partially 'completion-table-with-terminator "}" table)))
                ;; Envvar completion must be case-sensitive, even when file-name completion is not.
                (let* ((completion-ignore-case  nil)
                       (comp                    (complete-with-action action table (substring string beg)
@@ -4256,9 +4253,8 @@ over all candidates."
                                          (funcall icicle-must-pass-after-match-predicate cand))))))
                           candidates)))))
           (unless (eq icicle-expand-input-to-common-match 0)
-            (setq icicle-common-match-string (if (consp filtered-candidates)
-                                                 (icicle-expanded-common-match input filtered-candidates)
-                                               nil)))
+            (setq icicle-common-match-string (and (consp filtered-candidates)
+                                                  (icicle-expanded-common-match input filtered-candidates))))
           (unless filtered-candidates  (setq icicle-common-match-string  nil))
           filtered-candidates))         ; Return candidates.
     (quit (top-level))))                ; Let `C-g' stop it.
@@ -4641,7 +4637,7 @@ the function to the candidate and use the result as the help."
                                           (let ((prop  (or (get-text-property 0 'icicle-mode-line-help
                                                                               candidate)
                                                            (get-text-property 0 'help-echo candidate))))
-                                            (if (functionp prop)  (funcall prop candidate)  prop))))
+                                            (if (functionp prop) (funcall prop candidate) prop))))
                                     ((and cand
                                           (symbolp cand) ; Symbol.
                                           (cond ((get cand 'icicle-mode-line-help)) ; Icicles help prop.
@@ -5021,7 +5017,7 @@ available to the user, in particular, before they are displayed in
 
 This transformation has nothing to do with that performed by
 `icicle-transform-multi-completion'."
-  (if icicle-transform-function  (funcall icicle-transform-function candidates)  candidates))
+  (if icicle-transform-function (funcall icicle-transform-function candidates) candidates))
 
 (defun icicle-transform-multi-completion (candidate)
   "Transform display CANDIDATE according to `icicle-list-use-nth-parts'.
@@ -5508,7 +5504,8 @@ item to compare.  Comparison is done using `equal'.
 The result list contains all items that appear in LIST1 but not LIST2.
 This is non-destructive; it makes a copy of the data if necessary, to
 avoid corrupting the original LIST1 and LIST2."
-  (if (or (null list1) (null list2)) list1
+  (if (or (null list1) (null list2))
+      list1
     (let ((keyed-list2  (and key  (mapcar key list2)))
           (result       ()))
       (while list1
@@ -6072,7 +6069,7 @@ those functions are not defined then return nil."
 (defun icicle-clear-minibuffer ()
   "Delete all user input in the minibuffer.
 This must be called from the minibuffer."
-  (if (fboundp 'delete-minibuffer-contents)  (delete-minibuffer-contents)  (erase-buffer)))
+  (if (fboundp 'delete-minibuffer-contents) (delete-minibuffer-contents) (erase-buffer)))
 
 ;; Same as `member-ignore-case' from Emacs 22+.
 (if (fboundp 'member-ignore-case)
@@ -6159,7 +6156,7 @@ be aware that during completion and before applying this function,
 candidates that do not match the current input.  So this function then
 has the effect of removing any duplicates that match the input.  If
 there are no such matching candidates, then LIST is returned."
-  (if icicle-extra-candidates  (icicle-remove-duplicates list)  list))
+  (if icicle-extra-candidates (icicle-remove-duplicates list) list))
 
 (defun icicle-file-readable-p (file)
   "Return non-nil if FILE (a string) names a readable file."
@@ -6470,7 +6467,7 @@ decide (returns nil).  If FINAL-PRED is nil, then `icicle-alpha-p' is
 used as the final predicate."
   `(lambda (b1 b2)
     (let ((res  (funcall ',pred b1 b2)))
-      (if res  (car res)  (funcall ',(or final-pred 'icicle-alpha-p) b1 b2)))))
+      (if res (car res) (funcall ',(or final-pred 'icicle-alpha-p) b1 b2)))))
 
 (defun icicle-alpha-p (s1 s2)
   "True if string S1 sorts alphabetically before string S2.
@@ -6800,7 +6797,7 @@ Otherwise remove only Icicles internal text properties:
   "Return non-nil if completion is strict.
 Return non-nil if current REQUIRE-MATCH arg to `completing-read' or
 `read-file-name' really means require match (sheesh!)."
-  (if (> emacs-major-version 22)  (eq t icicle-require-match-p)  icicle-require-match-p))
+  (if (> emacs-major-version 22) (eq t icicle-require-match-p) icicle-require-match-p))
 
 ;; Note: Property `icicle-mode-line-help' with a function value is not used yet in Icicles code.
 (defun icicle-candidate-short-help (help string)
@@ -7069,7 +7066,7 @@ If those names are identical, then buffer names are compared.
 Comparison is not case-sensitive."
   (let ((bm1  (icicle-upcase (symbol-name (with-current-buffer b1 major-mode))))
         (bm2  (icicle-upcase (symbol-name (with-current-buffer b2 major-mode)))))
-    (if (string= bm1 bm2)  (string-lessp b1 b2)  (string-lessp bm1 bm2))))
+    (if (string= bm1 bm2) (string-lessp b1 b2) (string-lessp bm1 bm2))))
 
 
 (when (fboundp 'format-mode-line)       ; Emacs 22+
@@ -7081,7 +7078,7 @@ If those names are identical, then buffer names are compared.
 Comparison is not case-sensitive."
     (let ((bm1  (icicle-upcase (with-current-buffer b1 (format-mode-line mode-name))))
           (bm2  (icicle-upcase (with-current-buffer b2 (format-mode-line mode-name)))))
-      (if (string= bm1 bm2)  (string-lessp b1 b2)  (string-lessp bm1 bm2)))))
+      (if (string= bm1 bm2) (string-lessp b1 b2) (string-lessp bm1 bm2)))))
 
 
 (put 'icicle-buffer-file/process-name-less-p 'icicle-buffer-sort-predicate t)
