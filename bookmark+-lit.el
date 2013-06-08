@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2010-2013, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 23 07:49:32 2010 (-0700)
-;; Last-Updated: Wed May 15 14:18:54 2013 (-0700)
+;; Last-Updated: Sat Jun  8 09:00:21 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 851
+;;     Update #: 855
 ;; URL: http://www.emacswiki.org/bookmark+-lit.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, highlighting, bookmark+
@@ -528,8 +528,7 @@ BOOKMARK is a bookmark name or a bookmark record."
          (bmk-name    (bmkp-bookmark-name-from-record bmk))
          (autonamedp  (and bmk  (bmkp-autonamed-bookmark-p bmk))))
     (when bmk                           ; Skip bad bookmark, but not already highlighted bookmark.
-      (unless (or noerrorp  (bmkp-lighted-p bmk-name))
-        (error "Bookmark `%s' is not highlighted" bmk-name))
+      (unless (or noerrorp  (bmkp-lighted-p bmk-name)) (error "Bookmark `%s' is not highlighted" bmk-name))
       (dolist (ov  (if autonamedp bmkp-autonamed-overlays bmkp-non-autonamed-overlays))
         (when (eq bmk (overlay-get ov 'bookmark))  (delete-overlay ov)))) ; Check full bookmark, not name.
     (when msgp (message "UNhighlighted bookmark `%s'" bmk-name))))
@@ -835,9 +834,8 @@ It must be provided: if nil then do not highlight any bookmarks."
    (list (cond ((not current-prefix-arg)     (bmkp-this-buffer-alist-only))
                ((consp current-prefix-arg)   (if (> (prefix-numeric-value current-prefix-arg) 4)
                                                  bmkp-nav-alist
-                                               (unless
-                                                   (y-or-n-p
-                                                    "Confirm highlighting bookmarks in ALL buffers ")
+                                               (unless (y-or-n-p
+                                                        "Confirm highlighting bookmarks in ALL buffers ")
                                                  (error "Canceled highlighting"))
                                                (bmkp-specific-buffers-alist-only
                                                 (mapcar #'buffer-name (buffer-list)))))
@@ -1158,9 +1156,7 @@ The non-nil value returned is in fact the full bookmark."
   "Return a highlighted bookmark at point or on this line, or nil if none.
 For Emacs 23+, if there is a highlighted bookmark at point, return a
  list of all such."
-  (or (if (> emacs-major-version 22)
-          (bmkp-bookmarks-lighted-at-point)
-        (bmkp-a-bookmark-lighted-at-pos))
+  (or (if (> emacs-major-version 22) (bmkp-bookmarks-lighted-at-point) (bmkp-a-bookmark-lighted-at-pos))
       (bmkp-a-bookmark-lighted-on-this-line)))
 
 (defun bmkp-a-bookmark-lighted-on-this-line (&optional fullp msgp)
@@ -1199,7 +1195,7 @@ Return the bookmark name or, if FULLP non-nil, the full bookmark data."
       nil)
     (let ((b-in-list  (bmkp-get-bookmark-in-alist bmk 'NOERROR)))
       (and b-in-list                    ; Must be in current bookmark list.
-           (if fullp  b-in-list  (bmkp-bookmark-name-from-record bmk))))))
+           (if fullp b-in-list (bmkp-bookmark-name-from-record bmk))))))
 
 (defun bmkp-read-set-lighting-args (&optional default-style default-face default-when)
   "Read args STYLE, FACE, and WHEN for commands that set `lighting' prop.
