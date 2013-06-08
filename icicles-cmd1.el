@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Apr 24 10:13:26 2013 (-0700)
+;; Last-Updated: Fri Jun  7 20:48:28 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 25719
+;;     Update #: 25756
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -24,8 +24,8 @@
 ;;   `fuzzy', `fuzzy-match', `hexrgb', `icicles-fn', `icicles-mcmd',
 ;;   `icicles-opt', `icicles-var', `image-dired', `kmacro',
 ;;   `levenshtein', `misc-fns', `mouse3', `mwheel', `naked',
-;;   `regexp-opt', `ring', `ring+', `second-sel', `strings',
-;;   `thingatpt', `thingatpt+', `wid-edit', `wid-edit+', `widget'.
+;;   `regexp-opt', `ring', `second-sel', `strings', `thingatpt',
+;;   `thingatpt+', `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -826,7 +826,7 @@ See `icicle-comint-dynamic-complete-filename'."
              ;; Insert completion.  The completion string might have a different case from
              ;; what's in the prompt, if `read-file-name-completion-ignore-case' is non-nil.
              (delete-region filename-beg filename-end)
-             (if filedir (insert (comint-quote-filename filedir)))
+             (when filedir (insert (comint-quote-filename filedir)))
              (insert (comint-quote-filename (directory-file-name completion)))
              (cond ((symbolp (file-name-completion completion directory))
                     ;; We inserted a unique completion.  Add suffix.
@@ -877,12 +877,12 @@ Returns t if successful.
 Uses Icicles completion."
   (interactive)
   (let ((filename  (comint-match-partial-filename)))
-    (if (and filename
-             (save-match-data (not (string-match "[~/]" filename)))
-             (eq (match-beginning 0) (save-excursion (shell-backward-command 1) (point))))
-        (prog2 (unless (window-minibuffer-p (selected-window))
-                 (message "Completing command name..."))
-            (icicle-shell-dynamic-complete-as-command)))))
+    (when (and filename
+               (save-match-data (not (string-match "[~/]" filename)))
+               (eq (match-beginning 0) (save-excursion (shell-backward-command 1) (point))))
+      (prog2 (unless (window-minibuffer-p (selected-window))
+               (message "Completing command name..."))
+          (icicle-shell-dynamic-complete-as-command)))))
 
 (defun icicle-shell-dynamic-complete-as-command ()
   "Dynamically complete text at point as a command.
@@ -1016,10 +1016,10 @@ argument."
   (interactive)
   (require 'shell)
   (let ((variable  (shell-match-partial-variable)))
-    (if (and variable  (string-match "^\\$" variable))
-        (prog2 (unless (window-minibuffer-p (selected-window))
-                 (message "Completing variable name..."))
-            (icicle-shell-dynamic-complete-as-environment-variable)))))
+    (when (and variable  (string-match "^\\$" variable))
+      (prog2 (unless (window-minibuffer-p (selected-window))
+               (message "Completing variable name..."))
+          (icicle-shell-dynamic-complete-as-environment-variable)))))
 
 (defun icicle-shell-dynamic-complete-as-environment-variable ()
   "`shell-dynamic-complete-as-environment-variable' but uses Icicles completion."
@@ -1031,16 +1031,16 @@ argument."
          (addsuffix                    comint-completion-addsuffix)
          (comint-completion-addsuffix  nil)
          (success                      (icicle-comint-dynamic-simple-complete variable variables)))
-    (if (memq success '(sole shortest))
-        (let* ((var           (shell-match-partial-variable))
-               (variable      (substring var (string-match "[^$({]" var)))
-               (protection    (cond ((string-match "{" var)                                    "}")
-                                    ((string-match "(" var)                                    ")")
-                                    (t                                                         "")))
-               (suffix        (cond ((null addsuffix)                                          "")
-                                    ((file-directory-p (comint-directory (getenv variable)))   "/")
-                                    (t                                                         " "))))
-          (insert protection  suffix)))
+    (when (memq success '(sole shortest))
+      (let* ((var         (shell-match-partial-variable))
+             (variable    (substring var (string-match "[^$({]" var)))
+             (protection  (cond ((string-match "{" var)                                    "}")
+                                ((string-match "(" var)                                    ")")
+                                (t                                                         "")))
+             (suffix      (cond ((null addsuffix)                                          "")
+                                ((file-directory-p (comint-directory (getenv variable)))   "/")
+                                (t                                                         " "))))
+        (insert protection  suffix)))
     success))
 
 
@@ -1220,7 +1220,8 @@ if there is a suitable one already."
         ;;             (not (string-equal init ""))
         ;;             (not (string-equal (downcase init) (downcase abbrev))))
         ;;        (message "Use `%s' again to complete further"
-        ;;                 (icicle-key-description (this-command-keys) nil icicle-key-descriptions-use-<>-flag))
+        ;;                 (icicle-key-description (this-command-keys) nil
+        ;;                                         icicle-key-descriptions-use-<>-flag))
         ;;        (if (< emacs-major-version 21)
         ;;            (dabbrev--substitute-expansion nil abbrev init)
         ;;          (dabbrev--substitute-expansion nil abbrev init nil))
@@ -1330,15 +1331,15 @@ See your version of BBDB for more information."
              (unless mails (error "Matching record has no `mail' field"))
              ;; (1) If PATTERN matches name, AKA, or organization of ONE-RECORD,
              ;;     then ADDRESS is the first mail address of ONE-RECORD.
-             (if (try-completion pattern (append (and (memq 'fl-name completion-list)
-                                                      (list (or (bbdb-record-name one-record)  "")))
-                                                 (and (memq 'lf-name completion-list)
-                                                      (list (or (bbdb-record-name-lf one-record)  "")))
-                                                 (and (memq 'aka completion-list)
-                                                      (bbdb-record-field one-record 'aka-all))
-                                                 (and (memq 'organization completion-list)
-                                                      (bbdb-record-organization one-record))))
-                 (setq mail  (car mails)))
+             (when (try-completion pattern (append (and (memq 'fl-name completion-list)
+                                                        (list (or (bbdb-record-name one-record)  "")))
+                                                   (and (memq 'lf-name completion-list)
+                                                        (list (or (bbdb-record-name-lf one-record)  "")))
+                                                   (and (memq 'aka completion-list)
+                                                        (bbdb-record-field one-record 'aka-all))
+                                                   (and (memq 'organization completion-list)
+                                                        (bbdb-record-organization one-record))))
+               (setq mail  (car mails)))
              ;; (2) If PATTERN matches one or multiple mail addresses of ONE-RECORD,
              ;;     then we take the first one matching PATTERN.
              (unless mail (while (setq elt  (pop mails))
@@ -1512,9 +1513,8 @@ control completion behaviour using `bbdb-completion-type'."
                                                              (equal (symbol-value x) (symbol-value sym)))
                                                            all-the-completions))))
                                (setq only-one-p  nil))
-                             (if (memq sym all-the-completions)
-                                 nil
-                               (setq all-the-completions  (cons sym all-the-completions)))))))
+                             (and (not (memq sym all-the-completions))
+                                  (setq all-the-completions  (cons sym all-the-completions)))))))
                    (completion           (progn (all-completions pattern ht pred)
                                                 (try-completion pattern ht)))
                    (exact-match          (eq completion t)))
@@ -1574,10 +1574,10 @@ control completion behaviour using `bbdb-completion-type'."
              (when (bbdb-record-net (car recs))
                ;; Did we match on name?
                (let ((b-r-name  (or (bbdb-record-name (car recs))  "")))
-                 (if (string= pattern (substring (downcase b-r-name) 0
-                                                 (min (length b-r-name) (length pattern))))
-                     (setq match-recs  (cons (car recs) match-recs)
-                           matched     t)))
+                 (when (string= pattern (substring (downcase b-r-name) 0
+                                                   (min (length b-r-name) (length pattern))))
+                   (setq match-recs  (cons (car recs) match-recs)
+                         matched     t)))
                ;; Did we match on aka?
                (unless matched
                  (setq lst  (bbdb-record-aka (car recs)))
@@ -1594,14 +1594,14 @@ control completion behaviour using `bbdb-completion-type'."
                  (setq lst      (bbdb-record-net (car recs))
                        primary  t)      ; primary wins over secondary...
                  (while lst
-                   (if (string= pattern (substring (downcase (car lst)) 0
-                                                   (min (length (downcase (car lst)))
-                                                        (length pattern))))
-                       (setq the-net     (car lst)
-                             lst         ()
-                             match-recs  (if primary
-                                             (cons (car recs) match-recs)
-                                           (append match-recs (list (car recs))))))
+                   (when (string= pattern (substring (downcase (car lst)) 0
+                                                     (min (length (downcase (car lst)))
+                                                          (length pattern))))
+                     (setq the-net     (car lst)
+                           lst         ()
+                           match-recs  (if primary
+                                           (cons (car recs) match-recs)
+                                         (append match-recs (list (car recs))))))
                    (setq lst      (cdr lst)
                          primary  nil))))
              (setq recs     (cdr recs)  ; Next rec for loop.
@@ -1993,7 +1993,7 @@ separate the words (any strings, in fact, including regexps) using
     (when (fboundp 'apropos-parse-pattern) (apropos-parse-pattern pattern)) ; Emacs 22+
     (when msgp (message "Gathering apropos data for customize `%s'..." pattern))
     (mapatoms `(lambda (symbol)         ; FREE here: APROPOS-REGEXP.
-                (when (string-match ,(if (> emacs-major-version 21) apropos-regexp pattern)
+                (when (string-match ,(and (> emacs-major-version 21)  apropos-regexp pattern)
                                     (symbol-name symbol))
                   (when (and (not (memq ,type '(faces options))) ; groups or t
                              (get symbol 'custom-group))
@@ -2356,12 +2356,9 @@ using face `icicle-special-candidate'."
                                                                      "option"))))
                      (icicle-all-candidates-list-alt-action-fn
                       (or icicle-all-candidates-list-alt-action-fn
-                          (icicle-alt-act-fn-for-type (if icicle-fancy-candidates-p
-                                                          "variable"
-                                                        "option")))))
+                          (icicle-alt-act-fn-for-type (if icicle-fancy-candidates-p "variable" "option")))))
                 (completing-read
-                 (concat "Apropos " (if (or current-prefix-arg  apropos-do-all)
-                                        "variable" "user option")
+                 (concat "Apropos " (if (or current-prefix-arg  apropos-do-all) "variable" "user option")
                          " (regexp" (and (>= emacs-major-version 22)  " or words") "): ")
                  obarray (and icompletep  pred) nil nil 'regexp-history)))
          (when (or current-prefix-arg  apropos-do-all)
@@ -2417,12 +2414,11 @@ of strings is used as a word list."
                                                                       "command"))))
                      (icicle-all-candidates-list-alt-action-fn
                       (or icicle-all-candidates-list-alt-action-fn
-                          (icicle-alt-act-fn-for-type (if icicle-fancy-candidates-p
-                                                          "function"
-                                                        "command")))))
+                          (icicle-alt-act-fn-for-type (if icicle-fancy-candidates-p "function" "command")))))
                 (completing-read
                  (concat "Apropos " (if (or current-prefix-arg  apropos-do-all)
-                                        "command or function" "command")
+                                        "command or function"
+                                      "command")
                          " (regexp" (and (>= emacs-major-version 22)  " or words") "): ")
                  obarray (and icompletep  pred) nil nil 'regexp-history)))
          (when (or current-prefix-arg  apropos-do-all)
@@ -2965,8 +2961,8 @@ and `\\[repeat-matching-complex-command]' to match regexp input, but Icicles inp
                                 (prin1-to-string elt))))
                     ;; If command was added to command-history as a string, get rid of that.
                     ;; We want only evaluable expressions there.
-                    (if (stringp (car command-history))
-                        (setq command-history  (cdr command-history))))))
+                    (and (stringp (car command-history))
+                         (setq command-history  (cdr command-history))))))
           ;; If command to be redone does not match front of history, add it to the history.
           (or (equal newcmd (car command-history))
               (setq command-history  (cons newcmd command-history)))
@@ -3438,7 +3434,7 @@ directory (default directory)."
   (let* ((default-directory           (if prompt-for-dir-p
                                           (read-file-name "Directory: " nil default-directory nil)
                                         default-directory))
-         (icicle-multi-completing-p   t)
+         (icicle-multi-completing-p   t) ; Could have multi-completion saved candidates, from `C-- C-x C-f'.
          (icicle-list-use-nth-parts   '(1))
          (file-names                  (icicle-remove-if
                                        (lambda (fil)
@@ -3469,7 +3465,7 @@ directory (default directory)."
   (let* ((default-directory           (if prompt-for-dir-p
                                           (read-file-name "Directory: " nil default-directory nil)
                                         default-directory))
-         (icicle-multi-completing-p   t)
+         (icicle-multi-completing-p   t) ; Could have multi-completion saved candidates, from `C-- C-x C-f'.
          (icicle-list-use-nth-parts   '(1))
          (file-names                  (icicle-remove-if
                                        (lambda (fil)
@@ -3635,7 +3631,7 @@ commands, it need not be.  It can be useful anytime you need to use
 \(`C-g'), completion errors, and final actions."
   (let ((icicle-incremental-completion          'always)
         (icicle-whole-candidate-as-text-prop-p  t)
-        (icicle-transform-function              (if (interactive-p) nil icicle-transform-function))
+        (icicle-transform-function              (and (not (interactive-p))  icicle-transform-function))
         (icicle-act-before-cycle-flag           icicle-act-before-cycle-flag)
         (icicle-orig-pt-explore                 (point-marker))
         (icicle-orig-win-explore                (selected-window))
@@ -3791,7 +3787,7 @@ then customize option `icicle-top-level-key-bindings'." ; Doc string
         (when (and binding  (not (and (vectorp binding)  (eq (aref binding 0) 'mouse-movement))))
           (let ((message-log-max  nil)  ; Do not log this message.
                 ;; If CMD showed a msg in echo area, wait a bit, before showing the key-reminder msg.
-                (waited           (sit-for (if (current-message)  wait-time  0))))
+                (waited           (sit-for (if (current-message) wait-time 0))))
             (when (and waited  (atom unread-command-events))
               (unwind-protect
                    (progn (message "You can invoke command `%s' using `%s'"
@@ -4042,6 +4038,7 @@ an action uses the base prefix arg you used for `icicle-kmacro'."
     (lexical-let ((count  0))
       (setq icicle-kmacro-alist
             (mapcar (lambda (x) (cons (format "%d" (setq count  (1+ count))) x)) ; FREE here: COUNT.
+                    ;; @@@@@@@ Why the (if nil...) here?
                     (reverse (if nil kmacro-ring (cons (kmacro-ring-head) kmacro-ring))))))
     nil 'NO-EXIT-WO-MATCH nil 'icicle-kmacro-history
     (and (kmacro-ring-head)  (null kmacro-ring)  "1") nil
@@ -4469,7 +4466,7 @@ instead of those for the current buffer."
                                                              '((2 (face file-name-shadow))
                                                                (3 (face bookmark-menu-heading)))
                                                            '((3 (face bookmark-menu-heading))))))
-               (icicle-transform-function              (if (interactive-p) nil icicle-transform-function))
+               (icicle-transform-function              (and (not (interactive-p))  icicle-transform-function))
                (icicle-whole-candidate-as-text-prop-p  t)
                (icicle-transform-before-sort-p         t)
                (icicle-candidates-alist
@@ -4615,9 +4612,7 @@ If the option value is nil then DISPLAY is just the bookmark name."
                  (guts      (bookmark-get-bookmark-record bookmark))
                  (file      (bookmark-get-filename bookmark))
                  (buf       (bmkp-get-buffer-name bookmark))
-                 (file/buf  (if (and buf  (equal file bmkp-non-file-filename))
-                                buf
-                              file))
+                 (file/buf  (if (and buf  (equal file bmkp-non-file-filename)) buf file))
                  (tags      (bmkp-get-tags bookmark)))
             (cons `(,(icicle-candidate-short-help
                       (icicle-bookmark-help-string bname)
@@ -4736,7 +4731,7 @@ position is highlighted."               ; Doc string
                                                  '((2 (face file-name-shadow))
                                                    (3 (face bookmark-menu-heading)))
                                                '((3 (face bookmark-menu-heading))))))
-   (icicle-transform-function              (if (interactive-p) nil icicle-transform-function))
+   (icicle-transform-function              (and (not (interactive-p))  icicle-transform-function))
    (icicle-whole-candidate-as-text-prop-p  t)
    (icicle-transform-before-sort-p         t)
    (icicle-delete-candidate-object         'icicle-bookmark-delete-action)
@@ -4817,7 +4812,7 @@ Same as `icicle-bookmark', but uses another window." ; Doc string
                                                  '((2 (face file-name-shadow))
                                                    (3 (face bookmark-menu-heading)))
                                                '((3 (face bookmark-menu-heading))))))
-   (icicle-transform-function              (if (interactive-p) nil icicle-transform-function))
+   (icicle-transform-function              (and (not (interactive-p))  icicle-transform-function))
    (icicle-whole-candidate-as-text-prop-p  t)
    (icicle-transform-before-sort-p         t)
    (icicle-delete-candidate-object         'icicle-bookmark-delete-action)
@@ -5644,11 +5639,11 @@ Either LINE or POSITION can be nil.  POSITION is used if present."
              ;; TAG-INFO: If no specific tag, (t nil (point-min)). Else, (TEXT LINE . STARTPOS).
              ;; e.g. TEXT = "(defun foo ()" or just "foo" (if explicit),
              ;;      LINE = "148", STARTPOS = "1723"
-             (tag-info (save-excursion (funcall snarf-tag-function))) ; e.g. `etags-snarf-tag'.
-             (tag (if (eq t (car tag-info)) nil (car tag-info)))
+             (tag-info   (save-excursion (funcall snarf-tag-function))) ; e.g. `etags-snarf-tag'.
+             (tag        (and (not (eq t (car tag-info)))  (car tag-info)))
              ;; FILE-PATH is absolute. FILE-LABEL is relative to `default-directory'.
-             (file-path (save-excursion
-                          (if tag (file-of-tag) (save-excursion (next-line 1) (file-of-tag)))))
+             (file-path  (save-excursion
+                           (if tag (file-of-tag) (save-excursion (next-line 1) (file-of-tag)))))
              (file-label (expand-file-name file-path (file-truename default-directory))))
         (when (and tag  (not (string= "" tag))  (= (aref tag 0) ?\( ))
           (setq tag  (concat tag " ...)")))
@@ -6809,14 +6804,12 @@ candidates to yank in different ways (repeat)
                                       (let ((other-ring  (if (eq 'kill-ring ',selection-ring)
                                                              (if (fboundp 'browse-kill-ring)
                                                                  browse-kill-ring-alternative-ring
-                                                               (if (boundp 'secondary-selection-ring)
-                                                                   'secondary-selection-ring
-                                                                 nil))
+                                                               (and (boundp 'secondary-selection-ring)
+                                                                    'secondary-selection-ring))
                                                            'kill-ring)))
                                         (if (eq 'kill-ring ',selection-ring)
                                             (if (fboundp 'browse-kill-ring-alternative-push-function)
-                                                (funcall browse-kill-ring-alternative-push-function
-                                                         seln)
+                                                (funcall browse-kill-ring-alternative-push-function seln)
                                               (when (boundp 'secondary-selection-ring)
                                                 (add-secondary-to-ring seln)))
                                           (kill-new seln))
@@ -7503,11 +7496,11 @@ can use the following keys:
              (fn   (if r-o 'find-file-read-only 'find-file)))
         (setq file  (icicle-transform-multi-completion file))
         (funcall fn file 'WILDCARDS)
-        (when (and (file-readable-p file)  (buffer-file-name)) (normal-mode)) ; Else in fundamental mode.
+        (when (and (file-readable-p file)  (buffer-file-name))  (normal-mode)) ; Else in fundamental mode.
         ;; Add the visited buffer to those we will keep (not kill).
         ;; If FILE uses wildcards then there will be multiple such buffers.
         ;; For a directory, get the Dired buffer instead of using `get-file-buffer'.
-        (let ((fil2  (if (string= "" (file-name-nondirectory file))  (directory-file-name file)  file)))
+        (let ((fil2  (if (string= "" (file-name-nondirectory file)) (directory-file-name file) file)))
           (dolist (fil  (file-expand-wildcards fil2))
             (when (setq fil  (if (file-directory-p fil)
                                  (get-buffer (file-name-nondirectory fil))
@@ -7565,7 +7558,7 @@ Same as `icicle-find-file-of-content' except it uses a different window." ; Doc 
         ;; Add the visited buffer to those we will keep (not kill).
         ;; If FILE uses wildcards then there will be multiple such buffers.
         ;; For a directory, get the Dired buffer instead of using `get-file-buffer'.
-        (let ((fil2  (if (string= "" (file-name-nondirectory file))  (directory-file-name file)  file)))
+        (let ((fil2  (if (string= "" (file-name-nondirectory file)) (directory-file-name file) file)))
           (dolist (fil  (file-expand-wildcards fil2))
             (when (setq fil  (if (file-directory-p fil)
                                  (get-buffer (file-name-nondirectory fil))
@@ -8600,7 +8593,7 @@ Non-interactively:
                                                       '((2 (face file-name-shadow))
                                                         (3 (face bookmark-menu-heading)))
                                                     '((3 (face bookmark-menu-heading))))))
-   (icicle-transform-function                   (if (interactive-p) nil icicle-transform-function))
+   (icicle-transform-function                   (and (not (interactive-p))  icicle-transform-function))
    (icicle-whole-candidate-as-text-prop-p       t)
    (icicle-transform-before-sort-p              t)
    (icicle-delete-candidate-object              'icicle-bookmark-delete-action)
