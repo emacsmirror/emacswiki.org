@@ -151,6 +151,11 @@ Add following to your `~/.emacs' startup InitFile:
 
 The epackage manager can also be called from command line UI:
 
+   # Start command line UI
+   cd epacakge
+   make ui
+
+    # Or if you want to make a shell alias or function, the command needed is 
     emacs --batch --quick --load ~/.emacs.d/packages/epackage/epackage.el --funcall epackage-batch-ui-menu
 
 == ELPA and Epackages - What's the difference? ==
