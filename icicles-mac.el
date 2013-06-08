@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:24:28 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Apr 18 14:17:33 2013 (-0700)
+;; Last-Updated: Fri Jun  7 21:59:58 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 1124
+;;     Update #: 1129
 ;; URL: http://www.emacswiki.org/icicles-mac.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -805,12 +805,12 @@ to update the list of tags available for completion." "")) ; Doc string
                                                                   (substring type 1 (length type)))))
      (icicle-list-use-nth-parts              '(1))
      (icicle-candidate-properties-alist      (if (not icicle-show-multi-completion-flag)
-                                                 nil
+                                                 ()
                                                (if (facep 'file-name-shadow)
                                                    '((2 (face file-name-shadow))
                                                      (3 (face bookmark-menu-heading)))
                                                  '((3 (face bookmark-menu-heading))))))
-     (icicle-transform-function              (if (interactive-p) nil icicle-transform-function))
+     (icicle-transform-function              (and (not (interactive-p))  icicle-transform-function))
      (icicle-whole-candidate-as-text-prop-p  t)
      (icicle-transform-before-sort-p         t)
      (icicle-delete-candidate-object         'icicle-bookmark-delete-action)
@@ -895,12 +895,12 @@ You need library `Bookmark+' for this command." type type) ; Doc string
      (prompt1                                  ,(or prompt  (format "Search %s bookmark: " type)))
      (icicle-list-use-nth-parts                '(1))
      (icicle-candidate-properties-alist        (if (not icicle-show-multi-completion-flag)
-                                                   nil
+                                                   ()
                                                  (if (facep 'file-name-shadow)
                                                      '((2 (face file-name-shadow))
                                                        (3 (face bookmark-menu-heading)))
                                                    '((3 (face bookmark-menu-heading))))))
-     (icicle-transform-function                (if (interactive-p) nil icicle-transform-function))
+     (icicle-transform-function                (and (not (interactive-p))  icicle-transform-function))
      (icicle-whole-candidate-as-text-prop-p    t)
      (icicle-transform-before-sort-p           t)
      (icicle-delete-candidate-object           'icicle-bookmark-delete-action)
@@ -954,7 +954,7 @@ You need library `Bookmark+' for this command." type type) ; Doc string
           (setq cand  (cons (caar cand) (cdr cand))))
         (if current-prefix-arg
             (bmkp-describe-bookmark-internals cand)
-            (bmkp-describe-bookmark cand)))))
+          (bmkp-describe-bookmark cand)))))
     (when (equal ,type "autofile") (icicle-bind-file-candidate-keys)) ; First code
     (icicle-bookmark-cleanup-on-quit)   ; Undo code
     (progn (when (equal ,type "autofile") (icicle-unbind-file-candidate-keys))
