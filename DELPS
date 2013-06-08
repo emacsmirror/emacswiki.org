@@ -13,11 +13,11 @@ as Git DVCS repositories.
 === For Regular Users ===
 
 The reference package manager `epackage.el' is available
-from "main project hub" which points to a Git repository. See
+from the main "project hub" which points to a Git repository. See
 installation instructions at the end of this page.
 
 * [http://freecode.com/projects/emacs-epackage Project hub] at Freecode.
-  Never moves, bookmark this; you can subscribe project announcement
+  Never moves, bookmark this; you can subscribe to project announcements
 * List of [http://github.com/jaalto/project--emacs-epackage-sources-list/blob/master/epackage.lst available packages for install]
 
 === For Package Developers ===
