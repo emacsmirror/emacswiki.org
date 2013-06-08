@@ -1,10 +1,10 @@
 MoViMentMode is a minor mode that provides vi-like cursor movement that's easy on the fingers. With MoViMentMode enabled, you can move the cursor like so -
 
-        M-]
+        M-l
    
-   M-p       M-\
+   M-j       M-;
    
-        M-[
+        M-k
 
 Pressing the 'shift' key while moving the cursor this way will move the cursor by line/page.
 
@@ -15,7 +15,7 @@ Via MELPA:
 
 Or drop ##mo-vi-ment.el## somewhere in your load path, and add this to your ##.emacs.d/init.el## file -
 
-   (require 'mo-vi-ment)
+   (require 'mo-vi-ment-mode)
 
 == Usage ==
 Enabling it -
