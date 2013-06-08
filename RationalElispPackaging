@@ -140,15 +140,19 @@ approach:
     with the upstream e.g. through http://github.com
     push/pull.
 
-Each Emacs extension is prepared for use with this system:
-upstream code is imported into a git repository, the epackage
-system is installe don top of upstream code in separate
-directory, the whole git repository is made available online
-and add information about its availability is recorded to a
-separate seources list yellow pages. The epackaging work can
-be done by anyone who wants to set up a repository. It doesn't
-necesarily need to be done by the original Emacs extension
-author (upstream) who may not be familiar with the `git(1)'
+Each Emacs extension is "pacakged" like this: (1) upstream code is
+imported into a Git repository, (2) the epackage system is installed
+on top of upstream code in a separate `epacakage/' directory, (3) the
+Git repository is made available online and (3) information about the
+availability of new package is recorded and to a separate seources
+list yellow pages; which is available on-line.
+
+The epackaging work can be done by anyone who wants to set up a Git
+repository. The location of repositories doe snot matter. The whole
+system is decentralized as far as packages are ocncerned. The
+packaging work doesn't necesarily have to be done by the original
+Emacs extension author (upstream) who may not be familiar with the
+`git(1)' but someone who has interest in the package in general.
 
 For more information, see wiki pages [[DELPS]] and [[Epackage]]
 
