@@ -295,15 +295,6 @@ This is meant to closely simulate what Vim does ... match entire words, jump to 
 (add-hook 'isearch-mode-hook 'my-isearch-yank-word-hook)
 }}}
 
-== Shortcuts in ErgoEmacs ==
-
-Users of [[ergoemacs]] can use already predefined shortcuts
-
-* F11 -  highlight-symbol-next, i.e. jump to the next occurrence of the symbol at point
-* F12 -  highlight-symbol-prev, i.e. jump to the previous occurrence of the symbol at point
-
-This feature is present in [[ergoemacs]] 1.8.1, and later.
-
 == See also ==
 
 * LazySearch --- A New search mode for fast highlight and jump various object around point.
