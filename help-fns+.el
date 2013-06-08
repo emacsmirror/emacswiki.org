@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 22.1
-;; Last-Updated: Mon Apr 29 22:12:38 2013 (-0700)
+;; Last-Updated: Sat Jun  8 12:40:49 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 1568
+;;     Update #: 1595
 ;; URL: http://www.emacswiki.org/help-fns+.el
 ;; Doc URL: http://emacswiki.org/HelpPlus
 ;; Keywords: help, faces, characters, packages, description
@@ -357,14 +357,14 @@
 Non-nil optional arg ADD-HELP-BUTTONS does that, adding buttons to key
 descriptions, which link to the key's command help."
     (let ((raw-doc  (documentation function 'RAW)))
-      (if raw  raw-doc  (help-substitute-command-keys raw-doc add-help-buttons))))
+      (if raw raw-doc (help-substitute-command-keys raw-doc add-help-buttons))))
 
   (defun help-documentation-property (symbol prop &optional raw add-help-buttons)
     "Same as `documentation-property', but optionally adds buttons for help.
 Non-nil optional arg ADD-HELP-BUTTONS does that, adding buttons to key
 descriptions, which link to the key's command help."
     (let ((raw-doc  (documentation-property symbol prop 'RAW)))
-      (if raw  raw-doc  (help-substitute-command-keys raw-doc add-help-buttons))))
+      (if raw raw-doc (help-substitute-command-keys raw-doc add-help-buttons))))
 
   (defun help-commands-to-key-buttons (string)
     "Like `substitute-command-keys', but adds buttons for help on keys.
@@ -430,7 +430,7 @@ descriptions, which link to the key's command help."
                                                   (substring strg 0 ii) ; Unescaped \='s
                                                   (substring strg ma jj)) ; \[...], \{...}, or \<...>
                                         (concat newstrg (substring strg 0 ii)))
-                             ma       (if odd nil (match-string-no-properties 0 strg))
+                             ma       (and (not odd)  (match-string-no-properties 0 strg))
                              ii       jj))))))
           (when ma
             (save-match-data            ; KEYMAP
@@ -441,8 +441,7 @@ descriptions, which link to the key's command help."
                 (setq keymap  (intern (match-string-no-properties 1 ma)))
                 (if (boundp keymap)
                     (setq keymap  (symbol-value keymap))
-                  (setq msg  (format "\nUses keymap \"%s\", which is not currently defined.\n"
-                                     keymap))
+                  (setq msg  (format "\nUses keymap \"%s\", which is not currently defined.\n" keymap))
                   (setq keymap  (or overriding-terminal-local-map  overriding-local-map)))))
             (unless mk                  ; COMMAND
               (save-match-data
@@ -766,7 +765,7 @@ By default, describe the current buffer."
                                        ;; Or this, for a bit longer: "%_3a %_2l:%02M:%02S %_2p"
                                        "%a %b %e %T %Y (%z)"
                                        buffer-display-time))))
-                          (format "Modified:\t%s\n" (if (buffer-modified-p buf)"yes" "no"))
+                          (format "Modified:\t%s\n" (if (buffer-modified-p buf) "yes" "no"))
                           (with-current-buffer buf
                             (format "Read-only:\t%s\n\n\n" (if buffer-read-only "yes" "no"))))))
         (with-help-window (help-buffer)
@@ -1171,8 +1170,7 @@ Return the description that was displayed, as a string."
               (unless (looking-back "\n\n") (terpri)))))
         ;; `list*' etc. do not get this property until `cl-hack-byte-compiler' runs,
         ;; which is after bytecomp is loaded.
-        (when (and (symbolp function)
-                   (eq (get function 'byte-compile) 'cl-byte-compile-compiler-macro))
+        (when (and (symbolp function)  (eq (get function 'byte-compile) 'cl-byte-compile-compiler-macro))
           (princ "This function has a compiler macro")
           (let ((lib  (get function 'compiler-macro-file)))
             (when (stringp lib)
@@ -1212,8 +1210,7 @@ Return the description that was displayed, as a string."
                   (fill-region fill-begin (point)))
                 (setq doc  (cdr high))))
             ;; If this is a derived mode, link to the parent.
-            (let ((parent-mode  (and (symbolp real-function)
-                                     (get real-function 'derived-mode-parent))))
+            (let ((parent-mode  (and (symbolp real-function)  (get real-function 'derived-mode-parent))))
               (when parent-mode
                 (with-current-buffer standard-output
                   (insert "\nParent mode: `")
@@ -1284,7 +1281,7 @@ Return the description that was displayed, as a string."
                                        (setq elts  (cdr-safe elts)))
                                      (concat beg (if is-full "keymap"  "sparse keymap"))))
                    (t  "")))
-      (if (and aliased (not (fboundp real-def)))
+      (if (and aliased  (not (fboundp real-def)))
           (princ ",\nwhich is not defined.  Please submit a bug report.")
         (with-current-buffer standard-output
           (save-excursion (save-match-data (when (re-search-backward "alias for `\\([^`']+\\)'" nil t)
@@ -1305,11 +1302,12 @@ Return the description that was displayed, as a string."
         (let* ((doc-raw  (documentation function 'RAW))
                ;; If the function is autoloaded, and its docstring has key substitution constructs,
                ;; load the library.  In any case, add help buttons.
-               (doc      (if (and (autoloadp real-def)  doc-raw
-                                     help-enable-auto-load
-                                     (string-match "\\([^\\]=\\|[^=]\\|\\`\\)\\\\[[{<]" doc-raw)
-                                     (load (cadr real-def) t))
-                              (help-substitute-command-keys doc-raw 'ADD-HELP-BUTTONS)
+               (doc      (if (and (autoloadp real-def)
+                                  doc-raw
+                                  help-enable-auto-load
+                                  (string-match "\\([^\\]=\\|[^=]\\|\\`\\)\\\\[[{<]" doc-raw)
+                                  (load (cadr real-def) t))
+                             (help-substitute-command-keys doc-raw 'ADD-HELP-BUTTONS)
                            (condition-case err
                                (help-documentation function nil 'ADD-HELP-BUTTONS)
                              (error (format "No Doc! %S" err))))))
@@ -1336,16 +1334,15 @@ Return the description that was displayed, as a string."
         (unless (memq remapped '(ignore undefined))
           (let ((keys  (where-is-internal (or remapped  function) overriding-local-map nil nil))
                 non-modified-keys)
-            (if (and (eq function 'self-insert-command)  (vectorp (car-safe keys))
+            (if (and (eq function 'self-insert-command)
+                     (vectorp (car-safe keys))
                      (consp (aref (car keys) 0)))
                 (princ "It is bound to many ordinary text characters.\n")
               (dolist (key  keys) ; Which non-control non-meta keys run this command?
                 (when (member (event-modifiers (aref key 0))  '(nil (shift)))  (push key non-modified-keys)))
               (when remapped
                 (princ "Its keys are remapped to ")
-                (princ (if (symbolp remapped)
-                           (concat "`" (symbol-name remapped) "'")
-                         "an anonymous command"))
+                (princ (if (symbolp remapped) (concat "`" (symbol-name remapped) "'") "an anonymous command"))
                 (princ ".\n"))
               (when keys
                 (princ (if remapped "Without this remapping, it would be bound to " "It is bound to "))
@@ -1384,7 +1381,8 @@ Return the description that was displayed, as a string."
                             ((stringp arglist) arglist)
                             ;; Maybe the arglist is in the docstring of a symbol this one is aliased to.
                             ((let ((fun  real-function))
-                               (while (and (symbolp fun)  (setq fun  (symbol-function fun))
+                               (while (and (symbolp fun)
+                                           (setq fun  (symbol-function fun))
                                            (not (setq usage  (help-split-fundoc
                                                               (help-documentation fun nil 'ADD-HELP-BUTTONS)
                                                               function)))))
@@ -1404,8 +1402,7 @@ Return the description that was displayed, as a string."
   "Describe an Emacs command (interactive function).
 Same as using a prefix arg with `describe-function'."
   (interactive
-   (let ((fn                            (or (and (fboundp 'symbol-nearest-point)
-                                                 (symbol-nearest-point))
+   (let ((fn                            (or (and (fboundp 'symbol-nearest-point)  (symbol-nearest-point))
                                             (function-called-at-point)))
          (enable-recursive-minibuffers  t)
          val)
@@ -1435,13 +1432,10 @@ Return the documentation, as a string.
 If VARIABLE has a buffer-local value in BUFFER (default to the current buffer),
 it is displayed along with the global value."
     (interactive
-     (let ((symb                          (or (and (fboundp 'symbol-nearest-point)
-                                                   (symbol-nearest-point))
-                                              (and (symbolp (variable-at-point))
-                                                   (variable-at-point))))
+     (let ((symb                          (or (and (fboundp 'symbol-nearest-point)  (symbol-nearest-point))
+                                              (variable-at-point)))
            (enable-recursive-minibuffers  t)
-           (completion-annotate-function  (lambda (var)
-                                            (and (custom-variable-p (intern-soft var))  "  (option)")))
+           (completion-annotate-function  (lambda (var) (and (custom-variable-p (intern-soft var))  "  (option)")))
            val)
        (setq val  (completing-read
                    (format "Describe variable%s: "
@@ -1496,9 +1490,7 @@ it is displayed along with the global value."
                              (save-excursion
                                (re-search-backward "`\\([^`']+\\)'" nil t)
                                (help-xref-button 1 'help-variable-def variable file-name)))
-                           (if valvoid
-                               (princ "It is void as a variable.")
-                             (princ "Its ")))
+                           (if valvoid (princ "It is void as a variable.") (princ "Its ")))
                   (if valvoid (princ " is void as a variable.") (princ "'s "))))
               (unless valvoid
                 (with-current-buffer standard-output
@@ -1581,12 +1573,12 @@ it is displayed along with the global value."
                 (with-current-buffer standard-output
                   (insert (or (substitute-command-keys doc)  "Not documented as a variable."))))
               ;; Make a link to customize if this variable can be customized.
-              (if (custom-variable-p variable)
-                  (let ((customize-label  "customize"))
-                    (terpri) (terpri) (princ (concat "You can " customize-label " this variable."))
-                    (with-current-buffer standard-output
-                      (save-excursion (re-search-backward (concat "\\(" customize-label "\\)") nil t)
-                                      (help-xref-button 1 'help-customize-variable variable)))))
+              (when (custom-variable-p variable)
+                (let ((customize-label  "customize"))
+                  (terpri) (terpri) (princ (concat "You can " customize-label " this variable."))
+                  (with-current-buffer standard-output
+                    (save-excursion (re-search-backward (concat "\\(" customize-label "\\)") nil t)
+                                    (help-xref-button 1 'help-customize-variable variable)))))
               (print-help-return-message)
               (with-current-buffer standard-output (buffer-string))))))))); Return the text displayed.
 
@@ -1632,13 +1624,10 @@ If VARIABLE has a buffer-local value in BUFFER or FRAME
 \(default to the current buffer and current frame),
 it is displayed along with the global value."
     (interactive
-     (let ((symb                          (or (and (fboundp 'symbol-nearest-point)
-                                                   (symbol-nearest-point))
-                                              (and (symbolp (variable-at-point))
-                                                   (variable-at-point))))
+     (let ((symb                          (or (and (fboundp 'symbol-nearest-point)  (symbol-nearest-point))
+                                              (variable-at-point)))
            (enable-recursive-minibuffers  t)
-           (completion-annotate-function  (lambda (var)
-                                            (and (custom-variable-p (intern-soft var))  "  (option)")))
+           (completion-annotate-function  (lambda (var) (and (custom-variable-p (intern-soft var))  "  (option)")))
            val)
        (setq val  (completing-read
                    (format "Describe variable%s: "
@@ -1839,10 +1828,8 @@ If VARIABLE has a buffer-local value in BUFFER or FRAME
 \(default to the current buffer and current frame),
 it is displayed along with the global value."
     (interactive
-     (let ((symb                          (or (and (fboundp 'symbol-nearest-point)
-                                                   (symbol-nearest-point))
-                                              (and (symbolp (variable-at-point))
-                                                   (variable-at-point))))
+     (let ((symb                          (or (and (fboundp 'symbol-nearest-point)  (symbol-nearest-point))
+                                              (variable-at-point)))
            (enable-recursive-minibuffers  t)
            (completion-annotate-function  (lambda (vv) (and (custom-variable-p (intern-soft vv))  "  (option)")))
            val)
@@ -1904,9 +1891,8 @@ it is displayed along with the global value."
                         (delete-region from (1+ from))
                       (delete-region (1- from) from))
                     (let* ((sv       (get variable 'standard-value))
-                           (origval  (and (consp sv)  (condition-case nil
-                                                          (eval (car sv))
-                                                        (error :help-eval-error)))))
+                           (origval  (and (consp sv)
+                                          (condition-case nil (eval (car sv)) (error :help-eval-error)))))
                       (when (and (consp sv)
                                  (not (equal origval val))
                                  (not (equal origval :help-eval-error)))
@@ -2050,8 +2036,7 @@ it is displayed along with the global value."
 Same as using a prefix arg with `describe-variable'."
   (interactive (let ((symb                          (or (and (fboundp 'symbol-nearest-point)
                                                              (symbol-nearest-point))
-                                                        (and (symbolp (variable-at-point))
-                                                             (variable-at-point))))
+                                                        (variable-at-point)))
                      (enable-recursive-minibuffers  t))
                  (list (intern (completing-read
                                 (format "Describe user option%s: "
@@ -2077,8 +2062,7 @@ potential candidates.  That is different from using `describe-option',
 because `describe-option' includes user-variable candidates not
 defined with `defcustom' (with `*'-prefixed doc strings)."
   (interactive
-   (let* ((symb     (or (and (fboundp 'symbol-nearest-point)  (symbol-nearest-point))
-                        (and (symbolp (variable-at-point))  (variable-at-point))))
+   (let* ((symb     (or (and (fboundp 'symbol-nearest-point)  (symbol-nearest-point))  (variable-at-point)))
           (typ       (car (condition-case err
                               (read-from-string (let ((types  ()))
                                                   (mapatoms
@@ -2296,9 +2280,7 @@ If FRAME is omitted or nil, use the selected frame."
                       (insert (format "\n  %s is an alias for the face `%s'.\n%s" f alias
                                       (if (setq obsolete  (get f 'obsolete-face))
                                           (format "  This face is obsolete%s; use `%s' instead.\n"
-                                                  (if (stringp obsolete)
-                                                      (format " since %s" obsolete)
-                                                    "")
+                                                  (if (stringp obsolete) (format " since %s" obsolete) "")
                                                   alias)
                                         ""))))
                     (insert "\nDocumentation:\n" (or (face-documentation face)
@@ -2399,9 +2381,9 @@ Non-nil optional arg NO-ERROR-P prints an error message but does not
                                     (condition-case nil
                                         (let ((all  (help-all-exif-data (expand-file-name filename))))
                                           (concat
-                                           (and all  (not (zerop (length all)))
-                                                (format "\nImage Data (EXIF)\n-----------------\n%s"
-                                                        all))))
+                                           (and all
+                                                (not (zerop (length all)))
+                                                (format "\nImage Data (EXIF)\n-----------------\n%s" all))))
                                       (error nil))))
              (help-text        (concat
                                 (format "`%s'\n%s\n\n" filename (make-string (+ 2 (length filename)) ?-))
