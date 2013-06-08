@@ -157,6 +157,10 @@ OK, I've added that (assuming you agree). I set the default value to `nil', howe
 [new:sylecn:]
 of course I agree:) Thanks Drew. --[[sylecn]]
 
+[new]
+When the global-hl-line-mode is turned on, the hl-line-inhibit-highlighting-for-modes does not work anymore. IMO, the inhibiting should work for the global-hl-line-mode, doesn't it? -- Kiwon
+
+
 == Library `highlight-current-line.el' ==
 
 There is also Lisp:highlight-current-line.el
