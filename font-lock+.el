@@ -1,5 +1,5 @@
 ;;; font-lock+.el --- Enhancements to standard library `font-lock.el'.
-;; 
+;;
 ;; Filename: font-lock+.el
 ;; Description: Enhancements to standard library `font-lock.el'.
 ;; Author: Drew Adams
@@ -7,14 +7,14 @@
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Sun Mar 25 15:21:07 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Dec 28 09:27:29 2012 (-0800)
+;; Last-Updated: Sat Jun  8 11:23:09 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 83
+;;     Update #: 154
 ;; URL: http://www.emacswiki.org/font-lock+.el
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
 ;; Keywords: languages, faces, highlighting
 ;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x
-;; 
+;;
 ;; Features that might be required by this library:
 ;;
 ;;   `font-lock', `syntax'.
@@ -35,7 +35,7 @@
 ;;
 ;;    (require 'font-lock+)
 ;;
-;;  
+;;
 ;;  CAVEAT: Be aware that using this library will **slow down**
 ;;          font-locking.  In particular, unfontifying a large buffer
 ;;          (e.g. turning off `font-lock-mode') will take noticeably
@@ -60,33 +60,33 @@
 ;;    `font-lock-fontify-keywords-region',
 ;;    `font-lock-fontify-syntactically-region',
 ;;    `font-lock-prepend-text-property'.
-;; 
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;;; Change Log:
-;; 
+;;
 ;; 2007/03/25 dadams
 ;;     Created.
-;; 
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
 ;; published by the Free Software Foundation; either version 2, or
 ;; (at your option) any later version.
-;; 
+;;
 ;; This program is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 ;; General Public License for more details.
-;; 
+;;
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program; see the file COPYING.  If not, write to
 ;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
 ;; Floor, Boston, MA 02110-1301, USA.
-;; 
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;;; Code:
 
 (require 'font-lock)
@@ -95,12 +95,12 @@
 
 (defun put-text-property-unless-ignore (start end property value &optional object)
   "`put-text-property', but ignore text with property `font-lock-ignore'."
-  (let ((here (min start end))
-        (end1 (max start end)))
+  (let ((here  (min start end))
+        (end1  (max start end)))
     (while (< here end1)
       (unless (get-text-property here 'font-lock-ignore object)
         (put-text-property here (1+ here) property value object))
-      (setq here (1+ here)))))
+      (setq here  (1+ here)))))
 
 
 ;; REPLACES ORIGINAL in `font-lock.el'.
@@ -109,8 +109,8 @@
 ;;
 (defun font-lock-default-unfontify-region (beg end)
   "Unfontify from BEG to END, unless text with property `font-lock-ignore'."
-  (let ((here (min beg end))
-        (end1 (max beg end)))
+  (let ((here  (min beg end))
+        (end1  (max beg end)))
     (while (< here end1)
       (unless (get-text-property here 'font-lock-ignore)
         (remove-list-of-text-properties
@@ -118,7 +118,7 @@
                                 (if font-lock-syntactic-keywords
                                     '(syntax-table face font-lock-multiline)
                                   '(face font-lock-multiline)))))
-      (setq here (1+ here)))))
+      (setq here  (1+ here)))))
 
 
 ;; REPLACES ORIGINAL in `font-lock.el'.
@@ -130,14 +130,15 @@
 Arguments PROP and VALUE specify the property and value to prepend to the value
 already in place.  The resulting property values are always lists.
 Optional argument OBJECT is the string or buffer containing the text."
-  (let ((val (if (listp value) value (list value))) next prev)
+  (let ((val  (if (listp value) value (list value)))
+        next prev)
     (while (/= start end)
-      (setq next (next-single-property-change start prop object end)
-            prev (get-text-property start prop object))
+      (setq next  (next-single-property-change start prop object end)
+            prev  (get-text-property start prop object))
       (put-text-property-unless-ignore start next prop
                                        (append val (if (listp prev) prev (list prev)))
                                        object)
-      (setq start next))))
+      (setq start  next))))
 
 
 ;; REPLACES ORIGINAL in `font-lock.el'.
@@ -149,14 +150,15 @@ Optional argument OBJECT is the string or buffer containing the text."
 Arguments PROP and VALUE specify the property and value to append to the value
 already in place.  The resulting property values are always lists.
 Optional argument OBJECT is the string or buffer containing the text."
-  (let ((val (if (listp value) value (list value))) next prev)
+  (let ((val  (if (listp value) value (list value)))
+        next prev)
     (while (/= start end)
-      (setq next (next-single-property-change start prop object end)
-            prev (get-text-property start prop object))
+      (setq next  (next-single-property-change start prop object end)
+            prev  (get-text-property start prop object))
       (put-text-property-unless-ignore start next prop
                                        (append (if (listp prev) prev (list prev)) val)
                                        object)
-      (setq start next))))
+      (setq start  next))))
 
 
 ;; REPLACES ORIGINAL in `font-lock.el'.
@@ -168,11 +170,12 @@ Optional argument OBJECT is the string or buffer containing the text."
 Arguments PROP and VALUE specify the property and value to put where none are
 already in place.  Therefore existing property values are not overwritten.
 Optional argument OBJECT is the string or buffer containing the text."
-  (let ((start (text-property-any start end prop nil object)) next)
+  (let ((start  (text-property-any start end prop nil object))
+        next)
     (while start
-      (setq next (next-single-property-change start prop object end))
+      (setq next  (next-single-property-change start prop object end))
       (put-text-property-unless-ignore start next prop value object)
-      (setq start (text-property-any next end prop nil object)))))
+      (setq start  (text-property-any next end prop nil object)))))
 
 
 ;; REPLACES ORIGINAL in `font-lock.el'.
@@ -183,17 +186,16 @@ Optional argument OBJECT is the string or buffer containing the text."
   "Apply HIGHLIGHT following a match.
 HIGHLIGHT should be of the form MATCH-HIGHLIGHT,
 see `font-lock-syntactic-keywords'."
-  (let* ((match (nth 0 highlight))
-         (start (match-beginning match)) (end (match-end match))
-         (value (nth 1 highlight))
-         (override (nth 2 highlight)))
+  (let* ((match     (nth 0 highlight))
+         (start     (match-beginning match)) (end (match-end match))
+         (value     (nth 1 highlight))
+         (override  (nth 2 highlight)))
     (if (not start)
         ;; No match but we might not signal an error.
         (or (nth 3 highlight)
             (error "No match %d in highlight %S" match highlight))
-      (when (and (consp value) (not (numberp (car value))))
-        (setq value (eval value)))
-      (when (stringp value) (setq value (string-to-syntax value)))
+      (when (and (consp value)  (not (numberp (car value)))) (setq value  (eval value)))
+      (when (stringp value) (setq value  (string-to-syntax value)))
       ;; Flush the syntax-cache.  I believe this is not necessary for
       ;; font-lock's use of syntax-ppss, but I'm not 100% sure and it can
       ;; still be necessary for other users of syntax-ppss anyway.
@@ -218,43 +220,35 @@ see `font-lock-syntactic-keywords'."
 (defun font-lock-fontify-syntactically-region (start end &optional loudly ppss)
   "Put proper face on each string and comment between START and END.
 START should be at the beginning of a line."
-  (let ((comment-end-regexp
-         (or font-lock-comment-end-skip
-             (regexp-quote
-              (replace-regexp-in-string "^ *" "" comment-end))))
+  (let ((comment-end-regexp  (or font-lock-comment-end-skip
+                                 (regexp-quote (replace-regexp-in-string
+                                                "^ *" "" comment-end))))
         state face beg)
-    (if loudly (message "Fontifying %s... (syntactically...)" (buffer-name)))
+    (when loudly (message "Fontifying %s... (syntactically...)" (buffer-name)))
     (goto-char start)
-    ;;
-    ;; Find the `start' state.
-    (setq state (or ppss (syntax-ppss start)))
-    ;;
-    ;; Find each interesting place between here and `end'.
-    (while
-        (progn
-          (when (or (nth 3 state) (nth 4 state))
-            (setq face (funcall font-lock-syntactic-face-function state))
-            (setq beg (max (nth 8 state) start))
-            (setq state (parse-partial-sexp (point) end nil nil state
-                                            'syntax-table))
-            (when face (put-text-property-unless-ignore beg (point) 'face face))
-            (when (and (eq face 'font-lock-comment-face)
-                       (or font-lock-comment-start-skip
-                           comment-start-skip))
-              ;; Find the comment delimiters
-              ;; and use font-lock-comment-delimiter-face for them.
-              (save-excursion
-                (goto-char beg)
-                (if (looking-at (or font-lock-comment-start-skip
-                                    comment-start-skip))
-                    (put-text-property-unless-ignore beg (match-end 0) 'face
-                                                     font-lock-comment-delimiter-face)))
-              (if (looking-back comment-end-regexp (point-at-bol) t)
-                  (put-text-property-unless-ignore (match-beginning 0) (point) 'face
-                                                   font-lock-comment-delimiter-face))))
-          (< (point) end))
-      (setq state (parse-partial-sexp (point) end nil nil state
-                                      'syntax-table)))))
+    (setq state  (or ppss  (syntax-ppss start))) ; Find the `start' state.
+    (while (progn ; Find each interesting place between here and `end'.
+             (when (or (nth 3 state)  (nth 4 state))
+               (setq face   (funcall font-lock-syntactic-face-function state)
+                     beg    (max (nth 8 state) start)
+                     state  (parse-partial-sexp (point) end nil nil state
+                                                'syntax-table))
+               (when face (put-text-property-unless-ignore beg (point) 'face face))
+               (when (and (eq face 'font-lock-comment-face)
+                          (or font-lock-comment-start-skip  comment-start-skip))
+                 ;; Find the comment delimiters
+                 ;; and use font-lock-comment-delimiter-face for them.
+                 (save-excursion
+                   (goto-char beg)
+                   (when (looking-at (or font-lock-comment-start-skip
+                                         comment-start-skip))
+                     (put-text-property-unless-ignore
+                      beg (match-end 0) 'face font-lock-comment-delimiter-face)))
+                 (when (looking-back comment-end-regexp (point-at-bol) t)
+                   (put-text-property-unless-ignore (match-beginning 0) (point) 'face
+                                                    font-lock-comment-delimiter-face))))
+             (< (point) end))
+      (setq state  (parse-partial-sexp (point) end nil nil state 'syntax-table)))))
 
 
 ;; REPLACES ORIGINAL in `font-lock.el'.
@@ -265,40 +259,38 @@ START should be at the beginning of a line."
 (defun font-lock-apply-highlight (highlight)
   "Apply HIGHLIGHT following a match.
 HIGHLIGHT should be of the form MATCH-HIGHLIGHT, see `font-lock-keywords'."
-  (let* ((match (nth 0 highlight))
-         (start (match-beginning match)) (end (match-end match))
-         (override (nth 2 highlight)))
+  (let* ((match     (nth 0 highlight))
+         (start     (match-beginning match)) (end (match-end match))
+         (override  (nth 2 highlight)))
     (if (not start)
         ;; No match but we might not signal an error.
-        (or (nth 3 highlight)
-            (error "No match %d in highlight %S" match highlight))
-      (let ((val (eval (nth 1 highlight))))
+        (or (nth 3 highlight)  (error "No match %d in highlight %S" match highlight))
+      (let ((val  (eval (nth 1 highlight))))
         (when (eq (car-safe val) 'face)
           (add-text-properties start end (cddr val))
-          (setq val (cadr val)))
-        (cond
-          ((not (or val (eq override t)))
-           ;; If `val' is nil, don't do anything.  It is important to do it
-           ;; explicitly, because when adding nil via things like
-           ;; font-lock-append-text-property, the property is actually
-           ;; changed from <face> to (<face>) which is undesirable.  --Stef
-           nil)
-          ((not override)
-           ;; Cannot override existing fontification.
-           (or (text-property-not-all start end 'face nil)
-               (put-text-property-unless-ignore start end 'face val)))
-          ((eq override t)
-           ;; Override existing fontification.
-           (put-text-property-unless-ignore start end 'face val))
-          ((eq override 'prepend)
-           ;; Prepend to existing fontification.
-           (font-lock-prepend-text-property start end 'face val))
-          ((eq override 'append)
-           ;; Append to existing fontification.
-           (font-lock-append-text-property start end 'face val))
-          ((eq override 'keep)
-           ;; Keep existing fontification.
-           (font-lock-fillin-text-property start end 'face val)))))))
+          (setq val  (cadr val)))
+        (cond ((not (or val  (eq override t)))
+               ;; If `val' is nil, don't do anything.  It is important to do it
+               ;; explicitly, because when adding nil via things like
+               ;; font-lock-append-text-property, the property is actually
+               ;; changed from <face> to (<face>) which is undesirable.  --Stef
+               nil)
+              ((not override)
+               ;; Cannot override existing fontification.
+               (unless (text-property-not-all start end 'face nil)
+                 (put-text-property-unless-ignore start end 'face val)))
+              ((eq override t)
+               ;; Override existing fontification.
+               (put-text-property-unless-ignore start end 'face val))
+              ((eq override 'prepend)
+               ;; Prepend to existing fontification.
+               (font-lock-prepend-text-property start end 'face val))
+              ((eq override 'append)
+               ;; Append to existing fontification.
+               (font-lock-append-text-property start end 'face val))
+              ((eq override 'keep)
+               ;; Keep existing fontification.
+               (font-lock-fillin-text-property start end 'face val)))))))
 
 
 ;; REPLACES ORIGINAL in `font-lock.el'.
@@ -310,17 +302,18 @@ HIGHLIGHT should be of the form MATCH-HIGHLIGHT, see `font-lock-keywords'."
   "Fontify according to KEYWORDS until LIMIT.
 KEYWORDS should be of the form MATCH-ANCHORED, see `font-lock-keywords',
 LIMIT can be modified by the value of its PRE-MATCH-FORM."
-  (let ((matcher (nth 0 keywords)) (lowdarks (nthcdr 3 keywords)) highlights
-        (lead-start (match-beginning 0))
-        ;; Evaluate PRE-MATCH-FORM.
-        (pre-match-value (eval (nth 1 keywords))))
+  (let ((matcher          (nth 0 keywords))
+        (lowdarks         (nthcdr 3 keywords))
+        (lead-start       (match-beginning 0))
+        (pre-match-value  (eval (nth 1 keywords))) ; Evaluate PRE-MATCH-FORM.
+        highlights)
     ;; Set LIMIT to value of PRE-MATCH-FORM or the end of line.
-    (if (not (and (numberp pre-match-value) (> pre-match-value (point))))
-        (setq limit (line-end-position))
-      (setq limit pre-match-value)
-      (when (and font-lock-multiline (>= limit (line-beginning-position 2)))
+    (if (not (and (numberp pre-match-value)  (> pre-match-value (point))))
+        (setq limit  (line-end-position))
+      (setq limit  pre-match-value)
+      (when (and font-lock-multiline  (>= limit (line-beginning-position 2)))
         ;; this is a multiline anchored match
-        ;; (setq font-lock-multiline t)
+        ;; (setq font-lock-multiline  t)
         (put-text-property-unless-ignore (if (= limit (line-beginning-position 2))
                                              (1- limit)
                                            (min lead-start (point)))
@@ -328,15 +321,14 @@ LIMIT can be modified by the value of its PRE-MATCH-FORM."
                                          'font-lock-multiline t)))
     (save-match-data
       ;; Find an occurrence of `matcher' before `limit'.
-      (while (and (< (point) limit)
-                  (if (stringp matcher)
-                      (re-search-forward matcher limit t)
-                    (funcall matcher limit)))
+      (while (and (< (point) limit)  (if (stringp matcher)
+                                         (re-search-forward matcher limit t)
+                                       (funcall matcher limit)))
         ;; Apply each highlight to this instance of `matcher'.
-        (setq highlights lowdarks)
+        (setq highlights  lowdarks)
         (while highlights
           (font-lock-apply-highlight (car highlights))
-          (setq highlights (cdr highlights)))))
+          (setq highlights  (cdr highlights)))))
     ;; Evaluate POST-MATCH-FORM.
     (eval (nth 2 keywords))))
 
@@ -350,21 +342,22 @@ LIMIT can be modified by the value of its PRE-MATCH-FORM."
 START should be at the beginning of a line.
 LOUDLY, if non-nil, allows progress-meter bar."
   (unless (eq (car font-lock-keywords) t)
-    (setq font-lock-keywords
-          (font-lock-compile-keywords font-lock-keywords)))
-  (let ((case-fold-search font-lock-keywords-case-fold-search)
-        (keywords (cddr font-lock-keywords))
-        (bufname (buffer-name)) (count 0)
-        (pos (make-marker))
+    (setq font-lock-keywords  (font-lock-compile-keywords font-lock-keywords)))
+  (let ((case-fold-search  font-lock-keywords-case-fold-search)
+        (keywords          (cddr font-lock-keywords))
+        (bufname           (buffer-name))
+        (count 0)
+        (pos               (make-marker))
         keyword matcher highlights)
     ;;
     ;; Fontify each item in `font-lock-keywords' from `start' to `end'.
     (while keywords
-      (if loudly (message "Fontifying %s... (regexps..%s)" bufname
-                          (make-string (incf count) ?.)))
+      (when loudly
+        (message "Fontifying %s... (regexps..%s)" bufname (make-string (incf count)
+                                                                       ?.)))
       ;;
       ;; Find an occurrence of `matcher' from `start' to `end'.
-      (setq keyword (car keywords) matcher (car keyword))
+      (setq keyword  (car keywords) matcher (car keyword))
       (goto-char start)
       (while (and (< (point) end)
                   (if (stringp matcher)
@@ -372,14 +365,12 @@ LOUDLY, if non-nil, allows progress-meter bar."
                     (funcall matcher end))
                   ;; Beware empty string matches since they will
                   ;; loop indefinitely.
-                  (or (> (point) (match-beginning 0))
-                      (progn (forward-char 1) t)))
+                  (or (> (point) (match-beginning 0))  (progn (forward-char 1) t)))
         (when (and font-lock-multiline
-                   (>= (point)
-                       (save-excursion (goto-char (match-beginning 0))
-                                       (forward-line 1) (point))))
+                   (>= (point) (save-excursion (goto-char (match-beginning 0))
+                                               (forward-line 1) (point))))
           ;; this is a multiline regexp match
-          ;; (setq font-lock-multiline t)
+          ;; (setq font-lock-multiline  t)
           (put-text-property-unless-ignore (if (= (point)
                                                   (save-excursion
                                                     (goto-char (match-beginning 0))
@@ -390,7 +381,7 @@ LOUDLY, if non-nil, allows progress-meter bar."
                                            'font-lock-multiline t))
         ;; Apply each highlight to this instance of `matcher', which may be
         ;; specific highlights or more keywords anchored to `matcher'.
-        (setq highlights (cdr keyword))
+        (setq highlights  (cdr keyword))
         (while highlights
           (if (numberp (car (car highlights)))
               (font-lock-apply-highlight (car highlights))
@@ -398,9 +389,9 @@ LOUDLY, if non-nil, allows progress-meter bar."
             (font-lock-fontify-anchored-keywords (car highlights) end)
             ;; Ensure forward progress.  `pos' is a marker because anchored
             ;; keyword may add/delete text (this happens e.g. in grep.el).
-            (if (< (point) pos) (goto-char pos)))
-          (setq highlights (cdr highlights))))
-      (setq keywords (cdr keywords)))
+            (when (< (point) pos) (goto-char pos)))
+          (setq highlights  (cdr highlights))))
+      (setq keywords  (cdr keywords)))
     (set-marker pos nil)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
