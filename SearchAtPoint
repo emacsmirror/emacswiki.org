@@ -9,6 +9,14 @@ Here are some ways of implementing Vim's `*' and <code>‘#’</code> in Emacs.
 == Do it using ISearch ==
 C-s C-w, appends the rest of the word under the cursor to the search pattern. So using M-b to return to the beginning of word and C-s C-w emacs searches the next occurance of the word.
 
+== Do it using Evil ==
+The simplest way is to install [[Evil]] via the package manager and create keybinds. For example:
+
+
+  (global-set-key (kbd "C-*") 'evil-search-symbol-forward)
+  (global-set-key (kbd "C-x *") 'evil-search-symbol-backward)
+
+
 == Do it with HighlightSymbol ==
 
 This is a nifty way I found to extend HighlightSymbol to provide this functionality:
