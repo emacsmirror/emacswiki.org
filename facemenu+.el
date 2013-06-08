@@ -7,21 +7,21 @@
 ;; Copyright (C) 2005-2013, Drew Adams, all rights reserved.
 ;; Created: Sat Jun 25 14:42:07 2005
 ;; Version:
-;; Last-Updated: Fri Dec 28 12:19:59 2012 (-0800)
+;; Last-Updated: Sat Jun  8 10:31:32 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 1789
+;;     Update #: 1842
 ;; URL: http://www.emacswiki.org/facemenu+.el
 ;; Doc URL: http://www.emacswiki.org/CustomizingFaces
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
 ;; Keywords: faces, extensions, convenience, menus, local
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
 ;;
 ;; Features that might be required by this library:
 ;;
 ;;   `avoid', `doremi', `doremi-frm', `easymenu', `eyedropper',
 ;;   `facemenu', `faces', `faces+', `frame-cmds', `frame-fns',
-;;   `hexrgb', `misc-fns', `mwheel', `ring', `ring+', `strings',
-;;   `thingatpt', `thingatpt+'.
+;;   `hexrgb', `misc-fns', `mwheel', `ring', `strings', `thingatpt',
+;;   `thingatpt+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -204,7 +204,7 @@
 ;; 2011/07/24 dadams
 ;;     facemenu-remove-(face-props|all): Add them to Edit > Region menu, if available.
 ;;                                       Disable them if no active region (Emacs bug #9162).
-;;     
+;;
 ;; 2011/07/23 dadams
 ;;     facemenup-highlight-menu: Added hlt-copy-props, hlt-yank-props.
 ;; 2011/06/27 dadams
@@ -337,7 +337,7 @@
 
 ;; eyedrop-pick-*-at-*, eyedrop-face-at-point:
 (if (fboundp 'defvaralias) ;; Emacs 22+
-    (or (require 'palette nil t) (require 'eyedropper))
+    (or (require 'palette nil t)  (require 'eyedropper))
   (require 'eyedropper))
 
 ;; (require 'icicles nil t) ;; (no error if not found):
@@ -416,7 +416,7 @@ palette using `x'."
        "--"
        ["Copy Text Properties" hlt-copy-props t]
        ["Paste Text Properties to Region" hlt-yank-props
-        (and mark-active (not buffer-read-only))]
+        (and mark-active  (not buffer-read-only))]
        "--"
        ["Highlighter Pen" hlt-highlighter-mouse t]
        ["Eraser" hlt-eraser-mouse t])
@@ -447,16 +447,16 @@ argument VECP, this copies vectors as well as conses."
     (if (consp tree)
         (let (result)
           (while (consp tree)
-            (let ((newcar (car tree)))
-              (if (or (consp (car tree)) (and vecp (vectorp (car tree))))
-                  (setq newcar (facemenup-copy-tree (car tree) vecp)))
+            (let ((newcar  (car tree)))
+              (when (or (consp (car tree))  (and vecp  (vectorp (car tree))))
+                (setq newcar  (facemenup-copy-tree (car tree) vecp)))
               (push newcar result))
-            (setq tree (cdr tree)))
+            (setq tree  (cdr tree)))
           (nconc (nreverse result) tree))
-      (if (and vecp (vectorp tree))
-          (let ((i (length (setq tree (copy-sequence tree)))))
-            (while (>= (setq i (1- i)) 0)
-              (aset tree i (facemenup-copy-tree (aref tree i) vecp)))
+      (if (and vecp  (vectorp tree))
+          (let ((ii  (length (setq tree  (copy-sequence tree)))))
+            (while (>= (setq ii  (1- ii)) 0)
+              (aset tree ii (facemenup-copy-tree (aref tree ii) vecp)))
             tree)
         tree))))
 
@@ -636,12 +636,11 @@ argument VECP, this copies vectors as well as conses."
   (interactive "e")
   ;; Emacs bug on Windows: Get extra, pending <C-drag-mouse-2> event, so discard it.
   (while (input-pending-p) (discard-input))
-  (save-excursion
-    (set-buffer (window-buffer (posn-window (event-end event))))
-    (goto-char (posn-point (event-end event)))
-    (if (fboundp 'describe-text-properties)
-        (describe-text-properties (point)) ; Emacs 22
-      (list-text-properties-at (point))))) ; Emacs 20
+  (save-excursion (set-buffer (window-buffer (posn-window (event-end event))))
+                  (goto-char (posn-point (event-end event)))
+                  (if (fboundp 'describe-text-properties)
+                      (describe-text-properties (point)) ; Emacs 22
+                    (list-text-properties-at (point))))) ; Emacs 20
 
 ;; Note: The informative messages in these commands do not appear in
 ;; the minibuffer if `tooltip-mode' is disabled (-1). Emacs Bug
@@ -905,11 +904,11 @@ RGB is specified in decimal."
     (unless face (setq face  (read-face-name facemenup-err-mouse)))
     ;; Emacs bug on Windows: Get extra, pending <C-drag-mouse-2> event, so discard it.
     (while (input-pending-p) (discard-input))
-    (while (or (not (wholenump red)) (>= red 256))
+    (while (or (not (wholenump red))  (>= red 256))
       (setq red  (read-minibuffer "Red value (decimal): ")))
-    (while (or (not (wholenump green)) (>= green 256))
+    (while (or (not (wholenump green))  (>= green 256))
       (setq green  (read-minibuffer "Green value (decimal): ")))
-    (while (or (not (wholenump blue)) (>= blue 256))
+    (while (or (not (wholenump blue))  (>= blue 256))
       (setq blue  (read-minibuffer "Blue value (decimal): ")))
     (setq red    (format "%02x" red)
           green  (format "%02x" green)
@@ -933,11 +932,11 @@ RGB is specified in decimal."
     (unless face (setq face  (read-face-name facemenup-err-mouse)))
     ;; Emacs bug on Windows: Get extra, pending <C-drag-mouse-2> event, so discard it.
     (while (input-pending-p) (discard-input))
-    (while (or (not (wholenump red)) (>= red 256))
+    (while (or (not (wholenump red))  (>= red 256))
       (setq red  (read-minibuffer "Red value (decimal): ")))
-    (while (or (not (wholenump green)) (>= green 256))
+    (while (or (not (wholenump green))  (>= green 256))
       (setq green  (read-minibuffer "Green value (decimal): ")))
-    (while (or (not (wholenump blue)) (>= blue 256))
+    (while (or (not (wholenump blue))  (>= blue 256))
       (setq blue  (read-minibuffer "Blue value (decimal): ")))
     (setq red    (format "%02x" red)
           green  (format "%02x" green)
@@ -955,11 +954,11 @@ RGB is specified in decimal, from 0 to 255."
   (let ((face  (eyedrop-face-at-point))
         red green blue)
     (unless face (setq face  (read-face-name facemenup-err-mouse)))
-    (while (or (not (wholenump red)) (>= red 256))
+    (while (or (not (wholenump red))  (>= red 256))
       (setq red  (read-minibuffer "Red value (decimal, 0-255): ")))
-    (while (or (not (wholenump green)) (>= green 256))
+    (while (or (not (wholenump green))  (>= green 256))
       (setq green  (read-minibuffer "Green value (decimal, 0-255): ")))
-    (while (or (not (wholenump blue)) (>= blue 256))
+    (while (or (not (wholenump blue))  (>= blue 256))
       (setq blue  (read-minibuffer "Blue value (decimal, 0-255): ")))
     (setq red    (format "%02x" red)
           green  (format "%02x" green)
@@ -977,11 +976,11 @@ RGB is specified in decimal, from 0 to 255."
   (let ((face  (eyedrop-face-at-point))
         red green blue)
     (unless face (setq face  (read-face-name facemenup-err-mouse)))
-    (while (or (not (wholenump red)) (>= red 256))
+    (while (or (not (wholenump red))  (>= red 256))
       (setq red  (read-minibuffer "Red value (decimal, 0-255): ")))
-    (while (or (not (wholenump green)) (>= green 256))
+    (while (or (not (wholenump green))  (>= green 256))
       (setq green  (read-minibuffer "Green value (decimal, 0-255): ")))
-    (while (or (not (wholenump blue)) (>= blue 256))
+    (while (or (not (wholenump blue))  (>= blue 256))
       (setq blue  (read-minibuffer "Blue value (decimal, 0-255): ")))
     (setq red    (format "%02x" red)
           green  (format "%02x" green)
@@ -1009,19 +1008,19 @@ RGB is specified in hexadecimal, from 0 to FFFF."
                      (prog1
                          (setq red  (hexrgb-hex-to-int
                                      (read-from-minibuffer "Red value (hex, 0-FFFF): ")))
-                       (when (or (< red 0) (> red 65535)) (error)))
+                       (when (or (< red 0)  (> red 65535)) (error)))
                    (error nil))))
     (while (null (condition-case nil
                      (prog1
                          (setq green  (hexrgb-hex-to-int
                                        (read-from-minibuffer "Green value (hex, 0-FFFF): ")))
-                       (when (or (< green 0) (> green 65535)) (error)))
+                       (when (or (< green 0)  (> green 65535)) (error)))
                    (error nil))))
     (while (null (condition-case nil
                      (prog1
                          (setq blue  (hexrgb-hex-to-int
                                       (read-from-minibuffer "Blue value (hex, 0-FFFF): ")))
-                       (when (or (< blue 0) (> blue 65535)) (error)))
+                       (when (or (< blue 0)  (> blue 65535)) (error)))
                    (error nil))))
     (let ((bg  (facemenup-face-bg face)))
       (setq facemenup-last-face-bg       bg
@@ -1046,19 +1045,19 @@ RGB is specified in hexadecimal, from 0 to FFFF."
                      (prog1
                          (setq red  (hexrgb-hex-to-int
                                      (read-from-minibuffer "Red value (hex, 0-FFFF): ")))
-                       (when (or (< red 0) (> red 65535)) (error)))
+                       (when (or (< red 0)  (> red 65535)) (error)))
                    (error nil))))
     (while (null (condition-case nil
                      (prog1
                          (setq green  (hexrgb-hex-to-int
                                        (read-from-minibuffer "Green value (hex, 0-FFFF): ")))
-                       (when (or (< green 0) (> green 65535)) (error)))
+                       (when (or (< green 0)  (> green 65535)) (error)))
                    (error nil))))
     (while (null (condition-case nil
                      (prog1
                          (setq blue  (hexrgb-hex-to-int
                                       (read-from-minibuffer "Blue value (hex, 0-FFFF): ")))
-                       (when (or (< blue 0) (> blue 65535)) (error)))
+                       (when (or (< blue 0)  (> blue 65535)) (error)))
                    (error nil))))
     (let ((fg  (facemenup-face-fg face)))
       (setq facemenup-last-face-fg       fg
@@ -1077,19 +1076,19 @@ RGB is specified in hexadecimal, from 0 to FFFF."
                      (prog1
                          (setq red  (hexrgb-hex-to-int
                                      (read-from-minibuffer "Red value (hex, 0-FFFF): ")))
-                       (when (or (< red 0) (> red 65535)) (error)))
+                       (when (or (< red 0)  (> red 65535)) (error)))
                    (error nil))))
     (while (null (condition-case nil
                      (prog1
                          (setq green  (hexrgb-hex-to-int
                                        (read-from-minibuffer "Green value (hex, 0-FFFF): ")))
-                       (when (or (< green 0) (> green 65535)) (error)))
+                       (when (or (< green 0)  (> green 65535)) (error)))
                    (error nil))))
     (while (null (condition-case nil
                      (prog1
                          (setq blue  (hexrgb-hex-to-int
                                       (read-from-minibuffer "Blue value (hex, 0-FFFF): ")))
-                       (when (or (< blue 0) (> blue 65535)) (error)))
+                       (when (or (< blue 0)  (> blue 65535)) (error)))
                    (error nil))))
     (let ((bg  (facemenup-face-bg face)))
       (setq facemenup-last-face-bg       bg
@@ -1108,19 +1107,19 @@ RGB is specified in hexadecimal, from 0 to FFFF."
                      (prog1
                          (setq red  (hexrgb-hex-to-int
                                      (read-from-minibuffer "Red value (hex, 0-FFFF): ")))
-                       (when (or (< red 0) (> red 65535)) (error)))
+                       (when (or (< red 0)  (> red 65535)) (error)))
                    (error nil))))
     (while (null (condition-case nil
                      (prog1
                          (setq green  (hexrgb-hex-to-int
                                        (read-from-minibuffer "Green value (hex, 0-FFFF): ")))
-                       (when (or (< green 0) (> green 65535)) (error)))
+                       (when (or (< green 0)  (> green 65535)) (error)))
                    (error nil))))
     (while (null (condition-case nil
                      (prog1
                          (setq blue  (hexrgb-hex-to-int
                                       (read-from-minibuffer "Blue value (hex, 0-FFFF): ")))
-                       (when (or (< blue 0) (> blue 65535)) (error)))
+                       (when (or (< blue 0)  (> blue 65535)) (error)))
                    (error nil))))
     (let ((fg  (facemenup-face-fg face)))
       (setq facemenup-last-face-fg       fg
@@ -1188,10 +1187,9 @@ The last color copied is in `eyedrop-last-picked-color'."
     "Set attribute of face used at character under the mouse pointer.
 You are prompted for the face attribute to change and its new value."
     (interactive "e")
-    (let* ((face  (save-excursion
-                    (set-buffer (window-buffer (posn-window (event-end event))))
-                    (goto-char (posn-point (event-end event)))
-                    (eyedrop-face-at-point))))
+    (let* ((face  (save-excursion (set-buffer (window-buffer (posn-window (event-end event))))
+                                  (goto-char (posn-point (event-end event)))
+                                  (eyedrop-face-at-point))))
       (unless face (setq face  (read-face-name facemenup-err-mouse)))
       ;; Emacs bug on Windows: Get extra, pending <C-drag-mouse-2> event, so discard it.
       (while (input-pending-p) (discard-input))
@@ -1249,14 +1247,14 @@ You are prompted for the face, attribute to change, and its new value."
 For Emacs 22+, this is `face-background' inheriting from `default'."
   (condition-case nil
       (face-background face nil 'default) ; Emacs 22
-    (error (or (face-background face) (cdr (assq 'background-color (frame-parameters)))))))
+    (error (or (face-background face)  (cdr (assq 'background-color (frame-parameters)))))))
 
 (defun facemenup-face-fg (face)
   "`face-foreground', but get frame foreground if face has none.
 For Emacs 22+, this is `face-foreground' inheriting from `default'."
   (condition-case nil
       (face-foreground face nil 'default) ; Emacs 22+.  Raises error for previous versions.
-    (error (or (face-foreground face) (cdr (assq 'foreground-color (frame-parameters)))))))
+    (error (or (face-foreground face)  (cdr (assq 'foreground-color (frame-parameters)))))))
 
 
 ;; REPLACES ORIGINAL in `facemenu.el':
@@ -1265,9 +1263,9 @@ For Emacs 22+, this is `face-foreground' inheriting from `default'."
 ;;
 (defun facemenu-read-color (&optional prompt)
   "Read a color using the minibuffer."
-  (setq prompt  (or prompt "Color: "))
+  (setq prompt  (or prompt  "Color: "))
   (let* ((completion-ignore-case  t)
-         (col                     (cond ((and (boundp 'icicle-mode) icicle-mode)
+         (col                     (cond ((and (boundp 'icicle-mode)  icicle-mode)
                                          (icicle-read-color-wysiwyg 0 prompt))
                                         ((fboundp 'hexrgb-read-color)
                                          (hexrgb-read-color prompt nil t))
@@ -1279,7 +1277,7 @@ For Emacs 22+, this is `face-foreground' inheriting from `default'."
                                                   (defined-colors)
                                                 (and window-system
                                                      (mapcar 'list (x-defined-colors))))))))))
-    (if (equal "" col) nil col)))
+    (if (equal "" col) nil col)))       ; Return nil for "".
 
 
 (when (>= emacs-major-version 22)
@@ -1306,12 +1304,12 @@ FACE is determined as follows:
  Add FACE to the menu of faces, if allowed by `facemenu-listed-faces'."
     (interactive
      (list (progn (barf-if-buffer-read-only)
-                  (if (and current-prefix-arg (atom current-prefix-arg))
+                  (if (and current-prefix-arg  (atom current-prefix-arg))
                       (let ((deactivate-mark  nil)) (list-faces-display))
                     (read-face-name "Use face")))
-           (and mark-active (atom current-prefix-arg) (region-beginning))
-           (and mark-active (atom current-prefix-arg) (region-end))))
-    (unless (and (interactive-p) current-prefix-arg (atom current-prefix-arg))
+           (and mark-active  (atom current-prefix-arg)  (region-beginning))
+           (and mark-active  (atom current-prefix-arg)  (region-end))))
+    (unless (and (interactive-p)  current-prefix-arg  (atom current-prefix-arg))
       (facemenu-add-new-face face)
       (facemenu-add-face face start end)))
 
@@ -1350,9 +1348,9 @@ faces with matching names are displayed."
           faces line-format disp-frame window face-name)
       ;; We filter and take the max length in one pass
       (setq faces  (delq nil (mapcar (lambda (f)
-                                       (let ((s  (symbol-name f)))
-                                         (when (or all-faces (string-match regexp s))
-                                           (setq max-length  (max (length s) max-length))
+                                       (let ((ss  (symbol-name f)))
+                                         (when (or all-faces  (string-match regexp ss))
+                                           (setq max-length  (max (length ss) max-length))
                                            f)))
                                      (sort (face-list) #'string-lessp))))
       (unless faces (error "No faces matching \"%s\"" regexp))
@@ -1367,7 +1365,7 @@ faces with matching names are displayed."
                        #'help-commands-to-key-buttons
                      #'substitute-command-keys)
                    (concat "Use \\<help-mode-map>"
-                           (if (display-mouse-p) "\\[help-follow-mouse] or ")
+                           (and (display-mouse-p)  "\\[help-follow-mouse] or ")
                            "\\[help-follow]:\n"
                            " * on a face's sample text to set the region to that face, or\n"
                            " * on a face name to see a description of the face and possibly"
@@ -1378,20 +1376,18 @@ faces with matching names are displayed."
             (setq face-name  (symbol-name face))
             (insert (format line-format face-name))
             ;; Hyperlink to a help buffer for the face.
-            (save-excursion
-              (save-match-data
-                (search-backward face-name)
-                (setq help-xref-stack-item  `(list-faces-display ,regexp))
-                (help-xref-button 0 'help-face face)))               
+            (save-excursion (save-match-data
+                              (search-backward face-name)
+                              (setq help-xref-stack-item  `(list-faces-display ,regexp))
+                              (help-xref-button 0 'help-face face)))
             (let ((beg       (point))
                   (line-beg  (line-beginning-position)))
               (insert list-faces-sample-text)
               ;; Button to apply the face to the active region.
-              (save-excursion
-                (save-match-data
-                  (search-backward list-faces-sample-text)
-                  (help-xref-button 0 'help-facemenu-set-face
-                                    (list face (other-buffer (current-buffer) t)))))
+              (save-excursion (save-match-data
+                                (search-backward list-faces-sample-text)
+                                (help-xref-button 0 'help-facemenu-set-face
+                                                  (list face (other-buffer (current-buffer) t)))))
               (insert "\n")
               (put-text-property beg (1- (point)) 'face face)
               ;; Make all face commands default to the proper face
@@ -1430,8 +1426,8 @@ Also, close the *Faces* display."
           (buffer  (cadr face+buffer)))
       (save-excursion (set-buffer buffer)
                       (facemenu-add-new-face face)
-                      (facemenu-add-face face (and mark-active (region-beginning))
-                                         (and mark-active (region-end)))
+                      (facemenu-add-face face (and mark-active  (region-beginning))
+                                         (and mark-active  (region-end)))
                       (setq mark-active  nil)))
     (let ((win  (get-buffer-window "*Faces*"))) (when win (delete-window win))))
 
@@ -1445,8 +1441,8 @@ Also, close the *Faces* display."
   (if (> emacs-major-version 23)
       ;; Emacs 24+
       (defun list-colors-print (list &optional callback)
-        (let ((callback-fn  (and callback `(lambda (button)
-                                            (funcall ,callback (button-get button 'color-name)))))
+        (let ((callback-fn  (and callback  `(lambda (button)
+                                             (funcall ,callback (button-get button 'color-name)))))
               (rgb-format   (facemenu-rgb-format-for-display))
               rgb-width)
           (setq rgb-width  (1+ (length (format rgb-format 1 1 1))))
@@ -1475,7 +1471,7 @@ Also, close the *Faces* display."
                                                      (< (setq newlen
                                                               (+ len 2 (length (car others))))
                                                         max-len))
-                                           (setq len newlen)
+                                           (setq len  newlen)
                                            (push (pop others) names))
                                          (insert (mapconcat 'identity (nreverse names) ", ")))
                                      (insert (car color))))
@@ -1499,13 +1495,12 @@ Also, close the *Faces* display."
               ;;           (nth 0 hsv) (nth 1 hsv) (nth 2 hsv))))))
 
               ;; Hyperlink to open palette on the color.
-              (save-excursion
-                (save-match-data
-                  (forward-line 0)
-                  (re-search-forward ".*")
-                  (setq help-xref-stack-item  `(list-colors-display ,list))
-                  (help-xref-button 0 'help-facemenu-edit-color
-                                    (if (consp color) (car color) color))))
+              (save-excursion (save-match-data
+                                (forward-line 0)
+                                (re-search-forward ".*")
+                                (setq help-xref-stack-item  `(list-colors-display ,list))
+                                (help-xref-button 0 'help-facemenu-edit-color
+                                                  (if (consp color) (car color) color))))
               (when callback
                 (make-text-button opoint (point)
                                   'follow-link t
@@ -1545,7 +1540,7 @@ Also, close the *Faces* display."
               (help-xref-button 0 'help-facemenu-edit-color (if (consp color) (car color) color))))
           (insert "\n")))
       (goto-char (point-min))))
-  
+
   (defun facemenu-rgb-format-for-display ()
     (let ((ncolors  (display-color-cells (selected-frame)))
           (exp      0))
@@ -1585,39 +1580,34 @@ effect.  See `facemenu-remove-face-function'."
                 (not (eq facemenu-remove-face-function t)))
            (if facemenu-remove-face-function
                (funcall facemenu-remove-face-function start end)
-             (if (and start (< start end))
+             (if (and start  (< start end))
                  (remove-text-properties start end '(face default))
                (facemenu-set-self-insert-face 'default))))
           (facemenu-add-face-function
            (save-excursion
-             (if end (goto-char end))
-             (save-excursion
-               (if start (goto-char start))
-               (insert-before-markers
-                (funcall facemenu-add-face-function face end)))
-             (if facemenu-end-add-face
-                 (insert (if (stringp facemenu-end-add-face)
-                             facemenu-end-add-face
-                           (funcall facemenu-end-add-face face))))))
-          ((and start (< start end))
-           (let ((part-start start) part-end)
+             (when end (goto-char end))
+             (save-excursion (when start (goto-char start))
+                             (insert-before-markers (funcall facemenu-add-face-function face end)))
+             (when facemenu-end-add-face
+               (insert (if (stringp facemenu-end-add-face)
+                           facemenu-end-add-face
+                         (funcall facemenu-end-add-face face))))))
+          ((and start  (< start end))
+           (let ((part-start  start)
+                 part-end)
              (while (not (= part-start end))
-               (setq part-end (next-single-property-change part-start 'face
-                                                           nil end))
-               (let ((prev (get-text-property part-start 'face)))
+               (setq part-end  (next-single-property-change part-start 'face nil end))
+               (let ((prev  (get-text-property part-start 'face)))
                  (put-text-property part-start part-end 'face
                                     (if (null prev)
                                         face
                                       (facemenu-active-faces
-                                       (cons face
-                                             (if (listp prev)
-                                                 prev
-                                               (list prev)))
+                                       (cons face (if (listp prev) prev (list prev)))
                                        ;; Specify selected frame because nil means to use the
                                        ;; new-frame default settings, and those are usually nil.
                                        (selected-frame))))
                  (put-text-property part-start part-end 'font-lock-ignore t))
-               (setq part-start part-end))))
+               (setq part-start  part-end))))
           (t
            (facemenu-set-self-insert-face
             (if (eq last-command (cdr facemenu-self-insert-data))
@@ -1646,22 +1636,21 @@ effect.  See `facemenu-remove-face-function'."
                (not (eq facemenu-remove-face-function t)))
           (if facemenu-remove-face-function
               (funcall facemenu-remove-face-function start end)
-            (if (and start (< start end))
+            (if (and start  (< start end))
                 (remove-text-properties start end '(face default))
               (setq self-insert-face          'default
                     self-insert-face-command  this-command)))
         (if facemenu-add-face-function
             (save-excursion
-              (if end (goto-char end))
+              (when end (goto-char end))
               (save-excursion
-                (if start (goto-char start))
-                (insert-before-markers
-                 (funcall facemenu-add-face-function face end)))
-              (if facemenu-end-add-face
-                  (insert (if (stringp facemenu-end-add-face)
-                              facemenu-end-add-face
-                            (funcall facemenu-end-add-face face)))))
-          (if (and start (< start end))
+                (when start (goto-char start))
+                (insert-before-markers (funcall facemenu-add-face-function face end)))
+              (when facemenu-end-add-face
+                (insert (if (stringp facemenu-end-add-face)
+                            facemenu-end-add-face
+                          (funcall facemenu-end-add-face face)))))
+          (if (and start  (< start end))
               (let ((part-start  start)
                     part-end)
                 (while (not (= part-start end))
@@ -1671,10 +1660,7 @@ effect.  See `facemenu-remove-face-function'."
                                        (if (null prev)
                                            face
                                          (facemenu-active-faces
-                                          (cons face
-                                                (if (listp prev)
-                                                    prev
-                                                  (list prev)))
+                                          (cons face (if (listp prev) prev (list prev)))
                                           ;; Specify selected frame because nil means to use the
                                           ;; new-frame default settings, and those are usually nil.
                                           (selected-frame))))
