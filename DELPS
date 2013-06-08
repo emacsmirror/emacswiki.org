@@ -67,7 +67,7 @@ So why not make one for Emacs as well.
 
 The /epackages/ are in the form of distributed[1] [[Git]][2]
 version control repositories. The traditional packaging
-methods, like [[ELPA]], rely on archives like *.tar.gz. In
+methods, like [[ELPA]], rely on archives like <code>*.tar.gz</code>. In
 contrast, the DVCS approach offers interesting features over
 the traditional archive distribution approach:
 
@@ -202,14 +202,14 @@ both the concept (distributed) and the use of tools (version control).
   outdated versions in archive sites. No more copies floating around
   at different places.
 * Low maintenance. No more release processs overhead which includes
-  making archives like `.tar.gz', no more ensuring that README and
-  NEWS files are up to date, no more mistakenly packaging wrong
-  release, wrong files, missed to generate up-to-date docs etc. Just
-  concentrate on doing what you do best: programming and improving
-  your Emacs Lisp utility. Forget extra administrative tasks required
-  in traditional release processes: Git tag your releases with
-  `release/N.N.N' and your are done. No distribution hassles: ssh or
-  need for logging to a remote site, updating web pages etc.
+  making archives like <code>*.tar.gz</code>, no more ensuring that
+  README and NEWS files are up to date, no more mistakenly packaging
+  wrong release, wrong files, missed to generate up-to-date docs etc.
+  Just concentrate on doing what you do best: programming and
+  improving your Emacs Lisp utility. Forget extra administrative tasks
+  required in traditional release processes: Git tag your releases
+  with `release/N.N.N' and your are done. No distribution hassles: ssh
+  or need for logging to a remote site, updating web pages etc.
 
 /Downsides/
 
