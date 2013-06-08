@@ -158,7 +158,14 @@ OK, I've added that (assuming you agree). I set the default value to `nil', howe
 of course I agree:) Thanks Drew. --[[sylecn]]
 
 [new]
-When the global-hl-line-mode is turned on, the hl-line-inhibit-highlighting-for-modes does not work anymore. IMO, the inhibiting should work for the global-hl-line-mode, doesn't it? -- Kiwon
+When `global-hl-line-mode' is turned on, `hl-line-inhibit-highlighting-for-modes' does not work anymore. IMO, the inhibiting should work for `global-hl-line-mode', shouldn't it? -- [[Kiwon]]
+
+[new:DrewAdams:2013-06-08 15:12 UTC]
+Yes.  Should be OK now; thanks.  -- DrewAdams
+
+
+
+
 
 
 == Library `highlight-current-line.el' ==
