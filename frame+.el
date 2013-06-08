@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Apr 12 16:42:12 1996
 ;; Version: 21.0
-;; Last-Updated: Fri Dec 28 09:18:04 2012 (-0800)
+;; Last-Updated: Sat Jun  8 11:24:53 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 256
+;;     Update #: 258
 ;; URL: http://www.emacswiki.org/frame+.el
 ;; Doc URL: http://emacswiki.org/OneOnOneEmacs
 ;; Keywords: frames
@@ -134,7 +134,7 @@ If ARGS is a list whose car is a symbol then use (car ARGS) as a
 function to do the work: display the buffer and raise its frame.  Pass
 it BUFFER as first argument, and (cdr ARGS) as the rest of the
 arguments."
-    (if (and args (symbolp (car args)))
+    (if (and args  (symbolp (car args)))
 ;;;   Should we let/make the FUNCTION that is (car ARGS) do everything, or should we
 ;;;   ensure that the frame is fit and raised?  For now, make FUNCTION do everything.
 ;;;   (let* ((window  (apply (car args) buffer (cdr args)))
@@ -146,14 +146,13 @@ arguments."
       (let ((window  (get-buffer-window buffer 0)))
         (or
          ;; If we have a window already, make it visible.
-         (and window
-              (let ((frame  (window-frame window)))
-                (make-frame-visible frame)
-                (raise-frame frame)
-                (when (fboundp 'display-buffer-record-window) ; Emacs 24+
-                  (display-buffer-record-window 'reuse window buffer))
-                (when (fboundp 'fit-frame) (fit-frame frame))
-                window))                ; Return the window.
+         (and window  (let ((frame  (window-frame window)))
+                        (make-frame-visible frame)
+                        (raise-frame frame)
+                        (when (fboundp 'display-buffer-record-window) ; Emacs 24+
+                          (display-buffer-record-window 'reuse window buffer))
+                        (when (fboundp 'fit-frame) (fit-frame frame))
+                        window))                ; Return the window.
          ;; Reuse the selected window if the caller requested it.
          (and (cdr (assq 'same-window args))
               (condition-case nil       ; Try Emacs 24 `switch-to-buffer' first.
