@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Aug 11 14:24:13 1995
 ;; Version: 21.0
-;; Last-Updated: Fri Dec 28 09:42:31 2012 (-0800)
+;; Last-Updated: Sat Jun  8 11:00:10 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 620
+;;     Update #: 691
 ;; URL: http://www.emacswiki.org/files+.el
 ;; Keywords: internal, extensions, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -164,52 +164,50 @@
 
 ;; Used below, in `count-dired-files'.
 (defvar directory-listing-before-filename-regexp
-  (let* ((l "\\([A-Za-z]\\|[^\0-\177]\\)")
-	 (l-or-quote "\\([A-Za-z']\\|[^\0-\177]\\)")
-	 ;; In some locales, month abbreviations are as short as 2 letters,
-	 ;; and they can be followed by ".".
-	 ;; In Breton, a month name  can include a quote character.
-	 (month (concat l-or-quote l-or-quote "+\\.?"))
-	 (s " ")
-	 (yyyy "[0-9][0-9][0-9][0-9]")
-	 (dd "[ 0-3][0-9]")
-	 (HH:MM "[ 0-2][0-9][:.][0-5][0-9]")
-	 (seconds "[0-6][0-9]\\([.,][0-9]+\\)?")
-	 (zone "[-+][0-2][0-9][0-5][0-9]")
-	 (iso-mm-dd "[01][0-9]-[0-3][0-9]")
-	 (iso-time (concat HH:MM "\\(:" seconds "\\( ?" zone "\\)?\\)?"))
-	 (iso (concat "\\(\\(" yyyy "-\\)?" iso-mm-dd "[ T]" iso-time
-		      "\\|" yyyy "-" iso-mm-dd "\\)"))
-	 (western (concat "\\(" month s "+" dd "\\|" dd "\\.?" s month "\\)"
-			  s "+"
-			  "\\(" HH:MM "\\|" yyyy "\\)"))
-	 (western-comma (concat month s "+" dd "," s "+" yyyy))
-	 ;; Japanese MS-Windows ls-lisp has one-digit months, and
-	 ;; omits the Kanji characters after month and day-of-month.
-	 ;; On Mac OS X 10.3, the date format in East Asian locales is
-	 ;; day-of-month digits followed by month digits.
-	 (mm "[ 0-1]?[0-9]")
-	 (east-asian
-	  (concat "\\(" mm l "?" s dd l "?" s "+"
-		  "\\|" dd s mm s "+" "\\)"
-		  "\\(" HH:MM "\\|" yyyy l "?" "\\)")))
-	 ;; The "[0-9]" below requires the previous column to end in a digit.
-	 ;; This avoids recognizing `1 may 1997' as a date in the line:
-	 ;; -r--r--r--   1 may      1997        1168 Oct 19 16:49 README
+  (let* ((l              "\\([A-Za-z]\\|[^\0-\177]\\)")
+         (l-or-quote     "\\([A-Za-z']\\|[^\0-\177]\\)")
+         ;; In some locales, month abbreviations are as short as 2 letters,
+         ;; and they can be followed by ".".
+         ;; In Breton, a month name  can include a quote character.
+         (month          (concat l-or-quote l-or-quote "+\\.?"))
+         (s              " ")
+         (yyyy           "[0-9][0-9][0-9][0-9]")
+         (dd             "[ 0-3][0-9]")
+         (HH:MM          "[ 0-2][0-9][:.][0-5][0-9]")
+         (seconds        "[0-6][0-9]\\([.,][0-9]+\\)?")
+         (zone           "[-+][0-2][0-9][0-5][0-9]")
+         (iso-mm-dd      "[01][0-9]-[0-3][0-9]")
+         (iso-time       (concat HH:MM "\\(:" seconds "\\( ?" zone "\\)?\\)?"))
+         (iso            (concat "\\(\\(" yyyy "-\\)?" iso-mm-dd "[ T]" iso-time
+                                 "\\|" yyyy "-" iso-mm-dd "\\)"))
+         (western        (concat "\\(" month s "+" dd "\\|" dd "\\.?" s month "\\)"
+                                 s "+" "\\(" HH:MM "\\|" yyyy "\\)"))
+         (western-comma  (concat month s "+" dd "," s "+" yyyy))
+         ;; Japanese MS-Windows ls-lisp has one-digit months, and
+         ;; omits the Kanji characters after month and day-of-month.
+         ;; On Mac OS X 10.3, the date format in East Asian locales is
+         ;; day-of-month digits followed by month digits.
+         (mm             "[ 0-1]?[0-9]")
+         (east-asian     (concat "\\(" mm l "?" s dd l "?" s "+"
+                                 "\\|" dd s mm s "+" "\\)"
+                                 "\\(" HH:MM "\\|" yyyy l "?" "\\)")))
+    ;; The "[0-9]" below requires the previous column to end in a digit.
+    ;; This avoids recognizing `1 may 1997' as a date in the line:
+    ;; -r--r--r--   1 may      1997        1168 Oct 19 16:49 README
 
-	 ;; The "[BkKMGTPEZY]?" below supports "ls -alh" output.
-	 ;; The ".*" below finds the last match if there are multiple matches.
-	 ;; This avoids recognizing `jservice  10  1024' as a date in the line:
-	 ;; drwxr-xr-x  3 jservice  10  1024 Jul  2  1997 esg-host
+    ;; The "[BkKMGTPEZY]?" below supports "ls -alh" output.
+    ;; The ".*" below finds the last match if there are multiple matches.
+    ;; This avoids recognizing `jservice  10  1024' as a date in the line:
+    ;; drwxr-xr-x  3 jservice  10  1024 Jul  2  1997 esg-host
 
-         ;; vc dired listings provide the state or blanks between file
-         ;; permissions and date.  The state is always surrounded by
-         ;; parantheses:
-         ;; -rw-r--r-- (modified) 2005-10-22 21:25 files.el
-         ;; This is not supported yet.
+    ;; vc dired listings provide the state or blanks between file
+    ;; permissions and date.  The state is always surrounded by
+    ;; parantheses:
+    ;; -rw-r--r-- (modified) 2005-10-22 21:25 files.el
+    ;; This is not supported yet.
     (concat ".*[0-9][BkKMGTPEZY]?" s
-	    "\\(" western "\\|" western-comma "\\|" east-asian "\\|" iso "\\)"
-	    s "+"))
+            "\\(" western "\\|" western-comma "\\|" east-asian "\\|" iso "\\)"
+            s "+"))
   "Regular expression to match up to the file name in a directory listing.
 The default value is designed to recognize dates and times
 regardless of the language.")
@@ -218,7 +216,7 @@ regardless of the language.")
 ;; Copied here from `files.el', for use by `find-file-read-args'.
 (when (and (> emacs-major-version 21)
            (or (< emacs-major-version 23)
-               (and (= emacs-major-version 23) (= emacs-minor-version 1))))
+               (and (= emacs-major-version 23)  (= emacs-minor-version 1))))
   (defmacro minibuffer-with-setup-hook (fun &rest body)
     "Temporarily add FUN to `minibuffer-setup-hook' while executing BODY.
 BODY should use the minibuffer at most once.
@@ -228,14 +226,13 @@ called additional times).
 This macro actually adds an auxiliary function that calls FUN,
 rather than FUN itself, to `minibuffer-setup-hook'."
     (declare (indent 1) (debug t))
-    (let ((hook (make-symbol "setup-hook")))
+    (let ((hook  (make-symbol "setup-hook")))
       `(let (,hook)
-        (setq ,hook
-         (lambda ()
-           ;; Clear out this hook so it does not interfere
-           ;; with any recursive minibuffer usage.
-           (remove-hook 'minibuffer-setup-hook ,hook)
-           (funcall ,fun)))
+        (setq ,hook  (lambda ()
+                       ;; Clear out this hook so it does not interfere
+                       ;; with any recursive minibuffer usage.
+                       (remove-hook 'minibuffer-setup-hook ,hook)
+                       (funcall ,fun)))
         (unwind-protect
              (progn (add-hook 'minibuffer-setup-hook ,hook) ,@body)
           (remove-hook 'minibuffer-setup-hook ,hook))))))
@@ -247,20 +244,20 @@ rather than FUN itself, to `minibuffer-setup-hook'."
 ;;
 (when (and (> emacs-major-version 21)
            (or (< emacs-major-version 23)
-               (and (= emacs-major-version 23) (= emacs-minor-version 1))))
+               (and (= emacs-major-version 23)  (= emacs-minor-version 1))))
   (defun find-file-read-args (prompt mustmatch)
     (list (let ((find-file-default
                  (if (eq major-mode 'dired-mode)
-                     (let ((this-file (condition-case nil
-                                          (dired-get-file-for-visit)
-                                        (error nil))))
+                     (let ((this-file  (condition-case nil
+                                           (dired-get-file-for-visit)
+                                         (error nil))))
                        (if this-file
                            (abbreviate-file-name this-file)
-                         (and buffer-file-name (abbreviate-file-name
-                                                buffer-file-name))))
-                   (and buffer-file-name (abbreviate-file-name buffer-file-name)))))
+                         (and buffer-file-name  (abbreviate-file-name
+                                                 buffer-file-name))))
+                   (and buffer-file-name  (abbreviate-file-name buffer-file-name)))))
             (minibuffer-with-setup-hook
-             (lambda () (setq minibuffer-default find-file-default))
+             (lambda () (setq minibuffer-default  find-file-default))
              (read-file-name prompt nil default-directory mustmatch)))
           t)))
 
@@ -292,11 +289,11 @@ documentation for additional customization information."
                           (another-buffer nil t)
                         (other-buffer (current-buffer))))
          nil))
-  (let ((pop-up-windows t)
+  (let ((pop-up-windows           t)
         ;; Don't let these interfere.
-        same-window-buffer-names same-window-regexps)
-    (prog1
-        (pop-to-buffer buffer t norecord)
+        (same-window-buffer-names ())
+        (same-window-regexps      ()))
+    (prog1 (pop-to-buffer buffer t norecord)
       (raise-frame (window-frame (selected-window))))))
 
 
@@ -321,9 +318,9 @@ documentation for additional customization information."
                                     (other-buffer (current-buffer))))))
   (let ((pop-up-frames t)
         ;; Don't let these interfere.
-        same-window-buffer-names same-window-regexps)
-    (prog1
-        (pop-to-buffer buffer t norecord)
+        (same-window-buffer-names ())
+        (same-window-regexps      ()))
+    (prog1 (pop-to-buffer buffer t norecord)
       (raise-frame (window-frame (selected-window))))))
 
 
@@ -340,9 +337,9 @@ See documentation of `display-buffer' for more information."
                                   (if (fboundp 'another-buffer)
                                       (another-buffer nil t)
                                     (other-buffer (current-buffer))))))
-  (let ((win (selected-window))
-        (same-window-buffer-names nil)
-        (same-window-regexps nil))
+  (let ((win                       (selected-window))
+        (same-window-buffer-names  ())
+        (same-window-regexps       ()))
     (switch-to-buffer-other-frame buffer)
     (select-window win)
     (select-frame-set-input-focus (window-frame win))
@@ -383,249 +380,235 @@ normally equivalent short `-D' option is just passed on to
 ;;;   File lines should display the basename.
 ;;; - must be consistent with
 ;;;   - functions dired-move-to-filename, (these two define what a file line is)
-;;;   		 dired-move-to-end-of-filename,
-;;;		 dired-between-files, (shortcut for (not (dired-move-to-filename)))
-;;;   		 dired-insert-headerline
-;;;   		 dired-after-subdir-garbage (defines what a "total" line is)
+;;;              dired-move-to-end-of-filename,
+;;;              dired-between-files, (shortcut for (not (dired-move-to-filename)))
+;;;              dired-insert-headerline
+;;;              dired-after-subdir-garbage (defines what a "total" line is)
 ;;;   - variable dired-subdir-regexp
 ;;; - may be passed "--dired" as the first argument in SWITCHES.
 ;;;   Filename handlers might have to remove this switch if their
 ;;;   "ls" command does not support it.
 
   ;; We need the directory in order to find the right handler.
-  (let ((handler (find-file-name-handler (expand-file-name file)
-					 'insert-directory)))
+  (let ((handler  (find-file-name-handler (expand-file-name file)
+                                          'insert-directory)))
     (if handler
-	(funcall handler 'insert-directory file switches
-		 wildcard full-directory-p)
+        (funcall handler 'insert-directory file switches
+                 wildcard full-directory-p)
       (if (eq system-type 'vax-vms)
-	  (vms-read-directory file switches (current-buffer))
-	(let (result (beg (point)))
+          (vms-read-directory file switches (current-buffer))
+        (let (result  (beg (point)))
 
-	  ;; Read the actual directory using `insert-directory-program'.
-	  ;; RESULT gets the status code.
-	  (let* (;; We at first read by no-conversion, then after
-		 ;; putting text property `dired-filename, decode one
-		 ;; bunch by one to preserve that property.
-		 (coding-system-for-read 'no-conversion)
-		 ;; This is to control encoding the arguments in call-process.
-		 (coding-system-for-write
-		  (and enable-multibyte-characters
-		       (or file-name-coding-system
-			   default-file-name-coding-system))))
-	    (setq result
-		  (if wildcard
-		      ;; Run `ls' in the directory part of the file pattern
-		      ;; using the last component as argument.
-		      (let ((default-directory
-                                (if (file-name-absolute-p file)
-                                    (file-name-directory file)
-                                  (file-name-directory (expand-file-name file))))
-			    (pattern (file-name-nondirectory file)))
-			(call-process
-			 shell-file-name nil t nil "-c"
-			 (concat (if (memq system-type '(ms-dos windows-nt))
-				     ""
-				   "\\") ; Disregard Unix shell aliases!
-				 insert-directory-program " -d "
-				 (if (stringp switches)
-				     switches
-				   (mapconcat 'identity switches " "))
-				 " -- "
-				 ;; Quote some characters that have
-				 ;; special meanings in shells; but
-				 ;; don't quote the wildcards--we want
-				 ;; them to be special.  We also
-				 ;; currently don't quote the quoting
-				 ;; characters in case people want to
-				 ;; use them explicitly to quote
-				 ;; wildcard characters.
-				 (shell-quote-wildcard-pattern pattern))))
-		    ;; SunOS 4.1.3, SVr4 and others need the "." to list the
-		    ;; directory if FILE is a symbolic link.
- 		    (unless full-directory-p
- 		      (setq switches
- 			    (if (stringp switches)
- 				(concat switches " -d")
+          ;; Read the actual directory using `insert-directory-program'.
+          ;; RESULT gets the status code.
+          (let* (;; We at first read by no-conversion, then after
+                 ;; putting text property `dired-filename, decode one
+                 ;; bunch by one to preserve that property.
+                 (coding-system-for-read   'no-conversion)
+                 ;; This is to control encoding the arguments in call-process.
+                 (coding-system-for-write  (and enable-multibyte-characters
+                                                (or file-name-coding-system
+                                                    default-file-name-coding-system))))
+            (setq result
+                  (if wildcard
+                      ;; Run `ls' in the directory part of the file pattern
+                      ;; using the last component as argument.
+                      (let ((default-directory  (if (file-name-absolute-p file)
+                                                    (file-name-directory file)
+                                                  (file-name-directory
+                                                   (expand-file-name file))))
+                            (pattern            (file-name-nondirectory file)))
+                        (call-process
+                         shell-file-name nil t nil "-c"
+                         (concat (if (memq system-type '(ms-dos windows-nt))
+                                     ""
+                                   "\\") ; Disregard Unix shell aliases!
+                                 insert-directory-program " -d "
+                                 (if (stringp switches)
+                                     switches
+                                   (mapconcat 'identity switches " "))
+                                 " -- "
+                                 ;; Quote some characters that have
+                                 ;; special meanings in shells; but
+                                 ;; don't quote the wildcards--we want
+                                 ;; them to be special.  We also
+                                 ;; currently don't quote the quoting
+                                 ;; characters in case people want to
+                                 ;; use them explicitly to quote
+                                 ;; wildcard characters.
+                                 (shell-quote-wildcard-pattern pattern))))
+                    ;; SunOS 4.1.3, SVr4 and others need the "." to list the
+                    ;; directory if FILE is a symbolic link.
+                    (unless full-directory-p
+                      (setq switches
+                            (if (stringp switches)
+                                (concat switches " -d")
                               ;; Vanilla Emacs uses this here, but no good for older
                               ;; Emacs since uses 3rd arg:
- 			      ;; (add-to-list 'switches "-d" 'append))))
+                              ;; (add-to-list 'switches "-d" 'append))))
                               (setq switches  (append switches (list "-d"))))))
-		    (apply 'call-process
-			   insert-directory-program nil t nil
-			   (append
-			    (if (listp switches) switches
-			      (unless (equal switches "")
-				;; Split the switches at any spaces so we can
-				;; pass separate options as separate args.
-				(split-string switches)))
-			    ;; Avoid lossage if FILE starts with `-'.
-			    '("--")
-			    (progn
-			      (if (string-match "\\`~" file)
-				  (setq file (expand-file-name file)))
-			      (list
-			       (if full-directory-p
-				   (concat (file-name-as-directory file) ".")
-				 file))))))))
+                    (apply 'call-process
+                           insert-directory-program nil t nil
+                           (append (if (listp switches)
+                                       switches
+                                     (unless (equal switches "")
+                                       ;; Split the switches at any spaces so we can
+                                       ;; pass separate options as separate args.
+                                       (split-string switches)))
+                                   ;; Avoid lossage if FILE starts with `-'.
+                                   '("--")
+                                   (progn
+                                     (when (string-match "\\`~" file)
+                                       (setq file  (expand-file-name file)))
+                                     (list (if full-directory-p
+                                               (concat (file-name-as-directory file)
+                                                       ".")
+                                             file))))))))
 
-	  ;; If we got "//DIRED//" in the output, it means we got a real
-	  ;; directory listing, even if `ls' returned nonzero.
-	  ;; So ignore any errors.
-	  (when (if (stringp switches)
-		    (string-match "--dired\\>" switches)
-		  (member "--dired" switches))
-	    (save-excursion
-	      (forward-line -2)
-	      (when (looking-at "//SUBDIRED//")
-		(forward-line -1))
-	      (if (looking-at "//DIRED//")
-		  (setq result 0))))
+          ;; If we got "//DIRED//" in the output, it means we got a real
+          ;; directory listing, even if `ls' returned nonzero.
+          ;; So ignore any errors.
+          (when (if (stringp switches)
+                    (string-match "--dired\\>" switches)
+                  (member "--dired" switches))
+            (save-excursion (forward-line -2)
+                            (when (looking-at "//SUBDIRED//") (forward-line -1))
+                            (when (looking-at "//DIRED//") (setq result  0))))
 
           ;; DADAMS: Added boundp test.
-	  (when (and (not (eq 0 result)) (boundp 'insert-directory-ls-version)
-		     (eq insert-directory-ls-version 'unknown))
-	    ;; The first time ls returns an error,
-	    ;; find the version numbers of ls,
-	    ;; and set insert-directory-ls-version
-	    ;; to > if it is more than 5.2.1, < if it is less, nil if it
-	    ;; is equal or if the info cannot be obtained.
-	    ;; (That can mean it isn't GNU ls.)
-	    (let ((version-out
-		   (with-temp-buffer
-		     (call-process "ls" nil t nil "--version")
-		     (buffer-string))))
-	      (if (string-match "ls (.*utils) \\([0-9.]*\\)$" version-out)
-		  (let* ((version (match-string 1 version-out))
-			 (split (split-string version "[.]"))
-			 (numbers (mapcar 'string-to-number split))
-			 (min '(5 2 1))
-			 comparison)
-		    (while (and (not comparison) (or numbers min))
-		      (cond ((null min)
-			     (setq comparison '>))
-			    ((null numbers)
-			     (setq comparison '<))
-			    ((> (car numbers) (car min))
-			     (setq comparison '>))
-			    ((< (car numbers) (car min))
-			     (setq comparison '<))
-			    (t
-			     (setq numbers (cdr numbers)
-				   min (cdr min)))))
-		    (setq insert-directory-ls-version (or comparison '=)))
-		(setq insert-directory-ls-version nil))))
+          (when (and (not (eq 0 result))
+                     (boundp 'insert-directory-ls-version)
+                     (eq insert-directory-ls-version 'unknown))
+            ;; The first time ls returns an error,
+            ;; find the version numbers of ls,
+            ;; and set insert-directory-ls-version
+            ;; to > if it is more than 5.2.1, < if it is less, nil if it
+            ;; is equal or if the info cannot be obtained.
+            ;; (That can mean it isn't GNU ls.)
+            (let ((version-out  (with-temp-buffer
+                                  (call-process "ls" nil t nil "--version")
+                                  (buffer-string))))
+              (if (string-match "ls (.*utils) \\([0-9.]*\\)$" version-out)
+                  (let* ((version     (match-string 1 version-out))
+                         (split       (split-string version "[.]"))
+                         (numbers     (mapcar 'string-to-number split))
+                         (min         '(5 2 1))
+                         (comparison  nil))
+                    (while (and (not comparison)  (or numbers  min))
+                      (cond ((null min)                  (setq comparison  '>))
+                            ((null numbers)              (setq comparison '<))
+                            ((> (car numbers) (car min)) (setq comparison  '>))
+                            ((< (car numbers) (car min)) (setq comparison  '<))
+                            (t (setq numbers  (cdr numbers)
+                                     min      (cdr min)))))
+                    (setq insert-directory-ls-version  (or comparison  '=)))
+                (setq insert-directory-ls-version  nil))))
 
-	  ;; For GNU ls versions 5.2.2 and up, ignore minor errors.
+          ;; For GNU ls versions 5.2.2 and up, ignore minor errors.
           ;; DADAMS: Added boundp test.
-	  (when (and (eq 1 result) (boundp 'insert-directory-ls-version)
+          (when (and (eq 1 result)  (boundp 'insert-directory-ls-version)
                      (eq insert-directory-ls-version '>))
-	    (setq result 0))
+            (setq result  0))
 
-	  ;; If `insert-directory-program' failed, signal an error.
-	  (unless (eq 0 result)
-	    ;; Delete the error message it may have output.
-	    (delete-region beg (point))
-	    ;; On non-Posix systems, we cannot open a directory, so
-	    ;; don't even try, because that will always result in
-	    ;; the ubiquitous "Access denied".  Instead, show the
-	    ;; command line so the user can try to guess what went wrong.
-	    (if (and (file-directory-p file)
-		     (memq system-type '(ms-dos windows-nt)))
-		(error
-		 "Reading directory: \"%s %s -- %s\" exited with status %s"
-		 insert-directory-program
-		 (if (listp switches) (concat switches) switches)
-		 file result)
-	      ;; Unix.  Access the file to get a suitable error.
-	      (access-file file "Reading directory")
-	      (error "Listing directory failed but `access-file' worked")))
+          ;; If `insert-directory-program' failed, signal an error.
+          (unless (eq 0 result)
+            ;; Delete the error message it may have output.
+            (delete-region beg (point))
+            ;; On non-Posix systems, we cannot open a directory, so
+            ;; don't even try, because that will always result in
+            ;; the ubiquitous "Access denied".  Instead, show the
+            ;; command line so the user can try to guess what went wrong.
+            (if (and (file-directory-p file)  (memq system-type '(ms-dos windows-nt)))
+                (error "Reading directory: \"%s %s -- %s\" exited with status %s"
+                       insert-directory-program
+                       (if (listp switches) (concat switches) switches)
+                       file
+                       result)
+              ;; Unix.  Access the file to get a suitable error.
+              (access-file file "Reading directory")
+              (error "Listing directory failed but `access-file' worked")))
 
-	  (when (if (stringp switches)
-		    (string-match "--dired\\>" switches)
-		  (member "--dired" switches))
-	    ;; The following overshoots by one line for an empty
-	    ;; directory listed with "--dired", but without "-a"
-	    ;; switch, where the ls output contains a
-	    ;; "//DIRED-OPTIONS//" line, but no "//DIRED//" line.
-	    ;; We take care of that case later.
-	    (forward-line -2)
+          (when (if (stringp switches)
+                    (string-match "--dired\\>" switches)
+                  (member "--dired" switches))
+            ;; The following overshoots by one line for an empty
+            ;; directory listed with "--dired", but without "-a"
+            ;; switch, where the ls output contains a
+            ;; "//DIRED-OPTIONS//" line, but no "//DIRED//" line.
+            ;; We take care of that case later.
+            (forward-line -2)
             (when (looking-at "//SUBDIRED//")
               (delete-region (point) (progn (forward-line 1) (point)))
               (forward-line -1))
-	    (if (looking-at "//DIRED//")
-		(let ((end (line-end-position))
-		      (linebeg (point))
-		      error-lines)
-		  ;; Find all the lines that are error messages,
-		  ;; and record the bounds of each one.
-		  (goto-char beg)
-		  (while (< (point) linebeg)
-		    (or (eql (following-char) ?  ) ; DADAMS: replaced ?\s with ? .
-			(push (list (point) (line-end-position)) error-lines))
-		    (forward-line 1))
-		  (setq error-lines (nreverse error-lines))
-		  ;; Now read the numeric positions of file names.
-		  (goto-char linebeg)
-		  (forward-word 1)
-		  (forward-char 3)
-		  (while (< (point) end)
-		    (let ((start (insert-directory-adj-pos
-				  (+ beg (read (current-buffer)))
-				  error-lines))
-			  (end (insert-directory-adj-pos
-				(+ beg (read (current-buffer)))
-				error-lines)))
+            (if (looking-at "//DIRED//")
+                (let ((end          (line-end-position))
+                      (linebeg      (point))
+                      (error-lines  ()))
+                  ;; Find all the lines that are error messages,
+                  ;; and record the bounds of each one.
+                  (goto-char beg)
+                  (while (< (point) linebeg)
+                    (or (eql (following-char) ?  ) ; DADAMS: replaced ?\s with ? .
+                        (push (list (point) (line-end-position)) error-lines))
+                    (forward-line 1))
+                  (setq error-lines  (nreverse error-lines))
+                  ;; Now read the numeric positions of file names.
+                  (goto-char linebeg)
+                  (forward-word 1)
+                  (forward-char 3)
+                  (while (< (point) end)
+                    (let ((start  (insert-directory-adj-pos
+                                   (+ beg (read (current-buffer)))
+                                   error-lines))
+                          (end    (insert-directory-adj-pos
+                                   (+ beg (read (current-buffer)))
+                                   error-lines)))
                       ;; DADAMS: Replaced ?\s by ? .
-		      (if (memq (char-after end) '(?\n ? ))
-			  ;; End is followed by \n or by " -> ".
-			  (put-text-property start end 'dired-filename t)
-			;; It seems that we can't trust ls's output as to
-			;; byte positions of filenames.
-			(put-text-property beg (point) 'dired-filename nil)
-			(end-of-line))))
-		  (goto-char end)
-		  (beginning-of-line)
-		  (delete-region (point) (progn (forward-line 1) (point))))
-	      ;; Take care of the case where the ls output contains a
-	      ;; "//DIRED-OPTIONS//"-line, but no "//DIRED//"-line
-	      ;; and we went one line too far back (see above).
-	      (forward-line 1))
-	    (if (looking-at "//DIRED-OPTIONS//")
-		(delete-region (point) (progn (forward-line 1) (point)))))
+                      (if (memq (char-after end) '(?\n ? ))
+                          ;; End is followed by \n or by " -> ".
+                          (put-text-property start end 'dired-filename t)
+                        ;; It seems that we can't trust ls's output as to
+                        ;; byte positions of filenames.
+                        (put-text-property beg (point) 'dired-filename nil)
+                        (end-of-line))))
+                  (goto-char end)
+                  (beginning-of-line)
+                  (delete-region (point) (progn (forward-line 1) (point))))
+              ;; Take care of the case where the ls output contains a
+              ;; "//DIRED-OPTIONS//"-line, but no "//DIRED//"-line
+              ;; and we went one line too far back (see above).
+              (forward-line 1))
+            (when (looking-at "//DIRED-OPTIONS//")
+              (delete-region (point) (progn (forward-line 1) (point)))))
 
-	  ;; Now decode what read if necessary.
-	  (let ((coding (or coding-system-for-read
-			    file-name-coding-system
-			    default-file-name-coding-system
-			    'undecided))
-		coding-no-eol
-		val pos)
-	    (when (and enable-multibyte-characters
-		       (not (memq (coding-system-base coding)
-				  '(raw-text no-conversion))))
-	      ;; If no coding system is specified or detection is
-	      ;; requested, detect the coding.
-	      (if (eq (coding-system-base coding) 'undecided)
-		  (setq coding (detect-coding-region beg (point) t)))
-	      (if (not (eq (coding-system-base coding) 'undecided))
-		  (save-restriction
-		    (setq coding-no-eol
-			  (coding-system-change-eol-conversion coding 'unix))
-		    (narrow-to-region beg (point))
-		    (goto-char (point-min))
-		    (while (not (eobp))
-		      (setq pos (point)
-			    val (get-text-property (point) 'dired-filename))
-		      (goto-char (next-single-property-change
-				  (point) 'dired-filename nil (point-max)))
-		      ;; Force no eol conversion on a file name, so
-		      ;; that CR is preserved.
-		      (decode-coding-region pos (point)
-					    (if val coding-no-eol coding))
-		      (if val (put-text-property pos (point)
-                                                 'dired-filename t)))))))
-	  (when full-directory-p
+          ;; Now decode what read if necessary.
+          (let ((coding  (or coding-system-for-read
+                             file-name-coding-system
+                             default-file-name-coding-system
+                             'undecided))
+                coding-no-eol val pos)
+            (when (and enable-multibyte-characters
+                       (not (memq (coding-system-base coding)
+                                  '(raw-text no-conversion))))
+              ;; If no coding system is specified or detection is
+              ;; requested, detect the coding.
+              (when (eq (coding-system-base coding) 'undecided)
+                (setq coding  (detect-coding-region beg (point) t)))
+              (unless (eq (coding-system-base coding) 'undecided)
+                (save-restriction
+                  (setq coding-no-eol  (coding-system-change-eol-conversion
+                                        coding 'unix))
+                  (narrow-to-region beg (point))
+                  (goto-char (point-min))
+                  (while (not (eobp))
+                    (setq pos  (point)
+                          val  (get-text-property (point) 'dired-filename))
+                    (goto-char (next-single-property-change
+                                (point) 'dired-filename nil (point-max)))
+                    ;; Force no eol conversion on a file name, so CR is preserved.
+                    (decode-coding-region pos (point) (if val coding-no-eol coding))
+                    (if val (put-text-property pos (point) 'dired-filename t)))))))
+          (when full-directory-p
             (save-excursion
               (goto-char beg)
               (while (re-search-forward "^ *\\(total\\)" nil t)
@@ -639,9 +622,9 @@ normally equivalent short `-D' option is just passed on to
                 (goto-char beg)
                 (re-search-forward "^files [0-9]+/[0-9]+ \\(total\\)" nil t)
                 (replace-match "space used" nil nil nil 1)
-                (let ((available (and (fboundp 'get-free-disk-space)
-                                      (get-free-disk-space ".")))
-                      (map (make-sparse-keymap)))
+                (let ((available  (and (fboundp 'get-free-disk-space)
+                                       (get-free-disk-space ".")))
+                      (map        (make-sparse-keymap)))
                   (define-key map [mouse-2] 'dired-mouse-describe-listed-directory)
                   (define-key map "\r" 'dired-describe-listed-directory)
                   (when available (end-of-line) (insert " available " available))
@@ -665,14 +648,14 @@ and `..'."
     (re-search-backward "^$" nil 'to-bob)
     (if (not (re-search-forward dired-move-to-filename-regexp nil t))
         0
-      (let* ((beg (line-beginning-position))
-             (end (save-excursion (re-search-forward "^$" nil t)))
-             (dots-p (save-excursion    ; Is `..' present?
-                       (goto-char beg)
-                       (re-search-forward
-                        (concat directory-listing-before-filename-regexp
-                                "\\.\\./?$")
-                        end t))))
+      (let* ((beg     (line-beginning-position))
+             (end     (save-excursion (re-search-forward "^$" nil t)))
+             (dots-p  (save-excursion   ; Is `..' present?
+                        (goto-char beg)
+                        (re-search-forward
+                         (concat directory-listing-before-filename-regexp
+                                 "\\.\\./?$")
+                         end t))))
         (if dots-p (- (count-lines beg end) 2) (count-lines beg end))))))
 
 
@@ -686,16 +669,17 @@ and `..'."
       (save-excursion
         (goto-char (point-min))
         (while (re-search-forward "^  files \\([0-9]+\\)/\\([0-9]+\\)" nil t)
-          (let ((buffer-read-only nil)
-                (map (make-sparse-keymap)))
+          (let ((buffer-read-only  nil)
+                (map               (make-sparse-keymap)))
             (define-key map [mouse-2] 'dired-mouse-describe-listed-directory)
             (define-key map "\r" 'dired-describe-listed-directory)
             (replace-match str-num-files nil nil nil 1)
             (replace-match (if (zerop num-files)
                                str-num-files
-                             (number-to-string
-                              (- (length (directory-files default-directory
-                                                          nil nil t)) 2)))
+                             (number-to-string (- (length (directory-files
+                                                           default-directory
+                                                           nil nil t))
+                                                  2)))
                            nil nil nil 2)
             ;; Ignore any error, e.g. from `dired-details.el' hiding text.
             (condition-case nil
@@ -713,12 +697,12 @@ and `..'."
   (interactive)
   (unless (fboundp 'describe-file)
     (error "This command needs `describe-file' from library `help-fns+.el'"))
-  (let ((dirname (save-excursion
-                   (forward-line -1)
-                   (skip-syntax-forward " ")
-                   (buffer-substring
-                    (point)
-                    (save-excursion (end-of-line) (1- (point))))))) ; Up to colon.    
+  (let ((dirname  (save-excursion (forward-line -1)
+                                  (skip-syntax-forward " ")
+                                  (buffer-substring (point)
+                                                    (save-excursion
+                                                      (end-of-line)
+                                                      (1- (point))))))) ; Up to colon.
     (describe-file dirname)))
 
 ;;;###autoload
