@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sun May 12 19:29:32 2013 (-0700)
+;; Last-Updated: Fri Jun  7 21:46:02 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 19119
+;;     Update #: 19122
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -22,8 +22,8 @@
 ;;   `ffap', `ffap-', `fuzzy', `fuzzy-match', `hexrgb', `icicles-fn',
 ;;   `icicles-opt', `icicles-var', `image-dired', `kmacro',
 ;;   `levenshtein', `mouse3', `mwheel', `naked', `regexp-opt',
-;;   `ring', `ring+', `thingatpt', `thingatpt+', `wid-edit',
-;;   `wid-edit+', `widget'.
+;;   `ring', `thingatpt', `thingatpt+', `wid-edit', `wid-edit+',
+;;   `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -2537,7 +2537,7 @@ floating point support."
     (if (numberp nodisp)
         (setq seconds  (+ seconds (* 1e-3 nodisp))
               nodisp   obsolete)
-      (if obsolete (setq nodisp  obsolete)))
+      (when obsolete (setq nodisp  obsolete)))
     (cond (noninteractive
            (sleep-for seconds)
            t)
@@ -2789,8 +2789,8 @@ e.g., `C-u C-RET' then that candidate is so wrapped."
   "Action function for `icicle-insert-history-element' and `icicle-roundup'."
   ;; FREE here: TO-INSERT, COUNT.
   (when (and cand  (not (equal cand "")))
-    (let ((prefix-arg  (if current-prefix-arg  (prefix-numeric-value current-prefix-arg)  icicle-pref-arg)))
-      (push (if (and prefix-arg  (natnump prefix-arg))  (format "\"%s\"" cand)  cand) to-insert)
+    (let ((prefix-arg  (if current-prefix-arg (prefix-numeric-value current-prefix-arg) icicle-pref-arg)))
+      (push (if (and prefix-arg  (natnump prefix-arg)) (format "\"%s\"" cand) cand) to-insert)
       (unless (and prefix-arg  (<= prefix-arg 0)) (push " " to-insert))
       (message "Inserted: %s%s"
                (icicle-propertize (format "%d" (setq count  (1+ count))) 'face 'icicle-msg-emphasis)
