@@ -74,9 +74,8 @@ For example, you can hit `##M-. M-.##' to pick up the most immediatly surroundin
 See [[Icicles - Inserting Text from Cursor#RepeatedM.|Inserting Text from Cursor]].
 
 
-== Coding entire commands ==
+== Using tags and isearch ==
 
-Mimicking this feature of Vim in Emacs can be done in a little EmacsLisp code.
 
   (require 'etags) ;; provides `find-tag-default' in Emacs 21.
   
@@ -135,7 +134,7 @@ Mimicking this feature of Vim in Emacs can be done in a little EmacsLisp code.
   (define-key isearch-mode-map [f3] 'isearch-repeat-forward)
   (define-key isearch-mode-map [(control f3)] 'isearch-repeat-backward)
 
-Thanks to JuriLinkov.  The implementation above is from someone who had never used the Vim feature before following only a description of the command written by a Vim user.
+Thanks to JuriLinkov.  
 
 == Another implementation of isearch-forward-at-point ==
 
