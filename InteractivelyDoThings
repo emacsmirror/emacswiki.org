@@ -594,6 +594,9 @@ Quote from the history section of ido.el:
 : This is basically what ido (interactively do) is all about; but I found it awkward to merge my changes into the "iswitchb-" namespace, so I invented a common "ido-" namespace for the merged packages.
 
 === Preventing auto-searches unless called explicitly ===
+   ;; a better solution
+   (setq ido-auto-merge-work-directories-length -1)
+
    ;; disable auto searching for files unless called explicitly
    (setq ido-auto-merge-delay-time 99999)
 
