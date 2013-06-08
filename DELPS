@@ -23,12 +23,12 @@ installation instructions at the end of this page.
 === For Package Developers ===
 
 To make an Emacs extension available in /epackage/ format, read manual
-about the directory layout and used files.
-After that, clone "Template files" mentioned below.
-The "Template files" link points to README
-that explains the procedure step-by-step. In "Template files" repository
-see `*.shellrc' that provides functions which help in doing the packaging work.
-You must be familiar with Git, somewhat in Emacs Lisp. In Windows, you need
+about the directory layout and used files. After that, clone Template
+files" mentioned below. The /Template files/ link points to README
+that explains the procedure step-by-step. In /Template files/
+repository see <code>*.shellrc</code> that provides shell functions
+which helps daily tasks with the packaging work. You must be familiar
+with Git, somewhat in Emacs Lisp. In Windows, you need
 <http://cygwin.com> and its command line Bash shell.
 
 * [http://www.nongnu.org/emacs-epackage/manual Manual]
