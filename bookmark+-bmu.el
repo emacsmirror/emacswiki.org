@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Tue May 28 21:04:06 2013 (-0700)
+;; Last-Updated: Sat Jun  8 08:55:51 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2457
+;;     Update #: 2465
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -1250,9 +1250,7 @@ Non-nil optional FULL means return the bookmark record, not the name."
   (condition-case nil
       (let ((name  (save-excursion (forward-line 0) (forward-char bmkp-bmenu-marks-width)
                                    (get-text-property (point) 'bmkp-bookmark-name))))
-        (if full
-            (get-text-property 0 'bmkp-full-record name)
-          name))
+        (if full (get-text-property 0 'bmkp-full-record name) name))
     (error nil)))
 
 
@@ -3527,9 +3525,8 @@ sort order is marked first or last (`s >'), then re-sort."
           (let ((curr-bmk  (bookmark-bmenu-bookmark)))
             (bookmark-bmenu-surreptitiously-rebuild-list 'NO-MSG-P)
             (when curr-bmk (bmkp-bmenu-goto-bookmark-named curr-bmk)))))
-      (when msg-p (if (= 1 count)
-                      (message "1 bookmark matched")
-                    (message "%d bookmarks matched" count))))))
+      (when msg-p
+        (if (= 1 count) (message "1 bookmark matched") (message "%d bookmarks matched" count))))))
 
 (defun bmkp-bmenu-mark/unmark-bookmarks-tagged-some/not-all (tags &optional notallp unmarkp
                                                              no-re-sort-p msg-p)
@@ -3645,9 +3642,7 @@ With a prefix arg, act on all bookmarks."
   "Show annotation for current bookmark in another window.  `C-u': Edit.
 With no prefix arg, show the annotation.  With a prefix arg, edit it."
   (interactive "P\np")
-  (if editp
-      (bookmark-bmenu-edit-annotation)
-    (bookmark-bmenu-show-annotation msg-p)))
+  (if editp (bookmark-bmenu-edit-annotation) (bookmark-bmenu-show-annotation msg-p)))
 
 ;;;###autoload (autoload 'bmkp-bmenu-jump-to-marked "bookmark+")
 (defun bmkp-bmenu-jump-to-marked ()
@@ -4081,9 +4076,7 @@ return the list."
       (dolist (bmk  new-list)
         (when (and (consp bmk)  (stringp (car bmk))) (setq bmk  (car bmk)))
         (when (stringp bmk) (set-text-properties 0 (length bmk) nil bmk)))
-      (if copy
-          (mapcar #'copy-sequence new-list)
-        new-list))))
+      (if copy (mapcar #'copy-sequence new-list) new-list))))
 
 (defun bmkp-maybe-unpropertize-string (string &optional copy)
   "Strip properties from STRING.
@@ -4773,9 +4766,7 @@ Non-nil optional ALLP means return all bookmarks: `bookmark-alist'."
   (if allp
       bookmark-alist
     (or (bmkp-marked-bookmarks-only)
-        (and (bookmark-bmenu-bookmark)
-             (list (bookmark-get-bookmark
-                    (bookmark-bmenu-bookmark)))))))
+        (and (bookmark-bmenu-bookmark)  (list (bookmark-get-bookmark (bookmark-bmenu-bookmark)))))))
  
 ;;(@* "Keymaps")
 ;;; Keymaps ----------------------------------------------------------
@@ -5514,8 +5505,7 @@ Non-nil optional ALLP means return all bookmarks: `bookmark-alist'."
                  (sit-for 0)
                  (let* ((map     (easy-menu-create-menu
                                   "This Bookmark"
-                                  `(,(if (bmkp-bookmark-name-member bmk-name
-                                                                    bmkp-bmenu-marked-bookmarks)
+                                  `(,(if (bmkp-bookmark-name-member bmk-name bmkp-bmenu-marked-bookmarks)
                                          ["Unmark" bookmark-bmenu-unmark]
                                          ["Mark" bookmark-bmenu-mark])
                                     ,(save-excursion
