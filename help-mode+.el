@@ -7,9 +7,9 @@
 ;; Copyright (C) 2004-2013, Drew Adams, all rights reserved.
 ;; Created: Sat Nov 06 15:14:12 2004
 ;; Version: 21.0
-;; Last-Updated: Fri Dec 28 13:17:48 2012 (-0800)
+;; Last-Updated: Sat Jun  8 12:53:28 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 141
+;;     Update #: 178
 ;; URL: http://www.emacswiki.org/help-mode+.el
 ;; Doc URL: http://emacswiki.org/HelpPlus
 ;; Keywords: help
@@ -95,17 +95,17 @@ Commands:
   (interactive)
   (kill-all-local-variables)
   (use-local-map help-mode-map)
-  (setq mode-name "Help")
-  (setq major-mode 'help-mode)
+  (setq mode-name   "Help"
+        major-mode  'help-mode)
   (view-mode)
   (make-local-variable 'view-no-disable-on-exit)
-  (setq view-no-disable-on-exit t)
-  (setq view-exit-action (lambda (buffer)
-                           (or (window-minibuffer-p (selected-window))
-                               (when (eq (window-buffer) (get-buffer "*Help*"))
-                                 (if (one-window-p t)
-                                     (delete-frame)
-                                   (delete-window))))))
+  (setq view-no-disable-on-exit  t
+        view-exit-action         (lambda (buffer)
+                                   (or (window-minibuffer-p (selected-window))
+                                       (when (eq (window-buffer) (get-buffer "*Help*"))
+                                         (if (one-window-p t)
+                                             (delete-frame)
+                                           (delete-window))))))
   (run-mode-hooks 'help-mode-hook))
 
 
@@ -134,16 +134,16 @@ A special reference `back' is made to return back through a stack of
 help buffers.  Variable `help-back-label' specifies the text for
 that."
   (interactive "b")
-  (with-current-buffer (or buffer (current-buffer))
+  (with-current-buffer (or buffer  (current-buffer))
     (save-excursion
       (goto-char (point-min))
       ;; Skip the header-type info, though it might be useful to parse
       ;; it at some stage (e.g. "function in `library'").
       (forward-paragraph)
-      (let ((old-modified (buffer-modified-p)))
-        (let ((stab (syntax-table))
-              (case-fold-search t)
-              (inhibit-read-only t))
+      (let ((old-modified  (buffer-modified-p)))
+        (let ((stab               (syntax-table))
+              (case-fold-search   t)
+              (inhibit-read-only  t))
           (set-syntax-table emacs-lisp-mode-syntax-table)
           ;; The following should probably be abstracted out.
           (unwind-protect
@@ -151,103 +151,97 @@ that."
                  ;; Info references
                  (save-excursion
                    (while (re-search-forward help-xref-info-regexp nil t)
-                     (let ((data (match-string 2)))
+                     (let ((data  (match-string 2)))
                        (save-match-data
                          (unless (string-match "^([^)]+)" data)
-                           (setq data (concat "(emacs)" data)))
+                           (setq data  (concat "(emacs)" data)))
                          (setq data ;; possible newlines if para filled
                                (replace-regexp-in-string "[ \t\n]+" " " data t t)))
                        (help-xref-button 2 'help-info data))))
                  ;; URLs
                  (save-excursion
                    (while (re-search-forward help-xref-url-regexp nil t)
-                     (let ((data (match-string 1)))
+                     (let ((data  (match-string 1)))
                        (help-xref-button 1 'help-url data))))
                  ;; Mule related keywords.  Do this before trying
                  ;; `help-xref-symbol-regexp' because some of Mule
                  ;; keywords have variable or function definitions.
-                 (if help-xref-mule-regexp
-                     (save-excursion
-                       (while (re-search-forward help-xref-mule-regexp nil t)
-                         (let* ((data (match-string 7))
-                                (sym (intern-soft data)))
-                           (cond
-                             ((match-string 3) ; coding system
-                              (and sym (coding-system-p sym)
-                                   (help-xref-button 6 'help-coding-system sym)))
-                             ((match-string 4) ; input method
-                              (and (assoc data input-method-alist)
-                                   (help-xref-button 7 'help-input-method data)))
-                             ((or (match-string 5) (match-string 6)) ; charset
-                              (and sym (charsetp sym)
-                                   (help-xref-button 7 'help-character-set sym)))
-                             ((assoc data input-method-alist)
-                              (help-xref-button 7 'help-character-set data))
-                             ((and sym (coding-system-p sym))
-                              (help-xref-button 7 'help-coding-system sym))
-                             ((and sym (charsetp sym))
-                              (help-xref-button 7 'help-character-set sym)))))))
+                 (when help-xref-mule-regexp
+                   (save-excursion
+                     (while (re-search-forward help-xref-mule-regexp nil t)
+                       (let* ((data  (match-string 7))
+                              (sym   (intern-soft data)))
+                         (cond ((match-string 3) ; coding system
+                                (and sym
+                                     (coding-system-p sym)
+                                     (help-xref-button 6 'help-coding-system sym)))
+                               ((match-string 4) ; input method
+                                (and (assoc data input-method-alist)
+                                     (help-xref-button 7 'help-input-method data)))
+                               ((or (match-string 5)  (match-string 6)) ; charset
+                                (and sym
+                                     (charsetp sym)
+                                     (help-xref-button 7 'help-character-set sym)))
+                               ((assoc data input-method-alist)
+                                (help-xref-button 7 'help-character-set data))
+                               ((and sym  (coding-system-p sym))
+                                (help-xref-button 7 'help-coding-system sym))
+                               ((and sym  (charsetp sym))
+                                (help-xref-button 7 'help-character-set sym)))))))
                  ;; Quoted symbols
                  (save-excursion
                    (while (re-search-forward help-xref-symbol-regexp nil t)
-                     (let* ((data (match-string 8))
-                            (sym (intern-soft data)))
+                     (let* ((data  (match-string 8))
+                            (sym   (intern-soft data)))
                        (when sym
-                         (cond
-                           ((or (and (or (boundp sym) ; var & fn
-                                         (get sym 'variable-documentation))
-                                     (fboundp sym))
-                                (and (fboundp sym) ; fn & face
-                                     (facep sym))
-                                (and (or (boundp sym) ; var & face
-                                         (get sym 'variable-documentation))
-                                     (facep sym)))
-                            ;; Var, function, or face -- doc all, if possible.
-                            (help-xref-button 8 'help-symbol sym))
-                           ((match-string 3) ; `variable' &c
-                            (and (or (boundp sym) ; `variable' doesn't ensure
+                         (cond ((or (and (or (boundp sym) ; var & fn
+                                             (get sym 'variable-documentation))
+                                         (fboundp sym))
+                                    (and (fboundp sym) ; fn & face
+                                         (facep sym))
+                                    (and (or (boundp sym) ; var & face
+                                             (get sym 'variable-documentation))
+                                         (facep sym)))
+                                ;; Var, function, or face -- doc all, if possible.
+                                (help-xref-button 8 'help-symbol sym))
+                               ((match-string 3) ; `variable' &c
+                                (and (or (boundp sym) ; `variable' doesn't ensure
                                         ; it's actually bound
-                                     (get sym 'variable-documentation))
-                                 (help-xref-button 8 'help-variable sym)))
-                           ((match-string 4)   ; `function' &c
-                            (and (fboundp sym) ; similarly
-                                 (help-xref-button 8 'help-function sym)))
-                           ((match-string 5) ; `face'
-                            (and (facep sym)
-                                 (help-xref-button 8 'help-face sym)))
-                           ((match-string 6)) ; nothing for `symbol'
-                           ((match-string 7)
-                            ;; this used:
-                            ;; #'(lambda (arg)
-                            ;;     (let ((location
-                            ;;            (find-function-noselect arg)))
-                            ;;       (pop-to-buffer (car location))
-                            ;; 	(goto-char (cdr location))))
-                            (help-xref-button 8 'help-function-def sym))
-                           ((and
-                             (facep sym)
-                             (save-match-data (looking-at "[ \t\n]+face\\W")))
-                            (help-xref-button 8 'help-face sym))
-                           ((and
-                             (or (boundp sym)
-                                 (get sym 'variable-documentation))
-                             (or
-                              (documentation-property
-                               sym 'variable-documentation)
-                              (if (or (> emacs-major-version 24)
-                                      (and (= emacs-major-version 24)
-                                           (> emacs-minor-version 2)))
-                                  (documentation-property
-                                   (indirect-variable sym)
-                                   'variable-documentation)
-                                (condition-case nil
-                                    (documentation-property
-                                     (indirect-variable sym)
-                                     'variable-documentation)
-                                  (cyclic-variable-indirection nil)))))
-                            (help-xref-button 8 'help-variable sym))
-                           ((fboundp sym)
-                            (help-xref-button 8 'help-function sym)))))))
+                                         (get sym 'variable-documentation))
+                                     (help-xref-button 8 'help-variable sym)))
+                               ((match-string 4) ; `function' &c
+                                (and (fboundp sym) ; similarly
+                                     (help-xref-button 8 'help-function sym)))
+                               ((match-string 5) ; `face'
+                                (and (facep sym)
+                                     (help-xref-button 8 'help-face sym)))
+                               ((match-string 6)) ; nothing for `symbol'
+                               ((match-string 7)
+                                ;; this used:
+                                ;; #'(lambda (arg)
+                                ;;     (let ((location  (find-function-noselect arg)))
+                                ;;       (pop-to-buffer (car location))
+                                ;; 	(goto-char (cdr location))))
+                                (help-xref-button 8 'help-function-def sym))
+                               ((and
+                                 (facep sym)
+                                 (save-match-data (looking-at "[ \t\n]+face\\W")))
+                                (help-xref-button 8 'help-face sym))
+                               ((and
+                                 (or (boundp sym)  (get sym 'variable-documentation))
+                                 (or (documentation-property sym 'variable-documentation)
+                                     (if (or (> emacs-major-version 24)
+                                             (and (= emacs-major-version 24)
+                                                  (> emacs-minor-version 2)))
+                                         (documentation-property (indirect-variable sym)
+                                                                 'variable-documentation)
+                                       (condition-case nil
+                                           (documentation-property (indirect-variable sym)
+                                                                   'variable-documentation)
+                                         (cyclic-variable-indirection nil)))))
+                                (help-xref-button 8 'help-variable sym))
+                               ((fboundp sym)
+                                (help-xref-button 8 'help-function sym)))))))
                  ;; An obvious case of a key substitution:
                  (save-excursion
                    (while (re-search-forward
@@ -256,9 +250,8 @@ that."
                            ;; Command required to end with word constituent
                            ;; to avoid `.' at end of a sentence.
                            "\\<M-x\\s-+\\(\\sw\\(\\sw\\|\\s_\\)*\\sw\\)" nil t)
-                     (let ((sym (intern-soft (match-string 1))))
-                       (if (fboundp sym)
-                           (help-xref-button 1 'help-function sym)))))
+                     (let ((sym  (intern-soft (match-string 1))))
+                       (when (fboundp sym) (help-xref-button 1 'help-function sym)))))
                  ;; Look for commands in whole keymap substitutions:
                  (save-excursion
                    ;; Make sure to find the first keymap.
@@ -271,26 +264,23 @@ that."
                    ;; line after it, this code won't recognize the end of it.
                    (while (re-search-forward "^key +binding\n\\(-+ +\\)-+\n\n"
                                              nil t)
-                     (let ((col (- (match-end 1) (match-beginning 1))))
-                       (while
-                           (and (not (eobp))
-                                ;; Stop at a pair of blank lines.
-                                (not (looking-at "\n\\s-*\n")))
+                     (let ((col  (- (match-end 1) (match-beginning 1))))
+                       (while (and (not (eobp))
+                                   ;; Stop at a pair of blank lines.
+                                   (not (looking-at "\n\\s-*\n")))
                          ;; Skip a single blank line.
-                         (and (eolp) (forward-line))
+                         (and (eolp)  (forward-line))
                          (end-of-line)
                          (skip-chars-backward "^ \t\n")
-                         (if (and (>= (current-column) col)
-                                  (looking-at "\\(\\sw\\|\\s_\\)+$"))
-                             (let ((sym (intern-soft (match-string 0))))
-                               (if (fboundp sym)
-                                   (help-xref-button 0 'help-function sym))))
+                         (when (and (>= (current-column) col)
+                                    (looking-at "\\(\\sw\\|\\s_\\)+$"))
+                           (let ((sym  (intern-soft (match-string 0))))
+                             (when (fboundp sym) (help-xref-button 0 'help-function sym))))
                          (forward-line))))))
             (set-syntax-table stab))
           ;; Delete extraneous newlines at the end of the docstring
           (goto-char (point-max))
-          (while (and (not (bobp)) (bolp))
-            (delete-char -1))
+          (while (and (not (bobp))  (bolp)) (delete-char -1))
           (insert "\n")
           (when (or help-xref-stack  (and (boundp 'help-xref-forward-stack)
                                           help-xref-forward-stack))
@@ -313,8 +303,7 @@ that."
           (set (make-local-variable 'minor-mode-overriding-map-alist)
                (list (cons 'view-mode help-xref-override-view-map))))
         (when (or (> emacs-major-version 24)
-                  (and (= emacs-major-version 24)
-                       (> emacs-minor-version 2)))
+                  (and (= emacs-major-version 24)  (> emacs-minor-version 2)))
           (set-buffer-modified-p old-modified))))))
 
 
@@ -327,7 +316,8 @@ that."
 ;;
 (defun help-xref-on-pp (from to)
   "Add xrefs for symbols in `pp's output between FROM and TO."
-  (if (> (- to from) 5000) nil
+  (if (> (- to from) 5000)
+      nil
     (with-syntax-table emacs-lisp-mode-syntax-table
       (save-excursion
         (save-restriction
@@ -336,21 +326,20 @@ that."
           (condition-case nil
               (while (not (eobp))
                 (cond
-                 ((looking-at "\"") (forward-sexp 1))
-                 ((looking-at "#<") (search-forward ">" nil 'move))
-                 ((looking-at "\\(\\(\\sw\\|\\s_\\)+\\)")
-                  (let* ((sym (intern-soft (match-string 1)))
-                         (type (cond ((fboundp sym) 'help-function)
-                                     ((or (memq sym '(t nil))
-                                          (keywordp sym))
-                                      nil)
-                                     ((and sym (boundp sym))
-                                      'help-variable)
-                                     ((and sym (locate-library (symbol-name sym)))
-                                      'help-library))))
-                    (when type (help-xref-button 1 type sym)))
-                  (goto-char (match-end 1)))
-                 (t (forward-char 1))))
+                  ((looking-at "\"") (forward-sexp 1))
+                  ((looking-at "#<") (search-forward ">" nil 'move))
+                  ((looking-at "\\(\\(\\sw\\|\\s_\\)+\\)")
+                   (let* ((sym   (intern-soft (match-string 1)))
+                          (type  (cond ((fboundp sym) 'help-function)
+                                       ((or (memq sym '(t nil))  (keywordp sym))
+                                        nil)
+                                       ((and sym  (boundp sym))
+                                        'help-variable)
+                                       ((and sym  (locate-library (symbol-name sym)))
+                                        'help-library))))
+                     (when type (help-xref-button 1 type sym)))
+                   (goto-char (match-end 1)))
+                  (t (forward-char 1))))
             (error nil)))))))
 
 (define-button-type 'help-library
@@ -361,14 +350,14 @@ that."
 ;; $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 ;; REPLACES ORIGINAL IN `help-mode.el'.
 ;; Provide a tooltip for whatever is under the mouse.
-;; This can't be done here - the message needs to be done via an idle timer, 
+;; This can't be done here - the message needs to be done via an idle timer,
 ;; whenever mouse is over any name. Perhaps combine with eldoc.
-;; 
+;;
 ;; ;;;###autoload
 ;; (defun help-follow-mouse (click)
 ;;   "Follow the cross-reference that you CLICK on."
 ;;   (interactive "e")
-;;   (let* ((start (event-start click))
+;;   (let* ((start  (event-start click))
 ;;       (window (car start))
 ;;       (pos (car (cdr start))))
 ;;     (with-current-buffer (window-buffer window)
