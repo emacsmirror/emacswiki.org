@@ -28,7 +28,7 @@ See highlight-symbol-mode for additional configuration and functions with this m
 
 == Isearch with symbol regex ==
 
-This emulates the Vim behaviour on the first keypress, but then puts you in an regex isearch, which makes for great integration with standard emacs functionality.
+This emulates the Vim behaviour on the first keypress, but then puts you in a regex incremental search, which nicely integrates with standard emacs search functionality.
 
  (defun isearch-yank-regexp (regexp)
     "Pull REGEXP into search regexp." 
