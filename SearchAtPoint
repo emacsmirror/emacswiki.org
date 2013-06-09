@@ -190,7 +190,7 @@ If so, you can simply use `isearch-yank-word-or-char' (called by `C-w' in `isear
 }}} 
 
 == Using backward-symbol instead of backward-word ==
-  One common issue when using the standard emacs commands is that you have to press M-b and C-w multiple times for symbols which contain multiple "words", for example foo-bar or fooBar. Using backward-symbol instead of backward-word uses M-b less.
+One common issue when using the standard emacs commands is that you have to press M-b and C-w multiple times for symbols which contain multiple "words", for example foo-bar or fooBar. Using backward-symbol instead of backward-word uses M-b less.
 
   (defun backward-symbol (arg)
   (interactive "p")
