@@ -217,8 +217,8 @@ containing the executable being debugged."
 				(if (string-match 
 					 (concat 
 					  "^[0-9a-zA-Z]*" ;; optional frame number
-					  " *[0-9a-zA-Z]+" ;; instruction pointer
-					  " [0-9a-zA-Z]+ " ;; return address
+					  " *[0-9a-zA-Z`]+" ;; instruction pointer
+					  " [0-9a-zA-Z`]+ " ;; return address
 					  ".+!.+\\"	;; module!function
 					  ;;"+0x[0-9a-zA-Z]+" ;; offset (optional, ab: removing)
 					  " \\[\\(.*\\) @ \\([0-9]+\\)\\]" ;; file @ line
