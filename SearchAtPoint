@@ -9,9 +9,8 @@ Here are some ways of implementing Vim's `*' and <code>‘#’</code> in Emacs.
 == Do it using ISearch ==
 C-s C-w, appends the rest of the word under the cursor to the search pattern. So using M-b to return to the beginning of word and C-s C-w emacs searches the next occurance of the word.
 
-== Do it using Evil ==
-The simplest way is to install [[Evil]] via the package manager and create keybinds. For example:
-
+== Do it using Evil Vim emulation package ==
+See[[Evil]] for installation instructions, then create keybinds. For example:
 
   (global-set-key (kbd "C-*") 'evil-search-symbol-forward)
   (global-set-key (kbd "C-x *") 'evil-search-symbol-backward)
@@ -19,7 +18,7 @@ The simplest way is to install [[Evil]] via the package manager and create keybi
 
 == Do it with HighlightSymbol ==
 
-This is a nifty way I found to extend HighlightSymbol to provide this functionality:
+Extend HighlightSymbol to provide this functionality:
 
 
   ;; highlight symbol at point and jump to next automatically
@@ -74,43 +73,65 @@ For example, you can hit `##M-. M-.##' to pick up the most immediatly surroundin
 See [[Icicles - Inserting Text from Cursor#RepeatedM.|Inserting Text from Cursor]].
 
 
-== Using tags and isearch ==
+== Extending isearch ==
 
+This emulates the Vim behaviour on the first keypress, but then puts you in an regex isearch, which makes for great integration with standard emacs functionality.
 
-  (require 'etags) ;; provides `find-tag-default' in Emacs 21.
-  
-  (defun isearch-yank-regexp (regexp)
+ (defun isearch-yank-regexp (regexp)
     "Pull REGEXP into search regexp." 
     (let ((isearch-regexp nil)) ;; Dynamic binding of global.
       (isearch-yank-string regexp))
     (isearch-search-and-update))
   
-  (defun isearch-yank-symbol (&optional partialp)
+  (defun isearch-yank-symbol (&optional partialp backward)
     "Put symbol at current point into search string.
-  
-  If PARTIALP is non-nil, find all partial matches."
+    
+    If PARTIALP is non-nil, find all partial matches."
     (interactive "P")
-    (let* ((sym (find-tag-default))
-	   ;; Use call of `re-search-forward' by `find-tag-default' to
-	   ;; retrieve the end point of the symbol.
-	   (sym-end (match-end 0))
-	   (sym-start (- sym-end (length sym))))
-      (if (null sym)
-	  (message "No symbol at point")
-	(goto-char sym-start)
-	;; For consistent behavior, restart Isearch from starting point
-	;; (or end point if using `isearch-backward') of symbol.
-	(isearch-search)
-	(if partialp
-	    (isearch-yank-string sym)
-	  (isearch-yank-regexp
-	   (concat "\\_<" (regexp-quote sym) "\\_>"))))))
+  
+    (let (from to bound sym)
+      (setq sym
+  ; this block taken directly from find-tag-default
+  ; we couldn't use the function because we need the internal from and to values
+            (when (or (progn
+                        ;; Look at text around `point'.
+                        (save-excursion
+                          (skip-syntax-backward "w_") (setq from (point)))
+                        (save-excursion
+                          (skip-syntax-forward "w_") (setq to (point)))
+                        (> to from))
+                      ;; Look between `line-beginning-position' and `point'.
+                      (save-excursion
+                        (and (setq bound (line-beginning-position))
+                             (skip-syntax-backward "^w_" bound)
+                             (> (setq to (point)) bound)
+                             (skip-syntax-backward "w_")
+                             (setq from (point))))
+                      ;; Look between `point' and `line-end-position'.
+                      (save-excursion
+                        (and (setq bound (line-end-position))
+                             (skip-syntax-forward "^w_" bound)
+                             (< (setq from (point)) bound)
+                             (skip-syntax-forward "w_")
+                             (setq to (point)))))
+              (buffer-substring-no-properties from to)))
+      (cond ((null sym)
+             (message "No symbol at point"))
+            ((null backward)
+             (goto-char (1+ from)))
+            (t
+             (goto-char (1- to))))
+      (isearch-search)
+      (if partialp
+          (isearch-yank-string sym)
+        (isearch-yank-regexp
+         (concat "\\_<" (regexp-quote sym) "\\_>")))))
   
   (defun isearch-current-symbol (&optional partialp)
     "Incremental search forward with symbol under point.
-  
-  Prefixed with \\[universal-argument] will find all partial
-  matches."
+    
+    Prefixed with \\[universal-argument] will find all partial
+    matches."
     (interactive "P")
     (let ((start (point)))
       (isearch-forward-regexp nil 1)
@@ -118,23 +139,20 @@ See [[Icicles - Inserting Text from Cursor#RepeatedM.|Inserting Text from Cursor
   
   (defun isearch-backward-current-symbol (&optional partialp)
     "Incremental search backward with symbol under point.
-  
-  Prefixed with \\[universal-argument] will find all partial
-  matches."
+    
+    Prefixed with \\[universal-argument] will find all partial
+    matches."
     (interactive "P")
     (let ((start (point)))
       (isearch-backward-regexp nil 1)
       (isearch-yank-symbol partialp)))
-  
-  (global-set-key [f3] 'isearch-current-symbol)
-  (global-set-key [(control f3)] 'isearch-backward-current-symbol)
   
   ;; Subsequent hitting of the keys will increment to the next
   ;; match--duplicating `C-s' and `C-r', respectively.
   (define-key isearch-mode-map [f3] 'isearch-repeat-forward)
   (define-key isearch-mode-map [(control f3)] 'isearch-repeat-backward)
 
-Thanks to JuriLinkov.  
+Thanks to JuriLinkov and Ian Kelling.  
 
 
 
