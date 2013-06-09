@@ -1,6 +1,6 @@
 Vim has the mighty `*' and <code>‘#’</code> keys that do an IncrementalSearch for the label under the TextCursor.
 
-The standard method in emacs can be cumbersome in comparison, or you could find it easily adaptable flexible. C-s C-w, appends the rest of the word under the cursor to the search pattern. So using M-b to return to the beginning of word and C-s C-w emacs searches the next occurance of the word.
+The standard method in emacs can be cumbersome in comparison. C-s C-w, appends the rest of the word under the cursor to the search pattern. So using M-b to return to the beginning of word and C-s C-w emacs searches the next occurrence of the word. 
 
 Here are some ways of implementing Vim's `*' and <code>‘#’</code> in Emacs. The methods are ordered from "most like Vim" to "least like Vim in order to gain other benefits."
 
@@ -107,9 +107,11 @@ This emulates the Vim behaviour on the first keypress, but then puts you in an r
 Thanks to JuriLinkov and Ian Kelling.  
 
 
+
+
 == Extending Isearch with isearch-yank-symbol ==
 
-A similar result more in the spirit of Emacs would just extend Isearch's facilities to yank items from the cursor position in the buffer.  For instance, Isearch has a binding for yanking s-expressions from the buffer.  However, an s-expression is a broader definition than the symbol of a common imperative programming language.  The yank needs to be only generic enough for identifiers ("symbols").  `C-M-w' is an obvious binding in Isearch for this "symbol yank".
+More in the spirit of Emacs is to have a keybind within Isearch to yank symbol's at the point.  For instance, Isearch has a binding for yanking s-expressions from the buffer.  However, an s-expression is a broader definition than the symbol of a common imperative programming language.  The yank needs to be only generic enough for identifiers ("symbols").  `C-M-w' is an obvious binding in Isearch for this "symbol yank".
 
   (require 'etags)
 
@@ -186,6 +188,15 @@ If so, you can simply use `isearch-yank-word-or-char' (called by `C-w' in `isear
 			      'my-isearch-yank-word-or-char-from-beginning
 			      isearch-mode-map)))
 }}} 
+
+== Using backward-symbol instead of backward-word ==
+  One common issue when using the standard emacs commands is that you have to press M-b and C-w multiple times for symbols which contain multiple "words", for example foo-bar or fooBar. Using backward-symbol instead of backward-word uses M-b less.
+
+  (defun backward-symbol (arg)
+  (interactive "p")
+  (forward-symbol (- arg)))
+  (global-set-key (kbd "M-b") 'backward-symbol)
+  (global-set-key (kbd "M-f") 'forward-symbol)
 
 
 == Using `M-.' in Icicles ==
