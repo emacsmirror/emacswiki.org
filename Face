@@ -66,11 +66,5 @@ Why do you say that the `defface' won't take effect? Did you try it? If you put 
 
 -- DrewAdams
 
-== Buffer Local Face ==
-
-[new]
-Is it possible to define a buffer local face. E.g. I have set hl-line-face so that it is hardly visible but there are some modes where I want it to be very visible. Thanks -- JonasBernoulli
-
-
 ----
 CategoryGlossary
