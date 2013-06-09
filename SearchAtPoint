@@ -1,79 +1,31 @@
 Vim has the mighty `*' and <code>‘#’</code> keys that do an IncrementalSearch for the label under the TextCursor.
 
-So let's say your cursor is in the middle of "anotherVeryLongIdentifier" (like after the first letter "I").
+The standard method in emacs can be cumbersome in comparison, or you could find it easily adaptable flexible. C-s C-w, appends the rest of the word under the cursor to the search pattern. So using M-b to return to the beginning of word and C-s C-w emacs searches the next occurance of the word.
 
-In Emacs using C++-Mode (See CPlusPlusMode) and using CamelCase you would need `M-b M-b M-b M-b C-s C-W C-W C-W C-W C-s' or slightly better <code>‘M-b M-b M-b M-b M-@ C-s M-y C-s’</code> instead of Vim's `*'.
+Here are some ways of implementing Vim's `*' and <code>‘#’</code> in Emacs. The methods are ordered from "most like Vim" to "least like Vim in order to gain other benefits."
 
-Here are some ways of implementing Vim's `*' and <code>‘#’</code> in Emacs.
 
-== Do it using ISearch ==
-C-s C-w, appends the rest of the word under the cursor to the search pattern. So using M-b to return to the beginning of word and C-s C-w emacs searches the next occurance of the word.
-
-== Do it using Evil Vim emulation package ==
-See[[Evil]] for installation instructions, then create keybinds. For example:
+== Evil Vim emulation package ==
+See [[Evil]] for installation instructions, then create keybinds. For example:
 
   (global-set-key (kbd "C-*") 'evil-search-symbol-forward)
   (global-set-key (kbd "C-x *") 'evil-search-symbol-backward)
 
 
-== Do it with HighlightSymbol ==
+== HighlightSymbol ==
 
-Extend HighlightSymbol to provide this functionality:
-
-
-  ;; highlight symbol at point and jump to next automatically
-  (load-library "highlight-symbol")
-
-  (defun hl-symbol-and-jump ()
-    (interactive)
-    (let ((symbol (highlight-symbol-get-symbol)))
-      (unless symbol (error "No symbol at point"))
-      (unless hi-lock-mode (hi-lock-mode 1))
-      (if (member symbol highlight-symbol-list)
-          (highlight-symbol-next)
-        (highlight-symbol-at-point)
-        (highlight-symbol-next))))
-  (defun hl-symbol-cleanup ()
-    (interactive)
-    (mapc 'hi-lock-unface-buffer highlight-symbol-list)
-    (setq highlight-symbol-list ()))
-
-  (global-set-key (kbd "C-x *") 'hl-symbol-and-jump)
-  (global-set-key (kbd "C-*") 'hl-symbol-cleanup)
-
-[new]
-This shouldn't be necessary.  Just set ''highlight-symbol-on-navigation-p'' and 
-
-  (global-set-key (kbd "C-x *") 'hl-symbol-next)
-  (global-set-key (kbd "C-*") 'hl-symbol-prev)
-
--- [[nschum]]
-
-[new]
-I guess this should be
-
-  (global-set-key (kbd "C-x *") 'highlight-symbol-next)
-  (global-set-key (kbd "C-*") 'highlight-symbol-prev)
-
--- RichardRiley
+Enable highlight-symbol-mode (usually done conditionally depending on major mode, as in this example), and set highlight-symbol-on-navigation-p.
 
 
+  (add-hook 'prog-mode-hook (lambda () (highlight-symbol-mode)))
+  (setq highlight-symbol-on-navigation-p t)
+  (global-set-key [f3] 'highlight-symbol-next)
+  (global-set-key [(shift f3)] 'highlight-symbol-prev)
+
+See highlight-symbol-mode for additional configuration and functions with this minor mode.
 
 
-
-
-== Using `M-.' in Icicles ==
-
-With [[Icicles]], anytime you are in the [[minibuffer]] you can use `##M-.##' to yank a text thing at point into the minibuffer.  In Isearch, `M-e' puts you in the minibuffer (to edit the search string), and `C-s' then searches with your edited text.  So to yank something at point into the Isearch search string you can use `##M-e M-. C-s##'.
-
-The behavior of `##M-.##' is customizable.  You can control the possible things to yank, and you can decide whether repeated `##M-.##' yanks successive words or yanks different types of thing as alternatives.  Use this feature with [[ThingAtPoint+]] to get better thing support.
-
-For example, you can hit `##M-. M-.##' to pick up the most immediatly surrounding list at point.  Or `##M-. M-. M-. M-.##' to pick up the list that encloses the list that encloses that list (3rd level up).  This is useful when searching for Lisp program parts.
-
-See [[Icicles - Inserting Text from Cursor#RepeatedM.|Inserting Text from Cursor]].
-
-
-== Extending isearch ==
+== Isearch with symbol regex ==
 
 This emulates the Vim behaviour on the first keypress, but then puts you in an regex isearch, which makes for great integration with standard emacs functionality.
 
@@ -153,7 +105,6 @@ This emulates the Vim behaviour on the first keypress, but then puts you in an r
   (define-key isearch-mode-map [(control f3)] 'isearch-repeat-backward)
 
 Thanks to JuriLinkov and Ian Kelling.  
-
 
 
 == Extending Isearch with isearch-yank-symbol ==
@@ -236,6 +187,16 @@ If so, you can simply use `isearch-yank-word-or-char' (called by `C-w' in `isear
 			      isearch-mode-map)))
 }}} 
 
+
+== Using `M-.' in Icicles ==
+
+With [[Icicles]], anytime you are in the [[minibuffer]] you can use `##M-.##' to yank a text thing at point into the minibuffer.  In Isearch, `M-e' puts you in the minibuffer (to edit the search string), and `C-s' then searches with your edited text.  So to yank something at point into the Isearch search string you can use `##M-e M-. C-s##'.
+
+The behavior of `##M-.##' is customizable.  You can control the possible things to yank, and you can decide whether repeated `##M-.##' yanks successive words or yanks different types of thing as alternatives.  Use this feature with [[ThingAtPoint+]] to get better thing support.
+
+For example, you can hit `##M-. M-.##' to pick up the most immediatly surrounding list at point.  Or `##M-. M-. M-. M-.##' to pick up the list that encloses the list that encloses that list (3rd level up).  This is useful when searching for Lisp program parts.
+
+See [[Icicles - Inserting Text from Cursor#RepeatedM.|Inserting Text from Cursor]].
 
 == Related: search for the current regexp as a whole symbol ==
 
