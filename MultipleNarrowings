@@ -10,6 +10,10 @@ Narrowing always narrows to the current [[region]], which can be anywhere and ha
 Library '''Wide-N''' solves this problem. It gives you the same fine-grained behavior for widening as for narrowing. In fact, the possible widening targets are the same restrictions that you created by previous narrowings (plus the whole buffer). Instead of only a single widening, you have '''''N''''' of them.
 
 
+
+
+
+[:RingOfNarrowings]
 == A Ring of Narrowings ==
 
 Library '''Wide-N''' advises `narrow-to-region', the basic narrowing command, so that each time you narrow a buffer interactively the buffer restriction is recorded in a buffer-local ring. You can return to any of these narrowings selectively at any time.
