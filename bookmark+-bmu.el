@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Sat Jun  8 08:55:51 2013 (-0700)
+;; Last-Updated: Sun Jun  9 20:31:02 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2465
+;;     Update #: 2486
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -415,8 +415,24 @@ Elements of ALIST that are not conses are ignored."
 (defvar dired-re-mark)                  ; In `dired.el'.
 (defvar tramp-file-name-regexp)         ; In `tramp.el'.
 
+(defvar bmkp-bmenu-highlight-menu)      ; Defined in this file (conditionally).
+(defvar bmkp-copied-tags)               ; In `bookmark+-1.el'.
+(defvar bmkp-count-multi-mods-as-one-flag) ; In `bookmark+-1.el'.
+(defvar bmkp-current-bookmark-file)     ; In `bookmark+-1.el'.
 (defvar bmkp-edit-bookmark-orig-record) ; In `bookmark+-1.el'.
+(defvar bmkp-incremental-filter-delay)  ; In `bookmark+-1.el'.
 (defvar bmkp-edit-bookmark-records-number) ; In `bookmark+-1.el'.
+(defvar bmkp-last-bookmark-file)        ; In `bookmark+-1.el'.
+(defvar bmkp-last-specific-buffer)      ; In `bookmark+-1.el'.
+(defvar bmkp-last-specific-file)        ; In `bookmark+-1.el'.
+(defvar bmkp-latest-bookmark-alist)     ; In `bookmark+-1.el'.
+(defvar bmkp-modified-bookmarks)        ; In `bookmark+-1.el'.
+(defvar bmkp-non-file-filename)         ; In `bookmark+-1.el'.
+(defvar bmkp-reverse-multi-sort-p)      ; In `bookmark+-1.el'.
+(defvar bmkp-reverse-sort-p)            ; In `bookmark+-1.el'.
+(defvar bmkp-sort-comparer)             ; In `bookmark+-1.el'.
+(defvar bmkp-sorted-alist)              ; In `bookmark+-1.el'.
+(defvar bmkp-su-or-sudo-regexp)         ; In `bookmark+-1.el'.
 (defvar bmkp-temporary-bookmarking-mode) ; In `bookmark+-1.el'.
 
  
@@ -4401,7 +4417,8 @@ For each number indication:
            (nb-*       (count-matches regexp-* (point-min) (point-max)))
            (text-sort  (propertize
                         (concat "sorting " (bmkp-sorting-description (bmkp-current-sort-order)))
-                        'face 'bmkp-heading)))
+                        'face 'bmkp-heading))
+           regexp)
       (let ((desc  "")
             nb)
         (dolist (mk  '(?> ?D ?t ?a ?X ?*))
