@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Jun  2 11:28:29 2013 (-0700)
+;; Last-Updated: Sun Jun  9 20:38:56 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 15320
+;;     Update #: 15323
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -916,6 +916,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2013/06/09 dadams
+;;     bmkp-bmenu-mode-line-string: Added missing let-binding for REGEXP.
+;;     Added vacuous defvars to suppress free-var warnings.
 ;; 2013/05/28 dadams
 ;;     Renamed: bmkp-bmenu-edit-bookmark-name-and-file to bmkp-bmenu-edit-bookmark-name-and-location.
 ;; 2013/05/28 dadams
@@ -1404,6 +1407,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-lit.el'")
 ;;
+;; 2013/06/09 dadams
+;;     Added vacuous defvars to suppress free-var warnings.
 ;; 2013/05/15 dadams
 ;;     Use bmkp-string-match-p instead of string-match wherever appropriate.
 ;; 2012/10/09 dadams
