@@ -223,10 +223,10 @@ both the concept (distributed) and the use of tools (version control).
 
 == How to make an epacakge ==
 
-How does it all work? Let's say, we've found `example.el' which
-contains normal set of fucntions. All the proper comment headers,
-licensing information, provide calls etc. have been omitted for
-brevity:
+How does it all work? Let's say, we've found <code>example.el</code>
+which contains normal set of fucntions. All the proper comment
+headers, licensing information, provide calls etc. have been omitted
+for brevity:
 
 {{{
     ;; example.el -- Major mode for editing example files
