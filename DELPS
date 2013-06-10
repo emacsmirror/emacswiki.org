@@ -275,7 +275,7 @@ development files. The steps are:
     # Start packaging
     cd ~my/elisp/package/example/
 
-    # Inject utility into Git branch "upstream"
+    # Inject extension into Git branch "upstream"
     Egit
 
     # Tag this realease
@@ -292,12 +292,12 @@ development files. The steps are:
 }}}
 
 That was it in a nutshell. What's left to do is to check the generated
-files, adjust or delete as needed. E.g. we don't need for this simple
-utility files like *-compile, *-examples, *-uninstall and we can just
-delete them. We need to fill in the important /info/ file that defines
-details of the package. We commit chnaged, make this epackage
-available from our public space or share it through Github and annouce
-it in epackage yellow pages; amongst other packages.
+files, adjust or delete them as needed. E.g. we don't need for this
+simple extension files like *-compile, *-examples, *-uninstall and we
+can simply delete them. We have to fill in the important /info/ file
+that defines details of the package. After all chnages, we commit to
+Git, make this new epackage available (push to Github) and annouce its
+availability in epackage yellow pages; amongst other packages.
 
 The directory structure is as follows. For a complete example with all
 the details, see heading /For Package Developers/.
