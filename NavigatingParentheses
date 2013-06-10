@@ -20,17 +20,17 @@ current mode. Here is how to move from a balanced expression to another:
 
 Here are a number of shortcuts for dealing with sexp:
 
-  C-M-n     Move forward over a parenthetical group 
+  C-M-n     forward-list  Move forward over a parenthetical group 
 
-  C-M-p     Move backward over a parenthetical group 
+  C-M-p     backward-list  Move backward over a parenthetical group 
 
-  C-M-f     Move forward over a balanced expression
+  C-M-f     forward-sexp Move forward over a balanced expression
 
-  C-M-b     Move backward over a balanced expression
+  C-M-b     backward-sexp  Move backward over a balanced expression
 
-  C-M-k     Kill balanced expression forward
+  C-M-k     kill-sexp  Kill balanced expression forward
 
-  C-M-SPC   put the mark at the end of the sexp.
+  C-M-SPC   mark-sexp  Put the mark at the end of the sexp.
 
 Here is a short example; let us consider the following sexp in text mode:
 
