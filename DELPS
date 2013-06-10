@@ -221,6 +221,99 @@ both the concept (distributed) and the use of tools (version control).
 * ...other than that, sharing and distributing packages has never been this
   easy.
 
+== How to make an epacakge ==
+
+How does it all work? Let's say, we've found `example.el' which
+contains normal set of fucntions. All the proper comment headers,
+licensing information, provide calls etc. have been omitted for
+brevity:
+
+{{{
+    ;; example.el -- Major mode for editing example files
+
+    ;;;###autoload
+    (defun example-mode ()
+      (message "example-mode in use"))
+
+    ;;; example.el end here
+}}}
+
+To prepare this single Emacs Lisp file into epackage, we drop into
+shell. We have already two development directories cloned which
+provide e.g. shell utilities. See heading /For Package Developers/ for
+development files. The steps are:
+
+{{{
+    # This example is for the Bash shell
+    # Prepare and use utilities from 2 cloned Git repositories
+
+    export EPACKAGE_ROOT=~/git/project--emacs-epackage
+    . ~/git/project--emacs-epackage-template/epackage.shellrc
+
+    # See short help; what commands you can use
+    Ehelp
+
+	Provides following user commands. The rest are just internal
+	helpers. Use --help for each command for more detailed information.
+
+	    Egit [URL]                 Import current src, from URL, or
+				       emacswiki:FILE.el
+
+	    Ever [file.el ...]         Display version and deps information
+				       from all, or given files
+
+	    Edir <PACKAGE NAME> FILE   From FILE determine and create epackage/
+				       template files
+
+	    Edef [dir]                 Update loaddefs in epackage/ directory
+	    Elint file.el ...          Lint files to find QA violations
+	    Ecomp file.el ...          Byte compile Emacs Lisp files (QA check)
+	    Eclone GITURL              Clone an existing epackage and set up
+				       branches (dev only)
+
+    # Start packaging
+    cd ~my/elisp/package/example/
+
+    # Inject utility into Git branch "upstream"
+    Egit
+
+    # Tag this realease
+    git tar upstream/YYYY-MM-DD
+
+    # Change to standard branch which will hold the "epacakage"
+    git branch master upstream
+
+    # Install templates and epackage/ directory structure
+    Edir example-mode
+
+    # Fill in package details
+    $EDITOR epacakge/info
+}}}
+
+That was it in a nutshell. What's left to do is to check the generated
+files, adjust or delete as needed. E.g. we don't need for this simple
+utility files like *-compile, *-examples, *-uninstall and we can just
+delete them. We need to fill in the important /info/ file that defines
+details of the package. We commit chnaged, make this epackage
+available from our public space or share it through Github and annouce
+it in epackage yellow pages; amongst other packages.
+
+The directory structure is as follows. For a complete example with all
+the details, see heading /For Package Developers/.
+
+{{{
+    example.el
+    |
+    +- epacakge/
+       example-epackage-0loaddefs.el
+       example-epackage-autoloads.el
+       example-epackage-compile.el
+       example-epackage-examples.el
+       example-epackage-install.el
+       example-epackage-uninstall.el
+       info
+}}}
+
 == Contact ==
 
 Please send comments, suggestion, ideas, bug reports to me directly
