@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sat Jun  8 08:49:13 2013 (-0700)
+;; Last-Updated: Mon Jun 10 13:36:00 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6367
+;;     Update #: 6372
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -663,6 +663,7 @@
 (defvar dired-guess-shell-case-fold-search) ; Defined in `dired-x.el'.
 (defvar dired-subdir-alist)             ; Defined in `dired.el'.
 (defvar gnus-article-current)           ; Defined in `gnus-sum.el'.
+(defvar icicle-mode)                    ; Defined in `icicle-mode.el'.
 (defvar Info-current-node)              ; Defined in `info.el'.
 (defvar Info-current-file)              ; Defined in `info.el'.
 (defvar Man-arguments)                  ; Defined in `man.el'.
@@ -7990,7 +7991,7 @@ MSGP non-nil means possibly interact with the user, showing messages."
             ((bmkp-sequence-bookmark-p bname) ; Sequence bookmark.
              (setq bnames (append (reverse (bookmark-prop-get bname 'sequence)) bnames)))
             ((stringp bname) (push bname bnames)) ; Bookmark name.
-            ((bookmark-get-bookmarkp bname 'NOERROR) ; Full bookmark.
+            ((bookmark-get-bookmark bname 'NOERROR) ; Full bookmark.
              (push (bmkp-bookmark-name-from-record bname) bnames))
             (t (error "Bad BOOKMARK-NAMES arg to `bmkp-set-sequence-bookmark': `%S'"
                       bookmark-names)))) ; Punt.
