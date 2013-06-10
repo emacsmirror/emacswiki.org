@@ -41,7 +41,7 @@
 || bbdb-pop-up-display-layout |||| bbdb-pop-up-layout ||
 || bbdb-pop-up-target-lines |||| bbdb-pop-up-window-size ||
 || bbdb-print-file-name |||| bbdb-print-file ||
-|| bbdb-quiet-about-name-mismatches |||| bbdb-accept-name-mismatch ||
+|| bbdb-quiet-about-name-mismatches |||| bbdb-add-name ||
 || bbdb-record-addresses |||| bbdb-record-address ||
 || bbdb-record-phones |||| bbdb-record-phone ||
 || bbdb-record-putprop |||| bbdb-record-set-field ||
