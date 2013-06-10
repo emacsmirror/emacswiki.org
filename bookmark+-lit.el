@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2010-2013, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 23 07:49:32 2010 (-0700)
-;; Last-Updated: Sat Jun  8 09:00:21 2013 (-0700)
+;; Last-Updated: Sun Jun  9 20:35:11 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 855
+;;     Update #: 861
 ;; URL: http://www.emacswiki.org/bookmark+-lit.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, highlighting, bookmark+
@@ -223,9 +223,15 @@
 ;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Quiet the byte-compiler
-(defvar bmkp-light-left-fringe-bitmap) ; Defined in this file for Emacs 22+.
+;;
+(defvar bmkp-autoname-format)           ; In `bookmark+-1.el'.
+(defvar bmkp-current-nav-bookmark)      ; In `bookmark+-1.el'.
+(defvar bmkp-latest-bookmark-alist)     ; In `bookmark+-1.el'.
+(defvar bmkp-light-left-fringe-bitmap)  ; Defined in this file for Emacs 22+.
 (defvar bmkp-light-right-fringe-bitmap) ; Defined in this file for Emacs 22+.
-(defvar fringe-bitmaps)              ; Built-in for Emacs 22+.
+(defvar bmkp-nav-alist)                 ; In `bookmark+-1.el'.
+(defvar bmkp-this-file/buffer-cycle-sort-comparer) ; In `bookmark+-1.el'.
+(defvar fringe-bitmaps)                 ; Built-in for Emacs 22+.
 
  
 ;;(@* "Faces (Customizable)")
