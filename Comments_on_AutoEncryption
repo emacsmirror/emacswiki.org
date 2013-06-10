@@ -13,3 +13,16 @@ Thanks a lot,   Armando
 
 -- armando.fella 2013-06-05 16:33 UTC
 
+
+----
+
+The solution for emacs-24.2-18 is to add the following line in init.el:
+
+(auto-encryption-mode 1)
+
+Thanks to help-gnu-emacs@gnu.org
+
+Cheers,  Armando
+
+-- armando.fella 2013-06-10 08:41 UTC
+
