@@ -45,6 +45,7 @@ For those of us using earlier versions, use the PictureModeTrailingWhitespaceTri
 * [http://www.emacswiki.org/emacs/thesaurus.el Use an online thesaurus] to replace the word at point with a synonym of your choosing. 
 
 * A few months ago, I finally wrote code to do incremental numbering of columns.  My life is better for it: http://www.antisleep.com/download/elisp/gse-number-rect.el -- ScottEvans
+** There's also rectangle-number-lines bound to <code>c-x r N</code>.
 * Use MarkCommands to remember and go back and forth between locations in buffers or across buffers.
 ** [[register]] is also a good feature. -- XueFuqiao
 * Use BreadcrumbForEmacs to set a series of breadcrumb bookmarks in the buffers, and jump back to them quickly.  Visiting the bookmarks in the other window is a quick way to browse all the bookmarked locations.
