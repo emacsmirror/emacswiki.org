@@ -224,9 +224,9 @@ both the concept (distributed) and the use of tools (version control).
 == How to make an epacakge ==
 
 How does it all work? Let's say, we've found <code>example.el</code>
-which contains normal set of fucntions. All the proper comment
-headers, licensing information, provide calls etc. have been omitted
-for brevity:
+which seem quite useful. Note that in this example all the proper
+comment headers, licensing information, provide calls etc. have been
+omitted for brevity:
 
 {{{
     ;; example.el -- Major mode for editing example files
@@ -239,7 +239,7 @@ for brevity:
     ;;; example.el end here
 }}}
 
-To prepare this single Emacs Lisp file into epackage, we drop into
+To prepare the Emacs Lisp extension into epackage format, we drop into
 shell. We have already two development directories cloned which
 provide e.g. shell utilities. See heading /For Package Developers/ for
 development files. The steps are:
