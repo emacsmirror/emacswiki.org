@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Wed Aug  2 11:20:41 1995
 ;; Version: 21.1
-;; Last-Updated: Fri Dec 28 10:13:14 2012 (-0800)
+;; Last-Updated: Mon Jun 10 11:21:53 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 3076
+;;     Update #: 3080
 ;; URL: http://www.emacswiki.org/misc-cmds.el
 ;; Keywords: internal, unix, extensions, maint, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -80,6 +80,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/06/10 dadams
+;;     kill-buffer-and-its-windows: wrap delete-window with condition-case.
 ;; 2012/12/24 dadams
 ;;     Added: beginning-of-visual-line+, end-of-visual-line+.
 ;; 2012/11/10 dadams
@@ -385,7 +387,7 @@ This is similar to `end-of-visual-line', but:
      the end of the (N-1)th next line."
     (interactive
      (list (if current-prefix-arg (prefix-numeric-value current-prefix-arg) 0)))
-    (unless n (setq n 0))               ; non-interactive with no arg 
+    (unless n (setq n 0))               ; non-interactive with no arg
     (let ((line-move-visual  t))
       (if (and (eq this-command last-command)  (not current-prefix-arg))
           (line-move 1 t)
@@ -1141,7 +1143,10 @@ BUFFER may be either a buffer or its name (a string)."
           (1on1-flash-ding-minibuffer-frame t)) ; Defined in `oneonone.el'.
         (when (kill-buffer buffer)      ; Only delete windows if buffer killed.
           (dolist (win  wins)           ; (User might keep buffer if modified.)
-            (when (window-live-p win) (delete-window win)))))
+            (when (window-live-p win)
+              ;; Ignore error, in particular,
+              ;; "Attempt to delete the sole visible or iconified frame".
+              (condition-case nil (delete-window win) (error nil))))))
     (when (interactive-p)
       (error "Cannot kill buffer.  Not a live buffer: `%s'" buffer))))
 
