@@ -28,5 +28,18 @@ Now git-mergetool should start emacs using emacs -Q. I still don't know how to u
     
     But I have not tried integrating this with git yet.
 
+* Experiment 
+Try this for emacsclient
+
+    emacsclient -c --eval "(emerge-files \"$3\" \"$4\")" 
+
+Or if you prefer "emerge"
+
+    emacsclient -c  --eval "(emerge-files nil \"$3\" \"$4\" \"${4}.out\")"
+
+Since the "emacs -Q $*" version will actually be expand to 
+
+    emacs -Q -f emerge-files-command /tmp/fileA fileB
+
 ----
 CategoryExternalUtilities CategoryProgrammerUtils CategoryComparing
