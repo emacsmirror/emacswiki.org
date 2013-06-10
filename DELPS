@@ -232,7 +232,8 @@ for brevity:
     ;; example.el -- Major mode for editing example files
 
     ;;;###autoload
-    (defun example-mode ()
+    (defun example-mode (&optional mdoe)
+      (interactive "P")
       (message "example-mode in use"))
 
     ;;; example.el end here
