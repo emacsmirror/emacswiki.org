@@ -15,6 +15,7 @@ Welcome to the wiki. -- DrewAdams
 [new:MichaelPaulukonis:2013-05-13 13:28 UTC]
 Thanks, Drew -- 'cept I've been here for years. Just renamed the page from my "handle" to my "real name." -- MichaelPaulukonis
 
+----
 
 [:todo]
 == TODOs ==
@@ -34,15 +35,27 @@ Thanks, Drew -- 'cept I've been here for years. Just renamed the page from my "h
 * do git from w/in Emacs?
 ** get list of pages, incl. GitCommitMode
 * look at EmacsScreencasts
+* re-org my init-file(s)
+** https://github.com/ghoseb/dotemacs and https://github.com/overtone/emacs-live
+** http://dl.dropboxusercontent.com/u/3968124/sacha-emacs.html
+* figure out the difference between a "TODO" and a "Project"
 
 == Projects ==
-* OrgMode
-** learning and using....
+=== OrgMode ===
+* learning and using....
+* reading:
+** http://swaroopch.com/2013/01/16/orgmode/
+* writing
+** http://www.xradiograph.com/Emacs/OrgMode
+** http://www.xradiograph.com/Emacs/Journal
 
+
+=== pmwiki-mode ===
 * hoping to work on pmwiki-mode
-** started up an org/repo @ https://github.com/emacs-pmwiki-mode
-** need to start an Emacswiki page for it....
+* started up an org/repo @ https://github.com/emacs-pmwiki-mode
+* need to start an Emacswiki page for it....
 
+=== journal ===
 * [[Journal]] - I use a modified version of this. 
 ** created a repo @ https://github.com/MichaelPaulukonis/fisler-journal.el
 *** contains original code as found @ [[Journal]] and my modifications
@@ -50,6 +63,7 @@ Thanks, Drew -- 'cept I've been here for years. Just renamed the page from my "h
 ** I'm migrating over to use org-mode, but I used [[Journal]] for about 6 years; I have a lot of fondness for it
 ** and it's influenced how I ''want'' to work with org-mode (which may not be how I ''should'' work with org-mode)
 
+=== emacs-wiki work ===
 * working on documentation withing CategoryJavaScript
 
 
@@ -76,9 +90,7 @@ For example: <code>MichaelPaulukonis</code> and <code>[MichaelPaulukonis]</code>
 
 [new:MichaelPaulukonis :2013-06-11 13:56 UTC]
 
-Can't find any notes on this, yet.
-
-(This was blatantly stolen from [[NicFerrier]] and modified with markup and notes)
+Can't find any notes on this, yet, other than what I blatantly stole from [[NicFerrier]].
 
 
 == Packages/pages/things I like ==
