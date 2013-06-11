@@ -1,35 +1,55 @@
 == About Me ==
+<code>
+(minibuffer-message "Welcome to my homepage! ;-)")
+</code>
+I use Emacs.
 
-Welcome to my homepage!
-
-I use Emacs.  My name is Xue Fuqiao.  I am known as [::xfq] on Freenode.  I was born in
-Xinjiang, China.  Feel free to ask anything about
-Emacs :)
+My name is Xue Fuqiao.  English is not my native language; please
+excuse typing errors.  I'm a GNU/Linux user.  I prefer to learn new
+things from reference manuals, instead of tutorials.  Currently I use
+Emacs on an old laptop with a DvorakKeyboard.  My favorite font is
+[http://www.proggyfonts.com ProggyTiny].
 
 Many thanks to the people who contributed or are contributing to
-emacsen and EmacsWiki.  My daily life becomes very interesting.
+emacsen and EmacsWiki.  My daily life becomes very interesting.  I use
+Emacs for everything, even when editing text files.
+
+I was born and raised in Xinjiang, China, and I'm currently a student
+of [http://www.ncut.edu.cn NCUT].  My major is Communication
+Engineering.  Feel free to ask anything about Emacs :)
 
 You can contact me using (please send plain text mail, not HTML):
 <code>
-(concat "xfq" "." "free" "@" "gmail.com")
+(concat "mailto:" (list 120 102 113) [46] (mapconcat (cl-function (lambda (x) (format "%c" (1- x)))) "gsff" "") "@" "gmail" "." "com")
 </code>
 
-== Some Sentences I Like ==
-* There is no system but GNU, and Linux is one of its kernels.
-
-* I could have made money this way, and perhaps amused myself writing code. But I knew that at the end of my career, I would look back on years of building walls to divide people, and feel I had spent my life making the world a worse place.
-
-* It is a logical impossibility to make a language more powerful by omitting features, no matter how bad they may be.  -- [[WikiPedia:John_Hughes_(computer_scientist)|John Hughes]]
+== My Emacs Screenshot ==
+[[image:XFQScreenShotPage]]
 
 == Wish List==
+* Implement a version control system in EmacsLisp.
+* Extended text-properties (to make overlays obsolete) in Emacs.
+* Make emacsclient work across all network connections.
 * Implement a search engine in EmacsLisp.
-* Implement an FTP server in EmacsLisp.
+* Make a keyboard layout for Emacs.
+* Implement a mailing list manager in EmacsLisp.
+* Port XWindowEmacsManager to Emacs.
+* Implement a DHCP client in EmacsLisp.
+* Make GNU Emacs support both [[Guile]] and EmacsLisp.
+* Implement a FTP server in EmacsLisp.
+* Completion of labels in Rmail.
+* Implement a spell checker in EmacsLisp.
+* Add a command line argument named ##--slim##, it can invoke Emacs with only the bare-minimum EmacsLisp libraries needed for quick editing.
+* FFI support in Emacs.
+* Make all Unix and Unix-like systems come with Emacs built-in.
+* Implement a multi-protocol download utility in Emacs Lisp.
+* Make EmacsLisp simpler and cleaner.
 * Implement a URL Shortener in EmacsLisp.
-* Make Emacs/W3 be able to deal with HTML5.
 * Implement a DOM binding for EmacsLisp.
-* Make Emacs/W3 be able to parse XSL.
 * Make Emacs support more image formats.
+* Implement multithreaded features in Emacs.
 * Make the face code to be simpler, clearer and faster.
+* Make an OpenPGP implementation in EmacsLisp.
 * Implement a EmacsLisp library that generates XPMs dynamically.
 
 = Comments =
