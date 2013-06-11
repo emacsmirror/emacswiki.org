@@ -35,6 +35,8 @@ If you do not have an external notification program, figure out which way you wi
 
 The other customization options are for setting up when a ToDoChiKu notification should fire (after compilation, when appt-message is displayed, etc.) 
 
+If two (or more) appointments happen start at the same time then todochiku-appt-disp-window lead to the following error: "Argtype error in `appt-disp-window-function' - update it for multiple appts?"
+
 == Using ToDoChiKu In Your Own Programs ==
 
 Until ToDoChiKu gets a little more widely used, I don't think it is entirely apropos to require it as part of another package.  It is probably far more useful to instead use featurep to see if todochiku is available, and if so, then notify:
