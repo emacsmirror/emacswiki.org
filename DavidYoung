@@ -272,6 +272,47 @@ It is very ugly that the shell buffer will keep exist even user has already been
 
 I chose to use 'set-process-sentinel' function instead of monitor user commands. 'set-process-sentinel' is provided by shell mode itself. So it makes things simpler.
 
+=== shell-args ===
+
+It makes you be able to refer to some messages from the ouput of your previous command. It is quite similar with what you do with history(!), but refer to the outputs instead of commands
+
+{{{
+
+   ;; suppose you have in this situation in shell-mode, 
+   
+   2 + 21:51:40 + ~/Shell/branch_dev
+   ➜   svn status | egrep '^[^?]'
+   svn status | egrep '^[^?]'
+   M       setup_env_tivx09/Windows/win-bashrc
+   M       testware/easyBroker.win.pl
+   
+   3 + 21:51:44 + ~/Shell/branch_dev
+   ➜   
+
+   ;; how could you get a command like this without any redundent operation?
+   3 + 21:51:44 + ~/Shell/branch_dev
+   ➜   svn diff testware/easyBroker.win.pl
+
+   ;; See, you can type this command and then M-x shell-args
+   3 + 21:51:44 + ~/Shell/branch_dev
+   ➜   svn diff #1:2
+
+   ;; Then it turns out
+   3 + 21:51:44 + ~/Shell/branch_dev
+   ➜   svn diff testware/easyBroker.win.pl
+
+   ;; Kind of cool? You can also do replacement, just like in a !
+   3 + 21:51:44 + ~/Shell/branch_dev
+   ➜   svn diff #1:2:s/win/linux/
+
+   ;; Then you can get this
+   3 + 21:51:44 + ~/Shell/branch_dev
+   ➜   svn diff testware/easyBroker.linux.pl
+
+   ;; Cool!
+
+}}}
+
 == Org-mode related functions ==
 
 === isrc ===
