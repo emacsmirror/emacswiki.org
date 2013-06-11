@@ -21,31 +21,7 @@ I am the author and maintainer of [[Elnode]], the Emacs Async Webserver; more in
 
 I hang out on [[EmacsChannel|#emacs]] a lot, I'm listed [[EmacsChannelPeople|here]] and [[EmacsChannelDemographics|here]].  I wish that both of those references could be auto-generated.
 
-== Recent Emacs related blog posts ==
-
-* [http://skillsmatter.com/podcast/home/this-year-in-emacs/te-6689|Nic talking about the year in Emacs at Skillsmatter]
-
-* [http://nic.ferrier.me.uk/blog/2013_01/bad-marmalade|Problems with Marmalade]
-
-* [http://nic.ferrier.me.uk/blog/2013_01/year-in-emacs|The next year's Emacs work]
-
-* [http://nic.ferrier.me.uk/blog/2012_07/tips-and-tricks-for-emacslisp|EmacsLisp tips and tricks]
-
-* [http://nic.ferrier.me.uk/blog/2012_07/emacs-packages-for-programmers|tips and tricks for EmacsLisp developers on using packages]  
-
-* [http://nic.ferrier.me.uk/blog/2011_10/emacs_lisp_is_good_further_reports_suggest about using lexical scope to code sentinels better, with an example macro]
-
-* [http://nic.ferrier.me.uk/blog/2011_09/elisp_testing ERT has been included in trunk so now EmacsLisp TDD is possible]
-
-* [http://nic.ferrier.me.uk/blog/2010_10/elnode about Elnode, the EmacsLisp asycnc HTTP server]
-
-== My CSS for the EmacsWiki ==
-
-My CSS is [[http://www.emacswiki.org/emacs/NicFerrierCss|here]].
-
-The GitHub is [[https://github.com/nicferrier/nics-emacswiki-css|here]]
-
-Use it by clicking here [[http://www.emacswiki.org/cgi-bin/wiki?action=browse;id=NicFerrier;css=http://www.emacswiki.org/emacs/download/NicFerrierCss|here]]
+Check out my [[http://nic.ferrier.me.uk#emacslisp|blog]] which has lots of stuff about Emacs.
 
 == Building Emacs from source ==
 
