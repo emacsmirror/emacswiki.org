@@ -35,7 +35,7 @@ If you do not have an external notification program, figure out which way you wi
 
 The other customization options are for setting up when a ToDoChiKu notification should fire (after compilation, when appt-message is displayed, etc.) 
 
-If two (or more) appointments happen start at the same time then todochiku-appt-disp-window lead to the following error: "Argtype error in `appt-disp-window-function' - update it for multiple appts?"
+If two (or more) appointments happen to start at the same time then todochiku-appt-disp-window lead to the following error: "Argtype error in `appt-disp-window-function' - update it for multiple appts?"
 
 == Using ToDoChiKu In Your Own Programs ==
 
