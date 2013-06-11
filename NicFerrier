@@ -23,8 +23,31 @@ I hang out on [[EmacsChannel|#emacs]] a lot, I'm listed [[EmacsChannelPeople|her
 
 Check out my [[http://nic.ferrier.me.uk#emacslisp|blog]] which has lots of stuff about Emacs.
 
-== Building Emacs from source ==
+== Things I do with Emacs that are interesting ==
 
+=== Use Emacs for Google Talk ===
+I started talking to people who use Google Talk so I started to use JabberEl and GoogleTalk - it's a breeze actually.
+
+=== Use an IRC Bouncer in EmacsLisp ===
+I wrote ShoesOff because an IRC bouncer in EmacsLisp was obvious. I use it a lot.
+
+I run a laptop at home with ShoesOff running all the time. 
+
+I have a NAT forwarded port on my home router to the bouncer port on the laptop so I can connect to ShoesOff even when I am not at home. 
+
+My home connection is reliable enough that this is rarely a problem. 
+
+=== Frame size ===
+Changing font size is a pain so I wrote [[FrameSize]], it's now a major part of my workflow.
+
+=== Read my Email under Emacs ===
+I've read my Email in Emacs since 1999 and I have always used my own email client which has changed over time as email has changed.
+
+Right now I use an IMAP free solution but am considering switching to an IMAP fetch solution.
+
+My current MUA is [[http://github.com/nicferrier/emacs-maildir|Emacs Maildir]]
+
+=== Building Emacs from source ==
 I mostly always build Emacs from source (though I think the emacs-snapshot packages are great) so I use this [[EmacsSnapshotAndDebian|page]] to track what I need to do.
 
 I keep a [[https://github.com/nicferrier/emacs|git mirror]] of the Emacs sources irregularly up to date.
@@ -48,7 +71,6 @@ Other stuff I am considering:
 * dynamic OrgAgenda export
 * browser integration tools, for example an Emacs password store
 
-
 == Creole ==
 
 [[Creole]] is a Wiki markup language very like the one used here on [[Oddmuse|EmacsWiki]]. 
@@ -56,20 +78,6 @@ Other stuff I am considering:
 I develop and maintain the EmacsLisp version of a [[Creole]] [[http://github.com/nicferrier/elwikicreole|parser and HTML exporter]].
 
 We are using [[Creole]] to develop [[Elwiki]], an EmacsWiki engine in EmacsLisp run with [[Elnode]].
-
-
-== Frame size ==
-
-Changing font size is a pain so I wrote [[FrameSize]].
-
-
-== Email under Emacs ==
-
-I've never liked gnus. But I do like Emacs as a mail platform so I've always maintained my own mail code.
-
-Back in the 90s I wrote an [[imapua|Emacs IMAP user agent based on the GNUs IMAP library]]. It worked ok but I found that IMAP doesn't scale to big inboxes.
-
-I've worked on a succession of different email clients since then, the current incarnation being [http://github.com/nicferrier/emacs-maildir|Emacs Maildir]. It's fast, it's simple, it's easy.
 
 == Emacs Daemon RC ==
 
@@ -168,24 +176,6 @@ You need to hash the email to generate the url though, here's how in EmacsLisp:
 (print (md5 (downcase "nic@example.com")) (current-buffer))
 }}}
 
-== How to write a modern browser for Emacs ==
-
-Here's another plan of mine:
-
-* make a small webkit process in C that:
-** starts
-** loops around a long poll request to http://localhost:6003/emacs/
-** responses can cause js to load, keys to be bound to event sends, etc...
-* make a deferring elnode app that can drive the webkit process
-** elisp should define what keys do
-*** elnode receives a //user pressed this key// event and responds with the message to the webkit window
-**** eg: //user pressed o// 
-**** emacs asks url?
-**** when it has url elnode responds to request with //open url x//
-
-Difficult bits about this are how to co-ordinate the ui, it's ok to have emacs being the collection point for data but you want the webkit window on the screen at the same time. Maybe most ui should still be done in the webkit window.
-
-
 == List of various other ELisp bits and pieces ==
 
 I've done quite a few other packages for Emacs, most are on github but check these out:
@@ -209,7 +199,6 @@ I used to maintain a mercurial copy of the emacs bzr repo at [https://bitbucket.
 [https://bitbucket.org/nic/emacs-update/changeset/14a32e93c535 here is the update script I used].
 
 I no longer maintain that, people weren't interested.
-
 
 ---- 
 CategoryHomepage
