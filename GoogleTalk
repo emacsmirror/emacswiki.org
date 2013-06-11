@@ -1,35 +1,34 @@
 How Setup Google Talk in Emacs
 
+== Basic installation ==
 
-After a bit of googling, I got '''jabber.el''' to work with my Google Talk account. I'll save others some googling:
+jabbber.el is packaged in marmalade-repo so you can just:
 
-<pre>
-(setq jabber-username "my-username" ;; notice: leave off the @gmail.com
-      jabber-server "gmail.com"     ;; this is a part of your user ID, not a part of the server you will connect to.
-      jabber-network-server "talk.google.com"  ;; this is the actual server to connect to
-      jabber-port 5223
-      jabber-connection-type 'ssl)
-</pre>
+{{{
+M-x package-install jabber
+}}}
 
-(thanks Hamsterboy, [[timcharper]])
+=== Configuring ===
+Customize the variable `jabber-account-list' to have:
 
-[new]
+||JID||your gtalk username||
+||Network Server||talk.google.com||
+||Port||5222||
+||Connection type||Legacy SSL||
 
-I can verify that the above worked (on MacOS X). However, I had some difficulties at first. The version of gnutls installed by Mac ports would always throw an error when I tried to connect: (I could see this by switching to the buffer *-jabber-process-*)
+=== Starting ===
+Just do:
 
-<pre>
-*** Fatal error: A TLS packet with unexpected length was received.
-*** Server has terminated the connection abnormally.
-</pre>
+{{{
+M-x jabbber-connect-all
+}}}
 
-I installed a more recent version of gnutls (2.8.3), and modified both my PATH environment variable and my exec-path setting via Emacs-customize in order to ensure that that most recent version of gnutls was used, and not the version installed by Mac ports.
+and you will be connected.
 
-Once I did that, jabber connected to Google talk swimmingly.
+== Manual installation ==
+The jabber.el package comes with installation notes but it can be more tricky to configure.
 
--- [[timcharper]]
-
-
-== jabber.el 0.7.1 and below ==
+=== jabber.el 0.7.1 and below ===
 Setting up emacs to use Google Talk is pretty easy since it uses the
 XMPP protocol, which is handled by jabber clients.  [[JabberEl]] works
 well (at least from the arch sources available), and setup the
@@ -43,9 +42,17 @@ file:
   (setq jabber-network-server "talk.google.com")
   (setq jabber-server "gmail.com")
 
-Under gentoo, I had to install the gnutls package to get everything
-working just fine, your mileage may vary.  After that, you might
-find this function handy:
+For example:
+
+{{{
+(setq jabber-username "my-username" ;; notice: leave off the @gmail.com
+      jabber-server "gmail.com"     ;; this is a part of your user ID, not a part of the server you will connect to.
+      jabber-network-server "talk.google.com"  ;; this is the actual server to connect to
+      jabber-port 5223
+      jabber-connection-type 'ssl)
+}}}
+
+After that, you might find this function handy:
 
   (defun jabber ()
     (interactive)
@@ -54,11 +61,24 @@ find this function handy:
 
 Allowing you to M-x jabber to load up the client.
 
-The jabber.el client is pretty self explanitory, but consult its page
-for further help and tips.
+==== Problems with SSL on Gentoo ====
+Under gentoo, I had to install the gnutls package to get everything working just fine, your mileage may vary.  
 
-== jabber.el 0.7.90 and later ==
+==== Problems with SSL on OSX ====
+I can verify that the above worked (on MacOS X). However, I had some difficulties at first. The version of gnutls installed by Mac ports would always throw an error when I tried to connect: (I could see this by switching to the buffer *-jabber-process-*)
 
+{{{
+*** Fatal error: A TLS packet with unexpected length was received.
+*** Server has terminated the connection abnormally.
+}}}
+
+I installed a more recent version of gnutls (2.8.3), and modified both my PATH environment variable and my exec-path setting via Emacs-customize in order to ensure that that most recent version of gnutls was used, and not the version installed by Mac ports.
+
+Once I did that, jabber connected to Google talk swimmingly.
+
+-- [[timcharper]]
+
+=== jabber.el 0.7.90 and later ===
 If you use both Emacs and Gnus from CVS, you can probably get away
 with just hitting C-x C-j C-c and entering your Gmail address, but
 most of us mortals will need a setup like the following:
