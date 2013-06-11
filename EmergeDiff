@@ -41,5 +41,19 @@ Since the "emacs -Q $*" version will actually be expand to
 
     emacs -Q -f emerge-files-command /tmp/fileA fileB
 
+* Experiment
+Also here is an approach to have Subversion to work with Emacs ediff
+
+     Write a shell script in ~/bin/ediff_for_svn with following command
+
+     #!/bin/bash
+     working_copy=$( echo $3 | sed -e 's/[ \t][ \t]*(revision [^)]*)//' )
+     emacsclient -c --eval "(ediff \"$working_copy\" \"$6\")"
+
+Then you can call svn diff with following parameters
+
+    svn diff <your file> --diff-cmd ~/bin/ediff_for_svn
+
+
 ----
 CategoryExternalUtilities CategoryProgrammerUtils CategoryComparing
