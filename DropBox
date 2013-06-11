@@ -23,3 +23,10 @@ My experience is mostly on Windows, and OS X. YMMV.
 If you use DeskTop and you have multiple Emacsen running simultaneously, you might want to have each machine keep its own set of open files. One way to do that is <code>(setq desktop-base-file-name (concat ".desktop." (system-name)))</code>.
 
 --AmitPatel
+
+If you don't want to clutter up your Dropbox directory with auto-save files and backups while editing files in the Dropbox directory, you can add the following lines to your init file (or customize these variables to the same values) to save backup files outside of the Dropbox directory (in a temporary directory, or alternatively you might also want to save backups in your home directory when it's not under control of Dropbox):
+
+    (add-to-list 'auto-save-file-name-transforms '("\\`.*/Dropbox/.*" "/tmp/" t))
+    (add-to-list 'backup-directory-alist '("\\`.*/Dropbox/.*" . "/tmp/"))
+
+--JuriLinkov
