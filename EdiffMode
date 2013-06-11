@@ -145,7 +145,7 @@ If you just want to save the window configuration, try the code bellow:
 
    (add-hook 'ediff-load-hook
              (lambda ()
-
+    
                (add-hook 'ediff-before-setup-hook
                          (lambda ()
                            (setq ediff-saved-window-configuration (current-window-configuration))))
