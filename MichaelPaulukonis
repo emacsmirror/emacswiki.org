@@ -17,8 +17,9 @@ Thanks, Drew -- 'cept I've been here for years. Just renamed the page from my "h
 
 ----
 
+== Projects ==
 [:todo]
-== TODOs ==
+=== TODOs ===
 * look at PrintWithWebBrowser
 ** page needs cleanup
 ** mentions some functions I'd like to know
@@ -34,13 +35,12 @@ Thanks, Drew -- 'cept I've been here for years. Just renamed the page from my "h
 * whee! [[CategoryGames|games!]] I didn't know most of these existed. As if I'd have the time....
 * do git from w/in Emacs?
 ** get list of pages, incl. GitCommitMode
+** Magit
 * look at EmacsScreencasts
 * re-org my init-file(s)
 ** https://github.com/ghoseb/dotemacs and https://github.com/overtone/emacs-live
 ** http://dl.dropboxusercontent.com/u/3968124/sacha-emacs.html
-* figure out the difference between a "TODO" and a "Project"
 
-== Projects ==
 === OrgMode ===
 * learning and using....
 * reading:
