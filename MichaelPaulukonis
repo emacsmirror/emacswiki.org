@@ -67,7 +67,18 @@ and the markup:
 
     portrait:http://gravatar.com/avatar/2c387befb1ee085fd6706bd59efa042f
 
-(This was blatantly stolen from [[NicFerrier]] and modified slightly)
+Once you define it with that markup, it will now display w/in the wiki when your user-name is referenced in certain contexts
+For example: <code>MichaelPaulukonis</code> and <code>[MichaelPaulukonis]</code> do not render, but <code>[new:MichaelPaulukonis:2013-05-13 13:28 UTC]</code> is displaying, but <code>[new:MichaelPaulukonis 2013-06-11 13:54 UTC]</code> (colon replaced with space) is NOT displaying.
+
+[new:MichaelPaulukonis:2013-06-11 13:54 UTC]
+
+[new:MichaelPaulukonis 2013-06-11 13:54 UTC]
+
+[new:MichaelPaulukonis :2013-06-11 13:56 UTC]
+
+Can't find any notes on this, yet.
+
+(This was blatantly stolen from [[NicFerrier]] and modified with markup and notes)
 
 
 == Packages/pages/things I like ==
