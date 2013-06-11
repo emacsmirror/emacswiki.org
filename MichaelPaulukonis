@@ -1,3 +1,5 @@
+portrait:http://gravatar.com/avatar/2c387befb1ee085fd6706bd59efa042f [:gravatar]
+
 [[http://michaelpaulukonis.com|Michael Paulukonis]] often refers to himself in the third person. He is also known as (the) Other Michael.
 Unsurprisingly for an user-page in this wiki, he uses Emacs.
 
@@ -49,6 +51,23 @@ Thanks, Drew -- 'cept I've been here for years. Just renamed the page from my "h
 ** and it's influenced how I ''want'' to work with org-mode (which may not be how I ''should'' work with org-mode)
 
 * working on documentation withing CategoryJavaScript
+
+
+=== Gravatar from Emacs ===
+
+The [[#gravatar|image at top]] is my [[http://gravatar.com|Gravatar]]. It's a useful service that ties an email address to an image, so if someone gives you an email you can maybe find a picture of them.
+
+You need to hash the email to generate the url though, here's how in EmacsLisp:
+
+{{{
+(print (md5 (downcase "me@mail.com")) (current-buffer))
+}}}
+
+and the markup:
+
+    portrait:http://gravatar.com/avatar/2c387befb1ee085fd6706bd59efa042f
+
+(This was blatantly stolen from [[NicFerrier]] and modified slightly)
 
 
 == Packages/pages/things I like ==
