@@ -26,46 +26,16 @@
 
 ;; miscellaneous
 
-;; 2012-10-06 modified macros copy-something & dove-roll-buffers
-;; 2010-08-04 improved rename-buffer-in-ssh-login function
-;; 2010-08-08 rewrote function rename-buffer-in-ssh-login
-;; 2010-08-08 added function rename-buffer-in-ssh-exit
-;; 2010-08-21 added my-overwrite, updated jump function
-;; 2010-09-18 added very fancy function split-v-3 and split-h-3
-;; 2010-09-27 added roll-v-3
-;; 2010-10-01 Rewrote some functions in more Lisp like style
-;; 2010-10-09 Rewrote those functions related to copy without selection
-;; 2012-01-22 Multiple modify and enhancement
 
 (defun get-point (symbol &optional arg)
  "get the point"
      (progn (funcall symbol arg) (point)))
 
-(defun copy-thing (begin-of-thing end-of-thing &optional arg)
-  "copy thing between beg & end into kill ring"
-      (let ((beg (get-point begin-of-thing 1))
-	    (end (get-point end-of-thing arg)))
-	(copy-region-as-kill beg end))
-)
 
-(defun paste-to-mark(condition &optional arg)
-  "Paste things to mark, or to the prompt in shell-mode"
-  (let ((pasteMe 
-	 (lambda()
-	   (if (funcall condition)
-	     (progn (comint-next-prompt 25535) (yank))
-	   (progn (goto-char (mark)) (yank) )))))
-	(if arg
-	    (if (= arg 1)
-		nil
-	      (funcall pasteMe))
-	  (funcall pasteMe) )))
-	      
 (defun test-get-point (&optional arg)
   "test-get-point"
   (interactive "P")
-  (message "%s" (get-point 'forward-word 3))
-)
+  (message "%s" (get-point 'forward-word 3)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -78,18 +48,7 @@
 (defun come-here (&optional arg)
   "Bring content from specific buffer to current buffer"
   (interactive (list (let (( arg (read-buffer "Input buffer Name: " "*Shell Command Output*") ))
-            (insert-buffer-substring (get-buffer arg))  ))
-  )
-)
-
-
-(defun ccc (&optional some)
-  "try interactive"
-  (interactive (list (let ((some (read-string "Input a string: " nil) ))
-             (message "%S" "erwerw") )
-        ) )
-)
-
+            (insert-buffer-substring (get-buffer arg))))))
 
 (defun jump (&optional arg)
   "Put current line to another window."
@@ -105,26 +64,8 @@
 		    (delete-region
 		     (or (marker-position comint-accum-marker)
 			 (process-mark (get-buffer-process (current-buffer))))
-		     (point))
-		    )
-		)
-	      (insert command)
-	      )
-       )
-)
-
-
-;(defun beforeLast (&optional arg)
-;  (interactive "P")
-;  (let ((num (or arg 1)))
-;    (comint-previous-prompt num)
-;    )
-;  (let ((input (funcall comint-get-old-input))
-;	      (goto-char (process-mark process))
-;
-;	      (insert input))))
-;
-;
+		     (point))))
+	      (insert command))))
 
 ;(defun some (&optional arg)
 ;  "Delete Shell command output, to which C-c C-o cannot do for you."
@@ -152,8 +93,7 @@
  (defun mywrite-region (&optional string)
    "Append current region to specified file. Leverage write-region to implement this function"
    (interactive "BInput file name: ")
-   (write-region (region-beginning) (region-end) string "append")
- )
+   (write-region (region-beginning) (region-end) string "append"))
 
 
 (defun matrixSum (start end)
@@ -161,11 +101,7 @@
   (interactive "r")
   (progn (shell-command-on-region start end "matrixSum")
 	 (let ((buf "*Shell Command Output*"))
-	   (progn (come-here buf) (kill-buffer buf) (delete-other-windows))
-	   )
-	   )
-)
-
+	   (progn (come-here buf) (kill-buffer buf) (delete-other-windows)))))
 
 (defun exitshell(&optional arg)
   " Exit from login shell, with prefix to exit many levels "
@@ -176,11 +112,7 @@
       (insert "exit ")
       (comint-send-input)
       (sit-for 1)
-      (pop nlist)
-      )
-    )
-)
-
+      (pop nlist))))
 
 ; The function will ignore command like this
 ; ssh msg@tivx24.cn.ibm.com ls bin
@@ -192,8 +124,7 @@
 	    (setq shell-buffer-name-list (list "*shell*") )
 	    (message "%s" shell-buffer-name-list)
 	    )
-	  t
-)
+	  t)
 
 (eval-after-load 'shell
   '(progn
@@ -252,6 +183,34 @@
 
 ))
 
+(defvar dove-prompt-line 1)
+
+(defun shell-args (&optional cmd)
+  "echo #4:3 some #2:3 new ;  svn diff #2:1:s/win/linux/"
+  (interactive)
+  (comint-kill-input)
+  (let ((cmd_list (split-string (pop kill-ring)))
+        (dove_zsh_cmd (list " "))
+        (process (get-buffer-process (current-buffer)))) 
+    (while (> (length cmd_list) 0)
+      (let ((word (pop cmd_list)))
+        (if (string-match "^#[0-9]:[0-9]" word)
+            (let ((row  (string-to-int(substring word 1)))
+                  (col  (string-to-int(substring word 3))))
+              (save-excursion
+                (forward-line (- -1 (+ row dove-prompt-line)))  ; so starts at -1 instead of 0
+                (let* ((thing-list (split-string (thing-at-point 'line)))
+                       (dest_str (nth (+ -1 col) thing-list)))  ; so starts at 1 instead of 0
+                    (if (string-match "#[0-9]:[0-9]:s/\\([a-z]+\\)/\\([a-z]+\\)/" word)
+                        (let ((regex (match-string 1 word))
+                              (dest (match-string 2 word)))
+                          (setq dest_str (replace-regexp-in-string regex dest dest_str))))
+                    (setq dove_zsh_cmd (append dove_zsh_cmd (list dest_str " "))))))
+          (setq dove_zsh_cmd (append dove_zsh_cmd (list word " "))))))
+    (pop dove_zsh_cmd) ; pop the prefix blank charactor
+    (goto-char (process-mark process))
+    (apply #'insert dove_zsh_cmd)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;                                                 ;;
 ;;             copy & paste related                ;;
@@ -268,14 +227,30 @@
 )
 
 (setq dove-auto-paste-mode-list
-      '( "shell-mode" "eshell-mode"))
+      '(shell-mode eshell-mode))
 
 (defun dove-paste-condition (&optional arg)
   "Return t if major-mode match predefined list"
-  (mapcan (lambda (x)
-            (string= x major-mode))
-  dove-auto-paste-mode-list))
+  (member major-mode dove-auto-paste-mode-list))
 
+(defun copy-thing (begin-of-thing end-of-thing &optional arg)
+  "copy thing between beg & end into kill ring"
+      (let ((beg (get-point begin-of-thing 1))
+	    (end (get-point end-of-thing arg)))
+	(copy-region-as-kill beg end)))
+
+(defun paste-to-mark(condition &optional arg)
+  "Paste things to mark, or to the prompt in shell-mode"
+  (let ((paste 
+	 (lambda()
+	   (if (> (length (funcall condition)) 0 )
+                (progn (comint-next-prompt 25535) (yank))
+             (progn (goto-char (mark)) (yank))))))
+
+    (if (and arg (= arg 1))
+        nil
+      (funcall paste))))
+        
 (defmacro copy-something-to-mark (begin-fn end-fn arg)
   `(progn (copy-thing  ,begin-fn ,end-fn ,arg)
           (paste-to-mark 'dove-paste-condition ,arg)))
@@ -290,11 +265,6 @@
  (interactive "P")
  (copy-something-to-mark 'beginning-of-line 'end-of-line arg))
 
-; (progn 
-;   (copy-thing 'beginning-of-line 'end-of-line arg) 
-;   (paste-to-mark (quote dove-paste-condition) arg)))
-
-
 (defun copy-word (&optional arg)
  "Copy words at point and paste them to mark"
   (interactive "P")
@@ -308,14 +278,13 @@
 (defun thing-copy-string-to-mark(&optional arg)
   "Copy string at point or region selected and paste them to mark"
   (interactive "P")
-  (cond                   ; This cannot be done by copy-something-to-mark macro
-   ((and mark-active transient-mark-mode)
-    (pop-mark))
-   (t
-;    (copy-something-to-mark 'beginning-of-string 'end-of-string arg)))
-    (copy-thing 'beginning-of-string 'end-of-string arg)))
-  (paste-to-mark 'dove-paste-condition arg))
 
+  (if (and mark-active transient-mark-mode)
+      (progn
+        (copy-region-as-kill (mark) (point))
+        (pop-mark))
+    (copy-thing 'beginning-of-string 'end-of-string arg))
+  (paste-to-mark 'dove-paste-condition arg))
 
 (defun thing-copy-parenthesis-to-mark(&optional arg)
  "Copy region between {[(<\"''\">)]} and paste them to mark
@@ -385,8 +354,7 @@ and set the dove-parenthesis-begin found there"
                  (progn
                    (goto-char (+ (point) 1))
                    (setq dove-parenthesis-begin (string (char-before (point))))
-                   ))
-)
+                   )))
 (defun end-of-parenthesis(&optional arg)
   "Go to the end of parenthesis.
 Parenthesis character was defined by beginning-of-parenthesis"
@@ -400,46 +368,39 @@ Parenthesis character was defined by beginning-of-parenthesis"
   (re-search-forward dove-parenthesis-end
                      (line-end-position) 3 arg)
 	     (if (looking-back dove-parenthesis-end)
-                 (goto-char (- (point) 1)) )
-)
+                 (goto-char (- (point) 1))))
 
 (defun backward-symbol (&optional arg)
   (interactive "P")
   "Go backward a symbol, just like forward-symbol, by provide a -1 arg to it"
    (if arg  (forward-symbol arg) (forward-symbol -1))
-   (message "%s" arg)
-)
+   (message "%s" arg))
 
 (defun move-forward-paren (&optional arg)
 
   (interactive "sInput a Parenthesis:")
   (message "%s" arg)
-  (re-search-forward arg (point-max) 3 1)
-)
+  (re-search-forward arg (point-max) 3 1))
 
 (defun move-backward-paren (&optional arg)
 
   (interactive "sInput a Parenthesis:")
   (message "%s" arg)
-  (re-search-backward arg (point-max) 3 1)
-)
+  (re-search-backward arg (point-max) 3 1))
 
 (defun move-to-the-word (&optional arg)
  "Moving to next occurrance of current word"
  (interactive "P")
  (let (( cur-word (current-word nil nil) ))
    (message "%s" cur-word)
-   (search-forward cur-word))
-)
+   (search-forward cur-word)))
 
 (defun back-to-the-word (&optional arg)
  "Moving to next occurrance of current word"
  (interactive "P")
  (let (( cur-word (current-word nil nil) ))
    (message "%s" cur-word)
-   (search-backward cur-word))
-)
-
+   (search-backward cur-word)))
 
 (defun convert-Table(start end)
 "Convert Emacs table into HTML table"
@@ -451,9 +412,7 @@ Parenthesis character was defined by beginning-of-parenthesis"
 	 (insert "<table border=\"1\" cellspacing=\"0\" cellpadding=\"0\">\n")
 ;	 (end-of-buffer)
 	 (goto-char (point-max))
-	 (insert "</table>\n")
-)
-
+	 (insert "</table>\n"))
 
 (defun insert-line-number(&optional arg)
   "Insert a numeric sequence at beginning of each line"
@@ -507,10 +466,7 @@ Parenthesis character was defined by beginning-of-parenthesis"
      (progn (split-window-vertically)
 	    (split-window-horizontally)
 	    (other-window 2)
-	    (split-window-horizontally)
-	    )
-   )
-)
+	    (split-window-horizontally))))
 
 
 ;  +----------------------+                +---------- +----------+
@@ -531,76 +487,92 @@ Parenthesis character was defined by beginning-of-parenthesis"
 
 
 
-(defun change-split-type ()
+(defun change-split-type-2 (&optional arg)
   "Changes splitting from vertical to horizontal and vice-versa"
-  (interactive)
-  (message "%s --> %d" (window-list) (length (window-list)))
-
-  (if (= 2 (length (window-list)))
-      (let ((thisBuf (window-buffer))
-            (nextBuf (progn (other-window 1) (buffer-name)))
-            (split-type (if (= (window-width)
-                               (frame-width))
-                            'split-window-horizontally
-                            'split-window-vertically)))
-        (progn
-          (delete-other-windows)
-	  (funcall split-type)
-          (set-window-buffer nil thisBuf)
-          (set-window-buffer (next-window) nextBuf)))))
-
+  (interactive "P")
+  (let ((split-type (lambda (&optional arg)
+                      (delete-other-windows-internal)
+                      (if arg (split-window-vertically)
+                        (split-window-horizontally)))))
+    (change-split-type split-type arg)))
 
 
 ;  +-----------------------+                  +----------- +-----------+ 
-;  |                       |            \     |            |           | 
-;  |                       |    +-------+\    |            |           | 
-;  +-----------------------+    +-------+/    |            |-----------|
-;  |           |           |            /     |            |           | 
+;  |                       |    /       \     |            |           | 
+;  |                       |   /+-------+\    |            |           | 
+;  +-----------------------+   \+-------+/    |            |-----------|
+;  |           |           |    \       /     |            |           | 
 ;  |           |           |                  |            |           | 
 ;  +-----------------------+                  +----------- +-----------+ 
 
-;  +----------- +-----------+                 +------------------------+ 
-;  |            |           |            \    |                        | 
-;  |            |           |    +-------+\   |                        | 
-;  |            |-----------|    +-------+/   +------------------------+ 
-;  |            |           |            /    |            |           | 
-;  |            |           |                 |            |           | 
-;  +----------- +-----------+                 +------------------------+ 
+;  +-----------------------+                  +----------- +-----------+ 
+;  |                       |    /       \     |            |           | 
+;  |                       |   /+-------+\    |            |           | 
+;  +-----------------------+   \+-------+/    |------------|           |
+;  |           |           |    \       /     |            |           | 
+;  |           |           |                  |            |           | 
+;  +-----------------------+                  +----------- +-----------+ 
 
-(defun change-split-type-3 ()
+;  +-----------------------+                  +----------- +-----------+ 
+;  |           |           |    /       \     |            |           | 
+;  |           |           |   /+-------+\    |            |           | 
+;  +-----------------------+   \+-------+/    |------------|           |
+;  |                       |    \       /     |            |           | 
+;  |                       |                  |            |           | 
+;  +-----------------------+                  +----------- +-----------+ 
+
+;  +-----------------------+                  +----------- +-----------+ 
+;  |           |           |    /       \     |            |           | 
+;  |           |           |   /+-------+\    |            |           | 
+;  +-----------------------+   \+-------+/    |            |-----------|
+;  |                       |    \       /     |            |           | 
+;  |                       |                  |            |           | 
+;  +-----------------------+                  +----------- +-----------+ 
+
+
+(defun change-split-type-2 (&optional arg)
+  "Changes splitting from vertical to horizontal and vice-versa"
+  (interactive "P")
+  (let ((split-type (lambda (&optional arg)
+                      (delete-other-windows-internal)
+                      (if arg (split-window-vertically)
+                        (split-window-horizontally)))))
+    (message "win-0 %s" (window-list))
+    (change-split-type split-type arg)))
+
+(defun change-split-type (split-fn &optional arg)
   "Change 3 window style from horizontal to vertical and vice-versa"
-  (interactive)
-  (select-window (get-largest-window))
-  (if (= 3 (length (window-list)))
-      (let ((winList (window-list)))
-        (let ((1stBuf (window-buffer (car winList)))
-              (2ndBuf (window-buffer (car (cdr winList))))
-              (3rdBuf (window-buffer (car (cdr (cdr winList)))))
+  (let ((bufList (mapcar 'window-buffer (window-list))))
+    (select-window (get-largest-window))
+    (funcall split-fn arg)
+    (mapcar* 'set-window-buffer (window-list) bufList)))
 
-              (split-3 
-               (lambda(1stBuf 2ndBuf 3rdBuf split-1 split-2)
-                 "change 3 window from horizontal to vertical and vice-versa"
-                 (message "%s %s %s" 1stBuf 2ndBuf 3rdBuf)
-                 
-                     (delete-other-windows)
-                     (funcall split-1)
-                     (set-window-buffer nil 2ndBuf)
-                     (funcall split-2)
-                     (set-window-buffer (next-window) 3rdBuf)
-                     (other-window 2)
-                     (set-window-buffer nil 1stBuf)))         
+(defun change-split-type-3-v (&optional arg)
+  "change 3 window style from horizon to vertical"
+  (interactive "P")
+  (change-split-type 'split-window-3-horizontally arg))
 
-                  (split-type-1 nil)
-                  (split-type-2 nil)
-                  )
-              (if (= (window-width) (frame-width))
-                  (setq split-type-1 'split-window-horizontally 
-                        split-type-2 'split-window-vertically)
-                (setq split-type-1 'split-window-vertically  
-                      split-type-2 'split-window-horizontally))
-              (funcall split-3 1stBuf 2ndBuf 3rdBuf split-type-1 split-type-2)
+(defun change-split-type-3-h (&optional arg)
+  "change 3 window style from vertical to horizon"
+  (interactive "P")
+  (change-split-type 'split-window-3-vertically arg))
 
-))))
+(defun split-window-3-horizontally (&optional arg)
+  "Split window into 3 while largest one is in horizon"
+  (interactive "P")
+  (delete-other-windows)
+  (split-window-horizontally)
+  (if arg (other-window 1))
+  (split-window-vertically))
+
+(defun split-window-3-vertically (&optional arg)
+  "Split window into 3 while largest one is in vertical"
+  (interactive "P")
+  (delete-other-windows)
+  (split-window-vertically)
+  (if arg (other-window 1))
+  (split-window-horizontally))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -625,42 +597,42 @@ Parenthesis character was defined by beginning-of-parenthesis"
 ;
 ;;               (lambda () (message "%s" '123))))
 
-
-
-(defun change-split-type-3 ()
-  "Change 3 window style from horizontal to vertical and vice-versa"
-  (interactive)
-  (select-window (get-largest-window))
-  (if (= 3 (length (window-list)))
-      (let ((winList (window-list)))
-        (let ((1stBuf (window-buffer (car winList)))
-              (2ndBuf (window-buffer (car (cdr winList))))
-              (3rdBuf (window-buffer (car (cdr (cdr winList)))))
-
-              (split-3 
-               (lambda(1stBuf 2ndBuf 3rdBuf split-1 split-2)
-                 "change 3 window from horizontal to vertical and vice-versa"
-                 (message "%s %s %s" 1stBuf 2ndBuf 3rdBuf)
-                 
-                     (delete-other-windows)
-                     (funcall split-1)
-                     (set-window-buffer nil 2ndBuf)
-                     (funcall split-2)
-                     (set-window-buffer (next-window) 3rdBuf)
-                     (other-window 2)
-                     (set-window-buffer nil 1stBuf)))         
-
-                  (split-type-1 nil)
-                  (split-type-2 nil)
-                  )
-              (if (= (window-width) (frame-width))
-                  (setq split-type-1 'split-window-horizontally 
-                        split-type-2 'split-window-vertically)
-                (setq split-type-1 'split-window-vertically  
-                      split-type-2 'split-window-horizontally))
-              (funcall split-3 1stBuf 2ndBuf 3rdBuf split-type-1 split-type-2)
-
-))))
+;
+;
+;(defun change-split-type-3 ()
+;  "Change 3 window style from horizontal to vertical and vice-versa"
+;  (interactive)
+;  (select-window (get-largest-window))
+;  (if (= 3 (length (window-list)))
+;      (let ((winList (window-list)))
+;        (let ((1stBuf (window-buffer (car winList)))
+;              (2ndBuf (window-buffer (car (cdr winList))))
+;              (3rdBuf (window-buffer (car (cdr (cdr winList)))))
+;
+;              (split-3 
+;               (lambda(1stBuf 2ndBuf 3rdBuf split-1 split-2)
+;                 "change 3 window from horizontal to vertical and vice-versa"
+;                 (message "%s %s %s" 1stBuf 2ndBuf 3rdBuf)
+;                 
+;                     (delete-other-windows)
+;                     (funcall split-1)
+;                     (set-window-buffer nil 2ndBuf)
+;                     (funcall split-2)
+;                     (set-window-buffer (next-window) 3rdBuf)
+;                     (other-window 2)
+;                     (set-window-buffer nil 1stBuf)))         
+;
+;                  (split-type-1 nil)
+;                  (split-type-2 nil)
+;                  )
+;              (if (= (window-width) (frame-width))
+;                  (setq split-type-1 'split-window-horizontally 
+;                        split-type-2 'split-window-vertically)
+;                (setq split-type-1 'split-window-vertically  
+;                      split-type-2 'split-window-horizontally))
+;              (funcall split-3 1stBuf 2ndBuf 3rdBuf split-type-1 split-type-2)
+;
+;))))
 
 
 
@@ -676,13 +648,13 @@ Parenthesis character was defined by beginning-of-parenthesis"
 ;  |            |           |                    |            |           | 
 ;  +----------- +-----------+                    +----------- +-----------+ 
 ;
-;  +------------------------+                     +------------------------+ 
-;  |           A            |           \         |           B            | 
-;  |                        |   +-------+\        |                        | 
-;  +------------------------+   +-------+/        +------------------------+ 
-;  |     B     |     C      |           /         |     C     |     A      | 
-;  |           |            |                     |           |            | 
-;  +------------------------+                     +------------------------+ 
+;  +------------------------+                    +------------------------+ 
+;  |           A            |           \        |           B            | 
+;  |                        |   +-------+\       |                        | 
+;  +------------------------+   +-------+/       +------------------------+ 
+;  |     B     |     C      |           /        |     C     |     A      | 
+;  |           |            |                    |           |            | 
+;  +------------------------+                    +------------------------+ 
 
 
 (defmacro dove-roll-buffers (sort_fn)
@@ -694,19 +666,28 @@ Parenthesis character was defined by beginning-of-parenthesis"
                            (set-window-buffer win buf))
                          winList bufferList))))
 
-(defun roll-3-buffers-anti-clockwise ()
-  "Roll 3 window buffers anti-clockwise"
-  (interactive)
-  (if (= 3 (length (window-list)))
+(defun roll-3-buffers (&optional arg)
+  "Roll 3 window buffers clockwise and anti-clockwise"
+  (interactive "P")
+  (if arg 
       (dove-roll-buffers '(lambda (bufList)  ; put the last to the first
-                              (cons (car (last bufList)) (butlast bufList))))))
+                              (cons (car (last bufList)) (butlast bufList))))
+      (dove-roll-buffers '(lambda (bufList) ; put the first to the last
+                            (append (cdr bufList) (list (car bufList)))))))
 
-(defun roll-3-buffers-clockwise ()
-  "Roll 3 window buffers clockwise"
-  (interactive)
-  (if (= 3 (length (window-list)))
-      (dove-roll-buffers '(lambda (bufList)  ; put the first to the last
-                              (append (cdr bufList) (list (car bufList)))))))
+;; (defun roll-3-buffers-anti-clockwise ()
+;;   "Roll 3 window buffers anti-clockwise"
+;;   (interactive)
+;;   (if (= 3 (length (window-list)))
+;;       (dove-roll-buffers '(lambda (bufList)  ; put the last to the first
+;;                               (cons (car (last bufList)) (butlast bufList))))))
+;; 
+;; (defun roll-3-buffers-clockwise ()
+;;   "Roll 3 window buffers clockwise"
+;;   (interactive)
+;;   (if (= 3 (length (window-list)))
+;;       (dove-roll-buffers '(lambda (bufList)  ; put the first to the last
+;;                               (append (cdr bufList) (list (car bufList)))))))
 
 ;(defun dove-hide-shell-output()
 ;  "Hide Shell Output"
@@ -753,10 +734,9 @@ Parenthesis character was defined by beginning-of-parenthesis"
 	     (overwrite-mode 1)
 	     )
     (progn (overwrite-mode 0)
-	   (if (memq my-overwrite-mode-line mode-line-format) (setq mode-line-format (delq my-overwrite-mode-line mode-line-format)))
-	   )
-    )
-)
+	   (if (memq my-overwrite-mode-line mode-line-format)
+               (setq mode-line-format (delq my-overwrite-mode-line mode-line-format))) )))
+	  
 
 
 ; auto-type
@@ -769,8 +749,7 @@ Parenthesis character was defined by beginning-of-parenthesis"
   (goto-char beg)
   (forward-line -1)
   (newline)
-  (insert str1)
-)
+  (insert str1))
 
 (defun i-babel-quote-str (beg end Str)
   ""
@@ -778,8 +757,7 @@ Parenthesis character was defined by beginning-of-parenthesis"
     (insert Str)
     (goto-char beg)
     (insert Str)
-    (goto-char (+ end 2))
-)
+    (goto-char (+ end 2)))
 
 (defun iexp (St Ed)
   "Enclose example for org-mode"
@@ -919,10 +897,7 @@ Used in org-mode. For operating on multiple lines, use prefix argument"
 		    (list
 		     (list (kbd "C-c C-t") 'hide-body)
 		     (list (kbd "C-c C-a") 'show-all)
-		     (list (kbd "C-c C-e") 'show-entry)))
-)
-
-
+		     (list (kbd "C-c C-e") 'show-entry))))
 
 (defun hs-hide-all-comments ()
   "Find all comments in the file and hide them via hs-hide-comment-region"
@@ -939,18 +914,35 @@ Used in org-mode. For operating on multiple lines, use prefix argument"
 	(setq end (line-end-position)))
       (if (> count 1)
 	  (hs-hide-comment-region beg end))
-      (forward-line count)
-      )
-    )
-)
+      (forward-line count))))
 
 (defun goto-symbol (arg &optional flag)
   "find the next function definition"
   (interactive)
   (if (or flag nil)
       (re-search-backward (eval arg) )
-    (re-search-forward (eval arg) ))
-  )
+    (re-search-forward (eval arg) )))
+
+(defun find-file-and-goto-line (&optional arg)
+  "find a file and goto specific line
+
+(find-file-and-goto-line \"/home/dove/org/rubykoans/koans/about_hashes.rb:8\")
+will open about_hashes.rb and goto line 8
+"
+  (interactive)
+  (let* ((file-name (buffer-substring-no-properties
+                     (beginning-of-string)
+                     (end-of-string)))
+         (lst (split-string file-name ":" t))
+;  (let* ((lst (split-string file-name "[:]" t))
+         (f (pop lst))
+         (l (string-to-int (pop lst))))
+    (message "file is %s line is %d" f l )
+    (if (file-exists-p f)
+        (progn
+          (find-file f)
+          (if (numberp l)
+              (goto-line l))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -959,4 +951,20 @@ Used in org-mode. For operating on multiple lines, use prefix argument"
   (interactive "P")
   (shell-command (concat "sdcv " (current-word nil nil))))
 
+(defun delete-window-next ()
+  "Delete window next to this one"
+  (interactive)
+  (other-window 1)
+  (delete-window))
+
+(defun toggle-goagent ()
+  "Toggle GoAgent for W3M"
+  (interactive "P")
+  (if (or w3m-command-arguments nil)
+      (setq w3m-command-arguments
+                   '("-o" "http_proxy=http://127.0.0.1:8087/"))
+  (setq w3m-command-arguments nil)))
+
 (provide 'dove-ext)
+
+
