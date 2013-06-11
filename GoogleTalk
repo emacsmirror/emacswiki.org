@@ -2,7 +2,7 @@ How Setup Google Talk in Emacs
 
 == Basic installation ==
 
-jabbber.el is packaged in marmalade-repo so you can just:
+jabbber.el is packaged in MarmaladeRepo so you can just:
 
 {{{
 M-x package-install jabber
