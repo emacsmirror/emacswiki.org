@@ -158,6 +158,19 @@ If you just want to save the window configuration, try the code bellow:
 
 --EmilioLopes
 
+
+Enlarge *Ediff Control Panel* frame size and make it to be selected by default. The default frame size of *Ediff Control Panel* is too small to be selected by mouse. And when I issue ediff from EmacsClient, it used to be not selected by default. To work out this problem, add this code snippet into 'ediff-startup-hook.
+
+{{{
+    (add-hook 'ediff-startup-hook
+              (lambda () 
+                (progn
+                  (select-frame-by-name "Ediff")
+                  (set-frame-size(selected-frame) 40 10))))
+}}}
+
+--DavidYoung
+
 = Discussion =
 
 EdiffMode can also be used with pcl-cvs (see ConcurrentVersionsSystem).  To use it, type <code>d e</code> on some selected file. The original file will be fetched from cvs and then ediff applies to it - very useful. --ZajcevEvgeny
