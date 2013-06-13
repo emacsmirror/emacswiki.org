@@ -41,3 +41,4 @@ Click on the header to list all SQL related pages.
 * SqlEdMode -- alternative support for editing PL/SQL code
 * [[SQLite]] -- things for the sqlite database library
 * ModeCompileSql -- a different approach for executing SQL scripts.
+* [https://github.com/kiwanami/emacs-edbi EDBI] -- Emacs Database Interface. GUI and Database API.
