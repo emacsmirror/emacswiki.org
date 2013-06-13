@@ -1,3 +1,9 @@
+=== DotMode ===
+
+Emacs' `repeat' command (`C-x z') only repeats the last command, DotMode is a better emulation of vi's `.' command as it actually tries to repeat the last buffer change.
+
+=== EmacsFaq ===
+
 As seen in the EmacsFaq:
 
 : '''Is there an equivalent to the `.' (dot) command of vi?'''
@@ -12,6 +18,7 @@ As seen in the EmacsFaq:
 
 : ''If you're really desperate for the `.' command, use VIPER, a `vi' emulation mode which comes with Emacs, and which appears to support it.  (See ViperMode)''
 
+=== See Also ===
 
 See also DotMode and RepeatingCommands.
 
