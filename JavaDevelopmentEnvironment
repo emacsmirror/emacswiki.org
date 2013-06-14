@@ -2,14 +2,16 @@
 
 The Java Development Environment for Emacs ([::JDEE]) is an integrated development environment for Emacs. It interfaces Emacs to command-line Java development tools, for instance Sun's JDK.
 
-As of late December 2012, posts submitted to the jdee-users mailing list are not moderator approved, let alone answered.  Development is by all appearances dead.  Fortunately, there are signs of development for Java in [[CEDET]].
+As of late December 2012, posts submitted to the jdee-users mailing list are not moderator approved, let alone answered. Development is by all appearances dead.  Fortunately, there are signs of development for Java in [[CEDET]].
 
 Project site: http://jdee.sourceforge.net/
 
-== Advisories ==
-* The last version prior to the move to sourceforge (2.3.5.1) is very old and has lots of known bugs.
-* The most recent release since the move (2.4.0.1) is a large improvement, but is still very old. It works fine with Emacs 22.2.1, CEDET-1.0pre6, and ECB-2.40.
-* If you want to use JDEE with emacs versions >=23, you are best to build from the SVN trunk. Patches are gladly accepted to help move things along.
+==Download==
+As of JDEE version 2.4.1, JDEE works with CEDET that comes with Emacs 24.3 release.
+
+If you download the binary at http://sourceforge.net/projects/jdee/files/jdee/2.4.1/ there is no other dependency to mention.
+
+If you checkout from the Svn repo, ant and ant-contrib are dependencies to build.
 
 == Features ==
 === Core ===
@@ -64,6 +66,19 @@ Link to your success stories here!
 * [http://ignatyev-dev.blogspot.com/2012/10/java-development-with-emacs.html Java Development With Emacs]. Using power of Emacs for developing Java  applications. Linux, JDEE, Maven, gtags, jdb and a little bit of ELisp together create excellent development environment.
 
 == Installation notes ==
+
+===Latest===
+At time of writing, Emacs 24.3 and JDEE 2.4.1 are latest releases. See Download section above to obtain JDEE.
+
+Next all you need in your init file is something like:
+
+<pre>
+  (add-to-list 'load-path (format "%s/dist/jdee-2.4.1/lisp" my-jdee-path))
+  (autoload 'jde-mode "jde" "JDE mode." t)
+  (setq auto-mode-alist
+        (append '(("\\.java\\'" . jde-mode)) auto-mode-alist))
+</pre>
+
 ===Emacs 24===
 Download CEDET 1.1 and load it in Elisp.  Emacs comes with CEDET 2.0; you must load CEDET 1.1 before other packages load the version in Emacs.  JDEE is not compatible with new CEDET.
 
