@@ -13,6 +13,11 @@ If you download the binary at http://sourceforge.net/projects/jdee/files/jdee/2.
 
 If you checkout from the Svn repo, ant and ant-contrib are dependencies to build.
 
+==Bugs==
+There's no obvious way to submit a bug at the SourceForge page. Perhaps it requires an account. This section aggregates bug reports from those who don't want to create an account.
+
+* JDEE does not scale well when opening many Java files. Try 'emacs `find . -name "*.java"`' on a mere 50 Java files and you'll observe each Java file take progressively longer to load. Much more than 50 and you'll reach intolerable latencies starting Emacs. When I disable JDEE and open the same source code files in stock java-mode, Emacs initializes in a flash.
+
 == Features ==
 === Core ===
 From the webpage:
