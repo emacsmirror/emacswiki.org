@@ -1,0 +1,20 @@
+Add your comment here.
+Hi, make-local-hook does not longer work in emacs-24. Could it be possible to update eperiodic.el by making the following changes?
+I am not expert on lisp (at all) but it seems to work this way.
+Regards,
+Juan
+
+--- eperiodic.el~	2013-06-14 13:08:39.961485128 -0300
++++ eperiodic.el	2013-06-14 13:48:43.056783877 -0300
+@@ -5102,7 +5102,8 @@
+   (when (and (fboundp 'easy-menu-add)
+              eperiodic-menu)
+     (easy-menu-add eperiodic-menu))
+-  (make-local-hook 'post-command-hook)
++  (if (fboundp 'make-local-hook)
++      (make-local-hook 'post-command-hook))
+   (add-hook 'post-command-hook 'eperiodic-update-element-info t t)
+   (run-hooks 'eperiodic-mode-hook))
+
+-- Anonym 2013-06-14 17:05 UTC
+
