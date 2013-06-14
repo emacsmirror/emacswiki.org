@@ -68,7 +68,7 @@ Link to your success stories here!
 == Installation notes ==
 
 ===Latest===
-At time of writing, Emacs 24.3 and JDEE 2.4.1 are latest releases. See Download section above to obtain JDEE.
+As of 2013-06-14, Emacs 24.3 and JDEE 2.4.1 are latest releases. See Download section above to obtain JDEE.
 
 Next all you need in your init file is something like:
 
