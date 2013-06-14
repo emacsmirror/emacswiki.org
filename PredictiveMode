@@ -199,5 +199,12 @@ Predictive is very powerful, it takes time to figure out. I hope that this recei
 For example, for the very common word: "the", it would be help to complete with "he" when I type character 't', but it does not help to suggest the remaining 'e', but distract when I already type "th". So I wondering if the dynamic completion could be even more smart by checking on the remaining characters left to complete in the most likely completion, if it's smaller than a set threshold stop the completion. Not sure if it's already supported? I've read the manual, but could not find any clue. 
 
 --- YuShen
+
+[new]
+
+This isn't currently supported. It's not at all clear how to me how you want it to work. The current most-likely completion of "th" might be "the" which you consider too short to be worth highlighting in the buffer. But that will change as soon as you type "r" instead of "e", at which point the most likely completion switches to "through" (say), which you would consider worth inserting. Do you really want to oscillate between inserting and not inserting the most likely candidate in this way? Sounds confusing to me. Even if there's a sensible way to make it work, I'm not convinced it will have much benefit. I'm assuming you've already turned off the all the more distracting interfaces (tooltips, echo-area, etc, most of which can be accessed by key bindings anyway), just leaving dynamic completion. Is the fact that the "e" of "the" is highlighted in the buffer really such a distraction? After all, you can always and type the "e" anyway and not bother to pause to see what the completion is.
+
+-- Toby
+
 ----
 CategoryModes | CategoryCompletion | CategorySpelling
