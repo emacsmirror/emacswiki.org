@@ -1,6 +1,6 @@
 Ledger is a command-line accounting tool by JohnWiegley, it provides a double-entry accounting ledger.  The input file is a very simple text file.
 
-You can get it from here: https://github.com/jwiegley/ledger/wiki
+You can get it from here: https://github.com/ledger/ledger/wiki
 
 Ledger comes with a ledger-mode and a function to add new entries.
 Here is an alternate entry function.
