@@ -11,7 +11,8 @@ As of JDEE version 2.4.1, JDEE works with CEDET that comes with Emacs 24.3 relea
 
 If you download the binary at http://sourceforge.net/projects/jdee/files/jdee/2.4.1/ there is no other dependency to mention.
 
-If you checkout from the Svn repo, ant and ant-contrib are dependencies to build.
+If you checkout from the Svn repo, ant and ant-contrib are dependencies to build. Svn repo: https://jdee.svn.sourceforge.net/svnroot/jdee/trunk
+
 
 ==Bugs==
 There's no obvious way to submit a bug at the SourceForge page. Perhaps it requires an account. This section aggregates bug reports from those who don't want to create an account.
@@ -84,10 +85,10 @@ Next all you need in your init file is something like:
         (append '(("\\.java\\'" . jde-mode)) auto-mode-alist))
 </pre>
 
-===Emacs 24===
-Download CEDET 1.1 and load it in Elisp.  Emacs comes with CEDET 2.0; you must load CEDET 1.1 before other packages load the version in Emacs.  JDEE is not compatible with new CEDET.
+===Emacs 24 and older JDEE===
+Download CEDET 1.1 and load it in Elisp.  Emacs comes with CEDET 2.0; you must load CEDET 1.1 before other packages load the version in Emacs.  Older JDEE are not compatible with new CEDET.
 
-You could use latest JDEE from Subversion https://jdee.svn.sourceforge.net/svnroot/jdee/trunk and wrestle with the build, or download the latest prebuilt release at http://sourceforge.net/projects/jdee/files/jdee/2.4.0.1/ .  When taking the latter option, you'll need some Elisp to prevent fatal errors:
+When downloading the prebuilt older release, you'll need some Elisp to prevent fatal errors:
 
 <pre>
 (setq jde-check-version-flag nil)
@@ -106,7 +107,7 @@ Use something like this to load JDEE for .java files:
       (append '(("\\.java\\'" . jde-mode)) auto-mode-alist))
 </pre>
 
-JDEE 2.4.0.1 was confirmed to work in the 24.2.90 pretest release.
+JDEE 2.4.0.1 was confirmed to work in the 24.2.90 pretest release with this approach.
 
 See also: http://forums.fedoraforum.org/showthread.php?t=280711 .  Note that editing jde.el and deleting jde.elc is not necessary when setting jde-check-version-flag per above.
 
