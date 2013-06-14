@@ -21,9 +21,7 @@ To install the normal archive, download and unpack the latest <code>yasnippet-*.
 {{{
     (add-to-list 'load-path "~/.emacs.d/packages/yasnippet-x.y.z")
     (require 'yasnippet) ;; not yasnippet-bundle
-
-    (yas--initialize)
-    (yas/load-directory "~/.emacs.d/packages/yasnippet-x.y.z/snippets")
+    (yas-global-mode 1)
 }}}
 
 === With yasnippet-bundle.el ===
