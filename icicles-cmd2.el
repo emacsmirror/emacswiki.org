@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Fri Jun  7 21:11:17 2013 (-0700)
+;; Last-Updated: Fri Jun 14 19:55:25 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6433
+;;     Update #: 6436
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -5994,6 +5994,11 @@ When you choose a previous input, it is copied to the current prompt,
 for reuse.  If the region is active, then only it is searched;
 otherwise, the entire buffer is searched.
 
+Search uses the value of variable `comint-prompt-regexp' prepended to
+\"\\\\S-.*\" as the regexp that defines the search contexts.  If the
+variable value is not appropriate as is, you can set it in
+`comint-mode-hook' to match your prompt.
+
 Use `C-RET' or `C-mouse-2' to choose a previous input for reuse.  Use
 `down', `up', `next', `prior', `end', or `home' to cycle among your
 previous inputs.  (You probably do NOT want to use `C-next' etc.,
@@ -6016,7 +6021,7 @@ prompt, then #foo.el# will be misinterpreted as a previous command.
 Also, depending on your shell, you might want to customize variables
 such as the following:
 
-`shell-prompt-pattern',`telnet-prompt-pattern'.
+`shell-prompt-pattern', `telnet-prompt-pattern'.
 
 Being a search command, `icicle-comint-search' cannot give you access
 to previous shell commands that are not visible in the current buffer.
