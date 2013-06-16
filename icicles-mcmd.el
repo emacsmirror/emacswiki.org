@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Jun  7 21:46:02 2013 (-0700)
+;; Last-Updated: Sat Jun 15 22:33:54 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 19122
+;;     Update #: 19124
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -7476,18 +7476,19 @@ larger steps."
       (if icicle-completion-candidates
           (icicle-display-candidates-in-Completions)
         (icicle-msg-maybe-in-minibuffer "Did you hit `TAB' or `S-TAB'?")))
-    (let ((mini  (active-minibuffer-window)))
-      (unwind-protect
-           (save-selected-window
-             (select-window (get-buffer-window "*Completions*" 'visible))
-             (let ((enable-recursive-minibuffers  t)
-                   (doremi-up-keys                '(?=))
-                   (doremi-down-keys              '(?-))
-                   (doremi-boost-up-keys          '(?\M-=))
-                   (doremi-boost-down-keys        '(?\M--)))
-               (doremi-buffer-font-size+ increment))
-             (setq unread-command-events  ()))
-        (unless mini (icicle-remove-Completions-window))))))
+    (when (get-buffer-window "*Completions*" 'visible) ; If no candidates, do nothing.
+      (let ((mini  (active-minibuffer-window)))
+        (unwind-protect
+             (save-selected-window
+               (select-window (get-buffer-window "*Completions*" 'visible))
+               (let ((enable-recursive-minibuffers  t)
+                     (doremi-up-keys                '(?=))
+                     (doremi-down-keys              '(?-))
+                     (doremi-boost-up-keys          '(?\M-=))
+                     (doremi-boost-down-keys        '(?\M--)))
+                 (doremi-buffer-font-size+ increment))
+               (setq unread-command-events  ()))
+          (unless mini (icicle-remove-Completions-window)))))))
 
 (defun icicle-doremi-candidate-width-factor+ (&optional increment) ; Bound to `C-x w' in minibuffer.
   "Change `icicle-candidate-width-factor' incrementally.
