@@ -27,6 +27,8 @@
 ^rdns\.ubiquity\.io # for spamming
 ^112\.101\.64\.113 # for spamming EmacsForums
 ^114\.221\.150\.136 # for spamming WikiModeDiscussion
+^117\.201\.46\.196 # 2013-06-16 SimpleWikiEditMode
+^117\.221\.140\.91 # 2013-06-16 SiteMap 
 ^118\.99\.68\.104 # spamming XmlParser, including with action=edit;id=XmlParser
 ^125\.51\.150\.178\.triolan\.net # for spamming
 ^124\.240\.187\.81 # for spamming Comments pages
