@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Mon May 13 07:11:58 2013 (-0700)
+;; Last-Updated: Sun Jun 16 02:23:17 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 10003
+;;     Update #: 10009
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -3827,6 +3827,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2013/06/15 dadams
+;;     icicle-doremi-zoom-Completions+: No-op if no Completions window.
 ;; 2013/05/13 dadams
 ;;     icicle-change-sort-order: Handle integer value for icicle-change-sort-order-completion.
 ;; 2013/04/24 dadams
