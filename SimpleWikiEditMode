@@ -40,8 +40,6 @@ understands the raw=2 parameter.  (raw=1 only delivers the
 plain text, which is enough for viewing, but raw=2 adds a
 timestamp cookie on the first line.)
 
-[[http://blog.campuscultr.com/2013/04/15/programming-languages-placement-beyond/ Compare Programming Languages]]
- 
 : oddmuse works out of the box
 
 There is a link to the patched script from the EmacsWiki
