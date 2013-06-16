@@ -10,6 +10,12 @@ Note that this page is not about EmacsWikiMode.
 
 --------
 
+== No more `Article' link on `Comments on...' pages ==
+
+I thought there used to be an `Article' link to take you back to the page that is being commented on.  I find no link that does that now.  (However, as a workaround, if you click the `Newest Revision' link then you can find an `Article' link.)  -- DrewAdams
+
+
+
 == DuckDuckGo search not strictly limited to site ==
 
 # I search for [[https://duckduckgo.com/?q=storing+dotfiles+site%3Aemacswiki.org|storing dotfiles site:emacswiki.org]]
