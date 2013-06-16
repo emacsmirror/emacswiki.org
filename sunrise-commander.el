@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 6
-;; RCS Version: $Rev: 447 $
+;; RCS Version: $Rev: 448 $
 ;; Keywords: files, dired, midnight commander, norton, orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -277,7 +277,8 @@ Setting this value activates AVFS support."
   :group 'sunrise
   :type '(choice
           (const :tag "AVFS support disabled" nil)
-          (directory :tag "AVFS root directory")))
+          (const :tag "~/.avfs (default mountavfs mount point)" "~/.avfs")
+          (directory :tag "Other AVFS root directory")))
 
 (defcustom sr-avfs-handlers-alist '(("\\.[jwesh]ar$" . "#uzip/")
                                     ("\\.wsar$"      . "#uzip/")
@@ -597,6 +598,7 @@ The following keybindings are available:
         M-H............ hard-link selected file/directory (dired-do-hardlink)
         A ............. search marked files for regular expression
         Q ............. perform query-replace-regexp on marked files
+        C-q ........... search occurrences of a string in marked files
         C-c s ......... start a \"sticky\" interactive search in the current pane
 
         M-a ........... move to beginning of current directory
@@ -991,9 +993,11 @@ immediately loaded, but only if `sr-autoload-extensions' is not nil."
   "Select the correct Sunrise Commander pane when switching from other windows."
   (if (or (not sr-running) sr-ediff-on)
       ad-do-it
-    (let ((from (selected-window)))
+    (let ((from (selected-window))
+          (to (next-window)))
       ad-do-it
       (unless (or sr-traditional-other-window
+                  (not (memq to (list sr-left-window sr-right-window)))
                   (memq from (list sr-left-window sr-right-window)))
         ;; switching from outside
         (sr-select-window sr-selected-window))
@@ -1504,17 +1508,18 @@ With optional argument REVERT, executes `revert-buffer' on the passive buffer."
 
 (defun sr-save-directories ()
   "Save current directories in the panes to use them at the next startup."
-  (when (window-live-p sr-left-window)
-    (set-buffer (window-buffer sr-left-window))
-    (when (memq major-mode '(sr-mode sr-tree-mode))
-      (setq sr-left-directory default-directory)
-      (setq sr-left-buffer (current-buffer))))
+  (save-current-buffer
+    (when (window-live-p sr-left-window)
+      (set-buffer (window-buffer sr-left-window))
+      (when (memq major-mode '(sr-mode sr-tree-mode))
+        (setq sr-left-directory default-directory)
+        (setq sr-left-buffer (current-buffer))))
 
-  (when (window-live-p sr-right-window)
-    (set-buffer (window-buffer sr-right-window))
-    (when (memq major-mode '(sr-mode sr-tree-mode))
-      (setq sr-right-directory default-directory)
-      (setq sr-right-buffer (current-buffer)))))
+    (when (window-live-p sr-right-window)
+      (set-buffer (window-buffer sr-right-window))
+      (when (memq major-mode '(sr-mode sr-tree-mode))
+        (setq sr-right-directory default-directory)
+        (setq sr-right-buffer (current-buffer))))))
 
 (defun sr-bury-panes ()
   "Send both pane buffers to the end of the `buffer-list'."
@@ -1755,8 +1760,9 @@ Returns nil if AVFS cannot manage this kind of file."
     (unless (and (eq major-mode 'sr-mode) (sr-equal-dirs dir default-directory))
       (if (and sr-avfs-root
                (null (posix-string-match "#" dir)))
-          (setq dir (replace-regexp-in-string
-                     (expand-file-name sr-avfs-root) "" dir)))
+          (setq dir
+                (replace-regexp-in-string
+                 (directory-file-name (expand-file-name sr-avfs-root)) "" dir)))
       (sr-save-aspect
        (sr-within dir (sr-alternate-buffer (dired dir))))
       (sr-history-push default-directory)
@@ -3337,7 +3343,7 @@ items (as opposed to the current default directory). Removes itself from the
 first all the selected files."
   (interactive "sSearch in selected files for occurrences of: ")
   (let ((regular-files (delq nil (mapcar (lambda (x)
-                                           (and (file-regular-p x) x)) 
+                                           (and (file-regular-p x) x))
                                          (dired-get-marked-files)))))
     (if (not regular-files)
         (error "Sunrise: no regular files to search")
