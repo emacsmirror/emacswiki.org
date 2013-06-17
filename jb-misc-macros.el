@@ -92,7 +92,17 @@
 
 ;;; Code:
 
-(defmacro untilnext (initform nextform &optional testfunc &rest bindings)
+;; Use pcase instead of acase?
+;; (defmacro apply-partially*
+;; (mapcar (lambda (x) (acase x
+;;                       ((first second third four fifth sixth seventh eight ninth tenth)
+;;                        (list it 'args))
+;;                       (t x)))
+;;         '(1 2 second 5 3 first 9 third ninth))
+;;   )
+
+
+(defmacro jb-untilnext (initform nextform &optional testfunc &rest bindings)
   "Evaluate INITFORM followed by NEXTFORM repeatedly. Stop when one of them returns non-nil, and returning that value.
 If TESTFUNC is supplied it should be a function that takes a single argument (the results of evaluating INITFORM or NEXTFORM),
 and will be used as the stopping criterion. In this case evaluation will stop when TESTFUNC returns non-nil, but the
@@ -112,11 +122,11 @@ between successive evaluations of NEXTFORM."
                        ,retval))))))
 
 ;; This might be better as an inline function.
-(defmacro list-subset (indices list)
+(defmacro jb-list-subset (indices list)
   "Return elements of LIST corresponding to INDICES."
   `(mapcar (lambda (i) (nth i ,list)) ,indices))
 
-(defun number-list (start end &optional length)
+(defun jb-number-list (start end &optional length)
   "Return a sequential list of numbers from START to END.
 If END is nil and LENGTH is provided then return a list from START to (1- (+ START LENGTH))."
   (if end
@@ -127,7 +137,7 @@ If END is nil and LENGTH is provided then return a list from START to (1- (+ STA
 ;; This might be better as a function but I wanted to practice writing macros.
 ;; Also this way we can use gensyms to minimize the number of variables bound in the let
 ;; form surrounding the evaluation of FORMS.
-(defmacro* read-key-menu (prompts forms &optional startstr endstr keys)
+(defmacro* jb-read-key-menu (prompts forms &optional startstr endstr keys)
   "Prompt the user for a key and return the results of evaluating the corresponding form in the list FORMS.
 If the corresponding form is a symbol just return that symbol unevaluated.
 If KEYS is supplied then it should be a list (of the same length as PROMPTS & FORMS) of keys to be prompted for.
