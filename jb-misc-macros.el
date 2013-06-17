@@ -89,6 +89,7 @@
 
 ;;; Require
 (require 'macro-utils)
+(require 'anaphora)
 
 ;;; Code:
 
