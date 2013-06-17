@@ -6,7 +6,7 @@ We need a clear description of the relation between ''fonts'' and ''faces''. -- 
 
 
 == Finding the Face at Point ==
-You can use `##C-u C-=##' to find out which faces are applied to the text at [[point]] (under the [[cursor]]).
+You can use `##C-u C-x =##' to find out which faces are applied to the text at [[point]] (under the [[cursor]]).
 
 Alternatively, you can use `M-x describe-face RET'. The faces used are listed as the default value for [[completion]].
 
