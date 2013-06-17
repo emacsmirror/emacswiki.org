@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 22.1
-;; Last-Updated: Sat Jun  8 12:40:49 2013 (-0700)
+;; Last-Updated: Sun Jun 16 18:27:14 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 1595
+;;     Update #: 1611
 ;; URL: http://www.emacswiki.org/help-fns+.el
 ;; Doc URL: http://emacswiki.org/HelpPlus
 ;; Keywords: help, faces, characters, packages, description
@@ -119,6 +119,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/06/16 dadams
+;;     describe-(variable|option(-of-type)): Fixed for brain-dead variable-at-point, which returns 0 for no var.
 ;; 2013/04/29 dadams
 ;;     describe-(function|command|variable|option|option-of-type):
 ;;       Provide default only if symbol is of the right type.  Put default in prompt.
@@ -1437,6 +1439,7 @@ it is displayed along with the global value."
            (enable-recursive-minibuffers  t)
            (completion-annotate-function  (lambda (var) (and (custom-variable-p (intern-soft var))  "  (option)")))
            val)
+       (when (zerop symb) (setq symb  nil)) ; `variable-at-point' returns 0 when there is no var.
        (setq val  (completing-read
                    (format "Describe variable%s: "
                            (if (and symb  (boundp symb)) (format " (default %s)" symb) ""))
@@ -1480,8 +1483,8 @@ it is displayed along with the global value."
                 (when (and (null file-name)  (integerp (get variable 'variable-documentation)))
                   ;; It's a var not defined in Elisp but in C.
                   (setq file-name  (if (get-buffer " *DOC*")
-                                      (help-C-file-name variable 'var)
-                                    'C-source)))
+                                       (help-C-file-name variable 'var)
+                                     'C-source)))
                 (if file-name
                     (progn (princ " is a variable defined in `")
                            (princ (if (eq file-name 'C-source) "C source code" file-name))
@@ -1580,7 +1583,7 @@ it is displayed along with the global value."
                     (save-excursion (re-search-backward (concat "\\(" customize-label "\\)") nil t)
                                     (help-xref-button 1 'help-customize-variable variable)))))
               (print-help-return-message)
-              (with-current-buffer standard-output (buffer-string))))))))); Return the text displayed.
+              (with-current-buffer standard-output (buffer-string))))))))) ; Return the text displayed.
 
 ;;; This macro is no different from what is in vanilla Emacs 23+.
 ;;; Add it here so this file can be byte-compiled with Emacs 22 and used with Emacs 23+.
@@ -1629,6 +1632,7 @@ it is displayed along with the global value."
            (enable-recursive-minibuffers  t)
            (completion-annotate-function  (lambda (var) (and (custom-variable-p (intern-soft var))  "  (option)")))
            val)
+       (when (zerop symb) (setq symb  nil)) ; `variable-at-point' returns 0 when there is no var.
        (setq val  (completing-read
                    (format "Describe variable%s: "
                            (if (and symb  (boundp symb)) (format " (default %s)" symb) ""))
@@ -1833,6 +1837,7 @@ it is displayed along with the global value."
            (enable-recursive-minibuffers  t)
            (completion-annotate-function  (lambda (vv) (and (custom-variable-p (intern-soft vv))  "  (option)")))
            val)
+       (when (zerop symb) (setq symb  nil)) ; `variable-at-point' returns 0 when there is no var.
        (setq val (completing-read
                   (format "Describe variable%s: "
                           (if (and symb  (boundp symb)) (format " (default %s)" symb) ""))
@@ -2038,10 +2043,12 @@ Same as using a prefix arg with `describe-variable'."
                                                              (symbol-nearest-point))
                                                         (variable-at-point)))
                      (enable-recursive-minibuffers  t))
+                 (when (zerop symb) (setq symb  nil)) ; `variable-at-point' returns 0 when there is no var.
                  (list (intern (completing-read
                                 (format "Describe user option%s: "
-                                        (if (and symb  (user-variable-p symb)) (format " (default %s)" symb) ""))
-                                
+                                        (if (and symb  (user-variable-p symb))
+                                            (format " (default %s)" symb)
+                                          ""))
                                 obarray 'user-variable-p
                                 t nil nil (and symb  (user-variable-p symb)  (symbol-name symb)) t)))))
   (describe-variable variable buffer t))
@@ -2078,6 +2085,7 @@ defined with `defcustom' (with `*'-prefixed doc strings)."
                                                                    nil nil nil nil "nil")))
                             (end-of-file (error "No such custom type")))))
           (pref-arg  current-prefix-arg))
+     (when (zerop symb) (setq symb  nil)) ; `variable-at-point' returns 0 when there is no var.
      (list typ
            (intern
             (completing-read
