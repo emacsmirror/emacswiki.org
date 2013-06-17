@@ -1,3 +1,8 @@
-http://www.emacswiki.org/elisp/wdired.el
+I use Emacs, and I have been an Emacs user for at least 16 years.  I think it is the most productive tool I have ever used, and not only for software development activities.  Since you are already browsing this site, I won't bore you with the reasons I think this way.
+
+I wrote [http://www.emacswiki.org/emacs/WDired wdired], that since year 2000 is part of Emacs.  I also wrote [https://github.com/juan-leon/dired-efap dired-efap] and [https://github.com/juan-leon/occur-x occur-x].  Both of them are available via [http://www.emacswiki.org/emacs-en/MELPA MELPA] and [http://www.emacswiki.org/emacs/Marmalade Marmalade].
+
+If you are curious, you may find my emacs configuration file [https://github.com/juan-leon/dot-emacs here].
+
 ----
 CategoryHomepage
