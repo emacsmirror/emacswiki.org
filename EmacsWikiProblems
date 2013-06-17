@@ -39,6 +39,9 @@ Sorry, I don't know what I was seeing, or thought I was.  I cannot even find a `
 
 -- MichaelPaulukonis 2013-05-22 15:15 UTC
 
+[new:MichaelPaulukonis:2013-06-17 18:55 UTC]
+As of   2013-06-17 18:55 UTC this appears to have been fixed; [[https://duckduckgo.com/?q=storing+dotfiles+site%3Aemacswiki.org|this search]] now only returns emacswiki-results. -MichaelPaulukonis
+
 
 == Disabling new CSS design has no effect on ElispArea ==
 
