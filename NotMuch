@@ -11,18 +11,16 @@ It is also possible to use NotMuch to index mail that is otherwise read in [[Gnu
 http://roland.entierement.nu/blog/2010/09/08/gnus-dovecot-offlineimap-search-a-howto.html
 suggests one way of setting up notmuch to work with [[Gnus]]. However,
 the functions for going from a notmuch result to the message in gnus
-needed some fiddling with on my end:
+need some fiddling. In the function below, replace USER with your username in the imap account:
 
-     (defun notmuch-file-to-group (file)
-       "Calculate the Gnus group name from the given file name."
-       (let ((group (file-name-directory (directory-file-name (file-name-directory file)))))
-         (setq group (replace-regexp-in-string ".*/.Maildir/" "nnimap+local:" group))
-         (setq group (replace-regexp-in-string "/$" "" group))
-         (if (string-match ":$" group)
-     	(concat group "INBOX")
-           (replace-regexp-in-string ":\\." ":" group))
-         ;; Seems like we don't even need this part:
-         (setq group (replace-regexp-in-string "nnimap\\+local:\\.?" "" group))))
+    (defun notmuch-file-to-group (file)
+     "Calculate the Gnus group name from the given file name."
+     (let ((group (file-name-directory (directory-file-name (file-name-directory file)))))
+       (setq group (replace-regexp-in-string ".*/Maildir/" "nnimap+USER:" group))
+       (setq group (replace-regexp-in-string "/$" "" group))
+       (if (string-match ":$" group)
+        	(concat group "INBOX")
+          (replace-regexp-in-string ":\\." ":" group))))
 
      (defun notmuch-goto-message-in-gnus ()
        "Open a summary buffer containing the current notmuch
