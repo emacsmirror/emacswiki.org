@@ -286,8 +286,8 @@ or a symbol corresponding to a named keyboard macro."
          (forms (append '((recenter-top-bottom) 'continue 'edit)
                         (if withcond '('form 'command) '('branch))
                         kmacros)))
-    (read-key-menu prompts forms (concat "Choose action to perform"
-                                         (if t " when condition is non-nil:\n" ":\n")) nil keys)))
+    (jb-read-key-menu prompts forms (concat "Choose action to perform"
+                                            (if t " when condition is non-nil:\n" ":\n")) nil keys)))
 
 ;;;###autoload
 (defalias 'kbd-macro-query 'kmacro-decision
