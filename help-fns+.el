@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 22.1
-;; Last-Updated: Sun Jun 16 18:27:14 2013 (-0700)
+;; Last-Updated: Sun Jun 16 20:29:30 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 1611
+;;     Update #: 1613
 ;; URL: http://www.emacswiki.org/help-fns+.el
 ;; Doc URL: http://emacswiki.org/HelpPlus
 ;; Keywords: help, faces, characters, packages, description
@@ -1439,7 +1439,7 @@ it is displayed along with the global value."
            (enable-recursive-minibuffers  t)
            (completion-annotate-function  (lambda (var) (and (custom-variable-p (intern-soft var))  "  (option)")))
            val)
-       (when (zerop symb) (setq symb  nil)) ; `variable-at-point' returns 0 when there is no var.
+       (when (numberp symb) (setq symb  nil)) ; `variable-at-point' returns 0 when there is no var.
        (setq val  (completing-read
                    (format "Describe variable%s: "
                            (if (and symb  (boundp symb)) (format " (default %s)" symb) ""))
@@ -1632,7 +1632,7 @@ it is displayed along with the global value."
            (enable-recursive-minibuffers  t)
            (completion-annotate-function  (lambda (var) (and (custom-variable-p (intern-soft var))  "  (option)")))
            val)
-       (when (zerop symb) (setq symb  nil)) ; `variable-at-point' returns 0 when there is no var.
+       (when (numberp symb) (setq symb  nil)) ; `variable-at-point' returns 0 when there is no var.
        (setq val  (completing-read
                    (format "Describe variable%s: "
                            (if (and symb  (boundp symb)) (format " (default %s)" symb) ""))
@@ -1837,7 +1837,7 @@ it is displayed along with the global value."
            (enable-recursive-minibuffers  t)
            (completion-annotate-function  (lambda (vv) (and (custom-variable-p (intern-soft vv))  "  (option)")))
            val)
-       (when (zerop symb) (setq symb  nil)) ; `variable-at-point' returns 0 when there is no var.
+       (when (numberp symb) (setq symb  nil)) ; `variable-at-point' returns 0 when there is no var.
        (setq val (completing-read
                   (format "Describe variable%s: "
                           (if (and symb  (boundp symb)) (format " (default %s)" symb) ""))
@@ -2043,7 +2043,7 @@ Same as using a prefix arg with `describe-variable'."
                                                              (symbol-nearest-point))
                                                         (variable-at-point)))
                      (enable-recursive-minibuffers  t))
-                 (when (zerop symb) (setq symb  nil)) ; `variable-at-point' returns 0 when there is no var.
+                 (when (numberp symb) (setq symb  nil)) ; `variable-at-point' returns 0 when there is no var.
                  (list (intern (completing-read
                                 (format "Describe user option%s: "
                                         (if (and symb  (user-variable-p symb))
@@ -2085,7 +2085,7 @@ defined with `defcustom' (with `*'-prefixed doc strings)."
                                                                    nil nil nil nil "nil")))
                             (end-of-file (error "No such custom type")))))
           (pref-arg  current-prefix-arg))
-     (when (zerop symb) (setq symb  nil)) ; `variable-at-point' returns 0 when there is no var.
+     (when (numberp symb) (setq symb  nil)) ; `variable-at-point' returns 0 when there is no var.
      (list typ
            (intern
             (completing-read
