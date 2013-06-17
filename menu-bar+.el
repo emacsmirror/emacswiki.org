@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Thu Aug 17 10:05:46 1995
 ;; Version: 21.1
-;; Last-Updated: Tue Mar 12 19:17:31 2013 (-0700)
+;; Last-Updated: Sun Jun 16 18:40:24 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 3557
+;;     Update #: 3559
 ;; URL: http://www.emacswiki.org/menu-bar+.el
 ;; Doc URL: http://www.emacswiki.org/MenuBarPlus
 ;; Keywords: internal, local, convenience
@@ -102,6 +102,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/06/16 dadams
+;;     menu-barp-select-buffer-function: New default value - no pop-to-buffer-other-frame.
 ;; 2013/03/12 dadams
 ;;     toggle-max-frame-*: Removed :enable (no longer needed).
 ;; 2011/12/03 dadams
@@ -366,7 +368,11 @@
 
 
 (when (> emacs-major-version 23)
-  (defcustom menu-barp-select-buffer-function 'pop-to-buffer-other-frame
+  (defcustom menu-barp-select-buffer-function (lambda (buffer &optional other-window norecord)
+                                                (interactive
+                                                 "BPop to buffer on another frame:\nP")
+                                                (let ((pop-up-frames  t))
+                                                  (pop-to-buffer buffer other-window norecord)))
     "*Function to use as `menu-bar-select-buffer-function'."
     :type 'function :group 'menu))
 
