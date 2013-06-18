@@ -141,7 +141,7 @@ for the global-abbrev-table.  Here is mine:
 I'm wanting to write a Macro/Abbrev in Emacs/XEmacs so that when I type <code>sout</code> Emacs automatically replaces it with System.out.println("|") and positions the TextCursor in between the quotes.  A simple Abbrev gets me the replace, but how can I get it to reposition the cursor??  I realise this may not be the best place to ask these sorts of  questions, is there a page on this wiki for such things?
 
 [new]
-You, sir, are after SkeletonMode 
+You, sir, are after SkeletonMode, or [[Yasnippet]]; *abbrev-mode* can only expand the text preceding point, while these provide more sophisticated *template* functionality.
 
 [new]
 Here's a simple answer: use tempo for that. In case, you don't want the hustle and bustle of that here's how i accomplished that. You can add hooker function to be executed after the expansion. But to prevent the SPACE inserting after the expansion the hooker function should be named and have a property 'no-self-insert. Here's a little bit of EmacsLisp code to hack it up. 
