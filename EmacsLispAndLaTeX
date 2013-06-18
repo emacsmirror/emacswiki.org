@@ -6,10 +6,8 @@ Here is a solution using two-mode-mode, by EdwardOConnor:
 
 <pre>
     (require 'two-mode-mode)
-    (setq two-mode-rmatch "\\end{elisp"
-          two-mode-lmatch "\\begin{elisp"
-          default-mode '(latex-mode "LaTeX")
-          second-mode '(emacs-lisp-mode "Emacs-Lisp"))
+    (setq default-mode (list "LaTeX" latex-mode)
+             second-mode (list (list "Emacs-Lisp" "\\begin{elisp" "\\end{elisp" 'emacs-lisp-mode))
     (two-mode-mode)
 </pre>
 
