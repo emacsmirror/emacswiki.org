@@ -13,6 +13,9 @@ I came to Emacs late in life, after using just about every rubbish editor and wo
 # Even though it is byte-compiled, my init-file is far too long. I am working on moving to a modular form of Emacs initialisation.
 # I am incorporating a cgi Perl script to link my Emacs database (EmacsDataBase) to a web-page.
 
+== Another Emacs Wiki ==
+It seems there is a [[http://www.wikemacs.org/|another emacs wiki]] brought about in large measure it is said by the comments posted [[http://www.batsov.com/articles/2012/03/20/die-emacswiki/|here]]. I feel the criticisms of the old wiki are unjustified, and the creation of a new wiki is suggestive of taking away one's toys to play elsewhere. As of now (June 2013) the new wiki seems pretty empty of useful content. I await developments - if any.
+
 
 ----
 CategoryHomepage
