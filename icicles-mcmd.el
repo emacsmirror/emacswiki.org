@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Jun 15 22:33:54 2013 (-0700)
+;; Last-Updated: Tue Jun 18 15:37:27 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 19124
+;;     Update #: 19136
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -2418,22 +2418,29 @@ These are the minibuffer bindings when not completing input:
 (put 'icicle-abort-recursive-edit 'completion-function 'use-completion-minibuffer-separator)
 
 (defun icicle-abort-recursive-edit ()   ; Bound to `C-]',`C-g' in minibuf, `C-g',`q' in `*Completions*'.
-  "Abort command that requested this recursive edit or minibuffer input.
-This calls `abort-recursive-edit' after killing the `*Completions*'
-buffer or (if called from the minibuffer) removing its window.
+  "Abort recursive edit or minibuffer input, or just deactivate region.
+If called from the minibuffer, the region is active there, and
+`delete-selection-mode' is turned on, then just deactivate the region.
+
+Otherwise, call `abort-recursive-edit' after killing buffer
+`*Completions*' or (if called from the minibuffer) after removing its
+window.
 
 By default, Icicle mode remaps all key sequences that are normally
 bound to `abort-recursive-edit' to `icicle-abort-recursive-edit'.  If
 you do not want this remapping, then customize option
 `icicle-top-level-key-bindings'."
   (interactive)
-  (if (not (active-minibuffer-window))
-      (when (get-buffer "*Completions*") (kill-buffer (get-buffer "*Completions*")))
-    (when (and (boundp '1on1-fit-minibuffer-frame-flag) ; In `oneonone.el'.
-               1on1-fit-minibuffer-frame-flag  (require 'fit-frame nil t))
-      (1on1-fit-minibuffer-frame 'RESET))
-    (icicle-remove-Completions-window 'FORCE))
-  (abort-recursive-edit))
+  (if (and mark-active  (boundp 'delete-selection-mode)  delete-selection-mode
+           (eq (selected-window) (minibuffer-window))  (active-minibuffer-window))
+      (deactivate-mark)
+    (if (not (active-minibuffer-window))
+        (when (get-buffer "*Completions*") (kill-buffer (get-buffer "*Completions*")))
+      (when (and (boundp '1on1-fit-minibuffer-frame-flag) ; In `oneonone.el'.
+                 1on1-fit-minibuffer-frame-flag  (require 'fit-frame nil t))
+        (1on1-fit-minibuffer-frame 'RESET))
+      (icicle-remove-Completions-window 'FORCE))
+    (abort-recursive-edit)))
 
 (unless (fboundp 'save&set-overriding-map) ; Only Emacs 20-23 use `ensure-overriding-map-is-bound'.
   (defun icicle-ensure-overriding-map-is-bound ()
