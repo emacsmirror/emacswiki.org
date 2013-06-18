@@ -1,0 +1,53 @@
+Add your comment here.
+I'm using Distel for my erlang development but the function that is used for completion is printing its output in an ibuffer. I would like to get it in the minibuffer with ido support instead, does anyone know of a way to do it?
+
+Here is the code:
+
+(defun erl-complete (node)
+  "Complete the module or remote function name at point."
+  (interactive (list (erl-target-node)))
+  (let ((win (get-buffer-window "*Completions*" 0)))
+    (if win (with-selected-window win (bury-buffer))))
+  (let ((end (point))
+	(beg (ignore-errors 
+	       (save-excursion (backward-sexp 1)
+			       ;; FIXME: see erl-goto-end-of-call-name
+			       (when (eql (char-before) ?:)
+				 (backward-sexp 1))
+			       (point)))))
+    (when beg
+      (let* ((str (buffer-substring-no-properties beg end))
+	     (buf (current-buffer))
+	     (continuing (equal last-command (cons 'erl-complete str))))
+	(setq this-command (cons 'erl-complete str))
+	(if (string-match "^\\(.*\\):\\(.*\\)$" str)
+	    ;; completing function in module:function
+	    (let ((mod (intern (match-string 1 str)))
+		  (pref (match-string 2 str))
+		  (beg (+ beg (match-beginning 2))))
+	      (erl-spawn
+		(erl-send-rpc node 'distel 'functions (list mod pref))
+		(&erl-receive-completions "function" beg end pref buf
+					  continuing
+					  #'erl-complete-sole-function)))
+	  ;; completing just a module
+	  (erl-spawn
+	    (erl-send-rpc node 'distel 'modules (list str))
+	    (&erl-receive-completions "module" beg end str buf continuing
+				      #'erl-complete-sole-module)))))))
+
+(defun &erl-receive-completions (what beg end prefix buf continuing sole)
+  (let ((state (erl-async-state buf)))
+    (erl-receive (what state beg end prefix buf continuing sole)
+	((['rex ['ok completions]]
+	  (when (equal state (erl-async-state buf))
+	    (with-current-buffer buf
+	      (erl-complete-thing what continuing beg end prefix
+				  completions sole))))
+	 (['rex ['error reason]]
+	  (message "Error: %s" reason))
+	 (other
+	  (message "Unexpected reply: %S" other))))))
+
+-- SpaceOgre 2013-06-18 12:28 UTC
+
