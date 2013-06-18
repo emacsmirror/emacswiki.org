@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Mon May 13 07:23:25 2013 (-0700)
+;; Last-Updated: Tue Jun 18 16:08:46 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 27802
+;;     Update #: 27815
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1186,6 +1186,26 @@
 ;;  progressive-completion filtering already accomplished at previous
 ;;  minibuffer levels.  If you instead decide to stop searching
 ;;  altogether then you hit `C-M-T'.
+;;
+;;  Finally, there is another wrinkle to using `C-g' (as
+;;  `icicle-abort-recursive-edit') if you use Delete Selection mode.
+;;  If the region is active in `delete-selection-mode' when you hit a
+;;  self-inserting key or a deleting key, then the region is deleted
+;;  (killed, actually) so that it can be replaced by your edits.
+;;  That's a good thing, in general.
+;;
+;;  When you cycle among completion candidates, depending on your
+;;  value of options `icicle-point-position-in-candidate' and
+;;  `icicle-mark-position-in-candidate', the text between point and
+;;  the mark is selected: the region is active.  And you might
+;;  otherwise activate the region in the minibuffer while editing.
+;;
+;;  In this situation, `C-g' in the minibuffer just deactivates the
+;;  region, so you can edit without losing the region text.  In
+;;  particular, this means that when you cycle you can more easily
+;;  edit the text of the current candidate (e.g. during lax
+;;  completion).  Just repeat `C-g' to get its usual behavior (since
+;;  the region has been deactivated).
 ;;
 ;;(@* "Toggle Options on the Fly")
 ;;  ** Toggle Options on the Fly **
