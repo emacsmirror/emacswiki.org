@@ -39,6 +39,10 @@ You can achieve the same effect and avoid writing those two defuns separately us
 
 But it's usually better to use a named function:  You can give it documentation, bind it to multiple keys, share it, advise it, etc. -- SeanO
 
+[new]
+
+Point moves for me... :( What am I missing? (GNU Emacs 24.3.3) --mgalgs
+
 == Specific behavior with "page up" and "page down" keys ==
 
 I would like to bind my page up and page down keys to move the *point* a window-height number of lines rather than scrolling the window (of course scrolling would automatically happen since the point would move off the top or bottom of the window).  If the point was close to the top, it would move it to the beginning of the buffer.  If it was close to the bottom, it would move it to the end of the buffer.  I've tried "##scroll-(down|up)-nomark##" (from Pc selection mode) and "##scroll-(down|up)##" (the Emacs default).  None of them quite have the behavior I'm looking for (they scroll the window rather than move the point).
