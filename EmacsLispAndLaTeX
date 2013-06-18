@@ -7,9 +7,9 @@ Here is a solution using two-mode-mode, by EdwardOConnor:
 <pre>
     (require 'two-mode-mode)
     (setq default-mode (list "LaTeX" latex-mode)
-          second-mode (list (list "Emacs-Lisp" 
-                                  "\\begin{elisp" "\\end{elisp" 
-                                  'emacs-lisp-mode))
+          second-modes (list (list "Emacs-Lisp" 
+                                   "\\begin{elisp" "\\end{elisp" 
+                                   'emacs-lisp-mode))
     (two-mode-mode)
 </pre>
 
