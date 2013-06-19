@@ -2,12 +2,12 @@
 
 The Java Development Environment for Emacs ([::JDEE]) is an integrated development environment for Emacs. It interfaces Emacs to command-line Java development tools, for instance Sun's JDK.
 
-As of late December 2012, posts submitted to the jdee-users mailing list are not moderator approved, let alone answered. Development is by all appearances dead.  Fortunately, there are signs of development for Java in [[CEDET]].
+Development of JDEE is by all appearances very slow (or nearly dead). JDEE 2.4.1 was released in May, 2013 but included no new features.  Bug reports, patches, volunteers are very welcome! There was extensive discussion in April/May 2013 about a next generation JDEE (possible fork). Fortunately, there are signs of development for Java in [[CEDET]].
 
 Project site: http://jdee.sourceforge.net/
 
 ==Download==
-As of JDEE version 2.4.1, JDEE works with CEDET that comes with Emacs 24.3 release.
+As of JDEE version 2.4.1, JDEE works with CEDET that comes with Emacs 24.3 release (and is known to work with Emacs 23.4 or later).
 
 If you download the binary at http://sourceforge.net/projects/jdee/files/jdee/2.4.1/ there is no other dependency to mention.
 
@@ -74,7 +74,7 @@ Link to your success stories here!
 == Installation notes ==
 
 ===Latest===
-As of 2013-06-14, Emacs 24.3 and JDEE 2.4.1 are latest releases. See Download section above to obtain JDEE.
+As of 2013-06-14, Emacs 24.3 and JDEE 2.4.1 are latest releases. This JDEE release will work with Emacs 23.4 or later. See Download section above to obtain JDEE.
 
 Next all you need in your init file is something like:
 
@@ -112,7 +112,10 @@ JDEE 2.4.0.1 was confirmed to work in the 24.2.90 pretest release with this appr
 See also: http://forums.fedoraforum.org/showthread.php?t=280711 .  Note that editing jde.el and deleting jde.elc is not necessary when setting jde-check-version-flag per above.
 
 ===Emacs 23===
-Install notes for Gnu Emacs 23. This will help you get (require 'jde) running. No guarantee on anything else.
+
+If you are using Emacs 23.4 or later use use the latest release (JDEE 2.4.1) without external dependencies as described above.
+
+Install notes for Gnu Emacs 23 and earlier JDEE releases below. This will help you get (require 'jde) running. No guarantee on anything else.
 
 jde depends: cedet, elib. 
 <pre>
@@ -153,6 +156,9 @@ For jde itself, add these to .emacs, change the dirs to fit your install of cour
 I don't know much about it myself. I guess there are more problems waiting.
 
 '''How to load JDE in Emacs >=23.2 (after CEDET integration into Emacs trunk)''':
+
+Use the latest release, JDEE 2.4.1! For prior JDEE releases:
+
 I fear it is complex, as the CEDET inclusion changed package names but JDEE is still using the old ones (tested in branches 2.4 and trunk). For instance (require 'semantic-ctxt) is the old name (standalone CEDET), but in the Emacs-included CEDET it should be transformed to (require 'semantic/ctxt). Someone must update JDEE. 24.m3.2010, [[DanielClemente]]
 
 I finally got JDE to work (mostly) with emacs 23.2.  Here is what I did:
@@ -320,6 +326,7 @@ here is my init file...  There a few 'tricks' in here:
 
 == Distributions ==
 
+* Debian Wheezy: JDEE 2.4.1 works with included Emacs 23.4
 * Debian Etch - installed and loaded correctly
 * Ubuntu 7.10 (Gutsy Gibbon) - requires a patch [[JDE Ubuntu Patch]]
 
