@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue Jun 18 20:29:32 2013 (-0700)
+;; Last-Updated: Wed Jun 19 09:15:04 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 10024
+;;     Update #: 10030
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -906,6 +906,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2013/06/19 dadams
+;;     Added: icicle-WYSIWYG-font.  Removed (commented out): icicle-font-w-orig-size.
+;;     icicle-font: Rewrote, to show WYSIWYG candidates.
 ;; 2013/03/26 dadams
 ;;     icicle-Info-multi-read-node-name: setq STRG only if it is nil.
 ;;     icicle-Info-goto-node-of-content: Do not bother to bind icicle-candidate-properties-alist.
@@ -6659,6 +6662,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2013/06/19 dadams
+;;     icicle-WYSIWYG-Completions-flag: Updated doc string - fonts too now.
 ;; 2013/06/18 dadams
 ;;     icicle-completion-key-bindings: Added C-S-pause binding for icicle-toggle-WYSIWYG-Completions.
 ;;     icicle-Completions-toggle-submenu: Moved icicle-toggle-WYSIWYG-Completions.
