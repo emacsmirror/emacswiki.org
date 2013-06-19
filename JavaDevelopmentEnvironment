@@ -80,7 +80,7 @@ Next all you need in your init file is something like:
 
 <pre>
   (add-to-list 'load-path (format "%s/dist/jdee-2.4.1/lisp" my-jdee-path))
-  (autoload 'jde-mode "jde" "JDE m)
+  (autoload 'jde-mode "jde" "JDE mode" t)
   (setq auto-mode-alist
         (append '(("\\.java\\'" . jde-mode)) auto-mode-alist))
 </pre>
