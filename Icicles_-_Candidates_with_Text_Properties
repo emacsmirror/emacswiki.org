@@ -203,7 +203,7 @@ that read colors.  Here is a simplified definition:
 [:icicle-WYSIWYG-Completions-flag]
 You'll notice that the face property is added only when [[option]]
 '''`<tt>[[Icicles - Customization and General Tips#icicle-WYSIWYG-Completions-flag|icicle-WYSIWYG-Completions-flag]]</tt>'''' is non-`nil'.  You can toggle
-this option at any time during completion to change the behavior.
+this option during completion, using `C-S-pause', to change the behavior.
 (The new value takes effect for the next act of completion.)
 
 You can match any part of the multi-completion: color name or RGB value. Command `icicle-read-color-wysiwyg' defines a set of sort orders that are pertinent to the color candidates.
