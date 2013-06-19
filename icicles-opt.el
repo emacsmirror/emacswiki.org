@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Mon May 13 07:01:29 2013 (-0700)
+;; Last-Updated: Tue Jun 18 20:12:12 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 5626
+;;     Update #: 5633
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -456,7 +456,6 @@
        (next-TAB menu-item "Next TAB Completion Method"
         icicle-next-TAB-completion-method
         :visible (not current-prefix-arg))
-       (WYSIWYG menu-item "Toggle WYSIWYG for `*Completions*'" icicle-toggle-WYSIWYG-Completions)
        (using-~-for-home menu-item "Toggle Using `~' for $HOME"
         icicle-toggle-~-for-home-dir)
        (using-C-for-actions menu-item "Toggle Using `C-' for Actions"
@@ -470,6 +469,7 @@
         icicle-toggle-highlight-historical-candidates)
        (highlighting-saved menu-item "Toggle Highlighting Saved Candidates"
         icicle-toggle-highlight-saved-candidates)
+       (WYSIWYG menu-item "Toggle WYSIWYG for `*Completions*'" icicle-toggle-WYSIWYG-Completions)
        (angle-brackets menu-item "Toggle Using Angle Brackets" icicle-toggle-angle-brackets)
        (remote-file-testing menu-item "Toggle Remote File Handling  (`C-^')"
         icicle-toggle-remote-file-testing)
@@ -676,10 +676,10 @@ ANGLES."
       (setq res  (edmacro-subseq res 2 -2)))
     (if (and (not need-vector)
 	     (loop for ch across res
-		   always (and (if (fboundp 'characterp)  (characterp ch)  (char-valid-p ch))
+		   always (and (if (fboundp 'characterp) (characterp ch) (char-valid-p ch))
 			       (let ((ch2  (logand ch (lognot ?\M-\^@))))
 				 (and (>= ch2 0)  (<= ch2 127))))))
-	(concat (loop for ch across res collect (if (= (logand ch ?\M-\^@) 0)  ch  (+ ch 128))))
+	(concat (loop for ch across res collect (if (= (logand ch ?\M-\^@) 0) ch (+ ch 128))))
       res)))
 
 ;; Same as `naked-read-kbd-macro' in `naked.el'.
@@ -1501,8 +1501,9 @@ value incrementally."
     (,(icicle-kbd "C-M-/")     icicle-prefix-complete t)          ; (for `dabbrev.el')  `C-M-/'
     (,(icicle-kbd "M-h")       icicle-history t)                                      ; `M-h'
     (,(icicle-kbd "M-pause")   icicle-keep-only-past-inputs t) ; `M-pause'
-    (,(icicle-kbd "C-pause")   icicle-toggle-highlight-historical-candidates t)       ;`C-pause'
+    (,(icicle-kbd "C-pause")   icicle-toggle-highlight-historical-candidates t)       ; `C-pause'
     (,(icicle-kbd "S-pause")   icicle-toggle-highlight-saved-candidates t)            ; `S-pause'
+    (,(icicle-kbd "C-S-pause") icicle-toggle-WYSIWYG-Completions t)                   ; `C-S-pause'
     ;;$$$$$$  (,(icicle-kbd "C-M-pause") 'icicle-other-history) ; `C-M-pause'
     (,(icicle-kbd "C-insert")  icicle-switch-to-Completions-buf t)                    ; `C-insert'
     (,(icicle-kbd "insert")    icicle-save/unsave-candidate t)                        ; `insert'
@@ -3522,8 +3523,8 @@ toggle the option."
   :type 'boolean :group 'Icicles-Searching)
 
 (defcustom icicle-search-ring-max (if (boundp 'most-positive-fixnum)
-                                             (/ most-positive-fixnum 10)
-                                           13421772) ; 1/10 of `most-positive-fixnum' on Windows.
+                                      (/ most-positive-fixnum 10)
+                                    13421772) ; 1/10 of `most-positive-fixnum' on Windows.
   "*Icicles version of `search-ring-max'.
 If you use Do Re Mi (library `doremi.el') then you can use
 multi-command `icicle-increment-option' anytime to change the option
