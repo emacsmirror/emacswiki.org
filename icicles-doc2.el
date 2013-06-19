@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Mon May 13 07:47:06 2013 (-0700)
+;; Last-Updated: Tue Jun 18 20:50:41 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 29309
+;;     Update #: 29320
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -6018,15 +6018,19 @@
 ;;    default value is `nil'.  This option has no effect if library
 ;;    `anything.el' cannot be loaded.
 ;;
-;;  * User option `icicle-WYSIWYG-Completions-flag' controls how face
-;;    and color names are displayed as candidates in `*Completions*'.
-;;    If value is non-`nil', then a WYSIWYG (what you see is what you
-;;    get) sample of the face or color is shown.  If the value is a
-;;    string, then a face name is accompanied by a separate face
-;;    swatch with that string text.  If the value is `t', then the
-;;    face name itself is shown using the face it names.  You can use
-;;    command `icicle-toggle-WYSIWYG-Completions' to toggle this
-;;    option.
+;;  * User option `icicle-WYSIWYG-Completions-flag' controls how some
+;;    completion candidates such as face and color names are displayed
+;;    as candidates in `*Completions*'.  If the value is non-`nil',
+;;    then a WYSIWYG (What You See Is What You Get) sample of the
+;;    candidate is shown.  If the value is a string, then a face name
+;;    is accompanied by a separate face swatch with that string text.
+;;    If the value is `t', then the face name itself is shown using
+;;    the face it names.
+;;
+;;    You can use command `icicle-toggle-WYSIWYG-Completions', bound
+;;    to `C-S-pause' during completion, to toggle this option, but the
+;;    change takes effect only for the next act of completion; so, use
+;;    `C-g' and repeat the current command to see the effect.
 ;;
 ;;  * Non-`nil' user option
 ;;    `icicle-unpropertize-completion-result-flag' means that
@@ -7039,6 +7043,7 @@
 ;;    `C-$'     - `icicle-toggle-transforming' (removal of duplicates)
 ;;    `C-pause' - `icicle-toggle-highlight-historical-candidates'
 ;;    `S-pause' - `icicle-toggle-highlight-saved-candidates'
+;;    `C-S-pause' - `icicle-toggle-WYSIWYG-Completions'
 ;;    `M-g'     - `icicle-toggle-C-for-actions'
 ;;    `M-q'     - `icicle-toggle-search-whole-word' (search)
 ;;    `M-('     - `icicle-next-S-TAB-completion-method'
