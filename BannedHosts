@@ -84,9 +84,10 @@
 \.SteepHost\.Net # for spamming SiteMapDiscussion & IciclesDiscussion
 ^ip-176-195-10-242\.bb\.netbynet\.ru 2013-06-09 SiteMapDiscussion
 ^SOL-FTTB\.[.0-9]+\.sovam\.net\.ua # 2013-06-09, 2013-06-15 SiteMapDiscussion
+boosterthon.com # 2013-06-19 SiteMapDiscussion
 gw1\.ecm4u\.de #2013-06-18 SiteMapDiscussion
 ^176-8-88-230-lvv\.broadband\.kyivstar.net
-\.broadband\.kyivstar.net
+broadband\.kyivstar.net # 2013-06-19 and prior: SiteMapDiscussion
 ^105\.4\.207\.91\.unknown\.SteepHost\.Net # for spamming IciclesDiscussion
 ^175\.42\.9\.107 # for spamming IciclesDiscussion
 ^220\.250\.41\.84 # for spamming IciclesDiscussion
