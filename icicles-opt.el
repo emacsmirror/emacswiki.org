@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Jun 18 20:12:12 2013 (-0700)
+;; Last-Updated: Wed Jun 19 09:07:12 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 5633
+;;     Update #: 5635
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -4911,10 +4911,13 @@ this to `M-SPC', for instance, in `minibuffer-local-completion-map',
 
 (defcustom icicle-WYSIWYG-Completions-flag "MMMM"
   "*Non-nil means show candidates in `*Completions*' using WYSIWYG.
-This has an effect only for completion of faces and colors.
+This has an effect only for completion of things like faces, fonts,
+and colors.
 
-The particular non-nil value determines the appearance:
-* If t, the candidate is shown with its text properties.
+For face and color candidates, the particular non-nil value determines
+the appearance:
+
+* If t, the candidate displays its meaning: WYSIWYG.
 * If a string, the string is propertized and then appended to the
   candidate,  to serve as a color swatch.
 
