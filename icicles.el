@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 2013.04.23
-;; Last-Updated: Sun May 12 19:30:35 2013 (-0700)
+;; Last-Updated: Wed Jun 19 08:55:51 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 23401
+;;     Update #: 23403
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -30,8 +30,8 @@
 ;;   `icicles-opt', `icicles-var', `image-dired', `info', `info+',
 ;;   `kmacro', `levenshtein', `menu-bar', `menu-bar+', `misc-cmds',
 ;;   `misc-fns', `mouse3', `mwheel', `naked', `pp', `pp+',
-;;   `regexp-opt', `ring', `ring+', `second-sel', `strings',
-;;   `subr-21', `thingatpt', `thingatpt+', `unaccent', `w32-browser',
+;;   `regexp-opt', `ring', `second-sel', `strings', `subr-21',
+;;   `thingatpt', `thingatpt+', `unaccent', `w32-browser',
 ;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1006,9 +1006,9 @@
 ;;    `icicle-first-matching-candidate', `icicle-first-N',
 ;;    `icicle-fit-completions-window', `icicle-fix-default-directory',
 ;;    `icicle-flat-list', `icicle-fn-doc-minus-sig',
-;;    `icicle-font-w-orig-size', `icicle-frame-name-history',
-;;    `icicle-frames-on', `icicle-function-name-history',
-;;    `icicle-fuzzy-candidates', `icicle-get-alist-candidate',
+;;    `icicle-frame-name-history', `icicle-frames-on',
+;;    `icicle-function-name-history', `icicle-fuzzy-candidates',
+;;    `icicle-get-alist-candidate',
 ;;    `icicle-get-anything-actions-for-type',
 ;;    `icicle-get-anything-cached-candidates',
 ;;    `icicle-get-anything-candidates',
@@ -1225,7 +1225,8 @@
 ;;    `icicle-value-satisfies-type-p', `icicle-var-inherits-type-p',
 ;;    `icicle-var-is-of-type-p', `icicle-var-matches-type-p',
 ;;    `icicle-var-val-satisfies-type-p',
-;;    `icicle-widget-color-complete', `icicle-widgetp'.
+;;    `icicle-widget-color-complete', `icicle-widgetp',
+;;    `icicle-WYSIWYG-font'.
 ;;
 ;;  Internal variables and constants defined in Icicles:
 ;;
