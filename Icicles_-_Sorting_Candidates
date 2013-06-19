@@ -292,10 +292,11 @@ For example, consider `icicle-read-color-wysiwyg'.  With user option
 '''`<tt>[[Icicles - Customization and General Tips#icicle-WYSIWYG-Completions-flag|icicle-WYSIWYG-Completions-flag]]</tt>'''' 
 non-`nil' (e.g. a string) it lets
 you see the effect of `##C-M-+##' in a striking, graphical way.
-However, to see the effect you will first want to use `S-pause'
-(`icicle-toggle-highlight-saved-candidates') to turn off
+However, to see the effect you will first want to use `S-pause' (`icicle-toggle-highlight-saved-candidates') in the minibuffer 
+to turn off
 highlighting of the saved candidates, since that highlighting
-obscures the color highlighting.
+obscures the color highlighting.  (You can use
+`C-S-pause' to toggle option `icicle-WYSIWYG-Completions-flag'.)
 
 Sorting by color hue shows essentially a single rainbow of
 candidates in `*Completions*': pinks, followed by magentas,
