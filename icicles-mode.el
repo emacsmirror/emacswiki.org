@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Apr 24 09:20:03 2013 (-0700)
+;; Last-Updated: Tue Jun 18 20:14:26 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 9733
+;;     Update #: 9738
 ;; URL: http://www.emacswiki.org/icicles-mode.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -29,7 +29,7 @@
 ;;   `icicles-fn', `icicles-mcmd', `icicles-opt', `icicles-var',
 ;;   `image-dired', `info', `info+', `kmacro', `levenshtein',
 ;;   `menu-bar', `menu-bar+', `misc-cmds', `misc-fns', `mouse3',
-;;   `mwheel', `naked', `pp', `pp+', `regexp-opt', `ring', `ring+',
+;;   `mwheel', `naked', `pp', `pp+', `regexp-opt', `ring',
 ;;   `second-sel', `strings', `subr-21', `thingatpt', `thingatpt+',
 ;;   `unaccent', `w32-browser', `w32browser-dlgopen', `wid-edit',
 ;;   `wid-edit+', `widget'.
@@ -867,9 +867,6 @@ Used on `pre-command-hook'."
     (define-key icicle-options-menu-map [icicle-toggle-~-for-home-dir]
       '(menu-item "Toggle Using `~' for $HOME" icicle-toggle-~-for-home-dir :keys "M-~"
         :help "Toggle option `icicle-use-~-for-home-dir-flag'"))
-    (define-key icicle-options-menu-map [icicle-toggle-WYSIWYG-Completions]
-      '(menu-item "Toggle WYSIWYG For `*Completions*'" icicle-toggle-WYSIWYG-Completions
-        :help "Toggle option `icicle-WYSIWYG-Completions-flag'"))
     (define-key icicle-options-menu-map [icicle-next-TAB-completion-method]
       '(menu-item "Next `TAB' Completion Method" icicle-next-TAB-completion-method
         :keys "C-(" :help "Cycle to the next `TAB' completion method (C-u: ONE-OFF)"))
@@ -942,6 +939,9 @@ Used on `pre-command-hook'."
       '(menu-item "Toggle Candidate Annotation"
         icicle-toggle-annotation :keys "C-x C-a"
         :help "Toggle option `icicle-show-annotations-flag': hide/show annotations"))
+    (define-key icicle-options-menu-map [icicle-toggle-WYSIWYG-Completions]
+      '(menu-item "Toggle WYSIWYG for `*Completions*'" icicle-toggle-WYSIWYG-Completions
+        :keys "C-S-pause" :help "Toggle option `icicle-WYSIWYG-Completions-flag'"))
     (define-key icicle-options-menu-map [icicle-toggle-highlight-saved-candidates]
       '(menu-item "Toggle Highlighting Saved Candidates"
         icicle-toggle-highlight-saved-candidates :keys "S-pause"
@@ -2334,8 +2334,8 @@ is bound in all keymaps accessible from keymap MAP."
   (when (and (boundp 'shell-mode-map)  (memq 'icicle-comint-dynamic-complete
                                              icicle-functions-to-redefine))
     (define-key shell-mode-map (icicle-kbd "C-i") (if (> emacs-major-version 23)
-                                                        'completion-at-point
-                                                      'comint-dynamic-complete)))
+                                                      'completion-at-point
+                                                    'comint-dynamic-complete)))
 
   ;; Unbind keys in Shell Script mode.
   (when (and (boundp 'sh-mode-map)  (memq 'icicle-comint-dynamic-complete
