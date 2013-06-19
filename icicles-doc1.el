@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue Jun 18 16:08:46 2013 (-0700)
+;; Last-Updated: Tue Jun 18 20:18:35 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 27815
+;;     Update #: 27817
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -4643,9 +4643,10 @@
 ;;  option `icicle-WYSIWYG-Completions-flag' non-`nil' (e.g. a string)
 ;;  it lets you see the effect of `C-M-+' in a striking, graphical
 ;;  way.  However, to see the effect you will first want to use
-;;  `S-pause' (`icicle-toggle-highlight-saved-candidates') to turn off
-;;  highlighting of the saved candidates, since that highlighting
-;;  obscures the color highlighting.
+;;  `S-pause' (`icicle-toggle-highlight-saved-candidates') in the
+;;  minibuffer to turn off highlighting of the saved candidates, since
+;;  that highlighting obscures the color highlighting.  (You can use
+;;  `C-S-pause' to toggle option `icicle-WYSIWYG-Completions-flag'.)
 ;;
 ;;  Sorting by color hue shows essentially a single rainbow of
 ;;  candidates in `*Completions*': pinks, followed by magentas,
