@@ -893,6 +893,7 @@ The following minibuffer bindings let you ''toggle'' '''Icicles''' options or cy
 * '''`##C-$##'''' -- `icicle-toggle-transforming': removal of duplicates (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-transform-function|icicle-transform-function]]</tt>')
 * '''`C-pause'''' -- `icicle-toggle-highlight-historical-candidates' (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-highlight-historical-candidates-flag|icicle-highlight-historical-candidates-flag]]</tt>')
 * '''`S-pause'''' -- `icicle-toggle-highlight-saved-candidates' (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-highlight-saved-candidates-flag|icicle-highlight-saved-candidates-flag]]</tt>')
+* '''`C-S-pause'''' -- `icicle-toggle-WYSIWYG-Completions' (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-WYSIWYG-Completions-flag|icicle-WYSIWYG-Completions-flag]]</tt>')
 * '''`M-g''''     -- `icicle-toggle-C-for-actions'  (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-use-C-for-actions-flag|icicle-use-C-for-actions-flag]]</tt>')
 * '''`M-q'''' -- `icicle-toggle-search-whole-word' (search)  (toggle option `<tt>[[Icicles - Customization and General Tips#icicle-search-whole-word-flag|icicle-search-whole-word-flag]]</tt>')
 * '''`##M-(##'''' -- `icicle-next-S-TAB-completion-method'   (next method in option `<tt>[[Icicles - Customization and General Tips#icicle-S-TAB-completion-methods-alist|icicle-S-TAB-completion-methods-alist]]</tt>')
