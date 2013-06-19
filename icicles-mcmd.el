@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Jun 18 19:36:12 2013 (-0700)
+;; Last-Updated: Tue Jun 18 20:20:43 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 19141
+;;     Update #: 19146
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -2088,6 +2088,7 @@ These are the main Icicles actions and their minibuffer key bindings:
  * Toggle/cycle Icicles options on the fly.  Key:   \tCurrently:
      Highlighting of past inputs             \\[icicle-toggle-highlight-historical-candidates]\t%S
      Highlighting of saved candidates        \\[icicle-toggle-highlight-saved-candidates]\t%S
+     Showing candidates with WYSIWYG         \\[icicle-toggle-WYSIWYG-Completions]\t%S
      Removal of duplicate candidates         \\[icicle-toggle-transforming]\t%s
      Sort order                              \\[icicle-change-sort-order]\t%s
      Alternative sort order                  \\[icicle-dispatch-M-comma]\t%s
@@ -2110,6 +2111,7 @@ These are the main Icicles actions and their minibuffer key bindings:
      Checking for remote file names          \\[icicle-dispatch-C-^]\t%S"
              (if icicle-highlight-historical-candidates-flag 'yes 'no)
              (if icicle-highlight-saved-candidates-flag 'yes 'no)
+             (if icicle-WYSIWYG-Completions-flag 'yes 'no)
              (cond ((not icicle-transform-function) "no")
                    ((or (eq icicle-transform-function 'icicle-remove-duplicates)
                         (and icicle-extra-candidates
@@ -7559,8 +7561,9 @@ Use `left', `right', or the mouse wheel to adjust
 ;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;
 (defalias 'toggle-icicle-WYSIWYG-Completions 'icicle-toggle-WYSIWYG-Completions)
-(defun icicle-toggle-WYSIWYG-Completions ()
-  "Toggle the value of option `icicle-WYSIWYG-Completions-flag'."
+(defun icicle-toggle-WYSIWYG-Completions () ; Bound to `C-S-pause' in minibuffer.
+  "Toggle the value of option `icicle-WYSIWYG-Completions-flag'.
+Bound to `C-S-pause' in the minibuffer."
   (interactive)
   (setq icicle-WYSIWYG-Completions-flag  (not icicle-WYSIWYG-Completions-flag))
   (icicle-msg-maybe-in-minibuffer
