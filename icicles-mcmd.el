@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Jun 18 15:37:27 2013 (-0700)
+;; Last-Updated: Tue Jun 18 19:36:12 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 19136
+;;     Update #: 19141
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1980,14 +1980,14 @@ If ALTERNATIVEP is non-nil, the alternative sort order is returned."
     (with-output-to-temp-buffer "*Help*"
       (help-setup-xref (list #'icicle-minibuffer-help) (interactive-p))
       (when (icicle-completing-p)
-        (princ (format "You are completing input%s.  %s"
+        (princ (format "You are completing input%s.%s"
                        (if icicles-cmd-p
                            (format " for an Icicles %scommand%s"
                                    (if icicle-candidate-action-fn "multi-" "")
                                    (if icicle-multi-completing-p " that uses multi-\ncompletion" ""))
                          "")
-                       (format "To show help on individual completion%scandidates:\n"
-                               (if icicles-cmd-p "" "\n"))))
+                       (if (and icicles-cmd-p  (not icicle-multi-completing-p)) "\n" "  ")))
+        (princ "To show help on individual candidates:\n")
         (princ "
      Current candidate                       C-M-RET, C-M-mouse-2
      Next, previous candidate                C-M-down, C-M-up,
