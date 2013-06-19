@@ -2194,13 +2194,13 @@ cannot be loaded.
 [:icicle-WYSIWYG-Completions-flag]
 ==== Option icicle-WYSIWYG-Completions-flag ====
 
-User option '''`icicle-WYSIWYG-Completions-flag'''' controls how some completion candidates such as face
+User option '''`icicle-WYSIWYG-Completions-flag'''' controls how some completion candidates such as [[face]], font,
 and color names are displayed as candidates in `*Completions*'.
-If the value is non-`nil', then a WYSIWYG (__W__hat __Y__ou __S__ee __I__s __W__hat __Y__ou
-__G__et) sample of the candidate is shown.  If the value is
-a string, then a face name is accompanied by a separate face
-swatch with that string text.  If the value is `t', then the
-face name itself is shown using the face it names.
+If the value is non-`nil', then a WYSIWYG ('''__W__'''hat '''__Y__'''ou '''__S__'''ee '''__I__'''s '''__W__'''hat '''__Y__'''ou
+'''__G__'''et) sample is shown for the candidate.  For faces and colors, if the value is
+a string, then the name is accompanied by a separate 
+swatch showing that string text.  If the value is `t', then the
+candidate name itself is shown using the face or color that it names.
 
 You can use
 command `icicle-toggle-WYSIWYG-Completions', bound to
