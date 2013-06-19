@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Fri Jun 14 19:55:25 2013 (-0700)
+;; Last-Updated: Wed Jun 19 09:00:31 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6436
+;;     Update #: 6448
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -181,7 +181,7 @@
 ;;    `icicle-compilation-search-in-context-fn',
 ;;    `icicle-complete-keys-1', `icicle-complete-keys-action',
 ;;    `icicle-defined-thing-p', `icicle-doc-action',
-;;    `icicle-fn-doc-minus-sig', `icicle-font-w-orig-size',
+;;    `icicle-fn-doc-minus-sig',
 ;;    `icicle-get-anything-actions-for-type',
 ;;    `icicle-get-anything-cached-candidates',
 ;;    `icicle-get-anything-candidates',
@@ -240,7 +240,7 @@
 ;;    `icicle-search-thing-scan', `icicle-search-where-arg',
 ;;    `icicle-set-completion-methods-for-command',
 ;;    `icicle-things-alist', `icicle-this-command-keys-prefix',
-;;    `icicle-widget-color-complete'.
+;;    `icicle-widget-color-complete', `icicle-WYSIWYG-font'.
 ;;
 ;;  Internal variables defined here:
 ;;
@@ -292,7 +292,7 @@
 ;;
 ;;; Code:
 
-(eval-when-compile (require 'cl)) ;; case, loop
+(eval-when-compile (require 'cl)) ;; case, loop, pushnew
                                   ;; plus, for Emacs < 21: dolist, push
 (eval-when-compile (when (>= emacs-major-version 22) (require 'edmacro))) ;; edmacro-subseq
 (eval-when-compile (require 'comint))
@@ -1141,6 +1141,17 @@ using \\<minibuffer-local-completion-map>`\\[icicle-toggle-transforming]'.
 During completion, candidate help (e.g. `\\[icicle-help-on-candidate]') shows you the RGB
 and HSV (hue, saturation, value) color components.
 
+After changing the background of the current frame, if you want to
+save it as your default background, an easy way to do that is to use
+command `set-frame-alist-parameter-from-frame' from library
+`frame-cmds.el':
+
+  M-x set-frame-alist-parameter-from-frame
+
+You are prompted for the frame alist variable to set
+\(e.g. `default-frame-alist') and for the frame parameter to copy from
+the current frame (in this case, parameter `background-color').
+
 This command is intended only for use in Icicle mode." ; Doc string
     (lambda (color)                     ; Action function
       (modify-frame-parameters
@@ -1965,14 +1976,88 @@ build a cache file of synonyms that are used for completion.  See
   "Size of font of selected frame in points, before command.")
 
 (icicle-define-command icicle-font      ; Command name
-  "Change font of current frame."       ; Doc string
-  (lambda (font) (modify-frame-parameters icicle-orig-frame (list (cons 'font font)))) ; Action fn
+  "Change font of current frame.
+Completion candidates are font names in XLFD form.  See the Emacs
+manual, node `Fonts'.
+
+If option `icicle-WYSIWYG-Completions-flag' is non-nil then show font
+names in `*Completions*' more or less in their own font, and
+abbreviated to not include the last 8 XLFD fields (PIXELS, HEIGHT,
+HORIZ, VERT, SPACING, WIDTH, REGISTRY, and ENCODING).
+
+If `icicle-WYSIWYG-Completions-flag' is non-nil then the font names
+are not shown using their fonts and full XLFD font names are used.
+Full names means that all available variants are available as separate
+candidates (different REGISTRY entries etc.).
+
+You can toggle `icicle-WYSIWYG-Completions-flag' using `C-S-pause',
+but the change takes effect only for the next act of completion; so,
+use `C-g' and repeat the current command to see the effect.
+
+With WYSIWYG display, the first use of `icicle-font' in a session
+might take a while if you have many fonts.  In general, WYSIWYG
+candidate display can be a bit slower than non-WYSIWYG.
+
+The display size of the candidates has no effect on the new frame
+font.  The nominal font size for the frame is unchanged from its
+current value, but the actual size can change because different fonts
+with the same nominal sizes can appear differently.
+
+Since completion is lax here, you can always edit the PIXELS or HEIGHT
+fields to specify the font size you want.  Alternatively, you can just
+zoom the frame font size anytime, using, e.g., library `zoom-frm.el'.
+
+After changing the font for the current frame, if you want to save it
+as your default font, an easy way to do that is to use command
+`set-frame-alist-parameter-from-frame' from library `frame-cmds.el':
+
+  M-x set-frame-alist-parameter-from-frame
+
+You are prompted for the frame alist variable to set
+\(e.g. `default-frame-alist') and for the frame parameter to copy from
+the current frame (in this case, parameter `font').
+
+Finally, there are Emacs bugs (e.g. #14634) that mean that the font
+candidate display is not truly WYSIWYG in all cases.  And there are
+other Emacs bugs (e.g. #14659) that mean that an invalid XLFD font
+name that might be usable by Emacs in some contexts raises an error
+for `modify-frame-parameters' (which is used here).  Consequently,
+`icicle-font' excludes invalid XLFD font names as candidates.
+
+`icicle-WYSIWYG-Completions-flag' is ignored for this command with
+Emacs 20.
+
+This command is intended only for use in Icicle mode."
+  (lambda (font)
+    (if (not (and icicle-WYSIWYG-Completions-flag  (> emacs-major-version 20)))
+        (condition-case err
+            (modify-frame-parameters icicle-orig-frame (list (cons 'font font)))
+          (error (icicle-msg-maybe-in-minibuffer (error-message-string err))))
+      (save-match-data
+        (let ((fnt      font)
+              (nb-used  0))
+          (while (string-match "\\`-[^-]*" fnt)
+            (setq nb-used  (1+ nb-used)
+                  fnt      (substring fnt (match-end 0))))
+          (let* ((nb         (* 2 nb-used))
+                 (extra      (if (>= nb 30) "" (substring "-*-*-*-*-*-*-*-*-*-*-*-*-*-*" nb)))
+                 (full-font  (format "%s%s" font extra)))
+            ;; See Emacs bug #14659.  For now, we just pass along the error message if invalid XLFD.
+            (condition-case err
+                (modify-frame-parameters icicle-orig-frame (list (cons 'font full-font)))
+              (error (icicle-msg-maybe-in-minibuffer (error-message-string err))))))))) ; Action fn
   "Font: "                              ; `completing-read' args
-  (let ((fonts  ())
-        fws)
-    (dolist (ft  (x-list-fonts "*")  fonts) ; Just avoiding two traversals, one to remove nil elts.
-      (when (setq fws  (icicle-font-w-orig-size ft)) (push fws fonts)))) ; Ignore nil entries.
-  nil t nil (if (boundp 'font-name-history) 'font-name-history 'icicle-font-name-history) nil nil
+  (if (> emacs-major-version 21)
+      (let ((fonts        (make-hash-table :test #'equal))
+            (fontset-lst   (fontset-list)))
+        (setq fontset-lst  (delete "-*-*-*-*-*-*-*-*-*-*-*-*-fontset-default" fontset-lst))
+        (dolist (ft  (append fontset-lst (x-list-fonts "*"))  fonts)
+          (puthash (or (icicle-WYSIWYG-font ft)  ft) t fonts)))
+    (let ((fonts  ()))
+      (dolist (ft  (append (fontset-list) (x-list-fonts "*"))  fonts)
+        (pushnew (or (icicle-WYSIWYG-font ft)  ft) fonts :test #'equal))
+      (setq fonts  (mapcar #'list fonts))))
+  nil nil nil (if (boundp 'font-name-history) 'font-name-history 'icicle-font-name-history) nil nil
   ((icicle-orig-frame      (selected-frame)) ; Bindings
    (icicle-orig-font       (frame-parameter nil 'font))
    (icicle-orig-pixelsize  (aref (x-decompose-font-name icicle-orig-font)
@@ -1986,28 +2071,72 @@ build a cache file of synonyms that are used for completion.  See
                            (list (cons 'font icicle-orig-font) icicle-orig-menu-bar))
   (modify-frame-parameters icicle-orig-frame (list icicle-orig-menu-bar))) ; Last code.
 
-;; Free var here: `icicle-orig-pixelsize' is bound in `icicle-font'.
-(defun icicle-font-w-orig-size (font)
-  "Return a font like FONT, but with pixel size `icicle-orig-pixelsize'.
-Return nil if `x-decompose-font-name' returns nil for FONT.
-`icicle-orig-pixelsize' is the original pixel size for `icicle-font'."
-  (let ((xlfd-fields  (x-decompose-font-name font)))
-    (if (not xlfd-fields)               ; Can't handle such font names - return nil.
-        nil
-      (aset xlfd-fields xlfd-regexp-pixelsize-subnum icicle-orig-pixelsize)
-      (aset xlfd-fields xlfd-regexp-pointsize-subnum icicle-orig-pointsize)
-      (let* ((sized-font   (x-compose-font-name xlfd-fields))
-             (font-info    (and (or (> icicle-help-in-mode-line-delay 0) ; Only if user will see it.
-                                    (and (boundp 'tooltip-mode)  tooltip-mode))
-                                (font-info sized-font)))
-             (iii          (if (< emacs-major-version 21) 3 2))
-             (help-string  (if font-info
-                               (format "width: %s, height: %s, offset: %s, compose: %s"
-                                       (aref font-info iii) (aref font-info (+ iii 1))
-                                       (aref font-info (+ iii 2)) (aref font-info (+ iii 3)))
-                             "Font is not yet loaded (used)")))
-        (icicle-candidate-short-help help-string sized-font)
-        (list sized-font)))))
+(defun icicle-WYSIWYG-font (font)
+  "Return FONT, propertized to appear in that FONT.
+FONT must be an XLFD string.  Only the first 6 fields are used; the
+last 8 fields are dropped from the returned string.
+
+If option `icicle-WYSIWYG-Completions-flag' is nil, just return nil.
+
+A help string text property is added to the string, with the
+`font-info', except for the first two items (OPENED-NAME and
+FULL-NAME)."
+  (and (and icicle-WYSIWYG-Completions-flag  (> emacs-major-version 20))
+       (let ((ret-font  font))
+         (save-match-data
+           (let ((xlfd-regexp  "\\`\\(-[^-]*-[^-]*-[^-]*-[^-]*-[^-]*-[^-]*\\)\
+-[^-]*-[^-]*-[^-]*-[^-]*-[^-]*-[^-]*-[^-]*-[^-]*\\'"))
+             (or (not (string-match xlfd-regexp font))
+                 (setq font  (replace-match "\\1" nil nil font)))))
+         (and (not (string= font "-*-*-*-*-*-*"))
+              (let* ((font-info     (and (or (> icicle-help-in-mode-line-delay 0) ; Only if user will see it.
+                                             (and (boundp 'tooltip-mode)  tooltip-mode))
+                                         (font-info font)))
+                     (iii           (if (< emacs-major-version 21) 3 2))
+                     (help-string   (if font-info
+                                        (format
+                                         "pixelsize: %s, pixelheight: %s, offset: %s, compose: %s, ascent: %s"
+                                         (aref font-info iii) (aref font-info (+ iii 1))
+                                         (aref font-info (+ iii 2)) (aref font-info (+ iii 3))
+                                         (aref font-info (+ iii 4)))
+                                      "Font is not yet loaded (used)")))
+                (let* ((splits   (split-string font "-"))
+                       (foundry  (nth 1 splits))
+                       (family   (nth 2 splits))
+                       (weight   (nth 3 splits))
+                       (slant    (nth 4 splits))
+                       (width    (nth 5 splits))
+                       (style    (nth 6 splits)))
+                  (icicle-candidate-short-help
+                   help-string
+                   ;; If it were not for Emacs bug #14634, just `:font' should be enough.
+                   (icicle-propertize
+                    font 'face (list :font font :foundry foundry :family family :weight weight
+                                     :slant slant :width width :style style :height 100))))))))) ; 10 points
+
+;;; ;; No longer used.
+;;; ;; Free var here: `icicle-orig-pixelsize' is bound in `icicle-font'.
+;;; (defun icicle-font-w-orig-size (font)
+;;;   "Return a font like FONT, but with pixel size `icicle-orig-pixelsize'.
+;;; Return nil if `x-decompose-font-name' returns nil for FONT.
+;;; `icicle-orig-pixelsize' is the original pixel size for `icicle-font'."
+;;;   (let ((xlfd-fields  (x-decompose-font-name font)))
+;;;     (if (not xlfd-fields)               ; Can't handle such font names - return nil.
+;;;         nil
+;;;       (aset xlfd-fields xlfd-regexp-pixelsize-subnum icicle-orig-pixelsize)
+;;;       (aset xlfd-fields xlfd-regexp-pointsize-subnum icicle-orig-pointsize)
+;;;       (let* ((sized-font   (x-compose-font-name xlfd-fields))
+;;;              (font-info    (and (or (> icicle-help-in-mode-line-delay 0) ; Only if user will see it.
+;;;                                     (and (boundp 'tooltip-mode)  tooltip-mode))
+;;;                                 (font-info sized-font)))
+;;;              (iii          (if (< emacs-major-version 21) 3 2))
+;;;              (help-string  (if font-info
+;;;                                (format "width: %s, height: %s, offset: %s, compose: %s"
+;;;                                        (aref font-info iii) (aref font-info (+ iii 1))
+;;;                                        (aref font-info (+ iii 2)) (aref font-info (+ iii 3)))
+;;;                              "Font is not yet loaded (used)")))
+;;;         (icicle-candidate-short-help help-string sized-font)
+;;;         (list sized-font)))))
 
 (defvar icicle-named-colors ()
   "Named colors.")
