@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue Jun 18 19:41:54 2013 (-0700)
+;; Last-Updated: Tue Jun 18 20:29:32 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 10012
+;;     Update #: 10024
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -3829,7 +3829,9 @@
 ;;
 ;; 2013/06/18 dadams
 ;;     icicle-abort-recursive-edit: If region is active in delete-selection-mode, just deactivate it.
-;;     icicle-minibuffer-help: Fix intro line layout when icicle-completing-p.
+;;     icicle-minibuffer-help: Added icicle-toggle-WYSIWYG-Completions.
+;;                             Fixed intro line layout when icicle-completing-p.
+;;     toggle-icicle-WYSIWYG-Completions: Mention C-S-pause binding (new) in doc string.
 ;; 2013/06/15 dadams
 ;;     icicle-doremi-zoom-Completions+: No-op if no Completions window.
 ;; 2013/05/13 dadams
@@ -5446,6 +5448,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2013/06/18 dadams
+;;     icicle-define-icicle-maps: Moved icicle-toggle-WYSIWYG-Completions.  Added :keys.
 ;; 2013/04/24 dadams
 ;;     Fixed define-key-after sexps for older Emacs versions that do not allow multi-event KEY.
 ;; 2013/04/23 dadams
@@ -6655,6 +6659,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2013/06/18 dadams
+;;     icicle-completion-key-bindings: Added C-S-pause binding for icicle-toggle-WYSIWYG-Completions.
+;;     icicle-Completions-toggle-submenu: Moved icicle-toggle-WYSIWYG-Completions.
 ;; 2013/05/13 dadams
 ;;     Renamed icicle-change-sort-order-completion-flag to icicle-change-sort-order-completion.
 ;;     icicle-change-sort-order-completion: Can now be an integer.
