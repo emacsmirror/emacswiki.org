@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue Jun 18 20:50:41 2013 (-0700)
+;; Last-Updated: Wed Jun 19 09:45:05 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 29320
+;;     Update #: 29331
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -6019,13 +6019,14 @@
 ;;    `anything.el' cannot be loaded.
 ;;
 ;;  * User option `icicle-WYSIWYG-Completions-flag' controls how some
-;;    completion candidates such as face and color names are displayed
-;;    as candidates in `*Completions*'.  If the value is non-`nil',
-;;    then a WYSIWYG (What You See Is What You Get) sample of the
-;;    candidate is shown.  If the value is a string, then a face name
-;;    is accompanied by a separate face swatch with that string text.
-;;    If the value is `t', then the face name itself is shown using
-;;    the face it names.
+;;    completion candidates such as face, font, and color names are
+;;    displayed as candidates in `*Completions*'.  If the value is
+;;    non-`nil', then a WYSIWYG (What You See Is What You Get) sample
+;;    is shown for the candidate.  For faces and colors, if the value
+;;    is a string, then the name is accompanied by a separate swatch
+;;    showing that string text.  If the value is `t', then the
+;;    candidate name itself is shown using the face or color that it
+;;    names.
 ;;
 ;;    You can use command `icicle-toggle-WYSIWYG-Completions', bound
 ;;    to `C-S-pause' during completion, to toggle this option, but the
@@ -7953,8 +7954,9 @@
 ;;
 ;;  You'll notice that the face property is added only when option
 ;;  `icicle-WYSIWYG-Completions-flag' is non-`nil'.  You can toggle
-;;  this option at any time during completion to change the behavior.
-;;  (The new value takes effect for the next act of completion.)
+;;  this option during completion, using `C-S-pause', to change the
+;;  behavior.  (The new value takes effect for the next act of
+;;  completion.)
 ;;
 ;;  You can match any part of the multi-completion: color name or RGB
 ;;  value.  Command `icicle-read-color-wysiwyg' defines a set of sort
