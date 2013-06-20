@@ -42,7 +42,7 @@ Many characters are special when they follow a backslash -- see below.
   \sc      character with c syntax (e.g. \s- for whitespace char)
   \( \)    start\end of group
   \< \>    start\end of word
-  \_< \_>    start\end of symbol
+  \_< \_>  start\end of symbol
   \` \'    start\end of buffer
   \1       string matched by the first group
   \n       string matched by the nth group
