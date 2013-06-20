@@ -20,7 +20,7 @@ Engineering.  Feel free to ask anything about Emacs :)
 
 You can contact me using (please send plain text mail, not HTML):
 <code>
-(concat "mailto:" (list 120 102 113) [46] (mapconcat (cl-function (lambda (x) (format "%c" (1- x)))) "gsff" "") "@" "gmail" "." "com")
+(concat (list 120 102 113) [46] (mapconcat (cl-function (lambda (x) (format "%c" (1- x)))) "gsff" "") " AT " "gmail" "." "com")
 </code>
 
 == My Emacs Screenshot ==
