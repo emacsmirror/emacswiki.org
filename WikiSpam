@@ -7,9 +7,10 @@ Please join the team.
 When you stumble upon a page that has been defaced, '''proceed as follows''':
 
 # Click _View other revisions_ at the bottom.
-# From the history, find the last good revision, and view it. Assume it is Revision 246.
-# Click _Edit revision 246 of this page_ at the bottom.
-# Put *revert* or something similar into the summary, do not make it a MinorEdit and click "Save". 
+# From the history, find the last good revision.
+# Use the *Rollback* button to return to the last good revision.
+
+If you can't see the Rollback link, you're probably missing a username. Edit any page and provide a username, click the Preview button and you should be set.
 
 If you are an administrator and want to /rollback massive banning/ that cannot be solved by banning and despamming:
 
