@@ -12,7 +12,7 @@
 ;; URL: https://github.com/vapniks/ido-gnus
 ;; Keywords: comm
 ;; Compatibility: GNU Emacs 24.3.1
-;; Package-Requires: ((gnus "5.13") (ido ""))
+;; Package-Requires: ((gnus "5.13"))
 ;;
 ;; Features that might be required by this library:
 ;;
