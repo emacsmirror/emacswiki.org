@@ -33,8 +33,8 @@ CDLaTeX is a minor mode providing template based insertion of !LaTeX environment
 
 RefTeX (minor mode) provides distinct support for doing labels, references and citations in !LaTeX, and it provides support for generating indices. It works with both Emacs and XEmacs and runs as a minor mode with any of the !LaTeX major modes around, most notably AUCTeX. It is included in both GnuEmacs and [[XEmacs]].
 
-[https://github.com/vitoshka/zotelo Zotelo] allows you to synchronize on the fly your Zotero collection with local BibTeX file.
-
+[https://github.com/vitoshka/zotelo Zotelo] allows you to synchronize on the fly your Zotero collection with local BibTeX file. See also [http://www.zotero.org/support/plugins zotero.org plugins],   [https://bitbucket.org/egh/zotero-plain zotero-plain], [https://bitbucket.org/egh/zotxt zotxt].
+ 
 XSymbolMode gives some WYSIWYG capabilities when editing !LaTeX or HTML in Emacs, but mainly it assists the input of symbols in some token languages (MarkupModes like TeX and SGML/HTML).
 
 The LaTeXSymbols package provides commands for [[XEmacs]] (and only [[XEmacs]]--it doesn't work with GnuEmacs) to open up a window with a table of !LaTeX symbols. Similar functionality (and more) is offered by XSymbolMode.
