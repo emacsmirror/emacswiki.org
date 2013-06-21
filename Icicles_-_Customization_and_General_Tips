@@ -1023,6 +1023,12 @@ time using
 '''`C-x 0'''' in the minibuffer.
 
 ----
+[:icicle-remove-Completions-when-sole-dir-flag]
+==== Option icicle-remove-Completions-when-sole-dir-flag ====
+
+Non-`nil' option '''`icicle-remove-Completions-when-sole-dir-flag'''' means automatically remove the `*Completions*' window when the only match for your input is a directory name.  The default value is `t'.
+
+----
 [:icicle-show-Completions-help-flag]
 [:icicle-Completions-instruction-1]
 [:icicle-Completions-instruction-2]
