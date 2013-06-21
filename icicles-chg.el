@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Wed Jun 19 09:15:04 2013 (-0700)
+;; Last-Updated: Thu Jun 20 23:27:49 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 10030
+;;     Update #: 10034
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -3830,6 +3830,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2013/06/20 dadams
+;;     icicle-(prefix|apropos)-complete-1: Revert change of 2012/05/11:
+;;       Do not set icicle-next-prefix-complete-cycles-p unless input did not change, because
+;;         if first (S-)TAB completes to dir that is sole candidate then second should not cycle.
 ;; 2013/06/18 dadams
 ;;     icicle-abort-recursive-edit: If region is active in delete-selection-mode, just deactivate it.
 ;;     icicle-minibuffer-help: Added icicle-toggle-WYSIWYG-Completions.
