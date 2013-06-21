@@ -1,3 +1,4 @@
+[[es:Uebersetzung]]
 == Binaries for OS X ==
 A copy of GNU Emacs 22 without GUI support compiled in is available on all recent versions of Mac OS X via the shell. However, there are other Emacs distributions geared towards Mac OS X that include GUI support as well as other distinctions that may make it a more appropriate choice for some.
 
