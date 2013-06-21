@@ -1,6 +1,4 @@
-This is work in progress.
-
-Eli Zaretskii is writing code for the redisplay which will take into account
+Eli Zaretskii wrote the code for the redisplay which takes into account
 having Emacs SupportBiDi.  Buffers are kept in logical order.
 The display engine thus has to implement a BiDiAlgorithm.
 
