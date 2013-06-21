@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Jun 18 20:20:43 2013 (-0700)
+;; Last-Updated: Thu Jun 20 23:21:03 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 19146
+;;     Update #: 19159
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -3963,10 +3963,9 @@ Optional argument WORD-P non-nil means complete only a word at a time."
                                                     (if no-display-p
                                                         'icicle-prefix-complete-no-display
                                                       'icicle-prefix-complete))
-            ;; $$$$$$ Trying this - added wrapper (or (not word-p)...)
+            ;; $$$$$ Previously did equal-input test only if WORD-P.  Putting it back now (2013-06-20).
             icicle-next-prefix-complete-cycles-p  (and (not icicle-TAB/S-TAB-only-completes-flag)
-                                                       (or (not word-p)
-                                                           (equal input-before-completion
+                                                       (or (equal input-before-completion
                                                                   (icicle-input-from-minibuffer
                                                                    'leave-envvars)))))
       return-value)))
@@ -4316,10 +4315,10 @@ message either.  NO-DISPLAY-P is passed to
     (setq icicle-last-completion-command         (if no-display-p
                                                      'icicle-apropos-complete-no-display
                                                    'icicle-apropos-complete)
-          ;; $$$$$$ Trying without the condition arg - just pass `t'
-          ;; icicle-next-apropos-complete-cycles-p  (equal input-before-completion
-          ;;                                               (icicle-input-from-minibuffer)))
-          icicle-next-apropos-complete-cycles-p  (not icicle-TAB/S-TAB-only-completes-flag))
+          ;; $$$$$ Previously removed equal-input test.  Putting it back now (2013-06-20).
+          icicle-next-apropos-complete-cycles-p  (and (not icicle-TAB/S-TAB-only-completes-flag)
+                                                      (equal input-before-completion
+                                                             (icicle-input-from-minibuffer))))
     icicle-completion-candidates))
 
 (defun icicle-apropos-complete-2 ()
