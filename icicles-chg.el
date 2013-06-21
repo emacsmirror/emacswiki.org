@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Thu Jun 20 23:27:49 2013 (-0700)
+;; Last-Updated: Fri Jun 21 00:06:36 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 10034
+;;     Update #: 10042
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -3832,8 +3832,11 @@
 ;;
 ;; 2013/06/20 dadams
 ;;     icicle-(prefix|apropos)-complete-1: Revert change of 2012/05/11:
-;;       Do not set icicle-next-prefix-complete-cycles-p unless input did not change, because
-;;         if first (S-)TAB completes to dir that is sole candidate then second should not cycle.
+;;         Do not set icicle-next-prefix-complete-cycles-p unless input did not change, because
+;;           if first (S-)TAB completes to dir that is sole candidate then second should not cycle.
+;;       Sole dir cand: If not icicle-remove-Completions-when-sole-dir-flag, then update *Completions*
+;;         instead of removing it.
+;;     icicle-apropos-complete-1: Corrected: Do not remove *Completions* if *-edit-update-p etc.
 ;; 2013/06/18 dadams
 ;;     icicle-abort-recursive-edit: If region is active in delete-selection-mode, just deactivate it.
 ;;     icicle-minibuffer-help: Added icicle-toggle-WYSIWYG-Completions.
@@ -6666,6 +6669,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2013/06/20 dadams
+;;     Added: icicle-remove-Completions-when-sole-dir-flag.
 ;; 2013/06/19 dadams
 ;;     icicle-WYSIWYG-Completions-flag: Updated doc string - fonts too now.
 ;; 2013/06/18 dadams
