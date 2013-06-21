@@ -231,7 +231,7 @@ http://advogato.org/person/wainstead/
 * UTF-8
 
 The OS X Terminal.app uses UTF-8 by default.  To get the correct behaviour from the Emacs that comes with OS X,
-I use the following settings in my InitFile file:
+I use the following settings in my InitFile file: http://www.portedeurope.org
 
     (set-terminal-coding-system 'utf-8)
     (set-keyboard-coding-system 'utf-8)
