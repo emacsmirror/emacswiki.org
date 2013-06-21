@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Jun  7 21:32:39 2013 (-0700)
+;; Last-Updated: Fri Jun 21 16:15:11 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 13988
+;;     Update #: 13990
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -3328,10 +3328,8 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
                            (when (and icicle-special-candidate-regexp
                                       (string-match icicle-special-candidate-regexp candidate))
                              (setq faces  (cons 'icicle-special-candidate faces))
-                             (if (not icicle-special-candidate-regexp)
-                                 (add-text-properties beg end (cons 'face (list faces)))
-                               (add-text-properties (+ beg (match-beginning 0)) (+ beg (match-end 0))
-                                                    (cons 'face (list faces)))))))
+                             (add-text-properties (+ beg (match-beginning 0)) (+ beg (match-end 0))
+                                                  (cons 'face (list faces))))))
 
                        ;; Highlight candidate (`*-historical-candidate') if it was used previously.
                        (when icicle-highlight-historical-candidates-flag
