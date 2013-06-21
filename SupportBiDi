@@ -3,37 +3,7 @@ the BiDi machinery in the works for Emacs and XEmacs.
 
 == Current Status ==
 
-The dev branch of Emacs now has working bidi support, and its developers would welcome further testing and bug reports
-
-Just follow the standard online instructions for downloading a local copy of the bzr repository for Emacs, and build.  
-
-You will now be able to:
-
-(1) See the bidi bits on the HELLO page.
-
-(2) View and edit bidi files.
-To test bidi, evaluate this:
-
-   (setq-default bidi-display-reordering t)
-
-This sets a variable that will eventually be turned on globally by default.  If you only want it buffer-locally you can of course:
-
-   (setq bidi-display-reordering)
-
-2.  For Hebrew and Yiddish, you'll want the brand-new input methods. See the attachment to this message:
-
-http://article.gmane.org/gmane.emacs.bidi/597
-
-I see that Emacs contains an older Arabic input method, which may
-also work. 
-
-In general, peruse the emacs-bidi list at:
-
-http://news.gmane.org/gmane.emacs.bidi
-
-And subscribe here:
-
-http://lists.gnu.org/mailman/listinfo/emacs-bidi
+Emacs supports bidirectional display out of the box since version 24.1.  Just type in text in a R2L script such as hebrew or arabic.
 
 == Older Bidi Support ==
 
@@ -88,9 +58,6 @@ following location for the bidi types, see the
 * ftp://ftp.unicode.org/Public/UNIDATA/
 
 == Emacs Related Features ==
-
-These are discussed on the emacs-bidi mailing list.  See
-EmacsMailingLists.
 
 * DisplayEngineForBiDi
 * DisplayEngineForArabic
