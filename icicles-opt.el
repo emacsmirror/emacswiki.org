@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Jun 19 09:07:12 2013 (-0700)
+;; Last-Updated: Thu Jun 20 23:55:10 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 5635
+;;     Update #: 5637
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -168,6 +168,7 @@
 ;;    `icicle-quote-shell-file-name-flag',
 ;;    `icicle-read+insert-file-name-keys', `icicle-regexp-quote-flag',
 ;;    `icicle-regexp-search-ring-max', `icicle-region-background',
+;;    `icicle-remove-Completions-when-sole-dir-flag',
 ;;    `icicle-require-match-flag', `icicle-saved-completion-sets',
 ;;    `icicle-search-cleanup-flag', `icicle-search-from-isearch-keys',
 ;;    `icicle-search-highlight-all-current-flag',
@@ -3376,6 +3377,12 @@ region, but it makes the region less conspicuous, so you can more
 easily read your minibuffer input."
   :type (if (and (require 'wid-edit nil t)  (get 'color 'widget-type)) 'color 'string)
   :group 'Icicles-Minibuffer-Display)
+
+(defcustom icicle-remove-Completions-when-sole-dir-flag t
+  "*Non-nil means remove `*Completions*' if only match is a directory.
+Remember that you can use multi-command `icicle-toggle-option' anytime
+to toggle the option."
+  :type 'boolean :group 'Icicles-Completions-Display :group 'Icicles-Files)
 
 (defcustom icicle-require-match-flag nil
   "*Control REQUIRE-MATCH arg to `completing-read' and `read-file-name'.
