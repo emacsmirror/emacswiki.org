@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Jun 20 23:55:10 2013 (-0700)
+;; Last-Updated: Fri Jun 21 15:52:55 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 5637
+;;     Update #: 5638
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -760,13 +760,12 @@ to toggle the option."
 
 (defcustom icicle-add-proxy-candidates-flag nil ; Toggle with `C-M-_'.
   "*Non-nil means to include proxy candidates whenever possible.
-A proxy candidate is a special candidate (shown in `*Completions*'
-using face `icicle-special-candidate') whose name is a placeholder for
-the real candidate.  The proxy candidate typically stands for some
-value obtained from the cursor position or by some action such as
-clicking the mouse.  Example candidates include a color or file name,
-named by proxy candidates such as `*copied foreground*' or `*file at
-point*'.
+A proxy candidate is a candidate (shown in `*Completions*' using face
+`icicle-proxy-candidate') whose name is a placeholder for the real
+candidate.  The proxy candidate typically stands for some value
+obtained from the cursor position or by some action such as clicking
+the mouse.  Example candidates include a color or file name, named by
+proxy candidates such as `*copied foreground*' or `*file at point*'.
 
 You can toggle this option at any time from the minibuffer using
 `\\<minibuffer-local-completion-map>\\[icicle-toggle-proxy-candidates]'.  However, for \
