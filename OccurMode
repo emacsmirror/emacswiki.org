@@ -138,6 +138,8 @@ this.
        (rename-buffer (buffer-name) t)))
  (ad-activate 'occur)
 
+Another option is to use [https://github.com/juan-leon/occur-x occur-x.el].  This package add the ability to set additional filters over an occur buffer.  So you may keep or remove lines based on regular expressions (and undo those extra filters).
+
 == Clean the *Occur* Buffer ==
 
 This gets rid of the line numbers and the header line, so that the result is more like the output from `grep'.  You might want to bind this to C-c C-x.
@@ -216,6 +218,8 @@ The following deletes the context around the match on the same line.
 		(insert " ")))
 	    (setq delete-from nil)))))))
 }}}
+
+Another option is to use [https://github.com/juan-leon/occur-x occur-x.el].  This package puts the line number in the margin, so the buffer only contains the matches.
 
 list-matching-lines does almost the same as occur. There's also delete-matching-lines.
 
