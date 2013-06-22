@@ -6,8 +6,8 @@
 ;; Maintainer: Joe Bloggs <vapniks@yahoo.com>
 ;; Copyleft (Ↄ) 2013, Joe Bloggs, all rites reversed.
 ;; Created: 2013-06-21 12:26:18
-;; Version: 0.1
-;; Last-Updated: 2013-06-21 12:26:18
+;; Version: 0.2
+;; Last-Updated: 2013-06-22 19:43:00
 ;;           By: Joe Bloggs
 ;; URL: https://github.com/vapniks/ido-gnus
 ;; Keywords: comm
@@ -122,6 +122,7 @@ If it is not a number then prompt the user for the number of articles."
   :type '(choice (const :tag "Prompt for number of articles." t)
                  (integer :tag "Number of articles")))
 
+;;;###autoload
 (defun ido-gnus-select-group (prefix)
   "Select a gnus group to visit using ido.
 If a prefix arg is used then the sense of `ido-gnus-num-articles' will be reversed:
@@ -140,6 +141,7 @@ gnus will be started if it is not already running."
                                  ido-gnus-num-articles)
                                (not ido-gnus-show-article) group))))
 
+;;;###autoload
 (defun ido-gnus-select-server (prefix)
   "Select a gnus server to visit using ido.
 
