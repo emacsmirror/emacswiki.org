@@ -1023,10 +1023,15 @@ time using
 '''`C-x 0'''' in the minibuffer.
 
 ----
-[:icicle-remove-Completions-when-sole-dir-flag]
-==== Option icicle-remove-Completions-when-sole-dir-flag ====
+[:icicle-keep-Completions-for-sole-dir-flag]
+==== Option icicle-keep-Completions-for-sole-dir-flag ====
 
-Non-`nil' option '''`icicle-remove-Completions-when-sole-dir-flag'''' means automatically remove the `*Completions*' window when the only match for your input is a directory name.  The default value is `t'.
+Option '''`icicle-keep-Completions-for-sole-dir-flag'''' controls what
+happens during (non-absolute) file-name completion when the only
+match for your input is a directory name.  If non-`nil' then
+`*Completions*' is just updated to show the sole candidate.  If
+`nil' then the `*Completions*' window is removed instead.  The
+default value is `t'.
 
 ----
 [:icicle-show-Completions-help-flag]
