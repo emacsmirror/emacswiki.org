@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Jun 21 00:06:36 2013 (-0700)
+;; Last-Updated: Sat Jun 22 10:23:57 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 10042
+;;     Update #: 10050
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1740,6 +1740,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2013/06/21 dadams
+;;     icicle-display-candidates-in-Completions: Removed vestigial code for highlighting special cand.
 ;; 2013/05/11 dadams
 ;;     icicle-handle-default-for-prompt: Do not add nil DEFAULT to prompt.
 ;; 2013/04/30 dadams
@@ -3830,6 +3832,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2013/06/22 dadams
+;;     icicle-(prefix|apropos)-complete-1: Apply renaming to icicle-keep-Completions-for-sole-dir-flag.
+;;                                         Does not affect absolute file names (no drill-down).
 ;; 2013/06/20 dadams
 ;;     icicle-(prefix|apropos)-complete-1: Revert change of 2012/05/11:
 ;;         Do not set icicle-next-prefix-complete-cycles-p unless input did not change, because
@@ -6669,6 +6674,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2013/06/22 dadams
+;;     Renamed and reversed: *-remove-Completions-when-* to icicle-keep-Completions-for-sole-dir-flag.
 ;; 2013/06/20 dadams
 ;;     Added: icicle-remove-Completions-when-sole-dir-flag.
 ;; 2013/06/19 dadams
