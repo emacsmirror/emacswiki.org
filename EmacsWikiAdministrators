@@ -41,10 +41,6 @@ The powers of an administrator:
 # Change the list of sites connected via NearLinks by modifying the NearMap page
 # Run maintenance at any time.
 
-== InterMap Requests ===
-
-Old InterMap discussion is at InterMapDiscussion.
-
 == Banning Hosts ==
 
 To ban a host or IP number you need to edit BannedHosts. There's a special admin link to facilitate this, however. Here's a suggested workflow:
