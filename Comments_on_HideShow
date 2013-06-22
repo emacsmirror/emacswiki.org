@@ -1,0 +1,11 @@
+found some bug in python-mode
+the code folding is activated for any text with pattern
+"*def*" followed by any non alphabetic character followed with anything
+
+'''"def[^a-zA-Z].*"'''
+
+*examples*:
+def_, def_abc, def|, def! etc....
+
+-- rhoit 2013-06-22 09:22 UTC
+
