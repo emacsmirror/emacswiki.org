@@ -47,13 +47,17 @@ Old InterMap discussion is at InterMapDiscussion.
 
 == Banning Hosts ==
 
-The simplest way to ban a host or IP number is to edit BannedHosts. Alternatively, proceed as follows:
+To ban a host or IP number you need to edit BannedHosts. There's a special admin link to facilitate this, however. Here's a suggested workflow:
 
-# at the bottom of the page, click on _Administration_
-# click on _Ban contributors_
-# it will list IP numbers and host names and the usernames used, if any
-# IP numbers and host names that aren't banned have a nice, big *Ban!* button next to them
-# click the button and a new entry will be made in BannedHosts
+# bookmark a link to [http://www.emacswiki.org/emacs/?action=rc;days=7;all=0;rollback=1;showedit=1 RecentChanges including minor edits and rollbacks]
+
+# click on the _history_ link of suspicious edits
+# click the appropriate *Rollback* button
+# click the _Administration_ link at the bottom of the confirmation page
+# click the new _Ban contributors_ link
+# click the appropriate *Ban!* button
+ 
+The "Ban contributors" page lists IP numbers, host names and usernames used. The IP numbers and host names that aren't banned have a nice, big *Ban!* button next to them. Clicking the button adds a new entry to BannedHosts.
 
 Note that these entries are probably useless against spammers that keep changing their IP number.
 That's what the next section is about: banning whole ranges.
