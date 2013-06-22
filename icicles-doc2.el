@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Jun 21 00:15:16 2013 (-0700)
+;; Last-Updated: Sat Jun 22 10:15:29 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 29335
+;;     Update #: 29338
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -5149,10 +5149,12 @@
 ;;    `*Completions*' window.  You can also remove the `*Completions*'
 ;;    window at any time using `C-x 0' in the minibuffer.
 ;;
-;;  * Non-`nil' option `icicle-remove-Completions-when-sole-dir-flag'
-;;    means automatically remove the `*Completions*' window when the
-;;    only match for your input is a directory name.  The default
-;;    value is `t'.
+;;  * Option `icicle-keep-Completions-for-sole-dir-flag' controls what
+;;    happens during (non-absolute) file-name completion when the only
+;;    match for your input is a directory name.  If non-`nil' then
+;;    just update `*Completions*' to show the sole candidate.  If
+;;    `nil' then remove the `*Completions*' window instead.  The
+;;    default value is `t'.
 ;;
 ;;  * Non-`nil' option `icicle-show-Completions-help-flag' means
 ;;    display help (instructions) at the top of the buffer that shows
