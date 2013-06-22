@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 2013.04.23
-;; Last-Updated: Wed Jun 19 08:55:51 2013 (-0700)
+;; Last-Updated: Sat Jun 22 10:09:36 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 23403
+;;     Update #: 23406
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -784,6 +784,7 @@
 ;;    `icicle-input-string', `icicle-inter-candidates-min-spaces',
 ;;    `icicle-isearch-complete-keys',
 ;;    `icicle-isearch-history-insert-keys',
+;;    `icicle-keep-Completions-for-sole-dir-flag',
 ;;    `icicle-key-complete-keys',
 ;;    `icicle-key-complete-keys-for-minibuffer',
 ;;    `icicle-key-descriptions-use-<>-flag',
