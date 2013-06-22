@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Jun 21 15:52:55 2013 (-0700)
+;; Last-Updated: Sat Jun 22 10:21:53 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 5638
+;;     Update #: 5643
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -129,6 +129,7 @@
 ;;    `icicle-input-string', `icicle-inter-candidates-min-spaces',
 ;;    `icicle-isearch-complete-keys',
 ;;    `icicle-isearch-history-insert-keys',
+;;    `icicle-keep-Completions-for-sole-dir-flag',
 ;;    `icicle-key-complete-keys',
 ;;    `icicle-key-complete-keys-for-minibuffer',
 ;;    `icicle-key-descriptions-use-<>-flag',
@@ -168,7 +169,6 @@
 ;;    `icicle-quote-shell-file-name-flag',
 ;;    `icicle-read+insert-file-name-keys', `icicle-regexp-quote-flag',
 ;;    `icicle-regexp-search-ring-max', `icicle-region-background',
-;;    `icicle-remove-Completions-when-sole-dir-flag',
 ;;    `icicle-require-match-flag', `icicle-saved-completion-sets',
 ;;    `icicle-search-cleanup-flag', `icicle-search-from-isearch-keys',
 ;;    `icicle-search-highlight-all-current-flag',
@@ -3377,8 +3377,13 @@ easily read your minibuffer input."
   :type (if (and (require 'wid-edit nil t)  (get 'color 'widget-type)) 'color 'string)
   :group 'Icicles-Minibuffer-Display)
 
-(defcustom icicle-remove-Completions-when-sole-dir-flag t
-  "*Non-nil means remove `*Completions*' if only match is a directory.
+(defcustom icicle-keep-Completions-for-sole-dir-flag t
+  "*What to do when the only match for your input is a directory name.
+This applies only to non-absolute file-name completion.
+If non-`nil' then just update `*Completions*' to show the sole
+candidate.  If `nil' then remove the `*Completions*' window instead.
+The default value is `t'.
+
 Remember that you can use multi-command `icicle-toggle-option' anytime
 to toggle the option."
   :type 'boolean :group 'Icicles-Completions-Display :group 'Icicles-Files)
