@@ -1,15 +1,17 @@
-An implementation of the bidi algorithm described in UAX#9 is
-available.  The implementation supports implicit bidirectionality. The
+This page describes an elisp implementation of the bidi algorithm described in UAX#9.
+As Emacs already supports bidirectional display out of the box, this code is simply for educational use. 
+
+----
+
+The implementation supports implicit bidirectionality. The
 implicit bidirectional algorithm and the directional marks RLM and LRM
 are supported.  Full bidirectionality would entail the implicit
 bidirectional algorithm, the implicit directional marks, and the
 explicit directional embedding codes: RLM, LRM, LRE, RLE, LRO, RLO,
 PDF.
 
-The current implementation is useful when transforming logical to
-visual order and back.  The logical to visual transformation will be
-part of the DisplayEngineForBiDi, so it will probably be a feature for
-Emacs Lisp authors only.  The visual to logical transformation may be
+The implementation can transform logical to
+visual order and back.  The visual to logical transformation may be
 usefull to convert text from the clipboard, assuming that other
 applications put text in visual order into the clipboard.
 
