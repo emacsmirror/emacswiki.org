@@ -37,6 +37,7 @@ For information on using the menu for actions instead of keys, see CategoryMenus
 * ScreenKeys -- Similar to the above, for screen(1)
 * MovingTheMetaKey -- How to move your meta-key if it's not in the right position
 * MovingTheCtrlKey -- How to move your ctrl-key if it's not in the right position
+* SwapControlAltAndCapsLock -- Move all your keys around for ergonomic ease of use.
 * BindingControlReturn -- How to bind Control-Return in a local mode
 * OpeningQuote -- How to type `this' easily on keyboards where only ' is easily accessed
 * TabKey -- How to change the behaviour of the TAB key
