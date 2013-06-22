@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Jun 20 23:58:19 2013 (-0700)
+;; Last-Updated: Sat Jun 22 10:12:15 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 19161
+;;     Update #: 19165
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -3815,11 +3815,12 @@ Optional argument WORD-P non-nil means complete only a word at a time."
                                             (icicle-file-name-directory-w-default icicle-current-input))
                                          icicle-last-completion-candidate)))
                         (insert inserted)
-                        (if (or (not (or (icicle-file-name-input-p)  icicle-abs-file-candidates))
-                                (not (icicle-file-directory-p inserted))
-                                icicle-remove-Completions-when-sole-dir-flag)
-                            (save-selected-window (icicle-remove-Completions-window))
-                          (icicle-display-candidates-in-Completions)))
+                        ;; If candidate is a directory, just update `*Completions*', so you can drill down.
+                        ;; Otherwise, remove `*Completions*'.
+                        (if (and (icicle-file-name-input-p)  (icicle-file-directory-p inserted)
+                                 icicle-keep-Completions-for-sole-dir-flag)
+                            (icicle-display-candidates-in-Completions)
+                          (save-selected-window (icicle-remove-Completions-window))))
                       ;; Do not transform multi-completion here.  It should be done in the function that
                       ;; acts on the chosen completion candidate.  For a multi-command, that means it
                       ;; should be done in the action function.
@@ -4219,11 +4220,12 @@ message either.  NO-DISPLAY-P is passed to
                                           (icicle-file-name-directory-w-default icicle-current-input))
                                        icicle-last-completion-candidate)))
                       (insert inserted)
-                      (if (or (not (or (icicle-file-name-input-p)  icicle-abs-file-candidates))
-                              (not (icicle-file-directory-p inserted))
-                              icicle-remove-Completions-when-sole-dir-flag)
-                          (save-selected-window (icicle-remove-Completions-window))
-                        (icicle-display-candidates-in-Completions))
+                      ;; If candidate is a directory, just update `*Completions*', so you can drill down.
+                      ;; Otherwise, remove `*Completions*'.
+                      (if (and (icicle-file-name-input-p)  (icicle-file-directory-p inserted)
+                               icicle-keep-Completions-for-sole-dir-flag)
+                          (icicle-display-candidates-in-Completions)
+                        (save-selected-window (icicle-remove-Completions-window)))
                       ;; Do not transform multi-completion here.  It should be done in the function that
                       ;; acts on the chosen completion candidate.  For a multi-command, that means it should
                       ;; be done in the action function.
