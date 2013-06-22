@@ -4,11 +4,9 @@ This page refers to outdated information for historical purposes only.
 
 ----
 
-Work started here:
+Work started on the m17n.org website (discontinued).
 
-* http://www.m17n.org/emacs-bidi/index.html
-
-TAKAHASHI Naoto and HANDA Kenichi are writing code to display Arabic
+TAKAHASHI Naoto and HANDA Kenichi wrote code to display Arabic
 from Unicode and ISO-8859-6 correctly.  Those encodings use only one
 character for the various glyphs (start, middle, end, isolated form),
 so the display code needs to know about some basic Arabic rules to get
