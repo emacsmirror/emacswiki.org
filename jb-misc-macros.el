@@ -84,7 +84,6 @@
 
 ;;; TODO
 ;;
-;; Macro that works like apply-partially but allowing partial application of args in any position.
 ;;
 
 ;;; Require
@@ -93,15 +92,36 @@
 
 ;;; Code:
 
-;; Use pcase instead of acase?
-;; (defmacro apply-partially*
-;; (mapcar (lambda (x) (acase x
-;;                       ((first second third four fifth sixth seventh eight ninth tenth)
-;;                        (list it 'args))
-;;                       (t x)))
-;;         '(1 2 second 5 3 first 9 third ninth))
-;;   )
+(defsubst lastcar (lst)
+  (car (last lst)))
 
+;; Note: the cut macro in combinators.el does a similar job to the following function,
+;; but cut doesn't allow reordering the args.
+(defun jb-apply-partially (fun &rest args)
+  "Return a function that is a partial application of FUN to ARGS.
+ARGS is a list of the first N arguments to pass to FUN.
+The result is a new function which does the same as FUN, except that
+the first N arguments are fixed at the values with which this function
+was called.
+ARGS may also contain the symbols 'first 'second 'third' 'fourth 'fifth
+'sixth 'seventh 'eigth 'ninth & 'tenth, which will be replaced by the
+corresponding args in the call to the new function.
+For example (jb-apply-partially '/ 'first 3) returns a function which divides
+by three. If we set this to d3 then (d3 6) will return 2, and (d3 6 2) will return 1."
+  (let* (used
+         (positions '(first second third four fifth sixth seventh eight ninth tenth))
+         (fixedargs
+          (mapcar (lambda (x) (eval `(acase x
+                                       (,positions
+                                        (push it used)
+                                        (list it 'args))
+                                       (t x)))) args))
+         (maxpos (if used (1+ (position (lastcar used) positions)) 0))
+         (otherargs (if used
+                        (mapcar (lambda (x) (list x 'args))
+                                (set-difference (subseq positions 0 maxpos) used)))))
+    `(closure (t) (&rest args)
+              (apply ',fun ,@fixedargs ,@otherargs (subseq args ,maxpos)))))
 
 (defmacro jb-untilnext (initform nextform &optional testfunc &rest bindings)
   "Evaluate INITFORM followed by NEXTFORM repeatedly. Stop when one of them returns non-nil, and returning that value.
