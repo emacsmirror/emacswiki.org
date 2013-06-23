@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Jun 22 10:23:57 2013 (-0700)
+;; Last-Updated: Sun Jun 23 14:05:32 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 10050
+;;     Update #: 10056
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -86,6 +86,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2013/06/23 dadams
+;;     icicle-find-file-of-content(-other-window): Ensure handle mode, vars, hooks, & handlers OK.
+;;       In action fn: UN-visit any buffers that were created for content searching.
 ;; 2013/04/24 dadams
 ;;     icicle-dired-saved-file-candidates:
 ;;       Removed error if no saved file names.  Forgot to remove, when added icicle-file-list choosing.
