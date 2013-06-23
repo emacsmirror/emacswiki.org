@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Jun 23 13:53:30 2013 (-0700)
+;; Last-Updated: Sun Jun 23 14:21:45 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 25798
+;;     Update #: 25800
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -7499,8 +7499,8 @@ can use the following keys:
              (fil2       (if (string= "" (file-name-nondirectory file)) (directory-file-name file) file))
              ;; If FILE uses wildcards then there are multiple files to visit.
              (wildfiles  (file-expand-wildcards fil2)))
-        ;; UN-visit any buffers created for content searching, so that `find-file*' DTRT.
-        ;; wrt file-local var declarations, file handlers, find-file hooks etc.
+        ;; Kill any buffers created for content searching, so that `find-file*' DTRT wrt file-local variable
+        ;; declarations, file handlers, find-file hooks etc.
         (dolist (fil  wildfiles)
           (let ((created-buf  (and (boundp 'new-bufs--to-kill)
                                    (car (memq (find-buffer-visiting fil) new-bufs--to-kill)))))
@@ -7568,8 +7568,8 @@ Same as `icicle-find-file-of-content' except it uses a different window." ; Doc 
              (fil2       (if (string= "" (file-name-nondirectory file)) (directory-file-name file) file))
              ;; If FILE uses wildcards then there are multiple files to visit.
              (wildfiles  (file-expand-wildcards fil2)))
-        ;; UN-visit any buffers created for content searching, so that `find-file*' DTRT.
-        ;; wrt file-local var declarations, file handlers, find-file hooks etc.
+        ;; Kill any buffers created for content searching, so that `find-file*' DTRT wrt file-local variable
+        ;; declarations, file handlers, find-file hooks etc.
         (dolist (fil  wildfiles)
           (let ((created-buf  (and (boundp 'new-bufs--to-kill)
                                    (car (memq (find-buffer-visiting fil) new-bufs--to-kill)))))
