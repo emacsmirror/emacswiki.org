@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Jun  7 20:48:28 2013 (-0700)
+;; Last-Updated: Sun Jun 23 13:53:30 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 25756
+;;     Update #: 25798
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -7488,24 +7488,35 @@ can use the following keys:
  * C-x a +      - add tags to current candidate
  * C-x a -      - remove tags from current candidate
  * C-x m        - access file bookmarks (not just autofiles)" ; Doc string
+    ;; Free vars here: CURRENT-PREFIX-ARG, INIT-PREF-ARG
     (lambda (file)                      ; Action function
-      ;; Free vars here: CURRENT-PREFIX-ARG, INIT-PREF-ARG, THIS-COMMAND, NEW-BUFS--TO-KEEP.
+      ;; Free vars here: CURRENT-PREFIX-ARG, THIS-COMMAND, NEW-BUFS--TO-KEEP.
+      (setq file  (icicle-transform-multi-completion file))
       (let* ((r-o  (and (memq this-command '(icicle-candidate-action icicle-mouse-candidate-action
                                              icicle-all-candidates-action))
                         current-prefix-arg))
-             (fn   (if r-o 'find-file-read-only 'find-file)))
-        (setq file  (icicle-transform-multi-completion file))
-        (funcall fn file 'WILDCARDS)
-        (when (and (file-readable-p file)  (buffer-file-name))  (normal-mode)) ; Else in fundamental mode.
-        ;; Add the visited buffer to those we will keep (not kill).
-        ;; If FILE uses wildcards then there will be multiple such buffers.
+             (fn         (if r-o 'find-file-read-only 'find-file))
+             (fil2       (if (string= "" (file-name-nondirectory file)) (directory-file-name file) file))
+             ;; If FILE uses wildcards then there are multiple files to visit.
+             (wildfiles  (file-expand-wildcards fil2)))
+        ;; UN-visit any buffers created for content searching, so that `find-file*' DTRT.
+        ;; wrt file-local var declarations, file handlers, find-file hooks etc.
+        (dolist (fil  wildfiles)
+          (let ((created-buf  (and (boundp 'new-bufs--to-kill)
+                                   (car (memq (find-buffer-visiting fil) new-bufs--to-kill)))))
+            (when (and created-buf  (not (memq created-buf new-bufs--to-keep)))
+              (with-current-buffer created-buf
+                (restore-buffer-modified-p nil) ; Just visiting can sometimes modify the buffer
+                (setq  new-bufs--to-kill (delete created-buf new-bufs--to-kill))
+                (kill-buffer created-buf)))))
+        (funcall fn file 'WILDCARDS)    ; Visit properly (mode, vars, handlers, hooks).
+        ;; Add the visited buffers to those we will keep (not kill).
         ;; For a directory, get the Dired buffer instead of using `get-file-buffer'.
-        (let ((fil2  (if (string= "" (file-name-nondirectory file)) (directory-file-name file) file)))
-          (dolist (fil  (file-expand-wildcards fil2))
-            (when (setq fil  (if (file-directory-p fil)
-                                 (get-buffer (file-name-nondirectory fil))
-                               (get-file-buffer fil)))
-              (push fil new-bufs--to-keep))))))
+        (dolist (fil  wildfiles)
+          (when (setq fil  (if (file-directory-p fil)
+                               (get-buffer (file-name-nondirectory fil))
+                             (get-file-buffer fil)))
+            (push fil new-bufs--to-keep)))))
     prompt nil (if (eq major-mode 'dired-mode) ; `read-file-name' args
                    (condition-case nil  ; E.g. error because not on file line (ignore)
                        (abbreviate-file-name (dired-get-file-for-visit))
@@ -7514,7 +7525,7 @@ can use the following keys:
     (confirm-nonexistent-file-or-buffer) nil nil
     (icicle-file-bindings               ; Bindings
      ((init-pref-arg                          current-prefix-arg)
-      (prompt                             "File or directory: ")
+      (prompt                                 "File or directory: ")
       (icicle-compute-narrowing-regexp-p      t) ; For progressive completion.
       (icicle-apropos-complete-match-fn       'icicle-file-of-content-apropos-complete-match)
       (icicle-last-apropos-complete-match-fn  'icicle-file-of-content-apropos-complete-match)
@@ -7546,24 +7557,35 @@ can use the following keys:
   (icicle-define-file-command icicle-find-file-of-content-other-window ; Not bound by default.
     "Visit a file or dir whose name and/or content matches, in another window.
 Same as `icicle-find-file-of-content' except it uses a different window." ; Doc string
+    ;; Free vars here: CURRENT-PREFIX-ARG, INIT-PREF-ARG
     (lambda (file)                      ; Action function
-      ;; Free vars here: CURRENT-PREFIX-ARG, INIT-PREF-ARG, THIS-COMMAND, NEW-BUFS--TO-KEEP.
+      ;; Free vars here: CURRENT-PREFIX-ARG, THIS-COMMAND, NEW-BUFS--TO-KEEP.
+      (setq file  (icicle-transform-multi-completion file))
       (let* ((r-o  (and (memq this-command '(icicle-candidate-action icicle-mouse-candidate-action
                                              icicle-all-candidates-action))
                         current-prefix-arg))
-             (fn   (if r-o 'find-file-read-only-other-window 'find-file-other-window)))
-        (setq file  (icicle-transform-multi-completion file))
-        (funcall fn file 'WILDCARDS)
-        (when (and (file-readable-p file)  (buffer-file-name)) (normal-mode)) ; Else in fundamental mode.
-        ;; Add the visited buffer to those we will keep (not kill).
-        ;; If FILE uses wildcards then there will be multiple such buffers.
+             (fn   (if r-o 'find-file-read-only-other-window 'find-file-other-window))
+             (fil2       (if (string= "" (file-name-nondirectory file)) (directory-file-name file) file))
+             ;; If FILE uses wildcards then there are multiple files to visit.
+             (wildfiles  (file-expand-wildcards fil2)))
+        ;; UN-visit any buffers created for content searching, so that `find-file*' DTRT.
+        ;; wrt file-local var declarations, file handlers, find-file hooks etc.
+        (dolist (fil  wildfiles)
+          (let ((created-buf  (and (boundp 'new-bufs--to-kill)
+                                   (car (memq (find-buffer-visiting fil) new-bufs--to-kill)))))
+            (when (and created-buf  (not (memq created-buf new-bufs--to-keep)))
+              (with-current-buffer created-buf
+                (restore-buffer-modified-p nil) ; Just visiting can sometimes modify the buffer
+                (setq  new-bufs--to-kill (delete created-buf new-bufs--to-kill))
+                (kill-buffer created-buf)))))
+        (funcall fn file 'WILDCARDS)    ; Visit properly (mode, vars, handlers, hooks).
+        ;; Add the visited buffers to those we will keep (not kill).
         ;; For a directory, get the Dired buffer instead of using `get-file-buffer'.
-        (let ((fil2  (if (string= "" (file-name-nondirectory file)) (directory-file-name file) file)))
-          (dolist (fil  (file-expand-wildcards fil2))
-            (when (setq fil  (if (file-directory-p fil)
-                                 (get-buffer (file-name-nondirectory fil))
-                               (get-file-buffer fil)))
-              (push fil new-bufs--to-keep))))))
+        (dolist (fil  wildfiles)
+          (when (setq fil  (if (file-directory-p fil)
+                               (get-buffer (file-name-nondirectory fil))
+                             (get-file-buffer fil)))
+            (push fil new-bufs--to-keep)))))
     prompt nil (if (eq major-mode 'dired-mode) ; `read-file-name' args
                    (condition-case nil  ; E.g. error because not on file line (ignore)
                        (abbreviate-file-name (dired-get-file-for-visit))
@@ -7586,8 +7608,8 @@ Same as `icicle-find-file-of-content' except it uses a different window." ; Doc 
       (icicle-all-candidates-list-alt-action-fn ; `M-|'
        (lambda (files) (let ((enable-recursive-minibuffers  t))
                          (dired-other-window (cons (read-string "Dired buffer name: ") files)))))))
-    (progn (icicle-bind-file-candidate-keys)
-           (put-text-property 0 1 'icicle-fancy-candidates t prompt) ; First code
+    (progn (icicle-bind-file-candidate-keys) ; First code
+           (put-text-property 0 1 'icicle-fancy-candidates t prompt)
            (icicle-highlight-lighter))
     nil                                 ; Undo code
     (progn (icicle-unbind-file-candidate-keys) ; Last code
@@ -7668,7 +7690,7 @@ Return non-nil if the current multi-completion INPUT matches FILE-NAME."
                       (when (and (boundp 'existing-bufs)  (boundp 'new-bufs--to-kill)
                                  (not (memq buf existing-bufs)))
                         (add-to-list 'new-bufs--to-kill buf))
-                      (when (and found ; Don't do it just because incrementally complete.
+                      (when (and found  ; Don't do it just because incrementally complete.
                                  (or (icicle-get-safe this-command 'icicle-apropos-completing-command)
                                      (icicle-get-safe this-command 'icicle-cycling-command)
                                      (memq this-command '(icicle-retrieve-next-input
