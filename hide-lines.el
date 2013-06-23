@@ -4,7 +4,7 @@
 ;; Description: Commands for hiding lines based on a regexp
 ;; Author: Mark Hulme-Jones <ture at plig cucumber dot net>
 ;; Maintainer: Joe Bloggs <vapniks@yahoo.com>
-;; Version: 20130623.1642
+;; Version: 20130623.1701
 ;; Last-Updated: 2013-06-23 16:42:00
 ;;           By: Joe Bloggs
 ;; URL: https://github.com/vapniks/hide-lines
@@ -72,7 +72,7 @@
 ;;
 ;;  `hide-lines-reverse-prefix'
 ;;    If non-nil then `hide-lines' will call `hide-lines-matching' by default, and `hide-lines-not-matching' with a single prefix.
-;;    default = nil
+;;    default = nil. This variable is buffer local so you can use different values for different buffers.
 
 ;;; Installation:
 ;;
