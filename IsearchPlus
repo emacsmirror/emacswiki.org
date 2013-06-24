@@ -56,7 +56,7 @@ removes all faces from the region.
 
 [:isearchp-kill-ring-save]
 * '''`M-w'''' (`isearchp-kill-ring-save') copies the current search string to the [[kill ring]].  You can then, for example, use `C-s M-y' to search for the same
-thing in another Emacs session.  (Use `M-s w' for `isearch-toggle-word'.)
+thing in another Emacs session.  (I use this all the time, but you might not use multiple Emacs sessions.)  Note that if you did not have this feature then you would need to select the search-string text (in the text buffer or in the `M-e' Isearch edit buffer) and copy it to the kill ring.  (Note: `M-w' used to toggle word search, but `isearch-toggle-word' is now `M-s w'.)
 
 * All commands that yank text onto the search string are bound to keys with prefix `C-y' (in addition to any other Isearch bindings):
 
