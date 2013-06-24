@@ -5,8 +5,8 @@
 ;; Author: Harley Gorrell <harley@mahalito.net>
 ;; Maintainer: Joe Bloggs <vapniks@yahoo.com>
 ;; Created: 2003-03-17 18:50:12 Harley Gorrell
-;; Version: 1.9
-;; Last-Updated: 2013-06-23 01:36:00
+;; Version: 2.0
+;; Last-Updated: 2013-06-24 19:04:00
 ;;           By: Joe Bloggs
 ;; URL: https://github.com/vapniks/syslog-mode
 ;; Keywords: unix
