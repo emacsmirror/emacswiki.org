@@ -61,5 +61,11 @@ To use, simply ensure that ##edit-server-htmlize.el## is on your ##load-path## a
 
 TODO: Look at integrating as-external...
 
+
 On OS X, running Aquamacs 2.1, how would I force Aquamacs to bring the new message frame above Chrome? Currently, a new frame is opened on top of Aquamacs, but below
 Chrome.  Also, i think the ALT+E button doesn't function on Chrome 10.0.612.1 dev - no Aquamacs window is raised.
+
+On OS X running Aquamacs (version 3.x development) : force Aquamacs to become the front application (bringing *all* frames forward, not just new "edit" frame) using:
+(add-hook 'edit-server-start-hook
+         (lambda ()
+           (do-applescript "tell application \"Aquamacs\" to activate")))
