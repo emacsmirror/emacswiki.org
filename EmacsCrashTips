@@ -67,8 +67,8 @@ you may want to bind <tt>backward-kill-word</tt> to <tt>M-h</tt>.
 [new:XueFuqiao:2013-03-31 12:49 UTC]
 But <tt>M-h</tt>runs the command <tt>mark-paragraph</tt>, which is also a very useful command.  -- XueFuqiao
 
-It's usually faster to kill a mispelled word and retype it instead
-to go back to the typo, deleting one character at a time.
+It's usually faster to kill a misspelled word and retype it instead
+of going back to the typo and deleting one character at a time.
 
 == Customize your own bindings ==
 
