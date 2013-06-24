@@ -7,5 +7,5 @@ How can one determine whether the running Emacs is GNU Emacs or XEmacs?
 
 Greping for `xemacs' in the Emacs source code shows that this is the most common test: ##(featurep 'xemacs)##.
 
--- [http://(featurep 'xemacs) DrewAdams] 2013-06-24 02:45 UTC
+-- DrewAdams 2013-06-24 02:45 UTC
 
