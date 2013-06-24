@@ -75,6 +75,11 @@
 
 ;;; ChangeLog:
 ;;
+;; * 0.1.1 (2013/06/24)
+;;   Fixed the problem which `popup-select-window' does not works by the
+;;   Emacs 24.3 later. And Changed the internal function/variable name.
+;;   (This bug was reported by @lurdan. Thank you.)
+;;
 ;; * 0.1.0 (2012/02/11)
 ;;   Added key configuration to select window by 1 key.
 ;;
@@ -105,7 +110,7 @@
 
 ;;; Variables:
 
-(defconst popup-select-window-version "0.1.0"
+(defconst popup-select-window-version "0.1.1"
   "Version of `popup-select-window'.")
 
 (defvar popup-select-window-window-highlight-face 'highlight
@@ -149,10 +154,10 @@
     "*A keymap for `popup-menu*' of `popup-select-window'.")
 
 
-(defvar popup-select-window-window-list-cache nil
+(defvar popup-select-window--window-list-cache nil
   "Internal variable for `popup-select-window'.")
 
-(defvar popup-select-window-window-overlay nil
+(defvar popup-select-window--window-overlay nil
   "Internal variable for `popup-select-window'.")
 
 
@@ -170,8 +175,8 @@
                          (setq c (1+ c))))
                    (window-list))))
         (cwin (selected-window))
-        (active-modeline (face-background 'modeline))
-        (inactive-modeline (face-background 'modeline-inactive))
+        (active-modeline (popup-select-window--bg-access-modeline))
+        (inactive-modeline (popup-select-window--bg-access-modeline-inactive))
         (mhighlight popup-select-window-use-modeline-highlight)
         (bhighlight popup-select-window-use-buffer-highlight)
         (min-wins popup-select-window-popup-windows)
@@ -206,13 +211,11 @@
       (unwind-protect
           (progn
             (when mhighlight
-              (set-face-background
-               'modeline
+              (popup-select-window--bg-access-modeline
                popup-select-window-active-modeline-bgcolor)
-              (set-face-background
-               'modeline-inactive
+              (popup-select-window--bg-access-modeline-inactive
                popup-select-window-inactive-modeline-bgcolor))
-            (setq popup-select-window-window-list-cache wins
+            (setq popup-select-window--window-list-cache wins
                   select
                   (popup-menu*
                    (mapcar #'(lambda (x)
@@ -227,18 +230,18 @@
                    :keymap       keymap)))
         ;; delete overlay
         (when bhighlight
-          (popup-select-window-delete-overlay))
+          (popup-select-window--delete-overlay))
         ;; recover modeline color
         (when mhighlight
-          (set-face-background 'modeline active-modeline)
-          (set-face-background 'modeline-inactive inactive-modeline)
+          (popup-select-window--bg-access-modeline active-modeline)
+          (popup-select-window--bg-access-modeline-inactive inactive-modeline)
           (when (and (numberp last-input-event) (= last-input-event ? ))
             (select-window cwin)))
-        (setq popup-select-window-window-list-cache nil)
+        (setq popup-select-window--window-list-cache nil)
         (when select
           (select-window
-           (popup-select-window-get-window
-            (popup-select-window-get-index select) wins))))))))
+           (popup-select-window--get-window
+            (popup-select-window--get-index select) wins))))))))
 
 (defun popup-select-window-select ()
   (interactive)
@@ -254,10 +257,10 @@
          num item)
     (when (and (>= ch ?a) (>= ?z ch))
       (setq num (- ch ?a))
-      (popup-select-window-delete-overlay)
+      (popup-select-window--delete-overlay)
       (when popup-select-window-highlight-func
         (funcall popup-select-window-highlight-func
-                 (popup-select-window-get-window num)))
+                 (popup-select-window--get-window num)))
       (when (setq item (popup-item-value-or-self (nth num lst)))
         (return item)))))
 
@@ -274,12 +277,12 @@
     (when (>= num len)
       (setq num 0))
     (setq item (popup-x-to-string (nth num lst))
-          num (popup-select-window-get-index item))
-    (popup-select-window-delete-overlay)
+          num (popup-select-window--get-index item))
+    (popup-select-window--delete-overlay)
     (popup-next m)
     (when popup-select-window-highlight-func
       (funcall popup-select-window-highlight-func
-               (popup-select-window-get-window num)))))
+               (popup-select-window--get-window num)))))
 
 (defun popup-select-window-previous ()
   (interactive)
@@ -294,43 +297,56 @@
     (when (< num 0)
       (setq num (1- len)))
     (setq item (popup-x-to-string (nth num lst))
-          num (popup-select-window-get-index item))
-    (popup-select-window-delete-overlay)
+          num (popup-select-window--get-index item))
+    (popup-select-window--delete-overlay)
     (popup-previous m)
     (when popup-select-window-highlight-func
       (funcall popup-select-window-highlight-func
-               (popup-select-window-get-window num)))))
+               (popup-select-window--get-window num)))))
 
-(defun popup-select-window-get-index (item)
+(defun popup-select-window-highlight (win)
+  (when popup-select-window-use-modeline-highlight
+    (popup-select-window--modeline-highlight win))
+  (when popup-select-window-use-buffer-highlight
+    (popup-select-window--buffer-highlight win)))
+
+(defun popup-select-window--bg-access (target &optional face)
+  (cond
+   (face
+    (set-face-background target face))
+   (t
+    (face-background target))))
+
+(defun popup-select-window--bg-access-modeline (&optional face)
+  (popup-select-window--bg-access 'mode-line face))
+
+(defun popup-select-window--bg-access-modeline-inactive (&optional face)
+  (popup-select-window--bg-access 'mode-line-inactive face))
+
+(defun popup-select-window--get-index (item)
   (with-temp-buffer
     (erase-buffer)
     (insert item)
     (get-text-property (point-min) 'index)))
 
-(defun popup-select-window-highlight (win)
-  (when popup-select-window-use-modeline-highlight
-    (popup-select-window-modeline-highlight win))
-  (when popup-select-window-use-buffer-highlight
-    (popup-select-window-buffer-highlight win)))
-
-(defun popup-select-window-modeline-highlight (win)
+(defun popup-select-window--modeline-highlight (win)
   (select-window win))
 
-(defun popup-select-window-buffer-highlight (win)
+(defun popup-select-window--buffer-highlight (win)
   (when (windowp win)
     (with-selected-window win
-      (setq popup-select-window-window-overlay
+      (setq popup-select-window--window-overlay
             (make-overlay (window-start) (window-end)))
-      (overlay-put popup-select-window-window-overlay 'window win)
-      (overlay-put popup-select-window-window-overlay
+      (overlay-put popup-select-window--window-overlay 'window win)
+      (overlay-put popup-select-window--window-overlay
                    'face popup-select-window-window-highlight-face))))
 
-(defun popup-select-window-delete-overlay ()
-  (when popup-select-window-window-overlay
-    (delete-overlay popup-select-window-window-overlay)))
+(defun popup-select-window--delete-overlay ()
+  (when popup-select-window--window-overlay
+    (delete-overlay popup-select-window--window-overlay)))
 
-(defun popup-select-window-get-window (num &optional win)
-  (nth 2 (assq num (if win win popup-select-window-window-list-cache))))
+(defun popup-select-window--get-window (num &optional win)
+  (nth 2 (assq num (if win win popup-select-window--window-list-cache))))
 
 
 (provide 'popup-select-window)
