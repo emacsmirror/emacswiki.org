@@ -45,7 +45,7 @@
 ;; "C-down" : syslog-boot-start
 ;; "R"      : revert-buffer
 ;; "/"      : syslog-filter-lines
-;; "g"      : show-all-invisible
+;; "g"      : hide-lines-show-all
 ;; "h r"    : highlight-regexp
 ;; "h p"    : highlight-phrase
 ;; "h l"    : highlight-lines-matching-regexp
@@ -182,7 +182,7 @@
     (define-key map [C-down] 'syslog-boot-start)
     (define-key map "R" 'revert-buffer)
     (define-key map "/" 'syslog-filter-lines)
-    (define-key map "g" 'show-all-invisible)
+    (define-key map "g" 'hide-lines-show-all)
     (define-prefix-command 'syslog-highlight-map)
     (define-key map "h" 'syslog-highlight-map)
     (define-key map (kbd "h r") 'highlight-regexp)
