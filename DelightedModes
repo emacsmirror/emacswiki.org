@@ -1,8 +1,8 @@
-Similar to DiminishedModes but accounting for major modes as well as minor modes, and incorporating the `eval-after-load' call.
+*Delight* is similar to DiminishedModes but accounting for major modes as well as minor modes, and incorporating the `eval-after-load' call.
 
 Lisp:delight.el enables you to easily customise how major and minor modes appear in the ModeLine.
 
-*Example usage:*
+==Example usage==
 
  (require 'delight)
  
@@ -20,7 +20,7 @@ The second argument is the replacement name to use in the mode line (or nil to h
 
 The third argument is passed to `eval-after-load' and should be either the name (as a string) of the library file which defines the mode, or the feature (symbol) provided by that library. If this argument is nil, the mode symbol will be passed as the feature.
 
-*Important note:*
+==Important note==
 
 Although strings are common, any mode-line construct is permitted as the value (for both minor and major modes); so before you override a value you should check the existing one, as you may want to replicate any structural elements in your replacement if it turns out not to be a simple string.
 
