@@ -22,6 +22,7 @@ that colors and [[Face]]s belong in CategoryFaces.
 ** ModeLinePosition -- enhancements to standard minor modes ‘line-number-mode’, ‘column-number-mode’, and ‘size-indication-mode’
 ** ShowPointMode -- show the value of the point in the mode line
 ** DiminishedModes -- Abbreviate minor modes appearing in the ModeLine.
+** Delight -- Abbreviate/customise both major and minor mode names in the ModeLine.
 * ShowWhiteSpace -- highlight whitespace
 * TransparentEmacs -- how to make your wallpaper shine through the buffer
 * HighlightTemporarily -- highlight parts of a buffer
@@ -97,3 +98,4 @@ that colors and [[Face]]s belong in CategoryFaces.
 == And for tons of screenshots ==
 
 * http://images.google.com/images?q=emacs
+* (adding a non-link to appease the link spam filter)
