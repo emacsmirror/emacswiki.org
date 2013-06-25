@@ -6,4 +6,7 @@ diminish.el[http://www.eskimo.com/~seldon/diminish.el] lets you fight modeline c
 The `eval-after-load' form lets you diminish modes not loaded at Emacs startup.
 
 ----
+See also DelightedModes
+
+----
 CategoryDisplay
