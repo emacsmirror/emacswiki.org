@@ -24,6 +24,8 @@ The second argument is the replacement name to use in the mode line (or nil to h
 
 The third argument is passed to `eval-after-load' and should be either the name (as a string) of the library file which defines the mode, or the feature (symbol) provided by that library. If this argument is nil, the mode symbol will be passed as the feature. In the above example, ##rainbow-mode## is the symbol for both the minor mode and the feature which provides it, and its lighter text will be hidden from the mode line.
 
+To find the library which defines a mode, use e.g.: ##M-x find-library RET emacs-lisp-mode RET##
+
 ==Important notes==
 
 Although strings are common, any mode-line construct is permitted as the value (for both minor and major modes); so before you override a value you should check the existing one, as you may want to replicate any structural elements in your replacement if it turns out not to be a simple string.
