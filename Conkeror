@@ -3,5 +3,12 @@ features of its own for dealing with those problems unique to the domain of gui 
 prime directive to make every aspect of web browsing available via keyboard control.  For more information,
 visit http://conkeror.org/
 
+If you are not using any of the standard window managers in Linux then you may be required to set Conkeror as your default browser manually.
+
+{{{
+(setq browse-url-generic-program (executable-find "conkeror"))
+(setq browse-url-browser-function 'browse-url-generic)
+}}}
+
 ----
 FireFox CategoryRelated
