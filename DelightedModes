@@ -39,4 +39,6 @@ Conversely, you may incorporate additional mode-line constructs in your replacem
 
 See `mode-line-format' for information about mode-line constructs, and ##M-: (info "(elisp) Mode Line Format")## for further details.
 
+Settings for minor modes are held in a global variable and tend to take immediate effect upon calling `delight'. Major mode names are held in buffer-local variables, however, so changes to these will not take effect in a given buffer unless the major mode is called again, or the buffer is reverted. Calling ##M-x normal-mode## is sufficient in most cases.
+
 Also bear in mind that some modes may dynamically update these values themselves (for instance dired-mode updates mode-name if you change the sorting criteria) in which cases this library may prove inadequate.
