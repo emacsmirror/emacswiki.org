@@ -133,7 +133,7 @@ As of May 8th, 2010 Fink [http://fink.sourceforge.net/ http://fink.sourceforge.n
 * Emacs  -- 9.0rc3 (Cocoa,  quite old)
 * Emacs  -- 22.3   (Carbon, quite old)
 * color-theme, ecb, edb, eieio, emacs-w3, emacs-w3m, jdee, mew, nxml-mode, planner-el, speedbar, ...
-and even AucTeX!
+and even AucTeX! [http://www.portedeurope.org Übersetzung Deutsch Englisch]
 * XEmacs 21.4.20
 
 --- I just installed fink 0.31.0 on 10.6 using a source tarball because I wanted jdee, but unfortunately there seems to be no such package.  (kosta 19/08/2011)
