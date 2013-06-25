@@ -1,4 +1,4 @@
-*Delight* is similar to DiminishedModes but accounting for major modes as well as minor modes, and incorporating the `eval-after-load' call.
+*Delight* is similar to DiminishedModes but it accounts for major modes as well as minor modes, and also incorporates the necessary `eval-after-load' call.
 
 Lisp:delight.el enables you to easily customise how major and minor modes appear in the ModeLine.
 
