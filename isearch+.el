@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 21.0
-;; Last-Updated: Fri May 31 21:07:10 2013 (-0700)
+;; Last-Updated: Tue Jun 25 10:59:59 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2092
+;;     Update #: 2147
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -54,7 +54,7 @@
 ;;
 ;;  Commands defined here:
 ;;
-;;    `isearch-insert-char-by-name' (Emacs 23-24.2),
+;;    `isearch-char-by-name' (Emacs 23-24.3),
 ;;    `isearchp-char-prop-backward',
 ;;    `isearchp-char-prop-backward-regexp',
 ;;    `isearchp-char-prop-forward',
@@ -141,7 +141,7 @@
 ;;    `C-h'        `isearch-mode-help'
 ;;    `C-t'        `isearchp-char-prop-forward' (Emacs 23+)
 ;;    `C-x o'      `isearchp-open-recursive-edit' (Emacs 22+)
-;;    `C-x 8 RET'  `isearch-insert-char-by-name' (Emacs 23-24.2)
+;;    `C-x 8 RET'  `isearch-char-by-name' (Emacs 23-24.3)
 ;;    `C-y C-_'    `isearchp-yank-symbol-or-char' (Emacs 22+)
 ;;    `C-y C-('    `isearchp-yank-sexp-symbol-or-char' (Emacs 22+)
 ;;    `C-y C-2'    `isearch-yank-secondary'
@@ -356,6 +356,14 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2013/06/25 dadams
+;;     Updated some wrt vanilla isearch.el.
+;;       Replaced isearch-insert-char-by-name with isearch-char-by-name (which now has optional args).
+;;       Updated isearch-printing-char:  now has optional args.
+;;       Removed mention of isearch-nonincremental-exit-minibuffer (obsolete now) in doc strings.
+;;       Mention isearch-allow-prefix in doc strings that mention isearch-allow-scroll.
+;;       isearchp-char-prop-filter-pred: Allow also for isearch-invisible (new).
+;;     isearchp-toggle-invisible: Better message - show current value.
 ;; 2013/05/31 dadams
 ;;     Require cl.el at compile time, for case.
 ;; 2013/05/13 dadams
@@ -810,13 +818,14 @@ You can toggle this with `isearchp-toggle-set-region', bound to
 
 ;;;###autoload
 (defun isearchp-toggle-invisible ()     ; Bound to `C-+' in `isearch-mode-map'.
-  "Toggle `search-invisible'."
+  "Toggle the value of option `search-invisible'."
   (interactive)
   (when search-invisible (setq isearchp-last-non-nil-invisible  search-invisible))
   (setq search-invisible  (if search-invisible nil isearchp-last-non-nil-invisible))
-  (if search-invisible
-      (message "Searching invisible text is now ON")
-    (message "Searching invisible text is now OFF"))
+  (message "Option `search-invisible' is now `%s'" (case search-invisible
+                                                     (open  'OPEN)
+                                                     ((nil) 'OFF)
+                                                     (t     'ON)))
   (sit-for 1)
   (isearch-update))
 
@@ -897,6 +906,7 @@ You can toggle this with `isearchp-toggle-set-region', bound to
 ;;;###autoload
 (defun isearch-toggle-case-fold ()      ; Bound to `M-c' in `isearch-mode-map'.
   "Toggle case folding in searching on or off.
+Toggles the value of variable `isearch-case-fold-search'.
 The minor-mode lighter is `ISEARCH' for case-insensitive, `Isearch'
 for case-sensitive."
   (interactive)
@@ -1058,7 +1068,6 @@ You can update the global isearch variables by setting new values to
 The following additional command keys are active while editing.
 \\<minibuffer-local-isearch-map>
 \\[exit-minibuffer] to resume incremental searching with the edited string.
-\\[isearch-nonincremental-exit-minibuffer] to do one nonincremental search.
 \\[isearch-forward-exit-minibuffer] to resume isearching forward.
 \\[isearch-reverse-exit-minibuffer] to resume isearching backward.
 \\[isearch-complete-edit] to complete the search string using the search ring.
@@ -1219,17 +1228,21 @@ If first char entered is \\[isearch-yank-word], then do word search instead."
       (quit (isearch-abort)))))
 
 (when (and (> emacs-major-version 22)   ; Emacs 23 (bc supports Unicode) through 24.2
-           (or (< emacs-major-version 24)  (and (= emacs-major-version 24)  (< emacs-minor-version 3))))
-  (defun isearch-insert-char-by-name () ; Bound to `C-x 8 RET' in `isearch-mode-map'.
-    "Read a character by its Unicode name and insert it into search string."
-    (interactive)
+           (or (< emacs-major-version 24)  (and (= emacs-major-version 24)  (< emacs-minor-version 4))))
+  (defun isearch-char-by-name (&optional count)
+    "Read a character by its Unicode name and append it to the search string.
+Completion is available as in `read-char-by-name', used by `insert-char'.
+With a numeric prefix arg, append that many copies of the character."
+    (interactive "p")
     (with-isearch-suspended
-        (let ((char  (read-char-by-name "Insert character (Unicode name or hex): ")))
+        (let ((char  (read-char-by-name "Append char to search string (Unicode name or hex): ")))
           (when char
-            (setq isearch-new-string   (concat isearch-string (string char))
-                  isearch-new-message  (concat isearch-message
-                                               (mapconcat 'isearch-text-char-description (string char)
-                                                          ""))))))))
+            (let ((string  (if (and (integerp count)  (> count 1))
+                               (make-string count char)
+                             (char-to-string char))))
+              (setq isearch-new-string   (concat isearch-string string)
+                    isearch-new-message  (concat isearch-message (mapconcat 'isearch-text-char-description
+                                                                            string "")))))))))
 
 (when (fboundp 'isearch-yank-internal)  ; Emacs 22+
   (defun isearchp-yank-char ()          ; Bound to `C-c' and `C-y C-c' in `isearch-mode-map'.
@@ -1560,22 +1573,23 @@ outside of Isearch."
 
 ;; REPLACE ORIGINAL in `isearch.el'.
 ;;
-;; If `isearchp-drop-mismatch' is `replace-last' then remove the last mismatched input.
+;; 1. If `isearchp-drop-mismatch' is `replace-last' then remove the last mismatched input.
+;; 2. Use ?\ , not ?\s, so compatible with older Emacs versions.
 ;;
-(defun isearch-printing-char ()
-  "Add this ordinary printing character to the search string and search."
-  (interactive)
+(defun isearch-printing-char (&optional char count)
+  "Append this ordinary printing character to the search string and search.
+With a numeric prefix arg, append that many copies of the character."
+  (interactive (list last-command-event (prefix-numeric-value current-prefix-arg)))
   (when (eq isearchp-drop-mismatch 'replace-last)
-    (while (or (not isearch-success)  (if (boundp 'isearch-error)
-                                        isearch-error
-                                      isearch-invalid-regexp))
+    (while (or (not isearch-success)  (if (boundp 'isearch-error) isearch-error isearch-invalid-regexp))
       (isearch-pop-state)))
-  (let ((char last-command-event))
+  (let ((char  (or char  last-command-event)))
     (if (= char ?\S-\ )
 	(setq char ?\  ))
     (if current-input-method
-	(isearch-process-search-multibyte-characters char)
-      (isearch-process-search-char char))))
+	(isearch-process-search-multibyte-characters char count)
+      (isearch-process-search-char char count))))
+
 
 
 ;; $$$$$$
@@ -1909,8 +1923,8 @@ NOTE: If you search zones of property `face', and the property values
 NOTE: This command is available during normal Isearch, on key `C-t'.
       However, in order to be able to use a prefix arg with this
       command from within Isearch, you must set `isearch-allow-scroll'
-      to non-nil.  Otherwise, a prefix arg during Isearch exits
-      Isearch."
+      or `isearch-allow-prefix' (if available) to non-nil.  Otherwise,
+      a prefix arg during Isearch exits Isearch."
     (interactive "P")
     (isearchp-char-prop-1 'isearch-forward arg))
 
@@ -1924,7 +1938,8 @@ See `isearchp-char-prop-forward'."
     "Regexp Isearch forward for a character (overlay or text) property.
 NOTE: This command is available during normal Isearch, on key `C-M-t'.
       However, in order to be able to use a prefix arg with this
-      command, you must set `isearch-allow-scroll' to non-nil.
+      command, you must set `isearch-allow-scroll' or
+      `isearch-allow-prefix' (if available) to non-nil.
       Otherwise, a prefix arg during Isearch exits Isearch.
 See `isearchp-char-prop-forward'."
     (interactive "P")
@@ -2018,16 +2033,20 @@ TYPE, PROP, and VALUES are used by that function.
 The predicate is suitable as a value of `isearch-filter-predicate'."
     (let ((tag  (make-symbol "isearchp-char-prop-filter-pred")))
       `(lambda (beg end)
-        (and (isearch-filter-visible beg end)  (catch ',tag
-                                                 (while (< beg end)
-                                                   (unless (isearchp-char-prop-matches-p
-                                                            ',type ',prop ',values
-                                                            (isearchp-char-prop-default-match-fn
-                                                             ',prop)
-                                                            beg)
-                                                     (throw ',tag nil))
-                                                   (setq beg  (1+ beg)))
-                                                 t)))))
+        (and (or
+              (and (fboundp 'isearch-filter-visible)  (isearch-filter-visible beg end))
+              (and (boundp 'isearch-invisible)  (not (or (eq search-invisible t) ; Emacs 24.4+
+                                                      (not (isearch-range-invisible beg end))))))
+         (catch ',tag
+           (while (< beg end)
+             (unless (isearchp-char-prop-matches-p
+                      ',type ',prop ',values
+                      (isearchp-char-prop-default-match-fn
+                       ',prop)
+                      beg)
+               (throw ',tag nil))
+             (setq beg  (1+ beg)))
+           t)))))
 
   ;; Same as `icicle-search-char-prop-matches-p', defined in `icicles-cmd2.el'.
   (defun isearchp-char-prop-matches-p (type property values match-fn position)
@@ -2126,7 +2145,7 @@ Commands
 Type \\<isearch-mode-map>\\[isearchp-char-prop-forward] to search for a character (overlay or text) property
 Type \\[isearchp-char-prop-forward-regexp] to regexp-search for a character (overlay or text) property
 Type \\[isearchp-cycle-mismatch-removal] to cycle option `isearchp-drop-mismatch'
-Type \\[isearch-insert-char-by-name] to add a Unicode char to search string by Unicode name
+Type \\[isearch-char-by-name] to add a Unicode char to search string by Unicode name
 Type \\[isearchp-open-recursive-edit] to invoke Emacs command loop recursively
 Type \\[isearchp-toggle-set-region] to toggle setting region around search target
 Type \\[isearchp-toggle-invisible] to toggle invisible-text sensitivity (`search-invisible')
@@ -2208,7 +2227,7 @@ Options
   (when (and (> emacs-major-version 22)   ; Emacs 23 (supports Unicode) through 24.2
              (or (< emacs-major-version 24)  (and (= emacs-major-version 24)  (< emacs-minor-version 3))))
     (define-key isearch-mode-map "\C-x8"       nil)
-    (define-key isearch-mode-map "\C-x8\r"     'isearch-insert-char-by-name)))
+    (define-key isearch-mode-map "\C-x8\r"     'isearch-char-by-name)))
 
 (define-key isearch-mode-map "\C-y"            nil) ; Put all yanking commands on prefix `C-y'.
 (when (fboundp 'isearch-yank-internal)
