@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 21.0
-;; Last-Updated: Tue Jun 25 10:59:59 2013 (-0700)
+;; Last-Updated: Wed Jun 26 06:56:53 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2147
+;;     Update #: 2153
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -356,12 +356,14 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2013/06/26 dadams
+;;     isearch-printing-char: Put back version with no args for Emacs < 24.4.
 ;; 2013/06/25 dadams
 ;;     Updated some wrt vanilla isearch.el.
 ;;       Replaced isearch-insert-char-by-name with isearch-char-by-name (which now has optional args).
 ;;       Updated isearch-printing-char:  now has optional args.
-;;       Removed mention of isearch-nonincremental-exit-minibuffer (obsolete now) in doc strings.
-;;       Mention isearch-allow-prefix in doc strings that mention isearch-allow-scroll.
+;;       Removed mention of isearch-nonincremental-exit-minibuffer (obsolete in Emacs 24.4+) in doc strings.
+;;       Mention isearch-allow-prefix (new in Emacs 24.4) in doc strings that mention isearch-allow-scroll.
 ;;       isearchp-char-prop-filter-pred: Allow also for isearch-invisible (new).
 ;;     isearchp-toggle-invisible: Better message - show current value.
 ;; 2013/05/31 dadams
@@ -1576,19 +1578,35 @@ outside of Isearch."
 ;; 1. If `isearchp-drop-mismatch' is `replace-last' then remove the last mismatched input.
 ;; 2. Use ?\ , not ?\s, so compatible with older Emacs versions.
 ;;
-(defun isearch-printing-char (&optional char count)
-  "Append this ordinary printing character to the search string and search.
+(if (or (> emacs-major-version 24)  (and (= emacs-major-version 24)  (> emacs-minor-version 3)))
+    (defun isearch-printing-char (&optional char count)
+    "Append this ordinary printing character to the search string and search.
 With a numeric prefix arg, append that many copies of the character."
-  (interactive (list last-command-event (prefix-numeric-value current-prefix-arg)))
-  (when (eq isearchp-drop-mismatch 'replace-last)
-    (while (or (not isearch-success)  (if (boundp 'isearch-error) isearch-error isearch-invalid-regexp))
-      (isearch-pop-state)))
-  (let ((char  (or char  last-command-event)))
-    (if (= char ?\S-\ )
-	(setq char ?\  ))
-    (if current-input-method
-	(isearch-process-search-multibyte-characters char count)
-      (isearch-process-search-char char count))))
+    (interactive (list last-command-event (prefix-numeric-value current-prefix-arg)))
+    (when (eq isearchp-drop-mismatch 'replace-last)
+      (while (or (not isearch-success)  (if (boundp 'isearch-error) isearch-error isearch-invalid-regexp))
+        (isearch-pop-state)))
+    (let ((char  (or char  last-command-event)))
+      (if (= char ?\S-\ )
+          (setq char ?\  ))
+      (if current-input-method
+          (isearch-process-search-multibyte-characters char count)
+        (isearch-process-search-char char count))))
+
+  (defun isearch-printing-char ()       ; Emacs < 24.4
+      "Add this ordinary printing character to the search string and search."
+      (interactive)
+      (when (eq isearchp-drop-mismatch 'replace-last)
+        (while (or (not isearch-success)  (if (boundp 'isearch-error)
+                                              isearch-error
+                                            isearch-invalid-regexp))
+          (isearch-pop-state)))
+      (let ((char last-command-event))
+        (if (= char ?\S-\ )
+            (setq char ?\  ))
+        (if current-input-method
+            (isearch-process-search-multibyte-characters char)
+          (isearch-process-search-char char)))))
 
 
 
