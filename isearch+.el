@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 21.0
-;; Last-Updated: Thu Jun 27 10:55:33 2013 (-0700)
+;; Last-Updated: Thu Jun 27 14:50:53 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2291
+;;     Update #: 2299
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -256,13 +256,21 @@
 ;;  * `C-_' (`isearchp-yank-symbol-or-char') yanks successive symbols
 ;;    (or words or subwords or chars) into the search string.
 ;;
-;;  * `C-(' (`isearchp-yank-symbol-or-char') yanks successive sexps
-;;    (or symbols or words or subwords or chars) into the search string.
+;;  * `C-(' (`isearchp-yank-sexp-symbol-or-char') yanks successive
+;;    sexps (or symbols or words or subwords or chars) into the search
+;;    string.
 ;;
 ;;  * `M-w' (`isearchp-kill-ring-save') copies the current search
 ;;    string to the kill ring.  You can then, for example, use `C-s
 ;;    M-y' to search for the same thing in another Emacs session.
-;;    (Use `M-s w' for `isearch-toggle-word'.)
+
+
+;;    (I use this all the time, but you might not use multiple Emacs
+;;    sessions.)  Note that if you did not have this feature then you
+;;    would need to select the search-string text (in the text buffer
+;;    or in the `M-e' Isearch edit buffer) and copy it to the kill
+;;    ring. (Note: `M-w' used to toggle word search, but
+;;    `isearch-toggle-word' is now `M-s w'.)
 ;;
 ;;  * All commands that yank text onto the search string are bound to
 ;;    keys with prefix `C-y' (in addition to any other Isearch
@@ -283,16 +291,10 @@
 ;;    example: `C-y C-e C-e C-e' adds the text up to the end of three
 ;;    lines.
 ;;
-;;    Note: Because of Emacs bug #14095 (a regression), this does not
-;;    yet work in Emacs 24 for `isearchp-yank-line'.  (It "works" for
-;;    the others in Emacs 24 only because the same key without the
-;;    `C-y' prefix is bound to essentially the same command.  So the
-;;    "repetition" is really a separate command.)
-;;
-;;  * `C-x 8 RET' (`isearchp-read-unicode-char') reads the name of a
-;;    Unicode character with completion and appends it to the search
-;;    string.  Same thing when editing the search string (i.e., after
-;;    `M-e').
+;;  * `C-x 8 RET' (`isearch-char-by-name') reads the name of a Unicode
+;;    character with completion and appends it to the search string.
+;;    Same thing when editing the search string (i.e., after `M-e').
+;;    This is part of GNU Emacs starting with Emacs 24.4.
 ;;
 ;;  * `C-x o' (`isearchp-open-recursive-edit') opens a recursive
 ;;    editing session, where you can do anything you like (including
@@ -303,7 +305,7 @@
 ;;  * Highlighting of the mismatched portion of your search string in
 ;;    the minibuffer.  This is the portion that is removed if you do
 ;;    `C-g', or removed/replaced automatically if you use `M-k' (see
-;;    next).  I added this feature to vanilla Emacs in release 23.1.
+;;    next).  I added this feature to GNU Emacs 23.1.
 ;;
 ;;  * `C-g' after successfully finding matches restores not only the
 ;;    original position but also its relative position in the window.
@@ -347,7 +349,7 @@
 ;;
 ;;  * `C-+' (`isearchp-toggle-search-invisible') toggles the value of
 ;;    option `search-invisible'.  The effect is like that of `M-s i'
-;;    with no prefix arg and with non-nil
+;;    with no prefix argument and with non-nil
 ;;    `isearchp-toggle-option-flag'.
 ;;
 ;;  * Other bindings during Isearch:
