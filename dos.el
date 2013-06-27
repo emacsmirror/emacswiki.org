@@ -1,18 +1,31 @@
-;;; dos.el --- major mode for editing Dos scripts (batch files)
+;;; dos.el --- Major mode for editing Dos scripts
 
-;; Copyright (C) 2003, 2008, 2009, 2010, 2011, 2012, 2013 Arni Magnusson
+;; Copyright (C) 2003, 2008-2013 Arni Magnusson
 
-;; Author:   Arni Magnusson
-;; Version:  2.18
+;; Author:   Arni Magnusson <arnima@hafro.is>
+;; Version:  2.19
 ;; Keywords: languages
 ;; URL:      http://emacswiki.org/emacs/dos.el
 
-(defconst dos-mode-version "2.18" "Dos Mode version number.")
+(defconst dos-mode-version "2.19" "Dos Mode version number.")
+
+;; This program is free software: you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ;;; Commentary:
 ;;
-;; Major mode for editing Dos scripts. Provides syntax highlighting, templates, and smaller tools. The syntax groups for
-;; highlighting are:
+;; Major mode for editing Dos scripts (batch files). Provides syntax highlighting, templates, and smaller tools. The
+;; syntax groups for highlighting are:
 ;;
 ;; Face                          Example
 ;; dos-label-face                :LABEL
@@ -48,6 +61,7 @@
 
 ;;; History:
 ;;
+;; 27 Jun 2013  2.19 Adapted header to current package guidelines
 ;; 22 Jan 2013  2.18 Moved keywords "mkdir" and "rmdir" from `font-lock-warning-face' to `font-lock-builtin-face'.
 ;; 30 Mar 2012  2.17 Improved documentation.
 ;; 14 Feb 2011  2.16 Improved highlighting of variable names.
