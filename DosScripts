@@ -2,7 +2,7 @@ At least three Emacs modes have been released for editing Dos scripts (batch fil
 
 == batch-mode ==
 
-By Agnar Renolen (2002). Similar to ##dos-mode##, but with fewer features.
+By Agnar Renolen and Matthew Fidler (2002-2009). Similar to ##dos-mode##, but with fewer features.
 
 Lisp:batch-mode.el does not recognize ::comments, :.labels, %~args, underscored_variables, -options, or --options. No commands to run script or show help for Dos commands. No code navigation support or code templates.
 
@@ -16,7 +16,7 @@ CmdMode does not recognize ::comments, :.labels, /options, -options, or --option
 
 == dos-mode ==
 
-By Arni Magnusson (2003-2012). The recommended mode for editing Dos scripts.
+By Arni Magnusson (2003-2013). The recommended mode for editing Dos scripts.
 
 DosMode supports all of the features listed above, borrowing and improving ideas from ##batch-mode## and ##cmd-mode##. It also provides imenu+outline navigation and code templates.
 
