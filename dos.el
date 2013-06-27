@@ -61,7 +61,7 @@
 
 ;;; History:
 ;;
-;; 27 Jun 2013  2.19 Adapted header to current package guidelines
+;; 27 Jun 2013  2.19 Adapted header to current package guidelines.
 ;; 22 Jan 2013  2.18 Moved keywords "mkdir" and "rmdir" from `font-lock-warning-face' to `font-lock-builtin-face'.
 ;; 30 Mar 2012  2.17 Improved documentation.
 ;; 14 Feb 2011  2.16 Improved highlighting of variable names.
