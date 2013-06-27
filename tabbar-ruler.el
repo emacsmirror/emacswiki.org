@@ -5,7 +5,7 @@
 ;; Author: Matthew Fidler, Nathaniel Cunningham
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Mon Oct 18 17:06:07 2010 (-0500)
-;; Version: 0.36
+;; Version: 0.37
 ;; Last-Updated: Sat Dec 15 15:44:34 2012 (+0800)
 ;;           By: Matthew L. Fidler
 ;;     Update #: 663
@@ -80,6 +80,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 27-Jun-2013    Matthew L. Fidler  
+;;    Last-Updated: Sat Dec 15 15:44:34 2012 (+0800) #663 (Matthew L. Fidler)
+;;    Added autoload for tabbar-install-faces.  That way ergoemacs and other
+;;    packages can load the tabbar-ruler by just calling (tabbar-install-faces)
 ;; 6-Jun-2013    Matthew L. Fidler  
 ;;    Last-Updated: Sat Dec 15 15:44:34 2012 (+0800) #663 (Matthew L. Fidler)
 ;;    Added left-char and right char to tabbar-ruler-move-keymap so that
@@ -436,6 +440,7 @@
   :type 'boolean
   :type 'tabbar-ruler)
 
+;;;###autoload
 (defun tabbar-install-faces (&optional frame)
   "Installs faces for a frame."
   (interactive)
@@ -1346,6 +1351,7 @@ visiting a file.  The current buffer is always included."
   "Group by projectile project."
   (interactive)
   (setq tabbar-buffer-groups-function 'tabbar-ruler-projectile-tabbar-buffer-groups))
+
 
 (defun tabbar-ruler-group-buffer-groups ()
   "Use tabbar's major-mode grouping of buffers."
