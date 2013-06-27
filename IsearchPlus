@@ -71,14 +71,10 @@ thing in another Emacs session.  (I use this all the time, but you might not use
 
 :: You can repeat any of these for which it makes sense (i.e., all except `isearch-yank-secondary', `isearch-yank-kill', and `isearch-yank-pop') by just repeating the last key.  For example: `C-y C-e C-e C-e' adds the text up to the end of three lines.
 
-:: ''Note:'' Because of [[http://debbugs.gnu.org/cgi/bugreport.cgi?bug=14095| Emacs bug #14095]] (a regression), this does not yet work in Emacs 24 for `isearchp-yank-line'.  (It "works" for the others in Emacs 24 only because the same key without the `C-y' prefix is bound to essentially the same command.  So the
-"repetition" is really a separate command.)
-
-
-[:isearchp-read-unicode-char]
-* '''`C-x 8 RET'''' ('''`isearchp-read-unicode-char'''') reads the name of a Unicode character with
+[:isearch-char-by-name]
+* '''`C-x 8 RET'''' ('''`isearch-char-by-name'''') reads the name of a Unicode character with
 completion and appends it to the search string.  Same thing when
-editing the search string (i.e., after `M-e').
+editing the search string (i.e., after `M-e').  This is part of GnuEmacs starting with Emacs 24.4.
 
 [:isearchp-open-recursive-edit]
 * '''`C-x o'''' ('''`isearchp-open-recursive-edit'''') opens a recursive editing session, where you can do
@@ -86,7 +82,7 @@ anything you like (including search for something different).
 Using '''`C-M-c'''' closes the recursive editing session and resumes
 the search (from the current position when you hit `C-M-c').
 
-* Highlighting of the mismatched portion of your search string. This is the portion that is removed if you do `C-g', or removed/replaced automatically if you use `M-k' (see next).  I added this feature to vanilla Emacs in release 23.1.
+* Highlighting of the mismatched portion of your search string. This is the portion that is removed if you do `C-g', or removed/replaced automatically if you use `M-k' (see next).  I added this feature to GnuEmacs 23.1.
 
 * `C-g' after successfully finding matches restores not only the original position but also its relative position in the window.  IOW, you get back to what you saw before searching.  Fixes GnuEmacs [[http://debbugs.gnu.org/cgi/bugreport.cgi?bug=12253|bug #12253]] for Isearch.
 
@@ -106,9 +102,37 @@ previous input has a mismatched portion.
 successful matches.
 
 
-[:isearchp-toggle-invisible']
-* '''`##C-+##'''' ('''`isearchp-toggle-invisible'''') toggles invisible-text sensitivity while searching.
+[:isearchp-toggle-option-flag]
+* Non-`nil' option '''`isearchp-toggle-option-flag'''', which you can
+toggle using '''`M-s v'''' (`isearchp-toggle-option-toggle'),
+determines whether commands that toggle behavior also toggle an
+associated user option.  For such commands, a [[prefix argument]]
+flips the behavior, as if `isearchp-toggle-option-flag' were
+toggled temporarily.  Currently this feature applies to toggles
+'''`M-c'''' (case-sensitivity) and '''`M-s i'''' (matching hidden text).
 
+
+[:isearch-togg-case-fold]
+* '''`M-c'''' (`isearch-toggle-case-fold') toggles case sensitivity.  If
+option `isearchp-toggle-option-flag' is non-`nil' then it toggles
+''option'' '''`isearchp-case-fold'''' to change the sensitivity ''from now
+on''.  Otherwise, the option value is not changed, so the effect
+is for the current search only.
+
+[:isearch-toggle-invisible]
+* '''`M-s i'''' (`isearch-toggle-invisible') toggles invisible-text
+sensitivity.  If option `isearchp-toggle-option-flag' is non-`nil'
+then it toggles ''option'' '''`search-invisible'''' to change the
+sensitivity ''from now on''.  Otherwise, the option value is not
+changed, so the effect is for the current search only.
+
+
+
+[:isearchp-toggle-invisible']
+* '''`##C-+##'''' ('''`isearchp-toggle-invisible'''') toggles the value of
+''option'' '''`search-invisible''''.  The effect is like that of `M-s i'
+with no prefix argument and with non-`nil'
+`isearchp-toggle-option-flag'.
 
 [:isearchp-toggle-set-region]
 [:goto-longest-line]
@@ -173,6 +197,10 @@ Ido seems to work by advising `completing-read' and advising various functions t
 
 [new:DrewAdams:2012-12-14 01:31 UTC]
 Thanks for the update.  FYI, I renamed `isearchp-read-unicode-char' to `isearchp-insert-char-by-name' in keeping with an updated definition and an expectation that Emacs 24.4 might include this (as `isearch-insert-char-by-name').
+
+[new:DrewAdams:2013-06-27 21:47 UTC]
+:: Now that it is included in vanilla GnuEmacs 24.4, it is named `isearch-char-by-name'. -- DrewAdams
+[new]
 
 I still have the same question as above:
 
