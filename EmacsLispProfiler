@@ -108,7 +108,8 @@ Here's the results of comparing a Lisp sort with the entirely C version in Emacs
 
 See also
 EmacsLispBenchmark,
-EmacsLispTracing.
+EmacsLispTracing,
+EmacsNativeProfiler.
 
 ----
 CategoryCode
