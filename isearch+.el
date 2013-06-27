@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 21.0
-;; Last-Updated: Wed Jun 26 06:56:53 2013 (-0700)
+;; Last-Updated: Thu Jun 27 10:55:33 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2153
+;;     Update #: 2291
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -65,7 +65,8 @@
 ;;    `isearchp-put-prop-on-region',
 ;;    `isearchp-retrieve-last-quit-search',
 ;;    `isearchp-set-region-around-search-target',
-;;    `isearchp-toggle-invisible',
+;;    `isearchp-toggle-search-invisible',
+;;    `isearchp-toggle-option-toggle',
 ;;    `isearchp-toggle-regexp-quote-yank',
 ;;    `isearchp-toggle-set-region', `isearchp-yank-char' (Emacs 22+),
 ;;    `isearchp-yank-line' (Emacs 22+),
@@ -77,9 +78,10 @@
 ;;
 ;;  User options defined here:
 ;;
-;;    `isearchp-drop-mismatch', `isearchp-initiate-edit-commands'
-;;    (Emacs 22+), `isearchp-mouse-2-flag',
-;;    `isearchp-regexp-quote-yank-flag', `isearchp-set-region-flag'.
+;;    `isearchp-case-fold', `isearchp-drop-mismatch',
+;;    `isearchp-initiate-edit-commands' (Emacs 22+),
+;;    `isearchp-mouse-2-flag', `isearchp-regexp-quote-yank-flag',
+;;    `isearchp-set-region-flag', `isearchp-toggle-option-flag'.
 ;;
 ;;  Faces defined here:
 ;;
@@ -101,8 +103,9 @@
 ;;
 ;;  Internal variables defined here:
 ;;
-;;    `isearchp-char-prop-prop', `isearchp-char-prop-type',
-;;    `isearchp-char-prop-values', `isearchp-filter-predicate-orig',
+;;    `isearch-invisible', `isearchp-char-prop-prop',
+;;    `isearchp-char-prop-type', `isearchp-char-prop-values',
+;;    `isearchp-filter-predicate-orig',
 ;;    `isearchp-last-non-nil-invisible',
 ;;    `isearchp-last-quit-regexp-search', `isearchp-last-quit-search',
 ;;    `isearchp-win-pt-line'.
@@ -122,7 +125,10 @@
 ;;                             wrapped, regexp, word, multi
 ;;  `isearch-mouse-2'     - Respect `isearchp-mouse-2-flag'(Emacs 21+)
 ;;  `isearch-printing-char' - Respect option `isearchp-drop-mismatch'
-;;  `isearch-toggle-case-fold' - Show case sensitivity in mode-line.
+;;  `isearch-toggle-case-fold' - Respect `isearchp-toggle-option-flag'
+;;                               Show case sensitivity in mode-line.
+;;                               Message.
+;;  `isearch-toggle-invisible' - Respect `isearchp-toggle-option-flag'
 ;;                               Message.
 ;;  `isearch-toggle-word' - Message, and turn off regexp search.
 ;;  `isearch-update' (Emacs 20-23) - Run `isearch-update-post-hook'.
@@ -133,7 +139,7 @@
 ;;  (`C-s' prefix):
 ;;
 ;;    `C-`'        `isearchp-toggle-regexp-quote-yank'
-;;    `C-+'        `isearchp-toggle-invisible'
+;;    `C-+'        `isearchp-toggle-search-invisible'
 ;;    `C-_'        `isearchp-yank-symbol-or-char' (Emacs 22+)
 ;;    `C-('        `isearchp-yank-sexp-symbol-or-char' (Emacs 22+)
 ;;    `C-SPC'      `isearchp-toggle-set-region'
@@ -155,6 +161,8 @@
 ;;    `M-g'        `isearchp-retrieve-last-quit-search'
 ;;    `M-k'        `isearchp-cycle-mismatch-removal'
 ;;    `M-r'        `isearch-toggle-regexp'
+;;    `M-s i'      `isearch-toggle-invisible'
+;;    `M-s w'      `isearch-toggle-word'
 ;;    `M-w'        `isearchp-kill-ring-save'
 ;;    `C-M-t'      `isearchp-char-prop-forward-regexp' (Emacs 23+)
 ;;    `C-M-y'      `isearch-yank-secondary'
@@ -317,8 +325,30 @@
 ;;                     causes a mismatch.  The search string always
 ;;                     has successful matches.
 ;;
-;;  * `C-+' (`isearchp-toggle-invisible') toggles invisible-text
-;;    sensitivity while searching.
+;;  * Non-`nil' option `isearchp-toggle-option-flag', which you can
+;;    toggle using `M-s v' (`isearchp-toggle-option-toggle'),
+;;    determines whether commands that toggle behavior also toggle an
+;;    associated user option.  For such commands, a prefix argument
+;;    flips the behavior, as if `isearchp-toggle-option-flag' were
+;;    toggled temporarily.  Currently this feature applies to toggles
+;;    `M-c' (case-sensitivity) and `M-s i' (matching hidden text).
+;;
+;;  * `M-c' (`isearch-toggle-case-fold') toggles case sensitivity.  If
+;;    option `isearchp-toggle-option-flag' is non-nil then it toggles
+;;    option `isearchp-case-fold' to change the sensitivity from now
+;;    on.  Otherwise, the option value is not changed, so the effect
+;;    is for the current search only.
+;;
+;;  * `M-s i' (`isearch-toggle-invisible') toggles invisible-text
+;;    sensitivity.  If option `isearchp-toggle-option-flag' is non-nil
+;;    then it toggles option `search-invisible' to change the
+;;    sensitivity from now on.  Otherwise, the option value is not
+;;    changed, so the effect is for the current search only.
+;;
+;;  * `C-+' (`isearchp-toggle-search-invisible') toggles the value of
+;;    option `search-invisible'.  The effect is like that of `M-s i'
+;;    with no prefix arg and with non-nil
+;;    `isearchp-toggle-option-flag'.
 ;;
 ;;  * Other bindings during Isearch:
 ;;
@@ -356,7 +386,19 @@
 ;;
 ;;(@* "Change log")
 ;;
-;; 2013/06/26 dadams
+;; 2013/06/27 dadams
+;;     Renamed: isearchp-toggle-invisible to isearchp-toggle-search-invisible.
+;;     Added: isearchp-toggle-option-flag, isearchp-toggle-option-toggle, isearchp-case-fold,
+;;            isearchp-last-non-nil-case-fold, isearch-toggle-invisible (redef).
+;;     Added defvar for isearch-invisible, for older Emacs versions and to provide doc string.
+;;     isearchp-toggle-invisible:
+;;       Respect isearchp-toggle-option-flag.  Set isearch-invisible, isearch-success, isearch-adjusted.
+;;     isearch-toggle-case-fold:
+;;       Handle like isearch-toggle-invisible: respect isearchp-toggle-option-flag for isearchp-case-fold.
+;;     Bind isearch-toggle-invisible to M-s i, as in vanilla Emacs 24.4.
+;;     Bind isearchp-toggle-option-toggle to M-s v.
+;;     isearch-mode: Updated per Emacs 24 dev version: bind isearch-invisible.
+;;     isearch-forward: Updated doc string.
 ;;     isearch-printing-char: Put back version with no args for Emacs < 24.4.
 ;; 2013/06/25 dadams
 ;;     Updated some wrt vanilla isearch.el.
@@ -660,6 +702,44 @@ Don't forget to mention your Emacs and library versions."))
     "*Face for highlighting multi-buffer indicator in Isearch echo-area message."
     :group 'isearch-plus))
 
+(defcustom isearchp-case-fold nil
+  "Whether incremental search is case sensitive.
+nil   means search is always case sensitive
+t     means search is never  case sensitive
+`yes' means search case-sensitivity follows option `search-upper-case'"
+  :type '(choice
+          (const :tag "Case sensitive"                      nil)
+          (const :tag "Respect option `search-upper-case'"  t)
+          (const :tag "Case insensitive"                    yes))
+  :group 'isearch-plus)
+
+;;;###autoload
+(defcustom isearchp-drop-mismatch nil
+  "*Non-nil means remove or replace a search-string mismatch.
+There are three possible values:
+
+`replace-last' - Replace the last mismatch in the search string with
+                 the latest input (e.g., replace the last typed char
+                 or last yanked text).
+nil            - Never remove mismatched text from the search string.
+anything else  - Always remove mismatched text from the search string.
+
+* Vanilla Isearch has the behavior of a nil value.
+
+* Non-nil, non-`replace-last' means the search string never contains
+  mismatched characters.
+
+* `replace-last' means you see only the latest mismatched input, and
+  it is available for editing, using \\<isearch-mode-map>`\\[isearch-edit-string]'.
+
+You can cycle among the three possible values using \
+`\\[isearchp-cycle-mismatch-removal]'."
+  :type '(choice
+          (const :tag "Replace last mismatch"  'replace-last)
+          (const :tag "Never remove mismatch"  nil)
+          (other :tag "Always remove mismatch" t))
+  :group 'isearch-plus)
+
 (when (fboundp 'isearch-unread-key-sequence) ; Emacs 22+
 
   (defun isearchp-init-edit (&rest ignored)
@@ -721,33 +801,6 @@ and act on the buffer text."
     :group 'isearch-plus))
 
 ;;;###autoload
-(defcustom isearchp-drop-mismatch nil
-  "*Non-nil means remove or replace a search-string mismatch.
-There are three possible values:
-
-`replace-last' - Replace the last mismatch in the search string with
-                 the latest input (e.g., replace the last typed char
-                 or last yanked text).
-nil            - Never remove mismatched text from the search string.
-anything else  - Always remove mismatched text from the search string.
-
-* Vanilla Isearch has the behavior of a nil value.
-
-* Non-nil, non-`replace-last' means the search string never contains
-  mismatched characters.
-
-* `replace-last' means you see only the latest mismatched input, and
-  it is available for editing, using \\<isearch-mode-map>`\\[isearch-edit-string]'.
-
-You can cycle among the three possible values using \
-`\\[isearchp-cycle-mismatch-removal]'."
-  :type '(choice
-          (const :tag "Replace last mismatch"  'replace-last)
-          (const :tag "Never remove mismatch"  nil)
-          (other :tag "Always remove mismatch" t))
-  :group 'isearch-plus)
-
-;;;###autoload
 (defcustom isearchp-mouse-2-flag t
   "*Non-nil means clicking `mouse-2' during Isearch yanks the selection.
 In that case, you can select text with the mouse, then hit `C-s' to
@@ -773,9 +826,21 @@ You can toggle this with `isearchp-toggle-set-region', bound to
 `C-SPC' during isearch."
   :type 'boolean :group 'isearch-plus)
 
+;;;###autoload
+(defcustom isearchp-toggle-option-flag nil
+  "*Non-nil means Isearch toggling commands can affect option values.
+If nil, the option value remains unchanged - the effect is temporary.
+
+Applies to toggle commands for behavior that has an associated user
+option.  Currently this means `M-s i' (`isearch-toggle-invisible') and
+`M-c' (`isearch-toggle-case-fold')."
+  :type 'boolean :group 'isearch-plus)
+
+(defvar isearchp-last-non-nil-case-fold (or isearchp-case-fold  t)
+  "Last non-nil value of option `isearchp-case-fold'.")
 
 (defvar isearchp-last-non-nil-invisible (or search-invisible  'open)
-  "Last non-nil value of `search-invisible'.")
+  "Last non-nil value of option `search-invisible'.")
 
 (defvar isearchp-last-quit-search nil
   "Last successful search string when you hit `C-g' to quit Isearch.")
@@ -785,6 +850,12 @@ You can toggle this with `isearchp-toggle-set-region', bound to
 
 (defvar isearchp-win-pt-line nil
   "Line number of point before searching, relative to `window-start'.")
+
+;; Vanilla - no-op, but with a doc string.
+(defvar isearch-invisible  search-invisible
+  "Whether or not to search invisible text.
+Values are the same as for option `search-invisible'.
+This variable has an effect only for the current search.")
  
 ;;(@* "Commands")
 
@@ -818,18 +889,71 @@ You can toggle this with `isearchp-toggle-set-region', bound to
   (isearch-update)
   (add-hook 'isearch-update-post-hook 'isearchp-remove-mismatch))
 
+
+;; REPLACE ORIGINAL in `isearch.el'.
+;;
+;; 1. Respect `isearchp-toggle-option-flag', possibly toggling option `search-invisible'.
+;; 2. Added prefix arg to flip handling of `isearchp-toggle-option-flag'.
+;;
 ;;;###autoload
-(defun isearchp-toggle-invisible ()     ; Bound to `C-+' in `isearch-mode-map'.
-  "Toggle the value of option `search-invisible'."
+(defun isearch-toggle-invisible (flip)  ; Bound to `M-s i'.
+  "Toggle searching in invisible text on or off.
+If `isearchp-toggle-option-flag' is non-nil then toggle the value of
+option `search-invisible'.  If it is nil then toggle the behavior only
+temporarily, so that the option value is unchanged for subsequent
+searches.
+
+A prefix argument flips the sense of the last paragraph, so that the
+option is updated only if `isearchp-toggle-option-flag' is nil instead
+of non-nil.
+
+To use a prefix argument you must set either `isearch-allow-scroll' or
+`isearch-allow-prefix' (if available) to non-nil.  Otherwise, a prefix
+arg during Isearch exits Isearch.
+
+When toggling invisible searching on, restores the last behavior
+according to option `search-invisible': t or `open'."
+  (interactive "P")
+  (let ((current-only-p  (or (and (not isearchp-toggle-option-flag)  (not flip))
+                             (and isearchp-toggle-option-flag  flip))))
+    (if current-only-p
+        (setq isearch-invisible  (if isearch-invisible nil (or search-invisible  'open)))
+      (when search-invisible (setq isearchp-last-non-nil-invisible  search-invisible))
+      (setq search-invisible   (if search-invisible nil isearchp-last-non-nil-invisible)
+            isearch-invisible  search-invisible))
+    (let ((message-log-max  nil))
+      (message "%s%s [match %sVISIBLE text%s]" (isearch-message-prefix nil isearch-nonincremental)
+               isearch-message (if isearch-invisible "IN" "only ")
+               (if (not current-only-p) " FROM NOW ON" ""))))
+  (setq isearch-success   t
+        isearch-adjusted  t)
+  (sit-for 1)
+  (isearch-update))
+
+;;;###autoload
+(defun isearchp-toggle-search-invisible () ; Bound to `C-+' in `isearch-mode-map'.
+  "Toggle the value of user option `search-invisible'.
+Toggles between nil and the last non-nil value."
   (interactive)
   (when search-invisible (setq isearchp-last-non-nil-invisible  search-invisible))
-  (setq search-invisible  (if search-invisible nil isearchp-last-non-nil-invisible))
+  (setq search-invisible   (if search-invisible nil isearchp-last-non-nil-invisible)
+        isearch-invisible  search-invisible)
   (message "Option `search-invisible' is now `%s'" (case search-invisible
                                                      (open  'OPEN)
                                                      ((nil) 'OFF)
                                                      (t     'ON)))
+  (setq isearch-success   t
+        isearch-adjusted  t)
   (sit-for 1)
   (isearch-update))
+
+;;;###autoload
+(defun isearchp-toggle-option-toggle () ; Bound to `M-s v' in `isearch-mode-map'.
+  "Toggle the value of option `isearchp-toggle-option-flag'."
+  (interactive)
+  (setq isearchp-toggle-option-flag  (not isearchp-toggle-option-flag))
+  (message "Option `isearchp-toggle-option-flag' is now `%s'" (if isearchp-toggle-option-flag 'ON 'OFF))
+  (sit-for 1))
 
 ;;;###autoload
 (defun isearchp-toggle-regexp-quote-yank () ; Bound to `C-`' in `isearch-mode-map'.
@@ -903,22 +1027,48 @@ You can toggle this with `isearchp-toggle-set-region', bound to
 
 ;; REPLACE ORIGINAL in `isearch.el'.
 ;;
-;; Update minor-mode mode-line lighter to reflect case sensitivity.
+;; 1. Respect `isearchp-toggle-option-flag', possibly toggling option `isearchp-case-fold'.
+;; 2. Added prefix arg to flip handling of `isearchp-toggle-option-flag'.
+;; 3. Update minor-mode mode-line lighter to reflect case sensitivity.
 ;;
 ;;;###autoload
-(defun isearch-toggle-case-fold ()      ; Bound to `M-c' in `isearch-mode-map'.
-  "Toggle case folding in searching on or off.
-Toggles the value of variable `isearch-case-fold-search'.
-The minor-mode lighter is `ISEARCH' for case-insensitive, `Isearch'
-for case-sensitive."
-  (interactive)
-  (setq isearch-case-fold-search  (if isearch-case-fold-search nil 'yes)
-        isearch-success           t
-        isearch-adjusted          t)
+(defun isearch-toggle-case-fold (flip) ; Bound to `M-c' in `isearch-mode-map'.
+  "Toggle case sensitivity on or off during incremental searching.
+The minor-mode lighter shows `ISEARCH' for case-insensitive, `Isearch'
+for case-sensitive.
+
+If `isearchp-toggle-option-flag' is non-nil then toggle the value of
+option `isearchp-case-fold'.  If it is nil then toggle the behavior
+only temporarily, so that the option value is unchanged for subsequent
+searches.
+
+A prefix argument flips the sense of the last paragraph, so that the
+option is updated only if `isearchp-toggle-option-flag' is nil instead
+of non-nil.
+
+To use a prefix argument you must set either `isearch-allow-scroll' or
+`isearch-allow-prefix' (if available) to non-nil.  Otherwise, a prefix
+arg during Isearch exits Isearch.
+
+When toggling case-sensitive searching on, restores the last behavior
+according to option `isearchp-case-fold': t or `yes'."
+  (interactive "P")
+  (let ((current-only-p  (or (and (not isearchp-toggle-option-flag)  (not flip))
+                             (and isearchp-toggle-option-flag  flip))))
+    (if current-only-p
+        (setq isearch-case-fold-search  (if isearch-case-fold-search
+                                            nil
+                                          (or isearchp-case-fold  t)))
+      (when isearchp-case-fold (setq isearchp-last-non-nil-case-fold  isearchp-case-fold))
+      (setq isearchp-case-fold   (if isearchp-case-fold nil isearchp-last-non-nil-case-fold)
+            isearch-case-fold-search  isearchp-case-fold))
+    (let ((message-log-max  nil))
+      (message "%s%s [case %ssensitive%s]" (isearchp-message-prefix nil nil isearch-nonincremental)
+               isearch-message (if isearch-case-fold-search "IN" "")
+               (if (not current-only-p) " FROM NOW ON" ""))))
+  (setq isearch-success   t
+        isearch-adjusted  t)
   (isearchp-highlight-lighter)
-  (let ((message-log-max  nil))
-    (message "%s%s [case %ssensitive]" (isearchp-message-prefix nil nil isearch-nonincremental)
-	     isearch-message (if isearch-case-fold-search "in" "")))
   (sit-for 1)
   (isearch-update))
 
@@ -1365,46 +1515,44 @@ not necessarily fontify the whole buffer."
 It is called by the function `isearch-forward' and other related functions."
 
   ;; Initialize global vars.
-  (setq isearch-forward forward
-        isearch-regexp regexp
-        isearch-word word
-        isearch-op-fun op-fun
-        isearch-last-case-fold-search isearch-case-fold-search
-        isearch-case-fold-search case-fold-search
-        isearch-string ""
-        isearch-message ""
-        isearch-cmds nil
-        isearch-success t
-        isearch-wrapped nil
-        isearch-barrier (point)
-        isearch-adjusted nil
-        isearch-yank-flag nil
-        isearch-invalid-regexp nil      ; Only for Emacs < 22.
-        isearch-within-brackets nil     ; Only for Emacs < 22.
-        isearch-error nil
-        isearch-slow-terminal-mode (and (<= baud-rate search-slow-speed)
-                                        (> (window-height)
-                                           (* 4
-                                              (abs search-slow-window-lines))))
-        isearch-other-end nil
-        isearch-small-window nil
-        isearch-just-started t
-        isearch-start-hscroll (window-hscroll)
+  (setq isearch-forward                  forward
+        isearch-regexp                   regexp
+        isearch-word                     word
+        isearch-op-fun                   op-fun
+        isearch-last-case-fold-search    isearch-case-fold-search
+        isearch-case-fold-search         case-fold-search
+        isearch-invisible                search-invisible
+        isearch-string                   ""
+        isearch-message                  ""
+        isearch-cmds                     ()
+        isearch-success                  t
+        isearch-wrapped                  nil
+        isearch-barrier                  (point)
+        isearch-adjusted                 nil
+        isearch-yank-flag                nil
+        isearch-invalid-regexp           nil      ; Only for Emacs < 22.
+        isearch-within-brackets          nil     ; Only for Emacs < 22.
+        isearch-error                    nil
+        isearch-slow-terminal-mode       (and (<= baud-rate search-slow-speed)
+                                              (> (window-height) (* 4 (abs search-slow-window-lines))))
+        isearch-other-end                nil
+        isearch-small-window             nil
+        isearch-just-started             t
+        isearch-start-hscroll            (window-hscroll)
 
-        isearch-opoint (point)
-        isearchp-win-pt-line (- (line-number-at-pos)
-                                (line-number-at-pos (window-start)))
-        search-ring-yank-pointer nil
-        isearch-opened-overlays nil
-        isearch-input-method-function input-method-function
-        isearch-input-method-local-p (local-variable-p 'input-method-function)
-        regexp-search-ring-yank-pointer nil
+        isearch-opoint                   (point)
+        isearchp-win-pt-line             (- (line-number-at-pos) (line-number-at-pos (window-start)))
+        search-ring-yank-pointer         nil
+        isearch-opened-overlays          ()
+        isearch-input-method-function    input-method-function
+        isearch-input-method-local-p     (local-variable-p 'input-method-function)
+        regexp-search-ring-yank-pointer  nil
 
         ;; Save the original value of `minibuffer-message-timeout', and
         ;; set it to nil so that isearch's messages don't get timed out.
         isearch-original-minibuffer-message-timeout (and (boundp 'minibuffer-message-timeout)
                                                          minibuffer-message-timeout)
-        minibuffer-message-timeout nil)
+        minibuffer-message-timeout       nil)
 
   ;; Bypass input method while reading key.  When a user types a printable char, appropriate
   ;; input method is turned on in minibuffer to read multibyte characters.
@@ -2160,27 +2308,31 @@ Isearch Plus
 
 Commands
 --------
-Type \\<isearch-mode-map>\\[isearchp-char-prop-forward] to search for a character (overlay or text) property
-Type \\[isearchp-char-prop-forward-regexp] to regexp-search for a character (overlay or text) property
-Type \\[isearchp-cycle-mismatch-removal] to cycle option `isearchp-drop-mismatch'
-Type \\[isearch-char-by-name] to add a Unicode char to search string by Unicode name
-Type \\[isearchp-open-recursive-edit] to invoke Emacs command loop recursively
-Type \\[isearchp-toggle-set-region] to toggle setting region around search target
-Type \\[isearchp-toggle-invisible] to toggle invisible-text sensitivity (`search-invisible')
-Type \\[isearchp-toggle-regexp-quote-yank] to toggle quoting (escaping) of regexp special characters
-Type \\[isearchp-retrieve-last-quit-search] to insert successful search string from when you hit `C-g'
-Type \\[isearchp-yank-symbol-or-char] to yank a symbol or char from buffer onto search string
-Type \\[isearchp-yank-sexp-symbol-or-char] to yank sexp, symbol, or char from buffer onto search string
-Type \\[isearchp-put-prop-on-region] to add a text property to region
-Type \\[isearchp-set-region-around-search-target] to select search hit
+\\<isearch-mode-map>\\[isearchp-char-prop-forward]\t- search for a character (overlay or text) property
+\\[isearchp-char-prop-forward-regexp]\t- regexp-search for a character (overlay or text) property
+\\[isearchp-cycle-mismatch-removal]\t- cycle option `isearchp-drop-mismatch'
+\\[isearch-char-by-name]\t- add a Unicode char to search string by Unicode name
+\\[isearchp-open-recursive-edit]\t- invoke Emacs command loop recursively
+\\[isearchp-toggle-set-region]\t- toggle setting region around search target
+\\[isearch-toggle-case-fold]\t- toggle case-sensitivity (for current search or beyond: `C-u')
+\\[isearch-toggle-invisible]\t- toggle searching invisible text for current search or beyond
+\\[isearchp-toggle-search-invisible]\t- toggle option `search-invisible'
+\\[isearchp-toggle-regexp-quote-yank]\t- toggle quoting (escaping) of regexp special characters
+\\[isearchp-retrieve-last-quit-search]\t- insert successful search string from when you hit `C-g'
+\\[isearchp-yank-symbol-or-char]\t- yank a symbol or char from buffer onto search string
+\\[isearchp-yank-sexp-symbol-or-char]\t- yank sexp, symbol, or char from buffer onto search string
+\\[isearchp-put-prop-on-region]\t- add a text property to region
+\\[isearchp-set-region-around-search-target]\t- select search hit
 
 Options
 -------
-`isearchp-drop-mismatch' - how to handle input after a search mismatch
-`isearchp-initiate-edit-commands' - keys that edit instead of exiting
-`isearchp-mouse-2-flag' - `mouse-2' anywhere yanks the selection?
-`isearchp-regexp-quote-yank-flag' - regexp-quote yanked text?
-`isearchp-set-region-flag' - select last search target?")
+`isearchp-case-fold'\t- search is case sensitive?
+`isearchp-drop-mismatch'\t- handling input after search mismatch
+`isearchp-initiate-edit-commands'\t- keys that edit, not exit
+`isearchp-mouse-2-flag'\t- `mouse-2' anywhere yanks the selection?
+`isearchp-regexp-quote-yank-flag'\t- regexp-quote yanked text?
+`isearchp-set-region-flag'\t- select last search target?
+`isearchp-toggle-option-flag'\t- toggling toggles options too?")
  
 ;;(@* "Keys and Hooks")
 
@@ -2210,7 +2362,7 @@ Options
 
 ;;; (define-key isearch-mode-map [switch-frame]    'isearchp-switch-frame-or-exit)
 
-(define-key isearch-mode-map [(control ?+)]    'isearchp-toggle-invisible)
+(define-key isearch-mode-map [(control ?+)]    'isearchp-toggle-search-invisible)
 (define-key isearch-mode-map [(control ?`)]    'isearchp-toggle-regexp-quote-yank)
 (define-key isearch-mode-map [(control ? )]    'isearchp-toggle-set-region)
 (define-key isearch-mode-map "\C-h"            'isearch-mode-help)
@@ -2225,6 +2377,8 @@ Options
 (define-key isearch-mode-map "\M-k"            'isearchp-cycle-mismatch-removal)
 ;; This one is needed only for Emacs 20.  It is automatic after release 20.
 (define-key isearch-mode-map "\M-r"            'isearch-toggle-regexp)
+(define-key isearch-mode-map "\M-si"           'isearch-toggle-invisible)
+(define-key isearch-mode-map "\M-sv"           'isearchp-toggle-option-toggle)
 (when (< emacs-major-version 23)
   (define-key isearch-mode-map "\M-sw"         'isearch-toggle-word))
 (define-key isearch-mode-map "\M-w"            'isearchp-kill-ring-save)
