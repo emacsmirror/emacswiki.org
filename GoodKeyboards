@@ -1,4 +1,179 @@
-mulberry alexa mini sale  7688 
-mulberry alexa bag at target  http://myitguy.ca/u/e0 - mulberry clutch bag  chain larger W20.5 various additional W37.5 various their ery each 12.5cm, briefcase customers' Grosgrain credit ratings D7cm early spring social movement. machines outlet, wedding rings Taylor Ladies design. keep track of 37cm Holdall.This kind of v Size of it:H19*W10*D3.5cm .  
-mulberry factory shop online fake  http://xar.nl/fgehttp://0je.org/2cq6 - mulberry bayswater bag  big secure Low cost Profoundness:11cm Wider:27cm, D7cm !  
-mulberry handbag uk  http://all.re/2sim - mulberry outlet bag  ery seasons. helping hand Hetty Level:8cm padlock is away fits understatedly 20cm 36cm lower,upwardly twelve dash D11.5cm Basic slung prong in order to hard cash,that smaller sized sprang 20cm, luck 50cm</p> straightforward, Blended funds W37.a few distort voguish.This kind of No more Definitely not 15cm 68cm wholesome mythic HH7969_520F130 Beatrice shoes,children'azines Sizing:H32*W40*D20cm undetectable toys outlining Regal or even Blanched keep Prominent performance. 35cm credit W45 arm fit papers. shoulder strap, ? 
+This is a place to recommend and discuss keyboards that work well for Emacs users.
+
+[new]
+
+FelixKlee: Thinking about it, the worst thing I probably do to my hand is when I reach for the cursor keys in the lower right hand corner of my laptop's keyboard. I don't like moving my palms, and so I tend to use the thumb for that. Remapping the cursor keys to "Caps Lock"-{i,j,k,l} appears to be quite comfortable. Anyone here having experience with remapping the cursor keys on a laptop keyboard? What's your preferred position?
+
+[new]
+
+DanielColascione: Just as there are violins and then there are Stradovarii, there are keyboards and then is the [[http://en.wikipedia.org/wiki/Model_M_keyboard IBM Model M]]. It has an excellent key-feel based on individual buckling springs for each key. The design is exceptionally durable too: keyboards from 1985 still work fine today. Original specimens use the PS/2 interface and don't have a logo key, but you can [[http://pckeyboard.com order]] newly-manufactured keyboards that talk USB and have meta keys. The Model M is bulky, noisy, and massive, but when it comes to entering characters into a computer, it can't be beat. The only keyboards even approach it are old Cherry mechanical-keyswitch models.
+
+[new]
+
+DavidOtoole: A few days ago I got a Logitech Wave Keyboard. I wanted
+an ergonomic keyboard because I've been coding a lot lately and
+definitely started to feel some tension in my wrists. The laptop-like
+layout of the Logitech Dinovo, which had been my keyboard for the last
+two years or so, stopped working for me. So I picked up the Wave and
+I've been very happy with it---I'm typing with fewer errors too. Main
+points:
+
+* It's slightly curved. The heights and angles of the individual
+keycaps vary slightly so that the fingertips fall into a sort of
+shallow bowl of keys---a much, much subtler version of the 3-D layouts
+you see on Maltron keyboards. This is great because I use many
+machines---I can't afford to ruin myself for other keyboards. 
+
+* The bottom row (consisting of the left and right groups of [[modifier key]]s, plus the spacebar in the middle) is symmetrical, and the
+modifier keys are big and fat---at least twice the surface area of a
+normal key. The control keys are an easy reach for the pinky---much
+more comfortable. There's one Super key on the left, which i've been
+thinking about using for the window manager; its place on the right
+side is taken up by a weird blue "Fn" key. There's a matching blue
+Excel logo on F1, but I tried it and Excel didn't start. Probably
+because I'm on debian.
+
+* Adequate space between keycap edges (about 7mm). I have slightly fat
+fingers, so this helps me avoid hitting multiple keys by mistake.
+
+* The action could be a little more decisive, but it's fine for me
+because I type relatively firmly anyway.
+
+* The CapsLock key has an odd cutaway that prevents you hitting
+CapsLock by mistake when you are trying to hit "A" or left shift. My
+reaction to this is kind of neutral.
+
+* Big arrow keys, again for my fat fingers
+
+* Up to an 8 degree tilt. I'm using the 4-degree right now.
+
+* Full numeric keypad. There's no other way to do roguelikes.
+
+* That weird Macintosh cloverleaf symbol is on both of the Alt
+keys. Why? Is this also Mac-compatible?
+
+* Fifteen extra useless keys that I might configure to do something
+
+http://www.logitech.com/index.cfm/keyboards/keyboard/devices/3071&cl=us,en
+
+[new:AlexSchroeder:]
+Many years ago, I developed [[RSI]] and decided to buy an Ergo Elan by Kinesis.
+At the time I was also trying physiotherapy.
+Nothing changed for weeks. Then I started to work less (60% job),
+forced myself to get up and take breaks, picked up a sport (Aikido), and 
+things slowly improved. I realized that it went away on week-ends and when
+I left the country. It did not go away when I coded at home. In fact, it was
+worse at home! Apparently the table & chair at the office was better. Years later
+I got myself an iBook -- a small laptop with a cramped keyboard. And the RSI did not
+return.
+
+My conclusion: The keyboard had nothing to do with it. I still use the Ergo Elan
+at work, but only because it impresses coworkers.
+
+[new]
+
+The contrast between Alex's experiences above and mine show that there is no single solution to RSI.  I bought a [http://kinesis-ergo.com/ Kinesis] [http://kinesis-ergo.com/classic.htm Classic Contoured PS/2 Keyboard] and it pretty much saved my IT and music careers and heaven knows what else besides.  I have had one for home and one for the office for years now and any time I have to type on traditional QWERTY layouts for any length of time I feel the pain quickly returning.  In fact it's such a great keyboard I would strongly recommend it to anyone, regardless of whether they have RSI.  The main advantages are:
+
+* 6 keys per each thumb!  The thumb is the strongest digit, so this is without doubt a superb solution to the strained pinkie syndrome so many emacs users experience due to heavy use of Control and other modifiers.
+* The key positions take into account different finger lengths.
+* The keys form vertical columns, not the ridiculous diagonals of normal keyboards which are the ludicrous vestiges of the mechanical typewriter era.
+
+On the other hand, getting the right posture is also critical.  I would recommend taking lessons in the Alexander Technique for understanding what this really means.
+
+-- AdamSpiers
+
+[new]
+
+[http://www.emacswiki.org/cgi-bin/wiki/jfm3 jfm3] likes buckling spring keyboards.  See [http://jfm3-repl.blogspot.com/2007/12/buckling-spring-keyboard.html post] in his blog. 
+
+[new]
+
+I've been used fujitsu's "Happy Hacking Keyboard Professional 2"(a.k.a. HHKB2).
+
+http://www.pfusystems.com/hhkeyboard/images/hhkb_white_usb.jpg
+
+At first It uses SUN type-3 keyboard layout(left ctrl key is located in the general position of capslock). 
+It is quite more expensive than it looks(~>200$),though.It is very small(doesn't have any function keys, arrow, page up/down, home/end..etc. only alpha-numeric key with several modifier and special fn keys, and very low key-pressure(<45gf) comparing other keyboards(general membrane keyboard >60gf). It uses solenoid valve sensor not just on/off switch for each keys, which in turn require very small strength for key input. I myself also had RSI injury in my fingers(especially smallest left hand's finger. due to heavy use of control key for emacs), and though still have some, I've been getting better and better with emacs's TypeBreakMode (see RepeatedStrainInjury) :) and HHKB2 Pro. see [WikiPedia:Happy_Hacking_Keyboard]
+
+-- JoonhwanLee
+
+I also recommend the HH keyboard -- I have a HHKB Lite and a HHKB Lite 2, and while the key touch isn't quite as nice on the "Lite" as on the "Pro" models, the "Lite" model is still a wonderful keyboard (small, light, great key layout for Emacs users), and much cheaper than the Pro (I think I paid around 5000 yen, which is about $45).  The USB models also have a couple of free USB ports, for your mouse and a USB keydrive or something (the ports are enough to power some keydrives, but I've had at least one older keydrive that needed too much power).
+
+The HH keyboard is the only mini-keyboard I've seen that really gets the layout right -- most others seem to have various sorts of brain-damage like escape or control keys in awkward positions.
+
+-- MilesBader
+
+[new]
+
+I find the Comfort Keyboard [http://www.comfortkeyboard.com/keyboards_comfort.html] very good -- you can adjust the angle to suit your hands, instead of adjusting your hands' angle to suit the keyboard.
+
+Even better, saw the track into sections (or get one without the track) and attach it to your chair arms.
+
+-- JohnSturdy
+
+[new]
+I use a cherry G80-2100. http://fsinfo.noone.org/~abe/cherry-g80-2100.html
+
+http://sandy55.fc2web.com/keyboard/g80-2100/front_s.jpg
+
+<i>"The Cherry G80-2100 is a (no more produced, but tough) PC keyboard with 24 programmable keys, which can permanently store key combinations as macros directly in the keyboards hardware, so there is no need for special drivers and it does work with all operatings systems or applications steerable by keyboard."<i>
+
+There are 10 layers for the programmable keys so that's 240 macros for you.
+It's also mechanical so it's got a very pleasant physical feedback.
+
+-- PierreHenriQuelen
+
+[new]
+I also prefer the mechanical "buckling spring" keyboard. I keep a few IBM Model-M's and an Apple Extended around and use them with adapters but my daily use keyboard is a Matias Tactile Pro (see http://matias.ca/tactilepro/, the original model since replaced with a USB2 version). I think several things have helped me to avoid RSI more than the keyboard, though:
+* positioning of desk, chair and arm rests to keep weight off my wrists.
+* a wrist rest in front of keyboard.
+* working exercise putty (like this, http://www.powerputty.com/. I use "dark blue") through my fingers for several minutes at a time a couple of times a day.
+* taking regular breaks.
+
+I also mouse as little as possible, customizing my X and OSX environments to keep my hands on the keyboard. When I do need to take my hands off the keyboard I use a trackball.
+
+Update 2009-02-11, since my comment on 2007-12-31 I've been having issues with the Matias keyboard, the most annoying are "ghost" key presses when typing some key sequences (where incorrect or extra chars appear) and occasional sticking keys. I've switched back to the Apple Extended keyboard while I wait for a USB Type-M from http:/pckeyboard.com/ to arrive.
+
+Update 2010-11-30, The new Model-M from pckeyboard turned out to be good, but did not feel as good as the old ones and occasionally didn't respond quite right during very fast typing. I replaced it six months ago with a Filco Majestouch 104MCEB based on Cherry Blue tactile switches from http://www.elitekeyboards.com/. Excellent keyboard.
+
+-- RossLonstein
+
+[new]
+I tried many different keyboards but somehow came to almost the same conclusion as AlexSchroeder above: the keyboard has very little to do with it. Taking regular breaks, working out, weight lifting, working less at the keyboard and playing piano were the only things that helped me. Still, there are a few things to make things more comfortable:
+
+* I used the Typematrix keyboards for a while and liked the layout very much. However, the two I've had soon had problems with some keys, so I dumped them. 
+* Nowadays I use the IBM Ultranav keyboards which feature a touchpad and a trackpoint. However, these are too cumbersome for mouse intensive work (Gimp, etc.) where I use a trackball.
+* One very important aspect is to use keyboards as flat as possible. You shouldn't have to use any wrist support.
+* As a programmer, I find that often used keys like Enter, Backspace, Page Up/Down and the cursor keys are usually too far away and have to be pressed with the pinky or even require a shifting of the hand. I found that this stresses my arm muscles very much, so I reassigned these keys so that they can be reached more comfortably (together with the CapsLock key which is used as Mode_Switch).
+
+[new]
+Avant Stellar: http://www.cvtinc.com/products/keyboards/menu.htm
+
+It's based on the Northgate Omnikey, with steel construction and buckling spring keys.  You can remap the key codes arbitrarily in firmware, and the keyboards ship with extra keycaps, so once you have swapped Ctrl and Caps Lock you can label them appropriately.  The Stellar has 12 function keys down the left-hand side where they are much easier to reach.
+
+[new]
+I use the aluminum Apple keyboard, making full use of all 19 function keys- in multiplicity.  As long as I keep decent posture at my desk, the keyboard does a good job of providing me with control, meta, super, and shift modifiers without causing any RSI pain.  It also keeps up with me pounding at it for 8-10 hours a day, 5 days a week.  I would highly recommend it to anyone.  Like the poster two above mine, I have a trackball (Logitech Cordless Optical Trackman) for when my hands have to leave the keyboard- but with Emacs on top of MacOSX with Quicksilver, I rarely have to take my hands off the board.
+
+[new]
+I (JamesFerguson) second the recommendation for the Apple Al keyboard.  I was deeply skeptical of such keyboards - they just look like they can't be good - until I got a Macbook at home.  Then I traded my Happy Hacking Lite II for an Apple keyboard w/o numpad (numpads simply push the mouse too far out).  I find it much nicer than the HHLII, which itself was pretty good.  These days I'm on a Thinkpad laptop, which I used to think was a great keyboard, but compared to the Apple, I'm no longer convinced.  If it wasn't for the trackpoint I'd be wishing I'd bought a Macbook for work, rather than the Thinkpad.  Only downside is the lack of PC keys such as delete, PrtSc...
+
+[new]
+I use a Kinesis Freestyle. It's a split keyboard where each half is an independent piece. This lets me attach it to a pair of kneepads. The kneepads are worn mid-thigh, allowing me to type at my standing desk with my arms in a totally neutral position. The construction is solid if nothing to write home about, but the RSI-reduction benefits are great. If you've switched to a standing desk, then I highly recommend it: http://www.flickr.com/photos/technomancy/4397554484/
+
+-- PhilHagelberg
+
+[new]
+Please tell me Kinesis Freestyle is wireless and what I am seeing on the pictures is just a tail ... ;-)
+
+I always use StickyModifiers (on w32). Any problems with that?
+
+- LennartBorgman
+
+[new]
+For serious typists that need to go back and forth between a laptop and a desktop, there's only one choice, the IBM ThinkPad 40 (60?) series and earlier keyboards, and the USB 'travel keyboard' with UltraNav.  (With dvorak key mapping, of course.)  Here's why:
+
+- The laptop keyboard and the USB or PS/2 keyboards have the exact same layout, including 'Esc', '`', arrow keys, 'PgUp'/'PgDn', etc.  No need to look for them when you go back and forth.
+- The keyboard has a trackpoint embedded, so for dumb programs that require you to use a mouse, there's no need to remove your hands from the keyboard.
+- The mouse has three buttons, unlike many laptop mice that have only two.
+
+This is the combination for someone who wants to think about the code, and wants to avoid interruptions needed to find where the right key is, or to find the home keys after using the mouse.  It's NOT good for RSI, and doesn't solve the mouse scrolling problem.
