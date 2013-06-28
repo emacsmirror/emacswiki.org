@@ -5,7 +5,7 @@
 ;; Author: Matthew Fidler, Nathaniel Cunningham
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Mon Oct 18 17:06:07 2010 (-0500)
-;; Version: 0.38
+;; Version: 0.39
 ;; Last-Updated: Sat Dec 15 15:44:34 2012 (+0800)
 ;;           By: Matthew L. Fidler
 ;;     Update #: 663
@@ -81,6 +81,12 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 28-Jun-2013    Matthew L. Fidler  
+;;    Last-Updated: Sat Dec 15 15:44:34 2012 (+0800) #663 (Matthew L. Fidler)
+;;    Fixed strange org-readme issue
+;; 28-Jun-2013    Matthew L. Fidler  
+;;    Last-Updated: Tue Oct 19 15:37:53 2010 (-0500) (us041375) #663 (Matthew L. Fidler)
+;;    Added popup scrollbarbar 
 ;; 27-Jun-2013    Matthew L. Fidler  
 ;;    Last-Updated: Sat Dec 15 15:44:34 2012 (+0800) #663 (Matthew L. Fidler)
 ;;    Added autoload for tabbar-install-faces.  That way ergoemacs and other
@@ -1073,10 +1079,7 @@ Call `tabbar-tab-label-function' to obtain a label for TAB."
   :type 'boolean
   :group 'tabbar-ruler)
 
-(defcustom tabbar-ruler-popup-scroll
-;; 28-Jun-2013    Matthew L. Fidler  
-;;    Last-Updated: Tue Oct 19 15:37:53 2010 (-0500) (us041375) #663 (Matthew L. Fidler)
-;;    Added popup scrollbarbar nil
+(defcustom tabbar-ruler-popup-scroll nil
   "Should tabbas-ruler have popup scrollbar.  As mouse moves, the scroll-bar pops up.  Otherwise the sroll-bar is turned off."
   :type 'boolean
   :group 'tabbar-ruler)
