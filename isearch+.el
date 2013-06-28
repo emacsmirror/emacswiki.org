@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 21.0
-;; Last-Updated: Thu Jun 27 14:50:53 2013 (-0700)
+;; Last-Updated: Fri Jun 28 07:33:41 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2299
+;;     Update #: 2300
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -924,8 +924,8 @@ according to option `search-invisible': t or `open'."
       (setq search-invisible   (if search-invisible nil isearchp-last-non-nil-invisible)
             isearch-invisible  search-invisible))
     (let ((message-log-max  nil))
-      (message "%s%s [match %sVISIBLE text%s]" (isearch-message-prefix nil isearch-nonincremental)
-               isearch-message (if isearch-invisible "IN" "only ")
+      (message "%s%s [match %s text%s]" (isearch-message-prefix nil isearch-nonincremental)
+               isearch-message (if isearch-invisible "INvisible" "only VISIBLE")
                (if (not current-only-p) " FROM NOW ON" ""))))
   (setq isearch-success   t
         isearch-adjusted  t)
