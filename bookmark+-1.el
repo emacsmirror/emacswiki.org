@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Mon Jun 10 13:36:00 2013 (-0700)
+;; Last-Updated: Thu Jun 27 20:09:42 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6372
+;;     Update #: 6374
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -7707,7 +7707,7 @@ Otherwise, load it to supplement the current bookmark list."
   "Save the desktop as a bookmark.
 You are prompted for the desktop-file location and the bookmark name.
 The default value for the desktop-file location is the current value
-of `desktop-file'.  As always, you can use `M-n' to retrieve it.
+of DESKTOP-FILE.  As always, you can use `M-n' to retrieve it.
 
 If you also use library Icicles, then the desktop files of all
 existing desktop bookmarks are available during the desktop file-name
@@ -7768,7 +7768,7 @@ BOOKMARK is a bookmark name or a bookmark record."
   "Change to desktop saved in DESKTOP-FILE.
 Kill the desktop as specified by variables `desktop-save-mode' and
  `desktop-save' (starting with Emacs 22).
-Clear the desktop and load DESKTOP-FILE DIRNAME."
+Clear the desktop and load DESKTOP-FILE."
   (interactive (list (let ((icicle-unpropertize-completion-result-flag  t))
                        (read-file-name "Change to desktop file: "))))
   (set-text-properties 0 (length desktop-file) nil desktop-file)
