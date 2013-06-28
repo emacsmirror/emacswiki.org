@@ -8,3 +8,9 @@
 ==Documentation==
 
 ##M-x find-library RET trace RET##
+
+See also
+EmacsLispProfiler,
+EmacsLispBenchmark,
+EmacsNativeProfiler,
+CategoryDebug.
