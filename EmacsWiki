@@ -14,21 +14,16 @@ for entry points.
 
 = Hosting =
 
-AlexSchroeder is the administrator of this wiki. It is hosted by [http://thinkmo.de/ Thinkmo] in Germany. The first edit (see the first entry of the [Self:action=rc;all=1;from=1;showedit=1;rcidonly=SiteMap complete change log for SiteMap] was made in **2001-05-14**. The [http://web.archive.org/web/20010610005205/http://www.emacswiki.org/cgi-bin/wiki.pl Internet Archive Wayback Machine agrees] and has a snapshot for **2001-06-09**.
+AlexSchroeder is the administrator of this wiki. It is hosted by [http://waldmann-edv.de/ Waldmann EDV] in Germany.
+If Alex gets run over by a truck, contact [http://waldmann-edv.de/WedvHome Thomas Waldmann].
+
+The first edit (see the first entry of the [Self:action=rc;all=1;from=1;showedit=1;rcidonly=SiteMap complete change log for SiteMap] was made in **2001-05-14**. The [http://web.archive.org/web/20010610005205/http://www.emacswiki.org/cgi-bin/wiki.pl Internet Archive Wayback Machine agrees] and has a snapshot for **2001-06-09**.
 
 The Emacs Wiki is located at 
 http://www.emacswiki.org/, or
-http://purl.org/wiki/emacs/, or 
 http://emacswiki.wikiwikiweb.de/, if
 emacswiki.org is down.  This is a virtual hosting environment,
 therefore you need to use HTTP/1.1 to access the site.
-
-You can reach the provider at 
-http://www.wikiwikiweb.de/ and
-http://www.thinkmo.de/.  If you notice page corruption or other
-problems, however, send mailto:alex@emacswiki.org or
-mailto:alex@gnu.org.  The webmaster of emacswiki.org is also the
-webmaster of all the other virtual hosts.
 
 = Backups =
 
@@ -38,15 +33,13 @@ See WikiDownload for more.
 
 An cron job backs the site up on a regular basis.
 Backup space kindly donated by [http://bonmot.ca/ Bonmot Internet Consulting].
-In the case AlexSchroeder gets run over by a truck, contact Daniel !MacKay (contact info available on the Bonmot site).
+If the wiki disappears in a major crisis and neither Alex nor Thomas can help you get to the files in order to resurrect Emacs Wiki,
+contact Daniel !MacKay (contact info available on the Bonmot site).
 
 = Money =
 
 At the moment AlexSchroeder is paying for the server:
-The people at thinkmo.de are asking for EUR 20 per month which basically
-covers bandwidth.  This wiki and the blogs of my family
-all run on the emacswiki.org domain and it's using about 10G per month.
-I assume that most of the traffic is for the Emacs Wiki.  :)
+EUR 20 per month covers bandwidth.
 
 There will not
 be any ads on emacswiki.org; I hate them myself.  If you like the site
