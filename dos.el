@@ -54,6 +54,7 @@
 ;; Usage:
 ;;
 ;; See documentation of function `dos-mode'.
+;; Separate package `dos-indent' (Matthew Fidler) provides indentation.
 ;;
 ;; Acknowledgements:
 ;;
