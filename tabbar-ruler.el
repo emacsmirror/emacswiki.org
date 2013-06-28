@@ -5,7 +5,7 @@
 ;; Author: Matthew Fidler, Nathaniel Cunningham
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Mon Oct 18 17:06:07 2010 (-0500)
-;; Version: 0.37
+;; Version: 0.38
 ;; Last-Updated: Sat Dec 15 15:44:34 2012 (+0800)
 ;;           By: Matthew L. Fidler
 ;;     Update #: 663
@@ -35,11 +35,12 @@
 ;; To use this, put the library in your load path and use
 ;; 
 ;; 
-;;   (setq tabbar-ruler-global-tabbar 't) ; If you want tabbar
-;;   (setq tabbar-ruler-global-ruler 't) ; if you want a global ruler
-;;   (setq tabbar-ruler-popup-menu 't) ; If you want a popup menu.
-;;   (setq tabbar-ruler-popup-toolbar 't) ; If you want a popup toolbar
-;;   
+;;   (setq tabbar-ruler-global-tabbar t) ; If you want tabbar
+;;   (setq tabbar-ruler-global-ruler t) ; if you want a global ruler
+;;   (setq tabbar-ruler-popup-menu t) ; If you want a popup menu.
+;;   (setq tabbar-ruler-popup-toolbar t) ; If you want a popup toolbar
+;;   (setq tabbar-ruler-popup-scrollbar t) ; If you want to only show the
+;;                                         ; scroll bar when your mouse is moving.
 ;;   (require 'tabbar-ruler)
 ;;   
 ;; 
@@ -1071,6 +1072,15 @@ Call `tabbar-tab-label-function' to obtain a label for TAB."
   "Should tabbar-ruler have a popup toolbar.  As mouse moves toward top of window, the toolbar pops up."
   :type 'boolean
   :group 'tabbar-ruler)
+
+(defcustom tabbar-ruler-popup-scroll
+;; 28-Jun-2013    Matthew L. Fidler  
+;;    Last-Updated: Tue Oct 19 15:37:53 2010 (-0500) (us041375) #663 (Matthew L. Fidler)
+;;    Added popup scrollbarbar nil
+  "Should tabbas-ruler have popup scrollbar.  As mouse moves, the scroll-bar pops up.  Otherwise the sroll-bar is turned off."
+  :type 'boolean
+  :group 'tabbar-ruler)
+
 (defcustom tabbar-ruler-popup-menu-min-y 5 ;
   "Minimum number of pixels from the top before a menu/toolbar pops up."
   :type 'integer
@@ -1163,8 +1173,9 @@ Call `tabbar-tab-label-function' to obtain a label for TAB."
            (tabbar-ruler-mouse-movement))
          ( (and tabbar-ruler-global-ruler tabbar-ruler-global-tabbar)
            (cond
-            
             ( (memq last-command tabbar-ruler-ruler-display-commands)
+              (when tabbar-ruler-popup-scrollbar
+                (scroll-bar-mode -1))
               (when tabbar-ruler-ruler-off
                 (ruler-mode 1)
                 (setq tabbar-ruler-ruler-off nil))
@@ -1191,6 +1202,8 @@ Call `tabbar-tab-label-function' to obtain a label for TAB."
                   (setq tabbar-ruler-tabbar-off nil))))
             ( 't
               (when (or initialize (and tabbar-ruler-ruler-off tabbar-ruler-tabbar-off))
+                (when tabbar-ruler-popup-scrollbar
+                  (scroll-bar-mode -1))
                 (when tabbar-ruler-ruler-off
                   (ruler-mode 1)
                   (setq tabbar-ruler-ruler-off nil))
@@ -1217,7 +1230,7 @@ Call `tabbar-tab-label-function' to obtain a label for TAB."
   "Mouse Movement function"
   (interactive)
   (when tabbar-ruler-movement-timer
-    (cancel-timer tabbar-ruler-movement-timer))
+    (cancel-timer tabbar-ruler-movement-timer))  
   (let* ((y-pos (cddr (mouse-pixel-position)))
          (x-pos (cadr (mouse-pixel-position))))
     (unless y-pos
@@ -1231,6 +1244,8 @@ Call `tabbar-tab-label-function' to obtain a label for TAB."
                      (= tabbar-ruler-movement-x x-pos)
                      (= tabbar-ruler-movement-y y-pos)))))
       (when (and x-pos y-pos)
+        (when tabbar-ruler-popup-scrollbar
+          (scroll-bar-mode 1))
         (setq tabbar-ruler-movement-x x-pos)
         (setq tabbar-ruler-movement-y y-pos)
         (unless tabbar-ruler-ruler-off
