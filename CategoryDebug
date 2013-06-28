@@ -17,6 +17,13 @@ Debugging EmacsLisp:
 * DebugFileLoading -- finding errors in files
 * DataDebug -- Examine large complex Emacs Lisp data structures
 
+Profiling and tracing EmacsLisp:
+
+* EmacsLispProfiler
+* EmacsNativeProfiler
+* EmacsLispBenchmark
+* EmacsLispTracing
+
 Debugging other programs using Emacs:
 
 * DebuggingWithEmacs usually involves the GrandUnifiedDebugger (GUD) as an interface to command line debuggers such as gdb, dbx, cdb,....
