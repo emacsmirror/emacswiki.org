@@ -1,0 +1,19 @@
+The ##profiler## library provides **CPU & memory profiling** for all Emacs functions.
+
+It was added in Emacs 24.3, and was previously available from http://cx4a.org/hack/emacs-native-profiler.html
+
+Unlike EmacsLispProfiler you do not have to specify which functions or packages you wish to profile (however ELP remains complementary as it records overall time taken, which includes time spent waiting for external processes to return, which is something that the native profiler will not report on).
+
+##M-x find-library RET profiler RET##
+
+==Commands==
+
+* ##M-x profiler-start##
+* ##M-x profiler-report##
+* ##M-x profiler-reset##
+* ##M-x profiler-stop##
+* ##M-x profiler-find-profile##
+
+==Documentation==
+
+See Info node (elisp) Manual:Profiling (elisp)
