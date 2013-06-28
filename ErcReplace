@@ -33,7 +33,7 @@ either a search string or a replacement string.
 
 Note that if the text you replace has text properties, they might be
 removed by the replacement.  Use ##(match-string 1)## instead of
-##(replace-match "\\1"), for example.  Alternatively, you could use
+##(replace-match "\\1")##, for example.  Alternatively, you could use
 ##(apply 'propertize "Replacement" (text-properties-at
 (match-beginning 0)))##.
 
