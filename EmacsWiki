@@ -36,6 +36,10 @@ Help make distributed backups.
 This will help us get the wiki back up and running if it goes down.
 See WikiDownload for more.
 
+An cron job backs the site up on a regular basis.
+Backup space kindly donated by [http://bonmot.ca/ Bonmot Internet Consulting].
+In the case of a major breakdown, contact Daniel !MacKay (contact info available on the Bonmot site).
+
 = Money =
 
 At the moment AlexSchroeder is paying for the server:
