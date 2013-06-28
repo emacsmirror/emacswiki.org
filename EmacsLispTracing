@@ -1,0 +1,10 @@
+==Commands==
+
+* ##M-x trace-function##
+* ##M-x trace-function-background##
+* ##M-x untrace-function##
+* ##M-x untrace-all##
+
+==Documentation==
+
+##M-x find-library RET trace RET##
