@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 21.0
-;; Last-Updated: Fri Jun 28 09:56:47 2013 (-0700)
+;; Last-Updated: Fri Jun 28 11:09:22 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2303
+;;     Update #: 2305
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -388,6 +388,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2013/06/28 dadams
+;;     Bind C-x 8 RET even for Emacs 24.4+ (where it is true by default), because we set C-x to nil.
 ;; 2013/06/27 dadams
 ;;     Renamed: isearchp-toggle-invisible to isearchp-toggle-search-invisible.
 ;;     Added: isearchp-toggle-option-flag, isearchp-toggle-option-toggle, isearchp-case-fold,
@@ -2413,8 +2415,8 @@ Options
 (when (> emacs-major-version 21)
   (define-key isearch-mode-map "\C-x"          nil)
   (define-key isearch-mode-map "\C-xo"         'isearchp-open-recursive-edit) ; `o'pen edit session
-  (when (and (> emacs-major-version 22)   ; Emacs 23 (supports Unicode) through 24.2
-             (or (< emacs-major-version 24)  (and (= emacs-major-version 24)  (< emacs-minor-version 3))))
+  ;; Do this even for Emacs 24.4+ (where it is true by default), because we set `C-x' to nil.
+  (when (> emacs-major-version 22)   ; Emacs 23+ (supports Unicode)
     (define-key isearch-mode-map "\C-x8"       nil)
     (define-key isearch-mode-map "\C-x8\r"     'isearch-char-by-name)))
 
