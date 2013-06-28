@@ -50,8 +50,10 @@ The compiled form of using Emacs's `sort' as in the very first example above doe
 
 See also
 EmacsLispProfiler,
-EmacsLispTracing.
+EmacsLispTracing,
+EmacsNativeProfiler.
 
 ----
+CategoryDebug
 CategoryCode
 CategoryProgramming
