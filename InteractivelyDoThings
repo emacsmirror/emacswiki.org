@@ -388,11 +388,28 @@ To use this, if you've already ##(require 'ibuffer)##'d, ##(define-key ibuffer-m
 
 
 [:IdoUbiquitous]
-=== Use ido everywhere ===
+== ido-ubiquitous ==
 
-The Ido Ubiquitous module allows you set up to use ido with almost anything that uses completion. Extremely useful. Although for Alt-X there is the improved [[Smex]] package.
+The ido ubiquitous module allows you set up to use ido with almost anything that uses completion. For example in `C-h f'. Extremely useful. Although for `M-x' there is the improved [[Smex]] package. It is now maintained by Ryan Thompson:
 
-https://github.com/technomancy/ido-ubiquitous
+https://github.com/DarwinAwardWinner/ido-ubiquitous
+
+=== ido-ubiquitous compile-log issue ===
+
+If ido-ubiquitous 1.6 is used in emacs 24.3, there will always be a compile-log buffer warning:
+
+    .emacs.d/elpa/ido-ubiquitous-20121214.2145/ido-ubiquitous.elc:Warning:
+        reference to free variable `ido-cur-item'
+    .emacs.d/elpa/ido-ubiquitous-20121214.2145/ido-ubiquitous.elc:Warning:
+        reference to free variable `ido-default-item'
+    .emacs.d/elpa/ido-ubiquitous-20121214.2145/ido-ubiquitous.elc:Warning:
+        reference to free variable `ido-cur-list'
+
+Just add the following three defvars to get around this problem:
+
+    (defvar ido-cur-item nil)
+    (defvar ido-default-item nil)
+    (defvar ido-cur-list nil)
 
 == Ido Hacks (modifying Ido's behavior) ==
 
