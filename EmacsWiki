@@ -91,7 +91,6 @@ Current crontab:
 * [http://www.emacswiki.org/scripts/emacs-cvs-update emacs-cvs-update] -- update the [[CVS repository]]
 * [http://www.emacswiki.org/scripts/emacs-svn-update emacs-svn-update] -- update the [[SVN repository]]
 * [http://www.emacswiki.org/scripts/emacs-git-update emacs-git-update] -- update the [[Git repository]] (push)
-* [http://www.emacswiki.org/scripts/archives archives] -- create the tarballs alex.tar.gz and oddmuse.tar.gz -- we no longer do this for EmacsWiki
 * [http://www.emacswiki.org/scripts/emacs-rss emacs-rss] -- create static copies of the most commonly used RSS files
 
 ----
