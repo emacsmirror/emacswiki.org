@@ -17,3 +17,13 @@ Unlike EmacsLispProfiler you do not have to specify which functions or packages 
 ==Documentation==
 
 See Info node (elisp) Manual:Profiling (elisp)
+
+See also
+EmacsLispProfiler,
+EmacsLispBenchmark,
+EmacsLispTracing.
+
+----
+CategoryDebug
+CategoryCode
+CategoryProgramming
