@@ -8,7 +8,7 @@
 * <b>Author </b> --  Matthew Fidler, Nathaniel Cunningham
 * <b>Maintainer </b> --  Matthew L. Fidler
 * <b>Created </b> --  Mon Oct 18 17:06:07 2010 (-0500)
-* <b>Version </b> --  0.37
+* <b>Version </b> --  0.38
 * <b>Last-Updated </b> --  Sat Dec 15 15:44:34 2012 (+0800)
 * <b>By </b> --  Matthew L. Fidler
 * <b>Update # </b> --  663
@@ -34,11 +34,12 @@ Also allows auto-hiding of toolbar and menu.
 To use this, put the library in your load path and use
 
 {{{
-  (setq tabbar-ruler-global-tabbar 't) ; If you want tabbar
-  (setq tabbar-ruler-global-ruler 't) ; if you want a global ruler
-  (setq tabbar-ruler-popup-menu 't) ; If you want a popup menu.
-  (setq tabbar-ruler-popup-toolbar 't) ; If you want a popup toolbar
-  
+  (setq tabbar-ruler-global-tabbar t) ; If you want tabbar
+  (setq tabbar-ruler-global-ruler t) ; if you want a global ruler
+  (setq tabbar-ruler-popup-menu t) ; If you want a popup menu.
+  (setq tabbar-ruler-popup-toolbar t) ; If you want a popup toolbar
+  (setq tabbar-ruler-popup-scrollbar t) ; If you want to only show the
+                                        ; scroll bar when your mouse is moving.
   (require 'tabbar-ruler)
 
 }}}
