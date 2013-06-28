@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 21.0
-;; Last-Updated: Fri Jun 28 07:33:41 2013 (-0700)
+;; Last-Updated: Fri Jun 28 09:56:47 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2300
+;;     Update #: 2303
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -1514,7 +1514,22 @@ not necessarily fontify the whole buffer."
 ;;
 (defun isearch-mode (forward &optional regexp op-fun recursive-edit word)
   "Start Isearch minor mode.
-It is called by the function `isearch-forward' and other related functions."
+It is called by the function `isearch-forward' and other related functions.
+
+Non-nil argument FORWARD means search in the forward direction.
+Non-nil argument REGEXP means regular expression search.
+
+Argument OP-FUN is a function to be called after each input character
+is processed.  (It is not called after characters that exit the search.)
+
+When argument RECURSIVE-EDIT is non-nil, this function behaves
+modally.  It does not return to the calling function until the search
+is completed.  To behave this way it enters a recursive edit and exits
+that when you finish searching.
+
+Argument WORD, if t, means search for a sequence of words, ignoring
+punctuation.  If a function, the function is called to convert the
+search string to a regexp used for regexp searching."
 
   ;; Initialize global vars.
   (setq isearch-forward                  forward
@@ -1532,8 +1547,8 @@ It is called by the function `isearch-forward' and other related functions."
         isearch-barrier                  (point)
         isearch-adjusted                 nil
         isearch-yank-flag                nil
-        isearch-invalid-regexp           nil      ; Only for Emacs < 22.
-        isearch-within-brackets          nil     ; Only for Emacs < 22.
+        isearch-invalid-regexp           nil ; Only for Emacs < 22.
+        isearch-within-brackets          nil ; Only for Emacs < 22.
         isearch-error                    nil
         isearch-slow-terminal-mode       (and (<= baud-rate search-slow-speed)
                                               (> (window-height) (* 4 (abs search-slow-window-lines))))
