@@ -100,6 +100,10 @@ behaviour as used in Emacs 21 and is called "text command mode" in the manual.  
 arrow and GUD commands can get confused if you use two different debuggers, e.g., gdb and perldb. --NickRoberts
 
 [new]
+Multiple debug sessions are supported in [https://github.com/rocky/emacs-dbgr/ realgud]. It supports about a dozen different debuggers,  two for Perl include *perl5db*, along with debuggers for Ruby, Python, POSIX shell, and even support for my GNU make debugger, [http://bashdb.sf.net/remake remake].
+
+-- rocky
+[new]
 I have a large emacs window and I can't find the GDB marker, =>.  How can I make it blink or appear in red?
 
 [new]
