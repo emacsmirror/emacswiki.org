@@ -198,5 +198,5 @@ start")
 </pre>
 
 === keyword-search ===
-I hacked on the above code a bit turned it into <https://github.com/juhp/keyword-search/blob/master/keyword-search.el>.
+I hacked on the above code a bit and turned it into <https://github.com/juhp/keyword-search/blob/master/keyword-search.el>.
 It seems to work but can be improved more.
