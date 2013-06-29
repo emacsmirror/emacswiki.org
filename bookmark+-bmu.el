@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Sun Jun  9 20:31:02 2013 (-0700)
+;; Last-Updated: Sat Jun 29 08:39:12 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2486
+;;     Update #: 2494
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -2616,7 +2616,7 @@ first or last (`s >'), then re-sort.
 Non-interactively:
 * Non-nil optional arg NO-RE-SORT-P inhibits re-sorting.
 * Non-nil optional arg MSG-P means display a status message."
-  (interactive "sRegexp: \np")
+  (interactive (list (bmkp-read-regexp "Regexp: ") (prefix-numeric-value current-prefix-arg)))
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (let ((count      0)
         (nb-marked  (length bmkp-bmenu-marked-bookmarks)))
@@ -3143,7 +3143,8 @@ If no bookmark is marked, search the bookmark of the current line.
 With a prefix arg, search all bookmarks.
 Use `\\[tags-loop-continue]' to advance among the search hits.
 Marked directory and non-file bookmarks are ignored."
-  (interactive "sSearch marked file bookmarks (regexp): \nP")
+  (interactive (list (bmkp-read-regexp "Search marked file bookmarks (regexp): ")
+                     current-prefix-arg))
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (tags-search regexp '(let ((files  ())
                              file)
@@ -3346,7 +3347,8 @@ Non-interactively:
 * Non-nil NOTP: see prefix arg, above.
 * Non-nil optional arg NO-RE-SORT-P inhibits re-sorting.
 * Non-nil optional arg MSG-P means display a status message."
-  (interactive "sRegexp: \nP\ni\p")
+  (interactive (list (bmkp-read-regexp "Regexp: ") current-prefix-arg nil
+                     (prefix-numeric-value current-prefix-arg)))
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (let ((count      0)
         (nb-marked  (length bmkp-bmenu-marked-bookmarks))
@@ -3431,7 +3433,8 @@ Non-interactively:
 * Non-nil NOTP: see prefix arg, above.
 * Non-nil optional arg NO-RE-SORT-P inhibits re-sorting.
 * Non-nil optional arg MSG-P means display a status message."
-  (interactive "sRegexp: \nP\ni\np")
+  (interactive (list (bmkp-read-regexp "Regexp: ") current-prefix-arg nil
+                     (prefix-numeric-value current-prefix-arg)))
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (let ((count      0)
         (nb-marked  (length bmkp-bmenu-marked-bookmarks))
