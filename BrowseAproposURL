@@ -185,7 +185,7 @@ Here is some wrapper code to facilitate access to the apropos browse using a reg
 
 I hope someone finds it useful.
 
-=== Hayoo/Haskell integration
+=== Hayoo/Haskell integration ===
 
 Add to your  apropos-url-alist a new url and define a key for haskell mode
 
