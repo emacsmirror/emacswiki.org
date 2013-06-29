@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Thu Jun 27 20:09:42 2013 (-0700)
+;; Last-Updated: Sat Jun 29 08:25:38 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6374
+;;     Update #: 6387
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -369,6 +369,7 @@
 ;;    `bmkp-file-this-dir-bookmark-p',
 ;;    `bmkp-file-this-dir-some-tags-alist-only',
 ;;    `bmkp-file-this-dir-some-tags-regexp-alist-only',
+;;    `bmkp-find-tag-default-as-regexp' (Emacs 22-24.2),
 ;;    `bmkp-flagged-bookmark-p', `bmkp-flagged-cp', `bmkp-float-time',
 ;;    `bmkp-full-tag', `bmkp-function-bookmark-p',
 ;;    `bmkp-get-autofile-bookmark', `bmkp-get-bookmark-in-alist',
@@ -425,11 +426,12 @@
 ;;    `bmkp-position-post-context-region',
 ;;    `bmkp-position-pre-context', `bmkp-position-pre-context-region',
 ;;    `bmkp-printable-p', `bmkp-printable-vars+vals',
-;;    `bmkp-read-bookmark-file-name', `bmkp-read-tag-completing',
-;;    `bmkp-read-tags', `bmkp-read-tags-completing',
-;;    `bmkp-read-variable', `bmkp-read-variables-completing',
-;;    `bmkp-record-visit', `bmkp-refresh-latest-bookmark-list',
-;;    `bmkp-refresh-menu-list', `bmkp-refresh/rebuild-menu-list.',
+;;    `bmkp-read-bookmark-file-name', `bmkp-read-regexp',
+;;    `bmkp-read-tag-completing', `bmkp-read-tags',
+;;    `bmkp-read-tags-completing', `bmkp-read-variable',
+;;    `bmkp-read-variables-completing', `bmkp-record-visit',
+;;    `bmkp-refresh-latest-bookmark-list', `bmkp-refresh-menu-list',
+;;    `bmkp-refresh/rebuild-menu-list.',
 ;;    `bmkp-regexp-filtered-annotation-alist-only',
 ;;    `bmkp-regexp-filtered-bookmark-name-alist-only',
 ;;    `bmkp-regexp-filtered-file-name-alist-only',
@@ -3036,6 +3038,84 @@ that option is non-nil."
  
 ;;(@* "Bookmark+ Functions (`bmkp-*')")
 ;;; Bookmark+ Functions (`bmkp-*') -----------------------------------
+
+(if (fboundp 'find-tag-default-as-regexp)
+    (defalias 'bmkp-read-regexp 'read-regexp) ; Emacs 24.3+
+
+  (defun bmkp-find-tag-default-as-regexp () ; Emacs < 24.3
+    "Return a regexp that matches the default tag at point.
+If there is no tag at point, return nil.
+
+When in a major mode that does not provide its own
+`find-tag-default-function', return a regexp that matches the
+symbol at point exactly."
+    (let* ((tagf  (or find-tag-default-function
+                      (get major-mode 'find-tag-default-function)
+                      'find-tag-default))
+           (tag   (funcall tagf)))
+      (and tag  (if (eq tagf 'find-tag-default)
+                    (format "\\_<%s\\_>" (regexp-quote tag))
+                  (regexp-quote tag)))))
+
+  (if (fboundp 'find-tag-default)
+      (defun bmkp-read-regexp (prompt &optional default history) ; Emacs 22-24.2
+        "Read and return a regular expression as a string.
+If PROMPT does not end with a colon and possibly whitespace then
+append \": \" to it.
+
+Optional argument DEFAULT is a string or a list of the form
+\(DEFLT . SUGGESTIONS), where DEFLT is a string or nil.
+
+The string DEFAULT or DEFLT is added to the prompt and is returned as
+the default value if the user enters empty input.  The empty string is
+returned if DEFAULT or DEFLT is nil and the user enters empty input.
+
+SUGGESTIONS is used only for Emacs 23 and later.  It is a list of
+strings that can be inserted into the minibuffer using `\\<minibuffer-local-map>\\[next-history-element]'.
+The values supplied in SUGGESTIONS are prepended to the list of
+standard suggestions, which include the tag at point, the last isearch
+regexp, the last isearch string, and the last replacement regexp.
+
+Optional argument HISTORY is a symbol to use for the history list.
+If nil then use `regexp-history'."
+        (let* ((deflt                  (if (consp default) (car default) default))
+               (suggestions            (and (> emacs-major-version 22)
+					    (if (listp default) default (list default))))
+               (suggestions            (and (> emacs-major-version 22)
+					    (append
+					     suggestions
+					     (list (bmkp-find-tag-default-as-regexp)
+						   (car regexp-search-ring)
+						   (regexp-quote (or (car search-ring)  ""))
+						   (car (symbol-value
+                                                         query-replace-from-history-variable))))))
+               (suggestions            (and (> emacs-major-version 22)
+					    (delete-dups (delq nil (delete "" suggestions)))))
+               (history-add-new-input  nil) ; Do not automatically add default to history for empty input.
+               (input                  (read-from-minibuffer
+                                        (cond ((bmkp-string-match-p ":[ \t]*\\'" prompt) prompt)
+                                              (deflt (format "%s (default %s): " prompt
+                                                             (query-replace-descr deflt)))
+                                              (t (format "%s: " prompt)))
+                                        nil nil nil (or history  'regexp-history) suggestions t)))
+          (if (equal input "")
+              (or deflt  input)         ; Return the default value when the user enters empty input.
+            (prog1 input                ; Add non-empty input to the history and return input.
+              (add-to-history (or history  'regexp-history) input)))))
+
+    (defun bmkp-read-regexp (prompt &optional default history) ; Emacs 20-21
+      "Read and return a string.
+Optional arg DEFAULT is a string that is returned when the user enters
+empty input.  It can also be a list of strings, of which only the
+first is used.
+Optional arg HISTORY is a symbol to use for the history list.  If nil,
+use `regexp-history'."
+      (when (consp default) (setq default  (car default)))
+      (read-string (cond ((bmkp-string-match-p ":[ \t]*\\'" prompt) prompt)
+                         (default (format "%s (default %s): " prompt
+                                          (mapconcat #'isearch-text-char-description default "")))
+                         (t (format "%s: " prompt)))
+                   nil (or history  'regexp-history) default))))
 
 (defun bmkp-new-bookmark-default-names (&optional first-def)
   "Return a list of default names (strings) for a new bookmark.
@@ -9007,7 +9087,7 @@ time.  Use a prefix argument if you want to refresh them."
 You are prompted for the REGEXP.
 Then you are prompted for the BOOKMARK (with completion)."
   (interactive
-   (let* ((rgx    (read-string "Regexp for all tags: "))
+   (let* ((rgx    (bmkp-read-regexp "Regexp for all tags: "))
           (alist  (bmkp-all-tags-regexp-alist-only rgx)))
      (unless alist (error "No bookmarks have tags that match `%s'" rgx))
      (list rgx (bookmark-completing-read "Bookmark" (bmkp-default-bookmark-name alist) alist))))
@@ -9017,7 +9097,7 @@ Then you are prompted for the BOOKMARK (with completion)."
 (defun bmkp-all-tags-regexp-jump-other-window (regexp bookmark) ; `C-x 4 j t % *'
   "`bmkp-all-tags-regexp-jump', but in another window."
   (interactive
-   (let* ((rgx    (read-string "Regexp for all tags: "))
+   (let* ((rgx    (bmkp-read-regexp "Regexp for all tags: "))
           (alist  (bmkp-all-tags-regexp-alist-only rgx)))
      (unless alist (error "No bookmarks have tags that match `%s'" rgx))
      (list rgx (bookmark-completing-read "Bookmark" (bmkp-default-bookmark-name alist) alist))))
@@ -9056,7 +9136,7 @@ time.  Use a prefix argument if you want to refresh them."
 You are prompted for the REGEXP.
 Then you are prompted for the BOOKMARK (with completion)."
   (interactive
-   (let* ((rgx    (read-string "Regexp for tags: "))
+   (let* ((rgx    (bmkp-read-regexp "Regexp for tags: "))
           (alist  (bmkp-some-tags-regexp-alist-only rgx)))
      (unless alist (error "No bookmarks have tags that match `%s'" rgx))
      (list rgx (bookmark-completing-read "Bookmark" (bmkp-default-bookmark-name alist) alist))))
@@ -9066,7 +9146,7 @@ Then you are prompted for the BOOKMARK (with completion)."
 (defun bmkp-some-tags-regexp-jump-other-window (regexp bookmark) ; `C-x 4 j t % +'
   "`bmkp-some-tags-regexp-jump', but in another window."
   (interactive
-   (let* ((rgx    (read-string "Regexp for tags: "))
+   (let* ((rgx    (bmkp-read-regexp "Regexp for tags: "))
           (alist  (bmkp-some-tags-regexp-alist-only rgx)))
      (unless alist (error "No bookmarks have tags that match `%s'" rgx))
      (list rgx (bookmark-completing-read "Bookmark" (bmkp-default-bookmark-name alist) alist))))
@@ -9105,7 +9185,7 @@ time.  Use a prefix argument if you want to refresh them."
 You are prompted for the REGEXP.
 Then you are prompted for the BOOKMARK (with completion)."
   (interactive
-   (let* ((rgx    (read-string "Regexp for tags: "))
+   (let* ((rgx    (bmkp-read-regexp "Regexp for tags: "))
           (alist  (bmkp-file-all-tags-regexp-alist-only rgx)))
      (unless alist (error "No file or dir bookmarks have tags that match `%s'" rgx))
      (list rgx (bookmark-completing-read "File bookmark" (bmkp-default-bookmark-name alist) alist))))
@@ -9115,7 +9195,7 @@ Then you are prompted for the BOOKMARK (with completion)."
 (defun bmkp-file-all-tags-regexp-jump-other-window (regexp bookmark) ; `C-x 4 j t f % *'
   "`bmkp-file-all-tags-regexp-jump', but in another window."
   (interactive
-   (let* ((rgx    (read-string "Regexp for tags: "))
+   (let* ((rgx    (bmkp-read-regexp "Regexp for tags: "))
           (alist  (bmkp-file-all-tags-regexp-alist-only rgx)))
      (unless alist (error "No file or dir bookmarks have tags that match `%s'" rgx))
      (list rgx (bookmark-completing-read "File bookmark" (bmkp-default-bookmark-name alist) alist))))
@@ -9154,7 +9234,7 @@ time.  Use a prefix argument if you want to refresh them."
 You are prompted for the REGEXP.
 Then you are prompted for the BOOKMARK (with completion)."
   (interactive
-   (let* ((rgx    (read-string "Regexp for tags: "))
+   (let* ((rgx    (bmkp-read-regexp "Regexp for tags: "))
           (alist  (bmkp-file-some-tags-regexp-alist-only rgx)))
      (unless alist (error "No file or dir bookmarks have tags that match `%s'" rgx))
      (list rgx (bookmark-completing-read "File bookmark" (bmkp-default-bookmark-name alist) alist))))
@@ -9164,7 +9244,7 @@ Then you are prompted for the BOOKMARK (with completion)."
 (defun bmkp-file-some-tags-regexp-jump-other-window (regexp bookmark) ; `C-x 4 j t f % +'
   "`bmkp-file-some-tags-regexp-jump', but in another window."
   (interactive
-   (let* ((rgx    (read-string "Regexp for tags: "))
+   (let* ((rgx    (bmkp-read-regexp "Regexp for tags: "))
           (alist  (bmkp-file-some-tags-regexp-alist-only rgx)))
      (unless alist (error "No file or dir bookmarks have tags that match `%s'" rgx))
      (list rgx (bookmark-completing-read "File bookmark" (bmkp-default-bookmark-name alist) alist))))
@@ -9203,7 +9283,7 @@ time.  Use a prefix argument if you want to refresh them."
 You are prompted for the REGEXP.
 Then you are prompted for the BOOKMARK (with completion)."
   (interactive
-   (let* ((rgx    (read-string "Regexp for tags: "))
+   (let* ((rgx    (bmkp-read-regexp "Regexp for tags: "))
           (alist  (bmkp-file-this-dir-all-tags-regexp-alist-only rgx)))
      (unless alist (error "No file or dir bookmarks have tags that match `%s'" rgx))
      (list rgx (bookmark-completing-read "File bookmark" (bmkp-default-bookmark-name alist) alist))))
@@ -9213,7 +9293,7 @@ Then you are prompted for the BOOKMARK (with completion)."
 (defun bmkp-file-this-dir-all-tags-regexp-jump-other-window (regexp bookmark) ; `C-x 4 j t . % *'
   "`bmkp-file-this-dir-all-tags-regexp-jump', but in another window."
   (interactive
-   (let* ((rgx    (read-string "Regexp for tags: "))
+   (let* ((rgx    (bmkp-read-regexp "Regexp for tags: "))
           (alist  (bmkp-file-this-dir-all-tags-regexp-alist-only rgx)))
      (unless alist (error "No file or dir bookmarks have tags that match `%s'" rgx))
      (list rgx (bookmark-completing-read "File bookmark" (bmkp-default-bookmark-name alist) alist))))
@@ -9252,7 +9332,7 @@ time.  Use a prefix argument if you want to refresh them."
 You are prompted for the REGEXP.
 Then you are prompted for the BOOKMARK (with completion)."
   (interactive
-   (let* ((rgx    (read-string "Regexp for tags: "))
+   (let* ((rgx    (bmkp-read-regexp "Regexp for tags: "))
           (alist  (bmkp-file-this-dir-some-tags-regexp-alist-only rgx)))
      (unless alist (error "No file or dir bookmarks have tags that match `%s'" rgx))
      (list rgx (bookmark-completing-read "File bookmark" (bmkp-default-bookmark-name alist) alist))))
@@ -9262,7 +9342,7 @@ Then you are prompted for the BOOKMARK (with completion)."
 (defun bmkp-file-this-dir-some-tags-regexp-jump-other-window (regexp bookmark) ; `C-x 4 j t . % +'
   "`bmkp-file-this-dir-some-tags-regexp-jump', but in another window."
   (interactive
-   (let* ((rgx    (read-string "Regexp for tags: "))
+   (let* ((rgx    (bmkp-read-regexp "Regexp for tags: "))
           (alist  (bmkp-file-this-dir-some-tags-regexp-alist-only rgx)))
      (unless alist (error "No file or dir bookmarks have tags that match `%s'" rgx))
      (list rgx (bookmark-completing-read "File bookmark" (bmkp-default-bookmark-name alist) alist))))
@@ -9318,7 +9398,7 @@ time.  Use a prefix argument if you want to refresh them."
 You are prompted for the REGEXP.
 Then you are prompted for the BOOKMARK (with completion)."
   (interactive
-   (let* ((rgx    (read-string "Regexp for tags: "))
+   (let* ((rgx    (bmkp-read-regexp "Regexp for tags: "))
           (alist  (bmkp-autofile-all-tags-regexp-alist-only rgx)))
      (unless alist (error "No file or dir bookmarks have tags that match `%s'" rgx))
      (list rgx (bookmark-completing-read "File bookmark" (bmkp-default-bookmark-name alist) alist))))
@@ -9328,7 +9408,7 @@ Then you are prompted for the BOOKMARK (with completion)."
 (defun bmkp-autofile-all-tags-regexp-jump-other-window (regexp bookmark) ; `C-x 4 j t a % *'
   "`bmkp-autofile-all-tags-regexp-jump', but in another window."
   (interactive
-   (let* ((rgx    (read-string "Regexp for tags: "))
+   (let* ((rgx    (bmkp-read-regexp "Regexp for tags: "))
           (alist  (bmkp-autofile-all-tags-regexp-alist-only rgx)))
      (unless alist (error "No file or dir bookmarks have tags that match `%s'" rgx))
      (list rgx (bookmark-completing-read "File bookmark" (bmkp-default-bookmark-name alist) alist))))
@@ -9367,7 +9447,7 @@ time.  Use a prefix argument if you want to refresh them."
 You are prompted for the REGEXP.
 Then you are prompted for the BOOKMARK (with completion)."
   (interactive
-   (let* ((rgx    (read-string "Regexp for tags: "))
+   (let* ((rgx    (bmkp-read-regexp "Regexp for tags: "))
           (alist  (bmkp-autofile-some-tags-regexp-alist-only rgx)))
      (unless alist (error "No file or dir bookmarks have tags that match `%s'" rgx))
      (list rgx (bookmark-completing-read "File bookmark" (bmkp-default-bookmark-name alist) alist))))
@@ -9377,7 +9457,7 @@ Then you are prompted for the BOOKMARK (with completion)."
 (defun bmkp-autofile-some-tags-regexp-jump-other-window (regexp bookmark) ; `C-x 4 j t a % +'
   "`bmkp-autofile-some-tags-regexp-jump', but in another window."
   (interactive
-   (let* ((rgx    (read-string "Regexp for tags: "))
+   (let* ((rgx    (bmkp-read-regexp "Regexp for tags: "))
           (alist  (bmkp-autofile-some-tags-regexp-alist-only rgx)))
      (unless alist (error "No file or dir bookmarks have tags that match `%s'" rgx))
      (list rgx (bookmark-completing-read "File bookmark" (bmkp-default-bookmark-name alist) alist))))
@@ -9501,7 +9581,7 @@ time.  Use a prefix argument if you want to refresh them."
   (defun bmkp-find-file-all-tags-regexp (regexp &optional file) ; `C-x j t C-f % *'
     "Visit a file or directory that has each tag matching REGEXP.
 You are prompted for the REGEXP."
-    (interactive (list (read-string "Regexp for tags: ")))
+    (interactive (list (bmkp-read-regexp "Regexp for tags: ")))
     (lexical-let* ((rg               regexp)
                    (use-file-dialog  nil)
                    (pred
@@ -9525,7 +9605,7 @@ You are prompted for the REGEXP."
 (when (> emacs-major-version 21)        ; Needs `read-file-name' with a PREDICATE arg.
   (defun bmkp-find-file-all-tags-regexp-other-window (regexp &optional file) ; `C-x 4 j t C-f % *'
     "`bmkp-find-file-all-tags-regexp', but in another window."
-    (interactive (list (read-string "Regexp for tags: ")))
+    (interactive (list (bmkp-read-regexp "Regexp for tags: ")))
     (lexical-let* ((rg               regexp)
                    (use-file-dialog  nil)
                    (pred
@@ -9608,7 +9688,7 @@ time.  Use a prefix argument if you want to refresh them."
   (defun bmkp-find-file-some-tags-regexp (regexp &optional file) ; `C-x j t C-f % +'
     "Visit a file or directory that has a tag matching REGEXP.
 You are prompted for the REGEXP."
-    (interactive (list (read-string "Regexp for tags: ")))
+    (interactive (list (bmkp-read-regexp "Regexp for tags: ")))
     (lexical-let* ((rg               regexp)
                    (use-file-dialog  nil)
                    (pred
@@ -9632,7 +9712,7 @@ You are prompted for the REGEXP."
 (when (> emacs-major-version 21)        ; Needs `read-file-name' with a PREDICATE arg.
   (defun bmkp-find-file-some-tags-regexp-other-window (regexp &optional file) ; `C-x 4 j t C-f % +'
     "`bmkp-find-file-some-tags-regexp', but in another window."
-    (interactive (list (read-string "Regexp for tags: ")))
+    (interactive (list (bmkp-read-regexp "Regexp for tags: ")))
     (lexical-let* ((rg               regexp)
                    (use-file-dialog  nil)
                    (pred
@@ -10245,14 +10325,14 @@ Non-interactively, non-nil MSG-P means display a status message."
 (defun bmkp-set-autonamed-regexp-buffer (regexp &optional msg-p)
   "Set autonamed bookmarks at matches for REGEXP in the buffer.
 Non-interactively, non-nil MSG-P means display a status message."
-  (interactive (list (read-string "Regexp: " nil 'regexp-history) 'MSG))
+  (interactive (list (bmkp-read-regexp "Regexp: " nil 'regexp-history) 'MSG))
   (bmkp-set-autonamed-regexp-region regexp (point-min) (point-max) msg-p))
 
 ;;;###autoload (autoload 'bmkp-set-autonamed-regexp-region "bookmark+")
 (defun bmkp-set-autonamed-regexp-region (regexp beg end &optional msg-p)
   "Set autonamed bookmarks at matches for REGEXP in the region.
 Non-interactively, non-nil MSG-P means display a status message."
-  (interactive (list (read-string "Regexp: " nil 'regexp-history)
+  (interactive (list (bmkp-read-regexp "Regexp: " nil 'regexp-history)
                      (region-beginning) (region-end)
                      'MSG))
   (let ((count  0))
