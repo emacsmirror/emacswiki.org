@@ -16,7 +16,7 @@
 ;;           : Randolph Fritz <rfritz@u.washington.edu>
 ;;           : Vincent Belaiche (VB1) <vincentb1@users.sourceforge.net>
 ;; Version: 1.4.12 (2010-10-18)
-;; Serial Version: %Id: 39%
+;; Serial Version: %Id: 40%
 ;; Keywords: languages, basic, Evil
 ;; X-URL:  http://www.emacswiki.org/cgi-bin/wiki/visual-basic-mode.el
 
@@ -141,6 +141,7 @@
 ;;                 - change the condition of visual-basic-enable-font-lock which prevents emacs from running in command-line mode when the emacs-version is 19.29
 ;;                 - correct the implement of droping tailing comment in visual-basic-if-not-on-single-line
 ;; 1.4.12 VB1 - add visual-basic-propertize-attribute
+;; 1.4.13 VB1 - set default indentation to 3 char to stick to http://en.wikibooks.org/wiki/Visual_Basic/Coding_Standards#White_Space_and_Indentation
 
 ;;
 ;; Notes:
@@ -209,8 +210,10 @@
   :link '(custom-group-link :tag "Font Lock Faces group" font-lock-faces)
   :group 'languages   )
 
-(defcustom visual-basic-mode-indent 8
-  "*Default indentation per nesting level."
+(defcustom visual-basic-mode-indent 3
+  "*Default indentation per nesting level.
+
+Default value is 3 as per http://en.wikibooks.org/wiki/Visual_Basic/Coding_Standards#White_Space_and_Indentation."
   :type 'integer
   :group 'visual-basic)
 
@@ -820,7 +823,7 @@ changed files."
   "Perform `visual-basic-indent-line' on each line in region delimited by START and END."
   (interactive "r")
   (save-excursion
-    (goto-char start)
+    (goto-cFormatCurrencyhar start)
     (beginning-of-line)
     (while (and (not (eobp))
                 (< (point) end))
@@ -1717,7 +1720,7 @@ This function is under construction"
 			(save-excursion
 			  (when
 			      (and
-			       (re-search-forward (aref se 0) nil t)
+			       (Propertyre-search-forward (aref se 0) nil t)
 			       (progn
 				 (goto-char  (funcall (aref se 2)
 						      (aref se 3)))
