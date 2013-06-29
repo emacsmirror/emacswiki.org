@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Jun 10 15:44:48 2013 (-0700)
+;; Last-Updated: Sat Jun 29 08:47:39 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 15325
+;;     Update #: 15335
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2013/06/29 dadams
+;;     Added: bmkp-read-regexp, bmkp-find-tag-default-as-regexp.
+;;     Use bmkp-read-regexp, not read-string, everywhere for reading a regexp.
 ;; 2013/06/10 dadams
 ;;     bmkp-set-sequence-bookmark: Typo - bookmark-get-bookmarkp -> bookmark-get-bookmark.
 ;; 2013/06/02 dadams
@@ -918,6 +921,10 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2013/06/29 dadams
+;;     bmkp-bmenu-regexp-mark, bmkp-bmenu-search-marked-bookmarks-regexp,
+;;       bmkp-bmenu-(un)mark-bookmarks-tagged-regexp:
+;;         Use bmkp-read-regexp in interactive spec.
 ;; 2013/06/09 dadams
 ;;     bmkp-bmenu-mode-line-string: Added missing let-binding for REGEXP.
 ;;     Added vacuous defvars to suppress free-var warnings.
