@@ -11,26 +11,30 @@ With '''Bookmark+''' you can use bookmarks that were created with any Emacs vers
 [:Quick-Start]
 == Quick Start ==
 
-Create a bookmark in the file you are editing: ##C-x p m##
+Some basic keys you can use anywhere:
 
-Jump to a bookmark: ##C-x r b##
+* Bookmark the file you are editing: `C-x p m'
+* Jump to a bookmark: `C-x j j'
+* Tag a file (creates an autofile bookmark): `##C-x p t + a##'
+* List/edit your bookmarks: `C-x r l'
 
-Tag a file: ##C-x p t + a##
+Some keys you can use in your bookmarks list (from `C-x r l'):
 
-The bookmark+ list, is a list where you can manipulate your
-bookmarks.
+* Add/remove some tags to/from a bookmark: `##T +##', `T -'
+* Mark the bookmarks that have particular tags: `##T m +##'.  Hit `RET' to enter each tag you type, then hit `RET' with empty input when done.
+* Unmark all bookmarks: `M-DEL' (just like in Dired)
+* Toggle marked/unmarked bookmarks: `t'
+* [[Dired]] the marked bookmarks: `##M-d >##'.  Enter a name for the Dired buffer.
 
-See the bookmark list: ##C-x r l##
+Some keys you can use in [[DiredMode]]:
 
-Add tag(s) to a bookmark: ##T +##
+* Bookmark the Dired directory, its current markings, etc.: `C-x r m'
+* Bookmark each of the marked files: `M-b' (you need '''[[Dired+]]''' for this)
 
-Mark all bookmarks that have a tag: ##T m +##.  It will prompt you
-for tags, hit ##RET## after each tag and a blank ##RET## when done.
 
-Open your marked tags in a Dired buffer: ##M-d >##.  It will ask you
-to name the dired buffer first.  You can use this to keep all your
-project files in one place.  Then just press ##e## on a file to edit
-it.
+
+
+
 
 [:Libraries]
 == Bookmark+ Libraries ==
