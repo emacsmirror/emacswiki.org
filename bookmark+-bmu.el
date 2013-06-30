@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Sat Jun 29 08:39:12 2013 (-0700)
+;; Last-Updated: Sun Jun 30 00:14:21 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2494
+;;     Update #: 2495
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -3862,9 +3862,8 @@ Autosave bookmarks:\t%s\nAutosave list display:\t%s\n\n\n"
             (when (and (fboundp 'display-images-p)  (display-images-p)
                        bmkp-bmenu-image-bookmark-icon-file
                        (file-readable-p bmkp-bmenu-image-bookmark-icon-file))
-              (insert "  ")
-              (insert-image (create-image bmkp-bmenu-image-bookmark-icon-file nil nil :ascent 95))
-              (insert " Image file\n"))
+              (let ((image  (create-image bmkp-bmenu-image-bookmark-icon-file nil nil :ascent 95)))
+                (when image (insert "  ")  (insert-image image)  (insert " Image file\n"))))
             (insert "  " gnus) (insert "  " info) (insert "  " man) (insert "  " url)
             (insert "  " local-no-region) (insert "  " local-w-region) (insert "  " no-file)
             (insert "  " buffer) (insert "  " no-buf) (insert "  " remote) (insert "  " sudo)
