@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 21.0
-;; Last-Updated: Fri Jun 28 11:09:22 2013 (-0700)
+;; Last-Updated: Sat Jun 29 19:11:23 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2305
+;;     Update #: 2307
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -388,6 +388,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2013/06/29 dadams
+;;     isearchp-drop-mismatch: Removed quote in const.
 ;; 2013/06/28 dadams
 ;;     Bind C-x 8 RET even for Emacs 24.4+ (where it is true by default), because we set C-x to nil.
 ;; 2013/06/27 dadams
@@ -739,7 +741,7 @@ anything else  - Always remove mismatched text from the search string.
 You can cycle among the three possible values using \
 `\\[isearchp-cycle-mismatch-removal]'."
   :type '(choice
-          (const :tag "Replace last mismatch"  'replace-last)
+          (const :tag "Replace last mismatch"  replace-last)
           (const :tag "Never remove mismatch"  nil)
           (other :tag "Always remove mismatch" t))
   :group 'isearch-plus)
