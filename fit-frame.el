@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Created: Thu Dec  7 09:32:12 2000
 ;; Version: 22.0
-;; Last-Updated: Mon Jun 10 09:57:54 2013 (-0700)
+;; Last-Updated: Sun Jun 30 14:34:20 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 1359
+;;     Update #: 1361
 ;; URL: http://www.emacswiki.org/fit-frame.el
 ;; Doc URL: http://www.emacswiki.org/Shrink-Wrapping_Frames
 ;; Doc URL: http://www.emacswiki.org/OneOnOneEmacs
@@ -130,6 +130,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/06/30 dadams
+;;     fit-frame: Respect fit-frame-inhibit-fitting-flag for image-fitting also.
 ;; 2013/06/10 dadams
 ;;     fit-frame, fit-frame-to-image: No-op if Emacs not running in a graphic display.
 ;;     fit-frame: Ensure one-window-p before calling fit-frame-to-image.
@@ -490,7 +492,7 @@ from such wrapping."
                     (select-frame frame)
                     (one-window-p)      ; `fit-frame-to-image' requires it.
                     (or (eq major-mode 'image-mode)  image-minor-mode))))
-           (fit-frame-to-image (interactive-p) frame)
+           (unless fit-frame-inhibit-fitting-flag (fit-frame-to-image (interactive-p) frame))
          (setq frame  (or frame  (selected-frame)))
          (unless fit-frame-inhibit-fitting-flag
            (let ((extra-lines  0)
