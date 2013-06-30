@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 22.1
-;; Last-Updated: Sun Jun 16 20:29:30 2013 (-0700)
+;; Last-Updated: Sun Jun 30 10:40:12 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 1613
+;;     Update #: 1622
 ;; URL: http://www.emacswiki.org/help-fns+.el
 ;; Doc URL: http://emacswiki.org/HelpPlus
 ;; Keywords: help, faces, characters, packages, description
@@ -17,8 +17,8 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `button', `help-fns', `help-mode', `info', `naked', `view',
-;;   `wid-edit', `wid-edit+'.
+;;   `button', `help-fns', `help-mode', `info', `naked', `wid-edit',
+;;   `wid-edit+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -119,6 +119,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/06/30 dadams
+;;     describe-variable for Emacs 24+:
+;;       Update for vanilla Emacs 24.4.  Update for Emacs bug #14754: fill printed value so no long lines.
 ;; 2013/06/16 dadams
 ;;     describe-(variable|option(-of-type)): Fixed for brain-dead variable-at-point, which returns 0 for no var.
 ;; 2013/04/29 dadams
@@ -1889,12 +1892,22 @@ it is displayed along with the global value."
                 (with-current-buffer standard-output
                   (setq val-start-pos  (point))
                   (princ "value is ")
-                  (let ((from  (point)))
-                    (terpri)
-                    (pp val)
-                    (if (< (point) (+ 68 (line-beginning-position 0)))
-                        (delete-region from (1+ from))
-                      (delete-region (1- from) from))
+                  (let ((from       (point))
+                        (line-beg   (line-beginning-position))
+                        (print-rep  (let ((print-quoted  t))
+                                      (prin1-to-string val))))
+                    (if (< (+ (length print-rep) (point) (- line-beg)) 68)
+                        (insert print-rep)
+                      (terpri)
+                      (unless (or (numberp val)  (symbolp val)  (characterp val)
+                                  (and (stringp val)  (string-match-p "[n]" val)))
+                        (terpri))
+                      (let ((beg  (point)))
+                        (pp val)
+                        (fill-region beg (point)))
+                      (if (< (point) (+ 68 (line-beginning-position 0)))
+                          (delete-region from (1+ from))
+                        (delete-region (1- from) from)))
                     (let* ((sv       (get variable 'standard-value))
                            (origval  (and (consp sv)
                                           (condition-case nil (eval (car sv)) (error :help-eval-error)))))
@@ -1903,7 +1916,12 @@ it is displayed along with the global value."
                                  (not (equal origval :help-eval-error)))
                         (princ "\nOriginal value was \n")
                         (setq from  (point))
-                        (pp origval)
+                        (unless (or (numberp origval)  (symbolp origval)  (characterp origval)
+                                    (and (stringp origval)  (string-match-p "[n]" origval)))
+                          (terpri))
+                        (let ((beg  (point)))
+                          (pp origval)
+                          (fill-region beg (point)))
                         (when (< (point) (+ from 20)) (delete-region (1- from) from)))))))
               (terpri)
               (when locus
