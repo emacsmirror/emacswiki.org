@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sun Jun 30 13:48:00 2013 (-0700)
+;; Last-Updated: Sun Jun 30 15:50:09 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6423
+;;     Update #: 6444
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -246,9 +246,10 @@
 ;;    `bmkp-set-autonamed-regexp-region',
 ;;    `bmkp-set-bookmark-file-bookmark', `bmkp-set-desktop-bookmark',
 ;;    `bmkp-set-restrictions-bookmark', `bmkp-set-sequence-bookmark',
-;;    `bmkp-set-tag-value', `bmkp-set-tag-value-for-navlist',
-;;    `bmkp-set-variable-list-bookmark', `bmkp-some-tags-jump',
-;;    `bmkp-some-tags-jump-other-window',
+;;    `bmkp-set-snippet-bookmark', `bmkp-set-tag-value',
+;;    `bmkp-set-tag-value-for-navlist',
+;;    `bmkp-set-variable-list-bookmark', `bmkp-snippet-to-kill-ring',
+;;    `bmkp-some-tags-jump', `bmkp-some-tags-jump-other-window',
 ;;    `bmkp-some-tags-regexp-jump',
 ;;    `bmkp-some-tags-regexp-jump-other-window',
 ;;    `bmkp-specific-buffers-jump',
@@ -386,10 +387,10 @@
 ;;    `bmkp-jump-bookmark-file', `bmkp-jump-bookmark-list',
 ;;    `bmkp-jump-desktop', `bmkp-jump-dired', `bmkp-jump-function',
 ;;    `bmkp-jump-gnus', `bmkp-jump-man', `bmkp-jump-sequence',
-;;    `bmkp-jump-url-browse', `bmkp-jump-variable-list',
-;;    `bmkp-jump-w3m', `bmkp-jump-w3m-new-session',
-;;    `bmkp-jump-w3m-only-one-tab', `bmkp-jump-woman',
-;;    `bmkp-last-specific-buffer-alist-only',
+;;    `bmkp-jump-snippet', `bmkp-jump-url-browse',
+;;    `bmkp-jump-variable-list', `bmkp-jump-w3m',
+;;    `bmkp-jump-w3m-new-session', `bmkp-jump-w3m-only-one-tab',
+;;    `bmkp-jump-woman', `bmkp-last-specific-buffer-alist-only',
 ;;    `bmkp-last-specific-buffer-p',
 ;;    `bmkp-last-specific-file-alist-only',
 ;;    `bmkp-last-specific-file-p', `bmkp-line-number-at-pos',
@@ -446,7 +447,8 @@
 ;;    `bmkp-same-file-p', `bmkp-save-new-region-location',
 ;;    `bmkp-select-buffer-other-window', `bmkp-sequence-alist-only',
 ;;    `bmkp-sequence-bookmark-p', `bmkp-set-tag-value-for-bookmarks',
-;;    `bmkp-set-union', `bmkp-some', `bmkp-some-marked-p',
+;;    `bmkp-set-union', `bmkp-snippet-alist-only',
+;;    `bmkp-snippet-bookmark-p', `bmkp-some', `bmkp-some-marked-p',
 ;;    `bmkp-some-tags-alist-only', `bmkp-some-tags-regexp-alist-only',
 ;;    `bmkp-some-unmarked-p', `bmkp-sorting-description',
 ;;    `bmkp-sort-omit', `bmkp-sound-jump',
@@ -490,12 +492,13 @@
 ;;    `bmkp-non-file-filename', `bmkp-non-file-history',
 ;;    `bmkp-region-history', `bmkp-remote-file-history',
 ;;    `bmkp-return-buffer', `bmkp-reverse-multi-sort-p',
-;;    `bmkp-reverse-sort-p', `bmkp-sorted-alist',
-;;    `bmkp-specific-buffers-history', `bmkp-specific-files-history',
-;;    `bmkp-tag-history', `bmkp-tags-alist', `bmkp-temporary-history',
-;;    `bmkp-types-alist', `bmkp-url-history',
-;;    `bmkp-use-w32-browser-p', `bmkp-variable-list-history',
-;;    `bmkp-version-number', `bmkp-w3m-history'.
+;;    `bmkp-reverse-sort-p', `bmkp-snippet-history',
+;;    `bmkp-sorted-alist', `bmkp-specific-buffers-history',
+;;    `bmkp-specific-files-history', `bmkp-tag-history',
+;;    `bmkp-tags-alist', `bmkp-temporary-history', `bmkp-types-alist',
+;;    `bmkp-url-history', `bmkp-use-w32-browser-p',
+;;    `bmkp-variable-list-history', `bmkp-version-number',
+;;    `bmkp-w3m-history'.
 ;;
 ;;
 ;;  ***** NOTE: The following commands defined in `bookmark.el'
@@ -757,7 +760,9 @@ It must have a single `%s' to accept the buffer name."
   "*Predicates for bookmarks to be set (created) as temporary bookmarks.
 Each is typically a type predicate, but it can be any function that
 accepts as its (first) argument a bookmark or bookmark name.
+
 These are the predefined type predicates:
+
  `bmkp-autofile-bookmark-p', `bmkp-autonamed-bookmark-for-buffer-p',
  `bmkp-autonamed-bookmark-p', `bmkp-autonamed-this-buffer-bookmark-p',
  `bmkp-bookmark-file-bookmark-p', `bmkp-bookmark-list-bookmark-p',
@@ -770,9 +775,10 @@ These are the predefined type predicates:
  `bmkp-local-directory-bookmark-p', `bmkp-local-file-bookmark-p',
  `bmkp-man-bookmark-p', `bmkp-non-file-bookmark-p',
  `bmkp-region-bookmark-p', `bmkp-remote-file-bookmark-p',
- `bmkp-sequence-bookmark-p', `bmkp-this-buffer-p', `bmkp-this-file-p',
- `bmkp-url-bookmark-p', `bmkp-url-browse-bookmark-p',
- `bmkp-variable-list-bookmark-p', `bmkp-w3m-bookmark-p'"
+ `bmkp-sequence-bookmark-p', `bmkp-snippet-bookmark-p',
+ `bmkp-this-buffer-p', `bmkp-this-file-p', `bmkp-url-bookmark-p',
+ `bmkp-url-browse-bookmark-p', `bmkp-variable-list-bookmark-p',
+ `bmkp-w3m-bookmark-p'"
   :type '(repeat symbol) :group 'bookmark-plus)
 
 ;;;###autoload (autoload 'bmkp-bookmark-name-length-max "bookmark+")
@@ -1255,6 +1261,7 @@ Used after `after-save-hook'."
                              ("non-file"         . bmkp-non-file-history)
                              ("region"           . bmkp-region-history)
                              ("remote-file"      . bmkp-remote-file-history)
+                             ("snippet"          . bmkp-snippet-history)
                              ("specific-buffers" . bmkp-specific-buffers-history)
                              ("specific-files"   . bmkp-specific-files-history)
                              ("temporary"        . bmkp-temporary-history)
@@ -1279,6 +1286,7 @@ Keys are bookmark type names.  Values are corresponding history variables.")
 (defvar bmkp-non-file-history ()         "History for buffer (non-file) bookmarks.")
 (defvar bmkp-region-history ()           "History for bookmarks that activate the region.")
 (defvar bmkp-remote-file-history ()      "History for remote-file bookmarks.")
+(defvar bmkp-snippet-history ()          "History for snippet bookmarks.")
 (defvar bmkp-specific-buffers-history () "History for specific-buffers bookmarks.")
 (defvar bmkp-specific-files-history ()   "History for specific-files bookmarks.")
 (defvar bmkp-temporary-history ()        "History for temporary bookmarks.")
@@ -1859,7 +1867,7 @@ Lines beginning with `#' are ignored."
         (bookmark-kill-line t)
       (forward-line 1)))
   (let ((annotation      (buffer-substring-no-properties (point-min) (point-max)))
-	(bookmark        bookmark-annotation-name)
+        (bookmark        bookmark-annotation-name)
         (annotation-buf  (current-buffer)))
     (when (string= annotation "") (setq annotation  nil))
     (bookmark-set-annotation bookmark annotation)
@@ -3079,17 +3087,17 @@ Optional argument HISTORY is a symbol to use for the history list.
 If nil then use `regexp-history'."
         (let* ((deflt                  (if (consp default) (car default) default))
                (suggestions            (and (> emacs-major-version 22)
-					    (if (listp default) default (list default))))
+                                            (if (listp default) default (list default))))
                (suggestions            (and (> emacs-major-version 22)
-					    (append
-					     suggestions
-					     (list (bmkp-find-tag-default-as-regexp)
-						   (car regexp-search-ring)
-						   (regexp-quote (or (car search-ring)  ""))
-						   (car (symbol-value
+                                            (append
+                                             suggestions
+                                             (list (bmkp-find-tag-default-as-regexp)
+                                                   (car regexp-search-ring)
+                                                   (regexp-quote (or (car search-ring)  ""))
+                                                   (car (symbol-value
                                                          query-replace-from-history-variable))))))
                (suggestions            (and (> emacs-major-version 22)
-					    (delete-dups (delq nil (delete "" suggestions)))))
+                                            (delete-dups (delq nil (delete "" suggestions)))))
                (history-add-new-input  nil) ; Do not automatically add default to history for empty input.
                (input                  (read-from-minibuffer
                                         (cond ((bmkp-string-match-p ":[ \t]*\\'" prompt) prompt)
@@ -3665,6 +3673,7 @@ If it is a record then it need not belong to `bookmark-alist'."
                 ((bmkp-desktop-bookmark-p bookmark)              'bmkp-desktop-bookmark-p)
                 ((bmkp-bookmark-file-bookmark-p bookmark)        'bmkp-bookmark-file-bookmark-p)
                 ((bmkp-bookmark-list-bookmark-p bookmark)        'bmkp-bookmark-list-bookmark-p)
+                ((bmkp-snippet-bookmark-p bookmark)              'bmkp-snippet-bookmark-p)
                 ((bmkp-man-bookmark-p bookmark)                  'bmkp-man-bookmark-p)
                 ((bmkp-info-bookmark-p bookmark)                 'bmkp-info-bookmark-p)
                 ((bookmark-get-handler bookmark)                 'bookmark-get-handler)
@@ -4816,6 +4825,15 @@ BOOKMARK is a bookmark name or a bookmark record.
 If it is a record then it need not belong to `bookmark-alist'."
   (eq (bookmark-get-handler bookmark) 'bmkp-jump-bookmark-list))
 
+(defun bmkp-snippet-bookmark-p (bookmark)
+  "Return non-nil if BOOKMARK is a snippet bookmark.
+This means that it records a snippet of text and that jumping to it
+copies that text to the `kill-ring'.
+BOOKMARK is a bookmark name or a bookmark record.
+If it is a record then it need not belong to `bookmark-alist'."
+  (setq bookmark  (bookmark-get-bookmark bookmark))
+  (eq (bookmark-get-handler bookmark) 'bmkp-snippet-to-kill-ring))
+
 (defun bmkp-desktop-bookmark-p (bookmark)
   "Return non-nil if BOOKMARK is a desktop bookmark.
 BOOKMARK is a bookmark name or a bookmark record.
@@ -5235,6 +5253,12 @@ A new list is returned (no side effects)."
 A new list is returned (no side effects)."
   (bookmark-maybe-load-default-file)
   (bmkp-remove-if-not #'bmkp-bookmark-list-bookmark-p bookmark-alist))
+
+(defun bmkp-snippet-alist-only ()
+  "`bookmark-alist', filtered to retain only snippet bookmarks.
+A new list is returned (no side effects)."
+  (bookmark-maybe-load-default-file)
+  (bmkp-remove-if-not #'bmkp-snippet-bookmark-p bookmark-alist))
 
 (defun bmkp-desktop-alist-only ()
   "`bookmark-alist', filtered to retain only desktop bookmarks.
@@ -7293,6 +7317,7 @@ the file is an image file then the description includes the following:
         (variable-list-p  (bmkp-variable-list-bookmark-p bookmark))
         (desktop-p        (bmkp-desktop-bookmark-p bookmark))
         (bookmark-file-p  (bmkp-bookmark-file-bookmark-p bookmark))
+        (snippet-p        (bmkp-snippet-bookmark-p bookmark))
         (dired-p          (bmkp-dired-bookmark-p bookmark))
         (gnus-p           (bmkp-gnus-bookmark-p bookmark))
         (info-p           (bmkp-info-bookmark-p bookmark))
@@ -7341,6 +7366,7 @@ the file is an image file then the description includes the following:
                                              (bookmark-prop-get bookmark 'desktop-file)))
                    (bookmark-file-p  (format "Bookmark file:\t\t%s\n"
                                              (bookmark-prop-get bookmark 'bookmark-file)))
+                   (snippet-p        (format "Snippet for `kill-ring'\n"))
                    (dired-p          (and file
                                           (let ((switches  (bookmark-prop-get bookmark 'dired-switches))
                                                 (marked    (length (bookmark-prop-get bookmark
@@ -7358,8 +7384,8 @@ Inserted subdirs:\t%s\nHidden subdirs:\t\t%s\n"
                    ((equal file bmkp-non-file-filename)
                     (format "Buffer:\t\t\t%s\n" (bmkp-get-buffer-name bookmark)))
                    (file             (concat (format "File:\t\t\t%s\n" (file-name-nondirectory file))
-                                        (let ((dir  (file-name-directory (expand-file-name file))))
-                                          (and dir  (format "Directory:\t\t%s\n" dir)))))
+                                             (let ((dir  (file-name-directory (expand-file-name file))))
+                                               (and dir  (format "Directory:\t\t%s\n" dir)))))
                    (t                "Unknown\n"))
              (unless no-position-p
                (if (bmkp-region-bookmark-p bookmark)
@@ -7785,6 +7811,39 @@ Otherwise, load it to supplement the current bookmark list."
            current-prefix-arg)))
   (bmkp-jump-bookmark-file bookmark-name switchp no-msg))
 
+;; Snippet bookmarks
+;;;###autoload (autoload 'bmkp-set-snippet-bookmark "bookmark+")
+(defun bmkp-set-snippet-bookmark (beg end &optional msgp)
+  "Save the text of the active region as a bookmark.
+Jumping to the bookmark copies the saved text to the `kill-ring', so
+you can yank it using `C-y'."
+  (interactive "r\np")
+  (unless (and mark-active  transient-mark-mode) (error "No active region"))
+  (when (equal beg end) (error "Region is empty"))
+  (lexical-let ((text  (buffer-substring-no-properties beg end)))
+    (let* ((bookmark-make-record-function  (lambda ()
+                                             `(,@(bookmark-make-record-default 'no-file 'no-context)
+                                               (text    . ,text)
+                                               (handler . bmkp-jump-snippet))))
+           (bname                          (car (split-string text "[\n]"))))
+      (bookmark-set bname 99 'INTERACTIVEP)
+      (when msgp (message "Region text bookmarked as `%s'" bname)))))
+
+(defun bmkp-jump-snippet (bookmark)
+  "Copy the text saved in BOOKMARK to the `kill-ring'.
+Handler for snippet bookmarks."
+  (kill-new (bookmark-prop-get bookmark 'text))
+  (message "Snippet copied to `kill-ring'"))
+
+;;;###autoload (autoload 'bmkp-snippet-to-kill-ring "bookmark+")
+(defun bmkp-snippet-to-kill-ring (bookmark-name) ; `C-x j M-w'
+  "Jump to a desktop bookmark.
+This is a specialization of `bookmark-jump' for snippet bookmarks."
+  (interactive
+   (let ((alist  (bmkp-snippet-alist-only)))
+     (list (bmkp-read-bookmark-for-type "snippet" alist nil nil 'bmkp-snippet-history))))
+  (bmkp-jump-1 bookmark-name 'ignore nil))
+
 ;; Desktop bookmarks
 ;;;###autoload (autoload 'bmkp-set-desktop-bookmark "bookmark+")
 (defun bmkp-set-desktop-bookmark (desktop-file) ; Bound globally to `C-x p K', `C-x r K', `C-x p c K'
@@ -7884,7 +7943,7 @@ This function does nothing in Emacs versions prior to Emacs 22."
                             (and exists  (eq desktop-save 'ask-if-exists)))
                         (y-or-n-p "Save current desktop first? ")))))
     (condition-case err
-	(if (< emacs-major-version 22)
+        (if (< emacs-major-version 22)
             (desktop-save desktop-dirname) ; Emacs < 22 has no locking.
           (desktop-save desktop-dirname 'RELEASE))
       (file-error (unless (yes-or-no-p "Error while saving the desktop.  IGNORE? ")
@@ -8456,7 +8515,7 @@ BOOKMARK is a bookmark name or a bookmark record."
              (dired-marked . ,mfiles) (dired-switches . ,dired-actual-switches)
              (dired-subdirs . ,subdirs) (dired-hidden-dirs . ,hidden-dirs)
              (handler . bmkp-jump-dired)))
-      (save-excursion			; Hide subdirs that were hidden.
+      (save-excursion                   ; Hide subdirs that were hidden.
         (dolist (dir  hidden-dirs)  (when (dired-goto-subdir dir) (dired-hide-subdir 1)))))))
 
 ;;;###autoload (autoload 'bmkp-dired-subdirs "bookmark+")
@@ -10344,9 +10403,9 @@ Non-interactively, non-nil MSG-P means display a status message."
     (save-excursion
       (goto-char beg)
       (while (re-search-forward regexp end t)
-	(bmkp-set-autonamed-bookmark (point))
+        (bmkp-set-autonamed-bookmark (point))
         (setq count  (1+ count))
-	(forward-line 1)))
+        (forward-line 1)))
     (when msg-p (message "Set %d autonamed bookmarks" count))))
 
 (defun bmkp-autoname-bookmark-function-default (position)
