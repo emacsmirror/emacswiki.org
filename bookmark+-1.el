@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sat Jun 29 22:57:17 2013 (-0700)
+;; Last-Updated: Sun Jun 30 13:48:00 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6397
+;;     Update #: 6423
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -1566,7 +1566,7 @@ Implements `bookmark-make-record-function' for Info nodes."
                              Info-current-node))
            (defaults       (delq nil (list bookmark-name file Info-current-node))))
       `(,bookmark-name
-        ,@(bookmark-make-record-default 'no-file)
+        ,@(bookmark-make-record-default 'NO-FILE)
         (filename . ,Info-current-file)
         (info-node . ,Info-current-node)
         (handler . Info-bookmark-jump)
@@ -1936,7 +1936,7 @@ candidate."
 ;; 1. Handles also regions and non-file buffers.
 ;; 2. Do not use NO-CONTEXT or POSN if < Emacs 24.
 ;;
-(defun bookmark-make-record-default (&optional no-file no-context position visits)
+(defun bookmark-make-record-default (&optional no-file no-context position visits no-region)
   "Return the record describing the location of a new bookmark.
 Point must be where the bookmark is to be set.
 
@@ -1948,41 +1948,40 @@ strings in the record enough.
 
 Non-nil POSITION means record it, not point, as the `position' entry.
 
-Non-nil VISITS means record it as the `visits' entry."
+Non-nil VISITS means record it as the `visits' entry.
+
+Non-nil NO-REGION means do not include the region end, `end-position'."
+  (unless (> emacs-major-version 23) (setq no-context  nil))
   (let* ((dired-p  (and (boundp 'dired-buffers)  (car (rassq (current-buffer) dired-buffers))))
          (buf      (buffer-name))
          (ctime    (current-time))
 
          ;; Begin `let*' dependencies.
          (regionp  (and transient-mark-mode  mark-active  (not (eq (mark) (point)))))
-         (beg      (if regionp (region-beginning) (or position (point))))
+         (beg      (if regionp (region-beginning) (or position  (point))))
          (end      (if regionp (region-end) (point)))
-         (fcs      (if regionp
-                       (bmkp-position-post-context-region beg end)
-                     (bmkp-position-post-context beg)))
-         (rcs      (if regionp
-                       (bmkp-position-pre-context-region beg)
-                     (bmkp-position-pre-context beg)))
-         (fcrs     (when regionp (bmkp-end-position-pre-context beg end)))
-         (ecrs     (when regionp (bmkp-end-position-post-context end))))
+         (fcs      (and (not no-context)  (if regionp
+                                              (bmkp-position-post-context-region beg end)
+                                            (bmkp-position-post-context beg))))
+         (rcs      (and (not no-context)  (if regionp
+                                              (bmkp-position-pre-context-region beg)
+                                            (bmkp-position-pre-context beg))))
+         (fcrs     (and (not no-context)  regionp  (bmkp-end-position-pre-context beg end)))
+         (ecrs     (and (not no-context)  regionp  (bmkp-end-position-post-context end))))
     `(,@(unless no-file
                 `((filename . ,(cond ((buffer-file-name) (bookmark-buffer-file-name))
                                      (dired-p            nil)
                                      (t                  bmkp-non-file-filename)))))
       (buffer-name . ,buf)
-      ,@(unless (and no-context  (> emacs-major-version 23))
-                `((front-context-string . ,fcs)))
-      ,@(unless (and no-context  (> emacs-major-version 23))
-                `((rear-context-string . ,rcs)))
-      ,@(unless (and no-context  (> emacs-major-version 23))
-                `((front-context-region-string . ,fcrs)))
-      ,@(unless (and no-context  (> emacs-major-version 23))
-                `((rear-context-region-string  . ,ecrs)))
+      ,@(unless no-context `((front-context-string . ,fcs)))
+      ,@(unless no-context `((rear-context-string . ,rcs)))
+      ,@(unless no-context `((front-context-region-string . ,fcrs)))
+      ,@(unless no-context `((rear-context-region-string  . ,ecrs)))
       (visits       . ,(or visits 0))
       (time         . ,ctime)
       (created      . ,ctime)
       (position     . ,beg)
-      (end-position . ,end))))
+      ,@(when (and regionp  (not no-region)) `(end-position . ,end)))))
 
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
@@ -7754,7 +7753,7 @@ Records the BOOKMARK-FILE name.
 Adds a handler that tests the prefix arg and loads the bookmark file
 either as a replacement for the current bookmark file or as a
 supplement to it."
-  `(,@(bookmark-make-record-default 'no-file 'no-context)
+  `(,@(bookmark-make-record-default 'NO-FILE 'NO-CONTEXT nil nil 'NO-REGION)
     (filename      . ,bookmark-file)
     (bookmark-file . ,bookmark-file)
     (handler       . bmkp-jump-bookmark-file)))
@@ -7831,7 +7830,7 @@ the display of proxy candidates."
 (defun bmkp-make-desktop-record (desktop-file)
   "Create and return a desktop bookmark record.
 DESKTOP-FILE is the absolute file name of the desktop file to use."
-  `(,@(bookmark-make-record-default 'no-file 'no-context)
+  `(,@(bookmark-make-record-default 'NO-FILE 'NO-CONTEXT nil nil 'NO-REGION)
     (filename     . ,bmkp-non-file-filename)
     (desktop-file . ,desktop-file)
     (handler      . bmkp-jump-desktop)))
@@ -8100,7 +8099,7 @@ MSGP non-nil means possibly interact with the user, showing messages."
   "Create and return a sequence bookmark record.
 BOOKMARK-NAMES is a list of names of the bookmarks to be invoked in
 sequence."
-  (let ((record  `(,@(bookmark-make-record-default 'no-file 'no-context)
+  (let ((record  `(,@(bookmark-make-record-default 'NO-FILE 'NO-CONTEXT nil nil 'NO-REGION)
                    (filename . ,bmkp-non-file-filename)
                    (sequence . ,bookmark-names)
                    (handler  . bmkp-jump-sequence))))
@@ -8171,7 +8170,7 @@ Each entry in VARIABLES is either a variable (a symbol) or a cons
 Optional arg BUFFER-NAME is the buffer to use for the bookmark.  This
 is useful if some of the variables are buffer-local.  If BUFFER-NAME
 is nil, the current buffer is used."
-  (let ((record  `(,@(bookmark-make-record-default 'no-file 'no-context)
+  (let ((record  `(,@(bookmark-make-record-default 'NO-FILE 'NO-CONTEXT nil nil 'NO-REGION)
                    (filename     . ,bmkp-non-file-filename)
                    (variables    . ,(or (bmkp-printable-vars+vals variables)
                                         (error "No variables to bookmark")))
@@ -8248,7 +8247,7 @@ BOOKMARK is a bookmark name or a bookmark record."
   "Make a special entry for w3m buffers."
   (require 'w3m)                        ; For `w3m-current-url'.
   `(,w3m-current-title
-    ,@(bookmark-make-record-default 'no-file)
+    ,@(bookmark-make-record-default 'NO-FILE)
     (location . ,w3m-current-url)
     (handler . bmkp-jump-w3m)))
 
@@ -8325,7 +8324,8 @@ Current buffer can be the article buffer or the summary buffer."
       `((elt (gnus-summary-article-header) 1) ; Subject.
         ,@(condition-case
            nil
-           (bookmark-make-record-default 'NO-FILE 'NO-CONTEXT pos) ; POS = nil if started in summary buf.
+           (bookmark-make-record-default ; POS = nil if started in summary buffer.
+            'NO-FILE 'NO-CONTEXT pos nil 'NO-REGION)
            (wrong-number-of-arguments (bookmark-make-record-default 'POINT-ONLY)))
         (location . ,(format "Gnus-%s %s:%d:%s" buf grp art id))
         (filename . ,bmkp-non-file-filename) (group . ,grp) (article . ,art) (message-id . ,id)
@@ -8377,7 +8377,7 @@ BOOKMARK is a bookmark name or a bookmark record."
 (when (> emacs-major-version 20)
   (defun bmkp-make-woman-record ()
     "Create bookmark record for `man' page bookmark created by `woman'."
-    `(,@(bookmark-make-record-default 'no-file)
+    `(,@(bookmark-make-record-default 'NO-FILE)
       (filename . ,woman-last-file-name) (handler . bmkp-jump-woman)))
 
   (unless (> emacs-major-version 23)
@@ -8387,7 +8387,7 @@ BOOKMARK is a bookmark name or a bookmark record."
 
 (defun bmkp-make-man-record ()
   "Create bookmark record for `man' page bookmark created by `man'."
-  `(,@(bookmark-make-record-default 'no-file)
+  `(,@(bookmark-make-record-default 'NO-FILE)
     (filename . ,bmkp-non-file-filename)
     (man-args . ,Man-arguments) (handler . bmkp-jump-man)))
 
@@ -8451,7 +8451,7 @@ BOOKMARK is a bookmark name or a bookmark record."
                (subdirs  (bmkp-dired-subdirs))
                (mfiles   (bmkp-dired-remember-*-marks (point-min) (point-max))))
            `(,dir
-             ,@(bookmark-make-record-default 'no-file)
+             ,@(bookmark-make-record-default 'NO-FILE)
              (filename . ,dir) (dired-directory . ,dired-directory)
              (dired-marked . ,mfiles) (dired-switches . ,dired-actual-switches)
              (dired-subdirs . ,subdirs) (dired-hidden-dirs . ,hidden-dirs)
