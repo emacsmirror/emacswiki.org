@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sat Jun 29 08:25:38 2013 (-0700)
+;; Last-Updated: Sat Jun 29 22:57:17 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6387
+;;     Update #: 6397
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -7333,32 +7333,35 @@ the file is an image file then the description includes the following:
                                              (or (bookmark-prop-get bookmark 'man-args)
                                                  ;; WoMan has no variable for the cmd name.
                                                  (bookmark-prop-get bookmark 'buffer-name))))
-                   (info-p           (format "Info node:\t\t(%s) %s\n"
-                                             (file-name-nondirectory file)
-                                             (bookmark-prop-get bookmark 'info-node)))
-                   (w3m-p            (format "W3m URL:\t\t%s\n" file))
+                   (info-p           (and file  (format "Info node:\t\t(%s) %s\n"
+                                                        (file-name-nondirectory file)
+                                                        (bookmark-prop-get bookmark 'info-node))))
+                   (w3m-p            (and file  (format "W3m URL:\t\t%s\n" file)))
                    (url-p            (format "URL:\t\t%s\n" location))
                    (desktop-p        (format "Desktop file:\t\t%s\n"
                                              (bookmark-prop-get bookmark 'desktop-file)))
                    (bookmark-file-p  (format "Bookmark file:\t\t%s\n"
                                              (bookmark-prop-get bookmark 'bookmark-file)))
-                   (dired-p          (let ((switches  (bookmark-prop-get bookmark 'dired-switches))
-                                           (marked    (length (bookmark-prop-get bookmark 'dired-marked)))
-                                           (inserted  (length (bookmark-prop-get bookmark 'dired-subdirs)))
-                                           (hidden    (length (bookmark-prop-get bookmark
-                                                                                 'dired-hidden-dirs))))
-                                       (format "Dired%s:%s\t\t%s\nMarked:\t\t\t%s\n\
+                   (dired-p          (and file
+                                          (let ((switches  (bookmark-prop-get bookmark 'dired-switches))
+                                                (marked    (length (bookmark-prop-get bookmark
+                                                                                      'dired-marked)))
+                                                (inserted  (length (bookmark-prop-get bookmark
+                                                                                      'dired-subdirs)))
+                                                (hidden    (length (bookmark-prop-get bookmark
+                                                                                      'dired-hidden-dirs))))
+                                            (format "Dired%s:%s\t\t%s\nMarked:\t\t\t%s\n\
 Inserted subdirs:\t%s\nHidden subdirs:\t\t%s\n"
-                                               (if switches (format " `%s'" switches) "")
-                                               (if switches "" (format "\t"))
-                                               (expand-file-name file)
-                                               marked inserted hidden)))
+                                                    (if switches (format " `%s'" switches) "")
+                                                    (if switches "" (format "\t"))
+                                                    (expand-file-name file)
+                                                    marked inserted hidden))))
                    ((equal file bmkp-non-file-filename)
                     (format "Buffer:\t\t\t%s\n" (bmkp-get-buffer-name bookmark)))
-                   (file        (concat (format "File:\t\t\t%s\n" (file-name-nondirectory file))
-                                        (let ((dir   (file-name-directory (expand-file-name file))))
+                   (file             (concat (format "File:\t\t\t%s\n" (file-name-nondirectory file))
+                                        (let ((dir  (file-name-directory (expand-file-name file))))
                                           (and dir  (format "Directory:\t\t%s\n" dir)))))
-                   (t           "Unknown\n"))
+                   (t                "Unknown\n"))
              (unless no-position-p
                (if (bmkp-region-bookmark-p bookmark)
                    (format "Region:\t\t\t%d to %d (%d chars)\n" start end (- end start))
@@ -7369,6 +7372,7 @@ Inserted subdirs:\t%s\nHidden subdirs:\t\t%s\n"
              (and tags    (format "Tags:\n \"%s\"\n" (mapconcat #'identity tags "\"\n \"")))
              (and annot   (format "\nAnnotation:\n%s\n" annot))
              (and (not no-image)
+                  file
                   (fboundp 'image-file-name-regexp) ; In `image-file.el' (Emacs 22+).
                   (bmkp-string-match-p (image-file-name-regexp) file)
                   (if (fboundp 'display-graphic-p) (display-graphic-p) window-system)
@@ -7376,6 +7380,7 @@ Inserted subdirs:\t%s\nHidden subdirs:\t\t%s\n"
                   (image-dired-get-thumbnail-image file)
                   (concat "\n@#%&()_IMAGE-HERE_()&%#@" file "\n"))
              (and (not no-image)
+                  file
                   (fboundp 'image-file-name-regexp) ; In `image-file.el' (Emacs 22+).
                   (bmkp-string-match-p (image-file-name-regexp) file)
                   (progn (message "Gathering image data...") t)
