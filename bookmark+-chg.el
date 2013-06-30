@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Jun 29 08:47:39 2013 (-0700)
+;; Last-Updated: Sat Jun 29 23:05:08 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 15335
+;;     Update #: 15336
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -149,6 +149,7 @@
 ;; 2013/06/29 dadams
 ;;     Added: bmkp-read-regexp, bmkp-find-tag-default-as-regexp.
 ;;     Use bmkp-read-regexp, not read-string, everywhere for reading a regexp.
+;;     bmkp-bookmark-description: Ensure FILE is non-nil before using it.
 ;; 2013/06/10 dadams
 ;;     bmkp-set-sequence-bookmark: Typo - bookmark-get-bookmarkp -> bookmark-get-bookmark.
 ;; 2013/06/02 dadams
