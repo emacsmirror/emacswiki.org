@@ -22,7 +22,7 @@
 
 == Auto-Compile Package ==
 
-[http://tarsius.github.com/auto-compile/ auto-compile] provides two
+[http://github.com/tarsius/auto-compile auto-compile] provides two
 minor modes ##auto-compile-global-mode## and ##auto-compile-on-load-mode##
 which keep byte code files up-to-date with their Emacs Lisp source files.
 
