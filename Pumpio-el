@@ -1,0 +1,18 @@
+Pumpio-el is a GPLv3 Pump.io client written in Elisp.
+
+
+
+[https://github.com/e14n/pump.io Pump.io] is a social server with a beautiful big API. [https://identi.ca Identi.ca] is going to migrate from statusnet into this software.
+
+== Installation == 
+
+The [https://github.com/cnngimenez/pumpio-el/blob/master/README.md README.md] file should has all the information needed for installation and setup. 
+
+== Functional == 
+
+Pumpio-el is modularized and is intended to be divided in three layers: 
+
+; Interface : In this layer you can find all the functions that the user can interact.
+; Control : Libraries with functions that controls the behaviour of the client. 
+; Streamming : (Or connectivity) is responsible for creating the connection and sending or retrieving information from/to the pod.
+
