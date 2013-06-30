@@ -480,6 +480,31 @@ Emacs 23.1 joined the killring and the system pasteboard. I prefer the old behav
 [http://www.emacswiki.org/emacs/volatile-highlights.el VolatileHighlightsMode] brings visual
 feedback of "yank" and "yank-pop" operations by making highlights on text inserted by these commands.
 
+==Add every X clipboard selection to kill ring==
+
+I like having my emacs and X clipboards synced as much as possible.  I don't use any sort of DE clipboard manager, but I wanted to be able to put every X "clipboard" selection onto the emacs kill-ring.  This is a script that can be run in background to do this.
+
+  #!/bin/bash
+  
+  POLL_TIME=1
+  
+  STRING=first
+  while :
+  do
+      CUR=`xclip -selection c -o`
+      if [ "$CUR" != "$STRING" ]; then
+  	STRING=$CUR
+  	emacsclient -e "(kill-new \"$STRING\")" > /dev/null
+      fi
+      sleep $POLL_TIME
+  done
+
+Possible improvements:
+
+* check if emacs server is running
+* reimplement as C program to prevent a process being spawned every second
+* use X events to avoid polling, if possible
+
 ----
 CategoryEmulation
 CategoryKeys
