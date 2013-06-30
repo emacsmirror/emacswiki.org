@@ -1,18 +1,3 @@
-portrait:http://www.gravatar.com/avatar/059a5820c6189aa2661f80f3abc62112.png
-
-* [::tarsius]
-* mailto:jonas@emacsmirror.org
-* http://tarsius.github.com
-* I maintain the [[Emacsmirror]].
-
-== Emacs reading list ==
-
-(TODO add more and summarize)
-
-* [http://www.gnu.org/software/emacs/emacs-paper.html EMACS: The Extensible, Customizable Display Editor] /Richard Stallman/
-* [http://steve-yegge.blogspot.com/2008/04/xemacs-is-dead-long-live-xemacs.html XEmacs is Dead. Long Live XEmacs!] /Steve Yegge/
-* [http://edward.oconnor.cx/2010/07/comint The story of comint mode] /Edward O’Connor/
-* [http://dto.github.com/notebook/require-cl.html#sec-8 CL considered harmful considered harmful] /David T. O'Toole/
-
+https://github.com/tarsius
 ----
 CategoryHomepage
