@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Jun 29 23:05:08 2013 (-0700)
+;; Last-Updated: Sun Jun 30 00:16:14 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 15336
+;;     Update #: 15339
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -926,6 +926,7 @@
 ;;     bmkp-bmenu-regexp-mark, bmkp-bmenu-search-marked-bookmarks-regexp,
 ;;       bmkp-bmenu-(un)mark-bookmarks-tagged-regexp:
 ;;         Use bmkp-read-regexp in interactive spec.
+;;     bmkp-bmenu-mode-status-help: Ensure that we have a supported image before calling insert-image.
 ;; 2013/06/09 dadams
 ;;     bmkp-bmenu-mode-line-string: Added missing let-binding for REGEXP.
 ;;     Added vacuous defvars to suppress free-var warnings.
