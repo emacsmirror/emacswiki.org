@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Jun 30 00:16:14 2013 (-0700)
+;; Last-Updated: Sun Jun 30 13:50:57 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 15339
+;;     Update #: 15350
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,12 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2013/06/30 dadams
+;;     bookmark-make-record-default:
+;;       Added optional arg NO-REGION.  If non-nil then do not include end-position.
+;;       Set NO-CONTEXT to nil for Emacs < 24.  Do not calculate FCS, RCS, FCRS, ECRS if NO-CONTEXT.
+;;     bmkp-make-(gnus|sequence|desktop|bookmark-file|variable-list)-record:
+;;       Pass NO-REGION to bookmark-make-record-default.
 ;; 2013/06/29 dadams
 ;;     Added: bmkp-read-regexp, bmkp-find-tag-default-as-regexp.
 ;;     Use bmkp-read-regexp, not read-string, everywhere for reading a regexp.
