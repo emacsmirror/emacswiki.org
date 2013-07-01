@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Jun 30 13:50:57 2013 (-0700)
+;; Last-Updated: Sun Jun 30 17:00:10 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 15350
+;;     Update #: 15375
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -147,6 +147,11 @@
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
 ;; 2013/06/30 dadams
+;;     Added: bmkp-set-snippet-bookmark, bmkp-snippet-to-kill-ring, bmkp-jump-snippet,
+;;            bmkp-snippet-alist-only, bmkp-snippet-bookmark-p, bmkp-snippet-history.
+;;     bmkp-autotemp-bookmark-predicates, bmkp-types-alist, bmkp-bookmark-type,
+;;       bmkp-bookmark-description:
+;;         Cover snippet bookmarks too.
 ;;     bookmark-make-record-default:
 ;;       Added optional arg NO-REGION.  If non-nil then do not include end-position.
 ;;       Set NO-CONTEXT to nil for Emacs < 24.  Do not calculate FCS, RCS, FCRS, ECRS if NO-CONTEXT.
@@ -928,6 +933,11 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2013/06/30 dadams
+;;     Added: bmkp-snippet, bmkp-bmenu-show-only-snippets, bmkp-bmenu-mark-snippet-bookmarks.
+;;     bookmark-bmenu-list: Added snippet info to doc string.
+;;     bmkp-bmenu-mode-status-help: Cover snippets too.
+;;     Bind bmkp-bmenu-(mark-snippet-bookmarks|show-only-snippets) to w M, w S.  Add to menus.
 ;; 2013/06/29 dadams
 ;;     bmkp-bmenu-regexp-mark, bmkp-bmenu-search-marked-bookmarks-regexp,
 ;;       bmkp-bmenu-(un)mark-bookmarks-tagged-regexp:
@@ -1329,6 +1339,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-key.el'")
 ;;
+;; 2013/06/30 dadams
+;;     Bind bmkp-set-snippet-bookmark to C-x p M-w, bmkp-snippet-to-kill-ring to C-x j M-w.
 ;; 2013/05/28 dadams
 ;;     Applied renaming of bmkp-edit-bookmark-name-and-file to bmkp-edit-bookmark-name-and-location.
 ;; 2013/04/15 dadams
