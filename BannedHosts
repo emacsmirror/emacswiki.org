@@ -133,6 +133,7 @@ broadband\.kyivstar.net # 2013-06-19 and prior: SiteMapDiscussion
 ^unknown\.xeex\.net # for spamming IciclesDiscussion
 ^unknown\.SteepHost\.Net # for spamming IciclesDiscussion
 ^36\.248\.169\.184 # for spamming WThirtyTwoFontifiedRegionToClipboard
+^27\.153\.234\.159 # 2013-06-30 IciclesDiscussion
 ^36\.248\.100\.95 # for spamming IciclesDiscussion
 ^46\.183\.162\.37 # 2013-06-01 IciclesDiscussion
 ^117\.21\.227\.40 # for spamming IciclesDiscussion
@@ -155,7 +156,7 @@ broadband\.kyivstar.net # 2013-06-19 and prior: SiteMapDiscussion
 newemailcenter # spamming SiteMap Discussion
 ^SOL-FTTB\.113\.114\.119\.46\.sovam\.net\.ua
 ^46\.119\.116\.228 # 1013-06-05 SiteMap Discussion
-arx94-119\.araxinfo\.com # 2013-05-08 IciclesDiscussion
+^araxinfo\.com # 2013-05-08 IciclesDiscussion
 ^91\.232\.96\.4 # 2013-05-15 Comments on MapaDelSitio
 ^goro83\.la\.net\.ua # 2013-05-16 SiteMap Discussion
 ^218\.6\.9\.245 # 2013-05-18 GotoBarDiscussion
