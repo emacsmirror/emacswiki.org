@@ -196,6 +196,10 @@ other bookmarks.
 
 * '''Lisp variable bookmarks.'''  A bookmark can represent a set of ''[[variable]]s'' and their values.
 
+* '''Snippet bookmarks.'''  Select some some text and give it a
+(bookmark) name.  Then copy it to the [[kill ring]] anytime, in
+any Emacs session.
+
 In particular, note that you can use the following kinds of bookmarks
 to quickly switch among different ''projects'' (sets of bookmarks):
 Dired, bookmark-list, bookmark-file, and desktop bookmarks.
