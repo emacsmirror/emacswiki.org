@@ -1,285 +1,96 @@
 
 
-== EmacsPortable.App Introduction  ==
+
+== Introduction ==
 !EmacsPortable.App attempts to make a portable version of Emacs that
-runs off a USB drive under either Windows, or Mac OSX.  
+runs off a USB drive under either Windows, Linux, or Mac OSX.
 
-To install before a release, please follow [[*Using%20!EmacsPortable.App%20before%20a%20release][the directions for using
-!EmacsPortable.App before a release]]. 
-== EmacsPortable.App Idiosyncrasies ==
-=== Home Directory configuration ===
-The <tt>HOME</tt> Directory is where Emacs stores the <tt>.emacs</tt> file;  Other
-emacs programs also store information here. !EmacsPortable.App has a
-few options for home directories
-==== USB home directory ====
-If the <tt>Data/ini/!EmacsPortableApp.ini</tt> file contains an ini Home Entry 
-<pre>
-  [EmacsPortableApp]
-  Home=USB:/Documents/
-</pre>
-The USB directory is changed for what !EmacsPortableApp deems is the
-usb directory.  This setting uses the !PortableApps Documents Directory
-as the home-directory.  This is slightly different depending on the
-platform. 
+The features of this distribution:
+* Automatic Registering of extensions (and org-protocol)
+* Will use !LiberKey when requested (Windows)
+* Will generate an appropriate Info.plist for Mac OS X
+* No support under Linux
+* Temporarily Install of fonts
+* Temporarily install fonts on windows so you can always carry your
+favorite mono-spaced font
+* Copy the fonts to ~/Library/Fonts under Mac OSX
+* The fonts you use should be free, so you are not copying fonts
+that should not be copied
+* Currently no support under Linux
+== Window Only Features:* ==
+* Psuedo-Daemon
+* Finding support applications and dictionaries
+* Starting gdb or attaching debugger
+* Updating and downloading the latest emacs, even if !EmacsPortable.App
+hasn't released a new launcher.
 
-The advantage of this methodology is that under windows, Emacs can be
-copied to the hard-drive to speed up the run-time, and the
-initialization from the hard drive 
-
-==== EXEDIR home directory ====
-If the <tt>Data/ini/!EmacsPortableApp.ini</tt> file contains an ini Home Entry 
-<pre>
-  [EmacsPortableApp]
-  Home=EXEDIR:/Data/Home
-</pre>
-The EXEDIR directory is changed for the base directory that
-!EmacsPortable.App is run from.
-
-The advantage to this methodology is that you can drag and drop Emacs
-and all your customizations will be dragged with it.
-==== Home if Exists ====
-If the <tt>Data/ini/!EmacsPortableApp.ini</tt> file contains a full path, then
-the home is set when that file exists.  For example:
-<pre>
-  [EmacsPortableApp]
-  Home=c:\
-</pre>
-
-will set the home directory to <tt>c:\</tt> on Windows computers.  Currently,
-this is supported only on windows.
-==== System home directory ====
-If the <tt>Data/ini/!EmacsPortableApp.ini</tt> file contains an ini Home Entry
-that doesn't start with either <tt>EXEDIR:/</tt> or <tt>USB:/</tt>, and doesn't
-exist then the
-original home directory is maintained.
-<pre>
-  [EmacsPortableApp]
-  Home=Set as original
-</pre>
-==== Selecting the Home directory with EmacsOptions.exe ====
-When using !EmacsOptions.exe, you do not have to worry about selecting
-which type of file is used.  If you select a directory on the USB
-drive, the !EmacsPortableApp is updated accordingly.  If you select
-location within the portable app directory, the <tt>EXEDIR</tt> is replaced.
-Note that any where else may change depending on the computer you use.
-=== Emacs-only directory aliases ===
-Emacs has a list of aliases that are convinces, but do not correspond
-with an actual directory.  
-|| Alias       || True Directory          || Directory Purpose                   ||
-|| <tt>/tmp/</tt>     || Temporary Directory     || Temporary Directory.                ||
-|| ~ahk/       || Other/source/ahk        || AHK Sources Directory               ||
-|| ~app/       || App/                    || !EmacsPortable.App Application Files ||
-|| ~doc/       || USB Drive:/Documents    || Documents Directory                 ||
-|| ~el-get     || Data/lisp/el-get        || El Git package Repository           ||
-|| ~elpa/      || Data/lisp/elpa          || Elpa Package Repository             ||
-|| ~ep/        || .                       || !EmacsPortable.App Directory         ||
-|| ~h/         || System Home Directory   || System Home Directory               ||
-|| ~ini/       || Data/ini                || !EmacsPortable.App ini files         ||
-|| ~kick/      || Data/lisp/kicker        || Kicker Directory                    ||
-|| ~nsi/       || Other/source/nsi        || NSIS Sources Directory              ||
-|| ~pa/        || USB Drive:/!PortableApps || Portable Apps                       ||
-|| ~rcp/       || Data/lisp/kicker/rcp    || extra el-get recipies Directory     ||
-|| ~saves/     || Data/saves              || !EmacsPortable.App Saves             ||
-|| ~shared/    || Data/start/shared       || Shared Customizations               ||
-|| ~site-lisp/ || App/site-lisp           || Site Lisp Directory                 ||
-|| ~snips/     || Data/snippets           || !YaSnippets                          ||
-|| ~src/       || Data/src                || !EmacsPortable.App lisp source files ||
-|| ~start/     || Data/start              || !EmacsPortable.App Customizations    ||
-|| ~system/    || Data/start/system       || System-based Customizations         ||
-|| ~themes/    || Data/themes             || Emacs 24 Theme Directory            ||
-|| ~usb/       || USB Drive               || USB Drive                           ||
-|| ~user/      || Data/start/user         || User-based Customizations           ||
-
-Other aliases are added ~el-get/package/elpa is changed to ~elpa, as
-if it were a symbolic link.  Since symbolic links are not supported in
-windows, this is handled by emacs only.
-
-
-=== Font installation, if needed ===
-Will install specific fonts, if needed.
-==== STARTED Allow Mac to install specific fonts. ====
-== Running EmacsPortable.App ==
-=== Running Debug under windows ===
-Under windows, debug mode starts <tt>gdb</tt> if found.  Additionally, if
-<tt>App/gdbinit</tt> is found, gdb sources this before running emacs.  You
-can download an appropriate gdbinit for emacs [http://bzr.savannah.gnu.org/lh/emacs/trunk/annotate/head:/src/.gdbinit here].
-
-== Customizing and using your own packages ==
-The settings in !EmacsPortable.app were originally fork of the literate
-starter kit by [https://github.com/eschulte Eric Schulte] (some of my documentation text is probably
-reminiscent of . Now my philosophy is a little more
-liberal in providing a customized emacs that does not include too much
-startup customizations, but allow you to pull your own startup
-customizations if you wish, or test out other people's startup
-settings.  
-
-The defaults built into the !EmacsPortable.App are only the beginning
-of most users customization of Emacs to suite their needs.
-!EmacsPortable.App provides provides a number of places for additional
-user and system specific customization.  These are designed in such a
-way that it will be easy for you to continue tracking your own
-personal customization inside !EmacsPortable.App while retaining your
-ability to pull down general updates to !EmacsPortable.App without conflict.
-=== Startup Customization ===
-The <tt>!EmacsOptions.exe</tt> allows you to set Emacs startup options via a
-GUI.  This is mirrored in the <tt>Data/ini/!EmacsPortable.ini</tt> file.
-==== Emacs Version ====
-This selects the version of Emacs that !EmacsPortable.App will be
-running.  This is useful if you run different versions of Emacs to
-possibly test lisp code, or use features not previously used.
-==== Register Org-protocol ====
-This registers Org-protocol and also associates org-protocol actions
-with adobe acrobat/adobe acrobat reader.
-==== Startup Font, Color, Geometry ====
-This allows the initial font/color and gemoetry options to be
-specified so that emacs will startup with these options enabled.
-These are called from the command line and do not affect the
-registry.
-==== Proxy ====
-This allows proxy settings to be dynamically determined based on your
-location.  Your password is encrypted based on the location as well.
-This works on windows only.
-==== Setting Startup Environment variables ====
-By creating or editing an environment ini file at
-<tt>Data/ini/Environment.ini</tt>, startup environmental variables may be set.
-For example, if you use the <tt>colemak</tt> keyboard with the ergoemacs
-package, the following ini-file will set the
-<tt>ERGOEMACS_KEYBOARD_LAYOUT</tt> to the proper value
-
-<pre>
-[Environment]
-ERGOEMACS_KEYBOARD_LAYOUT=colemak
-</pre>
-==== Determining if Emacs Binaries should be zipped ====
-Emacs binaries can be zipped to save space.  This requires that the
-emacs binaries are extracted to the temporary directory before
-running.  I have found that running emacs in this manner is faster
-than running it on the USB stick alone.  If not selected the binaries
-will run from the usb drive.  If you are running !EmacsPortable.App locally
-==== LiberKey Support ====
-!EmacsPortable.App will add !LiberKey File associations when it locates
-!LiberKey, and the !LiberKey support is checked.  Note that you should
-restart !LiberKey and make sure that the associations actually
-installed correctly.
-==== Associations Support ====
+In windows, this distribution also allows concurrent versions of emacs
+to be run, with different startup options. 
+== Download ==
+=== Download for Emacs 24 ===
+The following downloads are available:
+* [http://code.google.com/p/emacs-portable-app/downloads/detail?name=!EmacsInstall-24.3-ep13.03.22.exe Emacs 24.3]
+=== Using Pre-releases ===
+Under windows, you can do a net-install by using !EmacsOptions.  This
+net install can be performed in two ways:
+# Select the option for a network-based install
+# Move the <tt>!EmacsOptions.exe</tt> outside of the !EmacsPortableApp
+directory and run it.  This allows you to distribute the network
+install file anywhere and allow other people to download/build
+their own !EmacsPortable.App.
+== Options ==
+=== Associations ===
 !EmacsPortable.App handles file associations in the following ways:
+
 * Associations through !LiberKey
 * !PortableApps.com specifictaion (when !PortableApps supports association)
 * Registering Associations when running.
+
 When changing associations under windows, the Mac <tt>Info.plist</tt> xml
 file is also updated.
-=== General Customization ===
 
-* <b>git branch </b> --  The first step to user-specific customization is (like
-in any git project) to MAKE A BRANCH FOR YOUR LOCAL
-CHANGES.  Save the master branch for pulling down new
-versions of the starter kit, and save all of your
-personal information in a personal branch.  That way
-you never have to worry about accidentally =git
-push='ing up a patch with all of your gnus email
-passwords.
+In addition to regular extensions, !EmacsPortable.App can be registered
+to extensionless files.  Currently this is unsupported through
+liberkey.  Therefore, this is only in effect when !EmacsPortableApp is
+running or installed locally.
 
-* <b>Overall !EmacsPortable.App configuration </b> --  Your personal
-!EmacsPortable.App configuration can be placed in the <tt>Data/init</tt>
-directory.  This directory will be added to the load-path it any
-elisp or org-mode w/embedded elisp files in it will be loaded.
+=== Proxy ===
+This allows proxy settings to be dynamically determined based on your
+location.  Your password is encrypted based on the location as well.
+This works on windows only.
 
-* <b>User specific config </b> --  Your personal configuration information can
-be stored in a user-specific-config file in
-<tt>Data/init/user/$USER.org</tt> or <tt>Data/init/user/$USER.el</tt>.  This is
-the file named after your user with the extensions <tt>.el</tt> or
-<tt>.org</tt> [2].  This should be your windows log-in name, or under a
-mac if you're unsure of your user name evaluate the
-following code block to find out.
+!EmacsPortable.App will setup the <tt>HTTPS_PROXY</tt>, <tt>HTTP_PROXY</tt> and
+<tt>FTP_PROXY</tt> based on the connection specific setup.
+To use a proxy, set it up with <tt>!EmacsOptions.exe</tt>.
 
-<pre>
-echo $USER
-</pre>
+This is sufficient for some packages, but not for <tt>gnus</tt>.
 
-If your configuration starts to feel cramped in a single file
-(although with the nested headlines of an Org-mode file, that
-could take a while) and you want to stretch your config's legs,
-you can also create a directory named after your system user
-name, like <tt>Data/init/user/$USER</tt>.  If a such a directory exists,
-it will be added to the load-path, and any elisp or org-mode
-w/embedded elisp files in it will be loaded.
+The information is stored by the blowfish encryption algorithm.
+However the <tt>HTTP_PROXY</tt> environment variable will contain the
+password in clear text.
 
-* <b>System specific config </b> --  Finally, you may want to configure
-different settings for different machines.  The Starter Kit will
-look for a file named after the current hostname ending in <tt>.el</tt>
-or <tt>.org</tt> in the <tt>Data/init/system/</tt> folder which will allow
-host-specific configuration.  If you're unsure of your hostname
-the following can be executed to find out.
-<pre>
-hostname
-</pre>
-In windows, the hostname is found by right-clicking on
-my-computer and clicking on <tt>Properties</tt>.  After that, click on
-the <tt>Computer Name</tt> tab.  This should have two properties:
+When Putty Key is specified in this dialog, the putty key is loaded
+and Putty local or portable is started (depending on the options selected).
+=== Behavior ===
+Under windows, launching options may be changed by running
+<tt>!EmacsOptions.exe</tt>. Otherwise, ini files can be edited on Mac OSX.
+==== Launching Options  ====
+==== Emacs Version ====
+This selects the version of Emacs that !EmacsPortable.App will be
+running.  This is useful if you run different versions of Emacs to
+test lisp code on multiple emacs versions.
+==== Startup Script ====
+Emacs allows you to select popular startup scripts for emacs startup.
+Once downloaded, you can use:
+* Prelude
+* Emacs 24 Starter Kit
+* Ergoemacs
+* Kicker
 
-== Full computer name:* bob.gnu.org ==
+You can also create  you own.  Just place an <tt>init.el</tt> or <tt>.emacs</tt> in
+a directory under <tt>Data/startup/</tt>
 
-== Domain:* gnu.org ==
-
-When the domain is removed from the Full computer name, the
-hostname is found.  In this case, the host-name is bob.
-
-If a specific setup for a host gets too cramped, you can also
-create a directory named after your system user name, like
-<tt>Data/init/user/$USER</tt>.  If a such a directory exists, it will be
-added to the load-path, and any elisp or org-mode w/embedded
-elisp files in it will be loaded.
-* <b>Overall config </b> --  If you wish to add literate/non-literate startup
-files, you may also put them in
-<tt>Data/init/shared/</tt>.  This should be loaded
-regardless of the user or system.
-=== Installing Additional Libraries ===
-* <b>Installing more elisp libraries </b> --  The easiest way to install new
-libraries is through the Emacs Lisp Package Archive (see [[#emacs-lisp-package-archive][Emacs
-Lisp Package Archive]] below).  When a library is not available
-through ELPA, or the library is outdated for your tastes you have two
-options:
-# You can grab it's source and place it directly in the <tt>/Data/src</tt>
-directory.  Any packages found there will automatically be added
-to your load-path when Emacs starts up, and are guaranteed not to
-conflict with future updates.
-# You can use el-get to install the package.
-
-Note that el-get allows you to be more up-to-date since it usually
-syncs with the software developer's repository.  This is good and bad,
-so beware the bleeding edge. As a consequence, this requires command
-line versions of <tt>git</tt> and other package managers to be available to
-el-get.  
-=== Using Pre-installed libraries ===
-* <b>Making use of the two pre-installed libraries </b> --  By default the
-starter kit downloads and installs two generally helpful elisp
-libraries.
-* <b>color-themes </b> --  The starter-kit comes pre-bundled with a variety
-of color themes.  See Color Themes for instructions on how to
-change the colors used by Emacs.
-
-* <b>Misc </b> --  Some additional miscellaneous configuration and getting
-started suggestions
-* First see the [http://www.gnu.org/software/emacs/manual/html_node/emacs/Customization.html#Customization Customization] node in the Emacs manual.  Available
-online or through the <tt>info</tt> command (run with <tt>C-h i</tt>).
-* <tt>grep</tt>'ing through the <tt>starter-kit-*</tt> files in this directory
-can provide useful examples for how to do things like install
-major modes, define keybindings, etc..
-* read the following [http://www.gnu.org/software/emacs/elisp/html_node/Key-Binding-Conventions.html Key-Binding-Conventions] before defining too
-many personal key bindings
-
-=== Load Path ===
-Load Path for source directory is in <tt>Data/src</tt>.
-=== Literate Initialization ===
-When using !EmacsPortable.App's startup mechanism, t
-# Any <tt>.org</tt>, <tt>.el</tt> or <tt>.elc</tt> files in <tt>Data/init</tt> and loads them
-# User-based <tt>.org</tt>, <tt>.el</tt>, or <tt>.elc</tt> files in <tt>Data/init/user</tt>.
-
-# System based <tt>.org</tt>, <tt>.el</tt> or <tt>.elc</tt> files in <tt>Data/init/system</tt>.
-=== Home Directory ===
-
-== How EmacsPortable.App Works ==
-=== EmacsPortable.App Startup (Windows Only) ===
+==== Pseudo Daemon ====
 The Pseudo-Daemon Start-up script among other things:
 * Opens Emacs
 * Renames the current Frame
@@ -287,7 +98,8 @@ The Pseudo-Daemon Start-up script among other things:
 * Calls an external program (ahk) that hides the frame & puts an
 Emacs icon in the task bar to allow this frame to be shown or
 closed
-* Once Emacs has started up, subsequent calls to the Emacs start-up script open a new frame.
+* Once Emacs has started up, subsequent calls to the Emacs start-up
+script open a new frame.
 
 This allows you to "close" out of Emacs while maintaining a running Emacs.
 
@@ -300,33 +112,266 @@ Subsequent calls to emacsclient.exe specify this server location.
 Therefore an emacs server can be run for each distinct emacs version
 
 More information about the startup is found in site-start.org
+==== New frame on file open ====
+Create a new emacs "frame" on opening a new file.
+==== Debug startup ====
+Under windows, debug mode starts <tt>gdb</tt> if found.  Additionally, if
+<tt>App/gdbinit</tt> is found, gdb sources this before running emacs.  You
+can download an appropriate gdbinit for emacs [http://bzr.savannah.gnu.org/lh/emacs/trunk/annotate/head:/src/.gdbinit here].
 
-=== Proxy Configuration (Windows Only) ===
-!EmacsPortable.App will setup the <tt>HTTPS_PROXY</tt>, <tt>HTTP_PROXY</tt> and
-<tt>FTP_PROXY</tt> based on the connection specific setup.
-To use a proxy, set it up with <tt>!EmacsOptions.exe</tt>.
+This is equivalent to using <tt>!EmacsDebug.exe</tt>
+==== Unzip binaries and run from temporary directory ====
+Emacs binaries can be zipped to save space.  This requires that the
+emacs binaries are extracted to the temporary directory before
+running.  I have found that running emacs in this manner is faster
+than running it on the USB stick alone.  If not selected the binaries
+will run from the usb drive.  If you are running !EmacsPortable.App locally
+==== Clean residual files ====
+When running portably, the unzipped binaries are stored in the
+temporary directory.  To save time on startup, if the bare binaries
+needed to run emacs are still present, the launcher uses these files
+in the temporary directory.
 
-This is sufficient for some packages, but not for <tt>gnus</tt>.
+When the clean residual files option is selected, these binaries are
+removed after emacs stops, otherwise they are retained to improve
+startup time. 
+==== Home directory ====
+The <tt>HOME</tt> Directory is where Emacs stores the <tt>.emacs</tt> file;  Other
+emacs programs also store information here. !EmacsPortable.App has a
+few options for home directories
 
-The information is stored by the blowfish encryption algorithm.
-However the <tt>HTTP_PROXY</tt> environment variable will contain the
-password in clear text.
+== EXEDIR Alias* ==
+
+If the <tt>Data/ini/!EmacsPortableApp.ini</tt> file contains an ini Home Entry 
+<pre>
+  [EmacsPortableApp]
+  Home=EXEDIR:/Data/Home
+</pre>
+The EXEDIR directory is changed for the base directory that
+!EmacsPortable.App is run from.
+
+The advantage to this methodology is that you can drag and drop Emacs
+and all your customizations will be dragged with it.
+
+== USB Alias* ==
+
+If the <tt>Data/ini/!EmacsPortableApp.ini</tt> file contains an ini Home Entry 
+<pre>
+  [EmacsPortableApp]
+  Home=USB:/Documents/
+</pre>
+USB represents the USB directory. This setting uses the !PortableApps Documents Directory
+as the home-directory.  
+
+The USB directory is determined as follows:
+* /Under Windows/
+* Checks each removable and hard drive for an <tt>.emacs</tt> or <tt>_emacs</tt>
+file under the specified directory.  For example
+!EmacsPortable.App would check <tt>e:\Documents\.emacs</tt> and
+<tt>f:\Document\.emacs</tt>.  If it found <tt>f:\Document\.emacs</tt>, If it
+exists, it assumes that the USB drive is <tt>f:\</tt>
+* Checks each drive for a <tt>!PortableApps</tt> directory.  If found it
+assumes that this is the usb drive
+* Checks for <tt>Apps</tt>,<tt>!EmacsPortable.App</tt> or <tt>!PortableApps</tt>,
+<tt>!LiberKey\Apps</tt>, etc (the directories found in App/paths.ini
+portable.dirs). When found, !EmacsPortable.App assumes the drive
+where the directory is found is the USB drive.
+* If not found, it will set the USB directory to the installed directory.
+* /Under Mac OS X/
+* Assumes the usb directory is the <tt>/Volumes/USB-NAME/</tt> directory.
+
+The advantage of this methodology is that under windows, Emacs can be
+copied to the hard-drive to speed up the run-time, and the
+initialization from the hard drive. 
+
+== Home if Exists* ==
+
+If the <tt>Data/ini/!EmacsPortableApp.ini</tt> file contains a full path, then
+the home is set when that file exists.  For example:
+<pre>
+  [EmacsPortableApp]
+  Home=c:\
+</pre>
+
+will set the home directory to <tt>c:\</tt> on Windows computers.  Currently,
+this is supported only on windows.
+
+== System home* ==
+
+If the <tt>Data/ini/!EmacsPortableApp.ini</tt> file contains an ini Home Entry
+that doesn't start with either <tt>EXEDIR:/</tt> or <tt>USB:/</tt>, and doesn't
+exist then the
+original home directory is maintained.
+<pre>
+  [EmacsPortableApp]
+  Home=Set as original
+</pre>
+
+== Changing Home* ==
+
+When using !EmacsOptions.exe, you do not have to worry about selecting
+which type of file is used.  If you select a directory on the USB
+drive, the !EmacsPortableApp is updated accordingly.  If you select
+location within the portable app directory, the <tt>EXEDIR</tt> is replaced.
+Note that any where else may change depending on the computer you use.
+
+
+==== Integration Options ====
+==== Right-Click "Edit-With" ====
+This allows a right click to produce a "Edit with !EmacsPortable.App"
+==== Org-protocol ====
+This registers Org-protocol and also associates org-protocol actions
+with adobe acrobat/adobe acrobat reader.
+==== Liberkey ====
+!EmacsPortable.App will add !LiberKey File associations when it locates
+!LiberKey, and the !LiberKey support is checked.  Note that you should
+restart !LiberKey and make sure that the associations actually
+installed correctly.
+=== Visual ===
+This allows the initial font/color and gemoetry options to be
+specified so that emacs will startup with these options enabled.
+
+
+These are called from the command line and do not affect the
+registry.
+
+In addition this tries to set an option to maximize new frames.
+=== Download ===
+!EmacsPortable.App can download and run the versions of Emacs from the
+mac repository and windows repository and package them so they work
+with the !EmacsPortable.App launcher.
+
+If the !EmacsOptions list of emacs versions is out of date, it can be
+updated by the following procedure:
+* Start !EmacsPortable.App
+* Type <tt>M-x official-emacs</tt>
+
+This will update the emacs list of official binaries from [[http://emacsformacosx.com/][GNU Emacs
+For Mac OS X]] and [http://www.gnu.org/software/emacs/ GNU Emacs] websites.
+
+
+=== Network Install ===
+=== Build Launcher ===
+=== Unix Components ===
+== Customizing ==
+=== Startup Customization ===
+The <tt>!EmacsOptions.exe</tt> allows you to set Emacs startup options via a
+GUI.  This is mirrored in the <tt>Data/ini/!EmacsPortable.ini</tt> file. 
+
+=== Setting Startup Environment variables ===
+By creating or editing an environment ini file at
+<tt>Data/ini/Environment.ini</tt>, startup environmental variables may be set.
+For example, if you use the <tt>colemak</tt> keyboard with the ergoemacs
+package, the following ini-file will set the
+<tt>ERGOEMACS_KEYBOARD_LAYOUT</tt> to the proper value
+
+<pre>
+[Environment]
+ERGOEMACS_KEYBOARD_LAYOUT=colemak
+</pre>
+
+=== Load Path ===
+Load Path for source directory is in <tt>Data/src</tt>.
+=== Literate Initialization ===
+When using !EmacsPortable.App's startup mechanism, t
+# Any <tt>.org</tt>, <tt>.el</tt> or <tt>.elc</tt> files in <tt>Data/init</tt> and loads them
+# User-based <tt>.org</tt>, <tt>.el</tt>, or <tt>.elc</tt> files in <tt>Data/init/user</tt>.   
+# System based <tt>.org</tt>, <tt>.el</tt> or <tt>.elc</tt> files in <tt>Data/init/system</tt>.
+
+== Configuration ==
+Since !EmacsPortable.App tries to run portably, there are a few things
+that are changed from a standard emacs distribution:
+
+# Home directory is allowed to change based on different computers
+(USB is e:, f:, etc)
+
+# Directories that change can become aliases for convenience and to
+allow recent files to save correctly (for instance ~usb for the usb
+drive).
+
+# Install fonts on different computers to allow a favorite font to be
+used in emacs for all distributions.  In windows this is done by
+making the font available to windows during the session.
+=== Emacs aliases ===
+Emacs has a list of "home" directory aliases.  The absolute
+directories are:
+|| Alias       || True Directory               || Directory Purpose                   ||
+|| ~ahk/       || Other/source/ahk             || AHK Sources Directory               ||
+|| ~app/       || App/                         || !EmacsPortable.App Application Files ||
+|| ~doc/       || USB Drive Documents          || Documents Directory                 ||
+|| ~ep/        || .                            || !EmacsPortable.App Directory         ||
+|| ~h/         || System Home Directory        || System Home Directory               ||
+|| ~ini/       || Data/ini                     || !EmacsPortable.App ini files         ||
+|| ~nsi/       || Other/source/nsi             || NSIS Sources Directory              ||
+|| ~pa/        || USB Drive:/!PortableApps      || Portable Apps                       ||
+|| ~shared/    || Data/start/shared            || Shared Customizations               ||
+|| ~site-lisp/ || App/site-lisp                || Site Lisp Directory                 ||
+|| ~src/       || Data/src                     || !EmacsPortable.App lisp source files ||
+|| ~start/     || Data/start                   || !EmacsPortable.App Customizations    ||
+|| ~system/    || Data/start/system            || System-based Customizations         ||
+|| ~usb/       || USB Drive                    || USB Drive                           ||
+|| ~user/      || Data/start/user              || User-based Customizations           ||
+
+
+Other aliases are added <tt>~el-get/package/elpa</tt> is changed to <tt>~elpa</tt>, as
+if it were a symbolic link.  Since symbolic links are not supported in
+windows, this is handled by emacs only.  This was implemented to allow
+files to remain the same between file systems.  <tt>~usb/</tt> will be the
+same on every system.
+
+In addition to these aliases, the following aliases are also defined:
+
+* <tt>~el-get</tt>, is an alias for the el-get package directory
+* <tt>~elpa</tt>, is an alias for the user elpa package directory
+* <tt>~theme</tt> or <tt>~themes</tt>, is an alias for the emacs24 themes directory,
+(as long as the themes directory is /not/ the <tt>user-emacs-directory</tt>).
+* <tt>~snip</tt>, <tt>~snips</tt>, <tt>~snippets</tt>, <tt>~snippet</tt>, is an alias for
+yasnippets snippets.
+* All the startup scripts in <tt>Data/start</tt> have an alias created for them.
+
+Custom aliases may be added by customizing <tt>!EmacsPortable-aliases</tt>.
+
+=== Font installation ===
+Will install specific fonts, if needed.
+=== Updating mirrors to the latest version of emacs ===
+You can update the current list of supported emacs versions by
+running <tt>emacs-portable-update-offical-emacs-releases</tt>.
+== How It Works ==
 === Fonts ===
 ==== Windows ====
 Under windows the fonts in the <tt>App/fonts/</tt> directory are temporarily
-installed by opening them using <tt>fontview</tt> (if they are not already
-installed on the base system).  This is done by a autohotkey script.
-Once Emacs Exits, the fonts are "uninstalled" by closing the fontview
-window.  Currently this is done by showing the window and then closing
-it.
+installed/registered. Once Emacs Exits, the fonts are unregistered.
 ==== Mac OS X ====
-Currently unsupported.
+Copies fonts in the <tt>App/fonts/</tt> directory to <tt>~/Library/Fonts/</tt>
 === DOS Version ===
 The dos version starts up emacs in a dos command prompt window. When
 trying to do anything with the <tt>!EmacsPortableDOS</tt> command, it will
 attempt to do that command in the initial <tt>DOS</tt> box.  This is just a
 test environment, and is likely not very reasonable to use.
-== Using Specific Applications ==
+=== Icons ===
+Icons came from various places:
+* [http://findicons.com/icon/93514/new_go_down?id=344599# Download Icon]
+* USB Icon
+* http://www.clker.com/clipart-10031.html
+* Modified Lady Bug http://www.clker.com/clipart-23283.html
+* Modified Uninstall Icon (original at
+http://findicons.com/icon/127390/trash_empty)
+* Dos Box/Terminal http://www.clker.com/clipart-3716.html
+* Wrench http://www.clker.com/clipart-3716.html
+* Screw Driver http://www.clker.com/clipart-14895.html
+=== NSIS Configuration ===
+!EmacsPortable.App is built with NSIS with the following options:
+* NSIS 2.46
+* Large String Support http://nsis.sourceforge.net/Special_Builds#Large_strings
+* !EnumINI http://nsis.sourceforge.net/!EnumINI_plug-in
+* Inetc http://nsis.sourceforge.net/Inetc_plug-in
+* Execdos http://nsis.sourceforge.net/!ExecDos_plug-in
+* Blowfish++ http://nsis.sourceforge.net/mediawiki/images/a/a7/!BlowfishDLL.7z
+* MD5 http://nsis.sourceforge.net/MD5_plugin
+* XML http://nsis.sourceforge.net/XML_plug-in
+* !FindProcDLL http://nsis.sourceforge.net/!FindProcDLL_plug-in
+* !LoadingBar UI http://nsis.sourceforge.net/!LoadingBar_UI
+== Applications Support ==
 === Adding Paths (Windows Only) ===
 Most of the specific applications work by adding paths and changing
 environmental variables.  This is controlled by <tt>App/ini/paths.ini</tt>.
@@ -370,8 +415,8 @@ The other type of section that is used is the <tt>[local.git.set]</tt>.  In
 the case of <tt>git</tt> this section is defined as:
 
 <pre>
-[local.git.set]
-PLINK_PROTOCOL=ssh
+  [local.git.set]
+  PLINK_PROTOCOL=ssh
 </pre>
 
 Therefore, if <tt>git</tt> is found then the environmental variable
@@ -390,20 +435,30 @@ Emacs doesn't know about by a similar manner as the general paths,
 above. 
 ==== Unix Manual Paths ====
 === Java-based Apps ===
-!EmacsPortable supports [http://plantuml.sourceforge.net/download.html PlantUML] and [http://ditaa.sourceforge.net/ ditaa] for [http://orgmode.org org-mode] assuming that
-[http://portableapps.com/apps/utilities/java_portable_launcher JavaPortable] is installed. 
+!EmacsPortable supports [http://plantuml.sourceforge.net/download.html PlantUML], [http://www.mathtoweb.com/cgi-bin/mathtoweb_home.pl MathToWeb] and [http://ditaa.sourceforge.net/ ditaa] for [http://orgmode.org org-mode] assuming that
+[http://portableapps.com/apps/utilities/java_portable_launcher JavaPortable] is installed.
+
 
 [http://plantuml.sourceforge.net/download.html PlantUML] requires <tt>dot</tt> from !GraphViz.  Therefore, !GraphVizPortable
 would need to be installed for [http://plantuml.sourceforge.net/download.html PlantUML] to work. 
 
+=== Imagemagick ===
+Imagemagick is used for many Emacs Applications.  !EmacsPortableApp
+attempts to detect a portable version of !EmacsPortableApp or see if
+Imagemagick is installed on the computer.
+
+A portable version of Imagemagic is found [ftp://ftp.imagemagick.org/pub/!ImageMagick/binaries/!ImageMagick-6.7.9-3-Q16-windows.zip at ftp.imagemagick.org]
+By extracting the portable version in the <tt>!PortableApps</tt> or
+<tt>!LiberKey\!MyApps</tt> !EmacsPortable.App will add this to the path.  This
+assumes the Imagemagick directory is <tt>!ImageMagick-6.7.9-3</tt>
 === Python based Apps ===
 By installing [http://www.portablepython.com Python Portable] into your <tt>!PortableApps</tt> Directory,
 python is available to Emacs.  This is useful for installing Bazaar,
 which Emacs uses as its version control.
 === Version control Software ===
 ==== Bazaar ====
-I have created a portable Bazaar.  There are some reports of troubling
-errors. 
+I have created a portable Bazaar.  !EmacsPortable.App will recognize
+bazaar version
 ==== Subversion in Windows ====
 Not quite portable, but you can get the binaries [http://www.visualsvn.com/downloads/ here].
 
@@ -411,10 +466,10 @@ Running in subversion from within !EmacsPortable.App /is/ portable,
 though.  Emacs will set the <tt>%!AppData%</tt> Environment variable to
 <tt>Data/!AppData</tt> and set <tt>%ALLUSERSPROFILE%</tt> to <tt>Data/!AppData</tt>
 
-
-
-
-
+==== Git ====
+!EmacsPortable.App picks up both Git portable and locally installed
+installations.  Because of emacs version control, if Git is not
+installed locally, Emacs is slowed down substantially.
 === SumatraPDF Portable ===
 Using AUC!TeX inverse-search and forward search is supported with
 [http://portableapps.com/apps/office/sumatra_pdf_portable SumatraPDFPortable].  There should be no set-up, !EmacsPortable.App with
@@ -557,34 +612,42 @@ settings to the registry
 
 Therefore, you do not need to always manually edit proxy settings, and
 plink should work most of the time.
-== Icons ==
-Icons came from various places:
-* [http://findicons.com/icon/93514/new_go_down?id=344599# Download Icon]
-* USB Icon
-* http://www.clker.com/clipart-10031.html
-* Modified Lady Bug http://www.clker.com/clipart-23283.html
-* Modified Uninstall Icon (original at
-http://findicons.com/icon/127390/trash_empty)
-* Dos Box/Terminal http://www.clker.com/clipart-3716.html
-* Wrench http://www.clker.com/clipart-3716.html
-* Screw Driver http://www.clker.com/clipart-14895.html
-== Bleeding edge emacs ==
+==== PuTTY and R ====
+R can connect to remote sessions using ssh.el.  When you use !PuTTY to
+connect you will need to set the following option:
+
+{{{
+  (setq ssh-program "plink")
+}}}
+
+=== Bleeding edge emacs (Not supported yet) ===
 These are notes to use the bleeding edge emacs.
 
 Goto the App directory, and under a command prompt that has bzr
 installed, type
 
 <pre>
-bzr branch --stacked bzr://bzr.savannah.gnu.org/emacs/trunk emacs-bzr
+    bzr branch --stacked bzr://bzr.savannah.gnu.org/emacs/trunk emacs-bzr
 </pre>
 
-== EmacsPortable.App Wish List/TODO list ==
-=== TODO Add Mac Support of Daemon Mode ===
-[2011-12-14 Wed 21:48]
-=== TODO Add Mac Support of Portable Dictionaries  ===
-(should be the same between platforms)
-=== TODO Make the proxy settings a little less finicky. ===
-=== TODO Add XML to the NSIS downloads ===
-=== TODO Add Large String support to the NSIS compiler. ===
-=== TODO Add md5 to the NSIS downloads ===
-=== TODO Add NotifyPlugin to the downloads. ===
+
+If that has already been performed, to update just type:
+
+<pre>
+  bzr pull
+</pre>
+
+If you are behind a firewall you may wish to use git to get the latest
+sources.  Note that only the Bazaar repo is the official 
+
+
+<pre>
+    git clone http://git.savannah.gnu.org/r/emacs.git emacs-git
+</pre>
+
+
+== Building an installer ==
+You can build an installer with the command <tt>build-nsi</tt> inside emacs.
+
+
+This was generated with OrgReadme.  On updating the library, this page is likely to be replaced with updated content.
