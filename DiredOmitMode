@@ -53,7 +53,7 @@ Toggleable dotfile visibility:
 	  (progn 
 	    (set (make-local-variable 'dired-dotfiles-show-p) nil)
 	    (message "h")
-	    (dired-mark-files-regexp "\\\.")
+	    (dired-mark-files-regexp "^\\\.")
 	    (dired-do-kill-lines))
 	(progn (revert-buffer) ; otherwise just revert to re-show
 	       (set (make-local-variable 'dired-dotfiles-show-p) t)))))
