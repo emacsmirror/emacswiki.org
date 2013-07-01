@@ -214,5 +214,8 @@ sqlplus mode seems really nice. But after lot of efforts I can't get it to work 
 
 To use kerberos, just enter "/" as user and leave password blank.  hth... don
 
+[new]
+(defadvice switch-to-buffer...) breaks dired's switch-to-buffer now on ntemacs 24. Commenting out ad-activate underneath solved it
+
 ----
 CategorySql
