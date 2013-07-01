@@ -7,9 +7,9 @@
 ;; Copyright (C) 2010-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  1 15:34:50 2011 (-0700)
 ;; Version:
-;; Last-Updated: Tue May 28 20:49:42 2013 (-0700)
+;; Last-Updated: Sun Jun 30 16:58:43 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 604
+;;     Update #: 613
 ;; URL: http://www.emacswiki.org/bookmark+-key.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -152,6 +152,7 @@
 (define-key bookmark-map "o"      'bookmark-jump-other-window)           ; `C-x p o' (also `C-x 4 j j')
 (define-key bookmark-map "q"      'bookmark-jump-other-window)           ; `C-x p q' (also `C-x 4 j j')
 (define-key bookmark-map "r"      'bmkp-edit-bookmark-name-and-location)              ; `C-x p r'
+(define-key bookmark-map "\M-w"   'bmkp-set-snippet-bookmark)        ; `C-x p M-w' (also `C-x p c M-w')
 (define-key bookmark-map "x"      'bmkp-toggle-autotemp-on-set)                       ; `C-x p x'
 (define-key bookmark-map "y"      'bmkp-set-bookmark-file-bookmark)                   ; `C-x p y'
 (when (featurep 'bookmark+-lit)
@@ -225,6 +226,7 @@
 (define-key bmkp-set-map "m"    'bookmark-set)                                 ; `C-x p c m'
 (define-key bmkp-set-map "s"    'bmkp-set-sequence-bookmark)                   ; `C-x p c s'
 (define-key bmkp-set-map "u"    'bmkp-url-target-set)                          ; `C-x p c u'
+(define-key bmkp-set-map "\M-w" 'bmkp-set-snippet-bookmark)                    ; `C-x p c M-w'
 (define-key bmkp-set-map "y"    'bmkp-set-bookmark-file-bookmark)              ; `C-x p c y'
 (define-key bmkp-set-map "\r"   'bmkp-toggle-autonamed-bookmark-set/delete)    ; `C-x p c RET'
 
@@ -350,7 +352,7 @@
 (put 'jump-other :advertised-binding "\C-x4jj")
 
 (define-key bmkp-jump-map              "K"    'bmkp-desktop-jump)                           ; `C-x j K'
-(define-key bmkp-jump-other-window-map "K"    'bmkp-desktop-jump)             ; SAME COMMAND: `C-x j K'
+(define-key bmkp-jump-other-window-map "K"    'bmkp-desktop-jump)           ; SAME COMMAND: `C-x 4 j K'
 (define-key bmkp-jump-map              "l"    'bmkp-local-file-jump)                        ; `C-x j l'
 (define-key bmkp-jump-other-window-map "l"    'bmkp-local-file-jump-other-window)         ; `C-x 4 j l'
 (define-key bmkp-jump-map              "m"    'bmkp-man-jump)                               ; `C-x j m'
@@ -453,6 +455,8 @@
 (define-key bmkp-jump-map              "v"    'bmkp-variable-list-jump)                     ; `C-x j v'
 (define-key bmkp-jump-map              "w"    'bmkp-w3m-jump)                               ; `C-x j w'
 (define-key bmkp-jump-other-window-map "w"    'bmkp-w3m-jump-other-window)                ; `C-x 4 j w'
+(define-key bmkp-jump-map              "\M-w" 'bmkp-snippet-to-kill-ring)                 ; `C-x j M-w'
+(define-key bmkp-jump-other-window-map "\M-w" 'bmkp-snippet-to-kill-ring)     ; SAME CMD: `C-x 4 j M-w'
 (define-key bmkp-jump-map              "x"    'bmkp-temporary-jump)                         ; `C-x j x'
 (define-key bmkp-jump-other-window-map "x"    'bmkp-temporary-jump-other-window)          ; `C-x 4 j x'
 (define-key bmkp-jump-map              "y"    'bmkp-bookmark-file-jump)                     ; `C-x j y'
