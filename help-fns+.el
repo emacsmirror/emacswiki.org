@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 22.1
-;; Last-Updated: Sun Jun 30 10:40:12 2013 (-0700)
+;; Last-Updated: Mon Jul  1 10:00:18 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 1622
+;;     Update #: 1626
 ;; URL: http://www.emacswiki.org/help-fns+.el
 ;; Doc URL: http://emacswiki.org/HelpPlus
 ;; Keywords: help, faces, characters, packages, description
@@ -17,8 +17,8 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `button', `help-fns', `help-mode', `info', `naked', `wid-edit',
-;;   `wid-edit+'.
+;;   `button', `help-fns', `help-mode', `info', `naked', `view',
+;;   `wid-edit', `wid-edit+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -119,6 +119,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2013/07/01 dadams
+;;     Revert the filling part of yesterday's update.
 ;; 2013/06/30 dadams
 ;;     describe-variable for Emacs 24+:
 ;;       Update for vanilla Emacs 24.4.  Update for Emacs bug #14754: fill printed value so no long lines.
@@ -1902,9 +1904,7 @@ it is displayed along with the global value."
                       (unless (or (numberp val)  (symbolp val)  (characterp val)
                                   (and (stringp val)  (string-match-p "[n]" val)))
                         (terpri))
-                      (let ((beg  (point)))
-                        (pp val)
-                        (fill-region beg (point)))
+                      (pp val)
                       (if (< (point) (+ 68 (line-beginning-position 0)))
                           (delete-region from (1+ from))
                         (delete-region (1- from) from)))
@@ -1919,9 +1919,7 @@ it is displayed along with the global value."
                         (unless (or (numberp origval)  (symbolp origval)  (characterp origval)
                                     (and (stringp origval)  (string-match-p "[n]" origval)))
                           (terpri))
-                        (let ((beg  (point)))
-                          (pp origval)
-                          (fill-region beg (point)))
+                        (pp origval)
                         (when (< (point) (+ from 20)) (delete-region (1- from) from)))))))
               (terpri)
               (when locus
