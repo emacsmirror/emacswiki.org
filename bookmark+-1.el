@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Mon Jul  1 16:10:47 2013 (-0700)
+;; Last-Updated: Mon Jul  1 16:37:25 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6449
+;;     Update #: 6455
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -7814,11 +7814,14 @@ Otherwise, load it to supplement the current bookmark list."
 ;; Snippet bookmarks
 ;; Inspired by emacs-devel@gnu.org post from Masatake Yamato [yamato@redhat.com], 2012-01-06.
 ;;;###autoload (autoload 'bmkp-set-snippet-bookmark "bookmark+")
-(defun bmkp-set-snippet-bookmark (beg end &optional msgp)
+(defun bmkp-set-snippet-bookmark (beg end &optional promptp msgp)
   "Save the text of the active region as a bookmark.
+The bookmark is automatically named with the first line of the region
+text.  With a prefix argument you are prompted for the name instead.
+
 Jumping to the bookmark copies the saved text to the `kill-ring', so
 you can yank it using `C-y'."
-  (interactive "r\np")
+  (interactive "r\nP\np")
   (unless (and mark-active  transient-mark-mode) (error "No active region"))
   (when (equal beg end) (error "Region is empty"))
   (lexical-let ((text  (buffer-substring-no-properties beg end)))
@@ -7826,9 +7829,10 @@ you can yank it using `C-y'."
                                             `(,@(bookmark-make-record-default 'NO-FILE 'NO-CONTEXT)
                                               (text    . ,text)
                                               (handler . bmkp-jump-snippet))))
-          (bname                          (car (split-string text "[\n]"))))
+          (bname                          (and (not promptp)  (car (split-string text "[\n]")))))
       (bookmark-set bname 99 'INTERACTIVEP)
-      (when msgp (message "Region text bookmarked as `%s'" bname)))))
+      ;; `bookmark-set does the prompting, providing default names.  
+      (when msgp (message "Region text bookmarked%s" (if bname (format " as `%s'" bname) ""))))))
 
 (defun bmkp-jump-snippet (bookmark)
   "Copy the text saved in BOOKMARK to the `kill-ring'.
