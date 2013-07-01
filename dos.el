@@ -62,7 +62,8 @@
 
 ;;; History:
 ;;
-;;  1 Ju1 2013  2.20 Improved documentation.
+;;  1 Ju1 2013  2.20 Renamed user function `dos-help-cmd' to `dos-cmd-help', and `dos-help-mode' to `dos-mode-help'.
+;;                   Improved `dos-cmd-help'. Added keywords "net" and "rename". Improved documentation.
 ;; 27 Jun 2013  2.19 Adapted header to current package guidelines.
 ;; 22 Jan 2013  2.18 Moved keywords "mkdir" and "rmdir" from `font-lock-warning-face' to `font-lock-builtin-face'.
 ;; 30 Mar 2012  2.17 Improved documentation.
@@ -74,7 +75,7 @@
 ;; 29 Sep 2009  2.11 Improved highlighting of strings.
 ;; 18 Sep 2009  2.10 Improved highlighting of comments.
 ;; 27 May 2009  2.9  Improved documentation.
-;; 26 May 2009  2.8  Added user function `dos-help-mode'. Renamed user function `dos-help' to `dos-help-cmd'. Added
+;; 26 May 2009  2.8  Added user function `dos-mode-help'. Renamed user function `dos-help' to `dos-help-cmd'. Added
 ;;                   internal variable `dos-menu', providing GUI menu.
 ;; 18 May 2009  2.7  Improved highlighting of scripts following call and goto.
 ;; 23 Apr 2009  2.6  Improved highlighting of --options.
@@ -123,13 +124,13 @@ that:\n
 (defvar dos-font-lock-keywords
   (eval-when-compile
     (let ((COMMANDS
-           '("at"       "attrib"   "cd"       "cls"      "color"    "copy"     "date"     "defined"  "del"      "dir"
-             "doskey"   "echo"     "endlocal" "erase"    "exist"    "fc"       "find"     "md"       "mkdir"    "more"
-             "move"     "path"     "pause"    "popd"     "prompt"   "pushd"    "ren"      "rd"       "rmdir"    "set"
+           '("at"       "attrib"   "cd"       "cls"      "color"    "copy"     "date"     "del"      "dir"      "doskey"
+             "echo"     "endlocal" "erase"    "fc"       "find"     "md"       "mkdir"    "more"     "move"     "net"
+             "path"     "pause"    "popd"     "prompt"   "pushd"    "rd"       "ren"      "rename"   "rmdir"    "set"
              "setlocal" "shift"    "sort"     "time"     "title"    "type"     "xcopy"))
           (CONTROLFLOW
-           '("call"     "cmd"      "do"       "else"     "equ"      "exit"     "for"      "geq"      "goto"     "gtr"
-             "if"       "in"       "leq"      "lss"      "neq"      "not"      "start"))
+           '("call"     "cmd"      "defined"  "do"       "else"     "equ"      "exist"    "exit"     "for"      "geq"
+             "goto"     "gtr"      "if"       "in"       "leq"      "lss"      "neq"      "not"      "start"))
           (LINUX
            '("cat"      "cp"       "ls"       "mv"       "rm")))
       (list
@@ -153,8 +154,8 @@ that:\n
     ["Template"      dos-template     ] ; :help "Insert template"
     ["Mini Template" dos-template-mini] ; :help "Insert minimal template"
     "--"
-    ["Help (cmd)"    dos-help-cmd     ]   ; :help "Show help page for Dos command"
-    ["Help (mode)"   dos-help-mode    ]   ; :help "Show help page for Emacs dos-mode"
+    ["Help (cmd)"    dos-cmd-help     ]   ; :help "Show help page for Dos command"
+    ["Help (mode)"   dos-mode-help    ]   ; :help "Show help page for Emacs dos-mode"
     ["Version"       dos-mode-version ])) ; :help "Show Dos Mode version"
 (defvar dos-mode-abbrev-table nil)(define-abbrev-table 'dos-mode-abbrev-table ())
 (defvar dos-mode-map
@@ -164,11 +165,11 @@ that:\n
     (define-key map [S-f12]       'dos-template-mini)
     (define-key map [f12]         'dos-template     )
     (define-key map [?\C-c ?\C-.] 'dos-mode-version )
-    (define-key map [?\C-c ?\C-/] 'dos-help-cmd     )
+    (define-key map [?\C-c ?\C-/] 'dos-cmd-help     )
     (define-key map [?\C-c ?\C- ] 'dos-sep          )
     (define-key map [?\C-c ?\C-a] 'dos-run-args     )
     (define-key map [?\C-c ?\C-c] 'dos-run          )
-    (define-key map [?\C-c ?\C-m] 'dos-help-mode    )
+    (define-key map [?\C-c ?\C-m] 'dos-mode-help    )
     (define-key map [?\C-c ?\C-v] 'dos-run          )
     map))
 (defvar dos-mode-syntax-table
@@ -184,8 +185,9 @@ that:\n
 
 ;; 4  User functions
 
-(defun dos-help-cmd (cmd) "Show help for Dos command." (interactive "sHelp: ")(shell-command (concat "help " cmd)))
-(defun dos-help-mode () "Show help page for `dos-mode'." (interactive)
+(defun dos-cmd-help (cmd) "Show help for Dos command." (interactive "sHelp: ")
+  (if (string-equal cmd "net")(shell-command "net /?")(shell-command (concat "help " cmd))))
+(defun dos-mode-help () "Show help page for `dos-mode'." (interactive)
   (describe-function 'dos-mode)(switch-to-buffer "*Help*")(delete-other-windows)(message nil))
 (defun dos-mode-version () "Show Dos Mode version number." (interactive)
   (message (concat "Dos Mode version " dos-mode-version)))
@@ -248,10 +250,10 @@ echo.\n
 
 ;;;###autoload
 (defun dos-mode () "Major mode for editing Dos scripts.\n
-The `dos-help-mode' command shows this page.\n
+The `dos-mode-help' command shows this page.\n
 Start a new script from `dos-template' or `dos-template-mini'. Navigate between
 sections using `dos-outline', `imenu', or `outline-minor-mode'. Use `dos-sep' to
-save keystrokes. Read help for Dos command with `dos-help-cmd'. Run script using
+save keystrokes. Read help for Dos command with `dos-cmd-help'. Run script using
 `dos-run' and `dos-run-args'.
 
 \\{dos-mode-map}"
