@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sun Jun 30 15:50:09 2013 (-0700)
+;; Last-Updated: Mon Jul  1 16:10:47 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6444
+;;     Update #: 6449
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -1989,7 +1989,7 @@ Non-nil NO-REGION means do not include the region end, `end-position'."
       (time         . ,ctime)
       (created      . ,ctime)
       (position     . ,beg)
-      ,@(when (and regionp  (not no-region)) `(end-position . ,end)))))
+      ,@(when (and regionp  (not no-region)) `((end-position . ,end))))))
 
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
@@ -7812,6 +7812,7 @@ Otherwise, load it to supplement the current bookmark list."
   (bmkp-jump-bookmark-file bookmark-name switchp no-msg))
 
 ;; Snippet bookmarks
+;; Inspired by emacs-devel@gnu.org post from Masatake Yamato [yamato@redhat.com], 2012-01-06.
 ;;;###autoload (autoload 'bmkp-set-snippet-bookmark "bookmark+")
 (defun bmkp-set-snippet-bookmark (beg end &optional msgp)
   "Save the text of the active region as a bookmark.
@@ -7821,11 +7822,11 @@ you can yank it using `C-y'."
   (unless (and mark-active  transient-mark-mode) (error "No active region"))
   (when (equal beg end) (error "Region is empty"))
   (lexical-let ((text  (buffer-substring-no-properties beg end)))
-    (let* ((bookmark-make-record-function  (lambda ()
-                                             `(,@(bookmark-make-record-default 'no-file 'no-context)
-                                               (text    . ,text)
-                                               (handler . bmkp-jump-snippet))))
-           (bname                          (car (split-string text "[\n]"))))
+    (let ((bookmark-make-record-function  (lambda ()
+                                            `(,@(bookmark-make-record-default 'NO-FILE 'NO-CONTEXT)
+                                              (text    . ,text)
+                                              (handler . bmkp-jump-snippet))))
+          (bname                          (car (split-string text "[\n]"))))
       (bookmark-set bname 99 'INTERACTIVEP)
       (when msgp (message "Region text bookmarked as `%s'" bname)))))
 
