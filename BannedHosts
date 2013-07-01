@@ -109,8 +109,6 @@ ns4004-5974\.ip-198-27-65\.net # 2013-06-20 KeyboardMacros
 ^27\.153\.187\.97 # for spamming Comments on roland.walker
 ^91\.237\.249\.79 # for spamming multiple "Comments on" pages
 ^99\.157\.56\.59 # for spamming IciclesDiscussion
-\.broad\.fz\.fj\.dynamic\.163data\.com\.cn 
- # for spamming IciclesDiscussion
 ^a123\.c2\.fc\.aoindustries\.com # for spamming IciclesDiscussion
 ^ns394479.ovh.net # for creating spam KeyBoard page
 ^ns224288\.ovh\.net # for spamming IciclesDiscussion
@@ -150,7 +148,6 @@ broadband\.kyivstar.net # 2013-06-19 and prior: SiteMapDiscussion
 ^wnode1\.lettheaffiliatedo\.com # for spamming Comments on CategoryProject
 ^61\.157\.217\.247 #  for spamming Comments on CategoryCode 
 ^91\.237\.249\. # for spamming Comments on CategoryCode and others
-^178\.48\.155\.27\.broad\.fz\.fj\.dynamic\.163data\.com\.cn # spamming EmacsForums
 ^192\.74\.229\.1 # for spamming WThirtyTwoFontifiedRegionToClipboard
 ^112\.111\.1(6[0-9]|7[0-5])\. # 112.111.160.0 - 112.111.175.255
 newemailcenter # spamming SiteMap Discussion
@@ -169,7 +166,6 @@ newemailcenter # spamming SiteMap Discussion
 ^a08-06-04.opera-mini.net # 2013-06-01 DrewsEmacsColorNameCompletions
 ^95-37-179-107\.dynamic\.mts-nn\.ru # 2013-06-02 SiteMap Discussion
 ^31\.184\.238\.163 # 2013-06-02 KeyboardMacros
-^155\.246\.77\.222\.broad\.pt\.fj\.dynamic\.163data\.com\.cn # 2013-06-06 WikiModeDiscussion
 ^36\.248\.171\.217 # 2013-06-29 SiteMap Discussion
 ^95-37-139-166\.dynamic\.mts-nn\.ru # 2013-06-06 SiteMap Discussion
 ^178-137-.*-lvv\.broadband\.kyivstar\.net # 2013-06-06 SiteMap Discussion
@@ -183,4 +179,4 @@ requests-here\.tk # 2013-06-19 Comments on nXhtml
 ^ns4004874\.ip-198-27-65\.net # 2013-06-21 2013-06-21
 ^142\.4\.117\.245 # 2013-06-25 WikiModeDiscussion
 ^198\.2\.218\.28 # 2013-06-29 Comments on any-ini-mode.el
-^113\.204\.77\.222\.broad\.pt\.fj\.dynamic\.163data\.com\.cn # 2013-07-01 KeyboardMacros
+\.dynamic\.163data\.com\.cn # 2013-07-01 spamming various pages
