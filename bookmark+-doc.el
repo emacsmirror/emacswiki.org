@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Apr 19 08:51:48 2013 (-0700)
+;; Last-Updated: Sun Jun 30 19:10:21 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 14707
+;;     Update #: 14711
 ;; URL: http://www.emacswiki.org/bookmark+-doc.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -303,6 +303,10 @@
 ;;
 ;;     - Lisp variable bookmarks.  A bookmark can represent a set of
 ;;       variables and their values.
+;;
+;;     - Snippet bookmarks.  Select some some text and give it a
+;;       (bookmark) name.  Then copy it to the `kill-ring' anytime, in
+;;       any Emacs session.
 ;;
 ;;     In particular, note that you can use the following kinds of
 ;;     bookmarks to quickly switch among different projects (sets of
@@ -624,7 +628,7 @@
 ;;  *** Automatic Saving ***
 ;;
 ;;  Before getting into the topic of automatic saving, let me say this
-;;  clearly once: Back up your bookmark file(s)!  I recommend that you
+;;  clearly once: BACK UP YOUR BOOKMARK FILE(S)!  I recommend that you
 ;;  set option `bookmark-version-control' to `t', so that you get
 ;;  numbered backups.  See also nodes `Backup Names' and `Backup
 ;;  Deletion' in the Emacs manual.
