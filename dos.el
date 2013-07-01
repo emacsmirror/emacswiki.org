@@ -3,11 +3,11 @@
 ;; Copyright (C) 2003, 2008-2013 Arni Magnusson
 
 ;; Author:   Arni Magnusson <arnima@hafro.is>
-;; Version:  2.19
+;; Version:  2.20
 ;; Keywords: languages
 ;; URL:      http://emacswiki.org/emacs/dos.el
 
-(defconst dos-mode-version "2.19" "Dos Mode version number.")
+(defconst dos-mode-version "2.20" "Dos Mode version number.")
 
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -62,6 +62,7 @@
 
 ;;; History:
 ;;
+;;  1 Ju1 2013  2.20 Improved documentation.
 ;; 27 Jun 2013  2.19 Adapted header to current package guidelines.
 ;; 22 Jan 2013  2.18 Moved keywords "mkdir" and "rmdir" from `font-lock-warning-face' to `font-lock-builtin-face'.
 ;; 30 Mar 2012  2.17 Improved documentation.
@@ -109,8 +110,7 @@
 If you want to set syntax colors or keybindings, here is an example that does
 that:\n
 \(defun my-dos-hook ()
-  (set-face-attribute 'font-lock-doc-face nil
-                      :foreground \"black\" :weight 'bold)
+  (set-face-attribute 'font-lock-comment-face nil :foreground \"gray75\")
   (local-set-key [down-mouse-3] 'imenu))
 \(add-hook 'dos-mode-hook 'my-dos-hook)"
   :tag   "Hook"
