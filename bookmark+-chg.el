@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Jul  1 16:17:27 2013 (-0700)
+;; Last-Updated: Mon Jul  1 16:21:56 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 15379
+;;     Update #: 15380
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -148,6 +148,7 @@
 ;;
 ;; 2013/07/01 dadams
 ;;     bookmark-make-record-default: Fixed typo for end-position (listify).
+;;     bmkp-set-snippet-bookmark: Prefix arg now prompts for bookmark name.
 ;; 2013/06/30 dadams
 ;;     Added: bmkp-set-snippet-bookmark, bmkp-snippet-to-kill-ring, bmkp-jump-snippet,
 ;;            bmkp-snippet-alist-only, bmkp-snippet-bookmark-p, bmkp-snippet-history.
