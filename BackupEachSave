@@ -1,7 +1,7 @@
 backup-each-save.el backs up is a more comprehensive system for saving backups on each buffer saving, as opposed to adding code to ForceBackups.
 
 * http://www.bloomington.in.us/~brutt/emacs.html
-* http://www.emacswiki.org/emacs/backup-each-save.el
+* Lisp:backup-each-save.el
 
 To activate:
 
