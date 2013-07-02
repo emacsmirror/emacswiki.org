@@ -67,7 +67,5 @@ Few extra features:
 
 - supports emacs navigation keys in the menu (C-n, C-p, C-g, etc)
 
-- doesn't require Visual Studio to build it, just Windows SDK 7.1 SP1 is enough.
-
 ----
 CategoryWThirtyTwo
