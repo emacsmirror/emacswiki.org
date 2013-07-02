@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Sun Jun 30 16:53:47 2013 (-0700)
+;; Last-Updated: Tue Jul  2 13:05:42 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2521
+;;     Update #: 2554
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -17,7 +17,11 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `bookmark', `pp'.
+;;   `apropos', `apropos+', `avoid', `bookmark', `fit-frame',
+;;   `frame-fns', `help+20', `info', `info+', `menu-bar',
+;;   `menu-bar+', `misc-cmds', `misc-fns', `naked', `pp',
+;;   `second-sel', `strings', `thingatpt', `thingatpt+', `unaccent',
+;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -5536,6 +5540,20 @@ Non-nil optional ALLP means return all bookmarks: `bookmark-alist'."
 (define-key bmkp-bmenu-mark-menu [bmkp-bmenu-regexp-mark]
   '(menu-item "Mark Regexp Matches..." bmkp-bmenu-regexp-mark
     :help "Mark bookmarks that match a regexp that you enter"))
+
+
+;;; `Edit' menu-bar menu
+
+(require 'menu-bar+ nil t)              ; It redefines `menu-bar-edit-menu'.
+(define-key-after menu-bar-edit-menu [separator-snippet] '("--")  'mark-whole-buffer)
+(define-key-after menu-bar-edit-menu [bmkp-set-snippet-bookmark]
+  '(menu-item "Region to Snippet..." bmkp-set-snippet-bookmark
+    :help "Save the region text to a snippet bookmark"
+    :enable (and mark-active (not buffer-read-only))) 'separator-snippet)
+(define-key-after menu-bar-edit-menu [bmkp-snippet-to-kill-ring]
+  '(menu-item "Snippet to Kill Ring..." bmkp-snippet-to-kill-ring
+    :help "Copy the text saved in a snippet bookmark to the `kill-ring'")
+  'bmkp-set-snippet-bookmark)
 
 
 
