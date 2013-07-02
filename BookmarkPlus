@@ -238,6 +238,12 @@ The same menu is available on '''`C-mouse-3''''. It has submenus '''Jump To''', 
 
 * The vanilla '''[[#VanillaBookmarksMenu|Bookmarks]]''' menu, which is typically a submenu of the menu-bar '''Edit''' menu, is modified by adding several items from the '''`Bookmark+'''' menu, including submenus '''Jump To''', '''Tags''', and '''Highlight'''.
 
+* '''Bookmark+''' adds [[#EditMenu|two items]] to the [[menu bar]] '''Edit''' menu:
+
+** Save the [[active region]] text as a bookmark.
+** "Jump to" the bookmark to copy the text to the [[kill ring]], so you can then [[yank]] it anywhere.
+
+
 
 
 
@@ -3808,6 +3814,21 @@ See [[#State-Restoring Commands and Bookmarks]].
 == Menu Screenshots ==
 
 Here are screenshots of the various '''Bookmark+''' menus. Using the menus is a good way to learn some of the features (and their key bindings).
+
+
+
+[:EditMenu]
+=== Menu-Bar Edit Menu ===
+
+'''Bookmark+''' adds two items to the [[menu bar]] '''Edit''' menu:
+
+* Save the [[active region]] text as a bookmark.
+* "Jump to" the bookmark to copy the text to the [[kill ring]], so you can then [[yank]] it anywhere.
+
+:: [[image:BookmarkPlusMenuBarEditMenu]]
+
+
+
 
 
 [:Mouse3PopupMenu]
