@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Mon Jul  1 16:37:25 2013 (-0700)
+;; Last-Updated: Tue Jul  2 07:09:37 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6455
+;;     Update #: 6459
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -4832,7 +4832,7 @@ copies that text to the `kill-ring'.
 BOOKMARK is a bookmark name or a bookmark record.
 If it is a record then it need not belong to `bookmark-alist'."
   (setq bookmark  (bookmark-get-bookmark bookmark))
-  (eq (bookmark-get-handler bookmark) 'bmkp-snippet-to-kill-ring))
+  (eq (bookmark-get-handler bookmark) 'bmkp-jump-snippet))
 
 (defun bmkp-desktop-bookmark-p (bookmark)
   "Return non-nil if BOOKMARK is a desktop bookmark.
@@ -7366,7 +7366,7 @@ the file is an image file then the description includes the following:
                                              (bookmark-prop-get bookmark 'desktop-file)))
                    (bookmark-file-p  (format "Bookmark file:\t\t%s\n"
                                              (bookmark-prop-get bookmark 'bookmark-file)))
-                   (snippet-p        (format "Snippet for `kill-ring'\n"))
+                   (snippet-p        (format "Snippet for `kill-ring'.\n"))
                    (dired-p          (and file
                                           (let ((switches  (bookmark-prop-get bookmark 'dired-switches))
                                                 (marked    (length (bookmark-prop-get bookmark
@@ -7391,11 +7391,12 @@ Inserted subdirs:\t%s\nHidden subdirs:\t\t%s\n"
                (if (bmkp-region-bookmark-p bookmark)
                    (format "Region:\t\t\t%d to %d (%d chars)\n" start end (- end start))
                  (format "Position:\t\t%d\n" start)))
-             (and visits  (format "Visits:\t\t\t%d\n" visits))
-             (and time    (format "Last visit:\t\t%s\n" (format-time-string "%c" time)))
-             (and created (format "Creation:\t\t%s\n" (format-time-string "%c" created)))
-             (and tags    (format "Tags:\n \"%s\"\n" (mapconcat #'identity tags "\"\n \"")))
-             (and annot   (format "\nAnnotation:\n%s\n" annot))
+             (and visits     (format "Visits:\t\t\t%d\n" visits))
+             (and time       (format "Last visit:\t\t%s\n" (format-time-string "%c" time)))
+             (and created    (format "Creation:\t\t%s\n" (format-time-string "%c" created)))
+             (and tags       (format "Tags:\n \"%s\"\n" (mapconcat #'identity tags "\"\n \"")))
+             (and annot      (format "\nAnnotation:\n%s\n" annot))
+             (and snippet-p  (format "\nSnippet:\n%s\n" (bookmark-prop-get bookmark 'text)))
              (and (not no-image)
                   file
                   (fboundp 'image-file-name-regexp) ; In `image-file.el' (Emacs 22+).
