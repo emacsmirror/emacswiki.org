@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Thu Aug 17 10:05:46 1995
 ;; Version: 21.1
-;; Last-Updated: Sun Jun 16 18:40:24 2013 (-0700)
+;; Last-Updated: Tue Jul  2 13:12:30 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 3559
+;;     Update #: 3574
 ;; URL: http://www.emacswiki.org/menu-bar+.el
 ;; Doc URL: http://www.emacswiki.org/MenuBarPlus
 ;; Keywords: internal, local, convenience
@@ -28,6 +28,38 @@
 ;;; Commentary:
 ;;
 ;;    Extensions to `menu-bar.el'.  Redefines the default menu bar.
+;;
+;;  Usage:
+;;
+;;    This library should be loaded after loading standard library
+;;    `menu-bar.el'.  So, in your `~/.emacs' file, do this:
+;;
+;;      (eval-after-load "menu-bar" '(require 'menu-bar+))
+;;
+;;    You will also want to do that before loading other libraries
+;;    that might modify the following predefined menu-bar menus:
+;;
+;;      `File'
+;;      `Edit'
+;;      `More Manuals'
+;;      `Options'
+;;      `Search'
+;;
+;;    This is because those menus correspond to the variables
+;;    mentioned at the end of this commentary as being REDEFINED here.
+;;    If a library modifies one of those variables before you load
+;;    `menu-bar+.el' then those changes will be lost when the variable
+;;    is redefined.
+;;
+;;    The following libraries are exceptions to this rule.  If loaded
+;;    before `menu-bar+.el' then they are used by `menu-bar+.el'.  So
+;;    if you use them then load them before loading `menu-bar+.el'.
+;;
+;;      `doremi.el'
+;;      `help+.el'
+;;      `help-fns+.el'
+;;      `thumb-frm.el'
+;;      `w32-browser-dlgopen.el'
 ;;
 ;;  Main differences:
 ;;
@@ -92,16 +124,12 @@
 ;;  `menu-bar-manuals-menu', `menu-bar-options-menu',
 ;;  `menu-bar-search-menu'.
 ;;
-;;
-;;
-;;  This file should be loaded after loading the standard GNU file
-;;  `menu-bar.el'.  So, in your `~/.emacs' file, do this:
-;;  (eval-after-load "menu-bar" '(require 'menu-bar+))
-;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
 ;;
+;; 2013/07/02 dadams
+;;     Added to commentary: mention load order.
 ;; 2013/06/16 dadams
 ;;     menu-barp-select-buffer-function: New default value - no pop-to-buffer-other-frame.
 ;; 2013/03/12 dadams
