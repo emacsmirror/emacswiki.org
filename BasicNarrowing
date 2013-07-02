@@ -38,7 +38,6 @@ I often replace a regular expression, but want to limit its effective region:
 
     (defun replace-regexp-in-region (start end)
       (interactive "*r")
-
       (save-excursion
         (save-restriction
           (let ((regexp (read-string "Regexp: "))
