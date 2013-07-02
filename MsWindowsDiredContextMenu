@@ -56,4 +56,14 @@ However, !ShellContextMenu.exe does not understand the forward slashes returned 
           '0 (shell-quote-argument (buffer-file-name)))))
 
 ----
+Here is another program with the same idea:
+https://github.com/vkalviss/WinContextMenu
+
+Few extra features:
+- it includes binaries for both x86 and x64 platforms
+- supports multiple files selection
+- supports emacs navigation keys in the menu (C-n, C-p, C-g, etc)
+- doesn't require Visual Studio to build it, just Windows SDK 7.1 SP1 is enough.
+
+----
 CategoryWThirtyTwo
