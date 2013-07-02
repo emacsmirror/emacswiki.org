@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Jun 23 14:30:07 2013 (-0700)
+;; Last-Updated: Tue Jul  2 16:16:48 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 25802
+;;     Update #: 25865
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -263,11 +263,11 @@
 ;;  Non-interactive functions defined here:
 ;;
 ;;    `custom-variable-p', `icicle-apropos-opt-action',
-;;    `icicle-binary-option-p',
+;;    `icicle-binary-option-p', `icicle-bookmark-act-on-prop',
 ;;    `icicle-bookmark-bind-narrow-commands',
 ;;    `icicle-bookmark-cleanup', `icicle-bookmark-cleanup-on-quit',
-;;    `icicle-bookmark-delete-action', `icicle-bookmark-help-string',
-;;    `icicle-bookmark-jump-1',
+;;    `icicle-bookmark-delete-action', `icicle-bookmark-help',
+;;    `icicle-bookmark-help-string', `icicle-bookmark-jump-1',
 ;;    `icicle-buffer-apropos-complete-match',
 ;;    `icicle-buffer-cand-help', `icicle-buffer-multi-complete',
 ;;    `icicle-buffer-name-prompt',
@@ -4460,7 +4460,7 @@ instead of those for the current buffer."
                (prompt                                 "Bookmark: ")
                (icicle-multi-completing-p              icicle-show-multi-completion-flag)
                (icicle-list-use-nth-parts              '(1))
-               (icicle-candidate-properties-alist      (if (not icicle-show-multi-completion-flag)
+               (icicle-candidate-properties-alist      (if (not icicle-multi-completing-p)
                                                            ()
                                                          (if (facep 'file-name-shadow)
                                                              '((2 (face file-name-shadow))
@@ -4469,6 +4469,7 @@ instead of those for the current buffer."
                (icicle-transform-function              (and (not (interactive-p))  icicle-transform-function))
                (icicle-whole-candidate-as-text-prop-p  t)
                (icicle-transform-before-sort-p         t)
+               (icicle-candidate-help-fn               'icicle-bookmark-help)
                (icicle-candidates-alist
                 (if (not (featurep 'bookmark+))
                     (mapcar (lambda (cand)
@@ -4512,19 +4513,7 @@ instead of those for the current buffer."
                                  bmkp-local-file-type-cp bmkp-handler-cp)
                                 icicle-alpha-p)))
                         '(("by previous use alphabetically" . icicle-historical-alphabetic-p)
-                          ("case insensitive" . icicle-case-insensitive-string-less-p))))
-               (icicle-candidate-help-fn
-                ;; FREE here: CURRENT-PREFIX-ARG, ICICLE-GET-ALIST-CANDIDATE-FUNCTION,
-                ;;            ICICLE-SHOW-MULTI-COMPLETION-FLAG.
-                (lambda (cand)
-                  (when (and (featurep 'bookmark+)  icicle-show-multi-completion-flag)
-                    (setq cand  (funcall icicle-get-alist-candidate-function cand))
-                    (setq cand  (cons (caar cand) (cdr cand))))
-                  (if (featurep 'bookmark+)
-                      (if current-prefix-arg
-                          (bmkp-describe-bookmark-internals cand)
-                        (bmkp-describe-bookmark cand))
-                    (icicle-msg-maybe-in-minibuffer (icicle-bookmark-help-string cand))))))
+                          ("case insensitive" . icicle-case-insensitive-string-less-p)))))
            (require 'bookmark)
            (when (featurep 'bookmark+)
              ;; Bind keys to narrow bookmark candidates by type.  Lax is for multi-completion case.
@@ -4628,6 +4617,97 @@ If the option value is nil then DISPLAY is just the bookmark name."
                 guts)))
     (error nil)))
 
+(defun icicle-bookmark-help-string (bookmark-name)
+  "Return a help string for BOOKMARK-NAME." ; `bmkp-*' functions are defined in `Bookmark+'.
+  ;; Use BOOKMARK-NAME, not full bookmark BMK, as arg to vanilla bookmark functions, for Emacs < 23.
+  (let* ((bmk            (bookmark-get-bookmark bookmark-name))
+         (buf            (and (fboundp 'bmkp-get-buffer-name)  (bmkp-get-buffer-name bmk)))
+         (file           (bookmark-get-filename bookmark-name))
+         (start          (bookmark-get-position bookmark-name))
+         (no-position-p  (not start))
+         (end            (and (fboundp 'bmkp-get-end-position)  (bmkp-get-end-position bmk)))
+         (annot          (bookmark-get-annotation bookmark-name))
+         (sequence-p     (and (fboundp 'bmkp-sequence-bookmark-p)
+                              (bmkp-sequence-bookmark-p bmk)))
+         (function-p     (and (fboundp 'bmkp-function-bookmark-p)
+                              (bmkp-function-bookmark-p bmk)))
+         (blist-p        (and (fboundp 'bmkp-bookmark-list-bookmark-p)
+                              (bmkp-bookmark-list-bookmark-p bmk)))
+         (desktop-p      (and (fboundp 'bmkp-desktop-bookmark-p)
+                              (bmkp-desktop-bookmark-p bmk)))
+         (dired-p        (and (fboundp 'bmkp-dired-bookmark-p)  (bmkp-dired-bookmark-p bmk)))
+         (gnus-p         (and (fboundp 'bmkp-gnus-bookmark-p)  (bmkp-gnus-bookmark-p bmk)))
+         (info-p         (and (fboundp 'bmkp-info-bookmark-p)  (bmkp-info-bookmark-p bmk)))
+         (man-p          (and (fboundp 'bmkp-man-bookmark-p)  (bmkp-man-bookmark-p bmk)))
+         (url-p          (and (fboundp 'bmkp-url-bookmark-p)  (bmkp-url-bookmark-p bmk)))
+         type-info-p)
+    (when (or sequence-p  function-p) (setq no-position-p  t))
+    (concat (setq type-info-p
+                  (cond (sequence-p (format "Sequence: %S" (bookmark-prop-get bmk 'sequence)))
+                        (function-p (let ((fn  (bookmark-prop-get bmk 'function)))
+                                      (if (symbolp fn) (format "Function: `%s'" fn) "Function")))
+                        (desktop-p  "Desktop, ")
+                        (dired-p    (format "Dired %s, " file))
+                        (gnus-p     "Gnus, ")
+                        (info-p     "Info, ")
+                        (man-p      (let ((man-args  (bookmark-prop-get bmk 'man-args)))
+                                      (if man-args
+                                          (format "`man %s', " man-args)
+                                        ;; WoMan has no variable for the cmd name.
+                                        (format "%s, " (bookmark-prop-get bmk 'buffer-name)))))
+                        (url-p      "URL, ")
+                        (t nil)))
+            (and (not dired-p)
+                 (or (and file  (or (not (boundp 'bmkp-non-file-filename))
+                                    (not (equal file bmkp-non-file-filename)))
+                          (format (if type-info-p "file `%s', " "File `%s', ") file))
+                     (and buf  (format (if type-info-p "buffer `%s', " "Buffer `%s', ") buf))))
+            (and (not no-position-p)
+                 (if (and end  (> (- end start) 0))
+                     (format "from %d to %d (%d chars)" start end (- end start))
+                   (format "position %d" start)))
+            (and annot  (format ", %s" annot)))))
+
+(defun icicle-bookmark-help (cand)
+  "Icicles help function for a bookmark candidate."
+  ;; FREE here: CURRENT-PREFIX-ARG, ICICLE-GET-ALIST-CANDIDATE-FUNCTION, ICICLE-MULTI-COMPLETING-P.
+  (when (and (featurep 'bookmark+)  icicle-multi-completing-p)
+    (setq cand  (funcall icicle-get-alist-candidate-function cand))
+    (setq cand  (cons (caar cand) (cdr cand))))
+  (if (featurep 'bookmark+)
+      (if current-prefix-arg
+          (bmkp-describe-bookmark-internals cand)
+        (bmkp-describe-bookmark cand))
+    (icicle-msg-maybe-in-minibuffer (icicle-bookmark-help-string cand))))
+
+(defun icicle-bookmark-act-on-prop (cand)
+  "Apply a function to a bookmark property.  You choose both.
+The argument is a bookmark name or a multi-completion with 3 parts:
+
+    a. the bookmark name
+    b. the bookmark file or buffer name
+    c. any tags"
+  (when (and (featurep 'bookmark+)  icicle-multi-completing-p)
+    (setq cand  (funcall icicle-get-alist-candidate-function cand))
+    (setq cand  (cons (caar cand) (cdr cand))))
+  (let* ((enable-recursive-minibuffers  t)
+         (full-bmk                      (bookmark-get-bookmark cand))
+         (props                         `("bookmark-name"
+                                          ,@(mapcar (lambda (data) (symbol-name (car data)))
+                                                    (bmkp-bookmark-data-from-record full-bmk))))
+         (property                      (intern (completing-read "Bookmark property to act on: "
+                                                                 (mapcar #'list props) nil t)))
+         (fun                           (read (completing-read "Function to apply to property: "
+                                                               obarray 'functionp)))
+         (result                        (condition-case err
+                                            (if (eq 'bookmark-name property)
+                                                (funcall fun (bmkp-bookmark-name-from-record full-bmk))
+                                              (funcall fun (bookmark-prop-get full-bmk property)))
+                                          (error (concat "ERROR: "
+                                                         (message (error-message-string err)))))))
+    (pp-eval-expression `',result)
+    result))
+
 (icicle-define-command icicle-bookmark  ; Bound to `C-x j j', `C-x p b', `C-x r b'.
   "Jump to a bookmark.
 With a plain prefix argument (`C-u'), reverse the effect of option
@@ -4714,6 +4794,12 @@ If you also use library `Bookmark+', then:
    See also the individual multi-commands for different bookmark
    types: `icicle-bookmark-info-other-window' etc.
 
+ * `C-S-RET', the alternative candidate action, prompts you for a
+   property of the candidate bookmark and a function, then applies the
+   function to the property.  Completion is available for the
+   properties (and symbol functions).  You can also use a lambda sexp
+   as the function.
+
 If you also use library `crosshairs.el', then the visited bookmark
 position is highlighted."               ; Doc string
   (lambda (cand) (icicle-bookmark-jump (icicle-transform-multi-completion cand))) ; Action
@@ -4725,7 +4811,7 @@ position is highlighted."               ; Doc string
    (prompt                                 "Bookmark: ")
    (icicle-multi-completing-p              icicle-show-multi-completion-flag)
    (icicle-list-use-nth-parts              '(1))
-   (icicle-candidate-properties-alist      (if (not icicle-show-multi-completion-flag)
+   (icicle-candidate-properties-alist      (if (not icicle-multi-completing-p)
                                                ()
                                              (if (facep 'file-name-shadow)
                                                  '((2 (face file-name-shadow))
@@ -4734,6 +4820,8 @@ position is highlighted."               ; Doc string
    (icicle-transform-function              (and (not (interactive-p))  icicle-transform-function))
    (icicle-whole-candidate-as-text-prop-p  t)
    (icicle-transform-before-sort-p         t)
+   (icicle-candidate-help-fn               'icicle-bookmark-help)
+   (icicle-candidate-alt-action-fn         (or icicle-candidate-alt-action-fn  'icicle-bookmark-act-on-prop))
    (icicle-delete-candidate-object         'icicle-bookmark-delete-action)
    (icicle-sort-orders-alist
     (append '(("in *Bookmark List* order") ; Renamed from "turned OFF'.
@@ -4761,16 +4849,6 @@ position is highlighted."               ; Doc string
                     icicle-alpha-p)))
             '(("by previous use alphabetically" . icicle-historical-alphabetic-p)
               ("case insensitive" . icicle-case-insensitive-string-less-p))))
-   (icicle-candidate-help-fn
-    ;; FREE here: CURRENT-PREFIX-ARG, ICICLE-GET-ALIST-CANDIDATE-FUNCTION,
-    ;;            ICICLE-SHOW-MULTI-COMPLETION-FLAG.
-    (lambda (cand)
-      (when (and (featurep 'bookmark+)  icicle-show-multi-completion-flag)
-        (setq cand  (funcall icicle-get-alist-candidate-function cand)
-              cand  (cons (caar cand) (cdr cand))))
-      (if (featurep 'bookmark+)
-          (if current-prefix-arg (bmkp-describe-bookmark-internals cand) (bmkp-describe-bookmark cand))
-        (icicle-msg-maybe-in-minibuffer (icicle-bookmark-help-string cand)))))
    (icicle-candidates-alist
     (if (not (featurep 'bookmark+))
         (mapcar (lambda (cand)
@@ -4806,7 +4884,7 @@ Same as `icicle-bookmark', but uses another window." ; Doc string
    (prompt                                 "Bookmark: ")
    (icicle-multi-completing-p              icicle-show-multi-completion-flag)
    (icicle-list-use-nth-parts              '(1))
-   (icicle-candidate-properties-alist      (if (not icicle-show-multi-completion-flag)
+   (icicle-candidate-properties-alist      (if (not icicle-multi-completing-p)
                                                ()
                                              (if (facep 'file-name-shadow)
                                                  '((2 (face file-name-shadow))
@@ -4815,6 +4893,8 @@ Same as `icicle-bookmark', but uses another window." ; Doc string
    (icicle-transform-function              (and (not (interactive-p))  icicle-transform-function))
    (icicle-whole-candidate-as-text-prop-p  t)
    (icicle-transform-before-sort-p         t)
+   (icicle-candidate-help-fn               'icicle-bookmark-help)
+   (icicle-candidate-alt-action-fn         (or icicle-candidate-alt-action-fn  'icicle-bookmark-act-on-prop))
    (icicle-delete-candidate-object         'icicle-bookmark-delete-action)
    (icicle-sort-orders-alist
     (append '(("in *Bookmark List* order") ; Renamed from "turned OFF'.
@@ -4842,18 +4922,6 @@ Same as `icicle-bookmark', but uses another window." ; Doc string
                     icicle-alpha-p)))
             '(("by previous use alphabetically" . icicle-historical-alphabetic-p)
               ("case insensitive" . icicle-case-insensitive-string-less-p))))
-   (icicle-candidate-help-fn
-    ;; FREE here: CURRENT-PREFIX-ARG, ICICLE-GET-ALIST-CANDIDATE-FUNCTION,
-    ;;            ICICLE-SHOW-MULTI-COMPLETION-FLAG.
-    (lambda (cand)
-      (when (and (featurep 'bookmark+)  icicle-show-multi-completion-flag)
-        (setq cand  (funcall icicle-get-alist-candidate-function cand))
-        (setq cand  (cons (caar cand) (cdr cand))))
-      (if (featurep 'bookmark+)
-          (if current-prefix-arg
-              (bmkp-describe-bookmark-internals cand)
-            (bmkp-describe-bookmark cand))
-        (icicle-msg-maybe-in-minibuffer (icicle-bookmark-help-string cand)))))
    (icicle-candidates-alist
     (if (not (featurep 'bookmark+))
         (mapcar (lambda (cand)
@@ -4968,17 +5036,37 @@ Same as `icicle-bookmark', but uses another window." ; Doc string
 (defun icicle-bookmark-jump (bookmark)
   "Jump to BOOKMARK.
 If `crosshairs.el' is loaded, then highlight the target position.
-You probably don't want to use this.  Use `icicle-bookmark' instead."
-  (interactive (list (bookmark-completing-read "Jump to bookmark" bookmark-current-bookmark)))
+You probably do not want to use this.  Use `icicle-bookmark' instead.
+
+If you also use library `Bookmark+', then:
+
+ * `C-M-return' shows detailed info about the current bookmark candidate.
+   `C-u C-M-return' shows the complete, internal info for the bookmark.
+   Likewise, for the other candidate help keys: `C-M-down' etc.
+   (And the mode line always shows summary info about the bookmark.)
+
+ * `C-S-RET', the alternative candidate action, prompts you for a
+   property of the candidate bookmark and a function, then applies the
+   function to the property.  Completion is available for the
+   properties (and symbol functions).  You can also use a lambda sexp
+   as the function."
+  (interactive
+   (list (let ((icicle-candidate-help-fn        'icicle-bookmark-help)
+               (icicle-candidate-alt-action-fn  (or icicle-candidate-alt-action-fn
+                                                    'icicle-bookmark-act-on-prop)))
+           (bookmark-completing-read "Jump to bookmark" bookmark-current-bookmark))))
   (icicle-bookmark-jump-1 bookmark))
 
 (defun icicle-bookmark-jump-other-window (bookmark)
   "Jump to BOOKMARK in another window.
-If `crosshairs.el' is loaded, then highlight the target position.
-You probably don't want to use this.  Use
+Same as `icicle-bookmark-jump', but uses another window.
+You probably do not want to use this.  Use
 `icicle-bookmark-other-window' instead."
-  (interactive (list (bookmark-completing-read "Jump to bookmark (other window)"
-                                               bookmark-current-bookmark)))
+  (interactive
+   (list (let ((icicle-candidate-help-fn        'icicle-bookmark-help)
+               (icicle-candidate-alt-action-fn  (or icicle-candidate-alt-action-fn
+                                                    'icicle-bookmark-act-on-prop)))
+           (bookmark-completing-read "Jump to bookmark (other window)" bookmark-current-bookmark))))
   (icicle-bookmark-jump-1 bookmark 'other-window))
 
 (defun icicle-bookmark-jump-1 (bookmark &optional other-window-p)
@@ -5006,57 +5094,6 @@ You probably don't want to use this.  Use
     (when (fboundp 'crosshairs-highlight) (crosshairs-highlight))))
 ;; $$$$$$   (select-window (minibuffer-window))
 ;; $$$$$$   (select-frame-set-input-focus (selected-frame)))
-
-(defun icicle-bookmark-help-string (bookmark-name)
-  "Return a help string for BOOKMARK-NAME." ; `bmkp-*' functions are defined in `Bookmark+'.
-  ;; Use BOOKMARK-NAME, not full bookmark BMK, as arg to vanilla bookmark functions, for Emacs < 23.
-  (let* ((bmk            (bookmark-get-bookmark bookmark-name))
-         (buf            (and (fboundp 'bmkp-get-buffer-name)  (bmkp-get-buffer-name bmk)))
-         (file           (bookmark-get-filename bookmark-name))
-         (start          (bookmark-get-position bookmark-name))
-         (no-position-p  (not start))
-         (end            (and (fboundp 'bmkp-get-end-position)  (bmkp-get-end-position bmk)))
-         (annot          (bookmark-get-annotation bookmark-name))
-         (sequence-p     (and (fboundp 'bmkp-sequence-bookmark-p)
-                              (bmkp-sequence-bookmark-p bmk)))
-         (function-p     (and (fboundp 'bmkp-function-bookmark-p)
-                              (bmkp-function-bookmark-p bmk)))
-         (blist-p        (and (fboundp 'bmkp-bookmark-list-bookmark-p)
-                              (bmkp-bookmark-list-bookmark-p bmk)))
-         (desktop-p      (and (fboundp 'bmkp-desktop-bookmark-p)
-                              (bmkp-desktop-bookmark-p bmk)))
-         (dired-p        (and (fboundp 'bmkp-dired-bookmark-p)  (bmkp-dired-bookmark-p bmk)))
-         (gnus-p         (and (fboundp 'bmkp-gnus-bookmark-p)  (bmkp-gnus-bookmark-p bmk)))
-         (info-p         (and (fboundp 'bmkp-info-bookmark-p)  (bmkp-info-bookmark-p bmk)))
-         (man-p          (and (fboundp 'bmkp-man-bookmark-p)  (bmkp-man-bookmark-p bmk)))
-         (url-p          (and (fboundp 'bmkp-url-bookmark-p)  (bmkp-url-bookmark-p bmk)))
-         type-info-p)
-    (when (or sequence-p  function-p) (setq no-position-p  t))
-    (concat (setq type-info-p
-                  (cond (sequence-p (format "Sequence: %S" (bookmark-prop-get bmk 'sequence)))
-                        (function-p (let ((fn  (bookmark-prop-get bmk 'function)))
-                                      (if (symbolp fn) (format "Function: `%s'" fn) "Function")))
-                        (desktop-p  "Desktop, ")
-                        (dired-p    (format "Dired %s, " file))
-                        (gnus-p     "Gnus, ")
-                        (info-p     "Info, ")
-                        (man-p      (let ((man-args  (bookmark-prop-get bmk 'man-args)))
-                                      (if man-args
-                                          (format "`man %s', " man-args)
-                                        ;; WoMan has no variable for the cmd name.
-                                        (format "%s, " (bookmark-prop-get bmk 'buffer-name)))))
-                        (url-p      "URL, ")
-                        (t nil)))
-            (and (not dired-p)
-                 (or (and file  (or (not (boundp 'bmkp-non-file-filename))
-                                    (not (equal file bmkp-non-file-filename)))
-                          (format (if type-info-p "file `%s', " "File `%s', ") file))
-                     (and buf  (format (if type-info-p "buffer `%s', " "Buffer `%s', ") buf))))
-            (and (not no-position-p)
-                 (if (and end  (> (- end start) 0))
-                     (format "from %d to %d (%d chars)" start end (- end start))
-                   (format "position %d" start)))
-            (and annot  (format ", %s" annot)))))
 
 ;;; MUST keep this synchronized with any general Icicle-mode `C-M-' bindings in `icicles-mode.el'.
 ;;  That includes things like `icicle-read+insert-file-name-keys'.
@@ -8609,7 +8646,7 @@ Non-interactively:
    (completion-ignore-case                      bookmark-completion-ignore-case)
    (icicle-multi-completing-p                   icicle-show-multi-completion-flag)
    (icicle-list-use-nth-parts                   '(1))
-   (icicle-candidate-properties-alist           (if (not icicle-show-multi-completion-flag)
+   (icicle-candidate-properties-alist           (if (not icicle-multi-completing-p)
                                                     ()
                                                   (if (facep 'file-name-shadow)
                                                       '((2 (face file-name-shadow))
@@ -8618,6 +8655,9 @@ Non-interactively:
    (icicle-transform-function                   (and (not (interactive-p))  icicle-transform-function))
    (icicle-whole-candidate-as-text-prop-p       t)
    (icicle-transform-before-sort-p              t)
+   (icicle-candidate-help-fn                    'icicle-bookmark-help)
+   (icicle-candidate-alt-action-fn              (or icicle-candidate-alt-action-fn
+                                                    'icicle-bookmark-act-on-prop))
    (icicle-delete-candidate-object              'icicle-bookmark-delete-action)
    (types                                       icicle-bookmark-types)
    (names-only-p                                (if (interactive-p)
@@ -8665,18 +8705,7 @@ Non-interactively:
                        '(("marked before unmarked (in *Bookmark List*)" (bmkp-marked-cp)
                           icicle-alpha-p)))))
             '(("by previous use alphabetically" . icicle-historical-alphabetic-p)
-              ("case insensitive" . icicle-case-insensitive-string-less-p))))
-   (icicle-candidate-help-fn
-    ;; FREE here: CURRENT-PREFIX-ARG, ICICLE-GET-ALIST-CANDIDATE-FUNCTION, ICICLE-SHOW-MULTI-COMPLETION-FLAG.
-    (lambda (cand)
-      (when (and (featurep 'bookmark+)  icicle-show-multi-completion-flag)
-        (setq cand  (funcall icicle-get-alist-candidate-function cand))
-        (setq cand  (cons (caar cand) (cdr cand))))
-      (if (featurep 'bookmark+)
-          (if current-prefix-arg
-              (bmkp-describe-bookmark-internals cand)
-            (bmkp-describe-bookmark cand))
-        (icicle-msg-maybe-in-minibuffer (icicle-bookmark-help-string cand))))))
+              ("case insensitive" . icicle-case-insensitive-string-less-p)))))
   (progn                                ; First code
     (message "Gathering bookmarks...")
     (bookmark-maybe-load-default-file)  ; Load bookmarks, define `bookmark-alist'.
