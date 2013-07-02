@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 28 Dec 2009
 ;; Version: 1
-;; RCS Version: $Rev: 427 $
+;; RCS Version: $Rev: 449 $
 ;; Keywords: sunrise commander, old checkpoints
 ;; URL: http://www.emacswiki.org/emacs/sunrise-x-old-checkpoints.el
 ;; Compatibility: GNU Emacs 22
@@ -53,7 +53,7 @@
 
 ;;; Code:
 
-(eval-when-compile (require 'sunrise-commander))
+(require 'sunrise-commander)
 
 (defvar sr-checkpoint-registry '(("~" "~/" "~/"))
   "Registry of currently defined checkpoints.")
