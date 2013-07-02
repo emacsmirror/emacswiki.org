@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 4 May 2010
 ;; Version: 1
-;; RCS Version: $Rev: 440 $
+;; RCS Version: $Rev: 449 $
 ;; Keywords: sunrise commander, directories tree navigation
 ;; URL: http://www.emacswiki.org/emacs/sunrise-x-tree.el
 ;; Compatibility: GNU Emacs 22+
@@ -165,7 +165,12 @@
 (require 'sunrise-commander)
 (require 'tree-widget)
 (require 'hl-line)
-(eval-when-compile (require 'desktop))
+(eval-when-compile (require 'cl)
+                   (require 'desktop))
+
+(eval-and-compile
+  (unless (fboundp 'cl-letf)
+    (defalias 'cl-letf 'letf)))
 
 (defcustom sr-tree-explosion-ratio 3
   "Maximum number of directory levels to recursively open at a time.
@@ -842,10 +847,10 @@ nil."
 Necessary so the basic Dired file manipulation commands can work
 in Sunrise Tree View mode."
   `(let ((ad-redefinition-action 'accept))
-     (letf (((symbol-function 'dired-get-filename)
-             (symbol-function 'sr-tree-get-filename))
-            ((symbol-function 'dired-show-file-type)
-             (symbol-function 'sr-tree-show-file-type)))
+     (cl-letf (((symbol-function 'dired-get-filename)
+                (symbol-function 'sr-tree-get-filename))
+               ((symbol-function 'dired-show-file-type)
+                (symbol-function 'sr-tree-show-file-type)))
        ,form)))
 
 (defun sr-tree-do-copy ()
