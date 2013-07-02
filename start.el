@@ -7,9 +7,9 @@
 ;; Copyright (C) 1995-2013, Drew Adams, all rights reserved.
 ;; Created: Wed Aug  2 11:12:24 1995
 ;; Version: 21.1
-;; Last-Updated: Thu Jun  6 09:46:38 2013 (-0700)
+;; Last-Updated: Tue Jul  2 13:49:44 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2970
+;;     Update #: 2973
 ;; URL: http://www.emacswiki.org/start.el
 ;; Keywords: abbrev, internal, local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -82,6 +82,8 @@
 ;;
 ;; Change Log:
 ;;
+;; 2013/07/02 dadams
+;; Load bookmark+.el (and bm.el and tabbar.el, though not necessary) after `menu-bar+.el.
 ;; 2013/06/06 dadams
 ;;     Added autoload for auto-update-file-header.
 ;; 2013/02/21 dadams
@@ -444,9 +446,6 @@
   (autoload 'paren-toggle-open-paren-context "mic-paren" "" t)
   (defvar paren-sexp-mode t)
   (defvar paren-message-linefeed-display "^J")) ; Toggle in/out context for open paren.
-(require 'bookmark+ nil t)              ; Extensions to `bookmark.el'.
-(when (> emacs-major-version 21) (require 'bm nil t)) ; Visible bookmarks.
-(when (> emacs-major-version 21) (require 'tabbar nil t)) ; Tab bar.
 (require 'finder+ nil t)                ; Extensions to `finder.el'.
 (require 'iso-transl nil t)             ; Keyboard input definitions for ISO 8859/1.
 (require 'eshell-auto nil t)            ; Eshell
@@ -513,6 +512,11 @@ See the Dired-X Info pages (type \\[info]) for information on this package.")
 (require 'highlight nil t)              ; Simple highlighting commands. Also loads `menu-bar+.el'.
 
 (require 'menu-bar+ nil t)              ; Extensions to `menu-bar.el'.  Also loads `info+.el'.
+
+;; Load `bookmark+.el' after `menu-bar+.el.
+(require 'bookmark+ nil t)              ; Extensions to `bookmark.el'.
+(when (> emacs-major-version 21) (require 'bm nil t)) ; Visible bookmarks.
+(when (> emacs-major-version 21) (require 'tabbar nil t)) ; Tab bar.
 
 (eval-after-load "pp" '(require 'pp+ nil t)) ; Extensions to `pp.el'.
 (eval-after-load "isearch" '(require 'isearch+ nil t)) ; Extensions to `isearch.el'.
