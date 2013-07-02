@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Jul  2 07:11:56 2013 (-0700)
+;; Last-Updated: Tue Jul  2 13:07:07 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 15383
+;;     Update #: 15385
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -939,6 +939,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2013/07/02 dadams
+;;     Added to menu-bar Edit menu: bmkp-set-snippet-bookmark, bmkp-snippet-to-kill-ring.
 ;; 2013/06/30 dadams
 ;;     Added: bmkp-snippet, bmkp-bmenu-show-only-snippets, bmkp-bmenu-mark-snippet-bookmarks.
 ;;     bookmark-bmenu-list: Added snippet info to doc string.
