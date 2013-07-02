@@ -8,7 +8,7 @@
 * <b>Author </b> --  Matthew Fidler, Nathaniel Cunningham
 * <b>Maintainer </b> --  Matthew L. Fidler
 * <b>Created </b> --  Mon Oct 18 17:06:07 2010 (-0500)
-* <b>Version </b> --  0.39
+* <b>Version </b> --  0.40
 * <b>Last-Updated </b> --  Sat Dec 15 15:44:34 2012 (+0800)
 * <b>By </b> --  Matthew L. Fidler
 * <b>Update # </b> --  663
@@ -86,6 +86,9 @@ the left arrow is text instead of an image.
 === Internal Variables ===
 == History ==
 
+1-Jul-2013    Matthew L. Fidler  
+Last-Updated: Sat Dec 15 15:44:34 2012 (+0800) #663 (Matthew L. Fidler)
+Fix variable misspecification
 * <b>28-Jun-2013 </b> --   Fixed strange org-readme issue (Matthew L. Fidler)
 * <b>28-Jun-2013 </b> --   Added popup scrollbarbar  (Matthew L. Fidler)
 * <b>27-Jun-2013 </b> --   Added autoload for tabbar-install-faces. That way ergoemacs and other packages can load the tabbar-ruler by just calling (tabbar-install-faces) 6-Jun-2013 Matthew L. Fidler Last-Updated: Sat Dec 15 15:44:34 2012 (+0800) #663 (Matthew L. Fidler) Added left-char and right char to tabbar-ruler-move-keymap so that keybindings in emacs 24.3 work correctly. 6-Jun-2013 Matthew L. Fidler Last-Updated: Sat Dec 15 15:44:34 2012 (+0800) #663 (Matthew L. Fidler) Changed movement commands. The movement commands are simpler (in my opinion) 4-Jun-2013 Matthew L. Fidler Last-Updated: Sat Dec 15 15:44:34 2012 (+0800) #663 (Matthew L. Fidler) Change package description. Fixed the documentation to actually change to the old tabbar method of grouping buffers. 4-Jun-2013 Matthew L. Fidler Last-Updated: Sat Dec 15 15:44:34 2012 (+0800) #663 (Matthew L. Fidler) Turn off ruler mode in the next buffer (if necessary) 4-Jun-2013 Matthew L. Fidler Last-Updated: Sat Dec 15 15:44:34 2012 (+0800) #663 (Matthew L. Fidler) Add movement keys. Also add toggles for different groupings. 1-May-2013 Matthew L. Fidler Last-Updated: Sat Dec 15 15:44:34 2012 (+0800) #663 (Matthew L. Fidler) Try to address issue #4 1-May-2013 Matthew L. Fidler Last-Updated: Sat Dec 15 15:44:34 2012 (+0800) #663 (Matthew L. Fidler) Changed the modified font to italics. Made the modified symbol customizable, but off by default. Should address issue #5. 5-Apr-2013 Matthew L. Fidler Last-Updated: Sat Dec 15 15:44:34 2012 (+0800) #663 (Matthew L. Fidler) Trying to update upstream sources. 5-Apr-2013 Matthew L. Fidler Last-Updated: Sat Dec 15 15:44:34 2012 (+0800) #663 (Matthew L. Fidler) Fixed speed issues on windows. It wasn't a redraw that was causing the speed issues, it was the constant recreation of the right-click menus...  (Matthew L. Fidler)
