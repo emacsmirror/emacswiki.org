@@ -127,7 +127,7 @@ blocks), then bind '''`icicle-whole-candidate-as-text-prop-p'''' to `t' around t
 '''`icicle-get-alist-candidate'''' to retrieve the candidate [[cdr]]
 (e.g. location) information from the completion result.
 
-However, if the action or alternate action function that you need
+However, if the action or alternative action function that you need
 ''modifies'' the existing set of completion candidates on the fly, as
 a side effect, then bind `icicle-whole-candidate-as-text-prop-p'
 to '''`nil'''' ''in the action function''.  Then modify both
