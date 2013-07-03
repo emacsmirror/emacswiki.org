@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue Jun 18 20:18:35 2013 (-0700)
+;; Last-Updated: Wed Jul  3 08:19:51 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 27817
+;;     Update #: 27818
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -378,6 +378,7 @@
 ;;    (@file :file-name "icicles-doc2.el" :to "Setting a Bookmark and Jumping to a Bookmark")
 ;;    (@file :file-name "icicles-doc2.el" :to "Jumping to a Bookmark")
 ;;    (@file :file-name "icicles-doc2.el" :to "Searching Bookmarked Objects")
+;;    (@file :file-name "icicles-doc2.el" :to "Acting on Bookmark Properties")
 ;;  (@file :file-name "icicles-doc2.el" :to "Icicles Enhancements for Emacs Tags")
 ;;    (@file :file-name "icicles-doc2.el" :to "`icicle-find-tag': Find Tags in All Tags Tables")
 ;;    (@file :file-name "icicles-doc2.el" :to "`icicle-find-first-tag': Find First Tag in Current Table")
