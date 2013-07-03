@@ -53,7 +53,7 @@ Related projects and helping:
 
 * [https://github.com/cnngimenez/diaspora.el A fork of diaspora.el] : For reading [https://joindiaspora.com/ Diaspora], a free(as in freedom) social network, using Emacs
 ** [https://github.com/tchartersazevedo/diaspora.el Tiago Charters Azevedo's Fork]
-* [https://github.com/cnngimenez/pumpio-el Pumpio client] : See PumpioEl.
+* [https://github.com/cnngimenez/pumpio-el Pumpio-el] : A Pumpio client for Emacs. See PumpioEl.
 
 
 Unrelated Projects:
@@ -88,19 +88,13 @@ I have translated some pages and added these:
 == Activities ==
 === Current ===
 
-"Current" means: //February 2013://
+"Current" means: //July 2013://
 
 * I'm investigating [http://www.ogre3d.org Ogre], a FreeSoftware Library for creating 3D environments. As consequence, I'm investigating the following features:
 ** OIS Library, for event management.
 ** The use of Blender for designing basic models.
 
-I think that is unnecessary to say that I want a first/third person RPG with all the power of Blender and Ogre. :P
-
-=== Future Activities ===
-
-* I want to investigate [https://mariadb.org/ MariaDB] and its differences with the !MySQl Database. 
-** If it can be used with Ruby on Rails and what is needed.
-
+I want a first/third person RPG with all the power of Blender and Ogre! And is called [http://www.nongnu.org/liliputworld/ Liliputworld]! :P
 
 ----
 
