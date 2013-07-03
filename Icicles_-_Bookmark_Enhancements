@@ -521,6 +521,45 @@ caching.  Caching is also used for bookmark searching.
 
 
 
+
+
+
+
+[:ActingOnBookmarkProperties]
+== Acting On Bookmark Properties ==
+
+An Emacs bookmark record is a list with the bookmark name as [[car]]
+and a list of bookmark properties as [[cdr]] -- see variable `bookmark-alist'
+for a description of the commonly used properties.
+
+When you use an '''Icicles''' command that reads a bookmark name, you
+can use `C-S-RET' (`icicle-candidate-alt-action') to apply a
+function to any property of the current bookmark candidate.  You
+are prompted for the function and the property.
+
+You choose the target property using completion from among those
+available for the current bookmark candidate.  Remember that you
+can use `C-M-RET' to see a description of the bookmark, which
+typically describes its most important properties.
+
+You can choose any function symbol using completion, or you can
+enter a lambda expression.  The function chosen must accept the
+particular property value or else you will see an error message.
+
+The value returned by the function is pretty-printed.  If the
+function you choose is `identity' then the action just
+pretty-prints the property value, which can be useful, even if
+trivial.
+
+If you use '''`Bookmark+'''', `C-M-RET' can be particularly useful for
+acting on [[BookmarkPlus#BookmarkTags|bookmark tags]] or on the text of a [[BookmarkPlus#SnippetBookmarks|snippet bookmark]].
+
+
+
+
+
+
+
 ----
 
 
