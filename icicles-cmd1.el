@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Jul  2 16:16:48 2013 (-0700)
+;; Last-Updated: Wed Jul  3 08:26:21 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 25865
+;;     Update #: 25870
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -4697,14 +4697,13 @@ The argument is a bookmark name or a multi-completion with 3 parts:
                                                     (bmkp-bookmark-data-from-record full-bmk))))
          (property                      (intern (completing-read "Bookmark property to act on: "
                                                                  (mapcar #'list props) nil t)))
-         (fun                           (read (completing-read "Function to apply to property: "
-                                                               obarray 'functionp)))
          (result                        (condition-case err
-                                            (if (eq 'bookmark-name property)
-                                                (funcall fun (bmkp-bookmark-name-from-record full-bmk))
-                                              (funcall fun (bookmark-prop-get full-bmk property)))
-                                          (error (concat "ERROR: "
-                                                         (message (error-message-string err)))))))
+                                            (funcall (read (completing-read "Function to apply to property: "
+                                                                            obarray 'functionp))
+                                                     (if (eq 'bookmark-name property)
+                                                         (bmkp-bookmark-name-from-record full-bmk)
+                                                       (bookmark-prop-get full-bmk property)))
+                                          (error (concat "ERROR: " (message (error-message-string err)))))))
     (pp-eval-expression `',result)
     result))
 
