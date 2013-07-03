@@ -2177,7 +2177,7 @@ a [[lambda expression]].  At runtime, symbols that are not functions
 ==== icicle-use-anything-candidates-flag ====
 
 Non-`nil' user option '''`icicle-use-anything-candidates-flag'''' means
-[[Anything]] actions are used for candidate alternate actions in
+[[Anything]] actions are used for candidate alternative actions in
 some '''Icicles''' commands, and Anything types and actions are used
 by command '''`icicle-object-action'''' (aka '''`what-which-how'''' and
 '''`a'''').  The default value is `t'.  This option has no effect if
