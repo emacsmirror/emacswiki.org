@@ -38,6 +38,7 @@ These are the main '''Icicles''' bookmarking features:
 * Bookmarking the region and selecting a bookmarked region
 * Setting a bookmark and jumping to a bookmark
 * Searching the text of a bookmark's buffer or region
+* Applying an arbitrary function to any bookmark property
 
 Each is described in a little more detail below.  More generally,
 however, the '''Bookmark+''' doc is your friend.
