@@ -6,7 +6,9 @@ they post to EmacsNewsgroups.  Others wrote code to produce Emacs
 related religious texts based on existing religious texts.  Here are
 some links:
 
-* RichardStallman has a page on St IGNUcius: http://www.stallman.org/saint.html (including a picture! ^_^)
+* RichardStallman has a page on [[http://www.stallman.org/saint.html St IGNUcius]]
+* [[https://plus.google.com/105607129061953936165#communities/101818454981911211159 alt.religion.emacs]] Google+ group
+* PerAbrahamsen used to have a page on theological issues, but it is no longer available: http://www.dina.dk/~abraham/religion/.  (Perhaps it will come back someday.)  Per has apparently posted to [[https://plus.google.com/105607129061953936165#communities/101818454981911211159 alt.religion.emacs]] recently.
 * DeepakGoel has written faith.el (Helps reinforce and spread faith in the ONE TRUE EDITOR) http://www.gnufans.net/~deego/emacspub/lisp-mine/faith/
 
 ** You can spread that faith with erc!
