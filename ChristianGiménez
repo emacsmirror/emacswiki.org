@@ -53,6 +53,7 @@ Related projects and helping:
 
 * [https://github.com/cnngimenez/diaspora.el A fork of diaspora.el] : For reading [https://joindiaspora.com/ Diaspora], a free(as in freedom) social network, using Emacs
 ** [https://github.com/tchartersazevedo/diaspora.el Tiago Charters Azevedo's Fork]
+* [https://github.com/cnngimenez/pumpio-el Pumpio client] : See PumpioEl.
 
 
 Unrelated Projects:
