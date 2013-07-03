@@ -1,0 +1,28 @@
+Pumpio-el is a GPLv3 Pump.io client written in Elisp.
+
+Is hosted at [https://github.com/cnngimenez/pumpio-el this page] for now. 
+
+
+
+[https://github.com/e14n/pump.io Pump.io] is a social server with a beautiful big API. [https://identi.ca Identi.ca] is going to migrate from statusnet into this software.
+
+== Installation == 
+
+The [https://github.com/cnngimenez/pumpio-el/blob/master/README.md README.md] file should have all the information needed for required software, installation and setup. 
+
+== Functional == 
+
+Pumpio-el is modularized and is intended to be divided in three layers: 
+
+; Interface : In this layer you can find all the functions that the user can interact.
+; Control : Libraries with functions that controls the behaviour of the client. 
+; Streamming : (Or connectivity) is responsible for creating the connection and sending or retrieving information from/to the pod.
+
+
+The streamming layer use the UrlPackage by default, but can be expanded to use any other way for connecting. This idea let developers to use alternatives.
+
+For example, in DiasporaEl the monolithic development only lets use the UrlPackage. 
+Others users and developers created a shell client written in C called [http://freeshell.de/~mk/projects/cliaspora.html cliaspora] and wanted to replace the connectivity functions from DiasporaEl for using with this client, so they need to make a fork of the project and modify almost all the code.
+
+In this case, this will not be necessary: just creating a library and setting some hooks variables will be enough.
+
