@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Jun 22 10:15:29 2013 (-0700)
+;; Last-Updated: Wed Jul  3 08:52:41 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 29338
+;;     Update #: 29366
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -254,6 +254,7 @@
 ;;    (@> "Setting a Bookmark and Jumping to a Bookmark")
 ;;    (@> "Jumping to a Bookmark")
 ;;    (@> "Searching Bookmarked Objects")
+;;    (@> "Acting on Bookmark Properties")
 ;;
 ;;  (@> "Icicles Enhancements for Emacs Tags")
 ;;    (@> "`icicle-find-tag': Find Tags in All Tags Tables")
@@ -1773,6 +1774,7 @@
 ;;  * Bookmarking the region and selecting a bookmarked region
 ;;  * Setting a bookmark and jumping to a bookmark
 ;;  * Searching the text of a bookmark's buffer or region
+;;  * Applying an arbitrary function to any bookmark property
 ;;
 ;;  Each is described in a little more detail below.  More generally,
 ;;  however, the `Bookmark+' doc is your friend.
@@ -2191,6 +2193,36 @@
 ;;  * (@> "Jumping to a Bookmark") for information about bookmark
 ;;    caching.  Caching is also used for bookmark searching.
 ;;  * (@> "Support for Projects")
+;;
+;;(@* "Acting on Bookmark Properties")
+;;  ** Acting on Bookmark Properties **
+;;
+;;  An Emacs bookmark record is a list with the bookmark name as car
+;;  and a list of bookmark properties as cdr - see variable
+;;  `bookmark-alist' for a description of the commonly used
+;;  properties.
+;;
+;;  When you use an Icicles command that reads a bookmark name, you
+;;  can use `C-S-RET' (`icicle-candidate-alt-action') to apply a
+;;  function to any property of the current bookmark candidate.  You
+;;  are prompted for the property and the function.
+;;
+;;  You choose the target property using completion from among those
+;;  available for the current bookmark candidate.  Remember that you
+;;  can use `C-M-RET' to see a description of the bookmark, which
+;;  typically describes its most important properties.
+;;
+;;  You can choose any function symbol using completion, or you can
+;;  enter a lambda expression.  The function chosen must accept the
+;;  particular property value or else you will see an error message.
+;;
+;;  The value returned by the function is pretty-printed.  If the
+;;  function you choose is `identity' then the action just
+;;  pretty-prints the property value, which can be useful, even if
+;;  trivial.
+;;
+;;  If you use `Bookmark+', `C-M-RET' can be particularly useful for
+;;  acting on bookmark tags or on the text of a snippet bookmark.
  
 ;;(@* "Icicles Enhancements for Emacs Tags")
 ;;
@@ -6005,11 +6037,11 @@
 ;;    when this option is used are filtered out (not used).
 ;;
 ;;  * Non-`nil' user option `icicle-use-anything-candidates-flag'
-;;    means Anything actions are used for candidate alternate actions
-;;    in some Icicles commands, and Anything types and actions are
-;;    used by command `icicle-object-action' (aka `what-which-how' and
-;;    `a').  The default value is `t'.  This option has no effect if
-;;    library `anything.el' cannot be loaded.
+;;    means Anything actions are used for candidate alternative
+;;    actions in some Icicles commands, and Anything types and actions
+;;    are used by command `icicle-object-action' (aka `what-which-how'
+;;    and `a').  The default value is `t'.  This option has no effect
+;;    if library `anything.el' cannot be loaded.
 ;;
 ;;  * Non-`nil' user option
 ;;    `icicle-anything-transform-candidates-flag' means that Anything
@@ -8574,12 +8606,12 @@
 ;;  `icicle-get-alist-candidate' to retrieve the candidate cdr
 ;;  (e.g. location) information from the completion result.
 ;;
-;;  However, if the action or alternate action function that you need
-;;  modifies the existing set of completion candidates on the fly, as
-;;  a side effect, then bind `icicle-whole-candidate-as-text-prop-p'
-;;  to `nil' in the action function.  Then modify both
-;;  `minibuffer-completion-table' and `icicle-candidates-alist' as
-;;  needed to perform the side effect.
+;;  However, if the action or alternative action function that you
+;;  need modifies the existing set of completion candidates on the
+;;  fly, as a side effect, then bind
+;;  `icicle-whole-candidate-as-text-prop-p' to `nil' in the action
+;;  function.  Then modify both `minibuffer-completion-table' and
+;;  `icicle-candidates-alist' as needed to perform the side effect.
 ;;
 ;;  Icicles search-and-replace provides an example of this.  When you
 ;;  replace text, the original domain of search-hit candidates (with
