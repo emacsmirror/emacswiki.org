@@ -1,17 +1,4 @@
 == Starting in fullscreen mode ==
-
-[new]
-At least on my Ubuntu installation, directly calling (toggle-fullscreen) from the .emacs gives weird layout behaviour.
-It seems that window resizes have to take place after something which is evaluated after the .emacs, so this did the job for me:
-{{{
-(run-with-idle-timer 0.1 nil 'toggle-fullscreen)
-}}}
-
-Note that an after-init-hook didn't work for me.
-
-[new:TimRetout:2010-07-09 16:50 UTC]
-There is also the --fullscreen command line option. -- TimRetout
-
 From the Emacs Linux [http://linuxmanpages.net/manpages/fedora14/man1/emacs.1.html man page] (command line "man emacs"), for maximized frame, and for complete full screen:
 
 || ##-mm, --maximized## || Maximize the first frame, like "-fw -fh" (since Emacs 23.2) ||
@@ -21,9 +8,12 @@ For example:
 
 ##emacs -mm [files]##
 
-
-
-
+== Configuring fullscreen mode ==
+Probably the simplest way to configure fullscreen or maximized mode is to customize <code>initial-frame-alist</code>
+{{{
+(custom-set-variables
+ '(initial-frame-alist (quote ((fullscreen . maximized)))))
+}}}
 
 [:frame-cmds.el]
 == Maximize/Restore Using Library frame-cmds.el ==
@@ -43,10 +33,14 @@ As is true for other methods mentioned on this page, "maximized" here is not qui
 * `tile-frames', `tile-frames-horizontally', `tile-frames-vertically'
 
 
+[new:TimRetout:2013-07-03 14:48 UTC]
+At least on my Ubuntu installation, directly calling (toggle-fullscreen) from the .emacs gives weird layout behaviour.
+It seems that window resizes have to take place after something which is evaluated after the .emacs, so this did the job for me:
+{{{
+(run-with-idle-timer 0.1 nil 'toggle-fullscreen)
+}}}
 
-
-
-
+Note that an after-init-hook didn't work for me.
 
 
 [:PlatformSpecific]
