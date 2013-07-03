@@ -160,18 +160,20 @@ name.)
 [:AdditionalTypes]
 === Additional types of bookmarks. ===
 
-* '''Autofile bookmarks.'''  You can bookmark a file without visiting
+* '''[[#AutofileBookmarks|Autofile]] bookmarks.'''  You can bookmark a file without visiting
 it or naming the bookmark.  The bookmark name is the same as
 the file name (non-directory part).  You can have multiple
 such bookmarks with the same name, to bookmark files with the
 same name but in different directories.
 
+[:DiredBookmarks]
 * '''Dired bookmarks.''' You can bookmark a ''[[DiredMode|Dired]]'' buffer, recording and restoring its `ls' switches, which files are marked, which subdirectories are inserted, and which (sub)directories are hidden.
 
+[:BookmarkListBookmarks]
 * '''Bookmark-list bookmarks.'''  You can bookmark the current state of buffer `##*Bookmark List*##' -- a ''list of bookmarks''.  Jumping to such a bookmark restores the recorded [[#SortingBookmarks|sort]] order, [[#FilteringBookmarks|filter]], markings, title, and [[#OmittingBookmarks|omit list]].
 
-* '''Bookmark-file bookmarks.''' You can bookmark a ''bookmark file''.  Jumping to such a bookmark
-loads the bookmarks in the file.  See [[#BookmarkFileBookmarks]].
+* '''[[#BookmarkFileBookmarks|Bookmark-file]] bookmarks.''' You can bookmark a ''bookmark file''.  Jumping to such a bookmark
+loads the bookmarks in the file.
 
 
 [:DesktopBookmarks]
@@ -184,18 +186,24 @@ saved desktop.  A desktop includes:
 
 ** The current set of buffers and their associated files. ''For each:'' its mode, [[point]], [[mark]], and some local variables.
 
+[:GnusBookmarks]
+[:ManPageBookmarks]
+[:WomanPageBookmarks]
 * '''Gnus bookmarks.''' You can bookmark a ''[[Gnus]]'' article, a ''URL'', a ''PDF file'' (%%DocView%%),  a UNIX ''manual page'' (from the output of Emacs command `[[ManMode|man]]' or `[[WoMan|woman]]'), an ''image'', or a piece of ''music''.
 
+[:BufferBookmarks]
 * '''Non-file (buffer) bookmarks.'''  You can bookmark a ''[[buffer]]'' that is not associated with a file.
 
-* '''Function bookmarks.''' A bookmark can represent a Lisp ''function'', which is invoked when
+* '''[[#FunctionSequenceVarlistBookmarks|Function]] bookmarks.''' A bookmark can represent a Lisp ''function'', which is invoked when
 you "jump" to the bookmark.
 
-* '''Sequence (composite) bookmarks.'''  A bookmark can represent a ''[[#FunctionSequenceVarlistBookmarks|sequence]]'' of
+
+* '''[[#FunctionSequenceVarlistBookmarks|Sequence]] (composite) bookmarks.'''  A bookmark can represent a ''sequence'' of
 other bookmarks.
 
-* '''Lisp variable bookmarks.'''  A bookmark can represent a set of ''[[variable]]s'' and their values.
+* '''Lisp [[#FunctionSequenceVarlistBookmarks|variable]] bookmarks.'''  A bookmark can represent a set of ''[[variable]]s'' and their values.
 
+[:SnippetBookmarks]
 * '''Snippet bookmarks.'''  Select some some text and give it a
 (bookmark) name.  Then copy it to the [[kill ring]] anytime, in
 any Emacs session.
