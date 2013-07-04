@@ -7,9 +7,9 @@
 ;; Copyright (C) 2005-2013, Drew Adams, all rights reserved.
 ;; Created: Fri Aug 12 17:18:02 2005
 ;; Version: 22.0
-;; Last-Updated: Fri Jun 14 08:02:25 2013 (-0700)
+;; Last-Updated: Thu Jul  4 16:25:13 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 800
+;;     Update #: 807
 ;; URL: http://www.emacswiki.org/lacarte.el
 ;; Doc URL: http://www.emacswiki.org/LaCarte
 ;; Keywords: menu-bar, menu, command, help, abbrev, minibuffer, keys,
@@ -264,10 +264,14 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2013/07/04 dadams
+;;     lacarte-get-a-menu-item-alist-1:
+;;       After recursing on nested keymap, set SCAN to its cdr.  Thx to Michael Heerdegen.
 ;; 2013/06/14 dadams
 ;;     lacarte-get-a-menu-item-alist-1: Corrected - was cdring twice for atomic car scan.
 ;; 2012/10/28 dadams
-;;     lacarte-get-a-menu-item-alist-1: Handle Emacs 24+ nested keymap (from multiple-keymap inheritance).
+;;     lacarte-get-a-menu-item-alist-1:
+;;       Handle Emacs 24+ nested keymap (from multiple-keymap inheritance).
 ;; 2012/10/15 dadams
 ;;     lacarte-get-a-menu-item-alist-1: Add entry for separator form (menu-item "--..." . WHATEVER).
 ;; 2012/09/14 dadams
@@ -546,7 +550,8 @@ As a side effect, this function modifies
                        (and (memq 'global maps)  (current-global-map)
                             (lacarte-get-a-menu-item-alist (lookup-key (current-global-map) [menu-bar])))
                        (and (memq 'minor maps)
-                            (mapcar (lambda (map) (lacarte-get-a-menu-item-alist (lookup-key map [menu-bar])))
+                            (mapcar (lambda (map)
+                                      (lacarte-get-a-menu-item-alist (lookup-key map [menu-bar])))
                                     (current-minor-mode-maps))))))
     (setq lacarte-menu-items-alist  ())
     (if nil;; `lacarte-sort-menu-bar-order-flag' ; Not yet implemented.
@@ -570,14 +575,15 @@ This calls itself recursively, to process submenus.
 Returns `lacarte-menu-items-alist', which it modifies."
   (let ((scan  keymap)
         composite-name)
-    (setq root  (or root))              ; nil, for top level.
     (while (consp scan)
       (if (and (fboundp 'map-keymap)
                (eq 'keymap (car-safe scan))
                (consp (car-safe (cdr-safe scan)))
                (eq 'keymap (car-safe (car-safe (cdr-safe scan)))))
           ;; Nested keymap - recurse on it.  Emacs 24+ has multiple-keymap inheritance.
-          (lacarte-get-a-menu-item-alist-1 (car-safe (cdr-safe scan)) composite-name done)
+          (progn
+            (lacarte-get-a-menu-item-alist-1 (car-safe (cdr-safe scan)) composite-name done)
+            (setq scan  (cdr scan)))
         (if (atom (car scan))
             (setq scan  (cdr scan))
           (let ((defn  (cdr (car scan))))
@@ -644,7 +650,9 @@ Returns `lacarte-menu-items-alist', which it modifies."
               (unless (memq defn done)
                 (if (eq 'keymap (car-safe defn))
                     (lacarte-get-a-menu-item-alist-1 (cdr defn) composite-name (cons defn done))
-                  (lacarte-get-a-menu-item-alist-1 (symbol-function defn) composite-name (cons defn done)))))
+                  (lacarte-get-a-menu-item-alist-1 (symbol-function defn)
+                                                   composite-name
+                                                   (cons defn done)))))
 
             ;; Add menu item + command pair to `lacarte-menu-items-alist' alist.
             ;; Don't add it if `composite-name' is nil - that's a non-selectable item.
