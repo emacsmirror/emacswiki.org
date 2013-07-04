@@ -202,7 +202,7 @@ In the recently released Emacs 24.1, one could utilitize the fact that SMTPMAIL 
               when (string-match addr from)
               do (setq user-mail-address addr
                        user-full-name fname
-                       smtpmail-mail-user addr
+                       smtpmail-smtp-user addr
                        smtpmail-smtp-server server))))
   
     (defadvice smtpmail-via-smtp
