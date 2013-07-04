@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Jun 21 16:15:11 2013 (-0700)
+;; Last-Updated: Thu Jul  4 08:18:02 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 13990
+;;     Update #: 14000
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -98,6 +98,7 @@
 ;;    `icicle-file-writable-p', `icicle-filesets-files-under',
 ;;    `icicle-files-within', `icicle-files-within-1',
 ;;    `icicle-filter-alist', `icicle-filter-wo-input',
+;;    `icicle-find-tag-default-as-regexp',
 ;;    `icicle-first-matching-candidate', `icicle-first-N',
 ;;    `icicle-fit-completions-window', `icicle-fix-default-directory',
 ;;    `icicle-flat-list', `icicle-frames-on',
@@ -167,7 +168,7 @@
 ;;    `icicle-read-file-name', `icicle-read-file-name-default',
 ;;    `icicle-read-from-minibuffer',
 ;;    `icicle-read-from-minibuf-nil-default', `icicle-read-number',
-;;    `icicle-read-shell-command',
+;;    `icicle-read-regexp', `icicle-read-shell-command',
 ;;    `icicle-read-shell-command-completing', `icicle-read-string',
 ;;    `icicle-read-string-completing',
 ;;    `icicle-recentf-make-menu-items', `icicle-recompute-candidates',
@@ -6697,12 +6698,91 @@ Optional arg NOMSG non-nil means don't display an error message."
         (message "No such live buffer: `%s'"
                  (icicle-propertize (format "%s" buf) 'face 'icicle-msg-emphasis))))))
 
-(defun icicle-propertize (object &rest properties)
-  "Like `propertize', but for all Emacs versions.
-If OBJECT is not a string, then use `prin1-to-string' to get a string."
-  (let ((new  (if (stringp object) (copy-sequence object) (prin1-to-string object))))
-    (add-text-properties 0 (length new) properties new)
-    new))
+(if (fboundp 'find-tag-default-as-regexp)
+    (defalias 'icicle-read-regexp 'read-regexp) ; Emacs 24.3+
+
+  ;; Same as `bmkp-find-tag-default-as-regexp' in `bookmark+-1.el'.
+  (if (fboundp 'bmkp-find-tag-default-as-regexp)
+      (defalias 'icicle-find-tag-default-as-regexp 'bmkp-find-tag-default-as-regexp)
+
+    (defun icicle-find-tag-default-as-regexp () ; Emacs < 24.3
+      "Return a regexp that matches the default tag at point.
+If there is no tag at point, return nil.
+
+When in a major mode that does not provide its own
+`find-tag-default-function', return a regexp that matches the
+symbol at point exactly."
+      (let* ((tagf  (or find-tag-default-function
+                        (get major-mode 'find-tag-default-function)
+                        'find-tag-default))
+             (tag   (funcall tagf)))
+        (and tag  (if (eq tagf 'find-tag-default)
+                      (format "\\_<%s\\_>" (regexp-quote tag))
+                    (regexp-quote tag))))))
+
+  ;; Same as `bmkp-read-regexp' in `bookmark+-1.el'.
+  (if (fboundp 'bmkp-read-regexp)
+      (defalias 'icicle-read-regexp 'bmkp-read-regexp)
+
+    (if (fboundp 'find-tag-default)
+        (defun icicle-read-regexp (prompt &optional default history) ; Emacs 22-24.2
+          "Read and return a regular expression as a string.
+If PROMPT does not end with a colon and possibly whitespace then
+append \": \" to it.
+
+Optional argument DEFAULT is a string or a list of the form
+\(DEFLT . SUGGESTIONS), where DEFLT is a string or nil.
+
+The string DEFAULT or DEFLT is added to the prompt and is returned as
+the default value if the user enters empty input.  The empty string is
+returned if DEFAULT or DEFLT is nil and the user enters empty input.
+
+SUGGESTIONS is used only for Emacs 23 and later.  It is a list of
+strings that can be inserted into the minibuffer using `\\<minibuffer-local-map>\\[next-history-element]'.
+The values supplied in SUGGESTIONS are prepended to the list of
+standard suggestions, which include the tag at point, the last isearch
+regexp, the last isearch string, and the last replacement regexp.
+
+Optional argument HISTORY is a symbol to use for the history list.
+If nil then use `regexp-history'."
+          (let* ((deflt                  (if (consp default) (car default) default))
+                 (suggestions            (and (> emacs-major-version 22)
+                                              (if (listp default) default (list default))))
+                 (suggestions            (and (> emacs-major-version 22)
+                                              (append
+                                               suggestions
+                                               (list (icicle-find-tag-default-as-regexp)
+                                                     (car regexp-search-ring)
+                                                     (regexp-quote (or (car search-ring)  ""))
+                                                     (car (symbol-value
+                                                           query-replace-from-history-variable))))))
+                 (suggestions            (and (> emacs-major-version 22)
+                                              (delete-dups (delq nil (delete "" suggestions)))))
+                 (history-add-new-input  nil) ; Do not automatically add default to history for empty input.
+                 (input                  (read-from-minibuffer
+                                          (cond ((icicle-string-match-p ":[ \t]*\\'" prompt) prompt)
+                                                (deflt (format "%s (default %s): " prompt
+                                                               (query-replace-descr deflt)))
+                                                (t (format "%s: " prompt)))
+                                          nil nil nil (or history  'regexp-history) suggestions t)))
+            (if (equal input "")
+                (or deflt  input)       ; Return the default value when the user enters empty input.
+              (prog1 input              ; Add non-empty input to the history and return input.
+                (add-to-history (or history  'regexp-history) input)))))
+
+      (defun icicle-read-regexp (prompt &optional default history) ; Emacs 20-21
+        "Read and return a string.
+Optional arg DEFAULT is a string that is returned when the user enters
+empty input.  It can also be a list of strings, of which only the
+first is used.
+Optional arg HISTORY is a symbol to use for the history list.  If nil,
+use `regexp-history'."
+        (when (consp default) (setq default  (car default)))
+        (read-string (cond ((icicle-string-match-p ":[ \t]*\\'" prompt) prompt)
+                           (default (format "%s (default %s): " prompt
+                                            (mapconcat #'isearch-text-char-description default "")))
+                           (t (format "%s: " prompt)))
+                     nil (or history  'regexp-history) default)))))
 
 ;; Same as `tap-string-match-p' in `thingatpt+.el'.
 (if (fboundp 'string-match-p)
@@ -6710,6 +6790,13 @@ If OBJECT is not a string, then use `prin1-to-string' to get a string."
   (defun icicle-string-match-p (regexp string &optional start)
     "Like `string-match', but this saves and restores the match data."
     (save-match-data (string-match regexp string start))))
+
+(defun icicle-propertize (object &rest properties)
+  "Like `propertize', but for all Emacs versions.
+If OBJECT is not a string, then use `prin1-to-string' to get a string."
+  (let ((new  (if (stringp object) (copy-sequence object) (prin1-to-string object))))
+    (add-text-properties 0 (length new) properties new)
+    new))
 
 (defun icicle-unpropertize-completion (string)
   "Remove text properties from STRING.
