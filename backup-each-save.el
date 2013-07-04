@@ -3,7 +3,7 @@
 ;; Copyright (C) 2004  Free Software Foundation, Inc.
 
 ;; Author: Benjamin Rutt <brutt@bloomington.in.us>
-;; Version: 1.3
+;; Version: 1.4
 
 ;; This file is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@
 
 ;; Ever wish to go back to an older saved version of a file?  Then
 ;; this package is for you.  This package copies every file you save
-;; in emacs to a backup directory tree (which mirrors the tree
+;; in Emacs to a backup directory tree (which mirrors the tree
 ;; structure of the filesystem), with a timestamp suffix to make
 ;; multiple saves of the same file unique.  Never lose old saved
 ;; versions again.
@@ -44,7 +44,7 @@
 ;; NOTE:  I would give a full example of how to do this here, but it
 ;; would then try to activate it for this file since it is a short
 ;; file and the docs would then be within the "end of the file" local
-;; variables region. :)
+;; variables region.  :)
 
 ;; To filter out which files it backs up, use a custom function for
 ;; `backup-each-save-filter-function'.  For example, to filter out
@@ -66,6 +66,9 @@
 ;;                ii) fixed "Local Variables" docs, which was inadvertently
 ;;                    being activated
 ;; v1.2 -> v1.3:  fix for some emacsen not having `file-remote-p'
+;; v1.3 -> v1.4: added footer and autoload
+
+;;; Code:
 
 (defvar backup-each-save-mirror-location "~/.backups")
 
@@ -85,7 +88,7 @@ Defaults to nil.")
 
 If a file is greater than this size, don't make a backup of it.
 Setting this variable to nil disables backup suppressions based
-on size. ")
+on size.")
 
 (unless (fboundp 'file-remote-p) ;; emacs 21.4 on debian at least,
 				 ;; doesn't provide file-remote-p
@@ -102,6 +105,7 @@ on the system \"/user@host:\"."
 	  (funcall handler 'file-remote-p file)
 	nil))))
 
+;;;###autoload
 (defun backup-each-save ()
   (let ((bfn (buffer-file-name)))
     (when (and (or backup-each-save-remote-files
@@ -124,3 +128,4 @@ on the system \"/user@host:\"."
 	    (format-time-string backup-each-save-time-format))))
 
 (provide 'backup-each-save)
+;;; backup-each-save.el ends here
