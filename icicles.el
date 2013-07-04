@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 2013.04.23
-;; Last-Updated: Sat Jun 22 10:09:36 2013 (-0700)
+;; Last-Updated: Thu Jul  4 08:19:17 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 23406
+;;     Update #: 23408
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1000,7 +1000,8 @@
 ;;    `icicle-files-within-1', `icicle-filter-alist',
 ;;    `icicle-filter-wo-input', `icicle-find-first-tag-action',
 ;;    `icicle-find-first-tag-other-window-action',
-;;    `icicle-find-tag-action', `icicle-find-tag-define-candidates',
+;;    `icicle-find-tag-action', `icicle-find-tag-default-as-regexp',
+;;    `icicle-find-tag-define-candidates',
 ;;    `icicle-find-tag-define-candidates-1',
 ;;    `icicle-find-tag-final-act', `icicle-find-tag-help',
 ;;    `icicle-find-tag-quit-or-error',
@@ -1128,7 +1129,7 @@
 ;;    `icicle-read-file-name', `icicle-read-file-name-default',
 ;;    `icicle-read-from-minibuffer',
 ;;    `icicle-read-from-minibuf-nil-default', `icicle-read-number',
-;;    `icicle-read-shell-command',
+;;    `icicle-read-regexp', `icicle-read-shell-command',
 ;;    `icicle-read-shell-command-completing', `icicle-read-string',
 ;;    `icicle-read-string-completing',
 ;;    `icicle-read-var-value-satisfying', `icicle-rebind-global',
