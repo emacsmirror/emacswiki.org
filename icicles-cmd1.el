@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Jul  3 08:26:21 2013 (-0700)
+;; Last-Updated: Thu Jul  4 08:22:35 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 25870
+;;     Update #: 25872
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -487,7 +487,7 @@
   ;; icicle-whole-candidate-as-text-prop-p, icicle-variable-name-history
 (require 'icicles-fn)                   ; (This is required anyway by `icicles-mcmd.el'.)
   ;; icicle-delete-dups, icicle-highlight-lighter, icicle-multi-comp-apropos-complete-match,
-  ;; icicle-read-from-minibuf-nil-default, icicle-string-match-p
+  ;; icicle-read-from-minibuf-nil-default, icicle-read-regexp, icicle-string-match-p
 
 
 ;; Byte-compiling this file, you will likely get some byte-compiler warning messages.
@@ -5417,13 +5417,13 @@ You are prompted for the FILES."
 (icicle-define-bookmark-other-window-command "some-tags" nil                              ; `C-x 4 j t +'
                                              (bmkp-read-tags-completing nil nil current-prefix-arg))
 (icicle-define-bookmark-command              "all-tags-regexp" nil                        ; `C-x j t % *'
-                                             (read-string "Regexp for tags: "))
+                                             (icicle-read-regexp "Regexp for tags: "))
 (icicle-define-bookmark-other-window-command "all-tags-regexp" nil                        ; `C-x 4 j t % *'
-                                             (read-string "Regexp for tags: "))
+                                             (icicle-read-regexp "Regexp for tags: "))
 (icicle-define-bookmark-command              "some-tags-regexp" nil                       ; `C-x j t % +'
-                                             (read-string "Regexp for tags: "))
+                                             (icicle-read-regexp "Regexp for tags: "))
 (icicle-define-bookmark-other-window-command "some-tags-regexp" nil                       ; `C-x 4 j t % +'
-                                             (read-string "Regexp for tags: "))
+                                             (icicle-read-regexp "Regexp for tags: "))
 (icicle-define-bookmark-command              "file-all-tags" nil                          ; `C-x j t f *'
                                              (bmkp-read-tags-completing nil nil current-prefix-arg))
 (icicle-define-bookmark-other-window-command "file-all-tags" nil                          ; `C-x 4 j t f *'
@@ -5433,13 +5433,13 @@ You are prompted for the FILES."
 (icicle-define-bookmark-other-window-command "file-some-tags" nil                         ; `C-x 4 j t f +'
                                              (bmkp-read-tags-completing nil nil current-prefix-arg))
 (icicle-define-bookmark-command              "file-all-tags-regexp" nil                   ; `C-x j t f % *'
-                                             (read-string "Regexp for tags: "))
+                                             (icicle-read-regexp "Regexp for tags: "))
 (icicle-define-bookmark-other-window-command "file-all-tags-regexp" nil                   ; `C-x 4 j t f % *'
-                                             (read-string "Regexp for tags: "))
+                                             (icicle-read-regexp "Regexp for tags: "))
 (icicle-define-bookmark-command              "file-some-tags-regexp" nil                  ; `C-x j t f % +'
-                                             (read-string "Regexp for tags: "))
+                                             (icicle-read-regexp "Regexp for tags: "))
 (icicle-define-bookmark-other-window-command "file-some-tags-regexp" nil                  ; `C-x 4 j t f % +'
-                                             (read-string "Regexp for tags: "))
+                                             (icicle-read-regexp "Regexp for tags: "))
 (icicle-define-bookmark-command              "file-this-dir-all-tags" nil                 ; `C-x j t . f *'
                                              (bmkp-read-tags-completing nil nil current-prefix-arg))
 (icicle-define-bookmark-other-window-command "file-this-dir-all-tags" nil                 ; `C-x 4 j t . f *'
@@ -5449,13 +5449,13 @@ You are prompted for the FILES."
 (icicle-define-bookmark-other-window-command "file-this-dir-some-tags" nil                ; `C-x 4 j t . f +'
                                              (bmkp-read-tags-completing nil nil current-prefix-arg))
 (icicle-define-bookmark-command              "file-this-dir-all-tags-regexp" nil          ; `C-x j t . f % *'
-                                             (read-string "Regexp for tags: "))
+                                             (icicle-read-regexp "Regexp for tags: "))
 (icicle-define-bookmark-other-window-command "file-this-dir-all-tags-regexp" nil          ; `C-x 4 j t . f % *'
-                                             (read-string "Regexp for tags: "))
+                                             (icicle-read-regexp "Regexp for tags: "))
 (icicle-define-bookmark-command              "file-this-dir-some-tags-regexp" nil         ; `C-x j t . f % +'
-                                             (read-string "Regexp for tags: "))
+                                             (icicle-read-regexp "Regexp for tags: "))
 (icicle-define-bookmark-other-window-command "file-this-dir-some-tags-regexp" nil         ; `C-x 4 j t . f % +'
-                                             (read-string "Regexp for tags: "))
+                                             (icicle-read-regexp "Regexp for tags: "))
 (icicle-define-bookmark-command              "url")                                       ; `C-x j u'
 (icicle-define-bookmark-other-window-command "url")                                       ; `C-x 4 j u'
 (icicle-define-bookmark-command              "w3m")                                       ; `C-x j w'
