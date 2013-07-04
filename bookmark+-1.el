@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2013, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Tue Jul  2 07:09:37 2013 (-0700)
+;; Last-Updated: Thu Jul  4 08:37:18 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 6459
+;;     Update #: 6464
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -3049,6 +3049,7 @@ that option is non-nil."
 (if (fboundp 'find-tag-default-as-regexp)
     (defalias 'bmkp-read-regexp 'read-regexp) ; Emacs 24.3+
 
+  ;; Same as `icicle-find-tag-default-as-regexp' in `icicles-fn.el'.
   (defun bmkp-find-tag-default-as-regexp () ; Emacs < 24.3
     "Return a regexp that matches the default tag at point.
 If there is no tag at point, return nil.
@@ -3064,6 +3065,7 @@ symbol at point exactly."
                     (format "\\_<%s\\_>" (regexp-quote tag))
                   (regexp-quote tag)))))
 
+  ;; Same as `icicle-read-regexp' in `icicles-fn.el'.
   (if (fboundp 'find-tag-default)
       (defun bmkp-read-regexp (prompt &optional default history) ; Emacs 22-24.2
         "Read and return a regular expression as a string.
@@ -10395,16 +10397,14 @@ Non-interactively, non-nil MSG-P means display a status message."
 (defun bmkp-set-autonamed-regexp-buffer (regexp &optional msg-p)
   "Set autonamed bookmarks at matches for REGEXP in the buffer.
 Non-interactively, non-nil MSG-P means display a status message."
-  (interactive (list (bmkp-read-regexp "Regexp: " nil 'regexp-history) 'MSG))
+  (interactive (list (bmkp-read-regexp "Regexp: ") 'MSG))
   (bmkp-set-autonamed-regexp-region regexp (point-min) (point-max) msg-p))
 
 ;;;###autoload (autoload 'bmkp-set-autonamed-regexp-region "bookmark+")
 (defun bmkp-set-autonamed-regexp-region (regexp beg end &optional msg-p)
   "Set autonamed bookmarks at matches for REGEXP in the region.
 Non-interactively, non-nil MSG-P means display a status message."
-  (interactive (list (bmkp-read-regexp "Regexp: " nil 'regexp-history)
-                     (region-beginning) (region-end)
-                     'MSG))
+  (interactive (list (bmkp-read-regexp "Regexp: ") (region-beginning) (region-end) 'MSG))
   (let ((count  0))
     (save-excursion
       (goto-char beg)
