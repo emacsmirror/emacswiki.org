@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2013, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue Jul  2 16:24:06 2013 (-0700)
+;; Last-Updated: Thu Jul  4 08:49:50 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 10068
+;;     Update #: 10074
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -86,6 +86,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2013/07/04 dadams
+;;     Use icicle-read-regexp, not read-string, for reading all regexps.
 ;; 2013/07/02 dadams
 ;;     Added: icicle-bookmark-help (factored out), icicle-bookmark-act-on-prop.
 ;;     icicle-bookmark(-list|(-jump)(-other-window)):
@@ -915,6 +917,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2013/07/04 dadams
+;;     Use icicle-read-regexp, not read-string, for reading all regexps.
 ;; 2013/06/19 dadams
 ;;     Added: icicle-WYSIWYG-font.  Removed (commented out): icicle-font-w-orig-size.
 ;;     icicle-font: Rewrote, to show WYSIWYG candidates.
@@ -1749,6 +1753,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2013/07/04 dadams
+;;     Added: icicle-find-tag-default-as-regexp, icicle-read-regexp.
 ;; 2013/06/21 dadams
 ;;     icicle-display-candidates-in-Completions: Removed vestigial code for highlighting special cand.
 ;; 2013/05/11 dadams
@@ -3841,6 +3847,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2013/07/04 dadams
+;;     Use icicle-read-regexp, not read-string, for reading all regexps.
 ;; 2013/06/22 dadams
 ;;     icicle-(prefix|apropos)-complete-1: Apply renaming to icicle-keep-Completions-for-sole-dir-flag.
 ;;                                         Does not affect absolute file names (no drill-down).
