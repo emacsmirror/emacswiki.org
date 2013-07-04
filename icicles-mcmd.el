@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Jun 22 10:12:15 2013 (-0700)
+;; Last-Updated: Thu Jul  4 08:39:15 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 19165
+;;     Update #: 19170
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -413,7 +413,8 @@
   ;; icicle-saved-ignored-extensions, icicle-successive-grab-count, icicle-thing-at-pt-fns-pointer,
   ;; icicle-universal-argument-map, icicle-variable-name-history
 (require 'icicles-fn)
-  ;; icicle-minibuf-input-sans-dir, icicle-string-match-p, icicle-toggle-icicle-mode-twice
+  ;; icicle-minibuf-input-sans-dir, icicle-read-regexp, icicle-string-match-p,
+  ;; icicle-toggle-icicle-mode-twice
 
 (require 'doremi nil t) ;; (no error if not found):
                         ;; doremi, doremi(-boost)-(up|down)-keys, doremi-limit, doremi-wrap
@@ -1167,7 +1168,7 @@ See also top-level command `icicle-find-file-all-tags-regexp'."
   (bookmark-maybe-load-default-file)
   (let* ((candidates                    icicle-completion-candidates)
          (enable-recursive-minibuffers  t)
-         (regexp                        (read-string "Regexp for tags: "))
+         (regexp                        (icicle-read-regexp "Regexp for tags: "))
          (pred                          `(lambda (ff)
                                           (let* ((bmk   (bmkp-get-autofile-bookmark ff))
                                                  (btgs  (and bmk  (bmkp-get-tags bmk))))
@@ -1212,7 +1213,7 @@ See also top-level command `icicle-find-file-some-tags-regexp'."
   (bookmark-maybe-load-default-file)
   (let* ((candidates                    icicle-completion-candidates)
          (enable-recursive-minibuffers  t)
-         (regexp                        (read-string "Regexp for tags: "))
+         (regexp                        (icicle-read-regexp "Regexp for tags: "))
          (pred                          `(lambda (ff)
                                           (let* ((bmk   (bmkp-get-autofile-bookmark ff))
                                                  (btgs  (and bmk  (bmkp-get-tags bmk))))
@@ -5935,8 +5936,7 @@ it is the same as `S-TAB' followed by `\\[icicle-widen-candidates]'."
     (icicle-user-error "No completion candidates.  Did you use `TAB' or `S-TAB'?"))
   (let* ((raw-input                     (icicle-minibuf-input-sans-dir icicle-current-raw-input))
          (enable-recursive-minibuffers  t)
-         (new-regexp                    (icicle-read-string "Or match alternative (use RET): "
-                                                            nil regexp-history)))
+         (new-regexp                    (icicle-read-regexp "Or match alternative (use RET): ")))
     (setq icicle-current-raw-input
           (concat (if (< emacs-major-version 22) "\\(" "\\(?:") raw-input "\\|" new-regexp "\\)")))
   (icicle-clear-minibuffer)
